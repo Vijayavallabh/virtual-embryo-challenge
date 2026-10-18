@@ -1,32 +1,61 @@
 # Questions for the organisers
 
-Send by email (virtual.embryo.moonshot@gmail.com) or in Slack `#virtual-embryo-challenge` **before** relying on any
-of these. Rules s.10: "an answer given in advance is not a finding of misconduct afterwards". Record each answer with
-its date in `docs/DATA_POLICY.md`.
+Send privately (email virtual.embryo.moonshot@gmail.com, or a Slack DM to Weize Xu), not in the public channel: some
+questions reveal method choices. Rules s.10: "an answer given in advance is not a finding of misconduct afterwards".
+Record each answer with its date in `docs/DATA_POLICY.md`.
 
-Status: **draft, not sent** (2026-10-18).
+Status (2026-10-18): revised; drafted as an email for the user to send. The leak report is a separate Slack draft.
 
-Already answered in Slack, so dropped from this draft (see `docs/DATA_POLICY.md`):
-- T3 literature priors: gene-level knockout findings are prohibited, broad phenotype background is allowed (2026-10-15).
-- The T2 heart extrapolation window equals T1's (2026-10-15).
-- External data for T3 is allowed within the windows (GSE208162 ruling, 2026-08-18).
+Dropped because they are already answered (see `docs/DATA_POLICY.md`):
+- T3 literature: gene-level knockout findings are prohibited, broad phenotype background is allowed (2026-10-15).
+- T2 heart extrapolation window equals T1's (2026-10-15).
+- External data is allowed for T3 within the windows (GSE208162 ruling, 2026-08-18).
+- Scoring conventions: no renormalisation; cell limits inclusive and enforced (2026-10-16).
+
+Deferred to the 2026-10-20 release (ask only if `panels/index.json` leaves them unclear): each test board's reference
+stage (`ref_cells`) and cell bounds.
+
+Not asked because our plan already takes the strict reading: somite-to-day boundary cases (we drop ambiguous embryos),
+Tier-B mutant datasets (unused), cross-species foundation models (unused), selection of the second submission among
+pre-registered candidates (Rules s.10 already allows it).
 
 ---
 
-**Subject:** Human Team: two s.10 questions (cross-task data use, test-board definitions)
+**Subject:** Human Team: four rules questions before the final phase (cross-task data, developmental background, board metadata, Generality scope)
 
-We are a Human Team. Before building, we would like to confirm two points.
+Hello organisers,
 
-1. **Cross-task use of released competition data.** Task 1's E8.5 scRNA is measured at E8.5, which is a held-out
-   validation stage of the Task 2 heart setting; likewise the Task 2/3 E8.75 and E9.5 MERFISH stages for Task 1.
-   (a) In the final phase, once all validation answers are released, may any released file from any task be used for
-   any task (e.g. the Task 1 scRNA as a reference for the Task 2 heart E12.5 and Task 3 models)? (b) Does the s.10
-   held-out list stop applying to validation stages once their answers are released?
+We are a Human Team (captain: Vijayavallabh J). Before the final phase we would like to confirm four points, so that
+we follow the rules exactly.
 
-2. **Test-board definitions.** For the final-phase boards: (a) is the differential-expression reference for Task 1 E12.5
-   and Task 2 heart E12.5 the E10.5 stage, and for Task 2 embryo E7.75 the E7.5 stage? (b) Is copy_last on those boards
-   that same stage? (c) Will `panels/index.json` list the test boards with their cell bounds and truth/reference sizes?
-   (d) Will final evaluation use veckit `main` at cc3859a (severity_slope, scale_log_ratio), or the 0.2.0 metric set
-   from veckit PR #6 (severity_ratio, size_fidelity)? (e) What time zone applies to the 2 December deadline?
+1. **Released competition data across tasks in the final phase.** Once the validation answers are released, may a
+   released file from one task be used as training input for another? Specifically: (a) Task 1 scRNA (E8.5, E9.5,
+   E10.5) for the Task 2 heart E12.5 board and for Task 3, for example to learn wild-type gene programmes and to calibrate
+   scRNA against MERFISH; (b) Task 2/3 MERFISH (heart E8.25 to E10.5, wild type E8.75 and E9.5) for the Task 1 E12.5
+   board. Our reading is that released competition data is training data for every task in the final phase, and that
+   the "after E9.5 up to and including E13.5" exclusion applies to external data only. Is that correct?
 
-Thank you.
+2. **General developmental-biology background inside a protected window.** For Task 1 and the Task 2 heart board we
+   would like to use textbook-level qualitative knowledge of heart development between E10.5 and E12.5 (for example
+   that the epicardium covers the heart, the coronary plexus begins to form, valve primordia appear and the outflow tract
+   septates) to decide which cell populations should appear in our predictions. We would not use any measured values
+   from that window (no proportions, sizes or expression data). By analogy with your 2026-10-15 answer about broad
+   phenotype background for Task 3, we read this as allowed. Is it? (This overlaps with a question from another team on
+   16 October in the public channel.)
+
+3. **Published board metadata.** May we use the `truth_cells` value that `panels/index.json` publishes for a board to
+   choose how many cells we submit? Neighbourhood statistics depend on spatial density, so the count matters for the
+   Task 2 boards. We will not use the anchor values (floor and ceiling metric values) for anything other than reading
+   scores.
+
+4. **Generality Award scope.** If a team enters all three tasks, must the one shared architecture underlie all three, or
+   is it enough that it answers at least two of them? And does a shared population-transport model count (unbalanced
+   optimal-transport coupling, a conditional velocity/growth network, decoding by retrieval of real cells and one
+   calibration protocol, with task-specific encoders, a coordinate head for Task 2 and a genotype head for Task 3)?
+
+Also: (5) will final evaluation use veckit `main` at commit cc3859a (severity_slope, scale_log_ratio), or the metric set
+of veckit PR #6? And (6) which time zone applies to the 2 December deadline?
+
+Thank you for running the challenge.
+
+Vijayavallabh J

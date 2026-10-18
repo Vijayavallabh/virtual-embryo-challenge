@@ -26,7 +26,7 @@
 
 - [ ] Data download needs the user's session token.
 - [ ] The leak report to the organisers is a draft until the user sends it (Slack group DM `C0CA7QTEMDF`).
-- [ ] Organiser questions (cross-task data, test-board definitions) not sent yet.
+- [ ] Organiser questions revised (cross-task data, developmental background, truth_cells, Generality scope, scorer version, deadline time zone); Gmail draft in be23b041@smail.iitm.ac.in awaiting the user.
 
 ## Decisions Made
 
