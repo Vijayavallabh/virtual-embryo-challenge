@@ -154,3 +154,221 @@ All of the harmonise experiment's numbers reproduce. Its label-transfer and dept
   is used for cross-stage work, and CardiacProgenitor and Pericardium stay out of cross-stage trends.
 - **Applied by the follow-up run** (see "Revisions" below once added): section ids from `vec.spatial.snap_z`, EM draws,
   a shifted-query estimator stage, z-trim outputs as standard, duplicated records dropped, release-day stages.
+
+## Revisions after review (2026-10-19)
+
+_A follow-up agent applied the review findings and the lead's decisions; a second independent agent verified the result. Both texts are unedited; the lead's notes close the section._
+
+### Follow-up report
+
+### Label harmonisation: review findings applied, full DGX rerun (2026-10-19)
+
+#### Summary
+- All 7 changes are in. The final numbers come from one DGX run of the final code: `harmonise.py` sha256 d4ce92a0f5173eaf, script b306f2d5144c3eca, lineage map 2f1ca675b28db04d, 557 s, exit 0.
+- The `experiments/harmonise/results/` folder now holds only the new aggregates: 79 files (39 modified, 35 new, 1 superseded manifest deleted).
+- The old set is still in git HEAD.
+
+#### What changed
+
+1. **Section ids.** `section_ids` now uses `vec.spatial.snap_z`; no integer rounding.
+   - Labels are `z<level>`, e.g. `z-240.473939`.
+   - New helpers: `z_levels`, `subset_levels`, `z_position`, `trim_mask`, `default_trims`.
+   - Sections: E9.5 40 and E8.75 35 (unchanged). The KO goes 36 → 35 after duplicate removal (see item 5).
+2. **EM bootstrap.** Uses `n_boot` (2000) everywhere; `n_boot_em` = 2000 is recorded in the summary and the manifest.
+   - New vectorised `em_priors_many` / `bootstrap_em`. They use the same resamples as `bootstrap_draws`, so top-call and EM draws pair up, and they run in threads (`n_jobs`).
+   - Speed: 2000 draws take 10 s (WT, 53.7k cells) and 31 s (KO), against 357 s for 2×1000 with the old loop.
+   - Tests check bitwise identity across thread counts and agreement with the per-draw loop.
+3. **Shifted-query stage and bracket helpers.**
+   - New stage `shifted`: train on one z-half (its out-of-fold calls are the reference side), predict the other half. Covers label, group and merged level, E9.5 and E8.75, both directions.
+   - New helpers: `composition_bracket` and `bracket_difference` return top call and EM together (mean probability optional), with section intervals, the bracket and its envelope; `subset=` gives within-CM fractions.
+   - The module docstring and `composition()` now say the bracket is the default for cross-file work; top call alone is for in-distribution, within-file use.
+4. **Novelty self-matches.** New `predict(..., exclude_self=True)` drops each training cell's own record from its neighbours. The model now stores `train_obs_names`.
+   - The bias is documented in the API, and a warning fires when more than 50% of query names are training names.
+   - With exclusion, reference cells score like new cells (test: median ratio within 0.85–1.15).
+5. **KO vs WT.**
+   - Every file is loaded with `load_stage(drop_duplicates=True)`, which removes 2,811 KO records, including the whole -220 level (a stored copy of -210).
+   - New standard outputs: `ko_trim_sensitivity.csv` and `ko_trim_summary.csv` (the reviewer's 8 trims, for group, merged and within-CM, top call and EM, each with section intervals), plus `ko_zprofile.csv`, `ko_zlocation.csv`, `ko_zprofile_distance.csv` and `fig_ko_zprofile.png`.
+   - Interval columns are named `*_sec_lo/_sec_hi/sec_excludes_0`, and the JSON carries an `interval_note` saying they cover within-embryo section sampling only, not genotype effects.
+   - `ko_summary.json → primary_within_cm` holds the within-CM shift with its trim range. Group-level results sit under `file_vs_file_*`.
+6. **Updated lineage map and merged level.**
+   - Groups now follow the reference's own `obs["group"]`, so file overrides apply.
+   - New merged level: `merged`, `merged_raw`, `pm:` columns, `true_merged`, and merged metrics in `transfer_metrics`.
+   - Recomputed outputs: `ko_label_concordance.csv` (with merged columns), `ko_merged_confusion.csv`, `cross_pergroup_merged.csv`, `cross_verdict_merged.csv`, and merged confusions.
+7. **Release stage (`release`).**
+   - Gata4 rep1 vs rep2, each vs WT E8.75: bracket tables, 8 trims per pair, z-profiles, concordance, a noise-bar table (`gata4_noise_bar.csv`), `gata4_summary.json` and `fig_gata4_groups.png`.
+   - Cross-stage series over adjacent stages (E8.25_late, E8.5, E8.75, E9.5, E10.5) at group and merged level.
+   - All paths are arguments. Missing files are skipped with exit status 0 and recorded in `release_status.json`, which also lists candidate files under `data/raw`.
+   - Pre-registered rule: files with labels not in the lineage map are skipped unless `--allow-unmapped` is passed.
+   - Today it ran the parts whose files exist (E8.25_late↔E8.75 and E8.75↔E9.5). The Gata4 part was skipped because the files are absent; a stand-in smoke test (rep1 = rep2 = Mab21l2 KO, WT = E9.5) exercised the code path.
+
+#### Commands
+- Local: `uv run ruff check src tests experiments/harmonise experiments/qc` passes. `uv run pytest -q`: 75 passed (25 harmonise tests).
+- Sync: the rsync command given in the task, before each run.
+- Smoke runs (DGX):
+  - `--out runs/harmonise_v2_smoke --max-cells 3000 --n-boot 50` (all stages).
+  - `--stages release,figs --out runs/harmonise_v2_smoke_gata4 --gata4-wt data/raw/T2/E9.5.h5ad --gata4-rep1/--gata4-rep2 data/raw/T3/E9.5_mab21l2_ko.h5ad`.
+- Final run (tmux `vec-harm2-final`, log `runs/logs/harmonise_v2_final.log`): `OMP_NUM_THREADS=16 uv run python experiments/harmonise/run_harmonise.py --out runs/harmonise_v2 --n-boot 2000 --n-jobs 16`
+  - Stage times: ref 123 s, ko 334 s (265 s of it trims), shift 8, cross 29, contrast 2, shifted 20, release 38, figs 3.
+- Copy back: `rsync -az --include='*.csv' --include='*.json' --include='*.png' --exclude='*' PrakashDGX_H2:v/virtual-embryo-challenge/runs/harmonise_v2/ experiments/harmonise/results/`
+- Release day:
+  ```
+  OMP_NUM_THREADS=16 uv run python experiments/harmonise/run_harmonise.py --stages release,figs --out runs/harmonise_release --n-jobs 16 \
+    --gata4-rep1 PATH --gata4-rep2 PATH --gata4-wt data/raw/T2/E8.75.h5ad \
+    --series "E8.25_late=data/raw/T2/E8.25_late.h5ad,E8.5=PATH,E8.75=data/raw/T2/E8.75.h5ad,E9.5=data/raw/T2/E9.5.h5ad,E10.5=PATH"
+  ```
+
+#### Results: old vs new
+
+##### Reference
+- E9.5 is identical to the old run: hold-out 0.837 / 0.811 / 0.887 / 0.862.
+- E8.75 (317 copies dropped):
+  - Hold-out: 0.850 / 0.635 / 0.909 / 0.768 → 0.848 / 0.641 / 0.907 / 0.772.
+  - 5-fold: 0.853 / 0.645 / 0.911 / 0.770 → 0.854 / 0.644 / 0.912 / 0.764.
+- Merged level, hold-out accuracy / macro-F1: 0.923 / 0.913 (E9.5) and 0.919 / 0.791 (E8.75).
+- Summed fine-label probabilities still beat a direct group classifier: 0.858 vs 0.848 (E9.5), 0.764 vs 0.759 (E8.75).
+
+##### KO vs WT, group level (KO − WT)
+
+| group | old top call [CI] | new top call [sec CI] | new EM [sec CI] | 8 trims, both estimators |
+|---|---|---|---|---|
+| NCC | -0.043 [-0.070, -0.020] | -0.043 [-0.068, -0.021] | -0.049 [-0.080, -0.024] | all exclude 0 (top -0.051..-0.014) |
+| Endoderm | -0.026 | -0.026 [-0.037, -0.015] | -0.029 [-0.041, -0.017] | all exclude 0 (-0.031..-0.018) |
+| CardiacProgenitor | -0.010 | -0.011 [-0.016, -0.005] | -0.015 [-0.022, -0.007] | all exclude 0 |
+| Pericardium | +0.035 | +0.034 [+0.010, +0.058] | +0.033 [+0.009, +0.054] | 7 of 8 (fails at KO low -6) |
+| Ectoderm | -0.017 | -0.017 [-0.033, -0.003] | -0.018 [-0.035, -0.003] | 6 of 8 (top), 7 of 8 (EM) |
+| Endothelium | -0.012 [-0.020, -0.004] | -0.012 | +0.009 [-0.010, +0.027] | estimators disagree |
+| CM | +0.031 n.s. | +0.031 n.s. | +0.029 n.s. | sign flips (-0.013..+0.063) |
+
+- Groups whose interval excludes 0: old 6 of 12 (top call); new 6 (top call), 5 (EM), 5 (both).
+- Labels: 13 of 22 (top call), 14 (EM), unchanged.
+- KO point estimates moved by at most 0.003 after duplicate removal.
+
+##### KO within-CM (primary summary)
+- **V-CM**:
+  - Old: 0.388 → 0.610 (+0.221).
+  - New top call: 0.388 → 0.606, +0.218 [+0.154, +0.278]; trim range +0.187..+0.265.
+  - New EM: 0.382 → 0.673, +0.291 [+0.203, +0.369]; trim range +0.245..+0.352.
+  - Interval excludes 0 under all 8 trims for both estimators.
+- **SV-CM**:
+  - Old: -0.118.
+  - New top call: 0.159 → 0.040, -0.119 [-0.185, -0.050]; trim range -0.127..-0.089.
+  - New EM: -0.149 [-0.230, -0.064]; trim range -0.155..-0.114.
+  - Excludes 0 under all 8 trims for both estimators.
+- **A-CM**: top call -0.066 [-0.127, +0.002]; EM -0.090 [-0.169, -0.006]. Excludes 0 in 6 of 8 trims (top call) and 7 of 8 (EM), so it is not robust.
+- **OFT-CM**: top call -0.033 (n.s.); EM -0.052 (n.s.).
+
+##### Coverage and concordance
+- **z-coverage:** the mean per-decile total variation between the WT and KO group compositions is 0.216. It is largest in the top two deciles (0.36 and 0.38).
+  - 35% of WT NCC calls sit in the top 10% of the stack, against 16% for the KO.
+  - The top decile is 2% CM in the WT and 30% CM in the KO.
+  - 93.5% of WT hepatocyte calls sit in the lowest 10%, against 30% for the KO.
+- **Concordance:**
+  - KO LPM agreement with the lineage map: 0 → 0.612 (now mapped to Pericardium).
+  - KO DPM: 0.089 → 0.809 (now PharyngealMesoderm).
+  - Group agreement: 0.747 on 90.9% of cells → 0.772 on 99.5%.
+  - Merged agreement: 0.895 on the 79.9% of cells with a tracked merged category. KO "Paraxial Mesoderm" agrees 0.487 at group level but 0.921 at merged level.
+
+##### Estimators (slope of estimated vs true change; 1 = unbiased)
+- **In distribution** (essentially unchanged):
+  - E9.5, label level: top call 0.997, EM 1.124.
+  - E8.75, label level: top call 1.006 → 1.015; EM 1.152 → 1.157.
+  - Merged level: top call 0.98–1.00, EM 1.04–1.06.
+- **Shifted query** (new stage; 4 settings):
+
+| level | top call (range) | EM (range) | lowest MAE |
+|---|---|---|---|
+| label | 0.760 (0.683–0.822) | 1.051 (0.982–1.102) | EM in 3 of 4 settings |
+| group | 0.902 (0.804–0.991) | 1.050 (0.957–1.105) | top call in 3 of 4 |
+| merged | 0.942 | 1.075 | top call in 3 of 4 |
+
+  - The reviewer's part E gave: label 0.758 / 1.038, group 0.896 / 1.040.
+- **Synthetic prior shift**: unchanged (EM 0.995–0.998).
+
+##### Cross-stage transfer
+- Group accuracy:
+  - E8.75 (thinned) → E9.5: 0.675 → 0.672.
+  - E9.5 → E8.75 (5 draws): 0.790 → 0.788.
+- Merged-level accuracy (macro-F1): 0.816 (0.814) and 0.868 (0.865).
+- Group verdicts are unchanged except Endoderm: partial → poor (minimum F1 0.501 → 0.498).
+- Merged verdicts:
+  - Clean: CM (0.93 / 0.96) and Endothelial (0.86 / 0.88).
+  - Partial: CranialMesoderm (0.75 / 0.88), NCC (0.73 / 0.87), Endoderm (0.82 / 0.51; precision 0.35 at E8.75) and Ectoderm (0.73 / 0.61).
+- New pair from the release stage, E8.25_late↔E8.75 (1,164 copies dropped; 57,552 cells):
+  - Group accuracy 0.889 / 0.862; merged 0.920 / 0.913.
+  - Clean: CM, Endocardium, Endothelium, pharyngeal, paraxial, NCC, endoderm, ectoderm, neural.
+  - Poor: Pericardium (0.41 / 0.48), LPM and EpiblastStreak.
+
+#### Which conclusions changed
+1. **"Top call is the best estimator" now holds only in distribution.** For any file other than the reference, quote the top-call/EM bracket. Top call understates label-level change by about a quarter (slope 0.76) and group-level change by about a tenth (0.90).
+2. **The within-CM KO shift is larger than top call alone suggested.**
+   - V-CM rises by +0.22 to +0.29 and SV-CM falls by 0.12 to 0.15. Both survive all 8 trims under both estimators.
+   - The top-call to EM ratio for V-CM (0.75) matches the shifted-query label slope (0.76).
+   - A-CM down is suggestive only.
+3. **KO group level.**
+   - Endothelium drops out: the estimators disagree in sign.
+   - Only NCC, Endoderm and CardiacProgenitor down survive all 8 trims under both estimators. The z-profiles show the two stacks cover different anatomy.
+   - These remain file-vs-file differences, not genotype effects.
+4. **Lineage map.** With the file overrides it agrees with the classifier for KO LPM and DPM. The merged level resolves the KO paraxial/pharyngeal split.
+5. **Cross-stage trends.** The merged level makes CM and Endothelial clean. The Endoderm group-level change from partial to poor is a threshold cliff, not a real change.
+6. **Unchanged:** reference self-evaluation, depth rules, summed vs direct groups, and "novelty does not detect missing types".
+
+#### Caveats
+- **One embryo per genotype.** The section intervals cover within-embryo section sampling only.
+- **KO level -320** still holds two sample_ids (30 and 35; 2,766 cells, about twice its neighbours) and acts as one bootstrap cluster. The deduplicated stack has two gaps.
+- **Records still included** (decision for the lead):
+  - Interpolated half-integer records: 614 in E8.75 and 2,556 in E8.25_late; `load_stage` truncates their counts.
+  - Copies with moved xy: 518 in E8.75 and 563 in E8.25_late. These could leak between CV folds (about 2% of E8.75).
+- **Shifted-query limits.** It is a within-file analogue (a regional shift, with no batch or gene-level shift), and EM over-corrects on some settings.
+- **Group-level top call** is now the argmax of summed probabilities in every stage. In-distribution group slopes moved by at most 0.013.
+- **Cross-stage "accuracy"** means agreement with the hand-built lineage map.
+- **Gata4 stage** is tested only with stand-in files; the default filenames are guesses. The noise bar rests on two replicates, and `clears_rep_noise` is a screening flag, not a test.
+- **Superseded output on the DGX:** `runs/harmonise_v2_aborted_run1` is a partial run with single-thread EM (same numbers). `runs/harmonise` is untouched; the reviewer's scripts read it.
+
+#### Data rules
+- Only released files in `data/raw` were read: T2 E9.5, E8.75, E8.25_late and T3 Mab21l2. Only aggregates left the DGX.
+- I did not open `docs/research/`, any research-workflow or fact-check output, `boards/index.json`, veckit 0.1.2 or PR #6.
+- Before reading the staged harmonise report I counted keyword hits without printing lines. It had no E12.5 or heart-size content, and its mentions of excluded sources were compliance statements.
+- The code encodes no gene-level knockout findings. The Gata4 stage only measures compositions from released files.
+- Nothing is committed.
+
+### Second independent review
+
+Mostly confirmed, with three real issues. I reproduced every focus result on the DGX with my own code: loading, duplicate removal, z snapping, classifier, depth thinning, EM and section bootstrap, none of it importing vec.harmonise. The results match the agent's.
+
+- **Shifted query:** top call 0.758 / EM 1.046 at label level against the agent's 0.760 / 1.051, with the same settings, cell counts and lowest-MAE counts.
+- **KO within-CM shift:** V-CM +0.218 (top call) / +0.291 (EM); SV-CM -0.119 / -0.149.
+- **Trims, profiles, concordance:** the 8 z-trim ranges, the z-profiles and the concordance numbers match.
+- **Section ids:** same levels on all 7 MERFISH files.
+- **Duplicates:** my counts equal load_stage's.
+- **Cross-stage:** accuracies agree within 0.005.
+
+Provenance holds. The manifest hashes match the local and DGX code. All 79 local result files are byte-identical to the DGX run, and that run ended with EXIT=0. Lint on the owned files and the full test suite pass (75 tests).
+
+The issues:
+1. **Release-stage crash.** A --series file with no usable labels crashes the stage with exit 1, before release_status.json is written. Missing files are handled correctly.
+2. **Circular concordance gain.** The LPM/DPM agreement and the 0.747 to 0.772 group-agreement rise come from file_overrides that were themselves set from the earlier run's classifier calls. Without them, the deduplicated data give 0.746.
+3. **Commit dependency.** harmonise.py imports the untracked src/vec/spatial.py. The run script needs another stream's uncommitted prep.py changes.
+
+Minor overstatements:
+- EM estimates moved by up to 0.0037, not at most 0.003.
+- stage_shift still sums top-label calls into groups, so "argmax of summed probabilities in every stage" is not quite true.
+- The report leaves out the run's own cross-stage contrast, where EM (0.815) is below top call (0.842). The bracket does not always contain the truth.
+
+No compliance breach found. My scripts and aggregate outputs are in /tmp/claude-1001/-mnt-md0-IITM-BackUp-Home-vijayavallabh/07d440b9-3ae8-4421-8a08-a046b42f307d/scratchpad/verify_harmonise/ (scripts) and its results/ subfolder. The DGX copies are in runs/harmonise_verify/, with logs in runs/logs/harmonise_verify_*.log.
+
+Issues it raised:
+
+1. Release-stage robustness gap. A --series stage whose file has no usable labels (or is fully unmapped and run with --allow-unmapped) makes transfer_scores call f1_score on an empty selection. The stage exits 1 before release_status.json is written, which also loses the Gata4 status. Fix: guard empty known/transferable selections, or skip such stages and record them in the status file. Reproduced with: run_harmonise.py --stages release --series 'E8.75=...,NOLAB=runs/harmonise_verify/syn/syn_nolabel_a.h5ad'.
+2. Commit-ordering dependency. src/vec/harmonise.py imports vec.spatial, and src/vec/spatial.py is untracked. run_harmonise.py needs the uncommitted src/vec/prep.py changes: load_stage(drop_duplicates=True), obs['merged'] and file_overrides. Both files belong to another stream. Committing the harmonise files alone would break import and the run. The manifest pins prep.py 97b98a86aa195e23 and spatial.py ff9e0c541479844a.
+3. The concordance gain is circular. The KO file_overrides (LPM to Pericardium, DPM to PharyngealMesoderm) were set from the earlier run's classifier calls (0.607 and 0.804). Without the overrides the same deduplicated data give 0.746 group agreement on 91.1% of cells. So 'LPM 0 to 0.612, DPM 0.089 to 0.809, group agreement 0.747 to 0.772' should not be cited as validation of the lineage map.
+4. The report leaves out evidence against 'the bracket brackets the truth'. In the run's own cross-stage contrast (E8.75 thinned to E9.5), EM's slope is 0.815, below top call's 0.842: both understate and the bracket misses 1.0. My kNN and z-thirds variants put EM's label slope as low as 0.73. The top-call/EM bracket is a sensitivity range, not a guaranteed interval.
+5. The within-CM 'primary summary' is still one embryo against one embryo. The 8 trims drop at most 6 end sections; they do not address that the two stacks cover different anatomy (CM is 2% of the WT top decile against 30% of the KO's, and WT within-CM composition varies strongly along z in the review's quintile table). The 'top-call/EM ratio 0.75 matches the shifted-query slope 0.76' argument compares different quantities and is suggestive at best.
+6. Minor overstatements: EM estimates moved by up to 0.0037, not 'at most 0.003'. stage_shift still uses group-of-top-label, not the argmax of summed probabilities. Ectoderm's EM trim count depends on the bootstrap seed (6 vs 7 of 8). Untrimmed intervals differ between ko_trim_sensitivity.csv and ko_composition_*.csv because of different seeds. Two trivial rounding slips (NCC -0.0425 printed as -0.043; 0.874 printed as 0.88).
+7. Housekeeping, low severity: 5 ruff errors remain in experiments/harmonise_review/review.py (not owned by this agent). `ruff format --check` would reformat the 3 owned files (style only; not one of the repo's checks). Still open from the agent's own list: experiments/harmonise/REPORT.md is not updated, the docs/PLAN.md wording is not edited, and the default Gata4 filenames are guesses.
+
+### Lead's notes
+
+- Fixed after the second review: the release stage no longer crashes on a file with no usable labels; errors are recorded in `release_status.json` (always written) and the stage then exits non-zero.
+- The LPM/DPM concordance gain is circular (the overrides were set from the earlier run's calls); it is not evidence that the lineage map is right. Without the overrides the de-duplicated data give 0.746 group agreement.
+- The top-call/EM pair is a sensitivity range, not a guaranteed interval: in the cross-stage contrast both understate (EM 0.815, top call 0.842).
+- **Results refreshed (v3, same day)** with the broader record drop (moved copies and interpolated records). Only results involving E8.75 moved: reference E8.75 hold-out macro-F1 0.641 -> 0.624, cross-stage accuracies by at most 0.004, shifted-query group EM slope 1.050 -> 1.056. The KO summary (`ko_summary.json`, within-CM shift, trims) is identical. `results/` holds v3.

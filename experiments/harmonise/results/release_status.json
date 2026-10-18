@@ -1,5 +1,5 @@
 {
-  "checked": "2026-10-18 22:24:38",
+  "checked": "2026-10-18 23:16:06",
   "inputs": {
     "gata4_WT": {
       "path": "data/raw/T2/E8.75.h5ad",
@@ -53,15 +53,15 @@
     "files": {
       "E8.25_late": {
         "n_input": 58716,
-        "n_dropped_duplicates": 1164,
-        "cells": 57552,
+        "n_dropped_duplicates": 4285,
+        "cells": 54431,
         "unmapped_labels": [],
         "sha256_16": "d56f94d3e2d719ed"
       },
       "E8.75": {
         "n_input": 24826,
-        "n_dropped_duplicates": 317,
-        "cells": 24509,
+        "n_dropped_duplicates": 1449,
+        "cells": 23377,
         "unmapped_labels": [],
         "sha256_16": "149ab6df7c99ad85"
       },

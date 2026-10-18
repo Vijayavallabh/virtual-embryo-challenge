@@ -282,3 +282,321 @@ Everything is on the DGX under `~/v/virtual-embryo-challenge/runs/coords_review/
 - **Dry runs on today's stages are code checks, not predictions;** their JSON files are not committed.
 - **Applied by the follow-up run** (see "Revisions" below once added): the review's code issues, provenance logging,
   all z modes logged, `run_p3.sh`.
+
+## Revisions after review (2026-10-19)
+
+_A follow-up agent applied the review findings and the lead's decisions; a second independent agent verified the result. Both texts are unedited; the lead's notes close the section._
+
+### Follow-up report
+
+#### Coords follow-up: pre-registered size procedure finished, review findings fixed (2026-10-19)
+
+I did not open `docs/research/`, `docs/PLAN.md`, the research fact-check results, any raw research-workflow output, `boards/index.json`, veckit PyPI 0.1.2 or PR #6. The only material read was the experiment and review report in `reports_staging/coords_REPORT.md` (target values already redacted there), the coords code, `configs/lineage_map.yaml`, `src/vec/prep.py` and `src/vec/spatial.py`. The user asked that the fact-check results be screened by a separate agent before they reach the plan or this work; nothing from them is in these outputs.
+
+**Dry-run forecasts are withheld.** In line with the 2026-10-19 redaction record, no E12.5 or E7.75 forecast appears in this report or in `results/`. The dry-run JSONs in `results/` have every forecast field replaced with `[redacted: dry-run forecast]` (0 unredacted fields checked). The unredacted copies exist only on the DGX in `runs/coords_v2/dryrun_full/` and can be deleted.
+
+---
+
+##### 1. What changed (all under `experiments/coords/`, nothing committed)
+
+**`size_procedure.py`** (implements the lead's decisions 1-5):
+- **Rule set:** `PREREGISTERED["heart_rules"]` is now `[latest_rate, half_rate, power_t]`, applied only to rate intervals starting at or after E9.0 and averaged in log space. `decaying_rate` stays in `RULES` as a diagnostic only. This does not change the 2026-10-20 outcome, because `decaying_rate` was never applicable there (it needs the E8.75 to E9.5 interval).
+- **Rate-free justification:** new `rule_multiplier()` and `rule_table(t_prev, t_ref, t_target)`. For each rule and for the average, the table gives:
+  - the multiplier m on the observed log growth;
+  - the horizon ratio h;
+  - the worst-case bias coefficient, max over rho in [0.5, 1] of |m − h·rho|;
+  - the noise amplification sqrt((1+m)² + m² + 1).
+  The table is saved to `results/size_rule_table.csv` and printed in the module docstring; a test checks the docstring against `rule_table()`.
+- **No assumed rates:** the assumed-rate illustration [redacted 2026-10-19: A] and every other assumed rate are gone from code, docstrings, outputs and tests. Tests now draw rates at random.
+- **Core:** `obs["core"]` from `load_stage` at the committed lineage map. `measure_stage` refuses unmapped labels and logs the core labels with their cell counts.
+- **Duplicates:** `PREREGISTERED["drop_duplicates"] = True`; per-input counts are logged (input records, dropped, by level gap, maximum xy offset).
+- **Output JSON (`run()` / CLI):** `--timestamp` is required. The JSON contains:
+  - the pre-registered result;
+  - all four z modes (raw, common_step, xy_grow_z_hold, split), each with scope H1/H0/H2;
+  - the valid flag;
+  - the git commit and the list of uncommitted changes to the procedure files;
+  - sha256 of every input, of `size_procedure.py`, of `lineage_map.yaml`, `prep.py` and `spatial.py`;
+  - stage geometry and the rule table.
+  `--redact-forecasts` (and `redact_forecasts()`) is for dry runs.
+- **Embryo logging:** the embryo procedure also logs four z modes (my definitions: xy_grow_z_hold holds z SD at the lower bracketing stage; split interpolates xy RMS and z SD separately). Raw stays pre-registered.
+- **KO:** the Mab21l2 KO is not an input anywhere in the procedure.
+
+**Review code fixes:**
+- **`coordlib.py`:** new helpers `level_partners` (pairs levels by z difference), `stage_rng` (fresh RNG per stage, seeded by stage name), `load` (de-duplicated load with drop counts), `raw_coords` (files as released, for scorer emulation), and `multi_section_levels` / `section_ids`. `vertical_offset` now pairs by z.
+- **`characterise.py`:** de-duplicates first, normalises per-section counts by the largest physical section, and reports end fractions and the core thin-axis angle.
+- **`zscale.py`, `zpitch_fit.py`:** de-duplicate, pair levels by z, use one RNG per stage, and leave out levels holding two physical sections. `zpitch_fit.py` reports open-ended flat ranges (`p_lo_open`, `p_hi_open`, `p_clamp`, `range_p`, `range_s`) and fits three k sets (1-3 main, 1, 1-6).
+- **`section_transforms.py`:** fits per physical section (level × sample_id) and adds a rigid flag.
+- **`handedness.py`:**
+  - hand-picked landmarks plus a label-pattern rule (`LANDMARK_RULE`, fixed now, before the release) that also picks landmarks for E8.5 and E10.5;
+  - the reviewer's robustness variants: LR cell sets (default, non-cardiac mesoderm, CM only, all cells) × weights (expression, binary) × both AP definitions;
+  - a strict verdict per stage (same sign in all 16 Pitx2 variants); E8.0 is marked unresolved;
+  - same-stage mirror Dice on split halves of the 10% working copy;
+  - a proper-vs-improper best-fit shape-alignment test (random-rotation search, then symmetric ICP) with split-half chirality calibration.
+  - Two rules were added after the first run and before any release file was seen, and are labelled as such: a secondary verdict that ignores variants with |h| < 0.1, and `usable_verdict` (a pair counts only if both stages are chiral in their own split halves).
+- **`evaluate_size.py`:**
+  - geometry comes from `measure_stage`, so it matches the procedure exactly;
+  - every row of `size_heart_modes.csv` carries `valid`, `settings` and `min_start_t`;
+  - KO-derived tables are labelled informational;
+  - new `size_dedup_sensitivity.csv` (informational);
+  - the z-unit-factor variant (iso_z) and the "with E8.0 added" column are removed;
+  - dry runs are redacted in `results/`.
+- **`plots.py`:** per-section normalisation, the k = 1-3 fit, neutral titles.
+- **Tests:** `test_size_procedure.py` has 22 tests and the new `test_coords_helpers.py` has 11. The no-size-numbers test tokenizes `size_procedure.py`:
+  - code literals must be in an explicit allow-list: E-days, the 30° angle, tolerances 1e-3 and 0.15, and the rule-form constants 0, 0.5, 1, 2, 3, 4;
+  - numbers in docstrings and comments may only be those plus the computed rule table.
+  An end-to-end CLI test on synthetic h5ad files checks provenance, the four modes, a planted duplicate and the redaction.
+
+**New files:**
+- `run_p3.sh`: release-day pipeline.
+- `p3_preflight.py`: checks inputs exist (exit 2), labels are mapped (exit 3), and the procedure files are committed (exit 4).
+- `test_coords_helpers.py`.
+
+**`run_p3.sh`** steps:
+1. Preflight.
+2. `vec data qc` on the new files.
+3. `characterise.py` and `zpitch_fit.py` on the new files; `handedness.py`: landmark verdicts for E8.5 and E10.5, mirror Dice, and shape alignment for E7.25:E7.5, E7.5:E8.0, E8.25_late:E8.5, E8.5:E8.75 and E9.5:E10.5, with split-half calibration of all eight stages involved.
+4. Heart (E8.25_late, E8.5, E8.75, E9.5, E10.5 → 12.5) and embryo (E6.75, E7.25, E7.5, E8.0 → 7.75) to `runs/coords/p3/size_heart_E12.5.json` and `size_embryo_E7.75.json`.
+5. Copy aggregates to `experiments/coords/results/p3/`.
+
+It logs to `runs/logs/`. Paths default to `data/raw/T2/{E8.5,E10.5,E7.5}.h5ad` and can be overridden with `--heart-e85`, `--heart-e105` and `--embryo-e75`; I did not consult the manifest. Other flags: `--timestamp`, `--allow-uncommitted`, `--rehearsal`.
+
+##### 2. Exact commands
+
+- **Local:**
+  - `uv run ruff check src tests experiments`: my files are clean; the only 5 errors are in `experiments/harmonise_review/review.py`, which is not mine.
+  - `uv run pytest -q`: 75 passed.
+  - `uv run pytest experiments/coords -q -p no:cacheprovider`: 33 passed (31 also passed on the DGX before the last two tests were added).
+- **Sync:** the prescribed rsync, before every DGX run.
+- **DGX, tmux `vec-coords-rerun2`** running `runs/coords_v2/rerun.sh`, log `runs/logs/vec-coords-rerun2.log`, about 2.7 minutes:
+  - `explore_raw.py`;
+  - `characterise.py`, `zscale.py`, `section_transforms.py`, `zpitch_fit.py`, each with `--out runs/coords_v2`;
+  - `handedness.py --jobs 12`;
+  - `evaluate_size.py --timestamp 2026-10-18T20:03:43Z` (the DGX's UTC clock);
+  - `plots.py --dir runs/coords_v2`;
+  - both size CLIs with `--redact-forecasts`; `cmp` shows each is byte-identical to the `evaluate_size` dry run;
+  - `bash experiments/coords/run_p3.sh --rehearsal --out runs/coords_v2/p3_rehearsal`.
+- **After the verdict refinements:** tmux `vec-coords-hand3` (handedness plus rehearsal) and `vec-coords-hand4` (handedness), then `plots.py`.
+- **Copy back:** `rsync -az -e ssh --exclude dryrun_full --exclude 'rerun*.sh' --exclude p3_rehearsal PrakashDGX_H2:v/virtual-embryo-challenge/runs/coords_v2/ experiments/coords/results/`. 41 files total; same names as before, plus the new files listed at the end.
+
+##### 3. Corrected numbers
+
+**Structure after de-duplication**
+
+| stage | records → kept (dropped, by level gap) | core | shell | raw z / levels | steps | x/y/z range | in-plane NN | step/NN | SD(z)/(range/√12) |
+|---|---|---|---|---|---|---|---|---|---|
+| E6.75 | 7093 → 7093 | 0 | 1.000 | 65/37 | 10×36 | 197/218/360 | 7.35 | 1.36 | 0.97 |
+| E7.25 | 13295 → 13295 | 0 | 1.000 | 40/40 | 10×39 | 264/345/390 | 7.25 | 1.38 | 0.93 |
+| E8.0 | 31671 → 31228 (443: gap 1: 321, gap 2: 122) | 762 | 0.976 | 30/30 | 15×29 | 843/757/435 | 8.44 | 1.78 | 0.97 |
+| E8.25_late | 58716 → 57552 (1164: gap 1) | 2154 | 0.963 | 38/38 | 15×37 | 944/1058/555 | 8.72 | 1.72 | 0.91 |
+| E8.75 | 24826 → 24509 (317: gap 1) | 4183 | 0.829 | 35/35 | 14×34 | 476/581/476 | 8.70 | 1.61 | 0.99 |
+| E9.5 | 53742 → 53742 | 19880 | 0.630 | 98/40 | 15×39 | 761/1129/585 | 9.04 | 1.66 | 1.02 |
+| KO | 50294 → 47483 (2811: same level 1404, gap 1: 1407) | 19634 | 0.587 | 35/35 (36 physical sections) | 10×32; 20×1; 30×1 | 832/955/370 | 8.72 | 1.15 | 1.00 |
+
+- **E9.5 z spread:** the within-level spread is 1.14e-13, now reported as max − min within a level.
+- **Duplicate coordinates:** 0 left in any file.
+- **3D nearest neighbour in its own level:** 0.967-0.984 for WT files, 0.873 for the KO.
+- **Where records were dropped:**
+  - E8.25_late: all 1164 at z −100.81 (922 cells remain there);
+  - E8.75: 317 at −100.47;
+  - E8.0: 148 at 2.31 and 295 at 17.31;
+  - KO: 1404 at −320 (2766 remain, sample_ids 30 and 35), and the 1407 copies at −220, which leaves that level empty.
+
+**Full-cloud shape** (RMS 3D / RMS xy / SD z / z share / principal SDs / most z-aligned PC):
+- E6.75: 122.7 / 69.8 / 100.9 / 0.68 / 100.9-52.2-46.3 / PC1
+- E7.25: 147.3 / 103.2 / 105.1 / 0.51 / 105.3-86.7-55.6 / PC1
+- E8.0: 326.7 / 303.0 / 122.4 / 0.14 / 226.5-202.0-121.1 / PC3
+- E8.25_late: 354.3 / 322.8 / 146.1 / 0.17 / 245.0-210.6-145.5 / PC3
+- E8.75: 217.1 / 169.4 / 135.7 / 0.39 / 136.9-128.4-109.1 / PC1
+- E9.5: 335.0 / 286.9 / 172.9 / 0.27 / 244.1-178.3-144.4 / PC2
+- KO: 296.9 / 277.1 / 106.6 / 0.13 / 224.4-165.9-101.3 / PC3
+
+**Core shape** (n / RMS 3D / RMS xy / SD z / angle between thinnest axis and z / log scope):
+- E8.0: 762 / 163.1 / 149.3 / 65.6 / 81.7° / 0.695
+- E8.25_late: 2154 / 153.6 / 126.3 / 87.4 / 42.0° / 0.836 (was 151.1 before de-duplication)
+- E8.75: 4183 / 154.1 / 119.4 / 97.5 / 64.6° / 0.343
+- E9.5: 19880 / 278.5 / 247.5 / 127.7 / 21.9° / 0.185
+- KO: 19634 / 226.3 / 206.4 / 92.9 / 14.2° / 0.271
+
+**End-section fractions** (first and last level divided by the largest physical section):
+
+| stage | all cells (first/last) | core (first/last) |
+|---|---|---|
+| E6.75 | 0.406 / 0.531 | – |
+| E7.25 | 0.101 / 0.801 | – |
+| E8.0 | 0.625 / 0.460 | 0 / 0 |
+| E8.25_late | 0.204 / 0.858 | 0.005 / 0.010 |
+| E8.75 | 0.535 / 0.770 | 0.093 / 0.000 |
+| E9.5 | 0.904 / 0.553 | 0.164 / 0.008 |
+| KO | 0.354 / 0.599 (was 0.15 / 0.25) | 0.031 / 0.387 (was 0.026 / 0.322) |
+
+**Section transforms:**
+- Every WT section is a pure translation of `spatial_2D`.
+- KO: 30 of 36 physical sections are rigid (residual 0.0011, scale 1.0000). The six non-rigid ones, as sample (z, residual, scale): 16 (−230, 16.3, 1.029), 17 (−200, 3.3, 0.996), 28 (−190, 34.0, 0.905), 9 (−180, 24.9, 0.921), 24 (−160, 12.7, 0.965), 1 (−20, 10.7, 1.036).
+
+**Pitch with z pairing** (lineage-group mismatch; p in xy units; s = step / p). Characterisation only; never used by any procedure.
+
+| stage | k = 1-3 (main) | s | k = 1 | k = 1-6 |
+|---|---|---|---|---|
+| E6.75 | 3.75, range (open ≤5.28, 6] | 2.67, range [1.67, ≥1.89 open) | 6.5 | 4.25 |
+| E7.25 | 7.0, range [5.25, 9.25] | 1.43, range [1.08, 1.90] | 10.25 | 5.75 |
+| E8.0 | 6.0, range (open ≤5.08, 10] | 2.50 | 9.0 | 5.25 |
+| E8.25_late | 7.25, range (open ≤5.13, 11] | 2.07 | 10.25 | 6.5 |
+| E8.75 | 6.75, range (open ≤5.18, 10.5] | 2.07 | 9.75 | 5.25 |
+| E9.5 | 15.5, range [13, 18.25] | 0.97, range [0.82, 1.15] | 18.75 (s 0.80) | 12.5 (s 1.20) |
+| KO | 9.5, range [6.75, 12.75] | 1.05 | 15.0 (s 0.67) | 8.75 (s 1.14) |
+
+- The KO figure was 10.25 with index pairing; the level at z −320 is now left out.
+- E6.75's best pitch lies in the clamped zone.
+- RMSE at p = step against the best fit: E8.x 0.076-0.083 vs 0.011-0.013; E9.5 0.013 vs 0.013; KO 0.017 vs 0.016.
+- The WT/KO pitch ratio is 1.63 (k = 1-3), 1.25 (k = 1) and 1.43 (k = 1-6), against a step ratio of 1.5.
+
+**Handedness robustness** (Pitx2; 16 variants = 4 LR cell sets × 2 weights × 2 AP definitions):
+- **E8.0:** 10 negative / 6 positive with both landmark sources (positives in the CM-only and all-cells variants, up to +0.40); |cos(AP, DV)| up to 0.80-0.93. Unresolved, as the lead decided; the strict rule agrees.
+- **E8.25_late:** rule landmarks 16/0; hand-picked landmarks 14/2. Both positives are all-cells × AP_heart, with h = +0.06 and +0.04. So the strict final verdict is **unresolved**, while the secondary verdict (|h| ≥ 0.1) is resolved, h < 0. This is new: the lead only named E8.0.
+- **E8.75, E9.5, KO (informational):** 16/0 under both sources; resolved, h < 0.
+- **E6.75, E7.25:** not testable by landmarks.
+- **Context markers (hand-picked):**
+
+| stage | Lefty2 (−/+) | Nodal (−/+) |
+|---|---|---|
+| E8.0 | 10/6 | 7/9 |
+| E8.25_late | 16/0 | 16/0 |
+| E8.75 | 16/0 | 10/6 |
+| E9.5 | 12/4 | 16/0 |
+| KO | 7/9 | 16/0 |
+
+- The default-variant bootstrap does not flag E8.0's flips: AP_body h = −0.44 with a same-sign fraction of 1.00.
+
+**Mirror Dice** (same-stage split halves of the 10% working copy, files as released, 10 seeds; proper vs mirrored):
+
+| stage | proper | mirrored | difference |
+|---|---|---|---|
+| E6.75 | 0.813 | 0.809 | +0.005 |
+| E7.25 | 0.870 | 0.862 | +0.007 |
+| E8.0 | 0.906 | 0.786 | +0.119 |
+| E8.25_late | 0.930 | 0.865 | +0.065 |
+| E8.75 | 0.883 | 0.854 | +0.029 |
+| E9.5 | 0.928 | 0.806 | +0.121 |
+| KO | 0.938 | 0.874 | +0.065 |
+
+**Embryo shape alignment** (best fit, improper/proper − 1 in RMS-normalised nearest-neighbour distance, 5 seeds of 2000 points):
+- **Split-half calibration:** E6.75 +1.2% ± 1.6% (not chiral, so a mirror image cannot be told apart); E7.25 +4.6% ± 0.8%; E8.0 +42%; E8.25_late +23%; E8.75 +3.7%; E9.5 +36%; KO +43%.
+- **Pairs:**
+
+| pair | margin | usable verdict |
+|---|---|---|
+| E6.75 → E7.25 | −0.5% ± 0.4% | uninformative (E6.75 not chiral) |
+| E7.25 → E8.0 | −0.1% ± 1.7% | undecided |
+| E8.25_late → E8.75 | +2.4% ± 1.1% | proper |
+| E8.75 → E9.5 | +1.8% ± 1.0% | proper |
+| E9.5 → KO | +4.2% ± 2.3% | proper |
+
+- The test agrees with the landmarks on the heart pairs. It cannot settle embryo handedness: E7.25 against E8.0 is undecided, so E7.5 against E8.0 is unlikely to be informative at release.
+
+**Heart pseudo-target** (E9.5 core from E8.25_late and E8.75; every pre-registered row is `valid=False`):
+- **Single rules (raw):** copy −0.592, latest −0.586, half −0.589, power_t −0.587 (de-duplication moved each by at most 0.009).
+- **Procedure average per z mode:** raw −0.587, common_step −0.561, xy_grow_z_hold −0.632, split −0.570. The rows with the E9.0 cut-off removed (`valid=True`, diagnostic) give the same numbers.
+- **Full-cloud scale skill:** 0.39-0.52.
+- **Context (E8.75 from E8.0 and E8.25_late):** copy −0.004, latest −0.124, half −0.064, power_t −0.119.
+- **Growing the full cloud directly:** 104.1 against 335.0 observed (−1.168, skill 0.269).
+- **Scope (observed 0.185):** H1 0.090, H0 0.343, H2 0.171.
+- **Rule table** for E9.5 → E10.5 → E12.5 (h = 2, rho in [0.5, 1]):
+
+| rule | m | worst-case bias | noise amplification |
+|---|---|---|---|
+| copy_last | 0 | 2 | 1.414 |
+| half_rate | 1 | 1 | 2.449 |
+| power_t | 1.742 | 0.742 | 3.399 |
+| latest_rate | 2 | 1 | 3.742 |
+| average | 1.581 | 0.581 | 3.187 |
+
+**Embryo leave-one-out** (E7.25 predicted from E6.75 and E8.0):
+- raw (pre-registered) +0.209, skill 0.469 ± 0.029;
+- common_step +0.147; xy_grow_z_hold +0.090; split +0.121;
+- extrapolating E8.0 at the latest rate: −0.523.
+
+**Informational** (the KO is not used by the procedure):
+- **WT vs KO, log(KO/WT):** core −0.207, full −0.121.
+- **Count-density leave-one-out errors:** −0.113, +0.172, −0.079, +0.079.
+- **De-duplication sensitivity:**
+  - as released vs de-duplicated: E8.25_late core −1.6%;
+  - also removing copies whose xy moved changes heart-stage core RMS by at most 0.34%, but E8.0 core by −3.7%;
+  - also removing interpolated (non-integer) records: E8.25_late core −0.9%.
+- **Metric ceiling:** unchanged.
+
+**Dry runs** (code checks; forecasts redacted):
+- **Heart** (E8.25_late, E8.75, E9.5 → 12.5): `valid=False` in every z mode, because the last interval starts at 8.75. Auto resolves to raw (E8.75 core thin axis 64.6°); 1164/317/0 duplicates dropped.
+- **Embryo** (E6.75, E7.25, E8.0 → 7.75): `valid=True`, raw mode, bracket E7.25-E8.0, leave-one-out errors as above, 443 E8.0 duplicates dropped.
+- **Rehearsal of `run_p3.sh`** (stand-ins: E8.25_late as E8.5, E9.5 as E10.5, E7.25 as E7.5): all five steps ran. The heart run is `valid=True` with all three rules chosen in every mode and xy_grow_z_hold pre-registered; the stand-in landmark verdicts are h < 0.
+
+##### 4. Review findings
+
+| # | Finding | Status |
+|---|---|---|
+| 1 | Levels paired by index | **Fixed** in `zpitch_fit`, `zscale` and `vertical_offset` |
+| 2 | Pitch flat range not open-ended | **Fixed**: open below about 5.1-5.3 for E6.75, E8.0, E8.25_late, E8.75 |
+| 3 | One RNG shared across stages | **Fixed**: `stage_rng` |
+| 4 | KO per-section normalisation | **Fixed**: 0.354/0.599 and 0.031/0.387; figure redrawn |
+| 5 | Duplicate detection too narrow | **Fixed**: `find_duplicate_records` everywhere geometry is measured; counts logged |
+| 6 | `_grow` valid overwrite | **Fixed** |
+| 7 | `select_rules` sets | **Fixed**: one common pseudo-target set |
+| 8 | No-size-numbers test | **Fixed**: tokenizer scan with allow-list |
+| 9 | Valid flag in `size_heart_modes.csv` | **Fixed** |
+| 10 | Handedness | **Fixed**: variants, verdicts, E8.0 unresolved, same-stage mirror Dice, rotation-search alignment |
+| 11 | Number slips | **Fixed** in the outputs; `REPORT.md` text is the lead's to revise |
+
+The reviewer's conclusions now carry numbers in the tables above: the KO defects, duplicates in E8.0-E8.75, E8.0 handedness, the mirror cost, and the k-set dependence of the z-unit factor. The assumed rate is removed. The heart procedure remains unvalidated in the test regime (no eligible pseudo-target).
+
+##### 5. Open issues for the lead
+1. **Commit before 2026-10-20.** `run_p3.sh` stops unless `configs/lineage_map.yaml`, `size_procedure.py`, `src/vec/prep.py` and `src/vec/spatial.py` are committed. Today `prep.py` is modified and `spatial.py` is untracked (both from the QC step). `--allow-uncommitted` overrides this, and the JSON logs the uncommitted files either way.
+2. **File names:** check the real names after `vec data fetch` and map every new label first; the preflight stops if any label is unmapped.
+3. **Rule set:** `PREREGISTERED` now lists three rules instead of four. There is no effect on the 2026-10-20 run.
+4. **Landmark rule vs hand-picked labels:** `LANDMARK_RULE` differs from the hand-picked labels for some released files, and E8.25_late fails the strict verdict with the hand-picked set. Decide whether the strict or the secondary verdict applies.
+5. **Post-hoc rules:** the secondary verdict and `usable_verdict` were added after the first run (before any release file) and are labelled as such.
+6. **Alignment sensitivity:** the alignment test is close to its detection limit for E8.25_late against E8.75 (in the rehearsal draw it came out undecided, +1.4% ± 1.3%).
+7. **Not changed:** the int32 truncation of half-integer counts in `load_stage` (`src/vec` is not mine), and `REPORT.md` (report files are yours; it still quotes the old numbers).
+
+New result files: `explore_raw.txt`, `handedness_robustness.csv`, `handedness_verdict.csv`, `landmarks_used.csv`, `mirror_dice*.csv`, `shape_alignment*.csv`, `size_dedup_sensitivity.csv`, `size_rule_table.csv`, and the redacted `size_cli_check_*.txt`. The dry-run JSONs (redacted) stay gitignored.
+
+### Second independent review
+
+Mostly CONFIRMED. I recomputed nearly every key number on the DGX with my own code, which does not import vec.prep, vec.spatial, coordlib, size_procedure or handedness. That covers duplicate removal, core masks, geometry, the size pseudo-targets, section transforms, the 640 handedness variants and mirror Dice. They match the agent's outputs to floating-point precision (largest relative difference 6e-15; handedness h within 5e-5). Other checks:
+- **Rule table:** the arithmetic is exact.
+- **Output JSONs:** the provenance (git commit, plus sha256 of the inputs and code checked against sha256sum), the four z modes with H1/H0/H2 and the validity flags are all correct.
+- **No assumed values:** size_procedure.py contains no numeric size or rate values (tokenizer scan), and neither do the outputs.
+- **run_p3.sh:** it stops with exit code 2 for missing files, 3 for unmapped labels or no celltype column, 4 for uncommitted changes and 1 for an unknown option. A rehearsal I re-ran myself completed.
+- **KO:** the knockout is never an input to the size procedure.
+- **Compliance:** clean.
+
+Problems found, all minor or caveats, none blocking:
+1. The git_uncommitted provenance field strips the leading space from the first porcelain line.
+2. The common_step pseudo-target errors are computed on mixed bases (rescaled vs raw target).
+3. The rule-table ranking depends on the assumed rho range [0.5, 1].
+4. Two shape-alignment verdicts are borderline: E6.75 chirality, and E8.75→E9.5.
+5. The E8.75 mirror cost depends on the seeds used.
+6. The preflight does not cover handedness.py.
+7. Cosmetic: the run_p3 stop message has the exit code appended to it.
+
+Action still open: the procedure files are uncommitted, so today the preflight exits 4. The lead must commit them before 2026-10-20.
+
+Issues it raised:
+
+1. Provenance defect (size_procedure.provenance and _git): `_git()` calls `.strip()` on the whole output of `git status --porcelain`, which removes the leading space of the first line. The JSON then records 'M experiments/coords/size_procedure.py', where git reports ' M ...', so a worktree change reads like a staged one. The p3_preflight message has the same problem. Fix: strip only the trailing newline for porcelain output. Low impact: the list is non-empty either way.
+2. Mixed bases for common_step errors. embryo_size_from_geometry rescales every stage, including the one left out, to E8.0's step, so the reported embryo common_step error (+0.147) is against a z-rescaled E7.25 RMS (188.4); against the raw RMS (147.3) it is +0.393. In the heart files, size_heart_pseudo.csv common_step_ref errors are against a rescaled E9.5 (copy -0.578), while size_heart_modes.csv common_step (-0.561) is against the raw E9.5. The report lists these next to raw errors as if they were comparable. Only raw is pre-registered for the embryo board, so this is a reporting caveat.
+3. The rule-table justification rests on an assumption. The worst-case-bias ranking uses RHO_RANGE=[0.5, 1], an assumed band for the later rate relative to the observed one; the docstring states it, but no absolute rate is assumed. If rho_min falls below about 0.29, half_rate beats the average on worst-case bias, and if rho can exceed 1, latest_rate improves. 'Without assuming any rate value' holds only for absolute rates.
+4. Shape-alignment verdicts are borderline in two places. My independent search finds E6.75 split halves proper in 5/5 seeds (+2.7% ± 1.1%), against the agent's 'not chiral' (4/5, +1.2%). The agent's raw E6.75→E7.25 verdict is 'improper' in 5/5 seeds at -0.5% (it is hidden by usable_verdict), while my search gives undecided. E8.75→E9.5 is proper in only 4/5 seeds in my run (+0.9% ± 0.7%). None of these affects the release-day pairs, but the chirality gate is fragile near a margin of 1-3%.
+5. The E8.75 mirror-Dice cost depends on the seeds: +0.029 with seeds 0-9, +0.012 with seeds 100-119, and the smallest per-seed difference is negative in both runs. E6.75 and E7.25 are about 0. The E8.0, E8.25_late, E9.5 and KO costs hold up.
+6. Preflight and provenance coverage gaps. LANDMARK_RULE is described as 'fixed before the release', but handedness.py is not in p3_preflight PROCEDURE_FILES or in the JSON provenance, so that pre-registration depends on the lead committing it. src/vec/io.py and src/vec/boards.py, which prep.py imports for constants only, are also not checked (low risk).
+7. Cosmetic: run_p3.sh fail() echoes `$*`, so the exit code is appended to every STOPPED message (for example '... or --t2-dir 2'). The exit codes themselves are correct.
+8. Wording: the report says the rehearsal ran 'all five steps', but in rehearsal mode step 5 (copy aggregates) is skipped by design and the summary stands in for it.
+9. Release blocker until committed: today the preflight exits 4 (size_procedure.py and src/vec/prep.py modified, src/vec/spatial.py untracked). The lead must commit and sync before 2026-10-20, or the run needs --allow-uncommitted.
+10. Unredacted dry-run forecasts still exist on the DGX in runs/coords_v2/dryrun_full/ (I did not open them). Delete them if the redaction record requires it.
+
+### Lead's notes
+
+- Fixed after the second review: `git status --porcelain` output is no longer stripped of its leading space in the provenance; `experiments/coords/handedness.py` joined the preflight's committed-file check and the JSON provenance.
+- Committed in 171695a before the release; the preflight now passes on a clean tree.
+- **Results refreshed (v3, same day):** `load_stage(drop_duplicates=True)` now also drops moved copies and interpolated records (`experiments/qc/REPORT.md`). Core-cardiac RMS changes: E8.0 163.1 -> 157.1 (-3.6%; 762 -> 731 core cells), E8.25_late 153.6 -> 152.2 (-0.9%), E8.75 154.1 -> 154.5 (+0.2%); E9.5 and the KO are unchanged. The rerun repeated every script and the run_p3.sh rehearsal (exit 0); the CLI checks still equal the evaluate_size dry runs. The tables above quote the v2 numbers; `results/` holds v3.
+- The rule-table ranking assumes the later mean rate is 0.5-1x the observed one (no absolute rate is assumed); below about 0.29x half_rate would win on worst-case bias, above 1x latest_rate would. This is stated in `docs/PLAN.md`.
+- Handedness: the secondary verdict (variants with |h| >= 0.1) is used for interpretation; E8.0 stays unresolved. Proper rotations only, whatever the verdicts. Embryo handedness cannot be settled by shape alignment.
+- Unredacted dry-run outputs stay only in DGX `runs/` (gitignored); they are code checks, not predictions.

@@ -516,3 +516,150 @@ The density experiment's numbers are right, and most of its conclusions hold. It
   truth_cells stands.
 - **Applied by the follow-up run** (see "Revisions" below once added): the corrected block-centre draw, the
   intermediate-quality condition, count levels as fractions of max_cells, release-day targets E10.5 and E7.5.
+
+## Revisions after review (2026-10-19)
+
+_A follow-up agent applied the review findings and the lead's decisions; a second independent agent verified the result. Both texts are unedited; the lead's notes close the section._
+
+### Follow-up report
+
+### Density experiment: review folded in; contiguous-block rerun done; release-day rerun ready
+
+All four changes are done; I committed nothing. With block centres now drawn at random positions, the block rerun keeps the contiguous-block conclusion: random rows only. A near-perfect prediction lost points in all 90 block calls. The penalty is somewhat larger and varies more than in the first run, because blocks near either end of the file are worse.
+
+Scope: I edited only `experiments/density/**` and did not open `docs/research/`, veckit 0.1.2, PR #6 or `boards/index.json`. No anchors were used. truth_cells is computed from the stages. Only aggregate CSV/TXT/PNG files came back from the DGX: one row per scoring call or per stage, no cells, no expression. None of the density files mention E12.5 or knockout results.
+
+#### 1. Review folded in (`experiments/density/review/`)
+- **Scripts:** the reviewer's seven scripts (`review_run.py`, `review_big.py`, `review_analyse.py`, `review_reagg.py`, `review_structure.py`, `review_all.sh`, `review_big_all.sh`) are copied in. Only the script paths changed, plus lint-only edits (line wraps, a variable renamed from `O`).
+- **Copies match:** I re-ran the copies from the repo on the DGX into `runs/density/review_copy/`.
+  - `analysis_big.txt` is byte-identical to the reviewer's.
+  - `analysis.txt` matches the reviewer's except for two result lines. In the reviewer's file those lines were fused with pandas warnings, and the scratchpad copy had dropped them. So `review/results/analysis.txt` is the clean regenerated version.
+- **New outputs:** `review/results/reagg.txt` and `structure.txt` are new; the reviewer had only printed them to the screen. There were no CSVs to bring back.
+
+#### 2. `run_density.py` changes (verified)
+- **Block centre:** one draw per count level, uniform over the start positions where that block fits (stream `[seed,2,k]`, or `[seed,5,k]` for reference blocks). The 8x nesting is gone. Rows record `block_start` and `block_draw="per_level_uniform"`.
+  - The script refuses to resume into a file that holds old-design block rows, so the two designs can never mix under one label.
+- **`shuffle50`:** the reviewer's intermediate-quality condition (random subset with 50% of expression rows permuted), using the same random-number recipe.
+- **Count levels as fractions of max_cells:** `<f>max` for f in {0.25, 0.5, 0.75, 1}, applied to `random`, `shuffle50` and `refstage`, alongside the `<r>x` multiples of truth_cells.
+  - Release targets use the board's published max_cells (a submission limit, not an anchor).
+  - Pseudo-targets use the documented cap rule: 3 × max(truth half, reference working copy), at least 5,000. That gives 3.0x truth_cells on heart_E9.5, 14.2x on heart_E8.75 and 3.16x on embryo_E8.0.
+  - `--max-cells` overrides both.
+- **Release targets:** `heart_E10.5` (reference E9.5, board `T2:heart:val_extrap`) and `embryo_E7.5` (reference E7.25, board `T2:embryo:val_interp`).
+  - When the files are missing they print a skip message and exit 0. I tested this on the DGX.
+  - If the exact file name is absent but exactly one `E10.5*.h5ad` exists, that file is used; `--target-file` and `--ref-file` override.
+- **Other edits:**
+  - `--patterns` option to run only some patterns.
+  - `run_all.sh` is parametrised: TARGETS, SEEDS, RAW, PATTERNS, TAG, JOBS, THREADS.
+  - `summarise.py`: deltas are now taken against each family's own 1x baseline. Before, reference conditions were compared with `random_1x` (the reviewer's point 8). There is also a new delta against the 1max level, and protection against duplicate rows.
+  - `report_tables.py`: skips missing conditions, uses the real seed count, adds tables for shuffle50, the max_cells levels and block positions.
+  - `diag_order.py`: adds E6.75 and the release stages (skipped while missing) and reports z-runs.
+  - New scripts: `seed_v2.py` and `compare_blocks.py`. New test file: `test_run_density.py`.
+- **Checks:**
+  - The 36 unchanged conditions (random, head, jitter, refstage, refhead) reproduce the old draws (synthetic test).
+  - A DGX smoke test re-scored `random_1x` and `refstage_1x` and matched the first run bit-exactly, and `shuffle50_1x` matched the reviewer's row bit-exactly.
+
+#### 3. Block rerun (v2): 3 targets × 5 seeds, 360 calls, about 3 minutes
+`runs/density/raw_v2` holds the first run's random/jitter/refstage rows plus the rescored block, head, refblock and refhead conditions. `head`/`refhead` reproduce v1 (179 of 180 exactly). The one exception, `embryo_E8.0` seed 3 `refhead_2x`, differs by 1.35e-4 points; I re-scored it and the gap is the BLAS thread count (2 threads in v1, 1 in v2), not a code change.
+
+Paired change against random sampling of the same source at the same count:
+
+| | v1 (one centre fixed so the 8x block fits) | v2 (uniform centre per level) |
+|---|---|---|
+| block, 1x, mean per target | −15.8 to −27.8 (pooled −23.0) | −16.1 to −31.2 (pooled −26.1); single calls −13.0 to −38.1 |
+| block, 8x | −12.4 to −18.2 (pooled −16.2) | −12.9 to −17.5 (pooled −15.7) |
+| block calls losing to random | 90/90 | 90/90 |
+| refblock, 1x | pooled −5.5 (15/15 lose) | pooled −5.9 (14/15 lose); calls −17.5 to +4.9 across all counts |
+| refblock, 8x | pooled −1.9 | pooled −3.7 (heart_E8.75 −10.0) |
+
+How the conclusions change:
+- **Near-perfect predictions:** qualitatively unchanged; random rows only. The quoted price changes to:
+  - a block at a random position costs 16–31 points at 1x and 13–18 at 8x;
+  - the first rows cost 21–48 at 1x and 14–21 at 8x (unchanged).
+- **Position matters:** within (target, ratio), blocks in the outer 10% of start positions lose an extra 3.9 points; blocks in the middle 80% gain 0.8. Spearman ρ between distance from mid-file and the change in score is −0.47 (p = 3e-6, n = 90).
+- **Floor-quality predictions:** the mean penalty is the same, but much more variable. In 14 of 90 reference-block calls the block beat random reference cells (13/90 in v1). No target block beat random in either run.
+- **"Lucky crop" on heart_E9.5 refblock 4x:** the reviewer suspected a single slab. It holds at five different slab positions: +1.9 ± 1.7, 0/5 seeds lose, relative start positions 0.43–0.93. The slab at the start of the file (refhead 4x) loses 5.5, so the effect depends on file region. It never occurs for target-quality cells.
+
+#### 4. Recommendations, with evidence
+Confidence intervals below are 95% half-widths of the paired mean. "Review" means 20 seeds on 4 targets (truth halves of 665–2,687 cells). "Large truth" means the review's frac=0.3 run (truth halves of 8,061 and 3,724 cells, 10 seeds).
+
+1. **Never submit fewer cells than truth_cells.**
+   - First run, 5 seeds × 3 targets: 0.5x costs 1.8–4.7 points for near-perfect predictions and 1.0–2.1 for floor-quality ones; 0.25x costs 5.1–9.5 and 2.2–5.5. All 15 seeds lose at each count.
+   - Review, near-perfect 0.5x vs 1x: −1.70 ±0.47, −4.26 ±0.65, −2.69 ±0.57, and −7.13 ±0.85 on the 665-cell truth; 80/80 seeds lose.
+   - Review, floor-quality 0.5x: −0.79 to −3.82; 78/80 lose.
+   - Large truth: −0.87 ±0.31 (10/10 lose) and −1.67 ±1.02 (9/10).
+   - The cause is that occupancy_dice cuts the truth down to the submitted count. The loss shrinks as the truth half grows but never reaches zero.
+2. **Above that, submit max_cells.** For imperfect predictions the score keeps rising with count, and near-perfect predictions lose nothing. Keying the count to max_cells also avoids choosing it from truth_cells.
+   - Intermediate quality (shuffle50), 1x→8x: +1.55 ±0.30, +2.08 ±0.58, +1.25 ±0.62, +2.67 ±0.46; pooled over the three original targets +1.63 ±0.30, with 2/60 seeds losing. 2x is worse than 8x by 0.93 ±0.27 (54/60 seeds).
+   - Floor quality, 8x vs 1x: +0.53 to +3.01; pooled +1.11 ±0.29. 2x is worse than 4x by 0.35 ±0.17 (48/60 seeds) and worse than 8x by 0.56 ±0.23.
+   - Large truth, up to 3x (the heart validation board's cap ratio, per the reviewer): intermediate +0.96 ±0.29 and +1.15 ±0.49 (0/10 lose each).
+   - Near-perfect, pooled vs 1x: 2x +0.27 ±0.23, 4x +0.27 ±0.23, 8x +0.14 ±0.29. The worst target mean is heart_E9.5 at 8x, −0.06 ±0.25. Large truth at 3x: +0.08 and +0.05.
+   - Tested only up to 8x truth_cells (and 3x on large truth halves). The release rerun measures the actual max_cells on both validation boards.
+3. **Random rows only:** the v2 numbers in section 3.
+4. **Jitter at most 0.25 NN:** unchanged and not rerun. In the review, 2 NN at 1x cost 1.2–1.7 points, with 59/60 seeds losing.
+
+#### Release-day rerun (2026-10-20)
+```bash
+### local: uv run vec data fetch; then the usual rsync. DGX, repo root:
+ls data/raw/T2/
+uv run python experiments/density/run_density.py --target heart_E10.5 --seeds 0 --out runs/density/smoke_release --only random_1x random_1max
+tmux new -d -s vec-density-release 'TARGETS="heart_E10.5 embryo_E7.5" SEEDS="0 1 2 3 4 5 6 7 8 9" RAW=runs/density/raw_release TAG=density_release JOBS=16 THREADS=1 bash experiments/density/run_all.sh'
+mkdir -p runs/density/summary_release && uv run python experiments/density/summarise.py --raw runs/density/raw_release --out runs/density/summary_release > runs/density/summary_release/summary_tables.txt
+uv run python experiments/density/diag_order.py --out runs/density/summary_release/diag_order.csv
+### local: scp 'PrakashDGX_H2:v/virtual-embryo-challenge/runs/density/summary_release/*' experiments/density/results/release/
+###        python3 -I experiments/density/report_tables.py experiments/density/results/release
+```
+- **Expected time:** 66 conditions per target and seed; heart_E10.5 calls take about 11–15 s each (judging from the large-truth run), so roughly 20 minutes.
+- **Log cross-checks:** the log prints the board's published truth_cells and max_cells next to the emulated and rule values.
+- **Suggested decision rule, to fix before the run:** keep count = max_cells unless, on a validation board, a lower max_cells level beats 1max for shuffle50 by more than 0.3 points (paired mean) in at least 8 of 10 seeds.
+
+#### Caveats
+- The block rerun used 5 seeds, as instructed; the position effect comes from 90 calls.
+- Bit-exact reproduction needs the same BLAS thread count; across thread counts scores differ by about 1e-4 points.
+- `results/` still holds v1; v2 is in `results/v2/`. In v2, the deltas for reference conditions are taken against `refstage_1x`.
+- `uv run ruff check src tests experiments` fails only in `experiments/harmonise_review/review.py`, which another agent owns; my files are clean.
+- When the lead folds the staged report into the REPORT, two things need cleaning:
+  - its "Consistency" bullet cites `docs/research/community_digest.md`, which is under redaction;
+  - its caveat 6 quotes an `index.json` truth_cells value, which the reviewer flagged.
+
+### Second independent review
+
+Mostly verified. The density work holds up, but two statistical claims are overstated and the max_cells rule is only supported up to 8x truth_cells.
+
+What checks out:
+- **Block-centre fix:** implemented as described. My own index code re-scored all 180 v2 block and reference-block calls bit-exactly (score, skills and block start).
+- **Numbers:** every rerun number, count-rule number and reviewer number in the report reproduces from the stored rows with my own aggregation code.
+- **Reviewer scripts:** run from the repo, they regenerate all four files in review/results byte-for-byte.
+- **Compliance:** clean. No index.json anchors, no docs/research in the agent's files, pinned git veckit, released files only, aggregate outputs only.
+- **User's banned-details concern:** there is no E12.5 heart-size or gene-level knockout content anywhere in experiments/density, so the density results are safe for the Task 3 and heart-size work.
+
+What is overstated:
+1. **Position effect.** The report counts 90 independent calls (p = 3e-6). But each (seed, level) pair puts the block at the same relative position on all three targets, so there are only 30 distinct positions, and the 'outer 10%' group is just 5 of them. Counting each position once, the effect survives (rho −0.58, p = 8e-4, n = 30). Per target it is significant on both hearts but not on embryo_E8.0 (p = 0.21).
+2. **Lucky crop at five positions.** The five heart_E9.5 reference blocks at 4x all share a common core of 4,944 rows, and seeds 0 and 1 overlap by 98%.
+
+max_cells recommendation: supported up to 8x truth_cells, and up to 3x for an ~8k-cell truth half. Beyond that it relies on the release-day rerun. The release-day pipeline works end to end on the max_cells levels.
+
+Commands:
+- Local: `uv run ruff check src tests experiments`, `uv run pytest -q`, `uv run pytest -q -p no:cacheprovider experiments/density/test_run_density.py`.
+- DGX: the prescribed rsync, then `tmux new -d -s vec-density-verify 'bash runs/density_verify/run_verify.sh'` (21:40–21:46 DGX time, at most 16 threads, session has exited).
+
+Files:
+- Scripts and returned aggregate text: /tmp/claude-1001/-mnt-md0-IITM-BackUp-Home-vijayavallabh/07d440b9-3ae8-4421-8a08-a046b42f307d/scratchpad/verify_density/ (verify_raw.py, verify_review.py, rescore.py, compare_rescore.py, compare_smoke.py, run_verify.sh, dgx_out/*.txt).
+- DGX outputs: ~/v/virtual-embryo-challenge/runs/density_verify/ and runs/logs/density_verify_*.log.
+
+Issues it raised:
+
+1. Position-effect statistics are overstated. Block starts use the same random key for a given (seed, level) on every target, so relative positions coincide across targets. The 'n=90, p=3e-6' result counts 30 distinct positions three times, and the 'outer 10%' group (10% at each end) holds only 5 positions. Counting each position once, the effect survives (rho −0.58, p=8e-4, n=30), but it is not significant on embryo_E8.0 alone (p=0.21). Fix: report the per-position test, or seed the block starts per target.
+2. 'Gain holds at five slab positions' (heart_E9.5 reference block at 4x) overstates independence. All five blocks share a common core of 4,944 rows, and seeds 0 and 1 overlap by 98%.
+3. The 'submit max_cells' rule is backed only up to 8x truth_cells (3x for an ~8k-cell truth half). The agent never ran the max_cells levels on the stand-in targets. My one-seed embryo_E8.0 run shows about 1 point of up-and-down noise around 1max, so the 10-seed release rerun and its decision rule should be fixed before anyone reads the release numbers.
+4. The pooled 8x reference-block mean (−3.70) includes 5 embryo_E8.0 calls where the 8x block is the entire reference pool, so it equals the random draw (change exactly 0). This dilutes the mean.
+5. One test line checks nothing: test_resolve_and_skip asserts that E7.5* does not match E7.75 without ever creating an E7.75 file. Also, experiments/density/test_run_density.py sits outside testpaths=['tests'], so ./init.sh and plain pytest never run it.
+6. diag_order.py block-coverage rows still describe a single seed-0 mid-file block (the old design), not the new per-level random blocks. The agent did not claim to change this, but readers of diag_order.csv should know.
+7. Still to clean in files the agent does not own: REPORT.md line 269 still cites docs/research/community_digest.md, as the agent warned. REPORT.md (caveat 6 and the review table) and the review_big.py docstring, copied unchanged from the reviewer, quote index.json truth_cells and max_cells for the validation boards. These are board-spec fields, not anchors, and not the banned E12.5 or knockout details, but the lead's redaction policy in commit dbb6eaf covers held-out-stage sizes, so the lead should decide.
+8. Minor: the caveat 'bit-exact reproduction needs the same BLAS thread count' is broader than the data; only one of the calls I re-scored at both 1 and 2 threads differed. The review_big.py --out default change (raw → raw_big) goes slightly beyond 'paths and lint only', though it is harmless.
+9. Outside the density stream: the shared session scratchpad holds a veckit012/ folder. veckit 0.1.2 is on the do-not-open list. I did not open it.
+
+### Lead's notes
+
+- Pre-registered for the release rerun (`docs/PLAN.md` section 3.6): keep max_cells unless a lower max_cells level beats it for the intermediate-quality condition by more than 0.3 points (paired mean) in at least 8 of 10 seeds.
+- The max_cells evidence reaches 8x truth_cells (3x on an 8k-cell truth half); larger multiples rely on the release rerun. The position effect is counted on 30 distinct block positions (rho -0.58, p = 8e-4), not 90 calls.
+- Not rerun after the loader change: the density experiment loads targets as released (the emulator path).

@@ -2,39 +2,47 @@
 
 ## Current Objective
 
-- Goal:
-- Current status:
-- Branch / commit:
+- Goal: a compliant Human-track entry on all four test boards; the final phase opens 2026-10-20 (2 scored uploads per
+  board for the whole phase).
+- Current status: every method choice that must precede the release is committed (size procedure, T3 decomposition
+  rules, T1 direction readout, count rule, label-mapping rule, test-anchor quarantine). Release-day steps are in
+  `docs/P3_RUNBOOK.md`.
+- Branch / commit: `main` on GitHub (private), mirrored to `PrakashDGX_H2:~/v/virtual-embryo-challenge`.
 
-## Completed This Session
+## Completed This Session (2026-10-18 to 2026-10-19)
 
-- [ ] 
+- [x] Harness, uv environment, `vec` package (emulator, checks, baselines, safe downloader, loaders, QC, harmonise).
+- [x] Training data on the DGX; research sweep, screened digest, PLAN v1.2, assumption ledger (19 rows).
+- [x] Experiments with independent reviews: density, coordinates/size procedure, harmonisation, data QC.
+- [x] Compliance: leaked heart size quarantined and reported; gene-level knockout findings and held-out-stage values
+      redacted by meaning; leaked-scorer copies and in-window external files deleted; history rewritten and the GitHub
+      repo recreated (first pass; a second pass is ready for the user to run).
 
 ## Verification Evidence
 
 | Check | Command | Result | Notes |
 |---|---|---|---|
-|  |  |  |  |
-
-## Files Changed
-
-- 
+| Lint and tests | `./init.sh` | passes | `uv run pytest -q` 90+ tests; experiment tests in `experiments/*/test_*.py` run separately |
+| Size procedure | `uv run pytest experiments/coords -q -p no:cacheprovider` | 33 passed | preflight requires committed procedure files |
+| QC of released files | `bash experiments/qc/run_qc.sh <tag>` (DGX) | `experiments/qc/results/` | duplicate and interpolated counts in `docs/DATA_NOTES.md` |
 
 ## Decisions Made
 
-- 
+- See `docs/PLAN.md` decision log (2026-10-18, 2026-10-19, 2026-10-19 b) and `docs/DATA_POLICY.md` records.
 
 ## Blockers / Risks
 
-- 
+- Organiser answers pending (leak report; rules email). Follow-up email ready in `docs/ORGANIZER_QUESTIONS.md`.
+- The second history rewrite needs the user (gh `delete_repo` scope; `rewrite_history2.sh` in the session scratchpad).
+- Never open the public board file, veckit 0.1.2, PR #6 or raw research outputs (AGENTS.md, quarantined material).
 
 ## Next Session Startup
 
 1. Read `AGENTS.md`.
 2. Read `feature_list.json` and `progress.md`.
-3. Review this handoff.
-4. Run `./init.sh` or the documented verification command before editing.
+3. Review this handoff and `docs/P3_RUNBOOK.md`.
+4. Run `./init.sh` before editing.
 
 ## Recommended Next Step
 
-- 
+- On 2026-10-20, run `docs/P3_RUNBOOK.md` top to bottom, committing each pre-registered output before anything else.

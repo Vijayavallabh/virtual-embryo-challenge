@@ -2,16 +2,12 @@
   "valid": false,
   "board": "heart",
   "target_t": 12.5,
-  "timestamp": "2026-10-18T20:03:43Z",
-  "git_commit": "dbb6eaf1d51c18d77b68f846dfa49e1c5fbea251",
-  "git_uncommitted": [
-    "M experiments/coords/size_procedure.py",
-    " M src/vec/prep.py",
-    "?? src/vec/spatial.py"
-  ],
+  "timestamp": "2026-10-18T21:08:25Z",
+  "git_commit": "171695ab2cd92caee44ce631691db2d0fd610848",
+  "git_uncommitted": [],
   "duplicates_dropped": {
-    "E8.25_late": 1164,
-    "E8.75": 317,
+    "E8.25_late": 4285,
+    "E8.75": 1449,
     "E9.5": 0
   },
   "preregistered_z_mode": "raw",

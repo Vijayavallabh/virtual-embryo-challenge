@@ -23,15 +23,37 @@ in `boards/index.json` (rounded), which confirms the server's 10% working copies
 
 ## Quirks to handle in loaders
 
-- **The z convention differs by stage:** median z step 10 (E6.75, E7.25, Mab21l2 KO), 15 (E8.0, E8.25_late), 14
-  (E8.75); E9.5 has 98 z levels with no clean step. z is a section index scaled by an unknown per-stage factor, so RMS
-  radii mix units across stages. The organisers say not to treat z as a measured distance until the Data Protocol says
-  otherwise.
-- **Mab21l2 KO:** non-unique obs names (make unique on load); 70 duplicate coordinates (jitter or drop before kNN);
-  different cell-type vocabulary from the WT files (vCM, LPM, Paraxial Mesoderm, Branchial Arch...); dense X.
+Settled by `experiments/qc/` (2026-10-19; `vec data qc`) and `experiments/coords/`:
+
+- **z is section position x a per-file step**: 10 (E6.75, E7.25, Mab21l2 KO), 14 (E8.75), 15 (E8.0, E8.25_late, E9.5).
+  E9.5's 98 raw z values are 40 levels exactly 15 apart; the extra values are floating-point copies (spread at most
+  1.1e-13), one per separately placed tissue piece (E6.75 likewise: 65 raw values on 37 levels). Snap with
+  `vec.spatial.snap_z`, never by rounding. xy are slide micrometres (each WT section is a pure translation of the slide
+  coordinates; 30 of 36 KO sections are rigid copies, 6 were warped). The stored step is most likely the section pitch;
+  use native coordinates and never rescale z across stages. Every file has 30-40 sections, so the z extent is set by
+  acquisition, and the stack cuts the heart in E9.5 (start) and the KO (end).
+- **Rows are stored section by section** in descending z (Spearman of row vs z -0.9994 to -0.9996): always subsample at
+  random.
+- **Synthetic records** (none in E6.75, E7.25, E9.5 or T1):
+  - copies, identical integer count rows in the same or an adjacent level, at the same xy (E8.0 443, E8.25_late 1,164,
+    E8.75 317) or moved (2,460 / 563 / 518 more; the E8.75 ones are an exact affine image of the level above);
+  - interpolated records with half-integer counts, each the average of two cells in neighbouring levels (E8.0 200,
+    E8.25_late 2,558, E8.75 614);
+  - Mab21l2 KO: sample_id 35 stored twice within level -320 (1,404 records) and sample_ids 18 and 19 one section at
+    two levels, -210 and -220 (1,407 records); level -320 also holds sample_id 30, and the 30-unit gap to -290 means two
+    sections are missing.
+  `load_stage(drop_duplicates=True)` drops all of these for prediction inputs (E8.0 2,903 + 198, E8.25_late
+  1,727 + 2,558, E8.75 835 + 614, KO 2,811); the emulator loads targets as released.
+- **Counts:** `load_stage` keeps int32 counts when all values are integers and float32 otherwise (the interpolated
+  rows), never truncating.
+- **Mab21l2 KO:** non-unique obs names (all on the copies; made unique on load); coordinates not centred (mean
+  -5439, -1464, -182; WT files are centred); different cell-type vocabulary (vCM, LPM, DPM, Paraxial Mesoderm,
+  Branchial Arch...): map into the WT vocabulary with `vec.harmonise`; `configs/lineage_map.yaml` remaps the KO's LPM
+  and DPM. Dense X.
 - **Vocabularies are not harmonised across stages** (E8.25_late and E8.75 share label definitions; E9.5 does not;
-  `cm_celltype` exists only in E8.0, E8.25_late, E8.75 and E9.5, where "Unknown" means "no subtype given").
-- All MERFISH files carry an integer `counts` layer; T1 counts must be recovered from `.X`.
+  `cm_celltype` exists only in E8.0, E8.25_late, E8.75 and E9.5, where "Unknown" means "no subtype given"). Only CM
+  transfers cleanly between E8.75 and E9.5; use the merged lineage level for cross-stage work.
+- All MERFISH files carry a `counts` layer; T1 counts must be recovered from `.X`.
 - A layer stored under the literal key `None` appears in every file (an artefact; ignore it).
 
 ## Loader checks (2026-10-18, `scripts/check_prep.py`)

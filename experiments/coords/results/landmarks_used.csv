@@ -1,42 +1,42 @@
 stage,source,landmark,column,labels,n_cells
 E6.75,rule,body_posterior,celltype,Caudal Epiblast|Primitive Streak,521
 E7.25,rule,body_posterior,celltype,Caudal Epiblast|Primitive Streak,1847
-E8.0,rule,heart_arterial,cm_celltype,aSHF1|aSHF2,377
-E8.0,rule,heart_venous,cm_celltype,pSHF,314
-E8.0,rule,body_anterior,celltype,Forebrain,2713
-E8.0,rule,body_posterior,celltype,Caudal Epiblast|Primitive Streak,396
-E8.0,rule,dorsal,celltype,D-FG,652
-E8.0,rule,ventral,celltype,V-FG,1016
-E8.0,hand,heart_arterial,cm_celltype,aSHF1|aSHF2,377
-E8.0,hand,heart_venous,cm_celltype,pSHF,314
-E8.0,hand,body_anterior,celltype,Forebrain,2713
-E8.0,hand,body_posterior,celltype,Primitive Streak|Caudal Epiblast|Allantois,2209
-E8.0,hand,dorsal,celltype,D-FG,652
-E8.0,hand,ventral,celltype,V-FG,1016
-E8.25_late,rule,heart_arterial,cm_celltype,aSHF1|aSHF2,568
-E8.25_late,rule,heart_venous,celltype,IFT-CM,308
-E8.25_late,rule,body_anterior,celltype,Forebrain,631
-E8.25_late,rule,body_posterior,celltype,Caudal Epiblast|Hindgut,1842
-E8.25_late,rule,dorsal,celltype,Neural Tube,3327
-E8.25_late,rule,ventral,core,True,2154
-E8.25_late,hand,heart_arterial,cm_celltype,aSHF1|aSHF2,568
-E8.25_late,hand,heart_venous,cm_celltype,pSHF,452
-E8.25_late,hand,body_anterior,celltype,Forebrain,631
-E8.25_late,hand,body_posterior,celltype,Caudal Epiblast|Hindgut,1842
-E8.25_late,hand,dorsal,celltype,Neural Tube,3327
-E8.25_late,hand,ventral,core,True,2154
-E8.75,rule,heart_arterial,cm_celltype,OFT/RV-CM,578
-E8.75,rule,heart_venous,cm_celltype,JCF/SV-CM,157
-E8.75,rule,body_anterior,celltype,aPHM,1218
-E8.75,rule,body_posterior,celltype,Caudal Epiblast|Hindgut,64
-E8.75,rule,dorsal,celltype,Neural Tube,3727
-E8.75,rule,ventral,core,True,4183
-E8.75,hand,heart_arterial,cm_celltype,OFT/RV-CM,578
-E8.75,hand,heart_venous,cm_celltype,aCM1|aCM2|JCF/SV-CM,1168
-E8.75,hand,body_anterior,celltype,Forebrain|aPHM,1236
-E8.75,hand,body_posterior,celltype,Caudal Epiblast|Hindgut|SOM,104
-E8.75,hand,dorsal,celltype,Neural Tube,3727
-E8.75,hand,ventral,core,True,4183
+E8.0,rule,heart_arterial,cm_celltype,aSHF1|aSHF2,341
+E8.0,rule,heart_venous,cm_celltype,pSHF,210
+E8.0,rule,body_anterior,celltype,Forebrain,2576
+E8.0,rule,body_posterior,celltype,Caudal Epiblast|Primitive Streak,389
+E8.0,rule,dorsal,celltype,D-FG,618
+E8.0,rule,ventral,celltype,V-FG,877
+E8.0,hand,heart_arterial,cm_celltype,aSHF1|aSHF2,341
+E8.0,hand,heart_venous,cm_celltype,pSHF,210
+E8.0,hand,body_anterior,celltype,Forebrain,2576
+E8.0,hand,body_posterior,celltype,Primitive Streak|Caudal Epiblast|Allantois,2055
+E8.0,hand,dorsal,celltype,D-FG,618
+E8.0,hand,ventral,celltype,V-FG,877
+E8.25_late,rule,heart_arterial,cm_celltype,aSHF1|aSHF2,509
+E8.25_late,rule,heart_venous,celltype,IFT-CM,267
+E8.25_late,rule,body_anterior,celltype,Forebrain,604
+E8.25_late,rule,body_posterior,celltype,Caudal Epiblast|Hindgut,1809
+E8.25_late,rule,dorsal,celltype,Neural Tube,3082
+E8.25_late,rule,ventral,core,True,2036
+E8.25_late,hand,heart_arterial,cm_celltype,aSHF1|aSHF2,509
+E8.25_late,hand,heart_venous,cm_celltype,pSHF,424
+E8.25_late,hand,body_anterior,celltype,Forebrain,604
+E8.25_late,hand,body_posterior,celltype,Caudal Epiblast|Hindgut,1809
+E8.25_late,hand,dorsal,celltype,Neural Tube,3082
+E8.25_late,hand,ventral,core,True,2036
+E8.75,rule,heart_arterial,cm_celltype,OFT/RV-CM,566
+E8.75,rule,heart_venous,cm_celltype,JCF/SV-CM,149
+E8.75,rule,body_anterior,celltype,aPHM,1197
+E8.75,rule,body_posterior,celltype,Caudal Epiblast|Hindgut,60
+E8.75,rule,dorsal,celltype,Neural Tube,3513
+E8.75,rule,ventral,core,True,3914
+E8.75,hand,heart_arterial,cm_celltype,OFT/RV-CM,566
+E8.75,hand,heart_venous,cm_celltype,aCM1|aCM2|JCF/SV-CM,1065
+E8.75,hand,body_anterior,celltype,Forebrain|aPHM,1214
+E8.75,hand,body_posterior,celltype,Caudal Epiblast|Hindgut|SOM,100
+E8.75,hand,dorsal,celltype,Neural Tube,3513
+E8.75,hand,ventral,core,True,3914
 E9.5,rule,heart_arterial,celltype,OFT-CM,2333
 E9.5,rule,heart_venous,celltype,SV-CM,2697
 E9.5,rule,body_anterior,celltype,Branch Arch,1526
