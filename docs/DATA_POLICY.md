@@ -70,6 +70,17 @@ organisers approve in writing.
 - **Gene-level beta-catenin or Gata4 knockout findings from papers** (see the 2026-10-15 ruling below).
 - **Code from public repos without a licence** (e.g. tubager/vec-t2, wqty123): ideas only, no copying.
 
+### Leak handling record (veckit 0.1.2 held-out radii)
+
+- 2026-10-18: research agents reading the scorer's PyPI release saw the E12.5 heart radius in
+  `common/shape_metrics.py` (line ~245 of the 0.1.2 wheel; also in open veckit PR #6). The numbers were redacted
+  from every research note before anything entered this repo (`git grep` for them is clean).
+- Mitigation: the E12.5 heart size comes only from the pre-registered procedure in `docs/PLAN.md` (T2 heart), fitted on
+  released training stages by committed code, with its output recorded in git before any test submission. Nobody
+  building the size model opens veckit 0.1.2 or PR #6.
+- Disclosure: a private report to the organisers (Weize Xu, Zehua Zeng) is drafted in Slack group DM
+  `C0CA7QTEMDF`; record the send date and their reply here.
+
 ## Organiser rulings on record (Slack #virtual-embryo-challenge; details in `docs/research/slack_digest.md`)
 
 - **2026-10-15, T3 priors (Weize Xu):** generic pathway and gene-set databases are allowed, except gene sets built

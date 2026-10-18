@@ -3,26 +3,154 @@
     {
       "id": "feat-001",
       "name": "Project setup",
-      "description": "uv project (core + dev locally, gpu group on the DGX), harness files, docs skeleton, private GitHub repo",
+      "description": "uv project (Python 3.12; gpu and jax groups on the DGX), harness files, docs skeleton, private GitHub repo, DGX mirror",
       "dependencies": [],
       "status": "done",
-      "evidence": "2026-10-18: ./init.sh passes (uv sync --locked, ruff clean, 11 pytest tests)"
+      "evidence": "2026-10-18: ./init.sh passes (uv sync --locked, ruff clean, 18 tests). DGX: torch 2.14.1+cu130 cuda=True, jax 0.11.2, moscot 0.5.2, scvi 1.5.1 (runs/logs/setup2.log)."
     },
     {
       "id": "feat-002",
       "name": "Local board emulator, format checks, reference baselines",
-      "description": "vec eval / vec check / vec baseline built on the pinned veckit metric code; skill map and Table 1 weights; per-seed scores; registry rows. Done when the published reference rows (copy_last, pseudobulk_shift, wt_identity, shift_transfer, gene_ko) are reproduced on the validation boards within sampling noise and the T2 shape gate is calibrated.",
+      "description": "vec eval / vec check / vec baseline on the pinned veckit metric code; skill map, Table 1 weights, gate min(1, 2*skill(neighborhood_mmd)); per-seed scores; registry rows.",
       "dependencies": ["feat-001"],
       "status": "in-progress",
-      "evidence": "Synthetic tests: floor scores exactly 50 on T1/T2/T3, better predictions score > 75. Calibration on real data pending feat-003."
+      "evidence": "Synthetic tests: floor scores exactly 50 on T1/T2/T3, better predictions > 75. Gate formula matches the one fitted to 608 live T2 rows (docs/research/metrics.md). Calibration on real data is feat-005."
     },
     {
       "id": "feat-003",
       "name": "Data acquisition on the DGX",
-      "description": "Register the team (Human Team track), download the training stages and, from 2026-10-20, the released validation answers and test inputs into ~/v/virtual-embryo-challenge/data/raw on the DGX; record sizes and checksums.",
+      "description": "vec data fetch of every released file (training stages; from 2026-10-20 the validation answers and test inputs) into ~/v/virtual-embryo-challenge/data/raw; SHA-256 recorded and compared with the organisers' checksums.",
       "dependencies": ["feat-001"],
       "status": "blocked",
-      "evidence": "Needs the user to register at virtualembryo.ai and accept the Rules and Terms."
+      "evidence": "vec data CLI built and tested offline. Waiting for the user's session token in ~/.config/vec/token (docs/DATA_ACCESS.md)."
+    },
+    {
+      "id": "feat-004",
+      "name": "Final-phase intake",
+      "description": "On 2026-10-20: pull the new panels/index.json (test boards, ref_cells, truth_cells, cell bounds), the Data Protocol section and any scorer change (veckit main, PR #6 status); update boards/ and docs; freeze each test board's reference stage (decision point D1).",
+      "dependencies": ["feat-001"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-005",
+      "name": "Emulator calibration against the live board",
+      "description": "With the released validation answers, reproduce copy_last, pseudobulk_shift, shift_transfer and gene_ko scores within 2 points of the published reference rows (mean of 10 seeds); local anchors bracket index.json (assumption A2).",
+      "dependencies": ["feat-002", "feat-003"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-006",
+      "name": "Data utilities",
+      "description": "Exact count recovery from log1p CP10k, CSR conversion with explicit zeros removed, unique obs names, panel alignment, cross-stage label harmonisation (classifier on the shared genes) for T1 scRNA and T2/T3 MERFISH.",
+      "dependencies": ["feat-003"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-007",
+      "name": "External data ingestion with window filters",
+      "description": "Committed download-and-filter code for Feng 2022 (E9.5, E14.5+ WT), Feulner 2026, JAX embryos 1-24 and 50-74, ENCODE heart bulk E14.5+, and the T2 embryo atlases outside (E7.25, E8.0); every source logged in EXTERNAL_DATA.md before use (assumption A9).",
+      "dependencies": ["feat-003"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-008",
+      "name": "Pseudo-task harness",
+      "description": "Backtests per board (T1 E10.5 from E8.5/E9.5; T2 embryo E7.5 from E7.25+E8.0; T2 heart E10.5 from <= E8.75 and <= E9.5; T3 Mab21l2<->Gata4 and Gata4 rep1->rep2), leave-one-transition-out, paired comparisons over 10 seeds, registry rows.",
+      "dependencies": ["feat-005"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-009",
+      "name": "Floor-plus candidates for all four boards",
+      "description": "B0 per board: real cells of the last released stage with a small, correctly signed count-space pseudobulk change; T2 boards with the pre-registered size; each beats its floor on the harness (decision point D2).",
+      "dependencies": ["feat-006", "feat-008"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-010",
+      "name": "T2 embryo: FGW displacement interpolation",
+      "description": "Fused Gromov-Wasserstein coupling of canonicalised E7.5 and E8.0, proper-rotation Procrustes, McCann interpolation with a calibrated clock, mixture-of-real-cells expression, PCHIP log-RMS size, matched density (assumption A7: pseudo-target score >= 70).",
+      "dependencies": ["feat-006", "feat-008"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-011",
+      "name": "T2 heart: pre-registered size, growth pipeline, niches, scope hypotheses",
+      "description": "Size procedure from training stages only (committed before any test submission; assumption A8), damped composition, emergent populations in anatomical niches, H1/H2 scope variants.",
+      "dependencies": ["feat-006", "feat-008"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-012",
+      "name": "T3: diagnostics, systematic transfer, composition",
+      "description": "Day-1 diagnostics and Gata4 oracle decomposition; N (Gata4 non-Mesp1 compartments and depth with real cells) and C (broad-phenotype second-heart-field/OFT/RV depletion) components; blind Gata4 proxy test for the sign (assumptions A10, A11).",
+      "dependencies": ["feat-006", "feat-008"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-013",
+      "name": "T3: Wnt programme, leave-one-knockout-out weights, magnitude calibration",
+      "description": "Wild-type Wnt-activity co-variation programme from T1 scRNA (if cross-task use is confirmed) mapped to Mesp1 MERFISH types; weights by leave-one-knockout-out; response slope calibrated near 1 (assumption A12).",
+      "dependencies": ["feat-012"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-014",
+      "name": "T1 M1: heart-chamber composition, external bracketing, births",
+      "description": "Composition for a heart-chamber-only E12.5, per-type count-space shifts directed by the E10.5 to E14.5+ external bracket, emergent states from E10.5 progenitors edited toward external profiles (assumptions A5, A6).",
+      "dependencies": ["feat-007", "feat-009"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-015",
+      "name": "T1 M2: OT bracketing in a shared scVI latent",
+      "description": "moscot temporal coupling from E10.5 to external E14.5 with growth marginals, count-sampled decoding; adopted only if it beats M1 on at least 2 of 3 pseudo-tasks.",
+      "dependencies": ["feat-014"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-016",
+      "name": "Submission client and disclosures",
+      "description": "API client that defaults to format-only, requires explicit confirmation and an idempotency key for scored uploads, archives every submitted file with its code hash, and generates the external-data disclosure text from EXTERNAL_DATA.md.",
+      "dependencies": ["feat-001"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-017",
+      "name": "Shared-core decision and method summary",
+      "description": "Decision point D3 (2026-11-12): shared transport-then-adjust core vs specialised pipelines (assumption A16); METHOD_SUMMARY.md written to winners'-report standard, with the Generality section if claimed.",
+      "dependencies": ["feat-010", "feat-011", "feat-013", "feat-014"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-018",
+      "name": "First official submissions (s1)",
+      "description": "Freeze s1 per board by 2026-11-16, pre-register s2 rules and hashes, submit s1 on all four boards by 2026-11-22 after the user's explicit approval.",
+      "dependencies": ["feat-009", "feat-010", "feat-011", "feat-013", "feat-014", "feat-016"],
+      "status": "not-started",
+      "evidence": ""
+    },
+    {
+      "id": "feat-019",
+      "name": "Second submissions (s2) and final nomination",
+      "description": "Apply the written s2 rules, submit by 2026-11-30, nominate final entries, archive everything for the 14-day report.",
+      "dependencies": ["feat-018", "feat-017"],
+      "status": "not-started",
+      "evidence": ""
     }
   ]
 }
