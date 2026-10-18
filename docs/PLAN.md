@@ -1,8 +1,9 @@
 # Plan
 
-Version 1.1, 2026-10-19, one day before the final phase opens. Update it weekly and log decisions at the bottom.
-Evidence behind every claim is in `docs/research/` (one report per topic) and `experiments/*/REPORT.md` (experiments on
-released data, each with an independent review); risks are tracked in `ASSUMPTIONS.md`.
+Version 1.2, 2026-10-19, one day before the final phase opens. Update it weekly and log decisions at the bottom.
+Evidence behind every claim is in `docs/research/` (one report per topic; `digest_2026-10-19.md` is the screened
+summary of the verified research sweep and its gap-fills) and `experiments/*/REPORT.md` (experiments on released data,
+each with an independent review); risks are tracked in `ASSUMPTIONS.md`.
 
 ## 1. What we are playing for
 
@@ -61,7 +62,12 @@ validation boards.
    graft the intended pseudobulk change onto them without destroying sparsity.
 3. **Pseudobulk hygiene.** Build deltas against the full released reference stage, not a subsample. Set the change to
    exactly 0 for genes we know nothing about and add no noise. Keep exact zeros for undetected genes. Submit at least
-   2,000 cells (the MMD draw) and never fewer than 1,500 (the variogram's variance penalty).
+   2,000 cells (the MMD draw) and never fewer than 1,500 (the variogram's variance penalty). Predict decreases only for
+   genes that can be called down (reference pseudobulk >= 0.25). de_direction rewards sharing the server's 10%
+   reference-subsample noise, so a plain copy already scores above zero: never read de_direction > 0 as evidence that a
+   direction is right, and make the local harness imitate the 10%/split-half protocol. Hold sex-linked (Xist, Tsix,
+   Y-linked) and strain-polymorphic genes flat: the pooled T1 stages differ in sex ratio. Score T3 against each
+   knockout replicate separately (the board ranks one) and optimise the worse or the mean.
 4. **Composition is the main lever** on all four boards: which cell types, and how many.
 5. **Interpolate whenever the rules allow.** E12.5 can be bracketed between our E10.5 and legal external hearts after
    E13.5, for both T1 and T2 heart. E7.75 is bracketed by E7.5 and E8.0 by design.
@@ -70,13 +76,25 @@ validation boards.
      (0.5x costs 1-5 points, 0.25x 2-10), because occupancy_dice thins the truth to the submitted count. Above 1x a
      near-perfect prediction is flat, but imperfect ones keep gaining (intermediate quality +1.6 points from 1x to 8x;
      +1.0 at 3x on an 8k-cell truth half). Keying the count to max_cells also avoids choosing it from truth_cells.
+     One community observation on the live heart-extrapolation board points the other way (10k and 17.6k cells lost
+     0.5-0.7 points against 5k), so re-test truth_cells, 2x and max_cells on the E10.5 and E7.5 validation targets
+     before fixing the test counts. The test boards may publish only their cell limits.
    - **Random rows only.** Rows are stored section by section. A contiguous block costs a near-perfect prediction 16-28
      points (mid-file) or 21-48 (first rows) at 1x, and still 12-21 at 8x.
    - **Jitter budget.** Up to 0.25 x the median nearest-neighbour distance is free (use it to break duplicate
      coordinates); 2 NN costs 1.2-1.8 points at 1x. One NN is about 20 units, 6-9% of the RMS radius, at 5% sampling.
-   - **Proper rotations only.** All released heart frames share one handedness (Pitx2 landmarks; E8.0 unresolved). A
-     mirrored copy of a correctly shaped cloud loses up to 0.12 Dice, about the whole floor-to-ceiling gap. Check E7.5
-     against E8.0 by proper vs improper shape alignment before building the embryo board.
+   - **Proper rotations only.** All released heart frames share one handedness (Pitx2 landmarks; E8.0 unresolved). Under
+     the pinned (fixed) scorer a mirrored copy of a correctly shaped cloud loses up to 0.12 Dice, about the whole
+     floor-to-ceiling gap. Check E7.5 against E8.0 by proper vs improper shape alignment before building the embryo
+     board.
+   - **Scorer build.** The live board behaves like the pre-fix veckit build: a mirror twin scores the same as the
+     original, and Dice depends on a parity coin set by the SVD sign pattern (row order), worth up to ~3.5 heart-board
+     points at good shape quality. The emulator models both builds (`experiments/scorer_build/`). A "parity hedge"
+     across the two submissions would exploit this defect: per the user's decision (2026-10-19) we ask the organisers
+     first and use it only if they say it is acceptable or confirm the build.
+   - **Native coordinates.** xy are slide micrometres and the stored z step is most likely the section pitch; never
+     rescale z across stages. A 1.5x z mismatch costs ~12.6 heart-board points on shape for an otherwise perfect
+     prediction; neighbourhoods barely notice.
    - **Duplicated records.** E8.0, E8.25_late, E8.75 and the Mab21l2 KO hold identical cells in adjacent sections (KO
      5.6%). Drop them (`vec.prep.load_stage(drop_duplicates=True)`) before neighbourhood, pseudobulk or composition
      work on prediction inputs; the emulator loads targets as released, since the server's truth includes them.
@@ -90,28 +108,47 @@ Effort split: T1 ~35%, T3 ~25%, T2 heart ~15%, T2 embryo ~10-15%, shared core an
 
 ### 4.1 T1: E12.5 single-cell population (weight 1)
 
-Facts that shape it:
-- E12.5 is "only the heart chamber" (organisers' dissection note), while E8.5-E10.5 include surrounding tissue.
-  Contamination is minimal at E10.5 and less at E12.5, and the scorer counts every cell.
-- Legal brackets after E13.5: Feng 2022 chamber-dissected hearts (GSE193346, E9.5 and E14.5-P9, 10x 3' v3), Feulner
-  2026 whole hearts (E14.5-P7, CELLxGENE), JAX time-lapse embryos 1-24 and 50-74 (sci-RNA-seq3 nuclei), and ENCODE heart
-  bulk at E14.5+. Our T1 data looks like whole cells (10x), so use within-dataset fold changes, never absolute
-  external levels, and map genes by Ensembl ID.
+Facts that shape it (`docs/research/digest_2026-10-19.md`, gap-fills 1 and 3):
+- E12.5 is "only the heart chamber" (organisers' dissection note; a few oesophagus-junction cells), while E8.5-E10.5
+  include surrounding tissue. The scorer counts every cell.
+- **Scope is the biggest lever.** In a pseudo-task through the pinned scorer, re-weighting real reference-stage cells to
+  a chamber-only composition, with no state change, moved T1 from 51 to 75 (+12 to +26 over 11 truth variants). Drop
+  the surrounding tissue and also the second-heart-field, pericardial and pharyngeal types: keeping them at the
+  reference share cost 13 points, dropping them when the truth keeps 15% cost 1-3. Blood about 1.5-2% (over-predicting
+  by 10 points costs 7-9). The cardiomyocyte share of heart cells carries ~75% of the composition risk, and legal E14.5
+  data disagree on it (40%, 42% and 77% across datasets and strains). Order the work: scope (~+20), per-type state
+  shifts (~15), births (~1.5-5).
+- **Direction.** Within-platform fold changes from Feng 2022 chamber hearts (legal stages only) beat internal momentum in
+  a test-like geometry (sign agreement 0.92 vs 0.73, Spearman 0.80 vs 0.40). JAX nuclei are run- and depth-confounded
+  and are dropped as a direction source. The pre-registered readout in `experiments/t1_direction/` decides on the
+  E9.5 -> E10.5 transition whether M2 is built: the external direction must beat cross-fitted momentum by >= 0.05 on
+  both DE metrics, with cardiomyocyte sign agreement >= 0.70.
+- **Legal external data** (each registered in `EXTERNAL_DATA.md` with committed filters before use): Feng 2022
+  (GSE193346; E9.5, CD1 only, and E14.5 and later, filtered on the per-cell stage column), Feulner 2026 whole hearts
+  (E14.5-P7), JAX/Qiu 2024 embryos 1-22 and 54-74 only (23-24 and 50-53 come from boundary or in-window litters;
+  1-12 are T1-only), ENCODE heart bulk from E14.5. Use within-dataset fold changes, never absolute external levels; map
+  genes by Ensembl ID.
 - Most T1 genes (8,522 Gm*, 2,524 *Rik) have no external signal: hold them at E10.5 levels.
+- **Emergent populations, contingent.** Which classes appear by E12.5 can rest on qualitative developmental background
+  inside the window only if the organisers allow it (asked 2026-10-18, unanswered). Until then use the legal route:
+  classes present in the legal E14.5+ chamber data but absent at E10.5, with E12.5 shares interpolated between the
+  two. Births are worth only ~1.5-5 points.
 
 | Step | What | Effort | Kept if |
 |---|---|---|---|
-| B0 floor-plus | E10.5 real cells, per-type count-space momentum shift (damped E9.5 to E10.5 change), E10.5 composition with non-cardiac types reduced | 2 days | beats copy_last on the E10.5 backtest |
-| M1 main | Composition model for a heart-chamber-only E12.5 (damped log-odds trends plus dissection rule) + per-type count-space shifts whose direction comes from the external bracket (E10.5 to E14.5+, t ≈ 0.5, warp calibrated on the backtest) + births of emergent states (epicardium-derived fibroblasts, coronary endothelium, smooth muscle, valve mesenchyme, definitive erythrocytes) built from the nearest E10.5 progenitors and edited toward external profiles | 1-2 weeks | beats B0 on the backtest |
-| M2 diverse bet | moscot OT bracketing from our E10.5 to external E14.5 in a shared scVI latent, decoded by count sampling | 2-3 weeks | beats M1 on at least 2 of 3 pseudo-tasks |
+| B0 floor-plus | E10.5 real cells re-weighted to a chamber-only composition (surrounding, second-heart-field, pericardial and pharyngeal types dropped; blood ~2%) plus a per-type count-space momentum shift | 2 days | beats copy_last on the E10.5 backtest |
+| M1 main | B0's composition with the cardiomyocyte share as the hedged parameter, per-type count-space shifts with direction from the Feng bracket (E10.5 to E14.5+, t ≈ 0.5) if the readout passes, damped momentum otherwise, and cheap proxy births by the legal route | 1-2 weeks | beats B0 on the backtest |
+| M2 diverse bet | moscot OT bracketing from our E10.5 to external E14.5 in a shared scVI latent, decoded by count sampling; built only if the readout passes | 2-3 weeks | beats M1 on at least 2 of 3 pseudo-tasks |
 | Stretch | Whole-ladder non-autonomous flow with growth (VGFM-style, reimplemented on torchcfm/POT) | only if time | beats M1 |
 
 Validation: predict E10.5 from E8.5 and E9.5 (plus legal external data), scored by the emulator over 10 seeds. Bracket
 fraction t ≈ 0.2-0.235 there versus ≈ 0.5 at test, so prefer parameters with a physical meaning (time fractions,
-shrinkage) over free knobs.
+shrinkage) over free knobs. After the release, re-run the composition pseudo-task with E10.5 as the reference and
+commit the s1/s2 rule before any upload.
 
-Submissions: s1 = M1 central. s2 = the pre-registered alternative: a different non-cardiac fraction, or M2 if it wins
-the backtests.
+Submissions: s1 = M1 with cardiomyocytes at about 58% of heart cells; s2 = identical except about 70% (the hedge
+belongs on the cardiomyocyte share; expected best-of-two gain ~1.1-1.4 points). Both shares are refit on E10.5 and the
+legal E14.5+ data and committed before any upload; M2 replaces s2 only if it wins the backtests.
 
 ### 4.2 T2 embryo: E7.75 interpolation (weight 0.5)
 
@@ -176,12 +213,17 @@ Pipeline:
    Ectoderm; labels harmonised with `vec.harmonise`), centred log-ratios over E8.75-E10.5, damping chosen on the
    1.75-day pseudo-target (expected 0.3-0.6). CardiacProgenitor and Pericardium have no stable cross-stage meaning and
    stay out of the trends.
-3. Emergent populations placed in anatomical niches on the E10.5 geometry: epicardium on the outer myocardial shell,
-   epicardium-derived cells just beneath, coronary endothelium on the dorsal surface and AV groove, valve mesenchyme in
-   the cushions, smooth muscle in the outflow-tract walls. Their expression comes from E10.5 precursors edited in count
+3. Emergent populations (contingent, as in section 4.1): the class list comes from the legal route unless the
+   organisers allow qualitative in-window background, and so does placement: each new cell goes next to the E10.5 cells
+   it most resembles in expression, not by in-window anatomy. Expression comes from E10.5 precursors edited in count
    space, or from external post-E13.5 cells mapped to MERFISH (only if cross-task data use is confirmed).
 4. Expression direction per type from the external bracket where available, otherwise damped momentum.
-5. Grow coordinates with the pre-registered size; keep the shape (no deformation unless pseudo-targets show a gain).
+5. Grow coordinates with the pre-registered size and keep E10.5's shape. A shape operation (axis stretch, radial trim,
+   type-stratified subsampling) is adopted only if it improves both released transitions (E9.5 -> E10.5 and
+   E8.25_late -> E8.5) by >= 0.15 d2 skill without lowering Dice and has a physical rationale; then it is applied at
+   half magnitude in at most one submission. The leaders' validation shape gains look transition-specific.
+6. Scope factors (radius of a scope-reduced cloud relative to the whole) are re-measured on E10.5; on E9.5, dropping
+   all shell lineages gives x0.95 and the cardiac core alone x0.83, and scope moves shape as well as size.
 
 Submissions: two scope hypotheses, H1 continuation (shell fraction follows the E9.5-E10.5 trend) and H2 heart-focused
 (shell halved or less), each with its own pre-registered size.
@@ -210,27 +252,47 @@ cardiomyocytes, V-CM rises from 0.39 to 0.61 and SV-CM falls from 0.16 to 0.04, 
 correction tried. There is also a gene-level technical shift between the knockout and wild-type files (rank correlation
 0.32-0.74 across matched, unrelated cell types) that component N must carry.
 
-Components (all legal under the 2026-10-15 ruling):
-- **N, systematic transfer:** carry Gata4's non-Mesp1 compartments and depth/coverage shift with real cells.
-- **C, composition:** deplete second-heart-field, outflow-tract and right-ventricle-lineage states, sparing first heart
-  field and left ventricle (broad phenotype background). Magnitudes come from within-heart composition effects in the
-  Gata4 and Mab21l2 knockouts (harmonised, bracketed, z-trimmed), counted only where they exceed the Gata4 replicate
-  difference.
-- **B, Wnt programme:** learn how panel genes co-vary with Wnt target activity ([redacted 2026-10-19: B], off
-  the panel) inside Mesp1 cell types of the wild-type T1 scRNA, and switch it off in Mesp1 cells. This needs the
-  organisers to confirm cross-task use; otherwise use MERFISH-only co-variation.
-- **Weights:** set by leave-one-knockout-out (Mab21l2 to Gata4, Gata4 to Mab21l2, Gata4 rep1 to rep2) with the official
-  scorer. Calibrate the response magnitude so the slope on likely DE genes is near 1.
+What the Mab21l2 decomposition shows (gap-fill 2 in `docs/research/digest_2026-10-19.md`; emulator scores, 10 seeds):
+the response is mostly **one per-gene factor shared by every cell type**. Estimated from the non-Mesp1 compartments
+only (endoderm, surface ectoderm, neural tube, neural crest) and applied to all WT cells, it scored 79.3, against 59.5
+for the knockout's full harmonised composition and 66.1 for "real non-lineage knockout cells plus WT lineage cells".
+Coverage adds nothing once the factor is present, lineage composition adds +1.5 on top, depth alone drives severity to
+its floor and helps only together with the factor, and the type-specific remainder (6.5% of the delta) has chance-level
+sign. A blind rule built from the broad phenotype failed (de_direction 0.07 against 0.06 for plain WT resampling;
+severity at the floor in 8-9 of 10 seeds). About half of the factor is knockout-specific and half specific to the WT
+reference: the WT half transfers to the test board for certain, the knockout half only if the series shares a batch.
 
-Submissions: s1 = central combination. s2 = the pre-registered alternative composition scenario. Any rule that picks
-s2 from s1's score is written down beforehand, and the organisers are asked to confirm it counts as selection.
+Components (all legal under the 2026-10-15 ruling):
+- **F, per-gene factor (lead component):** estimated from the non-Mesp1 compartments of a released knockout against
+  its matched WT and applied in count space to all WT E8.75 cells, with per-type depth only alongside it. The two
+  submissions differ in how F is sourced: the full Gata4 factor plus Gata4 depth, or a reference-only factor built from
+  the WT series.
+- **C, composition (secondary):** rides on top of F in both submissions. The states come from the broad phenotype
+  (`configs/t3_scenarios.yaml`; second-heart-field, outflow-tract and right-ventricle-lineage states depleted, first
+  heart field and left ventricle spared); the magnitude comes from within-heart Gata4 effects (harmonised, bracketed,
+  z-trimmed) and counts only where it exceeds the Gata4 replicate difference. Its sign is hedged only if the
+  pre-registered rules say so.
+- **B, pathway programme (low priority):** a WT-derived activity score built in the 32k-gene scRNA at cluster level from
+  a generic pathway database set whose provenance excludes any perturbation of the held-out genes, regressed onto panel
+  genes within type. Needs the cross-task ruling (A15); kept only if the analogous check passes on Gata4.
+- **Weights:** leave-one-knockout-out (Mab21l2 to Gata4, Gata4 to Mab21l2, Gata4 rep1 to rep2) with the official
+  scorer; calibrate the magnitude so the severity slope on likely DE genes is near 1; log the slope's R² on every fold
+  and drop any component that adds a shared offset (it can push severity to the floor).
+- **Pre-registration:** `experiments/t3_decomp/` with its `rules.yaml` is committed before the Gata4 download and run
+  unchanged on both replicates on release day; its decision file chooses the components.
+- **Pending confirmation:** using the released Gata4 files inside the beta-catenin prediction (follow-up question 3 to
+  the organisers). If refused, both submissions use the reference-only factor.
+
+Submissions: s1 = F (Gata4-sourced) + C; s2 = F (reference-sourced) + C. Both are built before the first upload. Any
+rule that picks or changes s2 after s1's score is written beforehand in terms of component skills and never reads a
+target property.
 
 **Provenance rule for T3 gene directions (pre-registered 2026-10-18).**
 1. No per-gene direction or magnitude is written by hand. None comes from knockout literature, from curated target
    lists built from beta-catenin or Gata4 knockout or perturbation experiments, or from LLM elicitation.
 2. Every per-gene change in a T3 prediction is the output of committed code applied to released data only:
-   - the Gata4 and Mab21l2 knockouts against their matched wild types (systematic component and composition effect
-     sizes);
+   - the Gata4 and Mab21l2 knockouts against their matched wild types (the per-gene factor from their non-Mesp1
+     compartments, and composition effect sizes);
    - wild-type cell-state expression profiles combined with a composition scenario (the composition term);
    - wild-type co-variation with Wnt activity (T1 scRNA, only if cross-task use is confirmed).
 3. The composition scenario names only cell states and lineage groups. They come from the broad phenotype
@@ -262,26 +324,34 @@ honest validation, claim the award in the method summary; otherwise use speciali
 
 Done:
 - `vec eval`, the emulator, with the gate formula confirmed against the live board.
-- `vec check`, the free format checks.
-- `vec baseline`, the reference baselines.
-- `vec data`, the safe downloader.
-- DGX environment (torch 2.14 cu130, scvi-tools, moscot), assumption ledger, data policy, external-data register.
+- `vec check`, the free format checks; `vec baseline`, the reference baselines; `vec data`, the safe downloader.
+- `vec.prep` loaders (exact count recovery, lineage map with a merged cross-stage level), `vec.spatial` (z snapping,
+  duplicated-record detection, `vec data qc`), `vec.harmonise` (label transfer across files and stages).
+- `vec.boards.update_boards`: board refresh that strips test-board anchors in memory.
+- Experiments with independent reviews: density and sampling, coordinates and the pre-registered size procedure,
+  label harmonisation (`experiments/*/REPORT.md`).
+- DGX environment (torch 2.14 cu130, scvi-tools, moscot), assumption ledger, data policy, external-data register,
+  release-day runbook (`docs/P3_RUNBOOK.md`).
 
 Next:
-1. Calibrate the emulator against the published reference rows on the validation boards (A2).
+1. Calibrate the emulator against the published reference rows on the validation boards (A2), with the scorer-build
+   switch (pre-fix vs main) and the validation anchor check.
 2. Pseudo-task harness with leave-one-transition-out splits and paired comparisons over 10 seeds.
-3. Data utilities: count recovery, CSR conversion with explicit zeros removed, label harmonisation across stages.
-4. External-data ingestion with window filters as committed code (JAX by embryo ID, Feng by stage).
-5. Run registry; submission client that defaults to format-only and sends an idempotency key on scored uploads.
+3. External-data ingestion with window filters as committed code (Feng by per-cell stage, JAX by embryo ID: 1-22 and
+   54-74), registered in `EXTERNAL_DATA.md` before use.
+4. Run registry; submission client (feat-016) that defaults to format-only, counts distinct file hashes per board whose
+   status is not rejected, treats the server's quota endpoint as the source of truth, keeps the filename and form
+   fields identical on retries, and sends an idempotency key on scored uploads.
+5. Set `POT_BACKEND_DISABLE_JAX=1` and `XLA_PYTHON_CLIENT_PREALLOCATE=false` before importing POT or JAX on the DGX.
 
 ## 7. Timeline and decision points
 
 | Dates | Work | Decision point |
 |---|---|---|
-| Oct 18-20 | Token and download; organiser questions out; leak report sent | D0: data on the DGX, else escalate |
-| Oct 20-26 | P3 intake (test boards in index.json, Data Protocol, scorer version); emulator calibration; T3 day-1 diagnostics; density experiment; size procedure; B0 on all four boards; external data ingested | D1 (Oct 22): test-board reference stages fixed |
-| Oct 27-Nov 2 | T2 embryo FGW pipeline; T1 M1 v1; T3 N+C v1; T2 heart growth v1 | D2 (Oct 31): every board beats its floor on internal validation |
-| Nov 3-9 | T1 external directions and births; T3 Wnt programme and leave-one-knockout-out; T2 heart niches and scope hypotheses; T1 M2 | - |
+| Oct 18-20 | Token and download; organiser questions out; leak report sent; experiments on released data; size procedure and release-day scripts committed; redactions and history rewrite | D0: data on the DGX, else escalate |
+| Oct 20-26 | Release-day runbook (`docs/P3_RUNBOOK.md`): board intake with anchors stripped, data, label map, pre-registered runs (size, T3 decomposition, T1 direction readout, harmonisation, density, anchor check); emulator calibration; T3 day-1 diagnostics; B0 on all four boards; external data ingested | D1 (Oct 22): test-board reference stages fixed |
+| Oct 27-Nov 2 | T2 embryo FGW pipeline; T1 M1 v1; T3 F+C v1; T2 heart growth v1 | D2 (Oct 31): every board beats its floor on internal validation |
+| Nov 3-9 | T1 external directions and births; T3 leave-one-knockout-out weights (pathway programme only if its check passes); T2 heart emergent populations and scope hypotheses; T1 M2 if the readout passed | - |
 | Nov 10-16 | Ablations, seed robustness, freeze s1 candidates (Nov 16) | D3 (Nov 12): shared core vs specialised |
 | Nov 17-23 | s1 on all four boards by Nov 22 (after user approval); s2 rules pre-registered and hashed | D4: read scores, apply the written rules |
 | Nov 24-30 | s2 by Nov 30; method summary and disclosures; final nomination | - |
@@ -297,18 +367,22 @@ Next:
 
 ## 9. Risks
 
-`ASSUMPTIONS.md` holds 18 scored assumptions with go/no-go tests. The biggest:
+`ASSUMPTIONS.md` holds 19 scored assumptions with go/no-go tests. The biggest:
 - **A11**, the T3 response sign (risk 5; early proxy: a blind Gata4 test);
 - **A6**, T1 E12.5 composition;
 - **A8**, heart scope and size;
 - **A5**, the value of the external bracket;
 - **A14**, a metric change from veckit PR #6 (mitigation: aim for slope ≈ 1 on T3 and realistic cell spacing on T2);
-- **A15**, the cross-task data ruling.
+- **A15**, the cross-task data ruling;
+- **A19**, whether released knockout-vs-WT composition shifts measure genotype effects (Gata4 replicates decide).
 
 ## 10. Open questions for the organisers
 
-`docs/ORGANIZER_QUESTIONS.md`: cross-task use of released data in the final phase, and the test-board reference
-stages, cell bounds, scorer version and deadline time zone. The leak report is a separate private message.
+`docs/ORGANIZER_QUESTIONS.md`. Sent on 2026-10-18 (unanswered): cross-task use of released data, qualitative in-window
+background, `truth_cells` for the submitted count, Generality scope, scorer version, deadline time zone. Follow-up,
+ready to send: scorer build and canonicalisation (and the parity defect), the wrong-sign severity rule, released Gata4
+files inside the beta-catenin prediction, duplicated records, the z coordinate, `truth_cells` and tissue size, stage
+conventions for external embryos, and an addendum to the leak report.
 
 ## Decision log
 
@@ -323,3 +397,11 @@ stages, cell bounds, scorer version and deadline time zone. The leak report is a
   cross-file compositions only through it, quoted as a top-call/EM bracket; Mab21l2 group-level shifts are not used as
   genotype effects, the within-CM shift is. (4) Lineage map: merged level for cross-stage work, KO-only overrides for
   LPM and DPM, a pre-registered rule for mapping new labels. (5) Duplicated records dropped from prediction inputs.
+
+- 2026-10-19 (b): integrated the screened research digest (a separate agent screened the raw results; the lead read
+  only the digest). T3 now leads with the per-gene factor measured on released knockouts; the blind broad-phenotype
+  composition rule is demoted to a secondary term. T1 works in the order scope, then state shifts, then births; the
+  Feng bracket is the direction source if its pre-registered readout passes; JAX is dropped as a direction source and
+  restricted to embryos 1-22 and 54-74. Emergent classes and their placement use the legal route until the organisers
+  answer. Live scorer modelled as the pre-fix build; no parity hedge without the organisers' approval (user). Test-board
+  anchors and the public board file are quarantined. History to be rewritten again (user).
