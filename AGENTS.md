@@ -28,7 +28,11 @@ If baseline verification is failing, repair that first before adding new scope.
 - **Competition data stays private.** Data lives under `data/` (gitignored) and is never committed, shared or shown
   publicly. The dataset is unpublished (Neil Chi lab, UCSD): no public presentation without written approval.
 - **Official submissions need the user's explicit go-ahead.** The final phase allows only 2 scored submissions per
-  board for the whole phase. Format checks (`vec check`) are free; uploads are not.
+  board for the whole phase, and they cannot be withdrawn. The API treats an upload as **official unless it sends
+  `format_only=true`**. The team API key (`~/.config/vec/token`, mode 600, local machine only, never on the DGX) can
+  make official uploads: use it only through this repo's own tools, never with community "submit" tools or ad-hoc
+  scripts. Validate files with `vec check` or format-only uploads; real uploads go through the submission client
+  (feat-016), which defaults to format-only.
 - **Heavy compute runs on the DGX** (`PrakashDGX_H2`, workspace `~/v/virtual-embryo-challenge`), never on the shared
   local machine. See `docs/COMPUTE.md`.
 - **uv only.** Use `uv add`, `uv sync`, `uv run`. No pip installs into the env, no conda.

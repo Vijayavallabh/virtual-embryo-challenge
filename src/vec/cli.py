@@ -166,5 +166,28 @@ def data_fetch(
         console.print(f"[{i}/{len(files)}] {status:10s} {f.key} ({f.bytes / 1e6:.0f} MB)")
 
 
+@data_app.command("inventory")
+def data_inventory(
+    root: Path = typer.Option(Path("data/raw"), help="directory holding the downloaded h5ad files"),
+    out: Path = typer.Option(Path("runs/inventory.json"), help="write the full JSON summary here"),
+):
+    """Summarise every h5ad under ROOT (run on the DGX, where the data lives)."""
+    files = sorted(root.rglob("*.h5ad"))
+    if not files:
+        console.print(f"[red]no .h5ad files under {root}[/]")
+        raise typer.Exit(1)
+    rows = []
+    t = Table("file", "cells", "genes", "nnz", "expm1 sum", "layers", "obsm")
+    for f in files:
+        s = vec_data.inventory(f)
+        rows.append(s)
+        t.add_row(str(f.relative_to(root)), str(s["n_obs"]), str(s["n_vars"]), f"{s['nonzero_fraction']:.3f}",
+                  f"{s['expm1_rowsum_median']:.0f}", ",".join(s["layers"]) or "-", ",".join(s["obsm_keys"]) or "-")
+    console.print(t)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(rows, indent=2))
+    console.print(f"wrote {out}")
+
+
 if __name__ == "__main__":
     app()

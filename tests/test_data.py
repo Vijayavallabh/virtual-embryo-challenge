@@ -30,6 +30,23 @@ def test_unsafe_keys_rejected(key):
         _ = DataFile(key=key, task="T1", role="train", stage="E8.5", modality="scRNA", bytes=1).relpath
 
 
+def test_tilde_never_reaches_a_quoted_remote_path():
+    from vec.data import resolve_dest
+
+    assert resolve_dest("~/v/proj/data/raw", remote=True) == "v/proj/data/raw"
+    assert resolve_dest("/abs/path", remote=True) == "/abs/path"
+    assert not resolve_dest("~/x", remote=False).startswith("~")
+
+
+def test_data_module_never_posts():
+    import inspect
+
+    import vec.data
+
+    src = inspect.getsource(vec.data)
+    assert "method=\"POST\"" not in src and "data=" not in src.replace("metadata", "")
+
+
 def test_safe_key_kept():
     assert DataFile(key="T1/E8.5_RNA.h5ad", task="T1", role="train", stage="E8.5", modality="scRNA",
                     bytes=1).relpath == "T1/E8.5_RNA.h5ad"

@@ -3,7 +3,7 @@
 ## Current State
 
 **Last Updated:** 2026-10-18
-**Active Feature:** feat-003 - Data acquisition (blocked on the user's session token)
+**Active Feature:** feat-003 - Data acquisition (training files done; P3 files on 2026-10-20)
 
 ## Status
 
@@ -14,17 +14,17 @@
 - [x] Research sweep (10 reports in `docs/research/`), PantheonOS Slack read in full, plan in `docs/PLAN.md`.
 - [x] `ASSUMPTIONS.md` (18 rows, linted), data policy with organiser rulings and a do-not-use list.
 - [x] Leaked E12.5 heart size quarantined: redacted from notes; private report to organisers drafted in Slack.
+- [x] Team API key stored at ~/.config/vec/token (mode 600, local only); 9 training files downloaded to the DGX and checksummed.
 
 ### What's Next
 
-1. User saves the session token to `~/.config/vec/token`; then `uv run vec data fetch` (feat-003).
+1. On 2026-10-20: `uv run vec data fetch` again for the validation answers and test inputs, then `vec data inventory` on the DGX.
 2. 2026-10-20 final-phase intake: new index.json, Data Protocol, scorer version (feat-004), then emulator calibration
    against the published reference rows (feat-005).
 3. T3 day-1 diagnostics and the T2 heart size procedure (feat-012, feat-011).
 
 ## Blockers / Risks
 
-- [ ] Data download needs the user's session token.
 - [ ] The leak report to the organisers is a draft until the user sends it (Slack group DM `C0CA7QTEMDF`).
 - [ ] Organiser questions revised (cross-task data, developmental background, truth_cells, Generality scope, scorer version, deadline time zone); Gmail draft in be23b041@smail.iitm.ac.in awaiting the user.
 
