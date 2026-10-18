@@ -1,0 +1,50 @@
+# External sources read by the window filters in this directory, and the legal subsets on the DGX they start from.
+#
+# The subsets were written on 2026-10-18 by the gap_external_direction_concordance research run (~/v/vec-gapconc) and
+# screened on 2026-10-19. The raw all-stage objects that run touched (the Feng GEO object and metadata table, the
+# unfiltered JAX cell table and LPM label table) were deleted from the DGX on 2026-10-19; they are not listed here and
+# must not be re-downloaded except through a committed filter, for a source registered in EXTERNAL_DATA.md.
+# Outputs go under data/external/ (gitignored), each with a MANIFEST.json (rule, row counts, sha256 of every input and
+# output, git state of the filter code). Downstream code reads external data only from there and checks the manifest.
+
+feng2022:
+  citation: >-
+    Feng W, Bais A, He H, et al. Single-cell transcriptomic analysis identifies murine heart molecular features at
+    embryonic and neonatal stages. Nat Commun 13:7960 (2022). doi:10.1038/s41467-022-35691-7
+  accession: GEO GSE193346 (CD1 Seurat object GSE193346_CD1_seurat_object.rds.gz and metadata table)
+  url: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE193346
+  platform: 10x Genomics 3' v3 whole cells, MULTI-seq multiplexed; chambers LA, RA, LV, RV; CD1 strain
+  keep: stage E9.5, or stage E14.5 and later (per-cell stage column); strain CD1
+  tasks: [T1]
+  src_dir: ~/v/vec-gapconc/out/feng
+  inputs:
+    obs: cd1_E9.5_E14.5_obs.csv
+    counts: cd1_E9.5_E14.5_counts.npz
+    stats: cd1_stats.npz
+  not_taken:
+    - >-
+      legal/counts_legal.mtx (all 14 legal stages): per-cell stage labels exist only in the deleted GEO metadata
+      table and the barcodes carry no stage, so the stage rule cannot be re-applied; E9.5 and E14.5 cells are taken
+      from cd1_E9.5_E14.5_counts.npz instead, and later stages only as the group statistics in cd1_stats.npz
+  dst: data/external/feng2022_gse193346
+
+jax_qiu2024:
+  citation: >-
+    Qiu C, Martin BK, Welsh IC, et al. A single-cell time-lapse of mouse prenatal development from gastrula to birth.
+    Nature 626:1084-1093 (2024). doi:10.1038/s41586-024-07069-w
+  url: https://shendure-web.gs.washington.edu/content/members/cxqiu/public/backup/jax/download/
+  platform: sci-RNA-seq3 nuclei, whole embryos
+  keep: embryos 1-22 and 54-74 (embryo_id column / file name); 1-12 T1-only; 23-24 and 50-53 excluded as boundary
+  tasks: [T1]
+  src_dir: ~/v/vec-gapconc
+  inputs:
+    cell_tables:
+      ext/jax/meta/df_cell.legalT1.csv: meta/df_cell.csv
+      ext/jax/meta/lpm_legalT1.csv: meta/lpm.csv
+      ext/jax/meta/jax_labels.csv: meta/labels.csv
+    gene_tables:
+      ext/jax/meta/df_gene.csv: meta/df_gene.csv
+    per_embryo:
+      out/jax/embryo_{n}.npz: stats/embryo_{n}.npz
+      ext/jax/embryo/embryo_{n}_gene_count.rds: embryo/embryo_{n}_gene_count.rds
+  dst: data/external/jax_qiu2024

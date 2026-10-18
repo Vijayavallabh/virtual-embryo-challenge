@@ -1,0 +1,206 @@
+{
+ "labels": {
+  "E8.5": {
+   "AVC-CM": "CM",
+   "Blood": "Blood",
+   "EXEM": "other:EXEM",
+   "Endothelium": "Endothelium",
+   "Foregut": "Foregut",
+   "IFT-CM": "CM",
+   "JCF": "SHF",
+   "LV-CM": "ventricularCM",
+   "NCC": "NCC",
+   "Neural Tube": "other:Neural Tube",
+   "OFT/RV-CM": "CM",
+   "Paraxial Mesoderm": "other:Paraxial Mesoderm",
+   "Pericardium": "Pericardium",
+   "RV-CM": "ventricularCM",
+   "SV-CM": "CM",
+   "Surface Ectoderm": "SurfaceEcto",
+   "aSHF": "SHF",
+   "pSHF": "SHF"
+  },
+  "E9.5": {
+   "AVC-CM": "CM",
+   "BEC": "Endothelium",
+   "Blood": "Blood",
+   "Endocardium": "Endocardium",
+   "Epithelium": "Foregut",
+   "Foregut": "Foregut",
+   "Hepatocyte": "Hepatocyte",
+   "IFT-CM": "CM",
+   "NCC": "NCC",
+   "NCC-derived": "NCC",
+   "OFT/RV-CM": "CM",
+   "Pericardium": "Pericardium",
+   "Proepicardium": "Epicardium",
+   "ST": "ST",
+   "SV-CM": "CM",
+   "Surface Ectoderm": "SurfaceEcto",
+   "V-CM": "ventricularCM",
+   "aPHM": "PHM",
+   "aSHF": "SHF",
+   "pPHM": "PHM",
+   "pSHF": "SHF"
+  }
+ },
+ "override": {},
+ "override_sha256": null,
+ "label_key": "celltype",
+ "groups": {
+  "Blood": {
+   "target": [
+    "Blood"
+   ],
+   "start": [
+    "Blood"
+   ],
+   "prev": null,
+   "external": [
+    "feng_E15.5",
+    "jax_e18-22_e54-56",
+    "jax_e18-22_e54-74",
+    "jax_e22_e54-56",
+    "jax_e22_e54-74",
+    "jax_same_interval"
+   ]
+  },
+  "CM": {
+   "target": [
+    "AVC-CM",
+    "IFT-CM",
+    "OFT/RV-CM",
+    "SV-CM",
+    "V-CM"
+   ],
+   "start": [
+    "AVC-CM",
+    "IFT-CM",
+    "LV-CM",
+    "OFT/RV-CM",
+    "RV-CM",
+    "SV-CM"
+   ],
+   "prev": null,
+   "external": [
+    "feng_E14.5",
+    "feng_E15.5",
+    "jax_e18-22_e54-56",
+    "jax_e18-22_e54-74",
+    "jax_e22_e54-56",
+    "jax_e22_e54-74",
+    "jax_same_interval"
+   ]
+  },
+  "Endocardium": {
+   "target": [
+    "Endocardium"
+   ],
+   "start": [
+    "Endothelium"
+   ],
+   "prev": null,
+   "external": [
+    "feng_E14.5",
+    "feng_E15.5",
+    "jax_e18-22_e54-56",
+    "jax_e18-22_e54-74",
+    "jax_e22_e54-56",
+    "jax_e22_e54-74",
+    "jax_same_interval"
+   ]
+  },
+  "Endothelium": {
+   "target": [
+    "BEC"
+   ],
+   "start": [
+    "Endothelium"
+   ],
+   "prev": null,
+   "external": [
+    "feng_E14.5",
+    "feng_E15.5",
+    "jax_e18-22_e54-56",
+    "jax_e18-22_e54-74",
+    "jax_e22_e54-56",
+    "jax_e22_e54-74",
+    "jax_same_interval"
+   ]
+  },
+  "Foregut": {
+   "target": [
+    "Epithelium",
+    "Foregut"
+   ],
+   "start": [
+    "Foregut"
+   ],
+   "prev": null,
+   "external": []
+  },
+  "NCC": {
+   "target": [
+    "NCC",
+    "NCC-derived"
+   ],
+   "start": [
+    "NCC"
+   ],
+   "prev": null,
+   "external": []
+  },
+  "Pericardium": {
+   "target": [
+    "Pericardium"
+   ],
+   "start": [
+    "Pericardium"
+   ],
+   "prev": null,
+   "external": []
+  },
+  "SHF": {
+   "target": [
+    "aSHF",
+    "pSHF"
+   ],
+   "start": [
+    "JCF",
+    "aSHF",
+    "pSHF"
+   ],
+   "prev": null,
+   "external": []
+  },
+  "SurfaceEcto": {
+   "target": [
+    "Surface Ectoderm"
+   ],
+   "start": [
+    "Surface Ectoderm"
+   ],
+   "prev": null,
+   "external": []
+  },
+  "ventricularCM": {
+   "target": [
+    "V-CM"
+   ],
+   "start": [
+    "LV-CM",
+    "RV-CM"
+   ],
+   "prev": null,
+   "external": [
+    "feng_E14.5",
+    "feng_E15.5",
+    "jax_e18-22_e54-56",
+    "jax_e18-22_e54-74",
+    "jax_e22_e54-56",
+    "jax_e22_e54-74",
+    "jax_same_interval"
+   ]
+  }
+ }
+}

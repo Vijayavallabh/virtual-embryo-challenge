@@ -1,0 +1,345 @@
+{
+ "preset": "mab21l2",
+ "argv": [
+  "experiments/t3_decomp/t3_decompose.py",
+  "mab21l2",
+  "--out",
+  "runs/t3_decomp/mab21l2_final",
+  "--workers",
+  "8",
+  "--threads",
+  "2"
+ ],
+ "started": "2026-10-18 23:23:14",
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "protocol_as_registered": true,
+ "workers": 8,
+ "threads_per_worker": 2,
+ "sha256": {
+  "script": "3e671c3bb5ff57bba5ceec80ea36fcc739b1f111399a1e2854400b5c9f5133d2",
+  "rules": "a1cf9692a9c201b88b5814d41c0abc109f8050a4133e94b582a64918ae09911d",
+  "t3_scenarios": "b4df1ff538e9ad8689927d5bc6275bb1308d892bd54b31c6c38b7a7070072ccd",
+  "lineage_map": "2f1ca675b28db04da8ba156c203940bbf183181524ddc9b2931667e5b377b690",
+  "vec.evaluate": "178bd81c82b3b8df1d7643eec4486ccb4cac79381328005b8286421636a3d82a",
+  "vec.prep": "4e8f92aa7df72e9f637e6b2d1f1d74fa793869babe0b7259db8fd28cc4e7037c",
+  "vec.harmonise": "d4ce92a0f5173eafa71a5268cd9c6aa50b8e20eaa6f2eb5c8451788fcc45da3a",
+  "vec.spatial": "ff9e0c541479844a6f94a2e4086bd57c7e06a262430548ab41a13bae0d47ba47",
+  "vec.boards": "f0d7e70818fcc859ebfb42728cded4916b0be899dff61040ab36c90e99385e43",
+  "vec.io": "9ba594e50b246dfe54848754c9275c19a968a0db3915986cf72c3933f4beeb7e"
+ },
+ "inputs": {
+  "wt": "/home/prachh/v/virtual-embryo-challenge/data/raw/T2/E9.5.h5ad",
+  "targets": "[('mab21l2', '/home/prachh/v/virtual-embryo-challenge/data/raw/T3/E9.5_mab21l2_ko.h5ad')]",
+  "stage:E8.75": "/home/prachh/v/virtual-embryo-challenge/data/raw/T2/E8.75.h5ad",
+  "series:E8.25_late": "/home/prachh/v/virtual-embryo-challenge/data/raw/T2/E8.25_late.h5ad",
+  "series:E8.75": "/home/prachh/v/virtual-embryo-challenge/data/raw/T2/E8.75.h5ad"
+ },
+ "versions": {
+  "python": "3.12.12",
+  "numpy": "2.5.4",
+  "pandas": "2.3.3",
+  "scipy": "1.18.1",
+  "sklearn": "1.9.1",
+  "anndata": "0.13.4",
+  "veckit": {
+   "url": "https://github.com/aristoteleo/veckit",
+   "vcs_info": {
+    "vcs": "git",
+    "commit_id": "cc3859ab2a2305efc4544815d3f44f660efa77d4",
+    "requested_revision": "cc3859ab2a2305efc4544815d3f44f660efa77d4"
+   }
+  }
+ },
+ "git": {
+  "commit": "9f83c59b8c3a0d282d4e4e8f95cb66c63da8a761",
+  "status": "M src/vec/evaluate.py\n?? experiments/t3_decomp/"
+ },
+ "files": {
+  "wt_pool": {
+   "path": "/home/prachh/v/virtual-embryo-challenge/data/raw/T2/E9.5.h5ad",
+   "sha256": "371ca6530e084de2b6cd6703b49d95f4bb59546c9291659809575382a630ee9a",
+   "n_cells": 53742,
+   "n_in_file": 53742,
+   "duplicates_dropped": 0,
+   "n_copies": 0,
+   "n_interpolated": 0,
+   "unmapped_labels": []
+  },
+  "wt_reference_as_released": {
+   "n_cells": 53742
+  }
+ },
+ "targets": {
+  "mab21l2": {
+   "path": "/home/prachh/v/virtual-embryo-challenge/data/raw/T3/E9.5_mab21l2_ko.h5ad",
+   "sha256": "5b1668ab982e64f7683fbf5f905218fab311c63548de5f5bc18a74f9d4d357e0",
+   "n_cells": 47483,
+   "n_in_file": 50294,
+   "duplicates_dropped": 2811,
+   "n_copies": 2811,
+   "n_interpolated": 0,
+   "unmapped_labels": [],
+   "as_released_cells": 50294,
+   "genotype_column": "genotype",
+   "genotype_levels": {
+    "mab21l2": 50294
+   },
+   "littermate_wt_cells": 0,
+   "median_depth": 95.0,
+   "harmoniser_depth_target": null,
+   "rounded_count_entries": 0
+  }
+ },
+ "stage_pools": {
+  "E8.75": {
+   "path": "/home/prachh/v/virtual-embryo-challenge/data/raw/T2/E8.75.h5ad",
+   "sha256": "149ab6df7c99ad85046c8aebebcf0c43689b3720c59ffb7cc550edcf2f13a83c",
+   "n_cells": 23377,
+   "n_in_file": 24826,
+   "duplicates_dropped": 1449,
+   "n_copies": 835,
+   "n_interpolated": 614,
+   "unmapped_labels": [],
+   "median_depth": 130.0,
+   "harmoniser_depth_target": null,
+   "confident_frac": 0.6832356589810498
+  }
+ },
+ "series": {
+  "E8.25_late": {
+   "path": "/home/prachh/v/virtual-embryo-challenge/data/raw/T2/E8.25_late.h5ad",
+   "sha256": "d56f94d3e2d719ed3074d86c03eae457ccf90b24145d33300f9958f0e8078593",
+   "n_cells": 54431,
+   "n_in_file": 58716,
+   "duplicates_dropped": 4285,
+   "n_copies": 1727,
+   "n_interpolated": 2558,
+   "unmapped_labels": [],
+   "median_depth": 233.0,
+   "harmoniser_depth_target": null,
+   "confident_frac": 0.5804045488783965
+  },
+  "E8.75": {
+   "path": "/home/prachh/v/virtual-embryo-challenge/data/raw/T2/E8.75.h5ad",
+   "sha256": "149ab6df7c99ad85046c8aebebcf0c43689b3720c59ffb7cc550edcf2f13a83c",
+   "n_cells": 23377,
+   "n_in_file": 24826,
+   "duplicates_dropped": 1449,
+   "n_copies": 835,
+   "n_interpolated": 614,
+   "unmapped_labels": [],
+   "median_depth": 130.0,
+   "harmoniser_depth_target": null,
+   "confident_frac": 0.6832356589810498
+  }
+ },
+ "vocabulary": [
+  {
+   "label": "V-CM",
+   "group": "CM",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 6207
+  },
+  {
+   "label": "A-CM",
+   "group": "CM",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 5054
+  },
+  {
+   "label": "Peri",
+   "group": "Pericardium",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 4739
+  },
+  {
+   "label": "Dorsal-PAM",
+   "group": "ParaxialMesoderm",
+   "mesp1": "partial",
+   "nonmesp1": false,
+   "wt_cells": 3726
+  },
+  {
+   "label": "Lateral-PAM",
+   "group": "PharyngealMesoderm",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 2946
+  },
+  {
+   "label": "SE",
+   "group": "Ectoderm",
+   "mesp1": "no",
+   "nonmesp1": true,
+   "wt_cells": 2895
+  },
+  {
+   "label": "Chamber-Endo",
+   "group": "Endocardium",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 2787
+  },
+  {
+   "label": "SV-CM",
+   "group": "CM",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 2697
+  },
+  {
+   "label": "Foregut",
+   "group": "Endoderm",
+   "mesp1": "no",
+   "nonmesp1": true,
+   "wt_cells": 2638
+  },
+  {
+   "label": "NCC",
+   "group": "NCC",
+   "mesp1": "no",
+   "nonmesp1": true,
+   "wt_cells": 2601
+  },
+  {
+   "label": "OFT-CM",
+   "group": "CM",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 2333
+  },
+  {
+   "label": "BEC",
+   "group": "Endothelium",
+   "mesp1": "partial",
+   "nonmesp1": false,
+   "wt_cells": 2238
+  },
+  {
+   "label": "pPHM",
+   "group": "PharyngealMesoderm",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 1968
+  },
+  {
+   "label": "aPHM",
+   "group": "PharyngealMesoderm",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 1823
+  },
+  {
+   "label": "Branch Arch",
+   "group": "NCC",
+   "mesp1": "no",
+   "nonmesp1": false,
+   "wt_cells": 1526
+  },
+  {
+   "label": "ST",
+   "group": "EpicardiumST",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 1524
+  },
+  {
+   "label": "Proepi",
+   "group": "EpicardiumST",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 1462
+  },
+  {
+   "label": "early-VEC",
+   "group": "Endothelium",
+   "mesp1": "partial",
+   "nonmesp1": false,
+   "wt_cells": 1365
+  },
+  {
+   "label": "Great Artery Endoth",
+   "group": "Endothelium",
+   "mesp1": "partial",
+   "nonmesp1": false,
+   "wt_cells": 1092
+  },
+  {
+   "label": "DMP",
+   "group": "CardiacProgenitor",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 861
+  },
+  {
+   "label": "Cush-EndoMT-Endo",
+   "group": "Endocardium",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 802
+  },
+  {
+   "label": "Hepatocytes",
+   "group": "Hepatocyte",
+   "mesp1": "no",
+   "nonmesp1": true,
+   "wt_cells": 458
+  }
+ ],
+ "blind_states_absent_from_vocabulary": {},
+ "R": {
+  "series": {
+   "E8.25_late": 8.25,
+   "E8.75": 8.75
+  },
+  "labels_used": 12,
+  "sd_log_phi": 0.9473281002917708
+ },
+ "selfcheck": "passed",
+ "analytic": {
+  "mab21l2": {
+   "n_DE_up": 63,
+   "n_DE_down": 26,
+   "joint_nnls_weights": {
+    "coverage": 0.0,
+    "mesp1_composition": 1.5528214579472905,
+    "stage": 0.21282881248530297,
+    "depth": 1.0244134638931102,
+    "factor": 0.9637825174313072
+   },
+   "joint_r2": 0.7849224143692619,
+   "drop_one_r2_loss": {
+    "coverage": 0.0,
+    "mesp1_composition": 0.08050721734248079,
+    "stage": 0.005928459094359129,
+    "depth": 0.06264345753815281,
+    "factor": 0.4800683132740279
+   },
+   "residual_share": 0.09797698657369351,
+   "within_type_mean_pairwise_r": 0.47399239964302525,
+   "log_factor_nonmesp1_vs_mesp1_spearman": 0.8387423483677515,
+   "dt_spearman_with_wt_pseudobulk": 0.026973323893295573,
+   "full_pool_alphas": [
+    0.4060402588767213
+   ],
+   "stage_pools": [
+    "E8.75"
+   ]
+  }
+ },
+ "runtime_min": 9.0
+}

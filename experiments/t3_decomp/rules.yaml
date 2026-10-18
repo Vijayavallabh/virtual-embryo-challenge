@@ -1,0 +1,306 @@
+# Task 3 response decomposition: pre-registered analysis settings and decision rules.
+#
+# Frozen 2026-10-19, before any Gata4 knockout data was seen (the author had seen the T3:gata4 validation-board
+# anchors quoted in docs/CHALLENGE.md; see the notes at the bottom). `t3_decompose.py gata4` reads this file on release day
+# (2026-10-20), runs unchanged on both Gata4 replicates against WT E8.75, evaluates the rules below and writes the
+# decision file (gata4_decisions.json / .txt). The sha256 of this file and of the script go into every output. Do not
+# edit this file after the Gata4 files are downloaded: run it as committed first, then add a dated note at the bottom
+# and rerun under a new name if something must change.
+#
+# Provenance (docs/PLAN.md section 4.4, docs/DATA_POLICY.md):
+# - Released competition files only. This file names no genes. Every per-gene change comes from code applied to
+#   released data (the per-gene factor of the released knockouts, wild-type profiles, the WT series). Blind rules and
+#   scenarios name cell states taken from broad phenotype descriptions (allowed by the 2026-10-15 ruling).
+# - No rule reads a leaderboard score, a published board anchor or boards/index.json. Every rule reads either
+#   local-emulator scores (vec.evaluate: official veckit metrics, 10% working copies, split-half ceiling, anchors
+#   computed on the working copies) of predictions built from released data and scored against released knockout
+#   files, or composition and decomposition statistics of those files (D7, D7m, D9, D11a). Both submissions are fixed
+#   by these rules before the first upload; nothing here reacts to a returned score.
+# - Thresholds marked [2026-10-18] were frozen in the earlier prototype rules D1-D7 (screened report
+#   gap_t3_response_decomposition.md, section 6). The others are set here, from the Mab21l2 results and generic
+#   choices; none comes from Gata4 data or from an anchor.
+
+version: 1
+frozen: "2026-10-19"
+
+protocol:
+  seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  working_copy_fraction: 0.1          # vec.evaluate.SUBSAMPLE_FRAC: target rng(seed), reference rng(seed + 1)
+  split_seed: 0                       # vec.evaluate.split_half(seed=0): truth half and ceiling half
+  prediction_cells_multiplier: 3      # predictions hold 3 x max(truth half, reference working copy) cells
+  severity_floor_tolerance: 1.0e-3    # a seed sits at the severity floor if severity_slope <= log(1e-3) + this
+  # Targets and the reference are scored as released (vec.prep.load_stage(drop_duplicates=False)); every prediction
+  # pool is deduplicated (drop_duplicates=True). Oracle pools: knockout cells outside the seed's working copy, minus
+  # any row whose counts equal a working-copy row (so no copy of a truth cell enters a prediction).
+
+harmonisation:                        # vec.harmonise, the settings adopted on 2026-10-19 (experiments/harmonise/REPORT.md)
+  classifier: logreg
+  n_pcs: 50
+  C: 1.0
+  clip: 10.0
+  threshold: 0.5
+  min_class_cells: 10
+  exclude_labels: [Unknown]
+  cv_folds: 5                         # WT out-of-fold calls: classifier bias enters both sides of a comparison
+  depth_draws: 5                      # a deeper query is thinned to the reference depth (5 draws averaged)
+  depth_tol: 0.05                     # a deeper reference is refitted, thinned to the query's median depth
+  confident_call: 0.6                 # stage and series pools use only calls with label_conf >= 0.6
+  seed: 0
+
+lineage:
+  label_modes:
+    celltype: "obs['celltype']"
+    combined: "obs['cm_celltype'] where it is not 'Unknown', else obs['celltype']"
+  group_of_label: majority            # a label's lineage group is the majority obs['group'] (configs/lineage_map.yaml) of its cells
+  nonmesp1_groups: [Endoderm, Hepatocyte, Ectoderm, Neural, NCC]   # endoderm, surface ectoderm, neural tube, neural crest
+  mixed_labels: ["Branch Arch", "Branchial Arch"]  # branchial arch is mixed (neural-crest mesenchyme, Mesp1-derived
+                                                   # pharyngeal mesoderm, epithelia): never in the non-Mesp1 set
+
+components:
+  # Compositions: knockout cells relabelled into the WT vocabulary by vec.harmonise; the knockout's call shares q and the
+  # WT's out-of-fold call shares p_oof, per estimator (top call, EM: the bracket), give
+  #   f = WT annotation share + (q - p_oof), clipped at 0 and renormalised over the classifier's labels,
+  # so classifier bias cancels and an unchanged population maps to the WT composition exactly.
+  estimators: [top_call, em]
+  coverage: "strict non-Mesp1 label shares from f; every other label keeps its WT relative share"
+  mesp1: "relative shares of every other label from f; strict non-Mesp1 shares stay at WT"
+  stage:
+    min_cells: 30                     # a label mixes in stage cells only if that stage pool has >= 30 confident cells of it
+    fit: nnls                         # alphas >= 0 (rescaled to sum <= 1) fitted to the depth-free within-type change
+  depth:
+    min_cells: 20                     # per-label median-depth ratio, knockout / WT; 1.0 where either side has < 20 cells
+  factor:
+    eps: 1.0e-5
+    clip: [0.25, 4.0]                 # [2026-10-18]
+    min_cells: 20                     # a label enters the factor only with >= 20 cells on both sides
+    # phi_g = sum_t w_t mu_KO,t,g / sum_t w_t mu_WT,t,g over strict non-Mesp1 labels t (mu = mean within-cell
+    # proportion, w = WT share), rescaled so the WT-weighted total proportion is unchanged; applied in count space
+    # (binomial thinning below 1, Poisson top-up from kNN-smoothed profiles above 1)
+  series_factor:                      # component R: the WT reference's own per-gene idiosyncrasy, from WT samples only
+    min_cells: 100                    # [2026-10-18]
+    fit: log_linear_least_squares     # per label and gene, log(mean proportion + 1e-6) on stage time, evaluated at the reference time
+  smoothing: {n_pcs: 30, k: 15}       # kNN-smoothed profiles used for Poisson top-up
+
+presets:
+  mab21l2:
+    description: "Mab21l2 KO (E9.5) vs WT E9.5: the pipeline on the released training knockout (smoke test)"
+    label_mode: celltype
+    reference_time: 9.5
+    stage_pools: {E8.75: 8.75}
+    series: {E8.25_late: 8.25, E8.75: 8.75}   # R extrapolated to E9.5 (failed in the prototype, kept as a check)
+    # Broad phenotype at E9.5 (Saito et al. 2012, doi:10.1371/journal.pone.0032991): small proepicardium, septum
+    # transversum mesenchyme absent around the hepatoblasts, reduced hepatoblast proliferation. States only.
+    blind:
+      M1_stm_d50: {deplete: {ST: 0.5, Proepi: 0.5}}
+      M1_stm_d25: {deplete: {ST: 0.25, Proepi: 0.25}}
+      M1_stm_d90: {deplete: {ST: 0.9, Proepi: 0.9}}
+      M2_stm_liver_d50: {deplete: {ST: 0.5, Proepi: 0.5, Hepatocytes: 0.5}}
+    primary_blind: M1_stm_d50
+  gata4:
+    description: "Gata4 KO rep1 and rep2 (E8.75) vs WT E8.75: the pre-registered release-day run"
+    label_mode: combined
+    reference_time: 8.75
+    stage_pools: {E9.5: 9.5, E8.25_late: 8.25}       # advance and delay axes
+    series: {E8.25_late: 8.25, E8.5: 8.5, E9.5: 9.5} # R interpolated at E8.75; E8.5 only when its file is present
+    transfer_ko: mab21l2                              # the released Mab21l2 KO: its factor on WT E8.75 cells
+    cm_states: [vCM1, vCM2, aCM1, aCM2, OFT/RV-CM, JCF/SV-CM, FHF/JCF, V-CM, IFT-CM]
+    # Broad phenotype of the validation genotype (thin myocardium, RV hypoplasia, reduced CM proliferation; compound
+    # loss impairs CM differentiation), states only. G2 applies the beta-catenin central-scenario states to Gata4 (A11).
+    blind:
+      G1_cm_d50: {deplete_list: cm_states, fraction: 0.5}
+      G1_cm_d25: {deplete_list: cm_states, fraction: 0.25}
+      G2_bcat_central_d50: {deplete: {OFT/RV-CM: 0.5, aSHF: 0.5, pSHF: 0.5, aPHM: 0.5, pPHM: 0.5}}
+      G3_diffblock: {deplete_list: cm_states, fraction: 0.5, enrich: {aSHF: 1.5, pSHF: 1.5, JCF: 1.5}}
+    primary_blind: G1_cm_d50
+    # The beta-catenin composition component C. Must equal configs/t3_scenarios.yaml `central` (checked at run time).
+    scenario:
+      depleted_states: [OFT/RV-CM, aSHF, pSHF, aPHM, pPHM]
+      spared_states: [vCM1, vCM2, JCF/SV-CM, FHF/JCF]
+
+calibration:                          # D7: the composition magnitude m, in log2 units of within-lineage state fractions
+  states: "Mesp1-lineage labels (lineage flag yes) in the classifier's vocabulary with >= min_wt_cells WT cells"
+  min_wt_cells: 50
+  pseudo: 1.0e-3                      # vec.harmonise.bracket_difference default
+  trims: {k: 6, both: [2, 4, 6]}      # vec.harmonise.default_trims: none, both ends -2/-4/-6, each end of each stack -6
+  # l(state) = log2((f_KO + pseudo) / (f_WT + pseudo)), fractions renormalised within the lineage states, per
+  # replicate, estimator and trim. A state counts if l keeps one sign over every replicate x estimator x trim and,
+  # untrimmed, min over replicates and estimators |l| exceeds the replicate noise bar
+  # max over estimators |log2((f_rep1 + pseudo) / (f_rep2 + pseudo))|. m = median over counted states of the mean
+  # untrimmed |l| (bracket: medians of the min and max). m_raw: the same median over states that keep one sign,
+  # without the noise bar. With one knockout embryo (Mab21l2, D7m) there is no noise bar: sign consistency only.
+  scenario_fallback_log2: 1.0         # D8 uses 50% depletion when m = 0
+
+weights:
+  factor_exponent:                    # W1: phi ** w for the Gata4-sourced factor
+    grid: [0.5, 0.75, 1.0, 1.25, 1.5]
+    variant_depth_off: "xrep:F@w={w}"
+    variant_depth_on: "xrep:F+depth@w={w}"   # used when D4 switches depth on
+    objective: mean_t3_over_targets   # factor borrowed from the other replicate, scored on each replicate
+    constraint_sev_floor_frac_le: 0.2 # on every target
+    tie_window_t3: 0.5                # among w within 0.5 T3 of the best, take the one closest to 1.0
+    default: 1.0                      # if no w meets the constraint
+  composition: {central: 1.0, mild: 0.5, mild_raw: 0.5}   # multiples of m (central, mild) or of m_raw (mild_raw)
+  depth_exponent: 1.0                 # depth ratios pooled over both replicates
+  stage_alphas: mean_over_replicates  # NNLS alphas fitted on each replicate's full pool, averaged
+  coverage_shares: mean_over_replicates
+  reference_factor_exponent: 1.0
+  transfer_factor_exponent: 1.0
+
+rules:
+  D1:
+    name: blind_sign
+    question: "A11 proxy: does the primary blind phenotype rule, alone on WT cells, get the sign of the response?"
+    variant: "blind:{primary}"
+    de_direction_gt: 0.2              # [2026-10-18]
+    beta_gt: 0.0                      # [2026-10-18]
+    r2_gt: 0.01                       # [2026-10-18]
+    sev_floor_frac_le: 0.2            # [2026-10-18]
+    effect: "informational (A11 reads out on the first official score); every blind rule is reported (D1b)"
+  D2:
+    name: factor_transfer
+    question: "A10: does the per-gene factor borrowed from the other replicate carry the response?"
+    variant: "xrep:F"
+    t3_ge: 60.0                       # [2026-10-18]
+    sev_floor_frac_le: 0.2
+    nonmesp1_delta_spearman_ge: 0.5   # [2026-10-18] replicate agreement of the non-Mesp1 compartment deltas
+  D2u:
+    name: factor_usable
+    question: "Weaker form: does the borrowed factor beat plain WT resampling?"
+    variant: "xrep:F"
+    baseline: "fac:none"
+    t3_gain_ge: 3.0
+    sev_floor_frac_le: 0.2
+  D3:
+    name: attribution
+    question: "Which components carry the response, averaged over every combination of the others (Shapley)?"
+    shapley_de_direction_ge: 0.05     # [2026-10-18] (there as a gain in one order)
+    shapley_t3_ge: 1.0
+    sev_floor_frac_le: 0.5            # [2026-10-18] on the component alone and on the full set, each estimator
+    effect: "informational; a component must also pass its transfer rule (D4-D6) to enter a submission"
+  D4:
+    name: depth_on
+    question: "Does the other replicate's per-label depth help on top of its factor?"
+    variant: "xrep:F+depth"
+    baseline: "xrep:F"
+    t3_gain_ge: 0.5
+    sev_floor_frac_le: 0.2
+    oracle_full_set_sev_floor_frac_le: 0.2   # fac[top|em]:cov+mesp1+stage+depth+factor (prototype D5: depth only with the factor)
+  D5:
+    name: stage_on
+    question: "Does the other replicate's stage mixing help on top of its factor?"
+    variant: "xrep:F+stage"
+    baseline: "xrep:F"
+    t3_gain_ge: 1.0
+    sev_floor_frac_le: 0.2
+    oracle_gain_after_factor_ge: 0.0  # fac:stage+factor - fac:factor
+  D6:
+    name: coverage_on
+    question: "Does the other replicate's section coverage help on top of its factor?"
+    variant: "xrep:F+cov"
+    baseline: "xrep:F"
+    t3_gain_ge: 1.0
+    sev_floor_frac_le: 0.2
+  D7:
+    name: composition_magnitude
+    question: "A19: do within-lineage composition shifts clear the replicate noise bar (calibration section)?"
+    min_counted_states: 1
+  D7m:
+    name: composition_magnitude_mab21l2
+    question: "Mab21l2 vs WT E9.5, within-lineage shifts that keep their sign over every trim and both estimators"
+    min_counted_states: 1
+    effect: "magnitude source only if the organisers refuse Gata4 files inside the beta-catenin prediction"
+  D8:
+    name: composition_sign
+    question: "Is the beta-catenin scenario composition a live risk on top of the borrowed factor?"
+    variant: "xrep:F+scenario@m"
+    baseline: "xrep:F"
+    fires_if_t3_change_le: -2.0       # [2026-10-18] on any target
+    fires_if_sev_floor_frac_gt: 0.2   # on any target
+  D9:
+    name: wnt_programme
+    question: "Does a type-specific residual remain that a Wnt programme (component B) could carry?"
+    residual_share_ge: 0.25           # [2026-10-18]
+    replicate_residual_spearman_ge: 0.3   # [2026-10-18]
+    effect: "invest in component B only if this passes (and the cross-task ruling allows T1 data)"
+  D10:
+    name: reference_factor_valid
+    question: "Does the WT-series factor R (no knockout data) beat the floor on its own?"
+    variant: "R"
+    t3_ge: 55.0                       # [2026-10-18]
+    sev_floor_frac_le: 0.2
+  D11a:
+    name: factor_reproducible
+    question: "Do the two replicates estimate the same per-gene factor?"
+    replicate_log_factor_spearman_ge: 0.7   # [2026-10-18]
+    effect: informational
+  D11b:
+    name: factor_series_shared
+    question: "Does the Mab21l2 factor transfer to Gata4 (a knockout-series factor)?"
+    variant: "transfer:mab21l2_all"
+    t3_ge: 60.0                       # [2026-10-18]
+    sev_floor_frac_le: 0.2
+
+submissions:
+  # Factor sources: gata4 = non-Mesp1 factor of both replicates pooled, vs WT E8.75, exponent from W1; reference = R from
+  # the WT series; mab21l2 = the Mab21l2 transfer factor; gata4_unvalidated = gata4 at exponent 1.0 with no extras;
+  # none = WT cells. Composition: central / mild = the scenario states depleted by 2^-(m x weight), mild_raw uses m_raw;
+  # spared states and every other label keep their WT shares before renormalising. Each table is read top-down; the
+  # first row whose `when` holds applies. `when` combines rule outcomes with and/or/not (an outcome that could not be
+  # evaluated counts as false).
+  # Organiser follow-up question 3 (released Gata4 files inside the beta-catenin prediction) is unanswered on
+  # 2026-10-19, so the decision file gives both branches.
+  allowed:
+    factor_table:
+      - {when: "D2 and D10", s1: gata4, s2: reference}
+      - {when: "D2", s1: gata4, s2: gata4}
+      - {when: "D2u and D10", s1: reference, s2: gata4}
+      - {when: "D2u", s1: gata4, s2: gata4}
+      - {when: "D10", s1: reference, s2: reference}
+      - {when: "true", s1: gata4_unvalidated, s2: gata4_unvalidated}
+    composition_s1:
+      - {when: "D7", value: central}
+      - {when: "true", value: none}
+    composition_s2_other_factor:      # s2's factor source differs from s1's: keep C unless its sign is a live risk
+      - {when: "D7 and D8", value: mild}
+      - {when: "D7", value: central}
+      - {when: "true", value: none}
+    composition_s2_same_factor:       # same factor source: s2 hedges the composition
+      - {when: "D7 and D8", value: mild}
+      - {when: "D7", value: none}
+      - {when: "m_raw_positive", value: mild_raw}
+      - {when: "true", value: none}
+    gata4_extras: {depth: D4, stage: D5, coverage: D6}   # only with factor source gata4, each on iff its rule passes
+    factor_exponent: {gata4: W1, gata4_unvalidated: 1.0, reference: 1.0, mab21l2: 1.0, none: 0.0}
+  refused:                            # no number derived from Gata4 files enters a prediction; Gata4 scores still choose
+    factor_table:
+      - {when: "D10", s1: reference, s2: reference}
+      - {when: "D11b", s1: mab21l2, s2: mab21l2}
+      - {when: "true", s1: none, s2: none}
+    composition_magnitude: D7m        # m from Mab21l2 vs WT E9.5
+    composition_s1:
+      - {when: "D7m", value: central}
+      - {when: "true", value: none}
+    composition_s2_same_factor:
+      - {when: "true", value: none}
+    gata4_extras: {}
+    factor_exponent: {reference: 1.0, mab21l2: 1.0, none: 0.0}
+  identical_fallback: "if s2 equals s1, s2 takes W1's runner-up exponent (allowed branch) or half of s1's exponent"
+
+# Dated notes (append only; never edit the rules above after the Gata4 download)
+notes:
+  - "2026-10-19 (disclosure, before any Gata4 file was downloaded): while reading docs/CHALLENGE.md the author of this
+    file saw the T3:gata4 validation-board anchors quoted there (metric floor and ceiling values). No threshold, grid
+    or magnitude in this file was derived from them; every threshold is marked [2026-10-18] (prototype rules) or set
+    from the Mab21l2 results and generic choices."
+  - "2026-10-19 (lead's decisions, before any Gata4 file was downloaded): (1) the factor source `mab21l2` means the
+    variant transfer:mab21l2_all. (2) The WT series R includes E8.5: on release day pass --e85 with the released E8.5
+    path explicitly. (3) Refused branch: if the organisers say the released Gata4 files may not be used at all, not even
+    to score candidates, D10 and D11b are not evaluated against Gata4 and the refused factor_table above is overridden:
+    both submissions use the factor source mab21l2 (exponent 1), because on the released Mab21l2 test the WT-series
+    factor R scored below the null (46.7 vs 50.8) while a knockout-derived factor scored 80.5; s1 composition central at
+    m = D7m, s2 mild (m/2). If they allow scoring against Gata4 but not training on it, the refused table applies as
+    written. (4) Before the gata4 run, count identical count rows shared by the two replicate files; if they share more
+    than 1% of either file's rows, the borrowed-replicate rules (D2, D2u, D4-D6, D8, W1) are recorded as not
+    independent. (5) Whoever builds a submission from the decision file uses the same construction as the scored
+    variants (count-space resampling, binomial thinning, Poisson top-up from kNN-smoothed profiles); on Mab21l2 the
+    top-up profile alone moved the factor variant by 1.6 T3."

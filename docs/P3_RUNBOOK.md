@@ -44,18 +44,25 @@ procedure refuses unmapped labels.
 
 1. **Heart and embryo size:** `bash experiments/coords/run_p3.sh` (paths as arguments). Use the heart output only if
    `valid` is true. Commit `experiments/coords/results/p3/`.
-2. **T3 decomposition on Gata4:** the single command in `experiments/t3_decomp/` with both replicates and WT E8.75.
-   Commit its decision file. The rules in `experiments/t3_decomp/rules.yaml` decide; nothing is chosen by eye.
-3. **T1 direction readout:** the command in `experiments/t1_direction/` on E9.5 to E10.5. Commit its decision
-   (build the bracketing pipeline or not).
+2. **T3 decomposition on Gata4.** First count identical count rows shared by the two replicate files (rules.yaml
+   note 4: more than 1% shared means the borrowed-replicate rules are recorded as not independent). Then:
+   `tmux new -d -s vec-t3-gata4 'bash experiments/t3_decomp/run_gata4.sh REP1.h5ad REP2.h5ad data/raw/T2/E8.75.h5ad
+   --e85 <released E8.5 file>'`. Check that `runs/logs/t3_decomp_gata4_*.log` exists (a wrong path exits 0 silently).
+   Bring back the aggregates with the rsync line the run prints and commit `gata4_decisions.json` first. The rules in
+   `experiments/t3_decomp/rules.yaml` decide, including the lead's dated notes; nothing is chosen by eye.
+3. **T1 direction readout:** `uv run python experiments/t1_direction/readout.py <released E10.5 file>` (DGX). It
+   refuses uncommitted procedure files, a non-default config or label map that is not a committed repo file, and a
+   second run without `--overwrite`. Commit `decision.json` (build the bracketing pipeline or not). Re-run the
+   committed filters (`experiments/external/`) before ~/v/vec-gapconc is cleaned up.
 4. **Harmonisation:** `experiments/harmonise/run_harmonise.py` release stages (Gata4 replicate 1 vs 2, cross-stage
    transfer with E8.5 and E10.5). The replicate difference is the noise bar for T3 composition effects (A19).
 5. **Density:** `TARGETS="heart_E10.5 embryo_E7.5" SEEDS="0 1 2 3 4 5 6 7 8 9" RAW=runs/density/raw_release
    TAG=density_release JOBS=16 THREADS=1 bash experiments/density/run_all.sh` (about 20 minutes), then `summarise.py`.
    The pre-registered rule in `docs/PLAN.md` section 3.6 decides the count: keep max_cells unless a lower level beats it
    for the intermediate-quality condition by more than 0.3 points in at least 8 of 10 seeds.
-6. **Scorer build:** `experiments/scorer_build/anchor_check.py` against the released validation answers (validation
-   anchors only).
+6. **Scorer build:** `uv run python experiments/scorer_build/anchor_check.py check` against the released validation
+   answers (validation anchors only; it refuses test boards, the public board file and anything before 2026-10-20).
+   Its verdict says which build the server baked the anchors with; it changes no prediction.
 
 ## 5. Then
 

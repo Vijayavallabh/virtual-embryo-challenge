@@ -1,0 +1,1093 @@
+{
+ "generated": "2026-10-18 22:57:39",
+ "mode": "self-test",
+ "files": {
+  "target": "E9.5.h5ad",
+  "reference": "E8.75.h5ad"
+ },
+ "boards": {
+  "TEST:0:prefix": {
+   "board": "TEST:0:prefix",
+   "N_target": 53742,
+   "N_ref": 24826,
+   "index_truth_cells": 2687,
+   "index_ref_cells": 2483,
+   "counts": {
+    "target_working_copy": [
+     5374,
+     5375
+    ],
+    "truth_is_first_half": [
+     5374,
+     5375
+    ],
+    "truth_is_second_half": [
+     5374
+    ],
+    "ref_cells_match": true,
+    "released_file_is_working_copy": false,
+    "released_file_is_truth_half": false
+   },
+   "published": {
+    "d2_shape": {
+     "floor": 0.04281,
+     "ceiling": 0.00337
+    },
+    "occupancy_dice": {
+     "floor": 0.7955,
+     "ceiling": 0.9142
+    },
+    "scale_log_ratio": {
+     "floor": -0.4391,
+     "ceiling": -0.0121
+    }
+   },
+   "exact_search": {
+    "n_truth_halves_tried": 1512,
+    "n_ceiling_scale_matches": 2,
+    "n_ceiling_matches": 1,
+    "n_target_draws": 132,
+    "n_ref_draws": 113,
+    "working_copy_sizes": {
+     "target": [
+      5374,
+      5375
+     ],
+     "reference": [
+      2483
+     ]
+    },
+    "n_hits": 1,
+    "n_hit_labels": 1,
+    "sec": 1.9
+   },
+   "exact_hits": [
+    {
+     "protocol": {
+      "target_draw": "legacy(seed=7, n=5374)",
+      "target_sorted": false,
+      "split": "veckit",
+      "split_seed": 7,
+      "truth_first": false,
+      "floor": "legacy(seed=8, n=2483), as drawn",
+      "metric_seed": 0
+     },
+     "equivalent": [
+      {
+       "target_draw": "legacy(seed=7, n=5374)",
+       "target_sorted": false,
+       "split": "veckit",
+       "split_seed": 7,
+       "truth_first": false,
+       "floor": "legacy(seed=8, n=2483), as drawn",
+       "metric_seed": 0
+      }
+     ],
+     "floor": {
+      "dice_main": 0.7955,
+      "dice_mirror": 0.7955,
+      "dice_prefix": 0.7955,
+      "parity_pred": 1,
+      "parity_truth": -1,
+      "prefix_mode": "mirror",
+      "rule_ok": true,
+      "twin_ok": true,
+      "d2_shape": 0.04281,
+      "scale_log_ratio": -0.4391,
+      "d2_scale_build_independent": true
+     },
+     "ceiling": {
+      "dice_main": 0.9142,
+      "dice_mirror": 0.7981,
+      "dice_prefix": 0.9142,
+      "parity_pred": 1,
+      "parity_truth": 1,
+      "prefix_mode": "proper",
+      "rule_ok": true,
+      "twin_ok": true,
+      "d2_shape": 0.00337,
+      "scale_log_ratio": -0.0121,
+      "d2_scale_build_independent": true
+     }
+    }
+   ],
+   "distribution": {
+    "n_seeds": 20,
+    "target_frac": 0.1,
+    "protocol": "vec.evaluate subsample(target, s) / subsample(ref, s+1) / split_half(seed 0), metric seed 0",
+    "floor": {
+     "dice_main": {
+      "mean": 0.77726,
+      "sd": 0.01226,
+      "min": 0.7608,
+      "max": 0.8,
+      "z_of_published": 1.49,
+      "pct_of_published": 90.0
+     },
+     "dice_mirror": {
+      "mean": 0.78729,
+      "sd": 0.01393,
+      "min": 0.7661,
+      "max": 0.8172,
+      "z_of_published": 0.59,
+      "pct_of_published": 70.0
+     },
+     "dice_prefix": {
+      "mean": 0.78207,
+      "sd": 0.01519,
+      "min": 0.7615,
+      "max": 0.8172,
+      "z_of_published": 0.88,
+      "pct_of_published": 80.0
+     },
+     "d2_shape": {
+      "mean": 0.05128,
+      "sd": 0.00334,
+      "min": 0.04566,
+      "max": 0.06025,
+      "z_of_published": -2.54,
+      "pct_of_published": 0.0
+     },
+     "scale_log_ratio": {
+      "mean": -0.43268,
+      "sd": 0.00609,
+      "min": -0.4441,
+      "max": -0.4208,
+      "z_of_published": -1.05,
+      "pct_of_published": 20.0
+     },
+     "proper_minus_mirror": {
+      "mean": -0.01,
+      "sd": 0.0114
+     },
+     "prefix_mirror_mode_frac": 0.55
+    },
+    "floor_whole_stage": {
+     "dice_main": {
+      "mean": 0.78681,
+      "sd": 0.00883,
+      "min": 0.7689,
+      "max": 0.8054,
+      "z_of_published": 0.99,
+      "pct_of_published": 80.0
+     },
+     "dice_mirror": {
+      "mean": 0.80992,
+      "sd": 0.00906,
+      "min": 0.7927,
+      "max": 0.8292,
+      "z_of_published": -1.59,
+      "pct_of_published": 5.0
+     },
+     "dice_prefix": {
+      "mean": 0.79519,
+      "sd": 0.01428,
+      "min": 0.7689,
+      "max": 0.8155,
+      "z_of_published": 0.02,
+      "pct_of_published": 45.0
+     },
+     "d2_shape": {
+      "mean": 0.05017,
+      "sd": 0.00259,
+      "min": 0.04556,
+      "max": 0.05635,
+      "z_of_published": -2.84,
+      "pct_of_published": 0.0
+     },
+     "scale_log_ratio": {
+      "mean": -0.43296,
+      "sd": 0.00489,
+      "min": -0.4405,
+      "max": -0.423,
+      "z_of_published": -1.25,
+      "pct_of_published": 10.0
+     },
+     "proper_minus_mirror": {
+      "mean": -0.0231,
+      "sd": 0.0055
+     },
+     "prefix_mirror_mode_frac": 0.4
+    },
+    "ceiling": {
+     "dice_main": {
+      "mean": 0.92557,
+      "sd": 0.00799,
+      "min": 0.9104,
+      "max": 0.9393,
+      "z_of_published": -1.42,
+      "pct_of_published": 5.0
+     },
+     "dice_mirror": {
+      "mean": 0.80602,
+      "sd": 0.00973,
+      "min": 0.7902,
+      "max": 0.8233,
+      "z_of_published": 11.12,
+      "pct_of_published": 100.0
+     },
+     "dice_prefix": {
+      "mean": 0.87202,
+      "sd": 0.06144,
+      "min": 0.7963,
+      "max": 0.9393,
+      "z_of_published": 0.69,
+      "pct_of_published": 50.0
+     },
+     "d2_shape": {
+      "mean": 0.00457,
+      "sd": 0.0024,
+      "min": 0.00202,
+      "max": 0.01256,
+      "z_of_published": -0.5,
+      "pct_of_published": 35.0
+     },
+     "scale_log_ratio": {
+      "mean": 0.00332,
+      "sd": 0.00908,
+      "min": -0.0123,
+      "max": 0.0176,
+      "z_of_published": -1.7,
+      "pct_of_published": 5.0
+     },
+     "proper_minus_mirror": {
+      "mean": 0.1196,
+      "sd": 0.0106
+     },
+     "prefix_mirror_mode_frac": 0.45
+    }
+   },
+   "classification": {
+    "floor": {
+     "label": "tie",
+     "basis": "exact",
+     "published": 0.7955,
+     "compared_with": "floor",
+     "published_equals_prefix_value_here": true
+    },
+    "ceiling": {
+     "label": "proper",
+     "basis": "exact",
+     "published": 0.9142,
+     "compared_with": "ceiling",
+     "published_equals_prefix_value_here": true
+    }
+   },
+   "reproduction": {
+    "d2_shape": {
+     "floor": {
+      "published": 0.04281,
+      "main": 0.04281,
+      "prefix": 0.04281,
+      "basis": "exact hit"
+     },
+     "ceiling": {
+      "published": 0.00337,
+      "main": 0.00337,
+      "prefix": 0.00337,
+      "basis": "exact hit"
+     }
+    },
+    "occupancy_dice": {
+     "floor": {
+      "published": 0.7955,
+      "main": 0.7955,
+      "prefix": 0.7955,
+      "basis": "exact hit"
+     },
+     "ceiling": {
+      "published": 0.9142,
+      "main": 0.9142,
+      "prefix": 0.9142,
+      "basis": "exact hit"
+     }
+    },
+    "scale_log_ratio": {
+     "floor": {
+      "published": -0.4391,
+      "main": -0.4391,
+      "prefix": -0.4391,
+      "basis": "exact hit"
+     },
+     "ceiling": {
+      "published": -0.0121,
+      "main": -0.0121,
+      "prefix": -0.0121,
+      "basis": "exact hit"
+     }
+    }
+   },
+   "theory": {
+    "rows": 62,
+    "prefix_equals_parity_rule": 62,
+    "mirror_twin_unchanged_under_prefix": 62,
+    "d2_scale_rows_under_both_builds": 2,
+    "d2_scale_build_independent": 2
+   },
+   "self_test": {
+    "build": "prefix",
+    "baked_protocol": {
+     "target_draw": "legacy(seed=7, n=5374)",
+     "target_sorted": false,
+     "split": "veckit",
+     "split_seed": 7,
+     "truth_first": false,
+     "floor": "legacy(seed=8, n=2483), as drawn",
+     "metric_seed": 0
+    },
+    "true_modes": {
+     "floor": "tie",
+     "ceiling": "proper"
+    },
+    "classified": {
+     "floor": "tie",
+     "ceiling": "proper"
+    },
+    "protocol_recovered": true,
+    "n_hits": 1,
+    "modes_recovered": true,
+    "passed": true
+   }
+  },
+  "TEST:1:main": {
+   "board": "TEST:1:main",
+   "N_target": 53742,
+   "N_ref": 24826,
+   "index_truth_cells": 2687,
+   "index_ref_cells": 2483,
+   "counts": {
+    "target_working_copy": [
+     5374,
+     5375
+    ],
+    "truth_is_first_half": [
+     5374,
+     5375
+    ],
+    "truth_is_second_half": [
+     5374
+    ],
+    "ref_cells_match": true,
+    "released_file_is_working_copy": false,
+    "released_file_is_truth_half": false
+   },
+   "published": {
+    "d2_shape": {
+     "floor": 0.05333,
+     "ceiling": 0.0091
+    },
+    "occupancy_dice": {
+     "floor": 0.7824,
+     "ceiling": 0.9161
+    },
+    "scale_log_ratio": {
+     "floor": -0.4286,
+     "ceiling": 0.0051
+    }
+   },
+   "exact_search": {
+    "n_truth_halves_tried": 1512,
+    "n_ceiling_scale_matches": 4,
+    "n_ceiling_matches": 2,
+    "n_target_draws": 132,
+    "n_ref_draws": 113,
+    "working_copy_sizes": {
+     "target": [
+      5374,
+      5375
+     ],
+     "reference": [
+      2483
+     ]
+    },
+    "n_hits": 1,
+    "n_hit_labels": 4,
+    "sec": 3.0
+   },
+   "exact_hits": [
+    {
+     "protocol": {
+      "target_draw": "gen(seed=3, n=5374)",
+      "target_sorted": true,
+      "split": "emulator",
+      "split_seed": 0,
+      "truth_first": true,
+      "floor": "gen(seed=4, n=2483), sorted",
+      "metric_seed": 3
+     },
+     "equivalent": [
+      {
+       "target_draw": "gen(seed=3, n=5374)",
+       "target_sorted": true,
+       "split": "emulator",
+       "split_seed": 0,
+       "truth_first": true,
+       "floor": "gen(seed=4, n=2483), sorted",
+       "metric_seed": 3
+      },
+      {
+       "target_draw": "gen(seed=3, n=5374)",
+       "target_sorted": true,
+       "split": "emulator",
+       "split_seed": 0,
+       "truth_first": true,
+       "floor": "gen_noshuffle(seed=4, n=2483), sorted",
+       "metric_seed": 3
+      },
+      {
+       "target_draw": "gen_noshuffle(seed=3, n=5374)",
+       "target_sorted": true,
+       "split": "emulator",
+       "split_seed": 0,
+       "truth_first": true,
+       "floor": "gen(seed=4, n=2483), sorted",
+       "metric_seed": 3
+      },
+      {
+       "target_draw": "gen_noshuffle(seed=3, n=5374)",
+       "target_sorted": true,
+       "split": "emulator",
+       "split_seed": 0,
+       "truth_first": true,
+       "floor": "gen_noshuffle(seed=4, n=2483), sorted",
+       "metric_seed": 3
+      }
+     ],
+     "floor": {
+      "dice_main": 0.7824,
+      "dice_mirror": 0.7731,
+      "dice_prefix": 0.7824,
+      "parity_pred": 1,
+      "parity_truth": 1,
+      "prefix_mode": "proper",
+      "rule_ok": true,
+      "twin_ok": true,
+      "d2_shape": 0.05333,
+      "scale_log_ratio": -0.4286,
+      "d2_scale_build_independent": true
+     },
+     "ceiling": {
+      "dice_main": 0.9161,
+      "dice_mirror": 0.7962,
+      "dice_prefix": 0.9161,
+      "parity_pred": -1,
+      "parity_truth": -1,
+      "prefix_mode": "proper",
+      "rule_ok": true,
+      "twin_ok": true,
+      "d2_shape": 0.0091,
+      "scale_log_ratio": 0.0051,
+      "d2_scale_build_independent": true
+     }
+    }
+   ],
+   "distribution": {
+    "n_seeds": 20,
+    "target_frac": 0.1,
+    "protocol": "vec.evaluate subsample(target, s) / subsample(ref, s+1) / split_half(seed 0), metric seed 0",
+    "floor": {
+     "dice_main": {
+      "mean": 0.77726,
+      "sd": 0.01226,
+      "min": 0.7608,
+      "max": 0.8,
+      "z_of_published": 0.42,
+      "pct_of_published": 65.0
+     },
+     "dice_mirror": {
+      "mean": 0.78729,
+      "sd": 0.01393,
+      "min": 0.7661,
+      "max": 0.8172,
+      "z_of_published": -0.35,
+      "pct_of_published": 45.0
+     },
+     "dice_prefix": {
+      "mean": 0.78207,
+      "sd": 0.01519,
+      "min": 0.7615,
+      "max": 0.8172,
+      "z_of_published": 0.02,
+      "pct_of_published": 55.0
+     },
+     "d2_shape": {
+      "mean": 0.05128,
+      "sd": 0.00334,
+      "min": 0.04566,
+      "max": 0.06025,
+      "z_of_published": 0.61,
+      "pct_of_published": 80.0
+     },
+     "scale_log_ratio": {
+      "mean": -0.43268,
+      "sd": 0.00609,
+      "min": -0.4441,
+      "max": -0.4208,
+      "z_of_published": 0.67,
+      "pct_of_published": 75.0
+     },
+     "proper_minus_mirror": {
+      "mean": -0.01,
+      "sd": 0.0114
+     },
+     "prefix_mirror_mode_frac": 0.55
+    },
+    "floor_whole_stage": {
+     "dice_main": {
+      "mean": 0.78681,
+      "sd": 0.00883,
+      "min": 0.7689,
+      "max": 0.8054,
+      "z_of_published": -0.5,
+      "pct_of_published": 40.0
+     },
+     "dice_mirror": {
+      "mean": 0.80992,
+      "sd": 0.00906,
+      "min": 0.7927,
+      "max": 0.8292,
+      "z_of_published": -3.04,
+      "pct_of_published": 0.0
+     },
+     "dice_prefix": {
+      "mean": 0.79519,
+      "sd": 0.01428,
+      "min": 0.7689,
+      "max": 0.8155,
+      "z_of_published": -0.9,
+      "pct_of_published": 25.0
+     },
+     "d2_shape": {
+      "mean": 0.05017,
+      "sd": 0.00259,
+      "min": 0.04556,
+      "max": 0.05635,
+      "z_of_published": 1.22,
+      "pct_of_published": 90.0
+     },
+     "scale_log_ratio": {
+      "mean": -0.43296,
+      "sd": 0.00489,
+      "min": -0.4405,
+      "max": -0.423,
+      "z_of_published": 0.89,
+      "pct_of_published": 80.0
+     },
+     "proper_minus_mirror": {
+      "mean": -0.0231,
+      "sd": 0.0055
+     },
+     "prefix_mirror_mode_frac": 0.4
+    },
+    "ceiling": {
+     "dice_main": {
+      "mean": 0.92557,
+      "sd": 0.00799,
+      "min": 0.9104,
+      "max": 0.9393,
+      "z_of_published": -1.19,
+      "pct_of_published": 25.0
+     },
+     "dice_mirror": {
+      "mean": 0.80602,
+      "sd": 0.00973,
+      "min": 0.7902,
+      "max": 0.8233,
+      "z_of_published": 11.31,
+      "pct_of_published": 100.0
+     },
+     "dice_prefix": {
+      "mean": 0.87202,
+      "sd": 0.06144,
+      "min": 0.7963,
+      "max": 0.9393,
+      "z_of_published": 0.72,
+      "pct_of_published": 60.0
+     },
+     "d2_shape": {
+      "mean": 0.00457,
+      "sd": 0.0024,
+      "min": 0.00202,
+      "max": 0.01256,
+      "z_of_published": 1.89,
+      "pct_of_published": 95.0
+     },
+     "scale_log_ratio": {
+      "mean": 0.00332,
+      "sd": 0.00908,
+      "min": -0.0123,
+      "max": 0.0176,
+      "z_of_published": 0.2,
+      "pct_of_published": 65.0
+     },
+     "proper_minus_mirror": {
+      "mean": 0.1196,
+      "sd": 0.0106
+     },
+     "prefix_mirror_mode_frac": 0.45
+    }
+   },
+   "classification": {
+    "floor": {
+     "label": "proper",
+     "basis": "exact",
+     "published": 0.7824,
+     "compared_with": "floor",
+     "published_equals_prefix_value_here": true
+    },
+    "ceiling": {
+     "label": "proper",
+     "basis": "exact",
+     "published": 0.9161,
+     "compared_with": "ceiling",
+     "published_equals_prefix_value_here": true
+    }
+   },
+   "reproduction": {
+    "d2_shape": {
+     "floor": {
+      "published": 0.05333,
+      "main": 0.05333,
+      "prefix": 0.05333,
+      "basis": "exact hit"
+     },
+     "ceiling": {
+      "published": 0.0091,
+      "main": 0.0091,
+      "prefix": 0.0091,
+      "basis": "exact hit"
+     }
+    },
+    "occupancy_dice": {
+     "floor": {
+      "published": 0.7824,
+      "main": 0.7824,
+      "prefix": 0.7824,
+      "basis": "exact hit"
+     },
+     "ceiling": {
+      "published": 0.9161,
+      "main": 0.9161,
+      "prefix": 0.9161,
+      "basis": "exact hit"
+     }
+    },
+    "scale_log_ratio": {
+     "floor": {
+      "published": -0.4286,
+      "main": -0.4286,
+      "prefix": -0.4286,
+      "basis": "exact hit"
+     },
+     "ceiling": {
+      "published": 0.0051,
+      "main": 0.0051,
+      "prefix": 0.0051,
+      "basis": "exact hit"
+     }
+    }
+   },
+   "theory": {
+    "rows": 62,
+    "prefix_equals_parity_rule": 62,
+    "mirror_twin_unchanged_under_prefix": 62,
+    "d2_scale_rows_under_both_builds": 2,
+    "d2_scale_build_independent": 2
+   },
+   "self_test": {
+    "build": "main",
+    "baked_protocol": {
+     "target_draw": "gen(seed=3, n=5374)",
+     "target_sorted": true,
+     "split": "emulator",
+     "split_seed": 0,
+     "truth_first": true,
+     "floor": "gen(seed=4, n=2483), sorted",
+     "metric_seed": 3
+    },
+    "true_modes": {
+     "floor": "proper",
+     "ceiling": "proper"
+    },
+    "classified": {
+     "floor": "proper",
+     "ceiling": "proper"
+    },
+    "protocol_recovered": true,
+    "n_hits": 1,
+    "modes_recovered": true,
+    "passed": true
+   }
+  },
+  "TEST:2:prefix": {
+   "board": "TEST:2:prefix",
+   "N_target": 53742,
+   "N_ref": 24826,
+   "index_truth_cells": 2687,
+   "index_ref_cells": 2483,
+   "counts": {
+    "target_working_copy": [
+     5374,
+     5375
+    ],
+    "truth_is_first_half": [
+     5374,
+     5375
+    ],
+    "truth_is_second_half": [
+     5374
+    ],
+    "ref_cells_match": true,
+    "released_file_is_working_copy": false,
+    "released_file_is_truth_half": false
+   },
+   "published": {
+    "d2_shape": {
+     "floor": 0.05285,
+     "ceiling": 0.00317
+    },
+    "occupancy_dice": {
+     "floor": 0.7755,
+     "ceiling": 0.8173
+    },
+    "scale_log_ratio": {
+     "floor": -0.4329,
+     "ceiling": 0.0021
+    }
+   },
+   "exact_search": {
+    "n_truth_halves_tried": 1512,
+    "n_ceiling_scale_matches": 8,
+    "n_ceiling_matches": 2,
+    "n_target_draws": 132,
+    "n_ref_draws": 113,
+    "working_copy_sizes": {
+     "target": [
+      5374,
+      5375
+     ],
+     "reference": [
+      2483
+     ]
+    },
+    "n_hits": 1,
+    "n_hit_labels": 4,
+    "sec": 3.7
+   },
+   "exact_hits": [
+    {
+     "protocol": {
+      "target_draw": "gen(seed=1, n=5374)",
+      "target_sorted": true,
+      "split": "emulator",
+      "split_seed": 0,
+      "truth_first": true,
+      "floor": "gen(seed=2, n=2483), sorted",
+      "metric_seed": 0
+     },
+     "equivalent": [
+      {
+       "target_draw": "gen(seed=1, n=5374)",
+       "target_sorted": true,
+       "split": "emulator",
+       "split_seed": 0,
+       "truth_first": true,
+       "floor": "gen(seed=2, n=2483), sorted",
+       "metric_seed": 0
+      },
+      {
+       "target_draw": "gen(seed=1, n=5374)",
+       "target_sorted": true,
+       "split": "emulator",
+       "split_seed": 0,
+       "truth_first": true,
+       "floor": "gen_noshuffle(seed=2, n=2483), sorted",
+       "metric_seed": 0
+      },
+      {
+       "target_draw": "gen_noshuffle(seed=1, n=5374)",
+       "target_sorted": true,
+       "split": "emulator",
+       "split_seed": 0,
+       "truth_first": true,
+       "floor": "gen(seed=2, n=2483), sorted",
+       "metric_seed": 0
+      },
+      {
+       "target_draw": "gen_noshuffle(seed=1, n=5374)",
+       "target_sorted": true,
+       "split": "emulator",
+       "split_seed": 0,
+       "truth_first": true,
+       "floor": "gen_noshuffle(seed=2, n=2483), sorted",
+       "metric_seed": 0
+      }
+     ],
+     "floor": {
+      "dice_main": 0.7755,
+      "dice_mirror": 0.7937,
+      "dice_prefix": 0.7755,
+      "parity_pred": -1,
+      "parity_truth": -1,
+      "prefix_mode": "proper",
+      "rule_ok": true,
+      "twin_ok": true,
+      "d2_shape": 0.05285,
+      "scale_log_ratio": -0.4329,
+      "d2_scale_build_independent": true
+     },
+     "ceiling": {
+      "dice_main": 0.9327,
+      "dice_mirror": 0.8173,
+      "dice_prefix": 0.8173,
+      "parity_pred": -1,
+      "parity_truth": 1,
+      "prefix_mode": "mirror",
+      "rule_ok": true,
+      "twin_ok": true,
+      "d2_shape": 0.00317,
+      "scale_log_ratio": 0.0021,
+      "d2_scale_build_independent": true
+     }
+    }
+   ],
+   "distribution": {
+    "n_seeds": 20,
+    "target_frac": 0.1,
+    "protocol": "vec.evaluate subsample(target, s) / subsample(ref, s+1) / split_half(seed 0), metric seed 0",
+    "floor": {
+     "dice_main": {
+      "mean": 0.77726,
+      "sd": 0.01226,
+      "min": 0.7608,
+      "max": 0.8,
+      "z_of_published": -0.14,
+      "pct_of_published": 60.0
+     },
+     "dice_mirror": {
+      "mean": 0.78729,
+      "sd": 0.01393,
+      "min": 0.7661,
+      "max": 0.8172,
+      "z_of_published": -0.85,
+      "pct_of_published": 25.0
+     },
+     "dice_prefix": {
+      "mean": 0.78207,
+      "sd": 0.01519,
+      "min": 0.7615,
+      "max": 0.8172,
+      "z_of_published": -0.43,
+      "pct_of_published": 40.0
+     },
+     "d2_shape": {
+      "mean": 0.05128,
+      "sd": 0.00334,
+      "min": 0.04566,
+      "max": 0.06025,
+      "z_of_published": 0.47,
+      "pct_of_published": 80.0
+     },
+     "scale_log_ratio": {
+      "mean": -0.43268,
+      "sd": 0.00609,
+      "min": -0.4441,
+      "max": -0.4208,
+      "z_of_published": -0.04,
+      "pct_of_published": 45.0
+     },
+     "proper_minus_mirror": {
+      "mean": -0.01,
+      "sd": 0.0114
+     },
+     "prefix_mirror_mode_frac": 0.55
+    },
+    "floor_whole_stage": {
+     "dice_main": {
+      "mean": 0.78681,
+      "sd": 0.00883,
+      "min": 0.7689,
+      "max": 0.8054,
+      "z_of_published": -1.28,
+      "pct_of_published": 10.0
+     },
+     "dice_mirror": {
+      "mean": 0.80992,
+      "sd": 0.00906,
+      "min": 0.7927,
+      "max": 0.8292,
+      "z_of_published": -3.8,
+      "pct_of_published": 0.0
+     },
+     "dice_prefix": {
+      "mean": 0.79519,
+      "sd": 0.01428,
+      "min": 0.7689,
+      "max": 0.8155,
+      "z_of_published": -1.38,
+      "pct_of_published": 10.0
+     },
+     "d2_shape": {
+      "mean": 0.05017,
+      "sd": 0.00259,
+      "min": 0.04556,
+      "max": 0.05635,
+      "z_of_published": 1.03,
+      "pct_of_published": 90.0
+     },
+     "scale_log_ratio": {
+      "mean": -0.43296,
+      "sd": 0.00489,
+      "min": -0.4405,
+      "max": -0.423,
+      "z_of_published": 0.01,
+      "pct_of_published": 60.0
+     },
+     "proper_minus_mirror": {
+      "mean": -0.0231,
+      "sd": 0.0055
+     },
+     "prefix_mirror_mode_frac": 0.4
+    },
+    "ceiling": {
+     "dice_main": {
+      "mean": 0.92557,
+      "sd": 0.00799,
+      "min": 0.9104,
+      "max": 0.9393,
+      "z_of_published": -13.55,
+      "pct_of_published": 0.0
+     },
+     "dice_mirror": {
+      "mean": 0.80602,
+      "sd": 0.00973,
+      "min": 0.7902,
+      "max": 0.8233,
+      "z_of_published": 1.16,
+      "pct_of_published": 90.0
+     },
+     "dice_prefix": {
+      "mean": 0.87202,
+      "sd": 0.06144,
+      "min": 0.7963,
+      "max": 0.9393,
+      "z_of_published": -0.89,
+      "pct_of_published": 40.0
+     },
+     "d2_shape": {
+      "mean": 0.00457,
+      "sd": 0.0024,
+      "min": 0.00202,
+      "max": 0.01256,
+      "z_of_published": -0.58,
+      "pct_of_published": 35.0
+     },
+     "scale_log_ratio": {
+      "mean": 0.00332,
+      "sd": 0.00908,
+      "min": -0.0123,
+      "max": 0.0176,
+      "z_of_published": -0.13,
+      "pct_of_published": 35.0
+     },
+     "proper_minus_mirror": {
+      "mean": 0.1196,
+      "sd": 0.0106
+     },
+     "prefix_mirror_mode_frac": 0.45
+    }
+   },
+   "classification": {
+    "floor": {
+     "label": "proper",
+     "basis": "exact",
+     "published": 0.7755,
+     "compared_with": "floor",
+     "published_equals_prefix_value_here": true
+    },
+    "ceiling": {
+     "label": "mirror",
+     "basis": "exact",
+     "published": 0.8173,
+     "compared_with": "ceiling",
+     "published_equals_prefix_value_here": true
+    }
+   },
+   "reproduction": {
+    "d2_shape": {
+     "floor": {
+      "published": 0.05285,
+      "main": 0.05285,
+      "prefix": 0.05285,
+      "basis": "exact hit"
+     },
+     "ceiling": {
+      "published": 0.00317,
+      "main": 0.00317,
+      "prefix": 0.00317,
+      "basis": "exact hit"
+     }
+    },
+    "occupancy_dice": {
+     "floor": {
+      "published": 0.7755,
+      "main": 0.7755,
+      "prefix": 0.7755,
+      "basis": "exact hit"
+     },
+     "ceiling": {
+      "published": 0.8173,
+      "main": 0.9327,
+      "prefix": 0.8173,
+      "basis": "exact hit"
+     }
+    },
+    "scale_log_ratio": {
+     "floor": {
+      "published": -0.4329,
+      "main": -0.4329,
+      "prefix": -0.4329,
+      "basis": "exact hit"
+     },
+     "ceiling": {
+      "published": 0.0021,
+      "main": 0.0021,
+      "prefix": 0.0021,
+      "basis": "exact hit"
+     }
+    }
+   },
+   "theory": {
+    "rows": 62,
+    "prefix_equals_parity_rule": 62,
+    "mirror_twin_unchanged_under_prefix": 62,
+    "d2_scale_rows_under_both_builds": 2,
+    "d2_scale_build_independent": 2
+   },
+   "self_test": {
+    "build": "prefix",
+    "baked_protocol": {
+     "target_draw": "gen(seed=1, n=5374)",
+     "target_sorted": true,
+     "split": "emulator",
+     "split_seed": 0,
+     "truth_first": true,
+     "floor": "gen(seed=2, n=2483), sorted",
+     "metric_seed": 0
+    },
+    "true_modes": {
+     "floor": "proper",
+     "ceiling": "mirror"
+    },
+    "classified": {
+     "floor": "proper",
+     "ceiling": "mirror"
+    },
+    "protocol_recovered": true,
+    "n_hits": 1,
+    "modes_recovered": true,
+    "passed": true
+   }
+  }
+ }
+}

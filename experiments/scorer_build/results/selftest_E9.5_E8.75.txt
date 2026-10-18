@@ -1,0 +1,45 @@
+anchor check 2026-10-18 22:57:39 (self-test)
+## TEST:0:prefix: N_target 53742, N_ref 24826, truth_cells 2687 (first half [5374, 5375], second half [5374]), ref_cells ok True
+  exact protocol: 1 hit(s) from 1512 truth halves (1 ceiling matches), 1.9 s
+    {'target_draw': 'legacy(seed=7, n=5374)', 'target_sorted': False, 'split': 'veckit', 'split_seed': 7, 'truth_first': False, 'floor': 'legacy(seed=8, n=2483), as drawn', 'metric_seed': 0}
+      floor: dice main 0.7955 mirror 0.7955 prefix 0.7955 (parities +1/-1)
+      ceiling: dice main 0.9142 mirror 0.7981 prefix 0.9142 (parities +1/+1)
+  d2_shape: floor published 0.04281 main 0.04281 prefix 0.04281 [exact hit]; ceiling published 0.00337 main 0.00337 prefix 0.00337 [exact hit]
+  occupancy_dice: floor published 0.7955 main 0.7955 prefix 0.7955 [exact hit]; ceiling published 0.9142 main 0.9142 prefix 0.9142 [exact hit]
+  scale_log_ratio: floor published -0.4391 main -0.4391 prefix -0.4391 [exact hit]; ceiling published -0.0121 main -0.0121 prefix -0.0121 [exact hit]
+  floor: proper-minus-mirror -0.01 (sd 0.0114), z(published Dice) proper 1.49 mirror 0.59
+  floor_whole_stage: proper-minus-mirror -0.0231 (sd 0.0055), z(published Dice) proper 0.99 mirror -1.59
+  ceiling: proper-minus-mirror 0.1196 (sd 0.0106), z(published Dice) proper -1.42 mirror 11.12
+  Dice floor anchor 0.7955: TIE (exact, floor; equals the prefix value here: True)
+  Dice ceiling anchor 0.9142: PROPER (exact, ceiling; equals the prefix value here: True)
+  theory: parity rule 62/62, mirror twin unchanged 62/62, d2/scale build-independent 2/2
+## TEST:1:main: N_target 53742, N_ref 24826, truth_cells 2687 (first half [5374, 5375], second half [5374]), ref_cells ok True
+  exact protocol: 1 hit(s) from 1512 truth halves (2 ceiling matches), 3.0 s
+    {'target_draw': 'gen(seed=3, n=5374)', 'target_sorted': True, 'split': 'emulator', 'split_seed': 0, 'truth_first': True, 'floor': 'gen(seed=4, n=2483), sorted', 'metric_seed': 3}
+      floor: dice main 0.7824 mirror 0.7731 prefix 0.7824 (parities +1/+1)
+      ceiling: dice main 0.9161 mirror 0.7962 prefix 0.9161 (parities -1/-1)
+  d2_shape: floor published 0.05333 main 0.05333 prefix 0.05333 [exact hit]; ceiling published 0.0091 main 0.0091 prefix 0.0091 [exact hit]
+  occupancy_dice: floor published 0.7824 main 0.7824 prefix 0.7824 [exact hit]; ceiling published 0.9161 main 0.9161 prefix 0.9161 [exact hit]
+  scale_log_ratio: floor published -0.4286 main -0.4286 prefix -0.4286 [exact hit]; ceiling published 0.0051 main 0.0051 prefix 0.0051 [exact hit]
+  floor: proper-minus-mirror -0.01 (sd 0.0114), z(published Dice) proper 0.42 mirror -0.35
+  floor_whole_stage: proper-minus-mirror -0.0231 (sd 0.0055), z(published Dice) proper -0.5 mirror -3.04
+  ceiling: proper-minus-mirror 0.1196 (sd 0.0106), z(published Dice) proper -1.19 mirror 11.31
+  Dice floor anchor 0.7824: PROPER (exact, floor; equals the prefix value here: True)
+  Dice ceiling anchor 0.9161: PROPER (exact, ceiling; equals the prefix value here: True)
+  theory: parity rule 62/62, mirror twin unchanged 62/62, d2/scale build-independent 2/2
+## TEST:2:prefix: N_target 53742, N_ref 24826, truth_cells 2687 (first half [5374, 5375], second half [5374]), ref_cells ok True
+  exact protocol: 1 hit(s) from 1512 truth halves (2 ceiling matches), 3.7 s
+    {'target_draw': 'gen(seed=1, n=5374)', 'target_sorted': True, 'split': 'emulator', 'split_seed': 0, 'truth_first': True, 'floor': 'gen(seed=2, n=2483), sorted', 'metric_seed': 0}
+      floor: dice main 0.7755 mirror 0.7937 prefix 0.7755 (parities -1/-1)
+      ceiling: dice main 0.9327 mirror 0.8173 prefix 0.8173 (parities -1/+1)
+  d2_shape: floor published 0.05285 main 0.05285 prefix 0.05285 [exact hit]; ceiling published 0.00317 main 0.00317 prefix 0.00317 [exact hit]
+  occupancy_dice: floor published 0.7755 main 0.7755 prefix 0.7755 [exact hit]; ceiling published 0.8173 main 0.9327 prefix 0.8173 [exact hit]
+  scale_log_ratio: floor published -0.4329 main -0.4329 prefix -0.4329 [exact hit]; ceiling published 0.0021 main 0.0021 prefix 0.0021 [exact hit]
+  floor: proper-minus-mirror -0.01 (sd 0.0114), z(published Dice) proper -0.14 mirror -0.85
+  floor_whole_stage: proper-minus-mirror -0.0231 (sd 0.0055), z(published Dice) proper -1.28 mirror -3.8
+  ceiling: proper-minus-mirror 0.1196 (sd 0.0106), z(published Dice) proper -13.55 mirror 1.16
+  Dice floor anchor 0.7755: PROPER (exact, floor; equals the prefix value here: True)
+  Dice ceiling anchor 0.8173: MIRROR (exact, ceiling; equals the prefix value here: True)
+  theory: parity rule 62/62, mirror twin unchanged 62/62, d2/scale build-independent 2/2
+Dice anchors: 6; proper 4, mirror 1, tie 1, other 0
+Reading: at least one Dice anchor is a mirror-mode value, so the bake ran a pre-fix build.

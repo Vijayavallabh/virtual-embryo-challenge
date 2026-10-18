@@ -92,7 +92,9 @@ validation boards.
      board.
    - **Scorer build.** The live board behaves like the pre-fix veckit build: a mirror twin scores the same as the
      original, and Dice depends on a parity coin set by the SVD sign pattern (row order), worth up to ~3.5 heart-board
-     points at good shape quality. The emulator models both builds (`experiments/scorer_build/`). A "parity hedge"
+     points at good shape quality. The emulator models both builds (`experiments/scorer_build/`): `build="main"`
+     (the default) compares candidates on shape quality without the parity coin, and `build="prefix"` reproduces live
+     scores (calibration and the anchor check). A "parity hedge"
      across the two submissions would exploit this defect: per the user's decision (2026-10-19) we ask the organisers
      first and use it only if they say it is acceptable or confirm the build.
    - **Native coordinates.** xy are slide micrometres and the stored z step is most likely the section pitch; never
@@ -408,3 +410,10 @@ conventions for external embryos, and an addendum to the leak report.
   restricted to embryos 1-22 and 54-74. Emergent classes and their placement use the legal route until the organisers
   answer. Live scorer modelled as the pre-fix build; no parity hedge without the organisers' approval (user). Test-board
   anchors and the public board file are quarantined. History to be rewritten again (user).
+- 2026-10-19 (c): release-day scripts committed after screening and independent review: T3 decomposition with
+  pre-registered rules (lead's notes: the Mab21l2 factor source is transfer:mab21l2_all; R includes E8.5; if the
+  organisers bar the Gata4 files entirely, both submissions use the Mab21l2 factor and no Gata4 score chooses anything;
+  replicate independence checked first), T1 direction readout (design signed off: Feng E14.5 alone decides, matched
+  coverage, two-fold cross-fitting, cardiomyocyte sign agreement on the full target, no momentum+Feng option; guard
+  against non-default configs and label maps), and the scorer-build switch (emulator default `main`, `prefix` for live
+  reproduction). Feng 2022, JAX/Qiu 2024 and the vendored veckit 0.1.1 function registered in `EXTERNAL_DATA.md`.

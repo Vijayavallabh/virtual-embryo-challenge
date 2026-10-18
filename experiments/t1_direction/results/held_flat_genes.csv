@@ -1,0 +1,24 @@
+gene,reasons,median_delta_detection
+Abcb7,pool rule,-0.2522
+BC004004,pool rule,-0.4413
+Cwc22,strain (named); pool rule,-0.2801
+Ddx3y,Y-linked,0.1749
+Eif2s3y,Y-linked,0.1936
+Gm10260,pool rule,-0.2928
+Gm7324,pool rule,-0.2191
+Kdm5d,Y-linked,0.1319
+Lin28a,pool rule,-0.2688
+Rabgef1,pool rule,-0.1846
+Rbmy,Y-linked,0
+Sly,Y-linked,0
+Srsy,Y-linked,0
+Sry,Y-linked,0
+Ssty1,Y-linked,0
+Ssty2,Y-linked,0
+Tpm3-rs7,strain (named); pool rule,-0.574
+Tsix,sex-linked; pool rule,-0.2466
+Usp9y,Y-linked,-0
+Uty,Y-linked; pool rule,0.233
+Xist,sex-linked; pool rule,-0.3355
+Zfy1,Y-linked,0
+Zfy2,Y-linked,0

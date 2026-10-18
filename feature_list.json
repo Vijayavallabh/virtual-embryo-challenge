@@ -16,7 +16,7 @@
         "feat-001"
       ],
       "status": "in-progress",
-      "evidence": "Synthetic tests: floor scores exactly 50 on T1/T2/T3, better predictions > 75. Gate formula matches the one fitted to 608 live T2 rows (docs/research/metrics.md). Calibration on real data is feat-005."
+      "evidence": "Synthetic tests: floor scores exactly 50 on T1/T2/T3, better predictions > 75. Gate formula matches the one fitted to 608 live T2 rows (docs/research/metrics.md). Calibration on real data is feat-005. 2026-10-19: scorer-build switch (build='main' default; 'prefix' = veckit 0.1.1 canonicalisation, MIT, EXTERNAL_DATA X004); main reproduces the previous emulator exactly (21/21 cases, tests/test_scorer_build.py); experiments/scorer_build/anchor_check.py for release day."
     },
     {
       "id": "feat-003",
@@ -35,8 +35,8 @@
       "dependencies": [
         "feat-001"
       ],
-      "status": "not-started",
-      "evidence": ""
+      "status": "in-progress",
+      "evidence": "2026-10-19: intake tooling ready: vec.boards.update_boards strips non-validation anchors in memory (tests/test_boards.py); docs/P3_RUNBOOK.md gives the release-day order. Runs on 2026-10-20."
     },
     {
       "id": "feat-005",
@@ -56,18 +56,18 @@
       "dependencies": [
         "feat-003"
       ],
-      "status": "in-progress",
-      "evidence": "2026-10-18: vec.prep (load_stage, recover_counts, log1p_cp10k, add_lineage) + configs/lineage_map.yaml (every label in the 9 files mapped; placement checked against marker genes via scripts/label_markers.py). DGX check (scripts/check_prep.py): T1 counts recovered exactly (max residual < 6e-4, ~11K UMIs/cell); MERFISH counts layers reproduce X (max diff 1e-6). Remaining: classifier-based harmonisation across vocabularies (the Mab21l2 file uses different labels from WT E9.5)."
+      "status": "done",
+      "evidence": "2026-10-18: vec.prep (load_stage, recover_counts, log1p_cp10k, add_lineage) + configs/lineage_map.yaml (every label in the 9 files mapped; placement checked against marker genes via scripts/label_markers.py). DGX check (scripts/check_prep.py): T1 counts recovered exactly (max residual < 6e-4, ~11K UMIs/cell); MERFISH counts layers reproduce X (max diff 1e-6). Remaining: classifier-based harmonisation across vocabularies (the Mab21l2 file uses different labels from WT E9.5). 2026-10-19: vec.prep.load_stage(drop_duplicates=True) drops copied and interpolated records and never truncates counts; vec.spatial (snap_z, find_duplicate_records, qc_stage) and `vec data qc` (experiments/qc/REPORT.md); vec.harmonise label transfer with review (experiments/harmonise/REPORT.md); lineage map with merged level, KO overrides and a pre-registered rule for new labels. ./init.sh passes."
     },
     {
       "id": "feat-007",
       "name": "External data ingestion with window filters",
-      "description": "Committed download-and-filter code for Feng 2022 (E9.5, E14.5+ WT), Feulner 2026, JAX embryos 1-24 and 50-74, ENCODE heart bulk E14.5+, and the T2 embryo atlases outside (E7.25, E8.0); every source logged in EXTERNAL_DATA.md before use (assumption A9).",
+      "description": "Committed download-and-filter code for Feng 2022 (E9.5, E14.5+ WT), Feulner 2026, JAX embryos 1-22 and 54-74, ENCODE heart bulk E14.5+, and the T2 embryo atlases outside (E7.25, E8.0); every source logged in EXTERNAL_DATA.md before use (assumption A9).",
       "dependencies": [
         "feat-003"
       ],
-      "status": "not-started",
-      "evidence": ""
+      "status": "in-progress",
+      "evidence": "2026-10-19: experiments/external filters (Feng by per-cell stage, JAX by embryo ID; tests) and EXTERNAL_DATA X002/X003. Still to do before any submission uses Feng: commit a clean reduction from the raw GEO object (the legal subsets came from screened research code); confirm licences."
     },
     {
       "id": "feat-008",
@@ -109,19 +109,19 @@
         "feat-006",
         "feat-008"
       ],
-      "status": "not-started",
-      "evidence": ""
+      "status": "in-progress",
+      "evidence": "2026-10-19: heart and embryo size procedure pre-registered and committed before the release (171695a; experiments/coords/size_procedure.py, run_p3.sh with preflight; experiments/coords/REPORT.md with two independent reviews). Runs on the release stages on 2026-10-20."
     },
     {
       "id": "feat-012",
       "name": "T3: diagnostics, systematic transfer, composition",
-      "description": "Day-1 diagnostics and Gata4 oracle decomposition; N (Gata4 non-Mesp1 compartments and depth with real cells) and C (broad-phenotype second-heart-field/OFT/RV depletion) components; blind Gata4 proxy test for the sign (assumptions A10, A11).",
+      "description": "Day-1 diagnostics and the pre-registered decomposition of the Gata4 response (experiments/t3_decomp); F = per-gene factor from non-Mesp1 compartments (lead component), C = broad-phenotype composition on top at a Gata4-calibrated magnitude; both submissions differ in how F is sourced (assumptions A10, A11, A19).",
       "dependencies": [
         "feat-006",
         "feat-008"
       ],
-      "status": "not-started",
-      "evidence": ""
+      "status": "in-progress",
+      "evidence": "2026-10-19: experiments/t3_decomp (t3_decompose.py, rules.yaml with dated lead notes) screened, built and independently reviewed; Mab21l2 smoke test: factor 80.5 vs null 50.8, composition+factor 84.2, blind phenotype rules ~51. Runs on the Gata4 replicates on 2026-10-20."
     },
     {
       "id": "feat-013",
@@ -141,8 +141,8 @@
         "feat-007",
         "feat-009"
       ],
-      "status": "not-started",
-      "evidence": ""
+      "status": "in-progress",
+      "evidence": "2026-10-19: pre-registered T1 direction readout (experiments/t1_direction; Feng bracket vs cross-fitted momentum, thresholds in config.yaml) decides on 2026-10-20 whether M2 is built; composition plan in docs/PLAN.md 4.1 (scope first, CM share hedge)."
     },
     {
       "id": "feat-015",

@@ -1,0 +1,11 @@
+gap check 2026-10-18 22:53:27: E9.5.h5ad (53742 cells), 10 seeds
+half wc (2687 cells): proper 0.9276 mirror 0.8063 gap 0.1212 (sd 0.0116, range 0.1045 to 0.1384); prefix mirror mode 0.5; checks main=proper 10/10, prefix=rule 10/10, twin 10/10
+half 1185 (1185 cells): proper 0.8945 mirror 0.7942 gap 0.1003 (sd 0.0121, range 0.0825 to 0.1195); prefix mirror mode 0.6; checks main=proper 10/10, prefix=rule 10/10, twin 10/10
+half 2687 (2687 cells): proper 0.9264 mirror 0.8065 gap 0.12 (sd 0.0116, range 0.1075 to 0.1389); prefix mirror mode 0.7; checks main=proper 10/10, prefix=rule 10/10, twin 10/10
+half 5374 (5374 cells): proper 0.9432 mirror 0.8165 gap 0.1267 (sd 0.0111, range 0.1104 to 0.1448); prefix mirror mode 0.8; checks main=proper 10/10, prefix=rule 10/10, twin 10/10
+half 8393 (8393 cells): proper 0.9506 mirror 0.8197 gap 0.1309 (sd 0.0132, range 0.1055 to 0.1505); prefix mirror mode 0.8; checks main=proper 10/10, prefix=rule 10/10, twin 10/10
+half 13000 (13000 cells): proper 0.9612 mirror 0.8194 gap 0.1418 (sd 0.0092, range 0.1308 to 0.1578); prefix mirror mode 0.5; checks main=proper 10/10, prefix=rule 10/10, twin 10/10
+emulator seed 0: score main 99.896 prefix 96.23 (diff -3.667); Dice main 0.9393 prefix 0.8084 (proper 0.9393, mirror 0.8084, mode mirror, local parity -1); panel Dice matches build [True, True]; other metrics identical True
+emulator seed 1: score main 99.958 prefix 99.958 (diff 0.0); Dice main 0.9327 prefix 0.8173 (proper 0.9327, mirror 0.8173, mode mirror, local parity -1); panel Dice matches build [True, True]; other metrics identical True
+emulator seed 2: score main 99.977 prefix 96.631 (diff -3.346); Dice main 0.9249 prefix 0.8169 (proper 0.9249, mirror 0.8169, mode mirror, local parity -1); panel Dice matches build [True, True]; other metrics identical True
+80.7 s

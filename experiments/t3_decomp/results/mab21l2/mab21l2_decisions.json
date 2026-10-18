@@ -1,0 +1,274 @@
+{
+ "preset": "mab21l2",
+ "rules_sha256": "a1cf9692a9c201b88b5814d41c0abc109f8050a4133e94b582a64918ae09911d",
+ "script_sha256": "3e671c3bb5ff57bba5ceec80ea36fcc739b1f111399a1e2854400b5c9f5133d2",
+ "protocol_as_registered": true,
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "rules": {
+  "targets": [
+   "mab21l2"
+  ],
+  "D1": {
+   "variant": "blind:M1_stm_d50",
+   "per_target": {
+    "mab21l2": false
+   },
+   "outcome": false,
+   "D1b_all_blind_rules": {
+    "blind:M1_stm_d50": {
+     "mab21l2": false
+    },
+    "blind:M1_stm_d25": {
+     "mab21l2": false
+    },
+    "blind:M1_stm_d90": {
+     "mab21l2": false
+    },
+    "blind:M2_stm_liver_d50": {
+     "mab21l2": false
+    }
+   }
+  },
+  "D2": {
+   "outcome": null,
+   "note": "needs two replicates"
+  },
+  "D2u": {
+   "outcome": null,
+   "note": "needs two replicates"
+  },
+  "D3": {
+   "components": {
+    "cov": {
+     "per_target_estimator": {
+      "mab21l2|top": {
+       "shapley_de_direction": 0.0052559999999999985,
+       "shapley_t3": 0.23019900556750555,
+       "alone_t3": 1.207648656648071,
+       "last_t3": -0.30002078428419593,
+       "alone_sev_floor_frac": 0.7,
+       "full_set_sev_floor_frac": 0.0
+      },
+      "mab21l2|em": {
+       "shapley_de_direction": -0.0005049999999999996,
+       "shapley_t3": 0.1748237464517158,
+       "alone_t3": 0.4566039581015076,
+       "last_t3": -0.04907296242829488,
+       "alone_sev_floor_frac": 0.9,
+       "full_set_sev_floor_frac": 0.0
+      }
+     },
+     "carries": false
+    },
+    "mesp1": {
+     "per_target_estimator": {
+      "mab21l2|top": {
+       "shapley_de_direction": 0.09971516666666666,
+       "shapley_t3": 4.772498727703025,
+       "alone_t3": 9.73320371523567,
+       "last_t3": 2.5775138391386205,
+       "alone_sev_floor_frac": 0.0,
+       "full_set_sev_floor_frac": 0.0
+      },
+      "mab21l2|em": {
+       "shapley_de_direction": 0.10106250000000001,
+       "shapley_t3": 4.873833344753377,
+       "alone_t3": 9.242438519457675,
+       "last_t3": 2.979429755125456,
+       "alone_sev_floor_frac": 0.0,
+       "full_set_sev_floor_frac": 0.0
+      }
+     },
+     "carries": true
+    },
+    "stage": {
+     "per_target_estimator": {
+      "mab21l2|top": {
+       "shapley_de_direction": 0.08965433333333332,
+       "shapley_t3": 4.929681271555094,
+       "alone_t3": 11.47778282831248,
+       "last_t3": -0.6888206940635684,
+       "alone_sev_floor_frac": 0.0,
+       "full_set_sev_floor_frac": 0.0
+      },
+      "mab21l2|em": {
+       "shapley_de_direction": 0.09240000000000001,
+       "shapley_t3": 5.02024891783366,
+       "alone_t3": 11.47778282831248,
+       "last_t3": -0.2626836158818634,
+       "alone_sev_floor_frac": 0.0,
+       "full_set_sev_floor_frac": 0.0
+      }
+     },
+     "carries": true
+    },
+    "depth": {
+     "per_target_estimator": {
+      "mab21l2|top": {
+       "shapley_de_direction": 0.040391,
+       "shapley_t3": 1.6227999485467932,
+       "alone_t3": 2.0121582857522085,
+       "last_t3": 1.9227318145431966,
+       "alone_sev_floor_frac": 1.0,
+       "full_set_sev_floor_frac": 0.0
+      },
+      "mab21l2|em": {
+       "shapley_de_direction": 0.03914416666666666,
+       "shapley_t3": 1.719367986133431,
+       "alone_t3": 2.0121582857522085,
+       "last_t3": 1.8639868621033913,
+       "alone_sev_floor_frac": 1.0,
+       "full_set_sev_floor_frac": 0.0
+      }
+     },
+     "carries": false
+    },
+    "factor": {
+     "per_target_estimator": {
+      "mab21l2|top": {
+       "shapley_de_direction": 0.5004335,
+       "shapley_t3": 22.430990748104694,
+       "alone_t3": 29.644711841548038,
+       "last_t3": 15.854174581282223,
+       "alone_sev_floor_frac": 0.0,
+       "full_set_sev_floor_frac": 0.0
+      },
+      "mab21l2|em": {
+       "shapley_de_direction": 0.49709833333333336,
+       "shapley_t3": 22.325792813987167,
+       "alone_t3": 29.644711841548038,
+       "last_t3": 15.8105887449502,
+       "alone_sev_floor_frac": 0.0,
+       "full_set_sev_floor_frac": 0.0
+      }
+     },
+     "carries": true
+    }
+   },
+   "full_set_variant": "fac[top]:cov+mesp1+stage+depth+factor",
+   "outcome": {
+    "cov": false,
+    "mesp1": true,
+    "stage": true,
+    "depth": false,
+    "factor": true
+   }
+  },
+  "D4": {
+   "outcome": null,
+   "note": "needs two replicates"
+  },
+  "D5": {
+   "outcome": null,
+   "note": "needs two replicates"
+  },
+  "D6": {
+   "outcome": null,
+   "note": "needs two replicates"
+  },
+  "depth_floor_flags": [
+   "mab21l2:fac[em]:cov+mesp1+depth",
+   "mab21l2:fac[em]:mesp1+depth",
+   "mab21l2:fac[top]:cov+mesp1+depth",
+   "mab21l2:fac[top]:mesp1+depth"
+  ],
+  "D7": {
+   "outcome": null,
+   "note": "needs two replicates"
+  },
+  "D7m": {
+   "m": 0.717813870986706,
+   "m_lo": 0.39264495650481335,
+   "m_hi": 0.803837845067939,
+   "m_raw": 0.717813870986706,
+   "n_states": 13,
+   "n_counted": 9,
+   "n_sign_consistent": 9,
+   "counted_states": [
+    "A-CM",
+    "Cush-EndoMT-Endo",
+    "DMP",
+    "Lateral-PAM",
+    "OFT-CM",
+    "Peri",
+    "Proepi",
+    "SV-CM",
+    "V-CM"
+   ],
+   "directions": {
+    "A-CM": "down",
+    "Cush-EndoMT-Endo": "down",
+    "DMP": "down",
+    "Lateral-PAM": "up",
+    "OFT-CM": "down",
+    "Peri": "up",
+    "Proepi": "down",
+    "SV-CM": "down",
+    "V-CM": "up"
+   },
+   "n_trims": 8,
+   "skipped_trims": [],
+   "replicates": [
+    "mab21l2"
+   ],
+   "outcome": true
+  },
+  "m_raw_positive": {
+   "outcome": false
+  },
+  "D8": {
+   "outcome": null,
+   "note": "needs two replicates"
+  },
+  "D9": {
+   "residual_share": {
+    "mab21l2": 0.09797698657369351
+   },
+   "replicate_residual_spearman": null,
+   "outcome": false
+  },
+  "D10": {
+   "per_target": {
+    "mab21l2": {
+     "t3": 46.68149740350815,
+     "sev_floor_frac": 1.0
+    }
+   },
+   "series": {
+    "series": {
+     "E8.25_late": 8.25,
+     "E8.75": 8.75
+    },
+    "labels_used": 12,
+    "sd_log_phi": 0.9473281002917708
+   },
+   "outcome": false
+  },
+  "D11a": {
+   "replicate_log_factor_spearman": null,
+   "outcome": null
+  },
+  "D11b": {
+   "outcome": null
+  },
+  "W1": {
+   "grid": [],
+   "chosen": null,
+   "runner_up": null,
+   "applicable": false,
+   "variant_template": "xrep:F@w={w}"
+  }
+ },
+ "submissions": "not applicable (smoke test on the training knockout; the gata4 run decides)"
+}

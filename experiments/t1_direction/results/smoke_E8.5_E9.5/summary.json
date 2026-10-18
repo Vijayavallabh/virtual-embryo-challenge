@@ -1,0 +1,143 @@
+{
+ "mode": "smoke",
+ "stages": {
+  "start": "E8.5",
+  "target": "E9.5"
+ },
+ "rule": {
+  "primary_predictor": "feng_E14.5",
+  "baseline": "mom_xfit",
+  "population_design": "matched_coverage",
+  "min_delta_de_score": 0.05,
+  "min_delta_de_direction": 0.05,
+  "cm_group": "CM",
+  "cm_target": "full",
+  "min_cm_sign_agreement": 0.7,
+  "pass_verdict": "build",
+  "fail_verdict": "do not build"
+ },
+ "config_version": 1,
+ "inputs": {
+  "E8.5": {
+   "path": "data/raw/T1/E8.5_RNA.h5ad",
+   "sha256": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+   "stats": "cache"
+  },
+  "E9.5": {
+   "path": "data/raw/T1/E9.5_RNA.h5ad",
+   "sha256": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+   "stats": "cache"
+  }
+ },
+ "external": {
+  "feng": {
+   "path": "data/external/feng2022_gse193346/cd1_stats.npz",
+   "sha256": "98c05be1df8a45a5b93e84084a3844ba4ea98f9552527b9528900ed3b8571228",
+   "mapped_t1_genes": 29715
+  },
+  "jax": {
+   "embryos": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    18,
+    19,
+    20,
+    21,
+    22,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74
+   ],
+   "mapped_t1_genes": 22638
+  },
+  "registered_in_EXTERNAL_DATA": {
+   "feng": false,
+   "jax": false
+  }
+ },
+ "held_flat": {
+  "n": 23,
+  "genes": [
+   "Abcb7",
+   "BC004004",
+   "Cwc22",
+   "Ddx3y",
+   "Eif2s3y",
+   "Gm10260",
+   "Gm7324",
+   "Kdm5d",
+   "Lin28a",
+   "Rabgef1",
+   "Rbmy",
+   "Sly",
+   "Srsy",
+   "Sry",
+   "Ssty1",
+   "Ssty2",
+   "Tpm3-rs7",
+   "Tsix",
+   "Usp9y",
+   "Uty",
+   "Xist",
+   "Zfy1",
+   "Zfy2"
+  ],
+  "note": "computed; written to experiments/t1_direction/results/held_flat_genes.csv"
+ },
+ "provenance": {
+  "git_commit": "c511e4cb7d8ef3acc5e82ef52bc9eefa67afe98c",
+  "git_uncommitted": [
+   "?? experiments/external/feng2022.py",
+   "?? experiments/external/filterio.py",
+   "?? experiments/external/jax_qiu2024.py",
+   "?? experiments/external/sources.yaml",
+   "?? experiments/external/windows.py",
+   "?? experiments/t1_direction/config.yaml",
+   "?? experiments/t1_direction/dirlib.py",
+   "?? experiments/t1_direction/readout.py",
+   "?? experiments/t1_direction/t1_stats.py"
+  ],
+  "code_sha256": {
+   "experiments/t1_direction/config.yaml": "bae9b7aa747b17658aa25b4c1984bc3f7a3dbaca9a0970f7b60aa8e9b504c69f",
+   "experiments/t1_direction/dirlib.py": "06a4c931274e4f0422d9d3f47bd6c26da36340ad0e7c41ee702f4042c9a2adab",
+   "experiments/t1_direction/readout.py": "b1182a9538fef03f83df639eb40743eee56a57615cbe76d3de21e8528761c0cc",
+   "experiments/t1_direction/t1_stats.py": "e9a1b25475914d517d194be958183e6d3883be30bed5152d374e967445d6f948",
+   "experiments/external/windows.py": "ee5b94a0e2147e96216135f9426ec54ee0d8a1cb202bed72f9dadc6cd3fe35f1",
+   "experiments/external/filterio.py": "926a544e180db440e913d4b6ae001956793f79fede398becfde4b1392d7f51b9",
+   "experiments/external/feng2022.py": "6e176f66c3ce963e7e1ce44dece03d14aacd386a2f80b77b020ceb6117d30aca",
+   "experiments/external/jax_qiu2024.py": "bab6187b32cb54f26ef237784d748c8898cd36a522896327d7f058e2122a2784",
+   "experiments/external/sources.yaml": "fdad693e7366f19a4cbf111c377d8be88d94942c96bf30382d1874188e5a0abc"
+  },
+  "run_utc": "2026-10-18T20:55:32Z"
+ },
+ "allow_uncommitted": false,
+ "verdict": "not evaluable: smoke geometry (no T1 stage before E8.5, so no momentum baseline)"
+}
