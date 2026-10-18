@@ -56,8 +56,8 @@
       "dependencies": [
         "feat-003"
       ],
-      "status": "not-started",
-      "evidence": ""
+      "status": "in-progress",
+      "evidence": "2026-10-18: vec.prep (load_stage, recover_counts, log1p_cp10k, add_lineage) + configs/lineage_map.yaml (every label in the 9 files mapped; placement checked against marker genes via scripts/label_markers.py). DGX check (scripts/check_prep.py): T1 counts recovered exactly (max residual < 6e-4, ~11K UMIs/cell); MERFISH counts layers reproduce X (max diff 1e-6). Remaining: classifier-based harmonisation across vocabularies (the Mab21l2 file uses different labels from WT E9.5)."
     },
     {
       "id": "feat-007",

@@ -33,3 +33,16 @@ in `boards/index.json` (rounded), which confirms the server's 10% working copies
   `cm_celltype` exists only in E8.0, E8.25_late, E8.75 and E9.5, where "Unknown" means "no subtype given").
 - All MERFISH files carry an integer `counts` layer; T1 counts must be recovered from `.X`.
 - A layer stored under the literal key `None` appears in every file (an artefact; ignore it).
+
+## Loader checks (2026-10-18, `scripts/check_prep.py`)
+
+- T1 counts recover exactly from `.X` (max distance from an integer < 6e-4); median library about 10.9K (E8.5) and
+  11.1K (E9.5) UMIs per cell, p10-p90 about 6.2K-21K. T1 looks like whole-cell 10x data, not nuclei.
+- MERFISH `counts` layers reproduce `.X` exactly (max difference 1e-6). Median counts per cell: E6.75 30, E7.25 35,
+  E8.0 212, E8.25_late 231, E8.75 130, E9.5 75, Mab21l2 KO 95.
+- The Mab21l2 KO is about 27% deeper per cell than its matched WT E9.5 (95 vs 75): a systematic, non-genotype shift
+  that the T3 "systematic component" must carry.
+- Coarse composition (lineage map): the heart-setting files differ a lot in scope (E8.25_late is 4% core cardiac, E8.75
+  17.5%, E9.5 37%); E8.25_late and E8.75 are dominated by non-cardiac tissue.
+- The KO and WT vocabularies do not line up even at the coarse level (pharyngeal mesoderm exists only under WT names),
+  so KO-vs-WT composition needs classifier-based relabelling on the shared panel, not label matching.

@@ -1,0 +1,127 @@
+# Coarse lineage groups for every stage-specific cell-type label in the released files.
+#
+# Built 2026-10-18 from label names checked against marker-gene expression per label (scripts/label_markers.py,
+# runs/label_markers.tsv on the DGX). The organisers' cross-stage label table is not published yet; replace or
+# refine this when it is. Flags:
+#   core:  counts toward the "core cardiac" cloud used for heart size (cardiomyocytes, endocardium, epicardium,
+#          cushion); everything else is "shell" (T2 heart scope modelling).
+#   mesp1: whether the group is (mostly) Mesp1-derived, i.e. cell-autonomously affected by Mesp1-Cre knockouts in T3:
+#          yes / partial / no. Mesp1 marks early cardiac and cranial mesoderm, extra-embryonic mesoderm and their
+#          derivatives; endoderm, ectoderm, neural tube and neural crest are not Mesp1-derived.
+
+groups:
+  CM:                 {core: true,  mesp1: "yes"}
+  CardiacProgenitor:  {core: false, mesp1: "yes"}      # FHF/SHF/JCF progenitors, DMP/DPM
+  Endocardium:        {core: true,  mesp1: "yes"}
+  Endothelium:        {core: false, mesp1: "partial"}  # vascular and haemato-endothelial
+  EpicardiumST:       {core: false, mesp1: "yes"}      # proepicardium and septum transversum
+  Pericardium:        {core: false, mesp1: "yes"}
+  PharyngealMesoderm: {core: false, mesp1: "yes"}
+  ParaxialMesoderm:   {core: false, mesp1: "partial"}  # cranial paraxial mesoderm is partly Mesp1-derived
+  LPM:                {core: false, mesp1: "partial"}
+  ExtraEmbryonicMeso: {core: false, mesp1: "partial"}  # ExEM, allantois
+  NCC:                {core: false, mesp1: "no"}
+  Endoderm:           {core: false, mesp1: "no"}       # foregut, gut, visceral/extra-embryonic endoderm
+  Hepatocyte:         {core: false, mesp1: "no"}
+  Ectoderm:           {core: false, mesp1: "no"}       # surface and cranial surface ectoderm
+  Neural:             {core: false, mesp1: "no"}
+  Blood:              {core: false, mesp1: "partial"}
+  EpiblastStreak:     {core: false, mesp1: "no"}       # epiblast, primitive streak (pre-specification)
+  Unknown:            {core: false, mesp1: "partial"}
+
+labels:
+  # cardiomyocytes
+  OFT/RV-CM: CM
+  IFT-CM: CM
+  AVC-CM: CM
+  RV-CM: CM
+  LV-CM: CM
+  SV-CM: CM
+  V-CM: CM
+  A-CM: CM
+  OFT-CM: CM
+  vCM: CM
+  FHF: CM                      # E8.0: CM markers dominate (Myl7, Myh7)
+  # progenitors
+  pSHF: CardiacProgenitor
+  aSHF: CardiacProgenitor
+  SHF: CardiacProgenitor
+  JCF: CardiacProgenitor
+  CP: CardiacProgenitor        # E6.75/E7.25 cardiac progenitors
+  DMP: CardiacProgenitor       # dorsal mesenchymal protrusion (SHF-derived)
+  DPM: CardiacProgenitor       # dorsal pericardial mesoderm (Mab21l2 file vocabulary)
+  # endocardium / endothelium
+  Endocardium: Endocardium
+  Endo: Endocardium
+  Chamber-Endo: Endocardium
+  Cush-EndoMT-Endo: Endocardium
+  Endothelium: Endothelium
+  BEC: Endothelium
+  early-VEC: Endothelium
+  Great Artery Endoth: Endothelium
+  Intra-Endoth: Endothelium
+  Intra-Endoth-1: Endothelium
+  Intra-Endoth-2: Endothelium
+  HEM-Endoth: Endothelium
+  EXE-Endothlium: Endothelium
+  Allantois Endothelium: Endothelium
+  # epicardium lineage, pericardium
+  Proepicardium: EpicardiumST
+  Proepi: EpicardiumST
+  ST: EpicardiumST
+  Pericardium: Pericardium
+  Peri: Pericardium
+  # mesoderm
+  aPHM: PharyngealMesoderm
+  pPHM: PharyngealMesoderm
+  Lateral-PAM: PharyngealMesoderm   # SHF markers present alongside paraxial ones
+  PHM/PAM: ParaxialMesoderm         # E6.75/E7.25 early cranial mesoderm
+  PAM-1: ParaxialMesoderm
+  PAM-2: ParaxialMesoderm
+  PAM-3: ParaxialMesoderm
+  PAM-4: ParaxialMesoderm
+  Dorsal-PAM: ParaxialMesoderm
+  Paraxial Mesoderm: ParaxialMesoderm
+  SOM: ParaxialMesoderm
+  LPM: LPM
+  EXEM: ExtraEmbryonicMeso
+  ExEM-1: ExtraEmbryonicMeso
+  ExEM-2: ExtraEmbryonicMeso
+  p-EXEM: ExtraEmbryonicMeso
+  Allantois: ExtraEmbryonicMeso
+  # neural crest
+  NCC: NCC
+  NCC-derived: NCC
+  Branchial Arch: NCC
+  Branch Arch: NCC
+  # endoderm
+  Foregut: Endoderm
+  D-FG: Endoderm
+  V-FG: Endoderm
+  a-FG: Endoderm
+  Lateral FG: Endoderm
+  Gut Endoderm: Endoderm
+  Hindgut: Endoderm
+  Epithelium: Endoderm
+  EXE-Endoderm: Endoderm
+  Hepatocyte: Hepatocyte
+  Hepatocytes: Hepatocyte
+  # ectoderm, neural
+  Surface Ectoderm: Ectoderm
+  SE: Ectoderm
+  aSE: Ectoderm
+  pSE: Ectoderm
+  V-SE: Ectoderm
+  d-CSE: Ectoderm
+  V-CSE: Ectoderm
+  EXE-Ectoderm: Ectoderm
+  Neural Tube: Neural
+  Forebrain: Neural
+  Hindbrain: Neural
+  # blood, early embryo, unknown
+  Blood: Blood
+  Blood Progenitor: Blood
+  Anterior Epiblast: EpiblastStreak
+  Caudal Epiblast: EpiblastStreak
+  Primitive Streak: EpiblastStreak
+  Unknown: Unknown
