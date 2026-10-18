@@ -59,6 +59,7 @@ def evaluate(
     seeds: str = typer.Option("0,1,2", help="comma-separated subsampling seeds"),
     anchors: str = typer.Option("computed", help="computed | published"),
     gate: str = typer.Option("floor_normalised", help="T2 shape gate: none | multiplicative | floor_normalised"),
+    frac: float = typer.Option(0.1, help="working-copy fraction (0.1 = server; 1.0 for small files)"),
     method: str = typer.Option("", help="method name for the registry"),
     out: Path = typer.Option(None, help="write full JSON scores here"),
     register: bool = typer.Option(False, help="append a row to results/registry.csv"),
@@ -67,10 +68,15 @@ def evaluate(
     b = get_board(board)
     stages = [Stage.from_anndata(read_stage(p, b.genes), b.genes, need_coords=b.needs_coords)
               for p in (pred, target, ref)]
-    res = score_board_seeds(b, *stages, seeds=tuple(int(s) for s in seeds.split(",")), anchors=anchors, gate=gate)
+    res = score_board_seeds(b, *stages, seeds=tuple(int(s) for s in seeds.split(",")), anchors=anchors, gate=gate,
+                             frac=frac)
     console.print(f"{board}: score {res['score_mean']:.2f} +/- {res['score_sd']:.2f} over seeds {seeds}")
-    for name, s in res["per_seed"][0]["group_skill"].items():
-        console.print(f"  {name}: {s:.3f} (seed {res['per_seed'][0]['seed']})")
+    first = res["per_seed"][0]
+    for name, s in first["group_skill"].items():
+        console.print(f"  {name}: {s:.3f} (seed {first['seed']})")
+    if first["extras"].get("inverted_anchors"):
+        console.print(f"[yellow]warning[/] ceiling no better than floor for {first['extras']['inverted_anchors']}: "
+                      "scores on this board are not meaningful")
     if out:
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps(res, indent=2, default=float))
@@ -81,10 +87,10 @@ def evaluate(
             w = csv.writer(f)
             if new:
                 w.writerow(["utc_time", "commit", "board", "method", "pred", "score_mean", "score_sd", "seeds",
-                            "anchors", "gate", "scores_json"])
+                            "anchors", "gate", "frac", "scores_json"])
             w.writerow([datetime.now(UTC).isoformat(timespec="seconds"), _git_commit(), board,
                         method or pred.stem, str(pred), f"{res['score_mean']:.3f}", f"{res['score_sd']:.3f}",
-                        seeds, anchors, gate, str(out) if out else ""])
+                        seeds, anchors, gate, frac, str(out) if out else ""])
 
 
 @app.command()

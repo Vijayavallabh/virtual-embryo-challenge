@@ -132,6 +132,17 @@ def skills_from_anchors(task: str, values: dict, anchors: dict) -> dict:
     return out
 
 
+def inverted_anchors(anchors: dict) -> list[str]:
+    """Metrics whose ceiling is no better than their floor. The skill map then gives the floor 1.0, so scores on
+    such a board are not meaningful (it happens on tiny samples; the published boards have none)."""
+    bad = []
+    for m, a in anchors.items():
+        f, c = (abs(a["floor"]), abs(a["ceiling"])) if m in ABS_METRICS else (a["floor"], a["ceiling"])
+        if (m in LOWER_IS_BETTER and c >= f) or (m not in LOWER_IS_BETTER and c <= f):
+            bad.append(m)
+    return bad
+
+
 def aggregate(task: str, skills: dict, gate: str = "floor_normalised") -> tuple[float, dict]:
     """Task score on the 0-100 board scale and per-group skills. NaN skills count as 0, as on the server.
 
@@ -164,23 +175,24 @@ class BoardScore:
 
 def score_board(board: Board, pred: Stage, target: Stage, ref: Stage, floor_pred: Stage | None = None,
                 seed: int = 0, anchors: str = "computed", gate: str = "floor_normalised",
-                probe="skip") -> BoardScore:
+                probe="skip", frac: float = SUBSAMPLE_FRAC) -> BoardScore:
     """Score `pred` on a board, emulating the server's 10% working copies and half-split truth.
 
     target: the full held-out stage (e.g. released validation answers). ref: the full DE reference stage (preceding
     stage for T1/T2, matched wild type for T3). floor_pred: the full floor prediction; defaults to `ref`, which is
     what copy_last and wt_identity return. anchors: "computed" measures floor and ceiling on these working copies;
-    "published" uses the board's anchors from index.json (validation boards only).
+    "published" uses the board's anchors from index.json (validation boards only). frac: working-copy fraction;
+    0.1 is what the server does, 1.0 is useful for small files and low-noise diagnostics.
     """
     task = board.task
-    target_w = subsample(target, SUBSAMPLE_FRAC, seed)
-    ref_w = subsample(ref, SUBSAMPLE_FRAC, seed + 1)
+    target_w = subsample(target, frac, seed)
+    ref_w = subsample(ref, frac, seed + 1)
     truth, other_half = split_half(target_w, seed=0)
     values = panel_metrics(task, pred, truth, ref_w, seed=seed, probe=probe)
 
     extras = {}
     if anchors == "computed":
-        floor_w = ref_w if floor_pred is None else subsample(floor_pred, SUBSAMPLE_FRAC, seed + 1)
+        floor_w = ref_w if floor_pred is None else subsample(floor_pred, frac, seed + 1)
         floor_vals = panel_metrics(task, floor_w, truth, ref_w, seed=seed)
         ceil_vals = panel_metrics(task, other_half, truth, ref_w, seed=seed)
         anchor_map = {m: {"floor": floor_vals.get(m), "ceiling": ceil_vals.get(m)} for m in RANKED_METRICS[task]}
@@ -194,7 +206,8 @@ def score_board(board: Board, pred: Stage, target: Stage, ref: Stage, floor_pred
 
     skills = skills_from_anchors(task, values, anchor_map)
     score, group_skill = aggregate(task, skills, gate=gate)
-    extras.update(truth_cells=truth.n, ref_cells=ref_w.n, pred_cells=pred.n)
+    extras.update(truth_cells=truth.n, ref_cells=ref_w.n, pred_cells=pred.n,
+                  inverted_anchors=inverted_anchors(anchor_map))
     return BoardScore(score=score, group_skill=group_skill, skills=skills, metrics=values,
                       anchors=anchor_map, seed=seed, extras=extras)
 
