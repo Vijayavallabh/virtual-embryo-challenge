@@ -62,6 +62,12 @@ organisers approve in writing.
   of a test target. Use veckit from git `main` (pinned in `pyproject.toml`) and never copy numbers from 0.1.2 docs.
 - **Target sizes or other properties recovered from scores** (inverting the skill map with published anchors, differencing
   submissions). At least one public community repo did this; it is prohibited by s.10.
+- **Test-board anchors in the final-phase index.json** (floor and ceiling metric values). A floor value is the distance
+  between the reference stage and the hidden truth, so it encodes the hidden target (for scale_log_ratio, its size; for
+  mmd_u on T3, how far the knockout is from wild type). The intake strips them before anyone looks; they are never read,
+  printed, committed or passed to the emulator. Validation-board anchors may be used to calibrate the emulator.
+- **Our own size forecasts from incomplete stage sets** (dry runs of the size procedure before the release) are code
+  checks, not predictions, and stay out of the docs.
 - **The organisers' Virtual Embryo atlas** (virtualembryo.ai, its predictor and API) lists stages inside protected
   windows (e.g. E7.5 and E11.5 spatial data). The rules name it explicitly: no held-out-stage data from it.
 - **Public atlases spanning a window** (MOCA E9.5-E13.5, MOSTA E10.5-E13.5, the JAX time-lapse between E9.5 and E13.5)
@@ -83,11 +89,35 @@ organisers approve in writing.
 - Mitigation: T3 gene directions come only from the pre-registered provenance rule in `docs/PLAN.md` section 4.4
   (released data and committed code; scenarios in `configs/t3_scenarios.yaml` name cell states, never genes).
 
+### Redaction record (held-out sizes, 2026-10-19)
+
+- A second redaction pass, by an agent that reported locations but not values, removed 132 spans from
+  `docs/research/t2_spatial.md`, `community_digest.md`, `metrics.md`, `docs/CHALLENGE.md` and the size-procedure dry-run
+  outputs in `experiments/coords/results/`. Each span is now `[redacted 2026-10-19: A]`. Removed: sizes and growth rates
+  of the validation stages (E8.5, E10.5, E7.5) back-calculated from published anchors and community score inversions;
+  veckit PR #6 radii for released stages; two figures derived from the veckit 0.1.2 docstring table, which includes
+  the E12.5 test stage (see the correction in the leak record below); an in-window literature measurement (heart wall
+  thickness at a Theiler stage inside the excluded window); an organiser-site volume factor for interpolation targets
+  (removed for caution); and our own dry-run forecasts for E12.5 and E7.75.
+- A separate screening agent reads the research workflow's raw results and hands the lead only a cleaned digest
+  (`docs/research/` integration uses that digest).
+- Exposure: the research agents, the coords experiment agent and its reviewer read `t2_spatial.md`. The lead saw a few
+  validation-stage values (E10.5, E7.5) in the reviewer's redaction list. Nobody building the size procedure saw a
+  measured or leaked E12.5 or E7.75 value.
+- Mitigation: the heart and embryo size procedures contain no size numbers and choose their rules with a rate-free
+  argument fixed before the release (`docs/PLAN.md` section 4.3). The measured validation stages released on
+  2026-10-20 supersede anything anchor-derived. Test-board anchors are stripped at intake (do-not-use list).
+- Git history: the removed values remain in commits since 2026-10-18 (research notes and `CHALLENGE.md`) and on
+  GitHub until the history is rewritten again; the user decides.
+
 ### Leak handling record (veckit 0.1.2 held-out radii)
 
 - 2026-10-18: research agents reading the scorer's PyPI release saw the E12.5 heart radius in
   `common/shape_metrics.py` (line ~245 of the 0.1.2 wheel; also in open veckit PR #6). The numbers were redacted
   from every research note before anything entered this repo (`git grep` for them is clean).
+- Correction, 2026-10-19: that check covered the radius values only. Two figures derived from the same docstring table
+  (a nearest-neighbour spread and a radius swing factor across its stages, which include E12.5) were still in
+  `docs/research/community_digest.md`, committed on 2026-10-18. They were redacted on 2026-10-19 (record above).
 - Mitigation: the E12.5 heart size comes only from the pre-registered procedure in `docs/PLAN.md` (T2 heart), fitted on
   released training stages by committed code, with its output recorded in git before any test submission. Nobody
   building the size model opens veckit 0.1.2 or PR #6.

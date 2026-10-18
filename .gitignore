@@ -26,3 +26,7 @@ wandb/
 .vscode/
 .idea/
 .DS_Store
+
+# Size-procedure dry runs on incomplete stage sets are code checks, not predictions (docs/DATA_POLICY.md)
+experiments/coords/results/size_dryrun_*.json
+experiments/coords/results/size_cli_check_*.json

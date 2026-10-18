@@ -1,0 +1,26 @@
+===== E9.5: 53742 cells; obs columns ['celltype', 'cm_celltype', 'group', 'core', 'mesp1']
+raw z levels 98; rounded levels 40; section_ids 40
+rounded-level steps: {np.float64(15.0): np.int64(39)}
+raw levels within 0.1 of an x.5 boundary: 0
+per rounded level: raw-z span max 0.0 ; levels with >1 raw value: 35
+cells per section: min 722 median 1370 max 1936
+raw z values (value:count), first 98:
+-280.257:1751, -265.257:1303, -250.257:1725, -235.257:1495, -220.257:933, -205.257:401, -205.257:1010, -190.257:468, -190.257:756, -175.257:377, -175.257:1031, -160.257:580, -160.257:1356, -145.257:293, -145.257:429, -130.257:428, -130.257:752, -115.257:584, -115.257:1195, -100.257:642, -100.257:1285, -85.257:559, -85.257:1351, -70.257:492, -70.257:1220, -55.257:258, -55.257:689, -40.257:323, -40.257:715, -25.257:624, -25.257:881, -10.257:615, -10.257:1051, 4.743:547, 4.743:670, 19.743:683, 19.743:1185, 34.743:462, 34.743:902, 49.743:4, 49.743:82, 49.743:453, 49.743:370, 64.743:6, 64.743:246, 64.743:439, 64.743:442, 79.743:7, 79.743:283, 79.743:541, 79.743:533, 79.743:12, 94.743:5, 94.743:301, 94.743:539, 94.743:566, 109.743:1, 109.743:154, 109.743:510, 109.743:422, 124.743:113, 124.743:493, 124.743:674, 139.743:265, 139.743:553, 139.743:705, 139.743:5, 154.743:11, 154.743:360, 154.743:302, 154.743:738, 154.743:17, 169.743:168, 169.743:362, 169.743:298, 184.743:306, 184.743:161, 184.743:326, 199.743:352, 199.743:161, 199.743:502, 214.743:288, 214.743:217, 214.743:440, 229.743:424, 229.743:205, 229.743:603, 244.743:384, 244.743:363, 244.743:518, 259.743:773, 259.743:642, 274.743:725, 274.743:711, 289.743:808, 289.743:761, 304.743:371, 304.743:700
+xy: overall sd [156.3 240.5] ; per-section sd median [152.  237.4] ; centroid sd across sections [36.9 65.3]
+===== E8.75: 24826 cells; obs columns ['celltype', 'cm_celltype', 'group', 'core', 'mesp1']
+raw z levels 35; rounded levels 35; section_ids 35
+rounded-level steps: {np.float64(14.0): np.int64(34)}
+raw levels within 0.1 of an x.5 boundary: 35
+per rounded level: raw-z span max 0.0 ; levels with >1 raw value: 0
+cells per section: min 300 median 746 max 888
+xy: overall sd [109.  129.8] ; per-section sd median [107. 125.] ; centroid sd across sections [11.1 24.8]
+===== KO: 50294 cells; obs columns ['celltype', 'sample_id', 'genotype', 'group', 'core', 'mesp1']
+raw z levels 36; rounded levels 36; section_ids 36
+rounded-level steps: {np.float64(10.0): np.int64(34), np.float64(30.0): np.int64(1)}
+raw levels within 0.1 of an x.5 boundary: 0
+per rounded level: raw-z span max 0.0 ; levels with >1 raw value: 0
+cells per section: min 609 median 1363 max 4170
+sample_id: 37 ids; sections per sample_id: {np.int64(1): np.int64(37)}; sample_ids per section: {np.int64(1): np.int64(35), np.int64(2): np.int64(1)}
+example sample_id values: ['0', '1', '10', '11', '12']
+genotype {'mab21l2': 50294}
+xy: overall sd [164.7 222.4] ; per-section sd median [159.1 220.2] ; centroid sd across sections [33.  43.9]

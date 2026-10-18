@@ -1,0 +1,290 @@
+[    0.0s] ===== part A
+[    1.9s] A E9.5 seed 0: accuracy 0.8361, macro_f1 0.8104, group_accuracy 0.8876, group_macro_f1 0.8618, coverage_0p5 0.9250
+[    3.3s] A E9.5 seed 1: accuracy 0.8364, macro_f1 0.8088, group_accuracy 0.8854, group_macro_f1 0.8596, coverage_0p5 0.9151
+[    4.8s] A E9.5 seed 2: accuracy 0.8370, macro_f1 0.8068, group_accuracy 0.8845, group_macro_f1 0.8567, coverage_0p5 0.9180
+[    5.7s] A E8.75 seed 0: accuracy 0.8493, macro_f1 0.6348, group_accuracy 0.9078, group_macro_f1 0.7759, coverage_0p5 0.9456
+[    6.5s] A E8.75 seed 1: accuracy 0.8528, macro_f1 0.6259, group_accuracy 0.9076, group_macro_f1 0.7502, coverage_0p5 0.9420
+[    7.2s] A E8.75 seed 2: accuracy 0.8523, macro_f1 0.6415, group_accuracy 0.9097, group_macro_f1 0.7848, coverage_0p5 0.9439
+   stage  split_seed  n_train  n_test  accuracy  macro_f1  group_accuracy  group_macro_f1  coverage_0p5
+0   E9.5           0    42993   10749    0.8361    0.8104          0.8876          0.8618        0.9250
+1   E9.5           1    42993   10749    0.8364    0.8088          0.8854          0.8596        0.9151
+2   E9.5           2    42993   10749    0.8370    0.8068          0.8845          0.8567        0.9180
+3  E8.75           0    18744    4686    0.8493    0.6348          0.9078          0.7759        0.9456
+4  E8.75           1    18744    4686    0.8528    0.6259          0.9076          0.7502        0.9420
+5  E8.75           2    18744    4686    0.8523    0.6415          0.9097          0.7848        0.9439
+[    7.2s] ===== part B
+[    9.4s] B: WT depth 75.0, KO depth 95.0, frac 0.7895; max |lognorm(KO counts) - KO.X| = 9.54e-07
+[   18.1s] B logreg done
+[   28.4s] B knn done
+                          variant       a       b    diff      lo      hi  excl0
+CM                  logreg/match5  0.3036  0.3349  0.0313 -0.0276  0.0899  False
+CardiacProgenitor   logreg/match5  0.0156  0.0051 -0.0105 -0.0162 -0.0052   True
+Endocardium         logreg/match5  0.0670  0.0762  0.0092 -0.0076  0.0257  False
+Endothelium         logreg/match5  0.0850  0.0725 -0.0125 -0.0201 -0.0046   True
+EpicardiumST        logreg/match5  0.0547  0.0559  0.0012 -0.0362  0.0377  False
+Pericardium         logreg/match5  0.0886  0.1243  0.0356  0.0094  0.0610   True
+PharyngealMesoderm  logreg/match5  0.1280  0.1426  0.0146 -0.0048  0.0351  False
+ParaxialMesoderm    logreg/match5  0.0693  0.0760  0.0068 -0.0163  0.0313  False
+NCC                 logreg/match5  0.0769  0.0339 -0.0430 -0.0707 -0.0205   True
+Endoderm            logreg/match5  0.0485  0.0224 -0.0261 -0.0376 -0.0146   True
+Hepatocyte          logreg/match5  0.0084  0.0191  0.0106 -0.0033  0.0245  False
+Ectoderm            logreg/match5  0.0544  0.0371 -0.0172 -0.0330 -0.0026   True
+CM                    logreg/none  0.3036  0.3351  0.0315 -0.0274  0.0900  False
+CardiacProgenitor     logreg/none  0.0156  0.0051 -0.0105 -0.0163 -0.0051   True
+Endocardium           logreg/none  0.0670  0.0793  0.0123 -0.0044  0.0289  False
+Endothelium           logreg/none  0.0850  0.0682 -0.0169 -0.0245 -0.0091   True
+EpicardiumST          logreg/none  0.0547  0.0549  0.0002 -0.0368  0.0359  False
+Pericardium           logreg/none  0.0886  0.1243  0.0357  0.0096  0.0612   True
+PharyngealMesoderm    logreg/none  0.1280  0.1424  0.0144 -0.0051  0.0350  False
+ParaxialMesoderm      logreg/none  0.0693  0.0769  0.0077 -0.0156  0.0322  False
+NCC                   logreg/none  0.0769  0.0348 -0.0421 -0.0696 -0.0198   True
+Endoderm              logreg/none  0.0485  0.0220 -0.0266 -0.0381 -0.0151   True
+Hepatocyte            logreg/none  0.0084  0.0189  0.0105 -0.0033  0.0243  False
+Ectoderm              logreg/none  0.0544  0.0380 -0.0163 -0.0321 -0.0016   True
+CM                     knn/match5  0.3028  0.3368  0.0340 -0.0245  0.0923  False
+CardiacProgenitor      knn/match5  0.0171  0.0060 -0.0111 -0.0171 -0.0055   True
+Endocardium            knn/match5  0.0730  0.0872  0.0142 -0.0029  0.0317  False
+Endothelium            knn/match5  0.0816  0.0616 -0.0200 -0.0273 -0.0126   True
+EpicardiumST           knn/match5  0.0554  0.0505 -0.0048 -0.0396  0.0293  False
+Pericardium            knn/match5  0.0917  0.1278  0.0361  0.0080  0.0645   True
+PharyngealMesoderm     knn/match5  0.1249  0.1414  0.0165 -0.0028  0.0366  False
+ParaxialMesoderm       knn/match5  0.0659  0.0750  0.0090 -0.0143  0.0344  False
+NCC                    knn/match5  0.0792  0.0388 -0.0404 -0.0681 -0.0174   True
+Endoderm               knn/match5  0.0477  0.0189 -0.0289 -0.0404 -0.0176   True
+Hepatocyte             knn/match5  0.0088  0.0210  0.0122 -0.0026  0.0274  False
+Ectoderm               knn/match5  0.0520  0.0351 -0.0169 -0.0318 -0.0034   True
+CM                       knn/none  0.3028  0.3364  0.0336 -0.0248  0.0919  False
+CardiacProgenitor        knn/none  0.0171  0.0065 -0.0105 -0.0167 -0.0049   True
+Endocardium              knn/none  0.0730  0.0881  0.0151 -0.0020  0.0323  False
+Endothelium              knn/none  0.0816  0.0609 -0.0206 -0.0283 -0.0131   True
+EpicardiumST             knn/none  0.0554  0.0505 -0.0049 -0.0398  0.0287  False
+Pericardium              knn/none  0.0917  0.1305  0.0388  0.0106  0.0669   True
+PharyngealMesoderm       knn/none  0.1249  0.1395  0.0146 -0.0042  0.0349  False
+ParaxialMesoderm         knn/none  0.0659  0.0741  0.0082 -0.0155  0.0329  False
+NCC                      knn/none  0.0792  0.0387 -0.0405 -0.0679 -0.0176   True
+Endoderm                 knn/none  0.0477  0.0191 -0.0286 -0.0402 -0.0171   True
+Hepatocyte               knn/none  0.0088  0.0211  0.0123 -0.0026  0.0275  False
+Ectoderm                 knn/none  0.0520  0.0346 -0.0174 -0.0320 -0.0040   True
+              variant       a       b    diff      lo      hi  excl0
+A-CM    logreg/match5  0.3117  0.2474 -0.0642 -0.1341  0.0066  False
+OFT-CM  logreg/match5  0.1414  0.1024 -0.0390 -0.1246  0.0345  False
+SV-CM   logreg/match5  0.1577  0.0418 -0.1159 -0.1833 -0.0505   True
+V-CM    logreg/match5  0.3893  0.6084  0.2191  0.1591  0.2862   True
+A-CM      logreg/none  0.3117  0.2521 -0.0595 -0.1312  0.0093  False
+OFT-CM    logreg/none  0.1414  0.1054 -0.0359 -0.1221  0.0388  False
+SV-CM     logreg/none  0.1577  0.0439 -0.1137 -0.1806 -0.0489   True
+V-CM      logreg/none  0.3893  0.5985  0.2092  0.1481  0.2767   True
+A-CM       knn/match5  0.3213  0.2433 -0.0779 -0.1505 -0.0064   True
+OFT-CM     knn/match5  0.1389  0.1096 -0.0294 -0.1155  0.0454  False
+SV-CM      knn/match5  0.1486  0.0349 -0.1137 -0.1776 -0.0501   True
+V-CM       knn/match5  0.3911  0.6122  0.2210  0.1597  0.2867   True
+A-CM         knn/none  0.3213  0.2550 -0.0663 -0.1377  0.0045  False
+OFT-CM       knn/none  0.1389  0.1150 -0.0239 -0.1101  0.0514  False
+SV-CM        knn/none  0.1486  0.0343 -0.1144 -0.1783 -0.0504   True
+V-CM         knn/none  0.3911  0.5957  0.2046  0.1424  0.2705   True
+labels with CI excluding 0: {'knn/match5': 13, 'knn/none': 12, 'logreg/match5': 13, 'logreg/none': 14}
+group fractions by each file's OWN labels via the lineage map:
+                    wt_own  ko_own
+CM                  0.3031  0.3192
+CardiacProgenitor   0.0160  0.0505
+Ectoderm            0.0539  0.0252
+Endocardium         0.0668  0.0943
+Endoderm            0.0491  0.0339
+Endothelium         0.0874  0.0647
+EpicardiumST        0.0556  0.0483
+Hepatocyte          0.0085  0.0183
+LPM                 0.0000  0.0864
+NCC                 0.0768  0.0526
+Neural              0.0000  0.0047
+ParaxialMesoderm    0.0693  0.1363
+Pericardium         0.0882  0.0656
+PharyngealMesoderm  0.1254  0.0000
+[   28.5s] ===== part C
+[   28.6s] C KO: largest z gap 30 between section ranks 5 and 6 of 36; largest section z-320 (4170 cells) at rank 5
+           embryo  n_cells     CM  CardiacProgenitor  Endocardium  Endothelium  EpicardiumST  Pericardium  PharyngealMesoderm  ParaxialMesoderm    NCC  Endoderm  Hepatocyte  Ectoderm
+0              WT  11250.0  0.284              0.014        0.068        0.091         0.199        0.081               0.120             0.034  0.030     0.018       0.040     0.020
+1              WT  12113.0  0.454              0.036        0.084        0.073         0.049        0.056               0.125             0.051  0.024     0.024       0.000     0.024
+2              WT  10700.0  0.380              0.022        0.124        0.074         0.006        0.060               0.162             0.064  0.045     0.033       0.000     0.031
+3              WT   9731.0  0.292              0.001        0.045        0.078         0.003        0.089               0.166             0.080  0.083     0.084       0.000     0.078
+4              WT   9948.0  0.070              0.000        0.006        0.111         0.002        0.168               0.066             0.127  0.222     0.094       0.000     0.133
+WT_low10%      WT      NaN  0.059              0.062        0.082        0.132         0.521        0.114               0.149             0.077  0.063     0.061       0.934     0.046
+WT_high10%     WT      NaN  0.008              0.000        0.005        0.127         0.003        0.192               0.055             0.185  0.349     0.199       0.002     0.279
+0              KO  11227.0  0.205              0.001        0.063        0.064         0.181        0.214               0.140             0.008  0.015     0.012       0.068     0.028
+1              KO   8647.0  0.392              0.007        0.087        0.057         0.065        0.151               0.124             0.027  0.031     0.012       0.022     0.026
+2              KO  10042.0  0.456              0.011        0.118        0.073         0.015        0.075               0.119             0.062  0.025     0.018       0.000     0.026
+3              KO  10482.0  0.337              0.006        0.075        0.081         0.005        0.080               0.179             0.127  0.046     0.027       0.000     0.038
+4              KO   9896.0  0.307              0.000        0.042        0.086         0.001        0.096               0.147             0.157  0.054     0.042       0.000     0.068
+KO_low10%      KO      NaN  0.041              0.016        0.063        0.089         0.358        0.154               0.096             0.009  0.026     0.050       0.252     0.058
+KO_high10%     KO      NaN  0.075              0.000        0.031        0.101         0.002        0.072               0.070             0.170  0.162     0.171       0.002     0.192
+[   28.6s] ===== part D
+                           test embryo  level  n_cat  n_excl0  max_abs_diff
+0          odd vs even sections     WT  group     12        0      0.012352
+1  alternating 4-section blocks     WT  group     12        1      0.038397
+2          odd vs even sections     WT  label     22        0      0.014857
+3  alternating 4-section blocks     WT  label     22        2      0.033338
+4          odd vs even sections     KO  group     12        0      0.012690
+5  alternating 4-section blocks     KO  group     12        0      0.024670
+6          odd vs even sections     KO  label     22        0      0.012458
+7  alternating 4-section blocks     KO  label     22        1      0.021751
+                      none  none excl0  both ends -2  both ends -2 excl0  both ends -4  both ends -4 excl0  both ends -6  both ends -6 excl0  WT low -6  WT low -6 excl0  WT high -6  WT high -6 excl0  KO low -6  KO low -6 excl0  KO high -6  KO high -6 excl0
+CM                  0.0313       False        0.0112               False       -0.0056               False        0.0054               False     0.0144            False     -0.0127             False     0.0667             True      0.0360             False
+CardiacProgenitor  -0.0105        True       -0.0117                True       -0.0127                True       -0.0120                True    -0.0108             True     -0.0132              True    -0.0096             True     -0.0097              True
+Endocardium         0.0092       False        0.0071               False        0.0049               False        0.0067               False     0.0079            False     -0.0017             False     0.0126            False      0.0156             False
+Endothelium        -0.0125        True       -0.0124                True       -0.0099                True       -0.0069               False    -0.0106             True     -0.0086              True    -0.0109             True     -0.0153              True
+EpicardiumST        0.0012       False        0.0064               False        0.0097               False        0.0010               False     0.0334             True     -0.0081             False    -0.0313             True      0.0100             False
+Pericardium         0.0356        True        0.0370                True        0.0372                True        0.0297                True     0.0353             True      0.0490              True     0.0136            False      0.0393              True
+PharyngealMesoderm  0.0146       False        0.0146               False        0.0131               False        0.0055               False     0.0162            False      0.0043             False     0.0145            False      0.0158             False
+ParaxialMesoderm    0.0068       False        0.0080               False        0.0098               False        0.0158               False     0.0009            False      0.0168             False     0.0237             True     -0.0060             False
+NCC                -0.0430        True       -0.0343                True       -0.0247                True       -0.0170                True    -0.0511             True     -0.0144              True    -0.0383             True     -0.0469              True
+Endoderm           -0.0261        True       -0.0265                True       -0.0249                True       -0.0239                True    -0.0312             True     -0.0180              True    -0.0237             True     -0.0295              True
+Hepatocyte          0.0106       False        0.0147               False        0.0165                True        0.0072                True     0.0190             True      0.0092             False    -0.0024            False      0.0137             False
+Ectoderm           -0.0172        True       -0.0141                True       -0.0134                True       -0.0115                True    -0.0234             True     -0.0025             False    -0.0149             True     -0.0232              True
+                      diff  max_jackknife_shift
+CM                  0.0313               0.0101
+CardiacProgenitor  -0.0105               0.0014
+Endocardium         0.0092               0.0032
+Endothelium        -0.0125               0.0012
+EpicardiumST        0.0012               0.0091
+Pericardium         0.0356               0.0075
+PharyngealMesoderm  0.0146               0.0033
+ParaxialMesoderm    0.0068               0.0062
+NCC                -0.0430               0.0065
+Endoderm           -0.0261               0.0017
+Hepatocyte          0.0106               0.0060
+Ectoderm           -0.0172               0.0032
+[   29.6s] ===== part G
+CM-only classifier: WT annotated-CM cells (OOF) vs KO cells called CM by the full LR
+             a       b    diff      lo      hi  excl0
+A-CM    0.3125  0.2530 -0.0595 -0.1303  0.0109  False
+OFT-CM  0.1389  0.1118 -0.0271 -0.1131  0.0484  False
+SV-CM   0.1602  0.0405 -0.1197 -0.1863 -0.0546   True
+V-CM    0.3884  0.5947  0.2063  0.1444  0.2755   True
+WT annotation within CM: {'V-CM': 0.381, 'A-CM': 0.3102, 'SV-CM': 0.1656, 'OFT-CM': 0.1432}
+KO own label (rows) -> CM-only call (cols), KO cells called CM:
+col_0               A-CM  OFT-CM  SV-CM   V-CM
+row_0                                         
+Branchial Arch     0.067   0.133  0.533  0.267
+DPM                0.678   0.178  0.144  0.000
+Endocardium        0.269   0.060  0.006  0.665
+Endothelium        0.357   0.089  0.018  0.536
+Foregut            0.296   0.222  0.148  0.333
+LPM                0.108   0.622  0.081  0.189
+Neural Tube        0.333   0.042  0.250  0.375
+OFT/RV-CM          0.021   0.694  0.007  0.279
+Paraxial Mesoderm  0.250   0.250  0.250  0.250
+Pericardium        0.051   0.077  0.009  0.863
+Proepicardium      0.086   0.029  0.876  0.009
+SV-CM              0.805   0.011  0.049  0.135
+vCM                0.031   0.007  0.000  0.962
+KO own CM labels: {'vCM': 0.5471, 'SV-CM': 0.2913, 'OFT/RV-CM': 0.1616}
+[   31.1s] ===== part H
+[   31.2s] H Hepatocyte (921) vs Hepatocytes (458): 106 genes >=5 CP10k in both; median |log2 KO/WT| 0.770; share |log2|>1 0.082
+[   31.2s] H Surface Ectoderm (1266) vs SE (2895): 157 genes >=5 CP10k in both; median |log2 KO/WT| 0.553; share |log2|>1 0.078
+[   31.2s] H Foregut (1703) vs Foregut (2638): 161 genes >=5 CP10k in both; median |log2 KO/WT| 0.650; share |log2|>1 0.094
+[   31.2s] H Branchial Arch (2646) vs NCC (2601): 165 genes >=5 CP10k in both; median |log2 KO/WT| 0.700; share |log2|>1 0.076
+[   31.2s] H vCM (8785) vs V-CM (6207): 131 genes >=5 CP10k in both; median |log2 KO/WT| 0.481; share |log2|>1 0.046
+[   31.3s] H Pericardium (3300) vs Peri (4739): 138 genes >=5 CP10k in both; median |log2 KO/WT| 0.573; share |log2|>1 0.054
+Spearman correlation of per-gene log2(KO/WT) between matched populations (pairwise complete genes):
+                        Hepatocyte|Hepatocytes  Surface Ectoderm|SE  Foregut|Foregut  Branchial Arch|NCC  vCM|V-CM  Pericardium|Peri
+Hepatocyte|Hepatocytes                   1.000                0.517            0.319               0.404     0.527             0.645
+Surface Ectoderm|SE                      0.517                1.000            0.357               0.536     0.740             0.618
+Foregut|Foregut                          0.319                0.357            1.000               0.511     0.440             0.410
+Branchial Arch|NCC                       0.404                0.536            0.511               1.000     0.643             0.513
+vCM|V-CM                                 0.527                0.740            0.440               0.643     1.000             0.658
+Pericardium|Peri                         0.645                0.618            0.410               0.513     0.658             1.000
+genes in common per pair:
+                        Hepatocyte|Hepatocytes  Surface Ectoderm|SE  Foregut|Foregut  Branchial Arch|NCC  vCM|V-CM  Pericardium|Peri
+Hepatocyte|Hepatocytes                     106                   81               89                  83        69                78
+Surface Ectoderm|SE                         81                  157              133                 129        85               112
+Foregut|Foregut                             89                  133              161                 134        89               112
+Branchial Arch|NCC                          83                  129              134                 165        87               107
+vCM|V-CM                                    69                   85               89                  87       131                91
+Pericardium|Peri                            78                  112              112                 107        91               138
+[   31.3s] H correction: 169 genes with an estimate; median |log2| 0.460
+group composition, KO recalled after per-gene correction:
+                    wt_oof      ko  ko_gene_corrected
+CM                  0.3036  0.3349             0.3353
+CardiacProgenitor   0.0156  0.0051             0.0055
+Endocardium         0.0670  0.0762             0.0759
+Endothelium         0.0850  0.0725             0.0746
+EpicardiumST        0.0547  0.0559             0.0553
+Pericardium         0.0886  0.1243             0.1225
+PharyngealMesoderm  0.1280  0.1426             0.1402
+ParaxialMesoderm    0.0693  0.0760             0.0759
+NCC                 0.0769  0.0339             0.0352
+Endoderm            0.0485  0.0224             0.0228
+Hepatocyte          0.0084  0.0191             0.0188
+Ectoderm            0.0544  0.0371             0.0379
+within-CM composition after correction:
+        wt_oof      ko  ko_gene_corrected
+A-CM    0.3117  0.2474             0.2542
+OFT-CM  0.1414  0.1024             0.1019
+SV-CM   0.1577  0.0418             0.0428
+V-CM    0.3893  0.6084             0.6011
+label changes after correction: 0.021 of KO cells
+[   32.9s] ===== part E
+[   38.1s] E E9.5 train lower: query accuracy 0.702, untrained-label share 0.000
+[   42.2s] E E9.5 train upper: query accuracy 0.638, untrained-label share 0.016
+[   45.1s] E E8.75 train lower: query accuracy 0.731, untrained-label share 0.001
+[   47.6s] E E8.75 train upper: query accuracy 0.657, untrained-label share 0.086
+    stage train_half  level         estimator  query_cells_of_untrained_labels  true_tv  delta_slope  delta_mae  delta_max  query_comp_mae  train_comp_mae
+0    E9.5      lower  label          top call                           0.0000   0.4974       0.7931     0.0120     0.0526          0.0134          0.0023
+1    E9.5      lower  group          top call                           0.0000   0.3440       0.9093     0.0133     0.0544          0.0151          0.0021
+2    E9.5      lower  label  mean probability                           0.0000   0.4974       0.7626     0.0128     0.0564          0.0128          0.0002
+3    E9.5      lower  group  mean probability                           0.0000   0.3440       0.8940     0.0145     0.0567          0.0145          0.0001
+4    E9.5      lower  label                EM                           0.0000   0.4974       1.1028     0.0101     0.0527          0.0099          0.0004
+5    E9.5      lower  group                EM                           0.0000   0.3440       0.9559     0.0093     0.0287          0.0094          0.0002
+6    E9.5      upper  label          top call                           0.0158   0.4975       0.7420     0.0195     0.0882          0.0198          0.0012
+7    E9.5      upper  group          top call                           0.0158   0.3441       0.7937     0.0179     0.0591          0.0181          0.0017
+8    E9.5      upper  label  mean probability                           0.0158   0.4975       0.7025     0.0201     0.0861          0.0201          0.0001
+9    E9.5      upper  group  mean probability                           0.0158   0.3441       0.7759     0.0177     0.0580          0.0177          0.0001
+10   E9.5      upper  label                EM                           0.0158   0.4975       1.0572     0.0126     0.0414          0.0126          0.0002
+11   E9.5      upper  group                EM                           0.0158   0.3441       1.0555     0.0190     0.0406          0.0189          0.0002
+12  E8.75      lower  label          top call                           0.0010   0.3727       0.8172     0.0088     0.0673          0.0097          0.0017
+13  E8.75      lower  group          top call                           0.0010   0.2657       0.8968     0.0070     0.0201          0.0074          0.0014
+14  E8.75      lower  label  mean probability                           0.0010   0.3727       0.7660     0.0098     0.0648          0.0099          0.0003
+15  E8.75      lower  group  mean probability                           0.0010   0.2657       0.8840     0.0080     0.0243          0.0080          0.0003
+16  E8.75      lower  label                EM                           0.0010   0.3727       1.0481     0.0065     0.0325          0.0065          0.0007
+17  E8.75      lower  group                EM                           0.0010   0.2657       1.0904     0.0087     0.0388          0.0085          0.0006
+18  E8.75      upper  label          top call                           0.0857   0.3732       0.6808     0.0145     0.0865          0.0147          0.0010
+19  E8.75      upper  group          top call                           0.0857   0.2664       0.9858     0.0071     0.0213          0.0070          0.0015
+20  E8.75      upper  label  mean probability                           0.0857   0.3732       0.6618     0.0146     0.0833          0.0147          0.0003
+21  E8.75      upper  group  mean probability                           0.0857   0.2664       0.9687     0.0076     0.0212          0.0074          0.0004
+22  E8.75      upper  label                EM                           0.0857   0.3732       0.9448     0.0159     0.0801          0.0158          0.0006
+23  E8.75      upper  group                EM                           0.0857   0.2664       1.0584     0.0088     0.0229          0.0084          0.0006
+                        delta_slope  delta_mae
+level estimator                               
+group EM                     1.0400     0.0115
+      mean probability       0.8807     0.0119
+      top call               0.8964     0.0113
+label EM                     1.0382     0.0113
+      mean probability       0.7232     0.0143
+      top call               0.7582     0.0137
+[   47.6s] ===== part F
+[   50.0s] F E8.75(thinned)->E9.5 seed 0: {'direction': 'E8.75(thinned)->E9.5', 'seed': 0, 'group_accuracy': 0.6753747663923019, 'group_macro_f1': 0.5994681159289186, 'novelty_gt1': 0.07143388783446838}
+[   52.5s] F E8.75(thinned)->E9.5 seed 1: {'direction': 'E8.75(thinned)->E9.5', 'seed': 1, 'group_accuracy': 0.6766471827905682, 'group_macro_f1': 0.5989569729287731, 'novelty_gt1': 0.07156413977894384}
+[   54.8s] F E8.75(thinned)->E9.5 seed 2: {'direction': 'E8.75(thinned)->E9.5', 'seed': 2, 'group_accuracy': 0.6722136069028589, 'group_macro_f1': 0.5953151999276374, 'novelty_gt1': 0.07228982918387854}
+[   57.0s] F E8.75->E9.5 seed 0: {'direction': 'E8.75->E9.5', 'seed': 0, 'group_accuracy': 0.6552546820947155, 'group_macro_f1': 0.5765885724524942, 'novelty_gt1': 0.023929142942205352}
+[   59.4s] F E8.75->E9.5 seed 1: {'direction': 'E8.75->E9.5', 'seed': 1, 'group_accuracy': 0.6552546820947155, 'group_macro_f1': 0.5765885724524942, 'novelty_gt1': 0.023929142942205352}
+[   63.1s] F E9.5->E8.75 1 draw seed 0: {'direction': 'E9.5->E8.75 1 draw', 'seed': 0, 'group_accuracy': 0.768723657192262, 'group_macro_f1': 0.6756012285933208, 'novelty_gt1': 0.08152743091919762}
+[   66.9s] F E9.5->E8.75 5 draws seed 0: {'direction': 'E9.5->E8.75 5 draws', 'seed': 0, 'group_accuracy': 0.7900140494974602, 'group_macro_f1': 0.6956933985408283, 'novelty_gt1': 0.05880931281720777}
+[   67.7s] F E9.5->E8.75 1 draw seed 1: {'direction': 'E9.5->E8.75 1 draw', 'seed': 1, 'group_accuracy': 0.7725062142007998, 'group_macro_f1': 0.6787200156117056, 'novelty_gt1': 0.08035930073310239}
+[   71.7s] F E9.5->E8.75 5 draws seed 1: {'direction': 'E9.5->E8.75 5 draws', 'seed': 1, 'group_accuracy': 0.7909867070139415, 'group_macro_f1': 0.6967018482544438, 'novelty_gt1': 0.0609441714331749}
+[   72.4s] F E9.5->E8.75 1 draw seed 2: {'direction': 'E9.5->E8.75 1 draw', 'seed': 2, 'group_accuracy': 0.771587593213012, 'group_macro_f1': 0.6776244614111988, 'novelty_gt1': 0.07955369370820914}
+[   76.1s] F E9.5->E8.75 5 draws seed 2: {'direction': 'E9.5->E8.75 5 draws', 'seed': 2, 'group_accuracy': 0.7887171728088188, 'group_macro_f1': 0.693966839958978, 'novelty_gt1': 0.06130669459437686}
+[   76.9s] F E9.5->E8.75 no depth match seed 0: {'direction': 'E9.5->E8.75 no depth match', 'seed': 0, 'group_accuracy': 0.787798551821031, 'group_macro_f1': 0.6924046255013396, 'novelty_gt1': 0.24514621767501812}
+                     direction  seed  group_accuracy  group_macro_f1  novelty_gt1
+0         E8.75(thinned)->E9.5     0          0.6754          0.5995       0.0714
+1         E8.75(thinned)->E9.5     1          0.6766          0.5990       0.0716
+2         E8.75(thinned)->E9.5     2          0.6722          0.5953       0.0723
+3                  E8.75->E9.5     0          0.6553          0.5766       0.0239
+4                  E8.75->E9.5     1          0.6553          0.5766       0.0239
+5           E9.5->E8.75 1 draw     0          0.7687          0.6756       0.0815
+6          E9.5->E8.75 5 draws     0          0.7900          0.6957       0.0588
+7           E9.5->E8.75 1 draw     1          0.7725          0.6787       0.0804
+8          E9.5->E8.75 5 draws     1          0.7910          0.6967       0.0609
+9           E9.5->E8.75 1 draw     2          0.7716          0.6776       0.0796
+10         E9.5->E8.75 5 draws     2          0.7887          0.6940       0.0613
+11  E9.5->E8.75 no depth match     0          0.7878          0.6924       0.2451
+[   76.9s] done
+EXIT=0

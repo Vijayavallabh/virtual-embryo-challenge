@@ -1,7 +1,8 @@
 # Plan
 
-Version 1, 2026-10-18, two days before the final phase opens. Update it weekly and log decisions at the bottom.
-Evidence behind every claim is in `docs/research/` (one report per topic); risks are tracked in `ASSUMPTIONS.md`.
+Version 1.1, 2026-10-19, one day before the final phase opens. Update it weekly and log decisions at the bottom.
+Evidence behind every claim is in `docs/research/` (one report per topic) and `experiments/*/REPORT.md` (experiments on
+released data, each with an independent review); risks are tracked in `ASSUMPTIONS.md`.
 
 ## 1. What we are playing for
 
@@ -64,10 +65,22 @@ validation boards.
 4. **Composition is the main lever** on all four boards: which cell types, and how many.
 5. **Interpolate whenever the rules allow.** E12.5 can be bracketed between our E10.5 and legal external hearts after
    E13.5, for both T1 and T2 heart. E7.75 is bracketed by E7.5 and E8.0 by design.
-6. **Spatial hygiene.** Proper rotations only (occupancy_dice is not reflection-invariant). Expression moves with its
-   cell. Submitted density near the truth half's density (neighborhood_mmd uses 15 nearest submitted cells). Even point
-   spacing helps Dice. No duplicate coordinates. Subsample cells at random, never contiguous rows: rows are stored in
-   spatial order.
+6. **Spatial hygiene** (`experiments/density/REPORT.md`, `experiments/coords/REPORT.md`).
+   - **Cell count: never below truth_cells; otherwise as many as allowed, up to max_cells.** Below 1x every seed loses
+     (0.5x costs 1-5 points, 0.25x 2-10), because occupancy_dice thins the truth to the submitted count. Above 1x a
+     near-perfect prediction is flat, but imperfect ones keep gaining (intermediate quality +1.6 points from 1x to 8x;
+     +1.0 at 3x on an 8k-cell truth half). Keying the count to max_cells also avoids choosing it from truth_cells.
+   - **Random rows only.** Rows are stored section by section. A contiguous block costs a near-perfect prediction 16-28
+     points (mid-file) or 21-48 (first rows) at 1x, and still 12-21 at 8x.
+   - **Jitter budget.** Up to 0.25 x the median nearest-neighbour distance is free (use it to break duplicate
+     coordinates); 2 NN costs 1.2-1.8 points at 1x. One NN is about 20 units, 6-9% of the RMS radius, at 5% sampling.
+   - **Proper rotations only.** All released heart frames share one handedness (Pitx2 landmarks; E8.0 unresolved). A
+     mirrored copy of a correctly shaped cloud loses up to 0.12 Dice, about the whole floor-to-ceiling gap. Check E7.5
+     against E8.0 by proper vs improper shape alignment before building the embryo board.
+   - **Duplicated records.** E8.0, E8.25_late, E8.75 and the Mab21l2 KO hold identical cells in adjacent sections (KO
+     5.6%). Drop them (`vec.prep.load_stage(drop_duplicates=True)`) before neighbourhood, pseudobulk or composition
+     work on prediction inputs; the emulator loads targets as released, since the server's truth includes them.
+   - Expression moves with its cell.
 7. **Pre-register.** Size models, composition scenarios and both submission candidates per board are fixed and hashed in
    git before the first test submission.
 
@@ -108,9 +121,13 @@ Pipeline:
 3. Proper-rotation Procrustes under the coupling, then McCann interpolation of positions at t ≈ 0.5. Calibrate a
    developmental clock on the E7.5 pseudo-target (nominal t = 1/3) and carry the warp over.
 4. Expression as a mixture of coupled real cells (each sampled cell keeps a real profile; count-space only).
-5. Size from a monotone (PCHIP) log-RMS curve through E6.75, E7.25, E7.5 and E8.0, checked leave-one-out.
-6. Cell count near the test truth half; optional blue-noise relaxation if pseudo-targets show no loss on d2 or
-   neighborhood_mmd.
+5. Size from the pre-registered embryo procedure (`experiments/coords/size_procedure.py`): PCHIP on raw 3D log RMS
+   through E6.75, E7.25, E7.5 and E8.0, with leave-one-out errors at E7.25 and E7.5 reported next to the prediction.
+   The embryo curve is convex (two-point interpolation of E7.25 overshoots by 0.21 in log), so E7.5 matters. If E7.5's
+   z step or sectioning orientation differs from E8.0's, record the z-convention risk with the submission (up to about
+   0.25 in log if E7.75 were cut along its long axis like E6.75 and E7.25).
+6. Cell count: max_cells (never below truth_cells); optional blue-noise relaxation if pseudo-targets show no loss on
+   d2 or neighborhood_mmd.
 
 Pseudo-targets: E7.5 from (E7.25, E8.0) and E7.25 from (E6.75, E7.5). Target emulator score of at least 70.
 
@@ -122,23 +139,43 @@ size, mixture expression).
 
 ### 4.3 T2 heart: E12.5 extrapolation (weight 0.5)
 
-Facts: raw RMS radii are not comparable across released stages (E8.25_late includes yolk sac and non-cardiac cells;
-E8.75 is mostly heart), z is a section index, units are unconfirmed, and annotations are only harmonised for E8.25 and
-E8.75. Every geometry deformation tried publicly on extrapolation lost points; rescaling helped.
+Facts (`experiments/coords/REPORT.md`): xy are slide units (rigid copies of the slide coordinates, scale 1.0000, in
+29 of 35 KO sections); z is the section position times a per-file step (10, 14 or 15), consistent with xy units in
+E9.5 and the KO but not clearly so at E8.0-E8.75. Every file has 30-40 sections, so the z extent is set by acquisition,
+and the stack cuts the heart in E9.5 and the KO. Raw RMS radii are not comparable across stages (E8.25_late includes
+yolk sac and non-cardiac cells; E8.75 is mostly heart). Label vocabularies differ by file: only CM transfers cleanly
+between E8.75 and E9.5 (`experiments/harmonise/REPORT.md`). Every geometry deformation tried publicly on extrapolation
+lost points; rescaling helped.
 
-**Pre-registered size procedure (training stages only).**
-1. Compute the RMS radius of the core cardiac cells (cardiomyocytes, endocardium, epicardium, cushion) and of the full
-   cloud, plus the shell fraction, for E8.75, E9.5 and E10.5.
-2. Fit three candidate growth rules on the core (log-linear at the latest rate, exponentially decaying rate, half-rate)
-   and score each on pseudo-targets: E10.5 from stages up to E8.75, and E9.5 from stages up to E8.75.
-3. Choose by pseudo-target error; optionally add a legal external bracket after E13.5 (heart size from MOSTA
-   E14.5-E16.5 or Hu 2026 Visium E14.5+).
-4. Commit the code and its output to git before any test submission. Nobody on this step opens veckit 0.1.2 or PR #6.
+**Pre-registered size procedure (fixed 2026-10-19, before the E10.5 release):** `experiments/coords/size_procedure.py`,
+run by `experiments/coords/run_p3.sh`.
+1. Core = the CM and Endocardium groups of `configs/lineage_map.yaml` at the commit (cushion endocardium in;
+   epicardium, proepicardium and septum transversum out). New E10.5 labels are mapped by the rule in that file's header
+   and committed before the run; the procedure refuses unmapped labels. Duplicated records are dropped first.
+2. Growth uses only rate intervals that start at or after E9.0, which leaves E9.5 to E10.5. Rates measured over
+   E8.0-E8.75 cannot predict later growth: the core RMS is flat from E8.0 to E8.75 and then nearly doubles at E9.5, so
+   every rule scored like copy_last on the E9.5 pseudo-target. The planned pseudo-targets (E9.5 and E10.5 from stages up
+   to E8.75) are dropped for the same reason; no released pseudo-target can rank rules in the E10.5-E12.5 regime.
+3. E12.5 core log growth = the log-space average of three rules on the E9.5-E10.5 interval: latest rate, half rate and
+   a power law in t, i.e. 1.58 x the observed log growth. The justification uses no assumed rate: if the mean rate over
+   E10.5-E12.5 is between 0.5 and 1 times the E9.5-E10.5 rate, the average has the smallest worst-case bias of the
+   candidates (0.58 x the observed log growth), at the cost of more noise amplification than half rate (3.2 vs 2.4
+   per-embryo SDs). The table is in the procedure's output.
+4. z: grow the in-plane extent and hold z at E10.5's values when the core's thinnest axis is within 30 degrees of z in
+   both E9.5 and E10.5 (the stack, not the tissue, sets z); otherwise grow in 3D. All four z modes are logged next to
+   the pre-registered choice.
+5. Scope: three hypotheses for the full-cloud/core ratio (H1 trend, H0 hold, H2 half); s1 uses H1 and s2 uses H2, each
+   rescaled about its centroid to its own full-cloud RMS.
+6. No external size bracket (units, dissection scope and stack depth do not transfer). The JSON output, with the git
+   hash and input checksums, is committed before any test submission. Nobody on this step opens veckit 0.1.2 or PR #6.
 
 Pipeline:
-1. Start from real E10.5 tissue (released at P3), sampled at random down to about the test truth-half size.
-2. Damped composition extrapolation (centred log-ratios over E8.75-E10.5; damping chosen on the 1.75-day
-   pseudo-target, expected 0.3-0.6).
+1. Start from real E10.5 tissue (released at P3), duplicates dropped, sampled at random to max_cells (never below
+   truth_cells).
+2. Damped composition extrapolation on the merged lineage level (CM, Endothelial, CranialMesoderm, NCC, Endoderm,
+   Ectoderm; labels harmonised with `vec.harmonise`), centred log-ratios over E8.75-E10.5, damping chosen on the
+   1.75-day pseudo-target (expected 0.3-0.6). CardiacProgenitor and Pericardium have no stable cross-stage meaning and
+   stay out of the trends.
 3. Emergent populations placed in anatomical niches on the E10.5 geometry: epicardium on the outer myocardial shell,
    epicardium-derived cells just beneath, coronary endothelium on the dorsal surface and AV groove, valve mesenchyme in
    the cushions, smooth muscle in the outflow-tract walls. Their expression comes from E10.5 precursors edited in count
@@ -157,18 +194,28 @@ as the test. Every published reference model gets the response direction wrong, 
 added delta on 93%-sparse data realises only about 4% of an intended decrease.
 
 Day-1 diagnostics (CPU, DGX):
-- depth, genes per cell and zero fraction per sample;
-- harmonised composition per sample;
-- Gata4 replicate 1 vs 2 vs wild type;
+- depth, genes per cell, zero fraction and duplicated records per sample (`vec data qc`);
+- z-coverage profiles of each knockout against its wild type before any composition comparison;
+- harmonised composition per sample (`vec.harmonise`, knockout mapped into the matched wild type's vocabulary), quoted
+  as a top-call/EM bracket with its z-trim range;
+- Gata4 replicate 1 vs 2 vs wild type: the replicate difference is the noise bar every composition effect must clear;
 - whether knockout files carry littermate wild-type cells;
 - an oracle decomposition of the Gata4 truth into composition, depth/coverage and within-type parts, each scored with
   the emulator.
 
+What the Mab21l2 knockout already shows (`experiments/harmonise/REPORT.md`, with its review): group-level differences
+from the E9.5 wild type are file-against-file differences, not genotype effects, because the two stacks cover different
+anatomy (trimming the stack ends removes or flips most of them). The robust difference is inside the heart: among
+cardiomyocytes, V-CM rises from 0.39 to 0.61 and SV-CM falls from 0.16 to 0.04, under every trim, classifier and batch
+correction tried. There is also a gene-level technical shift between the knockout and wild-type files (rank correlation
+0.32-0.74 across matched, unrelated cell types) that component N must carry.
+
 Components (all legal under the 2026-10-15 ruling):
 - **N, systematic transfer:** carry Gata4's non-Mesp1 compartments and depth/coverage shift with real cells.
 - **C, composition:** deplete second-heart-field, outflow-tract and right-ventricle-lineage states, sparing first heart
-  field and left ventricle (broad phenotype background). Magnitudes come from the observed composition effects in the
-  Gata4 and Mab21l2 knockouts.
+  field and left ventricle (broad phenotype background). Magnitudes come from within-heart composition effects in the
+  Gata4 and Mab21l2 knockouts (harmonised, bracketed, z-trimmed), counted only where they exceed the Gata4 replicate
+  difference.
 - **B, Wnt programme:** learn how panel genes co-vary with Wnt target activity ([redacted 2026-10-19: B], off
   the panel) inside Mesp1 cell types of the wild-type T1 scRNA, and switch it off in Mesp1 cells. This needs the
   organisers to confirm cross-task use; otherwise use MERFISH-only co-variation.
@@ -268,3 +315,11 @@ stages, cell bounds, scorer version and deadline time zone. The leak report is a
 - 2026-10-18: Human Team track only (user). Python 3.12 uv environment. veckit pinned to git main cc3859a (the live
   board's metric set, not PyPI 0.1.2). No mouse foundation models. T3 built without gene-level knockout literature.
   Leaked heart size quarantined; heart size from the pre-registered procedure only.
+- 2026-10-19: three pre-release experiments on released data, each independently reviewed (`experiments/*/REPORT.md`).
+  Decisions: (1) cell count = max_cells, never below truth_cells (A13 revised); random rows only; jitter at most 0.25
+  NN. (2) Heart size procedure fixed before the E10.5 release: core = CM + endocardium (epicardium is shell), growth
+  from E9.5-E10.5 only, fixed average of three rules justified without an assumed rate, z held at E10.5 when the
+  sectioning plane matches, three scope hypotheses, no external bracket. (3) Label transfer with `vec.harmonise`;
+  cross-file compositions only through it, quoted as a top-call/EM bracket; Mab21l2 group-level shifts are not used as
+  genotype effects, the within-CM shift is. (4) Lineage map: merged level for cross-stage work, KO-only overrides for
+  LPM and DPM, a pre-registered rule for mapping new labels. (5) Duplicated records dropped from prediction inputs.

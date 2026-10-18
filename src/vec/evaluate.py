@@ -200,6 +200,8 @@ def score_board(board: Board, pred: Stage, target: Stage, ref: Stage, floor_pred
                       if a["floor"] is not None and a["ceiling"] is not None}
         extras["floor_metrics"], extras["ceiling_metrics"] = floor_vals, ceil_vals
     elif anchors == "published":
+        if not board.anchors:
+            raise ValueError(f"{board.key}: no published anchors (test boards are stripped at intake)")
         anchor_map = board.anchors
     else:
         raise ValueError("anchors must be 'computed' or 'published'")

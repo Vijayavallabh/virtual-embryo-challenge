@@ -1,0 +1,58 @@
+head: 90 calls in both runs; max |score v2 - v1| = 0
+refhead: 90 calls in both runs; max |score v2 - v1| = 0.000135
+
+== paired delta vs random sampling of the same source at the same count: mean ± sd [seeds < 0] (position = block start / (pool - n), 0 = first rows)
+-- block
+heart_E9.5    0.25x  v1:  -27.3 ±  5.9 [5/5] range  -37.7.. -23.4 pos 0.38-0.77 | v2:  -29.2 ±  3.8 [5/5] range  -35.0.. -24.7 pos 0.29-0.98
+heart_E9.5     0.5x  v1:  -25.4 ±  3.6 [5/5] range  -31.2.. -21.5 pos 0.38-0.77 | v2:  -34.7 ±  8.5 [5/5] range  -44.9.. -24.8 pos 0.11-0.97
+heart_E9.5       1x  v1:  -25.5 ±  2.3 [5/5] range  -28.9.. -22.7 pos 0.37-0.78 | v2:  -30.9 ±  6.3 [5/5] range  -37.4.. -21.5 pos 0.11-0.85
+heart_E9.5       2x  v1:  -23.6 ±  2.6 [5/5] range  -27.2.. -20.9 pos 0.37-0.80 | v2:  -24.4 ±  2.8 [5/5] range  -27.5.. -20.2 pos 0.24-0.96
+heart_E9.5       4x  v1:  -22.5 ±  2.3 [5/5] range  -24.5.. -18.6 pos 0.35-0.84 | v2:  -22.9 ±  7.3 [5/5] range  -35.9.. -18.3 pos 0.01-0.50
+heart_E9.5       8x  v1:  -17.9 ±  2.3 [5/5] range  -20.3.. -14.6 pos 0.29-0.98 | v2:  -16.6 ±  1.5 [5/5] range  -18.0.. -14.5 pos 0.20-0.93
+heart_E8.75   0.25x  v1:  -28.0 ±  5.6 [5/5] range  -36.8.. -21.6 pos 0.38-0.77 | v2:  -30.8 ± 10.0 [5/5] range  -44.9.. -22.0 pos 0.29-0.98
+heart_E8.75    0.5x  v1:  -26.5 ±  8.2 [5/5] range  -39.0.. -19.3 pos 0.38-0.77 | v2:  -31.4 ±  7.5 [5/5] range  -40.1.. -23.1 pos 0.11-0.97
+heart_E8.75      1x  v1:  -27.8 ±  4.0 [5/5] range  -31.4.. -22.2 pos 0.37-0.78 | v2:  -31.2 ±  6.2 [5/5] range  -38.1.. -23.1 pos 0.11-0.85
+heart_E8.75      2x  v1:  -26.2 ±  0.8 [5/5] range  -26.9.. -24.9 pos 0.37-0.80 | v2:  -28.8 ±  3.4 [5/5] range  -34.0.. -24.8 pos 0.24-0.96
+heart_E8.75      4x  v1:  -23.8 ±  1.6 [5/5] range  -25.5.. -21.6 pos 0.35-0.84 | v2:  -25.7 ±  6.3 [5/5] range  -36.4.. -20.7 pos 0.01-0.50
+heart_E8.75      8x  v1:  -18.2 ±  2.0 [5/5] range  -20.5.. -15.8 pos 0.29-0.98 | v2:  -17.5 ±  2.8 [5/5] range  -21.7.. -14.0 pos 0.20-0.93
+embryo_E8.0   0.25x  v1:  -17.9 ±  4.4 [5/5] range  -24.5.. -13.1 pos 0.38-0.77 | v2:  -19.8 ±  3.8 [5/5] range  -23.5.. -14.2 pos 0.29-0.98
+embryo_E8.0    0.5x  v1:  -14.8 ±  2.4 [5/5] range  -18.8.. -12.6 pos 0.38-0.77 | v2:  -17.5 ±  2.6 [5/5] range  -20.7.. -14.7 pos 0.11-0.97
+embryo_E8.0      1x  v1:  -15.8 ±  1.4 [5/5] range  -18.2.. -14.4 pos 0.37-0.78 | v2:  -16.1 ±  2.3 [5/5] range  -18.9.. -13.0 pos 0.11-0.85
+embryo_E8.0      2x  v1:  -14.5 ±  1.5 [5/5] range  -17.0.. -13.4 pos 0.37-0.80 | v2:  -15.3 ±  2.9 [5/5] range  -20.3.. -13.0 pos 0.24-0.96
+embryo_E8.0      4x  v1:  -13.6 ±  1.1 [5/5] range  -14.8.. -12.1 pos 0.35-0.84 | v2:  -14.3 ±  0.9 [5/5] range  -15.4.. -13.2 pos 0.01-0.50
+embryo_E8.0      8x  v1:  -12.4 ±  1.1 [5/5] range  -13.2.. -10.5 pos 0.29-0.98 | v2:  -12.9 ±  0.7 [5/5] range  -13.9.. -12.1 pos 0.20-0.93
+-- refblock
+heart_E9.5    0.25x  v1:   -8.4 ±  1.4 [5/5] range   -9.4..  -5.9 pos 0.48-0.51 | v2:   -7.9 ±  6.8 [5/5] range  -17.5..  -0.5 pos 0.02-0.83
+heart_E9.5     0.5x  v1:   -6.7 ±  2.2 [5/5] range   -9.1..  -3.2 pos 0.48-0.51 | v2:  -10.6 ±  2.3 [5/5] range  -14.3..  -8.6 pos 0.16-0.83
+heart_E9.5       1x  v1:   -5.9 ±  1.2 [5/5] range   -6.9..  -3.9 pos 0.48-0.51 | v2:   -5.8 ±  5.6 [5/5] range  -15.7..  -2.2 pos 0.04-0.96
+heart_E9.5       2x  v1:   -5.5 ±  0.7 [5/5] range   -6.4..  -4.7 pos 0.48-0.52 | v2:   -8.9 ±  4.8 [5/5] range  -14.5..  -2.6 pos 0.00-0.68
+heart_E9.5       4x  v1:   +1.8 ±  1.2 [0/5] range   +0.6..  +3.7 pos 0.47-0.52 | v2:   +1.9 ±  1.7 [0/5] range   +0.5..  +4.9 pos 0.43-0.93
+heart_E9.5       8x  v1:   -0.5 ±  1.2 [3/5] range   -2.4..  +0.6 pos 0.02-0.83 | v2:   -1.1 ±  0.4 [5/5] range   -1.7..  -0.6 pos 0.05-0.30
+heart_E8.75   0.25x  v1:   -8.9 ±  5.3 [5/5] range  -14.9..  -3.9 pos 0.11-0.77 | v2:   -5.8 ±  7.1 [4/5] range  -14.8..  +3.2 pos 0.02-0.83
+heart_E8.75    0.5x  v1:   -7.7 ±  9.7 [3/5] range  -18.6..  +3.1 pos 0.11-0.77 | v2:   -4.5 ±  8.2 [3/5] range  -14.0..  +4.3 pos 0.16-0.83
+heart_E8.75      1x  v1:   -7.3 ±  5.2 [5/5] range  -13.5..  -2.7 pos 0.10-0.77 | v2:   -4.6 ±  5.0 [4/5] range  -11.1..  +2.0 pos 0.04-0.96
+heart_E8.75      2x  v1:   -4.8 ±  5.4 [4/5] range  -11.0..  +2.6 pos 0.09-0.78 | v2:   -6.9 ±  4.7 [4/5] range  -11.1..  +1.3 pos 0.00-0.68
+heart_E8.75      4x  v1:   -4.7 ±  5.0 [5/5] range  -11.5..  -0.6 pos 0.07-0.79 | v2:   -2.6 ±  2.1 [4/5] range   -5.5..  +0.2 pos 0.43-0.93
+heart_E8.75      8x  v1:   -5.3 ±  6.0 [4/5] range  -12.6..  +0.3 pos 0.02-0.83 | v2:  -10.0 ±  2.0 [5/5] range  -11.8..  -7.3 pos 0.05-0.30
+embryo_E8.0   0.25x  v1:   -4.7 ±  0.6 [5/5] range   -5.5..  -4.1 pos 0.50-0.50 | v2:   -5.7 ±  2.4 [5/5] range   -9.1..  -2.8 pos 0.02-0.83
+embryo_E8.0    0.5x  v1:   -4.1 ±  0.9 [5/5] range   -5.1..  -3.1 pos 0.50-0.50 | v2:   -5.7 ±  0.9 [5/5] range   -6.8..  -4.7 pos 0.16-0.83
+embryo_E8.0      1x  v1:   -3.3 ±  0.6 [5/5] range   -4.2..  -2.6 pos 0.50-0.50 | v2:   -7.1 ±  3.4 [5/5] range  -10.6..  -2.7 pos 0.04-0.96
+embryo_E8.0      2x  v1:   -1.4 ±  0.5 [5/5] range   -2.0..  -0.8 pos 0.50-0.50 | v2:   -3.5 ±  2.4 [4/5] range   -6.2..  +0.4 pos 0.00-0.68
+embryo_E8.0      4x  v1:   -0.4 ±  0.5 [3/5] range   -1.0..  +0.2 pos 0.50-0.50 | v2:   -1.7 ±  2.1 [3/5] range   -4.5..  +0.4 pos 0.43-0.94
+embryo_E8.0      8x  v1:   +0.0 ±  0.0 [0/5] range   +0.0..  +0.0 pos nan-nan | v2:   +0.0 ±  0.0 [0/5] range   +0.0..  +0.0 pos nan-nan
+
+== pooled over the three targets (mean of target means; seeds < 0 over all calls)
+1x block     v1  -23.0 (targets -27.8 to -15.8; 15/15 lose) | v2  -26.1 (targets -31.2 to -16.1; 15/15 lose)
+1x head      v1  -38.6 (targets -48.1 to -21.3; 15/15 lose) | v2  -38.6 (targets -48.1 to -21.3; 15/15 lose)
+1x refblock  v1   -5.5 (targets -7.3 to -3.3; 15/15 lose) | v2   -5.9 (targets -7.1 to -4.6; 14/15 lose)
+1x refhead   v1   -9.9 (targets -18.1 to -3.5; 15/15 lose) | v2   -9.9 (targets -18.1 to -3.5; 15/15 lose)
+8x block     v1  -16.2 (targets -18.2 to -12.4; 15/15 lose) | v2  -15.7 (targets -17.5 to -12.9; 15/15 lose)
+8x head      v1  -18.4 (targets -20.7 to -14.2; 15/15 lose) | v2  -18.4 (targets -20.7 to -14.2; 15/15 lose)
+8x refblock  v1   -1.9 (targets -5.3 to +0.0; 7/15 lose) | v2   -3.7 (targets -10.0 to +0.0; 10/15 lose)
+8x refhead   v1   -4.0 (targets -10.4 to +0.0; 10/15 lose) | v2   -4.0 (targets -10.4 to +0.0; 10/15 lose)
+v1: block/refblock calls that beat random at the same count: 13/180; embryo_E8.0 refblock 4x s0 +0.1, embryo_E8.0 refblock 4x s1 +0.2, heart_E8.75 refblock 0.5x s0 +0.3, heart_E8.75 refblock 0.5x s1 +3.1, heart_E8.75 refblock 8x s1 +0.3, heart_E8.75 refblock 2x s2 +2.6, heart_E9.5 refblock 4x s0 +1.0, heart_E9.5 refblock 8x s0 +0.4, heart_E9.5 refblock 4x s1 +2.1, heart_E9.5 refblock 4x s2 +0.6, heart_E9.5 refblock 8x s2 +0.6, heart_E9.5 refblock 4x s3 +3.7, heart_E9.5 refblock 4x s4 +1.6
+v2: block/refblock calls that beat random at the same count: 14/180; embryo_E8.0 refblock 4x s0 +0.2, embryo_E8.0 refblock 4x s1 +0.4, embryo_E8.0 refblock 2x s2 +0.4, heart_E8.75 refblock 0.25x s0 +3.2, heart_E8.75 refblock 0.5x s0 +4.3, heart_E8.75 refblock 2x s1 +1.3, heart_E8.75 refblock 1x s2 +2.0, heart_E8.75 refblock 0.5x s3 +4.1, heart_E8.75 refblock 4x s3 +0.2, heart_E9.5 refblock 4x s0 +0.5, heart_E9.5 refblock 4x s1 +2.1, heart_E9.5 refblock 4x s2 +1.0, heart_E9.5 refblock 4x s3 +4.9, heart_E9.5 refblock 4x s4 +1.2
+
+== v2: does the position of the block matter? Spearman(distance from mid-file, delta), within (target, ratio) after removing their means; and mean delta of blocks in the outer 10% of positions
+block: n=90 rho=-0.47 (p=3.4e-06); residual delta outer 10%: -3.9 (n=15), middle 80%: +0.8 (n=75)
+refblock: n=85 rho=-0.39 (p=0.00026); residual delta outer 10%: -1.8 (n=22), middle 80%: +0.6 (n=63)

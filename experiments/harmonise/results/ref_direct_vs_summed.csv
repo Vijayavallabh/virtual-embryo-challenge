@@ -1,0 +1,5 @@
+stage,approach,group_accuracy,group_macro_f1
+E9.5,summed fine-label probabilities,0.8846153846153846,0.8579864672494307
+E9.5,direct group classifier,0.8752558520337911,0.8475471568939758
+E8.75,summed fine-label probabilities,0.911096884336321,0.7698985148749784
+E8.75,direct group classifier,0.9066154502774221,0.7571266179893587

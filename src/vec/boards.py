@@ -7,12 +7,28 @@ weights are Table 1 of the accepted competition proposal (docs/reference/neurips
 
 from __future__ import annotations
 
+import hashlib
 import json
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
+from urllib.request import urlopen
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 BOARDS_DIR = REPO_ROOT / "boards"
+PANELS_URL = "https://virtualembryo.ai/challenge/panels"
+
+# Only these boards keep their published anchors. Any other board (the final-phase test boards) keeps only the fields
+# below: its anchors are distances between the reference stage and the hidden truth, so they encode the hidden target
+# and must never be read (docs/DATA_POLICY.md, do-not-use list).
+VALIDATION_BOARDS = frozenset({"T1:val", "T2:embryo:val_interp", "T2:heart:val_extrap", "T2:heart:val_interp",
+                               "T3:gata4"})
+VALIDATION_SPLITS = frozenset({"val", "val_interp", "val_extrap"})
+SPEC_FIELDS = frozenset({"key", "label", "task", "setting", "split", "target_ko", "public", "n_genes", "genes_file",
+                         "genes_sha256", "needs_coords", "obs_required", "obsm_required", "min_cells", "max_cells",
+                         "truth_cells", "ref_cells", "floor_model"})
+# Stages whose data are released (or released on 2026-10-20) and may appear in the published T1 composition file.
+RELEASED_T1_STAGES = frozenset({"E8.5", "E9.5", "E10.5"})
 
 # Metrics where smaller is better. severity_slope and scale_log_ratio are scored on their absolute value.
 LOWER_IS_BETTER = {"mmd_u", "variogram", "d2_shape", "neighborhood_mmd", "severity_slope", "scale_log_ratio"}
@@ -95,3 +111,50 @@ def get_board(key: str, boards_dir: Path = BOARDS_DIR) -> Board:
     if key not in boards:
         raise KeyError(f"unknown board {key!r}; known: {sorted(boards)}")
     return boards[key]
+
+
+def is_validation_board(key: str, spec: dict) -> bool:
+    return key in VALIDATION_BOARDS and spec.get("split") in VALIDATION_SPLITS
+
+
+def sanitise_index(index: dict) -> tuple[dict, list[str]]:
+    """Keep validation boards as published; reduce every other board to its submission spec (no anchors).
+
+    Returns the cleaned index and the keys that were reduced. Nothing is printed, so stripped values are never seen.
+    """
+    clean, reduced = {}, []
+    for key, spec in index.items():
+        if is_validation_board(key, spec):
+            clean[key] = spec
+        else:
+            clean[key] = {k: v for k, v in spec.items() if k in SPEC_FIELDS}
+            reduced.append(key)
+    return clean, reduced
+
+
+def _fetch(url: str) -> bytes:
+    with urlopen(url, timeout=60) as r:  # noqa: S310 (fixed https URL)
+        return r.read()
+
+
+def update_boards(boards_dir: Path = BOARDS_DIR, fetch: Callable[[str], bytes] = _fetch) -> dict:
+    """Refresh boards/ from the public panel files, stripping test-board anchors in memory before anything is written.
+
+    Gene lists are checked against their published sha256. The T1 composition file is written only if it describes
+    released stages alone; otherwise it is left untouched and reported (without its contents).
+    """
+    index, reduced = sanitise_index(json.loads(fetch(f"{PANELS_URL}/index.json")))
+    for key, spec in index.items():
+        if Path(spec["genes_file"]).name != spec["genes_file"]:
+            raise ValueError(f"{key}: unexpected genes_file path {spec['genes_file']!r}")
+        data = fetch(f"{PANELS_URL}/{spec['genes_file']}")
+        if spec.get("genes_sha256") and hashlib.sha256(data).hexdigest() != spec["genes_sha256"]:
+            raise ValueError(f"{key}: gene list does not match its published sha256")
+        (boards_dir / spec["genes_file"]).write_bytes(data)
+    (boards_dir / "index.json").write_text(json.dumps(index, indent=2) + "\n")
+    comp = json.loads(fetch(f"{PANELS_URL}/t1_composition.json"))
+    extra = sorted(set(comp.get("stages", {})) - RELEASED_T1_STAGES)
+    if not extra:
+        (boards_dir / "t1_composition.json").write_text(json.dumps(comp, indent=2) + "\n")
+    return {"boards": sorted(index), "reduced": reduced, "t1_composition_written": not extra,
+            "t1_composition_unreleased_stages": len(extra)}

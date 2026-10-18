@@ -1,0 +1,87 @@
+rows 720 unique (target,seed,cond) 720
+
+== near-perfect count sweep vs random_1x
+random_0.25x - random_1x: heart_E9.5: -5.10 (sd 1.11) [5/5] min -6.85 max -4.02 | heart_E8.75: -9.52 (sd 1.20) [5/5] min -11.04 max -8.30 | embryo_E8.0: -5.42 (sd 0.45) [5/5] min -5.90 max -4.82 || pooled mean of target means -6.68, seeds<0 15/15
+random_0.5x - random_1x: heart_E9.5: -1.77 (sd 1.15) [5/5] min -3.45 max -0.21 | heart_E8.75: -4.66 (sd 0.73) [5/5] min -5.59 max -3.90 | embryo_E8.0: -2.20 (sd 0.73) [5/5] min -3.24 max -1.51 || pooled mean of target means -2.87, seeds<0 15/15
+random_2x - random_1x: heart_E9.5: -0.01 (sd 0.38) [3/5] min -0.46 max +0.44 | heart_E8.75: +0.80 (sd 1.14) [1/5] min -0.16 max +2.74 | embryo_E8.0: -0.13 (sd 1.14) [2/5] min -1.32 max +1.14 || pooled mean of target means +0.22, seeds<0 6/15
+random_4x - random_1x: heart_E9.5: +0.02 (sd 0.43) [1/5] min -0.74 max +0.37 | heart_E8.75: -0.02 (sd 0.97) [1/5] min -1.69 max +0.79 | embryo_E8.0: -0.10 (sd 0.79) [2/5] min -0.94 max +0.93 || pooled mean of target means -0.03, seeds<0 4/15
+random_8x - random_1x: heart_E9.5: -0.23 (sd 0.76) [3/5] min -0.99 max +0.79 | heart_E8.75: -0.04 (sd 0.29) [2/5] min -0.46 max +0.26 | embryo_E8.0: +0.03 (sd 0.72) [3/5] min -0.67 max +1.20 || pooled mean of target means -0.08, seeds<0 8/15
+
+== floor-quality count sweep vs refstage_1x
+refstage_0.25x - refstage_1x: heart_E9.5: -2.56 (sd 0.91) [5/5] min -3.57 max -1.65 | heart_E8.75: -5.47 (sd 1.09) [5/5] min -7.06 max -4.21 | embryo_E8.0: -2.16 (sd 0.48) [5/5] min -2.85 max -1.51 || pooled mean of target means -3.40, seeds<0 15/15
+refstage_0.5x - refstage_1x: heart_E9.5: -1.08 (sd 0.94) [5/5] min -2.64 max -0.30 | heart_E8.75: -2.14 (sd 0.16) [5/5] min -2.29 max -1.97 | embryo_E8.0: -1.00 (sd 0.45) [5/5] min -1.36 max -0.25 || pooled mean of target means -1.41, seeds<0 15/15
+refstage_2x - refstage_1x: heart_E9.5: +0.39 (sd 0.39) [1/5] min -0.11 max +0.92 | heart_E8.75: +0.10 (sd 0.91) [3/5] min -0.78 max +1.54 | embryo_E8.0: +0.31 (sd 0.38) [1/5] min -0.19 max +0.72 || pooled mean of target means +0.27, seeds<0 5/15
+refstage_4x - refstage_1x: heart_E9.5: +0.04 (sd 0.70) [3/5] min -0.50 max +1.21 | heart_E8.75: +0.90 (sd 0.91) [1/5] min -0.26 max +1.81 | embryo_E8.0: +0.67 (sd 0.49) [1/5] min -0.19 max +1.05 || pooled mean of target means +0.54, seeds<0 5/15
+refstage_8x - refstage_1x: heart_E9.5: +0.39 (sd 0.50) [2/5] min -0.17 max +0.94 | heart_E8.75: +1.64 (sd 1.11) [1/5] min -0.04 max +2.71 | embryo_E8.0: +0.73 (sd 0.25) [0/5] min +0.36 max +1.01 || pooled mean of target means +0.92, seeds<0 3/15
+
+== near-perfect 2x vs 4x and 8x
+random_2x - random_4x: heart_E9.5: -0.03 (sd 0.34) [3/5] min -0.42 max +0.35 | heart_E8.75: +0.81 (sd 0.89) [1/5] min -0.06 max +1.95 | embryo_E8.0: -0.03 (sd 0.39) [2/5] min -0.50 max +0.47 || pooled mean of target means +0.25, seeds<0 6/15
+random_2x - random_8x: heart_E9.5: +0.22 (sd 0.70) [3/5] min -0.35 max +1.32 | heart_E8.75: +0.84 (sd 1.34) [1/5] min -0.17 max +3.19 | embryo_E8.0: -0.16 (sd 1.61) [2/5] min -2.46 max +1.81 || pooled mean of target means +0.30, seeds<0 6/15
+
+== floor-quality 2x vs 4x and 8x
+refstage_2x - refstage_4x: heart_E9.5: +0.35 (sd 0.46) [1/5] min -0.29 max +0.80 | heart_E8.75: -0.80 (sd 0.55) [5/5] min -1.43 max -0.25 | embryo_E8.0: -0.36 (sd 0.27) [5/5] min -0.68 max -0.00 || pooled mean of target means -0.27, seeds<0 11/15
+refstage_2x - refstage_8x: heart_E9.5: +0.00 (sd 0.53) [2/5] min -0.72 max +0.77 | heart_E8.75: -1.54 (sd 0.75) [5/5] min -2.66 max -0.75 | embryo_E8.0: -0.42 (sd 0.24) [5/5] min -0.59 max -0.01 || pooled mean of target means -0.65, seeds<0 12/15
+
+== blocks vs random same n
+block_1x - random_1x: heart_E9.5: -25.48 (sd 2.29) [5/5] min -28.92 max -22.66 | heart_E8.75: -27.84 (sd 4.01) [5/5] min -31.43 max -22.16 | embryo_E8.0: -15.82 (sd 1.44) [5/5] min -18.20 max -14.42 || pooled mean of target means -23.05, seeds<0 15/15
+block_8x - random_8x: heart_E9.5: -17.92 (sd 2.28) [5/5] min -20.25 max -14.55 | heart_E8.75: -18.19 (sd 1.98) [5/5] min -20.46 max -15.85 | embryo_E8.0: -12.45 (sd 1.10) [5/5] min -13.18 max -10.51 || pooled mean of target means -16.19, seeds<0 15/15
+head_1x - random_1x: heart_E9.5: -46.47 (sd 0.83) [5/5] min -47.91 max -45.81 | heart_E8.75: -48.14 (sd 1.38) [5/5] min -49.76 max -46.16 | embryo_E8.0: -21.25 (sd 0.84) [5/5] min -22.29 max -19.98 || pooled mean of target means -38.62, seeds<0 15/15
+head_8x - random_8x: heart_E9.5: -20.29 (sd 1.02) [5/5] min -21.51 max -18.73 | heart_E8.75: -20.72 (sd 1.05) [5/5] min -22.13 max -19.20 | embryo_E8.0: -14.24 (sd 0.75) [5/5] min -15.02 max -13.26 || pooled mean of target means -18.42, seeds<0 15/15
+
+== ref blocks vs refstage same n
+refblock_1x - refstage_1x: heart_E9.5: -5.94 (sd 1.16) [5/5] min -6.95 max -3.94 | heart_E8.75: -7.30 (sd 5.16) [5/5] min -13.54 max -2.71 | embryo_E8.0: -3.25 (sd 0.62) [5/5] min -4.17 max -2.65 || pooled mean of target means -5.50, seeds<0 15/15
+refblock_4x - refstage_4x: heart_E9.5: +1.80 (sd 1.19) [0/5] min +0.64 max +3.68 | heart_E8.75: -4.67 (sd 5.03) [5/5] min -11.47 max -0.57 | embryo_E8.0: -0.38 (sd 0.51) [3/5] min -1.02 max +0.15 || pooled mean of target means -1.08, seeds<0 8/15
+refhead_1x - refstage_1x: heart_E9.5: -18.06 (sd 0.84) [5/5] min -18.84 max -17.07 | heart_E8.75: -8.06 (sd 1.09) [5/5] min -9.89 max -7.11 | embryo_E8.0: -3.53 (sd 0.52) [5/5] min -4.24 max -3.02 || pooled mean of target means -9.88, seeds<0 15/15
+refhead_4x - refstage_4x: heart_E9.5: -5.54 (sd 0.64) [5/5] min -6.06 max -4.45 | heart_E8.75: -10.05 (sd 0.58) [5/5] min -10.68 max -9.21 | embryo_E8.0: +1.28 (sd 0.39) [0/5] min +0.87 max +1.74 || pooled mean of target means -4.77, seeds<0 10/15
+
+== jitter vs same cells
+jitter_1x_0.25own - random_1x: heart_E9.5: -0.02 (sd 0.06) [3/5] min -0.12 max +0.05 | heart_E8.75: +0.13 (sd 0.24) [2/5] min -0.02 max +0.54 | embryo_E8.0: +0.06 (sd 0.07) [1/5] min -0.03 max +0.13 || pooled mean of target means +0.06, seeds<0 6/15
+jitter_1x_0.5own - random_1x: heart_E9.5: -0.04 (sd 0.27) [4/5] min -0.25 max +0.42 | heart_E8.75: -0.28 (sd 0.30) [4/5] min -0.69 max +0.01 | embryo_E8.0: -0.11 (sd 0.49) [4/5] min -0.61 max +0.64 || pooled mean of target means -0.14, seeds<0 12/15
+jitter_1x_1.0own - random_1x: heart_E9.5: -0.21 (sd 0.45) [4/5] min -0.93 max +0.29 | heart_E8.75: -0.18 (sd 0.10) [5/5] min -0.31 max -0.02 | embryo_E8.0: -0.48 (sd 0.41) [4/5] min -1.07 max +0.00 || pooled mean of target means -0.29, seeds<0 13/15
+jitter_1x_2.0own - random_1x: heart_E9.5: -1.46 (sd 0.57) [5/5] min -2.20 max -0.79 | heart_E8.75: -1.75 (sd 0.57) [5/5] min -2.36 max -1.00 | embryo_E8.0: -1.17 (sd 0.87) [5/5] min -2.33 max -0.25 || pooled mean of target means -1.46, seeds<0 15/15
+jitter_4x_0.25truth - random_4x: heart_E9.5: -0.09 (sd 0.16) [3/5] min -0.37 max +0.00 | heart_E8.75: +0.09 (sd 0.15) [1/5] min -0.02 max +0.35 | embryo_E8.0: -0.03 (sd 0.18) [2/5] min -0.28 max +0.22 || pooled mean of target means -0.01, seeds<0 6/15
+jitter_4x_0.5truth - random_4x: heart_E9.5: -0.00 (sd 0.44) [3/5] min -0.39 max +0.71 | heart_E8.75: +0.40 (sd 0.71) [1/5] min -0.19 max +1.54 | embryo_E8.0: +0.09 (sd 0.32) [2/5] min -0.19 max +0.60 || pooled mean of target means +0.16, seeds<0 6/15
+jitter_4x_1.0truth - random_4x: heart_E9.5: -0.05 (sd 0.31) [2/5] min -0.52 max +0.29 | heart_E8.75: +0.55 (sd 0.69) [1/5] min -0.10 max +1.58 | embryo_E8.0: -0.38 (sd 0.53) [3/5] min -1.05 max +0.22 || pooled mean of target means +0.04, seeds<0 6/15
+jitter_4x_2.0truth - random_4x: heart_E9.5: -1.11 (sd 0.63) [5/5] min -1.81 max -0.34 | heart_E8.75: -0.42 (sd 0.47) [4/5] min -1.09 max +0.11 | embryo_E8.0: -1.36 (sd 1.06) [5/5] min -2.96 max -0.44 || pooled mean of target means -0.96, seeds<0 14/15
+jitter_4x_0.25own - random_4x: heart_E9.5: +0.02 (sd 0.12) [2/5] min -0.16 max +0.16 | heart_E8.75: -0.17 (sd 0.40) [2/5] min -0.84 max +0.20 | embryo_E8.0: -0.12 (sd 0.13) [4/5] min -0.30 max +0.00 || pooled mean of target means -0.09, seeds<0 8/15
+jitter_4x_0.5own - random_4x: heart_E9.5: +0.12 (sd 0.17) [1/5] min -0.01 max +0.41 | heart_E8.75: +0.25 (sd 0.28) [0/5] min +0.00 max +0.71 | embryo_E8.0: -0.07 (sd 0.38) [3/5] min -0.53 max +0.48 || pooled mean of target means +0.10, seeds<0 4/15
+jitter_4x_1.0own - random_4x: heart_E9.5: -0.36 (sd 0.51) [4/5] min -1.09 max +0.21 | heart_E8.75: +0.02 (sd 0.30) [3/5] min -0.26 max +0.53 | embryo_E8.0: +0.03 (sd 0.23) [2/5] min -0.26 max +0.29 || pooled mean of target means -0.10, seeds<0 9/15
+jitter_4x_2.0own - random_4x: heart_E9.5: -0.32 (sd 0.57) [4/5] min -1.05 max +0.48 | heart_E8.75: -0.41 (sd 0.26) [5/5] min -0.70 max -0.12 | embryo_E8.0: -0.42 (sd 0.62) [3/5] min -1.37 max +0.03 || pooled mean of target means -0.38, seeds<0 12/15
+
+== score mean (sd) per condition (key ones)
+random_1x heart_E9.5: 99.42 (0.31) | heart_E8.75: 98.71 (1.31) | embryo_E8.0: 99.18 (0.54)
+refstage_1x heart_E9.5: 50.50 (1.15) | heart_E8.75: 48.30 (1.00) | embryo_E8.0: 49.47 (0.79)
+random_2x heart_E9.5: 99.41 (0.17) | heart_E8.75: 99.51 (0.33) | embryo_E8.0: 99.05 (1.27)
+random_8x heart_E9.5: 99.19 (0.64) | heart_E8.75: 98.67 (1.47) | embryo_E8.0: 99.21 (0.70)
+
+== nbhd raw / ceiling (mean over seeds), random
+heart_E9.5 floor/ceil 75 (ratio of means 73) 0.25x 5.46 0.5x 2.38 1x 0.94 2x 0.66 4x 0.94 8x 1.94
+heart_E8.75 floor/ceil 32 (ratio of means 31) 0.25x 6.09 0.5x 2.76 1x 1.21 2x 0.66 4x 0.90 8x 1.47
+embryo_E8.0 floor/ceil 143 (ratio of means 139) 0.25x 5.64 0.5x 2.45 1x 0.86 2x 0.57 4x 0.92 8x 1.63
+per-seed argmin of raw nbhd over random counts:
+heart_E9.5 {0: 'random_2x', 1: 'random_2x', 2: 'random_2x', 3: 'random_2x', 4: 'random_2x'}
+heart_E8.75 {0: 'random_2x', 1: 'random_2x', 2: 'random_2x', 3: 'random_2x', 4: 'random_2x'}
+embryo_E8.0 {0: 'random_2x', 1: 'random_2x', 2: 'random_2x', 3: 'random_2x', 4: 'random_2x'}
+
+== dice voxel/NN ratio (truth side after count matching) random
+heart_E9.5 0.25x 3.5 0.5x 4.4 1x 5.8 2x 5.8 ceil 5.8
+heart_E8.75 0.25x 2.5 0.5x 3.0 1x 4.0 2x 4.0 ceil 4.0
+embryo_E8.0 0.25x 3.5 0.5x 4.5 1x 6.0 2x 6.0 ceil 6.0
+
+== loss decomposition below 1x (board points = 25 x group-skill change; shape group gated)
+heart_E9.5 0.25 {'expression_change': np.float64(-0.76), 'cell_state': np.float64(-0.03), 'shape_growth': np.float64(-2.92), 'local_organisation': np.float64(-1.39)} skill deltas: {'de_score': np.float64(-0.034), 'de_direction': np.float64(-0.027), 'mmd_u': np.float64(0.001), 'variogram': np.float64(-0.004), 'd2_shape': np.float64(-0.03), 'occupancy_dice': np.float64(-0.317), 'scale_log_ratio': np.float64(-0.003), 'neighborhood_mmd': np.float64(-0.056)}
+heart_E9.5 0.5 {'expression_change': np.float64(-0.24), 'cell_state': np.float64(-0.0), 'shape_growth': np.float64(-1.08), 'local_organisation': np.float64(-0.45)} skill deltas: {'de_score': np.float64(-0.012), 'de_direction': np.float64(-0.007), 'mmd_u': np.float64(0.001), 'variogram': np.float64(-0.001), 'd2_shape': np.float64(0.001), 'occupancy_dice': np.float64(-0.13), 'scale_log_ratio': np.float64(-0.0), 'neighborhood_mmd': np.float64(-0.018)}
+heart_E8.75 0.25 {'expression_change': np.float64(-1.18), 'cell_state': np.float64(-0.27), 'shape_growth': np.float64(-4.76), 'local_organisation': np.float64(-3.32)} skill deltas: {'de_score': np.float64(-0.054), 'de_direction': np.float64(-0.04), 'mmd_u': np.float64(-0.001), 'variogram': np.float64(-0.024), 'd2_shape': np.float64(-0.016), 'occupancy_dice': np.float64(-0.541), 'scale_log_ratio': np.float64(-0.014), 'neighborhood_mmd': np.float64(-0.133)}
+heart_E8.75 0.5 {'expression_change': np.float64(-0.4), 'cell_state': np.float64(-0.1), 'shape_growth': np.float64(-3.01), 'local_organisation': np.float64(-1.17)} skill deltas: {'de_score': np.float64(-0.015), 'de_direction': np.float64(-0.016), 'mmd_u': np.float64(-0.001), 'variogram': np.float64(-0.008), 'd2_shape': np.float64(-0.014), 'occupancy_dice': np.float64(-0.346), 'scale_log_ratio': np.float64(-0.001), 'neighborhood_mmd': np.float64(-0.047)}
+embryo_E8.0 0.25 {'expression_change': np.float64(-0.53), 'cell_state': np.float64(-0.07), 'shape_growth': np.float64(-4.06), 'local_organisation': np.float64(-0.76)} skill deltas: {'de_score': np.float64(-0.024), 'de_direction': np.float64(-0.018), 'mmd_u': np.float64(-0.001), 'variogram': np.float64(-0.006), 'd2_shape': np.float64(-0.015), 'occupancy_dice': np.float64(-0.469), 'scale_log_ratio': np.float64(-0.003), 'neighborhood_mmd': np.float64(-0.03)}
+embryo_E8.0 0.5 {'expression_change': np.float64(-0.19), 'cell_state': np.float64(-0.03), 'shape_growth': np.float64(-1.74), 'local_organisation': np.float64(-0.23)} skill deltas: {'de_score': np.float64(-0.01), 'de_direction': np.float64(-0.006), 'mmd_u': np.float64(-0.001), 'variogram': np.float64(-0.002), 'd2_shape': np.float64(-0.001), 'occupancy_dice': np.float64(-0.208), 'scale_log_ratio': np.float64(-0.0), 'neighborhood_mmd': np.float64(-0.009)}
+
+== anchors (mean over seeds of random_1x rows)
+heart_E9.5 de_score: 0/0.9296 de_direction: 0/0.9695 mmd_u: 0.05872/0.000122 variogram: 0.05831/0.000784 d2_shape: 0.05053/0.005132 occupancy_dice: 0.7806/0.9297 scale_log_ratio: -0.4306/0.0061 neighborhood_mmd: 0.1379/0.001882
+heart_E8.75 de_score: 0/0.9219 de_direction: 0/0.965 mmd_u: 0.05503/0.000558 variogram: 0.0558/0.0008368 d2_shape: 0.04262/0.005172 occupancy_dice: 0.7647/0.8821 scale_log_ratio: 0.4906/0.00428 neighborhood_mmd: 0.1123/0.003616
+embryo_E8.0 de_score: 0/0.9214 de_direction: 0/0.9848 mmd_u: 0.2444/0.000576 variogram: 0.1942/0.000921 d2_shape: 0.03233/0.00554 occupancy_dice: 0.7579/0.9032 scale_log_ratio: -0.798/-0.00488 neighborhood_mmd: 0.4615/0.003322
+
+== jitter rms at f=1 and nn values
+heart_E9.5 nn_truth 21.63 1x own jr 21.73 4x own 14.13 4x truth 21.63
+heart_E8.75 nn_truth 20.07 1x own jr 20.13 4x own 14.01 4x truth 20.07
+embryo_E8.0 nn_truth 20.46 1x own jr 20.43 4x own 13.75 4x truth 20.46

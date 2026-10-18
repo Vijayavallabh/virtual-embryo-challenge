@@ -1,0 +1,20 @@
+{
+  "started": "2026-10-18 20:11:02",
+  "stages": "ref,ko,shift,cross,contrast,figs",
+  "seed": 0,
+  "n_boot": 2000,
+  "max_cells": null,
+  "ko_depth": "match5",
+  "fig_estimator": "raw",
+  "python": "3.12.12",
+  "sklearn": "1.9.1",
+  "harmonise_py_sha256_16": "b89ae001f4b7ccf3",
+  "script_sha256_16": "e8ad724d3a1d71bb",
+  "data_sha256_16": {
+    "E9.5": "371ca6530e084de2",
+    "E8.75": "149ab6df7c99ad85",
+    "KO": "5b1668ab982e64f7"
+  },
+  "finished": "2026-10-18 20:20:32",
+  "seconds": 569.6
+}

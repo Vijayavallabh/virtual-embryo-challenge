@@ -1,0 +1,54 @@
+reviewer rows: 200; unique: 200
+
+== near-perfect (random) vs 1x: paired mean, 95% CI half-width [seeds<0 / n]
+random_0.5x - random_1x: heart_E9.5: -0.87 ±0.31 [10/10] | heart_E8.75: -1.67 ±1.02 [9/10] || 3 orig targets pooled: -1.27 ±0.52 [19/20]
+random_2x - random_1x: heart_E9.5: +0.09 ±0.27 [4/10] | heart_E8.75: +0.42 ±0.45 [3/10] || 3 orig targets pooled: +0.26 ±0.25 [7/20]
+random_3x - random_1x: heart_E9.5: +0.08 ±0.26 [5/10] | heart_E8.75: +0.05 ±0.43 [5/10] || 3 orig targets pooled: +0.07 ±0.23 [10/20]
+
+== floor-quality (refstage) vs 1x: paired mean, 95% CI half-width [seeds<0 / n]
+refstage_0.5x - refstage_1x: heart_E9.5: -0.91 ±0.45 [10/10] | heart_E8.75: -1.48 ±0.71 [9/10] || 3 orig targets pooled: -1.19 ±0.40 [19/20]
+refstage_2x - refstage_1x: heart_E9.5: +0.50 ±0.53 [3/10] | heart_E8.75: +0.67 ±0.91 [5/10] || 3 orig targets pooled: +0.59 ±0.48 [8/20]
+
+== intermediate (50% expression shuffled) vs 1x: paired mean, 95% CI half-width [seeds<0 / n]
+shuffle50_2x - shuffle50_1x: heart_E9.5: +0.59 ±0.32 [2/10] | heart_E8.75: +1.07 ±0.50 [0/10] || 3 orig targets pooled: +0.83 ±0.29 [2/20]
+shuffle50_3x - shuffle50_1x: heart_E9.5: +0.96 ±0.29 [0/10] | heart_E8.75: +1.15 ±0.49 [0/10] || 3 orig targets pooled: +1.06 ±0.26 [0/20]
+
+== 2x vs higher counts: paired mean, 95% CI half-width [seeds<0 / n]
+random_2x - random_3x: heart_E9.5: +0.01 ±0.26 [4/10] | heart_E8.75: +0.37 ±0.47 [3/10] || 3 orig targets pooled: +0.19 ±0.26 [7/20]
+shuffle50_2x - shuffle50_3x: heart_E9.5: -0.37 ±0.26 [9/10] | heart_E8.75: -0.08 ±0.48 [7/10] || 3 orig targets pooled: -0.23 ±0.25 [16/20]
+
+== jitter at 2 NN (same cells): paired mean, 95% CI half-width [seeds<0 / n]
+
+== does 4x tolerate the same physical jitter better? loss(1x/own f=2) - loss(4x/truth f=2), paired by seed
+
+== mean score (sd) and mean skills per condition
+-- heart_E9.5 (truth_cells 8061, frac 0.3)
+random_0.5x            n=  4030 seeds=10 score= 98.73 (0.59) nbhd/ceil= 3.82 vox/nn=6.7 | de_sc=0.993 de_di=0.997 mmd_u=1.000 vario=0.998 d2_sh=0.990 occup=0.911 scale=0.996 neigh=0.989
+random_1x              n=  8061 seeds=10 score= 99.60 (0.39) nbhd/ceil= 1.29 vox/nn=8.1 | de_sc=0.993 de_di=1.000 mmd_u=0.999 vario=0.999 d2_sh=0.993 occup=0.978 scale=0.997 neigh=0.999
+random_2x              n= 16122 seeds=10 score= 99.69 (0.31) nbhd/ceil= 1.58 vox/nn=8.1 | de_sc=0.999 de_di=1.000 mmd_u=0.999 vario=0.999 d2_sh=0.999 occup=0.975 scale=0.998 neigh=0.998
+random_3x              n= 24183 seeds=10 score= 99.68 (0.25) nbhd/ceil= 3.04 vox/nn=8.1 | de_sc=1.000 de_di=1.000 mmd_u=0.999 vario=0.999 d2_sh=0.998 occup=0.986 scale=0.999 neigh=0.993
+refstage_0.5x          n=  4030 seeds=10 score= 48.24 (1.14) nbhd/ceil=278.13 vox/nn=6.7 | de_sc=0.443 de_di=0.498 mmd_u=0.500 vario=0.501 d2_sh=0.497 occup=0.491 scale=0.500 neigh=0.481
+refstage_1x            n=  8061 seeds=10 score= 49.14 (1.35) nbhd/ceil=264.18 vox/nn=8.1 | de_sc=0.453 de_di=0.508 mmd_u=0.499 vario=0.501 d2_sh=0.499 occup=0.500 scale=0.500 neigh=0.493
+refstage_2x            n= 16122 seeds=10 score= 49.65 (1.11) nbhd/ceil=255.36 vox/nn=8.1 | de_sc=0.455 de_di=0.517 mmd_u=0.501 vario=0.505 d2_sh=0.501 occup=0.499 scale=0.500 neigh=0.501
+shuffle50_1x           n=  8061 seeds=10 score= 90.02 (0.48) nbhd/ceil=161.07 vox/nn=8.1 | de_sc=0.993 de_di=1.000 mmd_u=0.999 vario=0.999 d2_sh=0.993 occup=0.978 scale=0.997 neigh=0.616
+shuffle50_2x           n= 16122 seeds=10 score= 90.61 (0.32) nbhd/ceil=147.81 vox/nn=8.1 | de_sc=0.999 de_di=1.000 mmd_u=0.999 vario=1.000 d2_sh=0.999 occup=0.975 scale=0.998 neigh=0.635
+shuffle50_3x           n= 24183 seeds=10 score= 90.99 (0.30) nbhd/ceil=142.04 vox/nn=8.1 | de_sc=1.000 de_di=1.000 mmd_u=0.999 vario=1.000 d2_sh=0.998 occup=0.986 scale=0.999 neigh=0.646
+-- heart_E8.75 (truth_cells 3724, frac 0.3)
+random_0.5x            n=  1862 seeds=10 score= 97.44 (1.25) nbhd/ceil= 3.36 vox/nn=4.6 | de_sc=0.991 de_di=0.993 mmd_u=0.999 vario=0.998 d2_sh=0.980 occup=0.806 scale=0.996 neigh=0.979
+random_1x              n=  3724 seeds=10 score= 99.11 (0.59) nbhd/ceil= 1.07 vox/nn=5.5 | de_sc=0.995 de_di=0.999 mmd_u=0.999 vario=0.998 d2_sh=0.986 occup=0.929 scale=0.995 neigh=0.999
+random_2x              n=  7448 seeds=10 score= 99.53 (0.54) nbhd/ceil= 1.03 vox/nn=5.5 | de_sc=1.000 de_di=1.000 mmd_u=0.999 vario=0.999 d2_sh=0.989 occup=0.964 scale=0.997 neigh=0.999
+random_3x              n= 11172 seeds=10 score= 99.16 (0.58) nbhd/ceil= 1.78 vox/nn=5.5 | de_sc=1.000 de_di=1.000 mmd_u=1.000 vario=0.999 d2_sh=0.994 occup=0.928 scale=0.998 neigh=0.994
+refstage_0.5x          n=  1862 seeds=10 score= 46.88 (1.13) nbhd/ceil=135.97 vox/nn=4.6 | de_sc=0.444 de_di=0.515 mmd_u=0.504 vario=0.500 d2_sh=0.504 occup=0.462 scale=0.498 neigh=0.452
+refstage_1x            n=  3724 seeds=10 score= 48.36 (1.04) nbhd/ceil=125.35 vox/nn=5.5 | de_sc=0.451 de_di=0.522 mmd_u=0.507 vario=0.500 d2_sh=0.502 occup=0.497 scale=0.500 neigh=0.472
+refstage_2x            n=  7448 seeds=10 score= 49.03 (1.12) nbhd/ceil=117.99 vox/nn=5.5 | de_sc=0.448 de_di=0.519 mmd_u=0.504 vario=0.500 d2_sh=0.501 occup=0.492 scale=0.500 neigh=0.489
+shuffle50_1x           n=  3724 seeds=10 score= 88.41 (0.73) nbhd/ceil=85.43 vox/nn=5.5 | de_sc=0.995 de_di=0.999 mmd_u=0.999 vario=0.998 d2_sh=0.986 occup=0.929 scale=0.995 neigh=0.571
+shuffle50_2x           n=  7448 seeds=10 score= 89.48 (0.67) nbhd/ceil=76.37 vox/nn=5.5 | de_sc=1.000 de_di=1.000 mmd_u=0.999 vario=0.999 d2_sh=0.989 occup=0.964 scale=0.997 neigh=0.597
+shuffle50_3x           n= 11172 seeds=10 score= 89.55 (0.67) nbhd/ceil=72.60 vox/nn=5.5 | de_sc=1.000 de_di=1.000 mmd_u=1.000 vario=1.000 d2_sh=0.994 occup=0.928 scale=0.998 neigh=0.609
+
+== per-target argmin of mean score loss and of raw nbhd over counts (random / refstage / shuffle50)
+heart_E9.5 random: best mean score random_2x (99.69); raw-nbhd argmin random_1x; 0.5x 98.73, 1x 99.60, 2x 99.69, 3x 99.68
+heart_E9.5 refstage: best mean score refstage_2x (49.65); raw-nbhd argmin refstage_2x; 0.5x 48.24, 1x 49.14, 2x 49.65
+heart_E9.5 shuffle50: best mean score shuffle50_3x (90.99); raw-nbhd argmin shuffle50_3x; 1x 90.02, 2x 90.61, 3x 90.99
+heart_E8.75 random: best mean score random_2x (99.53); raw-nbhd argmin random_2x; 0.5x 97.44, 1x 99.11, 2x 99.53, 3x 99.16
+heart_E8.75 refstage: best mean score refstage_2x (49.03); raw-nbhd argmin refstage_2x; 0.5x 46.88, 1x 48.36, 2x 49.03
+heart_E8.75 shuffle50: best mean score shuffle50_3x (89.55); raw-nbhd argmin shuffle50_3x; 1x 88.41, 2x 89.48, 3x 89.55

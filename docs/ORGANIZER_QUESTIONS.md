@@ -59,3 +59,33 @@ of veckit PR #6? And (6) which time zone applies to the 2 December deadline?
 Thank you for running the challenge.
 
 Vijayavallabh J
+
+---
+
+## Follow-up (draft, 2026-10-19, not sent)
+
+Waiting for the user's decision. Points 1 and 2 report data problems that affect every team's scores, so sending them
+early also protects us; point 3 asks whether a published field may inform a prediction, before we would use it.
+
+**Subject:** Human Team: data questions on the MERFISH coordinates and duplicated records
+
+Hello organisers,
+
+Three follow-up points from checking the released Task 2/3 files:
+
+1. **Duplicated records.** Some files contain the same cell twice: identical integer count rows at the same xy
+   position in adjacent z sections. We count about 440 such records in E8.0, 1,164 in E8.25_late and 317 in E8.75. In
+   the Mab21l2 knockout file, sample_id 35 appears to be stored twice (about 1,400 records at near-identical xy), and
+   sample_ids 18 and 19 look like one section placed at two z levels (about 1,400 records). We found none in E6.75,
+   E7.25 or E9.5. Are these artefacts? Will the validation and test truth sets keep or remove such records?
+2. **z coordinate.** Is `spatial_3D` z the section position times the section thickness, in the same unit as xy, for
+   every file? Were the sections registered rigidly, or with expression-aware or non-rigid alignment? Some knockout
+   sections are not rigid copies of their slide coordinates. Will the test stacks follow the same acquisition protocol
+   (section thickness, roughly the same number of sections) as the training files?
+3. **truth_cells and tissue size.** Further to our earlier question about using `truth_cells` to choose the submitted
+   cell count: may it also inform the predicted tissue size (for example, a cell-count-to-volume relation fitted on the
+   released files)? We will not use it for that unless you confirm.
+
+Thank you,
+
+Vijayavallabh J

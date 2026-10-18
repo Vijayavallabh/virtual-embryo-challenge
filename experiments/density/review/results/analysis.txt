@@ -1,0 +1,159 @@
+reviewer rows: 1460; unique: 1460
+
+== reproduction: 315 overlapping (target, seed, condition) rows; max |score diff| = 0; max |skill diff| = 0; n_pred equal: True
+conditions compared: ['block_1x', 'block_8x', 'head_1x', 'head_8x', 'jitter_1x_0.5own', 'jitter_1x_2.0own', 'jitter_4x_2.0truth', 'random_0.25x', 'random_0.5x', 'random_1x', 'random_2x', 'random_4x', 'random_8x', 'refblock_1x', 'refhead_1x', 'refstage_0.25x', 'refstage_0.5x', 'refstage_1x', 'refstage_2x', 'refstage_4x', 'refstage_8x']
+
+== near-perfect (random) vs 1x: paired mean, 95% CI half-width [seeds<0 / n]
+random_0.5x - random_1x: heart_E9.5: -1.70 ±0.47 [20/20] | heart_E8.75: -4.26 ±0.65 [20/20] | embryo_E8.0: -2.69 ±0.57 [20/20] | embryo_E7.25: -7.13 ±0.85 [20/20] || 3 orig targets pooled: -2.88 ±0.41 [60/60]
+random_2x - random_1x: heart_E9.5: +0.08 ±0.19 [10/20] | heart_E8.75: +0.57 ±0.45 [5/20] | embryo_E8.0: +0.14 ±0.54 [7/20] | embryo_E7.25: +0.73 ±0.35 [2/20] || 3 orig targets pooled: +0.27 ±0.23 [22/60]
+random_4x - random_1x: heart_E9.5: +0.18 ±0.20 [6/20] | heart_E8.75: +0.40 ±0.47 [8/20] | embryo_E8.0: +0.23 ±0.51 [6/20] | embryo_E7.25: +1.17 ±0.40 [0/20] || 3 orig targets pooled: +0.27 ±0.23 [20/60]
+random_8x - random_1x: heart_E9.5: -0.06 ±0.25 [11/20] | heart_E8.75: +0.06 ±0.62 [7/20] | embryo_E8.0: +0.42 ±0.61 [8/20] | embryo_E7.25: +0.93 ±0.38 [3/20] || 3 orig targets pooled: +0.14 ±0.29 [26/60]
+
+== floor-quality (refstage) vs 1x: paired mean, 95% CI half-width [seeds<0 / n]
+refstage_0.5x - refstage_1x: heart_E9.5: -1.09 ±0.37 [19/20] | heart_E8.75: -1.97 ±0.40 [19/20] | embryo_E8.0: -0.79 ±0.23 [20/20] | embryo_E7.25: -3.82 ±0.55 [20/20] || 3 orig targets pooled: -1.28 ±0.23 [58/60]
+refstage_2x - refstage_1x: heart_E9.5: +0.45 ±0.32 [5/20] | heart_E8.75: +0.89 ±0.48 [5/20] | embryo_E8.0: +0.32 ±0.19 [3/20] | embryo_E7.25: +1.39 ±0.35 [0/20] || 3 orig targets pooled: +0.55 ±0.20 [13/60]
+refstage_4x - refstage_1x: heart_E9.5: +0.67 ±0.39 [5/20] | heart_E8.75: +1.54 ±0.53 [3/20] | embryo_E8.0: +0.50 ±0.21 [3/20] | embryo_E7.25: +2.12 ±0.55 [1/20] || 3 orig targets pooled: +0.90 ±0.25 [11/60]
+refstage_8x - refstage_1x: heart_E9.5: +0.86 ±0.40 [4/20] | heart_E8.75: +1.94 ±0.61 [3/20] | embryo_E8.0: +0.53 ±0.27 [4/20] | embryo_E7.25: +3.01 ±0.57 [0/20] || 3 orig targets pooled: +1.11 ±0.29 [11/60]
+
+== intermediate (50% expression shuffled) vs 1x: paired mean, 95% CI half-width [seeds<0 / n]
+shuffle50_2x - shuffle50_1x: heart_E9.5: +0.59 ±0.19 [0/20] | heart_E8.75: +1.12 ±0.43 [3/20] | embryo_E8.0: +0.36 ±0.58 [6/20] | embryo_E7.25: +1.33 ±0.45 [2/20] || 3 orig targets pooled: +0.69 ±0.25 [9/60]
+shuffle50_4x - shuffle50_1x: heart_E9.5: +1.14 ±0.22 [0/20] | heart_E8.75: +1.65 ±0.48 [1/20] | embryo_E8.0: +0.71 ±0.54 [4/20] | embryo_E7.25: +2.38 ±0.55 [0/20] || 3 orig targets pooled: +1.17 ±0.26 [5/60]
+shuffle50_8x - shuffle50_1x: heart_E9.5: +1.55 ±0.30 [0/20] | heart_E8.75: +2.08 ±0.58 [2/20] | embryo_E8.0: +1.25 ±0.62 [0/20] | embryo_E7.25: +2.67 ±0.46 [0/20] || 3 orig targets pooled: +1.63 ±0.30 [2/60]
+
+== 2x vs higher counts: paired mean, 95% CI half-width [seeds<0 / n]
+random_2x - random_4x: heart_E9.5: -0.10 ±0.13 [14/20] | heart_E8.75: +0.18 ±0.55 [7/20] | embryo_E8.0: -0.09 ±0.35 [10/20] | embryo_E7.25: -0.43 ±0.40 [11/20] || 3 orig targets pooled: -0.00 ±0.21 [31/60]
+random_2x - random_8x: heart_E9.5: +0.14 ±0.22 [9/20] | heart_E8.75: +0.51 ±0.68 [7/20] | embryo_E8.0: -0.27 ±0.53 [7/20] | embryo_E7.25: -0.19 ±0.40 [14/20] || 3 orig targets pooled: +0.13 ±0.29 [23/60]
+refstage_2x - refstage_4x: heart_E9.5: -0.22 ±0.33 [13/20] | heart_E8.75: -0.65 ±0.36 [18/20] | embryo_E8.0: -0.18 ±0.15 [17/20] | embryo_E7.25: -0.73 ±0.45 [15/20] || 3 orig targets pooled: -0.35 ±0.17 [48/60]
+refstage_2x - refstage_8x: heart_E9.5: -0.41 ±0.39 [13/20] | heart_E8.75: -1.05 ±0.49 [17/20] | embryo_E8.0: -0.21 ±0.21 [16/20] | embryo_E7.25: -1.62 ±0.50 [20/20] || 3 orig targets pooled: -0.56 ±0.23 [46/60]
+shuffle50_2x - shuffle50_4x: heart_E9.5: -0.55 ±0.17 [19/20] | heart_E8.75: -0.53 ±0.50 [15/20] | embryo_E8.0: -0.35 ±0.37 [14/20] | embryo_E7.25: -1.05 ±0.53 [17/20] || 3 orig targets pooled: -0.48 ±0.20 [48/60]
+shuffle50_2x - shuffle50_8x: heart_E9.5: -0.96 ±0.24 [19/20] | heart_E8.75: -0.96 ±0.63 [17/20] | embryo_E8.0: -0.89 ±0.52 [18/20] | embryo_E7.25: -1.34 ±0.44 [18/20] || 3 orig targets pooled: -0.93 ±0.27 [54/60]
+
+== jitter at 2 NN (same cells): paired mean, 95% CI half-width [seeds<0 / n]
+jitter_1x_2.0own - random_1x: heart_E9.5: -1.35 ±0.29 [20/20] | heart_E8.75: -1.68 ±0.38 [20/20] | embryo_E8.0: -1.19 ±0.35 [19/20] | embryo_E7.25: -2.93 ±0.45 [20/20] || 3 orig targets pooled: -1.41 ±0.19 [59/60]
+jitter_4x_2.0truth - random_4x: heart_E9.5: -0.89 ±0.25 [19/20] | heart_E8.75: -0.87 ±0.48 [17/20] | embryo_E8.0: -0.91 ±0.40 [19/20] | embryo_E7.25: -2.38 ±0.43 [20/20] || 3 orig targets pooled: -0.89 ±0.21 [55/60]
+
+== does 4x tolerate the same physical jitter better? loss(1x/own f=2) - loss(4x/truth f=2), paired by seed
+heart_E9.5: loss1x -1.35, loss4x -0.89, (loss4x - loss1x) +0.46 ±0.28 [4x worse in 3/20]
+heart_E8.75: loss1x -1.68, loss4x -0.87, (loss4x - loss1x) +0.82 ±0.45 [4x worse in 3/20]
+embryo_E8.0: loss1x -1.19, loss4x -0.91, (loss4x - loss1x) +0.28 ±0.38 [4x worse in 8/20]
+embryo_E7.25: loss1x -2.93, loss4x -2.38, (loss4x - loss1x) +0.55 ±0.72 [4x worse in 6/20]
+
+== mean score (sd) and mean skills per condition
+-- heart_E9.5 (truth_cells 2687, frac 0.1)
+block_1x               n=  2687 seeds= 5 score= 73.94 (2.17) nbhd/ceil=20.78 vox/nn=5.8 | de_sc=0.852 de_di=0.916 mmd_u=0.818 vario=0.878 d2_sh=0.263 occup=0.267 scale=0.784 neigh=0.794
+block_8x               n= 21496 seeds= 5 score= 81.27 (1.82) nbhd/ceil=12.49 vox/nn=5.8 | de_sc=0.885 de_di=0.950 mmd_u=0.898 vario=0.940 d2_sh=0.382 occup=0.421 scale=0.839 neigh=0.871
+head_1x                n=  2687 seeds= 5 score= 52.95 (0.79) nbhd/ceil=71.21 vox/nn=5.8 | de_sc=0.640 de_di=0.683 mmd_u=0.542 vario=0.644 d2_sh=0.323 occup=0.275 scale=0.486 neigh=0.513
+head_8x                n= 21496 seeds= 5 score= 78.90 (1.00) nbhd/ceil=14.45 vox/nn=5.8 | de_sc=0.812 de_di=0.893 mmd_u=0.884 vario=0.922 d2_sh=0.531 occup=0.437 scale=0.705 neigh=0.847
+jitter_1x_0.5own       n=  2687 seeds= 5 score= 99.38 (0.31) nbhd/ceil= 0.99 vox/nn=5.8 | de_sc=0.985 de_di=1.000 mmd_u=0.999 vario=1.000 d2_sh=0.982 occup=0.976 scale=0.995 neigh=0.999
+jitter_1x_2.0own       n=  2687 seeds=20 score= 98.11 (0.77) nbhd/ceil= 2.23 vox/nn=5.8 | de_sc=0.990 de_di=0.998 mmd_u=0.999 vario=0.999 d2_sh=0.979 occup=0.867 scale=0.991 neigh=0.985
+jitter_4x_2.0truth     n= 10748 seeds=20 score= 98.75 (0.69) nbhd/ceil= 0.77 vox/nn=5.8 | de_sc=0.999 de_di=1.000 mmd_u=0.999 vario=0.999 d2_sh=0.986 occup=0.875 scale=0.993 neigh=1.000
+random_0.25x           n=   672 seeds= 5 score= 94.32 (0.96) nbhd/ceil= 5.46 vox/nn=3.5 | de_sc=0.951 de_di=0.973 mmd_u=1.000 vario=0.996 d2_sh=0.952 occup=0.662 scale=0.992 neigh=0.944
+random_0.5x            n=  1344 seeds=20 score= 97.76 (1.05) nbhd/ceil= 2.66 vox/nn=4.4 | de_sc=0.981 de_di=0.990 mmd_u=0.999 vario=0.998 d2_sh=0.977 occup=0.865 scale=0.996 neigh=0.980
+random_1x              n=  2687 seeds=20 score= 99.46 (0.40) nbhd/ceil= 1.08 vox/nn=5.8 | de_sc=0.990 de_di=0.998 mmd_u=0.999 vario=0.999 d2_sh=0.980 occup=0.982 scale=0.997 neigh=0.998
+random_2x              n=  5374 seeds=20 score= 99.54 (0.30) nbhd/ceil= 0.65 vox/nn=5.8 | de_sc=0.996 de_di=1.000 mmd_u=0.999 vario=0.999 d2_sh=0.983 occup=0.975 scale=0.997 neigh=1.000
+random_4x              n= 10748 seeds=20 score= 99.63 (0.37) nbhd/ceil= 1.05 vox/nn=5.8 | de_sc=0.999 de_di=1.000 mmd_u=0.999 vario=0.999 d2_sh=0.987 occup=0.981 scale=0.997 neigh=0.998
+random_8x              n= 21496 seeds=20 score= 99.40 (0.41) nbhd/ceil= 2.07 vox/nn=5.8 | de_sc=0.999 de_di=1.000 mmd_u=0.999 vario=0.999 d2_sh=0.992 occup=0.978 scale=0.998 neigh=0.988
+refblock_1x            n=  2687 seeds= 5 score= 44.56 (1.50) nbhd/ceil=80.60 vox/nn=5.8 | de_sc=0.447 de_di=0.537 mmd_u=0.473 vario=0.460 d2_sh=0.349 occup=0.292 scale=0.413 neigh=0.483
+refhead_1x             n=  2687 seeds= 5 score= 32.44 (0.70) nbhd/ceil=155.55 vox/nn=5.8 | de_sc=0.416 de_di=0.440 mmd_u=0.313 vario=0.346 d2_sh=0.356 occup=0.281 scale=0.379 neigh=0.324
+refstage_0.25x         n=   672 seeds= 5 score= 47.94 (1.23) nbhd/ceil=84.65 vox/nn=3.5 | de_sc=0.460 de_di=0.514 mmd_u=0.512 vario=0.507 d2_sh=0.497 occup=0.448 scale=0.501 neigh=0.469
+refstage_0.5x          n=  1344 seeds=20 score= 48.52 (1.40) nbhd/ceil=84.41 vox/nn=4.4 | de_sc=0.444 de_di=0.514 mmd_u=0.499 vario=0.500 d2_sh=0.497 occup=0.480 scale=0.499 neigh=0.485
+refstage_1x            n=  2687 seeds=20 score= 49.61 (1.32) nbhd/ceil=78.56 vox/nn=5.8 | de_sc=0.451 de_di=0.518 mmd_u=0.500 vario=0.502 d2_sh=0.497 occup=0.499 scale=0.500 neigh=0.503
+refstage_2x            n=  5374 seeds=20 score= 50.06 (1.31) nbhd/ceil=75.24 vox/nn=5.8 | de_sc=0.452 de_di=0.523 mmd_u=0.499 vario=0.501 d2_sh=0.497 occup=0.508 scale=0.500 neigh=0.515
+refstage_4x            n= 10748 seeds=20 score= 50.28 (1.04) nbhd/ceil=73.33 vox/nn=5.8 | de_sc=0.453 de_di=0.523 mmd_u=0.500 vario=0.500 d2_sh=0.500 occup=0.505 scale=0.500 neigh=0.521
+refstage_8x            n= 21496 seeds=20 score= 50.48 (0.95) nbhd/ceil=71.13 vox/nn=5.8 | de_sc=0.456 de_di=0.527 mmd_u=0.497 vario=0.498 d2_sh=0.500 occup=0.506 scale=0.500 neigh=0.528
+shuffle50_1x           n=  2687 seeds=20 score= 90.78 (0.56) nbhd/ceil=42.84 vox/nn=5.8 | de_sc=0.990 de_di=0.998 mmd_u=0.999 vario=0.999 d2_sh=0.980 occup=0.982 scale=0.997 neigh=0.651
+shuffle50_2x           n=  5374 seeds=20 score= 91.37 (0.48) nbhd/ceil=39.00 vox/nn=5.8 | de_sc=0.996 de_di=1.000 mmd_u=0.999 vario=0.999 d2_sh=0.983 occup=0.975 scale=0.997 neigh=0.673
+shuffle50_4x           n= 10748 seeds=20 score= 91.92 (0.59) nbhd/ceil=36.06 vox/nn=5.8 | de_sc=0.999 de_di=1.000 mmd_u=0.999 vario=0.998 d2_sh=0.987 occup=0.981 scale=0.997 neigh=0.690
+shuffle50_8x           n= 21496 seeds=20 score= 92.33 (0.58) nbhd/ceil=33.67 vox/nn=5.8 | de_sc=0.999 de_di=1.000 mmd_u=0.999 vario=0.999 d2_sh=0.992 occup=0.978 scale=0.998 neigh=0.705
+-- heart_E8.75 (truth_cells 1241, frac 0.1)
+block_1x               n=  1241 seeds= 5 score= 70.87 (3.08) nbhd/ceil=11.33 vox/nn=4.0 | de_sc=0.816 de_di=0.918 mmd_u=0.817 vario=0.871 d2_sh=0.235 occup=0.229 scale=0.686 neigh=0.745
+block_8x               n=  9928 seeds= 5 score= 80.48 (1.55) nbhd/ceil= 7.02 vox/nn=4.0 | de_sc=0.876 de_di=0.960 mmd_u=0.910 vario=0.941 d2_sh=0.400 occup=0.474 scale=0.750 neigh=0.837
+head_1x                n=  1241 seeds= 5 score= 50.57 (1.04) nbhd/ceil=38.74 vox/nn=4.0 | de_sc=0.679 de_di=0.697 mmd_u=0.496 vario=0.610 d2_sh=0.245 occup=0.230 scale=0.666 neigh=0.450
+head_8x                n=  9928 seeds= 5 score= 77.95 (1.03) nbhd/ceil= 8.32 vox/nn=4.0 | de_sc=0.839 de_di=0.880 mmd_u=0.828 vario=0.895 d2_sh=0.627 occup=0.447 scale=0.708 neigh=0.810
+jitter_1x_0.5own       n=  1241 seeds= 5 score= 98.43 (1.46) nbhd/ceil= 1.26 vox/nn=4.0 | de_sc=0.978 de_di=0.998 mmd_u=0.997 vario=0.998 d2_sh=0.995 occup=0.891 scale=0.994 neigh=0.992
+jitter_1x_2.0own       n=  1241 seeds=20 score= 96.64 (1.13) nbhd/ceil= 2.65 vox/nn=4.1 | de_sc=0.984 de_di=0.998 mmd_u=0.997 vario=0.998 d2_sh=0.952 occup=0.836 scale=0.978 neigh=0.955
+jitter_4x_2.0truth     n=  4964 seeds=20 score= 97.85 (0.94) nbhd/ceil= 1.04 vox/nn=4.1 | de_sc=0.998 de_di=1.000 mmd_u=0.998 vario=0.999 d2_sh=0.948 occup=0.834 scale=0.977 neigh=0.997
+random_0.25x           n=   310 seeds= 5 score= 89.18 (0.79) nbhd/ceil= 6.09 vox/nn=2.5 | de_sc=0.923 de_di=0.958 mmd_u=0.996 vario=0.973 d2_sh=0.981 occup=0.377 scale=0.980 neigh=0.861
+random_0.5x            n=   620 seeds=20 score= 94.07 (1.31) nbhd/ceil= 3.03 vox/nn=3.1 | de_sc=0.969 de_di=0.982 mmd_u=0.996 vario=0.989 d2_sh=0.963 occup=0.593 scale=0.987 neigh=0.946
+random_1x              n=  1241 seeds=20 score= 98.32 (1.13) nbhd/ceil= 1.24 vox/nn=4.1 | de_sc=0.984 de_di=0.998 mmd_u=0.997 vario=0.998 d2_sh=0.980 occup=0.884 scale=0.991 neigh=0.993
+random_2x              n=  2482 seeds=20 score= 98.90 (1.08) nbhd/ceil= 0.68 vox/nn=4.1 | de_sc=0.997 de_di=1.000 mmd_u=0.997 vario=0.999 d2_sh=0.977 occup=0.908 scale=0.994 neigh=1.000
+random_4x              n=  4964 seeds=20 score= 98.72 (1.08) nbhd/ceil= 0.95 vox/nn=4.1 | de_sc=0.998 de_di=1.000 mmd_u=0.998 vario=0.999 d2_sh=0.981 occup=0.882 scale=0.996 neigh=0.998
+random_8x              n=  9928 seeds=20 score= 98.38 (1.37) nbhd/ceil= 1.62 vox/nn=4.1 | de_sc=0.998 de_di=1.000 mmd_u=0.997 vario=0.999 d2_sh=0.986 occup=0.879 scale=0.997 neigh=0.984
+refblock_1x            n=  1241 seeds= 5 score= 40.99 (5.41) nbhd/ceil=38.23 vox/nn=4.0 | de_sc=0.449 de_di=0.478 mmd_u=0.440 vario=0.439 d2_sh=0.221 occup=0.183 scale=0.541 neigh=0.452
+refhead_1x             n=  1241 seeds= 5 score= 40.24 (0.72) nbhd/ceil=40.34 vox/nn=4.0 | de_sc=0.442 de_di=0.464 mmd_u=0.434 vario=0.459 d2_sh=0.163 occup=0.161 scale=0.607 neigh=0.440
+refstage_0.25x         n=   310 seeds= 5 score= 42.82 (1.56) nbhd/ceil=47.39 vox/nn=2.5 | de_sc=0.435 de_di=0.498 mmd_u=0.497 vario=0.488 d2_sh=0.527 occup=0.304 scale=0.495 neigh=0.400
+refstage_0.5x          n=   620 seeds=20 score= 45.67 (1.49) nbhd/ceil=45.40 vox/nn=3.1 | de_sc=0.442 de_di=0.512 mmd_u=0.501 vario=0.496 d2_sh=0.507 occup=0.408 scale=0.501 neigh=0.438
+refstage_1x            n=  1241 seeds=20 score= 47.64 (1.12) nbhd/ceil=40.55 vox/nn=4.1 | de_sc=0.439 de_di=0.510 mmd_u=0.500 vario=0.499 d2_sh=0.504 occup=0.491 scale=0.501 neigh=0.466
+refstage_2x            n=  2482 seeds=20 score= 48.53 (0.81) nbhd/ceil=37.60 vox/nn=4.1 | de_sc=0.438 de_di=0.505 mmd_u=0.498 vario=0.498 d2_sh=0.506 occup=0.497 scale=0.500 neigh=0.485
+refstage_4x            n=  4964 seeds=20 score= 49.18 (0.83) nbhd/ceil=35.67 vox/nn=4.1 | de_sc=0.435 de_di=0.506 mmd_u=0.499 vario=0.502 d2_sh=0.502 occup=0.501 scale=0.500 neigh=0.499
+refstage_8x            n=  9928 seeds=20 score= 49.58 (0.74) nbhd/ceil=34.25 vox/nn=4.1 | de_sc=0.441 de_di=0.513 mmd_u=0.498 vario=0.500 d2_sh=0.501 occup=0.496 scale=0.501 neigh=0.509
+shuffle50_1x           n=  1241 seeds=20 score= 88.12 (1.15) nbhd/ceil=25.56 vox/nn=4.1 | de_sc=0.984 de_di=0.998 mmd_u=0.997 vario=0.998 d2_sh=0.980 occup=0.884 scale=0.991 neigh=0.585
+shuffle50_2x           n=  2482 seeds=20 score= 89.24 (1.21) nbhd/ceil=22.69 vox/nn=4.1 | de_sc=0.997 de_di=1.000 mmd_u=0.997 vario=0.999 d2_sh=0.977 occup=0.908 scale=0.994 neigh=0.614
+shuffle50_4x           n=  4964 seeds=20 score= 89.77 (1.19) nbhd/ceil=20.31 vox/nn=4.1 | de_sc=0.998 de_di=1.000 mmd_u=0.998 vario=0.999 d2_sh=0.981 occup=0.882 scale=0.996 neigh=0.641
+shuffle50_8x           n=  9928 seeds=20 score= 90.20 (1.32) nbhd/ceil=18.98 vox/nn=4.1 | de_sc=0.998 de_di=1.000 mmd_u=0.998 vario=0.999 d2_sh=0.986 occup=0.879 scale=0.997 neigh=0.657
+-- embryo_E8.0 (truth_cells 1583, frac 0.1)
+block_1x               n=  1583 seeds= 5 score= 83.36 (1.65) nbhd/ceil= 7.15 vox/nn=6.0 | de_sc=0.893 de_di=0.969 mmd_u=0.976 vario=0.979 d2_sh=0.235 occup=0.257 scale=0.901 neigh=0.962
+block_8x               n= 12664 seeds= 5 score= 86.76 (0.56) nbhd/ceil= 4.83 vox/nn=6.0 | de_sc=0.955 de_di=0.990 mmd_u=0.989 vario=0.992 d2_sh=0.348 occup=0.318 scale=0.934 neigh=0.974
+head_1x                n=  1583 seeds= 5 score= 77.93 (0.50) nbhd/ceil=19.18 vox/nn=6.0 | de_sc=0.764 de_di=0.914 mmd_u=0.926 vario=0.947 d2_sh=0.183 occup=0.246 scale=0.943 neigh=0.887
+head_8x                n= 12664 seeds= 5 score= 84.97 (0.65) nbhd/ceil= 5.71 vox/nn=6.0 | de_sc=0.904 de_di=0.971 mmd_u=0.984 vario=0.987 d2_sh=0.259 occup=0.282 scale=0.982 neigh=0.968
+jitter_1x_0.5own       n=  1583 seeds= 5 score= 99.07 (0.57) nbhd/ceil= 0.89 vox/nn=6.0 | de_sc=0.993 de_di=1.000 mmd_u=1.000 vario=1.000 d2_sh=0.988 occup=0.915 scale=0.997 neigh=1.000
+jitter_1x_2.0own       n=  1583 seeds=20 score= 97.56 (1.36) nbhd/ceil= 2.16 vox/nn=5.9 | de_sc=0.993 de_di=0.999 mmd_u=1.000 vario=1.000 d2_sh=0.922 occup=0.821 scale=0.994 neigh=0.994
+jitter_4x_2.0truth     n=  6332 seeds=20 score= 98.07 (1.17) nbhd/ceil= 0.84 vox/nn=5.9 | de_sc=0.998 de_di=1.000 mmd_u=1.000 vario=1.000 d2_sh=0.959 occup=0.818 scale=0.996 neigh=1.000
+random_0.25x           n=   396 seeds= 5 score= 93.77 (0.54) nbhd/ceil= 5.64 vox/nn=3.5 | de_sc=0.969 de_di=0.981 mmd_u=0.999 vario=0.994 d2_sh=0.972 occup=0.460 scale=0.994 neigh=0.970
+random_0.5x            n=   792 seeds=20 score= 96.07 (2.01) nbhd/ceil= 3.12 vox/nn=4.5 | de_sc=0.978 de_di=0.993 mmd_u=0.999 vario=0.998 d2_sh=0.892 occup=0.719 scale=0.995 neigh=0.989
+random_1x              n=  1583 seeds=20 score= 98.75 (1.47) nbhd/ceil= 1.03 vox/nn=5.9 | de_sc=0.993 de_di=0.999 mmd_u=1.000 vario=1.000 d2_sh=0.940 occup=0.928 scale=0.996 neigh=0.999
+random_2x              n=  3166 seeds=20 score= 98.90 (1.13) nbhd/ceil= 0.60 vox/nn=5.9 | de_sc=0.999 de_di=1.000 mmd_u=1.000 vario=1.000 d2_sh=0.956 occup=0.917 scale=0.997 neigh=1.000
+random_4x              n=  6332 seeds=20 score= 98.99 (1.10) nbhd/ceil= 1.05 vox/nn=5.9 | de_sc=0.998 de_di=1.000 mmd_u=1.000 vario=1.000 d2_sh=0.973 occup=0.913 scale=0.998 neigh=1.000
+random_8x              n= 12664 seeds=20 score= 99.17 (0.82) nbhd/ceil= 2.00 vox/nn=5.9 | de_sc=0.998 de_di=1.000 mmd_u=1.000 vario=1.000 d2_sh=0.980 occup=0.941 scale=0.999 neigh=0.995
+refblock_1x            n=  1583 seeds= 5 score= 46.22 (0.28) nbhd/ceil=140.14 vox/nn=6.0 | de_sc=0.447 de_di=0.530 mmd_u=0.512 vario=0.517 d2_sh=0.295 occup=0.304 scale=0.423 neigh=0.505
+refhead_1x             n=  1583 seeds= 5 score= 45.94 (0.33) nbhd/ceil=139.69 vox/nn=6.0 | de_sc=0.428 de_di=0.535 mmd_u=0.503 vario=0.509 d2_sh=0.317 occup=0.298 scale=0.418 neigh=0.507
+refstage_0.25x         n=   396 seeds= 5 score= 47.31 (0.37) nbhd/ceil=152.06 vox/nn=3.5 | de_sc=0.405 de_di=0.510 mmd_u=0.498 vario=0.497 d2_sh=0.515 occup=0.383 scale=0.498 neigh=0.485
+refstage_0.5x          n=   792 seeds=20 score= 48.61 (0.60) nbhd/ceil=189.13 vox/nn=4.5 | de_sc=0.418 de_di=0.516 mmd_u=0.501 vario=0.501 d2_sh=0.497 occup=0.463 scale=0.500 neigh=0.495
+refstage_1x            n=  1583 seeds=20 score= 49.40 (0.54) nbhd/ceil=184.77 vox/nn=5.9 | de_sc=0.414 de_di=0.516 mmd_u=0.499 vario=0.500 d2_sh=0.504 occup=0.527 scale=0.501 neigh=0.501
+refstage_2x            n=  3166 seeds=20 score= 49.72 (0.48) nbhd/ceil=179.22 vox/nn=5.9 | de_sc=0.419 de_di=0.523 mmd_u=0.499 vario=0.500 d2_sh=0.504 occup=0.523 scale=0.501 neigh=0.509
+refstage_4x            n=  6332 seeds=20 score= 49.90 (0.54) nbhd/ceil=176.13 vox/nn=5.9 | de_sc=0.421 de_di=0.527 mmd_u=0.498 vario=0.500 d2_sh=0.502 occup=0.526 scale=0.501 neigh=0.513
+refstage_8x            n= 11965 seeds=20 score= 49.93 (0.65) nbhd/ceil=173.89 vox/nn=5.9 | de_sc=0.418 de_di=0.527 mmd_u=0.499 vario=0.501 d2_sh=0.501 occup=0.524 scale=0.500 neigh=0.516
+shuffle50_1x           n=  1583 seeds=20 score= 95.35 (1.54) nbhd/ceil=30.16 vox/nn=5.9 | de_sc=0.993 de_di=0.999 mmd_u=1.000 vario=1.000 d2_sh=0.940 occup=0.928 scale=0.996 neigh=0.863
+shuffle50_2x           n=  3166 seeds=20 score= 95.71 (1.16) nbhd/ceil=27.84 vox/nn=5.9 | de_sc=0.999 de_di=1.000 mmd_u=1.000 vario=1.000 d2_sh=0.956 occup=0.917 scale=0.997 neigh=0.873
+shuffle50_4x           n=  6332 seeds=20 score= 96.06 (1.12) nbhd/ceil=25.54 vox/nn=5.9 | de_sc=0.998 de_di=1.000 mmd_u=1.000 vario=1.000 d2_sh=0.973 occup=0.913 scale=0.998 neigh=0.883
+shuffle50_8x           n= 12664 seeds=20 score= 96.60 (0.80) nbhd/ceil=23.32 vox/nn=5.9 | de_sc=0.998 de_di=1.000 mmd_u=1.000 vario=1.000 d2_sh=0.980 occup=0.941 scale=0.999 neigh=0.892
+-- embryo_E7.25 (truth_cells 665, frac 0.1)
+block_1x               n=   665 seeds= 5 score= 51.10 (9.70) nbhd/ceil=10.01 vox/nn=3.6 | de_sc=0.738 de_di=0.801 mmd_u=0.483 vario=0.438 d2_sh=0.374 occup=0.241 scale=0.342 neigh=0.514
+block_8x               n=  5320 seeds= 5 score= 71.84 (12.37) nbhd/ceil= 4.68 vox/nn=3.6 | de_sc=0.817 de_di=0.913 mmd_u=0.666 vario=0.657 d2_sh=0.851 occup=0.582 scale=0.403 neigh=0.735
+head_1x                n=   665 seeds= 5 score= 36.72 (1.29) nbhd/ceil=18.09 vox/nn=3.6 | de_sc=0.632 de_di=0.610 mmd_u=0.287 vario=0.261 d2_sh=0.396 occup=0.259 scale=0.361 neigh=0.341
+head_8x                n=  5320 seeds= 5 score= 54.89 (2.79) nbhd/ceil= 9.94 vox/nn=3.6 | de_sc=0.687 de_di=0.724 mmd_u=0.412 vario=0.377 d2_sh=0.755 occup=0.649 scale=0.439 neigh=0.496
+jitter_1x_0.5own       n=   665 seeds= 5 score= 98.97 (0.84) nbhd/ceil= 0.94 vox/nn=3.6 | de_sc=1.000 de_di=1.000 mmd_u=0.988 vario=0.988 d2_sh=0.966 occup=0.963 scale=0.991 neigh=0.997
+jitter_1x_2.0own       n=   665 seeds=20 score= 95.32 (1.32) nbhd/ceil= 1.32 vox/nn=3.5 | de_sc=0.977 de_di=0.986 mmd_u=0.993 vario=0.991 d2_sh=0.949 occup=0.751 scale=0.925 neigh=0.964
+jitter_4x_2.0truth     n=  2660 seeds=20 score= 97.04 (0.86) nbhd/ceil= 0.76 vox/nn=3.5 | de_sc=0.998 de_di=1.000 mmd_u=0.994 vario=1.000 d2_sh=0.977 occup=0.736 scale=0.945 neigh=1.000
+random_0.25x           n=   166 seeds= 5 score= 83.81 (2.23) nbhd/ceil= 3.20 vox/nn=2.1 | de_sc=0.943 de_di=0.851 mmd_u=0.990 vario=0.876 d2_sh=0.908 occup=0.264 scale=0.960 neigh=0.800
+random_0.5x            n=   332 seeds=20 score= 91.12 (1.85) nbhd/ceil= 1.83 vox/nn=2.7 | de_sc=0.954 de_di=0.924 mmd_u=0.988 vario=0.949 d2_sh=0.955 occup=0.545 scale=0.969 neigh=0.910
+random_1x              n=   665 seeds=20 score= 98.25 (0.91) nbhd/ceil= 1.01 vox/nn=3.5 | de_sc=0.977 de_di=0.986 mmd_u=0.993 vario=0.991 d2_sh=0.978 occup=0.940 scale=0.975 neigh=0.993
+random_2x              n=  1330 seeds=20 score= 98.98 (0.87) nbhd/ceil= 0.61 vox/nn=3.5 | de_sc=0.996 de_di=0.999 mmd_u=0.995 vario=1.000 d2_sh=0.988 occup=0.925 scale=0.982 neigh=1.000
+random_4x              n=  2660 seeds=20 score= 99.42 (0.58) nbhd/ceil= 0.49 vox/nn=3.5 | de_sc=0.998 de_di=1.000 mmd_u=0.994 vario=1.000 d2_sh=0.990 occup=0.969 scale=0.985 neigh=1.000
+random_8x              n=  5320 seeds=20 score= 99.18 (0.88) nbhd/ceil= 0.58 vox/nn=3.5 | de_sc=0.998 de_di=1.000 mmd_u=0.994 vario=1.000 d2_sh=0.994 occup=0.936 scale=0.986 neigh=1.000
+refblock_1x            n=   665 seeds= 5 score= 46.17 (2.54) nbhd/ceil= 9.97 vox/nn=3.6 | de_sc=0.588 de_di=0.627 mmd_u=0.472 vario=0.416 d2_sh=0.432 occup=0.265 scale=0.193 neigh=0.504
+refhead_1x             n=   665 seeds= 5 score= 29.28 (0.60) nbhd/ceil=25.35 vox/nn=3.6 | de_sc=0.531 de_di=0.503 mmd_u=0.236 vario=0.240 d2_sh=0.391 occup=0.239 scale=0.210 neigh=0.267
+refstage_0.25x         n=   166 seeds= 5 score= 44.38 (2.65) nbhd/ceil=13.83 vox/nn=2.1 | de_sc=0.503 de_di=0.566 mmd_u=0.491 vario=0.470 d2_sh=0.528 occup=0.235 scale=0.490 neigh=0.413
+refstage_0.5x          n=   332 seeds=20 score= 46.87 (2.11) nbhd/ceil=11.24 vox/nn=2.7 | de_sc=0.513 de_di=0.549 mmd_u=0.487 vario=0.480 d2_sh=0.504 occup=0.359 scale=0.506 neigh=0.449
+refstage_1x            n=   665 seeds=20 score= 50.69 (1.96) nbhd/ceil= 9.77 vox/nn=3.5 | de_sc=0.524 de_di=0.577 mmd_u=0.493 vario=0.497 d2_sh=0.504 occup=0.517 scale=0.501 neigh=0.489
+refstage_2x            n=  1330 seeds=20 score= 52.08 (1.72) nbhd/ceil= 8.76 vox/nn=3.5 | de_sc=0.524 de_di=0.596 mmd_u=0.495 vario=0.502 d2_sh=0.501 occup=0.520 scale=0.504 neigh=0.519
+refstage_4x            n=  2660 seeds=20 score= 52.81 (1.48) nbhd/ceil= 8.11 vox/nn=3.5 | de_sc=0.529 de_di=0.617 mmd_u=0.498 vario=0.505 d2_sh=0.501 occup=0.491 scale=0.502 neigh=0.540
+refstage_8x            n=  5320 seeds=20 score= 53.70 (1.43) nbhd/ceil= 7.53 vox/nn=3.5 | de_sc=0.530 de_di=0.626 mmd_u=0.501 vario=0.507 d2_sh=0.502 occup=0.511 scale=0.500 neigh=0.562
+shuffle50_1x           n=   665 seeds=20 score= 88.06 (1.38) nbhd/ceil= 6.97 vox/nn=3.5 | de_sc=0.977 de_di=0.986 mmd_u=0.993 vario=0.991 d2_sh=0.978 occup=0.940 scale=0.975 neigh=0.585
+shuffle50_2x           n=  1330 seeds=20 score= 89.38 (1.17) nbhd/ceil= 6.22 vox/nn=3.5 | de_sc=0.996 de_di=0.999 mmd_u=0.995 vario=1.000 d2_sh=0.988 occup=0.925 scale=0.982 neigh=0.616
+shuffle50_4x           n=  2660 seeds=20 score= 90.43 (0.88) nbhd/ceil= 5.69 vox/nn=3.5 | de_sc=0.998 de_di=1.000 mmd_u=0.994 vario=0.999 d2_sh=0.990 occup=0.969 scale=0.985 neigh=0.641
+shuffle50_8x           n=  5320 seeds=20 score= 90.72 (1.10) nbhd/ceil= 5.27 vox/nn=3.5 | de_sc=0.998 de_di=1.000 mmd_u=0.994 vario=1.000 d2_sh=0.994 occup=0.936 scale=0.986 neigh=0.662
+
+== per-target argmin of mean score loss and of raw nbhd over counts (random / refstage / shuffle50)
+heart_E9.5 random: best mean score random_4x (99.63); raw-nbhd argmin random_2x; 0.25x 94.32, 0.5x 97.76, 1x 99.46, 2x 99.54, 4x 99.63, 8x 99.40
+heart_E9.5 refstage: best mean score refstage_8x (50.48); raw-nbhd argmin refstage_8x; 0.25x 47.94, 0.5x 48.52, 1x 49.61, 2x 50.06, 4x 50.28, 8x 50.48
+heart_E9.5 shuffle50: best mean score shuffle50_8x (92.33); raw-nbhd argmin shuffle50_8x; 1x 90.78, 2x 91.37, 4x 91.92, 8x 92.33
+heart_E8.75 random: best mean score random_2x (98.90); raw-nbhd argmin random_2x; 0.25x 89.18, 0.5x 94.07, 1x 98.32, 2x 98.90, 4x 98.72, 8x 98.38
+heart_E8.75 refstage: best mean score refstage_8x (49.58); raw-nbhd argmin refstage_8x; 0.25x 42.82, 0.5x 45.67, 1x 47.64, 2x 48.53, 4x 49.18, 8x 49.58
+heart_E8.75 shuffle50: best mean score shuffle50_8x (90.20); raw-nbhd argmin shuffle50_8x; 1x 88.12, 2x 89.24, 4x 89.77, 8x 90.20
+embryo_E8.0 random: best mean score random_8x (99.17); raw-nbhd argmin random_2x; 0.25x 93.77, 0.5x 96.07, 1x 98.75, 2x 98.90, 4x 98.99, 8x 99.17
+embryo_E8.0 refstage: best mean score refstage_8x (49.93); raw-nbhd argmin refstage_0.25x; 0.25x 47.31, 0.5x 48.61, 1x 49.40, 2x 49.72, 4x 49.90, 8x 49.93
+embryo_E8.0 shuffle50: best mean score shuffle50_8x (96.60); raw-nbhd argmin shuffle50_8x; 1x 95.35, 2x 95.71, 4x 96.06, 8x 96.60
+embryo_E7.25 random: best mean score random_4x (99.42); raw-nbhd argmin random_4x; 0.25x 83.81, 0.5x 91.12, 1x 98.25, 2x 98.98, 4x 99.42, 8x 99.18
+embryo_E7.25 refstage: best mean score refstage_8x (53.70); raw-nbhd argmin refstage_8x; 0.25x 44.38, 0.5x 46.87, 1x 50.69, 2x 52.08, 4x 52.81, 8x 53.70
+embryo_E7.25 shuffle50: best mean score shuffle50_8x (90.72); raw-nbhd argmin shuffle50_8x; 1x 88.06, 2x 89.38, 4x 90.43, 8x 90.72

@@ -1,0 +1,9 @@
+test,embryo,level,n_cat,n_excl0,max_abs_diff
+odd vs even sections,WT,group,12,0,0.012352331136142779
+alternating 4-section blocks,WT,group,12,1,0.03839724692198598
+odd vs even sections,WT,label,22,0,0.014857002953303416
+alternating 4-section blocks,WT,label,22,2,0.03333811639887483
+odd vs even sections,KO,group,12,0,0.012690197933496725
+alternating 4-section blocks,KO,group,12,0,0.024669532178932585
+odd vs even sections,KO,label,22,0,0.012457503924567431
+alternating 4-section blocks,KO,label,22,1,0.021751098318638085

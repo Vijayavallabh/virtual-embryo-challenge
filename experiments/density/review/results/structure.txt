@@ -1,0 +1,6 @@
+E6.75: n=7093 dims=3 z_levels=65 z_runs=988 spearman(row,z)=-0.9994 kendall=-0.9811 frac_adjacent_z_increase=0.06754 dup_coords=0 rms=122.7 nn_full=7.35 truth_cells=354
+E7.25: n=13295 dims=3 z_levels=40 z_runs=40 spearman(row,z)=-0.9996 kendall=-0.9862 frac_adjacent_z_increase=0.00000 dup_coords=0 rms=147.3 nn_full=7.25 truth_cells=665
+E8.0: n=31671 dims=3 z_levels=30 z_runs=30 spearman(row,z)=-0.9994 kendall=-0.9826 frac_adjacent_z_increase=0.00000 dup_coords=0 rms=326.6 nn_full=8.41 truth_cells=1583
+E8.25_late: n=58716 dims=3 z_levels=38 z_runs=38 spearman(row,z)=-0.9996 kendall=-0.9854 frac_adjacent_z_increase=0.00000 dup_coords=0 rms=354.1 nn_full=8.72 truth_cells=2936
+E8.75: n=24826 dims=3 z_levels=35 z_runs=35 spearman(row,z)=-0.9995 kendall=-0.9851 frac_adjacent_z_increase=0.00000 dup_coords=0 rms=216.9 nn_full=8.71 truth_cells=1241
+E9.5: n=53742 dims=3 z_levels=98 z_runs=3484 spearman(row,z)=-0.9994 kendall=-0.9816 frac_adjacent_z_increase=0.03171 dup_coords=0 rms=335.0 nn_full=9.04 truth_cells=2687

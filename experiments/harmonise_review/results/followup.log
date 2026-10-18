@@ -1,0 +1,47 @@
+within-CM KO-WT differences under z trimming (top call, harmonise per-cell outputs):
+label          A-CM  OFT-CM  SV-CM   V-CM
+trim                                     
+KO high -6   -0.071  -0.083 -0.112  0.266
+KO low -6    -0.034  -0.027 -0.126  0.187
+KO low -8    -0.024  -0.021 -0.131  0.176
+WT high -6   -0.072  -0.018 -0.122  0.211
+WT low -6    -0.099  -0.057 -0.087  0.244
+both ends -4 -0.081  -0.062 -0.108  0.251
+both ends -6 -0.082  -0.069 -0.095  0.246
+none         -0.064  -0.039 -0.118  0.221
+label          A-CM  OFT-CM  SV-CM  V-CM
+trim                                    
+KO high -6    False    True   True  True
+KO low -6     False   False   True  True
+KO low -8     False   False   True  True
+WT high -6     True   False   True  True
+WT low -6      True   False   True  True
+both ends -4   True   False   True  True
+both ends -6   True   False   True  True
+none          False   False   True  True
+within-CM composition by z quintile (0 = lowest z, the liver/septum-transversum end in both stacks):
+col_0 embryo  cm_cells   A-CM  OFT-CM  SV-CM   V-CM
+row_0                                              
+0         WT      3190  0.058   0.002  0.420  0.519
+1         WT      5487  0.364   0.007  0.215  0.413
+2         WT      4066  0.461   0.072  0.014  0.453
+3         WT      2846  0.356   0.446  0.002  0.196
+4         WT       696  0.004   0.991  0.000  0.004
+0         KO      2284  0.019   0.008  0.116  0.857
+1         KO      3365  0.270   0.006  0.078  0.646
+2         KO      4552  0.303   0.016  0.032  0.649
+3         KO      3514  0.278   0.138  0.003  0.582
+4         KO      3025  0.275   0.368  0.002  0.355
+{'stage': 'E9.5', 'seed': 0, 'summed_group_acc': 0.8846153846153846, 'summed_group_f1': 0.8579864672494307, 'direct_group_acc': 0.8752558520337911, 'direct_group_f1': 0.8475471568939758, 'macro_f1': 0.8064112960563565, 'accuracy': 0.8337613040080384}
+{'stage': 'E9.5', 'seed': 1, 'summed_group_acc': 0.8857132224331064, 'summed_group_f1': 0.8600766942245724, 'direct_group_acc': 0.8740463696922333, 'direct_group_f1': 0.845847875447987, 'macro_f1': 0.8067019647434374, 'accuracy': 0.8339287707937926}
+{'stage': 'E9.5', 'seed': 2, 'summed_group_acc': 0.8842432362025976, 'summed_group_f1': 0.8578385443091864, 'direct_group_acc': 0.8752000297718731, 'direct_group_f1': 0.847838148296357, 'macro_f1': 0.8066418744235726, 'accuracy': 0.8337240891667597}
+{'stage': 'E8.75', 'seed': 0, 'summed_group_acc': 0.911096884336321, 'summed_group_f1': 0.7698985148749784, 'direct_group_acc': 0.9066154502774221, 'direct_group_f1': 0.7571266179893587, 'macro_f1': 0.6449013396951084, 'accuracy': 0.852752880921895}
+{'stage': 'E8.75', 'seed': 1, 'summed_group_acc': 0.9116090482287665, 'summed_group_f1': 0.7701089274489332, 'direct_group_acc': 0.9064020486555698, 'direct_group_f1': 0.7608327347906548, 'macro_f1': 0.6397684870039861, 'accuracy': 0.8536064874093043}
+{'stage': 'E8.75', 'seed': 2, 'summed_group_acc': 0.9127187366623987, 'summed_group_f1': 0.770219366051174, 'direct_group_acc': 0.9067861715749039, 'direct_group_f1': 0.7542039886685575, 'macro_f1': 0.6443917409271787, 'accuracy': 0.8562526675202732}
+   stage  seed  summed_group_acc  summed_group_f1  direct_group_acc  direct_group_f1  macro_f1  accuracy  f1_gain_summed
+0   E9.5     0            0.8846           0.8580            0.8753           0.8475    0.8064    0.8338          0.0104
+1   E9.5     1            0.8857           0.8601            0.8740           0.8458    0.8067    0.8339          0.0142
+2   E9.5     2            0.8842           0.8578            0.8752           0.8478    0.8066    0.8337          0.0100
+3  E8.75     0            0.9111           0.7699            0.9066           0.7571    0.6449    0.8528          0.0128
+4  E8.75     1            0.9116           0.7701            0.9064           0.7608    0.6398    0.8536          0.0093
+5  E8.75     2            0.9127           0.7702            0.9068           0.7542    0.6444    0.8563          0.0160

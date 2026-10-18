@@ -3,31 +3,47 @@
 # Built 2026-10-18 from label names checked against marker-gene expression per label (scripts/label_markers.py,
 # runs/label_markers.tsv on the DGX). The organisers' cross-stage label table is not published yet; replace or
 # refine this when it is. Flags:
-#   core:  counts toward the "core cardiac" cloud used for heart size (cardiomyocytes, endocardium, epicardium,
-#          cushion); everything else is "shell" (T2 heart scope modelling).
-#   mesp1: whether the group is (mostly) Mesp1-derived, i.e. cell-autonomously affected by Mesp1-Cre knockouts in T3:
-#          yes / partial / no. Mesp1 marks early cardiac and cranial mesoderm, extra-embryonic mesoderm and their
-#          derivatives; endoderm, ectoderm, neural tube and neural crest are not Mesp1-derived.
+#   core:   counts toward the "core cardiac" cloud used for heart size: cardiomyocytes and endocardium, including
+#           cushion endocardium. Epicardium, proepicardium and septum transversum are shell (decided 2026-10-19, so
+#           the core means the same thing at every stage). Everything else is "shell" (T2 heart scope modelling).
+#   mesp1:  whether the group is (mostly) Mesp1-derived, i.e. cell-autonomously affected by Mesp1-Cre knockouts in T3:
+#           yes / partial / no. Mesp1 marks early cardiac and cranial mesoderm, extra-embryonic mesoderm and their
+#           derivatives; endoderm, ectoderm, neural tube and neural crest are not Mesp1-derived.
+#   merged: coarser level for cross-stage and cross-file work, kept only for groups whose label transfer between
+#           E8.75 and E9.5 is usable (experiments/harmonise/REPORT.md). null = no stable cross-stage meaning (for
+#           example CardiacProgenitor is JCF/SHF at E8.75 but DMP at E9.5); leave those out of cross-stage trends.
+#
+# Label names do not line up across files: the same name can mean different cells (KO "LPM" is mostly WT pericardium;
+# KO "SV-CM" is mostly WT "A-CM"). Compare compositions across files only through vec.harmonise, never by name.
+# `file_overrides` remaps a label for one file (keyed by file stem) where the classifier evidence is clear.
+#
+# Rule for labels first seen in a new file (pre-registered 2026-10-19, before the 2026-10-20 release). Map every new
+# label and commit the map before running anything on that file. A label is core only if it names cardiomyocytes
+# (CM, myocardium, atrial/ventricular/OFT/AVC/IFT/SV myocytes, trabecular or compact myocardium, conduction cells) or
+# endocardium (Endo, endocardial, cushion or valve endocardium, cushion EndoMT cells); epicardium, epicardium-derived
+# cells, fibroblasts, smooth muscle, pericytes, blood and vascular endothelium are shell. When a name is ambiguous,
+# check its marker genes with scripts/label_markers.py and its classifier calls with vec.harmonise against the nearest
+# released stage, record the evidence in the comment, and default to shell.
 
 groups:
-  CM:                 {core: true,  mesp1: "yes"}
-  CardiacProgenitor:  {core: false, mesp1: "yes"}      # FHF/SHF/JCF progenitors, DMP/DPM
-  Endocardium:        {core: true,  mesp1: "yes"}
-  Endothelium:        {core: false, mesp1: "partial"}  # vascular and haemato-endothelial
-  EpicardiumST:       {core: false, mesp1: "yes"}      # proepicardium and septum transversum
-  Pericardium:        {core: false, mesp1: "yes"}
-  PharyngealMesoderm: {core: false, mesp1: "yes"}
-  ParaxialMesoderm:   {core: false, mesp1: "partial"}  # cranial paraxial mesoderm is partly Mesp1-derived
-  LPM:                {core: false, mesp1: "partial"}
-  ExtraEmbryonicMeso: {core: false, mesp1: "partial"}  # ExEM, allantois
-  NCC:                {core: false, mesp1: "no"}
-  Endoderm:           {core: false, mesp1: "no"}       # foregut, gut, visceral/extra-embryonic endoderm
-  Hepatocyte:         {core: false, mesp1: "no"}
-  Ectoderm:           {core: false, mesp1: "no"}       # surface and cranial surface ectoderm
-  Neural:             {core: false, mesp1: "no"}
-  Blood:              {core: false, mesp1: "partial"}
-  EpiblastStreak:     {core: false, mesp1: "no"}       # epiblast, primitive streak (pre-specification)
-  Unknown:            {core: false, mesp1: "partial"}
+  CM:                 {core: true,  mesp1: "yes",     merged: CM}
+  CardiacProgenitor:  {core: false, mesp1: "yes",     merged: null}               # FHF/SHF/JCF progenitors, DMP
+  Endocardium:        {core: true,  mesp1: "yes",     merged: Endothelial}
+  Endothelium:        {core: false, mesp1: "partial", merged: Endothelial}        # vascular and haemato-endothelial
+  EpicardiumST:       {core: false, mesp1: "yes",     merged: null}               # proepicardium, septum transversum
+  Pericardium:        {core: false, mesp1: "yes",     merged: null}
+  PharyngealMesoderm: {core: false, mesp1: "yes",     merged: CranialMesoderm}
+  ParaxialMesoderm:   {core: false, mesp1: "partial", merged: CranialMesoderm}    # cranial paraxial partly Mesp1
+  LPM:                {core: false, mesp1: "partial", merged: null}
+  ExtraEmbryonicMeso: {core: false, mesp1: "partial", merged: ExtraEmbryonicMeso} # ExEM, allantois
+  NCC:                {core: false, mesp1: "no",      merged: NCC}
+  Endoderm:           {core: false, mesp1: "no",      merged: Endoderm}           # foregut, gut, visceral/EXE endoderm
+  Hepatocyte:         {core: false, mesp1: "no",      merged: Endoderm}
+  Ectoderm:           {core: false, mesp1: "no",      merged: Ectoderm}           # surface and cranial surface ectoderm
+  Neural:             {core: false, mesp1: "no",      merged: Neural}
+  Blood:              {core: false, mesp1: "partial", merged: Blood}
+  EpiblastStreak:     {core: false, mesp1: "no",      merged: EpiblastStreak}     # epiblast, primitive streak
+  Unknown:            {core: false, mesp1: "partial", merged: null}
 
 labels:
   # cardiomyocytes
@@ -36,7 +52,7 @@ labels:
   AVC-CM: CM
   RV-CM: CM
   LV-CM: CM
-  SV-CM: CM
+  SV-CM: CM                    # in the Mab21l2 KO file this label is mostly WT "A-CM" (78%)
   V-CM: CM
   A-CM: CM
   OFT-CM: CM
@@ -49,7 +65,7 @@ labels:
   JCF: CardiacProgenitor
   CP: CardiacProgenitor        # E6.75/E7.25 cardiac progenitors
   DMP: CardiacProgenitor       # dorsal mesenchymal protrusion (SHF-derived)
-  DPM: CardiacProgenitor       # dorsal pericardial mesoderm (Mab21l2 file vocabulary)
+  DPM: CardiacProgenitor       # Mab21l2 KO vocabulary; see file_overrides
   # endocardium / endothelium
   Endocardium: Endocardium
   Endo: Endocardium
@@ -92,7 +108,7 @@ labels:
   # neural crest
   NCC: NCC
   NCC-derived: NCC
-  Branchial Arch: NCC
+  Branchial Arch: NCC          # KO vocabulary; 93% of WT E9.5 NCC calls land here, not on WT "Branch Arch"
   Branch Arch: NCC
   # endoderm
   Foregut: Endoderm
@@ -125,3 +141,10 @@ labels:
   Caudal Epiblast: EpiblastStreak
   Primitive Streak: EpiblastStreak
   Unknown: Unknown
+
+# Per-file remaps, keyed by file stem. Evidence: experiments/harmonise/results/ko_label_concordance.csv (WT E9.5
+# classifier calls on the KO cells).
+file_overrides:
+  E9.5_mab21l2_ko:
+    LPM: Pericardium           # 61% WT Peri, 20% ST; early-stage "LPM" (E6.75-E8.75) is real lateral plate mesoderm
+    DPM: PharyngealMesoderm    # 80% WT pharyngeal mesoderm (pPHM 54%, aPHM 20%); only 9% matched CardiacProgenitor
