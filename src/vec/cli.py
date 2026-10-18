@@ -13,6 +13,7 @@ from rich.console import Console
 from rich.table import Table
 
 from vec import baselines
+from vec import data as vec_data
 from vec.boards import REPO_ROOT, get_board, load_boards
 from vec.evaluate import Stage, score_board_seeds
 from vec.io import check_submission, make_submission, read_stage, write_submission
@@ -125,6 +126,44 @@ def baseline(
         raise typer.BadParameter(f"unknown baseline {name!r}")
     path = write_submission(make_submission(pred.X, b.genes, pred.coords), out)
     console.print(f"wrote {path} ({pred.n} cells)")
+
+
+data_app = typer.Typer(no_args_is_help=True, help="Competition data: list and download released files.")
+
+
+def _authed(call):
+    try:
+        return call()
+    except vec_data.AuthError as e:
+        console.print(f"[red]auth error[/] {e}")
+        raise typer.Exit(2) from None
+app.add_typer(data_app, name="data")
+
+
+@data_app.command("manifest")
+def data_manifest(token_file: Path = typer.Option(vec_data.DEFAULT_TOKEN_FILE, help="bearer token file (mode 600)")):
+    """List the files your account can download."""
+    files = _authed(lambda: vec_data.manifest(vec_data.load_token(token_file)))
+    t = Table("key", "task", "role", "stage", "modality", "MB")
+    for f in files:
+        t.add_row(f.key, f.task, f.role, f.stage, f.modality, f"{f.bytes / 1e6:.0f}")
+    console.print(t)
+    console.print(f"{len(files)} files, {sum(f.bytes for f in files) / 1e9:.2f} GB")
+
+
+@data_app.command("fetch")
+def data_fetch(
+    dest: str = typer.Option("~/v/virtual-embryo-challenge/data/raw", help="destination directory"),
+    host: str = typer.Option("PrakashDGX_H2", help="ssh host to download onto; empty string = this machine"),
+    match: str = typer.Option("", help="only keys containing this substring"),
+    token_file: Path = typer.Option(vec_data.DEFAULT_TOKEN_FILE, help="bearer token file (mode 600)"),
+):
+    """Download released files (one signed link at a time); already complete files are skipped."""
+    token = _authed(lambda: vec_data.load_token(token_file))
+    files = [f for f in _authed(lambda: vec_data.manifest(token)) if match in f.key]
+    for i, f in enumerate(files, 1):
+        status = _authed(lambda f=f: vec_data.fetch_one(f, token, dest, host or None))
+        console.print(f"[{i}/{len(files)}] {status:10s} {f.key} ({f.bytes / 1e6:.0f} MB)")
 
 
 if __name__ == "__main__":

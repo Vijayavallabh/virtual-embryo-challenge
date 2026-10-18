@@ -53,6 +53,21 @@ Returned scores may be used to choose among predictions, not to compute them. Tr
 fine; solving for a property of a hidden target from scores (inverting the skill map, differencing submissions) is
 prohibited.
 
+## Organiser rulings on record (Slack #virtual-embryo-challenge; details in `docs/research/slack_digest.md`)
+
+- **2026-10-15, T3 priors (Weize Xu):** generic pathway and gene-set databases are allowed, except gene sets built
+  from a knockout or perturbation of the held-out gene. **Gene-level results of losing the held-out gene in embryos at
+  a comparable stage (which genes go down, by how much) are not allowed, even when read off a paper.** Broad
+  background on what the phenotype looks like is allowed. For us: no gene-level beta-catenin or Gata4 knockout findings
+  from the literature; phenotype-level knowledge (e.g. which compartments fail to expand) is fine.
+- **2026-10-15 and 2026-09-04, T2 heart window:** the extrapolation window (after E9.5 up to and including E13.5
+  excluded; after E13.5 allowed with disclosure) applies to the T2 heart targets as well as T1.
+- **2026-08-18, external perturbation data far from the test stage:** GSE208162 (E12.5 endocardial Gata4 inactivation)
+  approved for T3 "as it is substantially far away for the perturbation time point". External data is therefore usable
+  for T3 within the windows.
+- **2026-10-16, scoring conventions:** submissions are never renormalised (submit log1p CP10k); cell limits are inclusive
+  and enforced at both ends.
+
 ## Open questions for the organisers
 
-Tracked in `docs/PLAN.md` (section "Questions for the organisers") until answered; record answers here with the date.
+Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here with the date.
