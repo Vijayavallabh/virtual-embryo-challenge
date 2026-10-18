@@ -1,0 +1,34 @@
+# Task 3 composition scenarios for the beta-catenin board (pre-registered form, 2026-10-18).
+#
+# Provenance rule (docs/PLAN.md section 4.4): scenarios name cell states / lineage groups only, never genes. Which
+# states change comes from the broad phenotype background allowed by the 2026-10-15 organiser ruling
+# (second-heart-field, outflow-tract and right-ventricle lineages fail to expand; first heart field and left ventricle
+# relatively spared). How much they change is calibrated by code from the released knockouts (Gata4 and Mab21l2
+# against their matched wild types), never set by hand. Per-gene consequences are computed from released wild-type
+# expression profiles of these states.
+#
+# Groups refer to configs/lineage_map.yaml; `states` are WT E8.75 fine labels (`celltype` / `cm_celltype`) resolved by
+# the harmonisation model, so the same names apply to the knockout files.
+
+calibration:
+  source: "released knockouts only: Gata4 rep1/rep2 vs WT E8.75 (from 2026-10-20); Mab21l2 vs WT E9.5"
+  statistic: "log fold change of harmonised state fractions in Mesp1-lineage states, knockout vs matched WT"
+  status: pending   # filled by code after the 2026-10-20 release; the numbers are written by the calibration script
+
+scenarios:
+  central:
+    description: "second-heart-field-derived states depleted at the calibrated typical knockout magnitude; first heart field / LV states relatively spared; non-Mesp1 states unchanged cell-autonomously"
+    depleted_groups: [CardiacProgenitor, PharyngealMesoderm]
+    depleted_states: ["OFT/RV-CM", "aSHF", "pSHF", "aPHM", "pPHM"]
+    spared_states: ["vCM1", "vCM2", "JCF/SV-CM", "FHF/JCF"]
+    magnitude: calibrated_median
+  mild:
+    description: "same states, half the calibrated magnitude (hedge for a diffuse, weaker effect)"
+    depleted_groups: [CardiacProgenitor, PharyngealMesoderm]
+    depleted_states: ["OFT/RV-CM", "aSHF", "pSHF", "aPHM", "pPHM"]
+    spared_states: ["vCM1", "vCM2", "JCF/SV-CM", "FHF/JCF"]
+    magnitude: calibrated_median_x0.5
+  broad_mesoderm:
+    description: "diffuse depletion across all Mesp1-lineage states (the organisers call the test gene broadly expressed with a diffuse effect)"
+    depleted_mesp1: ["yes"]
+    magnitude: calibrated_median_x0.5

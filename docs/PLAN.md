@@ -178,6 +178,22 @@ Components (all legal under the 2026-10-15 ruling):
 Submissions: s1 = central combination. s2 = the pre-registered alternative composition scenario. Any rule that picks
 s2 from s1's score is written down beforehand, and the organisers are asked to confirm it counts as selection.
 
+**Provenance rule for T3 gene directions (pre-registered 2026-10-18).**
+1. No per-gene direction or magnitude is written by hand. None comes from knockout literature, from curated target
+   lists built from beta-catenin or Gata4 knockout or perturbation experiments, or from LLM elicitation.
+2. Every per-gene change in a T3 prediction is the output of committed code applied to released data only:
+   - the Gata4 and Mab21l2 knockouts against their matched wild types (systematic component and composition effect
+     sizes);
+   - wild-type cell-state expression profiles combined with a composition scenario (the composition term);
+   - wild-type co-variation with Wnt activity (T1 scRNA, only if cross-task use is confirmed).
+3. The composition scenario names only cell states and lineage groups. They come from the broad phenotype
+   (second-heart-field, outflow-tract and right-ventricle lineages depleted; first heart field and left ventricle
+   relatively spared), with magnitudes measured in the released knockouts. The scenario lives in
+   `configs/t3_scenarios.yaml` and is committed before any test submission.
+4. Each test submission records the git commit, config hash and data checksums in the submission ledger.
+   `METHOD_SUMMARY.md` describes this procedure.
+5. The gene-level findings removed from the research notes on 2026-10-18 are never consulted (see `docs/DATA_POLICY.md`).
+
 ## 5. Shared architecture (Generality Award option)
 
 One "transport-then-adjust" operator underlies every board:

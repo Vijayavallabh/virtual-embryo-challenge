@@ -70,6 +70,16 @@ organisers approve in writing.
 - **Gene-level beta-catenin or Gata4 knockout findings from papers** (see the 2026-10-15 ruling below).
 - **Code from public repos without a licence** (e.g. tubager/vec-t2, wqty123): ideas only, no copying.
 
+### Redaction record (gene-level knockout findings)
+
+- 2026-10-18: the research notes copied into the repo contained gene-level findings from beta-catenin and Gata4
+  loss-of-function papers (direction tables and paper titles stating them), which the 2026-10-15 ruling bars. They
+  were removed from `docs/research/t3_biology.md`, `architecture.md`, `t3_methods.md` and `external_data.md`, and the
+  session scratch copies were overwritten with the redacted versions. Earlier commits still contain the original text
+  in git history; it is not to be consulted.
+- Mitigation: T3 gene directions come only from the pre-registered provenance rule in `docs/PLAN.md` section 4.4
+  (released data and committed code; scenarios in `configs/t3_scenarios.yaml` name cell states, never genes).
+
 ### Leak handling record (veckit 0.1.2 held-out radii)
 
 - 2026-10-18: research agents reading the scorer's PyPI release saw the E12.5 heart radius in
