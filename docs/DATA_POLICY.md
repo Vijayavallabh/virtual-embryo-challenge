@@ -68,6 +68,11 @@ organisers approve in writing.
   printed, committed or passed to the emulator. Validation-board anchors may be used to calibrate the emulator.
 - **Our own size forecasts from incomplete stage sets** (dry runs of the size procedure before the release) are code
   checks, not predictions, and stay out of the docs.
+- **The public board file and board endpoints themselves.** From 2026-10-20 `panels/index.json` on the site (and the
+  public `/challenge/boards` endpoint) may carry test-board anchors. Nobody opens them in a browser or fetches them by
+  hand or by script; boards are refreshed only through `vec.boards.update_boards`, which strips non-validation
+  anchors in memory. Team members skip Slack threads that discuss sizes or other values worked out from anchors, and
+  agents reading Slack must not quote such threads.
 - **The organisers' Virtual Embryo atlas** (virtualembryo.ai, its predictor and API) lists stages inside protected
   windows (e.g. E7.5 and E11.5 spatial data). The rules name it explicitly: no held-out-stage data from it.
 - **Public atlases spanning a window** (MOCA E9.5-E13.5, MOSTA E10.5-E13.5, the JAX time-lapse between E9.5 and E13.5)
@@ -108,7 +113,18 @@ organisers approve in writing.
   argument fixed before the release (`docs/PLAN.md` section 4.3). The measured validation stages released on
   2026-10-20 supersede anything anchor-derived. Test-board anchors are stripped at intake (do-not-use list).
 - Git history: the removed values remain in commits since 2026-10-18 (research notes and `CHALLENGE.md`) and on
-  GitHub until the history is rewritten again; the user decides.
+  GitHub until the history is rewritten again. The user chose on 2026-10-19 to rewrite and purge again, after the
+  remaining redactions are committed.
+- Related findings from the screened research digest: one spacing bound in `t2_spatial.md` matched a held-out column of
+  the leaked table (since redacted); no spacing, size or density parameter in the plan or code comes from it (the
+  jitter and count rules use spacing measured on released files, `experiments/density/REPORT.md`). One research agent
+  printed per-stage QC medians (library size, mitochondrial fraction) for all stages of an external heart dataset,
+  including in-window stages, once; nothing was set from them.
+- Clean-up (user's decision, 2026-10-19): deleted the session's copies of the veckit 0.1.2 wheel and sdist, the PR #6
+  files and PR bodies, and the anchor-derived research outputs (scratchpad `gap_units/`, DGX `~/v/vec-gap-units`). On the
+  DGX also deleted the raw external heart object and the two full metadata tables that still held E10.5-E13.5 cells,
+  and an atlas cell table covering in-window embryos; only window-filtered subsets remain. External data will be
+  re-ingested through committed filter code (feat-007).
 
 ### Leak handling record (veckit 0.1.2 held-out radii)
 

@@ -62,29 +62,52 @@ Vijayavallabh J
 
 ---
 
-## Follow-up (draft, 2026-10-19, not sent)
+## Follow-up (ready to send, 2026-10-19)
 
-Waiting for the user's decision. Points 1 and 2 report data problems that affect every team's scores, so sending them
-early also protects us; point 3 asks whether a published field may inform a prediction, before we would use it.
+User's decision (2026-10-19): send the full follow-up. Not sent yet; the user sends it by email from their address.
+Duplicate counts come from `experiments/qc/` (update them if the QC run changes them). Points whose answer would help
+every team ask for a public answer, so we never hold private information about held-out data.
 
-**Subject:** Human Team: data questions on the MERFISH coordinates and duplicated records
+**Subject:** Human Team: follow-up on the scorer build, Task 3 data use and two data issues
 
 Hello organisers,
 
-Three follow-up points from checking the released Task 2/3 files:
+Thank you for your earlier answers. A few follow-up points from checking the released files and the scorer. Where an
+answer would help every team (points 1, 2, 5 and 6), please feel free to answer publicly instead of to us.
 
-1. **Duplicated records.** Some files contain the same cell twice: identical integer count rows at the same xy
-   position in adjacent z sections. We count about 440 such records in E8.0, 1,164 in E8.25_late and 317 in E8.75. In
-   the Mab21l2 knockout file, sample_id 35 appears to be stored twice (about 1,400 records at near-identical xy), and
-   sample_ids 18 and 19 look like one section placed at two z levels (about 1,400 records). We found none in E6.75,
-   E7.25 or E9.5. Are these artefacts? Will the validation and test truth sets keep or remove such records?
-2. **z coordinate.** Is `spatial_3D` z the section position times the section thickness, in the same unit as xy, for
-   every file? Were the sections registered rigidly, or with expression-aware or non-rigid alignment? Some knockout
-   sections are not rigid copies of their slide coordinates. Will the test stacks follow the same acquisition protocol
-   (section thickness, roughly the same number of sections) as the training files?
-3. **truth_cells and tissue size.** Further to our earlier question about using `truth_cells` to choose the submitted
-   cell count: may it also inform the predicted tissue size (for example, a cell-count-to-volume relation fitted on the
+1. **Scorer build and canonicalisation.** Which veckit build will the test boards and the final evaluation use? The
+   public validation scores look consistent with the build before the right-handed-frame fix that was merged on
+   veckit `main` on 2 October. Under that build a mirror copy scores the same as the original, and `occupancy_dice`
+   depends on the sign pattern of the SVD used for canonicalisation, which changes with row order. So two otherwise
+   identical submissions can get different Dice values, and a team could deliberately submit opposite "parities". We
+   have not done this and will not unless you tell us it is acceptable; we are reporting it so you can decide. If the
+   build changes, will the published shape anchors be regenerated?
+2. **Severity with the wrong sign.** When the predicted severity slope has the wrong sign (or R² ≤ 0.01), the current
+   scorer returns log(1e-3), which equals the floor (skill 0.5). The Evaluation page and the proposal call this case
+   "undefined". Which applies in the final evaluation: skill 0.5 or skill 0?
+3. **Released Gata4 data in Task 3.** Once the Gata4 validation answers are released, may we use those released
+   knockout files as training input for the beta-catenin test prediction? Rules s.10 still lists the Gata4 knockout at
+   E8.75 among the held-out genotypes, while the Data page says validation answers become training material in the
+   final phase. (We will keep excluding external beta-catenin and Gata4 perturbation data either way.)
+4. **Duplicated records.** Some files contain the same cell twice: identical integer count rows at the same xy position
+   in adjacent z sections. We count about 440 such records in E8.0, 1,164 in E8.25_late and 317 in E8.75. In the
+   Mab21l2 knockout file, sample_id 35 appears to be stored twice and sample_ids 18 and 19 look like one section placed
+   at two z levels (about 2,800 records together). We found none in E6.75, E7.25 or E9.5. Are these artefacts, and do
+   the validation and test truth sets keep or remove such records?
+5. **z coordinate.** Is `spatial_3D` z the section position times the section thickness, in the same unit as xy, for
+   every file? Were sections registered rigidly, or with expression-aware or non-rigid alignment (some knockout
+   sections are not rigid copies of their slide coordinates)? If you can say so publicly: do the test stacks follow
+   the same acquisition protocol (section thickness, similar number of sections) as the training files?
+6. **truth_cells and tissue size.** Further to our earlier question about using `truth_cells` to choose the submitted
+   cell count: may it also inform the predicted tissue size (for example a cell-count-to-volume relation fitted on the
    released files)? We will not use it for that unless you confirm.
+7. **Stage conventions for external data.** Could you share your convention for converting somite counts, Theiler
+   stages and morphometric stages to E-days, or the somite counts of your own E8.25_late, E8.75 and E9.5 embryos? Two
+   concrete cases, which we currently exclude: atlas embryos staged E9.5 by somite count but harvested from a litter
+   labelled "E9.75", and embryos staged E13.75-E14.0 morphometrically but harvested from gestational E12.5 or E13.5
+   litters. Are they inside the excluded window?
+8. **Leak report, addendum.** Further to our private Slack note of 18 October: the same held-out values also appear
+   in the veckit 0.1.2 wheel on PyPI and in the description of veckit PR #6. We have not used them.
 
 Thank you,
 
