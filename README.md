@@ -14,7 +14,7 @@ Final submissions are due **2026-12-02**. Start with `AGENTS.md`, then `docs/CHA
 
 ```bash
 uv sync                    # local: core + dev tools (no GPU stack)
-uv sync --group gpu        # DGX: adds CUDA torch (cu128)
+uv sync --group gpu --group jax   # DGX: CUDA torch (cu130), scvi-tools, moscot
 ./init.sh                  # lock check, lint, tests
 ```
 

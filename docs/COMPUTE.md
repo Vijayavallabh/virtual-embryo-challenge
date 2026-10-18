@@ -16,11 +16,19 @@ other jobs: check before launching and never kill a job you did not start.
 ssh -o BatchMode=yes PrakashDGX_H2
 cd ~/v && git clone https://github.com/Vijayavallabh/virtual-embryo-challenge.git
 cd virtual-embryo-challenge
-uv sync --locked --group gpu    # CUDA torch comes from the cu128 index configured in pyproject.toml
+export PATH=$HOME/.local/bin:$PATH    # uv is not on the non-login ssh PATH
+uv sync --locked --group gpu --group jax   # torch 2.14 from the cu130 index (driver 580 = CUDA 13.0), scvi-tools, moscot
 uv run python -c "import torch; print(torch.cuda.is_available(), torch.cuda.device_count())"
 ```
 
-Competition data goes in `~/v/virtual-embryo-challenge/data/raw/` on the DGX only (gitignored).
+Competition data goes in `~/v/virtual-embryo-challenge/data/raw/` on the DGX only (gitignored). Code reaches the DGX by
+`rsync` from the local clone (no GitHub credentials on the shared account):
+
+```bash
+rsync -az --exclude .venv --exclude __pycache__ --exclude data --exclude runs -e ssh ./ PrakashDGX_H2:v/virtual-embryo-challenge/
+```
+
+The DGX shell exports `VIRTUAL_ENV=~/v/.venv`; uv ignores it and uses the project `.venv` (the warning is harmless).
 
 ## Running a job
 
