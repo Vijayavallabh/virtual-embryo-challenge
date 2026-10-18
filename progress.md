@@ -25,8 +25,7 @@
 
 ## Blockers / Risks
 
-- [ ] The leak report to the organisers is a draft until the user sends it (Slack group DM `C0CA7QTEMDF`).
-- [ ] Organiser questions revised (cross-task data, developmental background, truth_cells, Generality scope, scorer version, deadline time zone); Gmail draft in be23b041@smail.iitm.ac.in awaiting the user.
+- [ ] Awaiting organiser replies: leak report (Slack DM `C0CA7QTEMDF`, sent 2026-10-18) and the rules questions (email, sent 2026-10-18).
 
 ## Decisions Made
 

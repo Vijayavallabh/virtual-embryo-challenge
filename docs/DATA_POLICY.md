@@ -78,8 +78,8 @@ organisers approve in writing.
 - Mitigation: the E12.5 heart size comes only from the pre-registered procedure in `docs/PLAN.md` (T2 heart), fitted on
   released training stages by committed code, with its output recorded in git before any test submission. Nobody
   building the size model opens veckit 0.1.2 or PR #6.
-- Disclosure: a private report to the organisers (Weize Xu, Zehua Zeng) is drafted in Slack group DM
-  `C0CA7QTEMDF`; record the send date and their reply here.
+- Disclosure: private report sent to the organisers (Weize Xu, Zehua Zeng) in Slack group DM `C0CA7QTEMDF` on
+  2026-10-18 22:39 IST. Reply: _pending_.
 
 ## Organiser rulings on record (Slack #virtual-embryo-challenge; details in `docs/research/slack_digest.md`)
 
