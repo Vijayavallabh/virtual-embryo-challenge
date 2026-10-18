@@ -77,8 +77,9 @@ organisers approve in writing.
   were removed from `docs/research/t3_biology.md`, `architecture.md`, `t3_methods.md` and `external_data.md`, and the
   session scratch copies were overwritten with the redacted versions. Git history was then rewritten (user's
   decision, 2026-10-18) so that no commit contains the original text: main force-pushed as 9fed750, old objects
-  purged locally, the DGX mirror's .git refreshed. GitHub may keep unreferenced old objects reachable by exact ID for a
-  while; GitHub support can purge them if needed.
+  purged locally, the DGX mirror's .git refreshed. The GitHub repository was then deleted and recreated from the clean
+  history (same name, private), so none of the old commits exist in it; the API returns "No commit found" for the old
+  IDs. A local backup bundle of the clean history was written before the deletion.
 - Mitigation: T3 gene directions come only from the pre-registered provenance rule in `docs/PLAN.md` section 4.4
   (released data and committed code; scenarios in `configs/t3_scenarios.yaml` name cell states, never genes).
 
