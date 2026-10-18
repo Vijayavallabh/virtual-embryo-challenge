@@ -75,8 +75,10 @@ organisers approve in writing.
 - 2026-10-18: the research notes copied into the repo contained gene-level findings from beta-catenin and Gata4
   loss-of-function papers (direction tables and paper titles stating them), which the 2026-10-15 ruling bars. They
   were removed from `docs/research/t3_biology.md`, `architecture.md`, `t3_methods.md` and `external_data.md`, and the
-  session scratch copies were overwritten with the redacted versions. Earlier commits still contain the original text
-  in git history; it is not to be consulted.
+  session scratch copies were overwritten with the redacted versions. Git history was then rewritten (user's
+  decision, 2026-10-18) so that no commit contains the original text: main force-pushed as 9fed750, old objects
+  purged locally, the DGX mirror's .git refreshed. GitHub may keep unreferenced old objects reachable by exact ID for a
+  while; GitHub support can purge them if needed.
 - Mitigation: T3 gene directions come only from the pre-registered provenance rule in `docs/PLAN.md` section 4.4
   (released data and committed code; scenarios in `configs/t3_scenarios.yaml` name cell states, never genes).
 
