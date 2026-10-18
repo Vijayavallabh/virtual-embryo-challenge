@@ -1,0 +1,28 @@
+{
+  "features": [
+    {
+      "id": "feat-001",
+      "name": "Project setup",
+      "description": "uv project (core + dev locally, gpu group on the DGX), harness files, docs skeleton, private GitHub repo",
+      "dependencies": [],
+      "status": "done",
+      "evidence": "2026-10-18: ./init.sh passes (uv sync --locked, ruff clean, 11 pytest tests)"
+    },
+    {
+      "id": "feat-002",
+      "name": "Local board emulator, format checks, reference baselines",
+      "description": "vec eval / vec check / vec baseline built on the pinned veckit metric code; skill map and Table 1 weights; per-seed scores; registry rows. Done when the published reference rows (copy_last, pseudobulk_shift, wt_identity, shift_transfer, gene_ko) are reproduced on the validation boards within sampling noise and the T2 shape gate is calibrated.",
+      "dependencies": ["feat-001"],
+      "status": "in-progress",
+      "evidence": "Synthetic tests: floor scores exactly 50 on T1/T2/T3, better predictions score > 75. Calibration on real data pending feat-003."
+    },
+    {
+      "id": "feat-003",
+      "name": "Data acquisition on the DGX",
+      "description": "Register the team (Human Team track), download the training stages and, from 2026-10-20, the released validation answers and test inputs into ~/v/virtual-embryo-challenge/data/raw on the DGX; record sizes and checksums.",
+      "dependencies": ["feat-001"],
+      "status": "blocked",
+      "evidence": "Needs the user to register at virtualembryo.ai and accept the Rules and Terms."
+    }
+  ]
+}

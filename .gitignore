@@ -1,0 +1,28 @@
+# Python / uv
+__pycache__/
+*.py[cod]
+.venv/
+.ruff_cache/
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Competition and external data: never commit
+data/
+*.h5ad
+*.h5
+*.loom
+*.zarr/
+
+# Run outputs (scores are summarised in results/registry.csv)
+runs/
+checkpoints/
+wandb/
+*.ckpt
+*.pt
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store

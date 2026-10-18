@@ -1,0 +1,70 @@
+{
+  "note": "Cell-type composition of the released Task 1 stages, as a percentage of cells. Released stages only: nothing here describes E10.5 or E12.5. Labels are the annotation shipped in obs['celltype'] and the vocabulary is not harmonised across stages, so a name absent from one stage may be present under another name rather than biologically gone.",
+  "stages": {
+    "E8.5": {
+      "cells": 16787,
+      "n_types": 18,
+      "composition": {
+        "Foregut": 14.327,
+        "pSHF": 13.058,
+        "Surface Ectoderm": 8.477,
+        "OFT/RV-CM": 7.005,
+        "Endothelium": 6.785,
+        "JCF": 6.666,
+        "IFT-CM": 5.653,
+        "Paraxial Mesoderm": 5.564,
+        "EXEM": 5.141,
+        "aSHF": 4.897,
+        "Neural Tube": 4.605,
+        "Pericardium": 4.438,
+        "AVC-CM": 3.562,
+        "RV-CM": 2.633,
+        "LV-CM": 2.049,
+        "SV-CM": 1.847,
+        "NCC": 1.71,
+        "Blood": 1.585
+      }
+    },
+    "E9.5": {
+      "cells": 17057,
+      "n_types": 21,
+      "composition": {
+        "OFT/RV-CM": 10.729,
+        "Endocardium": 9.116,
+        "SV-CM": 7.463,
+        "pPHM": 7.0,
+        "Hepatocyte": 6.977,
+        "V-CM": 6.707,
+        "pSHF": 6.508,
+        "aSHF": 6.156,
+        "Pericardium": 5.259,
+        "Proepicardium": 5.177,
+        "ST": 5.153,
+        "Foregut": 5.106,
+        "IFT-CM": 4.045,
+        "NCC-derived": 3.641,
+        "Surface Ectoderm": 3.248,
+        "AVC-CM": 1.911,
+        "BEC": 1.589,
+        "Epithelium": 1.366,
+        "aPHM": 1.325,
+        "Blood": 1.249,
+        "NCC": 0.276
+      }
+    }
+  },
+  "shared_types": [
+    "AVC-CM",
+    "Blood",
+    "Foregut",
+    "IFT-CM",
+    "NCC",
+    "OFT/RV-CM",
+    "Pericardium",
+    "SV-CM",
+    "Surface Ectoderm",
+    "aSHF",
+    "pSHF"
+  ],
+  "n_shared_types": 11
+}
