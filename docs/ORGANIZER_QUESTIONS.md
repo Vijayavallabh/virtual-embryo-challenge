@@ -89,11 +89,13 @@ answer would help every team (points 1, 2, 5 and 6), please feel free to answer 
    knockout files as training input for the beta-catenin test prediction? Rules s.10 still lists the Gata4 knockout at
    E8.75 among the held-out genotypes, while the Data page says validation answers become training material in the
    final phase. (We will keep excluding external beta-catenin and Gata4 perturbation data either way.)
-4. **Duplicated records.** Some files contain the same cell twice: identical integer count rows at the same xy position
-   in adjacent z sections. We count about 440 such records in E8.0, 1,164 in E8.25_late and 317 in E8.75. In the
-   Mab21l2 knockout file, sample_id 35 appears to be stored twice and sample_ids 18 and 19 look like one section placed
-   at two z levels (about 2,800 records together). We found none in E6.75, E7.25 or E9.5. Are these artefacts, and do
-   the validation and test truth sets keep or remove such records?
+4. **Duplicated and interpolated records.** Some files contain the same cell more than once: identical integer count
+   rows in adjacent z sections, either at the same xy position (443 in E8.0, 1,164 in E8.25_late, 317 in E8.75) or
+   shifted in xy (about 2,460, 560 and 520 more). In the Mab21l2 knockout file, sample_id 35 appears to be stored twice
+   and sample_ids 18 and 19 look like one section placed at two z levels (2,811 records together). Separately, E8.0,
+   E8.25_late and E8.75 contain 200, 2,558 and 614 records with half-integer counts, each equal to the average of two
+   cells in the neighbouring sections. We found none of these in E6.75, E7.25 or E9.5. Are they artefacts of
+   registration or section interpolation, and do the validation and test truth sets keep or remove them?
 5. **z coordinate.** Is `spatial_3D` z the section position times the section thickness, in the same unit as xy, for
    every file? Were sections registered rigidly, or with expression-aware or non-rigid alignment (some knockout
    sections are not rigid copies of their slide coordinates)? If you can say so publicly: do the test stacks follow

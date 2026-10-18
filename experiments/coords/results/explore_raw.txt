@@ -1,0 +1,89 @@
+warning: `VIRTUAL_ENV=/home/prachh/v/.venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+/home/prachh/v/virtual-embryo-challenge/experiments/coords/explore_raw.py:21: UserWarning: Observation names are not unique. To make them unique, call `.obs_names_make_unique`.
+  a = ad.read_h5ad(f, backed="r")
+== data/raw/T2/E6.75.h5ad  n=7093
+   obs columns: ['celltype']
+   obsm keys: {'spatial_2D': ((7093, 3), dtype('float64')), 'spatial_3D': ((7093, 3), dtype('float64'))}
+   x: min -103.802 max 93.466 range 197.269 unique 7093 frac_integer 0.001
+   y: min -113.548 max 104.492 range 218.040 unique 7093 frac_integer 0.001
+   z: min -193.635 max 166.365 range 360.000 unique 65 frac_integer 0.000
+   first 12 z levels: [-193.6346, -183.6346, -173.6346, -163.6346, -153.6346, -143.6346, -133.6346, -123.6346, -113.6346, -103.6346, -93.6346, -83.6346]
+   z-step counts (top 10): [(10.0, 36), (0.0, 28)]
+   obs[celltype] categorical/str: unique 18 e.g. ['Allantois', 'Unknown', 'PHM/PAM', 'EXE-Ectoderm', 'ExEM-2', 'HEM-Endoth']
+   obsm[spatial_2D] ranges: [(-103.8, 1610.82), (-103.53, 1033.92), (-0.0, 0.01)]
+== data/raw/T2/E7.25.h5ad  n=13295
+   obs columns: ['celltype']
+   obsm keys: {'spatial_2D': ((13295, 3), dtype('float64')), 'spatial_3D': ((13295, 3), dtype('float64'))}
+   x: min -136.763 max 127.327 range 264.091 unique 13281 frac_integer 0.001
+   y: min -173.411 max 171.560 range 344.971 unique 13295 frac_integer 0.002
+   z: min -219.373 max 170.627 range 390.000 unique 40 frac_integer 0.000
+   first 12 z levels: [-219.3734, -209.3734, -199.3734, -189.3734, -179.3734, -169.3734, -159.3734, -149.3734, -139.3734, -129.3734, -119.3734, -109.3734]
+   z-step counts (top 10): [(10.0, 39)]
+   obs[celltype] categorical/str: unique 18 e.g. ['EXE-Endoderm', 'ExEM-2', 'ExEM-1', 'Blood Progenitor', 'HEM-Endoth', 'EXE-Ectoderm']
+   obsm[spatial_2D] ranges: [(-118.04, 2139.36), (-147.89, 1669.23), (-0.0, 0.01)]
+== data/raw/T2/E8.0.h5ad  n=31671
+   obs columns: ['celltype', 'cm_celltype']
+   obsm keys: {'spatial_2D': ((31671, 3), dtype('float64')), 'spatial_3D': ((31671, 3), dtype('float64'))}
+   x: min -434.605 max 408.336 range 842.942 unique 31181 frac_integer 0.004
+   y: min -296.584 max 460.504 range 757.088 unique 31130 frac_integer 0.004
+   z: min -207.687 max 227.313 range 435.000 unique 30 frac_integer 0.000
+   first 12 z levels: [-207.6868, -192.6868, -177.6868, -162.6868, -147.6868, -132.6868, -117.6868, -102.6868, -87.6868, -72.6868, -57.6868, -42.6868]
+   z-step counts (top 10): [(15.0, 29)]
+   obs[celltype] categorical/str: unique 26 e.g. ['EXE-Endoderm', 'EXE-Endothlium', 'ExEM-2', 'JCF', 'ExEM-1', 'd-CSE']
+   obs[cm_celltype] categorical/str: unique 7 e.g. ['Unknown', 'FHF/JCF1', 'FHF/JCF2', 'CC/CM', 'aSHF2', 'aSHF1']
+   obsm[spatial_2D] ranges: [(-422.45, 6896.22), (-262.28, 2958.9), (-0.0, 0.01)]
+== data/raw/T2/E8.25_late.h5ad  n=58716
+   obs columns: ['celltype', 'cm_celltype']
+   obsm keys: {'spatial_2D': ((58716, 3), dtype('float64')), 'spatial_3D': ((58716, 3), dtype('float64'))}
+   x: min -463.384 max 480.808 range 944.192 unique 57436 frac_integer 0.003
+   y: min -433.872 max 624.053 range 1057.925 unique 57451 frac_integer 0.004
+   z: min -310.805 max 244.195 range 555.000 unique 38 frac_integer 0.000
+   first 12 z levels: [-310.8055, -295.8055, -280.8055, -265.8055, -250.8055, -235.8055, -220.8055, -205.8055, -190.8055, -175.8055, -160.8055, -145.8055]
+   z-step counts (top 10): [(15.0, 37)]
+   obs[celltype] categorical/str: unique 33 e.g. ['EXE-Endoderm', 'ExEM-2', 'ExEM-1', 'HEM-Endoth', 'Neural Tube', 'Forebrain']
+   obs[cm_celltype] categorical/str: unique 7 e.g. ['Unknown', 'FHF/JCF1', 'FHF/JCF2', 'CC/CM', 'aSHF2', 'aSHF1']
+   obsm[spatial_2D] ranges: [(-450.29, 7722.43), (-393.04, 5278.92), (-0.0, 0.01)]
+== data/raw/T2/E8.75.h5ad  n=24826
+   obs columns: ['celltype', 'cm_celltype']
+   obsm keys: {'spatial_2D': ((24826, 3), dtype('float64')), 'spatial_3D': ((24826, 3), dtype('float64'))}
+   x: min -247.991 max 228.067 range 476.057 unique 24491 frac_integer 0.002
+   y: min -343.801 max 237.020 range 580.821 unique 24469 frac_integer 0.003
+   z: min -240.474 max 235.526 range 476.000 unique 35 frac_integer 0.000
+   first 12 z levels: [-240.4739, -226.4739, -212.4739, -198.4739, -184.4739, -170.4739, -156.4739, -142.4739, -128.4739, -114.4739, -100.4739, -86.4739]
+   z-step counts (top 10): [(14.0, 34)]
+   obs[celltype] categorical/str: unique 33 e.g. ['NCC', 'Unknown', 'V-CSE', 'Allantois', 'd-CSE', 'Intra-Endoth-1']
+   obs[cm_celltype] categorical/str: unique 13 e.g. ['Unknown', 'aPHM', 'aSHF', 'Peri/BW', 'OFT/RV-CM', 'aCM1']
+   obsm[spatial_2D] ranges: [(-247.99, 3884.81), (-286.88, 2782.34), (-0.0, 0.01)]
+== data/raw/T2/E9.5.h5ad  n=53742
+   obs columns: ['celltype', 'cm_celltype']
+   obsm keys: {'spatial_2D': ((53742, 3), dtype('float64')), 'spatial_3D': ((53742, 3), dtype('float64'))}
+   x: min -433.452 max 327.652 range 761.104 unique 53742 frac_integer 0.003
+   y: min -659.327 max 469.666 range 1128.992 unique 53742 frac_integer 0.004
+   z: min -280.257 max 304.743 range 585.000 unique 98 frac_integer 0.000
+   first 12 z levels: [-280.2565, -265.2565, -250.2565, -235.2565, -220.2565, -205.2565, -205.2565, -190.2565, -190.2565, -175.2565, -175.2565, -160.2565]
+   z-step counts (top 10): [(0.0, 58), (15.0, 39)]
+   obs[celltype] categorical/str: unique 22 e.g. ['Dorsal-PAM', 'BEC', 'SE', 'NCC', 'aPHM', 'Branch Arch']
+   obs[cm_celltype] categorical/str: unique 9 e.g. ['Unknown', 'OFT-CM', 'aCM3', 'aCM5', 'aCM4', 'vCM4']
+   obsm[spatial_2D] ranges: [(-433.45, 6165.24), (-659.33, 5434.44), (-0.01, 0.0)]
+== data/raw/T3/E9.5_mab21l2_ko.h5ad  n=50294
+   obs columns: ['slide', 'section', 'n_counts', 'n_genes', 'leiden', 'celltype', 'embryo_section', 'sample_id', 'z_coord', 'time', 'genotype', 'perturb_batch']
+   obsm keys: {'X_pca': ((50294, 50), dtype('float32')), 'X_pca_harmony': ((50294, 50), dtype('float32')), 'X_umap': ((50294, 2), dtype('float32')), 'spatial': ((50294, 2), dtype('float64')), 'spatial_3D': ((50294, 3), dtype('float64'))}
+   x: min -5833.903 max -5001.405 range 832.498 unique 47414 frac_integer 0.109
+   y: min -1965.509 max -1010.309 range 955.199 unique 48872 frac_integer 0.029
+   z: min -370.000 max -0.000 range 370.000 unique 36 frac_integer 1.000
+   first 12 z levels: [-370.0, -360.0, -350.0, -340.0, -330.0, -320.0, -290.0, -280.0, -270.0, -260.0, -250.0, -240.0]
+   z-step counts (top 10): [(10.0, 34), (30.0, 1)]
+   obs[slide] categorical/str: unique 1 e.g. ['M125']
+   obs[section] categorical/str: unique 36 e.g. ['11', '1', '2', '3', '4', '6']
+   obs[n_counts] numeric: min 20.0 max 1069.0 unique 660
+   obs[n_genes] numeric: min 20 max 173 unique 132
+   obs[leiden] categorical/str: unique 17 e.g. ['14', '2', '6', '7', '1', '13']
+   obs[celltype] categorical/str: unique 15 e.g. ['Neural Tube', 'Paraxial Mesoderm', 'Endothelium', 'Foregut', 'Branchial Arch', 'Surface Ectoderm']
+   obs[embryo_section] categorical/str: unique 31 e.g. ['nan', '29', '1', '9', '27-alt', '16']
+   obs[sample_id] categorical/str: unique 37 e.g. ['10', '0', '1', '2', '3', '5']
+   obs[z_coord] categorical/str: unique 36 e.g. ['0', '10', '20', '30', '40', '50']
+   obs[time] categorical/str: unique 1 e.g. ['9.5']
+   obs[genotype] categorical/str: unique 1 e.g. ['mab21l2']
+   obs[perturb_batch] categorical/str: unique 1 e.g. ['0']
+   obsm[X_umap] ranges: [(-2.82, 14.85), (-2.54, 14.9)]
+   obsm[spatial] ranges: [(-6417.4, 5983.02), (-6532.78, 5712.1)]

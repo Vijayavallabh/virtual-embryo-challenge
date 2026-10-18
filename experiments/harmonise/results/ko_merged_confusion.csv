@@ -1,0 +1,9 @@
+true,CM,Endothelial,CranialMesoderm,NCC,Endoderm,Ectoderm,Neural,Untracked
+CM,14956,49,77,0,17,5,0,63
+Endothelial,178,6874,349,21,34,1,0,101
+CranialMesoderm,91,51,8040,113,55,28,0,618
+NCC,9,44,1056,1348,16,52,0,39
+Endoderm,24,62,284,24,1635,336,0,82
+Ectoderm,0,2,68,11,18,1090,0,23
+Neural,20,15,81,31,47,23,0,17
+Untracked,532,63,624,12,50,227,0,7797

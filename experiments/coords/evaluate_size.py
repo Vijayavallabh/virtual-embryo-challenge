@@ -1,23 +1,33 @@
 """Part 4: evaluate candidate size rules on pseudo-targets built from released training stages only (DGX).
 
-Writes to runs/coords/:
-  stage_geometry.csv        per-file geometry used by the size procedure (raw, common-step and isotropy-corrected z)
-  size_heart_pseudo.csv     heart core-RMS rules on every pseudo-target available now, with sensitivity variants
-  size_heart_scope.csv      scope log-ratio hypotheses on the E9.5 pseudo-target
-  size_heart_full.csv       full-cloud pseudo-target errors (core rule x scope hypothesis) and scale skill
-  size_heart_modes.csv      the procedure end to end on the E9.5 pseudo-target for every z mode
-  size_embryo.csv           embryo interpolation checks (leave-one-out) and scale skill
-  size_noise.csv            embryo-to-embryo spread (E9.5 WT vs Mab21l2 KO) and rule noise multipliers
-  size_count_density.csv    diagnostic only: RMS / N^(1/3) consistency (needs an organiser ruling before any use)
-  size_ceiling.csv          split-half |scale_log_ratio| (the metric's ceiling) per released stage, 10 seeds
-  size_dryrun_heart.json, size_dryrun_embryo.json   end-to-end dry runs of size_procedure on current stages
-Usage: uv run python experiments/coords/evaluate_size.py
+Geometry comes from size_procedure.measure_stage (duplicated records dropped, unmapped labels refused), exactly as the
+procedure measures it. Scorer emulation (scale skill, ceilings) uses the files as released, because the scorer draws
+its truth halves from them. No rate value is assumed anywhere: the rule comparison is size_procedure.rule_table.
+
+Writes to --out:
+  stage_geometry.csv         per-file geometry used by the size procedure, with the duplicates dropped per file
+  size_heart_pseudo.csv      heart rules on the E9.5 pseudo-target (and the E8.75 context target), with variants
+  size_heart_modes.csv       the procedure on the E9.5 pseudo-target for every z mode; every row carries the run's valid
+                             flag: pre-registered settings (valid=False, no rate interval starts at or after E9.0, so
+                             the numbers are diagnostic only) and the same rules with the cut-off removed
+  size_heart_scope.csv       scope log-ratio hypotheses on the E9.5 pseudo-target
+  size_heart_full.csv        full-cloud pseudo-target errors (core rule x scope hypothesis) and scale skill
+  size_rule_table.csv        the rate-free rule table for the 2026-10-20 layout (E9.5, E10.5 -> E12.5)
+  size_embryo.csv            embryo leave-one-out checks for every z mode, scale skill, and an extrapolation check
+  size_noise.csv             informational: E9.5 WT vs Mab21l2 KO spread (the KO is not used by the size procedure)
+  size_count_density.csv     informational: RMS / N^(1/3) (needs an organiser ruling before any use)
+  size_dedup_sensitivity.csv informational: RMS as released, de-duplicated (what the procedure uses), and with copies
+                             whose xy moved and interpolated (non-integer) records also removed
+  size_ceiling.csv           split-half |scale_log_ratio| (the metric's ceiling) per released stage, 10 seeds
+  size_dryrun_heart.json, size_dryrun_embryo.json   dry runs on the current stages with every target forecast
+                             redacted (code checks, not predictions); the unredacted JSONs go to --out/dryrun_full/ and
+                             stay on the DGX
+Usage: uv run python experiments/coords/evaluate_size.py [--out runs/coords] [--timestamp TEXT]
 """
 
 from __future__ import annotations
 
 import argparse
-import json
 import sys
 from dataclasses import asdict
 from pathlib import Path
@@ -27,29 +37,21 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import size_procedure as sp  # noqa: E402
-from coordlib import FILES  # noqa: E402
+from coordlib import FILES, nominal_t, raw_coords  # noqa: E402
 
 from vec.evaluate import Stage, _skill, split_half, subsample  # noqa: E402
-from vec.prep import load_stage  # noqa: E402
 
-T = {"E6.75": 6.75, "E7.25": 7.25, "E8.0": 8.0, "E8.25_late": 8.25, "E8.75": 8.75, "E9.5": 9.5,
-     "E9.5_mab21l2_ko": 9.5}
+T = {k: nominal_t(k) for k in FILES}
 SEEDS = range(10)
+HEART = ["E8.25_late", "E8.75", "E9.5"]
+EMBRYO = ["E6.75", "E7.25", "E8.0"]
+INFO = "informational: not used by size_procedure"
 
 
 def scale_log_ratio(pred_C, true_C):
     from common.shape_metrics import scale_log_ratio as slr
 
     return slr(pred_C, true_C)
-
-
-def iso_geometry(g: sp.StageGeometry, s: float) -> sp.StageGeometry:
-    """z divided by the isotropy-collapse stretch s (diagnostic variant only)."""
-    out = sp.StageGeometry(**asdict(g))
-    out.sd_z_full, out.sd_z_core = g.sd_z_full / s, g.sd_z_core / s
-    out.rms_full = float(np.sqrt(g.rms_xy_full ** 2 + out.sd_z_full ** 2))
-    out.rms_core = float(np.sqrt(g.rms_xy_core ** 2 + out.sd_z_core ** 2))
-    return out
 
 
 def scale_skill(pred_rms: float, target: Stage, floor_stage: Stage, seeds=SEEDS) -> dict:
@@ -71,29 +73,61 @@ def scale_skill(pred_rms: float, target: Stage, floor_stage: Stage, seeds=SEEDS)
             "floor_mean": float(np.mean(fl)), "ceiling_abs_mean": float(np.mean(np.abs(ce)))}
 
 
-def main(out: Path) -> None:
-    stages, geoms = {}, {}
+def dedup_sensitivity(name: str, path: str) -> dict:
+    """RMS of the full cloud and the core under four record sets (informational)."""
+    import anndata as ad
+    from scipy import sparse
+
+    from vec.prep import add_lineage
+    from vec.spatial import find_duplicate_records
+
+    a = ad.read_h5ad(path)
+    add_lineage(a, source=Path(path).name.removesuffix(".h5ad"))
+    C = np.asarray(a.obsm["spatial_3D"], float)[:, :3]
+    core = np.asarray(a.obs["core"], bool)
+    m_dup, _ = find_duplicate_records(a)
+    m_any, _ = find_duplicate_records(a, xy_tol=np.inf)
+    M = sparse.csr_matrix(a.layers["counts"], dtype=np.float64)
+    frac = np.abs(M.data - np.rint(M.data)) > 1e-6
+    nonint = np.zeros(a.n_obs, bool)
+    nonint[np.unique(np.repeat(np.arange(a.n_obs), np.diff(M.indptr))[frac])] = True
+    row = {"stage": name, "n_as_released": int(a.n_obs), "n_duplicates": int(m_dup.sum()),
+           "n_duplicates_any_xy": int(m_any.sum()), "n_non_integer_rows": int(nonint.sum()), "note": INFO}
+    for tag, drop in (("as_released", np.zeros(a.n_obs, bool)), ("dedup", m_dup), ("dedup_any_xy", m_any),
+                      ("dedup_any_xy_no_nonint", m_any | nonint)):
+        keep = ~drop
+        row[f"rms_full_{tag}"] = sp.rms_radius(C[keep])
+        row[f"rms_core_{tag}"] = sp.rms_radius(C[keep & core]) if (keep & core).sum() >= 4 else np.nan
+    for tag in ("as_released", "dedup_any_xy", "dedup_any_xy_no_nonint"):
+        for part in ("full", "core"):
+            row[f"log_{part}_{tag}_vs_dedup"] = float(np.log(row[f"rms_{part}_{tag}"] / row[f"rms_{part}_dedup"]))
+    return row
+
+
+def main(out: Path, timestamp: str) -> None:
+    out.mkdir(parents=True, exist_ok=True)
+    geoms, infos, stages = {}, {}, {}
     for name, path in FILES.items():
-        a = load_stage(path)
-        C = np.asarray(a.obsm["spatial_3D"], dtype=np.float64)[:, :3]
-        core = np.asarray(a.obs["core"], dtype=bool)
+        geoms[name], infos[name] = sp.measure_stage(path, T[name], name=name)
+        C = raw_coords(path)
         stages[name] = Stage(X=np.zeros((C.shape[0], 1), np.float32), coords=C)
-        geoms[name] = sp.geometry_from_arrays(name, T[name], C, core)
-    zfit = pd.read_csv(out / "zpitch_fit.csv")
-    s_iso = zfit[zfit.measure == "mism_group"].set_index("stage")["s_best"].to_dict()
+        print(f"{name}: {infos[name]['n_input']} records, dropped {infos[name]['n_dropped_duplicates']} duplicates; "
+              f"core {geoms[name].n_core}", flush=True)
 
     geo_rows = []
     for name, g in geoms.items():
-        r = asdict(g) | {"log_scope": g.log_scope if np.isfinite(g.rms_core) else np.nan, "s_iso": s_iso.get(name)}
-        gi = iso_geometry(g, s_iso[name])
-        r |= {"rms_full_iso": gi.rms_full, "rms_core_iso": gi.rms_core}
-        geo_rows.append(r)
+        geo_rows.append(asdict(g) | {"log_scope": g.log_scope if np.isfinite(g.rms_core) else np.nan,
+                                     "log_scope_xy": g.log_scope_xy if np.isfinite(g.rms_core) else np.nan,
+                                     "core_thin_axis_angle_deg": g.core_thin_axis_angle_deg,
+                                     "n_input": infos[name]["n_input"],
+                                     "n_dropped_duplicates": infos[name]["n_dropped_duplicates"],
+                                     "rms_full_as_released": sp.rms_radius(stages[name].coords),
+                                     "setting_note": INFO if name == "E9.5_mab21l2_ko" else ""})
     pd.DataFrame(geo_rows).to_csv(out / "stage_geometry.csv", index=False)
 
-    # ---------------- heart: core-RMS rules on E9.5 from (E8.25_late, E8.75) ----------------
+    # ---------------- heart: rules on E9.5 from (E8.25_late, E8.75) ----------------
     rules = list(sp.RULES)
     rows = []
-    heart = ["E8.25_late", "E8.75", "E9.5"]
 
     def add_rows(variant, gl, target="E9.5", t_override=None):
         ts = np.array([t_override.get(g.name, g.t) if t_override else g.t for g in gl])
@@ -102,50 +136,51 @@ def main(out: Path) -> None:
             for r in rules:
                 pred = sp.RULES[r](ts[:-1], ys[:-1], ts[-1])
                 rows.append({"variant": variant, "series": key, "target": target, "rule": r,
+                             "preregistered_rule": r in sp.PREREGISTERED["heart_rules"],
                              "train": ",".join(g.name for g in gl[:-1]), "pred_log": pred, "obs_log": ys[-1],
                              "error": pred - ys[-1], "pred_rms": float(np.exp(pred)), "obs_rms": float(np.exp(ys[-1]))})
 
-    add_rows("raw", [geoms[k] for k in heart])
-    add_rows("raw_t8.25late=8.375", [geoms[k] for k in heart], t_override={"E8.25_late": 8.375})
-    add_rows("raw_t8.25late=8.5", [geoms[k] for k in heart], t_override={"E8.25_late": 8.5})
-    gl = [geoms[k] for k in heart]
-    add_rows("common_step", [sp.with_common_step(g, gl[-1].z_step) for g in gl])
-    add_rows("iso_z", [iso_geometry(geoms[k], s_iso[k]) for k in heart])
-    add_rows("raw_with_E8.0", [geoms[k] for k in ["E8.0"] + heart])
-    # E8.75 from (E8.0, E8.25_late): the remodelling window, for context
+    gl = [geoms[k] for k in HEART]
+    add_rows("raw", gl)
+    add_rows("raw_t8.25late=8.375", gl, t_override={"E8.25_late": 8.375})
+    add_rows("raw_t8.25late=8.5", gl, t_override={"E8.25_late": 8.5})
+    add_rows("common_step_ref", [sp.with_common_step(g, gl[-2].z_step) for g in gl])  # the procedure's choice
+    add_rows("common_step_target", [sp.with_common_step(g, gl[-1].z_step) for g in gl])  # oracle: the target's step
     add_rows("raw_context", [geoms[k] for k in ["E8.0", "E8.25_late", "E8.75"]], target="E8.75")
     hp = pd.DataFrame(rows)
     hp.to_csv(out / "size_heart_pseudo.csv", index=False)
 
-    # every z mode through the procedure itself: E9.5 from (E8.25_late, E8.75), all rules and scope hypotheses
+    # ---------------- every z mode through the procedure itself, with the valid flag on every row ----------------
     mode_rows = []
-    for mode in ("raw", "common_step", "xy_grow_z_hold", "split"):
-        res = sp.heart_size_from_geometry([geoms[k] for k in heart[:2]], 9.5, z_mode=mode)
-        ref = geoms["E8.75"]
-        tag = "core" if mode in ("raw", "common_step") else "core_xy"
-        for r, y in res[f"all_rule_predictions_{tag}"].items():
-            if mode == "xy_grow_z_hold":
-                core_r = float(np.hypot(np.exp(y), ref.sd_z_core))
-            elif mode == "split":
-                yz = res["all_rule_predictions_core_z"][r]
-                core_r = float(np.hypot(np.exp(y), np.exp(yz)))
-            else:
-                core_r = float(np.exp(y))
-            mode_rows.append({"z_mode": mode, "rule": r, "pred_rms_core": core_r,
-                              "core_error": float(np.log(core_r / geoms["E9.5"].rms_core))})
-        mode_rows.append({"z_mode": mode, "rule": "procedure(avg of " + "+".join(res[f"chosen_{tag}"]) + ")",
-                          "pred_rms_core": res["pred_rms_core"],
-                          "core_error": float(np.log(res["pred_rms_core"] / geoms["E9.5"].rms_core))}
-                         | {f"full_{h}": v["pred_rms_full"] for h, v in res["scope"].items()}
-                         | {f"full_error_{h}": float(np.log(v["pred_rms_full"] / geoms["E9.5"].rms_full))
-                            for h, v in res["scope"].items()}
-                         | {f"full_skill_{h}": scale_skill(v["pred_rms_full"], stages["E9.5"], stages["E8.75"])[
-                             "skill_mean"] for h, v in res["scope"].items()})
+    obs_core, obs_full = geoms["E9.5"].rms_core, geoms["E9.5"].rms_full
+    for mode in sp.Z_MODES:
+        for settings, mst in (("preregistered", None), ("no_rate_cutoff_diagnostic", -np.inf)):
+            res = sp.heart_size_from_geometry([geoms[k] for k in HEART[:2]], 9.5, z_mode=mode, min_start_t=mst)
+            ref = sorted([geoms[k] for k in HEART[:2]], key=lambda g: g.t)[-1]
+            tag = "core" if mode in ("raw", "common_step") else "core_xy"
+            base = {"z_mode": mode, "settings": settings, "min_start_t": res["min_start_t"], "valid": res["valid"]}
+            for r, y in res["growth"][tag]["all_rule_predictions"].items():
+                if mode == "xy_grow_z_hold":
+                    core_r = float(np.hypot(np.exp(y), ref.sd_z_core))
+                elif mode == "split":
+                    core_r = float(np.hypot(np.exp(y), np.exp(res["growth"]["core_z"]["all_rule_predictions"][r])))
+                else:
+                    core_r = float(np.exp(y))
+                mode_rows.append(base | {"rule": r, "pred_rms_core": core_r,
+                                         "core_error": float(np.log(core_r / obs_core))})
+            chosen = "+".join(res["growth"][tag]["chosen"])
+            row = base | {"rule": f"procedure: average of {chosen}", "pred_rms_core": res["pred_rms_core"],
+                          "core_error": float(np.log(res["pred_rms_core"] / obs_core))}
+            for h, v in res["scope"].items():
+                row[f"full_{h}"] = v["pred_rms_full"]
+                row[f"full_error_{h}"] = float(np.log(v["pred_rms_full"] / obs_full))
+                row[f"full_skill_{h}"] = scale_skill(v["pred_rms_full"], stages["E9.5"], stages["E8.75"])["skill_mean"]
+            mode_rows.append(row)
     pd.DataFrame(mode_rows).to_csv(out / "size_heart_modes.csv", index=False)
 
     # ---------------- heart: scope hypotheses on E9.5 ----------------
     scope_rows = []
-    for h in ("H1", "H0", "H2"):
+    for h in sp.PREREGISTERED["heart_scope_hypotheses"]:
         s = sp.scope_log_ratio([geoms["E8.25_late"].log_scope, geoms["E8.75"].log_scope], [8.25, 8.75], 9.5, h)
         scope_rows.append({"hypothesis": h, "pred_log_scope": s, "obs_log_scope": geoms["E9.5"].log_scope,
                            "error": s - geoms["E9.5"].log_scope})
@@ -158,79 +193,62 @@ def main(out: Path) -> None:
         for sr in scope_rows:
             pr = core_pred[r] * float(np.exp(sr["pred_log_scope"]))
             sk = scale_skill(pr, stages["E9.5"], stages["E8.75"])
-            full_rows.append({"core_rule": r, "scope": sr["hypothesis"], "pred_rms_full": pr,
-                              "obs_rms_full": geoms["E9.5"].rms_full,
-                              "error": float(np.log(pr / geoms["E9.5"].rms_full))} | sk)
-    for label, pr in (("direct_full_latest_rate", float(np.exp(hp[(hp.variant == "raw") & (hp.series == "full") &
-                                                                   (hp.rule == "latest_rate")].pred_log.iloc[0]))),
-                      ):
-        sk = scale_skill(pr, stages["E9.5"], stages["E8.75"])
-        full_rows.append({"core_rule": label, "scope": "-", "pred_rms_full": pr, "obs_rms_full": geoms["E9.5"].rms_full,
-                          "error": float(np.log(pr / geoms["E9.5"].rms_full))} | sk)
+            full_rows.append({"core_rule": r, "scope": sr["hypothesis"], "pred_rms_full": pr, "obs_rms_full": obs_full,
+                              "error": float(np.log(pr / obs_full))} | sk)
+    pr = float(np.exp(hp[(hp.variant == "raw") & (hp.series == "full") & (hp.rule == "latest_rate")].pred_log.iloc[0]))
+    full_rows.append({"core_rule": "direct_full_latest_rate", "scope": "-", "pred_rms_full": pr,
+                      "obs_rms_full": obs_full, "error": float(np.log(pr / obs_full))}
+                     | scale_skill(pr, stages["E9.5"], stages["E8.75"]))
     pd.DataFrame(full_rows).to_csv(out / "size_heart_full.csv", index=False)
 
-    # ---------------- embryo: interpolation checks ----------------
-    emb = ["E6.75", "E7.25", "E8.0"]
+    # ---------------- the rate-free rule table for the release layout ----------------
+    table = pd.DataFrame(sp.rule_table(9.5, 10.5, 12.5))
+    table.to_csv(out / "size_rule_table.csv", index=False)
+
+    # ---------------- embryo: leave-one-out for every z mode ----------------
     emb_rows = []
-    for variant in ("raw", "common_step"):
-        gl = [geoms[k] for k in emb]
-        if variant == "common_step":
-            gl = [sp.with_common_step(g, gl[-1].z_step) for g in gl]
-        res = sp.embryo_size_from_geometry(gl, 7.75, z_mode="raw")
+    rep = sp.embryo_report([geoms[k] for k in EMBRYO], 7.75)
+    for mode, res in rep["z_modes"].items():
         for lo in res["loo_interior"]:
             pr = float(np.exp(lo["pred"]))
-            # the board's floor for an interpolation target is a copy of the previous stage
-            sk = scale_skill(pr, stages[lo["left_out"]], stages["E6.75"]) if variant == "raw" else {}
-            emb_rows.append({"variant": variant, "check": "loo_interior", "target": lo["left_out"],
-                             "pred_rms": pr, "obs_rms": float(np.exp(lo["obs"])), "error": lo["error"]} | sk)
-        # extrapolative checks for context (latest rate)
-        ts = np.array([g.t for g in gl])
-        ys = np.log([g.rms_full for g in gl])
-        p = sp.rule_latest_rate(ts[:2], ys[:2], ts[2])
-        emb_rows.append({"variant": variant, "check": "extrap_latest_rate", "target": gl[2].name,
-                         "pred_rms": float(np.exp(p)), "obs_rms": float(np.exp(ys[2])), "error": p - ys[2]})
-        # also xy-only and z-only views of the same interpolation (raw only)
-        if variant == "raw":
-            for key, ser in (("xy_full", [g.rms_xy_full for g in gl]), ("sdz_full", [g.sd_z_full for g in gl])):
-                y = np.log(ser)
-                p = y[0] + (y[2] - y[0]) * (ts[1] - ts[0]) / (ts[2] - ts[0])
-                emb_rows.append({"variant": key, "check": "loo_interior", "target": "E7.25",
-                                 "pred_rms": float(np.exp(p)), "obs_rms": float(np.exp(y[1])), "error": p - y[1]})
+            sk = scale_skill(pr, stages[lo["left_out"]], stages["E6.75"]) if mode == "raw" else {}
+            emb_rows.append({"z_mode": mode, "preregistered": mode == rep["preregistered"]["z_mode"],
+                             "check": "loo_interior", "target": lo["left_out"], "pred_rms": pr,
+                             "obs_rms": float(np.exp(lo["obs"])), "error": lo["error"]} | sk)
+    ts = np.array([geoms[k].t for k in EMBRYO])
+    ys = np.log([geoms[k].rms_full for k in EMBRYO])
+    p = sp.rule_latest_rate(ts[:2], ys[:2], ts[2])
+    emb_rows.append({"z_mode": "raw", "preregistered": False, "check": "extrap_latest_rate", "target": EMBRYO[2],
+                     "pred_rms": float(np.exp(p)), "obs_rms": float(np.exp(ys[2])), "error": p - ys[2]})
     pd.DataFrame(emb_rows).to_csv(out / "size_embryo.csv", index=False)
 
-    # ---------------- embryo-to-embryo spread and rule noise multipliers ----------------
+    # ---------------- informational: embryo-to-embryo spread (the KO is not used by the procedure) ----------------
     wt, ko = geoms["E9.5"], geoms["E9.5_mab21l2_ko"]
     noise = []
     for key in ("rms_core", "rms_full", "rms_xy_core", "rms_xy_full", "sd_z_core", "sd_z_full"):
         d = float(np.log(getattr(ko, key) / getattr(wt, key)))
-        noise.append({"quantity": key, "log_ko_over_wt": d, "sigma_e_if_independent": abs(d) / np.sqrt(2)})
-    # linear-rule noise multipliers for the test layout (reference E10.5, previous E9.5, target E12.5): the SD of the
-    # prediction error in units of the per-embryo SD sigma_e, counting the reference, previous and target embryos
-    t1, t2, t3 = 9.5, 10.5, 12.5
-    k_latest = (t3 - t2) / (t2 - t1)
-    k_power = np.log(t3 / t2) / np.log(t2 / t1)
-    for name, k in (("copy_last", 0.0), ("half_rate", 0.5 * k_latest), ("power_t", k_power),
-                    ("latest_rate", k_latest)):
-        mult = float(np.sqrt((1 + k) ** 2 + k ** 2 + 1))
-        noise.append({"quantity": f"multiplier_{name}", "log_ko_over_wt": np.nan, "sigma_e_if_independent": mult})
-    # decaying rate: Monte Carlo around a decelerating baseline built from rates in the released data scale
+        noise.append({"quantity": key, "log_ko_over_wt": d, "sigma_e_if_independent": abs(d) / np.sqrt(2),
+                      "note": INFO})
     pd.DataFrame(noise).to_csv(out / "size_noise.csv", index=False)
 
-    # ---------------- count-density diagnostic (not part of the procedure) ----------------
+    # ---------------- informational: count-density diagnostic ----------------
     cd = []
     hs = ["E8.25_late", "E8.75", "E9.5", "E9.5_mab21l2_ko"]
     c = {k: geoms[k].rms_full / geoms[k].n_cells ** (1 / 3) for k in FILES}
     for k in hs:
-        others = [c[o] for o in hs if o != k]
-        pred = float(np.median(others)) * geoms[k].n_cells ** (1 / 3)
+        pred = float(np.median([c[o] for o in hs if o != k])) * geoms[k].n_cells ** (1 / 3)
         cd.append({"stage": k, "c_rms_over_cuberoot_n": c[k], "loo_pred_rms": pred, "obs_rms": geoms[k].rms_full,
-                   "error": float(np.log(pred / geoms[k].rms_full))})
-    for k in ("E6.75", "E7.25", "E8.0"):
+                   "error": float(np.log(pred / geoms[k].rms_full)), "note": INFO})
+    for k in EMBRYO:
         cd.append({"stage": k, "c_rms_over_cuberoot_n": c[k], "loo_pred_rms": np.nan, "obs_rms": geoms[k].rms_full,
-                   "error": np.nan})
+                   "error": np.nan, "note": INFO})
     pd.DataFrame(cd).to_csv(out / "size_count_density.csv", index=False)
 
-    # ---------------- ceiling noise of the metric ----------------
+    # ---------------- informational: how much the record set moves the RMS ----------------
+    ds = pd.DataFrame([dedup_sensitivity(k, p) for k, p in FILES.items()])
+    ds.to_csv(out / "size_dedup_sensitivity.csv", index=False)
+
+    # ---------------- ceiling noise of the metric (files as released) ----------------
     ce = []
     for k, st in stages.items():
         v = []
@@ -241,29 +259,40 @@ def main(out: Path) -> None:
                    "ceiling_abs_mean": float(np.mean(np.abs(v))), "ceiling_abs_max": float(np.max(np.abs(v)))})
     pd.DataFrame(ce).to_csv(out / "size_ceiling.csv", index=False)
 
-    # ---------------- dry runs of the procedure on the stages released so far ----------------
-    dh = sp.heart_size_from_geometry([geoms[k] for k in heart], 12.5)
-    de = sp.embryo_size_from_geometry([geoms[k] for k in emb], 7.75)
-    (out / "size_dryrun_heart.json").write_text(json.dumps(dh, indent=2, default=float))
-    (out / "size_dryrun_embryo.json").write_text(json.dumps(de, indent=2, default=float))
+    # ---------------- dry runs on the stages released so far (code checks; forecasts redacted) ----------------
+    (out / "dryrun_full").mkdir(exist_ok=True)
+    dry = {}
+    for board, names, target in (("heart", HEART, 12.5), ("embryo", EMBRYO, 7.75)):
+        res = sp.run(board, [(FILES[k], T[k]) for k in names], target, timestamp)
+        (out / "dryrun_full" / f"size_dryrun_{board}.json").write_text(sp.dumps(res))
+        dry[board] = sp.redact_forecasts(res)
+        (out / f"size_dryrun_{board}.json").write_text(sp.dumps(dry[board]))
 
-    pd.set_option("display.width", 220)
+    pd.set_option("display.width", 250)
+    pd.set_option("display.max_columns", 40)
     print(hp[(hp.series == "core")].pivot(index="rule", columns="variant", values="error").round(3))
     print(pd.DataFrame(mode_rows).round(3).to_string(index=False))
     print(pd.DataFrame(scope_rows).round(3))
     print(pd.DataFrame(full_rows)[["core_rule", "scope", "pred_rms_full", "error", "skill_mean", "floor_mean",
                                    "ceiling_abs_mean"]].round(3).to_string(index=False))
+    print(table.round(3).to_string(index=False))
     print(pd.DataFrame(emb_rows).round(3).to_string(index=False))
     print(pd.DataFrame(noise).round(3).to_string(index=False))
     print(pd.DataFrame(cd).round(3).to_string(index=False))
+    print(ds.round(4).to_string(index=False))
     print(pd.DataFrame(ce).round(4).to_string(index=False))
-    print("dry run heart:", {k: v for k, v in dh.items() if k in ("z_mode", "pred_rms_core", "pred_log_growth_core")
-                             or k.startswith("chosen_")},
-          {h: round(v["pred_rms_full"], 1) for h, v in dh["scope"].items()})
-    print("dry run embryo:", de["pred_rms_full"], de["bracket"], de["loo_interior"])
+    for board, d in dry.items():
+        print(f"dry run {board} (forecasts redacted): valid={d['valid']} preregistered z mode "
+              f"{d['preregistered']['z_mode']}; per mode:",
+              [(s["z_mode"], s["valid"], s.get("chosen")) for s in d["summary"]])
+        if board == "embryo":
+            print("  leave-one-out:", [(s["z_mode"], [(x["left_out"], round(x["error"], 3)) for x in s["loo_interior"]])
+                                       for s in d["summary"]])
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="runs/coords")
-    main(Path(ap.parse_args().out))
+    ap.add_argument("--timestamp", default="unset", help="recorded in the dry-run JSONs")
+    args = ap.parse_args()
+    main(Path(args.out), args.timestamp)

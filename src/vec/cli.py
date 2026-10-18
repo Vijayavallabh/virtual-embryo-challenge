@@ -12,7 +12,7 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from vec import baselines
+from vec import baselines, spatial
 from vec import data as vec_data
 from vec.boards import REPO_ROOT, get_board, load_boards
 from vec.evaluate import Stage, score_board_seeds
@@ -187,6 +187,53 @@ def data_inventory(
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(rows, indent=2))
     console.print(f"wrote {out}")
+
+
+def _cell(v) -> str:
+    return "-" if v in ("", None) else str(v)
+
+
+@data_app.command("qc")
+def data_qc(
+    files: list[Path] = typer.Argument(..., help="h5ad files to check (run on the DGX, where the data lives)"),
+    out: Path = typer.Option(Path("runs/qc.json"), help="write the full JSON report here"),
+    csv_out: Path = typer.Option(None, "--csv", help="also write one summary row per file here"),
+    xy_tol: float = typer.Option(0.01, help="duplicate records: largest |dx| and |dy| between copies (inf: any)"),
+    min_library: float = typer.Option(20, help="duplicate records: never flag rows with fewer total counts"),
+    max_level_gap: int = typer.Option(1, help="duplicate records: largest z-level distance between copies"),
+):
+    """Intake QC per file: z levels, step, gaps, sections, row order, duplicated records, coordinates (aggregates)."""
+    import anndata as ad
+
+    reports, rows = [], []
+    t = Table("file", "cells", "dup names", "non-int rows", "z raw/levels", "step", "gaps", "sections", "rho/runs",
+              "dup records", "identical rows", "centred")
+    for f in files:
+        qc = spatial.qc_stage(ad.read_h5ad(f), xy_tol=xy_tol, min_library=min_library, max_level_gap=max_level_gap)
+        reports.append({"file": str(f), **qc})
+        r = spatial.summary_row(str(f), qc)
+        rows.append(r)
+        has_z = r["z_levels"] != ""
+        dense = f"dense levels {r['z_dense_levels']}" if r["z_dense_levels"] else ""
+        lib = f" ({r['identical_rows_min_library']} >= min lib)" if r["identical_rows_min_library"] != "" else ""
+        dups = (f"{r['dup_redundant']} ({r['dup_by_gap'] or 'none'}); any xy {r['dup_any_xy_redundant']}"
+                if r["dup_redundant"] != "" else "-")
+        t.add_row(f"{f.parent.name}/{f.name}", _cell(r["cells"]), _cell(r["obs_names_duplicated"]),
+                  _cell(r["non_integer_count_rows"]), f"{r['z_raw_values']}/{r['z_levels']}" if has_z else "-",
+                  _cell(r["z_step"]), _cell(r["z_gaps"]), _cell("; ".join(filter(None, [r["section_labels"], dense]))),
+                  f"{r['spearman_row_vs_z']}/{r['z_runs']}" if has_z else "-", dups, f"{r['identical_rows']}{lib}",
+                  _cell(r["centred_on"]))
+    console.print(t)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(reports, indent=2, allow_nan=False))
+    console.print(f"wrote {out}")
+    if csv_out:
+        csv_out.parent.mkdir(parents=True, exist_ok=True)
+        with csv_out.open("w", newline="") as fh:
+            w = csv.DictWriter(fh, fieldnames=list(rows[0]))
+            w.writeheader()
+            w.writerows(rows)
+        console.print(f"wrote {csv_out}")
 
 
 if __name__ == "__main__":

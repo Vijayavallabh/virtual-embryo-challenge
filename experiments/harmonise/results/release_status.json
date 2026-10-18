@@ -1,0 +1,85 @@
+{
+  "checked": "2026-10-18 22:24:38",
+  "inputs": {
+    "gata4_WT": {
+      "path": "data/raw/T2/E8.75.h5ad",
+      "exists": true
+    },
+    "gata4_rep1": {
+      "path": "data/raw/T3/E8.75_gata4_ko_rep1.h5ad",
+      "exists": false
+    },
+    "gata4_rep2": {
+      "path": "data/raw/T3/E8.75_gata4_ko_rep2.h5ad",
+      "exists": false
+    },
+    "series_E8.25_late": {
+      "path": "data/raw/T2/E8.25_late.h5ad",
+      "exists": true
+    },
+    "series_E8.5": {
+      "path": "data/raw/T2/E8.5.h5ad",
+      "exists": false
+    },
+    "series_E8.75": {
+      "path": "data/raw/T2/E8.75.h5ad",
+      "exists": true
+    },
+    "series_E9.5": {
+      "path": "data/raw/T2/E9.5.h5ad",
+      "exists": true
+    },
+    "series_E10.5": {
+      "path": "data/raw/T2/E10.5.h5ad",
+      "exists": false
+    }
+  },
+  "gata4": {
+    "ran": false,
+    "reason": "input files not present: ['rep1', 'rep2']",
+    "candidates_under_data_raw": []
+  },
+  "series": {
+    "ran": true,
+    "stages": [
+      "E8.25_late",
+      "E8.75",
+      "E9.5"
+    ],
+    "pairs": [
+      "E8.25_late|E8.75",
+      "E8.75|E9.5"
+    ],
+    "files": {
+      "E8.25_late": {
+        "n_input": 58716,
+        "n_dropped_duplicates": 1164,
+        "cells": 57552,
+        "unmapped_labels": [],
+        "sha256_16": "d56f94d3e2d719ed"
+      },
+      "E8.75": {
+        "n_input": 24826,
+        "n_dropped_duplicates": 317,
+        "cells": 24509,
+        "unmapped_labels": [],
+        "sha256_16": "149ab6df7c99ad85"
+      },
+      "E9.5": {
+        "n_input": 53742,
+        "n_dropped_duplicates": 0,
+        "cells": 53742,
+        "unmapped_labels": [],
+        "sha256_16": "371ca6530e084de2"
+      }
+    }
+  },
+  "series_missing": [
+    "E8.5",
+    "E10.5"
+  ],
+  "release_files_present": {
+    "gata4": false,
+    "series": []
+  }
+}

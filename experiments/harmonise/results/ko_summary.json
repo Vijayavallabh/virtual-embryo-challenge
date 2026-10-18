@@ -1,29 +1,572 @@
 {
+  "files": {
+    "E9.5": {
+      "n_input": 53742,
+      "n_dropped_duplicates": 0,
+      "cells": 53742,
+      "unmapped_labels": [],
+      "sha256_16": "371ca6530e084de2"
+    },
+    "KO": {
+      "n_input": 50294,
+      "n_dropped_duplicates": 2811,
+      "cells": 47483,
+      "unmapped_labels": [],
+      "sha256_16": "5b1668ab982e64f7"
+    }
+  },
   "wt_depth": 75.0,
   "ko_depth": 95.0,
   "ko_depth_frac": 0.7894736842105263,
   "ko_primary_variant": "match5",
   "method": "logreg",
   "n_boot": 2000,
+  "n_boot_em": 2000,
+  "n_boot_trim": 2000,
   "wt_sections": 40,
-  "ko_sections": 36,
-  "n_boot_em": 1000,
-  "group_agreement_match": 0.7406751110236048,
-  "unassigned_match": 0.12224122161689267,
-  "novelty_gt1_match": 0.056925279357378615,
-  "median_label_conf_match": 0.8751991987228394,
-  "label_change_vs_primary_match": 0.07971129757028672,
-  "group_agreement_match5": 0.7473037124543327,
-  "unassigned_match5": 0.13391259394758817,
-  "novelty_gt1_match5": 0.04927029069073846,
-  "median_label_conf_match5": 0.8489091992378235,
+  "ko_sections": 35,
+  "wt_z_step": 15.0,
+  "ko_z_step": 10.0,
+  "ko_z_gaps": [
+    {
+      "from": -320.0,
+      "to": -290.0,
+      "steps": 3.0,
+      "missing": 2
+    },
+    {
+      "from": -230.0,
+      "to": -210.0,
+      "steps": 2.0,
+      "missing": 1
+    }
+  ],
+  "interval_note": "95% percentile intervals from resampling whole sections (snapped z levels) within each embryo, independently per population. They cover within-embryo section sampling only: with one embryo per genotype they are not intervals for genotype effects, and they carry no between-embryo or sectioning-coverage variance (see the z-trim table and the z profiles).",
+  "reading": "File against file: one WT embryo and one KO embryo whose z-stacks cover different anatomy. Group-level differences are not genotype effects or T3 magnitudes. The primary summary is the within-CM shift with its z-trim range. Compositions are quoted as a top-call/EM bracket.",
+  "primary_within_cm": {
+    "A-CM": {
+      "WT_top_call": 0.3115750690819773,
+      "KO_top_call": 0.24561847516608667,
+      "WT_em": 0.31052446466494565,
+      "KO_em": 0.22048382658975754,
+      "top_call_diff": -0.06595659391589062,
+      "top_call_diff_sec_ci": [
+        -0.12740058275756086,
+        0.002380699753954724
+      ],
+      "top_call_trim_range": [
+        -0.1010149412927662,
+        -0.03883495608762699
+      ],
+      "top_call_sec_excludes_0_all_trims": false,
+      "top_call_sign_flips_over_trims": false,
+      "em_diff": -0.09004063807518811,
+      "em_diff_sec_ci": [
+        -0.16881882265205048,
+        -0.006278574943859649
+      ],
+      "em_trim_range": [
+        -0.13325802249561772,
+        -0.05383013400349934
+      ],
+      "em_sec_excludes_0_all_trims": false,
+      "em_sign_flips_over_trims": false,
+      "bracket": [
+        -0.09004063807518811,
+        -0.06595659391589062
+      ]
+    },
+    "OFT-CM": {
+      "WT_top_call": 0.14123426466073075,
+      "KO_top_call": 0.10819360961720974,
+      "WT_em": 0.14231652409845463,
+      "KO_em": 0.0902577898020291,
+      "top_call_diff": -0.03304065504352101,
+      "top_call_diff_sec_ci": [
+        -0.11982399506984337,
+        0.04476489425611849
+      ],
+      "top_call_trim_range": [
+        -0.0786108101285777,
+        -0.011438678507711561
+      ],
+      "top_call_sec_excludes_0_all_trims": false,
+      "top_call_sign_flips_over_trims": false,
+      "em_diff": -0.05205873429642553,
+      "em_diff_sec_ci": [
+        -0.1526226784957549,
+        0.04017248886253068
+      ],
+      "em_trim_range": [
+        -0.105118932509859,
+        -0.027422201551718123
+      ],
+      "em_sec_excludes_0_all_trims": false,
+      "em_sign_flips_over_trims": false,
+      "bracket": [
+        -0.05205873429642553,
+        -0.03304065504352101
+      ]
+    },
+    "SV-CM": {
+      "WT_top_call": 0.15873503223825605,
+      "KO_top_call": 0.03998734577665296,
+      "WT_em": 0.16538537314487414,
+      "KO_em": 0.01643272255605045,
+      "top_call_diff": -0.1187476864616031,
+      "top_call_diff_sec_ci": [
+        -0.1852376892200859,
+        -0.05014271848295583
+      ],
+      "top_call_trim_range": [
+        -0.12674350681452723,
+        -0.08858012443670253
+      ],
+      "top_call_sec_excludes_0_all_trims": true,
+      "top_call_sign_flips_over_trims": false,
+      "em_diff": -0.1489526505888237,
+      "em_diff_sec_ci": [
+        -0.23044700457637118,
+        -0.06362499997697385
+      ],
+      "em_trim_range": [
+        -0.15534278505341795,
+        -0.11402193000927612
+      ],
+      "em_sec_excludes_0_all_trims": true,
+      "em_sign_flips_over_trims": false,
+      "bracket": [
+        -0.1489526505888237,
+        -0.1187476864616031
+      ]
+    },
+    "V-CM": {
+      "WT_top_call": 0.38845563401903593,
+      "KO_top_call": 0.6062005694400506,
+      "WT_em": 0.38177363809172554,
+      "KO_em": 0.672825661052163,
+      "top_call_diff": 0.2177449354210147,
+      "top_call_diff_sec_ci": [
+        0.15386738523010507,
+        0.2781457006073844
+      ],
+      "top_call_trim_range": [
+        0.1872505806702296,
+        0.26521325178094945
+      ],
+      "top_call_sec_excludes_0_all_trims": true,
+      "top_call_sign_flips_over_trims": false,
+      "em_diff": 0.2910520229604375,
+      "em_diff_sec_ci": [
+        0.20344733771053194,
+        0.3693720937985951
+      ],
+      "em_trim_range": [
+        0.2452364167695804,
+        0.35220132821092087
+      ],
+      "em_sec_excludes_0_all_trims": true,
+      "em_sign_flips_over_trims": false,
+      "bracket": [
+        0.2177449354210147,
+        0.2910520229604375
+      ]
+    }
+  },
+  "file_vs_file_groups": {
+    "CM": {
+      "bracket": [
+        0.028840563480970693,
+        0.031110165599319062
+      ],
+      "top_call_diff": 0.031110165599319062,
+      "em_diff": 0.028840563480970693,
+      "bracket_sec_excludes_0": false,
+      "top_call_trim_range": [
+        -0.013097401616760929,
+        0.06271134658846544
+      ],
+      "top_call_sec_excludes_0_all_trims": false,
+      "em_trim_range": [
+        -0.015650724326385645,
+        0.06341601500250582
+      ],
+      "em_sec_excludes_0_all_trims": false
+    },
+    "CardiacProgenitor": {
+      "bracket": [
+        -0.014897766062770814,
+        -0.01048275569724496
+      ],
+      "top_call_diff": -0.01048275569724496,
+      "em_diff": -0.014897766062770814,
+      "bracket_sec_excludes_0": true,
+      "top_call_trim_range": [
+        -0.01319532997525471,
+        -0.009605118523640058
+      ],
+      "top_call_sec_excludes_0_all_trims": true,
+      "em_trim_range": [
+        -0.018257269168838387,
+        -0.013442138826470707
+      ],
+      "em_sec_excludes_0_all_trims": true
+    },
+    "Endocardium": {
+      "bracket": [
+        -0.010867935005746211,
+        0.008931303660985698
+      ],
+      "top_call_diff": 0.008931303660985698,
+      "em_diff": -0.010867935005746211,
+      "bracket_sec_excludes_0": false,
+      "top_call_trim_range": [
+        -0.0020651190861874086,
+        0.015684951792320684
+      ],
+      "top_call_sec_excludes_0_all_trims": false,
+      "em_trim_range": [
+        -0.02441264250581892,
+        -0.0002370487886601269
+      ],
+      "em_sec_excludes_0_all_trims": false
+    },
+    "Endothelium": {
+      "bracket": [
+        -0.011749991854673417,
+        0.009351428012226631
+      ],
+      "top_call_diff": -0.011749991854673417,
+      "em_diff": 0.009351428012226631,
+      "bracket_sec_excludes_0": false,
+      "top_call_trim_range": [
+        -0.014752453173031019,
+        -0.006456315951723704
+      ],
+      "top_call_sec_excludes_0_all_trims": false,
+      "em_trim_range": [
+        0.0004231306613613345,
+        0.020865985773019555
+      ],
+      "em_sec_excludes_0_all_trims": false
+    },
+    "EpicardiumST": {
+      "bracket": [
+        -0.0017511646829474342,
+        0.012632577786588904
+      ],
+      "top_call_diff": -0.0017511646829474342,
+      "em_diff": 0.012632577786588904,
+      "bracket_sec_excludes_0": false,
+      "top_call_trim_range": [
+        -0.03157442721111345,
+        0.03065238416205627
+      ],
+      "top_call_sec_excludes_0_all_trims": false,
+      "em_trim_range": [
+        -0.036498856494324994,
+        0.05129194916715886
+      ],
+      "em_sec_excludes_0_all_trims": false
+    },
+    "Pericardium": {
+      "bracket": [
+        0.03297189007648561,
+        0.03398659702824111
+      ],
+      "top_call_diff": 0.03398659702824111,
+      "em_diff": 0.03297189007648561,
+      "bracket_sec_excludes_0": true,
+      "top_call_trim_range": [
+        0.014051503572344623,
+        0.04732391088715554
+      ],
+      "top_call_sec_excludes_0_all_trims": false,
+      "em_trim_range": [
+        0.016644496561216707,
+        0.04649565509309793
+      ],
+      "em_sec_excludes_0_all_trims": false
+    },
+    "PharyngealMesoderm": {
+      "bracket": [
+        0.01587526911936807,
+        0.019432767923307698
+      ],
+      "top_call_diff": 0.01587526911936807,
+      "em_diff": 0.019432767923307698,
+      "bracket_sec_excludes_0": false,
+      "top_call_trim_range": [
+        0.005755461910432802,
+        0.017514864536460006
+      ],
+      "top_call_sec_excludes_0_all_trims": false,
+      "em_trim_range": [
+        0.0053795557489368095,
+        0.026438069126851094
+      ],
+      "em_sec_excludes_0_all_trims": false
+    },
+    "ParaxialMesoderm": {
+      "bracket": [
+        0.008350928390045156,
+        0.009806945371585774
+      ],
+      "top_call_diff": 0.009806945371585774,
+      "em_diff": 0.008350928390045156,
+      "bracket_sec_excludes_0": false,
+      "top_call_trim_range": [
+        -0.0032063541203912888,
+        0.025579662862423413
+      ],
+      "top_call_sec_excludes_0_all_trims": false,
+      "em_trim_range": [
+        -0.006577107624076151,
+        0.027644204129017247
+      ],
+      "em_sec_excludes_0_all_trims": false
+    },
+    "NCC": {
+      "bracket": [
+        -0.048848838861535196,
+        -0.042471093346760795
+      ],
+      "top_call_diff": -0.042471093346760795,
+      "em_diff": -0.048848838861535196,
+      "bracket_sec_excludes_0": true,
+      "top_call_trim_range": [
+        -0.05064330144382682,
+        -0.013737275590618638
+      ],
+      "top_call_sec_excludes_0_all_trims": true,
+      "em_trim_range": [
+        -0.05704984466482256,
+        -0.015111360387022158
+      ],
+      "em_sec_excludes_0_all_trims": true
+    },
+    "Endoderm": {
+      "bracket": [
+        -0.02889655801635681,
+        -0.025540259578890532
+      ],
+      "top_call_diff": -0.025540259578890532,
+      "em_diff": -0.02889655801635681,
+      "bracket_sec_excludes_0": true,
+      "top_call_trim_range": [
+        -0.030760855886533673,
+        -0.017498303511198545
+      ],
+      "top_call_sec_excludes_0_all_trims": true,
+      "em_trim_range": [
+        -0.034117090749964094,
+        -0.02052273954607237
+      ],
+      "em_sec_excludes_0_all_trims": true
+    },
+    "Hepatocyte": {
+      "bracket": [
+        0.008788245619610856,
+        0.010267886048900976
+      ],
+      "top_call_diff": 0.008788245619610856,
+      "em_diff": 0.010267886048900976,
+      "bracket_sec_excludes_0": false,
+      "top_call_trim_range": [
+        -0.0021782385711373526,
+        0.01705433286297587
+      ],
+      "top_call_sec_excludes_0_all_trims": false,
+      "em_trim_range": [
+        -0.0024252321892167545,
+        0.018833775179046615
+      ],
+      "em_sec_excludes_0_all_trims": false
+    },
+    "Ectoderm": {
+      "bracket": [
+        -0.01833694377211617,
+        -0.01650326123859345
+      ],
+      "top_call_diff": -0.01650326123859345,
+      "em_diff": -0.01833694377211617,
+      "bracket_sec_excludes_0": true,
+      "top_call_trim_range": [
+        -0.02288087984075028,
+        -0.0018187642691401343
+      ],
+      "top_call_sec_excludes_0_all_trims": false,
+      "em_trim_range": [
+        -0.025359199304166948,
+        -0.0025574944503311547
+      ],
+      "em_sec_excludes_0_all_trims": false
+    }
+  },
+  "file_vs_file_merged": {
+    "CM": {
+      "bracket": [
+        0.028840563480970693,
+        0.030404610753541395
+      ],
+      "top_call_diff": 0.030404610753541395,
+      "em_diff": 0.028840563480970693,
+      "bracket_sec_excludes_0": false,
+      "top_call_trim_range": [
+        -0.01363137728797681,
+        0.06203659258522737
+      ],
+      "top_call_sec_excludes_0_all_trims": false,
+      "em_trim_range": [
+        -0.015650724326385645,
+        0.06341601500250582
+      ],
+      "em_sec_excludes_0_all_trims": false
+    },
+    "Endothelial": {
+      "bracket": [
+        -0.0024599070434037085,
+        -0.0015165069935195452
+      ],
+      "top_call_diff": -0.0024599070434037085,
+      "em_diff": -0.0015165069935195452,
+      "bracket_sec_excludes_0": false,
+      "top_call_trim_range": [
+        -0.009435618948131774,
+        0.0018307361196454597
+      ],
+      "top_call_sec_excludes_0_all_trims": false,
+      "em_trim_range": [
+        -0.009714422213008195,
+        0.005416641736422367
+      ],
+      "em_sec_excludes_0_all_trims": false
+    },
+    "CranialMesoderm": {
+      "bracket": [
+        0.02620812776538206,
+        0.027783696313352813
+      ],
+      "top_call_diff": 0.02620812776538206,
+      "em_diff": 0.027783696313352813,
+      "bracket_sec_excludes_0": false,
+      "top_call_trim_range": [
+        0.014297963543506986,
+        0.04272598077385928
+      ],
+      "top_call_sec_excludes_0_all_trims": false,
+      "em_trim_range": [
+        0.01353301777153501,
+        0.05408227325586837
+      ],
+      "em_sec_excludes_0_all_trims": false
+    },
+    "NCC": {
+      "bracket": [
+        -0.048848838861535196,
+        -0.04271087172841913
+      ],
+      "top_call_diff": -0.04271087172841913,
+      "em_diff": -0.048848838861535196,
+      "bracket_sec_excludes_0": true,
+      "top_call_trim_range": [
+        -0.05080450013226126,
+        -0.014245843641446126
+      ],
+      "top_call_sec_excludes_0_all_trims": true,
+      "em_trim_range": [
+        -0.05704984466482256,
+        -0.015111360387022158
+      ],
+      "em_sec_excludes_0_all_trims": true
+    },
+    "Endoderm": {
+      "bracket": [
+        -0.018628671967455837,
+        -0.017272174502520207
+      ],
+      "top_call_diff": -0.017272174502520207,
+      "em_diff": -0.018628671967455837,
+      "bracket_sec_excludes_0": true,
+      "top_call_trim_range": [
+        -0.026045962707043662,
+        -0.01069120068113983
+      ],
+      "top_call_sec_excludes_0_all_trims": false,
+      "em_trim_range": [
+        -0.028437030085913667,
+        -0.011323273892604582
+      ],
+      "em_sec_excludes_0_all_trims": false
+    },
+    "Ectoderm": {
+      "bracket": [
+        -0.01833694377211617,
+        -0.016909324509734674
+      ],
+      "top_call_diff": -0.016909324509734674,
+      "em_diff": -0.01833694377211617,
+      "bracket_sec_excludes_0": true,
+      "top_call_trim_range": [
+        -0.023096387051524534,
+        -0.0022546610666017153
+      ],
+      "top_call_sec_excludes_0_all_trims": false,
+      "em_trim_range": [
+        -0.025359199304166948,
+        -0.0025574944503311547
+      ],
+      "em_sec_excludes_0_all_trims": false
+    },
+    "Untracked": {
+      "bracket": [
+        0.022739539265154235,
+        0.030706701800303687
+      ],
+      "top_call_diff": 0.022739539265154235,
+      "em_diff": 0.030706701800303687,
+      "bracket_sec_excludes_0": false,
+      "top_call_trim_range": [
+        -0.0271677554777999,
+        0.05506578756370348
+      ],
+      "top_call_sec_excludes_0_all_trims": false,
+      "em_trim_range": [
+        -0.03329649875957899,
+        0.06791633879776092
+      ],
+      "em_sec_excludes_0_all_trims": false
+    }
+  },
+  "zprofile_mean_total_variation": 0.21620701488161895,
+  "group_comparable_fraction_match": 0.9950719204768023,
+  "group_agreement_match": 0.7633812355817055,
+  "merged_comparable_fraction_match": 0.7991070488385317,
+  "merged_agreement_match": 0.8883617963314357,
+  "unassigned_match": 0.12130657287871449,
+  "novelty_gt1_match": 0.05660973401006676,
+  "median_label_conf_match": 0.8732552528381348,
+  "label_change_vs_primary_match": 0.08076574774129688,
+  "group_comparable_fraction_match5": 0.9950719204768023,
+  "group_agreement_match5": 0.7715507206501725,
+  "merged_comparable_fraction_match5": 0.7991070488385317,
+  "merged_agreement_match5": 0.8945551338815096,
+  "unassigned_match5": 0.13415327590927278,
+  "novelty_gt1_match5": 0.04982835962344418,
+  "median_label_conf_match5": 0.8471922874450684,
   "label_change_vs_primary_match5": 0.0,
-  "group_agreement_none": 0.7478506267637987,
-  "unassigned_none": 0.09579671531395395,
-  "novelty_gt1_none": 0.09233705809838151,
-  "median_label_conf_none": 0.9019073247909546,
-  "label_change_vs_primary_none": 0.045532270250924566,
-  "comparable_fraction": 0.9088758102358134,
+  "group_comparable_fraction_none": 0.9950719204768023,
+  "group_agreement_none": 0.7727782598573515,
+  "merged_comparable_fraction_none": 0.7991070488385317,
+  "merged_agreement_none": 0.8944760699978916,
+  "unassigned_none": 0.09630815239138218,
+  "novelty_gt1_none": 0.09222247962428659,
+  "median_label_conf_none": 0.900749683380127,
+  "label_change_vs_primary_none": 0.0457848071941537,
   "reverse_model_depth": 75.0,
-  "reverse_method": "logreg"
+  "reverse_method": "logreg",
+  "reverse_model_groups": {
+    "LPM": "Pericardium",
+    "DPM": "PharyngealMesoderm"
+  }
 }

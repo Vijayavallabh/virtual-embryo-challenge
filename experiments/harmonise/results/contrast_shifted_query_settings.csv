@@ -1,0 +1,5 @@
+stage,train_half,query_half,query_cells_of_untrained_labels,query_accuracy,depth_frac,n_train,n_query,dropped_labels,seconds
+E9.5,lower,upper,0.0,0.7013585540816736,1.0,28789,24953,{},6.881369590759277
+E9.5,upper,lower,0.015804647608461564,0.6480553398743559,1.0,24950,28789,"{""Hepatocytes"": ""fewer than 10 cells""}",5.253868341445923
+E8.75,lower,upper,0.0009689922480620155,0.731593333921171,1.0,11762,11352,"{""Forebrain"": ""fewer than 10 cells""}",4.546390771865845
+E8.75,upper,lower,0.0863284901011131,0.7173811959453176,0.927536231884058,11333,11769,"{""Gut Endoderm"": ""fewer than 10 cells"", ""Hindgut"": ""fewer than 10 cells"", ""LPM"": ""fewer than 10 cells"", ""PAM-3"": ""fewer than 10 cells"", ""SOM"": ""fewer than 10 cells""}",3.3909873962402344

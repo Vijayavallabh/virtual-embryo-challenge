@@ -1,0 +1,68 @@
+{
+  "started": "2026-10-18 22:16:02",
+  "stages": "ref,ko,shift,cross,contrast,shifted,release,figs",
+  "seed": 0,
+  "n_boot": 2000,
+  "n_boot_em": 2000,
+  "n_boot_trim": 2000,
+  "max_cells": null,
+  "ko_depth": "match5",
+  "load": "vec.prep.load_stage(drop_duplicates=True)",
+  "python": "3.12.12",
+  "sklearn": "1.9.1",
+  "harmonise_py_sha256_16": "d4ce92a0f5173eaf",
+  "spatial_py_sha256_16": "ff9e0c541479844a",
+  "prep_py_sha256_16": "97b98a86aa195e23",
+  "lineage_map_sha256_16": "2f1ca675b28db04d",
+  "script_sha256_16": "b306f2d5144c3eca",
+  "release_args": {
+    "gata4_rep1": "data/raw/T3/E8.75_gata4_ko_rep1.h5ad",
+    "gata4_rep2": "data/raw/T3/E8.75_gata4_ko_rep2.h5ad",
+    "gata4_wt": "data/raw/T2/E8.75.h5ad",
+    "series": "E8.25_late=data/raw/T2/E8.25_late.h5ad,E8.5=data/raw/T2/E8.5.h5ad,E8.75=data/raw/T2/E8.75.h5ad,E9.5=data/raw/T2/E9.5.h5ad,E10.5=data/raw/T2/E10.5.h5ad",
+    "release_pairs": "adjacent",
+    "allow_unmapped": false
+  },
+  "stage_seconds": {
+    "ref": 123.2,
+    "ko": 334.3,
+    "shift": 7.8,
+    "cross": 28.8,
+    "contrast": 1.6,
+    "shifted": 20.1,
+    "release": 38.0,
+    "figs": 2.9
+  },
+  "files": {
+    "data/raw/T2/E9.5.h5ad": {
+      "n_input": 53742,
+      "n_dropped_duplicates": 0,
+      "cells": 53742,
+      "unmapped_labels": [],
+      "sha256_16": "371ca6530e084de2"
+    },
+    "data/raw/T2/E8.75.h5ad": {
+      "n_input": 24826,
+      "n_dropped_duplicates": 317,
+      "cells": 24509,
+      "unmapped_labels": [],
+      "sha256_16": "149ab6df7c99ad85"
+    },
+    "data/raw/T3/E9.5_mab21l2_ko.h5ad": {
+      "n_input": 50294,
+      "n_dropped_duplicates": 2811,
+      "cells": 47483,
+      "unmapped_labels": [],
+      "sha256_16": "5b1668ab982e64f7"
+    },
+    "data/raw/T2/E8.25_late.h5ad": {
+      "n_input": 58716,
+      "n_dropped_duplicates": 1164,
+      "cells": 57552,
+      "unmapped_labels": [],
+      "sha256_16": "d56f94d3e2d719ed"
+    }
+  },
+  "finished": "2026-10-18 22:25:19",
+  "seconds": 556.8
+}

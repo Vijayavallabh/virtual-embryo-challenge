@@ -1,0 +1,525 @@
+[
+  {
+    "file": "data/raw/T2/E6.75.h5ad",
+    "identical": {
+      "repeats": 0
+    },
+    "non_integer": {
+      "rows": 0
+    }
+  },
+  {
+    "file": "data/raw/T2/E7.25.h5ad",
+    "identical": {
+      "repeats": 0
+    },
+    "non_integer": {
+      "rows": 0
+    }
+  },
+  {
+    "file": "data/raw/T2/E8.0.h5ad",
+    "identical": {
+      "repeats": 2903,
+      "colocated": 443,
+      "by_gap": {
+        "-2": 288,
+        "-1": 2615
+      },
+      "by_gap_not_colocated": {
+        "-2": 166,
+        "-1": 2294
+      },
+      "xy_offset_quantiles_not_colocated": [
+        0.05615234375,
+        1.4576171875,
+        5.071533203124993,
+        26.454614257812498,
+        63.3701171875
+      ],
+      "by_level_pair": [
+        {
+          "z_first": -162.686843,
+          "z_repeat": -177.686843,
+          "gap": -1,
+          "n": 683,
+          "colocated": 0,
+          "median_dx": -0.35302734375,
+          "median_dy": 0.94384765625,
+          "sd_dx": 3.320619296289559,
+          "sd_dy": 4.127422508811661,
+          "affine": {
+            "rms_residual": 5.269679459742189,
+            "det": 1.0023171650363234,
+            "rotation_deg": -0.01467606025973108,
+            "shift": [
+              -0.1739411669437656,
+              0.601472152561091
+            ]
+          }
+        },
+        {
+          "z_first": -102.686843,
+          "z_repeat": -117.686843,
+          "gap": -1,
+          "n": 482,
+          "colocated": 0,
+          "median_dx": -0.0921630859375,
+          "median_dy": 0.031982421875,
+          "sd_dx": 8.882576752411056,
+          "sd_dy": 11.33207163133963,
+          "affine": {
+            "rms_residual": 12.87310312027585,
+            "det": 1.0420594924262832,
+            "rotation_deg": -0.6737414581691158,
+            "shift": [
+              2.4021694967697753,
+              0.6391723955209836
+            ]
+          }
+        },
+        {
+          "z_first": -87.686843,
+          "z_repeat": -102.686843,
+          "gap": -1,
+          "n": 427,
+          "colocated": 0,
+          "median_dx": -1.361083984375,
+          "median_dy": 5.6708984375,
+          "sd_dx": 21.28336588139712,
+          "sd_dy": 21.56208507418276,
+          "affine": {
+            "rms_residual": 22.7017832199071,
+            "det": 1.081376399347309,
+            "rotation_deg": 3.191987083386172,
+            "shift": [
+              -3.962058949049187,
+              4.11764528711143
+            ]
+          }
+        },
+        {
+          "z_first": -132.686843,
+          "z_repeat": -147.686843,
+          "gap": -1,
+          "n": 372,
+          "colocated": 0,
+          "median_dx": 0.4414062500000009,
+          "median_dy": 2.731201171875,
+          "sd_dx": 5.0958840957963485,
+          "sd_dy": 7.202954673183626,
+          "affine": {
+            "rms_residual": 8.667239272376635,
+            "det": 0.9966475723156187,
+            "rotation_deg": -0.03932050893247483,
+            "shift": [
+              0.3825639447126173,
+              3.3131441435943687
+            ]
+          }
+        },
+        {
+          "z_first": -192.686843,
+          "z_repeat": -207.686843,
+          "gap": -1,
+          "n": 330,
+          "colocated": 0,
+          "median_dx": -0.318359375,
+          "median_dy": 0.275634765625,
+          "sd_dx": 3.3107858171093487,
+          "sd_dy": 5.310924687437109,
+          "affine": {
+            "rms_residual": 6.017493641492594,
+            "det": 0.9936605144333701,
+            "rotation_deg": -0.135565254993951,
+            "shift": [
+              0.18759542332039583,
+              -1.4467710503203057
+            ]
+          }
+        },
+        {
+          "z_first": 32.313157,
+          "z_repeat": 17.313157,
+          "gap": -1,
+          "n": 295,
+          "colocated": 295,
+          "median_dx": 0.0,
+          "median_dy": 0.0,
+          "sd_dx": 0.0,
+          "sd_dy": 0.0
+        },
+        {
+          "z_first": -87.686843,
+          "z_repeat": -117.686843,
+          "gap": -2,
+          "n": 166,
+          "colocated": 0,
+          "median_dx": -3.8555908203125,
+          "median_dy": 5.573486328125,
+          "sd_dx": 24.580808550019714,
+          "sd_dy": 26.67944587889588,
+          "affine": {
+            "rms_residual": 28.32277210859446,
+            "det": 1.0511833379527498,
+            "rotation_deg": 5.189097783269594,
+            "shift": [
+              -4.818766520392909,
+              9.253807014901009
+            ]
+          }
+        },
+        {
+          "z_first": 32.313157,
+          "z_repeat": 2.313157,
+          "gap": -2,
+          "n": 122,
+          "colocated": 122,
+          "median_dx": 0.0,
+          "median_dy": 0.0,
+          "sd_dx": 0.0,
+          "sd_dy": 0.0
+        },
+        {
+          "z_first": 17.313157,
+          "z_repeat": 2.313157,
+          "gap": -1,
+          "n": 26,
+          "colocated": 26,
+          "median_dx": 0.0,
+          "median_dy": 0.0,
+          "sd_dx": 0.0,
+          "sd_dy": 0.0
+        }
+      ],
+      "level_pairs": 9
+    },
+    "non_integer": {
+      "rows": 200,
+      "fraction_values": {
+        "0.5000": 13573
+      },
+      "levels": {
+        "-147.686843": 58,
+        "2.313157": 1,
+        "17.313157": 61,
+        "32.313157": 1,
+        "62.313157": 8,
+        "197.313157": 71
+      },
+      "half_only_rows": 200,
+      "rows_with_2r_eq_A_plus_B": 160,
+      "decompositions": [
+        {
+          "gap_A": -1,
+          "gap_B": 1,
+          "A_colocated": false,
+          "B_colocated": false,
+          "n": 151
+        },
+        {
+          "gap_A": 1,
+          "gap_B": -1,
+          "A_colocated": false,
+          "B_colocated": false,
+          "n": 151
+        },
+        {
+          "gap_A": -2,
+          "gap_B": 1,
+          "A_colocated": false,
+          "B_colocated": false,
+          "n": 37
+        },
+        {
+          "gap_A": 1,
+          "gap_B": -2,
+          "A_colocated": false,
+          "B_colocated": false,
+          "n": 36
+        },
+        {
+          "gap_A": 0,
+          "gap_B": -1,
+          "A_colocated": false,
+          "B_colocated": false,
+          "n": 6
+        },
+        {
+          "gap_A": -1,
+          "gap_B": 0,
+          "A_colocated": false,
+          "B_colocated": false,
+          "n": 6
+        },
+        {
+          "gap_A": 0,
+          "gap_B": -2,
+          "A_colocated": false,
+          "B_colocated": false,
+          "n": 4
+        },
+        {
+          "gap_A": -2,
+          "gap_B": 0,
+          "A_colocated": false,
+          "B_colocated": false,
+          "n": 4
+        }
+      ]
+    }
+  },
+  {
+    "file": "data/raw/T2/E8.25_late.h5ad",
+    "identical": {
+      "repeats": 1727,
+      "colocated": 1164,
+      "by_gap": {
+        "-1": 1727
+      },
+      "by_gap_not_colocated": {
+        "-1": 563
+      },
+      "xy_offset_quantiles_not_colocated": [
+        0.0576171875,
+        0.4443359375,
+        1.15869140625,
+        2.7419921875,
+        7.376953125
+      ],
+      "by_level_pair": [
+        {
+          "z_first": -85.805487,
+          "z_repeat": -100.805487,
+          "gap": -1,
+          "n": 1164,
+          "colocated": 1164,
+          "median_dx": 0.0,
+          "median_dy": 0.0,
+          "sd_dx": 0.0,
+          "sd_dy": 0.0
+        },
+        {
+          "z_first": -115.805487,
+          "z_repeat": -130.805487,
+          "gap": -1,
+          "n": 563,
+          "colocated": 0,
+          "median_dx": 0.12158203125,
+          "median_dy": 0.255859375,
+          "sd_dx": 1.3848606457706483,
+          "sd_dy": 1.4771065345565488,
+          "affine": {
+            "rms_residual": 1.9115910007121781,
+            "det": 0.9967531296412644,
+            "rotation_deg": 0.11518580374480474,
+            "shift": [
+              -0.5394413780224631,
+              0.7616194544185234
+            ]
+          }
+        }
+      ],
+      "level_pairs": 2
+    },
+    "non_integer": {
+      "rows": 2558,
+      "fraction_values": {
+        "0.5000": 173315,
+        "0.2500": 684,
+        "0.1250": 72,
+        "0.3750": 26
+      },
+      "levels": {
+        "-145.805487": 522,
+        "-70.805487": 148,
+        "49.194513": 91,
+        "64.194513": 102,
+        "79.194513": 288,
+        "94.194513": 55,
+        "109.194513": 494,
+        "184.194513": 858
+      },
+      "half_only_rows": 2546,
+      "rows_with_2r_eq_A_plus_B": 2556,
+      "decompositions": [
+        {
+          "gap_A": 1,
+          "gap_B": -1,
+          "A_colocated": false,
+          "B_colocated": false,
+          "n": 2555
+        },
+        {
+          "gap_A": -1,
+          "gap_B": 1,
+          "A_colocated": false,
+          "B_colocated": false,
+          "n": 2545
+        },
+        {
+          "gap_A": 2,
+          "gap_B": -1,
+          "A_colocated": false,
+          "B_colocated": false,
+          "n": 242
+        },
+        {
+          "gap_A": -1,
+          "gap_B": 2,
+          "A_colocated": false,
+          "B_colocated": false,
+          "n": 242
+        },
+        {
+          "gap_A": 1,
+          "gap_B": -2,
+          "A_colocated": false,
+          "B_colocated": false,
+          "n": 58
+        },
+        {
+          "gap_A": -2,
+          "gap_B": 1,
+          "A_colocated": false,
+          "B_colocated": false,
+          "n": 58
+        }
+      ]
+    }
+  },
+  {
+    "file": "data/raw/T2/E8.75.h5ad",
+    "identical": {
+      "repeats": 835,
+      "colocated": 317,
+      "by_gap": {
+        "-1": 835
+      },
+      "by_gap_not_colocated": {
+        "-1": 518
+      },
+      "xy_offset_quantiles_not_colocated": [
+        0.08784935027870233,
+        1.620202625576212,
+        4.521826433262049,
+        7.593213275605034,
+        11.58450926276555
+      ],
+      "by_level_pair": [
+        {
+          "z_first": -114.473939,
+          "z_repeat": -128.473939,
+          "gap": -1,
+          "n": 518,
+          "colocated": 0,
+          "median_dx": -0.7503268142745583,
+          "median_dy": -0.6906708047367829,
+          "sd_dx": 4.551023966989649,
+          "sd_dy": 3.6916831285342027,
+          "affine": {
+            "rms_residual": 0.03174114273201656,
+            "det": 0.9974285640289239,
+            "rotation_deg": -0.2542097988900689,
+            "shift": [
+              -1.537716313502745,
+              0.016062130659821917
+            ]
+          }
+        },
+        {
+          "z_first": -86.473939,
+          "z_repeat": -100.473939,
+          "gap": -1,
+          "n": 317,
+          "colocated": 317,
+          "median_dx": 0.0,
+          "median_dy": 0.0,
+          "sd_dx": 0.0,
+          "sd_dy": 0.0
+        }
+      ],
+      "level_pairs": 2
+    },
+    "non_integer": {
+      "rows": 614,
+      "fraction_values": {
+        "0.5000": 34324
+      },
+      "levels": {
+        "-170.473939": 203,
+        "-58.473939": 86,
+        "-16.473939": 79,
+        "179.526061": 246
+      },
+      "half_only_rows": 614,
+      "rows_with_2r_eq_A_plus_B": 614,
+      "decompositions": [
+        {
+          "gap_A": -1,
+          "gap_B": 1,
+          "A_colocated": false,
+          "B_colocated": false,
+          "n": 614
+        },
+        {
+          "gap_A": 1,
+          "gap_B": -1,
+          "A_colocated": false,
+          "B_colocated": false,
+          "n": 614
+        }
+      ]
+    }
+  },
+  {
+    "file": "data/raw/T2/E9.5.h5ad",
+    "identical": {
+      "repeats": 0
+    },
+    "non_integer": {
+      "rows": 0
+    }
+  },
+  {
+    "file": "data/raw/T3/E9.5_mab21l2_ko.h5ad",
+    "identical": {
+      "repeats": 2811,
+      "colocated": 2811,
+      "by_gap": {
+        "-1": 1407,
+        "0": 1404
+      },
+      "by_gap_not_colocated": {},
+      "xy_offset_quantiles_not_colocated": [],
+      "by_level_pair": [
+        {
+          "z_first": -210.0,
+          "z_repeat": -220.0,
+          "gap": -1,
+          "n": 1407,
+          "colocated": 1407,
+          "median_dx": -0.0009765625,
+          "median_dy": -0.00048828125,
+          "sd_dx": 0.0013570174166669831,
+          "sd_dy": 0.000605371912955453
+        },
+        {
+          "z_first": -320.0,
+          "z_repeat": -320.0,
+          "gap": 0,
+          "n": 1404,
+          "colocated": 1404,
+          "median_dx": -0.0009765625,
+          "median_dy": 0.00048828125,
+          "sd_dx": 0.0013976957751253496,
+          "sd_dy": 0.0006356913351974392
+        }
+      ],
+      "level_pairs": 2
+    },
+    "non_integer": {
+      "rows": 0
+    }
+  }
+]

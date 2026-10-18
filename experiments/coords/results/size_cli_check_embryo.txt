@@ -1,0 +1,92 @@
+{
+  "valid": true,
+  "board": "embryo",
+  "target_t": 7.75,
+  "timestamp": "2026-10-18T20:03:43Z",
+  "git_commit": "dbb6eaf1d51c18d77b68f846dfa49e1c5fbea251",
+  "git_uncommitted": [
+    "M experiments/coords/size_procedure.py",
+    " M src/vec/prep.py",
+    "?? src/vec/spatial.py"
+  ],
+  "duplicates_dropped": {
+    "E6.75": 0,
+    "E7.25": 0,
+    "E8.0": 443
+  },
+  "preregistered_z_mode": "raw",
+  "summary": [
+    {
+      "z_mode": "raw",
+      "preregistered": true,
+      "valid": true,
+      "chosen": {},
+      "pred_rms_core": "[redacted: dry-run forecast]",
+      "pred_log_growth_core": "[redacted: dry-run forecast]",
+      "pred_rms_full": "[redacted: dry-run forecast]",
+      "loo_interior": [
+        {
+          "left_out": "E7.25",
+          "t": 7.25,
+          "pred": 5.20149177316778,
+          "obs": 4.992382501050746,
+          "error": 0.2091092721170343
+        }
+      ]
+    },
+    {
+      "z_mode": "common_step",
+      "preregistered": false,
+      "valid": true,
+      "chosen": {},
+      "pred_rms_core": "[redacted: dry-run forecast]",
+      "pred_log_growth_core": "[redacted: dry-run forecast]",
+      "pred_rms_full": "[redacted: dry-run forecast]",
+      "loo_interior": [
+        {
+          "left_out": "E7.25",
+          "t": 7.25,
+          "pred": 5.385290299827508,
+          "obs": 5.238596134915147,
+          "error": 0.1466941649123615
+        }
+      ]
+    },
+    {
+      "z_mode": "xy_grow_z_hold",
+      "preregistered": false,
+      "valid": true,
+      "chosen": {},
+      "pred_rms_core": "[redacted: dry-run forecast]",
+      "pred_log_growth_core": "[redacted: dry-run forecast]",
+      "pred_rms_full": "[redacted: dry-run forecast]",
+      "loo_interior": [
+        {
+          "left_out": "E7.25",
+          "t": 7.25,
+          "pred": 5.081961829846911,
+          "obs": 4.992382501050746,
+          "error": 0.08957932879616519
+        }
+      ]
+    },
+    {
+      "z_mode": "split",
+      "preregistered": false,
+      "valid": true,
+      "chosen": {},
+      "pred_rms_core": "[redacted: dry-run forecast]",
+      "pred_log_growth_core": "[redacted: dry-run forecast]",
+      "pred_rms_full": "[redacted: dry-run forecast]",
+      "loo_interior": [
+        {
+          "left_out": "E7.25",
+          "t": 7.25,
+          "pred": 5.113667848884938,
+          "obs": 4.992382501050746,
+          "error": 0.12128534783419175
+        }
+      ]
+    }
+  ]
+}

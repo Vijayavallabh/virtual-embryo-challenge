@@ -1,0 +1,6 @@
+rule,averaged_rules,t_prev,t_ref,t_target,horizon_ratio,multiplier_m,rho_min,rho_max,worst_case_bias_coef,noise_amplification
+copy_last,copy_last,9.5,10.5,12.5,2.0,0.0,0.5,1.0,2.0,1.4142135623730951
+half_rate,half_rate,9.5,10.5,12.5,2.0,1.0,0.5,1.0,1.0,2.449489742783178
+power_t,power_t,9.5,10.5,12.5,2.0,1.7420799566544778,0.5,1.0,0.7420799566544778,3.3990947418487014
+latest_rate,latest_rate,9.5,10.5,12.5,2.0,2.0,0.5,1.0,1.0,3.7416573867739413
+average,latest_rate+half_rate+power_t,9.5,10.5,12.5,2.0,1.580693318884826,0.5,1.0,0.580693318884826,3.1872510686332673

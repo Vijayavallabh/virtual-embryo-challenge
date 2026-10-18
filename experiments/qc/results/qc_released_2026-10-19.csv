@@ -1,0 +1,10 @@
+file,cells,genes,obs_names_duplicated,non_integer_count_rows,identical_rows,identical_rows_min_library,z_raw_values,z_levels,z_step,z_spacings,z_gaps,z_max_level_spread,z_off_grid_levels,z_dense_levels,section_labels,spearman_row_vs_z,z_runs,dup_redundant,dup_by_gap,dup_max_xy_offset,dup_below_min_library,dup_any_xy_redundant,dup_any_xy_by_gap,dup_any_xy_max_xy_offset,duplicate_positions,centred_on
+data/raw/T2/E6.75.h5ad,7093,498,0,0,49,0,65,37,10.0,10x36,,2.842170943040401e-14,0,,,-0.9996,37,0,,0.0,0,0,,0.0,0,mean
+data/raw/T2/E7.25.h5ad,13295,498,0,0,95,0,40,40,10.0,10x39,,0.0,0,,,-0.9996,40,0,,0.0,0,0,,0.0,0,mean
+data/raw/T2/E8.0.h5ad,31671,500,0,200,2912,2903,30,30,15.0,15x29,,0.0,0,,,-0.9994,30,443,gap1:321;gap2:122,0.0,2,2903,gap1:2615;gap2:288,63.3701171875,0,mean
+data/raw/T2/E8.25_late.h5ad,58716,500,0,2558,1728,1727,38,38,15.0,15x37,,0.0,0,-235.805487:1159 (1.7x),,-0.9996,38,1164,gap1:1164,0.0,1,1727,gap1:1727,7.376953125,0,mean
+data/raw/T2/E8.75.h5ad,24826,500,0,614,877,835,35,35,14.0,14x34,,0.0,0,,,-0.9995,35,317,gap1:317,0.0,7,835,gap1:835,11.58450926276555,0,mean
+data/raw/T2/E9.5.h5ad,53742,500,0,0,0,0,98,40,15.0,15x39,,1.1368683772161603e-13,0,-160.256503:1936 (1.82x),,-0.9996,40,0,,0.0,0,0,,0.0,0,mean
+data/raw/T3/E9.5_mab21l2_ko.h5ad,50294,500,2811,0,2811,2811,36,36,10.0,10x34;30x1,-320..-290 (2 missing),0.0,0,-320.0:4170 (3.15x),sample_id:MISMATCH;section:MISMATCH,-0.9994,36,2811,gap0:1404;gap1:1407,0.005859375,0,2811,gap0:1404;gap1:1407,0.005859375,70,no
+data/raw/T1/E8.5_RNA.h5ad,16787,32285,0,,0,,,,,,,,,,,,,,,,,,,,,
+data/raw/T1/E9.5_RNA.h5ad,17057,32285,0,,0,,,,,,,,,,,,,,,,,,,,,

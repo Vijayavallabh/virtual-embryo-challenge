@@ -78,7 +78,10 @@ validation boards.
      +1.0 at 3x on an 8k-cell truth half). Keying the count to max_cells also avoids choosing it from truth_cells.
      One community observation on the live heart-extrapolation board points the other way (10k and 17.6k cells lost
      0.5-0.7 points against 5k), so re-test truth_cells, 2x and max_cells on the E10.5 and E7.5 validation targets
-     before fixing the test counts. The test boards may publish only their cell limits.
+     before fixing the test counts, with this rule fixed in advance: keep max_cells unless, on a validation board, a
+     lower max_cells level beats it for the intermediate-quality condition by more than 0.3 points (paired mean) in at
+     least 8 of 10 seeds. The evidence for max_cells reaches 8x truth_cells (3x on an 8k-cell truth half). The test
+     boards may publish only their cell limits.
    - **Random rows only.** Rows are stored section by section. A contiguous block costs a near-perfect prediction 16-28
      points (mid-file) or 21-48 (first rows) at 1x, and still 12-21 at 8x.
    - **Jitter budget.** Up to 0.25 x the median nearest-neighbour distance is free (use it to break duplicate

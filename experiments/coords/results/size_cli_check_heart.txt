@@ -1,0 +1,85 @@
+{
+  "valid": false,
+  "board": "heart",
+  "target_t": 12.5,
+  "timestamp": "2026-10-18T20:03:43Z",
+  "git_commit": "dbb6eaf1d51c18d77b68f846dfa49e1c5fbea251",
+  "git_uncommitted": [
+    "M experiments/coords/size_procedure.py",
+    " M src/vec/prep.py",
+    "?? src/vec/spatial.py"
+  ],
+  "duplicates_dropped": {
+    "E8.25_late": 1164,
+    "E8.75": 317,
+    "E9.5": 0
+  },
+  "preregistered_z_mode": "raw",
+  "summary": [
+    {
+      "z_mode": "raw",
+      "preregistered": true,
+      "valid": false,
+      "chosen": {
+        "core": [
+          "latest_rate",
+          "half_rate",
+          "power_t"
+        ]
+      },
+      "pred_rms_core": "[redacted: dry-run forecast]",
+      "pred_log_growth_core": "[redacted: dry-run forecast]",
+      "pred_rms_full": "[redacted: dry-run forecast]"
+    },
+    {
+      "z_mode": "common_step",
+      "preregistered": false,
+      "valid": false,
+      "chosen": {
+        "core": [
+          "latest_rate",
+          "half_rate",
+          "power_t"
+        ]
+      },
+      "pred_rms_core": "[redacted: dry-run forecast]",
+      "pred_log_growth_core": "[redacted: dry-run forecast]",
+      "pred_rms_full": "[redacted: dry-run forecast]"
+    },
+    {
+      "z_mode": "xy_grow_z_hold",
+      "preregistered": false,
+      "valid": false,
+      "chosen": {
+        "core_xy": [
+          "latest_rate",
+          "half_rate",
+          "power_t"
+        ]
+      },
+      "pred_rms_core": "[redacted: dry-run forecast]",
+      "pred_log_growth_core": "[redacted: dry-run forecast]",
+      "pred_rms_full": "[redacted: dry-run forecast]"
+    },
+    {
+      "z_mode": "split",
+      "preregistered": false,
+      "valid": false,
+      "chosen": {
+        "core_xy": [
+          "latest_rate",
+          "half_rate",
+          "power_t"
+        ],
+        "core_z": [
+          "latest_rate",
+          "half_rate",
+          "power_t"
+        ]
+      },
+      "pred_rms_core": "[redacted: dry-run forecast]",
+      "pred_log_growth_core": "[redacted: dry-run forecast]",
+      "pred_rms_full": "[redacted: dry-run forecast]"
+    }
+  ]
+}

@@ -114,6 +114,11 @@ def check_submission(path: str | Path, board: Board) -> CheckReport:
                 rep.errors.append(f"obsm['{COORD_KEY}'] must be (n_cells, 3), got {C.shape}")
             elif not np.isfinite(C[:, :3]).all():
                 rep.errors.append(f"obsm['{COORD_KEY}'] contains NaN or infinite values")
+            else:
+                n_dup = C.shape[0] - np.unique(C[:, :3], axis=0).shape[0]
+                if n_dup:
+                    rep.warnings.append(f"{n_dup} cells repeat the exact coordinates of another cell (copied "
+                                        "positions? kNN and shape metrics see them as zero-distance neighbours)")
     if "celltype" in a.obs:
         rep.warnings.append("obs['celltype'] is ignored by the scorer; it is safe to drop")
     return rep

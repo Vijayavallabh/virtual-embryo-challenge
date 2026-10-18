@@ -1,0 +1,11 @@
+true,CM,Endothelial,CranialMesoderm,ExtraEmbryonicMeso,NCC,Endoderm,Ectoderm,Neural,EpiblastStreak,Untracked
+CM,3163,2,30,0,0,4,1,0,0,67
+Endothelial,16,2094,285,0,9,24,3,0,0,13
+CranialMesoderm,58,64,4505,0,54,110,42,0,0,155
+ExtraEmbryonicMeso,9,118,20,0,3,36,82,0,0,791
+NCC,0,32,105,0,1605,10,186,0,0,1
+Endoderm,8,14,33,0,1,1817,56,0,0,46
+Ectoderm,1,6,25,0,38,797,1900,0,0,5
+Neural,16,8,228,0,25,2355,1067,0,0,46
+EpiblastStreak,1,0,9,0,2,15,18,0,0,1
+Untracked,761,36,127,0,9,293,225,0,0,823

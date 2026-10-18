@@ -50,8 +50,10 @@ procedure refuses unmapped labels.
    (build the bracketing pipeline or not).
 4. **Harmonisation:** `experiments/harmonise/run_harmonise.py` release stages (Gata4 replicate 1 vs 2, cross-stage
    transfer with E8.5 and E10.5). The replicate difference is the noise bar for T3 composition effects (A19).
-5. **Density:** rerun `experiments/density/run_all.sh` with the E10.5 and E7.5 targets; it decides the count check in
-   `docs/PLAN.md` section 3.6.
+5. **Density:** `TARGETS="heart_E10.5 embryo_E7.5" SEEDS="0 1 2 3 4 5 6 7 8 9" RAW=runs/density/raw_release
+   TAG=density_release JOBS=16 THREADS=1 bash experiments/density/run_all.sh` (about 20 minutes), then `summarise.py`.
+   The pre-registered rule in `docs/PLAN.md` section 3.6 decides the count: keep max_cells unless a lower level beats it
+   for the intermediate-quality condition by more than 0.3 points in at least 8 of 10 seeds.
 6. **Scorer build:** `experiments/scorer_build/anchor_check.py` against the released validation answers (validation
    anchors only).
 
