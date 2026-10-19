@@ -70,6 +70,8 @@ from rich.console import Console
 from rich.markup import escape
 from rich.table import Table
 
+import vec.provenance  # noqa: F401  (records this build's start, before the method code below is loaded)
+
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 sys.path.insert(0, str(HERE))

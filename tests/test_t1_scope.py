@@ -1,3 +1,4 @@
+import hashlib
 import importlib.util
 import inspect
 import json
@@ -12,6 +13,7 @@ from scipy import sparse
 
 from vec.boards import BOARDS_DIR, REPO_ROOT, Board
 from vec.prep import log1p_cp10k
+from vec.provenance import read_stamp, stamp_path
 from vec.t1_scope import (
     UnmappedLabelError,
     apply_factors,
@@ -348,7 +350,7 @@ def test_apply_factors_expectation():
 # submission
 
 
-def test_build_submission_passes_the_format_check(tmp_path):
+def test_build_submission_passes_the_format_check(tmp_path, own_repo):
     start, ref = make_stage(20), make_stage(21, boost=("V-CM", "g1", 4.0))
     board = t1_board(GENES[::-1], min_cells=100, max_cells=600)  # reversed order: the builder must reorder
     sub, rep = build_submission(ref, board, SHARES, 300, seed=0, start=start, damping=0.5, held_flat=HELD,
@@ -359,6 +361,8 @@ def test_build_submission_passes_the_format_check(tmp_path):
     assert rep["shift"]["damping"] == 0.5 and rep["reweight"]["n_cells"] == 300
     check = write_checked(sub, tmp_path / "pred.h5ad", board)
     assert check.ok and check.n_cells == 300 and check.warnings == []
+    stamp = read_stamp(stamp_path(tmp_path / "pred.h5ad"))  # stamped by default, against the test's repository
+    assert stamp["clean"] and stamp["sha256"] == hashlib.sha256((tmp_path / "pred.h5ad").read_bytes()).hexdigest()
 
 
 def test_build_submission_without_shift_returns_released_rows():

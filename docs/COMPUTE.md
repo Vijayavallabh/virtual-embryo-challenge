@@ -30,6 +30,10 @@ Competition data goes in `~/v/virtual-embryo-challenge/data/raw/` on the DGX onl
 rsync -az --exclude .venv --exclude __pycache__ --exclude data --exclude runs -e ssh ./ PrakashDGX_H2:v/virtual-embryo-challenge/
 ```
 
+Never sync while a build that writes prediction files runs on the DGX: the sync rewrites `.git` (HEAD's reflog), so
+the file's build stamp records that the code may have changed mid-build, and an official upload of it is refused
+(rebuild after the sync). Commit before building official candidates; the stamp must say the tree was clean.
+
 The DGX shell exports `VIRTUAL_ENV=~/v/.venv`; uv ignores it and uses the project `.venv` (the warning is harmless).
 
 ## Running a job

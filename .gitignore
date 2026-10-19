@@ -11,6 +11,7 @@ build/
 # Competition and external data: never commit
 data/
 *.h5ad
+*.h5ad.stamp.json
 *.h5
 *.loom
 *.zarr/

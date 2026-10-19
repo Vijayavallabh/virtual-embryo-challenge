@@ -12,6 +12,7 @@ import shutil
 import signal
 import socket
 import subprocess
+import sys
 import tempfile
 import threading
 import time
@@ -19,16 +20,18 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from types import SimpleNamespace
 
+import anndata as ad
 import numpy as np
 import pytest
-from conftest import GENES
+from conftest import GENES, build, make_repo
+from conftest import git as _git
 from rich.console import Console
 from typer.testing import CliRunner
 
 from vec import cli
 from vec import submit as vs
 from vec.boards import load_boards
-from vec.io import CheckReport, make_submission, write_submission
+from vec.io import CheckReport, make_submission
 
 TOKEN = "tok-FAKE-never-print-3f9c1a77"
 T1 = "T1:test"
@@ -199,13 +202,6 @@ def api():
     server.server_close()
 
 
-def _git(repo, *args):
-    env = {**os.environ, "GIT_CONFIG_GLOBAL": os.devnull, "GIT_CONFIG_NOSYSTEM": "1"}
-    return subprocess.run(["git", "-C", str(repo), "-c", "user.name=t", "-c", "user.email=t@example.org",
-                           "-c", "commit.gpgsign=false", *args], check=True, capture_output=True, text=True,
-                          env=env).stdout.strip()
-
-
 @pytest.fixture
 def env(tmp_path, monkeypatch, api):
     """Isolated boards, disclosure register, ledger and a clean git repo; the module defaults point at them."""
@@ -221,12 +217,7 @@ def env(tmp_path, monkeypatch, api):
     (boards / "index.json").write_text(json.dumps(index))
     register = tmp_path / "EXTERNAL_DATA.md"
     register.write_text("| ID | Source |\n|---|---|\n| X001 | veckit (local scoring) |\n| X002 | Feng 2022 |\n")
-    repo = tmp_path / "repo"
-    repo.mkdir()
-    _git(repo, "init", "-q")
-    (repo / "method.py").write_text("x = 1\n")
-    _git(repo, "add", "method.py")
-    _git(repo, "commit", "-qm", "init")
+    repo = make_repo(tmp_path / "repo")
     monkeypatch.setenv("VEC_TOKEN", TOKEN)
     monkeypatch.setattr(vs, "API_BASE", api.url)
     monkeypatch.setattr(vs, "BOARDS_DIR", boards)
@@ -239,12 +230,14 @@ def env(tmp_path, monkeypatch, api):
     return SimpleNamespace(tmp=tmp_path, boards=boards, repo=repo, ledger=tmp_path / "submissions.csv", api=api)
 
 
-def _pred(env, name, seed, coords=False):
+def _pred(env, name, seed, coords=False, where=None):
+    """A valid prediction file in `where` (default env.tmp), built as in a new process and stamped by write_submission
+    against the test's repository (clean, at its HEAD, unless a test has changed it)."""
     rng = np.random.default_rng(seed)
     counts = rng.poisson(2.0, size=(40, len(GENES)))
     X = np.log1p(1e4 * counts / counts.sum(1, keepdims=True).clip(min=1))
     xyz = rng.normal(size=(40, 3)) if coords else None
-    return write_submission(make_submission(X, GENES, xyz), env.tmp / name)
+    return build(make_submission(X, GENES, xyz), (where or env.tmp) / name, env.repo)
 
 
 def _official(path, **kw):
@@ -376,6 +369,7 @@ def test_a_retry_in_a_later_call_reuses_the_first_filename_fields_and_key(env):
     assert res.server_status == "http_error" and res.http_status == 503 and not res.ok
     renamed = env.tmp / "renamed.h5ad"
     shutil.copy(g, renamed)
+    shutil.copy(vs.stamp_path(g), vs.stamp_path(renamed))  # the same bytes, so the same build stamp
     res = _official(renamed, model="a new name")
     posts = env.api.posts(official=True)
     assert res.ok and len(posts) == 5 and len(env.api.subs) == 1
@@ -652,6 +646,250 @@ def test_paths_with_spaces_compare_exactly(env, monkeypatch):
 
 
 # ---------------------------------------------------------------------------------------------------------------------
+# Build stamps: the code that built the file, not the code checked out when it is sent
+
+
+def _guard(plan, name):
+    return next(g for g in plan.guards if g.name == name)
+
+
+def _refused_for_the_stamp(path):
+    """An official upload of `path` refused by the guard "build stamp" alone; returns its detail."""
+    with pytest.raises(vs.SubmitRefused, match="build stamp") as e:
+        _official(path)
+    assert e.value.plan.failed == ["build stamp"]
+    return _guard(e.value.plan, "build stamp").detail
+
+
+def test_an_official_upload_needs_the_files_build_stamp(env):
+    f = _checked(env, "a.h5ad", 0)
+    vs.stamp_path(f).unlink()
+    res = vs.submit(f, T1)  # a format check never requires one
+    assert res.server_status == "format_ok" and vs.read_ledger(env.ledger)[-1]["build_commit"] == ""
+    assert res.plan.warnings[-1].startswith("an official upload of this file would fail build stamp: no build stamp "
+                                            "next to the file (a.h5ad.stamp.json)")
+    assert "no build stamp next to the file" in _refused_for_the_stamp(f)
+    assert not env.api.posts(official=True) and vs.read_ledger(env.ledger)[-1]["detail"] == "failed: build stamp"
+
+
+def test_a_file_rebuilt_without_a_new_stamp_is_refused(env):
+    f = _checked(env, "a.h5ad", 0)
+    old = json.loads(vs.stamp_path(f).read_text())
+    shutil.copyfile(_bigger_pred(env, "rebuilt.h5ad", 7), f)  # new bytes at the same path; the old stamp stays
+    sha = vs.sha256_file(f)
+    res = vs.submit(f, T1)
+    assert res.server_status == "format_ok" and vs.read_ledger(env.ledger)[-1]["build_commit"] == ""
+    assert f"the build stamp is for other bytes (sha256 {old['sha256'][:12]}, the file's is {sha[:12]})" in \
+        res.plan.warnings[-1]
+    assert "rebuilt without a new stamp" in _refused_for_the_stamp(f)
+    assert not env.api.posts(official=True)
+
+
+def test_a_file_built_from_a_dirty_tree_is_refused_even_when_the_tree_is_clean_again(env):
+    head = _git(env.repo, "rev-parse", "HEAD")
+    (env.repo / "method.py").write_text("x = 2\n")
+    f = _pred(env, "a.h5ad", 0)  # built with an uncommitted change
+    (env.repo / "method.py").write_text("x = 1\n")  # undone before the upload: the clean tree guard passes
+    assert vs.submit(f, T1).server_status == "format_ok"
+    assert vs.read_ledger(env.ledger)[-1]["build_commit"] == f"{head}+dirty"
+    assert "not clean (uncommitted or untracked: method.py)" in _refused_for_the_stamp(f)
+    assert vs.read_ledger(env.ledger)[-1]["build_commit"] == f"{head}+dirty"  # the refusal row names it too
+    stamp = json.loads(vs.stamp_path(f).read_text())
+    vs.stamp_path(f).write_text(json.dumps({**stamp, "why": None}))  # a stamp that gives no reason: told from its paths
+    assert "not clean (uncommitted or untracked: method.py)" in _refused_for_the_stamp(f)
+    assert not env.api.posts(official=True)
+
+
+def test_a_file_built_at_a_commit_that_is_not_an_ancestor_of_head_is_refused(env):
+    main = _git(env.repo, "rev-parse", "--abbrev-ref", "HEAD")
+    _git(env.repo, "checkout", "-qb", "side")
+    (env.repo / "method.py").write_text("x = 3\n")
+    _git(env.repo, "commit", "-qam", "an experiment on a branch that is not merged")
+    side = _git(env.repo, "rev-parse", "HEAD")
+    f = _checked(env, "a.h5ad", 0)  # built clean at the branch's commit
+    _git(env.repo, "checkout", "-q", main)
+    assert vs.read_ledger(env.ledger)[-1]["build_commit"] == side
+    assert f"build commit {side[:12]} is neither the local HEAD nor an ancestor of it" in _refused_for_the_stamp(f)
+    stamp = json.loads(vs.stamp_path(f).read_text())
+    vs.stamp_path(f).write_text(json.dumps({**stamp, "commit": "e" * 40}))  # a commit this repository does not have
+    assert "build commit eeeeeeeeeeee is not in the local repository" in _refused_for_the_stamp(f)
+    vs.stamp_path(f).write_text(json.dumps(stamp))
+    assert not env.api.posts(official=True)
+    _git(env.repo, "merge", "-q", "side")  # merged: the build commit is now HEAD's ancestor (here, HEAD itself)
+    assert _official(f).ok
+
+
+def test_a_file_built_clean_at_an_older_commit_is_sent_and_recorded_under_it(env):
+    built_at = _git(env.repo, "rev-parse", "HEAD")
+    f = _checked(env, "a.h5ad", 0)
+    (env.repo / "method.py").write_text("x = 2\n")
+    _git(env.repo, "commit", "-qam", "a later fix, after the file was built")
+    head = _git(env.repo, "rev-parse", "HEAD")
+    res = _official(f)
+    assert res.ok and _guard(res.plan, "build stamp").detail == \
+        f"built from a clean tree at {built_at[:12]}, the local HEAD or an ancestor of it"
+    row = vs.read_ledger(env.ledger)[-1]
+    assert (row["mode"], row["server_status"], row["git_commit"], row["build_commit"]) == \
+        ("official", "queued", head, built_at)
+    link = env.tmp / "links" / "s1.h5ad"  # a link: the stamp is read next to the file it points at
+    link.parent.mkdir()
+    link.symlink_to(f)
+    res = _official(link)
+    assert res.replayed and res.plan.build_commit == built_at and _guard(res.plan, "build stamp").ok
+
+
+def test_the_files_own_stamp_is_exempt_from_the_clean_tree_rule_but_no_other_stamp(env):
+    (env.repo / ".gitignore").write_text("*.h5ad\n")  # as in this repository: prediction files are never tracked
+    _git(env.repo, "add", ".gitignore")
+    _git(env.repo, "commit", "-qm", "ignore predictions")
+    preds = env.repo / "preds"  # inside the tree, outside results/ and runs/
+    f = _pred(env, "s1.h5ad", 0, where=preds)
+    assert vs.submit(f, T1).server_status == "format_ok"
+    other = _pred(env, "s2.h5ad", 2)
+    shutil.copy(vs.stamp_path(other), preds / ("s2.h5ad" + vs.STAMP_SUFFIX))  # another file's stamp lies there too
+    with pytest.raises(vs.SubmitRefused, match="clean tree") as e:
+        _official(f)
+    assert e.value.plan.failed == ["clean tree"] and _guard(e.value.plan, "clean tree").detail == \
+        "uncommitted or untracked: preds/s2.h5ad.stamp.json"
+    (preds / ("s2.h5ad" + vs.STAMP_SUFFIX)).unlink()
+    assert _official(f).ok  # its own stamp, untracked next to it, is exempt like the ledger
+
+
+def test_cli_shows_the_build_commit_in_the_plan_and_in_status(env):
+    runner = CliRunner()
+    built_at = _git(env.repo, "rev-parse", "HEAD")
+    f = _checked(env, "a.h5ad", 0)
+    sha = vs.sha256_file(f)
+    (env.repo / "method.py").write_text("x = 2\n")
+    _git(env.repo, "commit", "-qam", "a later fix")
+    head = _git(env.repo, "rev-parse", "HEAD")
+    res = runner.invoke(cli.app, ["submit", str(f), "--board", T1, "--official", "--confirm", sha[:12], "--disclose",
+                                  X001])
+    out = _output(res)
+    assert res.exit_code == 0, out
+    assert f"  commit    {head}\n  build     {built_at}\n" in out
+    assert re.search(rf"PASS build stamp +built from a clean tree at {built_at[:12]}", out)
+    res = runner.invoke(cli.app, ["submit", "status", "--board", T1])
+    assert res.exit_code == 0 and f"official {T1}: {sha[:12]} sub1 (queued), commit {head}, build {built_at}" in \
+        _output(res)
+    vs.stamp_path(f).unlink()
+    res = runner.invoke(cli.app, ["submit", str(f), "--board", T1])  # a format check without a stamp: shown, not needed
+    assert res.exit_code == 0 and "  build     -\n" in _output(res) and "would fail build stamp" in _output(res)
+
+
+# A builder in a process of its own, as a build on the DGX runs: it imports vec.io (whose import of vec.provenance
+# records the repository's state as the build's start) and the method, says it is ready, waits, then writes the file
+BUILDER = r"""
+import sys
+import time
+from pathlib import Path
+
+import vec.boards
+
+repo, ready, go, out = map(Path, sys.argv[1:5])
+vec.boards.REPO_ROOT = repo  # the test's repository stands in for this package's; vec.provenance is not imported yet
+import numpy as np
+from vec.io import make_submission, write_submission  # the build starts here
+
+sys.path.insert(0, str(repo))
+import method  # the code that builds the file, as the tree holds it now
+
+ready.touch()
+while not go.exists():
+    time.sleep(0.01)
+genes = sys.argv[5].split(",")
+counts = np.random.default_rng(0).poisson(2.0, size=(40, len(genes)))
+a = make_submission(np.log1p(1e4 * counts / counts.sum(1, keepdims=True).clip(min=1)), genes)
+a.uns["method_x"] = method.x  # what the code that ran computed
+write_submission(a, out)
+"""
+
+
+def _build_in_a_new_process(env, name, during=lambda: None):
+    """Build `name` in env.tmp with BUILDER in a new process, which stamps it against env.repo; `during` runs once the
+    build has started and before it writes the file. Returns the file."""
+    ready, go, err, out = (env.tmp / f"{name}{ext}" for ext in (".ready", ".go", ".err", ""))
+    environ = {**{k: v for k, v in os.environ.items() if "TOKEN" not in k.upper()},
+               "PYTHONDONTWRITEBYTECODE": "1"}  # no __pycache__ in the test's repository, which ignores nothing
+    with err.open("wb") as stderr:
+        proc = subprocess.Popen([sys.executable, "-c", BUILDER, str(env.repo), str(ready), str(go), str(out),
+                                 ",".join(GENES)], cwd=env.tmp, env=environ, stderr=stderr)
+        try:
+            deadline = time.monotonic() + 120
+            while not ready.exists():
+                assert proc.poll() is None and time.monotonic() < deadline, err.read_text()
+                time.sleep(0.01)
+            during()
+            go.touch()
+            proc.wait(timeout=120)
+        finally:
+            if proc.poll() is None:
+                proc.kill()
+                proc.wait()
+    assert proc.returncode == 0, err.read_text()
+    return out
+
+
+def test_a_file_whose_build_saw_a_new_commit_land_is_never_sent_officially(env):
+    """A build starts at A; a fix is committed (a pull, a sync) before it writes the file. A's code built the file, so
+    its stamp must not say that it was built clean at the new HEAD."""
+    a = _git(env.repo, "rev-parse", "HEAD")
+
+    def pull():
+        (env.repo / "method.py").write_text("x = 2\n")
+        _git(env.repo, "commit", "-qam", "a fix, synced while the build ran")
+
+    f = _build_in_a_new_process(env, "s1.h5ad", during=pull)
+    b = _git(env.repo, "rev-parse", "HEAD")
+    s = vs.read_stamp(vs.stamp_path(f))
+    assert ad.read_h5ad(f).uns["method_x"] == 1 and not s["clean"], s  # built by A's code
+    assert (s["commit"], s["start_commit"], s["why"]) == (b, a, f"HEAD moved during the build, from {a[:12]} to "
+                                                                f"{b[:12]}")
+    res = vs.submit(f, T1)  # a format check records the build commit as not clean, and warns
+    assert res.server_status == "format_ok" and vs.read_ledger(env.ledger)[-1]["build_commit"] == f"{b}+dirty"
+    assert "would fail build stamp: the build was not clean (HEAD moved during the build" in res.plan.warnings[-1]
+    assert f"(HEAD moved during the build, from {a[:12]} to {b[:12]})" in _refused_for_the_stamp(f)
+    assert not env.api.posts(official=True)
+
+
+@pytest.mark.parametrize("change", ["nothing", "stash", "checkout and back"])
+def test_only_a_build_that_ran_on_one_clean_commit_is_clean(env, change):
+    head, branch = _git(env.repo, "rev-parse", "HEAD"), _git(env.repo, "rev-parse", "--abbrev-ref", "HEAD")
+    during = lambda: None  # noqa: E731
+    if change == "stash":  # the build starts with an uncommitted change, stashed before it writes the file
+        (env.repo / "method.py").write_text("x = 3\n")
+        during = lambda: _git(env.repo, "stash", "-q")  # noqa: E731
+    elif change == "checkout and back":  # HEAD leaves while the build runs, and comes back before it writes the file
+        _git(env.repo, "checkout", "-qb", "side")
+        (env.repo / "method.py").write_text("x = 4\n")
+        _git(env.repo, "commit", "-qam", "an experiment")
+        _git(env.repo, "checkout", "-q", branch)
+
+        def during():
+            _git(env.repo, "checkout", "-q", "side")
+            _git(env.repo, "checkout", "-q", branch)
+
+    f = _build_in_a_new_process(env, "s1.h5ad", during)
+    s = vs.read_stamp(vs.stamp_path(f))
+    assert s["clean"] is (change == "nothing"), s
+    assert (s["commit"], s["start_commit"]) == (head, head) and _git(env.repo, "status", "--porcelain") == ""
+    if change == "nothing":
+        assert s["why"] is None and vs.submit(f, T1).server_status == "format_ok" and _official(f).ok
+        assert vs.read_ledger(env.ledger)[-1]["build_commit"] == head
+        return
+    if change == "stash":
+        assert ad.read_h5ad(f).uns["method_x"] == 3  # built by the uncommitted change
+        assert (s["why"], s["unclean"], s["unclean_count"]) == (
+            "uncommitted or untracked when the build started: method.py", ["method.py"], 1)
+    else:
+        assert s["why"].startswith(f"HEAD moved during the build and back to {head[:12]} (checkout: moving from side")
+    assert vs.submit(f, T1).server_status == "format_ok"
+    assert vs.read_ledger(env.ledger)[-1]["build_commit"] == f"{head}+dirty"
+    assert f"the build was not clean ({s['why']})" in _refused_for_the_stamp(f)
+    assert not env.api.posts(official=True)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
 # What is sent: a private snapshot of the confirmed bytes
 
 
@@ -660,7 +898,7 @@ def _bigger_pred(env, name, seed):
     rng = np.random.default_rng(seed)
     counts = rng.poisson(2.0, size=(55, len(GENES)))
     X = np.log1p(1e4 * counts / counts.sum(1, keepdims=True).clip(min=1))
-    return write_submission(make_submission(X, GENES), env.tmp / name)
+    return build(make_submission(X, GENES), env.tmp / name, env.repo)
 
 
 def test_a_retry_sends_the_confirmed_bytes_even_if_the_file_is_rewritten(env):
@@ -1096,16 +1334,21 @@ def test_site_text_is_never_markup_in_the_board_commands(env, monkeypatch):
 @pytest.fixture
 def dgx(env, monkeypatch):
     """The DGX for these tests: dgx_run runs each command with bash, as ssh would, in a temporary home whose DGX_REPO is
-    a clone of the local repo (the same HEAD), and logs it. With `cat_bytes` set, a cat sends those bytes instead."""
+    a clone of the local repo (the same HEAD), and logs it. With `cat_bytes` set, a cat sends those bytes instead; with
+    `stamp_bytes`, a cat of a build stamp does."""
     home = env.tmp / "dgx-home"
     repo = home / vs.DGX_REPO.removeprefix("~/")
     repo.parent.mkdir(parents=True)
     _git(repo.parent, "clone", "-q", str(env.repo), repo.name)
     (repo / "results").mkdir()
-    fake = SimpleNamespace(home=home, repo=repo, commands=[], cat_bytes=None)
+    fake = SimpleNamespace(home=home, repo=repo, commands=[], cat_bytes=None, stamp_bytes=None)
 
     def run(command, stderr):
         fake.commands.append(command)
+        if fake.stamp_bytes is not None and command.startswith("cat -- ") and \
+                shlex.split(command)[-1].endswith(vs.STAMP_SUFFIX):
+            (home / "other").write_bytes(fake.stamp_bytes)
+            command = "cat -- other"
         if fake.cat_bytes is not None and command.startswith("cat -- "):
             (home / "other").write_bytes(fake.cat_bytes)
             command = "cat -- other"
@@ -1117,10 +1360,13 @@ def dgx(env, monkeypatch):
 
 
 def _on_dgx(env, dgx, rel, seed):
-    """A valid prediction file at `rel` from the DGX repo root."""
+    """A valid prediction file at `rel` from the DGX repo root, with its build stamp next to it, as a builder there
+    leaves them (built clean at the HEAD the DGX clone shares with the local repo)."""
     path = dgx.repo / rel
     path.parent.mkdir(parents=True, exist_ok=True)
-    shutil.move(_pred(env, f"dgx{seed}.h5ad", seed), path)
+    built = _pred(env, f"dgx{seed}.h5ad", seed)
+    shutil.move(built, path)
+    shutil.move(vs.stamp_path(built), vs.stamp_path(path))
     return path
 
 
@@ -1147,8 +1393,9 @@ def test_a_format_check_from_the_dgx_sends_a_private_copy_and_leaves_nothing_beh
     assert res.server_status == "format_ok" and seen == [(0o700, 0o600, sha)] and not list(tmp.iterdir())
     assert post["fields"] == {"task": "T1", "format_only": "true"} and post["filename"] == "pred.h5ad"
     assert post["sha256"] == sha
-    report, cat = dgx.commands
+    report, cat, cat_stamp = dgx.commands
     assert report.startswith("bash -c ") and cat == f"cat -- {shlex.quote(str(f.resolve()))}"
+    assert cat_stamp == f"cat -- {shlex.quote(str(f.resolve()) + vs.STAMP_SUFFIX)}"
     row = vs.read_ledger(env.ledger)[-1]
     assert (row["file"], row["upload_name"], row["sha256"]) == (rel, "pred.h5ad", sha)
 
@@ -1243,7 +1490,7 @@ def test_the_token_never_reaches_a_remote_command_or_its_environment(env, dgx, m
     sha = vs.sha256_file(_on_dgx(env, dgx, "results/pred.h5ad", 0))
     assert vs.submit("results/pred.h5ad", T1, from_dgx=True).ok  # the token is loaded and used for this upload
     res = vs.submit("results/pred.h5ad", T1, official=True, confirm=sha[:12], disclose=X001, from_dgx=True)
-    assert res.ok and len(dgx.commands) == 4 and not [c for c in dgx.commands if TOKEN in c or "gh-FAKE" in c]
+    assert res.ok and len(dgx.commands) == 6 and not [c for c in dgx.commands if TOKEN in c or "gh-FAKE" in c]
     seen = {}  # the real runner: the exact ssh command line, and an environment without any TOKEN variable
     monkeypatch.setattr(subprocess, "Popen", lambda argv, **kw: seen.update(argv=argv, **kw))
     with tempfile.TemporaryFile() as err:
@@ -1263,7 +1510,7 @@ def test_the_ledger_origin_column_names_local_files_and_the_dgx_state(env, dgx):
     assert res.server_status == "format_ok"
     assert [w for w in res.plan.warnings if "would fail dgx provenance" in w and "method.py" in w]
     rows = vs.read_ledger(env.ledger)
-    assert list(rows[0])[-1] == "origin"
+    assert list(rows[0])[-2:] == ["origin", "build_commit"]
     assert [r["origin"] for r in rows] == ["local", f"PrakashDGX_H2:{rel}@{head}", f"PrakashDGX_H2:{rel}@{head}+dirty"]
     assert rows[0]["file"].endswith("a.h5ad") and [r["file"] for r in rows[1:]] == [rel, rel]
     assert {r["upload_name"] for r in rows[1:]} == {"pred.h5ad"} and rows[2]["git_commit"] == head
@@ -1342,3 +1589,91 @@ def test_a_linked_dgx_file_keeps_the_name_it_was_given(env, dgx):
     assert res.server_status == "format_ok" and post["filename"] == "latest.h5ad"
     row = vs.read_ledger(env.ledger)[-1]
     assert (row["file"], row["upload_name"]) == ("runs/build/output", "latest.h5ad")  # the ledger names the target
+
+
+def test_the_build_stamp_next_to_a_links_target_comes_along_from_the_dgx(env, dgx, monkeypatch):
+    tmp = _private_tmp(env, monkeypatch)
+    target = _on_dgx(env, dgx, "runs/build/s1.h5ad", 0)
+    (dgx.repo / "results" / "latest.h5ad").symlink_to(target)
+    sha, head, seen = vs.sha256_file(target), _git(env.repo, "rev-parse", "HEAD"), []
+
+    def look(plan):
+        stamp, names = vs.stamp_path(plan.file), sorted(p.name for p in plan.file.parent.iterdir())
+        seen.append((names, stamp.read_bytes(), stamp.stat().st_mode & 0o777))
+
+    res = vs.submit("results/latest.h5ad", T1, from_dgx=True, on_plan=look)
+    assert res.server_status == "format_ok" and not [w for w in res.plan.warnings if "build stamp" in w]
+    assert seen == [(["latest.h5ad", "latest.h5ad" + vs.STAMP_SUFFIX], vs.stamp_path(target).read_bytes(), 0o600)]
+    assert dgx.commands[-1] == f"cat -- {shlex.quote(str(target.resolve()) + vs.STAMP_SUFFIX)}"
+    assert vs.read_ledger(env.ledger)[-1]["build_commit"] == head and not list(tmp.iterdir())
+    res = vs.submit("results/latest.h5ad", T1, official=True, confirm=sha[:12], disclose=X001, from_dgx=True,
+                    sleep=lambda s: None)
+    assert res.ok and _guard(res.plan, "build stamp").ok and _guard(res.plan, "dgx provenance").ok
+    row = vs.read_ledger(env.ledger)[-1]
+    assert (row["mode"], row["origin"], row["build_commit"]) == ("official", f"PrakashDGX_H2:runs/build/s1.h5ad@{head}",
+                                                                 head)
+    assert not list(tmp.iterdir())
+
+
+def test_a_dgx_file_without_a_usable_stamp_is_checked_but_never_sent_officially(env, dgx):
+    rel = "results/pred.h5ad"
+    f = _on_dgx(env, dgx, rel, 0)
+    sha, stamp = vs.sha256_file(f), vs.stamp_path(f)
+    good = stamp.read_bytes()
+    stamp.unlink()
+    oversized = good.rstrip(b"\n") + b" " * vs.STAMP_MAX_BYTES + b"\n"  # still valid JSON, but too large to pull
+    for make, why in ((lambda: None, f"no build stamp next to {rel} on PrakashDGX_H2"),
+                      (lambda: stamp.symlink_to(f"{f.name}.elsewhere.json"), "is a link or not a regular file"),
+                      (lambda: stamp.mkdir(), "is a link or not a regular file"),
+                      (lambda: stamp.write_bytes(oversized), f"is {len(oversized)} bytes, more than a build stamp's "
+                                                             "64 KiB")):
+        make()
+        n = len(dgx.commands)
+        res = vs.submit(rel, T1, from_dgx=True)  # a format check works without it, with a warning
+        assert res.server_status == "format_ok" and len(dgx.commands) == n + 2, why  # the report and the file's cat
+        assert "an official upload of this file would fail build stamp: " in res.plan.warnings[-1]
+        assert why in res.plan.warnings[-1] and vs.read_ledger(env.ledger)[-1]["build_commit"] == ""
+        with pytest.raises(vs.SubmitRefused, match="build stamp") as e:
+            vs.submit(rel, T1, official=True, confirm=sha[:12], disclose=X001, from_dgx=True)
+        assert e.value.plan.failed == ["build stamp"] and why in _guard(e.value.plan, "build stamp").detail
+        if stamp.is_dir() and not stamp.is_symlink():
+            stamp.rmdir()
+        else:
+            stamp.unlink(missing_ok=True)
+    assert not env.api.posts(official=True)
+    stamp.write_bytes(good)
+    assert vs.submit(rel, T1, official=True, confirm=sha[:12], disclose=X001, from_dgx=True).ok
+
+
+def test_a_stamp_pull_that_does_not_match_the_report_is_refused_and_leaves_nothing_behind(env, dgx, monkeypatch):
+    tmp = _private_tmp(env, monkeypatch)
+    data = vs.stamp_path(_on_dgx(env, dgx, "results/pred.h5ad", 0)).read_bytes()
+    for other, n in ((data[:-2] + b"x\n", len(data)), (data + b" " * vs.STAMP_MAX_BYTES, vs.STAMP_MAX_BYTES + 1)):
+        dgx.stamp_bytes = other  # one byte changed (the same size); more than any stamp, cut off after the cap
+        with pytest.raises(vs.SubmitRefused, match=f"transfer mismatch: the pull of results/pred.h5ad.stamp.json gave "
+                                                   f"{n} bytes"):
+            vs.submit("results/pred.h5ad", T1, from_dgx=True)
+        assert not list(tmp.iterdir())
+    assert not env.api.requests and not env.ledger.exists()  # refused before any plan: nothing sent or recorded
+
+
+def test_a_dgx_files_own_stamp_is_exempt_from_dgx_provenance_but_no_other_stamp(env, dgx):
+    (env.repo / ".gitignore").write_text("*.h5ad\n")  # as in this repository: prediction files are never tracked
+    _git(env.repo, "add", ".gitignore")
+    _git(env.repo, "commit", "-qm", "ignore predictions")
+    _git(dgx.repo, "pull", "-q")  # the DGX at the same HEAD
+    rel = "preds/s1.h5ad"  # inside the DGX tree, outside results/ and runs/
+    sha = vs.sha256_file(_on_dgx(env, dgx, rel, 0))
+    _on_dgx(env, dgx, "preds/s2.h5ad", 1)  # another file and its stamp next to it
+    assert vs.submit(rel, T1, from_dgx=True).server_status == "format_ok"
+
+    def official():
+        return vs.submit(rel, T1, official=True, confirm=sha[:12], disclose=X001, from_dgx=True, sleep=lambda s: None)
+
+    with pytest.raises(vs.SubmitRefused, match="dgx provenance") as e:
+        official()
+    assert e.value.plan.failed == ["dgx provenance"]
+    assert _guard(e.value.plan, "dgx provenance").detail == "uncommitted or untracked on the DGX: preds/s2.h5ad" + \
+        vs.STAMP_SUFFIX
+    vs.stamp_path(dgx.repo / "preds" / "s2.h5ad").unlink()
+    assert official().ok  # its own stamp, untracked next to it, is exempt like the ledger

@@ -39,6 +39,9 @@ Track 1 (Human Team). A person reviews results and makes every submission decisi
   (`experiments/harmonise/REPORT.md`).
 - **Pre-registration:** every rule that turns released data into a submission is committed before the data it acts on
   (size procedure, T3 decomposition rules, T1 direction readout, cell-count rule, label-mapping rule).
+- **Provenance:** every prediction file carries a build stamp (its sha256, the commit that built it, and whether the
+  code was unchanged from the build's start to the write); an upload is accepted only with a matching clean stamp,
+  and the submission ledger records the building commit of every file sent.
 
 ## Task 1: temporal (E12.5) — _planned_
 

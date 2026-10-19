@@ -60,6 +60,7 @@ from vec.io import (
     make_submission,
     write_submission,
 )
+from vec.provenance import stamp_path
 
 JITTER_NN_FRAC = 0.25  # free jitter budget, as a fraction of the median nearest-neighbour distance (density)
 JITTER_MIN_FRAC = 0.5  # a broken duplicate moves 0.5-1 x the budget: clearly apart, never beyond the budget
@@ -721,12 +722,13 @@ def build_submission(board: Board, cells, coords, genes: list[str] | None = None
     a = make_submission(X, board.genes, C32)
     if out is None:
         with tempfile.TemporaryDirectory() as tmp:
-            rep = check_submission(write_submission(a, Path(tmp) / "submission.h5ad"), board)
+            rep = check_submission(write_submission(a, Path(tmp) / "submission.h5ad", stamp=False), board)
     else:
         path = write_submission(a, out)
         rep = check_submission(path, board)
         if not rep.ok:
             path.unlink()
+            stamp_path(path).unlink(missing_ok=True)
     if not rep.ok:
         raise ValueError(f"{board.key}: vec.io.check_submission rejected the file: {rep.errors}")
     # float32 storage can put a valid single-gene cell a hair above the float64 log1p(1e4); allow that much

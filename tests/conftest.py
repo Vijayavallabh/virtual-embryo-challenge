@@ -1,11 +1,51 @@
+import os
+import subprocess
+
 import numpy as np
 import pytest
 
+from vec import provenance
 from vec.boards import Board
 from vec.evaluate import Stage
+from vec.io import write_submission
 
 N_GENES = 60
 GENES = [f"g{i}" for i in range(N_GENES)]
+
+
+def git(repo, *args):
+    """git in a test's own repository, with no global or system configuration; returns its standard output."""
+    env = {**os.environ, "GIT_CONFIG_GLOBAL": os.devnull, "GIT_CONFIG_NOSYSTEM": "1"}
+    return subprocess.run(["git", "-C", str(repo), "-c", "user.name=t", "-c", "user.email=t@example.org",
+                           "-c", "commit.gpgsign=false", *args], check=True, capture_output=True, text=True,
+                          env=env).stdout.strip()
+
+
+def make_repo(path):
+    """A git repository at `path` with one commit (method.py) and a clean tree."""
+    path.mkdir(parents=True, exist_ok=True)
+    git(path, "init", "-q")
+    (path / "method.py").write_text("x = 1\n")
+    git(path, "add", "method.py")
+    git(path, "commit", "-qm", "init")
+    return path
+
+
+def build(adata, path, repo):
+    """write_submission as one build in a new process: the build's start is recorded for `repo` (as the first import of
+    vec.provenance records it for this package's repository), then the file is written and stamped against `repo`."""
+    provenance._record_start(repo)
+    return write_submission(adata, path, repo=repo)
+
+
+@pytest.fixture
+def own_repo(tmp_path_factory, monkeypatch):
+    """A clean git repository in place of this package's (the default a builder's stamps are written against), with
+    this test's build started there, so that no test stamps against the real checkout."""
+    repo = make_repo(tmp_path_factory.mktemp("repo"))
+    monkeypatch.setattr(provenance, "REPO_ROOT", repo)
+    provenance._record_start(repo)
+    return repo
 
 
 def simulate_stage(n_cells, means_by_type, props, rng, coords_scale=None, coords_shift=None):

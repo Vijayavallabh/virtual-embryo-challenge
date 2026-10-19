@@ -303,6 +303,7 @@ def _print_plan(plan: vec_submit.Plan) -> None:
         console.print(f"  key       Idempotency-Key {escape(plan.idempotency_key or '-')}")
     console.print(f"  disclose  {escape(', '.join(plan.disclosure)) or '-'}")
     console.print(f"  commit    {plan.git_commit}")
+    console.print(f"  build     {escape(plan.build_commit) or '-'}")
     if plan.remote:
         console.print(f"  origin    {escape(plan.origin)}")
     for w in plan.warnings:
@@ -390,6 +391,11 @@ def submit_status(board: str = typer.Option("", help="only this board key")):
                   f"{b.spent}/{b.limit}", *(escape(c) or "-" for c in files), str(bs.format_ok), str(bs.ledger_rows),
                   escape(f"{len(bs.entries)}: {entries}") if bs.entries else "-")
     console.print(t)
+    for bs in rep.boards:  # what each official upload in the ledger was sent at (commit) and built at (build)
+        for r in bs.uploads:
+            console.print(escape(f"official {bs.board}: {r.get('sha256', '')[:12]} {r.get('server_id') or '-'} "
+                                 f"({r.get('server_status')}), commit {r.get('git_commit') or '-'}, build "
+                                 f"{r.get('build_commit') or '-'}"))
     for bs in rep.boards:
         key, pending = escape(bs.board), vec_submit.resolve_commands(bs.budget.unresolved)
         for (_, sha), (kind, cmd) in sorted(pending.items()):

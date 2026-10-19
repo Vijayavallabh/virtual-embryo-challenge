@@ -60,8 +60,11 @@
       check with `vec submit status` once the final phase opens and adapt the parser (with a review) if needed.
 - [x] Upload logistics (decided by the user, 2026-10-19; built and verified the same day): `vec submit PATH --board KEY
       --from-dgx` pulls the built file into a private copy for that call only; the key never goes to the DGX.
-- [x] Provenance across machines: an official `--from-dgx` upload also needs the guard "dgx provenance" (the DGX's
-      HEAD is the local HEAD and its tree is clean), and the ledger's origin column records the DGX path and commit.
+- [x] Provenance across machines: "dgx provenance" alone checked only the code checked out at upload time, not the
+      code that built the file (a side agent caught this; I had marked it closed too early). Fixed 2026-10-20 with
+      build stamps: every prediction file gets `<file>.stamp.json` when it is built (sha256, the commit, whether the
+      tree was clean from the build's start to the write), and an official upload needs a stamp that matches the
+      bytes sent, says clean and names a commit in our history; the ledger's build_commit records it.
 - [ ] T1 pseudo-task gain from exact category shares is +31 against about +24 in the screened digest; both are upper
       bounds (exact shares), the real gain depends on how well the E12.5 shares are chosen.
 

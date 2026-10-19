@@ -5,12 +5,23 @@ scored submissions per board for the whole phase, which cannot be withdrawn. So 
 
 - sends format_only=true unless `official` is set AND `confirm` equals the first 12 hex characters of the file's sha256;
 - refuses an official upload unless every guard passes: the local format check, a board whose upload fields and split
-  are known, a clean working tree (no uncommitted change to a tracked file and no untracked, non-ignored file outside
-  results/, runs/ and experiments/**/results/; the ledger itself is exempt), at least one known disclosure id from
-  EXTERNAL_DATA.md, a passing server format check of the same file for the same board in the ledger, a phase that takes
-  submissions for the board's split, a readable quota and submission list, and room in the board's budget (below);
-  it also refuses a file the board already holds through a format check the server stored, unless an official attempt
-  of that file is still unanswered (its identical retry cannot take a second slot);
+  are known, a clean working tree (vec.provenance's clean-tree rule: no uncommitted change to a tracked file and no
+  untracked, non-ignored file outside results/, runs/ and experiments/**/results/; the ledger and the file's own build
+  stamp are exempt), a build stamp that ties the file to a clean build at the local HEAD or an ancestor of it (below),
+  at least one known disclosure id from EXTERNAL_DATA.md, a passing server format check of the same file for the same
+  board in the ledger, a phase that takes submissions for the board's split, a readable quota and submission list, and
+  room in the board's budget (below); it also refuses a file the board already holds through a format check the server
+  stored, unless an official attempt of that file is still unanswered (its identical retry cannot take a second slot);
+- ties an official upload to the code that built the file (guard "build stamp"): the stamp `<file>.stamp.json` next to
+  the file's real path (written with the file by vec.io.write_submission; see vec.provenance) must exist and parse (at
+  most STAMP_MAX_BYTES), its sha256 must be the plan's (the bytes that will be sent), it must say the build was clean
+  (the tree passed the clean-tree rule when the build started, at the builder's first import of vec.io, and when the
+  file was written, at one HEAD that did not move in between), and its commit must be a full hex commit that is the
+  local HEAD or an ancestor of it (`git merge-base --is-ancestor`, run in the local repo). So a file built before a
+  later fix is recorded under the commit that built it, and a file whose build saw a pull, checkout, sync or stash is
+  refused and its build commit marked +dirty in the ledger (an uncommitted edit made and undone while a build runs is
+  the one change git cannot see). A format check records a matching stamp's commit and warns when the stamp is missing
+  or would fail the guard; it never requires one;
 - refuses a format check too when the phase (read without the token) cannot be read or its split is not the board's:
   the server routes T1 and T2 uploads to the phase's split by itself, so a format check it stored would land elsewhere;
 - refuses every POST, format check or official, to every board while a format check that came back as a submission
@@ -24,16 +35,20 @@ scored submissions per board for the whole phase, which cannot be withdrawn. So 
 - takes a file built on the DGX (`from_dgx`, `vec submit PATH --from-dgx`) by pulling it for the call only: PATH is
   relative to the DGX repo root (DGX_REPO on DGX_HOST) or absolute inside it, and one that resolves outside it (through
   .., a symlink or an absolute path) or holds a newline or NUL is refused. One remote call reports the resolved path,
-  its sha256 and size, the DGX repo's HEAD and its `git status --porcelain -z`; `cat` then streams the file into a 0600
-  file in a 0700 temporary directory while it is hashed, and the pull is refused ("transfer mismatch") unless those
-  bytes have the reported sha256 and size. The copy then goes through everything here as a local file would, and the
+  its sha256 and size, the build stamp next to that real path (its sha256 and size; only its size when it is larger than
+  STAMP_MAX_BYTES; or that there is none, that it is a link or not a regular file, or that it cannot be read), the DGX
+  repo's HEAD and its `git status --porcelain -z`; `cat` then streams the file into a 0600 file in a 0700 temporary
+  directory while it is hashed, then a stamp reported at no more than STAMP_MAX_BYTES into a 0600 file next to it
+  (stopping one byte past that size), and the pull is refused ("transfer mismatch") unless each copy has the reported
+  sha256 and size. The copy then goes through everything here as a local file would, its stamp with it, and the
   directory is removed when the call ends, also on errors, Ctrl-C, SIGHUP (a closed terminal or dropped session) and
   SIGTERM, which unwind the call; a copy left by a call killed outright (SIGKILL, power loss) is removed by the next
   call once it is STALE_COPY_HOURS old. A refused pull, like a missing local file, writes no ledger row. An official
-  upload also needs the guard "dgx provenance": the DGX's HEAD is the local HEAD and its tree passes the clean-tree
-  rule above (the same parser reads its status); a format check records the DGX state without requiring it. Every
-  remote command goes through dgx_run (`ssh -o BatchMode=yes DGX_HOST -- COMMAND`, paths quoted with shlex.quote),
-  whose environment leaves out VEC_TOKEN and every variable whose name contains TOKEN in any case;
+  upload also needs the guard "dgx provenance": the DGX's HEAD is the local HEAD and its tree passes the clean-tree rule
+  above (the same parser reads its status; the ledger and the file's stamp are exempt); a format check records the DGX
+  state without requiring it. Every remote command goes through dgx_run (`ssh -o BatchMode=yes DGX_HOST -- COMMAND`,
+  paths quoted with shlex.quote), whose environment leaves out VEC_TOKEN and every variable whose name contains TOKEN in
+  any case;
 - sends a private snapshot: the file is opened before the snapshot exists, then copied once into a 0600 file in a 0700
   temporary directory and hashed from the copy (failing to open or read the file is "cannot read FILE"; only failing to
   write the copy points at the temporary directory), nothing is sent unless that hash equals the plan's ("file changed
@@ -42,10 +57,13 @@ scored submissions per board for the whole phase, which cannot be withdrawn. So 
 - keeps the filename, form fields and Idempotency-Key (derived from the board and the file hash) identical on every
   retry of an official upload, because the server answers a changed payload under a used key with 409;
 - appends a row to results/submissions.csv for every attempt, including refusals, replays and resolutions, and writes a
-  "sending" row before each official request so a crash mid-upload still leaves a trace. Its last column, origin, is
-  "local" for a local file and "PrakashDGX_H2:<path>@<DGX HEAD>" (plus "+dirty" when the DGX tree is not clean, or
-  "+unknown" when its git status cannot be read) for a pulled one, whose file column holds that repo-relative DGX path
-  (symlinks resolved) and whose upload filename is the basename of PATH as given, as for a local file.
+  "sending" row before each official request so a crash mid-upload still leaves a trace. Its git_commit column is the
+  local HEAD at the call (plus "+dirty" when the tree is not clean). Its last two columns are origin, "local" for a
+  local file and "PrakashDGX_H2:<path>@<DGX HEAD>" (plus "+dirty" when the DGX tree is not clean, or "+unknown" when
+  its git status cannot be read) for a pulled one, whose file column holds that repo-relative DGX path (symlinks
+  resolved) and whose upload filename is the basename of PATH as given, as for a local file; and build_commit, the
+  commit in the file's build stamp when the stamp matches the file (plus "+dirty" when it says the build was not
+  clean), else empty.
 
 The budget of a board is the larger of the quota endpoint's count (the source of truth) and the slots below, against
 the quota's limit (at most 2); if the quota or the submission list cannot be read or parsed, official uploads are
@@ -106,7 +124,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from collections.abc import Callable, Collection, Iterator, Sequence
+from collections.abc import Callable, Iterator, Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -115,17 +133,30 @@ from typing import BinaryIO
 from vec import data as vec_data
 from vec.boards import BOARDS_DIR, REPO_ROOT, Board, get_board, load_boards
 from vec.io import CheckReport, check_submission
+from vec.provenance import (
+    LEDGER_PATH,
+    STAMP_MAX_BYTES,
+    STAMP_SUFFIX,
+    _repo_paths,
+    git_state,
+    is_ancestor,
+    read_stamp,
+    stamp_path,
+    unclean_paths,
+)
+
+# the clean-tree rule moved to vec.provenance: the names it had here, used here or not, stay importable from here
+from vec.provenance import OUTPUT_DIRS as OUTPUT_DIRS
+from vec.provenance import _output_path as _output_path
 
 API_BASE = vec_data.API_BASE
-LEDGER = REPO_ROOT / "results" / "submissions.csv"
+LEDGER = REPO_ROOT / LEDGER_PATH
 EXTERNAL_DATA = REPO_ROOT / "EXTERNAL_DATA.md"
 FINAL_PHASE_LIMIT = 2  # scored submissions per board for the whole final phase
 LEDGER_FIELDS = ["utc_time", "board", "mode", "file", "upload_name", "sha256", "server_status", "server_id",
-                 "http_status", "git_commit", "disclosure", "idempotency_key", "fields", "note", "detail", "origin"]
+                 "http_status", "git_commit", "disclosure", "idempotency_key", "fields", "note", "detail", "origin",
+                 "build_commit"]
 REJECTED = "rejected"  # the only server status that spends no official attempt (cancelled ones are not refunded)
-# untracked files may stay here (and under experiments/**/results/) at an official upload; anything else, code or not,
-# must be committed so that the ledger's commit describes what produced the file
-OUTPUT_DIRS = ("results", "runs")
 CLIENT_STATUSES = frozenset({"refused", "sending", "no_response", "http_error", "unconfirmed", "unknown", "format_ok",
                              "format_failed", "format_unconfirmed", "UNEXPECTED_SUBMISSION"})  # never a server status
 FORMAT_SUBMISSION = ("UNEXPECTED_SUBMISSION", "format_unconfirmed")  # format checks that may have made a submission
@@ -142,16 +173,25 @@ DGX_REPO = "~/v/virtual-embryo-challenge"  # the repo's clone on DGX_HOST: a pul
 STALE_COPY_HOURS = 6.0  # a private copy this old is left over from a call that was killed outright (SIGKILL, power)
 COPY_PREFIXES = ("vec-dgx-", "vec-submit-")  # the temporary directories of pulled copies and of snapshots
 # One call on the DGX: refuse a path ($2) that is missing, not a regular file or outside the repo root ($1), then print
-# the root, the file's real path, sha256, size and the repo's HEAD (NUL-separated) and, last, its git status. The path
-# is an argument and never part of the script; `printf x` keeps a real path's trailing newline for the check here.
+# the root, the file's real path, sha256, size, the repo's HEAD and the build stamp next to the real path (the real path
+# plus $3): "<sha256> <size>", "large <size>" above $4 bytes (never hashed), "none", "special" (a link or not a regular
+# file: never read) or "unreadable"; NUL-separated, and, last, the repo's git status. The path is an argument and never
+# part of the script; `printf x` keeps a real path's trailing newline for the check here.
 DGX_REPORT = r"""cd -- "$1" && root=$(pwd -P) || exit 3
 f=$(realpath -e -- "$2" && printf x) || exit 4
 f=${f%?x}
 [ -f "$f" ] || { echo "not a regular file: $f" >&2; exit 4; }
 case $f in "$root"/*) ;; *) echo "resolves to $f, outside the repository $root" >&2; exit 4 ;; esac
 sum=$(sha256sum < "$f") && size=$(stat -c %s -- "$f") || exit 5
+s=$f$3
+if [ -L "$s" ] || { [ -e "$s" ] && [ ! -f "$s" ]; }; then stamp=special
+elif [ ! -e "$s" ]; then stamp=none
+elif ! ssize=$(stat -c %s -- "$s"); then stamp=unreadable
+elif [ "$ssize" -gt "$4" ]; then stamp="large $ssize"
+elif ssum=$(sha256sum < "$s"); then stamp="${ssum%% *} $ssize"
+else stamp=unreadable; fi
 head=$(git rev-parse --verify -q HEAD) || head=unknown
-printf 'vec-dgx\0%s\0%s\0%s\0%s\0%s\0' "$root" "$f" "${sum%% *}" "$size" "$head"
+printf 'vec-dgx\0%s\0%s\0%s\0%s\0%s\0%s\0' "$root" "$f" "${sum%% *}" "$size" "$head" "$stamp"
 GIT_OPTIONAL_LOCKS=0 exec git status --porcelain -z --untracked-files=all"""
 
 
@@ -189,6 +229,7 @@ class Plan:
     replay: dict | None = None  # earlier record when this file was already sent officially to this board
     remote: str = ""  # the file's path in the DGX repo when it was pulled from there (the ledger's file column)
     origin: str = "local"  # the ledger's origin column: local, or DGX_HOST:<remote>@<DGX HEAD>[+dirty|+unknown]
+    build_commit: str = ""  # the ledger's build_commit column: a matching build stamp's commit[+dirty], else ""
 
     @property
     def ok(self) -> bool:
@@ -353,51 +394,6 @@ def parse_ids(disclose: str | Sequence[str]) -> list[str]:
     return list(dict.fromkeys(i.strip().upper() for i in items if i.strip()))
 
 
-def _output_path(path: str) -> bool:
-    """An untracked path that may stay uncommitted: under results/, runs/ or experiments/**/results/."""
-    parts = path.split("/")
-    return (parts[0] in OUTPUT_DIRS and len(parts) > 1) or (parts[0] == "experiments" and "results" in parts[1:-1])
-
-
-def git_state(repo: Path, ignore: Sequence[Path] = ()) -> tuple[str, list[str] | None]:
-    """HEAD commit and the paths that keep the tree from being clean (None when git cannot tell; see unclean_paths),
-    leaving out `ignore` (the ledger)."""
-    def run(*args: str) -> str:
-        return subprocess.run(["git", "-C", str(repo), *args], capture_output=True, check=True).stdout.decode(
-            errors="replace")
-
-    try:
-        commit = run("rev-parse", "HEAD").strip()
-        status = run("status", "--porcelain", "-z", "--untracked-files=all")
-    except (OSError, subprocess.CalledProcessError):
-        return "unknown", None
-    return commit, unclean_paths(status, _repo_paths(repo, ignore))
-
-
-def _repo_paths(repo: Path, paths: Sequence[Path]) -> set[str]:
-    """`paths` relative to `repo`, as git status prints them; paths outside it are left out."""
-    out = set()
-    for p in paths:
-        try:
-            out.add(Path(p).resolve().relative_to(Path(repo).resolve()).as_posix())
-        except ValueError:
-            pass
-    return out
-
-
-def unclean_paths(status: str, skip: Collection[str] = ()) -> list[str]:
-    """The paths in `git status --porcelain -z --untracked-files=all` output (of this tree or the DGX's) that keep the
-    tree from being clean: tracked files with uncommitted changes, and untracked, non-ignored files outside results/,
-    runs/ and experiments/**/results/. -z never quotes the paths, so `skip` (the ledger) compares exactly."""
-    changed, entries = [], iter(status.split("\0"))
-    for entry in entries:
-        code, paths = entry[:2], [entry[3:]]
-        if "R" in code or "C" in code:
-            paths.append(next(entries, ""))  # a rename or copy: the new path, then the old one
-        changed += [p for p in paths if p and p not in skip and not (code == "??" and _output_path(p))]
-    return changed
-
-
 # ---------------------------------------------------------------------------------------------------------------------
 # Ledger
 
@@ -462,7 +458,8 @@ def _row(plan: Plan, status: str, server_id: str = "", http_status: int | None =
             "upload_name": plan.upload_name, "sha256": plan.sha256, "server_status": status, "server_id": server_id,
             "http_status": "" if http_status is None else str(http_status), "git_commit": plan.git_commit,
             "disclosure": ";".join(plan.disclosure), "idempotency_key": plan.idempotency_key,
-            "fields": json.dumps(plan.fields), "note": plan.note, "detail": detail, "origin": plan.origin}
+            "fields": json.dumps(plan.fields), "note": plan.note, "detail": detail, "origin": plan.origin,
+            "build_commit": plan.build_commit}
 
 
 def _now() -> str:
@@ -736,21 +733,23 @@ class _Unreadable(Exception):
     """Reading the file to upload failed (its cause is the OSError); writing the snapshot did not."""
 
 
-def _private_copy(src: BinaryIO, dst: Path) -> tuple[str, int]:
+def _private_copy(src: BinaryIO, dst: Path, cap: int | None = None) -> tuple[str, int]:
     """Copy the open file `src` into a new file `dst` (mode 0600); returns the sha256 and the size of the bytes written.
-    An error reading `src` is raised as _Unreadable, so that it is never taken for a full disk."""
+    An error reading `src` is raised as _Unreadable, so that it is never taken for a full disk. With `cap`, the copy
+    stops after cap + 1 bytes, more than any file it may hold."""
     h, size = hashlib.sha256(), 0
     with open(os.open(dst, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), "wb") as fo:
-        while True:
+        while cap is None or size <= cap:
             try:
-                chunk = src.read(1 << 20)
+                chunk = src.read(1 << 20 if cap is None else min(1 << 20, cap + 1 - size))
             except OSError as e:
                 raise _Unreadable from e
             if not chunk:
-                return h.hexdigest(), size
+                break
             fo.write(chunk)
             h.update(chunk)
             size += len(chunk)
+    return h.hexdigest(), size
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -777,6 +776,8 @@ class DgxFile:
     size: int
     head: str  # the DGX repo's HEAD ("unknown" when git cannot tell)
     status: str | None  # its `git status --porcelain -z --untracked-files=all` (None when git cannot tell)
+    stamp: Path | None = None  # the private copy of the build stamp next to the file's real path, next to `copy`
+    stamp_missing: str = ""  # why there is no such copy: no stamp, not a regular file, unreadable or too large
 
 
 def _dgx_word(path: str) -> str:
@@ -798,52 +799,76 @@ def _dgx_error(stderr: BinaryIO, code: int | None) -> str:
 
 def pull_from_dgx(path: str, stack: contextlib.ExitStack) -> DgxFile:
     """Pull `path` (relative to the DGX repo root, or absolute inside it) into a private temporary copy, which `stack`
-    deletes. One remote call reports the file and the repo's state, then `cat` streams the file into the copy while it
-    is hashed. Refuses a path outside the repo or with a newline or NUL, a file the DGX cannot report, and a pull whose
-    bytes are not the reported ones ("transfer mismatch"). Reads no token and sends nothing to the challenge API."""
+    deletes, with the build stamp next to its real path. One remote call reports the file, the stamp and the repo's
+    state, then `cat` streams the file, and the stamp unless it is larger than STAMP_MAX_BYTES, into the copies while
+    they are hashed. Refuses a path outside the repo or with a newline or NUL, a file the DGX cannot report, and a pull
+    whose bytes are not the reported ones ("transfer mismatch"). Reads no token and sends nothing to the challenge
+    API."""
     if not path or "\n" in path or "\0" in path:
         raise SubmitRefused(f"refusing the DGX path {path!r}: it is empty or holds a newline or NUL")
-    report = f"bash -c {shlex.quote(DGX_REPORT)} vec-dgx {_dgx_word(DGX_REPO)} {shlex.quote(path)}"
+    report = (f"bash -c {shlex.quote(DGX_REPORT)} vec-dgx {_dgx_word(DGX_REPO)} {shlex.quote(path)} "
+              f"{shlex.quote(STAMP_SUFFIX)} {STAMP_MAX_BYTES}")
     with tempfile.TemporaryFile() as err:
         with _dgx_start(report, err) as proc:
             out = proc.stdout.read()
-        parts = out.split(b"\0", 6)
-        if len(parts) < 7 or parts[0] != b"vec-dgx":
+        parts = out.split(b"\0", 7)
+        if len(parts) < 8 or parts[0] != b"vec-dgx":
             raise SubmitRefused(f"{DGX_HOST} cannot report {path}: {_dgx_error(err, proc.returncode)}")
     try:
-        root, real, sha, size, head = (p.decode() for p in parts[1:6])
+        root, real, sha, size, head, stamp = (p.decode() for p in parts[1:7])
     except UnicodeDecodeError:
         raise SubmitRefused(f"{DGX_HOST} reports a path that is not UTF-8 for {path}") from None
     if "\n" in real:
         raise SubmitRefused(f"refusing the DGX path {path!r}: it resolves to {real!r}, which holds a newline")
     rel = real[len(root) + 1:] if root and real.startswith(f"{root}/") else ""
     if not (rel and re.fullmatch(r"[0-9a-f]{64}", sha) and re.fullmatch(r"[0-9]+", size)
-            and re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}|unknown", head)):
+            and re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}|unknown", head)
+            and re.fullmatch(r"(?:[0-9a-f]{64}|large) [0-9]+|none|special|unreadable", stamp)):
         raise SubmitRefused(f"unexpected report from {DGX_HOST} for {path}: {out[:300]!r}")
-    status = parts[6].decode(errors="replace") if proc.returncode == 0 else None  # git status failed
+    status = parts[7].decode(errors="replace") if proc.returncode == 0 else None  # git status failed
     try:
         tmp = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix="vec-dgx-", ignore_cleanup_errors=True)))
     except OSError as e:
         raise SubmitRefused(f"cannot make a temporary directory in {tempfile.gettempdir()} ({type(e).__name__}: {e}); "
                             "free some space there or point TMPDIR elsewhere") from None
     copy = tmp / path.rstrip("/").rsplit("/", 1)[-1]  # the name as given (as for a local file), not a link's target
+    n = _pull(real, rel, copy, sha, int(size))
+    kind, _, stamp_size = stamp.partition(" ")
+    if kind in ("none", "special", "unreadable"):
+        return DgxFile(rel, copy, sha, n, head, status, stamp_missing={
+            "none": f"no build stamp next to {rel} on {DGX_HOST}",
+            "special": f"{rel}{STAMP_SUFFIX} on {DGX_HOST} is a link or not a regular file",
+            "unreadable": f"{DGX_HOST} cannot read {rel}{STAMP_SUFFIX}"}[kind])
+    if kind == "large" or int(stamp_size) > STAMP_MAX_BYTES:
+        return DgxFile(rel, copy, sha, n, head, status, stamp_missing=f"{rel}{STAMP_SUFFIX} on {DGX_HOST} is "
+                       f"{stamp_size} bytes, more than a build stamp's {STAMP_MAX_BYTES // 1024} KiB")
+    _pull(real + STAMP_SUFFIX, rel + STAMP_SUFFIX, stamp_path(copy), kind, int(stamp_size), cap=STAMP_MAX_BYTES)
+    return DgxFile(rel, copy, sha, n, head, status, stamp=stamp_path(copy))
+
+
+def _pull(real: str, rel: str, copy: Path, sha: str, size: int, cap: int | None = None) -> int:
+    """`cat` the DGX file `real` (shown as `rel`) into the private file `copy` while hashing it (with `cap`, reading at
+    most cap + 1 bytes); refuses unless the bytes have the reported `sha` and `size`, which it returns."""
     with tempfile.TemporaryFile() as err:
         with _dgx_start(f"cat -- {shlex.quote(real)}", err) as proc:
             try:
-                got, n = _private_copy(proc.stdout, copy)
+                got, n = _private_copy(proc.stdout, copy, cap)
             except _Unreadable as e:
                 proc.kill()
                 raise SubmitRefused(f"the pull of {rel} from {DGX_HOST} broke off ({e.__cause__})") from None
             except OSError as e:
                 proc.kill()
-                raise SubmitRefused(f"cannot write the copy into {tmp} ({type(e).__name__}: {e}); free some space "
-                                    "there or point TMPDIR elsewhere") from None
-        if proc.returncode != 0:
+                raise SubmitRefused(f"cannot write the copy into {copy.parent} ({type(e).__name__}: {e}); free some "
+                                    "space there or point TMPDIR elsewhere") from None
+            over = cap is not None and n > cap
+            if over:
+                proc.kill()  # more than a valid file: refused below, as a transfer mismatch
+        if proc.returncode != 0 and not over:
             raise SubmitRefused(f"cannot pull {rel} from {DGX_HOST}: {_dgx_error(err, proc.returncode)}")
-    if (got, n) != (sha, int(size)):
+    if (got, n) != (sha, size):
         raise SubmitRefused(f"transfer mismatch: the pull of {rel} gave {n} bytes with sha256 {got[:12]}, but "
                             f"{DGX_HOST} reported {size} bytes with sha256 {sha[:12]}; check the file and run again")
-    return DgxFile(rel, copy, sha, n, head, status)
+    return n
 
 
 @contextlib.contextmanager
@@ -899,6 +924,48 @@ def _dgx_provenance(dgx: DgxFile, changed: list[str] | None, local_head: str) ->
         problems.append(f"uncommitted or untracked on the DGX: {', '.join(changed[:5])}{more}")
     return Guard("dgx provenance", not problems, "; ".join(problems) or f"DGX HEAD {dgx.head[:12]} is the local HEAD "
                  "and the DGX tree is clean")
+
+
+def _build_stamp(stamp: Path | None, sha: str, repo: Path, missing: str = "") -> tuple[Guard, str]:
+    """The guard "build stamp" and the ledger's build_commit. An official upload needs the file's stamp (`stamp`; None
+    with the reason `missing`), parsed, for the bytes to be sent (`sha`), from a clean build (vec.provenance: a clean
+    tree when the build started and when the file was written, at one HEAD that did not move), at a commit that is the
+    local HEAD or an ancestor of it in `repo`. build_commit is the stamp's commit (+dirty if it says the build was not
+    clean) when the stamp matches the file, else ""."""
+    def refuse(detail: str, build: str = "") -> tuple[Guard, str]:
+        return Guard("build stamp", False, detail), build
+
+    if stamp is None:
+        return refuse(missing or "no build stamp")
+    try:
+        s = read_stamp(stamp)
+    except FileNotFoundError:
+        return refuse(f"no build stamp next to the file ({stamp.name}): write it with vec.io.write_submission, as "
+                      "every builder does")
+    except (OSError, ValueError) as e:
+        return refuse(f"cannot read the build stamp {stamp.name}: {e}")
+    if s["sha256"] != sha:
+        return refuse(f"the build stamp is for other bytes (sha256 {s['sha256'][:12]}, the file's is {sha[:12]}): "
+                      "the file was changed or rebuilt without a new stamp")
+    commit = s["commit"]
+    build = commit if s["clean"] or commit == "unknown" else f"{commit}+dirty"
+    if not s["clean"]:  # the stamp says why; a stamp without a reason is described from its paths
+        paths, n = s["unclean"], s["unclean_count"]
+        why = s.get("why") or (
+            f"uncommitted or untracked: {', '.join(paths[:5])}{' ...' if (n or 0) > 5 else ''}" if paths else
+            "its git state could not be read" if commit == "unknown" or paths is None else "no reason recorded")
+        return refuse(f"the build was not clean ({why}): rebuild the file from a clean tree, in a new process", build)
+    if commit == "unknown":
+        return refuse("the build stamp has no commit", build)
+    ancestor = is_ancestor(repo, commit)
+    if ancestor is None:
+        return refuse(f"build commit {commit[:12]} is not in the local repository (fetch it, or rebuild at a local "
+                      "commit)", build)
+    if not ancestor:
+        return refuse(f"build commit {commit[:12]} is neither the local HEAD nor an ancestor of it (built on a branch "
+                      "that is not merged?)", build)
+    return Guard("build stamp", True, f"built from a clean tree at {commit[:12]}, the local HEAD or an ancestor of "
+                 "it"), build
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -960,19 +1027,27 @@ def prepare(file: str | Path, board: str, official: bool, confirm: str | None, *
                             "is sent to any board until a person has checked the portal and run "
                             + "; ".join(cmd for _, cmd in stray.values())))
 
-    commit, changed = git_state(repo, ignore=[ledger_path])
+    # the build stamp next to a local file's real path, or the copy pulled with a DGX file; it and the ledger are exempt
+    # from the clean-tree rule
+    stamp = dgx.stamp if dgx is not None else stamp_path(path.resolve())
+    built, build_commit = _build_stamp(stamp, sha, repo, dgx.stamp_missing if dgx is not None else "")
+    commit, changed = git_state(repo, ignore=[ledger_path] if dgx is not None else [ledger_path, stamp])
     git_commit = commit if changed is None or not changed else f"{commit}+dirty"
     name, key = upload_name(path), idempotency_key(board, sha) if official and ident else ""
-    plan = Plan(path, board, official, sha, name, fields, key, ids, note, git_commit, guards, warnings)
+    plan = Plan(path, board, official, sha, name, fields, key, ids, note, git_commit, guards, warnings,
+                build_commit=build_commit)
     provenance = None
     if dgx is not None:  # the ledger names the DGX file and the DGX repo's state; only official uploads require it
-        dgx_changed = None if dgx.status is None else unclean_paths(dgx.status, _repo_paths(repo, [ledger_path]))
+        skip = _repo_paths(repo, [ledger_path]) | {dgx.path + STAMP_SUFFIX}
+        dgx_changed = None if dgx.status is None else unclean_paths(dgx.status, skip)
         state = "+unknown" if dgx_changed is None else "+dirty" if dgx_changed else ""  # unknown: git status failed
         plan.remote, plan.origin = dgx.path, f"{DGX_HOST}:{dgx.path}@{dgx.head}{state}"
         provenance = _dgx_provenance(dgx, dgx_changed, commit)
     if not official:
         if confirm:
             warnings.append("--confirm is ignored without --official: this is a format check")
+        if not built.ok:
+            warnings.append(f"an official upload of this file would fail build stamp: {built.detail}")
         if provenance is not None and not provenance.ok:
             warnings.append(f"an official upload of this file would fail dgx provenance: {provenance.detail}")
         if b is not None and ident:  # a format check the server stored anyway would land on the phase's split
@@ -988,6 +1063,7 @@ def prepare(file: str | Path, board: str, official: bool, confirm: str | None, *
         guards.append(Guard("clean tree", not changed, "nothing uncommitted (untracked files only under results/, "
                             "runs/ and experiments/**/results/)" if not changed else
                             f"uncommitted or untracked: {', '.join(changed[:5])}{' ...' if len(changed) > 5 else ''}"))
+    guards.append(built)
     if provenance is not None:
         guards.append(provenance)
     _reuse_earlier_request(plan, rows)
@@ -1289,6 +1365,8 @@ class BoardStatus:
     ledger_rows: int
     format_ok: int  # distinct files with a passing server format check
     entries: list[dict]  # server submissions on this board
+    uploads: list[dict] = field(default_factory=list)  # the ledger's latest official row per file sent: its server
+    # status and id, git_commit (the local HEAD when it was sent) and build_commit (the commit that built it)
 
 
 @dataclass
@@ -1345,6 +1423,8 @@ def status(board: str | None = None, *, api_base: str | None = None, token_file:
         budget = board_budget(key, rows, q_entry, subs, ident)
         fmt = {r.get("sha256") for r in rows if r.get("board") == key and r.get("mode") == "format"
                and r.get("server_status") == "format_ok"}
+        sent = {r.get("sha256"): r for r in rows if r.get("board") == key and r.get("mode") == "official"
+                and r.get("server_status") != "refused"}
         out.append(BoardStatus(key, budget, sum(r.get("board") == key for r in rows), len(fmt),
-                               server_entries(subs or [], key, ident)))
+                               server_entries(subs or [], key, ident), list(sent.values())))
     return StatusReport(phase.body if phase.status == 200 else None, quota, notes, out)

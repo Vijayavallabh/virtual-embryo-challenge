@@ -18,10 +18,12 @@ import numpy as np
 import pytest
 from conftest import GENES, simulate_stage
 
+from vec import io as vec_io
 from vec import t2_build as tb
 from vec.boards import Board
 from vec.evaluate import SCORER_BUILDS, Stage, score_board
 from vec.io import COORD_KEY, check_submission, read_stage
+from vec.provenance import read_stamp, stamp_path
 
 REPO = Path(__file__).resolve().parents[1]
 
@@ -402,7 +404,7 @@ def _cp10k(counts):
     return 1e4 * counts / counts.sum(1, keepdims=True)
 
 
-def test_builder_orders_genes_and_passes_the_format_check(tmp_path):
+def test_builder_orders_genes_and_passes_the_format_check(tmp_path, own_repo):
     board = t2_board(min_cells=10, max_cells=1000)
     X = _cells(200)
     order = np.random.default_rng(1).permutation(len(GENES))
@@ -416,6 +418,7 @@ def test_builder_orders_genes_and_passes_the_format_check(tmp_path):
     assert sub.obsm[COORD_KEY].dtype == np.float32 and sub.obsm[COORD_KEY].shape == (200, 3)
     assert any("outside the board panel dropped" in w for w in rep.warnings)
     assert check_submission(tmp_path / "pred.h5ad", board).ok
+    assert read_stamp(stamp_path(tmp_path / "pred.h5ad"))["clean"]  # stamped by default, against the test's repository
     back = read_stage(tmp_path / "pred.h5ad", GENES)
     np.testing.assert_array_equal(np.asarray(back.X), X)
     # matrix with gene names, Stage with gene names, matrix already in panel order
@@ -460,8 +463,19 @@ def test_builder_refusals(tmp_path):
     assert not list(tmp_path.iterdir())  # nothing written without `out`
 
 
+def test_builder_stamps_its_file_but_never_the_temporary_one(tmp_path, monkeypatch):
+    """The file written to `out` gets its build stamp (vec.io.write_submission); the temporary file written only to be
+    checked, without `out`, gets none."""
+    stamped = []
+    monkeypatch.setattr(vec_io, "write_stamp", lambda path, repo=None: stamped.append(Path(path)))
+    board, X, coords = t2_board(min_cells=10, max_cells=1000), _cells(200), stack(200, seed=13)
+    assert tb.build_submission(board, X, coords, genes=GENES)[1].ok and stamped == []
+    tb.build_submission(board, X, coords, genes=GENES, out=tmp_path / "pred.h5ad")
+    assert stamped == [tmp_path / "pred.h5ad"]
+
+
 # ---------------------------------------------------------------------------------------------------- end to end
-def test_end_to_end_copy_like_submission_scores_under_both_builds(tmp_path, profiles):
+def test_end_to_end_copy_like_submission_scores_under_both_builds(tmp_path, profiles, own_repo):
     _, later = profiles
     centres = np.array([[0, 0, 0], [6, 0, 0], [0, 6, 0]], float)
 

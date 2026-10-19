@@ -1,7 +1,11 @@
-"""Loading stages, aligning to a board's gene panel, writing and checking submission files.
+"""Loading stages, aligning to a board's gene panel, writing submission files (each with its build stamp) and checking
+them.
 
 The checks mirror what the portal's free format check reports (genes, order, cell count, coordinates, missing values,
 structure) plus two convention warnings the scorer only reports: non-normalised scale and broadcast populations.
+write_submission stamps every file it writes unless told not to (vec.provenance): an official upload needs the stamp.
+Importing this module records the start of the build, the repository state a stamp is compared with (vec.provenance's
+first import), so a builder imports it before its heavy work.
 """
 
 from __future__ import annotations
@@ -14,6 +18,7 @@ import numpy as np
 from scipy import sparse
 
 from vec.boards import Board
+from vec.provenance import write_stamp
 
 COORD_KEY = "spatial_3D"
 MAX_FILE_BYTES = 1200 * 1024 * 1024
@@ -52,10 +57,17 @@ def make_submission(X, genes: list[str], coords: np.ndarray | None = None) -> ad
     return a
 
 
-def write_submission(a: ad.AnnData, path: str | Path) -> Path:
+def write_submission(a: ad.AnnData, path: str | Path, *, stamp: bool = True, repo: str | Path | None = None) -> Path:
+    """Write a submission file (gzip-compressed h5ad), then, unless stamp=False, its build stamp `<file>.stamp.json`
+    (vec.provenance.write_stamp): the file's sha256 and size, the HEAD of `repo` (default: this package's repository)
+    and whether the build was clean (its tree clean, at one HEAD that did not move, from the build's start to this
+    write). An official upload needs a stamp that matches the file (vec.submit); internal and temporary writes pass
+    stamp=False."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     a.write_h5ad(path, compression="gzip")
+    if stamp:
+        write_stamp(path, repo)
     return path
 
 

@@ -34,6 +34,23 @@ RULES = yaml.safe_load((HERE / "rules.yaml").read_text())
 SCRIPT_SHA = t3d.sha256(HERE / "t3_decompose.py")
 RULES_SHA = t3d.sha256(HERE / "rules.yaml")
 HASH_OK = {"mismatch": []}
+
+
+@pytest.fixture(autouse=True)
+def own_repo(tmp_path_factory, monkeypatch):
+    """Built files are stamped against a clean throwaway repository, never the real checkout (vec.provenance)."""
+    import subprocess
+
+    from vec import provenance
+
+    repo = tmp_path_factory.mktemp("repo")
+    env = {**os.environ, "GIT_CONFIG_GLOBAL": os.devnull, "GIT_CONFIG_NOSYSTEM": "1"}
+    for args in (["init", "-q"], ["commit", "-q", "--allow-empty", "-m", "init"]):
+        subprocess.run(["git", "-C", str(repo), "-c", "user.name=t", "-c", "user.email=t@example.org",
+                        "-c", "commit.gpgsign=false", *args], check=True, capture_output=True, env=env)
+    monkeypatch.setattr(provenance, "REPO_ROOT", repo)
+    provenance._record_start(repo)
+    return repo
 G = 40
 GENES = [f"G{j}" for j in range(G)]
 # (celltype, cm_celltype, share): in the combined label mode the vocabulary holds every depleted scenario state

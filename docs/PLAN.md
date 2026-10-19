@@ -358,6 +358,12 @@ Done:
   server returns; one ledger row per attempt. `vec submit status` is read-only and prints the resolve commands. Files
   built on the DGX go up with `vec submit PATH --board KEY --from-dgx`: pulled into a private copy for that call only
   (the key never goes to the DGX), and an official upload also needs the DGX at the local HEAD with a clean tree.
+  Every prediction file gets a build stamp `<file>.stamp.json` when it is written (vec.io.write_submission ->
+  vec.provenance: sha256, size, the commit, and whether the tree stayed clean from the build's start to the write);
+  an official upload needs the guard "build stamp" (the stamp matches the exact bytes sent, says clean, and names
+  the local HEAD or an ancestor), and the ledger records the commit that built the file (build_commit) next to the
+  one checked out at upload (git_commit). Commit before building official candidates, and never sync, pull or
+  check out in a workspace while a build runs there (the stamp then is not clean and the upload is refused).
 - Builders: `vec.t2_build` (count rule with the truth floor, random rows, jitter, size procedure, cloud guard),
   `vec.t1_scope` (chamber categories, re-weighting to input shares, momentum shift) and the T3 builder
   (`experiments/t3_decomp/build_submission.py`, s1/s2 from the decision file). Each was verified by an independent

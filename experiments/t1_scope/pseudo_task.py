@@ -73,6 +73,7 @@ from vec.evaluate import (
     subsample,
 )
 from vec.prep import load_stage
+from vec.provenance import stamp_path
 from vec.t1_scope import (
     build_submission,
     classify,
@@ -287,6 +288,7 @@ def format_smoke(cfg: dict, out_dir: Path) -> dict:
     check = write_checked(sub, path, board)
     size = path.stat().st_size
     path.unlink()
+    stamp_path(path).unlink(missing_ok=True)
     return {"ok": check.ok, "warnings": check.warnings, "n_cells": check.n_cells, "n_genes": int(sub.n_vars),
             "dtype": str(sub.X.dtype), "file_mb": round(size / 2**20, 1), "same_rows_as_reweight": same,
             "board": board.key, "limits": [board.min_cells, board.max_cells]}
