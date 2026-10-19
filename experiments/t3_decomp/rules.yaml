@@ -312,3 +312,21 @@ notes:
     fails or cannot be evaluated, the two submissions must not both use the Gata4 factor: s1 keeps the allowed table's
     choice; s2 = no factor (WT cells) with the central composition at m when D7 passes, otherwise the Gata4 factor at
     exponent 0.5 with s1's composition. The decision record reports D11b's per-target scores next to the choice."
+  - "2026-10-19 (lead's decision, before any Gata4 file was downloaded; clarifies note 6 as implemented in
+    build_submission.py): (7) when note 6 replaces s2 and D7 passes, s2's composition is mild (m/2) if D8 fires (the
+    composition sign is a live risk) and central otherwise, so the D8 hedge is kept. When D7 fails, the replacement
+    takes s1's composition, as note 6 says, so the same-factor table's mild_raw hedge is not used. The replacement s2
+    carries no depth, stage or coverage. When its factor would equal s1's (the same Gata4 source at the same exponent),
+    s2 takes half of s1's exponent rather than W1's runner-up, because note 6 exists to reduce reliance on the Gata4
+    factor. Note 6 changes s2 only when the table's s1 and s2 both use a Gata4 factor source."
+  - "2026-10-19 (the user's decision after reading a plain summary of this file, before any Gata4 file was
+    downloaded): (8) Allowed branch, when the factor table reaches its last row (none of D2, D2u and D10 passes), no
+    check supports the Gata4 factor, so s1 does not bet on it: s1 = the Mab21l2 factor (exponent 1) if D11b passes,
+    otherwise no factor (WT cells), with the composition from composition_s1; s2 = the pooled Gata4 factor at exponent
+    0.5 without depth, stage or coverage, with the composition from composition_s2_other_factor. The two never
+    coincide, and note 6 then changes nothing because s1 no longer uses the Gata4 factor. build_submission.py applies
+    note 8 before note 6."
+  - "2026-10-19 (authorship and approval, before any Gata4 file was downloaded): this file, including the disclosure
+    note and the notes signed 'lead' (notes 1-7), was drafted by the team's AI coding assistant. The user read a plain
+    summary of the whole file on 2026-10-19, approved it as written apart from the fallback in the factor table's last
+    row, and chose note 8 for that case."
