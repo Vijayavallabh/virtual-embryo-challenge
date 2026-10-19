@@ -62,9 +62,9 @@ Vijayavallabh J
 
 ---
 
-## Follow-up (ready to send, 2026-10-19)
+## Follow-up (sent 2026-10-19)
 
-User's decision (2026-10-19): send the full follow-up. Saved as a Gmail draft (be23b041@smail.iitm.ac.in) for the user to review and send; not sent yet.
+User's decision (2026-10-19): send the full follow-up. Sent by the user on 2026-10-19 by email from be23b041@smail.iitm.ac.in. Answers: _pending_ (record them in `docs/DATA_POLICY.md`).
 Duplicate counts come from `experiments/qc/` (update them if the QC run changes them). Points whose answer would help
 every team ask for a public answer, so we never hold private information about held-out data.
 

@@ -385,7 +385,7 @@ Next:
 
 `docs/ORGANIZER_QUESTIONS.md`. Sent on 2026-10-18 (unanswered): cross-task use of released data, qualitative in-window
 background, `truth_cells` for the submitted count, Generality scope, scorer version, deadline time zone. Follow-up,
-ready to send: scorer build and canonicalisation (and the parity defect), the wrong-sign severity rule, released Gata4
+sent 2026-10-19: scorer build and canonicalisation (and the parity defect), the wrong-sign severity rule, released Gata4
 files inside the beta-catenin prediction, duplicated records, the z coordinate, `truth_cells` and tissue size, stage
 conventions for external embryos, and an addendum to the leak report.
 

@@ -32,7 +32,7 @@
 
 ## Blockers / Risks
 
-- Organiser answers pending (leak report; rules email). Follow-up email ready in `docs/ORGANIZER_QUESTIONS.md`.
+- Organiser answers pending (leak report; rules email). Follow-up email sent 2026-10-19 (`docs/ORGANIZER_QUESTIONS.md`).
 - The second history rewrite needs the user (gh `delete_repo` scope; `rewrite_history2.sh` in the session scratchpad).
 - Never open the public board file, veckit 0.1.2, PR #6 or raw research outputs (AGENTS.md, quarantined material).
 
