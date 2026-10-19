@@ -1,0 +1,29 @@
+t2_build smoke 2026-10-19T12:59:50+00:00 commit 94e1793047b35cf213859966149b35ac47075f95 seeds 0,1,2
+
+[heart] T2:heart:val_extrap: count rule max_cells, pool 23377 after dropping 1449 synthetic records
+  guard copy: ok=True cover ratio 1.00, rms ratio 1.000 (expected from the random reference)
+  guard block_control: ok=False cover ratio 0.60, rms ratio 0.860 (expected from the random reference)
+  guard oracle_size_control: ok=True cover ratio 1.00, rms ratio 1.544 (expected 1.544)
+  score copy                 main    51.24 +/- 0.19  dice 0.509 d2 0.508 scale 0.499 nbhd 0.539
+  score copy                 prefix  50.62 +/- 1.38  dice 0.434 d2 0.508 scale 0.499 nbhd 0.539
+  score block_control        main    52.37 +/- 0.54  dice 0.527 d2 0.702 scale 0.424 nbhd 0.523
+  score block_control        prefix  52.33 +/- 0.43  dice 0.523 d2 0.702 scale 0.424 nbhd 0.523
+  score oracle_size_control  main    55.42 +/- 0.18  dice 0.509 d2 0.508 scale 1.000 nbhd 0.539
+  score oracle_size_control  prefix  54.79 +/- 1.38  dice 0.434 d2 0.508 scale 1.000 nbhd 0.539
+  check_submission: ok=True, warnings: none
+  checks: copy_count_is_max_cells=pass, copy_passes_check_submission=pass, copy_file_has_no_repeated_positions=pass, copy_passes_guard=pass, block_control_flagged_as_block=pass, oracle_size_control_passes_guard=pass, scores_finite_both_builds=pass, build_free_metrics_identical_across_builds=pass, oracle_scale_log_ratio_near_zero=pass, no_inverted_anchors_main_build=pass
+
+[embryo] T2:embryo:val_interp: count rule max_cells, pool 13295 after dropping 0 synthetic records
+  guard copy: ok=True cover ratio 1.01, rms ratio 1.004 (expected from the random reference)
+  guard block_control: ok=False cover ratio 0.46, rms ratio 0.763 (expected from the random reference)
+  guard oracle_size_control: ok=True cover ratio 1.00, rms ratio 2.217 (expected 2.217)
+  score copy                 main    49.58 +/- 0.71  dice 0.528 d2 0.513 scale 0.502 nbhd 0.509
+  score copy                 prefix  50.74 +/- 2.99  dice 0.668 d2 0.513 scale 0.502 nbhd 0.509  inverted anchors ['occupancy_dice'] in seeds [2]
+  score block_control        main    50.77 +/- 0.37  dice 0.577 d2 0.521 scale 0.428 nbhd 0.519
+  score block_control        prefix  52.35 +/- 2.47  dice 0.767 d2 0.521 scale 0.428 nbhd 0.519  inverted anchors ['occupancy_dice'] in seeds [2]
+  score oracle_size_control  main    53.72 +/- 0.73  dice 0.528 d2 0.513 scale 1.000 nbhd 0.509
+  score oracle_size_control  prefix  54.89 +/- 3.00  dice 0.668 d2 0.513 scale 1.000 nbhd 0.509  inverted anchors ['occupancy_dice'] in seeds [2]
+  check_submission: ok=True, warnings: none
+  checks: copy_count_is_max_cells=pass, copy_passes_check_submission=pass, copy_file_has_no_repeated_positions=pass, copy_passes_guard=pass, block_control_flagged_as_block=pass, oracle_size_control_passes_guard=pass, scores_finite_both_builds=pass, build_free_metrics_identical_across_builds=pass, oracle_scale_log_ratio_near_zero=pass, no_inverted_anchors_main_build=pass
+
+all checks pass: True

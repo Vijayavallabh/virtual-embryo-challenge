@@ -1,0 +1,347 @@
+{
+  "generated_utc": "2026-10-19T12:59:50+00:00",
+  "git_commit": "94e1793047b35cf213859966149b35ac47075f95",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "shareable": "allow-list (smoke._shareable): only fields from which a validation board's cell limits cannot be recovered without the released data, so no count, sample or block-control record, guard reference statistic, file size or handedness count. Threat model set by the lead: nothing about a limit may be recoverable from these files alone; data access is not assumed, so the rounded guard ratios and scores of the submitted cells stay",
+  "jobs": {
+    "heart": {
+      "board": "T2:heart:val_extrap",
+      "count_rule": "max_cells",
+      "pool": {
+        "n_pool": 23377,
+        "n_dropped_duplicates": 1449
+      },
+      "inputs": {
+        "source": {
+          "file": "T2/E8.75.h5ad",
+          "sha256": "149ab6df7c99ad85046c8aebebcf0c43689b3720c59ffb7cc550edcf2f13a83c"
+        },
+        "target": {
+          "file": "T2/E9.5.h5ad",
+          "sha256": "371ca6530e084de2b6cd6703b49d95f4bb59546c9291659809575382a630ee9a"
+        },
+        "ref": {
+          "file": "T2/E8.75.h5ad",
+          "sha256": "149ab6df7c99ad85046c8aebebcf0c43689b3720c59ffb7cc550edcf2f13a83c"
+        }
+      },
+      "guard": {
+        "copy": {
+          "ok": true,
+          "cover_ratio": 1.0,
+          "rms_ratio": 1.0
+        },
+        "block_control": {
+          "ok": false,
+          "cover_ratio": 0.6,
+          "rms_ratio": 0.86
+        },
+        "oracle_size_control": {
+          "ok": true,
+          "cover_ratio": 1.0,
+          "rms_ratio": 1.544,
+          "expected_rms_ratio": 1.544
+        }
+      },
+      "scores": {
+        "copy": {
+          "main": {
+            "score_mean": 51.24,
+            "score_sd": 0.19,
+            "skills_mean": {
+              "de_score": 0.478,
+              "de_direction": 0.517,
+              "mmd_u": 0.509,
+              "variogram": 0.506,
+              "d2_shape": 0.508,
+              "occupancy_dice": 0.509,
+              "scale_log_ratio": 0.499,
+              "neighborhood_mmd": 0.539
+            },
+            "inverted_anchors": [],
+            "inverted_anchor_seeds": []
+          },
+          "prefix": {
+            "score_mean": 50.62,
+            "score_sd": 1.38,
+            "skills_mean": {
+              "de_score": 0.478,
+              "de_direction": 0.517,
+              "mmd_u": 0.509,
+              "variogram": 0.506,
+              "d2_shape": 0.508,
+              "occupancy_dice": 0.434,
+              "scale_log_ratio": 0.499,
+              "neighborhood_mmd": 0.539
+            },
+            "inverted_anchors": [],
+            "inverted_anchor_seeds": []
+          }
+        },
+        "block_control": {
+          "main": {
+            "score_mean": 52.37,
+            "score_sd": 0.54,
+            "skills_mean": {
+              "de_score": 0.487,
+              "de_direction": 0.537,
+              "mmd_u": 0.51,
+              "variogram": 0.506,
+              "d2_shape": 0.702,
+              "occupancy_dice": 0.527,
+              "scale_log_ratio": 0.424,
+              "neighborhood_mmd": 0.523
+            },
+            "inverted_anchors": [],
+            "inverted_anchor_seeds": []
+          },
+          "prefix": {
+            "score_mean": 52.33,
+            "score_sd": 0.43,
+            "skills_mean": {
+              "de_score": 0.487,
+              "de_direction": 0.537,
+              "mmd_u": 0.51,
+              "variogram": 0.506,
+              "d2_shape": 0.702,
+              "occupancy_dice": 0.523,
+              "scale_log_ratio": 0.424,
+              "neighborhood_mmd": 0.523
+            },
+            "inverted_anchors": [],
+            "inverted_anchor_seeds": []
+          }
+        },
+        "oracle_size_control": {
+          "main": {
+            "score_mean": 55.42,
+            "score_sd": 0.18,
+            "skills_mean": {
+              "de_score": 0.478,
+              "de_direction": 0.517,
+              "mmd_u": 0.509,
+              "variogram": 0.506,
+              "d2_shape": 0.508,
+              "occupancy_dice": 0.509,
+              "scale_log_ratio": 1.0,
+              "neighborhood_mmd": 0.539
+            },
+            "inverted_anchors": [],
+            "inverted_anchor_seeds": []
+          },
+          "prefix": {
+            "score_mean": 54.79,
+            "score_sd": 1.38,
+            "skills_mean": {
+              "de_score": 0.478,
+              "de_direction": 0.517,
+              "mmd_u": 0.509,
+              "variogram": 0.506,
+              "d2_shape": 0.508,
+              "occupancy_dice": 0.434,
+              "scale_log_ratio": 1.0,
+              "neighborhood_mmd": 0.539
+            },
+            "inverted_anchors": [],
+            "inverted_anchor_seeds": []
+          }
+        }
+      },
+      "check_submission": {
+        "ok": true,
+        "warnings": []
+      }
+    },
+    "embryo": {
+      "board": "T2:embryo:val_interp",
+      "count_rule": "max_cells",
+      "pool": {
+        "n_pool": 13295,
+        "n_dropped_duplicates": 0
+      },
+      "inputs": {
+        "source": {
+          "file": "T2/E7.25.h5ad",
+          "sha256": "c34192a31036b783b97ce1877ac50fc920b39faa3e00dc3c637b3e7e04255ee6"
+        },
+        "target": {
+          "file": "T2/E8.0.h5ad",
+          "sha256": "17530e23fbfa6a139ff68d0353a489d83790f5b60f036b7d2f58303a1ff8a810"
+        },
+        "ref": {
+          "file": "T2/E7.25.h5ad",
+          "sha256": "c34192a31036b783b97ce1877ac50fc920b39faa3e00dc3c637b3e7e04255ee6"
+        }
+      },
+      "guard": {
+        "copy": {
+          "ok": true,
+          "cover_ratio": 1.01,
+          "rms_ratio": 1.004
+        },
+        "block_control": {
+          "ok": false,
+          "cover_ratio": 0.46,
+          "rms_ratio": 0.763
+        },
+        "oracle_size_control": {
+          "ok": true,
+          "cover_ratio": 1.0,
+          "rms_ratio": 2.217,
+          "expected_rms_ratio": 2.217
+        }
+      },
+      "scores": {
+        "copy": {
+          "main": {
+            "score_mean": 49.58,
+            "score_sd": 0.71,
+            "skills_mean": {
+              "de_score": 0.402,
+              "de_direction": 0.522,
+              "mmd_u": 0.497,
+              "variogram": 0.498,
+              "d2_shape": 0.513,
+              "occupancy_dice": 0.528,
+              "scale_log_ratio": 0.502,
+              "neighborhood_mmd": 0.509
+            },
+            "inverted_anchors": [],
+            "inverted_anchor_seeds": []
+          },
+          "prefix": {
+            "score_mean": 50.74,
+            "score_sd": 2.99,
+            "skills_mean": {
+              "de_score": 0.402,
+              "de_direction": 0.522,
+              "mmd_u": 0.497,
+              "variogram": 0.498,
+              "d2_shape": 0.513,
+              "occupancy_dice": 0.668,
+              "scale_log_ratio": 0.502,
+              "neighborhood_mmd": 0.509
+            },
+            "inverted_anchors": [
+              "occupancy_dice"
+            ],
+            "inverted_anchor_seeds": [
+              2
+            ]
+          }
+        },
+        "block_control": {
+          "main": {
+            "score_mean": 50.77,
+            "score_sd": 0.37,
+            "skills_mean": {
+              "de_score": 0.449,
+              "de_direction": 0.539,
+              "mmd_u": 0.508,
+              "variogram": 0.51,
+              "d2_shape": 0.521,
+              "occupancy_dice": 0.577,
+              "scale_log_ratio": 0.428,
+              "neighborhood_mmd": 0.519
+            },
+            "inverted_anchors": [],
+            "inverted_anchor_seeds": []
+          },
+          "prefix": {
+            "score_mean": 52.35,
+            "score_sd": 2.47,
+            "skills_mean": {
+              "de_score": 0.449,
+              "de_direction": 0.539,
+              "mmd_u": 0.508,
+              "variogram": 0.51,
+              "d2_shape": 0.521,
+              "occupancy_dice": 0.767,
+              "scale_log_ratio": 0.428,
+              "neighborhood_mmd": 0.519
+            },
+            "inverted_anchors": [
+              "occupancy_dice"
+            ],
+            "inverted_anchor_seeds": [
+              2
+            ]
+          }
+        },
+        "oracle_size_control": {
+          "main": {
+            "score_mean": 53.72,
+            "score_sd": 0.73,
+            "skills_mean": {
+              "de_score": 0.402,
+              "de_direction": 0.522,
+              "mmd_u": 0.497,
+              "variogram": 0.498,
+              "d2_shape": 0.513,
+              "occupancy_dice": 0.528,
+              "scale_log_ratio": 1.0,
+              "neighborhood_mmd": 0.509
+            },
+            "inverted_anchors": [],
+            "inverted_anchor_seeds": []
+          },
+          "prefix": {
+            "score_mean": 54.89,
+            "score_sd": 3.0,
+            "skills_mean": {
+              "de_score": 0.402,
+              "de_direction": 0.522,
+              "mmd_u": 0.497,
+              "variogram": 0.498,
+              "d2_shape": 0.513,
+              "occupancy_dice": 0.668,
+              "scale_log_ratio": 1.0,
+              "neighborhood_mmd": 0.509
+            },
+            "inverted_anchors": [
+              "occupancy_dice"
+            ],
+            "inverted_anchor_seeds": [
+              2
+            ]
+          }
+        }
+      },
+      "check_submission": {
+        "ok": true,
+        "warnings": []
+      }
+    }
+  },
+  "checks": {
+    "heart": {
+      "copy_count_is_max_cells": true,
+      "copy_passes_check_submission": true,
+      "copy_file_has_no_repeated_positions": true,
+      "copy_passes_guard": true,
+      "block_control_flagged_as_block": true,
+      "oracle_size_control_passes_guard": true,
+      "scores_finite_both_builds": true,
+      "build_free_metrics_identical_across_builds": true,
+      "oracle_scale_log_ratio_near_zero": true,
+      "no_inverted_anchors_main_build": true
+    },
+    "embryo": {
+      "copy_count_is_max_cells": true,
+      "copy_passes_check_submission": true,
+      "copy_file_has_no_repeated_positions": true,
+      "copy_passes_guard": true,
+      "block_control_flagged_as_block": true,
+      "oracle_size_control_passes_guard": true,
+      "scores_finite_both_builds": true,
+      "build_free_metrics_identical_across_builds": true,
+      "oracle_scale_log_ratio_near_zero": true,
+      "no_inverted_anchors_main_build": true
+    }
+  },
+  "all_checks_pass": true
+}

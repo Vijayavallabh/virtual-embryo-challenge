@@ -1,0 +1,601 @@
+{
+  "oracle": {
+    "reused": [],
+    "rows": [
+      {
+        "category": "cm",
+        "target_share": 0.6152866242038216,
+        "quota": 3077,
+        "own_cells": 3819,
+        "pool": 3819,
+        "drawn_from": "own",
+        "labels": "AVC-CM;IFT-CM;LV-CM;OFT/RV-CM;RV-CM;SV-CM",
+        "unique": 3077,
+        "reused": 0,
+        "realised_share": 0.6154
+      },
+      {
+        "category": "endocardium",
+        "target_share": 0.18234758871701548,
+        "quota": 912,
+        "own_cells": 1139,
+        "pool": 1139,
+        "drawn_from": "own",
+        "labels": "Endothelium",
+        "unique": 912,
+        "reused": 0,
+        "realised_share": 0.1824
+      },
+      {
+        "category": "epicardium",
+        "target_share": 0.09863512283894449,
+        "quota": 493,
+        "own_cells": 0,
+        "pool": 1119,
+        "drawn_from": "stand-in",
+        "labels": "JCF",
+        "unique": 493,
+        "reused": 0,
+        "realised_share": 0.0986
+      },
+      {
+        "category": "vascular_endothelium",
+        "target_share": 0.03148316651501365,
+        "quota": 157,
+        "own_cells": 0,
+        "pool": 1139,
+        "drawn_from": "stand-in",
+        "labels": "Endothelium",
+        "unique": 157,
+        "reused": 0,
+        "realised_share": 0.0314
+      },
+      {
+        "category": "blood",
+        "target_share": 0.022202001819836215,
+        "quota": 111,
+        "own_cells": 266,
+        "pool": 266,
+        "drawn_from": "own",
+        "labels": "Blood",
+        "unique": 111,
+        "reused": 0,
+        "realised_share": 0.0222
+      },
+      {
+        "category": "surrounding",
+        "target_share": 0.05004549590536852,
+        "quota": 250,
+        "own_cells": 6685,
+        "pool": 2405,
+        "drawn_from": "own, restricted",
+        "labels": "Foregut",
+        "unique": 250,
+        "reused": 0,
+        "realised_share": 0.05
+      }
+    ]
+  },
+  "oracle_any_surr": {
+    "reused": [],
+    "rows": [
+      {
+        "category": "cm",
+        "target_share": 0.6152866242038216,
+        "quota": 3077,
+        "own_cells": 3819,
+        "pool": 3819,
+        "drawn_from": "own",
+        "labels": "AVC-CM;IFT-CM;LV-CM;OFT/RV-CM;RV-CM;SV-CM",
+        "unique": 3077,
+        "reused": 0,
+        "realised_share": 0.6154
+      },
+      {
+        "category": "endocardium",
+        "target_share": 0.18234758871701548,
+        "quota": 912,
+        "own_cells": 1139,
+        "pool": 1139,
+        "drawn_from": "own",
+        "labels": "Endothelium",
+        "unique": 912,
+        "reused": 0,
+        "realised_share": 0.1824
+      },
+      {
+        "category": "epicardium",
+        "target_share": 0.09863512283894449,
+        "quota": 493,
+        "own_cells": 0,
+        "pool": 1119,
+        "drawn_from": "stand-in",
+        "labels": "JCF",
+        "unique": 493,
+        "reused": 0,
+        "realised_share": 0.0986
+      },
+      {
+        "category": "vascular_endothelium",
+        "target_share": 0.03148316651501365,
+        "quota": 157,
+        "own_cells": 0,
+        "pool": 1139,
+        "drawn_from": "stand-in",
+        "labels": "Endothelium",
+        "unique": 157,
+        "reused": 0,
+        "realised_share": 0.0314
+      },
+      {
+        "category": "blood",
+        "target_share": 0.022202001819836215,
+        "quota": 111,
+        "own_cells": 266,
+        "pool": 266,
+        "drawn_from": "own",
+        "labels": "Blood",
+        "unique": 111,
+        "reused": 0,
+        "realised_share": 0.0222
+      },
+      {
+        "category": "surrounding",
+        "target_share": 0.05004549590536852,
+        "quota": 250,
+        "own_cells": 6685,
+        "pool": 6685,
+        "drawn_from": "own",
+        "labels": "EXEM;Foregut;NCC;Neural Tube;Paraxial Mesoderm;Surface Ectoderm",
+        "unique": 250,
+        "reused": 0,
+        "realised_share": 0.05
+      }
+    ]
+  },
+  "cm_minus": {
+    "reused": [
+      "endocardium",
+      "vascular_endothelium"
+    ],
+    "rows": [
+      {
+        "category": "cm",
+        "target_share": 0.5225113739763421,
+        "quota": 2613,
+        "own_cells": 3819,
+        "pool": 3819,
+        "drawn_from": "own",
+        "labels": "AVC-CM;IFT-CM;LV-CM;OFT/RV-CM;RV-CM;SV-CM",
+        "unique": 2613,
+        "reused": 0,
+        "realised_share": 0.5226
+      },
+      {
+        "category": "endocardium",
+        "target_share": 0.23648899857603384,
+        "quota": 1182,
+        "own_cells": 1139,
+        "pool": 1139,
+        "drawn_from": "own",
+        "labels": "Endothelium",
+        "unique": 1139,
+        "reused": 43,
+        "realised_share": 0.2364
+      },
+      {
+        "category": "epicardium",
+        "target_share": 0.12792119483853326,
+        "quota": 640,
+        "own_cells": 0,
+        "pool": 1119,
+        "drawn_from": "stand-in",
+        "labels": "JCF",
+        "unique": 640,
+        "reused": 0,
+        "realised_share": 0.128
+      },
+      {
+        "category": "vascular_endothelium",
+        "target_share": 0.04083093488388608,
+        "quota": 204,
+        "own_cells": 0,
+        "pool": 1139,
+        "drawn_from": "stand-in",
+        "labels": "Endothelium",
+        "unique": 204,
+        "reused": 204,
+        "realised_share": 0.0408
+      },
+      {
+        "category": "blood",
+        "target_share": 0.022202001819836215,
+        "quota": 111,
+        "own_cells": 266,
+        "pool": 266,
+        "drawn_from": "own",
+        "labels": "Blood",
+        "unique": 111,
+        "reused": 0,
+        "realised_share": 0.0222
+      },
+      {
+        "category": "surrounding",
+        "target_share": 0.05004549590536852,
+        "quota": 250,
+        "own_cells": 6685,
+        "pool": 2405,
+        "drawn_from": "own, restricted",
+        "labels": "Foregut",
+        "unique": 250,
+        "reused": 0,
+        "realised_share": 0.05
+      }
+    ]
+  },
+  "cm_plus": {
+    "reused": [],
+    "rows": [
+      {
+        "category": "cm",
+        "target_share": 0.7080618744313011,
+        "quota": 3540,
+        "own_cells": 3819,
+        "pool": 3819,
+        "drawn_from": "own",
+        "labels": "AVC-CM;IFT-CM;LV-CM;OFT/RV-CM;RV-CM;SV-CM",
+        "unique": 3540,
+        "reused": 0,
+        "realised_share": 0.708
+      },
+      {
+        "category": "endocardium",
+        "target_share": 0.12820617885799718,
+        "quota": 641,
+        "own_cells": 1139,
+        "pool": 1139,
+        "drawn_from": "own",
+        "labels": "Endothelium",
+        "unique": 641,
+        "reused": 0,
+        "realised_share": 0.1282
+      },
+      {
+        "category": "epicardium",
+        "target_share": 0.06934905083935575,
+        "quota": 347,
+        "own_cells": 0,
+        "pool": 1119,
+        "drawn_from": "stand-in",
+        "labels": "JCF",
+        "unique": 347,
+        "reused": 0,
+        "realised_share": 0.0694
+      },
+      {
+        "category": "vascular_endothelium",
+        "target_share": 0.022135398146141228,
+        "quota": 111,
+        "own_cells": 0,
+        "pool": 1139,
+        "drawn_from": "stand-in",
+        "labels": "Endothelium",
+        "unique": 111,
+        "reused": 0,
+        "realised_share": 0.0222
+      },
+      {
+        "category": "blood",
+        "target_share": 0.022202001819836215,
+        "quota": 111,
+        "own_cells": 266,
+        "pool": 266,
+        "drawn_from": "own",
+        "labels": "Blood",
+        "unique": 111,
+        "reused": 0,
+        "realised_share": 0.0222
+      },
+      {
+        "category": "surrounding",
+        "target_share": 0.05004549590536852,
+        "quota": 250,
+        "own_cells": 6685,
+        "pool": 2405,
+        "drawn_from": "own, restricted",
+        "labels": "Foregut",
+        "unique": 250,
+        "reused": 0,
+        "realised_share": 0.05
+      }
+    ]
+  },
+  "drop_surr_only": {
+    "reused": [],
+    "rows": [
+      {
+        "category": "cm",
+        "target_share": 0.3780439516927341,
+        "quota": 1890,
+        "own_cells": 3819,
+        "pool": 3819,
+        "drawn_from": "own",
+        "labels": "AVC-CM;IFT-CM;LV-CM;OFT/RV-CM;RV-CM;SV-CM",
+        "unique": 1890,
+        "reused": 0,
+        "realised_share": 0.378
+      },
+      {
+        "category": "endocardium",
+        "target_share": 0.11274995050485052,
+        "quota": 564,
+        "own_cells": 1139,
+        "pool": 1139,
+        "drawn_from": "own",
+        "labels": "Endothelium",
+        "unique": 564,
+        "reused": 0,
+        "realised_share": 0.1128
+      },
+      {
+        "category": "blood",
+        "target_share": 0.026331419520886946,
+        "quota": 132,
+        "own_cells": 266,
+        "pool": 266,
+        "drawn_from": "own",
+        "labels": "Blood",
+        "unique": 132,
+        "reused": 0,
+        "realised_share": 0.0264
+      },
+      {
+        "category": "progenitor",
+        "target_share": 0.40912690556325476,
+        "quota": 2045,
+        "own_cells": 4133,
+        "pool": 4133,
+        "drawn_from": "own",
+        "labels": "JCF;aSHF;pSHF",
+        "unique": 2045,
+        "reused": 0,
+        "realised_share": 0.409
+      },
+      {
+        "category": "pericardium",
+        "target_share": 0.0737477727182736,
+        "quota": 369,
+        "own_cells": 745,
+        "pool": 745,
+        "drawn_from": "own",
+        "labels": "Pericardium",
+        "unique": 369,
+        "reused": 0,
+        "realised_share": 0.0738
+      }
+    ]
+  },
+  "blood_plus": {
+    "reused": [
+      "blood"
+    ],
+    "rows": [
+      {
+        "category": "cm",
+        "target_share": 0.5523608843936597,
+        "quota": 2762,
+        "own_cells": 3819,
+        "pool": 3819,
+        "drawn_from": "own",
+        "labels": "AVC-CM;IFT-CM;LV-CM;OFT/RV-CM;RV-CM;SV-CM",
+        "unique": 2762,
+        "reused": 0,
+        "realised_share": 0.5524
+      },
+      {
+        "category": "endocardium",
+        "target_share": 0.16369878916369332,
+        "quota": 818,
+        "own_cells": 1139,
+        "pool": 1139,
+        "drawn_from": "own",
+        "labels": "Endothelium",
+        "unique": 818,
+        "reused": 0,
+        "realised_share": 0.1636
+      },
+      {
+        "category": "epicardium",
+        "target_share": 0.08854764842986204,
+        "quota": 443,
+        "own_cells": 0,
+        "pool": 1119,
+        "drawn_from": "stand-in",
+        "labels": "JCF",
+        "unique": 443,
+        "reused": 0,
+        "realised_share": 0.0886
+      },
+      {
+        "category": "vascular_endothelium",
+        "target_share": 0.028263363797723495,
+        "quota": 141,
+        "own_cells": 0,
+        "pool": 1139,
+        "drawn_from": "stand-in",
+        "labels": "Endothelium",
+        "unique": 141,
+        "reused": 0,
+        "realised_share": 0.0282
+      },
+      {
+        "category": "blood",
+        "target_share": 0.12220200181983622,
+        "quota": 611,
+        "own_cells": 266,
+        "pool": 266,
+        "drawn_from": "own",
+        "labels": "Blood",
+        "unique": 266,
+        "reused": 345,
+        "realised_share": 0.1222
+      },
+      {
+        "category": "surrounding",
+        "target_share": 0.04492731239522521,
+        "quota": 225,
+        "own_cells": 6685,
+        "pool": 2405,
+        "drawn_from": "own, restricted",
+        "labels": "Foregut",
+        "unique": 225,
+        "reused": 0,
+        "realised_share": 0.045
+      }
+    ]
+  },
+  "oracle_no_epi": {
+    "reused": [
+      "vascular_endothelium"
+    ],
+    "rows": [
+      {
+        "category": "cm",
+        "target_share": 0.6826165960024227,
+        "quota": 3413,
+        "own_cells": 3819,
+        "pool": 3819,
+        "drawn_from": "own",
+        "labels": "AVC-CM;IFT-CM;LV-CM;OFT/RV-CM;RV-CM;SV-CM",
+        "unique": 3413,
+        "reused": 0,
+        "realised_share": 0.6826
+      },
+      {
+        "category": "endocardium",
+        "target_share": 0.20230163537250154,
+        "quota": 1011,
+        "own_cells": 1139,
+        "pool": 1139,
+        "drawn_from": "own",
+        "labels": "Endothelium",
+        "unique": 1011,
+        "reused": 0,
+        "realised_share": 0.2022
+      },
+      {
+        "category": "vascular_endothelium",
+        "target_share": 0.03492832626690894,
+        "quota": 175,
+        "own_cells": 0,
+        "pool": 1139,
+        "drawn_from": "stand-in",
+        "labels": "Endothelium",
+        "unique": 170,
+        "reused": 47,
+        "realised_share": 0.035
+      },
+      {
+        "category": "blood",
+        "target_share": 0.024631536442560064,
+        "quota": 123,
+        "own_cells": 266,
+        "pool": 266,
+        "drawn_from": "own",
+        "labels": "Blood",
+        "unique": 123,
+        "reused": 0,
+        "realised_share": 0.0246
+      },
+      {
+        "category": "surrounding",
+        "target_share": 0.055521905915606705,
+        "quota": 278,
+        "own_cells": 6685,
+        "pool": 2405,
+        "drawn_from": "own, restricted",
+        "labels": "Foregut",
+        "unique": 278,
+        "reused": 0,
+        "realised_share": 0.0556
+      }
+    ]
+  },
+  "oracle_n2000": {
+    "reused": [],
+    "rows": [
+      {
+        "category": "cm",
+        "target_share": 0.6152866242038216,
+        "quota": 1231,
+        "own_cells": 3819,
+        "pool": 3819,
+        "drawn_from": "own",
+        "labels": "AVC-CM;IFT-CM;LV-CM;OFT/RV-CM;RV-CM;SV-CM",
+        "unique": 1231,
+        "reused": 0,
+        "realised_share": 0.6155
+      },
+      {
+        "category": "endocardium",
+        "target_share": 0.18234758871701548,
+        "quota": 365,
+        "own_cells": 1139,
+        "pool": 1139,
+        "drawn_from": "own",
+        "labels": "Endothelium",
+        "unique": 365,
+        "reused": 0,
+        "realised_share": 0.1825
+      },
+      {
+        "category": "epicardium",
+        "target_share": 0.09863512283894449,
+        "quota": 197,
+        "own_cells": 0,
+        "pool": 1119,
+        "drawn_from": "stand-in",
+        "labels": "JCF",
+        "unique": 197,
+        "reused": 0,
+        "realised_share": 0.0985
+      },
+      {
+        "category": "vascular_endothelium",
+        "target_share": 0.03148316651501365,
+        "quota": 63,
+        "own_cells": 0,
+        "pool": 1139,
+        "drawn_from": "stand-in",
+        "labels": "Endothelium",
+        "unique": 63,
+        "reused": 0,
+        "realised_share": 0.0315
+      },
+      {
+        "category": "blood",
+        "target_share": 0.022202001819836215,
+        "quota": 44,
+        "own_cells": 266,
+        "pool": 266,
+        "drawn_from": "own",
+        "labels": "Blood",
+        "unique": 44,
+        "reused": 0,
+        "realised_share": 0.022
+      },
+      {
+        "category": "surrounding",
+        "target_share": 0.05004549590536852,
+        "quota": 100,
+        "own_cells": 6685,
+        "pool": 2405,
+        "drawn_from": "own, restricted",
+        "labels": "Foregut",
+        "unique": 100,
+        "reused": 0,
+        "realised_share": 0.05
+      }
+    ]
+  }
+}

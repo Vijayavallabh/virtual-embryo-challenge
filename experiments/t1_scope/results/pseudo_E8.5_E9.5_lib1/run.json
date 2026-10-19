@@ -1,0 +1,134 @@
+{
+  "date": "2026-10-19 15:09:58",
+  "git": {
+    "commit": "94e1793",
+    "uncommitted": [],
+    "sha256": {
+      "src/vec/t1_scope.py": "74596a62aa81ab875efb8059355cc27c64c76df4431528722aed701165970f9d",
+      "configs/t1_chamber_classes.yaml": "6a0cf179072e95b21f4c8f6de1e1b5d2a4a50efbe7f5f9e402b309d75cbdc03a",
+      "experiments/t1_scope/pseudo_task.py": "6f160aebd6fdfe1b49a56d22b76f5105a89098c3371bfdeec8fb74e128f07e87",
+      "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c"
+    }
+  },
+  "board": "T1:val",
+  "inputs": {
+    "data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+    "data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361"
+  },
+  "truth": {
+    "library": "1",
+    "n_chamber": 2965,
+    "n_contamination": 156,
+    "contamination_labels_available": 404,
+    "categories": [
+      "blood",
+      "cm",
+      "endocardium",
+      "epicardium",
+      "surrounding",
+      "vascular_endothelium"
+    ],
+    "chamber_scope": [
+      "cm",
+      "endocardium",
+      "epicardium",
+      "vascular_endothelium",
+      "blood"
+    ],
+    "contamination": 0.05,
+    "contamination_labels": [
+      "Foregut",
+      "Epithelium"
+    ],
+    "contamination_label_cells": {
+      "truth E9.5 library 1": {
+        "Foregut": 317,
+        "Epithelium": 87
+      },
+      "sibling E9.5 libraries 2": {
+        "Foregut": 554,
+        "Epithelium": 146
+      },
+      "reference E8.5": {
+        "Foregut": 2405,
+        "Epithelium": 0
+      }
+    },
+    "truth_seed": 0,
+    "n_cells": 3121,
+    "cm_share_of_heart": 0.6548364648573417
+  },
+  "sibling_library": "2",
+  "n_cells": 5000,
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "frac": 0.1,
+  "build": "main",
+  "cm_delta": 0.1,
+  "blood_delta": 0.1,
+  "shift": {
+    "dampings": [
+      0.5,
+      1.0
+    ],
+    "flip_dampings": [
+      0.5
+    ],
+    "eps": 0.5,
+    "min_cells": 20,
+    "standin_momentum": false,
+    "n_held_flat": 23
+  },
+  "fallback_ref": {
+    "vascular_endothelium": [
+      "Endothelium"
+    ],
+    "epicardium": [
+      "JCF"
+    ]
+  },
+  "momentum_start": null,
+  "score_board_check": {
+    "seed": 0,
+    "score_board": 54.34879162639685,
+    "loop": 54.34879162639685,
+    "abs_diff": 0.0
+  },
+  "format_smoke": {
+    "ok": true,
+    "warnings": [],
+    "n_cells": 5000,
+    "n_genes": 32285,
+    "dtype": "float32",
+    "file_mb": 54.0,
+    "same_rows_as_reweight": true,
+    "board": "T1:val",
+    "limits": [
+      1000,
+      5118
+    ]
+  },
+  "seconds": 608.7,
+  "seconds_per_seed": [
+    426.0,
+    359.5,
+    358.8,
+    354.9,
+    356.6,
+    143.9,
+    142.8,
+    144.8,
+    143.3,
+    141.9
+  ]
+}
