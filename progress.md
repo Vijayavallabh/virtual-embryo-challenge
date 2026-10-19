@@ -62,5 +62,5 @@
 - `neighborhood_mmd` builds 15-NN neighbourhoods over all submitted cells, so submitted density moves T2 scores.
 - Ctnnb1 is not on the 500-gene MERFISH panel: gene_ko gives nothing for the beta-catenin test board.
 - T1 E12.5 is a heart-chamber-only dissection; earlier stages include surrounding tissue.
-- Agent scratch dirs on the DGX (`~/v/vec-t1-scratch`, `~/v/vec2026-env-probe`, ~7.5 GB) can be removed once no
-  longer needed.
+- DGX research scratch removed on 2026-10-19 (user's OK); `~/v/vec-gapconc` keeps only `ext/` and `out/`, the
+  legal inputs the committed filters in `experiments/external/` read (the JAX files are hard-linked into data/external).
