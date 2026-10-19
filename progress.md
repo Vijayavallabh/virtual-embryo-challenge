@@ -37,7 +37,7 @@
 - [ ] Awaiting organiser replies: leak report (Slack DM `C0CA7QTEMDF`, sent 2026-10-18) and the rules questions (email,
       sent 2026-10-18). The follow-up (scorer build and parity defect, wrong-sign severity, released Gata4 in the T3
       prediction, duplicated/interpolated records, z units, truth_cells and size, stage conventions) was sent on 2026-10-19.
-- [ ] Old commits still hold redacted values until the user runs the history rewrite.
+- [x] History rewritten and the GitHub repo recreated (2026-10-19).
 - [ ] The E12.5 emergent-class list waits on the organisers' answer about qualitative in-window background; the legal
       route is used meanwhile.
 
