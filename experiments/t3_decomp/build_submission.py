@@ -298,11 +298,15 @@ def resolve_spec(dec: dict, rules: dict, branch: str, submission: str, hashes: d
         tab, info["note8"] = note8(dec, rules, tab)
         s2, info["note6"] = note6(dec, rules, tab)
         info["warning"] = tab.get("warning")
-        # a replaced submission is described by the note that replaced it, not by the table's note (kept beside it)
-        applied = [f"rules.yaml note {n}: {info[k]['reason']}" for n, k in (("8", "note8"), ("6", "note6"))
-                   if info[k]["applies"] and (submission == "s2" or k == "note8")]
-        if applied:
-            info["table_note"], info["note"] = info["note"], "; ".join(applied)
+        # once a note changed the pair, the table's note describes a pair that is not built (it is kept beside the
+        # note's reason), and a replaced submission names the note as its source (at most one note applies)
+        n = next((k for k in ("8", "6") if info[f"note{k}"]["applies"]), None)
+        if n:
+            info["table_note"], info["note"] = info["note"], f"rules.yaml note {n}: {info[f'note{n}']['reason']}"
+            if submission == "s2" or n == "8":
+                src = info["source"]
+                info["table_source"], info["source"] = src, f"rules.yaml note {n} (replacing {src})"
+                info["table_factor_row"], info["factor_row"] = info["factor_row"], None
         if submission == "s2":
             return s2, info
     return tab[submission], info
@@ -949,6 +953,7 @@ def plan(
         rules = load_rules()
         dec = load_decision(decision, rules)
         hashes = check_hashes(dec, allow_hash_mismatch)
+        registered = bool(dec.get("protocol_as_registered", False))
         branches: dict = {}
         for branch in BRANCHES:
             branches[branch] = {}
@@ -969,9 +974,15 @@ def plan(
                 say(f"  {r['source']['note']}")
             if r["source"].get("warning"):
                 say(f"  warning: {r['source']['warning']}", "yellow")
+    if not registered:
+        say("warning: the decision file was not made with the registered protocol; build refuses it without "
+            "--allow-unregistered-protocol", "yellow")
     if out:
-        dump_json({"command": "plan", "decision_file": {"path": str(decision), "sha256": sha256(decision)},
-                   "hashes": hashes, "branches": branches}, out)
+        # the builder's hash too: notes 6-8 live in this file, which the decision file's hashes do not cover
+        dump_json({"command": "plan", "created": time.strftime("%Y-%m-%d %H:%M:%S %Z"),
+                   "decision_file": {"path": str(decision), "sha256": sha256(decision),
+                                     "protocol_as_registered": registered},
+                   "hashes": {**hashes, "build_submission": sha256(BUILDER_PATH)}, "branches": branches}, out)
         say(f"written {out}", "green")
 
 

@@ -290,6 +290,49 @@ def test_every_table_row_is_honoured(world):
     assert {(False, True, False, True), (False, True, False, False), (False, False, True, True)} <= note_cases
 
 
+def test_rules_not_evaluated_count_as_failed_in_the_notes(world):
+    """Every combination of True, False and None (not evaluated) for the rules the notes read: the built specs are the
+    ones the notes' text gives (an outcome that could not be evaluated counts as false), and a D7 that was not
+    evaluated carries no magnitude, as in real files."""
+    keys = ("D2", "D2u", "D10", "D11b", "D7", "D8")
+    for combo in itertools.product((True, False, None), repeat=len(keys)):
+        dec = make_decision(world, dict(zip(keys, combo, strict=True)))
+        if dec["rules"]["D7"]["outcome"] is None:
+            dec["rules"]["D7"] = {"outcome": None}
+            dec["submissions"] = bs.roundtrip(t3d.decide_submissions(RULES, dec["rules"], None,
+                                                                     {"submission_parameters": world.params}))
+        for s in ("s1", "s2"):
+            assert bs.resolve_spec(dec, RULES, "allowed", s, HASH_OK)[0] == allowed_from_text(dec, s), (combo, s)
+    # the three readings a mutant could change without failing the True/False sweep, written out
+    dec = make_decision(world, {"D11b": None})                  # note 8, D11b not evaluated: WT cells, not Mab21l2
+    assert bs.resolve_spec(dec, RULES, "allowed", "s1", HASH_OK)[0]["factor"] == {"source": "none", "exponent": 0.0}
+    dec = make_decision(world, {"D2": None, "D2u": None, "D10": None})   # none evaluated: note 8 applies
+    assert bs.resolve_spec(dec, RULES, "allowed", "s1", HASH_OK)[1]["note8"]["applies"]
+    dec = make_decision(world, {"D2": True, "D7": None})        # note 6 without D7: the Gata4 factor at 0.5
+    s1, s2 = (bs.resolve_spec(dec, RULES, "allowed", s, HASH_OK)[0] for s in ("s1", "s2"))
+    assert s2["factor"] == {"source": "gata4", "exponent": 0.5} and s2["composition"] == s1["composition"]
+
+
+def test_records_describe_what_is_built(world):
+    """Once a note changes the pair, the table's note and source move aside (table_note, table_source) and the
+    replaced submission names the note."""
+    dec = make_decision(world, {"D2": True})                    # note 6 replaces s2; the table's s2 equalled its s1
+    (s1, i1), (s2, i2) = (bs.resolve_spec(dec, RULES, "allowed", s, HASH_OK) for s in ("s1", "s2"))
+    table_note = dec["submissions"]["allowed"]["note"]
+    assert table_note and i1["table_note"] == i2["table_note"] == table_note
+    assert i1["note"].startswith("rules.yaml note 6") and i2["note"].startswith("rules.yaml note 6")
+    assert i1["source"] == "decision file submissions.allowed.s1" and i1["factor_row"] is not None   # s1 as stored
+    assert i2["source"] == "rules.yaml note 6 (replacing decision file submissions.allowed.s2)"
+    assert i2["factor_row"] is None and i2["table_factor_row"] == dec["submissions"]["allowed"]["factor_row"]
+    dec = make_decision(world, {})                              # note 8 replaces both
+    for s in ("s1", "s2"):
+        info = bs.resolve_spec(dec, RULES, "allowed", s, HASH_OK)[1]
+        assert info["source"] == f"rules.yaml note 8 (replacing decision file submissions.allowed.{s})"
+        assert info["table_factor_row"]["s1"] == "gata4_unvalidated" and info["factor_row"] is None
+    info = bs.resolve_spec(make_decision(world, {"D2": True, "D10": True}), RULES, "allowed", "s2", HASH_OK)[1]
+    assert "table_note" not in info and info["source"] == "decision file submissions.allowed.s2"   # no note applied
+
+
 def test_note6_gates_the_second_submission(world):
     """rules.yaml note 6: unless D11b passes, the allowed s1 and s2 do not both rely on the Gata4 factor."""
     per_target = {"rep1": {"t3": 57.0, "sev_floor_frac": 0.0}, "rep2": {"t3": 58.5, "sev_floor_frac": 0.1}}
@@ -387,7 +430,8 @@ def test_plan_lists_every_branch_and_builds_nothing(world, tmp_path):
     res = CliRunner().invoke(bs.app, ["plan", str(path), "--out", str(out)])
     assert res.exit_code == 0, res.output
     plan = json.loads(out.read_text())
-    assert plan["decision_file"]["sha256"] == t3d.sha256(path)
+    assert plan["decision_file"]["sha256"] == t3d.sha256(path) and plan["decision_file"]["protocol_as_registered"]
+    assert plan["hashes"]["build_submission"] == t3d.sha256(HERE / "build_submission.py") and plan["created"]
     assert set(plan["branches"]) == set(bs.BRANCHES)
     assert all(set(v) == {"s1", "s2"} for v in plan["branches"].values())
     allowed = plan["branches"]["allowed"]
@@ -398,6 +442,9 @@ def test_plan_lists_every_branch_and_builds_nothing(world, tmp_path):
     assert sorted(p.name for p in tmp_path.iterdir()) == ["gata4_decisions.json", "plan.json"]   # nothing built
     bad = write_decision(tmp_path / "other.json", {**dec, "rules_sha256": "0" * 64})
     assert CliRunner().invoke(bs.app, ["plan", str(bad)]).exit_code == 2
+    loose = write_decision(tmp_path / "loose.json", {**dec, "protocol_as_registered": False})
+    res = CliRunner().invoke(bs.app, ["plan", str(loose)])
+    assert res.exit_code == 0 and "registered protocol" in res.output       # shown, with a warning (build refuses)
 
 
 def test_gata4_extras_follow_their_rules(world):
@@ -441,7 +488,7 @@ def test_smoke_decision_without_table_is_derived(world):
     for branch in ("allowed", "refused"):
         for s in ("s1", "s2"):
             spec, info = bs.resolve_spec(dec, RULES, branch, s, HASH_OK)
-            assert info["source"].startswith("derived")
+            assert info.get("table_source", info["source"]).startswith("derived")
             assert spec == (allowed_from_text({**dec, "submissions": derived}, s) if branch == "allowed"
                             else derived[branch][s])
     spec, _ = bs.resolve_spec(dec, RULES, "allowed", "s2", HASH_OK)    # last row: note 8's half-strength bet
