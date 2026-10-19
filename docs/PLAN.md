@@ -266,6 +266,11 @@ its floor and helps only together with the factor, and the type-specific remaind
 sign. A blind rule built from the broad phenotype failed (de_direction 0.07 against 0.06 for plain WT resampling;
 severity at the floor in 8-9 of 10 seeds). About half of the factor is knockout-specific and half specific to the WT
 reference: the WT half transfers to the test board for certain, the knockout half only if the series shares a batch.
+Because the factor is measured in compartments the knockout cannot touch, much of it may be sample processing rather
+than biology, so its value on the test rests on the beta-catenin knockout sharing processing with the released ones.
+The first real check is cross-knockout transfer on release day (rule D11b: the Mab21l2 factor scored on Gata4); if it
+fails, the two submissions must not both use the Gata4 factor (rules.yaml note 6), and composition (C) and the pathway
+programme (B) stay as hedges rather than afterthoughts.
 
 Components (all legal under the 2026-10-15 ruling):
 - **F, per-gene factor (lead component):** estimated from the non-Mesp1 compartments of a released knockout against

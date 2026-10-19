@@ -304,3 +304,11 @@ notes:
     independent. (5) Whoever builds a submission from the decision file uses the same construction as the scored
     variants (count-space resampling, binomial thinning, Poisson top-up from kNN-smoothed profiles); on Mab21l2 the
     top-up profile alone moved the factor variant by 1.6 T3."
+  - "2026-10-19 (lead's decision, before any Gata4 file was downloaded): the per-gene factor is measured in compartments
+    the knockout cannot touch, so much of it may be sample processing rather than biology. D2 (replicate to replicate)
+    cannot tell a processing effect shared by one run from a real one; only D11b (the Mab21l2 factor scored on Gata4,
+    two different knockouts, stages and wild-type references) tests whether a factor carries across knockouts, which
+    is what the beta-catenin test needs. (6) Allowed branch: if D11b passes, the allowed tables apply as written. If D11b
+    fails or cannot be evaluated, the two submissions must not both use the Gata4 factor: s1 keeps the allowed table's
+    choice; s2 = no factor (WT cells) with the central composition at m when D7 passes, otherwise the Gata4 factor at
+    exponent 0.5 with s1's composition. The decision record reports D11b's per-target scores next to the choice."
