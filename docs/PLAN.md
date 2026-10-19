@@ -355,7 +355,9 @@ Done:
   server stored (or left unconfirmed) blocks every POST to every board until `vec submit resolve ... --as
   acknowledged` is run on each board it is recorded under. Each upload sends a private, re-hashed snapshot; retries
   are identical under one idempotency key; replays send and settle nothing; the token is redacted from everything the
-  server returns; one ledger row per attempt. `vec submit status` is read-only and prints the resolve commands.
+  server returns; one ledger row per attempt. `vec submit status` is read-only and prints the resolve commands. Files
+  built on the DGX go up with `vec submit PATH --board KEY --from-dgx`: pulled into a private copy for that call only
+  (the key never goes to the DGX), and an official upload also needs the DGX at the local HEAD with a clean tree.
 - Builders: `vec.t2_build` (count rule with the truth floor, random rows, jitter, size procedure, cloud guard),
   `vec.t1_scope` (chamber categories, re-weighting to input shares, momentum shift) and the T3 builder
   (`experiments/t3_decomp/build_submission.py`, s1/s2 from the decision file). Each was verified by an independent

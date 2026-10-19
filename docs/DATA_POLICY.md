@@ -158,7 +158,7 @@ organisers approve in writing.
   released training stages by committed code, with its output recorded in git before any test submission. Nobody
   building the size model opens veckit 0.1.2 or PR #6.
 - Disclosure: private report sent to the organisers (Weize Xu, Zehua Zeng) in Slack group DM `C0CA7QTEMDF` on
-  2026-10-18 22:39 IST. Reply: _pending_.
+  2026-10-18 22:39 IST. Reply: _pending_ (no reply or reaction as of 2026-10-19 18:57 IST).
 
 ## Organiser rulings on record (Slack #virtual-embryo-challenge; details in `docs/research/slack_digest.md`)
 

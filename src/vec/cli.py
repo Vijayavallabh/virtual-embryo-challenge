@@ -280,7 +280,10 @@ class _SubmitGroup(TyperGroup):
 
 submit_app = typer.Typer(cls=_SubmitGroup, no_args_is_help=True,
                          help="Submission client: free format checks by default, guarded official uploads, one ledger "
-                              "row per attempt (results/submissions.csv). `vec submit FILE --board KEY` runs upload.")
+                              "row per attempt (results/submissions.csv). `vec submit FILE --board KEY` runs upload. "
+                              "A file built on the DGX: `vec submit PATH --board KEY --from-dgx`, with PATH relative "
+                              f"to {vec_submit.DGX_REPO} on {vec_submit.DGX_HOST}; it is pulled into a private "
+                              "temporary copy for that call only, and the key never leaves this machine.")
 app.add_typer(submit_app, name="submit")
 
 
@@ -291,7 +294,8 @@ def _print_plan(plan: vec_submit.Plan) -> None:
     else:
         console.print(f"Format check on {escape(plan.board)} (format_only=true): nothing is scored and no attempt is "
                       "spent")
-    console.print(f"  file      {escape(str(plan.file))} (sent as {escape(plan.upload_name)}, "
+    src = f"{vec_submit.DGX_HOST}:{plan.remote}, pulled for this call" if plan.remote else str(plan.file)
+    console.print(f"  file      {escape(src)} (sent as {escape(plan.upload_name)}, "
                   f"{plan.file.stat().st_size / 1e6:.1f} MB)")
     console.print(f"  sha256    {plan.sha256}")
     console.print(f"  fields    {escape(' '.join(f'{k}={v}' for k, v in plan.fields.items()))}")
@@ -299,6 +303,8 @@ def _print_plan(plan: vec_submit.Plan) -> None:
         console.print(f"  key       Idempotency-Key {escape(plan.idempotency_key or '-')}")
     console.print(f"  disclose  {escape(', '.join(plan.disclosure)) or '-'}")
     console.print(f"  commit    {plan.git_commit}")
+    if plan.remote:
+        console.print(f"  origin    {escape(plan.origin)}")
     for w in plan.warnings:
         console.print(f"  [yellow]warning[/] {escape(w)}")
     for g in plan.guards:
@@ -312,8 +318,9 @@ def _print_result(res: vec_submit.Result) -> None:
     if not p.official:
         if res.ok:
             console.print(f"[green]server format check passed[/]{detail}")
-            console.print(f"official upload (only with the user's go-ahead): vec submit {escape(str(p.file))} --board "
-                          f"{escape(p.board)} --official --confirm {p.sha256[:12]} --disclose "
+            src, dgx = (shlex.quote(p.remote), " --from-dgx") if p.remote else (str(p.file), "")
+            console.print(f"official upload (only with the user's go-ahead): vec submit {escape(src)} --board "
+                          f"{escape(p.board)}{dgx} --official --confirm {p.sha256[:12]} --disclose "
                           f"{escape(','.join(p.disclosure)) or '<ids from EXTERNAL_DATA.md>'}")
         else:
             console.print(f"[red]server format check: {status}[/]{detail}")
@@ -327,8 +334,11 @@ def _print_result(res: vec_submit.Result) -> None:
 
 @submit_app.command("upload")
 def submit_upload(
-    file: Path = typer.Argument(..., help="prediction .h5ad"),
+    file: Path = typer.Argument(..., help="prediction .h5ad (with --from-dgx, its path on the DGX)"),
     board: str = typer.Option(..., help="board key, e.g. T1:val"),
+    from_dgx: bool = typer.Option(False, "--from-dgx", help=f"FILE is on {vec_submit.DGX_HOST}, relative to "
+                                  f"{vec_submit.DGX_REPO} (or absolute inside it): pulled into a private temporary "
+                                  "copy for this call only; the key stays here"),
     official: bool = typer.Option(False, "--official", help="OFFICIAL scored upload; also needs --confirm"),
     confirm: str = typer.Option("", help="first 12 hex characters of the file's sha256 (official uploads)"),
     disclose: str = typer.Option("", help="EXTERNAL_DATA.md ids, comma-separated (official uploads need one)"),
@@ -336,11 +346,12 @@ def submit_upload(
     model: str = typer.Option("", help="optional method name sent with the upload (shown with the team)"),
     architecture: str = typer.Option("", help="optional architecture name sent with the upload"),
 ):
-    """Format check FILE for a board (default, free), or upload it officially with --official --confirm SHA12."""
+    """Format check FILE for a board (default, free), or upload it officially with --official --confirm SHA12; add
+    --from-dgx for a file built on the DGX (vec submit PATH --board KEY --from-dgx, also with --official)."""
     try:
         res = vec_submit.submit(file, board, official=official, confirm=confirm or None, disclose=disclose, note=note,
-                                model=model or None, architecture=architecture or None, on_plan=_print_plan,
-                                echo=lambda m: console.print(escape(m)))
+                                model=model or None, architecture=architecture or None, from_dgx=from_dgx,
+                                on_plan=_print_plan, echo=lambda m: console.print(escape(m)))
     except vec_submit.SubmitRefused as e:
         console.print(f"[red]refused[/] {escape(str(e))}; nothing was sent")
         raise typer.Exit(1) from None

@@ -21,6 +21,19 @@ scored submissions per board for the whole phase, which cannot be withdrawn. So 
 - returns the earlier record instead of uploading when the server lists the same file on the board, or when the ledger
   holds the server's answer to an official upload of it, but never a format check's submission (made without the key:
   the identical request goes out under the key instead); a replay row (mode replay) never counts or settles anything;
+- takes a file built on the DGX (`from_dgx`, `vec submit PATH --from-dgx`) by pulling it for the call only: PATH is
+  relative to the DGX repo root (DGX_REPO on DGX_HOST) or absolute inside it, and one that resolves outside it (through
+  .., a symlink or an absolute path) or holds a newline or NUL is refused. One remote call reports the resolved path,
+  its sha256 and size, the DGX repo's HEAD and its `git status --porcelain -z`; `cat` then streams the file into a 0600
+  file in a 0700 temporary directory while it is hashed, and the pull is refused ("transfer mismatch") unless those
+  bytes have the reported sha256 and size. The copy then goes through everything here as a local file would, and the
+  directory is removed when the call ends, also on errors, Ctrl-C, SIGHUP (a closed terminal or dropped session) and
+  SIGTERM, which unwind the call; a copy left by a call killed outright (SIGKILL, power loss) is removed by the next
+  call once it is STALE_COPY_HOURS old. A refused pull, like a missing local file, writes no ledger row. An official
+  upload also needs the guard "dgx provenance": the DGX's HEAD is the local HEAD and its tree passes the clean-tree
+  rule above (the same parser reads its status); a format check records the DGX state without requiring it. Every
+  remote command goes through dgx_run (`ssh -o BatchMode=yes DGX_HOST -- COMMAND`, paths quoted with shlex.quote),
+  whose environment leaves out VEC_TOKEN and every variable whose name contains TOKEN in any case;
 - sends a private snapshot: the file is opened before the snapshot exists, then copied once into a 0600 file in a 0700
   temporary directory and hashed from the copy (failing to open or read the file is "cannot read FILE"; only failing to
   write the copy points at the temporary directory), nothing is sent unless that hash equals the plan's ("file changed
@@ -29,7 +42,10 @@ scored submissions per board for the whole phase, which cannot be withdrawn. So 
 - keeps the filename, form fields and Idempotency-Key (derived from the board and the file hash) identical on every
   retry of an official upload, because the server answers a changed payload under a used key with 409;
 - appends a row to results/submissions.csv for every attempt, including refusals, replays and resolutions, and writes a
-  "sending" row before each official request so a crash mid-upload still leaves a trace.
+  "sending" row before each official request so a crash mid-upload still leaves a trace. Its last column, origin, is
+  "local" for a local file and "PrakashDGX_H2:<path>@<DGX HEAD>" (plus "+dirty" when the DGX tree is not clean, or
+  "+unknown" when its git status cannot be read) for a pulled one, whose file column holds that repo-relative DGX path
+  (symlinks resolved) and whose upload filename is the basename of PATH as given, as for a local file.
 
 The budget of a board is the larger of the quota endpoint's count (the source of truth) and the slots below, against
 the quota's limit (at most 2); if the quota or the submission list cannot be read or parsed, official uploads are
@@ -47,9 +63,10 @@ plan's own unanswered official attempts are left out of its room check, since an
 cannot take a second slot.
 
 The token is loaded with vec.data.load_token at call time (it refuses a token with whitespace, control or non-ASCII
-characters), sent only to the API base (no redirects are followed), and never printed or logged: _call redacts it from
-everything the server sends back (the parsed JSON's keys and values at any depth, and the raw error text before it is
-cut) and from error messages, so ids, statuses, guard details and `vec submit status` only ever see "<token>".
+characters), sent only to the API base (no redirects are followed; never to the DGX, whose commands, arguments and
+environment never hold it), and never printed or logged: _call redacts it from everything the server sends back (the
+parsed JSON's keys and values at any depth, and the raw error text before it is cut) and from error messages, so ids,
+statuses, guard details and `vec submit status` only ever see "<token>".
 
 Endpoints and fields, from public material only (unauthenticated GETs, 2026-10-19): the API's OpenAPI document
 (https://api.virtualembryo.ai/openapi.json) and the portal's API guide and upload code in its public JavaScript bundle
@@ -79,13 +96,17 @@ import json
 import os
 import re
 import shlex
+import shutil
+import signal
+import stat
 import subprocess
 import tempfile
+import threading
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from collections.abc import Callable, Iterator, Sequence
+from collections.abc import Callable, Collection, Iterator, Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -100,7 +121,7 @@ LEDGER = REPO_ROOT / "results" / "submissions.csv"
 EXTERNAL_DATA = REPO_ROOT / "EXTERNAL_DATA.md"
 FINAL_PHASE_LIMIT = 2  # scored submissions per board for the whole final phase
 LEDGER_FIELDS = ["utc_time", "board", "mode", "file", "upload_name", "sha256", "server_status", "server_id",
-                 "http_status", "git_commit", "disclosure", "idempotency_key", "fields", "note", "detail"]
+                 "http_status", "git_commit", "disclosure", "idempotency_key", "fields", "note", "detail", "origin"]
 REJECTED = "rejected"  # the only server status that spends no official attempt (cancelled ones are not refunded)
 # untracked files may stay here (and under experiments/**/results/) at an official upload; anything else, code or not,
 # must be committed so that the ledger's commit describes what produced the file
@@ -116,6 +137,22 @@ UPLOAD_TIMEOUT = 900.0
 IDEMPOTENCY_KEY = re.compile(r"^[A-Za-z0-9._:-]{1,128}$")
 DISCLOSURE_ID = re.compile(r"^X\d{3}$")
 LOOPBACK = ("http://127.0.0.1:", "http://localhost:")
+DGX_HOST = "PrakashDGX_H2"  # where predictions are built (vec submit PATH --from-dgx); the token never goes there
+DGX_REPO = "~/v/virtual-embryo-challenge"  # the repo's clone on DGX_HOST: a pulled PATH must resolve inside it
+STALE_COPY_HOURS = 6.0  # a private copy this old is left over from a call that was killed outright (SIGKILL, power)
+COPY_PREFIXES = ("vec-dgx-", "vec-submit-")  # the temporary directories of pulled copies and of snapshots
+# One call on the DGX: refuse a path ($2) that is missing, not a regular file or outside the repo root ($1), then print
+# the root, the file's real path, sha256, size and the repo's HEAD (NUL-separated) and, last, its git status. The path
+# is an argument and never part of the script; `printf x` keeps a real path's trailing newline for the check here.
+DGX_REPORT = r"""cd -- "$1" && root=$(pwd -P) || exit 3
+f=$(realpath -e -- "$2" && printf x) || exit 4
+f=${f%?x}
+[ -f "$f" ] || { echo "not a regular file: $f" >&2; exit 4; }
+case $f in "$root"/*) ;; *) echo "resolves to $f, outside the repository $root" >&2; exit 4 ;; esac
+sum=$(sha256sum < "$f") && size=$(stat -c %s -- "$f") || exit 5
+head=$(git rev-parse --verify -q HEAD) || head=unknown
+printf 'vec-dgx\0%s\0%s\0%s\0%s\0%s\0' "$root" "$f" "${sum%% *}" "$size" "$head"
+GIT_OPTIONAL_LOCKS=0 exec git status --porcelain -z --untracked-files=all"""
 
 
 class SubmitRefused(RuntimeError):
@@ -150,6 +187,8 @@ class Plan:
     guards: list[Guard] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
     replay: dict | None = None  # earlier record when this file was already sent officially to this board
+    remote: str = ""  # the file's path in the DGX repo when it was pulled from there (the ledger's file column)
+    origin: str = "local"  # the ledger's origin column: local, or DGX_HOST:<remote>@<DGX HEAD>[+dirty|+unknown]
 
     @property
     def ok(self) -> bool:
@@ -321,9 +360,8 @@ def _output_path(path: str) -> bool:
 
 
 def git_state(repo: Path, ignore: Sequence[Path] = ()) -> tuple[str, list[str] | None]:
-    """HEAD commit and the paths that keep the tree from being clean (None when git cannot tell): tracked files with
-    uncommitted changes, and untracked, non-ignored files outside results/, runs/ and experiments/**/results/. The paths
-    come from `git status --porcelain -z`, which never quotes them, so `ignore` (the ledger) compares exactly."""
+    """HEAD commit and the paths that keep the tree from being clean (None when git cannot tell; see unclean_paths),
+    leaving out `ignore` (the ledger)."""
     def run(*args: str) -> str:
         return subprocess.run(["git", "-C", str(repo), *args], capture_output=True, check=True).stdout.decode(
             errors="replace")
@@ -333,19 +371,31 @@ def git_state(repo: Path, ignore: Sequence[Path] = ()) -> tuple[str, list[str] |
         status = run("status", "--porcelain", "-z", "--untracked-files=all")
     except (OSError, subprocess.CalledProcessError):
         return "unknown", None
-    skip = set()
-    for p in ignore:
+    return commit, unclean_paths(status, _repo_paths(repo, ignore))
+
+
+def _repo_paths(repo: Path, paths: Sequence[Path]) -> set[str]:
+    """`paths` relative to `repo`, as git status prints them; paths outside it are left out."""
+    out = set()
+    for p in paths:
         try:
-            skip.add(Path(p).resolve().relative_to(Path(repo).resolve()).as_posix())
+            out.add(Path(p).resolve().relative_to(Path(repo).resolve()).as_posix())
         except ValueError:
             pass
+    return out
+
+
+def unclean_paths(status: str, skip: Collection[str] = ()) -> list[str]:
+    """The paths in `git status --porcelain -z --untracked-files=all` output (of this tree or the DGX's) that keep the
+    tree from being clean: tracked files with uncommitted changes, and untracked, non-ignored files outside results/,
+    runs/ and experiments/**/results/. -z never quotes the paths, so `skip` (the ledger) compares exactly."""
     changed, entries = [], iter(status.split("\0"))
     for entry in entries:
         code, paths = entry[:2], [entry[3:]]
         if "R" in code or "C" in code:
             paths.append(next(entries, ""))  # a rename or copy: the new path, then the old one
         changed += [p for p in paths if p and p not in skip and not (code == "??" and _output_path(p))]
-    return commit, changed
+    return changed
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -408,11 +458,11 @@ def read_ledger(path: Path | None = None) -> list[dict]:
 
 def _row(plan: Plan, status: str, server_id: str = "", http_status: int | None = None, detail: str = "") -> dict:
     return {"utc_time": _now(), "board": plan.board,
-            "mode": "official" if plan.official else "format", "file": _display_path(plan.file),
+            "mode": "official" if plan.official else "format", "file": plan.remote or _display_path(plan.file),
             "upload_name": plan.upload_name, "sha256": plan.sha256, "server_status": status, "server_id": server_id,
             "http_status": "" if http_status is None else str(http_status), "git_commit": plan.git_commit,
             "disclosure": ";".join(plan.disclosure), "idempotency_key": plan.idempotency_key,
-            "fields": json.dumps(plan.fields), "note": plan.note, "detail": detail}
+            "fields": json.dumps(plan.fields), "note": plan.note, "detail": detail, "origin": plan.origin}
 
 
 def _now() -> str:
@@ -704,13 +754,163 @@ def _private_copy(src: BinaryIO, dst: Path) -> tuple[str, int]:
 
 
 # ---------------------------------------------------------------------------------------------------------------------
+# Files built on the DGX: pulled into a private copy for one call; the token stays here
+
+
+def dgx_run(command: str, stderr: BinaryIO) -> subprocess.Popen:
+    """Start `ssh -o BatchMode=yes DGX_HOST -- COMMAND` with its standard output piped and its standard error into
+    `stderr` (a file, so that neither can fill up while the other is read). Every remote command goes through here, and
+    tests replace it. ssh forwards the variables its SendEnv names, so VEC_TOKEN and every variable whose name contains
+    TOKEN, in any case, are left out of its environment."""
+    env = {k: v for k, v in os.environ.items() if "TOKEN" not in k.upper()}
+    return subprocess.Popen(["ssh", "-o", "BatchMode=yes", DGX_HOST, "--", command], env=env,
+                            stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=stderr)
+
+
+@dataclass
+class DgxFile:
+    """A file pulled from the DGX for one call: its private copy, and what the DGX reported just before the pull."""
+
+    path: str  # relative to the DGX repo root, symlinks resolved
+    copy: Path  # a 0600 file in a 0700 temporary directory, removed when the call ends
+    sha256: str
+    size: int
+    head: str  # the DGX repo's HEAD ("unknown" when git cannot tell)
+    status: str | None  # its `git status --porcelain -z --untracked-files=all` (None when git cannot tell)
+
+
+def _dgx_word(path: str) -> str:
+    """A DGX path as one shell word; a leading ~/ becomes "$HOME"/, since a quoted ~ is never expanded."""
+    return f'"$HOME"/{shlex.quote(path[2:])}' if path.startswith("~/") else shlex.quote(path)
+
+
+def _dgx_start(command: str, stderr: BinaryIO) -> subprocess.Popen:
+    try:
+        return dgx_run(command, stderr)
+    except OSError as e:  # no ssh on this machine
+        raise SubmitRefused(f"cannot run ssh to {DGX_HOST} ({type(e).__name__}: {e})") from None
+
+
+def _dgx_error(stderr: BinaryIO, code: int | None) -> str:
+    stderr.seek(0)
+    return f"{stderr.read().decode(errors='replace').strip() or 'no message'} (exit {code})"
+
+
+def pull_from_dgx(path: str, stack: contextlib.ExitStack) -> DgxFile:
+    """Pull `path` (relative to the DGX repo root, or absolute inside it) into a private temporary copy, which `stack`
+    deletes. One remote call reports the file and the repo's state, then `cat` streams the file into the copy while it
+    is hashed. Refuses a path outside the repo or with a newline or NUL, a file the DGX cannot report, and a pull whose
+    bytes are not the reported ones ("transfer mismatch"). Reads no token and sends nothing to the challenge API."""
+    if not path or "\n" in path or "\0" in path:
+        raise SubmitRefused(f"refusing the DGX path {path!r}: it is empty or holds a newline or NUL")
+    report = f"bash -c {shlex.quote(DGX_REPORT)} vec-dgx {_dgx_word(DGX_REPO)} {shlex.quote(path)}"
+    with tempfile.TemporaryFile() as err:
+        with _dgx_start(report, err) as proc:
+            out = proc.stdout.read()
+        parts = out.split(b"\0", 6)
+        if len(parts) < 7 or parts[0] != b"vec-dgx":
+            raise SubmitRefused(f"{DGX_HOST} cannot report {path}: {_dgx_error(err, proc.returncode)}")
+    try:
+        root, real, sha, size, head = (p.decode() for p in parts[1:6])
+    except UnicodeDecodeError:
+        raise SubmitRefused(f"{DGX_HOST} reports a path that is not UTF-8 for {path}") from None
+    if "\n" in real:
+        raise SubmitRefused(f"refusing the DGX path {path!r}: it resolves to {real!r}, which holds a newline")
+    rel = real[len(root) + 1:] if root and real.startswith(f"{root}/") else ""
+    if not (rel and re.fullmatch(r"[0-9a-f]{64}", sha) and re.fullmatch(r"[0-9]+", size)
+            and re.fullmatch(r"[0-9a-f]{40}|[0-9a-f]{64}|unknown", head)):
+        raise SubmitRefused(f"unexpected report from {DGX_HOST} for {path}: {out[:300]!r}")
+    status = parts[6].decode(errors="replace") if proc.returncode == 0 else None  # git status failed
+    try:
+        tmp = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix="vec-dgx-", ignore_cleanup_errors=True)))
+    except OSError as e:
+        raise SubmitRefused(f"cannot make a temporary directory in {tempfile.gettempdir()} ({type(e).__name__}: {e}); "
+                            "free some space there or point TMPDIR elsewhere") from None
+    copy = tmp / path.rstrip("/").rsplit("/", 1)[-1]  # the name as given (as for a local file), not a link's target
+    with tempfile.TemporaryFile() as err:
+        with _dgx_start(f"cat -- {shlex.quote(real)}", err) as proc:
+            try:
+                got, n = _private_copy(proc.stdout, copy)
+            except _Unreadable as e:
+                proc.kill()
+                raise SubmitRefused(f"the pull of {rel} from {DGX_HOST} broke off ({e.__cause__})") from None
+            except OSError as e:
+                proc.kill()
+                raise SubmitRefused(f"cannot write the copy into {tmp} ({type(e).__name__}: {e}); free some space "
+                                    "there or point TMPDIR elsewhere") from None
+        if proc.returncode != 0:
+            raise SubmitRefused(f"cannot pull {rel} from {DGX_HOST}: {_dgx_error(err, proc.returncode)}")
+    if (got, n) != (sha, int(size)):
+        raise SubmitRefused(f"transfer mismatch: the pull of {rel} gave {n} bytes with sha256 {got[:12]}, but "
+                            f"{DGX_HOST} reported {size} bytes with sha256 {sha[:12]}; check the file and run again")
+    return DgxFile(rel, copy, sha, n, head, status)
+
+
+@contextlib.contextmanager
+def _unwind_on_hangup() -> Iterator[None]:
+    """While a call runs in the main thread, SIGHUP and SIGTERM raise SystemExit instead of killing the process, so
+    the call unwinds and its private copies are removed (a closed terminal or a dropped ssh session sends SIGHUP)."""
+    if threading.current_thread() is not threading.main_thread():
+        yield
+        return
+
+    def stop(signum, _frame):
+        raise SystemExit(128 + signum)
+
+    before = {s: signal.signal(s, stop) for s in (signal.SIGHUP, signal.SIGTERM)}
+    try:
+        yield
+    finally:
+        for s, handler in before.items():
+            signal.signal(s, handler if handler is not None else signal.SIG_DFL)
+
+
+def remove_stale_copies(now: float | None = None) -> list[str]:
+    """Remove this user's private copies left in the temporary directory by a call that was killed outright (SIGKILL,
+    power loss), which could not remove its own: directories named with COPY_PREFIXES, older than STALE_COPY_HOURS
+    (no call runs that long). Returns their names."""
+    now, gone = time.time() if now is None else now, []
+    root = Path(tempfile.gettempdir())
+    try:
+        entries = list(root.iterdir())
+    except OSError:
+        return gone
+    for d in entries:
+        if not d.name.startswith(COPY_PREFIXES):
+            continue
+        try:
+            st = d.lstat()  # a link is never followed
+        except OSError:
+            continue
+        if stat.S_ISDIR(st.st_mode) and st.st_uid == os.getuid() and now - st.st_mtime > STALE_COPY_HOURS * 3600:
+            shutil.rmtree(d, ignore_errors=True)
+            gone.append(d.name)
+    return gone
+
+
+def _dgx_provenance(dgx: DgxFile, changed: list[str] | None, local_head: str) -> Guard:
+    """An official upload of a pulled file needs the DGX repo at the local HEAD and a tree that passes the clean-tree
+    rule."""
+    if dgx.head == "unknown" or changed is None:
+        return Guard("dgx provenance", False, f"cannot read the git state of {DGX_HOST}:{DGX_REPO}")
+    problems = [] if dgx.head == local_head else [f"DGX HEAD {dgx.head[:12]} is not the local HEAD {local_head[:12]}"]
+    if changed:
+        more = " ..." if len(changed) > 5 else ""
+        problems.append(f"uncommitted or untracked on the DGX: {', '.join(changed[:5])}{more}")
+    return Guard("dgx provenance", not problems, "; ".join(problems) or f"DGX HEAD {dgx.head[:12]} is the local HEAD "
+                 "and the DGX tree is clean")
+
+
+# ---------------------------------------------------------------------------------------------------------------------
 # Plan, send, resolve, status
 
 
 def prepare(file: str | Path, board: str, official: bool, confirm: str | None, *, disclose: str | Sequence[str],
             note: str, model: str | None, architecture: str | None, token: str, base: str, rows: list[dict],
-            repo: Path, ledger_path: Path, boards_dir: Path, external_data: Path | None) -> Plan:
-    """Hash the file, derive the request and evaluate every guard. Official plans read phase, quota and submissions."""
+            repo: Path, ledger_path: Path, boards_dir: Path, external_data: Path | None,
+            dgx: DgxFile | None = None) -> Plan:
+    """Hash the file, derive the request and evaluate every guard. Official plans read phase, quota and submissions.
+    `dgx` describes a file pulled from the DGX (`file` is then its copy)."""
     path = Path(file)
     sha = sha256_file(path)
     guards: list[Guard] = []
@@ -764,9 +964,17 @@ def prepare(file: str | Path, board: str, official: bool, confirm: str | None, *
     git_commit = commit if changed is None or not changed else f"{commit}+dirty"
     name, key = upload_name(path), idempotency_key(board, sha) if official and ident else ""
     plan = Plan(path, board, official, sha, name, fields, key, ids, note, git_commit, guards, warnings)
+    provenance = None
+    if dgx is not None:  # the ledger names the DGX file and the DGX repo's state; only official uploads require it
+        dgx_changed = None if dgx.status is None else unclean_paths(dgx.status, _repo_paths(repo, [ledger_path]))
+        state = "+unknown" if dgx_changed is None else "+dirty" if dgx_changed else ""  # unknown: git status failed
+        plan.remote, plan.origin = dgx.path, f"{DGX_HOST}:{dgx.path}@{dgx.head}{state}"
+        provenance = _dgx_provenance(dgx, dgx_changed, commit)
     if not official:
         if confirm:
             warnings.append("--confirm is ignored without --official: this is a format check")
+        if provenance is not None and not provenance.ok:
+            warnings.append(f"an official upload of this file would fail dgx provenance: {provenance.detail}")
         if b is not None and ident:  # a format check the server stored anyway would land on the phase's split
             guards.append(_phase_guard(base, b, official=False))
         return plan
@@ -780,11 +988,14 @@ def prepare(file: str | Path, board: str, official: bool, confirm: str | None, *
         guards.append(Guard("clean tree", not changed, "nothing uncommitted (untracked files only under results/, "
                             "runs/ and experiments/**/results/)" if not changed else
                             f"uncommitted or untracked: {', '.join(changed[:5])}{' ...' if len(changed) > 5 else ''}"))
+    if provenance is not None:
+        guards.append(provenance)
     _reuse_earlier_request(plan, rows)
     fmt_ok = any(r.get("mode") == "format" and r.get("board") == board and r.get("sha256") == sha
                  and r.get("server_status") == "format_ok" for r in rows)
+    again = f"{shlex.quote(dgx.path)} --board {board} --from-dgx" if dgx is not None else f"{path} --board {board}"
     guards.append(Guard("server format check", fmt_ok, "passed earlier for this file and board" if fmt_ok else
-                        f"run a format check first: vec submit {path} --board {board}"))
+                        f"run a format check first: vec submit {again}"))
     if b is None or not ident:  # the board guard has failed; no server reads
         return plan
 
@@ -873,24 +1084,30 @@ def _find_replay(board: str, sha: str, rows: list[dict], subs: list[dict] | None
 
 def submit(file: str | Path, board: str, official: bool = False, confirm: str | None = None, *,
            disclose: str | Sequence[str] = (), note: str = "", model: str | None = None,
-           architecture: str | None = None, on_plan: Callable[[Plan], None] | None = None,
+           architecture: str | None = None, from_dgx: bool = False, on_plan: Callable[[Plan], None] | None = None,
            echo: Callable[[str], None] | None = None, sleep: Callable[[float], None] = time.sleep,
            api_base: str | None = None, token_file: Path | None = None, ledger: Path | None = None,
            repo: Path | None = None, boards_dir: Path | None = None, external_data: Path | None = None) -> Result:
     """Format check (default) or official upload of one prediction file, with every attempt in the ledger.
 
     Sends format_only=true unless `official` is True and `confirm` equals sha256[:12] of the file. Raises SubmitRefused
-    (after `on_plan` has seen the guard results) when a guard fails; nothing is sent then.
+    (after `on_plan` has seen the guard results) when a guard fails; nothing is sent then. With `from_dgx`, `file` is a
+    path in the DGX repo: pull_from_dgx copies it here for this call only, and the copy is what is checked and sent.
     """
     base = _check_base(api_base or API_BASE)
-    if not Path(file).is_file():
+    if not from_dgx and not Path(file).is_file():
         raise SubmitRefused(f"no such file: {file}")
     token = vec_data.load_token(token_file) if token_file else vec_data.load_token()
     ledger_path = Path(ledger or LEDGER)
-    with Ledger(ledger_path) as led:
-        plan = prepare(file, board, official, confirm, disclose=disclose, note=note, model=model,
+    remove_stale_copies()
+    # a pulled copy, deleted on the way out (SIGHUP and SIGTERM unwind too), and the ledger lock
+    with _unwind_on_hangup(), contextlib.ExitStack() as stack:
+        dgx = pull_from_dgx(str(file), stack) if from_dgx else None
+        led = stack.enter_context(Ledger(ledger_path))
+        plan = prepare(dgx.copy if dgx else file, board, official, confirm, disclose=disclose, note=note, model=model,
                        architecture=architecture, token=token, base=base, rows=led.rows(), repo=Path(repo or REPO_ROOT),
-                       ledger_path=ledger_path, boards_dir=Path(boards_dir or BOARDS_DIR), external_data=external_data)
+                       ledger_path=ledger_path, boards_dir=Path(boards_dir or BOARDS_DIR), external_data=external_data,
+                       dgx=dgx)
         if on_plan is not None:
             on_plan(plan)
         if not plan.ok:
@@ -1058,6 +1275,7 @@ def resolve(sha: str, board: str, decision: str, note: str, *, ledger: Path | No
         row = {**dict.fromkeys(LEDGER_FIELDS, ""), "utc_time": _now(), "board": board, "mode": "resolve",
                "file": last.get("file", ""), "upload_name": last.get("upload_name", ""), "sha256": full,
                "server_status": decision, "note": note.strip(), "detail": f"resolved by a person: {settled}",
+               "origin": last.get("origin", ""),
                "server_id": ";".join(r["server_id"] for r in f.unresolved if r.get("server_id"))
                if decision == "acknowledged" else ""}
         led.append(row)

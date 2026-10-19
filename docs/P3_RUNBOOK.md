@@ -83,8 +83,10 @@ procedure refuses unmapped labels.
 
 - Emulator calibration against the published validation reference rows (feat-005, assumption A2).
 - Test-board intake: reference stage, cell limits and what else each test board publishes (decision point D1).
-- Candidate files, built on the DGX with the committed builders and checked locally there with
-  `uv run vec check FILE --board KEY` (no token, nothing sent). Nothing is uploaded today.
+- Candidate files, built on the DGX with the committed builders and checked there with
+  `uv run vec check FILE --board KEY` (no token, nothing sent). A server format check runs from this machine with
+  `uv run vec submit runs/<...>.h5ad --board <test board key> --from-dgx` (the file is pulled for that call only;
+  nothing official without `--official`). Nothing is uploaded officially today.
   - T3: `uv run python experiments/t3_decomp/build_submission.py build <gata4_decisions.json> --branch <b>
     --submission s1|s2 --wt data/raw/T2/E8.75.h5ad --run-dir runs/t3_decomp/gata4_<STAMP> --board <T3 board key>
     --n-cells <the board's max_cells> --out runs/t3_build/<b>_<s>.h5ad`, for `allowed` and `barred` until the

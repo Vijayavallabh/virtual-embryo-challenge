@@ -7,12 +7,16 @@ import io
 import json
 import os
 import re
+import shlex
 import shutil
+import signal
 import socket
 import subprocess
 import tempfile
 import threading
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
 from types import SimpleNamespace
 
 import numpy as np
@@ -29,6 +33,7 @@ from vec.io import CheckReport, make_submission, write_submission
 TOKEN = "tok-FAKE-never-print-3f9c1a77"
 T1 = "T1:test"
 X001 = "X001"
+REAL_DGX_RUN = vs.dgx_run  # the dgx fixture replaces it
 
 
 def _parse_multipart(content_type: str, body: bytes):
@@ -1082,3 +1087,258 @@ def test_site_text_is_never_markup_in_the_board_commands(env, monkeypatch):
     res = runner.invoke(cli.app, ["check", str(env.tmp / "x.h5ad"), "--board", board.key])
     assert res.exit_code == 1, _output(res)
     assert "error gene panel mismatch: 1 missing (e.g. ['G[/]'])" in res.output and "warning [red]odd" in res.output
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Files built on the DGX: pulled into a private copy for one call, provenance for official uploads, no token there
+
+
+@pytest.fixture
+def dgx(env, monkeypatch):
+    """The DGX for these tests: dgx_run runs each command with bash, as ssh would, in a temporary home whose DGX_REPO is
+    a clone of the local repo (the same HEAD), and logs it. With `cat_bytes` set, a cat sends those bytes instead."""
+    home = env.tmp / "dgx-home"
+    repo = home / vs.DGX_REPO.removeprefix("~/")
+    repo.parent.mkdir(parents=True)
+    _git(repo.parent, "clone", "-q", str(env.repo), repo.name)
+    (repo / "results").mkdir()
+    fake = SimpleNamespace(home=home, repo=repo, commands=[], cat_bytes=None)
+
+    def run(command, stderr):
+        fake.commands.append(command)
+        if fake.cat_bytes is not None and command.startswith("cat -- "):
+            (home / "other").write_bytes(fake.cat_bytes)
+            command = "cat -- other"
+        return subprocess.Popen(["bash", "-c", command], cwd=home, env={"HOME": str(home), "PATH": os.environ["PATH"]},
+                                stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=stderr)
+
+    monkeypatch.setattr(vs, "dgx_run", run)
+    return fake
+
+
+def _on_dgx(env, dgx, rel, seed):
+    """A valid prediction file at `rel` from the DGX repo root."""
+    path = dgx.repo / rel
+    path.parent.mkdir(parents=True, exist_ok=True)
+    shutil.move(_pred(env, f"dgx{seed}.h5ad", seed), path)
+    return path
+
+
+def _private_tmp(env, monkeypatch):
+    """An empty directory for tempfile, to see what a call leaves behind."""
+    tmp = env.tmp / "tmpdir"
+    tmp.mkdir()
+    monkeypatch.setattr(tempfile, "tempdir", str(tmp))
+    return tmp
+
+
+def test_a_format_check_from_the_dgx_sends_a_private_copy_and_leaves_nothing_behind(env, dgx, monkeypatch):
+    tmp = _private_tmp(env, monkeypatch)
+    rel = "results/t1/pred.h5ad"
+    f = _on_dgx(env, dgx, rel, 0)
+    sha, seen = vs.sha256_file(f), []
+
+    def look(plan):
+        seen.append((plan.file.parent.stat().st_mode & 0o777, plan.file.stat().st_mode & 0o777,
+                     vs.sha256_file(plan.file)))
+
+    res = vs.submit(rel, T1, from_dgx=True, on_plan=look)
+    (post,) = env.api.posts()
+    assert res.server_status == "format_ok" and seen == [(0o700, 0o600, sha)] and not list(tmp.iterdir())
+    assert post["fields"] == {"task": "T1", "format_only": "true"} and post["filename"] == "pred.h5ad"
+    assert post["sha256"] == sha
+    report, cat = dgx.commands
+    assert report.startswith("bash -c ") and cat == f"cat -- {shlex.quote(str(f.resolve()))}"
+    row = vs.read_ledger(env.ledger)[-1]
+    assert (row["file"], row["upload_name"], row["sha256"]) == (rel, "pred.h5ad", sha)
+
+    def boom(_plan):
+        raise RuntimeError("interrupted")
+
+    with pytest.raises(RuntimeError):  # errors too leave nothing behind
+        vs.submit(rel, T1, from_dgx=True, on_plan=boom)
+    assert not list(tmp.iterdir()) and len(env.api.posts()) == 1
+
+
+def test_an_official_upload_from_the_dgx_needs_the_local_head_and_a_clean_dgx_tree(env, dgx, monkeypatch):
+    tmp = _private_tmp(env, monkeypatch)
+    rel, head = "results/pred.h5ad", _git(env.repo, "rev-parse", "HEAD")
+    sha = vs.sha256_file(_on_dgx(env, dgx, rel, 0))
+    assert vs.submit(rel, T1, from_dgx=True).server_status == "format_ok"
+
+    def official():
+        return vs.submit(rel, T1, official=True, confirm=sha[:12], disclose=X001, from_dgx=True, sleep=lambda s: None)
+
+    def refused(match):
+        with pytest.raises(vs.SubmitRefused, match="dgx provenance") as e:
+            official()
+        assert e.value.plan.failed == ["dgx provenance"] and not list(tmp.iterdir())
+        assert match in next(g.detail for g in e.value.plan.guards if g.name == "dgx provenance")
+
+    (dgx.repo / "method.py").write_text("x = 2\n")
+    _git(dgx.repo, "commit", "-qam", "a newer commit on the DGX")
+    refused(f"is not the local HEAD {head[:12]}")
+    _git(dgx.repo, "reset", "-q", "--hard", head)
+    (dgx.repo / "method.py").write_text("x = 3\n")
+    refused("uncommitted or untracked on the DGX: method.py")
+    _git(dgx.repo, "checkout", "-q", "--", "method.py")
+    (dgx.repo / "notes.txt").write_text("an untracked file outside results/\n")
+    refused("uncommitted or untracked on the DGX: notes.txt")
+    (dgx.repo / "notes.txt").unlink()
+    assert not env.api.posts(official=True)
+    res = official()
+    assert res.ok and res.server_id == "sub1" and len(env.api.posts(official=True)) == 1 and not list(tmp.iterdir())
+    assert next(g for g in res.plan.guards if g.name == "dgx provenance").ok
+    row = vs.read_ledger(env.ledger)[-1]
+    assert (row["mode"], row["file"], row["origin"]) == ("official", rel, f"PrakashDGX_H2:{rel}@{head}")
+
+
+def test_a_pull_that_does_not_match_the_report_is_refused_and_leaves_nothing_behind(env, dgx, monkeypatch):
+    tmp = _private_tmp(env, monkeypatch)
+    data = _on_dgx(env, dgx, "results/pred.h5ad", 0).read_bytes()
+    for other in (data[:-1] + bytes([data[-1] ^ 1]), data[:100]):  # one byte changed (the same size); cut short
+        dgx.cat_bytes = other
+        with pytest.raises(vs.SubmitRefused, match="transfer mismatch"):
+            vs.submit("results/pred.h5ad", T1, from_dgx=True)
+        assert not list(tmp.iterdir())
+    assert not env.api.requests and not env.ledger.exists()  # refused before any plan: nothing sent or recorded
+
+
+def test_dgx_paths_with_spaces_quotes_or_shell_syntax_stay_one_argument(env, dgx):
+    rel = "results/my pred's \"v2\" $(touch pwned) `touch pwned2`.h5ad"
+    sha = vs.sha256_file(_on_dgx(env, dgx, rel, 0))
+    res = vs.submit(rel, T1, from_dgx=True)
+    assert res.server_status == "format_ok" and env.api.posts()[-1]["sha256"] == sha
+    sent = env.api.posts()[-1]["filename"]
+    assert sent == vs.upload_name(Path(rel)) == "my_pred_s__v2____touch_pwned___touch_pwned2_.h5ad"
+    assert vs.read_ledger(env.ledger)[-1]["file"] == rel and not list(env.tmp.rglob("pwned*"))
+    absolute = _on_dgx(env, dgx, "results/abs.h5ad", 1)
+    assert vs.submit(str(absolute), T1, from_dgx=True).server_status == "format_ok"  # absolute, inside the repo
+    assert vs.read_ledger(env.ledger)[-1]["file"] == "results/abs.h5ad"
+
+
+def test_dgx_paths_outside_the_repo_or_with_a_newline_are_refused(env, dgx):
+    outside = _on_dgx(env, dgx, "../outside.h5ad", 0).resolve()  # next to the DGX repo, not in it
+    (dgx.repo / "results" / "link.h5ad").symlink_to(outside)
+    for path in ("../outside.h5ad", "results/../../outside.h5ad", str(outside), "results/link.h5ad"):
+        with pytest.raises(vs.SubmitRefused, match="outside the repository"):
+            vs.submit(path, T1, from_dgx=True)
+    with pytest.raises(vs.SubmitRefused, match="No such file"):
+        vs.submit("results/missing.h5ad", T1, from_dgx=True)
+    nl = _on_dgx(env, dgx, "results/new\nline.h5ad", 1)
+    (dgx.repo / "results" / "nl.h5ad").symlink_to(nl)
+    with pytest.raises(vs.SubmitRefused, match="holds a newline"):  # a link to such a name: refused after the report
+        vs.submit("results/nl.h5ad", T1, from_dgx=True)
+    n = len(dgx.commands)
+    for path in ("results/new\nline.h5ad", "results/a\0b.h5ad", ""):
+        with pytest.raises(vs.SubmitRefused, match="newline or NUL"):
+            vs.submit(path, T1, from_dgx=True)
+    assert len(dgx.commands) == n  # refused before any remote command
+    assert not [c for c in dgx.commands if c.startswith("cat ")] and not env.api.requests
+
+
+def test_the_token_never_reaches_a_remote_command_or_its_environment(env, dgx, monkeypatch):
+    monkeypatch.setenv("GITHUB_TOKEN", "gh-FAKE-never-sent")
+    monkeypatch.setenv("hf_token_path", "/somewhere")
+    sha = vs.sha256_file(_on_dgx(env, dgx, "results/pred.h5ad", 0))
+    assert vs.submit("results/pred.h5ad", T1, from_dgx=True).ok  # the token is loaded and used for this upload
+    res = vs.submit("results/pred.h5ad", T1, official=True, confirm=sha[:12], disclose=X001, from_dgx=True)
+    assert res.ok and len(dgx.commands) == 4 and not [c for c in dgx.commands if TOKEN in c or "gh-FAKE" in c]
+    seen = {}  # the real runner: the exact ssh command line, and an environment without any TOKEN variable
+    monkeypatch.setattr(subprocess, "Popen", lambda argv, **kw: seen.update(argv=argv, **kw))
+    with tempfile.TemporaryFile() as err:
+        REAL_DGX_RUN("cat -- pyproject.toml", err)
+    assert seen["argv"] == ["ssh", "-o", "BatchMode=yes", "PrakashDGX_H2", "--", "cat -- pyproject.toml"]
+    assert not [k for k in seen["env"] if "TOKEN" in k.upper()] and seen["env"]["PATH"] == os.environ["PATH"]
+    assert TOKEN not in json.dumps(seen["env"]) and seen["stdin"] == subprocess.DEVNULL
+
+
+def test_the_ledger_origin_column_names_local_files_and_the_dgx_state(env, dgx):
+    vs.submit(_pred(env, "a.h5ad", 0), T1)
+    rel, head = "results/pred.h5ad", _git(env.repo, "rev-parse", "HEAD")
+    _on_dgx(env, dgx, rel, 1)
+    vs.submit(rel, T1, from_dgx=True)
+    (dgx.repo / "method.py").write_text("x = 9\n")  # recorded, but a format check does not require a clean DGX tree
+    res = vs.submit(rel, T1, from_dgx=True)
+    assert res.server_status == "format_ok"
+    assert [w for w in res.plan.warnings if "would fail dgx provenance" in w and "method.py" in w]
+    rows = vs.read_ledger(env.ledger)
+    assert list(rows[0])[-1] == "origin"
+    assert [r["origin"] for r in rows] == ["local", f"PrakashDGX_H2:{rel}@{head}", f"PrakashDGX_H2:{rel}@{head}+dirty"]
+    assert rows[0]["file"].endswith("a.h5ad") and [r["file"] for r in rows[1:]] == [rel, rel]
+    assert {r["upload_name"] for r in rows[1:]} == {"pred.h5ad"} and rows[2]["git_commit"] == head
+
+
+def test_cli_from_dgx(env, dgx):
+    runner, rel = CliRunner(), "results/pred.h5ad"
+    sha = vs.sha256_file(_on_dgx(env, dgx, rel, 0))
+    res = runner.invoke(cli.app, ["submit", rel, "--board", T1, "--from-dgx"])
+    out = _output(res)
+    assert res.exit_code == 0, out
+    assert f"file      PrakashDGX_H2:{rel}, pulled for this call (sent as pred.h5ad" in out
+    assert f"origin    PrakashDGX_H2:{rel}@{_git(env.repo, 'rev-parse', 'HEAD')}" in out
+    assert f"vec submit {rel} --board {T1} --from-dgx --official --confirm {sha[:12]} --disclose <ids" in out
+    res = runner.invoke(cli.app, ["submit", "../outside.h5ad", "--board", T1, "--from-dgx"])
+    assert res.exit_code == 1 and "nothing was sent" in _output(res)
+    for args in (["submit", "--help"], ["submit", "upload", "--help"]):
+        assert "--from-dgx" in runner.invoke(cli.app, args).output
+
+
+def test_hangup_and_terminate_unwind_the_call_so_no_private_copy_remains(env, dgx, monkeypatch):
+    """A closed terminal or a dropped session (SIGHUP), or SIGTERM, mid-call: the call unwinds and removes its copy."""
+    tmp = _private_tmp(env, monkeypatch)
+    rel = "results/pred.h5ad"
+    _on_dgx(env, dgx, rel, 0)
+    before = {s: signal.getsignal(s) for s in (signal.SIGHUP, signal.SIGTERM)}
+    for sig in (signal.SIGHUP, signal.SIGTERM):
+        def hang_up(plan, sig=sig):
+            assert plan.file.is_file() and plan.file.parent.parent == tmp  # the pulled copy exists right now
+            os.kill(os.getpid(), sig)
+            time.sleep(5)  # the handler interrupts this at once
+
+        with pytest.raises(SystemExit) as e:
+            vs.submit(rel, T1, from_dgx=True, on_plan=hang_up)
+        assert e.value.code == 128 + sig and not list(tmp.iterdir())
+    assert {s: signal.getsignal(s) for s in before} == before and not env.api.posts()  # handlers restored, nothing sent
+
+
+def test_copies_left_by_a_killed_call_are_removed_by_the_next_one(env, monkeypatch):
+    tmp = _private_tmp(env, monkeypatch)
+    now, old = time.time(), time.time() - (vs.STALE_COPY_HOURS + 1) * 3600
+    for name, age in (("vec-dgx-old", old), ("vec-submit-old", old), ("vec-dgx-new", now), ("other-old", old)):
+        (tmp / name).mkdir()
+        (tmp / name / "copy").write_bytes(b"x")
+        os.utime(tmp / name, (age, age))
+    (tmp / "vec-dgx-link").symlink_to(tmp / "other-old")  # a link is never followed
+    os.utime(tmp / "vec-dgx-link", (old, old), follow_symlinks=False)
+    assert sorted(vs.remove_stale_copies(now)) == ["vec-dgx-old", "vec-submit-old"]
+    assert sorted(p.name for p in tmp.iterdir()) == ["other-old", "vec-dgx-link", "vec-dgx-new"]
+    assert (tmp / "other-old" / "copy").is_file()
+    os.utime(tmp / "vec-dgx-new", (old, old))
+    vs.submit(_pred(env, "a.h5ad", 0), T1)  # every call clears what killed calls left
+    assert sorted(p.name for p in tmp.iterdir()) == ["other-old", "vec-dgx-link"]
+
+
+def test_an_unreadable_dgx_status_is_marked_in_the_origin_and_refuses_official(env, dgx):
+    rel = "results/pred.h5ad"
+    sha = vs.sha256_file(_on_dgx(env, dgx, rel, 0))
+    assert vs.submit(rel, T1, from_dgx=True).server_status == "format_ok"
+    (dgx.repo / ".git" / "index").write_bytes(b"not an index")  # git status fails; git rev-parse HEAD still works
+    res = vs.submit(rel, T1, from_dgx=True)
+    head = _git(env.repo, "rev-parse", "HEAD")
+    assert res.server_status == "format_ok" and vs.read_ledger(env.ledger)[-1]["origin"] == \
+        f"PrakashDGX_H2:{rel}@{head}+unknown"
+    with pytest.raises(vs.SubmitRefused, match="dgx provenance") as e:
+        vs.submit(rel, T1, official=True, confirm=sha[:12], disclose=X001, from_dgx=True, sleep=lambda s: None)
+    assert "cannot read the git state" in next(g.detail for g in e.value.plan.guards if g.name == "dgx provenance")
+
+
+def test_a_linked_dgx_file_keeps_the_name_it_was_given(env, dgx):
+    """As for a local file, the upload name and the format check use the name given, not the link target's."""
+    target = _on_dgx(env, dgx, "runs/build/output", 0)  # a valid prediction under a name without .h5ad
+    (dgx.repo / "results" / "latest.h5ad").symlink_to(target)
+    res = vs.submit("results/latest.h5ad", T1, from_dgx=True)
+    (post,) = env.api.posts()
+    assert res.server_status == "format_ok" and post["filename"] == "latest.h5ad"
+    row = vs.read_ledger(env.ledger)[-1]
+    assert (row["file"], row["upload_name"]) == ("runs/build/output", "latest.h5ad")  # the ledger names the target

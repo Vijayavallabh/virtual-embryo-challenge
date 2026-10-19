@@ -50,17 +50,18 @@
 
 - [ ] Awaiting organiser replies: leak report (Slack DM, sent 2026-10-18), the rules questions (email, 2026-10-18) and
       the follow-up (scorer build and parity defect, wrong-sign severity, released Gata4 in the T3 prediction,
-      duplicated/interpolated records, z units, truth_cells and size, stage conventions; sent 2026-10-19).
+      duplicated/interpolated records, z units, truth_cells and size, stage conventions; sent 2026-10-19). Slack checked
+      on 2026-10-19 evening by a screened sweep: no organiser post since 2026-10-16 and no reply in any DM; the email
+      inbox was not checked. Two public participant questions (deadline time zone; qualitative in-window priors) are
+      unanswered too: plan against the earliest plausible deadline and keep the strict in-window reading.
 - [ ] The E12.5 emergent-class list waits on the organisers' answer about qualitative in-window background; the legal
       route is used meanwhile.
 - [ ] Quota shape: `official_per_board` is unpublished. The client refuses official uploads until it can read it;
       check with `vec submit status` once the final phase opens and adapt the parser (with a review) if needed.
-- [ ] Upload logistics (user's decision, before the first official upload in November): the key is local-only and
-      built files live on the DGX, so a file must reach this machine to be uploaded (server format checks included).
-- [ ] Provenance across machines (before the first official upload): the client's clean-tree gate sees only the local
-      clone, while files are built on the DGX. Planned: the DGX writes a stamp next to each built file (commit, clean
-      flag, sha256), and an official upload is refused unless the stamp's commit is the local HEAD and the tree was
-      clean.
+- [x] Upload logistics (decided by the user, 2026-10-19; built and verified the same day): `vec submit PATH --board KEY
+      --from-dgx` pulls the built file into a private copy for that call only; the key never goes to the DGX.
+- [x] Provenance across machines: an official `--from-dgx` upload also needs the guard "dgx provenance" (the DGX's
+      HEAD is the local HEAD and its tree is clean), and the ledger's origin column records the DGX path and commit.
 - [ ] T1 pseudo-task gain from exact category shares is +31 against about +24 in the screened digest; both are upper
       bounds (exact shares), the real gain depends on how well the E12.5 shares are chosen.
 
@@ -75,6 +76,9 @@
   z held when the plane matches; H1/H2 scope). **T3 leads with the per-gene factor** from released knockouts.
 - **No parity hedge without the organisers' approval** (user, 2026-10-19). **History rewritten again** (user).
 - **GPUs:** free VRAM only until the end of October; all eight H100s from November (user, 2026-10-19).
+- **Uploads pull from the DGX** (user, 2026-10-19): `vec submit PATH --board KEY --from-dgx` streams the built file
+  from the DGX into the client's private temporary copy at upload time; no lasting local copy, and the key never
+  leaves this machine.
 
 ## Evidence of Completion
 
@@ -90,3 +94,7 @@
 - DGX research scratch removed on 2026-10-19 (user's OK); `~/v/vec-gapconc` keeps only `ext/` and `out/`, the
   legal inputs the committed filters in `experiments/external/` read (the JAX files are hard-linked into data/external).
 - `experiments/harmonise_review/review.py` has 5 pre-existing ruff findings (outside the checked `src tests`).
+- Release day: re-check #virtual-embryo-challenge and the Rules/Data pages (never the board file) for the release time,
+  submission rules and scorer version; an organiser said on 2026-09-01 that T2 E8.5 is released when the final stage
+  starts. Before the first upload, confirm that our account sign-in works (a participant saw "Sign-in is not available
+  yet" on the account page on 2026-10-18).
