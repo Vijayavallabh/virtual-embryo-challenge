@@ -112,9 +112,29 @@ organisers approve in writing.
 - Mitigation: the heart and embryo size procedures contain no size numbers and choose their rules with a rate-free
   argument fixed before the release (`docs/PLAN.md` section 4.3). The measured validation stages released on
   2026-10-20 supersede anything anchor-derived. Test-board anchors are stripped at intake (do-not-use list).
-- Git history: the removed values remain in commits since 2026-10-18 (research notes and `CHALLENGE.md`) and on
-  GitHub until the history is rewritten again. The user chose on 2026-10-19 to rewrite and purge again, after the
-  remaining redactions are committed.
+- Git history: rewritten on 2026-10-19 (user's decision) so that every commit carries the redacted versions; the
+  GitHub repository was deleted and recreated (private) from the clean history, and the DGX .git refreshed. Commit
+  IDs quoted in docs and result files before this date map to the new history as follows (old -> new):
+  - `810dc11` -> `eb0c4db`
+  - `a419024` -> `67ff77f`
+  - `49eef7c` -> `bdc7dd1`
+  - `00c14ba` -> `f496896`
+  - `ac5a19a` -> `a13552e`
+  - `e3b5d2c` -> `049ae66`
+  - `5078c82` -> `b768a38`
+  - `1b64676` -> `83e85e7`
+  - `18bb455` -> `33d6468`
+  - `3ac797e` -> `a2f3750`
+  - `9fed750` -> `042e595`
+  - `eddbbee` -> `428b654`
+  - `f87cf53` -> `41e8518`
+  - `dbb6eaf` -> `4d9048b`
+  - `da5692d` -> `5a9b2a6`
+  - `d8c0d2a` -> `977af14`
+  - `c511e4c` -> `59d266e`
+  - `171695a` -> `daca416`
+  - `9f83c59` -> `40c9664`
+  - `5044494` -> `7c8941a`
 - Related findings from the screened research digest: one spacing bound in `t2_spatial.md` matched a held-out column of
   the leaked table (since redacted); no spacing, size or density parameter in the plan or code comes from it (the
   jitter and count rules use spacing measured on released files, `experiments/density/REPORT.md`). One research agent
