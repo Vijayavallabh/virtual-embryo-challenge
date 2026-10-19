@@ -1,0 +1,152 @@
+# T1 chamber categories for every released T1 cell-type label (docs/PLAN.md section 4.1: B0 and the M1 base).
+#
+# The E12.5 T1 target is a heart-chamber dissection, while the released stages (E8.5, E9.5; E10.5 from 2026-10-20)
+# include surrounding tissue. vec.t1_scope re-weights real reference-stage cells by these categories. This file says
+# only which category each released label belongs to. It holds no target composition: the share of each category in a
+# prediction is always an input, decided after the release (`vec.t1_scope.load_shares`).
+#
+# Base: the coarse lineage groups of configs/lineage_map.yaml (`group_base` below). Every label is listed explicitly
+# under `labels`; a label whose category differs from its group's base is listed under `exceptions` with the reason
+# (tests/test_t1_scope.py checks both). Evidence for the placements that are not obvious from the name comes from
+# experiments/t1_scope/label_evidence.py (DGX, 2026-10-19; aggregates in experiments/t1_scope/results/label_evidence/):
+# marker means per label and logistic-regression label transfer between the two released stages on 2,000 highly
+# variable genes (vec.harmonise), both directions.
+#
+# Rule for labels first seen in a new T1 file (fixed 2026-10-19, before the 2026-10-20 release). `vec.t1_scope.classify`
+# refuses any label not listed here, so every new label is mapped and committed before a method touches the file:
+#   1. Map the label in configs/lineage_map.yaml first, by that file's rule.
+#   2. Its category is group_base[its group], except where the label names one of these, which win over the group:
+#      septum transversum -> surrounding; cushion or valve endocardium, cushion EndoMT cells or cushion mesenchyme ->
+#      endocardium; epicardium, proepicardium or epicardium-derived cells -> epicardium; erythroid, haematopoietic or
+#      immune cells of any kind -> blood; lymphatic endothelium -> vascular_endothelium.
+#   3. A label whose group has a null base (LPM, Unknown) or whose name does not say what it is (e.g. "Mesenchyme",
+#      "Fibroblast"): check its markers and its classifier calls against the nearest released stage
+#      (experiments/t1_scope/label_evidence.py), place it with the category whose released cells it resembles, record
+#      the evidence in a comment, and default to surrounding when the evidence does not place it inside the heart.
+#   4. A file that lacks a category's own cells may name stand-in labels under `file_fallbacks`, with classifier
+#      evidence. Stand-ins fill that category's quota when re-weighting. A type drawn from stand-ins at either stage
+#      gets no momentum unless standin_momentum=True (`vec.t1_scope.momentum_shift`): the difference between a
+#      stand-in and the type's own cells is one of identity, not development. A remap under `file_overrides` is not
+#      a stand-in; remapped cells count as the category's own, momentum included.
+
+version: 1
+
+# scope: chamber = tissue of the heart chambers themselves (plus the blood inside them); adjacent = cardiac or
+# pericardial tissue outside the chambers; surrounding = everything else. `heart` is the denominator of the
+# cardiomyocyte share ("CM share of heart cells", vec.t1_scope.with_share): chamber categories other than blood.
+categories:
+  cm:
+    scope: chamber
+    description: cardiomyocytes of every segment (atrial, ventricular, AVC, OFT, IFT, SV)
+  endocardium:
+    scope: chamber
+    description: endocardium, cushion and valve endocardium, cushion EndoMT cells and cushion mesenchyme
+  epicardium:
+    scope: chamber
+    description: epicardium, proepicardium and epicardium-derived cells
+  vascular_endothelium:
+    scope: chamber
+    description: vascular (non-endocardial) and lymphatic endothelium
+  blood:
+    scope: chamber
+    description: erythroid, haematopoietic and immune cells
+  progenitor:
+    scope: adjacent
+    description: cardiac progenitors (first and second heart field, JCF, DMP)
+  pericardium:
+    scope: adjacent
+    description: pericardial mesoderm
+  pharyngeal:
+    scope: adjacent
+    description: pharyngeal mesoderm
+  surrounding:
+    scope: surrounding
+    description: >-
+      foregut, ectoderm, neural tube, neural crest, hepatocyte, septum transversum, paraxial and extra-embryonic
+      mesoderm
+heart: [cm, endocardium, epicardium, vascular_endothelium]
+
+# Lineage-map group -> category. null = no default; such labels need an explicit, evidenced placement (rule 3).
+group_base:
+  CM: cm
+  Endocardium: endocardium
+  Endothelium: vascular_endothelium
+  EpicardiumST: epicardium          # ST itself is an exception (surrounding)
+  CardiacProgenitor: progenitor
+  Pericardium: pericardium
+  PharyngealMesoderm: pharyngeal
+  ParaxialMesoderm: surrounding
+  LPM: null
+  ExtraEmbryonicMeso: surrounding
+  NCC: surrounding
+  Endoderm: surrounding
+  Hepatocyte: surrounding
+  Ectoderm: surrounding
+  Neural: surrounding
+  Blood: blood
+  EpiblastStreak: surrounding
+  Unknown: null
+
+# Every label of the released T1 files (E8.5_RNA: 18 labels, E9.5_RNA: 21; boards/t1_composition.json).
+labels:
+  # cardiomyocytes
+  AVC-CM: cm
+  IFT-CM: cm
+  LV-CM: cm                     # E8.5
+  OFT/RV-CM: cm
+  RV-CM: cm                     # E8.5
+  SV-CM: cm
+  V-CM: cm                      # E9.5
+  # endocardium and vascular endothelium
+  Endocardium: endocardium      # E9.5; 98% called E8.5 "Endothelium"
+  BEC: vascular_endothelium     # E9.5 blood endothelial cells: Cldn5 1.79 vs 0.15 in Endocardium; Npr3 0.43 vs 1.01
+  Endothelium: vascular_endothelium   # E8.5 only, where it is a mixture; see file_overrides
+  # epicardium lineage
+  Proepicardium: epicardium     # E9.5; Wt1 1.55, Tbx18 1.65, Upk3b 1.02; 96% called E8.5 JCF
+  ST: surrounding               # E9.5 septum transversum (exception: the lineage map groups it with proepicardium)
+  # progenitors, pericardium, pharyngeal mesoderm
+  JCF: progenitor               # E8.5 juxta-cardiac field; the E8.5 stand-in for epicardium (file_fallbacks)
+  aSHF: progenitor
+  pSHF: progenitor
+  Pericardium: pericardium      # E8.5 Pericardium cells are called E9.5 aSHF (82%), E9.5 Pericardium cells E8.5 pSHF
+                                # (44%) or JCF (43%): the name does not transfer, but both readings are non-chamber
+  aPHM: pharyngeal              # E9.5
+  pPHM: pharyngeal              # E9.5
+  # blood
+  Blood: blood
+  # surrounding tissue
+  Foregut: surrounding
+  Epithelium: surrounding       # E9.5; 100% called E8.5 Foregut (foregut epithelium)
+  Hepatocyte: surrounding       # E9.5
+  Surface Ectoderm: surrounding
+  Neural Tube: surrounding      # E8.5
+  NCC: surrounding
+  NCC-derived: surrounding      # E9.5; arch mesenchyme (Twist1 1.09, Prrx1 0.99, Dlx2 0.34); 48% called E8.5 NCC
+  Paraxial Mesoderm: surrounding   # E8.5
+  EXEM: surrounding             # E8.5 extra-embryonic mesoderm; called E9.5 ST (58%) or pPHM (34%)
+
+# Labels whose category differs from group_base[their lineage-map group].
+exceptions:
+  ST: >-
+    Septum transversum is the liver-bud and diaphragm mesenchyme below the heart, not chamber tissue; only its
+    proepicardial part becomes epicardium, and that part has its own label (Proepicardium). Rule 2 places it in
+    surrounding.
+
+# Per-file remaps, keyed by file stem (pass `source=` to classify). Keys are released T1 file stems (E8.5_RNA, E9.5_RNA,
+# E10.5_RNA), never stage names: the file's stem would select none of a section keyed "E10.5", so
+# `vec.t1_scope.check_spec` (and its test) reports any other key, here and under file_fallbacks.
+file_overrides:
+  E8.5_RNA:
+    # E8.5 has no separate endocardium label. Of its "Endothelium" cells, 56% are called E9.5 Endocardium and 42% BEC
+    # by the E9.5-trained classifier; endocardial markers sit at E9.5-endocardium levels (Npr3 0.97 vs 1.01, Hapln1
+    # 2.74 vs 3.02) while Cldn5 is between the two (0.75; Endocardium 0.15, BEC 1.79). Majority call: endocardium.
+    Endothelium: endocardium
+
+# Stand-in labels for a category that has no own cells in a file (rule 4), keyed by file stem as above.
+file_fallbacks:
+  E8.5_RNA:
+    vascular_endothelium: [Endothelium]   # the same mixed label (42% BEC calls; see file_overrides)
+    epicardium: [JCF]                     # 96% of E9.5 Proepicardium cells are called JCF; JCF has the highest Wt1
+                                          # (0.38) and Tbx18 (0.68) of any E8.5 label. One direction only: 7.4% of
+                                          # E8.5 JCF cells are called Proepicardium (45% SV-CM, 26% ST, 19%
+                                          # Pericardium), so stand-in types get no momentum by default

@@ -1,0 +1,1132 @@
+"""Submission client (feat-016): free format checks by default, guarded official uploads, one ledger row per attempt.
+
+The challenge API treats an upload as OFFICIAL unless the request sends format_only=true, and the final phase allows 2
+scored submissions per board for the whole phase, which cannot be withdrawn. So this module:
+
+- sends format_only=true unless `official` is set AND `confirm` equals the first 12 hex characters of the file's sha256;
+- refuses an official upload unless every guard passes: the local format check, a board whose upload fields and split
+  are known, a clean working tree (no uncommitted change to a tracked file and no untracked, non-ignored file outside
+  results/, runs/ and experiments/**/results/; the ledger itself is exempt), at least one known disclosure id from
+  EXTERNAL_DATA.md, a passing server format check of the same file for the same board in the ledger, a phase that takes
+  submissions for the board's split, a readable quota and submission list, and room in the board's budget (below);
+  it also refuses a file the board already holds through a format check the server stored, unless an official attempt
+  of that file is still unanswered (its identical retry cannot take a second slot);
+- refuses a format check too when the phase (read without the token) cannot be read or its split is not the board's:
+  the server routes T1 and T2 uploads to the phase's split by itself, so a format check it stored would land elsewhere;
+- refuses every POST, format check or official, to every board while a format check that came back as a submission
+  (UNEXPECTED_SUBMISSION: the server ignored format_only, which would not be limited to one board) or unconfirmed
+  (format_unconfirmed) waits for a person's `vec submit resolve`. A format check answered with a submission id is
+  recorded, counted and blocked under the board the server named (the answer's bundle_key) and, if different, under
+  the board the request named; each record is resolved on its own board;
+- returns the earlier record instead of uploading when the server lists the same file on the board, or when the ledger
+  holds the server's answer to an official upload of it, but never a format check's submission (made without the key:
+  the identical request goes out under the key instead); a replay row (mode replay) never counts or settles anything;
+- sends a private snapshot: the file is opened before the snapshot exists, then copied once into a 0600 file in a 0700
+  temporary directory and hashed from the copy (failing to open or read the file is "cannot read FILE"; only failing to
+  write the copy points at the temporary directory), nothing is sent unless that hash equals the plan's ("file changed
+  before upload"), every attempt sends the snapshot's bytes with its Content-Length, and the snapshot is deleted
+  afterwards;
+- keeps the filename, form fields and Idempotency-Key (derived from the board and the file hash) identical on every
+  retry of an official upload, because the server answers a changed payload under a used key with 409;
+- appends a row to results/submissions.csv for every attempt, including refusals, replays and resolutions, and writes a
+  "sending" row before each official request so a crash mid-upload still leaves a trace.
+
+The budget of a board is the larger of the quota endpoint's count (the source of truth) and the slots below, against
+the quota's limit (at most 2); if the quota or the submission list cannot be read or parsed, official uploads are
+refused. Every server entry on the board that is not rejected takes one slot (counted by id). The ledger gives each file
+slots of its own: one per server id from an answer with a status other than rejected or from a format check that came
+back as a submission, one for an ambiguous official outcome (no response, HTTP 3xx or 5xx, a 2xx without both an id and
+a status, or a "sending" row with no outcome after it), and one per format check answered format_unconfirmed. Each
+server entry of the file, rejected or not, settles one of these: the slot of its id if the ledger has that id, else
+(matched by sha256) one without an id; the others count on top of the server's entries. An ambiguous file keeps
+counting, however old and even after a later 4xx, until a definite answer (a 2xx with id and status) or a server
+listing settles it, or a person who has checked the portal records `vec submit resolve SHA12 --board KEY --as
+not-stored --note TEXT` (a later listing still counts it). The other resolution, `--as acknowledged`, is for a format
+check that came back as a submission: it keeps counting, and POSTs resume once no such check waits on any board. The
+plan's own unanswered official attempts are left out of its room check, since an identical retry under the same key
+cannot take a second slot.
+
+The token is loaded with vec.data.load_token at call time (it refuses a token with whitespace, control or non-ASCII
+characters), sent only to the API base (no redirects are followed), and never printed or logged: _call redacts it from
+everything the server sends back (the parsed JSON's keys and values at any depth, and the raw error text before it is
+cut) and from error messages, so ids, statuses, guard details and `vec submit status` only ever see "<token>".
+
+Endpoints and fields, from public material only (unauthenticated GETs, 2026-10-19): the API's OpenAPI document
+(https://api.virtualembryo.ai/openapi.json) and the portal's API guide and upload code in its public JavaScript bundle
+(https://virtualembryo.ai/_nuxt/CFNGMlCM.js, component ChallengeApiGuide; upload function in _nuxt/DxvW8jU0.js).
+- POST /challenge/submissions, multipart: task (T1|T2|T3), setting and mode (T2), target (T3; the portal derives it from
+  the board key and the OpenAPI form lists it), optional model and architecture, format_only (default false), file;
+  optional Idempotency-Key header (1-128 of A-Za-z0-9._:-). A format check answers {ok, problems, format_only} and
+  creates nothing; an upload answers {id, status, task, bundle_key, phase, bytes, sha256, problems, used_credit}, and a
+  rejected one can still come back with HTTP 200.
+- GET /challenge/integration/quota: daily counts and, in the final phase, `official_per_board`, a phase-wide allowance
+  per board. The shape of its entries is not published; this module reads {board: {"used": n, "limit": m}} (or
+  "remaining" in place of "used", or both when they agree; any other field only with a string or null value) and
+  treats anything else as unknown, which refuses official uploads.
+- GET /challenge/submissions (latest 200, each with bundle_key, status and the server's sha256), and
+  GET /challenge/submissions/{id}.
+- GET /challenge/phase (public): split and accepts_submissions.
+"""
+
+from __future__ import annotations
+
+import contextlib
+import csv
+import fcntl
+import hashlib
+import http.client
+import json
+import os
+import re
+import shlex
+import subprocess
+import tempfile
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+from collections.abc import Callable, Iterator, Sequence
+from dataclasses import dataclass, field
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import BinaryIO
+
+from vec import data as vec_data
+from vec.boards import BOARDS_DIR, REPO_ROOT, Board, get_board, load_boards
+from vec.io import CheckReport, check_submission
+
+API_BASE = vec_data.API_BASE
+LEDGER = REPO_ROOT / "results" / "submissions.csv"
+EXTERNAL_DATA = REPO_ROOT / "EXTERNAL_DATA.md"
+FINAL_PHASE_LIMIT = 2  # scored submissions per board for the whole final phase
+LEDGER_FIELDS = ["utc_time", "board", "mode", "file", "upload_name", "sha256", "server_status", "server_id",
+                 "http_status", "git_commit", "disclosure", "idempotency_key", "fields", "note", "detail"]
+REJECTED = "rejected"  # the only server status that spends no official attempt (cancelled ones are not refunded)
+# untracked files may stay here (and under experiments/**/results/) at an official upload; anything else, code or not,
+# must be committed so that the ledger's commit describes what produced the file
+OUTPUT_DIRS = ("results", "runs")
+CLIENT_STATUSES = frozenset({"refused", "sending", "no_response", "http_error", "unconfirmed", "unknown", "format_ok",
+                             "format_failed", "format_unconfirmed", "UNEXPECTED_SUBMISSION"})  # never a server status
+FORMAT_SUBMISSION = ("UNEXPECTED_SUBMISSION", "format_unconfirmed")  # format checks that may have made a submission
+RESOLUTIONS = ("not-stored", "acknowledged")  # vec submit resolve --as
+QUOTA_FIELDS = ("used", "limit", "remaining")
+RETRY_DELAYS = (2.0, 4.0, 8.0)  # the API guide's back-off for timeouts and 5xx; 4xx are never retried automatically
+GET_TIMEOUT = 60.0
+UPLOAD_TIMEOUT = 900.0
+IDEMPOTENCY_KEY = re.compile(r"^[A-Za-z0-9._:-]{1,128}$")
+DISCLOSURE_ID = re.compile(r"^X\d{3}$")
+LOOPBACK = ("http://127.0.0.1:", "http://localhost:")
+
+
+class SubmitRefused(RuntimeError):
+    """A guard refused the request; nothing was sent."""
+
+    def __init__(self, message: str, plan: Plan | None = None):
+        super().__init__(message)
+        self.plan = plan
+
+
+@dataclass
+class Guard:
+    name: str
+    ok: bool
+    detail: str = ""
+
+
+@dataclass
+class Plan:
+    """What one attempt will send, and the guard results; built and shown before anything is sent."""
+
+    file: Path
+    board: str
+    official: bool
+    sha256: str
+    upload_name: str
+    fields: dict[str, str]
+    idempotency_key: str
+    disclosure: list[str]
+    note: str
+    git_commit: str
+    guards: list[Guard] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+    replay: dict | None = None  # earlier record when this file was already sent officially to this board
+
+    @property
+    def ok(self) -> bool:
+        return all(g.ok for g in self.guards)
+
+    @property
+    def failed(self) -> list[str]:
+        return [g.name for g in self.guards if not g.ok]
+
+
+@dataclass
+class Result:
+    plan: Plan
+    server_status: str  # format_ok | format_failed | format_unconfirmed | UNEXPECTED_SUBMISSION | a server status
+    # (queued, scored, rejected, ...) | unconfirmed (a 2xx without both an id and a status) | http_error | no_response
+    server_id: str = ""
+    http_status: int | None = None
+    detail: str = ""
+    replayed: bool = False
+    boards: tuple[str, ...] = ()  # an UNEXPECTED_SUBMISSION's ledger boards: the server's bundle_key, then the plan's
+
+    @property
+    def ok(self) -> bool:
+        if self.plan.official:
+            return self.server_status not in (REJECTED, "cancelled", "http_error", "no_response", "unconfirmed",
+                                              "unknown")
+        return self.server_status == "format_ok"
+
+
+@dataclass
+class Budget:
+    """Official uploads already spent on one board: the server's quota and entries, and files only the ledger knows."""
+
+    board: str
+    server_used: int | None  # from the quota endpoint (source of truth); None if unknown
+    server_limit: int | None
+    listed: list[str]  # ids of the server's entries on the board that are not rejected: one slot each
+    unlisted: dict[str, int]  # sha256 -> slots of a file the server does not list (yet), from the ledger
+    ambiguous: set[str]  # files whose outcome is unknown: they count until listed or resolved by a person
+    retryable: set[str]  # files with unanswered official attempts (one slot each; an identical retry is free)
+    unresolved: list[dict] = field(default_factory=list)  # format checks that came back as a submission: no POST
+    reason: str = ""  # why the server budget is unknown
+
+    @property
+    def limit(self) -> int:
+        return FINAL_PHASE_LIMIT if self.server_limit is None else min(self.server_limit, FINAL_PHASE_LIMIT)
+
+    def spent_besides(self, sha: str | None = None) -> int:
+        """Slots spent, leaving out the slot of `sha`'s unanswered official attempts: an identical retry under the same
+        Idempotency-Key cannot take a second one."""
+        return max(self.server_used or 0, len(self.listed) + sum(self.unlisted.values()) - (sha in self.retryable))
+
+    @property
+    def spent(self) -> int:
+        return self.spent_besides()
+
+
+@dataclass
+class Reply:
+    status: int  # HTTP status; 0 = no response (timeout or connection failure)
+    body: dict | None
+    detail: str
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Files, boards, disclosures
+
+
+def sha256_file(path: str | Path) -> str:
+    h = hashlib.sha256()
+    with Path(path).open("rb") as f:
+        while chunk := f.read(1 << 20):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def board_fields(board: Board) -> dict[str, str]:
+    """The form fields that name a board, derived from its key exactly as the portal does.
+
+    T1 -> task; T2 -> task, setting, mode (the part of the split after '_'); T3 -> task, target. The server picks the
+    phase's validation or test split by itself, so the board's split is checked against the phase before an official
+    upload.
+    """
+    parts = board.key.split(":")
+    task = parts[0]
+    if task == "T1" and len(parts) == 2:
+        out = {"task": task}
+    elif task == "T2" and len(parts) == 3 and "_" in parts[2]:
+        out = {"task": task, "setting": parts[1], "mode": parts[2].split("_", 1)[1]}
+        if out["setting"] not in ("heart", "embryo") or out["mode"] not in ("interp", "extrap"):
+            raise ValueError(f"unexpected T2 setting or mode in board key {board.key!r}")
+    elif task == "T3" and len(parts) == 2 and re.fullmatch(r"[A-Za-z0-9._-]+", parts[1]):
+        out = {"task": task, "target": parts[1]}
+    else:
+        raise ValueError(f"cannot derive upload fields from board key {board.key!r}")
+    if board.task != task:
+        raise ValueError(f"board {board.key!r} has task {board.task!r}")
+    if board.setting and out.get("setting", board.setting) != board.setting:
+        raise ValueError(f"board {board.key!r} has setting {board.setting!r}")
+    if board.target_ko and out.get("target", board.target_ko) != board.target_ko:
+        raise ValueError(f"board {board.key!r} has target {board.target_ko!r}")
+    return out
+
+
+def subtask_key(board: Board) -> str:
+    """The portal's per-subtask quota key: T2/<setting>/<mode> for T2, the task otherwise."""
+    f = board_fields(board)
+    return f"T2/{f['setting']}/{f['mode']}" if f["task"] == "T2" else f["task"]
+
+
+def board_split(board: Board) -> str | None:
+    """'val' or 'test', from the board's published split (or its key); None if neither."""
+    split = board.split or (board.key.split(":")[1] if board.task == "T1" else board.key.split(":")[-1])
+    split = split.lower()
+    return "test" if split.startswith("test") else "val" if split.startswith("val") else None
+
+
+def idempotency_key(board: str, sha256: str) -> str:
+    key = f"vec.{re.sub(r'[^A-Za-z0-9.:-]', '-', board)}.{sha256}"
+    if not IDEMPOTENCY_KEY.match(key):
+        raise ValueError(f"cannot build an Idempotency-Key for board {board!r}")
+    return key
+
+
+def upload_name(path: Path) -> str:
+    return re.sub(r"[^A-Za-z0-9._-]", "_", path.name)
+
+
+def check_local(file: str | Path, board: str | Board, boards_dir: Path | None = None) -> CheckReport:
+    """Free local format check (vec.io.check_submission plus the portal's file checks); refuses on any error."""
+    b = board if isinstance(board, Board) else get_board(board, boards_dir or BOARDS_DIR)
+    path = Path(file)
+    if not path.name.lower().endswith(".h5ad"):
+        raise SubmitRefused("local format check: the file must be an AnnData .h5ad")
+    if path.stat().st_size == 0:
+        raise SubmitRefused("local format check: the file is empty")
+    try:
+        rep = check_submission(path, b)
+    except Exception as e:  # unreadable or malformed file
+        raise SubmitRefused(f"local format check: cannot read {path.name}: {type(e).__name__}: {e}") from e
+    if not rep.ok:
+        raise SubmitRefused("local format check: " + "; ".join(rep.errors))
+    return rep
+
+
+def disclosure_register(path: Path | None = None) -> dict[str, str]:
+    """Disclosure ids in EXTERNAL_DATA.md's table, each with its source cell."""
+    try:
+        text = Path(path or EXTERNAL_DATA).read_text()
+    except OSError:
+        return {}
+    reg = {}
+    for line in text.splitlines():
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) > 1 and DISCLOSURE_ID.match(cells[0]):
+            reg[cells[0]] = cells[1]
+    return reg
+
+
+def parse_ids(disclose: str | Sequence[str]) -> list[str]:
+    items = disclose.split(",") if isinstance(disclose, str) else list(disclose)
+    return list(dict.fromkeys(i.strip().upper() for i in items if i.strip()))
+
+
+def _output_path(path: str) -> bool:
+    """An untracked path that may stay uncommitted: under results/, runs/ or experiments/**/results/."""
+    parts = path.split("/")
+    return (parts[0] in OUTPUT_DIRS and len(parts) > 1) or (parts[0] == "experiments" and "results" in parts[1:-1])
+
+
+def git_state(repo: Path, ignore: Sequence[Path] = ()) -> tuple[str, list[str] | None]:
+    """HEAD commit and the paths that keep the tree from being clean (None when git cannot tell): tracked files with
+    uncommitted changes, and untracked, non-ignored files outside results/, runs/ and experiments/**/results/. The paths
+    come from `git status --porcelain -z`, which never quotes them, so `ignore` (the ledger) compares exactly."""
+    def run(*args: str) -> str:
+        return subprocess.run(["git", "-C", str(repo), *args], capture_output=True, check=True).stdout.decode(
+            errors="replace")
+
+    try:
+        commit = run("rev-parse", "HEAD").strip()
+        status = run("status", "--porcelain", "-z", "--untracked-files=all")
+    except (OSError, subprocess.CalledProcessError):
+        return "unknown", None
+    skip = set()
+    for p in ignore:
+        try:
+            skip.add(Path(p).resolve().relative_to(Path(repo).resolve()).as_posix())
+        except ValueError:
+            pass
+    changed, entries = [], iter(status.split("\0"))
+    for entry in entries:
+        code, paths = entry[:2], [entry[3:]]
+        if "R" in code or "C" in code:
+            paths.append(next(entries, ""))  # a rename or copy: the new path, then the old one
+        changed += [p for p in paths if p and p not in skip and not (code == "??" and _output_path(p))]
+    return commit, changed
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Ledger
+
+
+class Ledger:
+    """results/submissions.csv, locked for the whole call so that two clients cannot both pass the budget guard."""
+
+    def __init__(self, path: Path):
+        self.path = Path(path)
+        self._fh = None
+        self._rows: list[dict] = []
+
+    def __enter__(self) -> Ledger:
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        fh = self.path.open("a+", newline="")
+        try:
+            fcntl.flock(fh, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            fh.close()
+            raise SubmitRefused(f"{self.path} is locked by another vec submit; try again when it finishes") from None
+        fh.seek(0)
+        reader = csv.DictReader(fh)
+        rows = list(reader)
+        if reader.fieldnames is not None and list(reader.fieldnames) != LEDGER_FIELDS:
+            fh.close()
+            raise SubmitRefused(f"{self.path} has unexpected columns; refusing to append to it")
+        self._fh, self._rows = fh, rows
+        return self
+
+    def __exit__(self, *exc) -> None:
+        if self._fh is not None:
+            fcntl.flock(self._fh, fcntl.LOCK_UN)
+            self._fh.close()
+            self._fh = None
+
+    def rows(self) -> list[dict]:
+        return list(self._rows)
+
+    def append(self, row: dict) -> None:
+        assert self._fh is not None, "ledger is not open"
+        self._fh.seek(0, os.SEEK_END)
+        w = csv.DictWriter(self._fh, fieldnames=LEDGER_FIELDS)
+        if self._fh.tell() == 0:
+            w.writeheader()
+        w.writerow(row)
+        self._fh.flush()
+        os.fsync(self._fh.fileno())
+        self._rows.append(row)
+
+
+def read_ledger(path: Path | None = None) -> list[dict]:
+    path = Path(path or LEDGER)
+    if not path.exists():
+        return []
+    with path.open(newline="") as fh:
+        return list(csv.DictReader(fh))
+
+
+def _row(plan: Plan, status: str, server_id: str = "", http_status: int | None = None, detail: str = "") -> dict:
+    return {"utc_time": _now(), "board": plan.board,
+            "mode": "official" if plan.official else "format", "file": _display_path(plan.file),
+            "upload_name": plan.upload_name, "sha256": plan.sha256, "server_status": status, "server_id": server_id,
+            "http_status": "" if http_status is None else str(http_status), "git_commit": plan.git_commit,
+            "disclosure": ";".join(plan.disclosure), "idempotency_key": plan.idempotency_key,
+            "fields": json.dumps(plan.fields), "note": plan.note, "detail": detail}
+
+
+def _now() -> str:
+    return datetime.now(UTC).isoformat(timespec="seconds")
+
+
+def _display_path(path: Path) -> str:
+    try:
+        return path.resolve().relative_to(REPO_ROOT).as_posix()
+    except ValueError:
+        return str(path.resolve())
+
+
+@dataclass
+class _File:
+    """What the ledger says about one file (sha256) on one board, read from its rows in order."""
+
+    answer: dict | None = None  # latest answer to an official upload: a row with the server's submission id and status
+    ambiguous: bool = False  # an official attempt may have stored it, and no answer or resolution has settled it since
+    sending: bool = False  # a "sending" row still waiting for its outcome row (a crash mid-upload leaves one)
+    format_ids: dict[str, dict] = field(default_factory=dict)  # format checks that came back as a submission, by id
+    unconfirmed: int = 0  # format checks answered format_unconfirmed since the last not-stored resolution
+    unresolved: list[dict] = field(default_factory=list)  # rows of those two kinds that no person has resolved yet
+
+    def ids(self) -> set[str]:
+        return set(self.format_ids) | ({self.answer["server_id"]} if self.answer else set())
+
+    def held(self) -> set[str]:
+        """The server ids that take a slot: format checks that came back as a submission, and the answer unless it was
+        rejected. The file's other slots have no id: one if ambiguous, and one per format_unconfirmed check."""
+        ids = set(self.format_ids)
+        if self.answer is not None:
+            ids.discard(self.answer["server_id"])
+            if self.answer["server_status"] != REJECTED:
+                ids.add(self.answer["server_id"])
+        return ids
+
+
+def _attempt(row: dict) -> str:
+    """What one official outcome row says: "answer" (the server's submission id and status), "ambiguous" (the upload may
+    have been stored), "not_stored" (HTTP 4xx) or "" (not an outcome row this client writes)."""
+    status, code = row.get("server_status", ""), row.get("http_status", "")
+    if status == "http_error":
+        return "not_stored" if code.startswith("4") else "ambiguous"  # 3xx and 5xx may have been processed
+    if row.get("server_id") and status and status not in CLIENT_STATUSES:
+        return "answer"
+    return "ambiguous" if status in ("no_response", "unconfirmed") or code else ""
+
+
+def _ledger_files(rows: list[dict], board: str) -> dict[str, _File]:
+    """What the ledger says about each file sent to `board` (the rules are in the module docstring). Replay rows sent
+    nothing and are ignored."""
+    files: dict[str, _File] = {}
+    for r in rows:
+        if r.get("board") != board or not r.get("sha256"):
+            continue
+        f, mode, status = files.setdefault(r["sha256"], _File()), r.get("mode"), r.get("server_status", "")
+        if mode == "official" and status == "sending":
+            f.ambiguous |= f.sending and f.answer is None  # the attempt before this one never got an outcome row
+            f.sending = True
+        elif mode == "official" and status != "refused":
+            f.sending, kind = False, _attempt(r)
+            if kind == "answer":
+                f.answer, f.ambiguous = r, False
+            elif kind == "ambiguous" and f.answer is None:
+                f.ambiguous = True  # a later 4xx does not undo this
+        elif mode == "format" and status in FORMAT_SUBMISSION:
+            if status == "UNEXPECTED_SUBMISSION":
+                f.format_ids[r.get("server_id") or r.get("utc_time", "")] = r
+            else:
+                f.unconfirmed += 1
+            f.unresolved.append(r)
+        elif mode == "resolve" and status == "not-stored":
+            f.ambiguous = f.sending = False
+            f.unconfirmed = 0
+            f.unresolved = [x for x in f.unresolved if x.get("server_status") == "UNEXPECTED_SUBMISSION"]
+        elif mode == "resolve" and status == "acknowledged":
+            f.unresolved = []
+    for f in files.values():
+        f.ambiguous |= f.sending and f.answer is None
+    return files
+
+
+def _unresolved(rows: list[dict], board: str | None = None) -> list[dict]:
+    """Format-check rows that came back as a submission or unconfirmed and await a person (ledger order): on `board`,
+    or on every board."""
+    boards = [board] if board is not None else list(dict.fromkeys(r.get("board", "") for r in rows))
+    pending = {id(r) for b in boards for f in _ledger_files(rows, b).values() for r in f.unresolved}
+    return [r for r in rows if id(r) in pending]
+
+
+def resolve_commands(rows: list[dict]) -> dict[tuple[str, str], tuple[str, str]]:
+    """For each (board, sha256) among format-check rows that await a person: what came back, and the `vec submit
+    resolve` command (--as acknowledged once the server gave a submission id; not-stored can only settle the rest)."""
+    kinds: dict[tuple[str, str], list[str]] = {}
+    for r in rows:
+        k = kinds.setdefault((r["board"], r["sha256"]), [])
+        k += [r["server_status"]] if r["server_status"] not in k else []
+    return {(board, sha): (" and ".join(k), f"vec submit resolve {sha[:12]} --board {shlex.quote(board)} --as "
+                           f"{'acknowledged' if 'UNEXPECTED_SUBMISSION' in k else 'acknowledged (or not-stored)'} "
+                           "--note TEXT") for (board, sha), k in kinds.items()}
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Server state
+
+
+def official_quota(quota: dict | None, board: Board) -> tuple[int, int] | str:
+    """(used, limit) for `board` from the quota endpoint's official_per_board, or why it is unknown."""
+    if not isinstance(quota, dict):
+        return "the quota endpoint could not be read"
+    per_board = quota.get("official_per_board")
+    if per_board is None:
+        return "the quota response has no official_per_board (not the final phase?)"
+    if not isinstance(per_board, dict):
+        return f"official_per_board has an unexpected shape ({type(per_board).__name__})"
+    keys = list(dict.fromkeys([board.key, subtask_key(board)]))
+    hits = [k for k in keys if k in per_board]
+    if len(hits) != 1:
+        return (f"official_per_board has no single entry for {' or '.join(keys)} "
+                f"(keys: {', '.join(map(str, per_board))})")
+    entry = per_board[hits[0]]
+    # any other field that is not a string may be a count this parser does not understand
+    if isinstance(entry, dict) and all(k in QUOTA_FIELDS or v is None or isinstance(v, str) for k, v in entry.items()):
+        used, limit, remaining = entry.get("used"), entry.get("limit"), entry.get("remaining")
+        if _count(used) and _count(limit) and (remaining is None or (_count(remaining) and used + remaining == limit)):
+            return used, limit
+        if used is None and _count(remaining) and _count(limit) and remaining <= limit:
+            return limit - remaining, limit
+    return f"official_per_board[{hits[0]!r}] has an unexpected shape: {json.dumps(entry)[:160]}"
+
+
+def _count(x) -> bool:
+    return isinstance(x, int) and not isinstance(x, bool) and x >= 0
+
+
+def server_entries(subs: list[dict], board: str, ident: dict[str, str] | None = None) -> list[dict]:
+    """Server submissions on `board`: by bundle_key, or (entries without one) by task and the board's fields."""
+    out = []
+    for e in subs:
+        if not isinstance(e, dict):
+            continue
+        bundle = e.get("bundle_key")
+        if bundle is not None:
+            if bundle == board:
+                out.append(e)
+        elif ident and e.get("task") == ident.get("task") and all(
+                e.get(k) in (None, v) for k, v in ident.items() if k != "task"):
+            out.append(e)  # conservative: may over-count, never under-count
+    return out
+
+
+def board_budget(board: str, rows: list[dict], quota: tuple[int, int] | str, subs: list[dict] | None,
+                 ident: dict[str, str] | None = None) -> Budget:
+    """The board's budget: server entries by id, plus the ledger's slots that no server entry has settled."""
+    entries = server_entries(subs or [], board, ident)
+    listed = list(dict.fromkeys(str(e.get("id") or f"#{i}") for i, e in enumerate(entries)
+                                if e.get("status") != REJECTED))
+    unlisted, ambiguous, retryable, unresolved = {}, set(), set(), []
+    for sha, f in _ledger_files(rows, board).items():
+        unresolved += f.unresolved
+        ids, held, anonymous = f.ids(), f.held(), int(f.ambiguous) + f.unconfirmed
+        for e in entries:  # each entry of the file settles one slot: its id's, else (same sha256) one without an id
+            if (eid := str(e.get("id") or "")) and eid in ids:
+                held.discard(eid)
+            elif e.get("sha256") == sha:
+                anonymous = max(anonymous - 1, 0)
+        if n := len(held) + anonymous:
+            unlisted[sha] = n
+        if anonymous:
+            ambiguous.add(sha)
+        if anonymous and f.ambiguous:
+            retryable.add(sha)
+    used, limit, reason = (quota[0], quota[1], "") if isinstance(quota, tuple) else (None, None, quota)
+    return Budget(board, used, limit, listed, unlisted, ambiguous, retryable, unresolved, reason)
+
+
+def _subs_list(reply: Reply) -> list[dict] | None:
+    if reply.status == 200 and isinstance(reply.body, dict) and isinstance(reply.body.get("submissions"), list):
+        return reply.body["submissions"]
+    return None
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# HTTP
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):  # noqa: D102
+        return None  # never follow a redirect: the token goes to the API base and nowhere else
+
+
+def _opener(url: str) -> urllib.request.OpenerDirector:
+    if url.startswith(LOOPBACK):  # local test servers: never through a proxy
+        return urllib.request.build_opener(_NoRedirect, urllib.request.ProxyHandler({}))
+    return urllib.request.build_opener(_NoRedirect)
+
+
+def _check_base(base: str) -> str:
+    base = base.rstrip("/")
+    if not (base.startswith("https://") or base.startswith(LOOPBACK)):
+        raise SubmitRefused(f"refusing to send the token to {base!r}: https (or a loopback test server) only")
+    return base
+
+
+def _call(req: urllib.request.Request, timeout: float, token: str | None) -> Reply:
+    """One request. The token is redacted here, once, from everything that comes back (the parsed JSON's keys and
+    values at any depth, the raw error text before it is cut) and from error messages, so no caller ever sees it."""
+    try:
+        with _opener(req.full_url).open(req, timeout=timeout) as r:
+            status, raw = r.status, r.read()
+    except urllib.error.HTTPError as e:
+        status, raw = e.code, e.read()
+    except (OSError, ValueError, http.client.HTTPException) as e:  # ValueError: a bad header value, a garbled answer
+        return Reply(0, None, vec_data.redact(f"no response ({type(e).__name__}: {getattr(e, 'reason', e)})", token))
+    try:
+        parsed = vec_data.redact(json.loads(raw.decode()), token) if raw else None
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        parsed = None
+    body = parsed if isinstance(parsed, dict) else None
+    detail = ""
+    if not 200 <= status < 300:
+        d = body.get("detail") if body is not None else parsed if parsed is not None else \
+            vec_data.redact(raw.decode(errors="replace"), token)
+        detail = f"HTTP {status}: {(d if isinstance(d, str) else json.dumps(d))[:300]}"
+    return Reply(status, body, detail)
+
+
+def _get(base: str, path: str, token: str | None = None) -> Reply:
+    headers = {"Accept": "application/json"}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    return _call(urllib.request.Request(f"{base}{path}", headers=headers, method="GET"), GET_TIMEOUT, token)
+
+
+class _Multipart:
+    """multipart/form-data body streamed from the snapshot. The boundary comes from the file hash, so retries are
+    identical."""
+
+    def __init__(self, fields: dict[str, str], path: Path, size: int, name: str, boundary: str):
+        parts = [f'--{boundary}\r\nContent-Disposition: form-data; name="{k}"\r\n\r\n{v}\r\n'
+                 for k, v in fields.items()]
+        parts.append(f'--{boundary}\r\nContent-Disposition: form-data; name="file"; filename="{name}"\r\n'
+                     "Content-Type: application/octet-stream\r\n\r\n")
+        self.head = "".join(parts).encode()
+        self.tail = f"\r\n--{boundary}--\r\n".encode()
+        self.path = path
+        self.length = len(self.head) + size + len(self.tail)
+
+    def __iter__(self) -> Iterator[bytes]:
+        yield self.head
+        with self.path.open("rb") as f:
+            while chunk := f.read(1 << 20):
+                yield chunk
+        yield self.tail
+
+
+def _post(base: str, token: str, plan: Plan, snapshot: Path, size: int) -> Reply:
+    """POST the plan with the snapshot's bytes (`size` of them) as the file."""
+    boundary = f"vec-{plan.sha256}"
+    body = _Multipart(plan.fields, snapshot, size, plan.upload_name, boundary)
+    headers = {"Authorization": f"Bearer {token}", "Accept": "application/json",
+               "Content-Type": f"multipart/form-data; boundary={boundary}", "Content-Length": str(body.length)}
+    if plan.official:
+        headers["Idempotency-Key"] = plan.idempotency_key
+    req = urllib.request.Request(f"{base}/challenge/submissions", data=body, headers=headers, method="POST")
+    return _call(req, UPLOAD_TIMEOUT, token)
+
+
+class _Unreadable(Exception):
+    """Reading the file to upload failed (its cause is the OSError); writing the snapshot did not."""
+
+
+def _private_copy(src: BinaryIO, dst: Path) -> tuple[str, int]:
+    """Copy the open file `src` into a new file `dst` (mode 0600); returns the sha256 and the size of the bytes written.
+    An error reading `src` is raised as _Unreadable, so that it is never taken for a full disk."""
+    h, size = hashlib.sha256(), 0
+    with open(os.open(dst, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), "wb") as fo:
+        while True:
+            try:
+                chunk = src.read(1 << 20)
+            except OSError as e:
+                raise _Unreadable from e
+            if not chunk:
+                return h.hexdigest(), size
+            fo.write(chunk)
+            h.update(chunk)
+            size += len(chunk)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Plan, send, resolve, status
+
+
+def prepare(file: str | Path, board: str, official: bool, confirm: str | None, *, disclose: str | Sequence[str],
+            note: str, model: str | None, architecture: str | None, token: str, base: str, rows: list[dict],
+            repo: Path, ledger_path: Path, boards_dir: Path, external_data: Path | None) -> Plan:
+    """Hash the file, derive the request and evaluate every guard. Official plans read phase, quota and submissions."""
+    path = Path(file)
+    sha = sha256_file(path)
+    guards: list[Guard] = []
+    warnings: list[str] = []
+    b, ident = None, {}
+    try:
+        b = get_board(board, boards_dir)
+    except KeyError as e:
+        guards.append(Guard("board", False, str(e).strip("\"'")))
+    else:
+        try:
+            ident = board_fields(b)
+            guards.append(Guard("board", True, ", ".join(f"{k}={v}" for k, v in ident.items())))
+        except ValueError as e:
+            guards.append(Guard("board", False, str(e)))
+    if b is not None:
+        try:
+            rep = check_local(path, b)
+            warnings += rep.warnings
+            guards.append(Guard("local format check", True, f"{rep.n_cells} cells, {len(rep.warnings)} warning(s)"))
+        except SubmitRefused as e:
+            guards.append(Guard("local format check", False, str(e)))
+
+    extra = {k: v for k, v in (("model", model), ("architecture", architecture)) if v}
+    bad = [k for k, v in extra.items() if len(v) > 200 or re.search(r"[\x00-\x1f\"]", v)]
+    if bad:
+        guards.append(Guard("fields", False,
+                            f"{', '.join(bad)}: at most 200 characters, no quotes or control characters"))
+    fields = {**ident, **extra}
+    if not official:
+        fields["format_only"] = "true"
+
+    ids = parse_ids(disclose)
+    register = disclosure_register(external_data)
+    unknown = [i for i in ids if i not in register]
+    if unknown:
+        guards.append(Guard("disclosure", False, f"not in EXTERNAL_DATA.md: {', '.join(unknown)}"))
+    elif official and not ids:
+        guards.append(Guard("disclosure", False, "an official upload needs --disclose with EXTERNAL_DATA.md ids"))
+    elif ids:
+        guards.append(Guard("disclosure", True, "; ".join(f"{i} {register[i][:60]}" for i in ids)))
+
+    stray = resolve_commands(_unresolved(rows))
+    if stray:  # the server may be ignoring format_only, and not on one board only: no POST anywhere until someone looks
+        seen = ", ".join(f"{sha[:12]} on {b} ({kind})" for (b, sha), (kind, _) in stray.items())
+        guards.append(Guard("unresolved upload", False, f"possible submissions from format checks ({seen}): nothing "
+                            "is sent to any board until a person has checked the portal and run "
+                            + "; ".join(cmd for _, cmd in stray.values())))
+
+    commit, changed = git_state(repo, ignore=[ledger_path])
+    git_commit = commit if changed is None or not changed else f"{commit}+dirty"
+    name, key = upload_name(path), idempotency_key(board, sha) if official and ident else ""
+    plan = Plan(path, board, official, sha, name, fields, key, ids, note, git_commit, guards, warnings)
+    if not official:
+        if confirm:
+            warnings.append("--confirm is ignored without --official: this is a format check")
+        if b is not None and ident:  # a format check the server stored anyway would land on the phase's split
+            guards.append(_phase_guard(base, b, official=False))
+        return plan
+
+    ok = (confirm or "").strip().lower() == sha[:12]
+    guards.insert(0, Guard("confirm", ok, "matches sha256[:12]" if ok else
+                           "--confirm must equal the first 12 hex characters of the file's sha256"))
+    if changed is None:
+        guards.append(Guard("clean tree", False, f"cannot read the git state of {repo}"))
+    else:
+        guards.append(Guard("clean tree", not changed, "nothing uncommitted (untracked files only under results/, "
+                            "runs/ and experiments/**/results/)" if not changed else
+                            f"uncommitted or untracked: {', '.join(changed[:5])}{' ...' if len(changed) > 5 else ''}"))
+    _reuse_earlier_request(plan, rows)
+    fmt_ok = any(r.get("mode") == "format" and r.get("board") == board and r.get("sha256") == sha
+                 and r.get("server_status") == "format_ok" for r in rows)
+    guards.append(Guard("server format check", fmt_ok, "passed earlier for this file and board" if fmt_ok else
+                        f"run a format check first: vec submit {path} --board {board}"))
+    if b is None or not ident:  # the board guard has failed; no server reads
+        return plan
+
+    guards.append(_phase_guard(base, b, official=True))
+    q = _get(base, "/challenge/integration/quota", token)
+    quota = official_quota(q.body if q.status == 200 else None, b)
+    if q.status != 200:
+        quota = f"the quota endpoint could not be read ({q.detail or 'no response'})"
+    guards.append(Guard("quota", isinstance(quota, tuple),
+                        f"server: {quota[0]} of {quota[1]} used on {board}" if isinstance(quota, tuple) else quota))
+    s = _get(base, "/challenge/submissions", token)
+    subs = _subs_list(s)
+    guards.append(Guard("submission list", subs is not None, f"{len(subs)} server entries read" if subs is not None
+                        else f"cannot read /challenge/submissions ({s.detail or s.status})"))
+
+    plan.replay = _find_replay(board, sha, rows, subs, ident)
+    if plan.replay is not None:
+        guards.append(Guard("budget", True, f"already sent ({plan.replay['source']} record {plan.replay['id'] or '?'}, "
+                            f"status {plan.replay['status']}): replayed, nothing new is spent"))
+        return plan
+    held = _ledger_files(rows, board).get(sha)
+    if held is not None and held.format_ids and not held.ambiguous:  # an unanswered official attempt may still retry
+        guards.append(Guard("already held", False, f"the board already holds this file as submission "
+                            f"{', '.join(sorted(held.format_ids))} (a format check the server stored): an official "
+                            "upload would spend another slot on the same bytes"))
+    budget = board_budget(board, rows, quota, subs, ident)
+    spent = budget.spent_besides(sha)
+    room = isinstance(quota, tuple) and subs is not None and spent < budget.limit
+    retry = "; this file's unanswered attempt is not counted again" if sha in budget.retryable else ""
+    guards.append(Guard("budget", room, f"{spent} of {budget.limit} spent (server quota "
+                        f"{budget.server_used if budget.server_used is not None else 'unknown'}; server entries not "
+                        f"rejected: {len(budget.listed)}; unlisted in the ledger: {sum(budget.unlisted.values())}; "
+                        f"ambiguous: {len(budget.ambiguous)}{retry})"))
+    return plan
+
+
+def _phase_guard(base: str, b: Board, official: bool) -> Guard:
+    """The phase must take the board's split, since the server routes T1 and T2 uploads to the phase's split by itself;
+    an official upload also needs accepts_submissions. The phase is public: no token."""
+    phase, split = _get(base, "/challenge/phase"), board_split(b)
+    if phase.status != 200 or phase.body is None:
+        return Guard("phase", False, f"cannot read /challenge/phase ({phase.detail or phase.status})")
+    p_split, accepts = str(phase.body.get("split", "")), phase.body.get("accepts_submissions")
+    ok = split is not None and p_split.lower().startswith(split) and (accepts is True or not official)
+    return Guard("phase", ok, f"phase {phase.body.get('phase')} split {p_split!r}, accepts submissions {accepts}; "
+                 f"board split {b.split or split!r}")
+
+
+def _reuse_earlier_request(plan: Plan, rows: list[dict]) -> None:
+    """A retry of an official upload reuses the earlier filename, fields and Idempotency-Key byte for byte."""
+    earlier = [r for r in rows if r.get("mode") == "official" and r.get("board") == plan.board
+               and r.get("sha256") == plan.sha256 and r.get("server_status") != "refused" and r.get("idempotency_key")]
+    if not earlier:
+        return
+    first = earlier[0]
+    try:
+        fields = json.loads(first["fields"])
+    except ValueError:
+        fields = None
+    if not isinstance(fields, dict) or not first.get("upload_name"):
+        plan.guards.append(Guard("retry", False, f"the earlier attempt's ledger row ({first['utc_time']}) is "
+                                 "unreadable"))
+        return
+    if fields != plan.fields or first["upload_name"] != plan.upload_name:
+        plan.warnings.append(f"retry of an earlier official attempt ({first['utc_time']}): reusing its filename "
+                             f"{first['upload_name']!r} and fields {fields}")
+    plan.fields, plan.upload_name, plan.idempotency_key = fields, first["upload_name"], first["idempotency_key"]
+
+
+def _find_replay(board: str, sha: str, rows: list[dict], subs: list[dict] | None, ident: dict) -> dict | None:
+    """The earlier record of this file on this board: the server's entry, or the ledger's answer to an official upload
+    (a 2xx with the server's submission id and status). Never a format check that came back as a submission, which was
+    made without the key, and never a ledger row without an id: the identical request goes out again then, and under
+    the same key the server answers it with the original if it holds one."""
+    f = _ledger_files(rows, board).get(sha) or _File()
+    if subs is not None:
+        same = [e for e in server_entries(subs, board, ident)
+                if e.get("sha256") == sha and str(e.get("id") or "") not in f.format_ids]
+        if same:
+            e = next((x for x in same if x.get("status") != REJECTED), same[0])
+            return {"source": "server", "id": str(e.get("id") or ""), "status": str(e.get("status") or "unknown")}
+    if f.answer is not None:
+        return {"source": "ledger", "id": f.answer["server_id"], "status": f.answer["server_status"]}
+    return None
+
+
+def submit(file: str | Path, board: str, official: bool = False, confirm: str | None = None, *,
+           disclose: str | Sequence[str] = (), note: str = "", model: str | None = None,
+           architecture: str | None = None, on_plan: Callable[[Plan], None] | None = None,
+           echo: Callable[[str], None] | None = None, sleep: Callable[[float], None] = time.sleep,
+           api_base: str | None = None, token_file: Path | None = None, ledger: Path | None = None,
+           repo: Path | None = None, boards_dir: Path | None = None, external_data: Path | None = None) -> Result:
+    """Format check (default) or official upload of one prediction file, with every attempt in the ledger.
+
+    Sends format_only=true unless `official` is True and `confirm` equals sha256[:12] of the file. Raises SubmitRefused
+    (after `on_plan` has seen the guard results) when a guard fails; nothing is sent then.
+    """
+    base = _check_base(api_base or API_BASE)
+    if not Path(file).is_file():
+        raise SubmitRefused(f"no such file: {file}")
+    token = vec_data.load_token(token_file) if token_file else vec_data.load_token()
+    ledger_path = Path(ledger or LEDGER)
+    with Ledger(ledger_path) as led:
+        plan = prepare(file, board, official, confirm, disclose=disclose, note=note, model=model,
+                       architecture=architecture, token=token, base=base, rows=led.rows(), repo=Path(repo or REPO_ROOT),
+                       ledger_path=ledger_path, boards_dir=Path(boards_dir or BOARDS_DIR), external_data=external_data)
+        if on_plan is not None:
+            on_plan(plan)
+        if not plan.ok:
+            led.append(_row(plan, "refused", detail="failed: " + ", ".join(plan.failed)))
+            raise SubmitRefused("guards failed: " + ", ".join(plan.failed), plan)
+        if plan.replay is not None:
+            return _replay(plan, led, base, token)
+        return _send(plan, led, base, token, echo or (lambda _msg: None), sleep)
+
+
+def _replay(plan: Plan, led: Ledger, base: str, token: str) -> Result:
+    status, sid = plan.replay["status"], plan.replay["id"]
+    if sid:  # refresh the status (read-only)
+        r = _get(base, f"/challenge/submissions/{urllib.parse.quote(sid, safe='')}", token)
+        if r.status == 200 and r.body and r.body.get("status"):
+            status = str(r.body["status"])
+    detail = f"replay of the earlier {plan.replay['source']} record: nothing was sent"
+    led.append({**_row(plan, status, sid, detail=detail), "mode": "replay"})  # never counts or settles a slot
+    return Result(plan, status, sid, None, detail, replayed=True)
+
+
+def _send(plan: Plan, led: Ledger, base: str, token: str, echo: Callable[[str], None],
+          sleep: Callable[[float], None]) -> Result:
+    if plan.official == ("format_only" in plan.fields) or (not plan.official and plan.fields["format_only"] != "true"):
+        raise SubmitRefused("internal error: format_only does not match the mode", plan)  # never reached
+    if plan.official and not any(g.name == "confirm" and g.ok for g in plan.guards):
+        raise SubmitRefused("internal error: official upload without a matching --confirm", plan)  # never reached
+    with contextlib.ExitStack() as stack:  # every attempt streams the snapshot; it is deleted on the way out
+        snapshot, size = _snapshot(plan, led, stack)
+        attempts = len(RETRY_DELAYS) + 1
+        for i in range(attempts):
+            tag = f"attempt {i + 1} of {attempts}"
+            if plan.official:
+                led.append(_row(plan, "sending", detail=tag))
+            reply = _post(base, token, plan, snapshot, size)
+            res = _outcome(plan, reply)
+            led.append(_row(plan, res.server_status, res.server_id, res.http_status,
+                            f"{tag}: {res.detail}" if res.detail else tag))
+            for board in res.boards:  # a format check's submission counts and blocks where the server put it, too
+                if board != plan.board:
+                    led.append({**_row(plan, res.server_status, res.server_id, res.http_status,
+                                       f"{tag}: the server named this board for submission {res.server_id}; the "
+                                       f"request named {plan.board}"), "board": board})
+            if not (reply.status == 0 or reply.status >= 500) or i == attempts - 1:
+                return res
+            echo(f"{tag}: {res.detail or reply.status}; retrying the identical request in {RETRY_DELAYS[i]:.0f} s")
+            sleep(RETRY_DELAYS[i])
+    raise AssertionError("unreachable")
+
+
+def _snapshot(plan: Plan, led: Ledger, stack: contextlib.ExitStack) -> tuple[Path, int]:
+    """Copy the plan's file into a 0600 file in a 0700 temporary directory (mkdtemp), which `stack` deletes, hashing the
+    copy; returns its path and size. The file is opened before the directory exists, so that one that has gone is not
+    blamed on the disk. Refuses, with a ledger row, if the file cannot be read, the copy cannot be written, or the
+    copy's sha256 is not the plan's."""
+    def refuse(detail: str, message: str) -> SubmitRefused:
+        led.append(_row(plan, "refused", detail=detail))
+        return SubmitRefused(message, plan)
+
+    def unreadable(e: BaseException | None) -> SubmitRefused:
+        return refuse(f"cannot read the file ({type(e).__name__})",
+                      f"cannot read {plan.file} ({type(e).__name__}: {e}); check it and run again")
+
+    try:
+        src = plan.file.open("rb")
+    except OSError as e:
+        raise unreadable(e) from None
+    with src:
+        try:
+            tmp = stack.enter_context(tempfile.TemporaryDirectory(prefix="vec-submit-", ignore_cleanup_errors=True))
+        except OSError as e:
+            where = tempfile.gettempdir()
+            raise refuse(f"cannot make a temporary directory ({type(e).__name__})", f"cannot make a temporary "
+                         f"directory in {where} ({type(e).__name__}: {e}); free some space there or point TMPDIR "
+                         "elsewhere") from None
+        snapshot = Path(tmp) / "snapshot"
+        try:
+            sha, size = _private_copy(src, snapshot)
+        except _Unreadable as e:
+            raise unreadable(e.__cause__) from None
+        except OSError as e:
+            raise refuse(f"cannot copy the file ({type(e).__name__})", f"cannot copy the file into {tmp} "
+                         f"({type(e).__name__}: {e}); free some space there or point TMPDIR elsewhere") from None
+    if sha != plan.sha256:
+        raise refuse("file changed before upload", "file changed before upload: its sha256 no longer matches the plan; "
+                     "check it and run again")
+    return snapshot, size
+
+
+def _outcome(plan: Plan, reply: Reply) -> Result:
+    if reply.status == 0:
+        return Result(plan, "no_response", detail=reply.detail)
+    if not 200 <= reply.status < 300:
+        return Result(plan, "http_error", http_status=reply.status, detail=reply.detail)
+    body = reply.body or {}
+    problems = "; ".join(map(str, body.get("problems") or []))
+    if not plan.official:
+        if body.get("id"):  # recorded under the board the server named, and under the plan's
+            sid, bundle = str(body["id"]), body.get("bundle_key")
+            boards = tuple(dict.fromkeys([bundle, plan.board] if isinstance(bundle, str) and bundle else [plan.board]))
+            cmds = "; ".join(f"vec submit resolve {plan.sha256[:12]} --board {shlex.quote(b)} --as acknowledged --note "
+                             "TEXT" for b in boards)
+            return Result(plan, "UNEXPECTED_SUBMISSION", sid, reply.status,
+                          f"a format check came back as submission {sid} on {' and '.join(boards)}: it counts there, "
+                          f"and nothing is sent to any board until a person has checked the portal and run {cmds}",
+                          boards=boards)
+        if body.get("format_only") is False:
+            return Result(plan, "format_unconfirmed", "", reply.status,
+                          "the server says format_only is false, so this may have been stored as a submission: it "
+                          f"counts on {plan.board}, and nothing is sent to any board until a person has checked the "
+                          f"portal and run vec submit resolve {plan.sha256[:12]} --board {shlex.quote(plan.board)} "
+                          "--as acknowledged (it is there) or --as not-stored --note TEXT")
+        return Result(plan, "format_ok" if body.get("ok") is True else "format_failed", "", reply.status, problems)
+    notes = [f"problems: {problems}"] if problems else []
+    if body.get("reject_reason"):
+        notes.append(f"reject_reason: {body['reject_reason']}")
+    if body.get("sha256") and body["sha256"] != plan.sha256:
+        notes.append(f"SERVER SHA256 DIFFERS: {body['sha256']}")
+    if body.get("bundle_key") and body["bundle_key"] != plan.board:
+        notes.append(f"SERVER BOARD DIFFERS: {body['bundle_key']}")
+    sid, status = str(body.get("id") or ""), str(body.get("status") or "")
+    if not (sid and status):  # stored or not: only a listing, the identical retry or a person can tell
+        notes.insert(0, f"the answer has no submission id and status (id {sid or '-'}, status {status or '-'}): the "
+                        "upload may or may not be stored, and it counts until the server lists it")
+        return Result(plan, "unconfirmed", sid, reply.status, "; ".join(notes))
+    return Result(plan, status, sid, reply.status, "; ".join(notes))
+
+
+def resolve(sha: str, board: str, decision: str, note: str, *, ledger: Path | None = None) -> dict:
+    """Record a person's decision about a file whose outcome on `board` the ledger cannot settle. Local: nothing is
+    sent and no token is read.
+
+    not-stored: the person checked the portal and the file is not stored; its unanswered official attempts and its
+    format checks answered format_unconfirmed stop counting and blocking (a later server listing still counts it).
+    acknowledged: a format check of the file came back as a submission (or unconfirmed); it keeps counting on `board`
+    and stops blocking. POSTs resume once no format check waits on any board; a submission recorded under two boards is
+    resolved on each. Returns the ledger row; raises SubmitRefused, writing nothing, when there is nothing to resolve.
+    """
+    prefix = sha.strip().lower()
+    if decision not in RESOLUTIONS:
+        raise SubmitRefused(f"--as must be one of: {', '.join(RESOLUTIONS)}")
+    if not re.fullmatch(r"[0-9a-f]{12,64}", prefix):
+        raise SubmitRefused("give at least the first 12 hex characters of the file's sha256")
+    if not note.strip():
+        raise SubmitRefused("a note is required: say what was checked (for example the portal's submission list)")
+    with Ledger(Path(ledger or LEDGER)) as led:
+        rows = led.rows()
+        files = {s: f for s, f in _ledger_files(rows, board).items() if s.startswith(prefix)}
+        if len(files) != 1:
+            raise SubmitRefused(f"{prefix} matches {len(files)} files on {board} in the ledger; give more characters"
+                                if files else f"no ledger row for {prefix} on {board}")
+        [(full, f)] = files.items()
+        if decision == "not-stored" and not (f.ambiguous or f.unconfirmed):
+            why = (f"the server answered with submission {f.answer['server_id']} ({f.answer['server_status']})"
+                   if f.answer else "a format check of it came back as a submission: use --as acknowledged"
+                   if f.format_ids else "no attempt of it is ambiguous")
+            raise SubmitRefused(f"nothing to resolve as not-stored for {full[:12]} on {board}: {why}")
+        if decision == "acknowledged" and not f.unresolved:
+            raise SubmitRefused(f"nothing to acknowledge for {full[:12]} on {board}: no format check of it is waiting "
+                                "for a person")
+        last = next(r for r in reversed(rows) if r.get("board") == board and r.get("sha256") == full)
+        settled = ("its unanswered attempts and format_unconfirmed checks stop counting; a server listing still counts "
+                   "it" if decision == "not-stored" else
+                   "the format check's submission keeps counting; POSTs resume once no format check waits on any board")
+        row = {**dict.fromkeys(LEDGER_FIELDS, ""), "utc_time": _now(), "board": board, "mode": "resolve",
+               "file": last.get("file", ""), "upload_name": last.get("upload_name", ""), "sha256": full,
+               "server_status": decision, "note": note.strip(), "detail": f"resolved by a person: {settled}",
+               "server_id": ";".join(r["server_id"] for r in f.unresolved if r.get("server_id"))
+               if decision == "acknowledged" else ""}
+        led.append(row)
+    return row
+
+
+@dataclass
+class BoardStatus:
+    board: str
+    budget: Budget
+    ledger_rows: int
+    format_ok: int  # distinct files with a passing server format check
+    entries: list[dict]  # server submissions on this board
+
+
+@dataclass
+class StatusReport:
+    phase: dict | None
+    quota: dict | None
+    notes: list[str]
+    boards: list[BoardStatus]
+
+
+def status(board: str | None = None, *, api_base: str | None = None, token_file: Path | None = None,
+           ledger: Path | None = None, boards_dir: Path | None = None) -> StatusReport:
+    """Read-only view: phase, quota and submission list (GETs), and the ledger, per board."""
+    base = _check_base(api_base or API_BASE)
+    rows = read_ledger(ledger)
+    notes: list[str] = []
+    phase = _get(base, "/challenge/phase")
+    if phase.status != 200:
+        notes.append(f"phase: {phase.detail or 'no response'}")
+    quota, subs = None, None
+    try:
+        token = vec_data.load_token(token_file) if token_file else vec_data.load_token()
+    except vec_data.AuthError as e:
+        notes.append(f"auth: {e} (ledger only)")
+    else:
+        q = _get(base, "/challenge/integration/quota", token)
+        quota = q.body if q.status == 200 else None
+        if quota is None:
+            notes.append(f"quota: {q.detail or 'no response'}")
+        s = _get(base, "/challenge/submissions", token)
+        subs = _subs_list(s)
+        if subs is None:
+            notes.append(f"submissions: {s.detail or 'unreadable response'}")
+    try:
+        known = load_boards(Path(boards_dir or BOARDS_DIR))
+    except (OSError, ValueError, KeyError) as e:
+        known = {}
+        notes.append(f"boards: {e}")
+    keys = [board] if board else sorted(set(known) | {r.get("board", "") for r in rows} - {""} |
+                                        {str(e["bundle_key"]) for e in subs or [] if isinstance(e, dict)
+                                         and e.get("bundle_key")})
+    out = []
+    for key in keys:
+        b = known.get(key)
+        ident: dict[str, str] = {}
+        if b is not None:
+            try:
+                ident = board_fields(b)
+            except ValueError:
+                pass
+        q_entry = official_quota(quota, b) if b is not None and ident else "board not in boards/index.json"
+        if quota is None:
+            q_entry = "the quota endpoint could not be read"
+        budget = board_budget(key, rows, q_entry, subs, ident)
+        fmt = {r.get("sha256") for r in rows if r.get("board") == key and r.get("mode") == "format"
+               and r.get("server_status") == "format_ok"}
+        out.append(BoardStatus(key, budget, sum(r.get("board") == key for r in rows), len(fmt),
+                               server_entries(subs or [], key, ident)))
+    return StatusReport(phase.body if phase.status == 200 else None, quota, notes, out)

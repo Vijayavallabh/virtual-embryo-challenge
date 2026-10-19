@@ -87,8 +87,8 @@
         "feat-006",
         "feat-008"
       ],
-      "status": "not-started",
-      "evidence": ""
+      "status": "in-progress",
+      "evidence": "2026-10-19: the builders B0 needs are in place and tested: T2 `vec.t2_build` (count by rule with the truth floor enforced, random rows, jitter, native coordinates with the size procedure, cloud guard; smoke test on both validation boards passes all checks, experiments/t2_build/results/smoke_summary_shareable.txt), T1 `vec.t1_scope` (feat-014) and the T3 builder (feat-012). B0 files are built after the release-day runs."
     },
     {
       "id": "feat-010",
@@ -110,7 +110,7 @@
         "feat-008"
       ],
       "status": "in-progress",
-      "evidence": "2026-10-19: heart and embryo size procedure pre-registered and committed before the release (171695a; experiments/coords/size_procedure.py, run_p3.sh with preflight; experiments/coords/REPORT.md with two independent reviews). Runs on the release stages on 2026-10-20."
+      "evidence": "2026-10-19: heart and embryo size procedure pre-registered and committed before the release (171695a; experiments/coords/size_procedure.py, run_p3.sh with preflight; experiments/coords/REPORT.md with two independent reviews). Runs on the release stages on 2026-10-20. 2026-10-19: `vec.t2_build.apply_size_procedure` reads the size procedure's JSON and rescales in its recorded z mode; copy, block and oracle-size controls in experiments/t2_build/smoke.py: the guard flags contiguous-block layouts (voxel cover 0.60 and 0.46 of a random subset's) and passes the copy and oracle-size files."
     },
     {
       "id": "feat-012",
@@ -121,7 +121,7 @@
         "feat-008"
       ],
       "status": "in-progress",
-      "evidence": "2026-10-19: experiments/t3_decomp (t3_decompose.py, rules.yaml with dated lead notes) screened, built and independently reviewed; Mab21l2 smoke test: factor 80.5 vs null 50.8, composition+factor 84.2, blind phenotype rules ~51. Runs on the Gata4 replicates on 2026-10-20."
+      "evidence": "2026-10-19: experiments/t3_decomp (t3_decompose.py, rules.yaml with dated lead notes) screened, built and independently reviewed; Mab21l2 smoke test: factor 80.5 vs null 50.8, composition+factor 84.2, blind phenotype rules ~51. Runs on the Gata4 replicates on 2026-10-20. 2026-10-19: experiments/t3_decomp/build_submission.py builds s1/s2 from the decision file without re-deciding (branches allowed, refused, barred; rules.yaml notes 6, 7 and 8 applied in the allowed branch) and `plan` prints both submissions of every branch; 23 tests (allowed-branch sweeps check the built specs against the notes' text, including rules not evaluated), all 50 T3 tests incl. end-to-end pass on the DGX (RUN_T3_E2E=1); two independent reviews (947622a, 3d52b3d). The user reviewed a plain summary of rules.yaml on 2026-10-19, approved it and chose note 8; experiments/t3_decomp/replicate_overlap.py implements the note-4 check (7 tests)."
     },
     {
       "id": "feat-013",
@@ -142,7 +142,7 @@
         "feat-009"
       ],
       "status": "in-progress",
-      "evidence": "2026-10-19: pre-registered T1 direction readout (experiments/t1_direction; Feng bracket vs cross-fitted momentum, thresholds in config.yaml) decides on 2026-10-20 whether M2 is built; composition plan in docs/PLAN.md 4.1 (scope first, CM share hedge)."
+      "evidence": "2026-10-19: pre-registered T1 direction readout (experiments/t1_direction; Feng bracket vs cross-fitted momentum, thresholds in config.yaml) decides on 2026-10-20 whether M2 is built; composition plan in docs/PLAN.md 4.1 (scope first, CM share hedge). 2026-10-19: `vec.t1_scope` (chamber category for every released label in configs/t1_chamber_classes.yaml, with marker and label-transfer evidence; re-weighting to input shares; momentum shift; builder), 35 tests. Pseudo-task E8.5 -> E9.5 on the T1 emulator, 10 seeds, both E9.5 libraries (experiments/t1_scope/results/): re-weighting to the truth's category shares +31.2/+30.6 over copying E8.5 (an upper bound; the screened digest quoted about +24); CM share 10 points low -0.6/-0.3 vs 10 points high -3.2/-3.4; dropping only surrounding tissue +17.0/+18.4; the per-type shift arms are re-run with the reviewed code (stand-in types no longer get momentum by default)."
     },
     {
       "id": "feat-015",
@@ -161,8 +161,8 @@
       "dependencies": [
         "feat-001"
       ],
-      "status": "not-started",
-      "evidence": ""
+      "status": "in-progress",
+      "evidence": "2026-10-19: src/vec/submit.py with `vec submit FILE --board KEY` (format-only unless --official and --confirm equal to the file's sha256[:12]), `vec submit status` (read-only: phase, quota, ledger and server view per board, with resolve commands) and `vec submit resolve SHA12 --board KEY --as not-stored|acknowledged --note TEXT` (local, no token); 61 tests in tests/test_submit.py, 27 in tests/test_data.py. A format check needs a phase whose split is the board's. An official upload also needs a clean tree (no uncommitted change to a tracked file and no untracked, non-ignored file outside results/, runs/ and experiments/**/results/; the ledger is exempt), EXTERNAL_DATA.md disclosure ids, an earlier passing server format check of the same file for the same board, a phase that takes the board's split, a readable quota (official_per_board) and submission list, and room in the board's budget (2 per board; rejected uploads refunded; server entries count by id, plus each file's ledger slots that no listed entry has settled; an upload with an unknown outcome counts, with no time limit, until an answer, a listing or a not-stored resolution settles it). A format check the server stored (UNEXPECTED_SUBMISSION) or left unconfirmed counts and blocks every POST to every board until resolved on each board it is recorded under; an official upload of a file the board already holds that way is refused. Each upload sends a private snapshot re-hashed against the plan; idempotency key vec.<board>.<sha256>, byte-identical retries, replays that send and settle nothing, no redirects, the token redacted from everything the server returns and refused if malformed; one ledger row per attempt in results/submissions.csv. Built by an agent, then three rounds of independent review and fixes (15 findings in round 1, all verified fixed). Open: the shape of official_per_board is unpublished, so official uploads stay refused until `vec submit status` reads it in the final phase; a DGX-side provenance stamp for built files (progress.md); the client records each file's sha256 and commit but does not copy the file (the Dec 1-2 archive step does)."
     },
     {
       "id": "feat-017",

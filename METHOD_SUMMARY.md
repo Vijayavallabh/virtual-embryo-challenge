@@ -43,8 +43,10 @@ Track 1 (Human Team). A person reviews results and makes every submission decisi
 ## Task 1: temporal (E12.5) — _planned_
 
 - **Scope first.** E12.5 is a heart-chamber-only dissection; re-weighting real E10.5 cells to a chamber-only composition
-  is the largest single lever (about +24 points in a released-data pseudo-task). The cardiomyocyte share is the main
-  unknown and the hedge between the two submissions.
+  is the largest single lever: in an E8.5 -> E9.5 pseudo-task on released data, re-weighting to the target's exact
+  category shares gained about +31 points over copying the earlier stage (an upper bound, since the E12.5 shares must be
+  chosen; `experiments/t1_scope/results/`). The cardiomyocyte share is the main unknown and the hedge between the two
+  submissions; there, a share 10 points too high cost about 3 points and 10 points too low under 1.
 - **Per-type count-space shifts.** Direction from within-dataset fold changes of legal external chamber data (Feng 2022:
   E9.5 and E14.5 onward) if a pre-registered readout on the E9.5 -> E10.5 transition shows it beats cross-fitted
   momentum; damped internal momentum otherwise. Sex-linked and strain-polymorphic genes are held flat.
@@ -72,7 +74,12 @@ Track 1 (Human Team). A person reviews results and makes every submission decisi
 - **Composition second.** Second-heart-field, outflow-tract and right-ventricle-lineage states depleted at a magnitude
   calibrated on the released Gata4 replicates, counted only where it exceeds the replicate difference.
 - **Decided by pre-registered rules** (`experiments/t3_decomp/rules.yaml`) run once on the released Gata4 files; the two
-  submissions differ in how the factor is sourced. Released Gata4 files are used only if the organisers confirm it.
+  submissions differ in how the factor is sourced. Because the factor is measured in compartments the knockout cannot
+  touch, it may partly reflect sample processing: unless the Mab21l2 factor transfers to Gata4, the two submissions do
+  not both rely on the Gata4 factor, and if no check supports it, the first submission is unchanged wild-type cells
+  (with the composition term) and only the second carries the factor, at half strength. Released Gata4 files are used
+  only if the organisers confirm it. The rules were drafted with an AI assistant and reviewed and approved by the team
+  before any Gata4 file was downloaded.
 
 ## Shared architecture (Generality Award)
 

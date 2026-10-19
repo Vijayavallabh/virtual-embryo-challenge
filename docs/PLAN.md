@@ -269,8 +269,11 @@ reference: the WT half transfers to the test board for certain, the knockout hal
 Because the factor is measured in compartments the knockout cannot touch, much of it may be sample processing rather
 than biology, so its value on the test rests on the beta-catenin knockout sharing processing with the released ones.
 The first real check is cross-knockout transfer on release day (rule D11b: the Mab21l2 factor scored on Gata4); if it
-fails, the two submissions must not both use the Gata4 factor (rules.yaml note 6), and composition (C) and the pathway
-programme (B) stay as hedges rather than afterthoughts.
+fails, the two submissions must not both use the Gata4 factor (rules.yaml note 6; note 7 keeps the mild-composition
+hedge when the composition sign is in doubt), and composition (C) and the pathway programme (B) stay as hedges rather
+than afterthoughts. If no check supports the Gata4 factor at all (none of D2, D2u, D10), s1 is wild-type cells (plus
+composition, or the Mab21l2 factor if it transfers to Gata4) and s2 the Gata4 factor at half strength (note 8, the
+user's choice after a plain-language review of the rules on 2026-10-19).
 
 Components (all legal under the 2026-10-15 ruling):
 - **F, per-gene factor (lead component):** estimated from the non-Mesp1 compartments of a released knockout against
@@ -342,6 +345,21 @@ Done:
   label harmonisation (`experiments/*/REPORT.md`).
 - DGX environment (torch 2.14 cu130, scvi-tools, moscot), assumption ledger, data policy, external-data register,
   release-day runbook (`docs/P3_RUNBOOK.md`).
+- Submission client (feat-016): `vec submit` sends format checks unless given `--official` and the file's hash, and
+  refuses a format check unless the phase's split is the board's. An official upload also needs a clean tree (no
+  uncommitted change to a tracked file, no untracked non-ignored file outside results/, runs/ and experiments/**/
+  results/), disclosure ids, an earlier passing server format check of the same file, the right phase and room in the
+  board's budget: the larger of the quota endpoint's count and the slots (every server entry not rejected, by id, plus
+  each file's ledger slots that no listed entry has settled). An unknown outcome counts, however old, until an answer,
+  a listing or `vec submit resolve SHA12 --board KEY --as not-stored --note TEXT` settles it. A format check the
+  server stored (or left unconfirmed) blocks every POST to every board until `vec submit resolve ... --as
+  acknowledged` is run on each board it is recorded under. Each upload sends a private, re-hashed snapshot; retries
+  are identical under one idempotency key; replays send and settle nothing; the token is redacted from everything the
+  server returns; one ledger row per attempt. `vec submit status` is read-only and prints the resolve commands.
+- Builders: `vec.t2_build` (count rule with the truth floor, random rows, jitter, size procedure, cloud guard),
+  `vec.t1_scope` (chamber categories, re-weighting to input shares, momentum shift) and the T3 builder
+  (`experiments/t3_decomp/build_submission.py`, s1/s2 from the decision file). Each was verified by an independent
+  agent, then went through further rounds of independent review and fixes until only nits remained.
 
 Next:
 1. Calibrate the emulator against the published reference rows on the validation boards (A2), with the scorer-build
@@ -349,9 +367,8 @@ Next:
 2. Pseudo-task harness with leave-one-transition-out splits and paired comparisons over 10 seeds.
 3. External-data ingestion with window filters as committed code (Feng by per-cell stage, JAX by embryo ID: 1-22 and
    54-74), registered in `EXTERNAL_DATA.md` before use.
-4. Run registry; submission client (feat-016) that defaults to format-only, counts distinct file hashes per board whose
-   status is not rejected, treats the server's quota endpoint as the source of truth, keeps the filename and form
-   fields identical on retries, and sends an idempotency key on scored uploads.
+4. Run registry. Read the real shape of the official quota with `vec submit status` once the final phase opens; the
+   client refuses official uploads until it can parse it.
 5. Set `POT_BACKEND_DISABLE_JAX=1` and `XLA_PYTHON_CLIENT_PREALLOCATE=false` before importing POT or JAX on the DGX.
 
 ## 7. Timeline and decision points
@@ -369,8 +386,9 @@ Next:
 
 ## 8. Submission policy
 
-- Format checks are free and unlimited. Scored uploads need the user's explicit go-ahead, and the client defaults to
-  format-only.
+- Format checks are free and unlimited (no scored attempt), only on the phase's boards, and paused while a format check
+  that the server stored awaits `vec submit resolve`. Scored uploads need the user's explicit go-ahead, and the client
+  defaults to format-only.
 - s1 = the best honestly validated candidate. s2 = a pre-registered alternative chosen by a written rule. Never submit a
   plain copy, and never in the last hours (the portal has had outages).
 - Each submission carries its external-data disclosure text.
@@ -422,3 +440,10 @@ conventions for external embryos, and an addendum to the leak report.
   coverage, two-fold cross-fitting, cardiomyocyte sign agreement on the full target, no momentum+Feng option; guard
   against non-default configs and label maps), and the scorer-build switch (emulator default `main`, `prefix` for live
   reproduction). Feng 2022, JAX/Qiu 2024 and the vendored veckit 0.1.1 function registered in `EXTERNAL_DATA.md`.
+- 2026-10-19 (d): T3 rules notes 6 and 7, written before any Gata4 file is downloaded after a side-agent review warned
+  that the per-gene factor may be sample processing: unless cross-knockout transfer (D11b) passes, s1 and s2 do not
+  both use the Gata4 factor, and the replacement s2 keeps the D8 mild-composition hedge. The user read a plain summary
+  of the T3 rules (drafted by the AI assistant), approved them and chose note 8: when no check supports the Gata4
+  factor, s1 does not bet on it. Submission client and the T1, T2 and T3 builders committed after independent
+  verification and three rounds of review and fixes; an official upload needs `--official`, the file's hash and the
+  user's go-ahead.

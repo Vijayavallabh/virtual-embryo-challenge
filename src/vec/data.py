@@ -6,13 +6,16 @@ The site signs in through GitHub and keeps a short-lived bearer token in the bro
 
 The token is a team API key that can also make official submissions, so this module only ever issues GET requests for
 the manifest and download links; uploads belong in a dedicated client that defaults to format-only (feat-016). The token
-stays on the machine that runs this module (default ~/.config/vec/token, mode 600) and is never printed.
+stays on the machine that runs this module (default ~/.config/vec/token, mode 600) and is never printed: load_token
+refuses one that is not a single run of printable ASCII (http.client would quote such a header value in an error), and
+the server's error text has it redacted before it goes into an exception.
 `fetch` asks for one signed link at a time, just before that file is downloaded, and passes it to curl on its standard
 input so it never appears in a process list or a log.
 """
 
 from __future__ import annotations
 
+import http.client
 import json
 import os
 import re
@@ -27,6 +30,7 @@ from pathlib import Path
 API_BASE = "https://api.virtualembryo.ai"
 DEFAULT_TOKEN_FILE = Path.home() / ".config" / "vec" / "token"
 SAFE_KEY = re.compile(r"^[A-Za-z0-9._/+-]+$")
+TOKEN_CHARS = re.compile(r"[\x21-\x7e]+")  # printable ASCII without spaces
 
 
 class AuthError(RuntimeError):
@@ -36,7 +40,7 @@ class AuthError(RuntimeError):
 def load_token(path: Path = DEFAULT_TOKEN_FILE) -> str:
     env = os.environ.get("VEC_TOKEN")
     if env:
-        return env.strip()
+        return _valid_token(env.strip(), "VEC_TOKEN")
     path = Path(path).expanduser()
     if not path.exists():
         raise AuthError(f"no token at {path}; see docs/DATA_ACCESS.md")
@@ -44,20 +48,60 @@ def load_token(path: Path = DEFAULT_TOKEN_FILE) -> str:
         raise AuthError(f"{path} is readable by others; run: chmod 600 {path}")
     token = path.read_text().strip()
     if token.startswith("{"):  # the whole localStorage value was pasted
-        token = json.loads(token)["token"]
+        try:
+            token = json.loads(token)["token"]
+        except (ValueError, KeyError, TypeError):
+            raise AuthError(f'{path} holds JSON without a "token" entry') from None
+    return _valid_token(token, str(path))
+
+
+def _valid_token(token, source: str) -> str:
+    """The token, if it is one run of printable ASCII; the error never repeats it."""
+    if not isinstance(token, str) or not TOKEN_CHARS.fullmatch(token):
+        raise AuthError(f"the token in {source} is empty or has whitespace, control or non-ASCII characters inside it; "
+                        "it must be a single line of printable characters")
     return token
 
 
+def redact(value, token: str | None):
+    """`value` with the token replaced by <token>: in a string, or in the keys and values of parsed JSON at any depth.
+    The escaped form a repr shows is replaced too, since http.client quotes a bad header value in its ValueError."""
+    if not token:
+        return value
+    if isinstance(value, str):
+        for form in sorted({token, repr(token)[1:-1]}, key=len, reverse=True):
+            value = value.replace(form, "<token>")
+        return value
+    if isinstance(value, dict):
+        return {redact(k, token): redact(v, token) for k, v in value.items()}
+    if isinstance(value, list):
+        return [redact(v, token) for v in value]
+    return value
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    """Never follow a redirect: urllib would resend the Authorization header to the new host."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise urllib.error.HTTPError(req.full_url, code, f"redirect to {newurl} refused (token not forwarded)",
+                                     headers, fp)
+
+
 def api_get(path: str, token: str) -> dict:
+    """GET an API path with the token. Errors carry the server's text with the token redacted (before it is cut), and
+    never chain the original exception, whose message may hold it."""
     req = urllib.request.Request(f"{API_BASE}{path}", headers={"Authorization": f"Bearer {token}"})
     try:
-        with urllib.request.urlopen(req, timeout=60) as r:
+        with urllib.request.build_opener(_NoRedirect).open(req, timeout=60) as r:
             return json.loads(r.read().decode())
     except urllib.error.HTTPError as e:
-        detail = e.read().decode(errors="replace")[:200]
+        detail = redact(e.read().decode(errors="replace") or str(e.msg), token)[:200]
         if e.code in (401, 403):
-            raise AuthError(f"HTTP {e.code} from {path}: {detail} (token expired or registration incomplete?)") from e
-        raise RuntimeError(f"HTTP {e.code} from {path}: {detail}") from e
+            raise AuthError(f"HTTP {e.code} from {path}: {detail} (token expired or registration "
+                            "incomplete?)") from None
+        raise RuntimeError(f"HTTP {e.code} from {path}: {detail}") from None
+    except (ValueError, http.client.InvalidURL) as e:  # a bad header value or URL, or an answer that is not JSON
+        raise RuntimeError(f"request to {path} failed: {redact(f'{type(e).__name__}: {e}', token)}") from None
 
 
 @dataclass
