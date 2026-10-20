@@ -229,3 +229,6 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   data); the Yukon entry now covers the collaborative track, the interest form, the rules behind the quarantine and
   the rule that our team's work is not one member's to contribute. Screened Slack and mail check to 22:43 IST: no
   organiser post and no reply to any of our messages.
+- 2026-10-20 (d): while drafting `docs/RELEASE_RULES_SUMMARY.md`, an agent's repo-wide search printed one line each of
+  `docs/research/t3_methods.md` and the screened digest (its exclusion filter failed). Neither line held a value or a
+  gene-level knockout finding, and nothing from them entered the summary or any method.

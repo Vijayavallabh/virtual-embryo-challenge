@@ -2,9 +2,10 @@
 
 ## Current State
 
-**Last Updated:** 2026-10-20
+**Last Updated:** 2026-10-21
 **Active Feature:** feat-004 - Final-phase intake on 2026-10-27, postponed from 2026-10-20 by the organisers
-(`docs/P3_RUNBOOK.md`); feat-003 completes with the release files
+(`docs/P3_RUNBOOK.md`); feat-003 completes with the release files. Before then: the release-day rules sign-off
+(`docs/RELEASE_RULES_SUMMARY.md`) and the v1 pipelines on the shared core (`vec.core`, feat-020 done)
 
 ## Status
 
@@ -45,6 +46,24 @@
       evaluation feedback private until 2026-12-11) is on the partner page only, and we follow it. Challenge
       reference, data policy, plan, organiser-questions log and AGENTS.md updated; the organiser draft cut to two
       questions.
+- [x] 2026-10-20: prize strategy, approved by the user ("do whatever's best"; `docs/PLAN.md` decision log 2026-10-20
+      (c)). Stay official; go for a Human-track place plus the Generality Award, which stacks on a place and is judged
+      across both tracks among shared-architecture entries. D3 loosened to "claim unless specialised code wins by more
+      than 3 points overall"; the shared core goes into code first (feat-020); ledger A16 revised, A21 added. The
+      Generality question was added to the organiser draft (now three questions). Prize terms and a leaderboard census
+      (323 Human teams, 159 above the floor, 6th place 223.5; Agent track 80) recorded in `docs/CHALLENGE.md` and PLAN
+      section 1. Not pursued: Yukon; a switch to the Agent track.
+- [x] 2026-10-21: feat-020, the shared transport-then-adjust core `src/vec/core.py` (Generality Award claim). The
+      T1 and T2 heads' allocation, draws and count-space edits moved into it, source unchanged except names; the
+      pre-registered T3 script keeps its own primitives and the core holds identical copies. Evidence
+      (`experiments/core/REPORT.md`):
+      - `tests/test_core.py`: 31 tests, including 12 golden cases recorded at eb946ac and T3 copies identical in
+        body and on 300 random inputs per function;
+      - released data on the DGX: old against new, all 64 hashed parts identical;
+      - `./init.sh`: 320 passed;
+      - an independent verifier: PASS. Its fixes were made: the module was renamed from `vec.operator`, which
+        shadowed the standard library, and the wording about T3 was corrected.
+      Release-day rules summary drafted for sign-off (`docs/RELEASE_RULES_SUMMARY.md`, with recommended answers).
 - [x] 2026-10-19: submission client and builders, each built by an agent and verified by an independent agent, then
       three rounds of independent review and fixes (every finding verified fixed):
       - `vec submit` (feat-016): format-only by default; official uploads behind --official, a hash confirmation and
@@ -82,9 +101,12 @@
       an official Human Team unless the user decides otherwise; nothing has been done toward joining. Moving is
       one-way and ends official-prize eligibility, a team left empty is archived, and the collaborative phase ends
       before 2026-10-27.
-- [ ] Before 2026-10-27: a plain summary of the other agent-written rules that act on the release (heart and embryo
-      size procedure, T1 direction readout, cell-count rule, label-mapping rule) for the user's approval or changes,
-      as was done for the T3 rules.
+- [ ] Before 2026-10-27: the user's sign-off on the other agent-written rules that act on the release (heart and
+      embryo size procedure, T1 direction readout, cell-count rule, label-mapping rule). The plain summary is in
+      `docs/RELEASE_RULES_SUMMARY.md` (drafted 2026-10-20, with recommended answers to eight open choices). It
+      found gaps: no fallback when the heart size comes out invalid, an ambiguous count-rule wording that no code
+      applies, and the T1 readout's second role (M1's direction) missing from its config. The fixes are written
+      once the user signs off.
 - [ ] The E12.5 emergent-class list waits on the organisers' answer about qualitative in-window background; the legal
       route is used meanwhile.
 - [ ] Quota shape: `official_per_board` is unpublished. The client refuses official uploads until it can read it;

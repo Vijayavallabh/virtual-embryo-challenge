@@ -96,7 +96,8 @@
       "description": "Fused Gromov-Wasserstein coupling of canonicalised E7.5 and E8.0, proper-rotation Procrustes, McCann interpolation with a calibrated clock, mixture-of-real-cells expression, PCHIP log-RMS size, matched density (assumption A7: pseudo-target score >= 70).",
       "dependencies": [
         "feat-006",
-        "feat-008"
+        "feat-008",
+        "feat-020"
       ],
       "status": "not-started",
       "evidence": ""
@@ -107,7 +108,8 @@
       "description": "Size procedure from training stages only (committed before any test submission; assumption A8), damped composition, emergent populations in anatomical niches, H1/H2 scope variants.",
       "dependencies": [
         "feat-006",
-        "feat-008"
+        "feat-008",
+        "feat-020"
       ],
       "status": "in-progress",
       "evidence": "2026-10-19: heart and embryo size procedure pre-registered and committed before the release (171695a; experiments/coords/size_procedure.py, run_p3.sh with preflight; experiments/coords/REPORT.md with two independent reviews). Runs on the release stages on 2026-10-27. 2026-10-19: `vec.t2_build.apply_size_procedure` reads the size procedure's JSON and rescales in its recorded z mode; copy, block and oracle-size controls in experiments/t2_build/smoke.py: the guard flags contiguous-block layouts (voxel cover 0.60 and 0.46 of a random subset's) and passes the copy and oracle-size files."
@@ -128,7 +130,8 @@
       "name": "T3: Wnt programme, leave-one-knockout-out weights, magnitude calibration",
       "description": "Wild-type Wnt-activity co-variation programme from T1 scRNA (if cross-task use is confirmed) mapped to Mesp1 MERFISH types; weights by leave-one-knockout-out; response slope calibrated near 1 (assumption A12).",
       "dependencies": [
-        "feat-012"
+        "feat-012",
+        "feat-020"
       ],
       "status": "not-started",
       "evidence": ""
@@ -139,7 +142,8 @@
       "description": "Composition for a heart-chamber-only E12.5, per-type count-space shifts directed by the E10.5 to E14.5+ external bracket, emergent states from E10.5 progenitors edited toward external profiles (assumptions A5, A6).",
       "dependencies": [
         "feat-007",
-        "feat-009"
+        "feat-009",
+        "feat-020"
       ],
       "status": "in-progress",
       "evidence": "2026-10-19: pre-registered T1 direction readout (experiments/t1_direction; Feng bracket vs cross-fitted momentum, thresholds in config.yaml) decides on 2026-10-27 whether M2 is built; composition plan in docs/PLAN.md 4.1 (scope first, CM share hedge). 2026-10-19: `vec.t1_scope` (chamber category for every released label in configs/t1_chamber_classes.yaml, with marker and label-transfer evidence; re-weighting to input shares; momentum shift; builder), 35 tests. Pseudo-task E8.5 -> E9.5 on the T1 emulator, 10 seeds, both E9.5 libraries (experiments/t1_scope/results/): re-weighting to the truth's category shares +31.2/+30.6 over copying E8.5 (an upper bound; the screened digest quoted about +24); CM share 10 points low -0.6/-0.3 vs 10 points high -3.2/-3.4; dropping only surrounding tissue +17.0/+18.4; per-type shifts in the true direction add +4.3/+4.5 at damping 0.5 and +7.2/+7.1 at damping 1, the reversed sign costs -4.5/-4.8 (an oracle direction, so upper bounds; stand-in types get no momentum; re-run at 94e1793, matching the reviewer's independent re-run)."
@@ -149,7 +153,8 @@
       "name": "T1 M2: OT bracketing in a shared scVI latent",
       "description": "moscot temporal coupling from E10.5 to external E14.5 with growth marginals, count-sampled decoding; adopted only if it beats M1 on at least 2 of 3 pseudo-tasks.",
       "dependencies": [
-        "feat-014"
+        "feat-014",
+        "feat-020"
       ],
       "status": "not-started",
       "evidence": ""
@@ -165,6 +170,17 @@
       "evidence": "2026-10-19: src/vec/submit.py with `vec submit FILE --board KEY` (format-only unless --official and --confirm equal to the file's sha256[:12]), `vec submit status` (read-only: phase, quota, ledger and server view per board, with resolve commands) and `vec submit resolve SHA12 --board KEY --as not-stored|acknowledged --note TEXT` (local, no token); 73 tests in tests/test_submit.py, 27 in tests/test_data.py. Built files are uploaded from the DGX with `vec submit PATH --board KEY --from-dgx` (the user's choice, 2026-10-19): the file is pulled over ssh into a private temporary copy for that call only (checked against the DGX's sha256 and size; removed on every exit, SIGHUP and SIGTERM included, and leftovers of killed calls cleared by the next call), the key never goes to the DGX, an official upload also needs the guard \"dgx provenance\" (DGX HEAD = local HEAD and a clean DGX tree), and the ledger's origin column records the DGX path and commit. A format check needs a phase whose split is the board's. An official upload also needs a clean tree (no uncommitted change to a tracked file and no untracked, non-ignored file outside results/, runs/ and experiments/**/results/; the ledger is exempt), EXTERNAL_DATA.md disclosure ids, an earlier passing server format check of the same file for the same board, a phase that takes the board's split, a readable quota (official_per_board) and submission list, and room in the board's budget (2 per board; rejected uploads refunded; server entries count by id, plus each file's ledger slots that no listed entry has settled; an upload with an unknown outcome counts, with no time limit, until an answer, a listing or a not-stored resolution settles it). A format check the server stored (UNEXPECTED_SUBMISSION) or left unconfirmed counts and blocks every POST to every board until resolved on each board it is recorded under; an official upload of a file the board already holds that way is refused. Each upload sends a private snapshot re-hashed against the plan; idempotency key vec.<board>.<sha256>, byte-identical retries, replays that send and settle nothing, no redirects, the token redacted from everything the server returns and refused if malformed; one ledger row per attempt in results/submissions.csv. Built by an agent, then three rounds of independent review and fixes (15 findings in round 1, all verified fixed). 2026-10-20: build stamps (a side agent noted that \"dgx provenance\" checks only the code checked out at upload time): vec.io.write_submission writes `<file>.stamp.json` for every prediction file (src/vec/provenance.py: sha256, size, commit, and whether the tree stayed clean from the build's start, recorded at the first import of vec.provenance, to the write, by the clean-tree rule and HEAD's reflog); an official upload needs the guard \"build stamp\" (the stamp matches the bytes sent, says clean, and its commit is the local HEAD or an ancestor), --from-dgx pulls the stamp with the file, and the ledger's build_commit column records it. Built by an agent, verified independently (a major gap, the start being read only at write time, reproduced and fixed), re-verified; 279 tests in tests/ (14 in tests/test_provenance.py), 203 in experiments/, all 50 T3 tests on the DGX. Open: the shape of official_per_board is unpublished, so official uploads stay refused until `vec submit status` reads it in the final phase; the client records each file's sha256 and commits but does not copy the file (the Dec 1-2 archive step copies each file with its stamp). 2026-10-20: first real uploads, while the validation phase runs a week longer (the final phase moved to 2026-10-27): three server format checks through `vec submit PATH --board KEY --from-dgx` of practice files built on the DGX at 6dca2c5 (`vec baseline copy_last|wt_identity --n-cells 1000`; T1:val, T2:heart:val_extrap, T3:gata4). Each came back HTTP 200 format_ok with no submission id, so the server honoured format_only=true and took each task's form fields (T1 task; T2 setting and mode; T3 target). `vec submit status` before and after: no server entry on any board, and the daily scored and upload counts stayed at 0 for every task. Ledger rows in results/submissions.csv carry the build commit and the DGX origin; no temporary copy was left behind."
     },
     {
+      "id": "feat-020",
+      "name": "Shared transport-then-adjust core (vec.core)",
+      "description": "One core module, src/vec/core.py, for the Generality Award claim (docs/PLAN.md section 5): composition allocation, real-cell draws and count-space edits moved out of the T1 and T2 heads into it with outputs unchanged bit for bit; the pre-registered T3 script keeps its own hash-pinned primitives, which the core copies exactly (tests/test_core.py proves them identical). Later pipelines (feat-010, 011, 013, 014, 015) add coupling, interpolation, births and calibration inside the core or a task head.",
+      "dependencies": [
+        "feat-006",
+        "feat-009"
+      ],
+      "status": "done",
+      "evidence": "2026-10-21: src/vec/core.py holds quotas, draw_least_used, counts_of, mean_cp10k and apply_factors (from vec.t1_scope) and draw_balanced (from vec.t2_build), source unchanged except names, plus identical copies of the T3 script's alloc, draw_rows, thin, rescale_depth and apply_gene_factor. tests/test_core.py (31 tests): 12 golden cases recorded at eb946ac pass before and after (local and DGX); T3 copies identical in body and signature and on 300 random inputs per function plus edge cases. Released data on the DGX (experiments/core/check_equivalence.py, eb946ac vs new): T1 build_submission (E9.5_RNA from E8.5_RNA, with and without the shift, 2 seeds) and T2 sample_cells, build_submission and cloud_guard (E9.5 on T2:heart:val_extrap, E8.75 on T2:heart:val_interp, 2 seeds): all 64 hashed parts identical. ./init.sh 320 passed; experiment tests 58 passed and 2 skipped locally, 60 passed on the DGX with RUN_T3_E2E=1. Independent verifier: PASS (golden hashes confirmed in an eb946ac worktree, t3_decomp byte-identical); its findings fixed: the module renamed from vec.operator, which shadowed the standard library's operator when a file in src/vec ran as a script, and the T3 wording corrected. Report: experiments/core/REPORT.md."
+    },
+    {
       "id": "feat-017",
       "name": "Shared-core decision and method summary",
       "description": "Decision point D3 (2026-11-12): shared transport-then-adjust core vs specialised pipelines (assumption A16); METHOD_SUMMARY.md written to winners'-report standard, with the Generality section if claimed.",
@@ -172,7 +188,8 @@
         "feat-010",
         "feat-011",
         "feat-013",
-        "feat-014"
+        "feat-014",
+        "feat-020"
       ],
       "status": "not-started",
       "evidence": ""

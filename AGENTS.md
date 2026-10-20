@@ -47,6 +47,11 @@ If baseline verification is failing, repair that first before adding new scope.
 ## Working Rules
 
 - **One feature at a time**: pick exactly one unfinished feature from `feature_list.json`.
+- **Shared core**: the T1 and T2 heads build every prediction through `vec.core`, and the pre-registered T3 script
+  runs identical copies of its primitives, pinned by `tests/test_core.py` (the Generality Award claim, `docs/PLAN.md`
+  section 5). New steps (coupling, births, calibration) go into the core or a head, never into a separate per-task
+  model. A change meant to alter a T1 or T2 output updates the golden table in `tests/test_core.py` in the same commit
+  and says why.
 - **Evidence over claims**: a model result counts only with a local-emulator score file (`runs/<run_id>/scores.json`)
   and a row in `results/registry.csv`.
 - **Update artifacts**: before ending a session, update `progress.md` and `feature_list.json`.
@@ -56,7 +61,8 @@ If baseline verification is failing, repair that first before adding new scope.
 ## Repository Map
 
 - `src/vec/`: package (`io.py` loading and submission writing, `boards.py` board specs, `evaluate.py` server-faithful
-  local board emulator, `baselines.py` reference baselines, `cli.py` the `vec` command).
+  local board emulator, `baselines.py` reference baselines, `cli.py` the `vec` command, `core.py` the shared core,
+  `t1_scope.py` and `t2_build.py` the T1 and T2 heads).
 - `configs/`: experiment configs. `runs/` (gitignored): per-run outputs. `results/registry.csv`: one row per scored run.
 - `boards/`: public board specs from the challenge site (`index.json`, panel gene lists, T1 composition).
 - `data/` (gitignored): `raw/` competition files, `external/` disclosed external data.

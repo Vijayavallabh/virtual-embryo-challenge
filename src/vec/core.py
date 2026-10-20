@@ -1,0 +1,260 @@
+"""The shared transport-then-adjust core (docs/PLAN.md section 5): the T1 and T2 heads build their predictions
+through it, and the pre-registered T3 script runs identical copies of its T3 primitives.
+
+Task heads hold what differs between boards and pass it in: the pools of real cells, the target composition, the
+expression factors and, on the coordinate boards, the rules for positions. The core turns them into cells. It knows no
+stage, cell type or board: no size, composition or class list of any stage is written here (tests/test_core.py
+checks the module's numeric literals against an allow-list and its strings against the released class lists).
+
+Steps implemented now:
+
+1. Allocate a composition to whole cell counts: `quotas` (shares by name; floors, then the largest remainders, ties by
+   name, and a share of 0 never gets a cell) and `alloc` (an array of shares; floors, then the largest remainders).
+2. Draw real cells from pools, under one of three draw policies:
+   - `draw_least_used`: every unused row before any repeat, then whole passes over the pool, each without replacement;
+     the use counts carry over between calls, so a pool that overlaps rows drawn before takes its unused rows first;
+   - `draw_balanced`: random rows in random order, without replacement up to the pool size and above it each pool row
+     n // N or n // N + 1 times;
+   - `draw_then_repeat`: without replacement up to the pool size; above it the whole pool once, then the rest drawn
+     with replacement.
+3. Edit expression in count space, so counts stay non-negative integers (`counts_of` recovers them, `mean_cp10k` gives a
+   population's mean CP10k per gene), and a cell the edit would empty keeps its counts:
+   - `apply_factors`: per-(type, gene) factors, binomial thinning below 1 and a Poisson top-up of the cell's own counts
+     above 1 (exact zeros stay zero), each cell's expected depth kept on request;
+   - `apply_gene_factor`: a per-gene factor, binomial thinning below 1 and a Poisson top-up from smoothed proportions
+     above 1;
+   - `rescale_depth`: a per-cell depth change, `thin` (binomial thinning) below 1 and a Poisson top-up from smoothed
+     proportions above 1.
+4. log1p CP10k: `log1p_cp10k` (vec.prep's, the released convention).
+
+Steps PLAN section 5 plans, which later features add here: coupling of adjacent populations (unbalanced OT, fused
+Gromov-Wasserstein when positions exist) and displacement interpolation (feat-010, feat-015); births from the best legal
+source (feat-014); leave-one-transition-out calibration of a few shrinkage parameters (feat-008).
+
+The task heads and the boundary (a head decides what goes in; the core does the work on cells):
+- T1, `vec.t1_scope`: chamber categories, target shares, stand-in labels and the momentum factors (damped log ratios of
+  mean CP10k between two stages). It calls `quotas`, `draw_least_used`, `counts_of`, `mean_cp10k`, `apply_factors` and
+  `log1p_cp10k`.
+- T2, `vec.t2_build`: the count rule, the coordinate head (duplicate jitter, proper rotations, the pre-registered size
+  procedure) and the cloud guard. It calls `draw_balanced`, for the submitted rows and for the guard's reference draws.
+- T3, `experiments/t3_decomp`: the genotype head (compositions, the per-gene factor, depth ratios, stage mixing). Its
+  script is pre-registered and hash-pinned (build_submission.py refuses a decision file whose script sha256 differs
+  from the file on disk), so it keeps its own primitives, written there first, and the core holds identical copies:
+  `alloc`, `draw_rows` (here `draw_then_repeat`), `thin`, `rescale_depth` and `apply_gene_factor`. tests/test_core.py
+  pins the two together: the same bodies, and the same outputs and generator states for the same inputs and seeds.
+  The script's `lognorm` is not a copy: it computes log1p CP10k in another order and agrees with `log1p_cp10k` within
+  one float32 ulp.
+
+The reference baselines (`vec.baselines`, `vec baseline`) sit outside the core: they make floor rows and practice
+files, never a prediction submitted for a score.
+
+The functions that moved here keep their old names in the heads, as the same objects: `vec.t1_scope.quotas`, `_draw`
+(`draw_least_used`), `counts_of`, `mean_cp10k` and `apply_factors`, and `vec.t2_build._balanced_rows`
+(`draw_balanced`).
+"""
+
+from __future__ import annotations
+
+from collections.abc import Mapping, Sequence
+
+import anndata as ad
+import numpy as np
+from scipy import sparse
+
+from vec.prep import TARGET_SUM, log1p_cp10k, recover_counts
+
+__all__ = ["alloc", "apply_factors", "apply_gene_factor", "counts_of", "draw_balanced", "draw_least_used",
+           "draw_then_repeat", "log1p_cp10k", "mean_cp10k", "quotas", "rescale_depth", "thin"]
+
+Seed = int | Sequence[int]
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# 1. Allocation
+
+
+def quotas(shares: Mapping[str, float], n: int) -> dict[str, int]:
+    """Whole cell counts per category summing to n: floors of share x n, then the largest remainders get one more
+    (ties by category name). A category with share 0 never gets a cell."""
+    if n < 0:
+        raise ValueError(f"n must be >= 0, got {n}")
+    raw = {c: float(s) * n for c, s in shares.items()}
+    q = {c: int(np.floor(v + 1e-9)) for c, v in raw.items()}
+    left = n - sum(q.values())
+    for c in sorted(raw, key=lambda c: (-(raw[c] - q[c]), c))[:max(left, 0)]:
+        q[c] += 1
+    return q
+
+
+def alloc(n, f) -> np.ndarray:
+    """Largest-remainder allocation of n cells to shares f (floors, then one more for the largest remainders, ties in
+    np.argsort's order). Frozen copy: experiments/t3_decomp/t3_decompose.py `alloc`."""
+    raw = n * np.asarray(f, dtype=np.float64)
+    k = np.floor(raw).astype(int)
+    rem = int(n - k.sum())
+    if rem > 0:
+        k[np.argsort(-(raw - k))[:rem]] += 1
+    return k
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# 2. Draws from pools of real cells
+
+
+def draw_least_used(pool: np.ndarray, k: int, used: np.ndarray, rng: np.random.Generator) -> tuple[np.ndarray, int]:
+    """k rows from `pool` (unique row indices), least-used first: every unused row before any repeat, then whole
+    passes over the pool, each without replacement. Updates `used`; returns (rows, picks that repeat a cell)."""
+    pool = np.asarray(pool)
+    before = used[pool].copy()
+    taken = np.zeros(len(pool), dtype=np.int64)
+    parts, rest = [], k
+    while rest > 0:
+        level = before + taken
+        cand = np.flatnonzero(level == level.min())
+        sel = rng.choice(cand, min(rest, len(cand)), replace=False)
+        taken[sel] += 1
+        parts.append(pool[sel])
+        rest -= len(sel)
+    used[pool] += taken
+    picks = np.concatenate(parts) if parts else np.array([], dtype=np.int64)
+    return picks, int(k - np.count_nonzero((before == 0) & (taken > 0)))
+
+
+def draw_balanced(n_pool: int, n: int, rng: np.random.Generator) -> np.ndarray:
+    """n row indices into a pool of n_pool, in random order: without replacement when n <= n_pool, otherwise every row
+    n // n_pool times plus n % n_pool distinct rows once more (a plain draw with replacement would leave about 1/e of
+    the pool out at n = n_pool and repeat other rows several times)."""
+    k, r = divmod(n, n_pool)
+    rows = np.concatenate([np.tile(np.arange(n_pool), k), rng.choice(n_pool, r, replace=False)])
+    return rng.permutation(rows).astype(np.int64)
+
+
+def draw_then_repeat(pool_idx, k, rng) -> np.ndarray:
+    """k rows of `pool_idx`: without replacement when k <= len(pool_idx); otherwise the whole pool once, in pool order,
+    then k - len(pool_idx) rows drawn with replacement. Empty for k <= 0 or an empty pool. Frozen copy:
+    experiments/t3_decomp/t3_decompose.py `draw_rows`."""
+    m = len(pool_idx)
+    if k <= 0 or m == 0:
+        return np.array([], dtype=int)
+    if k <= m:
+        return rng.choice(pool_idx, k, replace=False)
+    return np.concatenate([pool_idx, rng.choice(pool_idx, k - m, replace=True)])
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# 3. Count space
+
+
+def counts_of(adata: ad.AnnData, genes: Sequence[str] | None = None) -> sparse.csr_matrix:
+    """Integer counts (CSR int64) in the order of `genes` (default: the AnnData's own), from layers["counts"] or
+    recovered exactly from the log1p CP10k `.X` (`vec.prep.recover_counts`)."""
+    if "counts" in adata.layers:
+        C = sparse.csr_matrix(adata.layers["counts"])
+        if C.dtype.kind == "f":
+            if C.nnz and float(np.abs(C.data - np.rint(C.data)).max()) > 1e-6:
+                raise ValueError("layers['counts'] holds non-integer values")
+            C = sparse.csr_matrix((np.rint(C.data), C.indices, C.indptr), shape=C.shape)
+        C = C.astype(np.int64)
+    else:
+        C, _, resid = recover_counts(adata.X)
+        if resid > 1e-2:
+            raise ValueError(f"counts are not recoverable from X (largest residual {resid:.3g})")
+        C = C.astype(np.int64)
+    if genes is not None and list(adata.var_names) != list(genes):
+        idx = adata.var_names.get_indexer(list(genes))
+        if (idx < 0).any():
+            missing = [g for g, i in zip(genes, idx, strict=True) if i < 0]
+            raise KeyError(f"{len(missing)} genes missing, e.g. {missing[:5]}")
+        C = C[:, idx]
+    C.eliminate_zeros()
+    return C
+
+
+def mean_cp10k(C) -> np.ndarray:
+    """Mean over cells of 1e4 * c / (cell total), per gene."""
+    C = sparse.csr_matrix(C, dtype=np.float64)
+    lib = np.asarray(C.sum(1)).ravel()
+    scale = np.divide(TARGET_SUM, lib, out=np.zeros_like(lib), where=lib > 0)
+    return np.asarray((sparse.diags(scale) @ C).mean(0)).ravel()
+
+
+def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarray | None = None,
+                  keep_depth: bool = True, seed: Seed = 0) -> tuple[sparse.csr_matrix, np.ndarray, np.ndarray]:
+    """Edit integer counts by per-(type, gene) factors in count space.
+
+    C: (cells x genes) counts; factors: (types x genes), > 0; type_index: each cell's row of `factors`; held: genes
+    left exactly as they are. With keep_depth, each cell's non-held factors are multiplied by the constant that keeps
+    its expected total count unchanged. A count c with factor f < 1 becomes Binomial(c, f), with f > 1 c + Poisson
+    ((f - 1) c), with f == 1 stays c. Zeros stay zero. A cell left with no counts gets its original counts back.
+    Returns (counts as CSR int64, per-cell depth constant, restored-cell mask).
+    """
+    C = sparse.csr_matrix(C, dtype=np.int64, copy=True)
+    C.sort_indices()
+    n = C.shape[0]
+    factors = np.asarray(factors, dtype=np.float64)
+    if not np.all(np.isfinite(factors)) or (factors <= 0).any():
+        raise ValueError("factors must be finite and positive")
+    type_index = np.asarray(type_index)
+    held = np.zeros(C.shape[1], dtype=bool) if held is None else np.asarray(held, dtype=bool)
+    row_of = np.repeat(np.arange(n), np.diff(C.indptr))
+    c = C.data.astype(np.float64)
+    f = factors[type_index[row_of], C.indices]
+    free = ~held[C.indices]
+    scale = np.ones(n)
+    if keep_depth:
+        num = np.bincount(row_of, weights=c * free, minlength=n)
+        den = np.bincount(row_of, weights=c * f * free, minlength=n)
+        scale = np.divide(num, den, out=np.ones(n), where=den > 0)
+        f = np.where(free, f * scale[row_of], 1.0)
+    else:
+        f = np.where(free, f, 1.0)
+    rng = np.random.default_rng(seed)
+    new = C.data.copy()
+    down, up = f < 1.0, f > 1.0
+    new[down] = rng.binomial(C.data[down], f[down])
+    new[up] = C.data[up] + rng.poisson((f[up] - 1.0) * C.data[up])
+    dead = np.bincount(row_of, weights=new, minlength=n) == 0
+    if dead.any():
+        back = dead[row_of]
+        new[back] = C.data[back]
+    out = sparse.csr_matrix((new, C.indices.copy(), C.indptr.copy()), shape=C.shape)
+    out.eliminate_zeros()
+    return out, scale, dead
+
+
+def thin(C, p, rng) -> np.ndarray:
+    """Binomial thinning with per-cell keep probability p; a cell that would become empty keeps its counts (dense
+    counts, cells x genes). Frozen copy: experiments/t3_decomp/t3_decompose.py `thin`."""
+    p = np.clip(np.broadcast_to(np.asarray(p, dtype=np.float64).reshape(-1, 1), (C.shape[0], 1)), 0.0, 1.0)
+    out = rng.binomial(C.astype(np.int64), p).astype(np.int32)
+    empty = out.sum(1) == 0
+    out[empty] = C[empty]
+    return out
+
+
+def rescale_depth(C, ratio, P, rng) -> np.ndarray:
+    """Per-cell depth change by `ratio`: thinning below 1, Poisson top-up from smoothed proportions P above 1. Frozen
+    copy: experiments/t3_decomp/t3_decompose.py `rescale_depth`."""
+    ratio = np.asarray(ratio, dtype=np.float64)
+    out = thin(C, np.minimum(ratio, 1.0), rng)
+    up = ratio > 1.0
+    if up.any():
+        n = C[up].sum(1).astype(np.float64)
+        out[up] = out[up] + rng.poisson(P[up].astype(np.float64) * (n * (ratio[up] - 1.0))[:, None]).astype(np.int32)
+    return out
+
+
+def apply_gene_factor(C, phi, P, rng) -> np.ndarray:
+    """Per-gene factor in count space: binomial thinning where phi < 1, Poisson top-up from P where phi > 1; a cell left
+    empty keeps its counts. Frozen copy: experiments/t3_decomp/t3_decompose.py `apply_gene_factor`."""
+    out = C.copy()
+    down = phi < 1.0
+    if down.any():
+        out[:, down] = rng.binomial(C[:, down].astype(np.int64), phi[down]).astype(np.int32)
+    up = phi > 1.0
+    if up.any():
+        n = C.sum(1, keepdims=True).astype(np.float64)
+        out[:, up] += rng.poisson(P[:, up].astype(np.float64) * n * (phi[up] - 1.0)).astype(np.int32)
+    empty = out.sum(1) == 0
+    out[empty] = C[empty]
+    return out

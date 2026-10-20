@@ -87,8 +87,30 @@ Track 1 (Human Team). A person reviews results and makes every submission decisi
 
 ## Shared architecture (Generality Award)
 
-- Common: one "transport-then-adjust" operator over real cells (couple adjacent populations, move or re-weight cells,
-  edit expression in count space, decode by retrieval of real cells), the same emulator and pre-registration protocol.
-- Task heads: the 32k-gene vs 500-gene encoders, the coordinate head (T2) and the genotype head (T3).
-- Decision point 2026-11-12: claim the award only if the shared core is within about 1 point of the best specialised
-  variant on every board's honest validation.
+_Planned claim_: the summary will ask to be considered for the award unless decision point D3 (below) says otherwise.
+
+- **Common core** (`src/vec/core.py`, feat-020). Every prediction is built from real released cells by one
+  "transport-then-adjust" operator:
+  - allocate a target composition to whole cell counts;
+  - draw real cells from the source pools;
+  - edit their expression in count space (per-type or per-gene factors by binomial thinning or Poisson top-up, a
+    depth change);
+  - write log1p CP10k.
+
+  The planned steps go into the same module: coupling and displacement interpolation between bracketing stages (T2
+  embryo, the T1 external bracket), births from a legal source (T1), and leave-one-transition-out calibration of the
+  few shrinkage parameters.
+- **Task heads** (what differs):
+  - T1 (`vec.t1_scope`): the 32,285-gene encoder, chamber categories and target shares, and the direction (momentum or
+    external).
+  - T2 (`vec.t2_build`): the 500-gene panel and the coordinate head (cell count, random rows, jitter, the
+    pre-registered size procedure, proper rotations).
+  - T3 (`experiments/t3_decomp`): the genotype head (knockout composition from harmonised labels, and a per-gene
+    factor estimated in compartments the knockout cannot touch).
+- **Boundary:** heads supply the source pools, the target composition, the factors and the coordinate rules; the core
+  turns them into cells. The T3 script was written first, then pre-registered and hash-pinned, so it keeps its own
+  primitives; the core holds identical copies, and `tests/test_core.py` proves them identical (same code, same
+  outputs and random draws). Golden tests show the move into the core changed no T1 or T2 output
+  (`experiments/core/REPORT.md`).
+- **Decision point D3 (2026-11-12):** claim the award unless specialised variants beat the shared-core builds by more
+  than 3 points of overall standing on honest validation. Both submissions on every board are built through the core.

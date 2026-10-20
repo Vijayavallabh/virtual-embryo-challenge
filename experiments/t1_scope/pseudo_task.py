@@ -104,8 +104,8 @@ def sha256_file(path: Path, chunk: int = 1 << 23) -> str:
     return h.hexdigest()
 
 
-PROCEDURE_FILES = ("src/vec/t1_scope.py", "configs/t1_chamber_classes.yaml", "experiments/t1_scope/pseudo_task.py",
-                   "experiments/t1_direction/results/held_flat_genes.csv")
+PROCEDURE_FILES = ("src/vec/t1_scope.py", "src/vec/core.py", "configs/t1_chamber_classes.yaml",
+                   "experiments/t1_scope/pseudo_task.py", "experiments/t1_direction/results/held_flat_genes.csv")
 
 
 def git_state() -> dict:

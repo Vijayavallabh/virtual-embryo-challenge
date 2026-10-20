@@ -21,10 +21,17 @@ board. Every metric becomes a skill `1/(1+x)`, where x is the fraction of the fl
 All three were re-derived from 1,000+ public leaderboard rows to within 1e-4, including the T2 structure gate. The
 local emulator (`vec eval`) implements exactly this.
 
-**The field.** 313 Human teams. On the validation boards the Human prize line (6th) is 220.8 and the leader 224.7.
-Those numbers are inflated: teams had 8 scored submissions a day for two months, and the size and severity columns are
-saturated by search. The test allows 2 blind submissions per board on harder targets (E12.5 two days out, the
-"hardest" knockout), so test totals will drop.
+**The field** (public validation leaderboard, 2026-10-20 17:33 UTC). 323 Human teams, 180 of them on all three tasks
+and 159 above the 150 floor; the Human prize line (6th) is 223.5 and the leader 228.8. The Agent track has 80 teams
+(6th: 219.1). Those numbers are inflated: teams had 8 scored submissions a day for two months, and the size and
+severity columns are saturated by search. The test allows 2 blind submissions per board on harder targets (E12.5 two
+days out, the "hardest" knockout), so test totals will drop.
+
+**Prizes we play for** (they stack; decision log 2026-10-20 (c)): a Human-track place ($8K, 2 x $5K, 3 x $3K) and
+the Generality Award ($8K, once across both tracks, on top of any place: the best final standing among entries that
+answer every task they enter with one shared architecture, section 5). Also open to us: travel grants for
+early-career researchers (15-20 from $30K) and the Community Contribution Award (up to $200 per public contribution).
+Not pursued: the Yukon partner track (no official prizes) and a switch to the Agent track.
 
 **Target.** About 190+ on the test boards (T1 60-65, T2 62-68 averaged over its two boards, T3 58-63), which should be
 competitive for a placed prize. The differentiators are the high-variance blind calls: new cell populations in T1 and
@@ -331,8 +338,18 @@ Task heads hold what differs: the 32K-gene vs 500-gene encoders, the coordinate 
 copy_last, pseudobulk_shift, bracket interpolation and wild type plus response are all settings of this operator, so it
 should cost nothing per board.
 
-Decision point D3 (2026-11-12): if the shared core is within 1 point of the best specialised variant on every board's
-honest validation, claim the award in the method summary; otherwise use specialised code where it wins.
+The award needs the same architecture under every task we enter (Rules s.14), so both submissions on every board are
+built through the shared core, and new pipeline code goes into the core or a task head, never into a separate per-task
+model. The core is in code: `src/vec/core.py` (feat-020, a pure refactor with outputs unchanged bit for bit;
+`experiments/core/REPORT.md`). `vec.t1_scope` and `vec.t2_build` are heads that call it; the pre-registered T3 script
+keeps its own hash-pinned primitives, which the core copies exactly (`tests/test_core.py` proves them identical). The
+v1 pipelines are built on it.
+
+Decision point D3 (2026-11-12): claim the award unless the best specialised variants beat the shared-core builds by
+more than 3 points of overall standing (T1 + mean of the T2 boards + T3) on honest validation, paired over the
+emulator seeds; in that case use specialised code where it wins and drop the claim. Changed on 2026-10-20 from "within
+1 point on every board" (proposed by the AI assistant, approved by the user): if we are strong enough to place we have
+a good chance at the award too, so a few points are a bad trade for it, and if we are not, the claim costs nothing.
 
 ## 6. Infrastructure
 
@@ -481,3 +498,13 @@ of 2026-10-19; A20).
   final uploads still finish by the end of 30 November IST (section 8), and P3 methods, prediction files and
   evaluation feedback stay private until 2026-12-11, as they already do. Whether anyone moves to Yukon is the user's
   decision; nothing has been done toward it.
+- 2026-10-20 (c): prize strategy. The user asked how to maximise prize money; the AI assistant's recommendations,
+  approved by the user ("do whatever's best"):
+  - Stay an official Human Team and go for the prizes that stack: a place and the Generality Award. The award is
+    judged across both tracks among shared-architecture entries only, so it is our best chance per hour (section 1).
+  - D3 changed (section 5). The shared core goes into code now (feat-020) so every later pipeline builds on it, and the
+    Generality question goes to the organisers again (third email, in the user's drafts).
+  - Travel grants: apply when the call opens. Community award: only quick public contributions that do not help rivals
+    before 2 December, and nothing is published without the user's go-ahead.
+  - Not pursued: Yukon (rules out the official prizes); moving one member to Yukon (cross-team code-sharing risk);
+    the Agent track (a quarter of the field, but locked, unsteered runs with filed evidence; the user chose Human-only).

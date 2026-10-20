@@ -11,7 +11,9 @@ experiments/coords/REPORT.md, both measured on released data and independently r
 - `sample_cells`: random rows only. Released files store rows section by section, so a contiguous block of rows is a
   slab of sections (16-31 points lost at 1x on a near-perfect prediction, 13-18 at 8x). Rows repeat only when the
   count exceeds the pool; exact duplicate coordinates are then broken by isotropic jitter of at most 0.25 x the median
-  nearest-neighbour distance, the budget measured to cost nothing.
+  nearest-neighbour distance, the budget measured to cost nothing. The rows are drawn by the shared core
+  (vec.core.draw_balanced, docs/PLAN.md section 5; importable from here under its old name `_balanced_rows`); the
+  count rule, the jitter, the coordinate helpers and the guard are this module's, the T2 head.
 - Coordinates stay native: `centre`, `proper_rotation` (det +1 only: a mirrored copy of a correct shape loses up to
   0.12 Dice under the pinned scorer, so improper matrices are refused, never repaired), `rescale_to_rms` (an isotropic
   scaling about the centroid) and `apply_size_procedure`, which reads the pre-registered size procedure's output JSON
@@ -51,6 +53,7 @@ from scipy import sparse
 from scipy.spatial import cKDTree
 
 from vec.boards import Board
+from vec.core import draw_balanced
 from vec.io import (
     COORD_KEY,
     TARGET_LIBRARY_SIZE,
@@ -196,13 +199,7 @@ def n_cells(board: Board, pool_size: int, override: int | str | None = None) -> 
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Sampling
-def _balanced_rows(n_pool: int, n: int, rng: np.random.Generator) -> np.ndarray:
-    """n row indices into a pool of n_pool, in random order: without replacement when n <= n_pool, otherwise every row
-    n // n_pool times plus n % n_pool distinct rows once more (a plain draw with replacement would leave about 1/e of
-    the pool out at n = n_pool and repeat other rows several times)."""
-    k, r = divmod(n, n_pool)
-    rows = np.concatenate([np.tile(np.arange(n_pool), k), rng.choice(n_pool, r, replace=False)])
-    return rng.permutation(rows).astype(np.int64)
+_balanced_rows = draw_balanced  # its name here before it moved to vec.core (feat-020)
 
 
 def _ball_shifts(m: int, r_max: float, rng: np.random.Generator) -> np.ndarray:
@@ -245,7 +242,7 @@ def sample_cells(stage, n: int, seed: int, jitter_frac: float = JITTER_NN_FRAC) 
     seed = _whole(seed, "seed", 0)
     if not 0 < jitter_frac <= JITTER_NN_FRAC:
         raise ValueError(f"jitter_frac must be in (0, {JITTER_NN_FRAC}] (the free budget), got {jitter_frac}")
-    rows = _balanced_rows(N, n, np.random.default_rng([seed, 0]))
+    rows = draw_balanced(N, n, np.random.default_rng([seed, 0]))
     out = C[rows].copy()
     # first occurrence of each distinct position as the scorer reads it (float32: float-noise copies count as repeats)
     _, first = np.unique(out.astype(np.float32), axis=0, return_index=True)
@@ -609,7 +606,7 @@ def cloud_guard(pred_coords, source_coords, seed: int = 0, expected_rms_ratio: f
     refs = []
     for _ in range(n_ref):
         if p is None:
-            Q = S[_balanced_rows(S.shape[0], P.shape[0], rng)]
+            Q = S[draw_balanced(S.shape[0], P.shape[0], rng)]
         else:
             Q = S[rng.choice(S.shape[0], P.shape[0], replace=P.shape[0] > int((p > 0).sum()), p=p)]
         refs.append((*measure(Q, 1.0), rms_radius(Q) / rms_s))

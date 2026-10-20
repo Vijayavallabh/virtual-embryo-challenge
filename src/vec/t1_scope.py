@@ -19,6 +19,11 @@ gap-fill 1). Predictions are built in four steps, each usable on its own:
    runs `vec.io.check_submission` on it.
 
 Only real cells, count-space edits and log1p CP10k output (PLAN principle 1); never decoded means.
+
+This module is the T1 head of the shared core, vec.core (docs/PLAN.md section 5): it decides the categories, the
+shares, the stand-ins and the momentum factors, and the core does the cell work: the allocation (`quotas`), the draws
+(`draw_least_used`) and the count-space edits (`counts_of`, `mean_cp10k`, `apply_factors`, `log1p_cp10k`). Those
+functions moved there from here and stay importable from here under their old names (`_draw` is `draw_least_used`).
 """
 
 from __future__ import annotations
@@ -35,15 +40,15 @@ import yaml
 from scipy import sparse
 
 from vec.boards import RELEASED_T1_STAGES, REPO_ROOT, Board
+from vec.core import apply_factors, counts_of, draw_least_used, log1p_cp10k, mean_cp10k, quotas
 from vec.io import CheckReport, check_submission, make_submission, write_submission
-from vec.prep import lineage_map, log1p_cp10k, recover_counts
+from vec.prep import TARGET_SUM, lineage_map, recover_counts  # noqa: F401 (kept importable here; the core uses them)
 
 CHAMBER_CLASSES = REPO_ROOT / "configs" / "t1_chamber_classes.yaml"
 HELD_FLAT_GENES = REPO_ROOT / "experiments" / "t1_direction" / "results" / "held_flat_genes.csv"
 CATEGORY_KEY = "category"
 LABEL_KEY = "celltype"
 SHARE_TOL = 1e-6
-TARGET_SUM = 1e4
 RELEASED_STEMS = frozenset(f"{stage}_RNA" for stage in RELEASED_T1_STAGES)  # released T1 file stems, e.g. E8.5_RNA
 
 Seed = int | Sequence[int]
@@ -277,19 +282,6 @@ def with_share(shares: Mapping[str, float] | str | Path, category: str, share: f
     return load_shares(out, spec)
 
 
-def quotas(shares: Mapping[str, float], n: int) -> dict[str, int]:
-    """Whole cell counts per category summing to n: floors of share x n, then the largest remainders get one more
-    (ties by category name). A category with share 0 never gets a cell."""
-    if n < 0:
-        raise ValueError(f"n must be >= 0, got {n}")
-    raw = {c: float(s) * n for c, s in shares.items()}
-    q = {c: int(np.floor(v + 1e-9)) for c, v in raw.items()}
-    left = n - sum(q.values())
-    for c in sorted(raw, key=lambda c: (-(raw[c] - q[c]), c))[:max(left, 0)]:
-        q[c] += 1
-    return q
-
-
 # ---------------------------------------------------------------------------------------------------------------------
 # Re-weighting
 
@@ -322,23 +314,7 @@ def _take(adata: ad.AnnData, idx: np.ndarray) -> ad.AnnData:
     return ad.AnnData(X=adata.X[idx], obs=obs, var=adata.var.copy(), layers=layers)
 
 
-def _draw(pool: np.ndarray, k: int, used: np.ndarray, rng: np.random.Generator) -> tuple[np.ndarray, int]:
-    """k rows from `pool` (unique row indices), least-used first: every unused row before any repeat, then whole
-    passes over the pool, each without replacement. Updates `used`; returns (rows, picks that repeat a cell)."""
-    pool = np.asarray(pool)
-    before = used[pool].copy()
-    taken = np.zeros(len(pool), dtype=np.int64)
-    parts, rest = [], k
-    while rest > 0:
-        level = before + taken
-        cand = np.flatnonzero(level == level.min())
-        sel = rng.choice(cand, min(rest, len(cand)), replace=False)
-        taken[sel] += 1
-        parts.append(pool[sel])
-        rest -= len(sel)
-    used[pool] += taken
-    picks = np.concatenate(parts) if parts else np.array([], dtype=np.int64)
-    return picks, int(k - np.count_nonzero((before == 0) & (taken > 0)))
+_draw = draw_least_used  # its name here before it moved to vec.core (feat-020)
 
 
 def reweight(adata: ad.AnnData, target_shares: Mapping[str, float] | str | Path, n_cells: int, seed: Seed = 0, *,
@@ -390,7 +366,7 @@ def reweight(adata: ad.AnnData, target_shares: Mapping[str, float] | str | Path,
     used = np.zeros(adata.n_obs, dtype=np.int64)
     picks, roles, rows = [], [], []
     for _, c, pool, how, labs, n_own in plan:
-        idx, n_reused = _draw(pool, q[c], used, rng)
+        idx, n_reused = draw_least_used(pool, q[c], used, rng)
         picks.append(idx)
         roles.append(np.full(len(idx), c, dtype=object))
         rows.append({"category": c, "target_share": shares[c], "quota": q[c], "own_cells": n_own,
@@ -418,39 +394,6 @@ def held_flat_genes(path: str | Path = HELD_FLAT_GENES) -> list[str]:
     """The pre-registered held-flat list: sex-linked, Y-linked, strain and pool-effect genes (experiments/t1_direction,
     computed from the two released stages only)."""
     return pd.read_csv(path)["gene"].astype(str).tolist()
-
-
-def counts_of(adata: ad.AnnData, genes: Sequence[str] | None = None) -> sparse.csr_matrix:
-    """Integer counts (CSR int64) in the order of `genes` (default: the AnnData's own), from layers["counts"] or
-    recovered exactly from the log1p CP10k `.X` (`vec.prep.recover_counts`)."""
-    if "counts" in adata.layers:
-        C = sparse.csr_matrix(adata.layers["counts"])
-        if C.dtype.kind == "f":
-            if C.nnz and float(np.abs(C.data - np.rint(C.data)).max()) > 1e-6:
-                raise ValueError("layers['counts'] holds non-integer values")
-            C = sparse.csr_matrix((np.rint(C.data), C.indices, C.indptr), shape=C.shape)
-        C = C.astype(np.int64)
-    else:
-        C, _, resid = recover_counts(adata.X)
-        if resid > 1e-2:
-            raise ValueError(f"counts are not recoverable from X (largest residual {resid:.3g})")
-        C = C.astype(np.int64)
-    if genes is not None and list(adata.var_names) != list(genes):
-        idx = adata.var_names.get_indexer(list(genes))
-        if (idx < 0).any():
-            missing = [g for g, i in zip(genes, idx, strict=True) if i < 0]
-            raise KeyError(f"{len(missing)} genes missing, e.g. {missing[:5]}")
-        C = C[:, idx]
-    C.eliminate_zeros()
-    return C
-
-
-def mean_cp10k(C) -> np.ndarray:
-    """Mean over cells of 1e4 * c / (cell total), per gene."""
-    C = sparse.csr_matrix(C, dtype=np.float64)
-    lib = np.asarray(C.sum(1)).ravel()
-    scale = np.divide(TARGET_SUM, lib, out=np.zeros_like(lib), where=lib > 0)
-    return np.asarray((sparse.diags(scale) @ C).mean(0)).ravel()
 
 
 def _type_rows(adata: ad.AnnData, t: str, key: str, label_key: str, within, fallback,
@@ -496,50 +439,6 @@ class ShiftReport:
                 "max_abs_log_factor": self.max_abs_log_factor, "n_held_flat": self.n_held_flat,
                 "standin_momentum": self.standin_momentum, "restored_cells": self.restored_cells,
                 "skipped": self.skipped, "rows": self.rows}
-
-
-def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarray | None = None,
-                  keep_depth: bool = True, seed: Seed = 0) -> tuple[sparse.csr_matrix, np.ndarray, np.ndarray]:
-    """Edit integer counts by per-(type, gene) factors in count space.
-
-    C: (cells x genes) counts; factors: (types x genes), > 0; type_index: each cell's row of `factors`; held: genes
-    left exactly as they are. With keep_depth, each cell's non-held factors are multiplied by the constant that keeps
-    its expected total count unchanged. A count c with factor f < 1 becomes Binomial(c, f), with f > 1 c + Poisson
-    ((f - 1) c), with f == 1 stays c. Zeros stay zero. A cell left with no counts gets its original counts back.
-    Returns (counts as CSR int64, per-cell depth constant, restored-cell mask).
-    """
-    C = sparse.csr_matrix(C, dtype=np.int64, copy=True)
-    C.sort_indices()
-    n = C.shape[0]
-    factors = np.asarray(factors, dtype=np.float64)
-    if not np.all(np.isfinite(factors)) or (factors <= 0).any():
-        raise ValueError("factors must be finite and positive")
-    type_index = np.asarray(type_index)
-    held = np.zeros(C.shape[1], dtype=bool) if held is None else np.asarray(held, dtype=bool)
-    row_of = np.repeat(np.arange(n), np.diff(C.indptr))
-    c = C.data.astype(np.float64)
-    f = factors[type_index[row_of], C.indices]
-    free = ~held[C.indices]
-    scale = np.ones(n)
-    if keep_depth:
-        num = np.bincount(row_of, weights=c * free, minlength=n)
-        den = np.bincount(row_of, weights=c * f * free, minlength=n)
-        scale = np.divide(num, den, out=np.ones(n), where=den > 0)
-        f = np.where(free, f * scale[row_of], 1.0)
-    else:
-        f = np.where(free, f, 1.0)
-    rng = np.random.default_rng(seed)
-    new = C.data.copy()
-    down, up = f < 1.0, f > 1.0
-    new[down] = rng.binomial(C.data[down], f[down])
-    new[up] = C.data[up] + rng.poisson((f[up] - 1.0) * C.data[up])
-    dead = np.bincount(row_of, weights=new, minlength=n) == 0
-    if dead.any():
-        back = dead[row_of]
-        new[back] = C.data[back]
-    out = sparse.csr_matrix((new, C.indices.copy(), C.indptr.copy()), shape=C.shape)
-    out.eliminate_zeros()
-    return out, scale, dead
 
 
 def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, damping: float,
