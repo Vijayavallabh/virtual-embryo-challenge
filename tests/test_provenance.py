@@ -214,6 +214,35 @@ def test_vec_baseline_stamps_its_file(own_repo, tmp_path, monkeypatch):
     assert s["commit"] == git(own_repo, "rev-parse", "HEAD")
 
 
+def test_vec_baseline_keeps_n_random_rows(own_repo, tmp_path, monkeypatch):
+    import anndata as ad
+
+    board = Board(key="T1:x", task="T1", genes=GENES, needs_coords=False, min_cells=10, max_cells=1000)
+    monkeypatch.setattr(cli, "get_board", lambda key: board)
+    last = tmp_path / "last.h5ad"
+    _adata(3).write_h5ad(last)
+
+    def run(*extra, out):
+        return CliRunner().invoke(cli.app, ["baseline", "copy_last", "--board", "T1:x", "--last", str(last),
+                                            *extra, "--out", str(out)])
+
+    files = [tmp_path / f"p{i}.h5ad" for i in range(3)]
+    for f, seed in zip(files, (0, 0, 1), strict=True):
+        res = run("--n-cells", "12", "--seed", str(seed), out=f)
+        assert res.exit_code == 0, res.output
+    def dense(f):
+        X = ad.read_h5ad(f).X
+        return np.asarray(X.todense() if hasattr(X, "todense") else X)
+
+    x = [dense(f) for f in files]
+    assert all(m.shape == (12, len(GENES)) for m in x)
+    assert np.array_equal(x[0], x[1]) and not np.array_equal(x[0], x[2])  # the seed fixes the rows
+    assert read_stamp(stamp_path(files[0]))["sha256"] == hashlib.sha256(files[0].read_bytes()).hexdigest()
+    for bad in ("41", "-1"):
+        res = run("--n-cells", bad, out=tmp_path / "bad.h5ad")
+        assert res.exit_code != 0 and not (tmp_path / "bad.h5ad").exists()
+
+
 def test_read_stamp_refuses_what_is_not_a_stamp_of_this_version(repo, tmp_path):
     path = stamp_path(build(_adata(), tmp_path / "s1.h5ad", repo))
     good = json.loads(path.read_text())

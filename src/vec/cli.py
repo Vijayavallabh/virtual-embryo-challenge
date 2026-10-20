@@ -9,6 +9,7 @@ import subprocess
 from datetime import UTC, datetime
 from pathlib import Path
 
+import numpy as np
 import typer
 from rich.console import Console
 from rich.markup import escape
@@ -136,6 +137,8 @@ def baseline(
     ko_train: Path = typer.Option(None, help="observed knockout (shift_transfer, gene_ko)"),
     wt_train: Path = typer.Option(None, help="wild type matched to the observed knockout"),
     target_gene: str = typer.Option("", help="knocked-out gene (gene_ko)"),
+    n_cells: int = typer.Option(0, help="keep this many random rows (0 = all), e.g. to meet the board's cell limits"),
+    seed: int = typer.Option(0, help="seed of the --n-cells draw"),
     out: Path = typer.Option(..., help="output .h5ad"),
 ):
     """Write a reference-baseline prediction for a board."""
@@ -156,6 +159,10 @@ def baseline(
         pred = baselines.gene_ko(load(ko_train), load(wt_train), load(wt), b.genes, target_gene)
     else:
         raise typer.BadParameter(f"unknown baseline {name!r}")
+    if n_cells:
+        if not 0 < n_cells <= pred.n:
+            raise typer.BadParameter(f"--n-cells must be between 1 and {pred.n} (the baseline's cells)")
+        pred = pred.take(np.random.default_rng(seed).choice(pred.n, n_cells, replace=False))
     path = write_submission(make_submission(pred.X, b.genes, pred.coords), out)
     console.print(f"wrote {path} ({pred.n} cells)")
 
