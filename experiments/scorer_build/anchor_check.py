@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 """Validation anchor check for the two scorer builds. Pre-registered 2026-10-19, before the validation answers exist.
 
-From 2026-10-20, with the released T2 validation answers, this reproduces the published shape anchors of the three T2
-validation boards (d2_shape, occupancy_dice and scale_log_ratio, floor and ceiling) under both scorer builds of
-vec.evaluate ("main" = pinned veckit git cc3859a, "prefix" = veckit 0.1.1) and classifies each published
-occupancy_dice anchor as a proper-mode or a mirror-mode value.
+From the final phase (2026-10-27; the organisers moved it from 2026-10-20), with the released T2 validation answers,
+this reproduces the published shape anchors of the three T2 validation boards (d2_shape, occupancy_dice and
+scale_log_ratio, floor and ceiling) under both scorer builds of vec.evaluate ("main" = pinned veckit git cc3859a,
+"prefix" = veckit 0.1.1) and classifies each published occupancy_dice anchor as a proper-mode or a mirror-mode value.
 
 Background. The published anchors predate veckit PR #9 (right-handed frame). Under the pre-fix build a Dice value is
 the proper-mode value ("main") when the prediction's and the truth's SVD bases have the same parity, and the
@@ -15,7 +15,10 @@ Compliance (docs/DATA_POLICY.md):
 - Validation boards only. --board keys must be T2 validation boards (or synthetic "TEST:" keys made by `self-test`).
 - The index must be the repo's boards/index.json, refreshed only through vec.boards.update_boards. The run stops,
   printing counts only, if the index sits under a "panels" directory or if any non-validation board in it still
-  carries anchors (test-board anchors encode hidden targets and are never read). Nothing is fetched from the network.
+  carries anchors (test-board anchors encode hidden targets and are never read).
+- Check mode reads the anchors only from RELEASE_UTC on and only while the public phase endpoint reports the final
+  phase (vec.boards.final_phase_open: one tokenless GET; an unreadable answer counts as not open). Added 2026-10-20,
+  when the organisers moved the final phase from 2026-10-20 to 2026-10-27. Nothing else is fetched from the network.
 - Published validation anchors are compared with recomputed values; they set no number in any prediction.
 - When no validation answer file is present the script exits with status 0 before it opens the index.
 - Outputs are aggregate numbers only (JSON and TXT). Run it on the DGX; bring back only those files.
@@ -48,7 +51,7 @@ pre-fix build; whether the server runs it today is a separate question (leaderbo
 With --index-before (an older repo copy of boards/index.json, e.g. from git), a change in the Dice anchors without a
 change in d2_shape points to a re-bake with another canonicalisation.
 
-Usage (DGX, repo root, from 2026-10-20; long runs in tmux with a log under runs/logs/):
+Usage (DGX, repo root, from 2026-10-27; long runs in tmux with a log under runs/logs/):
   uv run python experiments/scorer_build/anchor_check.py check --out runs/scorer_build/anchor_check
   uv run python experiments/scorer_build/anchor_check.py check \
       --board T2:heart:val_extrap PATH_TO_E10.5_ANSWERS data/raw/T2/E9.5.h5ad
@@ -72,7 +75,7 @@ from pathlib import Path
 
 import numpy as np
 
-from vec.boards import REPO_ROOT, VALIDATION_BOARDS, VALIDATION_SPLITS
+from vec.boards import REPO_ROOT, VALIDATION_BOARDS, VALIDATION_SPLITS, final_phase_open
 from vec.evaluate import (
     SUBSAMPLE_FRAC,
     Stage,
@@ -681,7 +684,13 @@ def _seeds(text: str) -> tuple[int, ...]:
     return tuple(int(x) for x in text.split(",") if x.strip())
 
 
-RELEASE_UTC = "2026-10-20"  # validation answers become training data; no anchor is read before this date
+# Validation answers become training data with the final phase (moved by the organisers from 2026-10-20); no anchor
+# is read before this date, nor before the public phase endpoint reports the final phase.
+RELEASE_UTC = "2026-10-27"
+
+
+def _today_utc() -> str:
+    return time.strftime("%Y-%m-%d", time.gmtime())
 
 
 def cmd_check(a) -> int:
@@ -694,11 +703,15 @@ def cmd_check(a) -> int:
     present = [(k, t, r) for k, t, r in boards if t is not None]
     if not present:
         print(f"No T2 validation answers found (looked under {data} for "
-              f"{', '.join(s for s, _ in T2_BOARDS.values())}; released 2026-10-20). Nothing was read. Exiting.")
+              f"{', '.join(s for s, _ in T2_BOARDS.values())}; released {RELEASE_UTC}). Nothing was read. Exiting.")
         return 0
-    if time.strftime("%Y-%m-%d", time.gmtime()) < RELEASE_UTC:
+    if _today_utc() < RELEASE_UTC:
         print(f"Before the {RELEASE_UTC} release the validation anchors stay unread, even with stand-in files "
               "(use self-test). Exiting.")
+        return 0
+    if not final_phase_open():
+        print("The public phase endpoint does not report the final phase (or could not be read): the validation "
+              "anchors stay unread, even with stand-in files (use self-test). Exiting.")
         return 0
     missing = [k for k, t, _ in boards if t is None]
     entries = load_index_entries(a.index, [k for k, _, _ in present])

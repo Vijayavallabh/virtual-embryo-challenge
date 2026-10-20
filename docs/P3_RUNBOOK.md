@@ -1,4 +1,7 @@
-# Release-day runbook (2026-10-20, start of the final phase)
+# Release-day runbook (2026-10-27, start of the final phase)
+
+The organisers moved the start from 2026-10-20 to 2026-10-27 (email of 2026-10-20). Files written before that email say
+2026-10-20; they mean this release.
 
 The validation answers (T1 E10.5, T2 heart E8.5 and E10.5, T2 embryo E7.5, T3 Gata4 replicates) and the test inputs
 arrive today. Everything below that decides a method was committed before the release; run it as written and commit
@@ -11,7 +14,8 @@ each output before looking at anything else. Steps marked **(user)** need you.
   targets (`docs/DATA_POLICY.md`, do-not-use list).
 - `git pull`, `./init.sh` (lock, lint, tests).
 - `uv run vec submit status` (local, read-only; uploads nothing): the phase, its split and, per board, the quota and
-  the ledger and server view. If the official quota (`official_per_board`) shows as unknown, the client keeps refusing
+  the ledger and server view. If it still shows P2 (split `val`), the release has not happened: stop here and run
+  nothing below. If the official quota (`official_per_board`) shows as unknown, the client keeps refusing
   official uploads until its parser is adapted to the real shape and reviewed; nothing else depends on it today.
 - An `unresolved` line there means a format check came back as a submission (or unconfirmed): nothing can be sent to
   any board until it is resolved. Check the portal's submission list, then run the printed command for each board it
@@ -27,9 +31,11 @@ uv run vec boards update      # same as vec.boards.update_boards(); test anchors
 git add boards && git commit -m "Board specs for the final phase (test anchors stripped at intake)"
 ```
 
-The summary lists the boards, which ones were reduced to their submission spec, and whether the T1 composition file
-was written (it is skipped if it describes any unreleased stage). Never print `boards/index.json` anchors for a reduced
-board; they are not there.
+The summary lists the boards, which ones were reduced to their submission spec, and whether the T1 composition file was
+written (it is skipped if it describes any unreleased stage). Never print `boards/index.json` anchors for a reduced
+board; they are not there. E10.5 counts as unreleased until the public phase endpoint reports the test split; the
+summary says why the file was held back. If step 0 showed the final phase and the summary says the endpoint could not be
+read, re-run `uv run vec boards update` before committing.
 
 ## 2. Data
 
@@ -76,7 +82,7 @@ procedure refuses unmapped labels.
    The pre-registered rule in `docs/PLAN.md` section 3.6 decides the count: keep max_cells unless a lower level beats it
    for the intermediate-quality condition by more than 0.3 points in at least 8 of 10 seeds.
 6. **Scorer build:** `uv run python experiments/scorer_build/anchor_check.py check` against the released validation
-   answers (validation anchors only; it refuses test boards, the public board file and anything before 2026-10-20).
+   answers (validation anchors only; it refuses test boards, the public board file and anything before 2026-10-27).
    Its verdict says which build the server baked the anchors with; it changes no prediction.
 
 ## 5. Then

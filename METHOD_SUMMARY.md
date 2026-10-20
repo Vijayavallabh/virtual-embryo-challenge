@@ -5,8 +5,9 @@ decisions that mattered, what was trained on what, enough detail to understand w
 Generality Award is judged on this summary. Keep it current as methods change; every claim should point to a run in
 `results/registry.csv` or an experiment report in `experiments/*/REPORT.md`.
 
-Status 2026-10-19: methods are pre-registered on released training data; no test submission exists yet. Sections marked
-_planned_ describe the committed plan (`docs/PLAN.md` v1.2), not results.
+Status 2026-10-20: methods are pre-registered on released training data; no test submission exists yet. The final phase
+opens on 2026-10-27 (postponed by the organisers from 2026-10-20). Sections marked _planned_ describe the committed plan
+(`docs/PLAN.md` v1.2), not results.
 
 ## Team and track
 

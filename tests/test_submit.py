@@ -576,6 +576,11 @@ def test_boards_update_prints_only_the_summary(env, monkeypatch):
     assert "boards (2): T1:test, T1:val" in res.output and "submission spec (1): T1:test" in res.output
     assert "not written" in res.output and "anchor" not in res.output.lower()
 
+    for phase, said in (("closed", "once the final phase is open"), ("unreadable", "could not be read")):
+        monkeypatch.setattr("vec.boards.update_boards", lambda p=phase: {**fake_update(), "final_phase": p})
+        res = CliRunner().invoke(cli.app, ["boards", "update"])  # why E10.5 is held back
+        assert res.exit_code == 0 and said in " ".join(res.output.split())
+
     monkeypatch.setattr(cli, "load_boards", lambda: load_boards(env.boards))
     res = CliRunner().invoke(cli.app, ["boards"])  # unchanged: lists the boards
     assert res.exit_code == 0 and "T2:heart:test_extrap" in res.output

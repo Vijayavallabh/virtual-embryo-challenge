@@ -21,22 +21,22 @@
     {
       "id": "feat-003",
       "name": "Data acquisition on the DGX",
-      "description": "vec data fetch of every released file (training stages; from 2026-10-20 the validation answers and test inputs) into ~/v/virtual-embryo-challenge/data/raw; SHA-256 recorded and compared with the organisers' checksums.",
+      "description": "vec data fetch of every released file (training stages; from 2026-10-27 the validation answers and test inputs) into ~/v/virtual-embryo-challenge/data/raw; SHA-256 recorded and compared with the organisers' checksums.",
       "dependencies": [
         "feat-001"
       ],
       "status": "in-progress",
-      "evidence": "2026-10-18: 9 training files (2.26 GB) on the DGX in data/raw, sizes match the manifest, SHA-256 in data/raw/SHA256SUMS (E8.25_late matches the checksum published in Slack); structure in docs/DATA_NOTES.md. Remaining: validation answers and test inputs on 2026-10-20 (re-run vec data fetch)."
+      "evidence": "2026-10-18: 9 training files (2.26 GB) on the DGX in data/raw, sizes match the manifest, SHA-256 in data/raw/SHA256SUMS (E8.25_late matches the checksum published in Slack); structure in docs/DATA_NOTES.md. Remaining: validation answers and test inputs on 2026-10-27, postponed from 2026-10-20 (re-run vec data fetch)."
     },
     {
       "id": "feat-004",
       "name": "Final-phase intake",
-      "description": "On 2026-10-20: pull the new panels/index.json (test boards, ref_cells, truth_cells, cell bounds), the Data Protocol section and any scorer change (veckit main, PR #6 status); update boards/ and docs; freeze each test board's reference stage (decision point D1).",
+      "description": "On 2026-10-27 (postponed from 2026-10-20): pull the new panels/index.json (test boards, ref_cells, truth_cells, cell bounds), the Data Protocol section and any scorer change (veckit main, PR #6 status); update boards/ and docs; freeze each test board's reference stage (decision point D1).",
       "dependencies": [
         "feat-001"
       ],
       "status": "in-progress",
-      "evidence": "2026-10-19: intake tooling ready: vec.boards.update_boards strips non-validation anchors in memory (tests/test_boards.py); docs/P3_RUNBOOK.md gives the release-day order. Runs on 2026-10-20."
+      "evidence": "2026-10-19: intake tooling ready: vec.boards.update_boards strips non-validation anchors in memory (tests/test_boards.py); docs/P3_RUNBOOK.md gives the release-day order. Runs on 2026-10-27 (the final phase was postponed from 2026-10-20)."
     },
     {
       "id": "feat-005",
@@ -110,7 +110,7 @@
         "feat-008"
       ],
       "status": "in-progress",
-      "evidence": "2026-10-19: heart and embryo size procedure pre-registered and committed before the release (171695a; experiments/coords/size_procedure.py, run_p3.sh with preflight; experiments/coords/REPORT.md with two independent reviews). Runs on the release stages on 2026-10-20. 2026-10-19: `vec.t2_build.apply_size_procedure` reads the size procedure's JSON and rescales in its recorded z mode; copy, block and oracle-size controls in experiments/t2_build/smoke.py: the guard flags contiguous-block layouts (voxel cover 0.60 and 0.46 of a random subset's) and passes the copy and oracle-size files."
+      "evidence": "2026-10-19: heart and embryo size procedure pre-registered and committed before the release (171695a; experiments/coords/size_procedure.py, run_p3.sh with preflight; experiments/coords/REPORT.md with two independent reviews). Runs on the release stages on 2026-10-27. 2026-10-19: `vec.t2_build.apply_size_procedure` reads the size procedure's JSON and rescales in its recorded z mode; copy, block and oracle-size controls in experiments/t2_build/smoke.py: the guard flags contiguous-block layouts (voxel cover 0.60 and 0.46 of a random subset's) and passes the copy and oracle-size files."
     },
     {
       "id": "feat-012",
@@ -121,7 +121,7 @@
         "feat-008"
       ],
       "status": "in-progress",
-      "evidence": "2026-10-19: experiments/t3_decomp (t3_decompose.py, rules.yaml with dated lead notes) screened, built and independently reviewed; Mab21l2 smoke test: factor 80.5 vs null 50.8, composition+factor 84.2, blind phenotype rules ~51. Runs on the Gata4 replicates on 2026-10-20. 2026-10-19: experiments/t3_decomp/build_submission.py builds s1/s2 from the decision file without re-deciding (branches allowed, refused, barred; rules.yaml notes 6, 7 and 8 applied in the allowed branch) and `plan` prints both submissions of every branch; 23 tests (allowed-branch sweeps check the built specs against the notes' text, including rules not evaluated), all 50 T3 tests incl. end-to-end pass on the DGX (RUN_T3_E2E=1); two independent reviews (947622a, 3d52b3d). The user reviewed a plain summary of rules.yaml on 2026-10-19, approved it and chose note 8; experiments/t3_decomp/replicate_overlap.py implements the note-4 check (7 tests)."
+      "evidence": "2026-10-19: experiments/t3_decomp (t3_decompose.py, rules.yaml with dated lead notes) screened, built and independently reviewed; Mab21l2 smoke test: factor 80.5 vs null 50.8, composition+factor 84.2, blind phenotype rules ~51. Runs on the Gata4 replicates on 2026-10-27. 2026-10-19: experiments/t3_decomp/build_submission.py builds s1/s2 from the decision file without re-deciding (branches allowed, refused, barred; rules.yaml notes 6, 7 and 8 applied in the allowed branch) and `plan` prints both submissions of every branch; 23 tests (allowed-branch sweeps check the built specs against the notes' text, including rules not evaluated), all 50 T3 tests incl. end-to-end pass on the DGX (RUN_T3_E2E=1); two independent reviews (947622a, 3d52b3d). The user reviewed a plain summary of rules.yaml on 2026-10-19, approved it and chose note 8; experiments/t3_decomp/replicate_overlap.py implements the note-4 check (7 tests)."
     },
     {
       "id": "feat-013",
@@ -142,7 +142,7 @@
         "feat-009"
       ],
       "status": "in-progress",
-      "evidence": "2026-10-19: pre-registered T1 direction readout (experiments/t1_direction; Feng bracket vs cross-fitted momentum, thresholds in config.yaml) decides on 2026-10-20 whether M2 is built; composition plan in docs/PLAN.md 4.1 (scope first, CM share hedge). 2026-10-19: `vec.t1_scope` (chamber category for every released label in configs/t1_chamber_classes.yaml, with marker and label-transfer evidence; re-weighting to input shares; momentum shift; builder), 35 tests. Pseudo-task E8.5 -> E9.5 on the T1 emulator, 10 seeds, both E9.5 libraries (experiments/t1_scope/results/): re-weighting to the truth's category shares +31.2/+30.6 over copying E8.5 (an upper bound; the screened digest quoted about +24); CM share 10 points low -0.6/-0.3 vs 10 points high -3.2/-3.4; dropping only surrounding tissue +17.0/+18.4; per-type shifts in the true direction add +4.3/+4.5 at damping 0.5 and +7.2/+7.1 at damping 1, the reversed sign costs -4.5/-4.8 (an oracle direction, so upper bounds; stand-in types get no momentum; re-run at 94e1793, matching the reviewer's independent re-run)."
+      "evidence": "2026-10-19: pre-registered T1 direction readout (experiments/t1_direction; Feng bracket vs cross-fitted momentum, thresholds in config.yaml) decides on 2026-10-27 whether M2 is built; composition plan in docs/PLAN.md 4.1 (scope first, CM share hedge). 2026-10-19: `vec.t1_scope` (chamber category for every released label in configs/t1_chamber_classes.yaml, with marker and label-transfer evidence; re-weighting to input shares; momentum shift; builder), 35 tests. Pseudo-task E8.5 -> E9.5 on the T1 emulator, 10 seeds, both E9.5 libraries (experiments/t1_scope/results/): re-weighting to the truth's category shares +31.2/+30.6 over copying E8.5 (an upper bound; the screened digest quoted about +24); CM share 10 points low -0.6/-0.3 vs 10 points high -3.2/-3.4; dropping only surrounding tissue +17.0/+18.4; per-type shifts in the true direction add +4.3/+4.5 at damping 0.5 and +7.2/+7.1 at damping 1, the reversed sign costs -4.5/-4.8 (an oracle direction, so upper bounds; stand-in types get no momentum; re-run at 94e1793, matching the reviewer's independent re-run)."
     },
     {
       "id": "feat-015",

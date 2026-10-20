@@ -361,6 +361,35 @@ def test_anchor_check_guards(ac, tmp_path):
         ac.SHAPE_METRICS)
 
 
+@pytest.mark.parametrize("today, phase_open, reaches_index", [("2026-10-26", True, False), ("2026-10-27", False, False),
+                                                              ("2026-10-27", True, True)])
+def test_anchor_check_waits_for_the_date_and_the_final_phase(ac, tmp_path, monkeypatch, capsys, today, phase_open,
+                                                             reaches_index):
+    """Stand-in answer files alone never open the published validation anchors: check mode also needs the release date
+    and the public phase endpoint reporting the final phase (the organisers moved it from 2026-10-20 to 2026-10-27)."""
+    (tmp_path / "T2").mkdir()
+    for name in ("E9.5.h5ad", "E10.5.h5ad"):  # a stand-in answer for T2:heart:val_extrap and its reference
+        (tmp_path / "T2" / name).touch()
+
+    class ReadIndex(Exception):
+        pass
+
+    def read_index(*_a, **_k):
+        raise ReadIndex
+
+    monkeypatch.setattr(ac, "_today_utc", lambda: today)
+    monkeypatch.setattr(ac, "final_phase_open", lambda: phase_open)
+    monkeypatch.setattr(ac, "load_index_entries", read_index)
+    argv = ["--data", str(tmp_path), "--index", str(tmp_path / "index.json"), "--out", str(tmp_path / "out")]
+    if reaches_index:
+        with pytest.raises(ReadIndex):
+            ac.main(argv)
+    else:
+        assert ac.main(argv) == 0
+        assert "stay unread" in capsys.readouterr().out
+    assert not (tmp_path / "out").exists()
+
+
 def test_anchor_check_classification_rules(ac):
     rows = [{"dice_main": 0.95, "dice_mirror": 0.82}]
     assert ac.classify_exact(0.95, rows) == "proper"

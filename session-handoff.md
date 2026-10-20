@@ -2,8 +2,8 @@
 
 ## Current Objective
 
-- Goal: a compliant Human-track entry on all four test boards; the final phase opens 2026-10-20 (2 scored uploads per
-  board for the whole phase).
+- Goal: a compliant Human-track entry on all four test boards; the final phase opens 2026-10-27, postponed from
+  2026-10-20 by the organisers (2 scored uploads per board for the whole phase).
 - Current status: every method choice that must precede the release is committed (size procedure, T3 decomposition
   rules, T1 direction readout, count rule, label-mapping rule, test-anchor quarantine). Release-day steps are in
   `docs/P3_RUNBOOK.md`.
@@ -28,13 +28,14 @@
 
 ## Decisions Made
 
-- See `docs/PLAN.md` decision log (2026-10-18, 2026-10-19, 2026-10-19 b) and `docs/DATA_POLICY.md` records.
+- See `docs/PLAN.md` decision log (2026-10-18, 2026-10-19 a-d, 2026-10-20) and `docs/DATA_POLICY.md` records.
 
 ## Blockers / Risks
 
 - Organiser answers pending (leak report; rules email). Follow-up email sent 2026-10-19 (`docs/ORGANIZER_QUESTIONS.md`).
 - Second history rewrite done 2026-10-19 (GitHub repo recreated; old-to-new commit map in `docs/DATA_POLICY.md`).
-- Never open the public board file, veckit 0.1.2, PR #6 or raw research outputs (AGENTS.md, quarantined material).
+- Never open the public board file, veckit 0.1.2, PR #6, raw research outputs or Yukon team material (AGENTS.md,
+  quarantined material).
 
 ## Next Session Startup
 
@@ -45,4 +46,6 @@
 
 ## Recommended Next Step
 
-- On 2026-10-20, run `docs/P3_RUNBOOK.md` top to bottom, committing each pre-registered output before anything else.
+- On 2026-10-27, once `vec submit status` shows the final phase, run `docs/P3_RUNBOOK.md` top to bottom, committing each
+  pre-registered output before anything else. Until then, only work that needs no release data (`docs/PLAN.md`
+  section 7).

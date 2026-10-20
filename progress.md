@@ -2,8 +2,9 @@
 
 ## Current State
 
-**Last Updated:** 2026-10-19
-**Active Feature:** feat-004 - Final-phase intake on 2026-10-20 (`docs/P3_RUNBOOK.md`); feat-003 completes with the release files
+**Last Updated:** 2026-10-20
+**Active Feature:** feat-004 - Final-phase intake on 2026-10-27, postponed from 2026-10-20 by the organisers
+(`docs/P3_RUNBOOK.md`); feat-003 completes with the release files
 
 ## Status
 
@@ -40,10 +41,12 @@
 
 ### What's Next
 
-1. 2026-10-20: follow `docs/P3_RUNBOOK.md` (board intake with anchors stripped, `vec submit status` to read the quota
-   shape, data, label map, pre-registered runs, commit each output), then emulator calibration (feat-005) and
-   test-board intake (D1).
-2. B0 floor-plus files on all four boards with the builders (feat-009); T3 per-gene factor on Gata4 (feat-012); T1
+1. Until 2026-10-27: work that needs no release data (`docs/PLAN.md` section 7): external data through committed
+   window filters (feat-007), v1 pipelines on released stages, B0 builds checked with `vec check` on the DGX.
+2. 2026-10-27, once `vec submit status` shows the final phase: follow `docs/P3_RUNBOOK.md` (board intake with anchors
+   stripped, the quota shape, data, label map, pre-registered runs, commit each output), then emulator calibration
+   (feat-005) and test-board intake (D1).
+3. B0 floor-plus files on all four boards with the builders (feat-009); T3 per-gene factor on Gata4 (feat-012); T1
    scope shares by a written rule (feat-014).
 
 ## Blockers / Risks
@@ -97,7 +100,7 @@
 - DGX research scratch removed on 2026-10-19 (user's OK); `~/v/vec-gapconc` keeps only `ext/` and `out/`, the
   legal inputs the committed filters in `experiments/external/` read (the JAX files are hard-linked into data/external).
 - `experiments/harmonise_review/review.py` has 5 pre-existing ruff findings (outside the checked `src tests`).
-- Release day: re-check #virtual-embryo-challenge and the Rules/Data pages (never the board file) for the release time,
-  submission rules and scorer version; an organiser said on 2026-09-01 that T2 E8.5 is released when the final stage
-  starts. Before the first upload, confirm that our account sign-in works (a participant saw "Sign-in is not available
-  yet" on the account page on 2026-10-18).
+- Release day (2026-10-27): re-check #virtual-embryo-challenge and the Rules/Data pages (never the board file) for
+  the release time, submission rules, scorer version and any Yukon details the organisers post; an organiser said on
+  2026-09-01 that T2 E8.5 is released when the final stage starts. Before the first upload, confirm that our account
+  sign-in works (a participant saw "Sign-in is not available yet" on the account page on 2026-10-18).

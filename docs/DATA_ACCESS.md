@@ -30,7 +30,7 @@ uv run vec data fetch --match T1    # a subset
 
 `fetch` asks for one signed link at a time, right before that file, and hands it to `curl` on the DGX through stdin,
 so neither the token nor the links appear in a process list or log. Complete files (size equal to the manifest's) are
-skipped, so re-running after the final phase opens (2026-10-20) only pulls the new validation answers and test inputs.
+skipped, so re-running after the final phase opens (2026-10-27) only pulls the new validation answers and test inputs.
 
 Record SHA-256 checksums after each download (`sha256sum data/raw/**/*.h5ad > data/raw/SHA256SUMS` on the DGX) and
 compare with the checksums the organisers publish on the Data page.

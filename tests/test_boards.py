@@ -49,3 +49,53 @@ def test_update_boards_rejects_a_bad_gene_hash(tmp_path):
     files = {"index.json": json.dumps(index).encode(), "T1__val.genes.txt": b"A\n"}
     with pytest.raises(ValueError, match="sha256"):
         update_boards(tmp_path, fetch=lambda url: files[url.rsplit("/", 1)[1]])
+
+
+def _phase(split):
+    body = {"phase": "p3" if split == "test" else "p2", "split": split, "accepts_submissions": True}
+    return json.dumps(body).encode()
+
+
+@pytest.mark.parametrize("phase, state", [(_phase("val"), "closed"), (_phase("test"), "open"), (None, "unreadable"),
+                                          (b"<html>", "unreadable"), (b"[]", "unreadable")])
+def test_e10_5_composition_waits_for_the_final_phase(tmp_path, phase, state):
+    """E10.5 is the T1 validation answer, released with the final phase (moved to 2026-10-27): its composition is
+    written only when the public phase endpoint reports the test split; an unreachable or odd answer keeps it out."""
+    genes = b"Gata4\n"
+    index = {"T1:val": _spec("T1:val", "val")}
+    index["T1:val"]["genes_sha256"] = hashlib.sha256(genes).hexdigest()
+    comp = {"stages": {"E8.5": {}, "E9.5": {}, "E10.5": {}}}
+    files = {"index.json": json.dumps(index).encode(), "t1_composition.json": json.dumps(comp).encode(),
+             "T1__val.genes.txt": genes}
+    if phase is not None:
+        files["phase"] = phase
+
+    def fetch(url):
+        name = url.rsplit("/", 1)[1]
+        if name not in files:
+            raise OSError("unreachable")
+        return files[name]
+
+    summary = update_boards(tmp_path, fetch=fetch)
+    written = state == "open"
+    assert (tmp_path / "t1_composition.json").exists() is written
+    assert summary["t1_composition_written"] is written and summary["final_phase"] == state
+    assert summary["t1_composition_unreleased_stages"] == (0 if written else 1)
+
+
+def test_released_only_composition_is_written_without_asking_the_phase(tmp_path):
+    genes = b"Gata4\n"
+    index = {"T1:val": _spec("T1:val", "val")}
+    index["T1:val"]["genes_sha256"] = hashlib.sha256(genes).hexdigest()
+    comp = {"stages": {"E8.5": {}, "E9.5": {}}}
+    files = {"index.json": json.dumps(index).encode(), "t1_composition.json": json.dumps(comp).encode(),
+             "T1__val.genes.txt": genes}
+    asked = []
+
+    def fetch(url):
+        asked.append(url)
+        return files[url.rsplit("/", 1)[1]]
+
+    summary = update_boards(tmp_path, fetch=fetch)
+    assert summary["t1_composition_written"] and summary["final_phase"] is None
+    assert not any(u.endswith("/challenge/phase") for u in asked)

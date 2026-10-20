@@ -10,8 +10,8 @@ each submission. Any change to this file needs a dated note at the bottom.
 - Unpublished (Qingquan Zhang and Neil Chi, UCSD). Any publication or public presentation needs prior written approval
   from Dr. Neil Chi's group and must credit Dr. Qingquan Zhang and Dr. Neil Chi, plus acknowledge the Virtual Embryo
   Challenge (Terms of Use clause 14).
-- Validation answers are released at the start of the final phase (2026-10-20) and may then be trained on. Test ground
-  truth is never released.
+- Validation answers are released at the start of the final phase (2026-10-27, postponed from 2026-10-20) and may then
+  be trained on. Until then they are held out like any other target. Test ground truth is never released.
 
 ## Held-out stages and genotypes (no measured data from these, by any route)
 
@@ -65,11 +65,15 @@ organisers approve in writing.
 - **Test-board anchors in the final-phase index.json** (floor and ceiling metric values). A floor value is the distance
   between the reference stage and the hidden truth, so it encodes the hidden target (for scale_log_ratio, its size; for
   mmd_u on T3, how far the knockout is from wild type). The intake strips them before anyone looks; they are never read,
-  printed, committed or passed to the emulator. Validation-board anchors may be used to calibrate the emulator.
+  printed, committed or passed to the emulator. Validation-board anchors may be used to calibrate the emulator once
+  the validation answers are released (2026-10-27). Before then they describe held-out targets, and nothing is
+  calibrated, tuned or checked against them (the scorer-build anchor check refuses to read them before the final
+  phase).
 - **Our own size forecasts from incomplete stage sets** (dry runs of the size procedure before the release) are code
   checks, not predictions, and stay out of the docs.
-- **The public board file and board endpoints themselves.** From 2026-10-20 `panels/index.json` on the site (and the
-  public `/challenge/boards` endpoint) may carry test-board anchors. Nobody opens them in a browser or fetches them by
+- **The public board file and board endpoints themselves.** `panels/index.json` on the site (and the public
+  `/challenge/boards` endpoint) may carry test-board anchors at any time now (the final phase opens 2026-10-27, and the
+  organisers are preparing the platform in the week before). Nobody opens them in a browser or fetches them by
   hand or by script; boards are refreshed only through `vec.boards.update_boards`, which strips non-validation
   anchors in memory. Team members skip Slack threads that discuss sizes or other values worked out from anchors, and
   agents reading Slack must not quote such threads.
@@ -80,6 +84,17 @@ organisers approve in writing.
 - **GSE208162** (E12.5 endocardial Gata4 KO) is approved for T3 only; it is inside the T1/T2-heart window.
 - **Gene-level beta-catenin or Gata4 knockout findings from papers** (see the 2026-10-15 ruling below).
 - **Code from public repos without a licence** (e.g. tubager/vec-t2, wqty123): ideas only, no copying.
+- **The Yukon partner team's material** (Eigen Labs' reference team, announced 2026-10-20: open to anyone, shown on
+  the leaderboard as an unranked reference, not eligible for the Challenge's official prizes). Because anyone can join
+  it, anything the Yukon team produces (discussions, code, predictions, posts about them) may carry anchor-derived
+  values, leaked numbers or banned knockout findings. Agents do not open yukon.org or any Yukon team material; agents
+  reading Slack or email only note that such material was posted, without opening or quoting it. A team member who
+  looks at what Yukon offers should skip its challenge discussions, code and predictions, as with anchor threads in
+  Slack. Nothing from the Yukon team enters a method, and no number, threshold or submission choice comes from its
+  leaderboard scores. Moving from an official team to the Yukon team is one-way for whoever moves (no return to an
+  official team, no joining or creating one, even after leaving Yukon) and ends that person's eligibility for the
+  official prizes; whether any of us moves is the user's decision alone. The organisers will post more details:
+  re-check this entry when they do.
 
 ### Redaction record (gene-level knockout findings)
 
@@ -178,3 +193,13 @@ organisers approve in writing.
 ## Open questions for the organisers
 
 Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here with the date.
+
+## Change notes
+
+- 2026-10-20: the organisers postponed the final phase by one week to 2026-10-27 (email to registered teams,
+  2026-10-20 07:41 IST; scoring, submission limits, the 2026-12-02 deadline and the 2026-12-11 announcement unchanged).
+  Release dates in this file now read 2026-10-27; records written earlier ("released on 2026-10-20") mean the same
+  release. The validation answers stay held out until the final phase opens, so two release gates moved with it:
+  `vec boards update` writes the T1 composition file with E10.5 in it only once the public phase endpoint reports the
+  test split, and the scorer-build anchor check refuses to run before 2026-10-27. Added the Yukon partner team to the
+  do-not-use list.

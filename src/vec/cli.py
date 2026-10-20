@@ -65,8 +65,10 @@ def boards_update():
     if s["t1_composition_written"]:
         console.print("T1 composition written")
     else:
+        why = {"closed": "; E10.5 counts once the final phase is open",
+               "unreadable": "; the public phase endpoint could not be read, so E10.5 counts as unreleased: re-run"}
         console.print(f"T1 composition not written: it describes {escape(str(s['t1_composition_unreleased_stages']))} "
-                      "unreleased stage(s)")
+                      f"unreleased stage(s){why.get(s.get('final_phase'), '')}")
 
 
 @app.command()

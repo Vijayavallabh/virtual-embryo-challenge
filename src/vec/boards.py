@@ -11,12 +11,16 @@ import hashlib
 import json
 from collections.abc import Callable
 from dataclasses import dataclass, field
+from http.client import HTTPException
 from pathlib import Path
 from urllib.request import urlopen
+
+from vec.data import API_BASE
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 BOARDS_DIR = REPO_ROOT / "boards"
 PANELS_URL = "https://virtualembryo.ai/challenge/panels"
+PHASE_URL = f"{API_BASE}/challenge/phase"  # public, no token: phase, split, accepts_submissions
 
 # Only these boards keep their published anchors. Any other board (the final-phase test boards) keeps only the fields
 # below: its anchors are distances between the reference stage and the hidden truth, so they encode the hidden target
@@ -27,8 +31,11 @@ VALIDATION_SPLITS = frozenset({"val", "val_interp", "val_extrap"})
 SPEC_FIELDS = frozenset({"key", "label", "task", "setting", "split", "target_ko", "public", "n_genes", "genes_file",
                          "genes_sha256", "needs_coords", "obs_required", "obsm_required", "min_cells", "max_cells",
                          "truth_cells", "ref_cells", "floor_model"})
-# Stages whose data are released (or released on 2026-10-20) and may appear in the published T1 composition file.
+# Stages whose data are released, or released with the final phase, and may appear in the published T1 composition file.
+# E10.5, the T1 validation answer, comes with the final phase (moved by the organisers from 2026-10-20 to 2026-10-27):
+# a composition file that describes it is held back until the public phase endpoint reports the test split.
 RELEASED_T1_STAGES = frozenset({"E8.5", "E9.5", "E10.5"})
+FINAL_PHASE_T1_STAGES = frozenset({"E10.5"})
 
 # Metrics where smaller is better. severity_slope and scale_log_ratio are scored on their absolute value.
 LOWER_IS_BETTER = {"mmd_u", "variogram", "d2_shape", "neighborhood_mmd", "severity_slope", "scale_log_ratio"}
@@ -137,11 +144,29 @@ def _fetch(url: str) -> bytes:
         return r.read()
 
 
+def final_phase_state(fetch: Callable[[str], bytes] = _fetch) -> str:
+    """"open" when the public phase endpoint reports the test split, "closed" for any other split, "unreadable" when
+    it gives no JSON object."""
+    try:
+        phase = json.loads(fetch(PHASE_URL))
+    except (OSError, ValueError, HTTPException):
+        return "unreadable"
+    if not isinstance(phase, dict):
+        return "unreadable"
+    return "open" if str(phase.get("split", "")).lower().startswith("test") else "closed"
+
+
+def final_phase_open(fetch: Callable[[str], bytes] = _fetch) -> bool:
+    """True only when the public phase endpoint reports the test split; an unreadable answer counts as not open."""
+    return final_phase_state(fetch) == "open"
+
+
 def update_boards(boards_dir: Path = BOARDS_DIR, fetch: Callable[[str], bytes] = _fetch) -> dict:
     """Refresh boards/ from the public panel files, stripping test-board anchors in memory before anything is written.
 
     Gene lists are checked against their published sha256. The T1 composition file is written only if it describes
-    released stages alone; otherwise it is left untouched and reported (without its contents).
+    released stages alone (E10.5 only once the final phase is open); otherwise it is left untouched and reported
+    (without its contents).
     """
     index, reduced = sanitise_index(json.loads(fetch(f"{PANELS_URL}/index.json")))
     for key, spec in index.items():
@@ -153,8 +178,12 @@ def update_boards(boards_dir: Path = BOARDS_DIR, fetch: Callable[[str], bytes] =
         (boards_dir / spec["genes_file"]).write_bytes(data)
     (boards_dir / "index.json").write_text(json.dumps(index, indent=2) + "\n")
     comp = json.loads(fetch(f"{PANELS_URL}/t1_composition.json"))
-    extra = sorted(set(comp.get("stages", {})) - RELEASED_T1_STAGES)
+    stages = set(comp.get("stages", {}))
+    extra = stages - RELEASED_T1_STAGES
+    phase = final_phase_state(fetch) if stages & FINAL_PHASE_T1_STAGES else None
+    if phase not in (None, "open"):
+        extra |= stages & FINAL_PHASE_T1_STAGES
     if not extra:
         (boards_dir / "t1_composition.json").write_text(json.dumps(comp, indent=2) + "\n")
     return {"boards": sorted(index), "reduced": reduced, "t1_composition_written": not extra,
-            "t1_composition_unreleased_stages": len(extra)}
+            "t1_composition_unreleased_stages": len(extra), "final_phase": phase}

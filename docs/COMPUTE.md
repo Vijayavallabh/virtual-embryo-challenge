@@ -9,7 +9,8 @@
 
 The DGX workspace is `~/v/virtual-embryo-challenge` (a git clone of this repo). GPU allocation (user, 2026-10-19):
 until the end of October 2026, use only GPUs with free memory (other jobs run on the rest; check before launching and
-never kill a job you did not start); from November 2026 all eight H100s are available to this project. `/home` is
+never kill a job you did not start); from November 2026 all eight H100s are available to this project. The final
+phase now opens on 2026-10-27, so the release-week runs (Oct 27-31) still use free GPUs only. `/home` is
 shared and about 95% full: ask before writing more than 50 GB.
 
 ## Setup on the DGX

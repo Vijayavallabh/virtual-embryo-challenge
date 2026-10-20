@@ -2,7 +2,7 @@
 
 From `vec data inventory` on the DGX, 2026-10-18 (`runs/inventory.json` there; checksums in `data/raw/SHA256SUMS`).
 Structural facts only; no expression values. Re-run after each release (validation answers and test inputs arrive on
-2026-10-20).
+2026-10-27, postponed from 2026-10-20).
 
 ## Files
 

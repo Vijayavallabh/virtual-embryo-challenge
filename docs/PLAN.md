@@ -1,6 +1,7 @@
 # Plan
 
-Version 1.2, 2026-10-19, one day before the final phase opens. Update it weekly and log decisions at the bottom.
+Version 1.2, 2026-10-19; timeline revised 2026-10-20 (the organisers moved the final phase to 2026-10-27: section 7 and
+the decision log). Update it weekly and log decisions at the bottom.
 Evidence behind every claim is in `docs/research/` (one report per topic; `digest_2026-10-19.md` is the screened
 summary of the verified research sweep and its gap-fills) and `experiments/*/REPORT.md` (experiments on released data,
 each with an independent review); risks are tracked in `ASSUMPTIONS.md`.
@@ -384,13 +385,16 @@ Next:
 | Dates | Work | Decision point |
 |---|---|---|
 | Oct 18-20 | Token and download; organiser questions out; leak report sent; experiments on released data; size procedure and release-day scripts committed; redactions and history rewrite | D0: data on the DGX, else escalate |
-| Oct 20-26 | Release-day runbook (`docs/P3_RUNBOOK.md`): board intake with anchors stripped, data, label map, pre-registered runs (size, T3 decomposition, T1 direction readout, harmonisation, density, anchor check); emulator calibration; T3 day-1 diagnostics; B0 on all four boards; external data ingested | D1 (Oct 22): test-board reference stages fixed |
-| Oct 27-Nov 2 | T2 embryo FGW pipeline; T1 M1 v1; T3 F+C v1; T2 heart growth v1 | D2 (Oct 31): every board beats its floor on internal validation |
-| Nov 3-9 | T1 external directions and births; T3 leave-one-knockout-out weights (pathway programme only if its check passes); T2 heart emergent populations and scope hypotheses; T1 M2 if the readout passed | - |
-| Nov 10-16 | Ablations, seed robustness, freeze s1 candidates (Nov 16) | D3 (Nov 12): shared core vs specialised |
+| Oct 20-26 | The organisers moved the final phase to Oct 27. Work that needs no release data: external data through committed window filters (Feng reduction, feat-007); T2 embryo FGW pipeline, T2 heart growth and T1 M1 v1 built and tested on released stages and pseudo-tasks; B0 builds checked with `vec check` on the validation boards (DGX, nothing sent). Validation-board anchors stay unused until the release. Pre-registered rules stay as committed unless the user approves a change | - |
+| Oct 27-Nov 2 | Release-day runbook (`docs/P3_RUNBOOK.md`): board intake with anchors stripped, data, label map, pre-registered runs (size, T3 decomposition, T1 direction readout, harmonisation, density, anchor check); emulator calibration; T3 day-1 diagnostics; B0 on all four boards | D1 (Oct 29): test-board reference stages fixed |
+| Nov 3-9 | The v1 pipelines rerun on the release data (T2 embryo FGW, T1 M1, T3 F+C, T2 heart growth); T1 external directions and births; T1 M2 if the readout passed | D2 (Nov 6): every board beats its floor on internal validation |
+| Nov 10-16 | T3 leave-one-knockout-out weights (pathway programme only if its check passes); T2 heart emergent populations and scope hypotheses; ablations, seed robustness, freeze s1 candidates (Nov 16) | D3 (Nov 12): shared core vs specialised |
 | Nov 17-23 | s1 on all four boards by Nov 22 (after user approval); s2 rules pre-registered and hashed | D4: read scores, apply the written rules |
 | Nov 24-30 | s2 by Nov 30; method summary and disclosures; final nomination | - |
 | Dec 1-2 | Buffer only. Archive every submitted file with its code hash for the 14-day winners' report | - |
+
+The final phase is five weeks instead of six; the submission dates stay, so the week before the release takes the
+development work that does not need the release data.
 
 ## 8. Submission policy
 
@@ -455,3 +459,12 @@ conventions for external embryos, and an addendum to the leak report.
   factor, s1 does not bet on it. Submission client and the T1, T2 and T3 builders committed after independent
   verification and three rounds of review and fixes; an official upload needs `--official`, the file's hash and the
   user's go-ahead.
+- 2026-10-20: the organisers postponed the final phase by a week to 2026-10-27 (email to registered teams; scoring,
+  submission limits, the 2026-12-02 deadline and the 2026-12-11 announcement unchanged) and announced Eigen Labs' Yukon
+  team (open to anyone, unranked, not eligible for the Challenge's official prizes; moving there from an official team
+  is one-way for whoever moves). Our entry stays an official Human Team unless the user decides otherwise. The
+  pre-registered files are unchanged (their "2026-10-20" means the release); the two code paths that could read held-out
+  validation material now wait for the final phase itself: `vec boards update` writes a T1 composition file with E10.5
+  in it only once the public phase endpoint reports the test split, and the anchor check needs both 2026-10-27 and that
+  endpoint. Validation-board anchors stay unused until the release (`docs/DATA_POLICY.md`). Timeline (section 7): the
+  week of Oct 20-26 goes to work that needs no release data. Yukon's work is quarantined (`docs/DATA_POLICY.md`).

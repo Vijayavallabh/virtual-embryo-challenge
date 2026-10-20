@@ -12,8 +12,8 @@ Dropped because they are already answered (see `docs/DATA_POLICY.md`):
 - External data is allowed for T3 within the windows (GSE208162 ruling, 2026-08-18).
 - Scoring conventions: no renormalisation; cell limits inclusive and enforced (2026-10-16).
 
-Deferred to the 2026-10-20 release (ask only if `panels/index.json` leaves them unclear): each test board's reference
-stage (`ref_cells`) and cell bounds.
+Deferred to the release (2026-10-27, moved from 2026-10-20; ask only if `panels/index.json` leaves them unclear): each
+test board's reference stage (`ref_cells`) and cell bounds.
 
 Not asked because our plan already takes the strict reading: somite-to-day boundary cases (we drop ambiguous embryos),
 Tier-B mutant datasets (unused), cross-species foundation models (unused), selection of the second submission among
