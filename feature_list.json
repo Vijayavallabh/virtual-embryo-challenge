@@ -100,7 +100,7 @@
         "feat-020"
       ],
       "status": "not-started",
-      "evidence": ""
+      "evidence": "2026-10-21: the embryo test board's cell count follows approved rule 7 of docs/RELEASE_RULES_SUMMARY.md, applied by code: `vec.t2_build.count_override` decides from the release rerun's 10 seeds, `experiments/density/summarise.py --decide` writes experiments/density/results/release/count_decision.json, and `n_cells_from_decision` applies it (docs/P3_RUNBOOK.md step 4.5); ./init.sh 355 passed, three independent verifiers."
     },
     {
       "id": "feat-011",
@@ -112,7 +112,7 @@
         "feat-020"
       ],
       "status": "in-progress",
-      "evidence": "2026-10-19: heart and embryo size procedure pre-registered and committed before the release (171695a; experiments/coords/size_procedure.py, run_p3.sh with preflight; experiments/coords/REPORT.md with two independent reviews). Runs on the release stages on 2026-10-27. 2026-10-19: `vec.t2_build.apply_size_procedure` reads the size procedure's JSON and rescales in its recorded z mode; copy, block and oracle-size controls in experiments/t2_build/smoke.py: the guard flags contiguous-block layouts (voxel cover 0.60 and 0.46 of a random subset's) and passes the copy and oracle-size files."
+      "evidence": "2026-10-19: heart and embryo size procedure pre-registered and committed before the release (171695a; experiments/coords/size_procedure.py, run_p3.sh with preflight; experiments/coords/REPORT.md with two independent reviews). Runs on the release stages on 2026-10-27. 2026-10-19: `vec.t2_build.apply_size_procedure` reads the size procedure's JSON and rescales in its recorded z mode; copy, block and oracle-size controls in experiments/t2_build/smoke.py: the guard flags contiguous-block layouts (voxel cover 0.60 and 0.46 of a random subset's) and passes the copy and oracle-size files. 2026-10-21: approved rule 3 in code: `vec.t2_build.size_or_hold` applies a valid heart JSON exactly as apply_size_procedure does, keeps E10.5's size for valid=false, refuses cells from any other stage (the size rule goes back to the user), and checks for every heart JSON that the reference cloud is the cloud the JSON measured as E10.5 (docs/P3_RUNBOOK.md step 4.1 and section 5). The heart test board's count follows approved rule 7 (count_override, summarise.py --decide, n_cells_from_decision; docs/P3_RUNBOOK.md step 4.5 and section 5). ./init.sh 355 passed; fidelity, integrity and integration verifiers, two fix rounds, every code finding fixed."
     },
     {
       "id": "feat-012",
@@ -146,7 +146,7 @@
         "feat-020"
       ],
       "status": "in-progress",
-      "evidence": "2026-10-19: pre-registered T1 direction readout (experiments/t1_direction; Feng bracket vs cross-fitted momentum, thresholds in config.yaml) decides on 2026-10-27 whether M2 is built; composition plan in docs/PLAN.md 4.1 (scope first, CM share hedge). 2026-10-19: `vec.t1_scope` (chamber category for every released label in configs/t1_chamber_classes.yaml, with marker and label-transfer evidence; re-weighting to input shares; momentum shift; builder), 35 tests. Pseudo-task E8.5 -> E9.5 on the T1 emulator, 10 seeds, both E9.5 libraries (experiments/t1_scope/results/): re-weighting to the truth's category shares +31.2/+30.6 over copying E8.5 (an upper bound; the screened digest quoted about +24); CM share 10 points low -0.6/-0.3 vs 10 points high -3.2/-3.4; dropping only surrounding tissue +17.0/+18.4; per-type shifts in the true direction add +4.3/+4.5 at damping 0.5 and +7.2/+7.1 at damping 1, the reversed sign costs -4.5/-4.8 (an oracle direction, so upper bounds; stand-in types get no momentum; re-run at 94e1793, matching the reviewer's independent re-run)."
+      "evidence": "2026-10-19: pre-registered T1 direction readout (experiments/t1_direction; Feng bracket vs cross-fitted momentum, thresholds in config.yaml) decides on 2026-10-27 whether M2 is built; composition plan in docs/PLAN.md 4.1 (scope first, CM share hedge). 2026-10-19: `vec.t1_scope` (chamber category for every released label in configs/t1_chamber_classes.yaml, with marker and label-transfer evidence; re-weighting to input shares; momentum shift; builder), 35 tests. Pseudo-task E8.5 -> E9.5 on the T1 emulator, 10 seeds, both E9.5 libraries (experiments/t1_scope/results/): re-weighting to the truth's category shares +31.2/+30.6 over copying E8.5 (an upper bound; the screened digest quoted about +24); CM share 10 points low -0.6/-0.3 vs 10 points high -3.2/-3.4; dropping only surrounding tissue +17.0/+18.4; per-type shifts in the true direction add +4.3/+4.5 at damping 0.5 and +7.2/+7.1 at damping 1, the reversed sign costs -4.5/-4.8 (an oracle direction, so upper bounds; stand-in types get no momentum; re-run at 94e1793, matching the reviewer's independent re-run). 2026-10-21: the readout's second role is written down with the user's approval (experiments/t1_direction/README.md, docs/PLAN.md 4.1): 'build' also sets M1's direction to Feng's, a fail sets it to damped momentum. No code changed."
     },
     {
       "id": "feat-015",

@@ -64,6 +64,18 @@
       - an independent verifier: PASS. Its fixes were made: the module was renamed from `vec.operator`, which
         shadowed the standard library, and the wording about T3 was corrected.
       Release-day rules summary drafted for sign-off (`docs/RELEASE_RULES_SUMMARY.md`, with recommended answers).
+- [x] 2026-10-21: the two approved answers that needed code (answers 3 and 7 of `docs/RELEASE_RULES_SUMMARY.md`),
+      built by an agent and checked by three independent verifiers (fidelity, integrity, integration) over two fix
+      rounds; every code finding was fixed:
+      - `vec.t2_build.size_or_hold`, the heart size step: a valid JSON is applied exactly as `apply_size_procedure`
+        applies it; `valid` false keeps E10.5's size; cells from another stage get no size (back to the user); every
+        heart call's reference cloud must be the cloud the JSON measured as E10.5.
+      - `count_override`, `read_count_decision` and `n_cells_from_decision` in `vec.t2_build`, and
+        `experiments/density/summarise.py --decide`: the count decided per board from the release rerun, written once
+        to `experiments/density/results/release/count_decision.json`; uncommitted rule code and a second decision
+        without `--overwrite` are refused.
+      - `docs/P3_RUNBOOK.md` (steps 4.1 and 4.5, section 5) and `run_p3.sh`'s closing note now name them.
+        `./init.sh`: 355 passed (35 new tests).
 - [x] 2026-10-19: submission client and builders, each built by an agent and verified by an independent agent, then
       three rounds of independent review and fixes (every finding verified fixed):
       - `vec submit` (feat-016): format-only by default; official uploads behind --official, a hash confirmation and
@@ -101,12 +113,17 @@
       an official Human Team unless the user decides otherwise; nothing has been done toward joining. Moving is
       one-way and ends official-prize eligibility, a team left empty is archived, and the collaborative phase ends
       before 2026-10-27.
-- [ ] Before 2026-10-27: the user's sign-off on the other agent-written rules that act on the release (heart and
-      embryo size procedure, T1 direction readout, cell-count rule, label-mapping rule). The plain summary is in
-      `docs/RELEASE_RULES_SUMMARY.md` (drafted 2026-10-20, with recommended answers to eight open choices). It
-      found gaps: no fallback when the heart size comes out invalid, an ambiguous count-rule wording that no code
-      applies, and the T1 readout's second role (M1's direction) missing from its config. The fixes are written
-      once the user signs off.
+- [x] 2026-10-21: the user signed off ("approve all") on the other agent-written rules that act on the
+      release (heart and embryo size procedure, T1 direction readout, cell-count rule, label-mapping rule): all eight
+      recommended answers in `docs/RELEASE_RULES_SUMMARY.md` (drafted by the AI assistant on 2026-10-20). The gaps it
+      found are closed:
+      - the T1 readout's second role is written down (`experiments/t1_direction/README.md`, PLAN 4.1);
+      - poor harmonisation groups are held flat (PLAN 4.3);
+      - the fallback for an invalid heart size and the count rule are now in code (`vec.t2_build` and
+        `summarise.py --decide`; see What's Done).
+- [ ] The user's call, not covered by approved answer 7: a winning count level below a test board's lower limit
+      (truth_cells or min_cells; only 0.25 x max_cells can fall there). The build stops and asks. Recommended: the
+      next passing level the board allows, else max_cells.
 - [ ] The E12.5 emergent-class list waits on the organisers' answer about qualitative in-window background; the legal
       route is used meanwhile.
 - [ ] Quota shape: `official_per_board` is unpublished. The client refuses official uploads until it can read it;

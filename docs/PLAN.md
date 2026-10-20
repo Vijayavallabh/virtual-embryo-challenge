@@ -86,10 +86,14 @@ validation boards.
      +1.0 at 3x on an 8k-cell truth half). Keying the count to max_cells also avoids choosing it from truth_cells.
      One community observation on the live heart-extrapolation board points the other way (10k and 17.6k cells lost
      0.5-0.7 points against 5k), so re-test truth_cells, 2x and max_cells on the E10.5 and E7.5 validation targets
-     before fixing the test counts, with this rule fixed in advance: keep max_cells unless, on a validation board, a
-     lower max_cells level beats it for the intermediate-quality condition by more than 0.3 points (paired mean) in at
-     least 8 of 10 seeds. The evidence for max_cells reaches 8x truth_cells (3x on an 8k-cell truth half). The test
-     boards may publish only their cell limits.
+     before fixing the test counts, with this rule fixed in advance (wording approved by the user on 2026-10-21, and
+     applied by code, not read off a table: `experiments/density/summarise.py --decide` writes the decision and
+     `vec.t2_build.n_cells_from_decision` applies it): a lower max_cells level replaces max_cells on a board
+     only if, for the intermediate-quality condition on that board's validation target, its paired mean gain over
+     max_cells exceeds 0.3 points and it beats max_cells in at least 8 of the 10 seeds; if several pass, the largest
+     mean gain wins (ties go to the higher count); heart and embryo are decided separately, each for its own test
+     board; if the rerun cannot run, keep max_cells. The evidence for max_cells reaches 8x truth_cells (3x on an
+     8k-cell truth half). The test boards may publish only their cell limits.
    - **Random rows only.** Rows are stored section by section. A contiguous block costs a near-perfect prediction 16-28
      points (mid-file) or 21-48 (first rows) at 1x, and still 12-21 at 8x.
    - **Jitter budget.** Up to 0.25 x the median nearest-neighbour distance is free (use it to break duplicate
@@ -135,7 +139,9 @@ Facts that shape it (`docs/research/digest_2026-10-19.md`, gap-fills 1 and 3):
   a test-like geometry (sign agreement 0.92 vs 0.73, Spearman 0.80 vs 0.40). JAX nuclei are run- and depth-confounded
   and are dropped as a direction source. The pre-registered readout in `experiments/t1_direction/` decides on the
   E9.5 -> E10.5 transition whether M2 is built: the external direction must beat cross-fitted momentum by >= 0.05 on
-  both DE metrics, with cardiomyocyte sign agreement >= 0.70.
+  both DE metrics, with cardiomyocyte sign agreement >= 0.70. The same verdict sets M1's direction: a fail also drops
+  Feng from M1, which then uses damped momentum (approved by the user on 2026-10-21;
+  `experiments/t1_direction/README.md`).
 - **Legal external data** (each registered in `EXTERNAL_DATA.md` with committed filters before use): Feng 2022
   (GSE193346; E9.5, CD1 only, and E14.5 and later, filtered on the per-cell stage column), Feulner 2026 whole hearts
   (E14.5-P7), JAX/Qiu 2024 embryos 1-22 and 54-74 only (23-24 and 50-53 come from boundary or in-window litters;
@@ -216,16 +222,23 @@ run by `experiments/coords/run_p3.sh`.
    the pre-registered choice.
 5. Scope: three hypotheses for the full-cloud/core ratio (H1 trend, H0 hold, H2 half); s1 uses H1 and s2 uses H2, each
    rescaled about its centroid to its own full-cloud RMS.
+   Fallback (approved by the user on 2026-10-21): if the result comes out `valid` false while E10.5 is usable, both
+   submissions keep E10.5's size (the scale term sits at the floor instead of the build failing) and still differ by
+   scope. If E10.5 is barred (A20 fails), the heart plan is rebuilt from E9.5 and the size rule goes back to the user.
+   A standard run does not reach the fallback: `valid` depends only on the stage times, and a result with E9.5 and
+   E10.5 measured (the preflight requires both) is valid.
 6. No external size bracket (units, dissection scope and stack depth do not transfer). The JSON output, with the git
    hash and input checksums, is committed before any test submission. Nobody on this step opens veckit 0.1.2 or PR #6.
 
 Pipeline:
-1. Start from real E10.5 tissue (released at P3), duplicates dropped, sampled at random to max_cells (never below
-   truth_cells).
+1. Start from real E10.5 tissue (released at P3), duplicates dropped, sampled at random to the count approved rule 7
+   sets (max_cells unless the release rerun picks a lower level; never below truth_cells).
 2. Damped composition extrapolation on the merged lineage level (CM, Endothelial, CranialMesoderm, NCC, Endoderm,
    Ectoderm; labels harmonised with `vec.harmonise`), centred log-ratios over E8.75-E10.5, damping chosen on the
    1.75-day pseudo-target (expected 0.3-0.6). CardiacProgenitor and Pericardium have no stable cross-stage meaning and
-   stay out of the trends.
+   stay out of the trends, and so does any group the release-day harmonisation rates poor (worse F1 < 0.5) between
+   the new stage pairs: its share holds at E10.5 (approved by the user on 2026-10-21). The harmonisation noise bar is
+   informational; Task 3 computes its own.
 3. Emergent populations (contingent, as in section 4.1): the class list comes from the legal route unless the
    organisers allow qualitative in-window background, and so does placement: each new cell goes next to the E10.5 cells
    it most resembles in expression, not by in-window anatomy. Expression comes from E10.5 precursors edited in count
@@ -508,3 +521,11 @@ of 2026-10-19; A20).
     before 2 December, and nothing is published without the user's go-ahead.
   - Not pursued: Yukon (rules out the official prizes); moving one member to Yukon (cross-team code-sharing risk);
     the Agent track (a quarter of the field, but locked, unsteered runs with filed evidence; the user chose Human-only).
+- 2026-10-21: the release-day rules signed off. The AI assistant drafted a plain summary of the four remaining
+  agent-written rules with recommended answers (`docs/RELEASE_RULES_SUMMARY.md`); the user approved all eight:
+  (1) the three-rule heart growth average; (2) s1 = H1, s2 = H2; (3) a fallback for an invalid heart size (section
+  4.3); (4) epicardium in the shell; (5) the embryo unchanged; (6) all three T1 checks, and a fail also drops Feng
+  from M1 (section 4.1); (7) the count rule reworded and applied by code (section 3, item 6); (8) poor groups held
+  flat in the heart composition trends (section 4.3). The code for (3) and (7): `vec.t2_build.size_or_hold`;
+  `vec.t2_build.count_override` and `n_cells_from_decision`, with `experiments/density/summarise.py --decide`
+  (`docs/P3_RUNBOOK.md` steps 4.1 and 4.5).

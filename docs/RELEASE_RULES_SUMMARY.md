@@ -1,10 +1,17 @@
 # Release-day rules: plain summary for sign-off
 
-Drafted by the AI assistant (Claude) on 2026-10-20 from the files committed at `eb946ac`. Not yet approved.
+Drafted by the AI assistant (Claude) on 2026-10-20 from the files committed at `eb946ac`. **Approved by the user on
+2026-10-21: all eight recommended answers at the end.** The changes they call for are recorded in `docs/PLAN.md`
+(sections 3.6, 4.1 and 4.3 and the decision log). Answers 3 and 7 are applied by code: `size_or_hold`,
+`count_override` and `n_cells_from_decision` in `src/vec/t2_build.py`, and `experiments/density/summarise.py
+--decide` (`docs/P3_RUNBOOK.md` steps 4.1 and 4.5); how the code reads them is in the last section.
 
-AI agents wrote these four rules; please approve or change each before the 2026-10-27 release (Task 3 is already
-approved). Steps are from `docs/P3_RUNBOOK.md`, PLAN is `docs/PLAN.md`, s1 and s2 are a board's two scored
-submissions, * marks a file new on release day, and "(inferred)" marks what I worked out rather than read.
+AI agents wrote these four rules; the user approved them on 2026-10-21 with the answers at the end (Task 3 was
+approved earlier). Sections 1-4 and the two lists after them are kept as drafted; where an approved answer changes
+them (answers 3, 6, 7 and 8), the answer and the last section govern: for example, a heart result with `valid` false
+now keeps E10.5's size (answer 3), not section 1's "no fallback". Steps are from `docs/P3_RUNBOOK.md`, PLAN is
+`docs/PLAN.md`, s1 and s2 are a board's two scored submissions, * marks a file new on release day, and "(inferred)"
+marks what I worked out rather than read.
 
 All four rules use released validation answers, and their use for test predictions is still unconfirmed (assumption
 A20). Without them the heart size cannot run validly (inferred).
@@ -139,7 +146,7 @@ Current choice first, then the alternative.
    which level if several pass, and per board or both.
 8. **Groups rated poor on new stage pairs:** no rule covers them. Keep PLAN 4.3's list, or drop them.
 
-## Recommended answers (AI assistant, for your sign-off)
+## Approved answers (recommended by the AI assistant, approved by the user on 2026-10-21)
 
 1. **Heart growth:** keep the three-rule average. Its worst-case bias (0.581 of the observed growth) is well under half
    rate's (1.0), for a little more noise (3.19 against 2.45).
@@ -159,3 +166,24 @@ Current choice first, then the alternative.
 8. **Poor groups:** keep groups rated poor between the new stage pairs out of the composition trends (their share holds
    at E10.5), as PLAN 4.3 already does for CardiacProgenitor and Pericardium. The harmonisation noise bar stays
    informational; Task 3 computes its own.
+
+## How the code applies answers 3 and 7 (added 2026-10-21)
+
+- **3:** every heart build call names the stage its cells came from and passes E10.5's full cloud, which must match
+  the size JSON's own measurement of E10.5, valid result or not. Cells from any other stage get no size: the size
+  rule comes back to you. An embryo result with `valid` false is not used. Under the pre-registered settings a heart
+  result's `valid` depends only on the stage times, and `run_p3.sh` always measures E9.5 and E10.5, so a release-day
+  heart result is valid whenever E10.5 is in it: the fallback is a safeguard a standard run does not reach, and a size
+  step that fails for another reason (for example a forecast that is not a positive number) still stops the build.
+  The embryo procedure always returns `valid` true.
+- **7:** every seed 0-9 must be scored for max_cells and for each lower level; a missing or non-finite score keeps
+  max_cells for that board (read as "the rerun cannot run"). So does a level the validation pool capped below its
+  nominal count, since that level was never tested. If the rerun leaves no rule rows at all, `--decide` writes nothing
+  and the build counts with plain `n_cells` (max_cells). The decision is written once; a second one needs
+  `--overwrite`, which puts it in the first one's place (the file the build reads) and keeps the first beside it as
+  `count_decision.replaced-<UTC time>.json`.
+- **Not covered by answer 7:** the winning level falling below the test board's lower limit (truth_cells where
+  published, otherwise min_cells). Under the documented limits (max_cells = 3 x max(truth_cells, ref_cells), at least
+  5,000; min_cells = min(1,000, truth_cells)) only 0.25 x max_cells can, and only on a board that publishes
+  truth_cells with max_cells under 4 x truth_cells; on a board that publishes only its limits, no level falls below
+  min_cells. The build then stops and asks you.

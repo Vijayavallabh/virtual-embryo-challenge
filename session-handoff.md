@@ -5,8 +5,9 @@
 - Goal: a compliant Human-track entry on all four test boards; the final phase opens 2026-10-27, postponed from
   2026-10-20 by the organisers (2 scored uploads per board for the whole phase).
 - Current status: every method choice that must precede the release is committed (size procedure, T3 decomposition
-  rules, T1 direction readout, count rule, label-mapping rule, test-anchor quarantine). Release-day steps are in
-  `docs/P3_RUNBOOK.md`.
+  rules, T1 direction readout, count rule, label-mapping rule, test-anchor quarantine). The user signed off the
+  release-day rules on 2026-10-21 (`docs/RELEASE_RULES_SUMMARY.md`); the heart-size fallback and the count rule run
+  as code. Release-day steps are in `docs/P3_RUNBOOK.md`.
 - Branch / commit: `main` on GitHub (private), mirrored to `PrakashDGX_H2:~/v/virtual-embryo-challenge`.
 
 ## Completed This Session (2026-10-18 to 2026-10-19)
@@ -32,10 +33,12 @@
 
 ## Blockers / Risks
 
-- Organiser answers pending (leak report; rules email). Follow-up email sent 2026-10-19; a third (two questions) waits
+- Organiser answers pending (leak report; rules email). Follow-up email sent 2026-10-19; a third (three questions) waits
   in the user's drafts (`docs/ORGANIZER_QUESTIONS.md`). Deadline: through 2026-12-02, UTC.
 - Collaborative Yukon track (organisers' email of 2026-10-20 22:03 IST): joining is the user's decision alone; the
   entry stays an official Human Team meanwhile.
+- The user's call: a winning count level below a test board's lower limit, which approved answer 7 does not cover
+  (the build stops and asks; progress.md Blockers has the recommendation).
 - Second history rewrite done 2026-10-19 (GitHub repo recreated; old-to-new commit map in `docs/DATA_POLICY.md`).
 - Never open the public board file, veckit 0.1.2, PR #6, raw research outputs or Yukon team material (AGENTS.md,
   quarantined material).

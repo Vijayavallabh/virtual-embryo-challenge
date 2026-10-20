@@ -174,7 +174,7 @@ Only released files were used. No external data. I did not open the PyPI veckit 
 (b) Add the new files to coordlib.FILES and landmark labels to handedness.LANDMARKS. Re-run characterise.py, zpitch_fit.py and handedness.py on E8.5, E10.5, E7.5 and the Gata4 replicates. Check E10.5's z step, section count, core thin-axis angle and handedness against E9.5.
 (c) Run: uv run python experiments/coords/size_procedure.py --board heart --stage data/raw/T2/E8.25_late.h5ad 8.25 --stage <E8.5 file> 8.5 --stage data/raw/T2/E8.75.h5ad 8.75 --stage data/raw/T2/E9.5.h5ad 9.5 --stage <E10.5 file> 10.5 --target 12.5 --out runs/coords/size_heart_E12.5.json
 (d) Run: uv run python experiments/coords/size_procedure.py --board embryo --stage data/raw/T2/E6.75.h5ad 6.75 --stage data/raw/T2/E7.25.h5ad 7.25 --stage <E7.5 file> 7.5 --stage data/raw/T2/E8.0.h5ad 8.0 --target 7.75 --out runs/coords/size_embryo_E7.75.json
-(e) Use the heart output only if valid is true. Commit both JSONs with the git hash before any test submission.
+(e) Use the heart output only if valid is true. Commit both JSONs with the git hash before any test submission. (Superseded on 2026-10-21 by approved rule 3, `vec.t2_build.size_or_hold`: a heart result with valid=false keeps E10.5's size; docs/RELEASE_RULES_SUMMARY.md.)
 11. Optional, after an A15 ruling allows cross-task use: use the KO as a second E9.5 embryo, averaging log size with WT at E9.5, to cut noise at the previous-stage anchor by about sqrt2. Keep it off until then.
 
 ## Caveats (experiment agent)

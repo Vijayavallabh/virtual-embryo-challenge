@@ -31,7 +31,9 @@
 #   5. copy the aggregates (CSV, JSON, TXT; no per-cell rows) to --results. Then, on the local machine:
 #        rsync -az -e ssh PrakashDGX_H2:v/virtual-embryo-challenge/experiments/coords/results/p3/ \
 #          experiments/coords/results/p3/
-#      Use the heart result only if "valid" is true. Commit both JSONs before any test submission.
+#      Commit both JSONs before any test submission. The T2 build applies the heart JSON through
+#      vec.t2_build.size_or_hold (approved rule 3, 2026-10-21): "valid" false keeps E10.5's size. The embryo JSON
+#      goes through apply_size_procedure, which refuses "valid" false (docs/P3_RUNBOOK.md section 5).
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
@@ -151,4 +153,6 @@ cp "$OUT"/*.csv "$OUT"/*.json "$OUT"/*.txt "$RESULTS"/
 ls -la "$RESULTS"
 echo
 echo "Done. From the local machine: rsync -az -e ssh PrakashDGX_H2:v/virtual-embryo-challenge/$RESULTS/ $RESULTS/"
-echo "Use the heart result only if valid is true; commit both size JSONs (with the git hash) before any test submission."
+echo "Commit both size JSONs (with the git hash) before any test submission. The T2 build applies the heart"
+echo "JSON through vec.t2_build.size_or_hold (approved rule 3: valid=false keeps E10.5's size); an invalid"
+echo "embryo JSON is refused."

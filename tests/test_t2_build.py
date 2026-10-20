@@ -9,6 +9,8 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import io
+import json
+import re
 import sys
 import tokenize
 from pathlib import Path
@@ -100,6 +102,464 @@ def test_count_above_the_pool_is_annotated():
     n, rec = tb.n_cells(t2_board(min_cells=100, max_cells=3000), pool_size=1200)
     assert n == 3000 and rec["exceeds_pool"] and rec["repeated_rows"] == 1800
     assert rec["x_pool"] == pytest.approx(2.5) and "2 or 3 times" in rec["note"]
+
+
+# ---------------------------------------------------------------------------------------------------- count rule
+def _rerun(gains=None, seeds=range(10), base=60.0, seed=0):
+    """Density-rerun scores {level: {seed: score}}: "1max" around `base`, and each level in `gains` the 1max score of
+    the same seed plus its gain there (one number for every seed, or one per seed). None of the numbers means
+    anything."""
+    rng = np.random.default_rng(seed)
+    one = {s: base + float(rng.normal()) for s in seeds}
+    out = {"1max": one}
+    for level, g in (gains or {}).items():
+        g = np.broadcast_to(np.asarray(g, dtype=float), (len(one),))
+        out[level] = {s: one[s] + float(d) for s, d in zip(one, g, strict=True)}
+    return out
+
+
+LOSERS = {"0.25max": -2.0, "0.5max": -1.0}  # levels behind max_cells in every seed
+
+
+def test_count_rule_keeps_max_cells_when_no_level_passes():
+    for gains in ({**LOSERS, "0.75max": 0.2},  # ahead in all 10 seeds, mean gain 0.2
+                  {**LOSERS, "0.75max": [1.0] * 7 + [-0.5] * 3},  # mean gain 0.55, 7 seeds ahead
+                  {**LOSERS, "0.75max": [0.3] * 8 + [-0.2] * 2}):  # 8 seeds ahead, mean gain 0.2
+        override, rec = tb.count_override(_rerun(gains))
+        assert override is None and rec["override"] is None and rec["complete"] and rec["passing"] == []
+        assert rec["decision"].startswith("keep max_cells: no lower level")
+        assert [rec["per_level"][lv]["passes"] for lv in tb.COUNT_RULE_LEVELS] == [False] * 3
+    assert rec["per_level"]["0.75max"]["seeds_ahead"] == 8
+    assert rec["per_level"]["0.75max"]["mean_gain"] == pytest.approx(0.2)
+
+
+def test_count_rule_needs_8_seeds_ahead_besides_the_mean_gain():
+    override, rec = tb.count_override(_rerun({**LOSERS, "0.75max": [1.0] * 7 + [-0.5] * 3}))
+    lv = rec["per_level"]["0.75max"]
+    assert override is None and lv["mean_gain"] == pytest.approx(0.55) and lv["seeds_ahead"] == 7
+    assert lv["passes"] is False
+    override, rec = tb.count_override(_rerun({**LOSERS, "0.75max": [0.6] * 8 + [-0.2] * 2}))  # 8 ahead, mean 0.44
+    assert override == "0.75max" and rec["per_level"]["0.75max"]["seeds_ahead"] == 8
+    override, rec = tb.count_override(_rerun({**LOSERS, "0.75max": [1.0] * 7 + [0.0] * 3}))  # a tie is not ahead
+    assert override is None and rec["per_level"]["0.75max"]["seeds_ahead"] == 7
+
+
+def test_count_rule_one_level_passes_and_n_cells_takes_it():
+    override, rec = tb.count_override(_rerun({**LOSERS, "0.75max": 0.5}))
+    assert override == "0.75max" == rec["override"] and rec["passing"] == ["0.75max"] and rec["complete"]
+    assert rec["decision"].startswith("use 0.75max: paired mean gain +0.500 points over max_cells, 10 of the 10 seeds")
+    lv = rec["per_level"]["0.75max"]
+    assert lv["paired_seeds"] == list(range(10)) and lv["differences"] == pytest.approx([0.5] * 10)
+    assert lv["mean_gain"] == pytest.approx(0.5) and lv["seeds_ahead"] == 10 and lv["passes"] is True
+    assert rec["per_level"]["0.25max"]["mean_gain"] == pytest.approx(-2.0)
+    assert rec["approved"] == "2026-10-21" and rec["rule"].startswith("approved rule 7")
+    assert rec["condition"] == "shuffle50" and rec["seeds"] == list(range(10)) and rec["base_seeds"] == list(range(10))
+    n, count = tb.n_cells(t2_board(min_cells=100, max_cells=3000, truth_cells=800), 5000, override=override)
+    assert n == 2250 and count["rule"] == "override '0.75max'"
+
+
+def test_count_rule_largest_gain_wins_and_a_tie_goes_to_the_higher_count():
+    override, rec = tb.count_override(_rerun({"0.25max": -2.0, "0.5max": 0.8, "0.75max": 0.5}))
+    assert override == "0.5max" and rec["passing"] == ["0.5max", "0.75max"]
+    assert "the largest mean gain of the passing levels ['0.5max', '0.75max']" in rec["decision"]
+    override, rec = tb.count_override(_rerun({"0.25max": 0.6, "0.5max": -1.0, "0.75max": 0.6}))
+    assert rec["per_level"]["0.25max"]["mean_gain"] == rec["per_level"]["0.75max"]["mean_gain"]  # an exact tie
+    assert override == "0.75max"
+    assert tb.count_override(_rerun({"0.25max": 0.9, "0.5max": 0.9, "0.75max": 0.4}))[0] == "0.5max"
+
+
+def test_count_rule_keeps_max_cells_when_the_rerun_is_incomplete():
+    gains = {**LOSERS, "0.75max": 0.5}  # with every seed, 0.75max passes
+    override, rec = tb.count_override(_rerun(gains, seeds=range(9)))  # 9 seeds
+    assert override is None and rec["complete"] is False
+    assert rec["incomplete"] == [f"{lv} lacks seeds [9]" for lv in ("1max", *tb.COUNT_RULE_LEVELS)]
+    assert "the rerun is incomplete" in rec["decision"] and "keeps max_cells" in rec["decision"]
+    assert all(lv["passes"] is None for lv in rec["per_level"].values()) and rec["passing"] == []
+    scores = _rerun(gains)
+    del scores["0.25max"][4]  # one seed of a level that loses anyway: the rule reads every level's 10 seeds
+    override, rec = tb.count_override(scores)
+    assert override is None and rec["incomplete"] == ["0.25max lacks seeds [4]"]
+    scores = _rerun(gains)
+    del scores["1max"]
+    override, rec = tb.count_override(scores)
+    assert override is None and rec["incomplete"] == ["no 1max scores"] and rec["base_seeds"] == []
+    assert rec["per_level"]["0.75max"]["paired_seeds"] == [] and rec["per_level"]["0.75max"]["mean_gain"] is None
+    scores = _rerun(gains)
+    del scores["0.5max"]
+    assert tb.count_override(scores)[1]["incomplete"] == ["no 0.5max scores"]
+    override, rec = tb.count_override({})  # nothing ran
+    assert override is None and len(rec["incomplete"]) == 4
+
+
+def test_count_rule_treats_nan_scores_as_missing_seeds():
+    gains = {**LOSERS, "0.75max": 0.5}
+    for missing in (float("nan"), np.nan, None, float("inf"), np.float32("nan")):
+        scores = _rerun(gains)
+        scores["0.75max"][2] = missing
+        override, rec = tb.count_override(scores)
+        assert override is None and rec["incomplete"] == ["0.75max lacks seeds [2]"]
+        assert rec["per_level"]["0.75max"]["paired_seeds"] == [0, 1, 3, 4, 5, 6, 7, 8, 9]
+    scores = _rerun(gains)
+    scores["1max"][7] = float("nan")
+    override, rec = tb.count_override(scores)
+    assert override is None and rec["incomplete"] == ["1max lacks seeds [7]"]
+
+
+def test_count_rule_ignores_other_seeds_and_levels_and_refuses_malformed_input():
+    scores = _rerun({**LOSERS, "0.75max": -0.5})
+    for level in ("1max", *tb.COUNT_RULE_LEVELS):
+        scores[level][10] = 0.0 if level == "1max" else 99.0  # a seed beyond the release seeds is never counted
+    scores["0.9max"] = {s: 99.0 for s in range(10)}  # a level the rerun does not try
+    override, rec = tb.count_override(scores)
+    assert override is None and rec["complete"] and rec["ignored_seeds"] == [10]
+    assert rec["ignored_levels"] == ["0.9max"]
+    typed = {lv: {np.int64(s): np.float64(v) for s, v in d.items()} for lv, d in
+             _rerun({**LOSERS, "0.75max": 0.5}).items()}
+    assert tb.count_override(typed)[0] == "0.75max"  # numpy seeds and scores
+    for bad_level in ("half", "75%", 0.75):
+        with pytest.raises(ValueError, match="<f>max"):
+            tb.count_override({bad_level: {0: 60.0}})
+    for bad_score in ("60", True):
+        with pytest.raises(TypeError, match="score"):
+            tb.count_override({"1max": {0: bad_score}})
+    for bad_seed in (True, "0", 1.0):
+        with pytest.raises(TypeError, match="seeds"):
+            tb.count_override({"1max": {bad_seed: 60.0}})
+    with pytest.raises(TypeError):
+        tb.count_override([("1max", {0: 60.0})])
+    with pytest.raises(TypeError):
+        tb.count_override({"1max": [60.0]})
+
+
+def _load_by_path(name, *parts):
+    spec = importlib.util.spec_from_file_location(name, REPO.joinpath(*parts))
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+@pytest.fixture(scope="module")
+def ds():
+    """experiments/density/summarise.py (its decide mode is the count rule's release-day entry point)."""
+    return _load_by_path("density_summarise", "experiments", "density", "summarise.py")
+
+
+def test_count_rule_names_are_the_density_reruns(ds):
+    rd = _load_by_path("density_run_density", "experiments", "density", "run_density.py")
+    assert [f"{f:g}max" for f in rd.MAX_FRACS] == [*tb.COUNT_RULE_LEVELS, tb.COUNT_RULE_BASE]
+    labels = {lab for lab, *_ in rd.conditions(np.arange(4000), np.arange(3000), 100, 1000, 0)}
+    assert {f"{tb.COUNT_RULE_CONDITION}_{lv}" for lv in (*tb.COUNT_RULE_LEVELS, tb.COUNT_RULE_BASE)} <= labels
+    assert rd.SHUFFLE_FRAC == 0.5  # the intermediate-quality condition: half the expression rows shuffled
+    assert tb.COUNT_RULE_TARGETS == {"heart": "heart_E10.5", "embryo": "embryo_E7.5"}
+    for kind, target in tb.COUNT_RULE_TARGETS.items():  # the validation answers, each on its own kind's board
+        assert rd.TARGETS[target].get("release") and f":{kind}:" in rd.TARGETS[target]["board"]
+    assert all((REPO / p).is_file() for p in ds.RULE_FILES)
+    # the release decision's record: the --out of the release command in summarise.py's docstring, in this repo
+    assert ds.release_record() == REPO / "experiments" / "density" / "results" / "release" / "count_decision.json"
+    assert f"--out {ds.RELEASE_OUT} --decide" in " ".join(ds.__doc__.split())
+
+
+def _raw_row(target, seed, condition, score, basis="max", n_pred=None, max_cells=4000, pool_cells=36000):
+    """A raw row as experiments/density/run_density.py writes it, with the fields the decide mode reads."""
+    pattern = condition.split("_")[0]
+    return {"target": target, "board": "T2:synthetic", "seed": seed, "condition": condition, "source": "target",
+            "pattern": pattern, "basis": basis, "n_pred": n_pred, "max_cells": max_cells,
+            "max_cells_source": "board", "pool_cells": pool_cells, "score": score}
+
+
+CLEAN_CODE = {"git_commit": "synthetic", "git_unclean": [], "rule_files_uncommitted": [],
+              "rule_files_sha256": dict.fromkeys(("src/vec/t2_build.py", "experiments/density/summarise.py"),
+                                                 "synthetic")}
+
+
+@pytest.fixture
+def release_json(ds, tmp_path, monkeypatch):
+    """The release decision's canonical record (experiments/density/results/release/count_decision.json in the repo),
+    moved under tmp_path and absent until a test writes it: the tests do not depend on whether this tree holds the
+    release decision."""
+    path = tmp_path / "canonical" / "results" / "release" / ds.DECISION_FILE
+    monkeypatch.setattr(ds, "release_record", lambda: path)
+    return path
+
+
+@pytest.fixture
+def clean_code(ds, monkeypatch, release_json):
+    """The decide mode's view of the rule code, as committed: the tests do not depend on this tree's git state (nor,
+    through release_json, on its release decision)."""
+    monkeypatch.setattr(ds, "rule_code_state", lambda repo: dict(CLEAN_CODE))
+
+
+def _write_raw(raw, target, scores, seeds=range(10)):
+    """One <target>_s<seed>.jsonl per seed with the shuffle50 rows at the max_cells levels of `scores` and, around
+    them, rows the rule must not read (other conditions, a truth-multiple level)."""
+    n_of = {"0.25max": 1000, "0.5max": 2000, "0.75max": 3000, "1max": 4000}
+    for seed in seeds:
+        rows = []
+        for level, per_seed in scores.items():
+            if seed in per_seed:
+                rows.append(_raw_row(target, seed, f"shuffle50_{level}", per_seed[seed], n_pred=n_of[level]))
+                rows.append(_raw_row(target, seed, f"random_{level}", per_seed[seed] + 9.0, n_pred=n_of[level]))
+        rows.append(_raw_row(target, seed, "shuffle50_1x", 99.0, basis="truth", n_pred=500))
+        (raw / f"{target}_s{seed}.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows))
+
+
+def test_decide_mode_writes_the_count_decision_of_each_test_board(ds, tmp_path, capsys, clean_code):
+    raw, out = tmp_path / "raw_release", tmp_path / "release"
+    raw.mkdir()
+    _write_raw(raw, "heart_E10.5", _rerun({**LOSERS, "0.75max": 0.5}, seed=1))  # 0.75max passes
+    embryo = _rerun({"0.25max": 1.0, "0.5max": 1.0, "0.75max": 1.0}, seed=2)
+    embryo["0.5max"][3] = float("nan")  # run_density writes NaN for a score it could not compute
+    _write_raw(raw, "embryo_E7.5", embryo, seeds=range(9))  # seed 9 never ran
+    _write_raw(raw, "heart_E9.5", _rerun({"0.25max": 5.0, "0.5max": 5.0, "0.75max": 5.0}))  # a pseudo-target
+    first = raw / "heart_E10.5_s0.jsonl"  # a stale row, replaced by the later one for the same seed and condition
+    stale = _raw_row("heart_E10.5", 0, "shuffle50_0.75max", -50.0, n_pred=3000)
+    first.write_text(json.dumps(stale) + "\n" + first.read_text())
+
+    res = ds.decide(raw, out)  # out does not exist yet: decide makes it
+    text = (out / "count_decision.json").read_text()
+    assert json.loads(text) == res and "NaN" not in text
+    heart, embryo_b = res["boards"]["heart"], res["boards"]["embryo"]
+    assert heart["validation_target"] == "heart_E10.5" and heart["override"] == "0.75max"
+    assert heart["record"]["per_level"]["0.75max"]["differences"] == pytest.approx([0.5] * 10)
+    assert heart["decision"] == heart["record"]["decision"] and heart["row_problems"] == []
+    assert heart["max_cells"] == [4000] and heart["max_cells_source"] == ["board"] and heart["rows"] == 40
+    assert heart["n_pred"] == {"0.25max": [1000], "0.5max": [2000], "0.75max": [3000], "1max": [4000]}
+    assert embryo_b["validation_target"] == "embryo_E7.5" and embryo_b["override"] is None
+    assert embryo_b["record"]["incomplete"] == ["1max lacks seeds [9]", "0.25max lacks seeds [9]",
+                                                "0.5max lacks seeds [3, 9]", "0.75max lacks seeds [9]"]
+    assert res["rows_replaced"] == 1 and len(res["inputs_sha256"]) == 29
+    assert res["approved"] == "2026-10-21" and res["rule"] == tb.COUNT_RULE
+    assert res["allow_uncommitted"] is False and res["rule_files_uncommitted"] == []
+    assert res["git_commit"] == "synthetic" and set(res["rule_files_sha256"]) == set(ds.RULE_FILES)
+    assert res["earlier_decisions"] == []
+    printed = capsys.readouterr().out
+    assert "heart board (heart_E10.5): override '0.75max'; use 0.75max" in printed
+    assert "embryo board (embryo_E7.5): override None; keep max_cells" in printed
+    assert "WARNING" not in printed
+    with pytest.raises(SystemExit, match="exists"):  # the first decision is the record
+        ds.decide(raw, out)
+    second = ds.decide(raw, out, overwrite=True)
+    assert second["boards"]["heart"]["override"] == "0.75max"
+    kept = sorted(out.glob("count_decision.replaced-*.json"))  # --overwrite keeps the replaced record
+    assert len(kept) == 1 and json.loads(kept[0].read_text()) == res
+    assert second["earlier_decisions"] == [{"path": str(out / "count_decision.json"),
+                                            "sha256": hashlib.sha256(text.encode()).hexdigest(),
+                                            "kept_as": str(kept[0])}]
+    ds.decide(raw, out, overwrite=True)  # twice in a second: a second name, nothing lost
+    assert len(list(out.glob("count_decision.replaced-*.json"))) == 2
+
+
+def test_decide_mode_keeps_max_cells_when_the_rows_do_not_measure_the_rule_levels(ds, tmp_path, clean_code):
+    """Rows that disagree on max_cells, a max_cells not from the validation board, or a level capped at the pool: the
+    rows do not measure the rule's levels on the validation board, so max_cells stays (whatever the scores say)."""
+    def decide_heart(name, edit):
+        raw = tmp_path / name
+        raw.mkdir()
+        _write_raw(raw, "heart_E10.5", _rerun({**LOSERS, "0.75max": 0.5}))  # 0.75max passes on clean rows
+        for p in raw.glob("*.jsonl"):
+            rows = [json.loads(line) for line in p.read_text().splitlines()]
+            p.write_text("".join(json.dumps(edit(r)) + "\n" for r in rows))
+        return ds.decide(raw, tmp_path / f"{name}_out")["boards"]["heart"]
+
+    def capped(r):  # a pool of 3000 cells: 1max draws 3000, short of max_cells
+        return {**r, "pool_cells": 3000, "n_pred": min(r["n_pred"], 3000)}
+
+    def mixed(r):  # seeds 5-9 ran with --max-cells 6000
+        return {**r, "max_cells": 6000, "max_cells_source": "cli"} if r["seed"] >= 5 else r
+
+    def ruled(r):  # max_cells from the documented cap rule, not the board
+        return {**r, "max_cells_source": "rule"}
+
+    def short(r):  # 0.75max drew as many cells as 1max: not a lower count
+        return {**r, "n_pred": 4000} if r["condition"].endswith("_0.75max") else r
+
+    for name, edit, problem in (
+            ("capped", capped, "1max drew [3000] cells, not round(1 x 4000) = 4000 (pool [3000])"),
+            ("mixed", mixed, "the rows disagree on max_cells or lack it ([4000, 6000])"),
+            ("ruled", ruled, "max_cells came from ['rule'], not only from the validation board's published limit"),
+            ("short", short, "0.75max drew [4000] cells, not round(0.75 x 4000) = 3000")):
+        heart = decide_heart(name, edit)
+        assert heart["override"] is None and heart["record"]["override"] == "0.75max", name
+        assert any(p.startswith(problem) for p in heart["row_problems"]), (name, heart["row_problems"])
+        assert heart["decision"].startswith("keep max_cells: the rows do not measure approved rule 7's levels")
+        assert heart["decision"].endswith("(count_override on these rows alone gives '0.75max')")
+    assert decide_heart("clean", lambda r: r)["override"] == "0.75max"
+
+
+def test_decide_mode_refuses_uncommitted_rule_code_unless_allowed(ds, tmp_path, monkeypatch, capsys, release_json):
+    real_state = ds.rule_code_state
+    raw, out = tmp_path / "raw", tmp_path / "out"
+    raw.mkdir()
+    _write_raw(raw, "heart_E10.5", _rerun({**LOSERS, "0.75max": 0.5}))
+    for dirty in (["src/vec/t2_build.py"], None):  # None: git cannot tell
+        monkeypatch.setattr(ds, "rule_code_state", lambda repo, d=dirty: {**CLEAN_CODE, "rule_files_uncommitted": d})
+        with pytest.raises(SystemExit, match="uncommitted changes to the files that apply approved rule 7"):
+            ds.decide(raw, out)
+        assert not out.exists()  # nothing written
+    monkeypatch.setattr(ds, "rule_code_state",
+                        lambda repo: {**CLEAN_CODE, "rule_files_uncommitted": ["src/vec/t2_build.py"]})
+    res = ds.decide(raw, out, allow_uncommitted=True)
+    assert res["allow_uncommitted"] is True and res["rule_files_uncommitted"] == ["src/vec/t2_build.py"]
+    assert res["boards"]["heart"]["override"] == "0.75max"
+    assert "WARNING (allowed, recorded): uncommitted rule code" in capsys.readouterr().out
+    # the real reader: this tree's git state, whatever it is, and the sha256 of the rule files
+    state = real_state(REPO)
+    assert state["rule_files_sha256"] == {p: hashlib.sha256((REPO / p).read_bytes()).hexdigest()
+                                          for p in ds.RULE_FILES}
+    assert state["rule_files_uncommitted"] is None or set(state["rule_files_uncommitted"]) <= set(ds.RULE_FILES)
+
+
+def test_decide_mode_another_out_does_not_sidestep_the_release_decision(ds, tmp_path, capsys, clean_code,
+                                                                         release_json):
+    """The first decision is the record: once the release decision exists, a decide with another --out (the rerun run
+    again, say) is refused too, as experiments/t1_direction/readout.py refuses; with --overwrite the release decision
+    stays where it is, unchanged, and the new decision names it."""
+    raw = tmp_path / "raw"
+    raw.mkdir()
+    _write_raw(raw, "heart_E10.5", _rerun({**LOSERS, "0.75max": 0.5}))
+    first = ds.decide(raw, release_json.parent)  # the release command's --out
+    text = release_json.read_text()
+    sha = hashlib.sha256(text.encode()).hexdigest()
+    assert json.loads(text) == first and first["earlier_decisions"] == []
+    again = tmp_path / "rerun"
+    with pytest.raises(SystemExit, match="the release decision .* exists .* another --out does not sidestep it"):
+        ds.decide(raw, again)
+    assert not again.exists()  # nothing written
+    capsys.readouterr()
+    second = ds.decide(raw, again, overwrite=True)
+    assert release_json.read_text() == text and not list(release_json.parent.glob("*.replaced-*"))  # left in place
+    assert json.loads((again / ds.DECISION_FILE).read_text()) == second
+    assert second["earlier_decisions"] == [{"path": str(release_json), "sha256": sha, "kept_as": str(release_json)}]
+    assert f"WARNING (--overwrite): the release decision {release_json} stays where it is" in capsys.readouterr().out
+    # the release directory named another way is the same record: refused as the same --out, and replaced (kept next
+    # to the new one) with --overwrite, listed once
+    alias = release_json.parent / ".." / release_json.parent.name
+    with pytest.raises(SystemExit, match=r"exists \(the first decision is the record\); pass --overwrite"):
+        ds.decide(raw, alias)
+    third = ds.decide(raw, alias, overwrite=True)
+    kept = list(release_json.parent.glob("count_decision.replaced-*.json"))
+    assert len(kept) == 1 and kept[0].read_text() == text and json.loads(release_json.read_text()) == third
+    assert len(third["earlier_decisions"]) == 1 and third["earlier_decisions"][0]["sha256"] == sha
+    assert Path(third["earlier_decisions"][0]["kept_as"]).resolve() == kept[0].resolve()
+
+
+def test_decide_mode_refuses_partial_rows_and_a_directory_without_rule_rows(ds, tmp_path, clean_code):
+    raw, out = tmp_path / "raw", tmp_path / "out"
+    raw.mkdir()
+    _write_raw(raw, "heart_E10.5", _rerun({**LOSERS, "0.75max": 0.5}))
+    p = raw / "heart_E10.5_s3.jsonl"
+    text = p.read_text()
+    p.write_text(text[:-100])  # a killed job: the last row is cut short
+    n_lines = len(text.splitlines())
+    with pytest.raises(SystemExit, match=rf"heart_E10.5_s3.jsonl line {n_lines} is not a raw row"):
+        ds.decide(raw, out)
+    p.write_text(text + "42\n")  # a line that is JSON but not a row
+    with pytest.raises(SystemExit, match=rf"line {n_lines + 1} is not a raw row \(not a JSON object\)"):
+        ds.decide(raw, out)
+    assert not out.exists()
+    v2 = tmp_path / "raw_v2"  # the pre-release directory: pseudo-target rows only
+    v2.mkdir()
+    _write_raw(v2, "heart_E9.5", _rerun({**LOSERS, "0.75max": 0.5}))
+    with pytest.raises(SystemExit, match="no shuffle50 rows at the max_cells levels for heart_E10.5 or embryo_E7.5"):
+        ds.decide(v2, out)
+    assert not out.exists()
+
+
+def test_decide_mode_from_the_command_line_writes_only_the_decision(ds, tmp_path, monkeypatch, capsys, clean_code):
+    raw, out = tmp_path / "raw", tmp_path / "out"
+    raw.mkdir()
+    _write_raw(raw, "heart_E10.5", _rerun({**LOSERS, "0.75max": 0.5}), seeds=[0])
+    monkeypatch.setattr(sys, "argv", ["summarise.py", "--raw", str(raw), "--out", str(out), "--decide"])
+    ds.main()
+    assert [p.name for p in out.iterdir()] == ["count_decision.json"]  # no summary tables or plots
+    boards = json.loads((out / "count_decision.json").read_text())["boards"]
+    assert boards["heart"]["override"] is None and boards["embryo"]["override"] is None  # the rerun did not run
+    assert boards["embryo"]["record"]["incomplete"] == ["no 1max scores", "no 0.25max scores", "no 0.5max scores",
+                                                        "no 0.75max scores"]
+    assert boards["embryo"]["rows"] == 0 and "WARNING: no rows for embryo_E7.5" in capsys.readouterr().out
+    fresh = tmp_path / "fresh"
+    monkeypatch.setattr(sys, "argv", ["summarise.py", "--raw", str(tmp_path / "nope"), "--out", str(fresh),
+                                      "--decide"])
+    with pytest.raises(SystemExit, match="no raw directory"):
+        ds.main()
+    for argv in (["--out", str(fresh)], ["--raw", str(raw)], []):  # the defaults are the pre-release run's
+        monkeypatch.setattr(sys, "argv", ["summarise.py", *argv, "--decide"])
+        with pytest.raises(SystemExit) as e:
+            ds.main()
+        assert e.value.code == 2 and "--decide needs" in capsys.readouterr().err
+    assert not fresh.exists()  # a refused decide leaves no empty directory behind
+
+
+def _decision(heart="0.75max", embryo=None):
+    """A count decision as decide mode writes it, reduced to what n_cells_from_decision reads."""
+    return {"rule": tb.COUNT_RULE, "approved": tb.RULES_APPROVED, "git_commit": "synthetic", "allow_uncommitted": False,
+            "boards": {kind: {"validation_target": target, "override": lv, "decision": f"decision for {kind}"}
+                       for (kind, target), lv in zip(tb.COUNT_RULE_TARGETS.items(), (heart, embryo), strict=True)}}
+
+
+HEART_TEST = {"key": "T2:heart:test_extrap", "min_cells": 100, "max_cells": 3000, "truth_cells": 800}
+EMBRYO_TEST = {"key": "T2:embryo:test_interp", "min_cells": 100, "max_cells": 4000, "truth_cells": 600}
+
+
+def test_n_cells_from_decision_applies_the_decision_file_by_code(ds, tmp_path, clean_code):
+    raw, out = tmp_path / "raw", tmp_path / "release"
+    raw.mkdir()
+    _write_raw(raw, "heart_E10.5", _rerun({**LOSERS, "0.75max": 0.5}))  # the heart board: 0.75max
+    _write_raw(raw, "embryo_E7.5", _rerun({**LOSERS, "0.75max": -0.5}))  # the embryo board: max_cells
+    ds.decide(raw, out)
+    path = out / "count_decision.json"
+    sha = hashlib.sha256(path.read_bytes()).hexdigest()
+    n, rec = tb.n_cells_from_decision(t2_board(**HEART_TEST), 5000, path)
+    assert n == 2250 and rec["rule"] == "override '0.75max'"
+    assert rec["count_decision"] == {
+        "decision_file": str(path), "decision_sha256": sha, "kind": "heart", "validation_target": "heart_E10.5",
+        "override": "0.75max", "decision": json.loads(path.read_text())["boards"]["heart"]["decision"],
+        "decision_git_commit": "synthetic", "decision_allowed_uncommitted": False}
+    assert (n, rec) == tb.n_cells_from_decision(t2_board(**HEART_TEST), 5000, str(path))
+    n, rec = tb.n_cells_from_decision(t2_board(**EMBRYO_TEST), 5000, path)
+    assert n == 4000 and rec["rule"] == "max_cells" and rec["count_decision"]["validation_target"] == "embryo_E7.5"
+    assert rec["count_decision"]["override"] is None
+    # the same as n_cells with the override copied by hand, plus the record of where it came from
+    want_n, want = tb.n_cells(t2_board(**HEART_TEST), 5000, override="0.75max")
+    n, rec = tb.n_cells_from_decision(t2_board(**HEART_TEST), 5000, _decision())
+    assert n == want_n and {k: v for k, v in rec.items() if k != "count_decision"} == want
+    assert rec["count_decision"]["decision_file"] is None and rec["count_decision"]["decision_sha256"] is None
+
+
+def test_read_count_decision_refuses_what_is_not_the_boards_own_decision():
+    heart, unnamed = t2_board(**HEART_TEST), t2_board(**{**HEART_TEST, "key": "T2:test"})
+    assert tb.read_count_decision(_decision(), heart)[0] == "0.75max"
+    assert tb.read_count_decision(_decision(), unnamed, kind="heart")[0] == "0.75max"  # a key naming neither kind
+    for board, kind, match in ((unnamed, None, "names neither heart nor embryo"),
+                               (heart, "embryo", "does not agree with kind"),  # a heart board never takes the embryo's
+                               (t2_board(key="T2:heart:embryo"), None, "does not agree"),
+                               (heart, "lung", "kind must be one of"),
+                               (t2_board(key="T3:heart", task="T3"), None, "T2 boards only")):
+        with pytest.raises(ValueError, match=match):
+            tb.read_count_decision(_decision(), board, kind)
+    swapped = _decision()
+    swapped["boards"]["heart"]["validation_target"] = "embryo_E7.5"
+    for bad, match in ((swapped, "decided by its own validation target"),
+                       (_decision(heart="0.57max"), "neither None"),  # a typo
+                       (_decision(heart="1max"), "neither None"),  # not a lower level
+                       ({**_decision(), "rule": "keep max_cells unless ..."}, "another rule text"),
+                       ({**_decision(), "approved": "2026-10-20"}, "another rule text"),
+                       ({"boards": []}, "not a count decision"),
+                       ({**_decision(), "boards": {"embryo": {}}}, "no decision for the heart")):
+        with pytest.raises(ValueError, match=match):
+            tb.read_count_decision(bad, heart)
+
+
+def test_n_cells_from_decision_refuses_a_level_outside_the_test_boards_limits():
+    """Approved rule 7 does not say what to do when the decided level falls outside the test board's limits: n_cells
+    refuses it (never clipped) and no other level is chosen."""
+    board = t2_board(key="T2:heart:test_extrap", min_cells=100, max_cells=6000, truth_cells=2000)
+    with pytest.raises(ValueError, match="refused, not clipped. Approved rule 7 does not say .* goes to the captain"):
+        tb.n_cells_from_decision(board, 9000, _decision(heart="0.25max"))  # 1500 cells, below truth_cells
+    with pytest.raises(ValueError, match="no max_cells") as e:  # other refusals of n_cells are passed on unchanged
+        tb.n_cells_from_decision(t2_board(key="T2:heart:test_extrap", max_cells=None), 9000, _decision())
+    assert "captain" not in str(e.value)
 
 
 # ---------------------------------------------------------------------------------------------------- sampling
@@ -216,14 +676,20 @@ def test_rescale_to_rms_is_proper_isotropic_and_matches_the_size_procedure(sp):
 
 
 # ---------------------------------------------------------------------------------------------------- size JSON
-def _geom(sp, name, t, scale, sd, seed):
-    """A synthetic stage: a core blob inside a wider shell, scaled by `scale`, z on 15-unit sections."""
+def _stage_cloud(scale, sd, seed):
+    """A synthetic stage's cloud and core mask: a core blob inside a wider shell, scaled by `scale`, z on 15-unit
+    sections."""
     rng = np.random.default_rng(seed)
     core = rng.normal(size=(1500, 3)) * np.asarray(sd) * 0.6
     shell = rng.normal(size=(1500, 3)) * np.asarray(sd)
     C = np.vstack([core, shell]) * scale
     C[:, 2] = np.round(C[:, 2] / 15.0) * 15.0
-    return sp.geometry_from_arrays(name, t, C, np.r_[np.ones(1500, bool), np.zeros(1500, bool)])
+    return C, np.r_[np.ones(1500, bool), np.zeros(1500, bool)]
+
+
+def _geom(sp, name, t, scale, sd, seed):
+    """A synthetic stage's geometry, as the size procedure measures it (`_stage_cloud`)."""
+    return sp.geometry_from_arrays(name, t, *_stage_cloud(scale, sd, seed))
 
 
 def _size_json(sp, board, geoms, target_t, path):
@@ -237,11 +703,17 @@ def _size_json(sp, board, geoms, target_t, path):
     return res
 
 
-def _heart(sp, tmp_path, sd, name="size_heart.json", seed=0):
+def _heart_stages(sd, seed=0):
+    """The synthetic heart stages `_heart` measures, at t = 8.75, 9.5 and 10.5 with random growth, as
+    (name, t, cloud, core mask): the clouds are the reference clouds a caller of size_or_hold passes."""
     rng = np.random.default_rng(seed)
     scales = np.cumprod(1.0 + rng.uniform(0.05, 0.6, size=3))  # random growth
-    geoms = [_geom(sp, f"s{i}", t, s, sd, seed + i) for i, (t, s) in enumerate(zip((8.75, 9.5, 10.5), scales,
-                                                                                    strict=True))]
+    return [(f"s{i}", t, *_stage_cloud(s, sd, seed + i))
+            for i, (t, s) in enumerate(zip((8.75, 9.5, 10.5), scales, strict=True))]
+
+
+def _heart(sp, tmp_path, sd, name="size_heart.json", seed=0):
+    geoms = [sp.geometry_from_arrays(*stage) for stage in _heart_stages(sd, seed)]
     path = tmp_path / name
     return _size_json(sp, "heart", geoms, 12.5, path), path
 
@@ -326,6 +798,254 @@ def test_size_refusals(sp, tmp_path):
     # uncommitted procedure files are reported
     res["provenance"]["git_uncommitted"] = [" M experiments/coords/size_procedure.py"]
     assert "uncommitted" in tb.apply_size_procedure(C, res, "H1")[1]["warnings"][0]
+
+
+# ---------------------------------------------------------------------------------------------------- size fallback
+def _invalid_heart(sp, tmp_path, with_source=True, name="invalid_heart.json"):
+    """A heart size JSON with valid=false (no rate interval starts at or after E9.0: there is no E9.5), from the
+    procedure's own report. with_source adds a stage at E10.5 that the procedure measured. Returns the JSON, its path,
+    and the E10.5 stage's full cloud and core mask (the fallback's reference cloud and a scope-filtered part of it)."""
+    sd = (30.0, 80.0, 100.0)
+    C, core = _stage_cloud(1.6, sd, seed=5)
+    geoms = [_geom(sp, "a", 8.25, 1.0, sd, 1), _geom(sp, "b", 8.75, 1.2, sd, 2)]
+    if with_source:
+        geoms.append(sp.geometry_from_arrays("E10.5", 10.5, C, core))
+    path = tmp_path / name
+    res = _size_json(sp, "heart", geoms, 12.5, path)
+    assert res["valid"] is False and res["preregistered"]["valid"] is False
+    return res, path, C, core
+
+
+def _embryo(sp, tmp_path):
+    """A valid embryo size JSON (as in test_size_embryo_has_no_hypothesis) and its path."""
+    rng = np.random.default_rng(3)
+    scales = np.cumprod(1.0 + rng.uniform(0.05, 0.6, size=4))
+    geoms = [_geom(sp, f"e{i}", t, s, (60.0, 50.0, 90.0), 10 + i)
+             for i, (t, s) in enumerate(zip((6.75, 7.25, 7.5, 8.0), scales, strict=True))]
+    path = tmp_path / "size_embryo.json"
+    return _size_json(sp, "embryo", geoms, 7.75, path), path
+
+
+@pytest.mark.parametrize("sd", [(30.0, 80.0, 100.0), (100.0, 80.0, 30.0)], ids=["raw", "z_hold"])
+def test_size_or_hold_returns_what_apply_size_procedure_returns_for_a_valid_json(sp, tmp_path, sd):
+    res, path = _heart(sp, tmp_path, sd=sd)
+    assert res["valid"] is True
+    name, t, ref, _ = _heart_stages(sd)[-1]  # the full E10.5 cloud, as the JSON measured it
+    measured = next(g["rms_full"] for g in res["preregistered"]["stages"] if g["name"] == name)
+    assert t == 10.5 and tb.rms_radius(ref) == pytest.approx(measured, rel=1e-12)
+    C = stack(900, seed=7)
+    for hypothesis in ("H1", "H2"):
+        for size in (path, res):
+            want = tb.apply_size_procedure(C, size, hypothesis, expect_board="heart")
+            got = tb.size_or_hold(C, size, hypothesis, source_stage="E10.5", reference_cloud=ref, expect_board="heart")
+            np.testing.assert_array_equal(got[0], want[0])
+            assert got[1] == want[1] and "fallback" not in got[1]
+    for kw in ({"z_mode": "raw"}, {"z_mode": "xy_grow_z_hold", "match": "xy"}):  # logged alternatives pass through
+        want = tb.apply_size_procedure(C, path, "H1", **kw)
+        got = tb.size_or_hold(C, path, "H1", source_stage="E10.5", reference_cloud=ref, **kw)
+        np.testing.assert_array_equal(got[0], want[0])
+        assert got[1] == want[1]
+
+
+@pytest.mark.parametrize("valid", [True, False], ids=["valid", "invalid"])
+@pytest.mark.parametrize("source", ["E9.5", "E8.5", "E10.5_val"])
+def test_size_or_hold_returns_heart_cells_from_other_stages_to_the_captain(sp, tmp_path, valid, source):
+    """Approved rule 3: if E10.5 is barred (A20 fails) the heart plan is rebuilt from E9.5 and the size rule comes back
+    to the captain, so cells from another stage get no size, from a valid JSON (it measured E10.5) or an invalid one."""
+    if valid:
+        res, path = _heart(sp, tmp_path, sd=(30.0, 80.0, 100.0))
+        ref = stack(3000, seed=8)
+        assert res["valid"] is True and 10.5 in [g["t"] for g in res["preregistered"]["stages"]]
+    else:
+        _, path, ref, _ = _invalid_heart(sp, tmp_path)
+    for h in ("H1", "H2"):
+        with pytest.raises(ValueError, match=r"approved rule 3 \(2026-10-21\) sizes heart cells from E10.5 only") as e:
+            tb.size_or_hold(stack(300, seed=4), path, h, source_stage=source, reference_cloud=ref,
+                            expect_board="heart")
+        msg = str(e.value)
+        assert repr(source) in msg and "back to the captain" in msg and "A20" in msg and "No size is applied" in msg
+        # a spelling of E10.5 (a file name) gets the hint; another stage does not
+        assert ("pass source_stage='E10.5'" in msg) == (source == "E10.5_val")
+
+
+def test_size_or_hold_passes_a_valid_embryo_json_through(sp, tmp_path):
+    res, path = _embryo(sp, tmp_path)
+    C = stack(700, seed=9)
+    for size in (path, res):
+        want = tb.apply_size_procedure(C, size, expect_board="embryo")
+        got = tb.size_or_hold(C, size, expect_board="embryo")  # the embryo needs no source stage or reference cloud
+        np.testing.assert_array_equal(got[0], want[0])
+        assert got[1] == want[1]
+
+
+@pytest.mark.parametrize("hypothesis", ["H1", "H0", "H2"])
+def test_size_or_hold_keeps_the_e105_size_for_an_invalid_heart_json(sp, tmp_path, hypothesis):
+    res, path, ref, core = _invalid_heart(sp, tmp_path)
+    target = tb.rms_radius(ref)
+    clouds = {"every lineage": tb.sample_cells(ref, 2000, seed=1).coords,  # an s1-like scope
+              "core only": tb.sample_cells(ref[core], 900, seed=2).coords}  # an s2-like scope: a smaller cloud
+    assert tb.rms_radius(clouds["core only"]) < 0.8 * target
+    forecasts = [repr(v["pred_rms_full"]) for v in res["preregistered"]["scope"].values()]
+    for name, C in clouds.items():
+        out, rec = tb.size_or_hold(C, path, hypothesis, source_stage="E10.5", reference_cloud=ref,
+                                   expect_board="heart")
+        assert tb.rms_radius(out) == pytest.approx(target, rel=1e-12), name  # E10.5's size, whatever the scope
+        np.testing.assert_allclose(out.mean(0), C.mean(0), atol=1e-9)
+        np.testing.assert_allclose(out - out.mean(0), rec["scale"] * (C - C.mean(0)), atol=1e-9)  # isotropic
+        assert rec["fallback"] is True and rec["fallback_rule"].startswith("approved rule 3")
+        assert rec["fallback_approved"] == "2026-10-21" == tb.RULES_APPROVED
+        assert rec["source_stage"] == "E10.5" and rec["hypothesis"] == hypothesis
+        assert rec["hypothesis_changes_size"] is False and rec["z_held"] is False and rec["board"] == "heart"
+        assert rec["target_rms_full"] == pytest.approx(target) and rec["rms_after"] == pytest.approx(target)
+        assert rec["rms_before"] == pytest.approx(tb.rms_radius(C))
+        assert rec["scale"] == pytest.approx(target / tb.rms_radius(C))
+        assert rec["log_rms_after_vs_target"] == pytest.approx(0.0, abs=1e-12)
+        why = rec["fallback_reason"]
+        assert why["invalid_growth"] == {"core": {"applicable": []}} and why["min_rate_start_t"] == 9.0
+        assert why["stages"] == {"a": 8.25, "b": 8.75, "E10.5": 10.5}
+        assert rec["size_json_sha256"] == hashlib.sha256(path.read_bytes()).hexdigest()
+        assert rec["git_commit"] == "synthetic" and rec["target_t"] == 12.5
+        assert rec["size_json_stage_of_source"] == "E10.5"
+        assert rec["size_json_rms_full_of_source"] == pytest.approx(target) and rec["warnings"] == []
+        assert not any(f in json.dumps(rec) for f in forecasts)  # no forecast of the invalid JSON is copied
+
+
+def test_size_or_hold_fallback_inputs_and_its_check_of_the_reference_cloud(sp, tmp_path):
+    res, path, ref, core = _invalid_heart(sp, tmp_path)
+    C = stack(800, seed=3)
+    out, rec = tb.size_or_hold(C, path, "H1", source_stage="E10.5", reference_cloud=ref)
+    a = ad.AnnData(X=np.zeros((len(ref), 2), np.float32))
+    a.obsm[COORD_KEY] = ref
+    np.testing.assert_array_equal(tb.size_or_hold(C, path, "H1", source_stage="E10.5", reference_cloud=a)[0], out)
+    assert tb.size_or_hold(C, res, "H2", source_stage="E10.5", reference_cloud=ref)[1]["size_json_sha256"] is None
+    # a reference cloud that is not the one the procedure measured as E10.5 (scope-filtered, rescaled, another
+    # stage's) does not have E10.5's size: refused, never applied with a warning
+    other, _ = _stage_cloud(1.2, (30.0, 80.0, 100.0), seed=2)
+    for wrong in (ref[core], ref * 1.1, other):
+        with pytest.raises(ValueError, match="is not the cloud the size procedure measured as E10.5") as e:
+            tb.size_or_hold(C, res, "H2", source_stage="E10.5", reference_cloud=wrong)
+        assert f"({len(wrong)} cells, RMS radius" in str(e.value) and "no size is applied" in str(e.value)
+    # the procedure never measured E10.5: the layout of E10.5 barred (A20) or not the release-day JSON, refused
+    bad2, path2, ref2, _ = _invalid_heart(sp, tmp_path, with_source=False, name="no_e105.json")
+    assert bad2["preregistered"]["reference"] == "b"
+    for reference in (ref2, ref, other):
+        with pytest.raises(ValueError, match="the procedure did not measure E10.5") as e:
+            tb.size_or_hold(C, path2, "H1", source_stage="E10.5", reference_cloud=reference)
+        assert "{'a': 8.25, 'b': 8.75}" in str(e.value) and "back to the captain" in str(e.value)
+    # provenance warnings, as apply_size_procedure gives them
+    res["provenance"]["git_uncommitted"] = [" M experiments/coords/size_procedure.py"]
+    assert "uncommitted" in tb.size_or_hold(C, res, "H1", source_stage="E10.5", reference_cloud=ref)[1]["warnings"][0]
+    del res["provenance"]
+    assert "no provenance" in tb.size_or_hold(C, res, "H1", source_stage="E10.5", reference_cloud=ref)[1]["warnings"][0]
+
+
+def test_size_or_hold_refuses_the_a20_barred_layout(sp, tmp_path):
+    """The release-day heart stages without the validation answers E8.5 and E10.5 (A20 fails): valid=false, reference
+    E9.5. A stale source_stage='E10.5' with the E9.5 cloud gets no size: the size rule comes back to the captain."""
+    sd = (30.0, 80.0, 100.0)
+    e95, e95_core = _stage_cloud(1.5, sd, seed=4)
+    geoms = [_geom(sp, "E8.25_late", 8.25, 1.0, sd, 1), _geom(sp, "E8.75", 8.75, 1.2, sd, 2),
+             sp.geometry_from_arrays("E9.5", 9.5, e95, e95_core)]
+    res = _size_json(sp, "heart", geoms, 12.5, tmp_path / "barred.json")
+    assert res["valid"] is False and res["preregistered"]["reference"] == "E9.5"
+    with pytest.raises(ValueError, match="the procedure did not measure E10.5"):
+        tb.size_or_hold(stack(500, seed=6), res, "H1", source_stage="E10.5", reference_cloud=e95,
+                        expect_board="heart")
+    with pytest.raises(ValueError, match="sizes heart cells from E10.5 only"):
+        tb.size_or_hold(stack(500, seed=6), res, "H1", source_stage="E9.5", reference_cloud=e95,
+                        expect_board="heart")
+
+
+def test_size_or_hold_checks_the_reference_cloud_of_a_valid_json_too(sp, tmp_path):
+    """Every valid heart JSON measured E10.5, so the reference cloud is checked against that measurement as the
+    fallback checks it: a stale source_stage='E10.5' with the E9.5 cloud (the heart plan rebuilt from E9.5 after A20
+    fails), or a scope-filtered or rescaled E10.5 cloud, gets no size from a valid JSON either."""
+    sd = (30.0, 80.0, 100.0)
+    res, path = _heart(sp, tmp_path, sd=sd)
+    (_, t95, e95, _), (_, t105, e105, core) = _heart_stages(sd)[1:]
+    assert (t95, t105) == (9.5, 10.5) and res["valid"] is True
+    C = stack(500, seed=6)
+    for wrong in (e95, e105[core], e105 * 1.1):
+        for size in (path, res):
+            with pytest.raises(ValueError, match="is not the cloud the size procedure measured as E10.5") as e:
+                tb.size_or_hold(C, size, "H1", source_stage="E10.5", reference_cloud=wrong, expect_board="heart")
+            msg = str(e.value)
+            assert f"({len(wrong)} cells, RMS radius" in msg and "not shown to come from E10.5" in msg
+            assert "back to the captain" in msg and msg.endswith("no size is applied")
+    for hypothesis in ("H1", "H2"):  # the E10.5 cloud itself: exactly what apply_size_procedure returns
+        want = tb.apply_size_procedure(C, path, hypothesis, expect_board="heart")
+        got = tb.size_or_hold(C, path, hypothesis, source_stage="E10.5", reference_cloud=e105, expect_board="heart")
+        np.testing.assert_array_equal(got[0], want[0])
+        assert got[1] == want[1]
+    # apply_size_procedure's refusals still come first, whatever the reference cloud
+    with pytest.raises(ValueError, match="redacted"):
+        tb.size_or_hold(C, sp.redact_forecasts(res), "H1", source_stage="E10.5", reference_cloud=e95)
+    # a valid JSON that never measured E10.5 is not the release-day JSON: refused, whatever the reference cloud
+    geoms = [_geom(sp, f"x{i}", t, s, sd, 20 + i) for i, (t, s) in enumerate(((8.75, 1.0), (9.25, 1.3), (10.25, 1.6)))]
+    other = _size_json(sp, "heart", geoms, 12.5, tmp_path / "valid_without_e105.json")
+    assert other["valid"] is True
+    for reference in (e105, e95):
+        with pytest.raises(ValueError, match="is valid but the procedure did not measure E10.5") as e:
+            tb.size_or_hold(C, other, "H1", source_stage="E10.5", reference_cloud=reference)
+        assert "{'x0': 8.75, 'x1': 9.25, 'x2': 10.25}" in str(e.value) and "back to the captain" in str(e.value)
+
+
+def test_size_or_hold_has_no_embryo_fallback(sp, tmp_path):
+    res, path = _embryo(sp, tmp_path)
+    res["valid"] = res["preregistered"]["valid"] = False
+    path.write_text(sp.dumps(res))
+    C = stack(700, seed=9)
+    for size in (res, path):
+        with pytest.raises(ValueError, match="no fallback was approved for the embryo"):
+            tb.size_or_hold(C, size, expect_board="embryo")
+        with pytest.raises(ValueError, match="no fallback was approved for the embryo"):
+            tb.size_or_hold(C, size, source_stage="E10.5", reference_cloud=stack(500, seed=1))
+    with pytest.raises(ValueError, match="valid=false"):
+        tb.apply_size_procedure(C, path)  # unchanged
+
+
+def test_size_or_hold_refuses_redacted_and_unknown_inputs_as_before(sp, tmp_path):
+    res, path = _heart(sp, tmp_path, sd=(30.0, 80.0, 100.0))
+    bad, path_bad, ref, _ = _invalid_heart(sp, tmp_path)
+    C = stack(300, seed=10)
+    kw = {"source_stage": "E10.5", "reference_cloud": ref}
+    # a valid JSON: apply_size_procedure's refusals
+    with pytest.raises(ValueError, match="redacted"):
+        tb.size_or_hold(C, sp.redact_forecasts(res), "H1", **kw)
+    with pytest.raises(ValueError, match="scope hypothesis"):
+        tb.size_or_hold(C, path, "H3", **kw)
+    with pytest.raises(ValueError, match="cannot be applied"):
+        tb.size_or_hold(C, path, "H1", z_mode="auto", **kw)
+    with pytest.raises(ValueError, match="not a size procedure output"):
+        tb.size_or_hold(C, res["preregistered"], "H1", **kw)
+    # an invalid JSON: the same refusals before any fallback
+    with pytest.raises(ValueError, match="redacted"):
+        tb.size_or_hold(C, sp.redact_forecasts(bad), "H1", **kw)
+    for hypothesis in ("H3", None):
+        with pytest.raises(ValueError, match="scope hypothesis"):
+            tb.size_or_hold(C, path_bad, hypothesis, **kw)
+    with pytest.raises(ValueError, match="expected embryo"):
+        tb.size_or_hold(C, path_bad, "H1", expect_board="embryo", **kw)
+    with pytest.raises(ValueError, match="not a size procedure output"):
+        tb.size_or_hold(C, {"board": "heart", "valid": False}, "H1", **kw)
+    with pytest.raises(ValueError, match="unknown size board"):
+        tb.size_or_hold(C, {**bad, "board": "lung"}, "H1", **kw)
+    for flag in (None, "false", 0):  # a valid flag that is neither true nor false is refused, never a fallback
+        with pytest.raises(ValueError, match="valid=false"):
+            tb.size_or_hold(C, {**bad, "valid": flag}, "H1", **kw)
+    for extra in ({"z_mode": "xy_grow_z_hold"}, {"z_mode": "raw"}, {"match": "xy"}):
+        with pytest.raises(ValueError, match="isotropic"):
+            tb.size_or_hold(C, path_bad, "H1", **extra, **kw)
+    # a heart call states the source stage and passes the reference cloud, valid JSON or not
+    for p in (path, path_bad):
+        with pytest.raises(ValueError, match="source_stage"):
+            tb.size_or_hold(C, p, "H1", reference_cloud=ref)
+        with pytest.raises(ValueError, match="reference_cloud"):
+            tb.size_or_hold(C, p, "H1", source_stage="E10.5")
+        with pytest.raises(ValueError, match=r"\(n, 3\)"):
+            tb.size_or_hold(C, p, "H1", source_stage="E10.5", reference_cloud=np.zeros((5, 2)))
+    with pytest.raises(ValueError, match="is not the cloud the size procedure measured"):  # no spread: not E10.5
+        tb.size_or_hold(C, path_bad, "H1", source_stage="E10.5", reference_cloud=np.ones((5, 3)))
 
 
 # ---------------------------------------------------------------------------------------------------- guard
@@ -506,12 +1226,36 @@ def test_end_to_end_copy_like_submission_scores_under_both_builds(tmp_path, prof
 # factor (2.0), the implied library band (0.1 and 2.0 x 1e4), the smallest cloud (4) and tolerances. A size, a count or
 # a composition share of any stage fails.
 ALLOWED_LITERALS = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 16.0, 0.25, 0.5, 0.9, 0.03, 0.1, 1e-6, 1e-9, 1e-12}
+# The count rule's own thresholds as the user approved them on 2026-10-21 (docs/RELEASE_RULES_SUMMARY.md, answer 7: a
+# paired mean gain above 0.3 points, at least 8 of the 10 release seeds ahead), each allowed only on the module-level
+# line that defines its constant, so the same value anywhere else (a 0.3 composition share, say) still fails.
+RULE_LITERALS = {"COUNT_RULE_SEEDS": {10.0}, "COUNT_RULE_MIN_GAIN": {0.3}, "COUNT_RULE_MIN_AHEAD": {8.0}}
+
+
+def _stray_literals(src: str) -> tuple[list[tuple[int, str]], set[str]]:
+    """The numeric literals of `src` that neither ALLOWED_LITERALS nor RULE_LITERALS (on its constant's own line)
+    allows, as (line, text), and the rule constants found on their lines."""
+    bad, used = [], set()
+    for t in tokenize.generate_tokens(io.StringIO(src).readline):
+        if t.type != tokenize.NUMBER or float(t.string) in ALLOWED_LITERALS:
+            continue
+        m = re.match(r"([A-Z][A-Z0-9_]*) = ", t.line)  # a module-level constant's own line
+        if m and float(t.string) in RULE_LITERALS.get(m[1], ()):
+            used.add(m[1])
+        else:
+            bad.append((t.start[0], t.string))
+    return bad, used
 
 
 def test_module_holds_no_stage_constants():
-    src = (REPO / "src" / "vec" / "t2_build.py").read_text()
-    lits = {float(t.string) for t in tokenize.generate_tokens(io.StringIO(src).readline) if t.type == tokenize.NUMBER}
-    assert lits <= ALLOWED_LITERALS, sorted(lits - ALLOWED_LITERALS)
+    bad, used = _stray_literals((REPO / "src" / "vec" / "t2_build.py").read_text())
+    assert not bad, bad
+    assert used == set(RULE_LITERALS)  # each threshold is still defined where this test expects it
+
+
+def test_the_literal_guard_catches_a_rule_value_used_elsewhere():
+    src = (REPO / "src" / "vec" / "t2_build.py").read_text() + "\nSHARE = 0.3\n\n\ndef f(x):\n    return 8 * x\n"
+    assert [text for _, text in _stray_literals(src)[0]] == ["0.3", "8"]  # a 0.3 share, an 8 outside the rule
 
 
 def test_builder_enforces_the_truth_floor_unless_a_control_asks():
