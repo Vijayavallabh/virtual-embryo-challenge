@@ -37,6 +37,14 @@
       format checks pulled from the DGX (T1:val, T2:heart:val_extrap, T3:gata4; practice files from
       `vec baseline --n-cells 1000`) each came back format_ok with no submission id; before and after, no server entry
       on any board and the daily scored and upload counts at 0 (feat-016 evidence; ledger in results/submissions.csv).
+- [x] 2026-10-20 (organisers' email of 22:03 IST): a collaborative Yukon track (Eigen Labs; invite-only; separate
+      $10K-$30K pool; collaborative phase ends before P3; one-way transfer; ineligible for the official prizes) and the
+      deadline's time zone (through 2 December 2026, UTC). An agent read the official Rules, Terms, Privacy,
+      partner-rules, Timeline and FAQ pages (nothing quarantined opened): ordinary-team rules are unchanged; official
+      P3 scores are published when each submission is made; the P3 privacy rule (methods, prediction files and
+      evaluation feedback private until 2026-12-11) is on the partner page only, and we follow it. Challenge
+      reference, data policy, plan, organiser-questions log and AGENTS.md updated; the organiser draft cut to two
+      questions.
 - [x] 2026-10-19: submission client and builders, each built by an agent and verified by an independent agent, then
       three rounds of independent review and fixes (every finding verified fixed):
       - `vec submit` (feat-016): format-only by default; official uploads behind --official, a hash confirmation and
@@ -62,12 +70,18 @@
 - [ ] Awaiting organiser replies: leak report (Slack DM, sent 2026-10-18), the rules questions (email, 2026-10-18) and
       the follow-up (scorer build and parity defect, wrong-sign severity, released Gata4 in the T3 prediction,
       duplicated/interpolated records, z units, truth_cells and size, stage conventions; sent 2026-10-19). Screened
-      sweep of Slack and the organiser email on 2026-10-20 (to 14:29 IST): no organiser post on Slack since 2026-10-16,
-      no reply in any DM or by email (the sender's mail tracker reported both emails unopened 24 hours after sending);
-      the only platform email is the postponement. Unanswered in public: the deadline time zone, qualitative
-      in-window priors, and (new, 2026-10-19) whether released validation answers may be used for test predictions
-      (A20). Plan against the earliest plausible deadline (final uploads by the end of 30 November IST) and keep the
-      strict in-window reading. Not checked by agents: the challenge account messages page (user only) and Gmail Spam.
+      sweeps of Slack and the organiser email on 2026-10-20 (to 22:43 IST): no organiser post on Slack since
+      2026-10-16, no reply in any DM or by email (the sender's mail tracker reported both emails unopened 24 hours
+      after sending); the platform emails are the postponement (07:41 IST) and the collaborative Yukon track (22:03
+      IST), which gave the deadline's time zone (through 2 December 2026, UTC). Unanswered in public: qualitative
+      in-window priors and (2026-10-19) whether released validation answers may be used for test predictions (A20).
+      Final uploads still finish by the end of 30 November IST; keep the strict in-window reading. The third email
+      (two questions) waits in the user's drafts. Not checked by agents: the challenge account messages page (user
+      only) and Gmail Spam.
+- [ ] The user's decision: the collaborative Yukon track (organisers' email of 2026-10-20 22:03 IST). The entry stays
+      an official Human Team unless the user decides otherwise; nothing has been done toward joining. Moving is
+      one-way and ends official-prize eligibility, a team left empty is archived, and the collaborative phase ends
+      before 2026-10-27.
 - [ ] Before 2026-10-27: a plain summary of the other agent-written rules that act on the release (heart and embryo
       size procedure, T1 direction readout, cell-count rule, label-mapping rule) for the user's approval or changes,
       as was done for the T3 rules.

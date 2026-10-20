@@ -12,6 +12,11 @@ each submission. Any change to this file needs a dated note at the bottom.
   Challenge (Terms of Use clause 14).
 - Validation answers are released at the start of the final phase (2026-10-27, postponed from 2026-10-20) and may then
   be trained on. Until then they are held out like any other target. Test ground truth is never released.
+- P3 methods, prediction files and detailed evaluation feedback stay private from other participants until the
+  2026-12-11 final score announcement (organisers' email of 2026-10-20 22:03 IST; partner rules s.5, in Yukon's section
+  but not limited to Yukon by its wording). Ours stay in this private repo and the DGX workspace; nothing about them
+  goes into Slack or any other public place before then. Official P3 scores themselves are published when each
+  submission is made (Rules s.11).
 
 ## Held-out stages and genotypes (no measured data from these, by any route)
 
@@ -84,17 +89,22 @@ organisers approve in writing.
 - **GSE208162** (E12.5 endocardial Gata4 KO) is approved for T3 only; it is inside the T1/T2-heart window.
 - **Gene-level beta-catenin or Gata4 knockout findings from papers** (see the 2026-10-15 ruling below).
 - **Code from public repos without a licence** (e.g. tubager/vec-t2, wqty123): ideas only, no copying.
-- **The Yukon partner team's material** (Eigen Labs' reference team, announced 2026-10-20: open to anyone, shown on
-  the leaderboard as an unranked reference, not eligible for the Challenge's official prizes). Because anyone can join
-  it, anything the Yukon team produces (discussions, code, predictions, posts about them) may carry anchor-derived
-  values, leaked numbers or banned knockout findings. Agents do not open yukon.org or any Yukon team material; agents
-  reading Slack or email only note that such material was posted, without opening or quoting it. A team member who
-  looks at what Yukon offers should skip its challenge discussions, code and predictions, as with anchor threads in
-  Slack. Nothing from the Yukon team enters a method, and no number, threshold or submission choice comes from its
-  leaderboard scores. Moving from an official team to the Yukon team is one-way for whoever moves (no return to an
-  official team, no joining or creating one, even after leaving Yukon) and ends that person's eligibility for the
-  official prizes; whether any of us moves is the user's decision alone. The organisers will post more details:
-  re-check this entry when they do.
+- **The Yukon partner team's material** (Eigen Labs' collaborative reference team, announced 2026-10-20 and detailed
+  in the organisers' email of 2026-10-20 22:03 IST: shown on the leaderboard as an unranked reference, not eligible
+  for the Challenge's official prizes; its authorised members share executable models, fitted weights, methods and
+  evaluation feedback with each other). Because many people can join it, anything the Yukon team produces
+  (discussions, code, models, weights, predictions, posts about them) may carry anchor-derived values, leaked numbers
+  or banned knockout findings. Agents do not open yukon.org, the Yukon interest form or any Yukon team material;
+  agents reading Slack or email only note that such material was posted, without opening or quoting it. A team member
+  who looks at what Yukon offers should skip its challenge discussions, code, models and predictions, as with anchor
+  threads in Slack. Nothing from the Yukon team enters a method, and no number, threshold or submission choice comes
+  from its leaderboard scores. The rules agree: the partner exceptions "apply to the partner category only", Yukon
+  members share "within the team", and Rules s.4 bars attempts to access another team's work. Moving from an official
+  team to the Yukon team is one-way for whoever moves (no return to an ordinary team this edition, no joining or
+  creating one, even after leaving Yukon; earlier submissions stay with the original team) and ends that person's
+  eligibility for the official prizes; whether any of us moves is the user's decision alone. Our team's code and
+  methods are not any one member's to contribute there (code sharing across teams is prohibited, and the email limits
+  contributions to work the person is authorised to share).
 
 ### Redaction record (gene-level knockout findings)
 
@@ -199,7 +209,8 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   answers be used as training data and model inputs for the test predictions? Rules s.10 still lists the validation
   stages as held out, while the Data page says they become training data in the final phase. Our plan follows the Data
   page (assumption A20); if a ruling says otherwise, T1 and T2 heart are rebuilt from E9.5, T2 embryo from E7.25 and
-  E8.0 only, and T3 uses the barred branch. No answer as of 2026-10-20 13:49 IST.
+  E8.0 only, and T3 uses the barred branch. No answer as of 2026-10-20 22:43 IST; the Rules and Data pages were
+  unchanged on this point when checked at 17:10 UTC that day.
 
 ## Change notes
 
@@ -213,3 +224,8 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
 - 2026-10-20 (b): after a screened sweep of Slack and the organiser email: the anchor check also waits for the public
   phase endpoint; validation-board anchors stay unused until the release; the leak-report status and the pending public
   question on validation answers recorded.
+- 2026-10-20 (c): the organisers' email of 2026-10-20 22:03 IST (collaborative Yukon track) and the new partner rules
+  page: P3 methods, prediction files and evaluation feedback stay private until 2026-12-11 (added under Competition
+  data); the Yukon entry now covers the collaborative track, the interest form, the rules behind the quarantine and
+  the rule that our team's work is not one member's to contribute. Screened Slack and mail check to 22:43 IST: no
+  organiser post and no reply to any of our messages.

@@ -32,7 +32,10 @@
 
 ## Blockers / Risks
 
-- Organiser answers pending (leak report; rules email). Follow-up email sent 2026-10-19 (`docs/ORGANIZER_QUESTIONS.md`).
+- Organiser answers pending (leak report; rules email). Follow-up email sent 2026-10-19; a third (two questions) waits
+  in the user's drafts (`docs/ORGANIZER_QUESTIONS.md`). Deadline: through 2026-12-02, UTC.
+- Collaborative Yukon track (organisers' email of 2026-10-20 22:03 IST): joining is the user's decision alone; the
+  entry stays an official Human Team meanwhile.
 - Second history rewrite done 2026-10-19 (GitHub repo recreated; old-to-new commit map in `docs/DATA_POLICY.md`).
 - Never open the public board file, veckit 0.1.2, PR #6, raw research outputs or Yukon team material (AGENTS.md,
   quarantined material).

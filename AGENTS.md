@@ -30,7 +30,9 @@ If baseline verification is failing, repair that first before adding new scope.
 - **Scores choose, never compute.** Leaderboard returns may be used to pick between predictions, never to solve for a
   property of a hidden target (no inverting the skill map, no differencing scores).
 - **Competition data stays private.** Data lives under `data/` (gitignored) and is never committed, shared or shown
-  publicly. The dataset is unpublished (Neil Chi lab, UCSD): no public presentation without written approval.
+  publicly. The dataset is unpublished (Neil Chi lab, UCSD): no public presentation without written approval. P3
+  methods, prediction files and evaluation feedback stay private from other participants until the 2026-12-11
+  announcement.
 - **Official submissions need the user's explicit go-ahead.** The final phase allows only 2 scored submissions per
   board for the whole phase, and they cannot be withdrawn. The API treats an upload as **official unless it sends
   `format_only=true`**. The team API key (`~/.config/vec/token`, mode 600, local machine only, never on the DGX) can

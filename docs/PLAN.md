@@ -402,9 +402,11 @@ development work that does not need the release data.
   that the server stored awaits `vec submit resolve`. Scored uploads need the user's explicit go-ahead, and the client
   defaults to format-only.
 - s1 = the best honestly validated candidate. s2 = a pre-registered alternative chosen by a written rule. Never submit a
-  plain copy, and never in the last hours (the portal has had outages). Until the deadline's time and time zone are
-  announced, final uploads finish by the end of 30 November IST (the earliest reading of "2 December", 00:00 at
-  UTC+14, is 15:30 IST on 1 December).
+  plain copy, and never in the last hours (the portal has had outages). The deadline is "through 2 December 2026
+  (UTC)" (organisers' email of 2026-10-20 22:03 IST), with no hour given; its earliest reading, 00:00 UTC on
+  2 December, is 05:30 IST on 2 December. Final uploads still finish by the end of 30 November IST, which leaves
+  1 December for outages. Each official upload is scored and published when it is made (Rules s.11), so s1's score
+  is public before s2 goes in.
 - Each submission carries its external-data disclosure text.
 
 ## 9. Risks
@@ -421,10 +423,11 @@ development work that does not need the release data.
 ## 10. Open questions for the organisers
 
 `docs/ORGANIZER_QUESTIONS.md`. Sent on 2026-10-18 (unanswered): cross-task use of released data, qualitative in-window
-background, `truth_cells` for the submitted count, Generality scope, scorer version, deadline time zone. Follow-up,
+background, `truth_cells` for the submitted count, Generality scope, scorer version, deadline time zone (since
+given as UTC in the organisers' email of 2026-10-20 22:03 IST). Follow-up,
 sent 2026-10-19: scorer build and canonicalisation (and the parity defect), the wrong-sign severity rule, released Gata4
 files inside the beta-catenin prediction, duplicated records, the z coordinate, `truth_cells` and tissue size, stage
-conventions for external embryos, and an addendum to the leak report. No reply to either as of 2026-10-20 13:47 IST.
+conventions for external embryos, and an addendum to the leak report. No reply to either as of 2026-10-20 22:43 IST.
 Also open in public: whether released validation answers may be used for test predictions (a participant's question
 of 2026-10-19; A20).
 
@@ -472,3 +475,9 @@ of 2026-10-19; A20).
   in it only once the public phase endpoint reports the test split, and the anchor check needs both 2026-10-27 and that
   endpoint. Validation-board anchors stay unused until the release (`docs/DATA_POLICY.md`). Timeline (section 7): the
   week of Oct 20-26 goes to work that needs no release data. Yukon's work is quarantined (`docs/DATA_POLICY.md`).
+- 2026-10-20 (b): the organisers' second email of the day (22:03 IST) made Yukon a collaborative track (invite-only,
+  a separate $10K-$30K pool administered by Eigen Labs, collaborative phase ending before P3, one-way transfer,
+  ineligible for the official prizes) and gave the deadline's time zone: through 2 December 2026, UTC. No plan change:
+  final uploads still finish by the end of 30 November IST (section 8), and P3 methods, prediction files and
+  evaluation feedback stay private until 2026-12-11, as they already do. Whether anyone moves to Yukon is the user's
+  decision; nothing has been done toward it.

@@ -8,7 +8,8 @@ Our entry to the [Virtual Embryo Challenge](https://virtualembryo.ai/challenge) 
 | T2 spatial-temporal | cells with 500-gene expression and 3D coordinates | heart E12.5 (extrapolation), embryo E7.75 (interpolation) |
 | T3 perturbation | the mutant embryo's cells, expression and 3D coordinates | beta-catenin KO at E8.75 |
 
-Final submissions are due **2026-12-02**. Start with `AGENTS.md`, then `docs/CHALLENGE.md` and `docs/PLAN.md`.
+Final submissions are due **through 2026-12-02 (UTC)**. Start with `AGENTS.md`, then `docs/CHALLENGE.md` and
+`docs/PLAN.md`.
 
 ## Setup
 

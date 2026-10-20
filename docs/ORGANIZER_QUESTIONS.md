@@ -6,11 +6,15 @@ Record each answer with its date in `docs/DATA_POLICY.md`.
 
 Status: **sent** by email to virtual.embryo.moonshot@gmail.com from be23b041@smail.iitm.ac.in on 2026-10-18. Answers:
 _pending_ (record them in `docs/DATA_POLICY.md`). The leak report went separately by Slack DM the same day. As of
-2026-10-20 13:47 IST neither email nor the leak report has a reply (the sender's mail tracker reported both emails
-unopened 24 hours after sending), and no organiser has posted on Slack since 2026-10-16. A third email (four questions after the 2026-10-20 update: the start time, validation answers as training
-data, whether the validation boards stay open this week, and the Yukon team's work; plus a reminder of the two open
-emails and the deadline time zone) was saved as a draft in the sender's mailbox on 2026-10-20 for the user to review
-and send.
+2026-10-20 22:43 IST neither email nor the leak report has a reply (the sender's mail tracker reported both emails
+unopened 24 hours after sending), and no organiser has posted on Slack since 2026-10-16. Question 6 (the deadline's
+time zone) was answered for everyone by the organisers' email of 2026-10-20 22:03 IST: "through 2 December 2026
+(UTC)", no hour. A third email was saved as a draft in the sender's mailbox on 2026-10-20 for the user to review and
+send. After the 22:03 IST email and the new partner rules page it was cut to two questions (the test phase's start
+time; validation answers as training data and model inputs) plus a reminder of the two open emails: the Timeline
+page already says the validation answers come with the test phase, Rules s.4 and the partner page settle what
+ordinary teams do about Yukon's work, the deadline is UTC, and whether the validation boards stay open this week
+changes nothing we do (the upload path was tested on them on 2026-10-20).
 
 Dropped because they are already answered (see `docs/DATA_POLICY.md`):
 - T3 literature: gene-level knockout findings are prohibited, broad phenotype background is allowed (2026-10-15).
