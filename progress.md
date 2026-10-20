@@ -29,6 +29,10 @@
       Gata4 factor; note 7 keeps the D8 hedge in the replacement s2. The user read a plain summary of the T3 rules,
       approved them and chose note 8 (no check supports the Gata4 factor -> s1 = WT cells, s2 = the factor at half
       strength). All committed before any Gata4 file is downloaded; `build_submission.py plan` shows the result.
+- [x] 2026-10-20: the organisers moved the final phase to 2026-10-27 (email). The two code paths that could read
+      held-out validation material now wait for the final phase itself (the T1 composition at `vec boards update`; the
+      anchor check); runbook, plan timeline, data policy, ledger (A20) and handoff updated; Yukon team material
+      quarantined. Slack and the organiser email swept by screened agents (findings under Blockers).
 - [x] 2026-10-19: submission client and builders, each built by an agent and verified by an independent agent, then
       three rounds of independent review and fixes (every finding verified fixed):
       - `vec submit` (feat-016): format-only by default; official uploads behind --official, a hash confirmation and
@@ -53,10 +57,16 @@
 
 - [ ] Awaiting organiser replies: leak report (Slack DM, sent 2026-10-18), the rules questions (email, 2026-10-18) and
       the follow-up (scorer build and parity defect, wrong-sign severity, released Gata4 in the T3 prediction,
-      duplicated/interpolated records, z units, truth_cells and size, stage conventions; sent 2026-10-19). Slack checked
-      on 2026-10-19 evening by a screened sweep: no organiser post since 2026-10-16 and no reply in any DM; the email
-      inbox was not checked. Two public participant questions (deadline time zone; qualitative in-window priors) are
-      unanswered too: plan against the earliest plausible deadline and keep the strict in-window reading.
+      duplicated/interpolated records, z units, truth_cells and size, stage conventions; sent 2026-10-19). Screened
+      sweep of Slack and the organiser email on 2026-10-20 (to 14:29 IST): no organiser post on Slack since 2026-10-16,
+      no reply in any DM or by email (the sender's mail tracker reported both emails unopened 24 hours after sending);
+      the only platform email is the postponement. Unanswered in public: the deadline time zone, qualitative
+      in-window priors, and (new, 2026-10-19) whether released validation answers may be used for test predictions
+      (A20). Plan against the earliest plausible deadline (final uploads by the end of 30 November IST) and keep the
+      strict in-window reading. Not checked by agents: the challenge account messages page (user only) and Gmail Spam.
+- [ ] Before 2026-10-27: a plain summary of the other agent-written rules that act on the release (heart and embryo
+      size procedure, T1 direction readout, cell-count rule, label-mapping rule) for the user's approval or changes,
+      as was done for the T3 rules.
 - [ ] The E12.5 emergent-class list waits on the organisers' answer about qualitative in-window background; the legal
       route is used meanwhile.
 - [ ] Quota shape: `official_per_board` is unpublished. The client refuses official uploads until it can read it;
@@ -93,6 +103,12 @@
 - [x] DGX: torch 2.14.1+cu130 with CUDA, jax 0.11.2, moscot 0.5.2, scvi-tools 1.5.1 import (runs/logs/setup2.log).
 
 ## Notes for Next Session
+
+- Slack sweeps: leave the group DM C0CA7QTEMDF out of date searches that reach back to 2026-10-18 (they surface our
+  leak report). Six workspace accounts use eigenlabs.org addresses (none has posted); record their posts, or posts in a
+  new Yukon channel, by place and date only.
+- The Data Protocol (label table, units, sectioning) was promised before the test phase opens (an organiser,
+  2026-10-16): look for it on the Data page this week (never the board file).
 
 - `neighborhood_mmd` builds 15-NN neighbourhoods over all submitted cells, so submitted density moves T2 scores.
 - Ctnnb1 is not on the 500-gene MERFISH panel: gene_ko gives nothing for the beta-catenin test board.

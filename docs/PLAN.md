@@ -402,7 +402,9 @@ development work that does not need the release data.
   that the server stored awaits `vec submit resolve`. Scored uploads need the user's explicit go-ahead, and the client
   defaults to format-only.
 - s1 = the best honestly validated candidate. s2 = a pre-registered alternative chosen by a written rule. Never submit a
-  plain copy, and never in the last hours (the portal has had outages).
+  plain copy, and never in the last hours (the portal has had outages). Until the deadline's time and time zone are
+  announced, final uploads finish by the end of 30 November IST (the earliest reading of "2 December", 00:00 at
+  UTC+14, is 15:30 IST on 1 December).
 - Each submission carries its external-data disclosure text.
 
 ## 9. Risks
@@ -422,7 +424,9 @@ development work that does not need the release data.
 background, `truth_cells` for the submitted count, Generality scope, scorer version, deadline time zone. Follow-up,
 sent 2026-10-19: scorer build and canonicalisation (and the parity defect), the wrong-sign severity rule, released Gata4
 files inside the beta-catenin prediction, duplicated records, the z coordinate, `truth_cells` and tissue size, stage
-conventions for external embryos, and an addendum to the leak report.
+conventions for external embryos, and an addendum to the leak report. No reply to either as of 2026-10-20 13:47 IST.
+Also open in public: whether released validation answers may be used for test predictions (a participant's question
+of 2026-10-19; A20).
 
 ## Decision log
 

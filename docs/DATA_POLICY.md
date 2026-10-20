@@ -173,7 +173,8 @@ organisers approve in writing.
   released training stages by committed code, with its output recorded in git before any test submission. Nobody
   building the size model opens veckit 0.1.2 or PR #6.
 - Disclosure: private report sent to the organisers (Weize Xu, Zehua Zeng) in Slack group DM `C0CA7QTEMDF` on
-  2026-10-18 22:39 IST. Reply: _pending_ (no reply or reaction as of 2026-10-19 18:57 IST).
+  2026-10-18 22:39 IST. Reply: _pending_ (no reply or reaction as of 2026-10-20 13:49 IST; no organiser has posted on
+  Slack since 2026-10-16).
 
 ## Organiser rulings on record (Slack #virtual-embryo-challenge; details in `docs/research/slack_digest.md`)
 
@@ -194,6 +195,12 @@ organisers approve in writing.
 
 Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here with the date.
 
+- **Pending public question** (a participant, #virtual-embryo-challenge, 2026-10-19 19:41 IST): may released validation
+  answers be used as training data and model inputs for the test predictions? Rules s.10 still lists the validation
+  stages as held out, while the Data page says they become training data in the final phase. Our plan follows the Data
+  page (assumption A20); if a ruling says otherwise, T1 and T2 heart are rebuilt from E9.5, T2 embryo from E7.25 and
+  E8.0 only, and T3 uses the barred branch. No answer as of 2026-10-20 13:49 IST.
+
 ## Change notes
 
 - 2026-10-20: the organisers postponed the final phase by one week to 2026-10-27 (email to registered teams,
@@ -203,3 +210,6 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   `vec boards update` writes the T1 composition file with E10.5 in it only once the public phase endpoint reports the
   test split, and the scorer-build anchor check refuses to run before 2026-10-27. Added the Yukon partner team to the
   do-not-use list.
+- 2026-10-20 (b): after a screened sweep of Slack and the organiser email: the anchor check also waits for the public
+  phase endpoint; validation-board anchors stay unused until the release; the leak-report status and the pending public
+  question on validation answers recorded.

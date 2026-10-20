@@ -4,7 +4,13 @@ Send privately (email virtual.embryo.moonshot@gmail.com, or a Slack DM to Weize 
 questions reveal method choices. Rules s.10: "an answer given in advance is not a finding of misconduct afterwards".
 Record each answer with its date in `docs/DATA_POLICY.md`.
 
-Status: **sent** by email to virtual.embryo.moonshot@gmail.com from be23b041@smail.iitm.ac.in on 2026-10-18. Answers: _pending_ (record them in `docs/DATA_POLICY.md`). The leak report went separately by Slack DM the same day.
+Status: **sent** by email to virtual.embryo.moonshot@gmail.com from be23b041@smail.iitm.ac.in on 2026-10-18. Answers:
+_pending_ (record them in `docs/DATA_POLICY.md`). The leak report went separately by Slack DM the same day. As of
+2026-10-20 13:47 IST neither email nor the leak report has a reply (the sender's mail tracker reported both emails
+unopened 24 hours after sending), and no organiser has posted on Slack since 2026-10-16. A third email (four questions after the 2026-10-20 update: the start time, validation answers as training
+data, whether the validation boards stay open this week, and the Yukon team's work; plus a reminder of the two open
+emails and the deadline time zone) was saved as a draft in the sender's mailbox on 2026-10-20 for the user to review
+and send.
 
 Dropped because they are already answered (see `docs/DATA_POLICY.md`):
 - T3 literature: gene-level knockout findings are prohibited, broad phenotype background is allowed (2026-10-15).
