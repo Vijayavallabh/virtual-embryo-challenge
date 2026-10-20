@@ -33,6 +33,10 @@
       held-out validation material now wait for the final phase itself (the T1 composition at `vec boards update`; the
       anchor check); runbook, plan timeline, data policy, ledger (A20) and handoff updated; Yukon team material
       quarantined. Slack and the organiser email swept by screened agents (findings under Blockers).
+- [x] 2026-10-20: the upload path tested against the live server while the validation phase runs a week longer: three
+      format checks pulled from the DGX (T1:val, T2:heart:val_extrap, T3:gata4; practice files from
+      `vec baseline --n-cells 1000`) each came back format_ok with no submission id; before and after, no server entry
+      on any board and the daily scored and upload counts at 0 (feat-016 evidence; ledger in results/submissions.csv).
 - [x] 2026-10-19: submission client and builders, each built by an agent and verified by an independent agent, then
       three rounds of independent review and fixes (every finding verified fixed):
       - `vec submit` (feat-016): format-only by default; official uploads behind --official, a hash confirmation and
