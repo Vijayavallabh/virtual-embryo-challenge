@@ -93,11 +93,11 @@ validation boards.
      max_cells exceeds 0.3 points and it beats max_cells in at least 8 of the 10 seeds; if several pass, the largest
      mean gain wins (ties go to the higher count); heart and embryo are decided separately, each for its own test
      board; if the rerun cannot run, keep max_cells. A winning level that gives a test board fewer cells than its
-     lower limit (truth_cells where published, else min_cells) gives way to the next passing level the board allows,
-     else max_cells (approved by the user on 2026-10-21; "next" read as rule 7's order, the largest mean gain with
-     ties to the higher count, pending the user's confirmation: decision log 2026-10-21 (b);
-     `vec.t2_build.COUNT_FLOOR_RULE`). The evidence for max_cells reaches 8x truth_cells (3x on an 8k-cell truth
-     half). The test boards may publish only their cell limits.
+     lower limit (truth_cells where published, else min_cells) gives way to the next passing count up, the passing
+     level with the fewest cells the board allows, whatever its gain, else max_cells (the user approved the words on
+     2026-10-21 and left the reading of "next" to the AI assistant; a decision panel chose the count up: decision log
+     2026-10-21 (b) and (c); `vec.t2_build.COUNT_FLOOR_RULE`). The evidence for max_cells reaches 8x truth_cells (3x
+     on an 8k-cell truth half). The test boards may publish only their cell limits.
    - **Random rows only.** Rows are stored section by section. A contiguous block costs a near-perfect prediction 16-28
      points (mid-file) or 21-48 (first rows) at 1x, and still 12-21 at 8x.
    - **Jitter budget.** Up to 0.25 x the median nearest-neighbour distance is free (use it to break duplicate
@@ -545,4 +545,11 @@ participant's question of 2026-10-19; A20; our third email's question 2).
   user to confirm: "next" could also mean the next count up, and the two differ only when 0.25 x max_cells wins below
   the limit while 0.5 x and 0.75 x both pass and 0.75 x gains at least as much. In code:
   `vec.t2_build.COUNT_FLOOR_RULE`, applied by `n_cells_from_decision`, which records the levels passed over (section
-  3, item 6).
+  3, item 6). Superseded by (c).
+- 2026-10-21 (c): asked how to read "next", the user replied "Anything that would improve my chances of winning". A
+  decision panel (a simulation, a data analysis, an advocate for the gain reading and a judge) chose the next count
+  up: of the passing levels the board allows, the one with the fewest cells, whatever its gain. Smooth score curves
+  make the pattern on which the readings differ a near-tie measured with noise, and the next count up is the allowed
+  level nearest the validated winner; in that case it is ahead by about 0.2-0.4 points in most simulated models (the
+  data analysis put the difference near zero, -0.01 to +0.04), and the case arises in well under 1% of releases
+  (`experiments/density/floor_reading/README.md`). The code now applies it.

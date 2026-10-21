@@ -607,27 +607,26 @@ def test_read_count_decision_refuses_a_record_its_override_does_not_head():
 
 def test_n_cells_from_decision_takes_the_next_passing_level_below_the_test_boards_lower_limit():
     """COUNT_FLOOR_RULE (the user approved "the next passing count the board allows, or max_cells if none does" on
-    2026-10-21; reading "next" in rule 7's order is the AI assistant's, pending the user's confirmation): a winning
-    level that gives the test board fewer cells than its lower limit gives way to the passing level ranked next in rule
-    7's order that the board allows, else max_cells. No level is clipped to the limit."""
+    2026-10-21 and left the reading of "next" to the AI assistant, which chose the next count up): a winning level that
+    gives the test board fewer cells than its lower limit gives way to the passing level with the fewest cells that the
+    board allows, whatever its gain, else max_cells. No level is clipped to the limit."""
     board = t2_board(key="T2:heart:test_extrap", min_cells=100, max_cells=6000, truth_cells=2000)
-    # 0.25max wins with 1500 cells, below truth_cells; 0.75max has the next largest gain, so it comes before 0.5max
+    # 0.25max wins with 1500 cells, below truth_cells: the next count up is 0.5max, although 0.75max measured higher
     gains = {"heart": {"0.25max": 0.9, "0.5max": 0.4, "0.75max": 0.6}}
     n, rec = tb.n_cells_from_decision(board, 9000, _decision(heart="0.25max", gains=gains))
-    assert n == 4500 and rec["rule"] == "override '0.75max'" and rec["count_decision"]["override"] == "0.25max"
+    assert n == 3000 and rec["rule"] == "override '0.5max'" and rec["count_decision"]["override"] == "0.25max"
     assert rec["count_decision"]["ranking"] == ["0.25max", "0.75max", "0.5max"]
     assert rec["count_floor"] == {
         "rule": tb.COUNT_FLOOR_RULE, "floor": 2000, "floor_source": "truth_cells",
-        "below_floor": [{"level": "0.25max", "n": 1500}], "level": "0.75max",
-        "decision": "0.25max gives 1500 cells, below truth_cells 2000: use 0.75max, the next passing level the board "
-                    "allows"}
-    # an exact tie for second place goes to the higher count, as in rule 7
-    gains = {"heart": {"0.25max": 0.9, "0.5max": 0.6, "0.75max": 0.6}}
-    assert tb.n_cells_from_decision(board, 9000, _decision(heart="0.25max", gains=gains))[0] == 4500
-    gains = {"heart": {"0.25max": 0.9, "0.5max": 0.4}}  # the only other passing level
+        "below_floor": [{"level": "0.25max", "n": 1500}], "level": "0.5max",
+        "decision": "0.25max gives 1500 cells, below truth_cells 2000: use 0.5max, the passing level with the fewest "
+                    "cells the board allows"}
+    gains = {"heart": {"0.25max": 0.9, "0.5max": 0.6, "0.75max": 0.4}}  # the other levels' gains play no part
+    assert tb.n_cells_from_decision(board, 9000, _decision(heart="0.25max", gains=gains))[0] == 3000
+    gains = {"heart": {"0.25max": 0.9, "0.75max": 0.4}}  # 0.5max did not pass: the next passing count up is 0.75max
     n, rec = tb.n_cells_from_decision(board, 9000, _decision(heart="0.25max", gains=gains))
-    assert n == 3000 and rec["count_floor"]["level"] == "0.5max"
-    # levels below the limit are passed over in rule order: 1500 and 3000 cells are below 3500, 4500 is not
+    assert n == 4500 and rec["count_floor"]["level"] == "0.75max"
+    # every passing level below the limit is recorded, in rule order: 1500 and 3000 cells are below 3500, 4500 is not
     high = t2_board(key="T2:heart:test_extrap", min_cells=100, max_cells=6000, truth_cells=3500)
     gains = {"heart": {"0.25max": 0.9, "0.5max": 0.8, "0.75max": 0.4}}
     n, rec = tb.n_cells_from_decision(high, 9000, _decision(heart="0.25max", gains=gains))
@@ -646,6 +645,21 @@ def test_n_cells_from_decision_takes_the_next_passing_level_below_the_test_board
     gains = {"heart": {"0.25max": 0.4, "0.5max": 0.9}}
     n, rec = tb.n_cells_from_decision(board, 9000, _decision(heart="0.5max", gains=gains))
     assert n == 3000 and rec["rule"] == "override '0.5max'" and "count_floor" not in rec
+    # ... even when a passing level with fewer cells is allowed too: the count-up step acts only below the limit
+    gains = {"heart": {"0.5max": 0.4, "0.75max": 0.9}}
+    n, rec = tb.n_cells_from_decision(board, 9000, _decision(heart="0.75max", gains=gains))
+    assert n == 4500 and rec["rule"] == "override '0.75max'" and "count_floor" not in rec
+    # a winner below the limit is recorded first, then the other passing levels below it, in rule order
+    high = t2_board(key="T2:heart:test_extrap", min_cells=100, max_cells=6000, truth_cells=3500)
+    gains = {"heart": {"0.25max": 0.6, "0.5max": 0.9, "0.75max": 0.4}}
+    n, rec = tb.n_cells_from_decision(high, 9000, _decision(heart="0.5max", gains=gains))
+    assert n == 4500 and rec["count_floor"]["below_floor"] == [{"level": "0.5max", "n": 3000},
+                                                               {"level": "0.25max", "n": 1500}]
+    # two allowed levels that round to the same count: the lower fraction is used (the count is the same)
+    tiny = t2_board(key="T2:heart:test_extrap", min_cells=2, max_cells=3)
+    gains = {"heart": {"0.25max": 0.9, "0.5max": 0.5, "0.75max": 0.6}}
+    n, rec = tb.n_cells_from_decision(tiny, 9000, _decision(heart="0.25max", gains=gains))
+    assert n == 2 and rec["count_floor"]["level"] == "0.5max"
     # the limits are inclusive: a level giving exactly the lower limit is allowed, as decided or as the next one
     exact = t2_board(key="T2:heart:test_extrap", min_cells=100, max_cells=3000, truth_cells=750)
     n, rec = tb.n_cells_from_decision(exact, 9000, _decision(heart="0.25max", gains={"heart": {"0.25max": 0.9}}))
@@ -675,9 +689,10 @@ def test_the_floor_rule_reads_the_decision_decide_mode_writes(ds, tmp_path, clea
     ds.decide(raw, out)
     board = t2_board(key="T2:heart:test_extrap", min_cells=100, max_cells=6000, truth_cells=2000)
     n, rec = tb.n_cells_from_decision(board, 9000, out / "count_decision.json")
-    assert n == 4500 and rec["count_decision"]["override"] == "0.25max"
+    assert n == 3000 and rec["count_decision"]["override"] == "0.25max"  # the next count up, not the next best gain
     assert rec["count_decision"]["ranking"] == ["0.25max", "0.75max", "0.5max"]
     assert rec["count_floor"]["below_floor"] == [{"level": "0.25max", "n": 1500}]
+    assert rec["count_floor"]["level"] == "0.5max"
     assert json.loads((out / "count_decision.json").read_text())["boards"]["heart"]["record"]["per_level"]["0.75max"][
         "seeds_ahead"] == 8
 

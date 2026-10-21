@@ -1,0 +1,143 @@
+== per-seed SD of paired differences from review CI half-widths (SD = h*sqrt(n)/t_{.975,n-1})
+-- analysis.txt (20 seeds)
+           random_0.5x - random_1x      heart_E9.5   mean -1.70  h 0.47  n 20  -> SD 1.004   [neg 20/20]
+           random_0.5x - random_1x      heart_E8.75  mean -4.26  h 0.65  n 20  -> SD 1.389   [neg 20/20]
+           random_0.5x - random_1x      embryo_E8.0  mean -2.69  h 0.57  n 20  -> SD 1.218   [neg 20/20]
+           random_0.5x - random_1x      embryo_E7.25 mean -7.13  h 0.85  n 20  -> SD 1.816   [neg 20/20]
+             random_2x - random_1x      heart_E9.5   mean +0.08  h 0.19  n 20  -> SD 0.406   [neg 10/20]
+             random_2x - random_1x      heart_E8.75  mean +0.57  h 0.45  n 20  -> SD 0.962   [neg 5/20]
+             random_2x - random_1x      embryo_E8.0  mean +0.14  h 0.54  n 20  -> SD 1.154   [neg 7/20]
+             random_2x - random_1x      embryo_E7.25 mean +0.73  h 0.35  n 20  -> SD 0.748   [neg 2/20]
+             random_4x - random_1x      heart_E9.5   mean +0.18  h 0.20  n 20  -> SD 0.427   [neg 6/20]
+             random_4x - random_1x      heart_E8.75  mean +0.40  h 0.47  n 20  -> SD 1.004   [neg 8/20]
+             random_4x - random_1x      embryo_E8.0  mean +0.23  h 0.51  n 20  -> SD 1.090   [neg 6/20]
+             random_4x - random_1x      embryo_E7.25 mean +1.17  h 0.40  n 20  -> SD 0.855   [neg 0/20]
+             random_8x - random_1x      heart_E9.5   mean -0.06  h 0.25  n 20  -> SD 0.534   [neg 11/20]
+             random_8x - random_1x      heart_E8.75  mean +0.06  h 0.62  n 20  -> SD 1.325   [neg 7/20]
+             random_8x - random_1x      embryo_E8.0  mean +0.42  h 0.61  n 20  -> SD 1.303   [neg 8/20]
+             random_8x - random_1x      embryo_E7.25 mean +0.93  h 0.38  n 20  -> SD 0.812   [neg 3/20]
+         refstage_0.5x - refstage_1x    heart_E9.5   mean -1.09  h 0.37  n 20  -> SD 0.791   [neg 19/20]
+         refstage_0.5x - refstage_1x    heart_E8.75  mean -1.97  h 0.40  n 20  -> SD 0.855   [neg 19/20]
+         refstage_0.5x - refstage_1x    embryo_E8.0  mean -0.79  h 0.23  n 20  -> SD 0.491   [neg 20/20]
+         refstage_0.5x - refstage_1x    embryo_E7.25 mean -3.82  h 0.55  n 20  -> SD 1.175   [neg 20/20]
+           refstage_2x - refstage_1x    heart_E9.5   mean +0.45  h 0.32  n 20  -> SD 0.684   [neg 5/20]
+           refstage_2x - refstage_1x    heart_E8.75  mean +0.89  h 0.48  n 20  -> SD 1.026   [neg 5/20]
+           refstage_2x - refstage_1x    embryo_E8.0  mean +0.32  h 0.19  n 20  -> SD 0.406   [neg 3/20]
+           refstage_2x - refstage_1x    embryo_E7.25 mean +1.39  h 0.35  n 20  -> SD 0.748   [neg 0/20]
+           refstage_4x - refstage_1x    heart_E9.5   mean +0.67  h 0.39  n 20  -> SD 0.833   [neg 5/20]
+           refstage_4x - refstage_1x    heart_E8.75  mean +1.54  h 0.53  n 20  -> SD 1.132   [neg 3/20]
+           refstage_4x - refstage_1x    embryo_E8.0  mean +0.50  h 0.21  n 20  -> SD 0.449   [neg 3/20]
+           refstage_4x - refstage_1x    embryo_E7.25 mean +2.12  h 0.55  n 20  -> SD 1.175   [neg 1/20]
+           refstage_8x - refstage_1x    heart_E9.5   mean +0.86  h 0.40  n 20  -> SD 0.855   [neg 4/20]
+           refstage_8x - refstage_1x    heart_E8.75  mean +1.94  h 0.61  n 20  -> SD 1.303   [neg 3/20]
+           refstage_8x - refstage_1x    embryo_E8.0  mean +0.53  h 0.27  n 20  -> SD 0.577   [neg 4/20]
+           refstage_8x - refstage_1x    embryo_E7.25 mean +3.01  h 0.57  n 20  -> SD 1.218   [neg 0/20]
+          shuffle50_2x - shuffle50_1x   heart_E9.5   mean +0.59  h 0.19  n 20  -> SD 0.406   [neg 0/20]
+          shuffle50_2x - shuffle50_1x   heart_E8.75  mean +1.12  h 0.43  n 20  -> SD 0.919   [neg 3/20]
+          shuffle50_2x - shuffle50_1x   embryo_E8.0  mean +0.36  h 0.58  n 20  -> SD 1.239   [neg 6/20]
+          shuffle50_2x - shuffle50_1x   embryo_E7.25 mean +1.33  h 0.45  n 20  -> SD 0.962   [neg 2/20]
+          shuffle50_4x - shuffle50_1x   heart_E9.5   mean +1.14  h 0.22  n 20  -> SD 0.470   [neg 0/20]
+          shuffle50_4x - shuffle50_1x   heart_E8.75  mean +1.65  h 0.48  n 20  -> SD 1.026   [neg 1/20]
+          shuffle50_4x - shuffle50_1x   embryo_E8.0  mean +0.71  h 0.54  n 20  -> SD 1.154   [neg 4/20]
+          shuffle50_4x - shuffle50_1x   embryo_E7.25 mean +2.38  h 0.55  n 20  -> SD 1.175   [neg 0/20]
+          shuffle50_8x - shuffle50_1x   heart_E9.5   mean +1.55  h 0.30  n 20  -> SD 0.641   [neg 0/20]
+          shuffle50_8x - shuffle50_1x   heart_E8.75  mean +2.08  h 0.58  n 20  -> SD 1.239   [neg 2/20]
+          shuffle50_8x - shuffle50_1x   embryo_E8.0  mean +1.25  h 0.62  n 20  -> SD 1.325   [neg 0/20]
+          shuffle50_8x - shuffle50_1x   embryo_E7.25 mean +2.67  h 0.46  n 20  -> SD 0.983   [neg 0/20]
+             random_2x - random_4x      heart_E9.5   mean -0.10  h 0.13  n 20  -> SD 0.278   [neg 14/20]
+             random_2x - random_4x      heart_E8.75  mean +0.18  h 0.55  n 20  -> SD 1.175   [neg 7/20]
+             random_2x - random_4x      embryo_E8.0  mean -0.09  h 0.35  n 20  -> SD 0.748   [neg 10/20]
+             random_2x - random_4x      embryo_E7.25 mean -0.43  h 0.40  n 20  -> SD 0.855   [neg 11/20]
+             random_2x - random_8x      heart_E9.5   mean +0.14  h 0.22  n 20  -> SD 0.470   [neg 9/20]
+             random_2x - random_8x      heart_E8.75  mean +0.51  h 0.68  n 20  -> SD 1.453   [neg 7/20]
+             random_2x - random_8x      embryo_E8.0  mean -0.27  h 0.53  n 20  -> SD 1.132   [neg 7/20]
+             random_2x - random_8x      embryo_E7.25 mean -0.19  h 0.40  n 20  -> SD 0.855   [neg 14/20]
+           refstage_2x - refstage_4x    heart_E9.5   mean -0.22  h 0.33  n 20  -> SD 0.705   [neg 13/20]
+           refstage_2x - refstage_4x    heart_E8.75  mean -0.65  h 0.36  n 20  -> SD 0.769   [neg 18/20]
+           refstage_2x - refstage_4x    embryo_E8.0  mean -0.18  h 0.15  n 20  -> SD 0.321   [neg 17/20]
+           refstage_2x - refstage_4x    embryo_E7.25 mean -0.73  h 0.45  n 20  -> SD 0.962   [neg 15/20]
+           refstage_2x - refstage_8x    heart_E9.5   mean -0.41  h 0.39  n 20  -> SD 0.833   [neg 13/20]
+           refstage_2x - refstage_8x    heart_E8.75  mean -1.05  h 0.49  n 20  -> SD 1.047   [neg 17/20]
+           refstage_2x - refstage_8x    embryo_E8.0  mean -0.21  h 0.21  n 20  -> SD 0.449   [neg 16/20]
+           refstage_2x - refstage_8x    embryo_E7.25 mean -1.62  h 0.50  n 20  -> SD 1.068   [neg 20/20]
+          shuffle50_2x - shuffle50_4x   heart_E9.5   mean -0.55  h 0.17  n 20  -> SD 0.363   [neg 19/20]
+          shuffle50_2x - shuffle50_4x   heart_E8.75  mean -0.53  h 0.50  n 20  -> SD 1.068   [neg 15/20]
+          shuffle50_2x - shuffle50_4x   embryo_E8.0  mean -0.35  h 0.37  n 20  -> SD 0.791   [neg 14/20]
+          shuffle50_2x - shuffle50_4x   embryo_E7.25 mean -1.05  h 0.53  n 20  -> SD 1.132   [neg 17/20]
+          shuffle50_2x - shuffle50_8x   heart_E9.5   mean -0.96  h 0.24  n 20  -> SD 0.513   [neg 19/20]
+          shuffle50_2x - shuffle50_8x   heart_E8.75  mean -0.96  h 0.63  n 20  -> SD 1.346   [neg 17/20]
+          shuffle50_2x - shuffle50_8x   embryo_E8.0  mean -0.89  h 0.52  n 20  -> SD 1.111   [neg 18/20]
+          shuffle50_2x - shuffle50_8x   embryo_E7.25 mean -1.34  h 0.44  n 20  -> SD 0.940   [neg 18/20]
+      jitter_1x_2.0own - random_1x      heart_E9.5   mean -1.35  h 0.29  n 20  -> SD 0.620   [neg 20/20]
+      jitter_1x_2.0own - random_1x      heart_E8.75  mean -1.68  h 0.38  n 20  -> SD 0.812   [neg 20/20]
+      jitter_1x_2.0own - random_1x      embryo_E8.0  mean -1.19  h 0.35  n 20  -> SD 0.748   [neg 19/20]
+      jitter_1x_2.0own - random_1x      embryo_E7.25 mean -2.93  h 0.45  n 20  -> SD 0.962   [neg 20/20]
+    jitter_4x_2.0truth - random_4x      heart_E9.5   mean -0.89  h 0.25  n 20  -> SD 0.534   [neg 19/20]
+    jitter_4x_2.0truth - random_4x      heart_E8.75  mean -0.87  h 0.48  n 20  -> SD 1.026   [neg 17/20]
+    jitter_4x_2.0truth - random_4x      embryo_E8.0  mean -0.91  h 0.40  n 20  -> SD 0.855   [neg 19/20]
+    jitter_4x_2.0truth - random_4x      embryo_E7.25 mean -2.38  h 0.43  n 20  -> SD 0.919   [neg 20/20]
+-- analysis_big.txt (10 seeds)
+           random_0.5x - random_1x      heart_E9.5   mean -0.87  h 0.31  n 10  -> SD 0.433   [neg 10/10]
+           random_0.5x - random_1x      heart_E8.75  mean -1.67  h 1.02  n 10  -> SD 1.426   [neg 9/10]
+             random_2x - random_1x      heart_E9.5   mean +0.09  h 0.27  n 10  -> SD 0.377   [neg 4/10]
+             random_2x - random_1x      heart_E8.75  mean +0.42  h 0.45  n 10  -> SD 0.629   [neg 3/10]
+             random_3x - random_1x      heart_E9.5   mean +0.08  h 0.26  n 10  -> SD 0.363   [neg 5/10]
+             random_3x - random_1x      heart_E8.75  mean +0.05  h 0.43  n 10  -> SD 0.601   [neg 5/10]
+         refstage_0.5x - refstage_1x    heart_E9.5   mean -0.91  h 0.45  n 10  -> SD 0.629   [neg 10/10]
+         refstage_0.5x - refstage_1x    heart_E8.75  mean -1.48  h 0.71  n 10  -> SD 0.993   [neg 9/10]
+           refstage_2x - refstage_1x    heart_E9.5   mean +0.50  h 0.53  n 10  -> SD 0.741   [neg 3/10]
+           refstage_2x - refstage_1x    heart_E8.75  mean +0.67  h 0.91  n 10  -> SD 1.272   [neg 5/10]
+          shuffle50_2x - shuffle50_1x   heart_E9.5   mean +0.59  h 0.32  n 10  -> SD 0.447   [neg 2/10]
+          shuffle50_2x - shuffle50_1x   heart_E8.75  mean +1.07  h 0.50  n 10  -> SD 0.699   [neg 0/10]
+          shuffle50_3x - shuffle50_1x   heart_E9.5   mean +0.96  h 0.29  n 10  -> SD 0.405   [neg 0/10]
+          shuffle50_3x - shuffle50_1x   heart_E8.75  mean +1.15  h 0.49  n 10  -> SD 0.685   [neg 0/10]
+             random_2x - random_3x      heart_E9.5   mean +0.01  h 0.26  n 10  -> SD 0.363   [neg 4/10]
+             random_2x - random_3x      heart_E8.75  mean +0.37  h 0.47  n 10  -> SD 0.657   [neg 3/10]
+          shuffle50_2x - shuffle50_3x   heart_E9.5   mean -0.37  h 0.26  n 10  -> SD 0.363   [neg 9/10]
+          shuffle50_2x - shuffle50_3x   heart_E8.75  mean -0.08  h 0.48  n 10  -> SD 0.671   [neg 7/10]
+shuffle50 count-pair SDs (all targets, both files): n=26 min 0.363 q25 0.545 median 0.929 q75 1.127 max 1.346
+  heart_E9.5           median SD 0.470  range 0.363-0.641  (k=5)
+  heart_E8.75          median SD 1.068  range 0.919-1.346  (k=5)
+  embryo_E8.0          median SD 1.154  range 0.791-1.325  (k=5)
+  embryo_E7.25         median SD 0.983  range 0.940-1.175  (k=5)
+  heart_E9.5 (big)     median SD 0.405  range 0.363-0.447  (k=3)
+  heart_E8.75 (big)    median SD 0.685  range 0.671-0.699  (k=3)
+shuffle50 (20 seeds) SD by separation in doublings: 1: median 0.940 (k=8), 2: median 1.068 (k=8), 3: median 1.111 (k=4)
+
+== v1: experiments/density/results/results_long.csv: per-seed paired-difference SDs, 5 seeds
+  random    both levels >=1x: sep 1: median SD 0.885 (k=9), sep 2: median SD 0.876 (k=6), sep 3: median SD 0.725 (k=3)
+  random    lower level <1x: sep 1: median SD 0.815 (k=6), sep 2: median SD 1.096 (k=6), sep 3: median SD 1.065 (k=6), sep 4: median SD 0.994 (k=6), sep 5: median SD 1.286 (k=3)
+  refstage  both levels >=1x: sep 1: median SD 0.423 (k=9), sep 2: median SD 0.613 (k=6), sep 3: median SD 0.501 (k=3)
+  refstage  lower level <1x: sep 1: median SD 0.636 (k=6), sep 2: median SD 0.927 (k=6), sep 3: median SD 0.925 (k=6), sep 4: median SD 0.925 (k=6), sep 5: median SD 0.955 (k=3)
+  two-way residual correlations between levels >=1x are biased toward -1/(L-1) with 5 seeds; not used. Correlation structure is instead read from SD growth with separation above.
+
+== v2: experiments/density/results/v2/results_long.csv: per-seed paired-difference SDs, 5 seeds
+  random    both levels >=1x: sep 1: median SD 0.885 (k=9), sep 2: median SD 0.876 (k=6), sep 3: median SD 0.725 (k=3)
+  random    lower level <1x: sep 1: median SD 0.815 (k=6), sep 2: median SD 1.096 (k=6), sep 3: median SD 1.065 (k=6), sep 4: median SD 0.994 (k=6), sep 5: median SD 1.286 (k=3)
+  refstage  both levels >=1x: sep 1: median SD 0.423 (k=9), sep 2: median SD 0.613 (k=6), sep 3: median SD 0.501 (k=3)
+  refstage  lower level <1x: sep 1: median SD 0.636 (k=6), sep 2: median SD 0.927 (k=6), sep 3: median SD 0.925 (k=6), sep 4: median SD 0.925 (k=6), sep 5: median SD 0.955 (k=3)
+
+v1 vs v2 random/refstage rows identical: 180/180
+
+== shuffle50 paired mean gains offline (for the increasing family's slope range)
+  shuffle50_2x   vs 1x heart_E9.5   +0.59  -> per doubling +0.59
+  shuffle50_2x   vs 1x heart_E8.75  +1.12  -> per doubling +1.12
+  shuffle50_2x   vs 1x embryo_E8.0  +0.36  -> per doubling +0.36
+  shuffle50_2x   vs 1x embryo_E7.25 +1.33  -> per doubling +1.33
+  shuffle50_2x   vs 1x pooled3      +0.69  -> per doubling +0.69
+  shuffle50_4x   vs 1x heart_E9.5   +1.14  -> per doubling +0.57
+  shuffle50_4x   vs 1x heart_E8.75  +1.65  -> per doubling +0.82
+  shuffle50_4x   vs 1x embryo_E8.0  +0.71  -> per doubling +0.35
+  shuffle50_4x   vs 1x embryo_E7.25 +2.38  -> per doubling +1.19
+  shuffle50_4x   vs 1x pooled3      +1.17  -> per doubling +0.58
+  shuffle50_8x   vs 1x heart_E9.5   +1.55  -> per doubling +0.52
+  shuffle50_8x   vs 1x heart_E8.75  +2.08  -> per doubling +0.69
+  shuffle50_8x   vs 1x embryo_E8.0  +1.25  -> per doubling +0.42
+  shuffle50_8x   vs 1x embryo_E7.25 +2.67  -> per doubling +0.89
+  shuffle50_8x   vs 1x pooled3      +1.63  -> per doubling +0.54
+  shuffle50_2x   vs 1x heart_E9.5   +0.59  -> per doubling +0.59
+  shuffle50_2x   vs 1x heart_E8.75  +1.07  -> per doubling +1.07
+  shuffle50_2x   vs 1x pooled3      +0.83  -> per doubling +0.83
+  shuffle50_3x   vs 1x heart_E9.5   +0.96  -> per doubling +0.61
+  shuffle50_3x   vs 1x heart_E8.75  +1.15  -> per doubling +0.73
+  shuffle50_3x   vs 1x pooled3      +1.06  -> per doubling +0.67

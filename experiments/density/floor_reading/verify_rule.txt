@@ -1,0 +1,1 @@
+Vectorised rule 7 and reading G compared with vec.t2_build.count_override and _passing_ranking on 4,000 random 10-seed tables: winner mismatches 0; floor cases 1,039; G-reading mismatches 0; disagreement cases 112.

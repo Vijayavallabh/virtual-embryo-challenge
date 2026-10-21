@@ -77,16 +77,21 @@
       - `docs/P3_RUNBOOK.md` (steps 4.1 and 4.5, section 5) and `run_p3.sh`'s closing note now name them.
         `./init.sh`: 355 passed (35 new tests).
 - [x] 2026-10-21: the case approved answer 7 left open, in code as the user approved it ("the next passing count the
-      board allows, or max_cells if none does"; "next" read as rule 7's order, pending the user's confirmation):
+      board allows, or max_cells if none does"; read as the next count up, the reading the user left to the AI
+      assistant and a decision panel chose, `experiments/density/floor_reading/README.md`):
       - `vec.t2_build.n_cells_from_decision` passes over a decided level below the test board's lower limit to the
-        passing level ranked next that the board allows, else max_cells, and records `count_floor`
+        passing level with the fewest cells that the board allows, else max_cells, and records `count_floor`
         (`COUNT_FLOOR_RULE`);
       - `read_count_decision` now also checks the decision's record: the decided level heads its passing levels,
         every level's verdict agrees with its own numbers (both ways), and the rerun was complete;
       - runbook section 5, the rules summary, PLAN 3.6 and 4.2 step 6, the decision log, METHOD_SUMMARY and the
         ledger log updated; the third organiser email recorded as sent (`docs/ORGANIZER_QUESTIONS.md`).
-      Independent verifiers in two rounds (fidelity, robustness and docs; then code and docs re-checks): every
-      finding fixed, and the reading of "next" put to the user. `./init.sh`: 357 passed (3 new tests, 1 replaced).
+      Independent verifiers in two rounds on the gain reading (fidelity, robustness and docs; then code and docs
+      re-checks): every finding fixed; `./init.sh`: 357 passed (3 new tests, 1 replaced; d06727f). The reading of
+      "next" was then put to the user, who left it to the AI assistant; a four-agent panel (simulation, data, an
+      advocate for the gain reading, judge) chose the next count up, medium confidence. The switch to it: a code
+      verifier (pass; 0 mismatches in 579,150 cases against an independent implementation) and a docs verifier, their
+      findings fixed; `./init.sh`: 357 passed.
 - [x] 2026-10-19: submission client and builders, each built by an agent and verified by an independent agent, then
       three rounds of independent review and fixes (every finding verified fixed):
       - `vec submit` (feat-016): format-only by default; official uploads behind --official, a hash confirmation and
@@ -137,10 +142,11 @@
       board's lower limit (truth_cells or min_cells; only 0.25 x max_cells can fall there): the user approved ("go
       ahead") the recommendation "the next passing count the board allows, or max_cells if none does". In code as
       `vec.t2_build.COUNT_FLOOR_RULE` (see What's Done).
-- [ ] The user's confirmation of how the code reads "next" in that rule: rule 7's own order (the largest mean gain
-      among the passing levels the board allows, ties to the higher count; recommended and coded), or the next count
-      up. They differ only when 0.25 x max_cells wins below the limit while 0.5 x and 0.75 x both pass and 0.75 x
-      gains at least as much (rule order: 0.75 x; count order: 0.5 x). Settle before 2026-10-27.
+- [x] 2026-10-21: how the code reads "next" in that rule. The user left it to the AI assistant ("Anything that would
+      improve my chances of winning"). A decision panel chose the next count up over the next best gain: they differ
+      only when 0.25 x max_cells wins below the limit while 0.5 x and 0.75 x both pass and 0.75 x measures at least as
+      high, and there the next count up is ahead by about 0.2-0.4 points in most simulated models (a data analysis put
+      it near zero; `experiments/density/floor_reading/README.md`). In code (see What's Done).
 - [ ] The E12.5 emergent-class list waits on the organisers' answer about qualitative in-window background; the legal
       route is used meanwhile.
 - [ ] Quota shape: `official_per_board` is unpublished. The client refuses official uploads until it can read it;

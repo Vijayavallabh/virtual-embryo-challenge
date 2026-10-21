@@ -27,9 +27,9 @@ decision; --overwrite keeps a replaced decision next to the new one, leaves the 
 is, and the new decision lists them under earlier_decisions); a raw line that is not a JSON row; raw rows with no rule
 row for either target. vec.t2_build.n_cells_from_decision reads the file and passes a board's "override" to
 vec.t2_build.n_cells on that test board (null keeps max_cells); a level below that board's lower limit gives way to the
-passing level ranked next in rule 7's order (largest mean gain, ties to the higher count) that the board allows, else
-max_cells (vec.t2_build.COUNT_FLOOR_RULE: the user approved "the next passing count the board allows, or max_cells if
-none does" on 2026-10-21; reading "next" in rule 7's order is the AI assistant's and awaits the user's confirmation).
+next passing count up, the passing level with the fewest cells the board allows, else max_cells
+(vec.t2_build.COUNT_FLOOR_RULE: the user approved its words on 2026-10-21 and left the reading of "next" to the AI
+assistant, whose decision panel chose the count up; experiments/density/floor_reading/README.md).
   uv run python experiments/density/summarise.py --raw runs/density/raw_release --out \
     experiments/density/results/release --decide
 """
@@ -461,8 +461,8 @@ def decide(raw: Path, out: Path, overwrite: bool = False, allow_uncommitted: boo
         "what": ("the cell count of each T2 test board under approved rule 7 (docs/RELEASE_RULES_SUMMARY.md), applied "
                  "by vec.t2_build.count_override to the density rerun's raw rows; vec.t2_build.n_cells_from_decision "
                  "passes a board's override to vec.t2_build.n_cells on that test board (null keeps max_cells; a "
-                 "level below that board's lower limit gives way to the passing level ranked next in rule 7's order "
-                 "that the board allows, else max_cells: vec.t2_build.COUNT_FLOOR_RULE)"),
+                 "level below that board's lower limit gives way to the passing level with the fewest cells the "
+                 "board allows, else max_cells: vec.t2_build.COUNT_FLOOR_RULE)"),
         "rule": tb.COUNT_RULE, "approved": tb.RULES_APPROVED, "raw": str(raw), "inputs_sha256": sha,
         "rows_replaced": replaced, "earlier_decisions": earlier, "allow_uncommitted": bool(allow_uncommitted), **code,
         "boards": boards,

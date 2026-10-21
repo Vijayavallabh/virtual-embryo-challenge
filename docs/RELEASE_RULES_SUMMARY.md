@@ -6,14 +6,14 @@ Drafted by the AI assistant (Claude) on 2026-10-20 from the files committed at `
 `count_override` and `n_cells_from_decision` in `src/vec/t2_build.py`, and `experiments/density/summarise.py
 --decide` (`docs/P3_RUNBOOK.md` steps 4.1 and 4.5); how the code reads them is in the last section. For the one case
 answer 7 left open, a winning count below a test board's lower limit, the user approved "the next passing count the
-board allows, or max_cells if none does" the same day; how the code reads "next" awaits the user's confirmation (last
-section).
+board allows, or max_cells if none does" the same day and left the reading of "next" to the AI assistant, which chose
+the next count up (last section).
 
 AI agents wrote these four rules; the user approved them on 2026-10-21 with the answers at the end (Task 3 was
 approved earlier). Sections 1-4 and the two lists after them are kept as drafted; where an approved answer changes
 them (answers 3, 6, 7 and 8), the answer and the last section govern: for example, a heart result with `valid` false
 now keeps E10.5's size (answer 3), not section 1's "no fallback", and a winning count below a test board's lower limit
-gives way to the next passing level the board allows (last section), not section 3's "stops the build". Steps are from
+gives way to the next passing count up (last section), not section 3's "stops the build". Steps are from
 `docs/P3_RUNBOOK.md`, PLAN is `docs/PLAN.md`, s1 and s2 are a board's two scored submissions, * marks a file new on
 release day, and "(inferred)" marks what I worked out rather than read.
 
@@ -186,15 +186,19 @@ Current choice first, then the alternative.
   and the build counts with plain `n_cells` (max_cells). The decision is written once; a second one needs
   `--overwrite`, which puts it in the first one's place (the file the build reads) and keeps the first beside it as
   `count_decision.replaced-<UTC time>.json`.
-- **Below the test board's lower limit (left open by answer 7; approved in words on 2026-10-21, reading pending):**
-  the user approved the recommendation "the next passing count the board allows, or max_cells if none does". The
-  code reads "next" in answer 7's own order: if the winning level gives a test board fewer cells than its lower limit
-  (truth_cells where published, otherwise min_cells), the build uses the passing level with the next largest mean
-  gain (ties to the higher count) that the board allows, and max_cells if none does; no level is clipped to the
-  limit. That reading is the AI assistant's and was put to the user to confirm: "next" could also mean the next count
-  up, and the two differ only when 0.25 x max_cells wins below the limit while 0.5 x and 0.75 x both pass and 0.75 x
-  gains at least as much. `n_cells_from_decision` applies it (`COUNT_FLOOR_RULE` in `src/vec/t2_build.py`) and
-  records the levels it passed over under `count_floor`. Under the documented limits (max_cells = 3 x
-  max(truth_cells, ref_cells), at least 5,000; min_cells = min(1,000, truth_cells)) only 0.25 x max_cells can fall
-  there, and only on a board that publishes truth_cells with max_cells under 4 x truth_cells; on a board that
-  publishes only its limits, no level falls below min_cells.
+- **Below the test board's lower limit (left open by answer 7; decided on 2026-10-21):** the user approved the
+  recommendation "the next passing count the board allows, or max_cells if none does", then left the reading of
+  "next" to the AI assistant ("Anything that would improve my chances of winning"). The code reads it as the next
+  count up: if the winning level gives a test board fewer cells than its lower limit (truth_cells where published,
+  otherwise min_cells; a bound only), the build uses the level that passed answer 7 with the fewest cells the board
+  allows, whatever its gain, and max_cells if none does; no level is clipped to the limit. A decision panel (a
+  simulation, a data analysis, an advocate for the other reading and a judge) found this the better bet. The other
+  reading, the next largest gain, differs only when 0.25 x max_cells wins below the limit while 0.5 x and 0.75 x both
+  pass and 0.75 x measures at least as high, a pattern smooth score curves produce only by noise. There the next
+  count up is ahead by about 0.2-0.4 points in most simulated models (the data analysis: near zero, -0.01 to +0.04),
+  and the case arises in well under 1% of releases
+  (`experiments/density/floor_reading/README.md`). `n_cells_from_decision` applies it (`COUNT_FLOOR_RULE` in
+  `src/vec/t2_build.py`) and records the passing levels below the limit under `count_floor`. Under the documented
+  limits (max_cells = 3 x max(truth_cells, ref_cells), at least 5,000; min_cells = min(1,000, truth_cells)) only
+  0.25 x max_cells can fall there, and only on a board that publishes truth_cells with max_cells under 4 x
+  truth_cells; on a board that publishes only its limits, no level falls below min_cells.
