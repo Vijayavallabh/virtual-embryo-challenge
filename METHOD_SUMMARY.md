@@ -60,7 +60,9 @@ Track 1 (Human Team). A person reviews results and makes every submission decisi
 
 ## Task 2: spatial-temporal (heart E12.5, embryo E7.75) — _planned_
 
-- **Heart E12.5:** real E10.5 tissue (synthetic records dropped), sampled at random to the board's maximum cell count;
+- **Heart E12.5:** real E10.5 tissue (synthetic records dropped), sampled at random to the pre-registered count (the
+  board's maximum cell count unless the release-day density rerun picks a lower level by a rule fixed in advance,
+  never below the board's lower limit; `vec.t2_build.n_cells_from_decision`);
   damped composition trends on harmonised merged lineages; coordinates grown by the pre-registered size procedure
   (core = cardiomyocytes + endocardium; growth from E9.5 -> E10.5 only; a fixed three-rule average justified without an
   assumed rate; z held at E10.5 when the sectioning plane matches); two scope hypotheses as the two submissions.

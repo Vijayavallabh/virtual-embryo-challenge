@@ -210,7 +210,8 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   stages as held out, while the Data page says they become training data in the final phase. Our plan follows the Data
   page (assumption A20); if a ruling says otherwise, T1 and T2 heart are rebuilt from E9.5, T2 embryo from E7.25 and
   E8.0 only, and T3 uses the barred branch. No answer as of 2026-10-20 22:43 IST; the Rules and Data pages were
-  unchanged on this point when checked at 17:10 UTC that day.
+  unchanged on this point when checked at 17:10 UTC that day. We asked the organisers the same privately (question 2
+  of the third email, sent 2026-10-21 01:24 IST; `docs/ORGANIZER_QUESTIONS.md`); no answer yet.
 
 ## Change notes
 

@@ -10,7 +10,11 @@ experiments/coords/REPORT.md, both measured on released data and independently r
   rule pre-registered in PLAN 3.6; that level is passed as `override`. `count_override` applies that rule (approved
   answer 7 of docs/RELEASE_RULES_SUMMARY.md, 2026-10-21) to one board's rerun scores and returns the override;
   experiments/density/summarise.py --decide writes it per test board to count_decision.json, and
-  `n_cells_from_decision` reads that file for a test board (`read_count_decision`) and passes its override to n_cells.
+  `n_cells_from_decision` reads that file for a test board (`read_count_decision`) and passes its override to n_cells,
+  or, when that level falls below the board's lower limit, the passing level ranked next in rule 7's order (largest
+  mean gain, ties to the higher count) that the board allows, else max_cells (COUNT_FLOOR_RULE: the user approved "the
+  next passing count the board allows" the same day; reading "next" in rule 7's order is the AI assistant's, pending
+  the user's confirmation).
 - `sample_cells`: random rows only. Released files store rows section by section, so a contiguous block of rows is a
   slab of sections (16-31 points lost at 1x on a near-perfect prediction, 13-18 at 8x). Rows repeat only when the
   count exceeds the pool; exact duplicate coordinates are then broken by isotropic jitter of at most 0.25 x the median
@@ -38,7 +42,7 @@ thresholds are not properties of a stage. tests/test_t2_build.py checks the modu
 allow-list.
 
     pool = load_stage(path, genes=board.genes, drop_duplicates=True)     # prediction input: synthetic records dropped
-    n, count_record = n_cells_from_decision(board, pool.n_obs, "count_decision.json")  # approved rule 7's level
+    n, count_record = n_cells_from_decision(board, pool.n_obs, "count_decision.json")  # rule 7, or COUNT_FLOOR_RULE
     s = sample_cells(pool, n, seed=0)
     coords, size_record = size_or_hold(s.coords, "size_heart_E12.5.json", "H1", source_stage="E10.5",
                                        reference_cloud=pool, expect_board="heart")
@@ -120,6 +124,15 @@ COUNT_RULE = ("approved rule 7: a lower level replaces max_cells on a board only
               "target, its paired mean gain over max_cells exceeds 0.3 points and it beats max_cells in at least 8 of "
               "the 10 seeds. If several pass, the largest mean gain wins (ties go to the higher count). Heart and "
               "embryo are decided separately, each for its own test board. If the rerun cannot run, keep max_cells")
+# The case answer 7 leaves open (`n_cells_from_decision`). The user approved the recommendation in the quoted words on
+# 2026-10-21; "next" is read as rule 7's own order, the AI assistant's reading, put to the user to confirm. Reword this
+# text when the user confirms or changes it: it is copied into every count record that applies it.
+COUNT_FLOOR_RULE = ("the case rule 7 leaves open, approved by the user on 2026-10-21 as 'the next passing count the "
+                    "board allows, or max_cells if none does', applied in the AI assistant's reading (pending the "
+                    "user's confirmation): if the winning level gives a test board fewer cells than its lower limit "
+                    "(truth_cells where published and at least min_cells, else min_cells), use the passing level "
+                    "ranked next in rule 7's order (largest mean gain, ties to the higher count) that the board "
+                    "allows; if none, keep max_cells")
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -187,6 +200,23 @@ def _override_count(override, max_cells: int) -> int:
     return int(override)
 
 
+def _limits(board: Board) -> tuple[int, int, int | None, int, str]:
+    """A board's (max_cells, min_cells, truth_cells, floor, floor source): the floor is truth_cells when the board
+    publishes it (at least min_cells), else min_cells. Refused: a board without max_cells, a floor above max_cells."""
+    if board.max_cells is None:
+        raise ValueError(f"{board.key}: the board publishes no max_cells; the count rule needs it")
+    max_cells = _whole(board.max_cells, "max_cells", 1)
+    min_cells = _whole(board.min_cells, "min_cells", 1)
+    truth = None if board.truth_cells is None else _whole(board.truth_cells, "truth_cells", 1)
+    if truth is not None and truth >= min_cells:
+        floor, floor_source = truth, "truth_cells"
+    else:
+        floor, floor_source = min_cells, "min_cells"
+    if floor > max_cells:
+        raise ValueError(f"{board.key}: inconsistent limits, {floor_source} {floor} > max_cells {max_cells}")
+    return max_cells, min_cells, truth, floor, floor_source
+
+
 def n_cells(board: Board, pool_size: int, override: int | str | None = None) -> tuple[int, dict]:
     """The number of cells to submit on a board, and a record of why.
 
@@ -198,18 +228,8 @@ def n_cells(board: Board, pool_size: int, override: int | str | None = None) -> 
     with rows repeated as evenly as possible, a regime the density experiment did not test (it drew at most 44% of a
     pool).
     """
-    if board.max_cells is None:
-        raise ValueError(f"{board.key}: the board publishes no max_cells; the count rule needs it")
-    max_cells = _whole(board.max_cells, "max_cells", 1)
-    min_cells = _whole(board.min_cells, "min_cells", 1)
-    truth = None if board.truth_cells is None else _whole(board.truth_cells, "truth_cells", 1)
+    max_cells, min_cells, truth, floor, floor_source = _limits(board)
     pool_size = _whole(pool_size, "pool_size", 1)
-    if truth is not None and truth >= min_cells:
-        floor, floor_source = truth, "truth_cells"
-    else:
-        floor, floor_source = min_cells, "min_cells"
-    if floor > max_cells:
-        raise ValueError(f"{board.key}: inconsistent limits, {floor_source} {floor} > max_cells {max_cells}")
     if override is None:
         n, rule = max_cells, "max_cells"
     else:
@@ -264,9 +284,12 @@ def count_override(scores: Mapping) -> tuple[str | None, dict]:
     ignored and listed; a label that is not "<f>max", a seed that is not an integer or a score that is not a number is
     refused.
 
-    Returns (override, record): override is None (keep max_cells) or the winning level's label, which `n_cells` takes
-    as `override` on the matching test board; it refuses a count outside that board's limits, never clips it. The
-    record holds each level's paired seeds, differences, mean gain, seeds ahead and verdict, and the decision.
+    Returns (override, record): override is None (keep max_cells) or the winning level's label, which
+    `n_cells_from_decision` passes to `n_cells` on the matching test board; a level that gives that board fewer cells
+    than its lower limit gives way to the passing level ranked next in rule 7's order that the board allows, else
+    max_cells (COUNT_FLOOR_RULE), and n_cells refuses any count outside a board's limits, never clips it. The record
+    holds each level's paired seeds, differences, mean gain, seeds ahead and verdict, the passing levels and the
+    decision.
     """
     if not isinstance(scores, Mapping):
         raise TypeError("scores must map each count level to {seed: score}")
@@ -352,9 +375,11 @@ def read_count_decision(decision_json, board: Board, kind: str | None = None) ->
     board's kind ("heart" or "embryo") is the one its key names (`kind`, when given, must agree; it is needed only for
     a key that names neither), so a heart board never takes the embryo decision. Refused: a file that is not a decision
     of this rule (another rule text or approval date), a kind the file does not hold, a decision whose validation target
-    is not the kind's (COUNT_RULE_TARGETS), and an override that is neither None (keep max_cells) nor one of the rule's
-    lower levels. Returns (override, record): the record holds the file's path and sha256 (None for a dict), the kind,
-    the validation target, the override, the decision text and the git state the decision recorded.
+    is not the kind's (COUNT_RULE_TARGETS), an override that is neither None (keep max_cells) nor one of the rule's
+    lower levels, and for an override, a record of passing levels it does not head (`_passing_ranking`). Returns
+    (override, record): the record holds the file's path and sha256 (None for a dict), the kind, the validation target,
+    the override, the passing levels in rule order (`ranking`, empty for None: COUNT_FLOOR_RULE walks it), the decision
+    text and the git state the decision recorded.
     """
     kind = _t2_kind(board, kind)
     if isinstance(decision_json, Mapping):
@@ -380,27 +405,93 @@ def read_count_decision(decision_json, board: Board, kind: str | None = None) ->
         raise ValueError(f"the {kind} decision's override {override!r} is neither None (keep max_cells) nor one of the "
                          f"rule's lower levels {COUNT_RULE_LEVELS}")
     record = {"decision_file": None if path is None else str(path), "decision_sha256": sha, "kind": kind,
-              "validation_target": b["validation_target"], "override": override, "decision": b.get("decision"),
+              "validation_target": b["validation_target"], "override": override,
+              "ranking": [] if override is None else _passing_ranking(b, override, kind), "decision": b.get("decision"),
               "decision_git_commit": d.get("git_commit"),
               "decision_allowed_uncommitted": d.get("allow_uncommitted")}
     return override, record
 
 
-def n_cells_from_decision(board: Board, pool_size: int, decision_json, kind: str | None = None) -> tuple[int, dict]:
-    """`n_cells` with the override that approved rule 7's decision file gives this T2 test board
-    (`read_count_decision`), so the count is applied by code, never copied by hand. The count record gains
-    `count_decision` (the decision file's path and sha256, its validation target, override and decision). A decided
-    level that falls outside the test board's limits is refused by n_cells, never clipped: approved rule 7 does not say
-    what to do then, so the case goes to the captain."""
-    override, decision = read_count_decision(decision_json, board, kind)
+def _finite_number(v) -> float | None:
+    """v as a float when it is a finite real number (Python or numpy, not a bool), else None."""
+    if isinstance(v, bool | np.bool_) or not isinstance(v, int | float | np.integer | np.floating):
+        return None
     try:
-        n, record = n_cells(board, pool_size, override=override)
-    except ValueError as e:
-        if override is None or "refused, not clipped" not in str(e):
-            raise
-        raise ValueError(f"{e}. Approved rule 7 does not say what to do when the decided level is outside the test "
-                         "board's limits: the case goes to the captain (no other level is chosen here)") from e
+        v = float(v)
+    except OverflowError:  # an integer too large for a float
+        return None
+    return v if np.isfinite(v) else None
+
+
+def _passing_ranking(b: Mapping, override: str, kind: str) -> list[str]:
+    """One board's passing levels in approved rule 7's order (largest mean gain first, an exact tie going to the higher
+    count), read from the count_override record the decision holds; the decided override must come first. Every lower
+    level's verdict is checked against its own recorded numbers, both ways: it passes exactly when its mean gain exceeds
+    COUNT_RULE_MIN_GAIN with at least COUNT_RULE_MIN_AHEAD of the release seeds ahead. Refused: no such record or an
+    incomplete one, a level without a finite mean gain, a whole seed count and a verdict, a verdict its numbers
+    contradict, a passing list that is not the passing levels in the rule's level order, and an override that is not
+    the first."""
+    rec = b.get("record")
+    per_level = rec.get("per_level") if isinstance(rec, Mapping) else None
+    if not isinstance(per_level, Mapping) or not isinstance(rec.get("passing"), list):
+        raise ValueError(f"the {kind} decision holds no record of its passing levels (decide mode writes one)")
+    complete = rec.get("complete")
+    if not (isinstance(complete, bool | np.bool_) and complete):
+        raise ValueError(f"the {kind} decision names a level although its record says the rerun is incomplete")
+    n_seeds, gains = len(COUNT_RULE_SEEDS), {}
+    for lv in COUNT_RULE_LEVELS:
+        entry = per_level[lv] if isinstance(per_level.get(lv), Mapping) else {}
+        g, ahead, verdict = _finite_number(entry.get("mean_gain")), entry.get("seeds_ahead"), entry.get("passes")
+        whole = not isinstance(ahead, bool | np.bool_) and isinstance(ahead, int | np.integer) and 0 <= ahead <= n_seeds
+        if g is None or not whole or not isinstance(verdict, bool | np.bool_):
+            raise ValueError(f"the {kind} decision's record has no mean gain, seed count (0-{n_seeds}) and verdict for "
+                             f"{lv}: {entry.get('mean_gain')!r}, {ahead!r}, {verdict!r}")
+        if bool(verdict) != (g > COUNT_RULE_MIN_GAIN and ahead >= COUNT_RULE_MIN_AHEAD):
+            raise ValueError(f"the {kind} decision's verdict for {lv} (passes {verdict!r}) disagrees with its numbers "
+                             f"(mean gain {g:+.3f}, {ahead} of {n_seeds} seeds ahead): rule 7 passes a mean gain above "
+                             f"{COUNT_RULE_MIN_GAIN:g} with at least {COUNT_RULE_MIN_AHEAD} seeds ahead")
+        if verdict:
+            gains[lv] = g
+    passing = [lv for lv in COUNT_RULE_LEVELS if lv in gains]
+    if rec["passing"] != passing:
+        raise ValueError(f"the {kind} decision lists {rec['passing']!r} as passing, but its per-level verdicts pass "
+                         f"{passing}")
+    ranking = sorted(passing, key=lambda lv: (gains[lv], float(_MAX_LABEL.match(lv)["f"])), reverse=True)
+    if not ranking or ranking[0] != override:
+        raise ValueError(f"the {kind} decision's override {override!r} is not the first of its passing levels "
+                         f"{ranking} in approved rule 7's order (largest mean gain, ties to the higher count)")
+    return ranking
+
+
+def n_cells_from_decision(board: Board, pool_size: int, decision_json, kind: str | None = None) -> tuple[int, dict]:
+    """`n_cells` with the level that approved rule 7's decision file gives this T2 test board (`read_count_decision`),
+    so the count is applied by code, never copied by hand. The count record gains `count_decision` (the decision file's
+    path and sha256, its validation target, override, passing levels in rule order and decision).
+
+    A decided level that gives the test board fewer cells than its lower limit (truth_cells where published and at
+    least min_cells, else min_cells) gives way under COUNT_FLOOR_RULE to the passing level ranked next in rule 7's order
+    that the board allows, else max_cells. The user approved "the next passing count the board allows, or max_cells if
+    none does" on 2026-10-21, beside rule 7; reading "next" in rule 7's order is the AI assistant's and awaits the
+    user's confirmation. The record then gains `count_floor` (the levels passed over with their counts, the level used
+    and why). Under the documented limits only 0.25max can fall below. No level is clipped to the limit; other refusals
+    of n_cells (no max_cells, inconsistent limits) pass unchanged."""
+    override, decision = read_count_decision(decision_json, board, kind)
+    level, below = override, []
+    if override is not None:
+        max_cells, _, _, floor, floor_source = _limits(board)
+        ranked = decision["ranking"]
+        counts = [_override_count(lv, max_cells) for lv in ranked]
+        k = next((i for i, c in enumerate(counts) if c >= floor), len(ranked))  # the first level the board allows
+        level = ranked[k] if k < len(ranked) else None
+        below = [{"level": lv, "n": c} for lv, c in zip(ranked[:k], counts[:k], strict=True)]
+    n, record = n_cells(board, pool_size, override=level)
     record["count_decision"] = decision
+    if below:
+        used = (f"use {level}, the next passing level the board allows" if level is not None
+                else "no passing level is allowed, so keep max_cells")
+        record["count_floor"] = {
+            "rule": COUNT_FLOOR_RULE, "floor": floor, "floor_source": floor_source, "below_floor": below,
+            "level": level, "decision": f"{override} gives {below[0]['n']} cells, below {floor_source} {floor}: {used}"}
     return n, record
 
 

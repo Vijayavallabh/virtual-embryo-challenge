@@ -14,7 +14,10 @@ send. After the 22:03 IST email and the new partner rules page it was cut to two
 time; validation answers as training data and model inputs) plus a reminder of the two open emails: the Timeline
 page already says the validation answers come with the test phase, Rules s.4 and the partner page settle what
 ordinary teams do about Yukon's work, the deadline is UTC, and whether the validation boards stay open this week
-changes nothing we do (the upload path was tested on them on 2026-10-20).
+changes nothing we do (the upload path was tested on them on 2026-10-20). The Generality question (question 4 of the
+18 October email, asked again) was added the same day (prize strategy, `docs/PLAN.md` decision log 2026-10-20 (c)),
+and the user sent the email with three questions on 2026-10-21 at 01:24 IST (2026-10-20 19:54 UTC); its text is
+under "Third email" below.
 
 Dropped because they are already answered (see `docs/DATA_POLICY.md`):
 - T3 literature: gene-level knockout findings are prohibited, broad phenotype background is allowed (2026-10-15).
@@ -124,3 +127,39 @@ answer would help every team (points 1, 2, 5 and 6), please feel free to answer 
 Thank you,
 
 Vijayavallabh J
+
+---
+
+## Third email (sent 2026-10-21)
+
+Drafted by the AI assistant on 2026-10-20 and saved in the sender's drafts; sent by the user on 2026-10-21 at 01:24
+IST (2026-10-20 19:54 UTC) by email from be23b041@smail.iitm.ac.in to virtual.embryo.moonshot@gmail.com. Answers:
+_pending_ (record them in `docs/DATA_POLICY.md`; question 2 decides assumption A20, question 3 A21). Text as sent,
+rewrapped:
+
+**Subject:** Human Team: three questions before 27 October, and two open emails
+
+Hello organisers,
+
+Thank you for the two updates of 20 October. Three short questions remain before the test phase:
+
+1. Start time. At what time, and in which time zone, does the test phase open on 27 October?
+
+2. Validation answers as training data. Once released, may the validation answers be used as training data and as
+   model inputs for the test predictions (for example E10.5 when predicting E12.5)? The Data page says they become
+   training material, while Rules s.10 still lists those stages as held out. Another participant asked the same in
+   #virtual-embryo-challenge on 19 October.
+
+3. Generality Award. Does this count as one shared architecture: a single operator that builds every prediction from
+   real cells (composition re-weighting, then count-space expression edits, with coupling and interpolation between
+   stages where a task needs it), with task-specific heads only (a 32,285-gene or 500-gene encoder, a coordinate head
+   for Task 2, a genotype head for Task 3)? This repeats question 4 of our 18 October email.
+
+Our emails of 18 October ("four rules questions before the final phase") and 19 October ("follow-up on the scorer
+build, Task 3 data use and two data issues") are still open, as is our private Slack note of 18 October to Weize Xu
+and Zehua Zeng. Two points from them affect what we do on 27 October: which scorer build the test boards use, and
+whether the released Gata4 files may be used in the beta-catenin prediction.
+
+Best regards,
+Vijayavallabh J
+Team captain, Human Team track

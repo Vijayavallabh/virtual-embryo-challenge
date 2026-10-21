@@ -92,8 +92,12 @@ validation boards.
      only if, for the intermediate-quality condition on that board's validation target, its paired mean gain over
      max_cells exceeds 0.3 points and it beats max_cells in at least 8 of the 10 seeds; if several pass, the largest
      mean gain wins (ties go to the higher count); heart and embryo are decided separately, each for its own test
-     board; if the rerun cannot run, keep max_cells. The evidence for max_cells reaches 8x truth_cells (3x on an
-     8k-cell truth half). The test boards may publish only their cell limits.
+     board; if the rerun cannot run, keep max_cells. A winning level that gives a test board fewer cells than its
+     lower limit (truth_cells where published, else min_cells) gives way to the next passing level the board allows,
+     else max_cells (approved by the user on 2026-10-21; "next" read as rule 7's order, the largest mean gain with
+     ties to the higher count, pending the user's confirmation: decision log 2026-10-21 (b);
+     `vec.t2_build.COUNT_FLOOR_RULE`). The evidence for max_cells reaches 8x truth_cells (3x on an 8k-cell truth
+     half). The test boards may publish only their cell limits.
    - **Random rows only.** Rows are stored section by section. A contiguous block costs a near-perfect prediction 16-28
      points (mid-file) or 21-48 (first rows) at 1x, and still 12-21 at 8x.
    - **Jitter budget.** Up to 0.25 x the median nearest-neighbour distance is free (use it to break duplicate
@@ -182,8 +186,9 @@ Pipeline:
    The embryo curve is convex (two-point interpolation of E7.25 overshoots by 0.21 in log), so E7.5 matters. If E7.5's
    z step or sectioning orientation differs from E8.0's, record the z-convention risk with the submission (up to about
    0.25 in log if E7.75 were cut along its long axis like E6.75 and E7.25).
-6. Cell count: max_cells (never below truth_cells); optional blue-noise relaxation if pseudo-targets show no loss on
-   d2 or neighborhood_mmd.
+6. Cell count: the count approved rule 7 sets for the embryo test board (max_cells unless the release rerun on E7.5
+   picks a lower level; never below the board's lower limit; section 3, item 6); optional blue-noise relaxation if
+   pseudo-targets show no loss on d2 or neighborhood_mmd.
 
 Pseudo-targets: E7.5 from (E7.25, E8.0) and E7.25 from (E6.75, E7.5). Target emulator score of at least 70.
 
@@ -232,7 +237,8 @@ run by `experiments/coords/run_p3.sh`.
 
 Pipeline:
 1. Start from real E10.5 tissue (released at P3), duplicates dropped, sampled at random to the count approved rule 7
-   sets (max_cells unless the release rerun picks a lower level; never below truth_cells).
+   sets (max_cells unless the release rerun picks a lower level; never below the board's lower limit; section 3, item
+   6).
 2. Damped composition extrapolation on the merged lineage level (CM, Endothelial, CranialMesoderm, NCC, Endoderm,
    Ectoderm; labels harmonised with `vec.harmonise`), centred log-ratios over E8.75-E10.5, damping chosen on the
    1.75-day pseudo-target (expected 0.3-0.6). CardiacProgenitor and Pericardium have no stable cross-stage meaning and
@@ -458,8 +464,10 @@ given as UTC in the organisers' email of 2026-10-20 22:03 IST). Follow-up,
 sent 2026-10-19: scorer build and canonicalisation (and the parity defect), the wrong-sign severity rule, released Gata4
 files inside the beta-catenin prediction, duplicated records, the z coordinate, `truth_cells` and tissue size, stage
 conventions for external embryos, and an addendum to the leak report. No reply to either as of 2026-10-20 22:43 IST.
-Also open in public: whether released validation answers may be used for test predictions (a participant's question
-of 2026-10-19; A20).
+Third email, sent 2026-10-21 01:24 IST (2026-10-20 19:54 UTC): the test phase's start time, validation answers as
+training data and model inputs (A20) and the Generality scope again (A21), with a reminder of the two open emails;
+answers pending. Also open in public: whether released validation answers may be used for test predictions (a
+participant's question of 2026-10-19; A20; our third email's question 2).
 
 ## Decision log
 
@@ -516,7 +524,8 @@ of 2026-10-19; A20).
   - Stay an official Human Team and go for the prizes that stack: a place and the Generality Award. The award is
     judged across both tracks among shared-architecture entries only, so it is our best chance per hour (section 1).
   - D3 changed (section 5). The shared core goes into code now (feat-020) so every later pipeline builds on it, and the
-    Generality question goes to the organisers again (third email, in the user's drafts).
+    Generality question goes to the organisers again (third email, drafted 2026-10-20; the user sent it on
+    2026-10-21).
   - Travel grants: apply when the call opens. Community award: only quick public contributions that do not help rivals
     before 2 December, and nothing is published without the user's go-ahead.
   - Not pursued: Yukon (rules out the official prizes); moving one member to Yukon (cross-team code-sharing risk);
@@ -529,3 +538,11 @@ of 2026-10-19; A20).
   flat in the heart composition trends (section 4.3). The code for (3) and (7): `vec.t2_build.size_or_hold`;
   `vec.t2_build.count_override` and `n_cells_from_decision`, with `experiments/density/summarise.py --decide`
   (`docs/P3_RUNBOOK.md` steps 4.1 and 4.5).
+- 2026-10-21 (b): the case answer 7 left open, a winning count level that gives a test board fewer cells than its
+  lower limit. The AI assistant recommended "the next passing count the board allows, or max_cells if none does";
+  the user approved ("go ahead"). The code reads "next" as rule 7's own order: the largest mean gain among the
+  passing levels the board allows, ties to the higher count. That reading is the AI assistant's and was put to the
+  user to confirm: "next" could also mean the next count up, and the two differ only when 0.25 x max_cells wins below
+  the limit while 0.5 x and 0.75 x both pass and 0.75 x gains at least as much. In code:
+  `vec.t2_build.COUNT_FLOOR_RULE`, applied by `n_cells_from_decision`, which records the levels passed over (section
+  3, item 6).

@@ -137,8 +137,11 @@ procedure refuses unmapped labels.
     organisers answer follow-up question 3 (then only the branch their answer selects). It re-decides nothing and
     refuses a decision file whose script or rules hash differs from the files on disk.
   - T2: `vec.t2_build`, run from the repo root (the paths are relative). Count by `n_cells_from_decision(board,
-    pool.n_obs, "experiments/density/results/release/count_decision.json")` (step 4.5; null keeps max_cells, and a
-    decided level outside the test board's limits stops the build for the user). If step 4.5 wrote no decision
+    pool.n_obs, "experiments/density/results/release/count_decision.json")` (step 4.5; null keeps max_cells; a
+    decided level below the test board's lower limit gives way to the passing level ranked next in rule 7's order
+    (largest mean gain, ties to the higher count) that the board allows, else max_cells, and the count record's
+    `count_floor` says so; the user approved "the next passing count the board allows" on 2026-10-21, and reading
+    "next" in rule 7's order is the AI assistant's, pending the user's confirmation). If step 4.5 wrote no decision
     because the rerun left no rule rows, approved rule 7 keeps max_cells: count with `n_cells(board, pool.n_obs)` and
     record why in `progress.md`. Then `sample_cells`. Heart size by `size_or_hold(coords,
     "experiments/coords/results/p3/size_heart_E12.5.json", "H1" (s1) or "H2" (s2), source_stage="E10.5",

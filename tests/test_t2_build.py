@@ -491,11 +491,19 @@ def test_decide_mode_from_the_command_line_writes_only_the_decision(ds, tmp_path
     assert not fresh.exists()  # a refused decide leaves no empty directory behind
 
 
-def _decision(heart="0.75max", embryo=None):
-    """A count decision as decide mode writes it, reduced to what n_cells_from_decision reads."""
+def _decision(heart="0.75max", embryo=None, gains=None):
+    """A count decision as decide mode writes it, reduced to what n_cells_from_decision reads. `gains` gives a board's
+    passing levels and their mean gains ({kind: {level: gain}}); by default the board's override alone passes."""
+    boards = {}
+    for (kind, target), lv in zip(tb.COUNT_RULE_TARGETS.items(), (heart, embryo), strict=True):
+        g = (gains or {}).get(kind, {} if lv is None else {lv: 0.5})
+        per_level = {x: {"mean_gain": g.get(x, -1.0), "seeds_ahead": 10 if x in g else 0, "passes": x in g}
+                     for x in tb.COUNT_RULE_LEVELS}
+        boards[kind] = {"validation_target": target, "override": lv, "decision": f"decision for {kind}",
+                        "record": {"complete": True, "passing": [x for x in tb.COUNT_RULE_LEVELS if x in g],
+                                   "per_level": per_level}}
     return {"rule": tb.COUNT_RULE, "approved": tb.RULES_APPROVED, "git_commit": "synthetic", "allow_uncommitted": False,
-            "boards": {kind: {"validation_target": target, "override": lv, "decision": f"decision for {kind}"}
-                       for (kind, target), lv in zip(tb.COUNT_RULE_TARGETS.items(), (heart, embryo), strict=True)}}
+            "boards": boards}
 
 
 HEART_TEST = {"key": "T2:heart:test_extrap", "min_cells": 100, "max_cells": 3000, "truth_cells": 800}
@@ -514,12 +522,14 @@ def test_n_cells_from_decision_applies_the_decision_file_by_code(ds, tmp_path, c
     assert n == 2250 and rec["rule"] == "override '0.75max'"
     assert rec["count_decision"] == {
         "decision_file": str(path), "decision_sha256": sha, "kind": "heart", "validation_target": "heart_E10.5",
-        "override": "0.75max", "decision": json.loads(path.read_text())["boards"]["heart"]["decision"],
+        "override": "0.75max", "ranking": ["0.75max"],
+        "decision": json.loads(path.read_text())["boards"]["heart"]["decision"],
         "decision_git_commit": "synthetic", "decision_allowed_uncommitted": False}
+    assert "count_floor" not in rec  # 2250 cells: within the test board's limits, used as decided
     assert (n, rec) == tb.n_cells_from_decision(t2_board(**HEART_TEST), 5000, str(path))
     n, rec = tb.n_cells_from_decision(t2_board(**EMBRYO_TEST), 5000, path)
     assert n == 4000 and rec["rule"] == "max_cells" and rec["count_decision"]["validation_target"] == "embryo_E7.5"
-    assert rec["count_decision"]["override"] is None
+    assert rec["count_decision"]["override"] is None and rec["count_decision"]["ranking"] == []
     # the same as n_cells with the override copied by hand, plus the record of where it came from
     want_n, want = tb.n_cells(t2_board(**HEART_TEST), 5000, override="0.75max")
     n, rec = tb.n_cells_from_decision(t2_board(**HEART_TEST), 5000, _decision())
@@ -551,15 +561,125 @@ def test_read_count_decision_refuses_what_is_not_the_boards_own_decision():
             tb.read_count_decision(bad, heart)
 
 
-def test_n_cells_from_decision_refuses_a_level_outside_the_test_boards_limits():
-    """Approved rule 7 does not say what to do when the decided level falls outside the test board's limits: n_cells
-    refuses it (never clipped) and no other level is chosen."""
+def test_read_count_decision_refuses_a_record_its_override_does_not_head():
+    heart = t2_board(**HEART_TEST)
+    two = {"heart": {"0.5max": 0.9, "0.75max": 0.5}}
+    assert tb.read_count_decision(_decision(heart="0.5max", gains=two), heart)[1]["ranking"] == ["0.5max", "0.75max"]
+    no_record = _decision()
+    del no_record["boards"]["heart"]["record"]
+    mislisted = _decision(gains={"heart": {"0.5max": 0.4, "0.75max": 0.5}})
+    mislisted["boards"]["heart"]["record"]["passing"] = ["0.75max"]  # 0.5max passes too
+    incomplete = _decision()
+    incomplete["boards"]["heart"]["record"]["complete"] = False
+
+    def with_numbers(level, **numbers):  # a decision whose record carries other numbers for one level
+        d = _decision(gains={"heart": {"0.75max": 0.5}})
+        d["boards"]["heart"]["record"]["per_level"][level].update(numbers)
+        return d
+
+    for bad, match in ((_decision(heart="0.75max", gains=two), "not the first of its passing levels"),
+                       (_decision(heart="0.75max", gains={"heart": {"0.5max": 0.9}}), "not the first"),  # not passing
+                       (no_record, "no record of its passing levels"),
+                       (incomplete, "the rerun is incomplete"),
+                       (mislisted, "per-level verdicts pass"),
+                       (with_numbers("0.75max", seeds_ahead=7), "disagrees with its numbers"),  # marked passing
+                       (with_numbers("0.75max", mean_gain=0.3), "disagrees with its numbers"),  # not above 0.3
+                       (with_numbers("0.5max", mean_gain=0.9, seeds_ahead=10), "disagrees"),  # marked failing, passes
+                       (_decision(gains={"heart": {"0.75max": 0.2}}), "disagrees with its numbers"),
+                       (_decision(gains={"heart": {"0.75max": float("nan")}}), "no mean gain, seed count"),
+                       (_decision(gains={"heart": {"0.75max": True}}), "no mean gain, seed count"),
+                       (_decision(gains={"heart": {"0.75max": 10 ** 400}}), "no mean gain, seed count"),
+                       (with_numbers("0.75max", seeds_ahead=11), "seed count \\(0-10\\)"),  # more than the 10 seeds
+                       (with_numbers("0.75max", seeds_ahead=10.0), "no mean gain, seed count"),
+                       (with_numbers("0.75max", seeds_ahead=True), "no mean gain, seed count"),
+                       (with_numbers("0.25max", seeds_ahead=None), "no mean gain, seed count"),
+                       (with_numbers("0.25max", passes=None), "and verdict for 0.25max: -1.0, 0, None")):
+        with pytest.raises(ValueError, match=match):
+            tb.read_count_decision(bad, heart)
+    assert tb.read_count_decision(with_numbers("0.75max", seeds_ahead=8), heart)[1]["ranking"] == ["0.75max"]
+    typed = with_numbers("0.75max", mean_gain=np.float32(0.5), seeds_ahead=np.int64(9), passes=np.True_)
+    typed["boards"]["heart"]["record"]["complete"] = np.True_  # numpy numbers and bools, as in count_override's inputs
+    assert tb.read_count_decision(typed, heart)[1]["ranking"] == ["0.75max"]
+    keep = _decision(heart=None)
+    del keep["boards"]["heart"]["record"]  # keeping max_cells reads no passing levels
+    assert tb.read_count_decision(keep, heart)[1]["ranking"] == []
+
+
+def test_n_cells_from_decision_takes_the_next_passing_level_below_the_test_boards_lower_limit():
+    """COUNT_FLOOR_RULE (the user approved "the next passing count the board allows, or max_cells if none does" on
+    2026-10-21; reading "next" in rule 7's order is the AI assistant's, pending the user's confirmation): a winning
+    level that gives the test board fewer cells than its lower limit gives way to the passing level ranked next in rule
+    7's order that the board allows, else max_cells. No level is clipped to the limit."""
     board = t2_board(key="T2:heart:test_extrap", min_cells=100, max_cells=6000, truth_cells=2000)
-    with pytest.raises(ValueError, match="refused, not clipped. Approved rule 7 does not say .* goes to the captain"):
-        tb.n_cells_from_decision(board, 9000, _decision(heart="0.25max"))  # 1500 cells, below truth_cells
-    with pytest.raises(ValueError, match="no max_cells") as e:  # other refusals of n_cells are passed on unchanged
+    # 0.25max wins with 1500 cells, below truth_cells; 0.75max has the next largest gain, so it comes before 0.5max
+    gains = {"heart": {"0.25max": 0.9, "0.5max": 0.4, "0.75max": 0.6}}
+    n, rec = tb.n_cells_from_decision(board, 9000, _decision(heart="0.25max", gains=gains))
+    assert n == 4500 and rec["rule"] == "override '0.75max'" and rec["count_decision"]["override"] == "0.25max"
+    assert rec["count_decision"]["ranking"] == ["0.25max", "0.75max", "0.5max"]
+    assert rec["count_floor"] == {
+        "rule": tb.COUNT_FLOOR_RULE, "floor": 2000, "floor_source": "truth_cells",
+        "below_floor": [{"level": "0.25max", "n": 1500}], "level": "0.75max",
+        "decision": "0.25max gives 1500 cells, below truth_cells 2000: use 0.75max, the next passing level the board "
+                    "allows"}
+    # an exact tie for second place goes to the higher count, as in rule 7
+    gains = {"heart": {"0.25max": 0.9, "0.5max": 0.6, "0.75max": 0.6}}
+    assert tb.n_cells_from_decision(board, 9000, _decision(heart="0.25max", gains=gains))[0] == 4500
+    gains = {"heart": {"0.25max": 0.9, "0.5max": 0.4}}  # the only other passing level
+    n, rec = tb.n_cells_from_decision(board, 9000, _decision(heart="0.25max", gains=gains))
+    assert n == 3000 and rec["count_floor"]["level"] == "0.5max"
+    # levels below the limit are passed over in rule order: 1500 and 3000 cells are below 3500, 4500 is not
+    high = t2_board(key="T2:heart:test_extrap", min_cells=100, max_cells=6000, truth_cells=3500)
+    gains = {"heart": {"0.25max": 0.9, "0.5max": 0.8, "0.75max": 0.4}}
+    n, rec = tb.n_cells_from_decision(high, 9000, _decision(heart="0.25max", gains=gains))
+    assert n == 4500 and rec["count_floor"]["below_floor"] == [{"level": "0.25max", "n": 1500},
+                                                               {"level": "0.5max", "n": 3000}]
+    # no passing level is allowed: max_cells
+    n, rec = tb.n_cells_from_decision(board, 9000, _decision(heart="0.25max", gains={"heart": {"0.25max": 0.9}}))
+    assert n == 6000 and rec["rule"] == "max_cells" and rec["count_floor"]["level"] is None
+    assert rec["count_floor"]["decision"].endswith("no passing level is allowed, so keep max_cells")
+    # without truth_cells the lower limit is min_cells
+    no_truth = t2_board(key="T2:heart:test_extrap", min_cells=2000, max_cells=6000)
+    gains = {"heart": {"0.25max": 0.9, "0.5max": 0.4}}
+    n, rec = tb.n_cells_from_decision(no_truth, 9000, _decision(heart="0.25max", gains=gains))
+    assert n == 3000 and rec["count_floor"]["floor"] == 2000 and rec["count_floor"]["floor_source"] == "min_cells"
+    # a winning level the board allows is used as decided
+    gains = {"heart": {"0.25max": 0.4, "0.5max": 0.9}}
+    n, rec = tb.n_cells_from_decision(board, 9000, _decision(heart="0.5max", gains=gains))
+    assert n == 3000 and rec["rule"] == "override '0.5max'" and "count_floor" not in rec
+    # the limits are inclusive: a level giving exactly the lower limit is allowed, as decided or as the next one
+    exact = t2_board(key="T2:heart:test_extrap", min_cells=100, max_cells=3000, truth_cells=750)
+    n, rec = tb.n_cells_from_decision(exact, 9000, _decision(heart="0.25max", gains={"heart": {"0.25max": 0.9}}))
+    assert n == 750 and "count_floor" not in rec
+    exact = t2_board(key="T2:heart:test_extrap", min_cells=100, max_cells=3000, truth_cells=2250)
+    gains = {"heart": {"0.25max": 0.9, "0.75max": 0.4}}
+    n, rec = tb.n_cells_from_decision(exact, 9000, _decision(heart="0.25max", gains=gains))
+    assert n == 2250 and rec["count_floor"]["level"] == "0.75max"
+    # a board decide mode kept at max_cells (rows that do not measure the rule's levels) never falls back to a level
+    gains = {"heart": {"0.25max": 0.9, "0.5max": 0.4}}
+    n, rec = tb.n_cells_from_decision(board, 9000, _decision(heart=None, gains=gains))
+    assert n == 6000 and rec["rule"] == "max_cells" and "count_floor" not in rec
+    # other refusals of n_cells are passed on unchanged
+    with pytest.raises(ValueError, match="no max_cells"):
         tb.n_cells_from_decision(t2_board(key="T2:heart:test_extrap", max_cells=None), 9000, _decision())
-    assert "captain" not in str(e.value)
+    with pytest.raises(ValueError, match="inconsistent limits"):
+        tb.n_cells_from_decision(t2_board(key="T2:heart:test_extrap", min_cells=10, max_cells=500, truth_cells=800),
+                                 9000, _decision())
+
+
+def test_the_floor_rule_reads_the_decision_decide_mode_writes(ds, tmp_path, clean_code):
+    raw, out = tmp_path / "raw", tmp_path / "release"
+    raw.mkdir()
+    # all three pass; 0.75max with exactly 8 of the 10 seeds ahead (mean gain 0.44)
+    _write_raw(raw, "heart_E10.5", _rerun({"0.25max": 0.9, "0.5max": 0.4, "0.75max": [0.6] * 8 + [-0.2] * 2}))
+    _write_raw(raw, "embryo_E7.5", _rerun({**LOSERS, "0.75max": -0.5}))
+    ds.decide(raw, out)
+    board = t2_board(key="T2:heart:test_extrap", min_cells=100, max_cells=6000, truth_cells=2000)
+    n, rec = tb.n_cells_from_decision(board, 9000, out / "count_decision.json")
+    assert n == 4500 and rec["count_decision"]["override"] == "0.25max"
+    assert rec["count_decision"]["ranking"] == ["0.25max", "0.75max", "0.5max"]
+    assert rec["count_floor"]["below_floor"] == [{"level": "0.25max", "n": 1500}]
+    assert json.loads((out / "count_decision.json").read_text())["boards"]["heart"]["record"]["per_level"]["0.75max"][
+        "seeds_ahead"] == 8
 
 
 # ---------------------------------------------------------------------------------------------------- sampling

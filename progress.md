@@ -4,8 +4,8 @@
 
 **Last Updated:** 2026-10-21
 **Active Feature:** feat-004 - Final-phase intake on 2026-10-27, postponed from 2026-10-20 by the organisers
-(`docs/P3_RUNBOOK.md`); feat-003 completes with the release files. Before then: the release-day rules sign-off
-(`docs/RELEASE_RULES_SUMMARY.md`) and the v1 pipelines on the shared core (`vec.core`, feat-020 done)
+(`docs/P3_RUNBOOK.md`); feat-003 completes with the release files. Before then: the v1 pipelines on the shared core
+(`vec.core`, feat-020 done). The release-day rules are signed off and in code (`docs/RELEASE_RULES_SUMMARY.md`).
 
 ## Status
 
@@ -76,6 +76,17 @@
         without `--overwrite` are refused.
       - `docs/P3_RUNBOOK.md` (steps 4.1 and 4.5, section 5) and `run_p3.sh`'s closing note now name them.
         `./init.sh`: 355 passed (35 new tests).
+- [x] 2026-10-21: the case approved answer 7 left open, in code as the user approved it ("the next passing count the
+      board allows, or max_cells if none does"; "next" read as rule 7's order, pending the user's confirmation):
+      - `vec.t2_build.n_cells_from_decision` passes over a decided level below the test board's lower limit to the
+        passing level ranked next that the board allows, else max_cells, and records `count_floor`
+        (`COUNT_FLOOR_RULE`);
+      - `read_count_decision` now also checks the decision's record: the decided level heads its passing levels,
+        every level's verdict agrees with its own numbers (both ways), and the rerun was complete;
+      - runbook section 5, the rules summary, PLAN 3.6 and 4.2 step 6, the decision log, METHOD_SUMMARY and the
+        ledger log updated; the third organiser email recorded as sent (`docs/ORGANIZER_QUESTIONS.md`).
+      Independent verifiers in two rounds (fidelity, robustness and docs; then code and docs re-checks): every
+      finding fixed, and the reading of "next" put to the user. `./init.sh`: 357 passed (3 new tests, 1 replaced).
 - [x] 2026-10-19: submission client and builders, each built by an agent and verified by an independent agent, then
       three rounds of independent review and fixes (every finding verified fixed):
       - `vec submit` (feat-016): format-only by default; official uploads behind --official, a hash confirmation and
@@ -107,8 +118,9 @@
       IST), which gave the deadline's time zone (through 2 December 2026, UTC). Unanswered in public: qualitative
       in-window priors and (2026-10-19) whether released validation answers may be used for test predictions (A20).
       Final uploads still finish by the end of 30 November IST; keep the strict in-window reading. The third email
-      (two questions) waits in the user's drafts. Not checked by agents: the challenge account messages page (user
-      only) and Gmail Spam.
+      (three questions: the test phase's start time, validation answers as training data (A20), the Generality scope
+      (A21)) was sent by the user on 2026-10-21 at 01:24 IST (`docs/ORGANIZER_QUESTIONS.md`). Not checked by agents:
+      the challenge account messages page (user only) and Gmail Spam.
 - [ ] The user's decision: the collaborative Yukon track (organisers' email of 2026-10-20 22:03 IST). The entry stays
       an official Human Team unless the user decides otherwise; nothing has been done toward joining. Moving is
       one-way and ends official-prize eligibility, a team left empty is archived, and the collaborative phase ends
@@ -121,9 +133,14 @@
       - poor harmonisation groups are held flat (PLAN 4.3);
       - the fallback for an invalid heart size and the count rule are now in code (`vec.t2_build` and
         `summarise.py --decide`; see What's Done).
-- [ ] The user's call, not covered by approved answer 7: a winning count level below a test board's lower limit
-      (truth_cells or min_cells; only 0.25 x max_cells can fall there). The build stops and asks. Recommended: the
-      next passing level the board allows, else max_cells.
+- [x] 2026-10-21: the user's call on the case approved answer 7 left open, a winning count level below a test
+      board's lower limit (truth_cells or min_cells; only 0.25 x max_cells can fall there): the user approved ("go
+      ahead") the recommendation "the next passing count the board allows, or max_cells if none does". In code as
+      `vec.t2_build.COUNT_FLOOR_RULE` (see What's Done).
+- [ ] The user's confirmation of how the code reads "next" in that rule: rule 7's own order (the largest mean gain
+      among the passing levels the board allows, ties to the higher count; recommended and coded), or the next count
+      up. They differ only when 0.25 x max_cells wins below the limit while 0.5 x and 0.75 x both pass and 0.75 x
+      gains at least as much (rule order: 0.75 x; count order: 0.5 x). Settle before 2026-10-27.
 - [ ] The E12.5 emergent-class list waits on the organisers' answer about qualitative in-window background; the legal
       route is used meanwhile.
 - [ ] Quota shape: `official_per_board` is unpublished. The client refuses official uploads until it can read it;
