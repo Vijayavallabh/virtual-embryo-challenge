@@ -126,6 +126,9 @@
       (three questions: the test phase's start time, validation answers as training data (A20), the Generality scope
       (A21)) was sent by the user on 2026-10-21 at 01:24 IST (`docs/ORGANIZER_QUESTIONS.md`). Not checked by agents:
       the challenge account messages page (user only) and Gmail Spam.
+      Screened Slack sweep on 2026-10-23 (from 2026-10-20 22:43 IST): still no organiser post or reply anywhere;
+      two new unanswered participant questions (2026-10-21: textbook E9.5-E12.5 knowledge as a prior and whether to
+      disclose it; how travel grants are chosen).
 - [ ] The user's decision: the collaborative Yukon track (organisers' email of 2026-10-20 22:03 IST). The entry stays
       an official Human Team unless the user decides otherwise; nothing has been done toward joining. Moving is
       one-way and ends official-prize eligibility, a team left empty is archived, and the collaborative phase ends
