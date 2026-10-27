@@ -160,6 +160,8 @@ organisers approve in writing.
   - `171695a` -> `daca416`
   - `9f83c59` -> `40c9664`
   - `5044494` -> `7c8941a`
+- Git history rewritten again on 2026-10-27 (user's decision) to drop the AI co-author trailer from every commit
+  message; trees and dates unchanged. Old -> new commit IDs: `docs/COMMIT_MAP.md`.
 - Related findings from the screened research digest: one spacing bound in `t2_spatial.md` matched a held-out column of
   the leaked table (since redacted); no spacing, size or density parameter in the plan or code comes from it (the
   jitter and count rules use spacing measured on released files, `experiments/density/REPORT.md`). One research agent

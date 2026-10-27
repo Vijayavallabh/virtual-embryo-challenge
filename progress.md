@@ -141,6 +141,9 @@
       from Cloudflare to our client, so nothing was written (not worked around). The screened read of the new Rules
       and Terms was stopped by the user before it reported: what changed in them is not yet known. Nothing was
       downloaded, built or uploaded. The user asked to try again on 2026-10-28.
+- [x] 2026-10-27: history of `main` rewritten (user's decision) to drop the AI co-author trailer from all 44 commit
+      messages; trees, parents, authors and dates checked identical; old -> new IDs in `docs/COMMIT_MAP.md`;
+      force-pushed, DGX .git refreshed. Older IDs quoted in files resolve through that table.
 - [ ] The user's decision: the collaborative Yukon track (organisers' email of 2026-10-20 22:03 IST). The entry stays
       an official Human Team unless the user decides otherwise; nothing has been done toward joining. Moving is
       one-way and ends official-prize eligibility, a team left empty is archived, and the collaborative phase ends

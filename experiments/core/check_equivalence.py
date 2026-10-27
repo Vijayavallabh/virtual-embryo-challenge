@@ -5,7 +5,7 @@ compare the two JSONs (experiments/core/REPORT.md has the commands and the resul
 
   PYTHONPATH=<copy>/src <python> experiments/core/check_equivalence.py run --data <repo>/data/raw --out OUT.json
   <python> experiments/core/check_equivalence.py compare OLD.json NEW.json
-  <python> experiments/core/check_equivalence.py source --base eb946ac      (in a git checkout, no data)
+  <python> experiments/core/check_equivalence.py source --base f8dd950      (in a git checkout, no data)
 
 `run` prints the vec package it imported and records the sha256 of its builder files. It reads the released files
 read-only and writes only OUT.json: the T1 builder writes no file, and the T2 builder checks its file in a temporary
@@ -252,7 +252,8 @@ def main(argv=None) -> int:
     c.add_argument("old", type=Path)
     c.add_argument("new", type=Path)
     o = sub.add_parser("source", help="compare the core's functions with their sources (git checkout)")
-    o.add_argument("--base", default="eb946ac", help="the commit before the move")
+    o.add_argument("--base", default="f8dd950",  # eb946ac before the 2026-10-27 rewrite (docs/COMMIT_MAP.md)
+                   help="the commit before the move")
     args = ap.parse_args(argv)
     if args.cmd == "run":
         run(args.data, args.out)
