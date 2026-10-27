@@ -2,7 +2,7 @@
 
 ## Current State
 
-**Last Updated:** 2026-10-21
+**Last Updated:** 2026-10-27
 **Active Feature:** feat-004 - Final-phase intake on 2026-10-27, postponed from 2026-10-20 by the organisers
 (`docs/P3_RUNBOOK.md`); feat-003 completes with the release files. Before then: the v1 pipelines on the shared core
 (`vec.core`, feat-020 done). The release-day rules are signed off and in code (`docs/RELEASE_RULES_SUMMARY.md`).
@@ -129,6 +129,18 @@
       Screened Slack sweep on 2026-10-23 (from 2026-10-20 22:43 IST): still no organiser post or reply anywhere;
       two new unanswered participant questions (2026-10-21: textbook E9.5-E12.5 knowledge as a prior and whether to
       disclose it; how travel grants are chosen).
+- [ ] Release day (2026-10-27, checked to 17:43 UTC): the final phase is open (public phase endpoint: p3, split
+      test, accepts submissions; official quota keys T1:test, T2:heart:test_extrap, T2:embryo:test_interp and
+      T3:bcatenin, 0/2 used each; daily per task: scored 0/2, uploads 0/8). Runbook step 0 passed (357 tests, nothing
+      unresolved). Three things stop the intake: (1) the data manifest was refused (HTTP 409) until the user accepted
+      the current Challenge Rules and Terms of Use on the account page (done about 17:42 UTC; an API key cannot
+      accept them); (2) it then lists only the 9 training files, with the note "Training inputs only. Validation and
+      test targets are not distributed - a submission comes back as a score." (first recorded today; unknown whether
+      it is new or a leftover from the validation phase, and it conflicts with the Data page's promise that the
+      validation answers become training data); (3) `vec boards update` fails: panels/index.json answers HTTP 403
+      from Cloudflare to our client, so nothing was written (not worked around). The screened read of the new Rules
+      and Terms was stopped by the user before it reported: what changed in them is not yet known. Nothing was
+      downloaded, built or uploaded. The user asked to try again on 2026-10-28.
 - [ ] The user's decision: the collaborative Yukon track (organisers' email of 2026-10-20 22:03 IST). The entry stays
       an official Human Team unless the user decides otherwise; nothing has been done toward joining. Moving is
       one-way and ends official-prize eligibility, a team left empty is archived, and the collaborative phase ends

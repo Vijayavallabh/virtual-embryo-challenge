@@ -10,6 +10,8 @@
   count rule left open, whose reading of "next" the user left to the AI assistant (a decision panel chose the next
   passing count up); the heart-size fallback and the count rule run as code. Release-day steps are in
   `docs/P3_RUNBOOK.md`.
+  On 2026-10-27 the phase opened but the release files were not in the manifest and the board-spec file
+  answered 403 (`progress.md`, Blockers): retry runbook steps 0-2 on 2026-10-28.
 - Branch / commit: `main` on GitHub (private), mirrored to `PrakashDGX_H2:~/v/virtual-embryo-challenge`.
 
 ## Completed This Session (2026-10-18 to 2026-10-19)
