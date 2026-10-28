@@ -1,0 +1,360 @@
+{
+  "what": "the cell count of each T2 test board under approved rule 7 (docs/RELEASE_RULES_SUMMARY.md), applied by vec.t2_build.count_override to the density rerun's raw rows; vec.t2_build.n_cells_from_decision passes a board's override to vec.t2_build.n_cells on that test board (null keeps max_cells; a level below that board's lower limit gives way to the passing level with the fewest cells the board allows, else max_cells: vec.t2_build.COUNT_FLOOR_RULE)",
+  "rule": "approved rule 7: a lower level replaces max_cells on a board only if, on that board's validation target, its paired mean gain over max_cells exceeds 0.3 points and it beats max_cells in at least 8 of the 10 seeds. If several pass, the largest mean gain wins (ties go to the higher count). Heart and embryo are decided separately, each for its own test board. If the rerun cannot run, keep max_cells",
+  "approved": "2026-10-21",
+  "raw": "runs/density/raw_release",
+  "inputs_sha256": {
+    "embryo_E7.5_s0.jsonl": "0c13801a3b5c64472b48ce2aef8a385c39e60fe9f2e072d679b566679f09c83f",
+    "embryo_E7.5_s1.jsonl": "a8ca1c4fa5bfb52f4ef02e2d53fcdadceb89adc07722f27cf97b83b446fa2b87",
+    "embryo_E7.5_s2.jsonl": "08757e8d2a3fbe89d82734dbee64e9a3633b59229c90706a48168cf5a7bf7b72",
+    "embryo_E7.5_s3.jsonl": "5a9f5157e60dabf7d5f75573c01444b8c5641676dfc1242a0e78a24b315e613e",
+    "embryo_E7.5_s4.jsonl": "e506b35201b19ba75f9329d96769421d6ecf675bbcbe1b296207c56f5249c9bf",
+    "embryo_E7.5_s5.jsonl": "e7e17ad67f8bf5a5443d23b672eb8b457af483350466ecd165aae4d97dd6d337",
+    "embryo_E7.5_s6.jsonl": "d050fc4e7b6109e13ad08a2a30497cc3f729ea42a462eb38e778d6698261281b",
+    "embryo_E7.5_s7.jsonl": "eb0cde2b134476c74eef39f96f26595ee08709328f797f0c3db53fe9b53fb727",
+    "embryo_E7.5_s8.jsonl": "4ce66e43b52f198513f0e27bf6ff4cf1211f340d0a508cd8abf32758ee15106c",
+    "embryo_E7.5_s9.jsonl": "f997029f5fde77da39be72f91b986ead01916601572ceb3d406b760c951f1ebc",
+    "heart_E10.5_s0.jsonl": "a5dcabb8a2746de74405efbfdf0336599d4540b700751ddb4efca07e1cb747c2",
+    "heart_E10.5_s1.jsonl": "170b77f743c350a09dd34a2bf7ff2c2747be22b31b5f782cf5c837337d9f7b3b",
+    "heart_E10.5_s2.jsonl": "0b84316f5fa4c791b6580258e74fcf7cc08e296407de6f8f191304c630c76b74",
+    "heart_E10.5_s3.jsonl": "974980d36379e358198ea69882cee3227bf69e8dc4cfccdd2bdac8fa96df7e71",
+    "heart_E10.5_s4.jsonl": "a1ae8b8fb9e608825715e9bc87aaee52d41b1e2cf0354fbc0893902761699abf",
+    "heart_E10.5_s5.jsonl": "d39fc84f467543a43766318eb914caa2471d3b16c42c983212ab16489dfa1032",
+    "heart_E10.5_s6.jsonl": "fcdfc8a74e549ae21c45bbbb0fa8225db85ade743d76281c81d18ea3bf9246c2",
+    "heart_E10.5_s7.jsonl": "f9e6c4e593e547a3db1b6d0e0b9b652df3b6b108a3be316ab98b595df749af3f",
+    "heart_E10.5_s8.jsonl": "dbd1b2175fe35fd33cb9a804c47e179c475086899f27a12ab3b90ef6501766fa",
+    "heart_E10.5_s9.jsonl": "8c3e30f6b79b08bfeea8097d9c544d2d9c8392a948c2db5413d9d9fb4eee55e1"
+  },
+  "rows_replaced": 0,
+  "earlier_decisions": [],
+  "allow_uncommitted": false,
+  "git_commit": "725d19c879ab1795a3aba01917d27140b3f9374d",
+  "git_unclean": [],
+  "rule_files_uncommitted": [],
+  "rule_files_sha256": {
+    "src/vec/t2_build.py": "b5adb1a0b8952e87f6caa7176d90f32cc6d0b3344af356cc26f4bb15579c849b",
+    "experiments/density/summarise.py": "18d95ce5279ccd419ec27151fa9eb651410b2d864645a960f080db92e47af092"
+  },
+  "boards": {
+    "heart": {
+      "validation_target": "heart_E10.5",
+      "override": null,
+      "decision": "keep max_cells: no lower level has a paired mean gain above 0.3 points with at least 8 of the 10 seeds ahead",
+      "rows": 40,
+      "row_problems": [],
+      "max_cells": [
+        25179
+      ],
+      "max_cells_source": [
+        "board"
+      ],
+      "n_pred": {
+        "0.25max": [
+          6295
+        ],
+        "0.5max": [
+          12590
+        ],
+        "0.75max": [
+          18884
+        ],
+        "1max": [
+          25179
+        ]
+      },
+      "record": {
+        "rule": "approved rule 7: a lower level replaces max_cells on a board only if, on that board's validation target, its paired mean gain over max_cells exceeds 0.3 points and it beats max_cells in at least 8 of the 10 seeds. If several pass, the largest mean gain wins (ties go to the higher count). Heart and embryo are decided separately, each for its own test board. If the rerun cannot run, keep max_cells",
+        "approved": "2026-10-21",
+        "condition": "shuffle50",
+        "base": "1max",
+        "levels": [
+          "0.25max",
+          "0.5max",
+          "0.75max"
+        ],
+        "seeds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "min_mean_gain": 0.3,
+        "min_seeds_ahead": 8,
+        "complete": true,
+        "incomplete": [],
+        "base_seeds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "per_level": {
+          "0.25max": {
+            "paired_seeds": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "differences": [
+              -2.757647589553315,
+              -2.3073793546060415,
+              -1.59941012955602,
+              -2.244686829282159,
+              -1.1514505707562819,
+              -1.4849441727913586,
+              -2.3666278730633508,
+              -1.1854689258223345,
+              -1.9034716400719134,
+              -1.4514229640133607
+            ],
+            "mean_gain": -1.8452510049516135,
+            "seeds_ahead": 0,
+            "passes": false
+          },
+          "0.5max": {
+            "paired_seeds": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "differences": [
+              -0.553218053741702,
+              -1.7611764820058085,
+              -1.74429134156496,
+              -0.6607624567003256,
+              -0.654682902628636,
+              -1.0739471826361324,
+              -0.8369111676444589,
+              -0.7368727005251685,
+              -0.6178877145930102,
+              -0.5864533871468183
+            ],
+            "mean_gain": -0.922620338918702,
+            "seeds_ahead": 0,
+            "passes": false
+          },
+          "0.75max": {
+            "paired_seeds": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "differences": [
+              -0.7249903041223433,
+              -0.17157088081235372,
+              -0.9539959302812093,
+              -0.329103059467144,
+              -0.08723615172908694,
+              -1.0523725849870402,
+              -0.3198308576950666,
+              0.03862099461152013,
+              0.9219671209458085,
+              -0.35278539841135625
+            ],
+            "mean_gain": -0.3031297051948272,
+            "seeds_ahead": 2,
+            "passes": false
+          }
+        },
+        "passing": [],
+        "override": null,
+        "decision": "keep max_cells: no lower level has a paired mean gain above 0.3 points with at least 8 of the 10 seeds ahead",
+        "ignored_levels": [],
+        "ignored_seeds": []
+      }
+    },
+    "embryo": {
+      "validation_target": "embryo_E7.5",
+      "override": null,
+      "decision": "keep max_cells: no lower level has a paired mean gain above 0.3 points with at least 8 of the 10 seeds ahead",
+      "rows": 40,
+      "row_problems": [],
+      "max_cells": [
+        5000
+      ],
+      "max_cells_source": [
+        "board"
+      ],
+      "n_pred": {
+        "0.25max": [
+          1250
+        ],
+        "0.5max": [
+          2500
+        ],
+        "0.75max": [
+          3750
+        ],
+        "1max": [
+          5000
+        ]
+      },
+      "record": {
+        "rule": "approved rule 7: a lower level replaces max_cells on a board only if, on that board's validation target, its paired mean gain over max_cells exceeds 0.3 points and it beats max_cells in at least 8 of the 10 seeds. If several pass, the largest mean gain wins (ties go to the higher count). Heart and embryo are decided separately, each for its own test board. If the rerun cannot run, keep max_cells",
+        "approved": "2026-10-21",
+        "condition": "shuffle50",
+        "base": "1max",
+        "levels": [
+          "0.25max",
+          "0.5max",
+          "0.75max"
+        ],
+        "seeds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "min_mean_gain": 0.3,
+        "min_seeds_ahead": 8,
+        "complete": true,
+        "incomplete": [],
+        "base_seeds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "per_level": {
+          "0.25max": {
+            "paired_seeds": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "differences": [
+              -0.9775026429991271,
+              -1.4644522052474116,
+              -0.5085616592309776,
+              -1.3203316317617322,
+              -1.716166540980069,
+              -0.632144035520156,
+              -3.5443133988779607,
+              -3.9587276819336523,
+              -4.129515054264672,
+              1.7238065725098721
+            ],
+            "mean_gain": -1.6527908278305887,
+            "seeds_ahead": 1,
+            "passes": false
+          },
+          "0.5max": {
+            "paired_seeds": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "differences": [
+              1.5642806922895431,
+              0.025493458438177186,
+              -0.16390441893061336,
+              -0.8260986450734578,
+              -1.4074591268870478,
+              -3.043515481662112,
+              -1.3803523980928247,
+              -2.4663058397169095,
+              -3.5666219604884475,
+              3.107995363915947
+            ],
+            "mean_gain": -0.8156488356207745,
+            "seeds_ahead": 3,
+            "passes": false
+          },
+          "0.75max": {
+            "paired_seeds": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "differences": [
+              1.6622194574866285,
+              -2.5009396254416743,
+              0.13060341869233127,
+              -0.5195485059473981,
+              -0.3294863814925719,
+              0.2439066069089364,
+              -1.4244963911109778,
+              -2.065507441482964,
+              -3.5587188263110647,
+              1.7261829624755336
+            ],
+            "mean_gain": -0.6635784726223222,
+            "seeds_ahead": 4,
+            "passes": false
+          }
+        },
+        "passing": [],
+        "override": null,
+        "decision": "keep max_cells: no lower level has a paired mean gain above 0.3 points with at least 8 of the 10 seeds ahead",
+        "ignored_levels": [],
+        "ignored_seeds": []
+      }
+    }
+  }
+}
