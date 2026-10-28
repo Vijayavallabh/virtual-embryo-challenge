@@ -7,15 +7,22 @@ Sources (keep in sync when the site changes):
 - Challenge site: https://virtualembryo.ai/challenge (tasks, data, evaluation, baselines, rules, FAQ, timeline).
 - Accepted proposal with the metric definitions and Table 1 weights: `docs/reference/neurips-2026-competition-proposal.pdf`.
 - Nature Methods comment (Cao, Lu, Qiu 2026): `docs/reference/towards-predictive-virtual-embryos.pdf`.
-- Board specs with floor/ceiling anchors, gene panels and T1 composition: `boards/`.
+- Board specs with floor/ceiling anchors, gene panels and T1 composition: `boards/` (still the P2 specs: since
+  2026-10-27 the site's panel files answer HTTP 403 to `vec boards update`, not worked around; asked in the fourth
+  organiser email).
 - Official local scorer: https://github.com/aristoteleo/veckit (MIT), pinned in `pyproject.toml`.
 - Partner rules (Yukon), https://virtualembryo.ai/challenge/partner-rules, and the Privacy Policy, both published
   2026-10-20. Checked 2026-10-20 17:10 UTC: the Rules are unchanged since 2026-10-18 apart from a Yukon banner
-  ("Ordinary-team rules are unchanged"); the partner exceptions "apply to the partner category only".
+  ("Ordinary-team rules are unchanged"); the partner exceptions "apply to the partner category only". On 2026-10-28
+  (a screened read of the site) the final-phase Rules had changed: s.10 and s.11 now cover the opt-in validation
+  answers and the P3 start time (Timeline).
 
-## Timeline (today = 2026-10-18; schedule change of 2026-10-20 included)
-- P2 (now, until the final phase opens): validation leaderboard, 8 scored submissions/day/task. Starter kit + reference baselines are public (Colab: https://colab.research.google.com/drive/11kHZjd4IawoC6uwCqiHNuDGAYpoPlUQO).
-- **P3 starts 2026-10-27**, postponed by a week from 2026-10-20 (organisers' email to registered teams, 2026-10-20,
+## Timeline (compiled 2026-10-18, updated to 2026-10-28; schedule change of 2026-10-20 included)
+- P2 (until the final phase opened on 2026-10-27): validation leaderboard, 8 scored submissions/day/task. Starter kit +
+  reference baselines are public (Colab: https://colab.research.google.com/drive/11kHZjd4IawoC6uwCqiHNuDGAYpoPlUQO).
+  P2 standings were frozen at the P3 cutoff (the "Frozen P2" board); the live Validation board stays, but our team can
+  no longer submit to it (the unlock, below).
+- **P3 started 2026-10-27**, postponed by a week from 2026-10-20 (organisers' email to registered teams, 2026-10-20,
   citing a new partnership with Eigen Labs; scoring, submission limits and the other decisions for later dates are
   unchanged). Files committed before 2026-10-20 (pre-registered procedures, configs, reports) say 2026-10-20: they mean
   this release. P3 opened on 2026-10-27 at 09:00 America/Los_Angeles (16:00 UTC; Rules s.11); the test leaderboard
@@ -23,11 +30,13 @@ Sources (keep in sync when the site changes):
   after a team member unlocks them on the Data page. Unlocking permanently ends P2 submissions for the whole team,
   even without a download, and uses no P3 attempt. Our team unlocked them on 2026-10-28 at 09:32 UTC. Rules s.10 makes
   those official files an exception to the held-out-data restrictions "solely for preparing P3 predictions"; the user
-  read this as allowing them as model inputs (A20; organiser confirmation asked). **Only 2 official scored submissions
-  per board for the whole phase**; Rules s.11 says the board ranks a team by its best. The account page adds: "In the
-  final phase the captain picks which submission counts" (a "Final" mark per submission, until 2026-12-02). Each official submission "is scored and published when it is made" (Rules s.11),
-  so the test leaderboard is not hidden until the end. Format checks unlimited and free; a separate daily upload limit
-  bounds storage (`vec submit status` shows it; our format checks of 2026-10-20 did not count toward it).
+  read this as allowing them as model inputs (A20, passed on 2026-10-28; organiser confirmation asked in the fourth
+  email). **Only 2 official scored submissions per board for the whole phase**; Rules s.11 says the board ranks a team
+  by its best. The account page adds: "In the final phase the captain picks which submission counts" (a "Final" mark
+  per submission, until 2026-12-02). The user is the captain; what counts on a board with no mark is not stated (asked
+  in the fourth email). Each official submission "is scored and published when it is made" (Rules s.11), so the test
+  leaderboard is not hidden until the end. Format checks unlimited and free; a separate daily upload limit bounds
+  storage (`vec submit status` shows it; our format checks of 2026-10-20 did not count toward it).
 - Final submissions due **through 2026-12-02 (UTC)** (the time zone comes from the organisers' email of 2026-10-20
   22:03 IST, which gives no hour); official evaluation 2026-12-04; winners at NeurIPS 2026-12-11 (unchanged by the
   postponement). Per the same email and the partner rules (s.5), P3 methods, prediction files and detailed evaluation
@@ -41,7 +50,7 @@ Sources (keep in sync when the site changes):
   ($10K-$30K, administered by Eigen Labs) depends on its final reference position among VE teams; half goes to the
   top three Yukon results (50/30/20), half by contribution points. Entry is invite-only for now (an interest form asks
   for the applicant's current VE score; admitted members first submit the methodology behind that score). The
-  collaborative phase ends before P3 opens on 2026-10-27; members then build their P3 submissions independently.
+  collaborative phase was to end before P3 opened on 2026-10-27; members then build their P3 submissions independently.
   Moving from an official team is one-way for whoever moves (no return to an ordinary team this edition, and no joining
   or creating one, even after leaving Yukon; earlier submissions and scores stay with the original team, and a team
   left empty is archived and excluded from later rankings and awards: partner rules s.3) and makes that person
@@ -54,10 +63,10 @@ Sources (keep in sync when the site changes):
 - .X float32 log1p-normalised (log(1+1e4*c/sum c)), 32,285 genes, obs["celltype"]; no coordinates.
 - Annotation vocabulary is NOT harmonised across stages (Endocardium at E9.5 -> Endocardium-1/-2 later). E8.5 and E9.5 share 11 of 18/21 types; E9.5->E10.5 shares 13 of 23 types. Dissection scope varies by stage (Neural Tube 4.6% at E8.5, 0% at E9.5; paraxial mesoderm and EXEM likewise). E9.5 includes Hepatocyte 7%, ST 5%, pPHM 7%, Proepicardium 5%, Endocardium 9%.
 ### Task 2: 3D MERFISH (serial sections reassembled into 3D), 500-gene panel, log-normalised, obsm["spatial_3D"] per-embryo local frame (not registered across stages), obs["celltype"]
-- Heart setting: E8.25 train (E8.25_late.h5ad 225 MB), E8.5 val-interp ([redacted 2026-10-19: A]), E8.75 train (84 MB; also T3 WT reference), E9.5 train (164 MB), E10.5 val-extrap ([redacted 2026-10-19: A]), **E12.5 test-extrap** ([redacted 2026-10-19: A]). In the final phase every heart stage except E12.5 is training input.
+- Heart setting: E8.25 train (E8.25_late.h5ad 225 MB), E8.5 val-interp ([redacted 2026-10-19: A]), E8.75 train (84 MB; also T3 WT reference), E9.5 train (164 MB), E10.5 val-extrap ([redacted 2026-10-19: A]), **E12.5 test-extrap** ([redacted 2026-10-19: A]). In the final phase every heart stage except E12.5 is training input (once a team unlocks the validation answers; ours did on 2026-10-28).
 - Embryo setting (whole embryo, gastrulation): E6.75 train, E7.25 train, E7.5 val-interp, **E7.75 test-interp**, E8.0 train. Embryo panel = 498 genes (Casp4, Pnliprp1 missing at E6.75/E7.25).
 ### Task 3: conditional KOs, 3D MERFISH, same schema; Mesp1-Cre driven (mesoderm lineage)
-- Train: Mab21l2 KO @ E9.5 (458 MB). Val: Gata4 KO @ E8.75 = Mesp1-Cre; Gata4 F/F; Gata6 F/+ (2 replicates, 374+409 MB; answers released at P3). **Test: beta-catenin KO @ E8.75 = Mesp1-Cre; Ctnnb1 F/F** (2 replicates; broadly expressed gene, diffuse effect, "hardest").
+- Train: Mab21l2 KO @ E9.5 (458 MB). Val: Gata4 KO @ E8.75 = Mesp1-Cre; Gata4 F/F; Gata6 F/+ (2 replicates, 374+409 MB; answers opt-in in P3, unlocked by our team on 2026-10-28). **Test: beta-catenin KO @ E8.75 = Mesp1-Cre; Ctnnb1 F/F** (2 replicates; broadly expressed gene, diffuse effect, "hardest").
 - Matched WT @ E8.75 (84 MB) and E9.5 (164 MB). Every DE metric is computed against the matched WT at the same stage.
 - **Ctnnb1 is NOT on the 500-gene panel** (Gata4, Gata6, Mab21l2 are). Classic Wnt targets [redacted 2026-10-19: B] are absent; [redacted 2026-10-19: B] are present.
 
@@ -99,6 +108,7 @@ Notation: pb = pseudobulk (mean over cells) of log-normalised X; ref = preceding
 - External public data, pretrained models and published code allowed if licences permit and every source is disclosed. Expressly encouraged for T1.
 - Forbidden: measured data from a held-out stage/genotype by any route (directly, via a pretrained model trained on it, via a public dataset containing it).
 - Held out: T1 E10.5, E12.5; T2 embryo E7.5, E7.75; T2 heart E8.5, E10.5, E12.5; T3 Gata4 and beta-catenin KOs at E8.75.
+- Final-phase exception (Rules s.10, as read 2026-10-28): the official validation files, once a team unlocks them on the Data page, may be used "solely for preparing P3 predictions"; external data from the validation stages and genotypes stays prohibited, and the test windows are unchanged. The user read this as allowing them as model inputs too (A20, passed 2026-10-28; `docs/DATA_POLICY.md`).
 - Extrapolation targets (T1 and T2 heart): external data **excluded from after E9.5 up to and including E13.5**; exactly E9.5 allowed; **anything after E13.5 allowed** with disclosure of source and stages.
 - Interpolation targets: external data strictly between the bracketing released stages is excluded: T2 heart strictly between E8.25 and E8.75; T2 embryo strictly between E7.25 and E8.0. Bracketing stages themselves allowed. Somite counts / Theiler stages are mapped onto this scale.
 - Genotype: data from the held-out KOs, from another allele of the same gene at a comparable stage, or from a perturbation that phenocopies them, counts as held out.
@@ -110,5 +120,6 @@ Notation: pb = pseudobulk (mean over cells) of log-normalised X; ref = preceding
 - Prizes ($112K in all; Prizes page, 2026-10-20): per track 1st $8K, 2x 2nd $5K, 3x 3rd $3K, filled only by eligible entries (beating the floor), with fewer than six eligible the rest not awarded; the Generality Award above; travel awards $30K (15-20 grants for early-career researchers to attend the NeurIPS workshop; no call posted yet); Community Contribution Award $20K (up to $200 per public contribution such as tools, tutorials, notebooks, documentation or fixes; anyone may file, competing teams included; rolling until the fund is committed or 2026-12-11; unawarded prize money is added to it). Leading teams of both tracks are invited to co-author the organisers' Nature Methods analysis (the publish page).
 
 ## Our compute
-- PrakashDGX_H2: 8x H100 80GB (several GPUs busy with the user's other jobs; typically 2+ free), ~628 GB free disk, uv available, Python 3.10 system (uv-managed 3.11/3.12 fine), CUDA driver 13.0. Local machine is overloaded: editing/git only.
+- PrakashDGX_H2: 8x H100 80GB (several GPUs busy with the user's other jobs; typically 2+ free), 1.6 TB free on the shared /home (2026-10-28), uv available, Python 3.10 system (uv-managed 3.11/3.12 fine), CUDA driver 13.0. Local machine is overloaded: editing/git only.
+- BLAS threads on the DGX (2026-10-28): scikit-learn/numpy jobs need OPENBLAS_NUM_THREADS set (<= 64); without it a run crashed ("OpenBLAS warning: precompiled NUM_THREADS exceeded", then "malloc(): corrupted top size"). The repo's shell runners set OMP/OPENBLAS/MKL_NUM_THREADS themselves (at most 16 per process; `docs/COMPUTE.md`).
 - Environment policy: uv only (no conda/pip venvs).

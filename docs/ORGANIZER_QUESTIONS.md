@@ -17,7 +17,9 @@ ordinary teams do about Yukon's work, the deadline is UTC, and whether the valid
 changes nothing we do (the upload path was tested on them on 2026-10-20). The Generality question (question 4 of the
 18 October email, asked again) was added the same day (prize strategy, `docs/PLAN.md` decision log 2026-10-20 (c)),
 and the user sent the email with three questions on 2026-10-21 at 01:24 IST (2026-10-20 19:54 UTC); its text is
-under "Third email" below.
+under "Third email" below. The user sent a fourth email (the HTTP 403 on the panel files, final entries, confirmation
+of the A20 reading) on 2026-10-28 at 15:41 IST; its text is under "Fourth email" below. As of then none of the four
+emails had a reply, and the last screened Slack sweep (2026-10-23) found no organiser post or reply.
 
 Dropped because they are already answered (see `docs/DATA_POLICY.md`):
 - T3 literature: gene-level knockout findings are prohibited, broad phenotype background is allowed (2026-10-15).
@@ -26,7 +28,8 @@ Dropped because they are already answered (see `docs/DATA_POLICY.md`):
 - Scoring conventions: no renormalisation; cell limits inclusive and enforced (2026-10-16).
 
 Deferred to the release (2026-10-27, moved from 2026-10-20; ask only if `panels/index.json` leaves them unclear): each
-test board's reference stage (`ref_cells`) and cell bounds.
+test board's reference stage (`ref_cells`) and cell bounds. 2026-10-28: the panel files answer HTTP 403 to our client
+since 2026-10-27, so question 1 of the fourth email asks how to get the test boards' submission specs.
 
 Not asked because our plan already takes the strict reading: somite-to-day boundary cases (we drop ambiguous embryos),
 Tier-B mutant datasets (unused), cross-species foundation models (unused), selection of the second submission among
@@ -77,7 +80,10 @@ Vijayavallabh J
 
 ## Follow-up (sent 2026-10-19)
 
-User's decision (2026-10-19): send the full follow-up. Sent by the user on 2026-10-19 by email from be23b041@smail.iitm.ac.in. Answers: _pending_ (record them in `docs/DATA_POLICY.md`).
+User's decision (2026-10-19): send the full follow-up. Sent by the user on 2026-10-19 by email from
+be23b041@smail.iitm.ac.in. Answers: _pending_, no reply as of 2026-10-28 15:41 IST (record them in
+`docs/DATA_POLICY.md`). Until question 3 is answered the T3 build makes both branches (allowed and barred); the
+fourth email asks it again and names question 1 (the scorer build) as still open.
 Duplicate counts come from `experiments/qc/` (update them if the QC run changes them). Points whose answer would help
 every team ask for a public answer, so we never hold private information about held-out data.
 

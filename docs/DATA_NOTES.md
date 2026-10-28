@@ -2,9 +2,9 @@
 
 From `vec data inventory` on the DGX, 2026-10-18, re-run on 2026-10-28 with the six validation answers
 (`runs/inventory.json` there, the first run kept as `runs/inventory.2026-10-18.json`; QC in `runs/qc.json` and
-`runs/qc.csv`; log `runs/logs/intake_2026-10-28.log`). Checksums of all 15 files in `data/raw/SHA256SUMS` (the nine of 2026-10-18 are
-unchanged; the first file is kept as `SHA256SUMS.2026-10-18`); the site publishes no checksums to compare with.
-Structural facts only; no expression values. No test inputs are distributed.
+`runs/qc.csv`; log `runs/logs/intake_2026-10-28.log`). Checksums of all 15 files in `data/raw/SHA256SUMS` (the nine
+of 2026-10-18 are unchanged; the first file is kept as `SHA256SUMS.2026-10-18`); the site publishes no checksums to
+compare with. Structural facts only; no expression values. No test inputs are distributed.
 
 ## Files
 
@@ -30,8 +30,9 @@ All obs names in the six validation files are unique. The Gata4 files carry the 
 section, embryo, sample_id, z_coord, time, genotype, perturb_batch, leiden ...) and obsm `spatial` (2D) beside
 `spatial_3D`; the WT MERFISH files carry `spatial_2D` and `spatial_3D`.
 
-Every file satisfies `expm1(X).sum(1) == 1e4` (log1p CP10k; the validation answers too, median 10,000). Stage cell counts are exactly 10x the board `ref_cells`
-in `boards/index.json` (rounded), which confirms the server's 10% working copies.
+Every file satisfies `expm1(X).sum(1) == 1e4` (log1p CP10k; the validation answers too, median 10,000). Stage cell
+counts are exactly 10x the board `ref_cells` in `boards/index.json` (rounded), which confirms the server's 10% working
+copies.
 
 ## Quirks to handle in loaders
 
@@ -42,8 +43,9 @@ Settled by `experiments/qc/` (2026-10-19; `vec data qc`) and `experiments/coords
   1.1e-13), one per separately placed tissue piece (E6.75 likewise: 65 raw values on 37 levels). Snap with
   `vec.spatial.snap_z`, never by rounding. xy are slide micrometres (each WT section is a pure translation of the slide
   coordinates; 30 of 36 KO sections are rigid copies, 6 were warped). The stored step is most likely the section pitch;
-  use native coordinates and never rescale z across stages. Every file has 30-40 sections, so the z extent is set by
-  acquisition, and the stack cuts the heart in E9.5 (start) and the KO (end).
+  use native coordinates and never rescale z across stages. Every training file has 30-40 sections (the validation
+  answers have 25 to 46 z levels, below), so the z extent is set by acquisition, and the stack cuts the heart in E9.5
+  (start) and the KO (end).
 - **Rows are stored section by section** in descending z (Spearman of row vs z -0.9994 to -0.9996): always subsample at
   random. T2/E7.5 runs the other way (ascending z, +0.9995).
 - **Validation answers, intake QC (2026-10-28, `vec data qc`):**
@@ -59,6 +61,8 @@ Settled by `experiments/qc/` (2026-10-19; `vec data qc`) and `experiments/coords
     -585 (1.88x), -390 (3.26x) and -360 (1.71x); replicate 2 -615 (1.63x), -555 (2.35x) and -420 (1.64x).
   - Section and sample_id labels: one label per level and one level per label in both Gata4 files (the Mab21l2 KO
     fails this), so the 3.26x and 2.35x levels are each a single labelled section.
+  - Centring: the three WT validation files are centred on their mean like the WT training files; both Gata4 files
+    are not centred, like the Mab21l2 KO (`centred_on` in `runs/qc.csv`).
   - Shared rows between the two replicates are a pre-registered check of its own (runbook step 4.2).
 - **Synthetic records** (none in E6.75, E7.25, E9.5, T1 or the validation answers):
   - copies, identical integer count rows in the same or an adjacent level, at the same xy (E8.0 443, E8.25_late 1,164,
@@ -77,8 +81,9 @@ Settled by `experiments/qc/` (2026-10-19; `vec data qc`) and `experiments/coords
   Branchial Arch...): map into the WT vocabulary with `vec.harmonise`; `configs/lineage_map.yaml` remaps the KO's LPM
   and DPM. Dense X.
 - **Vocabularies are not harmonised across stages** (E8.25_late and E8.75 share label definitions; E9.5 does not;
-  `cm_celltype` exists only in E8.0, E8.25_late, E8.75 and E9.5, where "Unknown" means "no subtype given"). Only CM
-  transfers cleanly between E8.75 and E9.5; use the merged lineage level for cross-stage work.
+  of the training files, `cm_celltype` exists only in E8.0, E8.25_late, E8.75 and E9.5, where "Unknown" means "no
+  subtype given"; the validation answers E8.5 and E10.5 have it too, E7.5 does not). Only CM transfers cleanly between
+  E8.75 and E9.5; use the merged lineage level for cross-stage work.
 - All MERFISH files carry a `counts` layer; T1 counts must be recovered from `.X`.
 - A layer stored under the literal key `None` appears in every file (an artefact; ignore it).
 

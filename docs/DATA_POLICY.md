@@ -10,8 +10,11 @@ each submission. Any change to this file needs a dated note at the bottom.
 - Unpublished (Qingquan Zhang and Neil Chi, UCSD). Any publication or public presentation needs prior written approval
   from Dr. Neil Chi's group and must credit Dr. Qingquan Zhang and Dr. Neil Chi, plus acknowledge the Virtual Embryo
   Challenge (Terms of Use clause 14).
-- Validation answers are released at the start of the final phase (2026-10-27, postponed from 2026-10-20) and may then
-  be trained on. Until then they are held out like any other target. Test ground truth is never released.
+- Validation answers are served in the final phase (opened 2026-10-27, postponed from 2026-10-20) only after a team
+  member unlocks them on the Data page, which permanently ends P2 submissions for the whole team; the user unlocked
+  them for our team on 2026-10-28 at 09:32 UTC. From then they may be used "solely for preparing P3 predictions"
+  (Rules s.10; the exception below the held-out table). Until then they are held out like any other target. Test
+  ground truth is never released.
 - P3 methods, prediction files and detailed evaluation feedback stay private from other participants until the
   2026-12-11 final score announcement (organisers' email of 2026-10-20 22:03 IST; partner rules s.5, in Yukon's section
   but not limited to Yukon by its wording). Ours stay in this private repo and the DGX workspace; nothing about them
@@ -79,14 +82,14 @@ organisers approve in writing.
   between the reference stage and the hidden truth, so it encodes the hidden target (for scale_log_ratio, its size; for
   mmd_u on T3, how far the knockout is from wild type). The intake strips them before anyone looks; they are never read,
   printed, committed or passed to the emulator. Validation-board anchors may be used to calibrate the emulator once
-  the validation answers are released (2026-10-27). Before then they describe held-out targets, and nothing is
-  calibrated, tuned or checked against them (the scorer-build anchor check refuses to read them before the final
-  phase).
+  the validation answers are released (for our team, the unlock of 2026-10-28). Before then they describe held-out
+  targets, and nothing is calibrated, tuned or checked against them (the scorer-build anchor check refuses to read
+  them before the final phase).
 - **Our own size forecasts from incomplete stage sets** (dry runs of the size procedure before the release) are code
   checks, not predictions, and stay out of the docs.
 - **The public board file and board endpoints themselves.** `panels/index.json` on the site (and the public
-  `/challenge/boards` endpoint) may carry test-board anchors at any time now (the final phase opens 2026-10-27, and the
-  organisers are preparing the platform in the week before). Nobody opens them in a browser or fetches them by
+  `/challenge/boards` endpoint) may carry test-board anchors at any time now (the final phase opened on 2026-10-27;
+  since then the file answers HTTP 403 to `vec boards update`). Nobody opens them in a browser or fetches them by
   hand or by script; boards are refreshed only through `vec.boards.update_boards`, which strips non-validation
   anchors in memory. Team members skip Slack threads that discuss sizes or other values worked out from anchors, and
   agents reading Slack must not quote such threads.
@@ -194,7 +197,8 @@ organisers approve in writing.
   building the size model opens veckit 0.1.2 or PR #6.
 - Disclosure: private report sent to the organisers (Weize Xu, Zehua Zeng) in Slack group DM `C0CA7QTEMDF` on
   2026-10-18 22:39 IST. Reply: _pending_ (no reply or reaction as of 2026-10-20 13:49 IST; no organiser has posted on
-  Slack since 2026-10-16).
+  Slack since 2026-10-16). Still none at the screened Slack sweep of 2026-10-23, the last one (no organiser post or
+  reply anywhere).
 
 ## Organiser rulings on record (Slack #virtual-embryo-challenge; details in `docs/research/slack_digest.md`)
 
@@ -222,6 +226,10 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   E8.0 only, and T3 uses the barred branch. No answer as of 2026-10-20 22:43 IST; the Rules and Data pages were
   unchanged on this point when checked at 17:10 UTC that day. We asked the organisers the same privately (question 2
   of the third email, sent 2026-10-21 01:24 IST; `docs/ORGANIZER_QUESTIONS.md`); no answer yet.
+  2026-10-28: the final-phase Rules s.10 make the unlocked validation files an exception "solely for preparing P3
+  predictions" (held-out section above), and the user read this as allowing them as model inputs too (A20 passed).
+  The fourth email (sent 2026-10-28 15:41 IST) asks the organisers to confirm. No reply to any of the four emails as
+  of then, and no public answer at the last Slack sweep (2026-10-23).
 
 ## Change notes
 
@@ -243,3 +251,12 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
 - 2026-10-20 (d): while drafting `docs/RELEASE_RULES_SUMMARY.md`, an agent's repo-wide search printed one line each of
   `docs/research/t3_methods.md` and the screened digest (its exclusion filter failed). Neither line held a value or a
   gene-level knockout finding, and nothing from them entered the summary or any method.
+- 2026-10-27: the history rewrite of that day (AI co-author trailer dropped from every commit message; old -> new IDs
+  in `docs/COMMIT_MAP.md`) added to the held-out sizes record.
+- 2026-10-28: the validation answers turned out to be opt-in: a team member unlocks them on the Data page, which
+  permanently ends P2 submissions for the whole team (the user unlocked them at 09:32 UTC). Added the final-phase
+  exception below the held-out table (Rules s.10 and the Data page; A20 passed on the user's reading, organiser
+  confirmation asked in the fourth email). Updated the Competition data line on validation answers, the release date
+  in the calibration condition and the board-file entry in the do-not-use list (panel files HTTP 403 since 2026-10-27),
+  the leak-report status and the open question on validation answers. Records that say the validation stages were
+  released on 2026-10-20 or 2026-10-27 mean, for our team, this unlock.

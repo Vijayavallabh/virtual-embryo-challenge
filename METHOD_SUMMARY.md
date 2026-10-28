@@ -5,18 +5,26 @@ decisions that mattered, what was trained on what, enough detail to understand w
 Generality Award is judged on this summary. Keep it current as methods change; every claim should point to a run in
 `results/registry.csv` or an experiment report in `experiments/*/REPORT.md`.
 
-Status 2026-10-20: methods are pre-registered on released training data; no test submission exists yet. The final phase
-opens on 2026-10-27 (postponed by the organisers from 2026-10-20). Sections marked _planned_ describe the committed plan
-(`docs/PLAN.md` v1.2), not results.
+Status 2026-10-28: methods are pre-registered on released training data; no test submission exists yet. The final phase
+opened on 2026-10-27 (postponed by the organisers from 2026-10-20), and the team unlocked the P2 validation answers on
+2026-10-28 (Data provenance, below). Sections marked _planned_ describe the committed plan (`docs/PLAN.md` v1.2), not
+results.
 
 ## Team and track
 
-Track 1 (Human Team). A person reviews results and makes every submission decision; coding agents do the work.
+Team Mithril, Track 1 (Human Team). A person reviews results and makes every submission decision; coding agents do
+the work.
 
 ## Data provenance and compliance (applies to every task)
 
 - **Released competition data only, plus disclosed legal external data** (`EXTERNAL_DATA.md`). Nothing measured inside a
   protected window is used, by any route; windows and the do-not-use list are in `docs/DATA_POLICY.md`.
+- **Validation answers (since 2026-10-28).** The P2 validation answers (T1 E10.5, T2 heart E8.5 and E10.5, T2 embryo
+  E7.5, the two Gata4 knockout replicates) are opt-in in the final phase; the team captain unlocked them on the Data
+  page on 2026-10-28. Rules s.10 makes them an exception to the held-out-data restrictions solely for preparing P3
+  predictions; the team reads that as including their use as model inputs at prediction time (for example E10.5 as
+  the starting stage for E12.5) and has asked the organisers to confirm. External data from those stages and genotypes
+  stays out, and no test inputs are distributed.
 - **No board anchors and no leaderboard scores set any number.** Test-board anchors are stripped in memory when the
   board specs are refreshed (`vec.boards.update_boards`); the public board file is never opened.
 - **Task 3 gene directions come only from released data** through committed code (organiser ruling of 2026-10-15): no
@@ -84,8 +92,9 @@ Track 1 (Human Team). A person reviews results and makes every submission decisi
   touch, it may partly reflect sample processing: unless the Mab21l2 factor transfers to Gata4, the two submissions do
   not both rely on the Gata4 factor, and if no check supports it, the first submission is unchanged wild-type cells
   (with the composition term) and only the second carries the factor, at half strength. Released Gata4 files are used
-  only if the organisers confirm it. The rules were drafted with an AI assistant and reviewed and approved by the team
-  before any Gata4 file was downloaded.
+  only if the organisers confirm it (2026-10-28: the team reads the final-phase Rules s.10 as allowing it and has asked
+  them to confirm; until they answer, both versions are built, with and without the Gata4 files). The rules were
+  drafted with an AI assistant and reviewed and approved by the team before any Gata4 file was downloaded.
 
 ## Shared architecture (Generality Award)
 

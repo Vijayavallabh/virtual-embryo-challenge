@@ -1,5 +1,13 @@
 # Release-day rules: plain summary for sign-off
 
+Status 2026-10-28: these rules now apply. The final phase opened on 2026-10-27, and the user unlocked the validation
+answers on 2026-10-28 (all six are on the DGX). A20 passed on the user's reading: the final-phase Rules s.10 and the
+Data page allow the validation answers for preparing P3 predictions, which the user read as including model inputs at
+prediction time; the organisers have been asked to confirm (fourth email, 2026-10-28). Section 4's label mapping ran
+in runbook step 3 (d6b9566); the runs that sections 1-3 and the rest of section 4 govern (runbook step 4) have not
+started and wait for the user's go-ahead. The test boards' cell limits, which section 3 reads at build time, are not
+available yet: `panels/index.json` answers HTTP 403 since 2026-10-27 (runbook step 1). The rules below are unchanged.
+
 Drafted by the AI assistant (Claude) on 2026-10-20 from the files committed at `eb946ac`. **Approved by the user on
 2026-10-21: all eight recommended answers at the end.** The changes they call for are recorded in `docs/PLAN.md`
 (sections 3.6, 4.1 and 4.3 and the decision log). Answers 3 and 7 are applied by code: `size_or_hold`,
@@ -18,7 +26,8 @@ gives way to the next passing count up (last section), not section 3's "stops th
 release day, and "(inferred)" marks what I worked out rather than read.
 
 All four rules use released validation answers, and their use for test predictions is still unconfirmed (assumption
-A20). Without them the heart size cannot run validly (inferred).
+A20). Without them the heart size cannot run validly (inferred). (2026-10-28: A20 passed on the user's reading, and
+the organisers have been asked to confirm; see the status note at the top.)
 
 ## 1. Heart and embryo size
 

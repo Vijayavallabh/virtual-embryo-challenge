@@ -3,6 +3,10 @@
 Pre-registered before the final-phase release (2026-10-19). `readout.py` with `config.yaml` runs once on release day
 (`docs/P3_RUNBOOK.md` step 4.3) on the E9.5 -> E10.5 transition and prints one verdict, "build" or "do not build".
 
+2026-10-28: not run yet. The E10.5 file (`data/raw/T1/E10.5_RNA.h5ad`) did not come on release day (2026-10-27); it
+reached the DGX on 2026-10-28, after the user unlocked the validation answers (runbook step 2). The readout still runs
+once, at runbook step 4.3, after the user agrees to start step 4.
+
 "build" needs all three checks:
 1. Feng's E9.5-to-E14.5 direction beats cross-fitted momentum by at least 0.05 in de_score.
 2. It also does so in de_direction.

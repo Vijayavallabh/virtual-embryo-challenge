@@ -41,4 +41,5 @@ and both lists, and `vec data fetch` downloads both into the same `data/raw/T*/`
 listed in both is refused).
 
 Record SHA-256 checksums after each download (`sha256sum data/raw/**/*.h5ad > data/raw/SHA256SUMS` on the DGX) and
-compare with the checksums the organisers publish on the Data page.
+compare sizes with the manifest: the site publishes no checksums (as of 2026-10-28). The 15 files on the DGX are
+listed in `docs/DATA_NOTES.md`.

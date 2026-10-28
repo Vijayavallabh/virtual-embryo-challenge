@@ -1,7 +1,8 @@
 # Plan
 
 Version 1.2, 2026-10-19; timeline revised 2026-10-20 (the organisers moved the final phase to 2026-10-27: section 7 and
-the decision log). Update it weekly and log decisions at the bottom.
+the decision log); status updated 2026-10-28 (the final phase is open: the status note in section 7 and the decision
+log). Update it weekly and log decisions at the bottom.
 Evidence behind every claim is in `docs/research/` (one report per topic; `digest_2026-10-19.md` is the screened
 summary of the verified research sweep and its gap-fills) and `experiments/*/REPORT.md` (experiments on released data,
 each with an independent review); risks are tracked in `ASSUMPTIONS.md`.
@@ -41,10 +42,12 @@ the direction of the T3 response. T2 embryo interpolation is a board everyone ca
 
 Full detail in `docs/DATA_POLICY.md`. In short:
 
-- Nothing measured in a held-out window, by any route. T1 and T2 heart: no external data after E9.5 up to and including
-  E13.5; after E13.5 is fine with disclosure. T2 embryo: nothing strictly between E7.25 and E8.0. T2 heart
-  interpolation: nothing strictly between E8.25 and E8.75. T3: no beta-catenin or Gata4 perturbation data, no other
-  alleles at comparable stages, no phenocopies (GSE165300, Mesp1-Cre; Wls, is excluded).
+- Nothing measured in a held-out window, by any route (2026-10-28: except the official validation files our team
+  unlocked, which Rules s.10 allows for preparing P3 predictions; `docs/DATA_POLICY.md`, A20). T1 and T2 heart: no
+  external data after E9.5 up to and including E13.5; after E13.5 is fine with disclosure. T2 embryo: nothing
+  strictly between E7.25 and E8.0. T2 heart interpolation: nothing strictly between E8.25 and E8.75. T3: no
+  beta-catenin or Gata4 perturbation data, no other alleles at comparable stages, no phenocopies (GSE165300,
+  Mesp1-Cre; Wls, is excluded).
 - **No gene-level knockout findings from papers for T3** (organiser ruling, 2026-10-15). Broad phenotype background is
   allowed: beta-catenin loss in cardiac mesoderm impairs second-heart-field expansion and outflow-tract/right-ventricle
   growth.
@@ -202,7 +205,8 @@ size, mixture expression).
 
 Facts (`experiments/coords/REPORT.md`): xy are slide units (rigid copies of the slide coordinates, scale 1.0000, in
 29 of 35 KO sections); z is the section position times a per-file step (10, 14 or 15), consistent with xy units in
-E9.5 and the KO but not clearly so at E8.0-E8.75. Every file has 30-40 sections, so the z extent is set by acquisition,
+E9.5 and the KO but not clearly so at E8.0-E8.75. Every training file has 30-40 sections (the validation answers have
+25 to 46 z levels, `docs/DATA_NOTES.md`), so the z extent is set by acquisition,
 and the stack cuts the heart in E9.5 and the KO. Raw RMS radii are not comparable across stages (E8.25_late includes
 yolk sac and non-cardiac cells; E8.75 is mostly heart). Label vocabularies differ by file: only CM transfers cleanly
 between E8.75 and E9.5 (`experiments/harmonise/REPORT.md`). Every geometry deformation tried publicly on extrapolation
@@ -277,6 +281,10 @@ Day-1 diagnostics (CPU, DGX):
 - an oracle decomposition of the Gata4 truth into composition, depth/coverage and within-type parts, each scored with
   the emulator.
 
+The intake inventory and QC (2026-10-28, `docs/DATA_NOTES.md`) settle two points: neither Gata4 replicate has
+duplicated or interpolated records, and neither carries littermate wild-type cells (every cell genotype gata4,
+condition KO; both replicates from slide M164).
+
 What the Mab21l2 knockout already shows (`experiments/harmonise/REPORT.md`, with its review): group-level differences
 from the E9.5 wild type are file-against-file differences, not genotype effects, because the two stacks cover different
 anatomy (trimming the stack ends removes or flips most of them). The robust difference is inside the heart: among
@@ -295,8 +303,8 @@ severity at the floor in 8-9 of 10 seeds). About half of the factor is knockout-
 reference: the WT half transfers to the test board for certain, the knockout half only if the series shares a batch.
 Because the factor is measured in compartments the knockout cannot touch, much of it may be sample processing rather
 than biology, so its value on the test rests on the beta-catenin knockout sharing processing with the released ones.
-The first real check is cross-knockout transfer on release day (rule D11b: the Mab21l2 factor scored on Gata4); if it
-fails, the two submissions must not both use the Gata4 factor (rules.yaml note 6; note 7 keeps the mild-composition
+The first real check is cross-knockout transfer in runbook step 4.2 (rule D11b: the Mab21l2 factor scored on Gata4); if
+it fails, the two submissions must not both use the Gata4 factor (rules.yaml note 6; note 7 keeps the mild-composition
 hedge when the composition sign is in doubt), and composition (C) and the pathway programme (B) stay as hedges rather
 than afterthoughts. If no check supports the Gata4 factor at all (none of D2, D2u, D10), s1 is wild-type cells (plus
 composition, or the Mab21l2 factor if it transfers to Gata4) and s2 the Gata4 factor at half strength (note 8, the
@@ -319,9 +327,12 @@ Components (all legal under the 2026-10-15 ruling):
   scorer; calibrate the magnitude so the severity slope on likely DE genes is near 1; log the slope's R² on every fold
   and drop any component that adds a shared offset (it can push severity to the floor).
 - **Pre-registration:** `experiments/t3_decomp/` with its `rules.yaml` is committed before the Gata4 download and run
-  unchanged on both replicates on release day; its decision file chooses the components.
+  unchanged on both replicates on release day; its decision file chooses the components. 2026-10-28: the Gata4 files
+  arrived that day, with the other validation answers; this run is runbook step 4.2 and has not started.
 - **Pending confirmation:** using the released Gata4 files inside the beta-catenin prediction (follow-up question 3 to
-  the organisers). If refused, both submissions use the reference-only factor.
+  the organisers). If refused, both submissions use the reference-only factor. 2026-10-28: the user read the
+  final-phase Rules s.10 and Data page as allowing it (A20); the fourth email asks the organisers to confirm, and until
+  they answer the T3 build makes both the allowed and the barred branch.
 
 Submissions: s1 = F (Gata4-sourced) + C; s2 = F (reference-sourced) + C. Both are built before the first upload. Any
 rule that picks or changes s2 after s1's score is written beforehand in terms of component skills and never reads a
@@ -405,6 +416,10 @@ Done:
   `vec.t1_scope` (chamber categories, re-weighting to input shares, momentum shift) and the T3 builder
   (`experiments/t3_decomp/build_submission.py`, s1/s2 from the decision file). Each was verified by an independent
   agent, then went through further rounds of independent review and fixes until only nits remained.
+- Data (feat-003, done 2026-10-28): all 15 released files on the DGX, the 9 training files and the 6 validation answers
+  the user unlocked on the Data page. `vec data` reads the validation answers' own list and links (e0e1d58) and never
+  sends the unlock; SHA-256 in `data/raw/SHA256SUMS`, inventory and QC in `docs/DATA_NOTES.md` (f423f6a). No test
+  inputs are distributed.
 
 Next:
 1. Calibrate the emulator against the published reference rows on the validation boards (A2), with the scorer-build
@@ -412,9 +427,14 @@ Next:
 2. Pseudo-task harness with leave-one-transition-out splits and paired comparisons over 10 seeds.
 3. External-data ingestion with window filters as committed code (Feng by per-cell stage, JAX by embryo ID: 1-22 and
    54-74), registered in `EXTERNAL_DATA.md` before use.
-4. Run registry. Read the real shape of the official quota with `vec submit status` once the final phase opens; the
-   client refuses official uploads until it can parse it.
-5. Set `POT_BACKEND_DISABLE_JAX=1` and `XLA_PYTHON_CLIENT_PREALLOCATE=false` before importing POT or JAX on the DGX.
+4. Run registry. In the final phase (open since 2026-10-27) the quota lists the official count per test board (T1:test,
+   T2:heart:test_extrap, T2:embryo:test_interp, T3:bcatenin; 0 of 2 used on each). Check its shape with `vec submit
+   status`; the client refuses official uploads until it can parse it.
+5. Set `POT_BACKEND_DISABLE_JAX=1` and `XLA_PYTHON_CLIENT_PREALLOCATE=false` before importing POT or JAX on the DGX,
+   and cap BLAS threads for numpy and scikit-learn jobs there (`OPENBLAS_NUM_THREADS` at most 64; the repo's runners
+   set `OMP_NUM_THREADS`, `OPENBLAS_NUM_THREADS` and `MKL_NUM_THREADS`, at most 16 per process): a run without the
+   cap crashed on 2026-10-28 ("OpenBLAS warning: precompiled NUM_THREADS exceeded", then "malloc(): corrupted top
+   size"; `docs/COMPUTE.md`).
 
 ## 7. Timeline and decision points
 
@@ -432,6 +452,13 @@ Next:
 The final phase is five weeks instead of six; the submission dates stay, so the week before the release takes the
 development work that does not need the release data.
 
+Status 2026-10-28: the final phase opened on 2026-10-27 at 16:00 UTC. Runbook step 0 passed that day, and steps 2
+(data, f423f6a) and 3 (labels, d6b9566) were done on 2026-10-28. Step 1, the test-board specs, is blocked:
+`panels/index.json` answers HTTP 403 (Cloudflare) to `vec boards update` since 2026-10-27; it was not worked around,
+the fourth organiser email asks about it, and `boards/` still holds the P2 specs, so D1 waits for the specs. Next is
+step 4, the pre-registered runs in order, each output committed before anything else, once the user gives the
+go-ahead; then the runbook's section 5.
+
 ## 8. Submission policy
 
 - Format checks are free and unlimited (no scored attempt), only on the phase's boards, and paused while a format check
@@ -443,11 +470,17 @@ development work that does not need the release data.
   2 December, is 05:30 IST on 2 December. Final uploads still finish by the end of 30 November IST, which leaves
   1 December for outages. Each official upload is scored and published when it is made (Rules s.11), so s1's score
   is public before s2 goes in.
+- Final entries (account page, seen 2026-10-28): in the final phase the captain, the user, picks which submission
+  counts, marking it in a "Final" column of the team's submission list while nominations are open; 2026-12-02 is the
+  last moment to make a submission or nominate a final entry. Rules s.11 still says a board ranks a team by its best;
+  what counts when nothing is marked, and whether the pick is per board, is not stated (asked in the fourth email).
+  Mark the final entries after the last official upload.
 - Each submission carries its external-data disclosure text.
 
 ## 9. Risks
 
-`ASSUMPTIONS.md` holds 19 scored assumptions with go/no-go tests. The biggest:
+`ASSUMPTIONS.md` holds 21 scored assumptions with go/no-go tests (A1 and A20 passed on 2026-10-28, A20 on the user's
+reading). The biggest:
 - **A11**, the T3 response sign (risk 5; early proxy: a blind Gata4 test);
 - **A6**, T1 E12.5 composition;
 - **A8**, heart scope and size;
@@ -466,8 +499,15 @@ files inside the beta-catenin prediction, duplicated records, the z coordinate, 
 conventions for external embryos, and an addendum to the leak report. No reply to either as of 2026-10-20 22:43 IST.
 Third email, sent 2026-10-21 01:24 IST (2026-10-20 19:54 UTC): the test phase's start time, validation answers as
 training data and model inputs (A20) and the Generality scope again (A21), with a reminder of the two open emails;
-answers pending. Also open in public: whether released validation answers may be used for test predictions (a
-participant's question of 2026-10-19; A20; our third email's question 2).
+no reply. Its question 1 is answered by the final-phase Rules s.11 (P3 opened 2026-10-27 at 16:00 UTC); for question 2
+the user read the final-phase Rules s.10 and Data page as allowing it (A20 passed on the user's reading, 2026-10-28).
+Also open in public: whether released validation answers may be used for test predictions (a participant's question
+of 2026-10-19; A20; our third email's question 2); the final-phase Rules s.10 and Data page now allow the opt-in files
+for preparing P3 predictions (Slack last swept 2026-10-23). Fourth email, drafted by the AI assistant and sent by the
+user on 2026-10-28 at 15:41 IST (10:11 UTC), signed "Team captain, Mithril": the HTTP 403 on the board-spec file,
+what counts on a board where the captain marks no final entry, and confirmation of the A20 reading (which would also
+answer follow-up question 3, the Gata4 files in the beta-catenin prediction); it notes that the scorer build is still
+open. No organiser reply to any of the four emails as of then.
 
 ## Decision log
 
@@ -553,3 +593,16 @@ participant's question of 2026-10-19; A20; our third email's question 2).
   level nearest the validated winner; in that case it is ahead by about 0.2-0.4 points in most simulated models (the
   data analysis put the difference near zero, -0.01 to +0.04), and the case arises in well under 1% of releases
   (`experiments/density/floor_reading/README.md`). The code now applies it.
+- 2026-10-28: the final phase opened on 2026-10-27 at 16:00 UTC (Rules s.11), with the validation answers opt-in. The
+  user unlocked them on the Data page (09:32 UTC), which permanently ends P2 submissions for the whole team and uses no
+  P3 attempt; all six are on the DGX (runbook step 2, f423f6a). Shown the final-phase Rules s.10 ("a specific
+  exception to the held-out-data restrictions ... solely for preparing P3 predictions") and the Data page, the user
+  read them as allowing the validation answers as training data and as model inputs at prediction time (E10.5 as the
+  starting stage for E12.5, the Gata4 replicates in the beta-catenin prediction) and said yes: A20 passed on the
+  user's reading. External data from those stages and genotypes stays prohibited, and the test windows are unchanged.
+  The AI assistant drafted the fourth organiser email, which asks the organisers to confirm that reading; the user
+  sent it the same day, signed "Team captain, Mithril". Until they answer follow-up question 3, the T3 build keeps
+  making both the allowed and the barred branch. Runbook step 3 (labels), at the user's go-ahead (d6b9566): the 30
+  labels first seen in the validation answers are mapped in `configs/lineage_map.yaml` by its 2026-10-19 rule, and the
+  8 labels new to a T1 file in `configs/t1_chamber_classes.yaml`; the AI assistant mapped them (three independent
+  mappers, 29 of 30 unanimous, a judge for BW).

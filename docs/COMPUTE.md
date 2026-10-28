@@ -10,8 +10,8 @@
 The DGX workspace is `~/v/virtual-embryo-challenge` (a git clone of this repo). GPU allocation (user, 2026-10-19):
 until the end of October 2026, use only GPUs with free memory (other jobs run on the rest; check before launching and
 never kill a job you did not start); from November 2026 all eight H100s are available to this project. The final
-phase now opens on 2026-10-27, so the release-week runs (Oct 27-31) still use free GPUs only. `/home` is
-shared and about 95% full: ask before writing more than 50 GB.
+phase opened on 2026-10-27, so the release-week runs (Oct 27-31) still use free GPUs only. `/home` is
+shared and 89% full (1.6 TB free on 2026-10-28): ask before writing more than 50 GB.
 
 ## Setup on the DGX
 
@@ -50,9 +50,15 @@ tmux new -d -s vec-<name> 'CUDA_VISIBLE_DEVICES=<ids> uv run vec <command> 2>&1 
 
 Monitor with `tail -n 50 runs/logs/<name>.log`. Bring back only scores and small figures; checkpoints stay on the DGX.
 
+Jobs that use numpy or scikit-learn need BLAS thread caps on the DGX: a run without `OPENBLAS_NUM_THREADS` crashed on
+2026-10-28 ("OpenBLAS warning: precompiled NUM_THREADS exceeded", then "malloc(): corrupted top size"); keep it at 64
+or less. The repo's shell runners set `OMP_NUM_THREADS`, `OPENBLAS_NUM_THREADS` and `MKL_NUM_THREADS` themselves (at
+most 16 per process); a command started directly with `uv run` needs them on its command line, for example
+`OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 uv run python ...`.
+
 ## Constraints
 
-- `/home` on the DGX is about 96% full (roughly 600 GB free, shared). Check `df -h /home` before large writes and ask
-  before writing more than 50 GB.
+- `/home` on the DGX is 89% full (1.6 TB free, shared; `df -h /home` on 2026-10-28). Check it before large writes
+  and ask before writing more than 50 GB.
 - Stay inside `~/v`; the `prachh` account is shared with other lab members.
 - No system packages and no changes to the shared conda base. uv only.

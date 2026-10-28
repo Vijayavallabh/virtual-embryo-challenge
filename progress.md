@@ -102,14 +102,25 @@ blocked by the 403 on the panel files. The release-day rules are signed off and 
       - `vec.t1_scope`: chamber categories for every released T1 label (`configs/t1_chamber_classes.yaml`),
         re-weighting to input shares, momentum shift; E8.5 -> E9.5 pseudo-task (`experiments/t1_scope/results/`).
       - `experiments/t3_decomp/build_submission.py`: s1/s2 from the decision file, no re-deciding.
+- [x] 2026-10-27 to 2026-10-28 (details under Blockers / Risks): the final phase opened and runbook step 0 passed; the
+      history of `main` was rewritten without the AI co-author trailer (the user's decision, `docs/COMMIT_MAP.md`);
+      the user unlocked the validation answers, the data client reads them (e0e1d58) and step 2 is done (f423f6a;
+      feat-003 done); step 3 (labels) done at the user's go-ahead (aebcb8c, d6b9566); A1 passed, and A20 passed on
+      the user's reading (d47badf); the fourth organiser email, drafted by the AI assistant, was sent by the user
+      (ed3b1bc). `./init.sh`: 366 passed.
 
 ### What's Next
 
 1. Until 2026-10-27: work that needs no release data (`docs/PLAN.md` section 7): external data through committed
    window filters (feat-007), v1 pipelines on released stages, B0 builds checked with `vec check` on the DGX.
+   (2026-10-28: that week is over; these items are still open in `feature_list.json`.)
 2. 2026-10-27, once `vec submit status` shows the final phase: follow `docs/P3_RUNBOOK.md` (board intake with anchors
    stripped, the quota shape, data, label map, pre-registered runs, commit each output), then emulator calibration
    (feat-005) and test-board intake (D1).
+   (2026-10-28: step 0 passed on 2026-10-27, step 1 is blocked by the 403, steps 2 and 3 are done. Next is step 4,
+   the pre-registered runs in order (4.1 size, 4.2 T3 Gata4 decomposition with the replicate overlap first, 4.3 T1
+   direction readout, 4.4 harmonisation, 4.5 density rerun, 4.6 scorer-build anchor check), each output committed
+   before anything else; ask the user before starting. Then section 5.)
 3. B0 floor-plus files on all four boards with the builders (feat-009); T3 per-gene factor on Gata4 (feat-012); T1
    scope shares by a written rule (feat-014).
 
@@ -133,6 +144,13 @@ blocked by the 403 on the panel files. The release-day rules are signed off and 
       The fourth email (the 403 on the panel files, what counts when the captain marks no final entry, confirmation
       of the A20 reading; the scorer build still open) was sent by the user on 2026-10-28 at 15:41 IST, signed "Team
       captain, Mithril" (`docs/ORGANIZER_QUESTIONS.md`). No reply to any of the four emails in that mailbox as of then.
+- [ ] **Main blocker for submitting (2026-10-28):** the board specs. `panels/index.json` answers HTTP 403 to our
+      client (not worked around), `boards/` holds only the P2 specs, and `vec submit` checks the board against
+      `boards/index.json` first, so it refuses every upload to the four test boards, format checks included, until
+      the specs are in (`docs/P3_RUNBOOK.md`, step 1). Step 4 does not need them; candidate files need the test
+      boards' cell limits. Asked in the fourth email (sent 2026-10-28); fallbacks are the user's call: wait for the
+      reply, a public question in #virtual-embryo-challenge, or the user saving the file in the browser ("Save link
+      as", never opening it) for an intake that strips the anchors in memory (not built yet).
 - [ ] Release day (2026-10-27, checked to 17:43 UTC): the final phase is open (public phase endpoint: p3, split
       test, accepts submissions; official quota keys T1:test, T2:heart:test_extrap, T2:embryo:test_interp and
       T3:bcatenin, 0/2 used each; daily per task: scored 0/2, uploads 0/8). Runbook step 0 passed (357 tests, nothing
@@ -169,7 +187,8 @@ blocked by the 403 on the panel files. The release-day rules are signed off and 
       explicitly unlock the official P2 validation release above, you may use those released validation files for
       P3 preparation. This does not permit access to hidden test data or other restricted external sources."
       Still open: the 403 on the panel files (step 1, the test-board specs) and the user's reading for A20 (inputs
-      at prediction time), which steps 4.1-4.3 need.
+      at prediction time), which steps 4.1-4.3 need. (Later on 2026-10-28 the user read Rules s.10 and the Data page
+      as allowing it: A20 passed, `ASSUMPTIONS.md`; the 403 remains.)
 - [x] 2026-10-28: runbook step 3 (labels) done, at the user's go-ahead. The 30 labels first seen in the validation
       answers are mapped in `configs/lineage_map.yaml` by its 2026-10-19 rule, and the 8 labels new to a T1 file in
       `configs/t1_chamber_classes.yaml` (6 new names plus OFT-CM and Gut Endoderm). Evidence: classifier calls
@@ -191,14 +210,15 @@ blocked by the 403 on the panel files. The release-day rules are signed off and 
       nominations_open); the timeline makes 2026-12-02 the last moment to nominate. Rules s.11 still says the board
       ranks a team by its best; what counts if the captain marks nothing is not stated. The user (captain) marks
       the final entries after the last official upload; ask the organisers what an unmarked board gets
-      (`docs/P3_RUNBOOK.md`, section 5).
+      (`docs/P3_RUNBOOK.md`, section 5). Asked in the fourth email (sent 2026-10-28); no reply yet.
 - [x] 2026-10-27: history of `main` rewritten (user's decision) to drop the AI co-author trailer from all 44 commit
       messages; trees, parents, authors and dates checked identical; old -> new IDs in `docs/COMMIT_MAP.md`;
       force-pushed, DGX .git refreshed. Older IDs quoted in files resolve through that table.
 - [ ] The user's decision: the collaborative Yukon track (organisers' email of 2026-10-20 22:03 IST). The entry stays
       an official Human Team unless the user decides otherwise; nothing has been done toward joining. Moving is
-      one-way and ends official-prize eligibility, a team left empty is archived, and the collaborative phase ends
-      before 2026-10-27.
+      one-way and ends official-prize eligibility, a team left empty is archived, and the collaborative phase was
+      to end before P3 opened on 2026-10-27. (2026-10-28: P3 is open and the entry is still an official Human
+      Team, Mithril.)
 - [x] 2026-10-21: the user signed off ("approve all") on the other agent-written rules that act on the
       release (heart and embryo size procedure, T1 direction readout, cell-count rule, label-mapping rule): all eight
       recommended answers in `docs/RELEASE_RULES_SUMMARY.md` (drafted by the AI assistant on 2026-10-20). The gaps it
@@ -220,6 +240,10 @@ blocked by the 403 on the panel files. The release-day rules are signed off and 
       route is used meanwhile.
 - [ ] Quota shape: `official_per_board` is unpublished. The client refuses official uploads until it can read it;
       check with `vec submit status` once the final phase opens and adapt the parser (with a review) if needed.
+      2026-10-28 (as served since 2026-10-27): the final phase serves it (keys T1:test, T2:heart:test_extrap,
+      T2:embryo:test_interp and T3:bcatenin, 0/2 used each), but the client reads a board's entry only for a board
+      in `boards/index.json`, which still holds the P2 specs (step 1, 403), so the test boards' entries are not yet
+      checked through it.
 - [x] Upload logistics (decided by the user, 2026-10-19; built and verified the same day): `vec submit PATH --board KEY
       --from-dgx` pulls the built file into a private copy for that call only; the key never goes to the DGX.
 - [x] Provenance across machines: "dgx provenance" alone checked only the code checked out at upload time, not the
@@ -240,6 +264,9 @@ blocked by the 403 on the panel files. The release-day rules are signed off and 
 - **Heart size procedure fixed before the release** (core = CM + endocardium; E9.5-E10.5 only; fixed three-rule average;
   z held when the plane matches; H1/H2 scope). **T3 leads with the per-gene factor** from released knockouts.
 - **No parity hedge without the organisers' approval** (user, 2026-10-19). **History rewritten again** (user).
+- **2026-10-27 and 2026-10-28** (user): history rewritten once more to drop the AI co-author trailer; the validation
+  answers unlocked (P2 submissions end for the whole team) and read as allowed as training data and model inputs
+  (A20; organiser confirmation asked); the go-ahead for runbook step 3.
 - **GPUs:** free VRAM only until the end of October; all eight H100s from November (user, 2026-10-19).
 - **Uploads pull from the DGX** (user, 2026-10-19): `vec submit PATH --board KEY --from-dgx` streams the built file
   from the DGX into the client's private temporary copy at upload time; no lasting local copy, and the key never
@@ -247,8 +274,8 @@ blocked by the 403 on the panel files. The release-day rules are signed off and 
 
 ## Evidence of Completion
 
-- [x] `./init.sh`: lock check, ruff clean, 237 tests pass; experiment tests 203 pass, 2 skipped locally (the T3
-      end-to-end tests, which pass on the DGX: 50 T3 tests in all).
+- [x] `./init.sh` on 2026-10-28: lock check, ruff clean, 366 tests pass. Recorded on 2026-10-19 (237 tests then):
+      experiment tests 203 pass, 2 skipped locally (the T3 end-to-end tests, which pass on the DGX: 50 T3 tests in all).
 - [x] DGX: torch 2.14.1+cu130 with CUDA, jax 0.11.2, moscot 0.5.2, scvi-tools 1.5.1 import (runs/logs/setup2.log).
 
 ## Notes for Next Session
@@ -257,15 +284,24 @@ blocked by the 403 on the panel files. The release-day rules are signed off and 
   leak report). Six workspace accounts use eigenlabs.org addresses (none has posted); record their posts, or posts in a
   new Yukon channel, by place and date only.
 - The Data Protocol (label table, units, sectioning) was promised before the test phase opens (an organiser,
-  2026-10-16): look for it on the Data page this week (never the board file).
+  2026-10-16): look for it on the Data page this week (never the board file). (2026-10-28: the test phase opened on
+  2026-10-27; whether the Data page now has the protocol is not recorded.)
 
 - `neighborhood_mmd` builds 15-NN neighbourhoods over all submitted cells, so submitted density moves T2 scores.
 - Ctnnb1 is not on the 500-gene MERFISH panel: gene_ko gives nothing for the beta-catenin test board.
 - T1 E12.5 is a heart-chamber-only dissection; earlier stages include surrounding tissue.
 - DGX research scratch removed on 2026-10-19 (user's OK); `~/v/vec-gapconc` keeps only `ext/` and `out/`, the
   legal inputs the committed filters in `experiments/external/` read (the JAX files are hard-linked into data/external).
+- DGX: cap the BLAS threads for numpy and scikit-learn jobs (`OPENBLAS_NUM_THREADS` 64 or less; the runners set
+  `OMP_NUM_THREADS`, `OPENBLAS_NUM_THREADS` and `MKL_NUM_THREADS` themselves, e.g. 8 in `experiments/coords/run_p3.sh`
+  and 16 in `experiments/t3_decomp/run_gata4.sh`). Without the cap a run crashed on 2026-10-28 ("OpenBLAS warning:
+  precompiled NUM_THREADS exceeded", then "malloc(): corrupted top size").
 - `experiments/harmonise_review/review.py` has 5 pre-existing ruff findings (outside the checked `src tests`).
 - Release day (2026-10-27): re-check #virtual-embryo-challenge and the Rules/Data pages (never the board file) for
   the release time, submission rules, scorer version and any Yukon details the organisers post; an organiser said on
   2026-09-01 that T2 E8.5 is released when the final stage starts. Before the first upload, confirm that our account
   sign-in works (a participant saw "Sign-in is not available yet" on the account page on 2026-10-18).
+  2026-10-28: P3 opened on 2026-10-27 at 16:00 UTC (Rules s.11); the Rules and Data pages were read, screened, on
+  2026-10-28 (Blockers above); T2 E8.5 came as an opt-in validation answer and is on the DGX. Not re-checked yet:
+  Slack (last swept 2026-10-23); the scorer build is runbook step 4.6. Sign-in works: the user signed in to accept
+  the Rules (2026-10-27) and to unlock the validation answers (2026-10-28).

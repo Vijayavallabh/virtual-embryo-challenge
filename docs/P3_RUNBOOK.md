@@ -9,7 +9,14 @@ unlock: 2026-10-28 09:32 UTC). No test inputs are distributed. Everything below 
 before the release; run it as written and commit each output before looking at anything else. Steps marked **(user)**
 need you.
 
+Progress (2026-10-28): step 0 passed, step 1 is blocked, steps 2 and 3 are done, and step 4 is next; the user is asked
+before it starts. Each step's status is noted under its heading.
+
 ## 0. Before anything
+
+Status: passed on 2026-10-27 (phase p3, split test, accepting submissions; official quota keys T1:test,
+T2:heart:test_extrap, T2:embryo:test_interp and T3:bcatenin, 2 scored submissions each for the whole phase, none used;
+nothing unresolved).
 
 - **(user)** Do not open `panels/index.json` on the challenge site or the public board endpoints, and skip Slack threads
   that discuss sizes or other values worked out from anchors. Test-board anchors, if published, encode the hidden
@@ -28,6 +35,13 @@ need you.
 
 ## 1. Board specs (anchors stripped in memory)
 
+Status (2026-10-28): blocked. Since 2026-10-27 `vec boards update` fails: `panels/index.json` answers HTTP 403
+(Cloudflare) to our scripted client. It is not worked around (no other user agents or endpoints), so `boards/` still
+holds the P2 specs. The fourth organiser email (sent 2026-10-28) asks how to get the test boards' specs; the test-board
+intake (section 5) waits for them. So does every upload: `vec submit` checks the board against `boards/index.json`
+first (the board guard in `vec.submit.prepare`), so until the test boards are there it refuses every upload to them,
+format checks included. This is the main blocker for submitting; the pre-registered runs of step 4 do not need it.
+
 ```bash
 uv run vec boards update      # same as vec.boards.update_boards(); test anchors stripped in memory, never printed
 git add boards && git commit -m "Board specs for the final phase (test anchors stripped at intake)"
@@ -41,6 +55,11 @@ read, re-run `uv run vec boards update` before committing.
 
 ## 2. Data
 
+Status: done on 2026-10-28 (f423f6a). After the user's unlock (09:32 UTC) the data client fetched the validation
+answers (support added in e0e1d58): the six files (T1/E10.5_RNA, T2/E8.5, T2/E10.5, T2/E7.5, T3/E8.75_gata4_ko_1 and
+_2; 2.09 GB) reached `data/raw/T*/` on the DGX at 09:51-09:53 UTC, sizes as listed. The site publishes no checksums,
+so the SHA-256 sums of all 15 files are in `data/raw/SHA256SUMS` there; inventory and QC are in `docs/DATA_NOTES.md`.
+
 ```bash
 uv run vec data manifest      # local: needs the team token; training files, the unlock state, the validation answers
 uv run vec data fetch         # local: streams each signed link to curl on PrakashDGX_H2 (default --dest data/raw there)
@@ -53,17 +72,28 @@ records, row order) in `docs/DATA_NOTES.md`, and commit.
 
 ## 3. Labels (before any method touches a new file)
 
+Status: done on 2026-10-28 (d6b9566), at the user's go-ahead. The AI assistant mapped the 30 labels first seen in the
+validation answers in `configs/lineage_map.yaml` by its 2026-10-19 rule (three independent mappers, 29 of 30
+unanimous, a judge for BW) and the 8 labels new to a T1 file in `configs/t1_chamber_classes.yaml`. Evidence:
+`experiments/labels/` (script aebcb8c) and `experiments/t1_scope/results/label_evidence_E9.5_E10.5/`. New core labels:
+Endocardium-1, Endocardium-2 and EndoMT Endocardium (T1), Valve-EndoMT-Endo (T2 E10.5) and the Gata4 files' CM. Every
+label of all 15 files maps (DGX check).
+
 Map every new label in `configs/lineage_map.yaml` with the rule in its header (core = cardiomyocytes and endocardium;
 ambiguous labels default to shell after a marker check with `scripts/label_markers.py`). Commit the map. The size
 procedure refuses unmapped labels.
 
 ## 4. Pre-registered runs, in order (commit each output with the git hash)
 
+Status (2026-10-28): next; the user is asked before it starts. On the DGX, a command here that no runner script wraps
+needs the BLAS thread caps in `docs/COMPUTE.md`.
+
 1. **Heart and embryo size:** `bash experiments/coords/run_p3.sh` (paths as arguments). Commit
    `experiments/coords/results/p3/`. The heart JSON sizes both heart submissions through `vec.t2_build.size_or_hold`
    (approved rule 3, `docs/RELEASE_RULES_SUMMARY.md`): as recorded when `valid` is true; when `valid` is false while
-   E10.5 is usable, both keep E10.5's size. If E10.5 is barred (A20), the size rule goes back to the user. An embryo
-   JSON with `valid` false is not used.
+   E10.5 is usable, both keep E10.5's size. If E10.5 is barred (A20), the size rule goes back to the user
+   (2026-10-28: A20 passed on the user's reading, so E10.5 is usable; organiser confirmation is asked in the fourth
+   email). An embryo JSON with `valid` false is not used.
 2. **T3 decomposition on Gata4.** First count identical count rows shared by the two replicate files (rules.yaml
    note 4: more than 1% shared means the borrowed-replicate rules are recorded as not independent):
    `uv run python experiments/t3_decomp/replicate_overlap.py REP1.h5ad REP2.h5ad --out
@@ -155,14 +185,14 @@ procedure refuses unmapped labels.
     calls.
   - T1: `vec.t1_scope.build_submission` once the shares are fixed by their written rule (docs/PLAN.md section 4.1);
     pass `ref_source` (the reference file's stem) so the per-file label remaps apply.
-- Update `ASSUMPTIONS.md` (A1, A2, A3, A13, A19) and `progress.md`.
+- Update `ASSUMPTIONS.md` (A1, A2, A3, A13, A19) and `progress.md`. A1 is confirmed (2026-10-28).
 - **(user)** Final entries. The account page (seen in the site's public script, 2026-10-28): "The leaderboard shows
   your team's best score on each board, so there is nothing to nominate yet. In the final phase the captain picks
   which submission counts." While nominations are open, the captain sees a "Final" column in the team's submission
   list and marks a scored submission (or a bundle) as final. The timeline: 2026-12-02 is "the last moment a submission
   can be made or a final entry nominated. Nothing after this counts, in either track." Rules s.11 still says a board
-  ranks a team by its best; what counts when no entry is marked is not stated (ask the organisers). Mark the final
-  entries after the last official upload and before 2026-12-02.
+  ranks a team by its best; what counts when no entry is marked is not stated (asked in the fourth organiser email,
+  2026-10-28). Mark the final entries after the last official upload and before 2026-12-02 (the user is the captain).
 
 ## Never today
 

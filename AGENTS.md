@@ -21,8 +21,10 @@ If baseline verification is failing, repair that first before adding new scope.
 ## Invariants (never violate)
 
 - **Data-use rules.** Never train, tune or select on measured data inside a held-out window, by any route
-  (directly, via a pretrained model, via a public atlas). The windows are listed in `docs/DATA_POLICY.md`. Every
-  external dataset, pretrained model or published code must be logged in `EXTERNAL_DATA.md` *before* it enters a model.
+  (directly, via a pretrained model, via a public atlas). The windows are listed in `docs/DATA_POLICY.md`, with the
+  one exception: the official validation files our team unlocked on 2026-10-28 may be used for preparing P3
+  predictions (Rules s.10; A20). Every external dataset, pretrained model or published code must be logged in
+  `EXTERNAL_DATA.md` *before* it enters a model.
 - **Quarantined material.** Never open veckit PyPI 0.1.2, veckit PR #6, the raw research-workflow outputs, the Yukon
   partner team's material (yukon.org), or the public board file / board endpoints (test-board anchors encode hidden
   targets). Refresh boards only with `vec.boards.update_boards`. Read research results through the screened digest;
@@ -64,6 +66,8 @@ If baseline verification is failing, repair that first before adding new scope.
   local board emulator, `baselines.py` reference baselines, `cli.py` the `vec` command, `core.py` the shared core,
   `t1_scope.py` and `t2_build.py` the T1 and T2 heads).
 - `configs/`: experiment configs. `runs/` (gitignored): per-run outputs. `results/registry.csv`: one row per scored run.
+- `experiments/`: one folder per study (scripts, reports, committed `results/`); `docs/P3_RUNBOOK.md` step 4 names the
+  pre-registered ones, and `labels/` holds the classifier evidence for the validation answers (step 3, 2026-10-28).
 - `boards/`: public board specs from the challenge site (`index.json`, panel gene lists, T1 composition).
 - `data/` (gitignored): `raw/` competition files, `external/` disclosed external data.
 - `docs/`: `CHALLENGE.md`, `PLAN.md`, `DATA_POLICY.md`, `COMPUTE.md`, `research/` (background reports).
