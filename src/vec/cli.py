@@ -181,13 +181,30 @@ app.add_typer(data_app, name="data")
 
 @data_app.command("manifest")
 def data_manifest(token_file: Path = typer.Option(vec_data.DEFAULT_TOKEN_FILE, help="bearer token file (mode 600)")):
-    """List the files your account can download."""
-    files = _authed(lambda: vec_data.manifest(vec_data.load_token(token_file)))
-    t = Table("key", "task", "role", "stage", "modality", "MB")
-    for f in files:  # server text
-        t.add_row(*map(escape, [f.key, f.task, f.role, f.stage, f.modality, f"{f.bytes / 1e6:.0f}"]))
-    console.print(t)
-    console.print(f"{len(files)} files, {sum(f.bytes for f in files) / 1e9:.2f} GB")
+    """List the files your account can download: the training files, then the validation answers once unlocked."""
+    files, state = _authed(lambda: vec_data.released_files(vec_data.load_token(token_file)))
+    for source in ("train", vec_data.VALIDATION):
+        part = [f for f in files if f.source == source]
+        if source == vec_data.VALIDATION:
+            _print_validation_state(state)
+            if not part:
+                continue
+        t = Table("key", "task", "role", "stage", "modality", "MB", "other fields")
+        for f in part:  # server text
+            mb = f"{f.bytes / 1e6:.0f}" if f.bytes else "?"
+            t.add_row(*map(escape, [f.key, f.task, f.role, f.stage, f.modality, mb,
+                                    json.dumps(f.extra) if f.extra else "-"]))
+        console.print(t)
+        console.print(f"{len(part)} {source} files, {sum(f.bytes for f in part) / 1e9:.2f} GB")
+
+
+def _print_validation_state(state: dict):
+    shown = {k: v for k, v in state.items() if not isinstance(v, (dict, list))}  # server text
+    if state.get("unlocked") and state.get("available"):
+        console.print(f"validation release: unlocked {escape(json.dumps(shown))}")
+    else:
+        console.print(f"validation release: not listed {escape(json.dumps(shown))}; a person unlocks it on the "
+                      "site's Data page, which permanently ends P2 submissions for the whole team (never this tool)")
 
 
 @data_app.command("fetch")
@@ -197,12 +214,16 @@ def data_fetch(
     match: str = typer.Option("", help="only keys containing this substring"),
     token_file: Path = typer.Option(vec_data.DEFAULT_TOKEN_FILE, help="bearer token file (mode 600)"),
 ):
-    """Download released files (one signed link at a time); already complete files are skipped."""
+    """Download released files, validation answers included once unlocked (one signed link at a time); already
+    complete files are skipped."""
     token = _authed(lambda: vec_data.load_token(token_file))
-    files = [f for f in _authed(lambda: vec_data.manifest(token)) if match in f.key]
+    listed, state = _authed(lambda: vec_data.released_files(token))
+    _print_validation_state(state)
+    files = [f for f in listed if match in f.key]
     for i, f in enumerate(files, 1):
         status = _authed(lambda f=f: vec_data.fetch_one(f, token, dest, host or None))
-        console.print(f"[{i}/{len(files)}] {status:10s} {escape(f.key)} ({f.bytes / 1e6:.0f} MB)")
+        size = f"{f.bytes / 1e6:.0f} MB" if f.bytes else "size not listed"
+        console.print(f"[{i}/{len(files)}] {status:10s} {escape(f.key)} ({size}, {f.source})")
 
 
 @data_app.command("inventory")

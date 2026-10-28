@@ -202,6 +202,130 @@ def _wide_cli(monkeypatch):
     return cli
 
 
+def _api(routes, seen):
+    """Loopback API: a GET is answered by path from `routes` (path -> answers, the last one repeated), a request of
+    any other method is refused; every request goes into `seen` as (method, path)."""
+
+    class Api(BaseHTTPRequestHandler):
+        def log_message(self, *args):
+            pass
+
+        def _answer(self, code, body):
+            raw = json.dumps(body).encode()
+            self.send_response(code)
+            self.send_header("Content-Length", str(len(raw)))
+            self.end_headers()
+            self.wfile.write(raw)
+
+        def do_GET(self):
+            seen.append(("GET", self.path))
+            answers = routes.get(self.path) or [(404, {"detail": "not found"})]
+            self._answer(*(answers.pop(0) if len(answers) > 1 else answers[0]))
+
+        def do_POST(self):
+            seen.append(("POST", self.path))
+            self._answer(405, {"detail": "refused"})
+
+    srv = ThreadingHTTPServer(("127.0.0.1", 0), Api)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    return srv
+
+
+TRAIN_ROWS = [{"key": "T2/E9.5.h5ad", "task": "T2", "role": "train", "stage": "E9.5", "modality": "MERFISH",
+               "bytes": 5}]
+VAL_ROWS = [{"key": "T2/E8.5.h5ad", "task": "T2", "role": "validation", "stage": "E8.5", "modality": "MERFISH",
+             "bytes": 7, "sha256": "ab12"}]
+UNLOCKED = {"unlocked": True, "available": True, "lock_scope": "team"}
+
+
+def test_validation_answers_are_listed_and_linked_from_their_own_endpoints_once_unlocked(monkeypatch):
+    import vec.data as vd
+
+    seen = []
+    srv = _api({"/challenge/data/manifest": [(200, {"files": TRAIN_ROWS})],
+                "/challenge/data/validation/state": [(200, UNLOCKED)],
+                "/challenge/data/validation/manifest": [(200, {"files": VAL_ROWS})],
+                "/challenge/data/validation/link?key=T2/E8.5.h5ad": [(200, {"url": "https://signed/val"})],
+                "/challenge/data/link?key=T2/E9.5.h5ad": [(200, {"url": "https://signed/train"})]}, seen)
+    try:
+        monkeypatch.setattr(vd, "API_BASE", f"http://127.0.0.1:{srv.server_port}")
+        files, state = vd.released_files(TOKEN)
+        assert [(f.key, f.source, f.bytes, f.extra) for f in files] == [
+            ("T2/E9.5.h5ad", "train", 5, {}), ("T2/E8.5.h5ad", "validation", 7, {"sha256": "ab12"})]
+        assert state == UNLOCKED
+        assert vd.signed_link(files[1].key, TOKEN, files[1].source) == "https://signed/val"
+        assert vd.signed_link(files[0].key, TOKEN, files[0].source) == "https://signed/train"
+    finally:
+        srv.shutdown()
+    assert [m for m, _ in seen] == ["GET"] * 5 and not any("unlock" in p for _, p in seen)
+
+
+@pytest.mark.parametrize("state", [{"unlocked": False, "available": True}, {"unlocked": True, "available": False}, {}])
+def test_a_locked_or_unavailable_validation_release_is_never_listed(monkeypatch, state):
+    import vec.data as vd
+
+    seen = []
+    srv = _api({"/challenge/data/manifest": [(200, {"files": TRAIN_ROWS})],
+                "/challenge/data/validation/state": [(200, state)]}, seen)
+    try:
+        monkeypatch.setattr(vd, "API_BASE", f"http://127.0.0.1:{srv.server_port}")
+        files, _ = vd.released_files(TOKEN)
+    finally:
+        srv.shutdown()
+    assert [f.source for f in files] == ["train"]
+    assert seen == [("GET", "/challenge/data/manifest"), ("GET", "/challenge/data/validation/state")]
+
+
+def test_a_validation_key_that_is_also_a_training_key_is_refused(monkeypatch):
+    import vec.data as vd
+
+    srv = _api({"/challenge/data/manifest": [(200, {"files": TRAIN_ROWS})],
+                "/challenge/data/validation/state": [(200, UNLOCKED)],
+                "/challenge/data/validation/manifest": [(200, {"files": [dict(VAL_ROWS[0], key="T2/E9.5.h5ad")]})]},
+               [])
+    try:
+        monkeypatch.setattr(vd, "API_BASE", f"http://127.0.0.1:{srv.server_port}")
+        with pytest.raises(RuntimeError, match="both as training and validation"):
+            vd.released_files(TOKEN)
+    finally:
+        srv.shutdown()
+
+
+def test_no_code_can_unlock_the_validation_release():
+    """The unlock permanently ends P2 submissions for the whole team: only a person on the site's Data page makes it."""
+    from pathlib import Path
+
+    import vec
+
+    for path in Path(vec.__file__).parent.rglob("*.py"):
+        src = path.read_text()
+        assert "validation/unlock" not in src and "confirm_end_p2" not in src, path
+
+
+def test_fetch_one_asks_the_validation_link_endpoint_and_keeps_a_finished_unsized_file(tmp_path, monkeypatch):
+    import vec.data as vd
+
+    asked, ran = [], []
+    monkeypatch.setattr(vd, "signed_link", lambda key, token, source="train": asked.append((key, source)) or "https://x")
+
+    def curl_then_mv(cmd, input, text, check):  # what the shell line does once curl succeeds
+        ran.append(input)
+        (tmp_path / "T2").mkdir(exist_ok=True)
+        (tmp_path / "T2" / "E8.5.h5ad").write_bytes(b"1234567")
+
+    monkeypatch.setattr(vd.subprocess, "run", curl_then_mv)
+    f = DataFile(key="T2/E8.5.h5ad", task="T2", role="validation", stage="E8.5", modality="MERFISH", bytes=0,
+                 source=vd.VALIDATION)
+    assert vd.fetch_one(f, TOKEN, str(tmp_path), None) == "downloaded"
+    assert asked == [("T2/E8.5.h5ad", "validation")] and ran == ['url = "https://x"\n']
+    assert vd.fetch_one(f, TOKEN, str(tmp_path), None) == "present"  # no size listed: the finished file is kept
+    sized = DataFile(key="T2/E8.5.h5ad", task="T2", role="validation", stage="E8.5", modality="MERFISH", bytes=9,
+                     source=vd.VALIDATION)
+    with pytest.raises(RuntimeError, match="got 7 bytes, manifest says 9"):  # a listed size still decides
+        vd.fetch_one(sized, TOKEN, str(tmp_path), None)
+    assert len(asked) == 2
+
+
 def test_server_text_is_never_markup_in_the_data_commands(tmp_path, monkeypatch):
     from typer.testing import CliRunner
 
@@ -209,22 +333,11 @@ def test_server_text_is_never_markup_in_the_data_commands(tmp_path, monkeypatch)
 
     files = [{"key": "T1/[red]E8.5[/].h5ad", "task": "[bold]T1", "role": "train", "stage": "E8.5", "modality": "[/]rna",
               "bytes": 10}]
-    answers = [(401, {"detail": "expired [/]"}), (200, {"files": files}), (200, {"files": files})]
-
-    class Api(BaseHTTPRequestHandler):
-        def log_message(self, *args):
-            pass
-
-        def do_GET(self):
-            code, body = answers.pop(0)
-            raw = json.dumps(body).encode()
-            self.send_response(code)
-            self.send_header("Content-Length", str(len(raw)))
-            self.end_headers()
-            self.wfile.write(raw)
-
-    srv = ThreadingHTTPServer(("127.0.0.1", 0), Api)
-    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    val = [{"key": "T1/[bold]E10.5.h5ad", "task": "T1", "role": "[/]val", "stage": "E10.5", "modality": "rna",
+            "note": "[red]x"}]
+    srv = _api({"/challenge/data/manifest": [(401, {"detail": "expired [/]"}), (200, {"files": files})],
+                "/challenge/data/validation/state": [(200, {**UNLOCKED, "lock_scope": "[red]team"})],
+                "/challenge/data/validation/manifest": [(200, {"files": val})]}, [])
     try:
         cli = _wide_cli(monkeypatch)
         monkeypatch.setattr(vd, "API_BASE", f"http://127.0.0.1:{srv.server_port}")
@@ -236,8 +349,12 @@ def test_server_text_is_never_markup_in_the_data_commands(tmp_path, monkeypatch)
         res = runner.invoke(cli.app, ["data", "manifest", *unused])
         assert res.exit_code == 0, res.output
         assert "T1/[red]E8.5[/].h5ad" in res.output and "[bold]T1" in res.output and "[/]rna" in res.output
+        assert "T1/[bold]E10.5.h5ad" in res.output and "[/]val" in res.output and '{"note": "[red]x"}' in res.output
+        assert '"lock_scope": "[red]team"' in res.output and "1 validation files" in res.output
         res = runner.invoke(cli.app, ["data", "fetch", "--host", "", *unused])
-        assert res.exit_code == 0 and "[1/1] present    T1/[red]E8.5[/].h5ad (0 MB)" in res.output, res.output
+        assert res.exit_code == 0, res.output
+        assert "[1/2] present    T1/[red]E8.5[/].h5ad (0 MB, train)" in res.output
+        assert "[2/2] present    T1/[bold]E10.5.h5ad (size not listed, validation)" in res.output
         assert TOKEN not in res.output
     finally:
         srv.shutdown()

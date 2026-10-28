@@ -2,10 +2,13 @@
 
 The site signs in through GitHub and keeps a short-lived bearer token in the browser (localStorage key
 `ve-challenge-session`). The API lists released files at /challenge/data/manifest and hands out a signed URL per file at
-/challenge/data/link?key=..., valid for 15 minutes.
+/challenge/data/link?key=..., valid for 15 minutes. In the final phase the P2 validation answers have their own state,
+list and links under /challenge/data/validation/ (state, manifest, link?key=...), served once the team has unlocked
+them. The unlock is a POST that permanently ends P2 submissions for the whole team; a person makes it on the site's
+Data page (done on 2026-10-28), and this module never sends it.
 
 The token is a team API key that can also make official submissions, so this module only ever issues GET requests for
-the manifest and download links; uploads belong in a dedicated client that defaults to format-only (feat-016). The token
+the lists and download links; uploads belong in a dedicated client that defaults to format-only (feat-016). The token
 stays on the machine that runs this module (default ~/.config/vec/token, mode 600) and is never printed: load_token
 refuses one that is not a single run of printable ASCII (http.client would quote such a header value in an error), and
 the server's error text has it redacted before it goes into an exception.
@@ -24,10 +27,11 @@ import subprocess
 import urllib.error
 import urllib.parse
 import urllib.request
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 API_BASE = "https://api.virtualembryo.ai"
+VALIDATION = "validation"  # DataFile.source of the P2 validation answers (final phase, after the team's unlock)
 DEFAULT_TOKEN_FILE = Path.home() / ".config" / "vec" / "token"
 SAFE_KEY = re.compile(r"^[A-Za-z0-9._/+-]+$")
 TOKEN_CHARS = re.compile(r"[\x21-\x7e]+")  # printable ASCII without spaces
@@ -111,7 +115,9 @@ class DataFile:
     role: str
     stage: str
     modality: str
-    bytes: int
+    bytes: int  # 0 when the list gives no size
+    source: str = "train"  # or VALIDATION: which list the file came from, and so which link endpoint serves it
+    extra: dict = field(default_factory=dict)  # any other fields the list gives (a checksum, say), as served
 
     @property
     def relpath(self) -> str:
@@ -120,15 +126,46 @@ class DataFile:
         return self.key
 
 
-def manifest(token: str) -> list[DataFile]:
-    m = api_get("/challenge/data/manifest", token)
+KNOWN_FIELDS = {"key", "task", "role", "stage", "modality", "bytes"}
+
+
+def _files(m: dict, source: str) -> list[DataFile]:
     return [DataFile(key=f["key"], task=str(f.get("task", "")), role=str(f.get("role", "")),
                      stage=str(f.get("stage", "")), modality=str(f.get("modality", "")),
-                     bytes=int(f.get("bytes", 0))) for f in m["files"]]
+                     bytes=int(f.get("bytes") or 0), source=source,
+                     extra={k: v for k, v in f.items() if k not in KNOWN_FIELDS}) for f in m["files"]]
 
 
-def signed_link(key: str, token: str) -> str:
-    return api_get(f"/challenge/data/link?key={urllib.parse.quote(key)}", token)["url"]
+def manifest(token: str) -> list[DataFile]:
+    return _files(api_get("/challenge/data/manifest", token), "train")
+
+
+def validation_state(token: str) -> dict:
+    """The team's state for the P2 validation release, as served (the site reads `unlocked`, `available` and
+    `lock_scope`). Asking changes nothing."""
+    return api_get("/challenge/data/validation/state", token)
+
+
+def validation_manifest(token: str) -> list[DataFile]:
+    return _files(api_get("/challenge/data/validation/manifest", token), VALIDATION)
+
+
+def released_files(token: str) -> tuple[list[DataFile], dict]:
+    """The training files, then the validation answers if the team has unlocked them, and the validation state. The
+    site lists the validation files only when the state says unlocked and available, and so does this."""
+    files, state = manifest(token), validation_state(token)
+    if state.get("unlocked") and state.get("available"):
+        val = validation_manifest(token)
+        clash = {f.key for f in files} & {f.key for f in val}
+        if clash:  # one path on disk for two files: never let one overwrite the other
+            raise RuntimeError(f"keys listed both as training and validation files: {sorted(clash)}")
+        files += val
+    return files, state
+
+
+def signed_link(key: str, token: str, source: str = "train") -> str:
+    base = "/challenge/data/validation/link" if source == VALIDATION else "/challenge/data/link"
+    return api_get(f"{base}?key={urllib.parse.quote(key)}", token)["url"]
 
 
 def inventory(path: Path, max_cells_for_checks: int = 20000, seed: int = 0) -> dict:
@@ -198,14 +235,14 @@ def resolve_dest(dest: str, remote: bool) -> str:
 
 
 def fetch_one(f: DataFile, token: str, dest: str, host: str | None) -> str:
-    """Download one file to `dest` (a local dir, or a dir on `host` over ssh). Skips files already complete."""
+    """Download one file to `dest` (a local dir, or a dir on `host` over ssh). Skips files already complete: of the
+    listed size, or, when the list gives no size, present at all (curl writes to `.part` and the file gets its name
+    only after curl finished without error)."""
     target = f"{resolve_dest(dest, remote=bool(host)).rstrip('/')}/{f.relpath}"
-    if host:
-        if _remote_size(host, target) == f.bytes:
-            return "present"
-    elif Path(target).exists() and Path(target).stat().st_size == f.bytes:
+    have = _remote_size(host, target) if host else (Path(target).stat().st_size if Path(target).exists() else -1)
+    if have >= 0 and (have == f.bytes or not f.bytes):
         return "present"
-    url = signed_link(f.key, token)
+    url = signed_link(f.key, token, f.source)
     curl_cfg = f'url = "{url}"\n'
     part = f"{target}.part"
     script = (f"mkdir -p \"$(dirname '{target}')\" && curl -sS -L --fail --retry 3 -C - -K - -o '{part}' "
