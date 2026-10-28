@@ -47,6 +47,34 @@ uv run vec boards update      # same as vec.boards.update_boards(); test anchors
 git add boards && git commit -m "Board specs for the final phase (test anchors stripped at intake)"
 ```
 
+Fallback while the 403 lasts (built on 2026-10-28 at the user's request; when to use it is the user's call, and the AI
+assistant suggests giving the organisers until about 2026-10-31 to answer the fourth email):
+
+1. **(user)** On the site's Data page, right-click the link to the board index (`panels/index.json`) and choose "Save
+   link as" into a new, empty folder outside every git work tree: `~/vec-panels/` on this machine (`~` is
+   /home/sports), not next to the repository, whose parent folder is a git work tree too. If the browser runs on
+   another computer, copy the file here without opening it (e.g. with `scp`) and delete the browser's copy. Never open
+   the file, and never type its address into the browser (that displays it); if the page has no such link, stop and
+   tell the AI assistant.
+2. Run the intake on it. Nobody opens the saved file; the intake reads it in memory and strips the test anchors as
+   the online refresh does. The commit runs only if the intake succeeded, and stages only the files it writes:
+
+   ```bash
+   uv run vec boards update --from-file ~/vec-panels/index.json --delete-source && \
+     git add boards/index.json boards/*.genes.txt boards/t1_composition.json && \
+     git commit -m "Board specs for the final phase (saved index; test anchors stripped at intake)"
+   rm -r -- ~/vec-panels   # afterwards, unless the intake kept the files for a re-run
+   ```
+
+   Each gene list comes from that folder or from a file already in `boards/` with the sha256 the index publishes. If
+   the intake names a gene list it still needs, save that file from the Data page into the same folder and run it
+   again (nothing is written until every list is found). A `t1_composition.json` saved there goes through the same
+   released-stage rule; without one the old file stays. `--delete-source` deletes the saved index (and a saved
+   composition file) after a successful intake; without it the intake prints the `rm` line. A refusal writes
+   nothing and keeps the saved files: do not open them to find out why (the message says what was wrong). If the
+   summary says the phase endpoint could not be read, the files are kept and the intake prints the command to run
+   again. It also names other files in the folder that look like copies of the index (e.g. `index (1).json`).
+
 The summary lists the boards, which ones were reduced to their submission spec, and whether the T1 composition file was
 written (it is skipped if it describes any unreleased stage). Never print `boards/index.json` anchors for a reduced
 board; they are not there. E10.5 counts as unreleased until the public phase endpoint reports the test split; the

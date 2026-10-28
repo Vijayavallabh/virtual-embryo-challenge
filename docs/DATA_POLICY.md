@@ -90,9 +90,16 @@ organisers approve in writing.
 - **The public board file and board endpoints themselves.** `panels/index.json` on the site (and the public
   `/challenge/boards` endpoint) may carry test-board anchors at any time now (the final phase opened on 2026-10-27;
   since then the file answers HTTP 403 to `vec boards update`). Nobody opens them in a browser or fetches them by
-  hand or by script; boards are refreshed only through `vec.boards.update_boards`, which strips non-validation
-  anchors in memory. Team members skip Slack threads that discuss sizes or other values worked out from anchors, and
-  agents reading Slack must not quote such threads.
+  hand or by script; boards are refreshed only through `vec boards update`, which strips non-validation anchors in
+  memory. One more route was added on 2026-10-28 at the user's request, for while the scripted refresh gets HTTP
+  403: the user may save `panels/index.json` from the site with the browser's "Save link as", without opening it,
+  into a folder outside the repository, and run `vec boards update --from-file PATH`
+  (`vec.boards.update_boards_from_file`). It strips the anchors in memory the same way, refuses a file inside any git
+  work tree before reading it (on this machine the repository's parent folder is one), and with `--delete-source`
+  deletes the saved file afterwards (otherwise it says to).
+  Nobody else reads the saved file, and whether and when to use this route is the user's decision. Team members skip
+  Slack threads that discuss sizes or other values worked out from anchors, and agents reading Slack must not quote
+  such threads.
 - **The organisers' Virtual Embryo atlas** (virtualembryo.ai, its predictor and API) lists stages inside protected
   windows (e.g. E7.5 and E11.5 spatial data). The rules name it explicitly: no held-out-stage data from it.
 - **Public atlases spanning a window** (MOCA E9.5-E13.5, MOSTA E10.5-E13.5, the JAX time-lapse between E9.5 and E13.5)
@@ -260,3 +267,11 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   in the calibration condition and the board-file entry in the do-not-use list (panel files HTTP 403 since 2026-10-27),
   the leak-report status and the open question on validation answers. Records that say the validation stages were
   released on 2026-10-20 or 2026-10-27 mean, for our team, this unlock.
+- 2026-10-28 (b): at the user's request ("build the intake"), the board-file entry names a second route for while the
+  panel files answer HTTP 403 to scripts: a board index the user saves with the browser, never opened, goes through
+  `vec boards update --from-file`, which strips test-board anchors in memory as the online refresh does. Its tests
+  feed a sentinel anchor value through the success path and every refusal path and check that it never reaches the
+  terminal or `boards/`. Using the route is the user's call. Before it was committed, an independent review by three
+  AI agents found ways a mistaken file in the saved folder could carry anchors into `boards/` (a copy of the index
+  saved as the composition or as a gene list, a kept field holding nested values); both routes now refuse those,
+  each with a test, and the online refresh had the composition gap too.

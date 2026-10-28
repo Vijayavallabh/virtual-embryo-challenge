@@ -388,7 +388,8 @@ Done:
 - `vec check`, the free format checks; `vec baseline`, the reference baselines; `vec data`, the safe downloader.
 - `vec.prep` loaders (exact count recovery, lineage map with a merged cross-stage level), `vec.spatial` (z snapping,
   duplicated-record detection, `vec data qc`), `vec.harmonise` (label transfer across files and stages).
-- `vec.boards.update_boards`: board refresh that strips test-board anchors in memory.
+- `vec.boards.update_boards`: board refresh that strips test-board anchors in memory; `update_boards_from_file` does
+  the same from a board index the user saved in the browser (2026-10-28, for while the panel files answer HTTP 403).
 - Experiments with independent reviews: density and sampling, coordinates and the pre-registered size procedure,
   label harmonisation (`experiments/*/REPORT.md`).
 - DGX environment (torch 2.14 cu130, scvi-tools, moscot), assumption ledger, data policy, external-data register,

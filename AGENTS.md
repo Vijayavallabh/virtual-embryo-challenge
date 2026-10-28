@@ -27,8 +27,9 @@ If baseline verification is failing, repair that first before adding new scope.
   `EXTERNAL_DATA.md` *before* it enters a model.
 - **Quarantined material.** Never open veckit PyPI 0.1.2, veckit PR #6, the raw research-workflow outputs, the Yukon
   partner team's material (yukon.org), or the public board file / board endpoints (test-board anchors encode hidden
-  targets). Refresh boards only with `vec.boards.update_boards`. Read research results through the screened digest;
-  see `docs/DATA_POLICY.md`.
+  targets). Refresh boards only with `vec boards update`, online or `--from-file` with a board index the user saved
+  in the browser (both strip test anchors in memory; nobody opens the saved file). Read research results through the
+  screened digest; see `docs/DATA_POLICY.md`.
 - **Scores choose, never compute.** Leaderboard returns may be used to pick between predictions, never to solve for a
   property of a hidden target (no inverting the skill map, no differencing scores).
 - **Competition data stays private.** Data lives under `data/` (gitignored) and is never committed, shared or shown

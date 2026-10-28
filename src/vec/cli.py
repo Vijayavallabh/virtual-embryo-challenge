@@ -56,20 +56,86 @@ def boards_main(ctx: typer.Context):
 
 
 @boards_app.command("update")
-def boards_update():
-    """Refresh boards/ from the public panel files; test-board anchors are stripped in memory and never printed."""
-    from vec.boards import update_boards
+def boards_update(
+    from_file: Path | None = typer.Option(
+        None, "--from-file", help="offline intake of the board index the user saved from the site with the browser "
+        "(Save link as, never opened), kept outside every git work tree; gene lists come from the same folder or "
+        "from boards/ files with the published sha256"),
+    delete_source: bool = typer.Option(False, "--delete-source", help="with --from-file: delete the saved index "
+                                       "(and a saved t1_composition.json) after a successful intake"),
+    boards_dir: Path | None = typer.Option(None, "--boards-dir", hidden=True),
+):
+    """Refresh boards/ from the public panel files, or from a saved board index (--from-file); test-board anchors
+    are stripped in memory and never printed."""
+    from urllib.error import HTTPError
 
-    s = update_boards()  # board keys come from the site: never markup
-    console.print(f"boards ({len(s['boards'])}): {escape(', '.join(s['boards']))}")
+    from vec import boards as vec_boards
+
+    if delete_source and from_file is None:
+        console.print("--delete-source goes with --from-file; nothing was done")
+        raise typer.Exit(2)
+    where = {} if boards_dir is None else {"boards_dir": boards_dir}
+    try:
+        if from_file is None:
+            s = vec_boards.update_boards(**where)
+        else:
+            s = vec_boards.update_boards_from_file(from_file, delete_source=delete_source, **where)
+    except vec_boards.IntakeError as e:  # its message names boards, fields and files only
+        console.print(f"refused: {escape(str(e))}.")
+        console.print("Nothing was written.")
+        raise typer.Exit(1) from None
+    except HTTPError as e:
+        if from_file is not None or e.code != 403:
+            raise
+        console.print("the panel files answered HTTP 403; nothing was written. Not worked around: if the user has "
+                      "saved the board index with the browser, use --from-file (docs/P3_RUNBOOK.md step 1).")
+        raise typer.Exit(1) from None
+    except Exception as e:  # noqa: BLE001 (offline intake only: an error message could quote the saved file)
+        if from_file is None:
+            raise
+        said = (escape(str(e)) if isinstance(e, OSError)
+                else f"{type(e).__name__}; its message is withheld because it could quote the saved file")
+        console.print(f"the intake stopped ({said}). Nothing in boards/ was replaced unless the error names a file "
+                      "there. The saved index was kept and still holds the test anchors: do not open it to check.")
+        raise typer.Exit(1) from None
+    if from_file is not None:
+        console.print(f"source: saved board index {escape(s['source'])} (offline intake)")
+        if s["genes_reused"]:
+            console.print("gene lists taken from boards/ by their published sha256: "
+                          f"{escape(', '.join(s['genes_reused']))}")
+    console.print(f"boards ({len(s['boards'])}): {escape(', '.join(s['boards']))}")  # keys from the site: never markup
     console.print(f"reduced to their submission spec ({len(s['reduced'])}): {escape(', '.join(s['reduced'])) or '-'}")
-    if s["t1_composition_written"]:
+    for key, names in (s.get("dropped_fields") or {}).items():  # field names only (decision point D1), never values
+        console.print(f"  {escape(key)}: fields not kept: {escape(', '.join(names))}")
+    if from_file is not None and not s["t1_composition_supplied"]:
+        console.print("T1 composition not supplied: boards/t1_composition.json left as it was")
+    elif s["t1_composition_written"]:
         console.print("T1 composition written")
     else:
         why = {"closed": "; E10.5 counts once the final phase is open",
                "unreadable": "; the public phase endpoint could not be read, so E10.5 counts as unreleased: re-run"}
         console.print(f"T1 composition not written: it describes {escape(str(s['t1_composition_unreleased_stages']))} "
                       f"unreleased stage(s){why.get(s.get('final_phase'), '')}")
+    if from_file is None:
+        return
+    saved = [s["source"]] + ([str(Path(s["source"]).parent / "t1_composition.json")]
+                             if s["t1_composition_supplied"] else [])
+    if s["kept_for_rerun"]:
+        console.print("the saved file(s) were kept for that re-run and still hold the test anchors (do not open "
+                      "them): uv run vec boards update --from-file "
+                      f"{escape(shlex.quote(s['source']))} --delete-source")
+    elif s["deleted"]:
+        console.print(f"deleted the saved file(s), which held the test anchors: {escape(', '.join(s['deleted']))}")
+    elif not s["undeletable"]:
+        console.print("the saved file(s) still hold the test anchors: delete them now, e.g. rm -- "
+                      f"{escape(' '.join(map(shlex.quote, saved)))}")
+    if s["possible_copies"]:
+        console.print("other files in that folder may be copies of the saved index (not opened, not deleted): "
+                      f"{escape(', '.join(s['possible_copies']))}; delete them too")
+    if s["undeletable"]:
+        console.print(f"boards/ was updated, but these could not be deleted: {escape(', '.join(s['undeletable']))}. "
+                      "They still hold the test anchors: delete them by hand.")
+        raise typer.Exit(3)
 
 
 @app.command()
