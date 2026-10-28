@@ -11,8 +11,10 @@
   passing count up); the heart-size fallback and the count rule run as code. Release-day steps are in
   `docs/P3_RUNBOOK.md`.
   The phase opened on 2026-10-27. On 2026-10-28 the user unlocked the validation answers on the Data page (P2
-  submissions now permanently disabled for the team); all six are on the DGX and runbook step 2 is done. The
-  board-spec file still answers 403 (step 1 blocked; `progress.md`, Blockers).
+  submissions now permanently disabled for the team); all six are on the DGX, and runbook steps 2 (data) and 3
+  (labels) are done. The user read the final-phase Rules s.10 and Data page as allowing the validation answers as
+  model inputs (A20 passed; confirmation asked in the fourth organiser email, sent 2026-10-28). The board-spec file
+  still answers 403 (step 1 blocked; `progress.md`, Blockers).
 - Branch / commit: `main` on GitHub (private), mirrored to `PrakashDGX_H2:~/v/virtual-embryo-challenge`.
 
 ## Completed This Session (2026-10-18 to 2026-10-19)
@@ -40,7 +42,8 @@
 ## Blockers / Risks
 
 - Organiser answers pending (leak report; rules email). Follow-up email sent 2026-10-19; a third (three questions)
-  sent 2026-10-21 01:24 IST (`docs/ORGANIZER_QUESTIONS.md`). Deadline: through 2026-12-02, UTC.
+  sent 2026-10-21 01:24 IST; a fourth (403, final-entry nomination, A20) sent 2026-10-28 15:41 IST
+  (`docs/ORGANIZER_QUESTIONS.md`). Deadline: through 2026-12-02, UTC; the captain marks the final entries by then.
 - Collaborative Yukon track (organisers' email of 2026-10-20 22:03 IST): joining is the user's decision alone; the
   entry stays an official Human Team meanwhile.
 - Second history rewrite done 2026-10-19 (GitHub repo recreated; old-to-new commit map in `docs/DATA_POLICY.md`).
@@ -56,6 +59,5 @@
 
 ## Recommended Next Step
 
-- Continue `docs/P3_RUNBOOK.md` at step 3 (labels), committing each pre-registered output before anything else. Steps
-  4.1-4.3 use the validation answers as inputs (E10.5 for the heart size and the T1 readout, Gata4 for T3): they wait
-  for the user's reading of "for P3 preparation" (A20). Step 1 waits for the panel files (403).
+- Continue `docs/P3_RUNBOOK.md` at step 4 (the pre-registered runs, in order), committing each output before anything
+  else. Step 1 waits for the panel files (403).
