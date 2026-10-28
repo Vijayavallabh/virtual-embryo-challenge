@@ -166,6 +166,12 @@ reading of A20. The release-day rules are signed off and in code (`docs/RELEASE_
       P3 preparation. This does not permit access to hidden test data or other restricted external sources."
       Still open: the 403 on the panel files (step 1, the test-board specs) and the user's reading for A20 (inputs
       at prediction time), which steps 4.1-4.3 need.
+- [ ] Final-entry nomination (found 2026-10-28 in the site's public account-page script): "In the final phase the
+      captain picks which submission counts" (a "Final" column in the captain's submission list while
+      nominations_open); the timeline makes 2026-12-02 the last moment to nominate. Rules s.11 still says the board
+      ranks a team by its best; what counts if the captain marks nothing is not stated. The user (captain) marks
+      the final entries after the last official upload; ask the organisers what an unmarked board gets
+      (`docs/P3_RUNBOOK.md`, section 5).
 - [x] 2026-10-27: history of `main` rewritten (user's decision) to drop the AI co-author trailer from all 44 commit
       messages; trees, parents, authors and dates checked identical; old -> new IDs in `docs/COMMIT_MAP.md`;
       force-pushed, DGX .git refreshed. Older IDs quoted in files resolve through that table.

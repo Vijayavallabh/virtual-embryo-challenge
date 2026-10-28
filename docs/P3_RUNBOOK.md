@@ -156,6 +156,13 @@ procedure refuses unmapped labels.
   - T1: `vec.t1_scope.build_submission` once the shares are fixed by their written rule (docs/PLAN.md section 4.1);
     pass `ref_source` (the reference file's stem) so the per-file label remaps apply.
 - Update `ASSUMPTIONS.md` (A1, A2, A3, A13, A19) and `progress.md`.
+- **(user)** Final entries. The account page (seen in the site's public script, 2026-10-28): "The leaderboard shows
+  your team's best score on each board, so there is nothing to nominate yet. In the final phase the captain picks
+  which submission counts." While nominations are open, the captain sees a "Final" column in the team's submission
+  list and marks a scored submission (or a bundle) as final. The timeline: 2026-12-02 is "the last moment a submission
+  can be made or a final entry nominated. Nothing after this counts, in either track." Rules s.11 still says a board
+  ranks a team by its best; what counts when no entry is marked is not stated (ask the organisers). Mark the final
+  entries after the last official upload and before 2026-12-02.
 
 ## Never today
 
