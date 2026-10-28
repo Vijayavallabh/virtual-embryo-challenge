@@ -2,10 +2,10 @@
 
 ## Current State
 
-**Last Updated:** 2026-10-27
-**Active Feature:** feat-004 - Final-phase intake on 2026-10-27, postponed from 2026-10-20 by the organisers
-(`docs/P3_RUNBOOK.md`); feat-003 completes with the release files. Before then: the v1 pipelines on the shared core
-(`vec.core`, feat-020 done). The release-day rules are signed off and in code (`docs/RELEASE_RULES_SUMMARY.md`).
+**Last Updated:** 2026-10-28
+**Active Feature:** feat-004 - Final-phase intake (`docs/P3_RUNBOOK.md`). Step 2 (data) done on 2026-10-28 (feat-003
+done); step 3 (labels) is next; step 1 is blocked by the 403 on the panel files; steps 4.1-4.3 wait for the user's
+reading of A20. The release-day rules are signed off and in code (`docs/RELEASE_RULES_SUMMARY.md`).
 
 ## Status
 
@@ -155,6 +155,17 @@
       whether a Human Team must nominate entries (the phase endpoint shows nominations_open). Waiting on the user:
       the opt-in (irreversible, team-wide, browser only) and the reading of "solely for preparing P3 predictions"
       for inputs at prediction time (A20 stays open until then).
+      2026-10-28 09:32 UTC: the user unlocked the validation answers on the Data page (server state: granted
+      09:32:18 UTC, lock_scope team, so P2 submissions are permanently disabled for the whole team; the page says it
+      uses no P3 attempt). They have their own list and links (`/challenge/data/validation/` state, manifest and
+      link, found in the site's public script); the unlock is a separate POST that no repo code sends
+      (`tests/test_data.py` checks for it). The data client reads the validation list since e0e1d58, and all 6 files
+      (2.09 GB) are on the DGX: runbook step 2 done (checksums, inventory and QC; `docs/DATA_NOTES.md`). The Data
+      page's own words on use: "P2 validation answers can be used to prepare your final P3 models" and "After you
+      explicitly unlock the official P2 validation release above, you may use those released validation files for
+      P3 preparation. This does not permit access to hidden test data or other restricted external sources."
+      Still open: the 403 on the panel files (step 1, the test-board specs) and the user's reading for A20 (inputs
+      at prediction time), which steps 4.1-4.3 need.
 - [x] 2026-10-27: history of `main` rewritten (user's decision) to drop the AI co-author trailer from all 44 commit
       messages; trees, parents, authors and dates checked identical; old -> new IDs in `docs/COMMIT_MAP.md`;
       force-pushed, DGX .git refreshed. Older IDs quoted in files resolve through that table.

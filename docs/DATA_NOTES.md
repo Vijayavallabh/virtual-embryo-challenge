@@ -1,8 +1,10 @@
 # Data notes (structure only)
 
-From `vec data inventory` on the DGX, 2026-10-18 (`runs/inventory.json` there; checksums in `data/raw/SHA256SUMS`).
-Structural facts only; no expression values. Re-run after each release (validation answers and test inputs arrive on
-2026-10-27, postponed from 2026-10-20).
+From `vec data inventory` on the DGX, 2026-10-18, re-run on 2026-10-28 with the six validation answers
+(`runs/inventory.json` there, the first run kept as `runs/inventory.2026-10-18.json`; QC in `runs/qc.json` and
+`runs/qc.csv`; log `runs/logs/intake_2026-10-28.log`). Checksums of all 15 files in `data/raw/SHA256SUMS` (the nine of 2026-10-18 are
+unchanged; the first file is kept as `SHA256SUMS.2026-10-18`); the site publishes no checksums to compare with.
+Structural facts only; no expression values. No test inputs are distributed.
 
 ## Files
 
@@ -17,8 +19,18 @@ Structural facts only; no expression values. Re-run after each release (validati
 | T2/E8.75.h5ad | 24,826 | 500 | CSC | counts, log1p | heart setting and T3 matched WT; 33 types, still much neural tube and NCC |
 | T2/E9.5.h5ad | 53,742 | 500 | CSC | counts, log1p | heart setting and Mab21l2 matched WT; 22 types, heart-focused |
 | T3/E9.5_mab21l2_ko.h5ad | 50,294 | 500 | dense | counts, log1p, normalized_counts | genotype all `mab21l2` (no littermate WT); 37 sample_ids; one slide |
+| T1/E10.5_RNA.h5ad | 24,979 | 32,285 | CSC | - | validation answer; 23 types; obsm: harmony UMAP |
+| T2/E7.5.h5ad | 11,665 | 500 | dense | counts, log1p | validation answer, embryo setting; 18 types; no cm_celltype |
+| T2/E8.5.h5ad | 23,710 | 500 | CSC | counts, log1p | validation answer, heart setting; 33 types; 13 cm_celltype levels |
+| T2/E10.5.h5ad | 167,864 | 500 | CSC | counts, log1p | validation answer, heart setting; 23 types; 9 cm_celltype levels |
+| T3/E8.75_gata4_ko_1.h5ad | 42,257 | 500 | dense | counts, log1p, normalized_counts | validation answer; genotype all `gata4`, condition all `KO` (no littermate WT); 46 sample_ids; slide M164; 20 types; also `celltype_clean` |
+| T3/E8.75_gata4_ko_2.h5ad | 46,396 | 500 | dense | counts, log1p, normalized_counts | validation answer; as replicate 1 (same slide M164), 44 sample_ids, no `celltype_clean` |
 
-Every file satisfies `expm1(X).sum(1) == 1e4` (log1p CP10k). Stage cell counts are exactly 10x the board `ref_cells`
+All obs names in the six validation files are unique. The Gata4 files carry the Mab21l2 KO's obs columns (slide,
+section, embryo, sample_id, z_coord, time, genotype, perturb_batch, leiden ...) and obsm `spatial` (2D) beside
+`spatial_3D`; the WT MERFISH files carry `spatial_2D` and `spatial_3D`.
+
+Every file satisfies `expm1(X).sum(1) == 1e4` (log1p CP10k; the validation answers too, median 10,000). Stage cell counts are exactly 10x the board `ref_cells`
 in `boards/index.json` (rounded), which confirms the server's 10% working copies.
 
 ## Quirks to handle in loaders
@@ -33,8 +45,22 @@ Settled by `experiments/qc/` (2026-10-19; `vec data qc`) and `experiments/coords
   use native coordinates and never rescale z across stages. Every file has 30-40 sections, so the z extent is set by
   acquisition, and the stack cuts the heart in E9.5 (start) and the KO (end).
 - **Rows are stored section by section** in descending z (Spearman of row vs z -0.9994 to -0.9996): always subsample at
-  random.
-- **Synthetic records** (none in E6.75, E7.25, E9.5 or T1):
+  random. T2/E7.5 runs the other way (ascending z, +0.9995).
+- **Validation answers, intake QC (2026-10-28, `vec data qc`):**
+  - z steps: 15 for T2/E8.5, T2/E10.5 and both Gata4 replicates; 14 for T2/E7.5.
+  - Level counts (raw z values / levels): E8.5 81/25 and E10.5 157/44, floating-point copies again (snap with
+    `vec.spatial.snap_z`); E7.5 34/34; Gata4 replicates 46/46 and 44/44.
+  - Gaps: E10.5 has 9 single-level gaps, so from -433.272 to -163.272 its levels are 30 apart, not 15. The other new
+    files have none.
+  - Duplicates: no duplicated or interpolated records, no non-integer count rows, and no identical count rows in any of
+    the six; T1 E10.5 has no identical rows.
+  - Dense levels (cells against the mean of the two neighbouring levels; the QC reads about 2x as a hint of two
+    sections on one level, while ordinary variation reaches about 1.8x): E10.5 -433.272 (1.73x); Gata4 replicate 1
+    -585 (1.88x), -390 (3.26x) and -360 (1.71x); replicate 2 -615 (1.63x), -555 (2.35x) and -420 (1.64x).
+  - Section and sample_id labels: one label per level and one level per label in both Gata4 files (the Mab21l2 KO
+    fails this), so the 3.26x and 2.35x levels are each a single labelled section.
+  - Shared rows between the two replicates are a pre-registered check of its own (runbook step 4.2).
+- **Synthetic records** (none in E6.75, E7.25, E9.5, T1 or the validation answers):
   - copies, identical integer count rows in the same or an adjacent level, at the same xy (E8.0 443, E8.25_late 1,164,
     E8.75 317) or moved (2,460 / 563 / 518 more; the E8.75 ones are an exact affine image of the level above);
   - interpolated records with half-integer counts, each the average of two cells in neighbouring levels (E8.0 200,

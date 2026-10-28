@@ -10,8 +10,9 @@
   count rule left open, whose reading of "next" the user left to the AI assistant (a decision panel chose the next
   passing count up); the heart-size fallback and the count rule run as code. Release-day steps are in
   `docs/P3_RUNBOOK.md`.
-  On 2026-10-27 the phase opened but the release files were not in the manifest and the board-spec file
-  answered 403 (`progress.md`, Blockers): retry runbook steps 0-2 on 2026-10-28.
+  The phase opened on 2026-10-27. On 2026-10-28 the user unlocked the validation answers on the Data page (P2
+  submissions now permanently disabled for the team); all six are on the DGX and runbook step 2 is done. The
+  board-spec file still answers 403 (step 1 blocked; `progress.md`, Blockers).
 - Branch / commit: `main` on GitHub (private), mirrored to `PrakashDGX_H2:~/v/virtual-embryo-challenge`.
 
 ## Completed This Session (2026-10-18 to 2026-10-19)
@@ -55,6 +56,6 @@
 
 ## Recommended Next Step
 
-- On 2026-10-27, once `vec submit status` shows the final phase, run `docs/P3_RUNBOOK.md` top to bottom, committing each
-  pre-registered output before anything else. Until then, only work that needs no release data (`docs/PLAN.md`
-  section 7).
+- Continue `docs/P3_RUNBOOK.md` at step 3 (labels), committing each pre-registered output before anything else. Steps
+  4.1-4.3 use the validation answers as inputs (E10.5 for the heart size and the T1 readout, Gata4 for T3): they wait
+  for the user's reading of "for P3 preparation" (A20). Step 1 waits for the panel files (403).

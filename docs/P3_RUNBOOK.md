@@ -3,9 +3,11 @@
 The organisers moved the start from 2026-10-20 to 2026-10-27 (email of 2026-10-20). Files written before that email say
 2026-10-20; they mean this release.
 
-The validation answers (T1 E10.5, T2 heart E8.5 and E10.5, T2 embryo E7.5, T3 Gata4 replicates) and the test inputs
-arrive today. Everything below that decides a method was committed before the release; run it as written and commit
-each output before looking at anything else. Steps marked **(user)** need you.
+The validation answers (T1 E10.5, T2 heart E8.5 and E10.5, T2 embryo E7.5, T3 Gata4 replicates) are served only after
+a team member unlocks them on the site's Data page, which permanently ends P2 submissions for the whole team (our
+unlock: 2026-10-28 09:32 UTC). No test inputs are distributed. Everything below that decides a method was committed
+before the release; run it as written and commit each output before looking at anything else. Steps marked **(user)**
+need you.
 
 ## 0. Before anything
 
@@ -40,7 +42,7 @@ read, re-run `uv run vec boards update` before committing.
 ## 2. Data
 
 ```bash
-uv run vec data manifest      # local: needs the team token; lists the new files
+uv run vec data manifest      # local: needs the team token; training files, the unlock state, the validation answers
 uv run vec data fetch         # local: streams each signed link to curl on PrakashDGX_H2 (default --dest data/raw there)
 ssh PrakashDGX_H2 'cd ~/v/virtual-embryo-challenge && export PATH=$HOME/.local/bin:$PATH && \
   uv run vec data inventory && uv run vec data qc data/raw/T*/*.h5ad --csv runs/qc.csv'

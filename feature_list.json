@@ -25,8 +25,8 @@
       "dependencies": [
         "feat-001"
       ],
-      "status": "in-progress",
-      "evidence": "2026-10-18: 9 training files (2.26 GB) on the DGX in data/raw, sizes match the manifest, SHA-256 in data/raw/SHA256SUMS (E8.25_late matches the checksum published in Slack); structure in docs/DATA_NOTES.md. Remaining: validation answers and test inputs on 2026-10-27, postponed from 2026-10-20 (re-run vec data fetch)."
+      "status": "done",
+      "evidence": "2026-10-18: 9 training files (2.26 GB) on the DGX in data/raw, sizes match the manifest, SHA-256 in data/raw/SHA256SUMS (E8.25_late matches the checksum published in Slack); structure in docs/DATA_NOTES.md. 2026-10-28: the user unlocked the P2 validation answers on the Data page (09:32 UTC, team-wide; P2 submissions permanently disabled); the data client reads their own list and links (e0e1d58, tests/test_data.py) and vec data fetch put all 6 (2.09 GB) on the DGX at 09:51-09:53 UTC, sizes as listed; SHA-256 of all 15 files in data/raw/SHA256SUMS (the 9 of 2026-10-18 unchanged); inventory and QC in runs/ there, summary in docs/DATA_NOTES.md. No test inputs are distributed and the site publishes no checksums."
     },
     {
       "id": "feat-004",
@@ -36,7 +36,7 @@
         "feat-001"
       ],
       "status": "in-progress",
-      "evidence": "2026-10-19: intake tooling ready: vec.boards.update_boards strips non-validation anchors in memory (tests/test_boards.py); docs/P3_RUNBOOK.md gives the release-day order. Runs on 2026-10-27 (the final phase was postponed from 2026-10-20)."
+      "evidence": "2026-10-19: intake tooling ready: vec.boards.update_boards strips non-validation anchors in memory (tests/test_boards.py); docs/P3_RUNBOOK.md gives the release-day order. Runs on 2026-10-27 (the final phase was postponed from 2026-10-20). 2026-10-27 and 2026-10-28 (09:35 UTC): the final phase is open (test boards T1:test, T2:heart:test_extrap, T2:embryo:test_interp, T3:bcatenin), but vec boards update gets HTTP 403 (Cloudflare) on panels/index.json, so boards/ is not updated (not worked around). Runbook step 2 (data) done on 2026-10-28 (feat-003); step 3 (labels) is next."
     },
     {
       "id": "feat-005",
