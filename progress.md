@@ -129,6 +129,9 @@ reading of A20. The release-day rules are signed off and in code (`docs/RELEASE_
       Screened Slack sweep on 2026-10-23 (from 2026-10-20 22:43 IST): still no organiser post or reply anywhere;
       two new unanswered participant questions (2026-10-21: textbook E9.5-E12.5 knowledge as a prior and whether to
       disclose it; how travel grants are chosen).
+      The fourth email (the 403 on the panel files, what counts when the captain marks no final entry, confirmation
+      of the A20 reading; the scorer build still open) was sent by the user on 2026-10-28 at 15:41 IST, signed "Team
+      captain, Mithril" (`docs/ORGANIZER_QUESTIONS.md`). No reply to any of the four emails in that mailbox as of then.
 - [ ] Release day (2026-10-27, checked to 17:43 UTC): the final phase is open (public phase endpoint: p3, split
       test, accepts submissions; official quota keys T1:test, T2:heart:test_extrap, T2:embryo:test_interp and
       T3:bcatenin, 0/2 used each; daily per task: scored 0/2, uploads 0/8). Runbook step 0 passed (357 tests, nothing

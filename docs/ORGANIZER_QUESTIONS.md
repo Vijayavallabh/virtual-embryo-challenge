@@ -166,11 +166,12 @@ Best regards,
 Vijayavallabh J
 Team captain, Human Team track
 
-## Fourth email (drafted 2026-10-28)
+## Fourth email (sent 2026-10-28)
 
-Drafted by the AI assistant on 2026-10-28 at the user's request and saved in the drafts of be23b041@smail.iitm.ac.in,
-to virtual.embryo.moonshot@gmail.com; the user reviews and sends it. Answers: _pending_ (question 3 confirms A20 and
-selects the T3 branch, `docs/P3_RUNBOOK.md` section 5). Text as drafted, rewrapped:
+Drafted by the AI assistant on 2026-10-28 at the user's request and saved in the drafts of be23b041@smail.iitm.ac.in;
+sent by the user on 2026-10-28 at 15:41 IST (10:11 UTC) to virtual.embryo.moonshot@gmail.com, with the signature
+changed to the team name ("Team captain, Mithril"). Answers: _pending_ (question 3 confirms A20 and selects the T3
+branch, `docs/P3_RUNBOOK.md` section 5). Text as sent, rewrapped:
 
 **Subject:** Human Team: board specs blocked (HTTP 403), final-entry nomination, use of the unlocked validation files
 
@@ -200,4 +201,4 @@ follow-up: which veckit build scores the test boards.
 
 Best regards,
 Vijayavallabh J
-Team captain, Human Team track
+Team captain, Mithril
