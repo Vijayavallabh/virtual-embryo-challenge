@@ -1,0 +1,49 @@
+{
+  "rule": "rules.yaml note 4 (lead, 2026-10-19)",
+  "date": "2026-10-28T12:24:08+00:00",
+  "git": {
+    "commit": "725d19c879ab1795a3aba01917d27140b3f9374d",
+    "status": ""
+  },
+  "script_sha256": "0e0c97f8574de7a527c4c8448ae9c76153872c6440fb57f01d32402655d9a3d3",
+  "threshold": 0.01,
+  "min_library": 20,
+  "files": [
+    {
+      "path": "data/raw/T3/E8.75_gata4_ko_1.h5ad",
+      "sha256": "3805715d25c85873a8c51c86be44e8e42affaec0557e1b05f9d99db2ef976cad",
+      "genes": 500
+    },
+    {
+      "path": "data/raw/T3/E8.75_gata4_ko_2.h5ad",
+      "sha256": "1760657da7c477c4bf986352fdf1a066bb6a5fe995f1b9deca8ee859722074e4",
+      "genes": 500
+    }
+  ],
+  "genes_compared": 500,
+  "rows": [
+    42257,
+    46396
+  ],
+  "empty_rows": [
+    0,
+    0
+  ],
+  "shared_rows": [
+    0,
+    0
+  ],
+  "shared_fraction": [
+    0.0,
+    0.0
+  ],
+  "shared_rows_min_library": [
+    0,
+    0
+  ],
+  "shared_fraction_min_library": [
+    0.0,
+    0.0
+  ],
+  "independent": true
+}
