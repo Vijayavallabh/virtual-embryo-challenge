@@ -1,0 +1,246 @@
+{
+  "ran": true,
+  "method": "logreg",
+  "genes": 500,
+  "depths": {
+    "WT": 130.0,
+    "rep1": 82.0,
+    "rep2": 68.0
+  },
+  "reference_depth": 68.0,
+  "interval_note": "95% percentile intervals from resampling whole sections (snapped z levels) within each embryo, independently per population. They cover within-embryo section sampling only: with one embryo per genotype they are not intervals for genotype effects, and they carry no between-embryo or sectioning-coverage variance (see the z-trim table and the z profiles).",
+  "coords": true,
+  "n_boot": 2000,
+  "n_boot_trim": 2000,
+  "rep1_depth_frac": 0.8292682926829268,
+  "rep1_agreement": {
+    "group_comparable_fraction": 0.9803109543980879,
+    "group_agreement": 0.7967893783946892,
+    "merged_comparable_fraction": 0.9179070923160659,
+    "merged_agreement": 0.879833969268846
+  },
+  "rep2_depth_frac": 1.0,
+  "rep2_agreement": {
+    "group_comparable_fraction": 0.9786188464522804,
+    "group_agreement": 0.7514536164214607,
+    "merged_comparable_fraction": 0.8890421588067937,
+    "merged_agreement": 0.8693269976726145
+  },
+  "within_cm": {
+    "rep1_vs_WT": {
+      "IFT-CM": {
+        "WT_top_call": 0.3149403033236528,
+        "rep1_top_call": 0.09388924252068746,
+        "WT_em": 0.32683939732675477,
+        "rep1_em": 0.01933551519492291,
+        "top_call_diff": -0.22105106080296533,
+        "top_call_diff_sec_ci": [
+          -0.36673099170323614,
+          -0.08415844651788273
+        ],
+        "top_call_trim_range": [
+          -0.2662601524837488,
+          -0.11311227954932775
+        ],
+        "top_call_sec_excludes_0_all_trims": false,
+        "top_call_sign_flips_over_trims": false,
+        "em_diff": -0.3075038821318319,
+        "em_diff_sec_ci": [
+          -0.48189148083026806,
+          -0.14075958173157982
+        ],
+        "em_trim_range": [
+          -0.3259968962395487,
+          -0.1651560919266076
+        ],
+        "em_sec_excludes_0_all_trims": true,
+        "em_sign_flips_over_trims": false,
+        "bracket": [
+          -0.3075038821318319,
+          -0.22105106080296533
+        ]
+      },
+      "V-CM": {
+        "WT_top_call": 0.6850596966763473,
+        "rep1_top_call": 0.9061107574793126,
+        "WT_em": 0.6731606026732453,
+        "rep1_em": 0.9806644848050772,
+        "top_call_diff": 0.22105106080296533,
+        "top_call_diff_sec_ci": [
+          0.08415844651788267,
+          0.36673099170323603
+        ],
+        "top_call_trim_range": [
+          0.11311227954932779,
+          0.2662601524837488
+        ],
+        "top_call_sec_excludes_0_all_trims": false,
+        "top_call_sign_flips_over_trims": false,
+        "em_diff": 0.3075038821318319,
+        "em_diff_sec_ci": [
+          0.1407595817315797,
+          0.48189148083026784
+        ],
+        "em_trim_range": [
+          0.16515609192660763,
+          0.32599689623954875
+        ],
+        "em_sec_excludes_0_all_trims": true,
+        "em_sign_flips_over_trims": false,
+        "bracket": [
+          0.22105106080296533,
+          0.3075038821318319
+        ]
+      }
+    },
+    "rep2_vs_WT": {
+      "IFT-CM": {
+        "WT_top_call": 0.3149403033236528,
+        "rep2_top_call": 0.11062152133580705,
+        "WT_em": 0.32683939732675477,
+        "rep2_em": 0.02659805498972049,
+        "top_call_diff": -0.20431878198784575,
+        "top_call_diff_sec_ci": [
+          -0.3488289936011616,
+          -0.0751121200780977
+        ],
+        "top_call_trim_range": [
+          -0.21787376385310664,
+          -0.09638000073420816
+        ],
+        "top_call_sec_excludes_0_all_trims": false,
+        "top_call_sign_flips_over_trims": false,
+        "em_diff": -0.30024134233703426,
+        "em_diff_sec_ci": [
+          -0.47669642320204236,
+          -0.13426732589411922
+        ],
+        "em_trim_range": [
+          -0.30342326451344476,
+          -0.15789355213181
+        ],
+        "em_sec_excludes_0_all_trims": true,
+        "em_sign_flips_over_trims": false,
+        "bracket": [
+          -0.30024134233703426,
+          -0.20431878198784575
+        ]
+      },
+      "V-CM": {
+        "WT_top_call": 0.6850596966763473,
+        "rep2_top_call": 0.889378478664193,
+        "WT_em": 0.6731606026732453,
+        "rep2_em": 0.9734019450102794,
+        "top_call_diff": 0.2043187819878457,
+        "top_call_diff_sec_ci": [
+          0.07511212007809777,
+          0.3488289936011615
+        ],
+        "top_call_trim_range": [
+          0.09638000073420816,
+          0.21787376385310664
+        ],
+        "top_call_sec_excludes_0_all_trims": false,
+        "top_call_sign_flips_over_trims": false,
+        "em_diff": 0.30024134233703414,
+        "em_diff_sec_ci": [
+          0.13426732589411902,
+          0.47669642320204225
+        ],
+        "em_trim_range": [
+          0.1578935521318099,
+          0.3034232645134448
+        ],
+        "em_sec_excludes_0_all_trims": true,
+        "em_sign_flips_over_trims": false,
+        "bracket": [
+          0.2043187819878457,
+          0.30024134233703414
+        ]
+      }
+    },
+    "rep2_vs_rep1": {
+      "IFT-CM": {
+        "rep1_top_call": 0.09388924252068746,
+        "rep2_top_call": 0.11062152133580705,
+        "rep1_em": 0.01933551519492291,
+        "rep2_em": 0.02659805498972049,
+        "top_call_diff": 0.016732278815119586,
+        "top_call_diff_sec_ci": [
+          -0.054129146591928294,
+          0.08120164994775673
+        ],
+        "top_call_trim_range": [
+          0.003177296949858688,
+          0.061941370495903036
+        ],
+        "top_call_sec_excludes_0_all_trims": false,
+        "top_call_sign_flips_over_trims": false,
+        "em_diff": 0.00726253979479758,
+        "em_diff_sec_ci": [
+          -0.04002320163887808,
+          0.04272773807324857
+        ],
+        "em_trim_range": [
+          0.0056642393778636585,
+          0.025755553902514234
+        ],
+        "em_sec_excludes_0_all_trims": false,
+        "em_sign_flips_over_trims": false,
+        "bracket": [
+          0.00726253979479758,
+          0.016732278815119586
+        ]
+      },
+      "V-CM": {
+        "rep1_top_call": 0.9061107574793126,
+        "rep2_top_call": 0.889378478664193,
+        "rep1_em": 0.9806644848050772,
+        "rep2_em": 0.9734019450102794,
+        "top_call_diff": -0.016732278815119628,
+        "top_call_diff_sec_ci": [
+          -0.08120164994775668,
+          0.05412914659192825
+        ],
+        "top_call_trim_range": [
+          -0.06194137049590309,
+          -0.003177296949858688
+        ],
+        "top_call_sec_excludes_0_all_trims": false,
+        "top_call_sign_flips_over_trims": false,
+        "em_diff": -0.00726253979479774,
+        "em_diff_sec_ci": [
+          -0.04272773807324861,
+          0.04002320163887797
+        ],
+        "em_trim_range": [
+          -0.025755553902514383,
+          -0.005664239377863867
+        ],
+        "em_sec_excludes_0_all_trims": false,
+        "em_sign_flips_over_trims": false,
+        "bracket": [
+          -0.016732278815119628,
+          -0.00726253979479774
+        ]
+      }
+    }
+  },
+  "group_clearing_rep_noise": [
+    "CM",
+    "ParaxialMesoderm",
+    "ExtraEmbryonicMeso"
+  ],
+  "group_median_rep_to_rep_noise": 0.02033628410821811,
+  "merged_clearing_rep_noise": [
+    "CM",
+    "CranialMesoderm",
+    "ExtraEmbryonicMeso"
+  ],
+  "merged_median_rep_to_rep_noise": 0.030901028298782014,
+  "zprofile_mean_total_variation": {
+    "rep1_vs_WT": 0.19436450663905364,
+    "rep2_vs_WT": 0.2610684746757323,
+    "rep2_vs_rep1": 0.21868913789850172
+  }
+}

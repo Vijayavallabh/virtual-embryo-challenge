@@ -1,0 +1,14 @@
+true,CM,CardiacProgenitor,Endocardium,Endothelium,EpicardiumST,Pericardium,PharyngealMesoderm,ParaxialMesoderm,NCC,Endoderm,Hepatocyte,Ectoderm,Unknown
+CM,24185,58,312,62,240,124,28,8,8,2,4,5,0
+CardiacProgenitor,716,706,73,209,2818,96,4223,385,277,64,19,9,0
+Endocardium,509,3,9151,1329,1210,111,423,406,530,7,4,3,0
+Endothelium,88,15,1748,7924,83,24,832,1092,193,4,52,0,0
+EpicardiumST,862,6,7,15,5273,800,501,69,13,6,2,9,0
+Pericardium,19,0,9,13,1024,12121,2318,17,146,3,6,140,0
+PharyngealMesoderm,100,293,39,112,4257,396,22742,1340,514,148,12,12,0
+ParaxialMesoderm,119,10,66,259,1164,433,9749,12152,2450,71,29,132,0
+NCC,454,8,61,70,768,412,2648,4805,4867,17,7,69,0
+Endoderm,16,1,4,11,19,17,126,21,5,2403,6,25,0
+Hepatocyte,10,3,550,214,896,17,113,84,26,10,3610,0,0
+Ectoderm,1,0,0,2,19,249,47,15,38,30,4,1437,0
+Unknown,10,10,10,6,2247,166,708,59,21,12,37,13,0

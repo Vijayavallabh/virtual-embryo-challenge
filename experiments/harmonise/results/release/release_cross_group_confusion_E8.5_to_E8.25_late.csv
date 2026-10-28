@@ -1,0 +1,16 @@
+true,CM,CardiacProgenitor,Endocardium,Endothelium,Pericardium,PharyngealMesoderm,ParaxialMesoderm,LPM,ExtraEmbryonicMeso,NCC,Endoderm,Ectoderm,Neural,EpiblastStreak,Unknown
+CM,1302,37,0,0,0,16,0,0,0,0,0,0,2,0,0
+CardiacProgenitor,10,851,0,0,35,28,0,1,62,0,12,2,1,0,0
+Endocardium,3,0,540,115,0,0,0,0,11,0,9,0,1,0,0
+Endothelium,0,0,49,5468,0,24,85,0,132,32,43,5,2,0,0
+Pericardium,0,33,0,0,253,0,0,0,168,0,1,30,0,0,0
+PharyngealMesoderm,32,25,2,29,0,1420,152,0,4,5,9,6,0,0,0
+ParaxialMesoderm,0,0,0,103,0,66,6032,243,11,61,12,14,6,14,0
+LPM,0,0,0,1,0,0,58,2367,374,0,7,23,0,7,0
+ExtraEmbryonicMeso,1,29,2,176,37,1,2,70,9874,4,85,42,3,1,0
+NCC,0,0,0,19,0,4,33,0,1,3163,0,25,58,0,0
+Endoderm,8,19,4,41,0,7,12,10,104,1,9870,96,9,24,0
+Ectoderm,0,0,0,1,40,2,3,4,46,58,105,4347,67,8,0
+Neural,0,0,0,0,0,0,3,0,0,58,23,28,3573,1,0
+EpiblastStreak,0,0,0,2,0,0,98,52,0,0,13,28,3,1143,0
+Unknown,315,19,0,5,0,8,11,1,6,1,17,40,12,9,0
