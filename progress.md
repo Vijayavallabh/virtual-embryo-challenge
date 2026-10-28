@@ -4,9 +4,10 @@
 
 **Last Updated:** 2026-10-28
 **Active Feature:** feat-004 - Final-phase intake (`docs/P3_RUNBOOK.md`). Steps 2 (data) and 3 (labels) done on
-2026-10-28 (feat-003 done); step 4 (the pre-registered runs) is next, with A20 passed on the user's reading; step 1 is
-blocked by the 403 on the panel files. The release-day rules are signed off and in code
-(`docs/RELEASE_RULES_SUMMARY.md`).
+2026-10-28 (feat-003 done), and step 4 (the pre-registered runs) ran the same day at the user's go-ahead, each output
+committed before it was read. Step 1 is blocked by the 403 on the panel files; its saved-file fallback
+(`vec boards update --from-file`, cee1c92) is built and waits for the user's call. The release-day rules are signed
+off and in code (`docs/RELEASE_RULES_SUMMARY.md`).
 
 ## Status
 
@@ -108,6 +109,37 @@ blocked by the 403 on the panel files. The release-day rules are signed off and 
       feat-003 done); step 3 (labels) done at the user's go-ahead (aebcb8c, d6b9566); A1 passed, and A20 passed on
       the user's reading (d47badf); the fourth organiser email, drafted by the AI assistant, was sent by the user
       (ed3b1bc). `./init.sh`: 366 passed.
+- [x] 2026-10-28: runbook step 4 at the user's go-ahead ("build the intake and start step 4"), in order, on the DGX at
+      725d19c with a clean tree, each output committed before it was read (the rules decide; nothing chosen by eye):
+      - 4.1 size (f5be247): both JSONs valid. Heart E12.5 in the pre-registered xy_grow_z_hold mode: full RMS 614.7
+        for s1 (H1) and 560.5 for s2 (H2), core 487.2; embryo E7.75 in raw mode: 260.3. Handedness: E8.5 and E10.5
+        resolve right-handed by the Pitx2 landmarks.
+      - 4.2 T3 Gata4: replicate overlap 0 shared rows of 42,257 and 46,396, so independent (95d8198); decision file
+        (7e7c207), aggregates (3ff6bf0), plan (05ead40). Rule outcomes: D2, D2u, D4, D7, D7m and D11a pass; D1, D5,
+        D6, D8, D9, D10 and D11b do not. Plan: allowed branch s1 = Gata4 factor at exponent 1 with the central
+        composition (log2 1.383) and depth, s2 = WT cells with the same composition (note 6: D11b failed, D7
+        passed); barred branch s1 = Mab21l2 factor with the central composition (log2 0.718), s2 = the same factor
+        with the mild one (0.359); refused branch s1 = WT cells with the central composition, s2 = plain WT cells.
+      - 4.3 T1 direction readout (3c5cc66, default config and label map; the label check mapped every E10.5 label):
+        build M2. External direction minus cross-fitted momentum: de_score +0.175, de_direction +0.188 (bar 0.05);
+        CM sign agreement 0.912 (bar 0.70).
+      - 4.4 harmonisation release stage (0586bf6): Gata4 rep1 vs rep2 vs WT E8.75 (the replicate noise bar for T3
+        composition effects, A19; e.g. IFT-CM falls by 0.03-0.04 in both replicates, 10x the replicate difference)
+        and cross-stage transfer along E8.25_late-E10.5. The script's default Gata4 file names differ from the
+        released ones, so the run passed the real paths.
+      - 4.5 density rerun (dfee546 decision, ef1819f tables): 20 of 20 runs complete, none skipped; approved rule 7
+        keeps max_cells on both test boards (no lower level gains more than 0.3 points in 8 of 10 seeds).
+      - 4.6 scorer-build anchor check (12151e0, validation anchors only): the bake protocol is reproduced exactly on
+        all three T2 validation boards (numpy Generator seed 0, rows sorted, veckit split_half seed 0, truth = first
+        half, floor = the reference's working copy, metric seed 0; every d2_shape, Dice and scale_log_ratio anchor
+        hit). The six Dice anchors are proper-mode (5) or tied (1), none mirror-mode; both builds agree on these
+        draws, so the anchors do not say which build baked them. Feeds emulator calibration (feat-005).
+- [x] 2026-10-28: saved-file board intake at the user's request (cee1c92): `vec boards update --from-file PATH`
+      (`vec.boards.update_boards_from_file`) for a board index the user saves with the browser ("Save link as", never
+      opened) outside every git work tree; the same core as the online refresh, all-or-nothing writes, typed test
+      specs, field names dropped from test boards reported for D1 (names only). An independent review by three AI
+      agents found ways a mistaken file in the saved folder could carry anchors into `boards/`; all refused now, each
+      with a test that fails when its fix is undone (the online refresh had the composition gap too). 402 tests.
 
 ### What's Next
 
@@ -117,10 +149,10 @@ blocked by the 403 on the panel files. The release-day rules are signed off and 
 2. 2026-10-27, once `vec submit status` shows the final phase: follow `docs/P3_RUNBOOK.md` (board intake with anchors
    stripped, the quota shape, data, label map, pre-registered runs, commit each output), then emulator calibration
    (feat-005) and test-board intake (D1).
-   (2026-10-28: step 0 passed on 2026-10-27, step 1 is blocked by the 403, steps 2 and 3 are done. Next is step 4,
-   the pre-registered runs in order (4.1 size, 4.2 T3 Gata4 decomposition with the replicate overlap first, 4.3 T1
-   direction readout, 4.4 harmonisation, 4.5 density rerun, 4.6 scorer-build anchor check), each output committed
-   before anything else; ask the user before starting. Then section 5.)
+   (2026-10-28: step 0 passed on 2026-10-27, step 1 is blocked by the 403 (fallback built, the user's call), and
+   steps 2, 3 and 4 are done (What's Done). Next is the runbook's section 5: emulator calibration against the
+   validation reference rows (feat-005), then candidate files on the DGX; the test-board intake (D1) and every
+   server format check wait for the test boards' specs.)
 3. B0 floor-plus files on all four boards with the builders (feat-009); T3 per-gene factor on Gata4 (feat-012); T1
    scope shares by a written rule (feat-014).
 
@@ -150,7 +182,13 @@ blocked by the 403 on the panel files. The release-day rules are signed off and 
       the specs are in (`docs/P3_RUNBOOK.md`, step 1). Step 4 does not need them; candidate files need the test
       boards' cell limits. Asked in the fourth email (sent 2026-10-28); fallbacks are the user's call: wait for the
       reply, a public question in #virtual-embryo-challenge, or the user saving the file in the browser ("Save link
-      as", never opening it) for an intake that strips the anchors in memory (not built yet).
+      as", never opening it) for the intake that strips the anchors in memory (built 2026-10-28, cee1c92;
+      `docs/P3_RUNBOOK.md` step 1). The AI assistant suggests giving the organisers until about 2026-10-31.
+- [ ] Heads-up from step 4.1 for the embryo build (no rule acts on these by itself): `docs/PLAN.md` asks to check E7.5
+      against E8.0 by proper vs improper shape alignment before building the embryo board, and that check came out
+      undecided (relative margin -0.019 +/- 0.023 over 5 seeds), so proper rotations stay. E8.5 against E8.75 reads
+      improper although both heart stages resolve right-handed by landmarks. The z steps differ (E7.5 14, E8.0 15),
+      so the z-convention risk goes on record with the embryo submission (`docs/PLAN.md` section 4.2, step 5).
 - [ ] Release day (2026-10-27, checked to 17:43 UTC): the final phase is open (public phase endpoint: p3, split
       test, accepts submissions; official quota keys T1:test, T2:heart:test_extrap, T2:embryo:test_interp and
       T3:bcatenin, 0/2 used each; daily per task: scored 0/2, uploads 0/8). Runbook step 0 passed (357 tests, nothing
@@ -274,7 +312,7 @@ blocked by the 403 on the panel files. The release-day rules are signed off and 
 
 ## Evidence of Completion
 
-- [x] `./init.sh` on 2026-10-28: lock check, ruff clean, 366 tests pass. Recorded on 2026-10-19 (237 tests then):
+- [x] `./init.sh` on 2026-10-28: lock check, ruff clean, 402 tests pass. Recorded on 2026-10-19 (237 tests then):
       experiment tests 203 pass, 2 skipped locally (the T3 end-to-end tests, which pass on the DGX: 50 T3 tests in all).
 - [x] DGX: torch 2.14.1+cu130 with CUDA, jax 0.11.2, moscot 0.5.2, scvi-tools 1.5.1 import (runs/logs/setup2.log).
 

@@ -9,8 +9,9 @@ unlock: 2026-10-28 09:32 UTC). No test inputs are distributed. Everything below 
 before the release; run it as written and commit each output before looking at anything else. Steps marked **(user)**
 need you.
 
-Progress (2026-10-28): step 0 passed, step 1 is blocked, steps 2 and 3 are done, and step 4 is next; the user is asked
-before it starts. Each step's status is noted under its heading.
+Progress (2026-10-28): step 0 passed; step 1 is blocked (its saved-file fallback is built, cee1c92, and waits for the
+user's call); steps 2 and 3 are done; step 4 ran on 2026-10-28 at the user's go-ahead. Each step's status is noted
+under its heading.
 
 ## 0. Before anything
 
@@ -41,6 +42,8 @@ holds the P2 specs. The fourth organiser email (sent 2026-10-28) asks how to get
 intake (section 5) waits for them. So does every upload: `vec submit` checks the board against `boards/index.json`
 first (the board guard in `vec.submit.prepare`), so until the test boards are there it refuses every upload to them,
 format checks included. This is the main blocker for submitting; the pre-registered runs of step 4 do not need it.
+The fallback below was built on 2026-10-28 at the user's request (cee1c92, after an independent review); using it is
+the user's call.
 
 ```bash
 uv run vec boards update      # same as vec.boards.update_boards(); test anchors stripped in memory, never printed
@@ -113,8 +116,12 @@ procedure refuses unmapped labels.
 
 ## 4. Pre-registered runs, in order (commit each output with the git hash)
 
-Status (2026-10-28): next; the user is asked before it starts. On the DGX, a command here that no runner script wraps
-needs the BLAS thread caps in `docs/COMPUTE.md`.
+Status (2026-10-28): run at the user's go-ahead ("build the intake and start step 4"), in order, every run on the DGX
+at 725d19c with a clean tree, each output committed before it was read. 4.1 f5be247 (both size JSONs valid); 4.2
+95d8198 (replicate overlap: no shared rows, independent), 7e7c207 (decision file), 3ff6bf0 (aggregates), 05ead40
+(plan); 4.3 3c5cc66 (verdict: build); 4.4 0586bf6; 4.5 dfee546 (decision: max_cells kept on both boards) and
+ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps needs the BLAS thread caps in
+`docs/COMPUTE.md`.
 
 1. **Heart and embryo size:** `bash experiments/coords/run_p3.sh` (paths as arguments). Commit
    `experiments/coords/results/p3/`. The heart JSON sizes both heart submissions through `vec.t2_build.size_or_hold`
@@ -139,7 +146,10 @@ needs the BLAS thread caps in `docs/COMPUTE.md`.
    second run without `--overwrite`. Commit `decision.json` (build the bracketing pipeline or not). Re-run the
    committed filters (`experiments/external/`) before ~/v/vec-gapconc is cleaned up.
 4. **Harmonisation:** `experiments/harmonise/run_harmonise.py` release stages (Gata4 replicate 1 vs 2, cross-stage
-   transfer with E8.5 and E10.5). The replicate difference is the noise bar for T3 composition effects (A19).
+   transfer with E8.5 and E10.5). The replicate difference is the noise bar for T3 composition effects (A19). The
+   script's default Gata4 paths (`..._rep1.h5ad`, `..._rep2.h5ad`) are not the released names, so the run passed
+   `--stages release --out runs/harmonise_release --gata4-rep1 data/raw/T3/E8.75_gata4_ko_1.h5ad --gata4-rep2
+   data/raw/T3/E8.75_gata4_ko_2.h5ad`; tables in `experiments/harmonise/results/release/`.
 5. **Density:** the rule code (`src/vec/t2_build.py`, `experiments/density/summarise.py`) must be committed and synced
    to the DGX first (the rsync line in `docs/COMPUTE.md`): the decision refuses uncommitted rule code. Then, on the
    DGX from `~/v/virtual-embryo-challenge` (the rerun takes about 20 minutes; use tmux if the session may drop):
