@@ -141,6 +141,20 @@
       from Cloudflare to our client, so nothing was written (not worked around). The screened read of the new Rules
       and Terms was stopped by the user before it reported: what changed in them is not yet known. Nothing was
       downloaded, built or uploaded. The user asked to try again on 2026-10-28.
+      Retry 2026-10-28 04:37 UTC: phase, quota and manifest unchanged (9 training files, same note); `vec boards
+      update` still 403, nothing written. A screened read of the site (04:40-04:49 UTC; quotes came through WebFetch,
+      so check the live wording before relying on them) explains the missing files: the validation answers are now
+      opt-in. Data page and Rules s.10: they are "available to eligible registered participants during P3, after
+      explicit confirmation", and the opt-in files are "a specific exception to the held-out-data restrictions ...
+      solely for preparing P3 predictions after access is granted" (no external E10.5/E12.5 data; no test truth).
+      Rules s.11: obtaining access (even without downloading) or the first accepted P3 submission "permanently ends
+      P2 submissions across all tasks for the entire ordinary team"; viewing the Data page or a format check does not.
+      No test-input files will come ("Hidden test ground truth is never distributed"). P3 opened 2026-10-27 16:00
+      UTC (answers question 1 of the third email). The Data page still links the panel files under /challenge/panels/
+      and announces no outage, so the 403 is unexplained. No page says how the opt-in works, who is eligible, or
+      whether a Human Team must nominate entries (the phase endpoint shows nominations_open). Waiting on the user:
+      the opt-in (irreversible, team-wide, browser only) and the reading of "solely for preparing P3 predictions"
+      for inputs at prediction time (A20 stays open until then).
 - [x] 2026-10-27: history of `main` rewritten (user's decision) to drop the AI co-author trailer from all 44 commit
       messages; trees, parents, authors and dates checked identical; old -> new IDs in `docs/COMMIT_MAP.md`;
       force-pushed, DGX .git refreshed. Older IDs quoted in files resolve through that table.
