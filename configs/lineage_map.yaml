@@ -141,6 +141,54 @@ labels:
   Caudal Epiblast: EpiblastStreak
   Primitive Streak: EpiblastStreak
   Unknown: Unknown
+  # First seen in the validation answers unlocked on 2026-10-28, mapped by the rule above before anything else ran on
+  # those files. Evidence: classifier calls against the nearest released stage (experiments/labels/results/; for T1
+  # also experiments/t1_scope/results/label_evidence_E9.5_E10.5/) and marker scores (scripts/label_markers.py). The AI
+  # assistant mapped them with three independent mappers and a judge for the one disagreement (BW).
+  # T1 E10.5_RNA (calls against T1 E9.5)
+  Epicardium: EpicardiumST          # 93% called Proepicardium (T1 script 96%); Upk3b 2.36, Tbx18 1.64, Wt1 1.60
+  Endocardium-1: Endocardium        # 100% called Endocardium; Hapln1 2.90, Tek 1.90, Nfatc1 1.35
+  Endocardium-2: Endocardium        # 99% called Endocardium; Npr3 2.15, Emcn 1.95
+  EndoMT Endocardium: Endocardium   # cushion EndoMT cells; 96% called Endocardium; Hapln1 3.17, Twist1 1.94, Postn 1.72
+  Early VIC: Unknown                # early valve interstitial cells (cushion mesenchyme), named neither CM nor
+                                    # endocardium, so shell by default, and no shell group fits; 69% called Endocardium
+                                    # (T1 script 46% Endocardium, 48% NCC-derived); Postn 2.27, Sox9 1.45, no endothelial
+                                    # markers. T1 places it in endocardium (configs/t1_chamber_classes.yaml, exception)
+  Macrophage: Blood                 # immune cells (Runx1 1.73); E9.5 has none (novelty 0.70), so its calls (NCC 51%,
+                                    # Blood 23%) are forced
+  # T2 E10.5 (calls against T2 E9.5)
+  Late-a-PHM: PharyngealMesoderm    # 83% called pharyngeal mesoderm (pPHM 62%, aPHM 10%)
+  Epi: EpicardiumST                 # epicardium (cf. Proepi, Peri): 70% called EpicardiumST (Proepi 48%, ST 20%);
+                                    # epicardial markers highest (2.38)
+  BW: PharyngealMesoderm            # body wall, which has no group of its own: 56% called pharyngeal mesoderm
+                                    # (Lateral-PAM 53%), 32% ST; generic mesenchyme markers. Judge's ruling over LPM,
+                                    # which rested on the name alone; shell either way
+  Bronchus: Endoderm                # airway, a foregut derivative: 91% called Foregut
+  Valve-EndoMT-Endo: Endocardium    # valve EndoMT endocardium, core by the rule (cf. Cush-EndoMT-Endo): 43% called
+                                    # Cush-EndoMT-Endo, 23% ST; Postn-high mesenchymal markers like Cush-EndoMT-Endo
+  # T3 Gata4 KO E8.75, both replicates (calls against WT E8.75; shares ko_1/ko_2)
+  Extra-Embryonic Mesenchyme-1: ExtraEmbryonicMeso   # 87%/77% called ExEM-1
+  Extra-Embryonic Mesenchyme-2: ExtraEmbryonicMeso   # ko_2 84% ExEM (ExEM-2 44%, ExEM-1 38%); the 59 ko_1 cells 58% JCF
+  Paraxial Mesoderm-1: ParaxialMesoderm              # 95%/94% called paraxial mesoderm (PAM-3, PAM-4)
+  Paraxial Mesoderm-2: ParaxialMesoderm              # 87%/79% called paraxial mesoderm (PAM-1, PAM-2, PAM-4)
+  Endocardium/Intra-Embryonic Endothelium: Endothelium   # names both; 64%/57% called Intra-Endoth, 26%/31% Endo: shell
+  Ventral Surface Ectoderm: Ectoderm                 # 95%/92% called ectoderm (d-CSE, V-CSE)
+  Dorsal Surface Ectoderm: Ectoderm                  # 91%/87% called ectoderm (d-CSE, pSE)
+  Anterior Pharyngeal Mesoderm: PharyngealMesoderm   # 78%/74% called pharyngeal mesoderm (aPHM 60%/53%)
+  Posterior Pharyngeal Mesoderm: PharyngealMesoderm  # 68%/60% called pharyngeal mesoderm (pPHM 62%/51%)
+  CM: CM                                             # 98%/97% called CM (V-CM 92%/91%)
+  Pericardium/Body Wall: Pericardium                 # by name: called JCF 41%/44%, aPHM 24%/26%, ExEM-1 19%/14%,
+                                                     # not WT Peri; shell either way
+  Ventral Foregut: Endoderm                          # 76%/77% called endoderm (a-FG 41%/40%)
+  Dorsal Foregut: Endoderm                           # 91%/88% called endoderm (D-FG 90%/85%)
+  NCC-1: NCC                                         # 93%/89% called NCC
+  NCC-2: NCC                                         # by name: 94%/66% called d-CSE (ko_2 has 32 cells), NCC and
+                                                     # ectoderm markers alike (1.69 vs 1.65); shell, mesp1 no either way
+  NCC-3: NCC                                         # 99%/87% called NCC (ko_2 has 31 cells)
+  Artificial: Unknown                                # artefact cluster: no WT group above 21%, median confidence
+                                                     # 0.45/0.47, every marker score below 0.5
+  Haematopoetic Endothelium: Endothelium             # cf. HEM-Endoth: 94%/79% called Endothelium (HEM-Endoth 92%/75%)
+  Extra Endoderm: Endoderm                           # ko_2 96% called EXE-Endoderm (ko_1 has 3 cells)
 
 # Per-file remaps, keyed by file stem. Evidence: experiments/harmonise/results/ko_label_concordance.csv (WT E9.5
 # classifier calls on the KO cells).

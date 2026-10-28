@@ -101,6 +101,19 @@ def test_config_maps_every_released_t1_label_consistently():
     assert spec.labels["ST"] == "surrounding" and "ST" in spec.exceptions
 
 
+def test_config_maps_every_label_of_the_released_e10_5_file():
+    """E10.5_RNA (validation answer, unlocked 2026-10-28) is not in boards/t1_composition.json yet (the panel files
+    answer 403), so its 23 labels are listed here."""
+    from test_prep import VALIDATION_LABELS
+
+    spec = load_spec()
+    e105 = VALIDATION_LABELS["T1/E10.5_RNA"]
+    assert len(e105) == 23 and e105 <= set(spec.labels), sorted(e105 - set(spec.labels))
+    assert check_spec(spec) == []
+    assert spec.labels["Early VIC"] == "endocardium" and "Early VIC" in spec.exceptions
+    assert spec.labels["Macrophage"] == "blood" and spec.labels["Epicardium"] == "epicardium"
+
+
 def test_no_default_target_composition_or_size():
     for fn, params in ((load_shares, ["shares"]), (reweight, ["target_shares", "n_cells"]),
                        (build_submission, ["target_shares", "n_cells"])):

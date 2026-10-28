@@ -35,6 +35,40 @@ def test_lineage_map_is_consistent():
         assert isinstance(g["core"], bool)
 
 
+# Every cell-type label of the six validation answers unlocked on 2026-10-28 (runbook step 3), by file.
+VALIDATION_LABELS = {
+    "T1/E10.5_RNA": {"Epicardium", "Endocardium-1", "Endocardium-2", "EndoMT Endocardium", "Early VIC", "Macrophage",
+                     "Blood", "pPHM", "pSHF", "Surface Ectoderm", "aPHM", "OFT-CM", "BEC", "RV-CM", "LV-CM", "ST",
+                     "Pericardium", "SV-CM", "NCC", "AVC-CM", "IFT-CM", "Hepatocyte", "Gut Endoderm"},
+    "T2/E8.5": {"ExEM-1", "NCC", "Neural Tube", "SOM", "V-CM", "Caudal Epiblast", "V-CSE", "d-CSE", "LPM", "aPHM",
+                "EXE-Endoderm", "D-FG", "Intra-Endoth-1", "PAM-2", "PAM-1", "JCF", "PAM-3", "ExEM-2", "IFT-CM", "PAM-4",
+                "pPHM", "Endo", "pSE", "a-FG", "Peri", "Unknown", "Hindgut", "Intra-Endoth-2", "HEM-Endoth",
+                "Lateral FG", "Allantois", "Gut Endoderm", "Forebrain"},
+    "T2/E10.5": {"Late-a-PHM", "Epi", "BW", "Bronchus", "Valve-EndoMT-Endo", "Dorsal-PAM", "Peri", "V-CM",
+                 "Branch Arch", "DMP", "A-CM", "Chamber-Endo", "Hepatocytes", "BEC", "NCC", "Cush-EndoMT-Endo",
+                 "Great Artery Endoth", "Unknown", "SV-CM", "OFT-CM", "early-VEC", "SE", "HEM-Endoth"},
+    "T2/E7.5": {"EXE-Endoderm", "Anterior Epiblast", "Caudal Epiblast", "ExEM-2", "PHM/PAM", "Gut Endoderm",
+                "Allantois", "CP", "SOM", "Primitive Streak", "aSE", "Unknown", "ExEM-1", "LPM", "HEM-Endoth",
+                "EXE-Ectoderm", "Blood Progenitor", "pSE"},
+    "T3/E8.75_gata4_ko_1+2": {"Extra-Embryonic Mesenchyme-1", "Extra-Embryonic Mesenchyme-2", "Paraxial Mesoderm-1",
+                              "Paraxial Mesoderm-2", "Endocardium/Intra-Embryonic Endothelium",
+                              "Ventral Surface Ectoderm", "Dorsal Surface Ectoderm", "Anterior Pharyngeal Mesoderm",
+                              "Posterior Pharyngeal Mesoderm", "CM", "Pericardium/Body Wall", "Ventral Foregut",
+                              "Dorsal Foregut", "NCC-1", "NCC-2", "NCC-3", "Artificial", "Haematopoetic Endothelium",
+                              "Extra Endoderm", "Neural Tube"},
+}
+
+
+def test_every_label_of_the_validation_answers_is_mapped():
+    spec = lineage_map()
+    for f, labels in VALIDATION_LABELS.items():
+        assert labels <= set(spec["labels"]), (f, sorted(labels - set(spec["labels"])))
+    released = set().union(*VALIDATION_LABELS.values())
+    core = {lab for lab in released if spec["groups"][spec["labels"][lab]]["core"]}
+    new_core = {"Endocardium-1", "Endocardium-2", "EndoMT Endocardium", "Valve-EndoMT-Endo", "CM"}
+    assert new_core <= core and not {"Epi", "Epicardium", "Early VIC", "Endocardium/Intra-Embryonic Endothelium"} & core
+
+
 def test_add_lineage_flags_unmapped_labels():
     a = ad.AnnData(X=np.zeros((3, 2), np.float32))
     a.obs["celltype"] = ["V-CM", "Neural Tube", "Mystery"]

@@ -124,6 +124,16 @@ labels:
   NCC-derived: surrounding      # E9.5; arch mesenchyme (Twist1 1.09, Prrx1 0.99, Dlx2 0.34); 48% called E8.5 NCC
   Paraxial Mesoderm: surrounding   # E8.5
   EXEM: surrounding             # E8.5 extra-embryonic mesoderm; called E9.5 ST (58%) or pPHM (34%)
+  # First seen in a T1 file in E10.5_RNA (validation answer, unlocked 2026-10-28; 23 labels), placed by the rule above
+  # after the lineage map (evidence: experiments/t1_scope/results/label_evidence_E9.5_E10.5/, calls against E9.5)
+  Epicardium: epicardium        # 96% called E9.5 Proepicardium; Upk3b 2.36, Tbx18 1.64, Wt1 1.60
+  Endocardium-1: endocardium    # 99% called E9.5 Endocardium
+  Endocardium-2: endocardium    # 100% called E9.5 Endocardium
+  EndoMT Endocardium: endocardium   # cushion EndoMT cells (rule 2); 96% called E9.5 Endocardium
+  Early VIC: endocardium        # early valve interstitial cells = cushion mesenchyme (rule 2); see exceptions
+  Macrophage: blood             # immune cells (rule 2); E9.5 has none, so its calls are forced (BEC 32%, Blood 30%)
+  OFT-CM: cm                    # in the lineage map already (CM); 59% called E9.5 OFT/RV-CM, 31% aSHF
+  Gut Endoderm: surrounding     # in the lineage map already (Endoderm); 99% called E9.5 Epithelium
 
 # Labels whose category differs from group_base[their lineage-map group].
 exceptions:
@@ -131,6 +141,12 @@ exceptions:
     Septum transversum is the liver-bud and diaphragm mesenchyme below the heart, not chamber tissue; only its
     proepicardial part becomes epicardium, and that part has its own label (Proepicardium). Rule 2 places it in
     surrounding.
+  Early VIC: >-
+    E10.5 early valve interstitial cells. The lineage map keeps them shell under Unknown (its rule names neither
+    valve interstitial cells nor cushion mesenchyme as core), and Unknown has no T1 base. Rule 2 places cushion
+    mesenchyme in endocardium, and early VICs are the E10.5 cushion mesenchyme. The evidence agrees in part: Postn
+    2.27, Sox9 1.45 and Hapln1 1.32, like EndoMT Endocardium, and no endothelial markers; vec.harmonise calls 69% of
+    them E9.5 Endocardium, while the T1 script splits them 46% Endocardium and 48% NCC-derived.
 
 # Per-file remaps, keyed by file stem (pass `source=` to classify). Keys are released T1 file stems (E8.5_RNA, E9.5_RNA,
 # E10.5_RNA), never stage names: the file's stem would select none of a section keyed "E10.5", so

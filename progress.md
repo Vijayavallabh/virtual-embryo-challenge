@@ -3,9 +3,10 @@
 ## Current State
 
 **Last Updated:** 2026-10-28
-**Active Feature:** feat-004 - Final-phase intake (`docs/P3_RUNBOOK.md`). Step 2 (data) done on 2026-10-28 (feat-003
-done); step 3 (labels) is next; step 1 is blocked by the 403 on the panel files; steps 4.1-4.3 wait for the user's
-reading of A20. The release-day rules are signed off and in code (`docs/RELEASE_RULES_SUMMARY.md`).
+**Active Feature:** feat-004 - Final-phase intake (`docs/P3_RUNBOOK.md`). Steps 2 (data) and 3 (labels) done on
+2026-10-28 (feat-003 done); step 4 (the pre-registered runs) is next, with A20 passed on the user's reading; step 1 is
+blocked by the 403 on the panel files. The release-day rules are signed off and in code
+(`docs/RELEASE_RULES_SUMMARY.md`).
 
 ## Status
 
@@ -169,6 +170,22 @@ reading of A20. The release-day rules are signed off and in code (`docs/RELEASE_
       P3 preparation. This does not permit access to hidden test data or other restricted external sources."
       Still open: the 403 on the panel files (step 1, the test-board specs) and the user's reading for A20 (inputs
       at prediction time), which steps 4.1-4.3 need.
+- [x] 2026-10-28: runbook step 3 (labels) done, at the user's go-ahead. The 30 labels first seen in the validation
+      answers are mapped in `configs/lineage_map.yaml` by its 2026-10-19 rule, and the 8 labels new to a T1 file in
+      `configs/t1_chamber_classes.yaml` (6 new names plus OFT-CM and Gut Endoderm). Evidence: classifier calls
+      against the nearest released stage (`experiments/labels/`, results committed; the T1 rule's own script in
+      `experiments/t1_scope/results/label_evidence_E9.5_E10.5/`) and marker scores (`scripts/label_markers.py`, DGX).
+      The AI assistant mapped them with three independent mappers (29 of 30 unanimous) and a judge (BW).
+      - New core labels: Endocardium-1, Endocardium-2 and EndoMT Endocardium (T1), Valve-EndoMT-Endo (T2 E10.5, 2,621
+        cells) and the Gata4 files' CM.
+      - Calls a reader may question: Early VIC (lineage Unknown, so shell; T1 category endocardium, as cushion
+        mesenchyme by rule 2); BW (pharyngeal mesoderm, by the classifier); NCC-2 (NCC by name, though 94% of
+        replicate 1 is called surface ectoderm); Pericardium/Body Wall (pericardium by name; the calls are mostly
+        JCF); Endocardium/Intra-Embryonic Endothelium (Endothelium, shell, 57-64% of calls).
+      - Every label of all 15 files maps and the T1 config checks clean (DGX); 366 tests pass.
+      - Names already in the map keep their mapping, as the rule says, though some mean other cells in the new
+        files: T1 E10.5 BEC is 57% called E9.5 Endocardium (both chamber categories), T1 E10.5 Surface Ectoderm 80%
+        Foregut, and T2 E10.5 Branch Arch 50% Dorsal-PAM (all shell or surrounding either way).
 - [ ] Final-entry nomination (found 2026-10-28 in the site's public account-page script): "In the final phase the
       captain picks which submission counts" (a "Final" column in the captain's submission list while
       nominations_open); the timeline makes 2026-12-02 the last moment to nominate. Rules s.11 still says the board
