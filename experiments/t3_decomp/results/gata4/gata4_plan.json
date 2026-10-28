@@ -1,0 +1,318 @@
+{
+ "command": "plan",
+ "created": "2026-10-28 18:08:37 IST",
+ "decision_file": {
+  "path": "experiments/t3_decomp/results/gata4/gata4_decisions.json",
+  "sha256": "9440ae67625608112666d5235e6ceaa5dd9f47a4b0bbd30e16943f32f35c5a8c",
+  "protocol_as_registered": true
+ },
+ "hashes": {
+  "t3_decompose_on_disk": "3e671c3bb5ff57bba5ceec80ea36fcc739b1f111399a1e2854400b5c9f5133d2",
+  "rules_on_disk": "cd2d94aa6e202529a2eead2a7ad60b312d9a2fd9ff0bd989d9320662de750c13",
+  "decision_script_sha256": "3e671c3bb5ff57bba5ceec80ea36fcc739b1f111399a1e2854400b5c9f5133d2",
+  "decision_rules_sha256": "cd2d94aa6e202529a2eead2a7ad60b312d9a2fd9ff0bd989d9320662de750c13",
+  "mismatch": [],
+  "allow_hash_mismatch": false,
+  "build_submission": "f387e317ce0bdcf76f42f9bd7c042a5342a156c204a0adbe955893c175cc9cc2"
+ },
+ "branches": {
+  "allowed": {
+   "s1": {
+    "spec": {
+     "factor": {
+      "source": "gata4",
+      "exponent": 1.0
+     },
+     "composition": {
+      "kind": "central",
+      "depleted_states": [
+       "OFT/RV-CM",
+       "aSHF",
+       "pSHF",
+       "aPHM",
+       "pPHM"
+      ],
+      "spared_states": [
+       "vCM1",
+       "vCM2",
+       "JCF/SV-CM",
+       "FHF/JCF"
+      ],
+      "log2_magnitude": 1.3826521560990648,
+      "depletion_factor": 0.3835131214774091,
+      "magnitude_source": "Gata4 replicates (D7)"
+     },
+     "depth": true,
+     "stage": false,
+     "coverage": false
+    },
+    "source": {
+     "source": "decision file submissions.allowed.s1",
+     "recomputed_matches": true,
+     "factor_row": {
+      "when": "D2",
+      "s1": "gata4",
+      "s2": "gata4"
+     },
+     "note": "rules.yaml note 6: D11b did not pass and D7 passed: s2 = no factor (WT cells) with the central composition at m",
+     "warning": null,
+     "note8": {
+      "table_factor_row": {
+       "when": "D2",
+       "s1": "gata4",
+       "s2": "gata4"
+      },
+      "applies": false,
+      "reason": "the factor table did not reach its last row"
+     },
+     "note6": {
+      "D11b_outcome": false,
+      "D11b_per_target": {
+       "rep1": {
+        "t3": 59.39862256749344,
+        "sev_floor_frac": 0.0
+       },
+       "rep2": {
+        "t3": 62.15039518520014,
+        "sev_floor_frac": 0.0
+       }
+      },
+      "table_s2": {
+       "factor": {
+        "source": "gata4",
+        "exponent": 1.0
+       },
+       "composition": {
+        "kind": "none"
+       },
+       "depth": true,
+       "stage": false,
+       "coverage": false
+      },
+      "applies": true,
+      "reason": "D11b did not pass and D7 passed: s2 = no factor (WT cells) with the central composition at m"
+     },
+     "table_note": null
+    }
+   },
+   "s2": {
+    "spec": {
+     "factor": {
+      "source": "none",
+      "exponent": 0.0
+     },
+     "composition": {
+      "kind": "central",
+      "depleted_states": [
+       "OFT/RV-CM",
+       "aSHF",
+       "pSHF",
+       "aPHM",
+       "pPHM"
+      ],
+      "spared_states": [
+       "vCM1",
+       "vCM2",
+       "JCF/SV-CM",
+       "FHF/JCF"
+      ],
+      "log2_magnitude": 1.3826521560990648,
+      "depletion_factor": 0.3835131214774091,
+      "magnitude_source": "Gata4 replicates (D7)"
+     },
+     "depth": false,
+     "stage": false,
+     "coverage": false
+    },
+    "source": {
+     "source": "rules.yaml note 6 (replacing decision file submissions.allowed.s2)",
+     "recomputed_matches": true,
+     "factor_row": null,
+     "note": "rules.yaml note 6: D11b did not pass and D7 passed: s2 = no factor (WT cells) with the central composition at m",
+     "warning": null,
+     "note8": {
+      "table_factor_row": {
+       "when": "D2",
+       "s1": "gata4",
+       "s2": "gata4"
+      },
+      "applies": false,
+      "reason": "the factor table did not reach its last row"
+     },
+     "note6": {
+      "D11b_outcome": false,
+      "D11b_per_target": {
+       "rep1": {
+        "t3": 59.39862256749344,
+        "sev_floor_frac": 0.0
+       },
+       "rep2": {
+        "t3": 62.15039518520014,
+        "sev_floor_frac": 0.0
+       }
+      },
+      "table_s2": {
+       "factor": {
+        "source": "gata4",
+        "exponent": 1.0
+       },
+       "composition": {
+        "kind": "none"
+       },
+       "depth": true,
+       "stage": false,
+       "coverage": false
+      },
+      "applies": true,
+      "reason": "D11b did not pass and D7 passed: s2 = no factor (WT cells) with the central composition at m"
+     },
+     "table_note": null,
+     "table_source": "decision file submissions.allowed.s2",
+     "table_factor_row": {
+      "when": "D2",
+      "s1": "gata4",
+      "s2": "gata4"
+     }
+    }
+   }
+  },
+  "refused": {
+   "s1": {
+    "spec": {
+     "factor": {
+      "source": "none",
+      "exponent": 0.0
+     },
+     "composition": {
+      "kind": "central",
+      "depleted_states": [
+       "OFT/RV-CM",
+       "aSHF",
+       "pSHF",
+       "aPHM",
+       "pPHM"
+      ],
+      "spared_states": [
+       "vCM1",
+       "vCM2",
+       "JCF/SV-CM",
+       "FHF/JCF"
+      ],
+      "log2_magnitude": 0.717813870986706,
+      "depletion_factor": 0.608018079863038,
+      "magnitude_source": "Mab21l2 (D7m)"
+     }
+    },
+    "source": {
+     "source": "decision file submissions.refused.s1",
+     "recomputed_matches": true,
+     "factor_row": {
+      "when": "true",
+      "s1": "none",
+      "s2": "none"
+     },
+     "note": null,
+     "warning": null
+    }
+   },
+   "s2": {
+    "spec": {
+     "factor": {
+      "source": "none",
+      "exponent": 0.0
+     },
+     "composition": {
+      "kind": "none"
+     }
+    },
+    "source": {
+     "source": "decision file submissions.refused.s2",
+     "recomputed_matches": true,
+     "factor_row": {
+      "when": "true",
+      "s1": "none",
+      "s2": "none"
+     },
+     "note": null,
+     "warning": null
+    }
+   }
+  },
+  "barred": {
+   "s1": {
+    "spec": {
+     "factor": {
+      "source": "mab21l2",
+      "exponent": 1.0
+     },
+     "composition": {
+      "kind": "central",
+      "depleted_states": [
+       "OFT/RV-CM",
+       "aSHF",
+       "pSHF",
+       "aPHM",
+       "pPHM"
+      ],
+      "spared_states": [
+       "vCM1",
+       "vCM2",
+       "JCF/SV-CM",
+       "FHF/JCF"
+      ],
+      "log2_magnitude": 0.717813870986706,
+      "depletion_factor": 0.608018079863038,
+      "magnitude_source": "Mab21l2 (D7m)"
+     }
+    },
+    "source": {
+     "source": "rules.yaml note 3 (barred branch)",
+     "factor_row": {
+      "when": "rules.yaml note 3",
+      "s1": "mab21l2",
+      "s2": "mab21l2"
+     },
+     "note": null,
+     "warning": null
+    }
+   },
+   "s2": {
+    "spec": {
+     "factor": {
+      "source": "mab21l2",
+      "exponent": 1.0
+     },
+     "composition": {
+      "kind": "mild",
+      "depleted_states": [
+       "OFT/RV-CM",
+       "aSHF",
+       "pSHF",
+       "aPHM",
+       "pPHM"
+      ],
+      "spared_states": [
+       "vCM1",
+       "vCM2",
+       "JCF/SV-CM",
+       "FHF/JCF"
+      ],
+      "log2_magnitude": 0.358906935493353,
+      "depletion_factor": 0.7797551409660843,
+      "magnitude_source": "Mab21l2 (D7m)"
+     }
+    },
+    "source": {
+     "source": "rules.yaml note 3 (barred branch)",
+     "factor_row": {
+      "when": "rules.yaml note 3",
+      "s1": "mab21l2",
+      "s2": "mab21l2"
+     },
+     "note": null,
+     "warning": null
+    }
+   }
+  }
+ }
+}
