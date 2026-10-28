@@ -1,0 +1,572 @@
+[
+  {
+    "file": "data/raw/T2/E8.5.h5ad",
+    "cells": 23710,
+    "genes": 500,
+    "obs_names_duplicated": 0,
+    "matrix": "layers['counts']",
+    "counts": {
+      "non_integer_entries": 0,
+      "non_integer_rows": 0,
+      "half_integer_entries": 0,
+      "negative_entries": 0
+    },
+    "identical_rows": {
+      "repeats": 0,
+      "groups": 0,
+      "largest_group": 1,
+      "empty_rows": 0,
+      "repeats_min_library": 0
+    },
+    "z": {
+      "raw_values": 81,
+      "levels": 25,
+      "step": 15.0,
+      "spacings": {
+        "15": 24
+      },
+      "max_level_spread": 1.1368683772161603e-13,
+      "gaps": [],
+      "off_grid_levels": [],
+      "dense_levels": {},
+      "continuous": false,
+      "level_values": [
+        -164.365458,
+        -149.365458,
+        -134.365458,
+        -119.365458,
+        -104.365458,
+        -89.365458,
+        -74.365458,
+        -59.365458,
+        -44.365458,
+        -29.365458,
+        -14.365458,
+        0.634542,
+        15.634542,
+        30.634542,
+        45.634542,
+        60.634542,
+        75.634542,
+        90.634542,
+        105.634542,
+        120.634542,
+        135.634542,
+        150.634542,
+        165.634542,
+        180.634542,
+        195.634542
+      ],
+      "cells_per_level": [
+        1014,
+        1177,
+        1064,
+        1079,
+        1290,
+        1150,
+        1099,
+        1042,
+        958,
+        1122,
+        1120,
+        1135,
+        995,
+        809,
+        981,
+        657,
+        792,
+        793,
+        891,
+        496,
+        602,
+        892,
+        950,
+        761,
+        841
+      ]
+    },
+    "sections": {
+      "levels": 25
+    },
+    "row_order": {
+      "spearman_row_vs_z": -0.9991065500820034,
+      "z_runs": 25,
+      "grouped_by_level": true,
+      "direction": "descending"
+    },
+    "duplicates": {
+      "n_records": 23710,
+      "n_redundant": 0,
+      "n_with_copies": 0,
+      "by_gap": {},
+      "by_level_pair": [],
+      "max_xy_offset": 0.0,
+      "below_min_library": 0,
+      "xy_tol": 0.01,
+      "min_library": 20.0,
+      "max_level_gap": 1,
+      "z_step": 15.0
+    },
+    "duplicates_any_xy": {
+      "n_records": 23710,
+      "n_redundant": 0,
+      "n_with_copies": 0,
+      "by_gap": {},
+      "by_level_pair": [],
+      "max_xy_offset": 0.0,
+      "below_min_library": 0,
+      "xy_tol": "any",
+      "min_library": 20.0,
+      "max_level_gap": 1,
+      "z_step": 15.0
+    },
+    "coords": {
+      "min": [
+        -326.66309234871164,
+        -430.94096499410307,
+        -164.36545761284418
+      ],
+      "max": [
+        306.1574388192514,
+        471.0290227861117,
+        195.6345423871559
+      ],
+      "extent": [
+        632.820531167963,
+        901.9699877802148,
+        360.0000000000001
+      ],
+      "mean": [
+        -1.2166553438837138e-13,
+        -5.108955107228253e-14,
+        1.721681909462243e-11
+      ],
+      "bbox_mid": [
+        -10.252826764730116,
+        20.044028896004306,
+        15.63454238715586
+      ],
+      "centred_on": "mean",
+      "duplicate_positions": 0
+    }
+  },
+  {
+    "file": "data/raw/T2/E10.5.h5ad",
+    "cells": 167864,
+    "genes": 500,
+    "obs_names_duplicated": 0,
+    "matrix": "layers['counts']",
+    "counts": {
+      "non_integer_entries": 0,
+      "non_integer_rows": 0,
+      "half_integer_entries": 0,
+      "negative_entries": 0
+    },
+    "identical_rows": {
+      "repeats": 0,
+      "groups": 0,
+      "largest_group": 1,
+      "empty_rows": 0,
+      "repeats_min_library": 0
+    },
+    "z": {
+      "raw_values": 157,
+      "levels": 44,
+      "step": 15.0,
+      "spacings": {
+        "15": 34,
+        "30": 9
+      },
+      "max_level_spread": 2.2737367544323206e-13,
+      "gaps": [
+        {
+          "from": -433.272441,
+          "to": -403.272441,
+          "steps": 2.0,
+          "missing": 1
+        },
+        {
+          "from": -403.272441,
+          "to": -373.272441,
+          "steps": 2.0,
+          "missing": 1
+        },
+        {
+          "from": -373.272441,
+          "to": -343.272441,
+          "steps": 2.0,
+          "missing": 1
+        },
+        {
+          "from": -343.272441,
+          "to": -313.272441,
+          "steps": 2.0,
+          "missing": 1
+        },
+        {
+          "from": -313.272441,
+          "to": -283.272441,
+          "steps": 2.0,
+          "missing": 1
+        },
+        {
+          "from": -283.272441,
+          "to": -253.272441,
+          "steps": 2.0,
+          "missing": 1
+        },
+        {
+          "from": -253.272441,
+          "to": -223.272441,
+          "steps": 2.0,
+          "missing": 1
+        },
+        {
+          "from": -223.272441,
+          "to": -193.272441,
+          "steps": 2.0,
+          "missing": 1
+        },
+        {
+          "from": -193.272441,
+          "to": -163.272441,
+          "steps": 2.0,
+          "missing": 1
+        }
+      ],
+      "off_grid_levels": [],
+      "dense_levels": {
+        "-433.272441": {
+          "cells": 3545,
+          "neighbour_ratio": 1.73
+        }
+      },
+      "continuous": false,
+      "level_values": [
+        -433.272441,
+        -403.272441,
+        -373.272441,
+        -343.272441,
+        -313.272441,
+        -283.272441,
+        -253.272441,
+        -223.272441,
+        -193.272441,
+        -163.272441,
+        -148.272441,
+        -133.272441,
+        -118.272441,
+        -103.272441,
+        -88.272441,
+        -73.272441,
+        -58.272441,
+        -43.272441,
+        -28.272441,
+        -13.272441,
+        1.727559,
+        16.727559,
+        31.727559,
+        46.727559,
+        61.727559,
+        76.727559,
+        91.727559,
+        106.727559,
+        121.727559,
+        136.727559,
+        151.727559,
+        166.727559,
+        181.727559,
+        196.727559,
+        211.727559,
+        226.727559,
+        241.727559,
+        256.727559,
+        271.727559,
+        286.727559,
+        301.727559,
+        316.727559,
+        331.727559,
+        346.727559
+      ],
+      "cells_per_level": [
+        3545,
+        2048,
+        2549,
+        3735,
+        3290,
+        3859,
+        5288,
+        4515,
+        4034,
+        4816,
+        3979,
+        4745,
+        4626,
+        4921,
+        4855,
+        3785,
+        5010,
+        4937,
+        3943,
+        3935,
+        3571,
+        4039,
+        4910,
+        5846,
+        3632,
+        2892,
+        3009,
+        3971,
+        3749,
+        3148,
+        2708,
+        3187,
+        3039,
+        4100,
+        2339,
+        3491,
+        3829,
+        3695,
+        4087,
+        2579,
+        2813,
+        3547,
+        3608,
+        3660
+      ]
+    },
+    "sections": {
+      "levels": 44
+    },
+    "row_order": {
+      "spearman_row_vs_z": -0.999704826834355,
+      "z_runs": 44,
+      "grouped_by_level": true,
+      "direction": "descending"
+    },
+    "duplicates": {
+      "n_records": 167864,
+      "n_redundant": 0,
+      "n_with_copies": 0,
+      "by_gap": {},
+      "by_level_pair": [],
+      "max_xy_offset": 0.0,
+      "below_min_library": 0,
+      "xy_tol": 0.01,
+      "min_library": 20.0,
+      "max_level_gap": 1,
+      "z_step": 15.0
+    },
+    "duplicates_any_xy": {
+      "n_records": 167864,
+      "n_redundant": 0,
+      "n_with_copies": 0,
+      "by_gap": {},
+      "by_level_pair": [],
+      "max_xy_offset": 0.0,
+      "below_min_library": 0,
+      "xy_tol": "any",
+      "min_library": 20.0,
+      "max_level_gap": 1,
+      "z_step": 15.0
+    },
+    "coords": {
+      "min": [
+        -626.4023023229947,
+        -767.076333816057,
+        -433.2724407851347
+      ],
+      "max": [
+        678.5781664270044,
+        797.9051114964435,
+        346.7275592148655
+      ],
+      "extent": [
+        1304.980468749999,
+        1564.9814453125005,
+        780.0000000000002
+      ],
+      "mean": [
+        8.579109855232435e-12,
+        -3.929808931841999e-12,
+        -8.009864111212583e-11
+      ],
+      "bbox_mid": [
+        26.087932052004817,
+        15.414388840193283,
+        -43.27244078513459
+      ],
+      "centred_on": "mean",
+      "duplicate_positions": 0
+    }
+  },
+  {
+    "file": "data/raw/T2/E7.5.h5ad",
+    "cells": 11665,
+    "genes": 500,
+    "obs_names_duplicated": 0,
+    "matrix": "layers['counts']",
+    "counts": {
+      "non_integer_entries": 0,
+      "non_integer_rows": 0,
+      "half_integer_entries": 0,
+      "negative_entries": 0
+    },
+    "identical_rows": {
+      "repeats": 0,
+      "groups": 0,
+      "largest_group": 1,
+      "empty_rows": 0,
+      "repeats_min_library": 0
+    },
+    "z": {
+      "raw_values": 34,
+      "levels": 34,
+      "step": 14.0,
+      "spacings": {
+        "14": 33
+      },
+      "max_level_spread": 0.0,
+      "gaps": [],
+      "off_grid_levels": [],
+      "dense_levels": {},
+      "continuous": false,
+      "level_values": [
+        -222.95105,
+        -208.95105,
+        -194.95105,
+        -180.95105,
+        -166.95105,
+        -152.95105,
+        -138.95105,
+        -124.95105,
+        -110.95105,
+        -96.95105,
+        -82.95105,
+        -68.95105,
+        -54.95105,
+        -40.95105,
+        -26.95105,
+        -12.95105,
+        1.04895,
+        15.04895,
+        29.04895,
+        43.04895,
+        57.04895,
+        71.04895,
+        85.04895,
+        99.04895,
+        113.04895,
+        127.04895,
+        141.04895,
+        155.04895,
+        169.04895,
+        183.04895,
+        197.04895,
+        211.04895,
+        225.04895,
+        239.04895
+      ],
+      "cells_per_level": [
+        230,
+        352,
+        404,
+        252,
+        390,
+        314,
+        335,
+        349,
+        288,
+        450,
+        419,
+        433,
+        358,
+        368,
+        272,
+        514,
+        519,
+        453,
+        421,
+        233,
+        451,
+        350,
+        353,
+        334,
+        260,
+        367,
+        297,
+        270,
+        167,
+        205,
+        360,
+        322,
+        271,
+        304
+      ]
+    },
+    "sections": {
+      "levels": 34
+    },
+    "row_order": {
+      "spearman_row_vs_z": 0.9994896991724684,
+      "z_runs": 34,
+      "grouped_by_level": true,
+      "direction": "ascending"
+    },
+    "duplicates": {
+      "n_records": 11665,
+      "n_redundant": 0,
+      "n_with_copies": 0,
+      "by_gap": {},
+      "by_level_pair": [],
+      "max_xy_offset": 0.0,
+      "below_min_library": 0,
+      "xy_tol": 0.01,
+      "min_library": 20.0,
+      "max_level_gap": 1,
+      "z_step": 14.0
+    },
+    "duplicates_any_xy": {
+      "n_records": 11665,
+      "n_redundant": 0,
+      "n_with_copies": 0,
+      "by_gap": {},
+      "by_level_pair": [],
+      "max_xy_offset": 0.0,
+      "below_min_library": 0,
+      "xy_tol": "any",
+      "min_library": 20.0,
+      "max_level_gap": 1,
+      "z_step": 14.0
+    },
+    "coords": {
+      "min": [
+        -214.6659245308297,
+        -223.64819016501744,
+        -222.95105015000226
+      ],
+      "max": [
+        249.5985142703507,
+        184.44592430759374,
+        239.04894984999774
+      ],
+      "extent": [
+        464.2644388011804,
+        408.0941144726112,
+        462.0
+      ],
+      "mean": [
+        -3.37259581599359e-14,
+        2.730725680344586e-13,
+        3.9860150042770706e-11
+      ],
+      "bbox_mid": [
+        17.466294869760503,
+        -19.60113292871185,
+        8.04894984999774
+      ],
+      "centred_on": "mean",
+      "duplicate_positions": 0
+    }
+  }
+]

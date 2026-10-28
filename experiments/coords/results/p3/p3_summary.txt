@@ -1,0 +1,46 @@
+size_heart_E12.5.json: valid=True timestamp=2026-10-28T12:21:12Z commit=725d19c879ab1795a3aba01917d27140b3f9374d uncommitted=[] pre-registered z mode=xy_grow_z_hold
+  input E8.25_late t=8.25 records=58716 duplicates dropped=4285
+  input E8.5 t=8.5 records=23710 duplicates dropped=0
+  input E8.75 t=8.75 records=24826 duplicates dropped=1449
+  input E9.5 t=9.5 records=53742 duplicates dropped=0
+  input E10.5 t=10.5 records=167864 duplicates dropped=0
+  z mode raw: valid=True chosen={'core': ['latest_rate', 'half_rate', 'power_t']} core=474.3128170998542 full={'H1': 611.7891726999552, 'H0': 611.7891726999552, 'H2': 538.6830663521038}
+  z mode common_step: valid=True chosen={'core': ['latest_rate', 'half_rate', 'power_t']} core=474.3128170998542 full={'H1': 611.7891726999551, 'H0': 611.7891726999551, 'H2': 538.6830663521037}
+  z mode xy_grow_z_hold (pre-registered): valid=True chosen={'core_xy': ['latest_rate', 'half_rate', 'power_t']} core=487.1805527385723 full={'H1': 614.6551283937021, 'H0': 614.6551283937021, 'H2': 560.511646051119}
+  z mode split: valid=True chosen={'core_xy': ['latest_rate', 'half_rate', 'power_t'], 'core_z': ['latest_rate', 'half_rate', 'power_t']} core=487.49124609341766 full={'H1': 628.7872800265804, 'H0': 628.7872800265804, 'H2': 553.6499748648495}
+size_embryo_E7.75.json: valid=True timestamp=2026-10-28T12:21:12Z commit=725d19c879ab1795a3aba01917d27140b3f9374d uncommitted=[] pre-registered z mode=raw
+  input E6.75 t=6.75 records=7093 duplicates dropped=0
+  input E7.25 t=7.25 records=13295 duplicates dropped=0
+  input E7.5 t=7.5 records=11665 duplicates dropped=0
+  input E8.0 t=8.0 records=31671 duplicates dropped=3101
+  z mode raw (pre-registered): valid=True chosen={} core=None full=260.2948768316308
+  z mode common_step: valid=True chosen={} core=None full=247.02658670574183
+  z mode xy_grow_z_hold: valid=True chosen={} core=None full=253.59161192691172
+  z mode split: valid=True chosen={} core=None full=252.81504851280232
+--- handedness_verdict.csv
+stage,source,rule_verdict,pitx2_variants_neg,pitx2_variants_pos,max_abs_cos_AP_DV,secondary_verdict_informative_only,pitx2_informative_neg,pitx2_informative_pos,final_verdict,final_secondary_verdict
+E8.5,rule,"resolved: h < 0 in every variant (right-handed frame, situs solitus)",16,0,0.8623569083251382,"resolved: h < 0 in every variant (right-handed frame, situs solitus)",16,0,"resolved: h < 0 (right-handed frame, situs solitus)","resolved: h < 0 (right-handed frame, situs solitus)"
+E10.5,rule,"resolved: h < 0 in every variant (right-handed frame, situs solitus)",16,0,0.8775758217816084,"resolved: h < 0 in every variant (right-handed frame, situs solitus)",16,0,"resolved: h < 0 (right-handed frame, situs solitus)","resolved: h < 0 (right-handed frame, situs solitus)"
+
+--- shape_alignment_summary.csv
+A,B,kind,seeds,nn_dist_proper_mean,nn_dist_improper_mean,rel_margin_mean,rel_margin_sd,dice_proper_mean,dice_improper_mean,verdict,usable_verdict
+E7.25,E7.25,same_stage_halves,5,0.07643408187435527,0.07993980674810053,0.04588743881417887,0.00797455646888682,0.928363937715571,0.9148488713103579,proper,chiral
+E7.5,E7.5,same_stage_halves,5,0.06703946227928274,0.07845152019930206,0.17046338078135442,0.02269715752043912,0.9318658434253528,0.8875286236816742,proper,chiral
+E8.0,E8.0,same_stage_halves,5,0.062076053165485125,0.09019342612142996,0.45313249310985526,0.019911614451625818,0.953817526637809,0.8737958806113728,proper,chiral
+E8.25_late,E8.25_late,same_stage_halves,5,0.07549751843070704,0.09305830615378305,0.23274394554658548,0.020122675757372595,0.9324026219642807,0.8672436884042621,proper,chiral
+E8.5,E8.5,same_stage_halves,5,0.07682085430242272,0.09361399905453438,0.21864615541851323,0.014430140612816007,0.9154206798281932,0.8299240168867638,proper,chiral
+E8.75,E8.75,same_stage_halves,5,0.08374058468153553,0.08637218878055261,0.03146304595663638,0.009557433670810838,0.9404095359917475,0.9213291803527721,proper,chiral
+E9.5,E9.5,same_stage_halves,5,0.07728295553146805,0.10497960486045876,0.3586250812799597,0.023001138339469995,0.9292370354089599,0.8419504098508173,proper,chiral
+E10.5,E10.5,same_stage_halves,5,0.08678317426427969,0.09907306222850591,0.1418776711264314,0.029581652664993498,0.9234471198803617,0.8656170357530251,proper,chiral
+E7.25,E7.5,pair,5,0.1168977255398147,0.11607475442689263,-0.007031810928494564,0.0063391671209642,0.7714642337648074,0.7729327525126483,undecided,undecided
+E7.5,E8.0,pair,5,0.14274380681718862,0.140007369560524,-0.019079342236989216,0.02343626294870629,0.6733704883316961,0.7385244352539871,undecided,undecided
+E8.25_late,E8.5,pair,5,0.13522047275406968,0.13575440421278429,0.004079043161418228,0.019727562150777485,0.712754646350114,0.7218922973083365,undecided,undecided
+E8.5,E8.75,pair,5,0.12996348218624032,0.12900569078999582,-0.00737175414289617,0.004009631979075581,0.7091468959303387,0.7129015891902087,improper,improper
+E9.5,E10.5,pair,5,0.11262781097642235,0.11253417436858251,-0.0006973276876291346,0.012794692020891785,0.7889584679765459,0.8100530226847041,undecided,undecided
+
+--- mirror_dice_summary.csv
+stage,dice_proper_mean,dice_proper_sd,dice_mirrored_mean,dice_mirrored_sd,diff_mean,diff_min,n_half
+E7.5,0.7823128939296632,0.027704354861645943,0.7683637356943949,0.017722583823062316,0.013949158235268289,-0.03960396039603964,583
+E8.5,0.8819101970205052,0.019758827743486775,0.7732376715932562,0.017711653987808246,0.108672525427249,0.08376963350785349,1185
+E10.5,0.9501098443049466,0.008411721201488196,0.8408979612571358,0.012643232626648512,0.1092118830478109,0.08635578583765113,8393
+

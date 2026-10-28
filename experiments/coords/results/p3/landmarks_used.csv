@@ -1,0 +1,13 @@
+stage,source,landmark,column,labels,n_cells
+E8.5,rule,heart_arterial,cm_celltype,OFT/RV-CM,339
+E8.5,rule,heart_venous,cm_celltype,JCF/SV-CM,130
+E8.5,rule,body_anterior,celltype,Forebrain,62
+E8.5,rule,body_posterior,celltype,Caudal Epiblast|Hindgut,1406
+E8.5,rule,dorsal,celltype,Neural Tube,1455
+E8.5,rule,ventral,core,True,2431
+E10.5,rule,heart_arterial,celltype,OFT-CM,2654
+E10.5,rule,heart_venous,celltype,SV-CM,3098
+E10.5,rule,body_anterior,celltype,Branch Arch,9742
+E10.5,rule,body_posterior,celltype,Hepatocytes,5533
+E10.5,rule,dorsal,celltype,Dorsal-PAM,26634
+E10.5,rule,ventral,core,True,38722

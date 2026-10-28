@@ -1,0 +1,685 @@
+{
+  "board": "embryo",
+  "target_t": 7.75,
+  "timestamp": "2026-10-28T12:21:12Z",
+  "valid": true,
+  "preregistered_settings": {
+    "heart_rules": [
+      "latest_rate",
+      "half_rate",
+      "power_t"
+    ],
+    "heart_min_rate_start_t": 9.0,
+    "tie_tol": 0.15,
+    "heart_scope_hypotheses": [
+      "H1",
+      "H0",
+      "H2"
+    ],
+    "heart_z_mode": "auto",
+    "auto_thin_axis_max_angle_deg": 30.0,
+    "embryo_interpolant": "pchip",
+    "embryo_z_mode": "raw",
+    "core_key": "core",
+    "drop_duplicates": true
+  },
+  "provenance": {
+    "git_commit": "725d19c879ab1795a3aba01917d27140b3f9374d",
+    "git_uncommitted": [],
+    "size_procedure_sha256": "65c7d0f2a9c1ab8a700f519b1ab90f1ee07d0738c4c531be21923f60702b904a",
+    "code_sha256": {
+      "configs/lineage_map.yaml": "4d11db60966a14d46bfdffd7c335d0bb8addac525b3b8618dd59107146416915",
+      "src/vec/prep.py": "4e8f92aa7df72e9f637e6b2d1f1d74fa793869babe0b7259db8fd28cc4e7037c",
+      "src/vec/spatial.py": "ff9e0c541479844a6f94a2e4086bd57c7e06a262430548ab41a13bae0d47ba47",
+      "experiments/coords/handedness.py": "206f63f13d88ea5ef34e9cdb80c5d43901b721a363a6e628e21f95060c680d83"
+    },
+    "inputs_sha256": {
+      "data/raw/T2/E6.75.h5ad": "ab58b9217d1b9a18b0181f498475a9eb821ac2c92ab2b7e45a623da0e4fffe70",
+      "data/raw/T2/E7.25.h5ad": "c34192a31036b783b97ce1877ac50fc920b39faa3e00dc3c637b3e7e04255ee6",
+      "data/raw/T2/E7.5.h5ad": "e8e47255ddeca96d5604c7cd4923bbf27765c24bc6a3cd44e800cd6ea05a7d54",
+      "data/raw/T2/E8.0.h5ad": "17530e23fbfa6a139ff68d0353a489d83790f5b60f036b7d2f58303a1ff8a810"
+    }
+  },
+  "inputs": [
+    {
+      "name": "E6.75",
+      "path": "data/raw/T2/E6.75.h5ad",
+      "t": 6.75,
+      "n_input": 7093,
+      "n_dropped_duplicates": 0,
+      "dropped_by_level_gap": {},
+      "dropped_max_xy_offset": 0.0,
+      "duplicate_matches_below_min_library": 17,
+      "n_cells_measured": 7093,
+      "n_core": 0,
+      "core_labels": {},
+      "unmapped_labels": []
+    },
+    {
+      "name": "E7.25",
+      "path": "data/raw/T2/E7.25.h5ad",
+      "t": 7.25,
+      "n_input": 13295,
+      "n_dropped_duplicates": 0,
+      "dropped_by_level_gap": {},
+      "dropped_max_xy_offset": 0.0,
+      "duplicate_matches_below_min_library": 30,
+      "n_cells_measured": 13295,
+      "n_core": 0,
+      "core_labels": {},
+      "unmapped_labels": []
+    },
+    {
+      "name": "E7.5",
+      "path": "data/raw/T2/E7.5.h5ad",
+      "t": 7.5,
+      "n_input": 11665,
+      "n_dropped_duplicates": 0,
+      "dropped_by_level_gap": {},
+      "dropped_max_xy_offset": 0.0,
+      "duplicate_matches_below_min_library": 0,
+      "n_cells_measured": 11665,
+      "n_core": 0,
+      "core_labels": {},
+      "unmapped_labels": []
+    },
+    {
+      "name": "E8.0",
+      "path": "data/raw/T2/E8.0.h5ad",
+      "t": 8.0,
+      "n_input": 31671,
+      "n_dropped_duplicates": 3101,
+      "dropped_by_level_gap": {
+        "1": 2615,
+        "2": 288
+      },
+      "dropped_max_xy_offset": 63.3701171875,
+      "duplicate_matches_below_min_library": 9,
+      "n_cells_measured": 28570,
+      "n_core": 731,
+      "core_labels": {
+        "FHF": 731
+      },
+      "unmapped_labels": []
+    }
+  ],
+  "preregistered": {
+    "target_t": 7.75,
+    "z_mode": "raw",
+    "interpolant": "pchip",
+    "valid": true,
+    "stages": [
+      {
+        "name": "E6.75",
+        "t": 6.75,
+        "n_cells": 7093,
+        "n_core": 0,
+        "n_levels": 37,
+        "z_step": 10.0,
+        "z_range": 360.0,
+        "rms_full": 122.69389017864114,
+        "rms_core": NaN,
+        "rms_xy_full": 69.80954992713183,
+        "sd_z_full": 100.89805462019444,
+        "rms_xy_core": NaN,
+        "sd_z_core": NaN,
+        "core_thin_axis_cos_z": NaN
+      },
+      {
+        "name": "E7.25",
+        "t": 7.25,
+        "n_cells": 13295,
+        "n_core": 0,
+        "n_levels": 40,
+        "z_step": 10.0,
+        "z_range": 390.0,
+        "rms_full": 147.2869170388911,
+        "rms_core": NaN,
+        "rms_xy_full": 103.20321015065228,
+        "sd_z_full": 105.08345895249875,
+        "rms_xy_core": NaN,
+        "sd_z_core": NaN,
+        "core_thin_axis_cos_z": NaN
+      },
+      {
+        "name": "E7.5",
+        "t": 7.5,
+        "n_cells": 11665,
+        "n_core": 0,
+        "n_levels": 34,
+        "z_step": 14.0,
+        "z_range": 462.0,
+        "rms_full": 200.1391556899032,
+        "rms_core": NaN,
+        "rms_xy_full": 151.95555593726817,
+        "sd_z_full": 130.25049197628033,
+        "rms_xy_core": NaN,
+        "sd_z_core": NaN,
+        "core_thin_axis_cos_z": NaN
+      },
+      {
+        "name": "E8.0",
+        "t": 8.0,
+        "n_cells": 28570,
+        "n_core": 731,
+        "n_levels": 30,
+        "z_step": 15.0,
+        "z_range": 435.00000000000006,
+        "rms_full": 326.5383800792627,
+        "rms_core": 157.12661924805948,
+        "rms_xy_full": 304.24403484288376,
+        "sd_z_full": 118.58701837600589,
+        "rms_xy_core": 144.22414346482557,
+        "sd_z_core": 62.35519960806851,
+        "core_thin_axis_cos_z": 0.15372947962275443
+      }
+    ],
+    "pred_rms_full": 260.2948768316308,
+    "bracket": [
+      "E7.5",
+      "E8.0"
+    ],
+    "scale_vs_lower_bracket": 1.3005694759446935,
+    "scale_vs_upper_bracket": 0.7971340972796147,
+    "loo_interior": [
+      {
+        "left_out": "E7.25",
+        "t": 7.25,
+        "pred": 5.1093274386680285,
+        "obs": 4.992382501050746,
+        "error": 0.11694493761728263
+      },
+      {
+        "left_out": "E7.5",
+        "t": 7.5,
+        "pred": 5.175116525134292,
+        "obs": 5.299012903055946,
+        "error": -0.12389637792165421
+      }
+    ]
+  },
+  "summary": [
+    {
+      "z_mode": "raw",
+      "preregistered": true,
+      "valid": true,
+      "chosen": {},
+      "pred_rms_core": null,
+      "pred_log_growth_core": null,
+      "pred_rms_full": 260.2948768316308,
+      "loo_interior": [
+        {
+          "left_out": "E7.25",
+          "t": 7.25,
+          "pred": 5.1093274386680285,
+          "obs": 4.992382501050746,
+          "error": 0.11694493761728263
+        },
+        {
+          "left_out": "E7.5",
+          "t": 7.5,
+          "pred": 5.175116525134292,
+          "obs": 5.299012903055946,
+          "error": -0.12389637792165421
+        }
+      ]
+    },
+    {
+      "z_mode": "common_step",
+      "preregistered": false,
+      "valid": true,
+      "chosen": {},
+      "pred_rms_core": null,
+      "pred_log_growth_core": null,
+      "pred_rms_full": 247.02658670574183,
+      "loo_interior": [
+        {
+          "left_out": "E7.25",
+          "t": 7.25,
+          "pred": 5.224056582949884,
+          "obs": 5.238596134915147,
+          "error": -0.01453955196526264
+        },
+        {
+          "left_out": "E7.5",
+          "t": 7.5,
+          "pred": 5.363681414052499,
+          "obs": 5.329403635796666,
+          "error": 0.03427777825583245
+        }
+      ]
+    },
+    {
+      "z_mode": "xy_grow_z_hold",
+      "preregistered": false,
+      "valid": true,
+      "chosen": {},
+      "pred_rms_core": null,
+      "pred_log_growth_core": null,
+      "pred_rms_full": 253.59161192691172,
+      "loo_interior": [
+        {
+          "left_out": "E7.25",
+          "t": 7.25,
+          "pred": 5.024562008583521,
+          "obs": 4.992382501050746,
+          "error": 0.0321795075327746
+        },
+        {
+          "left_out": "E7.5",
+          "t": 7.5,
+          "pred": 5.154733550186517,
+          "obs": 5.299012903055946,
+          "error": -0.1442793528694291
+        }
+      ]
+    },
+    {
+      "z_mode": "split",
+      "preregistered": false,
+      "valid": true,
+      "chosen": {},
+      "pred_rms_core": null,
+      "pred_log_growth_core": null,
+      "pred_rms_full": 252.81504851280232,
+      "loo_interior": [
+        {
+          "left_out": "E7.25",
+          "t": 7.25,
+          "pred": 5.136531734582138,
+          "obs": 4.992382501050746,
+          "error": 0.144149233531392
+        },
+        {
+          "left_out": "E7.5",
+          "t": 7.5,
+          "pred": 5.1665443784428735,
+          "obs": 5.299012903055946,
+          "error": -0.1324685246130727
+        }
+      ]
+    }
+  ],
+  "z_modes": {
+    "raw": {
+      "target_t": 7.75,
+      "z_mode": "raw",
+      "interpolant": "pchip",
+      "valid": true,
+      "stages": [
+        {
+          "name": "E6.75",
+          "t": 6.75,
+          "n_cells": 7093,
+          "n_core": 0,
+          "n_levels": 37,
+          "z_step": 10.0,
+          "z_range": 360.0,
+          "rms_full": 122.69389017864114,
+          "rms_core": NaN,
+          "rms_xy_full": 69.80954992713183,
+          "sd_z_full": 100.89805462019444,
+          "rms_xy_core": NaN,
+          "sd_z_core": NaN,
+          "core_thin_axis_cos_z": NaN
+        },
+        {
+          "name": "E7.25",
+          "t": 7.25,
+          "n_cells": 13295,
+          "n_core": 0,
+          "n_levels": 40,
+          "z_step": 10.0,
+          "z_range": 390.0,
+          "rms_full": 147.2869170388911,
+          "rms_core": NaN,
+          "rms_xy_full": 103.20321015065228,
+          "sd_z_full": 105.08345895249875,
+          "rms_xy_core": NaN,
+          "sd_z_core": NaN,
+          "core_thin_axis_cos_z": NaN
+        },
+        {
+          "name": "E7.5",
+          "t": 7.5,
+          "n_cells": 11665,
+          "n_core": 0,
+          "n_levels": 34,
+          "z_step": 14.0,
+          "z_range": 462.0,
+          "rms_full": 200.1391556899032,
+          "rms_core": NaN,
+          "rms_xy_full": 151.95555593726817,
+          "sd_z_full": 130.25049197628033,
+          "rms_xy_core": NaN,
+          "sd_z_core": NaN,
+          "core_thin_axis_cos_z": NaN
+        },
+        {
+          "name": "E8.0",
+          "t": 8.0,
+          "n_cells": 28570,
+          "n_core": 731,
+          "n_levels": 30,
+          "z_step": 15.0,
+          "z_range": 435.00000000000006,
+          "rms_full": 326.5383800792627,
+          "rms_core": 157.12661924805948,
+          "rms_xy_full": 304.24403484288376,
+          "sd_z_full": 118.58701837600589,
+          "rms_xy_core": 144.22414346482557,
+          "sd_z_core": 62.35519960806851,
+          "core_thin_axis_cos_z": 0.15372947962275443
+        }
+      ],
+      "pred_rms_full": 260.2948768316308,
+      "bracket": [
+        "E7.5",
+        "E8.0"
+      ],
+      "scale_vs_lower_bracket": 1.3005694759446935,
+      "scale_vs_upper_bracket": 0.7971340972796147,
+      "loo_interior": [
+        {
+          "left_out": "E7.25",
+          "t": 7.25,
+          "pred": 5.1093274386680285,
+          "obs": 4.992382501050746,
+          "error": 0.11694493761728263
+        },
+        {
+          "left_out": "E7.5",
+          "t": 7.5,
+          "pred": 5.175116525134292,
+          "obs": 5.299012903055946,
+          "error": -0.12389637792165421
+        }
+      ]
+    },
+    "common_step": {
+      "target_t": 7.75,
+      "z_mode": "common_step",
+      "interpolant": "pchip",
+      "valid": true,
+      "stages": [
+        {
+          "name": "E6.75",
+          "t": 6.75,
+          "n_cells": 7093,
+          "n_core": 0,
+          "n_levels": 37,
+          "z_step": 15.0,
+          "z_range": 540.0,
+          "rms_full": 166.6712706792719,
+          "rms_core": NaN,
+          "rms_xy_full": 69.80954992713183,
+          "sd_z_full": 151.34708193029167,
+          "rms_xy_core": NaN,
+          "sd_z_core": NaN,
+          "core_thin_axis_cos_z": NaN
+        },
+        {
+          "name": "E7.25",
+          "t": 7.25,
+          "n_cells": 13295,
+          "n_core": 0,
+          "n_levels": 40,
+          "z_step": 15.0,
+          "z_range": 585.0,
+          "rms_full": 188.40542086839764,
+          "rms_core": NaN,
+          "rms_xy_full": 103.20321015065228,
+          "sd_z_full": 157.62518842874812,
+          "rms_xy_core": NaN,
+          "sd_z_core": NaN,
+          "core_thin_axis_cos_z": NaN
+        },
+        {
+          "name": "E7.5",
+          "t": 7.5,
+          "n_cells": 11665,
+          "n_core": 0,
+          "n_levels": 34,
+          "z_step": 15.0,
+          "z_range": 495.0,
+          "rms_full": 206.31489864087615,
+          "rms_core": NaN,
+          "rms_xy_full": 151.95555593726817,
+          "sd_z_full": 139.55409854601464,
+          "rms_xy_core": NaN,
+          "sd_z_core": NaN,
+          "core_thin_axis_cos_z": NaN
+        },
+        {
+          "name": "E8.0",
+          "t": 8.0,
+          "n_cells": 28570,
+          "n_core": 731,
+          "n_levels": 30,
+          "z_step": 15.0,
+          "z_range": 435.00000000000006,
+          "rms_full": 326.5383800792627,
+          "rms_core": 157.12661924805948,
+          "rms_xy_full": 304.24403484288376,
+          "sd_z_full": 118.58701837600589,
+          "rms_xy_core": 144.22414346482557,
+          "sd_z_core": 62.35519960806851,
+          "core_thin_axis_cos_z": 0.15372947962275443
+        }
+      ],
+      "pred_rms_full": 247.02658670574183,
+      "bracket": [
+        "E7.5",
+        "E8.0"
+      ],
+      "scale_vs_lower_bracket": 1.1973279115229136,
+      "scale_vs_upper_bracket": 0.7565009253913109,
+      "loo_interior": [
+        {
+          "left_out": "E7.25",
+          "t": 7.25,
+          "pred": 5.224056582949884,
+          "obs": 5.238596134915147,
+          "error": -0.01453955196526264
+        },
+        {
+          "left_out": "E7.5",
+          "t": 7.5,
+          "pred": 5.363681414052499,
+          "obs": 5.329403635796666,
+          "error": 0.03427777825583245
+        }
+      ]
+    },
+    "xy_grow_z_hold": {
+      "target_t": 7.75,
+      "z_mode": "xy_grow_z_hold",
+      "interpolant": "pchip",
+      "valid": true,
+      "stages": [
+        {
+          "name": "E6.75",
+          "t": 6.75,
+          "n_cells": 7093,
+          "n_core": 0,
+          "n_levels": 37,
+          "z_step": 10.0,
+          "z_range": 360.0,
+          "rms_full": 122.69389017864114,
+          "rms_core": NaN,
+          "rms_xy_full": 69.80954992713183,
+          "sd_z_full": 100.89805462019444,
+          "rms_xy_core": NaN,
+          "sd_z_core": NaN,
+          "core_thin_axis_cos_z": NaN
+        },
+        {
+          "name": "E7.25",
+          "t": 7.25,
+          "n_cells": 13295,
+          "n_core": 0,
+          "n_levels": 40,
+          "z_step": 10.0,
+          "z_range": 390.0,
+          "rms_full": 147.2869170388911,
+          "rms_core": NaN,
+          "rms_xy_full": 103.20321015065228,
+          "sd_z_full": 105.08345895249875,
+          "rms_xy_core": NaN,
+          "sd_z_core": NaN,
+          "core_thin_axis_cos_z": NaN
+        },
+        {
+          "name": "E7.5",
+          "t": 7.5,
+          "n_cells": 11665,
+          "n_core": 0,
+          "n_levels": 34,
+          "z_step": 14.0,
+          "z_range": 462.0,
+          "rms_full": 200.1391556899032,
+          "rms_core": NaN,
+          "rms_xy_full": 151.95555593726817,
+          "sd_z_full": 130.25049197628033,
+          "rms_xy_core": NaN,
+          "sd_z_core": NaN,
+          "core_thin_axis_cos_z": NaN
+        },
+        {
+          "name": "E8.0",
+          "t": 8.0,
+          "n_cells": 28570,
+          "n_core": 731,
+          "n_levels": 30,
+          "z_step": 15.0,
+          "z_range": 435.00000000000006,
+          "rms_full": 326.5383800792627,
+          "rms_core": 157.12661924805948,
+          "rms_xy_full": 304.24403484288376,
+          "sd_z_full": 118.58701837600589,
+          "rms_xy_core": 144.22414346482557,
+          "sd_z_core": 62.35519960806851,
+          "core_thin_axis_cos_z": 0.15372947962275443
+        }
+      ],
+      "pred_rms_full": 253.59161192691172,
+      "bracket": [
+        "E7.5",
+        "E8.0"
+      ],
+      "scale_vs_lower_bracket": 1.267076455143181,
+      "scale_vs_upper_bracket": 0.7766058368555507,
+      "loo_interior": [
+        {
+          "left_out": "E7.25",
+          "t": 7.25,
+          "pred": 5.024562008583521,
+          "obs": 4.992382501050746,
+          "error": 0.0321795075327746
+        },
+        {
+          "left_out": "E7.5",
+          "t": 7.5,
+          "pred": 5.154733550186517,
+          "obs": 5.299012903055946,
+          "error": -0.1442793528694291
+        }
+      ]
+    },
+    "split": {
+      "target_t": 7.75,
+      "z_mode": "split",
+      "interpolant": "pchip",
+      "valid": true,
+      "stages": [
+        {
+          "name": "E6.75",
+          "t": 6.75,
+          "n_cells": 7093,
+          "n_core": 0,
+          "n_levels": 37,
+          "z_step": 10.0,
+          "z_range": 360.0,
+          "rms_full": 122.69389017864114,
+          "rms_core": NaN,
+          "rms_xy_full": 69.80954992713183,
+          "sd_z_full": 100.89805462019444,
+          "rms_xy_core": NaN,
+          "sd_z_core": NaN,
+          "core_thin_axis_cos_z": NaN
+        },
+        {
+          "name": "E7.25",
+          "t": 7.25,
+          "n_cells": 13295,
+          "n_core": 0,
+          "n_levels": 40,
+          "z_step": 10.0,
+          "z_range": 390.0,
+          "rms_full": 147.2869170388911,
+          "rms_core": NaN,
+          "rms_xy_full": 103.20321015065228,
+          "sd_z_full": 105.08345895249875,
+          "rms_xy_core": NaN,
+          "sd_z_core": NaN,
+          "core_thin_axis_cos_z": NaN
+        },
+        {
+          "name": "E7.5",
+          "t": 7.5,
+          "n_cells": 11665,
+          "n_core": 0,
+          "n_levels": 34,
+          "z_step": 14.0,
+          "z_range": 462.0,
+          "rms_full": 200.1391556899032,
+          "rms_core": NaN,
+          "rms_xy_full": 151.95555593726817,
+          "sd_z_full": 130.25049197628033,
+          "rms_xy_core": NaN,
+          "sd_z_core": NaN,
+          "core_thin_axis_cos_z": NaN
+        },
+        {
+          "name": "E8.0",
+          "t": 8.0,
+          "n_cells": 28570,
+          "n_core": 731,
+          "n_levels": 30,
+          "z_step": 15.0,
+          "z_range": 435.00000000000006,
+          "rms_full": 326.5383800792627,
+          "rms_core": 157.12661924805948,
+          "rms_xy_full": 304.24403484288376,
+          "sd_z_full": 118.58701837600589,
+          "rms_xy_core": 144.22414346482557,
+          "sd_z_core": 62.35519960806851,
+          "core_thin_axis_cos_z": 0.15372947962275443
+        }
+      ],
+      "pred_rms_full": 252.81504851280232,
+      "bracket": [
+        "E7.5",
+        "E8.0"
+      ],
+      "scale_vs_lower_bracket": 1.2631963377746804,
+      "scale_vs_upper_bracket": 0.7742276679740829,
+      "loo_interior": [
+        {
+          "left_out": "E7.25",
+          "t": 7.25,
+          "pred": 5.136531734582138,
+          "obs": 4.992382501050746,
+          "error": 0.144149233531392
+        },
+        {
+          "left_out": "E7.5",
+          "t": 7.5,
+          "pred": 5.1665443784428735,
+          "obs": 5.299012903055946,
+          "error": -0.1324685246130727
+        }
+      ]
+    }
+  }
+}

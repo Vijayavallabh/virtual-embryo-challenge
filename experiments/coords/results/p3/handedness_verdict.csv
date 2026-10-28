@@ -1,0 +1,3 @@
+stage,source,rule_verdict,pitx2_variants_neg,pitx2_variants_pos,max_abs_cos_AP_DV,secondary_verdict_informative_only,pitx2_informative_neg,pitx2_informative_pos,final_verdict,final_secondary_verdict
+E8.5,rule,"resolved: h < 0 in every variant (right-handed frame, situs solitus)",16,0,0.8623569083251382,"resolved: h < 0 in every variant (right-handed frame, situs solitus)",16,0,"resolved: h < 0 (right-handed frame, situs solitus)","resolved: h < 0 (right-handed frame, situs solitus)"
+E10.5,rule,"resolved: h < 0 in every variant (right-handed frame, situs solitus)",16,0,0.8775758217816084,"resolved: h < 0 in every variant (right-handed frame, situs solitus)",16,0,"resolved: h < 0 (right-handed frame, situs solitus)","resolved: h < 0 (right-handed frame, situs solitus)"
