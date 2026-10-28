@@ -1,0 +1,24 @@
+label,n,in_map_before,label_1,label_2,label_3,group_1,group_2,novelty_gt1,median_conf
+Blood,3818,True,Blood 1.00,pPHM 0.00,NCC-derived 0.00,Blood 1.00,PharyngealMesoderm 0.00,0.068,1.0
+Epicardium,3028,False,Proepicardium 0.93,aSHF 0.05,Pericardium 0.01,EpicardiumST 0.93,CardiacProgenitor 0.05,0.044,0.996
+Endocardium-1,1766,False,Endocardium 1.00,BEC 0.00,aSHF 0.00,Endocardium 1.00,Endothelium 0.00,0.027,1.0
+pPHM,1673,True,pSHF 0.56,aSHF 0.21,pPHM 0.12,CardiacProgenitor 0.79,PharyngealMesoderm 0.12,0.148,0.74
+Endocardium-2,1566,False,Endocardium 0.99,BEC 0.00,pPHM 0.00,Endocardium 0.99,Endothelium 0.00,0.054,1.0
+pSHF,1534,True,pSHF 0.43,SV-CM 0.21,aSHF 0.16,CardiacProgenitor 0.61,CM 0.21,0.123,0.801
+Surface Ectoderm,1482,True,Foregut 0.80,Surface Ectoderm 0.14,aSHF 0.02,Endoderm 0.81,Ectoderm 0.14,0.051,0.98
+aPHM,1243,True,aSHF 0.50,NCC-derived 0.24,pPHM 0.08,CardiacProgenitor 0.58,NCC 0.24,0.205,0.754
+EndoMT Endocardium,1234,False,Endocardium 0.96,aSHF 0.03,NCC-derived 0.01,Endocardium 0.96,CardiacProgenitor 0.03,0.063,0.989
+Early VIC,1141,False,Endocardium 0.69,NCC-derived 0.11,OFT/RV-CM 0.10,Endocardium 0.69,NCC 0.13,0.12,0.871
+OFT-CM,924,True,OFT/RV-CM 0.55,aSHF 0.37,ST 0.05,CM 0.56,CardiacProgenitor 0.37,0.082,0.968
+BEC,843,True,Endocardium 0.64,BEC 0.35,Foregut 0.00,Endocardium 0.64,Endothelium 0.35,0.056,0.999
+RV-CM,813,True,OFT/RV-CM 0.98,V-CM 0.02,AVC-CM 0.00,CM 1.00,,0.001,1.0
+LV-CM,775,True,V-CM 0.84,OFT/RV-CM 0.09,AVC-CM 0.07,CM 0.99,PharyngealMesoderm 0.00,0.015,0.991
+ST,617,True,pPHM 0.74,ST 0.20,pSHF 0.04,PharyngealMesoderm 0.74,EpicardiumST 0.20,0.104,0.974
+Pericardium,616,True,aSHF 0.50,Pericardium 0.22,aPHM 0.09,CardiacProgenitor 0.57,Pericardium 0.21,0.146,0.818
+SV-CM,379,True,SV-CM 0.67,IFT-CM 0.27,AVC-CM 0.05,CM 0.99,EpicardiumST 0.01,0.029,0.839
+NCC,363,True,NCC 0.65,Endocardium 0.07,aPHM 0.06,NCC 0.71,CardiacProgenitor 0.08,0.303,0.907
+AVC-CM,325,True,AVC-CM 0.73,IFT-CM 0.24,V-CM 0.02,CM 1.00,Endocardium 0.00,0.003,0.961
+Macrophage,318,False,NCC 0.51,Blood 0.23,aPHM 0.09,NCC 0.54,Blood 0.23,0.704,0.838
+IFT-CM,237,True,IFT-CM 0.87,SV-CM 0.06,AVC-CM 0.05,CM 0.99,CardiacProgenitor 0.00,0.051,0.962
+Hepatocyte,164,True,Hepatocyte 0.96,Foregut 0.02,OFT/RV-CM 0.01,Hepatocyte 0.96,Endoderm 0.02,0.061,1.0
+Gut Endoderm,120,True,Epithelium 0.91,Foregut 0.05,aPHM 0.01,Endoderm 0.96,PharyngealMesoderm 0.02,0.1,0.995

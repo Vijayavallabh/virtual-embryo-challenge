@@ -1,0 +1,19 @@
+{
+  "stages": [
+    "E9.5",
+    "E10.5"
+  ],
+  "E9.5_on_E10.5_model": {
+    "method": "logreg",
+    "n_genes": 2000,
+    "n_train": 24979,
+    "depth_frac": 0.9413369713506139
+  },
+  "E10.5_on_E9.5_model": {
+    "method": "logreg",
+    "n_genes": 2000,
+    "n_train": 17057,
+    "depth_frac": 1.0
+  },
+  "hvg_union": 2691
+}

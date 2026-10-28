@@ -1,0 +1,24 @@
+label,n,in_map_before,label_1,label_2,label_3,group_1,group_2,novelty_gt1,median_conf
+Dorsal-PAM,26634,True,Dorsal-PAM 0.48,Lateral-PAM 0.29,Branch Arch 0.06,ParaxialMesoderm 0.46,PharyngealMesoderm 0.37,0.026,0.649
+Late-a-PHM,22490,False,pPHM 0.62,aPHM 0.10,ST 0.09,PharyngealMesoderm 0.83,EpicardiumST 0.08,0.022,0.71
+Peri,15816,True,Peri 0.77,Lateral-PAM 0.14,ST 0.06,Pericardium 0.77,PharyngealMesoderm 0.15,0.022,0.893
+V-CM,9782,True,V-CM 0.90,OFT-CM 0.04,A-CM 0.03,CM 0.97,Endocardium 0.02,0.014,0.967
+Branch Arch,9742,True,Dorsal-PAM 0.50,Branch Arch 0.12,Lateral-PAM 0.11,ParaxialMesoderm 0.48,PharyngealMesoderm 0.19,0.022,0.644
+DMP,9595,True,ST 0.32,pPHM 0.20,aPHM 0.10,PharyngealMesoderm 0.44,EpicardiumST 0.29,0.042,0.531
+A-CM,9502,True,A-CM 0.74,V-CM 0.16,SV-CM 0.06,CM 0.97,EpicardiumST 0.01,0.063,0.888
+Epi,7563,False,Proepi 0.48,ST 0.20,Peri 0.13,EpicardiumST 0.70,CM 0.11,0.045,0.66
+BW,7475,False,Lateral-PAM 0.53,ST 0.32,Dorsal-PAM 0.06,PharyngealMesoderm 0.56,EpicardiumST 0.32,0.025,0.694
+Chamber-Endo,6972,True,Chamber-Endo 0.79,BEC 0.07,early-VEC 0.05,Endocardium 0.78,Endothelium 0.16,0.031,0.772
+Hepatocytes,5533,True,Hepatocytes 0.66,ST 0.16,Cush-EndoMT-Endo 0.08,Hepatocyte 0.65,EpicardiumST 0.16,0.058,0.895
+BEC,5308,True,BEC 0.56,Dorsal-PAM 0.15,Lateral-PAM 0.08,Endothelium 0.68,ParaxialMesoderm 0.14,0.046,0.668
+NCC,4444,True,NCC 0.68,pPHM 0.12,Branch Arch 0.04,NCC 0.73,PharyngealMesoderm 0.18,0.088,0.847
+Cush-EndoMT-Endo,4093,True,Cush-EndoMT-Endo 0.62,ST 0.15,Dorsal-PAM 0.05,Endocardium 0.63,EpicardiumST 0.15,0.034,0.613
+Great Artery Endoth,3630,True,BEC 0.66,Dorsal-PAM 0.08,pPHM 0.08,Endothelium 0.78,PharyngealMesoderm 0.10,0.062,0.751
+Unknown,3299,True,ST 0.63,Lateral-PAM 0.09,pPHM 0.09,EpicardiumST 0.68,PharyngealMesoderm 0.21,0.025,0.635
+SV-CM,3098,True,SV-CM 0.80,A-CM 0.11,V-CM 0.04,CM 0.96,EpicardiumST 0.03,0.099,0.908
+OFT-CM,2654,True,OFT-CM 0.71,V-CM 0.21,Peri 0.03,CM 0.95,Pericardium 0.03,0.031,0.866
+Bronchus,2654,False,Foregut 0.91,pPHM 0.02,aPHM 0.02,Endoderm 0.91,PharyngealMesoderm 0.05,0.015,0.992
+Valve-EndoMT-Endo,2621,False,Cush-EndoMT-Endo 0.43,ST 0.23,Branch Arch 0.12,Endocardium 0.43,EpicardiumST 0.22,0.048,0.529
+early-VEC,2392,True,early-VEC 0.30,Chamber-Endo 0.23,Cush-EndoMT-Endo 0.21,Endothelium 0.45,Endocardium 0.44,0.021,0.524
+SE,1842,True,SE 0.78,Peri 0.14,Lateral-PAM 0.02,Ectoderm 0.78,Pericardium 0.14,0.033,0.94
+HEM-Endoth,725,True,BEC 0.49,Chamber-Endo 0.32,Cush-EndoMT-Endo 0.07,Endothelium 0.56,Endocardium 0.39,0.079,0.602

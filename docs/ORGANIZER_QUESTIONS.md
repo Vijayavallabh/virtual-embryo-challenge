@@ -134,8 +134,10 @@ Vijayavallabh J
 
 Drafted by the AI assistant on 2026-10-20 and saved in the sender's drafts; sent by the user on 2026-10-21 at 01:24
 IST (2026-10-20 19:54 UTC) by email from be23b041@smail.iitm.ac.in to virtual.embryo.moonshot@gmail.com. Answers:
-_pending_ (record them in `docs/DATA_POLICY.md`; question 2 decides assumption A20, question 3 A21). Text as sent,
-rewrapped:
+no reply as of 2026-10-28 (record them in `docs/DATA_POLICY.md`; question 2 decides assumption A20, question 3 A21).
+Question 1 is answered by the final-phase Rules s.11 (P3 opened 2026-10-27 at 09:00 America/Los_Angeles, 16:00 UTC).
+Question 2: the user read the final-phase Rules s.10 and Data page as allowing it (A20 passed, 2026-10-28); the
+fourth email asks the organisers to confirm. Text as sent, rewrapped:
 
 **Subject:** Human Team: three questions before 27 October, and two open emails
 
@@ -159,6 +161,42 @@ Our emails of 18 October ("four rules questions before the final phase") and 19 
 build, Task 3 data use and two data issues") are still open, as is our private Slack note of 18 October to Weize Xu
 and Zehua Zeng. Two points from them affect what we do on 27 October: which scorer build the test boards use, and
 whether the released Gata4 files may be used in the beta-catenin prediction.
+
+Best regards,
+Vijayavallabh J
+Team captain, Human Team track
+
+## Fourth email (drafted 2026-10-28)
+
+Drafted by the AI assistant on 2026-10-28 at the user's request and saved in the drafts of be23b041@smail.iitm.ac.in,
+to virtual.embryo.moonshot@gmail.com; the user reviews and sends it. Answers: _pending_ (question 3 confirms A20 and
+selects the T3 branch, `docs/P3_RUNBOOK.md` section 5). Text as drafted, rewrapped:
+
+**Subject:** Human Team: board specs blocked (HTTP 403), final-entry nomination, use of the unlocked validation files
+
+Hello organisers,
+
+Thank you for opening the final phase. We unlocked the P2 validation release on 28 October and have the six files.
+Three questions:
+
+1. Board specs. Since 27 October, https://virtualembryo.ai/challenge/panels/index.json answers HTTP 403 (Cloudflare)
+   to our scripted download, while the Data page still links the panel files and mentions no outage. We have not tried
+   to get around it. Is the block intended, and how should a team get the test boards' submission specs (panel genes,
+   cell-count limits, required obsm keys)? A spec-only file served through the API with the team key, like the data
+   files, would work for us.
+
+2. Final entries. The account page says "In the final phase the captain picks which submission counts", while Rules
+   s.11 says a board ranks a team by its best official submission. If the captain marks nothing on a board, does the
+   best official submission count? Is the pick made per board, and can it be changed until 2 December?
+
+3. Validation files as model inputs. Rules s.10 and the Data page allow the unlocked files for P3 preparation. We read
+   this as also allowing them as inputs when we produce the test predictions: for example the T1 and T2 heart E10.5
+   files as the starting stage for E12.5, and the two Gata4 knockout replicates in the beta-catenin prediction. Please
+   tell us if that reading is wrong. This would also answer question 2 of our 21 October email and question 3 of our
+   19 October follow-up.
+
+The start time we asked about on 21 October is now in Rules s.11; thank you. Still open from our 19 October
+follow-up: which veckit build scores the test boards.
 
 Best regards,
 Vijayavallabh J

@@ -1,0 +1,21 @@
+label,n,in_map_before,label_1,label_2,label_3,group_1,group_2,novelty_gt1,median_conf
+Neural Tube,6403,True,Neural Tube 0.91,NCC 0.06,D-FG 0.01,Neural 0.91,NCC 0.06,0.001,0.991
+Extra-Embryonic Mesenchyme-1,3977,False,ExEM-1 0.87,Peri 0.12,JCF 0.00,ExtraEmbryonicMeso 0.87,Pericardium 0.12,0.104,0.887
+Paraxial Mesoderm-2,3505,False,PAM-1 0.34,PAM-2 0.28,PAM-4 0.18,ParaxialMesoderm 0.87,Endothelium 0.06,0.007,0.704
+Endocardium/Intra-Embryonic Endothelium,3283,False,Intra-Endoth-1 0.48,Endo 0.27,Intra-Endoth-2 0.11,Endothelium 0.64,Endocardium 0.26,0.079,0.841
+Ventral Surface Ectoderm,3226,False,d-CSE 0.51,V-CSE 0.43,Peri 0.02,Ectoderm 0.95,Endoderm 0.02,0.003,0.918
+Paraxial Mesoderm-1,3153,False,PAM-3 0.47,PAM-4 0.42,PAM-1 0.04,ParaxialMesoderm 0.95,Endothelium 0.02,0.003,0.792
+Anterior Pharyngeal Mesoderm,3029,False,aPHM 0.60,pPHM 0.18,V-CM 0.07,PharyngealMesoderm 0.78,CM 0.07,0.024,0.791
+CM,2795,False,V-CM 0.92,IFT-CM 0.07,JCF 0.01,CM 0.98,CardiacProgenitor 0.01,0.162,0.993
+Pericardium/Body Wall,2637,False,JCF 0.41,aPHM 0.24,ExEM-1 0.19,CardiacProgenitor 0.40,PharyngealMesoderm 0.25,0.022,0.71
+Ventral Foregut,2522,False,a-FG 0.41,Lateral FG 0.16,V-CSE 0.16,Endoderm 0.76,Ectoderm 0.17,0.005,0.701
+NCC-1,1736,False,NCC 0.94,d-CSE 0.02,PAM-3 0.01,NCC 0.93,Ectoderm 0.03,0.007,0.997
+Posterior Pharyngeal Mesoderm,1333,False,pPHM 0.62,PAM-4 0.08,IFT-CM 0.08,PharyngealMesoderm 0.68,ParaxialMesoderm 0.12,0.014,0.769
+Dorsal Surface Ectoderm,1059,False,d-CSE 0.72,pSE 0.11,ExEM-1 0.07,Ectoderm 0.91,ExtraEmbryonicMeso 0.06,0.019,0.792
+NCC-2,1050,False,d-CSE 0.94,V-CSE 0.01,D-FG 0.01,Ectoderm 0.96,Endoderm 0.02,0.0,0.987
+Dorsal Foregut,945,False,D-FG 0.90,PAM-4 0.03,V-CSE 0.02,Endoderm 0.91,ParaxialMesoderm 0.05,0.013,0.948
+Artificial,832,False,PAM-4 0.19,ExEM-1 0.17,Neural Tube 0.11,ParaxialMesoderm 0.21,Endoderm 0.18,0.012,0.45
+NCC-3,505,False,NCC 0.99,d-CSE 0.01,PAM-4 0.00,NCC 0.99,Ectoderm 0.01,0.002,1.0
+Haematopoetic Endothelium,205,False,HEM-Endoth 0.92,PAM-4 0.01,Intra-Endoth-1 0.01,Endothelium 0.94,Endoderm 0.03,0.015,0.999
+Extra-Embryonic Mesenchyme-2,59,False,JCF 0.58,ExEM-2 0.20,ExEM-1 0.12,CardiacProgenitor 0.54,ExtraEmbryonicMeso 0.36,0.136,0.817
+Extra Endoderm,3,False,EXE-Endoderm 0.33,Intra-Endoth-2 0.33,D-FG 0.33,Endoderm 0.67,Endothelium 0.33,0.0,0.377

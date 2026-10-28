@@ -1,0 +1,21 @@
+label,n,in_map_before,label_1,label_2,label_3,group_1,group_2,novelty_gt1,median_conf
+Paraxial Mesoderm-1,5109,False,PAM-3 0.53,PAM-4 0.37,PAM-1 0.02,ParaxialMesoderm 0.94,Endothelium 0.02,0.005,0.778
+Endocardium/Intra-Embryonic Endothelium,4674,False,Intra-Endoth-1 0.38,Endo 0.32,Intra-Endoth-2 0.13,Endothelium 0.57,Endocardium 0.31,0.096,0.835
+Pericardium/Body Wall,4156,False,JCF 0.44,aPHM 0.26,ExEM-1 0.14,CardiacProgenitor 0.43,PharyngealMesoderm 0.26,0.04,0.745
+Neural Tube,3863,True,Neural Tube 0.90,NCC 0.05,Caudal Epiblast 0.02,Neural 0.90,NCC 0.05,0.001,0.987
+CM,3811,False,V-CM 0.91,IFT-CM 0.06,JCF 0.02,CM 0.97,CardiacProgenitor 0.02,0.225,0.994
+Anterior Pharyngeal Mesoderm,3316,False,aPHM 0.53,pPHM 0.21,V-CM 0.08,PharyngealMesoderm 0.74,CM 0.09,0.025,0.757
+Posterior Pharyngeal Mesoderm,2792,False,pPHM 0.51,aPHM 0.10,IFT-CM 0.07,PharyngealMesoderm 0.60,ParaxialMesoderm 0.15,0.027,0.66
+Extra-Embryonic Mesenchyme-1,2618,False,ExEM-1 0.77,Peri 0.19,ExEM-2 0.02,ExtraEmbryonicMeso 0.79,Pericardium 0.18,0.121,0.801
+Ventral Surface Ectoderm,2506,False,d-CSE 0.65,V-CSE 0.26,Peri 0.03,Ectoderm 0.92,Pericardium 0.03,0.004,0.875
+Paraxial Mesoderm-2,2491,False,PAM-1 0.43,PAM-4 0.14,PAM-3 0.13,ParaxialMesoderm 0.79,Endothelium 0.11,0.011,0.637
+Ventral Foregut,2491,False,a-FG 0.40,Lateral FG 0.15,D-FG 0.15,Endoderm 0.77,Ectoderm 0.09,0.01,0.587
+Dorsal Surface Ectoderm,1836,False,d-CSE 0.66,pSE 0.12,ExEM-1 0.11,Ectoderm 0.87,ExtraEmbryonicMeso 0.08,0.015,0.667
+NCC-1,1441,False,NCC 0.90,d-CSE 0.03,PAM-3 0.02,NCC 0.89,ParaxialMesoderm 0.05,0.013,0.99
+Extra Endoderm,1281,False,EXE-Endoderm 0.96,ExEM-2 0.01,ExEM-1 0.01,Endoderm 0.97,ExtraEmbryonicMeso 0.02,0.642,0.98
+Extra-Embryonic Mesenchyme-2,1118,False,ExEM-2 0.44,ExEM-1 0.38,JCF 0.14,ExtraEmbryonicMeso 0.84,CardiacProgenitor 0.13,0.282,0.814
+Haematopoetic Endothelium,1017,False,HEM-Endoth 0.75,ExEM-2 0.14,EXE-Endoderm 0.05,Endothelium 0.79,ExtraEmbryonicMeso 0.15,0.149,0.994
+Artificial,992,False,PAM-4 0.19,ExEM-1 0.19,Neural Tube 0.15,ParaxialMesoderm 0.21,ExtraEmbryonicMeso 0.18,0.021,0.468
+Dorsal Foregut,821,False,D-FG 0.85,PAM-4 0.05,Neural Tube 0.02,Endoderm 0.88,ParaxialMesoderm 0.07,0.016,0.871
+NCC-2,32,False,d-CSE 0.66,V-CSE 0.12,Neural Tube 0.09,Ectoderm 0.75,Endoderm 0.12,0.0,0.92
+NCC-3,31,False,NCC 0.87,d-CSE 0.06,Allantois 0.03,NCC 0.87,Ectoderm 0.10,0.0,0.974

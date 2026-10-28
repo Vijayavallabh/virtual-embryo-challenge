@@ -18,9 +18,14 @@ Sources (keep in sync when the site changes):
 - **P3 starts 2026-10-27**, postponed by a week from 2026-10-20 (organisers' email to registered teams, 2026-10-20,
   citing a new partnership with Eigen Labs; scoring, submission limits and the other decisions for later dates are
   unchanged). Files committed before 2026-10-20 (pre-registered procedures, configs, reports) say 2026-10-20: they mean
-  this release. From 2026-10-27: validation answers released for every task (they become training data), test inputs
-  released without labels, test leaderboard opens. **Only 2 official scored submissions per board for the whole
-  phase**; best of the two counts. Each official submission "is scored and published when it is made" (Rules s.11),
+  this release. P3 opened on 2026-10-27 at 09:00 America/Los_Angeles (16:00 UTC; Rules s.11); the test leaderboard
+  opened then. As it turned out (2026-10-28), no test inputs are distributed, and the validation answers come only
+  after a team member unlocks them on the Data page. Unlocking permanently ends P2 submissions for the whole team,
+  even without a download, and uses no P3 attempt. Our team unlocked them on 2026-10-28 at 09:32 UTC. Rules s.10 makes
+  those official files an exception to the held-out-data restrictions "solely for preparing P3 predictions"; the user
+  read this as allowing them as model inputs (A20; organiser confirmation asked). **Only 2 official scored submissions
+  per board for the whole phase**; Rules s.11 says the board ranks a team by its best. The account page adds: "In the
+  final phase the captain picks which submission counts" (a "Final" mark per submission, until 2026-12-02). Each official submission "is scored and published when it is made" (Rules s.11),
   so the test leaderboard is not hidden until the end. Format checks unlimited and free; a separate daily upload limit
   bounds storage (`vec submit status` shows it; our format checks of 2026-10-20 did not count toward it).
 - Final submissions due **through 2026-12-02 (UTC)** (the time zone comes from the organisers' email of 2026-10-20

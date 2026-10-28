@@ -1,0 +1,42 @@
+{
+  "E10.5_RNA__vs__E9.5_RNA": {
+    "query": "T1/E10.5_RNA.h5ad",
+    "reference": "T1/E9.5_RNA.h5ad",
+    "genes": 3000,
+    "method": "logreg",
+    "query_depth": 4849.0,
+    "reference_depth": 8176.0,
+    "query_depth_frac": 1.0,
+    "new_labels": 6
+  },
+  "E10.5__vs__E9.5": {
+    "query": "T2/E10.5.h5ad",
+    "reference": "T2/E9.5.h5ad",
+    "genes": 500,
+    "method": "logreg",
+    "query_depth": 56.0,
+    "reference_depth": 75.0,
+    "query_depth_frac": 1.0,
+    "new_labels": 5
+  },
+  "E8.75_gata4_ko_1__vs__E8.75": {
+    "query": "T3/E8.75_gata4_ko_1.h5ad",
+    "reference": "T2/E8.75.h5ad",
+    "genes": 500,
+    "method": "logreg",
+    "query_depth": 82.0,
+    "reference_depth": 130.0,
+    "query_depth_frac": 1.0,
+    "new_labels": 19
+  },
+  "E8.75_gata4_ko_2__vs__E8.75": {
+    "query": "T3/E8.75_gata4_ko_2.h5ad",
+    "reference": "T2/E8.75.h5ad",
+    "genes": 500,
+    "method": "logreg",
+    "query_depth": 68.0,
+    "reference_depth": 130.0,
+    "query_depth_frac": 1.0,
+    "new_labels": 19
+  }
+}

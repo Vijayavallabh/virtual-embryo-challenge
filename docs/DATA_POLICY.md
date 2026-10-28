@@ -29,6 +29,14 @@ each submission. Any change to this file needs a dated note at the bottom.
 
 "By any route" includes pretrained models whose training data contains the window, and public atlases that contain it.
 
+**Final phase, 2026-10-28.** The official validation files (T1 E10.5, T2 E8.5, E10.5 and E7.5, the two T3 Gata4
+replicates), unlocked by our team on the Data page, are the one exception (Rules s.10): "solely for preparing P3
+predictions", and the Data page: "you may use those released validation files for P3 preparation. This does not
+permit access to hidden test data or other restricted external sources." The user decided on 2026-10-28 that this
+covers using them as model inputs when producing the test predictions (A20 passed; organiser confirmation asked in the
+fourth email). The exception covers those files only: external data from the validation stages and genotypes is still
+prohibited, and the test windows (T1 and T2 heart E12.5, T2 embryo E7.75, the beta-catenin KO) are unchanged.
+
 ## External data windows
 
 - **Extrapolation targets (T1, T2 heart):** external data excluded **after E9.5 up to and including E13.5**. Exactly E9.5
