@@ -1,0 +1,605 @@
+{
+ "preset": "gata4",
+ "argv": [
+  "experiments/t3_decomp/t3_decompose.py",
+  "gata4",
+  "data/raw/T3/E8.75_gata4_ko_1.h5ad",
+  "data/raw/T3/E8.75_gata4_ko_2.h5ad",
+  "data/raw/T2/E8.75.h5ad",
+  "--out",
+  "runs/t3_decomp/gata4_20261028T122425Z",
+  "--workers",
+  "8",
+  "--threads",
+  "2",
+  "--e85",
+  "data/raw/T2/E8.5.h5ad"
+ ],
+ "started": "2026-10-28 13:24:26",
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "protocol_as_registered": true,
+ "workers": 8,
+ "threads_per_worker": 2,
+ "sha256": {
+  "script": "3e671c3bb5ff57bba5ceec80ea36fcc739b1f111399a1e2854400b5c9f5133d2",
+  "rules": "cd2d94aa6e202529a2eead2a7ad60b312d9a2fd9ff0bd989d9320662de750c13",
+  "t3_scenarios": "b4df1ff538e9ad8689927d5bc6275bb1308d892bd54b31c6c38b7a7070072ccd",
+  "lineage_map": "4d11db60966a14d46bfdffd7c335d0bb8addac525b3b8618dd59107146416915",
+  "vec.evaluate": "178bd81c82b3b8df1d7643eec4486ccb4cac79381328005b8286421636a3d82a",
+  "vec.prep": "4e8f92aa7df72e9f637e6b2d1f1d74fa793869babe0b7259db8fd28cc4e7037c",
+  "vec.harmonise": "d4ce92a0f5173eafa71a5268cd9c6aa50b8e20eaa6f2eb5c8451788fcc45da3a",
+  "vec.spatial": "ff9e0c541479844a6f94a2e4086bd57c7e06a262430548ab41a13bae0d47ba47",
+  "vec.boards": "f3910b844b20ae629a0813e4d662417f3011be26c31f3f78fb074bb3b68ecfff",
+  "vec.io": "e529f31b6505eb541bde2b9529dfb4da3ca5503e646a6111d497091b592be2dc"
+ },
+ "inputs": {
+  "wt": "data/raw/T2/E8.75.h5ad",
+  "targets": "[('rep1', 'data/raw/T3/E8.75_gata4_ko_1.h5ad'), ('rep2', 'data/raw/T3/E8.75_gata4_ko_2.h5ad')]",
+  "stage:E9.5": "/home/prachh/v/virtual-embryo-challenge/data/raw/T2/E9.5.h5ad",
+  "stage:E8.25_late": "/home/prachh/v/virtual-embryo-challenge/data/raw/T2/E8.25_late.h5ad",
+  "series:E8.25_late": "/home/prachh/v/virtual-embryo-challenge/data/raw/T2/E8.25_late.h5ad",
+  "series:E9.5": "/home/prachh/v/virtual-embryo-challenge/data/raw/T2/E9.5.h5ad",
+  "series:E8.5": "data/raw/T2/E8.5.h5ad",
+  "transfer_ko": "/home/prachh/v/virtual-embryo-challenge/data/raw/T3/E9.5_mab21l2_ko.h5ad"
+ },
+ "versions": {
+  "python": "3.12.12",
+  "numpy": "2.5.4",
+  "pandas": "2.3.3",
+  "scipy": "1.18.1",
+  "sklearn": "1.9.1",
+  "anndata": "0.13.4",
+  "veckit": {
+   "url": "https://github.com/aristoteleo/veckit",
+   "vcs_info": {
+    "vcs": "git",
+    "commit_id": "cc3859ab2a2305efc4544815d3f44f660efa77d4",
+    "requested_revision": "cc3859ab2a2305efc4544815d3f44f660efa77d4"
+   }
+  }
+ },
+ "git": {
+  "commit": "725d19c879ab1795a3aba01917d27140b3f9374d",
+  "status": ""
+ },
+ "scenario": {
+  "depleted_states": [
+   "OFT/RV-CM",
+   "aSHF",
+   "pSHF",
+   "aPHM",
+   "pPHM"
+  ],
+  "spared_states": [
+   "vCM1",
+   "vCM2",
+   "JCF/SV-CM",
+   "FHF/JCF"
+  ]
+ },
+ "files": {
+  "wt_pool": {
+   "path": "data/raw/T2/E8.75.h5ad",
+   "sha256": "149ab6df7c99ad85046c8aebebcf0c43689b3720c59ffb7cc550edcf2f13a83c",
+   "n_cells": 23377,
+   "n_in_file": 24826,
+   "duplicates_dropped": 1449,
+   "n_copies": 835,
+   "n_interpolated": 614,
+   "unmapped_labels": []
+  },
+  "wt_reference_as_released": {
+   "n_cells": 24826
+  }
+ },
+ "targets": {
+  "rep1": {
+   "path": "data/raw/T3/E8.75_gata4_ko_1.h5ad",
+   "sha256": "3805715d25c85873a8c51c86be44e8e42affaec0557e1b05f9d99db2ef976cad",
+   "n_cells": 42257,
+   "n_in_file": 42257,
+   "duplicates_dropped": 0,
+   "n_copies": 0,
+   "n_interpolated": 0,
+   "unmapped_labels": [],
+   "as_released_cells": 42257,
+   "genotype_column": "condition",
+   "genotype_levels": {
+    "KO": 42257
+   },
+   "littermate_wt_cells": 0,
+   "median_depth": 82.0,
+   "harmoniser_depth_target": 82.0,
+   "rounded_count_entries": 0
+  },
+  "rep2": {
+   "path": "data/raw/T3/E8.75_gata4_ko_2.h5ad",
+   "sha256": "1760657da7c477c4bf986352fdf1a066bb6a5fe995f1b9deca8ee859722074e4",
+   "n_cells": 46396,
+   "n_in_file": 46396,
+   "duplicates_dropped": 0,
+   "n_copies": 0,
+   "n_interpolated": 0,
+   "unmapped_labels": [],
+   "as_released_cells": 46396,
+   "genotype_column": "condition",
+   "genotype_levels": {
+    "KO": 46396
+   },
+   "littermate_wt_cells": 0,
+   "median_depth": 68.0,
+   "harmoniser_depth_target": 68.0,
+   "rounded_count_entries": 0
+  }
+ },
+ "stage_pools": {
+  "E9.5": {
+   "path": "/home/prachh/v/virtual-embryo-challenge/data/raw/T2/E9.5.h5ad",
+   "sha256": "371ca6530e084de2b6cd6703b49d95f4bb59546c9291659809575382a630ee9a",
+   "n_cells": 53742,
+   "n_in_file": 53742,
+   "duplicates_dropped": 0,
+   "n_copies": 0,
+   "n_interpolated": 0,
+   "unmapped_labels": [],
+   "median_depth": 75.0,
+   "harmoniser_depth_target": 75.0,
+   "confident_frac": 0.5961445424435264
+  },
+  "E8.25_late": {
+   "path": "/home/prachh/v/virtual-embryo-challenge/data/raw/T2/E8.25_late.h5ad",
+   "sha256": "d56f94d3e2d719ed3074d86c03eae457ccf90b24145d33300f9958f0e8078593",
+   "n_cells": 54431,
+   "n_in_file": 58716,
+   "duplicates_dropped": 4285,
+   "n_copies": 1727,
+   "n_interpolated": 2558,
+   "unmapped_labels": [],
+   "median_depth": 233.0,
+   "harmoniser_depth_target": null,
+   "confident_frac": 0.7356285939997428
+  }
+ },
+ "series": {
+  "E8.25_late": {
+   "path": "/home/prachh/v/virtual-embryo-challenge/data/raw/T2/E8.25_late.h5ad",
+   "sha256": "d56f94d3e2d719ed3074d86c03eae457ccf90b24145d33300f9958f0e8078593",
+   "n_cells": 54431,
+   "n_in_file": 58716,
+   "duplicates_dropped": 4285,
+   "n_copies": 1727,
+   "n_interpolated": 2558,
+   "unmapped_labels": [],
+   "median_depth": 233.0,
+   "harmoniser_depth_target": null,
+   "confident_frac": 0.7356285939997428
+  },
+  "E8.5": {
+   "path": "data/raw/T2/E8.5.h5ad",
+   "sha256": "41c76db18bfaa92c1d66f8220ec5fbb6d6acccb0a6b78241f40080a3096d37db",
+   "n_cells": 23710,
+   "n_in_file": 23710,
+   "duplicates_dropped": 0,
+   "n_copies": 0,
+   "n_interpolated": 0,
+   "unmapped_labels": [],
+   "median_depth": 166.0,
+   "harmoniser_depth_target": null,
+   "confident_frac": 0.7464361029101645
+  },
+  "E9.5": {
+   "path": "/home/prachh/v/virtual-embryo-challenge/data/raw/T2/E9.5.h5ad",
+   "sha256": "371ca6530e084de2b6cd6703b49d95f4bb59546c9291659809575382a630ee9a",
+   "n_cells": 53742,
+   "n_in_file": 53742,
+   "duplicates_dropped": 0,
+   "n_copies": 0,
+   "n_interpolated": 0,
+   "unmapped_labels": [],
+   "median_depth": 75.0,
+   "harmoniser_depth_target": 75.0,
+   "confident_frac": 0.5961445424435264
+  }
+ },
+ "vocabulary": [
+  {
+   "label": "Neural Tube",
+   "group": "Neural",
+   "mesp1": "no",
+   "nonmesp1": true,
+   "wt_cells": 3513
+  },
+  {
+   "label": "NCC",
+   "group": "NCC",
+   "mesp1": "no",
+   "nonmesp1": true,
+   "wt_cells": 1798
+  },
+  {
+   "label": "d-CSE",
+   "group": "Ectoderm",
+   "mesp1": "no",
+   "nonmesp1": true,
+   "wt_cells": 1570
+  },
+  {
+   "label": "Unknown",
+   "group": "Unknown",
+   "mesp1": "partial",
+   "nonmesp1": false,
+   "wt_cells": 1316
+  },
+  {
+   "label": "V-CSE",
+   "group": "Ectoderm",
+   "mesp1": "no",
+   "nonmesp1": true,
+   "wt_cells": 1002
+  },
+  {
+   "label": "Intra-Endoth-1",
+   "group": "Endothelium",
+   "mesp1": "partial",
+   "nonmesp1": false,
+   "wt_cells": 935
+  },
+  {
+   "label": "pPHM",
+   "group": "PharyngealMesoderm",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 915
+  },
+  {
+   "label": "Endo",
+   "group": "Endocardium",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 837
+  },
+  {
+   "label": "PAM-3",
+   "group": "ParaxialMesoderm",
+   "mesp1": "partial",
+   "nonmesp1": false,
+   "wt_cells": 799
+  },
+  {
+   "label": "PAM-1",
+   "group": "ParaxialMesoderm",
+   "mesp1": "partial",
+   "nonmesp1": false,
+   "wt_cells": 759
+  },
+  {
+   "label": "ExEM-1",
+   "group": "ExtraEmbryonicMeso",
+   "mesp1": "partial",
+   "nonmesp1": false,
+   "wt_cells": 714
+  },
+  {
+   "label": "vCM1",
+   "group": "CM",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 681
+  },
+  {
+   "label": "a-FG",
+   "group": "Endoderm",
+   "mesp1": "no",
+   "nonmesp1": true,
+   "wt_cells": 659
+  },
+  {
+   "label": "D-FG",
+   "group": "Endoderm",
+   "mesp1": "no",
+   "nonmesp1": true,
+   "wt_cells": 645
+  },
+  {
+   "label": "PAM-4",
+   "group": "ParaxialMesoderm",
+   "mesp1": "partial",
+   "nonmesp1": false,
+   "wt_cells": 622
+  },
+  {
+   "label": "vCM2",
+   "group": "CM",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 620
+  },
+  {
+   "label": "aPHM",
+   "group": "PharyngealMesoderm",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 602
+  },
+  {
+   "label": "OFT/RV-CM",
+   "group": "CM",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 566
+  },
+  {
+   "label": "aSHF",
+   "group": "PharyngealMesoderm",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 556
+  },
+  {
+   "label": "aCM1",
+   "group": "CM",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 551
+  },
+  {
+   "label": "Peri/BW",
+   "group": "CardiacProgenitor",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 468
+  },
+  {
+   "label": "PAM-2",
+   "group": "ParaxialMesoderm",
+   "mesp1": "partial",
+   "nonmesp1": false,
+   "wt_cells": 431
+  },
+  {
+   "label": "Lateral FG",
+   "group": "Endoderm",
+   "mesp1": "no",
+   "nonmesp1": true,
+   "wt_cells": 402
+  },
+  {
+   "label": "Intra-Endoth-2",
+   "group": "Endothelium",
+   "mesp1": "partial",
+   "nonmesp1": false,
+   "wt_cells": 378
+  },
+  {
+   "label": "aCM2",
+   "group": "CM",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 365
+  },
+  {
+   "label": "Peri",
+   "group": "Pericardium",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 347
+  },
+  {
+   "label": "pSHF",
+   "group": "PharyngealMesoderm",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 257
+  },
+  {
+   "label": "JCF/SV-CM",
+   "group": "CM",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 149
+  },
+  {
+   "label": "HEM-Endoth",
+   "group": "Endothelium",
+   "mesp1": "partial",
+   "nonmesp1": false,
+   "wt_cells": 138
+  },
+  {
+   "label": "JCF",
+   "group": "CardiacProgenitor",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 137
+  },
+  {
+   "label": "ExEM-2",
+   "group": "ExtraEmbryonicMeso",
+   "mesp1": "partial",
+   "nonmesp1": false,
+   "wt_cells": 128
+  },
+  {
+   "label": "FHF/JCF",
+   "group": "CardiacProgenitor",
+   "mesp1": "yes",
+   "nonmesp1": false,
+   "wt_cells": 106
+  },
+  {
+   "label": "EXE-Endoderm",
+   "group": "Endoderm",
+   "mesp1": "no",
+   "nonmesp1": true,
+   "wt_cells": 97
+  },
+  {
+   "label": "pSE",
+   "group": "Ectoderm",
+   "mesp1": "no",
+   "nonmesp1": true,
+   "wt_cells": 85
+  },
+  {
+   "label": "Allantois",
+   "group": "ExtraEmbryonicMeso",
+   "mesp1": "partial",
+   "nonmesp1": false,
+   "wt_cells": 55
+  },
+  {
+   "label": "Gut Endoderm",
+   "group": "Endoderm",
+   "mesp1": "no",
+   "nonmesp1": true,
+   "wt_cells": 52
+  },
+  {
+   "label": "Caudal Epiblast",
+   "group": "EpiblastStreak",
+   "mesp1": "no",
+   "nonmesp1": false,
+   "wt_cells": 45
+  },
+  {
+   "label": "SOM",
+   "group": "ParaxialMesoderm",
+   "mesp1": "partial",
+   "nonmesp1": false,
+   "wt_cells": 29
+  },
+  {
+   "label": "Forebrain",
+   "group": "Neural",
+   "mesp1": "no",
+   "nonmesp1": true,
+   "wt_cells": 17
+  },
+  {
+   "label": "LPM",
+   "group": "LPM",
+   "mesp1": "partial",
+   "nonmesp1": false,
+   "wt_cells": 16
+  },
+  {
+   "label": "Hindgut",
+   "group": "Endoderm",
+   "mesp1": "no",
+   "nonmesp1": true,
+   "wt_cells": 15
+  }
+ ],
+ "blind_states_absent_from_vocabulary": {
+  "G1_cm_d50": [
+   "V-CM",
+   "IFT-CM"
+  ],
+  "G1_cm_d25": [
+   "V-CM",
+   "IFT-CM"
+  ],
+  "G3_diffblock": [
+   "V-CM",
+   "IFT-CM"
+  ]
+ },
+ "R": {
+  "series": {
+   "E8.25_late": 8.25,
+   "E8.5": 8.5,
+   "E9.5": 9.5
+  },
+  "labels_used": 22,
+  "sd_log_phi": 0.4560479458739318
+ },
+ "selfcheck": "passed",
+ "transfer_ko": {
+  "path": "/home/prachh/v/virtual-embryo-challenge/data/raw/T3/E9.5_mab21l2_ko.h5ad",
+  "sha256": "5b1668ab982e64f7683fbf5f905218fab311c63548de5f5bc18a74f9d4d357e0",
+  "n_cells": 47483,
+  "n_in_file": 50294,
+  "duplicates_dropped": 2811,
+  "n_copies": 2811,
+  "n_interpolated": 0,
+  "unmapped_labels": [],
+  "labels_used_all": 28,
+  "harmoniser_depth_target": 95.0
+ },
+ "analytic": {
+  "rep1": {
+   "n_DE_up": 9,
+   "n_DE_down": 68,
+   "joint_nnls_weights": {
+    "coverage": 0.6280063796032581,
+    "mesp1_composition": 1.397455870535711,
+    "stage": 0.3845463662177476,
+    "depth": 0.9074341916062866,
+    "factor": 0.7790261589290204
+   },
+   "joint_r2": 0.9039549962122735,
+   "drop_one_r2_loss": {
+    "coverage": 0.0037233675590371274,
+    "mesp1_composition": 0.21360594008084743,
+    "stage": 0.009518404105550271,
+    "depth": 0.2426565753128993,
+    "factor": 0.3076474776867415
+   },
+   "residual_share": -0.036983465155055184,
+   "within_type_mean_pairwise_r": 0.42426256502490883,
+   "log_factor_nonmesp1_vs_mesp1_spearman": 0.6363630617145086,
+   "dt_spearman_with_wt_pseudobulk": -0.5190024600098401,
+   "full_pool_alphas": [
+    0.22467934590995817,
+    0.020226278239396496
+   ],
+   "stage_pools": [
+    "E9.5",
+    "E8.25_late"
+   ]
+  },
+  "rep2": {
+   "n_DE_up": 14,
+   "n_DE_down": 86,
+   "joint_nnls_weights": {
+    "coverage": 0.7928488310328002,
+    "mesp1_composition": 1.3446574303390826,
+    "stage": 0.43277784250170187,
+    "depth": 0.9720189602291682,
+    "factor": 0.5558476932576951
+   },
+   "joint_r2": 0.8895613357389566,
+   "drop_one_r2_loss": {
+    "coverage": 0.06615321214028991,
+    "mesp1_composition": 0.1386825534046191,
+    "stage": 0.01807831186614417,
+    "depth": 0.33649719572060044,
+    "factor": 0.12504272986664455
+   },
+   "residual_share": -0.14704927486669295,
+   "within_type_mean_pairwise_r": 0.4048820978244352,
+   "log_factor_nonmesp1_vs_mesp1_spearman": 0.5344897277060402,
+   "dt_spearman_with_wt_pseudobulk": -0.5812405649622598,
+   "full_pool_alphas": [
+    0.3229269732638527,
+    0.0
+   ],
+   "stage_pools": [
+    "E9.5",
+    "E8.25_late"
+   ]
+  }
+ },
+ "runtime_min": 13.0
+}
