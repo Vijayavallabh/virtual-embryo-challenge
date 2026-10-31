@@ -32,6 +32,7 @@ of the two the prefix build returns on the emulated truth, and the file's local 
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 
@@ -358,7 +359,7 @@ class BoardScore:
 
 
 def score_board(board: Board, pred: Stage, target: Stage, ref: Stage, floor_pred: Stage | None = None,
-                seed: int = 0, anchors: str = "computed", gate: str = "floor_normalised",
+                seed: int = 0, anchors: str | Mapping = "computed", gate: str = "floor_normalised",
                 probe="skip", frac: float = SUBSAMPLE_FRAC, build: str = DEFAULT_BUILD,
                 protocol: str = "emulator") -> BoardScore:
     """Score `pred` on a board, emulating the server's 10% working copies and half-split truth.
@@ -366,7 +367,9 @@ def score_board(board: Board, pred: Stage, target: Stage, ref: Stage, floor_pred
     target: the full held-out stage (e.g. released validation answers). ref: the full DE reference stage (preceding
     stage for T1/T2, matched wild type for T3). floor_pred: the full floor prediction; defaults to `ref`, which is
     what copy_last and wt_identity return. anchors: "computed" measures floor and ceiling on these working copies;
-    "published" uses the board's anchors from index.json (validation boards only). frac: working-copy fraction;
+    "published" uses the board's anchors from index.json (validation boards only); a mapping is an anchor map computed
+    earlier on the same draws (same board, target, reference, seed, frac, build and protocol), which vec.harness uses to
+    score several candidates against one seed's floor and ceiling. frac: working-copy fraction;
     0.1 is what the server does, 1.0 is useful for small files and low-noise diagnostics. build: the scorer build
     ("main" or "prefix", see the module docstring) for the candidate and for computed anchors. protocol: how the
     working copies and the truth half are drawn. "emulator" draws the target with `seed` and the reference with
@@ -392,7 +395,9 @@ def score_board(board: Board, pred: Stage, target: Stage, ref: Stage, floor_pred
 
     extras = {"build": build, "protocol": protocol}
     floor_w = None
-    if anchors == "computed":
+    if isinstance(anchors, Mapping):
+        anchor_map = {m: {"floor": a["floor"], "ceiling": a["ceiling"]} for m, a in anchors.items()}
+    elif anchors == "computed":
         floor_w = ref_w if floor_pred is None else subsample(floor_pred, frac, ref_seed)
         floor_vals = panel_metrics(task, floor_w, truth, ref_w, seed=seed, build=build)
         ceil_vals = panel_metrics(task, other_half, truth, ref_w, seed=seed, build=build)
@@ -405,7 +410,7 @@ def score_board(board: Board, pred: Stage, target: Stage, ref: Stage, floor_pred
             raise ValueError(f"{board.key}: no published anchors (test boards are stripped at intake)")
         anchor_map = board.anchors
     else:
-        raise ValueError("anchors must be 'computed' or 'published'")
+        raise ValueError("anchors must be 'computed', 'published' or an anchor map")
 
     if task == "T2" and pred.coords is not None and truth.coords is not None:
         live_n = board.truth_cells if board.truth_cells else truth.n

@@ -1,0 +1,108 @@
+# Pseudo-tasks per test board (feat-008; vec.harness). Fixed on 2026-11-01, before any release-data adoption result.
+#
+# Each pseudo-task is a backtest built only from released stages (the validation answers included, unlocked
+# 2026-10-28) in the geometry of its test board:
+#   target            the stage to predict (data/raw-relative), scored as released
+#   reference         the floor and DE reference: the stage before the target (extrapolation), the earlier bracket
+#                     (interpolation) or the matched wild type (knockout), as the organisers' boards use them
+#   inputs            role -> file: the only stages a candidate sees (loaded with duplicates dropped on T2/T3)
+#   validation_board  the P2 board whose geometry this is (its cell limits are then the published ones), else null
+#   twin_board        the validation board whose gene panel a synthetic pseudo-board borrows (only the panel)
+#   forbidden         files that may never be inputs, besides the target (the harness also refuses later stages
+#                     for extrapolation and inner stages for interpolation)
+# The harness checks every rule at load (vec.harness.check_task). Candidates also may not read files derived from a
+# pseudo-task's target (for example the size and count decisions measured on E10.5 and E7.5).
+
+T1:test:
+  - key: "T1/E9.5->E10.5"
+    task: T1
+    kind: extrap
+    target: T1/E10.5_RNA.h5ad
+    reference: T1/E9.5_RNA.h5ad
+    inputs: {ref: T1/E9.5_RNA.h5ad, start: T1/E8.5_RNA.h5ad}
+    validation_board: "T1:val"
+    notes: "The test geometry one day shorter (E12.5 from E10.5, momentum from E9.5). The truth is the whole E10.5
+      library, surrounding tissue included, while E12.5 is the heart chamber only."
+  - key: "T1/E8.5->E9.5"
+    task: T1
+    kind: extrap
+    target: T1/E9.5_RNA.h5ad
+    reference: T1/E8.5_RNA.h5ad
+    inputs: {ref: T1/E8.5_RNA.h5ad}
+    validation_board: null
+    twin_board: "T1:val"
+    notes: "No T1 stage precedes E8.5, so candidates that need a momentum start do not apply here."
+
+T2:embryo:test_interp:
+  - key: "T2e/E7.25+E8.0->E7.5"
+    task: T2
+    setting: embryo
+    kind: interp
+    target: T2/E7.5.h5ad
+    reference: T2/E7.25.h5ad
+    inputs: {before: T2/E7.25.h5ad, after: T2/E8.0.h5ad, earlier: T2/E6.75.h5ad}
+    validation_board: "T2:embryo:val_interp"
+    notes: "t = 1/3 between the brackets (test: E7.75 at t = 1/2 between E7.5 and E8.0)."
+  - key: "T2e/E6.75+E7.5->E7.25"
+    task: T2
+    setting: embryo
+    kind: interp
+    target: T2/E7.25.h5ad
+    reference: T2/E6.75.h5ad
+    inputs: {before: T2/E6.75.h5ad, after: T2/E7.5.h5ad, later: T2/E8.0.h5ad}
+    validation_board: null
+    twin_board: "T2:embryo:val_interp"
+    notes: "t = 2/3 between the brackets."
+
+T2:heart:test_extrap:
+  - key: "T2h/<=E9.5->E10.5"
+    task: T2
+    setting: heart
+    kind: extrap
+    target: T2/E10.5.h5ad
+    reference: T2/E9.5.h5ad
+    inputs: {ref: T2/E9.5.h5ad, start: T2/E8.75.h5ad, earlier: T2/E8.5.h5ad, earliest: T2/E8.25_late.h5ad}
+    validation_board: "T2:heart:val_extrap"
+    notes: "One day ahead (test: two days). E10.5 hearts were dissected and E9.5 embryo portions sectioned, so this
+      transition mixes development with a change in what was sampled (Data Protocol)."
+  - key: "T2h/<=E8.75->E10.5"
+    task: T2
+    setting: heart
+    kind: extrap
+    target: T2/E10.5.h5ad
+    reference: T2/E8.75.h5ad
+    inputs: {ref: T2/E8.75.h5ad, start: T2/E8.5.h5ad, earlier: T2/E8.25_late.h5ad}
+    validation_board: null
+    twin_board: "T2:heart:val_extrap"
+    forbidden: [T2/E9.5.h5ad]
+    notes: "1.75 days ahead, skipping E9.5. The plan chooses the composition damping on this pseudo-target, so an
+      adoption decision that also tunes on it is in-sample."
+
+T3:bcatenin:
+  - key: "T3/Gata4rep1->rep2"
+    task: T3
+    kind: ko
+    target: T3/E8.75_gata4_ko_2.h5ad
+    reference: T2/E8.75.h5ad
+    inputs: {wt: T2/E8.75.h5ad, ko_train: T3/E8.75_gata4_ko_1.h5ad, wt_train: T2/E8.75.h5ad}
+    validation_board: "T3:gata4"
+    notes: "Replicate transfer within one knockout (the validation board's truth is replicate 2 by its cell count)."
+  - key: "T3/Mab21l2->Gata4rep2"
+    task: T3
+    kind: ko
+    target: T3/E8.75_gata4_ko_2.h5ad
+    reference: T2/E8.75.h5ad
+    inputs: {wt: T2/E8.75.h5ad, ko_train: T3/E9.5_mab21l2_ko.h5ad, wt_train: T2/E9.5.h5ad}
+    validation_board: "T3:gata4"
+    forbidden: [T3/E8.75_gata4_ko_1.h5ad]
+    notes: "Cross-knockout transfer, the test's situation (a knockout never observed)."
+  - key: "T3/Gata4->Mab21l2"
+    task: T3
+    kind: ko
+    target: T3/E9.5_mab21l2_ko.h5ad
+    reference: T2/E9.5.h5ad
+    inputs: {wt: T2/E9.5.h5ad, ko_train: T3/E8.75_gata4_ko_1.h5ad, ko_train_2: T3/E8.75_gata4_ko_2.h5ad,
+             wt_train: T2/E8.75.h5ad}
+    validation_board: null
+    twin_board: "T3:gata4"
+    notes: "The reverse transfer, at E9.5 against WT E9.5. Not in the pre-registered T3 run."
