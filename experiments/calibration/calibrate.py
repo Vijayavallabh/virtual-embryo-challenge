@@ -198,8 +198,9 @@ def run_board(key: str, data: Path, out: Path) -> Path:
                           "match": anchor_match(anchors_seed0.get(m, {}).get(k), board.anchors[m][k])}
                       for k in ("floor", "ceiling")} for m in board.anchors}
     res = {"board": key, "utc": time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()), "commit": _git("rev-parse", "HEAD"),
-           "tree_clean": _git("status", "--porcelain") == "", "build": BUILD, "protocol": PROTOCOL, "seeds": SEEDS,
-           "frac": FRAC, "counts": counts, "anchors_seed0": anchor_cmp, "rows": rows,
+           "tree_clean": _git("status", "--porcelain", "--untracked-files=no") == "", "build": BUILD,
+           "protocol": PROTOCOL, "seeds": SEEDS, "frac": FRAC, "counts": counts, "anchors_seed0": anchor_cmp,
+           "rows": rows,
            "seconds": round(time.time() - t0, 1)}
     out.mkdir(parents=True, exist_ok=True)
     path = out / f"{key.replace(':', '__')}.json"
