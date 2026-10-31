@@ -451,3 +451,46 @@ def test_other_copies_left_in_the_folder_are_named(tmp_path):
     out = " ".join(res.output.split())
     assert res.exit_code == 0 and "may be copies of the saved index" in out and "index (1).json" in out
     assert not src.exists() and (src.parent / "index (1).json").exists() and TAG not in res.output
+
+
+def test_online_403_reports_the_block_kind_from_headers_only(monkeypatch):
+    """The 403 message names the kind of block (a bot challenge or a firewall rule) from response headers; the body,
+    which on another day could be the board file itself, is never read."""
+    from email.message import Message
+    from urllib.error import HTTPError
+
+    from typer.testing import CliRunner
+
+    from vec import boards as vec_boards
+    from vec import cli
+
+    class Body:
+        def read(self, *a):
+            raise AssertionError("the 403 body must not be read")
+
+    hdr = Message()
+    hdr["server"], hdr["cf-mitigated"], hdr["content-type"] = "cloudflare", "challenge", "text/html"
+
+    def blocked(**kw):
+        raise HTTPError("https://example.invalid/panels/index.json", 403, "Forbidden", hdr, Body())
+
+    monkeypatch.setattr(vec_boards, "update_boards", blocked)
+    res = CliRunner().invoke(cli.app, ["boards", "update"])
+    out = " ".join(res.output.split())
+    assert res.exit_code == 1 and "nothing was written" in out
+    assert "'cf-mitigated': 'challenge'" in out and "'server': 'cloudflare'" in out
+
+    class Plain:  # a plain-text Cloudflare error page: only its numeric code is read and shown
+        def read(self, n=-1):
+            assert 0 < n <= 200
+            return b"error code: 1010 and nothing else is shown"
+
+    plain = Message()
+    plain["server"], plain["content-type"] = "cloudflare", "text/plain; charset=UTF-8"
+
+    def blocked_plain(**kw):
+        raise HTTPError("https://example.invalid/panels/index.json", 403, "Forbidden", plain, Plain())
+
+    monkeypatch.setattr(vec_boards, "update_boards", blocked_plain)
+    out = " ".join(CliRunner().invoke(cli.app, ["boards", "update"]).output.split())
+    assert "'cloudflare_error_code': '1010'" in out and "nothing else is shown" not in out

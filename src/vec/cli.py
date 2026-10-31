@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 import shlex
 import subprocess
 from datetime import UTC, datetime
@@ -88,9 +89,21 @@ def boards_update(
     except HTTPError as e:
         if from_file is not None or e.code != 403:
             raise
+        # which kind of 403 it is (a bot challenge or browser-signature block a browser passes, or a firewall rule),
+        # from the headers and, for a short plain-text Cloudflare error page only, its numeric code; nothing else of
+        # the body is read or shown
+        kind = {k: e.headers.get(k) for k in ("server", "cf-mitigated", "content-type")
+                if e.headers is not None and e.headers.get(k)}
+        if str(kind.get("content-type", "")).startswith("text/plain"):
+            try:
+                code = re.search(r"error code: (\d{3,5})", e.read(200).decode("ascii", "replace"))
+            except Exception:  # noqa: BLE001 (diagnostic only)
+                code = None
+            if code:
+                kind["cloudflare_error_code"] = code.group(1)
         console.print("the panel files answered HTTP 403; nothing was written. Not worked around: a copy saved in "
                       "the browser for --from-file would be a workaround too and needs the user's decision first "
-                      "(docs/DATA_POLICY.md).")
+                      f"(docs/DATA_POLICY.md). Response headers: {escape(str(kind or 'none'))}.")
         raise typer.Exit(1) from None
     except Exception as e:  # noqa: BLE001 (offline intake only: an error message could quote the saved file)
         if from_file is None:

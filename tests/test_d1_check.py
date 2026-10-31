@@ -45,6 +45,9 @@ def test_expected_reference_stages_pass(d1):
     assert {k: v["A3"] for k, v in res.items()} == dict.fromkeys(d1.TEST_BOARDS, "pass")
     assert res["T2:embryo:test_interp"]["ref_stage_hits"] == ["E7.5"]
     assert res["T1:test"]["genes_same_as_validation_twin"] is True
+    flat = repr(res)  # the counts that can encode a held-out stage's size are never reported
+    assert "truth_cells': 1000" not in flat and "20000" not in flat and "'min_cells': 500" not in flat
+    assert res["T3:bcatenin"]["published"] == {"min_cells": True, "max_cells": True, "truth_cells": True}
 
 
 def test_another_stage_fails_and_unknown_counts_stay_unresolved(d1):

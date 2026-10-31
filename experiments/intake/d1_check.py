@@ -14,6 +14,12 @@ matches another released stage (the builders' deltas must then be rebuilt agains
 ref_cells is missing or matches no released stage. The test boards' cell limits, gene lists and required keys are
 listed for the builders, and each gene list is compared with the validation board of the same task and setting.
 
+A test board's truth_cells, min_cells and max_cells can encode the held-out stage's cell count (on the validation
+boards max_cells is 3 x the larger of truth_cells and ref_cells, and min_cells follows truth_cells below 1,000), so
+this script never prints or stores them: it reports only whether each is published. The builders read them from
+boards/ in code; nobody quotes them in docs, notes or agent output (red-team review, 2026-10-31). ref_cells is 10% of
+a released stage and is reported.
+
 Usage (local or DGX, repo root):  uv run python experiments/intake/d1_check.py --out experiments/intake/results
 """
 
@@ -76,8 +82,10 @@ def check(boards: dict) -> dict:
         twin = boards.get(VALIDATION_TWIN[key])
         out[key] = {
             "present": True, "task": b.task, "setting": b.setting, "split": b.split, "target_ko": b.target_ko,
-            "n_genes": b.n_genes, "needs_coords": b.needs_coords, "min_cells": b.min_cells, "max_cells": b.max_cells,
-            "truth_cells": b.truth_cells, "ref_cells": b.ref_cells, "floor_model": b.floor_model,
+            "n_genes": b.n_genes, "needs_coords": b.needs_coords, "ref_cells": b.ref_cells,
+            "floor_model": b.floor_model,
+            "published": {"min_cells": b.min_cells is not None, "max_cells": b.max_cells is not None,
+                          "truth_cells": b.truth_cells is not None},
             "ref_stage_hits": hits, "expected_ref_stage": EXPECTED_REF[key], "A3": a3, "why": why,
             "genes_same_as_validation_twin": None if twin is None else b.genes == twin.genes,
             "genes_same_set_as_validation_twin": None if twin is None else set(b.genes) == set(twin.genes),
@@ -99,7 +107,7 @@ def main(argv=None) -> None:
     (a.out / "d1_check.json").write_text(json.dumps(summary, indent=1))
     lines = [f"D1 / A3: {overall}"] + [
         f"  {k}: A3 {v['A3']} ({v['why']})" + (
-            f"; cells {v['min_cells']}-{v['max_cells']}, truth_cells {v['truth_cells']}, ref_cells {v['ref_cells']}, "
+            f"; cell limits and truth_cells published {v['published']} (values not shown), ref_cells {v['ref_cells']}, "
             f"{v['n_genes']} genes (same list as {VALIDATION_TWIN[k]}: {v['genes_same_as_validation_twin']}), "
             f"coords {v['needs_coords']}, floor {v['floor_model']}" if v["present"] else "")
         for k, v in res.items()]
