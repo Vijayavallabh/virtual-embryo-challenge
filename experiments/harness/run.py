@@ -52,7 +52,8 @@ def cmd_run(a) -> None:
     tasks = harness.load_tasks()
     if a.board not in tasks:
         sys.exit(f"unknown test board {a.board}; known: {sorted(tasks)}")
-    chosen = [t for t in tasks[a.board] if not a.task or t.key in a.task]
+    # --task takes a key or its shell-safe form (T1_E9.5_E10.5 for T1/E9.5->E10.5: '>' would redirect in a shell)
+    chosen = [t for t in tasks[a.board] if not a.task or t.key in a.task or safe(t.key) in a.task]
     if a.task and len(chosen) != len(set(a.task)):
         sys.exit(f"unknown pseudo-task(s) among {a.task}; known: {[t.key for t in tasks[a.board]]}")
     names = [n.strip() for n in a.candidates.split(",") if n.strip()]
