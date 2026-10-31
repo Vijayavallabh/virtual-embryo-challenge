@@ -164,6 +164,7 @@ def run_board(key: str, data: Path, out: Path) -> Path:
         sys.exit(f"refused: {key} is not a validation board")
     board, files = boards[key], BOARD_FILES[key]
     t0 = time.time()
+    commit, clean = _git("rev-parse", "HEAD"), _git("status", "--porcelain", "--untracked-files=no") == ""
 
     def load(rel: str) -> Stage:
         return Stage.from_anndata(read_stage(data / rel, board.genes), board.genes, need_coords=board.needs_coords)
@@ -197,8 +198,8 @@ def run_board(key: str, data: Path, out: Path) -> Path:
     anchor_cmp = {m: {k: {"published": board.anchors[m][k], "computed": anchors_seed0.get(m, {}).get(k),
                           "match": anchor_match(anchors_seed0.get(m, {}).get(k), board.anchors[m][k])}
                       for k in ("floor", "ceiling")} for m in board.anchors}
-    res = {"board": key, "utc": time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()), "commit": _git("rev-parse", "HEAD"),
-           "tree_clean": _git("status", "--porcelain", "--untracked-files=no") == "", "build": BUILD,
+    res = {"board": key, "utc": time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()), "commit": commit,  # at start
+           "tree_clean": clean, "build": BUILD,
            "protocol": PROTOCOL, "seeds": SEEDS, "frac": FRAC, "counts": counts, "anchors_seed0": anchor_cmp,
            "rows": rows,
            "seconds": round(time.time() - t0, 1)}
