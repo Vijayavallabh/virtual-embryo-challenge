@@ -197,7 +197,11 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
 
 ## 5. Then
 
-- Emulator calibration against the published validation reference rows (feat-005, assumption A2).
+- Emulator calibration against the published validation reference rows (feat-005, assumption A2). Done 2026-10-31
+  (`experiments/calibration/README.md`): every published validation anchor and four of the five organiser baseline
+  rows reproduce exactly under `protocol="bake"` and the prefix build; the heart-extrapolation pseudobulk_shift row
+  does not (cell-type matching across E8.75 and E9.5 is unpublished). On the validation boards, a local score at
+  seed 0 with the published anchors is the server's score.
 - Test-board intake: reference stage, cell limits and what else each test board publishes (decision point D1).
 - Candidate files, built on the DGX with the committed builders and checked there with
   `uv run vec check FILE --board KEY` (no token, nothing sent). A server format check runs from this machine with

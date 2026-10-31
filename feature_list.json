@@ -46,8 +46,8 @@
         "feat-002",
         "feat-003"
       ],
-      "status": "not-started",
-      "evidence": "2026-10-28: runbook step 4.6 (12151e0) reproduced the validation boards' bake protocol exactly (numpy Generator seed 0, sorted rows, veckit split_half seed 0, truth = first half, floor = the reference working copy, metric seed 0) on all three T2 validation boards; the six Dice anchors are proper-mode or tied, so they do not tell the two builds apart."
+      "status": "done",
+      "evidence": "2026-10-28: runbook step 4.6 (12151e0) reproduced the validation boards' bake protocol exactly (numpy Generator seed 0, sorted rows, veckit split_half seed 0, truth = first half, floor = the reference working copy, metric seed 0) on all three T2 validation boards; the six Dice anchors are proper-mode or tied, so they do not tell the two builds apart. 2026-10-31 (experiments/calibration/, c89a8b4 to 4642ae8): vec.evaluate gains protocol=\"bake\"; calibrate.py on all five validation boards (prefix build, seeds 0-9): all 66 published anchors exact at seed 0; T1 pseudobulk_shift 48.58, T2 embryo pseudobulk_shift 55.22, T3 shift_transfer 42.48 and gene_ko 42.50 exact against the published rows (screened from the research notes, reference_rows.json); T2 heart extrapolation pseudobulk_shift not reproduced (50.32 vs 47.76; cell-type matching across E8.75/E9.5 unknown; 14 constructions in variants.py). A2 fails as written on that row and is recorded as revised. ./init.sh 408 passed."
     },
     {
       "id": "feat-006",
