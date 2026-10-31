@@ -21,6 +21,34 @@ under "Third email" below. The user sent a fourth email (the HTTP 403 on the pan
 of the A20 reading) on 2026-10-28 at 15:41 IST; its text is under "Fourth email" below. As of then none of the four
 emails had a reply, and the last screened Slack sweep (2026-10-23) found no organiser post or reply.
 
+## Working answers (2026-10-31): predicted, not ruled
+
+No organiser had replied to any of the four emails or to the private leak note by 2026-10-31, and on Slack they have
+answered no team's rule question since 2026-10-16 (screened sweep, 2026-10-31). The captain then told the AI assistant:
+"Now assume that they don't reply to the emails and you then come up with their rational responses and act on it and proceed". Seven AI agents (a Slack screen; three independent predictors with the lenses "challenge
+operator", "rules text" and "precedent"; a judge; two red-team adversaries; workflow wf_65dab548-d7d) predicted the
+organisers' most likely answer to every open question, and a screening agent read the organisers' Data Protocol page
+(posted 2026-10-29). These are the team's working assumptions, never organiser rulings: a real answer replaces a
+prediction the day it arrives, and every disclosure says which is which. Confidence is the judge's.
+
+| Question | Working answer (confidence) | What the team does |
+|---|---|---|
+| Board specs (4th email Q1) | Not a decision to withhold the specs; the 403 is Cloudflare's browser-signature block (error code 1010, seen 2026-10-31); saving the Data page's linked file in a browser for the team's own tool is fine (0.8) | The captain decides on his two rules; if yes: dated notice on the email thread, about 72 h, "Save link as", the intake strips the anchors; test-board counts never quoted |
+| Final entries (4th Q2) | An unmarked board counts its best official submission; marks are per board and changeable until 2 Dec UTC (0.55) | Mark each board after its last upload: of the entries every ruling allows, the higher published score (a tie or an unscored s2: s1); recheck on 1 Dec IST |
+| Validation files as inputs (A20; 3rd Q2, 4th Q3) | Yes (0.88) | No change |
+| Gata4 replicates in T3 (follow-up Q3) | Yes (0.8) | Allowed branch; the red team proposes s2 = the refused branch's s1 (no Gata4-derived number) as a rule hedge, for the captain to decide |
+| Released data across tasks (A15; 18 Oct Q1) | Yes (0.75) | No new cross-modal input in any upload unless the organisers answer; the committed links stay |
+| Textbook background (18 Oct Q2) | Fine if qualitative (0.6) | No change: new populations only from the legal route; the T1 scope rule rests on the published E12.5 dissection note |
+| truth_cells for the count (18 Oct Q3) | Yes (0.75) | No change |
+| truth_cells for size (follow-up Q6) | No (0.65) | No change; the size outputs are committed (f5be247) |
+| Generality scope (18 Oct Q4; 3rd Q3) | Every task entered; no eligibility ruling in advance; fits if the summary shows the shared part doing the main work (0.55) | No change |
+| Scorer build and parity (follow-up Q1; 18 Oct Q5) | Current metric set, PR #6 not adopted, no endorsement of a parity pair (0.7 for that core; the build itself is near a coin) | No parity hedge; the row-order seed fixed in code |
+| Wrong-sign severity (follow-up Q2) | Skill 0.5 (0.65) | No change |
+| Duplicated records (follow-up Q4) | Reconstruction artefacts; truth sets as distributed (0.45) | No change |
+| z coordinate (follow-up Q5) | As far as the Data Protocol page goes: use the stored z as given; its unit is not stated | No change |
+| External staging (follow-up Q7) | Standard references; an embryo either label puts inside a window stays out (0.45) | No change |
+| Leak report (follow-up Q8) | Thanks and removal; nothing more from the team (0.55) | No change |
+
 Dropped because they are already answered (see `docs/DATA_POLICY.md`):
 - T3 literature: gene-level knockout findings are prohibited, broad phenotype background is allowed (2026-10-15).
 - T2 heart extrapolation window equals T1's (2026-10-15).

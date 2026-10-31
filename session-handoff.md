@@ -97,8 +97,15 @@
 
 ## Recommended Next Step
 
-- Continue `docs/P3_RUNBOOK.md` at section 5: emulator calibration against the validation reference rows (feat-005;
-  step 4.6 reproduced the bake protocol), then candidate files on the DGX. Test-board specs (step 1) wait for the
-  organisers, or for the user to lift the no-workaround rule and save the file for `vec boards update --from-file`;
-  until then no server format check can reach a test board. On the DGX, cap the BLAS threads (`docs/COMPUTE.md`;
-  `progress.md`, Notes for Next Session).
+- Board specs: the captain decides whether to lift his two rules for the browser save (predicted organiser answer: no
+  objection, 0.8; the 403 is Cloudflare error code 1010, a browser-signature block). If yes: he sends the notice
+  drafted in his Gmail (reply on the fourth-email thread), waits about 72 hours, saves the Data page's linked board
+  index with "Save link as" into ~/vec-panels/ (outside every git work tree), and the AI assistant runs `uv run vec
+  boards update --from-file ~/vec-panels/index.json --delete-source`, commits `boards/`, and runs
+  `experiments/intake/d1_check.py` (D1, A3). Test-board counts are read by code only, never quoted.
+- T3: the allowed branch is selected (working answers, `docs/ORGANIZER_QUESTIONS.md`); the captain decides on the
+  red team's proposal to make s2 the refused branch's s1. Builds need the test board's max_cells (after the intake).
+- Meanwhile (no specs needed): the v1 pipelines on the release data (`docs/PLAN.md` section 7, Nov 3-9): the T1
+  pseudo-task with E10.5 as the truth (`experiments/t1_scope/pseudo_task.py`, honest momentum from E8.5), T2 embryo
+  FGW, T2 heart growth, scored with the calibrated emulator (protocol="bake" reproduces the validation boards). On the
+  DGX, cap the BLAS threads (`docs/COMPUTE.md`).

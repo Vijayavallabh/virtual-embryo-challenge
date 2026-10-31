@@ -5,10 +5,12 @@
 **Last Updated:** 2026-10-31
 **Active Feature:** feat-004 - Final-phase intake (`docs/P3_RUNBOOK.md`). Steps 2 (data) and 3 (labels) done on
 2026-10-28 (feat-003 done), and step 4 (the pre-registered runs) ran the same day at the user's go-ahead, each output
-committed before it was read. Step 1 is blocked by the 403 on the panel files (still so on 2026-10-31; no reply to
-the fourth email). Its saved-file intake (`vec boards update --from-file`, cee1c92) is built but not cleared for use:
-saving the file in a browser would work around the 403, which only the user can allow (a side agent's heads-up,
-2026-10-31; `docs/DATA_POLICY.md`). The release-day rules are signed off and in code
+committed before it was read. Step 1 is blocked by the 403 on the panel files (Cloudflare error code 1010, a
+browser-signature block; no reply to any organiser email). Its saved-file intake (`vec boards update --from-file`,
+cee1c92) is built but not cleared: the browser save needs the captain's explicit yes (`docs/DATA_POLICY.md`). On
+2026-10-31, at the captain's instruction, the open organiser questions got predicted working answers
+(`docs/ORGANIZER_QUESTIONS.md`; T3 selects the allowed branch), and the emulator calibration (feat-005) ran: the
+scorer reproduces every published validation anchor exactly. The release-day rules are signed off and in code
 (`docs/RELEASE_RULES_SUMMARY.md`).
 
 ## Status
@@ -144,6 +146,16 @@ saving the file in a browser would work around the 403, which only the user can 
       with a test that fails when its fix is undone (the online refresh had the composition gap too). 402 tests.
       Not cleared for use (2026-10-31): the browser save would itself work around the 403 (`docs/DATA_POLICY.md`).
 
+- [x] 2026-10-31: emulator calibration (feat-005; `experiments/calibration/README.md`): vec.evaluate
+      protocol="bake"; all 66 published validation anchors exact at seed 0; T1 pseudobulk_shift, T2 embryo
+      pseudobulk_shift, T3 shift_transfer and gene_ko equal the published rows; the T2 heart-extrapolation
+      pseudobulk_shift row is unexplained (14 constructions; cell-type matching across E8.75 and E9.5 is unpublished).
+      A2 revised. ./init.sh: 412 passed.
+- [x] 2026-10-31: working answers to the organiser questions (`docs/ORGANIZER_QUESTIONS.md`), predicted by seven AI
+      agents at the captain's instruction after no reply; screened reads of Slack and the Data Protocol page
+      (`docs/DATA_NOTES.md`). T3 selects the allowed branch; no new cross-modal input; the 403 is Cloudflare error
+      code 1010 (browser-signature block); the D1 check is ready and never prints test-board counts.
+
 ### What's Next
 
 1. Until 2026-10-27: work that needs no release data (`docs/PLAN.md` section 7): external data through committed
@@ -156,6 +168,8 @@ saving the file in a browser would work around the 403, which only the user can 
    steps 2, 3 and 4 are done (What's Done). Next is the runbook's section 5: emulator calibration against the
    validation reference rows (feat-005), then candidate files on the DGX; the test-board intake (D1) and every
    server format check wait for the test boards' specs.)
+   (2026-10-31: feat-005 done; the D1 check script is ready (`experiments/intake/d1_check.py`); D1, candidate files
+   and format checks wait for the captain's decision on the browser route.)
 3. B0 floor-plus files on all four boards with the builders (feat-009); T3 per-gene factor on Gata4 (feat-012); T1
    scope shares by a written rule (feat-014).
 
@@ -186,8 +200,10 @@ saving the file in a browser would work around the 403, which only the user can 
       boards' cell limits. Asked in the fourth email (sent 2026-10-28). The options are the user's call: wait for the
       reply, ask in #virtual-embryo-challenge, or lift the no-workaround rule so the user can save the file in the
       browser for the intake that strips the anchors in memory (built 2026-10-28, cee1c92, not cleared for use;
-      `docs/P3_RUNBOOK.md` step 1). 2026-10-31: the online refresh still answered 403 (16:52 UTC), and none of the
-      four organiser emails has a reply (Mailsuite listed the fourth as unopened on 2026-10-29).
+      `docs/P3_RUNBOOK.md` step 1). 2026-10-31: the online refresh still answered 403 (16:52 and 18:20 UTC; Cloudflare
+      error code 1010, a browser-signature block), and none of the four organiser emails has a reply (Mailsuite
+      listed the fourth as unopened on 2026-10-29). The predicted organiser answer is no objection to a browser save
+      (0.8); the route waits for the captain's yes, then a dated notice and about 72 hours (runbook step 1).
 - [ ] Heads-up from step 4.1 for the embryo build (no rule acts on these by itself): `docs/PLAN.md` asks to check E7.5
       against E8.0 by proper vs improper shape alignment before building the embryo board, and that check came out
       undecided (relative margin -0.019 +/- 0.023 over 5 seeds), so proper rotations stay. E8.5 against E8.75 reads

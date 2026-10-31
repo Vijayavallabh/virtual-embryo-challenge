@@ -23,8 +23,10 @@ the work.
   E7.5, the two Gata4 knockout replicates) are opt-in in the final phase; the team captain unlocked them on the Data
   page on 2026-10-28. Rules s.10 makes them an exception to the held-out-data restrictions solely for preparing P3
   predictions; the team reads that as including their use as model inputs at prediction time (for example E10.5 as
-  the starting stage for E12.5) and has asked the organisers to confirm. External data from those stages and genotypes
-  stays out, and no test inputs are distributed.
+  the starting stage for E12.5) and asked the organisers to confirm (21 and 28 October), with no reply by 2026-10-31.
+  The team proceeds on that reading and on the predicted organiser answer (`docs/ORGANIZER_QUESTIONS.md`, working
+  answers), not on a ruling; the Task 3 use of the Gata4 replicates rests on the same reading. External data from
+  those stages and genotypes stays out, and no test inputs are distributed.
 - **No board anchors and no leaderboard scores set any number.** Test-board anchors are stripped in memory when the
   board specs are refreshed (`vec.boards.update_boards`; `update_boards_from_file` does the same for a board index
   saved in the browser, a route not cleared for use); the public board file is never opened.

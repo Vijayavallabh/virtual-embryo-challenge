@@ -44,7 +44,11 @@ get around it; the test-board intake (section 5) waits for them. So does every u
 against `boards/index.json` first (the board guard in `vec.submit.prepare`), so until the test boards are there it
 refuses every upload to them, format checks included. This is the main blocker for submitting; the pre-registered
 runs of step 4 do not need it. The saved-file intake below was built on 2026-10-28 at the user's request (cee1c92,
-after an independent review) and is not cleared for use.
+after an independent review) and is not cleared for use. 2026-10-31: the 403 is Cloudflare error code 1010, a
+browser-signature block (the message now names it), and the predicted organiser answer is no objection
+(`docs/ORGANIZER_QUESTIONS.md`, working answers). The route still needs the captain's explicit yes; then a dated notice
+on the fourth-email thread (a draft waits in his Gmail) and about 72 hours without objection before the save. After
+the intake, run `uv run python experiments/intake/d1_check.py` (D1 and A3; it never prints test-board counts).
 
 ```bash
 uv run vec boards update      # same as vec.boards.update_boards(); test anchors stripped in memory, never printed
@@ -211,8 +215,11 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
   on the DGX while a build runs there (the stamp then is not clean; rebuild after the sync).
   - T3: `uv run python experiments/t3_decomp/build_submission.py build <gata4_decisions.json> --branch <b>
     --submission s1|s2 --wt data/raw/T2/E8.75.h5ad --run-dir runs/t3_decomp/gata4_<STAMP> --board <T3 board key>
-    --n-cells <the board's max_cells> --out runs/t3_build/<b>_<s>.h5ad`, for `allowed` and `barred` until the
-    organisers answer follow-up question 3 (then only the branch their answer selects). It re-decides nothing and
+    --n-cells <the board's max_cells> --out runs/t3_build/<b>_<s>.h5ad`, for `allowed` and `barred`. 2026-10-31: the
+    allowed branch is selected on the predicted answer to follow-up question 3, at the captain's instruction
+    (`docs/ORGANIZER_QUESTIONS.md`); the barred branch stays built as the switch if a ruling arrives before the T3
+    uploads. Pending the captain (red team): s2 = the refused branch's s1 (wild-type cells, the central composition at
+    the Mab21l2 magnitude, no Gata4-derived number), uploaded first, with allowed s1 last. It re-decides nothing and
     refuses a decision file whose script or rules hash differs from the files on disk.
   - T2: `vec.t2_build`, run from the repo root (the paths are relative). Count by `n_cells_from_decision(board,
     pool.n_obs, "experiments/density/results/release/count_decision.json")` (step 4.5; null keeps max_cells; a
@@ -239,6 +246,11 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
   can be made or a final entry nominated. Nothing after this counts, in either track." Rules s.11 still says a board
   ranks a team by its best; what counts when no entry is marked is not stated (asked in the fourth organiser email,
   2026-10-28). Mark the final entries after the last official upload and before 2026-12-02 (the user is the captain).
+  Working rule (2026-10-31, red team): mark each board as soon as its last official upload is scored; of the entries
+  every ruling received by then allows, mark the one with the higher published score (a tie, or s2 unscored by
+  30 Nov IST: s1); if marks are per bundle, the bundle with the higher overall standing. Look for the Final column
+  after every official upload, ask on the email thread and in #virtual-embryo-challenge if it has not appeared by
+  28 Nov IST, and recheck all four boards on 1 Dec IST.
 
 ## Never today
 

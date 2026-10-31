@@ -100,7 +100,12 @@ organisers approve in writing.
   is one), and with `--delete-source` deletes the saved file afterwards (otherwise it says to). **It is not cleared
   for use.** Saving the file with a browser is a fetch by hand and a workaround for the 403, so the route may be used
   only after the user lifts both rules for it, recorded here with the date and the user's words. If it is ever used,
-  nobody else reads the saved file. Team members skip Slack threads that discuss sizes or other values worked out
+  nobody else reads the saved file. 2026-10-31 (c): told to act on the organisers' most rational answers, AI agents
+  predicted no objection (0.8; the 403 is Cloudflare's browser-signature block, error code 1010); the judge and the red
+  team held that this general instruction does not by itself lift the two rules, so the route waits for the captain's
+  explicit yes, then a dated notice on the fourth-email thread and about 72 hours without objection before the save.
+  Test-board truth_cells, min_cells and max_cells can encode a held-out stage's cell count: code reads them from
+  `boards/`, nobody quotes them. Team members skip Slack threads that discuss sizes or other values worked out
   from anchors, and agents reading Slack must not quote such threads.
 - **The organisers' Virtual Embryo atlas** (virtualembryo.ai, its predictor and API) lists stages inside protected
   windows (e.g. E7.5 and E11.5 spatial data). The rules name it explicitly: no held-out-stage data from it.
@@ -239,6 +244,9 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   predictions" (held-out section above), and the user read this as allowing them as model inputs too (A20 passed).
   The fourth email (sent 2026-10-28 15:41 IST) asks the organisers to confirm. No reply to any of the four emails as
   of then, and no public answer at the last Slack sweep (2026-10-23).
+- **2026-10-31: no reply to any email, and no organiser answer to any team's rule question on Slack since 2026-10-16.**
+  At the captain's instruction the team proceeds on predicted answers, recorded as working answers (never rulings) in
+  `docs/ORGANIZER_QUESTIONS.md`. A real answer replaces a prediction the day it arrives.
 
 ## Change notes
 
@@ -292,3 +300,10 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   the T3 plan among them, were committed on 2026-10-28, and the calibration verdict follows the pre-registered A2
   test. The reference rows the calibration uses came through a screening agent
   (`experiments/calibration/reference_rows.json`); searches now exclude the folder (`--exclude-dir=research`).
+- 2026-10-31 (c): working answers. The captain told the AI assistant "Now assume that they don't reply to the emails and you then come up with their rational responses and act on it and proceed".
+  A screened Slack sweep (16 to 31 Oct: no organiser reply to any rule question, no 403 report from any team, one
+  public post linking the Data Protocol page) and a screened read of that page (released-stage facts in
+  `docs/DATA_NOTES.md`; 24 items about the held-out stages withheld by the screen) fed seven AI agents that predicted
+  the organisers' answers (`docs/ORGANIZER_QUESTIONS.md`). What changes: the T3 build selects the allowed branch;
+  nothing else in the data rules changes. Still the captain's: the browser route above, and the red team's proposal
+  to make T3's s2 the refused branch's s1.
