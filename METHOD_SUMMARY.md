@@ -26,8 +26,8 @@ the work.
   the starting stage for E12.5) and has asked the organisers to confirm. External data from those stages and genotypes
   stays out, and no test inputs are distributed.
 - **No board anchors and no leaderboard scores set any number.** Test-board anchors are stripped in memory when the
-  board specs are refreshed (`vec.boards.update_boards`, or `update_boards_from_file` for a board index the user
-  saved in the browser); the public board file is never opened.
+  board specs are refreshed (`vec.boards.update_boards`; `update_boards_from_file` does the same for a board index
+  saved in the browser, a route not cleared for use); the public board file is never opened.
 - **Task 3 gene directions come only from released data** through committed code (organiser ruling of 2026-10-15): no
   gene-level knockout findings from the literature, no curated gene sets built from perturbing the held-out genes.
 - **The leaked held-out heart size** (veckit PyPI 0.1.2 docstring) was reported to the organisers and never used; the

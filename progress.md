@@ -2,12 +2,14 @@
 
 ## Current State
 
-**Last Updated:** 2026-10-28
+**Last Updated:** 2026-10-31
 **Active Feature:** feat-004 - Final-phase intake (`docs/P3_RUNBOOK.md`). Steps 2 (data) and 3 (labels) done on
 2026-10-28 (feat-003 done), and step 4 (the pre-registered runs) ran the same day at the user's go-ahead, each output
-committed before it was read. Step 1 is blocked by the 403 on the panel files; its saved-file fallback
-(`vec boards update --from-file`, cee1c92) is built and waits for the user's call. The release-day rules are signed
-off and in code (`docs/RELEASE_RULES_SUMMARY.md`).
+committed before it was read. Step 1 is blocked by the 403 on the panel files (still so on 2026-10-31; no reply to
+the fourth email). Its saved-file intake (`vec boards update --from-file`, cee1c92) is built but not cleared for use:
+saving the file in a browser would work around the 403, which only the user can allow (a side agent's heads-up,
+2026-10-31; `docs/DATA_POLICY.md`). The release-day rules are signed off and in code
+(`docs/RELEASE_RULES_SUMMARY.md`).
 
 ## Status
 
@@ -140,6 +142,7 @@ off and in code (`docs/RELEASE_RULES_SUMMARY.md`).
       specs, field names dropped from test boards reported for D1 (names only). An independent review by three AI
       agents found ways a mistaken file in the saved folder could carry anchors into `boards/`; all refused now, each
       with a test that fails when its fix is undone (the online refresh had the composition gap too). 402 tests.
+      Not cleared for use (2026-10-31): the browser save would itself work around the 403 (`docs/DATA_POLICY.md`).
 
 ### What's Next
 
@@ -149,7 +152,7 @@ off and in code (`docs/RELEASE_RULES_SUMMARY.md`).
 2. 2026-10-27, once `vec submit status` shows the final phase: follow `docs/P3_RUNBOOK.md` (board intake with anchors
    stripped, the quota shape, data, label map, pre-registered runs, commit each output), then emulator calibration
    (feat-005) and test-board intake (D1).
-   (2026-10-28: step 0 passed on 2026-10-27, step 1 is blocked by the 403 (fallback built, the user's call), and
+   (2026-10-28: step 0 passed on 2026-10-27, step 1 is blocked by the 403 (fallback built, not cleared for use), and
    steps 2, 3 and 4 are done (What's Done). Next is the runbook's section 5: emulator calibration against the
    validation reference rows (feat-005), then candidate files on the DGX; the test-board intake (D1) and every
    server format check wait for the test boards' specs.)
@@ -180,10 +183,11 @@ off and in code (`docs/RELEASE_RULES_SUMMARY.md`).
       client (not worked around), `boards/` holds only the P2 specs, and `vec submit` checks the board against
       `boards/index.json` first, so it refuses every upload to the four test boards, format checks included, until
       the specs are in (`docs/P3_RUNBOOK.md`, step 1). Step 4 does not need them; candidate files need the test
-      boards' cell limits. Asked in the fourth email (sent 2026-10-28); fallbacks are the user's call: wait for the
-      reply, a public question in #virtual-embryo-challenge, or the user saving the file in the browser ("Save link
-      as", never opening it) for the intake that strips the anchors in memory (built 2026-10-28, cee1c92;
-      `docs/P3_RUNBOOK.md` step 1). The AI assistant suggests giving the organisers until about 2026-10-31.
+      boards' cell limits. Asked in the fourth email (sent 2026-10-28). The options are the user's call: wait for the
+      reply, ask in #virtual-embryo-challenge, or lift the no-workaround rule so the user can save the file in the
+      browser for the intake that strips the anchors in memory (built 2026-10-28, cee1c92, not cleared for use;
+      `docs/P3_RUNBOOK.md` step 1). 2026-10-31: the online refresh still answered 403 (16:52 UTC), and none of the
+      four organiser emails has a reply (Mailsuite listed the fourth as unopened on 2026-10-29).
 - [ ] Heads-up from step 4.1 for the embryo build (no rule acts on these by itself): `docs/PLAN.md` asks to check E7.5
       against E8.0 by proper vs improper shape alignment before building the embryo board, and that check came out
       undecided (relative margin -0.019 +/- 0.023 over 5 seeds), so proper rotations stay. E8.5 against E8.75 reads

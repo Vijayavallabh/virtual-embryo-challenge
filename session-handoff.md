@@ -15,8 +15,9 @@
   submissions now permanently disabled for the team); all six are on the DGX, and runbook steps 2 (data) and 3
   (labels) are done. The user read the final-phase Rules s.10 and Data page as allowing the validation answers as
   model inputs (A20 passed; confirmation asked in the fourth organiser email, sent 2026-10-28). The board-spec file
-  still answers 403 (step 1 blocked; `progress.md`, Blockers); at the user's request its saved-file fallback is built
-  (`vec boards update --from-file`, cee1c92), and when to use it is the user's call. Step 4, the pre-registered runs,
+  still answers 403 (step 1 blocked; `progress.md`, Blockers; still so on 2026-10-31). At the user's request its
+  saved-file intake is built (`vec boards update --from-file`, cee1c92) but not cleared for use: saving the file in a
+  browser would work around the 403, which only the user can allow. Step 4, the pre-registered runs,
   ran on 2026-10-28 at the user's go-ahead, each output committed before it was read.
 - Branch / commit: `main` on GitHub (private), mirrored to `PrakashDGX_H2:~/v/virtual-embryo-challenge`.
 
@@ -38,7 +39,8 @@
       "Team captain, Mithril" (ed3b1bc).
 - [x] Saved-file board intake (cee1c92), at the user's request: `vec boards update --from-file` strips test anchors in
       memory like the online refresh; reviewed by three independent AI agents, every finding fixed with a test that
-      fails when the fix is undone; 402 tests pass. Runbook step 1 gives the user's steps.
+      fails when the fix is undone; 402 tests pass. Runbook step 1 gives the user's steps. Not cleared for use
+      (2026-10-31): the browser save is itself a workaround for the 403, so it waits for the user to lift that rule.
 - [x] Runbook step 4, in order on the DGX at 725d19c (`progress.md`, What's Done, has the numbers): 4.1 size (both
       JSONs valid; f5be247), 4.2 Gata4 (replicates independent; decision file, aggregates and plan: 95d8198, 7e7c207,
       3ff6bf0, 05ead40), 4.3 T1 readout (build M2; 3c5cc66), 4.4 harmonisation (0586bf6), 4.5 density (max_cells
@@ -97,5 +99,6 @@
 
 - Continue `docs/P3_RUNBOOK.md` at section 5: emulator calibration against the validation reference rows (feat-005;
   step 4.6 reproduced the bake protocol), then candidate files on the DGX. Test-board specs (step 1) wait for the
-  organisers or the user's saved file (`vec boards update --from-file`); until then no server format check can reach
-  a test board. On the DGX, cap the BLAS threads (`docs/COMPUTE.md`; `progress.md`, Notes for Next Session).
+  organisers, or for the user to lift the no-workaround rule and save the file for `vec boards update --from-file`;
+  until then no server format check can reach a test board. On the DGX, cap the BLAS threads (`docs/COMPUTE.md`;
+  `progress.md`, Notes for Next Session).

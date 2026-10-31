@@ -91,15 +91,17 @@ organisers approve in writing.
   `/challenge/boards` endpoint) may carry test-board anchors at any time now (the final phase opened on 2026-10-27;
   since then the file answers HTTP 403 to `vec boards update`). Nobody opens them in a browser or fetches them by
   hand or by script; boards are refreshed only through `vec boards update`, which strips non-validation anchors in
-  memory. One more route was added on 2026-10-28 at the user's request, for while the scripted refresh gets HTTP
-  403: the user may save `panels/index.json` from the site with the browser's "Save link as", without opening it,
-  into a folder outside the repository, and run `vec boards update --from-file PATH`
-  (`vec.boards.update_boards_from_file`). It strips the anchors in memory the same way, refuses a file inside any git
-  work tree before reading it (on this machine the repository's parent folder is one), and with `--delete-source`
-  deletes the saved file afterwards (otherwise it says to).
-  Nobody else reads the saved file, and whether and when to use this route is the user's decision. Team members skip
-  Slack threads that discuss sizes or other values worked out from anchors, and agents reading Slack must not quote
-  such threads.
+  memory. Its 403 is not worked around (the user's rule: "no workarounds for a 403 (no other user agents, no other
+  endpoints)"), and the fourth organiser email (2026-10-28) told the organisers we had not tried to get around it and
+  asked whether the block is intended. At the user's request ("build the intake", 2026-10-28) a second intake exists
+  for a copy the user would save with the browser's "Save link as", unopened, outside the repository:
+  `vec boards update --from-file PATH` (`vec.boards.update_boards_from_file`). It strips the anchors in memory the
+  same way, refuses a file inside any git work tree before reading it (on this machine the repository's parent folder
+  is one), and with `--delete-source` deletes the saved file afterwards (otherwise it says to). **It is not cleared
+  for use.** Saving the file with a browser is a fetch by hand and a workaround for the 403, so the route may be used
+  only after the user lifts both rules for it, recorded here with the date and the user's words. If it is ever used,
+  nobody else reads the saved file. Team members skip Slack threads that discuss sizes or other values worked out
+  from anchors, and agents reading Slack must not quote such threads.
 - **The organisers' Virtual Embryo atlas** (virtualembryo.ai, its predictor and API) lists stages inside protected
   windows (e.g. E7.5 and E11.5 spatial data). The rules name it explicitly: no held-out-stage data from it.
 - **Public atlases spanning a window** (MOCA E9.5-E13.5, MOSTA E10.5-E13.5, the JAX time-lapse between E9.5 and E13.5)
@@ -275,3 +277,8 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   AI agents found ways a mistaken file in the saved folder could carry anchors into `boards/` (a copy of the index
   saved as the composition or as a gene list, a kept field holding nested values); both routes now refuse those,
   each with a test, and the online refresh had the composition gap too.
+- 2026-10-31: a side agent pointed out that saving the board file with a browser breaks two standing rules (nobody
+  fetches it by hand; the user's "no workarounds for a 403"). The user had asked for the intake to be built, which
+  is not the same as lifting those rules, and the fourth organiser email says we have not tried to get around the
+  block. The board-file entry now says the saved-file route is not cleared for use until the user lifts both rules.
+  The same day the online refresh still answered 403 (16:52 UTC), and none of the four organiser emails had a reply.

@@ -36,22 +36,26 @@ nothing unresolved).
 
 ## 1. Board specs (anchors stripped in memory)
 
-Status (2026-10-28): blocked. Since 2026-10-27 `vec boards update` fails: `panels/index.json` answers HTTP 403
-(Cloudflare) to our scripted client. It is not worked around (no other user agents or endpoints), so `boards/` still
-holds the P2 specs. The fourth organiser email (sent 2026-10-28) asks how to get the test boards' specs; the test-board
-intake (section 5) waits for them. So does every upload: `vec submit` checks the board against `boards/index.json`
-first (the board guard in `vec.submit.prepare`), so until the test boards are there it refuses every upload to them,
-format checks included. This is the main blocker for submitting; the pre-registered runs of step 4 do not need it.
-The fallback below was built on 2026-10-28 at the user's request (cee1c92, after an independent review); using it is
-the user's call.
+Status (2026-10-31): blocked. Since 2026-10-27 `vec boards update` fails: `panels/index.json` answers HTTP 403
+(Cloudflare) to our scripted client (still so on 2026-10-31 at 16:52 UTC). It is not worked around (no other user
+agents or endpoints), so `boards/` still holds the P2 specs. The fourth organiser email (sent 2026-10-28; no reply by
+2026-10-31) asks whether the block is intended and how to get the test boards' specs, and says we have not tried to
+get around it; the test-board intake (section 5) waits for them. So does every upload: `vec submit` checks the board
+against `boards/index.json` first (the board guard in `vec.submit.prepare`), so until the test boards are there it
+refuses every upload to them, format checks included. This is the main blocker for submitting; the pre-registered
+runs of step 4 do not need it. The saved-file intake below was built on 2026-10-28 at the user's request (cee1c92,
+after an independent review) and is not cleared for use.
 
 ```bash
 uv run vec boards update      # same as vec.boards.update_boards(); test anchors stripped in memory, never printed
 git add boards && git commit -m "Board specs for the final phase (test anchors stripped at intake)"
 ```
 
-Fallback while the 403 lasts (built on 2026-10-28 at the user's request; when to use it is the user's call, and the AI
-assistant suggests giving the organisers until about 2026-10-31 to answer the fourth email):
+Fallback, **not cleared for use**. Saving the board index with a browser is a fetch by hand and a workaround for the
+403, which `docs/DATA_POLICY.md` and the user's rule forbid, and the fourth email told the organisers we had not tried
+to get around the block. These steps apply only after the user has lifted those rules for this route (recorded in
+`docs/DATA_POLICY.md` with the date), ideally once the organisers say whether the block is intended; the AI assistant
+suggests telling the organisers in the same thread if the route is used. The steps, for then:
 
 1. **(user)** On the site's Data page, right-click the link to the board index (`panels/index.json`) and choose "Save
    link as" into a new, empty folder outside every git work tree: `~/vec-panels/` on this machine (`~` is

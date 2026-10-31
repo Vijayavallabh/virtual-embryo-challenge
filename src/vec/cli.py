@@ -58,9 +58,10 @@ def boards_main(ctx: typer.Context):
 @boards_app.command("update")
 def boards_update(
     from_file: Path | None = typer.Option(
-        None, "--from-file", help="offline intake of the board index the user saved from the site with the browser "
-        "(Save link as, never opened), kept outside every git work tree; gene lists come from the same folder or "
-        "from boards/ files with the published sha256"),
+        None, "--from-file", help="offline intake of a board index saved from the site with the browser (Save "
+        "link as, never opened), kept outside every git work tree; not cleared for use until the user decides "
+        "(docs/DATA_POLICY.md); gene lists come from the same folder or from boards/ files with the published "
+        "sha256"),
     delete_source: bool = typer.Option(False, "--delete-source", help="with --from-file: delete the saved index "
                                        "(and a saved t1_composition.json) after a successful intake"),
     boards_dir: Path | None = typer.Option(None, "--boards-dir", hidden=True),
@@ -87,8 +88,9 @@ def boards_update(
     except HTTPError as e:
         if from_file is not None or e.code != 403:
             raise
-        console.print("the panel files answered HTTP 403; nothing was written. Not worked around: if the user has "
-                      "saved the board index with the browser, use --from-file (docs/P3_RUNBOOK.md step 1).")
+        console.print("the panel files answered HTTP 403; nothing was written. Not worked around: a copy saved in "
+                      "the browser for --from-file would be a workaround too and needs the user's decision first "
+                      "(docs/DATA_POLICY.md).")
         raise typer.Exit(1) from None
     except Exception as e:  # noqa: BLE001 (offline intake only: an error message could quote the saved file)
         if from_file is None:
