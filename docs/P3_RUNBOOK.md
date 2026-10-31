@@ -47,8 +47,8 @@ runs of step 4 do not need it. The saved-file intake below was built on 2026-10-
 after an independent review). 2026-10-31: the 403 is Cloudflare error code 1010, a browser-signature block (the
 message now names it), and the predicted organiser answer is no objection (`docs/ORGANIZER_QUESTIONS.md`, working
 answers). 2026-11-01: the captain cleared the route ("yes for all"), with these conditions: he sends the dated notice
-drafted in his Gmail first (a reply on the fourth-email thread); the save happens not before 2026-11-04 (UTC), and not
-if an objection or a fix arrives first. After the intake, run `uv run python experiments/intake/d1_check.py` (D1 and
+drafted in his Gmail first (a reply on the fourth-email thread; he sent it on 2026-10-31 at 18:59 UTC); the save
+happens not before 2026-11-04 (UTC), and not if an objection or a fix arrives first. After the intake, run `uv run python experiments/intake/d1_check.py` (D1 and
 A3; it never prints test-board counts).
 
 ```bash

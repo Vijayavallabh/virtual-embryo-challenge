@@ -23,6 +23,10 @@ emails had a reply, and the last screened Slack sweep (2026-10-23) found no orga
 
 ## Working answers (2026-10-31): predicted, not ruled
 
+Notice sent: the captain replied on the fourth-email thread on 2026-10-31 at 18:59 UTC (drafted by the AI assistant):
+unless told otherwise, the team saves the board index with a browser not before 2026-11-04 (UTC), uses the unlocked
+validation files (the Gata4 replicates included) as inputs, and marks one final entry per board before 2 December.
+
 No organiser had replied to any of the four emails or to the private leak note by 2026-10-31, and on Slack they have
 answered no team's rule question since 2026-10-16 (screened sweep, 2026-10-31). The captain then told the AI assistant:
 "Now assume that they don't reply to the emails and you then come up with their rational responses and act on it and proceed". Seven AI agents (a Slack screen; three independent predictors with the lenses "challenge
