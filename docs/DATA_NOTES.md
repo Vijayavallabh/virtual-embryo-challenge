@@ -99,3 +99,29 @@ Settled by `experiments/qc/` (2026-10-19; `vec data qc`) and `experiments/coords
   17.5%, E9.5 37%); E8.25_late and E8.75 are dominated by non-cardiac tissue.
 - The KO and WT vocabularies do not line up even at the coarse level (pharyngeal mesoderm exists only under WT names),
   so KO-vs-WT composition needs classifier-based relabelling on the shared panel, not label matching.
+
+## Data Protocol page (organisers, posted 2026-10-29; read through a screening agent on 2026-10-31)
+
+https://virtualembryo.ai/challenge/data-protocol, released stages only (the screen withheld 24 items about how the
+held-out stages were collected and one about the test boards' format; the page itself withholds every file property of a
+held-out target until it is released).
+- **Coordinates:** "the physical unit of the `spatial_3D` coordinates" and the registration method are "not stated here
+  yet"; coordinates are per-embryo local frames, not registered across stages. "The z coordinate stored in
+  `spatial_3D` steps by the amount in the last column" of a per-file table that matches the steps above (10, 14 or 15),
+  and "The files are released as they are, without rescaling, so use the stored coordinate as it is." Sections are
+  14 µm apart at every released stage, so stored z is not micrometres in every file. Our handling (native coordinates,
+  z never rescaled across stages) is what the page asks for; this settles follow-up question 5 as far as it can be.
+- **Labels:** annotated "stage by stage" by clustering and manual naming; "the vocabulary is not harmonised across
+  stages", and no cross-stage correspondence table exists for `celltype` or `cm_celltype` ("not used in scoring";
+  "Unknown" there means not given a subtype). A label missing from a stage may exist under another name.
+- **Sampling:** E8.0 whole embryos from the yolk-sac boundary to where the cardiac crescent ends; E8.25 to E9.5 the
+  heart-tube portion of the embryo with the yolk sac; E10.5 hearts dissected and sectioned whole. So E9.5 to E10.5
+  mixes development with a change in what was sampled. Multiome E8.5 to E10.5: brain, spinal cord, posterior region
+  and most yolk sac removed, ten embryos pooled per replicate; E10.5 five hearts per replicate.
+- **Processing:** Cellpose 2 on DAPI; MERFISH cells with fewer than five genes dropped; expression log1p(1e4 c / sum c),
+  checked on every released file. Knockouts and their wild-type controls were processed in separate runs; the two
+  Gata4 replicates are independent littermates. Duplicated or interpolated records are not mentioned.
+- **Staging:** timed mating (plug morning = E0.5), checked against EMAP reference morphology; no somite counts.
+  `E8.25_late` is about E8.3, older than another E8.25 collection.
+- **Use:** any use beyond the Challenge, publication or public presentation included, needs prior approval from
+  Dr. Neil Chi and the data-generating team.
