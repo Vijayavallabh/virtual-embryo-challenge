@@ -181,9 +181,15 @@ def evaluate(
     out: Path = typer.Option(None, help="write full JSON scores here"),
     register: bool = typer.Option(False, help="append a row to results/registry.csv"),
 ):
-    """Score a prediction with the local board emulator (by default the calibrated bake protocol)."""
-    from vec import registry
+    """Score a prediction with the local board emulator (by default the calibrated bake protocol). Validation boards
+    only: no test target exists locally, and a test board's counts are never written out."""
+    from vec import harness, registry
+    from vec.boards import VALIDATION_BOARDS
 
+    if board not in VALIDATION_BOARDS:
+        raise typer.BadParameter(f"{board} is not a validation board; vec eval scores validation boards only")
+    if register and not out:
+        raise typer.BadParameter("--register needs --out, so the row points at the full scores")
     b = get_board(board)
     stages = [Stage.from_anndata(read_stage(p, b.genes), b.genes, need_coords=b.needs_coords)
               for p in (pred, target, ref)]
@@ -201,10 +207,12 @@ def evaluate(
         out.write_text(json.dumps(res, indent=2, default=float))
     if register:
         registry.append([{
-            "utc_time": datetime.now(UTC).isoformat(timespec="seconds"), "commit": _git_commit(), "tree_clean": "",
+            "utc_time": datetime.now(UTC).isoformat(timespec="seconds"), "commit": harness._git("rev-parse", "HEAD"),
+            "tree_clean": harness._git("status", "--porcelain", "--untracked-files=no") == "",
             "source": "vec eval", "run_id": "", "test_board": "", "pseudo_task": "", "scoring_board": board,
-            "candidate": method or pred.stem, "params": json.dumps({"pred": str(pred), "target": str(target),
-                                                                     "ref": str(ref)}),
+            "candidate": method or pred.stem,
+            "params": json.dumps({k: {"path": str(v), "sha256": harness._sha256(v)}
+                                  for k, v in (("pred", pred), ("target", target), ("ref", ref))}),
             "seeds": seeds, "score_mean": f"{res['score_mean']:.3f}", "score_sd": f"{res['score_sd']:.3f}",
             "protocol": protocol, "build": build, "anchors": anchors, "gate": gate, "frac": frac,
             "scores_json": str(out) if out else ""}], path=REGISTRY)

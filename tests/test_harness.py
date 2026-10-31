@@ -1,4 +1,5 @@
-"""vec.harness (feat-008) and vec.registry: pseudo-task rules, boards, paired scoring, decisions, on synthetic data."""
+"""vec.harness (feat-008) and vec.registry: pseudo-task rules, boards, paired scoring, the read guard, decisions, on
+synthetic data. Revised after the 2026-11-01 four-lens review: every safeguard has a test that fails without it."""
 
 from __future__ import annotations
 
@@ -22,6 +23,7 @@ VALIDATION_ROWS = {"T1:val": (24979, 17057), "T2:embryo:val_interp": (11665, 132
                    "T3:gata4": (46396, 24826)}
 
 
+# ------------------------------------------------------------------------------------------------ config and rules
 def test_config_loads_and_every_task_passes_the_rules():
     tasks = load_tasks()
     assert set(tasks) == {"T1:test", "T2:embryo:test_interp", "T2:heart:test_extrap", "T3:bcatenin"}
@@ -29,9 +31,24 @@ def test_config_loads_and_every_task_passes_the_rules():
     for test_board, ts in tasks.items():
         assert ts and all(t.test_board == test_board for t in ts)
         for t in ts:
-            assert t.panel_board in boards and t.target not in t.inputs.values()
+            assert check_task(t) is t and t.panel_board in boards and t.target not in t.inputs.values()
     keys = [t.key for ts in tasks.values() for t in ts]
     assert len(keys) == len(set(keys))
+    t3 = {t.key: t for t in tasks["T3:bcatenin"]}
+    assert t3["T3/Gata4rep1->rep2"].replicate and not t3["T3/Gata4rep1->rep2"].counted
+
+
+def test_load_tasks_refuses_a_leaky_or_duplicated_config(tmp_path):
+    entry = ("  - {key: k, task: T2, setting: heart, kind: extrap, target: T2/E10.5.h5ad, reference: T2/E9.5.h5ad, "
+             "inputs: {ref: T2/E9.5.h5ad, peek: %s}, twin_board: 'T2:heart:val_extrap'}\n")
+    leaky = tmp_path / "leaky.yaml"
+    leaky.write_text("T2:heart:test_extrap:\n" + entry % "T2/E10.5.h5ad")
+    with pytest.raises(LeakageError):
+        load_tasks(leaky)
+    dup = tmp_path / "dup.yaml"
+    dup.write_text("T2:heart:test_extrap:\n" + entry % "T2/E8.75.h5ad" + entry % "T2/E8.5.h5ad")
+    with pytest.raises(ValueError, match="duplicate"):
+        load_tasks(dup)
 
 
 def _task(**over):
@@ -41,32 +58,60 @@ def _task(**over):
     return replace(base, **over)
 
 
-def test_leakage_rules_refuse_what_could_reveal_the_target():
-    check_task(_task())
-    with pytest.raises(LeakageError, match="target is an input"):
-        check_task(_task(inputs={"ref": "T2/E9.5.h5ad", "peek": "T2/E10.5.h5ad"}))
-    with pytest.raises(LeakageError, match="not earlier"):
-        check_task(_task(target="T2/E9.5.h5ad", reference="T2/E8.75.h5ad",
-                         inputs={"ref": "T2/E8.75.h5ad", "later": "T2/E10.5.h5ad"}))
-    with pytest.raises(LeakageError, match="forbidden"):
-        check_task(_task(forbidden=("T2/E8.75.h5ad",)))
-    interp = dict(task="T2", setting="embryo", kind="interp", target="T2/E7.5.h5ad", reference="T2/E7.25.h5ad",
-                  twin_board="T2:embryo:val_interp")
-    check_task(_task(**interp, inputs={"before": "T2/E7.25.h5ad", "after": "T2/E8.0.h5ad"}))
-    with pytest.raises(LeakageError, match="each side"):
-        check_task(_task(**interp, inputs={"before": "T2/E7.25.h5ad", "earlier": "T2/E6.75.h5ad"}))
-    with pytest.raises(ValueError, match="earlier bracket"):
-        check_task(_task(**interp | {"reference": "T2/E6.75.h5ad"},
-                         inputs={"before": "T2/E7.25.h5ad", "after": "T2/E8.0.h5ad", "earlier": "T2/E6.75.h5ad"}))
-    with pytest.raises(ValueError, match="unknown files"):
-        check_task(_task(inputs={"ref": "T2/E9.5.h5ad", "x": "T2/E12.5.h5ad"}))
-    with pytest.raises(ValueError, match="reference must be one of the inputs"):
-        check_task(_task(inputs={"start": "T2/E8.75.h5ad"}))
-    with pytest.raises(ValueError, match="validation board"):
-        check_task(_task(twin_board="T2:heart:test_extrap"))
-    with pytest.raises(ValueError, match="knockout"):
-        check_task(_task(task="T3", setting=None, kind="ko", target="T2/E9.5.h5ad", reference="T2/E8.75.h5ad",
-                         inputs={"wt": "T2/E8.75.h5ad"}, twin_board="T3:gata4"))
+INTERP = dict(task="T2", setting="embryo", kind="interp", target="T2/E7.5.h5ad", reference="T2/E7.25.h5ad",
+              twin_board="T2:embryo:val_interp")
+KO = dict(task="T3", setting=None, kind="ko", target="T3/E8.75_gata4_ko_2.h5ad", reference="T2/E8.75.h5ad",
+          twin_board="T3:gata4")
+
+
+@pytest.mark.parametrize("over, err, match", [
+    (dict(inputs={"ref": "T2/E9.5.h5ad", "peek": "T2/E10.5.h5ad"}), LeakageError, "target is an input"),
+    (dict(target="T2/E9.5.h5ad", reference="T2/E8.75.h5ad", inputs={"ref": "T2/E8.75.h5ad", "x": "T2/E10.5.h5ad"}),
+     LeakageError, "later than the reference"),
+    # another modality or genotype on the target's own day is not earlier than the target
+    (dict(target="T2/E9.5.h5ad", reference="T2/E8.75.h5ad",
+          inputs={"ref": "T2/E8.75.h5ad", "ko": "T3/E9.5_mab21l2_ko.h5ad"}), LeakageError, "later than the reference"),
+    # a skipped stage cannot come back through another file: the reference is the latest stage allowed
+    (dict(reference="T2/E8.75.h5ad", inputs={"ref": "T2/E8.75.h5ad", "t1": "T1/E9.5_RNA.h5ad"}), LeakageError,
+     "later than the reference"),
+    (dict(forbidden=("T2/E8.75.h5ad",)), LeakageError, "forbidden"),
+    (dict(inputs={"ref": "T2/E9.5.h5ad", "x": "T2/E12.5.h5ad"}), ValueError, "unknown files"),
+    (dict(inputs={"start": "T2/E8.75.h5ad"}), ValueError, "reference must be one of the inputs"),
+    (dict(twin_board="T2:heart:test_extrap"), ValueError, "validation board"),
+    (dict(validation_board="T2:heart:test_extrap", twin_board=None), ValueError, "validation board"),
+    (dict(kind="extrapolation"), ValueError, "kind one of"),
+    (dict(task="T4"), ValueError, "task must be one of"),
+    (dict(setting=None), ValueError, "setting"),
+    (dict(**INTERP, inputs={"before": "T2/E7.25.h5ad", "earlier": "T2/E6.75.h5ad"}), ValueError, "'after'"),
+    (dict(**INTERP, inputs={"before": "T2/E7.25.h5ad", "after": "T2/E8.0.h5ad", "x": "T3/E8.75_gata4_ko_1.h5ad"}),
+     None, None),
+    (dict(**INTERP | {"target": "T2/E8.75.h5ad", "reference": "T2/E8.5.h5ad"},
+          inputs={"before": "T2/E8.5.h5ad", "after": "T2/E9.5.h5ad", "ko": "T3/E8.75_gata4_ko_1.h5ad"}),
+     LeakageError, "inside the bracket"),
+    (dict(**INTERP | {"reference": "T2/E6.75.h5ad"},
+          inputs={"before": "T2/E7.25.h5ad", "after": "T2/E8.0.h5ad", "earlier": "T2/E6.75.h5ad"}),
+     ValueError, "'before' \\(the reference\\)"),
+    (dict(**KO, inputs={"wt": "T2/E8.75.h5ad", "ko_train": "T3/E8.75_gata4_ko_2.h5ad"}), LeakageError,
+     "target is an input"),
+    (dict(**KO, inputs={"wt": "T2/E8.75.h5ad", "ko_train": "T3/E8.75_gata4_ko_1.h5ad"}), LeakageError,
+     "own genotype"),
+    (dict(**KO | {"reference": "T3/E9.5_mab21l2_ko.h5ad"}, inputs={"wt": "T3/E9.5_mab21l2_ko.h5ad"}), ValueError,
+     "wild-type reference"),
+    (dict(replicate=True), ValueError, "replicate fold"),
+    (dict(target_filter={"keep": "chamber"}), ValueError, "target filter"),
+])
+def test_leakage_rules(over, err, match):
+    t = _task(**over)
+    if err is None:
+        assert check_task(t) is t
+    else:
+        with pytest.raises(err, match=match):
+            check_task(t)
+
+
+def test_a_replicate_fold_may_train_on_the_sibling_and_never_counts():
+    t = _task(**KO, inputs={"wt": "T2/E8.75.h5ad", "ko_train": "T3/E8.75_gata4_ko_1.h5ad"}, replicate=True)
+    assert check_task(t) is t and not t.counted
 
 
 def test_count_rule_reproduces_every_validation_board():
@@ -88,6 +133,9 @@ def test_task_board_keeps_validation_specs_and_builds_synthetic_ones():
     syn = harness.task_board(tasks["T2h/<=E8.75->E10.5"], boards, 167864, 24826)
     assert syn.key == "pseudo:T2h/<=E8.75->E10.5" and syn.genes == boards["T2:heart:val_extrap"].genes
     assert (syn.truth_cells, syn.ref_cells, syn.max_cells, syn.min_cells) == (8393, 2483, 25179, 1000)
+    assert syn.anchors == {}
+    mab = harness.task_board(tasks["T3/Gata4->Mab21l2"], boards, 50294, 53742)
+    assert mab.target_ko == "mab21l2" and mab.anchors == {}
     leaky = dict(boards) | {"T3:bcatenin": replace(boards["T3:gata4"], key="T3:bcatenin",
                                                    anchors={"mmd_u": {"floor": 0.1, "ceiling": 0.01}})}
     with pytest.raises(LeakageError):
@@ -100,24 +148,37 @@ def test_candidates_apply_only_where_their_inputs_exist():
     assert pbs.applies(tasks["T2h/<=E9.5->E10.5"]) and pbs.applies(tasks["T1/E9.5->E10.5"])
     assert pbs.applies(tasks["T2e/E7.25+E8.0->E7.5"])  # earlier bracket shifted from E6.75, as the organisers do
     assert not pbs.applies(tasks["T2e/E6.75+E7.5->E7.25"]) and not pbs.applies(tasks["T1/E8.5->E9.5"])
+    assert not pbs.applies(_task(inputs={"ref": "T2/E9.5.h5ad", "earlier": "T2/E8.5.h5ad"}))  # extrap needs start
     assert not pbs.applies(tasks["T3/Gata4rep1->rep2"]) and st.applies(tasks["T3/Gata4->Mab21l2"])
     assert all(CANDIDATES["copy"].applies(t) for t in tasks.values())
 
 
+def test_external_data_is_refused_inside_the_window():
+    t = _task()  # E10.5 from E9.5: window (8.5, 11.5]
+    ok = replace(CANDIDATES["copy"], externals=(("X002", 14.5, 18.5), ("X003", 8.0, 8.5)))
+    harness.check_externals(ok, t)
+    bad = replace(CANDIDATES["copy"], externals=(("X009", 11.0, 12.0),))
+    with pytest.raises(LeakageError, match="window"):
+        harness.check_externals(bad, t)
+    interp = _task(**INTERP, inputs={"before": "T2/E7.25.h5ad", "after": "T2/E8.0.h5ad"})
+    with pytest.raises(LeakageError):
+        harness.check_externals(replace(CANDIDATES["copy"], externals=(("Y", 7.5, 7.5),)), interp)
+    harness.check_externals(replace(CANDIDATES["copy"], externals=(("Y", 8.0, 9.0),)), interp)
+
+
 # ------------------------------------------------------------------------------------------------ synthetic scoring
 def _pool(n, rng, means, props, shift=0.0, scale=1.0, stretch=(1.0, 1.0, 1.0)):
-    X, ct, coords = _sim(n, rng, means, props, shift, scale)
-    coords = (coords * np.asarray(stretch, np.float32)).astype(np.float32)
-    a = ad.AnnData(X=X, obs=pd.DataFrame({"celltype": ct}, index=[f"c{i}" for i in range(n)]),
+    centres = np.array([[0, 0, 0], [6, 0, 0], [0, 6, 0]], float) * scale + shift
+    st = simulate_stage(n, means, props, rng, coords_scale=1.5 * scale, coords_shift=centres)
+    a = ad.AnnData(X=st.X, obs=pd.DataFrame({"celltype": st.celltype}, index=[f"c{i}" for i in range(n)]),
                    var=pd.DataFrame(index=GENES))
-    a.obsm["spatial_3D"] = coords
+    a.obsm["spatial_3D"] = (st.coords * np.asarray(stretch, np.float32)).astype(np.float32)
     return a
 
 
-def _sim(n, rng, means, props, shift, scale):
-    centres = np.array([[0, 0, 0], [6, 0, 0], [0, 6, 0]], float) * scale + shift
-    st = simulate_stage(n, means, props, rng, coords_scale=1.5 * scale, coords_shift=centres)
-    return st.X, st.celltype, st.coords
+def _stage(a):
+    return Stage(X=np.asarray(a.X, np.float32), coords=np.asarray(a.obsm["spatial_3D"], np.float32),
+                 celltype=np.asarray(a.obs["celltype"]))
 
 
 @pytest.fixture(scope="module")
@@ -127,84 +188,248 @@ def synthetic_t2():
     later = base.copy()
     later[:, :6] *= 3.0
     start = _pool(3000, rng, base, [0.5, 0.3, 0.2])
-    ref = _pool(4000, rng, base * 1.2, [0.4, 0.35, 0.25], scale=1.1)
+    ref = _pool(12000, rng, base * 1.2, [0.4, 0.35, 0.25], scale=1.1)  # > 10,000 rows, like the real pools
     target = _pool(6000, rng, later, [0.3, 0.4, 0.3], scale=1.3, stretch=(1.0, 1.0, 3.0))
     board = Board(key="pseudo:synthetic", task="T2", genes=list(GENES), needs_coords=True, setting="heart",
-                  min_cells=100, max_cells=900, truth_cells=300, ref_cells=400)
-    task = PseudoTask(key="syn", test_board="T2:heart:test_extrap", task="T2", setting="heart", kind="extrap",
-                      target="T2/E10.5.h5ad", reference="T2/E9.5.h5ad",
-                      inputs={"ref": "T2/E9.5.h5ad", "start": "T2/E8.75.h5ad"}, twin_board="T2:heart:val_extrap")
-
-    def st(a):
-        return Stage(X=np.asarray(a.X, np.float32), coords=np.asarray(a.obsm["spatial_3D"], np.float32),
-                     celltype=np.asarray(a.obs["celltype"]))
-
-    return task, board, st(target), st(ref), {"ref": ref, "start": start}
+                  min_cells=100, max_cells=3600, truth_cells=300, ref_cells=1200)
+    task = _task(key="syn")
+    return task, board, _stage(target), _stage(ref), {"ref": ref, "start": start}
 
 
-def test_an_anchor_map_scores_exactly_like_computed_anchors(synthetic_t2):
+def test_an_anchor_map_scores_exactly_like_computed_anchors_and_must_be_complete(synthetic_t2):
     task, board, target, ref, inputs = synthetic_t2
     pred = subsample(target, 0.2, 5)
     a = score_board(board, pred, target, ref, seed=3, anchors="computed", protocol="bake", build="main")
     b = score_board(board, pred, target, ref, seed=3, anchors=a.anchors, protocol="bake", build="main")
     assert a.score == b.score and a.skills == b.skills
+    with pytest.raises(ValueError, match="anchor map"):
+        score_board(board, pred, target, ref, seed=3, anchors={"mmd_u": {"floor": float("nan"), "ceiling": 0.1}},
+                    protocol="bake")
 
 
-def test_paired_scoring_floor_common_draws_and_build_seeds(synthetic_t2):
+def _spy(log):
+    def build(ctx):
+        log.append({"seed": ctx.seed, "roles": set(ctx.inputs), "board_truth": ctx.board.truth_cells,
+                    "view_has_paths": any("/" in str(v) and ".h5ad" in str(v) for v in vars(ctx.task).values())})
+        pool, rows, X, coords = harness.draw_copy(ctx)
+        log[-1]["rows"] = rows
+        pred = harness.finish(ctx, pool, X, coords)
+        log[-1]["pred"] = pred
+        return pred
+    return harness.Candidate("spy", frozenset(harness.TASKS), harness._ANY, build)
+
+
+def test_paired_scoring_on_shared_draws_with_offset_build_seeds(synthetic_t2):
     task, board, target, ref, inputs = synthetic_t2
+    log = []
     twin = replace(CANDIDATES["copy"], name="copy_twin")
-    cands = [CANDIDATES["floor"], CANDIDATES["copy"], twin, CANDIDATES["pseudobulk_shift"]]
-    rows = harness.score_seeds(task, board, target, ref, inputs, cands, seeds=(0, 1, 2))
-    for row in rows:
+    cands = [CANDIDATES["floor"], CANDIDATES["copy"], twin, CANDIDATES["pseudobulk_shift"], _spy(log)]
+    seeds = (0, 1, 2)
+    rows = harness.score_seeds(task, board, target, ref, inputs, cands, seeds=seeds)
+    assert [e["seed"] for e in log] == [harness.BUILD_SEED_OFFSET + s for s in seeds]
+    for row, e in zip(rows, log, strict=True):
+        s = row["seed"]
         assert row["scores"]["floor"] == 50.0
-        assert row["scores"]["copy"] == row["scores"]["copy_twin"]  # same build seed, same draws, same score
+        assert row["scores"]["copy"] == row["scores"]["copy_twin"] == row["scores"]["spy"]  # common random numbers
         assert row["n_cells"]["copy"] == row["n_cells"]["pseudobulk_shift"] == board.max_cells
-        assert row["build_seed"] == harness.BUILD_SEED_OFFSET + row["seed"]
-    # the candidates' rows never reproduce the scorer's reference draw at the same seed
-    ctx = harness.BuildContext(task=task, board=board, inputs=inputs, seed=harness.BUILD_SEED_OFFSET)
-    _, rows0, _, _ = harness.draw_copy(ctx)
-    floor_rows = np.random.default_rng(0).choice(inputs["ref"].n_obs, 400, replace=False)
-    assert len(set(floor_rows) & set(rows0.tolist())) < 0.6 * len(floor_rows)
-    # why the offset exists: numpy's [s, 0] stream (sample_cells' rows) is the scoring stream s itself
-    assert np.array_equal(np.random.default_rng([0, 0]).random(8), np.random.default_rng(0).random(8))
-    for s in harness.SEEDS:
-        b = harness.BUILD_SEED_OFFSET + s
-        assert b not in harness.SEEDS
-        for k in harness.SEEDS:
-            assert not np.array_equal(np.random.default_rng([b, 0]).random(8), np.random.default_rng(k).random(8))
+        # the harness score is the score the calibrated emulator gives this file on its own
+        direct = score_board(board, e["pred"], target, ref, seed=s, anchors="computed", protocol="bake", build="main")
+        assert row["scores"]["spy"] == direct.score
+        # candidates see their inputs only, no truth count, no file paths
+        assert e["roles"] == set(task.inputs) and e["board_truth"] is None and not e["view_has_paths"]
+        # the build rows are not the scorer's reference draw (at the scoring seed they would contain it)
+        floor_rows = np.random.default_rng(s).choice(12000, 1200, replace=False)
+        assert len(set(floor_rows) & set(e["rows"].tolist())) < 0.6 * len(floor_rows)
+        same = harness.draw_copy(harness.BuildContext(task=harness.TaskView.of(task), board=board, inputs=inputs,
+                                                      seed=s))[1]
+        assert set(floor_rows) <= set(same.tolist())
+    assert not {harness.BUILD_SEED_OFFSET + k for k in harness.SEEDS} & set(harness.SEEDS)
 
 
-def test_decide_pairs_only_tasks_where_both_candidates_ran():
-    gains = [1.0, 0.9, 1.2, 0.8, 1.1, 0.7, 1.3, 0.9, 1.0, 0.6]
-    r1 = {"task": {"key": "a"}, "candidates": ["floor", "copy"],
-          "rows": [{"seed": s, "scores": {"floor": 50.0, "copy": 50.0 + g}} for s, g in enumerate(gains)]}
-    r2 = {"task": {"key": "b"}, "candidates": ["floor"], "rows": [{"seed": s, "scores": {"floor": 50.0}}
-                                                                   for s in range(10)]}
-    d = harness.decide([r1, r2], "floor", "copy")
-    assert d["pseudo_tasks"] == ["a"] and d["keep"] and d["need"] == 1
-    assert not harness.decide([r2], "floor", "copy")["keep"]
-
-
-def test_run_task_gives_candidates_only_the_listed_inputs(synthetic_t2, monkeypatch, tmp_path):
+def test_the_floor_check_refuses_a_floor_that_does_not_score_fifty(synthetic_t2, monkeypatch):
     task, board, target, ref, inputs = synthetic_t2
-    loaded_inputs, scored = [], []
-    monkeypatch.setattr(harness, "read_stage", lambda path, genes: scored.append(str(path)) or (
-        ad.AnnData(X=np.asarray(target.X), var=pd.DataFrame(index=GENES), obsm={"spatial_3D": target.coords})
-        if str(path).endswith(task.target) else
-        ad.AnnData(X=np.asarray(ref.X), var=pd.DataFrame(index=GENES), obsm={"spatial_3D": ref.coords})))
+    real = harness.score_board
+
+    def off(board_, pred, *a, **kw):
+        r = real(board_, pred, *a, **kw)
+        return replace(r, score=49.0) if kw.get("anchors") == "computed" else r
+
+    monkeypatch.setattr(harness, "score_board", off)
+    with pytest.raises(ValueError, match="the floor scores"):
+        harness.score_seeds(task, board, target, ref, inputs, [CANDIDATES["copy"]], seeds=(0,))
+
+
+def test_a_floor_working_copy_built_as_a_candidate_scores_fifty(synthetic_t2):
+    task, board, target, ref, inputs = synthetic_t2
+    cand = harness.Candidate("floor_copy", frozenset(harness.TASKS), harness._ANY,
+                             lambda ctx: subsample(ref, 0.1, ctx.seed - harness.BUILD_SEED_OFFSET))
+    rows = harness.score_seeds(task, board, target, ref, inputs, [cand], seeds=(4,))
+    assert rows[0]["scores"]["floor_copy"] == 50.0
+
+
+def test_the_read_guard_refuses_target_derived_files(synthetic_t2, tmp_path):
+    task, board, target, ref, inputs = synthetic_t2
+    (tmp_path / "experiments" / "coords" / "results").mkdir(parents=True)
+    (tmp_path / "experiments" / "coords" / "results" / "size.json").write_text("{}")
+    (tmp_path / "configs").mkdir()
+    (tmp_path / "configs" / "ok.yaml").write_text("a: 1\n")
+    data = tmp_path / "data" / "raw"
+    data.mkdir(parents=True)
+    (data / "T2").mkdir()
+    ad.AnnData(X=np.zeros((2, 2), np.float32)).write_h5ad(data / "T2" / "E10.5.h5ad")
+
+    def reads(path):
+        def build(ctx):
+            if str(path).endswith(".h5ad"):
+                ad.read_h5ad(path)
+            else:
+                open(path).read()
+            return harness._copy(ctx)
+        return harness.Candidate("reader", frozenset(harness.TASKS), harness._ANY, build)
+
+    kw = dict(seeds=(0,), root=tmp_path, data_dir=data)
+    with pytest.raises(PermissionError, match="refused"):
+        harness.score_seeds(task, board, target, ref, inputs,
+                            [reads(tmp_path / "experiments" / "coords" / "results" / "size.json")], **kw)
+    with pytest.raises(PermissionError, match="refused"):
+        harness.score_seeds(task, board, target, ref, inputs, [reads(data / "T2" / "E10.5.h5ad")], **kw)
+    rows = harness.score_seeds(task, board, target, ref, inputs, [reads(tmp_path / "configs" / "ok.yaml")], **kw)
+    assert rows[0]["reads"]["reader"] == ["configs/ok.yaml"]
+    open(tmp_path / "experiments" / "coords" / "results" / "size.json").read()  # the guard is off outside builds
+
+
+def _fake_io(monkeypatch, tmp_path, task, target, ref, inputs, calls):
+    def read(path, genes):
+        calls["scored"].append(str(path).split(str(tmp_path) + "/")[1])
+        st = target if str(path).endswith(task.target) else ref
+        return ad.AnnData(X=np.asarray(st.X), var=pd.DataFrame(index=GENES),
+                          obsm={"spatial_3D": st.coords} if st.coords is not None else {})
+
     by_file = {f: inputs[r] for r, f in task.inputs.items()}
-    monkeypatch.setattr(harness, "load_stage", lambda path, **kw: loaded_inputs.append(str(path)) or
-                        by_file[str(path).split(str(tmp_path) + "/")[1]])
+
+    def load(path, **kw):
+        calls["inputs"].append((str(path).split(str(tmp_path) + "/")[1], kw))
+        return by_file[str(path).split(str(tmp_path) + "/")[1]]
+
+    monkeypatch.setattr(harness, "read_stage", read)
+    monkeypatch.setattr(harness, "load_stage", load)
     monkeypatch.setattr(harness, "_sha256", lambda path: "0" * 64)
+
+
+def test_run_task_loads_target_and_reference_as_released_and_inputs_only(synthetic_t2, monkeypatch, tmp_path):
+    task, board, target, ref, inputs = synthetic_t2
+    calls = {"scored": [], "inputs": []}
+    _fake_io(monkeypatch, tmp_path, task, target, ref, inputs, calls)
     monkeypatch.setattr(harness, "task_board", lambda t, boards, n_t, n_r: board)
     boards = {"T2:heart:val_extrap": replace(board, key="T2:heart:val_extrap")}
-    res = harness.run_task(task, [CANDIDATES["floor"], CANDIDATES["copy"]], seeds=(0,), data_dir=tmp_path,
-                           boards=boards, log=None)
-    assert all(not p.endswith(task.target) for p in loaded_inputs)
-    assert sorted(p.split(str(tmp_path) + "/")[1] for p in loaded_inputs) == sorted(task.inputs.values())
+    res = harness.run_task(task, [CANDIDATES["copy"]], seeds=(0,), data_dir=tmp_path, boards=boards, log=None)
+    assert calls["scored"] == [task.target, task.reference]
+    assert sorted(f for f, _ in calls["inputs"]) == sorted(task.inputs.values())
+    assert all(kw.get("drop_duplicates") is True for _, kw in calls["inputs"])  # T2: duplicates dropped from inputs
     assert res["candidates"] == ["floor", "copy"] and res["protocol"] == "bake" and res["build"] == "main"
+    # an anchored non-validation board stops the run before anything is read
+    calls = {"scored": [], "inputs": []}
+    _fake_io(monkeypatch, tmp_path, task, target, ref, inputs, calls)
+    leaky = boards | {"T2:heart:test_extrap": replace(board, key="T2:heart:test_extrap",
+                                                      anchors={"mmd_u": {"floor": 0.1, "ceiling": 0.01}})}
+    with pytest.raises(LeakageError):
+        harness.run_task(task, [CANDIDATES["copy"]], seeds=(0,), data_dir=tmp_path, boards=leaky, log=None)
+    assert calls == {"scored": [], "inputs": []}
+    # a leaky task is refused before anything is read
+    with pytest.raises(LeakageError):
+        harness.run_task(replace(task, inputs={"ref": task.reference, "x": task.target}), [CANDIDATES["copy"]],
+                         seeds=(0,), data_dir=tmp_path, boards=boards, log=None)
+    assert calls == {"scored": [], "inputs": []}
 
 
+def test_run_task_on_t1_loads_inputs_as_released(monkeypatch, tmp_path):
+    rng = np.random.default_rng(5)
+    base = rng.gamma(2.0, 2.0, size=(3, len(GENES)))
+
+    def t1(n, m):
+        st = simulate_stage(n, m, [0.5, 0.3, 0.2], rng)
+        return ad.AnnData(X=st.X, obs=pd.DataFrame({"celltype": st.celltype}, index=[f"c{i}" for i in range(n)]),
+                          var=pd.DataFrame(index=GENES))
+
+    later, earlier = base.copy(), base.copy()
+    later[:, :8] *= 4.0  # gene-specific changes: a uniform scale cancels in log1p CP10k and leaves no DE genes
+    later[:, 8:16] *= 0.25
+    earlier[:, 16:24] *= 3.0
+    ref_a, start_a, tgt_a = t1(3000, base), t1(2500, earlier), t1(4000, later)
+    task = PseudoTask(key="t1syn", test_board="T1:test", task="T1", kind="extrap", target="T1/E10.5_RNA.h5ad",
+                      reference="T1/E9.5_RNA.h5ad", inputs={"ref": "T1/E9.5_RNA.h5ad", "start": "T1/E8.5_RNA.h5ad"},
+                      twin_board="T1:val")
+    board = Board(key="pseudo:t1syn", task="T1", genes=list(GENES), needs_coords=False, min_cells=100, max_cells=600,
+                  truth_cells=200, ref_cells=300)
+    calls = {"scored": [], "inputs": []}
+    st = {"target": Stage(X=np.asarray(tgt_a.X)), "ref": Stage(X=np.asarray(ref_a.X))}
+    _fake_io(monkeypatch, tmp_path, task, st["target"], st["ref"], {"ref": ref_a, "start": start_a}, calls)
+    monkeypatch.setattr(harness, "task_board", lambda t, boards, n_t, n_r: board)
+    res = harness.run_task(task, [CANDIDATES["copy"], CANDIDATES["pseudobulk_shift"]], seeds=(0,),
+                           data_dir=tmp_path, boards={"T1:val": replace(board, key="T1:val")}, log=None)
+    assert calls["scored"] == [task.target, task.reference]
+    assert all(kw == {"lineage": False} for _, kw in calls["inputs"])
+    assert res["rows"][0]["scores"]["floor"] == 50.0
+    assert set(res["candidates"]) == {"floor", "copy", "pseudobulk_shift"}
+
+
+# ------------------------------------------------------------------------------------------------ deciding
+GAINS = [1.0, 0.9, 1.2, 0.8, 1.1, 0.7, 1.3, 0.9, 1.0, 0.6]
+
+
+def _result(key, cands=("floor", "copy"), gains=GAINS, **prov):
+    rows = [{"seed": s, "build_seed": harness.BUILD_SEED_OFFSET + s,
+             "scores": {"floor": 50.0, **({"copy": 50.0 + g} if "copy" in cands else {})}}
+            for s, g in zip(harness.SEEDS, gains, strict=True)]
+    p = {"commit": "abc", "tree_clean": True, "config_sha256": "c" * 64, "files_sha256": {"T2/E9.5.h5ad": "f"}} | prov
+    return {"task": {"key": key, "test_board": "T2:heart:test_extrap"}, "candidates": list(cands), "rows": rows,
+            "protocol": "bake", "build": "main", "anchors": "computed", "frac": 0.1, "seeds": list(harness.SEEDS),
+            "provenance": p}
+
+
+CONFIGURED = [_task(key="a"), _task(key="b")]
+
+
+def test_decide_counts_the_configured_pseudo_tasks():
+    d = harness.decide([_result("a"), _result("b")], CONFIGURED, "floor", "copy")
+    assert d["keep"] and d["counted"] == ["a", "b"] and d["need"] == 2
+    missing = harness.decide([_result("a")], CONFIGURED, "floor", "copy")  # b has no result: incomplete
+    assert not missing["keep"] and "incomplete" in missing["reason"]
+    unscored = harness.decide([_result("a"), _result("b", cands=("floor",))], CONFIGURED, "floor", "copy")
+    assert not unscored["keep"]
+    diag = harness.decide([_result("a")], [CONFIGURED[0], replace(CONFIGURED[1], adoption=False)], "floor", "copy")
+    assert diag["keep"] and diag["excluded"] == {"b": "diagnostic"} and diag["decided_on"].startswith("1 of 2")
+    tuned = harness.decide([_result("a"), _result("b")], CONFIGURED, "floor", "copy",
+                           candidates=CANDIDATES | {"copy": replace(CANDIDATES["copy"], tuned_on=frozenset({"b"}))})
+    assert tuned["counted"] == ["a"] and tuned["excluded"] == {"b": "change was tuned on it"}
+
+
+@pytest.mark.parametrize("bad, match", [
+    (dict(commit="other"), "commits"), (dict(tree_clean=False), "dirty"), (dict(config_sha256="d" * 64), "config"),
+    (dict(files_sha256={"T2/E9.5.h5ad": "g"}), "two checksums"),
+])
+def test_decide_refuses_results_that_do_not_belong_together(bad, match):
+    with pytest.raises(harness.InconsistentResults, match=match):
+        harness.decide([_result("a"), _result("b", **bad)], CONFIGURED, "floor", "copy")
+
+
+def test_decide_refuses_unknown_repeated_or_off_protocol_results():
+    with pytest.raises(harness.InconsistentResults, match="not in the config"):
+        harness.decide([_result("a"), _result("zzz")], CONFIGURED, "floor", "copy")
+    with pytest.raises(harness.InconsistentResults, match="repeated"):
+        harness.decide([_result("a"), _result("a")], CONFIGURED, "floor", "copy")
+    off = _result("b") | {"build": "prefix"}
+    with pytest.raises(harness.InconsistentResults, match="build"):
+        harness.decide([_result("a"), off], CONFIGURED, "floor", "copy")
+    shifted = _result("b")
+    shifted["rows"][3]["build_seed"] = 3
+    with pytest.raises(harness.InconsistentResults, match="build seeds"):
+        harness.decide([_result("a"), shifted], CONFIGURED, "floor", "copy")
+    with pytest.raises(harness.InconsistentResults, match="config"):
+        harness.decide([_result("a"), _result("b")], CONFIGURED, "floor", "copy", config_sha256="e" * 64)
+
+
+# ------------------------------------------------------------------------------------------------ registry
 def test_registry_header_and_refusals(tmp_path):
     path = tmp_path / "registry.csv"
     row = dict.fromkeys(registry.HEADER, "") | {"candidate": "copy", "protocol": "bake"}
@@ -218,3 +443,7 @@ def test_registry_header_and_refusals(tmp_path):
     other.write_text("utc_time,commit,board\n")
     with pytest.raises(ValueError, match="another header"):
         registry.append([row], path=other)
+    shuffled = tmp_path / "shuffled.csv"
+    shuffled.write_text(",".join(reversed(registry.HEADER)) + "\n")
+    with pytest.raises(ValueError, match="another header"):
+        registry.append([row], path=shuffled)

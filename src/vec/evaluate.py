@@ -32,6 +32,7 @@ of the two the prefix build returns on the emulated truth, and the file's local 
 
 from __future__ import annotations
 
+import numbers
 from collections.abc import Mapping
 from contextlib import contextmanager
 from dataclasses import dataclass, field
@@ -397,6 +398,10 @@ def score_board(board: Board, pred: Stage, target: Stage, ref: Stage, floor_pred
     floor_w = None
     if isinstance(anchors, Mapping):
         anchor_map = {m: {"floor": a["floor"], "ceiling": a["ceiling"]} for m, a in anchors.items()}
+        bad = sorted(m for m, a in anchor_map.items() if m not in RANKED_METRICS[task]
+                     or not all(isinstance(v, numbers.Real) and np.isfinite(v) for v in a.values()))
+        if bad:
+            raise ValueError(f"anchor map entries that are not finite anchors of a ranked {task} metric: {bad}")
     elif anchors == "computed":
         floor_w = ref_w if floor_pred is None else subsample(floor_pred, frac, ref_seed)
         floor_vals = panel_metrics(task, floor_w, truth, ref_w, seed=seed, build=build)

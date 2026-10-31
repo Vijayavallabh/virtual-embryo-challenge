@@ -31,6 +31,11 @@ from vec.adoption import SEEDS
 from vec.boards import REPO_ROOT
 
 
+def _rel(p: Path) -> str:
+    p = p.resolve()
+    return str(p.relative_to(REPO_ROOT)) if p.is_relative_to(REPO_ROOT) else str(p)
+
+
 def safe(key: str) -> str:
     return re.sub(r"[^A-Za-z0-9.]+", "_", key).strip("_")
 
@@ -57,16 +62,25 @@ def cmd_run(a) -> None:
     cands = [harness.CANDIDATES[n] for n in names]
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
+    failed = []
     for t in chosen:
         path = out / f"{safe(t.key)}.json"
         if path.exists() and not a.overwrite:
             sys.exit(f"{path} exists; pass --overwrite to replace it")
         t0 = time.time()
-        res = harness.run_task(t, cands, seeds=parse_seeds(a.seeds), data_dir=Path(a.data), build=a.build)
+        try:
+            res = harness.run_task(t, cands, seeds=parse_seeds(a.seeds), data_dir=Path(a.data), build=a.build)
+        except Exception as e:  # noqa: BLE001 (recorded, so decide sees the pseudo-task as missing, not absent)
+            failed.append(t.key)
+            (out / f"{safe(t.key)}.failed.txt").write_text(f"{type(e).__name__}: {e}\n")
+            print(f"FAILED {t.key}: {type(e).__name__}: {e}", flush=True)
+            continue
         res["run_id"] = out.name
         res["seconds"] = round(time.time() - t0, 1)
         path.write_text(json.dumps(res, indent=1, default=float))
         print(f"wrote {path} ({res['seconds']} s)", flush=True)
+    if failed:
+        sys.exit(f"{len(failed)} pseudo-task(s) failed: {failed}")
 
 
 def _summary(r: dict, name: str) -> tuple[float, float]:
@@ -75,12 +89,19 @@ def _summary(r: dict, name: str) -> tuple[float, float]:
 
 
 def cmd_decide(a) -> None:
-    runs = Path(a.runs)
-    results = [json.loads(p.read_text()) for p in sorted(runs.glob("*.json")) if p.name != "run.json"]
-    results = [r for r in results if r["task"]["test_board"] == a.board]
+    runs = Path(a.runs).resolve()
+    configured = harness.load_tasks().get(a.board)
+    if not configured:
+        sys.exit(f"unknown test board {a.board}")
+    results = []
+    for p in sorted(runs.glob("*.json")):
+        r = json.loads(p.read_text())
+        if isinstance(r, dict) and "task" in r and "rows" in r and r["task"]["test_board"] == a.board:
+            results.append(r)
     if not results:
         sys.exit(f"no pseudo-task results for {a.board} in {runs}")
-    decisions = [harness.decide(results, a.base, c) for c in a.change]
+    sha = harness._sha256(harness.CONFIG)
+    decisions = [harness.decide(results, configured, a.base, c, config_sha256=sha) for c in a.change]
     lines = [f"{a.board}: {len(results)} pseudo-task(s) in {runs} (protocol {results[0]['protocol']}, build "
              f"{results[0]['build']}, anchors computed, seeds {results[0]['seeds']})"]
     for r in results:
@@ -88,7 +109,8 @@ def cmd_decide(a) -> None:
                      + "; ".join(f"{n} {m:.2f} +/- {sd:.2f}" for n in r["candidates"] for m, sd in [_summary(r, n)])
                      + f" (commit {r['provenance']['commit'][:7]}, clean {r['provenance']['tree_clean']})")
     for d in decisions:
-        lines.append(f"{d['change']} against {d['base']}: {'KEEP' if d['keep'] else 'not kept'} ({d['reason']})")
+        lines.append(f"{d['change']} against {d['base']}: {'KEEP' if d['keep'] else 'not kept'} ({d['reason']}; "
+                     f"decided on {d['decided_on']}; not counted: {d['excluded'] or 'none'})")
         for k, v in d["tasks"].items():
             if v.get("complete"):
                 lines.append(f"    {k}: paired mean gain {v['mean_gain']:+.2f}, ahead in {v['seeds_ahead']} of "
@@ -116,9 +138,7 @@ def cmd_decide(a) -> None:
                     "seeds": ",".join(map(str, r["seeds"])), "score_mean": f"{m:.3f}", "score_sd": f"{sd:.3f}",
                     "protocol": r["protocol"], "build": r["build"], "anchors": r["anchors"],
                     "gate": "floor_normalised", "frac": r["frac"],
-                    "scores_json": str((runs / f"{safe(r['task']['key'])}.json").relative_to(REPO_ROOT))
-                    if (runs / f"{safe(r['task']['key'])}.json").resolve().is_relative_to(REPO_ROOT)
-                    else str(runs / f"{safe(r['task']['key'])}.json")})
+                    "scores_json": _rel(runs / f"{safe(r['task']['key'])}.json")})
         print(f"registered {registry.append(rows)} rows in {registry.REGISTRY}")
 
 

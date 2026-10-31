@@ -4,43 +4,55 @@ A pseudo-task (configs/pseudo_tasks.yaml) stands in for a test board's geometry 
 validation answers included). For each scoring seed s in vec.adoption.SEEDS the harness
   1. draws the calibrated bake protocol's working copies (vec.evaluate, protocol="bake"): the target's 10% copy and
      its truth half, and the reference's 10% copy, which is both the floor and the DE reference. The floor therefore
-     scores exactly 50, and the harness checks that it does;
+     scores exactly 50, and the harness checks that it does and that its anchors cover every ranked metric;
   2. computes the floor and ceiling anchors once and scores every candidate against them, with the scorer build
      "main" (docs/PLAN.md section 3: candidates are compared without the pre-fix build's parity coin; "prefix" is for
-     calibration only, and selecting on it would be the parity hedge);
+     calibration only, and selecting on it would be the parity hedge). On the first seed one candidate is also scored
+     with freshly computed anchors, and the two scores must agree;
   3. builds every candidate from the pseudo-task's inputs only, with the build seed BUILD_SEED_OFFSET + s. All
      candidates share it (common random numbers), and it is never a scoring stream: numpy's default_rng([s, 0]),
      which vec.t2_build.sample_cells draws rows with, is the same stream as default_rng(s), the bake protocol's
      reference draw, so a candidate built at seed s would contain the floor's own cells (checked 2026-11-01).
-Adoption goes through vec.adoption.keep_change over the pseudo-tasks of a test board on which both candidates apply
-(`decide`). Results are aggregate numbers per seed; registry rows go to results/registry.csv (vec.registry).
+Adoption goes through vec.adoption.keep_change in `decide`, over a test board's configured pseudo-tasks (see `decide`
+for which ones count). Results are aggregate numbers per seed; registry rows go to results/registry.csv
+(vec.registry).
 
-Leakage rules (`check_task`, applied when the config loads): the target is never an input; extrapolation inputs are
-all earlier than the target; interpolation inputs include a stage on each side of the target and none strictly
-inside the bracket; a task's `forbidden` files are never inputs; and candidates receive only the loaded input stages,
-never a path. A candidate must not read files derived from a pseudo-task's target either (the size JSONs measured
-E10.5 and E7.5; the count decision was decided on them): the built-in candidates read nothing but their inputs.
+Leakage rules. `check_task`, applied when the config loads and again before a run: the target is never an input;
+extrapolation inputs are no later than the reference, which is earlier than the target, whatever their modality or
+genotype; interpolation inputs lie outside the "before"-"after" bracket and none on the target's day; knockout tasks
+use no file of the target's genotype unless marked `replicate` (always a diagnostic); `forbidden` files are refused.
+Candidates get a view of the task without file paths (TaskView) and of the board without truth_cells and ref_cells
+(the test boards may not publish them), and they build inside `guarded_reads`, which refuses and logs any read of
+data/raw (inputs arrive loaded), runs/ or experiments/*/results/ (where files derived from targets live, such as the
+size and count decisions measured on E10.5 and E7.5). External data a candidate uses must be declared
+(Candidate.externals, by stage day) and is refused inside the pseudo-task's version of the test's window.
 """
 
 from __future__ import annotations
 
 import hashlib
+import os
 import subprocess
+import sys
+import tempfile
 import time
 from collections.abc import Callable, Mapping
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field, replace
+from fnmatch import fnmatch
 from pathlib import Path
 
 import anndata as ad
+import h5py
 import numpy as np
 import yaml
 
 from vec import t2_build
 from vec.adoption import SEEDS, keep_change
-from vec.boards import REPO_ROOT, VALIDATION_BOARDS, Board, load_boards
+from vec.boards import RANKED_METRICS, REPO_ROOT, VALIDATION_BOARDS, Board, load_boards
 from vec.core import draw_balanced
 from vec.evaluate import SUBSAMPLE_FRAC, Stage, score_board, subsample
-from vec.io import COORD_KEY, dense, read_stage
+from vec.io import COORD_KEY, check_submission, dense, make_submission, read_stage, write_submission
 from vec.prep import load_stage
 
 CONFIG = REPO_ROOT / "configs" / "pseudo_tasks.yaml"
@@ -51,6 +63,10 @@ BUILD_SEED_OFFSET = 1_000_000
 FLOOR = "floor"
 TASKS = ("T1", "T2", "T3")
 KINDS = ("extrap", "interp", "ko")
+# read guard: never readable while a candidate builds (inputs arrive loaded; results and runs may hold target-derived
+# numbers); boards/t1_composition.json publishes released-stage compositions, the targets' included
+DENY_DIRS = ("data", "runs", "experiments/*/results", "docs/research")
+DENY_FILES = ("boards/t1_composition.json",)
 
 # E-day of every released file a pseudo-task may name (docs/DATA_NOTES.md; E8.25_late is about E8.3, Data Protocol).
 STAGE_DAYS = {
@@ -60,11 +76,13 @@ STAGE_DAYS = {
     "T2/E10.5.h5ad": 10.5,
     "T3/E8.75_gata4_ko_1.h5ad": 8.75, "T3/E8.75_gata4_ko_2.h5ad": 8.75, "T3/E9.5_mab21l2_ko.h5ad": 9.5,
 }
-KNOCKOUTS = frozenset(f for f in STAGE_DAYS if f.startswith("T3/"))
+GENOTYPE = {"T3/E8.75_gata4_ko_1.h5ad": "gata4", "T3/E8.75_gata4_ko_2.h5ad": "gata4",
+            "T3/E9.5_mab21l2_ko.h5ad": "mab21l2"}
+KNOCKOUTS = frozenset(GENOTYPE)
 
 
 class LeakageError(ValueError):
-    """A pseudo-task whose inputs could reveal its target."""
+    """A pseudo-task, input or read that could reveal a target."""
 
 
 @dataclass(frozen=True)
@@ -80,12 +98,24 @@ class PseudoTask:
     twin_board: str | None = None
     setting: str | None = None
     forbidden: tuple[str, ...] = ()
+    adoption: bool = True
+    replicate: bool = False
+    target_filter: Mapping | None = None
     notes: str = ""
 
     @property
     def panel_board(self) -> str:
         """The board whose gene panel and limits rule this pseudo-task uses."""
         return self.validation_board or self.twin_board
+
+    @property
+    def counted(self) -> bool:
+        """Whether the adoption rule counts this pseudo-task (replicate folds and diagnostics never)."""
+        return self.adoption and not self.replicate
+
+
+def stem(path: str) -> str:
+    return Path(path).name.removesuffix(".h5ad")
 
 
 def check_task(t: PseudoTask) -> PseudoTask:
@@ -97,6 +127,8 @@ def check_task(t: PseudoTask) -> PseudoTask:
     if not t.panel_board or (t.validation_board and t.validation_board not in VALIDATION_BOARDS) or (
             t.twin_board and t.twin_board not in VALIDATION_BOARDS):
         raise ValueError(f"{t.key}: validation_board or twin_board must name a validation board")
+    if t.target_filter is not None and (t.task != "T1" or t.validation_board):
+        raise ValueError(f"{t.key}: a target filter is for T1 pseudo-tasks on a synthetic board")
     files = list(t.inputs.values())
     unknown = [f for f in [t.target, t.reference, *files, *t.forbidden] if f not in STAGE_DAYS]
     if unknown:
@@ -107,20 +139,31 @@ def check_task(t: PseudoTask) -> PseudoTask:
         raise LeakageError(f"{t.key}: forbidden inputs {sorted(set(t.forbidden) & set(files))}")
     if t.reference not in files:
         raise ValueError(f"{t.key}: the reference must be one of the inputs")
-    day = STAGE_DAYS[t.target]
-    days = [STAGE_DAYS[f] for f in files]
-    if t.kind == "extrap" and any(d >= day for d in days):
-        raise LeakageError(f"{t.key}: an extrapolation input is not earlier than the target")
-    if t.kind == "interp":
-        if any(d == day for d in days) or not any(d < day for d in days) or not any(d > day for d in days):
-            raise LeakageError(f"{t.key}: interpolation inputs need one stage on each side and none at the target")
-        before, after = max(d for d in days if d < day), min(d for d in days if d > day)
-        if STAGE_DAYS[t.reference] != before:
-            raise ValueError(f"{t.key}: the reference must be the earlier bracket")
-        if any(before < d < after for d in days):
-            raise LeakageError(f"{t.key}: an input lies inside the bracket")
-    if t.kind == "ko" and (t.target not in KNOCKOUTS or t.reference in KNOCKOUTS):
-        raise ValueError(f"{t.key}: a knockout pseudo-task targets a knockout file against a wild-type reference")
+    day, ref_day = STAGE_DAYS[t.target], STAGE_DAYS[t.reference]
+    days = {r: STAGE_DAYS[f] for r, f in t.inputs.items()}
+    if t.kind == "extrap":
+        if not ref_day < day:
+            raise LeakageError(f"{t.key}: the reference must be earlier than the target")
+        late = sorted(r for r, d in days.items() if d > ref_day)
+        if late:
+            raise LeakageError(f"{t.key}: extrapolation inputs later than the reference: {late}")
+    elif t.kind == "interp":
+        if "before" not in t.inputs or "after" not in t.inputs or t.inputs["before"] != t.reference:
+            raise ValueError(f"{t.key}: an interpolation task has 'before' (the reference) and 'after' inputs")
+        lo, hi = days["before"], days["after"]
+        if not lo < day < hi:
+            raise LeakageError(f"{t.key}: the target is not inside its bracket")
+        inside = sorted(r for r, d in days.items() if lo < d < hi or d == day)
+        if inside:
+            raise LeakageError(f"{t.key}: interpolation inputs inside the bracket: {inside}")
+    else:
+        if t.target not in KNOCKOUTS or t.reference in KNOCKOUTS:
+            raise ValueError(f"{t.key}: a knockout pseudo-task targets a knockout file against a wild-type reference")
+        sibling = sorted(r for r, f in t.inputs.items() if GENOTYPE.get(f) == GENOTYPE[t.target])
+        if sibling and not t.replicate:
+            raise LeakageError(f"{t.key}: inputs of the target's own genotype ({sibling}) need replicate: true")
+    if t.replicate and t.kind != "ko":
+        raise ValueError(f"{t.key}: only a knockout task can be a replicate fold")
     return t
 
 
@@ -163,25 +206,52 @@ def check_index(boards: Mapping[str, Board]) -> None:
 def task_board(t: PseudoTask, boards: Mapping[str, Board], n_target: int, n_ref: int) -> Board:
     """The board a pseudo-task is scored on, always with computed anchors. A validation geometry keeps its published
     spec, and the files must reproduce its published counts; any other pseudo-task gets a synthetic board with the
-    twin's gene panel and its own counts. Nothing is ever taken from a test board."""
+    twin's gene panel, its own counts and its own knockout. Nothing is ever taken from a test board."""
     counts = pseudo_counts(n_target, n_ref)
+    ko = GENOTYPE.get(t.target)
     if t.validation_board:
         b = boards[t.validation_board]
         off = sorted(k for k, v in counts.items() if getattr(b, k) != v)
         if off:
             raise ValueError(f"{t.key}: the files do not reproduce {b.key}'s published counts ({off})")
+        if ko and (b.target_ko or "").lower() != ko:
+            raise ValueError(f"{t.key}: {b.key} is the {b.target_ko} board, not {ko}")
         return replace(b, anchors={})
     twin = boards[t.twin_board]
-    return replace(twin, key=f"pseudo:{t.key}", split="pseudo", anchors={}, **counts)
+    return replace(twin, key=f"pseudo:{t.key}", split="pseudo", anchors={}, target_ko=ko or twin.target_ko, **counts)
 
 
 # ------------------------------------------------------------------------------------------------ candidates
+@dataclass(frozen=True)
+class TaskView:
+    """What a candidate may know about its pseudo-task: no file paths, nothing about the target but its day."""
+
+    key: str
+    task: str
+    kind: str
+    setting: str | None
+    test_board: str
+    roles: tuple[str, ...]
+    role_days: Mapping[str, float]
+    role_stems: Mapping[str, str]
+    reference_role: str
+    target_day: float
+
+    @classmethod
+    def of(cls, t: PseudoTask) -> TaskView:
+        return cls(key=t.key, task=t.task, kind=t.kind, setting=t.setting, test_board=t.test_board,
+                   roles=tuple(t.inputs), role_days={r: STAGE_DAYS[f] for r, f in t.inputs.items()},
+                   role_stems={r: stem(f) for r, f in t.inputs.items()}, reference_role=base_role(t),
+                   target_day=STAGE_DAYS[t.target])
+
+
 @dataclass
 class BuildContext:
-    """What a candidate sees: the pseudo-task, its board, the loaded input stages (roles of the config; duplicates
-    dropped on T2/T3; never the target) and the build seed. Candidates must not modify the inputs."""
+    """What a candidate sees: a path-free view of the task, the board without truth_cells and ref_cells, the loaded
+    input stages by role (duplicates dropped on T2/T3; never the target) and the build seed. Candidates must not
+    modify the inputs."""
 
-    task: PseudoTask
+    task: TaskView
     board: Board
     inputs: Mapping[str, ad.AnnData]
     seed: int
@@ -189,17 +259,51 @@ class BuildContext:
 
 @dataclass(frozen=True)
 class Candidate:
-    """A named builder. `needs` lists alternative sets of input roles; the candidate applies to a pseudo-task of one
-    of `tasks` that has every role of at least one set."""
+    """A named builder. It applies to a pseudo-task of one of `tasks` when `requires` (default: every role in one of
+    `needs`, a tuple of alternative role sets) says so. `tuned_on` lists pseudo-task keys the candidate was tuned or
+    selected on, which `decide` does not count for it; `externals` declares external data as (EXTERNAL_DATA id,
+    first day, last day), refused inside a pseudo-task's version of the test window."""
 
     name: str
     tasks: frozenset[str]
     needs: tuple[frozenset[str], ...]
     build: Callable[[BuildContext], Stage] | None
     params: Mapping = field(default_factory=dict)
+    requires: Callable[[PseudoTask], bool] | None = None
+    tuned_on: frozenset[str] = frozenset()
+    externals: tuple[tuple[str, float, float], ...] = ()
 
     def applies(self, t: PseudoTask) -> bool:
-        return t.task in self.tasks and any(n <= set(t.inputs) for n in self.needs)
+        if t.task not in self.tasks:
+            return False
+        if self.requires is not None:
+            return self.requires(t)
+        return any(n <= set(t.inputs) for n in self.needs)
+
+
+def external_window(t: PseudoTask) -> tuple[float, float] | None:
+    """The pseudo-task's version of the test's external-data window: extrapolation (reference day - 1, target day +
+    1] (the test: after E9.5 up to and including E13.5 for E12.5 from E10.5); interpolation the open bracket."""
+    if t.kind == "extrap":
+        return STAGE_DAYS[t.reference] - 1.0, STAGE_DAYS[t.target] + 1.0
+    if t.kind == "interp":
+        return STAGE_DAYS[t.inputs["before"]], STAGE_DAYS[t.inputs["after"]]
+    return None
+
+
+def check_externals(c: Candidate, t: PseudoTask) -> None:
+    if not c.externals:
+        return
+    w = external_window(t)
+    if w is None:
+        raise LeakageError(f"{c.name} declares external data; no rule covers it on knockout task {t.key}")
+    lo, hi = w
+    if t.kind == "extrap":  # (lo, hi]: an external stage range [first, last] overlaps it when last > lo, first <= hi
+        bad = [e for e in c.externals if e[2] > lo and e[1] <= hi]
+    else:  # (lo, hi), open on both ends
+        bad = [e for e in c.externals if e[2] > lo and e[1] < hi]
+    if bad:
+        raise LeakageError(f"{c.name}: external data inside {t.key}'s window {w}: {[e[0] for e in bad]}")
 
 
 def base_role(t: PseudoTask) -> str:
@@ -214,7 +318,7 @@ def count_for(board: Board, pool_size: int) -> int:
 
 def draw_copy(ctx: BuildContext) -> tuple[ad.AnnData, np.ndarray, np.ndarray, np.ndarray | None]:
     """Real reference cells at the board's count: (pool, rows, X float32 in board gene order, coords or None)."""
-    pool = ctx.inputs[base_role(ctx.task)]
+    pool = ctx.inputs[ctx.task.reference_role]
     n = count_for(ctx.board, pool.n_obs)
     if ctx.board.needs_coords:
         smp = t2_build.sample_cells(pool, n, seed=ctx.seed)
@@ -226,17 +330,22 @@ def draw_copy(ctx: BuildContext) -> tuple[ad.AnnData, np.ndarray, np.ndarray, np
 
 
 def finish(ctx: BuildContext, pool: ad.AnnData, X: np.ndarray, coords: np.ndarray | None) -> Stage:
-    """A candidate as the scorer reads its file: T1 as float32 X; coordinate boards through the T2 head's guard and
-    checked builder (a failing guard or check raises)."""
+    """A candidate as the scorer reads its file, after the checks the server applies: written and checked with
+    vec.io (T1), or through the T2 head's cloud guard and checked builder (coordinate boards). A failure raises."""
     X = np.clip(np.asarray(X, dtype=np.float32), 0.0, None)
     if not ctx.board.needs_coords:
-        return Stage(X=X)
+        sub = make_submission(X, ctx.board.genes)
+        with tempfile.TemporaryDirectory() as tmp:
+            rep = check_submission(write_submission(sub, Path(tmp) / "submission.h5ad", stamp=False), ctx.board)
+        if not rep.ok:
+            raise ValueError(f"{ctx.task.key}: the built file fails its check: {rep.errors}")
+        return Stage.from_anndata(sub, ctx.board.genes)
     guard = t2_build.cloud_guard(coords, np.asarray(pool.obsm[COORD_KEY], dtype=float)[:, :3], seed=ctx.seed)
     if not guard.ok:
         raise ValueError(f"{ctx.task.key}: cloud guard flags {guard.flags}")
     sub, rep = t2_build.build_submission(ctx.board, X, coords, genes=list(ctx.board.genes))
     if not rep.ok:
-        raise ValueError(f"{ctx.task.key}: the built file fails its check: {rep}")
+        raise ValueError(f"{ctx.task.key}: the built file fails its check: {rep.errors}")
     return Stage.from_anndata(sub, ctx.board.genes, need_coords=True)
 
 
@@ -250,10 +359,15 @@ def _type_means(a: ad.AnnData, genes) -> dict[str, np.ndarray]:
     return {c: np.asarray(X[ct == c].mean(0)).ravel() for c in np.unique(ct)}
 
 
-def start_role(t: PseudoTask) -> str | None:
-    """The stage before the reference: `start` on extrapolation, `earlier` (before the earlier bracket) on
-    interpolation, as the organisers' pseudobulk_shift uses them."""
-    return "start" if "start" in t.inputs else ("earlier" if t.kind == "interp" and "earlier" in t.inputs else None)
+def start_role(t: PseudoTask | TaskView) -> str | None:
+    """The stage before the reference, as the organisers' pseudobulk_shift uses it: `start` on extrapolation,
+    `earlier` (before the earlier bracket) on interpolation."""
+    roles = t.roles if isinstance(t, TaskView) else tuple(t.inputs)
+    if t.kind == "extrap" and "start" in roles:
+        return "start"
+    if t.kind == "interp" and "earlier" in roles:
+        return "earlier"
+    return None
 
 
 def _pseudobulk_shift(ctx: BuildContext) -> Stage:
@@ -285,32 +399,122 @@ CANDIDATES = {
     FLOOR: Candidate(FLOOR, frozenset(TASKS), _ANY, None,
                      {"what": "the organisers' floor: the reference's 10% working copy (copy_last or wt_identity)"}),
     "copy": Candidate("copy", frozenset(TASKS), _ANY, _copy, {"what": "real reference cells at the count rule"}),
-    "pseudobulk_shift": Candidate("pseudobulk_shift", frozenset({"T1", "T2"}),
-                                  (frozenset({"start"}), frozenset({"earlier"})), _pseudobulk_shift,
-                                  {"what": "per-type mean change from the stage before, on copied reference cells"}),
+    "pseudobulk_shift": Candidate("pseudobulk_shift", frozenset({"T1", "T2"}), (), _pseudobulk_shift,
+                                  {"what": "per-type mean change from the stage before, on copied reference cells"},
+                                  requires=lambda t: start_role(t) is not None),
     "shift_transfer": Candidate("shift_transfer", frozenset({"T3"}), (frozenset({"ko_train", "wt_train"}),),
                                 _shift_transfer, {"what": "training knockout's pseudobulk change on copied WT cells"}),
 }
 
 
+# ------------------------------------------------------------------------------------------------ read guard
+_GUARD: dict | None = None  # the active guard's rules and log, if a candidate is building
+_HOOKED = False
+
+
+def _under(rel: Path, pattern: str) -> bool:
+    """Whether a repository-relative path lies at or under a pattern such as 'experiments/*/results'."""
+    parts = Path(pattern).parts
+    return len(rel.parts) >= len(parts) and all(fnmatch(a, b) for a, b in zip(rel.parts, parts, strict=False))
+
+
+def _check_read(path) -> None:
+    g = _GUARD
+    if g is None or not isinstance(path, (str, bytes, os.PathLike)):
+        return
+    try:
+        p = Path(os.fsdecode(path)).resolve()
+    except (TypeError, ValueError, OSError):
+        return
+    try:
+        rel = p.relative_to(g["root"])
+    except ValueError:
+        if g["data"] in p.parents or p == g["data"]:
+            rel = None
+        else:
+            return
+    if rel is not None and (rel.parts[:1] == (".venv",) or "__pycache__" in rel.parts or
+                            p.suffix in (".py", ".pyc", ".so")):
+        return
+    shown = str(rel) if rel is not None else str(p)
+    g["log"].append(shown)
+    denied = rel is None or any(_under(rel, pat) for pat in DENY_DIRS)
+    if denied or str(rel) in DENY_FILES:
+        g["refused"].append(shown)
+        raise PermissionError(f"read refused while a candidate builds: {shown}")
+
+
+def _audit(event, args) -> None:
+    if event == "open" and args:
+        _check_read(args[0])
+
+
+_H5_INIT = h5py.File.__init__
+
+
+def _guarded_h5_init(self, name, *a, **kw):
+    _check_read(name)
+    return _H5_INIT(self, name, *a, **kw)
+
+
+@contextmanager
+def guarded_reads(root: Path = REPO_ROOT, data_dir: Path = DATA_DIR):
+    """While active, refuse (PermissionError) and log every read of data/raw, runs/, experiments/*/results/,
+    docs/research/ or boards/t1_composition.json, and log every other file opened under the repository. Covers
+    Python file opens (audit hook) and HDF5 opens (h5py.File, which anndata uses)."""
+    global _GUARD, _HOOKED
+    if not _HOOKED:
+        sys.addaudithook(_audit)
+        _HOOKED = True
+    _GUARD = {"root": Path(root).resolve(), "data": Path(data_dir).resolve(), "log": [], "refused": []}
+    h5py.File.__init__ = _guarded_h5_init
+    try:
+        yield _GUARD
+    finally:
+        h5py.File.__init__ = _H5_INIT
+        _GUARD = None
+
+
 # ------------------------------------------------------------------------------------------------ running
+def _candidate_board(board: Board) -> Board:
+    """The board as a candidate sees it: limits only (the test boards may publish only their limits)."""
+    return replace(board, truth_cells=None, ref_cells=None, anchors={})
+
+
 def score_seeds(t: PseudoTask, board: Board, target: Stage, ref: Stage, inputs: Mapping[str, ad.AnnData],
-                candidates: list[Candidate], seeds=SEEDS, build: str = BUILD, log=None) -> list[dict]:
-    """Per seed: the floor (checked to score 50) and every applicable candidate, all against one seed's anchors."""
+                candidates: list[Candidate], seeds=SEEDS, build: str = BUILD, log=None,
+                root: Path = REPO_ROOT, data_dir: Path = DATA_DIR) -> list[dict]:
+    """Per seed: the floor (checked to score 50 with complete anchors) and every applicable candidate, all against
+    one seed's anchors; candidates build inside the read guard."""
+    view, cboard = TaskView.of(t), _candidate_board(board)
+    for c in candidates:
+        if c.name != FLOOR and c.applies(t):
+            check_externals(c, t)
     rows = []
-    for s in seeds:
+    for i, s in enumerate(seeds):
         t0 = time.time()
         f = score_board(board, subsample(ref, SUBSAMPLE_FRAC, s), target, ref, seed=s, anchors="computed",
                         build=build, protocol=PROTOCOL)
-        if abs(f.score - 50.0) > 1e-9 or f.extras["inverted_anchors"]:
-            raise ValueError(f"{t.key} seed {s}: the floor scores {f.score} (inverted {f.extras['inverted_anchors']})")
+        missing = sorted(set(RANKED_METRICS[t.task]) - set(f.anchors))
+        if abs(f.score - 50.0) > 1e-9 or f.extras["inverted_anchors"] or missing:
+            raise ValueError(f"{t.key} seed {s}: the floor scores {f.score} (inverted {f.extras['inverted_anchors']},"
+                             f" missing anchors {missing})")
         row = {"seed": s, "build_seed": BUILD_SEED_OFFSET + s, "scores": {FLOOR: f.score}, "skills": {FLOOR: f.skills},
-               "n_cells": {FLOOR: int(round(ref.n * SUBSAMPLE_FRAC))}, "anchors": f.anchors}
+               "n_cells": {FLOOR: int(round(ref.n * SUBSAMPLE_FRAC))}, "anchors": f.anchors, "reads": {}}
+        cross_checked = False
         for c in candidates:
             if c.name == FLOOR or not c.applies(t):
                 continue
-            pred = c.build(BuildContext(task=t, board=board, inputs=inputs, seed=BUILD_SEED_OFFSET + s))
+            with guarded_reads(root, data_dir) as g:
+                pred = c.build(BuildContext(task=view, board=cboard, inputs=inputs, seed=BUILD_SEED_OFFSET + s))
+            row["reads"][c.name] = sorted(set(g["log"]))
             r = score_board(board, pred, target, ref, seed=s, anchors=f.anchors, build=build, protocol=PROTOCOL)
+            if i == 0 and not cross_checked:
+                full = score_board(board, pred, target, ref, seed=s, anchors="computed", build=build,
+                                   protocol=PROTOCOL)
+                if full.score != r.score:
+                    raise ValueError(f"{t.key} seed {s}: shared anchors give {r.score}, fresh ones {full.score}")
+                cross_checked = True
             row["scores"][c.name], row["skills"][c.name], row["n_cells"][c.name] = r.score, r.skills, pred.n
         row["seconds"] = round(time.time() - t0, 1)
         rows.append(row)
@@ -334,6 +538,28 @@ def _sha256(path: Path) -> str:
     return h.hexdigest()
 
 
+def filter_target(t: PseudoTask, data_dir: Path, genes) -> tuple[Stage, dict]:
+    """The released T1 target cut by the task's target filter (fixed in the config before any result): the cells of
+    the kept categories of configs/t1_chamber_classes.yaml, plus a share of contamination cells drawn at the filter's
+    seed from the named categories; returns the scoring Stage and a record (counts only)."""
+    from vec import t1_scope
+
+    spec = t1_scope.load_spec()
+    a = read_stage(data_dir / t.target, genes)
+    t1_scope.classify(a, source=stem(t.target))
+    cat = np.asarray(a.obs[t1_scope.CATEGORY_KEY]).astype(str)
+    f = t.target_filter
+    keep = set(spec.in_scope(f["keep"]))
+    kept = np.flatnonzero(np.isin(cat, sorted(keep)))
+    pool = np.flatnonzero(np.isin(cat, list(f.get("contamination_from", ()))))
+    c = float(f.get("contamination", 0.0))
+    k = min(len(pool), int(round(c / (1.0 - c) * len(kept)))) if c > 0 else 0
+    extra = np.random.default_rng(int(f["seed"])).choice(pool, k, replace=False) if k else np.array([], int)
+    rows = np.sort(np.concatenate([kept, extra]))
+    stage = Stage.from_anndata(a[rows], genes)
+    return stage, {"kept": int(len(kept)), "contamination": int(k), "of": int(a.n_obs)}
+
+
 def run_task(t: PseudoTask, candidates: list[Candidate], seeds=SEEDS, data_dir: Path = DATA_DIR,
              boards: Mapping[str, Board] | None = None, build: str = BUILD, log=print) -> dict:
     """Load one pseudo-task's stages and score the candidates on it (DGX: the files live under data/raw)."""
@@ -343,7 +569,10 @@ def run_task(t: PseudoTask, candidates: list[Candidate], seeds=SEEDS, data_dir: 
     check_task(t)
     genes = boards[t.panel_board].genes
     need_coords = boards[t.panel_board].needs_coords
-    target = Stage.from_anndata(read_stage(data_dir / t.target, genes), genes, need_coords=need_coords)
+    if t.target_filter is not None:
+        target, filt = filter_target(t, data_dir, genes)
+    else:
+        target, filt = Stage.from_anndata(read_stage(data_dir / t.target, genes), genes, need_coords=need_coords), None
     ref = Stage.from_anndata(read_stage(data_dir / t.reference, genes), genes, need_coords=need_coords)
     board = task_board(t, boards, target.n, ref.n)
     if t.task == "T1":
@@ -354,26 +583,101 @@ def run_task(t: PseudoTask, candidates: list[Candidate], seeds=SEEDS, data_dir: 
         missing = [g for g in genes if g not in a.var_names]
         if missing:
             raise ValueError(f"{t.key}: input {r} lacks {len(missing)} panel genes")
-    applicable = [c.name for c in candidates if c.applies(t)]
-    rows = score_seeds(t, board, target, ref, inputs, candidates, seeds=seeds, build=build, log=log)
+    applicable = [FLOOR] + [c.name for c in candidates if c.name != FLOOR and c.applies(t)]
+    rows = score_seeds(t, board, target, ref, inputs, candidates, seeds=seeds, build=build, log=log,
+                       data_dir=data_dir)
     files = sorted({t.target, t.reference, *t.inputs.values()})
     return {
-        "task": asdict(t) | {"inputs": dict(t.inputs), "forbidden": list(t.forbidden)},
-        "board": {k: getattr(board, k) for k in ("key", "task", "setting", "split", "needs_coords", "min_cells",
-                                                   "max_cells", "truth_cells", "ref_cells", "floor_model")},
-        "candidates": applicable, "params": {c.name: dict(c.params) for c in candidates if c.name in applicable},
+        "task": asdict(t) | {"inputs": dict(t.inputs), "forbidden": list(t.forbidden),
+                             "target_filter": dict(t.target_filter) if t.target_filter else None},
+        "board": {k: getattr(board, k) for k in ("key", "task", "setting", "split", "target_ko", "needs_coords",
+                                                   "min_cells", "max_cells", "truth_cells", "ref_cells",
+                                                   "floor_model")},
+        "target_filter_record": filt,
+        "candidates": applicable,
+        "params": {c.name: dict(c.params) | {"tuned_on": sorted(c.tuned_on), "externals": list(c.externals)}
+                   for c in candidates if c.name in applicable},
         "protocol": PROTOCOL, "build": build, "anchors": "computed", "frac": SUBSAMPLE_FRAC,
         "seeds": list(seeds), "rows": rows,
         "provenance": {"commit": commit, "tree_clean": clean, "config_sha256": _sha256(CONFIG),
                        "files_sha256": {f: _sha256(data_dir / f) for f in files},
+                       "build_seed_offset": BUILD_SEED_OFFSET,
                        "utc": time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())},
     }
 
 
-def decide(results: list[dict], base: str, change: str) -> dict:
-    """The adoption rule for `change` against `base` over the pseudo-tasks (one test board's results) where both
-    were scored."""
-    paired = {r["task"]["key"]: {row["seed"]: (row["scores"][base], row["scores"][change]) for row in r["rows"]}
-              for r in results if base in r["candidates"] and change in r["candidates"]}
+# ------------------------------------------------------------------------------------------------ deciding
+class InconsistentResults(ValueError):
+    """Results that may not be combined into one decision."""
+
+
+def check_results(results: list[dict], configured: list[PseudoTask], config_sha256: str | None = None) -> None:
+    """Refuse results that mix commits, configs, protocols, builds, anchors, fractions, seeds or build seeds, come
+    from a dirty tree, carry an unknown or repeated pseudo-task, or disagree on a shared file's checksum."""
+    keys = [r["task"]["key"] for r in results]
+    known = {t.key for t in configured}
+    problems = []
+    if len(keys) != len(set(keys)):
+        problems.append(f"repeated pseudo-tasks {sorted({k for k in keys if keys.count(k) > 1})}")
+    if set(keys) - known:
+        problems.append(f"pseudo-tasks not in the config {sorted(set(keys) - known)}")
+    for field_, want in (("protocol", PROTOCOL), ("build", BUILD), ("anchors", "computed"), ("frac", SUBSAMPLE_FRAC)):
+        got = {r[field_] for r in results}
+        if got != {want}:
+            problems.append(f"{field_} {sorted(map(str, got))}, not {want}")
+    if {tuple(r["seeds"]) for r in results} != {tuple(SEEDS)}:
+        problems.append("seeds other than vec.adoption.SEEDS")
+    commits = {r["provenance"]["commit"] for r in results}
+    if len(commits) != 1:
+        problems.append(f"{len(commits)} commits")
+    if not all(r["provenance"]["tree_clean"] for r in results):
+        problems.append("a run from a dirty tree")
+    shas = {r["provenance"]["config_sha256"] for r in results}
+    if len(shas) != 1 or (config_sha256 is not None and shas != {config_sha256}):
+        problems.append("a pseudo-task config other than the current one")
+    for r in results:
+        if any(row["build_seed"] != BUILD_SEED_OFFSET + row["seed"] for row in r["rows"]):
+            problems.append(f"{r['task']['key']}: build seeds off the offset")
+    seen: dict[str, str] = {}
+    for r in results:
+        for f, h in r["provenance"]["files_sha256"].items():
+            if seen.setdefault(f, h) != h:
+                problems.append(f"{f}: two checksums")
+    if problems:
+        raise InconsistentResults("; ".join(problems))
+
+
+def decide(results: list[dict], configured: list[PseudoTask], base: str, change: str,
+           candidates: Mapping[str, Candidate] = CANDIDATES, config_sha256: str | None = None) -> dict:
+    """The adoption rule for `change` against `base` on one test board.
+
+    Counted: the board's configured pseudo-tasks that are not diagnostics or replicate folds (PseudoTask.counted), on
+    which `change` applies, and which `change` was not tuned on. A counted pseudo-task with no result, or without both
+    candidates on every seed, is incomplete, so the change is not kept. Pending the captain's sign-off (2026-11-01):
+    whether a pseudo-task on which the change cannot run should count as not passed instead of not counted, and how a
+    tuned-on pseudo-task counts. The record says how many of the configured pseudo-tasks decided."""
+    check_results(results, configured, config_sha256)
+    by_key = {r["task"]["key"]: r for r in results}
+    c = candidates.get(change)
+    counted, excluded = [], {}
+    for t in configured:
+        if not t.counted:
+            excluded[t.key] = "replicate fold" if t.replicate else "diagnostic"
+        elif c is not None and not c.applies(t):
+            excluded[t.key] = "change does not apply"
+        elif c is not None and t.key in c.tuned_on:
+            excluded[t.key] = "change was tuned on it"
+        else:
+            counted.append(t.key)
+    paired = {}
+    for k in counted:
+        r = by_key.get(k)
+        if r is None or base not in r["candidates"] or change not in r["candidates"]:
+            paired[k] = {}
+            continue
+        paired[k] = {row["seed"]: (row["scores"][base], row["scores"][change]) for row in r["rows"]
+                     if base in row["scores"] and change in row["scores"]}
     out = keep_change(paired)
-    return {"base": base, "change": change, "pseudo_tasks": sorted(paired), **out}
+    return {"base": base, "change": change, "counted": counted, "excluded": excluded,
+            "configured": [t.key for t in configured],
+            "decided_on": f"{len(counted)} of {len(configured)} configured pseudo-tasks", **out}

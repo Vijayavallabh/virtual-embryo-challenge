@@ -8,10 +8,16 @@
 #   inputs            role -> file: the only stages a candidate sees (loaded with duplicates dropped on T2/T3)
 #   validation_board  the P2 board whose geometry this is (its cell limits are then the published ones), else null
 #   twin_board        the validation board whose gene panel a synthetic pseudo-board borrows (only the panel)
-#   forbidden         files that may never be inputs, besides the target (the harness also refuses later stages
-#                     for extrapolation and inner stages for interpolation)
-# The harness checks every rule at load (vec.harness.check_task). Candidates also may not read files derived from a
-# pseudo-task's target (for example the size and count decisions measured on E10.5 and E7.5).
+#   forbidden         files that may never be inputs, besides the target (the harness also refuses, whatever the
+#                     modality or genotype, extrapolation inputs later than the reference and interpolation inputs
+#                     inside the bracket, and on knockout tasks any file of the target's own genotype)
+#   adoption          false: a diagnostic, reported but never counted by the adoption rule (default true)
+#   replicate         true: trains on the target knockout's sibling replicate; always a diagnostic
+#   target_filter     a rule applied to the released target before scoring (T1 only), fixed before any result
+# The harness checks every rule at load (vec.harness.check_task), hands candidates no file paths, and refuses and logs
+# any read of data/raw, runs/ or experiments/*/results/ while a candidate builds (files derived from targets, such as
+# the size and count decisions measured on E10.5 and E7.5, live there). Revised 2026-11-01 after an independent
+# four-lens review and before any adoption result; entries marked "pending" await the captain's sign-off.
 
 T1:test:
   - key: "T1/E9.5->E10.5"
@@ -22,7 +28,21 @@ T1:test:
     inputs: {ref: T1/E9.5_RNA.h5ad, start: T1/E8.5_RNA.h5ad}
     validation_board: "T1:val"
     notes: "The test geometry one day shorter (E12.5 from E10.5, momentum from E9.5). The truth is the whole E10.5
-      library, surrounding tissue included, while E12.5 is the heart chamber only."
+      library: 31% of it is pharyngeal, surrounding, progenitor or pericardial tissue (configs/t1_chamber_classes.yaml
+      categories, measured 2026-11-01), while E12.5 is the heart chamber only."
+  - key: "T1/E9.5->E10.5:chamber"
+    task: T1
+    kind: extrap
+    target: T1/E10.5_RNA.h5ad
+    reference: T1/E9.5_RNA.h5ad
+    inputs: {ref: T1/E9.5_RNA.h5ad, start: T1/E8.5_RNA.h5ad}
+    validation_board: null
+    twin_board: "T1:val"
+    target_filter: {keep: chamber, contamination: 0.05, contamination_from: [surrounding], seed: 20261101}
+    adoption: false
+    notes: "Pending the captain: the same transition with the truth cut to the E12.5 test's tissue mix, E10.5's
+      chamber-category cells plus 5% of its surrounding cells (the dissection note's few oesophagus-junction cells).
+      It shares the chamber map with B0's scope step, so it is circular for scope and measures the other components."
   - key: "T1/E8.5->E9.5"
     task: T1
     kind: extrap
@@ -86,7 +106,9 @@ T3:bcatenin:
     reference: T2/E8.75.h5ad
     inputs: {wt: T2/E8.75.h5ad, ko_train: T3/E8.75_gata4_ko_1.h5ad, wt_train: T2/E8.75.h5ad}
     validation_board: "T3:gata4"
-    notes: "Replicate transfer within one knockout (the validation board's truth is replicate 2 by its cell count)."
+    replicate: true
+    notes: "Replicate transfer within one knockout (the validation board's truth is replicate 2 by its cell count).
+      A diagnostic: it trains on the target's sibling replicate and shares its truth with the next fold."
   - key: "T3/Mab21l2->Gata4rep2"
     task: T3
     kind: ko
