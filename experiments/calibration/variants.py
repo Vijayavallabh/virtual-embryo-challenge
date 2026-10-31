@@ -29,6 +29,9 @@ from vec.evaluate import Stage, score_board, subsample
 from vec.io import read_stage
 
 ALT_PREV = {"T2:heart:val_extrap": "T2/E8.25_late.h5ad"}  # the earlier heart stage, if E8.75 was not in its series
+# round 3 (2026-10-31, after the Data Protocol page said no cross-stage label mapping exists): E8.5, hidden in P2 but
+# known to the organisers when they scored the reference rows, as the stage before E9.5 in their heart series
+ROUND3_PREV = {"T2:heart:val_extrap": "T2/E8.5.h5ad"}
 FILES = {"T2:heart:val_extrap": ("T2/E10.5.h5ad", "T2/E9.5.h5ad", "T2/E8.75.h5ad"),
          "T2:embryo:val_interp": ("T2/E7.5.h5ad", "T2/E7.25.h5ad", "T2/E6.75.h5ad"),
          "T1:val": ("T1/E10.5_RNA.h5ad", "T1/E9.5_RNA.h5ad", "T1/E8.5_RNA.h5ad")}
@@ -58,6 +61,7 @@ def main(argv=None) -> None:
     ap.add_argument("--rows", type=Path, default=REPO_ROOT / "experiments" / "calibration" / "reference_rows.json")
     ap.add_argument("--out", type=Path, default=REPO_ROOT / "runs" / "calibration_variants")
     ap.add_argument("--round2", action="store_true", help="also vary the base cells and the earlier stage")
+    ap.add_argument("--round3", action="store_true", help="only the E8.5-as-previous-stage variants")
     a = ap.parse_args(argv)
     board = load_boards()[a.board]
     t, r, p = (a.data / f for f in FILES[a.board])
@@ -79,6 +83,8 @@ def main(argv=None) -> None:
                      ("celltype", None, "full_deltas_full_base")]
         if alt_prev:
             variants += [("celltype", alt_prev, "wc"), ("celltype", alt_prev, "full")]
+    if a.round3 and a.board in ROUND3_PREV:
+        variants = [(how, ROUND3_PREV[a.board], base) for how in ("celltype", "cm_celltype") for base in ("wc", "full")]
     for how, prev_file, base in variants:
         ref = load(r, how)
         prev = load(a.data / prev_file if prev_file else p, how)
