@@ -104,7 +104,12 @@
   `experiments/intake/d1_check.py` (D1, A3). Test-board counts are read by code only, never quoted.
 - T3 (approved 2026-11-01): s1 = the allowed branch's s1, s2 = the refused branch's s1, s2 uploaded first. Builds need
   the test board's max_cells (after the intake).
-- Model changes are adopted only under the adoption rule (`vec.adoption.keep_change`; PLAN section 3, item 8).
+- Model changes are adopted only under the adoption rule (`vec.adoption.keep_change`; PLAN section 3, item 8),
+  through the pseudo-task harness (feat-008 done 2026-11-01: `vec.harness`, `experiments/harness/run.py`;
+  baselines in `experiments/harness/results/baselines_v1/`). Next: the B0 builders per board (feat-009) as harness
+  candidates, then D2 (Nov 6). Before T1's B0 is judged, the captain decides the T1 tissue-mix geometry (whole
+  versus heart-only E10.5) and how inapplicable, tuned-on and replicate pseudo-tasks count. Never build a test
+  file at seed 0 (runbook section 5).
 - Meanwhile (no specs needed): the v1 pipelines on the release data (`docs/PLAN.md` section 7, Nov 3-9): the T1
   pseudo-task with E10.5 as the truth (`experiments/t1_scope/pseudo_task.py`, honest momentum from E8.5), T2 embryo
   FGW, T2 heart growth, scored with the calibrated emulator (protocol="bake" reproduces the validation boards). On the
