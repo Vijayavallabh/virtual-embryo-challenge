@@ -240,7 +240,8 @@ def summarise(rows_file: Path, runs: Path, out: Path) -> dict:
             best = None
             for c in CONSTRUCTIONS:
                 comp = [r["score"] for r in mine if r["construction"] == c and r["anchors"] == "computed"]
-                pub0 = [r["score"] for r in mine if r["construction"] == c and r["anchors"] == "published"]
+                row0 = [r for r in mine if r["construction"] == c and r["anchors"] == "published"]
+                pub0 = [r["score"] for r in row0]
                 if not comp:
                     continue
                 d = {"board": key, "model": model, "construction": c, "published": pub["score"],
@@ -248,10 +249,16 @@ def summarise(rows_file: Path, runs: Path, out: Path) -> dict:
                      "seed0_published_anchors": pub0[0] if pub0 else None}
                 d["diff_mean"] = d["mean_10"] - pub["score"]
                 d["exact"] = pub0 != [] and round(pub0[0], 2) == round(float(pub["score"]), 2)
+                # diagnostics only: seed-0 skills (0-100 scale, published anchors) against the published skills
+                d["skill_diffs_seed0"] = {m: 100.0 * row0[0]["skills"][m] - v for m, v in pub.get("skills", {}).items()
+                                          if row0 and row0[0]["skills"].get(m) is not None
+                                          and math.isfinite(row0[0]["skills"][m])}
                 comparisons.append(d)
+                worst = max(d["skill_diffs_seed0"].items(), key=lambda kv: abs(kv[1]), default=None)
                 lines.append(f"  {model} [{c}]: published {pub['score']}; mean of 10 seeds {d['mean_10']:.2f} "
                              f"+/- {d['sd_10']:.2f} (diff {d['diff_mean']:+.2f}); seed 0 with published anchors "
-                             f"{d['seed0_published_anchors']:.2f}{' [exact]' if d['exact'] else ''}")
+                             f"{d['seed0_published_anchors']:.2f}{' [exact]' if d['exact'] else ''}"
+                             + (f"; largest seed-0 skill gap {worst[0]} {worst[1]:+.2f}" if worst else ""))
                 if best is None or abs(d["diff_mean"]) < abs(best["diff_mean"]):
                     best = d
             if best is not None:
