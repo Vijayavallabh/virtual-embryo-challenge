@@ -211,3 +211,14 @@ Current choice first, then the alternative.
   limits (max_cells = 3 x max(truth_cells, ref_cells), at least 5,000; min_cells = min(1,000, truth_cells)) only
   0.25 x max_cells can fall there, and only on a board that publishes truth_cells with max_cells under 4 x
   truth_cells; on a board that publishes only its limits, no level falls below min_cells.
+
+## Approved on 2026-11-01 (the captain: "yes for all")
+
+1. **Adoption rule for model changes:** approved rule 7's test (paired mean gain above 0.3 points, ahead in at least 8
+   of 10 seeds) on at least 2 pseudo-tasks (all of them when a board has fewer than 3), and no pseudo-task losing more
+   than 0.3 points on average. Replaces "improves >= 2 of 3 pseudo-tasks" (A17), which kept a change with no effect
+   half the time (`experiments/adoption_rule/README.md`; code `vec.adoption.keep_change`).
+2. **T3 second submission:** the refused branch's s1 (wild-type cells, the central composition at the Mab21l2
+   magnitude, no number derived from the Gata4 files), uploaded first; the allowed branch's s1 last.
+3. **Test-board specs:** the browser save of the board index is cleared for this one route (`docs/DATA_POLICY.md`).
+

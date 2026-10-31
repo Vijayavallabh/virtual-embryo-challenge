@@ -44,22 +44,24 @@ get around it; the test-board intake (section 5) waits for them. So does every u
 against `boards/index.json` first (the board guard in `vec.submit.prepare`), so until the test boards are there it
 refuses every upload to them, format checks included. This is the main blocker for submitting; the pre-registered
 runs of step 4 do not need it. The saved-file intake below was built on 2026-10-28 at the user's request (cee1c92,
-after an independent review) and is not cleared for use. 2026-10-31: the 403 is Cloudflare error code 1010, a
-browser-signature block (the message now names it), and the predicted organiser answer is no objection
-(`docs/ORGANIZER_QUESTIONS.md`, working answers). The route still needs the captain's explicit yes; then a dated notice
-on the fourth-email thread (a draft waits in his Gmail) and about 72 hours without objection before the save. After
-the intake, run `uv run python experiments/intake/d1_check.py` (D1 and A3; it never prints test-board counts).
+after an independent review). 2026-10-31: the 403 is Cloudflare error code 1010, a browser-signature block (the
+message now names it), and the predicted organiser answer is no objection (`docs/ORGANIZER_QUESTIONS.md`, working
+answers). 2026-11-01: the captain cleared the route ("yes for all"), with these conditions: he sends the dated notice
+drafted in his Gmail first (a reply on the fourth-email thread); the save happens not before 2026-11-04 (UTC), and not
+if an objection or a fix arrives first. After the intake, run `uv run python experiments/intake/d1_check.py` (D1 and
+A3; it never prints test-board counts).
 
 ```bash
 uv run vec boards update      # same as vec.boards.update_boards(); test anchors stripped in memory, never printed
 git add boards && git commit -m "Board specs for the final phase (test anchors stripped at intake)"
 ```
 
-Fallback, **not cleared for use**. Saving the board index with a browser is a fetch by hand and a workaround for the
-403, which `docs/DATA_POLICY.md` and the user's rule forbid, and the fourth email told the organisers we had not tried
-to get around the block. These steps apply only after the user has lifted those rules for this route (recorded in
-`docs/DATA_POLICY.md` with the date), ideally once the organisers say whether the block is intended; the AI assistant
-suggests telling the organisers in the same thread if the route is used. The steps, for then:
+Fallback, **cleared by the captain on 2026-11-01** for this one route (`docs/DATA_POLICY.md`). Before step 1: the
+notice is sent, it is 2026-11-04 (UTC) or later, no objection or fix has arrived (a plain `uv run vec boards update`
+still gets the 403), and hovering over the Data page's board-index link (no click) shows
+`https://virtualembryo.ai/challenge/panels/index.json`, the URL the tool uses. Create the folder with `mkdir -m 700
+~/vec-panels`. On any refusal, delete the folder at once (`rm -r -- ~/vec-panels`) rather than keeping the file for a
+re-run, and save it again only if the refusal names a fixable cause. The steps:
 
 1. **(user)** On the site's Data page, right-click the link to the board index (`panels/index.json`) and choose "Save
    link as" into a new, empty folder outside every git work tree: `~/vec-panels/` on this machine (`~` is
@@ -218,9 +220,13 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     --n-cells <the board's max_cells> --out runs/t3_build/<b>_<s>.h5ad`, for `allowed` and `barred`. 2026-10-31: the
     allowed branch is selected on the predicted answer to follow-up question 3, at the captain's instruction
     (`docs/ORGANIZER_QUESTIONS.md`); the barred branch stays built as the switch if a ruling arrives before the T3
-    uploads. Pending the captain (red team): s2 = the refused branch's s1 (wild-type cells, the central composition at
-    the Mab21l2 magnitude, no Gata4-derived number), uploaded first, with allowed s1 last. It re-decides nothing and
-    refuses a decision file whose script or rules hash differs from the files on disk.
+    uploads. Approved by the captain on 2026-11-01: s1 = `--branch allowed --submission s1`; s2 = `--branch refused
+    --submission s1` (wild-type cells, the central composition at the Mab21l2 magnitude, no number derived from the
+    Gata4 files). Upload s2 first and s1 last (by 30 Nov IST), each with the captain's go-ahead after a screened check
+    of mail, Slack and the Rules page. If the organisers allow the Gata4 files before the first T3 upload, go back to
+    the allowed branch's s1 and s2; if they restrict them before the last one, send nothing from the allowed branch
+    (the barred branch's s1, or nothing). It re-decides nothing and refuses a decision file whose script or rules hash
+    differs from the files on disk.
   - T2: `vec.t2_build`, run from the repo root (the paths are relative). Count by `n_cells_from_decision(board,
     pool.n_obs, "experiments/density/results/release/count_decision.json")` (step 4.5; null keeps max_cells; a
     decided level below the test board's lower limit gives way to the next passing count up, the passing level with

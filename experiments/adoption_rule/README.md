@@ -1,4 +1,4 @@
-# Adoption rule for model changes: proposed tightening (awaiting the captain's sign-off)
+# Adoption rule for model changes (approved by the captain on 2026-11-01)
 
 Raised by a red-team agent on 2026-10-31 and by a side agent on 2026-11-01; checked on 2026-11-01, before any
 release-data result has been used to adopt a change (no decision under this rule exists yet).
@@ -24,7 +24,7 @@ Seed-to-seed sd of a paired score difference in the team's committed results: me
 
 (sd 0.95; ranges cover transitions that agree (tau 0) or disagree (tau 0.5 points) on the true gain.)
 
-## Proposed rule (the approved count rule 7's test, applied per pseudo-task)
+## The rule (the approved count rule 7's test, applied per pseudo-task; approved 2026-11-01, "yes for all")
 
 A change is kept only if, on its board's pseudo-tasks scored with the calibrated emulator over the same 10 seeds (and,
 where the code allows, the same cell draws for both candidates):
@@ -33,9 +33,9 @@ where the code allows, the same cell draws for both candidates):
 2. on no pseudo-task does it lose more than 0.3 points on average.
 Otherwise the simpler candidate stays.
 
-It would replace the test in A17, the T1 table's "Kept if" entries (B0 against copy_last, M1 against B0, M2 against
-M1, the stretch model) and "M2 replaces s2 only if it wins the backtests", and feat-015's condition, and the pseudo-task
-harness (feat-008) would apply it in code. It changes none of the decisions already committed under their own
+It replaces the test in A17, the T1 table's "Kept if" entries (B0 against copy_last, M1 against B0, M2 against M1,
+the stretch model) and "M2 replaces s2 only if it wins the backtests", and feat-015's condition; the pseudo-task
+harness (feat-008) applies it in code through `vec.adoption.keep_change` (tests: `tests/test_adoption.py`). It changes none of the decisions already committed under their own
 pre-registered rules (size, T3 decomposition, density and the count floor, the T1 direction readout), the T2 heart
 shape rule (its own margin of 0.15 d2 skill on both transitions) or D3 (the 3-point Generality gap).
 

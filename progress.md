@@ -7,7 +7,8 @@
 2026-10-28 (feat-003 done), and step 4 (the pre-registered runs) ran the same day at the user's go-ahead, each output
 committed before it was read. Step 1 is blocked by the 403 on the panel files (Cloudflare error code 1010, a
 browser-signature block; no reply to any organiser email). Its saved-file intake (`vec boards update --from-file`,
-cee1c92) is built but not cleared: the browser save needs the captain's explicit yes (`docs/DATA_POLICY.md`). On
+cee1c92) is cleared by the captain (2026-11-01): he sends the drafted notice, then saves the file not before
+2026-11-04 UTC (`docs/P3_RUNBOOK.md` step 1). On
 2026-10-31, at the captain's instruction, the open organiser questions got predicted working answers
 (`docs/ORGANIZER_QUESTIONS.md`; T3 selects the allowed branch), and the emulator calibration (feat-005) ran: the
 scorer reproduces every published validation anchor exactly. The release-day rules are signed off and in code
@@ -156,6 +157,11 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       (`docs/DATA_NOTES.md`). T3 selects the allowed branch; no new cross-modal input; the 403 is Cloudflare error
       code 1010 (browser-signature block); the D1 check is ready and never prints test-board counts.
 
+- [x] 2026-11-01, the captain's "yes for all": (1) the adoption rule (PLAN section 3, item 8; `vec.adoption`,
+      7 tests) replaces "improves >= 2 of 3 pseudo-tasks", which kept a change with no effect half the time;
+      (2) the browser route for the test-board specs is cleared (notice first, save not before 2026-11-04 UTC);
+      (3) T3 s2 = the refused branch's s1 (no Gata4-derived number), uploaded first. Commits pushed to GitHub.
+
 ### What's Next
 
 1. Until 2026-10-27: work that needs no release data (`docs/PLAN.md` section 7): external data through committed
@@ -204,10 +210,6 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       error code 1010, a browser-signature block), and none of the four organiser emails has a reply (Mailsuite
       listed the fourth as unopened on 2026-10-29). The predicted organiser answer is no objection to a browser save
       (0.8); the route waits for the captain's yes, then a dated notice and about 72 hours (runbook step 1).
-- [ ] **Awaiting the captain (2026-11-01): tighter adoption rule for model changes.** "Improves >= 2 of 3 pseudo-tasks"
-      (A17, PLAN 4.1, feat-015) has no margin, so a change with no effect passes half the time. Proposed: approved rule
-      7's test per pseudo-task (paired mean gain > 0.3 points, ahead in >= 8 of 10 seeds) on >= 2 pseudo-tasks (all if
-      fewer than 3), and no pseudo-task losing more than 0.3 (`experiments/adoption_rule/README.md`).
 - [ ] Heads-up from step 4.1 for the embryo build (no rule acts on these by itself): `docs/PLAN.md` asks to check E7.5
       against E8.0 by proper vs improper shape alignment before building the embryo board, and that check came out
       undecided (relative margin -0.019 +/- 0.023 over 5 seeds), so proper rotations stay. E8.5 against E8.75 reads

@@ -97,14 +97,14 @@
 
 ## Recommended Next Step
 
-- Board specs: the captain decides whether to lift his two rules for the browser save (predicted organiser answer: no
-  objection, 0.8; the 403 is Cloudflare error code 1010, a browser-signature block). If yes: he sends the notice
-  drafted in his Gmail (reply on the fourth-email thread), waits about 72 hours, saves the Data page's linked board
-  index with "Save link as" into ~/vec-panels/ (outside every git work tree), and the AI assistant runs `uv run vec
+- Board specs (cleared by the captain on 2026-11-01): he sends the notice drafted in his Gmail (a reply on the
+  fourth-email thread); not before 2026-11-04 UTC, if no objection or fix arrived, he checks the Data page link by
+  hovering, saves it with "Save link as" into ~/vec-panels/ (mkdir -m 700), and the AI assistant runs `uv run vec
   boards update --from-file ~/vec-panels/index.json --delete-source`, commits `boards/`, and runs
   `experiments/intake/d1_check.py` (D1, A3). Test-board counts are read by code only, never quoted.
-- T3: the allowed branch is selected (working answers, `docs/ORGANIZER_QUESTIONS.md`); the captain decides on the
-  red team's proposal to make s2 the refused branch's s1. Builds need the test board's max_cells (after the intake).
+- T3 (approved 2026-11-01): s1 = the allowed branch's s1, s2 = the refused branch's s1, s2 uploaded first. Builds need
+  the test board's max_cells (after the intake).
+- Model changes are adopted only under the adoption rule (`vec.adoption.keep_change`; PLAN section 3, item 8).
 - Meanwhile (no specs needed): the v1 pipelines on the release data (`docs/PLAN.md` section 7, Nov 3-9): the T1
   pseudo-task with E10.5 as the truth (`experiments/t1_scope/pseudo_task.py`, honest momentum from E8.5), T2 embryo
   FGW, T2 heart growth, scored with the calibrated emulator (protocol="bake" reproduces the validation boards). On the

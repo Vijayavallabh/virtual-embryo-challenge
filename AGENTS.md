@@ -28,9 +28,10 @@ If baseline verification is failing, repair that first before adding new scope.
 - **Quarantined material.** Never open veckit PyPI 0.1.2, veckit PR #6, the raw research-workflow outputs, the Yukon
   partner team's material (yukon.org), or the public board file / board endpoints (test-board anchors encode hidden
   targets). Refresh boards only with `vec boards update` (it strips test anchors in memory), and never work around
-  its HTTP 403. Its `--from-file` intake for a copy saved in the browser is built but not cleared: the browser save
-  is itself a workaround, which only the user can allow (`docs/DATA_POLICY.md`). Read research results through the
-  screened digest; see `docs/DATA_POLICY.md`.
+  its HTTP 403. Its `--from-file` intake reads a copy the captain saves in the browser, a route he cleared on
+  2026-11-01 with conditions (notice first, not before 2026-11-04; `docs/DATA_POLICY.md`): nobody opens the saved
+  file, and test-board counts are read by code only, never quoted. Read research results through the screened digest;
+  see `docs/DATA_POLICY.md`.
 - **Scores choose, never compute.** Leaderboard returns may be used to pick between predictions, never to solve for a
   property of a hidden target (no inverting the skill map, no differencing scores).
 - **Competition data stays private.** Data lives under `data/` (gitignored) and is never committed, shared or shown

@@ -33,10 +33,10 @@ prediction the day it arrives, and every disclosure says which is which. Confide
 
 | Question | Working answer (confidence) | What the team does |
 |---|---|---|
-| Board specs (4th email Q1) | Not a decision to withhold the specs; the 403 is Cloudflare's browser-signature block (error code 1010, seen 2026-10-31); saving the Data page's linked file in a browser for the team's own tool is fine (0.8) | The captain decides on his two rules; if yes: dated notice on the email thread, about 72 h, "Save link as", the intake strips the anchors; test-board counts never quoted |
+| Board specs (4th email Q1) | Not a decision to withhold the specs; the 403 is Cloudflare's browser-signature block (error code 1010, seen 2026-10-31); saving the Data page's linked file in a browser for the team's own tool is fine (0.8) | 2026-11-01: the captain lifted his two rules for this route; dated notice on the email thread first, save not before 2026-11-04 (UTC), "Save link as", the intake strips the anchors; test-board counts never quoted |
 | Final entries (4th Q2) | An unmarked board counts its best official submission; marks are per board and changeable until 2 Dec UTC (0.55) | Mark each board after its last upload: of the entries every ruling allows, the higher published score (a tie or an unscored s2: s1); recheck on 1 Dec IST |
 | Validation files as inputs (A20; 3rd Q2, 4th Q3) | Yes (0.88) | No change |
-| Gata4 replicates in T3 (follow-up Q3) | Yes (0.8) | Allowed branch; the red team proposes s2 = the refused branch's s1 (no Gata4-derived number) as a rule hedge, for the captain to decide |
+| Gata4 replicates in T3 (follow-up Q3) | Yes (0.8) | Allowed branch for s1; s2 = the refused branch's s1 (no Gata4-derived number), uploaded first (the red team's hedge, approved by the captain on 2026-11-01) |
 | Released data across tasks (A15; 18 Oct Q1) | Yes (0.75) | No new cross-modal input in any upload unless the organisers answer; the committed links stay |
 | Textbook background (18 Oct Q2) | Fine if qualitative (0.6) | No change: new populations only from the legal route; the T1 scope rule rests on the published E12.5 dissection note |
 | truth_cells for the count (18 Oct Q3) | Yes (0.75) | No change |

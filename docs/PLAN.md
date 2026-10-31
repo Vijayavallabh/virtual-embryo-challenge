@@ -125,6 +125,12 @@ validation boards.
    - Expression moves with its cell.
 7. **Pre-register.** Size models, composition scenarios and both submission candidates per board are fixed and hashed in
    git before the first test submission.
+8. **Adoption rule** (approved by the captain on 2026-11-01; `vec.adoption.keep_change`,
+   `experiments/adoption_rule/README.md`). A change is kept only if, on its board's pseudo-tasks scored with the
+   calibrated emulator over the same 10 seeds (and the same cell draws for both candidates where the code allows), it
+   passes approved rule 7's test (paired mean gain above 0.3 points and ahead in at least 8 of the 10 seeds) on at
+   least 2 pseudo-tasks, or on every one when a board has fewer than 3, and loses more than 0.3 points on average on
+   none; otherwise the simpler candidate stays. "Beats" and "wins" in the board plans below mean this test.
 
 ## 4. Board plans
 
@@ -162,10 +168,10 @@ Facts that shape it (`docs/research/digest_2026-10-19.md`, gap-fills 1 and 3):
 
 | Step | What | Effort | Kept if |
 |---|---|---|---|
-| B0 floor-plus | E10.5 real cells re-weighted to a chamber-only composition (surrounding, second-heart-field, pericardial and pharyngeal types dropped; blood ~2%) plus a per-type count-space momentum shift | 2 days | beats copy_last on the E10.5 backtest |
-| M1 main | B0's composition with the cardiomyocyte share as the hedged parameter, per-type count-space shifts with direction from the Feng bracket (E10.5 to E14.5+, t ≈ 0.5) if the readout passes, damped momentum otherwise, and cheap proxy births by the legal route | 1-2 weeks | beats B0 on the backtest |
-| M2 diverse bet | moscot OT bracketing from our E10.5 to external E14.5 in a shared scVI latent, decoded by count sampling; built only if the readout passes | 2-3 weeks | beats M1 on at least 2 of 3 pseudo-tasks |
-| Stretch | Whole-ladder non-autonomous flow with growth (VGFM-style, reimplemented on torchcfm/POT) | only if time | beats M1 |
+| B0 floor-plus | E10.5 real cells re-weighted to a chamber-only composition (surrounding, second-heart-field, pericardial and pharyngeal types dropped; blood ~2%) plus a per-type count-space momentum shift | 2 days | passes the adoption rule against copy_last |
+| M1 main | B0's composition with the cardiomyocyte share as the hedged parameter, per-type count-space shifts with direction from the Feng bracket (E10.5 to E14.5+, t ≈ 0.5) if the readout passes, damped momentum otherwise, and cheap proxy births by the legal route | 1-2 weeks | passes the adoption rule against B0 |
+| M2 diverse bet | moscot OT bracketing from our E10.5 to external E14.5 in a shared scVI latent, decoded by count sampling; built only if the readout passes | 2-3 weeks | passes the adoption rule against M1 |
+| Stretch | Whole-ladder non-autonomous flow with growth (VGFM-style, reimplemented on torchcfm/POT) | only if time | passes the adoption rule against M1 |
 
 Validation: predict E10.5 from E8.5 and E9.5 (plus legal external data), scored by the emulator over 10 seeds. Bracket
 fraction t ≈ 0.2-0.235 there versus ≈ 0.5 at test, so prefer parameters with a physical meaning (time fractions,
@@ -174,7 +180,7 @@ commit the s1/s2 rule before any upload.
 
 Submissions: s1 = M1 with cardiomyocytes at about 58% of heart cells; s2 = identical except about 70% (the hedge
 belongs on the cardiomyocyte share; expected best-of-two gain ~1.1-1.4 points). Both shares are refit on E10.5 and the
-legal E14.5+ data and committed before any upload; M2 replaces s2 only if it wins the backtests.
+legal E14.5+ data and committed before any upload; M2 replaces s2 only if it passes the adoption rule against s2.
 
 ### 4.2 T2 embryo: E7.75 interpolation (weight 0.5)
 
@@ -332,7 +338,10 @@ Components (all legal under the 2026-10-15 ruling):
 - **Pending confirmation:** using the released Gata4 files inside the beta-catenin prediction (follow-up question 3 to
   the organisers). If refused, both submissions use the reference-only factor. 2026-10-28: the user read the
   final-phase Rules s.10 and Data page as allowing it (A20); the fourth email asks the organisers to confirm, and until
-  they answer the T3 build makes both the allowed and the barred branch.
+  they answer the T3 build makes both the allowed and the barred branch. 2026-11-01 (captain's approval of the red
+  team's hedge): s1 = the allowed branch's s1; s2 = the refused branch's s1 (wild-type cells, the central composition
+  at the Mab21l2 magnitude, no number derived from the Gata4 files), uploaded first, with s1 last; the barred branch
+  stays built as the switch if a ruling restricts the Gata4 files before the last T3 upload.
 
 Submissions: s1 = F (Gata4-sourced) + C; s2 = F (reference-sourced) + C. Both are built before the first upload. Any
 rule that picks or changes s2 after s1's score is written beforehand in terms of component skills and never reads a
@@ -608,3 +617,8 @@ open. No organiser reply to any of the four emails as of then.
   8 labels new to a T1 file in `configs/t1_chamber_classes.yaml`; the AI assistant mapped them (three independent
   mappers, 29 of 30 unanimous, a judge for BW).
 - 2026-10-31: the organisers answered none of the four emails, and the captain said: "Now assume that they don't reply to the emails and you then come up with their rational responses and act on it and proceed". Seven AI agents predicted their answers (`docs/ORGANIZER_QUESTIONS.md`, working answers, never rulings). Acted on: T3 selects the allowed branch (the barred branch stays built as the switch); no new cross-modal input enters any upload (A15); everything else stays as committed. Left to the captain: the browser route for the board specs (his own two rules; the predicted answer is no objection, and the 403 is Cloudflare's browser-signature block, error code 1010) and the red team's proposal to make T3's s2 the refused branch's s1. The emulator calibration ran the same day (feat-005, `experiments/calibration/README.md`): the scorer reproduces every published validation anchor and four of the five organiser baseline rows exactly.
+- 2026-11-01: the captain answered "yes for all" to three proposals. (1) The adoption rule replaces "improves >= 2 of
+  3 pseudo-tasks" (section 3, item 8; `vec.adoption`): the old gate kept a change with no effect half the time
+  (`experiments/adoption_rule/`). (2) The browser route for the test-board specs is cleared for this one route, with
+  the dated notice first and the save not before 2026-11-04 (`docs/DATA_POLICY.md`). (3) T3 s2 becomes the refused
+  branch's s1, with no number derived from the Gata4 files, uploaded first (section 4.4; runbook section 5).

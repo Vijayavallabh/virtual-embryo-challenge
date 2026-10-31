@@ -105,8 +105,12 @@ organisers approve in writing.
   team held that this general instruction does not by itself lift the two rules, so the route waits for the captain's
   explicit yes, then a dated notice on the fourth-email thread and about 72 hours without objection before the save.
   Test-board truth_cells, min_cells and max_cells can encode a held-out stage's cell count: code reads them from
-  `boards/`, nobody quotes them. Team members skip Slack threads that discuss sizes or other values worked out
-  from anchors, and agents reading Slack must not quote such threads.
+  `boards/`, nobody quotes them. **2026-11-01: the captain lifted both rules for this one route** ("yes for all",
+  answering the plan: the dated notice first, the save not before 2026-11-04 UTC and not if an objection or a fix
+  arrives, the link checked by hovering, "Save link as" into a private folder, the intake, the folder deleted on any
+  refusal). The two rules stand for every other route: no other user agent, endpoint or script for the board file.
+  Team members skip Slack threads that discuss sizes or other values worked out from anchors, and agents reading Slack
+  must not quote such threads.
 - **The organisers' Virtual Embryo atlas** (virtualembryo.ai, its predictor and API) lists stages inside protected
   windows (e.g. E7.5 and E11.5 spatial data). The rules name it explicitly: no held-out-stage data from it.
 - **Public atlases spanning a window** (MOCA E9.5-E13.5, MOSTA E10.5-E13.5, the JAX time-lapse between E9.5 and E13.5)
@@ -307,3 +311,7 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   the organisers' answers (`docs/ORGANIZER_QUESTIONS.md`). What changes: the T3 build selects the allowed branch;
   nothing else in the data rules changes. Still the captain's: the browser route above, and the red team's proposal
   to make T3's s2 the refused branch's s1.
+- 2026-11-01: the captain answered "yes for all" to the open proposals. The browser route for the test-board specs is
+  cleared for that one route with the conditions in the board-file entry; T3's s2 becomes the refused branch's s1, so
+  one T3 submission carries no number derived from the Gata4 files (a hedge in case a ruling restricts them); and
+  model changes are adopted only under the adoption rule (`docs/PLAN.md` section 3, item 8).
