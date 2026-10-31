@@ -25,7 +25,10 @@ Candidates get a view of the task without file paths (TaskView) and of the board
 (the test boards may not publish them), and they build inside `guarded_reads`, which refuses and logs any read of
 data/raw (inputs arrive loaded), runs/ or experiments/*/results/ (where files derived from targets live, such as the
 size and count decisions measured on E10.5 and E7.5). External data a candidate uses must be declared
-(Candidate.externals, by stage day) and is refused inside the pseudo-task's version of the test's window.
+(Candidate.externals, by stage day) and is refused inside the pseudo-task's version of the test's window. A committed
+file computed from released stages (a derived input, DERIVED: the pre-registered T1 held-flat list) is read by the
+harness, never by the candidate, and handed over only on pseudo-tasks whose own inputs include every stage it was
+computed from (Candidate.derived; elsewhere the candidate does not apply).
 """
 
 from __future__ import annotations
@@ -40,6 +43,7 @@ from collections.abc import Callable, Mapping
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field, replace
 from fnmatch import fnmatch
+from functools import lru_cache
 from pathlib import Path
 
 import anndata as ad
@@ -83,6 +87,51 @@ KNOCKOUTS = frozenset(GENOTYPE)
 
 class LeakageError(ValueError):
     """A pseudo-task, input or read that could reveal a target."""
+
+
+@dataclass(frozen=True)
+class Derived:
+    """A committed file computed from released stages that a candidate may declare (Candidate.derived) for pseudo-tasks
+    of `task`. The harness reads it before the build (the read guard refuses it to candidates, as it lives under
+    experiments/*/results/) and hands it over only where the pseudo-task's own inputs include every stage in
+    `sources()`, so it carries nothing the inputs do not."""
+
+    task: str
+    path: Path
+    sources: Callable[[], tuple[str, ...]]
+    load: Callable[[Path], object]
+
+
+@lru_cache
+def _held_flat_sources() -> tuple[str, ...]:
+    """The stages the held-flat list's pool rule was computed on, as its producing config names them."""
+    cfg = yaml.safe_load((REPO_ROOT / "experiments" / "t1_direction" / "config.yaml").read_text())
+    files = tuple(f"T1/{s}_RNA.h5ad" for s in cfg["held_flat"]["pool_rule"]["stages"])
+    unknown = [f for f in files if f not in STAGE_DAYS]
+    if unknown:
+        raise ValueError(f"the held-flat pool rule names unknown stages {unknown}")
+    return files
+
+
+def _held_flat_load(path: Path) -> tuple[str, ...]:
+    from vec import t1_scope
+
+    return tuple(t1_scope.held_flat_genes(path))
+
+
+DERIVED = {
+    # the pre-registered list (experiments/t1_direction): genes named in its config (sex-linked, Y-linked, strain)
+    # plus its pool rule on E8.5 and E9.5; committed 2026-10-19 (c992e7a), nine days before the E10.5 file reached us
+    "t1_held_flat": Derived("T1", REPO_ROOT / "experiments" / "t1_direction" / "results" / "held_flat_genes.csv",
+                            _held_flat_sources, _held_flat_load),
+}
+
+
+def derived_ok(name: str, t: PseudoTask) -> bool:
+    """Whether derived input `name` may be handed over on pseudo-task t: it belongs to t's task and every stage it was
+    computed from is one of t's own inputs."""
+    d = DERIVED[name]
+    return d.task == t.task and set(d.sources()) <= set(t.inputs.values())
 
 
 @dataclass(frozen=True)
@@ -248,13 +297,14 @@ class TaskView:
 @dataclass
 class BuildContext:
     """What a candidate sees: a path-free view of the task, the board without truth_cells and ref_cells, the loaded
-    input stages by role (duplicates dropped on T2/T3; never the target) and the build seed. Candidates must not
-    modify the inputs."""
+    input stages by role (duplicates dropped on T2/T3; never the target), the build seed and the derived inputs it
+    declared for this task (name -> content, read by the harness). Candidates must not modify the inputs."""
 
     task: TaskView
     board: Board
     inputs: Mapping[str, ad.AnnData]
     seed: int
+    derived: Mapping[str, object] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -262,7 +312,8 @@ class Candidate:
     """A named builder. It applies to a pseudo-task of one of `tasks` when `requires` (default: every role in one of
     `needs`, a tuple of alternative role sets) says so. `tuned_on` lists pseudo-task keys the candidate was tuned or
     selected on, which `decide` does not count for it; `externals` declares external data as (EXTERNAL_DATA id,
-    first day, last day), refused inside a pseudo-task's version of the test window."""
+    first day, last day), refused inside a pseudo-task's version of the test window; `derived` names DERIVED inputs
+    it uses, and it does not apply where one of its task's cannot be handed over (`derived_ok`)."""
 
     name: str
     tasks: frozenset[str]
@@ -272,9 +323,16 @@ class Candidate:
     requires: Callable[[PseudoTask], bool] | None = None
     tuned_on: frozenset[str] = frozenset()
     externals: tuple[tuple[str, float, float], ...] = ()
+    derived: tuple[str, ...] = ()
+
+    def derived_for(self, t: PseudoTask) -> tuple[str, ...]:
+        """The derived inputs this candidate uses on pseudo-task t (those of t's task)."""
+        return tuple(n for n in self.derived if DERIVED[n].task == t.task)
 
     def applies(self, t: PseudoTask) -> bool:
         if t.task not in self.tasks:
+            return False
+        if not all(derived_ok(n, t) for n in self.derived_for(t)):
             return False
         if self.requires is not None:
             return self.requires(t)
@@ -304,6 +362,24 @@ def check_externals(c: Candidate, t: PseudoTask) -> None:
         bad = [e for e in c.externals if e[2] > lo and e[1] < hi]
     if bad:
         raise LeakageError(f"{c.name}: external data inside {t.key}'s window {w}: {[e[0] for e in bad]}")
+
+
+def load_derived(c: Candidate, t: PseudoTask) -> dict[str, object]:
+    """The derived inputs candidate c uses on pseudo-task t, read by the harness (outside the read guard). Refuses one
+    computed from a stage that is not among t's own inputs (`applies` already leaves such a candidate out)."""
+    out = {}
+    for n in c.derived_for(t):
+        if not derived_ok(n, t):
+            raise LeakageError(f"{c.name}: derived input {n} was computed from {list(DERIVED[n].sources())}, not "
+                               f"all of them inputs of {t.key}")
+        out[n] = DERIVED[n].load(DERIVED[n].path)
+    return out
+
+
+def derived_record(c: Candidate, t: PseudoTask) -> dict[str, dict]:
+    """What a result records about the derived inputs c used on t: the file and the stages it was computed from."""
+    return {n: {"file": str(DERIVED[n].path.relative_to(REPO_ROOT)), "sources": list(DERIVED[n].sources())}
+            for n in c.derived_for(t)}
 
 
 def base_role(t: PseudoTask) -> str:
@@ -430,8 +506,9 @@ def _b0_t1(damping: float) -> Callable[[BuildContext], Stage]:
         ref, src = _shallow(ctx.inputs[role]), ctx.task.role_stems[role]
         shares = t1_chamber_shares(ref, src)
         start = _shallow(ctx.inputs["start"]) if damping else None
+        held = list(ctx.derived["t1_held_flat"]) if damping else None  # handed over: the guard refuses the file
         sub, _ = t1_scope.build_submission(ref, ctx.board, shares, count_for(ctx.board, ref.n_obs), ctx.seed,
-                                           start=start, damping=damping, ref_source=src,
+                                           start=start, damping=damping, held_flat=held, ref_source=src,
                                            start_source=ctx.task.role_stems["start"] if damping else None)
         return finish(ctx, ref, dense(sub.X), None)
     return build
@@ -489,7 +566,7 @@ CANDIDATES = {
     "b0": Candidate("b0", frozenset({"T1", "T2"}), (), _b0,
                     {"what": "B0 (feat-009): T1 chamber-only copy plus damped momentum; T2 copy plus damped momentum "
                              "or bracket interpolation, both in count space", "damping": B0_DAMPING,
-                     "scope": "chamber"}, requires=_b0_applies),
+                     "scope": "chamber"}, requires=_b0_applies, derived=("t1_held_flat",)),
     "b0_scope": Candidate("b0_scope", frozenset({"T1"}), _ANY, _b0_t1(0.0),
                           {"what": "T1 chamber-only copy without a shift (B0's composition alone)",
                            "scope": "chamber"}),
@@ -576,9 +653,11 @@ def score_seeds(t: PseudoTask, board: Board, target: Stage, ref: Stage, inputs: 
     """Per seed: the floor (checked to score 50 with complete anchors) and every applicable candidate, all against
     one seed's anchors; candidates build inside the read guard."""
     view, cboard = TaskView.of(t), _candidate_board(board)
+    given: dict[str, dict[str, object]] = {}
     for c in candidates:
         if c.name != FLOOR and c.applies(t):
             check_externals(c, t)
+            given[c.name] = load_derived(c, t)
     rows = []
     for i, s in enumerate(seeds):
         t0 = time.time()
@@ -595,7 +674,8 @@ def score_seeds(t: PseudoTask, board: Board, target: Stage, ref: Stage, inputs: 
             if c.name == FLOOR or not c.applies(t):
                 continue
             with guarded_reads(root, data_dir) as g:
-                pred = c.build(BuildContext(task=view, board=cboard, inputs=inputs, seed=BUILD_SEED_OFFSET + s))
+                pred = c.build(BuildContext(task=view, board=cboard, inputs=inputs, seed=BUILD_SEED_OFFSET + s,
+                                            derived=given[c.name]))
             row["reads"][c.name] = sorted(set(g["log"]))
             r = score_board(board, pred, target, ref, seed=s, anchors=f.anchors, build=build, protocol=PROTOCOL)
             if i == 0 and not cross_checked:
@@ -676,6 +756,8 @@ def run_task(t: PseudoTask, candidates: list[Candidate], seeds=SEEDS, data_dir: 
     rows = score_seeds(t, board, target, ref, inputs, candidates, seeds=seeds, build=build, log=log,
                        data_dir=data_dir)
     files = sorted({t.target, t.reference, *t.inputs.values()})
+    used = [c for c in candidates if c.name in applicable[1:]]
+    derived = sorted({n for c in used for n in c.derived_for(t)})
     return {
         "task": asdict(t) | {"inputs": dict(t.inputs), "forbidden": list(t.forbidden),
                              "target_filter": dict(t.target_filter) if t.target_filter else None},
@@ -685,11 +767,13 @@ def run_task(t: PseudoTask, candidates: list[Candidate], seeds=SEEDS, data_dir: 
         "target_filter_record": filt,
         "candidates": applicable,
         "params": {c.name: dict(c.params) | {"tuned_on": sorted(c.tuned_on), "externals": list(c.externals)}
+                   | ({"derived": derived_record(c, t)} if c.derived_for(t) else {})
                    for c in candidates if c.name in applicable},
         "protocol": PROTOCOL, "build": build, "anchors": "computed", "frac": SUBSAMPLE_FRAC,
         "seeds": list(seeds), "rows": rows,
         "provenance": {"commit": commit, "tree_clean": clean, "config_sha256": _sha256(CONFIG),
                        "files_sha256": {f: _sha256(data_dir / f) for f in files},
+                       "derived_sha256": {n: _sha256(DERIVED[n].path) for n in derived},
                        "build_seed_offset": BUILD_SEED_OFFSET,
                        "utc": time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())},
     }
@@ -702,7 +786,8 @@ class InconsistentResults(ValueError):
 
 def check_results(results: list[dict], configured: list[PseudoTask], config_sha256: str | None = None) -> None:
     """Refuse results that mix commits, configs, protocols, builds, anchors, fractions, seeds or build seeds, come
-    from a dirty tree, carry an unknown or repeated pseudo-task, or disagree on a shared file's checksum."""
+    from a dirty tree, carry an unknown or repeated pseudo-task, or disagree on a shared file's or derived input's
+    checksum."""
     keys = [r["task"]["key"] for r in results]
     known = {t.key for t in configured}
     problems = []
@@ -729,7 +814,8 @@ def check_results(results: list[dict], configured: list[PseudoTask], config_sha2
             problems.append(f"{r['task']['key']}: build seeds off the offset")
     seen: dict[str, str] = {}
     for r in results:
-        for f, h in r["provenance"]["files_sha256"].items():
+        prov = r["provenance"]
+        for f, h in [*prov["files_sha256"].items(), *prov.get("derived_sha256", {}).items()]:
             if seen.setdefault(f, h) != h:
                 problems.append(f"{f}: two checksums")
     if problems:

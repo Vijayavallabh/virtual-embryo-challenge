@@ -373,6 +373,83 @@ def test_run_task_on_t1_loads_inputs_as_released(monkeypatch, tmp_path):
     assert set(res["candidates"]) == {"floor", "copy", "pseudobulk_shift"}
 
 
+def test_the_held_flat_list_is_handed_over_only_where_its_stages_are_inputs(monkeypatch):
+    from vec import t1_scope
+
+    d = harness.DERIVED["t1_held_flat"]
+    assert d.path == t1_scope.HELD_FLAT_GENES and d.sources() == ("T1/E8.5_RNA.h5ad", "T1/E9.5_RNA.h5ad")
+    tasks = {t.key: t for ts in load_tasks().values() for t in ts}
+    b0 = CANDIDATES["b0"]
+    assert b0.applies(tasks["T1/E9.5->E10.5"]) and b0.applies(tasks["T1/E9.5->E10.5:chamber"])
+    assert not b0.applies(tasks["T1/E8.5->E9.5"])
+    assert b0.applies(tasks["T2h/<=E9.5->E10.5"]) and harness.load_derived(b0, tasks["T2h/<=E9.5->E10.5"]) == {}
+    held = harness.load_derived(b0, tasks["T1/E9.5->E10.5"])["t1_held_flat"]
+    assert list(held) == pd.read_csv(t1_scope.HELD_FLAT_GENES)["gene"].astype(str).tolist() and "Xist" in held
+    with harness.guarded_reads(), pytest.raises(PermissionError, match="refused"):
+        t1_scope.held_flat_genes()  # a candidate reading the committed file itself is refused
+    # a list computed on the target's stage would never be handed over: the candidate does not apply there
+    monkeypatch.setattr(harness, "DERIVED", {"t1_held_flat": replace(
+        d, sources=lambda: ("T1/E9.5_RNA.h5ad", "T1/E10.5_RNA.h5ad"))})
+    assert not b0.applies(tasks["T1/E9.5->E10.5"]) and b0.applies(tasks["T2h/<=E9.5->E10.5"])
+    with pytest.raises(LeakageError, match="derived input"):
+        harness.load_derived(b0, tasks["T1/E9.5->E10.5"])
+
+
+def test_b0_on_t1_builds_inside_the_read_guard_with_the_list_handed_over(monkeypatch, tmp_path):
+    from scipy import sparse
+
+    from vec import t1_scope
+    from vec.prep import log1p_cp10k
+
+    rng = np.random.default_rng(7)
+    base = rng.gamma(2.0, 2.0, size=(3, len(GENES)))
+
+    def t1(n, m, labels):  # released T1 labels, so the chamber config classifies them (E9.5 and E8.5 per-file rules)
+        types = rng.choice(3, size=n, p=[0.5, 0.3, 0.2])
+        C = rng.poisson(m[types] * 20).astype(np.int32)
+        C[np.arange(n), rng.integers(0, len(GENES), n)] += 1
+        a = ad.AnnData(X=log1p_cp10k(C), obs=pd.DataFrame({"celltype": np.asarray(labels)[types]},
+                                                          index=[f"c{i}" for i in range(n)]),
+                       var=pd.DataFrame(index=GENES))
+        a.layers["counts"] = sparse.csr_matrix(C)
+        return a
+
+    later, earlier = base.copy(), base.copy()
+    later[:, :8] *= 4.0
+    later[:, 8:16] *= 0.25
+    earlier[:, 16:24] *= 3.0
+    ref_a = t1(3000, base, ["V-CM", "Endocardium", "Foregut"])
+    start_a = t1(2500, earlier, ["V-CM", "Endothelium", "Foregut"])
+    tgt_a = t1(4000, later, ["V-CM", "Endocardium", "Foregut"])
+    task = PseudoTask(key="t1b0", test_board="T1:test", task="T1", kind="extrap", target="T1/E10.5_RNA.h5ad",
+                      reference="T1/E9.5_RNA.h5ad", inputs={"ref": "T1/E9.5_RNA.h5ad", "start": "T1/E8.5_RNA.h5ad"},
+                      twin_board="T1:val")
+    board = Board(key="pseudo:t1b0", task="T1", genes=list(GENES), needs_coords=False, min_cells=100, max_cells=600,
+                  truth_cells=200, ref_cells=300)
+    calls = {"scored": [], "inputs": []}
+    st = {"target": Stage(X=tgt_a.X.toarray()), "ref": Stage(X=ref_a.X.toarray())}
+    _fake_io(monkeypatch, tmp_path, task, st["target"], st["ref"], {"ref": ref_a, "start": start_a}, calls)
+    monkeypatch.setattr(harness, "task_board", lambda t, boards, n_t, n_r: board)
+    held_seen, real = [], t1_scope.build_submission
+
+    def spy(*a, **kw):
+        held_seen.append(kw.get("held_flat"))
+        return real(*a, **kw)
+
+    monkeypatch.setattr(t1_scope, "build_submission", spy)
+    res = harness.run_task(task, [CANDIDATES["b0"], CANDIDATES["b0_scope"]], seeds=(0,), data_dir=tmp_path,
+                           boards={"T1:val": replace(board, key="T1:val")}, log=None)
+    assert res["candidates"] == ["floor", "b0", "b0_scope"] and res["rows"][0]["scores"]["floor"] == 50.0
+    want = pd.read_csv(t1_scope.HELD_FLAT_GENES)["gene"].astype(str).tolist()
+    assert held_seen == [want, None]  # b0 shifts with the handed-over list; b0_scope does not shift
+    assert not any("results" in p for p in res["rows"][0]["reads"]["b0"])
+    assert res["params"]["b0"]["derived"] == {"t1_held_flat": {
+        "file": "experiments/t1_direction/results/held_flat_genes.csv",
+        "sources": ["T1/E8.5_RNA.h5ad", "T1/E9.5_RNA.h5ad"]}}
+    assert "derived" not in res["params"]["b0_scope"] and res["provenance"]["derived_sha256"] == {
+        "t1_held_flat": "0" * 64}
+
+
 # ------------------------------------------------------------------------------------------------ deciding
 GAINS = [1.0, 0.9, 1.2, 0.8, 1.1, 0.7, 1.3, 0.9, 1.0, 0.6]
 
@@ -427,6 +504,9 @@ def test_decide_refuses_unknown_repeated_or_off_protocol_results():
         harness.decide([_result("a"), shifted], CONFIGURED, "floor", "copy")
     with pytest.raises(harness.InconsistentResults, match="config"):
         harness.decide([_result("a"), _result("b")], CONFIGURED, "floor", "copy", config_sha256="e" * 64)
+    with pytest.raises(harness.InconsistentResults, match="t1_held_flat: two checksums"):
+        harness.decide([_result("a", derived_sha256={"t1_held_flat": "x"}),
+                        _result("b", derived_sha256={"t1_held_flat": "y"})], CONFIGURED, "floor", "copy")
 
 
 # ------------------------------------------------------------------------------------------------ registry
