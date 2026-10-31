@@ -1,0 +1,81 @@
+{
+ "board": "T2:heart:val_extrap",
+ "published": {
+  "board": "T2:heart:val_extrap",
+  "model": "pseudobulk_shift",
+  "score": 47.76,
+  "skills": {
+   "de_score": 40.9,
+   "de_direction": 49.5,
+   "mmd_u": 50.1,
+   "variogram": 44.7,
+   "d2_shape": 50.0,
+   "occupancy_dice": 50.0,
+   "scale_log_ratio": 50.0,
+   "neighborhood_mmd": 48.9
+  },
+  "source": "docs/research/landscape.md:185; same headline in t2_spatial.md:113 (the only reference row where the gate bites)"
+ },
+ "variants": {
+  "celltype|prev=T2/E8.5.h5ad|base=wc": {
+   "score": 51.512085967942525,
+   "skills": {
+    "de_score": 53.28,
+    "de_direction": 53.44,
+    "mmd_u": 51.89,
+    "variogram": 46.34,
+    "d2_shape": 50.0,
+    "occupancy_dice": 50.0,
+    "scale_log_ratio": 50.0,
+    "neighborhood_mmd": 53.02
+   },
+   "pred_cells": 5374,
+   "matches_headline": false
+  },
+  "celltype|prev=T2/E8.5.h5ad|base=full": {
+   "score": 51.094108758108845,
+   "skills": {
+    "de_score": 53.28,
+    "de_direction": 54.34,
+    "mmd_u": 50.43,
+    "variogram": 47.83,
+    "d2_shape": 45.71,
+    "occupancy_dice": 52.22,
+    "scale_log_ratio": 49.93,
+    "neighborhood_mmd": 51.89
+   },
+   "pred_cells": 53742,
+   "matches_headline": false
+  },
+  "cm_celltype|prev=T2/E8.5.h5ad|base=wc": {
+   "score": 41.35994974545752,
+   "skills": {
+    "de_score": 50.39,
+    "de_direction": 48.37,
+    "mmd_u": 36.88,
+    "variogram": 26.67,
+    "d2_shape": 50.0,
+    "occupancy_dice": 50.0,
+    "scale_log_ratio": 50.0,
+    "neighborhood_mmd": 41.63
+   },
+   "pred_cells": 5374,
+   "matches_headline": false
+  },
+  "cm_celltype|prev=T2/E8.5.h5ad|base=full": {
+   "score": 42.327308072831315,
+   "skills": {
+    "de_score": 50.0,
+    "de_direction": 49.64,
+    "mmd_u": 36.22,
+    "variogram": 27.25,
+    "d2_shape": 45.71,
+    "occupancy_dice": 52.22,
+    "scale_log_ratio": 49.93,
+    "neighborhood_mmd": 43.74
+   },
+   "pred_cells": 53742,
+   "matches_headline": false
+  }
+ }
+}

@@ -17,10 +17,11 @@ raw research notes by a screening agent). Verdict rules were fixed in the script
 - **One row is not reproduced:** T2 heart extrapolation `pseudobulk_shift`, 50.32 at seed 0 against 47.76 (10-seed
   mean 50.58, +2.82; de_score skill 50.4 against 40.9). E8.75 and E9.5 use different annotation schemes (5 of their
   33 / 22 `celltype` labels are shared; `cm_celltype` shares only "Unknown"), so the per-type deltas depend on how the
-  organisers matched cell types across the two stages. Ten constructions were tried in two rounds (`variants.py`:
-  label choices, base cells, the earlier heart stage); none matches. On 2026-10-16 the organisers wrote on Slack that
-  a reference table mapping the labels to a consistent annotation existed but was unpublished; it is the likely
-  cause. Unexplained.
+  organisers matched cell types across the two stages. Fourteen constructions were tried in three rounds
+  (`variants.py`: label choices, base cells, E8.25_late or E8.5 as the earlier stage); none matches (closest 49.53,
+  then 50.16). On 2026-10-16 the organisers wrote on Slack that a reference table mapping the labels to a
+  consistent annotation was being prepared; their Data Protocol page (29 Oct, read through a screen) now says no
+  cross-stage mapping exists for either label column. Unexplained; the search stopped there.
 - **A2 verdict by the fixed rule: fail** (that row's best construction is 2.82 points off; every other row and every
   anchor passes). What it means: the scorer itself is exact (anchors and four rows), and the miss is in rebuilding
   one baseline whose cell-type matching is not published. Local scores of our own predictions on the validation boards
@@ -31,5 +32,5 @@ raw research notes by a screening agent). Verdict rules were fixed in the script
 Board runs at 1c8bf05 (clean tree) except `T1:val`, which started at 1c8bf05 and records e7d8230 because the repo was
 synced to the DGX while it ran (the old script recorded the commit at the end; fixed in 65a9c29). The two commits
 differ only in `summarise()` and the variants script, not in the run path. Variants: round 1 at e7d8230, round 2 at
-2df4feb. Files: `results/boards/*.json` (per seed and construction), `results/calibration_summary.{json,txt}`,
+2df4feb, round 3 at 8d8624b. Files: `results/boards/*.json` (per seed and construction), `results/calibration_summary.{json,txt}`,
 `results/variants/`.
