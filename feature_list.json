@@ -76,8 +76,8 @@
       "dependencies": [
         "feat-005"
       ],
-      "status": "in-progress",
-      "evidence": "2026-11-01: vec.harness, configs/pseudo_tasks.yaml (10 pseudo-tasks on the four test boards; fixed before any adoption result), vec.registry, experiments/harness/run.py (16abc5d). An independent four-lens review (leakage, pairing, fidelity, tests) found 32 issues; fixed in 57aa7ab (decide over the configured tasks with consistency checks, path-free task view, read guard, stage rules by day and genotype, T1 file checks, anchor checks), 13 of 13 safeguards mutation-tested, ./init.sh 461 passed. Smoke run on all 9 then-configured tasks at seed 0 (16abc5d); the 10-seed baseline run follows. Open with the captain: how inapplicable, tuned-on and replicate pseudo-tasks count, and the T1 tissue-mix geometry."
+      "status": "done",
+      "evidence": "2026-11-01: vec.harness, configs/pseudo_tasks.yaml (10 pseudo-tasks on the four test boards; fixed before any adoption result), vec.registry, experiments/harness/run.py (16abc5d). An independent four-lens review (leakage, pairing, fidelity, tests) found 32 issues; fixed in 57aa7ab (decide over the configured tasks with consistency checks, path-free task view, read guard, stage rules by day and genotype, T1 file checks, anchor checks), 13 of 13 safeguards mutation-tested, ./init.sh 461 passed. Smoke run on all 9 then-configured tasks at seed 0 (16abc5d); the 10-seed baseline run follows. Open with the captain: how inapplicable, tuned-on and replicate pseudo-tasks count, and the T1 tissue-mix geometry. 2026-11-01 baseline run (experiments/harness/results/baselines_v1/, runs at 57aa7ab and 53b3a04, clean trees, no candidate file reads logged): 10 pseudo-tasks x 10 seeds; decisions against the floor: T2 embryo copy KEEP (+0.58 and +3.27), pseudobulk_shift KEEP on its one applicable task (+6.97); T2 heart copy not kept (-0.04 / +0.55), pseudobulk_shift vetoed (-1.30 on the 1.75-day task); T1 copy vetoed (-2.02 on E9.5->E10.5), pseudobulk_shift vetoed (-0.51); T3 copy and shift_transfer vetoed on the cross-knockout folds. 28 registry rows."
     },
     {
       "id": "feat-009",

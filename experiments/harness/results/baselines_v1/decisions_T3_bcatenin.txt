@@ -1,0 +1,10 @@
+T3:bcatenin: 3 pseudo-task(s) in /mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/runs/harness/baselines_v1 (protocol bake, build main, anchors computed, seeds [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  T3/Gata4->Mab21l2 on pseudo:T3/Gata4->Mab21l2: floor 50.00 +/- 0.00; copy 50.74 +/- 2.02; shift_transfer 47.05 +/- 0.62 (commit 57aa7ab, clean True)
+  T3/Gata4rep1->rep2 on T3:gata4: floor 50.00 +/- 0.00; copy 48.59 +/- 2.02; shift_transfer 69.75 +/- 1.29 (commit 57aa7ab, clean True)
+  T3/Mab21l2->Gata4rep2 on T3:gata4: floor 50.00 +/- 0.00; copy 48.59 +/- 2.02; shift_transfer 42.18 +/- 0.33 (commit 57aa7ab, clean True)
+copy against floor: not kept (loses more than 0.3 points on average on ['T3/Mab21l2->Gata4rep2']; decided on 2 of 3 configured pseudo-tasks; not counted: {'T3/Gata4rep1->rep2': 'replicate fold'})
+    T3/Mab21l2->Gata4rep2: paired mean gain -1.41, ahead in 2 of 10 seeds, passes False, vetoes True
+    T3/Gata4->Mab21l2: paired mean gain +0.74, ahead in 7 of 10 seeds, passes False, vetoes False
+shift_transfer against floor: not kept (loses more than 0.3 points on average on ['T3/Gata4->Mab21l2', 'T3/Mab21l2->Gata4rep2']; decided on 2 of 3 configured pseudo-tasks; not counted: {'T3/Gata4rep1->rep2': 'replicate fold'})
+    T3/Mab21l2->Gata4rep2: paired mean gain -7.82, ahead in 0 of 10 seeds, passes False, vetoes True
+    T3/Gata4->Mab21l2: paired mean gain -2.95, ahead in 0 of 10 seeds, passes False, vetoes True

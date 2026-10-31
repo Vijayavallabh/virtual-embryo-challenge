@@ -162,6 +162,14 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       (2) the browser route for the test-board specs is cleared (notice first, save not before 2026-11-04 UTC);
       (3) T3 s2 = the refused branch's s1 (no Gata4-derived number), uploaded first. Commits pushed to GitHub.
 
+- [x] 2026-11-01: pseudo-task harness (feat-008; `vec.harness`, `configs/pseudo_tasks.yaml`,
+      `experiments/harness/run.py`, `vec.registry`): reviewed by four independent agents (32 issues fixed in
+      57aa7ab), 13 of 13 safeguards mutation-tested, ./init.sh 461 passed; 10-seed baselines on all 10
+      pseudo-tasks (`experiments/harness/results/baselines_v1/`). A copy at the count rule beats the floor on the
+      embryo board only; on T1 a copy loses 2.0 points. Found: never build a test file at seed 0 (runbook).
+      Awaiting the captain: how inapplicable, tuned-on and replicate pseudo-tasks count; the T1 tissue-mix
+      geometry; whether the screen may release the qualitative E12.5 collection text.
+
 ### What's Next
 
 1. Until 2026-10-27: work that needs no release data (`docs/PLAN.md` section 7): external data through committed

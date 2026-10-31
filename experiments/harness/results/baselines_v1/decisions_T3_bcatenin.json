@@ -1,0 +1,124 @@
+{
+ "board": "T3:bcatenin",
+ "runs": "/mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/runs/harness/baselines_v1",
+ "decisions": [
+  {
+   "base": "floor",
+   "change": "copy",
+   "counted": [
+    "T3/Mab21l2->Gata4rep2",
+    "T3/Gata4->Mab21l2"
+   ],
+   "excluded": {
+    "T3/Gata4rep1->rep2": "replicate fold"
+   },
+   "configured": [
+    "T3/Gata4rep1->rep2",
+    "T3/Mab21l2->Gata4rep2",
+    "T3/Gata4->Mab21l2"
+   ],
+   "decided_on": "2 of 3 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T3/Mab21l2->Gata4rep2']",
+   "tasks": {
+    "T3/Mab21l2->Gata4rep2": {
+     "complete": true,
+     "mean_gain": -1.4100273310025522,
+     "seeds_ahead": 2,
+     "passes": false,
+     "vetoes": true
+    },
+    "T3/Gata4->Mab21l2": {
+     "complete": true,
+     "mean_gain": 0.7379351565169685,
+     "seeds_ahead": 7,
+     "passes": false,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 0
+  },
+  {
+   "base": "floor",
+   "change": "shift_transfer",
+   "counted": [
+    "T3/Mab21l2->Gata4rep2",
+    "T3/Gata4->Mab21l2"
+   ],
+   "excluded": {
+    "T3/Gata4rep1->rep2": "replicate fold"
+   },
+   "configured": [
+    "T3/Gata4rep1->rep2",
+    "T3/Mab21l2->Gata4rep2",
+    "T3/Gata4->Mab21l2"
+   ],
+   "decided_on": "2 of 3 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T3/Gata4->Mab21l2', 'T3/Mab21l2->Gata4rep2']",
+   "tasks": {
+    "T3/Mab21l2->Gata4rep2": {
+     "complete": true,
+     "mean_gain": -7.822510850460063,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    },
+    "T3/Gata4->Mab21l2": {
+     "complete": true,
+     "mean_gain": -2.9509565147836483,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    }
+   },
+   "need": 2,
+   "passed": 0
+  }
+ ],
+ "summaries": {
+  "T3/Gata4->Mab21l2": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    50.73793515651697,
+    2.020488517158762
+   ],
+   "shift_transfer": [
+    47.04904348521636,
+    0.6243949311451376
+   ]
+  },
+  "T3/Gata4rep1->rep2": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    48.58997266899745,
+    2.0205724180601123
+   ],
+   "shift_transfer": [
+    69.75392123467512,
+    1.2896677650586197
+   ]
+  },
+  "T3/Mab21l2->Gata4rep2": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    48.58997266899745,
+    2.0205724180601123
+   ],
+   "shift_transfer": [
+    42.17748914953994,
+    0.33383020333422514
+   ]
+  }
+ }
+}

@@ -1,0 +1,562 @@
+{
+ "task": {
+  "key": "T1/E8.5->E9.5",
+  "test_board": "T1:test",
+  "task": "T1",
+  "kind": "extrap",
+  "target": "T1/E9.5_RNA.h5ad",
+  "reference": "T1/E8.5_RNA.h5ad",
+  "inputs": {
+   "ref": "T1/E8.5_RNA.h5ad"
+  },
+  "validation_board": null,
+  "twin_board": "T1:val",
+  "setting": null,
+  "forbidden": [],
+  "adoption": true,
+  "replicate": false,
+  "target_filter": null,
+  "notes": "No T1 stage precedes E8.5, so candidates that need a momentum start do not apply here."
+ },
+ "board": {
+  "key": "pseudo:T1/E8.5->E9.5",
+  "task": "T1",
+  "setting": null,
+  "split": "pseudo",
+  "target_ko": null,
+  "needs_coords": false,
+  "min_cells": 853,
+  "max_cells": 5037,
+  "truth_cells": 853,
+  "ref_cells": 1679,
+  "floor_model": "copy_last"
+ },
+ "target_filter_record": null,
+ "candidates": [
+  "floor",
+  "copy"
+ ],
+ "params": {
+  "floor": {
+   "what": "the organisers' floor: the reference's 10% working copy (copy_last or wt_identity)",
+   "tuned_on": [],
+   "externals": []
+  },
+  "copy": {
+   "what": "real reference cells at the count rule",
+   "tuned_on": [],
+   "externals": []
+  }
+ },
+ "protocol": "bake",
+ "build": "main",
+ "anchors": "computed",
+ "frac": 0.1,
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "rows": [
+  {
+   "seed": 0,
+   "build_seed": 1000000,
+   "scores": {
+    "floor": 50.0,
+    "copy": 50.97630110103907
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "copy": {
+     "de_score": 0.4897830075283102,
+     "de_direction": 0.5681287308590709,
+     "mmd_u": 0.49692847740236945,
+     "variogram": 0.48103266596417277
+    }
+   },
+   "n_cells": {
+    "floor": 1679,
+    "copy": 5037
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.7742
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.6567
+    },
+    "mmd_u": {
+     "floor": 0.03168,
+     "ceiling": 0.00903
+    },
+    "variogram": {
+     "floor": 0.001159,
+     "ceiling": 0.000246
+    }
+   },
+   "reads": {
+    "copy": []
+   },
+   "seconds": 61.8
+  },
+  {
+   "seed": 1,
+   "build_seed": 1000001,
+   "scores": {
+    "floor": 50.0,
+    "copy": 54.46073463794673
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "copy": {
+     "de_score": 0.5113465530818241,
+     "de_direction": 0.6210952201731276,
+     "mmd_u": 0.52744030163385,
+     "variogram": 0.5163240628778718
+    }
+   },
+   "n_cells": {
+    "floor": 1679,
+    "copy": 5037
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.7143
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.6601
+    },
+    "mmd_u": {
+     "floor": 0.03158,
+     "ceiling": 0.0064
+    },
+    "variogram": {
+     "floor": 0.001114,
+     "ceiling": 0.00026
+    }
+   },
+   "reads": {
+    "copy": []
+   },
+   "seconds": 38.5
+  },
+  {
+   "seed": 2,
+   "build_seed": 1000002,
+   "scores": {
+    "floor": 50.0,
+    "copy": 52.956967407084996
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "copy": {
+     "de_score": 0.494510711530473,
+     "de_direction": 0.6000883392226148,
+     "mmd_u": 0.5136577037985488,
+     "variogram": 0.5091130012150668
+    }
+   },
+   "n_cells": {
+    "floor": 1679,
+    "copy": 5037
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8333
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.6793
+    },
+    "mmd_u": {
+     "floor": 0.02898,
+     "ceiling": 0.00491
+    },
+    "variogram": {
+     "floor": 0.001045,
+     "ceiling": 0.000207
+    }
+   },
+   "reads": {
+    "copy": []
+   },
+   "seconds": 39.0
+  },
+  {
+   "seed": 3,
+   "build_seed": 1000003,
+   "scores": {
+    "floor": 50.0,
+    "copy": 54.34895250302887
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "copy": {
+     "de_score": 0.5263125763125763,
+     "de_direction": 0.6127709965385316,
+     "mmd_u": 0.5180091683038638,
+     "variogram": 0.5165794066317626
+    }
+   },
+   "n_cells": {
+    "floor": 1679,
+    "copy": 5037
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8621
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.6727
+    },
+    "mmd_u": {
+     "floor": 0.02935,
+     "ceiling": 0.00562
+    },
+    "variogram": {
+     "floor": 0.001087,
+     "ceiling": 0.000199
+    }
+   },
+   "reads": {
+    "copy": []
+   },
+   "seconds": 37.9
+  },
+  {
+   "seed": 4,
+   "build_seed": 1000004,
+   "scores": {
+    "floor": 50.0,
+    "copy": 51.230319465417075
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "copy": {
+     "de_score": 0.4942430703624733,
+     "de_direction": 0.5840793400035106,
+     "mmd_u": 0.489943156974202,
+     "variogram": 0.478698224852071
+    }
+   },
+   "n_cells": {
+    "floor": 1679,
+    "copy": 5037
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8113
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.6655
+    },
+    "mmd_u": {
+     "floor": 0.02851,
+     "ceiling": 0.0061
+    },
+    "variogram": {
+     "floor": 0.001016,
+     "ceiling": 0.000207
+    }
+   },
+   "reads": {
+    "copy": []
+   },
+   "seconds": 38.3
+  },
+  {
+   "seed": 5,
+   "build_seed": 1000005,
+   "scores": {
+    "floor": 50.0,
+    "copy": 52.59073985980781
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "copy": {
+     "de_score": 0.49549715125895977,
+     "de_direction": 0.5998940584444248,
+     "mmd_u": 0.5048811935899797,
+     "variogram": 0.5029761904761905
+    }
+   },
+   "n_cells": {
+    "floor": 1679,
+    "copy": 5037
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8088
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.6795
+    },
+    "mmd_u": {
+     "floor": 0.03575,
+     "ceiling": 0.00834
+    },
+    "variogram": {
+     "floor": 0.001226,
+     "ceiling": 0.000212
+    }
+   },
+   "reads": {
+    "copy": []
+   },
+   "seconds": 38.2
+  },
+  {
+   "seed": 6,
+   "build_seed": 1000006,
+   "scores": {
+    "floor": 50.0,
+    "copy": 50.37393094265175
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "copy": {
+     "de_score": 0.506482982171799,
+     "de_direction": 0.5642462918247672,
+     "mmd_u": 0.46162046908315574,
+     "variogram": 0.48785425101214575
+    }
+   },
+   "n_cells": {
+    "floor": 1679,
+    "copy": 5037
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8125
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.6543
+    },
+    "mmd_u": {
+     "floor": 0.02253,
+     "ceiling": 0.00521
+    },
+    "variogram": {
+     "floor": 0.000928,
+     "ceiling": 0.000205
+    }
+   },
+   "reads": {
+    "copy": []
+   },
+   "seconds": 38.2
+  },
+  {
+   "seed": 7,
+   "build_seed": 1000007,
+   "scores": {
+    "floor": 50.0,
+    "copy": 53.565352762920895
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "copy": {
+     "de_score": 0.5405271009448036,
+     "de_direction": 0.6044690771531627,
+     "mmd_u": 0.4843537414965987,
+     "variogram": 0.5204918032786885
+    }
+   },
+   "n_cells": {
+    "floor": 1679,
+    "copy": 5037
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8696
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.6871
+    },
+    "mmd_u": {
+     "floor": 0.0304,
+     "ceiling": 0.00548
+    },
+    "variogram": {
+     "floor": 0.001212,
+     "ceiling": 0.000196
+    }
+   },
+   "reads": {
+    "copy": []
+   },
+   "seconds": 38.5
+  },
+  {
+   "seed": 8,
+   "build_seed": 1000008,
+   "scores": {
+    "floor": 50.0,
+    "copy": 53.635089042872885
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "copy": {
+     "de_score": 0.5052474694156368,
+     "de_direction": 0.608282292714142,
+     "mmd_u": 0.5206791467131041,
+     "variogram": 0.5088235294117647
+    }
+   },
+   "n_cells": {
+    "floor": 1679,
+    "copy": 5037
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8136
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.6654
+    },
+    "mmd_u": {
+     "floor": 0.0297,
+     "ceiling": 0.00578
+    },
+    "variogram": {
+     "floor": 0.001084,
+     "ceiling": 0.000219
+    }
+   },
+   "reads": {
+    "copy": []
+   },
+   "seconds": 38.0
+  },
+  {
+   "seed": 9,
+   "build_seed": 1000009,
+   "scores": {
+    "floor": 50.0,
+    "copy": 54.69138539998449
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "copy": {
+     "de_score": 0.5180812306031575,
+     "de_direction": 0.6384716485167105,
+     "mmd_u": 0.5202240199128811,
+     "variogram": 0.5085421412300682
+    }
+   },
+   "n_cells": {
+    "floor": 1679,
+    "copy": 5037
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.7679
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.6801
+    },
+    "mmd_u": {
+     "floor": 0.03137,
+     "ceiling": 0.00629
+    },
+    "variogram": {
+     "floor": 0.001104,
+     "ceiling": 0.000211
+    }
+   },
+   "reads": {
+    "copy": []
+   },
+   "seconds": 38.7
+  }
+ ],
+ "provenance": {
+  "commit": "53b3a04f3f8739041c6d65e68f9e8cb4d902f7a8",
+  "tree_clean": true,
+  "config_sha256": "62e5280eaa4fe6cc432f83adf1393122e9e7fa3c47181ba85458be14fcbe7fc6",
+  "files_sha256": {
+   "T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+   "T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361"
+  },
+  "build_seed_offset": 1000000,
+  "utc": "2026-10-31 21:01:45"
+ },
+ "run_id": "baselines_v1",
+ "seconds": 415.9
+}

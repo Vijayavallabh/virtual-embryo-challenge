@@ -1,0 +1,9 @@
+T1:test: 3 pseudo-task(s) in /mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/runs/harness/baselines_v1 (protocol bake, build main, anchors computed, seeds [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  T1/E8.5->E9.5 on pseudo:T1/E8.5->E9.5: floor 50.00 +/- 0.00; copy 52.88 +/- 1.55 (commit 53b3a04, clean True)
+  T1/E9.5->E10.5 on T1:val: floor 50.00 +/- 0.00; copy 47.98 +/- 1.08; pseudobulk_shift 49.49 +/- 0.69 (commit 53b3a04, clean True)
+  T1/E9.5->E10.5:chamber on pseudo:T1/E9.5->E10.5:chamber: floor 50.00 +/- 0.00; copy 48.06 +/- 1.20; pseudobulk_shift 49.18 +/- 0.81 (commit 53b3a04, clean True)
+copy against floor: not kept (loses more than 0.3 points on average on ['T1/E9.5->E10.5']; decided on 2 of 3 configured pseudo-tasks; not counted: {'T1/E9.5->E10.5:chamber': 'diagnostic'})
+    T1/E9.5->E10.5: paired mean gain -2.02, ahead in 1 of 10 seeds, passes False, vetoes True
+    T1/E8.5->E9.5: paired mean gain +2.88, ahead in 10 of 10 seeds, passes True, vetoes False
+pseudobulk_shift against floor: not kept (loses more than 0.3 points on average on ['T1/E9.5->E10.5']; decided on 1 of 3 configured pseudo-tasks; not counted: {'T1/E9.5->E10.5:chamber': 'diagnostic', 'T1/E8.5->E9.5': 'change does not apply'})
+    T1/E9.5->E10.5: paired mean gain -0.51, ahead in 2 of 10 seeds, passes False, vetoes True
