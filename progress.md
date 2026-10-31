@@ -204,6 +204,10 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       error code 1010, a browser-signature block), and none of the four organiser emails has a reply (Mailsuite
       listed the fourth as unopened on 2026-10-29). The predicted organiser answer is no objection to a browser save
       (0.8); the route waits for the captain's yes, then a dated notice and about 72 hours (runbook step 1).
+- [ ] **Awaiting the captain (2026-11-01): tighter adoption rule for model changes.** "Improves >= 2 of 3 pseudo-tasks"
+      (A17, PLAN 4.1, feat-015) has no margin, so a change with no effect passes half the time. Proposed: approved rule
+      7's test per pseudo-task (paired mean gain > 0.3 points, ahead in >= 8 of 10 seeds) on >= 2 pseudo-tasks (all if
+      fewer than 3), and no pseudo-task losing more than 0.3 (`experiments/adoption_rule/README.md`).
 - [ ] Heads-up from step 4.1 for the embryo build (no rule acts on these by itself): `docs/PLAN.md` asks to check E7.5
       against E8.0 by proper vs improper shape alignment before building the embryo board, and that check came out
       undecided (relative margin -0.019 +/- 0.023 over 5 seeds), so proper rotations stay. E8.5 against E8.75 reads
