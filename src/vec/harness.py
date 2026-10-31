@@ -397,10 +397,13 @@ def _shift_transfer(ctx: BuildContext) -> Stage:
 _ANY = (frozenset(),)
 CANDIDATES = {
     FLOOR: Candidate(FLOOR, frozenset(TASKS), _ANY, None,
-                     {"what": "the organisers' floor: the reference's 10% working copy (copy_last or wt_identity)"}),
-    "copy": Candidate("copy", frozenset(TASKS), _ANY, _copy, {"what": "real reference cells at the count rule"}),
+                     {"what": "the organisers' floor: the reference's 10% working copy (copy_last or wt_identity)",
+                      "scope": "whole"}),
+    "copy": Candidate("copy", frozenset(TASKS), _ANY, _copy,
+                      {"what": "real reference cells at the count rule", "scope": "whole"}),
     "pseudobulk_shift": Candidate("pseudobulk_shift", frozenset({"T1", "T2"}), (), _pseudobulk_shift,
-                                  {"what": "per-type mean change from the stage before, on copied reference cells"},
+                                  {"what": "per-type mean change from the stage before, on copied reference cells",
+                                   "scope": "whole"},
                                   requires=lambda t: start_role(t) is not None),
     "shift_transfer": Candidate("shift_transfer", frozenset({"T3"}), (frozenset({"ko_train", "wt_train"}),),
                                 _shift_transfer, {"what": "training knockout's pseudobulk change on copied WT cells"}),
@@ -649,16 +652,24 @@ def check_results(results: list[dict], configured: list[PseudoTask], config_sha2
 
 def decide(results: list[dict], configured: list[PseudoTask], base: str, change: str,
            candidates: Mapping[str, Candidate] = CANDIDATES, config_sha256: str | None = None) -> dict:
-    """The adoption rule for `change` against `base` on one test board.
-
-    Counted: the board's configured pseudo-tasks that are not diagnostics or replicate folds (PseudoTask.counted), on
-    which `change` applies, and which `change` was not tuned on. A counted pseudo-task with no result, or without both
-    candidates on every seed, is incomplete, so the change is not kept. Pending the captain's sign-off (2026-11-01):
-    whether a pseudo-task on which the change cannot run should count as not passed instead of not counted, and how a
-    tuned-on pseudo-task counts. The record says how many of the configured pseudo-tasks decided."""
+    """The adoption rule for `change` against `base` on one test board, with the readings the captain approved on
+    2026-11-01 ("yes for all"):
+      - counted are the board's configured pseudo-tasks that are not diagnostics or replicate folds
+        (PseudoTask.counted), on which `change` applies (a pseudo-task it cannot run on is not counted; the record
+        says how many of the configured pseudo-tasks decided), and which `change` was not tuned on (if none remain,
+        the change is not kept);
+      - on T1 the tissue mix is a premise (the organisers' E12.5 dissection note), so candidates of the same declared
+        scope (params["scope"]: "whole" for the reference's own mix, "chamber" for the heart chamber only) are judged
+        on every counted pseudo-task, and candidates of different scopes (decision point D2: B0 against the floor)
+        only on the pseudo-tasks whose truth is cut to the chamber; the whole-E10.5 result is still reported.
+    A counted pseudo-task with no result, or without both candidates on every seed, is incomplete, so the change is
+    not kept."""
     check_results(results, configured, config_sha256)
     by_key = {r["task"]["key"]: r for r in results}
     c = candidates.get(change)
+    b = candidates.get(base)
+    cross_scope = (c is not None and b is not None and c.params.get("scope") and b.params.get("scope")
+                   and c.params["scope"] != b.params["scope"])
     counted, excluded = [], {}
     for t in configured:
         if not t.counted:
@@ -667,6 +678,8 @@ def decide(results: list[dict], configured: list[PseudoTask], base: str, change:
             excluded[t.key] = "change does not apply"
         elif c is not None and t.key in c.tuned_on:
             excluded[t.key] = "change was tuned on it"
+        elif cross_scope and t.task == "T1" and (t.target_filter or {}).get("keep") != "chamber":
+            excluded[t.key] = "different tissue mixes are judged on the chamber-cut truth"
         else:
             counted.append(t.key)
     paired = {}

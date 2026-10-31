@@ -221,4 +221,9 @@ Current choice first, then the alternative.
 2. **T3 second submission:** the refused branch's s1 (wild-type cells, the central composition at the Mab21l2
    magnitude, no number derived from the Gata4 files), uploaded first; the allowed branch's s1 last.
 3. **Test-board specs:** the browser save of the board index is cleared for this one route (`docs/DATA_POLICY.md`).
+4. **How the adoption rule counts pseudo-tasks** (approved the same day, second "yes for all"): only those a change
+   can run on, and not those it was tuned on; the Gata4 replicate fold never; on T1, same-scope candidates on both
+   the whole and the chamber-cut E10.5 truth, and a change of tissue mix on the chamber-cut truth alone.
+5. **The organisers' Data Protocol page:** the screen may release the qualitative T1 E12.5 collection text (no
+   numbers); the T2 heart and embryo text about held-out stages stays withheld.
 

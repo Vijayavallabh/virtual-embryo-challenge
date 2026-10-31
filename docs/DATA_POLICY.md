@@ -315,3 +315,10 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   cleared for that one route with the conditions in the board-file entry; T3's s2 becomes the refused branch's s1, so
   one T3 submission carries no number derived from the Gata4 files (a hedge in case a ruling restricts them); and
   model changes are adopted only under the adoption rule (`docs/PLAN.md` section 3, item 8).
+- 2026-11-01 (b): the captain allowed the screen to release the Data Protocol page's qualitative description of how
+  the Task 1 E12.5 samples were collected (what was dissected and pooled, any processing that removes cell types),
+  with every number replaced; collection protocols are not measurements, and the organisers published them. The text
+  about the Task 2 heart E12.5 and embryo E7.75 stacks and the test knockout stays withheld, because the T2 size and
+  scope choices are pre-registered. The same day the captain approved how the adoption rule counts pseudo-tasks
+  (`docs/PLAN.md` section 3, item 8).
+

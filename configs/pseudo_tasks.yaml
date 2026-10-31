@@ -17,7 +17,7 @@
 # The harness checks every rule at load (vec.harness.check_task), hands candidates no file paths, and refuses and logs
 # any read of data/raw, runs/ or experiments/*/results/ while a candidate builds (files derived from targets, such as
 # the size and count decisions measured on E10.5 and E7.5, live there). Revised 2026-11-01 after an independent
-# four-lens review and before any adoption result; entries marked "pending" await the captain's sign-off.
+# four-lens review and before any adoption result; the captain approved the readings on 2026-11-01.
 
 T1:test:
   - key: "T1/E9.5->E10.5"
@@ -39,10 +39,11 @@ T1:test:
     validation_board: null
     twin_board: "T1:val"
     target_filter: {keep: chamber, contamination: 0.05, contamination_from: [surrounding], seed: 20261101}
-    adoption: false
-    notes: "Pending the captain: the same transition with the truth cut to the E12.5 test's tissue mix, E10.5's
-      chamber-category cells plus 5% of its surrounding cells (the dissection note's few oesophagus-junction cells).
-      It shares the chamber map with B0's scope step, so it is circular for scope and measures the other components."
+    notes: "Approved by the captain on 2026-11-01: the same transition with the truth cut to the E12.5 test's tissue
+      mix, E10.5's chamber-category cells plus 5% of its surrounding cells (the dissection note's few
+      oesophagus-junction cells). It counts for same-scope T1 comparisons together with the whole-E10.5 task, and
+      alone for comparisons across tissue mixes (D2: B0 against the floor). It shares the chamber map with B0's scope
+      step, so for scope it is a premise check, not evidence."
   - key: "T1/E8.5->E9.5"
     task: T1
     kind: extrap

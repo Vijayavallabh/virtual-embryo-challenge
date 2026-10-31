@@ -42,3 +42,16 @@ shape rule (its own margin of 0.15 d2 skill on both transitions) or D3 (the 3-po
 Cost: real gains under about half a point are mostly not kept (they are also too small to trust across transitions,
 A17); with two pseudo-tasks, a real 1-point gain is kept a little over half the time. Scoring both candidates on the
 same cell draws lowers the noise and raises those odds.
+
+## Readings approved by the captain on 2026-11-01 (a second "yes for all")
+
+a pseudo-task a change cannot run on is
+not counted, and every decision says on how many of the configured pseudo-tasks it rests; a pseudo-task the change
+was tuned or selected on is not counted for it, and with none left the change is not kept; the Gata4 replicate fold
+never counts, so T3 changes are judged on the two cross-knockout folds; on T1 the tissue mix is a premise (the
+organisers' E12.5 dissection note), so same-scope candidates are judged on both the whole and the chamber-cut E10.5
+truth, and a change of tissue mix (D2: B0 against the floor) on the chamber-cut truth alone, with the whole-E10.5
+score reported.
+
+In code: `vec.harness.decide` (params["scope"] on T1 candidates; the chamber-cut task
+`T1/E9.5->E10.5:chamber` in `configs/pseudo_tasks.yaml`).

@@ -131,6 +131,13 @@ validation boards.
    passes approved rule 7's test (paired mean gain above 0.3 points and ahead in at least 8 of the 10 seeds) on at
    least 2 pseudo-tasks, or on every one when a board has fewer than 3, and loses more than 0.3 points on average on
    none; otherwise the simpler candidate stays. "Beats" and "wins" in the board plans below mean this test.
+   Readings approved by the captain on 2026-11-01 (a second "yes for all"): a pseudo-task a change cannot run on is
+   not counted, and every decision says on how many of the configured pseudo-tasks it rests; a pseudo-task the change
+   was tuned or selected on is not counted for it, and with none left the change is not kept; the Gata4 replicate fold
+   never counts, so T3 changes are judged on the two cross-knockout folds; on T1 the tissue mix is a premise (the
+   organisers' E12.5 dissection note), so same-scope candidates are judged on both the whole and the chamber-cut E10.5
+   truth, and a change of tissue mix (D2: B0 against the floor) on the chamber-cut truth alone, with the whole-E10.5
+   score reported.
 
 ## 4. Board plans
 

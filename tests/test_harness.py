@@ -447,3 +447,30 @@ def test_registry_header_and_refusals(tmp_path):
     shuffled.write_text(",".join(reversed(registry.HEADER)) + "\n")
     with pytest.raises(ValueError, match="another header"):
         registry.append([row], path=shuffled)
+
+
+def test_t1_scope_rule_judges_tissue_mix_changes_on_the_chamber_cut_truth():
+    """The captain's 2026-11-01 reading: same-scope T1 candidates are judged on every counted T1 pseudo-task; a
+    candidate of another tissue mix (B0 against the floor, decision point D2) only on the chamber-cut truth."""
+    tasks = {t.key: t for t in load_tasks()["T1:test"]}
+    whole, cut, early = tasks["T1/E9.5->E10.5"], tasks["T1/E9.5->E10.5:chamber"], tasks["T1/E8.5->E9.5"]
+    assert cut.counted and cut.target_filter["keep"] == "chamber"
+
+    def res(key, cands):
+        r = _result(key, cands=tuple("copy" if c == "b0" else c for c in cands))
+        r["task"]["test_board"], r["candidates"] = "T1:test", list(cands)
+        if "b0" in cands:
+            for row in r["rows"]:
+                row["scores"]["b0"] = row["scores"].pop("copy")
+        return r
+
+    b0 = replace(CANDIDATES["copy"], name="b0", params={"scope": "chamber"},
+                 requires=lambda t: "start" in t.inputs)
+    cands = CANDIDATES | {"b0": b0}
+    results = [res(k, ("floor", "b0")) for k in (whole.key, cut.key)] + [res(early.key, ("floor",))]
+    d = harness.decide(results, [whole, cut, early], "floor", "b0", candidates=cands)
+    assert d["counted"] == [cut.key] and d["keep"]
+    assert d["excluded"][whole.key].startswith("different tissue mixes")
+    same = harness.decide([res(k, ("floor", "copy")) for k in (whole.key, cut.key, early.key)],
+                          [whole, cut, early], "floor", "copy")
+    assert same["counted"] == [whole.key, cut.key, early.key]
