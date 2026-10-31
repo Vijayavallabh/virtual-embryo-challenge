@@ -28,6 +28,7 @@ from vec.boards import REPO_ROOT, load_boards
 from vec.evaluate import Stage, score_board, subsample
 from vec.io import read_stage
 
+ALT_PREV = {"T2:heart:val_extrap": "T2/E8.25_late.h5ad"}  # the earlier heart stage, if E8.75 was not in its series
 FILES = {"T2:heart:val_extrap": ("T2/E10.5.h5ad", "T2/E9.5.h5ad", "T2/E8.75.h5ad"),
          "T2:embryo:val_interp": ("T2/E7.5.h5ad", "T2/E7.25.h5ad", "T2/E6.75.h5ad"),
          "T1:val": ("T1/E10.5_RNA.h5ad", "T1/E9.5_RNA.h5ad", "T1/E8.5_RNA.h5ad")}
@@ -56,6 +57,7 @@ def main(argv=None) -> None:
     ap.add_argument("--data", type=Path, default=REPO_ROOT / "data" / "raw")
     ap.add_argument("--rows", type=Path, default=REPO_ROOT / "experiments" / "calibration" / "reference_rows.json")
     ap.add_argument("--out", type=Path, default=REPO_ROOT / "runs" / "calibration_variants")
+    ap.add_argument("--round2", action="store_true", help="also vary the base cells and the earlier stage")
     a = ap.parse_args(argv)
     board = load_boards()[a.board]
     t, r, p = (a.data / f for f in FILES[a.board])
@@ -68,14 +70,36 @@ def main(argv=None) -> None:
                if x["board"] == a.board and x["model"] == "pseudobulk_shift")
     target = load(t, "celltype")
     out = {"board": a.board, "published": pub, "variants": {}}
-    for how in ("celltype", "cm_celltype", "cm_or_celltype", "single_type"):
-        ref, prev = load(r, how), load(p, how)
-        pred = baselines.pseudobulk_shift(subsample(prev, 0.1, 0), subsample(ref, 0.1, 0))
+    # (label choice, prev file or None for the default, base the shift is applied to); round 2 added after round 1
+    # (label choices on the working copies) found no match on the heart-extrapolation board
+    variants = [(how, None, "wc") for how in ("celltype", "cm_celltype", "cm_or_celltype", "single_type")]
+    if a.round2:
+        alt_prev = ALT_PREV.get(a.board)
+        variants += [("celltype", None, "full"), ("celltype", None, "wc_seed1"), ("celltype", None, "max_cells"),
+                     ("celltype", None, "full_deltas_full_base")]
+        if alt_prev:
+            variants += [("celltype", alt_prev, "wc"), ("celltype", alt_prev, "full")]
+    for how, prev_file, base in variants:
+        ref = load(r, how)
+        prev = load(a.data / prev_file if prev_file else p, how)
+        if base == "wc":
+            pred = baselines.pseudobulk_shift(subsample(prev, 0.1, 0), subsample(ref, 0.1, 0))
+        elif base == "wc_seed1":
+            pred = baselines.pseudobulk_shift(subsample(prev, 0.1, 1), subsample(ref, 0.1, 1))
+        elif base in ("full", "full_deltas_full_base"):
+            pred = baselines.pseudobulk_shift(prev, ref)
+        elif base == "max_cells":
+            full = baselines.pseudobulk_shift(prev, ref)
+            pred = full.take(np.sort(np.random.default_rng(0).choice(full.n, min(full.n, board.max_cells),
+                                                                       replace=False)))
+        else:
+            raise ValueError(base)
         res = score_board(board, pred, target, ref, seed=0, anchors="published", build="prefix", protocol="bake")
         skills = {m: round(100 * v, 2) for m, v in res.skills.items()}
-        out["variants"][how] = {"score": res.score, "skills": skills,
-                                "matches_headline": round(res.score, 2) == round(float(pub["score"]), 2)}
-        print(f"{a.board} {how}: {res.score:.4f} (published {pub['score']}) {skills}", flush=True)
+        name = f"{how}|prev={prev_file or 'default'}|base={base}"
+        out["variants"][name] = {"score": res.score, "skills": skills, "pred_cells": pred.n,
+                                 "matches_headline": round(res.score, 2) == round(float(pub["score"]), 2)}
+        print(f"{a.board} {name}: {res.score:.4f} (published {pub['score']}; {pred.n} cells) {skills}", flush=True)
     a.out.mkdir(parents=True, exist_ok=True)
     (a.out / f"{a.board.replace(':', '__')}.json").write_text(json.dumps(out, indent=1, default=float))
 
