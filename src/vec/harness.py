@@ -394,6 +394,85 @@ def _shift_transfer(ctx: BuildContext) -> Stage:
     return finish(ctx, pool, X + (ko_mean - wt_mean).astype(np.float32), coords)
 
 
+# ------------------------------------------------------------------------------------------------ B0 (feat-009)
+# Fixed on 2026-11-01, before any B0 result: the damping of B0's momentum shift, a small change of the right sign.
+B0_DAMPING = 0.5
+
+
+def _shallow(a: ad.AnnData, **obs_cols) -> ad.AnnData:
+    """The same cells and matrices with a copied obs (plus columns), so a head may write obs without touching the
+    inputs; the matrices are shared, not copied."""
+    obs = a.obs.copy()
+    for k, v in obs_cols.items():
+        obs[k] = v
+    return ad.AnnData(X=a.X, obs=obs, var=a.var, layers=dict(a.layers), obsm=dict(a.obsm))
+
+
+def t1_chamber_shares(ref: ad.AnnData, source: str) -> dict[str, float]:
+    """B0's T1 composition: the reference stage's own shares, restricted to the chamber categories of
+    configs/t1_chamber_classes.yaml and renormalised (the E12.5 test is the heart chamber only; captain, 2026-11-01)."""
+    from vec import t1_scope
+
+    spec = t1_scope.load_spec()
+    a = _shallow(ref)
+    t1_scope.classify(a, source=source, spec=spec)
+    comp = t1_scope.composition(a)
+    keep = {c: v for c, v in comp.items() if c in spec.in_scope("chamber") and v > 0}
+    total = sum(keep.values())
+    return {c: v / total for c, v in keep.items()}
+
+
+def _b0_t1(damping: float) -> Callable[[BuildContext], Stage]:
+    def build(ctx: BuildContext) -> Stage:
+        from vec import t1_scope
+
+        role = ctx.task.reference_role
+        ref, src = _shallow(ctx.inputs[role]), ctx.task.role_stems[role]
+        shares = t1_chamber_shares(ref, src)
+        start = _shallow(ctx.inputs["start"]) if damping else None
+        sub, _ = t1_scope.build_submission(ref, ctx.board, shares, count_for(ctx.board, ref.n_obs), ctx.seed,
+                                           start=start, damping=damping, ref_source=src,
+                                           start_source=ctx.task.role_stems["start"] if damping else None)
+        return finish(ctx, ref, dense(sub.X), None)
+    return build
+
+
+def _b0_t2(ctx: BuildContext) -> Stage:
+    """B0 on a T2 board: real reference cells at the count rule, moved in count space by the per-type change of the
+    harmonised lineage level (obs["merged"]; groups without a stable cross-stage meaning held flat). Extrapolation:
+    from `start` to the reference, damped by B0_DAMPING. Interpolation: from the earlier bracket towards the later one,
+    by the target's fraction of the bracket (its day is part of the geometry). Coordinates and size stay the source's
+    (the heart size cannot be backtested; the test build applies the pre-registered size)."""
+    from vec import t1_scope
+
+    pool, rows, _, coords = draw_copy(ctx)
+    t = ctx.task
+    if t.kind == "extrap":
+        start, end, damping = ctx.inputs["start"], pool, B0_DAMPING
+    else:
+        lo, hi = t.role_days["before"], t.role_days["after"]
+        start, end, damping = pool, ctx.inputs["after"], (t.target_day - lo) / (hi - lo)
+
+    def typed(a: ad.AnnData, tag: str) -> ad.AnnData:
+        m = np.asarray(a.obs["merged"]).astype(str)
+        return _shallow(a, b0_type=np.where(m == "Untracked", f"Untracked@{tag}", m))
+
+    like = typed(pool, "start" if t.kind == "interp" else "end")[rows]
+    shifted, _ = t1_scope.momentum_shift(typed(start, "start"), typed(end, "end"), like, damping, (), key="b0_type",
+                                         seed=[ctx.seed, 3])
+    return finish(ctx, pool, dense(shifted[:, ctx.board.genes].X), coords)
+
+
+def _b0(ctx: BuildContext) -> Stage:
+    return _b0_t1(B0_DAMPING)(ctx) if ctx.task.task == "T1" else _b0_t2(ctx)
+
+
+def _b0_applies(t: PseudoTask) -> bool:
+    if t.task == "T1" or (t.task == "T2" and t.kind == "extrap"):
+        return "start" in t.inputs
+    return t.task == "T2" and t.kind == "interp" and {"before", "after"} <= set(t.inputs)
+
+
 _ANY = (frozenset(),)
 CANDIDATES = {
     FLOOR: Candidate(FLOOR, frozenset(TASKS), _ANY, None,
@@ -407,6 +486,13 @@ CANDIDATES = {
                                   requires=lambda t: start_role(t) is not None),
     "shift_transfer": Candidate("shift_transfer", frozenset({"T3"}), (frozenset({"ko_train", "wt_train"}),),
                                 _shift_transfer, {"what": "training knockout's pseudobulk change on copied WT cells"}),
+    "b0": Candidate("b0", frozenset({"T1", "T2"}), (), _b0,
+                    {"what": "B0 (feat-009): T1 chamber-only copy plus damped momentum; T2 copy plus damped momentum "
+                             "or bracket interpolation, both in count space", "damping": B0_DAMPING,
+                     "scope": "chamber"}, requires=_b0_applies),
+    "b0_scope": Candidate("b0_scope", frozenset({"T1"}), _ANY, _b0_t1(0.0),
+                          {"what": "T1 chamber-only copy without a shift (B0's composition alone)",
+                           "scope": "chamber"}),
 }
 
 

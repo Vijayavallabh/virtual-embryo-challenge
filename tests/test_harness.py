@@ -474,3 +474,69 @@ def test_t1_scope_rule_judges_tissue_mix_changes_on_the_chamber_cut_truth():
     same = harness.decide([res(k, ("floor", "copy")) for k in (whole.key, cut.key, early.key)],
                           [whole, cut, early], "floor", "copy")
     assert same["counted"] == [whole.key, cut.key, early.key]
+
+
+# ------------------------------------------------------------------------------------------------ B0 (feat-009)
+def _counted_pool(n, rng, means, props, groups, scale=1.0):
+    types = rng.choice(len(props), size=n, p=props)
+    counts = rng.poisson(means[types]).astype(np.int32)
+    lib = counts.sum(1, keepdims=True).clip(min=1)
+    X = np.log1p(1e4 * counts / lib).astype(np.float32)
+    centres = np.array([[0, 0, 0], [6, 0, 0], [0, 6, 0]], float) * scale
+    coords = (centres[types] + rng.normal(size=(n, 3)) * 1.5 * scale).astype(np.float32)
+    a = ad.AnnData(X=X, obs=pd.DataFrame({"celltype": [f"type{k}" for k in types],
+                                          "merged": [groups[k] for k in types]}, index=[f"c{i}" for i in range(n)]),
+                   var=pd.DataFrame(index=GENES))
+    a.layers["counts"] = counts
+    a.obsm["spatial_3D"] = coords
+    return a
+
+
+@pytest.fixture(scope="module")
+def counted_t2():
+    rng = np.random.default_rng(23)
+    base = rng.gamma(2.0, 2.0, size=(3, len(GENES)))
+    later = base.copy()
+    later[:, :8] *= 3.0
+    groups = ["CM", "Endothelial", "Untracked"]
+    start = _counted_pool(3000, rng, base, [0.5, 0.3, 0.2], groups)
+    ref = _counted_pool(4000, rng, later, [0.4, 0.4, 0.2], groups, scale=1.1)
+    board = Board(key="pseudo:b0", task="T2", genes=list(GENES), needs_coords=True, setting="heart",
+                  min_cells=100, max_cells=1500)
+    return board, {"ref": ref, "start": start}
+
+
+def test_b0_on_t2_moves_the_copied_cells_in_count_space(counted_t2):
+    board, inputs = counted_t2
+    view = harness.TaskView.of(_task(key="b0syn"))
+    ctx = harness.BuildContext(task=view, board=board, inputs=inputs, seed=harness.BUILD_SEED_OFFSET + 2)
+    pool, rows, X0, coords0 = harness.draw_copy(ctx)
+    pred = CANDIDATES["b0"].build(ctx)
+    copy = CANDIDATES["copy"].build(ctx)
+    assert np.array_equal(pred.coords, copy.coords) and pred.n == copy.n == board.max_cells  # the copy's own cells
+    assert not np.allclose(pred.X, copy.X)
+    assert np.all(pred.X[copy.X == 0] == 0)  # count-space edits keep zeros
+    untracked = np.asarray(pool.obs["merged"])[rows] == "Untracked"
+    assert untracked.any() and np.allclose(pred.X[untracked], copy.X[untracked])  # held flat
+
+
+def test_b0_interpolates_by_the_target_fraction_of_the_bracket(counted_t2, monkeypatch):
+    board, inputs = counted_t2
+    task = _task(**INTERP, inputs={"before": "T2/E7.25.h5ad", "after": "T2/E8.0.h5ad"})
+    seen = {}
+    real = harness.t2_build
+
+    def spy(start, end, like, damping, held, **kw):
+        seen["damping"] = damping
+        from vec import t1_scope
+        return t1_scope.__dict__["_momentum_shift_real"](start, end, like, damping, held, **kw)
+
+    from vec import t1_scope
+    monkeypatch.setitem(t1_scope.__dict__, "_momentum_shift_real", t1_scope.momentum_shift)
+    monkeypatch.setattr(t1_scope, "momentum_shift", spy)
+    ctx = harness.BuildContext(task=harness.TaskView.of(task), board=replace(board, setting="embryo"),
+                               inputs={"before": inputs["start"], "after": inputs["ref"]},
+                               seed=harness.BUILD_SEED_OFFSET)
+    CANDIDATES["b0"].build(ctx)
+    assert seen["damping"] == pytest.approx((7.5 - 7.25) / (8.0 - 7.25)) and real is harness.t2_build
+    assert CANDIDATES["b0"].applies(task) and not CANDIDATES["b0"].applies(_task(**KO, inputs={"wt": KO["reference"]}))
