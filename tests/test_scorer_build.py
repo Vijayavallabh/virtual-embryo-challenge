@@ -25,6 +25,7 @@ from vec.evaluate import (
     Stage,
     handedness,
     mirror_z,
+    panel_metrics,
     prefix_parity,
     score_board,
     score_board_seeds,
@@ -300,6 +301,36 @@ def test_score_board_mirror_twin_end_to_end(helix_stages):
     for k in main[0].metrics:
         if k not in CANONICALISING:
             assert same(main[0].metrics[k], main[1].metrics[k]), k
+
+
+def test_bake_protocol_draws_the_server_working_copies(helix_stages):
+    """protocol="bake" (runbook step 4.6): target and reference drawn with the same seed, the truth veckit's first
+    half in veckit's row order; the default protocol keeps the reference at seed + 1 and sorted halves."""
+    from common.core_metrics import split_half as veckit_split_half
+
+    ref, target, pred = helix_stages
+    board = make_board("T2", True)
+    frac, seed = 0.25, 3
+    tw, rw = subsample(target, frac, seed), subsample(ref, frac, seed)
+    a, b = veckit_split_half(tw.n, seed=0)
+    assert np.any(np.diff(a) < 0)  # veckit's order, not sorted: row order matters to the prefix build
+    truth, other = tw.take(a), tw.take(b)
+    got = score_board(board, pred, target, ref, seed=seed, frac=frac, build="prefix", protocol="bake")
+    want = panel_metrics("T2", pred, truth, rw, seed=seed, build="prefix")
+    assert all(same(v, got.metrics[k]) for k, v in want.items())
+    floor = panel_metrics("T2", rw, truth, rw, seed=seed, build="prefix")
+    ceiling = panel_metrics("T2", other, truth, rw, seed=seed, build="prefix")
+    for m, anc in got.anchors.items():
+        assert same(anc["floor"], floor[m]) and same(anc["ceiling"], ceiling[m]), m
+    assert got.extras["protocol"] == "bake" and got.extras["ref_cells"] == rw.n
+
+    emu = score_board(board, pred, target, ref, seed=seed, frac=frac, build="prefix")
+    assert emu.extras["protocol"] == "emulator"
+    assert emu.metrics["d2_shape"] != got.metrics["d2_shape"]  # another truth half
+    summary = score_board_seeds(board, pred, target, ref, seeds=(seed,), frac=frac, build="prefix", protocol="bake")
+    assert summary["per_seed"][0]["score"] == got.score
+    with pytest.raises(ValueError, match="protocol"):
+        score_board(board, pred, target, ref, protocol="server")
 
 
 # ------------------------------------------------------------------------------------------------ anchor check

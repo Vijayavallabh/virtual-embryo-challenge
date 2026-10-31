@@ -4,7 +4,8 @@ What is reproduced exactly: the metric code (the pinned veckit functions are cal
 group weights of proposal Table 1. What is emulated: the server subsamples every stage to 10% and splits the target in
 two halves at a fixed seed (one half is the truth, the other half is the ceiling prediction); the floor is the
 copy_last / wt_identity prediction scored against the same truth. The server's subsampling seeds are not published,
-so scores are reported per seed and averaged.
+so scores are reported per seed and averaged. Runbook step 4.6 (2026-10-28) recovered the validation bake exactly from
+the T2 shape anchors; `score_board(..., protocol="bake")` reproduces it (at seed 0, the server's own draw).
 
 Known gap: Task 2's shape group is "gated" by neighbourhood-structure skill on the live board, but the exact gate is not
 published. `gate` selects an assumption; calibrate it against the public reference rows once the validation answers
@@ -42,6 +43,7 @@ from vec.io import COORD_KEY, dense
 SUBSAMPLE_FRAC = 0.1
 SCORER_BUILDS = ("main", "prefix")
 DEFAULT_BUILD = "main"
+PROTOCOLS = ("emulator", "bake")  # how score_board draws the working copies and the truth half
 
 
 def _veckit_modules(task: str):
@@ -257,6 +259,14 @@ def split_half(stage: Stage, seed: int = 0) -> tuple[Stage, Stage]:
     return stage.take(np.sort(idx[: stage.n // 2])), stage.take(np.sort(idx[stage.n // 2:]))
 
 
+def veckit_halves(stage: Stage, seed: int = 0) -> tuple[Stage, Stage]:
+    """veckit's own split (`common.core_metrics.split_half`), rows kept in veckit's order (not sorted)."""
+    from common.core_metrics import split_half as veckit_split_half
+
+    a, b = veckit_split_half(stage.n, seed=seed)
+    return stage.take(a), stage.take(b)
+
+
 def panel_metrics(task: str, pred: Stage, truth: Stage, ref: Stage, seed: int = 0, probe="skip",
                   build: str = DEFAULT_BUILD) -> dict:
     """The full official metric panel for one prediction against one truth, under scorer build `build`."""
@@ -349,7 +359,8 @@ class BoardScore:
 
 def score_board(board: Board, pred: Stage, target: Stage, ref: Stage, floor_pred: Stage | None = None,
                 seed: int = 0, anchors: str = "computed", gate: str = "floor_normalised",
-                probe="skip", frac: float = SUBSAMPLE_FRAC, build: str = DEFAULT_BUILD) -> BoardScore:
+                probe="skip", frac: float = SUBSAMPLE_FRAC, build: str = DEFAULT_BUILD,
+                protocol: str = "emulator") -> BoardScore:
     """Score `pred` on a board, emulating the server's 10% working copies and half-split truth.
 
     target: the full held-out stage (e.g. released validation answers). ref: the full DE reference stage (preceding
@@ -357,7 +368,12 @@ def score_board(board: Board, pred: Stage, target: Stage, ref: Stage, floor_pred
     what copy_last and wt_identity return. anchors: "computed" measures floor and ceiling on these working copies;
     "published" uses the board's anchors from index.json (validation boards only). frac: working-copy fraction;
     0.1 is what the server does, 1.0 is useful for small files and low-noise diagnostics. build: the scorer build
-    ("main" or "prefix", see the module docstring) for the candidate and for computed anchors.
+    ("main" or "prefix", see the module docstring) for the candidate and for computed anchors. protocol: how the
+    working copies and the truth half are drawn. "emulator" draws the target with `seed` and the reference with
+    `seed + 1` and takes sorted halves of a seeded permutation. "bake" is the validation bake that runbook step 4.6
+    recovered exactly on all three T2 validation boards (2026-10-28, experiments/scorer_build/results/release/): the
+    target and the reference drawn with the same `seed`, the truth the first half of veckit's split_half(n, 0) in
+    veckit's row order; at seed 0 these are the server's own working copies and truth half.
 
     On T2 the candidate's handedness diagnostics go to extras["handedness"] whatever the build (dice_proper,
     dice_mirror, prefix_mode on this truth half, and local_parity at metric seed 0 with the board's truth_cells);
@@ -365,16 +381,19 @@ def score_board(board: Board, pred: Stage, target: Stage, ref: Stage, floor_pred
     """
     if build not in SCORER_BUILDS:
         raise ValueError(f"build must be one of {SCORER_BUILDS}, got {build!r}")
+    if protocol not in PROTOCOLS:
+        raise ValueError(f"protocol must be one of {PROTOCOLS}, got {protocol!r}")
     task = board.task
+    ref_seed = seed + 1 if protocol == "emulator" else seed
     target_w = subsample(target, frac, seed)
-    ref_w = subsample(ref, frac, seed + 1)
-    truth, other_half = split_half(target_w, seed=0)
+    ref_w = subsample(ref, frac, ref_seed)
+    truth, other_half = split_half(target_w, seed=0) if protocol == "emulator" else veckit_halves(target_w)
     values = panel_metrics(task, pred, truth, ref_w, seed=seed, probe=probe, build=build)
 
-    extras = {"build": build}
+    extras = {"build": build, "protocol": protocol}
     floor_w = None
     if anchors == "computed":
-        floor_w = ref_w if floor_pred is None else subsample(floor_pred, frac, seed + 1)
+        floor_w = ref_w if floor_pred is None else subsample(floor_pred, frac, ref_seed)
         floor_vals = panel_metrics(task, floor_w, truth, ref_w, seed=seed, build=build)
         ceil_vals = panel_metrics(task, other_half, truth, ref_w, seed=seed, build=build)
         anchor_map = {m: {"floor": floor_vals.get(m), "ceiling": ceil_vals.get(m)} for m in RANKED_METRICS[task]}
