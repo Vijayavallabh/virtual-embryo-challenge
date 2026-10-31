@@ -1,0 +1,15 @@
+T1:test: 3 pseudo-task(s) in /mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/runs/harness/d2_v1 (protocol bake, build main, anchors computed, seeds [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  T1/E8.5->E9.5 on pseudo:T1/E8.5->E9.5: floor 50.00 +/- 0.00; copy 52.88 +/- 1.55; b0_scope 38.93 +/- 1.86 (commit 20fb8b5, clean True)
+  T1/E9.5->E10.5 on T1:val: floor 50.00 +/- 0.00; copy 47.98 +/- 1.08; pseudobulk_shift 49.49 +/- 0.69; b0 44.12 +/- 0.46; b0_scope 43.38 +/- 0.44 (commit 20fb8b5, clean True)
+  T1/E9.5->E10.5:chamber on pseudo:T1/E9.5->E10.5:chamber: floor 50.00 +/- 0.00; copy 48.06 +/- 1.20; pseudobulk_shift 49.18 +/- 0.81; b0 49.68 +/- 0.67; b0_scope 48.88 +/- 0.64 (commit 20fb8b5, clean True)
+b0 against floor: not kept (loses more than 0.3 points on average on ['T1/E9.5->E10.5:chamber']; decided on 1 of 3 configured pseudo-tasks; not counted: {'T1/E9.5->E10.5': 'different tissue mixes are judged on the chamber-cut truth', 'T1/E8.5->E9.5': 'change does not apply'})
+    T1/E9.5->E10.5:chamber: paired mean gain -0.32, ahead in 4 of 10 seeds, passes False, vetoes True
+b0_scope against floor: not kept (loses more than 0.3 points on average on ['T1/E9.5->E10.5:chamber']; decided on 1 of 3 configured pseudo-tasks; not counted: {'T1/E9.5->E10.5': 'different tissue mixes are judged on the chamber-cut truth', 'T1/E8.5->E9.5': 'different tissue mixes are judged on the chamber-cut truth'})
+    T1/E9.5->E10.5:chamber: paired mean gain -1.12, ahead in 1 of 10 seeds, passes False, vetoes True
+copy against floor: not kept (loses more than 0.3 points on average on ['T1/E9.5->E10.5', 'T1/E9.5->E10.5:chamber']; decided on 3 of 3 configured pseudo-tasks; not counted: none)
+    T1/E9.5->E10.5: paired mean gain -2.02, ahead in 1 of 10 seeds, passes False, vetoes True
+    T1/E9.5->E10.5:chamber: paired mean gain -1.94, ahead in 1 of 10 seeds, passes False, vetoes True
+    T1/E8.5->E9.5: paired mean gain +2.88, ahead in 10 of 10 seeds, passes True, vetoes False
+pseudobulk_shift against floor: not kept (loses more than 0.3 points on average on ['T1/E9.5->E10.5', 'T1/E9.5->E10.5:chamber']; decided on 2 of 3 configured pseudo-tasks; not counted: {'T1/E8.5->E9.5': 'change does not apply'})
+    T1/E9.5->E10.5: paired mean gain -0.51, ahead in 2 of 10 seeds, passes False, vetoes True
+    T1/E9.5->E10.5:chamber: paired mean gain -0.82, ahead in 2 of 10 seeds, passes False, vetoes True

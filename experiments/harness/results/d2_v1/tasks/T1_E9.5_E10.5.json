@@ -1,0 +1,872 @@
+{
+ "task": {
+  "key": "T1/E9.5->E10.5",
+  "test_board": "T1:test",
+  "task": "T1",
+  "kind": "extrap",
+  "target": "T1/E10.5_RNA.h5ad",
+  "reference": "T1/E9.5_RNA.h5ad",
+  "inputs": {
+   "ref": "T1/E9.5_RNA.h5ad",
+   "start": "T1/E8.5_RNA.h5ad"
+  },
+  "validation_board": "T1:val",
+  "twin_board": null,
+  "setting": null,
+  "forbidden": [],
+  "adoption": true,
+  "replicate": false,
+  "target_filter": null,
+  "notes": "The test geometry one day shorter (E12.5 from E10.5, momentum from E9.5). The truth is the whole E10.5 library: 31% of it is pharyngeal, surrounding, progenitor or pericardial tissue (configs/t1_chamber_classes.yaml categories, measured 2026-11-01), while E12.5 is the heart chamber only."
+ },
+ "board": {
+  "key": "T1:val",
+  "task": "T1",
+  "setting": null,
+  "split": "val",
+  "target_ko": null,
+  "needs_coords": false,
+  "min_cells": 1000,
+  "max_cells": 5118,
+  "truth_cells": 1249,
+  "ref_cells": 1706,
+  "floor_model": "copy_last"
+ },
+ "target_filter_record": null,
+ "candidates": [
+  "floor",
+  "copy",
+  "pseudobulk_shift",
+  "b0",
+  "b0_scope"
+ ],
+ "params": {
+  "floor": {
+   "what": "the organisers' floor: the reference's 10% working copy (copy_last or wt_identity)",
+   "scope": "whole",
+   "tuned_on": [],
+   "externals": []
+  },
+  "copy": {
+   "what": "real reference cells at the count rule",
+   "scope": "whole",
+   "tuned_on": [],
+   "externals": []
+  },
+  "pseudobulk_shift": {
+   "what": "per-type mean change from the stage before, on copied reference cells",
+   "scope": "whole",
+   "tuned_on": [],
+   "externals": []
+  },
+  "b0": {
+   "what": "B0 (feat-009): T1 chamber-only copy plus damped momentum; T2 copy plus damped momentum or bracket interpolation, both in count space",
+   "damping": 0.5,
+   "scope": "chamber",
+   "tuned_on": [],
+   "externals": [],
+   "derived": {
+    "t1_held_flat": {
+     "file": "experiments/t1_direction/results/held_flat_genes.csv",
+     "sources": [
+      "T1/E8.5_RNA.h5ad",
+      "T1/E9.5_RNA.h5ad"
+     ]
+    }
+   }
+  },
+  "b0_scope": {
+   "what": "T1 chamber-only copy without a shift (B0's composition alone)",
+   "scope": "chamber",
+   "tuned_on": [],
+   "externals": []
+  }
+ },
+ "protocol": "bake",
+ "build": "main",
+ "anchors": "computed",
+ "frac": 0.1,
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "rows": [
+  {
+   "seed": 0,
+   "build_seed": 1000000,
+   "scores": {
+    "floor": 50.0,
+    "copy": 46.984282452874425,
+    "pseudobulk_shift": 48.54026644134853,
+    "b0": 43.96512151447558,
+    "b0_scope": 43.2582753746534
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "copy": {
+     "de_score": 0.3766632548618219,
+     "de_direction": 0.5228987425545996,
+     "mmd_u": 0.49376047681132434,
+     "variogram": 0.4841209106562081
+    },
+    "pseudobulk_shift": {
+     "de_score": 0.4414080834419818,
+     "de_direction": 0.5564476371575463,
+     "mmd_u": 0.5220216606498195,
+     "variogram": 0.39666118034328707
+    },
+    "b0": {
+     "de_score": 0.42163993225067253,
+     "de_direction": 0.559442044891312,
+     "mmd_u": 0.39876654632972325,
+     "variogram": 0.3737537848017133
+    },
+    "b0_scope": {
+     "de_score": 0.41620771046420146,
+     "de_direction": 0.5553134664042733,
+     "mmd_u": 0.38943296445010284,
+     "variogram": 0.3643628509719222
+    }
+   },
+   "n_cells": {
+    "floor": 1706,
+    "copy": 5118,
+    "pseudobulk_shift": 5118,
+    "b0": 5118,
+    "b0_scope": 5118
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8464
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.7901
+    },
+    "mmd_u": {
+     "floor": 0.08359,
+     "ceiling": 0.00406
+    },
+    "variogram": {
+     "floor": 0.005219,
+     "ceiling": 0.000158
+    }
+   },
+   "reads": {
+    "copy": [],
+    "pseudobulk_shift": [],
+    "b0": [
+     "configs/t1_chamber_classes.yaml"
+    ],
+    "b0_scope": []
+   },
+   "seconds": 141.4
+  },
+  {
+   "seed": 1,
+   "build_seed": 1000001,
+   "scores": {
+    "floor": 50.0,
+    "copy": 47.805704756695754,
+    "pseudobulk_shift": 49.048437785823836,
+    "b0": 43.35042380549521,
+    "b0_scope": 42.59379128997597
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "copy": {
+     "de_score": 0.36252900232018564,
+     "de_direction": 0.5442172122565785,
+     "mmd_u": 0.5076547328289748,
+     "variogram": 0.4953703703703703
+    },
+    "pseudobulk_shift": {
+     "de_score": 0.4312575470070726,
+     "de_direction": 0.5654097171863669,
+     "mmd_u": 0.5349654739485248,
+     "variogram": 0.4041395981266052
+    },
+    "b0": {
+     "de_score": 0.38404424189666647,
+     "de_direction": 0.5493166126532337,
+     "mmd_u": 0.4124878993223621,
+     "variogram": 0.38208827310384225
+    },
+    "b0_scope": {
+     "de_score": 0.37705494947463675,
+     "de_direction": 0.5444452203058445,
+     "mmd_u": 0.40365668813944683,
+     "variogram": 0.3723293200640267
+    }
+   },
+   "n_cells": {
+    "floor": 1706,
+    "copy": 5118,
+    "pseudobulk_shift": 5118,
+    "b0": 5118,
+    "b0_scope": 5118
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.75
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.7797
+    },
+    "mmd_u": {
+     "floor": 0.09131,
+     "ceiling": 0.00609
+    },
+    "variogram": {
+     "floor": 0.005561,
+     "ceiling": 0.000211
+    }
+   },
+   "reads": {
+    "copy": [],
+    "pseudobulk_shift": [],
+    "b0": [],
+    "b0_scope": []
+   },
+   "seconds": 114.9
+  },
+  {
+   "seed": 2,
+   "build_seed": 1000002,
+   "scores": {
+    "floor": 50.0,
+    "copy": 48.98049301319583,
+    "pseudobulk_shift": 49.932232320624344,
+    "b0": 43.9372388689948,
+    "b0_scope": 43.261450451800656
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "copy": {
+     "de_score": 0.3958202615956368,
+     "de_direction": 0.5530065545739528,
+     "mmd_u": 0.5021122510561256,
+     "variogram": 0.5098227538636165
+    },
+    "pseudobulk_shift": {
+     "de_score": 0.4532692201403858,
+     "de_direction": 0.5695626651012621,
+     "mmd_u": 0.5316973415132924,
+     "variogram": 0.4205257472092186
+    },
+    "b0": {
+     "de_score": 0.4021083598921304,
+     "de_direction": 0.5575348369487143,
+     "mmd_u": 0.4046495793006177,
+     "variogram": 0.39033357844775723
+    },
+    "b0_scope": {
+     "de_score": 0.39720056182496244,
+     "de_direction": 0.5539932909856541,
+     "mmd_u": 0.395644110514052,
+     "variogram": 0.3806140408056841
+    }
+   },
+   "n_cells": {
+    "floor": 1706,
+    "copy": 5118,
+    "pseudobulk_shift": 5118,
+    "b0": 5118,
+    "b0_scope": 5118
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8201
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.7762
+    },
+    "mmd_u": {
+     "floor": 0.08806,
+     "ceiling": 0.00486
+    },
+    "variogram": {
+     "floor": 0.006014,
+     "ceiling": 0.000175
+    }
+   },
+   "reads": {
+    "copy": [],
+    "pseudobulk_shift": [],
+    "b0": [],
+    "b0_scope": []
+   },
+   "seconds": 115.4
+  },
+  {
+   "seed": 3,
+   "build_seed": 1000003,
+   "scores": {
+    "floor": 50.0,
+    "copy": 50.21577157241821,
+    "pseudobulk_shift": 50.93151003856189,
+    "b0": 45.01647883816655,
+    "b0_scope": 44.05458150225897
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "copy": {
+     "de_score": 0.39655507979758653,
+     "de_direction": 0.5854501728543514,
+     "mmd_u": 0.5134383102510592,
+     "variogram": 0.513124547429399
+    },
+    "pseudobulk_shift": {
+     "de_score": 0.45000276075313345,
+     "de_direction": 0.5952017114914425,
+     "mmd_u": 0.5439137134052388,
+     "variogram": 0.4241993415145166
+    },
+    "b0": {
+     "de_score": 0.414842716074519,
+     "de_direction": 0.5701112412177985,
+     "mmd_u": 0.41655122877225387,
+     "variogram": 0.39480465213454974
+    },
+    "b0_scope": {
+     "de_score": 0.40039302382706954,
+     "de_direction": 0.5652300101581773,
+     "mmd_u": 0.40706944096264724,
+     "variogram": 0.38509612118741926
+    }
+   },
+   "n_cells": {
+    "floor": 1706,
+    "copy": 5118,
+    "pseudobulk_shift": 5118,
+    "b0": 5118,
+    "b0_scope": 5118
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.815
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.779
+    },
+    "mmd_u": {
+     "floor": 0.08574,
+     "ceiling": 0.00455
+    },
+    "variogram": {
+     "floor": 0.005835,
+     "ceiling": 0.000166
+    }
+   },
+   "reads": {
+    "copy": [],
+    "pseudobulk_shift": [],
+    "b0": [],
+    "b0_scope": []
+   },
+   "seconds": 113.6
+  },
+  {
+   "seed": 4,
+   "build_seed": 1000004,
+   "scores": {
+    "floor": 50.0,
+    "copy": 47.209840045482885,
+    "pseudobulk_shift": 49.33672144128404,
+    "b0": 43.748339391464434,
+    "b0_scope": 43.08606712771439
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "copy": {
+     "de_score": 0.37142994750276936,
+     "de_direction": 0.5185951792748881,
+     "mmd_u": 0.4932197838191943,
+     "variogram": 0.5081309180732811
+    },
+    "pseudobulk_shift": {
+     "de_score": 0.44939106112697397,
+     "de_direction": 0.5596224511852439,
+     "mmd_u": 0.5271301547293986,
+     "variogram": 0.4148739495798319
+    },
+    "b0": {
+     "de_score": 0.4222745441603242,
+     "de_direction": 0.5618489583333334,
+     "mmd_u": 0.3848591729284874,
+     "variogram": 0.37997383206341884
+    },
+    "b0_scope": {
+     "de_score": 0.4193583469276781,
+     "de_direction": 0.5570537187118985,
+     "mmd_u": 0.376186669331468,
+     "variogram": 0.36950827033904654
+    }
+   },
+   "n_cells": {
+    "floor": 1706,
+    "copy": 5118,
+    "pseudobulk_shift": 5118,
+    "b0": 5118,
+    "b0_scope": 5118
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.7712
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.7767
+    },
+    "mmd_u": {
+     "floor": 0.08074,
+     "ceiling": 0.00545
+    },
+    "variogram": {
+     "floor": 0.005125,
+     "ceiling": 0.000188
+    }
+   },
+   "reads": {
+    "copy": [],
+    "pseudobulk_shift": [],
+    "b0": [],
+    "b0_scope": []
+   },
+   "seconds": 113.4
+  },
+  {
+   "seed": 5,
+   "build_seed": 1000005,
+   "scores": {
+    "floor": 50.0,
+    "copy": 47.886118284248404,
+    "pseudobulk_shift": 49.7540216889602,
+    "b0": 44.03176926597395,
+    "b0_scope": 43.33872596582575
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "copy": {
+     "de_score": 0.3967937818800097,
+     "de_direction": 0.5215140513647976,
+     "mmd_u": 0.4984201722322037,
+     "variogram": 0.4987908643081057
+    },
+    "pseudobulk_shift": {
+     "de_score": 0.46848293662173784,
+     "de_direction": 0.5542297799371249,
+     "mmd_u": 0.5295550289626119,
+     "variogram": 0.4149776453055141
+    },
+    "b0": {
+     "de_score": 0.42074898264049865,
+     "de_direction": 0.5459984514675864,
+     "mmd_u": 0.40709442364133186,
+     "variogram": 0.3825125352015935
+    },
+    "b0_scope": {
+     "de_score": 0.41603422808536644,
+     "de_direction": 0.5410099037522668,
+     "mmd_u": 0.398149064634267,
+     "variogram": 0.3734075365428456
+    }
+   },
+   "n_cells": {
+    "floor": 1706,
+    "copy": 5118,
+    "pseudobulk_shift": 5118,
+    "b0": 5118,
+    "b0_scope": 5118
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8168
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.7757
+    },
+    "mmd_u": {
+     "floor": 0.08487,
+     "ceiling": 0.00442
+    },
+    "variogram": {
+     "floor": 0.005742,
+     "ceiling": 0.000173
+    }
+   },
+   "reads": {
+    "copy": [],
+    "pseudobulk_shift": [],
+    "b0": [],
+    "b0_scope": []
+   },
+   "seconds": 114.3
+  },
+  {
+   "seed": 6,
+   "build_seed": 1000006,
+   "scores": {
+    "floor": 50.0,
+    "copy": 48.98124156144525,
+    "pseudobulk_shift": 50.008318060895654,
+    "b0": 44.68835391218865,
+    "b0_scope": 44.11254969638386
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "copy": {
+     "de_score": 0.3812089742333693,
+     "de_direction": 0.571251999418351,
+     "mmd_u": 0.5064401373895976,
+     "variogram": 0.4988256549232159
+    },
+    "pseudobulk_shift": {
+     "de_score": 0.44135662431941924,
+     "de_direction": 0.5844242784885452,
+     "mmd_u": 0.5352304401374214,
+     "variogram": 0.415344114328695
+    },
+    "b0": {
+     "de_score": 0.4066893127776326,
+     "de_direction": 0.5691416153567548,
+     "mmd_u": 0.4136359082256287,
+     "variogram": 0.3941751731030052
+    },
+    "b0_scope": {
+     "de_score": 0.4058832733531529,
+     "de_direction": 0.5656180260600389,
+     "mmd_u": 0.40479458770467697,
+     "variogram": 0.3840589789956878
+    }
+   },
+   "n_cells": {
+    "floor": 1706,
+    "copy": 5118,
+    "pseudobulk_shift": 5118,
+    "b0": 5118,
+    "b0_scope": 5118
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.7782
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.7857
+    },
+    "mmd_u": {
+     "floor": 0.08823,
+     "ceiling": 0.00566
+    },
+    "variogram": {
+     "floor": 0.005693,
+     "ceiling": 0.000171
+    }
+   },
+   "reads": {
+    "copy": [],
+    "pseudobulk_shift": [],
+    "b0": [],
+    "b0_scope": []
+   },
+   "seconds": 114.7
+  },
+  {
+   "seed": 7,
+   "build_seed": 1000007,
+   "scores": {
+    "floor": 50.0,
+    "copy": 47.35325260754551,
+    "pseudobulk_shift": 48.86414166451451,
+    "b0": 44.21004194684441,
+    "b0_scope": 43.47037153111968
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "copy": {
+     "de_score": 0.3789103056019501,
+     "de_direction": 0.5334326942619064,
+     "mmd_u": 0.4933059307105109,
+     "variogram": 0.4872749844816884
+    },
+    "pseudobulk_shift": {
+     "de_score": 0.4381002087682673,
+     "de_direction": 0.5635556827941598,
+     "mmd_u": 0.5208307501549906,
+     "variogram": 0.40989109354020586
+    },
+    "b0": {
+     "de_score": 0.4121777559538424,
+     "de_direction": 0.5574907958085529,
+     "mmd_u": 0.4106462019747776,
+     "variogram": 0.3824471046770601
+    },
+    "b0_scope": {
+     "de_score": 0.4042184339786189,
+     "de_direction": 0.5532602585722316,
+     "mmd_u": 0.40221190214008706,
+     "variogram": 0.37335235765729036
+    }
+   },
+   "n_cells": {
+    "floor": 1706,
+    "copy": 5118,
+    "pseudobulk_shift": 5118,
+    "b0": 5118,
+    "b0_scope": 5118
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8394
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.7874
+    },
+    "mmd_u": {
+     "floor": 0.08804,
+     "ceiling": 0.00403
+    },
+    "variogram": {
+     "floor": 0.005642,
+     "ceiling": 0.000147
+    }
+   },
+   "reads": {
+    "copy": [],
+    "pseudobulk_shift": [],
+    "b0": [],
+    "b0_scope": []
+   },
+   "seconds": 113.4
+  },
+  {
+   "seed": 8,
+   "build_seed": 1000008,
+   "scores": {
+    "floor": 50.0,
+    "copy": 46.82227094370243,
+    "pseudobulk_shift": 49.14781065781601,
+    "b0": 44.13693155921684,
+    "b0_scope": 43.203047874918084
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "copy": {
+     "de_score": 0.3316230927099134,
+     "de_direction": 0.5361195682258512,
+     "mmd_u": 0.5057620016022678,
+     "variogram": 0.49779221861201367
+    },
+    "pseudobulk_shift": {
+     "de_score": 0.4235810348757693,
+     "de_direction": 0.5698734922035894,
+     "mmd_u": 0.5331644253881634,
+     "variogram": 0.41582573595935696
+    },
+    "b0": {
+     "de_score": 0.38721608668472596,
+     "de_direction": 0.5618156768907258,
+     "mmd_u": 0.41234989700045227,
+     "variogram": 0.40203202799084914
+    },
+    "b0_scope": {
+     "de_score": 0.37451504005643166,
+     "de_direction": 0.5572497123130035,
+     "mmd_u": 0.4025999509443218,
+     "variogram": 0.3915465268676278
+    }
+   },
+   "n_cells": {
+    "floor": 1706,
+    "copy": 5118,
+    "pseudobulk_shift": 5118,
+    "b0": 5118,
+    "b0_scope": 5118
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.7433
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.7748
+    },
+    "mmd_u": {
+     "floor": 0.08654,
+     "ceiling": 0.00447
+    },
+    "variogram": {
+     "floor": 0.00615,
+     "ceiling": 0.000175
+    }
+   },
+   "reads": {
+    "copy": [],
+    "pseudobulk_shift": [],
+    "b0": [],
+    "b0_scope": []
+   },
+   "seconds": 113.9
+  },
+  {
+   "seed": 9,
+   "build_seed": 1000009,
+   "scores": {
+    "floor": 50.0,
+    "copy": 47.528458931382204,
+    "pseudobulk_shift": 49.35371692956084,
+    "b0": 44.08213718288296,
+    "b0_scope": 43.44420347565655
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "copy": {
+     "de_score": 0.39421095509656395,
+     "de_direction": 0.5274100815617061,
+     "mmd_u": 0.49355514635849895,
+     "variogram": 0.4840639312085242
+    },
+    "pseudobulk_shift": {
+     "de_score": 0.46781164695177435,
+     "de_direction": 0.5612150529985062,
+     "mmd_u": 0.5234343434343434,
+     "variogram": 0.39625095638867647
+    },
+    "b0": {
+     "de_score": 0.42412993039443153,
+     "de_direction": 0.5533422178578944,
+     "mmd_u": 0.39890177563378837,
+     "variogram": 0.3839140103780579
+    },
+    "b0_scope": {
+     "de_score": 0.4216515454405659,
+     "de_direction": 0.5487236558391876,
+     "mmd_u": 0.39034801386029233,
+     "variogram": 0.3737191513926974
+    }
+   },
+   "n_cells": {
+    "floor": 1706,
+    "copy": 5118,
+    "pseudobulk_shift": 5118,
+    "b0": 5118,
+    "b0_scope": 5118
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8226
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.7889
+    },
+    "mmd_u": {
+     "floor": 0.08135,
+     "ceiling": 0.00362
+    },
+    "variogram": {
+     "floor": 0.005348,
+     "ceiling": 0.000169
+    }
+   },
+   "reads": {
+    "copy": [],
+    "pseudobulk_shift": [],
+    "b0": [],
+    "b0_scope": []
+   },
+   "seconds": 112.5
+  }
+ ],
+ "provenance": {
+  "commit": "20fb8b5a16a35c60c922bd805f4c1723291a9455",
+  "tree_clean": true,
+  "config_sha256": "7ebe0c245c99093eed4151adff6beb9e6f960ac218f658e4348038fbe1dfa73c",
+  "files_sha256": {
+   "T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+   "T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+   "T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361"
+  },
+  "derived_sha256": {
+   "t1_held_flat": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c"
+  },
+  "build_seed_offset": 1000000,
+  "utc": "2026-10-31 22:18:01"
+ },
+ "run_id": "d2_v1",
+ "seconds": 1180.4
+}

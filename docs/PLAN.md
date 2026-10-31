@@ -631,3 +631,9 @@ open. No organiser reply to any of the four emails as of then.
   (`experiments/adoption_rule/`). (2) The browser route for the test-board specs is cleared for this one route, with
   the dated notice first and the save not before 2026-11-04 (`docs/DATA_POLICY.md`). (3) T3 s2 becomes the refused
   branch's s1, with no number derived from the Gata4 files, uploaded first (section 4.4; runbook section 5).
+- 2026-11-01 (b): a second "yes for all": the adoption rule's readings (section 3, item 8), the chamber-cut T1
+  pseudo-task counts, and the screen may release the qualitative T1 E12.5 collection text (`docs/DATA_NOTES.md`).
+- 2026-11-01 (c): D2 run (`experiments/harness/results/d2_v1/`). B0 beats the floor on the T2 embryo board only. On
+  T2 heart it falls short on the one-day pseudo-task (ahead in 7 of 10 seeds, 8 needed); on T1 it is vetoed on the
+  chamber-cut truth (-0.32 points). B0 beats a plain copy on all three boards. T3's pre-registered entries cannot be
+  checked on the harness. Pending with the captain: the T1 blood share at test and the T3 reading.

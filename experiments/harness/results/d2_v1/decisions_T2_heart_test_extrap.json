@@ -1,0 +1,146 @@
+{
+ "board": "T2:heart:test_extrap",
+ "runs": "/mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/runs/harness/d2_v1",
+ "decisions": [
+  {
+   "base": "floor",
+   "change": "b0",
+   "counted": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 1 of 2 pseudo-tasks; needs 2",
+   "tasks": {
+    "T2h/<=E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": 0.4272525233645027,
+     "seeds_ahead": 7,
+     "passes": false,
+     "vetoes": false
+    },
+    "T2h/<=E8.75->E10.5": {
+     "complete": true,
+     "mean_gain": 1.4464499116553617,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 1
+  },
+  {
+   "base": "floor",
+   "change": "copy",
+   "counted": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 1 of 2 pseudo-tasks; needs 2",
+   "tasks": {
+    "T2h/<=E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": -0.04482335730095173,
+     "seeds_ahead": 4,
+     "passes": false,
+     "vetoes": false
+    },
+    "T2h/<=E8.75->E10.5": {
+     "complete": true,
+     "mean_gain": 0.5467720001961226,
+     "seeds_ahead": 8,
+     "passes": true,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 1
+  },
+  {
+   "base": "floor",
+   "change": "pseudobulk_shift",
+   "counted": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T2h/<=E8.75->E10.5']",
+   "tasks": {
+    "T2h/<=E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": 0.8789842187017051,
+     "seeds_ahead": 9,
+     "passes": true,
+     "vetoes": false
+    },
+    "T2h/<=E8.75->E10.5": {
+     "complete": true,
+     "mean_gain": -1.2988410291013999,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    }
+   },
+   "need": 2,
+   "passed": 1
+  }
+ ],
+ "summaries": {
+  "T2h/<=E8.75->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    50.54677200019612,
+    0.7913080817718336
+   ],
+   "pseudobulk_shift": [
+    48.7011589708986,
+    0.5353351594785953
+   ],
+   "b0": [
+    51.446449911655364,
+    0.6052791869950301
+   ]
+  },
+  "T2h/<=E9.5->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    49.955176642699044,
+    0.8224702162475157
+   ],
+   "pseudobulk_shift": [
+    50.87898421870171,
+    0.7534404121192456
+   ],
+   "b0": [
+    50.4272525233645,
+    0.7027599518307952
+   ]
+  }
+ }
+}

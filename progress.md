@@ -169,6 +169,19 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       embryo board only; on T1 a copy loses 2.0 points. Found: never build a test file at seed 0 (runbook).
       Awaiting the captain: how inapplicable, tuned-on and replicate pseudo-tasks count; the T1 tissue-mix
       geometry; whether the screen may release the qualitative E12.5 collection text.
+      (Answered the same day, a second "yes for all": PLAN section 3, item 8.)
+
+- [x] 2026-11-01: D2 check of B0 (feat-009; `experiments/harness/results/d2_v1/`, 10 seeds, clean trees). B0
+      beats the floor on the T2 embryo board only (+1.21 and +3.86 points, 10 of 10 seeds). T2 heart: +0.43 on the
+      one-day task but ahead in 7 of 10 seeds (8 needed), +1.45 on the 1.75-day task. T1: -0.32 on the chamber-cut
+      truth (4 of 10 seeds; the 0.3-point veto), 44.1 on the whole E10.5. B0 beats a plain copy on all three
+      boards. On T1 a fresh draw of reference cells starts about 2 points below the floor, all on de_score (by the
+      metric's code: its null ranks genes by reference expression, and the floor scores exactly 0); and E9.5's
+      chamber mix is far from E10.5's (blood about 2.5% against 24% of chamber cells), so B0's scope step gains
+      nothing on mmd_u and loses on the variogram. T3 has no harness check (the pre-registered entries were selected
+      or fitted on every fold). The first T1 run stopped when the read guard refused B0's own read of the held-flat
+      list; the harness now hands the list over (20fb8b5). Awaiting the captain: the T1 blood share at test, the T3
+      D2 reading, the push.
 
 ### What's Next
 

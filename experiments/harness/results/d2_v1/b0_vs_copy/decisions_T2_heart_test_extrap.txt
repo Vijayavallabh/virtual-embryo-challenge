@@ -1,0 +1,6 @@
+T2:heart:test_extrap: 2 pseudo-task(s) in /mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/runs/harness/d2_v1 (protocol bake, build main, anchors computed, seeds [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  T2h/<=E8.75->E10.5 on pseudo:T2h/<=E8.75->E10.5: floor 50.00 +/- 0.00; copy 50.55 +/- 0.79; pseudobulk_shift 48.70 +/- 0.54; b0 51.45 +/- 0.61 (commit eae34eb, clean True)
+  T2h/<=E9.5->E10.5 on T2:heart:val_extrap: floor 50.00 +/- 0.00; copy 49.96 +/- 0.82; pseudobulk_shift 50.88 +/- 0.75; b0 50.43 +/- 0.70 (commit eae34eb, clean True)
+b0 against copy: KEEP (passes on 2 of 2 pseudo-tasks (needs 2) and loses on none; decided on 2 of 2 configured pseudo-tasks; not counted: none)
+    T2h/<=E9.5->E10.5: paired mean gain +0.47, ahead in 9 of 10 seeds, passes True, vetoes False
+    T2h/<=E8.75->E10.5: paired mean gain +0.90, ahead in 10 of 10 seeds, passes True, vetoes False

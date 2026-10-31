@@ -1,0 +1,8 @@
+T1:test: 3 pseudo-task(s) in /mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/runs/harness/d2_v1 (protocol bake, build main, anchors computed, seeds [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  T1/E8.5->E9.5 on pseudo:T1/E8.5->E9.5: floor 50.00 +/- 0.00; copy 52.88 +/- 1.55; b0_scope 38.93 +/- 1.86 (commit 20fb8b5, clean True)
+  T1/E9.5->E10.5 on T1:val: floor 50.00 +/- 0.00; copy 47.98 +/- 1.08; pseudobulk_shift 49.49 +/- 0.69; b0 44.12 +/- 0.46; b0_scope 43.38 +/- 0.44 (commit 20fb8b5, clean True)
+  T1/E9.5->E10.5:chamber on pseudo:T1/E9.5->E10.5:chamber: floor 50.00 +/- 0.00; copy 48.06 +/- 1.20; pseudobulk_shift 49.18 +/- 0.81; b0 49.68 +/- 0.67; b0_scope 48.88 +/- 0.64 (commit 20fb8b5, clean True)
+b0 against copy: KEEP (passes on 1 of 1 pseudo-tasks (needs 1) and loses on none; decided on 1 of 3 configured pseudo-tasks; not counted: {'T1/E9.5->E10.5': 'different tissue mixes are judged on the chamber-cut truth', 'T1/E8.5->E9.5': 'change does not apply'})
+    T1/E9.5->E10.5:chamber: paired mean gain +1.62, ahead in 9 of 10 seeds, passes True, vetoes False
+b0_scope against copy: KEEP (passes on 1 of 1 pseudo-tasks (needs 1) and loses on none; decided on 1 of 3 configured pseudo-tasks; not counted: {'T1/E9.5->E10.5': 'different tissue mixes are judged on the chamber-cut truth', 'T1/E8.5->E9.5': 'different tissue mixes are judged on the chamber-cut truth'})
+    T1/E9.5->E10.5:chamber: paired mean gain +0.82, ahead in 9 of 10 seeds, passes True, vetoes False

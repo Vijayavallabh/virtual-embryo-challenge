@@ -106,10 +106,12 @@
   the test board's max_cells (after the intake).
 - Model changes are adopted only under the adoption rule (`vec.adoption.keep_change`; PLAN section 3, item 8),
   through the pseudo-task harness (feat-008 done 2026-11-01: `vec.harness`, `experiments/harness/run.py`;
-  baselines in `experiments/harness/results/baselines_v1/`). Next: the B0 builders per board (feat-009) as harness
-  candidates, then D2 (Nov 6). Before T1's B0 is judged, the captain decides the T1 tissue-mix geometry (whole
-  versus heart-only E10.5) and how inapplicable, tuned-on and replicate pseudo-tasks count. Never build a test
-  file at seed 0 (runbook section 5).
+  baselines in `experiments/harness/results/baselines_v1/`). D2 ran on 2026-11-01
+  (`experiments/harness/results/d2_v1/`): B0 beats the floor on the T2 embryo board only, and a plain copy on T1,
+  T2 heart and T2 embryo (`progress.md`). Open with the captain: the T1 blood share at test (B0 keeps E10.5's own
+  chamber mix, about 24% blood; the plan said about 2%), the T3 D2 reading (the pre-registered T3 entries cannot be
+  checked on the harness), and the push. Next: M1 (T1) and heart growth (T2 heart) through the harness against B0;
+  on T1, first the de_score handicap of fresh real cells. Never build a test file at seed 0 (runbook section 5).
 - Meanwhile (no specs needed): the v1 pipelines on the release data (`docs/PLAN.md` section 7, Nov 3-9): the T1
   pseudo-task with E10.5 as the truth (`experiments/t1_scope/pseudo_task.py`, honest momentum from E8.5), T2 embryo
   FGW, T2 heart growth, scored with the calibrated emulator (protocol="bake" reproduces the validation boards). On the

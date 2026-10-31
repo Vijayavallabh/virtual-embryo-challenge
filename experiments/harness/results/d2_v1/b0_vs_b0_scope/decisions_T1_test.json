@@ -1,0 +1,103 @@
+{
+ "board": "T1:test",
+ "runs": "/mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/runs/harness/d2_v1",
+ "decisions": [
+  {
+   "base": "b0_scope",
+   "change": "b0",
+   "counted": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber"
+   ],
+   "excluded": {
+    "T1/E8.5->E9.5": "change does not apply"
+   },
+   "configured": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber",
+    "T1/E8.5->E9.5"
+   ],
+   "decided_on": "2 of 3 configured pseudo-tasks",
+   "keep": true,
+   "reason": "passes on 2 of 2 pseudo-tasks (needs 2) and loses on none",
+   "tasks": {
+    "T1/E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": 0.7343771995396076,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    },
+    "T1/E9.5->E10.5:chamber": {
+     "complete": true,
+     "mean_gain": 0.8044637123857328,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 2
+  }
+ ],
+ "summaries": {
+  "T1/E8.5->E9.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    52.88297731227546,
+    1.5525224150181853
+   ],
+   "b0_scope": [
+    38.93101965722862,
+    1.8625366634481164
+   ]
+  },
+  "T1/E9.5->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    47.97674341689909,
+    1.0833523075516147
+   ],
+   "pseudobulk_shift": [
+    49.491717702938985,
+    0.6879666328638283
+   ],
+   "b0": [
+    44.116683628570335,
+    0.4633178753047292
+   ],
+   "b0_scope": [
+    43.38230642903072,
+    0.4435127849875099
+   ]
+  },
+  "T1/E9.5->E10.5:chamber": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    48.06103129437448,
+    1.2049221129933374
+   ],
+   "pseudobulk_shift": [
+    49.17556599494085,
+    0.8137765560153492
+   ],
+   "b0": [
+    49.68290567973587,
+    0.6683315658494151
+   ],
+   "b0_scope": [
+    48.87844196735013,
+    0.6431969918843083
+   ]
+  }
+ }
+}
