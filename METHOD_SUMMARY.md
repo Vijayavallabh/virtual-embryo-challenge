@@ -49,6 +49,11 @@ the work.
 - **Label harmonisation** (`vec.harmonise`): logistic regression on 50 PCs of the shared panel, group probabilities
   summed from fine labels, depth matching; cross-file compositions quoted as a top-call/EM bracket
   (`experiments/harmonise/REPORT.md`).
+- **Pseudo-task harness** (`vec.harness`): paired backtests on released stages in each test board's geometry, scored
+  with the calibrated emulator (the server's own draws reproduced; all 66 validation anchors exact), the floor checked
+  to score 50 on every seed, candidates built from the allowed stages only (no file paths, a read guard against files
+  derived from targets) on shared draws, and a change kept only under the adoption rule (approved rule 7's test per
+  pseudo-task).
 - **Pre-registration:** every rule that turns released data into a submission is committed before the data it acts on
   (size procedure, T3 decomposition rules, T1 direction readout, cell-count rule, label-mapping rule).
 - **Provenance:** every prediction file carries a build stamp (its sha256, the commit that built it, and whether the

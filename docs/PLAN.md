@@ -434,7 +434,9 @@ Done:
 Next:
 1. Calibrate the emulator against the published reference rows on the validation boards (A2), with the scorer-build
    switch (pre-fix vs main) and the validation anchor check.
-2. Pseudo-task harness with leave-one-transition-out splits and paired comparisons over 10 seeds.
+2. Pseudo-task harness with leave-one-transition-out splits and paired comparisons over 10 seeds. Built 2026-11-01
+   (feat-008: `vec.harness`, `configs/pseudo_tasks.yaml`, `experiments/harness/run.py`), reviewed by four independent
+   agents (leakage, pairing, fidelity, tests), every safeguard mutation-tested.
 3. External-data ingestion with window filters as committed code (Feng by per-cell stage, JAX by embryo ID: 1-22 and
    54-74), registered in `EXTERNAL_DATA.md` before use.
 4. Run registry. In the final phase (open since 2026-10-27) the quota lists the official count per test board (T1:test,

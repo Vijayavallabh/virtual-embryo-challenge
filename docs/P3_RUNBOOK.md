@@ -209,6 +209,16 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
   does not (cell-type matching across E8.75 and E9.5 is unpublished). On the validation boards, a local score at
   seed 0 with the published anchors is the server's score.
 - Test-board intake: reference stage, cell limits and what else each test board publishes (decision point D1).
+- Pseudo-task harness (feat-008, `vec.harness`, `configs/pseudo_tasks.yaml`): every model change is compared with
+  its base on its test board's pseudo-tasks and kept only under the adoption rule (`docs/PLAN.md` section 3, item 8):
+  `uv run python experiments/harness/run.py run --board KEY --candidates floor,copy,... --out runs/harness/<id>`
+  (DGX), then `... decide --runs runs/harness/<id> --board KEY --base floor --change NAME --out
+  experiments/harness/results/<id> --register`. `decide` refuses results from different commits, a dirty tree or
+  another config.
+- **Build seed (2026-11-01): never build a test file at seed 0.** numpy's `default_rng([s, 0])`, which
+  `vec.t2_build.sample_cells` draws rows with, is the same stream as `default_rng(s)`, and the server draws its
+  reference working copy with seed 0: a T2 file built at seed 0 contains the server's own floor cells. Use the
+  harness's offset (`vec.harness.BUILD_SEED_OFFSET`, 1,000,000) or any seed above it, and record it with the file.
 - Candidate files, built on the DGX with the committed builders and checked there with
   `uv run vec check FILE --board KEY` (no token, nothing sent). A server format check runs from this machine with
   `uv run vec submit runs/<...>.h5ad --board <test board key> --from-dgx` (the file is pulled for that call only;

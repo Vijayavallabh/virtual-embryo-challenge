@@ -76,8 +76,8 @@
       "dependencies": [
         "feat-005"
       ],
-      "status": "not-started",
-      "evidence": ""
+      "status": "in-progress",
+      "evidence": "2026-11-01: vec.harness, configs/pseudo_tasks.yaml (10 pseudo-tasks on the four test boards; fixed before any adoption result), vec.registry, experiments/harness/run.py (16abc5d). An independent four-lens review (leakage, pairing, fidelity, tests) found 32 issues; fixed in 57aa7ab (decide over the configured tasks with consistency checks, path-free task view, read guard, stage rules by day and genotype, T1 file checks, anchor checks), 13 of 13 safeguards mutation-tested, ./init.sh 461 passed. Smoke run on all 9 then-configured tasks at seed 0 (16abc5d); the 10-seed baseline run follows. Open with the captain: how inapplicable, tuned-on and replicate pseudo-tasks count, and the T1 tissue-mix geometry."
     },
     {
       "id": "feat-009",

@@ -125,3 +125,18 @@ held-out target until it is released).
   `E8.25_late` is about E8.3, older than another E8.25 collection.
 - **Use:** any use beyond the Challenge, publication or public presentation included, needs prior approval from
   Dr. Neil Chi and the data-generating team.
+
+## T1 composition by chamber category (configs/t1_chamber_classes.yaml; measured 2026-11-01)
+
+Share of each released T1 file's cells in the categories that the E12.5 test keeps (the heart chamber: cm,
+endocardium, epicardium, vascular endothelium, blood) and in those it leaves out:
+
+| File | Chamber | Left out (pharyngeal, surrounding, progenitor, pericardium) | Notable |
+|---|---|---|---|
+| E8.5_RNA | 0.31 | 0.69 | surrounding 0.40, progenitor 0.25 |
+| E9.5_RNA | 0.48 | 0.52 | surrounding 0.26, progenitor 0.13 |
+| E10.5_RNA | 0.69 | 0.31 | pharyngeal 0.12, surrounding 0.11; blood 0.17, endocardium 0.23, CM 0.14 |
+
+The E10.5 truth of the T1 pseudo-task therefore keeps about a third of the tissue the E12.5 test leaves out, and its
+blood share is far above B0's planned 2%.
+
