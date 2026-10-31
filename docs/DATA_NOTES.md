@@ -140,3 +140,18 @@ endocardium, epicardium, vascular endothelium, blood) and in those it leaves out
 The E10.5 truth of the T1 pseudo-task therefore keeps about a third of the tissue the E12.5 test leaves out, and its
 blood share is far above B0's planned 2%.
 
+
+## Task 1 E12.5 collection (Data Protocol page; released by the screen on 2026-11-01 at the captain's request)
+
+Qualitative text only, numbers replaced by [n] (`docs/DATA_POLICY.md` change note 2026-11-01 (b)):
+- Stage table, E12.5, Multiome (Task 1): "Hearts dissected specifically with most surrounding tissue removed; [n]
+  hearts pooled per biological replicate."
+- Multiome dissection, E12.5: "The hearts were dissected more specifically, with most of the surrounding tissue
+  removed. A small amount of tissue at the junction between the esophagus and the heart may remain. [n] hearts were
+  pooled per biological replicate."
+- Task 1 is profiled from nuclei (10x Chromium Nuclei Isolation Kit), every sample filtered for doublets (Scrublet,
+  AMULET) and ambient contamination (SoupX).
+- Blood: the page mentions no blood, red cells or any step that removes them (lysis, perfusion, sorting) at any stage
+  or for either assay. The released E10.5 hearts, collected the same way, are 17% blood (24% of their chamber cells).
+This confirms the organisers' earlier dissection note (E12.5 is the heart chamber, a few oesophagus-junction cells),
+so the captain's T1 tissue-mix reading stands. The T2 heart and embryo text about held-out stages stays withheld.
