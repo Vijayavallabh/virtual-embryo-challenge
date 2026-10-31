@@ -282,3 +282,13 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   is not the same as lifting those rules, and the fourth organiser email says we have not tried to get around the
   block. The board-file entry now says the saved-file route is not cleared for use until the user lifts both rules.
   The same day the online refresh still answered 403 (16:52 UTC), and none of the four organiser emails had a reply.
+- 2026-10-31 (b), exposure: searching the repository for the organisers' reference rows (feat-005), the AI assistant
+  ran two recursive greps meant to skip `docs/research/`, but the filter did not match the output paths (this shell's
+  grep is ugrep, which prints paths without a leading "./"), so about 30 lines from `docs/research/` (landscape.md,
+  t1_methods.md, t3_methods.md, engineering.md, t2_spatial.md and README.md) reached the main agent. The assistant
+  checked each line: published validation-board reference rows and notes on why the organisers' baselines score as
+  they do, none of the banned kinds (held-out sizes, test anchors, values from veckit 0.1.2 or PR #6, gene-level
+  knockout findings from papers, Yukon material). No decision depends on them: the pre-registered step-4 outputs,
+  the T3 plan among them, were committed on 2026-10-28, and the calibration verdict follows the pre-registered A2
+  test. The reference rows the calibration uses came through a screening agent
+  (`experiments/calibration/reference_rows.json`); searches now exclude the folder (`--exclude-dir=research`).
