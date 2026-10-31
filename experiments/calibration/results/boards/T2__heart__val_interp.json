@@ -1,0 +1,396 @@
+{
+ "board": "T2:heart:val_interp",
+ "utc": "2026-10-31 17:30:34",
+ "commit": "1c8bf0547f56c4c69c483176c1c1db02064c9d4e",
+ "tree_clean": true,
+ "build": "prefix",
+ "protocol": "bake",
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "frac": 0.1,
+ "counts": {
+  "N_target": 23710,
+  "N_ref": 58716,
+  "target_wc": 2371,
+  "truth_half": 1185,
+  "ref_wc": 5872,
+  "truth_cells": 1185,
+  "ref_cells": 5872,
+  "ok": true
+ },
+ "anchors_seed0": {
+  "de_score": {
+   "floor": {
+    "published": 0.0,
+    "computed": 0.0,
+    "match": "exact"
+   },
+   "ceiling": {
+    "published": 0.8182,
+    "computed": 0.8182,
+    "match": "exact"
+   }
+  },
+  "de_direction": {
+   "floor": {
+    "published": 0.0,
+    "computed": 0.0,
+    "match": "exact"
+   },
+   "ceiling": {
+    "published": 0.9553,
+    "computed": 0.9553,
+    "match": "exact"
+   }
+  },
+  "mmd_u": {
+   "floor": {
+    "published": 0.0207,
+    "computed": 0.0207,
+    "match": "exact"
+   },
+   "ceiling": {
+    "published": 0.00087,
+    "computed": 0.00087,
+    "match": "exact"
+   }
+  },
+  "variogram": {
+   "floor": {
+    "published": 0.023828,
+    "computed": 0.023828,
+    "match": "exact"
+   },
+   "ceiling": {
+    "published": 0.001021,
+    "computed": 0.001021,
+    "match": "exact"
+   }
+  },
+  "d2_shape": {
+   "floor": {
+    "published": 0.03079,
+    "computed": 0.03079,
+    "match": "exact"
+   },
+   "ceiling": {
+    "published": 0.00412,
+    "computed": 0.00412,
+    "match": "exact"
+   }
+  },
+  "occupancy_dice": {
+   "floor": {
+    "published": 0.6748,
+    "computed": 0.6748,
+    "match": "exact"
+   },
+   "ceiling": {
+    "published": 0.8796,
+    "computed": 0.8796,
+    "match": "exact"
+   }
+  },
+  "scale_log_ratio": {
+   "floor": {
+    "published": 0.3284,
+    "computed": 0.3284,
+    "match": "exact"
+   },
+   "ceiling": {
+    "published": -0.0119,
+    "computed": -0.0119,
+    "match": "exact"
+   }
+  },
+  "neighborhood_mmd": {
+   "floor": {
+    "published": 0.05728,
+    "computed": 0.05728,
+    "match": "exact"
+   },
+   "ceiling": {
+    "published": 0.00432,
+    "computed": 0.00432,
+    "match": "exact"
+   }
+  }
+ },
+ "rows": [
+  {
+   "model": "copy_last",
+   "construction": "wc",
+   "seed": 0,
+   "anchors": "computed",
+   "score": 50.0,
+   "skills": {
+    "de_score": 0.5,
+    "de_direction": 0.5,
+    "mmd_u": 0.5,
+    "variogram": 0.5,
+    "d2_shape": 0.5,
+    "occupancy_dice": 0.5,
+    "scale_log_ratio": 0.5,
+    "neighborhood_mmd": 0.5
+   },
+   "group_skill": {
+    "expression_change": 0.5,
+    "cell_state": 0.5,
+    "shape_growth": 0.5,
+    "local_organisation": 0.5
+   },
+   "pred_cells": 5872
+  },
+  {
+   "model": "copy_last",
+   "construction": "wc",
+   "seed": 0,
+   "anchors": "published",
+   "score": 50.0,
+   "skills": {
+    "de_score": 0.5,
+    "de_direction": 0.5,
+    "mmd_u": 0.5,
+    "variogram": 0.5,
+    "d2_shape": 0.5,
+    "occupancy_dice": 0.5,
+    "scale_log_ratio": 0.5,
+    "neighborhood_mmd": 0.5
+   },
+   "group_skill": {
+    "expression_change": 0.5,
+    "cell_state": 0.5,
+    "shape_growth": 0.5,
+    "local_organisation": 0.5
+   },
+   "pred_cells": 5872
+  },
+  {
+   "model": "copy_last",
+   "construction": "wc",
+   "seed": 1,
+   "anchors": "computed",
+   "score": 50.0,
+   "skills": {
+    "de_score": 0.5,
+    "de_direction": 0.5,
+    "mmd_u": 0.5,
+    "variogram": 0.5,
+    "d2_shape": 0.5,
+    "occupancy_dice": 0.5,
+    "scale_log_ratio": 0.5,
+    "neighborhood_mmd": 0.5
+   },
+   "group_skill": {
+    "expression_change": 0.5,
+    "cell_state": 0.5,
+    "shape_growth": 0.5,
+    "local_organisation": 0.5
+   },
+   "pred_cells": 5872
+  },
+  {
+   "model": "copy_last",
+   "construction": "wc",
+   "seed": 2,
+   "anchors": "computed",
+   "score": 50.0,
+   "skills": {
+    "de_score": 0.5,
+    "de_direction": 0.5,
+    "mmd_u": 0.5,
+    "variogram": 0.5,
+    "d2_shape": 0.5,
+    "occupancy_dice": 0.5,
+    "scale_log_ratio": 0.5,
+    "neighborhood_mmd": 0.5
+   },
+   "group_skill": {
+    "expression_change": 0.5,
+    "cell_state": 0.5,
+    "shape_growth": 0.5,
+    "local_organisation": 0.5
+   },
+   "pred_cells": 5872
+  },
+  {
+   "model": "copy_last",
+   "construction": "wc",
+   "seed": 3,
+   "anchors": "computed",
+   "score": 50.0,
+   "skills": {
+    "de_score": 0.5,
+    "de_direction": 0.5,
+    "mmd_u": 0.5,
+    "variogram": 0.5,
+    "d2_shape": 0.5,
+    "occupancy_dice": 0.5,
+    "scale_log_ratio": 0.5,
+    "neighborhood_mmd": 0.5
+   },
+   "group_skill": {
+    "expression_change": 0.5,
+    "cell_state": 0.5,
+    "shape_growth": 0.5,
+    "local_organisation": 0.5
+   },
+   "pred_cells": 5872
+  },
+  {
+   "model": "copy_last",
+   "construction": "wc",
+   "seed": 4,
+   "anchors": "computed",
+   "score": 50.0,
+   "skills": {
+    "de_score": 0.5,
+    "de_direction": 0.5,
+    "mmd_u": 0.5,
+    "variogram": 0.5,
+    "d2_shape": 0.5,
+    "occupancy_dice": 0.5,
+    "scale_log_ratio": 0.5,
+    "neighborhood_mmd": 0.5
+   },
+   "group_skill": {
+    "expression_change": 0.5,
+    "cell_state": 0.5,
+    "shape_growth": 0.5,
+    "local_organisation": 0.5
+   },
+   "pred_cells": 5872
+  },
+  {
+   "model": "copy_last",
+   "construction": "wc",
+   "seed": 5,
+   "anchors": "computed",
+   "score": 50.0,
+   "skills": {
+    "de_score": 0.5,
+    "de_direction": 0.5,
+    "mmd_u": 0.5,
+    "variogram": 0.5,
+    "d2_shape": 0.5,
+    "occupancy_dice": 0.5,
+    "scale_log_ratio": 0.5,
+    "neighborhood_mmd": 0.5
+   },
+   "group_skill": {
+    "expression_change": 0.5,
+    "cell_state": 0.5,
+    "shape_growth": 0.5,
+    "local_organisation": 0.5
+   },
+   "pred_cells": 5872
+  },
+  {
+   "model": "copy_last",
+   "construction": "wc",
+   "seed": 6,
+   "anchors": "computed",
+   "score": 50.0,
+   "skills": {
+    "de_score": 0.5,
+    "de_direction": 0.5,
+    "mmd_u": 0.5,
+    "variogram": 0.5,
+    "d2_shape": 0.5,
+    "occupancy_dice": 0.5,
+    "scale_log_ratio": 0.5,
+    "neighborhood_mmd": 0.5
+   },
+   "group_skill": {
+    "expression_change": 0.5,
+    "cell_state": 0.5,
+    "shape_growth": 0.5,
+    "local_organisation": 0.5
+   },
+   "pred_cells": 5872
+  },
+  {
+   "model": "copy_last",
+   "construction": "wc",
+   "seed": 7,
+   "anchors": "computed",
+   "score": 50.0,
+   "skills": {
+    "de_score": 0.5,
+    "de_direction": 0.5,
+    "mmd_u": 0.5,
+    "variogram": 0.5,
+    "d2_shape": 0.5,
+    "occupancy_dice": 0.5,
+    "scale_log_ratio": 0.5,
+    "neighborhood_mmd": 0.5
+   },
+   "group_skill": {
+    "expression_change": 0.5,
+    "cell_state": 0.5,
+    "shape_growth": 0.5,
+    "local_organisation": 0.5
+   },
+   "pred_cells": 5872
+  },
+  {
+   "model": "copy_last",
+   "construction": "wc",
+   "seed": 8,
+   "anchors": "computed",
+   "score": 50.0,
+   "skills": {
+    "de_score": 0.5,
+    "de_direction": 0.5,
+    "mmd_u": 0.5,
+    "variogram": 0.5,
+    "d2_shape": 0.5,
+    "occupancy_dice": 0.5,
+    "scale_log_ratio": 0.5,
+    "neighborhood_mmd": 0.5
+   },
+   "group_skill": {
+    "expression_change": 0.5,
+    "cell_state": 0.5,
+    "shape_growth": 0.5,
+    "local_organisation": 0.5
+   },
+   "pred_cells": 5872
+  },
+  {
+   "model": "copy_last",
+   "construction": "wc",
+   "seed": 9,
+   "anchors": "computed",
+   "score": 50.0,
+   "skills": {
+    "de_score": 0.5,
+    "de_direction": 0.5,
+    "mmd_u": 0.5,
+    "variogram": 0.5,
+    "d2_shape": 0.5,
+    "occupancy_dice": 0.5,
+    "scale_log_ratio": 0.5,
+    "neighborhood_mmd": 0.5
+   },
+   "group_skill": {
+    "expression_change": 0.5,
+    "cell_state": 0.5,
+    "shape_growth": 0.5,
+    "local_organisation": 0.5
+   },
+   "pred_cells": 5872
+  }
+ ],
+ "seconds": 46.3
+}
