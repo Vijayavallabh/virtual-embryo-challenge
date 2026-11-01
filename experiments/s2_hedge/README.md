@@ -44,9 +44,56 @@ it, which is why 15% blood wins even against a 3%-blood truth), and every cardio
 shortfall. At test, s1 and s2 share E10.5's own mix and differ only on the hedged shares, so these tables are context,
 not the decision basis.
 
-`t1-grid` (running) removes the confound: every prediction starts from the truth's own chamber mix (an oracle base) and
-sets blood (own, 5%, 40% of chamber cells) and cardiomyocytes (15%, own, 45%, 60%, 75% of heart cells); truths use the
-same 15-point grid.
+`t1-grid` removes the confound (10 seeds; commit 90b25d3; `results/t1_grid/`). Every prediction starts from the
+truth's own chamber mix (an oracle base) and sets two shares:
+- blood: own (22.9%), 5% or 40% of chamber cells;
+- cardiomyocytes: 15%, own (26.5%), 45%, 60% or 75% of heart cells.
+
+The truths use the same 15-point grid; labels read `b<blood>_c<cardiomyocytes>`. The full 15 x 15 table is in
+`results/t1_grid/payoff.txt`. The blood-own slice (mean board score; s1's analogue is `bown_cown`):
+
+| prediction \ truth | c0.15 | cown | c0.45 | c0.6 | c0.75 |
+|---|---|---|---|---|---|
+| bown_c0.15 | 71.03 | 68.06 | 62.66 | 57.13 | 53.33 |
+| bown_cown (s1) | 71.15 | 69.92 | 66.72 | 61.66 | 57.77 |
+| bown_c0.45 | 66.90 | 68.34 | 70.62 | 68.44 | 65.64 |
+| bown_c0.6 | 61.56 | 64.15 | 69.43 | 71.22 | 71.05 |
+| bown_c0.75 | 55.81 | 58.52 | 64.81 | 69.38 | 72.68 |
+
+The blood slice at the own cardiomyocyte share costs s1 much less. Against 5% blood it scores 64.04, where the matched
+prediction scores 66.07; against 40% it scores 70.13, against 74.65.
+
+The table below is the hedge (`results/t1_grid/hedge_bown_cown.*`): the expected better of s1 and each s2, paired by
+seed, with each candidate's gain over s1 alone. Two priors come from `hedge`: uniform over the 15 truths, and one
+third on own. Three more were computed from the same runs:
+- blood own, cardiomyocytes in {own, 0.45, 0.6, 0.75};
+- cardiomyocytes at 0.45 or above;
+- cardiomyocytes at own, with blood varying.
+
+| s2 | uniform | 1/3 on own | blood own, cm own..0.75 | cm >= 0.45 | cm own, blood varies |
+|---|---|---|---|---|---|
+| bown_c0.6 | 68.28 (+4.74) | 68.75 (+3.39) | +6.40 | +7.90 | +0.00 |
+| bown_c0.75 | 67.89 (+4.35) | 68.47 (+3.11) | +5.68 | +7.25 | +0.00 |
+| bown_c0.45 | 66.91 (+3.37) | 67.77 (+2.41) | +4.64 | +5.62 | +0.03 |
+| b0.4_c0.6 | 66.50 (+2.96) | 67.48 (+2.12) | +3.16 | +4.87 | +0.24 |
+| b0.4_cown | 65.03 (+1.49) | 66.43 (+1.07) | +0.03 | +1.59 | +1.51 |
+| b0.05_cown | 63.99 (+0.45) | 65.68 (+0.32) | +0.00 | +0.21 | +0.69 |
+| none (s1 alone) | 63.54 | 65.36 | 64.02 | 60.14 | 68.03 |
+
+Reading:
+- **The cardiomyocyte share is the lever.** A mismatch there costs up to 12-19 points, while blood costs s1 2-5.
+- **bown_c0.6 is the best s2** (blood own, cardiomyocytes at 60% of heart cells) under every prior that lets the
+  cardiomyocyte share move.
+- **A blood hedge wins only if the cardiomyocyte share is known to stay at E10.5's,** and then by 1.5 points at most.
+  This replaces the expectation in `docs/PLAN.md` 4.1 that the hedge belongs on blood.
+- **Where the s2 lands:** the legal E14.5 datasets put the cardiomyocyte share at 40-77% of heart cells (a different
+  assay, so the levels do not transfer), against E10.5's 26.5%. An s2 at 60% covers that upper range, and s1 keeps the
+  same-assay estimate.
+
+Caveats:
+- An oracle base: every row starts from the truth's own chamber mix.
+- One transition, E9.5 -> E10.5.
+- The priors are stated assumptions.
 
 ## T2 heart (`T2h/<=E9.5->E10.5`; `heart-scope`; 10 seeds; commit 90b25d3; `results/heart_scope/`)
 

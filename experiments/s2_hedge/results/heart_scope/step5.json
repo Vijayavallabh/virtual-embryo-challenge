@@ -1,0 +1,46 @@
+{
+ "task": "T2h/<=E9.5->E10.5",
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "d2_gain_bar": 0.15,
+ "preds": {
+  "half_size": {
+   "d2_gain": 0.05714436909434336,
+   "d2_ahead": 10,
+   "dice_gain": 0.02283120050933602,
+   "dice_ahead": 10,
+   "passes": false
+  },
+  "half_radial": {
+   "d2_gain": 0.15254320999824258,
+   "d2_ahead": 10,
+   "dice_gain": 0.034462395653183944,
+   "dice_ahead": 10,
+   "passes": true
+  },
+  "half_thin": {
+   "d2_gain": -0.053333222991870266,
+   "d2_ahead": 0,
+   "dice_gain": -0.006125161283709801,
+   "dice_ahead": 3,
+   "passes": false
+  },
+  "core_radial": {
+   "d2_gain": 0.4163498782126158,
+   "d2_ahead": 10,
+   "dice_gain": 0.04124249756635819,
+   "dice_ahead": 10,
+   "passes": true
+  }
+ }
+}
