@@ -265,6 +265,12 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       oracle base and a heart scope axis (prompted by a side note: heart s2 = H2 differs from s1 only in size, -9%,
       while E10.5's heart sample is 77% surrounding tissue) were started on the DGX at 46089fe.
 - [x] 2026-11-01: no organiser reply on the fourth-email thread; the captain's notice went out 2026-10-31 18:59 UTC.
+      Screened Slack sweep (a separate agent; #virtual-embryo-challenge and #general, 2026-10-28 00:00 to 2026-11-01
+      13:40 UTC): no organiser post on the board specs, the 403 or browser saves (no objection, no fix), nothing
+      addressed to our team, no rule, deadline, nomination or data-use change. One organiser reply (2026-10-29): the
+      Data Protocol is on the site and the training files' SHA-256 checksums are on the Data page (A1 could add a
+      checksum comparison; the protocol's held-out text stays withheld). Two threads skipped (other teams' standings;
+      a team's final-phase method details).
 
 ### What's Next
 
