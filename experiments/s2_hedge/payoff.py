@@ -451,6 +451,54 @@ def summarise(runs: list[Path], out: Path) -> dict:
     return res
 
 
+def hedge(runs: list[Path], s1: str, out: Path | None = None) -> dict:
+    """For each candidate s2: the expected better of (s1, s2) over the truth grid, paired by seed (the captain marks
+    the better-scoring upload), under two stated priors: uniform over the truths, and one third on the truth that
+    equals s1's mix ("own" or "own/own") with the rest uniform. Also each candidate's worst truth. Informs the s2
+    pre-registration; it chooses nothing."""
+    parts = [json.loads(q.read_text()) for d in runs for q in sorted(Path(d).glob("*.json"))]
+    merged: dict[int, dict] = {}
+    for part_ in parts:
+        for r in part_["rows"]:
+            merged.setdefault(r["seed"], {}).update(r["scores"])
+    head = parts[0]
+    pv = head.get("pred_values", head.get("values"))
+    tv = head.get("truth_values", head.get("values"))
+    if s1 not in pv:
+        raise SystemExit(f"{s1!r} is not a prediction; one of {pv}")
+    seeds = sorted(merged)
+    if any(set(merged[k]) != set(tv) for k in seeds):
+        raise SystemExit("some seeds miss some truths")
+    own = next((q for q in tv if q in ("own", "bown_cown")), None)
+    priors = {"uniform": {q: 1 / len(tv) for q in tv}}
+    if own is not None:
+        rest = (2 / 3) / (len(tv) - 1)
+        priors["own_third"] = {q: (1 / 3 if q == own else rest) for q in tv}
+    res = {"s1": s1, "seeds": seeds, "priors": priors, "candidates": {}}
+    for p2 in pv:
+        per_seed = {name: [sum(w[q] * max(merged[k][q][s1], merged[k][q][p2]) for q in tv) for k in seeds]
+                    for name, w in priors.items()}
+        worst = min(tv, key=lambda q: np.mean([max(merged[k][q][s1], merged[k][q][p2]) for k in seeds]))
+        res["candidates"][p2] = {
+            **{name: {"mean": float(np.mean(v)), "sd": float(np.std(v, ddof=1)) if len(v) > 1 else float("nan")}
+               for name, v in per_seed.items()},
+            "worst_truth": worst,
+            "worst_mean": float(np.mean([max(merged[k][worst][s1], merged[k][worst][p2]) for k in seeds]))}
+    order = sorted(pv, key=lambda c: -res["candidates"][c]["uniform"]["mean"])
+    lines = [f"{head['axis']}: expected better of s1={s1} and s2 over {len(tv)} truths, {len(seeds)} seeds "
+             "(s2 = s1 is s1 alone)", f"{'s2':>14s} " + " ".join(f"{n:>16s}" for n in priors) + "   worst truth"]
+    for c in order:
+        r = res["candidates"][c]
+        lines.append(f"{c:>14s} " + " ".join(f"{r[n]['mean']:8.2f} +/- {r[n]['sd']:4.2f}" for n in priors)
+                     + f"   {r['worst_truth']} ({r['worst_mean']:.2f})")
+    print("\n".join(lines))
+    if out is not None:
+        out.mkdir(parents=True, exist_ok=True)
+        (out / f"hedge_{s1.replace('/', '_')}.json").write_text(json.dumps(res, indent=1, default=float))
+        (out / f"hedge_{s1.replace('/', '_')}.txt").write_text("\n".join(lines) + "\n")
+    return res
+
+
 def parse_seeds(text: str) -> tuple[int, ...]:
     lo, _, hi = text.partition("-")
     return tuple(range(int(lo), int(hi) + 1)) if hi else tuple(int(x) for x in text.split(","))
@@ -473,12 +521,19 @@ def main(argv=None) -> None:
     p.add_argument("--seeds", default="0-9")
     p.add_argument("--out", required=True)
     p.add_argument("--data", default=str(harness.DATA_DIR))
+    p = sub.add_parser("hedge")
+    p.add_argument("--runs", nargs="+", required=True)
+    p.add_argument("--s1", required=True, help="the prediction label that stands for s1 (e.g. own, bown_cown, hold)")
+    p.add_argument("--out")
     p = sub.add_parser("summarise")
     p.add_argument("--runs", nargs="+", required=True)
     p.add_argument("--out", required=True)
     a = ap.parse_args(argv)
     if a.cmd == "summarise":
         summarise([Path(r) for r in a.runs], Path(a.out))
+        return
+    if a.cmd == "hedge":
+        hedge([Path(r) for r in a.runs], a.s1, Path(a.out) if a.out else None)
         return
     if a.cmd == "t1-grid":
         k, _, n_ = a.truth_part.partition("/")
