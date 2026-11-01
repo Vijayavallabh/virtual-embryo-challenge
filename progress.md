@@ -302,6 +302,13 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       Dry run on the DGX at 8031d9c (`build_test.py heart --entry s2_trim --board T2:heart:val_extrap`, file
       deleted afterwards): the trim keeps 80% of E10.5's cells, the in-plane scope goes 0.210 -> 0.105, the
       size step reaches H2's 560.5 full RMS (in-plane x1.49, z held), and the guard and checks pass.
+- [x] 2026-11-02: embryo s2. The rule was fixed before the run (90ddaaa): s2 is the fgw shape variant with the
+      higher better-of-two with fgw over both embryo pseudo-tasks. `interpolate_clouds(t_pos=...)` is
+      bit-identical by default (the run's fgw equals emb_fgw_v1's); the harness candidates are fgw_shape0 and
+      fgw_shape1. Result (`experiments/harness/results/emb_shape_v1/`): fgw_shape0 gives 60.87 against fgw alone
+      59.95 (E7.5: 62.95 against 61.12, ahead in 10 of 10, all shape; E7.25: never ahead); fgw_shape1 is never
+      ahead. So s2 = fgw_shape0 (`build_test.py embryo --method fgw_shape0`); the dry run on the validation board
+      passes (file deleted). All four s2 rules are now in `docs/S2_RULES.md`, to be hashed at the freeze.
 
 ### What's Next
 

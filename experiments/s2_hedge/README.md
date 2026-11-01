@@ -192,3 +192,18 @@ kept in `runs/s2_hedge/logs/stuck_2026-11-01/` on the DGX as a check that the re
 prediction straight after building it, instead of holding all 15 (about 20 GB per process). The scores are the same,
 because every builder and scorer call is seeded on its own. That claim comes from reading the code (no global RNG in
 `vec` or the scorer modules), not from a rerun, since the stalled grid finished no seed.
+
+## T2 embryo (`experiments/harness/results/emb_shape_v1/`; 10 seeds; commit 90ddaaa)
+
+No candidate built before 2026-11-02 beats fgw in any seed of either embryo pseudo-task (`emb_fgw_v1`), so none of
+them adds anything as an s2. The shape variants keep fgw's coupling and mixture of real cells and take positions from
+one bracket's geometry, at the size rule (`interpolate_clouds(t_pos=0 | 1)`; the run's fgw equals emb_fgw_v1's):
+
+| | fgw | fgw_shape0 (earlier bracket's geometry) | fgw_shape1 (later bracket's geometry) |
+|---|---|---|---|
+| E7.5 from (E7.25, E8.0), t = 1/3 | 61.12 | 62.95, ahead in 10 of 10 | 59.47, ahead in 0 of 10 |
+| E7.25 from (E6.75, E7.5), t = 2/3 | 58.78 | 53.67, ahead in 0 | 57.49, ahead in 0 |
+| better of fgw and it, mean of both | 59.95 | 60.87 | 59.95 |
+
+The E7.5 gain is shape alone (d2 +0.067, Dice +0.109); expression is unchanged. Under the rule fixed before the run,
+s2 = fgw_shape0 (E7.5's geometry at test).

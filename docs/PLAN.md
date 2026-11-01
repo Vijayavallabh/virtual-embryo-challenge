@@ -258,6 +258,11 @@ base cannot run on E7.25 (no stage before E6.75), a reading put to the captain. 
 "yes for all"): fgw is kept over psb_size (+2.29) and pseudobulk_shift (+4.15), decided on E7.5 (1 of 2), and over B0
 on both; **the embryo entry is fgw** (s1; `experiments/builds/build_test.py embryo --method fgw`). The s2 hedge
 (shape: interpolated or copied) is chosen at the s2 pre-registration.
+(2026-11-02, by the pre-registered rule in `docs/S2_RULES.md`, written by the AI assistant under the captain's
+delegation before the run: s2 = fgw_shape0, fgw's coupling and mixture in the earlier bracket's geometry, which
+is E7.5's at test, at the size rule. Its better-of-two with fgw is 60.87 against fgw alone 59.95 over both
+embryo pseudo-tasks. On E7.5 it is ahead in 10 of 10 seeds (+1.83, all shape: d2 +0.067, Dice +0.109); on E7.25
+it is never ahead. `experiments/harness/results/emb_shape_v1/`.)
 
 Submissions: s1 central clock; s2 alternative clock or the nearest-stage variant (E8.0 tissue shrunk to the predicted
 size, mixture expression).
@@ -754,3 +759,7 @@ open. No organiser reply to any of the four emails as of then.
     under a uniform prior, and on the released targets alone +0.00, +1.46 and +1.15. Its gains are mostly in
     de_score and de_direction, which step 5's shape bar does not measure.
   - `docs/S2_RULES.md` keeps the rule, the outcome and the amendment. The captain can restore the rule as written.
+- 2026-11-02 (d), by the pre-registered rule (`docs/S2_RULES.md`, fixed at 90ddaaa before the run): embryo s2 =
+  fgw_shape0, E7.5's geometry with fgw's mixture. Better-of-two with fgw 60.87 against fgw alone 59.95 (section 4.2).
+  The dry run on the validation board passes (472e856). Every board now has its s2: T1 at 60% cardiomyocytes,
+  heart H2 as the half trim, embryo fgw_shape0, T3 the refused branch's s1. The file is hashed at the freeze.
