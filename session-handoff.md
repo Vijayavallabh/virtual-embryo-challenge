@@ -97,6 +97,17 @@
 
 ## Recommended Next Step
 
+- 2026-11-01 (latest): the s1 build path was reviewed (four reviewers, skeptic-verified; 11 findings) and fixed in
+  46089fe. The critical one: both board intakes would have refused every gene list on 4 Nov (the site publishes a
+  16-hex digest of the newline-joined list); also test-board counts are no longer printed, and the T3 builder defaults
+  to seed 1,000,001 and reads max_cells from the board. On or after 2026-11-04 UTC: screened Slack and mail check for
+  an organiser objection, the captain saves the board index, then `uv run vec boards update --from-file
+  ~/vec-panels/index.json --delete-source`, commit boards/, `uv run python experiments/intake/d1_check.py`, the s1
+  builds (`experiments/builds/build_test.py t1|heart --entry s1|embryo --method fgw`, T3 per the runbook), `vec
+  check` and format-only `vec submit ... --from-dgx`. s2: payoff analyses in `experiments/s2_hedge/` (T1 grid and
+  heart scope ran at 46089fe) feed the s2 pre-registration (17-23 Nov), including the side note that heart s2 = H2
+  differs from s1 only in size.
+
 - Board specs (cleared by the captain on 2026-11-01): he sends the notice drafted in his Gmail (a reply on the
   fourth-email thread); not before 2026-11-04 UTC, if no objection or fix arrived, he checks the Data page link by
   hovering, saves it with "Save link as" into ~/vec-panels/ (mkdir -m 700), and the AI assistant runs `uv run vec

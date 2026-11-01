@@ -323,6 +323,12 @@ Pipeline:
 
 Submissions: two scope hypotheses, H1 continuation (shell fraction follows the E9.5-E10.5 trend) and H2 heart-focused
 (shell halved or less), each with its own pre-registered size.
+2026-11-01 (side note, for the s2 pre-registration): as built, H1 equals H0 (the in-plane scope rose from E9.5 to
+E10.5, so the trend rule holds it) and s2 = H2 uses s1's cells and expression, only 9% smaller, so it hedges little;
+E10.5's heart sample is 77% surrounding tissue (the core, CM plus endocardium, 23%; cardiomyocytes 15%). A
+heart-focused s2 (cells trimmed to H2's scope, then H2's size) would be a shape operation, which step 5 admits only if
+it gains on both released transitions; on E9.5 -> E10.5 the core share fell (37% to 23%), so it needs the captain's
+ruling. Payoffs: `experiments/s2_hedge/` (heart-scope).
 
 ### 4.4 T3: beta-catenin knockout at E8.75 (weight 1)
 
@@ -547,6 +553,9 @@ go-ahead; then the runbook's section 5.
   what counts when nothing is marked, and whether the pick is per board, is not stated (asked in the fourth email).
   Mark the final entries after the last official upload.
 - Each submission carries its external-data disclosure text.
+- s2 payoffs (2026-11-01, `experiments/s2_hedge/`, sensitivity analysis, not a choice): what each candidate s2 gains
+  where the test's tissue mix differs from s1's and costs where it does not (T1: blood and cardiomyocyte shares,
+  one-axis and on a 2-D grid; T2 heart: scope). The s2 rules (17-23 Nov) are written from them with the captain.
 
 ## 9. Risks
 

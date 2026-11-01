@@ -3,8 +3,9 @@
 ## Current State
 
 **Last Updated:** 2026-11-01
-**Active Feature:** feat-014 (T1 M1), then feat-011 (T2 heart growth), each against B0 on the harness; feat-004's step 1
-waits for the board-spec save (not before 2026-11-04 UTC). Earlier: feat-004 - Final-phase intake (`docs/P3_RUNBOOK.md`). Steps 2 (data) and 3 (labels) done on
+**Active Feature:** feat-018 (s1 files): the s1 build path is reviewed and fixed (2026-11-01, 46089fe); feat-004's
+step 1 waits for the board-spec save (not before 2026-11-04 UTC), then the s1 builds; the s2 hedge payoffs
+(`experiments/s2_hedge/`) feed the s2 pre-registration (17-23 Nov). Earlier: feat-004 - Final-phase intake (`docs/P3_RUNBOOK.md`). Steps 2 (data) and 3 (labels) done on
 2026-10-28 (feat-003 done), and step 4 (the pre-registered runs) ran the same day at the user's go-ahead, each output
 committed before it was read. Step 1 is blocked by the 403 on the panel files (Cloudflare error code 1010, a
 browser-signature block; no reply to any organiser email). Its saved-file intake (`vec boards update --from-file`,
@@ -236,6 +237,34 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       (`vec.harness.decide`, "base does not apply"; test with a mutation check), so fgw is kept over psb_size (+2.29)
       and pseudobulk_shift (+4.15) on E7.5 (1 of 2) and over B0 on both: **the embryo entry is fgw**. The s1
       cardiomyocyte share stays at E10.5's own (26.5% of heart cells). Pushed 8fca1cf..6a90a93.
+- [x] 2026-11-01, the captain's sixth "yes for all": the four commits be612bf..77ab626 pushed.
+- [x] 2026-11-01: independent review of the s1 build path (workflow: four reviewers, fidelity, maths, test-board
+      robustness and compliance; each finding checked by one or two skeptics; 23 agents; 11 confirmed, 2 refuted).
+      Fixed in 46089fe (./init.sh 504 passed; each critical fix mutation-checked):
+      - critical: both board intakes compared the full sha256 of a gene list with the site's genes_sha256, which is
+        the first 16 hex digits of sha256 over the newline-joined symbols (all five committed lists verify that way),
+        so the 4 Nov intake would have refused every board. `vec.boards._genes_match` takes both forms.
+      - critical: builds, `vec check`, `vec submit` and `vec boards` printed a test board's cell limits or a test file's
+        count (max_cells under the count rule). `Board.counts_hidden`; the tools say "max_cells" or "hidden".
+      - critical: the T3 builder defaulted to seed 0 and needed max_cells typed by hand: now seed 1,000,001 by default,
+        refused below the offset, and `--n-cells max` (the default) reads the board in code; runbook updated. The T3
+        decision file pins t3_decompose.py and rules.yaml only, so the pre-registered build is unchanged (its 22 local
+        tests pass).
+      - minor: null min_cells; obs_required/obsm_required loaded, checked and listed by the D1 check; T2 test counts
+        through the committed count decision (both overrides are null, so max_cells; provenance recorded); the embryo
+        fgw build no longer loads E7.25 (it lacks two panel genes); dry runs need a validation board and "dry" in the
+        file name.
+      - Compliance note: one verifier's grep printed a single line of docs/research/engineering.md (about the gene
+        digest format; no board values, no sizes); its conclusion rests on its own computation over boards/. Reported
+        to the captain.
+- [x] 2026-11-01: assumption A5 revised (the test as written cannot run; the M1 diagnostic met the de_score bar,
+      +0.110, not the de_direction bar, +0.026); feat-010 set to in progress (built and the entry; A7's 70 not met).
+- [x] 2026-11-01: s2 hedge payoffs (`experiments/s2_hedge/`, sensitivity analysis, not a choice): T1 blood and
+      cardiomyocyte axes on the chamber task (10 seeds, cf476aa; B0 at its own mix reproduces d2_v1 exactly). Tissue
+      mix moves T1 by up to 12-19 points; both one-axis runs are confounded by E9.5's own mix, so a 2-D grid on an
+      oracle base and a heart scope axis (prompted by a side note: heart s2 = H2 differs from s1 only in size, -9%,
+      while E10.5's heart sample is 77% surrounding tissue) were started on the DGX at 46089fe.
+- [x] 2026-11-01: no organiser reply on the fourth-email thread; the captain's notice went out 2026-10-31 18:59 UTC.
 
 ### What's Next
 
