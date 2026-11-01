@@ -207,7 +207,22 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       planned 58%. Heart: the composition trend is proposed for removal (PLAN 4.3 step 2). Slip: the code was synced to
       the DGX while the T1 reruns ran (against the compute rule); the runs had loaded their code, and their scores
       reproduce d2_v1 exactly. Awaiting the captain: Feng's direction on the readout; the Feng re-cut from the raw GEO
-      object and its licence; the heart composition step; the embryo's log-value edits; the push.
+      object and its licence; the heart composition step; the embryo's log-value edits; the push. (Answered the
+      same day: next entry.)
+
+- [x] 2026-11-01, the captain's fourth "yes for all" (PLAN decision log (f)): Feng's direction stands on the
+      readout; the Feng re-cut went ahead and the licence is confirmed; the heart's composition trend is dropped; the
+      embryo may use log-value edits; the four commits pushed (b2fc85c..8fca1cf). Then "put all the effort to win
+      this challenge at all drastic costs", taken within the rules.
+- [x] 2026-11-01: Feng clean reduction from GEO (feat-007; `experiments/external/feng2022_geo.py`, commit 6093147,
+      DGX): the 5.35 GB Seurat object parsed in 118 s without R (rdata, in its own uv group `external`); 19,073 of
+      27,445 cells kept; E9.5 and E14.5 cells and counts identical to the 2026-10-18 subsets, all 393 group totals
+      equal to float rounding; raw files deleted (checked). M1 now reads these statistics; its directions match the
+      readout's to 6e-7.
+- [x] 2026-11-01: FGW embryo pipeline built (bd2e433): `vec.core` coupling step (fgw_coupling, coupling_rotation,
+      barycentric, nearest_anchors), `vec.t2_build.interpolate_clouds` and `pchip_rms`, harness candidates `fgw`
+      and `psb_size`; 152 tests in the touched files pass. 10-seed runs on both embryo pseudo-tasks started on the DGX
+      (runs/harness/emb_fgw_v1).
 
 ### What's Next
 
