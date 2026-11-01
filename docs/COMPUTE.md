@@ -56,6 +56,15 @@ or less. The repo's shell runners set `OMP_NUM_THREADS`, `OPENBLAS_NUM_THREADS` 
 most 16 per process); a command started directly with `uv run` needs them on its command line, for example
 `OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 uv run python ...`.
 
+Large numpy jobs also need `NUMPY_MADVISE_HUGEPAGE=0`. NumPy asks for transparent huge pages on large arrays, and with
+the DGX's THP settings (`madvise`, defrag `madvise`) each such allocation compacts memory first. On 2026-11-01, 27
+payoff processes (about 520 GB, filling NUMA node 0) spent 99% of their CPU time in the kernel for 7 hours. The
+compaction isolated about 435,000 pages a second and almost every migration failed, so a heart seed took 4.8 hours.
+Killing the jobs stopped it at once. To check, sample `grep -E 'pgmigrate_fail|compact_isolated' /proc/vmstat` twice a
+few seconds apart, and sample a process's user and system ticks with `awk '{print $14, $15}' /proc/<pid>/stat`. A job
+whose system ticks grow while its user ticks stay flat is stuck. Keep a batch's memory well under one NUMA node
+(about 500 GB): the account is shared.
+
 ## Constraints
 
 - `/home` on the DGX is 89% full (1.6 TB free, shared; `df -h /home` on 2026-10-28). Check it before large writes

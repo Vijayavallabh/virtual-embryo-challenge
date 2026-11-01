@@ -61,3 +61,13 @@ plane to the truth's core size (an oracle core size), so rows differ in scope on
 
 A heart-focused s2 would be a shape operation, which `docs/PLAN.md` 4.3 step 5 admits only if it gains on both
 released transitions; on E9.5 -> E10.5 the core share fell (37% to 23%), so it would need the captain's ruling.
+
+## Runs
+
+The first launch of `t1-grid` and `heart-scope` (2026-11-01 13:32 UTC, 46089fe) stalled in kernel memory compaction
+(`docs/COMPUTE.md`) and was stopped after 6.9 hours. By then 2 heart seeds (0 and 5) had finished; their log lines are
+kept in `runs/s2_hedge/logs/stuck_2026-11-01/` on the DGX as a check that the rerun reproduces them. The relaunch adds
+`NUMPY_MADVISE_HUGEPAGE=0`. The heart scope runs as 5 processes of 2 seeds each. Each grid process now scores each
+prediction straight after building it, instead of holding all 15 (about 20 GB per process). The scores are the same,
+because every builder and scorer call is seeded on its own. That claim comes from reading the code (no global RNG in
+`vec` or the scorer modules), not from a rerun, since the stalled grid finished no seed.

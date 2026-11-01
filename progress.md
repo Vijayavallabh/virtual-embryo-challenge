@@ -271,6 +271,14 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       Data Protocol is on the site and the training files' SHA-256 checksums are on the Data page (A1 could add a
       checksum comparison; the protocol's held-out text stays withheld). Two threads skipped (other teams' standings;
       a team's final-phase method details).
+- [x] 2026-11-01: the s2 hedge runs on the DGX stalled. All 27 processes spent 99% of their CPU time in the kernel:
+      numpy's transparent-huge-page requests triggered memory compaction on a full, fragmented NUMA node 0, with about
+      435,000 failed page migrations a second. In 6.9 hours a heart seed took 4.8 hours and no grid seed finished. The
+      runs were stopped at 20:25 UTC and the failed migrations dropped to 0 at once. The logs are kept in
+      `runs/s2_hedge/logs/stuck_2026-11-01/`; heart seeds 0 and 5 finished and serve as a check on the rerun.
+      Relaunched with `NUMPY_MADVISE_HUGEPAGE=0`, and the grid now holds one prediction at a time (it held about
+      20 GB per process; same scores, since every call is seeded). The fix and how to spot the stall are in
+      `docs/COMPUTE.md`.
 
 ### What's Next
 

@@ -218,22 +218,28 @@ def run_t1_grid(seeds, part: tuple[int, int], out: Path, data_dir: Path) -> dict
         t0 = time.time()
         ctx = harness.BuildContext(task=view, board=cboard, inputs=inputs, seed=harness.BUILD_SEED_OFFSET + s_,
                                    derived={"t1_held_flat": held})
-        preds = {}
-        for b, c in points:
-            sub, _ = t1_scope.build_submission(pool, cboard, grid_mix(oracle, b, c), n, ctx.seed, start=start,
-                                               damping=harness.B0_DAMPING, held_flat=held, ref_source=src,
-                                               start_source=start_src)
-            preds[point_label(b, c)] = harness.finish(ctx, pool, dense(sub.X), None)
         row = {"seed": s_, "scores": {}, "skills": {}}
+        floors = {}  # truth -> (board, floor anchors), computed before any prediction
         for q, (truth, _) in truths.items():
             board = harness.task_board(t, boards, truth.n, ref_stage.n)
             fl = score_board(board, subsample(ref_stage, SUBSAMPLE_FRAC, s_), truth, ref_stage, seed=s_,
                              anchors="computed", build=harness.BUILD, protocol=harness.PROTOCOL)
             row["scores"][q], row["skills"][q] = {"floor": fl.score}, {"floor": fl.skills}
-            for p_, pred in preds.items():
-                r = score_board(board, pred, truth, ref_stage, seed=s_, anchors=fl.anchors, build=harness.BUILD,
+            floors[q] = (board, fl.anchors)
+        # One prediction in memory at a time: holding all 15 took about 20 GB per process (2026-11-01). Every builder
+        # and scorer call is seeded on its own (no global RNG), so the order does not change any score.
+        for b, c in points:
+            sub, _ = t1_scope.build_submission(pool, cboard, grid_mix(oracle, b, c), n, ctx.seed, start=start,
+                                               damping=harness.B0_DAMPING, held_flat=held, ref_source=src,
+                                               start_source=start_src)
+            pred, p_ = harness.finish(ctx, pool, dense(sub.X), None), point_label(b, c)
+            del sub
+            for q, (truth, _) in truths.items():
+                board, anchors = floors[q]
+                r = score_board(board, pred, truth, ref_stage, seed=s_, anchors=anchors, build=harness.BUILD,
                                 protocol=harness.PROTOCOL)
                 row["scores"][q][p_], row["skills"][q][p_] = r.score, r.skills
+            del pred
         row["seconds"] = round(time.time() - t0, 1)
         rows_out.append(row)
         print(f"t1-grid part {part[0]}/{part[1]} seed {s_} ({row['seconds']} s)", flush=True)
