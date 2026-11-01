@@ -26,10 +26,15 @@ Steps implemented now:
    - `rescale_depth`: a per-cell depth change, `thin` (binomial thinning) below 1 and a Poisson top-up from smoothed
      proportions above 1.
 4. log1p CP10k: `log1p_cp10k` (vec.prep's, the released convention).
+5. Couple two populations with positions and move cells between them (feat-010, 2026-11-01): `fgw_coupling` (a
+   balanced fused Gromov-Wasserstein coupling, POT's exact solver, each cost scaled to a maximum of 1),
+   `coupling_rotation` (the proper rotation that best maps one centred cloud onto the other under a coupling),
+   `barycentric` (each row's coupling-weighted partner) and `nearest_anchors` (k nearest anchors of each point). The
+   T2 head turns them into displacement interpolation (`vec.t2_build.interpolate_clouds`).
 
-Steps PLAN section 5 plans, which later features add here: coupling of adjacent populations (unbalanced OT, fused
-Gromov-Wasserstein when positions exist) and displacement interpolation (feat-010, feat-015); births from the best legal
-source (feat-014); leave-one-transition-out calibration of a few shrinkage parameters (feat-008).
+Steps PLAN section 5 plans, which later features add here: unbalanced coupling of populations without positions
+(feat-015); births from the best legal source (feat-014); leave-one-transition-out calibration of a few shrinkage
+parameters (feat-008).
 
 The task heads and the boundary (a head decides what goes in; the core does the work on cells):
 - T1, `vec.t1_scope`: chamber categories, target shares, stand-in labels and the momentum factors (damped log ratios of
@@ -63,7 +68,8 @@ from scipy import sparse
 
 from vec.prep import TARGET_SUM, log1p_cp10k, recover_counts
 
-__all__ = ["alloc", "apply_factors", "apply_gene_factor", "counts_of", "draw_balanced", "draw_least_used",
+__all__ = ["alloc", "apply_factors", "apply_gene_factor", "barycentric", "counts_of", "coupling_rotation",
+           "draw_balanced", "draw_least_used", "fgw_coupling", "nearest_anchors",
            "draw_then_repeat", "log1p_cp10k", "mean_cp10k", "quotas", "rescale_depth", "thin"]
 
 Seed = int | Sequence[int]
@@ -258,3 +264,72 @@ def apply_gene_factor(C, phi, P, rng) -> np.ndarray:
     empty = out.sum(1) == 0
     out[empty] = C[empty]
     return out
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# 5. Coupling and displacement
+
+
+def fgw_coupling(features_a, features_b, coords_a, coords_b, alpha: float, max_iter: int,
+                 emd_max_iter: int) -> np.ndarray:
+    """A balanced fused Gromov-Wasserstein coupling of two populations with positions (POT's exact conditional
+    gradient, square loss, uniform masses).
+
+    The feature cost is the squared Euclidean distance between rows of features_a and features_b; the structure costs
+    are the Euclidean distances within each cloud, so the coupling ignores how the clouds are placed or rotated. Each
+    cost is divided by its maximum, which makes `alpha` (the structure term's weight: 0 features only, 1 structure
+    only) free of units. max_iter bounds the conditional-gradient steps, emd_max_iter the network simplex of each
+    step's exact transport. Returns the coupling (rows a, columns b; its entries sum to 1)."""
+    import ot
+
+    FA, FB = np.asarray(features_a, dtype=np.float64), np.asarray(features_b, dtype=np.float64)
+    A, B = np.asarray(coords_a, dtype=np.float64), np.asarray(coords_b, dtype=np.float64)
+    if FA.shape[0] != A.shape[0] or FB.shape[0] != B.shape[0]:
+        raise ValueError("each population needs one feature row per position")
+    if not 0.0 <= alpha <= 1.0:
+        raise ValueError(f"alpha must lie in [0, 1], got {alpha}")
+    M = ot.dist(FA, FB)
+    CA = ot.dist(A, A, metric="euclidean")
+    CB = ot.dist(B, B, metric="euclidean")
+    for C in (M, CA, CB):
+        top = C.max()
+        if top > 0:
+            C /= top
+    p = np.full(A.shape[0], 1.0 / A.shape[0])
+    q = np.full(B.shape[0], 1.0 / B.shape[0])
+    T = ot.gromov.fused_gromov_wasserstein(M, CA, CB, p, q, loss_fun="square_loss", alpha=alpha, max_iter=max_iter,
+                                           numItermaxEmd=emd_max_iter)
+    return np.asarray(T, dtype=np.float64)
+
+
+def coupling_rotation(coords_a, coords_b, coupling) -> np.ndarray:
+    """The proper rotation R (det +1) minimising sum_ij T_ij |R a_i - b_j|^2 for centred clouds a and b under the
+    coupling T (weighted Kabsch): R maps a's frame onto b's, so b's points in a's frame are `coords_b @ R`."""
+    A, B = np.asarray(coords_a, dtype=np.float64), np.asarray(coords_b, dtype=np.float64)
+    T = np.asarray(coupling, dtype=np.float64)
+    if T.shape != (A.shape[0], B.shape[0]):
+        raise ValueError(f"coupling shape {T.shape} does not match the clouds ({A.shape[0]}, {B.shape[0]})")
+    H = A.T @ T @ B
+    U, _, Vt = np.linalg.svd(H)
+    D = np.eye(H.shape[0])
+    if np.linalg.det(Vt.T @ U.T) < 0:
+        D[-1, -1] = -1.0
+    return Vt.T @ D @ U.T
+
+
+def barycentric(coupling, values) -> np.ndarray:
+    """Each row's coupling-weighted mean of `values` (one row per column of the coupling)."""
+    T = np.asarray(coupling, dtype=np.float64)
+    w = T.sum(1)
+    if (w <= 0).any():
+        raise ValueError("a row of the coupling carries no mass")
+    return (T @ np.asarray(values, dtype=np.float64)) / w[:, None]
+
+
+def nearest_anchors(points, anchors, k: int) -> tuple[np.ndarray, np.ndarray]:
+    """The k nearest anchors of each point (Euclidean): (distances, indices), each points x k."""
+    from scipy.spatial import cKDTree
+
+    k = min(int(k), np.asarray(anchors).shape[0])
+    d, i = cKDTree(np.asarray(anchors, dtype=np.float64)).query(np.asarray(points, dtype=np.float64), k=k)
+    return np.asarray(d).reshape(len(points), k), np.asarray(i).reshape(len(points), k)

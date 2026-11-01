@@ -623,3 +623,35 @@ def test_b0_interpolates_by_the_target_fraction_of_the_bracket(counted_t2, monke
     CANDIDATES["b0"].build(ctx)
     assert seen["damping"] == pytest.approx((7.5 - 7.25) / (8.0 - 7.25)) and real is harness.t2_build
     assert CANDIDATES["b0"].applies(task) and not CANDIDATES["b0"].applies(_task(**KO, inputs={"wt": KO["reference"]}))
+
+
+# ------------------------------------------------------------------------------------------------ T2 embryo (feat-010)
+def test_embryo_candidates_resize_to_the_size_rule_and_interpolate_inside_the_guard():
+    rng = np.random.default_rng(21)
+    base = rng.gamma(2.0, 2.0, size=(3, len(GENES)))
+    earlier = _pool(1500, rng, base * 0.8, [0.6, 0.3, 0.1], scale=0.7)
+    before = _pool(2500, rng, base, [0.5, 0.3, 0.2])
+    after = _pool(4000, rng, base * 1.5, [0.3, 0.4, 0.3], scale=1.8, stretch=(1.0, 1.4, 1.0))
+    board = Board(key="pseudo:synthetic_embryo", task="T2", genes=list(GENES), needs_coords=True, setting="embryo",
+                  min_cells=100, max_cells=1500)
+    task = _task(**INTERP, key="syn_embryo",
+                 inputs={"before": "T2/E7.25.h5ad", "after": "T2/E8.0.h5ad", "earlier": "T2/E6.75.h5ad"})
+    tasks = {t.key: t for ts in load_tasks().values() for t in ts}
+    assert CANDIDATES["fgw"].applies(task) and CANDIDATES["psb_size"].applies(task)
+    assert CANDIDATES["fgw"].applies(tasks["T2e/E6.75+E7.5->E7.25"]) and not CANDIDATES["psb_size"].applies(
+        tasks["T2e/E6.75+E7.5->E7.25"])  # no stage before E6.75: the shift, and so its resized version, cannot run
+    assert not any(CANDIDATES[c].applies(tasks["T2h/<=E9.5->E10.5"]) for c in ("fgw", "psb_size"))
+    ctx = harness.BuildContext(task=harness.TaskView.of(task), board=board,
+                               inputs={"before": before, "after": after, "earlier": earlier}, seed=7)
+    want = t2_rms = harness.target_rms(ctx)
+    radii = [harness.t2_build.rms_radius(a.obsm["spatial_3D"]) for a in (earlier, before, after)]
+    days = [6.75, 7.25, 8.0]
+    assert want == pytest.approx(harness.t2_build.pchip_rms(days, radii, 7.5)) and radii[1] < want < radii[2]
+    psb, sized = CANDIDATES["pseudobulk_shift"].build(ctx), CANDIDATES["psb_size"].build(ctx)
+    np.testing.assert_array_equal(psb.X, sized.X)  # the same cells and expression: only the size step differs
+    pool = np.asarray(before.obsm["spatial_3D"], float)
+    f = t2_rms / harness.t2_build.rms_radius(pool)
+    np.testing.assert_allclose(sized.coords, pool.mean(0) + (psb.coords - pool.mean(0)) * f, rtol=1e-5, atol=1e-3)
+    fgw = CANDIDATES["fgw"].build(ctx)
+    assert fgw.n == board.max_cells and harness.t2_build.rms_radius(fgw.coords) == pytest.approx(want, rel=0.01)
+    assert fgw.X.shape == (board.max_cells, len(GENES))

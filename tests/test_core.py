@@ -648,7 +648,9 @@ MOVED = {("vec.t1_scope", "quotas"): "quotas", ("vec.t1_scope", "_draw"): "draw_
 # head function -> the core functions it must call
 CALLS = {("t1_scope", "reweight"): {"quotas", "draw_least_used"},
          ("t1_scope", "momentum_shift"): {"counts_of", "mean_cp10k", "apply_factors", "log1p_cp10k"},
-         ("t2_build", "sample_cells"): {"draw_balanced"}, ("t2_build", "cloud_guard"): {"draw_balanced"}}
+         ("t2_build", "sample_cells"): {"draw_balanced"}, ("t2_build", "cloud_guard"): {"draw_balanced"},
+         ("t2_build", "interpolate_clouds"): {"fgw_coupling", "coupling_rotation", "barycentric", "nearest_anchors",
+                                              "draw_balanced"}}
 
 
 @pytest.mark.parametrize(("home", "core"), MOVED.items(), ids=[f"{m}.{n}" for m, n in MOVED])
@@ -745,3 +747,52 @@ if __name__ == "__main__":  # prints the table, for an output change that is mea
                 print(f'        "{part}": "{digest}",')
             print("    },")
         print("}")
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# 5. Coupling and displacement (feat-010)
+def _rotation(a: float, b: float) -> np.ndarray:
+    rz = np.array([[np.cos(a), -np.sin(a), 0.0], [np.sin(a), np.cos(a), 0.0], [0.0, 0.0, 1.0]])
+    rx = np.array([[1.0, 0.0, 0.0], [0.0, np.cos(b), -np.sin(b)], [0.0, np.sin(b), np.cos(b)]])
+    return rz @ rx
+
+
+def test_coupling_rotation_recovers_a_proper_rotation_and_never_returns_a_mirror(op):
+    rng = np.random.default_rng(0)
+    A = rng.normal(size=(200, 3)) * [3.0, 2.0, 1.0]
+    A -= A.mean(0)
+    R0 = _rotation(0.7, -0.4)
+    T = np.eye(200) / 200
+    R = op.coupling_rotation(A, A @ R0.T, T)
+    np.testing.assert_allclose(R, R0, atol=1e-8)
+    Rm = op.coupling_rotation(A, A * [1.0, 1.0, -1.0], T)  # a mirror image: the best proper rotation, det +1
+    assert np.linalg.det(Rm) == pytest.approx(1.0)
+    with pytest.raises(ValueError, match="shape"):
+        op.coupling_rotation(A, A, np.eye(199))
+
+
+def test_fgw_coupling_pairs_a_moved_permuted_copy_cell_for_cell(op):
+    rng = np.random.default_rng(1)
+    A = rng.normal(size=(40, 3)) * [3.0, 2.0, 1.0]
+    F = rng.normal(size=(40, 5))
+    perm = rng.permutation(40)
+    B, FB = (A @ _rotation(1.1, 0.3).T + 7.0)[perm], F[perm]  # rotated, moved, rows shuffled
+    T = op.fgw_coupling(F, FB, A, B, alpha=0.5, max_iter=200, emd_max_iter=100_000)
+    assert T.shape == (40, 40) and T.sum() == pytest.approx(1.0)
+    np.testing.assert_allclose(T.sum(1), 1 / 40, atol=1e-9)
+    np.testing.assert_allclose(T.sum(0), 1 / 40, atol=1e-9)
+    assert (T.argmax(1) == np.argsort(perm)).all()  # each cell goes to its own copy
+    with pytest.raises(ValueError, match="alpha"):
+        op.fgw_coupling(F, FB, A, B, alpha=1.5, max_iter=10, emd_max_iter=10)
+    with pytest.raises(ValueError, match="feature row"):
+        op.fgw_coupling(F[:-1], FB, A, B, alpha=0.5, max_iter=10, emd_max_iter=10)
+
+
+def test_barycentric_and_nearest_anchors(op):
+    T = np.array([[0.25, 0.25], [0.0, 0.5]])
+    np.testing.assert_allclose(op.barycentric(T, np.array([[0.0, 0.0], [2.0, 4.0]])), [[1.0, 2.0], [2.0, 4.0]])
+    with pytest.raises(ValueError, match="no mass"):
+        op.barycentric(np.array([[0.0, 0.0]]), np.zeros((2, 2)))
+    d, i = op.nearest_anchors(np.array([[0.1, 0, 0], [5, 5, 5]]), np.array([[0, 0, 0], [5, 5, 4], [9, 9, 9]]), 2)
+    assert i[:, 0].tolist() == [0, 1] and d.shape == (2, 2) and d[0, 0] == pytest.approx(0.1)
+

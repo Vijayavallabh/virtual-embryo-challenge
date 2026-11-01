@@ -65,7 +65,7 @@ from scipy import sparse
 from scipy.spatial import cKDTree
 
 from vec.boards import Board
-from vec.core import draw_balanced
+from vec.core import barycentric, coupling_rotation, draw_balanced, fgw_coupling, nearest_anchors
 from vec.io import (
     COORD_KEY,
     TARGET_LIBRARY_SIZE,
@@ -1264,3 +1264,131 @@ def build_submission(board: Board, cells, coords, genes: list[str] | None = None
                             f"[{lo:.3g}, {hi:.3g}]: log1p of counts never scaled to 1e4 per cell?")
     rep.warnings.extend(notes)
     return a, rep
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Interpolation between two staged clouds (feat-010, the T2 embryo pipeline; docs/PLAN.md 4.2)
+# Fixed on 2026-11-01, before any interpolation result: the plan's setting where it names one, else sizes chosen for
+# run time, not for score.
+INTERP_ALPHA = 0.5  # FGW structure weight: the middle of the plan's 0.3-0.6
+INTERP_N_ANCHOR = 2000  # cells per stage in the coupling (POT's exact solver)
+INTERP_N_PC = 30  # expression features: principal components of the log1p panel expression of both stages' anchors
+INTERP_K = 8  # a cell moves by the mean displacement of its 8 nearest anchors of its own stage
+INTERP_MAX_ITER = 200  # conditional-gradient iterations of the coupling
+INTERP_EMD_ITER = 10_000_000  # network-simplex iterations of each step's exact transport (POT's default stops short)
+
+
+def pchip_rms(days, rms, target_day: float) -> float:
+    """The pre-registered embryo size rule in raw mode (experiments/coords/size_procedure.py, `_embryo_interp`): PCHIP
+    of log full-cloud RMS radius against the stage day through the given stages, read at target_day, which must lie
+    strictly inside them."""
+    from scipy.interpolate import PchipInterpolator
+
+    d = np.asarray(days, dtype=np.float64)
+    r = np.asarray(rms, dtype=np.float64)
+    order = np.argsort(d)
+    d, r = d[order], r[order]
+    if len(np.unique(d)) != len(d):
+        raise ValueError("two stages share a day")
+    if not d[0] < target_day < d[-1]:
+        raise ValueError(f"target day {target_day} is not strictly inside the stages {d.tolist()}")
+    if not (np.isfinite(r).all() and (r > 0).all()):
+        raise ValueError("RMS radii must be finite and positive")
+    return float(np.exp(PchipInterpolator(d, np.log(r), extrapolate=False)(target_day)))
+
+
+@dataclass
+class Interpolation:
+    """`interpolate_clouds` result: output cell i is row `rows[i]` of stage `stage[i]` (0 before, 1 after), at
+    `coords[i]` in the before stage's frame. `pool_coords` and `pool_weights`: where every cell of both stages lands
+    (before rows, then after rows) and its chance of being drawn, the source for the cloud guard."""
+
+    stage: np.ndarray
+    rows: np.ndarray
+    coords: np.ndarray
+    pool_coords: np.ndarray
+    pool_weights: np.ndarray
+    record: dict
+
+
+def _joint_pcs(Eb: np.ndarray, Ea: np.ndarray, n_pc: int) -> tuple[np.ndarray, np.ndarray]:
+    X = np.vstack([Eb, Ea]).astype(np.float64)
+    X -= X.mean(0)
+    _, _, Vt = np.linalg.svd(X, full_matrices=False)
+    P = X @ Vt[: min(n_pc, Vt.shape[0])].T
+    return P[: len(Eb)], P[len(Eb):]
+
+
+def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: float, n: int, seed: int, *,
+                       target_rms: float, alpha: float = INTERP_ALPHA, n_anchor: int = INTERP_N_ANCHOR,
+                       n_pc: int = INTERP_N_PC, k: int = INTERP_K, max_iter: int = INTERP_MAX_ITER,
+                       emd_max_iter: int = INTERP_EMD_ITER) -> Interpolation:
+    """Displacement interpolation between two stages at time fraction t (0 = before, 1 = after).
+
+    1. Each cloud is centred and divided by its RMS radius (no PCA axes, so no sign choice).
+    2. A fused Gromov-Wasserstein coupling (vec.core) of n_anchor random cells per stage: features are the first n_pc
+       principal components of both stages' anchors' log1p panel expression, structure the within-cloud distances.
+       The proper rotation that maps before onto after under the coupling brings the after cloud into the before
+       stage's frame (a rotation, never a mirror image).
+    3. Each anchor's displacement to its coupled partners' mean; every cell of either stage moves by the mean
+       displacement of its k nearest anchors of its own stage: a before cell t of the way towards after, an after cell
+       1 - t of the way back (McCann interpolation, carried to every cell).
+    4. n cells drawn: round((1 - t) n) before cells and the rest after cells, random rows (vec.core.draw_balanced);
+       each keeps its real expression, so the population is a mixture of real cells of the two stages.
+    5. The drawn cloud is scaled about its centroid to RMS radius target_rms (the size rule) and placed at the before
+       stage's centroid; exact repeats (a row drawn twice) move by the free jitter, as in `sample_cells`.
+    """
+    Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
+    Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
+    if Eb.shape[0] != Cb.shape[0] or Ea.shape[0] != Ca.shape[0] or Eb.shape[1] != Ea.shape[1]:
+        raise ValueError("expression must have one row per cell and the same genes in both stages")
+    if not 0.0 <= t <= 1.0:
+        raise ValueError(f"t must lie in [0, 1], got {t}")
+    if not (np.isfinite(target_rms) and target_rms > 0):
+        raise ValueError(f"target_rms must be finite and positive, got {target_rms}")
+    n, seed = _whole(n, "n", 1), _whole(seed, "seed", 0)
+    cb, sb, sa = Cb.mean(0), rms_radius(Cb), rms_radius(Ca)
+    Zb, Za = (Cb - cb) / sb, (Ca - Ca.mean(0)) / sa
+    rng = np.random.default_rng([seed, 4])
+    ib = np.sort(rng.choice(len(Zb), min(n_anchor, len(Zb)), replace=False))
+    ia = np.sort(rng.choice(len(Za), min(n_anchor, len(Za)), replace=False))
+    Fb, Fa = _joint_pcs(Eb[ib], Ea[ia], n_pc)
+    T = fgw_coupling(Fb, Fa, Zb[ib], Za[ia], alpha, max_iter, emd_max_iter)
+    R = coupling_rotation(Zb[ib], Za[ia], T)
+    Za_b = Za @ R
+    db = barycentric(T, Za_b[ia]) - Zb[ib]
+    da = barycentric(T.T, Zb[ib]) - Za_b[ia]
+    pos_b = Zb + t * db[nearest_anchors(Zb, Zb[ib], k)[1]].mean(1)
+    pos_a = Za_b + (1.0 - t) * da[nearest_anchors(Za_b, Za_b[ia], k)[1]].mean(1)
+    n_b = int(round((1.0 - t) * n))
+    n_a = n - n_b
+    empty = np.array([], dtype=np.int64)
+    rows_b = draw_balanced(len(Zb), n_b, np.random.default_rng([seed, 0])) if n_b else empty
+    rows_a = draw_balanced(len(Za), n_a, np.random.default_rng([seed, 1])) if n_a else empty
+    stage = np.r_[np.zeros(n_b, dtype=np.int64), np.ones(n_a, dtype=np.int64)]
+    rows = np.r_[rows_b, rows_a].astype(np.int64)
+    perm = np.random.default_rng([seed, 2]).permutation(n)
+    stage, rows = stage[perm], rows[perm]
+    Z = np.empty((n, 3))
+    Z[stage == 0], Z[stage == 1] = pos_b[rows[stage == 0]], pos_a[rows[stage == 1]]
+    zc = Z.mean(0)
+    scale = target_rms / rms_radius(Z)
+    coords = cb + (Z - zc) * scale
+    pool = cb + (np.vstack([pos_b, pos_a]) - zc) * scale
+    weights = np.r_[np.full(len(Zb), (1.0 - t) / len(Zb)), np.full(len(Za), t / len(Za))]
+    _, first = np.unique(coords.astype(np.float32), axis=0, return_index=True)
+    dup = np.ones(n, dtype=bool)
+    dup[first] = False
+    if dup.any():
+        coords[dup] += _ball_shifts(int(dup.sum()), JITTER_NN_FRAC * median_nn_distance(coords),
+                                    np.random.default_rng([seed, 3]))
+    angle = float(np.degrees(np.arccos(np.clip((np.trace(R) - 1.0) / 2.0, -1.0, 1.0))))
+    record = {"t": float(t), "n": n, "n_before": n_b, "n_after": n_a, "alpha": float(alpha),
+              "n_anchor": [len(ib), len(ia)], "n_pc": int(Fb.shape[1]), "k": int(k), "max_iter": int(max_iter),
+              "rotation_deg": angle,
+              "coupling_nonzero": int((T > 0).sum()), "target_rms": float(target_rms),
+              "rms_before": sb, "rms_after": sa, "scale_from_canonical": float(scale),
+              "mean_anchor_shift": [float(np.linalg.norm(db, axis=1).mean()), float(np.linalg.norm(da, axis=1).mean())],
+              "n_jittered": int(dup.sum())}
+    return Interpolation(stage=stage, rows=rows, coords=coords, pool_coords=pool, pool_weights=weights, record=record)
+

@@ -1364,7 +1364,11 @@ ALLOWED_LITERALS = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 16.0, 0.25, 0.5, 0.9, 0.03, 0.
 # The count rule's own thresholds as the user approved them on 2026-10-21 (docs/RELEASE_RULES_SUMMARY.md, answer 7: a
 # paired mean gain above 0.3 points, at least 8 of the 10 release seeds ahead), each allowed only on the module-level
 # line that defines its constant, so the same value anywhere else (a 0.3 composition share, say) still fails.
-RULE_LITERALS = {"COUNT_RULE_SEEDS": {10.0}, "COUNT_RULE_MIN_GAIN": {0.3}, "COUNT_RULE_MIN_AHEAD": {8.0}}
+# The interpolation's method settings, fixed on 2026-11-01 before any result (feat-010; sizes of the computation, not
+# values of any stage), are allowed the same way.
+RULE_LITERALS = {"COUNT_RULE_SEEDS": {10.0}, "COUNT_RULE_MIN_GAIN": {0.3}, "COUNT_RULE_MIN_AHEAD": {8.0},
+                 "INTERP_N_ANCHOR": {2000.0}, "INTERP_N_PC": {30.0}, "INTERP_K": {8.0}, "INTERP_MAX_ITER": {200.0},
+                 "INTERP_EMD_ITER": {10_000_000.0}}
 
 
 def _stray_literals(src: str) -> tuple[list[tuple[int, str]], set[str]]:
@@ -1438,3 +1442,61 @@ def test_builder_warns_on_non_integer_values_above_the_log1p_ceiling():
         _, rep = tb.build_submission(board, X, stack(300, seed=25))
         raw = [w for w in rep.warnings if "raw counts" in w]
         assert raw and "whole numbers only: False" in raw[0], rep.warnings
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Interpolation between two staged clouds (feat-010)
+def test_pchip_rms_reads_the_embryo_size_rule_strictly_inside_the_stages():
+    from scipy.interpolate import PchipInterpolator
+
+    d, r = [6.75, 7.25, 8.0], [100.0, 150.0, 300.0]
+    v = tb.pchip_rms(d, r, 7.5)
+    assert 150.0 < v < 300.0 and v == pytest.approx(float(np.exp(PchipInterpolator(d, np.log(r))(7.5))))
+    assert tb.pchip_rms(d[::-1], r[::-1], 7.5) == pytest.approx(v)  # stage order does not matter
+    for bad in (6.75, 8.0, 9.0):
+        with pytest.raises(ValueError, match="strictly inside"):
+            tb.pchip_rms(d, r, bad)
+    with pytest.raises(ValueError, match="share a day"):
+        tb.pchip_rms([7.0, 7.0, 8.0], r, 7.5)
+
+
+def _rot_z(a):
+    return np.array([[np.cos(a), -np.sin(a), 0.0], [np.sin(a), np.cos(a), 0.0], [0.0, 0.0, 1.0]])
+
+
+def test_interpolation_between_a_cloud_and_its_moved_copy_keeps_the_shape_and_lands_on_the_size():
+    rng = np.random.default_rng(3)
+    A = rng.normal(size=(600, 3)) * [4.0, 2.0, 1.0] + 20.0
+    E = rng.gamma(2.0, 1.0, size=(600, 12))
+    perm = rng.permutation(600)
+    B, EB = (2.0 * (A - A.mean(0)) @ _rot_z(0.6).T - 50.0)[perm], E[perm]  # rotated, doubled, moved, shuffled
+    for t, stage in ((0.0, 0), (1.0, 1)):
+        res = tb.interpolate_clouds(A, B, E, EB, t, 300, seed=1, target_rms=10.0, n_anchor=200, k=4)
+        assert res.coords.shape == (300, 3) and (res.stage == stage).all()
+        assert tb.rms_radius(res.coords) == pytest.approx(10.0)
+    res = tb.interpolate_clouds(A, B, E, EB, 0.5, 400, seed=2, target_rms=10.0, n_anchor=600, k=4)  # all as anchors
+    assert (res.stage == 1).sum() == 200 and res.record["rotation_deg"] == pytest.approx(np.degrees(0.6), abs=1.0)
+    assert res.pool_coords.shape == (1200, 3) and res.pool_weights.sum() == pytest.approx(1.0)
+    # same shape at both ends: every after cell lands where its own copy among the before cells lands
+    pb, pa = res.pool_coords[:600], res.pool_coords[600:]
+    assert np.abs(pa - pb[perm]).max() < 0.05 * tb.rms_radius(res.pool_coords)
+    # placed at the before stage's centroid (up to the jitter of cells drawn twice: a before cell and its own copy)
+    assert res.coords.mean(0) == pytest.approx(A.mean(0), abs=0.01 * tb.rms_radius(res.coords))
+    assert np.unique(res.coords.astype(np.float32), axis=0).shape[0] == 400
+    with pytest.raises(ValueError, match="t must"):
+        tb.interpolate_clouds(A, B, E, EB, 1.5, 10, seed=0, target_rms=1.0)
+
+
+def test_interpolation_moves_cells_part_of_the_way_between_two_shapes():
+    rng = np.random.default_rng(4)
+    A = rng.normal(size=(500, 3)) * [1.0, 1.0, 1.0]
+    E = rng.gamma(2.0, 1.0, size=(500, 10))
+    B = A * [3.0, 1.0, 1.0]  # the after shape is stretched along x; the same cells in the same order
+    long_axis = []
+    for t in (0.0, 0.5, 1.0):
+        res = tb.interpolate_clouds(A, B, E, E, t, 500, seed=0, target_rms=1.0, n_anchor=250, k=4)
+        C = res.coords - res.coords.mean(0)
+        ev = np.sort(np.linalg.eigvalsh(np.cov(C.T)))[::-1]
+        long_axis.append(ev[0] / ev[1])
+    assert long_axis[0] < long_axis[1] < long_axis[2]  # elongation grows with t
+

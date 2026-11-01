@@ -405,9 +405,13 @@ def draw_copy(ctx: BuildContext) -> tuple[ad.AnnData, np.ndarray, np.ndarray, np
     return pool, rows, X, coords
 
 
-def finish(ctx: BuildContext, pool: ad.AnnData, X: np.ndarray, coords: np.ndarray | None) -> Stage:
+def finish(ctx: BuildContext, pool: ad.AnnData, X: np.ndarray, coords: np.ndarray | None,
+           guard_source: np.ndarray | None = None, guard_weights: np.ndarray | None = None) -> Stage:
     """A candidate as the scorer reads its file, after the checks the server applies: written and checked with
-    vec.io (T1), or through the T2 head's cloud guard and checked builder (coordinate boards). A failure raises."""
+    vec.io (T1), or through the T2 head's cloud guard and checked builder (coordinate boards). A failure raises.
+    guard_source / guard_weights: the cloud the cells were drawn from, in the submission's frame, and the draw weights,
+    when that is not `pool` as loaded (a size step or an interpolation moved it); the guard then checks the cells
+    against it as it checks a copy against its pool."""
     X = np.clip(np.asarray(X, dtype=np.float32), 0.0, None)
     if not ctx.board.needs_coords:
         sub = make_submission(X, ctx.board.genes)
@@ -416,7 +420,8 @@ def finish(ctx: BuildContext, pool: ad.AnnData, X: np.ndarray, coords: np.ndarra
         if not rep.ok:
             raise ValueError(f"{ctx.task.key}: the built file fails its check: {rep.errors}")
         return Stage.from_anndata(sub, ctx.board.genes)
-    guard = t2_build.cloud_guard(coords, np.asarray(pool.obsm[COORD_KEY], dtype=float)[:, :3], seed=ctx.seed)
+    source = np.asarray(pool.obsm[COORD_KEY], dtype=float)[:, :3] if guard_source is None else guard_source
+    guard = t2_build.cloud_guard(coords, source, seed=ctx.seed, source_weights=guard_weights)
     if not guard.ok:
         raise ValueError(f"{ctx.task.key}: cloud guard flags {guard.flags}")
     sub, rep = t2_build.build_submission(ctx.board, X, coords, genes=list(ctx.board.genes))
@@ -450,13 +455,18 @@ def _pseudobulk_shift(ctx: BuildContext) -> Stage:
     """The organisers' pseudobulk_shift on real reference cells at the board's count: each cell moves by its type's
     mean change from the stage before to the reference stage (raw celltype labels; types absent before stay put)."""
     pool, rows, X, coords = draw_copy(ctx)
+    return finish(ctx, pool, _type_shift(ctx, pool, rows, X), coords)
+
+
+def _type_shift(ctx: BuildContext, pool: ad.AnnData, rows: np.ndarray, X: np.ndarray) -> np.ndarray:
+    """pseudobulk_shift's expression step: each drawn cell plus its raw type's mean change from the stage before."""
     ref_m = _type_means(pool, ctx.board.genes)
     start_m = _type_means(ctx.inputs[start_role(ctx.task)], ctx.board.genes)
     ct = np.asarray(pool.obs["celltype"]).astype(str)[rows]
     for c in np.unique(ct):
         if c in start_m:
             X[ct == c] += (ref_m[c] - start_m[c]).astype(np.float32)
-    return finish(ctx, pool, X, coords)
+    return X
 
 
 def _shift_transfer(ctx: BuildContext) -> Stage:
@@ -540,6 +550,47 @@ def _b0_t2(ctx: BuildContext) -> Stage:
     return finish(ctx, pool, dense(shifted[:, ctx.board.genes].X), coords)
 
 
+# ------------------------------------------------------------------------------------------------ T2 embryo (feat-010)
+def target_rms(ctx: BuildContext) -> float:
+    """The pre-registered embryo size rule (raw mode) on the task's own input stages: PCHIP of log RMS radius against
+    the stage day, read at the target's day (vec.t2_build.pchip_rms)."""
+    days = [ctx.task.role_days[r] for r in ctx.inputs]
+    rms = [t2_build.rms_radius(np.asarray(a.obsm[COORD_KEY], dtype=float)[:, :3]) for a in ctx.inputs.values()]
+    return t2_build.pchip_rms(days, rms, ctx.task.target_day)
+
+
+def _psb_size(ctx: BuildContext) -> Stage:
+    """pseudobulk_shift (the embryo base since 2026-11-01) with the cloud scaled about the pool's centroid to the
+    embryo size rule read on the task's own stages: the size step alone."""
+    pool, rows, X, coords = draw_copy(ctx)
+    X = _type_shift(ctx, pool, rows, X)
+    P = np.asarray(pool.obsm[COORD_KEY], dtype=float)[:, :3]
+    c0, f = P.mean(0), target_rms(ctx) / t2_build.rms_radius(P)
+    return finish(ctx, pool, X, c0 + (coords - c0) * f, guard_source=c0 + (P - c0) * f)
+
+
+def _fgw(ctx: BuildContext) -> Stage:
+    """The T2 embryo pipeline (docs/PLAN.md 4.2): displacement interpolation between the brackets at the target's
+    time fraction (vec.t2_build.interpolate_clouds: fused Gromov-Wasserstein coupling, proper rotation, McCann moves,
+    a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages."""
+    t = ctx.task
+    before, after = ctx.inputs["before"], ctx.inputs["after"]
+    lo, hi = t.role_days["before"], t.role_days["after"]
+    g = ctx.board.genes
+    Eb, Ea = dense(before[:, g].X).astype(np.float32), dense(after[:, g].X).astype(np.float32)
+    res = t2_build.interpolate_clouds(np.asarray(before.obsm[COORD_KEY], dtype=float)[:, :3],
+                                      np.asarray(after.obsm[COORD_KEY], dtype=float)[:, :3], Eb, Ea,
+                                      (t.target_day - lo) / (hi - lo), count_for(ctx.board, before.n_obs), ctx.seed,
+                                      target_rms=target_rms(ctx))
+    X = np.empty((len(res.rows), len(g)), dtype=np.float32)
+    X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
+    return finish(ctx, before, X, res.coords, guard_source=res.pool_coords, guard_weights=res.pool_weights)
+
+
+def _interp(t: PseudoTask) -> bool:
+    return t.task == "T2" and t.kind == "interp" and {"before", "after"} <= set(t.inputs)
+
+
 def _b0(ctx: BuildContext) -> Stage:
     return _b0_t1(B0_DAMPING)(ctx) if ctx.task.task == "T1" else _b0_t2(ctx)
 
@@ -570,6 +621,16 @@ CANDIDATES = {
     "b0_scope": Candidate("b0_scope", frozenset({"T1"}), _ANY, _b0_t1(0.0),
                           {"what": "T1 chamber-only copy without a shift (B0's composition alone)",
                            "scope": "chamber"}),
+    "psb_size": Candidate("psb_size", frozenset({"T2"}), (), _psb_size,
+                          {"what": "pseudobulk_shift with the cloud scaled to the embryo size rule (PCHIP of log RMS "
+                                   "radius through the task's own stages, read at the target's day)", "scope": "whole"},
+                          requires=lambda t: _interp(t) and start_role(t) is not None),
+    "fgw": Candidate("fgw", frozenset({"T2"}), (), _fgw,
+                     {"what": "displacement interpolation between the brackets (fused Gromov-Wasserstein coupling, "
+                              "proper rotation, McCann moves) with a mixture of real cells of both, scaled to the "
+                              "embryo size rule", "alpha": t2_build.INTERP_ALPHA, "n_anchor": t2_build.INTERP_N_ANCHOR,
+                      "n_pc": t2_build.INTERP_N_PC, "k": t2_build.INTERP_K, "scope": "whole"},
+                     requires=_interp),
 }
 
 
