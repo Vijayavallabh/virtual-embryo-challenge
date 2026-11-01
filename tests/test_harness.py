@@ -670,3 +670,11 @@ def test_embryo_candidates_resize_to_the_size_rule_and_interpolate_inside_the_gu
     fgw = CANDIDATES["fgw"].build(ctx)
     assert fgw.n == board.max_cells and harness.t2_build.rms_radius(fgw.coords) == pytest.approx(want, rel=0.01)
     assert fgw.X.shape == (board.max_cells, len(GENES))
+    # the embryo s2 shape variants: fgw's cells and expression, positions from one bracket's geometry, same size rule
+    for name in ("fgw_shape0", "fgw_shape1"):
+        assert CANDIDATES[name].applies(task) and CANDIDATES[name].applies(tasks["T2e/E6.75+E7.5->E7.25"])
+        assert not CANDIDATES[name].applies(tasks["T2h/<=E9.5->E10.5"])
+        v = CANDIDATES[name].build(ctx)
+        np.testing.assert_array_equal(v.X, fgw.X)
+        assert harness.t2_build.rms_radius(v.coords) == pytest.approx(want, rel=0.01)
+        assert not np.allclose(v.coords, fgw.coords)

@@ -105,14 +105,33 @@ trim is also H2's own definition in `docs/PLAN.md` 4.3 ("heart-focused (shell ha
 
 No test data were involved. The captain can restore the rule as written ("s2 = H2 as built") by saying so.
 
-## T2 embryo (open)
+## T2 embryo (rule fixed 2026-11-02, before the variants run)
 
-The candidates are:
-- FGW with an alternative clock;
-- the nearest-stage variant: E8.0 tissue shrunk to the predicted size, with mixture expression;
-- psb_size.
+### What no candidate does
 
-A hedge analysis on the two embryo pseudo-tasks decides, before the freeze.
+On both embryo pseudo-tasks, every candidate built so far scores below fgw in every one of the 10 seeds: copy, B0,
+pseudobulk_shift and psb_size (`experiments/harness/results/emb_fgw_v1/`). None of them adds anything as an s2.
+
+fgw's open risk is its interpolated shape: on E7.5 its shape skills fall below a copy's.
+
+### The candidates
+
+The s2 candidates are the shape variants:
+- `fgw_shape0` keeps fgw's coupling and its mixture of real cells, with positions taken from the earlier bracket's
+  geometry (`interpolate_clouds(..., t_pos=0)`).
+- `fgw_shape1` does the same with the later bracket's geometry (`t_pos=1`). This is the plan's nearest-stage variant:
+  E8.0 tissue at the predicted size, with mixture expression.
+
+Both are scaled to the embryo size rule. At test, the earlier bracket is E7.5 and the later is E8.0.
+
+### The rule
+
+Both candidates run on both embryo pseudo-tasks, against fgw, over seeds 0-9 with the harness.
+- **Choice.** s2 is the variant with the higher expected better of fgw and it: the mean over seeds of the larger of the
+  two scores, averaged over the two pseudo-tasks.
+- **Tie.** If both equal fgw's own mean, because neither beats fgw in any seed, s2 is `fgw_shape1`, the plan's
+  nearest-stage variant.
+- **Build.** The embryo test build gets the matching `--method`.
 
 ## T3 (decided 2026-11-01 by the captain)
 

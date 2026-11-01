@@ -1549,3 +1549,29 @@ def test_radial_trim_mask_refuses_bad_input():
         tb.radial_trim_mask(C, np.zeros(len(C), bool), 0.5)
     with pytest.raises(ValueError):
         tb.radial_trim_mask(C, core, 1.5)
+
+
+# ------------------------------------------------------------------ embryo s2 shape variants (t_pos), 2026-11-02
+def test_interpolation_t_pos_sets_the_geometry_and_leaves_the_default_unchanged():
+    rng = np.random.default_rng(4)
+    A = rng.normal(size=(500, 3))
+    E = rng.gamma(2.0, 1.0, size=(500, 10))
+    B = A * [3.0, 1.0, 1.0]  # stretched along x; same cells, same order
+    kw = dict(seed=0, target_rms=1.0, n_anchor=250, k=4)
+    base = tb.interpolate_clouds(A, B, E, E, 0.5, 500, **kw)
+    same = tb.interpolate_clouds(A, B, E, E, 0.5, 500, t_pos=0.5, **kw)
+    assert np.array_equal(base.coords, same.coords) and np.array_equal(base.rows, same.rows)
+    assert base.record["t_pos"] == 0.5
+    elong = {}
+    for tp in (0.0, 1.0):
+        res = tb.interpolate_clouds(A, B, E, E, 0.5, 500, t_pos=tp, **kw)
+        assert np.array_equal(res.rows, base.rows) and np.array_equal(res.stage, base.stage)  # the same mixture
+        assert (res.stage == 1).sum() == 250 and tb.rms_radius(res.coords) == pytest.approx(1.0)
+        C = res.coords - res.coords.mean(0)
+        ev = np.sort(np.linalg.eigvalsh(np.cov(C.T)))[::-1]
+        elong[tp] = ev[0] / ev[1]
+    C = base.coords - base.coords.mean(0)
+    ev = np.sort(np.linalg.eigvalsh(np.cov(C.T)))[::-1]
+    assert elong[0.0] < ev[0] / ev[1] < elong[1.0]  # before's round shape, the middle, after's stretched shape
+    with pytest.raises(ValueError, match="t_pos"):
+        tb.interpolate_clouds(A, B, E, E, 0.5, 10, t_pos=1.2, **kw)

@@ -569,10 +569,12 @@ def _psb_size(ctx: BuildContext) -> Stage:
     return finish(ctx, pool, X, c0 + (coords - c0) * f, guard_source=c0 + (P - c0) * f)
 
 
-def _fgw(ctx: BuildContext) -> Stage:
+def _fgw(ctx: BuildContext, t_pos: float | None = None) -> Stage:
     """The T2 embryo pipeline (docs/PLAN.md 4.2): displacement interpolation between the brackets at the target's
     time fraction (vec.t2_build.interpolate_clouds: fused Gromov-Wasserstein coupling, proper rotation, McCann moves,
-    a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages."""
+    a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages. t_pos:
+    the s2 shape variants' position fraction (0: the earlier bracket's geometry, 1: the later's; default: the
+    mixture's)."""
     t = ctx.task
     before, after = ctx.inputs["before"], ctx.inputs["after"]
     lo, hi = t.role_days["before"], t.role_days["after"]
@@ -581,10 +583,18 @@ def _fgw(ctx: BuildContext) -> Stage:
     res = t2_build.interpolate_clouds(np.asarray(before.obsm[COORD_KEY], dtype=float)[:, :3],
                                       np.asarray(after.obsm[COORD_KEY], dtype=float)[:, :3], Eb, Ea,
                                       (t.target_day - lo) / (hi - lo), count_for(ctx.board, before.n_obs), ctx.seed,
-                                      target_rms=target_rms(ctx))
+                                      target_rms=target_rms(ctx), t_pos=t_pos)
     X = np.empty((len(res.rows), len(g)), dtype=np.float32)
     X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
     return finish(ctx, before, X, res.coords, guard_source=res.pool_coords, guard_weights=res.pool_weights)
+
+
+def _fgw_shape0(ctx: BuildContext) -> Stage:
+    return _fgw(ctx, t_pos=0.0)
+
+
+def _fgw_shape1(ctx: BuildContext) -> Stage:
+    return _fgw(ctx, t_pos=1.0)
 
 
 def _interp(t: PseudoTask) -> bool:
@@ -631,6 +641,13 @@ CANDIDATES = {
                               "embryo size rule", "alpha": t2_build.INTERP_ALPHA, "n_anchor": t2_build.INTERP_N_ANCHOR,
                       "n_pc": t2_build.INTERP_N_PC, "k": t2_build.INTERP_K, "scope": "whole"},
                      requires=_interp),
+    # the embryo s2 shape variants (docs/S2_RULES.md): fgw's coupling and mixture, positions from one bracket's geometry
+    "fgw_shape0": Candidate("fgw_shape0", frozenset({"T2"}), (), _fgw_shape0,
+                            {"what": "fgw's mixture of real cells in the earlier bracket's geometry (t_pos = 0), "
+                                     "scaled to the embryo size rule", "scope": "whole"}, requires=_interp),
+    "fgw_shape1": Candidate("fgw_shape1", frozenset({"T2"}), (), _fgw_shape1,
+                            {"what": "fgw's mixture of real cells in the later bracket's geometry (t_pos = 1), "
+                                     "scaled to the embryo size rule", "scope": "whole"}, requires=_interp),
 }
 
 

@@ -1365,7 +1365,7 @@ def _joint_pcs(Eb: np.ndarray, Ea: np.ndarray, n_pc: int) -> tuple[np.ndarray, n
 def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: float, n: int, seed: int, *,
                        target_rms: float, alpha: float = INTERP_ALPHA, n_anchor: int = INTERP_N_ANCHOR,
                        n_pc: int = INTERP_N_PC, k: int = INTERP_K, max_iter: int = INTERP_MAX_ITER,
-                       emd_max_iter: int = INTERP_EMD_ITER) -> Interpolation:
+                       emd_max_iter: int = INTERP_EMD_ITER, t_pos: float | None = None) -> Interpolation:
     """Displacement interpolation between two stages at time fraction t (0 = before, 1 = after).
 
     1. Each cloud is centred and divided by its RMS radius (no PCA axes, so no sign choice).
@@ -1380,6 +1380,10 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
        each keeps its real expression, so the population is a mixture of real cells of the two stages.
     5. The drawn cloud is scaled about its centroid to RMS radius target_rms (the size rule) and placed at the before
        stage's centroid; exact repeats (a row drawn twice) move by the free jitter, as in `sample_cells`.
+
+    t_pos (default: t) moves the cells by a different fraction than the mixture uses. 0 gives the before stage's
+    geometry, every after cell carried onto its partners in the before cloud; 1 gives the after stage's geometry.
+    These are the embryo s2 shape variants (`docs/S2_RULES.md`). Left unset, the result is bit-identical to t_pos = t.
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1387,6 +1391,9 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         raise ValueError("expression must have one row per cell and the same genes in both stages")
     if not 0.0 <= t <= 1.0:
         raise ValueError(f"t must lie in [0, 1], got {t}")
+    tp = t if t_pos is None else float(t_pos)
+    if not 0.0 <= tp <= 1.0:
+        raise ValueError(f"t_pos must lie in [0, 1], got {t_pos}")
     if not (np.isfinite(target_rms) and target_rms > 0):
         raise ValueError(f"target_rms must be finite and positive, got {target_rms}")
     n, seed = _whole(n, "n", 1), _whole(seed, "seed", 0)
@@ -1401,8 +1408,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     Za_b = Za @ R
     db = barycentric(T, Za_b[ia]) - Zb[ib]
     da = barycentric(T.T, Zb[ib]) - Za_b[ia]
-    pos_b = Zb + t * db[nearest_anchors(Zb, Zb[ib], k)[1]].mean(1)
-    pos_a = Za_b + (1.0 - t) * da[nearest_anchors(Za_b, Za_b[ia], k)[1]].mean(1)
+    pos_b = Zb + tp * db[nearest_anchors(Zb, Zb[ib], k)[1]].mean(1)
+    pos_a = Za_b + (1.0 - tp) * da[nearest_anchors(Za_b, Za_b[ia], k)[1]].mean(1)
     n_b = int(round((1.0 - t) * n))
     n_a = n - n_b
     empty = np.array([], dtype=np.int64)
@@ -1426,7 +1433,7 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         coords[dup] += _ball_shifts(int(dup.sum()), JITTER_NN_FRAC * median_nn_distance(coords),
                                     np.random.default_rng([seed, 3]))
     angle = float(np.degrees(np.arccos(np.clip((np.trace(R) - 1.0) / 2.0, -1.0, 1.0))))
-    record = {"t": float(t), "n": n, "n_before": n_b, "n_after": n_a, "alpha": float(alpha),
+    record = {"t": float(t), "t_pos": float(tp), "n": n, "n_before": n_b, "n_after": n_a, "alpha": float(alpha),
               "n_anchor": [len(ib), len(ia)], "n_pc": int(Fb.shape[1]), "k": int(k), "max_iter": int(max_iter),
               "rotation_deg": angle,
               "coupling_nonzero": int((T > 0).sum()), "target_rms": float(target_rms),
