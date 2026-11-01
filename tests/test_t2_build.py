@@ -1500,3 +1500,52 @@ def test_interpolation_moves_cells_part_of_the_way_between_two_shapes():
         long_axis.append(ev[0] / ev[1])
     assert long_axis[0] < long_axis[1] < long_axis[2]  # elongation grows with t
 
+
+
+# ------------------------------------------------------------------ heart s2 scope trim (docs/S2_RULES.md, 2026-11-02)
+def _shelled_cloud(seed: int = 0, n_core: int = 300, n_shell: int = 900):
+    rng = np.random.default_rng(seed)
+    core = rng.normal(0, 1.0, (n_core, 3))
+    shell = rng.normal(0, 3.0, (n_shell, 3)) + np.array([1.5, -0.5, 0.0])
+    C = np.vstack([core, shell])
+    return C, np.r_[np.ones(n_core, bool), np.zeros(n_shell, bool)]
+
+
+@pytest.mark.parametrize("frac", [0.0, 0.25, 0.5, 1.0])
+def test_radial_trim_mask_reaches_the_scope_with_fewest_removed(frac):
+    C, core = _shelled_cloud()
+    keep = tb.radial_trim_mask(C, core, frac)
+    s0 = tb.xy_scope(C, core)
+    assert keep[core].all()  # core cells always kept
+    assert tb.xy_scope(C[keep], core[keep]) <= frac * s0 + 1e-12
+    removed = np.flatnonzero(~keep)
+    if len(removed):  # the farthest shell cells go first, and one fewer removal would miss the target
+        d = np.linalg.norm(C[:, :2] - C[core, :2].mean(0), axis=1)
+        assert d[removed].min() >= d[keep & ~core].max() - 1e-12
+        back = keep.copy()
+        back[removed[np.argmin(d[removed])]] = True
+        assert tb.xy_scope(C[back], core[back]) > frac * s0
+    if frac == 1.0:
+        assert keep.all()
+
+
+def test_radial_trim_mask_matches_the_payoff_study():
+    spec = importlib.util.spec_from_file_location(
+        "s2_payoff_for_trim", Path(__file__).resolve().parents[1] / "experiments" / "s2_hedge" / "payoff.py")
+    payoff = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = payoff
+    spec.loader.exec_module(payoff)
+    for seed in range(3):
+        C, core = _shelled_cloud(seed)
+        for frac in (0.0, 0.5):
+            ours = tb.radial_trim_mask(C, core, frac)
+            theirs = payoff.trim_mask(C, core, frac, "radial", np.random.default_rng(0))
+            assert np.array_equal(ours, theirs)
+
+
+def test_radial_trim_mask_refuses_bad_input():
+    C, core = _shelled_cloud()
+    with pytest.raises(ValueError):
+        tb.radial_trim_mask(C, np.zeros(len(C), bool), 0.5)
+    with pytest.raises(ValueError):
+        tb.radial_trim_mask(C, core, 1.5)

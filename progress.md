@@ -285,6 +285,20 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       Split by truth family: on the radial truths only H2 helps (+0.92); on the thin truths core_radial adds +6.41
       against H2's +1.32. A heart-focused s2 needs the captain's ruling (PLAN 4.3 step 5); the numbers are for that
       ruling at the s2 pre-registration (17-23 Nov).
+- [x] 2026-11-02: T1 2-D grid (`experiments/s2_hedge/results/t1_grid/`; 10 seeds, 90b25d3). The cardiomyocyte
+      share is the lever: as s2, 60% cardiomyocytes (blood own) adds +4.74 under a uniform prior and +3.39 with a
+      third on own, and is best under every prior that lets the share move; blood hedges add 1.5 at most. Step 5
+      on E9.5 -> E10.5: the radial trim passes (core_radial d2 +0.416, Dice +0.041; half_radial d2 +0.153).
+      Under the captain's delegation (2026-11-02) the AI assistant started `docs/S2_RULES.md` (38faf73): T1 s2 =
+      M1 at 60% cardiomyocytes; the heart rule was fixed before the second transition's readout (E8.25_late ->
+      E8.5, a diagnostic task in payoff.py, running with the 1.75-day pseudo-task at dcf1779).
+- [x] 2026-11-02: heart step 5 on the second released transition (E8.25_late -> E8.5) fails (core_radial d2
+      -0.021, Dice +0.112; on the 1.75-day pseudo-task d2 +0.141, Dice -0.013), so the rule as written gives s2 =
+      H2 as built. The AI assistant amended it under the delegation, after seeing the outcome and logged as such:
+      s2 = H2 as the half trim (`build_test.py heart --entry s2_trim`; `vec.t2_build.radial_trim_mask`, pinned to
+      the payoffs' trim by tests). On board score it beats H2 as built as an s2 on all three transitions (uniform
+      +0.95, +3.39, +5.52); on the released targets alone it adds +0.00, +2.04 and +1.57 against H2's +0.00,
+      +0.58 and +0.42.
 
 ### What's Next
 

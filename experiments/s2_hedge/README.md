@@ -153,6 +153,36 @@ A heart-focused s2 would be a shape operation, which `docs/PLAN.md` 4.3 step 5 a
 released transitions; on E9.5 -> E10.5 the core share fell (37% to 23%), so it would need the captain's ruling. These
 numbers inform that ruling; they change nothing in the plan.
 
+### The other heart transitions (`heart-scope --task`, commit dcf1779)
+
+Two more transitions, each with the same five truths and predictions:
+- **T2h/E8.25_late->E8.5** is step 5's second released transition, defined in `payoff.py` as a diagnostic. Its
+  predictions are copies, because B0's momentum needs an earlier stage.
+- **T2h/<=E8.75->E10.5** is the harness's 1.75-day pseudo-task, built with B0.
+
+Step 5 (`results/heart_scope*/step5.txt`):
+
+| transition | core_radial d2 | core_radial Dice | half_radial d2 | half_radial Dice | step 5 |
+|---|---|---|---|---|---|
+| E9.5 -> E10.5 | +0.416 | +0.041 | +0.153 | +0.034 | passes |
+| E8.25_late -> E8.5 | -0.021 | +0.112 | -0.036 | +0.029 | fails |
+| E8.75 -> E10.5 (not a step 5 transition) | +0.141 | -0.013 | +0.043 | -0.019 | fails |
+
+The hedge on board score (`results/heart_scope*/hedge_hold.txt`). Each cell is the expected better of hold and the s2,
+uniform over the five truths:
+
+| s2 | E9.5 -> E10.5 | E8.25_late -> E8.5 | E8.75 -> E10.5 |
+|---|---|---|---|
+| core_radial | 51.65 | 63.59 | 60.26 |
+| half_radial | 51.12 | 56.84 | 60.02 |
+| half_size (H2 as built) | 50.17 | 53.45 | 54.50 |
+| none | 49.09 | 51.61 | 52.73 |
+
+On the released target alone, the half trim beats hold in two of the three transitions: +1.75 on E8.25_late -> E8.5
+and +1.57 on E8.75 -> E10.5, against -5.88 on E9.5 -> E10.5. Step 5's shape bar fails, but as an s2 the half trim beats
+H2 as built on every transition and under every prior here. `docs/S2_RULES.md` records the rule, its outcome and the
+amendment that follows from this.
+
 ## Runs
 
 The first launch of `t1-grid` and `heart-scope` (2026-11-01 13:32 UTC, 46089fe) stalled in kernel memory compaction

@@ -135,6 +135,7 @@ def bt():
     (["t1", "--board", "T2:heart:val_extrap", "--out", "runs/x/T1_dry.h5ad"], "takes only"),
     (["t1", "--out", "runs/x/T1_dry.h5ad"], "must not contain 'dry'"),
     (["heart", "--entry", "s1", "--seed", "5", "--out", "runs/x/h.h5ad"], "below 1000000"),
+    (["heart", "--entry", "s2_trim", "--seed", "5", "--out", "runs/x/h.h5ad"], "below 1000000"),
 ])
 def test_build_test_refuses_misnamed_dry_runs_and_low_seeds(bt, argv, msg):
     with pytest.raises(SystemExit) as e:

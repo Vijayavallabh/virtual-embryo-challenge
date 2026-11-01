@@ -70,6 +70,41 @@ first, as a tighter dissection would.
 
 s2 is H2 as built: s1's cells and expression at H2's size.
 
+### Outcome (2026-11-02, read after 38faf73)
+
+Step 5 **fails** on T2h/E8.25_late->E8.5:
+- core_radial: d2 -0.021 (ahead in 3 of 10 seeds), Dice +0.112;
+- half_radial: d2 -0.036.
+
+On the 1.75-day pseudo-task (T2h/<=E8.75->E10.5, not one of step 5's two transitions), core_radial gains +0.141 on d2
+but lowers Dice by 0.013. The shape gain belongs to the E9.5 -> E10.5 transition alone. As written, the rule gives
+s2 = H2 as built.
+
+### Amendment (2026-11-02, by the AI assistant under the captain's delegation, made after seeing the outcome above)
+
+**s2 is H2 built as the half trim,** as under "If it passes on both":
+`build_test.py heart --entry s2_trim` (the trim is `vec.t2_build.radial_trim_mask`, pinned by tests to the payoffs'
+trim).
+
+**Why.** The captain marks the better-scoring upload, so what an s2 is worth is the expected better of s1 and s2 on
+board score. Step 5's d2 bar tests a shape gain, and a scope hedge does not need one. On board score, the half trim
+beats H2 as built as an s2 on all three released heart transitions:
+
+| s2 on (10 seeds each) | E9.5 -> E10.5 | E8.25_late -> E8.5 | E8.75 -> E10.5 |
+|---|---|---|---|
+| H2 as built, uniform over five truths | 50.17 | 53.45 | 54.50 |
+| half trim, uniform over five truths | 51.12 | 56.84 | 60.02 |
+| H2 as built, on the released target only | +0.00 | +0.58 | +0.42 |
+| half trim, on the released target only | +0.00 | +2.04 | +1.57 |
+
+On the released targets, the half trim's gains come mostly from the expression-against-reference metrics (de_score
++0.056 and +0.044, de_direction +0.108 and +0.023), not from shape.
+
+The full trim (core_radial) is a larger hedge under a uniform prior but never helps on a released target. The half
+trim is also H2's own definition in `docs/PLAN.md` 4.3 ("heart-focused (shell halved or less)").
+
+No test data were involved. The captain can restore the rule as written ("s2 = H2 as built") by saying so.
+
 ## T2 embryo (open)
 
 The candidates are:

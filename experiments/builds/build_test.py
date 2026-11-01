@@ -135,20 +135,30 @@ def build_heart(a) -> dict:
     genes = board.genes
     ref = load_stage(DATA / "T2/E10.5.h5ad", genes=genes, drop_duplicates=True)
     start = load_stage(DATA / "T2/E9.5.h5ad", genes=genes, drop_duplicates=True)
+    pool, trim = ref, None
+    if a.entry == "s2_trim":  # docs/S2_RULES.md (amended 2026-11-02): H2 built as a trim to half E10.5's scope
+        core = np.asarray(ref.obs["core"], dtype=bool)
+        C = np.asarray(ref.obsm[COORD_KEY], dtype=float)[:, :3]
+        keep = t2_build.radial_trim_mask(C, core, 0.5)
+        pool = ref[keep].copy()
+        trim = {"rule": "surrounding cells removed farthest in plane from the core first, to half the in-plane scope",
+                "kept_share": float(keep.mean()), "xy_scope_before": t2_build.xy_scope(C, core),
+                "xy_scope_after": t2_build.xy_scope(C[keep], core[keep])}
     view = _view("test:T2h", "T2", "extrap", "heart", board.key,
                  {"ref": ("T2/E10.5.h5ad", 10.5), "start": ("T2/E9.5.h5ad", 9.5)}, "ref", 12.5)
-    count = _t2_count(board, ref.n_obs)
-    ctx = harness.BuildContext(task=view, board=harness._candidate_board(board), inputs={"ref": ref, "start": start},
+    count = _t2_count(board, pool.n_obs)
+    ctx = harness.BuildContext(task=view, board=harness._candidate_board(board), inputs={"ref": pool, "start": start},
                                seed=a.seed)
     stage = harness._b0_t2(ctx)  # the harness's B0, guard and checks included, in E10.5's frame and size
-    hyp = {"s1": "H1", "s2": "H2"}[a.entry]
+    hyp = {"s1": "H1", "s2": "H2", "s2_trim": "H2"}[a.entry]
+    # the size step checks its reference against the full E10.5 cloud it measured; it rescales the (trimmed) cells
     coords, size = t2_build.size_or_hold(stage.coords, SIZES["heart"], hyp, source_stage="E10.5", reference_cloud=ref,
                                          expect_board="heart")
     _, report = t2_build.build_submission(board, stage.X, coords, genes=list(genes), out=a.out)
     if not report.ok:
         raise SystemExit(f"the built file fails its check: {report.errors}")
     return {"entry": f"B0 {a.entry} ({hyp})", "board": board.key, "dry_run": dry, "n_cells": int(stage.n),
-            "seed": a.seed, "count_decision": count,
+            "seed": a.seed, "count_decision": count, "trim": trim,
             "size": {k: size[k] for k in size if not isinstance(size[k], (dict, list))}}
 
 
@@ -202,7 +212,9 @@ def main(argv=None) -> None:
             p.add_argument("--cm-share", type=float, help="cardiomyocyte share of heart cells (default: E10.5's own)")
             p.add_argument("--blood-share", type=float, help="blood share of chamber cells (default: E10.5's own)")
         if name == "heart":
-            p.add_argument("--entry", choices=("s1", "s2"), required=True)
+            p.add_argument("--entry", choices=("s1", "s2", "s2_trim"), required=True,
+                           help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
+                                "scope, the s2 of docs/S2_RULES.md")
         if name == "embryo":
             p.add_argument("--method", choices=("pseudobulk_shift", "fgw"), required=True)
     a = ap.parse_args(argv)

@@ -1,0 +1,5 @@
+PLAN 4.3 step 5 on T2h/E8.25_late->E8.5 (the target as released; 10 seeds): mean gain over hold in skill (seeds ahead)
+   half_size  d2 -0.045 (0/10)  dice -0.010 (3/10)  fails
+ half_radial  d2 -0.036 (0/10)  dice +0.029 (8/10)  fails
+   half_thin  d2 -0.298 (0/10)  dice -0.206 (0/10)  fails
+ core_radial  d2 -0.021 (3/10)  dice +0.112 (10/10)  fails

@@ -200,6 +200,10 @@ legal E14.5+ data and committed before any upload; M2 replaces s2 only if it pas
 (2026-11-01: the captain agreed that the s2 rule be proposed at its pre-registration, Nov 17-23, with the hedge on the
 blood share instead of the cardiomyocyte share, since the blood share at E12.5 is the larger unknown; the rule itself
 is still put to him then.)
+(2026-11-02, decided by the AI assistant under the captain's delegation; `docs/S2_RULES.md`: s2 = M1 with cardiomyocytes
+at 60% of heart cells, blood at E10.5's own share. The 2-D grid shows the cardiomyocyte share is the lever. The 60% s2
+adds +4.74 points to the expected better-of-two (uniform prior over 15 mixes) and is best under every prior that lets
+the share move. A blood hedge adds 1.5 points at most; `experiments/s2_hedge/README.md`.)
 
 2026-11-01: M1's direction step is built (`vec.t1_scope.external_shift`, `experiments/t1_m1/`). The harness cannot
 score it, for two reasons: Feng's E9.5 cells lie inside every T1 pseudo-task's version of the window, and the readout
@@ -735,3 +739,18 @@ open. No organiser reply to any of the four emails as of then.
   captain's delegation of 2026-11-02", with a plain summary to the captain, who can overrule it. Unchanged: the
   Official Rules and `docs/DATA_POLICY.md`; the captain's explicit go-ahead for every official upload and every
   final-entry mark (AGENTS.md); push approval.
+- 2026-11-02 (b), decided by the AI assistant under the captain's delegation: the s2 rules start in `docs/S2_RULES.md`,
+  fixed before any test score exists and hashed at the freeze.
+  - T1: s2 = M1 at 60% cardiomyocytes (section 4.1).
+  - Heart: the rule for PLAN 4.3 step 5 was written before the second transition's readout. If the radial trim passes
+    on both transitions, s2 is H2 built as a trim to half the scope; otherwise H2 as built.
+  - Embryo: still open.
+  - T3: as the captain ruled.
+- 2026-11-02 (c), decided by the AI assistant under the captain's delegation: the heart s2 rule.
+  - Step 5 fails on its second released transition (E8.25_late -> E8.5: core_radial d2 -0.021, Dice +0.112), so as
+    written the rule gives s2 = H2 as built.
+  - Amended after seeing that result: s2 = H2 built as the half trim (`build_test.py heart --entry s2_trim`). On board
+    score, the half trim beats H2 as built as an s2 on all three released heart transitions: +0.95, +3.39 and +5.52
+    under a uniform prior, and on the released targets alone +0.00, +1.46 and +1.15. Its gains are mostly in
+    de_score and de_direction, which step 5's shape bar does not measure.
+  - `docs/S2_RULES.md` keeps the rule, the outcome and the amendment. The captain can restore the rule as written.

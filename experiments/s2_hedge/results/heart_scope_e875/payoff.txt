@@ -1,0 +1,11 @@
+heart-scope on T2h/<=E8.75->E10.5 (sensitivity analysis for the s2 pre-registration, not an adoption result: truths re-sampled to set tissue mixes, predictions built at the same mixes); 10 seeds; commit dcf17799bddb26a2579f3d0dad9e4670079d1229
+rows: prediction (scope); columns: truth (scope); cells: mean board score (floor row last); [gain over hold, seeds ahead]
+pred \ truth               own        radial_0.5          radial_0          thin_0.5            thin_0
+        hold  55.08             52.77             48.93             54.24             52.64           
+   half_size  55.50 [+0.42 10]  55.74 [+2.98 10]  51.28 [+2.35 10]  55.70 [+1.47 10]  54.29 [+1.65 10]
+ half_radial  56.65 [+1.57 10]  58.88 [+6.11 10]  57.10 [+8.17 10]  64.38 [+10.14 10]  63.08 [+10.44 10]
+   half_thin  44.29 [-10.79  0]  46.15 [-6.62  0]  47.86 [-1.06  0]  62.41 [+8.18 10]  60.37 [+7.73 10]
+ core_radial  53.84 [-1.24  0]  56.70 [+3.93 10]  56.38 [+7.46 10]  65.09 [+10.85 10]  68.04 [+15.40 10]
+       floor             50.00             50.00             50.00             50.00             50.42
+truths: own: 167864 cells, core 0.23, xy scope 0.210; radial_0.5: 134188 cells, core 0.29, xy scope 0.105; radial_0: 96544 cells, core 0.40, xy scope -0.000; thin_0.5: 45788 cells, core 0.85, xy scope 0.105; thin_0: 38722 cells, core 1.00, xy scope 0.000
+predictions (pool): hold: 23377 cells, core 0.17, xy scope 0.351; half_size: 23377 cells, core 0.17, xy scope 0.351; half_radial: 12859 cells, core 0.30, xy scope 0.175; half_thin: 4644 cells, core 0.84, xy scope 0.175; core_radial: 8277 cells, core 0.47, xy scope -0.000

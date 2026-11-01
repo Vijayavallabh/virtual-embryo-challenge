@@ -624,6 +624,49 @@ def rescale_to_rms(coords, rms: float) -> np.ndarray:
     return mu + (C - mu) * (target / current)
 
 
+def xy_scope(coords, core) -> float:
+    """The size procedure's in-plane scope: log(in-plane RMS of the whole cloud / in-plane RMS of its core cells)."""
+    C = _as_coords(coords)[:, :2]
+    core = np.asarray(core, dtype=bool)
+
+    def xy_rms(X: np.ndarray) -> float:
+        return float(np.sqrt(((X - X.mean(0)) ** 2).sum(1).mean()))
+
+    return float(np.log(xy_rms(C) / xy_rms(C[core])))
+
+
+def radial_trim_mask(coords, core, frac: float) -> np.ndarray:
+    """The heart s2's scope trim (docs/S2_RULES.md): cells kept when surrounding (non-core) cells are removed farthest
+    in plane from the core centroid first, until the in-plane scope is at most `frac` of the cloud's own (the fewest
+    removed that reach it, by bisection on the removal order). Core cells are always kept. The same rule as the s2
+    hedge payoffs' radial trim (experiments/s2_hedge/payoff.py trim_mask, mode "radial"); tests pin the two together."""
+    C = _as_coords(coords)
+    core = np.asarray(core, dtype=bool)
+    if core.shape != (len(C),) or not core.any():
+        raise ValueError("core must be a boolean mask over the cells with at least one core cell")
+    if not 0.0 <= float(frac) <= 1.0:
+        raise ValueError(f"frac must lie in [0, 1], got {frac!r}")
+    target = float(frac) * xy_scope(C, core)
+    shell = np.flatnonzero(~core)
+    d = np.linalg.norm(C[shell, :2] - C[core, :2].mean(0), axis=1)
+    order = shell[np.argsort(-d, kind="stable")]
+
+    def keep_after(k: int) -> np.ndarray:
+        keep = np.ones(len(C), dtype=bool)
+        keep[order[:k]] = False
+        return keep
+
+    lo, hi = 0, len(order)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        m = keep_after(mid)
+        if xy_scope(C[m], core[m]) <= target:
+            hi = mid
+        else:
+            lo = mid + 1
+    return keep_after(lo)
+
+
 def _scale_xy_hold_z(C: np.ndarray, target_full: float | None, target_xy: float | None) -> tuple[np.ndarray, dict]:
     """Scale x and y about the centroid, z untouched, so that the 3-D RMS radius equals target_full, or (when
     target_full is None) the in-plane RMS radius equals target_xy."""
