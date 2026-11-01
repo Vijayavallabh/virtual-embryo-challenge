@@ -16,14 +16,24 @@ cells, configs/pseudo_tasks.yaml):
             categories>), the T1 build's --blood-share)
   t1-cm     the cardiomyocyte share of heart cells, every category outside the heart holding its share
             (with_share(..., "cm", x), the T1 build's --cm-share)
-The prediction's mix is the reference's own chamber mix (vec.harness.t1_chamber_shares, B0's) with the axis share set
+  heart-scope  T2h/<=E9.5->E10.5: how much tissue surrounds the heart core (vec.prep core: the CM and Endocardium
+            lineage groups), as the in-plane scope log(rms_xy full / rms_xy core) the size procedure's scope
+            hypotheses use. Truths: E10.5 as released ("own"), and E10.5 with surrounding cells removed until its scope
+            is a half or none of its own, either farthest from the core centroid first ("radial", a tighter dissection)
+            or at random ("thin"). Predictions: B0 from E9.5 ("hold", the s1 analogue: scope held), B0 shrunk in plane
+            by half its scope ("half_size", today's size-only H2 s2), and B0 from E9.5 trimmed to half its scope
+            ("half_radial", "half_thin") or to none ("core_radial") before the draw. Every heart prediction is scaled
+            in plane about its centroid by the truth's core in-plane RMS over E9.5's (z held, as the pre-registered
+            xy_grow_z_hold mode does), an oracle core size, so the rows differ in scope only; half_size then shrinks.
+The T1 prediction's mix is the reference's own chamber mix (vec.harness.t1_chamber_shares, B0's) with the axis share set
 to each grid value; "own" is B0 itself. The truth's mix is the chamber cut's own with the axis share set to each grid
 value; "own" is the cut unchanged. Truth re-sampling uses one fixed seed (TRUTH_SEED), so a grid value is one fixed
 truth across the scoring seeds.
 
 Usage (DGX, repo root, BLAS threads capped; one process per seed range):
   uv run python experiments/s2_hedge/payoff.py t1-blood --seeds 0-4 --out runs/s2_hedge/t1_blood_a
-  uv run python experiments/s2_hedge/payoff.py summarise --runs runs/s2_hedge/t1_blood_a runs/s2_hedge/t1_blood_b \
+  uv run python experiments/s2_hedge/payoff.py heart-scope --seeds 0-9 --out runs/s2_hedge/heart-scope/0-9
+  uv run python experiments/s2_hedge/payoff.py summarise --runs runs/s2_hedge/t1-blood/0-1 runs/s2_hedge/t1-blood/2-3 \
       --out experiments/s2_hedge/results/t1_blood
 """
 
@@ -38,10 +48,10 @@ from pathlib import Path
 
 import numpy as np
 
-from vec import harness, t1_scope
+from vec import harness, prep, t1_scope
 from vec.boards import load_boards
 from vec.evaluate import SUBSAMPLE_FRAC, Stage, score_board, subsample
-from vec.io import dense, read_stage
+from vec.io import COORD_KEY, dense, read_stage
 from vec.prep import load_stage
 
 TRUTH_SEED = 20261102  # truth re-sampling (fixed before any run)
@@ -152,6 +162,126 @@ def run_t1(axis: str, seeds, out: Path, data_dir: Path) -> dict:
     return res
 
 
+HEART_TASK = "T2h/<=E9.5->E10.5"
+HEART_PREDS = ("hold", "half_size", "half_radial", "half_thin", "core_radial")
+HEART_TRUTHS = ("own", "radial_0.5", "radial_0", "thin_0.5", "thin_0")
+
+
+def xy_rms(C: np.ndarray) -> float:
+    X = C[:, :2] - C[:, :2].mean(0)
+    return float(np.sqrt((X ** 2).sum(1).mean()))
+
+
+def xy_scope(C: np.ndarray, core: np.ndarray) -> float:
+    """log(in-plane RMS of the whole cloud / in-plane RMS of its core), the size procedure's in-plane scope."""
+    return float(np.log(xy_rms(C) / xy_rms(C[core])))
+
+
+def trim_mask(C: np.ndarray, core: np.ndarray, frac: float, mode: str, rng: np.random.Generator) -> np.ndarray:
+    """Cells kept when surrounding (non-core) cells are removed, farthest in plane from the core centroid first
+    ("radial") or in random order ("thin"), until the in-plane scope is at most `frac` of its own (the fewest removed
+    that reach it, by bisection on the removal order); core cells are always kept."""
+    target = frac * xy_scope(C, core)
+    shell = np.flatnonzero(~core)
+    if mode == "radial":
+        d = np.linalg.norm(C[shell, :2] - C[core, :2].mean(0), axis=1)
+        order = shell[np.argsort(-d, kind="stable")]
+    elif mode == "thin":
+        order = rng.permutation(shell)
+    else:
+        raise ValueError(mode)
+
+    def keep_after(k: int) -> np.ndarray:
+        keep = np.ones(len(C), dtype=bool)
+        keep[order[:k]] = False
+        return keep
+
+    lo, hi = 0, len(order)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        m = keep_after(mid)
+        if xy_scope(C[m], core[m]) <= target:
+            hi = mid
+        else:
+            lo = mid + 1
+    return keep_after(lo)
+
+
+def run_heart(seeds, out: Path, data_dir: Path) -> dict:
+    t = {x.key: x for x in harness.load_tasks()["T2:heart:test_extrap"]}[HEART_TASK]
+    boards = load_boards()
+    genes = boards[t.panel_board].genes
+    ta = read_stage(data_dir / t.target, genes)
+    prep.add_lineage(ta, source=harness.stem(t.target))
+    tcore = np.asarray(ta.obs["core"], dtype=bool)
+    TC = np.asarray(ta.obsm[COORD_KEY], dtype=float)[:, :3]
+    ref_stage = Stage.from_anndata(read_stage(data_dir / t.reference, genes), genes, need_coords=True)
+    truths = {}
+    for i, name in enumerate(HEART_TRUTHS):
+        if name == "own":
+            keep = np.ones(ta.n_obs, dtype=bool)
+        else:
+            mode, frac = name.split("_")
+            keep = trim_mask(TC, tcore, float(frac), mode, np.random.default_rng([TRUTH_SEED, i]))
+        truths[name] = (Stage.from_anndata(ta[keep], genes, need_coords=True),
+                        {"cells": int(keep.sum()), "core_share": float(tcore[keep].mean()),
+                         "xy_scope": xy_scope(TC[keep], tcore[keep])})
+    inputs = {r: load_stage(data_dir / f, genes=genes, drop_duplicates=True) for r, f in t.inputs.items()}
+    pool = inputs["ref"]
+    pcore = np.asarray(pool.obs["core"], dtype=bool)
+    PC = np.asarray(pool.obsm[COORD_KEY], dtype=float)[:, :3]
+    s_pool = xy_scope(PC, pcore)
+    f_core = xy_rms(TC[tcore]) / xy_rms(PC[pcore])  # oracle core size, in plane (z held)
+    trims = {"hold": None, "half_size": None, "half_radial": ("radial", 0.5), "half_thin": ("thin", 0.5),
+             "core_radial": ("radial", 0.0)}
+    pools, pred_info = {}, {}
+    for i, name in enumerate(HEART_PREDS):
+        tr = trims[name]
+        keep = (np.ones(pool.n_obs, dtype=bool) if tr is None else
+                trim_mask(PC, pcore, tr[1], tr[0], np.random.default_rng([TRUTH_SEED, 100 + i])))
+        pools[name] = pool if tr is None else pool[keep].copy()
+        pred_info[name] = {"pool_cells": int(keep.sum()), "core_share": float(pcore[keep].mean()),
+                           "xy_scope": xy_scope(PC[keep], pcore[keep])}
+    base_board = harness.task_board(t, boards, truths["own"][0].n, ref_stage.n)
+    view, cboard = harness.TaskView.of(t), harness._candidate_board(base_board)
+    rows_out = []
+    for s in seeds:
+        t0 = time.time()
+        preds = {}
+        for name in HEART_PREDS:
+            ctx = harness.BuildContext(task=view, board=cboard, inputs={**inputs, "ref": pools[name]},
+                                       seed=harness.BUILD_SEED_OFFSET + s)
+            st = harness._b0_t2(ctx)
+            C = np.asarray(st.coords, dtype=float).copy()
+            c = C[:, :2].mean(0)
+            f = f_core * (np.exp(-0.5 * s_pool) if name == "half_size" else 1.0)
+            C[:, :2] = c + (C[:, :2] - c) * f
+            preds[name] = Stage(X=st.X, coords=C.astype(np.float32), celltype=st.celltype)
+        row = {"seed": s, "scores": {}, "skills": {}}
+        for q, (truth, _) in truths.items():
+            board = harness.task_board(t, boards, truth.n, ref_stage.n)
+            fl = score_board(board, subsample(ref_stage, SUBSAMPLE_FRAC, s), truth, ref_stage, seed=s,
+                             anchors="computed", build=harness.BUILD, protocol=harness.PROTOCOL)
+            row["scores"][q], row["skills"][q] = {"floor": fl.score}, {"floor": fl.skills}
+            for p, pred in preds.items():
+                r = score_board(board, pred, truth, ref_stage, seed=s, anchors=fl.anchors, build=harness.BUILD,
+                                protocol=harness.PROTOCOL)
+                row["scores"][q][p], row["skills"][q][p] = r.score, r.skills
+        row["seconds"] = round(time.time() - t0, 1)
+        rows_out.append(row)
+        print(f"heart-scope seed {s} ({row['seconds']} s): " + "; ".join(
+            f"truth {q}: " + ", ".join(f"{p} {v:.2f}" for p, v in sc.items()) for q, sc in row["scores"].items()),
+            flush=True)
+    res = {"label": LABEL, "axis": "heart-scope", "category": "scope", "task": t.key,
+           "pred_values": list(HEART_PREDS), "truth_values": list(HEART_TRUTHS),
+           "truth_info": {q: i for q, (_, i) in truths.items()}, "pred_info": pred_info,
+           "pool_xy_scope": s_pool, "oracle_core_xy_factor": f_core, "truth_seed": TRUTH_SEED,
+           "seeds": list(seeds), "rows": rows_out, "provenance": provenance()}
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "heart-scope.json").write_text(json.dumps(res, indent=1, default=float))
+    return res
+
+
 def provenance() -> dict:
     commit = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
     dirty = subprocess.run(["git", "status", "--porcelain", "--untracked-files=no"], capture_output=True,
@@ -172,25 +302,46 @@ def summarise(runs: list[Path], out: Path) -> dict:
     if len(set(seeds)) != len(seeds):
         raise SystemExit("a seed appears twice")
     head = parts[0]
-    values = head["values"]
-    mean = {q: {p: float(np.mean([r["scores"][q][p] for r in rows])) for p in ["floor", *values]} for q in values}
+    pv = head.get("pred_values", head.get("values"))
+    tv = head.get("truth_values", head.get("values"))
+    mean = {q: {p: float(np.mean([r["scores"][q][p] for r in rows])) for p in ["floor", *pv]} for q in tv}
     sd = {q: {p: float(np.std([r["scores"][q][p] for r in rows], ddof=1)) if len(rows) > 1 else float("nan")
-              for p in values} for q in values}
-    res = {k: head[k] for k in ("label", "axis", "category", "task", "values", "truth_mix", "truth_cells",
-                                "pred_mix", "n_pred", "truth_seed")}
-    res.update(seeds=seeds, mean=mean, sd=sd, provenance=head["provenance"])
+              for p in pv} for q in tv}
+    # each prediction's gain over the s1 analogue (the first row), paired over seeds
+    s1 = pv[0]
+    gain = {q: {p: {"mean": float(np.mean(d)), "ahead": int((d > 0).sum()), "of": len(d)}
+                for p in pv[1:] for d in [np.array([r["scores"][q][p] - r["scores"][q][s1] for r in rows])]}
+            for q in tv}
+    keep = [k for k in ("label", "axis", "category", "task", "values", "pred_values", "truth_values", "truth_mix",
+                        "truth_cells", "truth_info", "pred_mix", "pred_info", "n_pred", "pool_xy_scope",
+                        "oracle_core_xy_factor", "truth_seed") if k in head]
+    res = {k: head[k] for k in keep}
+    res.update(seeds=seeds, mean=mean, sd=sd, gain_over_first=gain, provenance=head["provenance"])
     out.mkdir(parents=True, exist_ok=True)
     (out / "payoff.json").write_text(json.dumps(res, indent=1, default=float))
     cat = head["category"]
     lines = [f"{head['axis']} on {head['task']} ({LABEL}); {len(seeds)} seeds; commit {head['provenance']['commit']}",
-             f"rows: prediction's {cat} share; columns: truth's {cat} share; cells: mean board score (floor row last)",
-             "pred \\ truth " + " ".join(f"{q:>8s}" for q in values)]
-    for p in values:
-        lines.append(f"{p:>12s} " + " ".join(f"{mean[q][p]:8.2f}" for q in values))
-    lines.append(f"{'floor':>12s} " + " ".join(f"{mean[q]['floor']:8.2f}" for q in values))
-    key = cat if cat == "blood" else "cm"
-    lines.append("truth mixes: " + "; ".join(
-        f"{q}: {key} {head['truth_mix'][q].get(key, 0.0):.3f} ({head['truth_cells'][q]} cells)" for q in values))
+             f"rows: prediction ({cat}); columns: truth ({cat}); cells: mean board score (floor row last); "
+             f"[gain over {s1}, seeds ahead]",
+             "pred \\ truth " + " ".join(f"{q:>17s}" for q in tv)]
+    for p in pv:
+        cells = []
+        for q in tv:
+            g = gain[q].get(p)
+            cells.append(f"{mean[q][p]:6.2f}" + (f" [{g['mean']:+5.2f} {g['ahead']:>2d}]" if g else " " * 11))
+        lines.append(f"{p:>12s} " + " ".join(f"{c:>17s}" for c in cells))
+    lines.append(f"{'floor':>12s} " + " ".join(f"{mean[q]['floor']:17.2f}" for q in tv))
+    if "truth_mix" in head:
+        key = cat if cat == "blood" else "cm"
+        lines.append("truth mixes: " + "; ".join(
+            f"{q}: {key} {head['truth_mix'][q].get(key, 0.0):.3f} ({head['truth_cells'][q]} cells)" for q in tv))
+    if "truth_info" in head:
+        lines.append("truths: " + "; ".join(
+            f"{q}: {i['cells']} cells, core {i['core_share']:.2f}, xy scope {i['xy_scope']:.3f}"
+            for q, i in head["truth_info"].items()))
+        lines.append("predictions (pool): " + "; ".join(
+            f"{p}: {i['pool_cells']} cells, core {i['core_share']:.2f}, xy scope {i['xy_scope']:.3f}"
+            for p, i in head["pred_info"].items()))
     (out / "payoff.txt").write_text("\n".join(lines) + "\n")
     print("\n".join(lines))
     return res
@@ -209,12 +360,19 @@ def main(argv=None) -> None:
         p.add_argument("--seeds", default="0-9")
         p.add_argument("--out", required=True)
         p.add_argument("--data", default=str(harness.DATA_DIR))
+    p = sub.add_parser("heart-scope")
+    p.add_argument("--seeds", default="0-9")
+    p.add_argument("--out", required=True)
+    p.add_argument("--data", default=str(harness.DATA_DIR))
     p = sub.add_parser("summarise")
     p.add_argument("--runs", nargs="+", required=True)
     p.add_argument("--out", required=True)
     a = ap.parse_args(argv)
     if a.cmd == "summarise":
         summarise([Path(r) for r in a.runs], Path(a.out))
+        return
+    if a.cmd == "heart-scope":
+        run_heart(parse_seeds(a.seeds), Path(a.out), Path(a.data))
         return
     run_t1(a.cmd, parse_seeds(a.seeds), Path(a.out), Path(a.data))
 
