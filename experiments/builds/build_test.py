@@ -79,6 +79,8 @@ def build_t1(a) -> dict:
     shares = harness.t1_chamber_shares(harness._shallow(ref), "E10.5_RNA")
     if a.cm_share is not None:
         shares = t1_scope.with_share(shares, "cm", a.cm_share)
+    if a.blood_share is not None:  # blood's share of all chamber cells, the other categories in proportion
+        shares = t1_scope.with_share(shares, "blood", a.blood_share, within=list(shares))
     directions, ext = feng_dirs.feng_directions(list(ref.var_names))
     groups = feng_dirs.label_groups(ref.obs["celltype"].astype(str).unique())
     fraction = feng_dirs.bracket_fraction(10.5, 12.5)
@@ -90,6 +92,7 @@ def build_t1(a) -> dict:
     check = t1_scope.write_checked(sub, a.out, board)
     return {"entry": "M1", "board": board.key, "dry_run": dry, "n_cells": n, "seed": a.seed, "fraction": fraction,
             "cm_share_of_heart": t1_scope.share_of(shares, "cm", t1_scope.load_spec().heart),
+            "blood_share_of_chamber": float(shares.get("blood", 0.0)),
             "shares": shares, "external": ext, "check_ok": check.ok, "realised": rep["realised"]}
 
 
@@ -157,6 +160,7 @@ def main(argv=None) -> None:
         p.add_argument("--seed", type=int, default=harness.BUILD_SEED_OFFSET + 1)
         if name == "t1":
             p.add_argument("--cm-share", type=float, help="cardiomyocyte share of heart cells (default: E10.5's own)")
+            p.add_argument("--blood-share", type=float, help="blood share of chamber cells (default: E10.5's own)")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2"), required=True)
         if name == "embryo":
