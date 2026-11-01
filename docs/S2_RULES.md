@@ -133,6 +133,24 @@ Both candidates run on both embryo pseudo-tasks, against fgw, over seeds 0-9 wit
   nearest-stage variant.
 - **Build.** The embryo test build gets the matching `--method`.
 
+### Outcome (2026-11-02, `experiments/harness/results/emb_shape_v1/`, 90ddaaa)
+
+The run's fgw scores are identical to emb_fgw_v1's on both tasks.
+
+| | fgw | fgw_shape0 | fgw_shape1 |
+|---|---|---|---|
+| E7.5 pseudo-task, mean score | 61.12 | 62.95 (ahead in 10 of 10) | 59.47 (ahead in 0 of 10) |
+| E7.5, better of fgw and it | | 62.95 | 61.12 |
+| E7.25 pseudo-task, mean score | 58.78 | 53.67 (ahead in 0) | 57.49 (ahead in 0) |
+| E7.25, better of fgw and it | | 58.78 | 58.78 |
+| Mean over the two tasks | 59.95 | **60.87** | 59.95 |
+
+On E7.5, fgw_shape0's gain is all shape: d2 +0.067, Dice +0.109, neighborhood_mmd +0.015. Expression is unchanged.
+
+**s2 = fgw_shape0**: E7.5's geometry at test, with fgw's mixture at the size rule.
+
+`build_test.py embryo --method fgw_shape0 --out <s2 file>` (the seed as s1's).
+
 ## T3 (decided 2026-11-01 by the captain)
 
 s2 is the refused branch's s1, uploaded first (`docs/PLAN.md` section 4.4 and its decision log;

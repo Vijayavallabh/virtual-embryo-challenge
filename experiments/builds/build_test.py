@@ -53,6 +53,8 @@ COUNT_FIELDS = ("n", "n_before", "n_after", "n_jittered")  # the interpolation r
 SIZES = {"heart": REPO_ROOT / "experiments/coords/results/p3/size_heart_E12.5.json",
          "embryo": REPO_ROOT / "experiments/coords/results/p3/size_embryo_E7.75.json"}
 DATA = harness.DATA_DIR
+# fgw and its s2 shape variants (docs/S2_RULES.md): the position fraction passed to interpolate_clouds
+EMBRYO_T_POS = {"fgw": None, "fgw_shape0": 0.0, "fgw_shape1": 1.0}
 
 
 def _view(key: str, task: str, kind: str, setting: str | None, test_board: str, roles: dict[str, tuple[str, float]],
@@ -185,7 +187,8 @@ def build_embryo(a) -> dict:
         Eb, Ea = dense(before[:, genes].X).astype(np.float32), dense(after[:, genes].X).astype(np.float32)
         res = t2_build.interpolate_clouds(np.asarray(before.obsm[COORD_KEY], float)[:, :3],
                                           np.asarray(after.obsm[COORD_KEY], float)[:, :3], Eb, Ea, 0.5,
-                                          harness.count_for(board, before.n_obs), a.seed, target_rms=target)
+                                          harness.count_for(board, before.n_obs), a.seed, target_rms=target,
+                                          t_pos=EMBRYO_T_POS[a.method])
         X = np.empty((len(res.rows), len(genes)), dtype=np.float32)
         X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
         guard = t2_build.cloud_guard(res.coords, res.pool_coords, seed=a.seed, source_weights=res.pool_weights)
@@ -216,7 +219,8 @@ def main(argv=None) -> None:
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
                                 "scope, the s2 of docs/S2_RULES.md")
         if name == "embryo":
-            p.add_argument("--method", choices=("pseudobulk_shift", "fgw"), required=True)
+            p.add_argument("--method", choices=("pseudobulk_shift", *EMBRYO_T_POS), required=True,
+                           help="fgw = s1; fgw_shape0 = the s2 of docs/S2_RULES.md (E7.5's geometry)")
     a = ap.parse_args(argv)
     _check_seed(a.seed)
     if a.board not in (None, TEST_BOARDS[a.which]):  # a dry run
