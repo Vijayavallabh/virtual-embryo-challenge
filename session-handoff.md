@@ -110,8 +110,13 @@
   (`experiments/harness/results/d2_v1/`): B0 beats the floor on the T2 embryo board only, and a plain copy on T1,
   T2 heart and T2 embryo (`progress.md`). The captain answered the same day (a third "yes for all"): the T1 test
   entry keeps E10.5's own chamber share of blood (about 24%; the plan said about 2%), the pre-registered T3 entries
-  stand on the T3 rules (the harness cannot check them), and the D2 commits are pushed. Next: M1 (T1) and heart growth (T2 heart) through the harness against B0;
-  on T1, first the de_score handicap of fresh real cells. Never build a test file at seed 0 (runbook section 5).
+  stand on the T3 rules (the harness cannot check them), and the D2 commits are pushed. Done the same day: the T1 de_score audit
+  (`experiments/harness/results/t1_de_v1/`: the handicap belongs to the E9.5 -> E10.5 change), the embryo base switch
+  to pseudobulk_shift (adoption rule), and M1's direction step with a labelled diagnostic (+1.29 and +1.09 over B0;
+  `experiments/t1_m1/`). Open with the captain: Feng's direction resting on the readout (the harness cannot score it),
+  the Feng re-cut from the raw GEO object and its licence (before any upload uses Feng), dropping the heart's
+  composition trend, the embryo's log-value edits, the s1 cardiomyocyte share (E10.5's own: 26.5% of heart cells), and
+  the push. Never build a test file at seed 0 (runbook section 5).
 - Meanwhile (no specs needed): the v1 pipelines on the release data (`docs/PLAN.md` section 7, Nov 3-9): the T1
   pseudo-task with E10.5 as the truth (`experiments/t1_scope/pseudo_task.py`, honest momentum from E8.5), T2 embryo
   FGW, T2 heart growth, scored with the calibrated emulator (protocol="bake" reproduces the validation boards). On the

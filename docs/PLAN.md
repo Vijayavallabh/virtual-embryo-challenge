@@ -195,6 +195,17 @@ legal E14.5+ data and committed before any upload; M2 replaces s2 only if it pas
 blood share instead of the cardiomyocyte share, since the blood share at E12.5 is the larger unknown; the rule itself
 is still put to him then.)
 
+2026-11-01: M1's direction step is built (`vec.t1_scope.external_shift`, `experiments/t1_m1/`). The harness cannot
+score it, for two reasons: Feng's E9.5 cells lie inside every T1 pseudo-task's version of the window, and the readout
+chose Feng on the E9.5 -> E10.5 step that both counting T1 pseudo-tasks use, so under the tuned-on reading none would
+be left anyway (a side agent's note to the captain, the same day). A labelled diagnostic in the
+readout's geometry (`experiments/t1_m1/results/diag_v1/`, not an adoption result): B0 with Feng's direction beats B0
+by +1.29 points on the chamber-cut truth and +1.09 on the whole, ahead in 10 of 10 seeds each, and beats the floor on
+the chamber cut (+0.97, 10 of 10). Proposed to the captain: Feng's direction stands on the readout. Before any upload
+uses Feng: the clean re-cut from the raw GEO object (feat-007) and the licence (`EXTERNAL_DATA.md` X002). E10.5's own
+chamber mix puts cardiomyocytes at 26.5% of heart cells (E9.5: 66%; endocardium, epicardium and blood are larger at
+E10.5), against s1's planned 58%: the s1 share is refit and put to the captain before the s1 freeze.
+
 ### 4.2 T2 embryo: E7.75 interpolation (weight 0.5)
 
 Pipeline:
@@ -216,6 +227,13 @@ Pseudo-targets: E7.5 from (E7.25, E8.0) and E7.25 from (E6.75, E7.5). Target emu
 
 External (optional, legal only outside (E7.25, E8.0)): Pijuan-Sala/extended gastrulation atlas E6.5-E7.25 and
 E8.0+; Sampath Kumar 2023 3D Slide-seq at E8.0+. Never the Chi-lab GSE176306 E7.5/E7.75 samples.
+
+2026-11-01: by the adoption rule, the organisers' pseudobulk_shift (each cell moves by its raw cell type's change from
+the stage before the earlier bracket, added to its log values) replaces B0 as the embryo base: +5.76 points over B0 on
+the E7.5 pseudo-task, ahead in 10 of 10 seeds, mostly on mmd_u, variogram and neighborhood_mmd; decided on 1 of the 2
+configured pseudo-tasks (it does not apply on the E7.25 one, which has no earlier stage;
+`experiments/harness/results/d2_v1/psb_vs_b0/`). It edits log values, not counts, a departure from principle 1. The
+FGW pipeline now has to beat it.
 
 Submissions: s1 central clock; s2 alternative clock or the nearest-stage variant (E8.0 tissue shrunk to the predicted
 size, mixture expression).
@@ -262,7 +280,10 @@ Pipeline:
 1. Start from real E10.5 tissue (released at P3), duplicates dropped, sampled at random to the count approved rule 7
    sets (max_cells unless the release rerun picks a lower level; never below the board's lower limit; section 3, item
    6).
-2. Damped composition extrapolation on the merged lineage level (CM, Endothelial, CranialMesoderm, NCC, Endoderm,
+2. (2026-11-01, proposed to the captain: drop this step and hold E10.5's composition, as B0 does. E9.5 and earlier are
+   embryo portions and E10.5 a dissected heart, so at test a trend through E9.5 and E10.5 would carry that change of
+   sampling on to E12.5; neither heart pseudo-task contains it, since both predict E10.5, so the harness cannot test
+   it.) Damped composition extrapolation on the merged lineage level (CM, Endothelial, CranialMesoderm, NCC, Endoderm,
    Ectoderm; labels harmonised with `vec.harmonise`), centred log-ratios over E8.75-E10.5, damping chosen on the
    1.75-day pseudo-target (expected 0.3-0.6). CardiacProgenitor and Pericardium have no stable cross-stage meaning and
    stay out of the trends, and so does any group the release-day harmonisation rates poor (worse F1 < 0.5) between
@@ -654,3 +675,10 @@ open. No organiser reply to any of the four emails as of then.
   changes face the adoption rule on folds they were not tuned on. (3) The five D2 commits were pushed
   (6c214e3..b2fc85c). Next: M1 (T1) and heart growth (T2 heart) against B0 on the harness; on T1, first the de_score
   handicap of fresh real cells.
+- 2026-11-01 (e): T1 de_score audit (`experiments/harness/results/t1_de_v1/`): the copy handicap belongs to the
+  E9.5 -> E10.5 change, whose changed genes are mostly highly expressed reference genes going down (the metric's
+  expression null names 39-41% of them, a copy 11%, B0 20-28%); on E8.5 -> E9.5 the null names 2% and a copy beats
+  it. Embryo: pseudobulk_shift replaces B0 by the adoption rule (section 4.2). M1's direction step is built; its
+  diagnostic gains +1.29 and +1.09 over B0 (section 4.1). Proposed to the captain: Feng's direction stands on the
+  readout; the heart's composition trend is dropped (section 4.3); the s1 cardiomyocyte share is refit (E10.5's own is
+  26.5% of heart cells).

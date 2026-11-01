@@ -189,6 +189,26 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       hedge on the blood share; the pre-registered T3 entries stand on the T3 rules, and new T3 changes face the
       harness on folds they were not tuned on (PLAN 4.4); the five D2 commits pushed (6c214e3..b2fc85c).
 
+- [x] 2026-11-01: harness rows keep each candidate's metric panel (ab072da). T1 de_score audit
+      (`experiments/harness/results/t1_de_v1/`, a rerun of the D2 T1 candidates that reproduces d2_v1 seed for seed):
+      the copy handicap belongs to the E9.5 -> E10.5 change, not to fresh cells. Its changed genes are mostly highly
+      expressed reference genes going down (426 of 558 on the chamber cut); the metric's expression null names 39-41%
+      of them, a copy 11% (-2.8 to -3.0 points), B0 20-28% (-1.25 on the chamber cut). On E8.5 -> E9.5 the null names
+      2% and a copy beats it.
+- [x] 2026-11-01: embryo base: pseudobulk_shift replaces B0 by the adoption rule (+5.76 points, ahead in 10 of 10
+      seeds on the E7.5 pseudo-task, the one where it runs; `experiments/harness/results/d2_v1/psb_vs_b0/`); vetoed on
+      the heart board (-2.75 on the 1.75-day task). It edits log values, not counts (PLAN principle 1).
+- [x] 2026-11-01: M1 direction step (401e3eb): `vec.t1_scope.external_shift` and the directions option of
+      `build_submission` (golden outputs unchanged; 2 new tests), `experiments/t1_m1/feng_dirs.py` (the readout's
+      primary predictor, manifest-checked). The harness cannot score Feng (its E9.5 cells lie inside every T1
+      pseudo-task's window, and the readout chose Feng on the E9.5 -> E10.5 step both counting tasks use). Labelled diagnostic (`experiments/t1_m1/results/diag_v1/`, 4 registry rows): +1.29 over B0
+      on the chamber-cut truth and +1.09 on the whole, 10 of 10 seeds each; +0.97 over the floor on the chamber cut,
+      10 of 10. Found: E10.5's chamber mix puts cardiomyocytes at 26.5% of heart cells (E9.5 66%), against s1's
+      planned 58%. Heart: the composition trend is proposed for removal (PLAN 4.3 step 2). Slip: the code was synced to
+      the DGX while the T1 reruns ran (against the compute rule); the runs had loaded their code, and their scores
+      reproduce d2_v1 exactly. Awaiting the captain: Feng's direction on the readout; the Feng re-cut from the raw GEO
+      object and its licence; the heart composition step; the embryo's log-value edits; the push.
+
 ### What's Next
 
 1. Until 2026-10-27: work that needs no release data (`docs/PLAN.md` section 7): external data through committed

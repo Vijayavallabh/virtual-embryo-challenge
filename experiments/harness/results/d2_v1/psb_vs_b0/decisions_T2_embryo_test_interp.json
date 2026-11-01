@@ -1,0 +1,68 @@
+{
+ "board": "T2:embryo:test_interp",
+ "runs": "/mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/experiments/harness/results/d2_v1/tasks",
+ "decisions": [
+  {
+   "base": "b0",
+   "change": "pseudobulk_shift",
+   "counted": [
+    "T2e/E7.25+E8.0->E7.5"
+   ],
+   "excluded": {
+    "T2e/E6.75+E7.5->E7.25": "change does not apply"
+   },
+   "configured": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "decided_on": "1 of 2 configured pseudo-tasks",
+   "keep": true,
+   "reason": "passes on 1 of 1 pseudo-tasks (needs 1) and loses on none",
+   "tasks": {
+    "T2e/E7.25+E8.0->E7.5": {
+     "complete": true,
+     "mean_gain": 5.763856603303388,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    }
+   },
+   "need": 1,
+   "passed": 1
+  }
+ ],
+ "summaries": {
+  "T2e/E6.75+E7.5->E7.25": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    53.26757396706354,
+    1.471194079501692
+   ],
+   "b0": [
+    53.85713523942375,
+    1.3615507507447882
+   ]
+  },
+  "T2e/E7.25+E8.0->E7.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    50.58061955768748,
+    0.851244252555769
+   ],
+   "pseudobulk_shift": [
+    56.9717840076528,
+    0.7601917330826194
+   ],
+   "b0": [
+    51.20792740434941,
+    0.8476661327440598
+   ]
+  }
+ }
+}
