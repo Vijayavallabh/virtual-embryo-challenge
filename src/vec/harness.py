@@ -651,7 +651,8 @@ def score_seeds(t: PseudoTask, board: Board, target: Stage, ref: Stage, inputs: 
                 candidates: list[Candidate], seeds=SEEDS, build: str = BUILD, log=None,
                 root: Path = REPO_ROOT, data_dir: Path = DATA_DIR) -> list[dict]:
     """Per seed: the floor (checked to score 50 with complete anchors) and every applicable candidate, all against
-    one seed's anchors; candidates build inside the read guard."""
+    one seed's anchors; candidates build inside the read guard. Each row keeps the full metric panel per candidate
+    (`metrics`, de_score's audit trail included), so a result can be explained without rebuilding it."""
     view, cboard = TaskView.of(t), _candidate_board(board)
     given: dict[str, dict[str, object]] = {}
     for c in candidates:
@@ -668,7 +669,8 @@ def score_seeds(t: PseudoTask, board: Board, target: Stage, ref: Stage, inputs: 
             raise ValueError(f"{t.key} seed {s}: the floor scores {f.score} (inverted {f.extras['inverted_anchors']},"
                              f" missing anchors {missing})")
         row = {"seed": s, "build_seed": BUILD_SEED_OFFSET + s, "scores": {FLOOR: f.score}, "skills": {FLOOR: f.skills},
-               "n_cells": {FLOOR: int(round(ref.n * SUBSAMPLE_FRAC))}, "anchors": f.anchors, "reads": {}}
+               "metrics": {FLOOR: dict(f.metrics)}, "n_cells": {FLOOR: int(round(ref.n * SUBSAMPLE_FRAC))},
+               "anchors": f.anchors, "reads": {}}
         cross_checked = False
         for c in candidates:
             if c.name == FLOOR or not c.applies(t):
@@ -685,6 +687,7 @@ def score_seeds(t: PseudoTask, board: Board, target: Stage, ref: Stage, inputs: 
                     raise ValueError(f"{t.key} seed {s}: shared anchors give {r.score}, fresh ones {full.score}")
                 cross_checked = True
             row["scores"][c.name], row["skills"][c.name], row["n_cells"][c.name] = r.score, r.skills, pred.n
+            row["metrics"][c.name] = dict(r.metrics)
         row["seconds"] = round(time.time() - t0, 1)
         rows.append(row)
         if log:

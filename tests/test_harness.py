@@ -235,6 +235,9 @@ def test_paired_scoring_on_shared_draws_with_offset_build_seeds(synthetic_t2):
         # the harness score is the score the calibrated emulator gives this file on its own
         direct = score_board(board, e["pred"], target, ref, seed=s, anchors="computed", protocol="bake", build="main")
         assert row["scores"]["spy"] == direct.score
+        # the row keeps each candidate's metric panel, de_score's audit trail included, and the floor's no-change zero
+        assert row["metrics"]["spy"] == direct.metrics and set(row["metrics"]) == set(row["scores"])
+        assert row["metrics"]["floor"]["de_score"] == 0.0 and "_de_chance" in row["metrics"]["copy"]
         # candidates see their inputs only, no truth count, no file paths
         assert e["roles"] == set(task.inputs) and e["board_truth"] is None and not e["view_has_paths"]
         # the build rows are not the scorer's reference draw (at the scoring seed they would contain it)
