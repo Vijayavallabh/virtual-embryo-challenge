@@ -1,0 +1,223 @@
+#!/usr/bin/env python
+"""s2 hedge payoffs (docs/PLAN.md section 8): a board's score when the prediction's tissue mix and the truth's differ.
+
+Sensitivity analysis for the s2 pre-registration (17-23 Nov). Not an adoption result and not a choice: nothing here
+picks an entry, and every setting below was fixed before the first run. On a released pseudo-task the truth is
+re-sampled without replacement, stratified by category, to a grid of tissue mixes along one axis; the prediction (B0,
+as the harness builds it) is built at the same grid of mixes; every prediction is scored against every truth with the
+harness's scoring (bake protocol, scorer build main, 10% working copies, each truth's floor and ceiling computed per
+seed and shared by the predictions, build seed 1,000,000 + seed). The payoff matrix score[prediction mix][truth mix]
+shows what a hedge gains where the truth's mix moves away from the one s1 assumes, and what it costs where it does not.
+
+Axes (T1/E9.5->E10.5:chamber, the truth the harness's chamber cut: E10.5's chamber categories plus 5% surrounding
+cells, configs/pseudo_tasks.yaml):
+  t1-blood  blood's share of the chamber cells, the other chamber categories in proportion and the truth's 5%
+            surrounding cells holding their share (vec.t1_scope.with_share(..., "blood", x, within=<chamber
+            categories>), the T1 build's --blood-share)
+  t1-cm     the cardiomyocyte share of heart cells, every category outside the heart holding its share
+            (with_share(..., "cm", x), the T1 build's --cm-share)
+The prediction's mix is the reference's own chamber mix (vec.harness.t1_chamber_shares, B0's) with the axis share set
+to each grid value; "own" is B0 itself. The truth's mix is the chamber cut's own with the axis share set to each grid
+value; "own" is the cut unchanged. Truth re-sampling uses one fixed seed (TRUTH_SEED), so a grid value is one fixed
+truth across the scoring seeds.
+
+Usage (DGX, repo root, BLAS threads capped; one process per seed range):
+  uv run python experiments/s2_hedge/payoff.py t1-blood --seeds 0-4 --out runs/s2_hedge/t1_blood_a
+  uv run python experiments/s2_hedge/payoff.py summarise --runs runs/s2_hedge/t1_blood_a runs/s2_hedge/t1_blood_b \
+      --out experiments/s2_hedge/results/t1_blood
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+import numpy as np
+
+from vec import harness, t1_scope
+from vec.boards import load_boards
+from vec.evaluate import SUBSAMPLE_FRAC, Stage, score_board, subsample
+from vec.io import dense, read_stage
+from vec.prep import load_stage
+
+TRUTH_SEED = 20261102  # truth re-sampling (fixed before any run)
+TASK = "T1/E9.5->E10.5:chamber"
+GRIDS = {  # axis -> (category, grid of shares); "own" is added as the unmodified mix
+    "t1-blood": ("blood", (0.03, 0.08, 0.15, 0.35)),
+    "t1-cm": ("cm", (0.15, 0.40, 0.58, 0.75)),
+}
+LABEL = ("sensitivity analysis for the s2 pre-registration, not an adoption result: truths re-sampled to set tissue "
+         "mixes, predictions built at the same mixes")
+
+
+def stratified(categories: np.ndarray, target: dict[str, float], rng: np.random.Generator) -> np.ndarray:
+    """Rows re-sampled without replacement to the category shares `target` (summing to 1) at the largest size the
+    available cells allow; a category with share 0 is dropped, a category with a share but no cells is refused."""
+    cats = {c: np.flatnonzero(categories == c) for c, w in target.items() if w > 0}
+    empty = sorted(c for c, ix in cats.items() if len(ix) == 0)
+    if empty:
+        raise ValueError(f"no cells of {empty} to re-sample")
+    total = min(len(ix) / target[c] for c, ix in cats.items())
+    rows = [rng.choice(ix, int(round(target[c] * total)), replace=False) for c, ix in cats.items()]
+    return np.sort(np.concatenate(rows))
+
+
+def axis_mix(base: dict[str, float], axis: str, value) -> dict[str, float]:
+    """`base` with the axis share set to `value` ("own": unchanged). t1-blood: blood's share of the chamber categories
+    present in `base` (as the T1 build's --blood-share), so a truth's surrounding cells keep their share; t1-cm: the
+    cardiomyocyte share of the config's heart categories."""
+    if value == "own":
+        return dict(base)
+    cat, _ = GRIDS[axis]
+    chamber = set(t1_scope.load_spec().in_scope("chamber"))
+    within = [c for c in base if c in chamber] if axis == "t1-blood" else None
+    return t1_scope.with_share(base, cat, float(value), within=within)
+
+
+def chamber_cut(t, data_dir: Path, genes):
+    """The harness's chamber cut (vec.harness.filter_target), with each kept row's category."""
+    spec = t1_scope.load_spec()
+    a = read_stage(data_dir / t.target, genes)
+    t1_scope.classify(a, source=harness.stem(t.target))
+    cat = np.asarray(a.obs[t1_scope.CATEGORY_KEY]).astype(str)
+    f = t.target_filter
+    kept = np.flatnonzero(np.isin(cat, sorted(set(spec.in_scope(f["keep"])))))
+    pool = np.flatnonzero(np.isin(cat, list(f.get("contamination_from", ()))))
+    c = float(f.get("contamination", 0.0))
+    k = min(len(pool), int(round(c / (1.0 - c) * len(kept)))) if c > 0 else 0
+    extra = np.random.default_rng(int(f["seed"])).choice(pool, k, replace=False) if k else np.array([], int)
+    rows = np.sort(np.concatenate([kept, extra]))
+    return a[rows], cat[rows]
+
+
+def run_t1(axis: str, seeds, out: Path, data_dir: Path) -> dict:
+    t = {x.key: x for x in harness.load_tasks()["T1:test"]}[TASK]
+    boards = load_boards()
+    genes = boards[t.panel_board].genes
+    cut, cut_cat = chamber_cut(t, data_dir, genes)
+    ref_stage = Stage.from_anndata(read_stage(data_dir / t.reference, genes), genes)
+    inputs = {r: load_stage(data_dir / f, lineage=False) for r, f in t.inputs.items()}
+    role = harness.base_role(t)
+    pool, src = harness._shallow(inputs[role]), harness.stem(t.inputs[role])
+    start, start_src = harness._shallow(inputs["start"]), harness.stem(t.inputs["start"])
+    held = list(t1_scope.held_flat_genes())
+    cut_mix = t1_scope.composition(list(cut_cat))
+    ref_mix = harness.t1_chamber_shares(pool, src)
+    values = ["own", *GRIDS[axis][1]]
+    truths = {}
+    for q in values:
+        mix = axis_mix(cut_mix, axis, q)
+        rows = (np.arange(cut.n_obs) if q == "own" else
+                stratified(cut_cat, mix, np.random.default_rng([TRUTH_SEED, values.index(q)])))
+        truths[str(q)] = (Stage.from_anndata(cut[rows], genes), t1_scope.composition(list(cut_cat[rows])))
+    base_board = harness.task_board(t, boards, truths["own"][0].n, ref_stage.n)
+    view, cboard = harness.TaskView.of(t), harness._candidate_board(base_board)
+    n = harness.count_for(cboard, pool.n_obs)  # as the harness's B0 (one count for every prediction)
+    rows_out = []
+    for s in seeds:
+        t0 = time.time()
+        ctx = harness.BuildContext(task=view, board=cboard, inputs=inputs, seed=harness.BUILD_SEED_OFFSET + s,
+                                   derived={"t1_held_flat": held})
+        preds = {}
+        for p in values:
+            mix = axis_mix(ref_mix, axis, p)
+            sub, _ = t1_scope.build_submission(pool, cboard, mix, n, ctx.seed, start=start, damping=harness.B0_DAMPING,
+                                               held_flat=held, ref_source=src, start_source=start_src)
+            preds[str(p)] = harness.finish(ctx, pool, dense(sub.X), None)
+        row = {"seed": s, "scores": {}, "skills": {}}
+        for q, (truth, _) in truths.items():
+            board = harness.task_board(t, boards, truth.n, ref_stage.n)
+            f = score_board(board, subsample(ref_stage, SUBSAMPLE_FRAC, s), truth, ref_stage, seed=s,
+                            anchors="computed", build=harness.BUILD, protocol=harness.PROTOCOL)
+            row["scores"][q], row["skills"][q] = {"floor": f.score}, {"floor": f.skills}
+            for p, pred in preds.items():
+                r = score_board(board, pred, truth, ref_stage, seed=s, anchors=f.anchors, build=harness.BUILD,
+                                protocol=harness.PROTOCOL)
+                row["scores"][q][p], row["skills"][q][p] = r.score, r.skills
+        row["seconds"] = round(time.time() - t0, 1)
+        rows_out.append(row)
+        print(f"{axis} seed {s} ({row['seconds']} s): " + "; ".join(
+            f"truth {q}: " + ", ".join(f"{p} {v:.2f}" for p, v in sc.items()) for q, sc in row["scores"].items()),
+            flush=True)
+    res = {"label": LABEL, "axis": axis, "category": GRIDS[axis][0], "task": t.key, "values": [str(v) for v in values],
+           "truth_mix": {q: m for q, (_, m) in truths.items()}, "truth_cells": {q: s.n for q, (s, _) in truths.items()},
+           "pred_mix": {str(p): axis_mix(ref_mix, axis, p) for p in values}, "n_pred": n, "truth_seed": TRUTH_SEED,
+           "seeds": list(seeds), "rows": rows_out, "provenance": provenance()}
+    out.mkdir(parents=True, exist_ok=True)
+    (out / f"{axis}.json").write_text(json.dumps(res, indent=1, default=float))
+    return res
+
+
+def provenance() -> dict:
+    commit = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+    dirty = subprocess.run(["git", "status", "--porcelain", "--untracked-files=no"], capture_output=True,
+                           text=True).stdout.strip()
+    return {"commit": commit, "tree_clean": dirty == "", "utc": time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())}
+
+
+def summarise(runs: list[Path], out: Path) -> dict:
+    parts = [json.loads(p.read_text()) for d in runs for p in sorted(Path(d).glob("*.json"))]
+    axes = {p["axis"] for p in parts}
+    if len(axes) != 1:
+        raise SystemExit(f"runs mix axes {sorted(axes)}")
+    commits = {p["provenance"]["commit"] for p in parts}
+    if len(commits) != 1 or not all(p["provenance"]["tree_clean"] for p in parts):
+        raise SystemExit(f"runs come from different commits or a dirty tree: {sorted(commits)}")
+    rows = sorted((r for p in parts for r in p["rows"]), key=lambda r: r["seed"])
+    seeds = [r["seed"] for r in rows]
+    if len(set(seeds)) != len(seeds):
+        raise SystemExit("a seed appears twice")
+    head = parts[0]
+    values = head["values"]
+    mean = {q: {p: float(np.mean([r["scores"][q][p] for r in rows])) for p in ["floor", *values]} for q in values}
+    sd = {q: {p: float(np.std([r["scores"][q][p] for r in rows], ddof=1)) if len(rows) > 1 else float("nan")
+              for p in values} for q in values}
+    res = {k: head[k] for k in ("label", "axis", "category", "task", "values", "truth_mix", "truth_cells",
+                                "pred_mix", "n_pred", "truth_seed")}
+    res.update(seeds=seeds, mean=mean, sd=sd, provenance=head["provenance"])
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "payoff.json").write_text(json.dumps(res, indent=1, default=float))
+    cat = head["category"]
+    lines = [f"{head['axis']} on {head['task']} ({LABEL}); {len(seeds)} seeds; commit {head['provenance']['commit']}",
+             f"rows: prediction's {cat} share; columns: truth's {cat} share; cells: mean board score (floor row last)",
+             "pred \\ truth " + " ".join(f"{q:>8s}" for q in values)]
+    for p in values:
+        lines.append(f"{p:>12s} " + " ".join(f"{mean[q][p]:8.2f}" for q in values))
+    lines.append(f"{'floor':>12s} " + " ".join(f"{mean[q]['floor']:8.2f}" for q in values))
+    key = cat if cat == "blood" else "cm"
+    lines.append("truth mixes: " + "; ".join(
+        f"{q}: {key} {head['truth_mix'][q].get(key, 0.0):.3f} ({head['truth_cells'][q]} cells)" for q in values))
+    (out / "payoff.txt").write_text("\n".join(lines) + "\n")
+    print("\n".join(lines))
+    return res
+
+
+def parse_seeds(text: str) -> tuple[int, ...]:
+    lo, _, hi = text.partition("-")
+    return tuple(range(int(lo), int(hi) + 1)) if hi else tuple(int(x) for x in text.split(","))
+
+
+def main(argv=None) -> None:
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    for axis in GRIDS:
+        p = sub.add_parser(axis)
+        p.add_argument("--seeds", default="0-9")
+        p.add_argument("--out", required=True)
+        p.add_argument("--data", default=str(harness.DATA_DIR))
+    p = sub.add_parser("summarise")
+    p.add_argument("--runs", nargs="+", required=True)
+    p.add_argument("--out", required=True)
+    a = ap.parse_args(argv)
+    if a.cmd == "summarise":
+        summarise([Path(r) for r in a.runs], Path(a.out))
+        return
+    run_t1(a.cmd, parse_seeds(a.seeds), Path(a.out), Path(a.data))
+
+
+if __name__ == "__main__":
+    sys.exit(main())
