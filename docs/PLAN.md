@@ -237,7 +237,14 @@ configured pseudo-tasks (it does not apply on the E7.25 one, which has no earlie
 `experiments/harness/results/d2_v1/psb_vs_b0/`). It edits log values, not counts, a departure from principle 1. The
 FGW pipeline now has to beat it. The captain allowed the log-value edits on the embryo board (2026-11-01) and
 asked for all effort on winning: the FGW pipeline was built the same day (`vec.core` coupling step,
-`vec.t2_build.interpolate_clouds`, harness candidate `fgw`; size step alone: `psb_size`).
+`vec.t2_build.interpolate_clouds`, harness candidate `fgw`; size step alone: `psb_size`). Results
+(`experiments/harness/results/emb_fgw_v1/`, 10 seeds, settings fixed before the run): on E7.5, fgw 61.12 against
+pseudobulk_shift 56.97 (+4.15) and psb_size 58.83 (+2.29); on E7.25, fgw 58.78 against B0 53.86 (+4.92); every gap
+ahead in 10 of 10 seeds. FGW gains on the expression metrics (de_direction 0.70, mmd_u 0.67, variogram 0.66 on E7.5)
+and loses on shape on E7.5 (d2 0.37, Dice 0.39, below a copy), where E8.0's sampling differs from E7.25's and
+E7.5's; on E7.25 its shape gains and its variogram falls (0.28). The adoption rule keeps psb_size over
+pseudobulk_shift (+1.86, 1 of 2 tasks) and fgw over B0 (2 of 2); fgw over psb_size is "incomplete" only because the
+base cannot run on E7.25 (no stage before E6.75), a reading put to the captain.
 
 Submissions: s1 central clock; s2 alternative clock or the nearest-stage variant (E8.0 tissue shrunk to the predicted
 size, mixture expression).
@@ -695,3 +702,9 @@ open. No organiser reply to any of the four emails as of then.
   go-ahead): the FGW embryo pipeline started the same day (section 4.2). Still open: the s1 cardiomyocyte share and
   which share the s2 hedge moves (E10.5's own chamber mix has 26.5% cardiomyocytes against the planned 58%; in the
   pre-release practice task 10 points too high cost about 3 points, 10 too low under 1).
+- 2026-11-01 (g): the Feng re-cut is identical to the earlier subsets; M1 reads it. FGW beats every embryo candidate
+  where both run (section 4.2). The test builds run end to end (`experiments/builds/build_test.py`, dry runs against
+  the validation boards on the DGX, deleted afterwards). Feng's own cardiomyocyte share barely moves from E9.5 to
+  E14.5 (89.5% to 85.5% of heart cells without fibroblast-like cells, to 77% with them), so carrying its log-odds
+  change at 2/5 onto E10.5's 26.5% gives about 20-24%, not the planned 58%. Put to the captain: count only the
+  pseudo-tasks where both candidates run (so fgw can replace psb_size); the s1 cardiomyocyte share.

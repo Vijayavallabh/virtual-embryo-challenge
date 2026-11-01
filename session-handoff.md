@@ -117,7 +117,9 @@
   the same day (Feng on the readout; the Feng re-cut, done and identical; licence confirmed; the heart's composition
   trend dropped; the embryo's log-value edits allowed; pushed) and asked for all effort on winning. Built the same day:
   the FGW embryo pipeline (harness candidates `fgw` and `psb_size`; runs in runs/harness/emb_fgw_v1 on the DGX).
-  Open: the s1 cardiomyocyte share and the s2 hedge (before the 16 Nov freeze). Never build a test file at seed 0 (runbook section 5).
+  FGW results: +4.15 over pseudobulk_shift (E7.5) and +4.92 over B0 (E7.25), 10 of 10 seeds. Test builds run end to
+  end (`experiments/builds/build_test.py`; dry runs deleted). Open: the reading for a task the base cannot run on (so
+  fgw can replace psb_size), the s1 cardiomyocyte share and the s2 hedge (before the 16 Nov freeze). Never build a test file at seed 0 (runbook section 5).
 - Meanwhile (no specs needed): the v1 pipelines on the release data (`docs/PLAN.md` section 7, Nov 3-9): the T1
   pseudo-task with E10.5 as the truth (`experiments/t1_scope/pseudo_task.py`, honest momentum from E8.5), T2 embryo
   FGW, T2 heart growth, scored with the calibrated emulator (protocol="bake" reproduces the validation boards). On the

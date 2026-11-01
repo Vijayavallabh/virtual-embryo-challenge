@@ -223,6 +223,15 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       barycentric, nearest_anchors), `vec.t2_build.interpolate_clouds` and `pchip_rms`, harness candidates `fgw`
       and `psb_size`; 152 tests in the touched files pass. 10-seed runs on both embryo pseudo-tasks started on the DGX
       (runs/harness/emb_fgw_v1).
+- [x] 2026-11-01: embryo results (`experiments/harness/results/emb_fgw_v1/`, 10 registry rows): fgw +4.15 over
+      pseudobulk_shift and +2.29 over psb_size on E7.5, +4.92 over B0 on E7.25, 10 of 10 seeds each; psb_size +1.86
+      over pseudobulk_shift. Kept: psb_size over pseudobulk_shift (1 of 2), fgw over B0 (2 of 2); fgw over psb_size
+      waits on the reading of a task the base cannot run on. Weak spots, left alone (any fix chosen now would be tuned
+      on both tasks): FGW's shape on E7.5 and its variogram on E7.25.
+- [x] 2026-11-01: test builds (`experiments/builds/build_test.py`, 55cbe3d): T1 M1, heart B0 s1/s2 with the
+      pre-registered size, embryo pseudobulk_shift or fgw with the pre-registered size; dry runs against the
+      validation boards passed their checks on the DGX (seed 1,000,001) and were deleted. Feng's E9.5 -> E14.5
+      cardiomyocyte share: 89.5% -> 85.5% of heart cells (77% counting fibroblast-like cells).
 
 ### What's Next
 
