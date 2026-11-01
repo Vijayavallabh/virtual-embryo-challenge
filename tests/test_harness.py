@@ -482,6 +482,21 @@ def test_decide_counts_the_configured_pseudo_tasks():
     tuned = harness.decide([_result("a"), _result("b")], CONFIGURED, "floor", "copy",
                            candidates=CANDIDATES | {"copy": replace(CANDIDATES["copy"], tuned_on=frozenset({"b"}))})
     assert tuned["counted"] == ["a"] and tuned["excluded"] == {"b": "change was tuned on it"}
+    # the captain's reading (2026-11-01): a pseudo-task the base cannot run on is not counted, and the record says so
+    narrow = replace(CANDIDATES["copy"], name="narrow", requires=lambda t: t.key == "a")
+    rb = _result("b", cands=("floor", "copy"))
+    ra = _result("a", cands=("floor", "copy"))
+    for r in (ra, rb):
+        for row in r["rows"]:
+            row["scores"]["wide"] = row["scores"]["copy"] + 1.0
+        r["candidates"] = [*r["candidates"], "wide"]
+    for row in ra["rows"]:
+        row["scores"]["narrow"] = row["scores"]["copy"]
+    ra["candidates"].append("narrow")
+    wide = replace(CANDIDATES["copy"], name="wide")
+    d = harness.decide([ra, rb], CONFIGURED, "narrow", "wide", candidates=CANDIDATES | {"narrow": narrow, "wide": wide})
+    assert d["keep"] and d["counted"] == ["a"] and d["excluded"] == {"b": "base does not apply"}
+    assert d["decided_on"].startswith("1 of 2")
 
 
 @pytest.mark.parametrize("bad, match", [

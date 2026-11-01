@@ -892,8 +892,10 @@ def decide(results: list[dict], configured: list[PseudoTask], base: str, change:
     2026-11-01 ("yes for all"):
       - counted are the board's configured pseudo-tasks that are not diagnostics or replicate folds
         (PseudoTask.counted), on which `change` applies (a pseudo-task it cannot run on is not counted; the record
-        says how many of the configured pseudo-tasks decided), and which `change` was not tuned on (if none remain,
-        the change is not kept);
+        says how many of the configured pseudo-tasks decided), on which `base` applies too (the captain's reading of
+        2026-11-01, a fourth "yes for all": a pseudo-task the base cannot run on is not counted either, e.g. the
+        embryo's E7.25 task for pseudobulk_shift, which has no stage before E6.75), and which `change` was not tuned
+        on (if none remain, the change is not kept);
       - on T1 the tissue mix is a premise (the organisers' E12.5 dissection note), so candidates of the same declared
         scope (params["scope"]: "whole" for the reference's own mix, "chamber" for the heart chamber only) are judged
         on every counted pseudo-task, and candidates of different scopes (decision point D2: B0 against the floor)
@@ -912,6 +914,8 @@ def decide(results: list[dict], configured: list[PseudoTask], base: str, change:
             excluded[t.key] = "replicate fold" if t.replicate else "diagnostic"
         elif c is not None and not c.applies(t):
             excluded[t.key] = "change does not apply"
+        elif b is not None and not b.applies(t):
+            excluded[t.key] = "base does not apply"
         elif c is not None and t.key in c.tuned_on:
             excluded[t.key] = "change was tuned on it"
         elif cross_scope and t.task == "T1" and (t.target_filter or {}).get("keep") != "chamber":
