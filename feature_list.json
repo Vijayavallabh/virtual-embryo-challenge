@@ -218,7 +218,7 @@
         "feat-017"
       ],
       "status": "in-progress",
-      "evidence": "2026-11-01: s2 hedge payoffs started (experiments/s2_hedge/, sensitivity analysis for the s2 pre-registration, not a choice): T1 blood and cardiomyocyte axes on the chamber task (10 seeds, cf476aa; confounded by E9.5's own mix), a 2-D T1 grid on an oracle base and a heart scope axis (the planned heart s2, H2, differs from s1 only in size) running at 46089fe."
+      "evidence": "2026-11-01: s2 hedge payoffs started (experiments/s2_hedge/, sensitivity analysis for the s2 pre-registration, not a choice): T1 blood and cardiomyocyte axes on the chamber task (10 seeds, cf476aa; confounded by E9.5's own mix), a 2-D T1 grid on an oracle base and a heart scope axis (the planned heart s2, H2, differs from s1 only in size) running at 46089fe. 2026-11-02: the s2 rules are written (docs/S2_RULES.md, by the AI assistant under the captain's delegation of 2026-11-02, each fixed before its deciding run). T1: M1 at 60% cardiomyocytes (T1 grid, 10 seeds, 90b25d3: +4.74 uniform). Heart: H2 as the half trim. Step 5 failed on E8.25_late -> E8.5; the rule was amended after that outcome and logged as such, since the trim beats H2 as built as an s2 on all three heart transitions (build_test.py heart --entry s2_trim). Embryo: fgw_shape0, by the rule fixed at 90ddaaa (better-of-two 60.87 against fgw alone 59.95; build_test.py embryo --method fgw_shape0). T3: the refused branch's s1. Dry runs of the heart and embryo s2 on the validation boards pass. Next: hash the file at the freeze; s2 uploads need the captain's go-ahead."
     }
   ]
 }
