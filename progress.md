@@ -279,6 +279,12 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       Relaunched with `NUMPY_MADVISE_HUGEPAGE=0`, and the grid now holds one prediction at a time (it held about
       20 GB per process; same scores, since every call is seeded). The fix and how to spot the stall are in
       `docs/COMPUTE.md`.
+- [x] 2026-11-01: heart scope payoffs (`experiments/s2_hedge/results/heart_scope/`; 10 seeds, 90b25d3; heart seeds
+      0 and 5 identical to the stalled run's). Today's size-only H2 is a weak hedge, adding about 1 point over s1
+      alone. A core-trimmed s2 adds 2.1-2.6 points: +10.8 against a clean-heart truth, -11.3 against E10.5 as released.
+      Split by truth family: on the radial truths only H2 helps (+0.92); on the thin truths core_radial adds +6.41
+      against H2's +1.32. A heart-focused s2 needs the captain's ruling (PLAN 4.3 step 5); the numbers are for that
+      ruling at the s2 pre-registration (17-23 Nov).
 
 ### What's Next
 
