@@ -2,8 +2,9 @@
 
 ## Current State
 
-**Last Updated:** 2026-10-31
-**Active Feature:** feat-004 - Final-phase intake (`docs/P3_RUNBOOK.md`). Steps 2 (data) and 3 (labels) done on
+**Last Updated:** 2026-11-01
+**Active Feature:** feat-014 (T1 M1), then feat-011 (T2 heart growth), each against B0 on the harness; feat-004's step 1
+waits for the board-spec save (not before 2026-11-04 UTC). Earlier: feat-004 - Final-phase intake (`docs/P3_RUNBOOK.md`). Steps 2 (data) and 3 (labels) done on
 2026-10-28 (feat-003 done), and step 4 (the pre-registered runs) ran the same day at the user's go-ahead, each output
 committed before it was read. Step 1 is blocked by the 403 on the panel files (Cloudflare error code 1010, a
 browser-signature block; no reply to any organiser email). Its saved-file intake (`vec boards update --from-file`,
@@ -181,7 +182,12 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       nothing on mmd_u and loses on the variogram. T3 has no harness check (the pre-registered entries were selected
       or fitted on every fold). The first T1 run stopped when the read guard refused B0's own read of the held-flat
       list; the harness now hands the list over (20fb8b5). Awaiting the captain: the T1 blood share at test, the T3
-      D2 reading, the push.
+      D2 reading, the push. (Answered the same day: next entry.)
+
+- [x] 2026-11-01, the captain's third "yes for all": the T1 test entry keeps E10.5's own chamber share of blood
+      (about 24% of chamber cells, not the plan's 1.5-2%; PLAN 4.1), and the s2 rule is to be proposed with the
+      hedge on the blood share; the pre-registered T3 entries stand on the T3 rules, and new T3 changes face the
+      harness on folds they were not tuned on (PLAN 4.4); the five D2 commits pushed (6c214e3..b2fc85c).
 
 ### What's Next
 

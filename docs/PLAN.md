@@ -152,7 +152,10 @@ Facts that shape it (`docs/research/digest_2026-10-19.md`, gap-fills 1 and 3):
   a chamber-only composition, with no state change, moved T1 from 51 to 75 (+12 to +26 over 11 truth variants). Drop
   the surrounding tissue and also the second-heart-field, pericardial and pharyngeal types: keeping them at the
   reference share cost 13 points, dropping them when the truth keeps 15% cost 1-3. Blood about 1.5-2% (over-predicting
-  by 10 points costs 7-9). The cardiomyocyte share of heart cells carries ~75% of the composition risk, and legal E14.5
+  by 10 points costs 7-9). (2026-11-01, the captain: not used at test. B0 and M1 keep E10.5's own chamber share of
+  blood, about 24% of chamber cells: the 1.5-2% came from nuclei of embryo portions at E8.5 and E9.5, while E10.5, the
+  same nuclei assay on dissected hearts like E12.5, has 17% blood, and the E12.5 collection text names no
+  blood-removal step.) The cardiomyocyte share of heart cells carries ~75% of the composition risk, and legal E14.5
   data disagree on it (40%, 42% and 77% across datasets and strains). Order the work: scope (~+20), per-type state
   shifts (~15), births (~1.5-5).
 - **Direction.** Within-platform fold changes from Feng 2022 chamber hearts (legal stages only) beat internal momentum in
@@ -175,7 +178,7 @@ Facts that shape it (`docs/research/digest_2026-10-19.md`, gap-fills 1 and 3):
 
 | Step | What | Effort | Kept if |
 |---|---|---|---|
-| B0 floor-plus | E10.5 real cells re-weighted to a chamber-only composition (surrounding, second-heart-field, pericardial and pharyngeal types dropped; blood ~2%) plus a per-type count-space momentum shift | 2 days | passes the adoption rule against copy_last |
+| B0 floor-plus | E10.5 real cells re-weighted to a chamber-only composition (surrounding, second-heart-field, pericardial and pharyngeal types dropped; blood at E10.5's own chamber share, about 24%, captain 2026-11-01) plus a per-type count-space momentum shift | 2 days | passes the adoption rule against copy_last |
 | M1 main | B0's composition with the cardiomyocyte share as the hedged parameter, per-type count-space shifts with direction from the Feng bracket (E10.5 to E14.5+, t ≈ 0.5) if the readout passes, damped momentum otherwise, and cheap proxy births by the legal route | 1-2 weeks | passes the adoption rule against B0 |
 | M2 diverse bet | moscot OT bracketing from our E10.5 to external E14.5 in a shared scVI latent, decoded by count sampling; built only if the readout passes | 2-3 weeks | passes the adoption rule against M1 |
 | Stretch | Whole-ladder non-autonomous flow with growth (VGFM-style, reimplemented on torchcfm/POT) | only if time | passes the adoption rule against M1 |
@@ -188,6 +191,9 @@ commit the s1/s2 rule before any upload.
 Submissions: s1 = M1 with cardiomyocytes at about 58% of heart cells; s2 = identical except about 70% (the hedge
 belongs on the cardiomyocyte share; expected best-of-two gain ~1.1-1.4 points). Both shares are refit on E10.5 and the
 legal E14.5+ data and committed before any upload; M2 replaces s2 only if it passes the adoption rule against s2.
+(2026-11-01: the captain agreed that the s2 rule be proposed at its pre-registration, Nov 17-23, with the hedge on the
+blood share instead of the cardiomyocyte share, since the blood share at E12.5 is the larger unknown; the rule itself
+is still put to him then.)
 
 ### 4.2 T2 embryo: E7.75 interpolation (weight 0.5)
 
@@ -349,6 +355,11 @@ Components (all legal under the 2026-10-15 ruling):
   team's hedge): s1 = the allowed branch's s1; s2 = the refused branch's s1 (wild-type cells, the central composition
   at the Mab21l2 magnitude, no number derived from the Gata4 files), uploaded first, with s1 last; the barred branch
   stays built as the switch if a ruling restricts the Gata4 files before the last T3 upload.
+- **D2 on T3** (captain, 2026-11-01): the harness gives the pre-registered T3 entries no verdict, because every fold is
+  one they were selected or fitted on (the Gata4 choice, the Mab21l2 magnitude). They stand on the pre-registered T3
+  rules: the Gata4 replicate transfer (that rule set's own D2) passed, and the Mab21l2-to-Gata4 transfer (D11b) failed,
+  which is why s2 uses no number derived from the Gata4 files. Any new T3 change must pass the adoption rule on the
+  cross-knockout folds it was not tuned on.
 
 Submissions: s1 = F (Gata4-sourced) + C; s2 = F (reference-sourced) + C. Both are built before the first upload. Any
 rule that picks or changes s2 after s1's score is written beforehand in terms of component skills and never reads a
@@ -637,3 +648,9 @@ open. No organiser reply to any of the four emails as of then.
   T2 heart it falls short on the one-day pseudo-task (ahead in 7 of 10 seeds, 8 needed); on T1 it is vetoed on the
   chamber-cut truth (-0.32 points). B0 beats a plain copy on all three boards. T3's pre-registered entries cannot be
   checked on the harness. Pending with the captain: the T1 blood share at test and the T3 reading.
+- 2026-11-01 (d): a third "yes for all" from the captain. (1) T1 blood at test: B0 and M1 keep E10.5's own chamber
+  share of blood, about 24% of chamber cells, not section 4.1's 1.5-2%, and the s2 rule is to be proposed with the
+  hedge on the blood share. (2) D2 on T3: the pre-registered T3 entries stand on the T3 rules (section 4.4); new T3
+  changes face the adoption rule on folds they were not tuned on. (3) The five D2 commits were pushed
+  (6c214e3..b2fc85c). Next: M1 (T1) and heart growth (T2 heart) against B0 on the harness; on T1, first the de_score
+  handicap of fresh real cells.
