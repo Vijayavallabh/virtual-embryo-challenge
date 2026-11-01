@@ -1,0 +1,95 @@
+{
+ "board": "T2:embryo:test_interp",
+ "runs": "/mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/experiments/harness/results/emb_fgw_v1/tasks",
+ "decisions": [
+  {
+   "base": "psb_size",
+   "change": "fgw",
+   "counted": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "incomplete pseudo-tasks: ['T2e/E6.75+E7.5->E7.25']",
+   "tasks": {
+    "T2e/E7.25+E8.0->E7.5": {
+     "complete": true,
+     "mean_gain": 2.2895547228078796,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    },
+    "T2e/E6.75+E7.5->E7.25": {
+     "complete": false,
+     "missing_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "non_finite_seeds": []
+    }
+   },
+   "need": 2,
+   "passed": 1
+  }
+ ],
+ "summaries": {
+  "T2e/E6.75+E7.5->E7.25": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    53.26757396706354,
+    1.471194079501692
+   ],
+   "b0": [
+    53.85713523942375,
+    1.3615507507447882
+   ],
+   "fgw": [
+    58.78119083140672,
+    2.2035357504971294
+   ]
+  },
+  "T2e/E7.25+E8.0->E7.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    50.58061955768748,
+    0.851244252555769
+   ],
+   "pseudobulk_shift": [
+    56.9717840076528,
+    0.7601917330826194
+   ],
+   "b0": [
+    51.20792740434941,
+    0.8476661327440598
+   ],
+   "psb_size": [
+    58.82936757299926,
+    0.7734958167373123
+   ],
+   "fgw": [
+    61.118922295807145,
+    0.8348261928410835
+   ]
+  }
+ }
+}

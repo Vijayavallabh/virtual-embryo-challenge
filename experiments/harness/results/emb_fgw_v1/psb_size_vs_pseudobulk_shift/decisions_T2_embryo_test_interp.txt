@@ -1,0 +1,5 @@
+T2:embryo:test_interp: 2 pseudo-task(s) in /mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/experiments/harness/results/emb_fgw_v1/tasks (protocol bake, build main, anchors computed, seeds [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  T2e/E6.75+E7.5->E7.25 on pseudo:T2e/E6.75+E7.5->E7.25: floor 50.00 +/- 0.00; copy 53.27 +/- 1.47; b0 53.86 +/- 1.36; fgw 58.78 +/- 2.20 (commit bd2e433, clean True)
+  T2e/E7.25+E8.0->E7.5 on T2:embryo:val_interp: floor 50.00 +/- 0.00; copy 50.58 +/- 0.85; pseudobulk_shift 56.97 +/- 0.76; b0 51.21 +/- 0.85; psb_size 58.83 +/- 0.77; fgw 61.12 +/- 0.83 (commit bd2e433, clean True)
+psb_size against pseudobulk_shift: KEEP (passes on 1 of 1 pseudo-tasks (needs 1) and loses on none; decided on 1 of 2 configured pseudo-tasks; not counted: {'T2e/E6.75+E7.5->E7.25': 'change does not apply'})
+    T2e/E7.25+E8.0->E7.5: paired mean gain +1.86, ahead in 10 of 10 seeds, passes True, vetoes False
