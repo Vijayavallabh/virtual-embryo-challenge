@@ -5,7 +5,9 @@ to Feng's CD1 hearts, E9.5 -> E14.5 (approved by the captain on 2026-10-21). Thi
 readout's vectors: per harmonised group, the log ratio of mean CP10k between Feng's E9.5 and E14.5 cells of the
 group's Feng labels (pseudocount, minimum cells and labels from experiments/t1_direction/config.yaml), on a T1 gene
 order (symbols used more than once in Feng are dropped; unmapped genes are NaN). Within-dataset ratios only: no
-external level enters a cell. Feng's statistics are checked against the filter's manifest before use.
+external level enters a cell. Feng's statistics are checked against the filter's manifest before use. They come from
+the clean reduction of the raw GEO files (experiments/external/feng2022_geo.py, run 2026-11-01 at 6093147), whose
+group totals equal the readout's 2026-10-18 statistics to float rounding.
 
 The cell label -> group map is the readout's (config regexes), with the ventricular cardiomyocyte labels inside CM, as
 in the readout's population prediction (`cm_includes`).
@@ -27,6 +29,7 @@ import dirlib as dl  # noqa: E402
 import filterio as fio  # noqa: E402
 
 CONFIG = REPO / "experiments" / "t1_direction" / "config.yaml"
+SOURCES = REPO / "experiments" / "external" / "sources.yaml"
 BRACKET = ("E9.5", "E14.5")  # the readout's primary predictor, feng_E14.5
 BRACKET_DAYS = (9.5, 14.5)
 
@@ -48,11 +51,18 @@ def label_groups(labels, cfg: dict | None = None) -> dict[str, str]:
     return {lab: ("CM" if g in inc else g) for lab, g in m.items()}
 
 
-def feng_directions(genes, cfg: dict | None = None) -> tuple[dict[str, np.ndarray], dict]:
+def clean_stats_path() -> Path:
+    """cd1_stats.npz of the clean GEO reduction (sources.yaml, feng2022_geo)."""
+    return REPO / yaml.safe_load(SOURCES.read_text())["feng2022_geo"]["dst"] / "cd1_stats.npz"
+
+
+def feng_directions(genes, cfg: dict | None = None,
+                    stats_path: Path | None = None) -> tuple[dict[str, np.ndarray], dict]:
     """group -> Feng E9.5 -> E14.5 log ratio on `genes` (NaN where unmapped), for every group with Feng labels and at
-    least min_cells_ext cells at both ends; and a record (file, sha256, groups, cells, mapped genes)."""
+    least min_cells_ext cells at both ends; and a record (file, sha256, groups, cells, mapped genes). stats_path:
+    default the clean GEO reduction's statistics."""
     cfg = cfg or load_config()
-    path = REPO / cfg["external"]["feng_stats"]
+    path = Path(stats_path) if stats_path is not None else clean_stats_path()
     entry = fio.verify_manifest_output(path)
     st = dl.load_stats(path)
     idx = dl.sym_index(st["genes"], list(genes))
