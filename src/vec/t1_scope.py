@@ -520,6 +520,77 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
     return out, report
 
 
+def external_shift(target_like: ad.AnnData, directions: Mapping[str, np.ndarray], fraction: float,
+                   group_of: Mapping[str, str], held_flat: Iterable[str] = (), *, label_key: str = LABEL_KEY,
+                   max_abs_log_factor: float | None = None, keep_depth: bool = True,
+                   seed: Seed = 0) -> tuple[ad.AnnData, ShiftReport]:
+    """Move cells along per-group external directions, in count space (M1's direction step, docs/PLAN.md 4.1).
+
+    directions: group -> log ratio of mean CP10k between the two ends of an external bracket (e.g. Feng 2022 E9.5 ->
+    E14.5), on target_like's gene order; NaN where the gene has no external value. fraction: the share of the bracket
+    the step covers, a time fraction (E10.5 -> E12.5 in the E9.5 -> E14.5 bracket: 2/5). group_of: cell label
+    (obs[label_key]) -> group. A cell whose label maps to a group with a direction gets
+        log f[gene] = fraction * direction[group][gene]   (0 where NaN and for held-flat genes),
+    clipped to +-max_abs_log_factor when given, applied by `apply_factors` like `momentum_shift`. Every other cell is
+    returned with its counts unchanged. Within-dataset ratios only: no external level enters a cell.
+
+    Returns a copy of target_like with layers["counts"] edited and X = log1p CP10k of the new counts (float32 CSR),
+    and a per-group report (ShiftReport, damping = fraction).
+    """
+    if not np.isfinite(fraction):
+        raise ValueError(f"fraction must be finite, got {fraction}")
+    if label_key not in target_like.obs:
+        raise KeyError(f"target_like has no obs[{label_key!r}]")
+    genes = list(target_like.var_names)
+    for g, v in directions.items():
+        if np.shape(v) != (len(genes),):
+            raise ValueError(f"direction for {g!r} has shape {np.shape(v)}, expected ({len(genes)},)")
+    C = counts_of(target_like)
+    held_set = set(map(str, held_flat))
+    held = np.array([g in held_set for g in genes], dtype=bool)
+    labels = target_like.obs[label_key].astype(str).to_numpy()
+    cell_group = np.array([group_of.get(lab, "") for lab in labels], dtype=object)
+    groups = sorted(g for g in directions if (cell_group == g).any())
+    F = np.ones((len(groups) + 1, len(genes)))  # last row: cells without a direction (f = 1)
+    rows = []
+    for i, g in enumerate(groups):
+        logf = fraction * np.nan_to_num(np.asarray(directions[g], dtype=np.float64), nan=0.0)
+        if max_abs_log_factor is not None:
+            logf = np.clip(logf, -max_abs_log_factor, max_abs_log_factor)
+        logf[held] = 0.0
+        F[i] = np.exp(logf)
+        rows.append({"type": g, "n_target": int((cell_group == g).sum()), "status": "shifted",
+                     "labels": ";".join(sorted(set(labels[cell_group == g]))),
+                     "n_no_value": int(np.isnan(np.asarray(directions[g], dtype=np.float64)).sum()),
+                     "n_up": int((logf > np.log(1.1)).sum()), "n_down": int((logf < -np.log(1.1)).sum()),
+                     "mean_abs_log_f": float(np.abs(logf).mean()), "max_abs_log_f": float(np.abs(logf).max())})
+    gindex = {g: i for i, g in enumerate(groups)}
+    tidx = np.array([gindex.get(g, len(groups)) for g in cell_group], dtype=np.int64)
+    untouched = tidx == len(groups)
+    rows.append({"type": "(no direction)", "n_target": int(untouched.sum()), "status": "unchanged",
+                 "labels": ";".join(sorted(set(labels[untouched])))})
+    new, scale, dead = apply_factors(C, F, tidx, held, keep_depth=keep_depth, seed=seed)
+    for row in rows:
+        m = (tidx == gindex[row["type"]]) if row["type"] in gindex else untouched
+        row["median_depth_scale"] = float(np.median(scale[m])) if m.any() else float("nan")
+    out = target_like.copy()
+    out.layers["counts"] = new.astype(np.int32)
+    out.X = log1p_cp10k(new)
+    report = ShiftReport(damping=float(fraction), eps=float("nan"), min_cells=0, keep_depth=bool(keep_depth),
+                         max_abs_log_factor=max_abs_log_factor, n_held_flat=int(held.sum()), rows=rows,
+                         restored_cells=int(dead.sum()))
+    return out, report
+
+
+def _stack_rows(parts: Sequence[tuple[np.ndarray, ad.AnnData]], n: int) -> ad.AnnData:
+    """Reassemble cell subsets (original row positions, AnnData) into one AnnData in the original row order."""
+    order = np.concatenate([idx for idx, _ in parts])
+    if len(order) != n or len(np.unique(order)) != n:
+        raise ValueError("the parts do not cover every row exactly once")
+    whole = ad.concat([a for _, a in parts], merge="first")
+    return whole[np.argsort(order)].copy()
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 # Submission
 
@@ -530,9 +601,16 @@ def build_submission(ref: ad.AnnData, board: Board, target_shares: Mapping[str, 
                      start_source: str | None = None, label_key: str = LABEL_KEY,
                      within: Mapping[str, Sequence[str]] | None = None,
                      fallback: Mapping[str, Sequence[str]] | None = None, spec: ChamberSpec | None = None,
+                     directions: Mapping[str, np.ndarray] | None = None, direction_fraction: float = 0.0,
+                     direction_groups: Mapping[str, str] | None = None,
                      **shift_kw) -> tuple[ad.AnnData, dict]:
     """A T1 prediction: real `ref` cells re-weighted to `target_shares`, optionally moved by the damped `start` ->
     `ref` momentum, in the board's gene order as float32 log1p CP10k. Returns (AnnData, report).
+
+    directions (M1, docs/PLAN.md 4.1): group -> external log ratio on ref's gene order (see `external_shift`), with
+    direction_groups (label -> group) and direction_fraction (the share of the external bracket the step covers).
+    Cells whose label maps to a group with a direction move along it; the other cells get the momentum shift (when
+    `start` and a damping are given) or stay as drawn. held_flat applies to both.
 
     ref: the reference stage (loaded with vec.prep.load_stage; counts are recovered from X if absent). n_cells must lie
     within the board's limits (it is an input, like the shares). ref_source / start_source: file stems selecting the
@@ -561,13 +639,37 @@ def build_submission(ref: ad.AnnData, board: Board, target_shares: Mapping[str, 
     classify(ref, label_key, ref_source, spec)
     fb = spec.fallbacks(ref_source) if fallback is None else dict(fallback)
     pop, rw = reweight(ref, shares, n_cells, seed, label_key=label_key, within=within, fallback=fb, spec=spec)
-    shift = None
-    if start is not None and damping != 0:
+    shift = ext = None
+    momentum = start is not None and damping != 0
+    held = (held_flat_genes() if held_flat is None else list(held_flat)) if momentum or directions else []
+
+    def with_momentum(cells: ad.AnnData) -> tuple[ad.AnnData, ShiftReport]:
         classify(start, label_key, start_source, spec)
-        held = held_flat_genes() if held_flat is None else list(held_flat)
-        pop, shift = momentum_shift(start, ref, pop, damping, held, label_key=label_key, within=within,
-                                    start_fallback=spec.fallbacks(start_source), ref_fallback=fb, seed=[seed, 1],
-                                    **shift_kw)
+        return momentum_shift(start, ref, cells, damping, held, label_key=label_key, within=within,
+                              start_fallback=spec.fallbacks(start_source), ref_fallback=fb, seed=[seed, 1],
+                              **shift_kw)
+
+    if directions:
+        if direction_groups is None:
+            raise ValueError("directions need direction_groups (cell label -> group)")
+        labels = pop.obs[label_key].astype(str).to_numpy()
+        covered = np.array([direction_groups.get(lab) in directions for lab in labels], dtype=bool)
+        parts = []
+        if covered.any():
+            idx = np.flatnonzero(covered)
+            ext_kw = {k: shift_kw[k] for k in ("max_abs_log_factor", "keep_depth") if k in shift_kw}
+            moved, ext = external_shift(pop[idx].copy(), directions, direction_fraction, direction_groups, held,
+                                        label_key=label_key, seed=[seed, 2], **ext_kw)
+            parts.append((idx, moved))
+        if not covered.all():
+            idx = np.flatnonzero(~covered)
+            rest = pop[idx].copy()
+            if momentum:
+                rest, shift = with_momentum(rest)
+            parts.append((idx, rest))
+        pop = _stack_rows(parts, pop.n_obs)
+    elif momentum:
+        pop, shift = with_momentum(pop)
     cols = pd.Index(pop.var_names).get_indexer(board.genes)
     if (cols < 0).any():
         missing = [g for g, i in zip(board.genes, cols, strict=True) if i < 0]
@@ -579,6 +681,8 @@ def build_submission(ref: ad.AnnData, board: Board, target_shares: Mapping[str, 
               "within": {k: list(v) for k, v in (within or {}).items()},
               "fallback": {k: list(v) for k, v in fb.items()}, "reweight": rw.as_dict(),
               "shift": None if shift is None else shift.as_dict(), "config": spec.path}
+    if directions:  # only then, so reports without directions are unchanged (tests/test_core.py golden table)
+        report["external"] = None if ext is None else ext.as_dict() | {"fraction": float(direction_fraction)}
     return sub, report
 
 

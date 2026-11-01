@@ -22,6 +22,7 @@ from vec.t1_scope import (
     classify,
     composition,
     counts_of,
+    external_shift,
     load_shares,
     load_spec,
     mean_cp10k,
@@ -361,6 +362,70 @@ def test_apply_factors_expectation():
 
 # ---------------------------------------------------------------------------------------------------------------------
 # submission
+
+
+def _direction(**genes):
+    d = np.zeros(len(GENES))
+    for g, v in genes.items():
+        d[GENES.index(g)] = v
+    return d
+
+
+def test_external_shift_moves_only_mapped_cells_by_the_fraction_of_the_direction():
+    ref = make_stage(30)
+    classify(ref)
+    pop, _ = reweight(ref, SHARES, 600, seed=1)
+    d = _direction(g1=np.log(4.0), Xist=np.log(8.0))
+    d[GENES.index("g2")] = np.nan  # no external value: left alone
+    out, rep = external_shift(pop, {"CM": d, "Absent": d}, 0.5, {"V-CM": "CM"}, HELD, seed=0)
+    old, new = counts_of(pop), counts_of(out)
+    cm = (pop.obs["celltype"] == "V-CM").to_numpy()
+    assert (new[~cm] != old[~cm]).count_nonzero() == 0  # cells without a direction keep their counts
+    g1, g2, xist = GENES.index("g1"), GENES.index("g2"), GENES.index("Xist")
+    assert (new[:, xist] != old[:, xist]).count_nonzero() == 0  # held flat
+    rest = [i for i in range(len(GENES)) if i not in (g1, g2) and GENES[i] not in HELD]
+    base = new[cm][:, rest].sum() / old[cm][:, rest].sum()
+    assert (new[cm][:, g1].sum() / old[cm][:, g1].sum()) / base == pytest.approx(2.0, rel=0.08)  # exp(0.5 log 4)
+    assert (new[cm][:, g2].sum() / old[cm][:, g2].sum()) / base == pytest.approx(1.0, rel=0.08)
+    nz_new, nz_old = (new != 0).astype(np.int8), (new != 0).multiply(old != 0).astype(np.int8)
+    assert (nz_new - nz_old).count_nonzero() == 0  # zeros stay zero
+    rows = {r["type"]: r for r in rep.rows}
+    assert set(rows) == {"CM", "(no direction)"} and rows["CM"]["n_target"] == int(cm.sum())
+    assert rows["CM"]["n_no_value"] == 1 and rep.damping == 0.5
+    same, _ = external_shift(pop, {"CM": d}, 0.0, {"V-CM": "CM"}, HELD, seed=0)
+    assert (counts_of(same) != old).count_nonzero() == 0  # fraction 0 is the identity
+    with pytest.raises(ValueError, match="shape"):
+        external_shift(pop, {"CM": d[:-1]}, 0.5, {"V-CM": "CM"})
+    with pytest.raises(ValueError, match="finite"):
+        external_shift(pop, {"CM": d}, float("nan"), {"V-CM": "CM"})
+
+
+def test_build_submission_moves_mapped_cells_by_direction_and_the_rest_by_momentum():
+    start, ref = make_stage(40), make_stage(41, boost=("V-CM", "g1", 4.0))
+    board = t1_board(GENES[::-1], min_cells=100, max_cells=600)
+    dirs, groups = {"CM": _direction(g5=np.log(9.0))}, {"V-CM": "CM"}
+    plain, rep0 = build_submission(ref, board, SHARES, 400, seed=3, ref_source="")
+    sub, rep = build_submission(ref, board, SHARES, 400, seed=3, ref_source="", directions=dirs,
+                                direction_fraction=0.5, direction_groups=groups, held_flat=HELD)
+    assert rep["realised"] == rep0["realised"] and rep["shift"] is None and rep["external"]["fraction"] == 0.5
+    src = {r.tobytes() for r in ref[:, board.genes].X.toarray().astype(np.float32)}
+    labels = ref.obs["celltype"].to_numpy()
+    cats = {r["type"]: r for r in rep["external"]["rows"]}
+    assert cats["CM"]["n_target"] == round(400 * SHARES["cm"]) and cats["CM"]["labels"] == "V-CM"
+    unchanged = np.array([r.tobytes() in src for r in sub.X])
+    assert unchanged.sum() == 400 - cats["CM"]["n_target"]  # only the mapped cells moved (no momentum given)
+    g5 = board.genes.index("g5")
+    cm_ref = labels == "V-CM"
+    m_ref = np.expm1(ref[:, board.genes].X.toarray()[cm_ref, g5]).mean()
+    assert np.expm1(sub.X[~unchanged, g5].astype(np.float64)).mean() / m_ref == pytest.approx(3.0, rel=0.15)
+    both, rep2 = build_submission(ref, board, SHARES, 400, seed=3, ref_source="", start=start, start_source="",
+                                  damping=0.5, directions=dirs, direction_fraction=0.5, direction_groups=groups,
+                                  held_flat=HELD)
+    shifted = {r["type"] for r in rep2["shift"]["rows"]}
+    assert "cm" not in shifted and "endocardium" in shifted  # momentum moved only the cells without a direction
+    assert {r["type"] for r in rep2["external"]["rows"]} == {"CM", "(no direction)"}
+    with pytest.raises(ValueError, match="direction_groups"):
+        build_submission(ref, board, SHARES, 400, seed=3, ref_source="", directions=dirs, direction_fraction=0.5)
 
 
 def test_build_submission_passes_the_format_check(tmp_path, own_repo):
