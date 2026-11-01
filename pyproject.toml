@@ -32,6 +32,11 @@ dev = [
     "pytest>=8.3",
     "ruff>=0.7",
 ]
+# R data reader for the clean Feng reduction from GEO (experiments/external/feng2022_geo.py), DGX only:
+# `uv run --group external ...`
+external = [
+    "rdata>=1.1",
+]
 # GPU stack, synced only on the DGX: `uv sync --group gpu [--group jax]`
 gpu = [
     "geomloss>=0.3.1",

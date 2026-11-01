@@ -28,6 +28,22 @@ feng2022:
       from cd1_E9.5_E14.5_counts.npz instead, and later stages only as the group statistics in cd1_stats.npz
   dst: data/external/feng2022_gse193346
 
+feng2022_geo:
+  # The clean reduction from the raw GEO files (feat-007), by experiments/external/feng2022_geo.py; the captain's
+  # go-ahead 2026-11-01 (the download holds E10.5-E13.5 cells, dropped before anything is written; raw files deleted).
+  citation: >-
+    Feng W, Bais A, He H, et al. Single-cell transcriptomic analysis identifies murine heart molecular features at
+    embryonic and neonatal stages. Nat Commun 13:7960 (2022). doi:10.1038/s41467-022-35691-7
+  accession: GEO GSE193346 (GSE193346_CD1_metadata.csv.gz, GSE193346_CD1_seurat_object.rds.gz)
+  urls:
+    metadata: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE193nnn/GSE193346/suppl/GSE193346_CD1_metadata.csv.gz
+    seurat: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE193nnn/GSE193346/suppl/GSE193346_CD1_seurat_object.rds.gz
+  keep: stage E9.5, or stage E14.5 and later (per-cell stage column); strain CD1 (feng2022.py's rule)
+  tasks: [T1]
+  raw_dir: data/external/_raw_feng2022
+  dst: data/external/feng2022_gse193346_geo
+  compare_with: data/external/feng2022_gse193346
+
 jax_qiu2024:
   citation: >-
     Qiu C, Martin BK, Welsh IC, et al. A single-cell time-lapse of mouse prenatal development from gastrula to birth.
