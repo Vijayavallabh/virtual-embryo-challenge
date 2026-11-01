@@ -137,7 +137,8 @@ validation boards.
    never counts, so T3 changes are judged on the two cross-knockout folds; on T1 the tissue mix is a premise (the
    organisers' E12.5 dissection note), so same-scope candidates are judged on both the whole and the chamber-cut E10.5
    truth, and a change of tissue mix (D2: B0 against the floor) on the chamber-cut truth alone, with the whole-E10.5
-   score reported.
+   score reported. Added the same day (a fifth "yes for all"): a pseudo-task the base cannot run on is not counted
+   either (`vec.harness.decide`, "base does not apply").
 
 ## 4. Board plans
 
@@ -187,6 +188,11 @@ Validation: predict E10.5 from E8.5 and E9.5 (plus legal external data), scored 
 fraction t ≈ 0.2-0.235 there versus ≈ 0.5 at test, so prefer parameters with a physical meaning (time fractions,
 shrinkage) over free knobs. After the release, re-run the composition pseudo-task with E10.5 as the reference and
 commit the s1/s2 rule before any upload.
+
+2026-11-01 (the captain, a fifth "yes for all"): s1 keeps E10.5's own chamber mix, cardiomyocytes at 26.5% of heart
+cells, which supersedes the 58% and 70% below (set before E10.5 existed): the same nuclei assay at E10.5 has 26.5%, and
+Feng's own share barely moves from E9.5 to E14.5 (carried at 2/5 onto E10.5 it gives about 20-24%). The s2 hedge is
+chosen at the s2 pre-registration.
 
 Submissions: s1 = M1 with cardiomyocytes at about 58% of heart cells; s2 = identical except about 70% (the hedge
 belongs on the cardiomyocyte share; expected best-of-two gain ~1.1-1.4 points). Both shares are refit on E10.5 and the
@@ -244,7 +250,10 @@ ahead in 10 of 10 seeds. FGW gains on the expression metrics (de_direction 0.70,
 and loses on shape on E7.5 (d2 0.37, Dice 0.39, below a copy), where E8.0's sampling differs from E7.25's and
 E7.5's; on E7.25 its shape gains and its variogram falls (0.28). The adoption rule keeps psb_size over
 pseudobulk_shift (+1.86, 1 of 2 tasks) and fgw over B0 (2 of 2); fgw over psb_size is "incomplete" only because the
-base cannot run on E7.25 (no stage before E6.75), a reading put to the captain.
+base cannot run on E7.25 (no stage before E6.75), a reading put to the captain. He approved it (2026-11-01, a fifth
+"yes for all"): fgw is kept over psb_size (+2.29) and pseudobulk_shift (+4.15), decided on E7.5 (1 of 2), and over B0
+on both; **the embryo entry is fgw** (s1; `experiments/builds/build_test.py embryo --method fgw`). The s2 hedge
+(shape: interpolated or copied) is chosen at the s2 pre-registration.
 
 Submissions: s1 central clock; s2 alternative clock or the nearest-stage variant (E8.0 tissue shrunk to the predicted
 size, mixture expression).
@@ -708,3 +717,6 @@ open. No organiser reply to any of the four emails as of then.
   E14.5 (89.5% to 85.5% of heart cells without fibroblast-like cells, to 77% with them), so carrying its log-odds
   change at 2/5 onto E10.5's 26.5% gives about 20-24%, not the planned 58%. Put to the captain: count only the
   pseudo-tasks where both candidates run (so fgw can replace psb_size); the s1 cardiomyocyte share.
+- 2026-11-01 (h): a fifth "yes for all": a pseudo-task the base cannot run on is not counted (section 3, item 8), so
+  fgw is kept and is the embryo entry (section 4.2); the s1 cardiomyocyte share stays at E10.5's own, 26.5% of heart
+  cells (section 4.1); the seven commits were pushed (8fca1cf..6a90a93).

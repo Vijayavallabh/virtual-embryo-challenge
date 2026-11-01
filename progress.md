@@ -232,6 +232,10 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       pre-registered size, embryo pseudobulk_shift or fgw with the pre-registered size; dry runs against the
       validation boards passed their checks on the DGX (seed 1,000,001) and were deleted. Feng's E9.5 -> E14.5
       cardiomyocyte share: 89.5% -> 85.5% of heart cells (77% counting fibroblast-like cells).
+- [x] 2026-11-01, the captain's fifth "yes for all": a pseudo-task the base cannot run on is not counted
+      (`vec.harness.decide`, "base does not apply"; test with a mutation check), so fgw is kept over psb_size (+2.29)
+      and pseudobulk_shift (+4.15) on E7.5 (1 of 2) and over B0 on both: **the embryo entry is fgw**. The s1
+      cardiomyocyte share stays at E10.5's own (26.5% of heart cells). Pushed 8fca1cf..6a90a93.
 
 ### What's Next
 

@@ -6,17 +6,18 @@
    "base": "psb_size",
    "change": "fgw",
    "counted": [
-    "T2e/E7.25+E8.0->E7.5",
-    "T2e/E6.75+E7.5->E7.25"
+    "T2e/E7.25+E8.0->E7.5"
    ],
-   "excluded": {},
+   "excluded": {
+    "T2e/E6.75+E7.5->E7.25": "base does not apply"
+   },
    "configured": [
     "T2e/E7.25+E8.0->E7.5",
     "T2e/E6.75+E7.5->E7.25"
    ],
-   "decided_on": "2 of 2 configured pseudo-tasks",
-   "keep": false,
-   "reason": "incomplete pseudo-tasks: ['T2e/E6.75+E7.5->E7.25']",
+   "decided_on": "1 of 2 configured pseudo-tasks",
+   "keep": true,
+   "reason": "passes on 1 of 1 pseudo-tasks (needs 1) and loses on none",
    "tasks": {
     "T2e/E7.25+E8.0->E7.5": {
      "complete": true,
@@ -24,25 +25,9 @@
      "seeds_ahead": 10,
      "passes": true,
      "vetoes": false
-    },
-    "T2e/E6.75+E7.5->E7.25": {
-     "complete": false,
-     "missing_seeds": [
-      0,
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7,
-      8,
-      9
-     ],
-     "non_finite_seeds": []
     }
    },
-   "need": 2,
+   "need": 1,
    "passed": 1
   }
  ],
