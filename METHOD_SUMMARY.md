@@ -5,10 +5,10 @@ decisions that mattered, what was trained on what, enough detail to understand w
 Generality Award is judged on this summary. Keep it current as methods change; every claim should point to a run in
 `results/registry.csv` or an experiment report in `experiments/*/REPORT.md`.
 
-Status 2026-10-28: methods are pre-registered on released training data; no test submission exists yet. The final phase
-opened on 2026-10-27 (postponed by the organisers from 2026-10-20), and the team unlocked the P2 validation answers on
-2026-10-28 (Data provenance, below). Sections marked _planned_ describe the committed plan (`docs/PLAN.md` v1.2), not
-results.
+Status 2026-11-01: the entry for each board is chosen (below) and built end to end; no test submission exists yet (the
+test boards' specs wait on the board intake, not before 2026-11-04). The final phase opened on 2026-10-27, and the team
+unlocked the P2 validation answers on 2026-10-28 (Data provenance, below). Each change was kept only if it passed the
+adoption rule on pseudo-tasks built from released stages (Shared machinery), unless a pre-registered rule decided it.
 
 ## Team and track
 
@@ -44,8 +44,10 @@ the work.
   and weights, the T2 structure gate, 10% working copies and split-half ceilings, several seeds. Two scorer builds:
   `main` for comparing candidates, `prefix` (veckit 0.1.1 canonicalisation) to reproduce live scores.
 - **Real cells, count-space edits:** predictions are built from real released cells; expression changes are applied by
-  binomial thinning or Poisson top-up on recovered integer counts, then renormalised to log1p CP10k. No decoded means,
-  no additive log-space deltas (they break the sparsity-driven variogram).
+  binomial thinning or Poisson top-up on recovered integer counts, then renormalised to log1p CP10k, or not at all (the
+  embryo entry places unedited real cells). No decoded means. The captain allowed additive log-space edits on the
+  embryo board (2026-11-01), where the organisers' pseudobulk_shift beat our count-space B0; the chosen embryo entry
+  does not use them.
 - **Label harmonisation** (`vec.harmonise`): logistic regression on 50 PCs of the shared panel, group probabilities
   summed from fine labels, depth matching; cross-file compositions quoted as a top-call/EM bracket
   (`experiments/harmonise/REPORT.md`).
@@ -60,34 +62,54 @@ the work.
   code was unchanged from the build's start to the write); an upload is accepted only with a matching clean stamp,
   and the submission ledger records the building commit of every file sent.
 
-## Task 1: temporal (E12.5) — _planned_
+## Task 1: temporal (E12.5) — M1
 
-- **Scope first.** E12.5 is a heart-chamber-only dissection; re-weighting real E10.5 cells to a chamber-only composition
-  is the largest single lever: in an E8.5 -> E9.5 pseudo-task on released data, re-weighting to the target's exact
-  category shares gained about +31 points over copying the earlier stage (an upper bound, since the E12.5 shares must be
-  chosen; `experiments/t1_scope/results/`). The cardiomyocyte share is the main unknown and the hedge between the two
-  submissions; there, a share 10 points too high cost about 3 points and 10 points too low under 1.
-- **Per-type count-space shifts.** Direction from within-dataset fold changes of legal external chamber data (Feng 2022:
-  E9.5 and E14.5 onward) if a pre-registered readout on the E9.5 -> E10.5 transition shows it beats cross-fitted
-  momentum; damped internal momentum otherwise. Sex-linked and strain-polymorphic genes are held flat.
-- **Emergent populations** by the legal route (classes present in legal E14.5+ data but absent at E10.5), pending the
-  organisers' answer about qualitative background.
-- Training data: released T1 E8.5, E9.5, E10.5; Feng 2022 legal stages (X002). JAX/Qiu 2024 for diagnostics only (X003).
+- **Scope.** E12.5 is a heart-chamber-only dissection, so the entry draws real E10.5 cells to E10.5's own composition
+  restricted to the chamber categories (`configs/t1_chamber_classes.yaml`): blood 24% of chamber cells, cardiomyocytes
+  26.5% of heart cells (the captain's choices of 2026-11-01). E10.5 is the same nuclei assay on dissected hearts; the
+  earlier stages were embryo portions, and their compositions do not transfer (blood 1.25% at E9.5; cardiomyocytes 66%
+  of heart cells). Legal external data agree on not raising the cardiomyocyte share: Feng's own share barely moves from
+  E9.5 to E14.5. The s2 hedge (blood or cardiomyocyte share) is fixed at the s2 pre-registration.
+- **Direction.** Cells of the groups Feng 2022 profiles (cardiomyocytes, endocardium, endothelium, epicardium) move in
+  count space along Feng's within-dataset E9.5 -> E14.5 log ratio of mean CP10k, scaled by the step's share of that
+  bracket (E10.5 -> E12.5: 2/5); the other cells (blood, mostly) move by half the E9.5 -> E10.5 per-type change. A
+  pre-registered readout on the E9.5 -> E10.5 transition chose Feng over cross-fitted momentum (de_score +0.175,
+  de_direction +0.188, cardiomyocyte sign agreement 0.91; `experiments/t1_direction/results/E10.5/`), and the captain
+  ruled that this check governs the direction, since no T1 pseudo-task can judge it (Feng's E9.5 cells lie inside each
+  one's external window). A labelled end-to-end diagnostic in the readout's geometry: +1.29 and +1.09 board points over
+  B0, 10 of 10 seeds (`experiments/t1_m1/results/diag_v1/`). Sex-linked, Y-linked and strain-variable genes are held
+  flat (a list fixed from E8.5 and E9.5 before E10.5 was released).
+- **What the T1 scorer rewards.** On the released E9.5 -> E10.5 transition the changed genes are mostly highly
+  expressed genes going down, which de_score's expression-magnitude null names 39-41% of; a copy names 11%
+  (`experiments/harness/results/t1_de_v1/`). Direction quality is what moves de_score above its floor.
+- **Emergent populations:** none in the entry (the organisers have not answered on qualitative background).
+- Training data: released T1 E8.5, E9.5, E10.5; Feng 2022 E9.5 and E14.5 CD1 hearts (X002), reduced from GEO by
+  committed code that drops E10.5-E13.5 cells before anything is written. JAX/Qiu 2024 for diagnostics only (X003).
 
-## Task 2: spatial-temporal (heart E12.5, embryo E7.75) — _planned_
+## Task 2: spatial-temporal (heart E12.5, embryo E7.75)
 
-- **Heart E12.5:** real E10.5 tissue (synthetic records dropped), sampled at random to the pre-registered count (the
-  board's maximum cell count unless the release-day density rerun picks a lower level by a rule fixed in advance,
-  never below the board's lower limit; `vec.t2_build.n_cells_from_decision`);
-  damped composition trends on harmonised merged lineages; coordinates grown by the pre-registered size procedure
-  (core = cardiomyocytes + endocardium; growth from E9.5 -> E10.5 only; a fixed three-rule average justified without an
-  assumed rate; z held at E10.5 when the sectioning plane matches); two scope hypotheses as the two submissions.
-- **Embryo E7.75:** interpolation between E7.5 and E8.0 (fused Gromov-Wasserstein coupling, proper-rotation alignment,
-  displacement interpolation at a calibrated clock), size from a PCHIP curve through the released embryo stages.
+- **Heart E12.5 — B0 with the pre-registered size:** real E10.5 tissue (synthetic records dropped), sampled at random
+  to the pre-registered count (the board's maximum unless the release-day density rerun picks a lower level by a rule
+  fixed in advance; `vec.t2_build.n_cells_from_decision`), moved in count space by half the E9.5 -> E10.5 change of
+  each harmonised lineage; coordinates grown by the pre-registered size procedure (core = cardiomyocytes +
+  endocardium; growth from E9.5 -> E10.5 only; a fixed three-rule average justified without an assumed rate; z held at
+  E10.5 when the sectioning plane matches); the two submissions are the two scope hypotheses (H1, H2). E10.5's
+  composition is held: E9.5 and earlier were embryo portions and E10.5 a dissected heart, so a composition trend through
+  them would carry that change of sampling on to E12.5 (dropped by the captain, 2026-11-01). On the pseudo-tasks B0
+  beats a copy (+0.47, +0.90) and the floor (+0.43, +1.45); the size cannot be backtested.
+- **Embryo E7.75 — displacement interpolation (FGW):** a balanced fused Gromov-Wasserstein coupling of 2,000 cells per
+  bracket (E7.5, E8.0) on 30 expression principal components and within-cloud distances (structure weight 0.5), the
+  proper rotation that maps one bracket onto the other under the coupling, every cell moved by its nearest anchors'
+  displacements t (or 1 - t) of the way, at the nominal time fraction t = 1/2; the population is a mixture of
+  unedited real cells of both brackets (half each), scaled to the pre-registered embryo size (PCHIP of log RMS radius
+  through the released embryo stages). On the pseudo-tasks: 61.12 on E7.5 against 56.97 for the organisers'
+  pseudobulk_shift and 58.83 for it with the size rule, and 58.78 on E7.25 against 53.86 for B0, every gap ahead in
+  10 of 10 seeds (`experiments/harness/results/emb_fgw_v1/`). It loses on shape on E7.5, where E8.0's sampling differs;
+  the s2 hedge (interpolated or copied shape) is fixed at the s2 pre-registration.
 - **Spatial hygiene:** random rows only, jitter of at most 0.25 nearest-neighbour distances to break duplicate
   coordinates, proper rotations only, native coordinates (`experiments/density/REPORT.md`, `experiments/coords/REPORT.md`).
 
-## Task 3: perturbation (beta-catenin KO, E8.75) — _planned_
+## Task 3: perturbation (beta-catenin KO, E8.75) — pre-registered
 
 - **Per-gene factor first.** On the released Mab21l2 knockout, the response is mostly one per-gene factor shared by every
   cell type: estimated from non-Mesp1 compartments and applied to all wild-type cells it scored 80.5 against 50.8 for
@@ -103,6 +125,11 @@ the work.
   only if the organisers confirm it (2026-10-28: the team reads the final-phase Rules s.10 as allowing it and has asked
   them to confirm; until they answer, both versions are built, with and without the Gata4 files). The rules were
   drafted with an AI assistant and reviewed and approved by the team before any Gata4 file was downloaded.
+- **Outcome (2026-10-28, run once):** the Gata4 replicates transfer to each other, the Mab21l2 factor does not transfer
+  to Gata4. s1 = the allowed branch's first submission; s2 = the refused branch's first (wild-type cells, the central
+  composition at the Mab21l2 magnitude, no number from the Gata4 files), uploaded first (approved 2026-11-01). The
+  harness gives these entries no verdict (every fold is one they were selected or fitted on); they stand on the
+  pre-registered rules.
 
 ## Shared architecture (Generality Award)
 
@@ -116,9 +143,10 @@ _Planned claim_: the summary will ask to be considered for the award unless deci
     depth change);
   - write log1p CP10k.
 
-  The planned steps go into the same module: coupling and displacement interpolation between bracketing stages (T2
-  embryo, the T1 external bracket), births from a legal source (T1), and leave-one-transition-out calibration of the
-  few shrinkage parameters.
+  - couple two populations with positions and move cells between them (fused Gromov-Wasserstein, a proper rotation
+    under the coupling, barycentric partners, nearest anchors; added 2026-11-01 for the T2 embryo).
+
+  Births from a legal source and leave-one-transition-out calibration are not in the entries.
 - **Task heads** (what differs):
   - T1 (`vec.t1_scope`): the 32,285-gene encoder, chamber categories and target shares, and the direction (momentum or
     external).
