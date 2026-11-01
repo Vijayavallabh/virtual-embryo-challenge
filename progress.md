@@ -299,6 +299,9 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       the payoffs' trim by tests). On board score it beats H2 as built as an s2 on all three transitions (uniform
       +0.95, +3.39, +5.52); on the released targets alone it adds +0.00, +2.04 and +1.57 against H2's +0.00,
       +0.58 and +0.42.
+      Dry run on the DGX at 8031d9c (`build_test.py heart --entry s2_trim --board T2:heart:val_extrap`, file
+      deleted afterwards): the trim keeps 80% of E10.5's cells, the in-plane scope goes 0.210 -> 0.105, the
+      size step reaches H2's 560.5 full RMS (in-plane x1.49, z held), and the guard and checks pass.
 
 ### What's Next
 
