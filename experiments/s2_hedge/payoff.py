@@ -258,6 +258,26 @@ def run_t1_grid(seeds, part: tuple[int, int], out: Path, data_dir: Path) -> dict
 HEART_TASK = "T2h/<=E9.5->E10.5"
 HEART_PREDS = ("hold", "half_size", "half_radial", "half_thin", "core_radial")
 HEART_TRUTHS = ("own", "radial_0.5", "radial_0", "thin_0.5", "thin_0")
+# PLAN 4.3 step 5's second released transition, defined here as a diagnostic (adoption false; not in the harness
+# config). E8.25_late predicts E8.5 on a synthetic board that borrows the heart interpolation board's gene panel. No
+# earlier stage is an input, so the predictions are copies (no momentum); step 5 reads only d2 and Dice, which the
+# coordinates set.
+HEART_EXTRA_TASKS = {
+    "T2h/E8.25_late->E8.5": {"key": "T2h/E8.25_late->E8.5", "test_board": "T2:heart:test_extrap", "task": "T2",
+                             "kind": "extrap", "setting": "heart", "target": "T2/E8.5.h5ad",
+                             "reference": "T2/E8.25_late.h5ad", "inputs": {"ref": "T2/E8.25_late.h5ad"},
+                             "twin_board": "T2:heart:val_interp", "adoption": False},
+}
+
+
+def heart_task(key: str):
+    """A heart pseudo-task from the harness config, or one of HEART_EXTRA_TASKS (checked by the harness's rules)."""
+    tasks = {x.key: x for x in harness.load_tasks()["T2:heart:test_extrap"]}
+    if key in tasks:
+        return tasks[key]
+    if key in HEART_EXTRA_TASKS:
+        return harness.check_task(harness.PseudoTask(**HEART_EXTRA_TASKS[key]))
+    raise SystemExit(f"unknown heart task {key!r}; one of {sorted(tasks) + sorted(HEART_EXTRA_TASKS)}")
 
 
 def xy_rms(C: np.ndarray) -> float:
@@ -300,8 +320,8 @@ def trim_mask(C: np.ndarray, core: np.ndarray, frac: float, mode: str, rng: np.r
     return keep_after(lo)
 
 
-def run_heart(seeds, out: Path, data_dir: Path) -> dict:
-    t = {x.key: x for x in harness.load_tasks()["T2:heart:test_extrap"]}[HEART_TASK]
+def run_heart(seeds, out: Path, data_dir: Path, task: str = HEART_TASK) -> dict:
+    t = heart_task(task)
     boards = load_boards()
     genes = boards[t.panel_board].genes
     ta = read_stage(data_dir / t.target, genes)
@@ -337,6 +357,7 @@ def run_heart(seeds, out: Path, data_dir: Path) -> dict:
                            "xy_scope": xy_scope(PC[keep], pcore[keep])}
     base_board = harness.task_board(t, boards, truths["own"][0].n, ref_stage.n)
     view, cboard = harness.TaskView.of(t), harness._candidate_board(base_board)
+    builder = "b0" if "start" in inputs else "copy"  # B0's momentum needs an earlier stage
     rows_out = []
     for s in seeds:
         t0 = time.time()
@@ -344,7 +365,7 @@ def run_heart(seeds, out: Path, data_dir: Path) -> dict:
         for name in HEART_PREDS:
             ctx = harness.BuildContext(task=view, board=cboard, inputs={**inputs, "ref": pools[name]},
                                        seed=harness.BUILD_SEED_OFFSET + s)
-            st = harness._b0_t2(ctx)
+            st = harness._b0_t2(ctx) if builder == "b0" else harness._copy(ctx)
             C = np.asarray(st.coords, dtype=float).copy()
             c = C[:, :2].mean(0)
             f = f_core * (np.exp(-0.5 * s_pool) if name == "half_size" else 1.0)
@@ -367,7 +388,7 @@ def run_heart(seeds, out: Path, data_dir: Path) -> dict:
         print(f"heart-scope seed {s} ({row['seconds']} s): " + "; ".join(
             f"truth {q}: " + ", ".join(f"{p} {v:.2f}" for p, v in sc.items()) for q, sc in row["scores"].items()),
             flush=True)
-    res = {"label": LABEL, "axis": "heart-scope", "category": "scope", "task": t.key,
+    res = {"label": LABEL, "axis": "heart-scope", "category": "scope", "task": t.key, "builder": builder,
            "pred_values": list(HEART_PREDS), "truth_values": list(HEART_TRUTHS),
            "truth_info": {q: i for q, (_, i) in truths.items()}, "pred_info": pred_info,
            "pool_xy_scope": s_pool, "oracle_core_xy_factor": f_core, "truth_seed": TRUTH_SEED,
@@ -386,9 +407,9 @@ def provenance() -> dict:
 
 def summarise(runs: list[Path], out: Path) -> dict:
     parts = [json.loads(p.read_text()) for d in runs for p in sorted(Path(d).glob("*.json"))]
-    axes = {p["axis"] for p in parts}
-    if len(axes) != 1:
-        raise SystemExit(f"runs mix axes {sorted(axes)}")
+    axes, tasks = {p["axis"] for p in parts}, {p["task"] for p in parts}
+    if len(axes) != 1 or len(tasks) != 1:
+        raise SystemExit(f"runs mix axes {sorted(axes)} or tasks {sorted(tasks)}")
     commits = {p["provenance"]["commit"] for p in parts}
     if len(commits) != 1 or not all(p["provenance"]["tree_clean"] for p in parts):
         raise SystemExit(f"runs come from different commits or a dirty tree: {sorted(commits)}")
@@ -505,6 +526,37 @@ def hedge(runs: list[Path], s1: str, out: Path | None = None) -> dict:
     return res
 
 
+STEP5_D2_GAIN = 0.15  # docs/PLAN.md 4.3 step 5: >= 0.15 d2 skill, Dice not lowered, on both released transitions
+
+
+def step5(runs: list[Path], out: Path | None = None) -> dict:
+    """PLAN 4.3 step 5's bar for each scope prediction against hold on the released target (truth "own"): the mean
+    gain in d2_shape skill (at least 0.15) and in occupancy_dice skill (not below 0), paired by seed."""
+    parts = [json.loads(q.read_text()) for d in runs for q in sorted(Path(d).glob("heart-scope.json"))]
+    tasks = {p["task"] for p in parts}
+    if len(tasks) != 1:
+        raise SystemExit(f"runs mix tasks {sorted(tasks)}")
+    rows = sorted((r for p in parts for r in p["rows"]), key=lambda r: r["seed"])
+    sk = [r["skills"]["own"] for r in rows]
+    res = {"task": tasks.pop(), "seeds": [r["seed"] for r in rows], "d2_gain_bar": STEP5_D2_GAIN, "preds": {}}
+    lines = [f"PLAN 4.3 step 5 on {res['task']} (the target as released; {len(rows)} seeds): mean gain over hold in "
+             "skill (seeds ahead)"]
+    for p in parts[0]["pred_values"][1:]:
+        d2 = np.array([s[p]["d2_shape"] - s["hold"]["d2_shape"] for s in sk])
+        dice = np.array([s[p]["occupancy_dice"] - s["hold"]["occupancy_dice"] for s in sk])
+        ok = bool(d2.mean() >= STEP5_D2_GAIN and dice.mean() >= 0)
+        res["preds"][p] = {"d2_gain": float(d2.mean()), "d2_ahead": int((d2 > 0).sum()),
+                           "dice_gain": float(dice.mean()), "dice_ahead": int((dice > 0).sum()), "passes": ok}
+        lines.append(f"{p:>12s}  d2 {d2.mean():+.3f} ({(d2 > 0).sum()}/{len(d2)})  dice {dice.mean():+.3f} "
+                     f"({(dice > 0).sum()}/{len(dice)})  {'passes' if ok else 'fails'}")
+    print("\n".join(lines))
+    if out is not None:
+        out.mkdir(parents=True, exist_ok=True)
+        (out / "step5.json").write_text(json.dumps(res, indent=1, default=float))
+        (out / "step5.txt").write_text("\n".join(lines) + "\n")
+    return res
+
+
 def parse_seeds(text: str) -> tuple[int, ...]:
     lo, _, hi = text.partition("-")
     return tuple(range(int(lo), int(hi) + 1)) if hi else tuple(int(x) for x in text.split(","))
@@ -525,8 +577,12 @@ def main(argv=None) -> None:
     p.add_argument("--data", default=str(harness.DATA_DIR))
     p = sub.add_parser("heart-scope")
     p.add_argument("--seeds", default="0-9")
+    p.add_argument("--task", default=HEART_TASK, help="a heart pseudo-task key, or one of HEART_EXTRA_TASKS")
     p.add_argument("--out", required=True)
     p.add_argument("--data", default=str(harness.DATA_DIR))
+    p = sub.add_parser("step5")
+    p.add_argument("--runs", nargs="+", required=True)
+    p.add_argument("--out")
     p = sub.add_parser("hedge")
     p.add_argument("--runs", nargs="+", required=True)
     p.add_argument("--s1", required=True, help="the prediction label that stands for s1 (e.g. own, bown_cown, hold)")
@@ -546,7 +602,10 @@ def main(argv=None) -> None:
         run_t1_grid(parse_seeds(a.seeds), (int(k), int(n_)), Path(a.out), Path(a.data))
         return
     if a.cmd == "heart-scope":
-        run_heart(parse_seeds(a.seeds), Path(a.out), Path(a.data))
+        run_heart(parse_seeds(a.seeds), Path(a.out), Path(a.data), a.task)
+        return
+    if a.cmd == "step5":
+        step5([Path(r) for r in a.runs], Path(a.out) if a.out else None)
         return
     run_t1(a.cmd, parse_seeds(a.seeds), Path(a.out), Path(a.data))
 

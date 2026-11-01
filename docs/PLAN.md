@@ -729,3 +729,9 @@ open. No organiser reply to any of the four emails as of then.
 - 2026-11-01 (h): a fifth "yes for all": a pseudo-task the base cannot run on is not counted (section 3, item 8), so
   fgw is kept and is the embryo entry (section 4.2); the s1 cardiomyocyte share stays at E10.5's own, 26.5% of heart
   cells (section 4.1); the seven commits were pushed (8fca1cf..6a90a93).
+- 2026-11-02: the captain delegated decisions to the AI assistant: "You have my full approval over decisions that
+  would maximize our chances of finishing at the top of the leaderboard." From then on, rulings this plan leaves to
+  the captain, and the s2 rules, are the assistant's. Each is noted here as "decided by the AI assistant under the
+  captain's delegation of 2026-11-02", with a plain summary to the captain, who can overrule it. Unchanged: the
+  Official Rules and `docs/DATA_POLICY.md`; the captain's explicit go-ahead for every official upload and every
+  final-entry mark (AGENTS.md); push approval.

@@ -445,6 +445,9 @@ scorer reproduces every published validation anchor exactly. The release-day rul
 ## Decisions Made
 
 - **Human Team track only** (user, 2026-10-18).
+- **Decision delegation** (captain, 2026-11-02): rulings left to the captain and the s2 rules are now the AI
+  assistant's, each noted as such with a plain summary; official uploads, final-entry marks and pushes still
+  need the captain's go-ahead (docs/PLAN.md decision log).
 - **Python 3.12; torch 2.14 cu130; veckit pinned to git main cc3859a.**
 - **No mouse single-cell foundation models** (in-window contamination). **No gene-level T3 knockout literature.**
 - **Heart size only from the pre-registered training-stage procedure** (docs/PLAN.md section 4.3).
