@@ -32,13 +32,15 @@ Refusals (exit status 2): an unknown branch or submission; a decision file whose
 t3_decompose.py / rules.yaml on disk (--allow-hash-mismatch overrides and is recorded); a decision file from a
 non-registered protocol (--allow-unregistered-protocol); a stored submissions table that the rules on disk do not
 reproduce; a factor file whose sha256 differs from its record; a WT or stage file that differs from the one the run
-recorded; a board that is not T3; a cell count outside the board's limits.
+recorded; a board that is not T3; a cell count outside the board's limits; a build seed below
+vec.harness.BUILD_SEED_OFFSET (docs/P3_RUNBOOK.md section 5: never seed 0).
 
 Commands (DGX, repository root; competition data and built files stay there):
 
   uv run python experiments/t3_decomp/build_submission.py build DECISIONS.json --branch allowed --submission s1 \\
       --wt data/raw/T2/E8.75.h5ad --run-dir runs/t3_decomp/gata4_<STAMP> --board <T3 board key> \\
-      --n-cells <the board's max_cells> --out runs/t3_build/<name>.h5ad
+      --seed 1000001 --out runs/t3_build/<name>.h5ad
+  (--n-cells defaults to "max", the board's max_cells read in code and never printed: the approved count)
   ... plan DECISIONS.json [--out FILE]     both submissions of every branch as `build` would make them, with the
                                            notes applied; reads only the decision file
   ... factors --preset mab21l2 --out DIR   per-gene factors written by t3_decompose's own code for a decision file
@@ -707,11 +709,34 @@ def preflight(decision: Path, branch: str, submission: str, board, n_cells: int,
     if board.task != "T3":
         raise Refused(f"board {board.key} is a {board.task} board")
     if n_cells < board.min_cells or (board.max_cells is not None and n_cells > board.max_cells):
-        raise Refused(f"--n-cells {n_cells} is outside the board's limits [{board.min_cells}, {board.max_cells}]")
+        raise Refused("--n-cells is outside the board's limits (values not shown: test board)" if board.counts_hidden
+                      else f"--n-cells {n_cells} is outside the board's limits [{board.min_cells}, {board.max_cells}]")
     if n_cells < 2000:
-        warnings.append(f"{n_cells} cells: fewer than the 2,000 the MMD draws (docs/PLAN.md section 3.3)")
+        warnings.append(("fewer than the 2,000 cells the MMD draws (count not shown: test board)" if board.counts_hidden
+                         else f"{n_cells} cells: fewer than the 2,000 the MMD draws") + " (docs/PLAN.md section 3.3)")
     return {"rules": rules, "dec": dec, "hashes": hashes, "spec": spec, "spec_info": spec_info, "preset": preset,
             "warnings": warnings}
+
+
+def resolve_n_cells(n_cells: str | int, board) -> int:
+    """--n-cells: "max" (the default) is the board's max_cells, the approved T3 count, read in code and never printed
+    or typed (a test board's limits can encode the held-out cell count); an integer is for tests and dry runs."""
+    if str(n_cells).strip().lower() in ("max", "max_cells"):
+        if board.max_cells is None:
+            raise Refused(f"board {board.key} publishes no max_cells; the approved T3 count is max_cells")
+        return int(board.max_cells)
+    try:
+        return int(n_cells)
+    except ValueError:
+        raise Refused("--n-cells takes 'max' or an integer") from None
+
+
+def count_label(n: int, board):
+    """A cell count as it may be shown: the number on validation and synthetic boards; on a test board "max_cells"
+    when it equals the board's max_cells, else "not max_cells" (values never shown)."""
+    if not board.counts_hidden:
+        return int(n)
+    return "max_cells" if board.max_cells is not None and int(n) == int(board.max_cells) else "not max_cells"
 
 
 def inputs_for(spec: dict, dec: dict, ref: Reference, run_dir: Path | None) -> tuple[dict, dict]:
@@ -727,11 +752,17 @@ def inputs_for(spec: dict, dec: dict, ref: Reference, run_dir: Path | None) -> t
 
 def build_submission(decision: Path, branch: str, submission: str, wt: Path, board, n_cells: int, out: Path,
                      run_dir: Path | None = None, preset: str | None = None, stage_paths_in: dict | None = None,
-                     seed: int = 0, allow_hash_mismatch: bool = False, allow_unregistered_protocol: bool = False,
-                     overwrite: bool = False, threads: int = 16) -> dict:
-    """Build one submission from the decision file; returns the sidecar (also written next to the file)."""
+                     seed: int = 1_000_001, allow_hash_mismatch: bool = False,
+                     allow_unregistered_protocol: bool = False, overwrite: bool = False, threads: int = 16) -> dict:
+    """Build one submission from the decision file; returns the sidecar (also written next to the file). The seed is
+    never below vec.harness.BUILD_SEED_OFFSET (docs/P3_RUNBOOK.md section 5: numpy's default_rng([s, 0]) is
+    default_rng(s), and the server draws its working copies with seed 0)."""
+    from vec.harness import BUILD_SEED_OFFSET
     from vec.io import check_submission, make_submission, write_submission
 
+    if int(seed) < BUILD_SEED_OFFSET:
+        raise Refused(f"build seed {seed} is below {BUILD_SEED_OFFSET} (docs/P3_RUNBOOK.md section 5: never build a "
+                      "test file at seed 0)")
     t0 = time.time()
     pf = preflight(decision, branch, submission, board, n_cells, preset, allow_hash_mismatch,
                    allow_unregistered_protocol)
@@ -778,8 +809,9 @@ def build_submission(decision: Path, branch: str, submission: str, wt: Path, boa
                    "stage_files": {n: {"path": str(p), "sha256": stage_sha[n]} for n, p in stage_paths.items()},
                    "board": {"key": board.key, "task": board.task, "n_genes": board.n_genes,
                              "genes_sha256": hashlib.sha256("\n".join(board.genes).encode()).hexdigest(),
-                             "min_cells": board.min_cells, "max_cells": board.max_cells},
-                   "n_cells": int(n_cells), "n_cells_recommended": board.max_cells, "seed": int(seed),
+                             **({"limits": "hidden (test board)"} if board.counts_hidden else
+                                {"min_cells": board.min_cells, "max_cells": board.max_cells})},
+                   "n_cells": count_label(n_cells, board), "seed": int(seed),
                    "rng_streams": [stream, f"{stream}:assemble"]},
         "construction": {"function": "t3_decompose.build",
                          "factor_exponent": kw["w"] if kw["phi"] is not None else None,
@@ -787,8 +819,11 @@ def build_submission(decision: Path, branch: str, submission: str, wt: Path, boa
                          {t: float(r) for t, r in zip(ref.V.labels, kw["ratio"], strict=True) if r != 1.0},
                          "stage_alphas": None if kw["alphas"] is None else
                          dict(zip([s.name for s in ref.stages], map(float, kw["alphas"]), strict=True)),
-                         "composition": info["composition"], **ainfo},
-        "output": {"h5ad": str(out), "sha256": sha256(out), "n_cells": int(X.shape[0]),
+                         "composition": info["composition"],
+                         **{k: (v if k != "cells_by_source" or not board.counts_hidden else
+                                {src: round(c / max(1, int(X.shape[0])), 4) for src, c in v.items()})
+                            for k, v in ainfo.items()}},
+        "output": {"h5ad": str(out), "sha256": sha256(out), "n_cells": count_label(X.shape[0], board),
                    "check": {"ok": rep.ok, "errors": rep.errors, "warnings": rep.warnings}},
         "warnings": warnings,
         "provenance": t3d.provenance({"wt": str(wt), "decision": str(decision)}),
@@ -815,12 +850,14 @@ def build(
     submission: str = typer.Option(..., help="s1 | s2"),
     wt: Path = typer.Option(..., help="WT reference (test: WT E8.75), loaded with drop_duplicates=True"),
     board: str = typer.Option(..., help="T3 board key in boards/ (gene panel, cell limits)"),
-    n_cells: int = typer.Option(..., help="number of cells (recommended: the board's max_cells)"),
+    n_cells: str = typer.Option("max", help="'max' (default): the board's max_cells, read in code and never "
+                                "printed (the approved count); an integer only for tests and dry runs"),
     out: Path = typer.Option(..., help="output .h5ad (the sidecar is the same name with .json)"),
     run_dir: Path = typer.Option(None, help="run directory holding factors/ (DGX only)"),
     preset: str = typer.Option(None, help="reference preset (default: the decision file's; barred branch only)"),
     stage: list[str] = typer.Option(None, help="NAME=PATH stage pool, needed only when stage mixing is on"),
-    seed: int = typer.Option(0, help="seed of the resampling and row order"),
+    seed: int = typer.Option(1_000_001, help="seed of the resampling and row order; never below "
+                             "vec.harness.BUILD_SEED_OFFSET (docs/P3_RUNBOOK.md section 5)"),
     boards_dir: Path = typer.Option(None, help="boards directory (default: the repository's boards/)"),
     allow_hash_mismatch: bool = typer.Option(False, help="build although the decision file's script/rules hashes "
                                              "differ from the files on disk (recorded)"),
@@ -832,7 +869,8 @@ def build(
     """Build submission s1 or s2 of one branch from the decision file."""
     try:
         b = board_spec(board, boards_dir)
-        s = build_submission(decision, branch, submission, wt, b, n_cells, out, run_dir=run_dir, preset=preset,
+        s = build_submission(decision, branch, submission, wt, b, resolve_n_cells(n_cells, b), out, run_dir=run_dir,
+                             preset=preset,
                              stage_paths_in=parse_pairs(stage, "--stage"), seed=seed,
                              allow_hash_mismatch=allow_hash_mismatch,
                              allow_unregistered_protocol=allow_unregistered_protocol, overwrite=overwrite,
@@ -856,7 +894,11 @@ def build(
     say(f"  composition {comp['kind']}" + (f", log2 magnitude {comp['log2_magnitude']:.3f}"
                                            if comp["kind"] != "none" else "")
         + "".join(f", {k} on" for k in EXTRAS if sp.get(k)))
-    say(f"  {s['output']['n_cells']} cells ({c['cells_by_source']}); board max_cells {b.max_cells}")
+    if b.counts_hidden:
+        say(f"  cells: {s['output']['n_cells']} (counts not shown: test board); sources "
+            f"{sorted(c['cells_by_source'])}")
+    else:
+        say(f"  {s['output']['n_cells']} cells ({c['cells_by_source']}); board max_cells {b.max_cells}")
     for w in s["warnings"]:
         say(f"  warning: {w}", "yellow")
     if s["hashes"]["mismatch"]:

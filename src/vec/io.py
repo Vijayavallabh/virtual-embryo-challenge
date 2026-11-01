@@ -102,7 +102,8 @@ def check_submission(path: str | Path, board: Board) -> CheckReport:
                               f"{len(extra)} extra (e.g. {extra[:5]})")
 
     if a.n_obs < board.min_cells or (board.max_cells is not None and a.n_obs > board.max_cells):
-        rep.errors.append(f"{a.n_obs} cells outside [{board.min_cells}, {board.max_cells}]")
+        rep.errors.append("the cell count is outside the board's limits (values not shown: test board)"
+                          if board.counts_hidden else f"{a.n_obs} cells outside [{board.min_cells}, {board.max_cells}]")
 
     X = dense(a.X)
     if not np.isfinite(X).all():
@@ -131,6 +132,12 @@ def check_submission(path: str | Path, board: Board) -> CheckReport:
                 if n_dup:
                     rep.warnings.append(f"{n_dup} cells repeat the exact coordinates of another cell (copied "
                                         "positions? kNN and shape metrics see them as zero-distance neighbours)")
-    if "celltype" in a.obs:
+    for k in board.obs_required:  # keys the board spec asks for (names, not values)
+        if k not in a.obs.columns:
+            rep.errors.append(f"obs['{k}'] is required by the board spec")
+    for k in board.obsm_required:
+        if k not in a.obsm:
+            rep.errors.append(f"obsm['{k}'] is required by the board spec")
+    if "celltype" in a.obs and "celltype" not in board.obs_required:
         rep.warnings.append("obs['celltype'] is ignored by the scorer; it is safe to drop")
     return rep

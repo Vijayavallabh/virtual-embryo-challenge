@@ -40,8 +40,8 @@ def boards():
     """List the known boards and their constraints."""
     t = Table("board", "task", "genes", "coords", "cells", "floor")
     for key, b in load_boards().items():  # site text: table cells are markup, so every one is escaped
-        t.add_row(*map(escape, [key, b.task, str(b.n_genes), str(b.needs_coords), f"{b.min_cells}-{b.max_cells}",
-                                str(b.floor_model or "-")]))
+        cells = "hidden (test board)" if b.counts_hidden else f"{b.min_cells}-{b.max_cells}"
+        t.add_row(*map(escape, [key, b.task, str(b.n_genes), str(b.needs_coords), cells, str(b.floor_model or "-")]))
     console.print(t)
 
 
@@ -156,12 +156,14 @@ def boards_update(
 @app.command()
 def check(pred: Path, board: str = typer.Option(..., help="board key, e.g. T1:val")):
     """Free format check of a prediction file (no scoring)."""
-    rep = check_submission(pred, get_board(board))
+    b = get_board(board)
+    rep = check_submission(pred, b)
     for w in rep.warnings:  # the messages quote the site's gene panel and the file's contents: never markup
         console.print(f"[yellow]warning[/] {escape(w)}")
     for e in rep.errors:
         console.print(f"[red]error[/] {escape(e)}")
-    console.print(f"{'[green]OK' if rep.ok else '[red]REJECTED'}[/] ({rep.n_cells} cells)")
+    count = ("max_cells" if rep.n_cells == b.max_cells else "count not shown") if b.counts_hidden else rep.n_cells
+    console.print(f"{'[green]OK' if rep.ok else '[red]REJECTED'}[/] ({count} cells)")
     raise typer.Exit(0 if rep.ok else 1)
 
 

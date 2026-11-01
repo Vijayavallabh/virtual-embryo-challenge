@@ -49,6 +49,7 @@ import json
 import subprocess
 import sys
 import time
+from dataclasses import replace
 from pathlib import Path
 
 import numpy as np
@@ -345,7 +346,9 @@ def run_heart(seeds, out: Path, data_dir: Path) -> dict:
             preds[name] = Stage(X=st.X, coords=C.astype(np.float32), celltype=st.celltype)
         row = {"seed": s, "scores": {}, "skills": {}}
         for q, (truth, _) in truths.items():
-            board = harness.task_board(t, boards, truth.n, ref_stage.n)
+            # the validation geometry's board (its published counts are the untrimmed files'), with the trimmed
+            # truth's own count: scoring reads the board's task and, for diagnostics only, truth_cells
+            board = replace(base_board, truth_cells=truth.n)
             fl = score_board(board, subsample(ref_stage, SUBSAMPLE_FRAC, s), truth, ref_stage, seed=s,
                              anchors="computed", build=harness.BUILD, protocol=harness.PROTOCOL)
             row["scores"][q], row["skills"][q] = {"floor": fl.score}, {"floor": fl.skills}

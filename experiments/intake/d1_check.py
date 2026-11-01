@@ -56,7 +56,10 @@ def family(board) -> str:
     return board.task if board.task in ("T1", "T3") else f"{board.task}:{board.setting}"
 
 
-def check(boards: dict) -> dict:
+def check(boards: dict, raw: dict | None = None) -> dict:
+    """raw: boards/index.json as parsed, for which limits are published (load_boards fills a null min_cells with its
+    default); without it the Board fields are used."""
+    raw = raw or {}
     leaking = [k for k, b in boards.items() if k not in VALIDATION_BOARDS and b.anchors]
     if leaking:  # test-board anchors encode hidden targets and are never read
         sys.exit(f"refused: {len(leaking)} non-validation board(s) still carry anchors; re-run the intake")
@@ -84,8 +87,13 @@ def check(boards: dict) -> dict:
             "present": True, "task": b.task, "setting": b.setting, "split": b.split, "target_ko": b.target_ko,
             "n_genes": b.n_genes, "needs_coords": b.needs_coords, "ref_cells": b.ref_cells,
             "floor_model": b.floor_model,
-            "published": {"min_cells": b.min_cells is not None, "max_cells": b.max_cells is not None,
-                          "truth_cells": b.truth_cells is not None},
+            "published": ({f: raw[key].get(f) is not None for f in ("min_cells", "max_cells", "truth_cells")}
+                          if key in raw else {"min_cells": b.min_cells is not None,
+                                              "max_cells": b.max_cells is not None,
+                                              "truth_cells": b.truth_cells is not None}),
+            "obs_required": b.obs_required, "obsm_required": b.obsm_required,
+            "required_as_builders_write": (b.obs_required == []
+                                           and b.obsm_required == (["spatial_3D"] if b.needs_coords else [])),
             "ref_stage_hits": hits, "expected_ref_stage": EXPECTED_REF[key], "A3": a3, "why": why,
             "genes_same_as_validation_twin": None if twin is None else b.genes == twin.genes,
             "genes_same_set_as_validation_twin": None if twin is None else set(b.genes) == set(twin.genes),
@@ -98,7 +106,7 @@ def main(argv=None) -> None:
     ap.add_argument("--boards-dir", type=Path, default=REPO_ROOT / "boards")
     ap.add_argument("--out", type=Path, default=REPO_ROOT / "experiments" / "intake" / "results")
     a = ap.parse_args(argv)
-    res = check(load_boards(a.boards_dir))
+    res = check(load_boards(a.boards_dir), json.loads((a.boards_dir / "index.json").read_text()))
     verdicts = {k: v["A3"] for k, v in res.items()}
     overall = ("pass" if all(v == "pass" for v in verdicts.values())
                else "fail" if "fail" in verdicts.values() else "unresolved")
@@ -109,7 +117,8 @@ def main(argv=None) -> None:
         f"  {k}: A3 {v['A3']} ({v['why']})" + (
             f"; cell limits and truth_cells published {v['published']} (values not shown), ref_cells {v['ref_cells']}, "
             f"{v['n_genes']} genes (same list as {VALIDATION_TWIN[k]}: {v['genes_same_as_validation_twin']}), "
-            f"coords {v['needs_coords']}, floor {v['floor_model']}" if v["present"] else "")
+            f"coords {v['needs_coords']}, floor {v['floor_model']}, obs_required {v['obs_required']}, obsm_required "
+            f"{v['obsm_required']} (as the builders write: {v['required_as_builders_write']})" if v["present"] else "")
         for k, v in res.items()]
     (a.out / "d1_check.txt").write_text("\n".join(lines) + "\n")
     print("\n".join(lines))

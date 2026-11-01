@@ -15,8 +15,12 @@ machine, and an official upload needs the captain's go-ahead.
           between E7.5 and E8.0 at t = 1/2; sized by the pre-registered embryo procedure (size_embryo_E7.75.json)
 
 The board is the test board from boards/ (after the intake, `vec boards update --from-file`); before that, --board
-may name a validation board for a dry run (the output name says so, and the file must never be uploaded). The build
-seed is never 0 (runbook section 5): default vec.harness.BUILD_SEED_OFFSET + 1.
+may name a validation board of the same task for a dry run, and the script refuses a dry run whose output file name
+does not contain "dry" (such a file must never be uploaded). The build seed is never 0 (runbook section 5): default
+vec.harness.BUILD_SEED_OFFSET + 1. T2 counts go through approved rule 7's committed decision
+(`t2_build.n_cells_from_decision`, runbook section 5), checked against the count the harness's builder draws. On a
+test board no cell count is printed or stored: the record says "max_cells" when the file holds the board's max_cells
+(the count rule) and refuses otherwise (red-team review 2026-10-31; s1 build review 2026-11-01).
 
 Usage (DGX, repo root, BLAS threads capped):
   uv run python experiments/builds/build_test.py t1 --out runs/builds/T1_s1.h5ad
@@ -42,6 +46,10 @@ sys.path.insert(0, str(REPO_ROOT / "experiments" / "t1_m1"))
 import feng_dirs  # noqa: E402
 
 TEST_BOARDS = {"t1": "T1:test", "heart": "T2:heart:test_extrap", "embryo": "T2:embryo:test_interp"}
+DRY_BOARDS = {"t1": {"T1:val"}, "heart": {"T2:heart:val_extrap", "T2:heart:val_interp"},
+              "embryo": {"T2:embryo:val_interp"}}
+COUNT_DECISION = REPO_ROOT / "experiments/density/results/release/count_decision.json"
+COUNT_FIELDS = ("n", "n_before", "n_after", "n_jittered")  # the interpolation record's counts
 SIZES = {"heart": REPO_ROOT / "experiments/coords/results/p3/size_heart_E12.5.json",
          "embryo": REPO_ROOT / "experiments/coords/results/p3/size_embryo_E7.75.json"}
 DATA = harness.DATA_DIR
@@ -64,6 +72,32 @@ def _board(which: str, override: str | None):
                  "run")
     dry = key != TEST_BOARDS[which]
     return boards[key], dry
+
+
+def _t2_count(board, pool_n: int) -> dict:
+    """Approved rule 7 through its committed decision file (runbook section 5), checked against the count the harness's
+    builder draws (harness.count_for on the candidate board); returns the decision's provenance, no counts."""
+    n_rule = harness.count_for(harness._candidate_board(board), pool_n)
+    n_dec, rec = t2_build.n_cells_from_decision(board, pool_n, COUNT_DECISION)
+    if n_dec != n_rule:
+        sys.exit("the committed count decision gives another count than the builder's count rule (values not shown); "
+                 "build through n_cells_from_decision before any upload")
+    d = rec["count_decision"]
+    return {k: d.get(k) for k in ("decision_file", "decision_sha256", "kind", "validation_target", "override",
+                                  "decision")}
+
+
+def _hide_counts(rec: dict, board) -> dict:
+    """On a test board, the record without cell counts: n_cells becomes "max_cells" (the count rule), and anything
+    else refuses."""
+    if not board.counts_hidden:
+        return rec
+    if rec["n_cells"] != board.max_cells:
+        sys.exit("the built file does not hold the board's max_cells, the approved count (values not shown)")
+    out = dict(rec, n_cells="max_cells")
+    if isinstance(out.get("record"), dict):
+        out["record"] = {k: v for k, v in out["record"].items() if k not in COUNT_FIELDS}
+    return out
 
 
 def _check_seed(seed: int) -> int:
@@ -103,6 +137,7 @@ def build_heart(a) -> dict:
     start = load_stage(DATA / "T2/E9.5.h5ad", genes=genes, drop_duplicates=True)
     view = _view("test:T2h", "T2", "extrap", "heart", board.key,
                  {"ref": ("T2/E10.5.h5ad", 10.5), "start": ("T2/E9.5.h5ad", 9.5)}, "ref", 12.5)
+    count = _t2_count(board, ref.n_obs)
     ctx = harness.BuildContext(task=view, board=harness._candidate_board(board), inputs={"ref": ref, "start": start},
                                seed=a.seed)
     stage = harness._b0_t2(ctx)  # the harness's B0, guard and checks included, in E10.5's frame and size
@@ -113,14 +148,18 @@ def build_heart(a) -> dict:
     if not report.ok:
         raise SystemExit(f"the built file fails its check: {report.errors}")
     return {"entry": f"B0 {a.entry} ({hyp})", "board": board.key, "dry_run": dry, "n_cells": int(stage.n),
-            "seed": a.seed, "size": {k: size[k] for k in size if not isinstance(size[k], (dict, list))}}
+            "seed": a.seed, "count_decision": count,
+            "size": {k: size[k] for k in size if not isinstance(size[k], (dict, list))}}
 
 
 def build_embryo(a) -> dict:
     board, dry = _board("embryo", a.board)
     genes = board.genes
-    files = {"before": ("T2/E7.5.h5ad", 7.5), "after": ("T2/E8.0.h5ad", 8.0), "earlier": ("T2/E7.25.h5ad", 7.25)}
+    files = {"before": ("T2/E7.5.h5ad", 7.5), "after": ("T2/E8.0.h5ad", 8.0)}
+    if a.method == "pseudobulk_shift":  # only it uses the stage before the bracket (E7.25 lacks two panel genes)
+        files["earlier"] = ("T2/E7.25.h5ad", 7.25)
     inputs = {r: load_stage(DATA / f, genes=genes, drop_duplicates=True) for r, (f, _) in files.items()}
+    count = _t2_count(board, inputs["before"].n_obs)
     view = _view("test:T2e", "T2", "interp", "embryo", board.key, files, "before", 7.75)
     ctx = harness.BuildContext(task=view, board=harness._candidate_board(board), inputs=inputs, seed=a.seed)
     size = json.loads(SIZES["embryo"].read_text())
@@ -147,7 +186,8 @@ def build_embryo(a) -> dict:
     if not report.ok:
         raise SystemExit(f"the built file fails its check: {report.errors}")
     return {"entry": a.method, "board": board.key, "dry_run": dry, "n_cells": int(len(X)), "seed": a.seed,
-            "target_rms": target, "record": {k: v for k, v in rec.items() if not isinstance(v, (dict, list))}}
+            "count_decision": count, "target_rms": target,
+            "record": {k: v for k, v in rec.items() if not isinstance(v, (dict, list))}}
 
 
 def main(argv=None) -> None:
@@ -167,8 +207,16 @@ def main(argv=None) -> None:
             p.add_argument("--method", choices=("pseudobulk_shift", "fgw"), required=True)
     a = ap.parse_args(argv)
     _check_seed(a.seed)
+    if a.board not in (None, TEST_BOARDS[a.which]):  # a dry run
+        if a.board not in DRY_BOARDS[a.which]:
+            sys.exit(f"--board {a.board}: a {a.which} dry run takes only {sorted(DRY_BOARDS[a.which])}")
+        if "dry" not in Path(a.out).name.lower():
+            sys.exit(f"{a.out}: a dry run's file name must contain 'dry' (the file must never be uploaded)")
+    elif "dry" in Path(a.out).name.lower():
+        sys.exit(f"{a.out}: a test build's file name must not contain 'dry'")
     Path(a.out).parent.mkdir(parents=True, exist_ok=True)
     rec = {"t1": build_t1, "heart": build_heart, "embryo": build_embryo}[a.which](a)
+    rec = _hide_counts(rec, load_boards()[rec["board"]])
     Path(a.out).with_suffix(".build.json").write_text(json.dumps(rec, indent=1, default=float))
     print(json.dumps({k: v for k, v in rec.items() if k not in ("shares", "external", "realised")}, default=float))
 

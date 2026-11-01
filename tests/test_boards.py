@@ -494,3 +494,90 @@ def test_online_403_reports_the_block_kind_from_headers_only(monkeypatch):
     monkeypatch.setattr(vec_boards, "update_boards", blocked_plain)
     out = " ".join(CliRunner().invoke(cli.app, ["boards", "update"]).output.split())
     assert "'cloudflare_error_code': '1010'" in out and "nothing else is shown" not in out
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# s1 build review (2026-11-01): the site's gene-list digest, null limits, required keys, hidden test-board counts.
+
+def _site_digest(genes: bytes) -> str:
+    """The digest the site publishes: the first 16 hex digits of sha256 over the symbols joined by newlines."""
+    symbols = [g.strip() for g in genes.decode().splitlines() if g.strip()]
+    return hashlib.sha256("\n".join(symbols).encode()).hexdigest()[:16]
+
+
+def test_every_committed_gene_list_matches_its_published_digest():
+    """The committed boards/index.json is the site's own file (2026-10-18): each list must verify, else the intake
+    refuses every board."""
+    from pathlib import Path
+
+    from vec.boards import BOARDS_DIR, _genes_match
+
+    index = json.loads((Path(BOARDS_DIR) / "index.json").read_text())
+    for key, spec in index.items():
+        data = (Path(BOARDS_DIR) / spec["genes_file"]).read_bytes()
+        assert _genes_match(data, spec["genes_sha256"]), key
+        assert not _genes_match(data + b"ExtraGene\n", spec["genes_sha256"]), key
+
+
+@pytest.mark.parametrize("served", [GENES, GENES.rstrip(b"\n"), GENES.replace(b"\n", b"\r\n")])
+def test_intakes_accept_the_site_digest_however_the_list_ends(tmp_path, served):
+    index = {"T1:val": _spec("T1:val", "val"), "T1:test": _spec("T1:test", "test")}
+    for s in index.values():
+        s["genes_sha256"] = _site_digest(GENES)
+    files = {"index.json": json.dumps(index).encode(), "T1__val.genes.txt": served, "T1__test.genes.txt": served,
+             "t1_composition.json": json.dumps({"stages": {"E8.5": {}, "E9.5": {}}}).encode()}
+    online = tmp_path / "online"
+    online.mkdir()
+    update_boards(online, fetch=lambda url: files[url.rsplit("/", 1)[1]])
+    assert load_boards(online)["T1:test"].genes == ["Gata4", "Nkx2-5"]
+    offline = tmp_path / "offline"
+    offline.mkdir()
+    src = _save(tmp_path / "saved", index, genes=served)
+    update_boards_from_file(src, offline, fetch=lambda url: (_ for _ in ()).throw(OSError("offline")))
+    assert load_boards(offline)["T1:test"].genes == ["Gata4", "Nkx2-5"]
+
+
+def test_intake_reuses_a_boards_list_by_the_site_digest(tmp_path):
+    boards_dir = tmp_path / "boards"
+    boards_dir.mkdir()
+    (boards_dir / "T1__val.genes.txt").write_bytes(GENES)
+    index = {"T1:val": _spec("T1:val", "val"), "T1:test": _spec("T1:test", "test")}
+    for s in index.values():
+        s["genes_sha256"] = _site_digest(GENES)
+    src = _save(tmp_path / "saved", index, gene_files=())
+    summary = update_boards_from_file(src, boards_dir, fetch=lambda url: (_ for _ in ()).throw(OSError("offline")))
+    assert sorted(summary["genes_reused"]) == ["T1__test.genes.txt = T1__val.genes.txt", "T1__val.genes.txt"]
+
+
+def test_intakes_refuse_a_list_the_site_digest_does_not_name(tmp_path):
+    index = {"T1:val": _spec("T1:val", "val")}
+    index["T1:val"]["genes_sha256"] = _site_digest(b"Gata4\nTbx5\n")
+    files = {"index.json": json.dumps(index).encode(), "T1__val.genes.txt": GENES,
+             "t1_composition.json": json.dumps({"stages": {"E8.5": {}}}).encode()}
+    with pytest.raises(IntakeError, match="sha256"):
+        update_boards(tmp_path, fetch=lambda url: files[url.rsplit("/", 1)[1]])
+    short = {"T1:val": _spec("T1:val", "val")}
+    short["T1:val"]["genes_sha256"] = _site_digest(GENES)[:8]  # too short to name a list
+    files["index.json"] = json.dumps(short).encode()
+    with pytest.raises(IntakeError, match="sha256"):
+        update_boards(tmp_path, fetch=lambda url: files[url.rsplit("/", 1)[1]])
+
+
+def test_a_null_min_cells_loads_as_the_default_and_required_keys_load(tmp_path):
+    spec = _spec("T1:test", "test", anchors=False)
+    spec.update(min_cells=None, obs_required=[], obsm_required=["spatial_3D"])
+    clean, _ = sanitise_index({"T1:test": spec})
+    (tmp_path / "index.json").write_text(json.dumps(clean))
+    (tmp_path / "T1__test.genes.txt").write_bytes(GENES)
+    b = load_boards(tmp_path)["T1:test"]
+    assert b.min_cells == 1000 and b.obs_required == [] and b.obsm_required == ["spatial_3D"]
+
+
+@pytest.mark.parametrize("key, split, hidden", [
+    ("T1:test", "test", True), ("T2:heart:test_extrap", None, True), ("T3:bcatenin", "test", True),
+    ("T1:other", "test_x", True), ("T9:new", "weird", True), ("T1:val", "val", False),
+    ("pseudo:T1/E9.5->E10.5", "pseudo", False), ("T1:synthetic", None, False)])
+def test_counts_are_hidden_on_test_boards_only(key, split, hidden):
+    from vec.boards import Board
+
+    assert Board(key=key, task="T1", genes=["A"], needs_coords=False, split=split).counts_hidden is hidden

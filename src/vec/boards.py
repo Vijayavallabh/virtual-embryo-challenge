@@ -36,6 +36,8 @@ PHASE_URL = f"{API_BASE}/challenge/phase"  # public, no token: phase, split, acc
 VALIDATION_BOARDS = frozenset({"T1:val", "T2:embryo:val_interp", "T2:heart:val_extrap", "T2:heart:val_interp",
                                "T3:gata4"})
 VALIDATION_SPLITS = frozenset({"val", "val_interp", "val_extrap"})
+# The final-phase test boards, as the server keys them (official_per_board, served since 2026-10-27).
+TEST_BOARD_KEYS = frozenset({"T1:test", "T2:heart:test_extrap", "T2:embryo:test_interp", "T3:bcatenin"})
 SPEC_FIELDS = frozenset({"key", "label", "task", "setting", "split", "target_ko", "public", "n_genes", "genes_file",
                          "genes_sha256", "needs_coords", "obs_required", "obsm_required", "min_cells", "max_cells",
                          "truth_cells", "ref_cells", "floor_model"})
@@ -90,9 +92,23 @@ class Board:
     floor_model: str = "copy_last"
     anchors: dict[str, dict[str, float]] = field(default_factory=dict)
 
+    obs_required: list[str] = field(default_factory=list)
+    obsm_required: list[str] = field(default_factory=list)
+
     @property
     def n_genes(self) -> int:
         return len(self.genes)
+
+    @property
+    def counts_hidden(self) -> bool:
+        """True for a final-phase test board (its key, a "test..." split, or any split that is neither a validation
+        split nor the harness's "pseudo"): a test board's cell limits and counts can encode the held-out stage's cell
+        count, so tools read them in code and never print them (red-team review 2026-10-31; s1 build review
+        2026-11-01). Validation, pseudo and split-less synthetic boards keep their numbers."""
+        split = str(self.split or "")
+        unknown_split = split not in ("", "pseudo") and split not in VALIDATION_SPLITS
+        return (self.key in TEST_BOARD_KEYS or split.startswith("test")
+                or (self.key not in VALIDATION_BOARDS and unknown_split))
 
 
 def read_genes(path: Path) -> list[str]:
@@ -111,12 +127,14 @@ def load_boards(boards_dir: Path = BOARDS_DIR) -> dict[str, Board]:
             setting=spec.get("setting"),
             split=spec.get("split"),
             target_ko=spec.get("target_ko"),
-            min_cells=int(spec.get("min_cells", 1000)),
+            min_cells=1000 if spec.get("min_cells") is None else int(spec["min_cells"]),  # null: the default
             max_cells=spec.get("max_cells"),
             truth_cells=spec.get("truth_cells"),
             ref_cells=spec.get("ref_cells"),
             floor_model=spec.get("floor_model", "copy_last"),
             anchors=spec.get("anchors", {}),
+            obs_required=[str(k) for k in (spec.get("obs_required") or [])],
+            obsm_required=[str(k) for k in (spec.get("obsm_required") or [])],
         )
     return boards
 
@@ -196,6 +214,23 @@ def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+_DIGEST = re.compile(r"[0-9a-f]{16,64}")
+
+
+def _genes_match(data: bytes, sha: str) -> bool:
+    """`data` is the gene list a published genes_sha256 names. The site publishes the first 16 hex digits of
+    sha256("\\n".join(genes)), one symbol per line and no trailing newline (every list in boards/ since 2026-10-18;
+    review of 2026-11-01); the full sha256 of the file's bytes is accepted too. The list is read as read_genes reads
+    it, so a trailing newline or CRLF line ends do not matter."""
+    if _sha256(data) == sha:
+        return True
+    sha = sha.strip().lower()
+    if not _DIGEST.fullmatch(sha):
+        return False
+    genes = [line.strip() for line in data.decode("utf-8", "replace").splitlines() if line.strip()]
+    return hashlib.sha256("\n".join(genes).encode()).hexdigest().startswith(sha)
+
+
 def sanitise_index(index: dict) -> tuple[dict, list[str]]:
     """Keep validation boards as published; reduce every other board to its submission spec (no anchors).
 
@@ -248,7 +283,7 @@ def update_boards(boards_dir: Path = BOARDS_DIR, fetch: Callable[[str], bytes] =
 
     def gene_list(key: str, spec: dict) -> bytes:
         data = fetch(f"{PANELS_URL}/{spec['genes_file']}")
-        if spec.get("genes_sha256") and _sha256(data) != spec["genes_sha256"]:
+        if spec.get("genes_sha256") and not _genes_match(data, spec["genes_sha256"]):
             raise IntakeError(f"{key}: gene list does not match its published sha256")
         if not _gene_list_ok(data):
             raise IntakeError(f"{key}: {spec['genes_file']} is not a plain gene list")
@@ -297,12 +332,12 @@ def update_boards_from_file(index_path: Path, boards_dir: Path = BOARDS_DIR, fet
             if not _gene_list_ok(data):
                 raise IntakeError(f"{key}: the saved {name} is not a plain gene list (do not open it; delete it and "
                                   "save that link again)")
-            if not sha or _sha256(data) == sha:
+            if not sha or _genes_match(data, sha):
                 return data
         if sha:
             for local in sorted(Path(boards_dir).glob("*.genes.txt")):
                 data = local.read_bytes()
-                if _sha256(data) == sha and _gene_list_ok(data):
+                if _genes_match(data, sha) and _gene_list_ok(data):
                     reused.append(name if local.name == name else f"{name} = {local.name}")
                     return data
         why = "does not match its published sha256" if saved.is_file() else "is not in the folder"

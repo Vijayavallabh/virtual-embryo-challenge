@@ -997,7 +997,9 @@ def prepare(file: str | Path, board: str, official: bool, confirm: str | None, *
         try:
             rep = check_local(path, b)
             warnings += rep.warnings
-            guards.append(Guard("local format check", True, f"{rep.n_cells} cells, {len(rep.warnings)} warning(s)"))
+            count = (("max_cells" if rep.n_cells == b.max_cells else "count not shown") if b.counts_hidden
+                     else rep.n_cells)
+            guards.append(Guard("local format check", True, f"{count} cells, {len(rep.warnings)} warning(s)"))
         except SubmitRefused as e:
             guards.append(Guard("local format check", False, str(e)))
 

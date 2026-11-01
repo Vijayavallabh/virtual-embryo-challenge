@@ -227,7 +227,9 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
   on the DGX while a build runs there (the stamp then is not clean; rebuild after the sync).
   - T3: `uv run python experiments/t3_decomp/build_submission.py build <gata4_decisions.json> --branch <b>
     --submission s1|s2 --wt data/raw/T2/E8.75.h5ad --run-dir runs/t3_decomp/gata4_<STAMP> --board <T3 board key>
-    --n-cells <the board's max_cells> --out runs/t3_build/<b>_<s>.h5ad`, for `allowed` and `barred`. 2026-10-31: the
+    --seed 1000001 --out runs/t3_build/<b>_<s>.h5ad`, for `allowed` and `barred`. The cell count defaults to the
+    board's max_cells, read in code and never typed or printed (s1 build review, 2026-11-01); the builder refuses a
+    seed below `vec.harness.BUILD_SEED_OFFSET`. 2026-10-31: the
     allowed branch is selected on the predicted answer to follow-up question 3, at the captain's instruction
     (`docs/ORGANIZER_QUESTIONS.md`); the barred branch stays built as the switch if a ruling arrives before the T3
     uploads. Approved by the captain on 2026-11-01: s1 = `--branch allowed --submission s1`; s2 = `--branch refused
