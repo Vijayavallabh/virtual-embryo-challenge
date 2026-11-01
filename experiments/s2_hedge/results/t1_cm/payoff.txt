@@ -1,0 +1,10 @@
+t1-cm on T1/E9.5->E10.5:chamber (sensitivity analysis for the s2 pre-registration, not an adoption result: truths re-sampled to set tissue mixes, predictions built at the same mixes); 10 seeds; commit cf476aaaf5da6b5035f656c9f175316121c31846
+rows: prediction (cm); columns: truth (cm); cells: mean board score (floor row last); [gain over own, seeds ahead]
+pred \ truth               own              0.15               0.4              0.58              0.75
+         own  49.68             48.41             52.57             55.83             59.19           
+        0.15  55.14 [+5.46 10]  58.39 [+9.98 10]  51.39 [-1.18  4]  46.78 [-9.05  0]  44.32 [-14.86  0]
+         0.4  55.94 [+6.25 10]  56.34 [+7.93 10]  56.12 [+3.54 10]  54.35 [-1.48  1]  53.40 [-5.78  0]
+        0.58  52.35 [+2.67 10]  51.41 [+3.00 10]  54.63 [+2.06 10]  56.42 [+0.59  9]  58.43 [-0.76  1]
+        0.75  46.73 [-2.95  0]  45.32 [-3.09  0]  49.77 [-2.81  0]  54.12 [-1.71  0]  58.86 [-0.32  1]
+       floor             50.00             50.00             50.00             50.00             50.00
+truth mixes: own: cm 0.191 (18071 cells); 0.15: cm 0.108 (15627 cells); 0.4: cm 0.288 (11971 cells); 0.58: cm 0.418 (8256 cells); 0.75: cm 0.541 (6384 cells)

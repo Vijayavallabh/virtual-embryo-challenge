@@ -25,10 +25,15 @@ cells, configs/pseudo_tasks.yaml):
             ("half_radial", "half_thin") or to none ("core_radial") before the draw. Every heart prediction is scaled
             in plane about its centroid by the truth's core in-plane RMS over E9.5's (z held, as the pre-registered
             xy_grow_z_hold mode does), an oracle core size, so the rows differ in scope only; half_size then shrinks.
-The T1 prediction's mix is the reference's own chamber mix (vec.harness.t1_chamber_shares, B0's) with the axis share set
-to each grid value; "own" is B0 itself. The truth's mix is the chamber cut's own with the axis share set to each grid
-value; "own" is the cut unchanged. Truth re-sampling uses one fixed seed (TRUTH_SEED), so a grid value is one fixed
-truth across the scoring seeds.
+  t1-grid   T1/E9.5->E10.5:chamber, blood x cardiomyocyte shares (GRID2) for truths and predictions alike. Unlike the
+            two axes above, every prediction starts from the truth's own chamber mix (the chamber cut's categories
+            without its surrounding cells, renormalised: an oracle base) with the two shares set, so a row differs
+            from s1's analogue ("own/own") only on the hedged shares, as s1 and s2 do at test. Run in parts
+            (--truth-part K/N), merged by summarise.
+The T1 axes' prediction mix is the reference's own chamber mix (vec.harness.t1_chamber_shares, B0's) with the axis
+share set to each grid value; "own" is B0 itself. The truth's mix is the chamber cut's own with the axis share set to
+each grid value; "own" is the cut unchanged. Truth re-sampling uses one fixed seed per grid value (TRUTH_SEED), so a
+grid value is one fixed truth across the scoring seeds.
 
 Usage (DGX, repo root, BLAS threads capped; one process per seed range):
   uv run python experiments/s2_hedge/payoff.py t1-blood --seeds 0-4 --out runs/s2_hedge/t1_blood_a
@@ -159,6 +164,87 @@ def run_t1(axis: str, seeds, out: Path, data_dir: Path) -> dict:
            "seeds": list(seeds), "rows": rows_out, "provenance": provenance()}
     out.mkdir(parents=True, exist_ok=True)
     (out / f"{axis}.json").write_text(json.dumps(res, indent=1, default=float))
+    return res
+
+
+GRID2 = {"blood": ("own", 0.05, 0.40), "cm": (0.15, "own", 0.45, 0.60, 0.75)}
+
+
+def grid_points() -> list[tuple[object, object]]:
+    return [(b, c) for b in GRID2["blood"] for c in GRID2["cm"]]
+
+
+def point_label(b, c) -> str:
+    return f"b{b}_c{c}"
+
+
+def grid_mix(base: dict[str, float], b, c) -> dict[str, float]:
+    """`base` with blood's share of the chamber categories set to b and the cardiomyocyte share of heart cells to c
+    ("own": unchanged); the two settings commute (each keeps the other's ratio)."""
+    mix = axis_mix(base, "t1-blood", b)
+    return axis_mix(mix, "t1-cm", c)
+
+
+def run_t1_grid(seeds, part: tuple[int, int], out: Path, data_dir: Path) -> dict:
+    t = {x.key: x for x in harness.load_tasks()["T1:test"]}[TASK]
+    boards = load_boards()
+    genes = boards[t.panel_board].genes
+    cut, cut_cat = chamber_cut(t, data_dir, genes)
+    ref_stage = Stage.from_anndata(read_stage(data_dir / t.reference, genes), genes)
+    inputs = {r: load_stage(data_dir / f, lineage=False) for r, f in t.inputs.items()}
+    role = harness.base_role(t)
+    pool, src = harness._shallow(inputs[role]), harness.stem(t.inputs[role])
+    start, start_src = harness._shallow(inputs["start"]), harness.stem(t.inputs["start"])
+    held = list(t1_scope.held_flat_genes())
+    cut_mix = t1_scope.composition(list(cut_cat))
+    chamber = set(t1_scope.load_spec().in_scope("chamber"))
+    oracle = {k: v for k, v in cut_mix.items() if k in chamber and v > 0}
+    oracle = {k: v / sum(oracle.values()) for k, v in oracle.items()}
+    points = grid_points()
+    mine = [pt for i, pt in enumerate(points) if i % part[1] == part[0]]
+    truths = {}
+    for b, c in mine:
+        mix = grid_mix(cut_mix, b, c)
+        i = points.index((b, c))
+        rows = (np.arange(cut.n_obs) if (b, c) == ("own", "own") else
+                stratified(cut_cat, mix, np.random.default_rng([TRUTH_SEED, 1000 + i])))
+        truths[point_label(b, c)] = (Stage.from_anndata(cut[rows], genes), t1_scope.composition(list(cut_cat[rows])))
+    base_board = harness.task_board(t, boards, cut.n_obs, ref_stage.n)
+    view, cboard = harness.TaskView.of(t), harness._candidate_board(base_board)
+    n = harness.count_for(cboard, pool.n_obs)
+    rows_out = []
+    for s_ in seeds:
+        t0 = time.time()
+        ctx = harness.BuildContext(task=view, board=cboard, inputs=inputs, seed=harness.BUILD_SEED_OFFSET + s_,
+                                   derived={"t1_held_flat": held})
+        preds = {}
+        for b, c in points:
+            sub, _ = t1_scope.build_submission(pool, cboard, grid_mix(oracle, b, c), n, ctx.seed, start=start,
+                                               damping=harness.B0_DAMPING, held_flat=held, ref_source=src,
+                                               start_source=start_src)
+            preds[point_label(b, c)] = harness.finish(ctx, pool, dense(sub.X), None)
+        row = {"seed": s_, "scores": {}, "skills": {}}
+        for q, (truth, _) in truths.items():
+            board = harness.task_board(t, boards, truth.n, ref_stage.n)
+            fl = score_board(board, subsample(ref_stage, SUBSAMPLE_FRAC, s_), truth, ref_stage, seed=s_,
+                             anchors="computed", build=harness.BUILD, protocol=harness.PROTOCOL)
+            row["scores"][q], row["skills"][q] = {"floor": fl.score}, {"floor": fl.skills}
+            for p_, pred in preds.items():
+                r = score_board(board, pred, truth, ref_stage, seed=s_, anchors=fl.anchors, build=harness.BUILD,
+                                protocol=harness.PROTOCOL)
+                row["scores"][q][p_], row["skills"][q][p_] = r.score, r.skills
+        row["seconds"] = round(time.time() - t0, 1)
+        rows_out.append(row)
+        print(f"t1-grid part {part[0]}/{part[1]} seed {s_} ({row['seconds']} s)", flush=True)
+    labels = [point_label(b, c) for b, c in points]
+    res = {"label": LABEL, "axis": "t1-grid", "category": "blood x cm", "task": t.key,
+           "pred_values": labels, "truth_values": labels, "part": list(part),
+           "truth_mix": {q: m for q, (_, m) in truths.items()},
+           "truth_cells": {q: st.n for q, (st, _) in truths.items()},
+           "pred_mix": {point_label(b, c): grid_mix(oracle, b, c) for b, c in points}, "n_pred": n,
+           "truth_seed": TRUTH_SEED, "seeds": list(seeds), "rows": rows_out, "provenance": provenance()}
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "t1-grid.json").write_text(json.dumps(res, indent=1, default=float))
     return res
 
 
@@ -297,11 +383,25 @@ def summarise(runs: list[Path], out: Path) -> dict:
     commits = {p["provenance"]["commit"] for p in parts}
     if len(commits) != 1 or not all(p["provenance"]["tree_clean"] for p in parts):
         raise SystemExit(f"runs come from different commits or a dirty tree: {sorted(commits)}")
-    rows = sorted((r for p in parts for r in p["rows"]), key=lambda r: r["seed"])
+    merged: dict[int, dict] = {}
+    for part_ in parts:
+        for r in part_["rows"]:
+            m = merged.setdefault(r["seed"], {"seed": r["seed"], "scores": {}, "skills": {}})
+            twice = set(m["scores"]) & set(r["scores"])
+            if twice:
+                raise SystemExit(f"seed {r['seed']}: truth(s) {sorted(twice)} appear twice")
+            m["scores"].update(r["scores"])
+            m["skills"].update(r["skills"])
+    rows = [merged[k] for k in sorted(merged)]
     seeds = [r["seed"] for r in rows]
-    if len(set(seeds)) != len(seeds):
-        raise SystemExit("a seed appears twice")
-    head = parts[0]
+    head = dict(parts[0])
+    for k in ("truth_mix", "truth_cells", "truth_info"):
+        if k in head:
+            head[k] = {q: v for part_ in parts for q, v in part_[k].items()}
+    want = head.get("truth_values", head.get("values"))
+    short = [r["seed"] for r in rows if set(r["scores"]) != set(want)]
+    if short:
+        raise SystemExit(f"seeds {short} miss some truths")
     pv = head.get("pred_values", head.get("values"))
     tv = head.get("truth_values", head.get("values"))
     mean = {q: {p: float(np.mean([r["scores"][q][p] for r in rows])) for p in ["floor", *pv]} for q in tv}
@@ -332,9 +432,10 @@ def summarise(runs: list[Path], out: Path) -> dict:
         lines.append(f"{p:>12s} " + " ".join(f"{c:>17s}" for c in cells))
     lines.append(f"{'floor':>12s} " + " ".join(f"{mean[q]['floor']:17.2f}" for q in tv))
     if "truth_mix" in head:
-        key = cat if cat == "blood" else "cm"
+        heart = t1_scope.load_spec().heart
         lines.append("truth mixes: " + "; ".join(
-            f"{q}: {key} {head['truth_mix'][q].get(key, 0.0):.3f} ({head['truth_cells'][q]} cells)" for q in tv))
+            f"{q}: blood {m.get('blood', 0.0):.3f}, cm/heart {t1_scope.share_of(m, 'cm', heart):.3f} "
+            f"({head['truth_cells'][q]} cells)" for q in tv for m in [head["truth_mix"][q]]))
     if "truth_info" in head:
         lines.append("truths: " + "; ".join(
             f"{q}: {i['cells']} cells, core {i['core_share']:.2f}, xy scope {i['xy_scope']:.3f}"
@@ -360,6 +461,11 @@ def main(argv=None) -> None:
         p.add_argument("--seeds", default="0-9")
         p.add_argument("--out", required=True)
         p.add_argument("--data", default=str(harness.DATA_DIR))
+    p = sub.add_parser("t1-grid")
+    p.add_argument("--seeds", default="0-9")
+    p.add_argument("--truth-part", default="0/1", help="K/N: this process scores truths K, K+N, K+2N, ...")
+    p.add_argument("--out", required=True)
+    p.add_argument("--data", default=str(harness.DATA_DIR))
     p = sub.add_parser("heart-scope")
     p.add_argument("--seeds", default="0-9")
     p.add_argument("--out", required=True)
@@ -370,6 +476,10 @@ def main(argv=None) -> None:
     a = ap.parse_args(argv)
     if a.cmd == "summarise":
         summarise([Path(r) for r in a.runs], Path(a.out))
+        return
+    if a.cmd == "t1-grid":
+        k, _, n_ = a.truth_part.partition("/")
+        run_t1_grid(parse_seeds(a.seeds), (int(k), int(n_)), Path(a.out), Path(a.data))
         return
     if a.cmd == "heart-scope":
         run_heart(parse_seeds(a.seeds), Path(a.out), Path(a.data))
