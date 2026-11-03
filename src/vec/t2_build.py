@@ -65,7 +65,7 @@ from scipy import sparse
 from scipy.spatial import cKDTree
 
 from vec.boards import Board
-from vec.core import barycentric, coupling_rotation, draw_balanced, fgw_coupling, nearest_anchors
+from vec.core import barycentric, coupling_rotation, draw_balanced, fgw_coupling, herd_rows, nearest_anchors
 from vec.io import (
     COORD_KEY,
     TARGET_LIBRARY_SIZE,
@@ -522,7 +522,7 @@ class CellSample:
     record: dict
 
 
-def sample_cells(stage, n: int, seed: int, jitter_frac: float = JITTER_NN_FRAC) -> CellSample:
+def sample_cells(stage, n: int, seed: int, jitter_frac: float = JITTER_NN_FRAC, herd_expr=None) -> CellSample:
     """Draw n cells from a pool at random rows, then break exact duplicate coordinates.
 
     stage: an AnnData with obsm["spatial_3D"] (e.g. `vec.prep.load_stage(..., drop_duplicates=True)`), a
@@ -535,6 +535,10 @@ def sample_cells(stage, n: int, seed: int, jitter_frac: float = JITTER_NN_FRAC) 
     sit off its section's z level by at most that length.
 
     Draws use the streams [seed, 0] (rows) and [seed, 1] (jitter), so a jitter change never moves the rows.
+
+    herd_expr (cells x genes of the pool, e.g. its log1p CP10k panel; T2 try H4 of experiments/harness/TRIES.md): the
+    random rows are then herded towards the pool's mean expression (`vec.core.herd_rows`, stream [seed, 2]) before
+    positions are read, so each cell keeps its own position; without it the draw is unchanged.
     """
     C = _coords_of(stage)
     N = C.shape[0]
@@ -543,6 +547,9 @@ def sample_cells(stage, n: int, seed: int, jitter_frac: float = JITTER_NN_FRAC) 
     if not 0 < jitter_frac <= JITTER_NN_FRAC:
         raise ValueError(f"jitter_frac must be in (0, {JITTER_NN_FRAC}] (the free budget), got {jitter_frac}")
     rows = draw_balanced(N, n, np.random.default_rng([seed, 0]))
+    herd_rec = None
+    if herd_expr is not None:
+        rows, herd_rec = herd_rows(herd_expr, np.arange(N), rows, np.random.default_rng([seed, 2]))
     out = C[rows].copy()
     # first occurrence of each distinct position as the scorer reads it (float32: float-noise copies count as repeats)
     _, first = np.unique(out.astype(np.float32), axis=0, return_index=True)
@@ -573,6 +580,8 @@ def sample_cells(stage, n: int, seed: int, jitter_frac: float = JITTER_NN_FRAC) 
         "jitter_radius_min": JITTER_MIN_FRAC * r_max,
         "max_shift": float(shift.max()), "mean_shift_jittered": float(shift[dup].mean()) if dup.any() else 0.0,
     }
+    if herd_rec is not None:
+        record["herd"] = herd_rec
     return CellSample(rows=rows, coords=out, record=record)
 
 
@@ -1369,7 +1378,7 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
                        target_rms: float, alpha: float = INTERP_ALPHA, n_anchor: int = INTERP_N_ANCHOR,
                        n_pc: int = INTERP_N_PC, k: int = INTERP_K, max_iter: int = INTERP_MAX_ITER,
                        emd_max_iter: int = INTERP_EMD_ITER, t_pos: float | None = None,
-                       with_partners: bool = False) -> Interpolation:
+                       with_partners: bool = False, herd: bool = False) -> Interpolation:
     """Displacement interpolation between two stages at time fraction t (0 = before, 1 = after).
 
     1. Each cloud is centred and divided by its RMS radius (no PCA axes, so no sign choice).
@@ -1392,6 +1401,10 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     with_partners: also pick, for every output cell, a coupled cell of the other stage (one of its k nearest anchors at
     random, then a partner anchor from that anchor's coupling row or column), from its own random stream, so the rest
     of the result is unchanged.
+
+    herd (embryo try E9 of experiments/harness/TRIES.md): each stage's drawn rows are herded towards that stage's mean
+    expression (`vec.core.herd_rows` on before_expr / after_expr, streams [seed, 6] and [seed, 7]) before positions are
+    read; the coupling and the moves are unchanged.
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1424,6 +1437,13 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     empty = np.array([], dtype=np.int64)
     rows_b = draw_balanced(len(Zb), n_b, np.random.default_rng([seed, 0])) if n_b else empty
     rows_a = draw_balanced(len(Za), n_a, np.random.default_rng([seed, 1])) if n_a else empty
+    herd_rec = None
+    if herd:
+        herd_rec = {}
+        if n_b:
+            rows_b, herd_rec["before"] = herd_rows(Eb, np.arange(len(Zb)), rows_b, np.random.default_rng([seed, 6]))
+        if n_a:
+            rows_a, herd_rec["after"] = herd_rows(Ea, np.arange(len(Za)), rows_a, np.random.default_rng([seed, 7]))
     stage = np.r_[np.zeros(n_b, dtype=np.int64), np.ones(n_a, dtype=np.int64)]
     rows = np.r_[rows_b, rows_a].astype(np.int64)
     perm = np.random.default_rng([seed, 2]).permutation(n)
@@ -1449,6 +1469,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
               "rms_before": sb, "rms_after": sa, "scale_from_canonical": float(scale),
               "mean_anchor_shift": [float(np.linalg.norm(db, axis=1).mean()), float(np.linalg.norm(da, axis=1).mean())],
               "n_jittered": int(dup.sum())}
+    if herd_rec is not None:
+        record["herd"] = herd_rec
     partners = None
     if with_partners:
         prng = np.random.default_rng([seed, 5])

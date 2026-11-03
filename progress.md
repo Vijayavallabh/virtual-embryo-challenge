@@ -2,10 +2,15 @@
 
 ## Current State
 
-**Last Updated:** 2026-11-01
-**Active Feature:** feat-018 (s1 files): the s1 build path is reviewed and fixed (2026-11-01, 46089fe); feat-004's
-step 1 waits for the board-spec save (not before 2026-11-04 UTC), then the s1 builds; the s2 hedge payoffs
-(`experiments/s2_hedge/`) feed the s2 pre-registration (17-23 Nov). Earlier: feat-004 - Final-phase intake (`docs/P3_RUNBOOK.md`). Steps 2 (data) and 3 (labels) done on
+**Last Updated:** 2026-11-03
+**Active Feature:** feat-018 (s1 files). The captain (2026-11-03): keep every default, continue the s1 work, iterate
+without the plan's dates ("do whatever it takes to win", within the rules). Every change tried for an entry now goes
+through the tries ledger (`experiments/harness/TRIES.md`: reason, predicted metrics and fit risk written before the
+run, every try counted; adopted after a side agent's note on lucky fits). Tried 2026-11-03: depth matching (embryo E7,
+heart H3) and blends (E8), none kept; herded draws (T1 T5/T6, heart H4, embryo E9) running. The s1 builds wait for the
+board-spec save (from 2026-11-04 UTC); `experiments/builds/build_all.sh s1|s2|t3alt` then builds and checks a whole
+set on the DGX. The s2 rules are frozen (`docs/S2_RULES.md`, 2026-11-03).
+Earlier: feat-004 - Final-phase intake (`docs/P3_RUNBOOK.md`). Steps 2 (data) and 3 (labels) done on
 2026-10-28 (feat-003 done), and step 4 (the pre-registered runs) ran the same day at the user's go-ahead, each output
 committed before it was read. Step 1 is blocked by the 403 on the panel files (Cloudflare error code 1010, a
 browser-signature block; no reply to any organiser email). Its saved-file intake (`vec boards update --from-file`,

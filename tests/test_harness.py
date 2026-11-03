@@ -743,4 +743,22 @@ def test_herded_t1_candidates_apply_where_their_plain_versions_do():
         assert CANDIDATES["b0_herd"].applies(t) == CANDIDATES["b0"].applies(t)
         assert CANDIDATES["copy_herd"].applies(t)
     assert not CANDIDATES["copy_herd"].applies(tasks["T2e/E7.25+E8.0->E7.5"])
-    assert not CANDIDATES["b0_herd"].applies(tasks["T2h/<=E9.5->E10.5"])
+    for key in ("T2h/<=E9.5->E10.5", "T2h/<=E8.75->E10.5"):  # try H4 on the heart board
+        assert CANDIDATES["b0_herd"].applies(tasks[key]) == CANDIDATES["b0"].applies(tasks[key]) is True
+    assert CANDIDATES["fgw_herd"].applies(tasks["T2e/E7.25+E8.0->E7.5"])  # try E9
+    assert not CANDIDATES["fgw_herd"].applies(tasks["T2h/<=E9.5->E10.5"])
+
+
+def test_b0_herd_on_t2_keeps_b0s_count_and_moves_the_draw_mean_to_the_pool(counted_t2):
+    board, inputs = counted_t2
+    ctx = harness.BuildContext(task=harness.TaskView.of(_task(key="syn_herd")), board=board, inputs=inputs,
+                               seed=harness.BUILD_SEED_OFFSET)
+    pool, rows, X0, _ = harness.draw_copy(ctx)
+    _, rows_h, Xh, coords_h = harness.draw_copy(ctx, herd=True)
+    assert len(rows_h) == len(rows) and len(np.unique(rows_h)) == len(rows_h) and not np.array_equal(rows_h, rows)
+    P = np.asarray(pool.obsm["spatial_3D"], float)
+    np.testing.assert_allclose(coords_h, P[rows_h], atol=1e-5)  # each cell at its own position
+    goal = np.asarray(pool[:, board.genes].X.mean(0)).ravel()
+    assert ((Xh.mean(0) - goal) ** 2).sum() < ((X0.mean(0) - goal) ** 2).sum()
+    v = CANDIDATES["b0_herd"].build(ctx)
+    assert v.n == CANDIDATES["b0"].build(ctx).n

@@ -157,7 +157,7 @@ def build_heart(a) -> dict:
     count = _t2_count(board, pool.n_obs)
     ctx = harness.BuildContext(task=view, board=harness._candidate_board(board), inputs={"ref": pool, "start": start},
                                seed=a.seed)
-    stage = harness._b0_t2(ctx, depth=a.depth)  # the harness's B0, guard and checks included, in E10.5's frame and size
+    stage = harness._b0_t2(ctx, depth=a.depth, herd=a.herd)  # the harness's B0 with its guard and checks
     hyp = {"s1": "H1", "s2": "H2", "s2_trim": "H2"}[a.entry]
     # the size step checks its reference against the full E10.5 cloud it measured; it rescales the (trimmed) cells
     coords, size = t2_build.size_or_hold(stage.coords, SIZES["heart"], hyp, source_stage="E10.5", reference_cloud=ref,
@@ -194,7 +194,8 @@ def build_embryo(a) -> dict:
         res = t2_build.interpolate_clouds(np.asarray(before.obsm[COORD_KEY], float)[:, :3],
                                           np.asarray(after.obsm[COORD_KEY], float)[:, :3], Eb, Ea, 0.5,
                                           harness.count_for(board, before.n_obs), a.seed, target_rms=target,
-                                          t_pos=EMBRYO_T_POS[a.method], with_partners=a.expression == "blend")
+                                          t_pos=EMBRYO_T_POS[a.method], with_partners=a.expression == "blend",
+                                          herd=a.herd)
         expr_rec = None
         if a.expression == "mixture":
             X = np.empty((len(res.rows), len(genes)), dtype=np.float32)
@@ -236,12 +237,16 @@ def main(argv=None) -> None:
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
                                 "scope, the s2 of docs/S2_RULES.md")
+            p.add_argument("--herd", action="store_true",
+                           help="herd B0's draw towards the pool's mean expression (try H4; off: the entry so far)")
             p.add_argument("--depth", action="store_true",
                            help="thin B0's cells to the extrapolated E12.5 depth (heart try H3 of "
                                 "experiments/harness/TRIES.md; off: the entry as adopted so far)")
         if name == "embryo":
             p.add_argument("--method", choices=("pseudobulk_shift", *EMBRYO_T_POS), required=True,
                            help="fgw = s1; fgw_shape0 = the s2 of docs/S2_RULES.md (E7.5's geometry)")
+            p.add_argument("--herd", action="store_true",
+                           help="herd each bracket's draw towards its mean expression (try E9; off: the entry so far)")
             p.add_argument("--expression", choices=("mixture", "depth", "blend"), default="mixture",
                            help="fgw methods: the cells as released (the entry), or tries E7 / E8 of "
                                 "experiments/harness/TRIES.md (thinned to the predicted depth; blends)")

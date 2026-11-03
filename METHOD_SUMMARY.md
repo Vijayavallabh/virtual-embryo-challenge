@@ -61,6 +61,13 @@ the work.
   (`docs/S2_RULES.md`) were written by the AI assistant under the captain's delegation of 2026-11-02 from sensitivity
   analyses on released data, before any test score, and frozen on 2026-11-03. The heart rule was amended after its
   released-data outcome, and the amendment is logged as such.
+- **Tries ledger** (since 2026-11-03, `experiments/harness/TRIES.md`): every change tried for an entry is written
+  down before its run with its physical reason, the metrics where its gain should show and what would make a gain a
+  fit to one backtest, and every try is counted. Tried and rejected on 2026-11-03: matching detection depth by
+  binomial thinning (released stages differ several-fold in counts per cell: the embryo series rises from 30 to 212,
+  the heart series falls from 233 to 56). It lost on the more test-like backtest of both boards (-4.18 embryo, -3.92
+  heart), lowering mmd_u and neighbourhood MMD, so it is not used. Blending coupled pairs of cells also lost on both embryo backtests:
+  averaged cells are too narrow a population.
 - **Provenance:** every prediction file carries a build stamp (its sha256, the commit that built it, and whether the
   code was unchanged from the build's start to the write); an upload is accepted only with a matching clean stamp,
   and the submission ledger records the building commit of every file sent.

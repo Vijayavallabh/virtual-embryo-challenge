@@ -392,12 +392,15 @@ def count_for(board: Board, pool_size: int) -> int:
     return t2_build.n_cells(board, pool_size)[0]
 
 
-def draw_copy(ctx: BuildContext) -> tuple[ad.AnnData, np.ndarray, np.ndarray, np.ndarray | None]:
-    """Real reference cells at the board's count: (pool, rows, X float32 in board gene order, coords or None)."""
+def draw_copy(ctx: BuildContext, herd: bool = False) -> tuple[ad.AnnData, np.ndarray, np.ndarray, np.ndarray | None]:
+    """Real reference cells at the board's count: (pool, rows, X float32 in board gene order, coords or None). herd
+    (coordinate boards; try H4 of experiments/harness/TRIES.md): the draw herded towards the pool's mean panel
+    expression (`t2_build.sample_cells(..., herd_expr=...)`)."""
     pool = ctx.inputs[ctx.task.reference_role]
     n = count_for(ctx.board, pool.n_obs)
     if ctx.board.needs_coords:
-        smp = t2_build.sample_cells(pool, n, seed=ctx.seed)
+        smp = t2_build.sample_cells(pool, n, seed=ctx.seed,
+                                    herd_expr=pool[:, ctx.board.genes].X if herd else None)
         rows, coords = smp.rows, smp.coords
     else:
         rows, coords = draw_balanced(pool.n_obs, n, np.random.default_rng([ctx.seed, 0])), None
@@ -534,17 +537,18 @@ def _copy_herd(ctx: BuildContext) -> Stage:
     return finish(ctx, pool, dense(pool[:, g].X[rows]).astype(np.float32), coords)
 
 
-def _b0_t2(ctx: BuildContext, depth: bool = False) -> Stage:
+def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False) -> Stage:
     """B0 on a T2 board: real reference cells at the count rule, moved in count space by the per-type change of the
     harmonised lineage level (obs["merged"]; groups without a stable cross-stage meaning held flat). Extrapolation:
     from `start` to the reference, damped by B0_DAMPING. Interpolation: from the earlier bracket towards the later one,
     by the target's fraction of the bracket (its day is part of the geometry). Coordinates and size stay the source's
     (the heart size cannot be backtested; the test build applies the pre-registered size). depth (extrapolation only;
     heart try H3 of experiments/harness/TRIES.md): the moved cells are then binomially thinned to the target depth that
-    vec.t2_build.DEPTH_EXTRAP_RULE extrapolates at B0_DAMPING from the start's and the reference's median depths."""
+    vec.t2_build.DEPTH_EXTRAP_RULE extrapolates at B0_DAMPING from the start's and the reference's median depths.
+    herd (try H4): the copy's draw herded towards the pool's mean panel expression (`draw_copy`)."""
     from vec import t1_scope
 
-    pool, rows, _, coords = draw_copy(ctx)
+    pool, rows, _, coords = draw_copy(ctx, herd=herd)
     t = ctx.task
     if t.kind == "extrap":
         start, end, damping = ctx.inputs["start"], pool, B0_DAMPING
@@ -590,7 +594,7 @@ def _psb_size(ctx: BuildContext) -> Stage:
     return finish(ctx, pool, X, c0 + (coords - c0) * f, guard_source=c0 + (P - c0) * f)
 
 
-def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixture") -> Stage:
+def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixture", herd: bool = False) -> Stage:
     """The T2 embryo pipeline (docs/PLAN.md 4.2): displacement interpolation between the brackets at the target's
     time fraction (vec.t2_build.interpolate_clouds: fused Gromov-Wasserstein coupling, proper rotation, McCann moves,
     a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages. t_pos:
@@ -606,7 +610,8 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     res = t2_build.interpolate_clouds(np.asarray(before.obsm[COORD_KEY], dtype=float)[:, :3],
                                       np.asarray(after.obsm[COORD_KEY], dtype=float)[:, :3], Eb, Ea,
                                       frac, count_for(ctx.board, before.n_obs), ctx.seed,
-                                      target_rms=target_rms(ctx), t_pos=t_pos, with_partners=expression == "blend")
+                                      target_rms=target_rms(ctx), t_pos=t_pos, with_partners=expression == "blend",
+                                      herd=herd)
     if expression == "mixture":
         X = np.empty((len(res.rows), len(g)), dtype=np.float32)
         X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
@@ -633,6 +638,14 @@ def _fgw_depth(ctx: BuildContext) -> Stage:
 
 def _b0_depth(ctx: BuildContext) -> Stage:
     return _b0_t2(ctx, depth=True)
+
+
+def _b0_herd(ctx: BuildContext) -> Stage:
+    return _b0_t1(B0_DAMPING, herd=True)(ctx) if ctx.task.task == "T1" else _b0_t2(ctx, herd=True)
+
+
+def _fgw_herd(ctx: BuildContext) -> Stage:
+    return _fgw(ctx, herd=True)
 
 
 def _t2_extrap_with_start(t: PseudoTask) -> bool:
@@ -705,10 +718,14 @@ CANDIDATES = {
                                     "bracket, splitting the expected counts (1 - t) : t at the predicted depth",
                             "rule": "blend: " + t2_build.DEPTH_RULE, "scope": "whole"}, requires=_interp),
     # T1 tries T5 and T6 (experiments/harness/TRIES.md, registered before their run): herded draws
-    "b0_herd": Candidate("b0_herd", frozenset({"T1"}), (), _b0_t1(B0_DAMPING, herd=True),
-                         {"what": "B0 on T1 with each category's draw herded towards its pool's mean expression "
-                                  "(vec.core.herd_rows)", "damping": B0_DAMPING, "scope": "chamber"},
+    "b0_herd": Candidate("b0_herd", frozenset({"T1", "T2"}), (), _b0_herd,
+                         {"what": "B0 with its draw herded towards the pool's mean expression (vec.core.herd_rows): "
+                                  "on T1 each category's draw, on T2 the copy's draw before B0's shift",
+                          "damping": B0_DAMPING, "scope": "chamber"},
                          requires=_b0_applies, derived=("t1_held_flat",)),
+    "fgw_herd": Candidate("fgw_herd", frozenset({"T2"}), (), _fgw_herd,
+                          {"what": "fgw with each bracket's draw herded towards that bracket's mean panel expression "
+                                   "(embryo try E9)", "scope": "whole"}, requires=_interp),
     "copy_herd": Candidate("copy_herd", frozenset({"T1"}), _ANY, _copy_herd,
                            {"what": "a copy of the reference with its draw herded towards the pool's mean expression "
                                     "(a diagnostic)", "scope": "whole"}),

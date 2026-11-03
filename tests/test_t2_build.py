@@ -1710,3 +1710,17 @@ def test_thin_to_depth_thins_by_the_ratio_and_leaves_a_deeper_target_alone():
     assert rec["factor"] == pytest.approx(0.5) and rec["thinned"] == 400
     assert (X > 0).sum(1).mean() < (E > 0).sum(1).mean() and ((X > 0).sum(1) >= 1).all()
     assert tb.median_depth(a, panel) == pytest.approx(float(np.median(N)))
+
+
+
+def test_interpolation_herd_moves_each_draw_mean_and_keeps_the_rest():
+    rng = np.random.default_rng(36)
+    before, after, panel, res, mix = _interp_pair(rng, 60.0, 60.0)
+    Eb, Ea = (np.asarray(x[:, panel].X.toarray(), np.float32) for x in (before, after))
+    kw = dict(seed=3, target_rms=1.0, n_anchor=150, k=4)
+    h = tb.interpolate_clouds(before.obsm[COORD_KEY], after.obsm[COORD_KEY], Eb, Ea, 0.5, 500, herd=True, **kw)
+    assert np.array_equal(h.stage, res.stage) and not np.array_equal(h.rows, res.rows)
+    for s_, E in ((0, Eb), (1, Ea)):
+        m0, m1 = E[res.rows[res.stage == s_]].mean(0), E[h.rows[h.stage == s_]].mean(0)
+        assert ((m1 - E.mean(0)) ** 2).sum() < ((m0 - E.mean(0)) ** 2).sum()
+    assert set(h.record["herd"]) == {"before", "after"}
