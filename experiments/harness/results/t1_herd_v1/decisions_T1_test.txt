@@ -1,0 +1,7 @@
+T1:test: 3 pseudo-task(s) in /mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/runs/harness/t1_herd_v1 (protocol bake, build main, anchors computed, seeds [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  T1/E8.5->E9.5 on pseudo:T1/E8.5->E9.5: floor 50.00 +/- 0.00; copy 52.88 +/- 1.55; copy_herd 52.94 +/- 1.26 (commit 2bf32c4, clean True)
+  T1/E9.5->E10.5 on T1:val: floor 50.00 +/- 0.00; copy 47.98 +/- 1.08; copy_herd 48.19 +/- 1.16; b0 44.12 +/- 0.46; b0_herd 44.09 +/- 0.45 (commit 2bf32c4, clean True)
+  T1/E9.5->E10.5:chamber on pseudo:T1/E9.5->E10.5:chamber: floor 50.00 +/- 0.00; copy 48.06 +/- 1.20; copy_herd 48.23 +/- 1.23; b0 49.68 +/- 0.67; b0_herd 49.67 +/- 0.69 (commit 2bf32c4, clean True)
+b0_herd against b0: not kept (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2; decided on 2 of 3 configured pseudo-tasks; not counted: {'T1/E8.5->E9.5': 'change does not apply'})
+    T1/E9.5->E10.5: paired mean gain -0.03, ahead in 4 of 10 seeds, passes False, vetoes False
+    T1/E9.5->E10.5:chamber: paired mean gain -0.01, ahead in 5 of 10 seeds, passes False, vetoes False
