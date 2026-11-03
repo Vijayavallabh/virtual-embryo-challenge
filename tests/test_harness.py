@@ -678,3 +678,38 @@ def test_embryo_candidates_resize_to_the_size_rule_and_interpolate_inside_the_gu
         np.testing.assert_array_equal(v.X, fgw.X)
         assert harness.t2_build.rms_radius(v.coords) == pytest.approx(want, rel=0.01)
         assert not np.allclose(v.coords, fgw.coords)
+
+
+def test_depth_tries_keep_fgw_geometry_and_change_only_the_expression():
+    """Tries E7 and E8 (experiments/harness/TRIES.md): fgw's cells and positions, expression at the predicted depth."""
+    from scipy import sparse as sp
+
+    rng = np.random.default_rng(22)
+    base = rng.gamma(2.0, 2.0, size=(3, len(GENES)))
+    pools = {}
+    for role, (n, f, sc) in {"before": (2500, 1.0, 1.0), "after": (4000, 4.0, 1.8)}.items():
+        types = rng.choice(3, size=n, p=[0.4, 0.3, 0.3])  # the later stage four times deeper
+        C = rng.poisson(base[types] * f)
+        C[C.sum(1) == 0, 0] = 1
+        X = np.log1p(1e4 * C / C.sum(1, keepdims=True)).astype(np.float32)
+        centres = np.array([[0, 0, 0], [6, 0, 0], [0, 6, 0]], float) * sc
+        a = ad.AnnData(X=sp.csr_matrix(X), obs=pd.DataFrame({"celltype": [f"type{t}" for t in types]},
+                                                             index=[f"c{i}" for i in range(n)]),
+                       var=pd.DataFrame(index=GENES))
+        a.layers["counts"] = sp.csr_matrix(C.astype(np.int32))
+        a.obsm["spatial_3D"] = (centres[types] + rng.normal(size=(n, 3)) * 1.5 * sc).astype(np.float32)
+        pools[role] = a
+    board = Board(key="pseudo:synthetic_embryo", task="T2", genes=list(GENES), needs_coords=True, setting="embryo",
+                  min_cells=100, max_cells=1500)
+    task = _task(**INTERP, key="syn_embryo_depth", inputs={"before": "T2/E7.25.h5ad", "after": "T2/E8.0.h5ad"})
+    ctx = harness.BuildContext(task=harness.TaskView.of(task), board=board, inputs=pools, seed=7)
+    fgw = CANDIDATES["fgw"].build(ctx)
+    tasks = {t.key: t for ts in load_tasks().values() for t in ts}
+    for name in ("fgw_depth", "fgw_blend"):
+        c = CANDIDATES[name]
+        assert c.applies(task) and c.applies(tasks["T2e/E6.75+E7.5->E7.25"])
+        assert not c.applies(tasks["T2h/<=E9.5->E10.5"])
+        v = c.build(ctx)
+        np.testing.assert_array_equal(v.coords, fgw.coords)  # positions and draws are fgw's
+        assert v.X.shape == fgw.X.shape and not np.array_equal(v.X, fgw.X)
+        assert ((v.X > 0).sum(1) >= 1).all()

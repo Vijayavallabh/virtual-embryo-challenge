@@ -193,13 +193,22 @@ def build_embryo(a) -> dict:
         res = t2_build.interpolate_clouds(np.asarray(before.obsm[COORD_KEY], float)[:, :3],
                                           np.asarray(after.obsm[COORD_KEY], float)[:, :3], Eb, Ea, 0.5,
                                           harness.count_for(board, before.n_obs), a.seed, target_rms=target,
-                                          t_pos=EMBRYO_T_POS[a.method])
-        X = np.empty((len(res.rows), len(genes)), dtype=np.float32)
-        X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
+                                          t_pos=EMBRYO_T_POS[a.method], with_partners=a.expression == "blend")
+        expr_rec = None
+        if a.expression == "mixture":
+            X = np.empty((len(res.rows), len(genes)), dtype=np.float32)
+            X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
+        elif a.expression == "depth":  # the harness's fgw_depth (try E7, experiments/harness/TRIES.md)
+            X, expr_rec = t2_build.depth_matched_expression(before, after, res, genes, 0.5, [a.seed, 7])
+        else:  # the harness's fgw_blend (try E8)
+            X, expr_rec = t2_build.blend_expression(before, after, res, genes, 0.5, [a.seed, 7])
         guard = t2_build.cloud_guard(res.coords, res.pool_coords, seed=a.seed, source_weights=res.pool_weights)
         if not guard.ok:
             raise SystemExit(f"cloud guard flags {guard.flags}")
         coords, rec = res.coords, res.record
+        if expr_rec is not None:
+            rec = {**rec, "expression": a.expression,
+                   **{f"depth_{k}": v for k, v in expr_rec.items() if not isinstance(v, (dict, list))}}
     _, report = t2_build.build_submission(board, X, coords, genes=list(genes), out=a.out)
     if not report.ok:
         raise SystemExit(f"the built file fails its check: {report.errors}")
@@ -226,6 +235,9 @@ def main(argv=None) -> None:
         if name == "embryo":
             p.add_argument("--method", choices=("pseudobulk_shift", *EMBRYO_T_POS), required=True,
                            help="fgw = s1; fgw_shape0 = the s2 of docs/S2_RULES.md (E7.5's geometry)")
+            p.add_argument("--expression", choices=("mixture", "depth", "blend"), default="mixture",
+                           help="fgw methods: the cells as released (the entry), or tries E7 / E8 of "
+                                "experiments/harness/TRIES.md (thinned to the predicted depth; blends)")
     a = ap.parse_args(argv)
     _check_seed(a.seed)
     if a.board not in (None, TEST_BOARDS[a.which]):  # a dry run

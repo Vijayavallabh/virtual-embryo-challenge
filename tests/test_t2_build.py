@@ -1368,7 +1368,10 @@ ALLOWED_LITERALS = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 16.0, 0.25, 0.5, 0.9, 0.03, 0.
 # values of any stage), are allowed the same way.
 RULE_LITERALS = {"COUNT_RULE_SEEDS": {10.0}, "COUNT_RULE_MIN_GAIN": {0.3}, "COUNT_RULE_MIN_AHEAD": {8.0},
                  "INTERP_N_ANCHOR": {2000.0}, "INTERP_N_PC": {30.0}, "INTERP_K": {8.0}, "INTERP_MAX_ITER": {200.0},
-                 "INTERP_EMD_ITER": {10_000_000.0}}
+                 "INTERP_EMD_ITER": {10_000_000.0},
+                 # 2026-11-03, tries E7 and E8 (experiments/harness/TRIES.md): sizes of the computation, set before
+                 # their run (a retry budget for thinned cells left without counts; the partner-sampling chunk)
+                 "DEPTH_ZERO_RETRIES": {20.0}, "PARTNER_CHUNK": {4096.0}}
 
 
 def _stray_literals(src: str) -> tuple[list[tuple[int, str]], set[str]]:
@@ -1575,3 +1578,112 @@ def test_interpolation_t_pos_sets_the_geometry_and_leaves_the_default_unchanged(
     assert elong[0.0] < ev[0] / ev[1] < elong[1.0]  # before's round shape, the middle, after's stretched shape
     with pytest.raises(ValueError, match="t_pos"):
         tb.interpolate_clouds(A, B, E, E, 0.5, 10, t_pos=1.2, **kw)
+
+
+# ------------------------------------------------------------------- detection depth of an interpolated stage (E7, E8)
+def _counted(rng, n, depth, panel=12, extra=3, profile=None):
+    """An AnnData as the released files store it: Poisson counts at a given depth on `panel` genes plus `extra` genes
+    outside the panel, X = log(1 + 1e4 c / N) with N over every gene. Returns it, the panel gene names and N."""
+    import pandas as pd
+    from scipy import sparse as sp
+
+    prof = rng.gamma(2.0, 1.0, size=panel + extra) if profile is None else np.asarray(profile, float)
+    prof = prof / prof.sum()
+    C = rng.poisson(prof * depth, size=(n, panel + extra))
+    C[C[:, :panel].sum(1) == 0, 0] += 1  # every cell has a panel count, as every released cell does
+    N = C.sum(1)
+    genes = [f"g{i}" for i in range(panel + extra)]
+    a = ad.AnnData(X=sp.csr_matrix(np.log1p(1e4 * C / N[:, None]).astype(np.float32)),
+                   var=pd.DataFrame(index=genes))
+    a.layers["counts"] = sp.csr_matrix(C.astype(np.int32))
+    a.obsm[COORD_KEY] = rng.normal(size=(n, 3)).astype(np.float32)
+    return a, genes[:panel], N
+
+
+def test_library_sizes_recover_the_whole_library_from_the_panel_genes():
+    rng = np.random.default_rng(30)
+    a, panel, N = _counted(rng, 300, 80.0)
+    sub = a[:, panel]
+    lib = tb.library_sizes(sub.X, sub.layers["counts"])
+    np.testing.assert_array_equal(lib, N)  # genes outside the panel are counted, as the released N counts them
+    assert (lib > np.asarray(sub.layers["counts"].sum(1)).ravel()).any()
+    with pytest.raises(ValueError, match="non-zero"):
+        tb.library_sizes(sub.X, sub.layers["counts"][::-1])
+
+
+def test_depth_target_is_log_linear_between_the_brackets():
+    assert tb.depth_target(62.0, 212.0, 0.5) == pytest.approx(np.sqrt(62.0 * 212.0))
+    assert tb.depth_target(35.0, 212.0, 0.0) == pytest.approx(35.0)
+    assert tb.depth_target(35.0, 212.0, 1.0) == pytest.approx(212.0)
+    with pytest.raises(ValueError):
+        tb.depth_target(0.0, 10.0, 0.5)
+
+
+def _interp_pair(rng, d_before, d_after, n=600, t=0.5, partners=False, **kw):
+    before, panel, _ = _counted(rng, n, d_before, **kw)
+    after, _, _ = _counted(rng, n, d_after, **kw)
+    Eb, Ea = (np.asarray(x[:, panel].X.toarray(), np.float32) for x in (before, after))
+    res = tb.interpolate_clouds(before.obsm[COORD_KEY], after.obsm[COORD_KEY], Eb, Ea, t, 500, seed=3,
+                                target_rms=1.0, n_anchor=150, k=4, with_partners=partners)
+    mix = np.empty((len(res.rows), len(panel)), np.float32)
+    mix[res.stage == 0], mix[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
+    return before, after, panel, res, mix
+
+
+def test_depth_matching_thins_only_the_deeper_bracket_to_the_predicted_depth():
+    rng = np.random.default_rng(31)
+    before, after, panel, res, mix = _interp_pair(rng, 40.0, 200.0)
+    X, rec = tb.depth_matched_expression(before, after, res, panel, 0.5, seed=[1, 7])
+    b, a = res.stage == 0, res.stage == 1
+    np.testing.assert_array_equal(X[b], mix[b])  # the shallower bracket keeps its released rows exactly
+    assert rec["factor"]["before"] == 1.0 and rec["factor"]["after"] == pytest.approx(rec["target"] / 200, rel=0.05)
+    assert rec["target"] == pytest.approx(np.sqrt(40.0 * 200.0), rel=0.08)
+    assert not np.array_equal(X[a], mix[a])
+    # the thinned cells' counts: as many detected genes as cells near the target depth, fewer than at 200
+    assert (X[a] > 0).sum(1).mean() < (mix[a] > 0).sum(1).mean()
+    assert (X[a] > 0).sum(1).min() >= 1 and np.isfinite(X).all() and X.max() <= np.log1p(1e4) + 1e-4
+    # equal depths: nothing is thinned, so the result is the mixture
+    before2, after2, panel2, res2, mix2 = _interp_pair(np.random.default_rng(32), 60.0, 60.0)
+    X2, rec2 = tb.depth_matched_expression(before2, after2, res2, panel2, 0.5, seed=0)
+    if rec2["factor"]["before"] == 1.0 and rec2["factor"]["after"] == 1.0:
+        np.testing.assert_array_equal(X2, mix2)
+    assert min(rec2["factor"].values()) > 0.9
+
+
+def test_thinning_never_adds_counts_and_keeps_integers():
+    rng = np.random.default_rng(33)
+    from scipy import sparse as sp
+
+    C = sp.csr_matrix(rng.poisson(5.0, size=(200, 10)))
+    other = rng.poisson(3.0, size=200)
+    T, o = tb._binomial_rows(C, other, np.full(200, 0.4), rng)
+    assert (T.toarray() <= C.toarray()).all() and (o <= other).all() and T.dtype.kind == "i"
+    assert T.sum() == pytest.approx(0.4 * C.sum(), rel=0.05)
+    same, o1 = tb._binomial_rows(C, other, np.ones(200), rng)
+    assert (same.toarray() == C.toarray()).all() and (o1 == other).all()
+
+
+def test_blend_splits_the_expected_counts_by_the_bracket_fraction():
+    rng = np.random.default_rng(34)
+    pb = np.r_[np.ones(6), np.full(6, 1e-9), np.ones(3)]  # the earlier stage expresses genes 0-5, the later 6-11
+    pa = np.r_[np.full(6, 1e-9), np.ones(6), np.ones(3)]
+    before, panel, _ = _counted(rng, 600, 40.0, profile=pb)
+    after, _, _ = _counted(rng, 600, 200.0, profile=pa)
+    Eb, Ea = (np.asarray(x[:, panel].X.toarray(), np.float32) for x in (before, after))
+    res = tb.interpolate_clouds(before.obsm[COORD_KEY], after.obsm[COORD_KEY], Eb, Ea, 0.5, 500, seed=3,
+                                target_rms=1.0, n_anchor=150, k=4, with_partners=True)
+    assert res.partners is not None and len(res.partners) == 500
+    assert (res.partners[res.stage == 0] < after.n_obs).all() and (res.partners[res.stage == 1] < before.n_obs).all()
+    X, rec = tb.blend_expression(before, after, res, panel, 0.5, seed=5)
+    c = np.expm1(X.astype(np.float64))  # proportional to each cell's counts (the library size cancels in a share)
+    share = c[:, :6].sum(1) / c.sum(1)
+    want = rec["expected_share_before"]
+    assert rec["weights"]["before"] == 1.0 and 0.0 < rec["weights"]["after"] < 1.0  # the shallow side is capped
+    assert share.mean() == pytest.approx(want, abs=0.05) and 0.3 < want < 0.6
+    assert (share > 0).all() and (share < 1).all()  # every cell carries counts of both its cells
+    no_partners = tb.interpolate_clouds(before.obsm[COORD_KEY], after.obsm[COORD_KEY], Eb, Ea, 0.5, 500, seed=3,
+                                        target_rms=1.0, n_anchor=150, k=4)
+    for f in ("stage", "rows", "coords", "pool_coords", "pool_weights"):  # partners come from their own stream
+        np.testing.assert_array_equal(getattr(res, f), getattr(no_partners, f))
+    with pytest.raises(ValueError, match="with_partners"):
+        tb.blend_expression(before, after, no_partners, panel, 0.5, seed=5)

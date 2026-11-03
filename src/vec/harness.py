@@ -569,23 +569,32 @@ def _psb_size(ctx: BuildContext) -> Stage:
     return finish(ctx, pool, X, c0 + (coords - c0) * f, guard_source=c0 + (P - c0) * f)
 
 
-def _fgw(ctx: BuildContext, t_pos: float | None = None) -> Stage:
+def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixture") -> Stage:
     """The T2 embryo pipeline (docs/PLAN.md 4.2): displacement interpolation between the brackets at the target's
     time fraction (vec.t2_build.interpolate_clouds: fused Gromov-Wasserstein coupling, proper rotation, McCann moves,
     a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages. t_pos:
     the s2 shape variants' position fraction (0: the earlier bracket's geometry, 1: the later's; default: the
-    mixture's)."""
+    mixture's). expression: "mixture" (the cells as released), "depth" (vec.t2_build.depth_matched_expression) or
+    "blend" (vec.t2_build.blend_expression); tries E7 and E8 of experiments/harness/TRIES.md."""
     t = ctx.task
     before, after = ctx.inputs["before"], ctx.inputs["after"]
     lo, hi = t.role_days["before"], t.role_days["after"]
     g = ctx.board.genes
+    frac = (t.target_day - lo) / (hi - lo)
     Eb, Ea = dense(before[:, g].X).astype(np.float32), dense(after[:, g].X).astype(np.float32)
     res = t2_build.interpolate_clouds(np.asarray(before.obsm[COORD_KEY], dtype=float)[:, :3],
                                       np.asarray(after.obsm[COORD_KEY], dtype=float)[:, :3], Eb, Ea,
-                                      (t.target_day - lo) / (hi - lo), count_for(ctx.board, before.n_obs), ctx.seed,
-                                      target_rms=target_rms(ctx), t_pos=t_pos)
-    X = np.empty((len(res.rows), len(g)), dtype=np.float32)
-    X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
+                                      frac, count_for(ctx.board, before.n_obs), ctx.seed,
+                                      target_rms=target_rms(ctx), t_pos=t_pos, with_partners=expression == "blend")
+    if expression == "mixture":
+        X = np.empty((len(res.rows), len(g)), dtype=np.float32)
+        X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
+    elif expression == "depth":
+        X, _ = t2_build.depth_matched_expression(before, after, res, g, frac, [ctx.seed, 7])
+    elif expression == "blend":
+        X, _ = t2_build.blend_expression(before, after, res, g, frac, [ctx.seed, 7])
+    else:
+        raise ValueError(f"unknown expression step {expression!r}")
     return finish(ctx, before, X, res.coords, guard_source=res.pool_coords, guard_weights=res.pool_weights)
 
 
@@ -595,6 +604,14 @@ def _fgw_shape0(ctx: BuildContext) -> Stage:
 
 def _fgw_shape1(ctx: BuildContext) -> Stage:
     return _fgw(ctx, t_pos=1.0)
+
+
+def _fgw_depth(ctx: BuildContext) -> Stage:
+    return _fgw(ctx, expression="depth")
+
+
+def _fgw_blend(ctx: BuildContext) -> Stage:
+    return _fgw(ctx, expression="blend")
 
 
 def _interp(t: PseudoTask) -> bool:
@@ -648,6 +665,16 @@ CANDIDATES = {
     "fgw_shape1": Candidate("fgw_shape1", frozenset({"T2"}), (), _fgw_shape1,
                             {"what": "fgw's mixture of real cells in the later bracket's geometry (t_pos = 1), "
                                      "scaled to the embryo size rule", "scope": "whole"}, requires=_interp),
+    # tries E7 and E8 (experiments/harness/TRIES.md, registered before their run): the target's detection depth
+    "fgw_depth": Candidate("fgw_depth", frozenset({"T2"}), (), _fgw_depth,
+                           {"what": "fgw with each bracket's cells binomially thinned to the interpolated stage's "
+                                    "predicted depth (log-linear between the brackets' median counts per cell; a "
+                                    "shallower bracket kept as released)", "rule": t2_build.DEPTH_RULE,
+                            "scope": "whole"}, requires=_interp),
+    "fgw_blend": Candidate("fgw_blend", frozenset({"T2"}), (), _fgw_blend,
+                           {"what": "fgw's cells as binomial blends of each cell and a coupled partner of the other "
+                                    "bracket, splitting the expected counts (1 - t) : t at the predicted depth",
+                            "rule": "blend: " + t2_build.DEPTH_RULE, "scope": "whole"}, requires=_interp),
 }
 
 

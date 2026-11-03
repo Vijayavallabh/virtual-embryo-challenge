@@ -1319,6 +1319,7 @@ INTERP_N_PC = 30  # expression features: principal components of the log1p panel
 INTERP_K = 8  # a cell moves by the mean displacement of its 8 nearest anchors of its own stage
 INTERP_MAX_ITER = 200  # conditional-gradient iterations of the coupling
 INTERP_EMD_ITER = 10_000_000  # network-simplex iterations of each step's exact transport (POT's default stops short)
+PARTNER_CHUNK = 4096  # cells per block when drawing coupled partners (memory only; the draw does not depend on it)
 
 
 def pchip_rms(days, rms, target_day: float) -> float:
@@ -1344,7 +1345,8 @@ def pchip_rms(days, rms, target_day: float) -> float:
 class Interpolation:
     """`interpolate_clouds` result: output cell i is row `rows[i]` of stage `stage[i]` (0 before, 1 after), at
     `coords[i]` in the before stage's frame. `pool_coords` and `pool_weights`: where every cell of both stages lands
-    (before rows, then after rows) and its chance of being drawn, the source for the cloud guard."""
+    (before rows, then after rows) and its chance of being drawn, the source for the cloud guard. `partners` (only
+    with `with_partners=True`): for each output cell, a row of the other stage coupled to it (`blend_expression`)."""
 
     stage: np.ndarray
     rows: np.ndarray
@@ -1352,6 +1354,7 @@ class Interpolation:
     pool_coords: np.ndarray
     pool_weights: np.ndarray
     record: dict
+    partners: np.ndarray | None = None
 
 
 def _joint_pcs(Eb: np.ndarray, Ea: np.ndarray, n_pc: int) -> tuple[np.ndarray, np.ndarray]:
@@ -1365,7 +1368,8 @@ def _joint_pcs(Eb: np.ndarray, Ea: np.ndarray, n_pc: int) -> tuple[np.ndarray, n
 def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: float, n: int, seed: int, *,
                        target_rms: float, alpha: float = INTERP_ALPHA, n_anchor: int = INTERP_N_ANCHOR,
                        n_pc: int = INTERP_N_PC, k: int = INTERP_K, max_iter: int = INTERP_MAX_ITER,
-                       emd_max_iter: int = INTERP_EMD_ITER, t_pos: float | None = None) -> Interpolation:
+                       emd_max_iter: int = INTERP_EMD_ITER, t_pos: float | None = None,
+                       with_partners: bool = False) -> Interpolation:
     """Displacement interpolation between two stages at time fraction t (0 = before, 1 = after).
 
     1. Each cloud is centred and divided by its RMS radius (no PCA axes, so no sign choice).
@@ -1384,6 +1388,10 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     t_pos (default: t) moves the cells by a different fraction than the mixture uses. 0 gives the before stage's
     geometry, every after cell carried onto its partners in the before cloud; 1 gives the after stage's geometry.
     These are the embryo s2 shape variants (`docs/S2_RULES.md`). Left unset, the result is bit-identical to t_pos = t.
+
+    with_partners: also pick, for every output cell, a coupled cell of the other stage (one of its k nearest anchors at
+    random, then a partner anchor from that anchor's coupling row or column), from its own random stream, so the rest
+    of the result is unchanged.
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1408,8 +1416,9 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     Za_b = Za @ R
     db = barycentric(T, Za_b[ia]) - Zb[ib]
     da = barycentric(T.T, Zb[ib]) - Za_b[ia]
-    pos_b = Zb + tp * db[nearest_anchors(Zb, Zb[ib], k)[1]].mean(1)
-    pos_a = Za_b + (1.0 - tp) * da[nearest_anchors(Za_b, Za_b[ia], k)[1]].mean(1)
+    near_b, near_a = nearest_anchors(Zb, Zb[ib], k)[1], nearest_anchors(Za_b, Za_b[ia], k)[1]
+    pos_b = Zb + tp * db[near_b].mean(1)
+    pos_a = Za_b + (1.0 - tp) * da[near_a].mean(1)
     n_b = int(round((1.0 - t) * n))
     n_a = n - n_b
     empty = np.array([], dtype=np.int64)
@@ -1440,5 +1449,184 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
               "rms_before": sb, "rms_after": sa, "scale_from_canonical": float(scale),
               "mean_anchor_shift": [float(np.linalg.norm(db, axis=1).mean()), float(np.linalg.norm(da, axis=1).mean())],
               "n_jittered": int(dup.sum())}
-    return Interpolation(stage=stage, rows=rows, coords=coords, pool_coords=pool, pool_weights=weights, record=record)
+    partners = None
+    if with_partners:
+        prng = np.random.default_rng([seed, 5])
+        partners = np.empty(n, dtype=np.int64)
+        for s, near, other, P in ((0, near_b, ia, T), (1, near_a, ib, T.T)):
+            m = stage == s
+            if m.any():
+                anchor = near[rows[m], prng.integers(0, near.shape[1], int(m.sum()))]
+                partners[m] = other[_sample_from_rows(P, anchor, prng)]
+        record["partners"] = "one coupled cell of the other stage per output cell (stream [seed, 5])"
+    return Interpolation(stage=stage, rows=rows, coords=coords, pool_coords=pool, pool_weights=weights, record=record,
+                         partners=partners)
+
+
+def _sample_from_rows(P: np.ndarray, which: np.ndarray, rng: np.random.Generator,
+                      chunk: int = PARTNER_CHUNK) -> np.ndarray:
+    """For each entry r of `which`, a column of P drawn with probability P[r, j] / P[r].sum()."""
+    cum = np.cumsum(np.asarray(P, dtype=np.float64), axis=1)
+    if (cum[:, -1] <= 0).any():
+        raise ValueError("a row of the coupling carries no mass")
+    cum /= cum[:, -1:]
+    out = np.empty(len(which), dtype=np.int64)
+    u = rng.random(len(which))
+    for lo in range(0, len(which), chunk):
+        c = cum[which[lo:lo + chunk]]
+        out[lo:lo + chunk] = np.minimum((c < u[lo:lo + chunk, None]).sum(1), P.shape[1] - 1)
+    return out
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Detection depth of an interpolated stage (2026-11-03; embryo tries E7 and E8, experiments/harness/TRIES.md, each
+# registered before its run). The released MERFISH stages differ several-fold in counts per cell (median totals:
+# E6.75 30, E7.25 35, E7.5 62, E8.0 212), and the scorer reads log(1 + 1e4 c / N), whose zeros and levels follow the
+# depth. A mixture of whole cells of two brackets carries both brackets' depths. The interpolated stage's depth is
+# predicted log-linearly between the brackets' median depths at the bracket fraction t; a deeper bracket's cells are
+# binomially thinned to it (a shallower bracket cannot be deepened and keeps its cells as they are).
+DEPTH_RULE = ("depth: the interpolated stage's median counts per cell = exp((1 - t) log d_before + t log d_after), "
+              "d = a bracket's median counts per cell over all its cells; cells of a bracket deeper than that are "
+              "binomially thinned by target / d (panel genes and the rest of the library alike), a shallower "
+              "bracket's cells are left as they are")
+DEPTH_ZERO_RETRIES = 20  # a thinned cell left with no panel counts is thinned again (a cell without counts is not kept)
+
+
+def library_sizes(X, counts) -> np.ndarray:
+    """Each cell's library size N in `.X = log(1 + 1e4 c / N)`. N counts every gene of the cell's file, also genes
+    outside the panel, so it is read from the cell's expressed panel genes: N = 1e4 c / expm1(x) (the mean over them,
+    rounded; they agree to the rounding of X)."""
+    Xc, C = sparse.csr_matrix(X, dtype=np.float64), sparse.csr_matrix(counts, dtype=np.float64)
+    for M in (Xc, C):
+        M.eliminate_zeros()
+        M.sort_indices()
+    if Xc.shape != C.shape or not (np.array_equal(Xc.indptr, C.indptr) and np.array_equal(Xc.indices, C.indices)):
+        raise ValueError("expression and counts must have the same non-zero entries")
+    per_row = np.diff(C.indptr)
+    if (per_row == 0).any():
+        raise ValueError(f"{int((per_row == 0).sum())} cells have no expressed panel gene")
+    n = TARGET_LIBRARY_SIZE * C.data / np.expm1(Xc.data)
+    lib = np.rint(np.add.reduceat(n, C.indptr[:-1]) / per_row)
+    if (lib < np.asarray(C.sum(1)).ravel() - 0.5).any():
+        raise ValueError("a recovered library size is below the cell's panel counts")
+    return lib
+
+
+def depth_target(d_before: float, d_after: float, t: float) -> float:
+    """The interpolated stage's median counts per cell: log-linear between the brackets' medians at fraction t."""
+    if not (d_before > 0 and d_after > 0 and 0.0 <= t <= 1.0):
+        raise ValueError("depths must be positive and t in [0, 1]")
+    return float(np.exp((1.0 - t) * np.log(d_before) + t * np.log(d_after)))
+
+
+def _binomial_rows(C: sparse.csr_matrix, other: np.ndarray, w: np.ndarray,
+                   rng: np.random.Generator) -> tuple[sparse.csr_matrix, np.ndarray]:
+    """Each row's panel counts and its counts outside the panel, binomially thinned by the row's weight in [0, 1]."""
+    data = rng.binomial(C.data.astype(np.int64), np.repeat(w, np.diff(C.indptr)))
+    out = sparse.csr_matrix((data, C.indices.copy(), C.indptr.copy()), shape=C.shape)
+    return out, rng.binomial(np.asarray(other, dtype=np.int64), w)
+
+
+def _log_normalise(C: sparse.csr_matrix, lib: np.ndarray) -> np.ndarray:
+    """log(1 + 1e4 c / N) as the released files store it, dense float32."""
+    X = sparse.diags(TARGET_LIBRARY_SIZE / np.asarray(lib, dtype=np.float64)) @ sparse.csr_matrix(C, dtype=np.float64)
+    X.data = np.log1p(X.data)
+    return np.asarray(X.toarray(), dtype=np.float32)
+
+
+def _stage_counts(a: ad.AnnData, genes) -> tuple[np.ndarray, sparse.csr_matrix, np.ndarray, np.ndarray]:
+    """A bracket's panel expression (dense float32), panel counts, library sizes and counts outside the panel."""
+    sub = a[:, list(genes)]
+    C = sparse.csr_matrix(sub.layers["counts"], dtype=np.int64)
+    C.eliminate_zeros()
+    C.sort_indices()
+    lib = library_sizes(sub.X, C)
+    return dense(sub.X).astype(np.float32), C, lib, lib - np.asarray(C.sum(1)).ravel()
+
+
+def _keep_some_counts(make, n_rows: int, rng: np.random.Generator) -> tuple[sparse.csr_matrix, np.ndarray, int]:
+    """make(rows, rng) -> (panel counts, library sizes) for those rows; rows left without panel counts are made again,
+    up to DEPTH_ZERO_RETRIES times. Returns the counts, the library sizes and how many rows needed another try."""
+    C, lib = make(np.arange(n_rows), rng)
+    C, lib = sparse.csr_matrix(C), np.array(lib, dtype=np.float64)
+    retried = 0
+    for _ in range(DEPTH_ZERO_RETRIES):
+        empty = np.flatnonzero(np.asarray(C.sum(1)).ravel() == 0)
+        if not len(empty):
+            break
+        retried += len(empty)
+        Cn, ln = make(empty, rng)
+        keep = np.ones(n_rows, dtype=bool)
+        keep[empty] = False
+        order = np.r_[np.flatnonzero(keep), empty]  # the original row of each stacked row
+        C = sparse.vstack([C[keep], sparse.csr_matrix(Cn)]).tocsr()[np.argsort(order)]
+        lib[empty] = ln
+    if (np.asarray(C.sum(1)).ravel() == 0).any():
+        raise ValueError("thinning left a cell without panel counts after every retry")
+    return C, lib, retried
+
+
+def depth_matched_expression(before: ad.AnnData, after: ad.AnnData, interp: Interpolation, genes, t: float,
+                             seed) -> tuple[np.ndarray, dict]:
+    """The interpolation's cells with each bracket's cells thinned to the predicted depth (DEPTH_RULE): expression
+    (cells x genes, float32, log(1 + 1e4 c / N)) and a record. A bracket at or below the predicted depth keeps its
+    rows exactly as released."""
+    rng = np.random.default_rng(seed)
+    parts = [_stage_counts(a, genes) for a in (before, after)]
+    d = [float(np.median(p[2])) for p in parts]
+    target = depth_target(d[0], d[1], t)
+    out = np.empty((len(interp.rows), len(genes)), dtype=np.float32)
+    rec = {"rule": DEPTH_RULE, "t": float(t), "median_depth": {"before": d[0], "after": d[1]}, "target": target,
+           "factor": {}, "thinned": {}, "retried": {}}
+    for s, name in ((0, "before"), (1, "after")):
+        m = interp.stage == s
+        E, C, lib, other = parts[s]
+        f = min(1.0, target / d[s])
+        rec["factor"][name] = f
+        rows = interp.rows[m]
+        if f >= 1.0 or not m.any():
+            out[m] = E[rows]
+            rec["thinned"][name], rec["retried"][name] = 0, 0
+            continue
+        w = np.full(len(rows), f)
+
+        def make(idx, g, C=C, other=other, rows=rows, w=w):
+            Cn, on = _binomial_rows(C[rows[idx]], other[rows[idx]], w[idx], g)
+            return Cn, np.asarray(Cn.sum(1)).ravel() + on
+
+        Cn, ln, retried = _keep_some_counts(make, len(rows), rng)
+        out[m] = _log_normalise(Cn, ln)
+        rec["thinned"][name], rec["retried"][name] = int(m.sum()), retried
+    return out, rec
+
+
+def blend_expression(before: ad.AnnData, after: ad.AnnData, interp: Interpolation, genes, t: float,
+                     seed) -> tuple[np.ndarray, dict]:
+    """Each output cell's counts become Binomial(c_b, w_b) + Binomial(c_a, w_a) of itself and its coupled partner
+    (`interp.partners`, from `interpolate_clouds(..., with_partners=True)`), with w_b = min(1, (1 - t) D / d_b) and
+    w_a = min(1, t D / d_a): at the predicted depth D (DEPTH_RULE) the expected counts split (1 - t) : t between the
+    earlier and the later cell. Then log(1 + 1e4 c / N). Returns the expression and a record."""
+    if interp.partners is None:
+        raise ValueError("blend_expression needs interpolate_clouds(..., with_partners=True)")
+    rng = np.random.default_rng(seed)
+    (Eb, Cb, lb, ob), (Ea, Ca, la, oa) = (_stage_counts(a, genes) for a in (before, after))
+    db, da = float(np.median(lb)), float(np.median(la))
+    target = depth_target(db, da, t)
+    wb, wa = min(1.0, (1.0 - t) * target / db), min(1.0, t * target / da)
+    is_b = interp.stage == 0
+    rb = np.where(is_b, interp.rows, interp.partners)
+    ra = np.where(is_b, interp.partners, interp.rows)
+
+    def make(idx, g):
+        B, obn = _binomial_rows(Cb[rb[idx]], ob[rb[idx]], np.full(len(idx), wb), g)
+        A, oan = _binomial_rows(Ca[ra[idx]], oa[ra[idx]], np.full(len(idx), wa), g)
+        S = (B + A).tocsr()
+        S.eliminate_zeros()
+        return S, np.asarray(S.sum(1)).ravel() + obn + oan
+
+    C, lib, retried = _keep_some_counts(make, len(interp.rows), rng)
+    rec = {"rule": "blend: " + DEPTH_RULE, "t": float(t), "median_depth": {"before": db, "after": da},
+           "target": target, "weights": {"before": wb, "after": wa}, "retried": retried,
+           "expected_share_before": float(wb * db / (wb * db + wa * da))}
+    return _log_normalise(C, lib), rec
 
