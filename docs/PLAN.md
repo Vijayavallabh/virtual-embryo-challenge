@@ -807,3 +807,13 @@ open. No organiser reply to any of the four emails as of then.
   and its fit risk are written down and committed before the run, and every try is counted. Tried that day, none kept:
   depth matching by thinning on the embryo (E7) and heart (H3) entries, coupled-pair blends on the embryo (E8), herded
   draws on T1 (T5; the T2 versions H4 and E9 were pruned before their run). The entries are unchanged.
+- 2026-11-03 (c), decided by the AI assistant under the captain's delegation of 2026-11-02 (the captain can overrule):
+  a read-only ideas workflow (21 agents) found one change worth a try, the embryo coupling's left-right ambiguity.
+  FGW pairs cells one to one and cannot tell an embryo's two sides apart where expression is left-right symmetric, so
+  partners can be mirrored and the moved cloud flattens. A target-free gate (`experiments/harness/diag_emb_coupling.py`)
+  found it in every draw on the test pair, the s1 seed included, and on E7.5, and in half the draws on E7.25, one short
+  of the gate's count, so try E10 was pruned. Because the gate only saved tries and the defect sits in every test draw,
+  the same change was re-registered as try E11 under the unchanged adoption rule: +2.13 on E7.5, -1.59 on E7.25
+  (veto), not kept. The s1 stays fgw; its flattened test geometry is a known risk that the s2 (fgw_shape0, E7.5's
+  geometry) hedges, and on the backtests the pair fgw + fgw_shape0 beats fgw_aligned + fgw_shape0 on the s2 rule's
+  better-of-two (60.87 against 60.24). The other proposals were pruned before any run (`TRIES.md`).

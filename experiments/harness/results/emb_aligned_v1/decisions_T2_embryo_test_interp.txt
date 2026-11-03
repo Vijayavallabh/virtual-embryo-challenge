@@ -1,0 +1,6 @@
+T2:embryo:test_interp: 2 pseudo-task(s) in /mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/runs/harness/emb_aligned_v1 (protocol bake, build main, anchors computed, seeds [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  T2e/E6.75+E7.5->E7.25 on pseudo:T2e/E6.75+E7.5->E7.25: floor 50.00 +/- 0.00; fgw 58.78 +/- 2.20; fgw_aligned 57.20 +/- 1.99 (commit b705279, clean True)
+  T2e/E7.25+E8.0->E7.5 on T2:embryo:val_interp: floor 50.00 +/- 0.00; fgw 61.12 +/- 0.83; fgw_aligned 63.25 +/- 0.56 (commit b705279, clean True)
+fgw_aligned against fgw: not kept (loses more than 0.3 points on average on ['T2e/E6.75+E7.5->E7.25']; decided on 2 of 2 configured pseudo-tasks; not counted: none)
+    T2e/E7.25+E8.0->E7.5: paired mean gain +2.13, ahead in 10 of 10 seeds, passes True, vetoes False
+    T2e/E6.75+E7.5->E7.25: paired mean gain -1.59, ahead in 1 of 10 seeds, passes False, vetoes True

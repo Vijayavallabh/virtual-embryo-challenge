@@ -1,0 +1,70 @@
+{
+ "board": "T2:embryo:test_interp",
+ "runs": "/mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/runs/harness/emb_aligned_v1",
+ "decisions": [
+  {
+   "base": "fgw",
+   "change": "fgw_aligned",
+   "counted": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T2e/E6.75+E7.5->E7.25']",
+   "tasks": {
+    "T2e/E7.25+E8.0->E7.5": {
+     "complete": true,
+     "mean_gain": 2.1305212155892,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    },
+    "T2e/E6.75+E7.5->E7.25": {
+     "complete": true,
+     "mean_gain": -1.5860015052570162,
+     "seeds_ahead": 1,
+     "passes": false,
+     "vetoes": true
+    }
+   },
+   "need": 2,
+   "passed": 1
+  }
+ ],
+ "summaries": {
+  "T2e/E6.75+E7.5->E7.25": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "fgw": [
+    58.78119083140672,
+    2.2035357504971294
+   ],
+   "fgw_aligned": [
+    57.1951893261497,
+    1.9877281398483284
+   ]
+  },
+  "T2e/E7.25+E8.0->E7.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "fgw": [
+    61.118922295807145,
+    0.8348261928410835
+   ],
+   "fgw_aligned": [
+    63.249443511396336,
+    0.5628508543555922
+   ]
+  }
+ }
+}

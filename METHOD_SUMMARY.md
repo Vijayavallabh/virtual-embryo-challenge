@@ -67,7 +67,12 @@ the work.
   binomial thinning (released stages differ several-fold in counts per cell: the embryo series rises from 30 to 212,
   the heart series falls from 233 to 56). It lost on the more test-like backtest of both boards (-4.18 embryo, -3.92
   heart), lowering mmd_u and neighbourhood MMD, so it is not used. Blending coupled pairs of cells also lost on both embryo backtests:
-  averaged cells are too narrow a population.
+  averaged cells are too narrow a population. A target-free diagnostic found that the FGW coupling cannot tell the
+  embryo's left side from its right (expression is left-right symmetric at these stages), so its partners can be
+  mirrored and the moved cloud flattens; it happens in every draw of the test pair. Taking the moves from an exact
+  transport on expression and position in the rotated common frame fixed every draw and gained +2.13 on the E7.5
+  backtest (shape only) but lost -1.59 on E7.25, where its shorter moves cost shape, so it is not used; the s2
+  (E7.5's geometry) hedges the flattened s1 geometry.
 - **Provenance:** every prediction file carries a build stamp (its sha256, the commit that built it, and whether the
   code was unchanged from the build's start to the write); an upload is accepted only with a matching clean stamp,
   and the submission ledger records the building commit of every file sent.

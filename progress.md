@@ -6,10 +6,13 @@
 **Active Feature:** feat-018 (s1 files). The captain (2026-11-03): keep every default, continue the s1 work, iterate
 without the plan's dates ("do whatever it takes to win", within the rules). Every change tried for an entry now goes
 through the tries ledger (`experiments/harness/TRIES.md`: reason, predicted metrics and fit risk written before the
-run, every try counted; adopted after a side agent's note on lucky fits). Tried 2026-11-03: depth matching (embryo E7,
-heart H3) and blends (E8), none kept; herded draws (T1 T5/T6, heart H4, embryo E9) running. The s1 builds wait for the
-board-spec save (from 2026-11-04 UTC); `experiments/builds/build_all.sh s1|s2|t3alt` then builds and checks a whole
-set on the DGX. The s2 rules are frozen (`docs/S2_RULES.md`, 2026-11-03).
+run, every try counted; adopted after a side agent's note on lucky fits). Tried 2026-11-03, none kept: depth matching
+(embryo E7, heart H3), blends (E8), herded draws (T1 T5; H4 and E9 pruned), and the embryo coupling fix (E10 pruned by
+its target-free gate, E11 vetoed on E7.25). Known risk: at test fgw's moved cloud is flattened in every draw (mirrored
+FGW partners), hedged by the s2 (E7.5's geometry). The s1 builds wait for the board-spec save (from 2026-11-04 UTC;
+`vec boards update` still answered 403 at 19:00 UTC on 2026-11-03; no organiser email; Slack not screened, the plugin
+is signed out); `experiments/builds/build_all.sh s1|s2|t3alt` then builds and checks a whole set on the DGX. The s2
+rules are frozen (`docs/S2_RULES.md`, 2026-11-03).
 Earlier: feat-004 - Final-phase intake (`docs/P3_RUNBOOK.md`). Steps 2 (data) and 3 (labels) done on
 2026-10-28 (feat-003 done), and step 4 (the pre-registered runs) ran the same day at the user's go-ahead, each output
 committed before it was read. Step 1 is blocked by the 403 on the panel files (Cloudflare error code 1010, a
@@ -348,6 +351,22 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       nothing deleted; space came back while working); 47cd272 was committed with two failing literal-guard tests
       (fixed in 69de75a); a mistaken `git checkout <commit> -- .` overwrote the working tree with older files and was
       restored from HEAD at once (nothing uncommitted existed; no loss).
+- [x] 2026-11-03 (later), the ideas workflow and the embryo coupling. A read-only workflow (seven proposers on T1
+      metrics, T1 data, embryo expression, embryo geometry, heart, the T3 builder and scorer mechanics; a merge; three
+      critics per idea; a ranking; 21 agents) left one change worth a try and pruned the rest with reasons
+      (`experiments/harness/TRIES.md`). FGW's coupling is one-to-one and cannot tell the embryo's left side from its
+      right, so its partners can be mirrored and McCann moves flatten the cloud. Target-free gate
+      (`experiments/harness/diag_emb_coupling.py`, results `diag_emb_coupling/`, 5baba46): mirrored or random partners
+      in every draw on the test pair (s1 seed included: thinnest axis 0.21-0.25 of the RMS radius against 0.36 and
+      0.53 for the brackets) and on E7.5, in 5 of 10 on E7.25, one short of its 6: E10 pruned, not counted. E11
+      re-registered the change as a counted try (the AI assistant under the delegation; adoption rule unchanged):
+      +2.13 on E7.5 (10 of 10, shape only), -1.59 on E7.25 (veto; shorter moves cost d2 where FGW was right, and
+      E7.25's truth is thinner than both brackets, so restored thickness cost Dice). Not kept; with s2 = fgw_shape0 the
+      better-of-two is 60.87 with s1 = fgw and 60.24 with the fix. Code (off by default): `vec.core.aligned_coupling`,
+      `interpolate_clouds(move_coupling=, with_coupling=)`, harness `fgw_aligned`, `build_test.py embryo
+      --move-coupling`. 534 tests pass on the DGX. Tries: T1 6, embryo 9, heart 3, T3 1. Board specs: still 403;
+      the mail screen found no organiser reply (the tracker showed the notice unopened on 1 Nov); Slack could not be
+      screened (the connected Slack is another workspace, the Slack plugin signed out).
 
 ### What's Next
 
