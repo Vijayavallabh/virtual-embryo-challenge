@@ -1329,6 +1329,7 @@ INTERP_K = 8  # a cell moves by the mean displacement of its 8 nearest anchors o
 INTERP_MAX_ITER = 200  # conditional-gradient iterations of the coupling
 INTERP_EMD_ITER = 10_000_000  # network-simplex iterations of each step's exact transport (POT's default stops short)
 PARTNER_CHUNK = 4096  # cells per block when drawing coupled partners (memory only; the draw does not depend on it)
+HERD_STREAMS = (6, 7)  # random streams of the herded draws (before, after), apart from the interpolation's 0-5
 
 
 def pchip_rms(days, rms, target_day: float) -> float:
@@ -1403,7 +1404,7 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     of the result is unchanged.
 
     herd (embryo try E9 of experiments/harness/TRIES.md): each stage's drawn rows are herded towards that stage's mean
-    expression (`vec.core.herd_rows` on before_expr / after_expr, streams [seed, 6] and [seed, 7]) before positions are
+    expression (`vec.core.herd_rows` on before_expr / after_expr, streams HERD_STREAMS) before positions are
     read; the coupling and the moves are unchanged.
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
@@ -1441,9 +1442,11 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     if herd:
         herd_rec = {}
         if n_b:
-            rows_b, herd_rec["before"] = herd_rows(Eb, np.arange(len(Zb)), rows_b, np.random.default_rng([seed, 6]))
+            rows_b, herd_rec["before"] = herd_rows(Eb, np.arange(len(Zb)), rows_b,
+                                                   np.random.default_rng([seed, HERD_STREAMS[0]]))
         if n_a:
-            rows_a, herd_rec["after"] = herd_rows(Ea, np.arange(len(Za)), rows_a, np.random.default_rng([seed, 7]))
+            rows_a, herd_rec["after"] = herd_rows(Ea, np.arange(len(Za)), rows_a,
+                                                  np.random.default_rng([seed, HERD_STREAMS[1]]))
     stage = np.r_[np.zeros(n_b, dtype=np.int64), np.ones(n_a, dtype=np.int64)]
     rows = np.r_[rows_b, rows_a].astype(np.int64)
     perm = np.random.default_rng([seed, 2]).permutation(n)
