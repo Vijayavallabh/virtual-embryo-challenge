@@ -227,7 +227,7 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
   on the DGX while a build runs there (the stamp then is not clean; rebuild after the sync).
   - T3: `uv run python experiments/t3_decomp/build_submission.py build <gata4_decisions.json> --branch <b>
     --submission s1|s2 --wt data/raw/T2/E8.75.h5ad --run-dir runs/t3_decomp/gata4_<STAMP> --board <T3 board key>
-    --seed 1000001 --out runs/t3_build/<b>_<s>.h5ad`, for `allowed` and `barred`. The cell count defaults to the
+    --seed 1000001 --out runs/t3_build/<b>_<s>.h5ad`, for `allowed`, `refused` and `barred` (s2 = `refused` s1; `docs/S2_RULES.md`). The cell count defaults to the
     board's max_cells, read in code and never typed or printed (s1 build review, 2026-11-01); the builder refuses a
     seed below `vec.harness.BUILD_SEED_OFFSET`. 2026-10-31: the
     allowed branch is selected on the predicted answer to follow-up question 3, at the captain's instruction
@@ -237,7 +237,7 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     Gata4 files). Upload s2 first and s1 last (by 30 Nov IST), each with the captain's go-ahead after a screened check
     of mail, Slack and the Rules page. If the organisers allow the Gata4 files before the first T3 upload, go back to
     the allowed branch's s1 and s2; if they restrict them before the last one, send nothing from the allowed branch
-    (the barred branch's s1, or nothing). It re-decides nothing and refuses a decision file whose script or rules hash
+    (the barred branch's s1; `docs/S2_RULES.md`, which also covers a full bar). It re-decides nothing and refuses a decision file whose script or rules hash
     differs from the files on disk.
   - T2: `vec.t2_build`, run from the repo root (the paths are relative). Count by `n_cells_from_decision(board,
     pool.n_obs, "experiments/density/results/release/count_decision.json")` (step 4.5; null keeps max_cells; a
@@ -247,7 +247,8 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     up: `experiments/density/floor_reading/README.md`). If step 4.5 wrote no decision because the rerun left no rule
     rows, approved rule 7 keeps max_cells: count with `n_cells(board, pool.n_obs)` and
     record why in `progress.md`. Then `sample_cells`. Heart size by `size_or_hold(coords,
-    "experiments/coords/results/p3/size_heart_E12.5.json", "H1" (s1) or "H2" (s2), source_stage="E10.5",
+    "experiments/coords/results/p3/size_heart_E12.5.json", "H1" (s1) or "H2" (s2; the heart s2 is H2 built as the half
+    trim, `build_test.py heart --entry s2_trim`, trim before the draw, `docs/S2_RULES.md`), source_stage="E10.5",
     reference_cloud=<the full E10.5 pool from load_stage(..., drop_duplicates=True), before any scope filter>,
     expect_board="heart")`; embryo size by `apply_size_procedure` with
     `experiments/coords/results/p3/size_embryo_E7.75.json`. Then `cloud_guard` and `build_submission`. The module

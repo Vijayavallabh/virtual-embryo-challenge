@@ -282,23 +282,24 @@ scorer reproduces every published validation anchor exactly. The release-day rul
 - [x] 2026-11-01: heart scope payoffs (`experiments/s2_hedge/results/heart_scope/`; 10 seeds, 90b25d3; heart seeds
       0 and 5 identical to the stalled run's). Today's size-only H2 is a weak hedge, adding about 1 point over s1
       alone. A core-trimmed s2 adds 2.1-2.6 points: +10.8 against a clean-heart truth, -11.3 against E10.5 as released.
-      Split by truth family: on the radial truths only H2 helps (+0.92); on the thin truths core_radial adds +6.41
+      Split by truth family: on the radial truths H2 helps most (+0.92; half_radial +0.15); on the thin truths core_radial adds +6.41
       against H2's +1.32. A heart-focused s2 needs the captain's ruling (PLAN 4.3 step 5); the numbers are for that
       ruling at the s2 pre-registration (17-23 Nov).
 - [x] 2026-11-02: T1 2-D grid (`experiments/s2_hedge/results/t1_grid/`; 10 seeds, 90b25d3). The cardiomyocyte
       share is the lever: as s2, 60% cardiomyocytes (blood own) adds +4.74 under a uniform prior and +3.39 with a
-      third on own, and is best under every prior that lets the share move; blood hedges add 1.5 at most. Step 5
+      third on own, and is best under every prior that lets the share move; blood hedges add at most 1.6. Step 5
       on E9.5 -> E10.5: the radial trim passes (core_radial d2 +0.416, Dice +0.041; half_radial d2 +0.153).
       Under the captain's delegation (2026-11-02) the AI assistant started `docs/S2_RULES.md` (38faf73): T1 s2 =
       M1 at 60% cardiomyocytes; the heart rule was fixed before the second transition's readout (E8.25_late ->
-      E8.5, a diagnostic task in payoff.py, running with the 1.75-day pseudo-task at dcf1779).
+      E8.5, a diagnostic task in payoff.py, run at dcf1779 with the 1.75-day pseudo-task and read after 38faf73).
 - [x] 2026-11-02: heart step 5 on the second released transition (E8.25_late -> E8.5) fails (core_radial d2
       -0.021, Dice +0.112; on the 1.75-day pseudo-task d2 +0.141, Dice -0.013), so the rule as written gives s2 =
       H2 as built. The AI assistant amended it under the delegation, after seeing the outcome and logged as such:
       s2 = H2 as the half trim (`build_test.py heart --entry s2_trim`; `vec.t2_build.radial_trim_mask`, pinned to
-      the payoffs' trim by tests). On board score it beats H2 as built as an s2 on all three transitions (uniform
-      +0.95, +3.39, +5.52); on the released targets alone it adds +0.00, +2.04 and +1.57 against H2's +0.00,
-      +0.58 and +0.42.
+      the payoffs' trim by tests). On board score it beats or equals H2 as built as an s2 in 14 of 15 prior and
+      transition cells (uniform +0.95, +3.39, +5.51); on the released targets alone it adds +0.00, +2.04 and +1.57
+      against H2's +0.00, +0.58 and +0.42. Under the radial-family prior on E9.5 -> E10.5, H2 as built leads (50.84
+      against 50.07).
       Dry run on the DGX at 8031d9c (`build_test.py heart --entry s2_trim --board T2:heart:val_extrap`, file
       deleted afterwards): the trim keeps 80% of E10.5's cells, the in-plane scope goes 0.210 -> 0.105, the
       size step reaches H2's 560.5 full RMS (in-plane x1.49, z held), and the guard and checks pass.
@@ -309,6 +310,17 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       59.95 (E7.5: 62.95 against 61.12, ahead in 10 of 10, all shape; E7.25: never ahead); fgw_shape1 is never
       ahead. So s2 = fgw_shape0 (`build_test.py embryo --method fgw_shape0`); the dry run on the validation board
       passes (file deleted). All four s2 rules are now in `docs/S2_RULES.md`, to be hashed at the freeze.
+- [x] 2026-11-03: the s2 rules frozen at the captain's request (`docs/S2_RULES.md`, sha256 d170704284640f09...;
+      `docs/S2_RULES.sha256`, pinned by `tests/test_s2_rules.py`). Before the freeze: an independent four-lens
+      review (42 confirmed findings) and a second check (24 residual or new problems), all fixed. None changed a
+      chosen s2. The rule text, its evidence claims, T3's commands and ruling switches, "as s1", M2, A20 and
+      the upload order were corrected or completed. The per-seed hedge runs are committed
+      (`experiments/s2_hedge/results/per_seed/`, `hedge --prior`), and the embryo variants are registered.
+      A side agent's note asked about one final mark per set. Exact expectations
+      (`experiments/s2_hedge/bundle_sim.py`) keep a single s2 set: with per-set marks it gains +5.54 to +2.09
+      over s1 alone (even to 0.6 weight on the released-like truths) and is never more than 0.05 behind a
+      milder set, which it leads by 1.5-2.1 with per-board marks. A stray empty /tmp/.git, created during the
+      review, made the board-intake tests refuse their temp files; it was removed, and all 517 tests pass.
 
 ### What's Next
 

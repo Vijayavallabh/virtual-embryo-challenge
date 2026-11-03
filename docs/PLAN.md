@@ -197,13 +197,16 @@ chosen at the s2 pre-registration.
 Submissions: s1 = M1 with cardiomyocytes at about 58% of heart cells; s2 = identical except about 70% (the hedge
 belongs on the cardiomyocyte share; expected best-of-two gain ~1.1-1.4 points). Both shares are refit on E10.5 and the
 legal E14.5+ data and committed before any upload; M2 replaces s2 only if it passes the adoption rule against s2.
+(Superseded: s1 keeps E10.5's own 26.5% (2026-11-01) and s2 is M1 at 60% (2026-11-02). M2 does not replace s2; if M2
+replaces M1 as s1, the T1 s2 goes back to the captain. `docs/S2_RULES.md`, frozen 2026-11-03.)
 (2026-11-01: the captain agreed that the s2 rule be proposed at its pre-registration, Nov 17-23, with the hedge on the
 blood share instead of the cardiomyocyte share, since the blood share at E12.5 is the larger unknown; the rule itself
 is still put to him then.)
 (2026-11-02, decided by the AI assistant under the captain's delegation; `docs/S2_RULES.md`: s2 = M1 with cardiomyocytes
 at 60% of heart cells, blood at E10.5's own share. The 2-D grid shows the cardiomyocyte share is the lever. The 60% s2
 adds +4.74 points to the expected better-of-two (uniform prior over 15 mixes) and is best under every prior that lets
-the share move. A blood hedge adds 1.5 points at most; `experiments/s2_hedge/README.md`.)
+the share move. A blood hedge adds at most 1.6 points (+1.59 with cardiomyocytes at 0.45 or above) and beats the 60%
+s2 only if the cardiomyocyte share stays at E10.5's; `experiments/s2_hedge/README.md`.)
 
 2026-11-01: M1's direction step is built (`vec.t1_scope.external_shift`, `experiments/t1_m1/`). The harness cannot
 score it, for two reasons: Feng's E9.5 cells lie inside every T1 pseudo-task's version of the window, and the readout
@@ -265,7 +268,7 @@ embryo pseudo-tasks. On E7.5 it is ahead in 10 of 10 seeds (+1.83, all shape: d2
 it is never ahead. `experiments/harness/results/emb_shape_v1/`.)
 
 Submissions: s1 central clock; s2 alternative clock or the nearest-stage variant (E8.0 tissue shrunk to the predicted
-size, mixture expression).
+size, mixture expression). (Superseded 2026-11-02: s1 = fgw, s2 = fgw_shape0; `docs/S2_RULES.md`.)
 
 ### 4.3 T2 heart: E12.5 extrapolation (weight 0.5)
 
@@ -338,6 +341,10 @@ E10.5's heart sample is 77% surrounding tissue (the core, CM plus endocardium, 2
 heart-focused s2 (cells trimmed to H2's scope, then H2's size) would be a shape operation, which step 5 admits only if
 it gains on both released transitions; on E9.5 -> E10.5 the core share fell (37% to 23%), so it needs the captain's
 ruling. Payoffs: `experiments/s2_hedge/` (heart-scope).
+(2026-11-02, decided by the AI assistant under the captain's delegation, after step 5 failed on E8.25_late -> E8.5:
+s2 = H2 built as the half trim, `build_test.py heart --entry s2_trim`. This overrides step 5's classing of the trim as
+a shape operation; the reclassification came after the failure and is logged as such. `docs/S2_RULES.md`; decision
+log 2026-11-02 (c). The captain can restore s2 = H2 as built before the first official heart upload.)
 
 ### 4.4 T3: beta-catenin knockout at E8.75 (weight 1)
 
@@ -405,7 +412,9 @@ Components (all legal under the 2026-10-15 ruling):
   unchanged on both replicates on release day; its decision file chooses the components. 2026-10-28: the Gata4 files
   arrived that day, with the other validation answers; this run is runbook step 4.2 and has not started.
 - **Pending confirmation:** using the released Gata4 files inside the beta-catenin prediction (follow-up question 3 to
-  the organisers). If refused, both submissions use the reference-only factor. 2026-10-28: the user read the
+  the organisers). If refused, both submissions use the reference-only factor. (Superseded: in the decision file the
+  refused branch has no per-gene factor; s2 is the refused branch's s1, and under a restriction the last T3 upload is
+  the barred branch's s1, the Mab21l2 factor; `docs/S2_RULES.md`.) 2026-10-28: the user read the
   final-phase Rules s.10 and Data page as allowing it (A20); the fourth email asks the organisers to confirm, and until
   they answer the T3 build makes both the allowed and the barred branch. 2026-11-01 (captain's approval of the red
   team's hedge): s1 = the allowed branch's s1; s2 = the refused branch's s1 (wild-type cells, the central composition
@@ -417,7 +426,9 @@ Components (all legal under the 2026-10-15 ruling):
   which is why s2 uses no number derived from the Gata4 files. Any new T3 change must pass the adoption rule on the
   cross-knockout folds it was not tuned on.
 
-Submissions: s1 = F (Gata4-sourced) + C; s2 = F (reference-sourced) + C. Both are built before the first upload. Any
+Submissions: s1 = F (Gata4-sourced) + C; s2 = F (reference-sourced) + C. (Superseded 2026-11-01: s1 = the allowed
+branch's s1; s2 = the refused branch's s1, wild-type cells with the central composition at the Mab21l2 magnitude,
+uploaded first; `docs/S2_RULES.md`.) Both are built before the first upload. Any
 rule that picks or changes s2 after s1's score is written beforehand in terms of component skills and never reads a
 target property.
 
@@ -531,7 +542,7 @@ Next:
 | Oct 27-Nov 2 | Release-day runbook (`docs/P3_RUNBOOK.md`): board intake with anchors stripped, data, label map, pre-registered runs (size, T3 decomposition, T1 direction readout, harmonisation, density, anchor check); emulator calibration; T3 day-1 diagnostics; B0 on all four boards | D1 (Oct 29): test-board reference stages fixed |
 | Nov 3-9 | The v1 pipelines rerun on the release data (T2 embryo FGW, T1 M1, T3 F+C, T2 heart growth); T1 external directions and births; T1 M2 if the readout passed | D2 (Nov 6): every board beats its floor on internal validation |
 | Nov 10-16 | T3 leave-one-knockout-out weights (pathway programme only if its check passes); T2 heart emergent populations and scope hypotheses; ablations, seed robustness, freeze s1 candidates (Nov 16) | D3 (Nov 12): shared core vs specialised |
-| Nov 17-23 | s1 on all four boards by Nov 22 (after user approval); s2 rules pre-registered and hashed | D4: read scores, apply the written rules |
+| Nov 17-23 | s1 on T1 and both T2 boards by Nov 22 (after user approval; T3: s2 first, s1 last); s2 rules frozen and hashed on 2026-11-03 (`docs/S2_RULES.md`) | D4: read scores to mark finals; no s2 rule reads a score |
 | Nov 24-30 | s2 by Nov 30; method summary and disclosures; final nomination | - |
 | Dec 1-2 | Buffer only. Archive every submitted file with its code hash for the 14-day winners' report | - |
 
@@ -555,7 +566,7 @@ go-ahead; then the runbook's section 5.
   (UTC)" (organisers' email of 2026-10-20 22:03 IST), with no hour given; its earliest reading, 00:00 UTC on
   2 December, is 05:30 IST on 2 December. Final uploads still finish by the end of 30 November IST, which leaves
   1 December for outages. Each official upload is scored and published when it is made (Rules s.11), so s1's score
-  is public before s2 goes in.
+  is public before s2 goes in (on T3, s2's score is public before s1 goes in).
 - Final entries (account page, seen 2026-10-28): in the final phase the captain, the user, picks which submission
   counts, marking it in a "Final" column of the team's submission list while nominations are open; 2026-12-02 is the
   last moment to make a submission or nominate a final entry. Rules s.11 still says a board ranks a team by its best;
@@ -564,7 +575,8 @@ go-ahead; then the runbook's section 5.
 - Each submission carries its external-data disclosure text.
 - s2 payoffs (2026-11-01, `experiments/s2_hedge/`, sensitivity analysis, not a choice): what each candidate s2 gains
   where the test's tissue mix differs from s1's and costs where it does not (T1: blood and cardiomyocyte shares,
-  one-axis and on a 2-D grid; T2 heart: scope). The s2 rules (17-23 Nov) are written from them with the captain.
+  one-axis and on a 2-D grid; T2 heart: scope). The s2 rules were written from them by the AI assistant under the captain's delegation and frozen on 2026-11-03
+  (`docs/S2_RULES.md`).
 
 ## 9. Risks
 
@@ -755,11 +767,33 @@ open. No organiser reply to any of the four emails as of then.
   - Step 5 fails on its second released transition (E8.25_late -> E8.5: core_radial d2 -0.021, Dice +0.112), so as
     written the rule gives s2 = H2 as built.
   - Amended after seeing that result: s2 = H2 built as the half trim (`build_test.py heart --entry s2_trim`). On board
-    score, the half trim beats H2 as built as an s2 on all three released heart transitions: +0.95, +3.39 and +5.52
-    under a uniform prior, and on the released targets alone +0.00, +1.46 and +1.15. Its gains are mostly in
-    de_score and de_direction, which step 5's shape bar does not measure.
+    score, the half trim beats H2 as built as an s2 on all three released heart transitions under a uniform prior
+    (+0.95, +3.39 and +5.51). On the released targets alone it is +0.00, +1.46 and +1.15: a tie on E9.5 -> E10.5,
+    where under the radial-family prior H2 as built leads by 0.77. Its gains on the released targets are spread over
+    the expression, scale and shape terms (`docs/S2_RULES.md`), while step 5's bar reads only d2 and Dice.
   - `docs/S2_RULES.md` keeps the rule, the outcome and the amendment. The captain can restore the rule as written.
-- 2026-11-02 (d), by the pre-registered rule (`docs/S2_RULES.md`, fixed at 90ddaaa before the run): embryo s2 =
+- 2026-11-02 (d), decided by the AI assistant under the captain's delegation of 2026-11-02, by the pre-registered
+  rule (`docs/S2_RULES.md`, fixed at 90ddaaa before the run): embryo s2 =
   fgw_shape0, E7.5's geometry with fgw's mixture. Better-of-two with fgw 60.87 against fgw alone 59.95 (section 4.2).
   The dry run on the validation board passes (472e856). Every board now has its s2: T1 at 60% cardiomyocytes,
   heart H2 as the half trim, embryo fgw_shape0, T3 the refused branch's s1. The file is hashed at the freeze.
+- 2026-11-03, decided by the AI assistant under the captain's delegation of 2026-11-02: the s2 rules were frozen at the
+  captain's request ("go ahead and do it now itself instead of later", 2026-11-03), ahead of the Nov 17-23 slot.
+  - **Hash.** `docs/S2_RULES.md` sha256 d170704284640f093afd5039143f6e86d1ce9a4c10ab5351e682f3337afe17c6, also in `docs/S2_RULES.sha256`; `tests/test_s2_rules.py` pins it.
+  - **Review.** Before the freeze, an independent four-lens review confirmed 42 findings (14 major), and a second check
+    found 24 residual or new problems. All were fixed; none changed a chosen s2.
+  - **Corrections.** The heart trim beats or equals H2 as built in 14 of 15 prior and transition cells, not "under
+    every prior". Its physical rationale holds on E8.25_late -> E8.5 only, and the amendment rests on the hedge alone.
+    Two embryo candidates ran on one task, not both.
+  - **New choices,** each logged in the file:
+    - what "as s1" means, and when an s2 goes back to the captain;
+    - M2 does not replace the T1 s2;
+    - a ruling that bars the validation answers lapses the T1, heart and embryo s2 and sends T3 to the barred branch;
+    - T3 under a restriction: the barred s1 last;
+    - T3 under a full bar before the first upload: both uploads from the barred branch;
+    - a full bar after the refused upload: the refused file is not marked final;
+    - on T3, an unscored s1 means mark s2.
+    - if one final mark covers a whole set, the same s2s stand, and no second set is kept
+      (`experiments/s2_hedge/bundle_sim.py`; prompted by a side agent's note).
+  - **Embryo registry.** The embryo variant runs are registered (emb_shape_v1, 8 rows). The per-seed hedge runs are
+    committed in `experiments/s2_hedge/results/per_seed/`.

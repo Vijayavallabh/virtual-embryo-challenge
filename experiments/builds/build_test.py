@@ -10,9 +10,11 @@ machine, and an official upload needs the captain's go-ahead.
           mix (or --cm-share, the cardiomyocyte share of heart cells), Feng's E9.5 -> E14.5 direction on the cells of
           Feng's groups at 2/5 of the bracket (E10.5 -> E12.5), B0's damped E9.5 -> E10.5 momentum on the rest
   heart   B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
-          procedure: --entry s1 = scope hypothesis H1, s2 = H2 (approved rule 3, `size_or_hold`)
-  embryo  --method pseudobulk_shift | fgw: E7.5 cells moved by the E7.25 -> E7.5 change, or the FGW interpolation
-          between E7.5 and E8.0 at t = 1/2; sized by the pre-registered embryo procedure (size_embryo_E7.75.json)
+          procedure: --entry s1 = scope hypothesis H1; s2_trim = the s2 of docs/S2_RULES.md (H2 as a trim to half
+          E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`)
+  embryo  --method pseudobulk_shift | fgw | fgw_shape0 | fgw_shape1: E7.5 cells moved by the E7.25 -> E7.5 change, or
+          the FGW interpolation between E7.5 and E8.0 at t = 1/2 (fgw_shape0, the s2 of docs/S2_RULES.md, keeps the
+          mixture in E7.5's geometry); sized by the pre-registered embryo procedure (size_embryo_E7.75.json)
 
 The board is the test board from boards/ (after the intake, `vec boards update --from-file`); before that, --board
 may name a validation board of the same task for a dry run, and the script refuses a dry run whose output file name
@@ -26,6 +28,9 @@ Usage (DGX, repo root, BLAS threads capped):
   uv run python experiments/builds/build_test.py t1 --out runs/builds/T1_s1.h5ad
   uv run python experiments/builds/build_test.py heart --entry s1 --out runs/builds/T2heart_s1.h5ad
   uv run python experiments/builds/build_test.py embryo --method fgw --out runs/builds/T2embryo_s1.h5ad
+  uv run python experiments/builds/build_test.py t1 --cm-share 0.60 --out runs/builds/T1_s2.h5ad
+  uv run python experiments/builds/build_test.py heart --entry s2_trim --out runs/builds/T2heart_s2.h5ad
+  uv run python experiments/builds/build_test.py embryo --method fgw_shape0 --out runs/builds/T2embryo_s2.h5ad
 """
 
 from __future__ import annotations

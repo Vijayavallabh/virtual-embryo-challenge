@@ -1,0 +1,6 @@
+Expected gain of the s2 set over s1 alone, on the total score (T1 + mean of the T2 boards; T3 left out)
+ weight on the released-like truth  A: per board / per set  B: per board / per set  C: per board / per set
+                              even   +7.63 /  +5.54       +5.52 /  +5.16       +4.74 /  +4.74    
+                               1/3   +5.97 /  +3.81       +4.07 /  +3.64       +3.39 /  +3.39    
+                               0.6   +4.00 /  +2.09       +2.51 /  +2.14       +2.03 /  +2.03    
+                                 1   +1.06 /  +0.00       +0.17 /  +0.00       +0.00 /  +0.00    

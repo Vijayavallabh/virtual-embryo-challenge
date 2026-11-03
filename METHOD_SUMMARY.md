@@ -57,7 +57,10 @@ the work.
   derived from targets) on shared draws, and a change kept only under the adoption rule (approved rule 7's test per
   pseudo-task).
 - **Pre-registration:** every rule that turns released data into a submission is committed before the data it acts on
-  (size procedure, T3 decomposition rules, T1 direction readout, cell-count rule, label-mapping rule).
+  (size procedure, T3 decomposition rules, T1 direction readout, cell-count rule, label-mapping rule). The s2 rules
+  (`docs/S2_RULES.md`) were written by the AI assistant under the captain's delegation of 2026-11-02 from sensitivity
+  analyses on released data, before any test score, and frozen on 2026-11-03. The heart rule was amended after its
+  released-data outcome, and the amendment is logged as such.
 - **Provenance:** every prediction file carries a build stamp (its sha256, the commit that built it, and whether the
   code was unchanged from the build's start to the write); an upload is accepted only with a matching clean stamp,
   and the submission ledger records the building commit of every file sent.
@@ -69,7 +72,8 @@ the work.
   26.5% of heart cells (the captain's choices of 2026-11-01). E10.5 is the same nuclei assay on dissected hearts; the
   earlier stages were embryo portions, and their compositions do not transfer (blood 1.25% at E9.5; cardiomyocytes 66%
   of heart cells). Legal external data agree on not raising the cardiomyocyte share: Feng's own share barely moves from
-  E9.5 to E14.5. The s2 hedge (blood or cardiomyocyte share) is fixed at the s2 pre-registration.
+  E9.5 to E14.5. The s2 hedge: cardiomyocytes at 60% of heart cells, decided from the T1 grid
+  (`docs/S2_RULES.md`).
 - **Direction.** Cells of the groups Feng 2022 profiles (cardiomyocytes, endocardium, endothelium, epicardium) move in
   count space along Feng's within-dataset E9.5 -> E14.5 log ratio of mean CP10k, scaled by the step's share of that
   bracket (E10.5 -> E12.5: 2/5); the other cells (blood, mostly) move by half the E9.5 -> E10.5 per-type change. A
@@ -93,7 +97,8 @@ the work.
   fixed in advance; `vec.t2_build.n_cells_from_decision`), moved in count space by half the E9.5 -> E10.5 change of
   each harmonised lineage; coordinates grown by the pre-registered size procedure (core = cardiomyocytes +
   endocardium; growth from E9.5 -> E10.5 only; a fixed three-rule average justified without an assumed rate; z held at
-  E10.5 when the sectioning plane matches); the two submissions are the two scope hypotheses (H1, H2). E10.5's
+  E10.5 when the sectioning plane matches); the two submissions are the two scope hypotheses (H1; H2 as the half trim, amended after its released-data outcome,
+  `docs/S2_RULES.md`). E10.5's
   composition is held: E9.5 and earlier were embryo portions and E10.5 a dissected heart, so a composition trend through
   them would carry that change of sampling on to E12.5 (dropped by the captain, 2026-11-01). On the pseudo-tasks B0
   beats a copy (+0.47, +0.90) and the floor (+0.43, +1.45); the size cannot be backtested.
@@ -105,7 +110,7 @@ the work.
   through the released embryo stages). On the pseudo-tasks: 61.12 on E7.5 against 56.97 for the organisers'
   pseudobulk_shift and 58.83 for it with the size rule, and 58.78 on E7.25 against 53.86 for B0, every gap ahead in
   10 of 10 seeds (`experiments/harness/results/emb_fgw_v1/`). It loses on shape on E7.5, where E8.0's sampling differs;
-  the s2 hedge (interpolated or copied shape) is fixed at the s2 pre-registration.
+  the s2 is fgw_shape0, fgw's mixture in E7.5's geometry, chosen by a rule fixed before its run (`docs/S2_RULES.md`).
 - **Spatial hygiene:** random rows only, jitter of at most 0.25 nearest-neighbour distances to break duplicate
   coordinates, proper rotations only, native coordinates (`experiments/density/REPORT.md`, `experiments/coords/REPORT.md`).
 

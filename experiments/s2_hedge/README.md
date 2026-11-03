@@ -1,7 +1,7 @@
 # s2 hedge payoffs (sensitivity analysis for the s2 pre-registration)
 
-**Not an adoption result and not a choice.** Nothing here picks an entry. The s2 rules are pre-registered on 17-23 Nov
-with the captain's sign-off (`docs/PLAN.md` sections 7-8). These runs measure what a second upload gains where the
+**Not an adoption result and not a choice.** Nothing here picks an entry. The s2 rules are in `docs/S2_RULES.md`,
+written by the AI assistant under the captain's delegation of 2026-11-02 and frozen on 2026-11-03. These runs measure what a second upload gains where the
 test's tissue mix is not the one s1 assumes, and what it costs where it is.
 
 Each board allows 2 scored uploads, and the captain marks the better-scoring one as final, so s2 is worth most when it
@@ -17,7 +17,8 @@ Both one-axis runs build the prediction from E9.5's own chamber mix (blood 2.6% 
 of heart cells) and move one share. B0 at its own mix against the unchanged truth equals the harness's B0 cell for
 cell (d2_v1). Mean board scores (floor 50):
 
-Blood's share of chamber cells (`results/t1_blood/`):
+Blood's share of chamber cells (`results/t1_blood/`; the column is the truth's share of all cells, which include 5%
+surrounding cells):
 
 | prediction \ truth | own (22.9%) | 2.8% | 7.6% | 14.3% | 33.3% |
 |---|---|---|---|---|---|
@@ -38,15 +39,15 @@ Cardiomyocyte share of heart cells (`results/t1_cm/`; the column is the truth's 
 | 75% | 46.73 | 45.32 | 49.77 | 54.12 | 58.86 |
 
 Reading: composition moves T1 by up to 12-19 points on this task, far more than any expression step (M1's direction
-added 1.29). On the cardiomyocyte axis the matched prediction wins every column, and a mismatch of 0.6 costs about 14
-points. **Both axes are confounded:** every blood row also carries E9.5's cardiomyocyte excess (adding blood dilutes
+added 1.29). On the cardiomyocyte axis the matched prediction wins three of the four columns that have one (in the 75% column the
+own 66% row edges it, 59.19 against 58.86), and a mismatch of 0.6 costs about 14 points. **Both axes are confounded:** every blood row also carries E9.5's cardiomyocyte excess (adding blood dilutes
 it, which is why 15% blood wins even against a 3%-blood truth), and every cardiomyocyte row carries E9.5's blood
 shortfall. At test, s1 and s2 share E10.5's own mix and differ only on the hedged shares, so these tables are context,
 not the decision basis.
 
 `t1-grid` removes the confound (10 seeds; commit 90b25d3; `results/t1_grid/`). Every prediction starts from the
 truth's own chamber mix (an oracle base) and sets two shares:
-- blood: own (22.9%), 5% or 40% of chamber cells;
+- blood: own (24.1% of chamber cells; 22.9% of all truth cells), 5% or 40% of chamber cells;
 - cardiomyocytes: 15%, own (26.5%), 45%, 60% or 75% of heart cells.
 
 The truths use the same 15-point grid; labels read `b<blood>_c<cardiomyocytes>`. The full 15 x 15 table is in
@@ -81,11 +82,14 @@ third on own. Three more were computed from the same runs:
 | none (s1 alone) | 63.54 | 65.36 | 64.02 | 60.14 | 68.03 |
 
 Reading:
-- **The cardiomyocyte share is the lever.** A mismatch there costs up to 12-19 points, while blood costs s1 2-5.
+- **The cardiomyocyte share is the lever.** With blood at its own share, a mismatch there costs s1 up to 15 points
+  (3.9, 9.6 and 14.9 against truths at 45%, 60% and 75% of heart cells), while blood costs s1 2-5.
 - **bown_c0.6 is the best s2** (blood own, cardiomyocytes at 60% of heart cells) under every prior that lets the
   cardiomyocyte share move.
-- **A blood hedge wins only if the cardiomyocyte share is known to stay at E10.5's,** and then by 1.5 points at most.
-  This replaces the expectation in `docs/PLAN.md` 4.1 that the hedge belongs on blood.
+- **A blood hedge wins only if the cardiomyocyte share is known to stay at E10.5's,** and then by 1.5 points (at most
+  1.6 under any prior here). This reverses the direction the captain agreed on 2026-11-01 (a hedge on the blood share;
+  `docs/PLAN.md` 4.1, decision log 2026-11-01 (d)). It was decided by the AI assistant under his delegation
+  (`docs/S2_RULES.md`).
 - **Where the s2 lands:** the legal E14.5 datasets put the cardiomyocyte share at 40-77% of heart cells (a different
   assay, so the levels do not transfer), against E10.5's 26.5%. An s2 at 60% covers that upper range, and s1 keeps the
   same-assay estimate.
@@ -138,7 +142,7 @@ Reading:
 - **It would be a bad s1.** Against E10.5 as released it loses 11.3 points, mostly on the expression-spread metrics
   (mmd_u 0.30 against 0.47, neighborhood_mmd 0.36 against 0.52).
 - **The choice depends on the prior.**
-  - On the radial family only H2 helps (+0.92); core_radial never beats hold there.
+  - On the radial family H2 helps most (+0.92; half_radial +0.15); core_radial never beats hold there.
   - On the thin family core_radial adds +6.41 against H2's +1.32.
   - half_radial sits between them (+0.15 and +4.86).
   - The released stages lean radial: the core share fell from 37% at E9.5 to 23% at E10.5.
@@ -151,7 +155,8 @@ Caveats:
 
 A heart-focused s2 would be a shape operation, which `docs/PLAN.md` 4.3 step 5 admits only if it gains on both
 released transitions; on E9.5 -> E10.5 the core share fell (37% to 23%), so it would need the captain's ruling. These
-numbers inform that ruling; they change nothing in the plan.
+numbers inform that ruling; they change nothing in the plan. (2026-11-02: under the captain's delegation they were used
+to set the heart s2 to the half trim, treated as a scope hedge; `docs/S2_RULES.md`.)
 
 ### The other heart transitions (`heart-scope --task`, commit dcf1779)
 
@@ -179,8 +184,10 @@ uniform over the five truths:
 | none | 49.09 | 51.61 | 52.73 |
 
 On the released target alone, the half trim beats hold in two of the three transitions: +1.75 on E8.25_late -> E8.5
-and +1.57 on E8.75 -> E10.5, against -5.88 on E9.5 -> E10.5. Step 5's shape bar fails, but as an s2 the half trim beats
-H2 as built on every transition and under every prior here. `docs/S2_RULES.md` records the rule, its outcome and the
+(paired mean of s2 minus s1, ahead in 9 of 10 seeds; +2.04 as the better of the two) and +1.57 on E8.75 -> E10.5,
+against -5.88 on E9.5 -> E10.5. Step 5's shape bar fails. As an s2, the half trim beats H2 as built on every transition
+under the uniform, one-third-on-own and thin-family priors. On E9.5 -> E10.5 it ties on the released target (50.22)
+and trails under the radial family (50.07 against 50.84). `docs/S2_RULES.md` records the rule, its outcome and the
 amendment that follows from this.
 
 ## Runs
@@ -195,8 +202,8 @@ because every builder and scorer call is seeded on its own. That claim comes fro
 
 ## T2 embryo (`experiments/harness/results/emb_shape_v1/`; 10 seeds; commit 90ddaaa)
 
-No candidate built before 2026-11-02 beats fgw in any seed of either embryo pseudo-task (`emb_fgw_v1`), so none of
-them adds anything as an s2. The shape variants keep fgw's coupling and mixture of real cells and take positions from
+No candidate built before 2026-11-02 beats fgw in any seed of the embryo pseudo-tasks it runs on (`emb_fgw_v1`;
+pseudobulk_shift and psb_size run on E7.5 only), so none of them adds anything as an s2. The shape variants keep fgw's coupling and mixture of real cells and take positions from
 one bracket's geometry, at the size rule (`interpolate_clouds(t_pos=0 | 1)`; the run's fgw equals emb_fgw_v1's):
 
 | | fgw | fgw_shape0 (earlier bracket's geometry) | fgw_shape1 (later bracket's geometry) |
@@ -210,20 +217,38 @@ s2 = fgw_shape0 (E7.5's geometry at test).
 
 ## Reproducing
 
-The per-seed run files behind every table are committed in `results/per_seed/`, copied from the compute machine's
-`runs/s2_hedge/` with their provenance: T1 grid at 90b25d3, heart transitions at 90b25d3 and dcf1779, clean trees.
+The per-seed run files behind the T1 grid and heart tables are committed in `results/per_seed/`. They were copied
+from the compute machine's `runs/s2_hedge/` with their provenance: T1 grid at 90b25d3, heart transitions at 90b25d3
+and dcf1779, clean trees. The one-axis T1 tables keep only their cf476aa summaries, and the embryo rows are in
+`experiments/harness/results/`.
 The extra priors quoted here and in `docs/S2_RULES.md` are uniform over the truths each one lists:
 
 ```bash
 P="uv run python experiments/s2_hedge/payoff.py"
-$P hedge --runs results/per_seed/t1-grid/* --s1 bown_cown --out results/t1_grid \
+$P hedge --runs experiments/s2_hedge/results/per_seed/t1-grid/* --s1 bown_cown --out experiments/s2_hedge/results/t1_grid \
   --prior blood_own_cm_own_up=bown_cown,bown_c0.45,bown_c0.6,bown_c0.75 \
   --prior cm_0.45_up=bown_c0.45,bown_c0.6,bown_c0.75,b0.05_c0.45,b0.05_c0.6,b0.05_c0.75,b0.4_c0.45,b0.4_c0.6,b0.4_c0.75 \
   --prior cm_own_blood_varies=bown_cown,b0.05_cown,b0.4_cown
-$P hedge --runs results/per_seed/heart-scope/* --s1 hold --out results/heart_scope \
+$P hedge --runs experiments/s2_hedge/results/per_seed/heart-scope/* --s1 hold --out experiments/s2_hedge/results/heart_scope \
   --prior released=own --prior radial_family=own,radial_0.5,radial_0 --prior thin_family=thin_0.5,thin_0
 ```
 
-The same command reproduces `heart_scope_e825` and `heart_scope_e875`, with `results/per_seed/heart-scope-e825/*`
-and `results/per_seed/heart-scope-e875/*` as the runs. Paths are relative to `experiments/s2_hedge/`. `summarise` and
-`step5` take the same run folders.
+Run these from the repo root. The same heart command reproduces `heart_scope_e825` and `heart_scope_e875`, with
+`experiments/s2_hedge/results/per_seed/heart-scope-e825/*` and `.../heart-scope-e875/*` as the runs and the matching `--out`.
+`summarise` and `step5` take the same run folders.
+
+## Per-set marks (`bundle_sim.py`, `results/bundle_sim/`)
+
+What the s2 set gains if one final mark covers a whole set of boards instead of each board. These are exact
+expectations over the committed per-seed payoffs, with the boards independent, the T2 boards averaged and T3 left
+out. Each cell gives the gain over s1 alone, per-board marks / per-set marks:
+
+| Weight on each board's released-like truth | s2s of `docs/S2_RULES.md` | milder set (heart H2 as built, embryo redrawn) | T1's s2 alone |
+|---|---|---|---|
+| even | +7.63 / +5.54 | +5.52 / +5.16 | +4.74 / +4.74 |
+| 1/3 | +5.97 / +3.81 | +4.07 / +3.64 | +3.39 / +3.39 |
+| 0.6 | +4.00 / +2.09 | +2.51 / +2.14 | +2.03 / +2.03 |
+| 1 | +1.06 / +0.00 | +0.17 / +0.00 | +0.00 / +0.00 |
+
+With per-set marks the bold s2s keep a third to a half less value. They are never more than 0.05 behind the milder
+set, and with per-board marks they lead by 1.5-2.1, so one set is kept.

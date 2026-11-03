@@ -1,0 +1,112 @@
+{
+ "board": "T2:embryo:test_interp",
+ "runs": "/mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/experiments/harness/results/emb_shape_v1/tasks",
+ "decisions": [
+  {
+   "base": "fgw",
+   "change": "fgw_shape0",
+   "counted": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T2e/E6.75+E7.5->E7.25']",
+   "tasks": {
+    "T2e/E7.25+E8.0->E7.5": {
+     "complete": true,
+     "mean_gain": 1.830818263318949,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    },
+    "T2e/E6.75+E7.5->E7.25": {
+     "complete": true,
+     "mean_gain": -5.113781546184615,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    }
+   },
+   "need": 2,
+   "passed": 1
+  },
+  {
+   "base": "fgw",
+   "change": "fgw_shape1",
+   "counted": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T2e/E6.75+E7.5->E7.25', 'T2e/E7.25+E8.0->E7.5']",
+   "tasks": {
+    "T2e/E7.25+E8.0->E7.5": {
+     "complete": true,
+     "mean_gain": -1.6508794039993355,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    },
+    "T2e/E6.75+E7.5->E7.25": {
+     "complete": true,
+     "mean_gain": -1.289525554296953,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    }
+   },
+   "need": 2,
+   "passed": 0
+  }
+ ],
+ "summaries": {
+  "T2e/E6.75+E7.5->E7.25": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "fgw": [
+    58.78119083140672,
+    2.2035357504971294
+   ],
+   "fgw_shape0": [
+    53.66740928522209,
+    1.9439395785757863
+   ],
+   "fgw_shape1": [
+    57.49166527710977,
+    1.9964349956311944
+   ]
+  },
+  "T2e/E7.25+E8.0->E7.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "fgw": [
+    61.118922295807145,
+    0.8348261928410835
+   ],
+   "fgw_shape0": [
+    62.949740559126084,
+    0.7618931412546367
+   ],
+   "fgw_shape1": [
+    59.468042891807805,
+    0.7250809884059297
+   ]
+  }
+ }
+}
