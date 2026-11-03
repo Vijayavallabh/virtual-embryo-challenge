@@ -524,12 +524,14 @@ def _b0_t1(damping: float) -> Callable[[BuildContext], Stage]:
     return build
 
 
-def _b0_t2(ctx: BuildContext) -> Stage:
+def _b0_t2(ctx: BuildContext, depth: bool = False) -> Stage:
     """B0 on a T2 board: real reference cells at the count rule, moved in count space by the per-type change of the
     harmonised lineage level (obs["merged"]; groups without a stable cross-stage meaning held flat). Extrapolation:
     from `start` to the reference, damped by B0_DAMPING. Interpolation: from the earlier bracket towards the later one,
     by the target's fraction of the bracket (its day is part of the geometry). Coordinates and size stay the source's
-    (the heart size cannot be backtested; the test build applies the pre-registered size)."""
+    (the heart size cannot be backtested; the test build applies the pre-registered size). depth (extrapolation only;
+    heart try H3 of experiments/harness/TRIES.md): the moved cells are then binomially thinned to the target depth that
+    vec.t2_build.DEPTH_EXTRAP_RULE extrapolates at B0_DAMPING from the start's and the reference's median depths."""
     from vec import t1_scope
 
     pool, rows, _, coords = draw_copy(ctx)
@@ -547,7 +549,16 @@ def _b0_t2(ctx: BuildContext) -> Stage:
     like = typed(pool, "start" if t.kind == "interp" else "end")[rows]
     shifted, _ = t1_scope.momentum_shift(typed(start, "start"), typed(end, "end"), like, damping, (), key="b0_type",
                                          seed=[ctx.seed, 3])
-    return finish(ctx, pool, dense(shifted[:, ctx.board.genes].X), coords)
+    g = ctx.board.genes
+    if depth:
+        if t.kind != "extrap":
+            raise ValueError("the depth step of B0 is for extrapolation boards")
+        d_start, d_ref = t2_build.median_depth(start, g), t2_build.median_depth(pool, g)
+        target = t2_build.extrapolated_depth(d_start, d_ref, t.role_days["start"], t.role_days[t.reference_role],
+                                             t.target_day, B0_DAMPING)
+        X, _ = t2_build.thin_to_depth(shifted, g, d_ref, target, [ctx.seed, 8])
+        return finish(ctx, pool, X, coords)
+    return finish(ctx, pool, dense(shifted[:, g].X), coords)
 
 
 # ------------------------------------------------------------------------------------------------ T2 embryo (feat-010)
@@ -608,6 +619,14 @@ def _fgw_shape1(ctx: BuildContext) -> Stage:
 
 def _fgw_depth(ctx: BuildContext) -> Stage:
     return _fgw(ctx, expression="depth")
+
+
+def _b0_depth(ctx: BuildContext) -> Stage:
+    return _b0_t2(ctx, depth=True)
+
+
+def _t2_extrap_with_start(t: PseudoTask) -> bool:
+    return t.task == "T2" and t.kind == "extrap" and "start" in t.inputs
 
 
 def _fgw_blend(ctx: BuildContext) -> Stage:
@@ -675,6 +694,12 @@ CANDIDATES = {
                            {"what": "fgw's cells as binomial blends of each cell and a coupled partner of the other "
                                     "bracket, splitting the expected counts (1 - t) : t at the predicted depth",
                             "rule": "blend: " + t2_build.DEPTH_RULE, "scope": "whole"}, requires=_interp),
+    # heart try H3 (experiments/harness/TRIES.md, registered before its run)
+    "b0_depth": Candidate("b0_depth", frozenset({"T2"}), (), _b0_depth,
+                          {"what": "B0 on a T2 extrapolation board with its cells binomially thinned to the target's "
+                                   "depth, extrapolated at B0's damping (half the latest log rate per day over the "
+                                   "horizon)", "damping": B0_DAMPING, "rule": t2_build.DEPTH_EXTRAP_RULE,
+                           "scope": "whole"}, requires=_t2_extrap_with_start),
 }
 
 

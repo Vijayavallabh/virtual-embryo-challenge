@@ -1600,6 +1600,50 @@ def depth_matched_expression(before: ad.AnnData, after: ad.AnnData, interp: Inte
     return out, rec
 
 
+# Detection depth of an extrapolated stage (2026-11-03; heart try H3, experiments/harness/TRIES.md, registered before
+# its run). Counts per cell fall steadily through heart development in the released series (median counts per cell:
+# E8.25_late 233, E8.5 166, E8.75 130, E9.5 75, E10.5 56).
+DEPTH_EXTRAP_RULE = ("depth (extrapolation): the target's median counts per cell = d_ref * exp(damping * r * "
+                     "(target_day - ref_day)), r = (log d_ref - log d_start) / (ref_day - start_day), the latest log "
+                     "rate per day, at B0's damping; the reference's cells are binomially thinned by target / d_ref "
+                     "when the target lies below d_ref (counts are never added)")
+
+
+def median_depth(a: ad.AnnData, genes) -> float:
+    """A stage's median counts per cell (each cell's library size, `library_sizes`), over all its cells."""
+    sub = a[:, list(genes)]
+    return float(np.median(library_sizes(sub.X, sub.layers["counts"])))
+
+
+def extrapolated_depth(d_start: float, d_ref: float, start_day: float, ref_day: float, target_day: float,
+                       damping: float) -> float:
+    """DEPTH_EXTRAP_RULE's target depth."""
+    if not (d_start > 0 and d_ref > 0 and ref_day > start_day and target_day >= ref_day and np.isfinite(damping)):
+        raise ValueError("depths must be positive, the start before the reference and the target not before it")
+    rate = (np.log(d_ref) - np.log(d_start)) / (ref_day - start_day)
+    return float(d_ref * np.exp(damping * rate * (target_day - ref_day)))
+
+
+def thin_to_depth(a: ad.AnnData, genes, d_ref: float, target: float, seed) -> tuple[np.ndarray, dict]:
+    """a's cells binomially thinned by min(1, target / d_ref), panel genes and the rest of each library alike, cells
+    left without panel counts thinned again (as in `depth_matched_expression`): expression (cells x genes, float32,
+    log(1 + 1e4 c / N)) and a record. At a factor of 1 the cells come back exactly as given."""
+    E, C, lib, other = _stage_counts(a, genes)
+    f = min(1.0, target / d_ref) if d_ref > 0 else 1.0
+    rec = {"rule": DEPTH_EXTRAP_RULE, "reference_depth": float(d_ref), "target": float(target), "factor": f}
+    if f >= 1.0:
+        return E, {**rec, "thinned": 0, "retried": 0}
+    rng = np.random.default_rng(seed)
+    w = np.full(C.shape[0], f)
+
+    def make(idx, g):
+        Cn, on = _binomial_rows(C[idx], other[idx], w[idx], g)
+        return Cn, np.asarray(Cn.sum(1)).ravel() + on
+
+    Cn, ln, retried = _keep_some_counts(make, C.shape[0], rng)
+    return _log_normalise(Cn, ln), {**rec, "thinned": int(C.shape[0]), "retried": retried}
+
+
 def blend_expression(before: ad.AnnData, after: ad.AnnData, interp: Interpolation, genes, t: float,
                      seed) -> tuple[np.ndarray, dict]:
     """Each output cell's counts become Binomial(c_b, w_b) + Binomial(c_a, w_a) of itself and its coupled partner

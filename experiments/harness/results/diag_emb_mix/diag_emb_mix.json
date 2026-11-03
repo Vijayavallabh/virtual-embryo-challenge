@@ -1,0 +1,105 @@
+{
+ "label": "diagnostic, not an adoption result",
+ "commit": "f68836d67e1948a576c5d1c66c85d2506aa8aa0c",
+ "tree_clean": true,
+ "depth": {
+  "E6.75": {
+   "cells": 7093,
+   "median_counts_per_cell": 30.0,
+   "q10_q90_counts": [
+    9.0,
+    74.0
+   ],
+   "median_panel_genes_detected": 14.0
+  },
+  "E7.25": {
+   "cells": 13295,
+   "median_counts_per_cell": 35.0,
+   "q10_q90_counts": [
+    10.0,
+    92.0
+   ],
+   "median_panel_genes_detected": 17.0
+  },
+  "E7.5": {
+   "cells": 11665,
+   "median_counts_per_cell": 62.0,
+   "q10_q90_counts": [
+    26.0,
+    174.0
+   ],
+   "median_panel_genes_detected": 29.0
+  },
+  "E8.0": {
+   "cells": 28570,
+   "median_counts_per_cell": 212.0,
+   "q10_q90_counts": [
+    87.0,
+    411.0
+   ],
+   "median_panel_genes_detected": 66.0
+  }
+ },
+ "mixtures": {
+  "E7.25 from E6.75+E7.5 (t = 0.667)": {
+   "copy_before": {
+    "de_score": 0.1935,
+    "de_direction": 0.2791,
+    "mmd_u": 0.02062,
+    "variogram": 0.008748,
+    "neighborhood_mmd": 0.07932
+   },
+   "copy_after": {
+    "de_score": 0.4194,
+    "de_direction": 0.3864,
+    "mmd_u": 0.05414,
+    "variogram": 0.054657,
+    "neighborhood_mmd": 0.15249
+   },
+   "mix_nominal_t": {
+    "de_score": 0.4839,
+    "de_direction": 0.3959,
+    "mmd_u": 0.02637,
+    "variogram": 0.027125,
+    "neighborhood_mmd": 0.07211
+   },
+   "mix_half": {
+    "de_score": 0.5484,
+    "de_direction": 0.4136,
+    "mmd_u": 0.01517,
+    "variogram": 0.013898,
+    "neighborhood_mmd": 0.04901
+   }
+  },
+  "E7.5 from E7.25+E8.0 (t = 0.333)": {
+   "copy_before": {
+    "de_score": -0.2063,
+    "de_direction": 0.1809,
+    "mmd_u": 0.08583,
+    "variogram": 0.052923,
+    "neighborhood_mmd": 0.18449
+   },
+   "copy_after": {
+    "de_score": 0.2381,
+    "de_direction": 0.5406,
+    "mmd_u": 0.08294,
+    "variogram": 0.102001,
+    "neighborhood_mmd": 0.18758
+   },
+   "mix_nominal_t": {
+    "de_score": 0.2063,
+    "de_direction": 0.5379,
+    "mmd_u": 0.04326,
+    "variogram": 0.026153,
+    "neighborhood_mmd": 0.11238
+   },
+   "mix_half": {
+    "de_score": 0.2222,
+    "de_direction": 0.5439,
+    "mmd_u": 0.03797,
+    "variogram": 0.03043,
+    "neighborhood_mmd": 0.10246
+   }
+  }
+ }
+}

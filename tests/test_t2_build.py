@@ -1687,3 +1687,26 @@ def test_blend_splits_the_expected_counts_by_the_bracket_fraction():
         np.testing.assert_array_equal(getattr(res, f), getattr(no_partners, f))
     with pytest.raises(ValueError, match="with_partners"):
         tb.blend_expression(before, after, no_partners, panel, 0.5, seed=5)
+
+
+def test_extrapolated_depth_carries_half_the_latest_log_rate_over_the_horizon():
+    # the heart series at test: E9.5 75, E10.5 56, two days ahead at B0's damping 0.5
+    assert tb.extrapolated_depth(75.0, 56.0, 9.5, 10.5, 12.5, 0.5) == pytest.approx(56.0 * (56.0 / 75.0))
+    assert tb.extrapolated_depth(130.0, 75.0, 8.75, 9.5, 10.5, 0.5) == pytest.approx(
+        75.0 * np.exp(0.5 * np.log(75.0 / 130.0) / 0.75))
+    assert tb.extrapolated_depth(50.0, 50.0, 1.0, 2.0, 4.0, 0.5) == pytest.approx(50.0)
+    with pytest.raises(ValueError):
+        tb.extrapolated_depth(75.0, 56.0, 10.5, 9.5, 12.5, 0.5)
+
+
+def test_thin_to_depth_thins_by_the_ratio_and_leaves_a_deeper_target_alone():
+    rng = np.random.default_rng(35)
+    a, panel, N = _counted(rng, 400, 120.0)
+    E = np.asarray(a[:, panel].X.toarray(), np.float32)
+    same, rec = tb.thin_to_depth(a, panel, 120.0, 150.0, seed=1)
+    np.testing.assert_array_equal(same, E)
+    assert rec["factor"] == 1.0 and rec["thinned"] == 0
+    X, rec = tb.thin_to_depth(a, panel, 120.0, 60.0, seed=1)
+    assert rec["factor"] == pytest.approx(0.5) and rec["thinned"] == 400
+    assert (X > 0).sum(1).mean() < (E > 0).sum(1).mean() and ((X > 0).sum(1) >= 1).all()
+    assert tb.median_depth(a, panel) == pytest.approx(float(np.median(N)))

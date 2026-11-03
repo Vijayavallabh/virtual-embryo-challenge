@@ -713,3 +713,23 @@ def test_depth_tries_keep_fgw_geometry_and_change_only_the_expression():
         np.testing.assert_array_equal(v.coords, fgw.coords)  # positions and draws are fgw's
         assert v.X.shape == fgw.X.shape and not np.array_equal(v.X, fgw.X)
         assert ((v.X > 0).sum(1) >= 1).all()
+
+
+def test_b0_depth_thins_b0s_cells_on_extrapolation_boards_only(counted_t2):
+    """Heart try H3 (experiments/harness/TRIES.md): B0's draws and positions, thinned to the extrapolated depth."""
+    board, inputs = counted_t2
+    task = _task(key="syn_depth")
+    ctx = harness.BuildContext(task=harness.TaskView.of(task), board=board, inputs=inputs,
+                               seed=harness.BUILD_SEED_OFFSET)
+    c = CANDIDATES["b0_depth"]
+    tasks = {t.key: t for ts in load_tasks().values() for t in ts}
+    assert c.applies(task) and c.applies(tasks["T2h/<=E9.5->E10.5"]) and c.applies(tasks["T2h/<=E8.75->E10.5"])
+    assert not c.applies(tasks["T2e/E7.25+E8.0->E7.5"]) and not c.applies(tasks["T1/E9.5->E10.5"])
+    b0, v = CANDIDATES["b0"].build(ctx), c.build(ctx)
+    np.testing.assert_array_equal(v.coords, b0.coords)
+    d_start = harness.t2_build.median_depth(inputs["start"], board.genes)
+    d_ref = harness.t2_build.median_depth(inputs["ref"], board.genes)
+    if d_ref < d_start:  # a falling depth is carried on: fewer genes detected per cell
+        assert (v.X > 0).sum(1).mean() < (b0.X > 0).sum(1).mean()
+    else:  # a rising one cannot be: the cells come back as B0 made them
+        np.testing.assert_array_equal(v.X, b0.X)

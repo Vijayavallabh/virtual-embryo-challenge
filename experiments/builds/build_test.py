@@ -156,7 +156,7 @@ def build_heart(a) -> dict:
     count = _t2_count(board, pool.n_obs)
     ctx = harness.BuildContext(task=view, board=harness._candidate_board(board), inputs={"ref": pool, "start": start},
                                seed=a.seed)
-    stage = harness._b0_t2(ctx)  # the harness's B0, guard and checks included, in E10.5's frame and size
+    stage = harness._b0_t2(ctx, depth=a.depth)  # the harness's B0, guard and checks included, in E10.5's frame and size
     hyp = {"s1": "H1", "s2": "H2", "s2_trim": "H2"}[a.entry]
     # the size step checks its reference against the full E10.5 cloud it measured; it rescales the (trimmed) cells
     coords, size = t2_build.size_or_hold(stage.coords, SIZES["heart"], hyp, source_stage="E10.5", reference_cloud=ref,
@@ -165,7 +165,7 @@ def build_heart(a) -> dict:
     if not report.ok:
         raise SystemExit(f"the built file fails its check: {report.errors}")
     return {"entry": f"B0 {a.entry} ({hyp})", "board": board.key, "dry_run": dry, "n_cells": int(stage.n),
-            "seed": a.seed, "count_decision": count, "trim": trim,
+            "seed": a.seed, "count_decision": count, "trim": trim, "depth_step": bool(a.depth),
             "size": {k: size[k] for k in size if not isinstance(size[k], (dict, list))}}
 
 
@@ -232,6 +232,9 @@ def main(argv=None) -> None:
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
                                 "scope, the s2 of docs/S2_RULES.md")
+            p.add_argument("--depth", action="store_true",
+                           help="thin B0's cells to the extrapolated E12.5 depth (heart try H3 of "
+                                "experiments/harness/TRIES.md; off: the entry as adopted so far)")
         if name == "embryo":
             p.add_argument("--method", choices=("pseudobulk_shift", *EMBRYO_T_POS), required=True,
                            help="fgw = s1; fgw_shape0 = the s2 of docs/S2_RULES.md (E7.5's geometry)")
