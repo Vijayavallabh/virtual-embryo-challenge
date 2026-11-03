@@ -31,6 +31,9 @@ Steps implemented now:
    `coupling_rotation` (the proper rotation that best maps one centred cloud onto the other under a coupling),
    `barycentric` (each row's coupling-weighted partner) and `nearest_anchors` (k nearest anchors of each point). The
    T2 head turns them into displacement interpolation (`vec.t2_build.interpolate_clouds`).
+6. Herd a draw (2026-11-03, T1 try T5 of experiments/harness/TRIES.md): `herd_rows` swaps drawn rows for undrawn rows
+   of the same pool when the swap brings the drawn rows' mean expression closer to the pool's, a variance reduction of
+   the sample's pseudobulk with no change to what is drawn from.
 
 Steps PLAN section 5 plans, which later features add here: unbalanced coupling of populations without positions
 (feat-015); births from the best legal source (feat-014); leave-one-transition-out calibration of a few shrinkage
@@ -333,3 +336,54 @@ def nearest_anchors(points, anchors, k: int) -> tuple[np.ndarray, np.ndarray]:
     k = min(int(k), np.asarray(anchors).shape[0])
     d, i = cKDTree(np.asarray(anchors, dtype=np.float64)).query(np.asarray(points, dtype=np.float64), k=k)
     return np.asarray(d).reshape(len(points), k), np.asarray(i).reshape(len(points), k)
+
+
+HERD_PROPOSALS = 20  # random swap proposals per drawn row (a size of the computation; more only matches closer)
+HERD_BATCH = 256  # proposals evaluated together; a batch's accepted swaps are applied at once
+
+
+def herd_rows(X, pool, picked, rng: np.random.Generator, proposals: int | None = None,
+              target: np.ndarray | None = None) -> tuple[np.ndarray, dict]:
+    """Swap rows of `picked` (distinct rows drawn from `pool`) for undrawn rows of `pool` whenever a swap brings the
+    mean of the picked rows of X closer, in squared distance over all columns, to `target` (default: the pool's mean).
+
+    Random proposals (HERD_PROPOSALS per picked row unless given), drawn HERD_BATCH at a time on distinct positions
+    and distinct undrawn rows, are taken in order and each is accepted only if it improves on the mean as it stands
+    after the swaps accepted before it (exact greedy: the distance falls with every accepted swap). The picked rows keep
+    their positions in the draw (a swapped-in row takes the place of the row it replaces), so a draw's order and its
+    size are unchanged. With repeats, or nothing left to swap in, the draw comes back as it is.
+
+    Returns (rows, record: squared distance before and after, proposals, swaps accepted)."""
+    pool, picked = np.asarray(pool, dtype=np.int64), np.asarray(picked, dtype=np.int64).copy()
+    m = len(picked)
+    out = np.setdiff1d(pool, picked)
+    rec = {"rows": int(m), "pool": int(len(pool)), "proposals": 0, "accepted": 0}
+    if m == 0 or len(out) == 0 or len(np.unique(picked)) < m:
+        return picked, {**rec, "skipped": "repeats or nothing to swap in"}
+    X = sparse.csr_matrix(X, dtype=np.float64)
+    goal = np.asarray(X[pool].mean(0)).ravel() if target is None else np.asarray(target, dtype=np.float64)
+    norms = np.asarray(X.multiply(X).sum(1)).ravel()
+    e = np.asarray(X[picked].sum(0)).ravel() / m - goal
+    rec["sq_distance_before"] = float(e @ e)
+    total = HERD_PROPOSALS * m if proposals is None else int(proposals)
+    done = 0
+    while done < total:
+        b = int(min(HERD_BATCH, m, len(out), total - done))
+        pos = rng.choice(m, b, replace=False)
+        cand = rng.choice(len(out), b, replace=False)
+        r_out, r_in = picked[pos].copy(), out[cand].copy()
+        Xo, Xi = X[r_out], X[r_in]
+        a, o = Xi @ e, Xo @ e  # each proposal's rows against the current error, kept current below
+        cross = np.asarray(Xo.multiply(Xi).sum(1)).ravel()
+        q = norms[r_in] + norms[r_out] - cross - cross  # |x_in - x_out|^2
+        for k in range(b):
+            lin = (a[k] - o[k]) / m  # e.d for d = (x_in - x_out) / m
+            if lin + lin + q[k] / (m * m) < 0:
+                d = (np.asarray(Xi[k].todense()).ravel() - np.asarray(Xo[k].todense()).ravel()) / m
+                e = e + d
+                a, o = a + Xi @ d, o + Xo @ d
+                picked[pos[k]], out[cand[k]] = r_in[k], r_out[k]
+                rec["accepted"] += 1
+        done += b
+    rec["proposals"], rec["sq_distance_after"] = int(done), float(e @ e)
+    return picked, rec

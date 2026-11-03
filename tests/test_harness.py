@@ -733,3 +733,14 @@ def test_b0_depth_thins_b0s_cells_on_extrapolation_boards_only(counted_t2):
         assert (v.X > 0).sum(1).mean() < (b0.X > 0).sum(1).mean()
     else:  # a rising one cannot be: the cells come back as B0 made them
         np.testing.assert_array_equal(v.X, b0.X)
+
+
+def test_herded_t1_candidates_apply_where_their_plain_versions_do():
+    """T1 tries T5 and T6 (experiments/harness/TRIES.md)."""
+    tasks = {t.key: t for ts in load_tasks().values() for t in ts}
+    for key in ("T1/E9.5->E10.5", "T1/E9.5->E10.5:chamber", "T1/E8.5->E9.5"):
+        t = tasks[key]
+        assert CANDIDATES["b0_herd"].applies(t) == CANDIDATES["b0"].applies(t)
+        assert CANDIDATES["copy_herd"].applies(t)
+    assert not CANDIDATES["copy_herd"].applies(tasks["T2e/E7.25+E8.0->E7.5"])
+    assert not CANDIDATES["b0_herd"].applies(tasks["T2h/<=E9.5->E10.5"])

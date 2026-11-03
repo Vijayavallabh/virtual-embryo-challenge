@@ -54,7 +54,7 @@ import yaml
 from vec import t2_build
 from vec.adoption import SEEDS, keep_change
 from vec.boards import RANKED_METRICS, REPO_ROOT, VALIDATION_BOARDS, Board, load_boards
-from vec.core import draw_balanced
+from vec.core import draw_balanced, herd_rows
 from vec.evaluate import SUBSAMPLE_FRAC, Stage, score_board, subsample
 from vec.io import COORD_KEY, check_submission, dense, make_submission, read_stage, write_submission
 from vec.prep import load_stage
@@ -508,7 +508,7 @@ def t1_chamber_shares(ref: ad.AnnData, source: str) -> dict[str, float]:
     return {c: v / total for c, v in keep.items()}
 
 
-def _b0_t1(damping: float) -> Callable[[BuildContext], Stage]:
+def _b0_t1(damping: float, herd: bool = False) -> Callable[[BuildContext], Stage]:
     def build(ctx: BuildContext) -> Stage:
         from vec import t1_scope
 
@@ -519,9 +519,19 @@ def _b0_t1(damping: float) -> Callable[[BuildContext], Stage]:
         held = list(ctx.derived["t1_held_flat"]) if damping else None  # handed over: the guard refuses the file
         sub, _ = t1_scope.build_submission(ref, ctx.board, shares, count_for(ctx.board, ref.n_obs), ctx.seed,
                                            start=start, damping=damping, held_flat=held, ref_source=src,
-                                           start_source=ctx.task.role_stems["start"] if damping else None)
+                                           start_source=ctx.task.role_stems["start"] if damping else None,
+                                           herd=herd)
         return finish(ctx, ref, dense(sub.X), None)
     return build
+
+
+def _copy_herd(ctx: BuildContext) -> Stage:
+    """A copy of the reference with its draw herded towards the pool's mean expression (T1 try T6, a diagnostic of how
+    much of a copy's de_score handicap is sampling noise; experiments/harness/TRIES.md)."""
+    pool, rows, _, coords = draw_copy(ctx)
+    g = ctx.board.genes
+    rows, _ = herd_rows(pool[:, g].X, np.arange(pool.n_obs), rows, np.random.default_rng([ctx.seed, 9]))
+    return finish(ctx, pool, dense(pool[:, g].X[rows]).astype(np.float32), coords)
 
 
 def _b0_t2(ctx: BuildContext, depth: bool = False) -> Stage:
@@ -694,6 +704,14 @@ CANDIDATES = {
                            {"what": "fgw's cells as binomial blends of each cell and a coupled partner of the other "
                                     "bracket, splitting the expected counts (1 - t) : t at the predicted depth",
                             "rule": "blend: " + t2_build.DEPTH_RULE, "scope": "whole"}, requires=_interp),
+    # T1 tries T5 and T6 (experiments/harness/TRIES.md, registered before their run): herded draws
+    "b0_herd": Candidate("b0_herd", frozenset({"T1"}), (), _b0_t1(B0_DAMPING, herd=True),
+                         {"what": "B0 on T1 with each category's draw herded towards its pool's mean expression "
+                                  "(vec.core.herd_rows)", "damping": B0_DAMPING, "scope": "chamber"},
+                         requires=_b0_applies, derived=("t1_held_flat",)),
+    "copy_herd": Candidate("copy_herd", frozenset({"T1"}), _ANY, _copy_herd,
+                           {"what": "a copy of the reference with its draw herded towards the pool's mean expression "
+                                    "(a diagnostic)", "scope": "whole"}),
     # heart try H3 (experiments/harness/TRIES.md, registered before its run)
     "b0_depth": Candidate("b0_depth", frozenset({"T2"}), (), _b0_depth,
                           {"what": "B0 on a T2 extrapolation board with its cells binomially thinned to the target's "

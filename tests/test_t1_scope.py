@@ -249,6 +249,28 @@ def test_reweight_hits_quotas_exactly_with_real_cells():
     assert list(again.obs["source_obs"]) == list(out.obs["source_obs"])
 
 
+def test_herded_reweight_keeps_the_quotas_and_moves_each_category_towards_its_pool_mean():
+    """T1 try T5 (experiments/harness/TRIES.md): herding swaps cells within a category, never across."""
+    a = make_stage(1)
+    classify(a)
+    plain, _ = reweight(a, SHARES, 300, seed=3)
+    herded, rep = reweight(a, SHARES, 300, seed=3, herd=True)
+    assert composition(herded) == composition(plain) and herded.obs["source_obs"].is_unique
+    assert (herded.obs["category"].to_numpy() == herded.obs["source_category"].to_numpy()).all()
+    src = a[herded.obs["source_obs"].to_numpy()]
+    assert (herded.X != src.X).count_nonzero() == 0  # still real cells as released
+    cats = a.obs["category"].astype(str).to_numpy()
+    for row in rep.rows:
+        c = row["category"]
+        if row["herd"].get("skipped"):
+            continue
+        assert row["herd"]["sq_distance_after"] <= row["herd"]["sq_distance_before"]
+        goal = np.asarray(a.X[cats == c].mean(0)).ravel()
+        d_h = np.asarray(herded[herded.obs["category"] == c].X.mean(0)).ravel() - goal
+        d_p = np.asarray(plain[plain.obs["category"] == c].X.mean(0)).ravel() - goal
+        assert d_h @ d_h <= d_p @ d_p + 1e-12
+
+
 def test_reweight_reuses_as_few_cells_as_possible_and_reports_it():
     a = make_stage(2)
     classify(a)

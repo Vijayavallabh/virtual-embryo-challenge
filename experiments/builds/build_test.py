@@ -129,9 +129,10 @@ def build_t1(a) -> dict:
     sub, rep = t1_scope.build_submission(ref, board, shares, n, a.seed, start=start, damping=harness.B0_DAMPING,
                                          held_flat=t1_scope.held_flat_genes(), ref_source="E10.5_RNA",
                                          start_source="E9.5_RNA", directions=directions, direction_fraction=fraction,
-                                         direction_groups=groups)
+                                         direction_groups=groups, herd=a.herd)
     check = t1_scope.write_checked(sub, a.out, board)
     return {"entry": "M1", "board": board.key, "dry_run": dry, "n_cells": n, "seed": a.seed, "fraction": fraction,
+            "herd": bool(a.herd),
             "cm_share_of_heart": t1_scope.share_of(shares, "cm", t1_scope.load_spec().heart),
             "blood_share_of_chamber": float(shares.get("blood", 0.0)),
             "shares": shares, "external": ext, "check_ok": check.ok, "realised": rep["realised"]}
@@ -228,6 +229,9 @@ def main(argv=None) -> None:
         if name == "t1":
             p.add_argument("--cm-share", type=float, help="cardiomyocyte share of heart cells (default: E10.5's own)")
             p.add_argument("--blood-share", type=float, help="blood share of chamber cells (default: E10.5's own)")
+            p.add_argument("--herd", action="store_true",
+                           help="herd each category's draw towards its pool's mean expression (T1 try T5 of "
+                                "experiments/harness/TRIES.md; off: the entry as adopted so far)")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "

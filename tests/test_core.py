@@ -689,7 +689,8 @@ def test_core_api_and_imports(op):
 # Every numeric literal allowed in vec/core.py: 0 and 1 (indices, axes, the factor and ratio of no change), 5 (the
 # genes an error message lists) and tolerances (1e-9 for floors, 1e-6 for whole numbers, 1e-2 for count recovery). A
 # size, a count or a composition share of any stage fails.
-OPERATOR_LITERALS = {0.0, 1.0, 5.0, 1e-9, 1e-6, 1e-2}
+OPERATOR_LITERALS = {0.0, 1.0, 5.0, 1e-9, 1e-6, 1e-2,
+                     20.0, 256.0}  # 2026-11-03, herd_rows: proposals per drawn row and the batch size (computation)
 
 
 def test_core_holds_no_stage_constants(op):
@@ -796,3 +797,26 @@ def test_barycentric_and_nearest_anchors(op):
     d, i = op.nearest_anchors(np.array([[0.1, 0, 0], [5, 5, 5]]), np.array([[0, 0, 0], [5, 5, 4], [9, 9, 9]]), 2)
     assert i[:, 0].tolist() == [0, 1] and d.shape == (2, 2) and d[0, 0] == pytest.approx(0.1)
 
+
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# herd_rows (2026-11-03, T1 try T5 of experiments/harness/TRIES.md)
+def test_herd_rows_brings_the_draw_mean_to_the_pool_mean_and_keeps_its_shape(op):
+    rng = np.random.default_rng(40)
+    X = sparse.csr_matrix(rng.poisson(rng.gamma(1.0, 1.0, size=60), size=(3000, 60)).astype(float))
+    pool = np.arange(500, 3000)
+    picked = rng.choice(pool, 400, replace=False)
+    new, rec = op.herd_rows(X, pool, picked, np.random.default_rng(1))
+    assert len(new) == 400 and len(np.unique(new)) == 400 and np.isin(new, pool).all()
+    goal = np.asarray(X[pool].mean(0)).ravel()
+    before = np.asarray(X[picked].mean(0)).ravel() - goal
+    after = np.asarray(X[new].mean(0)).ravel() - goal
+    assert rec["sq_distance_after"] == pytest.approx(float(after @ after))
+    assert after @ after < 0.2 * (before @ before) and rec["accepted"] > 0
+    kept = new == picked  # a swapped-in row takes the place of the row it replaces
+    assert kept.any() and (~kept).any()
+    same, rec2 = op.herd_rows(X, pool, np.r_[picked[:10], picked[:10]], np.random.default_rng(1))
+    assert np.array_equal(same, np.r_[picked[:10], picked[:10]]) and "skipped" in rec2  # repeats: left alone
+    whole, rec3 = op.herd_rows(X, pool, pool, np.random.default_rng(1))
+    assert np.array_equal(whole, pool) and "skipped" in rec3  # nothing to swap in

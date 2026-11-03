@@ -1,0 +1,142 @@
+{
+ "label": "diagnostic, not an adoption result",
+ "commit": "71b18f9efc51e10e7213511ce262c6ef23ec1dab",
+ "tree_clean": true,
+ "stages": {
+  "T2/E6.75": {
+   "cells": 7093,
+   "median_counts_per_cell": 30.0,
+   "q10_q90_counts": [
+    9.0,
+    74.0
+   ],
+   "median_genes_detected": 14.0
+  },
+  "T2/E7.25": {
+   "cells": 13295,
+   "median_counts_per_cell": 35.0,
+   "q10_q90_counts": [
+    10.0,
+    92.0
+   ],
+   "median_genes_detected": 17.0
+  },
+  "T2/E7.5": {
+   "cells": 11665,
+   "median_counts_per_cell": 62.0,
+   "q10_q90_counts": [
+    26.0,
+    174.0
+   ],
+   "median_genes_detected": 29.0
+  },
+  "T2/E8.0": {
+   "cells": 28570,
+   "median_counts_per_cell": 212.0,
+   "q10_q90_counts": [
+    87.0,
+    411.0
+   ],
+   "median_genes_detected": 66.0
+  },
+  "T2/E8.25_late": {
+   "cells": 54431,
+   "median_counts_per_cell": 233.0,
+   "q10_q90_counts": [
+    93.0,
+    455.0
+   ],
+   "median_genes_detected": 70.0
+  },
+  "T2/E8.5": {
+   "cells": 23710,
+   "median_counts_per_cell": 166.0,
+   "q10_q90_counts": [
+    64.0,
+    357.0
+   ],
+   "median_genes_detected": 61.0
+  },
+  "T2/E8.75": {
+   "cells": 23377,
+   "median_counts_per_cell": 130.0,
+   "q10_q90_counts": [
+    38.0,
+    287.0
+   ],
+   "median_genes_detected": 52.0
+  },
+  "T2/E9.5": {
+   "cells": 53742,
+   "median_counts_per_cell": 75.0,
+   "q10_q90_counts": [
+    39.0,
+    172.0
+   ],
+   "median_genes_detected": 35.0
+  },
+  "T2/E10.5": {
+   "cells": 167864,
+   "median_counts_per_cell": 56.0,
+   "q10_q90_counts": [
+    33.0,
+    111.0
+   ],
+   "median_genes_detected": 30.0
+  },
+  "T3/E8.75_gata4_ko_1": {
+   "cells": 42257,
+   "median_counts_per_cell": 82.0,
+   "q10_q90_counts": [
+    24.0,
+    192.0
+   ],
+   "median_genes_detected": 38.0
+  },
+  "T3/E8.75_gata4_ko_2": {
+   "cells": 46396,
+   "median_counts_per_cell": 68.0,
+   "q10_q90_counts": [
+    20.0,
+    169.0
+   ],
+   "median_genes_detected": 34.0
+  },
+  "T3/E9.5_mab21l2_ko": {
+   "cells": 47483,
+   "median_counts_per_cell": 95.0,
+   "q10_q90_counts": [
+    41.0,
+    239.0
+   ],
+   "median_genes_detected": 43.0
+  },
+  "T1/E8.5_RNA": {
+   "cells": 16787,
+   "median_counts_per_cell": 10856.99987111353,
+   "q10_q90_counts": [
+    6740.999857980785,
+    19653.999257969703
+   ],
+   "median_genes_detected": 3836.0
+  },
+  "T1/E9.5_RNA": {
+   "cells": 17057,
+   "median_counts_per_cell": 11079.999762093903,
+   "q10_q90_counts": [
+    6193.000200996829,
+    21312.000159160594
+   ],
+   "median_genes_detected": 3878.0
+  },
+  "T1/E10.5_RNA": {
+   "cells": 24979,
+   "median_counts_per_cell": 6723.000025168911,
+   "q10_q90_counts": [
+    2664.8000294486883,
+    15089.999641305636
+   ],
+   "median_genes_detected": 2869.0
+  }
+ }
+}

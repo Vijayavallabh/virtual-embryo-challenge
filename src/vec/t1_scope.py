@@ -40,7 +40,7 @@ import yaml
 from scipy import sparse
 
 from vec.boards import RELEASED_T1_STAGES, REPO_ROOT, Board
-from vec.core import apply_factors, counts_of, draw_least_used, log1p_cp10k, mean_cp10k, quotas
+from vec.core import apply_factors, counts_of, draw_least_used, herd_rows, log1p_cp10k, mean_cp10k, quotas
 from vec.io import CheckReport, check_submission, make_submission, write_submission
 from vec.prep import TARGET_SUM, lineage_map, recover_counts  # noqa: F401 (kept importable here; the core uses them)
 
@@ -320,7 +320,7 @@ _draw = draw_least_used  # its name here before it moved to vec.core (feat-020)
 def reweight(adata: ad.AnnData, target_shares: Mapping[str, float] | str | Path, n_cells: int, seed: Seed = 0, *,
              key: str = CATEGORY_KEY, label_key: str = LABEL_KEY, within: Mapping[str, Sequence[str]] | None = None,
              fallback: Mapping[str, Sequence[str]] | None = None,
-             spec: ChamberSpec | None = None) -> tuple[ad.AnnData, ReweightReport]:
+             spec: ChamberSpec | None = None, herd: bool = False) -> tuple[ad.AnnData, ReweightReport]:
     """Sample `n_cells` real cells so that each category holds exactly its quota of the target shares.
 
     adata: classified cells (obs[key], see `classify`). target_shares: a dict or YAML file (`load_shares`). Quotas are
@@ -330,6 +330,8 @@ def reweight(adata: ad.AnnData, target_shares: Mapping[str, float] | str | Path,
     Categories with own cells draw first, stand-ins after them, so a stand-in pool shared with another category
     repeats cells only once its unused cells run out. Drawn cells keep their obs columns; obs[key] becomes the
     category they fill and obs["source_category"] / obs["source_obs"] record where they came from. Rows are shuffled.
+    herd (T1 try T5, experiments/harness/TRIES.md): each category's draw is then herded towards its pool's mean
+    expression (`vec.core.herd_rows`, from its own random stream, so the draws it starts from are unchanged).
     """
     spec = spec or load_spec()
     shares = load_shares(target_shares, spec)
@@ -365,14 +367,22 @@ def reweight(adata: ad.AnnData, target_shares: Mapping[str, float] | str | Path,
     plan.sort(key=lambda p: p[0])  # stable: own pools first in config order, then stand-ins
     used = np.zeros(adata.n_obs, dtype=np.int64)
     picks, roles, rows = [], [], []
+    hrng = np.random.default_rng([*np.atleast_1d(seed).tolist(), 9]) if herd else None
+    herded = {}
     for _, c, pool, how, labs, n_own in plan:
         idx, n_reused = draw_least_used(pool, q[c], used, rng)
+        if herd:
+            new, herded[c] = herd_rows(adata.X, pool, idx, hrng)
+            np.subtract.at(used, idx, 1)
+            np.add.at(used, new, 1)
+            idx = new
         picks.append(idx)
         roles.append(np.full(len(idx), c, dtype=object))
         rows.append({"category": c, "target_share": shares[c], "quota": q[c], "own_cells": n_own,
                      "pool": int(len(pool)), "drawn_from": how, "labels": ";".join(labs),
                      "unique": int(len(np.unique(idx))), "reused": n_reused,
-                     "realised_share": q[c] / n_cells if n_cells else float("nan")})
+                     "realised_share": q[c] / n_cells if n_cells else float("nan"),
+                     **({"herd": herded[c]} if herd else {})})
     idx = np.concatenate(picks) if picks else np.array([], dtype=np.int64)
     role = np.concatenate(roles) if roles else np.array([], dtype=object)
     perm = rng.permutation(len(idx))
@@ -602,7 +612,7 @@ def build_submission(ref: ad.AnnData, board: Board, target_shares: Mapping[str, 
                      within: Mapping[str, Sequence[str]] | None = None,
                      fallback: Mapping[str, Sequence[str]] | None = None, spec: ChamberSpec | None = None,
                      directions: Mapping[str, np.ndarray] | None = None, direction_fraction: float = 0.0,
-                     direction_groups: Mapping[str, str] | None = None,
+                     direction_groups: Mapping[str, str] | None = None, herd: bool = False,
                      **shift_kw) -> tuple[ad.AnnData, dict]:
     """A T1 prediction: real `ref` cells re-weighted to `target_shares`, optionally moved by the damped `start` ->
     `ref` momentum, in the board's gene order as float32 log1p CP10k. Returns (AnnData, report).
@@ -620,7 +630,8 @@ def build_submission(ref: ad.AnnData, board: Board, target_shares: Mapping[str, 
     re-weighting quotas; a type drawn from stand-ins at either stage gets no momentum unless standin_momentum=True.
     held_flat: genes the shift leaves alone (default: the pre-registered list, `held_flat_genes`). shift_kw go to
     `momentum_shift` (eps, min_cells, max_abs_log_factor, keep_depth, standin_momentum). Without a shift the rows are
-    the released values of the drawn cells. `classify` writes obs["category"] on ref and start.
+    the released values of the drawn cells. `classify` writes obs["category"] on ref and start. herd: herd each
+    category's draw towards its pool's mean expression before any shift (`reweight`).
     """
     if board.task != "T1":
         raise ValueError(f"{board.key} is a {board.task} board; this builder makes T1 predictions")
@@ -638,7 +649,8 @@ def build_submission(ref: ad.AnnData, board: Board, target_shares: Mapping[str, 
     shares = load_shares(target_shares, spec)
     classify(ref, label_key, ref_source, spec)
     fb = spec.fallbacks(ref_source) if fallback is None else dict(fallback)
-    pop, rw = reweight(ref, shares, n_cells, seed, label_key=label_key, within=within, fallback=fb, spec=spec)
+    pop, rw = reweight(ref, shares, n_cells, seed, label_key=label_key, within=within, fallback=fb, spec=spec,
+                       herd=herd)
     shift = ext = None
     momentum = start is not None and damping != 0
     held = (held_flat_genes() if held_flat is None else list(held_flat)) if momentum or directions else []
