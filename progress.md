@@ -326,6 +326,28 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       over s1 alone (even to 0.6 weight on the released-like truths) and is never more than 0.05 behind a
       milder set, which it leads by 1.5-2.1 with per-board marks. A stray empty /tmp/.git, created during the
       review, made the board-intake tests refuse their temp files; it was removed, and all 517 tests pass.
+- [x] 2026-11-03, after the s2 freeze, at the captain's "keep all the defaults and continue with the s1 work" and
+      "maniacally iterate without any fixed timeline": the tries ledger (`experiments/harness/TRIES.md`; a side
+      agent's note: count every try, keep only changes with a physical reason that holds at test). Six tries
+      registered before their runs, four run, none kept (the entries are unchanged):
+      - embryo E7 `fgw_depth` (thin the deeper bracket to the log-linear predicted depth; released counts per cell
+        rise 30 -> 212 over E6.75-E8.0): -4.18 on E7.5 (veto), +0.74 on E7.25. A mixture drawn (1 - t) : t already has
+        the target's average log depth;
+      - embryo E8 `fgw_blend` (binomial blends of coupled pairs): -2.23 and -3.19 (averaged cells are too narrow);
+      - heart H3 `b0_depth` (thin to the depth extrapolated at B0's damping; heart counts fall 233 -> 56 over
+        E8.25-E10.5): -3.92 on the 1-day backtest (veto), +0.45 on the 1.75-day one. Thinning lowers mmd_u and
+        neighbourhood MMD even when it matches the target's depth;
+      - T1 T5 `b0_herd` (herd each category's draw to its pool's mean): -0.03 and -0.01; the scorer's 10% reference
+        working copy carries most of the pseudobulk noise. The T2 versions (H4, E9) were pruned before their run.
+      Code (all off by default; the default outputs reproduce earlier runs exactly): `vec.core.herd_rows`;
+      `vec.t2_build` depth and blend steps, `interpolate_clouds(with_partners=, herd=)`, `sample_cells(herd_expr=)`;
+      harness candidates; `build_test.py` flags. Diagnostics: `experiments/harness/results/diag_emb_mix/` and
+      `diag_depth/` (every released stage's depth). `experiments/builds/build_all.sh s1|s2|t3alt` builds and checks a
+      whole set on the DGX after the intake; the three s1 dry runs on the validation boards pass `vec check` at
+      a12fbbb (files deleted). 529 tests pass on the DGX. Incidents: the local root volume filled up (0 bytes free;
+      nothing deleted; space came back while working); 47cd272 was committed with two failing literal-guard tests
+      (fixed in 69de75a); a mistaken `git checkout <commit> -- .` overwrote the working tree with older files and was
+      restored from HEAD at once (nothing uncommitted existed; no loss).
 
 ### What's Next
 

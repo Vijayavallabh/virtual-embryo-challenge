@@ -797,3 +797,13 @@ open. No organiser reply to any of the four emails as of then.
       (`experiments/s2_hedge/bundle_sim.py`; prompted by a side agent's note).
   - **Embryo registry.** The embryo variant runs are registered (emb_shape_v1, 8 rows). The per-seed hedge runs are
     committed in `experiments/s2_hedge/results/per_seed/`.
+- 2026-11-03 (b), the captain: "keep all the defaults and continue with the s1 work", then "maniacally iterate without
+  any fixed timeline" and "not follow timelines for plan. Do whatever it takes to win this challenge at all drastic
+  costs". Taken as: the dates in section 7 no longer pace the work (the upload deadlines stand: s1 before s2 on T1 and
+  T2, everything by the end of 30 Nov IST), every default the AI assistant set under the delegation stands, and
+  iteration continues within the Official Rules, `docs/DATA_POLICY.md`, the adoption rule and the frozen s2 rules,
+  with the captain's go-ahead for every official upload. After a side agent's note on lucky fits, every change tried
+  for an entry goes through the tries ledger (`experiments/harness/TRIES.md`): the reason, the metrics it should move
+  and its fit risk are written down and committed before the run, and every try is counted. Tried that day, none kept:
+  depth matching by thinning on the embryo (E7) and heart (H3) entries, coupled-pair blends on the embryo (E8), herded
+  draws on T1 (T5; the T2 versions H4 and E9 were pruned before their run). The entries are unchanged.
