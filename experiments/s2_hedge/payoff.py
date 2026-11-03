@@ -478,11 +478,12 @@ def summarise(runs: list[Path], out: Path) -> dict:
     return res
 
 
-def hedge(runs: list[Path], s1: str, out: Path | None = None) -> dict:
+def hedge(runs: list[Path], s1: str, out: Path | None = None, extra: dict[str, list[str]] | None = None) -> dict:
     """For each candidate s2: the expected better of (s1, s2) over the truth grid, paired by seed (the captain marks
     the better-scoring upload), under two stated priors: uniform over the truths, and one third on the truth that
     equals s1's mix ("own" or "own/own") with the rest uniform. Also each candidate's worst truth. Informs the s2
-    pre-registration; it chooses nothing."""
+    pre-registration; it chooses nothing. extra: further named priors, each uniform over the truths it lists (for
+    example the released target alone), as `docs/S2_RULES.md` quotes them."""
     parts = [json.loads(q.read_text()) for d in runs for q in sorted(Path(d).glob("*.json"))]
     merged: dict[int, dict] = {}
     for part_ in parts:
@@ -501,9 +502,14 @@ def hedge(runs: list[Path], s1: str, out: Path | None = None) -> dict:
     if own is not None:
         rest = (2 / 3) / (len(tv) - 1)
         priors["own_third"] = {q: (1 / 3 if q == own else rest) for q in tv}
+    for name, qs in (extra or {}).items():
+        unknown = sorted(set(qs) - set(tv))
+        if not qs or unknown or name in priors:
+            raise SystemExit(f"prior {name!r}: no truths, a taken name, or unknown truths {unknown} (truths: {tv})")
+        priors[name] = {q: 1 / len(qs) for q in qs}
     res = {"s1": s1, "seeds": seeds, "priors": priors, "candidates": {}}
     for p2 in pv:
-        per_seed = {name: [sum(w[q] * max(merged[k][q][s1], merged[k][q][p2]) for q in tv) for k in seeds]
+        per_seed = {name: [sum(w[q] * max(merged[k][q][s1], merged[k][q][p2]) for q in tv if q in w) for k in seeds]
                     for name, w in priors.items()}
         worst = min(tv, key=lambda q: np.mean([max(merged[k][q][s1], merged[k][q][p2]) for k in seeds]))
         res["candidates"][p2] = {
@@ -587,6 +593,8 @@ def main(argv=None) -> None:
     p.add_argument("--runs", nargs="+", required=True)
     p.add_argument("--s1", required=True, help="the prediction label that stands for s1 (e.g. own, bown_cown, hold)")
     p.add_argument("--out")
+    p.add_argument("--prior", action="append", default=[], metavar="NAME=TRUTH,TRUTH",
+                   help="an extra prior, uniform over the listed truths (repeatable)")
     p = sub.add_parser("summarise")
     p.add_argument("--runs", nargs="+", required=True)
     p.add_argument("--out", required=True)
@@ -595,7 +603,11 @@ def main(argv=None) -> None:
         summarise([Path(r) for r in a.runs], Path(a.out))
         return
     if a.cmd == "hedge":
-        hedge([Path(r) for r in a.runs], a.s1, Path(a.out) if a.out else None)
+        extra = {}
+        for spec in a.prior:
+            name, _, qs = spec.partition("=")
+            extra[name.strip()] = [q.strip() for q in qs.split(",") if q.strip()]
+        hedge([Path(r) for r in a.runs], a.s1, Path(a.out) if a.out else None, extra)
         return
     if a.cmd == "t1-grid":
         k, _, n_ = a.truth_part.partition("/")

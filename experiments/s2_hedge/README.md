@@ -207,3 +207,23 @@ one bracket's geometry, at the size rule (`interpolate_clouds(t_pos=0 | 1)`; the
 
 The E7.5 gain is shape alone (d2 +0.067, Dice +0.109); expression is unchanged. Under the rule fixed before the run,
 s2 = fgw_shape0 (E7.5's geometry at test).
+
+## Reproducing
+
+The per-seed run files behind every table are committed in `results/per_seed/`, copied from the compute machine's
+`runs/s2_hedge/` with their provenance: T1 grid at 90b25d3, heart transitions at 90b25d3 and dcf1779, clean trees.
+The extra priors quoted here and in `docs/S2_RULES.md` are uniform over the truths each one lists:
+
+```bash
+P="uv run python experiments/s2_hedge/payoff.py"
+$P hedge --runs results/per_seed/t1-grid/* --s1 bown_cown --out results/t1_grid \
+  --prior blood_own_cm_own_up=bown_cown,bown_c0.45,bown_c0.6,bown_c0.75 \
+  --prior cm_0.45_up=bown_c0.45,bown_c0.6,bown_c0.75,b0.05_c0.45,b0.05_c0.6,b0.05_c0.75,b0.4_c0.45,b0.4_c0.6,b0.4_c0.75 \
+  --prior cm_own_blood_varies=bown_cown,b0.05_cown,b0.4_cown
+$P hedge --runs results/per_seed/heart-scope/* --s1 hold --out results/heart_scope \
+  --prior released=own --prior radial_family=own,radial_0.5,radial_0 --prior thin_family=thin_0.5,thin_0
+```
+
+The same command reproduces `heart_scope_e825` and `heart_scope_e875`, with `results/per_seed/heart-scope-e825/*`
+and `results/per_seed/heart-scope-e875/*` as the runs. Paths are relative to `experiments/s2_hedge/`. `summarise` and
+`step5` take the same run folders.

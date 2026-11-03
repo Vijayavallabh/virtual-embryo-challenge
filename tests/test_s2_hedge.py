@@ -62,3 +62,23 @@ def test_mixed_tasks_refused(payoff, tmp_path):
         payoff.step5(runs)
     with pytest.raises(SystemExit):
         payoff.summarise(runs, tmp_path / "out")
+
+
+def test_hedge_extra_priors(payoff, tmp_path):
+    rows = [{"seed": 0, "scores": {"own": {"floor": 50.0, "s1": 60.0, "x": 55.0},
+                                   "far": {"floor": 50.0, "s1": 40.0, "x": 70.0}}},
+            {"seed": 1, "scores": {"own": {"floor": 50.0, "s1": 62.0, "x": 64.0},
+                                   "far": {"floor": 50.0, "s1": 42.0, "x": 50.0}}}]
+    d = tmp_path / "r"
+    d.mkdir()
+    (d / "part.json").write_text(json.dumps({"axis": "test", "pred_values": ["s1", "x"],
+                                             "truth_values": ["own", "far"], "rows": rows}))
+    res = payoff.hedge([d], "s1", tmp_path / "out", {"released": ["own"], "far_only": ["far"]})
+    x = res["candidates"]["x"]
+    assert x["released"]["mean"] == pytest.approx((60 + 64) / 2)  # the better of s1 and x, per seed, on own
+    assert x["far_only"]["mean"] == pytest.approx((70 + 50) / 2)
+    assert x["uniform"]["mean"] == pytest.approx(((60 + 70) / 2 + (64 + 50) / 2) / 2)
+    assert res["candidates"]["s1"]["released"]["mean"] == pytest.approx(61.0)  # s2 = s1 is s1 alone
+    for bad in ({"bad": ["nope"]}, {"empty": []}, {"uniform": ["own"]}):
+        with pytest.raises(SystemExit):
+            payoff.hedge([d], "s1", None, bad)

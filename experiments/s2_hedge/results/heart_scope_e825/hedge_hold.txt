@@ -1,7 +1,7 @@
 heart-scope: expected better of s1=hold and s2 over 5 truths, 10 seeds (s2 = s1 is s1 alone)
-            s2          uniform        own_third   worst truth
-     half_thin    64.30 +/- 0.86    62.04 +/- 0.90   own (50.76)
-   core_radial    63.59 +/- 1.09    61.45 +/- 1.08   own (50.76)
-   half_radial    56.84 +/- 1.45    56.17 +/- 1.39   own (52.80)
-     half_size    53.45 +/- 1.11    53.10 +/- 1.05   own (51.34)
-          hold    51.61 +/- 1.26    51.47 +/- 1.11   thin_0.5 (49.60)
+            s2          uniform        own_third         released    radial_family      thin_family   worst truth
+     half_thin    64.30 +/- 0.86    62.04 +/- 0.90    50.76 +/- 1.48    55.03 +/- 0.80    78.21 +/- 1.94   own (50.76)
+   core_radial    63.59 +/- 1.09    61.45 +/- 1.08    50.76 +/- 1.48    62.00 +/- 0.73    65.97 +/- 2.02   own (50.76)
+   half_radial    56.84 +/- 1.45    56.17 +/- 1.39    52.80 +/- 1.50    57.80 +/- 0.91    55.39 +/- 2.91   own (52.80)
+     half_size    53.45 +/- 1.11    53.10 +/- 1.05    51.34 +/- 1.46    54.00 +/- 0.79    52.61 +/- 2.62   own (51.34)
+          hold    51.61 +/- 1.26    51.47 +/- 1.11    50.76 +/- 1.48    52.08 +/- 0.62    50.90 +/- 2.87   thin_0.5 (49.60)
