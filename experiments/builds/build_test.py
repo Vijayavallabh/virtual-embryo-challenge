@@ -195,7 +195,7 @@ def build_embryo(a) -> dict:
                                           np.asarray(after.obsm[COORD_KEY], float)[:, :3], Eb, Ea, 0.5,
                                           harness.count_for(board, before.n_obs), a.seed, target_rms=target,
                                           t_pos=EMBRYO_T_POS[a.method], with_partners=a.expression == "blend",
-                                          herd=a.herd)
+                                          herd=a.herd, move_coupling=a.move_coupling)
         expr_rec = None
         if a.expression == "mixture":
             X = np.empty((len(res.rows), len(genes)), dtype=np.float32)
@@ -250,6 +250,9 @@ def main(argv=None) -> None:
             p.add_argument("--expression", choices=("mixture", "depth", "blend"), default="mixture",
                            help="fgw methods: the cells as released (the entry), or tries E7 / E8 of "
                                 "experiments/harness/TRIES.md (thinned to the predicted depth; blends)")
+            p.add_argument("--move-coupling", choices=t2_build.MOVE_COUPLINGS, default=t2_build.MOVE_COUPLINGS[0],
+                           help="fgw methods: which coupling sets the moves: fgw (the entry) or aligned (try E10 of "
+                                "experiments/harness/TRIES.md: an exact transport in the rotated common frame)")
     a = ap.parse_args(argv)
     _check_seed(a.seed)
     if a.board not in (None, TEST_BOARDS[a.which]):  # a dry run

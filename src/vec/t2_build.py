@@ -65,7 +65,15 @@ from scipy import sparse
 from scipy.spatial import cKDTree
 
 from vec.boards import Board
-from vec.core import barycentric, coupling_rotation, draw_balanced, fgw_coupling, herd_rows, nearest_anchors
+from vec.core import (
+    aligned_coupling,
+    barycentric,
+    coupling_rotation,
+    draw_balanced,
+    fgw_coupling,
+    herd_rows,
+    nearest_anchors,
+)
 from vec.io import (
     COORD_KEY,
     TARGET_LIBRARY_SIZE,
@@ -1330,6 +1338,9 @@ INTERP_MAX_ITER = 200  # conditional-gradient iterations of the coupling
 INTERP_EMD_ITER = 10_000_000  # network-simplex iterations of each step's exact transport (POT's default stops short)
 PARTNER_CHUNK = 4096  # cells per block when drawing coupled partners (memory only; the draw does not depend on it)
 HERD_STREAMS = (6, 7)  # random streams of the herded draws (before, after), apart from the interpolation's 0-5
+# Which coupling sets the moves (embryo try E10 of experiments/harness/TRIES.md, registered before its run): "fgw" (the
+# entry so far) or "aligned" (vec.core.aligned_coupling of the same anchors in the before frame, after the rotation).
+MOVE_COUPLINGS = ("fgw", "aligned")
 
 
 def pchip_rms(days, rms, target_day: float) -> float:
@@ -1356,7 +1367,10 @@ class Interpolation:
     """`interpolate_clouds` result: output cell i is row `rows[i]` of stage `stage[i]` (0 before, 1 after), at
     `coords[i]` in the before stage's frame. `pool_coords` and `pool_weights`: where every cell of both stages lands
     (before rows, then after rows) and its chance of being drawn, the source for the cloud guard. `partners` (only
-    with `with_partners=True`): for each output cell, a row of the other stage coupled to it (`blend_expression`)."""
+    with `with_partners=True`): for each output cell, a row of the other stage coupled to it (`blend_expression`).
+    `coupling` (only with `with_coupling=True`): the coupling's inputs and results, for diagnostics (anchor rows of
+    each stage, the FGW coupling, the coupling that set the moves, the rotation, both clouds in the before stage's
+    normalised frame and every cell's mean anchor displacement there)."""
 
     stage: np.ndarray
     rows: np.ndarray
@@ -1365,6 +1379,7 @@ class Interpolation:
     pool_weights: np.ndarray
     record: dict
     partners: np.ndarray | None = None
+    coupling: dict | None = None
 
 
 def _joint_pcs(Eb: np.ndarray, Ea: np.ndarray, n_pc: int) -> tuple[np.ndarray, np.ndarray]:
@@ -1379,7 +1394,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
                        target_rms: float, alpha: float = INTERP_ALPHA, n_anchor: int = INTERP_N_ANCHOR,
                        n_pc: int = INTERP_N_PC, k: int = INTERP_K, max_iter: int = INTERP_MAX_ITER,
                        emd_max_iter: int = INTERP_EMD_ITER, t_pos: float | None = None,
-                       with_partners: bool = False, herd: bool = False) -> Interpolation:
+                       with_partners: bool = False, herd: bool = False, move_coupling: str = MOVE_COUPLINGS[0],
+                       with_coupling: bool = False) -> Interpolation:
     """Displacement interpolation between two stages at time fraction t (0 = before, 1 = after).
 
     1. Each cloud is centred and divided by its RMS radius (no PCA axes, so no sign choice).
@@ -1406,6 +1422,14 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     herd (embryo try E9 of experiments/harness/TRIES.md): each stage's drawn rows are herded towards that stage's mean
     expression (`vec.core.herd_rows` on before_expr / after_expr, streams HERD_STREAMS) before positions are
     read; the coupling and the moves are unchanged.
+
+    move_coupling (embryo try E10): "fgw" (default) moves the cells by the FGW coupling of step 2. "aligned" keeps that
+    coupling's rotation and takes the moves (and the partners) from `vec.core.aligned_coupling` of the same anchors and
+    features in the before stage's frame, with the after cloud rotated into it: within-cloud distances and left-right
+    symmetric expression cannot tell an embryo's two sides apart, so FGW's partners can sit at random or mirrored
+    across the body's symmetric direction, and McCann moves then pull both clouds towards its mid-plane; in a common
+    frame position settles which side a partner is on. The draws, the mixture and every random stream are unchanged.
+    with_coupling: also return the coupling's internals (`Interpolation.coupling`) for the target-free diagnostic.
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1416,6 +1440,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     tp = t if t_pos is None else float(t_pos)
     if not 0.0 <= tp <= 1.0:
         raise ValueError(f"t_pos must lie in [0, 1], got {t_pos}")
+    if move_coupling not in MOVE_COUPLINGS:
+        raise ValueError(f"move_coupling must be one of {MOVE_COUPLINGS}, got {move_coupling!r}")
     if not (np.isfinite(target_rms) and target_rms > 0):
         raise ValueError(f"target_rms must be finite and positive, got {target_rms}")
     n, seed = _whole(n, "n", 1), _whole(seed, "seed", 0)
@@ -1428,8 +1454,9 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     T = fgw_coupling(Fb, Fa, Zb[ib], Za[ia], alpha, max_iter, emd_max_iter)
     R = coupling_rotation(Zb[ib], Za[ia], T)
     Za_b = Za @ R
-    db = barycentric(T, Za_b[ia]) - Zb[ib]
-    da = barycentric(T.T, Zb[ib]) - Za_b[ia]
+    Tm = T if move_coupling == MOVE_COUPLINGS[0] else aligned_coupling(Fb, Fa, Zb[ib], Za_b[ia], alpha, emd_max_iter)
+    db = barycentric(Tm, Za_b[ia]) - Zb[ib]
+    da = barycentric(Tm.T, Zb[ib]) - Za_b[ia]
     near_b, near_a = nearest_anchors(Zb, Zb[ib], k)[1], nearest_anchors(Za_b, Za_b[ia], k)[1]
     pos_b = Zb + tp * db[near_b].mean(1)
     pos_a = Za_b + (1.0 - tp) * da[near_a].mean(1)
@@ -1474,18 +1501,26 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
               "n_jittered": int(dup.sum())}
     if herd_rec is not None:
         record["herd"] = herd_rec
+    if move_coupling != MOVE_COUPLINGS[0]:
+        record["move_coupling"] = move_coupling
+        record["coupling_nonzero_moves"] = int((Tm > 0).sum())
     partners = None
     if with_partners:
         prng = np.random.default_rng([seed, 5])
         partners = np.empty(n, dtype=np.int64)
-        for s, near, other, P in ((0, near_b, ia, T), (1, near_a, ib, T.T)):
+        for s, near, other, P in ((0, near_b, ia, Tm), (1, near_a, ib, Tm.T)):
             m = stage == s
             if m.any():
                 anchor = near[rows[m], prng.integers(0, near.shape[1], int(m.sum()))]
                 partners[m] = other[_sample_from_rows(P, anchor, prng)]
         record["partners"] = "one coupled cell of the other stage per output cell (stream [seed, 5])"
+    internals = None
+    if with_coupling:
+        internals = {"anchors_before": ib, "anchors_after": ia, "fgw": T, "moves": Tm, "rotation": R,
+                     "before_frame": Zb, "after_frame": Za_b, "shift_before": db[near_b].mean(1),
+                     "shift_after": da[near_a].mean(1)}
     return Interpolation(stage=stage, rows=rows, coords=coords, pool_coords=pool, pool_weights=weights, record=record,
-                         partners=partners)
+                         partners=partners, coupling=internals)
 
 
 def _sample_from_rows(P: np.ndarray, which: np.ndarray, rng: np.random.Generator,

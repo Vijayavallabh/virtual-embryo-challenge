@@ -1581,6 +1581,84 @@ def test_interpolation_t_pos_sets_the_geometry_and_leaves_the_default_unchanged(
         tb.interpolate_clouds(A, B, E, E, 0.5, 10, t_pos=1.2, **kw)
 
 
+# ------------------------------------------------------------------- the moves' coupling (embryo try E10), 2026-11-03
+def _left_right_pair(rng, n=500):
+    """Two clouds whose expression is left-right symmetric (each gene a bump in |x|, the relative y and z, never in
+    the sign of x), with x the thinnest axis as E8.0's left-right axis is; the after cloud is longer along y."""
+    A = rng.normal(size=(n, 3)) * [0.5, 2.0, 1.0]
+    B = rng.normal(size=(n, 3)) * [0.5, 3.0, 1.0]
+    centres = rng.normal(size=(12, 3)) * [0.5, 1.0, 1.0]
+    centres[:, 0] = np.abs(centres[:, 0])
+
+    def expr(C, length):
+        f = np.c_[np.abs(C[:, 0]), C[:, 1] / length, C[:, 2]]
+        return np.exp(-((f[:, None, :] - centres[None]) ** 2).sum(-1))
+
+    return A, B, expr(A, 2.0), expr(B, 3.0)
+
+
+def _thinnest(C, w=None):
+    """A cloud's smallest principal SD over its RMS radius (weights optional)."""
+    w = np.full(len(C), 1.0 / len(C)) if w is None else np.asarray(w, float) / np.sum(w)
+    X = C - w @ C
+    ev = np.linalg.eigvalsh((X * w[:, None]).T @ X)
+    return float(np.sqrt(ev.min() / ev.sum()))
+
+
+def _xcorr_min(X, Y):
+    """The smallest eigenvalue of the symmetrised whitened cross-correlation of paired rows of X and Y."""
+    X, Y = X - X.mean(0), Y - Y.mean(0)
+
+    def isqrt(S):
+        ev, V = np.linalg.eigh(S)
+        return V @ np.diag(ev ** -0.5) @ V.T
+
+    K = isqrt(X.T @ X / len(X)) @ (X.T @ Y / len(X)) @ isqrt(Y.T @ Y / len(Y))
+    return float(np.linalg.eigvalsh((K + K.T) / 2).min())
+
+
+def test_interpolation_move_coupling_defaults_to_fgw_and_aligned_changes_only_the_moves():
+    rng = np.random.default_rng(5)
+    A, B, Eb, Ea = _left_right_pair(rng)
+    kw = dict(seed=1, target_rms=1.0, n_anchor=200, k=4)
+    base = tb.interpolate_clouds(A, B, Eb, Ea, 0.5, 400, **kw)
+    same = tb.interpolate_clouds(A, B, Eb, Ea, 0.5, 400, move_coupling="fgw", **kw)
+    assert np.array_equal(base.coords, same.coords) and base.record == same.record
+    assert "move_coupling" not in base.record and base.coupling is None
+    al = tb.interpolate_clouds(A, B, Eb, Ea, 0.5, 400, move_coupling="aligned", with_coupling=True, **kw)
+    assert np.array_equal(al.rows, base.rows) and np.array_equal(al.stage, base.stage)  # the same mixture
+    assert al.record["rotation_deg"] == base.record["rotation_deg"]  # FGW's rotation is kept
+    assert al.record["coupling_nonzero"] == base.record["coupling_nonzero"]
+    assert al.record["move_coupling"] == "aligned" and al.record["coupling_nonzero_moves"] == 200  # one to one
+    c = al.coupling
+    assert c["fgw"].shape == c["moves"].shape == (200, 200)
+    np.testing.assert_allclose(c["after_frame"], ((B - B.mean(0)) / tb.rms_radius(B)) @ c["rotation"])
+    P = np.vstack([c["before_frame"] + 0.5 * c["shift_before"], c["after_frame"] + 0.5 * c["shift_after"]])
+    scale = al.record["scale_from_canonical"]
+    np.testing.assert_allclose(al.pool_coords - al.pool_coords[0], (P - P[0]) * scale, atol=1e-9)
+    with pytest.raises(ValueError, match="move_coupling"):
+        tb.interpolate_clouds(A, B, Eb, Ea, 0.5, 10, move_coupling="tissue", **kw)
+
+
+def test_aligned_moves_keep_a_left_right_symmetric_interpolation_as_thick_as_its_brackets():
+    rng = np.random.default_rng(6)
+    A, B, Eb, Ea = _left_right_pair(rng)
+    out = {}
+    for mc in tb.MOVE_COUPLINGS:
+        res = tb.interpolate_clouds(A, B, Eb, Ea, 0.5, 500, seed=2, target_rms=1.0, n_anchor=300, k=4,
+                                    move_coupling=mc, with_coupling=True)
+        c = res.coupling
+        anchors_b = c["before_frame"][c["anchors_before"]]
+        partners = (c["moves"] @ c["after_frame"][c["anchors_after"]]) / c["moves"].sum(1, keepdims=True)
+        out[mc] = _xcorr_min(anchors_b, partners), _thinnest(res.pool_coords, res.pool_weights)
+    # FGW cannot tell the sides apart: its partners are uncorrelated along the symmetric direction (the defect)
+    assert out["fgw"][0] < 0.2
+    # in the common frame position tells the side, and the moved cloud keeps its brackets' thickness
+    assert out["aligned"][0] >= out["fgw"][0] + 0.25
+    assert out["aligned"][1] > out["fgw"][1]
+    assert out["aligned"][1] >= 0.9 * min(_thinnest(A), _thinnest(B))
+
+
 # ------------------------------------------------------------------- detection depth of an interpolated stage (E7, E8)
 def _counted(rng, n, depth, panel=12, extra=3, profile=None):
     """An AnnData as the released files store it: Poisson counts at a given depth on `panel` genes plus `extra` genes

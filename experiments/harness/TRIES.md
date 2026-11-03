@@ -31,7 +31,7 @@ Before this ledger (from `results/registry.csv` and the decision files; floor an
 | T2:heart:test_extrap | 2 | b0, pseudobulk_shift (harness). The s2 hedge payoffs (heart scope) are a sensitivity analysis, not tries |
 | T3:bcatenin | 1 | shift_transfer (the organisers' baseline); the T3 entries come from the pre-registered rules in `experiments/t3_decomp/` |
 
-Since this ledger: see the table below. Running totals: T1 6, embryo 8, heart 3, T3 1 (H4 and E9 were pruned before their run).
+Since this ledger: see the table below. Running totals: T1 6, embryo 8, heart 3, T3 1 (H4 and E9 were pruned before their run; E10 is registered and counts only if its gate lets it run).
 
 ## Tries since 2026-11-03
 
@@ -48,6 +48,7 @@ the entry after that decision. Both on the two embryo backtests, 10 seeds, by `e
 | T6 | T1 | `copy_herd` (diagnostic) | The same herding on a plain copy of the reference: measures how much of the copy's de_score handicap is sampling noise. Reported, not a candidate for an entry | de_score | - | 2bf32c4 | Small: +0.06, +0.21 and +0.17 on the three T1 backtests. The copy's handicap is the reference's noise, not ours |
 | H4 | heart | `b0_herd` on the heart board | T5's reason on the T2 heart board, whose de_score also starts below the floor for a plain copy (skill 0.45-0.46 on both backtests): B0's draw of real cells is herded towards the pool's mean panel expression before B0's shift (`vec.t2_build.sample_cells(..., herd_expr=...)`, its own random stream); positions are the herded rows' own, jitter only for repeats, as before | de_score and de_direction; mmd_u, variogram and neighborhood_mmd about unchanged; the shape terms about unchanged (a different random-like subset of the same cloud) | it gains on one task only; or the cloud guard or a shape term moves (herding should not depend on position) | 47cd272 | **Pruned before its run** after T5: the reason does not hold, since the scorer's reference working copy carries most of the noise on T2 too (10% of the reference stage), and de metrics weigh half as much on T2 as on T1 |
 | E9 | embryo | `fgw_herd` | The same on the embryo entry: each bracket's draw in fgw is herded towards that bracket's mean panel expression before positions are assigned (`interpolate_clouds(..., herd=True)`, its own random stream) | de_score and de_direction; the rest about unchanged | as H4 | 47cd272 | **Pruned before its run**, as H4 |
+| E10 | embryo | `fgw_aligned` | fgw's coupling is an exact one-to-one pairing of its 2,000 anchors per stage: with Euclidean within-cloud distances the square-loss Gromov-Wasserstein term is concave on the couplings, so POT's conditional gradient ends on a vertex. Neither its features (panel expression at 30-212 counts per cell) nor the within-cloud distances can tell an embryo's left side from its right where expression is left-right symmetric (no lateralised marker before about E8.0), so partners can sit at random or mirrored across that direction, and McCann moves then pull both brackets towards its mid-plane: the moved cloud flattens there (wholly at t = 1/2 with mirrored partners), and so does the s2's mapped E8.0 half. The proper rotation is mostly unaffected (the other two axes and det +1 fix it). Change: keep FGW's rotation; take the moves (still the mean displacement of the 8 nearest anchors) from an exact transport of the same anchors on (1 - a) M / max M + a \|x - y R\|^2 / max, in the before stage's frame, a = INTERP_ALPHA = 0.5 reused (`vec.core.aligned_coupling`; `interpolate_clouds(..., move_coupling="aligned")`); in a common frame position tells the side. Synthetic left-right symmetric pair (tests/test_t2_build.py, AI-assistant scratch): FGW's partners have whitened cross-correlation about 0 along the symmetric axis, the aligned ones 0.4-0.7 (300-500 anchors), and the moved cloud's thinnest SD returns to the brackets'. **Gate, target-free, fixed here before it runs** (decided by the AI assistant under the captain's delegation of 2026-11-02, as the ideas workflow proposed): `experiments/harness/diag_emb_coupling.py` on the three bracket pairs at build seeds 1,000,000-1,000,009. A draw has the defect if fgw's smallest whitened anchor-partner cross-correlation is below 0.3 or its moved cloud's thinnest SD over RMS radius is below 0.9 x the thinner bracket's; the fix works if the aligned partners' cross-correlation is at least 0.6 and their merged-label agreement at most 0.05 below fgw's. The try runs only if draws with both reach 6 of 10 on each backtest pair and 3 of 10 (or the s1 seed's draw) on the test pair. A defect at test that the backtests cannot show: pruned, reported to the captain as a test-only risk. The diagnostic reads no target and no score, so it is not a try | E7.5: d2_shape up in at least 8 of 10 seeds, occupancy_dice flat or up; E7.25: d2 and Dice up in the seeds whose draws show the defect, about unchanged in the rest; de_score, de_direction, mmd_u and variogram identical to fgw's (the same cells); scale_log_ratio identical up to the scorer's rounding; neighborhood_mmd within +-0.01 skill on both | the gain sits in Dice alone, or only in E7.25's seeds 3, 4, 5, 8 and 9 (that block's anisotropy: E7.25's truth is thinner along PC3 than either bracket); or mean_anchor_shift falls well below fgw's while d2 moves toward fgw_shape0's (shorter moves across the sectioning-plane change, not the mechanism); or the gain is confined to draws where the rotation is a half-turn off (rotation and label agreement reported per seed). Caveats written before the run: the idea came after E7.25's seed split was seen; a = 0.5 is reused in a new role and no other value is tried; the backtests sit at t = 1/3 and 2/3, so a pass says nothing about t = 1/2 beyond the diagnostic | (this row's commit) | Pending: runs only if its gate passes |
 
 ## Pruned before running
 
@@ -59,6 +60,28 @@ the entry after that decision. Both on the two embryo backtests, 10 seeds, by `e
   fractions in opposite directions (E7.25 near E6.75; E7.5 about midway between E7.25 and E8.0 by mmd_u), and at test
   the nominal fraction is 1/2. Nothing measured on released stages says which way E7.75 would sit.
 - **Sweeps of FGW alpha, k or the anchor count.** No physical reason for another value than the plan's.
+
+From the ideas workflow of 2026-11-03 (seven read-only proposers, three critics per idea, a ranking; results not
+committed, their synthetic toys in the AI assistant's scratch). E10 above was its one survivor worth a try.
+
+- **fgw_tissue (embryo): couple the brackets on 15-NN tissue profiles.** Tissue profiles make partners consistent but
+  cannot set their left-right sign: expression is symmetric and FGW is mirror-blind. In a synthetic test it mirrored in
+  about half the draws and lost on average with a round cross-section.
+- **fgw_pairs (embryo): one coupled partner per cell.** The FGW coupling is already one-to-one, so this is exactly
+  k = 1, a value of the pruned k sweep; in a synthetic test it raised raw neighborhood_mmd by 18-29%.
+- **b0_smooth (heart): B0's top-up from kNN-smoothed expected counts.** B0's gain over the copy on the 1.75-day
+  backtest lies on the same variogram-vs-variance line as pure thinning, that is, it comes from the own-count
+  top-up's detection loss, which this change removes; heart depth falls at every released stage, so the test target
+  is likely shallower still. About 3-5% to pass, the largest build of the lot.
+- **The same exact top-up on T1.** The own-count top-up realises about half the intended rise of a sparse gene, but
+  the expected test gain is 0.1-0.4 points, and both counted T1 backtests would judge it backwards through their
+  composition mismatch (B0 draws E9.5's chamber mix, cardiomyocytes about 64% of cells, against about 19% in the
+  chamber-cut truth), so either verdict would be that confound.
+- **T3: a background- or spillover-aware factor.** It needs a new T3 harness candidate, a threshold for "background
+  level" and an amendment of rules note 5 (hash-pinned); its sign cannot be checked on released data without tuning
+  on a counted fold. About +0.3 expected, with an SD near 1.5.
+- **T3: an absolute knockout-depth rule; the factor measured against the target's WT.** Both would gain on the two
+  cross-knockout folds and change nothing at test, where the knockouts share the WT reference: lucky-fit traps.
 
 ## Diagnostics behind these choices
 

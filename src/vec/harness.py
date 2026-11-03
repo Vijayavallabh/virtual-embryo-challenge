@@ -594,13 +594,15 @@ def _psb_size(ctx: BuildContext) -> Stage:
     return finish(ctx, pool, X, c0 + (coords - c0) * f, guard_source=c0 + (P - c0) * f)
 
 
-def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixture", herd: bool = False) -> Stage:
+def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixture", herd: bool = False,
+         move_coupling: str = t2_build.MOVE_COUPLINGS[0]) -> Stage:
     """The T2 embryo pipeline (docs/PLAN.md 4.2): displacement interpolation between the brackets at the target's
     time fraction (vec.t2_build.interpolate_clouds: fused Gromov-Wasserstein coupling, proper rotation, McCann moves,
     a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages. t_pos:
     the s2 shape variants' position fraction (0: the earlier bracket's geometry, 1: the later's; default: the
     mixture's). expression: "mixture" (the cells as released), "depth" (vec.t2_build.depth_matched_expression) or
-    "blend" (vec.t2_build.blend_expression); tries E7 and E8 of experiments/harness/TRIES.md."""
+    "blend" (vec.t2_build.blend_expression); tries E7 and E8 of experiments/harness/TRIES.md. move_coupling: "fgw"
+    (the entry) or "aligned" (try E10: the moves from vec.core.aligned_coupling in the rotated common frame)."""
     t = ctx.task
     before, after = ctx.inputs["before"], ctx.inputs["after"]
     lo, hi = t.role_days["before"], t.role_days["after"]
@@ -611,7 +613,7 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
                                       np.asarray(after.obsm[COORD_KEY], dtype=float)[:, :3], Eb, Ea,
                                       frac, count_for(ctx.board, before.n_obs), ctx.seed,
                                       target_rms=target_rms(ctx), t_pos=t_pos, with_partners=expression == "blend",
-                                      herd=herd)
+                                      herd=herd, move_coupling=move_coupling)
     if expression == "mixture":
         X = np.empty((len(res.rows), len(g)), dtype=np.float32)
         X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
@@ -654,6 +656,10 @@ def _t2_extrap_with_start(t: PseudoTask) -> bool:
 
 def _fgw_blend(ctx: BuildContext) -> Stage:
     return _fgw(ctx, expression="blend")
+
+
+def _fgw_aligned(ctx: BuildContext) -> Stage:
+    return _fgw(ctx, move_coupling="aligned")
 
 
 def _interp(t: PseudoTask) -> bool:
@@ -726,6 +732,13 @@ CANDIDATES = {
     "fgw_herd": Candidate("fgw_herd", frozenset({"T2"}), (), _fgw_herd,
                           {"what": "fgw with each bracket's draw herded towards that bracket's mean panel expression "
                                    "(embryo try E9)", "scope": "whole"}, requires=_interp),
+    # embryo try E10 (experiments/harness/TRIES.md, registered before its run; it runs only if its target-free gate
+    # passes): FGW's rotation, the moves from an exact transport of the same anchors in the common frame
+    "fgw_aligned": Candidate("fgw_aligned", frozenset({"T2"}), (), _fgw_aligned,
+                             {"what": "fgw with the moves taken from an exact transport of the same anchors on a fused "
+                                      "cost of expression and position in the rotated common frame "
+                                      "(vec.core.aligned_coupling; FGW's rotation kept)",
+                              "alpha": t2_build.INTERP_ALPHA, "scope": "whole"}, requires=_interp),
     "copy_herd": Candidate("copy_herd", frozenset({"T1"}), _ANY, _copy_herd,
                            {"what": "a copy of the reference with its draw herded towards the pool's mean expression "
                                     "(a diagnostic)", "scope": "whole"}),

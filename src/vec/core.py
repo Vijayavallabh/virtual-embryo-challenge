@@ -30,7 +30,10 @@ Steps implemented now:
    balanced fused Gromov-Wasserstein coupling, POT's exact solver, each cost scaled to a maximum of 1),
    `coupling_rotation` (the proper rotation that best maps one centred cloud onto the other under a coupling),
    `barycentric` (each row's coupling-weighted partner) and `nearest_anchors` (k nearest anchors of each point). The
-   T2 head turns them into displacement interpolation (`vec.t2_build.interpolate_clouds`).
+   T2 head turns them into displacement interpolation (`vec.t2_build.interpolate_clouds`). `aligned_coupling`
+   (2026-11-03, embryo try E10 of experiments/harness/TRIES.md): an exact transport of two clouds already in one frame
+   on a fused cost of features and positions, which tells apart the mirror-image sides that the within-cloud distances
+   and left-right symmetric features cannot.
 6. Herd a draw (2026-11-03, T1 try T5 of experiments/harness/TRIES.md): `herd_rows` swaps drawn rows for undrawn rows
    of the same pool when the swap brings the drawn rows' mean expression closer to the pool's, a variance reduction of
    the sample's pseudobulk with no change to what is drawn from.
@@ -71,8 +74,8 @@ from scipy import sparse
 
 from vec.prep import TARGET_SUM, log1p_cp10k, recover_counts
 
-__all__ = ["alloc", "apply_factors", "apply_gene_factor", "barycentric", "counts_of", "coupling_rotation",
-           "draw_balanced", "draw_least_used", "fgw_coupling", "nearest_anchors",
+__all__ = ["aligned_coupling", "alloc", "apply_factors", "apply_gene_factor", "barycentric", "counts_of",
+           "coupling_rotation", "draw_balanced", "draw_least_used", "fgw_coupling", "nearest_anchors",
            "draw_then_repeat", "log1p_cp10k", "mean_cp10k", "quotas", "rescale_depth", "thin"]
 
 Seed = int | Sequence[int]
@@ -303,6 +306,35 @@ def fgw_coupling(features_a, features_b, coords_a, coords_b, alpha: float, max_i
     T = ot.gromov.fused_gromov_wasserstein(M, CA, CB, p, q, loss_fun="square_loss", alpha=alpha, max_iter=max_iter,
                                            numItermaxEmd=emd_max_iter)
     return np.asarray(T, dtype=np.float64)
+
+
+def aligned_coupling(features_a, features_b, coords_a, coords_b, alpha: float, emd_max_iter: int) -> np.ndarray:
+    """An exact optimal transport between two populations whose positions are already in one frame, on a fused cost:
+    (1 - alpha) times the squared Euclidean distance between rows of features_a and features_b plus alpha times the
+    squared Euclidean distance between positions, each divided by its maximum as in `fgw_coupling` (uniform masses, so
+    two populations of the same size are paired one to one). Unlike `fgw_coupling` it reads where the cells sit in
+    the common frame, so it tells apart cells that within-cloud distances and features cannot: the two mirror-image
+    sides of a body whose expression is left-right symmetric. emd_max_iter bounds the network simplex. Returns the
+    coupling (rows a, columns b; its entries sum to 1)."""
+    import ot
+
+    FA, FB = np.asarray(features_a, dtype=np.float64), np.asarray(features_b, dtype=np.float64)
+    A, B = np.asarray(coords_a, dtype=np.float64), np.asarray(coords_b, dtype=np.float64)
+    if FA.shape[0] != A.shape[0] or FB.shape[0] != B.shape[0]:
+        raise ValueError("each population needs one feature row per position")
+    if A.shape[1] != B.shape[1]:
+        raise ValueError("the two populations' positions need the same dimensions")
+    if not 0.0 <= alpha <= 1.0:
+        raise ValueError(f"alpha must lie in [0, 1], got {alpha}")
+    M = ot.dist(FA, FB)
+    D = ot.dist(A, B)
+    for C in (M, D):
+        top = C.max()
+        if top > 0:
+            C /= top
+    p = np.full(A.shape[0], 1.0 / A.shape[0])
+    q = np.full(B.shape[0], 1.0 / B.shape[0])
+    return np.asarray(ot.emd(p, q, (1.0 - alpha) * M + alpha * D, numItermax=emd_max_iter), dtype=np.float64)
 
 
 def coupling_rotation(coords_a, coords_b, coupling) -> np.ndarray:

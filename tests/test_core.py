@@ -650,7 +650,7 @@ CALLS = {("t1_scope", "reweight"): {"quotas", "draw_least_used"},
          ("t1_scope", "momentum_shift"): {"counts_of", "mean_cp10k", "apply_factors", "log1p_cp10k"},
          ("t2_build", "sample_cells"): {"draw_balanced"}, ("t2_build", "cloud_guard"): {"draw_balanced"},
          ("t2_build", "interpolate_clouds"): {"fgw_coupling", "coupling_rotation", "barycentric", "nearest_anchors",
-                                              "draw_balanced"}}
+                                              "draw_balanced", "aligned_coupling"}}
 
 
 @pytest.mark.parametrize(("home", "core"), MOVED.items(), ids=[f"{m}.{n}" for m, n in MOVED])
@@ -787,6 +787,36 @@ def test_fgw_coupling_pairs_a_moved_permuted_copy_cell_for_cell(op):
         op.fgw_coupling(F, FB, A, B, alpha=1.5, max_iter=10, emd_max_iter=10)
     with pytest.raises(ValueError, match="feature row"):
         op.fgw_coupling(F[:-1], FB, A, B, alpha=0.5, max_iter=10, emd_max_iter=10)
+
+
+def test_aligned_coupling_keeps_each_cell_on_its_own_side_and_reduces_to_each_cost(op):
+    import ot
+
+    rng = np.random.default_rng(2)
+    side = rng.normal(size=(30, 3)) * [1.0, 2.0, 0.7]
+    side[:, 0] = np.abs(side[:, 0]) + 0.2
+    A = np.vstack([side, side * [-1.0, 1.0, 1.0]])  # one side of a body and its mirror image
+    F = np.c_[np.abs(A[:, 0]), A[:, 1], A[:, 2]]  # expression the same on both sides: features cannot tell them apart
+    perm = rng.permutation(60)
+    B, FB = A[perm] + rng.normal(scale=0.02, size=(60, 3)), F[perm]  # the same cells in the same frame, rows shuffled
+    T = op.aligned_coupling(F, FB, A, B, alpha=0.5, emd_max_iter=100_000)
+    assert T.shape == (60, 60) and T.sum() == pytest.approx(1.0)
+    np.testing.assert_allclose(T.sum(1), 1 / 60, atol=1e-12)
+    np.testing.assert_allclose(T.sum(0), 1 / 60, atol=1e-12)
+    assert ((T > 0).sum(1) == 1).all() and ((T > 0).sum(0) == 1).all()  # one to one
+    assert (T.argmax(1) == np.argsort(perm)).all()  # each cell goes to its own copy, never to its mirror twin
+    M, D = ot.dist(F, FB), ot.dist(A, B)
+    M, D = M / M.max(), D / D.max()
+    p = np.full(60, 1 / 60)
+    for alpha, C in ((0.0, M), (1.0, D)):  # alpha 0: the features alone; alpha 1: the positions alone
+        Ta = op.aligned_coupling(F, FB, A, B, alpha=alpha, emd_max_iter=100_000)
+        assert (Ta * C).sum() == pytest.approx(ot.emd2(p, p, C, numItermax=100_000), abs=1e-12)
+    with pytest.raises(ValueError, match="alpha"):
+        op.aligned_coupling(F, FB, A, B, alpha=-0.1, emd_max_iter=10)
+    with pytest.raises(ValueError, match="feature row"):
+        op.aligned_coupling(F[:-1], FB, A, B, alpha=0.5, emd_max_iter=10)
+    with pytest.raises(ValueError, match="dimensions"):
+        op.aligned_coupling(F, FB, A, B[:, :2], alpha=0.5, emd_max_iter=10)
 
 
 def test_barycentric_and_nearest_anchors(op):

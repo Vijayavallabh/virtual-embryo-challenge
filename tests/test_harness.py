@@ -678,6 +678,13 @@ def test_embryo_candidates_resize_to_the_size_rule_and_interpolate_inside_the_gu
         np.testing.assert_array_equal(v.X, fgw.X)
         assert harness.t2_build.rms_radius(v.coords) == pytest.approx(want, rel=0.01)
         assert not np.allclose(v.coords, fgw.coords)
+    # embryo try E10 (experiments/harness/TRIES.md): fgw's cells, expression and size; only the moves' coupling differs
+    c = CANDIDATES["fgw_aligned"]
+    assert c.applies(task) and c.applies(tasks["T2e/E6.75+E7.5->E7.25"]) and c.applies(tasks["T2e/E7.25+E8.0->E7.5"])
+    assert not c.applies(tasks["T2h/<=E9.5->E10.5"])
+    v = c.build(ctx)
+    np.testing.assert_array_equal(v.X, fgw.X)
+    assert harness.t2_build.rms_radius(v.coords) == pytest.approx(want, rel=0.01)
 
 
 def test_depth_tries_keep_fgw_geometry_and_change_only_the_expression():
