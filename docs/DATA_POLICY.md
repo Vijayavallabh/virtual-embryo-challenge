@@ -352,3 +352,14 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   T1's or T3's composition, unless the captain rules otherwise. Nothing from the page is written anywhere else; the
   organiser follow-up (drafted by the AI assistant, sent by the captain) names the limit rule and the listed file
   sizes as possible leaks, with no value.
+- 2026-11-04 (c), the captain's ruling on the block: a side agent pointed out that the block closes T1 births (the
+  plan's ~1.5-5 points); asked whether to keep it or narrow it so births by the legal route stay open (the AI
+  assistant's recommendation), the captain answered "Go ahead with whatever maximizes our chances of winning this
+  challenge". The AI assistant narrowed it as recommended: a T1 try may add births by the legal route (cell states
+  present in legal post-E14.5 chamber data and absent at E10.5, their states and shares taken only from E10.5 and
+  those data by a rule written before any run). Everything else in the block stands: cell numbers on every board,
+  sizes and scope on every board, T1's other composition (the cardiomyocyte and blood shares stay as the s1 and s2
+  rules set them) and T3's composition. Why this is safe: what the exposure showed for T1 is a cell count of the
+  scorer's E12.5 working copy, which says nothing about which states appear or their shares; and the T1 E12.5 file
+  size, a proxy for the same count, has been in `docs/CHALLENGE.md` since 2026-10-18 without redaction, because Task 1
+  scores no size. A births try still goes through the tries ledger, registered before its run.
