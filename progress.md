@@ -7,14 +7,16 @@
 answered 403 at 07:29 UTC; a screened Slack and email sweep (wf_2489e0c9-951, two clean audits) found no objection, no
 fix and no rule change since the notice of 2026-10-31; the captain saved the board index and the embryo test gene
 list, and `vec boards update --from-file` read them. D1 (ae6d6b3): the test boards publish their cell limits, gene
-lists and keys but no truth_cells or ref_cells, so A3 stays open. Two exposures on the way are recorded with their
-containment (`docs/DATA_POLICY.md`, 2026-11-04 and 2026-11-04 (b)): the board file and then the Data page were pasted
-into the AI assistant's session, so no try may change a cell number, a size or a scope, or T1's or T3's composition,
-unless the captain rules otherwise. The s1, s2 and T3-switch sets are building on the DGX
-(`experiments/builds/build_all.sh`, tmux `vec_builds`, at ae6d6b3); next come the server format checks
-(`vec submit FILE --board KEY --from-dgx`), then the captain's go-ahead for each official upload. An organiser
-follow-up (the exposure; the published limits and file sizes can reveal hidden counts) waits in the captain's Gmail
-drafts. Pushes no longer need asking (the captain, 2026-11-04).
+lists and keys but no truth_cells or ref_cells, so A3 stays open. Two exposures on the way are recorded with their containment (`docs/DATA_POLICY.md`, 2026-11-04 and (b)): the
+board file and then the Data page were pasted into the AI assistant's session, so no try may change a cell number, a
+size or a scope on any board, or T1's or T3's composition; the captain's ruling (c) reopened T1 births by the legal
+route only. All 10 test-board files (s1, s2 and the T3 switch) built at ae6d6b3 pass `vec check` and the server
+format check; no scored submission is used. The first official round (heart s1, embryo s1, T3's s2 = refused_s1) has
+the captain's go-ahead; Claude Code's auto-mode classifier blocks the AI assistant from sending official uploads, so
+the captain runs the three commands. Both T1 uploads wait for the births decision (design workflow wf_77e506c8-014;
+until 2026-11-10 at the latest, then T1 goes up as built). The captain sent an organiser follow-up on 2026-11-04 (the
+exposure; the published limits and file sizes can reveal hidden counts) and found the Spam folder clean. Pushes no
+longer need asking (the captain, 2026-11-04).
 Since 2026-11-03 (the captain: keep every default, continue the s1 work, iterate without the plan's dates, "do
 whatever it takes to win", within the rules) every change tried for an entry goes through the tries ledger
 (`experiments/harness/TRIES.md`); none tried so far was kept (embryo E7, E8 and E11; heart H3; T1 T5; H4, E9 and E10

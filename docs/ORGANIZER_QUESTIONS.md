@@ -27,6 +27,14 @@ Notice sent: the captain replied on the fourth-email thread on 2026-10-31 at 18:
 unless told otherwise, the team saves the board index with a browser not before 2026-11-04 (UTC), uses the unlocked
 validation files (the Gata4 replicates included) as inputs, and marks one final entry per board before 2 December.
 
+Follow-up sent: the captain replied on the same thread on 2026-11-04 (drafted by the AI assistant). The board index
+still answered 403 to our tool; instead of saving it unopened, the captain displayed it in a browser and pasted it,
+and then the Data page, into the AI assistant's session; its test boards carry no anchors or truth_cells; read with
+the Data page's rule for the upper cell limit, some test-board limits give away the size of a hidden truth half, and
+the page lists hidden targets' file sizes; nothing in our predictions depends on what was seen (the cell counts and
+sizes follow rules committed before the release); the file was then saved for our intake. The same day the captain
+checked the Gmail Spam folder, which the screening connector cannot see: nothing from the organisers since 2026-10-28.
+
 No organiser had replied to any of the four emails or to the private leak note by 2026-10-31, and on Slack they have
 answered no team's rule question since 2026-10-16 (screened sweep, 2026-10-31). The captain then told the AI assistant:
 "Now assume that they don't reply to the emails and you then come up with their rational responses and act on it and proceed". Seven AI agents (a Slack screen; three independent predictors with the lenses "challenge
