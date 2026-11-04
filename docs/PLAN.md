@@ -969,3 +969,20 @@ open. No organiser reply to any of the four emails as of then.
     uploads, but under the frozen s2 rules it fixes those boards for good; that trade-off stays the captain's.
   - **A known test-only risk that nothing open hedges:** if E7.75 was acquired at E7.5-like depth, both embryo uploads
     are too deep.
+- 2026-11-04 (d), the first wave's outcome (wf_b4b013b3-a46; rows registered at 945de7d, run at 0409d18 on a clean
+  tree, recorded at 5437084). K2's rule was set by the AI assistant under the captain's delegation of 2026-11-02, and
+  he can overrule it:
+  - **N1 holds**: the embryo test pair on the 497-gene test panel reproduces every recorded coupling and geometry
+    value; no risk note and nothing rebuilt.
+  - **N2, for R1**: M1's momentum moves 0.31 of T1 s1's cells (blood 0.24, Early VIC 0.07), not the quarter the
+    rebuild estimated. In blood the factor moves 11% of genes by more than 10%, and with keep-depth (median 0.91)
+    about a third of genes past 10%, almost all down. R1 waits for the captain with these numbers.
+  - **K2 not kept**: K2a (s1's Gata4 factor on the Gata4 -> Mab21l2 fold) beats its permuted control K2b by +0.18,
+    ahead in 9 of 10 seeds, short of the adoption rule. The miss rests on seed 3's severity gate (K2a leads K2b by
+    +0.69 on the other nine), but K2a does not beat our WT copy on this fold either way (-0.65 over the ten seeds,
+    -0.11 over the nine). So s1's lead component has no cross-knockout support. The fold is harsher than the test,
+    so this is weak evidence against it. T3's s1 stays as built; it changes only by the captain's ruling.
+  - **Sign-off.** K2's rule was registered, and its counted run made, under the delegation without a fresh sign-off
+    from the captain (an item of the workflow's review). The plain summary went to him on 2026-11-04; his
+    acknowledgment or overrule will be recorded here. From now on a counted run's rule also goes to the captain as a
+    plain summary before the run, not only after it.

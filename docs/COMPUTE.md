@@ -28,8 +28,10 @@ Competition data goes in `~/v/virtual-embryo-challenge/data/raw/` on the DGX onl
 `rsync` from the local clone (no GitHub credentials on the shared account):
 
 ```bash
-rsync -az --exclude .venv --exclude __pycache__ --exclude data --exclude runs -e ssh ./ PrakashDGX_H2:v/virtual-embryo-challenge/
+rsync -az --exclude .venv --exclude __pycache__ --exclude data --exclude runs --exclude .claude -e ssh ./ PrakashDGX_H2:v/virtual-embryo-challenge/
 ```
+
+`.claude/` holds Claude Code's workflow worktrees (gitignored); it stays off the DGX, whose tree must stay clean.
 
 Never sync while a build that writes prediction files runs on the DGX: the sync rewrites `.git` (HEAD's reflog), so
 the file's build stamp records that the code may have changed mid-build, and an official upload of it is refused

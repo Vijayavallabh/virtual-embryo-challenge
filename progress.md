@@ -27,7 +27,12 @@ note); N2 sizes M1's momentum on the cells without a Feng group (s1 0.31 of cell
 for the captain with R1); K2a (s1's Gata4 factor on the Gata4 -> Mab21l2 fold) against its permuted control K2b
 +0.18, ahead in 9 of 10 seeds: not kept, so no cross-knockout support for the factor (K2a 50.08 against wt_identity
 50, our WT copy 50.74 and shift_transfer 47.05; `experiments/harness/results/t3_k2_v1/`). T3 is at 3 tries. No
-upload, entry or rule changes; R1 waits for the captain (`experiments/harness/TRIES.md`).
+upload, entry or rule changes; R1 waits for the captain (`experiments/harness/TRIES.md`). The workflow's review found
+no code or result defect and five record items, handled the same day: K2a's real-data factor check and its seed-3
+reading (`TRIES.md`; `experiments/harness/results/t3_k2_v1/factor_check.txt`), `docs/DATA_POLICY.md` 2026-11-04 (h),
+the DGX sync now excludes `.claude` (`docs/COMPUTE.md`), and the builders' worktrees, branches and DGX scratch copies
+are removed (their smoke files kept in the ignored `runs/smoke/`). K2's rule was set and run under the captain's
+delegation without a fresh sign-off; the plain summary went to him (`docs/PLAN.md` decision log 2026-11-04 (d)).
 Since 2026-11-03 (the captain: keep every default, continue the s1 work, iterate without the plan's dates, "do
 whatever it takes to win", within the rules) every change tried for an entry goes through the tries ledger
 (`experiments/harness/TRIES.md`); none tried so far was kept (embryo E7, E8 and E11; heart H3; T1 T5; H4, E9 and E10
@@ -445,6 +450,10 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       next tries, rule 2's equal-mixing confound, the prunes). The T1 E12.5 file size is redacted from
       `docs/CHALLENGE.md` at HEAD (no other copy in a tracked file outside `boards/` and `docs/research/`), and
       agents no longer open the session store or search the whole filesystem (`AGENTS.md`).
+- [x] 2026-11-04 (night): the first wave (wf_b4b013b3-a46; registered at 945de7d, code merged at 0409d18 and run there
+      on a clean tree, recorded at 5437084; `./init.sh` on the DGX at 0409d18: 573 passed). N1 holds; N2 sized M1's
+      momentum (0.31 of T1 s1's cells moved); K2a not kept against K2b (+0.18, 9 of 10 seeds), so s1's Gata4 factor
+      has no cross-knockout support. T3 is at 3 tries. The review's record items are handled (Current State).
 
 ### What's Next
 
@@ -461,20 +470,24 @@ Updated 2026-11-04, after the captain's guiding principle (`AGENTS.md`; the orde
    is reopened by the legal route (`docs/DATA_POLICY.md` 2026-11-04 (d)), the one open lever on its weakest groups
    (distribution, DE recovery, covariance); T1 direction stays open, but no backtest can judge a change to Feng's
    direction. The rebuild design (wf_237f8d8f-e7c) registered no composition try (no legal share rule has a counted
-   check). N2 sizes M1's momentum on cells without a Feng group; R1 (those cells keep their E10.5 expression)
-   waits on the captain's ruling. If he rules it in, T1's s1 and s2 are rebuilt and checked, and he confirms T1's
-   s2 under (d).
+   check). N2 (done) sized M1's momentum on cells without a Feng group: it moves 0.31 of s1's cells (blood 0.24,
+   Early VIC 0.07), not the quarter the rebuild estimated; in blood the factor moves 11% of genes by more than 10%,
+   and with keep-depth (median 0.91) about a third of genes past 10%, almost all down. R1 (those cells keep their
+   E10.5 expression) waits on the captain's ruling, with these numbers. If he rules it in, T1's s1 and s2 are
+   rebuilt and checked, and he confirms T1's s2 under (d).
 3. T3: response identity, the largest gap in Overall units on the cross-knockout stand-in (15.18; 11.89 on the
    replicate stand-in), ties with T1 distribution (15.08) and comes second for the reason in `TRIES.md` (the rebuild
    design found no T3 candidate with a reason that holds at test). A factor change is kept only under the adoption rule on the
    cross-knockout folds and then goes to the captain (T3's s1 is his ruling); the composition stays closed.
-   Registered 2026-11-04 (the AI assistant's decision): K2a and K2b, s1's Gata4 factor on the Gata4 -> Mab21l2 fold
-   with a permuted control (`TRIES.md`); it changes no upload.
+   K2a and K2b (registered 2026-11-04, the AI assistant's decision; run at 0409d18): K2a, s1's Gata4 factor on the
+   Gata4 -> Mab21l2 fold, is not kept against its permuted control, so the factor has no cross-knockout support;
+   the miss rests on seed 3, and on the other nine seeds K2a leads K2b but still trails our WT copy. It goes to the
+   captain with T3's s1, which changes only by his ruling; no upload changes. T3 is at 3 tries.
 4. Keep the headroom tables and `METHOD_SUMMARY.md` current after every kept change or new entry (`TRIES.md` rule 8;
    feat-021, done once a full `./init.sh` passes); D3 on 2026-11-12 (feat-017).
 5. Heart and embryo: no try without an open lever and a reason that holds at test; the rebuild design re-examined
-   both and found none. N1 rechecks the embryo test pair's coupling and geometry on the 497-gene test panel
-   (target-free, not a try).
+   both and found none. N1 (done) held: the embryo test pair's coupling and geometry on the 497-gene test panel
+   match the record (target-free, not a try; no risk note).
 
 ## Blockers / Risks
 

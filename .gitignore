@@ -25,6 +25,8 @@ wandb/
 
 # Editors / OS
 .vscode/
+# Claude Code workflow worktrees (never synced to the DGX: docs/COMPUTE.md)
+.claude/worktrees/
 .idea/
 .DS_Store
 

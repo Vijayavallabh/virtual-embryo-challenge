@@ -422,3 +422,18 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   or written to the scratchpad and read there. Packages are located through the venv's `*.dist-info` (`RECORD`,
   `direct_url.json`), never by a filesystem-wide search. The repository's Python runs as `python -I -B` (on the DGX
   `uv run --frozen --no-sync python -I -B`), and read-only git uses `GIT_OPTIONAL_LOCKS=0` (`AGENTS.md`).
+- 2026-11-04 (h), process notes from the first-wave workflow (wf_b4b013b3-a46), from its agents' own reports and its
+  review; no test-board limit, anchor or truth count and no hidden-target size was seen: (i) one oversized `sed` of
+  `experiments/harness/TRIES.md` by the run agent was saved by the harness into the session store (its content was
+  that file's text); it was not opened, and the rest was read in smaller chunks; (ii) the K2 builder read once the
+  harness's output file of its own background wait command (empty; under `/tmp`, outside the session store, but a
+  harness-saved output all the same); (iii) the K2 builder's capped read of `baselines_v1`'s T3 decision text showed
+  the baseline scores that row K2a already quotes, before any K2 score existed; (iv) the N2 builder displayed
+  `experiments/t1_m1/results/diag_v1/README.md`, which holds that diagnostic's practice-task scores and cell counts
+  by Feng group (released and validation files, no test board); N2 uses none of it and stays target-free; (v) the
+  builders left three repository copies on the DGX, each with its own `boards/index.json`, which a later recursive
+  search could walk; after the K2 smoke evidence was archived (`experiments/harness/results/t3_k2_v1/factor_check.txt`;
+  the full logs in the ignored `runs/smoke/`), the copies, the local worktrees and their branches were removed the
+  same day. (g)'s rules stand: a long output is capped, or written to the scratchpad and read there. In addition, a
+  workflow's last agent removes its scratch copies and worktrees once their evidence is archived, and the DGX sync
+  excludes `.claude` (`docs/COMPUTE.md`).

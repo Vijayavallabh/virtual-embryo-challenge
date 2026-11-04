@@ -1,0 +1,31 @@
+K2a's factor is s1's factor: the real-data check (experiments/harness/TRIES.md row K2a)
+
+Added 2026-11-04 after the first-wave review (workflow wf_b4b013b3-a46), which asked for this record before the
+DGX scratch copies were removed.
+
+What was checked. The K2 builder's target-free smoke ran on a DGX scratch copy of commit 5a47b23 (2026-11-04, about
+14:13 UTC). It never loaded the Mab21l2 KO and scored no candidate. It loaded the fold's released inputs as
+vec.harness.run_task loads them (the panel genes, duplicates dropped), recomputed K2a's factor with the harness
+(vec.harness.t3_gata4_factor), and compared it with s1's factor file, the one
+experiments/t3_decomp/results/gata4/gata4_decisions.json names under parameters.factor_files.gata4_pooled:
+runs/t3_decomp/gata4_20261028T122425Z/factors/gata4_pooled.csv,
+sha256 36f2d65a36d2d4fd5307cddfadb56e9724c362c982795f30428eda752b4734ef.
+
+Lines from its log (lines with cell counts left out):
+  factor recomputed in 6.6s
+  s1 factor file sha256 as recorded: True | genes and order as the panel: True
+  K2a factor equals s1's factor exactly: True | max abs diff 0.0 | genes 500
+  deciles [50, 50, 50, 50, 50, 50, 50, 50, 50, 50] | multisets kept True | genes moved 494 | deterministic True
+  seed 0: K2a used s1's factor True; K2b the permuted one True; both arms at the same positions True
+  seed 1: K2a used s1's factor True; K2b the permuted one True; both arms at the same positions True
+
+Independent check by the review (read-only, on the DGX):
+- The four input files and the factor file hold T3:gata4's 500 panel genes in panel order.
+- These are unchanged since the factor run: the hashes of t3_decompose.py and rules.yaml, src/vec/prep.py,
+  src/vec/harmonise.py, and the numpy, scikit-learn, scipy and anndata versions.
+
+Where the full files went. Before ~/v/scratch/firstwave was removed on 2026-11-04, the full log and the smoke script
+were copied to runs/smoke/firstwave_k2/ in the local checkout. That folder is gitignored. Their sha256 values:
+  k2_smoke.log 54d3a4c848f139a247215adc025949c6ccdea1c5c20980f81597cdf92772af77
+  k2_smoke.py  f0698a2670cd044b6c00de7a735f91351b6d4b13d2c4c48819e701bb2ccf7083
+The N1 and N2 smoke outputs went to runs/smoke/firstwave_n1/ and runs/smoke/firstwave_n2/ the same way.
