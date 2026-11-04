@@ -348,6 +348,79 @@ def aggregate(task: str, skills: dict, gate: str = "floor_normalised") -> tuple[
     return score, group_skill
 
 
+def working_copies(target: Stage, ref: Stage, seed: int, frac: float = SUBSAMPLE_FRAC,
+                   protocol: str = "emulator") -> tuple[Stage, Stage, Stage]:
+    """(truth half, ceiling half, reference working copy) as `score_board` draws them for one seed (see its protocol
+    argument)."""
+    if protocol not in PROTOCOLS:
+        raise ValueError(f"protocol must be one of {PROTOCOLS}, got {protocol!r}")
+    target_w = subsample(target, frac, seed)
+    ref_w = subsample(ref, frac, seed + 1 if protocol == "emulator" else seed)
+    truth, other_half = split_half(target_w, seed=0) if protocol == "emulator" else veckit_halves(target_w)
+    return truth, other_half, ref_w
+
+
+SEVERITY_GATED = ("beta_gate", "r2_gate", "no_response")  # t3_response_detail states scored as the worst severity
+
+
+def t3_response_detail(pred_X, truth_X, ref_X, de=None, metrics: Mapping | None = None) -> dict:
+    """What the T3 response metrics are made of, by the pinned veckit functions' own steps (the fit checks of tries
+    K2a and K2b, experiments/harness/TRIES.md):
+
+    - severity: `severity_slope`'s beta and r2 over the truth's DE genes and the branch that set the value: "scored"
+      (log beta), "beta_gate" (beta <= 0) and "r2_gate" (r2 <= 0.01), both scored as the worst value, "no_response"
+      (the prediction's change is below 1% of the truth's SD; worst too), "undefined" (fewer than 5 DE genes or no
+      truth change; NaN). "gated" is true in the three states scored as the worst value (SEVERITY_GATED).
+    - de_direction_terms: per gene (columns of the inputs), the product of the prediction's and the truth's change
+      ranks after the reference's pseudobulk rank is regressed out of each, over the product of their norms. They sum
+      to `de_direction`'s partial correlation before its clip to [-1, 1]; all zero where de_direction returns 0.
+
+    de: the truth's (up, down, lfc) from veckit's `de_genes(truth_X, ref_X)`, when the caller has it. metrics: the
+    candidate's panel values (`panel_metrics`); the record then says whether these parts reproduce them.
+    """
+    from common.core_metrics import SEVERITY_LOG_WORST, _ranks, de_genes, pseudobulk
+
+    up, dn = (de if de is not None else de_genes(truth_X, ref_X))[:2]
+    dp = pseudobulk(pred_X) - pseudobulk(ref_X)
+    dt = pseudobulk(truth_X) - pseudobulk(ref_X)
+    sev: dict = {"state": "undefined", "beta": None, "r2": None}
+    idx = np.concatenate([up, dn]).astype(int)
+    if len(idx) >= 5 and np.std(dt) >= 1e-12:
+        if np.std(dp) < 1e-2 * np.std(dt):
+            sev["state"] = "no_response"
+        elif float(dt[idx] @ dt[idx]) >= 1e-12:
+            a, b = dp[idx], dt[idx]
+            beta = float(b @ a) / float(b @ b)
+            resid = a - beta * b
+            r2 = 1.0 - float(resid @ resid) / max(float(((a - a.mean()) ** 2).sum()), 1e-12)
+            sev = {"state": "beta_gate" if beta <= 0 else "r2_gate" if r2 <= 0.01 else "scored", "beta": beta,
+                   "r2": r2}
+    sev["gated"] = sev["state"] in SEVERITY_GATED
+    terms = np.zeros(len(dp))
+    if not (np.std(dt) < 1e-12 or np.std(dp) < 1e-2 * np.std(dt)):
+        rp, rt, rr = _ranks(dp), _ranks(dt), _ranks(pseudobulk(ref_X))
+        C = np.corrcoef(np.vstack([rp, rt, rr]))
+        if np.all(np.isfinite(C)) and 1.0 - abs(C[0, 2]) >= 1e-6:
+            x = rr - rr.mean()
+
+            def resid_of(r):
+                y = r - r.mean()
+                return y - (x @ y) / (x @ x) * x
+
+            ep, et = resid_of(rp), resid_of(rt)
+            norm = float(np.linalg.norm(ep) * np.linalg.norm(et))
+            if norm > 1e-12:
+                terms = ep * et / norm
+    out = {"severity": sev, "de_direction": float(terms.sum()), "de_direction_terms": terms.tolist()}
+    if metrics is not None:
+        worst = round(SEVERITY_LOG_WORST, 4)
+        out["matches_panel"] = {
+            "de_direction": abs(float(np.clip(terms.sum(), -1.0, 1.0)) - float(metrics["de_direction"])) <= 1e-4,
+            "severity": (sev["state"] == "undefined") == (metrics.get("severity_slope") is None)
+            and sev["gated"] == (metrics.get("severity_slope") == worst)}
+    return out
+
+
 @dataclass
 class BoardScore:
     score: float
@@ -385,13 +458,9 @@ def score_board(board: Board, pred: Stage, target: Stage, ref: Stage, floor_pred
     """
     if build not in SCORER_BUILDS:
         raise ValueError(f"build must be one of {SCORER_BUILDS}, got {build!r}")
-    if protocol not in PROTOCOLS:
-        raise ValueError(f"protocol must be one of {PROTOCOLS}, got {protocol!r}")
     task = board.task
     ref_seed = seed + 1 if protocol == "emulator" else seed
-    target_w = subsample(target, frac, seed)
-    ref_w = subsample(ref, frac, ref_seed)
-    truth, other_half = split_half(target_w, seed=0) if protocol == "emulator" else veckit_halves(target_w)
+    truth, other_half, ref_w = working_copies(target, ref, seed, frac, protocol)
     values = panel_metrics(task, pred, truth, ref_w, seed=seed, probe=probe, build=build)
 
     extras = {"build": build, "protocol": protocol}

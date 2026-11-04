@@ -6,7 +6,9 @@
           per pseudo-task (per-seed scores, skills, anchors, cell counts, provenance) into --out
   decide  apply the adoption rule (vec.adoption.keep_change) to each --change against --base over the board's
           pseudo-tasks found in --runs; writes decisions.{json,txt} into --out and, with --register, one row per
-          pseudo-task and candidate into results/registry.csv
+          pseudo-task and candidate into results/registry.csv. On T3 each decision also carries the fit checks of
+          tries K2a and K2b (vec.harness.t3_fit_checks: the margin by scored group, the top 10 genes' share of the
+          de_direction margin, the seeds where the severity gate differs)
 
 Usage (DGX, repo root, BLAS threads capped as docs/COMPUTE.md says; long runs in tmux with a log):
   OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 uv run python experiments/harness/run.py run \
@@ -103,6 +105,9 @@ def cmd_decide(a) -> None:
         sys.exit(f"no pseudo-task results for {a.board} in {runs}")
     sha = harness._sha256(harness.CONFIG)
     decisions = [harness.decide(results, configured, a.base, c, config_sha256=sha) for c in a.change]
+    for d in decisions:  # T3 rows carry the parts of the response metrics (tries K2a and K2b's fit checks)
+        d["fit_checks"] = {r["task"]["key"]: fc for r in results
+                           if (fc := harness.t3_fit_checks(r, a.base, d["change"])) is not None}
     lines = [f"{a.board}: {len(results)} pseudo-task(s) in {runs} (protocol {results[0]['protocol']}, build "
              f"{results[0]['build']}, anchors computed, seeds {results[0]['seeds']})"]
     for r in results:
@@ -118,6 +123,13 @@ def cmd_decide(a) -> None:
                              f"{len(SEEDS)} seeds, passes {v['passes']}, vetoes {v['vetoes']}")
             else:
                 lines.append(f"    {k}: incomplete {v}")
+        for k, fc in d["fit_checks"].items():
+            share = "n/a" if fc["top_share"] is None else f"{fc['top_share']:.2f}"
+            lines.append(f"    {k} fit checks: margin by group "
+                         + ", ".join(f"{g} {m:+.2f}" for g, m in fc["group_margins"].items())
+                         + f"; de_direction margin {fc['de_direction_margin']:+.4f}, its top {fc['top']} genes' share "
+                         f"{share}; severity gate differs in {len(fc['severity_gate_differs'])} of {len(fc['seeds'])} "
+                         f"seeds" + ("" if fc["matches_panel"] else "; WARNING: the parts do not reproduce the panel"))
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     (out / f"decisions_{safe(a.board)}.json").write_text(json.dumps(
