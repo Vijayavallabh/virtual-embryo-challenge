@@ -4,21 +4,14 @@
 
 - Goal: a compliant Human-track entry on all four test boards; the final phase opened on 2026-10-27 at 16:00 UTC,
   postponed from 2026-10-20 by the organisers (2 scored uploads per board for the whole phase; none used as of
-  2026-10-28).
-- Current status: every method choice that must precede the release is committed (size procedure, T3 decomposition
-  rules, T1 direction readout, count rule, label-mapping rule, test-anchor quarantine). The user signed off the
-  release-day rules on 2026-10-21 (`docs/RELEASE_RULES_SUMMARY.md`), and the same day the wording for the case the
-  count rule left open, whose reading of "next" the user left to the AI assistant (a decision panel chose the next
-  passing count up); the heart-size fallback and the count rule run as code. Release-day steps are in
-  `docs/P3_RUNBOOK.md`.
-  The phase opened on 2026-10-27. On 2026-10-28 the user unlocked the validation answers on the Data page (P2
-  submissions now permanently disabled for the team); all six are on the DGX, and runbook steps 2 (data) and 3
-  (labels) are done. The user read the final-phase Rules s.10 and Data page as allowing the validation answers as
-  model inputs (A20 passed; confirmation asked in the fourth organiser email, sent 2026-10-28). The board-spec file
-  still answers 403 (step 1 blocked; `progress.md`, Blockers; still so on 2026-10-31). At the user's request its
-  saved-file intake is built (`vec boards update --from-file`, cee1c92) but not cleared for use: saving the file in a
-  browser would work around the 403, which only the user can allow. Step 4, the pre-registered runs,
-  ran on 2026-10-28 at the user's go-ahead, each output committed before it was read.
+  2026-11-04).
+- Current status (2026-11-04): the test-board specs are in `boards/` (634b5fd; D1 at ae6d6b3 leaves A3 unresolved),
+  and all ten test-board files, built at ae6d6b3, pass `vec check` and the server's format check; no scored upload
+  has been made. No official upload is made without the captain's explicit go-ahead at the time (he runs the
+  commands), and both T1 uploads also wait for the births decision. The captain's guiding principle (2026-11-04) now
+  opens `AGENTS.md`, and the headroom tables in `experiments/harness/TRIES.md` order the work. Every pre-release rule
+  stays as committed (size procedure, T3 decomposition rules, T1 direction readout, count rule, label-mapping rule,
+  the frozen s2 rules). Details: `progress.md`, Current State and What's Next.
 - Branch / commit: `main` on GitHub (private), mirrored to `PrakashDGX_H2:~/v/virtual-embryo-challenge`.
 
 ## Completed This Session (2026-10-27 to 2026-10-28)
@@ -94,10 +87,19 @@
 2. Read `feature_list.json` and `progress.md`.
 3. Review this handoff and `docs/P3_RUNBOOK.md`.
 4. Run `./init.sh` before editing.
+5. Before choosing or changing work on an entry, read the guiding principle in `AGENTS.md` and the headroom tables in
+   `experiments/harness/TRIES.md`.
 
 ## Recommended Next Step
 
-- 2026-11-01 (latest): the s1 build path was reviewed (four reviewers, skeptic-verified; 11 findings) and fixed in
+- 2026-11-04 (latest): follow `progress.md`, What's Next: the T1 births decision (by 2026-11-10 at the latest), the
+  T3 response-identity line through the adoption rule, and the headroom tables kept current. Official uploads only on
+  the captain's go-ahead. Every change to an entry starts from its board's published baseline and a row in
+  `experiments/harness/TRIES.md`, registered before its run (rules 5-8).
+
+Earlier notes, kept as history (superseded where `progress.md` says otherwise):
+
+- 2026-11-01: the s1 build path was reviewed (four reviewers, skeptic-verified; 11 findings) and fixed in
   46089fe. The critical one: both board intakes would have refused every gene list on 4 Nov (the site publishes a
   16-hex digest of the newline-joined list); also test-board counts are no longer printed, and the T3 builder defaults
   to seed 1,000,001 and reads max_cells from the board. On or after 2026-11-04 UTC: screened Slack and mail check for

@@ -5,15 +5,84 @@ decisions that mattered, what was trained on what, enough detail to understand w
 Generality Award is judged on this summary. Keep it current as methods change; every claim should point to a run in
 `results/registry.csv` or an experiment report in `experiments/*/REPORT.md`.
 
-Status 2026-11-01: the entry for each board is chosen (below) and built end to end; no test submission exists yet (the
-test boards' specs wait on the board intake, not before 2026-11-04). The final phase opened on 2026-10-27, and the team
-unlocked the P2 validation answers on 2026-10-28 (Data provenance, below). Each change was kept only if it passed the
-adoption rule on pseudo-tasks built from released stages (Shared machinery), unless a pre-registered rule decided it.
+Status 2026-11-04: the entry for each board is chosen (below). The test-board specs were taken in on 2026-11-04 by
+`vec boards update --from-file` (634b5fd; nobody opened the saved file), and all ten test-board files (s1, s2 and the
+Task 3 switch files), built at ae6d6b3, pass `vec check` and the server's format check; no scored submission has been
+made. The final phase opened on 2026-10-27, and the team unlocked the P2 validation answers on 2026-10-28 (Data
+provenance, below). Each change was kept only if it passed the adoption rule on pseudo-tasks built from released
+stages (Shared machinery), unless a pre-registered rule decided it.
+Since 2026-11-04 the summary is framed by the team captain's guiding principle: each entry is described by the change
+it predicts beyond the published baseline and by the held-out evidence for that change ("What each entry predicts
+beyond the published baselines", below).
 
 ## Team and track
 
 Team Mithril, Track 1 (Human Team). A person reviews results and makes every submission decision; coding agents do
 the work.
+
+## What each entry predicts beyond the published baselines
+
+The team captain's guiding principle (2026-11-04) treats the embryo as a process of becoming: an entry predicts which
+cell states emerge, in what proportions, how their expression changes and, on Task 2, how cells organise in space.
+The published baselines predict no change in any of them. copy_last submits the last released stage unchanged (Task 1
+and both Task 2 boards), wt_identity the matched wild type (Task 3), and each scores 50. Below, per board and facet,
+are the change an entry predicts beyond its baseline and the held-out evidence for it: backtests on released stages
+or knockouts the change was not tuned on, over 10 seeds. Harness rows are scored with the calibrated emulator (bake
+protocol), in board points. The Task 3 rows come from the pre-registered decomposition's own scorer (2026-10-28: the
+emulator's metrics with its default draws and computed anchors, before the 2026-10-31 calibration), the Task 1 readout
+is raw metric deltas, and the T1 and heart s2 rest on sensitivity analyses with an oracle base or core size. Where no
+backtest exists, the cell names the nearest check and what it is: in-sample, an oracle base or one knockout. The
+per-group numbers are in `experiments/harness/TRIES.md` ("Where the entries stand against the published
+baselines"). In this section, D-numbers are the pre-registered Task 3 rules (`experiments/t3_decomp/rules.yaml`),
+C-numbers claims in `experiments/coords/REPORT.md`, A-numbers rows of `ASSUMPTIONS.md` and E11 a `TRIES.md` row.
+
+**Task 1, E12.5, beyond E10.5 verbatim.** s1 = M1; s2 = M1 with cardiomyocytes at 60% of heart cells.
+
+| Facet | Change beyond the baseline | Held-out evidence |
+|---|---|---|
+| States that emerge | None yet. Births by the legal route (states present in legal post-E14.5 chamber data and absent at E10.5) are being designed | - |
+| Proportions | Chamber categories only (the surrounding, cardiac-progenitor (first and second heart field, JCF, DMP), pericardial and pharyngeal categories dropped; `configs/t1_chamber_classes.yaml`), at E10.5's own chamber mix; s2 moves cardiomyocytes to 60% of heart cells | A premise rather than a measurement (the organisers' E12.5 collection note). On the chamber-cut backtest (E10.5 from E9.5) B0 beats a copy (+1.62, 9 of 10 seeds) but not the floor (-0.32, vetoed), and that backtest draws E9.5's mix, so E10.5's own mix is never tested (`experiments/harness/results/d2_v1/`). The s2 rests on a sensitivity grid on an oracle base, not on a backtest (`experiments/s2_hedge/`) |
+| Expression | Count-space shifts: Feng 2022's E9.5 -> E14.5 direction at 2/5 for cardiomyocytes, endocardium, endothelium and epicardium; half the E9.5 -> E10.5 per-type change for the other cells (mostly blood); 23 genes held flat (13 Y-linked, Xist and Tsix, 2 named strain genes and 6 by the pool rule alone; `experiments/t1_direction/results/held_flat_genes.csv`) | The pre-registered readout on E10.5 from E9.5: de_score +0.175 and de_direction +0.188 over cross-fitted momentum, cardiomyocyte sign agreement 0.912 (`experiments/t1_direction/results/E10.5/`). A labelled diagnostic at 1/5, in-sample for that readout: +0.97 over the floor and +1.29 over B0, 10 of 10 seeds each; over the floor all of the gain is on de_direction (skill 0.620, against 0.536 for a copy), and de_score (0.480) stays below the floor (`experiments/t1_m1/results/diag_v1/`). No harness task can judge it, and the 2/5 used at test is untested |
+| Spatial organisation | Not scored on Task 1 | - |
+
+**Task 2 heart, E12.5, beyond E10.5 with its coordinates.** s1 = H1 (B0 with the pre-registered size); s2 = H2 as
+the half trim.
+
+| Facet | Change beyond the baseline | Held-out evidence |
+|---|---|---|
+| States that emerge, proportions | None: E10.5's composition is held (the trend was dropped on 2026-11-01). s2 removes surrounding cells, farthest from the core first, to half the in-plane scope | s2 against s1 on the released targets: -5.88 on E10.5 from E9.5 (ahead in 0 of 10 seeds), +1.75 on E8.5 from E8.25_late (9 of 10), +1.57 on E10.5 from <= E8.75 (10 of 10), every prediction scaled to an oracle core size (`docs/S2_RULES.md`, `experiments/s2_hedge/`) |
+| Expression | Half the E9.5 -> E10.5 change of each harmonised lineage, in count space | E10.5 from E9.5 and from <= E8.75: +0.47 and +0.90 over a copy (9 and 10 of 10 seeds), +0.43 and +1.45 over the floor (7 and 10 of 10); every metric within 1.3 points of the floor (`experiments/harness/results/d2_v1/`). The expression-change group itself moves +0.77 and -0.03 against a copy (+0.38 and -0.46 against the floor); on the 1.75-day backtest the gain over a copy sits on neighbourhoods (+0.50) and cell state (+0.43), not on the group the momentum's reason targets (`TRIES.md` rule 2; `experiments/harness/results/headroom/`) |
+| Spatial organisation | E10.5's tissue and shape; the core grown by 1.58 x the E9.5 -> E10.5 log growth (a fixed three-rule average), xy grown and z held | None is possible. No released pseudo-target reaches the E10.5-E12.5 regime, and on E9.5 every growth rule scores like copy_last (`experiments/coords/REPORT.md`, C7; A8). The one released scope check (n = 1) ranked s1's scope, which equals H0 as built, last of three (C10) |
+
+**Task 2 embryo, E7.75, beyond E7.5 with its coordinates.** s1 = fgw; s2 = fgw_shape0. Against the organisers'
+pseudobulk_shift on E7.5, fgw gains +4.15, and against B0 on E7.25 +4.92, ahead in 10 of 10 seeds each.
+
+| Facet | Change beyond the baseline | Held-out evidence |
+|---|---|---|
+| States that emerge, proportions | Real cells, half from E7.5 and half from E8.0: E8.0's states enter at half their E8.0 share, and states seen only at E7.5 halve | Mixed. On E7.5 (t = 1/3) mmd_u skill 0.671 and variogram 0.664; on E7.25 (t = 2/3) 0.497 and 0.283, the variogram below the floor. E7.25 sits much nearer E6.75 than its day says, and a mixture at its nominal fraction does worse there than a copy of E6.75 (`experiments/harness/results/diag_emb_mix/`). Nothing measured places E7.75 between its brackets (the clock warp was pruned) |
+| Expression | The pseudobulk moves between the brackets; the cells are not edited | de_score 0.581 and 0.683, de_direction 0.703 and 0.702, against 0.450 and 0.522, and 0.526 and 0.628, for a copy (`experiments/harness/results/emb_fgw_v1/`) |
+| Spatial organisation | s1: cells moved half-way along their FGW partners after a proper rotation; s2: E7.5's geometry. Both at the size given by PCHIP of log RMS radius through the released embryo stages, with the 15-NN neighbourhoods of real cells | Size: scale skill 0.727 and 0.624. Shape, s1: d2 0.372 and 0.717, Dice 0.385 and 0.595 (below a copy on E7.5); at test the moved cloud is flatter than either bracket in every draw (mirrored partners; `experiments/harness/results/diag_emb_coupling/`), and the fix, try E11, gained on E7.5 and was vetoed on E7.25. Shape, s2: d2 0.439 and 0.383, Dice 0.494 and 0.434. Neighbourhoods: 0.640 and 0.602 (s1), 0.654 and 0.563 (s2). Better of the two: 60.87, against 59.95 for fgw alone (`experiments/harness/results/emb_shape_v1/`) |
+
+**Task 3, beta-catenin knockout at E8.75, beyond the unchanged wild type.** s1 = the allowed branch's s1; s2 = the
+refused branch's s1, uploaded first.
+
+| Facet | Change beyond the baseline | Held-out evidence |
+|---|---|---|
+| States that emerge | None: the scenario only depletes | - |
+| Proportions | Both: OFT/RV-CM, aSHF, pSHF, aPHM and pPHM depleted, first-heart-field and left-ventricle states spared; to 0.38x in s1 (the Gata4 replicates' median shift, D7), 0.61x in s2 (Mab21l2's, D7m) | None for beta-catenin. On Gata4 the term adds +0.22 and -0.43 on top of the borrowed factor (D8 did not fire). The same states at 0.5x on WT cells score 53.62 and 48.13, against 52.39 and 50.61 for WT cells, with severity at its floor in 4 and 10 of 10 seeds |
+| Expression (the per-gene response) | s1: the Gata4 per-gene factor, measured in the compartments the knockout cannot touch (non-Mesp1) and applied in count space to every WT E8.75 cell, with Gata4's per-type depth. s2: none | Within one knockout only: the other replicate's factor scores 68.05 and 64.09, with depth 74.50 and 72.15 (rules D2 and D4). No unseen knockout tests this factor. The one factor carried across knockouts, Mab21l2's on Gata4 (D11b), scored 59.40 and 62.15 against 52.39 and 50.61 for WT cells, under its pre-registered bar of 60 on rep1; its gain is on severity (skill 0.893 and 0.892), and its de_score stays just below the floor (skill 0.490 and 0.498; `experiments/t3_decomp/results/gata4/`) |
+| Spatial organisation | Not scored on Task 3 | - |
+
+s2 is floor insurance by design: it carries no number derived from the Gata4 files and stays near wt_identity, so the
+better of the two stays near the floor if s1's factor does not carry to beta-catenin or has the wrong sign (A10). Its
+composition is the same bet as s1's (A11), at a smaller magnitude.
+
+**What no entry predicts yet.** No Task 1, heart or Task 3 entry predicts a state that no released stage has: Task 1
+births by the legal route are being designed, the heart holds E10.5's composition, and the Task 3 scenario only
+depletes. On the embryo, states that E8.0 has and E7.5 lacks enter at half their E8.0 share, as E8.0's real cells, by
+interpolation only; no backtest checks that at t = 1/2. The heart entry's checked changes stay within 1.3 points of
+copy_last on every metric, so its gain at test rests on the pre-registered size, which no released stage can test.
+Task 3's s2 is the wild type plus a five-state depletion, by design.
 
 ## Data provenance and compliance (applies to every task)
 
@@ -29,7 +98,8 @@ the work.
   those stages and genotypes stays out, and no test inputs are distributed.
 - **No board anchors and no leaderboard scores set any number.** Test-board anchors are stripped in memory when the
   board specs are refreshed (`vec.boards.update_boards`; `update_boards_from_file` does the same for a board index
-  saved in the browser, a route not cleared for use); the public board file is never opened.
+  the captain saved in the browser, the route he cleared on 2026-11-01 and used on 2026-11-04, 634b5fd); the public
+  board file is never opened.
 - **Task 3 gene directions come only from released data** through committed code (organiser ruling of 2026-10-15): no
   gene-level knockout findings from the literature, no curated gene sets built from perturbing the held-out genes.
 - **The leaked held-out heart size** (veckit PyPI 0.1.2 docstring) was reported to the organisers and never used; the
@@ -72,7 +142,10 @@ the work.
   mirrored and the moved cloud flattens; it happens in every draw of the test pair. Taking the moves from an exact
   transport on expression and position in the rotated common frame fixed every draw and gained +2.13 on the E7.5
   backtest (shape only) but lost -1.59 on E7.25, where its shorter moves cost shape, so it is not used; the s2
-  (E7.5's geometry) hedges the flattened s1 geometry.
+  (E7.5's geometry) hedges the flattened s1 geometry. Since 2026-11-04 every row also names its board's published
+  baseline, the change it predicts beyond the baseline (facet and metrics), the scored group it targets and the
+  held-out evidence that would show its effect, and tries go first to the weakest group with an open lever (rules 5-8
+  and the headroom tables, built from committed results by `experiments/harness/headroom.py`).
 - **Provenance:** every prediction file carries a build stamp (its sha256, the commit that built it, and whether the
   code was unchanged from the build's start to the write); an upload is accepted only with a matching clean stamp,
   and the submission ledger records the building commit of every file sent.
@@ -98,7 +171,10 @@ the work.
 - **What the T1 scorer rewards.** On the released E9.5 -> E10.5 transition the changed genes are mostly highly
   expressed genes going down, which de_score's expression-magnitude null names 39-41% of; a copy names 11%
   (`experiments/harness/results/t1_de_v1/`). Direction quality is what moves de_score above its floor.
-- **Emergent populations:** none in the entry (the organisers have not answered on qualitative background).
+- **Emergent populations:** none in the entry yet. The organisers have not answered on qualitative in-window
+  background; births by the legal route (states present in legal post-E14.5 chamber data and absent at E10.5, their
+  states and shares taken only from E10.5 and those data by a rule written before any run; the cardiomyocyte and blood
+  shares stay as the s1 and s2 rules set them; `docs/DATA_POLICY.md`, 2026-11-04 (c)) are being designed.
 - Training data: released T1 E8.5, E9.5, E10.5; Feng 2022 E9.5 and E14.5 CD1 hearts (X002), reduced from GEO by
   committed code that drops E10.5-E13.5 cells before anything is written. JAX/Qiu 2024 for diagnostics only (X003).
 
@@ -113,7 +189,8 @@ the work.
   `docs/S2_RULES.md`). E10.5's
   composition is held: E9.5 and earlier were embryo portions and E10.5 a dissected heart, so a composition trend through
   them would carry that change of sampling on to E12.5 (dropped by the captain, 2026-11-01). On the pseudo-tasks B0
-  beats a copy (+0.47, +0.90) and the floor (+0.43, +1.45); the size cannot be backtested.
+  beats a copy by the adoption rule (+0.47, 9 of 10 seeds; +0.90, 10 of 10) and is ahead of the floor (+0.43 and
+  +1.45), short of the rule on the one-day task (7 of 10 seeds); the size cannot be backtested.
 - **Embryo E7.75 — displacement interpolation (FGW):** a balanced fused Gromov-Wasserstein coupling of 2,000 cells per
   bracket (E7.5, E8.0) on 30 expression principal components and within-cloud distances (structure weight 0.5), the
   proper rotation that maps one bracket onto the other under the coupling, every cell moved by its nearest anchors'
@@ -164,6 +241,12 @@ _Planned claim_: the summary will ask to be considered for the award unless deci
     under the coupling, barycentric partners, nearest anchors; added 2026-11-01 for the T2 embryo).
 
   Births from a legal source and leave-one-transition-out calibration are not in the entries.
+- **The core's steps and the four predictions** (the captain's guiding principle, 2026-11-04). Drawing real cells to
+  a target composition answers which states appear and in what proportions; births would add states no released stage
+  has (not in the entries yet; on the embryo the later bracket's real cells bring them); count-space edits carry the
+  expression change, and on Task 3 the genotype's per-gene response; coupling and moves carry the spatial organisation
+  on Task 2. The published baselines are the same operator with every step at identity, so an entry's change beyond
+  its baseline is the list of steps it switches on, and the heads decide which.
 - **Task heads** (what differs):
   - T1 (`vec.t1_scope`): the 32,285-gene encoder, chamber categories and target shares, and the direction (momentum or
     external).

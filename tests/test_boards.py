@@ -573,6 +573,33 @@ def test_a_null_min_cells_loads_as_the_default_and_required_keys_load(tmp_path):
     assert b.min_cells == 1000 and b.obs_required == [] and b.obsm_required == ["spatial_3D"]
 
 
+# The published baselines (docs/CHALLENGE.md, "Metric panel"; the captain's guiding principle, 2026-11-04): copy_last on
+# T1 and T2, wt_identity on T3. Until 2026-11-04 a spec without floor_model read as copy_last on every task (D1,
+# ae6d6b3, lists copy_last for T3:bcatenin).
+
+@pytest.mark.parametrize("key, published, floor", [
+    ("T3:bcatenin", "omitted", "wt_identity"), ("T3:bcatenin", None, "wt_identity"),
+    ("T1:test", "omitted", "copy_last"), ("T2:heart:test_extrap", None, "copy_last"),
+    ("T2:embryo:test_interp", "omitted", "copy_last"), ("T3:gata4", "wt_identity", "wt_identity"),
+    ("T3:bcatenin", "copy_last", "copy_last")])
+def test_a_spec_without_a_floor_model_gets_its_tasks_published_floor(tmp_path, key, published, floor):
+    spec = _spec(key, "test", anchors=False)
+    if published == "omitted":
+        del spec["floor_model"]
+    else:
+        spec["floor_model"] = published  # a published value is kept as published
+    clean, _ = sanitise_index({key: spec})
+    (tmp_path / "index.json").write_text(json.dumps(clean))
+    (tmp_path / spec["genes_file"]).write_bytes(GENES)
+    assert load_boards(tmp_path)[key].floor_model == floor
+
+
+def test_every_task_has_a_published_floor():
+    from vec.boards import GROUPS, TASK_FLOOR
+
+    assert set(TASK_FLOOR) == set(GROUPS) and TASK_FLOOR["T3"] == "wt_identity"
+
+
 @pytest.mark.parametrize("key, split, hidden", [
     ("T1:test", "test", True), ("T2:heart:test_extrap", None, True), ("T3:bcatenin", "test", True),
     ("T1:other", "test_x", True), ("T9:new", "weird", True), ("T1:val", "val", False),

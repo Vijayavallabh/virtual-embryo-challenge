@@ -1312,7 +1312,8 @@ def test_site_text_is_never_markup_in_the_board_commands(env, monkeypatch):
     res = runner.invoke(cli.app, ["boards"])
     assert res.exit_code == 0, _output(res)
     assert "T1:x[/]" in res.output and "[red]copy_last" in res.output
-    blank = dataclasses.replace(board, floor_model=None)  # a spec published with "floor_model": null
+    # a Board with no floor: load_boards now gives a published null its task's floor, so only code builds this one
+    blank = dataclasses.replace(board, floor_model=None)
     monkeypatch.setattr(cli, "load_boards", lambda: {blank.key: blank})
     res = runner.invoke(cli.app, ["boards"])
     assert res.exit_code == 0, _output(res)

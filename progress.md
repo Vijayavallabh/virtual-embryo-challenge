@@ -22,6 +22,22 @@ whatever it takes to win", within the rules) every change tried for an entry goe
 (`experiments/harness/TRIES.md`); none tried so far was kept (embryo E7, E8 and E11; heart H3; T1 T5; H4, E9 and E10
 pruned). Known risk: at test fgw's moved cloud is flattened in every draw (mirrored FGW partners), hedged by the s2
 (E7.5's geometry). The s2 rules are frozen (`docs/S2_RULES.md`, 2026-11-03).
+2026-11-04 (later), the captain's guiding principle (quoted in `AGENTS.md`): the AI assistant applied it across the
+harness files and the docs (feat-021): `AGENTS.md` opens with it and seven working rules; `docs/PLAN.md` section 3,
+item 9 (weakest weighted component first) and decision log 2026-11-04; `experiments/harness/TRIES.md` rules 5-8, the
+headroom tables and the order of the next tries; `METHOD_SUMMARY.md` by facet; A22. The headroom tables
+(`experiments/harness/headroom.py`, committed results only, not a try) give the largest gaps in Overall units as T3
+response identity (de_score, 15.18 points left with the cross-knockout stand-in; 11.89 with stand-in A) and T1
+distribution (mmd_u, 15.08), tied within T3's stand-in spread; the heart's stand-in is within 1.3 points of copy_last
+on every metric; the embryo has the smallest gap and the most tries. Open levers: T1 births by the legal route (the
+births design) and a T3 factor change through the adoption rule on the cross-knockout folds, then the captain; T1
+direction is open but has no backtest; none with a reason that holds at test on the heart or the embryo. Nothing in
+this makes or schedules an upload: each official upload needs the captain's explicit go-ahead at the time. D1 floor
+note: D1 (ae6d6b3) lists copy_last as T3:bcatenin's floor. The old loader gave copy_last to any spec without the
+field; `vec.boards.load_boards` now gives a spec without the field, or with null, its task's floor (wt_identity on T3)
+and keeps a published value. Whether the T3:bcatenin spec omits the field is not checked (that needs the board index,
+which nobody opens). No build, upload guard or score uses the field, so no built file or score changes; the D1 check
+and `vec boards` print it, harness task files record it, and the D1 files stay as run.
 Earlier: feat-004 - Final-phase intake (`docs/P3_RUNBOOK.md`). Steps 2 (data) and 3 (labels) done on
 2026-10-28 (feat-003 done), and step 4 (the pre-registered runs) ran the same day at the user's go-ahead, each output
 committed before it was read. Step 1 is blocked by the 403 on the panel files (Cloudflare error code 1010, a
@@ -386,23 +402,47 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       unresolved (the P3 specs carry no truth_cells or ref_cells). Exposures 2026-11-04 and (b) recorded in
       `docs/DATA_POLICY.md`; runbook step 1 now warns never to copy the Data page's text. The s1, s2 and t3alt builds
       started on the DGX at ae6d6b3.
+- [x] 2026-11-04 (later): the captain's guiding principle applied across the harness files and the docs by the AI
+      assistant, on branch principles-2026-11-04 (feat-021, in progress). `AGENTS.md` opens with it and seven
+      working rules; `docs/PLAN.md` section 3 is framed by it, with item 9 (weakest weighted component first) and
+      decision log 2026-11-04; `experiments/harness/TRIES.md` gains rules 5-8, the headroom tables and the order of
+      the next tries; `METHOD_SUMMARY.md` gives, per board and facet, the change beyond the published baseline and its
+      held-out evidence; `docs/CHALLENGE.md` lists the published baseline per test board; A22 in `ASSUMPTIONS.md`;
+      `init.sh` points to the rules. `experiments/harness/headroom.py` (stdlib only) and its results read 19 committed
+      inputs (sha256 in the output); every stored board score is recomputed to 1.4e-14 points and every mean agrees
+      with `results/registry.csv` to 0.0005; a rebuild gives identical files. `vec.boards.load_boards` gives a spec
+      without floor_model, or with null, its task's published floor (T3 wt_identity; this settles the D1 floor note
+      only if the T3:bcatenin spec omits the field, unchecked), with a test in `tests/test_boards.py` that fails when
+      the fix is undone. Three independent reviews (accuracy, compliance, substance and style) followed, and their
+      valid fixes are in the same commit: among them, `headroom.py` now prints the weakest weighted component as the
+      scored group (its `vec.boards.GROUPS` id) and ranks the groups and boards in Overall units, `TRIES.md` rule 6
+      defines ties and closed levers, and the decision log says what the question finds in the entries as they stand.
+      Checks with the main repository's interpreter: ruff clean on src, tests and headroom.py; `tests/test_boards.py`
+      68 passed, 1 deselected (the test that reads the committed board index, left out so that no failure could print
+      a test board's spec); `tests/test_submit.py` 88 passed. No try, no build, no upload.
 
 ### What's Next
 
-1. Until 2026-10-27: work that needs no release data (`docs/PLAN.md` section 7): external data through committed
-   window filters (feat-007), v1 pipelines on released stages, B0 builds checked with `vec check` on the DGX.
-   (2026-10-28: that week is over; these items are still open in `feature_list.json`.)
-2. 2026-10-27, once `vec submit status` shows the final phase: follow `docs/P3_RUNBOOK.md` (board intake with anchors
-   stripped, the quota shape, data, label map, pre-registered runs, commit each output), then emulator calibration
-   (feat-005) and test-board intake (D1).
-   (2026-10-28: step 0 passed on 2026-10-27, step 1 is blocked by the 403 (fallback built, not cleared for use), and
-   steps 2, 3 and 4 are done (What's Done). Next is the runbook's section 5: emulator calibration against the
-   validation reference rows (feat-005), then candidate files on the DGX; the test-board intake (D1) and every
-   server format check wait for the test boards' specs.)
-   (2026-10-31: feat-005 done; the D1 check script is ready (`experiments/intake/d1_check.py`); D1, candidate files
-   and format checks wait for the captain's decision on the browser route.)
-3. B0 floor-plus files on all four boards with the builders (feat-009); T3 per-gene factor on Gata4 (feat-012); T1
-   scope shares by a written rule (feat-014).
+Updated 2026-11-04, after the captain's guiding principle (`AGENTS.md`; the order comes from the headroom tables in
+`experiments/harness/TRIES.md`):
+
+1. Official uploads: none without the captain's explicit go-ahead at the time; he runs the commands. Once the heart
+   and embryo s1 are up, the frozen s2 rules build their s2 as s1, at s1's commit (`docs/S2_RULES.md`), so no later
+   try reaches those two boards unless the captain changes a rule.
+2. T1: both uploads also wait for the births decision (design workflow wf_77e506c8-014; decision by 2026-11-10 at the
+   latest; a T1 upload then still needs the captain's go-ahead). Births by the legal route are the one open
+   composition lever on T1's weakest groups (distribution, DE recovery, covariance); T1 direction stays open, but no
+   backtest can judge a change to Feng's direction. The births try is registered in `TRIES.md` under rules 5-8
+   before its run.
+3. T3: response identity, the largest gap in Overall units on the cross-knockout stand-in (15.18; 11.89 on the
+   replicate stand-in), ties with T1 distribution (15.08) and comes second for the reason in `TRIES.md` (T1's lever
+   has a design and a date; no T3 candidate exists yet). A factor change is kept only under the adoption rule on the
+   cross-knockout folds and then goes to the captain (T3's s1 is his ruling); the composition stays closed.
+   Optional, and it changes no upload: the Gata4 factor alone on the Gata4 -> Mab21l2 fold (`TRIES.md`, the order of
+   the next tries).
+4. Keep the headroom tables and `METHOD_SUMMARY.md` current after every kept change or new entry (`TRIES.md` rule 8;
+   feat-021, done once a full `./init.sh` passes); D3 on 2026-11-12 (feat-017).
+5. Heart and embryo: no try without an open lever and a reason that holds at test.
 
 ## Blockers / Risks
 
@@ -572,6 +612,9 @@ scorer reproduces every published validation anchor exactly. The release-day rul
 
 ## Notes for Next Session
 
+- Before choosing or changing work on an entry, read the guiding principle at the top of `AGENTS.md` and the headroom
+  tables in `experiments/harness/TRIES.md` (after a kept change, rerun `python3 -I experiments/harness/headroom.py`,
+  commit its output and copy the tables: `TRIES.md` rule 8).
 - Slack sweeps: leave the group DM C0CA7QTEMDF out of date searches that reach back to 2026-10-18 (they surface our
   leak report). Six workspace accounts use eigenlabs.org addresses (none has posted); record their posts, or posts in a
   new Yukon channel, by place and date only.

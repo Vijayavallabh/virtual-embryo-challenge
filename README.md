@@ -9,8 +9,8 @@ Our entry to the [Virtual Embryo Challenge](https://virtualembryo.ai/challenge) 
 | T3 perturbation | the mutant embryo's cells, expression and 3D coordinates | beta-catenin KO at E8.75 |
 
 Final submissions are due **through 2026-12-02 (UTC)**; by then the team captain also marks, on the account page,
-which submission counts on each board (`docs/P3_RUNBOOK.md`, section 5). Start with `AGENTS.md`, then
-`docs/CHALLENGE.md` and `docs/PLAN.md`.
+which submission counts on each board (`docs/P3_RUNBOOK.md`, section 5). Start with `AGENTS.md` (it opens with the team
+captain's guiding principle of 2026-11-04), then `docs/CHALLENGE.md` and `docs/PLAN.md`.
 
 ## Setup
 

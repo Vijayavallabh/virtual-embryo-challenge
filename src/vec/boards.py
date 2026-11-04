@@ -75,6 +75,15 @@ GROUPS: dict[str, list[tuple[str, float, list[tuple[str, float]]]]] = {
 
 RANKED_METRICS = {task: [m for _, _, ms in groups for m, _ in ms] for task, groups in GROUPS.items()}
 
+# The published baseline (floor) of each task, which scores 50 on every board (docs/CHALLENGE.md, "Metric panel"):
+# copy_last, the last released stage verbatim, on T1 and T2; wt_identity, the matched wild type unchanged, on T3.
+# load_boards gives it to a spec that omits floor_model or publishes null; a published value is kept. Until 2026-11-04
+# a spec without the field read as copy_last on every task (D1, ae6d6b3, lists copy_last for T3:bcatenin; whether that
+# spec omits the field is not checked). No build, upload guard or score uses the field: the emulator's floor is always
+# the reference's working copy (src/vec/evaluate.py). Only `vec boards`, the D1 check and the harness's task record
+# report it.
+TASK_FLOOR = {"T1": "copy_last", "T2": "copy_last", "T3": "wt_identity"}
+
 
 @dataclass
 class Board:
@@ -89,7 +98,7 @@ class Board:
     max_cells: int | None = None
     truth_cells: int | None = None
     ref_cells: int | None = None
-    floor_model: str = "copy_last"
+    floor_model: str = "copy_last"  # a board read from a spec gets its task's floor when none is published (TASK_FLOOR)
     anchors: dict[str, dict[str, float]] = field(default_factory=dict)
 
     obs_required: list[str] = field(default_factory=list)
@@ -131,7 +140,7 @@ def load_boards(boards_dir: Path = BOARDS_DIR) -> dict[str, Board]:
             max_cells=spec.get("max_cells"),
             truth_cells=spec.get("truth_cells"),
             ref_cells=spec.get("ref_cells"),
-            floor_model=spec.get("floor_model", "copy_last"),
+            floor_model=spec.get("floor_model") or TASK_FLOOR.get(spec["task"], "copy_last"),  # see TASK_FLOOR
             anchors=spec.get("anchors", {}),
             obs_required=[str(k) for k in (spec.get("obs_required") or [])],
             obsm_required=[str(k) for k in (spec.get("obsm_required") or [])],

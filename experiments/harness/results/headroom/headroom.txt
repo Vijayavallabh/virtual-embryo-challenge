@@ -1,0 +1,561 @@
+Baseline headroom per test board (experiments/harness/headroom.py; written by the AI assistant, 2026-11-04)
+
+The captain's guiding principle (2026-11-04): "Begin with the published copy-last-stage and unchanged-wild-type
+  baselines across the boards you intend to enter. Improve the weakest weighted component before polishing what
+  already works." Asked of every component: "What meaningful change beyond the baseline does this predict, and what
+  held-out evidence shows it?"
+
+Weights from docs/CHALLENGE.md "Metric panel" (src/vec/boards.py GROUPS). Skills: 0.5 = the published floor
+  (copy_last on T1 and T2, wt_identity on T3), 1 = the split-half ceiling. +floor and +copy: points gained over the
+  floor and the copy row, 100 x weight x (entry skill - baseline skill), seed-paired. left: points left to the
+  ceiling, 100 x weight x (1 - entry skill). T2 shape weights carry the entry's mean structure gate min(1, 2 x
+  skill(neighborhood_mmd)); a shape term's points left include any gate shortfall, so the points left sum to 100 -
+  board score. Weakest weighted component: the scored group (src/vec/boards.py GROUPS id) with the most points left,
+  ties at 0.01 points to the least gained over the floor (docs/PLAN.md section 3, item 9); weakest metric: the same
+  rule over single metrics, for reference only. Inputs are committed practice-task results only; no target, no
+  test-board file, no cell count.
+
+Summary, means over the counted practice tasks (n; for T3 the two Gata4 replicates). * marks a stand-in. score: board
+  score; +floor: its gain over the floor's 50. weakest group: the weakest weighted component, its points left on the
+  board and in Overall units (x 0.5 on a T2 board), and what it gained over the floor.
+  board                  slot entry                                      n  score  +floor  weakest group        left Overall gained
+  T1:test                s1   M1 *                                       1  50.97   +0.97  distribution        15.08   15.08  -0.08
+  T2:heart:test_extrap   s1   H1 *                                       2  50.94   +0.94  expression_change   12.54    6.27  -0.04
+  T2:embryo:test_interp  s1   fgw                                        2  59.95   +9.95  cell_state          11.50    5.75  +1.00
+  T2:embryo:test_interp  s2   fgw_shape0                                 2  58.31   +8.31  shape_growth        12.08    6.04  +0.42
+  T3:bcatenin            s1   allowed s1 ~ xrep:F+depth *                2  73.33  +23.33  response_identity   11.89   11.89  +3.11
+  T3:bcatenin            s1   allowed s1 ~ transfer:mab21l2_all *        2  60.77  +10.77  response_identity   15.18   15.18  -0.18
+  T3:bcatenin            s2   refused s1 ~ blind:G2_bcat_central_d50 *   2  50.87   +0.87  response_identity   16.67   16.67  -1.67
+
+Weakest metric (single metrics, for reference), where it is not in the weakest weighted component:
+  T2:heart:test_extrap s1 H1: neighborhood_mmd 11.64 left, in another group than expression_change (12.54)
+  T2:embryo:test_interp s1 fgw: neighborhood_mmd 9.48 left, in another group than cell_state (11.50)
+  T2:embryo:test_interp s2 fgw_shape0: neighborhood_mmd 9.79 left, in another group than shape_growth (12.08)
+
+Points left in Overall units per board (100 - board score, x 0.5 on a T2 board), s1 or its stand-ins:
+   49.03  T1:test (M1)
+   24.53  T2:heart:test_extrap (H1)
+   20.02  T2:embryo:test_interp (fgw)
+   26.67  T3:bcatenin (allowed s1 ~ xrep:F+depth)
+   39.23  T3:bcatenin (allowed s1 ~ transfer:mab21l2_all)
+
+Points left per scored group in Overall units, s1 (or its stand-ins; T3 has two), largest first (groups compared
+  across boards, docs/PLAN.md section 3, item 9):
+   15.18  T3:bcatenin response_identity (allowed s1 ~ transfer:mab21l2_all)
+   15.08  T1:test distribution (M1)
+   13.00  T1:test de_recovery (M1)
+   11.89  T3:bcatenin response_identity (allowed s1 ~ xrep:F+depth)
+   11.45  T1:test covariance (M1)
+   11.29  T3:bcatenin response_direction (allowed s1 ~ transfer:mab21l2_all)
+   10.08  T3:bcatenin mutant_state (allowed s1 ~ transfer:mab21l2_all)
+    9.49  T1:test direction (M1)
+    8.05  T3:bcatenin response_direction (allowed s1 ~ xrep:F+depth)
+    6.27  T2:heart:test_extrap expression_change (H1)
+    6.22  T2:heart:test_extrap cell_state (H1)
+    6.22  T2:heart:test_extrap shape_growth (H1)
+    5.82  T2:heart:test_extrap local_organisation (H1)
+    5.75  T2:embryo:test_interp cell_state (fgw)
+    5.70  T3:bcatenin mutant_state (allowed s1 ~ xrep:F+depth)
+    5.37  T2:embryo:test_interp shape_growth (fgw)
+    4.74  T2:embryo:test_interp local_organisation (fgw)
+    4.16  T2:embryo:test_interp expression_change (fgw)
+    2.68  T3:bcatenin response_magnitude (allowed s1 ~ transfer:mab21l2_all)
+    1.03  T3:bcatenin response_magnitude (allowed s1 ~ xrep:F+depth)
+
+Points left per metric in Overall units, s1 (or its stand-ins), largest first (top 12; for reference):
+   15.18  T3:bcatenin de_score (allowed s1 ~ transfer:mab21l2_all)
+   15.08  T1:test mmd_u (M1)
+   13.00  T1:test de_score (M1)
+   11.89  T3:bcatenin de_score (allowed s1 ~ xrep:F+depth)
+   11.45  T1:test variogram (M1)
+   11.29  T3:bcatenin de_direction (allowed s1 ~ transfer:mab21l2_all)
+    9.49  T1:test de_direction (M1)
+    8.05  T3:bcatenin de_direction (allowed s1 ~ xrep:F+depth)
+    5.82  T2:heart:test_extrap neighborhood_mmd (H1)
+    5.70  T3:bcatenin mmd_u (allowed s1 ~ transfer:mab21l2_all)
+    4.74  T2:embryo:test_interp neighborhood_mmd (fgw)
+    4.38  T3:bcatenin variogram (allowed s1 ~ transfer:mab21l2_all)
+
+======================================================================================================================
+T1:test  (weight in Overall: 1; floor = copy_last)
+  E12.5 scRNA. s1 = M1: real E10.5 cells at E10.5's own chamber composition, Feng's E9.5 -> E14.5 direction at 2/5
+    for its four groups, half the E9.5 -> E10.5 per-type change for the rest (METHOD_SUMMARY.md). s2 = M1 at
+    cardiomyocytes 0.60 of heart cells (docs/S2_RULES.md).
+
+  s1 = M1 (candidate m1_feng)
+    STAND-IN, a labelled diagnostic, not an adoption result: m1_feng of experiments/t1_m1/results/diag_v1 (B0 plus
+      Feng's direction at 1/5, the step's share of Feng's bracket on this transition). The harness refuses Feng's
+      E9.5 cells on every T1 pseudo-task, and the pre-registered readout that chose Feng ran on this same transition,
+      so it is in-sample for that choice. M1 has B0's scope, so B0's counted set against the floor is used.
+    Counted practice tasks from experiments/harness/results/d2_v1/decisions_T1_test.json (floor -> b0):
+      T1/E9.5->E10.5:chamber; not counted: T1/E9.5->E10.5 (different tissue mixes are judged on the chamber-cut
+      truth); T1/E8.5->E9.5 (change does not apply).
+
+   task T1/E9.5->E10.5:chamber [counted]
+    source: experiments/t1_m1/results/diag_v1/T1_E9.5_E10.5_chamber.json (commit 401e3eb, clean True, seeds 0-9,
+      bake, build main, anchors computed (diag_v1 README)); floor and copy from
+      experiments/harness/results/d2_v1/tasks/T1_E9.5_E10.5_chamber.json (commit 20fb8b5)
+    board: entry 50.97, floor 50.00, copy 48.06
+    context: B0: M1 without Feng's direction (the harness's own candidate, d2_v1): board 49.68; skills de_score
+      0.450, de_direction 0.608, mmd_u 0.493, variogram 0.423
+    metric             weight   entry   floor    copy   +floor    +copy    left
+    de_score           0.2500   0.480   0.500   0.389    -0.50    +2.28   13.00
+    de_direction       0.2500   0.620   0.500   0.536    +3.01    +2.12    9.49
+    mmd_u              0.3000   0.497   0.500   0.500    -0.08    -0.08   15.08
+    variogram          0.2000   0.428   0.500   0.498    -1.45    -1.41   11.45
+    board (sum)        1.0000   50.97                    +0.97    +2.91   49.03
+    groups (left / +floor): de_recovery 13.00 / -0.50; direction 9.49 / +3.01; distribution 15.08 / -0.08; covariance
+      11.45 / -1.45
+    weakest weighted component (group): distribution (15.08 points left, -0.08 gained over the floor); weakest
+      metric: mmd_u (15.08 left)
+
+   task T1/E9.5->E10.5 [reported, not counted: different tissue mixes are judged on the chamber-cut truth]
+    source: experiments/t1_m1/results/diag_v1/T1_E9.5_E10.5.json (commit 401e3eb, clean True, seeds 0-9, bake, build
+      main, anchors computed (diag_v1 README)); floor and copy from
+      experiments/harness/results/d2_v1/tasks/T1_E9.5_E10.5.json (commit 20fb8b5)
+    board: entry 45.21, floor 50.00, copy 47.98
+    context: B0: M1 without Feng's direction (the harness's own candidate, d2_v1): board 44.12; skills de_score
+      0.410, de_direction 0.559, mmd_u 0.406, variogram 0.387
+    metric             weight   entry   floor    copy   +floor    +copy    left
+    de_score           0.2500   0.437   0.500   0.379    -1.59    +1.45   14.09
+    de_direction       0.2500   0.569   0.500   0.541    +1.73    +0.69   10.77
+    mmd_u              0.3000   0.409   0.500   0.501    -2.73    -2.76   17.73
+    variogram          0.2000   0.390   0.500   0.498    -2.20    -2.15   12.20
+    board (sum)        1.0000   45.21                    -4.79    -2.77   54.79
+    groups (left / +floor): de_recovery 14.09 / -1.59; direction 10.77 / +1.73; distribution 17.73 / -2.73;
+      covariance 12.20 / -2.20
+    weakest weighted component (group): distribution (17.73 points left, -2.73 gained over the floor); weakest
+      metric: mmd_u (17.73 left)
+
+   s1 over the 1 counted task(s): board 50.97; weakest weighted component (group) distribution, 15.08 points left
+     (15.08 in Overall), -0.08 gained over the floor; weakest metric mmd_u (15.08 left)
+    groups, points left, most first: distribution 15.08, de_recovery 13.00, covariance 11.45, direction 9.49
+    metrics, points left, most first: mmd_u 15.08, de_score 13.00, variogram 11.45, de_direction 9.49
+
+  Not in the table: s2 (M1 at 0.60 cardiomyocytes) is not a harness candidate; its evidence is the oracle-base
+    sensitivity grid in experiments/s2_hedge/results/t1_grid/ (not an adoption result).
+  Closed levers: Cell numbers, sizes, scope and T1's composition are closed to tries after the 2026-11-04 exposure,
+    except births by the legal route (docs/DATA_POLICY.md 2026-11-04, (b), (c)); the cardiomyocyte and blood shares
+    stay as the s1 and s2 rules set them. State shifts (direction) stay open under the block, but no backtest can
+    judge a change to Feng's direction (Feng's E9.5 lies inside every T1 window).
+
+======================================================================================================================
+T2:heart:test_extrap  (weight in Overall: 0.5; floor = copy_last)
+  E12.5 MERFISH, extrapolation. s1 = H1: B0 on real E10.5 tissue with the pre-registered size (METHOD_SUMMARY.md). s2
+    = H2 as the half trim (docs/S2_RULES.md).
+
+  s1 = H1 (candidate b0)
+    STAND-IN: the harness's b0 is H1 without the pre-registered size step; its coordinates and size stay the
+      reference stage's (src/vec/harness.py _b0_t2), so its shape and scale skills equal a copy's and say nothing
+      about the size the test build applies, which no backtest can check.
+    Counted practice tasks from experiments/harness/results/d2_v1/decisions_T2_heart_test_extrap.json (floor -> b0):
+      T2h/<=E9.5->E10.5, T2h/<=E8.75->E10.5; not counted: none.
+
+   task T2h/<=E9.5->E10.5 [counted]
+    source: experiments/harness/results/d2_v1/tasks/T2h_E9.5_E10.5.json (commit eae34eb, clean True, seeds 0-9, bake,
+      build main, anchors computed)
+    board: entry 50.43, floor 50.00, copy 49.96; structure gate mean 0.999, min 0.994
+    metric             weight   entry   floor    copy   +floor    +copy    left
+    de_score           0.1250   0.510   0.500   0.464    +0.12    +0.57    6.13
+    de_direction       0.1250   0.521   0.500   0.505    +0.26    +0.20    5.99
+    mmd_u              0.1500   0.466   0.500   0.494    -0.51    -0.42    8.01
+    variogram          0.1000   0.519   0.500   0.497    +0.19    +0.22    4.81
+    d2_shape           0.0833   0.489   0.500   0.489    -0.10    +0.00    4.26
+    occupancy_dice     0.0833   0.504   0.500   0.504    +0.03    +0.00    4.14
+    scale_log_ratio    0.0833   0.500   0.500   0.500    -0.01    +0.00    4.17
+    neighborhood_mmd   0.2500   0.517   0.500   0.521    +0.44    -0.10   12.06
+    board (sum)        0.9999   50.43                    +0.43    +0.47   49.57
+    groups (left / +floor): expression_change 12.12 / +0.38; cell_state 12.82 / -0.32; shape_growth 12.57 / -0.07;
+      local_organisation 12.06 / +0.44
+    weakest weighted component (group): cell_state (12.82 points left, -0.32 gained over the floor); weakest metric:
+      neighborhood_mmd (12.06 left)
+
+   task T2h/<=E8.75->E10.5 [counted]
+    source: experiments/harness/results/d2_v1/tasks/T2h_E8.75_E10.5.json (commit eae34eb, clean True, seeds 0-9,
+      bake, build main, anchors computed)
+    board: entry 51.45, floor 50.00, copy 50.55; structure gate mean 1.000, min 1.000
+    metric             weight   entry   floor    copy   +floor    +copy    left
+    de_score           0.1250   0.454   0.500   0.449    -0.58    +0.05    6.83
+    de_direction       0.1250   0.510   0.500   0.516    +0.12    -0.08    6.13
+    mmd_u              0.1500   0.510   0.500   0.498    +0.15    +0.18    7.35
+    variogram          0.1000   0.529   0.500   0.504    +0.29    +0.25    4.71
+    d2_shape           0.0833   0.502   0.500   0.502    +0.02    +0.00    4.15
+    occupancy_dice     0.0833   0.521   0.500   0.521    +0.17    +0.00    3.99
+    scale_log_ratio    0.0833   0.500   0.500   0.500    +0.00    +0.00    4.17
+    neighborhood_mmd   0.2500   0.551   0.500   0.531    +1.28    +0.50   11.22
+    board (sum)        1.0000   51.45                    +1.45    +0.90   48.55
+    groups (left / +floor): expression_change 12.96 / -0.46; cell_state 12.06 / +0.44; shape_growth 12.31 / +0.19;
+      local_organisation 11.22 / +1.28
+    weakest weighted component (group): expression_change (12.96 points left, -0.46 gained over the floor); weakest
+      metric: neighborhood_mmd (11.22 left)
+
+   s1 over the 2 counted task(s): board 50.94; weakest weighted component (group) expression_change, 12.54 points
+     left (6.27 in Overall), -0.04 gained over the floor; weakest metric neighborhood_mmd (11.64 left)
+    groups, points left, most first: expression_change 12.54, cell_state 12.44, shape_growth 12.44,
+      local_organisation 11.64
+    metrics, points left, most first: neighborhood_mmd 11.64, mmd_u 7.68, de_score 6.48, de_direction 6.06, variogram
+      4.76, d2_shape 4.21, scale_log_ratio 4.17, occupancy_dice 4.06
+
+  Not in the table: s2 (H2 as the half trim) is not a harness candidate; its evidence is the oracle-core-size
+    sensitivity analysis in experiments/s2_hedge/results/heart_scope*/ (not an adoption result).
+  Closed levers: Cell numbers, the size and the scope are closed to tries after the 2026-11-04 exposure
+    (docs/DATA_POLICY.md 2026-11-04 and (b)); the composition trend was dropped by the captain on 2026-11-01
+    (docs/PLAN.md 4.3, pipeline step 2); the depth line is closed (TRIES.md, H3).
+
+======================================================================================================================
+T2:embryo:test_interp  (weight in Overall: 0.5; floor = copy_last)
+  E7.75 MERFISH, interpolation. s1 = fgw: displacement interpolation between E7.5 and E8.0 with a mixture of real
+    cells of both, at the embryo size rule. s2 = fgw_shape0: fgw's mixture in E7.5's geometry (docs/S2_RULES.md).
+
+  s1 = fgw (candidate fgw)
+    the entry itself, scored by the harness (emb_fgw_v1); kept over B0 by the adoption rule.
+    Counted practice tasks from experiments/harness/results/emb_fgw_v1/fgw_vs_b0/decisions_T2_embryo_test_interp.json
+      (b0 -> fgw): T2e/E7.25+E8.0->E7.5, T2e/E6.75+E7.5->E7.25; not counted: none.
+
+   task T2e/E7.25+E8.0->E7.5 [counted]
+    source: experiments/harness/results/emb_fgw_v1/tasks/T2e_E7.25_E8.0_E7.5.json (commit bd2e433, clean True, seeds
+      0-9, bake, build main, anchors computed)
+    board: entry 61.12, floor 50.00, copy 50.58; structure gate mean 1.000, min 1.000
+    metric             weight   entry   floor    copy   +floor    +copy    left
+    de_score           0.1250   0.581   0.500   0.450    +1.01    +1.63    5.24
+    de_direction       0.1250   0.703   0.500   0.526    +2.53    +2.21    3.72
+    mmd_u              0.1500   0.671   0.500   0.500    +2.57    +2.57    4.93
+    variogram          0.1000   0.664   0.500   0.502    +1.64    +1.62    3.36
+    d2_shape           0.0833   0.372   0.500   0.508    -1.06    -1.13    5.23
+    occupancy_dice     0.0833   0.385   0.500   0.506    -0.96    -1.01    5.12
+    scale_log_ratio    0.0833   0.727   0.500   0.501    +1.89    +1.88    2.27
+    neighborhood_mmd   0.2500   0.640   0.500   0.529    +3.49    +2.76    9.01
+    board (sum)        1.0000   61.12                   +11.12   +10.54   38.88
+    groups (left / +floor): expression_change 8.96 / +3.54; cell_state 8.29 / +4.21; shape_growth 12.63 / -0.13;
+      local_organisation 9.01 / +3.49
+    weakest weighted component (group): shape_growth (12.63 points left, -0.13 gained over the floor); weakest
+      metric: neighborhood_mmd (9.01 left)
+
+   task T2e/E6.75+E7.5->E7.25 [counted]
+    source: experiments/harness/results/emb_fgw_v1/tasks/T2e_E6.75_E7.5_E7.25.json (commit bd2e433, clean True, seeds
+      0-9, bake, build main, anchors computed)
+    board: entry 58.78, floor 50.00, copy 53.27; structure gate mean 1.000, min 1.000
+    metric             weight   entry   floor    copy   +floor    +copy    left
+    de_score           0.1250   0.683   0.500   0.522    +2.29    +2.02    3.96
+    de_direction       0.1250   0.702   0.500   0.628    +2.52    +0.93    3.73
+    mmd_u              0.1500   0.497   0.500   0.494    -0.05    +0.04    7.55
+    variogram          0.1000   0.283   0.500   0.500    -2.17    -2.17    7.17
+    d2_shape           0.0833   0.717   0.500   0.502    +1.81    +1.79    2.36
+    occupancy_dice     0.0833   0.595   0.500   0.506    +0.79    +0.75    3.37
+    scale_log_ratio    0.0833   0.624   0.500   0.502    +1.03    +1.02    3.13
+    neighborhood_mmd   0.2500   0.602   0.500   0.556    +2.55    +1.14    9.95
+    board (sum)        1.0000   58.78                    +8.78    +5.51   41.22
+    groups (left / +floor): expression_change 7.69 / +4.81; cell_state 14.72 / -2.22; shape_growth 8.86 / +3.64;
+      local_organisation 9.95 / +2.55
+    weakest weighted component (group): cell_state (14.72 points left, -2.22 gained over the floor); weakest metric:
+      neighborhood_mmd (9.95 left)
+
+   s1 over the 2 counted task(s): board 59.95; weakest weighted component (group) cell_state, 11.50 points left (5.75
+     in Overall), +1.00 gained over the floor; weakest metric neighborhood_mmd (9.48 left)
+    groups, points left, most first: cell_state 11.50, shape_growth 10.74, local_organisation 9.48, expression_change
+      8.32
+    metrics, points left, most first: neighborhood_mmd 9.48, mmd_u 6.24, variogram 5.26, de_score 4.60,
+      occupancy_dice 4.25, d2_shape 3.79, de_direction 3.72, scale_log_ratio 2.70
+
+  s2 = fgw_shape0 (candidate fgw_shape0)
+    the entry itself, scored by the harness (emb_shape_v1); chosen as s2 by the frozen rule's better-of-two, not kept
+      as an s1 (vetoed on E7.25).
+    Counted practice tasks from experiments/harness/results/emb_shape_v1/decisions_T2_embryo_test_interp.json (fgw ->
+      fgw_shape0): T2e/E7.25+E8.0->E7.5, T2e/E6.75+E7.5->E7.25; not counted: none.
+
+   task T2e/E7.25+E8.0->E7.5 [counted]
+    source: experiments/harness/results/emb_shape_v1/tasks/T2e_E7.25_E8.0_E7.5.json (commit 90ddaaa, clean True,
+      seeds 0-9, bake, build main, anchors computed); floor and copy from
+      experiments/harness/results/emb_fgw_v1/tasks/T2e_E7.25_E8.0_E7.5.json (commit bd2e433)
+    board: entry 62.95, floor 50.00, copy 50.58; structure gate mean 1.000, min 1.000
+    metric             weight   entry   floor    copy   +floor    +copy    left
+    de_score           0.1250   0.581   0.500   0.450    +1.01    +1.63    5.24
+    de_direction       0.1250   0.703   0.500   0.526    +2.53    +2.21    3.72
+    mmd_u              0.1500   0.671   0.500   0.500    +2.57    +2.57    4.93
+    variogram          0.1000   0.664   0.500   0.502    +1.64    +1.62    3.36
+    d2_shape           0.0833   0.439   0.500   0.508    -0.51    -0.58    4.67
+    occupancy_dice     0.0833   0.494   0.500   0.506    -0.05    -0.10    4.21
+    scale_log_ratio    0.0833   0.727   0.500   0.501    +1.89    +1.88    2.27
+    neighborhood_mmd   0.2500   0.654   0.500   0.529    +3.86    +3.13    8.64
+    board (sum)        1.0000   62.95                   +12.95   +12.37   37.05
+    groups (left / +floor): expression_change 8.96 / +3.54; cell_state 8.29 / +4.21; shape_growth 11.16 / +1.34;
+      local_organisation 8.64 / +3.86
+    weakest weighted component (group): shape_growth (11.16 points left, +1.34 gained over the floor); weakest
+      metric: neighborhood_mmd (8.64 left)
+
+   task T2e/E6.75+E7.5->E7.25 [counted]
+    source: experiments/harness/results/emb_shape_v1/tasks/T2e_E6.75_E7.5_E7.25.json (commit 90ddaaa, clean True,
+      seeds 0-9, bake, build main, anchors computed); floor and copy from
+      experiments/harness/results/emb_fgw_v1/tasks/T2e_E6.75_E7.5_E7.25.json (commit bd2e433)
+    board: entry 53.67, floor 50.00, copy 53.27; structure gate mean 1.000, min 1.000
+    metric             weight   entry   floor    copy   +floor    +copy    left
+    de_score           0.1250   0.683   0.500   0.522    +2.29    +2.02    3.96
+    de_direction       0.1250   0.702   0.500   0.628    +2.52    +0.93    3.73
+    mmd_u              0.1500   0.497   0.500   0.494    -0.05    +0.04    7.55
+    variogram          0.1000   0.283   0.500   0.500    -2.17    -2.17    7.17
+    d2_shape           0.0833   0.383   0.500   0.502    -0.98    -0.99    5.14
+    occupancy_dice     0.0833   0.434   0.500   0.506    -0.55    -0.60    4.72
+    scale_log_ratio    0.0833   0.624   0.500   0.502    +1.03    +1.02    3.13
+    neighborhood_mmd   0.2500   0.563   0.500   0.556    +1.56    +0.15   10.94
+    board (sum)        1.0000   53.67                    +3.67    +0.40   46.33
+    groups (left / +floor): expression_change 7.69 / +4.81; cell_state 14.72 / -2.22; shape_growth 12.99 / -0.49;
+      local_organisation 10.94 / +1.56
+    weakest weighted component (group): cell_state (14.72 points left, -2.22 gained over the floor); weakest metric:
+      neighborhood_mmd (10.94 left)
+
+   s2 over the 2 counted task(s): board 58.31; weakest weighted component (group) shape_growth, 12.08 points left
+     (6.04 in Overall), +0.42 gained over the floor; weakest metric neighborhood_mmd (9.79 left)
+    groups, points left, most first: shape_growth 12.08, cell_state 11.50, local_organisation 9.79, expression_change
+      8.32
+    metrics, points left, most first: neighborhood_mmd 9.79, mmd_u 6.24, variogram 5.26, d2_shape 4.91, de_score
+      4.60, occupancy_dice 4.47, de_direction 3.72, scale_log_ratio 2.70
+
+  Not in the table: nothing; both entries are harness candidates.
+  Closed levers: Cell numbers, the size and the scope are closed to tries after the 2026-11-04 exposure
+    (docs/DATA_POLICY.md 2026-11-04 and (b)); the coupling line is closed for the s1 unless the captain rules
+    otherwise (TRIES.md, after E11), and so is the depth line (TRIES.md, H3).
+
+======================================================================================================================
+T3:bcatenin  (weight in Overall: 1; floor = wt_identity)
+  beta-catenin knockout at E8.75. s1 = the allowed branch's s1: the pooled Gata4 per-gene factor (exponent 1), the
+    depth ratio and the central composition at the Gata4 magnitude (log2 1.38). s2 = the refused branch's s1:
+    wild-type cells with the central composition at the Mab21l2 magnitude (log2 0.718), no factor (docs/S2_RULES.md;
+    experiments/t3_decomp/results/gata4/gata4_plan.json).
+
+  Baseline rows on the counted cross-knockout folds
+    (experiments/harness/results/baselines_v1/decisions_T3_bcatenin.json: T3/Mab21l2->Gata4rep2, T3/Gata4->Mab21l2;
+    not counted: T3/Gata4rep1->rep2 (replicate fold)). The published baseline, wt_identity, is the floor (50 by
+    construction). Rows for our copy (real WT cells at the count rule, a fresh draw, not a published baseline) and,
+    as context, the organisers' published shift_transfer; neither is an entry, and neither entry is a harness
+    candidate.
+
+   task T3/Gata4->Mab21l2 [counted]
+    source: experiments/harness/results/baselines_v1/tasks/T3_Gata4_Mab21l2.json (commit 57aa7ab, clean True, seeds
+      0-9, bake, build main, anchors computed)
+    copy: board 50.74 (floor 50.00); skills de_score 0.499, de_direction 0.515, severity_slope 0.513, mmd_u 0.505,
+      variogram 0.500; gained over the floor de_score -0.02, de_direction +0.38, severity_slope +0.32, mmd_u +0.06,
+      variogram -0.00
+    shift_transfer: board 47.05 (floor 50.00); skills de_score 0.495, de_direction 0.487, severity_slope 0.500, mmd_u
+      0.395, variogram 0.350; gained over the floor de_score -0.16, de_direction -0.32, severity_slope +0.00, mmd_u
+      -1.26, variogram -1.20
+    floor (wt_identity), points left: de_score 15.00, de_direction 12.50, severity_slope 12.50, mmd_u 6.00, variogram
+      4.00 (weakest group: response_identity)
+
+   task T3/Mab21l2->Gata4rep2 [counted]
+    source: experiments/harness/results/baselines_v1/tasks/T3_Mab21l2_Gata4rep2.json (commit 57aa7ab, clean True,
+      seeds 0-9, bake, build main, anchors computed)
+    copy: board 48.59 (floor 50.00); skills de_score 0.411, de_direction 0.527, severity_slope 0.517, mmd_u 0.507,
+      variogram 0.508; gained over the floor de_score -2.67, de_direction +0.68, severity_slope +0.42, mmd_u +0.09,
+      variogram +0.06
+    shift_transfer: board 42.18 (floor 50.00); skills de_score 0.381, de_direction 0.499, severity_slope 0.500, mmd_u
+      0.371, variogram 0.165; gained over the floor de_score -3.57, de_direction -0.03, severity_slope +0.00, mmd_u
+      -1.55, variogram -2.68
+    floor (wt_identity), points left: de_score 15.00, de_direction 12.50, severity_slope 12.50, mmd_u 6.00, variogram
+      4.00 (weakest group: response_identity)
+
+  Stand-ins for the entries (experiments/t3_decomp/results/gata4/gata4_records.csv: the pre-registered decomposition
+    on the two Gata4 replicates, scored against WT E8.75 by the T3 script's own scorer, seeds 0-9; not in
+    results/registry.csv and not harness folds). The copy column is fac:none, the decomposition's WT cells resampled.
+
+  s1 = allowed s1, stand-in xrep:F+depth
+    STAND-IN A, optimistic: the Gata4 factor and depth ratio borrowed from the other replicate, scored on each
+      replicate. Same knockout, so a replicate fold, which never counts under the adoption rule; it lacks s1's
+      composition term (D8 measured that term at +0.22 and -0.43 points on top of the borrowed factor;
+      gata4_decisions.json). It shows the factor carries between two runs of one knockout, which a processing effect
+      shared by one run could explain (rules.yaml, the 2026-10-19 note that adds rule 6), not that it carries to
+      another knockout.
+
+   target Gata4 rep1 (E8.75, against WT E8.75) [stand-in, not counted]
+    board: stand-in 74.50, floor 50.00, fac:none 52.39
+    metric             weight   entry   floor   wt_rs   +floor   +wt_rs    left
+    de_score           0.3000   0.635   0.500   0.448    +4.05    +5.60   10.95
+    de_direction       0.2500   0.683   0.500   0.555    +4.58    +3.20    7.92
+    severity_slope     0.2500   0.987   0.500   0.589   +12.18    +9.96    0.32
+    mmd_u              0.1200   0.652   0.500   0.519    +1.82    +1.59    4.18
+    variogram          0.0800   0.734   0.500   0.514    +1.87    +1.76    2.13
+    board (sum)        1.0000   74.50                   +24.50   +22.11   25.50
+    groups (left / +floor): response_identity 10.95 / +4.05; response_direction 7.92 / +4.58; response_magnitude 0.32
+      / +12.18; mutant_state 6.30 / +3.70
+    weakest weighted component (group): response_identity (10.95 points left, +4.05 gained over the floor); weakest
+      metric: de_score (10.95 left)
+
+   target Gata4 rep2 (E8.75, against WT E8.75) [stand-in, not counted]
+    board: stand-in 72.15, floor 50.00, fac:none 50.61
+    metric             weight   entry   floor   wt_rs   +floor   +wt_rs    left
+    de_score           0.3000   0.572   0.500   0.426    +2.16    +4.39   12.84
+    de_direction       0.2500   0.673   0.500   0.543    +4.32    +3.24    8.18
+    severity_slope     0.2500   0.931   0.500   0.562   +10.77    +9.21    1.73
+    mmd_u              0.1200   0.718   0.500   0.510    +2.62    +2.50    3.38
+    variogram          0.0800   0.785   0.500   0.509    +2.28    +2.20    1.72
+    board (sum)        1.0000   72.15                   +22.15   +21.53   27.85
+    groups (left / +floor): response_identity 12.84 / +2.16; response_direction 8.18 / +4.32; response_magnitude 1.73
+      / +10.77; mutant_state 5.10 / +4.90
+    weakest weighted component (group): response_identity (12.84 points left, +2.16 gained over the floor); weakest
+      metric: de_score (12.84 left)
+
+   over both replicates: board 73.33; weakest weighted component (group) response_identity, 11.89 points left (11.89
+     in Overall), +3.11 gained over the floor; weakest metric de_score (11.89 left)
+    groups, points left, most first: response_identity 11.89, response_direction 8.05, mutant_state 5.70,
+      response_magnitude 1.03
+    metrics, points left, most first: de_score 11.89, de_direction 8.05, mmd_u 3.78, variogram 1.92, severity_slope
+      1.03
+
+  s1 = allowed s1, stand-in transfer:mab21l2_all
+    STAND-IN B, the only cross-knockout reading of a per-gene factor: the Mab21l2 factor on WT E8.75 cells, scored on
+      Gata4 (D11b, whose pre-registered bar is a board score of at least 60 on every target; it scored 59.40 on rep1,
+      so it failed). A different factor from s1's, but the situation of the test: one knockout's factor applied to
+      another knockout.
+
+   target Gata4 rep1 (E8.75, against WT E8.75) [stand-in, not counted]
+    board: stand-in 59.40, floor 50.00, fac:none 52.39
+    metric             weight   entry   floor   wt_rs   +floor   +wt_rs    left
+    de_score           0.3000   0.490   0.500   0.448    -0.29    +1.25   15.29
+    de_direction       0.2500   0.530   0.500   0.555    +0.75    -0.63   11.75
+    severity_slope     0.2500   0.893   0.500   0.589    +9.83    +7.61    2.67
+    mmd_u              0.1200   0.486   0.500   0.519    -0.17    -0.41    6.17
+    variogram          0.0800   0.411   0.500   0.514    -0.71    -0.83    4.71
+    board (sum)        1.0000   59.40                    +9.40    +7.01   40.60
+    groups (left / +floor): response_identity 15.29 / -0.29; response_direction 11.75 / +0.75; response_magnitude
+      2.67 / +9.83; mutant_state 10.89 / -0.89
+    weakest weighted component (group): response_identity (15.29 points left, -0.29 gained over the floor); weakest
+      metric: de_score (15.29 left)
+
+   target Gata4 rep2 (E8.75, against WT E8.75) [stand-in, not counted]
+    board: stand-in 62.15, floor 50.00, fac:none 50.61
+    metric             weight   entry   floor   wt_rs   +floor   +wt_rs    left
+    de_score           0.3000   0.498   0.500   0.426    -0.07    +2.15   15.07
+    de_direction       0.2500   0.567   0.500   0.543    +1.67    +0.60   10.83
+    severity_slope     0.2500   0.892   0.500   0.562    +9.81    +8.25    2.69
+    mmd_u              0.1200   0.565   0.500   0.510    +0.78    +0.65    5.22
+    variogram          0.0800   0.495   0.500   0.509    -0.04    -0.12    4.04
+    board (sum)        1.0000   62.15                   +12.15   +11.54   37.85
+    groups (left / +floor): response_identity 15.07 / -0.07; response_direction 10.83 / +1.67; response_magnitude
+      2.69 / +9.81; mutant_state 9.27 / +0.73
+    weakest weighted component (group): response_identity (15.07 points left, -0.07 gained over the floor); weakest
+      metric: de_score (15.07 left)
+
+   over both replicates: board 60.77; weakest weighted component (group) response_identity, 15.18 points left (15.18
+     in Overall), -0.18 gained over the floor; weakest metric de_score (15.18 left)
+    groups, points left, most first: response_identity 15.18, response_direction 11.29, mutant_state 10.08,
+      response_magnitude 2.68
+    metrics, points left, most first: de_score 15.18, de_direction 11.29, mmd_u 5.70, variogram 4.38, severity_slope
+      2.68
+
+  s2 = refused s1, stand-in blind:G2_bcat_central_d50
+    STAND-IN: wild-type cells with s2's five depleted states at depletion 0.5 (log2 1.0, against s2's 0.608, log2
+      0.718), no factor, scored on Gata4: the beta-catenin composition rule read on another knockout, written before
+      any Gata4 file was opened (rules.yaml, A11).
+
+   target Gata4 rep1 (E8.75, against WT E8.75) [stand-in, not counted]
+    board: stand-in 53.62, floor 50.00, fac:none 52.39
+    metric             weight   entry   floor   wt_rs   +floor   +wt_rs    left
+    de_score           0.3000   0.466   0.500   0.448    -1.02    +0.53   16.02
+    de_direction       0.2500   0.534   0.500   0.555    +0.85    -0.53   11.65
+    severity_slope     0.2500   0.627   0.500   0.589    +3.17    +0.95    9.33
+    mmd_u              0.1200   0.534   0.500   0.519    +0.41    +0.18    5.59
+    variogram          0.0800   0.526   0.500   0.514    +0.21    +0.09    3.79
+    board (sum)        1.0000   53.62                    +3.62    +1.22   46.38
+    groups (left / +floor): response_identity 16.02 / -1.02; response_direction 11.65 / +0.85; response_magnitude
+      9.33 / +3.17; mutant_state 9.38 / +0.62
+    weakest weighted component (group): response_identity (16.02 points left, -1.02 gained over the floor); weakest
+      metric: de_score (16.02 left)
+
+   target Gata4 rep2 (E8.75, against WT E8.75) [stand-in, not counted]
+    board: stand-in 48.13, floor 50.00, fac:none 50.61
+    metric             weight   entry   floor   wt_rs   +floor   +wt_rs    left
+    de_score           0.3000   0.423   0.500   0.426    -2.32    -0.10   17.32
+    de_direction       0.2500   0.507   0.500   0.543    +0.17    -0.91   12.33
+    severity_slope     0.2500   0.500   0.500   0.562    +0.00    -1.56   12.50
+    mmd_u              0.1200   0.514   0.500   0.510    +0.17    +0.05    5.83
+    variogram          0.0800   0.513   0.500   0.509    +0.11    +0.03    3.89
+    board (sum)        1.0000   48.13                    -1.87    -2.49   51.87
+    groups (left / +floor): response_identity 17.32 / -2.32; response_direction 12.33 / +0.17; response_magnitude
+      12.50 / +0.00; mutant_state 9.72 / +0.28
+    weakest weighted component (group): response_identity (17.32 points left, -2.32 gained over the floor); weakest
+      metric: de_score (17.32 left)
+
+   over both replicates: board 50.87; weakest weighted component (group) response_identity, 16.67 points left (16.67
+     in Overall), -1.67 gained over the floor; weakest metric de_score (16.67 left)
+    groups, points left, most first: response_identity 16.67, response_direction 11.99, response_magnitude 10.92,
+      mutant_state 9.55
+    metrics, points left, most first: de_score 16.67, de_direction 11.99, severity_slope 10.92, mmd_u 5.71, variogram
+      3.84
+
+  Not in the table: Neither T3 entry is a harness candidate: every fold is one they were selected or fitted on
+    (METHOD_SUMMARY.md, Task 3), so they stand on the pre-registered rules (experiments/t3_decomp/rules.yaml;
+    docs/PLAN.md decision log 2026-11-01 (c) and (d)).
+  Closed levers: T3's composition, cell numbers and sizes are closed to tries after the 2026-11-04 exposure
+    (docs/DATA_POLICY.md 2026-11-04 and (b)); the entries are fixed by the frozen pre-registered rules; a new T3
+    factor change faces the adoption rule on the two cross-knockout folds (docs/PLAN.md decision log 2026-11-01 (d))
+    and then the captain, since only his ruling departs from the frozen rules' outcome;
+    experiments/t3_decomp/rules.yaml is not edited.
+
+======================================================================================================================
+Checks:
+  - every stored board score (harness, diagnostic and T3 decomposition rows) recomputed from its skills with these
+    weights and the gate: max gap 1.4e-14 points
+  - every per-candidate mean used agrees with results/registry.csv score_mean: max gap 0.0005 points (the registry
+    rounds to 0.001)
+  - T1/E9.5->E10.5:chamber: diag_v1's b0 equals d2_v1's b0 seed for seed (max gap 0.0e+00 points), so its m1_feng
+    pairs with the harness's floor and copy
+  - T1/E9.5->E10.5: diag_v1's b0 equals d2_v1's b0 seed for seed (max gap 0.0e+00 points), so its m1_feng pairs with
+    the harness's floor and copy
+  - T2e/E7.25+E8.0->E7.5: emb_shape_v1's fgw equals emb_fgw_v1's fgw seed for seed (max gap 0.0e+00 points)
+  - T2e/E6.75+E7.5->E7.25: emb_shape_v1's fgw equals emb_fgw_v1's fgw seed for seed (max gap 0.0e+00 points)
+
+Caveats:
+  - Points left are measured to the split-half ceiling, which no prediction reaches, and the skill map is 1/(1 + x):
+    halving a metric's remaining distance takes its skill from 0.5 to 0.667, so equal points left on two metrics do
+    not mean equal reach.
+  - Where an entry sits near the floor (the M1 and H1 stand-ins, T3's s2 stand-in), the ranking of points left mostly
+    restates the weights: at the floor every metric leaves 50 x weight points, so the heaviest metric comes first (T1
+    mmd_u 0.30, T2 neighborhood_mmd 0.25, T3 de_score 0.30). On T2 the four groups weigh 0.25 each and
+    neighborhood_mmd alone carries a whole group's weight, so the weakest metric is read for reference only and the
+    weakest weighted component is the group (docs/PLAN.md section 3, item 9).
+  - Where a board's counting backtests name different weakest groups, those groups count as tied, and so do gaps
+    across boards that lie within the spread of a board's stand-ins (experiments/harness/TRIES.md rule 6); the
+    per-task lines above show each backtest's own weakest group.
+  - These are backtests on released transitions, not the test: T1 on E9.5 -> E10.5 (test E10.5 -> E12.5); the heart
+    one and 1.75 days ahead (test two); the embryo at t = 1/3 and 2/3 (test 1/2). Each backtest's geometry, sampling
+    and depth differ from the test's (TRIES.md diagnostics).
+  - T1: the stand-in draws E9.5's own chamber mix (cardiomyocytes about 66% of heart cells) against E10.5's
+    chamber-cut truth, while the test entry starts from E10.5's own mix, so mmd_u and the variogram here carry a
+    composition mismatch the test entry does not carry in that form. B0 drawn to the truth's own chamber mix (an
+    oracle base) scores 69.92 against that truth, against 49.68 for B0 at E9.5's mix (experiments/s2_hedge/README.md,
+    t1-grid at 90b25d3, 10 seeds; a sensitivity analysis, not an adoption result). At test the open question is how
+    E12.5's states and shares differ from E10.5's, which is where births by the legal route come in.
+  - T1: the whole-E10.5 task is shown but not counted (a different tissue mix from the floor's); E8.5 -> E9.5 cannot
+    run the entry.
+  - T2 heart: the stand-in's shape and scale skills are a copy's (the reference stage's coordinates); the test
+    entry's size comes from the pre-registered procedure, which no backtest scores, and sizes are closed to tries
+    anyway.
+  - T3: no row is an entry. Stand-in A is a replicate fold (one knockout, two runs), stand-in B a different factor;
+    the composition magnitudes differ from the entries'. The harness rows on the counted folds are baseline rows
+    only: wt_identity (the floor), our copy of WT cells and the organisers' shift_transfer.
+  - The weights and the gate are the emulator's (src/vec/evaluate.py, gate floor_normalised). docs/PLAN.md section 1
+    says all three board formulas, the T2 gate included, were re-derived from over 1,000 public leaderboard rows to
+    within 1e-4; the organisers have not published the gate's code.
+  - This table chooses nothing: a change aimed at a weak component is registered in TRIES.md before its run and kept
+    only under the adoption rule (docs/PLAN.md section 3, item 8) and TRIES.md rule 2; the data rules, the frozen s2
+    rules and the 2026-11-04 block stand.
+
+Inputs (sha256):
+  experiments/harness/results/baselines_v1/decisions_T3_bcatenin.json  f027865f35228d59b59a044af3df64a9258dfef56f7883f95e38af7ee0ec88e1
+  experiments/harness/results/baselines_v1/tasks/T3_Gata4_Mab21l2.json  7bbb0e9bbaa8806463a5498e290794465962cf94a3d9d50dd1fa0d1c8b66fb1f
+  experiments/harness/results/baselines_v1/tasks/T3_Mab21l2_Gata4rep2.json  bd0d1e494f20cef4b0fdf088260a300aa7544fd0c2e0ff4653ba1df6f8859861
+  experiments/harness/results/d2_v1/decisions_T1_test.json  9cfbb6d1cc7996c1359377d25bec9c9b1f43502e5755eafbe2123ba10b6add24
+  experiments/harness/results/d2_v1/decisions_T2_heart_test_extrap.json  57872ddb94fe9087fc5d10d8ff2a1ca75826d091db6aa2893afa79e5b5eaeb8e
+  experiments/harness/results/d2_v1/tasks/T1_E9.5_E10.5.json  65b3291835db4755d1b6bf2013a83188ba22ca35d1c44abeee00cfa3c15b7535
+  experiments/harness/results/d2_v1/tasks/T1_E9.5_E10.5_chamber.json  ad5cef9cd5e1be2693295c60c6be2b6c5dd020064e100d4d91e8052e75385eab
+  experiments/harness/results/d2_v1/tasks/T2h_E8.75_E10.5.json  abbdc05fe3ea40e71b089569c0dfefef2ed43f9da0538fc80959621929102cc7
+  experiments/harness/results/d2_v1/tasks/T2h_E9.5_E10.5.json  7cc830d376fb890916fa97355740cfa5e3ff96d1a9002755776a64d8ec692c93
+  experiments/harness/results/emb_fgw_v1/fgw_vs_b0/decisions_T2_embryo_test_interp.json  39aada363e7fba19bd958d089b29cc11841087e018bfb20b6bd77466809197c3
+  experiments/harness/results/emb_fgw_v1/tasks/T2e_E6.75_E7.5_E7.25.json  0579ef165aa0d1f7ebea91f73eb30fe3d200a2165e09dc3c254ddfe9ded178e1
+  experiments/harness/results/emb_fgw_v1/tasks/T2e_E7.25_E8.0_E7.5.json  50efea88a03f54a6d8e39fc89d34c43c5284ab938e471abdf5e442afc932e315
+  experiments/harness/results/emb_shape_v1/decisions_T2_embryo_test_interp.json  4a4000b4e83473f61d1150e29d6cd76b46e0592ac0e5b9abd35c3f3a3d658fe6
+  experiments/harness/results/emb_shape_v1/tasks/T2e_E6.75_E7.5_E7.25.json  2e58860ac1014e9a02c87caafaf420b58b1974fea37d213266f14cf68266c426
+  experiments/harness/results/emb_shape_v1/tasks/T2e_E7.25_E8.0_E7.5.json  f8545e9002474a66d1d3e7ba4be4ad01b1e7fabda927a72bffd04de3356625e0
+  experiments/t1_m1/results/diag_v1/T1_E9.5_E10.5.json  8682656022b4a96df01a056cb713b4213a5ed6cba6dc80ac38dbd00c63749822
+  experiments/t1_m1/results/diag_v1/T1_E9.5_E10.5_chamber.json  e51d67c6f04271a438883fba2b4800de6cfc7dd006d13b7b49bf62c62dec39fe
+  experiments/t3_decomp/results/gata4/gata4_records.csv  62bc4a448f8f922b9809c47c1ed1285a7962d716d515ea0bb5718a40c62dfd0c
+  results/registry.csv  e3fd930e103c79a5f76dab2fc9b76fa066ca3d23b16cfa901418ef70b4f3651a

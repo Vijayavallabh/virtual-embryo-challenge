@@ -2,7 +2,8 @@
 
 Version 1.2, 2026-10-19; timeline revised 2026-10-20 (the organisers moved the final phase to 2026-10-27: section 7 and
 the decision log); status updated 2026-10-28 (the final phase is open: the status note in section 7 and the decision
-log). Update it weekly and log decisions at the bottom.
+log); framed on 2026-11-04 by the captain's guiding principle (`AGENTS.md`; section 3 and the decision log,
+2026-11-04). Update it weekly and log decisions at the bottom.
 Evidence behind every claim is in `docs/research/` (one report per topic; `digest_2026-10-19.md` is the screened
 summary of the verified research sweep and its gap-fills) and `experiments/*/REPORT.md` (experiments on released data,
 each with an independent review); risks are tracked in `ASSUMPTIONS.md`.
@@ -64,6 +65,18 @@ Full detail in `docs/DATA_POLICY.md`. In short:
 These come from the scorer code, controlled probes and the public record of what worked and failed on the
 validation boards.
 
+Since 2026-11-04 they are read through the captain's guiding principle (quoted in full in `AGENTS.md`). The embryo is
+a process of becoming, so every board asks which cell states emerge, in what proportions (item 4), how their
+expression changes (items 1-3) and, on the two T2 boards only, how cells organise in space (item 6; T1 and T3 score
+no spatial term). A population is not an average cell: item 1, and blends of coupled cells lost on both embryo
+backtests (`experiments/harness/TRIES.md`, E8). An embryo is not expression without structure: shape and
+neighbourhoods carry half of each T2 board's weight, and the structure gate ties the shape credit to the
+neighbourhoods. A perturbation is not an unchanged wild type: T3's baseline is wt_identity, so every T3 entry states
+its change beyond it. Every component has to answer the principle's question, "What meaningful change beyond the
+baseline does this predict, and what held-out evidence shows it?" The answers per board are in `METHOD_SUMMARY.md`;
+the order of work is item 9. Where an item rests on the public validation record rather than on our backtests (4.3:
+"every geometry deformation tried publicly on extrapolation lost points"), it is a hypothesis to test, not evidence.
+
 1. **Real cells, count-space edits.** The variogram on 32,285 genes is mostly a per-gene sparsity test. Decoded means
    make it 7x worse; adding a dense delta to every cell doubles it (that is why `pseudobulk_shift` and `shift_transfer`
    sit below the floor). Recover integer counts (`c = expm1(x)·s/1e4`, `s = 1e4/expm1(min nonzero)`), edit by
@@ -79,7 +92,9 @@ validation boards.
    direction is right, and make the local harness imitate the 10%/split-half protocol. Hold sex-linked (Xist, Tsix,
    Y-linked) and strain-polymorphic genes flat: the pooled T1 stages differ in sex ratio. Score T3 against each
    knockout replicate separately (the board ranks one) and optimise the worse or the mean.
-4. **Composition is the main lever** on all four boards: which cell types, and how many.
+4. **Composition is the main lever** on all four boards: which cell types, and how many. (2026-11-04: the post-exposure
+   block closes cell numbers, sizes and scope on every board, and T1's and T3's composition, except T1 births by the
+   legal route; `docs/DATA_POLICY.md`, 2026-11-04, (b), (c).)
 5. **Interpolate whenever the rules allow.** E12.5 can be bracketed between our E10.5 and legal external hearts after
    E13.5, for both T1 and T2 heart. E7.75 is bracketed by E7.5 and E8.0 by design.
 6. **Spatial hygiene** (`experiments/density/REPORT.md`, `experiments/coords/REPORT.md`).
@@ -139,6 +154,23 @@ validation boards.
    truth, and a change of tissue mix (D2: B0 against the floor) on the chamber-cut truth alone, with the whole-E10.5
    score reported. Added the same day (a fifth "yes for all"): a pseudo-task the base cannot run on is not counted
    either (`vec.harness.decide`, "base does not apply").
+9. **Weakest weighted component first** (the captain's guiding principle, 2026-11-04; this reading is the AI
+   assistant's, under the captain's delegation of 2026-11-02, and he can overrule it). A board's weighted components
+   are its scored groups (`vec.boards.GROUPS`, the proposal's Table 1). `experiments/harness/headroom.py` gives, for
+   each entry on the backtests the adoption rule counts for it, every group's points against the published baseline
+   (100 x weight x (skill - 0.5), seed-paired) and its points left (100 x weight x (1 - skill));
+   `experiments/harness/TRIES.md` keeps the tables. The weakest weighted component is the group with the most points
+   left on the mean of those backtests, as the script prints it. Its weakest-metric line, for reference only, ranks
+   single metrics and on T2 has named neighborhood_mmd in every row so far: that metric's points left are
+   25 x (1 - skill), against at most 15 x (1 - skill) for any other T2 metric. Across boards, points left count in
+   Overall units (a T2 board at half), and gaps within the spread of a board's stand-ins count as tied (`TRIES.md`
+   rule 6). The next try on a board targets its weakest group whose lever is open; a try on another group says why
+   the weaker ones are closed or have no reason that holds at test. A lever closed by the post-exposure block stays
+   closed, however large its gap. One fixed by a pre-registered or frozen rule moves only as that rule allows or by
+   the captain's own ruling: on T3 a factor change that passes the adoption rule on the cross-knockout folds goes to
+   him (decision log 2026-11-01 (d)), and `experiments/t3_decomp/rules.yaml` is not edited. What closes a lever is
+   listed in `TRIES.md` rule 6. The tables are rebuilt from committed results after every kept change or new entry;
+   no official test score enters them.
 
 ## 4. Board plans
 
@@ -460,7 +492,12 @@ One "transport-then-adjust" operator underlies every board:
 
 Task heads hold what differs: the 32K-gene vs 500-gene encoders, the coordinate head (T2) and the genotype head (T3).
 copy_last, pseudobulk_shift, bracket interpolation and wild type plus response are all settings of this operator, so it
-should cost nothing per board.
+should cost nothing per board. Under the captain's guiding principle (2026-11-04), its steps map onto the four
+predictions: reweighting and real-cell retrieval set which states appear and in what proportions, births add states no
+released stage has (on the embryo the later bracket's real cells bring them), count-space edits carry the expression
+change (on T3 the genotype's response), and coupling and moves carry the spatial organisation on T2. The published
+baselines are the operator with every step at identity, so an entry's change beyond its baseline is the list of steps
+it switches on (`METHOD_SUMMARY.md`).
 
 The award needs the same architecture under every task we enter (Rules s.14), so both submissions on every board are
 built through the shared core, and new pipeline code goes into the core or a task head, never into a separate per-task
@@ -817,3 +854,59 @@ open. No organiser reply to any of the four emails as of then.
   (veto), not kept. The s1 stays fgw; its flattened test geometry is a known risk that the s2 (fgw_shape0, E7.5's
   geometry) hedges, and on the backtests the pair fgw + fgw_shape0 beats fgw_aligned + fgw_shape0 on the s2 rule's
   better-of-two (60.87 against 60.24). The other proposals were pruned before any run (`TRIES.md`).
+- 2026-11-04, after the data-policy notes 2026-11-04, (b) and (c) (`docs/DATA_POLICY.md`): the captain asked that
+  his guiding principle be internalised across the harness files and the docs, so that it changes how the team works,
+  not only what the files say (quoted in full in `AGENTS.md`). The readings below are the AI assistant's, under the
+  captain's delegation of 2026-11-02; the captain can overrule them.
+  - **What it adds.** `AGENTS.md` opens with the principle and seven working rules. Section 3 is framed by it and gains
+    item 9 (weakest weighted component first). `experiments/harness/TRIES.md` gains rules 5-8, the headroom tables and
+    the order of the next tries. The tables come from `experiments/harness/headroom.py`, which reads 19 committed
+    practice-task results (sha256 in its output) and runs no candidate, so it is not a try. `METHOD_SUMMARY.md` states,
+    per board and facet, the change beyond the published baseline and its held-out evidence. `docs/CHALLENGE.md` lists
+    the published baseline per test board, and `init.sh` points to the rules before any change to an entry.
+    `ASSUMPTIONS.md` gains A22 (the backtests' weakest component is the test's). feat-021 tracks the work.
+  - **The published baselines.** copy_last on T1:test, T2:heart:test_extrap and T2:embryo:test_interp; wt_identity on
+    T3:bcatenin (`docs/CHALLENGE.md`). D1 (ae6d6b3) lists copy_last as T3:bcatenin's floor; until this change
+    `vec.boards.load_boards` gave copy_last to any spec without the field. It now gives a spec without the field, or
+    with null, its task's floor (`TASK_FLOOR`, tested in `tests/test_boards.py`), and keeps a published value. Whether
+    the T3:bcatenin spec omits the field is not checked (that needs the board index, which nobody opens). No build,
+    upload guard or score uses the field (the emulator's floor is always the reference's working copy), so no built
+    file or score changes; the D1 check and `vec boards` print it, harness task files record it, and the committed D1
+    files stay as run.
+  - **What the tables say** (means over the backtests the adoption rule counts; a stand-in, labelled as such, where no
+    backtest can run the entry):
+    - T1 (M1's labelled diagnostic, in-sample for the readout): 50.97. Distribution sits at the baseline (-0.08, 15.08
+      points left), DE recovery (-0.50) and covariance (-1.45) below it; all its gain over the floor is direction
+      (+3.01).
+    - Heart (B0 without the size): 50.43 and 51.45, every metric within 1.3 points of the baseline, so what the entry
+      adds beyond that at test is the pre-registered size, which no backtest can score. Its weakest group is a
+      near-tie that the two backtests reverse (`TRIES.md`).
+    - Embryo (fgw): 61.12 and 58.78, ahead of the baseline on every group on the mean. Its weakest group is cell state
+      (11.50 left), a gap that comes from E7.25 (`TRIES.md` rule 2).
+    - T3: response identity is the weakest group on every stand-in; across knockouts (D11b, the Mab21l2 factor on
+      Gata4) its de_score skill is 0.494.
+    - In Overall units the largest gaps are T3 response identity (15.18 across knockouts; 11.89 on stand-in A, s1's
+      own factor) and T1 distribution (15.08). Both are a 0.30-weight metric at the floor, and T3's lies within its
+      stand-ins' spread, so they count as tied (`TRIES.md` rule 6).
+  - **What the question finds in the entries as they stand** (`METHOD_SUMMARY.md`). T1: B0, M1 without Feng's
+    direction, sits below the baseline on the counted backtest (49.68; -0.32 against the floor, vetoed; `d2_v1`), and
+    Feng's direction is judged only in-sample (`diag_v1`, on the readout's own transition). Heart: B0 beats our copy by
+    the adoption rule, but against the floor it falls short of the rule on the one-day backtest (7 of 10 seeds); no
+    backtest can score the size, and the one released scope check ranked s1's scope last (C10, n = 1). Embryo: fgw was
+    kept over B0, which beats the floor there (the D2 check, 2026-11-01 (c)), and leads the baseline on every group on
+    the mean, though not on each backtest (cell state on E7.25, shape on E7.5). T3: s1's factor carries between the
+    two Gata4 replicates, no other knockout tests it, and the one factor carried across knockouts (Mab21l2's on Gata4,
+    rule D11b) failed its bar. The T1 and heart s2 rest on sensitivity analyses with an oracle base or core size. The
+    entries stay as built: each rests on a pre-registered or frozen rule, an adoption decision or a ruling of the
+    captain recorded above, and the block closes the sizes, the scope and T1's shares. Rules 5-8 of `TRIES.md` govern
+    changes from 2026-11-04 on.
+  - **What it means for the next tries.** T1 first: births by the legal route, the one open composition lever on its
+    weakest groups (the births design, wf_77e506c8-014; the decision by 2026-11-10 at the latest). T1's direction stays
+    open, but no backtest can judge a change to Feng's direction. T3 second, although its gap ties T1's, because no T3
+    candidate exists yet: a factor change that passes the adoption rule on the cross-knockout folds, then the captain.
+    Heart and embryo: no open lever with a reason that holds at test. Once the heart and embryo s1 are uploaded, their
+    s2 are built as s1, at s1's commit (`docs/S2_RULES.md`), so no later try reaches those two boards unless the
+    captain changes a rule.
+  - **What does not change.** The data rules and the post-exposure block, the adoption rule and its readings, ledger
+    rules 1-4, the frozen s2 rules (`docs/S2_RULES.md`) and T3 rules (`experiments/t3_decomp/rules.yaml`), and the
+    captain's go-ahead for every official upload. No entry changes, and nothing here makes or schedules an upload.

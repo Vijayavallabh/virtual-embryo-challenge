@@ -1,0 +1,2976 @@
+{
+ "principle": "Begin with the published copy-last-stage and unchanged-wild-type baselines across the boards you intend to enter. Improve the weakest weighted component before polishing what already works.",
+ "question": "What meaningful change beyond the baseline does this predict, and what held-out evidence shows it?",
+ "boards": {
+  "T1:test": {
+   "what": "E12.5 scRNA. s1 = M1: real E10.5 cells at E10.5's own chamber composition, Feng's E9.5 -> E14.5 direction at 2/5 for its four groups, half the E9.5 -> E10.5 per-type change for the rest (METHOD_SUMMARY.md). s2 = M1 at cardiomyocytes 0.60 of heart cells (docs/S2_RULES.md).",
+   "floor_model": "copy_last",
+   "overall_factor": 1.0,
+   "entries": [
+    {
+     "slot": "s1",
+     "entry": "M1",
+     "candidate": "m1_feng",
+     "label": "STAND-IN, a labelled diagnostic, not an adoption result: m1_feng of experiments/t1_m1/results/diag_v1 (B0 plus Feng's direction at 1/5, the step's share of Feng's bracket on this transition). The harness refuses Feng's E9.5 cells on every T1 pseudo-task, and the pre-registered readout that chose Feng ran on this same transition, so it is in-sample for that choice. M1 has B0's scope, so B0's counted set against the floor is used.",
+     "counted_by": "experiments/harness/results/d2_v1/decisions_T1_test.json (floor -> b0: 1 of 3 configured pseudo-tasks)",
+     "excluded": {
+      "T1/E9.5->E10.5": "different tissue mixes are judged on the chamber-cut truth",
+      "T1/E8.5->E9.5": "change does not apply"
+     },
+     "tasks": {
+      "T1/E9.5->E10.5:chamber": {
+       "metrics": {
+        "de_score": {
+         "weight": 0.25,
+         "entry": 0.47982347400052666,
+         "floor": 0.5,
+         "copy": 0.38870351217143717,
+         "gain_floor": -0.504413149986835,
+         "gain_copy": 2.2779990457272357,
+         "left": 13.004413149986831
+        },
+        "de_direction": {
+         "weight": 0.25,
+         "entry": 0.6203567618558561,
+         "floor": 0.5,
+         "copy": 0.5356814061159283,
+         "gain_floor": 3.008919046396404,
+         "gain_copy": 2.1168838934981955,
+         "left": 9.491080953603596
+        },
+        "mmd_u": {
+         "weight": 0.3,
+         "entry": 0.4972317820560105,
+         "floor": 0.5,
+         "copy": 0.4997531679744718,
+         "gain_floor": -0.08304653831968789,
+         "gain_copy": -0.07564157755384215,
+         "left": 15.083046538319689
+        },
+        "variogram": {
+         "weight": 0.2,
+         "entry": 0.4276755716307205,
+         "floor": 0.5,
+         "copy": 0.49794066489780936,
+         "gain_floor": -1.4464885673855894,
+         "gain_copy": -1.4053018653417777,
+         "left": 11.44648856738559
+        }
+       },
+       "gate_mean": 1.0,
+       "gate_min": 1.0,
+       "score": 50.97497079070429,
+       "floor_score": 50.0,
+       "copy_score": 48.06103129437448,
+       "groups": {
+        "de_recovery": {
+         "left": 13.004413149986831,
+         "gain_floor": -0.504413149986835
+        },
+        "direction": {
+         "left": 9.491080953603596,
+         "gain_floor": 3.008919046396404
+        },
+        "distribution": {
+         "left": 15.083046538319689,
+         "gain_floor": -0.08304653831968789
+        },
+        "covariance": {
+         "left": 11.44648856738559,
+         "gain_floor": -1.4464885673855894
+        }
+       },
+       "weakest_group": "distribution",
+       "weakest_metric": "mmd_u",
+       "status": "counted",
+       "source": "experiments/t1_m1/results/diag_v1/T1_E9.5_E10.5_chamber.json (commit 401e3eb, clean True, seeds 0-9, bake, build main, anchors computed (diag_v1 README)); floor and copy from experiments/harness/results/d2_v1/tasks/T1_E9.5_E10.5_chamber.json (commit 20fb8b5)"
+      },
+      "T1/E9.5->E10.5": {
+       "metrics": {
+        "de_score": {
+         "weight": 0.25,
+         "entry": 0.43657946968756545,
+         "floor": 0.5,
+         "copy": 0.3785744655599807,
+         "gain_floor": -1.5855132578108653,
+         "gain_copy": 1.450125103189618,
+         "left": 14.085513257810865
+        },
+        "de_direction": {
+         "weight": 0.25,
+         "entry": 0.5690938015530105,
+         "floor": 0.5,
+         "copy": 0.5413896256346983,
+         "gain_floor": 1.727345038825265,
+         "gain_copy": 0.6926043979578086,
+         "left": 10.772654961174734
+        },
+        "mmd_u": {
+         "weight": 0.3,
+         "entry": 0.4089001002293954,
+         "floor": 0.5,
+         "copy": 0.5007668943059758,
+         "gain_floor": -2.732996993118138,
+         "gain_copy": -2.7560038222974086,
+         "left": 17.732996993118135
+        },
+        "variogram": {
+         "weight": 0.2,
+         "entry": 0.3900019007390702,
+         "floor": 0.5,
+         "copy": 0.49773171539264227,
+         "gain_floor": -2.1999619852185957,
+         "gain_copy": -2.1545962930714424,
+         "left": 12.199961985218597
+        }
+       },
+       "gate_mean": 1.0,
+       "gate_min": 1.0,
+       "score": 45.20887280267766,
+       "floor_score": 50.0,
+       "copy_score": 47.97674341689908,
+       "groups": {
+        "de_recovery": {
+         "left": 14.085513257810865,
+         "gain_floor": -1.5855132578108653
+        },
+        "direction": {
+         "left": 10.772654961174734,
+         "gain_floor": 1.727345038825265
+        },
+        "distribution": {
+         "left": 17.732996993118135,
+         "gain_floor": -2.732996993118138
+        },
+        "covariance": {
+         "left": 12.199961985218597,
+         "gain_floor": -2.1999619852185957
+        }
+       },
+       "weakest_group": "distribution",
+       "weakest_metric": "mmd_u",
+       "status": "reported, not counted: different tissue mixes are judged on the chamber-cut truth",
+       "source": "experiments/t1_m1/results/diag_v1/T1_E9.5_E10.5.json (commit 401e3eb, clean True, seeds 0-9, bake, build main, anchors computed (diag_v1 README)); floor and copy from experiments/harness/results/d2_v1/tasks/T1_E9.5_E10.5.json (commit 20fb8b5)"
+      }
+     },
+     "context": {
+      "T1/E9.5->E10.5:chamber": {
+       "candidate": "b0",
+       "what": "B0: M1 without Feng's direction (the harness's own candidate, d2_v1)",
+       "score": 49.68290567973587,
+       "skills": {
+        "de_score": 0.450109222148274,
+        "de_direction": 0.6076440781790118,
+        "mmd_u": 0.49270891186987537,
+        "variogram": 0.4228902907728732
+       }
+      },
+      "T1/E9.5->E10.5": {
+       "candidate": "b0",
+       "what": "B0: M1 without Feng's direction (the harness's own candidate, d2_v1)",
+       "score": 44.116683628570335,
+       "skills": {
+        "de_score": 0.40958718627254437,
+        "de_direction": 0.5586042451425907,
+        "mmd_u": 0.4059942633129424,
+        "variogram": 0.38660349719018466
+       }
+      }
+     },
+     "aggregate": {
+      "metrics": {
+       "de_score": {
+        "weight": 0.25,
+        "entry": 0.47982347400052666,
+        "floor": 0.5,
+        "copy": 0.38870351217143717,
+        "gain_floor": -0.504413149986835,
+        "gain_copy": 2.2779990457272357,
+        "left": 13.004413149986831
+       },
+       "de_direction": {
+        "weight": 0.25,
+        "entry": 0.6203567618558561,
+        "floor": 0.5,
+        "copy": 0.5356814061159283,
+        "gain_floor": 3.008919046396404,
+        "gain_copy": 2.1168838934981955,
+        "left": 9.491080953603596
+       },
+       "mmd_u": {
+        "weight": 0.3,
+        "entry": 0.4972317820560105,
+        "floor": 0.5,
+        "copy": 0.4997531679744718,
+        "gain_floor": -0.08304653831968789,
+        "gain_copy": -0.07564157755384215,
+        "left": 15.083046538319689
+       },
+       "variogram": {
+        "weight": 0.2,
+        "entry": 0.4276755716307205,
+        "floor": 0.5,
+        "copy": 0.49794066489780936,
+        "gain_floor": -1.4464885673855894,
+        "gain_copy": -1.4053018653417777,
+        "left": 11.44648856738559
+       }
+      },
+      "score": 50.97497079070429,
+      "n_tasks": 1,
+      "floor_score": 50.0,
+      "groups": {
+       "de_recovery": {
+        "left": 13.004413149986831,
+        "gain_floor": -0.504413149986835
+       },
+       "direction": {
+        "left": 9.491080953603596,
+        "gain_floor": 3.008919046396404
+       },
+       "distribution": {
+        "left": 15.083046538319689,
+        "gain_floor": -0.08304653831968789
+       },
+       "covariance": {
+        "left": 11.44648856738559,
+        "gain_floor": -1.4464885673855894
+       }
+      },
+      "weakest_group": "distribution",
+      "weakest_metric": "mmd_u"
+     }
+    }
+   ],
+   "closed_levers": "Cell numbers, sizes, scope and T1's composition are closed to tries after the 2026-11-04 exposure, except births by the legal route (docs/DATA_POLICY.md 2026-11-04, (b), (c)); the cardiomyocyte and blood shares stay as the s1 and s2 rules set them. State shifts (direction) stay open under the block, but no backtest can judge a change to Feng's direction (Feng's E9.5 lies inside every T1 window).",
+   "not_scored": "s2 (M1 at 0.60 cardiomyocytes) is not a harness candidate; its evidence is the oracle-base sensitivity grid in experiments/s2_hedge/results/t1_grid/ (not an adoption result)."
+  },
+  "T2:heart:test_extrap": {
+   "what": "E12.5 MERFISH, extrapolation. s1 = H1: B0 on real E10.5 tissue with the pre-registered size (METHOD_SUMMARY.md). s2 = H2 as the half trim (docs/S2_RULES.md).",
+   "floor_model": "copy_last",
+   "overall_factor": 0.5,
+   "entries": [
+    {
+     "slot": "s1",
+     "entry": "H1",
+     "candidate": "b0",
+     "label": "STAND-IN: the harness's b0 is H1 without the pre-registered size step; its coordinates and size stay the reference stage's (src/vec/harness.py _b0_t2), so its shape and scale skills equal a copy's and say nothing about the size the test build applies, which no backtest can check.",
+     "counted_by": "experiments/harness/results/d2_v1/decisions_T2_heart_test_extrap.json (floor -> b0: 2 of 2 configured pseudo-tasks)",
+     "excluded": {},
+     "tasks": {
+      "T2h/<=E9.5->E10.5": {
+       "metrics": {
+        "de_score": {
+         "weight": 0.125,
+         "entry": 0.509602777837326,
+         "floor": 0.5,
+         "copy": 0.4639297611738248,
+         "gain_floor": 0.12003472296657502,
+         "gain_copy": 0.5709127082937653,
+         "left": 6.129965277033425
+        },
+        "de_direction": {
+         "weight": 0.125,
+         "entry": 0.5211115659269187,
+         "floor": 0.5,
+         "copy": 0.5052595582170707,
+         "gain_floor": 0.2638945740864834,
+         "gain_copy": 0.19815009637309897,
+         "left": 5.986105425913516
+        },
+        "mmd_u": {
+         "weight": 0.15,
+         "entry": 0.4659438712726744,
+         "floor": 0.5,
+         "copy": 0.49408288874071105,
+         "gain_floor": -0.5108419309098828,
+         "gain_copy": -0.422085262020549,
+         "left": 8.010841930909882
+        },
+        "variogram": {
+         "weight": 0.1,
+         "entry": 0.5190339260991343,
+         "floor": 0.5,
+         "copy": 0.4969876188663315,
+         "gain_floor": 0.1903392609913431,
+         "gain_copy": 0.22046307232802817,
+         "left": 4.809660739008657
+        },
+        "d2_shape": {
+         "weight": 0.0832874836251042,
+         "entry": 0.48853072427898125,
+         "floor": 0.5,
+         "copy": 0.48853072427898125,
+         "gain_floor": -0.09804612811826371,
+         "gain_copy": 0.0009227912457195231,
+         "left": 4.264712794784929
+        },
+        "occupancy_dice": {
+         "weight": 0.0832874836251042,
+         "entry": 0.5040791165371908,
+         "floor": 0.5,
+         "copy": 0.5040791165371908,
+         "gain_floor": 0.0316218460652137,
+         "gain_copy": 0.0008861466665525342,
+         "left": 4.135044820601452
+        },
+        "scale_log_ratio": {
+         "weight": 0.0832874836251042,
+         "entry": 0.49965402632429967,
+         "floor": 0.5,
+         "copy": 0.49965402632429967,
+         "gain_floor": -0.005193292206805733,
+         "gain_copy": 0.0008634907530035818,
+         "left": 4.171859958873471
+        },
+        "neighborhood_mmd": {
+         "weight": 0.25,
+         "entry": 0.5174177388195936,
+         "floor": 0.5,
+         "copy": 0.5213392253385603,
+         "gain_floor": 0.43544347048984056,
+         "gain_copy": -0.09803716297416454,
+         "left": 12.06455652951016
+        }
+       },
+       "gate_mean": 0.9994498035012505,
+       "gate_min": 0.9944980350125046,
+       "score": 50.4272525233645,
+       "floor_score": 49.99999999999999,
+       "copy_score": 49.95517664269905,
+       "groups": {
+        "expression_change": {
+         "left": 12.116070702946942,
+         "gain_floor": 0.38392929705305845
+        },
+        "cell_state": {
+         "left": 12.82050266991854,
+         "gain_floor": -0.3205026699185397
+        },
+        "shape_growth": {
+         "left": 12.571617574259852,
+         "gain_floor": -0.07161757425985574
+        },
+        "local_organisation": {
+         "left": 12.06455652951016,
+         "gain_floor": 0.43544347048984056
+        }
+       },
+       "weakest_group": "cell_state",
+       "weakest_metric": "neighborhood_mmd",
+       "status": "counted",
+       "source": "experiments/harness/results/d2_v1/tasks/T2h_E9.5_E10.5.json (commit eae34eb, clean True, seeds 0-9, bake, build main, anchors computed)"
+      },
+      "T2h/<=E8.75->E10.5": {
+       "metrics": {
+        "de_score": {
+         "weight": 0.125,
+         "entry": 0.4535797327465202,
+         "floor": 0.5,
+         "copy": 0.4493827856654787,
+         "gain_floor": -0.5802533406684978,
+         "gain_copy": 0.05246183851301822,
+         "left": 6.830253340668497
+        },
+        "de_direction": {
+         "weight": 0.125,
+         "entry": 0.5098997636183765,
+         "floor": 0.5,
+         "copy": 0.5162542331192344,
+         "gain_floor": 0.12374704522970621,
+         "gain_copy": -0.07943086876072333,
+         "left": 6.126252954770294
+        },
+        "mmd_u": {
+         "weight": 0.15,
+         "entry": 0.509993586748245,
+         "floor": 0.5,
+         "copy": 0.4980115949538675,
+         "gain_floor": 0.1499038012236773,
+         "gain_copy": 0.17972987691566464,
+         "left": 7.350096198776322
+        },
+        "variogram": {
+         "weight": 0.1,
+         "entry": 0.5285476361938969,
+         "floor": 0.5,
+         "copy": 0.503513566857319,
+         "gain_floor": 0.2854763619389682,
+         "gain_copy": 0.25034069336577797,
+         "left": 4.714523638061033
+        },
+        "d2_shape": {
+         "weight": 0.08333333333333333,
+         "entry": 0.5022071716771024,
+         "floor": 0.5,
+         "copy": 0.5022071716771024,
+         "gain_floor": 0.01839309730918619,
+         "gain_copy": 0.0,
+         "left": 4.14827356935748
+        },
+        "occupancy_dice": {
+         "weight": 0.08333333333333333,
+         "entry": 0.5207163005597193,
+         "floor": 0.5,
+         "copy": 0.5207163005597193,
+         "gain_floor": 0.17263583799766144,
+         "gain_copy": 0.0,
+         "left": 3.994030828669004
+        },
+        "scale_log_ratio": {
+         "weight": 0.08333333333333333,
+         "entry": 0.5001856117906748,
+         "floor": 0.5,
+         "copy": 0.5001856117906748,
+         "gain_floor": 0.0015467649222893343,
+         "gain_copy": 0.0,
+         "left": 4.165119901744378
+        },
+        "neighborhood_mmd": {
+         "weight": 0.25,
+         "entry": 0.5510000137480947,
+         "floor": 0.5,
+         "copy": 0.5311369588910748,
+         "gain_floor": 1.2750003437023698,
+         "gain_copy": 0.49657637142549815,
+         "left": 11.22499965629763
+        }
+       },
+       "gate_mean": 1.0,
+       "gate_min": 1.0,
+       "score": 51.44644991165535,
+       "floor_score": 49.99999999999999,
+       "copy_score": 50.54677200019613,
+       "groups": {
+        "expression_change": {
+         "left": 12.95650629543879,
+         "gain_floor": -0.45650629543879157
+        },
+        "cell_state": {
+         "left": 12.064619836837355,
+         "gain_floor": 0.4353801631626455
+        },
+        "shape_growth": {
+         "left": 12.307424299770862,
+         "gain_floor": 0.19257570022913698
+        },
+        "local_organisation": {
+         "left": 11.22499965629763,
+         "gain_floor": 1.2750003437023698
+        }
+       },
+       "weakest_group": "expression_change",
+       "weakest_metric": "neighborhood_mmd",
+       "status": "counted",
+       "source": "experiments/harness/results/d2_v1/tasks/T2h_E8.75_E10.5.json (commit eae34eb, clean True, seeds 0-9, bake, build main, anchors computed)"
+      }
+     },
+     "aggregate": {
+      "metrics": {
+       "de_score": {
+        "weight": 0.125,
+        "entry": 0.4815912552919231,
+        "floor": 0.5,
+        "copy": 0.45665627341965176,
+        "gain_floor": -0.23010930885096137,
+        "gain_copy": 0.31168727340339175,
+        "left": 6.480109308850961
+       },
+       "de_direction": {
+        "weight": 0.125,
+        "entry": 0.5155056647726476,
+        "floor": 0.5,
+        "copy": 0.5107568956681525,
+        "gain_floor": 0.1938208096580948,
+        "gain_copy": 0.059359613806187816,
+        "left": 6.056179190341905
+       },
+       "mmd_u": {
+        "weight": 0.15,
+        "entry": 0.48796872901045973,
+        "floor": 0.5,
+        "copy": 0.49604724184728927,
+        "gain_floor": -0.18046906484310277,
+        "gain_copy": -0.12117769255244219,
+        "left": 7.680469064843102
+       },
+       "variogram": {
+        "weight": 0.1,
+        "entry": 0.5237907811465157,
+        "floor": 0.5,
+        "copy": 0.5002505928618253,
+        "gain_floor": 0.23790781146515566,
+        "gain_copy": 0.23540188284690305,
+        "left": 4.7620921885348455
+       },
+       "d2_shape": {
+        "weight": 0.08331040847921876,
+        "entry": 0.4953689479780418,
+        "floor": 0.5,
+        "copy": 0.4953689479780418,
+        "gain_floor": -0.03982651540453876,
+        "gain_copy": 0.00046139562285976157,
+        "left": 4.206493182071204
+       },
+       "occupancy_dice": {
+        "weight": 0.08331040847921876,
+        "entry": 0.512397708548455,
+        "floor": 0.5,
+        "copy": 0.512397708548455,
+        "gain_floor": 0.10212884203143757,
+        "gain_copy": 0.0004430733332762671,
+        "left": 4.064537824635228
+       },
+       "scale_log_ratio": {
+        "weight": 0.08331040847921876,
+        "entry": 0.4999198190574872,
+        "floor": 0.5,
+        "copy": 0.4999198190574872,
+        "gain_floor": -0.0018232636422581992,
+        "gain_copy": 0.0004317453765017909,
+        "left": 4.168489930308924
+       },
+       "neighborhood_mmd": {
+        "weight": 0.25,
+        "entry": 0.5342088762838442,
+        "floor": 0.5,
+        "copy": 0.5262380921148175,
+        "gain_floor": 0.8552219070961051,
+        "gain_copy": 0.1992696042256668,
+        "left": 11.644778092903895
+       }
+      },
+      "score": 50.936851217509926,
+      "n_tasks": 2,
+      "floor_score": 49.99999999999999,
+      "groups": {
+       "expression_change": {
+        "left": 12.536288499192867,
+        "gain_floor": -0.03628849919286656
+       },
+       "cell_state": {
+        "left": 12.442561253377947,
+        "gain_floor": 0.057438746622052894
+       },
+       "shape_growth": {
+        "left": 12.439520937015358,
+        "gain_floor": 0.06047906298464061
+       },
+       "local_organisation": {
+        "left": 11.644778092903895,
+        "gain_floor": 0.8552219070961051
+       }
+      },
+      "weakest_group": "expression_change",
+      "weakest_metric": "neighborhood_mmd"
+     }
+    }
+   ],
+   "closed_levers": "Cell numbers, the size and the scope are closed to tries after the 2026-11-04 exposure (docs/DATA_POLICY.md 2026-11-04 and (b)); the composition trend was dropped by the captain on 2026-11-01 (docs/PLAN.md 4.3, pipeline step 2); the depth line is closed (TRIES.md, H3).",
+   "not_scored": "s2 (H2 as the half trim) is not a harness candidate; its evidence is the oracle-core-size sensitivity analysis in experiments/s2_hedge/results/heart_scope*/ (not an adoption result)."
+  },
+  "T2:embryo:test_interp": {
+   "what": "E7.75 MERFISH, interpolation. s1 = fgw: displacement interpolation between E7.5 and E8.0 with a mixture of real cells of both, at the embryo size rule. s2 = fgw_shape0: fgw's mixture in E7.5's geometry (docs/S2_RULES.md).",
+   "floor_model": "copy_last",
+   "overall_factor": 0.5,
+   "entries": [
+    {
+     "slot": "s1",
+     "entry": "fgw",
+     "candidate": "fgw",
+     "label": "the entry itself, scored by the harness (emb_fgw_v1); kept over B0 by the adoption rule.",
+     "counted_by": "experiments/harness/results/emb_fgw_v1/fgw_vs_b0/decisions_T2_embryo_test_interp.json (b0 -> fgw: 2 of 2 configured pseudo-tasks)",
+     "excluded": {},
+     "tasks": {
+      "T2e/E7.25+E8.0->E7.5": {
+       "metrics": {
+        "de_score": {
+         "weight": 0.125,
+         "entry": 0.5809625528744186,
+         "floor": 0.5,
+         "copy": 0.4503035724213797,
+         "gain_floor": 1.0120319109302318,
+         "gain_copy": 1.6332372556629848,
+         "left": 5.237968089069767
+        },
+        "de_direction": {
+         "weight": 0.125,
+         "entry": 0.7025857959457641,
+         "floor": 0.5,
+         "copy": 0.5256158424699436,
+         "gain_floor": 2.532322449322051,
+         "gain_copy": 2.212124418447756,
+         "left": 3.717677550677949
+        },
+        "mmd_u": {
+         "weight": 0.15,
+         "entry": 0.671105655570388,
+         "floor": 0.5,
+         "copy": 0.49998923279707636,
+         "gain_floor": 2.56658483355582,
+         "gain_copy": 2.5667463415996767,
+         "left": 4.933415166444179
+        },
+        "variogram": {
+         "weight": 0.1,
+         "entry": 0.6644763732022942,
+         "floor": 0.5,
+         "copy": 0.5022983441008236,
+         "gain_floor": 1.644763732022943,
+         "gain_copy": 1.6217802910147063,
+         "left": 3.3552362679770567
+        },
+        "d2_shape": {
+         "weight": 0.08333333333333333,
+         "entry": 0.3723902438457136,
+         "floor": 0.5,
+         "copy": 0.5081457485848191,
+         "gain_floor": -1.063414634619053,
+         "gain_copy": -1.1312958728258788,
+         "left": 5.230081301285719
+        },
+        "occupancy_dice": {
+         "weight": 0.08333333333333333,
+         "entry": 0.3852224407202506,
+         "floor": 0.5,
+         "copy": 0.5062779986891162,
+         "gain_floor": -0.9564796606645783,
+         "gain_copy": -1.0087963164072133,
+         "left": 5.123146327331244
+        },
+        "scale_log_ratio": {
+         "weight": 0.08333333333333333,
+         "entry": 0.7272120685009084,
+         "floor": 0.5,
+         "copy": 0.5013265795492077,
+         "gain_floor": 1.8934339041742363,
+         "gain_copy": 1.8823790745975053,
+         "left": 2.2732327624924293
+        },
+        "neighborhood_mmd": {
+         "weight": 0.25,
+         "entry": 0.6395871904434196,
+         "floor": 0.5,
+         "copy": 0.5291020886022147,
+         "gain_floor": 3.4896797610854917,
+         "gain_copy": 2.7621275460301202,
+         "left": 9.010320238914508
+        }
+       },
+       "gate_mean": 1.0,
+       "gate_min": 1.0,
+       "score": 61.118922295807145,
+       "floor_score": 49.99999999999999,
+       "copy_score": 50.580619557687484,
+       "groups": {
+        "expression_change": {
+         "left": 8.955645639747717,
+         "gain_floor": 3.5443543602522825
+        },
+        "cell_state": {
+         "left": 8.288651434421237,
+         "gain_floor": 4.2113485655787635
+        },
+        "shape_growth": {
+         "left": 12.626460391109394,
+         "gain_floor": -0.1264603911093949
+        },
+        "local_organisation": {
+         "left": 9.010320238914508,
+         "gain_floor": 3.4896797610854917
+        }
+       },
+       "weakest_group": "shape_growth",
+       "weakest_metric": "neighborhood_mmd",
+       "status": "counted",
+       "source": "experiments/harness/results/emb_fgw_v1/tasks/T2e_E7.25_E8.0_E7.5.json (commit bd2e433, clean True, seeds 0-9, bake, build main, anchors computed)"
+      },
+      "T2e/E6.75+E7.5->E7.25": {
+       "metrics": {
+        "de_score": {
+         "weight": 0.125,
+         "entry": 0.6831818797536086,
+         "floor": 0.5,
+         "copy": 0.5215445001982733,
+         "gain_floor": 2.2897734969201067,
+         "gain_copy": 2.0204672444416913,
+         "left": 3.9602265030798933
+        },
+        "de_direction": {
+         "weight": 0.125,
+         "entry": 0.7017729179780889,
+         "floor": 0.5,
+         "copy": 0.6277431335576782,
+         "gain_floor": 2.5221614747261114,
+         "gain_copy": 0.9253723052551324,
+         "left": 3.7278385252738886
+        },
+        "mmd_u": {
+         "weight": 0.15,
+         "entry": 0.4967602260924906,
+         "floor": 0.5,
+         "copy": 0.4938696232591243,
+         "gain_floor": -0.048596608612640944,
+         "gain_copy": 0.04335904250049376,
+         "left": 7.548596608612643
+        },
+        "variogram": {
+         "weight": 0.1,
+         "entry": 0.28315591015129604,
+         "floor": 0.5,
+         "copy": 0.5004959759025072,
+         "gain_floor": -2.16844089848704,
+         "gain_copy": -2.1734006575121114,
+         "left": 7.16844089848704
+        },
+        "d2_shape": {
+         "weight": 0.08333333333333333,
+         "entry": 0.7169444557110503,
+         "floor": 0.5,
+         "copy": 0.5018168602976777,
+         "gain_floor": 1.807870464258751,
+         "gain_copy": 1.7927299617781043,
+         "left": 2.3587962024079148
+        },
+        "occupancy_dice": {
+         "weight": 0.08333333333333333,
+         "entry": 0.5953680058063998,
+         "floor": 0.5,
+         "copy": 0.5056355800406768,
+         "gain_floor": 0.7947333817199975,
+         "gain_copy": 0.7477702147143578,
+         "left": 3.3719332849466683
+        },
+        "scale_log_ratio": {
+         "weight": 0.08333333333333333,
+         "entry": 0.6241929405621673,
+         "floor": 0.5,
+         "copy": 0.5020888703217515,
+         "gain_floor": 1.034941171351394,
+         "gain_copy": 1.0175339186701309,
+         "left": 3.1317254953152722
+        },
+        "neighborhood_mmd": {
+         "weight": 0.25,
+         "entry": 0.6019499339812013,
+         "floor": 0.5,
+         "copy": 0.5563585406013866,
+         "gain_floor": 2.5487483495300345,
+         "gain_copy": 1.1397848344953718,
+         "left": 9.951251650469965
+        }
+       },
+       "gate_mean": 1.0,
+       "gate_min": 1.0,
+       "score": 58.781190831406704,
+       "floor_score": 49.99999999999999,
+       "copy_score": 53.26757396706354,
+       "groups": {
+        "expression_change": {
+         "left": 7.6880650283537815,
+         "gain_floor": 4.8119349716462185
+        },
+        "cell_state": {
+         "left": 14.717037507099683,
+         "gain_floor": -2.217037507099681
+        },
+        "shape_growth": {
+         "left": 8.862454982669856,
+         "gain_floor": 3.637545017330143
+        },
+        "local_organisation": {
+         "left": 9.951251650469965,
+         "gain_floor": 2.5487483495300345
+        }
+       },
+       "weakest_group": "cell_state",
+       "weakest_metric": "neighborhood_mmd",
+       "status": "counted",
+       "source": "experiments/harness/results/emb_fgw_v1/tasks/T2e_E6.75_E7.5_E7.25.json (commit bd2e433, clean True, seeds 0-9, bake, build main, anchors computed)"
+      }
+     },
+     "aggregate": {
+      "metrics": {
+       "de_score": {
+        "weight": 0.125,
+        "entry": 0.6320722163140136,
+        "floor": 0.5,
+        "copy": 0.4859240363098265,
+        "gain_floor": 1.6509027039251691,
+        "gain_copy": 1.826852250052338,
+        "left": 4.59909729607483
+       },
+       "de_direction": {
+        "weight": 0.125,
+        "entry": 0.7021793569619266,
+        "floor": 0.5,
+        "copy": 0.5766794880138109,
+        "gain_floor": 2.527241962024081,
+        "gain_copy": 1.5687483618514442,
+        "left": 3.722758037975919
+       },
+       "mmd_u": {
+        "weight": 0.15,
+        "entry": 0.5839329408314393,
+        "floor": 0.5,
+        "copy": 0.49692942802810036,
+        "gain_floor": 1.2589941124715895,
+        "gain_copy": 1.3050526920500853,
+        "left": 6.241005887528411
+       },
+       "variogram": {
+        "weight": 0.1,
+        "entry": 0.47381614167679514,
+        "floor": 0.5,
+        "copy": 0.5013971600016653,
+        "gain_floor": -0.26183858323204845,
+        "gain_copy": -0.27581018324870255,
+        "left": 5.2618385832320484
+       },
+       "d2_shape": {
+        "weight": 0.08333333333333333,
+        "entry": 0.5446673497783819,
+        "floor": 0.5,
+        "copy": 0.5049813044412483,
+        "gain_floor": 0.37222791481984907,
+        "gain_copy": 0.3307170444761127,
+        "left": 3.7944387518468172
+       },
+       "occupancy_dice": {
+        "weight": 0.08333333333333333,
+        "entry": 0.4902952232633252,
+        "floor": 0.5,
+        "copy": 0.5059567893648964,
+        "gain_floor": -0.08087313947229041,
+        "gain_copy": -0.13051305084642778,
+        "left": 4.247539806138956
+       },
+       "scale_log_ratio": {
+        "weight": 0.08333333333333333,
+        "entry": 0.6757025045315379,
+        "floor": 0.5,
+        "copy": 0.5017077249354795,
+        "gain_floor": 1.464187537762815,
+        "gain_copy": 1.449956496633818,
+        "left": 2.7024791289038506
+       },
+       "neighborhood_mmd": {
+        "weight": 0.25,
+        "entry": 0.6207685622123105,
+        "floor": 0.5,
+        "copy": 0.5427303146018007,
+        "gain_floor": 3.019214055307763,
+        "gain_copy": 1.9509561902627461,
+        "left": 9.480785944692236
+       }
+      },
+      "score": 59.95005656360692,
+      "n_tasks": 2,
+      "floor_score": 49.99999999999999,
+      "groups": {
+       "expression_change": {
+        "left": 8.321855334050749,
+        "gain_floor": 4.17814466594925
+       },
+       "cell_state": {
+        "left": 11.50284447076046,
+        "gain_floor": 0.9971555292395411
+       },
+       "shape_growth": {
+        "left": 10.744457686889625,
+        "gain_floor": 1.7555423131103738
+       },
+       "local_organisation": {
+        "left": 9.480785944692236,
+        "gain_floor": 3.019214055307763
+       }
+      },
+      "weakest_group": "cell_state",
+      "weakest_metric": "neighborhood_mmd"
+     }
+    },
+    {
+     "slot": "s2",
+     "entry": "fgw_shape0",
+     "candidate": "fgw_shape0",
+     "label": "the entry itself, scored by the harness (emb_shape_v1); chosen as s2 by the frozen rule's better-of-two, not kept as an s1 (vetoed on E7.25).",
+     "counted_by": "experiments/harness/results/emb_shape_v1/decisions_T2_embryo_test_interp.json (fgw -> fgw_shape0: 2 of 2 configured pseudo-tasks)",
+     "excluded": {},
+     "tasks": {
+      "T2e/E7.25+E8.0->E7.5": {
+       "metrics": {
+        "de_score": {
+         "weight": 0.125,
+         "entry": 0.5809625528744186,
+         "floor": 0.5,
+         "copy": 0.4503035724213797,
+         "gain_floor": 1.0120319109302318,
+         "gain_copy": 1.6332372556629848,
+         "left": 5.237968089069767
+        },
+        "de_direction": {
+         "weight": 0.125,
+         "entry": 0.7025857959457641,
+         "floor": 0.5,
+         "copy": 0.5256158424699436,
+         "gain_floor": 2.532322449322051,
+         "gain_copy": 2.212124418447756,
+         "left": 3.717677550677949
+        },
+        "mmd_u": {
+         "weight": 0.15,
+         "entry": 0.671105655570388,
+         "floor": 0.5,
+         "copy": 0.49998923279707636,
+         "gain_floor": 2.56658483355582,
+         "gain_copy": 2.5667463415996767,
+         "left": 4.933415166444179
+        },
+        "variogram": {
+         "weight": 0.1,
+         "entry": 0.6644763732022942,
+         "floor": 0.5,
+         "copy": 0.5022983441008236,
+         "gain_floor": 1.644763732022943,
+         "gain_copy": 1.6217802910147063,
+         "left": 3.3552362679770567
+        },
+        "d2_shape": {
+         "weight": 0.08333333333333333,
+         "entry": 0.439087409131021,
+         "floor": 0.5,
+         "copy": 0.5081457485848191,
+         "gain_floor": -0.5076049239081586,
+         "gain_copy": -0.5754861621149843,
+         "left": 4.674271590574824
+        },
+        "occupancy_dice": {
+         "weight": 0.08333333333333333,
+         "entry": 0.4943053729972907,
+         "floor": 0.5,
+         "copy": 0.5062779986891162,
+         "gain_floor": -0.047455225022577444,
+         "gain_copy": -0.09977188076521241,
+         "left": 4.214121891689244
+        },
+        "scale_log_ratio": {
+         "weight": 0.08333333333333333,
+         "entry": 0.7272120685009084,
+         "floor": 0.5,
+         "copy": 0.5013265795492077,
+         "gain_floor": 1.8934339041742363,
+         "gain_copy": 1.8823790745975053,
+         "left": 2.2732327624924293
+        },
+        "neighborhood_mmd": {
+         "weight": 0.25,
+         "entry": 0.6542265551220618,
+         "floor": 0.5,
+         "copy": 0.5291020886022147,
+         "gain_floor": 3.855663878051547,
+         "gain_copy": 3.128111662996175,
+         "left": 8.644336121948452
+        }
+       },
+       "gate_mean": 1.0,
+       "gate_min": 1.0,
+       "score": 62.949740559126084,
+       "floor_score": 49.99999999999999,
+       "copy_score": 50.580619557687484,
+       "groups": {
+        "expression_change": {
+         "left": 8.955645639747717,
+         "gain_floor": 3.5443543602522825
+        },
+        "cell_state": {
+         "left": 8.288651434421237,
+         "gain_floor": 4.2113485655787635
+        },
+        "shape_growth": {
+         "left": 11.161626244756498,
+         "gain_floor": 1.3383737552435002
+        },
+        "local_organisation": {
+         "left": 8.644336121948452,
+         "gain_floor": 3.855663878051547
+        }
+       },
+       "weakest_group": "shape_growth",
+       "weakest_metric": "neighborhood_mmd",
+       "status": "counted",
+       "source": "experiments/harness/results/emb_shape_v1/tasks/T2e_E7.25_E8.0_E7.5.json (commit 90ddaaa, clean True, seeds 0-9, bake, build main, anchors computed); floor and copy from experiments/harness/results/emb_fgw_v1/tasks/T2e_E7.25_E8.0_E7.5.json (commit bd2e433)"
+      },
+      "T2e/E6.75+E7.5->E7.25": {
+       "metrics": {
+        "de_score": {
+         "weight": 0.125,
+         "entry": 0.6831818797536086,
+         "floor": 0.5,
+         "copy": 0.5215445001982733,
+         "gain_floor": 2.2897734969201067,
+         "gain_copy": 2.0204672444416913,
+         "left": 3.9602265030798933
+        },
+        "de_direction": {
+         "weight": 0.125,
+         "entry": 0.7017729179780889,
+         "floor": 0.5,
+         "copy": 0.6277431335576782,
+         "gain_floor": 2.5221614747261114,
+         "gain_copy": 0.9253723052551324,
+         "left": 3.7278385252738886
+        },
+        "mmd_u": {
+         "weight": 0.15,
+         "entry": 0.4967602260924906,
+         "floor": 0.5,
+         "copy": 0.4938696232591243,
+         "gain_floor": -0.048596608612640944,
+         "gain_copy": 0.04335904250049376,
+         "left": 7.548596608612643
+        },
+        "variogram": {
+         "weight": 0.1,
+         "entry": 0.28315591015129604,
+         "floor": 0.5,
+         "copy": 0.5004959759025072,
+         "gain_floor": -2.16844089848704,
+         "gain_copy": -2.1734006575121114,
+         "left": 7.16844089848704
+        },
+        "d2_shape": {
+         "weight": 0.08333333333333333,
+         "entry": 0.38299269732704716,
+         "floor": 0.5,
+         "copy": 0.5018168602976777,
+         "gain_floor": -0.9750608556079399,
+         "gain_copy": -0.9902013580885874,
+         "left": 5.141727522274606
+        },
+        "occupancy_dice": {
+         "weight": 0.08333333333333333,
+         "entry": 0.43384524233412175,
+         "floor": 0.5,
+         "copy": 0.5056355800406768,
+         "gain_floor": -0.5512896472156517,
+         "gain_copy": -0.5982528142212914,
+         "left": 4.7179563138823175
+        },
+        "scale_log_ratio": {
+         "weight": 0.08333333333333333,
+         "entry": 0.6241929405621673,
+         "floor": 0.5,
+         "copy": 0.5020888703217515,
+         "gain_floor": 1.034941171351394,
+         "gain_copy": 1.0175339186701309,
+         "left": 3.1317254953152722
+        },
+        "neighborhood_mmd": {
+         "weight": 0.25,
+         "entry": 0.5625568460859104,
+         "floor": 0.5,
+         "copy": 0.5563585406013866,
+         "gain_floor": 1.5639211521477618,
+         "gain_copy": 0.15495763711309946,
+         "left": 10.936078847852238
+        }
+       },
+       "gate_mean": 1.0,
+       "gate_min": 1.0,
+       "score": 53.66740928522209,
+       "floor_score": 49.99999999999999,
+       "copy_score": 53.26757396706354,
+       "groups": {
+        "expression_change": {
+         "left": 7.6880650283537815,
+         "gain_floor": 4.8119349716462185
+        },
+        "cell_state": {
+         "left": 14.717037507099683,
+         "gain_floor": -2.217037507099681
+        },
+        "shape_growth": {
+         "left": 12.991409331472196,
+         "gain_floor": -0.49140933147219745
+        },
+        "local_organisation": {
+         "left": 10.936078847852238,
+         "gain_floor": 1.5639211521477618
+        }
+       },
+       "weakest_group": "cell_state",
+       "weakest_metric": "neighborhood_mmd",
+       "status": "counted",
+       "source": "experiments/harness/results/emb_shape_v1/tasks/T2e_E6.75_E7.5_E7.25.json (commit 90ddaaa, clean True, seeds 0-9, bake, build main, anchors computed); floor and copy from experiments/harness/results/emb_fgw_v1/tasks/T2e_E6.75_E7.5_E7.25.json (commit bd2e433)"
+      }
+     },
+     "aggregate": {
+      "metrics": {
+       "de_score": {
+        "weight": 0.125,
+        "entry": 0.6320722163140136,
+        "floor": 0.5,
+        "copy": 0.4859240363098265,
+        "gain_floor": 1.6509027039251691,
+        "gain_copy": 1.826852250052338,
+        "left": 4.59909729607483
+       },
+       "de_direction": {
+        "weight": 0.125,
+        "entry": 0.7021793569619266,
+        "floor": 0.5,
+        "copy": 0.5766794880138109,
+        "gain_floor": 2.527241962024081,
+        "gain_copy": 1.5687483618514442,
+        "left": 3.722758037975919
+       },
+       "mmd_u": {
+        "weight": 0.15,
+        "entry": 0.5839329408314393,
+        "floor": 0.5,
+        "copy": 0.49692942802810036,
+        "gain_floor": 1.2589941124715895,
+        "gain_copy": 1.3050526920500853,
+        "left": 6.241005887528411
+       },
+       "variogram": {
+        "weight": 0.1,
+        "entry": 0.47381614167679514,
+        "floor": 0.5,
+        "copy": 0.5013971600016653,
+        "gain_floor": -0.26183858323204845,
+        "gain_copy": -0.27581018324870255,
+        "left": 5.2618385832320484
+       },
+       "d2_shape": {
+        "weight": 0.08333333333333333,
+        "entry": 0.4110400532290341,
+        "floor": 0.5,
+        "copy": 0.5049813044412483,
+        "gain_floor": -0.7413328897580492,
+        "gain_copy": -0.7828437601017859,
+        "left": 4.9079995564247145
+       },
+       "occupancy_dice": {
+        "weight": 0.08333333333333333,
+        "entry": 0.46407530766570626,
+        "floor": 0.5,
+        "copy": 0.5059567893648964,
+        "gain_floor": -0.29937243611911457,
+        "gain_copy": -0.3490123474932519,
+        "left": 4.46603910278578
+       },
+       "scale_log_ratio": {
+        "weight": 0.08333333333333333,
+        "entry": 0.6757025045315379,
+        "floor": 0.5,
+        "copy": 0.5017077249354795,
+        "gain_floor": 1.464187537762815,
+        "gain_copy": 1.449956496633818,
+        "left": 2.7024791289038506
+       },
+       "neighborhood_mmd": {
+        "weight": 0.25,
+        "entry": 0.6083917006039861,
+        "floor": 0.5,
+        "copy": 0.5427303146018007,
+        "gain_floor": 2.7097925150996542,
+        "gain_copy": 1.6415346500546373,
+        "left": 9.790207484900346
+       }
+      },
+      "score": 58.30857492217409,
+      "n_tasks": 2,
+      "floor_score": 49.99999999999999,
+      "groups": {
+       "expression_change": {
+        "left": 8.321855334050749,
+        "gain_floor": 4.17814466594925
+       },
+       "cell_state": {
+        "left": 11.50284447076046,
+        "gain_floor": 0.9971555292395411
+       },
+       "shape_growth": {
+        "left": 12.076517788114344,
+        "gain_floor": 0.42348221188565116
+       },
+       "local_organisation": {
+        "left": 9.790207484900346,
+        "gain_floor": 2.7097925150996542
+       }
+      },
+      "weakest_group": "shape_growth",
+      "weakest_metric": "neighborhood_mmd"
+     }
+    }
+   ],
+   "closed_levers": "Cell numbers, the size and the scope are closed to tries after the 2026-11-04 exposure (docs/DATA_POLICY.md 2026-11-04 and (b)); the coupling line is closed for the s1 unless the captain rules otherwise (TRIES.md, after E11), and so is the depth line (TRIES.md, H3).",
+   "not_scored": null
+  },
+  "T3:bcatenin": {
+   "what": "beta-catenin knockout at E8.75. s1 = the allowed branch's s1: the pooled Gata4 per-gene factor (exponent 1), the depth ratio and the central composition at the Gata4 magnitude (log2 1.38). s2 = the refused branch's s1: wild-type cells with the central composition at the Mab21l2 magnitude (log2 0.718), no factor (docs/S2_RULES.md; experiments/t3_decomp/results/gata4/gata4_plan.json).",
+   "floor_model": "wt_identity",
+   "overall_factor": 1.0,
+   "baselines_on_counted_folds": {
+    "T3/Gata4->Mab21l2": {
+     "status": "counted",
+     "copy": {
+      "metrics": {
+       "de_score": {
+        "weight": 0.3,
+        "entry": 0.499352848513145,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": -0.019414544605649908,
+        "gain_copy": null,
+        "left": 15.019414544605649
+       },
+       "de_direction": {
+        "weight": 0.25,
+        "entry": 0.5150945977507189,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": 0.37736494376797225,
+        "gain_copy": null,
+        "left": 12.12263505623203
+       },
+       "severity_slope": {
+        "weight": 0.25,
+        "entry": 0.5127646292229037,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": 0.3191157305725925,
+        "gain_copy": null,
+        "left": 12.180884269427407
+       },
+       "mmd_u": {
+        "weight": 0.12,
+        "entry": 0.5053457973064626,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": 0.06414956767755094,
+        "gain_copy": null,
+        "left": 5.935850432322448
+       },
+       "variogram": {
+        "weight": 0.08000000000000002,
+        "entry": 0.49958993238806304,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": -0.0032805408954961644,
+        "gain_copy": null,
+        "left": 4.0032805408954975
+       }
+      },
+      "gate_mean": 1.0,
+      "gate_min": 1.0,
+      "score": 50.73793515651697,
+      "floor_score": 50.0,
+      "copy_score": null,
+      "groups": {
+       "response_identity": {
+        "left": 15.019414544605649,
+        "gain_floor": -0.019414544605649908
+       },
+       "response_direction": {
+        "left": 12.12263505623203,
+        "gain_floor": 0.37736494376797225
+       },
+       "response_magnitude": {
+        "left": 12.180884269427407,
+        "gain_floor": 0.3191157305725925
+       },
+       "mutant_state": {
+        "left": 9.939130973217946,
+        "gain_floor": 0.060869026782054775
+       }
+      },
+      "weakest_group": "response_identity",
+      "weakest_metric": "de_score"
+     },
+     "shift_transfer": {
+      "metrics": {
+       "de_score": {
+        "weight": 0.3,
+        "entry": 0.49455981368193375,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": -0.16320558954198727,
+        "gain_copy": null,
+        "left": 15.163205589541988
+       },
+       "de_direction": {
+        "weight": 0.25,
+        "entry": 0.48701031305951226,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": -0.32474217351219237,
+        "gain_copy": null,
+        "left": 12.824742173512192
+       },
+       "severity_slope": {
+        "weight": 0.25,
+        "entry": 0.5,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": 0.0,
+        "gain_copy": null,
+        "left": 12.5
+       },
+       "mmd_u": {
+        "weight": 0.12,
+        "entry": 0.39462983195470513,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": -1.2644420165435388,
+        "gain_copy": null,
+        "left": 7.264442016543539
+       },
+       "variogram": {
+        "weight": 0.08000000000000002,
+        "entry": 0.3501791581017587,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": -1.1985667351859306,
+        "gain_copy": null,
+        "left": 5.198566735185932
+       }
+      },
+      "gate_mean": 1.0,
+      "gate_min": 1.0,
+      "score": 47.04904348521635,
+      "floor_score": 50.0,
+      "copy_score": null,
+      "groups": {
+       "response_identity": {
+        "left": 15.163205589541988,
+        "gain_floor": -0.16320558954198727
+       },
+       "response_direction": {
+        "left": 12.824742173512192,
+        "gain_floor": -0.32474217351219237
+       },
+       "response_magnitude": {
+        "left": 12.5,
+        "gain_floor": 0.0
+       },
+       "mutant_state": {
+        "left": 12.463008751729472,
+        "gain_floor": -2.463008751729469
+       }
+      },
+      "weakest_group": "response_identity",
+      "weakest_metric": "de_score"
+     },
+     "floor": {
+      "metrics": {
+       "de_score": {
+        "weight": 0.3,
+        "entry": 0.5,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": 0.0,
+        "gain_copy": null,
+        "left": 15.0
+       },
+       "de_direction": {
+        "weight": 0.25,
+        "entry": 0.5,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": 0.0,
+        "gain_copy": null,
+        "left": 12.5
+       },
+       "severity_slope": {
+        "weight": 0.25,
+        "entry": 0.5,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": 0.0,
+        "gain_copy": null,
+        "left": 12.5
+       },
+       "mmd_u": {
+        "weight": 0.12,
+        "entry": 0.5,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": 0.0,
+        "gain_copy": null,
+        "left": 6.0
+       },
+       "variogram": {
+        "weight": 0.08000000000000002,
+        "entry": 0.5,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": 0.0,
+        "gain_copy": null,
+        "left": 4.000000000000001
+       }
+      },
+      "gate_mean": 1.0,
+      "gate_min": 1.0,
+      "score": 50.0,
+      "floor_score": 50.0,
+      "copy_score": null,
+      "groups": {
+       "response_identity": {
+        "left": 15.0,
+        "gain_floor": 0.0
+       },
+       "response_direction": {
+        "left": 12.5,
+        "gain_floor": 0.0
+       },
+       "response_magnitude": {
+        "left": 12.5,
+        "gain_floor": 0.0
+       },
+       "mutant_state": {
+        "left": 10.0,
+        "gain_floor": 0.0
+       }
+      },
+      "weakest_group": "response_identity",
+      "weakest_metric": "de_score"
+     }
+    },
+    "T3/Mab21l2->Gata4rep2": {
+     "status": "counted",
+     "copy": {
+      "metrics": {
+       "de_score": {
+        "weight": 0.3,
+        "entry": 0.4111062439187343,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": -2.666812682437971,
+        "gain_copy": null,
+        "left": 17.66681268243797
+       },
+       "de_direction": {
+        "weight": 0.25,
+        "entry": 0.5273925937391022,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": 0.6848148434775542,
+        "gain_copy": null,
+        "left": 11.815185156522444
+       },
+       "severity_slope": {
+        "weight": 0.25,
+        "entry": 0.5167609344128927,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": 0.4190233603223181,
+        "gain_copy": null,
+        "left": 12.080976639677683
+       },
+       "mmd_u": {
+        "weight": 0.12,
+        "entry": 0.5074771347852798,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": 0.08972561742335676,
+        "gain_copy": null,
+        "left": 5.910274382576643
+       },
+       "variogram": {
+        "weight": 0.08000000000000002,
+        "entry": 0.5079026912765234,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": 0.06322153021218853,
+        "gain_copy": null,
+        "left": 3.936778469787812
+       }
+      },
+      "gate_mean": 1.0,
+      "gate_min": 1.0,
+      "score": 48.58997266899745,
+      "floor_score": 50.0,
+      "copy_score": null,
+      "groups": {
+       "response_identity": {
+        "left": 17.66681268243797,
+        "gain_floor": -2.666812682437971
+       },
+       "response_direction": {
+        "left": 11.815185156522444,
+        "gain_floor": 0.6848148434775542
+       },
+       "response_magnitude": {
+        "left": 12.080976639677683,
+        "gain_floor": 0.4190233603223181
+       },
+       "mutant_state": {
+        "left": 9.847052852364454,
+        "gain_floor": 0.1529471476355453
+       }
+      },
+      "weakest_group": "response_identity",
+      "weakest_metric": "de_score"
+     },
+     "shift_transfer": {
+      "metrics": {
+       "de_score": {
+        "weight": 0.3,
+        "entry": 0.38111047107781215,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": -3.5666858676656368,
+        "gain_copy": null,
+        "left": 18.566685867665633
+       },
+       "de_direction": {
+        "weight": 0.25,
+        "entry": 0.49869718754533665,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": -0.03257031136658384,
+        "gain_copy": null,
+        "left": 12.532570311366584
+       },
+       "severity_slope": {
+        "weight": 0.25,
+        "entry": 0.5,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": 0.0,
+        "gain_copy": null,
+        "left": 12.5
+       },
+       "mmd_u": {
+        "weight": 0.12,
+        "entry": 0.37118147186365624,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": -1.545822337636125,
+        "gain_copy": null,
+        "left": 7.545822337636123
+       },
+       "variogram": {
+        "weight": 0.08000000000000002,
+        "entry": 0.16532095827603532,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": -2.6774323337917183,
+        "gain_copy": null,
+        "left": 6.677432333791719
+       }
+      },
+      "gate_mean": 1.0,
+      "gate_min": 1.0,
+      "score": 42.17748914953994,
+      "floor_score": 50.0,
+      "copy_score": null,
+      "groups": {
+       "response_identity": {
+        "left": 18.566685867665633,
+        "gain_floor": -3.5666858676656368
+       },
+       "response_direction": {
+        "left": 12.532570311366584,
+        "gain_floor": -0.03257031136658384
+       },
+       "response_magnitude": {
+        "left": 12.5,
+        "gain_floor": 0.0
+       },
+       "mutant_state": {
+        "left": 14.223254671427842,
+        "gain_floor": -4.223254671427844
+       }
+      },
+      "weakest_group": "response_identity",
+      "weakest_metric": "de_score"
+     },
+     "floor": {
+      "metrics": {
+       "de_score": {
+        "weight": 0.3,
+        "entry": 0.5,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": 0.0,
+        "gain_copy": null,
+        "left": 15.0
+       },
+       "de_direction": {
+        "weight": 0.25,
+        "entry": 0.5,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": 0.0,
+        "gain_copy": null,
+        "left": 12.5
+       },
+       "severity_slope": {
+        "weight": 0.25,
+        "entry": 0.5,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": 0.0,
+        "gain_copy": null,
+        "left": 12.5
+       },
+       "mmd_u": {
+        "weight": 0.12,
+        "entry": 0.5,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": 0.0,
+        "gain_copy": null,
+        "left": 6.0
+       },
+       "variogram": {
+        "weight": 0.08000000000000002,
+        "entry": 0.5,
+        "floor": 0.5,
+        "copy": null,
+        "gain_floor": 0.0,
+        "gain_copy": null,
+        "left": 4.000000000000001
+       }
+      },
+      "gate_mean": 1.0,
+      "gate_min": 1.0,
+      "score": 50.0,
+      "floor_score": 50.0,
+      "copy_score": null,
+      "groups": {
+       "response_identity": {
+        "left": 15.0,
+        "gain_floor": 0.0
+       },
+       "response_direction": {
+        "left": 12.5,
+        "gain_floor": 0.0
+       },
+       "response_magnitude": {
+        "left": 12.5,
+        "gain_floor": 0.0
+       },
+       "mutant_state": {
+        "left": 10.0,
+        "gain_floor": 0.0
+       }
+      },
+      "weakest_group": "response_identity",
+      "weakest_metric": "de_score"
+     }
+    }
+   },
+   "stand_ins": [
+    {
+     "slot": "s1",
+     "entry": "allowed s1",
+     "candidate": "xrep:F+depth",
+     "label": "STAND-IN A, optimistic: the Gata4 factor and depth ratio borrowed from the other replicate, scored on each replicate. Same knockout, so a replicate fold, which never counts under the adoption rule; it lacks s1's composition term (D8 measured that term at +0.22 and -0.43 points on top of the borrowed factor; gata4_decisions.json). It shows the factor carries between two runs of one knockout, which a processing effect shared by one run could explain (rules.yaml, the 2026-10-19 note that adds rule 6), not that it carries to another knockout.",
+     "targets": {
+      "rep1": {
+       "metrics": {
+        "de_score": {
+         "weight": 0.3,
+         "entry": 0.6350376902581907,
+         "floor": 0.5,
+         "copy": 0.4484983396714394,
+         "gain_floor": 4.051130707745721,
+         "gain_copy": 5.596180517602541,
+         "left": 10.948869292254281
+        },
+        "de_direction": {
+         "weight": 0.25,
+         "entry": 0.6830950938025115,
+         "floor": 0.5,
+         "copy": 0.5549717231794364,
+         "gain_floor": 4.57737734506279,
+         "gain_copy": 3.203084265576878,
+         "left": 7.92262265493721
+        },
+        "severity_slope": {
+         "weight": 0.25,
+         "entry": 0.9871041697321304,
+         "floor": 0.5,
+         "copy": 0.5886150232680839,
+         "gain_floor": 12.17760424330326,
+         "gain_copy": 9.962228661601165,
+         "left": 0.3223957566967389
+        },
+        "mmd_u": {
+         "weight": 0.12,
+         "entry": 0.6518319542537183,
+         "floor": 0.5,
+         "copy": 0.519455988140199,
+         "gain_floor": 1.8219834510446205,
+         "gain_copy": 1.5885115933622331,
+         "left": 4.178016548955379
+        },
+        "variogram": {
+         "weight": 0.08000000000000002,
+         "entry": 0.734357823857124,
+         "floor": 0.5,
+         "copy": 0.5143588778802362,
+         "gain_floor": 1.8748625908569931,
+         "gain_copy": 1.7599915678151035,
+         "left": 2.125137409143008
+        }
+       },
+       "gate_mean": 1.0,
+       "gate_min": 1.0,
+       "score": 74.50295833801337,
+       "floor_score": 50.0,
+       "copy_score": 52.39296173205546,
+       "groups": {
+        "response_identity": {
+         "left": 10.948869292254281,
+         "gain_floor": 4.051130707745721
+        },
+        "response_direction": {
+         "left": 7.92262265493721,
+         "gain_floor": 4.57737734506279
+        },
+        "response_magnitude": {
+         "left": 0.3223957566967389,
+         "gain_floor": 12.17760424330326
+        },
+        "mutant_state": {
+         "left": 6.303153958098387,
+         "gain_floor": 3.6968460419016136
+        }
+       },
+       "weakest_group": "response_identity",
+       "weakest_metric": "de_score"
+      },
+      "rep2": {
+       "metrics": {
+        "de_score": {
+         "weight": 0.3,
+         "entry": 0.5721287852057815,
+         "floor": 0.5,
+         "copy": 0.4259310215698139,
+         "gain_floor": 2.163863556173444,
+         "gain_copy": 4.385932909079027,
+         "left": 12.836136443826557
+        },
+        "de_direction": {
+         "weight": 0.25,
+         "entry": 0.6727361061945586,
+         "floor": 0.5,
+         "copy": 0.5431399225605984,
+         "gain_floor": 4.3184026548639665,
+         "gain_copy": 3.239904590849008,
+         "left": 8.181597345136034
+        },
+        "severity_slope": {
+         "weight": 0.25,
+         "entry": 0.930663025063707,
+         "floor": 0.5,
+         "copy": 0.5623687646921883,
+         "gain_floor": 10.766575626592678,
+         "gain_copy": 9.207356509287967,
+         "left": 1.7334243734073222
+        },
+        "mmd_u": {
+         "weight": 0.12,
+         "entry": 0.7184866526366899,
+         "floor": 0.5,
+         "copy": 0.5104040299001668,
+         "gain_floor": 2.621839831640279,
+         "gain_copy": 2.4969914728382774,
+         "left": 3.378160168359721
+        },
+        "variogram": {
+         "weight": 0.08000000000000002,
+         "entry": 0.7847003279538372,
+         "floor": 0.5,
+         "copy": 0.5091610180243008,
+         "gain_floor": 2.2776026236306985,
+         "gain_copy": 2.2043144794362917,
+         "left": 1.7223973763693021
+        }
+       },
+       "gate_mean": 1.0,
+       "gate_min": 1.0,
+       "score": 72.14828429290105,
+       "floor_score": 50.0,
+       "copy_score": 50.6137843314105,
+       "groups": {
+        "response_identity": {
+         "left": 12.836136443826557,
+         "gain_floor": 2.163863556173444
+        },
+        "response_direction": {
+         "left": 8.181597345136034,
+         "gain_floor": 4.3184026548639665
+        },
+        "response_magnitude": {
+         "left": 1.7334243734073222,
+         "gain_floor": 10.766575626592678
+        },
+        "mutant_state": {
+         "left": 5.100557544729023,
+         "gain_floor": 4.899442455270977
+        }
+       },
+       "weakest_group": "response_identity",
+       "weakest_metric": "de_score"
+      }
+     },
+     "aggregate_over_replicates": {
+      "metrics": {
+       "de_score": {
+        "weight": 0.3,
+        "entry": 0.6035832377319861,
+        "floor": 0.5,
+        "copy": 0.43721468062062663,
+        "gain_floor": 3.1074971319595823,
+        "gain_copy": 4.991056713340784,
+        "left": 11.89250286804042
+       },
+       "de_direction": {
+        "weight": 0.25,
+        "entry": 0.6779155999985351,
+        "floor": 0.5,
+        "copy": 0.5490558228700174,
+        "gain_floor": 4.447889999963378,
+        "gain_copy": 3.221494428212943,
+        "left": 8.052110000036622
+       },
+       "severity_slope": {
+        "weight": 0.25,
+        "entry": 0.9588835973979187,
+        "floor": 0.5,
+        "copy": 0.5754918939801361,
+        "gain_floor": 11.47208993494797,
+        "gain_copy": 9.584792585444566,
+        "left": 1.0279100650520305
+       },
+       "mmd_u": {
+        "weight": 0.12,
+        "entry": 0.6851593034452041,
+        "floor": 0.5,
+        "copy": 0.5149300090201829,
+        "gain_floor": 2.22191164134245,
+        "gain_copy": 2.0427515331002555,
+        "left": 3.77808835865755
+       },
+       "variogram": {
+        "weight": 0.08000000000000002,
+        "entry": 0.7595290759054806,
+        "floor": 0.5,
+        "copy": 0.5117599479522685,
+        "gain_floor": 2.076232607243846,
+        "gain_copy": 1.9821530236256977,
+        "left": 1.923767392756155
+       }
+      },
+      "score": 73.32562131545721,
+      "n_tasks": 2,
+      "floor_score": 50.0,
+      "groups": {
+       "response_identity": {
+        "left": 11.89250286804042,
+        "gain_floor": 3.1074971319595823
+       },
+       "response_direction": {
+        "left": 8.052110000036622,
+        "gain_floor": 4.447889999963378
+       },
+       "response_magnitude": {
+        "left": 1.0279100650520305,
+        "gain_floor": 11.47208993494797
+       },
+       "mutant_state": {
+        "left": 5.701855751413705,
+        "gain_floor": 4.298144248586295
+       }
+      },
+      "weakest_group": "response_identity",
+      "weakest_metric": "de_score"
+     }
+    },
+    {
+     "slot": "s1",
+     "entry": "allowed s1",
+     "candidate": "transfer:mab21l2_all",
+     "label": "STAND-IN B, the only cross-knockout reading of a per-gene factor: the Mab21l2 factor on WT E8.75 cells, scored on Gata4 (D11b, whose pre-registered bar is a board score of at least 60 on every target; it scored 59.40 on rep1, so it failed). A different factor from s1's, but the situation of the test: one knockout's factor applied to another knockout.",
+     "targets": {
+      "rep1": {
+       "metrics": {
+        "de_score": {
+         "weight": 0.3,
+         "entry": 0.490306926590911,
+         "floor": 0.5,
+         "copy": 0.4484983396714394,
+         "gain_floor": -0.29079220227267105,
+         "gain_copy": 1.2542576075841487,
+         "left": 15.29079220227267
+        },
+        "de_direction": {
+         "weight": 0.25,
+         "entry": 0.5298713068504043,
+         "floor": 0.5,
+         "copy": 0.5549717231794364,
+         "gain_floor": 0.7467826712601076,
+         "gain_copy": -0.6275104082258045,
+         "left": 11.753217328739893
+        },
+        "severity_slope": {
+         "weight": 0.25,
+         "entry": 0.8931771979490748,
+         "floor": 0.5,
+         "copy": 0.5886150232680839,
+         "gain_floor": 9.829429948726865,
+         "gain_copy": 7.614054367024769,
+         "left": 2.670570051273134
+        },
+        "mmd_u": {
+         "weight": 0.12,
+         "entry": 0.4855856499707415,
+         "floor": 0.5,
+         "copy": 0.519455988140199,
+         "gain_floor": -0.17297220035110278,
+         "gain_copy": -0.40644405803349015,
+         "left": 6.1729722003511025
+        },
+        "variogram": {
+         "weight": 0.08000000000000002,
+         "entry": 0.4107717937662799,
+         "floor": 0.5,
+         "copy": 0.5143588778802362,
+         "gain_floor": -0.7138256498697612,
+         "gain_copy": -0.8286966729116505,
+         "left": 4.7138256498697615
+        }
+       },
+       "gate_mean": 1.0,
+       "gate_min": 1.0,
+       "score": 59.39862256749344,
+       "floor_score": 50.0,
+       "copy_score": 52.39296173205546,
+       "groups": {
+        "response_identity": {
+         "left": 15.29079220227267,
+         "gain_floor": -0.29079220227267105
+        },
+        "response_direction": {
+         "left": 11.753217328739893,
+         "gain_floor": 0.7467826712601076
+        },
+        "response_magnitude": {
+         "left": 2.670570051273134,
+         "gain_floor": 9.829429948726865
+        },
+        "mutant_state": {
+         "left": 10.886797850220864,
+         "gain_floor": -0.886797850220864
+        }
+       },
+       "weakest_group": "response_identity",
+       "weakest_metric": "de_score"
+      },
+      "rep2": {
+       "metrics": {
+        "de_score": {
+         "weight": 0.3,
+         "entry": 0.49776170055833074,
+         "floor": 0.5,
+         "copy": 0.4259310215698139,
+         "gain_floor": -0.06714898325007841,
+         "gain_copy": 2.154920369655504,
+         "left": 15.067148983250078
+        },
+        "de_direction": {
+         "weight": 0.25,
+         "entry": 0.5669406479020566,
+         "floor": 0.5,
+         "copy": 0.5431399225605984,
+         "gain_floor": 1.6735161975514146,
+         "gain_copy": 0.5950181335364564,
+         "left": 10.826483802448587
+        },
+        "severity_slope": {
+         "weight": 0.25,
+         "entry": 0.8924361290294265,
+         "floor": 0.5,
+         "copy": 0.5623687646921883,
+         "gain_floor": 9.810903225735661,
+         "gain_copy": 8.251684108430954,
+         "left": 2.689096774264338
+        },
+        "mmd_u": {
+         "weight": 0.12,
+         "entry": 0.564747808324845,
+         "floor": 0.5,
+         "copy": 0.5104040299001668,
+         "gain_floor": 0.7769736998981391,
+         "gain_copy": 0.6521253410961375,
+         "left": 5.223026300101861
+        },
+        "variogram": {
+         "weight": 0.08000000000000002,
+         "entry": 0.49451888065812455,
+         "floor": 0.5,
+         "copy": 0.5091610180243008,
+         "gain_floor": -0.04384895473500379,
+         "gain_copy": -0.11713709892941035,
+         "left": 4.043848954735004
+        }
+       },
+       "gate_mean": 1.0,
+       "gate_min": 1.0,
+       "score": 62.150395185200125,
+       "floor_score": 50.0,
+       "copy_score": 50.6137843314105,
+       "groups": {
+        "response_identity": {
+         "left": 15.067148983250078,
+         "gain_floor": -0.06714898325007841
+        },
+        "response_direction": {
+         "left": 10.826483802448587,
+         "gain_floor": 1.6735161975514146
+        },
+        "response_magnitude": {
+         "left": 2.689096774264338,
+         "gain_floor": 9.810903225735661
+        },
+        "mutant_state": {
+         "left": 9.266875254836865,
+         "gain_floor": 0.7331247451631353
+        }
+       },
+       "weakest_group": "response_identity",
+       "weakest_metric": "de_score"
+      }
+     },
+     "aggregate_over_replicates": {
+      "metrics": {
+       "de_score": {
+        "weight": 0.3,
+        "entry": 0.4940343135746209,
+        "floor": 0.5,
+        "copy": 0.43721468062062663,
+        "gain_floor": -0.17897059276137472,
+        "gain_copy": 1.7045889886198264,
+        "left": 15.178970592761374
+       },
+       "de_direction": {
+        "weight": 0.25,
+        "entry": 0.5484059773762304,
+        "floor": 0.5,
+        "copy": 0.5490558228700174,
+        "gain_floor": 1.210149434405761,
+        "gain_copy": -0.01624613734467406,
+        "left": 11.28985056559424
+       },
+       "severity_slope": {
+        "weight": 0.25,
+        "entry": 0.8928066634892506,
+        "floor": 0.5,
+        "copy": 0.5754918939801361,
+        "gain_floor": 9.820166587231263,
+        "gain_copy": 7.932869237727862,
+        "left": 2.679833412768736
+       },
+       "mmd_u": {
+        "weight": 0.12,
+        "entry": 0.5251667291477933,
+        "floor": 0.5,
+        "copy": 0.5149300090201829,
+        "gain_floor": 0.3020007497735182,
+        "gain_copy": 0.12284064153132368,
+        "left": 5.697999250226482
+       },
+       "variogram": {
+        "weight": 0.08000000000000002,
+        "entry": 0.45264533721220224,
+        "floor": 0.5,
+        "copy": 0.5117599479522685,
+        "gain_floor": -0.3788373023023825,
+        "gain_copy": -0.47291688592053044,
+        "left": 4.378837302302383
+       }
+      },
+      "score": 60.774508876346786,
+      "n_tasks": 2,
+      "floor_score": 50.0,
+      "groups": {
+       "response_identity": {
+        "left": 15.178970592761374,
+        "gain_floor": -0.17897059276137472
+       },
+       "response_direction": {
+        "left": 11.28985056559424,
+        "gain_floor": 1.210149434405761
+       },
+       "response_magnitude": {
+        "left": 2.679833412768736,
+        "gain_floor": 9.820166587231263
+       },
+       "mutant_state": {
+        "left": 10.076836552528864,
+        "gain_floor": -0.07683655252886429
+       }
+      },
+      "weakest_group": "response_identity",
+      "weakest_metric": "de_score"
+     }
+    },
+    {
+     "slot": "s2",
+     "entry": "refused s1",
+     "candidate": "blind:G2_bcat_central_d50",
+     "label": "STAND-IN: wild-type cells with s2's five depleted states at depletion 0.5 (log2 1.0, against s2's 0.608, log2 0.718), no factor, scored on Gata4: the beta-catenin composition rule read on another knockout, written before any Gata4 file was opened (rules.yaml, A11).",
+     "targets": {
+      "rep1": {
+       "metrics": {
+        "de_score": {
+         "weight": 0.3,
+         "entry": 0.4660303054413782,
+         "floor": 0.5,
+         "copy": 0.4484983396714394,
+         "gain_floor": -1.0190908367586542,
+         "gain_copy": 0.5259589730981657,
+         "left": 16.019090836758654
+        },
+        "de_direction": {
+         "weight": 0.25,
+         "entry": 0.5338951518352308,
+         "floor": 0.5,
+         "copy": 0.5549717231794364,
+         "gain_floor": 0.8473787958807717,
+         "gain_copy": -0.5269142836051403,
+         "left": 11.652621204119226
+        },
+        "severity_slope": {
+         "weight": 0.25,
+         "entry": 0.6267690309692932,
+         "floor": 0.5,
+         "copy": 0.5886150232680839,
+         "gain_floor": 3.1692257742323275,
+         "gain_copy": 0.9538501925302298,
+         "left": 9.330774225767675
+        },
+        "mmd_u": {
+         "weight": 0.12,
+         "entry": 0.5344129095176882,
+         "floor": 0.5,
+         "copy": 0.519455988140199,
+         "gain_floor": 0.41295491421225783,
+         "gain_copy": 0.17948305652987048,
+         "left": 5.587045085787741
+        },
+        "variogram": {
+         "weight": 0.08000000000000002,
+         "entry": 0.5258295137433591,
+         "floor": 0.5,
+         "copy": 0.5143588778802362,
+         "gain_floor": 0.20663610994687226,
+         "gain_copy": 0.09176508690498286,
+         "left": 3.7933638900531284
+        }
+       },
+       "gate_mean": 1.0,
+       "gate_min": 1.0,
+       "score": 53.61710475751356,
+       "floor_score": 50.0,
+       "copy_score": 52.39296173205546,
+       "groups": {
+        "response_identity": {
+         "left": 16.019090836758654,
+         "gain_floor": -1.0190908367586542
+        },
+        "response_direction": {
+         "left": 11.652621204119226,
+         "gain_floor": 0.8473787958807717
+        },
+        "response_magnitude": {
+         "left": 9.330774225767675,
+         "gain_floor": 3.1692257742323275
+        },
+        "mutant_state": {
+         "left": 9.380408975840869,
+         "gain_floor": 0.61959102415913
+        }
+       },
+       "weakest_group": "response_identity",
+       "weakest_metric": "de_score"
+      },
+      "rep2": {
+       "metrics": {
+        "de_score": {
+         "weight": 0.3,
+         "entry": 0.42258736928377916,
+         "floor": 0.5,
+         "copy": 0.4259310215698139,
+         "gain_floor": -2.3223789214866253,
+         "gain_copy": -0.10030956858104237,
+         "left": 17.322378921486624
+        },
+        "de_direction": {
+         "weight": 0.25,
+         "entry": 0.5067462565274166,
+         "floor": 0.5,
+         "copy": 0.5431399225605984,
+         "gain_floor": 0.16865641318541194,
+         "gain_copy": -0.9098416508295462,
+         "left": 12.331343586814588
+        },
+        "severity_slope": {
+         "weight": 0.25,
+         "entry": 0.5,
+         "floor": 0.5,
+         "copy": 0.5623687646921883,
+         "gain_floor": 0.0,
+         "gain_copy": -1.5592191173047085,
+         "left": 12.5
+        },
+        "mmd_u": {
+         "weight": 0.12,
+         "entry": 0.514480604301134,
+         "floor": 0.5,
+         "copy": 0.5104040299001668,
+         "gain_floor": 0.1737672516136068,
+         "gain_copy": 0.0489188928116052,
+         "left": 5.826232748386394
+        },
+        "variogram": {
+         "weight": 0.08000000000000002,
+         "entry": 0.5134145608391113,
+         "floor": 0.5,
+         "copy": 0.5091610180243008,
+         "gain_floor": 0.10731648671288982,
+         "gain_copy": 0.03402834251848326,
+         "left": 3.8926835132871114
+        }
+       },
+       "gate_mean": 1.0,
+       "gate_min": 1.0,
+       "score": 48.12736123002528,
+       "floor_score": 50.0,
+       "copy_score": 50.6137843314105,
+       "groups": {
+        "response_identity": {
+         "left": 17.322378921486624,
+         "gain_floor": -2.3223789214866253
+        },
+        "response_direction": {
+         "left": 12.331343586814588,
+         "gain_floor": 0.16865641318541194
+        },
+        "response_magnitude": {
+         "left": 12.5,
+         "gain_floor": 0.0
+        },
+        "mutant_state": {
+         "left": 9.718916261673506,
+         "gain_floor": 0.2810837383264966
+        }
+       },
+       "weakest_group": "response_identity",
+       "weakest_metric": "de_score"
+      }
+     },
+     "aggregate_over_replicates": {
+      "metrics": {
+       "de_score": {
+        "weight": 0.3,
+        "entry": 0.44430883736257865,
+        "floor": 0.5,
+        "copy": 0.43721468062062663,
+        "gain_floor": -1.6707348791226397,
+        "gain_copy": 0.2128247022585617,
+        "left": 16.67073487912264
+       },
+       "de_direction": {
+        "weight": 0.25,
+        "entry": 0.5203207041813237,
+        "floor": 0.5,
+        "copy": 0.5490558228700174,
+        "gain_floor": 0.5080176045330919,
+        "gain_copy": -0.7183779672173431,
+        "left": 11.991982395466907
+       },
+       "severity_slope": {
+        "weight": 0.25,
+        "entry": 0.5633845154846466,
+        "floor": 0.5,
+        "copy": 0.5754918939801361,
+        "gain_floor": 1.5846128871161638,
+        "gain_copy": -0.30268446238723934,
+        "left": 10.915387112883838
+       },
+       "mmd_u": {
+        "weight": 0.12,
+        "entry": 0.5244467569094111,
+        "floor": 0.5,
+        "copy": 0.5149300090201829,
+        "gain_floor": 0.2933610829129323,
+        "gain_copy": 0.11420097467073784,
+        "left": 5.7066389170870675
+       },
+       "variogram": {
+        "weight": 0.08000000000000002,
+        "entry": 0.5196220372912352,
+        "floor": 0.5,
+        "copy": 0.5117599479522685,
+        "gain_floor": 0.15697629832988103,
+        "gain_copy": 0.06289671471173305,
+        "left": 3.84302370167012
+       }
+      },
+      "score": 50.872232993769416,
+      "n_tasks": 2,
+      "floor_score": 50.0,
+      "groups": {
+       "response_identity": {
+        "left": 16.67073487912264,
+        "gain_floor": -1.6707348791226397
+       },
+       "response_direction": {
+        "left": 11.991982395466907,
+        "gain_floor": 0.5080176045330919
+       },
+       "response_magnitude": {
+        "left": 10.915387112883838,
+        "gain_floor": 1.5846128871161638
+       },
+       "mutant_state": {
+        "left": 9.549662618757187,
+        "gain_floor": 0.4503373812428133
+       }
+      },
+      "weakest_group": "response_identity",
+      "weakest_metric": "de_score"
+     }
+    }
+   ],
+   "closed_levers": "T3's composition, cell numbers and sizes are closed to tries after the 2026-11-04 exposure (docs/DATA_POLICY.md 2026-11-04 and (b)); the entries are fixed by the frozen pre-registered rules; a new T3 factor change faces the adoption rule on the two cross-knockout folds (docs/PLAN.md decision log 2026-11-01 (d)) and then the captain, since only his ruling departs from the frozen rules' outcome; experiments/t3_decomp/rules.yaml is not edited.",
+   "not_scored": "Neither T3 entry is a harness candidate: every fold is one they were selected or fitted on (METHOD_SUMMARY.md, Task 3), so they stand on the pre-registered rules (experiments/t3_decomp/rules.yaml; docs/PLAN.md decision log 2026-11-01 (c) and (d))."
+  }
+ },
+ "summary": [
+  {
+   "board": "T1:test",
+   "slot": "s1",
+   "entry": "M1",
+   "stand_in": true,
+   "n_tasks": 1,
+   "board_score": 50.97497079070429,
+   "gain_over_floor": 0.9749707907042904,
+   "left_overall_board": 49.02502920929571,
+   "weakest_group": "distribution",
+   "weakest_group_left": 15.083046538319689,
+   "weakest_group_left_overall": 15.083046538319689,
+   "weakest_group_gain_floor": -0.08304653831968789,
+   "weakest_metric": "mmd_u",
+   "weakest_metric_left": 15.083046538319689,
+   "left_by_group": {
+    "de_recovery": 13.004413149986831,
+    "direction": 9.491080953603596,
+    "distribution": 15.083046538319689,
+    "covariance": 11.44648856738559
+   },
+   "left_by_metric": {
+    "de_score": 13.004413149986831,
+    "de_direction": 9.491080953603596,
+    "mmd_u": 15.083046538319689,
+    "variogram": 11.44648856738559
+   }
+  },
+  {
+   "board": "T2:heart:test_extrap",
+   "slot": "s1",
+   "entry": "H1",
+   "stand_in": true,
+   "n_tasks": 2,
+   "board_score": 50.936851217509926,
+   "gain_over_floor": 0.9368512175099326,
+   "left_overall_board": 24.531574391245037,
+   "weakest_group": "expression_change",
+   "weakest_group_left": 12.536288499192867,
+   "weakest_group_left_overall": 6.268144249596434,
+   "weakest_group_gain_floor": -0.03628849919286656,
+   "weakest_metric": "neighborhood_mmd",
+   "weakest_metric_left": 11.644778092903895,
+   "left_by_group": {
+    "expression_change": 12.536288499192867,
+    "cell_state": 12.442561253377947,
+    "shape_growth": 12.439520937015358,
+    "local_organisation": 11.644778092903895
+   },
+   "left_by_metric": {
+    "de_score": 6.480109308850961,
+    "de_direction": 6.056179190341905,
+    "mmd_u": 7.680469064843102,
+    "variogram": 4.7620921885348455,
+    "d2_shape": 4.206493182071204,
+    "occupancy_dice": 4.064537824635228,
+    "scale_log_ratio": 4.168489930308924,
+    "neighborhood_mmd": 11.644778092903895
+   }
+  },
+  {
+   "board": "T2:embryo:test_interp",
+   "slot": "s1",
+   "entry": "fgw",
+   "stand_in": false,
+   "n_tasks": 2,
+   "board_score": 59.95005656360692,
+   "gain_over_floor": 9.950056563606928,
+   "left_overall_board": 20.02497171819654,
+   "weakest_group": "cell_state",
+   "weakest_group_left": 11.50284447076046,
+   "weakest_group_left_overall": 5.75142223538023,
+   "weakest_group_gain_floor": 0.9971555292395411,
+   "weakest_metric": "neighborhood_mmd",
+   "weakest_metric_left": 9.480785944692236,
+   "left_by_group": {
+    "expression_change": 8.321855334050749,
+    "cell_state": 11.50284447076046,
+    "shape_growth": 10.744457686889625,
+    "local_organisation": 9.480785944692236
+   },
+   "left_by_metric": {
+    "de_score": 4.59909729607483,
+    "de_direction": 3.722758037975919,
+    "mmd_u": 6.241005887528411,
+    "variogram": 5.2618385832320484,
+    "d2_shape": 3.7944387518468172,
+    "occupancy_dice": 4.247539806138956,
+    "scale_log_ratio": 2.7024791289038506,
+    "neighborhood_mmd": 9.480785944692236
+   }
+  },
+  {
+   "board": "T2:embryo:test_interp",
+   "slot": "s2",
+   "entry": "fgw_shape0",
+   "stand_in": false,
+   "n_tasks": 2,
+   "board_score": 58.30857492217409,
+   "gain_over_floor": 8.308574922174095,
+   "left_overall_board": 20.845712538912956,
+   "weakest_group": "shape_growth",
+   "weakest_group_left": 12.076517788114344,
+   "weakest_group_left_overall": 6.038258894057172,
+   "weakest_group_gain_floor": 0.42348221188565116,
+   "weakest_metric": "neighborhood_mmd",
+   "weakest_metric_left": 9.790207484900346,
+   "left_by_group": {
+    "expression_change": 8.321855334050749,
+    "cell_state": 11.50284447076046,
+    "shape_growth": 12.076517788114344,
+    "local_organisation": 9.790207484900346
+   },
+   "left_by_metric": {
+    "de_score": 4.59909729607483,
+    "de_direction": 3.722758037975919,
+    "mmd_u": 6.241005887528411,
+    "variogram": 5.2618385832320484,
+    "d2_shape": 4.9079995564247145,
+    "occupancy_dice": 4.46603910278578,
+    "scale_log_ratio": 2.7024791289038506,
+    "neighborhood_mmd": 9.790207484900346
+   }
+  },
+  {
+   "board": "T3:bcatenin",
+   "slot": "s1",
+   "entry": "allowed s1 ~ xrep:F+depth",
+   "stand_in": true,
+   "n_tasks": 2,
+   "board_score": 73.32562131545721,
+   "gain_over_floor": 23.325621315457212,
+   "left_overall_board": 26.674378684542788,
+   "weakest_group": "response_identity",
+   "weakest_group_left": 11.89250286804042,
+   "weakest_group_left_overall": 11.89250286804042,
+   "weakest_group_gain_floor": 3.1074971319595823,
+   "weakest_metric": "de_score",
+   "weakest_metric_left": 11.89250286804042,
+   "left_by_group": {
+    "response_identity": 11.89250286804042,
+    "response_direction": 8.052110000036622,
+    "response_magnitude": 1.0279100650520305,
+    "mutant_state": 5.701855751413705
+   },
+   "left_by_metric": {
+    "de_score": 11.89250286804042,
+    "de_direction": 8.052110000036622,
+    "severity_slope": 1.0279100650520305,
+    "mmd_u": 3.77808835865755,
+    "variogram": 1.923767392756155
+   }
+  },
+  {
+   "board": "T3:bcatenin",
+   "slot": "s1",
+   "entry": "allowed s1 ~ transfer:mab21l2_all",
+   "stand_in": true,
+   "n_tasks": 2,
+   "board_score": 60.774508876346786,
+   "gain_over_floor": 10.774508876346786,
+   "left_overall_board": 39.225491123653214,
+   "weakest_group": "response_identity",
+   "weakest_group_left": 15.178970592761374,
+   "weakest_group_left_overall": 15.178970592761374,
+   "weakest_group_gain_floor": -0.17897059276137472,
+   "weakest_metric": "de_score",
+   "weakest_metric_left": 15.178970592761374,
+   "left_by_group": {
+    "response_identity": 15.178970592761374,
+    "response_direction": 11.28985056559424,
+    "response_magnitude": 2.679833412768736,
+    "mutant_state": 10.076836552528864
+   },
+   "left_by_metric": {
+    "de_score": 15.178970592761374,
+    "de_direction": 11.28985056559424,
+    "severity_slope": 2.679833412768736,
+    "mmd_u": 5.697999250226482,
+    "variogram": 4.378837302302383
+   }
+  },
+  {
+   "board": "T3:bcatenin",
+   "slot": "s2",
+   "entry": "refused s1 ~ blind:G2_bcat_central_d50",
+   "stand_in": true,
+   "n_tasks": 2,
+   "board_score": 50.872232993769416,
+   "gain_over_floor": 0.8722329937694155,
+   "left_overall_board": 49.127767006230584,
+   "weakest_group": "response_identity",
+   "weakest_group_left": 16.67073487912264,
+   "weakest_group_left_overall": 16.67073487912264,
+   "weakest_group_gain_floor": -1.6707348791226397,
+   "weakest_metric": "de_score",
+   "weakest_metric_left": 16.67073487912264,
+   "left_by_group": {
+    "response_identity": 16.67073487912264,
+    "response_direction": 11.991982395466907,
+    "response_magnitude": 10.915387112883838,
+    "mutant_state": 9.549662618757187
+   },
+   "left_by_metric": {
+    "de_score": 16.67073487912264,
+    "de_direction": 11.991982395466907,
+    "severity_slope": 10.915387112883838,
+    "mmd_u": 5.7066389170870675,
+    "variogram": 3.84302370167012
+   }
+  }
+ ],
+ "overall_left_by_board_s1": [
+  {
+   "left_overall": 49.02502920929571,
+   "board": "T1:test",
+   "entry": "M1"
+  },
+  {
+   "left_overall": 24.531574391245037,
+   "board": "T2:heart:test_extrap",
+   "entry": "H1"
+  },
+  {
+   "left_overall": 20.02497171819654,
+   "board": "T2:embryo:test_interp",
+   "entry": "fgw"
+  },
+  {
+   "left_overall": 26.674378684542788,
+   "board": "T3:bcatenin",
+   "entry": "allowed s1 ~ xrep:F+depth"
+  },
+  {
+   "left_overall": 39.225491123653214,
+   "board": "T3:bcatenin",
+   "entry": "allowed s1 ~ transfer:mab21l2_all"
+  }
+ ],
+ "overall_ranking_s1_by_group": [
+  {
+   "left_overall": 15.178970592761374,
+   "board": "T3:bcatenin",
+   "entry": "allowed s1 ~ transfer:mab21l2_all",
+   "group": "response_identity"
+  },
+  {
+   "left_overall": 15.083046538319689,
+   "board": "T1:test",
+   "entry": "M1",
+   "group": "distribution"
+  },
+  {
+   "left_overall": 13.004413149986831,
+   "board": "T1:test",
+   "entry": "M1",
+   "group": "de_recovery"
+  },
+  {
+   "left_overall": 11.89250286804042,
+   "board": "T3:bcatenin",
+   "entry": "allowed s1 ~ xrep:F+depth",
+   "group": "response_identity"
+  },
+  {
+   "left_overall": 11.44648856738559,
+   "board": "T1:test",
+   "entry": "M1",
+   "group": "covariance"
+  },
+  {
+   "left_overall": 11.28985056559424,
+   "board": "T3:bcatenin",
+   "entry": "allowed s1 ~ transfer:mab21l2_all",
+   "group": "response_direction"
+  },
+  {
+   "left_overall": 10.076836552528864,
+   "board": "T3:bcatenin",
+   "entry": "allowed s1 ~ transfer:mab21l2_all",
+   "group": "mutant_state"
+  },
+  {
+   "left_overall": 9.491080953603596,
+   "board": "T1:test",
+   "entry": "M1",
+   "group": "direction"
+  },
+  {
+   "left_overall": 8.052110000036622,
+   "board": "T3:bcatenin",
+   "entry": "allowed s1 ~ xrep:F+depth",
+   "group": "response_direction"
+  },
+  {
+   "left_overall": 6.268144249596434,
+   "board": "T2:heart:test_extrap",
+   "entry": "H1",
+   "group": "expression_change"
+  },
+  {
+   "left_overall": 6.221280626688974,
+   "board": "T2:heart:test_extrap",
+   "entry": "H1",
+   "group": "cell_state"
+  },
+  {
+   "left_overall": 6.219760468507679,
+   "board": "T2:heart:test_extrap",
+   "entry": "H1",
+   "group": "shape_growth"
+  },
+  {
+   "left_overall": 5.822389046451947,
+   "board": "T2:heart:test_extrap",
+   "entry": "H1",
+   "group": "local_organisation"
+  },
+  {
+   "left_overall": 5.75142223538023,
+   "board": "T2:embryo:test_interp",
+   "entry": "fgw",
+   "group": "cell_state"
+  },
+  {
+   "left_overall": 5.701855751413705,
+   "board": "T3:bcatenin",
+   "entry": "allowed s1 ~ xrep:F+depth",
+   "group": "mutant_state"
+  },
+  {
+   "left_overall": 5.372228843444812,
+   "board": "T2:embryo:test_interp",
+   "entry": "fgw",
+   "group": "shape_growth"
+  },
+  {
+   "left_overall": 4.740392972346118,
+   "board": "T2:embryo:test_interp",
+   "entry": "fgw",
+   "group": "local_organisation"
+  },
+  {
+   "left_overall": 4.1609276670253745,
+   "board": "T2:embryo:test_interp",
+   "entry": "fgw",
+   "group": "expression_change"
+  },
+  {
+   "left_overall": 2.679833412768736,
+   "board": "T3:bcatenin",
+   "entry": "allowed s1 ~ transfer:mab21l2_all",
+   "group": "response_magnitude"
+  },
+  {
+   "left_overall": 1.0279100650520305,
+   "board": "T3:bcatenin",
+   "entry": "allowed s1 ~ xrep:F+depth",
+   "group": "response_magnitude"
+  }
+ ],
+ "overall_ranking_s1_by_metric": [
+  {
+   "left_overall": 15.178970592761374,
+   "board": "T3:bcatenin",
+   "entry": "allowed s1 ~ transfer:mab21l2_all",
+   "metric": "de_score"
+  },
+  {
+   "left_overall": 15.083046538319689,
+   "board": "T1:test",
+   "entry": "M1",
+   "metric": "mmd_u"
+  },
+  {
+   "left_overall": 13.004413149986831,
+   "board": "T1:test",
+   "entry": "M1",
+   "metric": "de_score"
+  },
+  {
+   "left_overall": 11.89250286804042,
+   "board": "T3:bcatenin",
+   "entry": "allowed s1 ~ xrep:F+depth",
+   "metric": "de_score"
+  },
+  {
+   "left_overall": 11.44648856738559,
+   "board": "T1:test",
+   "entry": "M1",
+   "metric": "variogram"
+  },
+  {
+   "left_overall": 11.28985056559424,
+   "board": "T3:bcatenin",
+   "entry": "allowed s1 ~ transfer:mab21l2_all",
+   "metric": "de_direction"
+  },
+  {
+   "left_overall": 9.491080953603596,
+   "board": "T1:test",
+   "entry": "M1",
+   "metric": "de_direction"
+  },
+  {
+   "left_overall": 8.052110000036622,
+   "board": "T3:bcatenin",
+   "entry": "allowed s1 ~ xrep:F+depth",
+   "metric": "de_direction"
+  },
+  {
+   "left_overall": 5.822389046451947,
+   "board": "T2:heart:test_extrap",
+   "entry": "H1",
+   "metric": "neighborhood_mmd"
+  },
+  {
+   "left_overall": 5.697999250226482,
+   "board": "T3:bcatenin",
+   "entry": "allowed s1 ~ transfer:mab21l2_all",
+   "metric": "mmd_u"
+  },
+  {
+   "left_overall": 4.740392972346118,
+   "board": "T2:embryo:test_interp",
+   "entry": "fgw",
+   "metric": "neighborhood_mmd"
+  },
+  {
+   "left_overall": 4.378837302302383,
+   "board": "T3:bcatenin",
+   "entry": "allowed s1 ~ transfer:mab21l2_all",
+   "metric": "variogram"
+  },
+  {
+   "left_overall": 3.840234532421551,
+   "board": "T2:heart:test_extrap",
+   "entry": "H1",
+   "metric": "mmd_u"
+  },
+  {
+   "left_overall": 3.77808835865755,
+   "board": "T3:bcatenin",
+   "entry": "allowed s1 ~ xrep:F+depth",
+   "metric": "mmd_u"
+  },
+  {
+   "left_overall": 3.2400546544254807,
+   "board": "T2:heart:test_extrap",
+   "entry": "H1",
+   "metric": "de_score"
+  },
+  {
+   "left_overall": 3.1205029437642056,
+   "board": "T2:embryo:test_interp",
+   "entry": "fgw",
+   "metric": "mmd_u"
+  },
+  {
+   "left_overall": 3.0280895951709526,
+   "board": "T2:heart:test_extrap",
+   "entry": "H1",
+   "metric": "de_direction"
+  },
+  {
+   "left_overall": 2.679833412768736,
+   "board": "T3:bcatenin",
+   "entry": "allowed s1 ~ transfer:mab21l2_all",
+   "metric": "severity_slope"
+  },
+  {
+   "left_overall": 2.6309192916160242,
+   "board": "T2:embryo:test_interp",
+   "entry": "fgw",
+   "metric": "variogram"
+  },
+  {
+   "left_overall": 2.3810460942674228,
+   "board": "T2:heart:test_extrap",
+   "entry": "H1",
+   "metric": "variogram"
+  },
+  {
+   "left_overall": 2.299548648037415,
+   "board": "T2:embryo:test_interp",
+   "entry": "fgw",
+   "metric": "de_score"
+  },
+  {
+   "left_overall": 2.123769903069478,
+   "board": "T2:embryo:test_interp",
+   "entry": "fgw",
+   "metric": "occupancy_dice"
+  },
+  {
+   "left_overall": 2.103246591035602,
+   "board": "T2:heart:test_extrap",
+   "entry": "H1",
+   "metric": "d2_shape"
+  },
+  {
+   "left_overall": 2.084244965154462,
+   "board": "T2:heart:test_extrap",
+   "entry": "H1",
+   "metric": "scale_log_ratio"
+  },
+  {
+   "left_overall": 2.032268912317614,
+   "board": "T2:heart:test_extrap",
+   "entry": "H1",
+   "metric": "occupancy_dice"
+  },
+  {
+   "left_overall": 1.923767392756155,
+   "board": "T3:bcatenin",
+   "entry": "allowed s1 ~ xrep:F+depth",
+   "metric": "variogram"
+  },
+  {
+   "left_overall": 1.8972193759234086,
+   "board": "T2:embryo:test_interp",
+   "entry": "fgw",
+   "metric": "d2_shape"
+  },
+  {
+   "left_overall": 1.8613790189879595,
+   "board": "T2:embryo:test_interp",
+   "entry": "fgw",
+   "metric": "de_direction"
+  },
+  {
+   "left_overall": 1.3512395644519253,
+   "board": "T2:embryo:test_interp",
+   "entry": "fgw",
+   "metric": "scale_log_ratio"
+  },
+  {
+   "left_overall": 1.0279100650520305,
+   "board": "T3:bcatenin",
+   "entry": "allowed s1 ~ xrep:F+depth",
+   "metric": "severity_slope"
+  }
+ ],
+ "checks": [
+  "every stored board score (harness, diagnostic and T3 decomposition rows) recomputed from its skills with these weights and the gate: max gap 1.4e-14 points",
+  "every per-candidate mean used agrees with results/registry.csv score_mean: max gap 0.0005 points (the registry rounds to 0.001)",
+  "T1/E9.5->E10.5:chamber: diag_v1's b0 equals d2_v1's b0 seed for seed (max gap 0.0e+00 points), so its m1_feng pairs with the harness's floor and copy",
+  "T1/E9.5->E10.5: diag_v1's b0 equals d2_v1's b0 seed for seed (max gap 0.0e+00 points), so its m1_feng pairs with the harness's floor and copy",
+  "T2e/E7.25+E8.0->E7.5: emb_shape_v1's fgw equals emb_fgw_v1's fgw seed for seed (max gap 0.0e+00 points)",
+  "T2e/E6.75+E7.5->E7.25: emb_shape_v1's fgw equals emb_fgw_v1's fgw seed for seed (max gap 0.0e+00 points)"
+ ],
+ "caveats": [
+  "Points left are measured to the split-half ceiling, which no prediction reaches, and the skill map is 1/(1 + x): halving a metric's remaining distance takes its skill from 0.5 to 0.667, so equal points left on two metrics do not mean equal reach.",
+  "Where an entry sits near the floor (the M1 and H1 stand-ins, T3's s2 stand-in), the ranking of points left mostly restates the weights: at the floor every metric leaves 50 x weight points, so the heaviest metric comes first (T1 mmd_u 0.30, T2 neighborhood_mmd 0.25, T3 de_score 0.30). On T2 the four groups weigh 0.25 each and neighborhood_mmd alone carries a whole group's weight, so the weakest metric is read for reference only and the weakest weighted component is the group (docs/PLAN.md section 3, item 9).",
+  "Where a board's counting backtests name different weakest groups, those groups count as tied, and so do gaps across boards that lie within the spread of a board's stand-ins (experiments/harness/TRIES.md rule 6); the per-task lines above show each backtest's own weakest group.",
+  "These are backtests on released transitions, not the test: T1 on E9.5 -> E10.5 (test E10.5 -> E12.5); the heart one and 1.75 days ahead (test two); the embryo at t = 1/3 and 2/3 (test 1/2). Each backtest's geometry, sampling and depth differ from the test's (TRIES.md diagnostics).",
+  "T1: the stand-in draws E9.5's own chamber mix (cardiomyocytes about 66% of heart cells) against E10.5's chamber-cut truth, while the test entry starts from E10.5's own mix, so mmd_u and the variogram here carry a composition mismatch the test entry does not carry in that form. B0 drawn to the truth's own chamber mix (an oracle base) scores 69.92 against that truth, against 49.68 for B0 at E9.5's mix (experiments/s2_hedge/README.md, t1-grid at 90b25d3, 10 seeds; a sensitivity analysis, not an adoption result). At test the open question is how E12.5's states and shares differ from E10.5's, which is where births by the legal route come in.",
+  "T1: the whole-E10.5 task is shown but not counted (a different tissue mix from the floor's); E8.5 -> E9.5 cannot run the entry.",
+  "T2 heart: the stand-in's shape and scale skills are a copy's (the reference stage's coordinates); the test entry's size comes from the pre-registered procedure, which no backtest scores, and sizes are closed to tries anyway.",
+  "T3: no row is an entry. Stand-in A is a replicate fold (one knockout, two runs), stand-in B a different factor; the composition magnitudes differ from the entries'. The harness rows on the counted folds are baseline rows only: wt_identity (the floor), our copy of WT cells and the organisers' shift_transfer.",
+  "The weights and the gate are the emulator's (src/vec/evaluate.py, gate floor_normalised). docs/PLAN.md section 1 says all three board formulas, the T2 gate included, were re-derived from over 1,000 public leaderboard rows to within 1e-4; the organisers have not published the gate's code.",
+  "This table chooses nothing: a change aimed at a weak component is registered in TRIES.md before its run and kept only under the adoption rule (docs/PLAN.md section 3, item 8) and TRIES.md rule 2; the data rules, the frozen s2 rules and the 2026-11-04 block stand."
+ ],
+ "inputs_sha256": {
+  "experiments/harness/results/baselines_v1/decisions_T3_bcatenin.json": "f027865f35228d59b59a044af3df64a9258dfef56f7883f95e38af7ee0ec88e1",
+  "experiments/harness/results/baselines_v1/tasks/T3_Gata4_Mab21l2.json": "7bbb0e9bbaa8806463a5498e290794465962cf94a3d9d50dd1fa0d1c8b66fb1f",
+  "experiments/harness/results/baselines_v1/tasks/T3_Mab21l2_Gata4rep2.json": "bd0d1e494f20cef4b0fdf088260a300aa7544fd0c2e0ff4653ba1df6f8859861",
+  "experiments/harness/results/d2_v1/decisions_T1_test.json": "9cfbb6d1cc7996c1359377d25bec9c9b1f43502e5755eafbe2123ba10b6add24",
+  "experiments/harness/results/d2_v1/decisions_T2_heart_test_extrap.json": "57872ddb94fe9087fc5d10d8ff2a1ca75826d091db6aa2893afa79e5b5eaeb8e",
+  "experiments/harness/results/d2_v1/tasks/T1_E9.5_E10.5.json": "65b3291835db4755d1b6bf2013a83188ba22ca35d1c44abeee00cfa3c15b7535",
+  "experiments/harness/results/d2_v1/tasks/T1_E9.5_E10.5_chamber.json": "ad5cef9cd5e1be2693295c60c6be2b6c5dd020064e100d4d91e8052e75385eab",
+  "experiments/harness/results/d2_v1/tasks/T2h_E8.75_E10.5.json": "abbdc05fe3ea40e71b089569c0dfefef2ed43f9da0538fc80959621929102cc7",
+  "experiments/harness/results/d2_v1/tasks/T2h_E9.5_E10.5.json": "7cc830d376fb890916fa97355740cfa5e3ff96d1a9002755776a64d8ec692c93",
+  "experiments/harness/results/emb_fgw_v1/fgw_vs_b0/decisions_T2_embryo_test_interp.json": "39aada363e7fba19bd958d089b29cc11841087e018bfb20b6bd77466809197c3",
+  "experiments/harness/results/emb_fgw_v1/tasks/T2e_E6.75_E7.5_E7.25.json": "0579ef165aa0d1f7ebea91f73eb30fe3d200a2165e09dc3c254ddfe9ded178e1",
+  "experiments/harness/results/emb_fgw_v1/tasks/T2e_E7.25_E8.0_E7.5.json": "50efea88a03f54a6d8e39fc89d34c43c5284ab938e471abdf5e442afc932e315",
+  "experiments/harness/results/emb_shape_v1/decisions_T2_embryo_test_interp.json": "4a4000b4e83473f61d1150e29d6cd76b46e0592ac0e5b9abd35c3f3a3d658fe6",
+  "experiments/harness/results/emb_shape_v1/tasks/T2e_E6.75_E7.5_E7.25.json": "2e58860ac1014e9a02c87caafaf420b58b1974fea37d213266f14cf68266c426",
+  "experiments/harness/results/emb_shape_v1/tasks/T2e_E7.25_E8.0_E7.5.json": "f8545e9002474a66d1d3e7ba4be4ad01b1e7fabda927a72bffd04de3356625e0",
+  "experiments/t1_m1/results/diag_v1/T1_E9.5_E10.5.json": "8682656022b4a96df01a056cb713b4213a5ed6cba6dc80ac38dbd00c63749822",
+  "experiments/t1_m1/results/diag_v1/T1_E9.5_E10.5_chamber.json": "e51d67c6f04271a438883fba2b4800de6cfc7dd006d13b7b49bf62c62dec39fe",
+  "experiments/t3_decomp/results/gata4/gata4_records.csv": "62bc4a448f8f922b9809c47c1ed1285a7962d716d515ea0bb5718a40c62dfd0c",
+  "results/registry.csv": "e3fd930e103c79a5f76dab2fc9b76fa066ca3d23b16cfa901418ef70b4f3651a"
+ },
+ "weights": {
+  "T1": {
+   "de_score": 0.25,
+   "de_direction": 0.25,
+   "mmd_u": 0.3,
+   "variogram": 0.2
+  },
+  "T2": {
+   "de_score": 0.125,
+   "de_direction": 0.125,
+   "mmd_u": 0.15,
+   "variogram": 0.1,
+   "d2_shape": 0.08333333333333333,
+   "occupancy_dice": 0.08333333333333333,
+   "scale_log_ratio": 0.08333333333333333,
+   "neighborhood_mmd": 0.25
+  },
+  "T3": {
+   "de_score": 0.3,
+   "de_direction": 0.25,
+   "severity_slope": 0.25,
+   "mmd_u": 0.12,
+   "variogram": 0.08000000000000002
+  }
+ },
+ "definitions": {
+  "skill": "0.5 = the published floor, 1 = the split-half ceiling; NaN counts as 0",
+  "gain": "seed-paired mean of 100 x weight x (entry skill - baseline skill)",
+  "left": "100 x weight x (1 - entry skill); T2 shape terms: 100 x (0.25/3) x (1 - gate x skill)",
+  "gate": "T2: min(1, 2 x skill(neighborhood_mmd)) per candidate and seed",
+  "weakest_group": "the weakest weighted component: the scored group (src/vec/boards.py GROUPS id) with the most points left; ties at 0.01 points to the least gained over the floor (docs/PLAN.md section 3, item 9)",
+  "weakest_metric": "the same rule over single metrics, for reference only",
+  "left_overall": "points left x the board's weight in Overall (1 on T1 and T3, 0.5 on a T2 board)"
+ }
+}

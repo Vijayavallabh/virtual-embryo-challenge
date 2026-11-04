@@ -7,9 +7,11 @@ Sources (keep in sync when the site changes):
 - Challenge site: https://virtualembryo.ai/challenge (tasks, data, evaluation, baselines, rules, FAQ, timeline).
 - Accepted proposal with the metric definitions and Table 1 weights: `docs/reference/neurips-2026-competition-proposal.pdf`.
 - Nature Methods comment (Cao, Lu, Qiu 2026): `docs/reference/towards-predictive-virtual-embryos.pdf`.
-- Board specs with floor/ceiling anchors, gene panels and T1 composition: `boards/` (still the P2 specs: since
-  2026-10-27 the site's panel files answer HTTP 403 to `vec boards update`, not worked around; asked in the fourth
-  organiser email).
+- Board specs, gene panels and T1 composition: `boards/`. The validation boards keep their floor and ceiling anchors.
+  Since 2026-11-04 (634b5fd) it also holds the P3 test boards, taken in with `vec boards update --from-file` from a
+  copy the captain saved (nobody opened the saved file), their anchors stripped in memory. The test boards' cell
+  limits are read by code only: nobody opens `boards/index.json` or quotes them (`docs/DATA_POLICY.md`). The online
+  refresh still answers HTTP 403 (since 2026-10-27, not worked around; asked in the fourth organiser email).
 - Official local scorer: https://github.com/aristoteleo/veckit (MIT), pinned in `pyproject.toml`.
 - Partner rules (Yukon), https://virtualembryo.ai/challenge/partner-rules, and the Privacy Policy, both published
   2026-10-20. Checked 2026-10-20 17:10 UTC: the Rules are unchanged since 2026-10-18 apart from a Yukon banner
@@ -99,6 +101,20 @@ Notation: pb = pseudobulk (mean over cells) of log-normalised X; ref = preceding
 
 ## Reference rows (published baselines; numbers are on the live leaderboard at https://virtualembryo.ai/challenge/leaderboard, fetched client-side from https://api.virtualembryo.ai)
 - copy_last (T1/T2 floor = 50); wt_identity (T3 floor = 50). ceiling = 100 (clipped).
+- The published baseline of each final-phase test board, which every entry is measured from (the captain's guiding
+  principle, 2026-11-04; `AGENTS.md`):
+
+  | Test board | Counts in Overall | Published baseline (scores 50) | What it submits |
+  |---|---|---|---|
+  | T1:test (E12.5 scRNA) | 1 | copy_last | the last released stage verbatim (E10.5, expected) |
+  | T2:heart:test_extrap (E12.5 MERFISH) | 0.5 (one of the two boards in the T2 mean) | copy_last | E10.5 (expected), with its coordinates |
+  | T2:embryo:test_interp (E7.75 MERFISH) | 0.5 (one of the two boards in the T2 mean) | copy_last | E7.5, the earlier bracket (expected), with its coordinates |
+  | T3:bcatenin (beta-catenin knockout, E8.75) | 1 | wt_identity | the matched wild type at E8.75, unchanged |
+
+  The reference stages are assumption A3's expectation: the P3 specs publish no ref_cells (D1, ae6d6b3). The floor
+  scores exactly 50 because the scorer measures its anchors on its own working copy of the reference stage; a copy we
+  submit is another draw and can score below 50 (the copy rows in `experiments/harness/TRIES.md`, "Where the entries
+  stand against the published baselines").
 - pseudobulk_shift (T1/T2): per-cell-type constant velocity between the last two stages added to the last stage's real cells, clipped at 0; types absent earlier stay put; coordinates unchanged.
 - shift_ode (T1), neural_ode (T1: autonomous field in gene space, flow-matched on a global entropic-OT coupling; does NOT beat the constant shift), spatiotemporal_ode (T2: its score comes almost entirely from an analytic growth-rate extrapolation), dynode_flow (external flow-matching reference model, unmodified; likely the Qiu lab's Navigo, github.com/aristoteleo/Navigo-release), perturb_ode (T3), shift_transfer (T3: add the training KO's pseudobulk delta to the target WT), gene_ko (shift_transfer + zero the KO gene).
 - Organisers' notes: "On the published references every model gets the direction of the [T3] response wrong." "Clearing the [T1] floor plausibly needs supervision across the whole stage ladder, a non-autonomous field, and a treatment of populations appearing rather than only existing ones moving." Fitting constant-velocity extrapolation lands below copy_last on every setting. On interpolation boards copy_last copies a stage [redacted 2026-10-19: A] too small by volume.
