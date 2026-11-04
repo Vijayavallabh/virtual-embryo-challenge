@@ -15,7 +15,9 @@ scored submissions per board for the whole phase, which cannot be withdrawn. So 
 - refuses an official upload while the captain's upload gate stands (guard "upload gate"; 2026-11-05, his words: "Until
   our estimated score in leaderboard crosses 209, don't submit our 1st submission"; docs/PLAN.md section 8): the
   committed record UPLOAD_GATE must hold an estimate above UPLOAD_GATE_MIN with a named independent review, or the
-  captain's lift; an unreadable or inconsistent record refuses too. Format checks never read it;
+  captain's lift, or its deadline exception must have opened (2026-11-27 00:00 UTC; the captain: "I am fine with
+  submitting our 1st submission at Nov 27 anyway"); an unreadable or inconsistent record refuses too. Format
+  checks never read it;
 - ties an official upload to the code that built the file (guard "build stamp"): the stamp `<file>.stamp.json` next to
   the file's real path (written with the file by vec.io.write_submission; see vec.provenance) must exist and parse (at
   most STAMP_MAX_BYTES), its sha256 must be the plan's (the bytes that will be sent), it must say the build was clean
@@ -921,12 +923,14 @@ def remove_stale_copies(now: float | None = None) -> list[str]:
 
 
 
-def upload_gate_guard(path: str | Path | None = None) -> Guard:
+def upload_gate_guard(path: str | Path | None = None, now: datetime | None = None) -> Guard:
     """The guard "upload gate": the captain's rule of 2026-11-05, "Until our estimated score in leaderboard crosses 209,
     don't submit our 1st submission" (docs/PLAN.md section 8). It reads the committed record (UPLOAD_GATE, JSON) and
     passes when the captain has lifted the gate there (`lifted_by_captain` true) or when its `estimate`, our estimated
-    leaderboard total from our own evidence, is above UPLOAD_GATE_MIN and an independent `review` is named. An
-    unreadable record, a missing or non-finite estimate, or a `threshold` other than UPLOAD_GATE_MIN refuses."""
+    leaderboard total from our own evidence, is above UPLOAD_GATE_MIN and an independent `review` is named. It also
+    passes from the record's `deadline_exception_utc` on (an ISO time with its zone; the captain, 2026-11-05: "I am
+    fine with submitting our 1st submission at Nov 27 anyway"). An unreadable record or exception time, a missing
+    or non-finite estimate, or a `threshold` other than UPLOAD_GATE_MIN refuses. `now` is for tests."""
     p = Path(path) if path is not None else UPLOAD_GATE
     name = "upload gate"
     try:
@@ -939,6 +943,19 @@ def upload_gate_guard(path: str | Path | None = None) -> Guard:
         return Guard(name, False, f"{p.name} is not a JSON object")
     if rec.get("lifted_by_captain") is True:
         return Guard(name, True, f"lifted by the captain ({str(rec.get('lifted_note') or 'no note')[:120]})")
+    opens = ""
+    if rec.get("deadline_exception_utc") is not None:
+        raw = str(rec["deadline_exception_utc"])
+        try:
+            when = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+        except ValueError:
+            when = None
+        if when is None or when.tzinfo is None:
+            return Guard(name, False, f"{p.name}: cannot read deadline_exception_utc {raw[:40]!r} (an ISO time "
+                         "with its zone)")
+        if (now or datetime.now(UTC)) >= when:
+            return Guard(name, True, f"the captain's deadline exception, open since {when.isoformat()}")
+        opens = f"; it opens at the captain's deadline exception, {when.isoformat()}"
     try:
         threshold = float(rec.get("threshold", UPLOAD_GATE_MIN))
         estimate = float(rec["estimate"])
@@ -953,8 +970,9 @@ def upload_gate_guard(path: str | Path | None = None) -> Guard:
         return Guard(name, True, f"estimate {estimate:g} above {UPLOAD_GATE_MIN:g}, reviewed: {review[:120]}")
     why = (f"estimate {estimate:g} is not above {UPLOAD_GATE_MIN:g}" if estimate <= UPLOAD_GATE_MIN
            else "no independent review of the estimate is recorded")
-    return Guard(name, False, f"the captain's upload gate stands: {why} (docs/PLAN.md section 8); only the captain "
-                 "lifts it")
+    return Guard(name, False, f"the captain's upload gate stands: {why} (docs/PLAN.md section 8){opens}; only the "
+                 "captain lifts it earlier")
+
 
 def _dgx_provenance(dgx: DgxFile, changed: list[str] | None, local_head: str) -> Guard:
     """An official upload of a pulled file needs the DGX repo at the local HEAD and a tree that passes the clean-tree

@@ -244,7 +244,8 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     uploads. Approved by the captain on 2026-11-01: s1 = `--branch allowed --submission s1`; s2 = `--branch refused
     --submission s1` (wild-type cells, the central composition at the Mab21l2 magnitude, no number derived from the
     Gata4 files). Upload s2 first and s1 last (by 30 Nov IST; since 2026-11-05 not before the captain's upload gate
-    is crossed, `docs/PLAN.md` section 8), each with the captain's go-ahead after a screened check
+    is crossed or its deadline exception opens on 27 Nov, `docs/PLAN.md` section 8), each with the captain's go-ahead
+    after a screened check
     of mail, Slack and the Rules page. If the organisers allow the Gata4 files before the first T3 upload, go back to
     the allowed branch's s1 and s2; if they restrict them before the last one, send nothing from the allowed branch
     (the barred branch's s1; `docs/S2_RULES.md`, which also covers a full bar). It re-decides nothing and refuses a decision file whose script or rules hash
@@ -284,8 +285,9 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
 ## Never today
 
 - No official upload on any board while the captain's upload gate stands (2026-11-05: "Until our estimated score in
-  leaderboard crosses 209, don't submit our 1st submission"; `docs/PLAN.md` section 8). The client refuses one
-  unless `results/upload_gate.json` passes (guard "upload gate").
+  leaderboard crosses 209, don't submit our 1st submission"; `docs/PLAN.md` section 8), until his deadline exception
+  opens it at 2026-11-27 00:00 UTC. The client refuses one unless `results/upload_gate.json` passes (guard "upload
+  gate").
 - No scored upload (format checks only; `format_only=true`). `vec submit` sends format checks unless given
   `--official` with the file's hash, which needs the user's go-ahead.
 - Server format checks only on boards of the phase's split: in the final phase, the test boards that `vec boards

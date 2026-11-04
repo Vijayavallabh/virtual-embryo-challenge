@@ -595,8 +595,9 @@ step 4, the pre-registered runs in order, each output committed before anything 
 go-ahead; then the runbook's section 5.
 
 2026-11-05: the upload dates in the table (Nov 17-30) are superseded. Uploads wait for the captain's upload gate
-(section 8). The fallback dates of decision log 2026-11-04 (b) are now the latest times for each round once the gate
-is crossed or the captain lifts it; they send nothing on their own.
+(section 8) with his deadline exception: the s1 methods freeze at 2026-11-27 00:00 UTC and the first round goes in on
+27 Nov whatever the estimate, each upload with his go-ahead; the s2 round by 2026-12-01 06:00 UTC and the final marks
+by 12:00 UTC that day (decision log 2026-11-04 (b) and 2026-11-05).
 
 ## 8. Submission policy
 
@@ -613,14 +614,20 @@ is crossed or the captain lifts it; they send nothing on their own.
   - The figure: 209, the leading Human total on the test boards when he set it (209.3). It stays fixed unless the
     captain changes it, and later leaderboard reads do not move it. It gates uploads only; it is never a threshold or
     evidence for a try, an adoption or a method choice (`docs/DATA_POLICY.md` 2026-11-05).
-  - The record: `results/upload_gate.json` (the estimate, its range and basis, the review, and whether the captain
-    has lifted the gate). The submission client refuses an official upload unless the record passes: an estimate
-    above 209 with a named review, or the captain's lift (guard "upload gate"; `src/vec/submit.py`). Only the captain
-    lifts it, by a committed change to the record.
+  - The deadline exception (the captain, 2026-11-05, answering a side agent's note that the gate could mean no
+    entry, and so no place and no Generality Award standing): "I am fine with submitting our 1st submission at Nov 27
+    anyway". So the s1 methods freeze at 2026-11-27 00:00 UTC (05:30 IST). That morning the AI assistant rebuilds the
+    files at the freeze commit, checks them (`vec check`, the server format checks, archived hashes) and gives the
+    captain the plain summary; the first round (T1 s1, heart s1, embryo s1 and T3's s2) then goes in on 27 Nov
+    whatever the estimate, each upload with his go-ahead at the time. The s2 round follows by 2026-12-01 06:00 UTC and
+    the final marks by 12:00 UTC that day. If the estimate crosses 209 earlier, with its review, the first round may
+    go in earlier.
+  - The record: `results/upload_gate.json` (the estimate, its range and basis, the review, the deadline exception and
+    whether the captain has lifted the gate). The submission client refuses an official upload unless the record
+    passes: an estimate above 209 with a named review, the deadline exception reached (2026-11-27 00:00 UTC), or the
+    captain's lift (guard "upload gate"; `src/vec/submit.py`). Only the captain lifts it or moves the exception, by a
+    committed change to the record.
   - Today: about 184 (170-198), some 25 points short.
-  - If the estimate is still at or below 209 at the s1 freeze (2026-11-27), the AI assistant puts the choice to the
-    captain that day: under the gate we do not enter, and not submitting means no place, no prize and no Generality
-    Award standing.
 
 - Format checks are free and unlimited (no scored attempt), only on the phase's boards, and paused while a format check
   that the server stored awaits `vec submit resolve`. Scored uploads need the user's explicit go-ahead, and the client
@@ -1039,12 +1046,18 @@ open. No organiser reply to any of the four emails as of then.
 - 2026-11-05, the captain's upload gate and the rebuild rehearsal:
   - **The gate** (the captain's rule; recorded by the AI assistant): "Until our estimated score in leaderboard crosses
     209, don't submit our 1st submission." Section 8 records how the estimate is made and checked, the record
-    `results/upload_gate.json` and the client's guard. The fallback dates of 2026-11-04 (b) stop being a schedule:
-    they are the latest times once the gate is crossed or lifted, and send nothing on their own. The AI assistant reads
+    `results/upload_gate.json` and the client's guard. The fallback dates of 2026-11-04 (b) give way to the gate and
+    its deadline exception (next item). The AI assistant reads
     "our estimated score in leaderboard" as the total the leaderboard would show for us, each board at the better of
     its two uploads (about 184 today); the captain can say if he meant the first upload alone. Unchanged: his go-ahead
     for every upload, the data rules, the frozen s2 and T3 rules, and the rule that a leaderboard figure is never
     evidence for a try.
+  - **The deadline exception** (the captain, the same day, answering a side agent's note that the gate could mean no
+    entry, and so no place and no Generality Award): "I am fine with submitting our 1st submission at Nov 27 anyway".
+    The s1 methods freeze moves to 2026-11-27 00:00 UTC, so the files can be rebuilt and checked that morning; the
+    first round goes in on 27 Nov whatever the estimate, each upload with his go-ahead at the time; the s2 round and
+    the final marks keep their dates. The record carries the exception (`deadline_exception_utc`), and the client's
+    guard opens at it.
   - **The rehearsal** ((c)'s recommendation). At 1206d60 on a clean tree, the DGX rebuilt all ten test files from
     empty folders with `experiments/builds/build_all.sh` (s1, s2 and t3alt, about 2.3 minutes in all). Every file
     passed `vec check`, all ten are byte-identical to the archived builds of 2026-11-04

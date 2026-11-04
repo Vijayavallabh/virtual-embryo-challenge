@@ -197,7 +197,7 @@
     {
       "id": "feat-018",
       "name": "First official submissions (s1)",
-      "description": "Upload the first official submissions only once the captain's upload gate is crossed (2026-11-05: \"Until our estimated score in leaderboard crosses 209, don't submit our 1st submission\"; docs/PLAN.md section 8, results/upload_gate.json, the client's guard \"upload gate\") and he gives the go-ahead. Latest times once it is crossed or lifted: s1 methods frozen 2026-11-27, the s1 round 2026-11-28, the s2 round by 2026-12-01 06:00 UTC and the final marks by 12:00 UTC (T3: s2 first, s1 last). The s2 rules were frozen and hashed on 2026-11-03 (docs/S2_RULES.md).",
+      "description": "Upload the first official submissions only once the captain's upload gate is crossed (2026-11-05: \"Until our estimated score in leaderboard crosses 209, don't submit our 1st submission\"; docs/PLAN.md section 8, results/upload_gate.json, the client's guard \"upload gate\") and he gives the go-ahead. By his deadline exception (2026-11-05: \"I am fine with submitting our 1st submission at Nov 27 anyway\") the s1 methods freeze at 2026-11-27 00:00 UTC and the first round goes in on 27 Nov whatever the estimate; the s2 round by 2026-12-01 06:00 UTC and the final marks by 12:00 UTC (T3: s2 first, s1 last). The s2 rules were frozen and hashed on 2026-11-03 (docs/S2_RULES.md).",
       "dependencies": [
         "feat-009",
         "feat-010",

@@ -15,9 +15,10 @@ format check, and the rehearsal at 1206d60 rebuilt all ten byte-identical (`docs
 no scored submission is used. Official uploads are on hold (the captain, 2026-11-04) and, since 2026-11-05, behind
 the captain's upload gate: "Until our estimated score in leaderboard crosses 209, don't submit our 1st submission"
 (`docs/PLAN.md` section 8; record `results/upload_gate.json`, enforced by the client's guard "upload gate"). Our
-estimate is about 184 (170-198), so nothing goes in until the entry gains about 25 points; nothing has been sent,
-and the fallback dates (`docs/PLAN.md` decision log 2026-11-04 (b)) are only the latest times once the gate is
-crossed or lifted. The captain runs every upload, since Claude Code's
+estimate is about 184 (170-198). By his deadline exception of the same day ("I am fine with submitting our 1st
+submission at Nov 27 anyway") the s1 methods freeze at 2026-11-27 00:00 UTC and the first round goes in on 27 Nov
+whatever the estimate, unless the gate is crossed earlier; nothing has been sent. The captain runs every upload,
+since Claude Code's
 auto-mode classifier blocks the AI assistant from sending one. Births were designed and pruned (`TRIES.md`), and
 `docs/DATA_POLICY.md` 2026-11-04 (d) reopened T1's composition by the legal route. A screened read of the public
 leaderboards (wf_e01fe547-a9a; totals only) puts a Human top-3 place near 202-210 overall, against about 165 from
@@ -466,7 +467,8 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       log 2026-11-04 (e) and `docs/DATA_POLICY.md` 2026-11-04 (i). The captain's upload gate (209) recorded across
       the harness (`AGENTS.md`, `docs/PLAN.md` sections 2, 7 and 8 and decision log 2026-11-05,
       `docs/P3_RUNBOOK.md`, `experiments/harness/TRIES.md`, `docs/DATA_POLICY.md` 2026-11-05) and enforced by the
-      submission client (guard "upload gate", `results/upload_gate.json`).
+      submission client (guard "upload gate", `results/upload_gate.json`), with the captain's deadline exception the
+      same day (the first round on 27 Nov whatever the estimate; the s1 freeze at 2026-11-27 00:00 UTC).
 
 ### What's Next
 
@@ -475,8 +477,9 @@ Updated 2026-11-04, after the captain's guiding principle (`AGENTS.md`; the orde
 
 1. Official uploads: none until the captain's upload gate is crossed (2026-11-05: our estimated leaderboard total
    above 209, about 184 today; `docs/PLAN.md` section 8, `results/upload_gate.json`), and each then needs his
-   explicit go-ahead at the time; the captain runs the commands. If the estimate is still at or below 209 at the s1
-   freeze (2026-11-27), the AI assistant puts the choice to him that day (no upload means no place). Once the heart
+   explicit go-ahead at the time; the captain runs the commands. By his deadline exception the s1 methods freeze at
+   2026-11-27 00:00 UTC and the first round goes in on 27 Nov whatever the estimate (rebuild, checks and the plain
+   summary that morning); the s2 round by 2026-12-01 06:00 UTC, final marks by 12:00 UTC. Once the heart
    and embryo s1 are up, the frozen s2 rules build their s2 as s1, at s1's commit (`docs/S2_RULES.md`), so no later
    try reaches those two boards unless the captain changes a rule. The AI assistant's recommendation (`docs/PLAN.md`
    decision log 2026-11-04 (c)): keep the hold; the rebuild rehearsal is done (2026-11-04, 1206d60: ten files

@@ -3,11 +3,16 @@
   "set_by": "the captain, 2026-11-05",
   "threshold": 209,
   "estimate": 184,
-  "estimate_range": [170, 198],
+  "estimate_range": [
+    170,
+    198
+  ],
   "estimate_date": "2026-11-04",
   "estimate_basis": "docs/PLAN.md decision log 2026-11-04 (c): our own committed evidence (backtests carried to the test boards, the oracle-base grids, the s2 hedge payoffs), each board at the better of its two uploads: T1 about 63, T3 about 65, heart about 52, embryo about 60; no test score, no leaderboard figure",
   "review": "",
   "lifted_by_captain": false,
   "lifted_note": "",
-  "how_it_changes": "docs/PLAN.md section 8: the AI assistant restates the estimate after every kept change; it passes only above 209 with an independent reviewer's recomputation named in review; only the captain sets lifted_by_captain or changes the threshold"
+  "deadline_exception_utc": "2026-11-27T00:00:00Z",
+  "deadline_exception": "the captain, 2026-11-05, answering a side agent's note that the gate could mean no entry: \"I am fine with submitting our 1st submission at Nov 27 anyway\". The s1 methods freeze at 2026-11-27 00:00 UTC (05:30 IST); the files are rebuilt, checked and format-checked that morning; each upload still needs his go-ahead at the time",
+  "how_it_changes": "docs/PLAN.md section 8: the AI assistant restates the estimate after every kept change; it passes early only above 209 with an independent reviewer's recomputation named in review; from deadline_exception_utc on it passes anyway (the captain's exception); only the captain sets lifted_by_captain, changes the threshold or moves the exception"
 }

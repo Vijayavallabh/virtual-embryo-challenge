@@ -16,6 +16,7 @@ import sys
 import tempfile
 import threading
 import time
+from datetime import UTC, datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from types import SimpleNamespace
@@ -708,6 +709,21 @@ def test_the_upload_gate_record(tmp_path):
     assert not vs.upload_gate_guard(tmp_path / "missing.json").ok
     g.write_text(" " * (vs.UPLOAD_GATE_MAX_BYTES + 1))
     assert not vs.upload_gate_guard(g).ok
+    # the captain's deadline exception (2026-11-05: "I am fine with submitting our 1st submission at Nov 27 anyway")
+    rec = {"threshold": 209, "estimate": 184, "review": "", "deadline_exception_utc": "2026-11-27T00:00:00Z"}
+    g.write_text(json.dumps(rec))
+    before = vs.upload_gate_guard(g, now=datetime(2026, 11, 26, 23, 59, 59, tzinfo=UTC))
+    assert not before.ok
+    assert "it opens at the captain's deadline exception, 2026-11-27T00:00:00+00:00" in before.detail
+    assert vs.upload_gate_guard(g, now=datetime(2026, 11, 27, tzinfo=UTC)).ok
+    ist = timezone(timedelta(hours=5.5))
+    assert vs.upload_gate_guard(g, now=datetime(2026, 11, 27, 5, 30, tzinfo=ist)).ok
+    assert not vs.upload_gate_guard(g, now=datetime(2026, 11, 27, 5, 29, tzinfo=ist)).ok
+    for bad in ("soon", "2026-11-27T00:00:00", ""):  # unreadable, or no time zone: refused
+        g.write_text(json.dumps({**rec, "deadline_exception_utc": bad}))
+        assert not vs.upload_gate_guard(g, now=datetime(2026, 12, 1, tzinfo=UTC)).ok, bad
+    g.write_text(json.dumps({**rec, "estimate": 210, "review": "wf-review"}))  # crossed early: open before it
+    assert vs.upload_gate_guard(g, now=datetime(2026, 11, 10, tzinfo=UTC)).ok
 
 
 def test_an_official_upload_waits_for_the_captains_upload_gate(env):
@@ -737,12 +753,16 @@ def test_the_format_check_message_names_the_upload_gate(env):
 
 
 def test_the_committed_upload_gate_record_holds():
-    """The repository's own record parses and, until the captain's figure is crossed or he lifts it, refuses."""
-    rec = json.loads((Path(__file__).resolve().parents[1] / "results" / "upload_gate.json").read_text())
+    """The repository's own record parses; until the captain's figure is crossed or he lifts it, it refuses before his
+    deadline exception (2026-11-27 00:00 UTC) and passes from then on."""
+    path = Path(__file__).resolve().parents[1] / "results" / "upload_gate.json"
+    rec = json.loads(path.read_text())
     assert rec["threshold"] == vs.UPLOAD_GATE_MIN == 209.0
     assert isinstance(rec["estimate"], (int, float)) and isinstance(rec["lifted_by_captain"], bool)
+    assert rec["deadline_exception_utc"] == "2026-11-27T00:00:00Z"
     if rec["estimate"] <= 209 and not rec["lifted_by_captain"]:
-        assert not vs.upload_gate_guard(Path(__file__).resolve().parents[1] / "results" / "upload_gate.json").ok
+        assert not vs.upload_gate_guard(path, now=datetime(2026, 11, 26, 23, 59, tzinfo=UTC)).ok
+    assert vs.upload_gate_guard(path, now=datetime(2026, 11, 27, tzinfo=UTC)).ok
 
 
 def test_a_file_rebuilt_without_a_new_stamp_is_refused(env):
