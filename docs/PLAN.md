@@ -1115,3 +1115,7 @@ open. No organiser reply to any of the four emails as of then.
     is coded Theiler stage 22 (X006). Under the staging rule's working answer that sample stays out, so its figure is
     withdrawn from the rationale; Feng's two strains alone span 42-77% and the s2 stays inside that range, so no rule
     changes (`docs/DATA_POLICY.md` 2026-11-05 (c)).
+  - **The determinism check** (target-free, at 1435acf on the DGX): all three sets rebuilt from empty folders at 1, 4,
+    8 and 16 BLAS threads, every file passed `vec check`, and all forty files are byte-identical to the archived builds
+    of 2026-11-04 (`experiments/builds/results/determinism_1435acf.txt`; `./init.sh` before it: 577 passed). So the
+    freeze-morning hash check cannot fail on the thread count; the builds keep 16.

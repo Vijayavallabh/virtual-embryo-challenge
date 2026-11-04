@@ -476,7 +476,9 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       and a synthesis) found no route past 209 by the freeze (everything proposed adds about +0.2 Overall, and none
       passes the adoption rule); its prunes are in `TRIES.md` (T1 now at 7 tries), its process notes in
       `docs/DATA_POLICY.md` 2026-11-05 (b), the published code the method runs on is registered (X005), and its
-      rulings went to the captain (`docs/PLAN.md` decision log 2026-11-05 (b)).
+      rulings went to the captain (`docs/PLAN.md` decision log 2026-11-05 (b)). The determinism check passed at
+      1435acf: all ten test files byte-identical to the archived builds at 1, 4, 8 and 16 BLAS threads
+      (`experiments/builds/results/determinism_1435acf.txt`).
 
 ### What's Next
 
