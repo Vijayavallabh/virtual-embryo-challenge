@@ -322,3 +322,22 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   scope choices are pre-registered. The same day the captain approved how the adoption rule counts pseudo-tasks
   (`docs/PLAN.md` section 3, item 8).
 
+- 2026-11-04, exposure: the board index displayed and pasted. At 06:56 UTC `vec boards update` still got the 403
+  (Cloudflare 1010). Asked which API was blocked, the AI assistant named the board index's address without repeating
+  that it must not be opened; the captain then opened that address in a browser, which displays the file, and pasted
+  all of it into the AI assistant's session (about 07:05 UTC). It held each board's key, label, gene-list name and
+  published hash, the validation boards' full specs (as already in `boards/`), and for the four test boards no anchors
+  and no truth_cells, but their min_cells and max_cells. So the AI assistant has read the test boards' cell limits,
+  which the board-file entry says can encode a held-out stage's cell count; read against the validation boards' own
+  limits, some of them look as if they do. No value or inference from the paste is written anywhere (repository,
+  notes, commit messages, prompts to other agents, session summaries) and none is used: every use of a test board's
+  limits is code fixed before today (the count rule through approved rule 7's committed decision, the heart and
+  embryo sizes from the procedure pre-registered at 171695a before the release, the s2 rules frozen and hash-pinned on
+  2026-11-03, the pre-registered T3 rules), and the builders never print a test-board count. From now on no try
+  changes a cell number, a size or a scope on any board, or T1's composition, unless the captain rules otherwise after
+  reading this entry (decided by the AI assistant under the captain's delegation of 2026-11-02). The paste stays in
+  Claude Code's local log of this session, outside every repository; deleting it is the captain's call, and searches
+  of that log stop before 07:00 UTC on 2026-11-04. The route is otherwise unchanged: the captain saves the index and
+  the embryo test board's gene list (the one list not already in `boards/` under its published hash) with "Save link
+  as" into `~/vec-panels/`; the intake reads them only after the screened Slack and email sweep started at about
+  07:00 UTC finds no objection and no fix; nobody opens the saved files.
