@@ -36,7 +36,14 @@ nothing unresolved).
 
 ## 1. Board specs (anchors stripped in memory)
 
-Status (2026-10-31): blocked. Since 2026-10-27 `vec boards update` fails: `panels/index.json` answers HTTP 403
+Status (2026-11-04): done. `vec boards update` still answered 403 at 07:29 UTC; the screened Slack and email sweep
+(wf_2489e0c9-951, two clean audits) found no objection, no fix and no rule change since the notice; the captain
+saved the board index and the embryo test gene list, and `vec boards update --from-file` read them (634b5fd; the
+saved index deleted, `~/vec-panels` removed). D1 (ae6d6b3): every test board publishes its cell limits, gene list
+and keys, but no truth_cells or ref_cells, so A3 is unresolved. Exposures on the way (the file and the Data page
+pasted into the AI assistant's session): `docs/DATA_POLICY.md`, 2026-11-04 and 2026-11-04 (b).
+
+Earlier status (2026-10-31): blocked. Since 2026-10-27 `vec boards update` fails: `panels/index.json` answers HTTP 403
 (Cloudflare) to our scripted client (still so on 2026-10-31 at 16:52 UTC). It is not worked around (no other user
 agents or endpoints), so `boards/` still holds the P2 specs. The fourth organiser email (sent 2026-10-28; no reply by
 2026-10-31) asks whether the block is intended and how to get the test boards' specs, and says we have not tried to

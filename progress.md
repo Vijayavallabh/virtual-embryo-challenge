@@ -2,17 +2,24 @@
 
 ## Current State
 
-**Last Updated:** 2026-11-03
-**Active Feature:** feat-018 (s1 files). The captain (2026-11-03): keep every default, continue the s1 work, iterate
-without the plan's dates ("do whatever it takes to win", within the rules). Every change tried for an entry now goes
-through the tries ledger (`experiments/harness/TRIES.md`: reason, predicted metrics and fit risk written before the
-run, every try counted; adopted after a side agent's note on lucky fits). Tried 2026-11-03, none kept: depth matching
-(embryo E7, heart H3), blends (E8), herded draws (T1 T5; H4 and E9 pruned), and the embryo coupling fix (E10 pruned by
-its target-free gate, E11 vetoed on E7.25). Known risk: at test fgw's moved cloud is flattened in every draw (mirrored
-FGW partners), hedged by the s2 (E7.5's geometry). The s1 builds wait for the board-spec save (from 2026-11-04 UTC;
-`vec boards update` still answered 403 at 19:00 UTC on 2026-11-03; no organiser email; Slack not screened, the plugin
-is signed out); `experiments/builds/build_all.sh s1|s2|t3alt` then builds and checks a whole set on the DGX. The s2
-rules are frozen (`docs/S2_RULES.md`, 2026-11-03).
+**Last Updated:** 2026-11-04
+**Active Feature:** feat-018 (s1 files). 2026-11-04: runbook step 1 is done (634b5fd). `vec boards update` still
+answered 403 at 07:29 UTC; a screened Slack and email sweep (wf_2489e0c9-951, two clean audits) found no objection, no
+fix and no rule change since the notice of 2026-10-31; the captain saved the board index and the embryo test gene
+list, and `vec boards update --from-file` read them. D1 (ae6d6b3): the test boards publish their cell limits, gene
+lists and keys but no truth_cells or ref_cells, so A3 stays open. Two exposures on the way are recorded with their
+containment (`docs/DATA_POLICY.md`, 2026-11-04 and 2026-11-04 (b)): the board file and then the Data page were pasted
+into the AI assistant's session, so no try may change a cell number, a size or a scope, or T1's or T3's composition,
+unless the captain rules otherwise. The s1, s2 and T3-switch sets are building on the DGX
+(`experiments/builds/build_all.sh`, tmux `vec_builds`, at ae6d6b3); next come the server format checks
+(`vec submit FILE --board KEY --from-dgx`), then the captain's go-ahead for each official upload. An organiser
+follow-up (the exposure; the published limits and file sizes can reveal hidden counts) waits in the captain's Gmail
+drafts. Pushes no longer need asking (the captain, 2026-11-04).
+Since 2026-11-03 (the captain: keep every default, continue the s1 work, iterate without the plan's dates, "do
+whatever it takes to win", within the rules) every change tried for an entry goes through the tries ledger
+(`experiments/harness/TRIES.md`); none tried so far was kept (embryo E7, E8 and E11; heart H3; T1 T5; H4, E9 and E10
+pruned). Known risk: at test fgw's moved cloud is flattened in every draw (mirrored FGW partners), hedged by the s2
+(E7.5's geometry). The s2 rules are frozen (`docs/S2_RULES.md`, 2026-11-03).
 Earlier: feat-004 - Final-phase intake (`docs/P3_RUNBOOK.md`). Steps 2 (data) and 3 (labels) done on
 2026-10-28 (feat-003 done), and step 4 (the pre-registered runs) ran the same day at the user's go-ahead, each output
 committed before it was read. Step 1 is blocked by the 403 on the panel files (Cloudflare error code 1010, a
@@ -367,6 +374,16 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       --move-coupling`. 534 tests pass on the DGX. Tries: T1 6, embryo 9, heart 3, T3 1. Board specs: still 403;
       the mail screen found no organiser reply (the tracker showed the notice unopened on 1 Nov); Slack could not be
       screened (the connected Slack is another workspace, the Slack plugin signed out).
+
+- [x] 2026-11-04: board specs for the final phase (runbook step 1; 634b5fd), after a screened sweep of Slack (public
+      channels, our DMs and group DMs) and the organiser email from the notice to 07:22 UTC (wf_2489e0c9-951: three
+      screeners, a reconciler, two chained audits, both clean): no objection, no fix, no rule change, and no organiser
+      message anywhere since 2026-10-29. The online refresh still answered 403 at 07:29 UTC. The intake took the T1,
+      heart and T3 test gene lists from the validation boards' lists by their published sha256 and the new embryo test
+      list (497 genes) from the saved folder; the saved index was deleted and `~/vec-panels` removed. D1 (ae6d6b3): A3
+      unresolved (the P3 specs carry no truth_cells or ref_cells). Exposures 2026-11-04 and (b) recorded in
+      `docs/DATA_POLICY.md`; runbook step 1 now warns never to copy the Data page's text. The s1, s2 and t3alt builds
+      started on the DGX at ae6d6b3.
 
 ### What's Next
 
