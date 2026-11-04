@@ -215,6 +215,11 @@ Read with care:
    cells; the heart's core-focused s2 (scope; a frozen rule); stack-limited embryo geometry (z extent; a frozen
    rule); T3's composition magnitude (a frozen rule).
 
+The captain's upload gate (2026-11-05; `docs/PLAN.md` section 8): no first upload on any board until our estimated
+leaderboard total is above 209 (about 184 today), so every entry stays open to tries until then. The gate is about
+uploads only: it is never evidence for a try, and a try's row still names its own expected gain on its counting
+backtests.
+
 Once the heart and embryo s1 are uploaded, the frozen s2 rules build their s2 as s1, at s1's commit
 (`docs/S2_RULES.md`), so from then on no try reaches those two boards unless the captain changes a rule.
 

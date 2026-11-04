@@ -58,7 +58,8 @@ Full detail in `docs/DATA_POLICY.md`. In short:
   section 4.3.
 - Scores choose between candidates; they never compute one.
 - Every external source is logged in `EXTERNAL_DATA.md` before use, with the removal code committed.
-- No scored upload without the user's explicit go-ahead.
+- No scored upload without the user's explicit go-ahead, and no first upload on any board until our estimated
+  leaderboard total is above 209 (the captain's upload gate, 2026-11-05; section 8).
 
 ## 3. Design principles for every board
 
@@ -593,7 +594,33 @@ the fourth organiser email asks about it, and `boards/` still holds the P2 specs
 step 4, the pre-registered runs in order, each output committed before anything else, once the user gives the
 go-ahead; then the runbook's section 5.
 
+2026-11-05: the upload dates in the table (Nov 17-30) are superseded. Uploads wait for the captain's upload gate
+(section 8). The fallback dates of decision log 2026-11-04 (b) are now the latest times for each round once the gate
+is crossed or the captain lifts it; they send nothing on their own.
+
 ## 8. Submission policy
+
+- **The captain's upload gate (2026-11-05).** In his words: "Until our estimated score in leaderboard crosses 209,
+  don't submit our 1st submission."
+  - What it holds: the first official upload on every board (on T3 the first is its s2), so no upload goes in while
+    the gate stands. Format checks are not submissions and continue.
+  - The estimate: the overall total the leaderboard would show for our entries, T1 + mean(heart, embryo) + T3, each
+    board at the better of its two uploads (a board shows a team's best). It comes from our own committed evidence
+    only (backtests carried to the test boards, the oracle-base grids, the s2 hedge payoffs), by the outlook procedure
+    of decision log 2026-11-04 (c), and never from a test score or a leaderboard figure. It is restated with its range
+    after every kept change. Before the gate counts as crossed, an independent reviewer recomputes it from the
+    committed files, and the captain sees the number and how it was reached.
+  - The figure: 209, the leading Human total on the test boards when he set it (209.3). It stays fixed unless the
+    captain changes it, and later leaderboard reads do not move it. It gates uploads only; it is never a threshold or
+    evidence for a try, an adoption or a method choice (`docs/DATA_POLICY.md` 2026-11-05).
+  - The record: `results/upload_gate.json` (the estimate, its range and basis, the review, and whether the captain
+    has lifted the gate). The submission client refuses an official upload unless the record passes: an estimate
+    above 209 with a named review, or the captain's lift (guard "upload gate"; `src/vec/submit.py`). Only the captain
+    lifts it, by a committed change to the record.
+  - Today: about 184 (170-198), some 25 points short.
+  - If the estimate is still at or below 209 at the s1 freeze (2026-11-27), the AI assistant puts the choice to the
+    captain that day: under the gate we do not enter, and not submitting means no place, no prize and no Generality
+    Award standing.
 
 - Format checks are free and unlimited (no scored attempt), only on the phase's boards, and paused while a format check
   that the server stored awaits `vec submit resolve`. Scored uploads need the user's explicit go-ahead, and the client
@@ -986,3 +1013,41 @@ open. No organiser reply to any of the four emails as of then.
     from the captain (an item of the workflow's review). The plain summary went to him on 2026-11-04; his
     acknowledgment or overrule will be recorded here. From now on a counted run's rule also goes to the captain as a
     plain summary before the run, not only after it.
+- 2026-11-04 (e), the field again and a note on bolder backups (the AI assistant's readings under the captain's
+  delegation of 2026-11-02; he can overrule them):
+  - **The field** (a second screened read of the public leaderboards, 14:40 UTC, wf_010b5501-f2a: board and overall
+    totals, ranks and team names only; calibration, never a threshold or evidence for a try). The Human top 3 overall
+    are unchanged since 09:00 (209.3, 203.7, 202.1). Prizes go to six Human places (one 1st, two 2nd, three 3rd), and
+    the 6th Human place is at 197.1 overall; per board the 6th Human value is T1 74.8, heart 56.2, embryo 70.9 and
+    T3 66.9. 59 of the 80 ranked entries are Human; Mithril has not entered. Our outlook (about 184, 170-198; (c))
+    sits about 13 points under the 6th place and 18-25 under a top-3 place. The audit was not clean: the screening
+    agent withheld an item in the site's JavaScript and the boards' label strings before handing over
+    (`docs/DATA_POLICY.md` 2026-11-04 (i)).
+  - **Bolder backups** (a side agent's note to the captain: below a cutoff, riskier bets that average a little less can
+    raise the odds, and each board's backup is the place for them). The backups already work this way: the s2 rules were
+    chosen to maximise the expected better of the two uploads, which pays for a backup that scores unlike s1
+    (`docs/S2_RULES.md`). The one open bolder bet is the tries ledger's second-wave D3 (not the Generality decision D3):
+    T1's backup at a higher cardiomyocyte share, a frozen rule (`experiments/harness/TRIES.md`). On the committed hedge
+    grid (`experiments/s2_hedge/results/t1_grid/payoff.json`, means over 10 seeds), a backup at 75% instead of 60%
+    raises T1's better-of-two by 1.6 and 3.8 points in two of the three worlds at 75% (blood at its own or a low share;
+    about 0 at 40% blood), and lowers it by 1.7-3.4 in five of the six worlds at 45-60% (about 0 in the sixth). Beyond
+    the grid (0.8 and up) it could gain more; D3 prices that tail. A win of about 4 points does not bridge a 13-point
+    gap, and the larger tail bets are closed levers (the heart's scope, the embryo's z extent, T3's composition). So the
+    captain's goal stands (the best odds of a top-3 place, not the safest finish), and no frozen rule changes for it:
+    the odds have to come from method gains. D3 stays the captain's: it runs only on a prior he writes from legal data
+    (E10.5's own share and the legal E14.5+ sets), never from developmental knowledge between E9.5 and E13.5.
+- 2026-11-05, the captain's upload gate and the rebuild rehearsal:
+  - **The gate** (the captain's rule; recorded by the AI assistant): "Until our estimated score in leaderboard crosses
+    209, don't submit our 1st submission." Section 8 records how the estimate is made and checked, the record
+    `results/upload_gate.json` and the client's guard. The fallback dates of 2026-11-04 (b) stop being a schedule:
+    they are the latest times once the gate is crossed or lifted, and send nothing on their own. The AI assistant reads
+    "our estimated score in leaderboard" as the total the leaderboard would show for us, each board at the better of
+    its two uploads (about 184 today); the captain can say if he meant the first upload alone. Unchanged: his go-ahead
+    for every upload, the data rules, the frozen s2 and T3 rules, and the rule that a leaderboard figure is never
+    evidence for a try.
+  - **The rehearsal** ((c)'s recommendation). At 1206d60 on a clean tree, the DGX rebuilt all ten test files from
+    empty folders with `experiments/builds/build_all.sh` (s1, s2 and t3alt, about 2.3 minutes in all). Every file
+    passed `vec check`, all ten are byte-identical to the archived builds of 2026-11-04
+    (`runs/archive/builds_ae6d6b3/SHA256SUMS`), and the ten server format checks passed again from the local machine
+    (`results/submissions.csv`). A first attempt stopped at the T3 builder, which refuses to overwrite an earlier
+    output, as designed; the earlier files had been archived and verified first. It is repeated at the freeze commit.

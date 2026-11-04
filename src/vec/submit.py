@@ -12,6 +12,10 @@ scored submissions per board for the whole phase, which cannot be withdrawn. So 
   board in the ledger, a phase that takes submissions for the board's split, a readable quota and submission list, and
   room in the board's budget (below); it also refuses a file the board already holds through a format check the server
   stored, unless an official attempt of that file is still unanswered (its identical retry cannot take a second slot);
+- refuses an official upload while the captain's upload gate stands (guard "upload gate"; 2026-11-05, his words: "Until
+  our estimated score in leaderboard crosses 209, don't submit our 1st submission"; docs/PLAN.md section 8): the
+  committed record UPLOAD_GATE must hold an estimate above UPLOAD_GATE_MIN with a named independent review, or the
+  captain's lift; an unreadable or inconsistent record refuses too. Format checks never read it;
 - ties an official upload to the code that built the file (guard "build stamp"): the stamp `<file>.stamp.json` next to
   the file's real path (written with the file by vec.io.write_submission; see vec.provenance) must exist and parse (at
   most STAMP_MAX_BYTES), its sha256 must be the plan's (the bytes that will be sent), it must say the build was clean
@@ -152,6 +156,9 @@ from vec.provenance import _output_path as _output_path
 API_BASE = vec_data.API_BASE
 LEDGER = REPO_ROOT / LEDGER_PATH
 EXTERNAL_DATA = REPO_ROOT / "EXTERNAL_DATA.md"
+UPLOAD_GATE = REPO_ROOT / "results" / "upload_gate.json"  # the captain's upload gate record (docs/PLAN.md section 8)
+UPLOAD_GATE_MIN = 209.0  # the captain's figure (2026-11-05); only he changes it
+UPLOAD_GATE_MAX_BYTES = 64 * 1024
 FINAL_PHASE_LIMIT = 2  # scored submissions per board for the whole final phase
 LEDGER_FIELDS = ["utc_time", "board", "mode", "file", "upload_name", "sha256", "server_status", "server_id",
                  "http_status", "git_commit", "disclosure", "idempotency_key", "fields", "note", "detail", "origin",
@@ -913,6 +920,42 @@ def remove_stale_copies(now: float | None = None) -> list[str]:
     return gone
 
 
+
+def upload_gate_guard(path: str | Path | None = None) -> Guard:
+    """The guard "upload gate": the captain's rule of 2026-11-05, "Until our estimated score in leaderboard crosses 209,
+    don't submit our 1st submission" (docs/PLAN.md section 8). It reads the committed record (UPLOAD_GATE, JSON) and
+    passes when the captain has lifted the gate there (`lifted_by_captain` true) or when its `estimate`, our estimated
+    leaderboard total from our own evidence, is above UPLOAD_GATE_MIN and an independent `review` is named. An
+    unreadable record, a missing or non-finite estimate, or a `threshold` other than UPLOAD_GATE_MIN refuses."""
+    p = Path(path) if path is not None else UPLOAD_GATE
+    name = "upload gate"
+    try:
+        if p.stat().st_size > UPLOAD_GATE_MAX_BYTES:
+            return Guard(name, False, f"{p.name} is larger than {UPLOAD_GATE_MAX_BYTES} bytes")
+        rec = json.loads(p.read_text())
+    except (OSError, ValueError) as e:
+        return Guard(name, False, f"cannot read the captain's upload gate record {p.name} ({type(e).__name__})")
+    if not isinstance(rec, dict):
+        return Guard(name, False, f"{p.name} is not a JSON object")
+    if rec.get("lifted_by_captain") is True:
+        return Guard(name, True, f"lifted by the captain ({str(rec.get('lifted_note') or 'no note')[:120]})")
+    try:
+        threshold = float(rec.get("threshold", UPLOAD_GATE_MIN))
+        estimate = float(rec["estimate"])
+    except (KeyError, TypeError, ValueError):
+        return Guard(name, False, f"{p.name} holds no numeric estimate")
+    if threshold != UPLOAD_GATE_MIN:
+        return Guard(name, False, f"{p.name} says threshold {threshold:g}; the captain's figure is {UPLOAD_GATE_MIN:g}")
+    review = str(rec.get("review") or "").strip()
+    if not (estimate == estimate and abs(estimate) != float("inf")):
+        return Guard(name, False, f"{p.name} holds no finite estimate")
+    if estimate > UPLOAD_GATE_MIN and review:
+        return Guard(name, True, f"estimate {estimate:g} above {UPLOAD_GATE_MIN:g}, reviewed: {review[:120]}")
+    why = (f"estimate {estimate:g} is not above {UPLOAD_GATE_MIN:g}" if estimate <= UPLOAD_GATE_MIN
+           else "no independent review of the estimate is recorded")
+    return Guard(name, False, f"the captain's upload gate stands: {why} (docs/PLAN.md section 8); only the captain "
+                 "lifts it")
+
 def _dgx_provenance(dgx: DgxFile, changed: list[str] | None, local_head: str) -> Guard:
     """An official upload of a pulled file needs the DGX repo at the local HEAD and a tree that passes the clean-tree
     rule."""
@@ -1065,6 +1108,7 @@ def prepare(file: str | Path, board: str, official: bool, confirm: str | None, *
         guards.append(Guard("clean tree", not changed, "nothing uncommitted (untracked files only under results/, "
                             "runs/ and experiments/**/results/)" if not changed else
                             f"uncommitted or untracked: {', '.join(changed[:5])}{' ...' if len(changed) > 5 else ''}"))
+    guards.append(upload_gate_guard())
     guards.append(built)
     if provenance is not None:
         guards.append(provenance)

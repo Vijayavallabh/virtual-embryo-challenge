@@ -437,3 +437,15 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   same day. (g)'s rules stand: a long output is capped, or written to the scratchpad and read there. In addition, a
   workflow's last agent removes its scratch copies and worktrees once their evidence is archived, and the DGX sync
   excludes `.claude` (`docs/COMPUTE.md`).
+- 2026-11-04 (i), the second screened leaderboard read (wf_010b5501-f2a, 14:40 UTC; the captain's choice of a screening
+  agent for the leaderboards). The screening agent read the public leaderboard pages. Its audit was not clean: it
+  flagged an item in the site's JavaScript and the boards' label strings, and withheld both before handing over. The
+  main agent received a redacted table: overall and board totals, ranks and team names, nothing else. No withheld
+  item is in any file, prompt or summary, and the main agent saw no test-board limit, anchor, truth count or
+  hidden-target size. The figures serve as calibration only (`docs/PLAN.md` decision log 2026-11-04 (e)).
+- 2026-11-05, the captain's upload gate: "Until our estimated score in leaderboard crosses 209, don't submit our 1st
+  submission." Its figure is the leading Human total on the test boards in the screened read of 2026-11-04 (209.3).
+  It is the captain's own upload rule and gates official uploads only. It is not a threshold or evidence for any try,
+  adoption or method choice, which a leaderboard figure never is. The estimate it is compared with uses our own
+  committed evidence only, never a test score or a leaderboard figure, and later leaderboard reads do not move the
+  gate (`docs/PLAN.md` section 8).

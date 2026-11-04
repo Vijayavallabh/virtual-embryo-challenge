@@ -11,9 +11,13 @@ lists and keys but no truth_cells or ref_cells, so A3 stays open. Two exposures 
 board file and then the Data page were pasted into the AI assistant's session, so no try may change a cell number, a
 size or a scope on any board, or T1's or T3's composition; the captain's ruling (c) reopened T1 births by the legal
 route, and (d) T1's composition by the same route. All 10 test-board files (s1, s2 and the T3 switch) built at ae6d6b3 pass `vec check` and the server
-format check; no scored submission is used. Official uploads are on hold (the captain, 2026-11-04): none until the entry has improved
-significantly, aiming at a Human top-3 place; the first round's go-ahead was withdrawn the same day and nothing was
-sent (fallback dates: `docs/PLAN.md` decision log 2026-11-04 (b)). The captain runs every upload, since Claude Code's
+format check, and the rehearsal at 1206d60 rebuilt all ten byte-identical (`docs/PLAN.md` decision log 2026-11-05);
+no scored submission is used. Official uploads are on hold (the captain, 2026-11-04) and, since 2026-11-05, behind
+the captain's upload gate: "Until our estimated score in leaderboard crosses 209, don't submit our 1st submission"
+(`docs/PLAN.md` section 8; record `results/upload_gate.json`, enforced by the client's guard "upload gate"). Our
+estimate is about 184 (170-198), so nothing goes in until the entry gains about 25 points; nothing has been sent,
+and the fallback dates (`docs/PLAN.md` decision log 2026-11-04 (b)) are only the latest times once the gate is
+crossed or lifted. The captain runs every upload, since Claude Code's
 auto-mode classifier blocks the AI assistant from sending one. Births were designed and pruned (`TRIES.md`), and
 `docs/DATA_POLICY.md` 2026-11-04 (d) reopened T1's composition by the legal route. A screened read of the public
 leaderboards (wf_e01fe547-a9a; totals only) puts a Human top-3 place near 202-210 overall, against about 165 from
@@ -454,18 +458,29 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       on a clean tree, recorded at 5437084; `./init.sh` on the DGX at 0409d18: 573 passed). N1 holds; N2 sized M1's
       momentum (0.31 of T1 s1's cells moved); K2a not kept against K2b (+0.18, 9 of 10 seeds), so s1's Gata4 factor
       has no cross-knockout support. T3 is at 3 tries. The review's record items are handled (Current State).
+- [x] 2026-11-04 (late) and 2026-11-05: the rebuild rehearsal at 1206d60 (all ten test files rebuilt from empty
+      folders, `vec check` passed, byte-identical to `runs/archive/builds_ae6d6b3/`, ten server format checks passed;
+      the first attempt stopped at the T3 builder's overwrite refusal and its watcher was stopped). A second screened
+      leaderboard read (wf_010b5501-f2a; the 6th Human place, the last prize, at 197.1) and a side agent's note on
+      bolder backups (no frozen rule changes; D3 of the second wave stays the captain's) in `docs/PLAN.md` decision
+      log 2026-11-04 (e) and `docs/DATA_POLICY.md` 2026-11-04 (i). The captain's upload gate (209) recorded across
+      the harness (`AGENTS.md`, `docs/PLAN.md` sections 2, 7 and 8 and decision log 2026-11-05,
+      `docs/P3_RUNBOOK.md`, `experiments/harness/TRIES.md`, `docs/DATA_POLICY.md` 2026-11-05) and enforced by the
+      submission client (guard "upload gate", `results/upload_gate.json`).
 
 ### What's Next
 
 Updated 2026-11-04, after the captain's guiding principle (`AGENTS.md`; the order comes from the headroom tables in
 `experiments/harness/TRIES.md`):
 
-1. Official uploads: on hold until the entry has improved significantly (the captain, 2026-11-04; fallback dates in
-   `docs/PLAN.md` decision log 2026-11-04 (b)); each needs the captain's explicit go-ahead at the time, and the
-   captain runs the commands. Once the heart
+1. Official uploads: none until the captain's upload gate is crossed (2026-11-05: our estimated leaderboard total
+   above 209, about 184 today; `docs/PLAN.md` section 8, `results/upload_gate.json`), and each then needs his
+   explicit go-ahead at the time; the captain runs the commands. If the estimate is still at or below 209 at the s1
+   freeze (2026-11-27), the AI assistant puts the choice to him that day (no upload means no place). Once the heart
    and embryo s1 are up, the frozen s2 rules build their s2 as s1, at s1's commit (`docs/S2_RULES.md`), so no later
    try reaches those two boards unless the captain changes a rule. The AI assistant's recommendation (`docs/PLAN.md`
-   decision log 2026-11-04 (c)): keep the hold; rebuild and check all ten files at a clean commit by 13 Nov.
+   decision log 2026-11-04 (c)): keep the hold; the rebuild rehearsal is done (2026-11-04, 1206d60: ten files
+   byte-identical, `vec check` and the server format checks passed); repeat it at the freeze commit.
 2. T1: births were designed and pruned (2026-11-04; `TRIES.md`), so neither upload waits on them. T1's composition
    is reopened by the legal route (`docs/DATA_POLICY.md` 2026-11-04 (d)), the one open lever on its weakest groups
    (distribution, DE recovery, covariance); T1 direction stays open, but no backtest can judge a change to Feng's

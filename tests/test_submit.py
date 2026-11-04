@@ -224,10 +224,14 @@ def env(tmp_path, monkeypatch, api):
     monkeypatch.setattr(vs, "EXTERNAL_DATA", register)
     monkeypatch.setattr(vs, "LEDGER", tmp_path / "submissions.csv")
     monkeypatch.setattr(vs, "REPO_ROOT", repo)
+    gate = tmp_path / "upload_gate.json"  # a passing gate record, so the other guards are what these tests see
+    gate.write_text(json.dumps({"threshold": 209, "estimate": 210.5, "review": "test fixture"}))
+    monkeypatch.setattr(vs, "UPLOAD_GATE", gate)
     # wider than any path (PATH_MAX is 4096): no printed line wraps and no table cell is cropped, wherever pytest puts
     # its tmp files
     monkeypatch.setattr(cli, "console", Console(emoji=False, highlight=False, width=10_000))
-    return SimpleNamespace(tmp=tmp_path, boards=boards, repo=repo, ledger=tmp_path / "submissions.csv", api=api)
+    return SimpleNamespace(tmp=tmp_path, boards=boards, repo=repo, ledger=tmp_path / "submissions.csv", api=api,
+                           gate=gate)
 
 
 def _pred(env, name, seed, coords=False, where=None):
@@ -675,6 +679,70 @@ def test_an_official_upload_needs_the_files_build_stamp(env):
                                             "next to the file (a.h5ad.stamp.json)")
     assert "no build stamp next to the file" in _refused_for_the_stamp(f)
     assert not env.api.posts(official=True) and vs.read_ledger(env.ledger)[-1]["detail"] == "failed: build stamp"
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# The captain's upload gate (2026-11-05; docs/PLAN.md section 8)
+
+
+def test_the_upload_gate_record(tmp_path):
+    g = tmp_path / "gate.json"
+
+    def guard(rec):
+        g.write_text(rec if isinstance(rec, str) else json.dumps(rec))
+        return vs.upload_gate_guard(g)
+
+    assert vs.UPLOAD_GATE_MIN == 209.0
+    assert not guard({"threshold": 209, "estimate": 184, "review": "r"}).ok  # today's estimate
+    assert not guard({"threshold": 209, "estimate": 209, "review": "r"}).ok  # crossing means above
+    assert not guard({"threshold": 209, "estimate": 209.5, "review": " "}).ok  # no independent review named
+    assert guard({"threshold": 209, "estimate": 209.5, "review": "wf-review"}).ok
+    assert guard({"estimate": 209.5, "review": "wf-review"}).ok  # the threshold defaults to the captain's figure
+    assert not guard({"threshold": 200, "estimate": 205, "review": "r"}).ok  # only the captain changes the figure
+    assert guard({"estimate": 150, "lifted_by_captain": True, "lifted_note": "deadline"}).ok
+    assert guard({"lifted_by_captain": True}).ok
+    assert not guard({"estimate": 150, "lifted_by_captain": "yes", "review": "r"}).ok  # only a JSON true lifts it
+    for bad in ({"estimate": "NaN", "review": "r"}, {"estimate": float("inf"), "review": "r"}, {"review": "r"},
+                {"estimate": None, "review": "r"}, "not json", "[1, 2]", ""):
+        assert not guard(bad).ok, bad
+    assert not vs.upload_gate_guard(tmp_path / "missing.json").ok
+    g.write_text(" " * (vs.UPLOAD_GATE_MAX_BYTES + 1))
+    assert not vs.upload_gate_guard(g).ok
+
+
+def test_an_official_upload_waits_for_the_captains_upload_gate(env):
+    f = _checked(env, "a.h5ad", 0)
+    env.gate.write_text(json.dumps({"threshold": 209, "estimate": 184, "estimate_range": [170, 198], "review": ""}))
+    with pytest.raises(vs.SubmitRefused, match="upload gate") as e:
+        _official(f)
+    assert e.value.plan.failed == ["upload gate"]
+    assert "estimate 184 is not above 209" in _guard(e.value.plan, "upload gate").detail
+    assert not env.api.posts(official=True) and vs.read_ledger(env.ledger)[-1]["detail"] == "failed: upload gate"
+    assert vs.submit(f, T1).server_status == "format_ok"  # format checks never read the gate
+    env.gate.unlink()  # no record: refused as well
+    with pytest.raises(vs.SubmitRefused, match="upload gate"):
+        _official(f)
+    env.gate.write_text(json.dumps({"estimate": 184, "lifted_by_captain": True, "lifted_note": "the captain"}))
+    res = _official(f)  # the captain's lift
+    assert res.ok and len(env.api.posts(official=True)) == 1
+
+
+def test_the_format_check_message_names_the_upload_gate(env):
+    f = _pred(env, "a.h5ad", 0)
+    env.gate.write_text(json.dumps({"threshold": 209, "estimate": 184, "review": ""}))
+    out = CliRunner().invoke(cli.app, ["submit", str(f), "--board", T1])
+    assert out.exit_code == 0, out.output
+    assert "no official upload: the captain's upload gate stands: estimate 184 is not above 209" in out.output
+    assert "only with the captain's go-ahead, once his upload gate passes" in out.output
+
+
+def test_the_committed_upload_gate_record_holds():
+    """The repository's own record parses and, until the captain's figure is crossed or he lifts it, refuses."""
+    rec = json.loads((Path(__file__).resolve().parents[1] / "results" / "upload_gate.json").read_text())
+    assert rec["threshold"] == vs.UPLOAD_GATE_MIN == 209.0
+    assert isinstance(rec["estimate"], (int, float)) and isinstance(rec["lifted_by_captain"], bool)
+    if rec["estimate"] <= 209 and not rec["lifted_by_captain"]:
+        assert not vs.upload_gate_guard(Path(__file__).resolve().parents[1] / "results" / "upload_gate.json").ok
 
 
 def test_a_file_rebuilt_without_a_new_stamp_is_refused(env):

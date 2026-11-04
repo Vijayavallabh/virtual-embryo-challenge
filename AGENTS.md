@@ -45,8 +45,8 @@ assistant under the captain's delegation of 2026-11-02, and he can overrule them
    2026-11-04).
 7. **No safeguard loosens.** The principle opens no data, route or exception. The data rules and the post-exposure
    block (`docs/DATA_POLICY.md`, 2026-11-04, (b) to (d)), the adoption rule, the ledger's rules, the frozen s2 and T3
-   rules and the captain's go-ahead for every official upload all stand; a closed lever (`TRIES.md` rule 6) stays
-   closed whatever its headroom.
+   rules, the captain's go-ahead for every official upload and his upload gate (209, below) all stand; a closed lever
+   (`TRIES.md` rule 6) stays closed whatever its headroom.
 
 ## Startup Workflow
 
@@ -92,6 +92,14 @@ If baseline verification is failing, repair that first before adding new scope.
   make official uploads: use it only through this repo's own tools, never with community "submit" tools or ad-hoc
   scripts. Validate files with `vec check` or format-only uploads; real uploads go through the submission client
   (feat-016), which defaults to format-only.
+- **The captain's upload gate (2026-11-05).** In his words: "Until our estimated score in leaderboard crosses 209,
+  don't submit our 1st submission." No first official upload on any board (T3's first is its s2) while our
+  estimated leaderboard total is 209 or below. The estimate is the overall total the leaderboard would show for our
+  entries, each board at the better of its two uploads, from our own committed evidence by the procedure in
+  `docs/PLAN.md` section 8, recomputed by an independent reviewer before the gate counts as crossed; never from a test
+  score or a leaderboard figure. The figure stays 209 unless the captain changes it, and only he lifts the gate. It
+  gates uploads only, never a try (`docs/DATA_POLICY.md` 2026-11-05). The record is `results/upload_gate.json`; the
+  submission client refuses an official upload while it does not pass (guard "upload gate").
 - **Heavy compute runs on the DGX** (`PrakashDGX_H2`, workspace `~/v/virtual-embryo-challenge`), never on the shared
   local machine. See `docs/COMPUTE.md`.
 - **uv only.** Use `uv add`, `uv sync`, `uv run`. No pip installs into the env, no conda.

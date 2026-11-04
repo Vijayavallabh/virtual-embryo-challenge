@@ -443,7 +443,11 @@ def _print_result(res: vec_submit.Result) -> None:
         if res.ok:
             console.print(f"[green]server format check passed[/]{detail}")
             src, dgx = (shlex.quote(p.remote), " --from-dgx") if p.remote else (str(p.file), "")
-            console.print(f"official upload (only with the user's go-ahead): vec submit {escape(src)} --board "
+            gate = vec_submit.upload_gate_guard()
+            if not gate.ok:  # the captain's upload gate (docs/PLAN.md section 8)
+                console.print(f"[yellow]no official upload: {escape(gate.detail)}[/]")
+            console.print(f"official upload (only with the captain's go-ahead, once his upload gate passes): vec "
+                          f"submit {escape(src)} --board "
                           f"{escape(p.board)}{dgx} --official --confirm {p.sha256[:12]} --disclose "
                           f"{escape(','.join(p.disclosure)) or '<ids from EXTERNAL_DATA.md>'}")
         else:
