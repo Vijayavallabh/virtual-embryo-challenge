@@ -45,6 +45,7 @@ from dataclasses import asdict, dataclass, field, replace
 from fnmatch import fnmatch
 from functools import lru_cache
 from pathlib import Path
+from types import SimpleNamespace
 
 import anndata as ad
 import h5py
@@ -53,9 +54,9 @@ import yaml
 
 from vec import t2_build
 from vec.adoption import SEEDS, keep_change
-from vec.boards import RANKED_METRICS, REPO_ROOT, VALIDATION_BOARDS, Board, load_boards
+from vec.boards import GROUPS, RANKED_METRICS, REPO_ROOT, VALIDATION_BOARDS, Board, load_boards
 from vec.core import draw_balanced, herd_rows
-from vec.evaluate import SUBSAMPLE_FRAC, Stage, score_board, subsample
+from vec.evaluate import SUBSAMPLE_FRAC, Stage, score_board, subsample, t3_response_detail, working_copies
 from vec.io import COORD_KEY, check_submission, dense, make_submission, read_stage, write_submission
 from vec.prep import load_stage
 
@@ -676,6 +677,158 @@ def _b0_applies(t: PseudoTask) -> bool:
     return t.task == "T2" and t.kind == "interp" and {"before", "after"} <= set(t.inputs)
 
 
+# ------------------------------------------------------------------------------------------------ T3 tries K2a and K2b
+# Fixed in their experiments/harness/TRIES.md rows (registered 2026-11-04 at 945de7d, before any run): s1's lead
+# component, the pooled Gata4 factor of the pre-registered T3 run, on the Gata4 -> Mab21l2 fold's WT E9.5 (K2a,
+# t3_factor_xko), and the same factor permuted across genes within deciles of WT E8.75 mean expression (K2b,
+# t3_factor_xko_perm, the control). Built with the T3 head's own code, experiments/t3_decomp (t3_decompose.py is
+# hash-pinned by build_submission.py; rules.yaml holds every setting the factor and the build read).
+T3_DIR = REPO_ROOT / "experiments" / "t3_decomp"
+K2_FACTOR_FILES = ("T3/E8.75_gata4_ko_1.h5ad", "T3/E8.75_gata4_ko_2.h5ad", "T2/E8.75.h5ad")  # ko_train(_2), wt_train
+K2_FACTOR_PRESET = "gata4"  # rules.yaml preset of s1's factor: the replicates against WT E8.75, its label mode
+K2_REFERENCE_PRESET = "mab21l2"  # rules.yaml preset whose reference is WT E9.5, the fold's WT: its label mode
+K2_PERM_SEED = 20261104  # K2b: one permutation, this seed (its row)
+K2_PERM_BINS = 10  # K2b: deciles
+K2_STREAM = "t3_factor_xko"  # both arms build from this stream: the same cells drawn, then each arm's factor applied
+_K2_PREP: dict = {}
+
+
+def _t3_head():
+    """experiments/t3_decomp/build_submission.py, and through it (`.t3d`) the pre-registered t3_decompose.py, imported
+    as tests/test_hidden_counts.py imports them."""
+    if str(T3_DIR) not in sys.path:
+        sys.path.insert(0, str(T3_DIR))
+    import build_submission
+
+    return build_submission
+
+
+def _t3_vocab(t3d, a: ad.AnnData, rules: Mapping) -> tuple[object, np.ndarray]:
+    """(vocabulary, each cell's label index) of a pool labelled by t3_decompose.add_label_column, as
+    build_submission.load_reference makes them (every label a class)."""
+    labels = np.array(sorted(set(a.obs["t3_label"].astype(str))))
+    V = t3d.make_vocab(a, "t3_label", SimpleNamespace(classes=labels), rules)
+    pos = {lab: i for i, lab in enumerate(V.labels)}
+    return V, np.array([pos[lab] for lab in a.obs["t3_label"].astype(str)])
+
+
+def t3_gata4_factor(wt: ad.AnnData, reps: list[ad.AnnData], rules: Mapping, n_jobs: int = 1) -> np.ndarray:
+    """Try K2a's factor, s1's lead component: the pooled non-Mesp1 Gata4 factor as the pre-registered T3 run computes
+    it for s1 (t3_decompose.build_context, then submission_parameters, which writes the factor file
+    build_submission.py loads for s1). WT E8.75's own labels in the gata4 preset's label mode; each replicate's cells
+    (littermate wild types split off) called into that vocabulary by the frozen harmoniser, depth-matched as there;
+    both replicates' cells pooled; t3_decompose.gene_factor over the strict non-Mesp1 labels with at least min_cells
+    cells on both sides, weighted by the WT shares (rules.yaml components.factor: eps 1e-5, clip 0.25-4, 20 cells).
+    wt and reps as the harness loads them (vec.prep.load_stage(drop_duplicates=True)), replicates in file order; none
+    of them is modified."""
+    t3d = _t3_head().t3d
+    hp, fc = rules["harmonisation"], rules["components"]["factor"]
+    w = _shallow(wt)
+    t3d.add_label_column(w, rules["presets"][K2_FACTOR_PRESET]["label_mode"])
+    V, wlab = _t3_vocab(t3d, w, rules)
+    Cw = t3d.dense_counts(w)
+    harm = t3d.Harmoniser(w, "t3_label", t3d.label_groups(w, "t3_label"), hp, n_jobs)
+    Cs, labs = [], []
+    for a in reps:
+        a = _shallow(a)
+        littermates, _, _ = t3d.littermate_split(a)
+        if littermates.any():
+            a = a[~littermates].copy()
+        calls, _ = harm.calls(a, seed=hp["seed"])
+        Cs.append(t3d.dense_counts(a))
+        labs.append(t3d.calls_to_index(V, calls))
+    C, lab = np.vstack(Cs), np.concatenate(labs)
+    ok = ((np.bincount(lab[lab >= 0], minlength=V.L) >= fc["min_cells"])
+          & (np.bincount(wlab, minlength=V.L) >= fc["min_cells"]))
+    phi, _ = t3d.gene_factor(t3d.props_type_means(C, lab, V.L), t3d.props_type_means(Cw, wlab, V.L), V.p, ok & V.nm,
+                             fc["eps"], tuple(fc["clip"]))
+    return phi
+
+
+def t3_mean_expression(a: ad.AnnData) -> np.ndarray:
+    """K2b's decile basis: each gene's mean released expression (log1p CP10k, `.X`) over a pool's cells, in float64."""
+    return dense(a.X).astype(np.float64).mean(0)
+
+
+def t3_decile_permutation(phi, basis, seed: int = K2_PERM_SEED, bins: int = K2_PERM_BINS) -> np.ndarray:
+    """Try K2b's factor: phi permuted across genes within bins of `basis`. Genes ranked by basis (a stable sort, so
+    ties keep panel order) are cut into `bins` runs of consecutive ranks (sizes differing by at most one); one
+    generator, default_rng(seed), permutes each run's values in turn, from the lowest basis up. Every gene gets a value
+    of its own bin, and each bin keeps its values."""
+    phi = np.asarray(phi, dtype=np.float64)
+    rng = np.random.default_rng(seed)
+    out = phi.copy()
+    for genes in np.array_split(np.argsort(np.asarray(basis, dtype=np.float64), kind="stable"), bins):
+        out[genes] = phi[genes[rng.permutation(len(genes))]]
+    return out
+
+
+def t3_reference(pool: ad.AnnData, preset: str, rules: Mapping):
+    """A WT pool in t3_decompose's form, as build_submission.load_reference prepares a file without stage mixing: the
+    preset's label mode, the vocabulary, int counts and the kNN-smoothed proportions that are the Poisson top-up
+    profile (rules.yaml components.smoothing, note 5), from a pool the harness loaded."""
+    bs = _t3_head()
+    w = _shallow(pool)
+    bs.t3d.add_label_column(w, rules["presets"][preset]["label_mode"])
+    V, wlab = _t3_vocab(bs.t3d, w, rules)
+    Cw = bs.t3d.dense_counts(w)
+    sm = rules["components"]["smoothing"]
+    return bs.Reference(preset=preset, rules=rules, genes=list(w.var_names), V=V,
+                        pool=bs.t3d.Pool(Cw, wlab, bs.t3d.smoothed_props(Cw, sm["n_pcs"], sm["k"]), V.L),
+                        coords=np.asarray(w.obsm[COORD_KEY], dtype=np.float64)[:, :3])
+
+
+def _k2_prepared(ctx: BuildContext) -> dict:
+    """K2a's factor, K2b's permuted factor and the fold's WT in t3_decompose's form. None depends on the seed, and the
+    harness hands every seed the same input objects, so they are made once per loaded fold."""
+    ref_role = ctx.task.reference_role
+    objs = tuple(ctx.inputs[r] for r in ("wt_train", "ko_train", "ko_train_2", ref_role))
+    hit = _K2_PREP.get("fold")
+    if hit is None or any(a is not b for a, b in zip(hit["inputs"], objs, strict=True)):
+        rules = _t3_head().load_rules()
+        wt, pool = ctx.inputs["wt_train"], ctx.inputs[ref_role]
+        if list(wt.var_names) != list(pool.var_names):
+            raise ValueError(f"{ctx.task.key}: the factor's WT and the reference hold different genes")
+        phi = t3_gata4_factor(wt, [ctx.inputs["ko_train"], ctx.inputs["ko_train_2"]], rules)
+        _K2_PREP.clear()
+        hit = _K2_PREP["fold"] = {"inputs": objs, "phi": phi,
+                                  "phi_perm": t3_decile_permutation(phi, t3_mean_expression(wt)),
+                                  "ref": t3_reference(pool, K2_REFERENCE_PRESET, rules)}
+    return hit
+
+
+def _t3_factor_xko(ctx: BuildContext, permuted: bool = False) -> Stage:
+    """Tries K2a (t3_factor_xko) and K2b (permuted: t3_factor_xko_perm): the factor, at exponent 1, on the reference
+    WT's real cells at its own composition, built as the T3 s1 build builds: build_submission.construct, i.e.
+    t3_decompose.build (alloc and draw_rows per label, then apply_gene_factor with the kNN-smoothed top-up profile; no
+    depth ratio, no composition term, no stage mixing), then build_submission.assemble (panel columns, random row
+    order, each cell at its source cell's position). Never vec.core.apply_factors, whose top-up is from each cell's
+    own counts."""
+    bs = _t3_head()
+    prep = _k2_prepared(ctx)
+    ref, pool = prep["ref"], ctx.inputs[ctx.task.reference_role]
+    built = bs.construct(ref, count_for(ctx.board, pool.n_obs), bs.t3d.stable_rng(ctx.seed, K2_STREAM), f=ref.V.p,
+                         phi=prep["phi_perm" if permuted else "phi"])
+    X, coords, _ = bs.assemble(ref, built, list(ctx.board.genes), bs.t3d.stable_rng(ctx.seed, f"{K2_STREAM}:assemble"))
+    return finish(ctx, pool, X, coords if ctx.board.needs_coords else None)
+
+
+def _t3_factor_xko_perm(ctx: BuildContext) -> Stage:
+    return _t3_factor_xko(ctx, permuted=True)
+
+
+def _k2_applies(t: PseudoTask) -> bool:
+    """K2a and K2b run where the factor's own inputs are the task's: both Gata4 replicates and their matched WT E8.75
+    (T3/Gata4->Mab21l2 in configs/pseudo_tasks.yaml)."""
+    return t.task == "T3" and tuple(t.inputs.get(r) for r in ("ko_train", "ko_train_2", "wt_train")) == K2_FACTOR_FILES
+
+
+K2_PARAMS = {"factor": "s1's lead component: Gata4 replicates pooled against WT E8.75, strict non-Mesp1 labels "
+                       "(t3_decompose harmoniser calls and gene_factor; rules.yaml components.factor), exponent 1",
+             "build": "build_submission.construct and assemble (t3_decompose.build: apply_gene_factor with the "
+                      "kNN-smoothed top-up profile of rules.yaml note 5); no depth, no composition",
+             "reference_labels": f"rules.yaml preset {K2_REFERENCE_PRESET}", "stream": K2_STREAM}
+
 _ANY = (frozenset(),)
 CANDIDATES = {
     FLOOR: Candidate(FLOOR, frozenset(TASKS), _ANY, None,
@@ -748,6 +901,16 @@ CANDIDATES = {
                                    "depth, extrapolated at B0's damping (half the latest log rate per day over the "
                                    "horizon)", "damping": B0_DAMPING, "rule": t2_build.DEPTH_EXTRAP_RULE,
                            "scope": "whole"}, requires=_t2_extrap_with_start),
+    # T3 tries K2a and K2b (experiments/harness/TRIES.md, registered before their run): s1's Gata4 factor on the
+    # Gata4 -> Mab21l2 fold, and its permuted control
+    "t3_factor_xko": Candidate("t3_factor_xko", frozenset({"T3"}), (), _t3_factor_xko,
+                               {"what": "try K2a: s1's pooled Gata4 factor on the reference WT's real cells at its "
+                                        "own composition", **K2_PARAMS}, requires=_k2_applies),
+    "t3_factor_xko_perm": Candidate("t3_factor_xko_perm", frozenset({"T3"}), (), _t3_factor_xko_perm,
+                                    {"what": "try K2b: K2a with its factor permuted across genes within deciles of WT "
+                                             "E8.75 mean expression (log1p CP10k over the deduplicated cells)",
+                                     **K2_PARAMS, "permutation_seed": K2_PERM_SEED, "bins": K2_PERM_BINS},
+                                    requires=_k2_applies),
 }
 
 
@@ -830,7 +993,9 @@ def score_seeds(t: PseudoTask, board: Board, target: Stage, ref: Stage, inputs: 
                 root: Path = REPO_ROOT, data_dir: Path = DATA_DIR) -> list[dict]:
     """Per seed: the floor (checked to score 50 with complete anchors) and every applicable candidate, all against
     one seed's anchors; candidates build inside the read guard. Each row keeps the full metric panel per candidate
-    (`metrics`, de_score's audit trail included), so a result can be explained without rebuilding it."""
+    (`metrics`, de_score's audit trail included) and its group skills (`groups`), so a result can be explained without
+    rebuilding it; on T3 also what the response metrics are made of (`t3`: vec.evaluate.t3_response_detail, the
+    severity gate and de_direction's per-gene terms, for the fit checks of tries K2a and K2b)."""
     view, cboard = TaskView.of(t), _candidate_board(board)
     given: dict[str, dict[str, object]] = {}
     for c in candidates:
@@ -840,15 +1005,26 @@ def score_seeds(t: PseudoTask, board: Board, target: Stage, ref: Stage, inputs: 
     rows = []
     for i, s in enumerate(seeds):
         t0 = time.time()
-        f = score_board(board, subsample(ref, SUBSAMPLE_FRAC, s), target, ref, seed=s, anchors="computed",
-                        build=build, protocol=PROTOCOL)
+        floor_pred = subsample(ref, SUBSAMPLE_FRAC, s)
+        f = score_board(board, floor_pred, target, ref, seed=s, anchors="computed", build=build, protocol=PROTOCOL)
         missing = sorted(set(RANKED_METRICS[t.task]) - set(f.anchors))
         if abs(f.score - 50.0) > 1e-9 or f.extras["inverted_anchors"] or missing:
             raise ValueError(f"{t.key} seed {s}: the floor scores {f.score} (inverted {f.extras['inverted_anchors']},"
                              f" missing anchors {missing})")
         row = {"seed": s, "build_seed": BUILD_SEED_OFFSET + s, "scores": {FLOOR: f.score}, "skills": {FLOOR: f.skills},
                "metrics": {FLOOR: dict(f.metrics)}, "n_cells": {FLOOR: int(round(ref.n * SUBSAMPLE_FRAC))},
-               "anchors": f.anchors, "reads": {}}
+               "groups": {FLOOR: dict(f.group_skill)}, "anchors": f.anchors, "reads": {}}
+        detail = None
+        if t.task == "T3":
+            from common.core_metrics import de_genes
+
+            truth, _, ref_w = working_copies(target, ref, s, SUBSAMPLE_FRAC, PROTOCOL)
+            de = de_genes(truth.X, ref_w.X)
+
+            def detail(pred, metrics, truth=truth, ref_w=ref_w, de=de):
+                return t3_response_detail(pred.X, truth.X, ref_w.X, de, metrics)
+
+            row["t3"] = {FLOOR: detail(floor_pred, f.metrics)}
         cross_checked = False
         for c in candidates:
             if c.name == FLOOR or not c.applies(t):
@@ -865,7 +1041,9 @@ def score_seeds(t: PseudoTask, board: Board, target: Stage, ref: Stage, inputs: 
                     raise ValueError(f"{t.key} seed {s}: shared anchors give {r.score}, fresh ones {full.score}")
                 cross_checked = True
             row["scores"][c.name], row["skills"][c.name], row["n_cells"][c.name] = r.score, r.skills, pred.n
-            row["metrics"][c.name] = dict(r.metrics)
+            row["metrics"][c.name], row["groups"][c.name] = dict(r.metrics), dict(r.group_skill)
+            if detail is not None:
+                row["t3"][c.name] = detail(pred, r.metrics)
         row["seconds"] = round(time.time() - t0, 1)
         rows.append(row)
         if log:
@@ -1051,3 +1229,32 @@ def decide(results: list[dict], configured: list[PseudoTask], base: str, change:
     return {"base": base, "change": change, "counted": counted, "excluded": excluded,
             "configured": [t.key for t in configured],
             "decided_on": f"{len(counted)} of {len(configured)} configured pseudo-tasks", **out}
+
+
+def t3_fit_checks(result: dict, base: str, change: str, top: int = 10) -> dict | None:
+    """What the column "A fit, not an effect, if" of tries K2a and K2b (experiments/harness/TRIES.md) reads, for
+    `change` against `base` on one T3 pseudo-task result, over the seeds whose rows hold both (None if none does):
+      group_margins: per scored group (vec.boards.GROUPS), the mean over seeds of 100 x weight x (change's group skill
+        - base's); they sum to the mean score margin (score_margin);
+      de_direction_margin: the mean over seeds of the difference of de_direction's per-gene terms
+        (vec.evaluate.t3_response_detail), summed over genes; top_share: the share of it carried by the `top` genes
+        with the largest seed-mean differences (None unless the margin is positive);
+      severity_gate_differs: the seeds where the severity gate (scored as the worst value: an r2 or beta gate, or no
+        response) holds for one of the two only; severity_states: both states per seed;
+      matches_panel: whether every detail used reproduced its candidate's panel values."""
+    rows = [r for r in result["rows"] if {base, change} <= set(r.get("t3", {})) & set(r.get("groups", {}))]
+    if not rows:
+        return None
+    margins = {name: float(np.mean([100.0 * w * (r["groups"][change][name] - r["groups"][base][name]) for r in rows]))
+               for name, w, _ in GROUPS["T3"]}
+    d = np.mean([np.asarray(r["t3"][change]["de_direction_terms"]) - np.asarray(r["t3"][base]["de_direction_terms"])
+                 for r in rows], axis=0)
+    margin = float(d.sum())
+    sev = {r["seed"]: {n: r["t3"][n]["severity"] for n in (base, change)} for r in rows}
+    return {"base": base, "change": change, "seeds": sorted(sev), "group_margins": margins,
+            "score_margin": float(sum(margins.values())), "de_direction_margin": margin, "top": top,
+            "top_share": float(np.sort(d)[::-1][:top].sum() / margin) if margin > 0 else None,
+            "severity_gate_differs": [s for s, v in sev.items() if v[base]["gated"] != v[change]["gated"]],
+            "severity_states": {s: {n: v[n]["state"] for n in v} for s, v in sev.items()},
+            "matches_panel": all(all(r["t3"][n].get("matches_panel", {"none": False}).values())
+                                 for r in rows for n in (base, change))}
