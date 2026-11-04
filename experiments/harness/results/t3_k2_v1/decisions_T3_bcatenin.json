@@ -1,0 +1,134 @@
+{
+ "board": "T3:bcatenin",
+ "runs": "/mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/runs/harness/t3_k2_v1",
+ "decisions": [
+  {
+   "base": "t3_factor_xko_perm",
+   "change": "t3_factor_xko",
+   "counted": [
+    "T3/Gata4->Mab21l2"
+   ],
+   "excluded": {
+    "T3/Gata4rep1->rep2": "replicate fold",
+    "T3/Mab21l2->Gata4rep2": "change does not apply"
+   },
+   "configured": [
+    "T3/Gata4rep1->rep2",
+    "T3/Mab21l2->Gata4rep2",
+    "T3/Gata4->Mab21l2"
+   ],
+   "decided_on": "1 of 3 configured pseudo-tasks",
+   "keep": false,
+   "reason": "passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 1 pseudo-tasks; needs 1",
+   "tasks": {
+    "T3/Gata4->Mab21l2": {
+     "complete": true,
+     "mean_gain": 0.18397095480217515,
+     "seeds_ahead": 9,
+     "passes": false,
+     "vetoes": false
+    }
+   },
+   "need": 1,
+   "passed": 0,
+   "fit_checks": {
+    "T3/Gata4->Mab21l2": {
+     "base": "t3_factor_xko_perm",
+     "change": "t3_factor_xko",
+     "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "group_margins": {
+      "response_identity": 0.2734107319380213,
+      "response_direction": 0.38216923551169624,
+      "response_magnitude": -0.5304221041093624,
+      "mutant_state": 0.05881309146182068
+     },
+     "score_margin": 0.1839709548021758,
+     "de_direction_margin": 0.06076537846461835,
+     "top": 10,
+     "top_share": 1.5901553260857808,
+     "severity_gate_differs": [
+      3
+     ],
+     "severity_states": {
+      "0": {
+       "t3_factor_xko_perm": "r2_gate",
+       "t3_factor_xko": "r2_gate"
+      },
+      "1": {
+       "t3_factor_xko_perm": "r2_gate",
+       "t3_factor_xko": "r2_gate"
+      },
+      "2": {
+       "t3_factor_xko_perm": "r2_gate",
+       "t3_factor_xko": "r2_gate"
+      },
+      "3": {
+       "t3_factor_xko_perm": "scored",
+       "t3_factor_xko": "r2_gate"
+      },
+      "4": {
+       "t3_factor_xko_perm": "r2_gate",
+       "t3_factor_xko": "r2_gate"
+      },
+      "5": {
+       "t3_factor_xko_perm": "r2_gate",
+       "t3_factor_xko": "r2_gate"
+      },
+      "6": {
+       "t3_factor_xko_perm": "r2_gate",
+       "t3_factor_xko": "r2_gate"
+      },
+      "7": {
+       "t3_factor_xko_perm": "r2_gate",
+       "t3_factor_xko": "r2_gate"
+      },
+      "8": {
+       "t3_factor_xko_perm": "r2_gate",
+       "t3_factor_xko": "r2_gate"
+      },
+      "9": {
+       "t3_factor_xko_perm": "r2_gate",
+       "t3_factor_xko": "r2_gate"
+      }
+     },
+     "matches_panel": true
+    }
+   }
+  }
+ ],
+ "summaries": {
+  "T3/Gata4->Mab21l2": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    50.73793515651697,
+    2.020488517158762
+   ],
+   "shift_transfer": [
+    47.04904348521636,
+    0.6243949311451376
+   ],
+   "t3_factor_xko": [
+    50.084296911174725,
+    0.4690720345284868
+   ],
+   "t3_factor_xko_perm": [
+    49.900325956372555,
+    1.7994072181570815
+   ]
+  }
+ }
+}

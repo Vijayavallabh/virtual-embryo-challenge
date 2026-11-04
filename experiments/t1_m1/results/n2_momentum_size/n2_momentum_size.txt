@@ -1,0 +1,13 @@
+N2 (experiments/harness/TRIES.md; T1, a diagnostic, not a try): the size of M1's momentum on cells without a Feng group (target-free: no target, no score, no board, no built file, no cell count)
+Feng groups with a direction: CM, Endocardium, Endothelium, Epicardium; momentum categories: blood, endocardium
+Factor per category: log f = 0.5 x [log(m_E10.5 + 0.5) - log(m_E9.5 + 0.5)], clip none, f = 1 on 23 held-flat genes, keep_depth True; s2: cardiomyocytes at 0.60 of heart cells (docs/S2_RULES.md)
+blood (shifted): moved labels Blood, Macrophage (1.00 of the category at E10.5); on a Feng direction: none; label mix E9.5 Blood 1.00; E10.5 Blood 0.92, Macrophage 0.08
+  genes expressed in the moved E10.5 cells: 21,020 genes (17 held flat); |f - 1| > 0.10: 2,375 (11.3%; 796 up, 1,579 down); > 0.25: 218 (1.0%; 115 up, 103 down); mean |log f| 0.038; the cells' CP10k on those genes 0.56 and 0.23
+  keep-depth constant s: median 0.91 (10% 0.86, 90% 0.98); at the median, |f s - 1| > 0.10: 7,443 genes (178 up, 7,265 down), > 0.25: 494 (26 up, 468 down)
+  share of cells: s1 0.24 in the category, 0.24 moved by the momentum; s2 0.24 and 0.24
+endocardium (shifted): moved labels Early VIC (0.20 of the category at E10.5); on a Feng direction: EndoMT Endocardium, Endocardium-1, Endocardium-2; label mix E9.5 Endocardium 1.00; E10.5 Early VIC 0.20, EndoMT Endocardium 0.22, Endocardium-1 0.31, Endocardium-2 0.27
+  genes expressed in the moved E10.5 cells: 20,622 genes (15 held flat); |f - 1| > 0.10: 1,370 (6.6%; 888 up, 482 down); > 0.25: 186 (0.9%; 181 up, 5 down); mean |log f| 0.029; the cells' CP10k on those genes 0.26 and 0.07
+  keep-depth constant s: median 0.96 (10% 0.94, 90% 0.98); at the median, |f s - 1| > 0.10: 1,785 genes (500 up, 1,285 down), > 0.25: 144 (131 up, 13 down)
+  genes expressed in any of the category's E10.5 cells: 24,020 genes (16 held flat); |f - 1| > 0.10: 1,371 (5.7%; 889 up, 482 down); > 0.25: 186 (0.8%; 181 up, 5 down); mean |log f| 0.025; the cells' CP10k on those genes 0.24 and 0.05
+  share of cells: s1 0.33 in the category, 0.07 moved by the momentum; s2 0.18 and 0.04
+Moved by the momentum, all categories: s1 0.31 of its cells, s2 0.28

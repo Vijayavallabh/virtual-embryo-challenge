@@ -1,0 +1,236 @@
+{
+ "board": "T3:bcatenin",
+ "runs": "/mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/runs/harness/t3_k2_v1",
+ "decisions": [
+  {
+   "base": "shift_transfer",
+   "change": "t3_factor_xko",
+   "counted": [
+    "T3/Gata4->Mab21l2"
+   ],
+   "excluded": {
+    "T3/Gata4rep1->rep2": "replicate fold",
+    "T3/Mab21l2->Gata4rep2": "change does not apply"
+   },
+   "configured": [
+    "T3/Gata4rep1->rep2",
+    "T3/Mab21l2->Gata4rep2",
+    "T3/Gata4->Mab21l2"
+   ],
+   "decided_on": "1 of 3 configured pseudo-tasks",
+   "keep": true,
+   "reason": "passes on 1 of 1 pseudo-tasks (needs 1) and loses on none",
+   "tasks": {
+    "T3/Gata4->Mab21l2": {
+     "complete": true,
+     "mean_gain": 3.0352534259583748,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    }
+   },
+   "need": 1,
+   "passed": 1,
+   "fit_checks": {
+    "T3/Gata4->Mab21l2": {
+     "base": "shift_transfer",
+     "change": "t3_factor_xko",
+     "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "group_margins": {
+      "response_identity": 0.7020069946664383,
+      "response_direction": 0.3683103627169353,
+      "response_magnitude": 0.0,
+      "mutant_state": 1.9649360685750028
+     },
+     "score_margin": 3.0352534259583765,
+     "de_direction_margin": 0.05939471361813294,
+     "top": 10,
+     "top_share": 1.126598812746992,
+     "severity_gate_differs": [],
+     "severity_states": {
+      "0": {
+       "shift_transfer": "beta_gate",
+       "t3_factor_xko": "r2_gate"
+      },
+      "1": {
+       "shift_transfer": "beta_gate",
+       "t3_factor_xko": "r2_gate"
+      },
+      "2": {
+       "shift_transfer": "beta_gate",
+       "t3_factor_xko": "r2_gate"
+      },
+      "3": {
+       "shift_transfer": "beta_gate",
+       "t3_factor_xko": "r2_gate"
+      },
+      "4": {
+       "shift_transfer": "beta_gate",
+       "t3_factor_xko": "r2_gate"
+      },
+      "5": {
+       "shift_transfer": "beta_gate",
+       "t3_factor_xko": "r2_gate"
+      },
+      "6": {
+       "shift_transfer": "beta_gate",
+       "t3_factor_xko": "r2_gate"
+      },
+      "7": {
+       "shift_transfer": "beta_gate",
+       "t3_factor_xko": "r2_gate"
+      },
+      "8": {
+       "shift_transfer": "beta_gate",
+       "t3_factor_xko": "r2_gate"
+      },
+      "9": {
+       "shift_transfer": "beta_gate",
+       "t3_factor_xko": "r2_gate"
+      }
+     },
+     "matches_panel": true
+    }
+   }
+  },
+  {
+   "base": "shift_transfer",
+   "change": "t3_factor_xko_perm",
+   "counted": [
+    "T3/Gata4->Mab21l2"
+   ],
+   "excluded": {
+    "T3/Gata4rep1->rep2": "replicate fold",
+    "T3/Mab21l2->Gata4rep2": "change does not apply"
+   },
+   "configured": [
+    "T3/Gata4rep1->rep2",
+    "T3/Mab21l2->Gata4rep2",
+    "T3/Gata4->Mab21l2"
+   ],
+   "decided_on": "1 of 3 configured pseudo-tasks",
+   "keep": true,
+   "reason": "passes on 1 of 1 pseudo-tasks (needs 1) and loses on none",
+   "tasks": {
+    "T3/Gata4->Mab21l2": {
+     "complete": true,
+     "mean_gain": 2.8512824711561997,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    }
+   },
+   "need": 1,
+   "passed": 1,
+   "fit_checks": {
+    "T3/Gata4->Mab21l2": {
+     "base": "shift_transfer",
+     "change": "t3_factor_xko_perm",
+     "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "group_margins": {
+      "response_identity": 0.4285962627284171,
+      "response_direction": -0.013858872794760974,
+      "response_magnitude": 0.5304221041093624,
+      "mutant_state": 1.9061229771131825
+     },
+     "score_margin": 2.851282471156201,
+     "de_direction_margin": -0.0013706648464854101,
+     "top": 10,
+     "top_share": null,
+     "severity_gate_differs": [
+      3
+     ],
+     "severity_states": {
+      "0": {
+       "shift_transfer": "beta_gate",
+       "t3_factor_xko_perm": "r2_gate"
+      },
+      "1": {
+       "shift_transfer": "beta_gate",
+       "t3_factor_xko_perm": "r2_gate"
+      },
+      "2": {
+       "shift_transfer": "beta_gate",
+       "t3_factor_xko_perm": "r2_gate"
+      },
+      "3": {
+       "shift_transfer": "beta_gate",
+       "t3_factor_xko_perm": "scored"
+      },
+      "4": {
+       "shift_transfer": "beta_gate",
+       "t3_factor_xko_perm": "r2_gate"
+      },
+      "5": {
+       "shift_transfer": "beta_gate",
+       "t3_factor_xko_perm": "r2_gate"
+      },
+      "6": {
+       "shift_transfer": "beta_gate",
+       "t3_factor_xko_perm": "r2_gate"
+      },
+      "7": {
+       "shift_transfer": "beta_gate",
+       "t3_factor_xko_perm": "r2_gate"
+      },
+      "8": {
+       "shift_transfer": "beta_gate",
+       "t3_factor_xko_perm": "r2_gate"
+      },
+      "9": {
+       "shift_transfer": "beta_gate",
+       "t3_factor_xko_perm": "r2_gate"
+      }
+     },
+     "matches_panel": true
+    }
+   }
+  }
+ ],
+ "summaries": {
+  "T3/Gata4->Mab21l2": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    50.73793515651697,
+    2.020488517158762
+   ],
+   "shift_transfer": [
+    47.04904348521636,
+    0.6243949311451376
+   ],
+   "t3_factor_xko": [
+    50.084296911174725,
+    0.4690720345284868
+   ],
+   "t3_factor_xko_perm": [
+    49.900325956372555,
+    1.7994072181570815
+   ]
+  }
+ }
+}

@@ -1,0 +1,231 @@
+{
+ "label": "the size of M1's momentum on cells without a Feng group (target-free: no target, no score, no board, no built file, no cell count)",
+ "inputs": {
+  "start": "T1/E9.5_RNA.h5ad",
+  "reference": "T1/E10.5_RNA.h5ad"
+ },
+ "settings": {
+  "damping": 0.5,
+  "eps": 0.5,
+  "max_abs_log_factor": null,
+  "keep_depth": true,
+  "standin_momentum": false,
+  "held_flat_genes": 23,
+  "thresholds": [
+   0.1,
+   0.25
+  ],
+  "s2_cm_share": 0.6,
+  "s2_rules_sha256": "d170704284640f093afd5039143f6e86d1ce9a4c10ab5351e682f3337afe17c6"
+ },
+ "feng_groups_with_direction": [
+  "CM",
+  "Endocardium",
+  "Endothelium",
+  "Epicardium"
+ ],
+ "label_groups": {
+  "AVC-CM": "CM",
+  "BEC": "Endothelium",
+  "Blood": "Blood",
+  "Early VIC": "other:Early VIC",
+  "EndoMT Endocardium": "Endocardium",
+  "Endocardium-1": "Endocardium",
+  "Endocardium-2": "Endocardium",
+  "Epicardium": "Epicardium",
+  "IFT-CM": "CM",
+  "LV-CM": "CM",
+  "Macrophage": "other:Macrophage",
+  "OFT-CM": "CM",
+  "RV-CM": "CM",
+  "SV-CM": "CM"
+ },
+ "categories": {
+  "blood": {
+   "status": "shifted",
+   "moved_labels": [
+    "Blood",
+    "Macrophage"
+   ],
+   "feng_labels": [],
+   "label_mix": {
+    "E9.5": {
+     "Blood": 1.0
+    },
+    "E10.5": {
+     "Blood": 0.92,
+     "Macrophage": 0.08
+    }
+   },
+   "moved_fraction_of_category": 1.0,
+   "factor": {
+    "denominator_genes": 21020,
+    "held_flat_in_denominator": 17,
+    "mean_abs_log_f": 0.03784240426302701,
+    "max_abs_log_f": 1.523870251773833,
+    "gt_0.10": {
+     "genes": 2375,
+     "up": 796,
+     "down": 1579,
+     "share_of_denominator": 0.11298763082778307,
+     "cp10k_share": 0.5604441524597313
+    },
+    "gt_0.25": {
+     "genes": 218,
+     "up": 115,
+     "down": 103,
+     "share_of_denominator": 0.010371075166508087,
+     "cp10k_share": 0.23191982503686331
+    }
+   },
+   "keep_depth_constant": {
+    "median": 0.9071844182864932,
+    "q10": 0.8584992184889095,
+    "q90": 0.9799586404937568
+   },
+   "factor_at_median_s": {
+    "denominator_genes": 21020,
+    "held_flat_in_denominator": 17,
+    "mean_abs_log_f": 0.11326456029640465,
+    "max_abs_log_f": 1.4264607300075545,
+    "gt_0.10": {
+     "genes": 7443,
+     "up": 178,
+     "down": 7265,
+     "share_of_denominator": 0.35409134157944816,
+     "cp10k_share": 0.6631460517530533
+    },
+    "gt_0.25": {
+     "genes": 494,
+     "up": 26,
+     "down": 468,
+     "share_of_denominator": 0.023501427212178877,
+     "cp10k_share": 0.24582544488878075
+    }
+   },
+   "share_of_cells": {
+    "s1": {
+     "category": 0.24,
+     "moved": 0.24
+    },
+    "s2": {
+     "category": 0.24,
+     "moved": 0.24
+    }
+   }
+  },
+  "endocardium": {
+   "status": "shifted",
+   "moved_labels": [
+    "Early VIC"
+   ],
+   "feng_labels": [
+    "EndoMT Endocardium",
+    "Endocardium-1",
+    "Endocardium-2"
+   ],
+   "label_mix": {
+    "E9.5": {
+     "Endocardium": 1.0
+    },
+    "E10.5": {
+     "Early VIC": 0.2,
+     "EndoMT Endocardium": 0.22,
+     "Endocardium-1": 0.31,
+     "Endocardium-2": 0.27
+    }
+   },
+   "moved_fraction_of_category": 0.2,
+   "factor": {
+    "denominator_genes": 20622,
+    "held_flat_in_denominator": 15,
+    "mean_abs_log_f": 0.029226253190684923,
+    "max_abs_log_f": 1.0657661382143095,
+    "gt_0.10": {
+     "genes": 1370,
+     "up": 888,
+     "down": 482,
+     "share_of_denominator": 0.06643390553777519,
+     "cp10k_share": 0.2625502757012657
+    },
+    "gt_0.25": {
+     "genes": 186,
+     "up": 181,
+     "down": 5,
+     "share_of_denominator": 0.00901949374454466,
+     "cp10k_share": 0.07439816624109749
+    }
+   },
+   "keep_depth_constant": {
+    "median": 0.9615193089762085,
+    "q10": 0.9383621024764588,
+    "q90": 0.9785030389858966
+   },
+   "factor_at_median_s": {
+    "denominator_genes": 20622,
+    "held_flat_in_denominator": 15,
+    "mean_abs_log_f": 0.05101275461259505,
+    "max_abs_log_f": 1.026525506197906,
+    "gt_0.10": {
+     "genes": 1785,
+     "up": 500,
+     "down": 1285,
+     "share_of_denominator": 0.08655804480651731,
+     "cp10k_share": 0.329378049143403
+    },
+    "gt_0.25": {
+     "genes": 144,
+     "up": 131,
+     "down": 13,
+     "share_of_denominator": 0.0069828338667442535,
+     "cp10k_share": 0.06310870201366386
+    }
+   },
+   "factor_whole_category": {
+    "denominator_genes": 24020,
+    "held_flat_in_denominator": 16,
+    "mean_abs_log_f": 0.025199488003662934,
+    "max_abs_log_f": 1.0657661382143095,
+    "gt_0.10": {
+     "genes": 1371,
+     "up": 889,
+     "down": 482,
+     "share_of_denominator": 0.0570774354704413,
+     "cp10k_share": 0.24483736294004935
+    },
+    "gt_0.25": {
+     "genes": 186,
+     "up": 181,
+     "down": 5,
+     "share_of_denominator": 0.0077435470441298915,
+     "cp10k_share": 0.05337659349211329
+    }
+   },
+   "share_of_cells": {
+    "s1": {
+     "category": 0.33,
+     "moved": 0.07
+    },
+    "s2": {
+     "category": 0.18,
+     "moved": 0.04
+    }
+   }
+  }
+ },
+ "share_of_cells_total": {
+  "s1": {
+   "category": 0.57,
+   "moved": 0.31
+  },
+  "s2": {
+   "category": 0.42,
+   "moved": 0.28
+  }
+ },
+ "provenance": {
+  "commit": "0409d18f11c2e2f3f9fb2c8185524eff56673389",
+  "tree_clean": true,
+  "utc": "2026-11-04 13:31:23"
+ }
+}

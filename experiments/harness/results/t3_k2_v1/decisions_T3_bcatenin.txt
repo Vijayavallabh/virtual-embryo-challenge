@@ -1,0 +1,5 @@
+T3:bcatenin: 1 pseudo-task(s) in /mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/runs/harness/t3_k2_v1 (protocol bake, build main, anchors computed, seeds [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  T3/Gata4->Mab21l2 on pseudo:T3/Gata4->Mab21l2: floor 50.00 +/- 0.00; copy 50.74 +/- 2.02; shift_transfer 47.05 +/- 0.62; t3_factor_xko 50.08 +/- 0.47; t3_factor_xko_perm 49.90 +/- 1.80 (commit 0409d18, clean True)
+t3_factor_xko against t3_factor_xko_perm: not kept (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 1 pseudo-tasks; needs 1; decided on 1 of 3 configured pseudo-tasks; not counted: {'T3/Gata4rep1->rep2': 'replicate fold', 'T3/Mab21l2->Gata4rep2': 'change does not apply'})
+    T3/Gata4->Mab21l2: paired mean gain +0.18, ahead in 9 of 10 seeds, passes False, vetoes False
+    T3/Gata4->Mab21l2 fit checks: margin by group response_identity +0.27, response_direction +0.38, response_magnitude -0.53, mutant_state +0.06; de_direction margin +0.0608, its top 10 genes' share 1.59; severity gate differs in 1 of 10 seeds

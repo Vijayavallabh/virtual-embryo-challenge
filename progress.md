@@ -20,6 +20,14 @@ leaderboards (wf_e01fe547-a9a; totals only) puts a Human top-3 place near 202-21
 our practice-task results; the rebuild design (wf_237f8d8f-e7c, design only) finished the same day: about 184 expected at test (170-198) on our own evidence, no candidate with a held-out gain, the first wave registered (N1, N2, K2a, K2b; R1 put to the captain), the T1 E12.5 file size redacted at HEAD and T1 depth closed (`docs/PLAN.md` decision log 2026-11-04 (c); `docs/DATA_POLICY.md` 2026-11-04 (f), (g)). The captain sent an organiser follow-up on 2026-11-04 (the
 exposure; the published limits and file sizes can reveal hidden counts) and found the Spam folder clean. Pushes no
 longer need asking (the captain, 2026-11-04).
+2026-11-04 (evening), the first wave, merged, run and recorded by the AI assistant (workflow wf_b4b013b3-a46;
+rows registered at 945de7d, code merged at 0409d18, `./init.sh` on the DGX at 0409d18: lock, ruff, 573 passed): N1
+holds (the test pair on the 497-gene test panel reproduces every recorded coupling and geometry value; no risk
+note); N2 sizes M1's momentum on the cells without a Feng group (s1 0.31 of cells moved: blood 0.24, Early VIC 0.07;
+for the captain with R1); K2a (s1's Gata4 factor on the Gata4 -> Mab21l2 fold) against its permuted control K2b
++0.18, ahead in 9 of 10 seeds: not kept, so no cross-knockout support for the factor (K2a 50.08 against wt_identity
+50, our WT copy 50.74 and shift_transfer 47.05; `experiments/harness/results/t3_k2_v1/`). T3 is at 3 tries. No
+upload, entry or rule changes; R1 waits for the captain (`experiments/harness/TRIES.md`).
 Since 2026-11-03 (the captain: keep every default, continue the s1 work, iterate without the plan's dates, "do
 whatever it takes to win", within the rules) every change tried for an entry goes through the tries ledger
 (`experiments/harness/TRIES.md`); none tried so far was kept (embryo E7, E8 and E11; heart H3; T1 T5; H4, E9 and E10

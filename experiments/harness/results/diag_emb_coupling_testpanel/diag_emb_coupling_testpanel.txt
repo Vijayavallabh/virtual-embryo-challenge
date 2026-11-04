@@ -1,0 +1,20 @@
+N1 (experiments/harness/TRIES.md; a diagnostic, not a try): the embryo coupling on the test pair
+(test/E7.5+E8.0->E7.75, t = 1/2) on T2:embryo:test_interp's panel, the entry's moves (fgw), build seeds
+1,000,000-1,000,009. Target-free: reads E7.5 and E8.0 only, no target and no score. Commit
+0409d18f11c2e2f3f9fb2c8185524eff56673389, clean tree: True. Recorded: TRIES.md, diagnostics of 2026-11-03 (5baba46,
+T2:embryo:val_interp's panel), compared at two decimals.
+
+  recorded        now             departure  measure
+  -0.50 to -0.26  -0.50 to -0.28  0.00       fgw's smallest whitened anchor-partner cross-correlation, every draw
+  0.21 to 0.25    0.21 to 0.25    0.00       the moved cloud's thinnest SD over its RMS radius, every draw
+  -0.31           -0.31           0.00       the s1 seed's draw (1,000,001): the cross-correlation
+  0.67            0.67            0.00       the s1 seed's draw: its thinnest axis over the thinner bracket's
+  0.47 to 0.51    0.47 to 0.51    0.00       the s2's pool (t_pos = 0): its thinnest SD over its RMS radius, every draw
+
+Reported, not judged: partners mirrored (cross-correlation below 0) in 10 of 10 draws; 15-NN kept 0.44 to 0.47
+(recorded 0.44 to 0.47); thinnest axis over the thinner bracket's 0.58 to 0.69 (recorded 0.58 to 0.70); merged-label
+agreement 0.47 to 0.51; the s1 seed's s2 pool 0.48.
+Rule (row N1, fixed before the run): hold if every value stays within 0.03 of its recorded range; a risk note to the
+captain if the s1 seed's thinnest axis or the s2 pool's leaves its recorded range by more than 0.05; otherwise moved,
+within the note threshold.
+verdict: hold
