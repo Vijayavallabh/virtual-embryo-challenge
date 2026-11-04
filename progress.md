@@ -17,7 +17,7 @@ sent (fallback dates: `docs/PLAN.md` decision log 2026-11-04 (b)). The captain r
 auto-mode classifier blocks the AI assistant from sending one. Births were designed and pruned (`TRIES.md`), and
 `docs/DATA_POLICY.md` 2026-11-04 (d) reopened T1's composition by the legal route. A screened read of the public
 leaderboards (wf_e01fe547-a9a; totals only) puts a Human top-3 place near 202-210 overall, against about 165 from
-our practice-task results; the rebuild design (wf_237f8d8f-e7c, design only) is running. The captain sent an organiser follow-up on 2026-11-04 (the
+our practice-task results; the rebuild design (wf_237f8d8f-e7c, design only) finished the same day: about 184 expected at test (170-198) on our own evidence, no candidate with a held-out gain, the first wave registered (N1, N2, K2a, K2b; R1 put to the captain), the T1 E12.5 file size redacted at HEAD and T1 depth closed (`docs/PLAN.md` decision log 2026-11-04 (c); `docs/DATA_POLICY.md` 2026-11-04 (f), (g)). The captain sent an organiser follow-up on 2026-11-04 (the
 exposure; the published limits and file sizes can reveal hidden counts) and found the Spam folder clean. Pushes no
 longer need asking (the captain, 2026-11-04).
 Since 2026-11-03 (the captain: keep every default, continue the s1 work, iterate without the plan's dates, "do
@@ -431,6 +431,12 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       workflow's grep slip in (e); A8's readout moved after the 2026-12-11 announcement (A22). The D1 check rerun
       with the loader fix (`experiments/intake/results/d1_rerun_2026-11-04/`) reports wt_identity for T3:bcatenin,
       which settles the D1 floor note. Rebuild design launched (wf_237f8d8f-e7c).
+- [x] 2026-11-04 (evening): the rebuild design (wf_237f8d8f-e7c, 12 agents, design only) finished. Its synthesis and
+      compliance audit are recorded in `docs/PLAN.md` decision log 2026-11-04 (c), `docs/DATA_POLICY.md` 2026-11-04
+      (f) and (g) and `experiments/harness/TRIES.md` (the first wave registered before any run, the order of the
+      next tries, rule 2's equal-mixing confound, the prunes). The T1 E12.5 file size is redacted from
+      `docs/CHALLENGE.md` at HEAD (no other copy in a tracked file outside `boards/` and `docs/research/`), and
+      agents no longer open the session store or search the whole filesystem (`AGENTS.md`).
 
 ### What's Next
 
@@ -441,22 +447,26 @@ Updated 2026-11-04, after the captain's guiding principle (`AGENTS.md`; the orde
    `docs/PLAN.md` decision log 2026-11-04 (b)); each needs the captain's explicit go-ahead at the time, and the
    captain runs the commands. Once the heart
    and embryo s1 are up, the frozen s2 rules build their s2 as s1, at s1's commit (`docs/S2_RULES.md`), so no later
-   try reaches those two boards unless the captain changes a rule.
+   try reaches those two boards unless the captain changes a rule. The AI assistant's recommendation (`docs/PLAN.md`
+   decision log 2026-11-04 (c)): keep the hold; rebuild and check all ten files at a clean commit by 13 Nov.
 2. T1: births were designed and pruned (2026-11-04; `TRIES.md`), so neither upload waits on them. T1's composition
    is reopened by the legal route (`docs/DATA_POLICY.md` 2026-11-04 (d)), the one open lever on its weakest groups
    (distribution, DE recovery, covariance); T1 direction stays open, but no backtest can judge a change to Feng's
-   direction. The rebuild design (wf_237f8d8f-e7c) proposes the rows; each is registered in `TRIES.md` under rules
-   5-8 before its run.
+   direction. The rebuild design (wf_237f8d8f-e7c) registered no composition try (no legal share rule has a counted
+   check). N2 sizes M1's momentum on cells without a Feng group; R1 (those cells keep their E10.5 expression)
+   waits on the captain's ruling. If he rules it in, T1's s1 and s2 are rebuilt and checked, and he confirms T1's
+   s2 under (d).
 3. T3: response identity, the largest gap in Overall units on the cross-knockout stand-in (15.18; 11.89 on the
-   replicate stand-in), ties with T1 distribution (15.08) and comes second for the reason in `TRIES.md` (T1's lever
-   has a design under way; no T3 candidate exists yet). A factor change is kept only under the adoption rule on the
+   replicate stand-in), ties with T1 distribution (15.08) and comes second for the reason in `TRIES.md` (the rebuild
+   design found no T3 candidate with a reason that holds at test). A factor change is kept only under the adoption rule on the
    cross-knockout folds and then goes to the captain (T3's s1 is his ruling); the composition stays closed.
-   Optional, and it changes no upload: the Gata4 factor alone on the Gata4 -> Mab21l2 fold (`TRIES.md`, the order of
-   the next tries).
+   Registered 2026-11-04 (the AI assistant's decision): K2a and K2b, s1's Gata4 factor on the Gata4 -> Mab21l2 fold
+   with a permuted control (`TRIES.md`); it changes no upload.
 4. Keep the headroom tables and `METHOD_SUMMARY.md` current after every kept change or new entry (`TRIES.md` rule 8;
    feat-021, done once a full `./init.sh` passes); D3 on 2026-11-12 (feat-017).
-5. Heart and embryo: no try without an open lever and a reason that holds at test; the rebuild design re-examines
-   both.
+5. Heart and embryo: no try without an open lever and a reason that holds at test; the rebuild design re-examined
+   both and found none. N1 rechecks the embryo test pair's coupling and geometry on the 497-gene test panel
+   (target-free, not a try).
 
 ## Blockers / Risks
 

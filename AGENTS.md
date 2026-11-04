@@ -77,7 +77,9 @@ If baseline verification is failing, repair that first before adding new scope.
   2026-11-01 with conditions (notice first, not before 2026-11-04; `docs/DATA_POLICY.md`): nobody opens the saved
   file, and test-board counts are read by code only, never quoted. Read research results through the screened digest;
   see `docs/DATA_POLICY.md`. Recursive searches skip `boards/` and `docs/research/`
-  (`grep -r --exclude-dir=boards --exclude-dir=research`).
+  (`grep -r --exclude-dir=boards --exclude-dir=research`), and nothing searches the whole filesystem. Agents never
+  open session logs, transcripts or harness-saved tool outputs (under `~/.claude-account` or `~/.claude`), and run
+  the repository's Python as `python -I -B` (`docs/DATA_POLICY.md`, 2026-11-04 (g)).
 - **Scores choose, never compute.** Leaderboard returns may be used to pick between predictions, never to solve for a
   property of a hidden target (no inverting the skill map, no differencing scores).
 - **Competition data stays private.** Data lives under `data/` (gitignored) and is never committed, shared or shown

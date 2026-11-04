@@ -40,7 +40,7 @@ C-numbers claims in `experiments/coords/REPORT.md`, A-numbers rows of `ASSUMPTIO
 
 | Facet | Change beyond the baseline | Held-out evidence |
 |---|---|---|
-| States that emerge | None yet. Births by the legal route (states present in legal post-E14.5 chamber data and absent at E10.5) are being designed | - |
+| States that emerge | None. Births by the legal route (states present in legal post-E14.5 chamber data and absent at E10.5) were designed and pruned on 2026-11-04 (`experiments/harness/TRIES.md`) | - |
 | Proportions | Chamber categories only (the surrounding, cardiac-progenitor (first and second heart field, JCF, DMP), pericardial and pharyngeal categories dropped; `configs/t1_chamber_classes.yaml`), at E10.5's own chamber mix; s2 moves cardiomyocytes to 60% of heart cells | A premise rather than a measurement (the organisers' E12.5 collection note). On the chamber-cut backtest (E10.5 from E9.5) B0 beats a copy (+1.62, 9 of 10 seeds) but not the floor (-0.32, vetoed), and that backtest draws E9.5's mix, so E10.5's own mix is never tested (`experiments/harness/results/d2_v1/`). The s2 rests on a sensitivity grid on an oracle base, not on a backtest (`experiments/s2_hedge/`) |
 | Expression | Count-space shifts: Feng 2022's E9.5 -> E14.5 direction at 2/5 for cardiomyocytes, endocardium, endothelium and epicardium; half the E9.5 -> E10.5 per-type change for the other cells (mostly blood); 23 genes held flat (13 Y-linked, Xist and Tsix, 2 named strain genes and 6 by the pool rule alone; `experiments/t1_direction/results/held_flat_genes.csv`) | The pre-registered readout on E10.5 from E9.5: de_score +0.175 and de_direction +0.188 over cross-fitted momentum, cardiomyocyte sign agreement 0.912 (`experiments/t1_direction/results/E10.5/`). A labelled diagnostic at 1/5, in-sample for that readout: +0.97 over the floor and +1.29 over B0, 10 of 10 seeds each; over the floor all of the gain is on de_direction (skill 0.620, against 0.536 for a copy), and de_score (0.480) stays below the floor (`experiments/t1_m1/results/diag_v1/`). No harness task can judge it, and the 2/5 used at test is untested |
 | Spatial organisation | Not scored on Task 1 | - |
@@ -78,7 +78,7 @@ better of the two stays near the floor if s1's factor does not carry to beta-cat
 composition is the same bet as s1's (A11), at a smaller magnitude.
 
 **What no entry predicts yet.** No Task 1, heart or Task 3 entry predicts a state that no released stage has: Task 1
-births by the legal route are being designed, the heart holds E10.5's composition, and the Task 3 scenario only
+births by the legal route were pruned on 2026-11-04, the heart holds E10.5's composition, and the Task 3 scenario only
 depletes. On the embryo, states that E8.0 has and E7.5 lacks enter at half their E8.0 share, as E8.0's real cells, by
 interpolation only; no backtest checks that at t = 1/2. The heart entry's checked changes stay within 1.3 points of
 copy_last on every metric, so its gain at test rests on the pre-registered size, which no released stage can test.
@@ -174,7 +174,8 @@ Task 3's s2 is the wild type plus a five-state depletion, by design.
 - **Emergent populations:** none in the entry yet. The organisers have not answered on qualitative in-window
   background; births by the legal route (states present in legal post-E14.5 chamber data and absent at E10.5, their
   states and shares taken only from E10.5 and those data by a rule written before any run; the cardiomyocyte and blood
-  shares stay as the s1 and s2 rules set them; `docs/DATA_POLICY.md`, 2026-11-04 (c)) are being designed.
+  shares stay as the s1 and s2 rules set them; `docs/DATA_POLICY.md`, 2026-11-04 (c)) were designed and pruned on
+  2026-11-04 (`experiments/harness/TRIES.md`).
 - Training data: released T1 E8.5, E9.5, E10.5; Feng 2022 E9.5 and E14.5 CD1 hearts (X002), reduced from GEO by
   committed code that drops E10.5-E13.5 cells before anything is written. JAX/Qiu 2024 for diagnostics only (X003).
 

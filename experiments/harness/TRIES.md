@@ -19,7 +19,11 @@ same delegation. Rows written before that date stay as they were.
    - the gain sits on the metrics its reason predicts;
    - no known feature of one backtest explains it. Example: the E7.25 embryo target sits much closer to E6.75 than
      its day says (2026-11-03 diagnostic below), so a change that moves the mixture toward the earlier bracket gains
-     there and says nothing about E7.75, where the bracket fraction is 1/2.
+     there and says nothing about E7.75, where the bracket fraction is 1/2. A second (added 2026-11-04 from the
+     rebuild design, wf_237f8d8f-e7c): by mmd_u both embryo backtests prefer equal mixing to their nominal
+     fraction (0.0152 against 0.0264 on E7.25, 0.0380 against 0.0433 on E7.5; the 2026-11-03 table below), so a
+     change that pulls either backtest's mixture toward 1/2 gains on both and says nothing at test, where the
+     nominal fraction is already 1/2.
 3. Changes without a reason that holds at test are pruned before they run, with the reason written down.
 4. Every try counts, diagnostics included; each value of a swept parameter is one try. The counts go into every
    adoption report.
@@ -68,7 +72,7 @@ Before this ledger (from `results/registry.csv` and the decision files; floor an
 | T2:heart:test_extrap | 2 | b0, pseudobulk_shift (harness). The s2 hedge payoffs (heart scope) are a sensitivity analysis, not tries |
 | T3:bcatenin | 1 | shift_transfer (the organisers' baseline); the T3 entries come from the pre-registered rules in `experiments/t3_decomp/` |
 
-Since this ledger: see "Tries since 2026-11-03" and "Tries since 2026-11-04 (rules 5-8)" below. Running totals: T1 6, embryo 9, heart 3, T3 1 (H4 and E9 were pruned before their run; E10 was pruned by its gate and not counted; E11 counts).
+Since this ledger: see "Tries since 2026-11-03" and "Tries since 2026-11-04 (rules 5-8)" below. Running totals: T1 6, embryo 9, heart 3, T3 1 (H4 and E9 were pruned before their run; E10 was pruned by its gate and not counted; E11 counts). K2a and K2b (registered 2026-11-04, below) take T3 to 3 when they run; N1 and N2 read no target and no score, so they are not tries, and R1 is a ruling request with no run.
 
 ## Where the entries stand against the published baselines
 
@@ -174,23 +178,23 @@ Read with care:
 
 1. **T1 composition by the legal route.** Births by the legal route were designed and pruned on 2026-11-04
    (wf_77e506c8-014; "Pruned before running"). `docs/DATA_POLICY.md` 2026-11-04 (d) then reopened T1's shares within
-   the chamber scope by the legal route: the one open lever on T1's weakest groups (direction stays open under the
-   block, but no backtest can judge a change to Feng's direction: item 5). Its candidates come from the rebuild
-   design of 2026-11-04 (wf_237f8d8f-e7c). Under rules 5-8 each row names the states and their shares, taken only
-   from the released stages, E10.5 and legal external data by a rule fixed before the run, the groups it should move
-   (distribution and covariance first) and its held-out check, with the backtests' composition confound named in
-   advance (B0 draws E9.5's chamber mix, cardiomyocytes about 64% of cells, against about 19% in the chamber-cut
-   truth: the pruned exact top-up below). If that confound would decide the verdict, the row says so before the run.
+   the chamber scope by the legal route, and (f) says how a share rule is built (quotas at the frozen count, never
+   importance weights; T1 depth closed). The rebuild design of 2026-11-04 (wf_237f8d8f-e7c) registered no
+   composition try: no legal share rule has a counted check, since both counted T1 tasks draw E9.5's chamber mix
+   (cardiomyocytes about 64% of cells, against about 19% in the chamber-cut truth: the pruned exact top-up below),
+   and the committed oracle-base grid (`experiments/s2_hedge/`) puts the current s1/s2 pair within about 1.5 points
+   of the best pair under every prior it states. A share change can enter only by the captain's ruling after he
+   writes a prior (item 6). What remains on T1 is R1, a ruling request: cells without a Feng group keep their E10.5
+   expression (row below). A later composition row still follows rules 5-8 and names that confound in advance.
 2. **T3 response identity.** The largest gap in Overall units on the cross-knockout stand-in (15.18); on stand-in A,
    s1's own factor, it is 11.89, behind T1 distribution (15.08) and T1 DE recovery (13.00). So it ties with T1
-   distribution (rule 6), and T1 goes first: its lever has a design under way (wf_237f8d8f-e7c), and no T3 candidate
-   exists yet. A factor change must pass the adoption rule on the two cross-knockout
-   folds and then goes to the captain; the composition is closed. One reading the principle asks for, which changes
-   no upload, is s1's own lead component (the Gata4 factor, without composition) on the Gata4 -> Mab21l2 fold: the
-   first reading of it on a knockout it was not fitted on (A10). It needs a T3 harness candidate and counts as a try.
-   Its row says in advance that this fold's WT reference is E9.5, not the E8.75 the test shares with Gata4, and what
-   each outcome means: a pass is the first cross-knockout support for s1's factor; a loss under the adoption rule's
-   test counts against its transfer (A10) and goes to the captain with T3's s1, which changes only by his ruling.
+   distribution (rule 6), and T1 went first; the rebuild design found no T1 try (item 1) and no T3 candidate with a
+   reason that holds at test ("Pruned before running"). A factor change must pass the adoption rule on the two
+   cross-knockout folds and then goes to the captain; the composition is closed. The one reading the principle asks
+   for, s1's own lead component (the Gata4 factor, without composition) on the Gata4 -> Mab21l2 fold, the first
+   reading of it on a knockout it was not fitted on (A10), is registered as K2a with a permuted-factor control K2b
+   (rows below; decided by the AI assistant under the delegation of 2026-11-02, the captain can overrule). It changes
+   no upload: T3's s1 changes only by the captain's ruling, whatever the outcome.
 3. **Embryo: stop polishing.** It has the smallest gap (20.02 Overall points left) and the most tries (9), no group
    has an open lever with a reason that holds at test, and its one measured test risk, the flattened s1 geometry, is
    hedged by s2.
@@ -200,6 +204,16 @@ Read with care:
 5. **T1 direction: no other try.** Feng's E9.5 lies inside every T1 window, and both T1 backtests that count for a
    same-scope change (the whole and the chamber-cut E10.5 truths) carry E9.5's chamber mix, so no check exists for a
    change to Feng's direction.
+6. **After the first wave.** No further try is registered without a new reason that holds at test, written in its
+   row before the run. The rebuild design's second-wave items run only at the captain's request: H5, a
+   placebo-controlled reading of B0's momentum on both heart backtests (information only); D3, pricing T1's
+   cardiomyocyte tail, which changes a frozen s2 rule and runs only after the captain writes a prior (under the
+   stated priors it loses, 68.28 against 67.89 with a uniform prior; break-even needs about 25% of the prior on a
+   cardiomyocyte share of at least 0.8); T3's s2 moved to the barred branch's s1 (a frozen rule; it would override
+   D11b's failed bar after the fact; not recommended); a zone-fixed Feng cardiomyocyte direction (about 0 +- 0.3;
+   not recommended). Scenarios kept as risks and not built (closed levers): T1 depth and the oesophagus-junction
+   cells; the heart's core-focused s2 (scope; a frozen rule); stack-limited embryo geometry (z extent; a frozen
+   rule); T3's composition magnitude (a frozen rule).
 
 Once the heart and embryo s1 are uploaded, the frozen s2 rules build their s2 as s1, at s1's commit
 (`docs/S2_RULES.md`), so from then on no try reaches those two boards unless the captain changes a rule.
@@ -224,10 +238,19 @@ the entry after that decision. Both on the two embryo backtests, 10 seeds, by `e
 
 ## Tries since 2026-11-04 (rules 5-8)
 
-Each row is committed before its run, as rule 1 says, and fills every column (rules 5-7). None yet.
+Each row is committed before its run, as rule 1 says, and fills every column (rules 5-7). The first wave comes
+from the rebuild design of 2026-11-04 (wf_237f8d8f-e7c: its synthesis's rows, with the compliance audit's fix to
+N2 and K2b's permutation seed fixed by the AI assistant). N1 and N2 are diagnostics that read no target and no
+score, so they are not tries (as E10's gate); R1 is a ruling request with no run; K2a and K2b are counted tries.
+A row's registration commit is named with its outcome.
 
 | # | Board | Candidate | Departs from (baseline; entry) | Targets (GROUPS id, weight; table line) | Reason (the hypothesis) | Predicted change beyond the baseline (facet; metrics; expected gain) | Held-out evidence (counting backtests or folds, none tuned on) | A fit, not an effect, if | Registered at | Outcome (against the floor and the entry) |
 |---|---|---|---|---|---|---|---|---|---|---|
+| N1 (diagnostic, not a try) | embryo | `diag_emb_coupling.py` rerun on the test pair with the test panel (497 genes) | copy_last; s1 fgw and s2 fgw_shape0, unchanged | shape_growth (0.25): s1 on E7.5 -0.13 / 12.63; s2 12.08 left; a check only | Every embryo backtest and diagnostic so far used the 498-gene validation panel; the test panel is new (D1, ae6d6b3). The recorded test-only risk the s2 hedges (FGW partners mirrored in every test draw, the moved cloud's thinnest axis 0.21-0.25 of its RMS radius; the s2 pool 0.47-0.51) was measured on the old panel | None to any entry. Expected: the recorded test-pair values hold within 0.03. Expected gain 0 | Reads only E7.5 (unlocked, A20) and E8.0, the test's inputs, at build seeds 1,000,000-1,000,009 and the s1 seed 1,000,001; prints no cell count; no target and no score, so not a try (as E10's gate) | Not applicable. Fixed now: if the s1 seed's thinnest axis or the s2 pool's leaves its recorded range by more than 0.05, the captain gets a test-only risk note; nothing is rebuilt on this result | this row's commit (named with its outcome) | |
+| N2 (diagnostic, not a try) | T1 | size of M1's momentum on cells without a Feng group | copy_last; s1 M1 (s2 as s1) | distribution (mmd_u, 0.30): -0.08 / 15.08; de_recovery (0.25): -0.50 / 13.00; a check only | Gives ruling R1 the size of what it removes: M1 moves Blood, Macrophage and Early VIC (about a quarter of s1's cells at E10.5's chamber mix) by half the E9.5 -> E10.5 per-category change | None to any entry. Reports per category the genes whose factor moves by more than 10% and 25%, the mean absolute log factor, and the share of s1's and s2's cells touched, computed from E10.5's chamber mix and the s2 rule (not from built files) and printed to two decimals; it prints no cell count. Expected gain 0 | Reads released E9.5 and the unlocked E10.5 as the test build's inputs, as build_t1 does; no target, no score; not a try | Not applicable; its numbers go to the captain with R1 and decide nothing else | this row's commit (named with its outcome) | |
+| R1 (ruling, no run) | T1 | `m1_hold_unbracketed`: cells without a Feng group keep their E10.5 counts | copy_last; s1 M1; s2 follows as s1, and a changed s1 sends its s2 back to the captain (DATA_POLICY 2026-11-04 (d)) | distribution (mmd_u, 0.30): -0.08 / 15.08, the weakest open group; then de_recovery (0.25): -0.50 / 13.00 | M1 extrapolates half the E9.5 -> E10.5 per-category change for Blood, Macrophage and Early VIC. That step spans T1's sampling change (an embryo portion at E9.5, a dissected heart at E10.5). On the one transition measured, the same momentum had no sign skill on Blood: sign agreement 0.50 full and 0.55 cross-fitted, Spearman -0.06 and -0.05, de_direction_full -0.17 and -0.02 (pre-registered readout, experiments/t1_direction/results/E10.5/per_type.csv). Early VIC's category change contains the appearance of EndoMT and Early VIC states, a composition change carried as expression. A move with no measured sign skill adds distance in expectation | Expression only: these cells are predicted at their E10.5 expression, as the baseline predicts them; no state, share, cell number, size or scope changes. Metrics: mmd_u (the blood cluster), then de_score and de_direction (fewer blood genes among the top-ranked changes); the variogram may move either way. Expected at test +0.1 to +0.3 board points (range -0.3 to +0.5), in s1 and s2 | None that counts: both counted T1 tasks draw E9.5's chamber mix (blood 2.6% of chamber cells), so the expected change there is below 0.1 and rule 5 prunes it as a try. It enters only by the captain's ruling, as Feng's direction did (decision log 2026-11-01 (f)). Its evidence is the readout rows above (in-sample for that readout) and N2's sizes | Not applicable (no run). Fixed now: no test score confirms or reverses it; if the captain declines, M1 stays as built | this row's commit (named with its outcome) | |
+| K2a | T3 | `t3_factor_xko`: s1's lead component (Gata4's pooled non-Mesp1 factor, exponent 1) on deduplicated WT E9.5 cells at WT composition, no depth, no composition | wt_identity; s1 (allowed branch: factor, Gata4 per-label depth, central composition at 0.38x), unchanged whatever the outcome | response_identity (de_score, 0.30): 15.18 left across knockouts, 11.89 on stand-in A; then response_direction (0.25): 11.29 (8.05) | A10: s1's factor, measured in compartments a Mesp1-Cre deletion cannot touch, is processing shared across knockouts, so it carries to a knockout it was not fitted on; no unseen knockout has tested it. Built with the T3 script's own primitives (gene_factor, eps 1e-5, clip 0.25-4; apply_gene_factor with the kNN-smoothed top-up profile, rules note 5). Depth is off because the knockouts' depth ratios flip between folds (0.52-0.63x against 1.27x), the pruned lucky-fit trap | Expression: the mutant's per-gene processing response predicted from another knockout's factor. Metrics: de_score and de_direction above K2b (gene identity); severity may sit at the r2 gate in both arms. Expected: both arms near or below 50 (the reverse fold's analogue, Mab21l2's factor against its own WT, scored 52.04 and 46.24). The reading is K2a minus K2b. Expected Overall gain 0 (no upload changes) | The cross-knockout fold T3/Gata4->Mab21l2 (configs/pseudo_tasks.yaml: Mab21l2 KO against WT E9.5), 10 seeds, never used by the T3 rules; reported against wt_identity (50), our WT copy (50.74) and shift_transfer (47.05). Written now: this fold's WT reference is E9.5, not the E8.75 the test shares with Gata4, so the factor crosses a WT run whose large per-gene file difference the test does not have. The fold is harsher than the test, and a fail is weak evidence against A10. Outcomes: if K2a beats K2b by the adoption rule's test (paired mean above 0.3, ahead in at least 8 of 10 seeds), that is the first cross-knockout support for s1's factor; otherwise there is no support, and it goes to the captain with T3's s1, which changes only by his ruling. No T3 file is rebuilt either way | The margin sits on severity or mutant state alone; or more than half the de_direction margin comes from 10 genes; or the r2 gate differs between the arms in more than 2 seeds, so the cliff decides rather than gene identity | this row's commit (named with its outcome) | |
+| K2b | T3 | `t3_factor_xko_perm` (control): K2a's factor permuted across genes within deciles of WT E8.75 mean expression, one permutation, seed 20261104, fixed in this row | as K2a | as K2a | Separates the factor's gene identity from its magnitude and offset, which a comparison with wt_identity alone cannot | None by design. Expected: about K2a's level on severity, and below it on de_score and de_direction if A10's gene-identity part holds | as K2a; counts as a try (rule 4), so T3 goes from 1 to 3 | as K2a | this row's commit (named with its outcome) | |
 
 ## Pruned before running
 
@@ -310,6 +333,66 @@ committed, their synthetic toys in the AI assistant's scratch). E10 above was it
   any run (`docs/DATA_POLICY.md` 2026-11-04 (d), which came after this entry), and T1's try count stays 6. Evidence
   on the DGX, not committed: `~/v/scratch/births/scout/` (`scout.py` sha256 387fda22, `scout_b2.py` 461f0959, post hoc; the per-cell
   calls), `critic_luckyfit/align2.py` 56e81d3c, `critic_value/reach.py` 0f7e21b3.
+
+From the rebuild design of 2026-11-04 (wf_237f8d8f-e7c: five board designers, an adversarial critic each, a synthesis
+and a compliance audit; design only, no scored run; the design texts are not committed). Pruned by the AI assistant
+under the captain's delegation of 2026-11-02; the captain can overrule. Several diagnostics below were pruned because
+they would read a counted task's truth and spend tries without making anything adoptable.
+
+- **T1: a within-type maturity tilt** (importance re-weighting of real cells along a stage axis). It is composition
+  under (d), not an expression change, and it fails on its own terms: its stage classifier separates the stages
+  almost perfectly (AUC 0.991-1.000), the weights' effective sample is 0.12-0.28 of the pool, only 32-42% of the tilt
+  is realised when the backtests draw 5,118 of 8,185 cells, and its Feng variant ranks cardiomyocytes by depth
+  (rho -0.53).
+- **T1: bracket transport of chamber sub-states, and Feng-internal held-out (FIB) checks.** Rule 2 fails before the
+  run: Feng's capture changes from 69% LV-zone cells at E9.5 to zone-balanced at E14.5, so Feng-based growth and FIB
+  brackets read capture, not development; item 5 applies as well.
+- **T1: pricing the cardiomyocyte tail as a try.** A captain question only (item 6).
+- **T1: a noise-aware, subtype-resolved Feng direction.** A split-half check of Feng's direction finds nothing to
+  shrink, E9.5 has only 11 atrial cardiomyocytes, and its top-up is a variant of the pruned exact top-up.
+- **T1: whole-ladder flow with growth.** 10-14 days of work, no check that reaches the test, and its critic's
+  estimate at or below -0.5.
+- **T1: a ladder-consistency gate and progress calibration of Feng's direction.** Its gate and clock read T1's
+  sampling change (an embryo portion at E9.5, a dissected heart at E10.5).
+- **T1: oracle ladders and decompositions on the counted tasks (eight diagnostics).** In-sample on a transition
+  already read five times; they count as tries and can make nothing adoptable. Two had decision thresholds pinned to
+  the field's validation totals, a use of leaderboard figures beyond calibration (`docs/DATA_POLICY.md` 2026-11-04
+  (g)).
+- **T1: PLAN item 3's decrease gate.** The form a backtest could test is not the form used at test.
+- **T1: a composition-matched truth filter.** It judges only momentum variants that R1 makes moot.
+- **T1: Feng's Endothelium group as a mislabelled identity.** Checked, no change: the group is 70 endocardial cells
+  at E9.5 and 107 + 51 at E14.5, but on the pre-registered readout Feng's Endothelium direction agrees with the BEC
+  change (sign agreement 0.813, Spearman 0.51, de_direction_full 0.26 against a 0.55 ceiling, where momentum scored
+  -0.40).
+- **Heart: Feng's direction, and the scRNA ladder's direction, on the heart panel.** Closed by A15 (no new
+  cross-modal input enters an upload until the organisers answer); the target-free concordance check is null
+  (cardiomyocyte Spearman 0.05-0.10 between Feng and MERFISH), and per-type momentum carries over only for
+  cardiomyocytes.
+- **Heart: removing the reference file's own transient per-gene deviation.** Leverage at the reference file is
+  0.80-0.91, so the estimator is degenerate.
+- **Heart: within-core state shares moved along Feng's change.** Closed by the captain's composition ruling of
+  2026-11-01, and its sign was wrong.
+- **Heart: two gap-anatomy diagnostics.** They would select on the counting backtests' truth.
+- **Embryo: a depth-shaped draw of real bracket cells.** The depth line is closed; a simulation gives about +0.05 to
+  +0.2 at test.
+- **Embryo: exponential-growth state shares.** Share total variation against the current interpolation is 0.041,
+  0.038 and 0.014 (about +0.05). As proposed, its check used an external atlas spanning E8.5, a held-out heart
+  validation stage strictly inside a heart interpolation bracket, for a step in the shared core, before any window
+  check: a window breach on paper (nothing was fetched or run; `docs/DATA_POLICY.md` 2026-11-04 (g)).
+- **Embryo: s1 = fgw_aligned re-read on a test-like task.** It would re-decide E11, which its veto settled.
+- **Embryo: displacement interpolation in a count-model latent space.** 7-10 days of work for about +0.15.
+- **Embryo: a closability oracle, an attribution split, a third pseudo-task (heart E8.5) and a per-metric
+  leaderboard read.** The first two read the counted targets and spend tries; the third would loosen the adoption
+  threshold with a pair unlike the test; the fourth lies outside the screened route (totals and ranks only).
+- **T3: a Mesp1-lineage timing shift on a WT-ladder basis.** The estimator fails a known-lag check, and the
+  committed timing oracle is +0.17, +1.42 and -0.76.
+- **T3: a same-reference transplant of Gata4's non-Mesp1 cells.** Within-label coverage is closed with T3's
+  composition, and the build would apply the factor twice.
+- **T3: a two-scenario factor exponent.** Its rho_F cannot be identified on released data.
+- **T3: a per-gene Mesp1-lineage contrast shared by the released knockouts.** Nested in the timing shift above.
+- **T3: three diagnostics on the cross-knockout folds** (s1's recipe with depth and gene identity separated, the
+  knockout-slide variance net of the WT-run difference, an oracle bound of the Mesp1 response). They would spend
+  both folds; K2a and K2b keep the one reading the principle asks for, on one fold.
 
 ## Diagnostics behind these choices
 

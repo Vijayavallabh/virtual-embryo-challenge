@@ -941,3 +941,31 @@ open. No organiser reply to any of the four emails as of then.
   - **The rebuild design** (wf_237f8d8f-e7c, design only, no scored run): five board designers (T1 populations, T1
     dynamics, heart, embryo, T3), an adversarial critic each, a synthesis and a compliance audit diagnose each board's
     gap and propose the first wave of tries, which go into `TRIES.md` before their runs.
+- 2026-11-04 (c), the rebuild design's outcome (wf_237f8d8f-e7c: five board designers, an adversarial critic each, a
+  synthesis and a compliance audit; design only, no scored run; the AI assistant's readings under the captain's
+  delegation of 2026-11-02, and the captain can overrule them):
+  - **Outlook.** For the entries as built, on our own evidence (committed backtests and the oracle-base grid, no test
+    score): about 184 overall, likely 170-198 (T1 about 63, T3 about 65, heart about 52, embryo about 60, each board at
+    the better of its two uploads). The practice-task 165 understates T1 and T3, whose test entries carry bets the
+    stand-ins lack (E10.5's chamber mix with the s2 hedge; s1's knockout-depth term); those are bets, not
+    measurements. Against the screened field figure (a Human top-3 place at about 202-209) a top-3 place is out of reach
+    on this evidence.
+  - **No candidate survives.** No candidate from the five designs has both an expected held-out gain of at least 0.3
+    points and a reason that holds at test (the prunes are in `TRIES.md`). The first wave, registered before any run:
+    N1 (embryo, target-free: the test pair's coupling and geometry on the 497-gene test panel), N2 (T1, target-free:
+    the size of M1's momentum on cells without a Feng group), K2a and K2b (T3: s1's Gata4 factor on the Gata4 ->
+    Mab21l2 fold with a permuted control, the principle's question for T3's lead component; 2 tries; no upload changes;
+    decided by the AI assistant), and R1 for the captain (T1: Blood, Macrophage and Early VIC keep their E10.5
+    expression, since the readout found no sign skill for blood's momentum; about +0.1 to +0.3, no counted check).
+    After it, no try without a new reason that holds at test; the second-wave items run only at the captain's request.
+  - **Compliance.** The audit was not clean: process slips, and uses of leaderboard figures beyond calibration in the
+    design texts, all struck (`docs/DATA_POLICY.md` 2026-11-04 (g)). The T1 E12.5 file size is redacted at HEAD and
+    T1 depth is closed ((f)). The design texts are not committed.
+  - **Uploads.** The plan changes no heart, embryo or T3 entry, and at most T1's expression (R1). The AI assistant's
+    recommendation: keep the hold, so every board stays open to a better idea until the 27 Nov freeze, and take the
+    operational risk out of the last days instead: rebuild all ten files at a clean commit with `vec check`, the
+    format-only server check and archived hashes by 13 Nov, and again at the freeze commit. The fallback dates stand.
+    Uploading the unchanged boards early (heart s1, embryo s1, T3's s2) would show our standing and spread the
+    uploads, but under the frozen s2 rules it fixes those boards for good; that trade-off stays the captain's.
+  - **A known test-only risk that nothing open hedges:** if E7.75 was acquired at E7.5-like depth, both embryo uploads
+    are too deep.

@@ -383,3 +383,42 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   printed three citation lines from `docs/research/` (landscape.md, external_data.md, t2_spatial.md), all giving the
   DOIs of errata to Qiu et al., Cell 2024; nothing from them was used or written. Recursive searches now skip both
   folders (`AGENTS.md`, quarantined material).
+- 2026-11-04 (f), clarifying (d) (proposed by the rebuild design's synthesis, wf_237f8d8f-e7c, amended by its
+  compliance audit; decided by the AI assistant under the captain's ruling (c) and the delegation of 2026-11-02; the
+  captain can overrule). (1) A rule that changes which real cells are drawn inside a chamber category, by quotas or by
+  weights, changes the shares of the states within it, so it is composition under (d): its rule, every constant
+  included, is committed in its ledger row before any run, and before any diagnostic that reads a T1 truth's
+  within-category shares as a target (the births entry's precedent). (2) Shares are set through `vec.core`'s quotas
+  at the count the frozen count rule gives, never through importance weights: what a weighted draw realises depends on
+  that count's ratio to the pool, and cell numbers stay closed. (3) T1 depth stays as built (every drawn cell keeps its
+  own counts) and is now closed, as the depth line already is on the T2 boards. A cell count read with the T1 E12.5
+  file size gives bytes per cell, which bears on detection depth, so (c)'s reason for leaving that size in the notes
+  ("Task 1 scores no size") does not cover depth. The size is now redacted from `docs/CHALLENGE.md` at HEAD as
+  `[redacted 2026-11-04: A]`; a check that printed locations only found no other copy in a tracked file outside
+  `boards/` and `docs/research/` (those two were not searched). Earlier commits still hold it, and rewriting history
+  is the captain's call. A share rule's row reports the drawn population's median library size against E10.5's, and
+  a shift beyond 5% sends the rule to the captain. (4) Why shares stay open: a count, the upper-limit rule or a file
+  size says how many cells or bytes a file holds, not which states appear or in what shares, as (c) found for births.
+  Unchanged: cell numbers, sizes and scope on every board, T3's composition and the frozen s2 rules.
+- 2026-11-04 (g), process slips in the rebuild design workflow (wf_237f8d8f-e7c), found by its compliance audit; no
+  test-board limit, anchor or truth count and no other hidden value was seen, and the one hidden-target figure shown is
+  the file size below: (i) four agents' first reads (the T1-populations, embryo, T3 and heart designers) displayed the
+  `docs/CHALLENGE.md` line holding the T1 E12.5 file size (in the notes since 2026-10-18; not quoted, written or used;
+  redacted at HEAD under (f)); (ii) the heart critic opened once a harness-saved tool output in Claude Code's session
+  store, whose content was `TRIES.md` as its own command had printed it (no session log or transcript was opened);
+  (iii) the heart designer started a filesystem-wide `find` for an installed package, which walked `boards/`,
+  `docs/research/` and the session store by name only, and stopped it unread; (iv) some agents ran the repository's
+  Python with `-I` but without `-B` (timestamps show no bytecode written in the tree); (v) design and critique texts
+  used leaderboard figures beyond calibration: decision thresholds pinned to the field's validation totals and
+  test-board statistics as evidence for or against a gap hypothesis (the T1-populations design and its critic, one of
+  whose figures is in no committed record), the test top 3 turned into a per-group skill to say where the embryo's gap
+  lies (the embryo design; its critic used a test-board statistic the same way), a sentence attributing the field's
+  heart lead to closed levers (the heart design), and a proposed per-metric leaderboard read outside the screened
+  route (the embryo design). All are struck: none enters a ledger row, a decision or a prompt, and the design texts are
+  not committed. (vi) An embryo candidate proposed an external atlas spanning E8.5, a held-out heart validation stage
+  strictly inside a heart interpolation bracket, for a check of a step in the shared core, before any window check;
+  nothing was fetched or run, and it is pruned (`experiments/harness/TRIES.md`). From now on agents never open session
+  logs, transcripts or harness-saved tool outputs (under `~/.claude-account` or `~/.claude`): a long output is split,
+  or written to the scratchpad and read there. Packages are located through the venv's `*.dist-info` (`RECORD`,
+  `direct_url.json`), never by a filesystem-wide search. The repository's Python runs as `python -I -B` (on the DGX
+  `uv run --frozen --no-sync python -I -B`), and read-only git uses `GIT_OPTIONAL_LOCKS=0` (`AGENTS.md`).
