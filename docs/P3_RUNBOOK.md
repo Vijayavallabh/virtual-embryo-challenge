@@ -69,6 +69,8 @@ re-run, and save it again only if the refusal names a fixable cause. The steps:
    another computer, copy the file here without opening it (e.g. with `scp`) and delete the browser's copy. Never open
    the file, and never type its address into the browser (that displays it); if the page has no such link, stop and
    tell the AI assistant.
+   The Data page itself lists every board's cell limits, says how the upper limit is set and gives hidden targets'
+   file sizes: never copy its text to anyone, the AI assistant included (`docs/DATA_POLICY.md`, 2026-11-04 (b)).
 2. Run the intake on it. Nobody opens the saved file; the intake reads it in memory and strips the test anchors as
    the online refresh does. The commit runs only if the intake succeeded, and stages only the files it writes:
 

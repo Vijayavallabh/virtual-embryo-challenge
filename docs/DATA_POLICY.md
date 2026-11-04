@@ -341,3 +341,14 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   the embryo test board's gene list (the one list not already in `boards/` under its published hash) with "Save link
   as" into `~/vec-panels/`; the intake reads them only after the screened Slack and email sweep started at about
   07:00 UTC finds no objection and no fix; nobody opens the saved files.
+- 2026-11-04 (b), exposure: the captain then pasted the text of the Data page (as seen signed in) into the AI
+  assistant's session, to show where its links are. Besides what the notes already hold, the page shows every board's
+  cell limits in its panel table (the test boards' are the index's), says how the upper limit is set (read with the
+  limits, that rule can give a hidden truth half's size away), and lists hidden targets' file sizes: the T2 heart
+  E12.5 file, which the redaction of 2026-10-19 removed from `docs/CHALLENGE.md` (category A), and the two
+  beta-catenin replicates (the T1 E12.5 file size was already in the notes). So every visit to the Data page shows
+  these to the captain; the route's step 1 now says never to copy the page's text to anyone, the AI assistant
+  included. The containment of the entry above is widened to T3: no try changes a cell number, a size, a scope, or
+  T1's or T3's composition, unless the captain rules otherwise. Nothing from the page is written anywhere else; the
+  organiser follow-up (drafted by the AI assistant, sent by the captain) names the limit rule and the listed file
+  sizes as possible leaks, with no value.
