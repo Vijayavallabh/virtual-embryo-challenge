@@ -9,8 +9,34 @@
   ],
   "estimate_date": "2026-11-04",
   "estimate_basis": "docs/PLAN.md decision log 2026-11-04 (c): our own committed evidence (backtests carried to the test boards, the oracle-base grids, the s2 hedge payoffs), each board at the better of its two uploads: T1 about 63, T3 about 65, heart about 52, embryo about 60; no test score, no leaderboard figure",
-  "estimate_first_round": null,
-  "estimate_first_round_note": "the first round alone (T1 s1, heart s1, embryo s1 and T3's s2): roughly 160-170 on unreviewed arithmetic (docs/PLAN.md decision log 2026-11-05 (b)); experiments/gate/estimate.py is to compute it from committed files; until the captain says which reading he meant, an early crossing needs both readings above 209",
+  "estimate_first_round": 170.24,
+  "estimate_first_round_range": [
+    160.2,
+    179.1
+  ],
+  "estimate_first_round_note": "the first round alone (T1 s1, heart s1, embryo s1 and T3's s2), from experiments/gate/estimate.py (2026-11-05; aggregation of committed results, not a try; independently recomputed, wf_ae139ac6-f35); its T1 credits the oracle-base grid in full, so it is an upper reading; until the captain says which reading he meant, an early crossing needs both readings above 209",
+  "estimate_reproducible": {
+    "better_of_two": 191.51,
+    "better_of_two_range": [
+      176.8,
+      204.0
+    ],
+    "better_of_two_before_k2a": 193.98,
+    "per_board_better_of_two": {
+      "T1": 69.57,
+      "heart": 53.85,
+      "embryo": 60.87,
+      "T3": 64.58
+    },
+    "per_board_first_round": {
+      "T1": 64.83,
+      "heart": 49.2,
+      "embryo": 59.95,
+      "T3": 50.84
+    },
+    "source": "experiments/gate/estimate.py; output experiments/gate/results/estimate_2026-11-05.json",
+    "note": "the outlook procedure of decision log 2026-11-04 (c) written out as code; it does not reproduce 184: its T1 (69.6 against 63) credits the oracle-base grid in full, which (c) discounted by an unrecorded amount, so it is an upper reading; the honest better-of-two range is 184-192. estimate stays at the committed outlook until a change is kept (docs/PLAN.md section 8 and decision log 2026-11-05 (b)). No reading and no band's upper edge reaches 209"
+  },
   "review": "",
   "lifted_by_captain": false,
   "lifted_note": "",

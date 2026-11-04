@@ -1088,11 +1088,16 @@ open. No organiser reply to any of the four emails as of then.
     lucky-fit risk. The DGX runs target-free work instead: a determinism check of the ten builds across thread counts
     and the estimator below. The pruned set is in `experiments/harness/TRIES.md` ("Pruned before running", the
     campaign design of 2026-11-05).
-  - **The estimate stays 184 (170-198)** until a change is kept, and is then restated symmetrically: K2a came after it
-    and points down for T3, so 184 is if anything high. The first-round-only reading (T1 s1, heart s1, embryo s1, T3's
-    s2) is lower, roughly 160-170 on unreviewed arithmetic. `experiments/gate/estimate.py` is to compute both readings
-    from committed files only (aggregation, not a try), and an independent agent recomputes them before either figure
-    goes to the captain as reviewed.
+  - **The estimate.** The record keeps the committed outlook, 184 (170-198), until a change is kept; a restatement is
+    symmetric. Written out as code the same day (`experiments/gate/estimate.py`, wf_ae139ac6-f35; aggregation of
+    committed results, not a try), the outlook's own procedure does not reproduce it: each board at the better of its
+    two uploads reads 191.5 (176.8-204.0) with K2a (194.0 before it), and the first round alone 170.2 (160.2-179.1).
+    Nearly all of the gap is T1 (69.6 against 63): the code credits the oracle-base grid in full, which (c) discounted
+    by an amount it did not record, so the code's T1 is an upper reading; K2a lowers T3 by 2.5. An independent agent
+    recomputed both readings with its own code and matched them to 0.01 on every board, and a code audit's fixes are
+    in (K2a is now paired with our WT copy on its own fold, so both uploads meet the same truth). So 184 is not "if
+    anything high": the honest better-of-two range is 184-192, and about 170 for the first round. No reading, and no
+    band's upper edge, reaches 209 (`results/upload_gate.json`, `estimate_reproducible`).
   - **Put to the captain** (2026-11-05): confirm or correct the exception's reading (section 8); which reading of
     "estimated score" he meant; R1 (the AI assistant recommends yes); R2, the embryo s2 changed to fgw with aligned
     moves (+0.154 board points on the frozen rule's better-of-two backtests, +0.2997 head-to-head on E7.5 in 9 of 10

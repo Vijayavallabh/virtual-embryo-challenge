@@ -493,3 +493,15 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   README and `docs/PLAN.md` 4.1 are restated). The figure stays in the screened digest as a record and is not cited
   again. No history purge is proposed: it is an authors-labelled E14.5 summary share, outside the organisers' window as
   written, kept out by our stricter working answer; the captain can rule otherwise.
+- 2026-11-05 (d), process notes from the gate-estimator workflow (wf_ae139ac6-f35: a builder, a blind independent
+  recompute and a code audit; local only, aggregation of committed results, no target read and no score computed): (i)
+  reading the assigned decision-log entries and `docs/PLAN.md` section 8 showed the builder and the reviewer the
+  screened field figures and the gate's source figure, and a grep for the outlook figures printed `progress.md` and
+  `docs/PLAN.md` lines that carry them; none was used, written or quoted, and the estimator holds no leaderboard
+  figure (a test pins every number in it); (ii) key dumps printed practice-task fields of committed results (the T1
+  grid's re-sampled E10.5 truth sizes and prediction counts, prediction counts in `gata4_summary.csv`, and the
+  board-spec counts of the released-data K2 pseudo-task); no test board is among them, and the estimator uses none of
+  these fields; (iii) a capped read of `docs/CHALLENGE.md` showed its validation-anchor line (not test anchors); (iv)
+  the builder opened one memory note of the AI assistant (the compliance rules; no values), which is not a session
+  log, transcript or saved tool output, but sits under `~/.claude-account`: from now on agents leave memory files
+  alone too; (v) probe folders were deleted, and the tests delete their temporary copies.

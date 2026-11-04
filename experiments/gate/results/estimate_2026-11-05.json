@@ -1,0 +1,328 @@
+{
+ "label": "our estimated leaderboard total from committed results only: aggregation, not a try; no test score and no leaderboard figure",
+ "readings": {
+  "A": {
+   "T1": 69.5699687789954,
+   "heart": 53.85316177680092,
+   "embryo": 60.86546569526639,
+   "T3": 64.58351437130811,
+   "Overall": 191.51279688633716,
+   "band": {
+    "T1": [
+     64.81091289405924,
+     73.01283007288353
+    ],
+    "heart": [
+     48.48441637006498,
+     60.119389617976566
+    ],
+    "embryo": [
+     56.87569610038206,
+     63.52610116305234
+    ],
+    "T3": [
+     50.35673538637583,
+     74.61749128422535
+    ],
+    "Overall": [
+     176.81947109802414,
+     203.95294897269818
+    ]
+   }
+  },
+  "A_as_of_c": {
+   "T1": 69.5699687789954,
+   "heart": 53.85316177680092,
+   "embryo": 60.86546569526639,
+   "T3": 67.05006509590201,
+   "Overall": 193.97934761093106,
+   "band": {
+    "T1": [
+     64.81091289405924,
+     73.01283007288353
+    ],
+    "heart": [
+     48.48441637006498,
+     60.119389617976566
+    ],
+    "embryo": [
+     56.87569610038206,
+     63.52610116305234
+    ],
+    "T3": [
+     59.277631103396914,
+     74.61749128422535
+    ],
+    "Overall": [
+     183.95449365253225,
+     203.95294897269818
+    ]
+   }
+  },
+  "B": {
+   "T1": 64.82714142354978,
+   "heart": 49.19517981245728,
+   "embryo": 59.950056563606914,
+   "T3": 50.83865853445631,
+   "Overall": 170.23841814603819,
+   "band": {
+    "T1": [
+     55.55188957932982,
+     72.19827903858663
+    ],
+    "heart": [
+     44.4735420167644,
+     52.36901308693236
+    ],
+    "embryo": [
+     56.87569610038206,
+     62.343423925256474
+    ],
+    "T3": [
+     47.94723486043665,
+     56.77760335729101
+    ],
+    "Overall": [
+     160.2117742243272,
+     179.11707370526165
+    ]
+   }
+  },
+  "B_as_of_c": {
+   "T1": 64.82714142354978,
+   "heart": 49.19517981245728,
+   "embryo": 59.950056563606914,
+   "T3": 50.87223299376944,
+   "Overall": 170.2719926053513,
+   "band": {
+    "T1": [
+     55.55188957932982,
+     72.19827903858663
+    ],
+    "heart": [
+     44.4735420167644,
+     52.36901308693236
+    ],
+    "embryo": [
+     56.87569610038206,
+     62.343423925256474
+    ],
+    "T3": [
+     47.66033789245854,
+     56.811036264482865
+    ],
+    "Overall": [
+     160.05252727212493,
+     179.66530892530872
+    ]
+   }
+  }
+ },
+ "first_round": {
+  "T1": "s1",
+  "heart": "s1",
+  "embryo": "s1",
+  "T3": "s2"
+ },
+ "outlook": {
+  "T1": 63,
+  "heart": 52,
+  "embryo": 60,
+  "T3": 65,
+  "Overall": 184,
+  "range": [
+   170,
+   198
+  ],
+  "source": "docs/PLAN.md:989-991 (decision log 2026-11-04 (c))"
+ },
+ "A_as_of_c_minus_outlook": {
+  "T1": 6.569968778995403,
+  "heart": 1.853161776800917,
+  "embryo": 0.8654656952663871,
+  "T3": 2.0500650959020135,
+  "Overall": 9.979347610931057
+ },
+ "A_minus_outlook": {
+  "T1": 6.569968778995403,
+  "heart": 1.853161776800917,
+  "embryo": 0.8654656952663871,
+  "T3": -0.41648562869188765,
+  "Overall": 7.512796886337156
+ },
+ "reproduces_outlook": false,
+ "agree_within": 1,
+ "steps": {
+  "prior": "uniform",
+  "T1": {
+   "m1_minus_b0": 1.2920651109684258,
+   "grid_A": 68.27790366802697,
+   "grid_B": 63.53507631258135
+  },
+  "heart": [
+   {
+    "task": "T2h/<=E9.5->E10.5",
+    "backtest_b0": 50.4272525233645,
+    "payoff_hold_released": 50.224647545310184,
+    "offset": 0.20260497805431754
+   },
+   {
+    "task": "T2h/<=E8.75->E10.5",
+    "backtest_b0": 51.446449911655364,
+    "payoff_hold_released": 55.07867795055321,
+    "offset": -3.6322280388978427
+   }
+  ],
+  "T3_stand_in_means": {
+   "A": 73.32562131545723,
+   "B": 60.774508876346786,
+   "K2a": 50.084296911174725,
+   "K2a_fold_copy": 50.73793515651697,
+   "s2": 50.87223299376943
+  },
+  "T3_weights_as_of_c": {
+   "A": 0.5,
+   "B": 0.5
+  },
+  "T3_weights_with_k2a": {
+   "A": 0.5,
+   "B": 0.25,
+   "K2a": 0.25
+  }
+ },
+ "sensitivity_to_stated_priors": {
+  "T1": {
+   "uniform": {
+    "A": 69.5699687789954,
+    "B": 64.82714142354978
+   },
+   "own_third": {
+    "A": 70.03888843148938,
+    "B": 66.65115460617106
+   },
+   "blood_own_cm_own_up": {
+    "A": 71.70899715374712,
+    "B": 65.31107596664937
+   },
+   "cm_0.45_up": {
+    "A": 69.33311085122571,
+    "B": 61.428398592149684
+   },
+   "cm_own_blood_varies": {
+    "A": 69.31963322989807,
+    "B": 69.31963322989807
+   }
+  },
+  "heart": {
+   "uniform": {
+    "A": 53.85316177680092,
+    "B": 49.19517981245728
+   },
+   "own_third": {
+    "A": 53.498084705878675,
+    "B": 49.48545837996606
+   },
+   "released": {
+    "A": 51.722699351267416,
+    "B": 50.93685121750992
+   },
+   "radial_family": {
+    "A": 52.08955688176333,
+    "B": 49.37689302818224
+   },
+   "thin_family": {
+    "A": 56.49856911935725,
+    "B": 48.92260998886984
+   }
+  }
+ },
+ "gate": {
+  "threshold": 209,
+  "source": "results/upload_gate.json (the captain's upload gate)",
+  "A_above": false,
+  "A_as_of_c_above": false,
+  "B_above": false,
+  "note": "a crossing also needs an independent recomputation, docs/PLAN.md section 8"
+ },
+ "band_percentiles": [
+  10,
+  90
+ ],
+ "draws": 200000,
+ "rng_seed": 20261105,
+ "checks": [
+  "T1 grid: the per-seed runs give payoff.json's mean[truth][bown_cown] on 15 truths (largest gap 0.0e+00)",
+  "T1 grid: the per-seed runs give payoff.json's mean[truth][bown_c0.6] on 15 truths (largest gap 0.0e+00)",
+  "T1 grid (experiments/s2_hedge/results/t1_grid/hedge_bown_cown.json): the per-seed runs give the hedge file's bown_cown alone under 5 stated priors (largest gap 2.1e-14)",
+  "T1 grid (experiments/s2_hedge/results/t1_grid/hedge_bown_cown.json): the per-seed runs give the hedge file's the better of bown_cown and bown_c0.6 under 5 stated priors (largest gap 1.4e-14)",
+  "T1: the floor is 50 on every truth and seed of the grid and on the backtest (largest gap 0.0e+00)",
+  "T1: diag_v1's B0 is the harness's B0 (d2_v1) seed for seed (largest gap 0.0e+00)",
+  "heart T2h/<=E9.5->E10.5 (experiments/s2_hedge/results/heart_scope/hedge_hold.json): the per-seed runs give the hedge file's hold alone under 5 stated priors (largest gap 7.1e-15)",
+  "heart T2h/<=E9.5->E10.5 (experiments/s2_hedge/results/heart_scope/hedge_hold.json): the per-seed runs give the hedge file's the better of hold and half_radial under 5 stated priors (largest gap 2.1e-14)",
+  "heart T2h/<=E9.5->E10.5: the floor is 50 on the released truth and on the backtest (largest gap 0.0e+00)",
+  "heart T2h/<=E8.75->E10.5 (experiments/s2_hedge/results/heart_scope_e875/hedge_hold.json): the per-seed runs give the hedge file's hold alone under 5 stated priors (largest gap 1.4e-14)",
+  "heart T2h/<=E8.75->E10.5 (experiments/s2_hedge/results/heart_scope_e875/hedge_hold.json): the per-seed runs give the hedge file's the better of hold and half_radial under 5 stated priors (largest gap 7.1e-15)",
+  "heart T2h/<=E8.75->E10.5: the floor is 50 on the released truth and on the backtest (largest gap 0.0e+00)",
+  "embryo T2e/E7.25+E8.0->E7.5: emb_shape_v1's fgw is emb_fgw_v1's seed for seed (largest gap 0.0e+00)",
+  "embryo T2e/E7.25+E8.0->E7.5: the floor is 50 on every seed (largest gap 0.0e+00)",
+  "embryo T2e/E6.75+E7.5->E7.25: emb_shape_v1's fgw is emb_fgw_v1's seed for seed (largest gap 0.0e+00)",
+  "embryo T2e/E6.75+E7.5->E7.25: the floor is 50 on every seed (largest gap 0.0e+00)",
+  "T3 rep1: the records' seed means are gata4_summary.csv's t3 (3 variants) (largest gap 1.4e-14)",
+  "T3 rep2: the records' seed means are gata4_summary.csv's t3 (3 variants) (largest gap 1.4e-14)",
+  "T3 T3/Gata4->Mab21l2: the floor is 50 on every seed (largest gap 0.0e+00)",
+  "reading B as of (c): T3 is s2's stand-in on the Gata4 replicates (largest gap 7.1e-15)"
+ ],
+ "inputs_sha256": {
+  "experiments/harness/results/d2_v1/tasks/T1_E9.5_E10.5_chamber.json": "ad5cef9cd5e1be2693295c60c6be2b6c5dd020064e100d4d91e8052e75385eab",
+  "experiments/harness/results/d2_v1/tasks/T2h_E8.75_E10.5.json": "abbdc05fe3ea40e71b089569c0dfefef2ed43f9da0538fc80959621929102cc7",
+  "experiments/harness/results/d2_v1/tasks/T2h_E9.5_E10.5.json": "7cc830d376fb890916fa97355740cfa5e3ff96d1a9002755776a64d8ec692c93",
+  "experiments/harness/results/emb_fgw_v1/tasks/T2e_E6.75_E7.5_E7.25.json": "0579ef165aa0d1f7ebea91f73eb30fe3d200a2165e09dc3c254ddfe9ded178e1",
+  "experiments/harness/results/emb_fgw_v1/tasks/T2e_E7.25_E8.0_E7.5.json": "50efea88a03f54a6d8e39fc89d34c43c5284ab938e471abdf5e442afc932e315",
+  "experiments/harness/results/emb_shape_v1/tasks/T2e_E6.75_E7.5_E7.25.json": "2e58860ac1014e9a02c87caafaf420b58b1974fea37d213266f14cf68266c426",
+  "experiments/harness/results/emb_shape_v1/tasks/T2e_E7.25_E8.0_E7.5.json": "f8545e9002474a66d1d3e7ba4be4ad01b1e7fabda927a72bffd04de3356625e0",
+  "experiments/harness/results/t3_k2_v1/tasks/T3_Gata4_Mab21l2.json": "99bd0535fd176d26115fd1ed000bcfc854a4c37fa21763763146b5b35d895269",
+  "experiments/s2_hedge/results/heart_scope/hedge_hold.json": "64734499b20e2ac0c64a3991fdf600aa67e39e74ca5dd1cbf08932129aaab6cb",
+  "experiments/s2_hedge/results/heart_scope_e875/hedge_hold.json": "7eccbc6d1aec19fdc6630c35b270c290a9edb178233993af482e03a9b4e2db3e",
+  "experiments/s2_hedge/results/per_seed/heart-scope-e875/0-1/heart-scope.json": "2a8d8708b4498a86298d0589a1385c8d51499e02d4b79e031f8b98db732c7d33",
+  "experiments/s2_hedge/results/per_seed/heart-scope-e875/2-3/heart-scope.json": "d997dca89bf932cb24d51921b300b853de0cbc05b2b0db41528ddcd893ebc7c6",
+  "experiments/s2_hedge/results/per_seed/heart-scope-e875/4-5/heart-scope.json": "c3b674b906a06c16794232ab074748b0dc59ac227021b245e6cd9103cd5b41d1",
+  "experiments/s2_hedge/results/per_seed/heart-scope-e875/6-7/heart-scope.json": "85b3d33fed9f8542b4825130d68f2a86bd707604ac5f0e42ff570ad8f76f2b88",
+  "experiments/s2_hedge/results/per_seed/heart-scope-e875/8-9/heart-scope.json": "9e8f6582962f37ffb37a4d6d6d1959d1f2fcf36d0884b6114551a9be1bdee02a",
+  "experiments/s2_hedge/results/per_seed/heart-scope/0-1/heart-scope.json": "2411bb6adebf47a2577b4e9a298cb4fa2a8013df06beeaadbd1bd499bac21ef5",
+  "experiments/s2_hedge/results/per_seed/heart-scope/2-3/heart-scope.json": "52685fce43a5c11762b8ddea396b83d6b5e86bdd866db0a0bdb750a53000a550",
+  "experiments/s2_hedge/results/per_seed/heart-scope/4-5/heart-scope.json": "0ae5a2064c668ff4702cf046ad5bc2157748c5c8889116f54c5e0a026201d995",
+  "experiments/s2_hedge/results/per_seed/heart-scope/6-7/heart-scope.json": "68f03fc4065604beeb817f285b31ac661077f4e2be53f1cacf3a1b8d0ef2a7c9",
+  "experiments/s2_hedge/results/per_seed/heart-scope/8-9/heart-scope.json": "03c324242c767790b414ccecae04e8fecf3f23d6d4c7fd8feed267f948ec755e",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p0_0-1/t1-grid.json": "99a189c5af827a1a7ee5ac5524c74f8d3f6832bd195558c719e5864e836272c7",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p0_2-3/t1-grid.json": "74266924bc4651f47d5511d6911777b4a01d7fa09d009b77215e5739a51ecdab",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p0_4-5/t1-grid.json": "fb20a9195bcce44c2f9dda8bc1b0480cda72a854c72399bdbb822a2cdde6cb3f",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p0_6-7/t1-grid.json": "d0f3f609be2adf13a6f5e4f9eb77ff6f4fc3603d304831125e4e51fe1be120c4",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p0_8-9/t1-grid.json": "ef5959c85ad915465ae420716528d0ad5600b1f44baa7fd4349e5d02fdf0fc02",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p1_0-1/t1-grid.json": "202265e22714589521f265fba0420e39baab9e25b503d16cac8b26793d3bee91",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p1_2-3/t1-grid.json": "48d9bb494a56270423095b1b2b2768c47527df80436c6b0d4a6bb43533741ff0",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p1_4-5/t1-grid.json": "de1cfd975fb8262da4524f41985bea8fb0629b4db6b965785d6e57d6ad0634b2",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p1_6-7/t1-grid.json": "caa3aeeb5350c4bfcb727a3cf6a5a1ae9b5f87e06b76bec56b39ed3a947090f5",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p1_8-9/t1-grid.json": "96541d5d4ca772f21dbe9d6c8097730ef38f2b4324362b6c69b1e2c741258cb2",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p2_0-1/t1-grid.json": "8e40497fc57ff360a989585ded16811490c0964d9b872ef730582a66eedb8c77",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p2_2-3/t1-grid.json": "f248dffea0cbf67bb8772a57b43b7633e9557956275c9e17f358fad40c23d7cb",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p2_4-5/t1-grid.json": "dac288505a3f6f3a67734975b0001b6b66b08a9ba3db2b52bed86d105bd2ff1e",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p2_6-7/t1-grid.json": "d1d80605f6de5a3c7409c9b288d88ee1ca91f37987e1ca300d52d4e2235e92ac",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p2_8-9/t1-grid.json": "024bc03261b7cbb20b179c2911da3d28e9606b949841925a3d5db2ba125473f7",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p3_0-1/t1-grid.json": "d7daa1ebdf3f9691ec1c58407303277cb0a33b2684d39772c13a2b792e576ed0",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p3_2-3/t1-grid.json": "b95cf2ab12b167eac5de6b243dc4f8facad99ebfff74102156da1cf87dee3e5b",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p3_4-5/t1-grid.json": "f88ee247abbd73f337ff70d3960e136ef4f1d34c8d9654a4c4a5692159dc0b4c",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p3_6-7/t1-grid.json": "0733dba83a7ac9ca571497cd869b4cbf9e0f658bf1b5d29120465714b71d3b40",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p3_8-9/t1-grid.json": "cb396170489f3b60295826729943d10dc482b1ee1b8756a1dfcc73b11c567834",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p4_0-1/t1-grid.json": "c54f18dbaf66c3c1951dc094cbb6728ada820e483e13a7ca96d847e3c479f335",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p4_2-3/t1-grid.json": "23fdd61decfea365708b02b9094fc4520c85c8a886ede81dbe9be74a1e50267a",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p4_4-5/t1-grid.json": "c97dff86b9b41d18a6f70c4a762d8132b3e7fe6078a8d795861be8642d236bab",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p4_6-7/t1-grid.json": "682d9ee6a3219f96f04d0b1091011263a91e59c5b4bd3647550e67b32c9836d4",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p4_8-9/t1-grid.json": "e918cd88bcd06dbfbe2333a31571ebdda48c338b8790fcb055e0f4075e811689",
+  "experiments/s2_hedge/results/t1_grid/hedge_bown_cown.json": "3480e76f5e3680fec6220a1e5c66b9f2ddb4d614908a530f289fc6515608e2be",
+  "experiments/s2_hedge/results/t1_grid/payoff.json": "8fc2ebbfe555a7cfc6d4c4ba9d36d7172ba55be0e8d22191dee5846e486463a5",
+  "experiments/t1_m1/results/diag_v1/T1_E9.5_E10.5_chamber.json": "e51d67c6f04271a438883fba2b4800de6cfc7dd006d13b7b49bf62c62dec39fe",
+  "experiments/t3_decomp/results/gata4/gata4_records.csv": "62bc4a448f8f922b9809c47c1ed1285a7962d716d515ea0bb5718a40c62dfd0c",
+  "experiments/t3_decomp/results/gata4/gata4_summary.csv": "da46a3c2591b8481e3f0080f7ceadd393cac51c678fbca6e91f1171ed9daa628",
+  "results/upload_gate.json": "6761d790f52519b74e027853011035bca834938dbc07073c22041f130e3bf51c"
+ }
+}

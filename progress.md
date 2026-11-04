@@ -478,7 +478,9 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       `docs/DATA_POLICY.md` 2026-11-05 (b), the published code the method runs on is registered (X005), and its
       rulings went to the captain (`docs/PLAN.md` decision log 2026-11-05 (b)). The determinism check passed at
       1435acf: all ten test files byte-identical to the archived builds at 1, 4, 8 and 16 BLAS threads
-      (`experiments/builds/results/determinism_1435acf.txt`).
+      (`experiments/builds/results/determinism_1435acf.txt`). The gate estimator (`experiments/gate/estimate.py`,
+      independently recomputed and audited): 191.5 (176.8-204.0) on the better-of-two reading, 170.2 (160.2-179.1) for
+      the first round alone; its T1 is an upper reading, so the record keeps 184; nothing reaches 209.
 
 ### What's Next
 
