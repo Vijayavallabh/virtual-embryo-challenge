@@ -177,7 +177,9 @@ Task 3's s2 is the wild type plus a five-state depletion, by design.
   shares stay as the s1 and s2 rules set them; `docs/DATA_POLICY.md`, 2026-11-04 (c)) were designed and pruned on
   2026-11-04 (`experiments/harness/TRIES.md`).
 - Training data: released T1 E8.5, E9.5, E10.5; Feng 2022 E9.5 and E14.5 CD1 hearts (X002), reduced from GEO by
-  committed code that drops E10.5-E13.5 cells before anything is written. JAX/Qiu 2024 for diagnostics only (X003).
+  committed code that drops E10.5-E13.5 cells before anything is written. The E14.5 cardiomyocyte shares of Feng's two
+  strains (label metadata only, in-window rows dropped at read time; X002) bound where the s2's 60% sits. JAX/Qiu 2024
+  for diagnostics only (X003). The open-source libraries the method runs on are listed in X005.
 
 ## Task 2: spatial-temporal (heart E12.5, embryo E7.75)
 

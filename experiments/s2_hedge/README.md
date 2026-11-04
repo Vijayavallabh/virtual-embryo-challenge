@@ -90,9 +90,11 @@ Reading:
   1.6 under any prior here). This reverses the direction the captain agreed on 2026-11-01 (a hedge on the blood share;
   `docs/PLAN.md` 4.1, decision log 2026-11-01 (d)). It was decided by the AI assistant under his delegation
   (`docs/S2_RULES.md`).
-- **Where the s2 lands:** the legal E14.5 datasets put the cardiomyocyte share at 40-77% of heart cells (a different
+- **Where the s2 lands:** Feng's two strains at E14.5 put the cardiomyocyte share at 42-77% of heart cells (a different
   assay, so the levels do not transfer), against E10.5's 26.5%. An s2 at 60% covers that upper range, and s1 keeps the
-  same-assay estimate.
+  same-assay estimate. (Restated 2026-11-05: a whole-heart figure of 40% was withdrawn, since its sample is coded
+  Theiler stage 22, which the staging rule keeps out; the s2 stays inside the remaining range, so nothing changes;
+  `docs/DATA_POLICY.md` 2026-11-05 (c).)
 
 Caveats:
 - An oracle base: every row starts from the truth's own chamber mix.

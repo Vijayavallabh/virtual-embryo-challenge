@@ -190,7 +190,8 @@ Facts that shape it (`docs/research/digest_2026-10-19.md`, gap-fills 1 and 3):
   blood, about 24% of chamber cells: the 1.5-2% came from nuclei of embryo portions at E8.5 and E9.5, while E10.5, the
   same nuclei assay on dissected hearts like E12.5, has 17% blood, and the E12.5 collection text names no
   blood-removal step.) The cardiomyocyte share of heart cells carries ~75% of the composition risk, and legal E14.5
-  data disagree on it (40%, 42% and 77% across datasets and strains). Order the work: scope (~+20), per-type state
+  data disagree on it (42% and 77% in Feng's two strains; a whole-heart 40% from a sample coded Theiler stage 22 is
+  withdrawn under the staging rule, `docs/DATA_POLICY.md` 2026-11-05 (c)). Order the work: scope (~+20), per-type state
   shifts (~15), births (~1.5-5).
 - **Direction.** Within-platform fold changes from Feng 2022 chamber hearts (legal stages only) beat internal momentum in
   a test-like geometry (sign agreement 0.92 vs 0.73, Spearman 0.80 vs 0.40). JAX nuclei are run- and depth-confounded
@@ -595,9 +596,9 @@ step 4, the pre-registered runs in order, each output committed before anything 
 go-ahead; then the runbook's section 5.
 
 2026-11-05: the upload dates in the table (Nov 17-30) are superseded. Uploads wait for the captain's upload gate
-(section 8) with his deadline exception: the s1 methods freeze at 2026-11-27 00:00 UTC and the first round goes in on
-27 Nov whatever the estimate, each upload with his go-ahead; the s2 round by 2026-12-01 06:00 UTC and the final marks
-by 12:00 UTC that day (decision log 2026-11-04 (b) and 2026-11-05).
+(section 8) with his deadline exception: the s1 methods freeze at 2026-11-27 00:00 UTC, and from then the first round
+may go in whatever the estimate, each upload only on his go-ahead at the time; the s2 round by 2026-12-01 06:00 UTC
+and the final marks by 12:00 UTC that day (decision log 2026-11-04 (b) and 2026-11-05).
 
 ## 8. Submission policy
 
@@ -618,16 +619,23 @@ by 12:00 UTC that day (decision log 2026-11-04 (b) and 2026-11-05).
     entry, and so no place and no Generality Award standing): "I am fine with submitting our 1st submission at Nov 27
     anyway". So the s1 methods freeze at 2026-11-27 00:00 UTC (05:30 IST). That morning the AI assistant rebuilds the
     files at the freeze commit, checks them (`vec check`, the server format checks, archived hashes) and gives the
-    captain the plain summary; the first round (T1 s1, heart s1, embryo s1 and T3's s2) then goes in on 27 Nov
-    whatever the estimate, each upload with his go-ahead at the time. The s2 round follows by 2026-12-01 06:00 UTC and
-    the final marks by 12:00 UTC that day. If the estimate crosses 209 earlier, with its review, the first round may
-    go in earlier.
+    captain the plain summary; the first round (T1 s1, heart s1, embryo s1 and T3's s2) may then go in whatever the
+    estimate, each upload only on his go-ahead at the time. The words are his own, written in his message in the main
+    session (a note on a side agent's text he forwarded), not an agent's relay. The AI assistant reads "our 1st
+    submission" with the gate's own scope (the first upload on every board) and "at Nov 27" as from 2026-11-27 00:00
+    UTC (05:30 IST, inside 27 Nov in both zones), and asked him on 2026-11-05 to confirm or correct that reading. The
+    s2 round follows by 2026-12-01 06:00 UTC and the final marks by 12:00 UTC that day. If the estimate crosses 209
+    earlier, with its review, the first round may go in earlier.
   - The record: `results/upload_gate.json` (the estimate, its range and basis, the review, the deadline exception and
     whether the captain has lifted the gate). The submission client refuses an official upload unless the record
     passes: an estimate above 209 with a named review, the deadline exception reached (2026-11-27 00:00 UTC), or the
     captain's lift (guard "upload gate"; `src/vec/submit.py`). Only the captain lifts it or moves the exception, by a
-    committed change to the record.
-  - Today: about 184 (170-198), some 25 points short.
+    committed change to the record. The guard checks the record only; the captain's go-ahead for each upload, which he
+    runs himself, is the control beyond it. Until he says which reading of "estimated score" he meant, an early
+    crossing needs both readings above 209: each board at the better of its two uploads (`estimate`) and the first
+    round alone (`estimate_first_round`: T1 s1, heart s1, embryo s1 and T3's s2).
+  - Today: about 184 (170-198), some 25 points short. The DGX campaign design of 2026-11-05 found no route past 209 by
+    the freeze on our evidence (decision log 2026-11-05 (b)).
 
 - Format checks are free and unlimited (no scored attempt), only on the phase's boards, and paused while a format check
   that the server stored awaits `vec submit resolve`. Scored uploads need the user's explicit go-ahead, and the client
@@ -1055,8 +1063,8 @@ open. No organiser reply to any of the four emails as of then.
   - **The deadline exception** (the captain, the same day, answering a side agent's note that the gate could mean no
     entry, and so no place and no Generality Award): "I am fine with submitting our 1st submission at Nov 27 anyway".
     The s1 methods freeze moves to 2026-11-27 00:00 UTC, so the files can be rebuilt and checked that morning; the
-    first round goes in on 27 Nov whatever the estimate, each upload with his go-ahead at the time; the s2 round and
-    the final marks keep their dates. The record carries the exception (`deadline_exception_utc`), and the client's
+    first round may go in from then whatever the estimate, each upload only on his go-ahead at the time; the s2 round
+    and the final marks keep their dates. The record carries the exception (`deadline_exception_utc`), and the client's
     guard opens at it.
   - **The rehearsal** ((c)'s recommendation). At 1206d60 on a clean tree, the DGX rebuilt all ten test files from
     empty folders with `experiments/builds/build_all.sh` (s1, s2 and t3alt, about 2.3 minutes in all). Every file
@@ -1064,3 +1072,46 @@ open. No organiser reply to any of the four emails as of then.
     (`runs/archive/builds_ae6d6b3/SHA256SUMS`), and the ten server format checks passed again from the local machine
     (`results/submissions.csv`). A first attempt stopped at the T3 builder, which refuses to overwrite an earlier
     output, as designed; the earlier files had been archived and verified first. It is repeated at the freeze commit.
+- 2026-11-05 (b), the DGX campaign design (wf_7d1d7fe1-e6e) and its audit:
+  - **What it was.** The captain asked for the DGX's resources to be used extensively. Four program designers (T1
+    composition, T1 expression, the T3 response, the two T2 boards), an adversarial critic each, a compliance audit and
+    a synthesis looked for compute-heavy, rule-compliant ways to lift the estimate past 209 by the freeze.
+  - **The finding: no.** After the critics, everything proposed adds about +0.2 Overall in expectation, and nothing
+    passes `vec.adoption` on counting backtests it was not tuned on; the chance that either reading of the estimate
+    exceeds 209 by 2026-11-27 is put below 1%. The limit is legal evidence, not compute. T1's composition has no legal
+    counted check (both counted T1 tasks draw E9.5's mix, Feng's E9.5 lies inside every T1 task's window, and a
+    late-fetal family cannot test the capture change or the transfer from whole cells to nuclei), and exact knowledge
+    of E12.5's mix would be worth only about +2 to +4 over today's pair; an oracle per-type expression shift moved
+    mmd_u by +0.12 and +0.30; T3's lead factor has no cross-knockout support (K2a, (d)); the heart and the embryo have
+    no open lever with a reason that holds at test. So the GPUs stay unused (the one GPU plan, per-cell latent
+    transport at about 15 GPU-hours, is pruned), and no try is spent on a pruned idea, which would only raise the
+    lucky-fit risk. The DGX runs target-free work instead: a determinism check of the ten builds across thread counts
+    and the estimator below. The pruned set is in `experiments/harness/TRIES.md` ("Pruned before running", the
+    campaign design of 2026-11-05).
+  - **The estimate stays 184 (170-198)** until a change is kept, and is then restated symmetrically: K2a came after it
+    and points down for T3, so 184 is if anything high. The first-round-only reading (T1 s1, heart s1, embryo s1, T3's
+    s2) is lower, roughly 160-170 on unreviewed arithmetic. `experiments/gate/estimate.py` is to compute both readings
+    from committed files only (aggregation, not a try), and an independent agent recomputes them before either figure
+    goes to the captain as reviewed.
+  - **Put to the captain** (2026-11-05): confirm or correct the exception's reading (section 8); which reading of
+    "estimated score" he meant; R1 (the AI assistant recommends yes); R2, the embryo s2 changed to fgw with aligned
+    moves (+0.154 board points on the frozen rule's better-of-two backtests, +0.2997 head-to-head on E7.5 in 9 of 10
+    seeds, below 0.3; post hoc, since E11 ran after the s2 freeze and both embryo tasks are selected-on; about +0.15
+    Overall at test, range -0.15 to +0.5; it loses if E7.75 keeps E7.5's geometry; recommended: decline); D3 only on a
+    prior he writes from legal data; a late-fetal counting family, recommended declined for this season, so T1's try
+    budget to the freeze is its count plus at most D3; and the deletion of residues (the JAX source tables outside the
+    repository, which still hold boundary embryos 50-53; the raw site copies of 2026-10-18 to 2026-10-20 in the AI
+    assistant's session scratchpad; the DGX scratch folder `rebuild_2026-11-04/` once its evidence is archived).
+  - **Decided by the AI assistant** (the delegation of 2026-11-02; the captain can overrule): (i) a changed T1 s1 sends
+    T1's s2 back to the captain, the stricter of two readings (with_share would otherwise carry a changed non-CM ratio
+    into the 60% s2 by itself); (ii) a designer's unregistered comparison against E10.5 counts as T1's seventh try
+    (rule 4; `docs/DATA_POLICY.md` 2026-11-05 (b)); (iii) the published code the method runs on gets one register row
+    (X005), since the Rules ask for every published-code source to be disclosed; (iv) the exception is worded "may go
+    in ..., each upload only on his go-ahead at the time" everywhere, and "whatever the estimate" stays as the meaning
+    of his "anyway"; (v) board priority comes only from the headroom tables: the campaign's task prompt carried
+    per-board leaderboard figures, which is struck (`docs/DATA_POLICY.md` 2026-11-05 (b)).
+  - **A disclosure gap, closed.** The T1 s2's 60% placement leaned on three E14.5 cardiomyocyte shares from label-only
+    metadata that no register row covered: Feng's C57BL/6 strain (now in X002) and a whole-heart dataset whose sample
+    is coded Theiler stage 22 (X006). Under the staging rule's working answer that sample stays out, so its figure is
+    withdrawn from the rationale; Feng's two strains alone span 42-77% and the s2 stays inside that range, so no rule
+    changes (`docs/DATA_POLICY.md` 2026-11-05 (c)).

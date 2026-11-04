@@ -72,7 +72,7 @@ Before this ledger (from `results/registry.csv` and the decision files; floor an
 | T2:heart:test_extrap | 2 | b0, pseudobulk_shift (harness). The s2 hedge payoffs (heart scope) are a sensitivity analysis, not tries |
 | T3:bcatenin | 1 | shift_transfer (the organisers' baseline); the T3 entries come from the pre-registered rules in `experiments/t3_decomp/` |
 
-Since this ledger: see "Tries since 2026-11-03" and "Tries since 2026-11-04 (rules 5-8)" below. Running totals: T1 6, embryo 9, heart 3, T3 3 (H4 and E9 were pruned before their run; E10 was pruned by its gate and not counted; E11 counts; K2a and K2b, registered at 945de7d, ran at 0409d18 and count). N1 and N2 read no target and no score, so they are not tries, and R1 is a ruling request with no run.
+Since this ledger: see "Tries since 2026-11-03" and "Tries since 2026-11-04 (rules 5-8)" below. Running totals: T1 7, embryo 9, heart 3, T3 3 (H4 and E9 were pruned before their run; E10 was pruned by its gate and not counted; E11 counts; K2a and K2b, registered at 945de7d, ran at 0409d18 and count; T1's seventh is a campaign designer's unregistered comparison against E10.5 of 2026-11-05, counted under rule 4: "Pruned before running", the campaign design of 2026-11-05). N1 and N2 read no target and no score, so they are not tries, and R1 is a ruling request with no run.
 
 ## Where the entries stand against the published baselines
 
@@ -217,9 +217,9 @@ Read with care:
 
 The captain's upload gate (2026-11-05; `docs/PLAN.md` section 8): no first upload on any board until our estimated
 leaderboard total is above 209 (about 184 today) or his deadline exception opens (the s1 methods freeze at 2026-11-27
-00:00 UTC; the first round goes in on 27 Nov), so every entry stays open to tries until then. The gate is about
-uploads only: it is never evidence for a try, and a try's row still names its own expected gain on its counting
-backtests.
+00:00 UTC; from then the first round may go in, each upload only on his go-ahead at the time), so every entry stays
+open to tries until then. The gate is about uploads only: it is never evidence for a try, and a try's row still names
+its own expected gain on its counting backtests.
 
 Once the heart and embryo s1 are uploaded, the frozen s2 rules build their s2 as s1, at s1's commit
 (`docs/S2_RULES.md`), so from then on no try reaches those two boards unless the captain changes a rule.
@@ -399,6 +399,56 @@ they would read a counted task's truth and spend tries without making anything a
 - **T3: three diagnostics on the cross-knockout folds** (s1's recipe with depth and gene identity separated, the
   knockout-slide variance net of the WT-run difference, an oracle bound of the Mesp1 response). They would spend
   both folds; K2a and K2b keep the one reading the principle asks for, on one fold.
+
+From the DGX campaign design of 2026-11-05 (wf_7d1d7fe1-e6e: four program designers, an adversarial critic each, a
+compliance audit and a synthesis; design only, no scored run; pruned by the AI assistant under the captain's delegation
+of 2026-11-02, and he can overrule). Everything it proposed adds about +0.2 Overall in expectation after the critics,
+and nothing passes the adoption rule on counting backtests it was not tuned on: the limit is legal evidence, not
+compute (`docs/PLAN.md` decision log 2026-11-05 (b)).
+
+- **T1: V3, Feng's E9.5 -> E14.5 epicardial-to-endothelial composition rate at f = 2/5, checked on a late-fetal family
+  (Feng CD1 with Feulner 2026).** It re-proposes the pruned Feng-based growth without answering why it was pruned:
+  Feng's capture moves from mostly LV-zone cells at E9.5 to zone-balanced at E14.5, and a late-fetal, whole-cell family
+  cannot test that capture change or the transfer from whole cells to nuclei. The crosswalk of Feng's fibroblast-like
+  group alone moves the test shift 2.7-fold, and the proposed power gate would preview the family's outcomes. Revival
+  only at the captain's request, with a registered target-free capture check, every constant, the family under its own
+  config key, a Theiler-to-E-day table and an X002 amendment committed before any gate. Before any row existed its
+  designer compared the rule, one day forward from E9.5, with E10.5's committed non-cardiomyocyte split: an
+  unregistered in-sample check that counts as T1's seventh try (rule 4). Its figures are carried nowhere, and E10.5 is
+  never cited for V3 (`docs/DATA_POLICY.md` 2026-11-05 (b)).
+- **T1: a hierarchical composition meta-model with scANVI.** Nothing identifies the (9.5, 13.5] gap, so it reduces to
+  V3 with more parameters, and training scANVI on E10.5's labels reads a counted target.
+- **T1: late-fetal pseudo-tasks (XP) as counting evidence; per-cell latent transport (JL-OT a and b); decoded
+  sampling.** Feulner's TS22 sample is excluded by our staging rule (`docs/ORGANIZER_QUESTIONS.md` Q7's working
+  answer; the X003 precedent for JAX embryos 50-53): a filter drops it at ingest, and it could be kept only with a
+  documented per-sample age in (13.5, 14.5] and an organiser question citing Q7 sent first, since the captain cannot
+  waive an organiser window. Every other legal late anchor is at or after birth, and XP0's gene-coverage check read the
+  targets. JL-OT's counted expectation is 0.16-0.2, under rule 5's 0.3: an oracle per-type shift moved mmd_u only
+  +0.12 and +0.30 points (`experiments/t1_scope/results/pseudo_E8.5_E9.5_lib1` and `lib2`); balanced transport would
+  impose the anchor's capture-driven atrial:ventricular mix, a composition change with no quota rule
+  (`docs/DATA_POLICY.md` 2026-11-04 (f)); and GPU non-determinism would break the freeze-morning hash check. Until a
+  revival meets the audit's conditions (per-stage files with a loader test, a register row for Feulner with filter
+  code, an X002 amendment per new Feng use confirmed by the captain, an independent leakage review of the harness
+  extension, one late-fetal family approved as an adoption-rule reading), nothing from Feng enters a model beyond the
+  ruled per-type direction. The two T1 designers saw per-stage cell counts and batch ids of Feng E17.5 and P0; a
+  revival's rows disclose it.
+- **T3: QC20, the knockout pipeline's 20-count and 20-gene cell filter in s1.** It claims more than the committed
+  within-label ceiling (`experiments/t3_decomp/results/gata4/gata4_summary.csv`: at most about 1.4 and 0.8 T3
+  points); its synthetic evidence was not built the way s1 is; its pseudobulk shift tracks pb (Spearman +0.97), so it
+  is a depth increase; and its within-label redraws change T3's composition: two closed levers. Its check would read
+  the Gata4 replicate, a fold that never counts. T3 stays at 3 tries, and nobody inspects E10.5's cell filter.
+- **T3: additions to existing entries, not new prunes.** A Mesp1-lineage delay belongs to "a Mesp1-lineage timing
+  shift" above (the WT axes are run differences). Generic cycle and stress programmes: no hand-typed gene list or
+  pathway set enters a model without an `EXTERNAL_DATA.md` row, `docs/PLAN.md` 4.4 provenance excluding Ctnnb1
+  perturbations, and A15. Shrinkage belongs to "a two-scenario factor exponent"; ensembles are covered by D3's
+  factorial, D11b and K2a; a mean of runs is D10's x0 = 0.
+- **Embryo.** E7.25 and E7.5 cannot count for any change to the mixing fraction: a designer derived each target's
+  best fraction from the committed mixtures in `diag_emb_mix.json` (not quoted anywhere). The heart-E8.5
+  "gate-estimate" diagnostic is dropped: it is the pruned third pseudo-task, and it would make the gate the reason for
+  a try. The embryo s2 changed to fgw with aligned moves is a ruling request (R2, `docs/PLAN.md` decision log
+  2026-11-05 (b)), not a row; its diagnostic N3 is registered only if the captain asks to consider it.
+- **T1 and heart: population or share choices from qualitative E9.5-E13.5 background.** Closed by
+  `docs/DATA_POLICY.md` 2026-11-04 (d) and decision log 2026-11-04 (e); struck.
 
 ## Diagnostics behind these choices
 

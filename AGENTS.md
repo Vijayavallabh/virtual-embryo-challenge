@@ -99,8 +99,8 @@ If baseline verification is failing, repair that first before adding new scope.
   section 8, recomputed by an independent reviewer before the gate counts as crossed; never from a test score or a
   leaderboard figure. The figure stays 209 unless the captain changes it, and only he lifts the gate. His deadline
   exception (2026-11-05): "I am fine with submitting our 1st submission at Nov 27 anyway": the s1 methods freeze at
-  2026-11-27 00:00 UTC, and the first round may then go in whatever the estimate, each upload with his go-ahead at the
-  time. The gate is about uploads only, never a try (`docs/DATA_POLICY.md` 2026-11-05). The record is
+  2026-11-27 00:00 UTC, and the first round may then go in whatever the estimate, each upload only on his go-ahead at
+  the time. The gate is about uploads only, never a try (`docs/DATA_POLICY.md` 2026-11-05). The record is
   `results/upload_gate.json`; the submission client refuses an official upload while it does not pass (guard "upload
   gate").
 - **Heavy compute runs on the DGX** (`PrakashDGX_H2`, workspace `~/v/virtual-embryo-challenge`), never on the shared

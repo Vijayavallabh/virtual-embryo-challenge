@@ -448,4 +448,48 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   It is the captain's own upload rule and gates official uploads only. It is not a threshold or evidence for any try,
   adoption or method choice, which a leaderboard figure never is. The estimate it is compared with uses our own
   committed evidence only, never a test score or a leaderboard figure, and later leaderboard reads do not move the
-  gate (`docs/PLAN.md` section 8).
+  gate (`docs/PLAN.md` section 8). His deadline exception of the same day lets the first round go in from 2026-11-27
+  00:00 UTC whatever the estimate, each upload only on his go-ahead at the time; it changes no data rule.
+- 2026-11-05 (b), process notes from the DGX campaign design (wf_7d1d7fe1-e6e), from its compliance audit and its
+  agents' own reports; no test-board limit, anchor or truth count and no hidden-target size was seen, and no
+  leaderboard page, board file or board endpoint was opened: (i) before any row existed, the T1 composition designer
+  applied Feng's E9.5 -> E14.5 composition rate one day forward from E9.5 and compared it with E10.5's committed
+  non-cardiomyocyte split, the target of both counted T1 tasks; it was disclosed and marked not to be cited, its
+  figures are carried nowhere, it counts as T1's seventh try (rule 4), and E10.5 is never cited for that rule; (ii)
+  that designer's probes read Feng and JAX tables in the DGX repository's `data/external` directly with read-only
+  stdlib one-liners, without a scratch copy (the modification times of `data/`, `data/raw` and `data/external` are
+  unchanged); (iii) the T3 designer's probes ran the DGX venv's Python directly, read built test files in the DGX
+  repository's `runs/` (outside its scratch copy) and computed per-cell gene-count shares and a median library size on
+  them, ran the T3 scorer on synthetic truths (not a try, on the synthetic-toy precedent), and wrote a probe with
+  hand-typed gene lists; no hand-typed list or pathway set enters a model without an `EXTERNAL_DATA.md` row,
+  `docs/PLAN.md` 4.4 provenance and A15; (iv) the T1 expression designer made one general web search, whose snippet
+  (a published late-fetal trend, outside the banned range) was not used; (v) the T2 designer fitted the committed
+  mixtures to each counted embryo target's best mixing fraction (so E7.25 and E7.5 cannot count for a change to the
+  mixing fraction; not quoted anywhere), read the digest's lines on how cell limits are set, and displayed a
+  validation board's published spec; (vi) two full test runs on the DGX that the audit could not attribute were the
+  main session's harness initialisations at 01337d0 and 54fccb0 (finished 19:06 and 19:19 UTC on 2026-11-04; the
+  audit read the DGX's local times, UTC+1, as UTC), and a uv lock four minutes later is unattributed (a probe's
+  `uv run` fits); (vii) the AI assistant's task prompt gave every design agent the per-board figures of the screened
+  leaderboard read, the misuse (g)(v) struck, and one design used them to say where the gap lies. It is struck: board
+  priority comes only from the headroom tables, and prompts carry no per-board leaderboard figure (at most the overall
+  figure, labelled as calibration); (viii) residues that predate the campaign, kept until the captain rules: the JAX
+  source tables outside the repository (`~/v/vec-gapconc/ext/jax/meta/`), which still hold boundary embryos 50-53
+  (agents read JAX only under `data/external/jax_qiu2024`); raw copies of challenge-site pages, leaderboard downloads
+  and board-endpoint responses from 2026-10-18 to 2026-10-20 in the AI assistant's session scratchpad (no agent lists
+  or searches the scratchpad recursively, and probes write into their own subfolder); and the DGX scratch folder
+  `rebuild_2026-11-04/` (the rebuild design's probe scripts). The campaign left no scratch copy on the DGX.
+- 2026-11-05 (c), a disclosure gap the campaign's audit found, traced by a screening agent (the main agent read only
+  the screened answer and the digest): the T1 s2's placement (cardiomyocytes at 60% of heart cells) leaned on three
+  E14.5 cardiomyocyte shares from the research of 2026-10-19 (digest, 2026-10-19, the composition-cost item): one
+  whole-heart dataset (39.9% +- 11.2) and Feng's chamber dataset in two strains (41.5% and 76.6%). All three came from
+  label-only per-cell metadata, before any register row covered them: X002 covered Feng's CD1 strain only, and the
+  whole-heart source (best match Feulner 2026 with Wünnemann 2020, CELLxGENE-coded Theiler stage 22; the digest does
+  not name it) had no row. Under this policy's "Nearness counts" and the staging rule's working answer
+  (`docs/ORGANIZER_QUESTIONS.md` Q7: an embryo either label puts inside a window stays out), a sample coded Theiler
+  stage 22 (E13.5-E15) stays out of T1 and the T2 heart, even though its authors call it E14.5. So: X002 now discloses
+  the C57BL/6 label use (E14.5, legal); X006 discloses the whole-heart source and withdraws its figure from the s2
+  rationale; X005 lists the published code the method runs on. No rule changes: Feng's two strains alone span 42-77%,
+  and the frozen s2's 60% lies inside that range (`docs/S2_RULES.md` does not cite the withdrawn figure; the s2_hedge
+  README and `docs/PLAN.md` 4.1 are restated). The figure stays in the screened digest as a record and is not cited
+  again. No history purge is proposed: it is an authors-labelled E14.5 summary share, outside the organisers' window as
+  written, kept out by our stricter working answer; the captain can rule otherwise.
