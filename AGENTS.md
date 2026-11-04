@@ -44,7 +44,7 @@ assistant under the captain's delegation of 2026-11-02, and he can overrule them
    2026-11-04 on; the entries as built stand on the rules and rulings that chose them (`docs/PLAN.md`, decision log
    2026-11-04).
 7. **No safeguard loosens.** The principle opens no data, route or exception. The data rules and the post-exposure
-   block (`docs/DATA_POLICY.md`, 2026-11-04, (b), (c)), the adoption rule, the ledger's rules, the frozen s2 and T3
+   block (`docs/DATA_POLICY.md`, 2026-11-04, (b) to (d)), the adoption rule, the ledger's rules, the frozen s2 and T3
    rules and the captain's go-ahead for every official upload all stand; a closed lever (`TRIES.md` rule 6) stays
    closed whatever its headroom.
 
@@ -76,7 +76,8 @@ If baseline verification is failing, repair that first before adding new scope.
   its HTTP 403. Its `--from-file` intake reads a copy the captain saves in the browser, a route he cleared on
   2026-11-01 with conditions (notice first, not before 2026-11-04; `docs/DATA_POLICY.md`): nobody opens the saved
   file, and test-board counts are read by code only, never quoted. Read research results through the screened digest;
-  see `docs/DATA_POLICY.md`.
+  see `docs/DATA_POLICY.md`. Recursive searches skip `boards/` and `docs/research/`
+  (`grep -r --exclude-dir=boards --exclude-dir=research`).
 - **Scores choose, never compute.** Leaderboard returns may be used to pick between predictions, never to solve for a
   property of a hidden target (no inverting the skill map, no differencing scores).
 - **Competition data stays private.** Data lives under `data/` (gitignored) and is never committed, shared or shown

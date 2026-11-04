@@ -363,3 +363,23 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   scorer's E12.5 working copy, which says nothing about which states appear or their shares; and the T1 E12.5 file
   size, a proxy for the same count, has been in `docs/CHALLENGE.md` since 2026-10-18 without redaction, because Task 1
   scores no size. A births try still goes through the tries ledger, registered before its run.
+- 2026-11-04 (d), decided by the AI assistant under the captain's ruling (c) ("Go ahead with whatever maximizes our
+  chances of winning this challenge") and the delegation of 2026-11-02 (the captain can overrule): T1's composition
+  reopens within the fixed chamber scope by the legal route. A T1 try may change the shares of the chamber categories
+  and of the states within them, births included, taken only from the released stages, the unlocked E10.5 and legal
+  external data (nothing after E9.5 up to and including E13.5), by a rule committed in its ledger row before any run.
+  Why this is safe: (c)'s reason covers every share, not only births. What the exposure showed for T1 is a cell count
+  of the scorer's E12.5 working copy, and the T1 E12.5 file size, a proxy for the same count, has been in
+  `docs/CHALLENGE.md` since 2026-10-18; a count says nothing about which states appear or in what shares. No exposed
+  value is in any file, prompt or summary, and since this session's context was summarised the AI assistant's working
+  context holds none. Why now: births were pruned the same day (`experiments/harness/TRIES.md`), leaving no open lever
+  on T1's weakest groups, and a screened read of the public leaderboards (board and overall totals only) put a Human
+  top-3 place near 202-210 overall, against about 165 from our practice-task results, with T1 the largest gap. Still
+  closed: cell numbers, sizes and scope on every board, and T3's composition (also fixed by the frozen T3 rules). The
+  frozen s2 rules (`docs/S2_RULES.md`) apply to whatever s1 the ledger keeps; an s1 that changes sends its s2 back to
+  the captain.
+- 2026-11-04 (e), process slip, no exposure: in the principle workflow (wf_880d37d6-91b), one recursive grep over its
+  worktree (`*.md` and `*.json`) opened `boards/index.json`; no line matched and none was printed. The same grep
+  printed three citation lines from `docs/research/` (landscape.md, external_data.md, t2_spatial.md), all giving the
+  DOIs of errata to Qiu et al., Cell 2024; nothing from them was used or written. Recursive searches now skip both
+  folders (`AGENTS.md`, quarantined material).

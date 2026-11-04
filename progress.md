@@ -10,11 +10,14 @@ list, and `vec boards update --from-file` read them. D1 (ae6d6b3): the test boar
 lists and keys but no truth_cells or ref_cells, so A3 stays open. Two exposures on the way are recorded with their containment (`docs/DATA_POLICY.md`, 2026-11-04 and (b)): the
 board file and then the Data page were pasted into the AI assistant's session, so no try may change a cell number, a
 size or a scope on any board, or T1's or T3's composition; the captain's ruling (c) reopened T1 births by the legal
-route only. All 10 test-board files (s1, s2 and the T3 switch) built at ae6d6b3 pass `vec check` and the server
-format check; no scored submission is used. The first official round (heart s1, embryo s1, T3's s2 = refused_s1) has
-the captain's go-ahead; Claude Code's auto-mode classifier blocks the AI assistant from sending official uploads, so
-the captain runs the three commands. Both T1 uploads wait for the births decision (design workflow wf_77e506c8-014;
-until 2026-11-10 at the latest, then T1 goes up as built). The captain sent an organiser follow-up on 2026-11-04 (the
+route, and (d) T1's composition by the same route. All 10 test-board files (s1, s2 and the T3 switch) built at ae6d6b3 pass `vec check` and the server
+format check; no scored submission is used. Official uploads are on hold (the captain, 2026-11-04): none until the entry has improved
+significantly, aiming at a Human top-3 place; the first round's go-ahead was withdrawn the same day and nothing was
+sent (fallback dates: `docs/PLAN.md` decision log 2026-11-04 (b)). The captain runs every upload, since Claude Code's
+auto-mode classifier blocks the AI assistant from sending one. Births were designed and pruned (`TRIES.md`), and
+`docs/DATA_POLICY.md` 2026-11-04 (d) reopened T1's composition by the legal route. A screened read of the public
+leaderboards (wf_e01fe547-a9a; totals only) puts a Human top-3 place near 202-210 overall, against about 165 from
+our practice-task results; the rebuild design (wf_237f8d8f-e7c, design only) is running. The captain sent an organiser follow-up on 2026-11-04 (the
 exposure; the published limits and file sizes can reveal hidden counts) and found the Spam folder clean. Pushes no
 longer need asking (the captain, 2026-11-04).
 Since 2026-11-03 (the captain: keep every default, continue the s1 work, iterate without the plan's dates, "do
@@ -29,11 +32,11 @@ headroom tables and the order of the next tries; `METHOD_SUMMARY.md` by facet; A
 (`experiments/harness/headroom.py`, committed results only, not a try) give the largest gaps in Overall units as T3
 response identity (de_score, 15.18 points left with the cross-knockout stand-in; 11.89 with stand-in A) and T1
 distribution (mmd_u, 15.08), tied within T3's stand-in spread; the heart's stand-in is within 1.3 points of copy_last
-on every metric; the embryo has the smallest gap and the most tries. Open levers: T1 births by the legal route (the
-births design) and a T3 factor change through the adoption rule on the cross-knockout folds, then the captain; T1
+on every metric; the embryo has the smallest gap and the most tries. Open levers: T1 composition by the legal route (births
+were pruned; (d) reopened the shares) and a T3 factor change through the adoption rule on the cross-knockout folds, then the captain; T1
 direction is open but has no backtest; none with a reason that holds at test on the heart or the embryo. Nothing in
 this makes or schedules an upload: each official upload needs the captain's explicit go-ahead at the time. D1 floor
-note: D1 (ae6d6b3) lists copy_last as T3:bcatenin's floor. The old loader gave copy_last to any spec without the
+note (settled 2026-11-04: the rerun reports wt_identity): D1 (ae6d6b3) lists copy_last as T3:bcatenin's floor. The old loader gave copy_last to any spec without the
 field; `vec.boards.load_boards` now gives a spec without the field, or with null, its task's floor (wt_identity on T3)
 and keeps a published value. Whether the T3:bcatenin spec omits the field is not checked (that needs the board index,
 which nobody opens). No build, upload guard or score uses the field, so no built file or score changes; the D1 check
@@ -420,29 +423,40 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       Checks with the main repository's interpreter: ruff clean on src, tests and headroom.py; `tests/test_boards.py`
       68 passed, 1 deselected (the test that reads the committed board index, left out so that no failure could print
       a test board's spec); `tests/test_submit.py` 88 passed. No try, no build, no upload.
+- [x] 2026-11-04 (later): the principle branch merged into main (404b84b, fast-forward). Births by the legal route
+      designed and pruned (wf_77e506c8-014: seven agents, design only, no T1 score; entry in `TRIES.md`, "Pruned
+      before running"; the scratch files' hashes checked on the DGX). The captain's upload hold, the fallback
+      dates, the screened leaderboard read and T1's composition reopened by the legal route are recorded in
+      `docs/PLAN.md` decision log 2026-11-04 (b) and `docs/DATA_POLICY.md` 2026-11-04 (d); the principle
+      workflow's grep slip in (e); A8's readout moved after the 2026-12-11 announcement (A22). The D1 check rerun
+      with the loader fix (`experiments/intake/results/d1_rerun_2026-11-04/`) reports wt_identity for T3:bcatenin,
+      which settles the D1 floor note. Rebuild design launched (wf_237f8d8f-e7c).
 
 ### What's Next
 
 Updated 2026-11-04, after the captain's guiding principle (`AGENTS.md`; the order comes from the headroom tables in
 `experiments/harness/TRIES.md`):
 
-1. Official uploads: none without the captain's explicit go-ahead at the time; he runs the commands. Once the heart
+1. Official uploads: on hold until the entry has improved significantly (the captain, 2026-11-04; fallback dates in
+   `docs/PLAN.md` decision log 2026-11-04 (b)); each needs the captain's explicit go-ahead at the time, and the
+   captain runs the commands. Once the heart
    and embryo s1 are up, the frozen s2 rules build their s2 as s1, at s1's commit (`docs/S2_RULES.md`), so no later
    try reaches those two boards unless the captain changes a rule.
-2. T1: both uploads also wait for the births decision (design workflow wf_77e506c8-014; decision by 2026-11-10 at the
-   latest; a T1 upload then still needs the captain's go-ahead). Births by the legal route are the one open
-   composition lever on T1's weakest groups (distribution, DE recovery, covariance); T1 direction stays open, but no
-   backtest can judge a change to Feng's direction. The births try is registered in `TRIES.md` under rules 5-8
-   before its run.
+2. T1: births were designed and pruned (2026-11-04; `TRIES.md`), so neither upload waits on them. T1's composition
+   is reopened by the legal route (`docs/DATA_POLICY.md` 2026-11-04 (d)), the one open lever on its weakest groups
+   (distribution, DE recovery, covariance); T1 direction stays open, but no backtest can judge a change to Feng's
+   direction. The rebuild design (wf_237f8d8f-e7c) proposes the rows; each is registered in `TRIES.md` under rules
+   5-8 before its run.
 3. T3: response identity, the largest gap in Overall units on the cross-knockout stand-in (15.18; 11.89 on the
    replicate stand-in), ties with T1 distribution (15.08) and comes second for the reason in `TRIES.md` (T1's lever
-   has a design and a date; no T3 candidate exists yet). A factor change is kept only under the adoption rule on the
+   has a design under way; no T3 candidate exists yet). A factor change is kept only under the adoption rule on the
    cross-knockout folds and then goes to the captain (T3's s1 is his ruling); the composition stays closed.
    Optional, and it changes no upload: the Gata4 factor alone on the Gata4 -> Mab21l2 fold (`TRIES.md`, the order of
    the next tries).
 4. Keep the headroom tables and `METHOD_SUMMARY.md` current after every kept change or new entry (`TRIES.md` rule 8;
    feat-021, done once a full `./init.sh` passes); D3 on 2026-11-12 (feat-017).
-5. Heart and embryo: no try without an open lever and a reason that holds at test.
+5. Heart and embryo: no try without an open lever and a reason that holds at test; the rebuild design re-examines
+   both.
 
 ## Blockers / Risks
 

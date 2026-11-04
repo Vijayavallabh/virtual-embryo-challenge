@@ -910,3 +910,34 @@ open. No organiser reply to any of the four emails as of then.
   - **What does not change.** The data rules and the post-exposure block, the adoption rule and its readings, ledger
     rules 1-4, the frozen s2 rules (`docs/S2_RULES.md`) and T3 rules (`experiments/t3_decomp/rules.yaml`), and the
     captain's go-ahead for every official upload. No entry changes, and nothing here makes or schedules an upload.
+- 2026-11-04 (b), the captain's upload hold, the field and the rebuild (the AI assistant's readings under the
+  captain's delegation of 2026-11-02 and ruling (c); the captain can overrule them):
+  - **Uploads on hold.** The captain withdrew the first round's go-ahead (heart s1, embryo s1, T3's s2) the same day,
+    before anything was sent: no official upload until the entry has improved significantly, aiming at a Human top-3
+    place. Fallback dates (the captain asked to move them later, at least for s2; set by the AI assistant): s1 methods
+    frozen 2026-11-27 and the s1 round uploaded 2026-11-28; the s2 round by 2026-12-01 06:00 UTC and the final marks
+    by 12:00 UTC that day; the deadline's earliest reading is 2026-12-02 00:00 UTC, and no upload goes in its last
+    hours. Not submitting means no place. The captain runs every official upload (Claude Code's auto-mode classifier
+    blocks the AI assistant from sending one). Each upload is scored and published when made and a board ranks a team
+    by its best of two, so an earlier s1 upload would show our real standing per board and leave one upload for the
+    improved candidate; that trade-off is the captain's. An upload's board total may be read; its per-metric values
+    are not read before the 2026-12-11 announcement (A8, A22).
+  - **The field** (a screening agent read the public leaderboards on 2026-11-04 at 09:00 UTC, board and overall totals
+    and ranks only, wf_e01fe547-a9a, clean audit; calibration, never a threshold or evidence for a try): on the test
+    boards the Human top 3 overall are 209.3, 203.7 and 202.1, with seven of the Frozen-P2 Human top 10 yet to enter;
+    per board, Human top 3: T1 77.4-78.5, heart 59.1-69.8, embryo 72.7-74.3, T3 67.0-69.9. On the validation targets
+    our backtests use, teams now in the test top 10 scored 64-79 (T1), 56-67 (heart), 70-77 (embryo) and 66-82
+    (T3); our entries' practice results there are 45-51, 50-51, 61-63 and 59-62, about 165 overall. Validation
+    standing carries over moderately to test (rank correlation about 0.5 overall; -0.06 on T3), and the teams
+    strongest on validation all fell on test.
+  - **Births pruned** (wf_77e506c8-014; `experiments/harness/TRIES.md`, "Pruned before running"): no rule written
+    before a run makes a birth on the counted tasks, and the one buildable state is worth about +0.1 to +0.2 on the
+    backtests against the 0.3 bar. T1 stays at 6 tries; neither T1 upload waits on births.
+  - **T1 composition reopened by the legal route** (`docs/DATA_POLICY.md` 2026-11-04 (d)): with births pruned, no open
+    lever was left on T1's weakest groups, and T1 is the largest gap to the field. Cell numbers, sizes and scope on
+    every board and T3's composition stay closed.
+  - **D1 floor note settled.** The D1 check rerun with the loader fix (`experiments/intake/results/d1_rerun_2026-11-04/`)
+    reports wt_identity for T3:bcatenin, so its spec publishes no floor_model; the committed D1 files stay as run.
+  - **The rebuild design** (wf_237f8d8f-e7c, design only, no scored run): five board designers (T1 populations, T1
+    dynamics, heart, embryo, T3), an adversarial critic each, a synthesis and a compliance audit diagnose each board's
+    gap and propose the first wave of tries, which go into `TRIES.md` before their runs.

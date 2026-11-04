@@ -39,9 +39,9 @@ same delegation. Rows written before that date stay as they were.
    test.
    - **Ties.** When a board's counting backtests name different weakest groups, those groups count as tied; across
      boards, gaps within the spread of a board's stand-ins count as tied. The row says which it targets first and why.
-   - **Closed levers.** A lever is closed by the post-exposure block (`docs/DATA_POLICY.md`, 2026-11-04, (b), (c):
-     cell numbers, sizes and scope on every board; T1's composition apart from births by the legal route; T3's
-     composition), by a ruling of the captain (the heart's composition trend, dropped on 2026-11-01, `docs/PLAN.md`
+   - **Closed levers.** A lever is closed by the post-exposure block (`docs/DATA_POLICY.md`, 2026-11-04, (b) to (d):
+     cell numbers, sizes and scope on every board; T3's composition; T1's composition except by the legal route of
+     (d)), by a ruling of the captain (the heart's composition trend, dropped on 2026-11-01, `docs/PLAN.md`
      4.3, pipeline step 2), by a standing working answer (no new cross-modal input enters an upload until the
      organisers answer, A15) or by this ledger after its tries (the depth, blend, herding and coupling lines; the
      captain can reopen one). A lever fixed by a frozen or pre-registered rule moves only as that rule allows or by the
@@ -96,9 +96,10 @@ response_direction, response_magnitude, mutant_state.
 
 - Weakest group: distribution (mmd_u), 15.08 points left, at the baseline. All of M1's gain over the floor is on
   direction; B0 alone (M1 without Feng's direction) scores 49.68.
-- Open composition lever: births by the legal route (`docs/DATA_POLICY.md`, 2026-11-04 (c)); the rest of T1's
-  composition is closed. Direction stays open under the block, but no backtest can judge a change to Feng's
-  direction: Feng's E9.5 lies inside every T1 window.
+- Open composition lever: T1's shares within the chamber scope, births included, by the legal route
+  (`docs/DATA_POLICY.md`, 2026-11-04 (c), (d)); the births design was pruned on 2026-11-04 ("Pruned before running").
+  Direction stays open under the block, but no backtest can judge a change to Feng's direction: Feng's E9.5 lies
+  inside every T1 window.
 - Shown, not counted: the whole-E10.5 truth, 45.21 (copy 47.98). Not scored by the harness: the s2 (M1 at 60%
   cardiomyocytes), whose evidence is the oracle-base grid in `experiments/s2_hedge/`.
 
@@ -171,20 +172,19 @@ Read with care:
 
 ### What it means for the order of the next tries
 
-1. **T1 births by the legal route.** The one open composition lever on T1's weakest groups (direction stays open
-   under the block, but no backtest can judge a change to Feng's direction: item 5), and the one line that would
-   predict states no released stage has (on the embryo, E8.0's real cells already bring in the states E7.5 lacks).
-   Its design is a separate workflow (wf_77e506c8-014). Under rules 5-8 and `docs/DATA_POLICY.md` 2026-11-04 (c), its
-   row names which states emerge (present in legal post-E14.5 chamber data, absent at E10.5) and their shares, both
-   taken only from E10.5 and those data by a rule fixed before the run (the cardiomyocyte and blood shares stay as the
-   s1 and s2 rules set them), the groups it should move (distribution and covariance first) and its held-out check,
-   with the E9.5 chamber-mix confound of the chamber-cut backtest named in advance (as in the pruned exact top-up
-   below). If that confound would decide the verdict, as it would have for the exact top-up, the row says so before
-   the run; how the try is then judged is for the births design to settle, not this file.
+1. **T1 composition by the legal route.** Births by the legal route were designed and pruned on 2026-11-04
+   (wf_77e506c8-014; "Pruned before running"). `docs/DATA_POLICY.md` 2026-11-04 (d) then reopened T1's shares within
+   the chamber scope by the legal route: the one open lever on T1's weakest groups (direction stays open under the
+   block, but no backtest can judge a change to Feng's direction: item 5). Its candidates come from the rebuild
+   design of 2026-11-04 (wf_237f8d8f-e7c). Under rules 5-8 each row names the states and their shares, taken only
+   from the released stages, E10.5 and legal external data by a rule fixed before the run, the groups it should move
+   (distribution and covariance first) and its held-out check, with the backtests' composition confound named in
+   advance (B0 draws E9.5's chamber mix, cardiomyocytes about 64% of cells, against about 19% in the chamber-cut
+   truth: the pruned exact top-up below). If that confound would decide the verdict, the row says so before the run.
 2. **T3 response identity.** The largest gap in Overall units on the cross-knockout stand-in (15.18); on stand-in A,
    s1's own factor, it is 11.89, behind T1 distribution (15.08) and T1 DE recovery (13.00). So it ties with T1
-   distribution (rule 6), and T1 goes first: its lever has a design under way and a date (the births decision by
-   2026-11-10), and no T3 candidate exists yet. A factor change must pass the adoption rule on the two cross-knockout
+   distribution (rule 6), and T1 goes first: its lever has a design under way (wf_237f8d8f-e7c), and no T3 candidate
+   exists yet. A factor change must pass the adoption rule on the two cross-knockout
    folds and then goes to the captain; the composition is closed. One reading the principle asks for, which changes
    no upload, is s1's own lead component (the Gata4 factor, without composition) on the Gata4 -> Mab21l2 fold: the
    first reading of it on a knockout it was not fitted on (A10). It needs a T3 harness candidate and counts as a try.
@@ -266,6 +266,50 @@ committed, their synthetic toys in the AI assistant's scratch). E10 above was it
   rules otherwise.
 - **T3: an absolute knockout-depth rule; the factor measured against the target's WT.** Both would gain on the two
   cross-knockout folds and change nothing at test, where the knockouts share the WT reference: lucky-fit traps.
+- **T1 births by the legal route (`b0_births`; never registered).** Designed 2026-11-04 by the AI assistant's design
+  workflow (a data scout, a code scout, a designer and three critics); design only, no T1 score of any kind. Pruned by
+  the AI assistant under the captain's delegation of 2026-11-02; the captain can overrule. No developmental knowledge
+  after E9.5 up to and including E13.5 entered any class, share or state: all came from Feng 2022's E14.5 cells and the
+  released E8.5 and E9.5 stages. The strongest rule turned some of the latest stage's epicardium-category cells into
+  fibroblast-like cells, shifted by Feng's within-E14.5 fibroblast-like-over-epicardial ratio, at t x (Feng's E14.5
+  share - the latest stage's share) of heart cells, t = (target day - latest day) / (14.5 - latest day); immune was never
+  built. No result of its run could put births into T1. (1) No rule written before any run makes a birth on the counted
+  tasks (`docs/DATA_POLICY.md`, 2026-11-04 (c)). The scout's rule, fixed in its RULES block before its run (argmax and
+  marker score both under 0.2 x the type's share of all Feng E14.5 cells; uncommitted, script saved 08:13 UTC, outputs
+  08:14), finds only immune absent at E9.5, and immune cannot be built (4), so `b0_births` would equal `b0` on both.
+  Fibroblast-like comes in only through a confident-call test (p >= 0.9) and a non-blood denominator chosen after that
+  run with its E9.5 calls in view: a defensible change (the argmax calls were forced, mean probability 0.18 on SV-CM)
+  but a later one. The scout's evidence also used Feng's own E9.5 hearts, which lie inside both counted windows,
+  (8.5, 11.5]. Reading "before any run" as "before any scored run" would be a reading of `docs/DATA_POLICY.md`, which
+  the delegation leaves to the captain. (2) Under the later rule a keep is still out of reach. As scorer sensitivities
+  only, the digest's gap-fill 1 (an E8.5 -> E9.5 pseudo-task on a board near 75) gives +0.36 points per percentage
+  point of emergent share with perfect states and 33-41% of that with nearest-progenitor proxies; the skill map
+  (skill = d_floor / (d_floor + d), `docs/CHALLENGE.md`) makes the same change worth skill^2 as much, 0.35-0.44 of it
+  at b0's 44.1 and 49.7. The rule's 1.9% of heart cells at t = 0.2 then gains about 0.25-0.5 on the chamber cut with
+  perfect states and 0.07-0.22 with the states it builds, and less on the whole; a keep needs more than +0.3 and 8 of
+  10 seeds ahead on both. The two counted tasks are nearly one result: the same predictions (inputs E9.5 and E8.5,
+  build seeds 1,000,000 + s, 5,118 cells) scored against two cuts of one E10.5 library. A pass would exceed what the
+  born cells can carry, and the born direction has no in-scope landing (target-free, E9.5 and Feng E14.5 only): it
+  correlates best with NCC-derived (0.32), then Endocardium (0.26), NCC and BEC (0.25), and moves the cells 15-16% of
+  the way to NCC-derived, 10-12% to Endocardium, BEC and ST, 2% to V-CM. No score pattern could tell such a gain from
+  the scope and composition gaps the counted tasks already carry (the `configs/pseudo_tasks.yaml` notes; the T1 top-up
+  entry above), so rule 2's third condition fails before the run. (3) The born state is a weak proxy: in the scorer's
+  log1p pseudobulk the shifted cells reach 0.30-0.44 of Feng's within-E14.5 change; count-space edits keep zeros, so
+  the 30 genes it raises most stay detected in 30% of cells against 82% in Feng's fibroblast-like; inside the chamber
+  scope the nearest released cells (epicardium) correlate 0.20 with it (0.30 with chamber z). (4) Immune cannot be
+  built: no released chamber cell detects more than 9 of its 30 markers (its own cells' 5th percentile is about 20),
+  its nearest Feng type is blood (r = 0.07, 7 Feng E14.5 cells), and the s1 and s2 rules fix the blood share. (5) At
+  test it is worth about zero or a little less (about -0.2, range -2 to +0.6). At t = 0.5 it adds 3.8-4.7% of heart
+  cells: +0.3 to +0.6 if E12.5 holds that share, -0.5 to -2 if half or less (gap-fill 1: births at double the true
+  share cost 4.4, against a reference it does not state). The confident-call test caught only 28-63% of E9.5's present
+  non-cardiomyocyte nuclei (Proepicardium as epicardial: 244 of 883), so at E10.5 it would call fibroblast-like absent
+  even at 3-7% of heart cells and add births on top. The share has no legal anchor: at E9.5, where both datasets are
+  legal, the nuclei shares of the same types run 0.26x to 6.8x Feng's, and the three share bases move k by up to 3x.
+  Births would go into both s1 and s2, so the s2 hedge does not cover them. Births are not added at test either; the
+  births line is closed for T1 unless the captain rules otherwise or a new reason comes with its rule written before
+  any run (`docs/DATA_POLICY.md` 2026-11-04 (d), which came after this entry), and T1's try count stays 6. Evidence
+  on the DGX, not committed: `~/v/scratch/births/scout/` (`scout.py` sha256 387fda22, `scout_b2.py` 461f0959, post hoc; the per-cell
+  calls), `critic_luckyfit/align2.py` 56e81d3c, `critic_value/reach.py` 0f7e21b3.
 
 ## Diagnostics behind these choices
 

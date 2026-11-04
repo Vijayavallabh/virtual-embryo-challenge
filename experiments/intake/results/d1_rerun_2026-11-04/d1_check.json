@@ -1,0 +1,112 @@
+{
+ "utc": "2026-11-04 10:28:31",
+ "A3": "unresolved",
+ "boards": {
+  "T1:test": {
+   "present": true,
+   "task": "T1",
+   "setting": null,
+   "split": "test",
+   "target_ko": null,
+   "n_genes": 32285,
+   "needs_coords": false,
+   "ref_cells": null,
+   "floor_model": "copy_last",
+   "published": {
+    "min_cells": true,
+    "max_cells": true,
+    "truth_cells": false
+   },
+   "obs_required": [],
+   "obsm_required": [],
+   "required_as_builders_write": true,
+   "ref_stage_hits": [],
+   "expected_ref_stage": "E10.5",
+   "A3": "unresolved",
+   "why": "ref_cells missing",
+   "genes_same_as_validation_twin": true,
+   "genes_same_set_as_validation_twin": true
+  },
+  "T2:heart:test_extrap": {
+   "present": true,
+   "task": "T2",
+   "setting": "heart",
+   "split": "test",
+   "target_ko": null,
+   "n_genes": 500,
+   "needs_coords": true,
+   "ref_cells": null,
+   "floor_model": "copy_last",
+   "published": {
+    "min_cells": true,
+    "max_cells": true,
+    "truth_cells": false
+   },
+   "obs_required": [],
+   "obsm_required": [
+    "spatial_3D"
+   ],
+   "required_as_builders_write": true,
+   "ref_stage_hits": [],
+   "expected_ref_stage": "E10.5",
+   "A3": "unresolved",
+   "why": "ref_cells missing",
+   "genes_same_as_validation_twin": true,
+   "genes_same_set_as_validation_twin": true
+  },
+  "T2:embryo:test_interp": {
+   "present": true,
+   "task": "T2",
+   "setting": "embryo",
+   "split": "test",
+   "target_ko": null,
+   "n_genes": 497,
+   "needs_coords": true,
+   "ref_cells": null,
+   "floor_model": "copy_last",
+   "published": {
+    "min_cells": true,
+    "max_cells": true,
+    "truth_cells": false
+   },
+   "obs_required": [],
+   "obsm_required": [
+    "spatial_3D"
+   ],
+   "required_as_builders_write": true,
+   "ref_stage_hits": [],
+   "expected_ref_stage": "E7.5",
+   "A3": "unresolved",
+   "why": "ref_cells missing",
+   "genes_same_as_validation_twin": false,
+   "genes_same_set_as_validation_twin": false
+  },
+  "T3:bcatenin": {
+   "present": true,
+   "task": "T3",
+   "setting": null,
+   "split": "test",
+   "target_ko": null,
+   "n_genes": 500,
+   "needs_coords": true,
+   "ref_cells": null,
+   "floor_model": "wt_identity",
+   "published": {
+    "min_cells": true,
+    "max_cells": true,
+    "truth_cells": false
+   },
+   "obs_required": [],
+   "obsm_required": [
+    "spatial_3D"
+   ],
+   "required_as_builders_write": true,
+   "ref_stage_hits": [],
+   "expected_ref_stage": "WT E8.75",
+   "A3": "unresolved",
+   "why": "ref_cells missing",
+   "genes_same_as_validation_twin": true,
+   "genes_same_set_as_validation_twin": true
+  }
+ }
+}
