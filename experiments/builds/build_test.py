@@ -8,7 +8,9 @@ machine, and an official upload needs the captain's go-ahead.
 
   t1      M1 (docs/PLAN.md 4.1; the captain's rulings of 2026-11-01): E10.5 cells re-weighted to E10.5's own chamber
           mix (or --cm-share, the cardiomyocyte share of heart cells), Feng's E9.5 -> E14.5 direction on the cells of
-          Feng's groups at 2/5 of the bracket (E10.5 -> E12.5), B0's damped E9.5 -> E10.5 momentum on the rest
+          Feng's groups at 2/5 of the bracket (E10.5 -> E12.5); the rest keep their E10.5 expression (R1 of
+          experiments/harness/TRIES.md, the captain's ruling of 2026-11-05; --no-hold-unbracketed gives them B0's
+          damped E9.5 -> E10.5 momentum, M1 as built before R1)
   heart   B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
           procedure: --entry s1 = scope hypothesis H1; s2_trim = the s2 of docs/S2_RULES.md (H2 as a trim to half
           E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`)
@@ -113,10 +115,20 @@ def _check_seed(seed: int) -> int:
     return seed
 
 
+def _t1_momentum(hold: bool, load=load_stage) -> dict:
+    """build_submission's momentum arguments for T1. R1 (experiments/harness/TRIES.md; the captain's ruling of
+    2026-11-05): with hold, cells without a Feng group keep their E10.5 expression, so no momentum is built and E9.5
+    is not loaded; without it they get B0's damped E9.5 -> E10.5 momentum (M1 as built before R1)."""
+    if hold:
+        return {}
+    return {"start": load(DATA / "T1/E9.5_RNA.h5ad", lineage=False), "damping": harness.B0_DAMPING,
+            "start_source": "E9.5_RNA"}
+
+
 def build_t1(a) -> dict:
     board, dry = _board("t1", a.board)
     ref = load_stage(DATA / "T1/E10.5_RNA.h5ad", lineage=False)
-    start = load_stage(DATA / "T1/E9.5_RNA.h5ad", lineage=False)
+    momentum = _t1_momentum(a.hold_unbracketed)
     shares = harness.t1_chamber_shares(harness._shallow(ref), "E10.5_RNA")
     if a.cm_share is not None:
         shares = t1_scope.with_share(shares, "cm", a.cm_share)
@@ -126,13 +138,12 @@ def build_t1(a) -> dict:
     groups = feng_dirs.label_groups(ref.obs["celltype"].astype(str).unique())
     fraction = feng_dirs.bracket_fraction(10.5, 12.5)
     n = harness.count_for(board, ref.n_obs)
-    sub, rep = t1_scope.build_submission(ref, board, shares, n, a.seed, start=start, damping=harness.B0_DAMPING,
-                                         held_flat=t1_scope.held_flat_genes(), ref_source="E10.5_RNA",
-                                         start_source="E9.5_RNA", directions=directions, direction_fraction=fraction,
-                                         direction_groups=groups, herd=a.herd)
+    sub, rep = t1_scope.build_submission(ref, board, shares, n, a.seed, held_flat=t1_scope.held_flat_genes(),
+                                         ref_source="E10.5_RNA", directions=directions, direction_fraction=fraction,
+                                         direction_groups=groups, herd=a.herd, **momentum)
     check = t1_scope.write_checked(sub, a.out, board)
     return {"entry": "M1", "board": board.key, "dry_run": dry, "n_cells": n, "seed": a.seed, "fraction": fraction,
-            "herd": bool(a.herd),
+            "herd": bool(a.herd), "hold_unbracketed": bool(a.hold_unbracketed),
             "cm_share_of_heart": t1_scope.share_of(shares, "cm", t1_scope.load_spec().heart),
             "blood_share_of_chamber": float(shares.get("blood", 0.0)),
             "shares": shares, "external": ext, "check_ok": check.ok, "realised": rep["realised"]}
@@ -219,7 +230,7 @@ def build_embryo(a) -> dict:
             "record": {k: v for k, v in rec.items() if not isinstance(v, (dict, list))}}
 
 
-def main(argv=None) -> None:
+def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = ap.add_subparsers(dest="which", required=True)
     for name in ("t1", "heart", "embryo"):
@@ -233,6 +244,10 @@ def main(argv=None) -> None:
             p.add_argument("--herd", action="store_true",
                            help="herd each category's draw towards its pool's mean expression (T1 try T5 of "
                                 "experiments/harness/TRIES.md; off: the entry as adopted so far)")
+            p.add_argument("--hold-unbracketed", action=argparse.BooleanOptionalAction, default=True,
+                           help="R1 (experiments/harness/TRIES.md; the captain's ruling of 2026-11-05): cells without "
+                                "a Feng group keep their E10.5 expression (default); --no-hold-unbracketed gives "
+                                "them B0's damped E9.5 -> E10.5 momentum, M1 as built before R1")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
@@ -253,7 +268,11 @@ def main(argv=None) -> None:
             p.add_argument("--move-coupling", choices=t2_build.MOVE_COUPLINGS, default=t2_build.MOVE_COUPLINGS[0],
                            help="fgw methods: which coupling sets the moves: fgw (the entry) or aligned (try E10 of "
                                 "experiments/harness/TRIES.md: an exact transport in the rotated common frame)")
-    a = ap.parse_args(argv)
+    return ap
+
+
+def main(argv=None) -> None:
+    a = build_parser().parse_args(argv)
     _check_seed(a.seed)
     if a.board not in (None, TEST_BOARDS[a.which]):  # a dry run
         if a.board not in DRY_BOARDS[a.which]:

@@ -143,6 +143,25 @@ def test_build_test_refuses_misnamed_dry_runs_and_low_seeds(bt, argv, msg):
     assert msg in str(e.value)
 
 
+def test_t1_build_holds_cells_without_a_feng_group_by_default(bt):
+    """R1 (experiments/harness/TRIES.md; the captain's ruling of 2026-11-05): the T1 build's default keeps the cells
+    without a Feng group at their E10.5 expression (no momentum; E9.5 is not loaded), in s1 and in s2 (s1's command
+    plus --cm-share); --no-hold-unbracketed restores M1 as built before R1."""
+    ap = bt.build_parser()
+    assert ap.parse_args(["t1", "--out", "runs/x/T1_s1.h5ad"]).hold_unbracketed is True
+    assert ap.parse_args(["t1", "--cm-share", "0.60", "--out", "runs/x/T1_s2.h5ad"]).hold_unbracketed is True
+    assert ap.parse_args(["t1", "--no-hold-unbracketed", "--out", "runs/x/T1.h5ad"]).hold_unbracketed is False
+
+    def no_load(*args, **kw):
+        raise AssertionError("under R1 the build loads no earlier stage")
+
+    assert bt._t1_momentum(True, load=no_load) == {}
+    calls = []
+    kw = bt._t1_momentum(False, load=lambda path, lineage: calls.append((Path(path).name, lineage)) or "E9.5")
+    assert kw == {"start": "E9.5", "damping": bt.harness.B0_DAMPING, "start_source": "E9.5_RNA"}
+    assert calls == [("E9.5_RNA.h5ad", False)]
+
+
 def test_build_record_hides_counts_on_a_test_board(bt):
     b = _board()
     rec = {"board": b.key, "n_cells": SECRET_MAX, "record": {"n": SECRET_MAX, "n_before": 2000, "n_after": 2321,
