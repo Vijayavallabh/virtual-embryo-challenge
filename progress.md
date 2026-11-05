@@ -11,6 +11,11 @@ changed, `vec check` and the server format checks passed, the other eight files 
 top-3 aim (`experiments/gate/options_tail.py`); the DGX cleanup is done, and the captain deleted the
 scratchpad's 32 raw site copies and 17 later residues with the two scripts (`docs/DATA_POLICY.md` 2026-11-05 (f);
 `docs/PLAN.md` decision log 2026-11-05 (c)).
+**2026-11-05 (later), the search for more top-3 chance** (the captain's "continue iterating to maximize our Top 3
+chances at all drastic costs"): no upload changes. The T3 second-upload swap was rejected by three independent reviewers
+(the factor's carry is mostly a stage offset that s1's factor shares;
+`experiments/gate/results/t3_swap_review_2026-11-05.md`), the T1 blood hedge was dropped (no allowed-data prior), and R2
+stays declined (`docs/PLAN.md` decision log 2026-11-05 (d)).
 **Active Feature:** feat-018 (s1 files). 2026-11-04: runbook step 1 is done (634b5fd). `vec boards update` still
 answered 403 at 07:29 UTC; a screened Slack and email sweep (wf_2489e0c9-951, two clean audits) found no objection, no
 fix and no rule change since the notice of 2026-10-31; the captain saved the board index and the embryo test gene
@@ -499,6 +504,13 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       the top-3 aim by the chance of a high total (`experiments/gate/options_tail.py`): D3 lowers it, R2 raises it by at
       most 0.4 points on selected-on backtests; both stay out. DGX cleanup done (JAX tables with embryos 50-53 deleted,
       scratch archived and removed); the captain deleted the scratchpad's 32 raw site copies and 17 later residues.
+- [x] 2026-11-05 (later): the search for more top-3 chance (`docs/PLAN.md` decision log 2026-11-05 (d)). Priced T3's
+      second-upload swap and every committed second-upload candidate by the chance of a high total
+      (`experiments/gate/t3_swap.py`, `portfolio_tail.py`); three adversarial reviewers refuted the T3 swap
+      (`experiments/gate/results/t3_swap_review_2026-11-05.md`); the T1 blood hedge was dropped and R2 stays declined,
+      so no upload changes. Determinism at the R1 builders: 40 of 40
+      (`experiments/builds/results/determinism_6964b7d.txt`). Disclosure ids for each upload in `docs/P3_RUNBOOK.md`
+      section 5. A10 marked killed.
 
 ### What's Next
 

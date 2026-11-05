@@ -1,5 +1,10 @@
 """T3's second upload: today's refused-branch s1 (no factor) against the barred-branch s1 (the Mab21l2 factor).
 
+SUPERSEDED (2026-11-05; results/t3_swap_review_2026-11-05.md, docs/PLAN.md decision log 2026-11-05 (d)): the worlds
+below treat s1's and the swap's outcomes as independent, though both factors are referenced to WT E8.75 and share
+its E9.5-ward offset, and they floor s1's failure at K2a. Coupled and unfloored, the swap's expected T3 gain is about
+-0.2 to +0.1, and it can lower the chance of middle totals. Kept as the record of what was priced.
+
 Written for the captain's aim of 2026-11-05 (the choices that maximise the chance of a top-3 place). Aggregation of
 committed results with experiments/gate/estimate.py's loaders, not a try: no target is read and no score is computed.
 The two candidate files differ only by the Mab21l2 factor (docs/S2_RULES.md, T3: the same wild-type cells and the same

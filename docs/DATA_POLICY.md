@@ -546,3 +546,13 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   KB of an inventory file through `grep -o` to see its field names (it relayed no values); the AI assistant wrote two
   scripts of this task into an existing scratchpad folder (`r1/`) that the screen found to hold site downloads of
   2026-11-04, without listing or opening its other contents.
+- 2026-11-05 (g), process notes from the search of decision log 2026-11-05 (d): (i) the three reviewers
+  (wf_6b41d823-d5a) report: one parsed committed CSV and JSON files with the system `python3 -I -B` rather than `uv run`
+  (no repository code ran that way); one opened the harness decision files of the T3 pseudo-tasks (practice scores only)
+  and read section 2.5 of the screened digest, which it says holds a broad-phenotype paragraph on the held-out knockouts
+  (not used); one grep over the decision log printed two lines that quote screened per-board leaderboard figures (not
+  used or repeated). The last two go to a screening agent: per-board leaderboard figures do not belong in files every
+  agent reads, and the digest paragraph is checked for gene-level knockout findings. (ii) The AI assistant cut the
+  upload client off with `| head -2` during two format checks, which then never reached `results/submissions.csv`; both
+  were rerun and logged, and the client showed no unresolved upload. (iii) A side agent's note told the captain that the
+  T1 blood hedge's top-end gain rests on the grid's design prior; it was right, and the hedge was dropped.

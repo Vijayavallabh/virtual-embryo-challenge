@@ -1,5 +1,9 @@
 """Which second uploads give the best chance of a high total: every committed candidate pair, judged jointly.
 
+SUPERSEDED in part (2026-11-05; docs/PLAN.md decision log 2026-11-05 (d)): its T3 options use t3_swap.py's worlds,
+which the review refuted, and its T1 top-end gain from blood at 0.4 rests on the grid's design prior (a third on
+blood near 40%), which no allowed data supports. Kept as the record of what was priced.
+
 Written for the captain's aim of 2026-11-05 (the best chance of a top-3 place). Aggregation of committed results with
 experiments/gate/estimate.py's loaders, not a try: no target is read and no score is computed. Each board keeps the
 better of its two uploads; Overall = T1 + (heart + embryo) / 2 + T3, drawn 200,000 times with common random numbers

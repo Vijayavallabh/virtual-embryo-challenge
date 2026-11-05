@@ -1161,3 +1161,26 @@ open. No organiser reply to any of the four emails as of then.
     the captain's run of the deletion script, since the auto-mode classifier blocks the AI assistant from deleting them;
     a second script for 17 later copies of the same kind, which the AI assistant recommended, was run by him the same
     day (`docs/DATA_POLICY.md` 2026-11-05 (f)).
+- 2026-11-05 (d), after the captain's "continue iterating to maximize our Top 3 chances at all drastic costs": the AI
+  assistant's search; aggregation of committed results, not a try; no rule, file or upload changed:
+  - **What was tried.** The second uploads were judged by the chance of a high total at our own 75th to 99th
+    percentiles, with no leaderboard figure: T3's s2 as the barred-branch s1 (`experiments/gate/t3_swap.py`), and every
+    committed second-upload candidate jointly (`experiments/gate/portfolio_tail.py`; the heart's other candidates change
+    its scope, which the post-exposure block closes).
+  - **T3's s2 swap, rejected.** Three independent adversaries (wf_6b41d823-d5a;
+    `experiments/gate/results/t3_swap_review_2026-11-05.md`) refuted the case: the Mab21l2 factor's carry to Gata4 is
+    mostly the WT E9.5-against-E8.75 offset that s1's factor shares, so the two bets succeed or fail together (coupled,
+    about -0.2 to +0.1 on T3); 83% of its +9.90 is today's stand-in sitting at the severity floor; the downside had been
+    floored at K2a; the barred file itself was never scored; and three of the four ruling switches would break. The AI
+    assistant's claim that the swap never lowers the chance at any level was wrong: it held only under that floor.
+  - **T1's s2 with blood at 40% of chamber cells, dropped.** Most of the joint top-end gain (2.5 of 2.8 points at our
+    95th percentile) came from it, and it rests on the grid's design prior, a third of it on blood near 40%. No allowed
+    data supports that, and the captain's ruling of 2026-11-01 keeps E10.5's own share; a side agent's note to the
+    captain said so first. It stays out unless he writes a prior from allowed data.
+  - **R2 stays declined:** alone it adds 0.08 on average and at most 0.4 points of chance, on selected-on backtests.
+  - **So no upload changes.** No change backed by our data moves our chance of a top-decile total by more than a
+    fraction of a point; that chance rests on s1's bets (T1's composition, T3's factor and depth) landing near their
+    best case. Done on the way: the determinism check at the R1 builders (40 of 40,
+    `experiments/builds/results/determinism_6964b7d.txt`), the disclosure ids for each upload (`docs/P3_RUNBOOK.md`
+    section 5), and two candidate files built and format-checked at 3f9cb0c, not needed now (`runs/cand_3f9cb0c` on the
+    DGX). A10 is marked killed in `ASSUMPTIONS.md`: its go/no-go, D11b, failed on 2026-10-28.

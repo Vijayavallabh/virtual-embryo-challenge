@@ -212,7 +212,8 @@ Read with care:
    against 67.89 with a uniform prior; break-even needs about 25% of the prior on a cardiomyocyte share of at least 0.8;
    not run: no prior was written by 2026-11-05, and it lowers the chance of a high total,
    `experiments/gate/options_tail.py`); T3's s2 moved to the barred branch's s1 (a frozen rule; it would override D11b's
-   failed bar after the fact; not recommended); a zone-fixed Feng cardiomyocyte direction (about 0 +- 0.3; not
+   failed bar after the fact; not recommended; re-examined on 2026-11-05 and rejected after an adversarial review,
+   `docs/PLAN.md` decision log 2026-11-05 (d)); a zone-fixed Feng cardiomyocyte direction (about 0 +- 0.3; not
    recommended). Scenarios kept as risks and not built (closed levers): T1 depth and the oesophagus-junction cells; the
    heart's core-focused s2 (scope; a frozen rule); stack-limited embryo geometry (z extent; a frozen rule); T3's
    composition magnitude (a frozen rule).
