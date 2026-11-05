@@ -103,7 +103,7 @@ marked *chosen* is the simplest one that fits the committed files. None was fitt
 | A as of (c), before K2a | 69.57 | 53.85 | 60.87 | 67.05 | 193.98 | 184.0-204.0 |
 | B, first round, with K2a | 64.83 | 49.20 | 59.95 | 50.84 | 170.24 | 160.2-179.1 |
 | B as of (c), before K2a | 64.83 | 49.20 | 59.95 | 50.87 | 170.27 | 160.1-179.7 |
-| outlook of (c) (`docs/PLAN.md`:990) | 63 | 52 | 60 | 65 | 184 | 170-198 |
+| outlook of (c) (`docs/PLAN.md` decision log 2026-11-04 (c)) | 63 | 52 | 60 | 65 | 184 | 170-198 |
 
 **The procedure does not reproduce the outlook within 1 point per board.** Reading A as of (c) differs by:
 

@@ -72,16 +72,20 @@ If baseline verification is failing, repair that first before adding new scope.
   `EXTERNAL_DATA.md` *before* it enters a model.
 - **Quarantined material.** Never open veckit PyPI 0.1.2, veckit PR #6, the raw research-workflow outputs, the Yukon
   partner team's material (yukon.org), or the public board file / board endpoints (test-board anchors encode hidden
-  targets). Refresh boards only with `vec boards update` (it strips test anchors in memory), and never work around
-  its HTTP 403. Its `--from-file` intake reads a copy the captain saves in the browser, a route he cleared on
-  2026-11-01 with conditions (notice first, not before 2026-11-04; `docs/DATA_POLICY.md`): nobody opens the saved
-  file, and test-board counts are read by code only, never quoted. Read research results through the screened digest;
-  see `docs/DATA_POLICY.md`. Recursive searches skip `boards/` and `docs/research/`
-  (`grep -r --exclude-dir=boards --exclude-dir=research`), and nothing searches the whole filesystem. Agents never
-  open session logs, transcripts or harness-saved tool outputs (under `~/.claude-account` or `~/.claude`), and run
-  the repository's Python as `python -I -B` (`docs/DATA_POLICY.md`, 2026-11-04 (g)).
+  targets). Refresh boards only with `vec boards update` (it strips test anchors in memory), and never work around its
+  HTTP 403. Its `--from-file` intake reads a copy the captain saves in the browser, a route he cleared on 2026-11-01
+  with conditions (notice first, not before 2026-11-04; `docs/DATA_POLICY.md`): nobody opens the saved file, and
+  test-board counts are read by code only, never quoted. Read research results through the screened digest; see
+  `docs/DATA_POLICY.md`. Recursive searches skip `boards/` and `docs/research/` (`grep -r --exclude-dir=boards
+  --exclude-dir=research`), and nothing searches the whole filesystem. Agents never open session logs, transcripts or
+  harness-saved tool outputs (under `~/.claude-account` or `~/.claude`), and run the repository's Python as `python -I
+  -B` (`docs/DATA_POLICY.md`, 2026-11-04 (g)). Revisions from before 030ca89 of `docs/PLAN.md`, `docs/DATA_POLICY.md`
+  and `docs/research/digest_2026-10-19.md` hold screened-out material (per-board leaderboard figures, a count that may
+  describe a hidden target): never print them (`git show` of an older revision, `git log -p` or a diff across 030ca89 on
+  those paths); a review of such a commit masks the removed side (`docs/DATA_POLICY.md` 2026-11-05 (h), (i)).
 - **Scores choose, never compute.** Leaderboard returns may be used to pick between predictions, never to solve for a
-  property of a hidden target (no inverting the skill map, no differencing scores).
+  property of a hidden target (no inverting the skill map, no differencing scores). A screened leaderboard read hands
+  the main agent overall totals and overall ranks only (`docs/DATA_POLICY.md`, Scores).
 - **Competition data stays private.** Data lives under `data/` (gitignored) and is never committed, shared or shown
   publicly. The dataset is unpublished (Neil Chi lab, UCSD): no public presentation without written approval. P3
   methods, prediction files and evaluation feedback stay private from other participants until the 2026-12-11

@@ -69,6 +69,15 @@ Returned scores may be used to choose among predictions, not to compute them. Tr
 fine; solving for a property of a hidden target from scores (inverting the skill map, differencing submissions) is
 prohibited.
 
+A screened read of the leaderboard hands the main agent overall totals and overall ranks only. Per-board or per-task
+figures of any team (scores, ranges, ranks, gaps, correlations) stay with the screening record and out of every file an
+agent reads, the screened digest included (2026-11-05 (h), (i)).
+
+Every screening brief quotes this list. Removed: test-board limits, anchors and truth counts, and any other property of
+a hidden target; per-board leaderboard figures; gene-level knockout findings from outside the released data (the ruling
+of 2026-10-15 below). Kept: overall totals and ranks; phenotype-level knockout knowledge, which that ruling allows; our
+own results; the organisers' published baselines.
+
 ## Do-not-use list (known traps)
 
 These leak properties of held-out targets. Do not read them into any model, prior or hyperparameter unless the

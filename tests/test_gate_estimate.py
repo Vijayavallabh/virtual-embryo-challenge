@@ -95,7 +95,7 @@ def test_committed_anchors(est, res):
 
 def test_outlook_comparison(est, res):
     assert res["outlook"] == {"T1": 63, "heart": 52, "embryo": 60, "T3": 65, "Overall": 184, "range": [170, 198],
-                              "source": "docs/PLAN.md:989-991 (decision log 2026-11-04 (c))"}
+                              "source": "docs/PLAN.md decision log 2026-11-04 (c)"}
     a = res["readings"]["A_as_of_c"]
     for b in est.BOARDS:
         assert res["A_as_of_c_minus_outlook"][b] == pytest.approx(a[b] - est.OUTLOOK[b])

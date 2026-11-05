@@ -9,12 +9,12 @@ only labels, seeds and board scores; no cell count, anchor or target field is us
 a maximum or a percentile of board scores already committed. No leaderboard figure enters it, as a constant or
 otherwise (docs/PLAN.md section 8; docs/DATA_POLICY.md 2026-11-05).
 
-The two readings of "our estimated score in leaderboard" (docs/PLAN.md:605-636):
+The two readings of "our estimated score in leaderboard" (docs/PLAN.md section 8):
   A  every board at the better of its two uploads, since a board shows a team's best;
   B  the first round alone: T1 s1, heart s1, embryo s1 and T3's s2 (on T3 the first upload is s2).
 Overall = T1 + (heart + embryo) / 2 + T3.
 
-The procedure follows the evidence decision log 2026-11-04 (c) names (docs/PLAN.md:989-993), with the simplest rule
+The procedure follows the evidence decision log 2026-11-04 (c) names (docs/PLAN.md), with the simplest rule
 where (c) states no step (experiments/gate/README.md); it does not reproduce (c)'s figures:
   T1      the oracle-base grid of experiments/s2_hedge/ under its uniform prior (s1 bown_cown, s2 bown_c0.6), plus
           M1's paired gain over B0 on the same backtest (diag_v1), whose B0 is the harness's (d2_v1) seed for seed;
@@ -48,18 +48,19 @@ import numpy as np
 REPO = Path(__file__).resolve().parents[2]
 
 # ------------------------------------------------------------------------------ the committed outlook, compared only
-# Decision log 2026-11-04 (c), docs/PLAN.md:989-991: "about 184 overall, likely 170-198 (T1 about 63, T3 about 65, heart
+# docs/PLAN.md decision log 2026-11-04 (c): "about 184 overall, likely 170-198 (T1 about 63, T3 about 65, heart
 # about 52, embryo about 60, each board at the better of its two uploads)"; results/upload_gate.json:5-9 and :11. No
 # step below is fitted to these figures; they are printed beside the readings and differenced.
-OUTLOOK = {"T1": 63, "heart": 52, "embryo": 60, "T3": 65}  # docs/PLAN.md:990
-OUTLOOK_TOTAL = 184  # docs/PLAN.md:990
-OUTLOOK_RANGE = (170, 198)  # docs/PLAN.md:990
+OUTLOOK = {"T1": 63, "heart": 52, "embryo": 60, "T3": 65}  # docs/PLAN.md decision log 2026-11-04 (c)
+OUTLOOK_TOTAL = 184  # docs/PLAN.md decision log 2026-11-04 (c)
+OUTLOOK_RANGE = (170, 198)  # docs/PLAN.md decision log 2026-11-04 (c)
 AGREE_WITHIN = 1  # points per board for "reproduces the outlook" (chosen: experiments/gate/README.md, The procedure)
 
 # ------------------------------------------------------------------------------------------- readings and Overall
 BOARDS = ("T1", "heart", "embryo", "T3")
-OVERALL_WEIGHT = {"T1": 1.0, "heart": 0.5, "embryo": 0.5, "T3": 1.0}  # docs/PLAN.md:609; docs/CHALLENGE.md:109-112
-FIRST_ROUND = {"T1": "s1", "heart": "s1", "embryo": "s1", "T3": "s2"}  # docs/PLAN.md:607, :636; docs/S2_RULES.md:282
+# docs/PLAN.md section 8; docs/CHALLENGE.md:109-112
+OVERALL_WEIGHT = {"T1": 1.0, "heart": 0.5, "embryo": 0.5, "T3": 1.0}
+FIRST_ROUND = {"T1": "s1", "heart": "s1", "embryo": "s1", "T3": "s2"}  # docs/PLAN.md section 8; docs/S2_RULES.md:282
 PRIOR = "uniform"  # every payoff's first stated prior: experiments/s2_hedge/payoff.py:483; docs/S2_RULES.md:95, :144
 BAND = (10, 90)  # the band's percentiles (chosen: experiments/gate/README.md, The procedure)
 N_DRAWS = 200_000  # Monte Carlo draws behind the bands
@@ -68,7 +69,7 @@ TOL = 1e-9  # largest gap allowed when a committed summary is recomputed from it
 
 # ------------------------------------------------------------------------------------------------------------- T1
 # s1 is M1 at E10.5's own chamber mix, s2 the same at cardiomyocytes 0.60 of heart cells (docs/S2_RULES.md:85). That bet
-# (docs/PLAN.md:991-992: "E10.5's chamber mix with the s2 hedge") is priced by the oracle-base grid
+# (docs/PLAN.md decision log 2026-11-04 (c): "E10.5's chamber mix with the s2 hedge") is priced by the oracle-base grid
 # (experiments/s2_hedge/payoff.py:28-32): B0 built at the truth's own chamber mix with the two shares set.
 T1_TASK = "T1/E9.5->E10.5:chamber"
 T1_GRID_RUNS = "experiments/s2_hedge/results/per_seed/t1-grid"  # experiments/s2_hedge/README.md:220-224
@@ -114,22 +115,23 @@ EMBRYO_S1, EMBRYO_S2 = "fgw", "fgw_shape0"
 
 # ------------------------------------------------------------------------------------------------------------- T3
 # No backtest runs the T3 entries; their stand-ins are rows of the pre-registered decomposition on the two Gata4
-# replicates (experiments/harness/TRIES.md:137-146). s1's bet, the knockout-depth term (docs/PLAN.md:992), is in
-# stand-in A and not in B; the two count evenly, a chosen rule, since (c) states no weights (experiments/gate/README.md,
-# The procedure).
+# replicates (experiments/harness/TRIES.md:137-146). s1's bet, the knockout-depth term (docs/PLAN.md decision log
+# 2026-11-04 (c)), is in stand-in A and not in B; the two count evenly, a chosen rule, since (c) states no weights
+# (experiments/gate/README.md, The procedure).
 T3_RECORDS = "experiments/t3_decomp/results/gata4/gata4_records.csv"  # per seed; only target, seed, variant, t3 read
 T3_SUMMARY = "experiments/t3_decomp/results/gata4/gata4_summary.csv"  # seed means; checked against the records
 T3_REPLICATES = ("rep1", "rep2")
 T3_STANDINS = {"A": "xrep:F+depth", "B": "transfer:mab21l2_all"}  # experiments/harness/TRIES.md:145, :144
 T3_S2 = "blind:G2_bcat_central_d50"  # experiments/harness/TRIES.md:146
-T3_K2 = "experiments/harness/results/t3_k2_v1/tasks/T3_Gata4_Mab21l2.json"  # docs/PLAN.md:1022-1026
+T3_K2 = "experiments/harness/results/t3_k2_v1/tasks/T3_Gata4_Mab21l2.json"  # docs/PLAN.md decision log 2026-11-04 (d)
 T3_K2_TASK = "T3/Gata4->Mab21l2"
 T3_K2A = "t3_factor_xko"  # experiments/harness/TRIES.md:258 (row K2a)
 T3_K2_S2 = "copy"  # our WT copy on K2a's fold, standing in there for T3's near-WT s2 (chosen; README, The procedure)
-# K2a, included because docs/PLAN.md:1091-1092 asks for a symmetric restatement; the split is chosen: the cross-knockout
-# half of s1's weight is split evenly between its two directions, B (Mab21l2 -> Gata4) and K2a (Gata4 -> Mab21l2), so a
-# K2a above B would have raised T3 exactly as this one lowers it. K2a's fold has no s2 stand-in, so our WT copy on that
-# fold stands in for s2, paired by seed: both uploads then meet the same truth, as a board's better of two does.
+# K2a, included because docs/PLAN.md decision log 2026-11-05 (b) asks for a symmetric restatement; the split is
+# chosen: the cross-knockout half of s1's weight is split evenly between its two directions, B (Mab21l2 -> Gata4) and
+# K2a (Gata4 -> Mab21l2), so a K2a above B would have raised T3 exactly as this one lowers it. K2a's fold has no s2
+# stand-in, so our WT copy on that fold stands in for s2, paired by seed: both uploads then meet the same truth, as a
+# board's better of two does.
 T3_WEIGHTS_AS_OF_C = {"A": 0.5, "B": 0.5}
 T3_WEIGHTS_K2A = {"A": 0.5, "B": 0.25, "K2a": 0.25}
 
@@ -537,7 +539,7 @@ def estimate(root: Path = REPO, n_draws: int = N_DRAWS, seed: int = RNG_SEED) ->
                      "B": {**r_k["B"], "band": b_k["B"]}, "B_as_of_c": {**r_c["B"], "band": b_c["B"]}},
         "first_round": FIRST_ROUND,
         "outlook": {**OUTLOOK, "Overall": OUTLOOK_TOTAL, "range": list(OUTLOOK_RANGE),
-                    "source": "docs/PLAN.md:989-991 (decision log 2026-11-04 (c))"},
+                    "source": "docs/PLAN.md decision log 2026-11-04 (c)"},
         "A_as_of_c_minus_outlook": diff_c, "A_minus_outlook": diff_k,
         "reproduces_outlook": bool(all(abs(diff_c[b]) <= AGREE_WITHIN for b in BOARDS)),
         "agree_within": AGREE_WITHIN,
@@ -582,7 +584,7 @@ def table(res: dict) -> str:
            row("   A as of 2026-11-04 (c), before K2a", r["A_as_of_c"], r["A_as_of_c"]["band"]["Overall"]),
            row("B  first round: T1/heart/embryo s1, T3's s2", r["B"], r["B"]["band"]["Overall"]),
            row("   B as of 2026-11-04 (c), before K2a", r["B_as_of_c"], r["B_as_of_c"]["band"]["Overall"]),
-           row("outlook of 2026-11-04 (c), docs/PLAN.md:990", res["outlook"], res["outlook"]["range"]),
+           row("outlook of decision log 2026-11-04 (c)", res["outlook"], res["outlook"]["range"]),
            row("A as of (c) minus the outlook", res["A_as_of_c_minus_outlook"], signed=True),
            row("A minus the outlook", res["A_minus_outlook"], signed=True), ""]
     for name in ("A", "B"):

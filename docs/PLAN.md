@@ -975,7 +975,7 @@ open. No organiser reply to any of the four emails as of then.
     use, teams now in the test top 10 scored [per-board leaderboard figure removed 2026-11-05]; our entries' practice
     results there are 45-51 (T1), 50-51 (heart), 61-63 (embryo) and 59-62 (T3), about 165 overall. Validation standing
     carries over moderately to test (rank correlation about 0.5 overall;
-    [per-board leaderboard figure removed 2026-11-05] on T3), and the teams strongest on validation all fell on test.
+    [per-board leaderboard figure removed 2026-11-05]), and the teams strongest on validation all fell on test.
   - **Births pruned** (wf_77e506c8-014; `experiments/harness/TRIES.md`, "Pruned before running"): no rule written
     before a run makes a birth on the counted tasks, and the one buildable state is worth about +0.1 to +0.2 on the
     backtests against the 0.3 bar. T1 stays at 6 tries; neither T1 upload waits on births.

@@ -134,7 +134,7 @@
    170,
    198
   ],
-  "source": "docs/PLAN.md:989-991 (decision log 2026-11-04 (c))"
+  "source": "docs/PLAN.md decision log 2026-11-04 (c)"
  },
  "A_as_of_c_minus_outlook": {
   "T1": 6.569968778995403,
@@ -323,6 +323,6 @@
   "experiments/t1_m1/results/diag_v1/T1_E9.5_E10.5_chamber.json": "e51d67c6f04271a438883fba2b4800de6cfc7dd006d13b7b49bf62c62dec39fe",
   "experiments/t3_decomp/results/gata4/gata4_records.csv": "62bc4a448f8f922b9809c47c1ed1285a7962d716d515ea0bb5718a40c62dfd0c",
   "experiments/t3_decomp/results/gata4/gata4_summary.csv": "da46a3c2591b8481e3f0080f7ceadd393cac51c678fbca6e91f1171ed9daa628",
-  "results/upload_gate.json": "6761d790f52519b74e027853011035bca834938dbc07073c22041f130e3bf51c"
+  "results/upload_gate.json": "1cd1a892ba669ef6eecc38aa1d7da56f072b3aaedb88e3dbf1a6f79536066b16"
  }
 }
