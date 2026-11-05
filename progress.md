@@ -38,6 +38,10 @@ N6-N10). Their rule recommends making T3's s2 the barred branch's s1, a Gata4-fr
 expected across the two floor readings. That needs the captain's ruling before T3's first upload on 2026-11-27, and
 the default is today's s2. He sent the fifth organiser email, which asks how a floored severity scores (A24)
 (`docs/PLAN.md` decision log 2026-11-05 (g)).
+**2026-11-06, the T3 s2 ruling.** A sensitivity check (TRIES N11, prompted by a side agent's note) showed the swap's
+gain rests on one world. The captain then ruled, "go with your recommendation": T3's s2 becomes the barred s1 only if
+the organisers say, before T3's first upload, that a floored severity scores zero. Otherwise it stays today's s2
+(`docs/PLAN.md` decision log 2026-11-06 (a), (b)).
 **Active Feature:** feat-018 (s1 files). 2026-11-04: runbook step 1 is done (634b5fd). `vec boards update` still
 answered 403 at 07:29 UTC; a screened Slack and email sweep (wf_2489e0c9-951, two clean audits) found no objection, no
 fix and no rule change since the notice of 2026-10-31; the captain saved the board index and the embryo test gene
@@ -608,10 +612,10 @@ headroom tables in `experiments/harness/TRIES.md`):
    both and found none. N1 (done) held: the embryo test pair's coupling and geometry on the 497-gene test panel
    match the record (target-free, not a try; no risk note).
 6. Research follow-ups (`experiments/research_2026_11/REPORT.md` section 7), in deadline order:
-   - T3: the checks ran (TRIES N6-N11). After the sensitivity check (N11), the advice is a close call that turns on
-     the organisers' answer to the fifth email: swap to the barred s1 if a floored severity scores zero; keep today's
-     s2 if it scores half or no answer comes by 2026-11-26. The captain's ruling is due before T3's first upload
-     (2026-11-27); the default is today's s2. If he rules for the swap, record it in the
+   - T3: ruled by the captain on 2026-11-06 (`docs/PLAN.md` decision log 2026-11-06 (b); runbook section 5). The
+     screened check before T3's first upload (no earlier than 2026-11-26) looks for the organisers' answer to the
+     fifth email. If they say a floored severity scores zero, T3's s2 is the barred s1; if they say half, or nothing
+     by then, it stays today's refused s1. If he rules for the swap, record it in the
      decision log with his words and update `docs/P3_RUNBOOK.md`'s T3 switches. `docs/S2_RULES.md` stays frozen, and
      his ruling overrides it. Watch for the organisers' answer
      to the fifth email (A24).

@@ -251,6 +251,14 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     the allowed branch's s1 and s2; if they restrict them before the last one, send nothing from the allowed branch
     (the barred branch's s1; `docs/S2_RULES.md`, which also covers a full bar). It re-decides nothing and refuses a decision file whose script or rules hash
     differs from the files on disk.
+    2026-11-06, the captain's ruling ("go with your recommendation"; `docs/PLAN.md` decision log 2026-11-06 (b)):
+    - The screened check before T3's first upload also looks for the organisers' answer to the fifth email, on how a
+      floored severity scores (`docs/ORGANIZER_QUESTIONS.md`).
+    - If they have said zero, T3's s2 is `runs/t3_build/barred_s1.h5ad`, even if the Gata4 files are allowed.
+    - If they have said half, or nothing by then, T3's s2 stays the refused s1.
+    - If the barred s1 went first and the Gata4 files are restricted before the last upload, the last upload is
+      `runs/t3_build/barred_s2.h5ad`, and the higher published score of the two Gata4-free uploads is marked.
+    - An answer that arrives after T3's s2 is up changes nothing. The disclosure ids are unchanged (X001, X004, X005).
   - T2: `vec.t2_build`, run from the repo root (the paths are relative). Count by `n_cells_from_decision(board,
     pool.n_obs, "experiments/density/results/release/count_decision.json")` (step 4.5; null keeps max_cells; a
     decided level below the test board's lower limit gives way to the next passing count up, the passing level with

@@ -65,7 +65,9 @@ pseudobulk_shift on E7.5, fgw gains +4.15, and against B0 on E7.25 +4.92, ahead 
 | Spatial organisation | s1: cells moved half-way along their FGW partners after a proper rotation; s2: E7.5's geometry. Both at the size given by PCHIP of log RMS radius through the released embryo stages, with the 15-NN neighbourhoods of real cells | Size: scale skill 0.727 and 0.624. Shape, s1: d2 0.372 and 0.717, Dice 0.385 and 0.595 (below a copy on E7.5); at test the moved cloud is flatter than either bracket in every draw (mirrored partners; `experiments/harness/results/diag_emb_coupling/`), and the fix, try E11, gained on E7.5 and was vetoed on E7.25. Shape, s2: d2 0.439 and 0.383, Dice 0.494 and 0.434. Neighbourhoods: 0.640 and 0.602 (s1), 0.654 and 0.563 (s2). Better of the two: 60.87, against 59.95 for fgw alone (`experiments/harness/results/emb_shape_v1/`) |
 
 **Task 3, beta-catenin knockout at E8.75, beyond the unchanged wild type.** s1 = the allowed branch's s1; s2 = the
-refused branch's s1, uploaded first.
+refused branch's s1, uploaded first. If the organisers say before that upload that a floored severity scores zero, s2 is
+instead the barred branch's s1: the Mab21l2 factor with no depth step, Gata4-free (the captain's ruling of 2026-11-06,
+`docs/PLAN.md` decision log 2026-11-06 (b)).
 
 | Facet | Change beyond the baseline | Held-out evidence |
 |---|---|---|

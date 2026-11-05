@@ -456,6 +456,8 @@ overridden, the deadline and the default if he says nothing.
     format-checked and Gata4-free), worth about +0.5 to +2.5 T3 across the sensitivity range.
   - If it scores half, or no answer comes by 2026-11-26: keep today's s2. The swap's gain is then +0.2 to +0.4 under
     neutral assumptions, and negative if the barred file does worse than measured.
+- *Ruled by the captain on 2026-11-06* ("go with your recommendation"). The rule and its interactions are in
+  `docs/PLAN.md` decision log 2026-11-06 (b) and `docs/P3_RUNBOOK.md` section 5.
 - *Deciding priors:* P(U2), P(the stage anchor carries) and P(floor = 0). Under the default floor reading the swap
   breaks even near P(U2) of 0.77-0.9, or near P(anchor carries) of 0.35. It is robustly positive under the 0 reading:
   today's s2 floored severity in 14 of 20 practice seeds and would average roughly 42 rather than 51. Our working

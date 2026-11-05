@@ -1263,3 +1263,32 @@ open. No organiser reply to any of the four emails as of then.
   - **Revised recommendation.** Swap T3's s2 to the barred s1 only if the organisers answer that a floored severity
     scores zero. Keep today's s2 if they answer half, or if no answer comes by 2026-11-26. The ruling stays the
     captain's, due before T3's first upload (2026-11-27).
+- 2026-11-06 (b), the captain's ruling on T3's s2, in his words: "go with your recommendation". The recommendation of
+  (a) becomes the rule.
+  - **The rule.** T3's s2, its first upload, is chosen at the screened check of mail, Slack and the Rules page that
+    precedes T3's first upload. That check runs no earlier than 2026-11-26; T3's first upload goes in from 2026-11-27
+    00:00 UTC.
+    - If the organisers have said by then that the final evaluation scores a floored (undefined) severity_slope as
+      zero, s2 is the barred branch's s1: `runs/t3_build/barred_s1.h5ad`, the Mab21l2 factor against WT E8.75, with no
+      depth and the central composition at the Mab21l2 magnitude. It is Gata4-free, built, archived and
+      format-checked.
+    - If they have said half (skill 0.5), or no answer has come by then, s2 stays today's refused s1.
+  - **Unchanged:**
+    - s1 (the allowed s1, uploaded last);
+    - the order;
+    - the captain's go-ahead for each upload;
+    - the Gata4 switches of `docs/S2_RULES.md`. A full bar still sends both uploads from the barred branch.
+  - **Interactions,** settled by the AI assistant under the delegation of 2026-11-02 (the captain can overrule):
+    - The new switch takes the s2 slot even when the Gata4 files are explicitly allowed; that slot would otherwise be
+      the allowed branch's s2.
+    - If the barred s1 went first and the Gata4 files are then restricted before the last upload, the last upload is
+      the barred branch's s2 (the mild composition), since the barred s1 is already up. The marked entry is the higher
+      published score of the two Gata4-free uploads.
+    - An answer that arrives after T3's s2 is up changes nothing.
+  - **What it overrides,** conditionally:
+    - T3's frozen s2 rule. `docs/S2_RULES.md` stays frozen and unedited; this ruling overrides it.
+    - D11b's failed pre-registered bar, through rules.yaml note 6.
+    The captain accepted both with the recommendation.
+  - **Why:** TRIES N10 and N11 (`experiments/research_2026_11/REPORT.md` section 3).
+    - Under a zero reading, today's s2 loses 12.5 T3 points on most seeds, and the swap gains about +0.5 to +2.5.
+    - Under a half reading, the swap's gain is small or negative.
