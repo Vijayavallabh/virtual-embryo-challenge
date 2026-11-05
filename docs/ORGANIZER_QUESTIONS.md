@@ -248,3 +248,29 @@ follow-up: which veckit build scores the test boards.
 Best regards,
 Vijayavallabh J
 Team captain, Mithril
+
+## Fifth email (drafted 2026-11-05; not sent)
+
+Drafted by the AI assistant on 2026-11-05 at the captain's request ("yes draft the organiser email"). It is saved in
+the drafts of be23b041@smail.iitm.ac.in, addressed to virtual.embryo.moonshot@gmail.com, for the captain to send. It
+asks again question 2 of the 19 October follow-up, which decides T3's second upload (`ASSUMPTIONS.md` A24;
+`experiments/research_2026_11/REPORT.md` section 3). Answers: _pending_. Text as drafted:
+
+**Subject:** Human Team: how the final evaluation scores an undefined severity_slope (Task 3)
+
+Hello organisers,
+
+One short scoring question about Task 3. Its answer affects every team the same way.
+
+In Task 3, the severity metric is undefined when the predicted slope has the wrong sign, beta <= 0, or R^2 <= 0.01.
+The current scorer then returns log(1e-3), which equals the floor, so the live leaderboard gives that metric skill
+0.5. The Evaluation page and the competition proposal call this case "undefined", which would map to skill 0.
+
+Which will the final evaluation of the test boards use: skill 0.5 or skill 0?
+
+This was question 2 of our 19 October follow-up. A public answer in #virtual-embryo-challenge would be welcome, since
+it applies to all teams.
+
+Best regards,
+Vijayavallabh J
+Team captain, Mithril
