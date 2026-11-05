@@ -971,17 +971,17 @@ open. No organiser reply to any of the four emails as of then.
   - **The field** (a screening agent read the public leaderboards on 2026-11-04 at 09:00 UTC, board and overall totals
     and ranks only, wf_e01fe547-a9a, clean audit; calibration, never a threshold or evidence for a try): on the test
     boards the Human top 3 overall are 209.3, 203.7 and 202.1, with seven of the Frozen-P2 Human top 10 yet to enter;
-    per board, Human top 3: T1 77.4-78.5, heart 59.1-69.8, embryo 72.7-74.3, T3 67.0-69.9. On the validation targets
-    our backtests use, teams now in the test top 10 scored 64-79 (T1), 56-67 (heart), 70-77 (embryo) and 66-82
-    (T3); our entries' practice results there are 45-51, 50-51, 61-63 and 59-62, about 165 overall. Validation
-    standing carries over moderately to test (rank correlation about 0.5 overall; -0.06 on T3), and the teams
-    strongest on validation all fell on test.
+    per board, Human top 3: [per-board leaderboard figure removed 2026-11-05]. On the validation targets our backtests
+    use, teams now in the test top 10 scored [per-board leaderboard figure removed 2026-11-05]; our entries' practice
+    results there are 45-51 (T1), 50-51 (heart), 61-63 (embryo) and 59-62 (T3), about 165 overall. Validation standing
+    carries over moderately to test (rank correlation about 0.5 overall;
+    [per-board leaderboard figure removed 2026-11-05] on T3), and the teams strongest on validation all fell on test.
   - **Births pruned** (wf_77e506c8-014; `experiments/harness/TRIES.md`, "Pruned before running"): no rule written
     before a run makes a birth on the counted tasks, and the one buildable state is worth about +0.1 to +0.2 on the
     backtests against the 0.3 bar. T1 stays at 6 tries; neither T1 upload waits on births.
   - **T1 composition reopened by the legal route** (`docs/DATA_POLICY.md` 2026-11-04 (d)): with births pruned, no open
-    lever was left on T1's weakest groups, and T1 is the largest gap to the field. Cell numbers, sizes and scope on
-    every board and T3's composition stay closed.
+    lever was left on T1's weakest groups, and [per-board leaderboard figure removed 2026-11-05]. Cell numbers, sizes
+    and scope on every board and T3's composition stay closed.
   - **D1 floor note settled.** The D1 check rerun with the loader fix (`experiments/intake/results/d1_rerun_2026-11-04/`)
     reports wt_identity for T3:bcatenin, so its spec publishes no floor_model; the committed D1 files stay as run.
   - **The rebuild design** (wf_237f8d8f-e7c, design only, no scored run): five board designers (T1 populations, T1
@@ -1037,11 +1037,11 @@ open. No organiser reply to any of the four emails as of then.
   - **The field** (a second screened read of the public leaderboards, 14:40 UTC, wf_010b5501-f2a: board and overall
     totals, ranks and team names only; calibration, never a threshold or evidence for a try). The Human top 3 overall
     are unchanged since 09:00 (209.3, 203.7, 202.1). Prizes go to six Human places (one 1st, two 2nd, three 3rd), and
-    the 6th Human place is at 197.1 overall; per board the 6th Human value is T1 74.8, heart 56.2, embryo 70.9 and
-    T3 66.9. 59 of the 80 ranked entries are Human; Mithril has not entered. Our outlook (about 184, 170-198; (c))
-    sits about 13 points under the 6th place and 18-25 under a top-3 place. The audit was not clean: the screening
-    agent withheld an item in the site's JavaScript and the boards' label strings before handing over
-    (`docs/DATA_POLICY.md` 2026-11-04 (i)).
+    the 6th Human place is at 197.1 overall; per board the 6th Human value is
+    [per-board leaderboard figure removed 2026-11-05]. 59 of the 80 ranked entries are Human; Mithril has not entered.
+    Our outlook (about 184, 170-198; (c)) sits about 13 points under the 6th place and 18-25 under a top-3 place. The
+    audit was not clean: the screening agent withheld an item in the site's JavaScript and the boards' label strings
+    before handing over (`docs/DATA_POLICY.md` 2026-11-04 (i)).
   - **Bolder backups** (a side agent's note to the captain: below a cutoff, riskier bets that average a little less can
     raise the odds, and each board's backup is the place for them). The backups already work this way: the s2 rules were
     chosen to maximise the expected better of the two uploads, which pays for a backup that scores unlike s1

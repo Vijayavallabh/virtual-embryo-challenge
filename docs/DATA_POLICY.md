@@ -374,10 +374,10 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   value is in any file, prompt or summary, and since this session's context was summarised the AI assistant's working
   context holds none. Why now: births were pruned the same day (`experiments/harness/TRIES.md`), leaving no open lever
   on T1's weakest groups, and a screened read of the public leaderboards (board and overall totals only) put a Human
-  top-3 place near 202-210 overall, against about 165 from our practice-task results, with T1 the largest gap. Still
-  closed: cell numbers, sizes and scope on every board, and T3's composition (also fixed by the frozen T3 rules). The
-  frozen s2 rules (`docs/S2_RULES.md`) apply to whatever s1 the ledger keeps; an s1 that changes sends its s2 back to
-  the captain.
+  top-3 place near 202-210 overall, against about 165 from our practice-task results, with
+  [per-board leaderboard figure removed 2026-11-05]. Still closed: cell numbers, sizes and scope on every board, and
+  T3's composition (also fixed by the frozen T3 rules). The frozen s2 rules (`docs/S2_RULES.md`) apply to whatever s1
+  the ledger keeps; an s1 that changes sends its s2 back to the captain.
 - 2026-11-04 (e), process slip, no exposure: in the principle workflow (wf_880d37d6-91b), one recursive grep over its
   worktree (`*.md` and `*.json`) opened `boards/index.json`; no line matched and none was printed. The same grep
   printed three citation lines from `docs/research/` (landscape.md, external_data.md, t2_spatial.md), all giving the
@@ -556,3 +556,14 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   upload client off with `| head -2` during two format checks, which then never reached `results/submissions.csv`; both
   were rerun and logged, and the client showed no unresolved upload. (iii) A side agent's note told the captain that the
   T1 blood hedge's top-end gain rests on the grid's design prior; it was right, and the hedge was dropped.
+- 2026-11-05 (h), a screening agent's cleanup of the files every agent reads, after (g): six per-board leaderboard items
+  were removed and overall totals kept. Five are in `docs/PLAN.md`'s decision log (per-board score ranges of the Human
+  top 3 and of the teams in the test top 10, a per-board validation-to-test rank correlation, the 6th Human place per
+  board, and a claim of which board our gap to the field is largest on); the sixth is that same claim in this file's
+  2026-11-04 (d) rationale. Line counts are kept, since `experiments/gate/estimate.py` cites `docs/PLAN.md` by line. In
+  the screened digest's section 2.5 it removed a count of truth-DE genes on a T3 board whose source cannot be determined
+  (it is not the validation board's, and the digest names no board); an exact-value search found the number nowhere else
+  in the repository. Under the AI assistant's brief, which was stricter than this policy (the ruling of 2026-10-15
+  allows phenotype-level knockout knowledge), it had also replaced the digest's paragraph on the held-out knockouts'
+  phenotypes; that edit was undone, so the paragraph stays, like the same kind of statement in `docs/PLAN.md` 4.4 and
+  `METHOD_SUMMARY.md`. Git history keeps the removed text; no figure was relayed to the main agent.
