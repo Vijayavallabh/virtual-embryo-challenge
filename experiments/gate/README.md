@@ -128,3 +128,14 @@ Risks that no committed file measures sit outside every band:
 - E7.75 acquired at E7.5-like depth.
 
 The stand-ins and K2a's fold are not the test.
+
+## Other scripts here
+
+- `options_tail.py` (2026-11-05): D3 and R2 judged by P(Overall >= c) across our own range; output
+  `results/options_tail_2026-11-05.txt`. Both stayed out.
+- `t3_swap.py` (2026-11-05, superseded): T3's second upload as the barred-branch s1. Its worlds treat the two factors as
+  independent and floor s1's failure at K2a; three reviewers refuted it (`results/t3_swap_review_2026-11-05.md`).
+- `portfolio_tail.py` (2026-11-05, superseded in part): every committed second-upload candidate judged jointly. Its T3
+  options use `t3_swap.py`'s worlds, and its T1 blood-0.4 gain rests on the grid's design prior.
+All three aggregate committed results, are not tries, and read no leaderboard figure (`docs/PLAN.md` decision log
+2026-11-05 (d)).

@@ -67,6 +67,10 @@ few seconds apart, and sample a process's user and system ticks with `awk '{prin
 whose system ticks grow while its user ticks stay flat is stuck. Keep a batch's memory well under one NUMA node
 (about 500 GB): the account is shared.
 
+Detached jobs over ssh: put `cd` on its own line (or use absolute paths) before `setsid nohup ... &`. In `cd DIR && ...
+&& job & <wait loop>` the `&` backgrounds the whole chain, so the wait loop runs in the login directory: a waiter of
+2026-11-04 polled the wrong folder for a day before it was stopped.
+
 ## Constraints
 
 - `/home` on the DGX is 89% full (1.6 TB free, shared; `df -h /home` on 2026-10-28). Check it before large writes

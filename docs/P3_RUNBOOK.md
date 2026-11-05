@@ -228,12 +228,13 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
   `vec.t2_build.sample_cells` draws rows with, is the same stream as `default_rng(s)`, and the server draws its
   reference working copy with seed 0: a T2 file built at seed 0 contains the server's own floor cells. Use the
   harness's offset (`vec.harness.BUILD_SEED_OFFSET`, 1,000,000) or any seed above it, and record it with the file.
-- Candidate files, built on the DGX with the committed builders and checked there with
-  `uv run vec check FILE --board KEY` (no token, nothing sent). A server format check runs from this machine with
-  `uv run vec submit runs/<...>.h5ad --board <test board key> --from-dgx` (the file is pulled for that call only;
-  nothing official without `--official`). Nothing is uploaded officially today. Every built file gets a build stamp
-  (`<file>.stamp.json`) that an official upload checks: commit before building, and do not sync, pull or check out
-  on the DGX while a build runs there (the stamp then is not clean; rebuild after the sync).
+- Candidate files, built on the DGX with the committed builders and checked there with `uv run vec check FILE --board
+  KEY` (no token, nothing sent). A server format check runs from this machine with `uv run vec submit runs/<...>.h5ad
+  --board <test board key> --from-dgx` (the file is pulled for that call only; nothing official without `--official`;
+  its output goes to a file, never through `head`, which can cut the client off mid-call). Nothing is uploaded
+  officially today. Every built file gets a build stamp (`<file>.stamp.json`) that an official upload checks: commit
+  before building, and do not sync, pull or check out on the DGX while a build runs there (the stamp then is not clean;
+  rebuild after the sync).
   - T3: `uv run python experiments/t3_decomp/build_submission.py build <gata4_decisions.json> --branch <b>
     --submission s1|s2 --wt data/raw/T2/E8.75.h5ad --run-dir runs/t3_decomp/gata4_<STAMP> --board <T3 board key>
     --seed 1000001 --out runs/t3_build/<b>_<s>.h5ad`, for `allowed`, `refused` and `barred` (s2 = `refused` s1; `docs/S2_RULES.md`). The cell count defaults to the

@@ -603,4 +603,5 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   agents had one oversized grep output saved in the session store by the harness (not opened) and first wrote working
   files into an existing scratchpad folder (names listed, none opened); the second pass ran the system `python3` once on
   its own scratch script, and, as its brief asked, searched `docs/research/`, which showed hit lines from unscreened
-  reports to it only.
+  reports to it only. The captain ruled the same day: no rewrite, and any public release of the code is a fresh
+  repository built from the final tree (`docs/PLAN.md` decision log 2026-11-05 (e)).

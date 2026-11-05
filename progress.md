@@ -16,6 +16,12 @@ chances at all drastic costs"): no upload changes. The T3 second-upload swap was
 (the factor's carry is mostly a stage offset that s1's factor shares;
 `experiments/gate/results/t3_swap_review_2026-11-05.md`), the T1 blood hedge was dropped (no allowed-data prior), and R2
 stays declined (`docs/PLAN.md` decision log 2026-11-05 (d)).
+**2026-11-05 (latest), the screened cleanup and the captain's last ruling:** per-board leaderboard figures and a T3
+count that may describe a hidden target (likely an organiser scorer-docstring example) are out of every file an agent
+reads, and the standing screening rules sit in `docs/DATA_POLICY.md`'s Scores section (2026-11-05 (h), (i)). The captain
+ruled no history rewrite: older revisions stay in the private repository, AGENTS.md forbids printing them, and any
+public release of the code is a fresh repository built from the final tree (`docs/PLAN.md` decision log 2026-11-05 (e)).
+The assumption ledger is current (A11 killed, A19 and A9 confirmed, overdue readouts rescheduled).
 **Active Feature:** feat-018 (s1 files). 2026-11-04: runbook step 1 is done (634b5fd). `vec boards update` still
 answered 403 at 07:29 UTC; a screened Slack and email sweep (wf_2489e0c9-951, two clean audits) found no objection, no
 fix and no rule change since the notice of 2026-10-31; the captain saved the board index and the embryo test gene
@@ -511,11 +517,16 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       so no upload changes. Determinism at the R1 builders: 40 of 40
       (`experiments/builds/results/determinism_6964b7d.txt`). Disclosure ids for each upload in `docs/P3_RUNBOOK.md`
       section 5. A10 marked killed.
+- [x] 2026-11-05 (latest): a code review of 030ca89 (13 findings, 4 confirmed) and two screening passes: per-board
+      leaderboard items out of `docs/PLAN.md`, `docs/DATA_POLICY.md` and the digest; the T3 count out of the digest and
+      `docs/research/t3_methods.md`; standing screening rules; the estimator's plan citations as entry labels; (h)
+      corrected in (i) (030ca89, 1f0497b, 80c8604). The captain ruled no history rewrite, and any public release is a
+      fresh repository (decision log 2026-11-05 (e)). The assumption ledger brought up to date.
 
 ### What's Next
 
-Updated 2026-11-04, after the captain's guiding principle (`AGENTS.md`; the order comes from the headroom tables in
-`experiments/harness/TRIES.md`):
+Updated 2026-11-05 (the order, set on 2026-11-04 after the captain's guiding principle in `AGENTS.md`, comes from the
+headroom tables in `experiments/harness/TRIES.md`):
 
 1. Official uploads: none until the captain's upload gate is crossed (2026-11-05: our estimated leaderboard total
    above 209, about 184 today; `docs/PLAN.md` section 8, `results/upload_gate.json`), and each then needs his explicit
@@ -528,23 +539,28 @@ Updated 2026-11-04, after the captain's guiding principle (`AGENTS.md`; the orde
    done (2026-11-04, 1206d60: ten files byte-identical, `vec check` and the server format checks passed); repeat it at
    the freeze commit.
    2026-11-05: the captain ran both scratchpad deletion scripts (32 raw site copies and 17 later residues deleted).
-2. T1: births were designed and pruned (2026-11-04; `TRIES.md`), so neither upload waits on them. T1's composition
-   is reopened by the legal route (`docs/DATA_POLICY.md` 2026-11-04 (d)), the one open lever on its weakest groups
+   The freeze-morning hash check runs against `runs/archive/builds_88b057f` (the R1 builds; 40 of 40 at every
+   thread count), and the disclosure ids for each upload are in `docs/P3_RUNBOOK.md` section 5 for the captain.
+2. T1: births were designed and pruned (2026-11-04; `TRIES.md`), so neither upload waits on them. T1's composition is
+   reopened by the legal route (`docs/DATA_POLICY.md` 2026-11-04 (d)), the one open lever on its weakest groups
    (distribution, DE recovery, covariance); T1 direction stays open, but no backtest can judge a change to Feng's
    direction. The rebuild design (wf_237f8d8f-e7c) registered no composition try (no legal share rule has a counted
-   check). N2 (done) sized M1's momentum on cells without a Feng group: it moves 0.31 of s1's cells (blood 0.24,
-   Early VIC 0.07), not the quarter the rebuild estimated; in blood the factor moves 11% of genes by more than 10%,
-   and with keep-depth (median 0.91) about a third of genes past 10%, almost all down. R1 (those cells keep their
-   E10.5 expression) waits on the captain's ruling, with these numbers. If he rules it in, T1's s1 and s2 are
-   rebuilt and checked, and he confirms T1's s2 under (d).
-3. T3: response identity, the largest gap in Overall units on the cross-knockout stand-in (15.18; 11.89 on the
-   replicate stand-in), ties with T1 distribution (15.08) and comes second for the reason in `TRIES.md` (the rebuild
-   design found no T3 candidate with a reason that holds at test). A factor change is kept only under the adoption rule on the
-   cross-knockout folds and then goes to the captain (T3's s1 is his ruling); the composition stays closed.
-   K2a and K2b (registered 2026-11-04, the AI assistant's decision; run at 0409d18): K2a, s1's Gata4 factor on the
-   Gata4 -> Mab21l2 fold, is not kept against its permuted control, so the factor has no cross-knockout support;
-   the miss rests on seed 3, and on the other nine seeds K2a leads K2b but still trails our WT copy. It goes to the
-   captain with T3's s1, which changes only by his ruling; no upload changes. T3 is at 3 tries.
+   check). N2 (done) sized M1's momentum on cells without a Feng group: it moves 0.31 of s1's cells (blood 0.24, Early
+   VIC 0.07), not the quarter the rebuild estimated; in blood the factor moves 11% of genes by more than 10%, and with
+   keep-depth (median 0.91) about a third of genes past 10%, almost all down. R1 (those cells keep their E10.5
+   expression) was ruled in on 2026-11-05 and built at 88b057f: T1's s1 and s2 were rebuilt and checked, and T1's s2,
+   which now carries R1, is covered by his ruling. The 40%-blood s2 hedge was dropped the same day (no allowed-data
+   prior).
+3. T3: response identity, the largest gap in Overall units on the cross-knockout stand-in (15.18; 11.89 on the replicate
+   stand-in), ties with T1 distribution (15.08) and comes second for the reason in `TRIES.md` (the rebuild design found
+   no T3 candidate with a reason that holds at test). A factor change is kept only under the adoption rule on the
+   cross-knockout folds and then goes to the captain (T3's s1 is his ruling); the composition stays closed. K2a and K2b
+   (registered 2026-11-04, the AI assistant's decision; run at 0409d18): K2a, s1's Gata4 factor on the Gata4 -> Mab21l2
+   fold, is not kept against its permuted control, so the factor has no cross-knockout support; the miss rests on seed
+   3, and on the other nine seeds K2a leads K2b but still trails our WT copy. It goes to the captain with T3's s1, which
+   changes only by his ruling; no upload changes. T3 is at 3 tries. 2026-11-05: the T3 second-upload swap (s2 = the
+   barred-branch s1) was refuted by three adversarial reviewers, and A10 and A11 are killed in the ledger; T3's uploads
+   stay as frozen (`docs/PLAN.md` decision log 2026-11-05 (d), (e)).
 4. Keep the headroom tables and `METHOD_SUMMARY.md` current after every kept change or new entry (`TRIES.md` rule 8;
    feat-021, done once a full `./init.sh` passes); D3 on 2026-11-12 (feat-017).
 5. Heart and embryo: no try without an open lever and a reason that holds at test; the rebuild design re-examined

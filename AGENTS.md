@@ -90,7 +90,8 @@ If baseline verification is failing, repair that first before adding new scope.
 - **Competition data stays private.** Data lives under `data/` (gitignored) and is never committed, shared or shown
   publicly. The dataset is unpublished (Neil Chi lab, UCSD): no public presentation without written approval. P3
   methods, prediction files and evaluation feedback stay private from other participants until the 2026-12-11
-  announcement.
+  announcement. Any public release of the code is a fresh repository built from the final tree, never this repository or
+  its history (the captain, 2026-11-05).
 - **Official submissions need the user's explicit go-ahead.** The final phase allows only 2 scored submissions per
   board for the whole phase, and they cannot be withdrawn. The API treats an upload as **official unless it sends
   `format_only=true`**. The team API key (`~/.config/vec/token`, mode 600, local machine only, never on the DGX) can

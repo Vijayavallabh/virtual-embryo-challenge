@@ -621,14 +621,15 @@ and the final marks by 12:00 UTC that day (decision log 2026-11-04 (b) and 2026-
   - The deadline exception (the captain, 2026-11-05, answering a side agent's note that the gate could mean no entry,
     and so no place and no Generality Award standing): "I am fine with submitting our 1st submission at Nov 27 anyway".
     So the s1 methods freeze at 2026-11-27 00:00 UTC (05:30 IST). That morning the AI assistant rebuilds the files at
-    the freeze commit, checks them (`vec check`, the server format checks, archived hashes) and gives the captain the
-    plain summary; the first round (T1 s1, heart s1, embryo s1 and T3's s2) may then go in whatever the estimate, each
-    upload only on his go-ahead at the time. The words are his own, written in his message in the main session (a note
-    on a side agent's text he forwarded), not an agent's relay. The AI assistant reads "our 1st submission" with the
-    gate's own scope (the first upload on every board) and "at Nov 27" as from 2026-11-27 00:00 UTC (05:30 IST, inside
-    27 Nov in both zones), and asked him on 2026-11-05 to confirm or correct that reading; he confirmed it the same day
-    (decision log 2026-11-05 (c)). The s2 round follows by 2026-12-01 06:00 UTC and the final marks by 12:00 UTC that
-    day. If the estimate crosses 209 earlier, with its review, the first round may go in earlier.
+    the freeze commit, checks them (`vec check`, the server format checks, the hashes archived in
+    `runs/archive/builds_88b057f`) and gives the captain the plain summary; the first round (T1 s1, heart s1, embryo s1
+    and T3's s2) may then go in whatever the estimate, each upload only on his go-ahead at the time. The words are his
+    own, written in his message in the main session (a note on a side agent's text he forwarded), not an agent's relay.
+    The AI assistant reads "our 1st submission" with the gate's own scope (the first upload on every board) and "at Nov
+    27" as from 2026-11-27 00:00 UTC (05:30 IST, inside 27 Nov in both zones), and asked him on 2026-11-05 to confirm or
+    correct that reading; he confirmed it the same day (decision log 2026-11-05 (c)). The s2 round follows by 2026-12-01
+    06:00 UTC and the final marks by 12:00 UTC that day. If the estimate crosses 209 earlier, with its review, the first
+    round may go in earlier.
   - The record: `results/upload_gate.json` (the estimate, its range and basis, the review, the deadline exception and
     whether the captain has lifted the gate). The submission client refuses an official upload unless the record passes:
     an estimate above 209 with a named review, the deadline exception reached (2026-11-27 00:00 UTC), or the captain's
@@ -1184,3 +1185,11 @@ open. No organiser reply to any of the four emails as of then.
     `experiments/builds/results/determinism_6964b7d.txt`), the disclosure ids for each upload (`docs/P3_RUNBOOK.md`
     section 5), and two candidate files built and format-checked at 3f9cb0c, not needed now (`runs/cand_3f9cb0c` on the
     DGX). A10 is marked killed in `ASSUMPTIONS.md`: its go/no-go, D11b, failed on 2026-10-28.
+- 2026-11-05 (e), the captain's ruling on the history of the screened cleanup (`docs/DATA_POLICY.md` 2026-11-05 (h),
+  (i)), in his words: "No rewrite, go with your recommendation". Git history is not rewritten: older revisions of the
+  four cleaned paths stay in the private repository as the audit record, and AGENTS.md forbids printing them. Any public
+  release of the code is a fresh repository built from the final tree, never this repository or its history. The
+  assumption ledger was brought up to date the same day: A11 killed (its pre-registered proxy failed in the Gata4 run of
+  2026-10-28: the blind composition's de_direction 0.113 and 0.022 against 0.2; both T3 uploads carry that composition,
+  which the frozen T3 rules and the post-exposure block keep, so no upload changes), A19 confirmed (D7 passed), A9
+  confirmed for the sources the method uses, and the overdue readouts rescheduled with reasons (`ASSUMPTIONS.md` log).
