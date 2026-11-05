@@ -608,8 +608,10 @@ headroom tables in `experiments/harness/TRIES.md`):
    both and found none. N1 (done) held: the embryo test pair's coupling and geometry on the 497-gene test panel
    match the record (target-free, not a try; no risk note).
 6. Research follow-ups (`experiments/research_2026_11/REPORT.md` section 7), in deadline order:
-   - T3: the checks ran (TRIES N6-N10) and their rule recommends the swap. The captain's ruling on T3's s2 is due
-     before T3's first upload (2026-11-27); the default is today's s2. If he rules for the swap, record it in the
+   - T3: the checks ran (TRIES N6-N11). After the sensitivity check (N11), the advice is a close call that turns on
+     the organisers' answer to the fifth email: swap to the barred s1 if a floored severity scores zero; keep today's
+     s2 if it scores half or no answer comes by 2026-11-26. The captain's ruling is due before T3's first upload
+     (2026-11-27); the default is today's s2. If he rules for the swap, record it in the
      decision log with his words and update `docs/P3_RUNBOOK.md`'s T3 switches. `docs/S2_RULES.md` stays frozen, and
      his ruling overrides it. Watch for the organisers' answer
      to the fifth email (A24).

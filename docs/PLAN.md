@@ -1253,3 +1253,13 @@ open. No organiser reply to any of the four emails as of then.
   - **Organiser email.** The fifth email (`docs/ORGANIZER_QUESTIONS.md`) asks the organisers how a floored severity
     scores. The captain sent it on 2026-11-05. An answer of "zero" strengthens the swap; "half" makes it close (+0.4
     to +0.8 at p_anchor 0.5-0.65).
+- 2026-11-06 (a), the T3 backup advice revised after a sensitivity check (TRIES N11, registered and run at d42883a).
+  - **The prompt.** A side agent's note to the captain: nearly all of N10's gain comes from one world, about 1 in 6.
+    There the beta-catenin file is not Gata4-shallow but the shared signal carries. s1's score in it is a judgement
+    cell, and the barred file's was measured on shallow Gata4 files.
+  - **The check.** Varying both, the swap's mixture gain falls from +1.38 to +0.42 if the barred file performs as
+    measured only half the time. It goes negative if s1 does better than assumed there. N11's rule, fixed before the
+    run, therefore reports the advice as a close call.
+  - **Revised recommendation.** Swap T3's s2 to the barred s1 only if the organisers answer that a floored severity
+    scores zero. Keep today's s2 if they answer half, or if no answer comes by 2026-11-26. The ruling stays the
+    captain's, due before T3's first upload (2026-11-27).

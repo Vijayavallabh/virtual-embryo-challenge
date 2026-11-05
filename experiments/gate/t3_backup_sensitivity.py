@@ -98,8 +98,8 @@ def main(argv=None) -> None:
     others = {"T1": t1, "heart": heart, "embryo": embryo}
     cells = [simulate(rows, others, pu, pa, s, q, np.random.default_rng(P.SEED))
              for pu, pa in BANDS for s in S1_WC for q in Q_BARRED]
-    Path(a.out).write_text(json.dumps({"script": "experiments/gate/t3_backup_sensitivity.py", "self_checks": len(checks),
-                                       "cells": cells}, indent=1) + "\n")
+    out = {"script": "experiments/gate/t3_backup_sensitivity.py", "self_checks": len(checks), "cells": cells}
+    Path(a.out).write_text(json.dumps(out, indent=1) + "\n")
     print(f"self-checks run: {len(checks)}")
     print("p_u2 p_anchor | s1 in that world (mean, P floor) | q | dE half / zero / mixture | dP mix lambda1 q90, q95")
     for c in cells:

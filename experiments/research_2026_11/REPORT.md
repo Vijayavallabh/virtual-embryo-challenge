@@ -276,6 +276,19 @@ the only counted reading of the mechanism. Recommended default until then: keep 
   - Most of the gain is the zero-credit reading, which the organisers have now been asked about (fifth email,
     2026-11-05). Under "half" alone, the gain is +0.4 to +0.8 at p_anchor 0.5-0.65.
 
+**The sensitivity check, 2026-11-06** (TRIES N11; a side agent's note to the captain). Nearly all of the gain comes
+from one world, about 1 in 6: the beta-catenin file is not Gata4-shallow, but the shared signal carries. In it, s1's
+score is a judgement cell (50), and the barred file's 60.8 was measured on Gata4 files that are shallow.
+- Varying the two, the swap's mixture gain at the selected band is:
+  - +1.38 / +0.90 / +0.42 / -0.05 if the barred file performs as measured with probability q = 1 / 0.75 / 0.5 /
+    0.25 (and as its no-stage version otherwise), with s1 at 50;
+  - +0.93 / +0.57 / +0.20 / -0.16 with s1 at 53;
+  - at most +0.42 with s1 at 56.
+- Under neutral assumptions (q = 0.5) the gain is +0.2 to +0.4, below the +0.5 bar.
+- Under the zero reading alone the swap stays positive in most cells. Under the half reading alone it needs q of 0.75
+  or more.
+- So the advice is revised to a close call that turns on the organisers' answer about floored severity.
+
 **Confidence:**
 - High that s1's severity hinges on depth and on its factor's agreement.
 - Low on every payoff figure.
@@ -437,10 +450,12 @@ overridden, the deadline and the default if he says nothing.
 
 **A. T3 s2: today's refused s1, or the barred s1 (lever 1).**
 - *What changes:* the T3 s2 file (`t3_build/barred_s1.h5ad`, already built and format-checked).
-- *Recommendation (after the checks, by the rule fixed before they ran):* swap: T3's s2 becomes the barred branch's s1
-  (`t3_build/barred_s1.h5ad`). It is Gata4-free, already built and format-checked. If the organisers answer "half"
-  before 2026-11-27, the case weakens to +0.4 to +0.8 and becomes a close call. If they answer "zero", it strengthens
-  to about +2.5.
+- *Recommendation, revised after the sensitivity check (TRIES N11):* decide on the organisers' answer to the fifth
+  email.
+  - If a floored severity scores zero: swap. T3's s2 becomes the barred branch's s1 (`t3_build/barred_s1.h5ad`, built,
+    format-checked and Gata4-free), worth about +0.5 to +2.5 T3 across the sensitivity range.
+  - If it scores half, or no answer comes by 2026-11-26: keep today's s2. The swap's gain is then +0.2 to +0.4 under
+    neutral assumptions, and negative if the barred file does worse than measured.
 - *Deciding priors:* P(U2), P(the stage anchor carries) and P(floor = 0). Under the default floor reading the swap
   breaks even near P(U2) of 0.77-0.9, or near P(anchor carries) of 0.35. It is robustly positive under the 0 reading:
   today's s2 floored severity in 14 of 20 practice seeds and would average roughly 42 rather than 51. Our working
