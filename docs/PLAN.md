@@ -1233,3 +1233,23 @@ open. No organiser reply to any of the four emails as of then.
     - (i) N3-N5 are diagnostics, not tries (N2's precedent);
     - (ii) the measured-out items are pruned;
     - (iii) no upload changes until the captain rules on section 7.
+- 2026-11-05 (g), the T3 checks the captain asked for ("run the T3 checks"), and the organiser email he sent.
+  - **Registration.** TRIES N6-N10 were registered at 5a14ff0 with their decision rules, before any run. D1 and D5/D6
+    first failed on two code bugs; they were fixed at d4f51cf and rerun there, with the rules unchanged.
+  - **Results** (`experiments/research_2026_11/REPORT.md` section 3):
+    - The released knockout files come from two independent runs.
+    - Gata4's depth shortfall is lower capture, not finer segmentation, and every released knockout file is shallower
+      than WT E8.75 (p_U2 band: middle, 0.7).
+    - The two factors' shared part lies mostly across the WT developmental axis (p_anchor band: high, 0.65), though it
+      is weak in size.
+    - The WT E8.75 staging check failed and shifts nothing.
+    - The pricing at (0.7, 0.65) gains +1.38 T3 for the swap under the mixture of floor readings (+0.79 half, +2.47
+      zero). It raises the top-3 chance by up to +2.5 points if the field shares our s1's fortunes.
+  - **The rule's recommendation: swap.** T3's s2 becomes the barred branch's s1, Mab21l2's factor against WT E8.75
+    (Gata4-free, already built and format-checked).
+  - **It is the captain's ruling.** It would override D11b's failed bar (rules.yaml note 6) and needs the T3 ruling
+    switches rewritten.
+  - **Deadline and default.** Due before T3's first upload (from 2026-11-27 00:00 UTC). Default: today's s2.
+  - **Organiser email.** The fifth email (`docs/ORGANIZER_QUESTIONS.md`) asks the organisers how a floored severity
+    scores. The captain sent it on 2026-11-05. An answer of "zero" strengthens the swap; "half" makes it close (+0.4
+    to +0.8 at p_anchor 0.5-0.65).

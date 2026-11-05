@@ -33,6 +33,11 @@ principles, then non-mimetic solutions for a top-3 place):
   floor reading, and robustly positive if a floored severity scores 0 (A24). It goes to the captain before T3's first
   upload, after target-free checks.
 - No upload changes (`docs/PLAN.md` decision log 2026-11-05 (f)).
+**2026-11-05 (late), the T3 checks and the organiser email.** The checks ran with rules fixed before they ran (TRIES
+N6-N10). Their rule recommends making T3's s2 the barred branch's s1, a Gata4-free factor with no depth step: +1.38 T3
+expected across the two floor readings. That needs the captain's ruling before T3's first upload on 2026-11-27, and
+the default is today's s2. He sent the fifth organiser email, which asks how a floored severity scores (A24)
+(`docs/PLAN.md` decision log 2026-11-05 (g)).
 **Active Feature:** feat-018 (s1 files). 2026-11-04: runbook step 1 is done (634b5fd). `vec boards update` still
 answered 403 at 07:29 UTC; a screened Slack and email sweep (wf_2489e0c9-951, two clean audits) found no objection, no
 fix and no rule change since the notice of 2026-10-31; the captain saved the board index and the embryo test gene
@@ -551,6 +556,12 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       - Ruling sheets for the captain (the report's section 7). A23 and A24 added. The process slips are recorded
         (`docs/DATA_POLICY.md` 2026-11-05 (k)), and `AGENTS.md` now names memory files and the scorer's docstrings.
       - The screened leaderboard totals were taken out of the AI assistant's memory file.
+- [x] 2026-11-05 (late): the T3 checks D1, D2, D5, D6 and the backup pricing (TRIES N6-N10).
+      - Registered at 5a14ff0. D1 and D5/D6 were fixed for code bugs at d4f51cf and rerun, with the rules unchanged.
+      - Results: two independent knockout runs; Gata4's depth shortfall is capture; the factors' shared part lies
+        mostly across the developmental axis; the staging check failed.
+      - The pricing recommends the swap (+1.38 T3 under the mixture).
+      - The fifth organiser email was drafted and sent by the captain (`docs/ORGANIZER_QUESTIONS.md`).
 
 ### What's Next
 
@@ -597,9 +608,11 @@ headroom tables in `experiments/harness/TRIES.md`):
    both and found none. N1 (done) held: the embryo test pair's coupling and geometry on the 497-gene test panel
    match the record (target-free, not a try; no risk note).
 6. Research follow-ups (`experiments/research_2026_11/REPORT.md` section 7), in deadline order:
-   - T3: task h's D5/D6 and D1/D2, and the rank-aware pricing under both floor readings. All are target-free, with
-     decision rules committed first. Then the captain's ruling on T3's s2 (A23, A24), before T3's first upload
-     (2026-11-27).
+   - T3: the checks ran (TRIES N6-N10) and their rule recommends the swap. The captain's ruling on T3's s2 is due
+     before T3's first upload (2026-11-27); the default is today's s2. If he rules for the swap, record it in the
+     decision log with his words and update `docs/P3_RUNBOOK.md`'s T3 switches. `docs/S2_RULES.md` stays frozen, and
+     his ruling overrides it. Watch for the organisers' answer
+     to the fifth email (A24).
    - Embryo: the pseudo-truth table, then the captain's ruling on an s2 at mixture fraction 1/4 (by the second round).
    - T1: the captain's readings on a strong-null prior (by the s1 freeze) and on A15 for T1 gene sets.
 

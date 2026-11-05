@@ -1,0 +1,60 @@
+{
+ "D5": {
+  "band": "high",
+  "context": {
+   "corr_d_primary_with_log_all_over_vs95": 0.5927167864408766,
+   "corr_fG_R": 0.12144718507069044,
+   "corr_fM_fM95": 0.48508095974855214
+  },
+  "primary": {
+   "along_axis": 7.7200723991036515,
+   "corr_fG_d": 0.13279245296888936,
+   "corr_fG_fM": 0.1534775738799093,
+   "corr_fM_d": 0.42253673162263483,
+   "corr_rG_rM": 0.1083889753991552,
+   "inner_fG_fM": 21.116816040279858,
+   "orthogonal": 13.396743641176203,
+   "orthogonal_share": 0.6344111543909939
+  },
+  "primary_axis": "E9.5 vs E8.25_late",
+  "secondary": {
+   "along_axis": 4.2560561995994215,
+   "corr_fG_d": 0.10130744883839338,
+   "corr_fG_fM": 0.1534775738799093,
+   "corr_fM_d": 0.3053391300669087,
+   "corr_rG_rM": 0.12935573129344888,
+   "inner_fG_fM": 21.116816040279858,
+   "orthogonal": 16.86075984068043,
+   "orthogonal_share": 0.7984518029857771
+  },
+  "secondary_axis": "E9.5 vs E8.5"
+ },
+ "D6": {
+  "known_lag_check_passed": false,
+  "labels_used": 5,
+  "nominal_E8.75": 0.403988602768658,
+  "placement": "check failed: uninformative",
+  "s_E8.25late_on_E8.5_E9.5": 0.04749432914527234,
+  "s_E8.5_on_E8.25late_E9.5": 0.20531813702487736,
+  "s_E8.75_on_E8.25late_E9.5": 0.3997313565955575,
+  "s_E8.75_on_E8.5_E9.5": 0.4254957062862453
+ },
+ "check": "d5d6",
+ "p_anchor": 0.65,
+ "p_anchor_band": "high",
+ "provenance": {
+  "commit": "d4f51cf99605a0ca4b8f56aeb99e1287198f69f1",
+  "inputs_sha256": {
+   "data/raw/T2/E8.25_late.h5ad": "d56f94d3e2d719ed3074d86c03eae457ccf90b24145d33300f9958f0e8078593",
+   "data/raw/T2/E8.5.h5ad": "41c76db18bfaa92c1d66f8220ec5fbb6d6acccb0a6b78241f40080a3096d37db",
+   "data/raw/T2/E8.75.h5ad": "149ab6df7c99ad85046c8aebebcf0c43689b3720c59ffb7cc550edcf2f13a83c",
+   "data/raw/T2/E9.5.h5ad": "371ca6530e084de2b6cd6703b49d95f4bb59546c9291659809575382a630ee9a",
+   "experiments/t3_decomp/results/gata4/gata4_decisions.json": "9440ae67625608112666d5235e6ceaa5dd9f47a4b0bbd30e16943f32f35c5a8c",
+   "runs/t3_decomp/gata4_20261028T122425Z/factors/gata4_pooled.csv": "36f2d65a36d2d4fd5307cddfadb56e9724c362c982795f30428eda752b4734ef",
+   "runs/t3_decomp/gata4_20261028T122425Z/factors/reference_R.csv": "3577cc368c45ce0dd76081cbecd64f13735699fb07adab09dc159ea0d1aa869f",
+   "runs/t3_decomp/gata4_20261028T122425Z/factors/transfer_mab21l2_all.csv": "64b1e0b8572c7193ed1e1f0b7339a26081e601f1e706e6b08193e1718dc5c7e8",
+   "runs/t3_decomp/gata4_20261028T122425Z/factors/transfer_mab21l2_vs95.csv": "89de692a770917f6524a8f0f26662e141221a9936c9e99d4885936c550337a90"
+  },
+  "tracked_tree_clean": true
+ }
+}

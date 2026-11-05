@@ -253,6 +253,29 @@ weighs on the decision due before 2026-11-27.
 Decision rules are committed before any of them runs. K3a, a counted cross-knockout try registered in TRIES first, is
 the only counted reading of the mechanism. Recommended default until then: keep today's s2.
 
+**The checks, run 2026-11-05 at the captain's request** (TRIES N6-N10, registered with their rules before any run;
+`results/d1.json`, `d2.json`, `d5d6.json`, `pricing.json`):
+- **D1, run fingerprint.** The Gata4 replicates are on slide M164 (batches 1 and 2) and Mab21l2 on slide M125 (batch 0).
+  They are two independent knockout runs.
+- **D2, areal capture.** Object density is about the same in every file. Gata4's shortfall against WT E8.75 is lower
+  capture per area (counts per area 0.56-0.69x), not finer segmentation. Every released knockout file is shallower
+  than WT E8.75 (0.52-0.73x). Under the rule, p_U2 falls in the middle band, 0.7.
+- **D5, the shared component.** 63% of the two factors' shared part lies across the WT developmental axis (80% on the
+  secondary axis), which gives the high band, p_anchor 0.65. But the shared part is weak in size: the two factors
+  correlate only 0.15, and the barred factor correlates 0.42 with the developmental axis itself.
+- **D6, staging.** WT E8.75 sits at its nominal place on the ladder (0.400 against 0.404). Half of the known-lag check
+  failed, so by its rule D6 shifts nothing.
+- **The pricing at (0.7, 0.65).** Swapping gains +0.79 T3 under the half reading, +2.47 under the zero reading and
+  +1.38 under the mixture. It raises the top-3 chance at our 90th and 95th percentiles by +1.9 to +2.5 points if the
+  field shares our s1's fortunes (lambda 1), and by about 0 if it does not (lambda 0).
+- **The rule's verdict: recommend the swap.** It holds at p_anchor 0.5 (+0.94) and fails at 0.35 (+0.48).
+- **Caveats.**
+  - D5's rule reads the split of the shared part, not its size. And D6's raw placement (W875 on its nominal stage)
+    suggests Gata4's "older" look was its own litter's, which argues for a p_anchor nearer 0.5 than 0.65; the swap
+    still clears the bar there.
+  - Most of the gain is the zero-credit reading, which the organisers have now been asked about (fifth email,
+    2026-11-05). Under "half" alone, the gain is +0.4 to +0.8 at p_anchor 0.5-0.65.
+
 **Confidence:**
 - High that s1's severity hinges on depth and on its factor's agreement.
 - Low on every payoff figure.
@@ -414,8 +437,10 @@ overridden, the deadline and the default if he says nothing.
 
 **A. T3 s2: today's refused s1, or the barred s1 (lever 1).**
 - *What changes:* the T3 s2 file (`t3_build/barred_s1.h5ad`, already built and format-checked).
-- *Recommendation:* not yet. First run D5/D6, D1/D2 and the rank-aware pricing, all target-free with decision rules
-  committed before they run, then rule.
+- *Recommendation (after the checks, by the rule fixed before they ran):* swap: T3's s2 becomes the barred branch's s1
+  (`t3_build/barred_s1.h5ad`). It is Gata4-free, already built and format-checked. If the organisers answer "half"
+  before 2026-11-27, the case weakens to +0.4 to +0.8 and becomes a close call. If they answer "zero", it strengthens
+  to about +2.5.
 - *Deciding priors:* P(U2), P(the stage anchor carries) and P(floor = 0). Under the default floor reading the swap
   breaks even near P(U2) of 0.77-0.9, or near P(anchor carries) of 0.35. It is robustly positive under the 0 reading:
   today's s2 floored severity in 14 of 20 practice seeds and would average roughly 42 rather than 51. Our working

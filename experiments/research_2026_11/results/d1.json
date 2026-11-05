@@ -1,0 +1,499 @@
+{
+ "check": "d1",
+ "files": {
+  "Gata4 KO rep1 (E8.75)": {
+   "counts_per_object": {
+    "median": 82.0,
+    "min": 5.0
+   },
+   "dtype": "float32",
+   "file": "T3/E8.75_gata4_ko_1.h5ad",
+   "genes_per_object": {
+    "median": 38.0,
+    "min": 5
+   },
+   "id:condition": {
+    "n_unique": 1,
+    "top": {
+     "KO": 42257
+    }
+   },
+   "id:embryo": {
+    "n_unique": 1,
+    "top": {
+     "M164-KO1": 42257
+    }
+   },
+   "id:genotype": {
+    "n_unique": 1,
+    "top": {
+     "gata4": 42257
+    }
+   },
+   "id:perturb_batch": {
+    "n_unique": 1,
+    "top": {
+     "1": 42257
+    }
+   },
+   "id:sample_id": {
+    "n_unique": 46,
+    "top": {
+     "10": 1234,
+     "11": 1205,
+     "12": 1135,
+     "2": 1452,
+     "20": 1189,
+     "29": 1260,
+     "3": 1426,
+     "4": 1186,
+     "5": 1184,
+     "6": 1310,
+     "7": 1198,
+     "9": 1232
+    }
+   },
+   "id:section": {
+    "n_unique": 46,
+    "top": {
+     "KO1-10": 1232,
+     "KO1-11": 1234,
+     "KO1-12": 1205,
+     "KO1-13": 1135,
+     "KO1-21": 1189,
+     "KO1-3": 1452,
+     "KO1-30": 1260,
+     "KO1-4": 1426,
+     "KO1-5": 1186,
+     "KO1-6": 1184,
+     "KO1-7": 1310,
+     "KO1-8": 1198
+    }
+   },
+   "id:slide": {
+    "n_unique": 1,
+    "top": {
+     "M164": 42257
+    }
+   },
+   "layers": [
+    "None",
+    "counts",
+    "log1p",
+    "normalized_counts"
+   ],
+   "matrix": "dense",
+   "objects_released": 42257,
+   "obs_columns": [
+    "celltype",
+    "celltype_clean",
+    "condition",
+    "embryo",
+    "embryo_section",
+    "genotype",
+    "leiden",
+    "n_counts",
+    "n_genes",
+    "perturb_batch",
+    "sample_id",
+    "section",
+    "slide",
+    "time",
+    "z_coord"
+   ],
+   "obsm": [
+    "X_pca",
+    "X_umap",
+    "spatial",
+    "spatial_3D"
+   ],
+   "synthetic_records_dropped": 0,
+   "z_levels": 46,
+   "z_step_median": 15.0
+  },
+  "Gata4 KO rep2 (E8.75)": {
+   "counts_per_object": {
+    "median": 68.0,
+    "min": 5.0
+   },
+   "dtype": "float32",
+   "file": "T3/E8.75_gata4_ko_2.h5ad",
+   "genes_per_object": {
+    "median": 34.0,
+    "min": 5
+   },
+   "id:condition": {
+    "n_unique": 1,
+    "top": {
+     "KO": 46396
+    }
+   },
+   "id:embryo": {
+    "n_unique": 1,
+    "top": {
+     "M164-KO2": 46396
+    }
+   },
+   "id:genotype": {
+    "n_unique": 1,
+    "top": {
+     "gata4": 46396
+    }
+   },
+   "id:perturb_batch": {
+    "n_unique": 1,
+    "top": {
+     "2": 46396
+    }
+   },
+   "id:sample_id": {
+    "n_unique": 44,
+    "top": {
+     "11": 1299,
+     "12": 1300,
+     "13": 1319,
+     "16": 1223,
+     "19": 1263,
+     "21": 1406,
+     "22": 1362,
+     "24": 1329,
+     "28": 1395,
+     "31": 1497,
+     "32": 1241,
+     "41": 1341
+    }
+   },
+   "id:section": {
+    "n_unique": 44,
+    "top": {
+     "KO2-12": 1299,
+     "KO2-13": 1300,
+     "KO2-14": 1319,
+     "KO2-17": 1223,
+     "KO2-20": 1263,
+     "KO2-22": 1406,
+     "KO2-23": 1362,
+     "KO2-25": 1329,
+     "KO2-29": 1395,
+     "KO2-32": 1497,
+     "KO2-33": 1241,
+     "KO2-45": 1341
+    }
+   },
+   "id:slide": {
+    "n_unique": 1,
+    "top": {
+     "M164": 46396
+    }
+   },
+   "layers": [
+    "None",
+    "counts",
+    "log1p",
+    "normalized_counts"
+   ],
+   "matrix": "dense",
+   "objects_released": 46396,
+   "obs_columns": [
+    "celltype",
+    "condition",
+    "embryo",
+    "embryo_section",
+    "genotype",
+    "leiden",
+    "n_counts",
+    "n_genes",
+    "perturb_batch",
+    "sample_id",
+    "section",
+    "slide",
+    "time",
+    "z_coord"
+   ],
+   "obsm": [
+    "X_pca",
+    "X_umap",
+    "spatial",
+    "spatial_3D"
+   ],
+   "synthetic_records_dropped": 0,
+   "z_levels": 44,
+   "z_step_median": 15.0
+  },
+  "Mab21l2 KO (E9.5)": {
+   "counts_per_object": {
+    "median": 95.0,
+    "min": 20.0
+   },
+   "dtype": "float32",
+   "file": "T3/E9.5_mab21l2_ko.h5ad",
+   "genes_per_object": {
+    "median": 43.0,
+    "min": 20
+   },
+   "id:genotype": {
+    "n_unique": 1,
+    "top": {
+     "mab21l2": 50294
+    }
+   },
+   "id:perturb_batch": {
+    "n_unique": 1,
+    "top": {
+     "0": 50294
+    }
+   },
+   "id:sample_id": {
+    "n_unique": 37,
+    "top": {
+     "12": 1547,
+     "15": 1514,
+     "24": 1482,
+     "25": 1722,
+     "26": 1552,
+     "28": 1582,
+     "35": 2808,
+     "4": 1712,
+     "6": 1570,
+     "7": 1501,
+     "8": 1556,
+     "9": 1597
+    }
+   },
+   "id:section": {
+    "n_unique": 36,
+    "top": {
+     "10": 1597,
+     "13": 1547,
+     "16": 1514,
+     "19": 2814,
+     "26": 1722,
+     "27": 1552,
+     "29": 1582,
+     "36": 2808,
+     "5": 1712,
+     "7": 1570,
+     "8": 1501,
+     "9": 1556
+    }
+   },
+   "id:slide": {
+    "n_unique": 1,
+    "top": {
+     "M125": 50294
+    }
+   },
+   "layers": [
+    "None",
+    "counts",
+    "log1p",
+    "normalized_counts"
+   ],
+   "matrix": "dense",
+   "objects_released": 50294,
+   "obs_columns": [
+    "celltype",
+    "embryo_section",
+    "genotype",
+    "leiden",
+    "n_counts",
+    "n_genes",
+    "perturb_batch",
+    "sample_id",
+    "section",
+    "slide",
+    "time",
+    "z_coord"
+   ],
+   "obsm": [
+    "X_pca",
+    "X_pca_harmony",
+    "X_umap",
+    "spatial",
+    "spatial_3D"
+   ],
+   "synthetic_records_dropped": 2811,
+   "z_levels": 36,
+   "z_step_median": 10.0
+  },
+  "WT E10.5": {
+   "counts_per_object": {
+    "median": 56.0,
+    "min": 20.0
+   },
+   "dtype": "float32",
+   "file": "T2/E10.5.h5ad",
+   "genes_per_object": {
+    "median": 30.0,
+    "min": 20
+   },
+   "layers": [
+    "None",
+    "counts",
+    "log1p"
+   ],
+   "matrix": "sparse",
+   "objects_released": 167864,
+   "obs_columns": [
+    "celltype",
+    "cm_celltype"
+   ],
+   "obsm": [
+    "spatial_2D",
+    "spatial_3D"
+   ],
+   "synthetic_records_dropped": 0,
+   "z_levels": 44,
+   "z_step_median": 15.0
+  },
+  "WT E8.25_late": {
+   "counts_per_object": {
+    "median": 233.0,
+    "min": 5.0
+   },
+   "dtype": "float32",
+   "file": "T2/E8.25_late.h5ad",
+   "genes_per_object": {
+    "median": 70.0,
+    "min": 4
+   },
+   "layers": [
+    "None",
+    "counts",
+    "log1p"
+   ],
+   "matrix": "sparse",
+   "objects_released": 58716,
+   "obs_columns": [
+    "celltype",
+    "cm_celltype"
+   ],
+   "obsm": [
+    "spatial_2D",
+    "spatial_3D"
+   ],
+   "synthetic_records_dropped": 4285,
+   "z_levels": 38,
+   "z_step_median": 15.0
+  },
+  "WT E8.5": {
+   "counts_per_object": {
+    "median": 166.0,
+    "min": 3.0
+   },
+   "dtype": "float32",
+   "file": "T2/E8.5.h5ad",
+   "genes_per_object": {
+    "median": 61.0,
+    "min": 3
+   },
+   "layers": [
+    "None",
+    "counts",
+    "log1p"
+   ],
+   "matrix": "sparse",
+   "objects_released": 23710,
+   "obs_columns": [
+    "celltype",
+    "cm_celltype"
+   ],
+   "obsm": [
+    "spatial_2D",
+    "spatial_3D"
+   ],
+   "synthetic_records_dropped": 0,
+   "z_levels": 25,
+   "z_step_median": 15.0
+  },
+  "WT E8.75": {
+   "counts_per_object": {
+    "median": 130.0,
+    "min": 1.0
+   },
+   "dtype": "float32",
+   "file": "T2/E8.75.h5ad",
+   "genes_per_object": {
+    "median": 52.0,
+    "min": 1
+   },
+   "layers": [
+    "None",
+    "counts",
+    "log1p"
+   ],
+   "matrix": "sparse",
+   "objects_released": 24826,
+   "obs_columns": [
+    "celltype",
+    "cm_celltype"
+   ],
+   "obsm": [
+    "spatial_2D",
+    "spatial_3D"
+   ],
+   "synthetic_records_dropped": 1449,
+   "z_levels": 35,
+   "z_step_median": 14.0
+  },
+  "WT E9.5": {
+   "counts_per_object": {
+    "median": 75.0,
+    "min": 20.0
+   },
+   "dtype": "float32",
+   "file": "T2/E9.5.h5ad",
+   "genes_per_object": {
+    "median": 35.0,
+    "min": 20
+   },
+   "layers": [
+    "None",
+    "counts",
+    "log1p"
+   ],
+   "matrix": "sparse",
+   "objects_released": 53742,
+   "obs_columns": [
+    "celltype",
+    "cm_celltype"
+   ],
+   "obsm": [
+    "spatial_2D",
+    "spatial_3D"
+   ],
+   "synthetic_records_dropped": 0,
+   "z_levels": 40,
+   "z_step_median": 15.0
+  }
+ },
+ "gata4_mab21l2_shared_ids": {
+  "genotype": [],
+  "perturb_batch": [],
+  "sample_id": [
+   "12",
+   "24",
+   "28",
+   "4",
+   "6",
+   "7",
+   "9"
+  ],
+  "section": [],
+  "slide": []
+ },
+ "provenance": {
+  "commit": "d4f51cf99605a0ca4b8f56aeb99e1287198f69f1",
+  "inputs_sha256": {
+   "data/raw/T2/E10.5.h5ad": "d6b37967f9cf3533091964cd07421c48a5c7c04628e9321123a426cb2a9c7e8b",
+   "data/raw/T2/E8.25_late.h5ad": "d56f94d3e2d719ed3074d86c03eae457ccf90b24145d33300f9958f0e8078593",
+   "data/raw/T2/E8.5.h5ad": "41c76db18bfaa92c1d66f8220ec5fbb6d6acccb0a6b78241f40080a3096d37db",
+   "data/raw/T2/E8.75.h5ad": "149ab6df7c99ad85046c8aebebcf0c43689b3720c59ffb7cc550edcf2f13a83c",
+   "data/raw/T2/E9.5.h5ad": "371ca6530e084de2b6cd6703b49d95f4bb59546c9291659809575382a630ee9a",
+   "data/raw/T3/E8.75_gata4_ko_1.h5ad": "3805715d25c85873a8c51c86be44e8e42affaec0557e1b05f9d99db2ef976cad",
+   "data/raw/T3/E8.75_gata4_ko_2.h5ad": "1760657da7c477c4bf986352fdf1a066bb6a5fe995f1b9deca8ee859722074e4",
+   "data/raw/T3/E9.5_mab21l2_ko.h5ad": "5b1668ab982e64f7683fbf5f905218fab311c63548de5f5bc18a74f9d4d357e0"
+  },
+  "tracked_tree_clean": true
+ }
+}
