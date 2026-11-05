@@ -1,0 +1,50 @@
+# Determinism check at 6964b7d (experiments/builds/determinism_check.sh), DGX, 2026-11-05. The builders are those of 88b057f
+# (R1); 6964b7d adds only experiments/gate/t3_swap.py. All three sets (s1, s2, t3alt) rebuilt from empty folders at BLAS
+# threads 1, 4, 8 and 16 in parallel chains, every file checked with vec check, then compared with
+# runs/archive/builds_88b057f/SHA256SUMS (the freeze-morning reference since R1). Target-free: released inputs only, no
+# target read, no score. ./init.sh at deb80a5 (the same code): 601 passed.
+== BLAS threads 1, against runs/archive/builds_88b057f/SHA256SUMS
+builds/T1_s1.h5ad: OK
+builds/T1_s2.h5ad: OK
+builds/T2embryo_s1.h5ad: OK
+builds/T2embryo_s2.h5ad: OK
+builds/T2heart_s1.h5ad: OK
+builds/T2heart_s2.h5ad: OK
+t3_build/allowed_s1.h5ad: OK
+t3_build/barred_s1.h5ad: OK
+t3_build/barred_s2.h5ad: OK
+t3_build/refused_s1.h5ad: OK
+== BLAS threads 4, against runs/archive/builds_88b057f/SHA256SUMS
+builds/T1_s1.h5ad: OK
+builds/T1_s2.h5ad: OK
+builds/T2embryo_s1.h5ad: OK
+builds/T2embryo_s2.h5ad: OK
+builds/T2heart_s1.h5ad: OK
+builds/T2heart_s2.h5ad: OK
+t3_build/allowed_s1.h5ad: OK
+t3_build/barred_s1.h5ad: OK
+t3_build/barred_s2.h5ad: OK
+t3_build/refused_s1.h5ad: OK
+== BLAS threads 8, against runs/archive/builds_88b057f/SHA256SUMS
+builds/T1_s1.h5ad: OK
+builds/T1_s2.h5ad: OK
+builds/T2embryo_s1.h5ad: OK
+builds/T2embryo_s2.h5ad: OK
+builds/T2heart_s1.h5ad: OK
+builds/T2heart_s2.h5ad: OK
+t3_build/allowed_s1.h5ad: OK
+t3_build/barred_s1.h5ad: OK
+t3_build/barred_s2.h5ad: OK
+t3_build/refused_s1.h5ad: OK
+== BLAS threads 16, against runs/archive/builds_88b057f/SHA256SUMS
+builds/T1_s1.h5ad: OK
+builds/T1_s2.h5ad: OK
+builds/T2embryo_s1.h5ad: OK
+builds/T2embryo_s2.h5ad: OK
+builds/T2heart_s1.h5ad: OK
+builds/T2heart_s2.h5ad: OK
+t3_build/allowed_s1.h5ad: OK
+t3_build/barred_s1.h5ad: OK
+t3_build/barred_s2.h5ad: OK
+t3_build/refused_s1.h5ad: OK
+all files byte-identical to the archived set at every thread count

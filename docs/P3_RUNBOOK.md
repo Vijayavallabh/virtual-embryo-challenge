@@ -269,6 +269,13 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
   - T1: `vec.t1_scope.build_submission` once the shares are fixed by their written rule (docs/PLAN.md section 4.1);
     pass `ref_source` (the reference file's stem) so the per-file label remaps apply.
 - Update `ASSUMPTIONS.md` (A1, A2, A3, A13, A19) and `progress.md`. A1 is confirmed (2026-10-28).
+- **Disclosure ids for each official upload** (prepared 2026-11-05 by the AI assistant; the captain confirms them on
+  the morning). The client refuses an official upload without `--disclose` ids from `EXTERNAL_DATA.md`. Rule used:
+  every register row whose Tasks column names the board's task, since Rules s.10 asks for every public dataset,
+  model and published code used, and a figure that informed a choice counts; disclosing a row that only informed a
+  choice is safe, leaving one out is not. T1:test (s1 and s2): `X001,X002,X003,X005,X006`. T2:heart:test_extrap and
+  T2:embryo:test_interp: `X001,X004,X005`. T3:bcatenin: `X001,X004,X005`. A row added later joins the boards its
+  Tasks column names.
 - **(user)** Final entries. The account page (seen in the site's public script, 2026-10-28): "The leaderboard shows
   your team's best score on each board, so there is nothing to nominate yet. In the final phase the captain picks
   which submission counts." While nominations are open, the captain sees a "Final" column in the team's submission
