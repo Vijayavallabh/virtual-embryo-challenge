@@ -17,7 +17,26 @@ Sources (keep in sync when the site changes):
   2026-10-20. Checked 2026-10-20 17:10 UTC: the Rules are unchanged since 2026-10-18 apart from a Yukon banner
   ("Ordinary-team rules are unchanged"); the partner exceptions "apply to the partner category only". On 2026-10-28
   (a screened read of the site) the final-phase Rules had changed: s.10 and s.11 now cover the opt-in validation
-  answers and the P3 start time (Timeline).
+  answers and the P3 start time (Timeline). Checked 2026-11-05 at 15:50 UTC in a screened read (wf_cf28f5b9-9aa,
+  with s.10's window sentences then read word for word): no change dated after 2026-10-28. Some text was not in this
+  record before; when it appeared is unknown:
+  - **Upload count.** The overview page speaks of "up to two official test submissions per task". Rules s.11, the
+    Timeline and the server's quota (`official_per_board`, limit 2 on each of the four test boards) all say per
+    board.
+  - **s.10, data:**
+    - the midpoint nearness rule, and the extrapolation window that relaxes it (`docs/DATA_POLICY.md`, External data
+      windows);
+    - viewing the Data page or running a format check is not an opt-in;
+    - a team's first accepted P3 submission ends P2.
+  - **s.11, ranking:**
+    - a board never attempted counts zero;
+    - a rejected submission uses no scored attempt;
+    - each track is ranked separately.
+  - **Prize terms:**
+    - the method report is due 14 days after notification and is published with the results;
+    - the organisers may ask for documentation or code before paying;
+    - a result that cannot be reproduced makes a team ineligible.
+  - **Dates.** Official evaluation starts 2026-12-04; winners are announced on 2026-12-11.
 
 ## Timeline (compiled 2026-10-18, updated to 2026-10-28; schedule change of 2026-10-20 included)
 - P2 (until the final phase opened on 2026-10-27): validation leaderboard, 8 scored submissions/day/task. Starter kit +

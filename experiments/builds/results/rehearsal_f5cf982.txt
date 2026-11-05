@@ -1,0 +1,26 @@
+# Rebuild rehearsal at f5cf982, DGX, 2026-11-05 (after the captain's "Go ahead"):
+# experiments/builds/determinism_check.sh at 16 BLAS threads, the upload default: all three sets (s1, s2, t3alt)
+# rebuilt from empty folders on a clean tree by experiments/builds/build_all.sh, every file checked with vec check (10
+# of 10 OK), then compared with runs/archive/builds_88b057f/SHA256SUMS, the freeze-morning reference since R1. The
+# builders are those of 88b057f: no file under src/, experiments/builds/ (results aside), experiments/t3_decomp/,
+# experiments/t1_m1/, configs/, pyproject.toml or uv.lock changed since 6964b7d. Target-free: released inputs only, no
+# target read, no score. A second comparison on the local machine (the rebuilt files' sha256 against the archive's
+# list) agreed.
+#
+# No server format check was sent: each file is byte-identical to one that already passed it on its board
+# (results/submissions.csv: T1 s1 and s2 on 2026-11-05 at 88b057f; the other eight on 2026-11-04 at ae6d6b3 and again
+# at 1206d60). The client's read-only status (`vec submit status`, local machine, about 15:40 UTC): phase p3, split
+# test, accepting submissions; every test board 0 of 2 official uploads used on the server and in the ledger; no
+# unlisted, ambiguous or unresolved ledger rows; no official row in the ledger.
+== BLAS threads 16, against runs/archive/builds_88b057f/SHA256SUMS
+builds/T1_s1.h5ad: OK
+builds/T1_s2.h5ad: OK
+builds/T2embryo_s1.h5ad: OK
+builds/T2embryo_s2.h5ad: OK
+builds/T2heart_s1.h5ad: OK
+builds/T2heart_s2.h5ad: OK
+t3_build/allowed_s1.h5ad: OK
+t3_build/barred_s1.h5ad: OK
+t3_build/barred_s2.h5ad: OK
+t3_build/refused_s1.h5ad: OK
+all files byte-identical to the archived set at every thread count

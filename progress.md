@@ -522,6 +522,13 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       `docs/research/t3_methods.md`; standing screening rules; the estimator's plan citations as entry labels; (h)
       corrected in (i) (030ca89, 1f0497b, 80c8604). The captain ruled no history rewrite, and any public release is a
       fresh repository (decision log 2026-11-05 (e)). The assumption ledger brought up to date.
+- [x] 2026-11-05 (evening), after the captain's "Go ahead": the rebuild rehearsal repeated at f5cf982
+      (`experiments/builds/results/rehearsal_f5cf982.txt`). All ten files were rebuilt from empty folders on the DGX;
+      10 of 10 pass `vec check`, and all are byte-identical to `runs/archive/builds_88b057f`. None was format-checked
+      again, since each already passed on its board. The client's read-only status: phase p3 accepting submissions,
+      every test board at 0 of 2 official uploads, no unresolved ledger rows. The DGX check folders
+      (`runs/determinism_1435acf`, `_6964b7d`, `_f5cf982`) were verified against their archives and removed. A
+      screened sweep (wf_cf28f5b9-9aa; Blockers below) found nothing new from the organisers.
 
 ### What's Next
 
@@ -537,7 +544,8 @@ headroom tables in `experiments/harness/TRIES.md`):
    (`docs/S2_RULES.md`), so no later try reaches those two boards unless the captain changes a rule. The AI
    assistant's recommendation (`docs/PLAN.md` decision log 2026-11-04 (c)): keep the hold; the rebuild rehearsal is
    done (2026-11-04, 1206d60: ten files byte-identical, `vec check` and the server format checks passed); repeat it at
-   the freeze commit.
+   the freeze commit. Repeated at f5cf982 on 2026-11-05: ten files byte-identical to `runs/archive/builds_88b057f`
+   (`experiments/builds/results/rehearsal_f5cf982.txt`).
    2026-11-05: the captain ran both scratchpad deletion scripts (32 raw site copies and 17 later residues deleted).
    The freeze-morning hash check runs against `runs/archive/builds_88b057f` (the R1 builds; 40 of 40 at every
    thread count), and the disclosure ids for each upload are in `docs/P3_RUNBOOK.md` section 5 for the captain.
@@ -587,6 +595,14 @@ headroom tables in `experiments/harness/TRIES.md`):
       The fourth email (the 403 on the panel files, what counts when the captain marks no final entry, confirmation
       of the A20 reading; the scorer build still open) was sent by the user on 2026-10-28 at 15:41 IST, signed "Team
       captain, Mithril" (`docs/ORGANIZER_QUESTIONS.md`). No reply to any of the four emails in that mailbox as of then.
+      Screened sweep on 2026-11-05 (wf_cf28f5b9-9aa; Slack, the organiser email, and the Rules, Timeline, FAQ and
+      Prizes pages, each digest audited; from 2026-11-04 07:22 UTC to about 15:50 UTC):
+      - Slack (the PantheonOS workspace, through the claude.ai Slack connector; the design plugin's Slack is signed
+        out): no organiser message.
+      - Email: no organiser message; our follow-up of 2026-11-04 is unanswered.
+      - None of our questions was answered.
+      - The site pages carry no change dated after 2026-10-28. Text our record had not summarised is noted in
+        `docs/CHALLENGE.md` (Sources).
 - [ ] **Main blocker for submitting (2026-10-28):** the board specs. `panels/index.json` answers HTTP 403 to our
       client (not worked around), `boards/` holds only the P2 specs, and `vec submit` checks the board against
       `boards/index.json` first, so it refuses every upload to the four test boards, format checks included, until
@@ -738,6 +754,10 @@ headroom tables in `experiments/harness/TRIES.md`):
 - Before choosing or changing work on an entry, read the guiding principle at the top of `AGENTS.md` and the headroom
   tables in `experiments/harness/TRIES.md` (after a kept change, rerun `python3 -I experiments/harness/headroom.py`,
   commit its output and copy the tables: `TRIES.md` rule 8).
+- Email sweeps: search the organiser address in both forms, virtual.embryo.moonshot@gmail.com and
+  virtualembryomoonshot@gmail.com. Gmail delivers both to one inbox, but its search treats them as different strings
+  (found 2026-11-05). The claude.ai Slack connector reaches the PantheonOS workspace, which holds
+  #virtual-embryo-challenge.
 - Slack sweeps: leave the group DM C0CA7QTEMDF out of date searches that reach back to 2026-10-18 (they surface our
   leak report). Six workspace accounts use eigenlabs.org addresses (none has posted); record their posts, or posts in a
   new Yukon channel, by place and date only.

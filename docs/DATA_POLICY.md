@@ -49,6 +49,15 @@ prohibited, and the test windows (T1 and T2 heart E12.5, T2 embryo E7.75, the be
   - T2 embryo: strictly between E7.25 and E8.0.
   - The bracketing stages themselves are allowed.
 - **Nearness counts.** Somite counts and Theiler stages are converted to E-days and judged by the same boundaries.
+  Rules s.10 gives the general rule, read word for word by a screening agent on 2026-11-05: "External data is
+  treated as a held-out stage when it sits closer to that stage than to the nearest stage we released for the same
+  task: the midpoint between them is the boundary." For the extrapolation targets, the same section says the window
+  "is stated outright rather than derived, and it relaxes the midpoint rule above rather than following it". So the
+  explicit window governs there:
+  - "Anything after E13.5 may be used, provided the source and its stages are stated explicitly with the
+    submission."
+  - Data at exactly E13.5 may not be used, and data at exactly E9.5 may.
+  No source the method uses changes status.
 - **Genotype.** Data from the held-out knockouts, from another allele of the same gene at a comparable stage, or from a
   perturbation that phenocopies them counts as held out (beta-catenin/Ctnnb1 and Gata4 at around E8.75).
 - **General resources** that span a window may be used only after removing the in-window cells; the removal must be
@@ -605,3 +614,11 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   its own scratch script, and, as its brief asked, searched `docs/research/`, which showed hit lines from unscreened
   reports to it only. The captain ruled the same day: no rewrite, and any public release of the code is a fresh
   repository built from the final tree (`docs/PLAN.md` decision log 2026-11-05 (e)).
+- 2026-11-05 (j), a record update, no exposure.
+  - A screened sweep (wf_cf28f5b9-9aa) read Slack, the organiser email and the Rules, Timeline, FAQ and Prizes pages,
+    each digest audited (`progress.md`, Blockers). It found nothing new from the organisers.
+  - The pages showed text this record had not summarised, among it s.10's midpoint nearness rule. A screening agent
+    then read s.10's window sentences word for word. They are now under External data windows above: for the
+    extrapolation targets the explicit window relaxes the midpoint rule, so legal post-E13.5 data stays legal.
+  - The other new text is listed in `docs/CHALLENGE.md` (Sources).
+  - The digests skipped five Yukon passages on the site pages, recording only place and date.
