@@ -522,4 +522,26 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   of 2026-10-18 and 2026-10-19, recreating the GitHub repo and losing its push record. The captain can order one (a
   force-push needs his yes; the script would be dry-run on a scratch clone first, and he runs it). The side agent's note
   repeated the value to the captain, so a D3 prior, if he writes one, rests on registered legal data (Feng's two
-  strains, X002), not on it.
+  strains, X002), not on it. The captain ruled on 2026-11-05: no purge (`docs/PLAN.md` decision log 2026-11-05 (c)).
+- 2026-11-05 (f), the cleanup the captain ruled on 2026-11-05 (`docs/PLAN.md` decision log 2026-11-05 (c)): (i) DGX:
+  `~/v/vec-gapconc/ext/jax/meta/df_cell.legalT1.csv` and `lpm_legalT1.csv`, which also held boundary embryos 50-53, are
+  deleted; the reduction's output in `data/external/jax_qiu2024/` holds embryos 1-22 and 54-74 only, and a rerun needs a
+  fresh download (X003). `jax_labels.csv` (embryos 1-22 and 54-74) and the gene table stay, and the per-embryo folders
+  hold no file for embryos 23-53 (checked by name). (ii) DGX scratch: `~/v/scratch/rebuild_2026-11-04/` and, under the
+  standing rule for scratch copies, `~/v/scratch/births/` were archived to
+  `runs/archive/scratch_rebuild_2026-11-04.tar.gz` and `runs/archive/scratch_births.tar.gz` (every file's hash checked
+  after extraction; sums in `runs/archive/SHA256SUMS.scratch_2026-11-05`) and removed; neither held a repository copy or
+  a board file. (iii) The AI assistant's session scratchpad: a screening agent classified its top-level entries of
+  2026-10-18 to 2026-10-20 by name and file type, relaying no values. 29 hold raw challenge-site copies (site pages,
+  Nuxt and JS bundles, API and leaderboard captures, a Data-page copy, a copy of the board-anchor index, inventories of
+  challenge files with their sizes), 3 could not be opened past a boards/, panels/ or leaderboard subfolder, and 130 are
+  our own work. The auto-mode classifier blocked the AI assistant's deletion, so the captain runs the script it prepared
+  (`cleanup_2026-11-05/delete_site_copies.sh` in that scratchpad: a dry run unless given --delete, with a date guard; 32
+  entries, about 515 MB). The screen also flagged the same kind of material from later dates (manifest tables with
+  per-file sizes of 2026-10-27 and 2026-10-28, site copies of 2026-10-28, the leaderboard reads and captures of
+  2026-11-04) and, among our own work, anchor-check and parity-hedge outputs, a raw Slack copy, a repository bundle of
+  2026-10-19 that may keep pre-purge history and the raw research-agent reports; a second script
+  (`delete_later_copies.sh`, 17 entries, about 32 MB) is recommended and waits for the captain. (iv) Slips: the
+  screening agent once read the first 1.2 KB of an inventory file through `grep -o` to see its field names (it relayed
+  no values); the AI assistant wrote two scripts of this task into an existing scratchpad folder (`r1/`) that the screen
+  found to hold site downloads of 2026-11-04, without listing or opening its other contents.

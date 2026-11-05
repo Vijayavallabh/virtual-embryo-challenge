@@ -10,7 +10,9 @@ Embryos 1-12 are T1-only: their E8.5 bin (0-12 somites) overlaps the T2-heart in
 embryo 1 (0 somites) may sit in the T2-embryo window (E7.25, E8.0). Naming any task besides T1 with --tasks drops them.
 Every kept cell row is also re-checked: its day label must lie outside the windows of every named task (abort if not).
 
-Inputs: the legal subsets already on the DGX (paths in sources.yaml), written by the 2026-10-18 research run:
+Inputs: the legal subsets already on the DGX (paths in sources.yaml), written by the 2026-10-18 research run
+(df_cell.legalT1.csv and lpm_legalT1.csv, which also held embryos 50-53, were deleted on 2026-11-05, so a rerun
+needs a fresh download; docs/DATA_POLICY.md 2026-11-05 (f)):
   cell tables   df_cell.legalT1.csv (embryos 1-22, 50-74), lpm_legalT1.csv (LPM sub-labels, same embryos),
                 jax_labels.csv (refined labels, embryos 1-22, 54-74): streamed row by row on the embryo_id column
   gene table    df_gene.csv (gene IDs, symbols, chromosome; no cells): copied

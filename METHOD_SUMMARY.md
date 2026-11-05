@@ -36,13 +36,14 @@ per-group numbers are in `experiments/harness/TRIES.md` ("Where the entries stan
 baselines"). In this section, D-numbers are the pre-registered Task 3 rules (`experiments/t3_decomp/rules.yaml`),
 C-numbers claims in `experiments/coords/REPORT.md`, A-numbers rows of `ASSUMPTIONS.md` and E11 a `TRIES.md` row.
 
-**Task 1, E12.5, beyond E10.5 verbatim.** s1 = M1; s2 = M1 with cardiomyocytes at 60% of heart cells.
+**Task 1, E12.5, beyond E10.5 verbatim.** s1 = M1 with R1 (cells without a Feng group keep their E10.5 expression; the
+captain's ruling of 2026-11-05); s2 = the same with cardiomyocytes at 60% of heart cells.
 
 | Facet | Change beyond the baseline | Held-out evidence |
 |---|---|---|
 | States that emerge | None. Births by the legal route (states present in legal post-E14.5 chamber data and absent at E10.5) were designed and pruned on 2026-11-04 (`experiments/harness/TRIES.md`) | - |
 | Proportions | Chamber categories only (the surrounding, cardiac-progenitor (first and second heart field, JCF, DMP), pericardial and pharyngeal categories dropped; `configs/t1_chamber_classes.yaml`), at E10.5's own chamber mix; s2 moves cardiomyocytes to 60% of heart cells | A premise rather than a measurement (the organisers' E12.5 collection note). On the chamber-cut backtest (E10.5 from E9.5) B0 beats a copy (+1.62, 9 of 10 seeds) but not the floor (-0.32, vetoed), and that backtest draws E9.5's mix, so E10.5's own mix is never tested (`experiments/harness/results/d2_v1/`). The s2 rests on a sensitivity grid on an oracle base, not on a backtest (`experiments/s2_hedge/`) |
-| Expression | Count-space shifts: Feng 2022's E9.5 -> E14.5 direction at 2/5 for cardiomyocytes, endocardium, endothelium and epicardium; half the E9.5 -> E10.5 per-type change for the other cells (mostly blood); 23 genes held flat (13 Y-linked, Xist and Tsix, 2 named strain genes and 6 by the pool rule alone; `experiments/t1_direction/results/held_flat_genes.csv`) | The pre-registered readout on E10.5 from E9.5: de_score +0.175 and de_direction +0.188 over cross-fitted momentum, cardiomyocyte sign agreement 0.912 (`experiments/t1_direction/results/E10.5/`). A labelled diagnostic at 1/5, in-sample for that readout: +0.97 over the floor and +1.29 over B0, 10 of 10 seeds each; over the floor all of the gain is on de_direction (skill 0.620, against 0.536 for a copy), and de_score (0.480) stays below the floor (`experiments/t1_m1/results/diag_v1/`). No harness task can judge it, and the 2/5 used at test is untested |
+| Expression | Count-space shifts: Feng 2022's E9.5 -> E14.5 direction at 2/5 for cardiomyocytes, endocardium, endothelium and epicardium; the other cells (mostly blood) keep their E10.5 expression (R1, the captain's ruling of 2026-11-05; until then half the E9.5 -> E10.5 per-type change, a step with no measured sign skill on blood); 23 genes held flat (13 Y-linked, Xist and Tsix, 2 named strain genes and 6 by the pool rule alone; `experiments/t1_direction/results/held_flat_genes.csv`) | The pre-registered readout on E10.5 from E9.5: de_score +0.175 and de_direction +0.188 over cross-fitted momentum, cardiomyocyte sign agreement 0.912 (`experiments/t1_direction/results/E10.5/`). A labelled diagnostic at 1/5, in-sample for that readout: +0.97 over the floor and +1.29 over B0, 10 of 10 seeds each (measured before R1); over the floor all of the gain is on de_direction (skill 0.620, against 0.536 for a copy), and de_score (0.480) stays below the floor (`experiments/t1_m1/results/diag_v1/`). No harness task can judge it, and the 2/5 used at test is untested |
 | Spatial organisation | Not scored on Task 1 | - |
 
 **Task 2 heart, E12.5, beyond E10.5 with its coordinates.** s1 = H1 (B0 with the pre-registered size); s2 = H2 as
@@ -161,13 +162,14 @@ Task 3's s2 is the wild type plus a five-state depletion, by design.
   (`docs/S2_RULES.md`).
 - **Direction.** Cells of the groups Feng 2022 profiles (cardiomyocytes, endocardium, endothelium, epicardium) move in
   count space along Feng's within-dataset E9.5 -> E14.5 log ratio of mean CP10k, scaled by the step's share of that
-  bracket (E10.5 -> E12.5: 2/5); the other cells (blood, mostly) move by half the E9.5 -> E10.5 per-type change. A
-  pre-registered readout on the E9.5 -> E10.5 transition chose Feng over cross-fitted momentum (de_score +0.175,
-  de_direction +0.188, cardiomyocyte sign agreement 0.91; `experiments/t1_direction/results/E10.5/`), and the captain
-  ruled that this check governs the direction, since no T1 pseudo-task can judge it (Feng's E9.5 cells lie inside each
-  one's external window). A labelled end-to-end diagnostic in the readout's geometry: +1.29 and +1.09 board points over
-  B0, 10 of 10 seeds (`experiments/t1_m1/results/diag_v1/`). Sex-linked, Y-linked and strain-variable genes are held
-  flat (a list fixed from E8.5 and E9.5 before E10.5 was released).
+  bracket (E10.5 -> E12.5: 2/5); the other cells (blood, mostly) keep their E10.5 expression (R1, the captain's ruling
+  of 2026-11-05: the half step of E9.5 -> E10.5 momentum they took before had no measured sign skill on blood and spans
+  T1's sampling change). A pre-registered readout on the E9.5 -> E10.5 transition chose Feng over cross-fitted momentum
+  (de_score +0.175, de_direction +0.188, cardiomyocyte sign agreement 0.91; `experiments/t1_direction/results/E10.5/`),
+  and the captain ruled that this check governs the direction, since no T1 pseudo-task can judge it (Feng's E9.5 cells
+  lie inside each one's external window). A labelled end-to-end diagnostic in the readout's geometry: +1.29 and +1.09
+  board points over B0, 10 of 10 seeds, measured before R1 (`experiments/t1_m1/results/diag_v1/`). Sex-linked, Y-linked
+  and strain-variable genes are held flat (a list fixed from E8.5 and E9.5 before E10.5 was released).
 - **What the T1 scorer rewards.** On the released E9.5 -> E10.5 transition the changed genes are mostly highly
   expressed genes going down, which de_score's expression-magnitude null names 39-41% of; a copy names 11%
   (`experiments/harness/results/t1_de_v1/`). Direction quality is what moves de_score above its floor.

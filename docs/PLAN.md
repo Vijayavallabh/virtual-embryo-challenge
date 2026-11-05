@@ -233,6 +233,9 @@ belongs on the cardiomyocyte share; expected best-of-two gain ~1.1-1.4 points). 
 legal E14.5+ data and committed before any upload; M2 replaces s2 only if it passes the adoption rule against s2.
 (Superseded: s1 keeps E10.5's own 26.5% (2026-11-01) and s2 is M1 at 60% (2026-11-02). M2 does not replace s2; if M2
 replaces M1 as s1, the T1 s2 goes back to the captain. `docs/S2_RULES.md`, frozen 2026-11-03.)
+(2026-11-05, the captain's ruling R1: cells without a Feng group (blood, macrophages, Early VIC) keep their E10.5
+expression in s1 and s2, `build_test.py t1`'s default; the s2 is still s1's command plus the 60% cardiomyocytes,
+now carrying R1; `experiments/harness/TRIES.md` R1, decision log 2026-11-05 (c).)
 (2026-11-01: the captain agreed that the s2 rule be proposed at its pre-registration, Nov 17-23, with the hedge on the
 blood share instead of the cardiomyocyte share, since the blood share at E12.5 is the larger unknown; the rule itself
 is still put to him then.)
@@ -615,27 +618,28 @@ and the final marks by 12:00 UTC that day (decision log 2026-11-04 (b) and 2026-
   - The figure: 209, the leading Human total on the test boards when he set it (209.3). It stays fixed unless the
     captain changes it, and later leaderboard reads do not move it. It gates uploads only; it is never a threshold or
     evidence for a try, an adoption or a method choice (`docs/DATA_POLICY.md` 2026-11-05).
-  - The deadline exception (the captain, 2026-11-05, answering a side agent's note that the gate could mean no
-    entry, and so no place and no Generality Award standing): "I am fine with submitting our 1st submission at Nov 27
-    anyway". So the s1 methods freeze at 2026-11-27 00:00 UTC (05:30 IST). That morning the AI assistant rebuilds the
-    files at the freeze commit, checks them (`vec check`, the server format checks, archived hashes) and gives the
-    captain the plain summary; the first round (T1 s1, heart s1, embryo s1 and T3's s2) may then go in whatever the
-    estimate, each upload only on his go-ahead at the time. The words are his own, written in his message in the main
-    session (a note on a side agent's text he forwarded), not an agent's relay. The AI assistant reads "our 1st
-    submission" with the gate's own scope (the first upload on every board) and "at Nov 27" as from 2026-11-27 00:00
-    UTC (05:30 IST, inside 27 Nov in both zones), and asked him on 2026-11-05 to confirm or correct that reading. The
-    s2 round follows by 2026-12-01 06:00 UTC and the final marks by 12:00 UTC that day. If the estimate crosses 209
-    earlier, with its review, the first round may go in earlier.
+  - The deadline exception (the captain, 2026-11-05, answering a side agent's note that the gate could mean no entry,
+    and so no place and no Generality Award standing): "I am fine with submitting our 1st submission at Nov 27 anyway".
+    So the s1 methods freeze at 2026-11-27 00:00 UTC (05:30 IST). That morning the AI assistant rebuilds the files at
+    the freeze commit, checks them (`vec check`, the server format checks, archived hashes) and gives the captain the
+    plain summary; the first round (T1 s1, heart s1, embryo s1 and T3's s2) may then go in whatever the estimate, each
+    upload only on his go-ahead at the time. The words are his own, written in his message in the main session (a note
+    on a side agent's text he forwarded), not an agent's relay. The AI assistant reads "our 1st submission" with the
+    gate's own scope (the first upload on every board) and "at Nov 27" as from 2026-11-27 00:00 UTC (05:30 IST, inside
+    27 Nov in both zones), and asked him on 2026-11-05 to confirm or correct that reading; he confirmed it the same day
+    (decision log 2026-11-05 (c)). The s2 round follows by 2026-12-01 06:00 UTC and the final marks by 12:00 UTC that
+    day. If the estimate crosses 209 earlier, with its review, the first round may go in earlier.
   - The record: `results/upload_gate.json` (the estimate, its range and basis, the review, the deadline exception and
-    whether the captain has lifted the gate). The submission client refuses an official upload unless the record
-    passes: an estimate above 209 with a named review, the deadline exception reached (2026-11-27 00:00 UTC), or the
-    captain's lift (guard "upload gate"; `src/vec/submit.py`). Only the captain lifts it or moves the exception, by a
-    committed change to the record. The guard checks the record only; the captain's go-ahead for each upload, which he
-    runs himself, is the control beyond it. Until he says which reading of "estimated score" he meant, an early
-    crossing needs both readings above 209: each board at the better of its two uploads (`estimate`) and the first
-    round alone (`estimate_first_round`: T1 s1, heart s1, embryo s1 and T3's s2).
+    whether the captain has lifted the gate). The submission client refuses an official upload unless the record passes:
+    an estimate above 209 with a named review, the deadline exception reached (2026-11-27 00:00 UTC), or the captain's
+    lift (guard "upload gate"; `src/vec/submit.py`). Only the captain lifts it or moves the exception, by a committed
+    change to the record. The guard checks the record only; the captain's go-ahead for each upload, which he runs
+    himself, is the control beyond it. He confirmed on 2026-11-05 that "estimated score" means each board at the better
+    of its two uploads (`estimate`); the first round alone (`estimate_first_round`: T1 s1, heart s1, embryo s1 and T3's
+    s2) stays in the record for information.
   - Today: about 184 (170-198), some 25 points short. The DGX campaign design of 2026-11-05 found no route past 209 by
-    the freeze on our evidence (decision log 2026-11-05 (b)).
+    the freeze on our evidence (decision log 2026-11-05 (b)). R1, kept by the captain's ruling the same day, has no
+    counted run, so the estimate stands (decision log 2026-11-05 (c)).
 
 - Format checks are free and unlimited (no scored attempt), only on the phase's boards, and paused while a format check
   that the server stored awaits `vec submit resolve`. Scored uploads need the user's explicit go-ahead, and the client
@@ -1126,3 +1130,33 @@ open. No organiser reply to any of the four emails as of then.
     8 and 16 BLAS threads, every file passed `vec check`, and all forty files are byte-identical to the archived builds
     of 2026-11-04 (`experiments/builds/results/determinism_1435acf.txt`; `./init.sh` before it: 577 passed). So the
     freeze-morning hash check cannot fail on the thread count; the builds keep 16.
+- 2026-11-05 (c), the captain's rulings, in his words: "No purge, go with your recommendations on all six [the ones that
+  will maximize our chances on placing at Top 3 in the leaderboard at all drastic costs]":
+  - **The withdrawn whole-heart figure:** no history purge; its value stays redacted from the working files
+    (`docs/DATA_POLICY.md` 2026-11-05 (e)).
+  - **The deadline exception's reading, confirmed:** all four first uploads (T1 s1, heart s1, embryo s1 and T3's s2)
+    may go in from 2026-11-27 00:00 UTC (05:30 IST), each only on his go-ahead at the time.
+  - **"Estimated score", confirmed:** each board at the better of its two uploads (`estimate`, today 184); the first
+    round alone (`estimate_first_round`) stays in the record for information.
+  - **R1, kept:** cells without a Feng group (Blood, Macrophage, Early VIC) keep their E10.5 expression. Built at
+    88b057f as `build_test.py t1`'s default; `--no-hold-unbracketed` rebuilds M1 as before, byte-identical to the
+    archived s1 of ae6d6b3. All ten files were rebuilt there: only T1's s1 and s2 changed, every file passed `vec
+    check`, and T1's two new files passed the server format check (`experiments/builds/results/r1_88b057f.txt`;
+    archive `runs/archive/builds_88b057f/` on the DGX, now the freeze-morning reference). T1's s2 is still s1's
+    command plus 60% cardiomyocytes, so it now carries R1; under (b)(i) that goes back to the captain, and the AI
+    assistant reads his ruling as covering it (recommended: yes; he can say otherwise). Not a try. The estimate
+    stands at 184, since no counted run measures R1 (expected +0.1 to +0.3 on T1).
+  - **R2 declined, D3 not run, the late-fetal counting family declined for this season.** Since he asked for the
+    choices that maximise the chance of a top-3 place, D3 and R2 were also judged by the chance of a high total, not
+    only the mean, from committed results and with no leaderboard figure (`experiments/gate/options_tail.py`,
+    aggregation, not a try; `experiments/gate/results/options_tail_2026-11-05.txt`). D3 (T1's s2 at 0.75) lowers
+    P(Overall >= c) at 8 of the 9 levels from our median to our 99.5th percentile, and the mean by 0.4. R2 raises it
+    at all 9 by up to 0.4 percentage points, and the mean by 0.08, but on the two embryo backtests that chose the
+    embryo entry (both selected-on; E11 ran after the s2 freeze; below the adoption bar), so its true gain is likely
+    smaller, and it would amend a frozen rule after the fact: declined as recommended. D3 runs only on a prior the
+    captain writes from legal data, and none was written.
+  - **Cleanup:** on the DGX, the JAX tables that still held boundary embryos 50-53 are deleted, and the scratch
+    folders `rebuild_2026-11-04/` and `births/` are archived (contents verified) and removed. The raw site copies of
+    2026-10-18 to 2026-10-20 in the AI assistant's session scratchpad (32 entries, screened by name) wait for the
+    captain to run the deletion script, since the auto-mode classifier blocks the AI assistant from deleting them;
+    a second script for later copies of the same kind is recommended (`docs/DATA_POLICY.md` 2026-11-05 (f)).

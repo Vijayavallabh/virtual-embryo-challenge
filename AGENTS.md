@@ -92,17 +92,17 @@ If baseline verification is failing, repair that first before adding new scope.
   make official uploads: use it only through this repo's own tools, never with community "submit" tools or ad-hoc
   scripts. Validate files with `vec check` or format-only uploads; real uploads go through the submission client
   (feat-016), which defaults to format-only.
-- **The captain's upload gate (2026-11-05).** In his words: "Until our estimated score in leaderboard crosses 209,
-  don't submit our 1st submission." No first official upload on any board (T3's first is its s2) while our estimated
-  leaderboard total is 209 or below. The estimate is the overall total the leaderboard would show for our entries,
-  each board at the better of its two uploads, from our own committed evidence by the procedure in `docs/PLAN.md`
-  section 8, recomputed by an independent reviewer before the gate counts as crossed; never from a test score or a
-  leaderboard figure. The figure stays 209 unless the captain changes it, and only he lifts the gate. His deadline
-  exception (2026-11-05): "I am fine with submitting our 1st submission at Nov 27 anyway": the s1 methods freeze at
-  2026-11-27 00:00 UTC, and the first round may then go in whatever the estimate, each upload only on his go-ahead at
-  the time. The gate is about uploads only, never a try (`docs/DATA_POLICY.md` 2026-11-05). The record is
-  `results/upload_gate.json`; the submission client refuses an official upload while it does not pass (guard "upload
-  gate").
+- **The captain's upload gate (2026-11-05).** In his words: "Until our estimated score in leaderboard crosses 209, don't
+  submit our 1st submission." No first official upload on any board (T3's first is its s2) while our estimated
+  leaderboard total is 209 or below. The estimate is the overall total the leaderboard would show for our entries, each
+  board at the better of its two uploads, from our own committed evidence by the procedure in `docs/PLAN.md` section 8,
+  recomputed by an independent reviewer before the gate counts as crossed; never from a test score or a leaderboard
+  figure. The figure stays 209 unless the captain changes it, and only he lifts the gate. His deadline exception
+  (2026-11-05): "I am fine with submitting our 1st submission at Nov 27 anyway": the s1 methods freeze at 2026-11-27
+  00:00 UTC, and the first round may then go in whatever the estimate, each upload only on his go-ahead at the time; he
+  confirmed this reading and the better-of-two estimate on 2026-11-05. The gate is about uploads only, never a try
+  (`docs/DATA_POLICY.md` 2026-11-05). The record is `results/upload_gate.json`; the submission client refuses an
+  official upload while it does not pass (guard "upload gate").
 - **Heavy compute runs on the DGX** (`PrakashDGX_H2`, workspace `~/v/virtual-embryo-challenge`), never on the shared
   local machine. See `docs/COMPUTE.md`.
 - **uv only.** Use `uv add`, `uv sync`, `uv run`. No pip installs into the env, no conda.

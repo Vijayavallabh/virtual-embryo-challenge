@@ -1,0 +1,44 @@
+# R1 builds at 88b057f (the captain's ruling of 2026-11-05; docs/PLAN.md decision log 2026-11-05 (c)), on the DGX.
+# Target-free: the committed builders on the released inputs; no target read, no score computed, nothing uploaded.
+# Run by runs/r1_88b057f.sh (log runs/logs/r1_88b057f.log on the DGX), 2026-11-05 11:14-11:21 UTC, BLAS threads 16.
+== ./init.sh at 88b057f
+601 passed, 2 warnings in 221.24s (0:03:41)
+== compatibility: build_test.py t1 --no-hold-unbracketed (M1 as built before R1, the s1 seed)
+compat: OK, byte-identical to the archived s1 of ae6d6b3
+== sets s1, s2 and t3alt into runs/r1_88b057f/ (experiments/builds/build_all.sh); vec check of every file
+== vec check builds/T1_s1.h5ad (T1:test)	OK (max_cells cells)
+== vec check builds/T2heart_s1.h5ad (T2:heart:test_extrap)	OK (max_cells cells)
+== vec check builds/T2embryo_s1.h5ad (T2:embryo:test_interp)	OK (max_cells cells)
+== vec check t3_build/allowed_s1.h5ad (T3:bcatenin)	OK (max_cells cells)
+== vec check builds/T1_s2.h5ad (T1:test)	OK (max_cells cells)
+== vec check builds/T2heart_s2.h5ad (T2:heart:test_extrap)	OK (max_cells cells)
+== vec check builds/T2embryo_s2.h5ad (T2:embryo:test_interp)	OK (max_cells cells)
+== vec check t3_build/refused_s1.h5ad (T3:bcatenin)	OK (max_cells cells)
+== vec check t3_build/barred_s1.h5ad (T3:bcatenin)	OK (max_cells cells)
+== vec check t3_build/barred_s2.h5ad (T3:bcatenin)	OK (max_cells cells)
+== against runs/archive/builds_ae6d6b3/SHA256SUMS (only T1 is meant to change)
+builds/T1_s1.h5ad: FAILED
+builds/T1_s2.h5ad: FAILED
+builds/T2embryo_s1.h5ad: OK
+builds/T2embryo_s2.h5ad: OK
+builds/T2heart_s1.h5ad: OK
+builds/T2heart_s2.h5ad: OK
+t3_build/allowed_s1.h5ad: OK
+t3_build/barred_s1.h5ad: OK
+t3_build/barred_s2.h5ad: OK
+t3_build/refused_s1.h5ad: OK
+sha256sum: WARNING: 2 computed checksums did NOT match
+== new hashes (runs/archive/builds_88b057f/SHA256SUMS on the DGX)
+3400007a5f1f97d445adfa7aed7c38333b7860c29faac2f164ec91ab43f37913  builds/T1_s1.h5ad
+55829822dc3706696020fad26176fedf2d068eadc635ef70533c4af8da95b0ac  builds/T1_s2.h5ad
+dc910d4b3fb1d62b643bf96e5765741f8f0ad011f7b2d928a7955928ddee1303  builds/T2embryo_s1.h5ad
+574aa30b60a735c0ca3308886f5d10f6b1fd99fc7be8b6efab7aa3b4c98f0fac  builds/T2embryo_s2.h5ad
+e73d0396364806514c4acf1aa522e5923e395d610c4b0c3bb85112a89ef84355  builds/T2heart_s1.h5ad
+5a309434d4a2e66d7b3b838a9a0b23d7c1cd0bc49daec238cf87e194df158190  builds/T2heart_s2.h5ad
+3d6c94a97b02b8f378b275070dad2767e54005e4194d093e4e01bdf3881b4203  t3_build/allowed_s1.h5ad
+3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2  t3_build/barred_s1.h5ad
+1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f  t3_build/barred_s2.h5ad
+0ac8901b2f4015cd4d89738a2a5188faec7a371e6ae7a68d3fdb1dd4140eb101  t3_build/refused_s1.h5ad
+== server format checks (local machine, vec submit FILE --board T1:test --from-dgx, format-only; results/submissions.csv)
+runs/archive/builds_88b057f/builds/T1_s1.h5ad: server format check passed
+runs/archive/builds_88b057f/builds/T1_s2.h5ad: server format check passed

@@ -54,6 +54,9 @@ jax_qiu2024:
   tasks: [T1]
   src_dir: ~/v/vec-gapconc
   inputs:
+    # df_cell.legalT1.csv and lpm_legalT1.csv, which also held boundary embryos 50-53, were deleted on 2026-11-05 by
+    # the captain's ruling (docs/DATA_POLICY.md 2026-11-05 (f)): the output in data/external/jax_qiu2024/ stays, and
+    # a rerun needs a fresh download.
     cell_tables:
       ext/jax/meta/df_cell.legalT1.csv: meta/df_cell.csv
       ext/jax/meta/lpm_legalT1.csv: meta/lpm.csv
