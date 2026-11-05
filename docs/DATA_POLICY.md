@@ -535,13 +535,14 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   2026-10-18 to 2026-10-20 by name and file type, relaying no values. 29 hold raw challenge-site copies (site pages,
   Nuxt and JS bundles, API and leaderboard captures, a Data-page copy, a copy of the board-anchor index, inventories of
   challenge files with their sizes), 3 could not be opened past a boards/, panels/ or leaderboard subfolder, and 130 are
-  our own work. The auto-mode classifier blocked the AI assistant's deletion, so the captain runs the script it prepared
-  (`cleanup_2026-11-05/delete_site_copies.sh` in that scratchpad: a dry run unless given --delete, with a date guard; 32
-  entries, about 515 MB). The screen also flagged the same kind of material from later dates (manifest tables with
-  per-file sizes of 2026-10-27 and 2026-10-28, site copies of 2026-10-28, the leaderboard reads and captures of
-  2026-11-04) and, among our own work, anchor-check and parity-hedge outputs, a raw Slack copy, a repository bundle of
-  2026-10-19 that may keep pre-purge history and the raw research-agent reports; a second script
-  (`delete_later_copies.sh`, 17 entries, about 32 MB) is recommended and waits for the captain. (iv) Slips: the
-  screening agent once read the first 1.2 KB of an inventory file through `grep -o` to see its field names (it relayed
-  no values); the AI assistant wrote two scripts of this task into an existing scratchpad folder (`r1/`) that the screen
-  found to hold site downloads of 2026-11-04, without listing or opening its other contents.
+  our own work. The auto-mode classifier blocked the AI assistant's deletion, so the captain ran the script it prepared
+  (`cleanup_2026-11-05/delete_site_copies.sh` in that scratchpad: a dry run unless given --delete, with a date guard) on
+  2026-11-05: 32 entries and 514,772,564 bytes deleted, nothing left behind. The screen also flagged the same kind of
+  material from later dates (manifest tables with per-file sizes of 2026-10-27 and 2026-10-28, site copies of
+  2026-10-28, the leaderboard reads and captures of 2026-11-04) and, among our own work, anchor-check and parity-hedge
+  outputs, a raw Slack copy, a repository bundle of 2026-10-19 that may keep pre-purge history and the raw
+  research-agent reports; a second script (`delete_later_copies.sh`, 17 entries, about 32 MB) is recommended and waits
+  for the captain. (iv) Slips: the screening agent once read the first 1.2 KB of an inventory file through `grep -o` to
+  see its field names (it relayed no values); the AI assistant wrote two scripts of this task into an existing
+  scratchpad folder (`r1/`) that the screen found to hold site downloads of 2026-11-04, without listing or opening its
+  other contents.

@@ -1155,8 +1155,8 @@ open. No organiser reply to any of the four emails as of then.
     embryo entry (both selected-on; E11 ran after the s2 freeze; below the adoption bar), so its true gain is likely
     smaller, and it would amend a frozen rule after the fact: declined as recommended. D3 runs only on a prior the
     captain writes from legal data, and none was written.
-  - **Cleanup:** on the DGX, the JAX tables that still held boundary embryos 50-53 are deleted, and the scratch
-    folders `rebuild_2026-11-04/` and `births/` are archived (contents verified) and removed. The raw site copies of
-    2026-10-18 to 2026-10-20 in the AI assistant's session scratchpad (32 entries, screened by name) wait for the
-    captain to run the deletion script, since the auto-mode classifier blocks the AI assistant from deleting them;
+  - **Cleanup:** on the DGX, the JAX tables that still held boundary embryos 50-53 are deleted, and the scratch folders
+    `rebuild_2026-11-04/` and `births/` are archived (contents verified) and removed. The raw site copies of 2026-10-18
+    to 2026-10-20 in the AI assistant's session scratchpad (32 entries, screened by name) were deleted the same day by
+    the captain's run of the deletion script, since the auto-mode classifier blocks the AI assistant from deleting them;
     a second script for later copies of the same kind is recommended (`docs/DATA_POLICY.md` 2026-11-05 (f)).
