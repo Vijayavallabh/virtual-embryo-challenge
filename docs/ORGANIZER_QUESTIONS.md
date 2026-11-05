@@ -249,10 +249,11 @@ Best regards,
 Vijayavallabh J
 Team captain, Mithril
 
-## Fifth email (drafted 2026-11-05; not sent)
+## Fifth email (sent 2026-11-05)
 
-Drafted by the AI assistant on 2026-11-05 at the captain's request ("yes draft the organiser email"). It is saved in
-the drafts of be23b041@smail.iitm.ac.in, addressed to virtual.embryo.moonshot@gmail.com, for the captain to send. It
+Drafted by the AI assistant on 2026-11-05 at the captain's request ("yes draft the organiser email") in the drafts of
+be23b041@smail.iitm.ac.in. The captain sent it on 2026-11-05, by 18:18 UTC. The sent copy is addressed to
+virtualembryomoonshot@gmail.com, the same inbox. It
 asks again question 2 of the 19 October follow-up, which decides T3's second upload (`ASSUMPTIONS.md` A24;
 `experiments/research_2026_11/REPORT.md` section 3). Answers: _pending_. Text as drafted:
 

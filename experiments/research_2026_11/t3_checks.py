@@ -83,8 +83,8 @@ def d1() -> tuple[dict, list[Path]]:
         ded = load_stage(p, drop_duplicates=True)
         tot, ng = counts_of(ded)
         rec = {"file": rel, "matrix": "sparse" if sparse.issparse(a.X) else "dense", "dtype": str(a.X.dtype),
-               "layers": sorted(a.layers.keys()), "obs_columns": sorted(map(str, a.obs.columns)),
-               "obsm": sorted(a.obsm.keys()), "objects_released": int(a.n_obs),
+               "layers": sorted(map(str, a.layers.keys())), "obs_columns": sorted(map(str, a.obs.columns)),
+               "obsm": sorted(map(str, a.obsm.keys())), "objects_released": int(a.n_obs),
                "synthetic_records_dropped": int(a.n_obs - ded.n_obs)}
         for col in ID_COLS:
             if col in a.obs.columns:
@@ -163,9 +163,12 @@ def d5d6(threads: int) -> tuple[dict, list[Path]]:
     dec = bs.load_decision(DECISION, rules)
     preset = dec["preset"]
     pools = rules["presets"][preset]["stage_pools"]
-    stage_paths = {n: DATA / "T2" / f"{n}.h5ad" for n in pools}
-    ref = bs.load_reference(DATA / WT["E8.75"], preset, rules, stage_paths, threads)
-    ctx, V = ref.ctx, ref.ctx.V
+    import tempfile
+    paths = {"wt": str(DATA / WT["E8.75"]), "targets": [],
+             **{f"stage:{n}": str(DATA / "T2" / f"{n}.h5ad") for n in pools}}
+    with bs.thread_limits(threads), tempfile.TemporaryDirectory() as tmp:
+        ctx, _ = t3d.build_context(preset, paths, rules, n_jobs=threads, threads=threads, out=Path(tmp))
+    V = ctx.V
     fc = rules["components"]["factor"]
     hp = rules["harmonisation"]
     mu = {"E8.75": ctx.wt.mu}
@@ -193,7 +196,7 @@ def d5d6(threads: int) -> tuple[dict, list[Path]]:
         return v - v.mean()
 
     def logf(name: str) -> np.ndarray:
-        phi, _ = bs.load_factor(RUN_DIR, name, ref.genes, dec)
+        phi, _ = bs.load_factor(RUN_DIR, name, list(ctx.genes), dec)
         v = np.log(phi)
         return v - v.mean()
 
