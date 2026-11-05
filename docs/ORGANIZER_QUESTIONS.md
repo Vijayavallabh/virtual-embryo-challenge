@@ -275,3 +275,21 @@ it applies to all teams.
 Best regards,
 Vijayavallabh J
 Team captain, Mithril
+
+## Planned Slack DM (drafted 2026-11-06, not sent)
+
+The state-of-the-art research recommends it (`experiments/research_2026_11_sota/REPORT.md` section 8; `docs/PLAN.md`
+decision log 2026-11-06 (c)). The captain sends it himself, if he agrees, by Slack DM to Weize Xu, the private route at
+the top of this file. He posts nothing in public. Any answer is recorded here and in `docs/DATA_POLICY.md` with its
+date. An answer that arrives after T3's s2 is up changes nothing (decision log 2026-11-06 (b)). The second paragraph is
+optional.
+
+> Hi Weize, one short scoring question for Task 3, the same as in our email of 5 November; it affects every team the
+> same way. When the severity metric is undefined (predicted slope <= 0, or R^2 <= 0.01), the current scorer returns
+> log(1e-3), which equals the floor, so the live leaderboard gives skill 0.5, while the Evaluation page and the proposal
+> call this case "undefined", which would map to skill 0. Which will the final evaluation of the test boards use: skill
+> 0.5 or skill 0? A public answer in #virtual-embryo-challenge would be welcome, since it applies to all teams.
+>
+> (Optional) Also, are the embryo-series stage labels gestational (plug-dated) or morphological?
+>
+> Thanks, Vijayavallabh (captain, Mithril)

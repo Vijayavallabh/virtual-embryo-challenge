@@ -1292,3 +1292,50 @@ open. No organiser reply to any of the four emails as of then.
   - **Why:** TRIES N10 and N11 (`experiments/research_2026_11/REPORT.md` section 3).
     - Under a zero reading, today's s2 loses 12.5 T3 points on most seeds, and the swap gains about +0.5 to +2.5.
     - Under a half reading, the swap's gain is small or negative.
+- 2026-11-06 (c), the state-of-the-art research. The captain asked to "Use /deep-research and other relevant skills and
+  plugins to extensively research relevant state of the art papers, reports, then synthesize the findings to develop
+  solutions that will maximize our chances of placing at Top-3 in the leaderboard for this challenge. [Total score >
+  209]".
+  - **What ran:**
+    - six specialists and a second pass on task a, each screened and audited (wf_7b251aa0-18a, wf_131e273a-1c9);
+    - five board designers, each attacked by a critic;
+    - four counter-reviewers and a devil's advocate (wf_c4ff039d-fdf);
+    - a target-free aggregation, `experiments/gate/path_to_target.py` (not a try).
+    The report is `experiments/research_2026_11_sota/REPORT.md` (163 registry entries, 159 distinct works, mostly
+    2025-2026).
+  - **Finding.** No 2025-2026 method, dataset or tactic moves our total materially under our rules.
+    - The surviving items are worth +0.01 to +0.3 Overall each.
+    - On reading A, P(>= our own 95th percentile) goes from 5% today to about 7-8% with everything the record supports,
+      and P(>= 209), for information, from 0.42% to about 1%.
+    - The upper tail rests on T3's in-sample stand-in A: with its weight at 0 instead of 0.5, no draw reaches our 90th
+      percentile.
+  - **Decided by the AI assistant** (the delegation of 2026-11-02; the captain can overrule):
+    - no entry, rule or upload changes;
+    - `path_to_target.py` and the research folder committed, so the clean-tree guard passes;
+    - the design notes' 209 passages struck;
+    - AGENTS.md warns against the competition proposal's Data section and page 7;
+    - the process notes recorded in `docs/DATA_POLICY.md` 2026-11-06 (a).
+  - **Put to the captain** (REPORT section 8):
+    1. Send the Slack DM to Weize Xu that repeats the fifth email's floored-severity question (text in
+       `docs/ORGANIZER_QUESTIONS.md`, "Planned Slack DM").
+    2. Agree the dated upload runbook:
+       - 27 Nov IST: the first round, after the rebuild and checks;
+       - 29 Nov IST: the T1, heart and embryo s2;
+       - 30 Nov IST: T3's s1;
+       - 1 Dec IST: buffer and marks.
+       Each upload is on his go-ahead, and every T3 upload follows its screened check. Also reconcile this file's "by
+       2026-12-01 06:00 UTC" (sections 7 and 8) with section 8's "by the end of 30 November IST" and `docs/S2_RULES.md`.
+    3. One bundled T1 ruling by about 20 Nov:
+       - sheet C of 2026-11-05 (f), the strong-null down-tail bet: the largest tail lever on record, +0.5 to +1.1
+         points of chance at our 95th percentile at P = 0.2-0.3, break-even near P = 0.12;
+       - an A15 reading for T1-only gene sets (Feng-direction hygiene), about +0.10;
+       - a cycling-state quota, about +0.05.
+       Each has the conditions REPORT section 8 lists, and each sends T1's s2 back to him.
+    4. The embryo s2 at mixture fraction 1/4: default no. It is about -0.3 in expectation at the committed residual,
+       and worth a ruling only if he holds a staging spread of 0.15 day or more from released-stage evidence alone.
+    5. Heart hold: sheet E's default (decline) stands.
+    6. Not recommended: re-reading the test-knockout acquisition text to decide T3's depth step.
+    7. Whether the organisers' public task-page statements about the test targets, withheld by our screen (class A),
+       may inform a legal-route prior.
+    8. Whether to turn off the memory-index injection for workflow subagents (`docs/DATA_POLICY.md` 2026-11-06 (a)).
+  - **Pruned:** `experiments/harness/TRIES.md`, "Pruned before running" (the state-of-the-art research of 2026-11-06).

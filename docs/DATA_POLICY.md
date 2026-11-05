@@ -643,3 +643,59 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   - **An unregistered first run.** The first runs of diagnostics N3 and N4 used an uncommitted copy on the DGX. They
     were then registered (`experiments/harness/TRIES.md`, 1edec56) and rerun there on a clean tree with stamped
     provenance; the results matched.
+- 2026-11-06 (a), process notes from the state-of-the-art research of 2026-11-06 (workflows wf_7b251aa0-18a and
+  wf_131e273a-1c9, counter-review wf_c4ff039d-fdf; `experiments/research_2026_11_sota/`, its notes and reviews). No
+  test file, board file or Data page was opened, no test-board limit, anchor or truth count was seen, and no try ran.
+  - **Screening.** Removed: 6 class-A items (organiser statements on the public task pages that may describe test
+    targets), 24 class-W passages, 1 class-L figure, 5 residues in audit, 2 sources withdrawn. After the counter-review
+    the main session removed one more class-A residue from the committed `notes/task-e.md` (lines 71, 273, 281-284) and
+    full session-store paths from four notes.
+  - **Met but not recorded.** Class B twice, in search-result summaries (one a PubMed abstract) read by task c's agent
+    while it searched the Mesp1-Cre phenotype. Classes L and Y in search listings read by task e. Possible class A at
+    the Task 1 and Task 3 pages, a community blog, and the competition proposal PDF's Data section and page 7
+    (`docs/reference/neurips-2026-competition-proposal.pdf`, a tracked file; AGENTS.md now tells agents to skip both).
+  - **Memory files opened, against AGENTS.md and 2026-11-05 (d)(iv), for the second day running.** Task a's screener
+    opened one, task e's screener one (found through the memory index the harness injects) and task b's auditor two.
+    Nothing was copied. The harness injects the auto-memory index into every subagent's context (about a dozen agents
+    noted it; none opened a file by it except those three). From now on the AI assistant's briefs open with "do not
+    open any file the injected memory index names"; turning off the injection for workflow subagents is the captain's
+    choice.
+  - **The project memory file's totals.** Task b's auditor reported overall leaderboard totals still in that file,
+    which (k) said were taken out. One line still held the top-3 and sixth-place overall totals (a kept class). The main
+    session replaced it with a pointer to the decision log the same day.
+  - **An indirect exposure of the main session.** The compliance reviewer's issue text told the main session the topic
+    of the class-A statement removed from the Task 1 page: it concerns the change to the T1 test target and carries a
+    share figure. The value was not seen. Nothing was used: births and T1's composition stay where the block and the
+    rulings leave them, and the committed copy of that review is redacted.
+  - **Harness-saved outputs.** Many agents' fetches and long prints were saved by the harness under
+    `~/.claude-account`; none was opened. One main-session print of the counter-review result was saved the same way;
+    it was not opened, and the result was reprinted in parts.
+  - **Git without GIT_OPTIONAL_LOCKS=0.** The T3 critic ran `git log --oneline -5` without it. The T1 and embryo
+    designers' and critics' read-only git looks do not say whether they set it.
+  - **Displays of practice-truth and validation files (no test board):**
+    - validation-board anchor lines of `experiments/calibration/results/calibration_summary.txt` (task a's auditor);
+    - the E7.5 validation board's spec and anchors and that task's truth DE counts in a committed practice file (the
+      embryo designer);
+    - the T1 grid's practice truths' resampled sizes, and the first 60 characters of `payoff.txt` line 20 (the cross
+      designer and its critic);
+    - released label counts (the heart designer and critic);
+    - E7.5's row of `experiments/coords/results/p3/file_summary.csv` (the embryo critic);
+    - the D10 and W1 blocks of the Gata4 and Mab21l2 decision files (task c's auditor);
+    - in-memory re-weightings of the committed T1 grid (the T1 designer and critic).
+  - **Other process notes:**
+    - Four agents used the system `python3 -I -B` with the standard library only, instead of `uv run` (precedent
+      2026-11-05 (g)(i)).
+    - Two agents wrote beyond their one output file, and deleted it within minutes: the T1 critic's helper script and
+      task d's auditor's scratch copy.
+    - Two agents inverted the skill map on committed practice results of released files, which Scores allows: task c
+      and the cross critic.
+    - Task f's agent cited `docs/research/t3_methods.md` (unscreened) for VCC's design, and its log does not say
+      whether it opened the file. The auditor repointed the citation to the screened digest. Not confirmed.
+    - Designers read the untracked `experiments/gate/path_to_target.py` before any review. It is committed now,
+      without its per-board 209 what-ifs.
+  - **209 passages struck.** The design notes' passages that measured candidates against 209 are marked struck
+    (precedent 2026-11-04 (g)(v)). The brief carried the 202-210 overall figure without its calibration label (label
+    added to the committed copy). The report gives P(>= 209) once, for information.
+  - **Not a slip.** A workflow restart created a second task-a agent. The first one, resumed by a coordination message
+    from the main session, wrote a separate note (a2) without opening the pipeline's raw note, and both were screened
+    and audited.

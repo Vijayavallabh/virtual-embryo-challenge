@@ -493,6 +493,45 @@ From the screened cross-disciplinary research of 2026-11-05 (wf_a2176927-e30; co
 The research's open items need a ruling or a target-free tool first and are not tries: `docs/PLAN.md` decision log
 2026-11-05 (f).
 
+From the state-of-the-art research of 2026-11-06 (wf_7b251aa0-18a; counter-review wf_c4ff039d-fdf;
+`experiments/research_2026_11_sota/REPORT.md` section 8 and `notes/design/`). Pruned by the AI assistant under the
+captain's delegation of 2026-11-02; he can overrule. Design only: no try ran, and no target or score was read.
+- **T1: a second direction from Leonard et al.'s E14.5 Multiome nuclei (GSE272154), pooled with Feng's.** The factor
+  is our base stage's category mean subtracted from another lab's single stage. No within-dataset time contrast cancels
+  the lab, pipeline, strain and dissection offset. Its E9.5 -> E10.5 backtest reproduces the backtest's own known feature
+  (embryo portion to dissected heart), so rule 2 fails before the run.
+- **T1: Leonard's real nuclei drawn as a fraction t of each category quota.** The same lab offset, now in the truth's
+  PC space. It also carries the (f)(3) library-size issue, and it is about -0.2 at test.
+- **T1: a larger fibroblast-like share from same-chemistry anchors** (births revisited). The pruned births line, with
+  no counted check.
+- **T1: decoded latent forecasters (the scFM class), unbalanced growth transport and count-realistic generators.**
+  They repeat "whole-ladder flow with growth", "decoded sampling", JL-OT and the exact top-up. The one copy-last
+  comparison at scale is mostly denoising, which the variogram punishes. Growth is identified only between observed
+  snapshots.
+- **T3: a section-artefact audit with a section-robust source factor; a lineage-distance source factor.** Both fail
+  rule 5 (expected far below 0.3 on the folds), and both would taint the Gata4-free hedge. The second repeats "a
+  background- or spillover-aware factor".
+- **Heart: lineage-contrast momentum, a readout-structured run model, run-noise shrinkage, a core shape toward a legal
+  late anchor, and an organiser question on external spatial data.**
+  - The run term in the momentum is not identifiable: the lineage-shared part also carries admixture, the depth drift,
+    shared biology and, at test, the dissection change. The 2026-11-05 dynamics note had already priced it.
+  - Shape is entangled with the closed scope.
+- **Embryo: an emergence-first s2, an asymmetry check on real intermediates (Flysta3D-v2, the heart triple), and
+  retiring the flat-geometry bet in s1.** Each is about 0 or negative, and the last repeats E11's veto.
+- **Cross-board:**
+  - an organiser answer on A15 for a cross-modal heart direction (it repeats the A15 prune; the concordance is null);
+  - a captain-written legal T1 composition prior (no decision value against today's pair);
+  - nuclei-anchored births;
+  - reviving the late-fetal counting family (declined on 2026-11-05 (c); its core objections are unanswered);
+  - front-loading the second round (it forfeits the frozen fallbacks for late A20 or Gata4 rulings).
+- **Ruling requests, not tries** (`docs/PLAN.md` decision log 2026-11-06 (c)):
+  - T1 sheet C;
+  - the A15 hygiene reading;
+  - the cycling-state quota;
+  - the embryo s2 at fraction 1/4 (default no);
+  - the heart hold (sheet E, default decline);
+  - T3's acquisition-text depth premise (not recommended).
+
 ## Diagnostics behind these choices
 
 2026-11-03, the embryo coupling (`experiments/harness/results/diag_emb_coupling/`, at 5baba46, clean; reads no target

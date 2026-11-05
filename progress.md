@@ -2,7 +2,7 @@
 
 ## Current State
 
-**Last Updated:** 2026-11-05
+**Last Updated:** 2026-11-06
 **2026-11-05, the captain's rulings** ("No purge, go with your recommendations on all six [the ones that will maximize
 our chances on placing at Top 3 in the leaderboard at all drastic costs]"): no purge of the withdrawn heart figure; the
 deadline exception's reading and the better-of-two estimate confirmed; R1 kept and built (88b057f: only T1's s1 and s2
@@ -42,6 +42,19 @@ the default is today's s2. He sent the fifth organiser email, which asks how a f
 gain rests on one world. The captain then ruled, "go with your recommendation": T3's s2 becomes the barred s1 only if
 the organisers say, before T3's first upload, that a floored severity scores zero. Otherwise it stays today's s2
 (`docs/PLAN.md` decision log 2026-11-06 (a), (b)).
+**2026-11-06 (later), the state-of-the-art research** (the captain: research state-of-the-art papers and reports, then solutions for a top-3 place, "[Total score > 209]"):
+- Seven screened and audited notes, 163 registry entries (159 works, mostly 2025-2026), five board designers
+  each attacked by a critic, four counter-reviewers and a devil's advocate
+  (`experiments/research_2026_11_sota/REPORT.md`).
+- No 2025-2026 method, dataset or tactic moves our total materially under our rules; surviving items are +0.01 to
+  +0.3 each. P(>= our own 95th percentile) goes from 5% to about 7-8% with everything on record; P(>= 209), for
+  information, from 0.42% to about 1% (`experiments/gate/path_to_target.py`, aggregation, not a try). The upper
+  tail rests on T3's in-sample stand-in A.
+- Put to the captain (decision log 2026-11-06 (c)): the Slack DM (text in `docs/ORGANIZER_QUESTIONS.md`); the
+  dated upload runbook; one bundled T1 ruling by about 20 Nov (sheet C first, the largest tail lever; A15
+  hygiene; cycling quota); the embryo s2 at 1/4 (default no); the heart hold (default decline); whether public
+  organiser task-page statements may inform a legal-route prior; the memory-index injection for subagents.
+- No entry, rule or upload changed. Process notes: `docs/DATA_POLICY.md` 2026-11-06 (a).
 **Active Feature:** feat-018 (s1 files). 2026-11-04: runbook step 1 is done (634b5fd). `vec boards update` still
 answered 403 at 07:29 UTC; a screened Slack and email sweep (wf_2489e0c9-951, two clean audits) found no objection, no
 fix and no rule change since the notice of 2026-10-31; the captain saved the board index and the embryo test gene

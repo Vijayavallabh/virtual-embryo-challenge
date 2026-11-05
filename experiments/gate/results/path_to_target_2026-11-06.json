@@ -1,0 +1,126 @@
+{
+ "label": "aggregation of committed results, not a try; 209 for information only",
+ "mean_overall": 191.49689560437218,
+ "own_percentiles": {
+  "50": 192.89492968987435,
+  "75": 200.56974397563994,
+  "90": 203.95294897269818,
+  "95": 205.53883359769063,
+  "99": 208.07474002765431
+ },
+ "p_at_least_own": {
+  "50": 0.5,
+  "75": 0.25,
+  "90": 0.1,
+  "95": 0.05,
+  "99": 0.01
+ },
+ "for_information_p_at_least_209": 0.004225,
+ "board_means": {
+  "T1": 69.57150312134384,
+  "heart": 53.856247227324154,
+  "embryo": 60.862007894120794,
+  "T3": 64.56626492230585
+ },
+ "board_means_given_own_q95": {
+  "T1": 72.37375366379872,
+  "heart": 58.47861903728023,
+  "embryo": 62.33264468617741,
+  "T3": 74.29899381260233
+ },
+ "sure_overall_gain": {
+  "0.35": {
+   "p_own_q90": 0.11305,
+   "p_own_q95": 0.058955,
+   "for_information_p_209": 0.005925
+  },
+  "0.8": {
+   "p_own_q90": 0.13172,
+   "p_own_q95": 0.07259,
+   "for_information_p_209": 0.008935
+  },
+  "1": {
+   "p_own_q90": 0.140055,
+   "p_own_q95": 0.079145,
+   "for_information_p_209": 0.01071
+  },
+  "2": {
+   "p_own_q90": 0.18519,
+   "p_own_q95": 0.115595,
+   "for_information_p_209": 0.02232
+  },
+  "3": {
+   "p_own_q90": 0.232305,
+   "p_own_q95": 0.158235,
+   "for_information_p_209": 0.039285
+  },
+  "5": {
+   "p_own_q90": 0.318405,
+   "p_own_q95": 0.251285,
+   "for_information_p_209": 0.09832
+  },
+  "8": {
+   "p_own_q90": 0.41785,
+   "p_own_q95": 0.36907,
+   "for_information_p_209": 0.230025
+  },
+  "10": {
+   "p_own_q90": 0.472715,
+   "p_own_q95": 0.430175,
+   "for_information_p_209": 0.316635
+  },
+  "16": {
+   "p_own_q90": 0.628375,
+   "p_own_q95": 0.5877,
+   "for_information_p_209": 0.49724
+  }
+ },
+ "t3_standin_A_weight_sensitivity": {
+  "0.5": {
+   "T3_mean": 64.58351437130811,
+   "overall_mean": 191.49689560437218,
+   "p_own_q90": 0.1,
+   "p_own_q95": 0.05
+  },
+  "0.375": {
+   "T3_mean": 62.39798763527084,
+   "overall_mean": 189.29671305206057,
+   "p_own_q90": 0.07455,
+   "p_own_q95": 0.03741
+  },
+  "0.25": {
+   "T3_mean": 60.21246089923356,
+   "overall_mean": 187.12641036254723,
+   "p_own_q90": 0.049865,
+   "p_own_q95": 0.02514
+  },
+  "0.0": {
+   "T3_mean": 55.84140742715899,
+   "overall_mean": 182.75917550371972,
+   "p_own_q90": 0.0,
+   "p_own_q95": 0.0
+  }
+ },
+ "checks": [
+  "T1 grid: the per-seed runs give payoff.json's mean[truth][bown_cown] on 15 truths (largest gap 0.0e+00)",
+  "T1 grid: the per-seed runs give payoff.json's mean[truth][bown_c0.6] on 15 truths (largest gap 0.0e+00)",
+  "T1 grid (experiments/s2_hedge/results/t1_grid/hedge_bown_cown.json): the per-seed runs give the hedge file's bown_cown alone under 5 stated priors (largest gap 2.8e-14)",
+  "T1 grid (experiments/s2_hedge/results/t1_grid/hedge_bown_cown.json): the per-seed runs give the hedge file's the better of bown_cown and bown_c0.6 under 5 stated priors (largest gap 1.4e-14)",
+  "T1: the floor is 50 on every truth and seed of the grid and on the backtest (largest gap 0.0e+00)",
+  "T1: diag_v1's B0 is the harness's B0 (d2_v1) seed for seed (largest gap 0.0e+00)",
+  "heart T2h/<=E9.5->E10.5 (experiments/s2_hedge/results/heart_scope/hedge_hold.json): the per-seed runs give the hedge file's hold alone under 5 stated priors (largest gap 7.1e-15)",
+  "heart T2h/<=E9.5->E10.5 (experiments/s2_hedge/results/heart_scope/hedge_hold.json): the per-seed runs give the hedge file's the better of hold and half_radial under 5 stated priors (largest gap 2.1e-14)",
+  "heart T2h/<=E9.5->E10.5: the floor is 50 on the released truth and on the backtest (largest gap 0.0e+00)",
+  "heart T2h/<=E8.75->E10.5 (experiments/s2_hedge/results/heart_scope_e875/hedge_hold.json): the per-seed runs give the hedge file's hold alone under 5 stated priors (largest gap 1.4e-14)",
+  "heart T2h/<=E8.75->E10.5 (experiments/s2_hedge/results/heart_scope_e875/hedge_hold.json): the per-seed runs give the hedge file's the better of hold and half_radial under 5 stated priors (largest gap 1.4e-14)",
+  "heart T2h/<=E8.75->E10.5: the floor is 50 on the released truth and on the backtest (largest gap 0.0e+00)",
+  "embryo T2e/E7.25+E8.0->E7.5: emb_shape_v1's fgw is emb_fgw_v1's seed for seed (largest gap 0.0e+00)",
+  "embryo T2e/E7.25+E8.0->E7.5: the floor is 50 on every seed (largest gap 0.0e+00)",
+  "embryo T2e/E6.75+E7.5->E7.25: emb_shape_v1's fgw is emb_fgw_v1's seed for seed (largest gap 0.0e+00)",
+  "embryo T2e/E6.75+E7.5->E7.25: the floor is 50 on every seed (largest gap 0.0e+00)",
+  "T3 rep1: the records' seed means are gata4_summary.csv's t3 (3 variants) (largest gap 1.4e-14)",
+  "T3 rep2: the records' seed means are gata4_summary.csv's t3 (3 variants) (largest gap 1.4e-14)",
+  "T3 T3/Gata4->Mab21l2: the floor is 50 on every seed (largest gap 0.0e+00)",
+  "path_to_target: T3 rebuilt at stand-in A weight 0.5 reproduces board_t3 (largest gap 0.0e+00)"
+ ]
+}
