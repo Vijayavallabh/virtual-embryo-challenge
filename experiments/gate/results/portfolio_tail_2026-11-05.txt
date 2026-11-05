@@ -1,0 +1,61 @@
+self-checks run: 14; candidates: T1 14, embryo 3, T3 2; heart fixed
+
+T3 model base, T1 prior uniform: today's pair, mean 189.02, P at its 75/90/95/99th = 25/10/5/1 %
+  level 75th (200.6): best bown_c0.6 + fgw_aligned + T3 barred: 25.0 -> 25.6 %, mean 191.49
+  level 90th (204.0): best b0.4_c0.6 + fgw_aligned + T3 barred: 10.0 -> 12.4 %, mean 189.72
+  level 95th (205.5): best b0.4_c0.6 + fgw_aligned + T3 barred: 5.0 -> 7.8 %, mean 189.72
+  level 99th (208.1): best b0.4_cown + fgw_aligned + T3 barred: 1.0 -> 2.8 %, mean 188.25
+
+T3 model base, T1 prior own_third: today's pair, mean 189.48, P at its 75/90/95/99th = 25/10/5/1 %
+  level 75th (201.0): best bown_c0.6 + fgw_aligned + T3 barred: 25.0 -> 25.7 %, mean 191.96
+  level 90th (204.1): best b0.4_c0.6 + fgw_aligned + T3 barred: 10.0 -> 12.0 %, mean 190.70
+  level 95th (205.6): best b0.4_c0.6 + fgw_aligned + T3 barred: 5.0 -> 7.0 %, mean 190.70
+  level 99th (208.0): best b0.4_cown + fgw_aligned + T3 barred: 1.0 -> 2.3 %, mean 189.65
+
+T3 model base, T1 prior blood_own_cm_own_up: today's pair, mean 191.15, P at its 75/90/95/99th = 25/10/5/1 %
+  level 75th (202.3): best bown_c0.6 + fgw_aligned + T3 barred: 25.0 -> 25.7 %, mean 193.63
+  level 90th (205.0): best bown_c0.6 + fgw_aligned + T3 barred: 10.0 -> 10.5 %, mean 193.63
+  level 95th (206.4): best bown_c0.6 + fgw_aligned + T3 barred: 5.0 -> 5.3 %, mean 193.63
+  level 99th (208.6): best bown_c0.75 + fgw_aligned + T3 barred: 1.0 -> 1.4 %, mean 192.91
+
+T3 model base, T1 prior cm_0.45_up: today's pair, mean 188.78, P at its 75/90/95/99th = 25/10/5/1 %
+  level 75th (200.4): best bown_c0.6 + fgw_aligned + T3 barred: 25.0 -> 25.7 %, mean 191.26
+  level 90th (203.7): best b0.4_c0.6 + fgw_aligned + T3 barred: 10.0 -> 13.1 %, mean 188.22
+  level 95th (205.4): best b0.4_c0.6 + fgw_aligned + T3 barred: 5.0 -> 9.0 %, mean 188.22
+  level 99th (207.9): best b0.4_c0.6 + fgw_aligned + T3 barred: 1.0 -> 3.7 %, mean 188.22
+
+T3 model base, T1 prior cm_own_blood_varies: today's pair, mean 188.77, P at its 75/90/95/99th = 25/10/5/1 %
+  level 75th (200.3): best b0.4_cown + fgw_aligned + T3 barred: 25.0 -> 30.9 %, mean 192.75
+  level 90th (203.5): best b0.4_cown + fgw_aligned + T3 barred: 10.0 -> 19.5 %, mean 192.75
+  level 95th (205.1): best b0.4_cown + fgw_aligned + T3 barred: 5.0 -> 14.3 %, mean 192.75
+  level 99th (207.5): best b0.4_cown + fgw_aligned + T3 barred: 1.0 -> 7.1 %, mean 192.75
+
+T3 model pessimistic, T1 prior uniform: today's pair, mean 183.41, P at its 75/90/95/99th = 25/10/5/1 %
+  level 75th (189.5): best bown_c0.6 + fgw_aligned + T3 barred: 25.0 -> 27.9 %, mean 183.75
+  level 90th (201.6): best bown_c0.6 + fgw_aligned + T3 barred: 10.0 -> 10.2 %, mean 183.75
+  level 95th (203.9): best b0.4_c0.6 + fgw_aligned + T3 barred: 5.0 -> 6.2 %, mean 181.98
+  level 99th (207.1): best b0.4_c0.6 + fgw_aligned + T3 barred: 1.0 -> 2.1 %, mean 181.98
+
+T3 model pessimistic, T1 prior own_third: today's pair, mean 183.88, P at its 75/90/95/99th = 25/10/5/1 %
+  level 75th (189.5): best bown_c0.6 + fgw_aligned + T3 barred: 25.0 -> 28.2 %, mean 184.22
+  level 90th (202.0): best bown_c0.6 + fgw_aligned + T3 barred: 10.0 -> 10.3 %, mean 184.22
+  level 95th (204.1): best b0.4_c0.6 + fgw_aligned + T3 barred: 5.0 -> 6.0 %, mean 182.96
+  level 99th (207.0): best b0.4_c0.45 + fgw_aligned + T3 barred: 1.0 -> 1.8 %, mean 182.59
+
+T3 model pessimistic, T1 prior blood_own_cm_own_up: today's pair, mean 185.55, P at its 75/90/95/99th = 25/10/5/1 %
+  level 75th (190.8): best bown_c0.6 + fgw_aligned + T3 barred: 25.0 -> 28.5 %, mean 185.89
+  level 90th (203.2): best bown_c0.6 + fgw_aligned + T3 barred: 10.0 -> 10.3 %, mean 185.89
+  level 95th (205.0): best bown_c0.6 + fgw_aligned + T3 barred: 5.0 -> 5.2 %, mean 185.89
+  level 99th (207.8): best bown_c0.75 + fgw_aligned + T3 barred: 1.0 -> 1.2 %, mean 185.17
+
+T3 model pessimistic, T1 prior cm_0.45_up: today's pair, mean 183.18, P at its 75/90/95/99th = 25/10/5/1 %
+  level 75th (189.3): best bown_c0.6 + fgw_aligned + T3 barred: 25.0 -> 27.8 %, mean 183.51
+  level 90th (201.4): best bown_c0.6 + fgw_aligned + T3 barred: 10.0 -> 10.2 %, mean 183.51
+  level 95th (203.8): best b0.4_c0.6 + fgw_aligned + T3 barred: 5.0 -> 6.4 %, mean 180.48
+  level 99th (206.9): best b0.4_c0.6 + fgw_aligned + T3 barred: 1.0 -> 2.7 %, mean 180.48
+
+T3 model pessimistic, T1 prior cm_own_blood_varies: today's pair, mean 183.16, P at its 75/90/95/99th = 25/10/5/1 %
+  level 75th (189.2): best b0.4_cown + fgw_aligned + T3 barred: 25.0 -> 28.9 %, mean 185.00
+  level 90th (201.3): best b0.4_cown + fgw_aligned + T3 barred: 10.0 -> 13.4 %, mean 185.00
+  level 95th (203.6): best b0.4_cown + fgw_aligned + T3 barred: 5.0 -> 9.7 %, mean 185.00
+  level 99th (206.6): best b0.4_cown + fgw_aligned + T3 barred: 1.0 -> 4.7 %, mean 185.00
