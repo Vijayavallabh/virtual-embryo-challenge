@@ -572,7 +572,35 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   2026-11-04 (d) rationale. Line counts are kept, since `experiments/gate/estimate.py` cites `docs/PLAN.md` by line. In
   the screened digest's section 2.5 it removed a count of truth-DE genes on a T3 board whose source cannot be determined
   (it is not the validation board's, and the digest names no board); an exact-value search found the number nowhere else
-  in the repository. Under the AI assistant's brief, which was stricter than this policy (the ruling of 2026-10-15
-  allows phenotype-level knockout knowledge), it had also replaced the digest's paragraph on the held-out knockouts'
-  phenotypes; that edit was undone, so the paragraph stays, like the same kind of statement in `docs/PLAN.md` 4.4 and
-  `METHOD_SUMMARY.md`. Git history keeps the removed text; no figure was relayed to the main agent.
+  in the repository [both statements corrected in (i)]. Under the AI assistant's brief, which was stricter than this
+  policy (the ruling of 2026-10-15 allows phenotype-level knockout knowledge), it had also replaced the digest's
+  paragraph on the held-out knockouts' phenotypes; that edit was undone, so the paragraph stays, like the same kind of
+  statement in `docs/PLAN.md` 4.4 and `METHOD_SUMMARY.md`. Git history keeps the removed text; no figure was relayed to
+  the main agent.
+- 2026-11-05 (i), corrections to (h) after a code review of 030ca89 (13 findings, 4 confirmed) and a second screening
+  pass. (i) The count: the second pass searched every tracked file, `docs/research/` included (`boards/`, `panels/`,
+  `data/`, `runs/` and index.json files excluded), and found the same quantity once more, in
+  `docs/research/t3_methods.md`, now marked; the first search had skipped `docs/research/`. No T3 rule, script or result
+  holds the value or anything derived from it (n_up and n_dn are counted from the truth at run time). Its likely source
+  is an example in the organisers' scorer docstring, written before the validation answers were released and naming no
+  board; the validation board's own truth-DE count under the scorer protocol varies by seed over a range that includes
+  it, so it may describe either board, and the digest's mark now says "possible". From 97d0c47 (2026-10-19) it stood in
+  the digest's section 2.5, which the AI assistant read when it built PLAN v1.2 and the T3 rules of 2026-10-18 and
+  2026-10-19 were written; a reviewer of 2026-11-05 (wf_6b41d823-d5a) read that section before the cleanup. Nothing in
+  the repository shows it was used. (ii) History: older revisions of `docs/PLAN.md`, `docs/DATA_POLICY.md`, the digest
+  and `docs/research/t3_methods.md` hold the removed text, pushed to GitHub and in the DGX's .git; AGENTS.md forbids
+  printing them. Rewriting history is the captain's call (`docs/PLAN.md` decision log 2026-11-05 (e)); the AI assistant
+  recommends no rewrite, for the reasons of (e), and that any public release of the code be a fresh repository built
+  from the final tree. (iii) The digest: the second pass removed 18 more per-board leaderboard items (leader scores and
+  ranges per board, per-task prize lines, per-metric point pools at leader levels, per-board gaps) and its legend now
+  keeps overall totals and ranks only. Other screened copies under `docs/research/` (t2_spatial.md, t3_methods.md) still
+  hold such figures, behind the rule that the main agent reads only the digest. The edit (h) undid was the AI
+  assistant's own `git checkout` of the whole digest, made before the count was removed and with no diff printed; a
+  screening read in the review found section 2.5 phenotype-level only for the held-out knockouts. (iv) Fixed after the
+  review: the `docs/PLAN.md` citations in `experiments/gate/` are entry labels (they had drifted); the one placeholder
+  that named a board no longer does; the Scores section holds the standing screening rules. Each "[per-board leaderboard
+  figure removed 2026-11-05]" mark in `docs/PLAN.md` and this file is explained by (h) and (i). (v) Slips: the review's
+  agents had one oversized grep output saved in the session store by the harness (not opened) and first wrote working
+  files into an existing scratchpad folder (names listed, none opened); the second pass ran the system `python3` once on
+  its own scratch script, and, as its brief asked, searched `docs/research/`, which showed hit lines from unscreened
+  reports to it only.

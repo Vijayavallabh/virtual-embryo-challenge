@@ -79,10 +79,11 @@ If baseline verification is failing, repair that first before adding new scope.
   `docs/DATA_POLICY.md`. Recursive searches skip `boards/` and `docs/research/` (`grep -r --exclude-dir=boards
   --exclude-dir=research`), and nothing searches the whole filesystem. Agents never open session logs, transcripts or
   harness-saved tool outputs (under `~/.claude-account` or `~/.claude`), and run the repository's Python as `python -I
-  -B` (`docs/DATA_POLICY.md`, 2026-11-04 (g)). Revisions from before 030ca89 of `docs/PLAN.md`, `docs/DATA_POLICY.md`
-  and `docs/research/digest_2026-10-19.md` hold screened-out material (per-board leaderboard figures, a count that may
-  describe a hidden target): never print them (`git show` of an older revision, `git log -p` or a diff across 030ca89 on
-  those paths); a review of such a commit masks the removed side (`docs/DATA_POLICY.md` 2026-11-05 (h), (i)).
+  -B` (`docs/DATA_POLICY.md`, 2026-11-04 (g)). Revisions of `docs/PLAN.md`, `docs/DATA_POLICY.md`,
+  `docs/research/digest_2026-10-19.md` and `docs/research/t3_methods.md` older than their cleanup of 2026-11-05
+  (`docs/DATA_POLICY.md` 2026-11-05 (h), (i)) hold screened-out material (per-board leaderboard figures, a count that
+  may describe a hidden target): never print them (`git show` of an older revision, `git log -p`, or a diff across the
+  cleanup on those paths); a review of such a commit masks the removed side.
 - **Scores choose, never compute.** Leaderboard returns may be used to pick between predictions, never to solve for a
   property of a hidden target (no inverting the skill map, no differencing scores). A screened leaderboard read hands
   the main agent overall totals and overall ranks only (`docs/DATA_POLICY.md`, Scores).
