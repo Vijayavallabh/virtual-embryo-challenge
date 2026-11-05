@@ -9,8 +9,8 @@ deadline exception's reading and the better-of-two estimate confirmed; R1 kept a
 changed, `vec check` and the server format checks passed, the other eight files byte-identical; archive
 `runs/archive/builds_88b057f`); R2 declined, D3 not run and the late-fetal family declined, also checked against the
 top-3 aim (`experiments/gate/options_tail.py`); the DGX cleanup is done, and the captain deleted the
-scratchpad's 32 raw site copies with `delete_site_copies.sh` (`docs/DATA_POLICY.md` 2026-11-05 (f); `docs/PLAN.md`
-decision log 2026-11-05 (c)).
+scratchpad's 32 raw site copies and 17 later residues with the two scripts (`docs/DATA_POLICY.md` 2026-11-05 (f);
+`docs/PLAN.md` decision log 2026-11-05 (c)).
 **Active Feature:** feat-018 (s1 files). 2026-11-04: runbook step 1 is done (634b5fd). `vec boards update` still
 answered 403 at 07:29 UTC; a screened Slack and email sweep (wf_2489e0c9-951, two clean audits) found no objection, no
 fix and no rule change since the notice of 2026-10-31; the captain saved the board index and the embryo test gene
@@ -498,7 +498,7 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       (`experiments/builds/results/r1_88b057f.txt`; archive `runs/archive/builds_88b057f`). D3 and R2 checked against
       the top-3 aim by the chance of a high total (`experiments/gate/options_tail.py`): D3 lowers it, R2 raises it by at
       most 0.4 points on selected-on backtests; both stay out. DGX cleanup done (JAX tables with embryos 50-53 deleted,
-      scratch archived and removed); the captain deleted the scratchpad's 32 raw site copies.
+      scratch archived and removed); the captain deleted the scratchpad's 32 raw site copies and 17 later residues.
 
 ### What's Next
 
@@ -515,8 +515,7 @@ Updated 2026-11-04, after the captain's guiding principle (`AGENTS.md`; the orde
    assistant's recommendation (`docs/PLAN.md` decision log 2026-11-04 (c)): keep the hold; the rebuild rehearsal is
    done (2026-11-04, 1206d60: ten files byte-identical, `vec check` and the server format checks passed); repeat it at
    the freeze commit.
-   2026-11-05: the captain ran `delete_site_copies.sh` (the 32 raw site copies are deleted); `delete_later_copies.sh`
-   (17 later residues of the same kind, in the same scratchpad folder) is recommended and waits for his call.
+   2026-11-05: the captain ran both scratchpad deletion scripts (32 raw site copies and 17 later residues deleted).
 2. T1: births were designed and pruned (2026-11-04; `TRIES.md`), so neither upload waits on them. T1's composition
    is reopened by the legal route (`docs/DATA_POLICY.md` 2026-11-04 (d)), the one open lever on its weakest groups
    (distribution, DE recovery, covariance); T1 direction stays open, but no backtest can judge a change to Feng's

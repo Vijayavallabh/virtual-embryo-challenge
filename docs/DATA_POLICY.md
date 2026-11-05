@@ -541,8 +541,8 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   material from later dates (manifest tables with per-file sizes of 2026-10-27 and 2026-10-28, site copies of
   2026-10-28, the leaderboard reads and captures of 2026-11-04) and, among our own work, anchor-check and parity-hedge
   outputs, a raw Slack copy, a repository bundle of 2026-10-19 that may keep pre-purge history and the raw
-  research-agent reports; a second script (`delete_later_copies.sh`, 17 entries, about 32 MB) is recommended and waits
-  for the captain. (iv) Slips: the screening agent once read the first 1.2 KB of an inventory file through `grep -o` to
-  see its field names (it relayed no values); the AI assistant wrote two scripts of this task into an existing
-  scratchpad folder (`r1/`) that the screen found to hold site downloads of 2026-11-04, without listing or opening its
-  other contents.
+  research-agent reports; a second script (`delete_later_copies.sh`, 17 entries) was recommended, and the captain ran it
+  the same day: 32,163,793 bytes deleted, nothing left behind. (iv) Slips: the screening agent once read the first 1.2
+  KB of an inventory file through `grep -o` to see its field names (it relayed no values); the AI assistant wrote two
+  scripts of this task into an existing scratchpad folder (`r1/`) that the screen found to hold site downloads of
+  2026-11-04, without listing or opening its other contents.

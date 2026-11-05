@@ -1159,4 +1159,5 @@ open. No organiser reply to any of the four emails as of then.
     `rebuild_2026-11-04/` and `births/` are archived (contents verified) and removed. The raw site copies of 2026-10-18
     to 2026-10-20 in the AI assistant's session scratchpad (32 entries, screened by name) were deleted the same day by
     the captain's run of the deletion script, since the auto-mode classifier blocks the AI assistant from deleting them;
-    a second script for later copies of the same kind is recommended (`docs/DATA_POLICY.md` 2026-11-05 (f)).
+    a second script for 17 later copies of the same kind, which the AI assistant recommended, was run by him the same
+    day (`docs/DATA_POLICY.md` 2026-11-05 (f)).
