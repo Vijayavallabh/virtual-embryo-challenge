@@ -481,7 +481,7 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
 - 2026-11-05 (c), a disclosure gap the campaign's audit found, traced by a screening agent (the main agent read only
   the screened answer and the digest): the T1 s2's placement (cardiomyocytes at 60% of heart cells) leaned on three
   E14.5 cardiomyocyte shares from the research of 2026-10-19 (digest, 2026-10-19, the composition-cost item): one
-  whole-heart dataset (39.9% +- 11.2) and Feng's chamber dataset in two strains (41.5% and 76.6%). All three came from
+  whole-heart dataset (redacted, (e)) and Feng's chamber dataset in two strains (41.5% and 76.6%). All three came from
   label-only per-cell metadata, before any register row covered them: X002 covered Feng's CD1 strain only, and the
   whole-heart source (best match Feulner 2026 with Wünnemann 2020, CELLxGENE-coded Theiler stage 22; the digest does
   not name it) had no row. Under this policy's "Nearness counts" and the staging rule's working answer
@@ -491,8 +491,9 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   rationale; X005 lists the published code the method runs on. No rule changes: Feng's two strains alone span 42-77%,
   and the frozen s2's 60% lies inside that range (`docs/S2_RULES.md` does not cite the withdrawn figure; the s2_hedge
   README and `docs/PLAN.md` 4.1 are restated). The figure stays in the screened digest as a record and is not cited
-  again. No history purge is proposed: it is an authors-labelled E14.5 summary share, outside the organisers' window as
-  written, kept out by our stricter working answer; the captain can rule otherwise.
+  again (superseded by (e): its value is now redacted from the digest and every working file). No history purge is
+  proposed: it is an authors-labelled E14.5 summary share, outside the organisers' window as written, kept out by our
+  stricter working answer; the captain can rule otherwise.
 - 2026-11-05 (d), process notes from the gate-estimator workflow (wf_ae139ac6-f35: a builder, a blind independent
   recompute and a code audit; local only, aggregation of committed results, no target read and no score computed): (i)
   reading the assigned decision-log entries and `docs/PLAN.md` section 8 showed the builder and the reviewer the
@@ -505,3 +506,20 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   the builder opened one memory note of the AI assistant (the compliance rules; no values), which is not a session
   log, transcript or saved tool output, but sits under `~/.claude-account`: from now on agents leave memory files
   alone too; (v) probe folders were deleted, and the tests delete their temporary copies.
+- 2026-11-05 (e), the withdrawn whole-heart figure ((c) above, X006), after a side agent's note to the captain: its
+  value is now redacted from every working file a method choice could read: `EXTERNAL_DATA.md` X006, (c) above,
+  `docs/PLAN.md` 4.1, the s2_hedge README and the screened digest (the composition-cost item). It had stood in the
+  digest and `docs/PLAN.md` 4.1 since 97d0c47 (2026-10-19) and in the s2_hedge README, as the low end of a range, since
+  the s2 rules (38faf73); the disclosure commit (1435acf) added it to X006 and (c). Why: the staging rule keeps the
+  sample out of T1 and the T2 heart, yet the value still faced every reader of a T1 or heart choice, among them any
+  prior for D3 (the cardiomyocyte share), which is open. Two lists that named the dataset as legal without that
+  exception (`docs/PLAN.md` 4.1's legal external data, `ASSUMPTIONS.md` A9) now carry it. What stays: the source and its
+  withdrawal stay disclosed (X006; Rules s.10 asks for sources, not values); git history keeps the value as the record
+  of what informed the s2; the unscreened notes under `docs/research/` stay quarantined as before (only screening agents
+  read them). No history purge, the AI assistant's recommendation under the delegation of 2026-11-02: the figure is an
+  authors-labelled E14.5 share from a published paper, outside the organisers' window as written, and a purge would
+  rewrite every commit since 97d0c47, changing each commit hash cited as pre-registration evidence and, as in the purges
+  of 2026-10-18 and 2026-10-19, recreating the GitHub repo and losing its push record. The captain can order one (a
+  force-push needs his yes; the script would be dry-run on a scratch clone first, and he runs it). The side agent's note
+  repeated the value to the captain, so a D3 prior, if he writes one, rests on registered legal data (Feng's two
+  strains, X002), not on it.

@@ -190,9 +190,9 @@ Facts that shape it (`docs/research/digest_2026-10-19.md`, gap-fills 1 and 3):
   blood, about 24% of chamber cells: the 1.5-2% came from nuclei of embryo portions at E8.5 and E9.5, while E10.5, the
   same nuclei assay on dissected hearts like E12.5, has 17% blood, and the E12.5 collection text names no
   blood-removal step.) The cardiomyocyte share of heart cells carries ~75% of the composition risk, and legal E14.5
-  data disagree on it (42% and 77% in Feng's two strains; a whole-heart 40% from a sample coded Theiler stage 22 is
-  withdrawn under the staging rule, `docs/DATA_POLICY.md` 2026-11-05 (c)). Order the work: scope (~+20), per-type state
-  shifts (~15), births (~1.5-5).
+  data disagree on it (42% and 77% in Feng's two strains; a whole-heart figure from a sample coded Theiler stage 22
+  is withdrawn under the staging rule and its value redacted, `docs/DATA_POLICY.md` 2026-11-05 (c) and (e)). Order
+  the work: scope (~+20), per-type state shifts (~15), births (~1.5-5).
 - **Direction.** Within-platform fold changes from Feng 2022 chamber hearts (legal stages only) beat internal momentum in
   a test-like geometry (sign agreement 0.92 vs 0.73, Spearman 0.80 vs 0.40). JAX nuclei are run- and depth-confounded
   and are dropped as a direction source. The pre-registered readout in `experiments/t1_direction/` decides on the
@@ -202,9 +202,9 @@ Facts that shape it (`docs/research/digest_2026-10-19.md`, gap-fills 1 and 3):
   `experiments/t1_direction/README.md`).
 - **Legal external data** (each registered in `EXTERNAL_DATA.md` with committed filters before use): Feng 2022
   (GSE193346; E9.5, CD1 only, and E14.5 and later, filtered on the per-cell stage column), Feulner 2026 whole hearts
-  (E14.5-P7), JAX/Qiu 2024 embryos 1-22 and 54-74 only (23-24 and 50-53 come from boundary or in-window litters;
-  1-12 are T1-only), ENCODE heart bulk from E14.5. Use within-dataset fold changes, never absolute external levels; map
-  genes by Ensembl ID.
+  (E14.5-P7; its sample coded Theiler stage 22 stays out of T1 and the T2 heart, X006), JAX/Qiu 2024 embryos 1-22 and
+  54-74 only (23-24 and 50-53 come from boundary or in-window litters; 1-12 are T1-only), ENCODE heart bulk from E14.5.
+  Use within-dataset fold changes, never absolute external levels; map genes by Ensembl ID.
 - Most T1 genes (8,522 Gm*, 2,524 *Rik) have no external signal: hold them at E10.5 levels.
 - **Emergent populations, contingent.** Which classes appear by E12.5 can rest on qualitative developmental background
   inside the window only if the organisers allow it (asked 2026-10-18, unanswered). Until then use the legal route:
@@ -1119,7 +1119,9 @@ open. No organiser reply to any of the four emails as of then.
     metadata that no register row covered: Feng's C57BL/6 strain (now in X002) and a whole-heart dataset whose sample
     is coded Theiler stage 22 (X006). Under the staging rule's working answer that sample stays out, so its figure is
     withdrawn from the rationale; Feng's two strains alone span 42-77% and the s2 stays inside that range, so no rule
-    changes (`docs/DATA_POLICY.md` 2026-11-05 (c)).
+    changes (`docs/DATA_POLICY.md` 2026-11-05 (c)). Later that day its value was redacted from the working files
+    too; git history keeps it, and no purge is recommended (the captain can order one; `docs/DATA_POLICY.md`
+    2026-11-05 (e)).
   - **The determinism check** (target-free, at 1435acf on the DGX): all three sets rebuilt from empty folders at 1, 4,
     8 and 16 BLAS threads, every file passed `vec check`, and all forty files are byte-identical to the archived builds
     of 2026-11-04 (`experiments/builds/results/determinism_1435acf.txt`; `./init.sh` before it: 577 passed). So the

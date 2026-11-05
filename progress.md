@@ -480,7 +480,9 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       1435acf: all ten test files byte-identical to the archived builds at 1, 4, 8 and 16 BLAS threads
       (`experiments/builds/results/determinism_1435acf.txt`). The gate estimator (`experiments/gate/estimate.py`,
       independently recomputed and audited): 191.5 (176.8-204.0) on the better-of-two reading, 170.2 (160.2-179.1) for
-      the first round alone; its T1 is an upper reading, so the record keeps 184; nothing reaches 209.
+      the first round alone; its T1 is an upper reading, so the record keeps 184; nothing reaches 209. The withdrawn
+      whole-heart figure's value is redacted from the working files (git history keeps it; no purge recommended;
+      `docs/DATA_POLICY.md` 2026-11-05 (e)).
 
 ### What's Next
 
