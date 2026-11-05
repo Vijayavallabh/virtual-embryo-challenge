@@ -1193,3 +1193,43 @@ open. No organiser reply to any of the four emails as of then.
   2026-10-28: the blind composition's de_direction 0.113 and 0.022 against 0.2; both T3 uploads carry that composition,
   which the frozen T3 rules and the post-exposure block keep, so no upload changes), A19 confirmed (D7 passed), A9
   confirmed for the sources the method uses, and the overdue readouts rescheduled with reasons (`ASSUMPTIONS.md` log).
+- 2026-11-05 (f), the screened cross-disciplinary research and its counter-review. The captain asked for research
+  across disciplines from first principles, then non-mimetic solutions that maximise the chance of a top-3 place.
+  - **What it was.**
+    - Eight specialists: decision theory, statistical physics, pathway provenance, computational statistics, contest
+      economics, dynamical systems, tissue physics and assay measurement (wf_a2176927-e30). Each notes file was
+      screened and audited.
+    - 131 sources.
+    - Three target-free diagnostics, N3-N5 (`experiments/harness/TRIES.md`; registered and run at 1edec56).
+    - A counter-review by four adversaries (wf_3eef9333-d9d; 50 issues).
+    - The report is `experiments/research_2026_11/REPORT.md`.
+  - **The finding.** Nothing found moves our total into its own top-3 region. The open levers come to roughly +1 to +3
+    Overall in expectation, and several compete for one slot. The top-3 chance is a few percent at most; under the
+    measurement-based T3 payoffs it is under 1% at our 95th percentile. No leaderboard figure is used as a threshold:
+    task a's z-rule took one, and it is struck.
+  - **The sharpest finding**, a quantification of a bet already on record: T3 s1's severity needs a matching depth
+    deficit in the beta-catenin file (A23) and its factor's gene-by-gene agreement.
+    - s1's depth step carries 43% of its dp energy.
+    - Without a matching truth shift, the gate bar is 0.22-0.66 (N4).
+  - **The T3 s2 question, reopened on new grounds.**
+    - s2 as the barred branch's s1 (the Mab21l2 factor, no depth, the same composition) is worth about +0.3 T3 (-0.2 to
+      +0.9) under the default floor reading.
+    - It is robustly positive if a floored severity scores 0 (A24; 0.35 under the working answer). Today's s2 floored
+      severity in 14 of 20 seeds, so it would average roughly 42 instead of 51. A side agent raised this with the
+      captain the same day.
+    - It would override D11b's failed bar after the fact.
+    - The AI assistant's recommendation: keep today's s2 for now; run D5/D6, D1/D2 and the rank-aware pricing
+      (target-free, decision rules committed first); bring the ruling before T3's first upload on 2026-11-27.
+  - **Other rulings for the captain** (the report's section 7):
+    - the embryo s2 at mixture fraction 1/4. It also hedges the logged risk that E7.75 was imaged at E7.5-like depth,
+      but it amends a frozen rule after the fact, as R2 would have. Deadline: the second round.
+    - a T1 strong-null down-tail prior, a skewed bet. Deadline: the s1 freeze.
+    - a T1 maturation quota and Feng direction hygiene. Both wait on his reading of A15 for T1 gene sets.
+    - the exact up-kernel and a heart momentum hold. Recommended: decline.
+  - **Pruned or closed:** `experiments/harness/TRIES.md`, "Pruned before running" (the research of 2026-11-05).
+  - **Compliance.** The process slips are in `docs/DATA_POLICY.md` 2026-11-05 (k). `AGENTS.md` now names memory files
+    and the scorer's two docstrings.
+  - **Decided by the AI assistant** (the delegation of 2026-11-02; the captain can overrule):
+    - (i) N3-N5 are diagnostics, not tries (N2's precedent);
+    - (ii) the measured-out items are pruned;
+    - (iii) no upload changes until the captain rules on section 7.

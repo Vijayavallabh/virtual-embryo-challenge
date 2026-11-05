@@ -1,0 +1,335 @@
+{
+ "diagnostic": "tails",
+ "files": {
+  "builds/T1_s1.h5ad": {
+   "board": "T1:test",
+   "genes": 32285,
+   "genes_feasible_down": 4231,
+   "reference": "T1/E10.5_RNA.h5ad",
+   "tail": [
+    {
+     "K": 25,
+     "infeasible": 0,
+     "kth_dp": -0.26850759983062744
+    },
+    {
+     "K": 50,
+     "infeasible": 0,
+     "kth_dp": -0.21479931473731995
+    },
+    {
+     "K": 100,
+     "infeasible": 0,
+     "kth_dp": -0.170879065990448
+    },
+    {
+     "K": 200,
+     "infeasible": 5,
+     "kth_dp": -0.13163591176271439
+    },
+    {
+     "K": 400,
+     "infeasible": 20,
+     "kth_dp": -0.08967089653015137
+    },
+    {
+     "K": 800,
+     "infeasible": 87,
+     "kth_dp": -0.05704259127378464
+    },
+    {
+     "K": 1600,
+     "infeasible": 302,
+     "kth_dp": -0.02936500310897827
+    }
+   ]
+  },
+  "builds/T1_s2.h5ad": {
+   "board": "T1:test",
+   "genes": 32285,
+   "genes_feasible_down": 4231,
+   "reference": "T1/E10.5_RNA.h5ad",
+   "tail": [
+    {
+     "K": 25,
+     "infeasible": 0,
+     "kth_dp": -0.3274456262588501
+    },
+    {
+     "K": 50,
+     "infeasible": 0,
+     "kth_dp": -0.270482137799263
+    },
+    {
+     "K": 100,
+     "infeasible": 0,
+     "kth_dp": -0.21428364515304565
+    },
+    {
+     "K": 200,
+     "infeasible": 0,
+     "kth_dp": -0.16500326991081238
+    },
+    {
+     "K": 400,
+     "infeasible": 5,
+     "kth_dp": -0.123757004737854
+    },
+    {
+     "K": 800,
+     "infeasible": 36,
+     "kth_dp": -0.08323637768626213
+    },
+    {
+     "K": 1600,
+     "infeasible": 198,
+     "kth_dp": -0.04854428768157959
+    }
+   ]
+  },
+  "builds/T2embryo_s1.h5ad": {
+   "board": "T2:embryo:test_interp",
+   "genes": 497,
+   "genes_feasible_down": 153,
+   "reference": "T2/E7.5.h5ad",
+   "tail": [
+    {
+     "K": 20,
+     "infeasible": 0,
+     "kth_dp": -0.15541797876358032
+    },
+    {
+     "K": 40,
+     "infeasible": 1,
+     "kth_dp": -0.06704097986221313
+    },
+    {
+     "K": 80,
+     "infeasible": 31,
+     "kth_dp": 0.000524275004863739
+    },
+    {
+     "K": 160,
+     "infeasible": 107,
+     "kth_dp": 0.01753552258014679
+    }
+   ]
+  },
+  "builds/T2embryo_s2.h5ad": {
+   "board": "T2:embryo:test_interp",
+   "genes": 497,
+   "genes_feasible_down": 153,
+   "reference": "T2/E7.5.h5ad",
+   "tail": [
+    {
+     "K": 20,
+     "infeasible": 0,
+     "kth_dp": -0.15541797876358032
+    },
+    {
+     "K": 40,
+     "infeasible": 1,
+     "kth_dp": -0.06704097986221313
+    },
+    {
+     "K": 80,
+     "infeasible": 31,
+     "kth_dp": 0.000524275004863739
+    },
+    {
+     "K": 160,
+     "infeasible": 107,
+     "kth_dp": 0.01753552258014679
+    }
+   ]
+  },
+  "builds/T2heart_s1.h5ad": {
+   "board": "T2:heart:test_extrap",
+   "genes": 500,
+   "genes_feasible_down": 158,
+   "reference": "T2/E10.5.h5ad",
+   "tail": [
+    {
+     "K": 20,
+     "infeasible": 0,
+     "kth_dp": -0.16324841976165771
+    },
+    {
+     "K": 40,
+     "infeasible": 1,
+     "kth_dp": -0.09846523404121399
+    },
+    {
+     "K": 80,
+     "infeasible": 13,
+     "kth_dp": -0.04338657855987549
+    },
+    {
+     "K": 160,
+     "infeasible": 69,
+     "kth_dp": -0.012724339962005615
+    }
+   ]
+  },
+  "builds/T2heart_s2.h5ad": {
+   "board": "T2:heart:test_extrap",
+   "genes": 500,
+   "genes_feasible_down": 158,
+   "reference": "T2/E10.5.h5ad",
+   "tail": [
+    {
+     "K": 20,
+     "infeasible": 0,
+     "kth_dp": -0.16878628730773926
+    },
+    {
+     "K": 40,
+     "infeasible": 3,
+     "kth_dp": -0.10232727229595184
+    },
+    {
+     "K": 80,
+     "infeasible": 17,
+     "kth_dp": -0.04113142564892769
+    },
+    {
+     "K": 160,
+     "infeasible": 74,
+     "kth_dp": -0.013452529907226562
+    }
+   ]
+  },
+  "t3_build/allowed_s1.h5ad": {
+   "board": "T3:bcatenin",
+   "genes": 500,
+   "genes_feasible_down": 222,
+   "reference": "T2/E8.75.h5ad",
+   "tail": [
+    {
+     "K": 20,
+     "infeasible": 0,
+     "kth_dp": -0.6139388382434845
+    },
+    {
+     "K": 40,
+     "infeasible": 0,
+     "kth_dp": -0.41718506813049316
+    },
+    {
+     "K": 80,
+     "infeasible": 0,
+     "kth_dp": -0.2334301769733429
+    },
+    {
+     "K": 120,
+     "infeasible": 0,
+     "kth_dp": -0.14343693852424622
+    }
+   ]
+  },
+  "t3_build/barred_s1.h5ad": {
+   "board": "T3:bcatenin",
+   "genes": 500,
+   "genes_feasible_down": 222,
+   "reference": "T2/E8.75.h5ad",
+   "tail": [
+    {
+     "K": 20,
+     "infeasible": 0,
+     "kth_dp": -0.5604434609413147
+    },
+    {
+     "K": 40,
+     "infeasible": 0,
+     "kth_dp": -0.31665998697280884
+    },
+    {
+     "K": 80,
+     "infeasible": 1,
+     "kth_dp": -0.16140155494213104
+    },
+    {
+     "K": 120,
+     "infeasible": 16,
+     "kth_dp": -0.08368091657757759
+    }
+   ]
+  },
+  "t3_build/barred_s2.h5ad": {
+   "board": "T3:bcatenin",
+   "genes": 500,
+   "genes_feasible_down": 222,
+   "reference": "T2/E8.75.h5ad",
+   "tail": [
+    {
+     "K": 20,
+     "infeasible": 0,
+     "kth_dp": -0.5703682899475098
+    },
+    {
+     "K": 40,
+     "infeasible": 0,
+     "kth_dp": -0.3216021656990051
+    },
+    {
+     "K": 80,
+     "infeasible": 1,
+     "kth_dp": -0.15811660885810852
+    },
+    {
+     "K": 120,
+     "infeasible": 18,
+     "kth_dp": -0.08001084625720978
+    }
+   ]
+  },
+  "t3_build/refused_s1.h5ad": {
+   "board": "T3:bcatenin",
+   "genes": 500,
+   "genes_feasible_down": 222,
+   "reference": "T2/E8.75.h5ad",
+   "tail": [
+    {
+     "K": 20,
+     "infeasible": 0,
+     "kth_dp": -0.06931936740875244
+    },
+    {
+     "K": 40,
+     "infeasible": 0,
+     "kth_dp": -0.04695802927017212
+    },
+    {
+     "K": 80,
+     "infeasible": 4,
+     "kth_dp": -0.023605406284332275
+    },
+    {
+     "K": 120,
+     "infeasible": 19,
+     "kth_dp": -0.013583540916442871
+    }
+   ]
+  }
+ },
+ "provenance": {
+  "commit": "1edec563bbc1038a5274b1356d8fdd3c66103f9d",
+  "inputs_sha256": {
+   "data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+   "data/raw/T2/E10.5.h5ad": "d6b37967f9cf3533091964cd07421c48a5c7c04628e9321123a426cb2a9c7e8b",
+   "data/raw/T2/E7.5.h5ad": "e8e47255ddeca96d5604c7cd4923bbf27765c24bc6a3cd44e800cd6ea05a7d54",
+   "data/raw/T2/E8.75.h5ad": "149ab6df7c99ad85046c8aebebcf0c43689b3720c59ffb7cc550edcf2f13a83c",
+   "runs/archive/builds_88b057f/builds/T1_s1.h5ad": "3400007a5f1f97d445adfa7aed7c38333b7860c29faac2f164ec91ab43f37913",
+   "runs/archive/builds_88b057f/builds/T1_s2.h5ad": "55829822dc3706696020fad26176fedf2d068eadc635ef70533c4af8da95b0ac",
+   "runs/archive/builds_88b057f/builds/T2embryo_s1.h5ad": "dc910d4b3fb1d62b643bf96e5765741f8f0ad011f7b2d928a7955928ddee1303",
+   "runs/archive/builds_88b057f/builds/T2embryo_s2.h5ad": "574aa30b60a735c0ca3308886f5d10f6b1fd99fc7be8b6efab7aa3b4c98f0fac",
+   "runs/archive/builds_88b057f/builds/T2heart_s1.h5ad": "e73d0396364806514c4acf1aa522e5923e395d610c4b0c3bb85112a89ef84355",
+   "runs/archive/builds_88b057f/builds/T2heart_s2.h5ad": "5a309434d4a2e66d7b3b838a9a0b23d7c1cd0bc49daec238cf87e194df158190",
+   "runs/archive/builds_88b057f/t3_build/allowed_s1.h5ad": "3d6c94a97b02b8f378b275070dad2767e54005e4194d093e4e01bdf3881b4203",
+   "runs/archive/builds_88b057f/t3_build/barred_s1.h5ad": "3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2",
+   "runs/archive/builds_88b057f/t3_build/barred_s2.h5ad": "1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f",
+   "runs/archive/builds_88b057f/t3_build/refused_s1.h5ad": "0ac8901b2f4015cd4d89738a2a5188faec7a371e6ae7a68d3fdb1dd4140eb101"
+  },
+  "tracked_tree_clean": true
+ }
+}

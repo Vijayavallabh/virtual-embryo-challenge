@@ -77,9 +77,11 @@ If baseline verification is failing, repair that first before adding new scope.
   with conditions (notice first, not before 2026-11-04; `docs/DATA_POLICY.md`): nobody opens the saved file, and
   test-board counts are read by code only, never quoted. Read research results through the screened digest; see
   `docs/DATA_POLICY.md`. Recursive searches skip `boards/` and `docs/research/` (`grep -r --exclude-dir=boards
-  --exclude-dir=research`), and nothing searches the whole filesystem. Agents never open session logs, transcripts or
-  harness-saved tool outputs (under `~/.claude-account` or `~/.claude`), and run the repository's Python as `python -I
-  -B` (`docs/DATA_POLICY.md`, 2026-11-04 (g)). Revisions of `docs/PLAN.md`, `docs/DATA_POLICY.md`,
+  --exclude-dir=research`), and nothing searches the whole filesystem. Agents never open session logs, transcripts,
+  harness-saved tool outputs or memory files (under `~/.claude-account` or `~/.claude`), and run the repository's
+  Python as `python -I -B` (`docs/DATA_POLICY.md`, 2026-11-04 (g)). Read the pinned scorer's `common/core_metrics.py`
+  for its formulas only, and skip its module docstring and its `de_genes` docstring (example counts that may describe
+  a T3 board; `docs/DATA_POLICY.md` 2026-11-05 (i), (k)). Revisions of `docs/PLAN.md`, `docs/DATA_POLICY.md`,
   `docs/research/digest_2026-10-19.md` and `docs/research/t3_methods.md` older than their cleanup of 2026-11-05
   (`docs/DATA_POLICY.md` 2026-11-05 (h), (i)) hold screened-out material (per-board leaderboard figures, a count that
   may describe a hidden target): never print them (`git show` of an older revision, `git log -p`, or a diff across the

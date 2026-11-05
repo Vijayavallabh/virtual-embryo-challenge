@@ -1,0 +1,118 @@
+{
+ "depth_step": {
+  "corr_with_s1_dp": 0.6326140034540609,
+  "cos2_ones": 0.4178667342669762,
+  "share_of_s1_dp_energy": 0.4274477963118587,
+  "spearman_vs_pb_wt": -0.9453283573134293
+ },
+ "diagnostic": "t3-gate",
+ "provenance": {
+  "commit": "1edec563bbc1038a5274b1356d8fdd3c66103f9d",
+  "inputs_sha256": {
+   "data/raw/T2/E8.75.h5ad": "149ab6df7c99ad85046c8aebebcf0c43689b3720c59ffb7cc550edcf2f13a83c",
+   "experiments/t3_decomp/results/gata4/gata4_decisions.json": "9440ae67625608112666d5235e6ceaa5dd9f47a4b0bbd30e16943f32f35c5a8c",
+   "runs/archive/builds_88b057f/t3_build/allowed_s1.h5ad": "3d6c94a97b02b8f378b275070dad2767e54005e4194d093e4e01bdf3881b4203",
+   "runs/archive/builds_88b057f/t3_build/barred_s1.h5ad": "3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2",
+   "runs/archive/builds_88b057f/t3_build/barred_s2.h5ad": "1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f",
+   "runs/archive/builds_88b057f/t3_build/refused_s1.h5ad": "0ac8901b2f4015cd4d89738a2a5188faec7a371e6ae7a68d3fdb1dd4140eb101"
+  },
+  "tracked_tree_clean": true
+ },
+ "rebuild_matches_archived_s1_corr": 0.9999999999999848,
+ "reference": "WT E8.75 as released (the scorer's reference)",
+ "spec_allowed_s1": {
+  "coverage": false,
+  "depth": true,
+  "stage": false
+ },
+ "variants": {
+  "archived_allowed_s1": {
+   "cos2_ones_all_genes": 0.2118593726965992,
+   "cos2_ones_feasible_down_or_up": 0.29812120836701933,
+   "cos2_ones_top20pct_abs_dp": 0.6538706148082103,
+   "gate_bar_cos2_dp_dt_all_genes": 0.21974077896963323,
+   "gate_bar_cos2_dp_dt_feasible_down_or_up": 0.30513999628334915,
+   "gate_bar_cos2_dp_dt_top20pct_abs_dp": 0.6573319086601281,
+   "mean_dp": -0.11212820705864579,
+   "sd_dp": 0.2162683139202675,
+   "spearman_dp_vs_pb_wt": -0.6397190068760275
+  },
+  "archived_barred_s1": {
+   "cos2_ones_all_genes": 0.0011835729371045451,
+   "cos2_ones_feasible_down_or_up": 1.076131091023731e-06,
+   "cos2_ones_top20pct_abs_dp": 0.006072709212186338,
+   "gate_bar_cos2_dp_dt_all_genes": 0.0111717372077335,
+   "gate_bar_cos2_dp_dt_feasible_down_or_up": 0.010001065369780114,
+   "gate_bar_cos2_dp_dt_top20pct_abs_dp": 0.016011982120064473,
+   "mean_dp": -0.0097968764686957,
+   "sd_dp": 0.28459872951302495,
+   "spearman_dp_vs_pb_wt": -0.20177216708866832
+  },
+  "archived_barred_s2": {
+   "cos2_ones_all_genes": 0.0005786958068292999,
+   "cos2_ones_feasible_down_or_up": 0.00018568674516375837,
+   "cos2_ones_top20pct_abs_dp": 0.006088310272954689,
+   "gate_bar_cos2_dp_dt_all_genes": 0.010572908848761007,
+   "gate_bar_cos2_dp_dt_feasible_down_or_up": 0.01018382987771212,
+   "gate_bar_cos2_dp_dt_top20pct_abs_dp": 0.016027427170225143,
+   "mean_dp": -0.006821358214132487,
+   "sd_dp": 0.28347841129399853,
+   "spearman_dp_vs_pb_wt": -0.1816740066960268
+  },
+  "archived_refused_s1": {
+   "cos2_ones_all_genes": 0.09411450875985006,
+   "cos2_ones_feasible_down_or_up": 0.07899416366229976,
+   "cos2_ones_top20pct_abs_dp": 0.35370583545886924,
+   "gate_bar_cos2_dp_dt_all_genes": 0.10317336367225155,
+   "gate_bar_cos2_dp_dt_feasible_down_or_up": 0.08820422202567677,
+   "gate_bar_cos2_dp_dt_top20pct_abs_dp": 0.3601687771042806,
+   "mean_dp": -0.008196381335146725,
+   "sd_dp": 0.025429072371099166,
+   "spearman_dp_vs_pb_wt": -0.26356031824127296
+  },
+  "composition_only": {
+   "cos2_ones_all_genes": 0.08824130669322444,
+   "cos2_ones_feasible_down_or_up": 0.08851844706756598,
+   "cos2_ones_top20pct_abs_dp": 0.34323429294682906,
+   "gate_bar_cos2_dp_dt_all_genes": 0.09735889362629219,
+   "gate_bar_cos2_dp_dt_feasible_down_or_up": 0.09763326259689031,
+   "gate_bar_cos2_dp_dt_top20pct_abs_dp": 0.34980195001736075,
+   "mean_dp": -0.011301994712091982,
+   "sd_dp": 0.03632947240790007,
+   "spearman_dp_vs_pb_wt": -0.29484943539774155
+  },
+  "s1_as_built": {
+   "cos2_ones_all_genes": 0.21185936401321606,
+   "cos2_ones_feasible_down_or_up": 0.298121195524867,
+   "cos2_ones_top20pct_abs_dp": 0.6538706069525131,
+   "gate_bar_cos2_dp_dt_all_genes": 0.2197407703730839,
+   "gate_bar_cos2_dp_dt_feasible_down_or_up": 0.3051399835696183,
+   "gate_bar_cos2_dp_dt_top20pct_abs_dp": 0.657331900882988,
+   "mean_dp": -0.11212820569332689,
+   "sd_dp": 0.21626831691031545,
+   "spearman_dp_vs_pb_wt": -0.6397190068760275
+  },
+  "s1_no_depth": {
+   "cos2_ones_all_genes": 0.0029652632523151133,
+   "cos2_ones_feasible_down_or_up": 0.0007266953392216635,
+   "cos2_ones_top20pct_abs_dp": 0.020769246285474333,
+   "gate_bar_cos2_dp_dt_all_genes": 0.012935610619791963,
+   "gate_bar_cos2_dp_dt_feasible_down_or_up": 0.010719428385829448,
+   "gate_bar_cos2_dp_dt_top20pct_abs_dp": 0.03056155382261959,
+   "mean_dp": -0.009172248388640582,
+   "sd_dp": 0.1681896721689355,
+   "spearman_dp_vs_pb_wt": -0.1564817779271117
+  },
+  "s1_no_factor": {
+   "cos2_ones_all_genes": 0.40185763568858746,
+   "cos2_ones_feasible_down_or_up": 0.685943128933556,
+   "cos2_ones_top20pct_abs_dp": 0.8836415056129104,
+   "gate_bar_cos2_dp_dt_all_genes": 0.40783905933170156,
+   "gate_bar_cos2_dp_dt_feasible_down_or_up": 0.6890836976442205,
+   "gate_bar_cos2_dp_dt_top20pct_abs_dp": 0.8848050905567814,
+   "mean_dp": -0.11502467719418928,
+   "sd_dp": 0.14033215429001678,
+   "spearman_dp_vs_pb_wt": -0.9642281449125796
+  }
+ }
+}

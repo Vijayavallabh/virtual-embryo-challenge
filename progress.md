@@ -22,6 +22,17 @@ reads, and the standing screening rules sit in `docs/DATA_POLICY.md`'s Scores se
 ruled no history rewrite: older revisions stay in the private repository, AGENTS.md forbids printing them, and any
 public release of the code is a fresh repository built from the final tree (`docs/PLAN.md` decision log 2026-11-05 (e)).
 The assumption ledger is current (A11 killed, A19 and A9 confirmed, overdue readouts rescheduled).
+**2026-11-05 (night), the screened cross-disciplinary research** (the captain: research across disciplines from first
+principles, then non-mimetic solutions for a top-3 place):
+- Eight specialists, each notes file screened and audited; three target-free diagnostics (N3-N5); four adversarial
+  reviewers. The report is `experiments/research_2026_11/REPORT.md`.
+- Nothing found moves our total into its own top-3 region; the open levers come to roughly +1 to +3 Overall.
+- The sharpest finding: T3 s1's severity rests on a matching depth deficit (A23) and its factor's gene-specific
+  agreement.
+- The T3 s2 question is reopened. A Gata4-free backup with a factor and no depth is about +0.3 T3 under the default
+  floor reading, and robustly positive if a floored severity scores 0 (A24). It goes to the captain before T3's first
+  upload, after target-free checks.
+- No upload changes (`docs/PLAN.md` decision log 2026-11-05 (f)).
 **Active Feature:** feat-018 (s1 files). 2026-11-04: runbook step 1 is done (634b5fd). `vec boards update` still
 answered 403 at 07:29 UTC; a screened Slack and email sweep (wf_2489e0c9-951, two clean audits) found no objection, no
 fix and no rule change since the notice of 2026-10-31; the captain saved the board index and the embryo test gene
@@ -530,6 +541,17 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       (`runs/determinism_1435acf`, `_6964b7d`, `_f5cf982`) were verified against their archives and removed. A
       screened sweep (wf_cf28f5b9-9aa; Blockers below) found nothing new from the organisers.
 
+- [x] 2026-11-05 (night): the screened cross-disciplinary research.
+      - Eight specialists (wf_a2176927-e30), with screened and audited notes in `experiments/research_2026_11/notes/`
+        and a 131-source registry.
+      - Target-free diagnostics N3-N5, registered and run at 1edec56: the T1 tail decoder is pruned (5% infeasible at
+        400); the gate geometry of s1's depth step is measured (43% of its dp energy); the tails across all ten files
+        warrant no decoder.
+      - A counter-review by four adversaries (wf_3eef9333-d9d; 50 issues), applied to the revised report.
+      - Ruling sheets for the captain (the report's section 7). A23 and A24 added. The process slips are recorded
+        (`docs/DATA_POLICY.md` 2026-11-05 (k)), and `AGENTS.md` now names memory files and the scorer's docstrings.
+      - The screened leaderboard totals were taken out of the AI assistant's memory file.
+
 ### What's Next
 
 Updated 2026-11-05 (the order, set on 2026-11-04 after the captain's guiding principle in `AGENTS.md`, comes from the
@@ -574,6 +596,12 @@ headroom tables in `experiments/harness/TRIES.md`):
 5. Heart and embryo: no try without an open lever and a reason that holds at test; the rebuild design re-examined
    both and found none. N1 (done) held: the embryo test pair's coupling and geometry on the 497-gene test panel
    match the record (target-free, not a try; no risk note).
+6. Research follow-ups (`experiments/research_2026_11/REPORT.md` section 7), in deadline order:
+   - T3: task h's D5/D6 and D1/D2, and the rank-aware pricing under both floor readings. All are target-free, with
+     decision rules committed first. Then the captain's ruling on T3's s2 (A23, A24), before T3's first upload
+     (2026-11-27).
+   - Embryo: the pseudo-truth table, then the captain's ruling on an s2 at mixture fraction 1/4 (by the second round).
+   - T1: the captain's readings on a strong-null prior (by the s1 freeze) and on A15 for T1 gene sets.
 
 ## Blockers / Risks
 

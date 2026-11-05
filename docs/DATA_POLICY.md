@@ -622,3 +622,24 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     extrapolation targets the explicit window relaxes the midpoint rule, so legal post-E13.5 data stays legal.
   - The other new text is listed in `docs/CHALLENGE.md` (Sources).
   - The digests skipped five Yukon passages on the site pages, recording only place and date.
+- 2026-11-05 (k), process slips in the screened research of 2026-11-05 (wf_a2176927-e30) and its counter-review
+  (wf_3eef9333-d9d), from the agents' own compliance logs and the counter-review's compliance lens. No barred value
+  reached a file the main agent reads, and no try ran.
+  - **A memory file was opened, against (d)(iv).** The research agent of task f opened the AI assistant's project
+    memory file under `~/.claude-account`. It held screened overall leaderboard totals, a kept class, and nothing from
+    it was copied or used. The same day the totals were taken out of that file, along with a per-board comparison
+    phrase older than the cleanup of (h). It now points to the decision log.
+  - **A docstring with a possible class-A count was read.** The research agent of task d read the module docstring and
+    the `de_genes` docstring of the pinned scorer's `common/core_metrics.py`. They hold example truth-DE counts that
+    (i) says may describe a T3 board. Nothing was copied. Standing rule from now on: read the formulas in that module
+    and skip those two docstrings.
+  - **One class-W source, used for method only.** The research agent of task f met an arXiv source whose results
+    report embryo findings over E6.5-E7.5, which includes the validation stage. Only its method-level points are used
+    ([87] in `experiments/research_2026_11/REPORT.md`, marked there).
+  - **Harness-saved files.** Several agents' fetched PDFs and long shell prints were saved by the harness under
+    `~/.claude-account`. None was opened.
+  - **Toys on the local machine.** The research agent of task d ran synthetic toys there, past the one-minute limit:
+    one run was killed at 120 s at a load average of about 85. Later runs used 4 BLAS threads.
+  - **An unregistered first run.** The first runs of diagnostics N3 and N4 used an uncommitted copy on the DGX. They
+    were then registered (`experiments/harness/TRIES.md`, 1edec56) and rerun there on a clean tree with stamped
+    provenance; the results matched.

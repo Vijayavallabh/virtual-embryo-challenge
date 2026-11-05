@@ -1,0 +1,81 @@
+{
+ "diagnostic": "t1-tail",
+ "feasible_dp_le_0.05": 819,
+ "feasible_dp_le_0.1": 320,
+ "feasible_dp_le_0.25": 30,
+ "file": "runs/archive/builds_88b057f/builds/T1_s1.h5ad",
+ "genes_feasible_down": 4231,
+ "infeasible_dp_le_0.02": 590,
+ "infeasible_dp_le_0.05": 118,
+ "infeasible_dp_le_0.1": 11,
+ "n_genes": 32285,
+ "provenance": {
+  "commit": "1edec563bbc1038a5274b1356d8fdd3c66103f9d",
+  "inputs_sha256": {
+   "data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+   "runs/archive/builds_88b057f/builds/T1_s1.h5ad": "3400007a5f1f97d445adfa7aed7c38333b7860c29faac2f164ec91ab43f37913"
+  },
+  "tracked_tree_clean": true
+ },
+ "reference": "T1 E10.5 (all cells, as the scorer's reference)",
+ "scope_only": "same draw, no direction",
+ "spearman_dp_scope_vs_dp_dir_on_bottom_400": -0.6720015750098437,
+ "tail": [
+  {
+   "K": 25,
+   "infeasible": 0,
+   "infeasible_direction_driven": 0,
+   "infeasible_scope_driven": 0,
+   "infeasible_with_margin": 0,
+   "kth_dp": -0.26850783824920654
+  },
+  {
+   "K": 50,
+   "infeasible": 0,
+   "infeasible_direction_driven": 0,
+   "infeasible_scope_driven": 0,
+   "infeasible_with_margin": 0,
+   "kth_dp": -0.21479927748441696
+  },
+  {
+   "K": 100,
+   "infeasible": 0,
+   "infeasible_direction_driven": 0,
+   "infeasible_scope_driven": 0,
+   "infeasible_with_margin": 0,
+   "kth_dp": -0.1708783507347107
+  },
+  {
+   "K": 200,
+   "infeasible": 5,
+   "infeasible_direction_driven": 0,
+   "infeasible_scope_driven": 5,
+   "infeasible_with_margin": 6,
+   "kth_dp": -0.13163596391677856
+  },
+  {
+   "K": 400,
+   "infeasible": 20,
+   "infeasible_direction_driven": 0,
+   "infeasible_scope_driven": 20,
+   "infeasible_with_margin": 21,
+   "kth_dp": -0.08967280387878418
+  },
+  {
+   "K": 800,
+   "infeasible": 87,
+   "infeasible_direction_driven": 2,
+   "infeasible_scope_driven": 85,
+   "infeasible_with_margin": 99,
+   "kth_dp": -0.05704259127378464
+  },
+  {
+   "K": 1600,
+   "infeasible": 302,
+   "infeasible_direction_driven": 22,
+   "infeasible_scope_driven": 280,
+   "infeasible_with_margin": 349,
+   "kth_dp": -0.02936452627182007
+  }
+ ]
+}
