@@ -1475,3 +1475,15 @@ open. No organiser reply to any of the four emails as of then.
     ambient globins are Feng's own, and T1 is SoupX-corrected.
   - The alternative is R2 as registered, on the organisers' word. Dropping N1 and N2 before N12 runs is a recorded
     amendment, not a change after N12's numbers are seen. The captain decides.
+- 2026-11-06 (i), the captain: "Do whatever it takes to utilize all the available compute in the dgx to maximize our
+  chances of placing at the top 3 in the leaderboard".
+  - **The DGX that day:** 192 cores, 1 TB RAM and eight H100s. Six H100s were idle; two held the user's own vLLM
+    servers, which are left alone.
+  - **First, a regression check of the day's code** (target-free). On the DGX, at fa678e7, the eight non-T1 test files
+    were rebuilt: heart s1 and s2, embryo s1 and s2, and T3's allowed s1, refused s1, barred s1 and barred s2. All
+    eight are byte-identical to the archived `builds_88b057f`; outputs are in `runs/regress_fa678e7/` (ignored by
+    git).
+    - T1's two files wait for R2's decision, since R2 reads no T1 E10.5 file before its build.
+  - **Then a red-team workflow** (wf_45fa202b-768): three read-only finders (failure risk, open decisions,
+    compute-enabled methods), each proposal checked by an adversarial verifier. It looks for rule-compliant compute
+    uses that the 2026-11-05 campaign ((b)) and the 2026-11-06 research missed. Its outcome follows in this entry.
