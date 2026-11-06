@@ -49,7 +49,16 @@ solutions that maximise our chance of a top-3 place, with his target of a total 
   - the chance today is 5% by construction;
   - every draw that reaches it takes T3 from stand-in A, s1's Gata4 factor scored on the other Gata4 replicate, a fold
     the adoption rule never counts. Without that stand-in, no draw reaches even our 90th percentile (section 2).
-- **The top-3 chance** stays "a few percent at most", as the 2026-11-05 research found.
+- **The top-3 chance** (corrected after the commit; `docs/PLAN.md` 2026-11-06 (d)). 209 was first place, not the
+  top-3 line. At the screened reads of 2026-11-04 (overall totals, calibration only; `docs/PLAN.md` 2026-11-04 (b), (e)),
+  third place stood between our own 75th and 90th percentiles. The sixth Human place stood between our 50th and 75th;
+  it is the last of the six prize places (one 1st, two 2nd, three 3rd).
+  - Against those lines, reading A gives a top-3 place 10-25% and a prize place 25-50%. The "few percent" quoted here
+    before is the chance of our own 95th percentile; it holds only if the third-place line rises to about there.
+  - Three things pull these down: seven of the Frozen-P2 Human top 10 had not entered the test boards at the first read;
+    the committed outlook (184) sits 7.5 below reading A; and the chance rests on T3's stand-in A (with no weight on
+    it, no draw reaches our 90th percentile).
+  - The lines will move, and they choose nothing here.
 
 **Bottom line: the 2025-2026 state of the art holds no method, dataset or tactic that moves our total materially under
 our rules.**
@@ -101,7 +110,7 @@ What to do (section 8):
 4. **One bundled T1 ruling for the captain, by about 20 Nov** (rebuild and re-hash by 24 Nov). Each item changes T1's
    s1, so T1's s2 goes back to him:
    - **sheet C, the strong-null down-tail bet:** +0.1 to +0.3 in expectation and +0.5 to +1.1 points of chance at
-     our 95th percentile at P = 0.2-0.3; tail break-even near P = 0.12;
+     our 95th percentile at P = 0.2-0.3; tail break-even near P = 0.12, mean break-even 0.16-0.3;
    - an A15 reading for T1-only external gene sets, for a Feng-direction hygiene step: about +0.10;
    - a cycling-state quota within T1 categories: about +0.05.
 5. **Offered, default no:**
@@ -612,7 +621,7 @@ keeps out.
 
 | Ruling | Mean (Overall) | ΔP at our 95th | Deadline | Conditions |
 |---|---|---|---|---|
-| T1 sheet C: strong-null down-tail bet | +0.09 / +0.29 at P = 0.2 / 0.3 | +0.49 / +1.13 (break-even P about 0.12) | s1 freeze | T1's s2 back to the captain; 2026-11-05 report section 7 |
+| T1 sheet C: strong-null down-tail bet | +0.09 / +0.29 at P = 0.2 / 0.3 | +0.49 / +1.13 (tail break-even P about 0.12; mean break-even 0.16-0.3) | s1 freeze | T1's s2 back to the captain; 2026-11-05 report section 7 |
 | T1 A15 reading for T1-only gene sets (Feng hygiene) | about +0.10 (-0.3 to +0.4) | about +0.3 (cross design) | about 20 Nov | see below |
 | T1 cycling-state quota | about +0.05 (-1.0 to +0.4) | small | about 20 Nov | see below |
 | Embryo s2 at fraction 1/4 | about -0.3 (-0.7 to 0) | -1.3 to +1.0 | the embryo's s2 | default no; see below |
@@ -621,6 +630,13 @@ keeps out.
 Sheet C is priced as a two-point bet: +1.75 T1 with probability P, else -0.33 (its stated sizes), read on the
 survival curve of section 2 (value review; it matches `path_to_target.py`'s figures where they overlap). Cut by a third
 (+1.17 if right), it is worth +0.05 to +0.5 points of chance.
+
+On the mean, sheet C breaks even at P = 0.16 with its stated loss (-0.33), 0.2 at its largest stated loss (-0.45),
+and 0.3 if the unknown distributional cost doubles the loss (value review). Between those and 0.12 it pays only in the
+upper tail. The value review ranked by the tail because the captain's 209 sits above our 95th percentile. 209 sets
+nothing here, and it was first place, not the top-3 line (executive summary). Read the mean column as the line-free
+test. Ranked by it, the order barely changes: the heart hold and the embryo s2 swap, and at P = 0.2 sheet C and the
+A15 reading are level (corrected after the commit; `docs/PLAN.md` 2026-11-06 (d)).
 
 The conditions:
 - **T1 bundle (sheet C, A15 hygiene, cycling quota).** One ruling by about 20 Nov, so the rebuild and re-hash finish by

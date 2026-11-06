@@ -1204,7 +1204,8 @@ open. No organiser reply to any of the four emails as of then.
     - A counter-review by four adversaries (wf_3eef9333-d9d; 50 issues).
     - The report is `experiments/research_2026_11/REPORT.md`.
   - **The finding.** Nothing found moves our total into its own top-3 region. The open levers come to roughly +1 to +3
-    Overall in expectation, and several compete for one slot. The top-3 chance is a few percent at most; under the
+    Overall in expectation, and several compete for one slot. The top-3 chance is a few percent at most [against the
+    lines of 2026-11-04 (b) and (e), 10-25% on reading A; 2026-11-06 (d)]; under the
     measurement-based T3 payoffs it is under 1% at our 95th percentile. No leaderboard figure is used as a threshold:
     task a's z-rule took one, and it is struck.
   - **The sharpest finding**, a quantification of a bet already on record: T3 s1's severity needs a matching depth
@@ -1327,7 +1328,8 @@ open. No organiser reply to any of the four emails as of then.
        2026-12-01 06:00 UTC" (sections 7 and 8) with section 8's "by the end of 30 November IST" and `docs/S2_RULES.md`.
     3. One bundled T1 ruling by about 20 Nov:
        - sheet C of 2026-11-05 (f), the strong-null down-tail bet: the largest tail lever on record, +0.5 to +1.1
-         points of chance at our 95th percentile at P = 0.2-0.3, break-even near P = 0.12;
+         points of chance at our 95th percentile at P = 0.2-0.3, break-even near P = 0.12 (the tail's; on the mean
+         0.16-0.3, (d));
        - an A15 reading for T1-only gene sets (Feng-direction hygiene), about +0.10;
        - a cycling-state quota, about +0.05.
        Each has the conditions REPORT section 8 lists, and each sends T1's s2 back to him.
@@ -1339,3 +1341,21 @@ open. No organiser reply to any of the four emails as of then.
        may inform a legal-route prior.
     8. Whether to turn off the memory-index injection for workflow subagents (`docs/DATA_POLICY.md` 2026-11-06 (a)).
   - **Pruned:** `experiments/harness/TRIES.md`, "Pruned before running" (the state-of-the-art research of 2026-11-06).
+- 2026-11-06 (d), two corrections to (c) and its report, after a side note to the AI assistant pointed out that 209
+  was first place, not the top-3 line. No recommendation changes.
+  - **The top-3 chance.** At the 2026-11-04 (b) and (e) reads (calibration only), third place stood between our own 75th and
+    90th percentiles (200.6 and 204.0). The sixth Human place, the last prize place, stood between our 50th and 75th
+    (192.9 and 200.6).
+    - Against those lines, reading A gives a top-3 place 10-25% and a prize place 25-50%. The "few percent" here
+      since 2026-11-05 (f) is the chance of our own 95th percentile.
+    - Three things pull these down. Seven of the Frozen-P2 Human top 10 had not entered at the first read. The
+      committed outlook (184) is 7.5 below reading A. And the chance rests on T3's stand-in A: with no weight on it,
+      no draw reaches our 90th percentile.
+    - The lines are calibration only and set no threshold.
+  - **Sheet C's break-even.** (c) and the report gave only the tail's, P about 0.12 at our 95th percentile.
+    - On the mean it is 0.16 at the stated loss, 0.2 at the largest stated loss and 0.3 if the distributional cost
+      doubles the loss (`experiments/research_2026_11_sota/notes/review/value.md`, issue 1).
+    - The tail ranking rested on 209 sitting above our 95th percentile. 209 sets nothing, so the mean is the
+      line-free test; below 0.16-0.3 the bet pays only in the upper tail.
+    - The other items are mean gains (A15 hygiene, cycling quota) or declines, so none trades a safe upload for a
+      long shot.

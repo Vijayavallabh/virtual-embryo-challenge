@@ -55,6 +55,11 @@ the organisers say, before T3's first upload, that a floored severity scores zer
   hygiene; cycling quota); the embryo s2 at 1/4 (default no); the heart hold (default decline); whether public
   organiser task-page statements may inform a legal-route prior; the memory-index injection for subagents.
 - No entry, rule or upload changed. Process notes: `docs/DATA_POLICY.md` 2026-11-06 (a).
+- Corrected the same day (decision log 2026-11-06 (d)): 209 was first place, not the top-3 line.
+  - Against the 2026-11-04 lines (calibration only), reading A gives a top-3 place 10-25% and a prize place 25-50%.
+  - Three caveats pull these down: seven of the Frozen-P2 Human top 10 had not entered, the committed outlook is 7.5
+    lower, and the chance rests on T3's stand-in A.
+  - Sheet C breaks even at 0.16-0.3 on the mean; its 0.12 was the tail's.
 **Active Feature:** feat-018 (s1 files). 2026-11-04: runbook step 1 is done (634b5fd). `vec boards update` still
 answered 403 at 07:29 UTC; a screened Slack and email sweep (wf_2489e0c9-951, two clean audits) found no objection, no
 fix and no rule change since the notice of 2026-10-31; the captain saved the board index and the embryo test gene
