@@ -1,0 +1,90 @@
+# R2, the Feng-direction hygiene, and N12, its target-free gate (experiments/harness/TRIES.md rows R2 and N12,
+# registered at 7aa0a2d before any code or build; docs/PLAN.md 4.1, R2's provenance rule; EXTERNAL_DATA.md X002
+# amendment and X007-X009).
+#
+# Every number below is R2's or N12's registered value; a change is a new TRIES row, never an edit after N12's numbers
+# are seen. No gene symbol is typed here or anywhere else: D, Table 5 and N2 are extracted by committed code
+# (experiments/external/hygiene_sources.py) from the two hashed sources below, A1 and N1 are the patterns below applied
+# to Feng's gene symbols (X002), and experiments/t1_hygiene/hygiene.py maps them to the T1 gene names by exact symbol.
+
+sources:
+  vdb2017_si:
+    register: X007
+    citation: >-
+      van den Brink SC, Sage F, Vertesy A, Spanjaard B, Peterson-Maduro J, Baron CS, Robin C, van Oudenaarden A.
+      Single-cell sequencing reveals dissociation-induced gene expression in tissue subpopulations. Nat Methods
+      14:935-936 (2017), doi:10.1038/nmeth.4437. Supplementary Information PDF
+    url: https://static-content.springer.com/esm/art%3A10.1038%2Fnmeth.4437/MediaObjects/41592_2017_BFnmeth4437_MOESM1_ESM.pdf
+    sha256: 8e5f2445913b8db0f1d1e93aec7bf1e5e9a89d7b8168648aaa1ee0320e700a00
+    bytes: 20255025
+  bakken2018_s6:
+    register: X008
+    citation: >-
+      Bakken TE, Hodge RD, Miller JA, Yao Z, Nguyen TN, Aevermann B, et al. Single-nucleus and single-cell
+      transcriptomes compared in matched cortical cell types. PLoS One 13(12):e0209648 (2018),
+      doi:10.1371/journal.pone.0209648. S6 Table, pone.0209648.s011.xlsx
+    url: https://journals.plos.org/plosone/article/file?type=supplementary&id=10.1371/journal.pone.0209648.s011
+    sha256: 57846e17a94c562316c03ca16b60d11c5e85bc58a036dd991bd08cf7ab5987ac
+    bytes: 4795369
+
+# The committed extracts, one per list, written by experiments/external/hygiene_sources.py; `n` is the registered
+# number of rows, `sha256` the extract file's (hygiene.py refuses any other file).
+extracts:
+  D:  # module D: Supplementary Table 1, column 'Gene symbol' (the only column written)
+    source: vdb2017_si
+    path: experiments/external/extracts/vdb2017_table1.tsv
+    n: 32
+    sha256: 3335efdfd9510e0887c784ebf2589079d9324b25f6ce0626a90bf0630559539f
+  D_table5:  # Supplementary Table 5, column 'Gene Symbol': N12 reads it in place of D, deciding nothing
+    source: vdb2017_si
+    path: experiments/external/extracts/vdb2017_table5.tsv
+    n: 140
+    sha256: e773a3d3029207b04f4417484d4087a453d9daf3b032c3876d63ac4be8353c89
+  N2:  # module N2: the S6 rows that pass n2_filter, held flat at both signs
+    source: bakken2018_s6
+    path: experiments/external/extracts/bakken2018_s6_n2.tsv
+    n: 19
+    sha256: 79c29283b06e0b2dfa971388d70888559fc2dc195945823b4d5009a14d6769c3
+
+n2_filter:  # Bakken 2018 S6 rows in module N2 ('NA' in nuclear.prop never passes)
+  type_of_gene: ncRNA
+  min_nuclear_prop: 0.9  # nuclear.prop >= 0.9
+  clusters_nuc: 11  # inh.clusters_nuc + exc.clusters_nuc: expressed in all 11 matched clusters in nuclei
+  clusters_cell: 11  # inh.clusters_cell + exc.clusters_cell: and in cells
+
+patterns:  # on Feng's gene symbols (X002): every matching symbol, each once, as R2 defines A1 and N1
+  A1: '^Hb[ab]-'  # haemoglobin, ambient RNA (basis: X009)
+  N1: '^mt-'  # mitochondrially encoded
+
+lines:  # A1 and N1 are separate lines the captain can drop; D and N2 are always in the union
+  A1: true
+  N1: true
+
+direction:  # M1's factor as build_t1 applies it: log f = fraction x Feng's E9.5 -> E14.5 log ratio of mean CP10k
+  fraction: 0.4  # feng_dirs.bracket_fraction(10.5, 12.5): E10.5 -> E12.5 in Feng's E9.5 -> E14.5 bracket
+  from_day: 10.5
+  to_day: 12.5
+  pseudocount_cp10k: 0.5  # experiments/t1_direction/config.yaml, which feng_dirs reads (N12 checks they agree)
+
+gate:  # R2's gate, decided by N12 from the union U's count in each list
+  list_size: 400  # the top 400 up and the top 400 down per Feng direction group (cross_critique C4a's fixed proxy)
+  upper: 133  # U holds more than 133 of a list of any group: nothing is built until the captain rules
+  floor: 10  # U holds fewer than 10 of 400 in every list of every group: a near no-op, not built
+
+n12:  # N12's readings that decide nothing
+  reported_sizes: [100, 1000]
+  decile_null:  # random sets of a module's mapped size matching its decile composition (K2b's precedent)
+    draws: 1000
+    seed: 20261106
+    bins: 10  # deciles of the group's mean CP10k averaged over E9.5 and E14.5, among genes with log f other than 0
+  reported_patterns:
+    ribosomal: '^Rp[ls][0-9]'
+    oxphos: '^(Nduf|Sdh[a-d]|Uqcr|Cox[4-8]|Atp5)'
+    mt: '^mt-'
+
+union:
+  path: experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv  # written by N12, read by the build
+
+# The union's sha256, pinned only at the build commit after N12 (R2's commit order); while it is null the build
+# refuses --feng-hygiene (hygiene.load_union).
+union_sha256: null

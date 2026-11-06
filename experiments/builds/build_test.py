@@ -10,7 +10,9 @@ machine, and an official upload needs the captain's go-ahead.
           mix (or --cm-share, the cardiomyocyte share of heart cells), Feng's E9.5 -> E14.5 direction on the cells of
           Feng's groups at 2/5 of the bracket (E10.5 -> E12.5); the rest keep their E10.5 expression (R1 of
           experiments/harness/TRIES.md, the captain's ruling of 2026-11-05; --no-hold-unbracketed gives them B0's
-          damped E9.5 -> E10.5 momentum, M1 as built before R1)
+          damped E9.5 -> E10.5 momentum, M1 as built before R1). --feng-hygiene (R2 of TRIES.md) also holds R2's
+          gene modules flat in Feng's direction: the union N12 wrote, once configs/t1_hygiene.yaml pins its sha256;
+          off unless given, until the build commit after N12
   heart   B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
           procedure: --entry s1 = scope hypothesis H1; s2_trim = the s2 of docs/S2_RULES.md (H2 as a trim to half
           E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`)
@@ -44,13 +46,15 @@ from pathlib import Path
 
 import numpy as np
 
-from vec import harness, t1_scope, t2_build
+from vec import harness, provenance, t1_scope, t2_build
 from vec.boards import REPO_ROOT, load_boards
 from vec.io import COORD_KEY, dense
 from vec.prep import load_stage
 
 sys.path.insert(0, str(REPO_ROOT / "experiments" / "t1_m1"))
+sys.path.insert(0, str(REPO_ROOT / "experiments" / "t1_hygiene"))
 import feng_dirs  # noqa: E402
+import hygiene  # noqa: E402
 
 TEST_BOARDS = {"t1": "T1:test", "heart": "T2:heart:test_extrap", "embryo": "T2:embryo:test_interp"}
 DRY_BOARDS = {"t1": {"T1:val"}, "heart": {"T2:heart:val_extrap", "T2:heart:val_interp"},
@@ -98,12 +102,19 @@ def _t2_count(board, pool_n: int) -> dict:
 
 def _hide_counts(rec: dict, board) -> dict:
     """On a test board, the record without cell counts: n_cells becomes "max_cells" (the count rule), and anything
-    else refuses."""
+    else refuses. T1's realised composition is left out (below)."""
     if not board.counts_hidden:
         return rec
     if rec["n_cells"] != board.max_cells:
         sys.exit("the built file does not hold the board's max_cells, the approved count (values not shown)")
     out = dict(rec, n_cells="max_cells")
+    # Stripped, not rounded (docs/PLAN.md decision log 2026-11-06 (g)): T1's realised composition is quota / n_cells per
+    # category (t1_scope.composition of the drawn cells), so at full precision its denominators give the closed test
+    # count. Rounding would not make it safe: the quotas are vec.core.quotas of the target shares, which the record
+    # keeps at full precision ("shares"), so a rounded realised share still moves with n_cells wherever a target sits
+    # within 1/n_cells of a rounding boundary. And it adds nothing: the quotas meet the targets to within 1/n_cells by
+    # construction. The h5ad is untouched: this is the record written beside it.
+    out.pop("realised", None)
     if isinstance(out.get("record"), dict):
         out["record"] = {k: v for k, v in out["record"].items() if k not in COUNT_FIELDS}
     return out
@@ -125,7 +136,68 @@ def _t1_momentum(hold: bool, load=load_stage) -> dict:
             "start_source": "E9.5_RNA"}
 
 
+def _feng_hygiene_on(flag: bool | None, hold_unbracketed: bool) -> bool:
+    """R2's build flag (experiments/harness/TRIES.md R2): --feng-hygiene not given (None) is off until the build commit
+    after N12 flips it to follow --hold-unbracketed, so --no-hold-unbracketed alone keeps rebuilding the archived s1 of
+    ae6d6b3 byte-identically; an explicit --feng-hygiene with --no-hold-unbracketed is refused (R2 departs from M1
+    with R1)."""
+    if flag and not hold_unbracketed:
+        sys.exit("--feng-hygiene is refused with --no-hold-unbracketed: R2 departs from M1 with R1 "
+                 "(experiments/harness/TRIES.md R2)")
+    return bool(flag)
+
+
+def _no_blood(direction_groups) -> None:
+    """R2's guard, on group names only: --feng-hygiene is refused while Blood is among Feng's direction groups."""
+    if "Blood" in set(direction_groups):
+        sys.exit("--feng-hygiene is refused: Blood is among Feng's direction groups (experiments/harness/TRIES.md R2)")
+
+
+def _feng_group_names() -> list[str]:
+    """The names of Feng's direction groups from Feng's statistics alone, before any T1 file is read. The groups
+    feng_dirs.feng_directions returns do not depend on the gene list it is given, so it is called on one placeholder
+    name (an empty list fails in dirlib.sym_index, whose empty index is a float array) and only the names are kept."""
+    return sorted(feng_dirs.feng_directions([""])[0])
+
+
+def _t1_union(hygiene_on: bool) -> dict | None:
+    """R2's union for --feng-hygiene, after R2's two refusals that need no T1 file, both made before anything else is
+    read (R2: no E10.5 file is read before the build): hygiene.load_union refuses while configs/t1_hygiene.yaml pins no
+    union_sha256 (until the build commit after N12) or pins another file's; then the Blood guard on the names of Feng's
+    direction groups. Off: None, and nothing is read."""
+    if not hygiene_on:
+        return None
+    try:
+        union = hygiene.load_union()
+    except hygiene.Refused as e:
+        sys.exit(f"--feng-hygiene is refused: {e}")
+    _no_blood(_feng_group_names())
+    return union
+
+
+def _t1_held(union: dict | None, direction_groups, build_genes) -> tuple[list[str], dict | None]:
+    """The held-flat genes build_t1 passes to build_submission, and the build record's feng_hygiene field. Off (no
+    union): the pre-registered list exactly as before R2, so the file is byte-identical, and None. On (R2): that list
+    joined with the union (_t1_union), after the Blood guard again on the groups the build uses; the field records the
+    union's file, sha256 and gene count, the genes per module, the commit and the sources' sha256 (docs/PLAN.md 4.1,
+    item 4), and, by name, the union genes absent from the build's genes (N12 mapped the union on E9.5's names; a name
+    E10.5 lacks cannot be held and changes nothing)."""
+    held = t1_scope.held_flat_genes()
+    if union is None:
+        return held, None
+    _no_blood(direction_groups)
+    present = {str(g) for g in build_genes}
+    absent = [g for g in union["genes"] if g not in present]
+    commit, _ = provenance.git_state(provenance.REPO_ROOT)
+    return sorted(set(held) | set(union["genes"])), {
+        "file": union["file"], "sha256": union["sha256"], "commit": commit, "genes": len(union["genes"]),
+        "union_genes_absent_from_build": {"count": len(absent), "genes": absent}, "modules": union["modules"],
+        "sources": union["sources"]}
+
+
 def build_t1(a) -> dict:
+    hygiene_on = _feng_hygiene_on(a.feng_hygiene, a.hold_unbracketed)  # R2's refusals come before anything is read
+    union = _t1_union(hygiene_on)
     board, dry = _board("t1", a.board)
     ref = load_stage(DATA / "T1/E10.5_RNA.h5ad", lineage=False)
     momentum = _t1_momentum(a.hold_unbracketed)
@@ -135,15 +207,16 @@ def build_t1(a) -> dict:
     if a.blood_share is not None:  # blood's share of all chamber cells, the other categories in proportion
         shares = t1_scope.with_share(shares, "blood", a.blood_share, within=list(shares))
     directions, ext = feng_dirs.feng_directions(list(ref.var_names))
+    held, feng_hygiene = _t1_held(union, directions, ref.var_names)
     groups = feng_dirs.label_groups(ref.obs["celltype"].astype(str).unique())
     fraction = feng_dirs.bracket_fraction(10.5, 12.5)
     n = harness.count_for(board, ref.n_obs)
-    sub, rep = t1_scope.build_submission(ref, board, shares, n, a.seed, held_flat=t1_scope.held_flat_genes(),
+    sub, rep = t1_scope.build_submission(ref, board, shares, n, a.seed, held_flat=held,
                                          ref_source="E10.5_RNA", directions=directions, direction_fraction=fraction,
                                          direction_groups=groups, herd=a.herd, **momentum)
     check = t1_scope.write_checked(sub, a.out, board)
     return {"entry": "M1", "board": board.key, "dry_run": dry, "n_cells": n, "seed": a.seed, "fraction": fraction,
-            "herd": bool(a.herd), "hold_unbracketed": bool(a.hold_unbracketed),
+            "herd": bool(a.herd), "hold_unbracketed": bool(a.hold_unbracketed), "feng_hygiene": feng_hygiene,
             "cm_share_of_heart": t1_scope.share_of(shares, "cm", t1_scope.load_spec().heart),
             "blood_share_of_chamber": float(shares.get("blood", 0.0)),
             "shares": shares, "external": ext, "check_ok": check.ok, "realised": rep["realised"]}
@@ -248,6 +321,11 @@ def build_parser() -> argparse.ArgumentParser:
                            help="R1 (experiments/harness/TRIES.md; the captain's ruling of 2026-11-05): cells without "
                                 "a Feng group keep their E10.5 expression (default); --no-hold-unbracketed gives "
                                 "them B0's damped E9.5 -> E10.5 momentum, M1 as built before R1")
+            p.add_argument("--feng-hygiene", action=argparse.BooleanOptionalAction, default=None,
+                           help="R2 (experiments/harness/TRIES.md): also hold R2's gene modules flat in Feng's "
+                                "direction (the union N12 wrote; refused until configs/t1_hygiene.yaml pins its "
+                                "sha256, with --no-hold-unbracketed, or while Blood has a Feng direction). Not given: "
+                                "off, until the build commit after N12")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "

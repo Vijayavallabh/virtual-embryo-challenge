@@ -1,0 +1,43 @@
+# extract: R2 module D: van den Brink 2017 Supplementary Table 1, column 'Gene symbol'
+# register: EXTERNAL_DATA.md X007; experiments/harness/TRIES.md R2
+# source: van den Brink SC, Sage F, Vertesy A, Spanjaard B, Peterson-Maduro J, Baron CS, Robin C, van Oudenaarden A. Single-cell sequencing reveals dissociation-induced gene expression in tissue subpopulations. Nat Methods 14:935-936 (2017), doi:10.1038/nmeth.4437. Supplementary Information PDF
+# source_url: https://static-content.springer.com/esm/art%3A10.1038%2Fnmeth.4437/MediaObjects/41592_2017_BFnmeth4437_MOESM1_ESM.pdf
+# source_sha256: 8e5f2445913b8db0f1d1e93aec7bf1e5e9a89d7b8168648aaa1ee0320e700a00
+# source_bytes: 20255025
+# extractor: experiments/external/hygiene_sources.py (sha256 e6d9663e93a3ad1ea5a5ba08fa9dd3145629a1f75d48cbb6e41b715bfae2e937)
+# tool: pdftotext -layout -enc UTF-8 (pdftotext version 22.02.0, Poppler)
+# date: 2026-11-06
+# rows: 32
+gene_symbol
+Fos
+Hspa1a
+Jun
+Fosb
+Junb
+Egr1
+Hspa1b
+Ubc
+Zfp36
+Hspb1
+Hsp90aa1
+Mt2
+Dnajb1
+Btg2
+Nr4a1
+Cebpd
+Hspa8
+Mt1
+Ier2
+Dnaja1
+Socs3
+Atf3
+Jund
+Cebpb
+Id3
+Ppp1r15a
+Hspe1
+Cxcl1
+Dusp1
+Hsp90ab1
+Nfkbia
+Hsph1

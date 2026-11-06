@@ -1,0 +1,30 @@
+# extract: R2 module N2: Bakken 2018 S6 Table rows with type_of_gene ncRNA, nuclear.prop >= 0.9, inh.clusters_nuc + exc.clusters_nuc = 11 and inh.clusters_cell + exc.clusters_cell = 11
+# register: EXTERNAL_DATA.md X008; experiments/harness/TRIES.md R2
+# source: Bakken TE, Hodge RD, Miller JA, Yao Z, Nguyen TN, Aevermann B, et al. Single-nucleus and single-cell transcriptomes compared in matched cortical cell types. PLoS One 13(12):e0209648 (2018), doi:10.1371/journal.pone.0209648. S6 Table, pone.0209648.s011.xlsx
+# source_url: https://journals.plos.org/plosone/article/file?type=supplementary&id=10.1371/journal.pone.0209648.s011
+# source_sha256: 57846e17a94c562316c03ca16b60d11c5e85bc58a036dd991bd08cf7ab5987ac
+# source_bytes: 4795369
+# extractor: experiments/external/hygiene_sources.py (sha256 e6d9663e93a3ad1ea5a5ba08fa9dd3145629a1f75d48cbb6e41b715bfae2e937)
+# tool: Python 3.12.11 zipfile and xml.etree.ElementTree (standard library)
+# date: 2026-11-06
+# rows: 19
+gene_symbol	type_of_gene	inh.clusters_nuc	exc.clusters_nuc	inh.clusters_cell	exc.clusters_cell	nuclear.prop
+2810008D09Rik	ncRNA	2	9	2	9	0.96286488299999995
+4933439C10Rik	ncRNA	2	9	2	9	0.94157014699999997
+A230057D06Rik	ncRNA	2	9	2	9	0.98151889400000003
+A330023F24Rik	ncRNA	2	9	2	9	1
+A330076H08Rik	ncRNA	2	9	2	9	0.92678202899999995
+A930011O12Rik	ncRNA	2	9	2	9	0.95815161400000004
+C130071C03Rik	ncRNA	2	9	2	9	0.91356222099999995
+C230091D08Rik	ncRNA	2	9	2	9	0.90714200700000003
+Gm31001	ncRNA	2	9	2	9	0.97715279700000002
+Ipw	ncRNA	2	9	2	9	1
+Kcnq1ot1	ncRNA	2	9	2	9	0.99063601199999995
+LOC105244879	ncRNA	2	9	2	9	0.98836233799999995
+LOC105245838	ncRNA	2	9	2	9	0.99044420099999997
+LOC105246975	ncRNA	2	9	2	9	0.91651973499999995
+Malat1	ncRNA	2	9	2	9	0.97348435899999997
+Meg3	ncRNA	2	9	2	9	0.91915319500000003
+Miat	ncRNA	2	9	2	9	0.99567888999999998
+Mirg	ncRNA	2	9	2	9	1
+Nrg3os	ncRNA	2	9	2	9	0.93833365000000002

@@ -71,6 +71,12 @@ the organisers say, before T3's first upload, that a floored severity scores zer
   -1.0 downside, and not countable. The captain can reinstate it by 20 Nov.
   - Next: the hygiene's ruling row and target-free size check, then the build; T1's s2 goes back to the captain after
     the rebuild, by 24 Nov.
+- R2 (the Feng-direction hygiene) and N12 were registered at 7aa0a2d (decision log 2026-11-06 (g)).
+  - Their code was written, reviewed adversarially and fixed (wf_738722b5-174: verdict "fix", all nine issues
+    applied): `experiments/t1_hygiene/`, `experiments/external/hygiene_sources.py` and its extracts,
+    `configs/t1_hygiene.yaml`, and the `--feng-hygiene` flag in `experiments/builds/build_test.py` (off by default).
+  - The T1 build record no longer keeps `realised` on boards with hidden counts.
+  - Nothing ran on project data. N12 waits on the captain's sign-off on R2's gate.
 **Active Feature:** feat-018 (s1 files). 2026-11-04: runbook step 1 is done (634b5fd). `vec boards update` still
 answered 403 at 07:29 UTC; a screened Slack and email sweep (wf_2489e0c9-951, two clean audits) found no objection, no
 fix and no rule change since the notice of 2026-10-31; the captain saved the board index and the embryo test gene
