@@ -530,8 +530,9 @@ captain's delegation of 2026-11-02; he can overrule. Design only: no try ran, an
     pays on the mean as well as in the tail);
   - the A15 hygiene reading: adopted by ruling (`docs/DATA_POLICY.md` 2026-11-06 (b)); the Feng-direction hygiene
     enters through its gates and its ruling row, which come before any build;
-  - the cycling-state quota: adopted by ruling, through its gates and its ruling row, before any run or any
-    computation on E10.5's within-category shares;
+  - the cycling-state quota: adopted by ruling, then dropped by the AI assistant the same day (decision log
+    2026-11-06 (f): about +0.05 against a -1.0 downside, not countable, a depth-sensitive sign); nothing was built or
+    computed for it;
   - the embryo s2 at fraction 1/4: declined (today's s2 stands);
   - the heart hold: declined (sheet E's default);
   - T3's acquisition-text depth premise: not done.

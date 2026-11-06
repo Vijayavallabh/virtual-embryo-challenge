@@ -1409,3 +1409,14 @@ open. No organiser reply to any of the four emails as of then.
   - **Not done:** re-reading the test-knockout acquisition text for T3's depth step.
   - **Still open, since no recommendation was on record:** whether the organisers' public task-page statements may
     inform a legal-route prior, and the memory-index injection for workflow subagents.
+- 2026-11-06 (f), the cycling-state quota dropped by the AI assistant under the captain's delegation of 2026-11-02, the
+  same day. A side note to the captain pointed out its skew, and the AI assistant agrees.
+  - **The skew.** It is about +0.05 in expectation against a downside of -1.0 (range -1.0 to +0.4; the T1 critique,
+    section D).
+  - **Why it cannot be checked.** It cannot be counted: the shift is below the paired seed noise. Its sign is
+    depth-sensitive, and the sign is the part that matters. It also needs a new external intake (Leonard's library
+    and the Q7 staging check).
+  - **The miss.** (e) called it an expected gain without weighing that skew.
+  - **What stays.** T1's composition keeps today's within-category shares. The captain can reinstate the quota by
+    20 Nov. The Feng-direction hygiene stays as ruled: +0.10 (-0.3 to +0.4), a bounded downside, and a target-free
+    size check that can stop it before the build.

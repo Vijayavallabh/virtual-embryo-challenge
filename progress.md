@@ -67,7 +67,10 @@ the organisers say, before T3's first upload, that a floored severity scores zer
   - opened by his A15 reading (`docs/DATA_POLICY.md` 2026-11-06 (b)): the Feng-direction hygiene and the cycling-state
     quota for T1, each through its gates before any build;
   - he sends the DM himself.
-  - Next: the two T1 items' ruling rows and gates; T1's s2 goes back to him after the rebuild, by 24 Nov.
+- The same day the AI assistant dropped the cycling-state quota (decision log 2026-11-06 (f)): about +0.05 against a
+  -1.0 downside, and not countable. The captain can reinstate it by 20 Nov.
+  - Next: the hygiene's ruling row and target-free size check, then the build; T1's s2 goes back to the captain after
+    the rebuild, by 24 Nov.
 **Active Feature:** feat-018 (s1 files). 2026-11-04: runbook step 1 is done (634b5fd). `vec boards update` still
 answered 403 at 07:29 UTC; a screened Slack and email sweep (wf_2489e0c9-951, two clean audits) found no objection, no
 fix and no rule change since the notice of 2026-10-31; the captain saved the board index and the embryo test gene

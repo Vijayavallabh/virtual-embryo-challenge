@@ -711,6 +711,7 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     - Each set's gene classes are fixed in a TRIES ruling row before any build, and none is chosen from E10.5's DE
       genes, which are a counted truth.
     - A changed T1 s1 sends its s2 back to the captain (2026-11-04 (d)).
-  - **The scope.** It opens two items only: the Feng-direction hygiene and the cycling-state quota. The blood direction
-    from globin anchors stays closed (it amends R1). A15's cross-modal line still closes every new cross-modal input.
+  - **The scope.** It opens two items only: the Feng-direction hygiene and the cycling-state quota. The quota was
+    dropped the same day as a method decision (`docs/PLAN.md` decision log 2026-11-06 (f)). The blood direction from
+    globin anchors stays closed (it amends R1). A15's cross-modal line still closes every new cross-modal input.
   - A real organiser answer on A15 replaces this reading the day it arrives.
