@@ -10,9 +10,10 @@ machine, and an official upload needs the captain's go-ahead.
           mix (or --cm-share, the cardiomyocyte share of heart cells), Feng's E9.5 -> E14.5 direction on the cells of
           Feng's groups at 2/5 of the bracket (E10.5 -> E12.5); the rest keep their E10.5 expression (R1 of
           experiments/harness/TRIES.md, the captain's ruling of 2026-11-05; --no-hold-unbracketed gives them B0's
-          damped E9.5 -> E10.5 momentum, M1 as built before R1). --feng-hygiene (R2 of TRIES.md) also holds R2's
-          gene modules flat in Feng's direction: the union N12 wrote, once configs/t1_hygiene.yaml pins its sha256;
-          off unless given, until the build commit after N12
+          damped E9.5 -> E10.5 momentum, M1 as built before R1). R2 of TRIES.md also holds R2's gene modules flat in
+          Feng's direction (the union N12 wrote, pinned in configs/t1_hygiene.yaml): on by default with R1 since the
+          build commit after N12 (docs/PLAN.md decision log 2026-11-06 (k)); --no-feng-hygiene rebuilds the s1 of
+          88b057f (M1 with R1, before R2)
   heart   B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
           procedure: --entry s1 = scope hypothesis H1; s2_trim = the s2 of docs/S2_RULES.md (H2 as a trim to half
           E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`)
@@ -137,14 +138,15 @@ def _t1_momentum(hold: bool, load=load_stage) -> dict:
 
 
 def _feng_hygiene_on(flag: bool | None, hold_unbracketed: bool) -> bool:
-    """R2's build flag (experiments/harness/TRIES.md R2): --feng-hygiene not given (None) is off until the build commit
-    after N12 flips it to follow --hold-unbracketed, so --no-hold-unbracketed alone keeps rebuilding the archived s1 of
-    ae6d6b3 byte-identically; an explicit --feng-hygiene with --no-hold-unbracketed is refused (R2 departs from M1
-    with R1)."""
+    """R2's build flag (experiments/harness/TRIES.md R2). Since the build commit after N12 (docs/PLAN.md decision log
+    2026-11-06 (k)), --feng-hygiene not given (None) follows --hold-unbracketed: on with R1, the default, and off with
+    --no-hold-unbracketed, which keeps rebuilding the archived s1 of ae6d6b3 byte-identically. --no-feng-hygiene
+    rebuilds the s1 of 88b057f (M1 with R1, before R2). An explicit --feng-hygiene with --no-hold-unbracketed is
+    refused (R2 departs from M1 with R1)."""
     if flag and not hold_unbracketed:
         sys.exit("--feng-hygiene is refused with --no-hold-unbracketed: R2 departs from M1 with R1 "
                  "(experiments/harness/TRIES.md R2)")
-    return bool(flag)
+    return bool(hold_unbracketed) if flag is None else bool(flag)
 
 
 def _no_blood(direction_groups) -> None:
@@ -323,9 +325,9 @@ def build_parser() -> argparse.ArgumentParser:
                                 "them B0's damped E9.5 -> E10.5 momentum, M1 as built before R1")
             p.add_argument("--feng-hygiene", action=argparse.BooleanOptionalAction, default=None,
                            help="R2 (experiments/harness/TRIES.md): also hold R2's gene modules flat in Feng's "
-                                "direction (the union N12 wrote; refused until configs/t1_hygiene.yaml pins its "
-                                "sha256, with --no-hold-unbracketed, or while Blood has a Feng direction). Not given: "
-                                "off, until the build commit after N12")
+                                "direction (the union N12 wrote, pinned in configs/t1_hygiene.yaml; refused with "
+                                "--no-hold-unbracketed or while Blood has a Feng direction). Not given: on with "
+                                "--hold-unbracketed (the default), off with --no-hold-unbracketed")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "

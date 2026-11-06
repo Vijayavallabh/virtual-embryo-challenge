@@ -262,7 +262,7 @@ def _no_read(*a, **k):
     pytest.fail("nothing is read before the refusal")
 
 
-def test_feng_hygiene_flag_is_none_unless_given_and_resolves_off(bt):
+def test_feng_hygiene_flag_is_none_unless_given_and_follows_r1(bt):
     ap = bt.build_parser()
 
     def parse(*argv):
@@ -271,7 +271,7 @@ def test_feng_hygiene_flag_is_none_unless_given_and_resolves_off(bt):
     assert (parse(), parse("--feng-hygiene"), parse("--no-feng-hygiene")) == (None, True, False)
     assert ap.parse_args(["t1", "--cm-share", "0.60", "--out", "runs/x/T1_s2.h5ad"]).feng_hygiene is None
     assert [bt._feng_hygiene_on(f, h) for f, h in ((None, True), (None, False), (False, True), (False, False))] \
-        == [False] * 4
+        == [True, False, False, False]  # since the build commit of 2026-11-06 (k): on with R1 unless refused
     assert bt._feng_hygiene_on(True, True) is True
     with pytest.raises(SystemExit, match="refused with --no-hold-unbracketed"):
         bt._feng_hygiene_on(True, False)
@@ -287,11 +287,11 @@ def test_hygiene_off_reads_nothing_and_holds_the_pre_registered_list_itself(bt, 
     assert held is listed and rec is None
 
 
-@pytest.mark.parametrize("argv, hold", [([], True), (["--no-feng-hygiene"], True), (["--no-hold-unbracketed"], False),
+@pytest.mark.parametrize("argv, hold", [(["--no-feng-hygiene"], True), (["--no-hold-unbracketed"], False),
                                         (["--no-hold-unbracketed", "--no-feng-hygiene"], False)])
 def test_t1_build_without_the_hygiene_writes_todays_file(bt, t1_env, tmp_path, capsys, argv, hold):
-    """The default and --no-feng-hygiene keep today's file byte-identical, with R1 and (the archived s1 of ae6d6b3)
-    without it; the record gains feng_hygiene None and no longer carries the realised composition."""
+    """--no-feng-hygiene keeps the file of 88b057f byte-identical (M1 with R1, before R2), and --no-hold-unbracketed the
+    archived s1 of ae6d6b3; the record gains feng_hygiene None and no longer carries the realised composition."""
     today = _reference_file(bt, t1_env, tmp_path / "today.h5ad", hold)
     capsys.readouterr()
     out = tmp_path / "T1_s1.h5ad"
@@ -306,16 +306,17 @@ def test_t1_build_without_the_hygiene_writes_todays_file(bt, t1_env, tmp_path, c
     assert str(T1_SECRET) not in text + capsys.readouterr().out
 
 
-def test_t1_build_with_the_hygiene_holds_the_pinned_union(bt, t1_env, tmp_path, monkeypatch):
-    """--feng-hygiene builds the same file as build_t1 with the union added to the held-flat list; R2's checks run
-    before E10.5 is read (the union, then Feng's group names alone), and the record names the union, its sources, the
-    commit and the union genes the build's genes lack."""
+@pytest.mark.parametrize("argv", [["--feng-hygiene"], []])  # [] : the default since the build commit of (k)
+def test_t1_build_with_the_hygiene_holds_the_pinned_union(bt, t1_env, tmp_path, monkeypatch, argv):
+    """--feng-hygiene, and the default with R1, build the same file as build_t1 with the union added to the held-flat
+    list; R2's checks run before E10.5 is read (the union, then Feng's group names alone), and the record names the
+    union, its sources, the commit and the union genes the build's genes lack."""
     monkeypatch.setattr(bt.hygiene, "load_union", lambda *a, **k: UNION)
     held = ["g5", "g7", "gone_x", "held_a", "held_b"]  # sorted(pre-registered | union)
     want = _reference_file(bt, t1_env, tmp_path / "want.h5ad", held=held)
     today = _reference_file(bt, t1_env, tmp_path / "today.h5ad")
     out = tmp_path / "T1_s1.h5ad"
-    bt.main(["t1", "--feng-hygiene", "--out", str(out)])
+    bt.main(["t1", *argv, "--out", str(out)])
     assert t1_env.held_calls == [held]
     assert out.read_bytes() == want.read_bytes() != today.read_bytes()
     assert t1_env.reads == [("Feng", [""]), "E10.5", ("Feng", T1_GENES)]

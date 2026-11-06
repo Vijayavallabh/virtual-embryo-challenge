@@ -90,6 +90,6 @@ n12:  # N12's readings that decide nothing
 union:
   path: experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv  # written by N12, read by the build
 
-# The union's sha256, pinned only at the build commit after N12 (R2's commit order); while it is null the build
-# refuses --feng-hygiene (hygiene.load_union).
-union_sha256: null
+# The union's sha256, pinned at the build commit after N12 said build (R2's commit order; docs/PLAN.md decision log
+# 2026-11-06 (k)); the build refuses any other union file (hygiene.load_union).
+union_sha256: c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841
