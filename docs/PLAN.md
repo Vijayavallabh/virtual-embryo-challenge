@@ -1378,7 +1378,8 @@ open. No organiser reply to any of the four emails as of then.
 - 2026-11-06 (e), the captain's ruling on (c) and (d), in his words: "go with your recommendations". The AI assistant
   reads it item by item against REPORT section 8 as corrected in (d); he can correct any reading.
   - **The DM** to Weize Xu: the captain sends it himself (text in `docs/ORGANIZER_QUESTIONS.md`, "Planned Slack DM").
-    Any answer is recorded with its date there and in `docs/DATA_POLICY.md`.
+    He sent it the same day ("i sent the slack dm"). Any answer is recorded with its date there and in
+    `docs/DATA_POLICY.md`; the screened check before T3's first upload looks for one.
   - **The upload runbook** is adopted (section 7).
     - The deadline conflict is settled to the frozen rule: every upload by the end of 30 November IST
       (`docs/S2_RULES.md`), 1 December IST as the outage buffer only, and the final marks that day by 12:00 UTC.

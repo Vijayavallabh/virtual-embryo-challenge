@@ -66,7 +66,7 @@ the organisers say, before T3's first upload, that a floored severity scores zer
   - declined: T1 sheet C, the embryo s2 at 1/4 and the heart hold;
   - opened by his A15 reading (`docs/DATA_POLICY.md` 2026-11-06 (b)): the Feng-direction hygiene and the cycling-state
     quota for T1, each through its gates before any build;
-  - he sends the DM himself.
+  - he sent the DM himself the same day (no answer yet).
 - The same day the AI assistant dropped the cycling-state quota (decision log 2026-11-06 (f)): about +0.05 against a
   -1.0 downside, and not countable. The captain can reinstate it by 20 Nov.
   - Next: the hygiene's ruling row and target-free size check, then the build; T1's s2 goes back to the captain after
