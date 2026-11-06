@@ -276,11 +276,11 @@ Best regards,
 Vijayavallabh J
 Team captain, Mithril
 
-## Planned Slack DM (drafted 2026-11-06, not sent)
+## Planned Slack DM (drafted 2026-11-06; approved by the captain the same day, for him to send)
 
 The state-of-the-art research recommends it (`experiments/research_2026_11_sota/REPORT.md` section 8; `docs/PLAN.md`
-decision log 2026-11-06 (c)). The captain sends it himself, if he agrees, by Slack DM to Weize Xu, the private route at
-the top of this file. He posts nothing in public. Any answer is recorded here and in `docs/DATA_POLICY.md` with its
+decision log 2026-11-06 (c)), and the captain approved it on 2026-11-06 (decision log 2026-11-06 (e)). He sends it
+himself by Slack DM to Weize Xu, the private route at the top of this file. He posts nothing in public. Any answer is recorded here and in `docs/DATA_POLICY.md` with its
 date. An answer that arrives after T3's s2 is up changes nothing (decision log 2026-11-06 (b)). The second paragraph is
 optional.
 

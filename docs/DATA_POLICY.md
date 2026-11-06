@@ -699,3 +699,18 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   - **Not a slip.** A workflow restart created a second task-a agent. The first one, resumed by a coordination message
     from the main session, wrote a separate note (a2) without opening the pipeline's raw note, and both were screened
     and audited.
+- 2026-11-06 (b), the captain's reading of A15 for T1-only external gene sets (`docs/PLAN.md` decision log
+  2026-11-06 (e): "go with your recommendations", which adopts the reading the state-of-the-art report recommended).
+  - **The reading.** A15 (`docs/ORGANIZER_QUESTIONS.md`, working answer, never a ruling) covers released data used
+    across tasks and new cross-modal input. A generic external gene set used only in T1 is neither, so A15 does not
+    close it.
+  - **The conditions.**
+    - Each source gets an `EXTERNAL_DATA.md` row with `docs/PLAN.md` 4.4-style provenance, and a list built from
+      in-window measurements stays out.
+    - No set is built by perturbing Ctnnb1 or Gata4 (the 2026-10-15 ruling above).
+    - Each set's gene classes are fixed in a TRIES ruling row before any build, and none is chosen from E10.5's DE
+      genes, which are a counted truth.
+    - A changed T1 s1 sends its s2 back to the captain (2026-11-04 (d)).
+  - **The scope.** It opens two items only: the Feng-direction hygiene and the cycling-state quota. The blood direction
+    from globin anchors stays closed (it amends R1). A15's cross-modal line still closes every new cross-modal input.
+  - A real organiser answer on A15 replaces this reading the day it arrives.

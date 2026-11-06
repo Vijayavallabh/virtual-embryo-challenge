@@ -600,8 +600,23 @@ go-ahead; then the runbook's section 5.
 
 2026-11-05: the upload dates in the table (Nov 17-30) are superseded. Uploads wait for the captain's upload gate
 (section 8) with his deadline exception: the s1 methods freeze at 2026-11-27 00:00 UTC, and from then the first round
-may go in whatever the estimate, each upload only on his go-ahead at the time; the s2 round by 2026-12-01 06:00 UTC
-and the final marks by 12:00 UTC that day (decision log 2026-11-04 (b) and 2026-11-05).
+may go in whatever the estimate, each upload only on his go-ahead at the time (decision log 2026-11-04 (b) and
+2026-11-05). Every upload is done by the end of 30 November IST (`docs/S2_RULES.md`); 1 December IST is the outage
+buffer, and the final marks are made that day by 12:00 UTC (reconciled 2026-11-06 (e); this replaces "the s2 round by
+2026-12-01 06:00 UTC").
+
+The upload runbook (the captain's ruling 2026-11-06 (e)). Each upload goes in only on his go-ahead at the time, and
+every T3 upload after its screened check of mail, Slack and the Rules page (`docs/S2_RULES.md`, T3):
+
+| Day (IST) | Work |
+|---|---|
+| 26-27 Nov | The screened check that picks T3's s2 (ruling 2026-11-06 (b)), run no earlier than 26 Nov |
+| 27 Nov, from 05:30 | Rebuild at the freeze commit and check (`vec check`, the server format checks, the archived hashes); the plain summary to the captain; then the first round: T1 s1, heart s1, embryo s1 and T3's s2 |
+| 29 Nov | T1, heart and embryo s2, each after its screened check |
+| 30 Nov | T3's s1, after its screened check; every upload done by the end of the day |
+| 1 Dec | Outage buffer only; each board's final mark as soon as both its uploads are scored, by 12:00 UTC |
+
+Do not front-load the second round: a late A20 bar or Gata4 restriction is absorbed only by the s2 and last-T3 slots.
 
 ## 8. Submission policy
 
@@ -627,8 +642,9 @@ and the final marks by 12:00 UTC that day (decision log 2026-11-04 (b) and 2026-
     own, written in his message in the main session (a note on a side agent's text he forwarded), not an agent's relay.
     The AI assistant reads "our 1st submission" with the gate's own scope (the first upload on every board) and "at Nov
     27" as from 2026-11-27 00:00 UTC (05:30 IST, inside 27 Nov in both zones), and asked him on 2026-11-05 to confirm or
-    correct that reading; he confirmed it the same day (decision log 2026-11-05 (c)). The s2 round follows by 2026-12-01
-    06:00 UTC and the final marks by 12:00 UTC that day. If the estimate crosses 209 earlier, with its review, the first
+    correct that reading; he confirmed it the same day (decision log 2026-11-05 (c)). The second round follows by the end of 30
+    November IST; 1 December IST is the outage buffer, and the final marks are made that day by 12:00 UTC (section 7,
+    reconciled 2026-11-06 (e)). If the estimate crosses 209 earlier, with its review, the first
     round may go in earlier.
   - The record: `results/upload_gate.json` (the estimate, its range and basis, the review, the deadline exception and
     whether the captain has lifted the gate). The submission client refuses an official upload unless the record passes:
@@ -1359,3 +1375,37 @@ open. No organiser reply to any of the four emails as of then.
       line-free test; below 0.16-0.3 the bet pays only in the upper tail.
     - The other items are mean gains (A15 hygiene, cycling quota) or declines, so none trades a safe upload for a
       long shot.
+- 2026-11-06 (e), the captain's ruling on (c) and (d), in his words: "go with your recommendations". The AI assistant
+  reads it item by item against REPORT section 8 as corrected in (d); he can correct any reading.
+  - **The DM** to Weize Xu: the captain sends it himself (text in `docs/ORGANIZER_QUESTIONS.md`, "Planned Slack DM").
+    Any answer is recorded with its date there and in `docs/DATA_POLICY.md`.
+  - **The upload runbook** is adopted (section 7).
+    - The deadline conflict is settled to the frozen rule: every upload by the end of 30 November IST
+      (`docs/S2_RULES.md`), 1 December IST as the outage buffer only, and the final marks that day by 12:00 UTC.
+    - "The s2 round by 2026-12-01 06:00 UTC" in sections 7 and 8 was the AI assistant's paraphrase, not his words. It
+      is replaced; the entries of 2026-11-04 (b) and 2026-11-05 keep it as history.
+    - Each upload still needs his go-ahead at the time.
+  - **T1 sheet C: declined.** He gave no probability.
+    - The AI assistant's own estimate, from the record alone, is P(strong-null) about 0.2-0.25: no counted check, and
+      one strong-null transition seen.
+    - That lies inside the mean's break-even range (0.16-0.3), where the bet pays mainly in the upper tail ((d)).
+    - M1 stays as ruled. He can overrule by putting P(strong-null) at 0.3 or more by 20 Nov.
+  - **A15 for T1-only external gene sets:** the reading the report recommended, which his approval adopts
+    (`docs/DATA_POLICY.md` 2026-11-06 (b)). So the two small T1 items enter by his ruling. Each passes its gates and
+    conditions (REPORT section 8, in the critiques' gate order) before any build:
+    - **Feng-direction hygiene.** An `EXTERNAL_DATA.md` row for each gene-set source, with 4.4-style provenance. A TRIES
+      ruling row fixes the gene classes before any build; none is chosen from E10.5's DE genes, and R1 is untouched.
+      A target-free size check comes first: the share of Feng's top changes per type that fall in the modules (N2's
+      precedent).
+    - **The cycling-state quota.**
+      - The released label vocabulary is checked by names only.
+      - It uses Leonard's WT nuclei only, with their register row and the Q7 staging check.
+      - A common-depth call diagnostic runs first; no thinned cell enters a build.
+      - Its rule and constants go in a TRIES row before any run or any computation on E10.5's within-category shares.
+      - The (f)(3) library-size report applies.
+    - Both change T1's s1, so T1's s2 goes back to the captain after the rebuild, by 24 Nov.
+  - **Declined, as recommended:** the embryo s2 at fraction 1/4 (today's s2 stands) and the heart's momentum hold
+    (sheet E's default).
+  - **Not done:** re-reading the test-knockout acquisition text for T3's depth step.
+  - **Still open, since no recommendation was on record:** whether the organisers' public task-page statements may
+    inform a legal-route prior, and the memory-index injection for workflow subagents.

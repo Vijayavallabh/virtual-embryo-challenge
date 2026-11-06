@@ -524,13 +524,17 @@ captain's delegation of 2026-11-02; he can overrule. Design only: no try ran, an
   - nuclei-anchored births;
   - reviving the late-fetal counting family (declined on 2026-11-05 (c); its core objections are unanswered);
   - front-loading the second round (it forfeits the frozen fallbacks for late A20 or Gata4 rulings).
-- **Ruling requests, not tries** (`docs/PLAN.md` decision log 2026-11-06 (c)):
-  - T1 sheet C;
-  - the A15 hygiene reading;
-  - the cycling-state quota;
-  - the embryo s2 at fraction 1/4 (default no);
-  - the heart hold (sheet E, default decline);
-  - T3's acquisition-text depth premise (not recommended).
+- **Ruling requests, not tries** (`docs/PLAN.md` decision log 2026-11-06 (c)), ruled on 2026-11-06 (e) ("go with
+  your recommendations"):
+  - T1 sheet C: declined (no probability given; the AI assistant's estimate, 0.2-0.25, is below the 0.3 at which it
+    pays on the mean as well as in the tail);
+  - the A15 hygiene reading: adopted by ruling (`docs/DATA_POLICY.md` 2026-11-06 (b)); the Feng-direction hygiene
+    enters through its gates and its ruling row, which come before any build;
+  - the cycling-state quota: adopted by ruling, through its gates and its ruling row, before any run or any
+    computation on E10.5's within-category shares;
+  - the embryo s2 at fraction 1/4: declined (today's s2 stands);
+  - the heart hold: declined (sheet E's default);
+  - T3's acquisition-text depth premise: not done.
 
 ## Diagnostics behind these choices
 

@@ -60,6 +60,14 @@ the organisers say, before T3's first upload, that a floored severity scores zer
   - Three caveats pull these down: seven of the Frozen-P2 Human top 10 had not entered, the committed outlook is 7.5
     lower, and the chance rests on T3's stand-in A.
   - Sheet C breaks even at 0.16-0.3 on the mean; its 0.12 was the tail's.
+- The captain's ruling, "go with your recommendations" (decision log 2026-11-06 (e)):
+  - adopted: the dated upload runbook (`docs/PLAN.md` section 7; every upload by the end of 30 Nov IST, 1 Dec the
+    buffer);
+  - declined: T1 sheet C, the embryo s2 at 1/4 and the heart hold;
+  - opened by his A15 reading (`docs/DATA_POLICY.md` 2026-11-06 (b)): the Feng-direction hygiene and the cycling-state
+    quota for T1, each through its gates before any build;
+  - he sends the DM himself.
+  - Next: the two T1 items' ruling rows and gates; T1's s2 goes back to him after the rebuild, by 24 Nov.
 **Active Feature:** feat-018 (s1 files). 2026-11-04: runbook step 1 is done (634b5fd). `vec boards update` still
 answered 403 at 07:29 UTC; a screened Slack and email sweep (wf_2489e0c9-951, two clean audits) found no objection, no
 fix and no rule change since the notice of 2026-10-31; the captain saved the board index and the embryo test gene
