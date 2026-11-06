@@ -746,3 +746,18 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     - Reads beyond the brief's list: `experiments/t1_direction/config.yaml` and `dirlib.py`,
       `experiments/external/sources.yaml`, the header of `feng2022_geo.py`, test files, and the screened `task-h.md`
       and `task-a.md`.
+- 2026-11-06 (d), the closed T1 test count's last trace in our records removed (the captain's go-ahead, `docs/PLAN.md`
+  decision log 2026-11-06 (l)).
+  - **The problem.** Before the 2026-11-06 (g) fix, every T1:test build record stored `realised`, the drawn
+    composition at full precision, and its denominators give the closed count.
+  - **The fix.** On the DGX the field was stripped from the 12 records that still had it. A dry run listed them first,
+    the rewrite was atomic, and only paths were printed, never a value:
+    - `runs/archive/builds_88b057f/builds/T1_s1.build.json` and `T1_s2.build.json`;
+    - `runs/archive/builds_ae6d6b3/builds/T1_s1.build.json` and `T1_s2.build.json`;
+    - `runs/archive/rehearsal_1206d60_first_try/builds/T1_s1.build.json` and `T1_s2.build.json`;
+    - `runs/builds/T1_s1.build.json` and `T1_s2.build.json`;
+    - `runs/cand_3f9cb0c/builds/T1_s2_b40c60.build.json`;
+    - `runs/r1_88b057f/builds/T1_s1.build.json` and `T1_s2.build.json`;
+    - `runs/r1_88b057f/compat/T1_s1.build.json`.
+  - **What did not change.** No h5ad file, stamp or archived SHA256SUMS changed. No build record is tracked by git, and
+    the two archived tarballs hold none.

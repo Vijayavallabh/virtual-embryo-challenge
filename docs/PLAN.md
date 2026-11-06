@@ -1508,6 +1508,17 @@ open. No organiser reply to any of the four emails as of then.
     - The AI assistant proposes stripping that one field from those `.build.json` files: a dry run listing the paths
       first, then a rewrite that prints no values.
     - The h5ad files and the archived SHA256SUMS are untouched.
+- 2026-11-06 (l), the captain on both open items, in his words: "Go ahead with both".
+  - **T1's s2 approved as rebuilt.** It is s1's command plus `--cm-share 0.60` at 02abf39 (`docs/S2_RULES.md`'s rule,
+    unchanged), now carrying R2's hygiene: `runs/r2build_02abf39/t16/builds/T1_s2.h5ad`, sha256 d48d3a55e45d...
+    (`runs/archive/builds_02abf39/SHA256SUMS`). With (k), both of T1's uploads are settled for the freeze. A later
+    change to T1's s1 would send the s2 back again.
+  - **The housekeeping is done.** 12 T1:test build records on the DGX, written before the (g) fix, no longer carry
+    `realised` (paths in `docs/DATA_POLICY.md` 2026-11-06 (d)):
+    - a dry run listed them first, and the rewrite was atomic, printing paths only;
+    - the h5ad files, their stamps (which hash the h5ad, not the record) and both archives' SHA256SUMS are unchanged
+      (`builds_88b057f` and `builds_02abf39` re-checked OK);
+    - no build record under `runs/` carries the field now, and no record is tracked by git.
 - 2026-11-06 (j), the captain's sign-off on R2, in his words: "go ahead with your recommendation". That was (h)'s
   recommendation: R2 with D (van den Brink's 32 dissociation genes) and A1 (the haemoglobin genes) only.
   - Lines N1 and N2 are off before N12 runs, since N13 could not confirm that T1 is nuclei. This is a recorded
