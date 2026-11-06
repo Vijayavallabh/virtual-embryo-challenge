@@ -47,8 +47,15 @@ def cfg(n12):
     return n12.hygiene.load_config()
 
 
-def _cfg(cfg, draws=None, seed=None):
+REGISTERED_LINES = {"D": True, "A1": True, "N1": True, "N2": True}  # R2 as registered, before 2026-11-06 (j)
+
+
+def _cfg(cfg, draws=None, seed=None, lines=REGISTERED_LINES):
+    """A copy of the committed config. The mechanics tests run on R2's union as registered (every line on); lines=None
+    keeps the committed lines (D and A1 since the captain's sign-off of 2026-11-06 (j))."""
     c = copy.deepcopy(cfg)
+    if lines is not None:
+        c["lines"] = dict(lines)
     if draws is not None:
         c["n12"]["decile_null"]["draws"] = draws
     if seed is not None:
@@ -130,9 +137,13 @@ def test_n12_decides_the_gate_from_the_unions_counts(n12, cfg, u_up, u_down, ver
 def test_union_follows_the_lines(n12, cfg):
     genes, dirs, basis = _two_groups()
     mods = _modules(d=genes[:5], a1=genes[5:25], n1=genes[25:30], n2=genes[30:32])
-    on = n12.n12(genes, dirs, basis, [], mods, _cfg(cfg, draws=5))
+    all_on = _cfg(cfg, draws=5)  # R2 as registered
+    on = n12.n12(genes, dirs, basis, [], mods, all_on)
     assert on["gate"]["counts"]["A"]["up"] == 32 and on["settings"]["union_modules"] == ["D", "A1", "N1", "N2"]
-    off = _cfg(cfg, draws=5)
+    signed = n12.n12(genes, dirs, basis, [], mods, _cfg(cfg, draws=5, lines=None))  # committed: D and A1 only
+    assert signed["gate"]["counts"]["A"]["up"] == 25 and signed["settings"]["union_modules"] == ["D", "A1"]
+    assert signed["groups"]["A"]["lists"]["up_400"]["counts"]["N2"] == 2  # N1 and N2 are still reported
+    off = copy.deepcopy(all_on)
     off["lines"]["A1"] = False
     res = n12.n12(genes, dirs, basis, [], mods, off)
     assert res["gate"]["counts"]["A"]["up"] == 12 and res["modules"]["A1"]["in_union"] is False
@@ -355,8 +366,7 @@ def test_synthetic_run_writes_stamped_outputs_and_no_cell_count(n12, run_inputs,
     assert sorted(body["groups"]) == ["CM", "Endocardium", "Endothelium", "Epicardium"]  # blood has too few cells
     # the union: the modules mapped by exact symbol; A1 keeps Feng's repeated symbol, once, though it has no Feng value
     t1 = set(inp["t1"])
-    want = ({s for s in inp["d"] if s in t1} | {s for s in inp["n2"] if s in t1}
-            | {"Hba-syn1", "Hbb-syn2", "Hbb-syn3", "mt-Syn1", "mt-Syn2"})
+    want = {s for s in inp["d"] if s in t1} | {"Hba-syn1", "Hbb-syn2", "Hbb-syn3"}  # D and A1 since 2026-11-06 (j)
     rows = [ln for ln in csv.splitlines() if not ln.startswith("#")]
     assert rows[0] == "gene,modules" and {r.split(",")[0] for r in rows[1:]} == want
     assert body["modules"]["A1"]["source"] == 3 and body["modules"]["D"]["mapped"] == 12

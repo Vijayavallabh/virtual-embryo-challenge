@@ -1487,3 +1487,11 @@ open. No organiser reply to any of the four emails as of then.
   - **Then a red-team workflow** (wf_45fa202b-768): three read-only finders (failure risk, open decisions,
     compute-enabled methods), each proposal checked by an adversarial verifier. It looks for rule-compliant compute
     uses that the 2026-11-05 campaign ((b)) and the 2026-11-06 research missed. Its outcome follows in this entry.
+- 2026-11-06 (j), the captain's sign-off on R2, in his words: "go ahead with your recommendation". That was (h)'s
+  recommendation: R2 with D (van den Brink's 32 dissociation genes) and A1 (the haemoglobin genes) only.
+  - Lines N1 and N2 are off before N12 runs, since N13 could not confirm that T1 is nuclei. This is a recorded
+    amendment (TRIES R2's outcome cell; `configs/t1_hygiene.yaml` lines; `hygiene.union_modules` now reads all four
+    lines, with D always on).
+  - The gate and its constants are unchanged; N12 still reports N1 and N2 and decides nothing with them.
+  - N12 runs next on the DGX. If it says build, T1's s1 and s2 are rebuilt and T1's s2 goes back to the captain by
+    24 Nov.

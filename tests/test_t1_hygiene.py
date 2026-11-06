@@ -64,7 +64,8 @@ def test_config_constants_are_r2s_registered_numbers(cfg):
     f = cfg["n2_filter"]
     assert (f["type_of_gene"], f["min_nuclear_prop"], f["clusters_nuc"], f["clusters_cell"]) == ("ncRNA", 0.9, 11, 11)
     assert {k: v["n"] for k, v in cfg["extracts"].items()} == {"D": 32, "D_table5": 140, "N2": 19}
-    assert cfg["patterns"] == {"A1": "^Hb[ab]-", "N1": "^mt-"} and cfg["lines"] == {"A1": True, "N1": True}
+    assert cfg["patterns"] == {"A1": "^Hb[ab]-", "N1": "^mt-"}
+    assert cfg["lines"] == {"D": True, "A1": True, "N1": False, "N2": False}  # the sign-off of 2026-11-06 (j)
     assert cfg["n12"]["reported_patterns"] == {"ribosomal": "^Rp[ls][0-9]",
                                                "oxphos": "^(Nduf|Sdh[a-d]|Uqcr|Cox[4-8]|Atp5)", "mt": "^mt-"}
     union = ROOT / cfg["union"]["path"]
@@ -179,13 +180,22 @@ def test_read_extract_refuses_a_file_whose_sha256_is_not_pinned(hyg, cfg, tmp_pa
 def test_union_follows_the_lines_and_names_each_genes_modules(hyg, cfg):
     mapped = {"D": {"mapped": ["SynB", "SynA"]}, "A1": {"mapped": ["Hba-syn1"]}, "N1": {"mapped": ["mt-Syn1"]},
               "N2": {"mapped": ["SynA", "Nc-syn"]}}
-    assert hyg.union_modules(cfg) == ["D", "A1", "N1", "N2"]
-    u = hyg.union(mapped, hyg.union_modules(cfg))
+    on = copy.deepcopy(cfg)
+    on["lines"] = {"D": True, "A1": True, "N1": True, "N2": True}  # R2 as registered
+    assert hyg.union_modules(on) == ["D", "A1", "N1", "N2"]
+    u = hyg.union(mapped, hyg.union_modules(on))
     assert u == {"Hba-syn1": ["A1"], "Nc-syn": ["N2"], "SynA": ["D", "N2"], "SynB": ["D"], "mt-Syn1": ["N1"]}
-    dropped = copy.deepcopy(cfg)
+    dropped = copy.deepcopy(on)
     dropped["lines"]["A1"] = False  # the captain drops a line
     assert hyg.union_modules(dropped) == ["D", "N1", "N2"]
     assert "Hba-syn1" not in hyg.union(mapped, hyg.union_modules(dropped))
+    assert hyg.union_modules(cfg) == ["D", "A1"]  # the committed config, after the sign-off of 2026-11-06 (j)
+    assert hyg.union(mapped, hyg.union_modules(cfg)) == {"Hba-syn1": ["A1"], "SynA": ["D"], "SynB": ["D"]}
+    for bad_lines in ({"D": False, "A1": True, "N1": True, "N2": True}, {"D": True, "A1": True}):
+        bad = copy.deepcopy(cfg)
+        bad["lines"] = bad_lines
+        with pytest.raises(hyg.Refused, match="must name D, A1, N1 and N2"):
+            hyg.union_modules(bad)
 
 
 def test_load_union_refuses_unless_its_sha256_is_pinned(hyg, cfg, tmp_path):

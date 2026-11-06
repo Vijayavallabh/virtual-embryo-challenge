@@ -17,8 +17,8 @@ M1's factor, as build_t1 applies it (vec.t1_scope.external_shift, no clip): for 
 group. The top lists are the 400 largest positive and the 400 most negative log f, ties by symbol (Python string
 order).
 
-R2's gate, from the count of the union U (configs/t1_hygiene.yaml: D, N2, and A1 and N1 while their lines are on) in
-each top-400 list of each group:
+R2's gate, from the count of the union U (configs/t1_hygiene.yaml: the modules whose line is on; D and A1 since
+2026-11-06 (j)) in each top-400 list of each group:
 - more than 133 in any list of any group: "captain" (nothing is built until the captain rules);
 - fewer than 10 in every list of every group: "not built" (a near no-op: no rebuild, no s2 re-ruling);
 - otherwise "build" (T1's s1 and s2 are rebuilt and format-checked, and T1's s2 goes back to the captain by 24 Nov).
@@ -260,7 +260,7 @@ def n12(genes: Sequence[str], directions: Mapping[str, np.ndarray], basis: Mappi
                                                "decides": False}},
         "settings": {"fraction": fraction, "list_size": size, "upper": upper, "floor": floor, "sizes": sizes,
                      "null": {k: int(nul[k]) for k in ("draws", "seed", "bins")}, "union_modules": in_u,
-                     "lines": {m: bool(cfg["lines"][m]) for m in hygiene.FROM_PATTERNS},
+                     "lines": {m: bool(cfg["lines"][m]) for m in hygiene.MODULES},
                      "patterns": dict(cfg["patterns"]), "reported_patterns": dict(cfg["n12"]["reported_patterns"]),
                      "t1_genes": n, "held_flat_genes_in_t1": int(held.sum())},
         "modules": {m: {"source": len(mapped[m]["source"]), "mapped": len(mapped[m]["mapped"]),

@@ -129,8 +129,13 @@ def map_modules(modules: Mapping[str, Sequence[str]], t1_genes: Iterable[str]) -
 
 
 def union_modules(cfg: Mapping) -> list[str]:
-    """The modules that make R2's union: D and N2, and A1 and N1 while their lines are on (the config's `lines`)."""
-    return [m for m in MODULES if m not in FROM_PATTERNS or bool(cfg["lines"][m])]
+    """The modules that make R2's union: those whose line is on in the config's `lines`, which must name all four with
+    D on. A1 and N1 were registered as lines the captain can drop; his sign-off before N12 ran (docs/PLAN.md decision
+    log 2026-11-06 (j)) also turned off N2, since N13 could not confirm that T1 is nuclei."""
+    lines = cfg["lines"]
+    if set(lines) != set(MODULES) or not lines["D"]:
+        raise Refused("configs/t1_hygiene.yaml `lines` must name D, A1, N1 and N2, with D on (TRIES R2)")
+    return [m for m in MODULES if bool(lines[m])]
 
 
 def union(mapped: Mapping[str, Mapping[str, Sequence[str]]], modules: Sequence[str]) -> dict[str, list[str]]:

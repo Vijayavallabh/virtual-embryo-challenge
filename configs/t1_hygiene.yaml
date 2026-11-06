@@ -40,7 +40,7 @@ extracts:
     path: experiments/external/extracts/vdb2017_table5.tsv
     n: 140
     sha256: e773a3d3029207b04f4417484d4087a453d9daf3b032c3876d63ac4be8353c89
-  N2:  # module N2: the S6 rows that pass n2_filter, held flat at both signs
+  N2:  # module N2: the S6 rows that pass n2_filter, held flat at both signs while its line is on (off since 2026-11-06 (j))
     source: bakken2018_s6
     path: experiments/external/extracts/bakken2018_s6_n2.tsv
     n: 19
@@ -56,9 +56,14 @@ patterns:  # on Feng's gene symbols (X002): every matching symbol, each once, as
   A1: '^Hb[ab]-'  # haemoglobin, ambient RNA (basis: X009)
   N1: '^mt-'  # mitochondrially encoded
 
-lines:  # A1 and N1 are separate lines the captain can drop; D and N2 are always in the union
+lines:  # the modules in R2's union while their line is on. D is always on. A1 and N1 were registered as lines the
+        # captain can drop. Before N12 ran, the captain approved R2 with D and A1 only (docs/PLAN.md decision log
+        # 2026-11-06 (j)): N13's reading of T1's assay was unclear, so N1 and N2, which rest on T1 being nuclei, are
+        # off. N12 still reports them, deciding nothing.
+  D: true
   A1: true
-  N1: true
+  N1: false
+  N2: false
 
 direction:  # M1's factor as build_t1 applies it: log f = fraction x Feng's E9.5 -> E14.5 log ratio of mean CP10k
   fraction: 0.4  # feng_dirs.bracket_fraction(10.5, 12.5): E10.5 -> E12.5 in Feng's E9.5 -> E14.5 bracket
