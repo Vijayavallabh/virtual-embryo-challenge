@@ -1462,3 +1462,16 @@ open. No organiser reply to any of the four emails as of then.
     `_hide_counts` strips only `n_cells`. It is to be fixed at the hygiene build commit (round or strip the stored
     composition).
   - Process notes: `docs/DATA_POLICY.md` 2026-11-06 (c).
+- 2026-11-06 (h), N13 registered and run (686cac5; `experiments/harness/TRIES.md` N13). A side note to the captain
+  pointed out that the AI assistant's summary of R2 said T1 is nuclei without mentioning the 2026-10-18 loader note
+  ("looks like whole-cell", from library size alone).
+  - **The reading is unclear.**
+    - Against Feng's E9.5 whole cells, T1's E9.5 cells carry a fifth of the mt- share and a third of the
+      ribosomal-protein share, as nuclei would.
+    - They also carry a sixth of the Malat1 share, which nuclei would not. The organisers' text (nuclei; AMULET, an
+      ATAC-based doublet filter; SoupX) is the direct evidence.
+  - **The AI assistant's recommendation** to the captain is now R2 with D and A1 only: drop N1 and N2, whose nuclei
+    premise N13 did not confirm. D and A1 hold whether T1 is nuclei or whole cells: Feng's dissociation stress and
+    ambient globins are Feng's own, and T1 is SoupX-corrected.
+  - The alternative is R2 as registered, on the organisers' word. Dropping N1 and N2 before N12 runs is a recorded
+    amendment, not a change after N12's numbers are seen. The captain decides.

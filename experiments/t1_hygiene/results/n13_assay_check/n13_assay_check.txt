@@ -1,0 +1,18 @@
+N13: does the released T1 E9.5 file look like nuclei or whole cells? Reading: unclear
+T1 genes: 13 mt- genes, Malat1 present True, 11 N2 genes, 97 ribosomal-protein genes
+Feng genes: 13 mt- genes, Malat1 present True
+
+Share of UMIs (T1: per-cell mean [median, p10-p90]; Feng: pooled mean per-cell share)
+  all cells
+    mt      T1 1.080% [1.051%, 0.868%-1.328%]   Feng 5.665%
+    Malat1  T1 0.088% [0.089%, 0.062%-0.112%]   Feng 0.516%
+    N2      T1 0.169% [0.165%, 0.106%-0.238%]   Feng 0.568%
+    Rp      T1 5.404% [5.277%, 4.134%-6.875%]   Feng 16.581%
+  CM cells
+    mt      T1 1.035% [1.026%, 0.875%-1.192%]   Feng 5.815%
+    Malat1  T1 0.092% [0.092%, 0.071%-0.112%]   Feng 0.533%
+    N2      T1 0.167% [0.163%, 0.110%-0.230%]   Feng 0.585%
+    Rp      T1 5.108% [5.064%, 4.145%-6.122%]   Feng 16.064%
+
+Inputs: {'t1_file': 'data/raw/T1/E9.5_RNA.h5ad', 't1_file_sha256': '0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361', 'feng_stats': 'data/external/feng2022_gse193346_geo/cd1_stats.npz', 'feng_stats_sha256': '28f188fb9409984142a70a5a940dde3d1d3187b033d94ee2d26337a216f295c3', 'n2_extract_sha256': '26177f917879feef10eca56a86b4cf8dcdf690ce96894278ab8ac5691b6fef0a'}
+Commit 686cac54413a3d924087aeb5b099528403ab67cb, tree clean True, UTC 2026-11-06T06:08:42Z
