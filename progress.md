@@ -621,7 +621,7 @@ headroom tables in `experiments/harness/TRIES.md`):
    go-ahead at the time; the captain runs the commands. By his deadline exception the s1 methods freeze at 2026-11-27
    00:00 UTC, and from then the first round may go in whatever the estimate, each upload only on his go-ahead
    (rebuild, checks and the plain summary that morning); the s2 round by 2026-12-01 06:00 UTC, final marks by 12:00
-   UTC. Once the heart and embryo s1 are up, the frozen s2 rules build their s2 as s1, at s1's commit
+   UTC [superseded by decision log 2026-11-06 (e): every upload by the end of 30 Nov IST, 1 Dec the outage buffer]. Once the heart and embryo s1 are up, the frozen s2 rules build their s2 as s1, at s1's commit
    (`docs/S2_RULES.md`), so no later try reaches those two boards unless the captain changes a rule. The AI
    assistant's recommendation (`docs/PLAN.md` decision log 2026-11-04 (c)): keep the hold; the rebuild rehearsal is
    done (2026-11-04, 1206d60: ten files byte-identical, `vec check` and the server format checks passed); repeat it at
@@ -629,7 +629,7 @@ headroom tables in `experiments/harness/TRIES.md`):
    (`experiments/builds/results/rehearsal_f5cf982.txt`).
    2026-11-05: the captain ran both scratchpad deletion scripts (32 raw site copies and 17 later residues deleted).
    The freeze-morning hash check runs against `runs/archive/builds_88b057f` (the R1 builds; 40 of 40 at every
-   thread count), and the disclosure ids for each upload are in `docs/P3_RUNBOOK.md` section 5 for the captain.
+   thread count) [since decision log 2026-11-06 (k): `runs/archive/builds_02abf39`, with R2's T1 files], and the disclosure ids for each upload are in `docs/P3_RUNBOOK.md` section 5 for the captain.
 2. T1: births were designed and pruned (2026-11-04; `TRIES.md`), so neither upload waits on them. T1's composition is
    reopened by the legal route (`docs/DATA_POLICY.md` 2026-11-04 (d)), the one open lever on its weakest groups
    (distribution, DE recovery, covariance); T1 direction stays open, but no backtest can judge a change to Feng's

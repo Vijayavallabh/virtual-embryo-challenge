@@ -1487,7 +1487,27 @@ open. No organiser reply to any of the four emails as of then.
     - T1's two files wait for R2's decision, since R2 reads no T1 E10.5 file before its build.
   - **Then a red-team workflow** (wf_45fa202b-768): three read-only finders (failure risk, open decisions,
     compute-enabled methods), each proposal checked by an adversarial verifier. It looks for rule-compliant compute
-    uses that the 2026-11-05 campaign ((b)) and the 2026-11-06 research missed. Its outcome follows in this entry.
+    uses that the 2026-11-05 campaign ((b)) and the 2026-11-06 research missed.
+  - **The outcome: nothing kept.** Four proposals were made, and the verifiers killed all four:
+    - a pre-freeze readiness pass: mostly done or already scheduled (the rehearsals at 1206d60 and f5cf982, the
+      determinism checks, the freeze-morning procedure);
+    - building the allowed branch's T3 s2: never needed, since (b)'s switch takes the s2 slot even when the Gata4
+      files are allowed;
+    - retiring stale DGX artifacts: about 0 Overall;
+    - pre-built A20-no fallback files: deferred by design to a real bar (release-day answer 3).
+  - The methods lens proposed nothing: "on every board the binding limit is counting evidence, not compute", and GPU
+    non-determinism would also break the freeze-morning hash check. So the GPUs stay idle, as on 2026-11-05.
+  - **Record fixes taken from the review:**
+    - T1's disclosure ids in `docs/P3_RUNBOOK.md` section 5 gain X007-X009 (R2's sources; Rules s.10 asks for every
+      source);
+    - the runbook's 2026-11-01 Gata4 line now points s2 at (b)'s switch;
+    - two superseded progress lines are marked (the deadline, the reference archive).
+  - **Open housekeeping, put to the captain:** T1 build records written before the 2026-11-06 (g) fix (for example in
+    `runs/archive/builds_88b057f/`) still carry `realised` at full precision, from which the closed test count could be
+    worked out.
+    - The AI assistant proposes stripping that one field from those `.build.json` files: a dry run listing the paths
+      first, then a rewrite that prints no values.
+    - The h5ad files and the archived SHA256SUMS are untouched.
 - 2026-11-06 (j), the captain's sign-off on R2, in his words: "go ahead with your recommendation". That was (h)'s
   recommendation: R2 with D (van den Brink's 32 dissociation genes) and A1 (the haemoglobin genes) only.
   - Lines N1 and N2 are off before N12 runs, since N13 could not confirm that T1 is nuclei. This is a recorded

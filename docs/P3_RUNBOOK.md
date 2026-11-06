@@ -247,8 +247,9 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     Gata4 files). Upload s2 first and s1 last (by 30 Nov IST; since 2026-11-05 not before the captain's upload gate
     is crossed or its deadline exception opens on 27 Nov, `docs/PLAN.md` section 8), each with the captain's go-ahead
     after a screened check
-    of mail, Slack and the Rules page. If the organisers allow the Gata4 files before the first T3 upload, go back to
-    the allowed branch's s1 and s2; if they restrict them before the last one, send nothing from the allowed branch
+    of mail, Slack and the Rules page. If the organisers allow the Gata4 files before the first T3 upload, s1 stays
+    the allowed branch's s1 and s2 follows the 2026-11-06 switch below (decision log 2026-11-06 (b), Interactions: the
+    switch takes the s2 slot even when the Gata4 files are allowed); if they restrict them before the last one, send nothing from the allowed branch
     (the barred branch's s1; `docs/S2_RULES.md`, which also covers a full bar). It re-decides nothing and refuses a decision file whose script or rules hash
     differs from the files on disk.
     2026-11-06, the captain's ruling ("go with your recommendation"; `docs/PLAN.md` decision log 2026-11-06 (b)):
@@ -282,7 +283,7 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
   the morning). The client refuses an official upload without `--disclose` ids from `EXTERNAL_DATA.md`. Rule used:
   every register row whose Tasks column names the board's task, since Rules s.10 asks for every public dataset,
   model and published code used, and a figure that informed a choice counts; disclosing a row that only informed a
-  choice is safe, leaving one out is not. T1:test (s1 and s2): `X001,X002,X003,X005,X006`. T2:heart:test_extrap and
+  choice is safe, leaving one out is not. T1:test (s1 and s2): `X001,X002,X003,X005,X006,X007,X008,X009` (X007-X009 since R2's build, 2026-11-06 (k)). T2:heart:test_extrap and
   T2:embryo:test_interp: `X001,X004,X005`. T3:bcatenin: `X001,X004,X005`. A row added later joins the boards its
   Tasks column names.
 - **(user)** Final entries. The account page (seen in the site's public script, 2026-10-28): "The leaderboard shows
