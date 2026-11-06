@@ -81,6 +81,11 @@ the organisers say, before T3's first upload, that a floored severity scores zer
   The mitochondrial and ribosomal shares are low, as in nuclei; the Malat1 share is low too, unlike nuclei. The AI
   assistant now recommends R2 without N1 and N2 (decision log 2026-11-06 (h)); the captain decides.
 - The captain signed off R2 with D and A1 only (decision log 2026-11-06 (j)); N12 runs next.
+- N12 said build. R2 is built (02abf39; decision log 2026-11-06 (k)): T1's s1 and s2 now hold 40 genes flat in Feng's
+  direction.
+  - The rebuild is deterministic, `--no-feng-hygiene` reproduces 88b057f, and `vec check` is OK.
+  - The new freeze-morning reference is `runs/archive/builds_02abf39`.
+  - T1's s2 goes back to the captain (recommended: approve as built). Server format checks wait for the freeze morning.
 **Active Feature:** feat-018 (s1 files). 2026-11-04: runbook step 1 is done (634b5fd). `vec boards update` still
 answered 403 at 07:29 UTC; a screened Slack and email sweep (wf_2489e0c9-951, two clean audits) found no objection, no
 fix and no rule change since the notice of 2026-10-31; the captain saved the board index and the embryo test gene

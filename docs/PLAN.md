@@ -656,7 +656,8 @@ Do not front-load the second round: a late A20 bar or Gata4 restriction is absor
     and so no place and no Generality Award standing): "I am fine with submitting our 1st submission at Nov 27 anyway".
     So the s1 methods freeze at 2026-11-27 00:00 UTC (05:30 IST). That morning the AI assistant rebuilds the files at
     the freeze commit, checks them (`vec check`, the server format checks, the hashes archived in
-    `runs/archive/builds_88b057f`) and gives the captain the plain summary; the first round (T1 s1, heart s1, embryo s1
+    `runs/archive/builds_02abf39` since R2's build, decision log 2026-11-06 (k); before it `builds_88b057f`) and gives
+    the captain the plain summary; the first round (T1 s1, heart s1, embryo s1
     and T3's s2) may then go in whatever the estimate, each upload only on his go-ahead at the time. The words are his
     own, written in his message in the main session (a note on a side agent's text he forwarded), not an agent's relay.
     The AI assistant reads "our 1st submission" with the gate's own scope (the first upload on every board) and "at Nov
@@ -1495,3 +1496,25 @@ open. No organiser reply to any of the four emails as of then.
   - The gate and its constants are unchanged; N12 still reports N1 and N2 and decides nothing with them.
   - N12 runs next on the DGX. If it says build, T1's s1 and s2 are rebuilt and T1's s2 goes back to the captain by
     24 Nov.
+- 2026-11-06 (k), R2 built.
+  - **N12's verdict was build** (1cac64c; TRIES N12). The union U = D and A1 has 40 T1 genes. It holds up to 17 of a
+    top-400 list (Epicardium up) and 0.7-1.1% of each group's direction mass; with and without it, the direction
+    correlates at Spearman 0.998.
+  - **The build commit** (02abf39) pins the union's sha256 (c40e568d...) and makes the hygiene T1's default with R1.
+    `--no-feng-hygiene` rebuilds the s1 of 88b057f, and `--no-hold-unbracketed` the archived s1 of ae6d6b3. The full
+    suite passed on the DGX (667).
+  - **The rebuild of T1's s1 and s2 at 02abf39** (DGX, `runs/r2build_02abf39/`):
+    - identical at 1 and 16 BLAS threads;
+    - `--no-feng-hygiene` reproduces `builds_88b057f`'s T1 files byte for byte, so the hygiene is the only change;
+    - `vec check` OK for both;
+    - the build record names 40 held genes (D 32, A1 8), none absent from E10.5's genes.
+  - **The new freeze-morning reference** is `runs/archive/builds_02abf39/SHA256SUMS`: T1's two new files, and the
+    other eight unchanged from `builds_88b057f`.
+  - **Server format checks** wait for the freeze-morning procedure, on the captain's watch.
+    `docs/P3_RUNBOOK.md` notes that a format check can come back stored as a submission, and T1's file structure did
+    not change.
+  - **The estimate stands** (184 committed; reading A 191.5): R2 entered by ruling with no counted run, as R1 did.
+    Its price is +0.10 (range -0.3 to +0.4).
+  - **Put to the captain:** T1's s2. By `docs/S2_RULES.md` it is still s1's command plus `--cm-share 0.60` at the
+    same commit, so it now carries the hygiene too (`runs/r2build_02abf39/t16/builds/T1_s2.h5ad`). The changed s1 sends
+    it back to him (`docs/DATA_POLICY.md` 2026-11-04 (d)). The AI assistant recommends approving it as built.

@@ -7,7 +7,7 @@
 # uploaded.
 #
 #   bash experiments/builds/determinism_check.sh ARCHIVE_SHA256SUMS THREADS...
-#   e.g. bash experiments/builds/determinism_check.sh runs/archive/builds_88b057f/SHA256SUMS 1 4 8 16
+#   e.g. bash experiments/builds/determinism_check.sh runs/archive/builds_02abf39/SHA256SUMS 1 4 8 16
 #
 # Run on the DGX from the repo root at a clean, committed tree, with no sync while it runs. The thread counts run in
 # parallel, one chain each; the outputs go to runs/determinism_<HEAD>/t<threads>/ (ignored by git), logs next to them.
