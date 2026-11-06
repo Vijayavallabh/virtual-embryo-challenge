@@ -1,0 +1,3272 @@
+{
+ "label": "N12 (experiments/harness/TRIES.md): R2's gate (target-free: no E10.5 file, no target, no score, no board, no built file, no T1 cell count)",
+ "verdict": "build",
+ "gate": {
+  "rule": "U holds more than 133 of the top 400 up or down of any group: captain; fewer than 10 in every list of every group: not built; otherwise build",
+  "counts": {
+   "CM": {
+    "up": 3,
+    "down": 9
+   },
+   "Endocardium": {
+    "up": 5,
+    "down": 7
+   },
+   "Endothelium": {
+    "up": 11,
+    "down": 6
+   },
+   "Epicardium": {
+    "up": 17,
+    "down": 3
+   }
+  },
+  "max": 17,
+  "lists_above_upper": [],
+  "lists_at_or_above_floor": [
+   "Endothelium up",
+   "Epicardium up"
+  ],
+  "with_table5_in_place_of_D": {
+   "counts": {
+    "CM": {
+     "up": 6,
+     "down": 19
+    },
+    "Endocardium": {
+     "up": 6,
+     "down": 17
+    },
+    "Endothelium": {
+     "up": 16,
+     "down": 12
+    },
+    "Epicardium": {
+     "up": 22,
+     "down": 13
+    }
+   },
+   "reading": "build",
+   "decides": false
+  }
+ },
+ "settings": {
+  "fraction": 0.4,
+  "list_size": 400,
+  "upper": 133,
+  "floor": 10,
+  "sizes": [
+   100,
+   400,
+   1000
+  ],
+  "null": {
+   "draws": 1000,
+   "seed": 20261106,
+   "bins": 10
+  },
+  "union_modules": [
+   "D",
+   "A1"
+  ],
+  "lines": {
+   "D": true,
+   "A1": true,
+   "N1": false,
+   "N2": false
+  },
+  "patterns": {
+   "A1": "^Hb[ab]-",
+   "N1": "^mt-"
+  },
+  "reported_patterns": {
+   "ribosomal": "^Rp[ls][0-9]",
+   "oxphos": "^(Nduf|Sdh[a-d]|Uqcr|Cox[4-8]|Atp5)",
+   "mt": "^mt-"
+  },
+  "t1_genes": 32285,
+  "held_flat_genes_in_t1": 23
+ },
+ "modules": {
+  "D": {
+   "source": 32,
+   "mapped": 32,
+   "genes": [
+    "Fos",
+    "Hspa1a",
+    "Jun",
+    "Fosb",
+    "Junb",
+    "Egr1",
+    "Hspa1b",
+    "Ubc",
+    "Zfp36",
+    "Hspb1",
+    "Hsp90aa1",
+    "Mt2",
+    "Dnajb1",
+    "Btg2",
+    "Nr4a1",
+    "Cebpd",
+    "Hspa8",
+    "Mt1",
+    "Ier2",
+    "Dnaja1",
+    "Socs3",
+    "Atf3",
+    "Jund",
+    "Cebpb",
+    "Id3",
+    "Ppp1r15a",
+    "Hspe1",
+    "Cxcl1",
+    "Dusp1",
+    "Hsp90ab1",
+    "Nfkbia",
+    "Hsph1"
+   ],
+   "sha256": "0b749e8ebe2928bb7b80c39fc520f7a03ec723dee2c47d165fd4f157fe6bf538",
+   "source_sha256": "0b749e8ebe2928bb7b80c39fc520f7a03ec723dee2c47d165fd4f157fe6bf538",
+   "unmapped": [],
+   "mapped_on_held_flat": [],
+   "mapped_without_feng_value": [],
+   "in_union": true
+  },
+  "A1": {
+   "source": 8,
+   "mapped": 8,
+   "genes": [
+    "Hbb-bt",
+    "Hbb-bs",
+    "Hbb-bh2",
+    "Hbb-bh1",
+    "Hbb-y",
+    "Hba-x",
+    "Hba-a1",
+    "Hba-a2"
+   ],
+   "sha256": "53b05b0951f8dcff124482ecaeb47877075ef258b1d6b59465b1b41fbdf28935",
+   "source_sha256": "53b05b0951f8dcff124482ecaeb47877075ef258b1d6b59465b1b41fbdf28935",
+   "unmapped": [],
+   "mapped_on_held_flat": [],
+   "mapped_without_feng_value": [],
+   "in_union": true
+  },
+  "N1": {
+   "source": 13,
+   "mapped": 13,
+   "genes": [
+    "mt-Nd1",
+    "mt-Nd2",
+    "mt-Co1",
+    "mt-Co2",
+    "mt-Atp8",
+    "mt-Atp6",
+    "mt-Co3",
+    "mt-Nd3",
+    "mt-Nd4l",
+    "mt-Nd4",
+    "mt-Nd5",
+    "mt-Nd6",
+    "mt-Cytb"
+   ],
+   "sha256": "106c63768ad1af043988eb56ebd51431995a3df1cce1b4bf3e4f453ef8c4bc32",
+   "source_sha256": "106c63768ad1af043988eb56ebd51431995a3df1cce1b4bf3e4f453ef8c4bc32",
+   "unmapped": [],
+   "mapped_on_held_flat": [],
+   "mapped_without_feng_value": [],
+   "in_union": false
+  },
+  "N2": {
+   "source": 19,
+   "mapped": 11,
+   "genes": [
+    "4933439C10Rik",
+    "A230057D06Rik",
+    "A330023F24Rik",
+    "A330076H08Rik",
+    "C130071C03Rik",
+    "Kcnq1ot1",
+    "Malat1",
+    "Meg3",
+    "Miat",
+    "Mirg",
+    "Nrg3os"
+   ],
+   "sha256": "ac31c32535e6b66666d25fe44efa1bced169fd9ae911cd64662421441e8aed3c",
+   "source_sha256": "26177f917879feef10eca56a86b4cf8dcdf690ce96894278ab8ac5691b6fef0a",
+   "unmapped": [
+    "2810008D09Rik",
+    "A930011O12Rik",
+    "C230091D08Rik",
+    "Gm31001",
+    "Ipw",
+    "LOC105244879",
+    "LOC105245838",
+    "LOC105246975"
+   ],
+   "mapped_on_held_flat": [],
+   "mapped_without_feng_value": [
+    "4933439C10Rik",
+    "A330023F24Rik",
+    "A330076H08Rik"
+   ],
+   "in_union": false
+  },
+  "D_table5": {
+   "source": 140,
+   "mapped": 137,
+   "genes": [
+    "Actg1",
+    "Btg1",
+    "Cxcl1",
+    "Dnajb4",
+    "Errfi1",
+    "H3f3b",
+    "Hspb1",
+    "Irf1",
+    "Klf6",
+    "Mir22hg",
+    "Nfkbia",
+    "Pcf11",
+    "Pxdc1",
+    "Sdc4",
+    "Srf",
+    "Tpm3",
+    "Usp2",
+    "Gadd45g",
+    "Ankrd1",
+    "Btg2",
+    "Dusp1",
+    "Hipk3",
+    "Hsph1",
+    "Irf8",
+    "Klf9",
+    "Mt1",
+    "Nfkbiz",
+    "Pde4b",
+    "Rap1b",
+    "Serpine1",
+    "Srsf5",
+    "Tppp3",
+    "Wac",
+    "Hspe1",
+    "Arid5a",
+    "Ccnl1",
+    "Dcn",
+    "Dusp8",
+    "Fos",
+    "Hsp90aa1",
+    "Id3",
+    "Itpkc",
+    "Litaf",
+    "Mt2",
+    "Nop58",
+    "Per1",
+    "Rassf1",
+    "Skil",
+    "Srsf7",
+    "Tra2a",
+    "Zc3h12a",
+    "Ier5",
+    "Atf3",
+    "Ddx3x",
+    "Egr1",
+    "Fosb",
+    "Hsp90ab1",
+    "Idi1",
+    "Jun",
+    "Lmna",
+    "Myadm",
+    "Nppc",
+    "Phlda1",
+    "Rhob",
+    "Slc10a6",
+    "Stat3",
+    "Tra2b",
+    "Zfand5",
+    "Kcne4",
+    "Atf4",
+    "Cebpb",
+    "Ddx5",
+    "Egr2",
+    "Fosl2",
+    "Hspa1a",
+    "Ier2",
+    "Junb",
+    "Maff",
+    "Myc",
+    "Nr4a1",
+    "Pnp",
+    "Rhoh",
+    "Slc38a2",
+    "Tagln2",
+    "Trib1",
+    "Zfp36",
+    "Bag3",
+    "Cebpd",
+    "Des",
+    "Eif1",
+    "Gadd45a",
+    "Hspa1b",
+    "Ier3",
+    "Jund",
+    "Mafk",
+    "Myd88",
+    "Odc1",
+    "Pnrc1",
+    "Ripk1",
+    "Slc41a1",
+    "Tiparp",
+    "Tubb4b",
+    "Zfp36l1",
+    "Bhlhe40",
+    "Cebpg",
+    "Dnaja1",
+    "Eif5",
+    "Gcc1",
+    "Hspa5",
+    "Ifrd1",
+    "Klf2",
+    "Mcl1",
+    "Nckap5l",
+    "Osgin1",
+    "Ppp1cc",
+    "Sat1",
+    "Socs3",
+    "Tnfaip3",
+    "Tubb6",
+    "Zfp36l2",
+    "Brd2",
+    "Csrnp1",
+    "Dnajb1",
+    "Erf",
+    "Gem",
+    "Hspa8",
+    "Il6",
+    "Klf4",
+    "Midn",
+    "Ncoa7",
+    "Oxnad1",
+    "Ppp1r15a",
+    "Sbno2",
+    "Sqstm1",
+    "Tnfaip6",
+    "Ubc",
+    "Zyx"
+   ],
+   "sha256": "ececbfc42aac5b674fba23f995b3b113ce6950066b11ee70964dca99709bc588",
+   "source_sha256": "921bb4ec98a5d872ef0f55e43924fa6da42539e00a9cc2fd67fc1706212ca5e1",
+   "unmapped": [
+    "Cyr61",
+    "Fam132b",
+    "Ccrn4l"
+   ],
+   "mapped_on_held_flat": [],
+   "mapped_without_feng_value": [
+    "Mir22hg"
+   ],
+   "in_union": false
+  }
+ },
+ "unions": {
+  "U": {
+   "genes": 40,
+   "per_module": {
+    "D": 32,
+    "A1": 8
+   },
+   "on_held_flat": []
+  },
+  "U_table5": {
+   "genes": 145,
+   "per_module": {
+    "A1": 8,
+    "D_table5": 137
+   },
+   "on_held_flat": []
+  }
+ },
+ "union_members": {
+  "Atf3": [
+   "D"
+  ],
+  "Btg2": [
+   "D"
+  ],
+  "Cebpb": [
+   "D"
+  ],
+  "Cebpd": [
+   "D"
+  ],
+  "Cxcl1": [
+   "D"
+  ],
+  "Dnaja1": [
+   "D"
+  ],
+  "Dnajb1": [
+   "D"
+  ],
+  "Dusp1": [
+   "D"
+  ],
+  "Egr1": [
+   "D"
+  ],
+  "Fos": [
+   "D"
+  ],
+  "Fosb": [
+   "D"
+  ],
+  "Hba-a1": [
+   "A1"
+  ],
+  "Hba-a2": [
+   "A1"
+  ],
+  "Hba-x": [
+   "A1"
+  ],
+  "Hbb-bh1": [
+   "A1"
+  ],
+  "Hbb-bh2": [
+   "A1"
+  ],
+  "Hbb-bs": [
+   "A1"
+  ],
+  "Hbb-bt": [
+   "A1"
+  ],
+  "Hbb-y": [
+   "A1"
+  ],
+  "Hsp90aa1": [
+   "D"
+  ],
+  "Hsp90ab1": [
+   "D"
+  ],
+  "Hspa1a": [
+   "D"
+  ],
+  "Hspa1b": [
+   "D"
+  ],
+  "Hspa8": [
+   "D"
+  ],
+  "Hspb1": [
+   "D"
+  ],
+  "Hspe1": [
+   "D"
+  ],
+  "Hsph1": [
+   "D"
+  ],
+  "Id3": [
+   "D"
+  ],
+  "Ier2": [
+   "D"
+  ],
+  "Jun": [
+   "D"
+  ],
+  "Junb": [
+   "D"
+  ],
+  "Jund": [
+   "D"
+  ],
+  "Mt1": [
+   "D"
+  ],
+  "Mt2": [
+   "D"
+  ],
+  "Nfkbia": [
+   "D"
+  ],
+  "Nr4a1": [
+   "D"
+  ],
+  "Ppp1r15a": [
+   "D"
+  ],
+  "Socs3": [
+   "D"
+  ],
+  "Ubc": [
+   "D"
+  ],
+  "Zfp36": [
+   "D"
+  ]
+ },
+ "groups": {
+  "CM": {
+   "genes_with_feng_value": 29715,
+   "nonzero_log_f": 17936,
+   "positive": 8493,
+   "negative": 9443,
+   "max_abs_log_f": 1.0431044268748342,
+   "gate_counts": {
+    "up": 3,
+    "down": 9
+   },
+   "held_share": {
+    "U": 0.006742481173189126,
+    "U_table5": 0.01655857185941492
+   },
+   "spearman_with_without": {
+    "U": 0.9983680443954509,
+    "U_table5": 0.9947649534033134
+   },
+   "lists": {
+    "up_100": {
+     "length": 100,
+     "counts": {
+      "D": 1,
+      "A1": 0,
+      "N1": 5,
+      "N2": 1,
+      "D_table5": 1,
+      "U": 1,
+      "U_table5": 1
+     },
+     "abs_log_f_share": {
+      "D": 0.0072131033692703975,
+      "A1": 0.0,
+      "N1": 0.04021353388892179,
+      "N2": 0.01060495840216505,
+      "D_table5": 0.0072131033692703975,
+      "U": 0.0072131033692703975,
+      "U_table5": 0.0072131033692703975
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 0,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 3,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 5,
+       "held_by_U": 0
+      }
+     }
+    },
+    "up_400": {
+     "length": 400,
+     "counts": {
+      "D": 3,
+      "A1": 0,
+      "N1": 13,
+      "N2": 1,
+      "D_table5": 6,
+      "U": 3,
+      "U_table5": 6
+     },
+     "abs_log_f_share": {
+      "D": 0.007323158407202077,
+      "A1": 0.0,
+      "N1": 0.03445471519370518,
+      "N2": 0.004333831674399695,
+      "D_table5": 0.012726495354398973,
+      "U": 0.007323158407202077,
+      "U_table5": 0.012726495354398973
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 1,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 37,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 13,
+       "held_by_U": 0
+      }
+     },
+     "module_genes": {
+      "D": [
+       "Hspa1a",
+       "Egr1",
+       "Mt1"
+      ],
+      "A1": [],
+      "N1": [
+       "mt-Co1",
+       "mt-Co3",
+       "mt-Nd4",
+       "mt-Co2",
+       "mt-Atp6",
+       "mt-Cytb",
+       "mt-Nd2",
+       "mt-Nd5",
+       "mt-Nd1",
+       "mt-Nd4l",
+       "mt-Atp8",
+       "mt-Nd3",
+       "mt-Nd6"
+      ],
+      "N2": [
+       "Malat1"
+      ],
+      "D_table5": [
+       "Hspa1a",
+       "Egr1",
+       "Slc38a2",
+       "Ier3",
+       "Mt1",
+       "Zfp36l1"
+      ]
+     },
+     "pattern_genes": {
+      "ribosomal": [
+       "Rps6ka3"
+      ],
+      "oxphos": [
+       "Cox6a2",
+       "Cox8b",
+       "Ndufa11",
+       "Ndufa13",
+       "Cox6c",
+       "Atp5e",
+       "Ndufb11",
+       "Atp5h",
+       "Ndufv1",
+       "Ndufa6",
+       "Sdhc",
+       "Cox4i1",
+       "Atp5b",
+       "Ndufa7",
+       "Ndufb4",
+       "Cox5b",
+       "Ndufa3",
+       "Cox7a1",
+       "Ndufb2",
+       "Cox7b",
+       "Ndufc1",
+       "Uqcr11",
+       "Ndufb7",
+       "Ndufa2",
+       "Atp5j",
+       "Atp5g1",
+       "Ndufa10",
+       "Ndufs3",
+       "Ndufs2",
+       "Uqcrb",
+       "Ndufv3",
+       "Cox6b1",
+       "Atp5l",
+       "Uqcrc1",
+       "Ndufs1",
+       "Ndufb9",
+       "Uqcrc2"
+      ],
+      "mt": [
+       "mt-Co1",
+       "mt-Co3",
+       "mt-Nd4",
+       "mt-Co2",
+       "mt-Atp6",
+       "mt-Cytb",
+       "mt-Nd2",
+       "mt-Nd5",
+       "mt-Nd1",
+       "mt-Nd4l",
+       "mt-Atp8",
+       "mt-Nd3",
+       "mt-Nd6"
+      ]
+     }
+    },
+    "up_1000": {
+     "length": 1000,
+     "counts": {
+      "D": 6,
+      "A1": 1,
+      "N1": 13,
+      "N2": 1,
+      "D_table5": 13,
+      "U": 7,
+      "U_table5": 14
+     },
+     "abs_log_f_share": {
+      "D": 0.006421770348366097,
+      "A1": 0.0006093662438029042,
+      "N1": 0.021125637418499654,
+      "N2": 0.002657254778379481,
+      "D_table5": 0.012488045161916412,
+      "U": 0.007031136592169002,
+      "U_table5": 0.013097411405719317
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 1,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 66,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 13,
+       "held_by_U": 0
+      }
+     }
+    },
+    "down_100": {
+     "length": 100,
+     "counts": {
+      "D": 3,
+      "A1": 0,
+      "N1": 0,
+      "N2": 0,
+      "D_table5": 6,
+      "U": 3,
+      "U_table5": 6
+     },
+     "abs_log_f_share": {
+      "D": 0.025978852556280144,
+      "A1": 0.0,
+      "N1": 0.0,
+      "N2": 0.0,
+      "D_table5": 0.049261735197374736,
+      "U": 0.025978852556280144,
+      "U_table5": 0.049261735197374736
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 1,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 0,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 0,
+       "held_by_U": 0
+      }
+     }
+    },
+    "down_400": {
+     "length": 400,
+     "counts": {
+      "D": 7,
+      "A1": 2,
+      "N1": 0,
+      "N2": 0,
+      "D_table5": 17,
+      "U": 9,
+      "U_table5": 19
+     },
+     "abs_log_f_share": {
+      "D": 0.01890306888263563,
+      "A1": 0.003979520878500245,
+      "N1": 0.0,
+      "N2": 0.0,
+      "D_table5": 0.04198294704618273,
+      "U": 0.02288258976113587,
+      "U_table5": 0.045962467924682976
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 8,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 0,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 0,
+       "held_by_U": 0
+      }
+     },
+     "module_genes": {
+      "D": [
+       "Hspe1",
+       "Hsp90aa1",
+       "Hsph1",
+       "Dnaja1",
+       "Id3",
+       "Hspa8",
+       "Hsp90ab1"
+      ],
+      "A1": [
+       "Hbb-bs",
+       "Hbb-bt"
+      ],
+      "N1": [],
+      "N2": [],
+      "D_table5": [
+       "Hspe1",
+       "Odc1",
+       "Hsp90aa1",
+       "Hsph1",
+       "Hspa5",
+       "Srsf7",
+       "Tpm3",
+       "Dnaja1",
+       "Id3",
+       "Hspa8",
+       "Tubb4b",
+       "Eif5",
+       "Phlda1",
+       "Nop58",
+       "Hsp90ab1",
+       "Idi1",
+       "Pnp"
+      ]
+     },
+     "pattern_genes": {
+      "ribosomal": [
+       "Rpl22l1",
+       "Rps23",
+       "Rpl18",
+       "Rps6",
+       "Rps27l",
+       "Rpl14",
+       "Rps2",
+       "Rpl35a"
+      ],
+      "oxphos": [],
+      "mt": []
+     }
+    },
+    "down_1000": {
+     "length": 1000,
+     "counts": {
+      "D": 8,
+      "A1": 2,
+      "N1": 0,
+      "N2": 2,
+      "D_table5": 21,
+      "U": 10,
+      "U_table5": 23
+     },
+     "abs_log_f_share": {
+      "D": 0.011084459052053726,
+      "A1": 0.002198896638724319,
+      "N1": 0.0,
+      "N2": 0.001438990569573027,
+      "D_table5": 0.026226233435389837,
+      "U": 0.013283355690778043,
+      "U_table5": 0.028425130074114156
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 36,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 1,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 0,
+       "held_by_U": 0
+      }
+     }
+    }
+   },
+   "null": {
+    "D": {
+     "mapped": 32,
+     "in_universe": 32,
+     "per_decile": [
+      0,
+      0,
+      0,
+      0,
+      5,
+      4,
+      4,
+      4,
+      5,
+      10
+     ],
+     "lists": {
+      "up_100": {
+       "observed": 1,
+       "null_mean": 0.441,
+       "null_sd": 0.6315994917017571,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.37362637362637363
+      },
+      "up_400": {
+       "observed": 3,
+       "null_mean": 1.58,
+       "null_sd": 1.1794028111680044,
+       "null_q05": 0.0,
+       "null_q95": 4.0,
+       "p_at_or_above": 0.2047952047952048
+      },
+      "up_1000": {
+       "observed": 6,
+       "null_mean": 3.427,
+       "null_sd": 1.6599477179798243,
+       "null_q05": 1.0,
+       "null_q95": 6.0,
+       "p_at_or_above": 0.11188811188811189
+      },
+      "down_100": {
+       "observed": 3,
+       "null_mean": 0.508,
+       "null_sd": 0.6988736827384648,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.012987012987012988
+      },
+      "down_400": {
+       "observed": 7,
+       "null_mean": 1.874,
+       "null_sd": 1.2844351964088239,
+       "null_q05": 0.0,
+       "null_q95": 4.0,
+       "p_at_or_above": 0.000999000999000999
+      },
+      "down_1000": {
+       "observed": 8,
+       "null_mean": 4.267,
+       "null_sd": 1.7677205197190635,
+       "null_q05": 2.0,
+       "null_q95": 7.0,
+       "p_at_or_above": 0.04395604395604396
+      }
+     }
+    },
+    "A1": {
+     "mapped": 8,
+     "in_universe": 7,
+     "per_decile": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      5
+     ],
+     "lists": {
+      "up_100": {
+       "observed": 0,
+       "null_mean": 0.206,
+       "null_sd": 0.44470412833901346,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 1.0
+      },
+      "up_400": {
+       "observed": 0,
+       "null_mean": 0.654,
+       "null_sd": 0.7515642679431008,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 1.0
+      },
+      "up_1000": {
+       "observed": 1,
+       "null_mean": 1.146,
+       "null_sd": 0.9744914743770895,
+       "null_q05": 0.0,
+       "null_q95": 3.0,
+       "p_at_or_above": 0.7212787212787213
+      },
+      "down_100": {
+       "observed": 0,
+       "null_mean": 0.226,
+       "null_sd": 0.44846975943214407,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 1.0
+      },
+      "down_400": {
+       "observed": 2,
+       "null_mean": 0.786,
+       "null_sd": 0.8275801404630786,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.17682317682317683
+      },
+      "down_1000": {
+       "observed": 2,
+       "null_mean": 1.64,
+       "null_sd": 1.0561796795600242,
+       "null_q05": 0.0,
+       "null_q95": 3.0,
+       "p_at_or_above": 0.5254745254745254
+      }
+     }
+    },
+    "N1": {
+     "mapped": 13,
+     "in_universe": 13,
+     "per_decile": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      13
+     ],
+     "lists": {
+      "up_100": {
+       "observed": 5,
+       "null_mean": 0.502,
+       "null_sd": 0.701775240720623,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.000999000999000999
+      },
+      "up_400": {
+       "observed": 13,
+       "null_mean": 1.509,
+       "null_sd": 1.1615800739803814,
+       "null_q05": 0.0,
+       "null_q95": 4.0,
+       "p_at_or_above": 0.000999000999000999
+      },
+      "up_1000": {
+       "observed": 13,
+       "null_mean": 2.574,
+       "null_sd": 1.4270811331387436,
+       "null_q05": 0.0,
+       "null_q95": 5.0,
+       "p_at_or_above": 0.000999000999000999
+      },
+      "down_100": {
+       "observed": 0,
+       "null_mean": 0.552,
+       "null_sd": 0.7333715523756248,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 1.0
+      },
+      "down_400": {
+       "observed": 0,
+       "null_mean": 2.013,
+       "null_sd": 1.272969540661304,
+       "null_q05": 0.0,
+       "null_q95": 4.0,
+       "p_at_or_above": 1.0
+      },
+      "down_1000": {
+       "observed": 0,
+       "null_mean": 4.043,
+       "null_sd": 1.6685127913608977,
+       "null_q05": 1.0,
+       "null_q95": 7.0,
+       "p_at_or_above": 1.0
+      }
+     }
+    },
+    "N2": {
+     "mapped": 11,
+     "in_universe": 6,
+     "per_decile": [
+      1,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      1,
+      2
+     ],
+     "lists": {
+      "up_100": {
+       "observed": 1,
+       "null_mean": 0.121,
+       "null_sd": 0.34128503552818645,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 0.11688311688311688
+      },
+      "up_400": {
+       "observed": 1,
+       "null_mean": 0.337,
+       "null_sd": 0.5474766942352256,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 0.3006993006993007
+      },
+      "up_1000": {
+       "observed": 1,
+       "null_mean": 0.59,
+       "null_sd": 0.6680915703302552,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.4915084915084915
+      },
+      "down_100": {
+       "observed": 0,
+       "null_mean": 0.094,
+       "null_sd": 0.3020848477750171,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 1.0
+      },
+      "down_400": {
+       "observed": 0,
+       "null_mean": 0.339,
+       "null_sd": 0.5553263791567868,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 1.0
+      },
+      "down_1000": {
+       "observed": 2,
+       "null_mean": 0.709,
+       "null_sd": 0.7161227770653799,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.13386613386613386
+      }
+     }
+    },
+    "D_table5": {
+     "mapped": 137,
+     "in_universe": 136,
+     "per_decile": [
+      2,
+      3,
+      4,
+      6,
+      21,
+      14,
+      12,
+      19,
+      20,
+      35
+     ],
+     "lists": {
+      "up_100": {
+       "observed": 1,
+       "null_mean": 1.678,
+       "null_sd": 1.2521517016255992,
+       "null_q05": 0.0,
+       "null_q95": 4.0,
+       "p_at_or_above": 0.8131868131868132
+      },
+      "up_400": {
+       "observed": 6,
+       "null_mean": 6.063,
+       "null_sd": 2.269401062214694,
+       "null_q05": 3.0,
+       "null_q95": 10.0,
+       "p_at_or_above": 0.5794205794205795
+      },
+      "up_1000": {
+       "observed": 13,
+       "null_mean": 13.099,
+       "null_sd": 3.28023763757429,
+       "null_q05": 8.0,
+       "null_q95": 18.0,
+       "p_at_or_above": 0.5734265734265734
+      },
+      "down_100": {
+       "observed": 6,
+       "null_mean": 1.79,
+       "null_sd": 1.3497117180056346,
+       "null_q05": 0.0,
+       "null_q95": 4.0,
+       "p_at_or_above": 0.012987012987012988
+      },
+      "down_400": {
+       "observed": 17,
+       "null_mean": 6.889,
+       "null_sd": 2.392990891208198,
+       "null_q05": 3.0,
+       "null_q95": 11.0,
+       "p_at_or_above": 0.000999000999000999
+      },
+      "down_1000": {
+       "observed": 21,
+       "null_mean": 15.593,
+       "null_sd": 3.2747633616912037,
+       "null_q05": 10.0,
+       "null_q95": 21.0,
+       "p_at_or_above": 0.06593406593406594
+      }
+     }
+    }
+   }
+  },
+  "Endocardium": {
+   "genes_with_feng_value": 29715,
+   "nonzero_log_f": 13717,
+   "positive": 7506,
+   "negative": 6211,
+   "max_abs_log_f": 1.0700117946566148,
+   "gate_counts": {
+    "up": 5,
+    "down": 7
+   },
+   "held_share": {
+    "U": 0.006575099152753073,
+    "U_table5": 0.01711547225511918
+   },
+   "spearman_with_without": {
+    "U": 0.9982331370730692,
+    "U_table5": 0.994090175534608
+   },
+   "lists": {
+    "up_100": {
+     "length": 100,
+     "counts": {
+      "D": 1,
+      "A1": 0,
+      "N1": 0,
+      "N2": 2,
+      "D_table5": 1,
+      "U": 1,
+      "U_table5": 1
+     },
+     "abs_log_f_share": {
+      "D": 0.008315997087183077,
+      "A1": 0.0,
+      "N1": 0.0,
+      "N2": 0.021340867784187898,
+      "D_table5": 0.008315997087183077,
+      "U": 0.008315997087183077,
+      "U_table5": 0.008315997087183077
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 0,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 0,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 0,
+       "held_by_U": 0
+      }
+     }
+    },
+    "up_400": {
+     "length": 400,
+     "counts": {
+      "D": 2,
+      "A1": 3,
+      "N1": 7,
+      "N2": 2,
+      "D_table5": 3,
+      "U": 5,
+      "U_table5": 6
+     },
+     "abs_log_f_share": {
+      "D": 0.005071631228219002,
+      "A1": 0.006816673964910315,
+      "N1": 0.012899328799924357,
+      "N2": 0.00846040247220221,
+      "D_table5": 0.00703033010920731,
+      "U": 0.011888305193129316,
+      "U_table5": 0.013847004074117627
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 0,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 1,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 7,
+       "held_by_U": 0
+      }
+     },
+     "module_genes": {
+      "D": [
+       "Cebpd",
+       "Hspb1"
+      ],
+      "A1": [
+       "Hbb-bt",
+       "Hbb-y",
+       "Hba-x"
+      ],
+      "N1": [
+       "mt-Co3",
+       "mt-Nd4",
+       "mt-Co1",
+       "mt-Cytb",
+       "mt-Co2",
+       "mt-Nd3",
+       "mt-Nd5"
+      ],
+      "N2": [
+       "Malat1",
+       "Kcnq1ot1"
+      ],
+      "D_table5": [
+       "Cebpd",
+       "Zfp36l1",
+       "Hspb1"
+      ]
+     },
+     "pattern_genes": {
+      "ribosomal": [],
+      "oxphos": [
+       "Ndufa4l2"
+      ],
+      "mt": [
+       "mt-Co3",
+       "mt-Nd4",
+       "mt-Co1",
+       "mt-Cytb",
+       "mt-Co2",
+       "mt-Nd3",
+       "mt-Nd5"
+      ]
+     }
+    },
+    "up_1000": {
+     "length": 1000,
+     "counts": {
+      "D": 2,
+      "A1": 5,
+      "N1": 10,
+      "N2": 2,
+      "D_table5": 13,
+      "U": 7,
+      "U_table5": 18
+     },
+     "abs_log_f_share": {
+      "D": 0.002914103501826529,
+      "A1": 0.0051452631805645474,
+      "N1": 0.009744714782681912,
+      "N2": 0.004861254172804707,
+      "D_table5": 0.010921663885968005,
+      "U": 0.008059366682391076,
+      "U_table5": 0.016066927066532555
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 2,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 1,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 10,
+       "held_by_U": 0
+      }
+     }
+    },
+    "down_100": {
+     "length": 100,
+     "counts": {
+      "D": 5,
+      "A1": 0,
+      "N1": 0,
+      "N2": 1,
+      "D_table5": 10,
+      "U": 5,
+      "U_table5": 10
+     },
+     "abs_log_f_share": {
+      "D": 0.04740312153994396,
+      "A1": 0.0,
+      "N1": 0.0,
+      "N2": 0.01983780214234742,
+      "D_table5": 0.09500177070576159,
+      "U": 0.04740312153994396,
+      "U_table5": 0.09500177070576159
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 1,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 0,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 0,
+       "held_by_U": 0
+      }
+     }
+    },
+    "down_400": {
+     "length": 400,
+     "counts": {
+      "D": 7,
+      "A1": 0,
+      "N1": 0,
+      "N2": 1,
+      "D_table5": 17,
+      "U": 7,
+      "U_table5": 17
+     },
+     "abs_log_f_share": {
+      "D": 0.021651752134146624,
+      "A1": 0.0,
+      "N1": 0.0,
+      "N2": 0.007006317916994824,
+      "D_table5": 0.048627139589033634,
+      "U": 0.021651752134146624,
+      "U_table5": 0.048627139589033634
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 11,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 2,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 0,
+       "held_by_U": 0
+      }
+     },
+     "module_genes": {
+      "D": [
+       "Hsp90aa1",
+       "Hspe1",
+       "Hsph1",
+       "Hspa8",
+       "Jun",
+       "Hsp90ab1",
+       "Dnaja1"
+      ],
+      "A1": [],
+      "N1": [],
+      "N2": [
+       "Meg3"
+      ],
+      "D_table5": [
+       "Hsp90aa1",
+       "Odc1",
+       "Hspe1",
+       "Phlda1",
+       "Hsph1",
+       "Hspa5",
+       "Srsf7",
+       "Actg1",
+       "Hspa8",
+       "Jun",
+       "Hsp90ab1",
+       "Eif5",
+       "Tagln2",
+       "Dnaja1",
+       "Nop58",
+       "Tubb4b",
+       "Des"
+      ]
+     },
+     "pattern_genes": {
+      "ribosomal": [
+       "Rps2",
+       "Rpl36al",
+       "Rps27l",
+       "Rpl8",
+       "Rpl10a",
+       "Rps21",
+       "Rps3",
+       "Rpl41",
+       "Rpl18",
+       "Rpl4",
+       "Rpl9"
+      ],
+      "oxphos": [
+       "Atp5g2",
+       "Cox5a"
+      ],
+      "mt": []
+     }
+    },
+    "down_1000": {
+     "length": 1000,
+     "counts": {
+      "D": 9,
+      "A1": 0,
+      "N1": 0,
+      "N2": 1,
+      "D_table5": 27,
+      "U": 9,
+      "U_table5": 27
+     },
+     "abs_log_f_share": {
+      "D": 0.013399542137418115,
+      "A1": 0.0,
+      "N1": 0.0,
+      "N2": 0.003814364408733225,
+      "D_table5": 0.034439176155224016,
+      "U": 0.013399542137418115,
+      "U_table5": 0.034439176155224016
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 34,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 15,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 0,
+       "held_by_U": 0
+      }
+     }
+    }
+   },
+   "null": {
+    "D": {
+     "mapped": 32,
+     "in_universe": 32,
+     "per_decile": [
+      0,
+      0,
+      4,
+      1,
+      3,
+      5,
+      2,
+      4,
+      3,
+      10
+     ],
+     "lists": {
+      "up_100": {
+       "observed": 1,
+       "null_mean": 0.53,
+       "null_sd": 0.7318713245070035,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.4095904095904096
+      },
+      "up_400": {
+       "observed": 2,
+       "null_mean": 1.703,
+       "null_sd": 1.2595147388488066,
+       "null_q05": 0.0,
+       "null_q95": 4.0,
+       "p_at_or_above": 0.5114885114885115
+      },
+      "up_1000": {
+       "observed": 2,
+       "null_mean": 3.685,
+       "null_sd": 1.7148515141888279,
+       "null_q05": 1.0,
+       "null_q95": 7.0,
+       "p_at_or_above": 0.9150849150849151
+      },
+      "down_100": {
+       "observed": 5,
+       "null_mean": 0.609,
+       "null_sd": 0.7594048299133312,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.001998001998001998
+      },
+      "down_400": {
+       "observed": 7,
+       "null_mean": 2.143,
+       "null_sd": 1.3800200924100545,
+       "null_q05": 0.0,
+       "null_q95": 5.0,
+       "p_at_or_above": 0.002997002997002997
+      },
+      "down_1000": {
+       "observed": 9,
+       "null_mean": 4.739,
+       "null_sd": 1.8445273869697032,
+       "null_q05": 2.0,
+       "null_q95": 8.0,
+       "p_at_or_above": 0.029970029970029972
+      }
+     }
+    },
+    "A1": {
+     "mapped": 8,
+     "in_universe": 7,
+     "per_decile": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      5
+     ],
+     "lists": {
+      "up_100": {
+       "observed": 0,
+       "null_mean": 0.235,
+       "null_sd": 0.4516403203645341,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 1.0
+      },
+      "up_400": {
+       "observed": 3,
+       "null_mean": 0.623,
+       "null_sd": 0.7344456483705315,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.01898101898101898
+      },
+      "up_1000": {
+       "observed": 5,
+       "null_mean": 1.076,
+       "null_sd": 0.9268673492377878,
+       "null_q05": 0.0,
+       "null_q95": 3.0,
+       "p_at_or_above": 0.000999000999000999
+      },
+      "down_100": {
+       "observed": 0,
+       "null_mean": 0.247,
+       "null_sd": 0.4962229712913715,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 1.0
+      },
+      "down_400": {
+       "observed": 0,
+       "null_mean": 0.887,
+       "null_sd": 0.8746404952870613,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 1.0
+      },
+      "down_1000": {
+       "observed": 0,
+       "null_mean": 1.822,
+       "null_sd": 1.137369601145384,
+       "null_q05": 0.0,
+       "null_q95": 4.0,
+       "p_at_or_above": 1.0
+      }
+     }
+    },
+    "N1": {
+     "mapped": 13,
+     "in_universe": 13,
+     "per_decile": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      12
+     ],
+     "lists": {
+      "up_100": {
+       "observed": 0,
+       "null_mean": 0.544,
+       "null_sd": 0.7379760217030149,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 1.0
+      },
+      "up_400": {
+       "observed": 7,
+       "null_mean": 1.332,
+       "null_sd": 1.1211748449876286,
+       "null_q05": 0.0,
+       "null_q95": 3.0,
+       "p_at_or_above": 0.000999000999000999
+      },
+      "up_1000": {
+       "observed": 10,
+       "null_mean": 2.142,
+       "null_sd": 1.353391173189654,
+       "null_q05": 0.0,
+       "null_q95": 5.0,
+       "p_at_or_above": 0.000999000999000999
+      },
+      "down_100": {
+       "observed": 0,
+       "null_mean": 0.667,
+       "null_sd": 0.7992182115979025,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 1.0
+      },
+      "down_400": {
+       "observed": 0,
+       "null_mean": 2.187,
+       "null_sd": 1.3460471176161861,
+       "null_q05": 0.0,
+       "null_q95": 5.0,
+       "p_at_or_above": 1.0
+      },
+      "down_1000": {
+       "observed": 0,
+       "null_mean": 4.269,
+       "null_sd": 1.698683173674398,
+       "null_q05": 2.0,
+       "null_q95": 7.0,
+       "p_at_or_above": 1.0
+      }
+     }
+    },
+    "N2": {
+     "mapped": 11,
+     "in_universe": 6,
+     "per_decile": [
+      1,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3
+     ],
+     "lists": {
+      "up_100": {
+       "observed": 2,
+       "null_mean": 0.141,
+       "null_sd": 0.37850001619849666,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 0.011988011988011988
+      },
+      "up_400": {
+       "observed": 2,
+       "null_mean": 0.325,
+       "null_sd": 0.526927559207765,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 0.027972027972027972
+      },
+      "up_1000": {
+       "observed": 2,
+       "null_mean": 0.496,
+       "null_sd": 0.618357798015329,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.06493506493506493
+      },
+      "down_100": {
+       "observed": 1,
+       "null_mean": 0.156,
+       "null_sd": 0.37390346856348333,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 0.15284715284715283
+      },
+      "down_400": {
+       "observed": 1,
+       "null_mean": 0.528,
+       "null_sd": 0.6384540888925558,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.45354645354645357
+      },
+      "down_1000": {
+       "observed": 1,
+       "null_mean": 1.024,
+       "null_sd": 0.8037848406570444,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.7272727272727273
+      }
+     }
+    },
+    "D_table5": {
+     "mapped": 137,
+     "in_universe": 133,
+     "per_decile": [
+      4,
+      2,
+      9,
+      19,
+      9,
+      13,
+      13,
+      13,
+      16,
+      35
+     ],
+     "lists": {
+      "up_100": {
+       "observed": 1,
+       "null_mean": 1.94,
+       "null_sd": 1.3484132223536738,
+       "null_q05": 0.0,
+       "null_q95": 4.0,
+       "p_at_or_above": 0.8601398601398601
+      },
+      "up_400": {
+       "observed": 3,
+       "null_mean": 6.399,
+       "null_sd": 2.4219134304645706,
+       "null_q05": 3.0,
+       "null_q95": 10.0,
+       "p_at_or_above": 0.955044955044955
+      },
+      "up_1000": {
+       "observed": 13,
+       "null_mean": 13.695,
+       "null_sd": 3.5307848194758966,
+       "null_q05": 8.0,
+       "null_q95": 19.0,
+       "p_at_or_above": 0.6253746253746254
+      },
+      "down_100": {
+       "observed": 10,
+       "null_mean": 2.169,
+       "null_sd": 1.409406054132529,
+       "null_q05": 0.0,
+       "null_q95": 5.0,
+       "p_at_or_above": 0.000999000999000999
+      },
+      "down_400": {
+       "observed": 17,
+       "null_mean": 7.975,
+       "null_sd": 2.536692691243819,
+       "null_q05": 4.0,
+       "null_q95": 12.0,
+       "p_at_or_above": 0.001998001998001998
+      },
+      "down_1000": {
+       "observed": 27,
+       "null_mean": 17.53,
+       "null_sd": 3.485864491234743,
+       "null_q05": 12.0,
+       "null_q95": 23.0,
+       "p_at_or_above": 0.007992007992007992
+      }
+     }
+    }
+   }
+  },
+  "Endothelium": {
+   "genes_with_feng_value": 29715,
+   "nonzero_log_f": 14146,
+   "positive": 7950,
+   "negative": 6196,
+   "max_abs_log_f": 1.4315317517871042,
+   "gate_counts": {
+    "up": 11,
+    "down": 6
+   },
+   "held_share": {
+    "U": 0.008387677432955343,
+    "U_table5": 0.019303437645699053
+   },
+   "spearman_with_without": {
+    "U": 0.998058218924612,
+    "U_table5": 0.9936486759654446
+   },
+   "lists": {
+    "up_100": {
+     "length": 100,
+     "counts": {
+      "D": 3,
+      "A1": 0,
+      "N1": 0,
+      "N2": 2,
+      "D_table5": 3,
+      "U": 3,
+      "U_table5": 3
+     },
+     "abs_log_f_share": {
+      "D": 0.026384976012170432,
+      "A1": 0.0,
+      "N1": 0.0,
+      "N2": 0.01811162034344157,
+      "D_table5": 0.026384976012170432,
+      "U": 0.026384976012170432,
+      "U_table5": 0.026384976012170432
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 0,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 0,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 0,
+       "held_by_U": 0
+      }
+     }
+    },
+    "up_400": {
+     "length": 400,
+     "counts": {
+      "D": 9,
+      "A1": 2,
+      "N1": 2,
+      "N2": 2,
+      "D_table5": 14,
+      "U": 11,
+      "U_table5": 16
+     },
+     "abs_log_f_share": {
+      "D": 0.02264530000099555,
+      "A1": 0.0033842607941446637,
+      "N1": 0.003364154970410349,
+      "N2": 0.007259232011653737,
+      "D_table5": 0.03280205481765517,
+      "U": 0.026029560795140214,
+      "U_table5": 0.03618631561179984
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 0,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 0,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 2,
+       "held_by_U": 0
+      }
+     },
+     "module_genes": {
+      "D": [
+       "Cebpd",
+       "Hspa1a",
+       "Junb",
+       "Egr1",
+       "Nfkbia",
+       "Fos",
+       "Hspa1b",
+       "Socs3",
+       "Hspb1"
+      ],
+      "A1": [
+       "Hbb-y",
+       "Hbb-bt"
+      ],
+      "N1": [
+       "mt-Co3",
+       "mt-Nd4"
+      ],
+      "N2": [
+       "Malat1",
+       "Kcnq1ot1"
+      ],
+      "D_table5": [
+       "Cebpd",
+       "Hspa1a",
+       "Junb",
+       "Egr1",
+       "Pde4b",
+       "Gadd45g",
+       "Nfkbia",
+       "Zfp36l2",
+       "Sat1",
+       "Fos",
+       "Hspa1b",
+       "Socs3",
+       "Zfp36l1",
+       "Hspb1"
+      ]
+     },
+     "pattern_genes": {
+      "ribosomal": [],
+      "oxphos": [],
+      "mt": [
+       "mt-Co3",
+       "mt-Nd4"
+      ]
+     }
+    },
+    "up_1000": {
+     "length": 1000,
+     "counts": {
+      "D": 13,
+      "A1": 4,
+      "N1": 9,
+      "N2": 2,
+      "D_table5": 27,
+      "U": 17,
+      "U_table5": 31
+     },
+     "abs_log_f_share": {
+      "D": 0.016058344914811704,
+      "A1": 0.0034125806060538227,
+      "N1": 0.007342465652774076,
+      "N2": 0.004203802030151746,
+      "D_table5": 0.028412377616154155,
+      "U": 0.01947092552086553,
+      "U_table5": 0.03182495822220798
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 2,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 2,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 9,
+       "held_by_U": 0
+      }
+     }
+    },
+    "down_100": {
+     "length": 100,
+     "counts": {
+      "D": 3,
+      "A1": 0,
+      "N1": 0,
+      "N2": 1,
+      "D_table5": 6,
+      "U": 3,
+      "U_table5": 6
+     },
+     "abs_log_f_share": {
+      "D": 0.0324451212769868,
+      "A1": 0.0,
+      "N1": 0.0,
+      "N2": 0.02325819006494296,
+      "D_table5": 0.060518667612136964,
+      "U": 0.0324451212769868,
+      "U_table5": 0.060518667612136964
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 1,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 0,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 0,
+       "held_by_U": 0
+      }
+     }
+    },
+    "down_400": {
+     "length": 400,
+     "counts": {
+      "D": 6,
+      "A1": 0,
+      "N1": 0,
+      "N2": 1,
+      "D_table5": 12,
+      "U": 6,
+      "U_table5": 12
+     },
+     "abs_log_f_share": {
+      "D": 0.01879670338308279,
+      "A1": 0.0,
+      "N1": 0.0,
+      "N2": 0.008464667904876773,
+      "D_table5": 0.035407262348137014,
+      "U": 0.01879670338308279,
+      "U_table5": 0.035407262348137014
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 3,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 2,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 0,
+       "held_by_U": 0
+      }
+     },
+     "module_genes": {
+      "D": [
+       "Hspe1",
+       "Hsph1",
+       "Hsp90aa1",
+       "Hsp90ab1",
+       "Hspa8",
+       "Dnaja1"
+      ],
+      "A1": [],
+      "N1": [],
+      "N2": [
+       "Meg3"
+      ],
+      "D_table5": [
+       "Hspa5",
+       "Hspe1",
+       "Hsph1",
+       "Hsp90aa1",
+       "Phlda1",
+       "Srsf7",
+       "Hsp90ab1",
+       "Hspa8",
+       "Eif5",
+       "Des",
+       "Dnaja1",
+       "Nop58"
+      ]
+     },
+     "pattern_genes": {
+      "ribosomal": [
+       "Rps2",
+       "Rpl36al",
+       "Rps27l"
+      ],
+      "oxphos": [
+       "Ndufab1",
+       "Ndufs4"
+      ],
+      "mt": []
+     }
+    },
+    "down_1000": {
+     "length": 1000,
+     "counts": {
+      "D": 6,
+      "A1": 0,
+      "N1": 0,
+      "N2": 1,
+      "D_table5": 19,
+      "U": 6,
+      "U_table5": 19
+     },
+     "abs_log_f_share": {
+      "D": 0.010263700005716267,
+      "A1": 0.0,
+      "N1": 0.0,
+      "N2": 0.00462202388647904,
+      "D_table5": 0.02459659925515526,
+      "U": 0.010263700005716267,
+      "U_table5": 0.02459659925515526
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 22,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 16,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 0,
+       "held_by_U": 0
+      }
+     }
+    }
+   },
+   "null": {
+    "D": {
+     "mapped": 32,
+     "in_universe": 32,
+     "per_decile": [
+      0,
+      0,
+      2,
+      1,
+      0,
+      3,
+      6,
+      5,
+      5,
+      10
+     ],
+     "lists": {
+      "up_100": {
+       "observed": 3,
+       "null_mean": 0.548,
+       "null_sd": 0.7309105487200402,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.016983016983016984
+      },
+      "up_400": {
+       "observed": 9,
+       "null_mean": 1.85,
+       "null_sd": 1.322591867980916,
+       "null_q05": 0.0,
+       "null_q95": 4.0,
+       "p_at_or_above": 0.000999000999000999
+      },
+      "up_1000": {
+       "observed": 13,
+       "null_mean": 3.974,
+       "null_sd": 1.8173130238422401,
+       "null_q05": 1.0,
+       "null_q95": 7.0,
+       "p_at_or_above": 0.000999000999000999
+      },
+      "down_100": {
+       "observed": 3,
+       "null_mean": 0.638,
+       "null_sd": 0.757317324197413,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.022977022977022976
+      },
+      "down_400": {
+       "observed": 6,
+       "null_mean": 2.314,
+       "null_sd": 1.3435807416040204,
+       "null_q05": 0.0,
+       "null_q95": 5.0,
+       "p_at_or_above": 0.01898101898101898
+      },
+      "down_1000": {
+       "observed": 6,
+       "null_mean": 5.194,
+       "null_sd": 1.9313451514667423,
+       "null_q05": 2.0,
+       "null_q95": 9.0,
+       "p_at_or_above": 0.42357642357642356
+      }
+     }
+    },
+    "A1": {
+     "mapped": 8,
+     "in_universe": 7,
+     "per_decile": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      5
+     ],
+     "lists": {
+      "up_100": {
+       "observed": 0,
+       "null_mean": 0.183,
+       "null_sd": 0.421531361453319,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 1.0
+      },
+      "up_400": {
+       "observed": 2,
+       "null_mean": 0.512,
+       "null_sd": 0.6740254522718785,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.08791208791208792
+      },
+      "up_1000": {
+       "observed": 4,
+       "null_mean": 0.964,
+       "null_sd": 0.8668653041017708,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.003996003996003996
+      },
+      "down_100": {
+       "observed": 0,
+       "null_mean": 0.265,
+       "null_sd": 0.48683879468671354,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 1.0
+      },
+      "down_400": {
+       "observed": 0,
+       "null_mean": 0.906,
+       "null_sd": 0.8659757005331696,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 1.0
+      },
+      "down_1000": {
+       "observed": 0,
+       "null_mean": 1.794,
+       "null_sd": 1.0856991953311665,
+       "null_q05": 0.0,
+       "null_q95": 4.0,
+       "p_at_or_above": 1.0
+      }
+     }
+    },
+    "N1": {
+     "mapped": 13,
+     "in_universe": 13,
+     "per_decile": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      12
+     ],
+     "lists": {
+      "up_100": {
+       "observed": 0,
+       "null_mean": 0.465,
+       "null_sd": 0.6761894943225842,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 1.0
+      },
+      "up_400": {
+       "observed": 2,
+       "null_mean": 1.157,
+       "null_sd": 1.019504973205325,
+       "null_q05": 0.0,
+       "null_q95": 3.0,
+       "p_at_or_above": 0.3256743256743257
+      },
+      "up_1000": {
+       "observed": 9,
+       "null_mean": 1.986,
+       "null_sd": 1.321949905083983,
+       "null_q05": 0.0,
+       "null_q95": 4.0,
+       "p_at_or_above": 0.000999000999000999
+      },
+      "down_100": {
+       "observed": 0,
+       "null_mean": 0.562,
+       "null_sd": 0.7474722166841485,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 1.0
+      },
+      "down_400": {
+       "observed": 0,
+       "null_mean": 2.037,
+       "null_sd": 1.3120031830572485,
+       "null_q05": 0.0,
+       "null_q95": 4.0,
+       "p_at_or_above": 1.0
+      },
+      "down_1000": {
+       "observed": 0,
+       "null_mean": 4.168,
+       "null_sd": 1.6384323179370153,
+       "null_q05": 2.0,
+       "null_q95": 7.0,
+       "p_at_or_above": 1.0
+      }
+     }
+    },
+    "N2": {
+     "mapped": 11,
+     "in_universe": 6,
+     "per_decile": [
+      1,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3
+     ],
+     "lists": {
+      "up_100": {
+       "observed": 2,
+       "null_mean": 0.117,
+       "null_sd": 0.34847156617496416,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 0.007992007992007992
+      },
+      "up_400": {
+       "observed": 2,
+       "null_mean": 0.306,
+       "null_sd": 0.5259663873677107,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 0.026973026973026972
+      },
+      "up_1000": {
+       "observed": 2,
+       "null_mean": 0.498,
+       "null_sd": 0.6468496072615445,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.07092907092907093
+      },
+      "down_100": {
+       "observed": 1,
+       "null_mean": 0.142,
+       "null_sd": 0.36874377550268145,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 0.13586413586413587
+      },
+      "down_400": {
+       "observed": 1,
+       "null_mean": 0.496,
+       "null_sd": 0.6327593416018323,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.4255744255744256
+      },
+      "down_1000": {
+       "observed": 1,
+       "null_mean": 0.948,
+       "null_sd": 0.8024586842572894,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.6763236763236763
+      }
+     }
+    },
+    "D_table5": {
+     "mapped": 137,
+     "in_universe": 135,
+     "per_decile": [
+      4,
+      3,
+      7,
+      12,
+      12,
+      11,
+      15,
+      16,
+      14,
+      41
+     ],
+     "lists": {
+      "up_100": {
+       "observed": 3,
+       "null_mean": 2.027,
+       "null_sd": 1.4283946623084642,
+       "null_q05": 0.0,
+       "null_q95": 5.0,
+       "p_at_or_above": 0.35064935064935066
+      },
+      "up_400": {
+       "observed": 14,
+       "null_mean": 6.404,
+       "null_sd": 2.351236336975148,
+       "null_q05": 3.0,
+       "null_q95": 10.0,
+       "p_at_or_above": 0.002997002997002997
+      },
+      "up_1000": {
+       "observed": 27,
+       "null_mean": 14.063,
+       "null_sd": 3.390948175588876,
+       "null_q05": 9.0,
+       "null_q95": 20.0,
+       "p_at_or_above": 0.000999000999000999
+      },
+      "down_100": {
+       "observed": 6,
+       "null_mean": 2.361,
+       "null_sd": 1.513595048211367,
+       "null_q05": 0.0,
+       "null_q95": 5.0,
+       "p_at_or_above": 0.03496503496503497
+      },
+      "down_400": {
+       "observed": 12,
+       "null_mean": 8.617,
+       "null_sd": 2.765856279881686,
+       "null_q05": 4.0,
+       "null_q95": 13.0,
+       "p_at_or_above": 0.14185814185814186
+      },
+      "down_1000": {
+       "observed": 19,
+       "null_mean": 19.001,
+       "null_sd": 3.7417910150087215,
+       "null_q05": 13.0,
+       "null_q95": 25.0,
+       "p_at_or_above": 0.5344655344655345
+      }
+     }
+    }
+   }
+  },
+  "Epicardium": {
+   "genes_with_feng_value": 29715,
+   "nonzero_log_f": 14041,
+   "positive": 8099,
+   "negative": 5942,
+   "max_abs_log_f": 1.2882104085131723,
+   "gate_counts": {
+    "up": 17,
+    "down": 3
+   },
+   "held_share": {
+    "U": 0.010702680617621734,
+    "U_table5": 0.02256007419830253
+   },
+   "spearman_with_without": {
+    "U": 0.9978144352423378,
+    "U_table5": 0.9936731319723108
+   },
+   "lists": {
+    "up_100": {
+     "length": 100,
+     "counts": {
+      "D": 3,
+      "A1": 3,
+      "N1": 0,
+      "N2": 3,
+      "D_table5": 4,
+      "U": 6,
+      "U_table5": 7
+     },
+     "abs_log_f_share": {
+      "D": 0.03158821560761942,
+      "A1": 0.03732932800332914,
+      "N1": 0.0,
+      "N2": 0.026720824227033042,
+      "D_table5": 0.04910784277876833,
+      "U": 0.06891754361094854,
+      "U_table5": 0.08643717078209745
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 0,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 0,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 0,
+       "held_by_U": 0
+      }
+     }
+    },
+    "up_400": {
+     "length": 400,
+     "counts": {
+      "D": 13,
+      "A1": 4,
+      "N1": 0,
+      "N2": 3,
+      "D_table5": 18,
+      "U": 17,
+      "U_table5": 22
+     },
+     "abs_log_f_share": {
+      "D": 0.032592566380646344,
+      "A1": 0.016585265300947755,
+      "N1": 0.0,
+      "N2": 0.010738778101583232,
+      "D_table5": 0.04777235426207048,
+      "U": 0.049177831681594106,
+      "U_table5": 0.06435761956301825
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 1,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 2,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 0,
+       "held_by_U": 0
+      }
+     },
+     "module_genes": {
+      "D": [
+       "Cebpb",
+       "Fos",
+       "Hspa1a",
+       "Egr1",
+       "Junb",
+       "Btg2",
+       "Hspb1",
+       "Ubc",
+       "Socs3",
+       "Jund",
+       "Hspa1b",
+       "Jun",
+       "Nfkbia"
+      ],
+      "A1": [
+       "Hbb-bt",
+       "Hbb-bs",
+       "Hba-a1",
+       "Hbb-y"
+      ],
+      "N1": [],
+      "N2": [
+       "Meg3",
+       "Malat1",
+       "Kcnq1ot1"
+      ],
+      "D_table5": [
+       "Dcn",
+       "Cebpb",
+       "Fos",
+       "Hspa1a",
+       "Egr1",
+       "Zfp36l1",
+       "Junb",
+       "Klf2",
+       "Btg2",
+       "Hspb1",
+       "Ubc",
+       "Socs3",
+       "Jund",
+       "Hspa1b",
+       "Sat1",
+       "Jun",
+       "Klf4",
+       "Nfkbia"
+      ]
+     },
+     "pattern_genes": {
+      "ribosomal": [
+       "Rps27"
+      ],
+      "oxphos": [
+       "Cox6b2",
+       "Ndufa6"
+      ],
+      "mt": []
+     }
+    },
+    "up_1000": {
+     "length": 1000,
+     "counts": {
+      "D": 15,
+      "A1": 5,
+      "N1": 3,
+      "N2": 3,
+      "D_table5": 25,
+      "U": 20,
+      "U_table5": 30
+     },
+     "abs_log_f_share": {
+      "D": 0.020748012930179856,
+      "A1": 0.010739257528408703,
+      "N1": 0.002060562727268035,
+      "N2": 0.006389830131099052,
+      "D_table5": 0.0330206165407231,
+      "U": 0.03148727045858856,
+      "U_table5": 0.04375987406913181
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 4,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 8,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 3,
+       "held_by_U": 0
+      }
+     }
+    },
+    "down_100": {
+     "length": 100,
+     "counts": {
+      "D": 3,
+      "A1": 0,
+      "N1": 0,
+      "N2": 0,
+      "D_table5": 7,
+      "U": 3,
+      "U_table5": 7
+     },
+     "abs_log_f_share": {
+      "D": 0.028137652158744034,
+      "A1": 0.0,
+      "N1": 0.0,
+      "N2": 0.0,
+      "D_table5": 0.07043107790249555,
+      "U": 0.028137652158744034,
+      "U_table5": 0.07043107790249555
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 0,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 0,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 0,
+       "held_by_U": 0
+      }
+     }
+    },
+    "down_400": {
+     "length": 400,
+     "counts": {
+      "D": 3,
+      "A1": 0,
+      "N1": 0,
+      "N2": 0,
+      "D_table5": 13,
+      "U": 3,
+      "U_table5": 13
+     },
+     "abs_log_f_share": {
+      "D": 0.010040265588462303,
+      "A1": 0.0,
+      "N1": 0.0,
+      "N2": 0.0,
+      "D_table5": 0.03814944126072253,
+      "U": 0.010040265588462303,
+      "U_table5": 0.03814944126072253
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 3,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 0,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 0,
+       "held_by_U": 0
+      }
+     },
+     "module_genes": {
+      "D": [
+       "Hsph1",
+       "Hspe1",
+       "Hsp90aa1"
+      ],
+      "A1": [],
+      "N1": [],
+      "N2": [],
+      "D_table5": [
+       "Phlda1",
+       "Idi1",
+       "Hsph1",
+       "Hspe1",
+       "Hsp90aa1",
+       "Srsf7",
+       "Odc1",
+       "Nop58",
+       "Klf6",
+       "Hspa5",
+       "Tagln2",
+       "Tpm3",
+       "Tubb6"
+      ]
+     },
+     "pattern_genes": {
+      "ribosomal": [
+       "Rps27l",
+       "Rps2",
+       "Rpl36al"
+      ],
+      "oxphos": [],
+      "mt": []
+     }
+    },
+    "down_1000": {
+     "length": 1000,
+     "counts": {
+      "D": 6,
+      "A1": 0,
+      "N1": 0,
+      "N2": 0,
+      "D_table5": 22,
+      "U": 6,
+      "U_table5": 22
+     },
+     "abs_log_f_share": {
+      "D": 0.007579939770837857,
+      "A1": 0.0,
+      "N1": 0.0,
+      "N2": 0.0,
+      "D_table5": 0.027556687960114873,
+      "U": 0.007579939770837857,
+      "U_table5": 0.027556687960114873
+     },
+     "patterns": {
+      "ribosomal": {
+       "genes": 4,
+       "held_by_U": 0
+      },
+      "oxphos": {
+       "genes": 5,
+       "held_by_U": 0
+      },
+      "mt": {
+       "genes": 0,
+       "held_by_U": 0
+      }
+     }
+    }
+   },
+   "null": {
+    "D": {
+     "mapped": 32,
+     "in_universe": 32,
+     "per_decile": [
+      0,
+      0,
+      1,
+      3,
+      1,
+      1,
+      4,
+      4,
+      5,
+      13
+     ],
+     "lists": {
+      "up_100": {
+       "observed": 3,
+       "null_mean": 0.777,
+       "null_sd": 0.8614017721208918,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.04295704295704296
+      },
+      "up_400": {
+       "observed": 13,
+       "null_mean": 2.055,
+       "null_sd": 1.3067833342534954,
+       "null_q05": 0.0,
+       "null_q95": 4.0,
+       "p_at_or_above": 0.000999000999000999
+      },
+      "up_1000": {
+       "observed": 15,
+       "null_mean": 3.933,
+       "null_sd": 1.791010530041272,
+       "null_q05": 1.0,
+       "null_q95": 7.0,
+       "p_at_or_above": 0.000999000999000999
+      },
+      "down_100": {
+       "observed": 3,
+       "null_mean": 0.819,
+       "null_sd": 0.846732517360681,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.03796203796203796
+      },
+      "down_400": {
+       "observed": 3,
+       "null_mean": 2.783,
+       "null_sd": 1.4642592171658182,
+       "null_q05": 1.0,
+       "null_q95": 5.0,
+       "p_at_or_above": 0.5444555444555444
+      },
+      "down_1000": {
+       "observed": 6,
+       "null_mean": 5.801,
+       "null_sd": 1.9827582632107048,
+       "null_q05": 3.0,
+       "null_q95": 9.0,
+       "p_at_or_above": 0.5374625374625375
+      }
+     }
+    },
+    "A1": {
+     "mapped": 8,
+     "in_universe": 7,
+     "per_decile": [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      5
+     ],
+     "lists": {
+      "up_100": {
+       "observed": 3,
+       "null_mean": 0.248,
+       "null_sd": 0.48241966038785017,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 0.001998001998001998
+      },
+      "up_400": {
+       "observed": 4,
+       "null_mean": 0.555,
+       "null_sd": 0.7095621737934446,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.000999000999000999
+      },
+      "up_1000": {
+       "observed": 5,
+       "null_mean": 0.916,
+       "null_sd": 0.896519797744449,
+       "null_q05": 0.0,
+       "null_q95": 3.0,
+       "p_at_or_above": 0.000999000999000999
+      },
+      "down_100": {
+       "observed": 0,
+       "null_mean": 0.298,
+       "null_sd": 0.5210254000214072,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 1.0
+      },
+      "down_400": {
+       "observed": 0,
+       "null_mean": 0.954,
+       "null_sd": 0.8948098595146818,
+       "null_q05": 0.0,
+       "null_q95": 3.0,
+       "p_at_or_above": 1.0
+      },
+      "down_1000": {
+       "observed": 0,
+       "null_mean": 1.744,
+       "null_sd": 1.079643288141796,
+       "null_q05": 0.0,
+       "null_q95": 4.0,
+       "p_at_or_above": 1.0
+      }
+     }
+    },
+    "N1": {
+     "mapped": 13,
+     "in_universe": 13,
+     "per_decile": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      11
+     ],
+     "lists": {
+      "up_100": {
+       "observed": 0,
+       "null_mean": 0.58,
+       "null_sd": 0.7390170134348371,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 1.0
+      },
+      "up_400": {
+       "observed": 0,
+       "null_mean": 1.23,
+       "null_sd": 1.013966532055239,
+       "null_q05": 0.0,
+       "null_q95": 3.0,
+       "p_at_or_above": 1.0
+      },
+      "up_1000": {
+       "observed": 3,
+       "null_mean": 2.075,
+       "null_sd": 1.2934635858995212,
+       "null_q05": 0.0,
+       "null_q95": 4.0,
+       "p_at_or_above": 0.33666333666333664
+      },
+      "down_100": {
+       "observed": 0,
+       "null_mean": 0.622,
+       "null_sd": 0.7769940281107185,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 1.0
+      },
+      "down_400": {
+       "observed": 0,
+       "null_mean": 2.063,
+       "null_sd": 1.2643692615805044,
+       "null_q05": 0.0,
+       "null_q95": 4.0,
+       "p_at_or_above": 1.0
+      },
+      "down_1000": {
+       "observed": 0,
+       "null_mean": 3.861,
+       "null_sd": 1.56592820114178,
+       "null_q05": 1.0,
+       "null_q95": 6.0,
+       "p_at_or_above": 1.0
+      }
+     }
+    },
+    "N2": {
+     "mapped": 11,
+     "in_universe": 5,
+     "per_decile": [
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3
+     ],
+     "lists": {
+      "up_100": {
+       "observed": 3,
+       "null_mean": 0.133,
+       "null_sd": 0.35417006710962523,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 0.000999000999000999
+      },
+      "up_400": {
+       "observed": 3,
+       "null_mean": 0.292,
+       "null_sd": 0.5128342802494769,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 0.001998001998001998
+      },
+      "up_1000": {
+       "observed": 3,
+       "null_mean": 0.472,
+       "null_sd": 0.6273831441867158,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 0.001998001998001998
+      },
+      "down_100": {
+       "observed": 0,
+       "null_mean": 0.184,
+       "null_sd": 0.4003801996906245,
+       "null_q05": 0.0,
+       "null_q95": 1.0,
+       "p_at_or_above": 1.0
+      },
+      "down_400": {
+       "observed": 0,
+       "null_mean": 0.583,
+       "null_sd": 0.67791634481739,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 1.0
+      },
+      "down_1000": {
+       "observed": 0,
+       "null_mean": 0.968,
+       "null_sd": 0.8170946356718073,
+       "null_q05": 0.0,
+       "null_q95": 2.0,
+       "p_at_or_above": 1.0
+      }
+     }
+    },
+    "D_table5": {
+     "mapped": 137,
+     "in_universe": 131,
+     "per_decile": [
+      5,
+      3,
+      7,
+      13,
+      8,
+      9,
+      12,
+      16,
+      16,
+      42
+     ],
+     "lists": {
+      "up_100": {
+       "observed": 4,
+       "null_mean": 2.5,
+       "null_sd": 1.460182225659569,
+       "null_q05": 0.0,
+       "null_q95": 5.0,
+       "p_at_or_above": 0.22777222777222778
+      },
+      "up_400": {
+       "observed": 18,
+       "null_mean": 6.892,
+       "null_sd": 2.5268004908818424,
+       "null_q05": 3.0,
+       "null_q95": 11.0,
+       "p_at_or_above": 0.000999000999000999
+      },
+      "up_1000": {
+       "observed": 25,
+       "null_mean": 14.097,
+       "null_sd": 3.5281778638610386,
+       "null_q05": 8.0,
+       "null_q95": 20.0,
+       "p_at_or_above": 0.002997002997002997
+      },
+      "down_100": {
+       "observed": 7,
+       "null_mean": 2.613,
+       "null_sd": 1.5137775670561782,
+       "null_q05": 0.0,
+       "null_q95": 5.0,
+       "p_at_or_above": 0.01098901098901099
+      },
+      "down_400": {
+       "observed": 13,
+       "null_mean": 9.183,
+       "null_sd": 2.810588979272923,
+       "null_q05": 5.0,
+       "null_q95": 14.0,
+       "p_at_or_above": 0.1068931068931069
+      },
+      "down_1000": {
+       "observed": 22,
+       "null_mean": 19.256,
+       "null_sd": 3.8048575454201887,
+       "null_q05": 13.0,
+       "null_q95": 26.0,
+       "p_at_or_above": 0.26373626373626374
+      }
+     }
+    }
+   }
+  }
+ },
+ "union_file": {
+  "path": "experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv",
+  "sha256": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841"
+ },
+ "feng": {
+  "file": "data/external/feng2022_gse193346_geo/cd1_stats.npz",
+  "sha256": "28f188fb9409984142a70a5a940dde3d1d3187b033d94ee2d26337a216f295c3",
+  "bracket": [
+   "E9.5",
+   "E14.5"
+  ],
+  "pseudocount_cp10k": 0.5,
+  "min_cells_ext": 10,
+  "mapped_genes": 29715,
+  "of_genes": 32285,
+  "groups": {
+   "CM": {
+    "feng_labels": [
+     "ventricular_cm",
+     "atrial_cm"
+    ]
+   },
+   "Endocardium": {
+    "feng_labels": [
+     "endocardial_ec"
+    ]
+   },
+   "Endothelium": {
+    "feng_labels": [
+     "endocardial_ec",
+     "vascular_ec"
+    ]
+   },
+   "Epicardium": {
+    "feng_labels": [
+     "epicardial"
+    ]
+   }
+  }
+ },
+ "inputs": {
+  "config": {
+   "path": "configs/t1_hygiene.yaml",
+   "sha256": "63d9b252faf2d90f99b645d5a5dfb748c356ee9f5f031701156332e7e4fa660b"
+  },
+  "extract D": {
+   "path": "experiments/external/extracts/vdb2017_table1.tsv",
+   "sha256": "3335efdfd9510e0887c784ebf2589079d9324b25f6ce0626a90bf0630559539f"
+  },
+  "extract N2": {
+   "path": "experiments/external/extracts/bakken2018_s6_n2.tsv",
+   "sha256": "79c29283b06e0b2dfa971388d70888559fc2dc195945823b4d5009a14d6769c3"
+  },
+  "extract D_table5": {
+   "path": "experiments/external/extracts/vdb2017_table5.tsv",
+   "sha256": "e773a3d3029207b04f4417484d4087a453d9daf3b032c3876d63ac4be8353c89"
+  },
+  "Feng statistics": {
+   "path": "data/external/feng2022_gse193346_geo/cd1_stats.npz",
+   "sha256": "28f188fb9409984142a70a5a940dde3d1d3187b033d94ee2d26337a216f295c3"
+  },
+  "T1 gene names": {
+   "path": "T1/E9.5_RNA.h5ad",
+   "sha256": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+   "names_sha256": "807549e15be019899fa83cbab864bec87ad278f60c272e39819c7302cc2285b8"
+  },
+  "held-flat list": {
+   "path": "experiments/t1_direction/results/held_flat_genes.csv",
+   "sha256": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c"
+  }
+ },
+ "outputs": {
+  "hygiene_genes.csv": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841",
+  "n12_hygiene_size.txt": "b0e5e6de9dcd0710edc37ae118c829a7dba38215eb2f437ccef9679a6bae4fff"
+ },
+ "provenance": {
+  "commit": "f894bd2bf47214f5d2ab236e95bcd85befd37e42",
+  "tree_clean": true,
+  "utc": "2026-11-06T06:23:43Z",
+  "rerun_row": null
+ }
+}

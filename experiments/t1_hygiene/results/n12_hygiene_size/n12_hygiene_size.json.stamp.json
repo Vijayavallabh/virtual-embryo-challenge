@@ -1,0 +1,18 @@
+{
+ "version": 1,
+ "file": "n12_hygiene_size.json",
+ "sha256": "ff1b835c116d7e11adb1bef2469caa6d199c177c0f568f87fccab211e247cc63",
+ "size": 62809,
+ "commit": "f894bd2bf47214f5d2ab236e95bcd85befd37e42",
+ "clean": true,
+ "why": null,
+ "unclean": [],
+ "unclean_count": 0,
+ "start_commit": "f894bd2bf47214f5d2ab236e95bcd85befd37e42",
+ "started_utc": "2026-11-06T06:23:35+00:00",
+ "created_utc": "2026-11-06T06:23:43+00:00",
+ "hostname": "p01r10srv05",
+ "argv": [
+  "experiments/t1_hygiene/n12_hygiene_size.py"
+ ]
+}

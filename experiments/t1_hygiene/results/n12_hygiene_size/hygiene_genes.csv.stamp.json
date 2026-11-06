@@ -1,0 +1,18 @@
+{
+ "version": 1,
+ "file": "hygiene_genes.csv",
+ "sha256": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841",
+ "size": 1620,
+ "commit": "f894bd2bf47214f5d2ab236e95bcd85befd37e42",
+ "clean": true,
+ "why": null,
+ "unclean": [],
+ "unclean_count": 0,
+ "start_commit": "f894bd2bf47214f5d2ab236e95bcd85befd37e42",
+ "started_utc": "2026-11-06T06:23:35+00:00",
+ "created_utc": "2026-11-06T06:23:43+00:00",
+ "hostname": "p01r10srv05",
+ "argv": [
+  "experiments/t1_hygiene/n12_hygiene_size.py"
+ ]
+}
