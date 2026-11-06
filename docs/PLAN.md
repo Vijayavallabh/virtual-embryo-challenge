@@ -258,6 +258,25 @@ subsets) and the captain confirmed the licence (`EXTERNAL_DATA.md` X002). E10.5'
 chamber mix puts cardiomyocytes at 26.5% of heart cells (E9.5: 66%; endocardium, epicardium and blood are larger at
 E10.5), against s1's planned 58%: the s1 share is refit and put to the captain before the s1 freeze.
 
+(2026-11-06, R2: the Feng-direction hygiene, entering by the captain's ruling 2026-11-06 (e) and his A15 reading
+(`docs/DATA_POLICY.md` 2026-11-06 (b)); its gate waits on his sign-off before N12 runs. `experiments/harness/TRIES.md`
+R2 and N12 fix its classes, constants and gate.) The provenance rule for its gene sets:
+1. No gene is added to or removed from a module by hand. Each module is the output of committed code applied only to
+   registered sources:
+   - van den Brink 2017 Supplementary Table 1 (X007) and Bakken 2018 S6 Table (X008), each read from a file whose
+     sha256 is pinned in `configs/t1_hygiene.yaml`;
+   - two annotation patterns on Feng's gene symbols (X002): ^Hb[ab]-, whose basis is X009, and mt-.
+2. No set is built from in-window measurements, none from a perturbation of Ctnnb1 or Gata4, none from E10.5's or any
+   T1 truth's DE genes, and none from released T1 expression. T1 enters only as gene names, for the exact-symbol
+   mapping.
+3. A module only holds genes at f = 1 in Feng's direction, for the cells M1 moves along it.
+   - No external level or direction enters a cell.
+   - R1's cells, every share, the count, depth, size and scope, and the frozen s2 rule are untouched.
+   - A changed s1 sends T1's s2 back to the captain.
+4. N12 records the module lists, their sha256 and the counts per module. Each T1 build stamp records the commit, the
+   sources' sha256 and the union's sha256.
+5. `METHOD_SUMMARY.md` describes the procedure at the build commit.
+
 ### 4.2 T2 embryo: E7.75 interpolation (weight 0.5)
 
 Pipeline:
@@ -1421,3 +1440,25 @@ open. No organiser reply to any of the four emails as of then.
   - **What stays.** T1's composition keeps today's within-category shares. The captain can reinstate the quota by
     20 Nov. The Feng-direction hygiene stays as ruled: +0.10 (-0.3 to +0.4), a bounded downside, and a target-free
     size check that can stop it before the build.
+- 2026-11-06 (g), R2 (the Feng-direction hygiene) and N12 registered in `experiments/harness/TRIES.md`, with X007-X009
+  and an X002 amendment in `EXTERNAL_DATA.md` and its provenance rule in section 4.1.
+  - **How they were made.** Design workflow wf_6253eea5-9c9: a read-only designer, then an adversarial reviewer
+    (verdict "fix"). The fixes are in the row:
+    - the design's ambient rule on Feng's statistics (A2) is dropped, since it was unbounded;
+    - the "not built" branch is a size floor (fewer than 10 of 400 in every list), not twice a null that it could
+      never fail to clear;
+    - each module is read against a decile-matched null, for information;
+    - N1 rests on genome annotation, not on a misread of Bakken;
+    - the nuclei premise is cited from the organisers' Data-page text;
+    - `--no-hold-unbracketed` keeps its byte-identical rebuild, and a Blood guard is added;
+    - the outputs go to a folder with no target-derived content.
+  - **The cycling design's review** (same workflow) returned "stop", since the quota is dropped ((f)). Its findings
+    confirm the drop: cross-lab processing bias, a sign guard that measures only sampling noise, mismatched call
+    depths, and a mis-described gene-list source.
+  - **Put to the captain before N12 runs** (the sign-off practice since 2026-11-04): a plain summary of R2's classes,
+    constants and gate.
+  - **Found outside the change** (the cycling reviewer, low): `build_t1` stores `realised = composition(pop)` at full
+    float precision in its build record, and those fractions' denominators give the closed test count;
+    `_hide_counts` strips only `n_cells`. It is to be fixed at the hygiene build commit (round or strip the stored
+    composition).
+  - Process notes: `docs/DATA_POLICY.md` 2026-11-06 (c).

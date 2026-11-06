@@ -715,3 +715,34 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     dropped the same day as a method decision (`docs/PLAN.md` decision log 2026-11-06 (f)). The blood direction from
     globin anchors stays closed (it amends R1). A15's cross-modal line still closes every new cross-modal input.
   - A real organiser answer on A15 replaces this reading the day it arrives.
+- 2026-11-06 (c), process notes from the T1 design workflow wf_6253eea5-9c9 (a designer and an adversarial reviewer
+  for each of the hygiene and the cycling quota; read-only; nothing written in the repository or on the DGX, no DGX job).
+  No test file, board file, Data page or leaderboard was opened, and no target or score was read.
+  - **Met but not recorded.**
+    - *Borderline class B, the cycling designer:* a PubMed abstract returned by a metadata call carried a gene-level
+      Gata4 statement in a miR-200-inhibitor model. It is not a Gata4 knockout finding. Nothing further was read and
+      nothing was used.
+    - *Phenotype only, the same designer:* a stage-token scan of the GSE272154 series record surfaced the mutant
+      model's lethality by E16.5. This is a phenotype at a stage outside every window, not a barred class, and the
+      full records were deleted from the scratchpad.
+  - **Possible class A, local and already committed.** `docs/DATA_NOTES.md` lines 145-151 carry the organisers'
+    qualitative Data-page text on the E12.5 dissection and the T1 assay. The hygiene reviewer read it once; only the
+    statement that applies to every T1 sample (nuclei, SoupX) is used, in R2's reason.
+  - **Displays of committed aggregate or validation figures; nothing used.**
+    - E10.5 category-level figures in TRIES N2 and R1, PLAN 4.1, `docs/S2_RULES.md`'s T1 section, `cross_critique.md`
+      C5, `task-b.md` line 106, `docs/DATA_NOTES.md` line 156 and `configs/pseudo_tasks.yaml` line 31. None is a
+      within-category or cycling figure.
+    - Comment fragments with numbers from a names-only grep of `configs/t1_chamber_classes.yaml`.
+    - `docs/CHALLENGE.md` line 119: the validation-board anchors of T1 val and T3 gata4 (unlocked validation boards,
+      not test boards).
+    - `docs/DATA_NOTES.md` inventory lines: the cell and type counts of the T2 heart E10.5 validation file.
+  - **Harness-saved outputs.** The cycling reviewer's two GEO text fetches were saved by the harness under
+    `~/.claude-account`; they were not opened.
+  - **Tools and files.**
+    - Python: system `python3 -I -B` (standard library only) for the external tables in the session scratchpad, and
+      `.venv/bin/python -I -B` once, for a names-only YAML parse.
+    - Downloads stayed in the scratchpad: the van den Brink supplementary PDF and Bakken's S6 table, two copies each.
+    - The pinned scorer was read for formulas only (lines 125-189).
+    - Reads beyond the brief's list: `experiments/t1_direction/config.yaml` and `dirlib.py`,
+      `experiments/external/sources.yaml`, the header of `feng2022_geo.py`, test files, and the screened `task-h.md`
+      and `task-a.md`.
