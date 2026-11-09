@@ -1656,3 +1656,13 @@ open. No organiser reply to any of the four emails as of then.
   - **What the tournament can say.** It is a stand-in test on released backtests. A gate pass says T1's platform can
     carry a Feng-bracket signal and is not independent of the earlier readout on E8.5 -> E9.5. It changes M1 only by his
     ruling, and only through T17 or T18 at or above the similarity floor.
+- 2026-11-10 (g), the late-proxy stand-in's stage label corrected, before any try.
+  - **What happened.** N20's first run (f1103d2, target-free) stopped the tournament: Feng's file has no stage labelled
+    E18.5. Its stages are E9.5, E14.5, E15.5, E16.5, E17.5, E18, P0, P1, P2, P3, P4, P5, P7 and P9. The design, and the
+    AI assistant's recommendation of 2026-11-09, named E18.5 without checking the file's labels.
+  - **By N20's row** T13-T18 as registered did not run and do not count, and a rerun is a new row.
+  - **The correction.** N20b and the amended T13-T18 rows use Feng's E14.5 -> E18 (read as day 18.0), a 3.5-day bracket,
+    so a one-day step takes 2/7 of it, not 1/4. It is the same stage the captain approved under a wrong label and not a
+    new data use, but it goes to him before N20b reads that stage. If he declines, T13-T18 are dropped and M1 is
+    unaffected. The code change is at e2af71f, whose message says the rows were amended too; they are amended in the
+    commit after it.
