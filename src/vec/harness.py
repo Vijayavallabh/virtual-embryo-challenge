@@ -538,6 +538,53 @@ def _copy_herd(ctx: BuildContext) -> Stage:
     return finish(ctx, pool, dense(pool[:, g].X[rows]).astype(np.float32), coords)
 
 
+# T1 try T11 (experiments/harness/TRIES.md, registered before its run): a mean-free within-type momentum on top of B0
+_G_MOM_PREP: dict = {}
+
+
+def _g_mom_factors(ctx: BuildContext, ref: ad.AnnData, src: str, start: ad.AnnData, start_src: str,
+                   shares: Mapping[str, float]):
+    """Try T11's per-metacell factors for this fold, fitted once per pair of loaded inputs (the harness hands every
+    seed the same objects): OT within each chamber category from the start stage to the reference in a PCA of the fold's
+    inputs, metacells of the reference cells, the log ratio of each metacell's mean CP10k to its transported partners'
+    (start-stage) mean, the category's mean removed, damped by B0_DAMPING, zeroed and clipped
+    (`vec.t1_state_transport`). ref and start: classified copies of the inputs, as `_g_mom` makes them."""
+    from vec import t1_scope
+    from vec import t1_state_transport as ts
+
+    objs = (ctx.inputs[ctx.task.reference_role], ctx.inputs["start"])
+    hit = _G_MOM_PREP.get("fold")
+    if hit is None or any(a is not b for a, b in zip(hit["inputs"], objs, strict=True)):
+        spec = t1_scope.load_spec()
+        fit = ts.fit_state_factors(start, ref, "later", [c for c, s in shares.items() if s > 0],
+                                   earlier_fallback=spec.fallbacks(start_src), later_fallback=spec.fallbacks(src))
+        _G_MOM_PREP.clear()
+        hit = _G_MOM_PREP["fold"] = {"inputs": objs, "factors": ts.finish_momentum(fit, B0_DAMPING)}
+    return hit["factors"]
+
+
+def _g_mom(ctx: BuildContext) -> Stage:
+    """Try T11: B0's cells and shift (the same draws and factors, `vec.t1_state_transport.b0_population`) with a
+    within-type momentum per reference-stage metacell on top, applied through `vec.core.apply_factors`; cells of R1's
+    held types (labels with no Feng direction) get no within-type factor. Backtests: start E8.5, ref E9.5; at test
+    start would be E9.5 and ref E10.5 (promotion needs the captain's ruling)."""
+    from vec import t1_scope
+    from vec import t1_state_transport as ts
+
+    role = ctx.task.reference_role
+    ref, src = _shallow(ctx.inputs[role]), ctx.task.role_stems[role]
+    start, start_src = _shallow(ctx.inputs["start"]), ctx.task.role_stems["start"]
+    shares = t1_chamber_shares(ref, src)
+    held = list(ctx.derived["t1_held_flat"])
+    pop = ts.b0_population(ref, start, shares, count_for(ctx.board, ref.n_obs), ctx.seed, held, ref_source=src,
+                           start_source=start_src, damping=B0_DAMPING)
+    factors = _g_mom_factors(ctx, ref, src, start, start_src, shares)
+    labels = pop.obs[t1_scope.LABEL_KEY].astype(str).to_numpy()
+    no_edit = np.isin(labels, sorted(ts.r1_unbracketed_labels(np.unique(labels))))
+    moved, _ = ts.apply_state_factors(pop, factors, held, [ctx.seed, 5], rescale=False, no_edit=no_edit)
+    return finish(ctx, ref, dense(moved[:, ctx.board.genes].X).astype(np.float32), None)
+
+
 def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool = False) -> Stage:
     """B0 on a T2 board: real reference cells at the count rule, moved in count space by the per-type change of the
     harmonised lineage level (obs["merged"]; groups without a stable cross-stage meaning held flat). Extrapolation:
@@ -1119,6 +1166,12 @@ CANDIDATES = {
     "copy_herd": Candidate("copy_herd", frozenset({"T1"}), _ANY, _copy_herd,
                            {"what": "a copy of the reference with its draw herded towards the pool's mean expression "
                                     "(a diagnostic)", "scope": "whole"}),
+    # T1 try T11 (experiments/harness/TRIES.md, registered before its run): a mean-free within-type momentum on B0
+    "g_mom": Candidate("g_mom", frozenset({"T1"}), (), _g_mom,
+                       {"what": "B0 plus a mean-free within-type momentum per reference-stage metacell, from an OT "
+                                "between the start stage and the reference (vec.t1_state_transport); R1's held types "
+                                "keep B0's cells", "damping": B0_DAMPING, "scope": "chamber"},
+                       requires=_b0_applies, derived=("t1_held_flat",)),
     # heart try H3 (experiments/harness/TRIES.md, registered before its run)
     "b0_depth": Candidate("b0_depth", frozenset({"T2"}), (), _b0_depth,
                           {"what": "B0 on a T2 extrapolation board with its cells binomially thinned to the target's "

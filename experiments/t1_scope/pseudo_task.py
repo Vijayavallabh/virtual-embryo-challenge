@@ -42,6 +42,18 @@ Usage (DGX, repo root; ~10 min with 5 jobs; run in tmux with a log under runs/lo
 Writes aggregates only (scores per seed and candidate, summaries, compositions, shift factors per type, run record)
 to experiments/t1_scope/results/<tag>/, all at the end and only if the procedure files still hash as they did at the
 start (run.json last). Nothing per cell leaves runs/.
+
+O1 (tries T8 to T10, experiments/harness/TRIES.md; `--o1-arms`, off by default, so a run without it is what it always
+was): how much of mmd_u and the variogram is within-type state shape, read on the E8.5 -> E9.5 geometry with the truth
+library's sibling as the oracle displacement source. Three more arms, all at --n-cells 2500 (the row's fix for the
+cells reused at 5000), with Sinkhorn and metacells once per truth:
+  sibling_real                 real cells of the sibling library at the truth's category shares (no transport)
+  state_transport_1.0          shift_1's cells plus within-type factors per metacell from an oracle OT
+                               (vec.t1_state_transport.finish_oracle), each category's per-gene pseudobulk held
+  state_transport_b0like_1.0   the same factors on E8.5's own chamber mix (vec.harness.t1_chamber_shares)
+experiments/t1_scope/o1_readout.py reads the two truths' results; its bar is fixed in the row. An O1 run stamps its
+outputs (commit, clean-tree flag, UTC, the inputs' sha256) and refuses a results folder that already holds files, as
+--strict-outputs does for any run of this script.
 """
 
 from __future__ import annotations
@@ -60,6 +72,7 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
+from vec import provenance, t1_state_transport
 from vec.boards import RANKED_METRICS, REPO_ROOT, get_board
 from vec.evaluate import (
     DEFAULT_BUILD,
@@ -72,6 +85,7 @@ from vec.evaluate import (
     split_half,
     subsample,
 )
+from vec.harness import t1_chamber_shares
 from vec.prep import load_stage
 from vec.provenance import stamp_path
 from vec.t1_scope import (
@@ -106,6 +120,8 @@ def sha256_file(path: Path, chunk: int = 1 << 23) -> str:
 
 PROCEDURE_FILES = ("src/vec/t1_scope.py", "src/vec/core.py", "configs/t1_chamber_classes.yaml",
                    "experiments/t1_scope/pseudo_task.py", "experiments/t1_direction/results/held_flat_genes.csv")
+O1_ARMS = ("sibling_real", "state_transport_1.0", "state_transport_b0like_1.0")  # tries T8 to T10
+O1_MODULE = "src/vec/t1_state_transport.py"
 
 
 def git_state() -> dict:
@@ -185,7 +201,7 @@ def candidates(seed: int) -> tuple[dict, dict, dict]:
     d = _DATA
     ref, sib, cfg, mstart = d["ref"], d["sibling"], d["cfg"], d["momentum_start"]
     out, rw_rep, sh_rep = {}, {}, {}
-    want = set(cfg["only"]) | {"copy_last", "oracle"} if cfg["only"] else None
+    want = set(cfg["only"]) | {"copy_last", "oracle"} | ({"shift_1"} if cfg["o1"] else set()) if cfg["only"] else None
 
     def wanted(name):
         return want is None or name in want
@@ -193,7 +209,7 @@ def candidates(seed: int) -> tuple[dict, dict, dict]:
     rng = np.random.default_rng([seed, 99])
     pick = np.sort(rng.choice(ref.n_obs, cfg["n_cells"], replace=False))
     out["copy_last"] = Stage(X=ref.X[pick], celltype=ref.obs["celltype"].astype(str).to_numpy()[pick])
-    oracle_pop = None
+    oracle_pop = shift_1_pop = None
     for name, (shares, within) in d["share_sets"].items():
         if not wanted(name):
             continue
@@ -219,6 +235,8 @@ def candidates(seed: int) -> tuple[dict, dict, dict]:
             name = f"{prefix}_{damping:g}"
             out[name] = to_stage(pop)
             sh_rep[name] = rep.as_dict()
+            if name == "shift_1":  # the cells O1's state_transport_1.0 edits
+                shift_1_pop = pop
         if mstart is not None and wanted(f"momentum_{damping:g}"):
             pop, rep = momentum_shift(mstart, ref, oracle_pop, damping, d["held_flat"], within=d["within"],
                                       start_fallback=d["mstart_fallback"], ref_fallback=d["fallback"], seed=[seed, 2],
@@ -227,7 +245,49 @@ def candidates(seed: int) -> tuple[dict, dict, dict]:
             name = f"momentum_{damping:g}"
             out[name] = to_stage(pop)
             sh_rep[name] = rep.as_dict()
+    if cfg["o1"]:
+        o1_arms(seed, out, rw_rep, sh_rep, wanted, shift_1_pop)
     return out, rw_rep, sh_rep
+
+
+def o1_arms(seed: int, out: dict, rw_rep: dict, sh_rep: dict, wanted, shift_1_pop) -> None:
+    """O1's three arms for one seed (tries T8 to T10, module docstring), with the factors fitted once per truth."""
+    d = _DATA
+    cfg, ref, sib, o1 = d["cfg"], d["ref"], d["sibling"], d["o1"]
+    shares, within = d["share_sets"]["oracle"]
+    if wanted("sibling_real"):  # real E9.5 cells of the sibling library at the truth's shares: the prize's numerator
+        pop, rep = reweight(sib, shares, cfg["n_cells"], [seed, 3], within=within, fallback=d["sib_fallback"])
+        out["sibling_real"] = to_stage(pop)
+        rw_rep["sibling_real"] = rep.as_dict()
+    if wanted("state_transport_1.0"):  # shift_1's cells with the within-type edit on top, per-type pseudobulk held
+        if shift_1_pop is None:
+            raise typer.BadParameter("state_transport_1.0 needs shift_1's cells: run with damping 1.0")
+        pop, rep = t1_state_transport.apply_state_factors(shift_1_pop, o1["factors"], d["held_flat"], [seed, 11],
+                                                          rescale=True)
+        out["state_transport_1.0"] = to_stage(pop)
+        sh_rep["state_transport_1.0"] = rep
+    if wanted("state_transport_b0like_1.0"):  # the same factors on E8.5's own chamber mix, a mismatched base
+        base, rw = reweight(ref, o1["b0like_shares"], cfg["n_cells"], [seed, 13], within=within, fallback=d["fallback"])
+        shifted, _ = momentum_shift(ref, sib, base, 1.0, d["held_flat"], within=d["within"],
+                                    start_fallback=d["fallback"], ref_fallback=d["sib_fallback"], seed=[seed, 12],
+                                    min_cells=cfg["min_cells"], eps=cfg["eps"],
+                                    standin_momentum=cfg["standin_momentum"])
+        pop, rep = t1_state_transport.apply_state_factors(shifted, o1["factors"], d["held_flat"], [seed, 14],
+                                                          rescale=True)
+        out["state_transport_b0like_1.0"] = to_stage(pop)
+        rw_rep["state_transport_b0like_1.0"] = rw.as_dict()
+        sh_rep["state_transport_b0like_1.0"] = rep
+
+
+def _o1_fit() -> t1_state_transport.StateFactors:
+    """O1's factors, once per truth: E8.5 cells to the sibling library's cells within each category of either arm's
+    composition (Sinkhorn, k-means metacells, per-metacell log ratios, then zero and clip: finish_oracle)."""
+    d, cfg = _DATA, _DATA["cfg"]
+    sf = t1_state_transport.fit_state_factors(d["ref"], d["sibling"], "earlier", d["o1"]["categories"],
+                                              within=d["within"], earlier_fallback=d["fallback"],
+                                              later_fallback=d["sib_fallback"], min_cells=cfg["min_cells"],
+                                              standin=cfg["standin_momentum"])
+    return t1_state_transport.finish_oracle(sf)
 
 
 def emulate(seed: int) -> dict:
@@ -325,6 +385,10 @@ def main(
     smoke: bool = typer.Option(True, help="also run build_submission + the format check on real data"),
     small_n: int = typer.Option(2000, help="cell count of the oracle_n<k> ablation"),
     only: str = typer.Option("", help="comma-separated candidates to run (copy_last and oracle always run)"),
+    o1_arms_on: bool = typer.Option(False, "--o1-arms", help="also build O1's arms (tries T8-T10; module docstring)"),
+    strict_outputs: bool = typer.Option(False, "--strict-outputs", help="refuse a results folder that already holds "
+                                        "files, and stamp run.json (commit, clean-tree flag, UTC); --o1-arms implies "
+                                        "it"),
 ):
     """Score copy_last, chamber re-weighting and the shift arms on a chamber pseudo-task (default E8.5 -> E9.5)."""
     seed_list = [int(s) for s in seeds.split(",") if s.strip()]
@@ -332,6 +396,9 @@ def main(
         console.print(f"[yellow]warning[/] {len(seed_list)} seeds; the protocol asks for at least 8")
     t0 = time.perf_counter()
     git_at_start = git_state()  # the procedure files as loaded; checked again before anything is written
+    strict = strict_outputs or o1_arms_on
+    tree_at_start = provenance.git_state(provenance.REPO_ROOT) if strict else None
+    o1_sha = sha256_file(REPO_ROOT / O1_MODULE) if o1_arms_on else None
     spec = load_spec()
     board = get_board(board_key)
     if not board.min_cells <= n_cells <= (board.max_cells or n_cells):
@@ -341,6 +408,8 @@ def main(
     stage_of = {p: p.name.split("_")[0].removesuffix(".h5ad") for p in (ref, truth_stage, momentum_start)
                 if p is not None}
     out_dir = RESULTS / (tag or f"pseudo_{stage_of[ref]}_{stage_of[truth_stage]}_lib{truth_library}")
+    if strict and out_dir.exists() and any(out_dir.iterdir()):
+        raise typer.BadParameter(f"{out_dir} already holds files; a rerun needs a new tag and row")
 
     a = load_stage(ref, lineage=False)
     b = load_stage(truth_stage, lineage=False)
@@ -394,7 +463,8 @@ def main(
     cfg = {"n_cells": n_cells, "frac": frac, "build": build, "dampings": [float(x) for x in dampings.split(",") if x],
            "flip_dampings": [float(x) for x in flip_dampings.split(",") if x], "eps": eps, "min_cells": min_cells,
            "check_seed": seed_list[0], "ref_source": ref_source, "small_n": small_n,
-           "standin_momentum": standin_momentum, "only": [x.strip() for x in only.split(",") if x.strip()]}
+           "standin_momentum": standin_momentum, "only": [x.strip() for x in only.split(",") if x.strip()],
+           "o1": bool(o1_arms_on)}
     _DATA.update(ref=a, sibling=sibling, cfg=cfg, board=board, share_sets=share_sets, within=within,
                  fallback=spec.fallbacks(ref_source), sib_fallback=spec.fallbacks(truth_source),
                  momentum_start=mstart, mstart_fallback=spec.fallbacks(mstart_source),
@@ -404,8 +474,32 @@ def main(
                   f"contamination), sibling library {sib_library} {sibling.n_obs} cells; CM share of heart cells in "
                   f"the truth {cm_heart:.3f}")
 
-    results = []
     ctx = mp.get_context("fork")
+    o1_info, factors = None, None
+    if o1_arms_on:
+        if 1.0 not in cfg["dampings"]:
+            raise typer.BadParameter("--o1-arms needs damping 1.0 in --dampings: shift_1 is its base arm")
+        b0like = t1_chamber_shares(a, ref_source)  # E8.5's own chamber mix, as vec.harness builds B0's shares
+        cats = [c for c in spec.categories if truth_shares.get(c, 0.0) > 0 or b0like.get(c, 0.0) > 0]
+        _DATA["o1"] = {"b0like_shares": b0like, "categories": cats}
+        # Once per truth, in a child process, so this parent runs no threaded BLAS or OpenMP before it forks the
+        # scoring workers (a forked child inherits OpenMP in a state it cannot use).
+        with ProcessPoolExecutor(max_workers=1, mp_context=ctx) as pool:
+            factors = pool.submit(_o1_fit).result()
+        _DATA["o1"]["factors"] = factors
+        st = t1_state_transport
+        o1_info = {"arms": list(O1_ARMS), "module": O1_MODULE, "module_sha256": o1_sha, "b0like_shares": b0like,
+                   "categories_fitted": sorted(factors.categories), "skipped": factors.skipped,
+                   "record": factors.record,
+                   "constants": {"n_hvg": st.N_HVG, "n_pcs": st.N_PCS, "ot_epsilon_fraction": st.OT_EPSILON_FRACTION,
+                                 "ot_tol": st.OT_TOL, "ot_max_iter": st.OT_MAX_ITER,
+                                 "metacells": [st.METACELL_DIVISOR, st.METACELL_MIN, st.METACELL_MAX],
+                                 "kmeans_seed": st.KMEANS_SEED, "pseudocount": st.PSEUDOCOUNT,
+                                 "zero_below_log": st.ZERO_BELOW, "clip_at_log": st.CLIP_AT}}
+        console.print(f"O1 factors fitted in {time.perf_counter() - t0:.0f} s: {sorted(factors.categories)}; skipped "
+                      f"{sorted(factors.skipped)}")
+
+    results = []
     with ProcessPoolExecutor(max_workers=max(1, jobs), mp_context=ctx) as pool:
         for res in pool.map(emulate, seed_list):
             results.append(res)
@@ -437,6 +531,17 @@ def main(
              "shift_seed0.json": json.dumps(first["shift"], indent=2, default=float) + "\n",
              "anchors_computed.csv": anchors.to_csv(index=False)}
 
+    if o1_arms_on:
+        files["o1_reuse.json"] = json.dumps(
+            {"n_cells": n_cells, "cells_reused_per_seed": {
+                name: {str(r["seed"]): {row["category"]: row["reused"] for row in r["reweight"][name]["rows"]}
+                       for r in results}
+                for name in ("oracle", "sibling_real", "state_transport_b0like_1.0") if name in results[0]["reweight"]
+            }}, indent=2) + "\n"
+        files["o1_factors.json"] = json.dumps(
+            {"record": factors.record, "skipped": factors.skipped,
+             "categories": {c: cf.record for c, cf in factors.categories.items()}}, indent=2, default=float) + "\n"
+
     smoke_rec = format_smoke(cfg, out_dir) if smoke else None
     run = {
         "date": time.strftime("%Y-%m-%d %H:%M:%S"), "git": git_at_start, "board": board_key,
@@ -457,6 +562,18 @@ def main(
         "format_smoke": smoke_rec, "seconds": round(time.perf_counter() - t0, 1),
         "seconds_per_seed": [round(r["seconds_total"], 1) for r in results],
     }
+    if strict:
+        commit, unclean = tree_at_start
+        end_commit, end_unclean = provenance.git_state(provenance.REPO_ROOT)
+        run["provenance"] = {"commit": commit, "commit_at_write": end_commit,
+                             "tree_clean": unclean == [] and end_unclean == [] and commit == end_commit,
+                             "unclean_paths": sorted(set(unclean or []) | set(end_unclean or [])) or None,
+                             "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                             "inputs_sha256": run["inputs"]}
+    if o1_arms_on:
+        run["o1"] = o1_info
+        if sha256_file(REPO_ROOT / O1_MODULE) != o1_sha:
+            raise SystemExit(f"{O1_MODULE} changed during the run: nothing was written; rerun")
     files["run.json"] = json.dumps(run, indent=2, default=float) + "\n"
     write_results(out_dir, files, git_at_start)
 
