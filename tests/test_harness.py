@@ -763,6 +763,41 @@ def test_depth_tries_keep_fgw_geometry_and_change_only_the_expression():
         assert ((v.X > 0).sum(1) >= 1).all()
 
 
+def test_fgw_midpoint_draws_real_cells_of_both_brackets_at_the_nominal_mix():
+    """Try E13 (experiments/harness/TRIES.md): fgw's moves and nominal mixture; only which real cells are drawn."""
+    from scipy import sparse as sp
+
+    rng = np.random.default_rng(23)
+    base = rng.gamma(2.0, 2.0, size=(3, len(GENES)))
+    pools = {}
+    for role, (n, f, sc) in {"before": (1200, 1.0, 1.0), "after": (1500, 2.5, 1.5)}.items():
+        types = rng.choice(3, size=n, p=[0.4, 0.3, 0.3])
+        C = rng.poisson(base[types] * f)
+        C[C.sum(1) == 0, 0] = 1
+        X = np.log1p(1e4 * C / C.sum(1, keepdims=True)).astype(np.float32)
+        centres = np.array([[0, 0, 0], [6, 0, 0], [0, 6, 0]], float) * sc
+        a = ad.AnnData(X=sp.csr_matrix(X), obs=pd.DataFrame({"celltype": [f"type{t}" for t in types]},
+                                                             index=[f"c{i}" for i in range(n)]),
+                       var=pd.DataFrame(index=GENES))
+        a.layers["counts"] = sp.csr_matrix(C.astype(np.int32))
+        a.obsm["spatial_3D"] = (centres[types] + rng.normal(size=(n, 3)) * 1.5 * sc).astype(np.float32)
+        pools[role] = a
+    board = Board(key="pseudo:synthetic_embryo", task="T2", genes=list(GENES), needs_coords=True, setting="embryo",
+                  min_cells=100, max_cells=1000)  # large enough that the guard's coverage is not draw noise
+    task = _task(**INTERP, key="syn_embryo_midpoint", inputs={"before": "T2/E7.25.h5ad", "after": "T2/E8.0.h5ad"})
+    tasks = {t.key: t for ts in load_tasks().values() for t in ts}
+    c = CANDIDATES["fgw_midpoint"]
+    assert c.applies(task) and c.applies(tasks["T2e/E6.75+E7.5->E7.25"]) and c.applies(tasks["T2e/E7.25+E8.0->E7.5"])
+    assert not c.applies(tasks["T2h/<=E9.5->E10.5"]) and not c.applies(tasks["T1/E9.5->E10.5"])
+    assert c.params["k_strata"] == harness.t2_build.MIDPOINT_K_STRATA and c.params["k_anchors"] == 15
+    ctx = harness.BuildContext(task=harness.TaskView.of(task), board=board, inputs=pools, seed=7)
+    fgw, v = CANDIDATES["fgw"].build(ctx), c.build(ctx)
+    assert v.n == fgw.n == 1000 and not np.array_equal(v.X, fgw.X)  # another draw of real cells, the same count
+    real = {row.tobytes() for a in pools.values() for row in np.asarray(a[:, GENES].X.todense(), np.float32)}
+    assert all(row.tobytes() in real for row in np.asarray(v.X, np.float32))  # every expression row is a released cell
+    assert harness.t2_build.rms_radius(v.coords) == pytest.approx(harness.t2_build.rms_radius(fgw.coords), rel=0.05)
+
+
 def test_b0_depth_thins_b0s_cells_on_extrapolation_boards_only(counted_t2):
     """Heart try H3 (experiments/harness/TRIES.md): B0's draws and positions, thinned to the extrapolated depth."""
     board, inputs = counted_t2

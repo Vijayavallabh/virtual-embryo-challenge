@@ -73,6 +73,7 @@ from vec.core import (
     fgw_coupling,
     herd_rows,
     nearest_anchors,
+    quotas,
 )
 from vec.io import (
     COORD_KEY,
@@ -1341,6 +1342,15 @@ HERD_STREAMS = (6, 7)  # random streams of the herded draws (before, after), apa
 # Which coupling sets the moves (embryo try E10 of experiments/harness/TRIES.md, registered before its run): "fgw" (the
 # entry so far) or "aligned" (vec.core.aligned_coupling of the same anchors in the before frame, after the rotation).
 MOVE_COUPLINGS = ("fgw", "aligned")
+# Which real cells of each bracket make up the mixture (embryo try E13 of experiments/harness/TRIES.md, registered
+# before its run; it runs only if its target-free gate N16 passes): "uniform" (the entry) or "midpoint"
+# (`_midpoint_draw`).
+DRAWS = ("uniform", "midpoint")
+MIDPOINT_K_STRATA = 20  # k-means strata of the joint PCs: the draw keeps each stratum's share of its bracket
+MIDPOINT_K_ANCHORS = 15  # the coupled anchor pairs nearest a cell's moved position set its local midpoint and axis
+MIDPOINT_KMEANS_SEED = 20261109  # the fixed random_state of the deterministic k-means (lloyd, n_init=1)
+MIDPOINT_STREAMS = (8, 9)  # random streams of the midpoint draw (before, after): not the interpolation's 0-5 or the
+# herd's and expression's 6 and 7
 
 
 def pchip_rms(days, rms, target_day: float) -> float:
@@ -1370,7 +1380,9 @@ class Interpolation:
     with `with_partners=True`): for each output cell, a row of the other stage coupled to it (`blend_expression`).
     `coupling` (only with `with_coupling=True`): the coupling's inputs and results, for diagnostics (anchor rows of
     each stage, the FGW coupling, the coupling that set the moves, the rotation, both clouds in the before stage's
-    normalised frame and every cell's mean anchor displacement there)."""
+    normalised frame and every cell's mean anchor displacement there; with draw="midpoint" also `midpoint`: the
+    anchors' joint-PC fit (centre, loadings), the residualised joint PCs, strata, offsets and weights per bracket, each
+    row's expected share of the draw and the uniform rows of the same seed, for the gate N16)."""
 
     stage: np.ndarray
     rows: np.ndarray
@@ -1390,12 +1402,147 @@ def _joint_pcs(Eb: np.ndarray, Ea: np.ndarray, n_pc: int) -> tuple[np.ndarray, n
     return P[: len(Eb)], P[len(Eb):]
 
 
+def _joint_pc_loadings(Eb: np.ndarray, Ea: np.ndarray, n_pc: int) -> tuple[np.ndarray, np.ndarray]:
+    """The fit behind `_joint_pcs` on the same rows, as (centre, loadings: genes x components), so that every cell of
+    both brackets can be projected: (Eb - centre) @ loadings gives `_joint_pcs`'s features. A separate function, so
+    that `_joint_pcs`, and every build that goes through it, stays exactly as it is (embryo try E13)."""
+    X = np.vstack([Eb, Ea]).astype(np.float64)
+    centre = X.mean(0)
+    X -= centre
+    _, _, Vt = np.linalg.svd(X, full_matrices=False)
+    return centre, Vt[: min(n_pc, Vt.shape[0])].T
+
+
+def _residualise_depth(P: np.ndarray, log_depth: np.ndarray) -> np.ndarray:
+    """P (cells x components of one bracket) with each column's straight-line dependence on the cells' log panel depth
+    removed. The deviation from the bracket's mean depth is regressed out, so each column's mean stays, and with it
+    the bracket-to-bracket difference a tilt is measured along. A bracket whose depth does not vary comes back as is."""
+    x = np.asarray(log_depth, dtype=np.float64)
+    x = x - x.mean()
+    ss = float(x @ x)
+    if ss <= 0.0:
+        return P
+    return P - x[:, None] * (P.T @ x / ss)[None, :]
+
+
+def _midpoint_weights(s: np.ndarray, strata: np.ndarray) -> np.ndarray:
+    """Within each stratum of one bracket, a cell's weight is exp(-s^2 / (2 var(s))), var(s) the stratum's own variance
+    (population form): a stratum whose s follows N(mu, v) becomes N(mu / 2, v / 2), so each stratum's cells move half
+    way to the local midpoint (the Gaussian product rule). A stratum without spread in s is left flat. Floored at
+    1e-12, so that a weighted draw always has enough non-zero entries."""
+    w = np.ones(len(s), dtype=np.float64)
+    for st in np.unique(strata):
+        m = strata == st
+        v = float(s[m].var())
+        if v > 0.0:
+            w[m] = np.maximum(np.exp(-s[m] ** 2 / (2.0 * v)), 1e-12)
+    return w
+
+
+def _draw_weighted(strata: np.ndarray, w: np.ndarray, n: int,
+                   rng: np.random.Generator) -> tuple[np.ndarray, np.ndarray]:
+    """n rows of one bracket: each stratum gets its share of the bracket's pool (vec.core.quotas of the pool shares),
+    and its quota is drawn without replacement with probability proportional to w. Rows repeat only if a quota exceeds
+    its stratum's pool: the whole pool is then taken quota // pool times and the rest drawn by weight (draw_balanced's
+    rule inside a stratum). Returns the rows in random order and each row's expected share of the n cells (quota x w /
+    its stratum's sum), which sums to n: the bracket's part of `Interpolation.pool_weights`."""
+    if n == 0:
+        return np.array([], dtype=np.int64), np.zeros(len(strata), dtype=np.float64)
+    ids, counts = np.unique(strata, return_counts=True)
+    q = quotas({str(int(i)): float(c) / len(strata) for i, c in zip(ids, counts, strict=True)}, n)
+    parts, expected = [], np.zeros(len(strata), dtype=np.float64)
+    for i in ids:
+        rows, k = np.flatnonzero(strata == i), q[str(int(i))]
+        p = w[rows] / w[rows].sum()
+        expected[rows] = k * p
+        full, rest = divmod(k, len(rows))
+        if full:
+            parts.append(np.tile(rows, full))
+        if rest:
+            parts.append(rng.choice(rows, rest, replace=False, p=p))
+    return rng.permutation(np.concatenate(parts)).astype(np.int64), expected
+
+
+def _midpoint_draw(Eb: np.ndarray, Ea: np.ndarray, ib: np.ndarray, ia: np.ndarray, Tm: np.ndarray, pos_b: np.ndarray,
+                   pos_a: np.ndarray, t: float, n_b: int, n_a: int, log_depth: tuple[np.ndarray, np.ndarray],
+                   n_pc: int, seed: int) -> dict:
+    """The midpoint draw (`interpolate_clouds(..., draw="midpoint")`, embryo try E13 of experiments/harness/TRIES.md):
+    which real cells of each bracket are drawn, every cell kept as it is at its own moved position.
+
+    1. Every cell is projected on the anchors' joint PCs (`_joint_pc_loadings`) and each bracket's PCs are residualised
+       on its cells' log panel depth (`_residualise_depth`), so the tilt below cannot select on depth directly.
+    2. k-means strata (MIDPOINT_K_STRATA, lloyd, n_init=1, random_state MIDPOINT_KMEANS_SEED) are fit on both brackets'
+       anchors, every cell assigned to its nearest centre, so the strata fix the large between-state part of the
+       transport and each stratum keeps its share of its bracket (`_draw_weighted`).
+    3. Each coupled pair of anchors (one per before anchor, its partner the coupling's barycentre) has a local midpoint
+       (1 - t) f_i + t f_j, a bracket-difference vector f_j - f_i, and a place (1 - t) p_i + t p_j in the moved cloud. A
+       cell's midpoint and axis are the means over the MIDPOINT_K_ANCHORS pairs nearest its moved position, and s is the
+       projection of its PC offset from that midpoint on that axis, measured along the transport direction rather than
+       as a typicality score. Weights: `_midpoint_weights` on s within each stratum and bracket.
+    4. Each bracket draws its nominal number of cells (`_draw_weighted`, streams MIDPOINT_STREAMS), so the bracket
+       fractions stay exactly the mixture's own.
+
+    Returns the rows of each bracket (rows_before, rows_after), each row's sampling weight (pool_weights, over before
+    rows then after rows, summing to 1), the effective pool fractions (ess_frac), and for the gate N16 the internals
+    (the anchors' PC fit, the residualised PCs, the strata, s, the weights and each row's expected share per
+    bracket)."""
+    from sklearn.cluster import KMeans
+
+    centre, loadings = _joint_pc_loadings(Eb[ib], Ea[ia], n_pc)
+    Pb = _residualise_depth((Eb - centre) @ loadings, log_depth[0])
+    Pa = _residualise_depth((Ea - centre) @ loadings, log_depth[1])
+    X = np.vstack([Pb[ib], Pa[ia]])
+    km = KMeans(n_clusters=min(MIDPOINT_K_STRATA, len(X)), init="k-means++", n_init=1, algorithm="lloyd",
+                random_state=MIDPOINT_KMEANS_SEED).fit(X)
+    tree = cKDTree(km.cluster_centers_)
+    strata_b, strata_a = tree.query(Pb)[1], tree.query(Pa)[1]
+    partner = barycentric(Tm, Pa[ia])
+    midpoint = (1.0 - t) * Pb[ib] + t * partner
+    axis = partner - Pb[ib]
+    place = (1.0 - t) * pos_b[ib] + t * barycentric(Tm, pos_a[ia])
+
+    def offsets(P: np.ndarray, near: np.ndarray) -> np.ndarray:
+        s = np.empty(len(P), dtype=np.float64)
+        for lo in range(0, len(P), PARTNER_CHUNK):
+            idx = near[lo:lo + PARTNER_CHUNK]
+            u = axis[idx].mean(1)
+            norm = np.linalg.norm(u, axis=1, keepdims=True)
+            u = np.divide(u, norm, out=np.zeros_like(u), where=norm > 0.0)
+            s[lo:lo + PARTNER_CHUNK] = ((P[lo:lo + PARTNER_CHUNK] - midpoint[idx].mean(1)) * u).sum(1)
+        return s
+
+    s_b = offsets(Pb, nearest_anchors(pos_b, place, MIDPOINT_K_ANCHORS)[1])
+    s_a = offsets(Pa, nearest_anchors(pos_a, place, MIDPOINT_K_ANCHORS)[1])
+    w_b, w_a = _midpoint_weights(s_b, strata_b), _midpoint_weights(s_a, strata_a)
+    rows_b, expected_b = _draw_weighted(strata_b, w_b, n_b, np.random.default_rng([seed, MIDPOINT_STREAMS[0]]))
+    rows_a, expected_a = _draw_weighted(strata_a, w_a, n_a, np.random.default_rng([seed, MIDPOINT_STREAMS[1]]))
+
+    def ess_frac(expected: np.ndarray) -> float | None:
+        total = float(expected.sum())
+        return None if total <= 0.0 else float(total * total / (expected @ expected)) / len(expected)
+
+    return {"rows_before": rows_b, "rows_after": rows_a,
+            "pool_weights": np.r_[expected_b, expected_a] / float(n_b + n_a),
+            "ess_frac": {"before": ess_frac(expected_b), "after": ess_frac(expected_a)}, "k_strata": int(km.n_clusters),
+            "internals": {"centre": centre, "loadings": loadings, "pcs_before": Pb, "pcs_after": Pa,
+                          "strata_before": strata_b, "strata_after": strata_a, "s_before": s_b, "s_after": s_a,
+                          "w_before": w_b, "w_after": w_a, "expected_before": expected_b, "expected_after": expected_a}}
+
+
+def log_panel_counts(a: ad.AnnData, genes) -> np.ndarray:
+    """log1p of each cell's total counts over the panel (`layers["counts"]`, whatever its sparsity): the depth the
+    midpoint draw's PCs are residualised on (`interpolate_clouds(..., draw="midpoint", log_depth=...)`). The log1p keeps
+    a cell without panel counts finite."""
+    return np.log1p(np.asarray(sparse.csr_matrix(a[:, list(genes)].layers["counts"], dtype=np.float64).sum(1)).ravel())
+
+
 def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: float, n: int, seed: int, *,
                        target_rms: float, alpha: float = INTERP_ALPHA, n_anchor: int = INTERP_N_ANCHOR,
                        n_pc: int = INTERP_N_PC, k: int = INTERP_K, max_iter: int = INTERP_MAX_ITER,
                        emd_max_iter: int = INTERP_EMD_ITER, t_pos: float | None = None,
                        with_partners: bool = False, herd: bool = False, move_coupling: str = MOVE_COUPLINGS[0],
-                       with_coupling: bool = False) -> Interpolation:
+                       with_coupling: bool = False, draw: str = DRAWS[0],
+                       log_depth: tuple[np.ndarray, np.ndarray] | None = None) -> Interpolation:
     """Displacement interpolation between two stages at time fraction t (0 = before, 1 = after).
 
     1. Each cloud is centred and divided by its RMS radius (no PCA axes, so no sign choice).
@@ -1430,6 +1577,13 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     across the body's symmetric direction, and McCann moves then pull both clouds towards its mid-plane; in a common
     frame position settles which side a partner is on. The draws, the mixture and every random stream are unchanged.
     with_coupling: also return the coupling's internals (`Interpolation.coupling`) for the target-free diagnostic.
+
+    draw (embryo try E13 of experiments/harness/TRIES.md): "uniform" (default, the entry) draws the rows at random as
+    above. "midpoint" keeps every cell real and at its own moved position and changes only which cells are drawn: within
+    k-means strata of the joint PCs, cells near the local displacement midpoint along the local bracket axis are drawn
+    more (`_midpoint_draw`, streams MIDPOINT_STREAMS), each bracket's count and each stratum's share of its bracket
+    stay as the uniform draw's, and pool_weights carry the draw's probabilities for the cloud guard. It needs
+    log_depth=(before, after), each cell's log panel counts (`log_panel_counts`), for the depth residualisation.
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1442,6 +1596,17 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         raise ValueError(f"t_pos must lie in [0, 1], got {t_pos}")
     if move_coupling not in MOVE_COUPLINGS:
         raise ValueError(f"move_coupling must be one of {MOVE_COUPLINGS}, got {move_coupling!r}")
+    if draw not in DRAWS:
+        raise ValueError(f"draw must be one of {DRAWS}, got {draw!r}")
+    if draw != DRAWS[0]:
+        if herd:
+            raise ValueError(f"draw={draw!r} and herd both choose the rows; use one of them")
+        if log_depth is None or len(log_depth) != 2:
+            raise ValueError("draw='midpoint' needs log_depth=(before, after), each cell's log panel counts")
+        log_depth = (np.asarray(log_depth[0], dtype=np.float64), np.asarray(log_depth[1], dtype=np.float64))
+        if (log_depth[0].shape != (Cb.shape[0],) or log_depth[1].shape != (Ca.shape[0],)
+                or not (np.isfinite(log_depth[0]).all() and np.isfinite(log_depth[1]).all())):
+            raise ValueError("log_depth: one finite value per cell of each stage")
     if not (np.isfinite(target_rms) and target_rms > 0):
         raise ValueError(f"target_rms must be finite and positive, got {target_rms}")
     n, seed = _whole(n, "n", 1), _whole(seed, "seed", 0)
@@ -1465,6 +1630,11 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     empty = np.array([], dtype=np.int64)
     rows_b = draw_balanced(len(Zb), n_b, np.random.default_rng([seed, 0])) if n_b else empty
     rows_a = draw_balanced(len(Za), n_a, np.random.default_rng([seed, 1])) if n_a else empty
+    midpoint = None
+    if draw != DRAWS[0]:  # the rows above are the uniform draw of this seed: replaced here, kept for the gate N16
+        midpoint = {**_midpoint_draw(Eb, Ea, ib, ia, Tm, pos_b, pos_a, t, n_b, n_a, log_depth, Fb.shape[1], seed),
+                    "uniform_before": rows_b, "uniform_after": rows_a}
+        rows_b, rows_a = midpoint["rows_before"], midpoint["rows_after"]
     herd_rec = None
     if herd:
         herd_rec = {}
@@ -1485,6 +1655,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     coords = cb + (Z - zc) * scale
     pool = cb + (np.vstack([pos_b, pos_a]) - zc) * scale
     weights = np.r_[np.full(len(Zb), (1.0 - t) / len(Zb)), np.full(len(Za), t / len(Za))]
+    if midpoint is not None:
+        weights = midpoint["pool_weights"]
     _, first = np.unique(coords.astype(np.float32), axis=0, return_index=True)
     dup = np.ones(n, dtype=bool)
     dup[first] = False
@@ -1504,6 +1676,10 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     if move_coupling != MOVE_COUPLINGS[0]:
         record["move_coupling"] = move_coupling
         record["coupling_nonzero_moves"] = int((Tm > 0).sum())
+    if midpoint is not None:
+        record["draw"] = draw
+        record["midpoint"] = {"k_strata": midpoint["k_strata"], "k_anchors": MIDPOINT_K_ANCHORS,
+                              "ess_frac": midpoint["ess_frac"]}
     partners = None
     if with_partners:
         prng = np.random.default_rng([seed, 5])
@@ -1519,6 +1695,9 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         internals = {"anchors_before": ib, "anchors_after": ia, "fgw": T, "moves": Tm, "rotation": R,
                      "before_frame": Zb, "after_frame": Za_b, "shift_before": db[near_b].mean(1),
                      "shift_after": da[near_a].mean(1)}
+        if midpoint is not None:
+            internals["midpoint"] = {**midpoint["internals"], "uniform_before": midpoint["uniform_before"],
+                                     "uniform_after": midpoint["uniform_after"]}
     return Interpolation(stage=stage, rows=rows, coords=coords, pool_coords=pool, pool_weights=weights, record=record,
                          partners=partners, coupling=internals)
 
