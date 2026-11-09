@@ -14,19 +14,33 @@ pre-registered held-flat list at 0) and d_real = Feng's E9.5 -> E14.5 log ratio 
   largest abs(d) of each;
   in the proxy's top 400 up and down by log f: how many genes of each of R2's modules (D, A1, N1, N2), as N12 does for
   M1's real factor;
-  the reliability shrinkage (feng_dirs.eb_shrink) per expression decile: its factors, for the record.
+  the reliability shrinkage (feng_dirs.eb_shrink) per expression decile: its factors, one per decile, which every gene
+  of the decile shares (it cannot reorder a decile).
 
 Its gate (N20's row, fixed before anything is read): the tries T13-T18 run only if Feng's statistics hold a stage
-E14.5 and a stage E18.5, the CM group has at least min_cells_ext (10) cells at both ends of the proxy bracket, and at
-least 20,000 T1 genes have a Feng value. Otherwise the tries are not run and do not count. Everything else is reported
-and decides nothing.
+E14.5 and a stage E18.5, the direction group of each within-type read (READ_GROUPS: CM, and Endocardium for the
+endocardium read) has at least min_cells_ext (10) cells at both ends of the proxy bracket, and at least 20,000 T1 genes
+have a Feng value. Otherwise the tries are not run and do not count.
 
-Usage (DGX, repo root):
+Two more numbers, fixed in the row before anything is read, that late_proxy.py reads and that stop none of the gate's
+tries:
+  the landing floor: CM's Spearman correlation of the proxy with the real direction, each from the other half of Feng's
+  cells (proxy half A against real half B, and the reverse, their mean; over the genes with all four values), must be
+  at least 0.2. Below it, a pass of T16, T17 or T18 is platform evidence only, with no recommendation for M1. The
+  directions share Feng's E14.5 with opposite signs, so the plain correlation of the pooled directions is pulled down
+  by E14.5's sampling noise; disjoint halves remove that. The plain correlation is reported and decides nothing.
+  T18's stop: T18 does not run (and does not count) unless, in each of CM and Endocardium, some factor of expression
+  deciles 4-10 is below 0.9; otherwise its direction barely changes on those genes, and the variants' bar, which asks
+  for a gain on reads of both groups, could not be met.
+
+Usage (DGX, repo root; refused unless the row is committed, X002's amendment is in EXTERNAL_DATA.md and the tree is
+clean):
   OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 NUMPY_MADVISE_HUGEPAGE=0 \\
       uv run --frozen --no-sync python -I -B experiments/t1_m1/n20_proxy_profile.py
 
 Writes experiments/t1_m1/results/n20_proxy_profile/n20_proxy_profile.{json,txt}, stamped (commit, vec.provenance's
-clean-tree flag, UTC, the inputs' sha256); an existing output is refused (a rerun is a new row).
+clean-tree flag, UTC, the inputs' sha256); an existing output is refused (a rerun is a new row). The tries refuse to
+run on any commit but N20's, so nothing is committed between N20 and the tournament's last decision.
 """
 
 from __future__ import annotations
@@ -60,6 +74,11 @@ FRACTION = 0.25  # a one-day step's share of the four-day proxy bracket
 TOP = 400
 MIN_MAPPED = 20000
 GATE_GROUP = "CM"
+READ_GROUPS = {"T1/E8.5->E9.5:cm": "CM", "T1/E9.5->E10.5:cm": "CM",
+               "T1/E9.5->E10.5:endocardium": "Endocardium"}  # late_proxy.WITHIN: each read's direction group
+LANDING_FLOOR = 0.2  # CM's cross-half Spearman of the proxy with the real direction; below it no recommendation for M1
+EB_NO_OP = 0.9  # T18's stop: a decile factor at or above this barely changes the direction
+EB_EXPRESSED_FROM = 3  # index of decile 4 (factors are lowest expression first): low deciles' changes are already small
 
 
 def _rel(path: Path) -> str:
@@ -98,6 +117,33 @@ def group_profile(group: str, d_proxy: np.ndarray, d_real: np.ndarray, halves: d
             "eb_spearman": n12.spearman(np.nan_to_num(d_proxy), np.nan_to_num(eb))}
 
 
+def landing_floor(st: dict, bracket: dict | None, genes: list[str], cfg: dict) -> dict:
+    """The landing floor: CM's Spearman of the proxy with the real direction, each from the other half of Feng's cells
+    (proxy half A against real half B, and the reverse, the mean of the two), over the genes with all four values, so
+    that the sampling noise of E14.5, which the two directions share with opposite signs, cannot pull it down."""
+    record = {"group": GATE_GROUP, "spearman_cross_half": None, "floor": LANDING_FLOOR, "met": False}
+    if bracket is None:
+        return record
+    proxy = feng_dirs.direction_halves(bracket, genes, cfg, PROXY, groups={GATE_GROUP}).get(GATE_GROUP)
+    real = feng_dirs.direction_halves(st, genes, cfg, REAL, groups={GATE_GROUP}).get(GATE_GROUP)
+    if proxy is None or real is None:
+        return record
+    ok = np.isfinite(proxy["d_a"]) & np.isfinite(proxy["d_b"]) & np.isfinite(real["d_a"]) & np.isfinite(real["d_b"])
+    ab, ba = n12.spearman(proxy["d_a"][ok], real["d_b"][ok]), n12.spearman(proxy["d_b"][ok], real["d_a"][ok])
+    value = None if ab is None or ba is None else (ab + ba) / 2.0
+    record.update(spearman_cross_half=value, met=value is not None and value >= LANDING_FLOOR)
+    return record
+
+
+def t18_stop(groups: dict) -> dict:
+    """T18's target-free stop: in each group of the within-type reads, does any factor of expression deciles 4-10 fall
+    below EB_NO_OP? T18 runs only if so in every group (a group with no factors counts as no)."""
+    factors = {g: groups[g]["eb_factors"] if g in groups else None for g in sorted(set(READ_GROUPS.values()))}
+    below = {g: None if f is None else bool(min(f[EB_EXPRESSED_FROM:]) < EB_NO_OP) for g, f in factors.items()}
+    return {"no_op_at": EB_NO_OP, "deciles": f"{EB_EXPRESSED_FROM + 1}-{harness.LP_BINS}", "below_no_op": below,
+            "runs": all(v is True for v in below.values())}
+
+
 def main(argv=None) -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--t1-file", default=str(T1_FILE))
@@ -106,9 +152,14 @@ def main(argv=None) -> None:
     out = Path(a.out)
     if "N20" not in n12.tries_rows():
         sys.exit("N20 has no row in experiments/harness/TRIES.md: a row is committed before its run")
+    if not feng_dirs.x002_amended():
+        sys.exit(f"EXTERNAL_DATA.md's X002 row does not carry the amendment (its phrase {feng_dirs.X002_AMENDMENT!r}): "
+                 "a use of an external dataset is logged before it enters anything")
     if out.exists() and any(out.iterdir()):
         sys.exit("N20 has already written its outputs; a rerun is a new row (experiments/harness/TRIES.md)")
     start = provenance.git_state(provenance.REPO_ROOT)
+    if start[1] is None or start[1]:
+        sys.exit(f"the tree is not clean ({start[1]}): N20 runs once, on the commit the tries will run at")
     cfg = feng_dirs.load_config()
     genes = n12.t1_gene_names(Path(a.t1_file))
     path = feng_dirs.clean_stats_path()
@@ -120,9 +171,12 @@ def main(argv=None) -> None:
                                     else ({}, {}, np.full(len(genes), -1)))
     real_dirs, real_cells, _ = feng_dirs.directions_from_stats(st, genes, cfg, REAL)
     gate["cm_at_both_ends"] = GATE_GROUP in proxy_dirs
+    gate["direction_available"] = {read: g in proxy_dirs for read, g in READ_GROUPS.items()}
+    gate["every_read_has_a_direction"] = all(gate["direction_available"].values())
     gate["mapped_genes"] = int((idx >= 0).sum())
     gate["mapped_genes_at_least"] = gate["mapped_genes"] >= MIN_MAPPED
-    proceed = all(gate[k] for k in ("stages_present", "cm_at_both_ends", "mapped_genes_at_least"))
+    proceed = all(gate[k] for k in ("stages_present", "cm_at_both_ends", "every_read_has_a_direction",
+                                    "mapped_genes_at_least"))
     modules = {m: set(hygiene.map_symbols(syms, genes)["mapped"]) for m, syms in
                hygiene.build_modules([str(g) for g in st["genes"]]).items()}
     held_set = set(t1_scope.held_flat_genes())
@@ -132,9 +186,13 @@ def main(argv=None) -> None:
     for g in harness.LP_GROUPS:
         if g in proxy_dirs and g in real_dirs:
             groups[g] = group_profile(g, proxy_dirs[g], real_dirs[g], halves[g], genes, held, modules)
+    landing = landing_floor(st, bracket, genes, cfg)
+    stop = t18_stop(groups)
     report = {"label": "N20: target-free profile of the late-proxy direction (no E10.5 file, no target, no score, no "
                        "board, no built file, no T1 cell count); it gates tries T13-T18 by its row's rule",
               "gate": gate, "proceed_to_tries": proceed,
+              "landing_floor": landing, "proxy_close_to_real": landing["met"], "t18_stop": stop,
+              "t18_runs": stop["runs"],
               "proxy_cells": {g: proxy_cells[g] for g in sorted(proxy_cells)},
               "real_cells": {g: real_cells[g] for g in sorted(real_cells)},
               "groups": groups, "n_t1_genes": len(genes),
@@ -150,6 +208,8 @@ def main(argv=None) -> None:
     out.mkdir(parents=True, exist_ok=True)
     (out / "n20_proxy_profile.json").write_text(json.dumps(report, indent=1) + "\n")
     lines = [f"N20: proceed to the tries: {'YES' if proceed else 'NO'} (gate {gate})",
+             f"Landing floor (T16-T18): {landing}: {'met' if landing['met'] else 'not met (no recommendation for M1)'}",
+             f"T18's stop: {stop}: {'T18 runs if the gate passes' if stop['runs'] else 'T18 does not run or count'}",
              "  group  genes  mean|logf|  moved>10%  spearman(real)  cosine  top400 same-sign  top400 overlap"]
     for g, r in groups.items():
         sp, co, ag = r["spearman_with_real"], r["cosine_with_real"], r["top400_sign_agreement_with_real"]

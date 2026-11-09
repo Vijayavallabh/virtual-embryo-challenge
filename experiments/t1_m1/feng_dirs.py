@@ -36,10 +36,20 @@ CONFIG = REPO / "experiments" / "t1_direction" / "config.yaml"
 SOURCES = REPO / "experiments" / "external" / "sources.yaml"
 BRACKET = ("E9.5", "E14.5")  # the readout's primary predictor, feng_E14.5
 BRACKET_DAYS = (9.5, 14.5)
+REGISTER = REPO / "EXTERNAL_DATA.md"
+X002_AMENDMENT = "E14.5 -> E18.5"  # the key phrase of X002's late-proxy amendment (PLAN decision log 2026-11-10 (a))
 
 
 def load_config(path: Path = CONFIG) -> dict:
     return yaml.safe_load(Path(path).read_text())
+
+
+def x002_amended(path: Path | None = None) -> bool:
+    """Whether EXTERNAL_DATA.md's X002 row already carries the late-proxy amendment: a use is logged before it enters a
+    model (AGENTS.md; experiments/t1_direction/readout.py refuses on its register keys the same way). Only X002's own
+    row counts: the phrase elsewhere in the file does not."""
+    text = Path(REGISTER if path is None else path).read_text(encoding="utf-8")
+    return any(line.startswith("| X002 |") and X002_AMENDMENT in line for line in text.splitlines())
 
 
 def bracket_fraction(ref_day: float, target_day: float, bracket_days: tuple[float, float] = BRACKET_DAYS) -> float:
@@ -141,7 +151,8 @@ def eb_shrink(d, d_a, d_b, basis, bins: int = 10) -> tuple[np.ndarray, list[floa
     each decile of the genes with a value, the noise variance of d is the mean of ((d_a - d_b) / 2) ** 2 (if each half
     has noise variance s, d_a - d_b has variance 2 s and d, which pools both halves, about s / 2, a quarter of it), the
     signal variance is the mean of d ** 2 less that noise (floored at 0), and every d in the decile is multiplied by
-    signal / (signal + noise). NaN stays NaN. Returns the shrunk d and each decile's factor, lowest expression first."""
+    the same factor signal / (signal + noise): a gene is not judged by its own halves' disagreement, so genes keep their
+    order inside a decile. NaN stays NaN. Returns the shrunk d and each decile's factor, lowest expression first."""
     d, d_a, d_b, basis = (np.asarray(x, dtype=np.float64) for x in (d, d_a, d_b, basis))
     out = d.copy()
     idx = np.flatnonzero(np.isfinite(d) & np.isfinite(d_a) & np.isfinite(d_b) & np.isfinite(basis))
