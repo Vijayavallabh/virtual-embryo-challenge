@@ -281,7 +281,10 @@ def build_embryo(a) -> dict:
                                           np.asarray(after.obsm[COORD_KEY], float)[:, :3], Eb, Ea, 0.5,
                                           harness.count_for(board, before.n_obs), a.seed, target_rms=target,
                                           t_pos=EMBRYO_T_POS[a.method], with_partners=a.expression == "blend",
-                                          herd=a.herd, move_coupling=a.move_coupling)
+                                          herd=a.herd, move_coupling=a.move_coupling, draw=a.draw,
+                                          log_depth=(None if a.draw == t2_build.DRAWS[0]
+                                                     else (t2_build.log_panel_counts(before, genes),
+                                                           t2_build.log_panel_counts(after, genes))))
         expr_rec = None
         if a.expression == "mixture":
             X = np.empty((len(res.rows), len(genes)), dtype=np.float32)
@@ -348,6 +351,10 @@ def build_parser() -> argparse.ArgumentParser:
             p.add_argument("--move-coupling", choices=t2_build.MOVE_COUPLINGS, default=t2_build.MOVE_COUPLINGS[0],
                            help="fgw methods: which coupling sets the moves: fgw (the entry) or aligned (try E10 of "
                                 "experiments/harness/TRIES.md: an exact transport in the rotated common frame)")
+            p.add_argument("--draw", choices=t2_build.DRAWS, default=t2_build.DRAWS[0],
+                           help="fgw methods: which real cells of each bracket are drawn: uniform (the entry) or "
+                                "midpoint (try E13 of experiments/harness/TRIES.md: tilted towards the local "
+                                "displacement midpoint, every cell unedited at its moved position)")
     return ap
 
 

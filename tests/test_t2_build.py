@@ -1372,7 +1372,11 @@ RULE_LITERALS = {"COUNT_RULE_SEEDS": {10.0}, "COUNT_RULE_MIN_GAIN": {0.3}, "COUN
                  # 2026-11-03, tries E7 and E8 (experiments/harness/TRIES.md): sizes of the computation, set before
                  # their run (a retry budget for thinned cells left without counts; the partner-sampling chunk)
                  "DEPTH_ZERO_RETRIES": {20.0}, "PARTNER_CHUNK": {4096.0},
-                 "HERD_STREAMS": {6.0, 7.0}}  # random-stream ids of the herded draws (try E9), not values of a stage
+                 "HERD_STREAMS": {6.0, 7.0},  # random-stream ids of the herded draws (try E9), not values of a stage
+                 # 2026-11-09, try E13 (the midpoint draw): sizes of the computation and its fixed k-means seed, set
+                 # before its run; MIDPOINT_STREAMS are random-stream ids, not values of a stage
+                 "MIDPOINT_K_STRATA": {20.0}, "MIDPOINT_K_ANCHORS": {15.0}, "MIDPOINT_KMEANS_SEED": {20261109.0},
+                 "MIDPOINT_STREAMS": {8.0, 9.0}}
 
 
 def _stray_literals(src: str) -> tuple[list[tuple[int, str]], set[str]]:
@@ -1803,3 +1807,185 @@ def test_interpolation_herd_moves_each_draw_mean_and_keeps_the_rest():
         m0, m1 = E[res.rows[res.stage == s_]].mean(0), E[h.rows[h.stage == s_]].mean(0)
         assert ((m1 - E.mean(0)) ** 2).sum() < ((m0 - E.mean(0)) ** 2).sum()
     assert set(h.record["herd"]) == {"before", "after"}
+
+
+# ------------------------------------------------------------------- the midpoint draw (embryo try E13), 2026-11-09
+def _midpoint_pair(seed: int = 0, n: int = 800, genes: int = 30):
+    """Two brackets of the same four states placed in four spatial blocks; each state's after cells are moved along
+    its own expression direction (the local transport). Returns coordinates, expression, log depths and the states."""
+    rng = np.random.default_rng(seed)
+    states_b, states_a = rng.integers(0, 4, n), rng.integers(0, 4, n)
+    blocks = np.array([[-8.0, 0.0, 0.0], [8.0, 0.0, 0.0], [0.0, -8.0, 0.0], [0.0, 8.0, 0.0]])
+    A = blocks[states_b] + rng.normal(size=(n, 3))
+    B = 1.1 * blocks[states_a] + rng.normal(size=(n, 3))
+    base = 4.0 * rng.normal(size=(4, genes))
+    shift = rng.normal(size=(4, genes))
+    shift = 3.0 * shift / np.linalg.norm(shift, axis=1, keepdims=True)
+    Eb = base[states_b] + 0.7 * rng.normal(size=(n, genes))
+    Ea = base[states_a] + shift[states_a] + 0.7 * rng.normal(size=(n, genes))
+    return A, B, Eb, Ea, rng.normal(3.0, 0.4, n), rng.normal(4.0, 0.4, n)
+
+
+@pytest.fixture(scope="module")
+def midpoint_case():
+    A, B, Eb, Ea, Lb, La = _midpoint_pair()
+    kw = dict(target_rms=1.0, n_anchor=300, k=4, seed=11)
+    mid = tb.interpolate_clouds(A, B, Eb, Ea, 0.5, 600, draw="midpoint", log_depth=(Lb, La), with_coupling=True, **kw)
+    return A, B, Eb, Ea, Lb, La, kw, mid, tb.interpolate_clouds(A, B, Eb, Ea, 0.5, 600, **kw)
+
+
+def test_midpoint_weights_move_each_stratum_half_way_to_zero_and_halve_its_variance():
+    rng = np.random.default_rng(40)
+    mu, sd = 3.0, 2.0
+    s = np.r_[rng.normal(mu, sd, 400_000), rng.normal(-1.0, 0.5, 400_000)]  # two strata, each its own variance
+    strata = np.r_[np.zeros(400_000, int), np.ones(400_000, int)]
+    w = tb._midpoint_weights(s, strata)
+    for st, (m0, v0) in {0: (mu, sd**2), 1: (-1.0, 0.25)}.items():
+        x, p = s[strata == st], w[strata == st] / w[strata == st].sum()
+        mean = float((p * x).sum())
+        assert mean == pytest.approx(m0 / 2.0, abs=0.02)  # the Gaussian product rule: half way to the midpoint
+        assert float((p * (x - mean) ** 2).sum()) == pytest.approx(v0 / 2.0, rel=0.02)
+    # a stratum without spread stays flat, and weights never reach zero
+    assert np.all(tb._midpoint_weights(np.full(5, 2.0), np.zeros(5, int)) == 1.0)
+    far = tb._midpoint_weights(np.r_[0.0, 100.0], np.array([0, 0]))
+    assert far[1] >= 1e-12 > 0.0
+
+
+def test_draw_weighted_keeps_exact_stratum_quotas_and_repeats_only_past_the_pool():
+    strata = np.r_[np.zeros(50, int), np.ones(30, int), np.full(20, 2)]
+    w = np.random.default_rng(41).uniform(0.01, 1.0, 100)
+    rows, expected = tb._draw_weighted(strata, w, 25, np.random.default_rng(1))
+    assert np.bincount(strata[rows], minlength=3).tolist() == [13, 7, 5]  # largest remainders of 12.5, 7.5, 5
+    assert len(set(rows.tolist())) == 25 and expected.sum() == pytest.approx(25)
+    for st, k in ((0, 13), (1, 7), (2, 5)):
+        assert expected[strata == st].sum() == pytest.approx(k)
+    rows2, _ = tb._draw_weighted(strata, w, 25, np.random.default_rng(1))
+    assert np.array_equal(rows, rows2)  # the stream alone decides the draw
+    many, exp2 = tb._draw_weighted(strata, w, 140, np.random.default_rng(2))
+    assert np.bincount(strata[many], minlength=3).tolist() == [70, 42, 28]  # the pool's shares, past each pool's size
+    assert np.bincount(many, minlength=100).min() >= 1 and exp2.sum() == pytest.approx(140)
+    # within a stratum, rows are drawn in proportion to the weights, the rest of the pool almost never first
+    ws = np.ones(40)
+    ws[:4] = 1000.0
+    hits = np.zeros(40)
+    for s_ in range(300):
+        r, _ = tb._draw_weighted(np.zeros(40, int), ws, 4, np.random.default_rng([s_, 5]))
+        hits[r] += 1
+    assert hits[:4].min() >= 0.95 * 300 and hits[4:].max() < 0.05 * 300
+    rows0, exp0 = tb._draw_weighted(strata, w, 0, np.random.default_rng(3))
+    assert rows0.size == 0 and exp0.sum() == 0.0
+
+
+def test_joint_pc_fit_reproduces_the_entrys_features_and_depth_is_regressed_out():
+    rng = np.random.default_rng(42)
+    Eb, Ea = rng.normal(size=(200, 15)), rng.normal(1.0, 2.0, size=(150, 15))
+    Fb, Fa = tb._joint_pcs(Eb, Ea, 8)  # the entry's function, untouched by the midpoint draw (a pinned requirement)
+    c, L = tb._joint_pc_loadings(Eb, Ea, 8)
+    assert L.shape == (15, 8) and c.shape == (15,)
+    np.testing.assert_allclose((Eb - c) @ L, Fb, atol=1e-8)
+    np.testing.assert_allclose((Ea - c) @ L, Fa, atol=1e-8)
+    # the fit is the one `_joint_pcs` makes, also when fewer components than requested exist
+    X, y = rng.normal(size=(6, 15)), rng.normal(size=(2, 15))
+    assert tb._joint_pc_loadings(X, y, 30)[1].shape[1] == tb._joint_pcs(X, y, 30)[0].shape[1]
+    P = rng.normal(size=(500, 4)) + np.array([1.0, -2.0, 0.5, 3.0])
+    depth = rng.normal(2.0, 0.6, 500)
+    Q = tb._residualise_depth(P + depth[:, None] @ np.array([[2.0, -1.0, 0.0, 0.5]]), depth)
+    np.testing.assert_allclose(Q.mean(0), P.mean(0) + depth.mean() * np.array([2.0, -1.0, 0.0, 0.5]), atol=1e-9)
+    for j in range(4):
+        assert abs(np.corrcoef(Q[:, j], depth)[0, 1]) < 1e-6
+    np.testing.assert_array_equal(tb._residualise_depth(P, np.full(500, 2.0)), P)  # no depth variation: nothing moves
+
+
+def test_midpoint_draw_keeps_the_nominal_mixture_and_leaves_the_default_path_identical(midpoint_case):
+    A, B, Eb, Ea, Lb, La, kw, mid, base = midpoint_case
+    # the default path: identical to an explicit uniform draw (log_depth, when given, ignored), no new record field
+    uni = tb.interpolate_clouds(A, B, Eb, Ea, 0.5, 600, draw="uniform", log_depth=(Lb, La), **kw)
+    for f in ("stage", "rows", "coords", "pool_coords", "pool_weights"):
+        np.testing.assert_array_equal(getattr(uni, f), getattr(base, f))
+    assert uni.record == base.record and "draw" not in base.record and "midpoint" not in base.record
+    assert base.pool_weights[0] == pytest.approx(0.5 / 800)
+    # exact bracket counts, the same shuffle of stages as the uniform draw, the same moves
+    assert (mid.stage == 0).sum() == (base.stage == 0).sum() == 300 and (mid.stage == 1).sum() == 300
+    np.testing.assert_array_equal(mid.stage, base.stage)
+
+    def unit(C):  # the pool up to the similarity the draw sets (centre and scale follow the drawn cells)
+        C = C - C.mean(0)
+        return C / np.sqrt((C**2).sum(1).mean())
+
+    np.testing.assert_allclose(unit(mid.pool_coords), unit(base.pool_coords), atol=1e-9)  # the same moved positions
+    assert not np.array_equal(mid.rows, base.rows)  # only which rows are drawn changes
+    assert mid.record["draw"] == "midpoint" and mid.record["midpoint"]["k_strata"] == tb.MIDPOINT_K_STRATA
+    assert mid.record["midpoint"]["k_anchors"] == tb.MIDPOINT_K_ANCHORS
+    m = mid.coupling["midpoint"]
+    # every drawn row is a real cell of its bracket, at its own moved position (the pool's), the draw's mass kept
+    Xb, Xa = mid.pool_coords[:800], mid.pool_coords[800:]
+    rows_b, rows_a = mid.rows[mid.stage == 0], mid.rows[mid.stage == 1]
+    assert rows_b.max() < 800 and rows_a.max() < 800
+    assert len(set(rows_b.tolist())) == 300 and len(set(rows_a.tolist())) == 300  # no repeats below the pool's size
+    for rows, X, sel in ((rows_b, Xb, mid.stage == 0), (rows_a, Xa, mid.stage == 1)):
+        np.testing.assert_allclose(np.sort(mid.coords[sel], axis=0), np.sort(X[rows], axis=0), atol=1e-6)
+    assert mid.pool_weights.sum() == pytest.approx(1.0)
+    assert mid.pool_weights[:800].sum() == pytest.approx(0.5) and mid.pool_weights[800:].sum() == pytest.approx(0.5)
+    # each bracket keeps each stratum's share of the pool, up to the rounding of one cell
+    for rows, strata in ((rows_b, m["strata_before"]), (rows_a, m["strata_after"])):
+        drawn = np.bincount(strata[rows], minlength=tb.MIDPOINT_K_STRATA) / len(rows)
+        pool = np.bincount(strata, minlength=tb.MIDPOINT_K_STRATA) / len(strata)
+        assert np.abs(drawn - pool).max() <= 1.0 / len(rows) + 1e-9
+    # the uniform draw of the same seed is the one the entry would draw (for the gate's comparison)
+    np.testing.assert_array_equal(np.sort(m["uniform_before"]), np.sort(base.rows[base.stage == 0]))
+    np.testing.assert_array_equal(np.sort(m["uniform_after"]), np.sort(base.rows[base.stage == 1]))
+    # the same call twice gives the same draw (deterministic k-means, fixed streams, none of them the herd's)
+    again = tb.interpolate_clouds(A, B, Eb, Ea, 0.5, 600, draw="midpoint", log_depth=(Lb, La), **kw)
+    np.testing.assert_array_equal(again.rows, mid.rows)
+    assert not set(tb.MIDPOINT_STREAMS) & {0, 1, 2, 3, 4, 5, *tb.HERD_STREAMS}
+
+
+def test_midpoint_draw_tilts_each_bracket_towards_the_local_midpoint(midpoint_case):
+    *_, mid, base = midpoint_case
+    m = mid.coupling["midpoint"]
+    s_b, s_a = m["s_before"], m["s_after"]
+    # the anchor pairs' local midpoint sits between the brackets: before cells below it, after cells above it
+    assert s_b.mean() < -0.5 and s_a.mean() > 0.5
+    # the tilt moves each stratum's draw about half way to the midpoint (the expected draw shares, noise-free)
+    moved = []
+    for s, w, strata in ((s_b, m["expected_before"], m["strata_before"]),
+                         (s_a, m["expected_after"], m["strata_after"])):
+        for st in np.unique(strata):
+            mask = strata == st
+            if mask.sum() >= 40 and abs(s[mask].mean()) > s[mask].std():  # strata clearly off the midpoint
+                moved.append((w[mask] / w[mask].sum() * s[mask]).sum() / s[mask].mean())
+    assert len(moved) >= 4 and 0.35 < float(np.median(moved)) < 0.65
+    # the draw itself follows: the drawn cells sit closer to the midpoint than the uniform draw's
+    for s, rows, uni in ((s_b, mid.rows[mid.stage == 0], m["uniform_before"]),
+                         (s_a, mid.rows[mid.stage == 1], m["uniform_after"])):
+        assert abs(s[rows].mean()) < 0.8 * abs(s[uni].mean())
+    # the two brackets stay on their own sides: a tilt, not an exchange of cells
+    assert s_b[mid.rows[mid.stage == 0]].mean() < 0 < s_a[mid.rows[mid.stage == 1]].mean()
+    # the effect is visible against two uniform draws of the same size (the gate's measure)
+    assert m["w_before"].std() > 0.0 and m["w_after"].std() > 0.0
+    ess = mid.record["midpoint"]["ess_frac"]
+    assert 0.0 < ess["before"] < 1.0 and 0.0 < ess["after"] < 1.0
+    assert base.record.get("midpoint") is None
+
+
+def test_midpoint_draw_refuses_bad_arguments(midpoint_case):
+    A, B, Eb, Ea, Lb, La, kw, *_ = midpoint_case
+    with pytest.raises(ValueError, match="draw must be one of"):
+        tb.interpolate_clouds(A, B, Eb, Ea, 0.5, 100, draw="balanced", **kw)
+    with pytest.raises(ValueError, match="needs log_depth"):
+        tb.interpolate_clouds(A, B, Eb, Ea, 0.5, 100, draw="midpoint", **kw)
+    with pytest.raises(ValueError, match="log_depth"):
+        tb.interpolate_clouds(A, B, Eb, Ea, 0.5, 100, draw="midpoint", log_depth=(Lb[:-1], La), **kw)
+    with pytest.raises(ValueError, match="both choose"):
+        tb.interpolate_clouds(A, B, Eb, Ea, 0.5, 100, draw="midpoint", log_depth=(Lb, La), herd=True, **kw)
+
+
+def test_log_panel_counts_sums_the_panels_counts_whatever_the_sparsity():
+    rng = np.random.default_rng(43)
+    a, panel, _ = _counted(rng, 50, 60.0)
+    want = np.log1p(np.asarray(a[:, panel].layers["counts"].sum(1)).ravel())
+    np.testing.assert_allclose(tb.log_panel_counts(a, panel), want)
+    from scipy import sparse as sp
+
+    dense_counts = ad.AnnData(X=a.X.copy(), var=a.var, layers={"counts": sp.csr_matrix(a.layers["counts"]).toarray()})
+    np.testing.assert_allclose(tb.log_panel_counts(dense_counts, panel), want)

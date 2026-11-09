@@ -596,25 +596,28 @@ def _psb_size(ctx: BuildContext) -> Stage:
 
 
 def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixture", herd: bool = False,
-         move_coupling: str = t2_build.MOVE_COUPLINGS[0]) -> Stage:
+         move_coupling: str = t2_build.MOVE_COUPLINGS[0], draw: str = t2_build.DRAWS[0]) -> Stage:
     """The T2 embryo pipeline (docs/PLAN.md 4.2): displacement interpolation between the brackets at the target's
     time fraction (vec.t2_build.interpolate_clouds: fused Gromov-Wasserstein coupling, proper rotation, McCann moves,
     a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages. t_pos:
     the s2 shape variants' position fraction (0: the earlier bracket's geometry, 1: the later's; default: the
     mixture's). expression: "mixture" (the cells as released), "depth" (vec.t2_build.depth_matched_expression) or
     "blend" (vec.t2_build.blend_expression); tries E7 and E8 of experiments/harness/TRIES.md. move_coupling: "fgw"
-    (the entry) or "aligned" (try E10: the moves from vec.core.aligned_coupling in the rotated common frame)."""
+    (the entry) or "aligned" (try E10: the moves from vec.core.aligned_coupling in the rotated common frame). draw:
+    "uniform" (the entry) or "midpoint" (try E13, vec.t2_build._midpoint_draw; it needs the inputs' counts layer)."""
     t = ctx.task
     before, after = ctx.inputs["before"], ctx.inputs["after"]
     lo, hi = t.role_days["before"], t.role_days["after"]
     g = ctx.board.genes
     frac = (t.target_day - lo) / (hi - lo)
     Eb, Ea = dense(before[:, g].X).astype(np.float32), dense(after[:, g].X).astype(np.float32)
+    log_depth = (None if draw == t2_build.DRAWS[0]
+                 else (t2_build.log_panel_counts(before, g), t2_build.log_panel_counts(after, g)))
     res = t2_build.interpolate_clouds(np.asarray(before.obsm[COORD_KEY], dtype=float)[:, :3],
                                       np.asarray(after.obsm[COORD_KEY], dtype=float)[:, :3], Eb, Ea,
                                       frac, count_for(ctx.board, before.n_obs), ctx.seed,
                                       target_rms=target_rms(ctx), t_pos=t_pos, with_partners=expression == "blend",
-                                      herd=herd, move_coupling=move_coupling)
+                                      herd=herd, move_coupling=move_coupling, draw=draw, log_depth=log_depth)
     if expression == "mixture":
         X = np.empty((len(res.rows), len(g)), dtype=np.float32)
         X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
@@ -661,6 +664,10 @@ def _fgw_blend(ctx: BuildContext) -> Stage:
 
 def _fgw_aligned(ctx: BuildContext) -> Stage:
     return _fgw(ctx, move_coupling="aligned")
+
+
+def _fgw_midpoint(ctx: BuildContext) -> Stage:
+    return _fgw(ctx, draw=t2_build.DRAWS[1])
 
 
 def _interp(t: PseudoTask) -> bool:
@@ -892,6 +899,17 @@ CANDIDATES = {
                                       "cost of expression and position in the rotated common frame "
                                       "(vec.core.aligned_coupling; FGW's rotation kept)",
                               "alpha": t2_build.INTERP_ALPHA, "scope": "whole"}, requires=_interp),
+    # embryo try E13 (experiments/harness/TRIES.md, registered before its run; it runs only if its target-free gate N16
+    # passes): fgw's cells and positions; which real cells are drawn is tilted towards the local displacement midpoint
+    "fgw_midpoint": Candidate("fgw_midpoint", frozenset({"T2"}), (), _fgw_midpoint,
+                              {"what": "fgw with each bracket's real cells drawn by a tilt towards the local "
+                                       "displacement midpoint (w = exp(-s^2 / (2 var(s))), s the cell's PC offset "
+                                       "from the midpoint projected on the local bracket-difference axis, within "
+                                       "k-means strata of the joint PCs; every cell unedited at its moved position, "
+                                       "exact bracket fractions)",
+                               "k_strata": t2_build.MIDPOINT_K_STRATA, "k_anchors": t2_build.MIDPOINT_K_ANCHORS,
+                               "kmeans_seed": t2_build.MIDPOINT_KMEANS_SEED,
+                               "streams": list(t2_build.MIDPOINT_STREAMS), "scope": "whole"}, requires=_interp),
     "copy_herd": Candidate("copy_herd", frozenset({"T1"}), _ANY, _copy_herd,
                            {"what": "a copy of the reference with its draw herded towards the pool's mean expression "
                                     "(a diagnostic)", "scope": "whole"}),
