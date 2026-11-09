@@ -1,0 +1,20 @@
+{
+ "version": 1,
+ "file": "n18_latent_fidelity.json",
+ "sha256": "4e28ccb000e0642898829f3f933a28bb20580180e96a995ae34232e3e7a2defd",
+ "size": 4497,
+ "commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+ "clean": true,
+ "why": null,
+ "unclean": [],
+ "unclean_count": 0,
+ "start_commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+ "started_utc": "2026-11-09T21:28:08+00:00",
+ "created_utc": "2026-11-09T21:41:37+00:00",
+ "hostname": "p01r10srv05",
+ "argv": [
+  "experiments/harness/n18_latent_fidelity.py",
+  "--device",
+  "cpu"
+ ]
+}

@@ -1,0 +1,8 @@
+O1 reproduction gate: pass (tolerances: score 0.02 points, skill 0.002 per seed)
+  library 1 copy_last: max |d score| 0.0000; de_score 0.00000, de_direction 0.00000, mmd_u 0.00000, variogram 0.00000
+  library 1 oracle: max |d score| 0.0000; de_score 0.00000, de_direction 0.00000, mmd_u 0.00000, variogram 0.00000
+  library 1 shift_1: max |d score| 0.0000; de_score 0.00000, de_direction 0.00000, mmd_u 0.00000, variogram 0.00000
+  library 2 copy_last: max |d score| 0.0000; de_score 0.00000, de_direction 0.00000, mmd_u 0.00000, variogram 0.00000
+  library 2 oracle: max |d score| 0.0000; de_score 0.00000, de_direction 0.00000, mmd_u 0.00000, variogram 0.00000
+  library 2 shift_1: max |d score| 0.0000; de_score 0.00000, de_direction 0.00000, mmd_u 0.00000, variogram 0.00000
+Commit 203c62350d135a14ef1dc695f9f477514f1a7312, tree clean True, UTC 2026-11-09T21:32:19Z

@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "file": "n11_measured.txt",
+ "sha256": "6dfd9af0f30b22219a1a396f72b70b9469377077eb8f7a87e7775a37ddf06fb7",
+ "size": 1616,
+ "commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+ "clean": true,
+ "why": null,
+ "unclean": [],
+ "unclean_count": 0,
+ "start_commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+ "started_utc": "2026-11-09T21:38:37+00:00",
+ "created_utc": "2026-11-09T21:38:38+00:00",
+ "hostname": "p01r10srv05",
+ "argv": [
+  "experiments/t3_decomp/orth_diag.py",
+  "n11"
+ ]
+}

@@ -1,0 +1,6 @@
+T1:test: 2 pseudo-task(s) in /home/prachh/v/virtual-embryo-challenge/runs/harness/t11_g_mom (protocol bake, build main, anchors computed, seeds [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  T1/E9.5->E10.5 on T1:val: floor 50.00 +/- 0.00; b0 44.12 +/- 0.46; g_mom 45.25 +/- 0.51 (commit 203c623, clean True)
+  T1/E9.5->E10.5:chamber on pseudo:T1/E9.5->E10.5:chamber: floor 50.00 +/- 0.00; b0 49.68 +/- 0.67; g_mom 50.91 +/- 0.70 (commit 203c623, clean True)
+g_mom against b0: KEEP (passes on 2 of 2 pseudo-tasks (needs 2) and loses on none; decided on 2 of 3 configured pseudo-tasks; not counted: {'T1/E8.5->E9.5': 'change does not apply'})
+    T1/E9.5->E10.5: paired mean gain +1.13, ahead in 10 of 10 seeds, passes True, vetoes False
+    T1/E9.5->E10.5:chamber: paired mean gain +1.23, ahead in 10 of 10 seeds, passes True, vetoes False

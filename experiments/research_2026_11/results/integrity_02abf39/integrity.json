@@ -1,0 +1,709 @@
+{
+ "files": {
+  "builds/T1_s1.h5ad": {
+   "board": "T1:test",
+   "flags": [],
+   "library": {
+    "band": [
+     0.99,
+     1.01
+    ],
+    "median_over_1e4": 0.9999999998728728,
+    "p0.1_over_1e4": 0.9999999180057987,
+    "p99.9_over_1e4": 1.00000007093096,
+    "pass": true
+   },
+   "panel_names_in_order": true,
+   "pb": {
+    "floor": 0.9,
+    "pass": true,
+    "pearson": 0.9941606596000742,
+    "spearman": 0.9857465471610634
+   },
+   "provenance": {
+    "exact_row_fraction": 0.304,
+    "floor": 0.05,
+    "k_sample": 2000,
+    "pass": true
+   },
+   "record": {
+    "missing": [],
+    "path": "builds/T1_s1.build.json",
+    "present": true,
+    "problems": [],
+    "source_row_fields": []
+   },
+   "sha256": "58ffcf61c6389ae6f84504f041d81714d3033a1c76977a2bc2e703bd673003fd",
+   "sources": [
+    "T1/E10.5_RNA.h5ad"
+   ],
+   "stamp": {
+    "clean": true,
+    "commit": "02abf39e43e5f38f7d11c005b0f5a3a3cd97b4c0",
+    "present": true,
+    "sha256_matches": true
+   },
+   "x": {
+    "finite": true,
+    "non_negative": true,
+    "pass": true
+   }
+  },
+  "builds/T1_s2.h5ad": {
+   "board": "T1:test",
+   "flags": [],
+   "library": {
+    "band": [
+     0.99,
+     1.01
+    ],
+    "median_over_1e4": 0.9999999996635249,
+    "p0.1_over_1e4": 0.999999919485177,
+    "p99.9_over_1e4": 1.0000000697130331,
+    "pass": true
+   },
+   "panel_names_in_order": true,
+   "pb": {
+    "floor": 0.9,
+    "pass": true,
+    "pearson": 0.9851754193933583,
+    "spearman": 0.9844677507011724
+   },
+   "provenance": {
+    "exact_row_fraction": 0.274,
+    "floor": 0.05,
+    "k_sample": 2000,
+    "pass": true
+   },
+   "record": {
+    "missing": [],
+    "path": "builds/T1_s2.build.json",
+    "present": true,
+    "problems": [],
+    "source_row_fields": []
+   },
+   "sha256": "d48d3a55e45dddcb2a57a16e2ac9b2eac385a8d74ac74244012059e36bcbce0e",
+   "sources": [
+    "T1/E10.5_RNA.h5ad"
+   ],
+   "stamp": {
+    "clean": true,
+    "commit": "02abf39e43e5f38f7d11c005b0f5a3a3cd97b4c0",
+    "present": true,
+    "sha256_matches": true
+   },
+   "x": {
+    "finite": true,
+    "non_negative": true,
+    "pass": true
+   }
+  },
+  "builds/T2embryo_s1.h5ad": {
+   "board": "T2:embryo:test_interp",
+   "flags": [],
+   "moran": {
+    "agreement": 0.8673657500759979,
+    "file_mean_I": 0.12480289484550529,
+    "floor": 0.5,
+    "level_floor": 0.35,
+    "level_ratio": 0.4312337110112181,
+    "pass": true,
+    "per_source": {
+     "T2/E7.5.h5ad": {
+      "agreement": 0.7948887327852296,
+      "file_mean_I": 0.12009849083633542,
+      "level_ratio": 0.7450686134429889,
+      "shuffled_control_agreement": -0.071250546266678,
+      "source_mean_I": 0.16119118248902736
+     },
+     "T2/E8.0.h5ad": {
+      "agreement": 0.8673657500759979,
+      "file_mean_I": 0.12480289484550529,
+      "level_ratio": 0.4312337110112181,
+      "shuffled_control_agreement": 0.0210021592987657,
+      "source_mean_I": 0.2894089484628874
+     }
+    },
+    "shuffled_control_agreement": 0.0210021592987657,
+    "source": "T2/E8.0.h5ad",
+    "source_mean_I": 0.2894089484628874
+   },
+   "panel_names_in_order": true,
+   "pb": {
+    "floor": 0.95,
+    "pass": true,
+    "pearson": 0.9997731551140346,
+    "per_source": {
+     "T2/E7.5.h5ad": {
+      "pearson": 0.9338548460796858,
+      "spearman": 0.9328110129881504
+     },
+     "T2/E8.0.h5ad": {
+      "pearson": 0.9632141854375664,
+      "spearman": 0.9739150018650575
+     }
+    },
+    "spearman": 0.9985797020756486
+   },
+   "provenance": {
+    "exact_row_fraction": 1.0,
+    "floor": 0.99,
+    "k_sample": 2000,
+    "pass": true,
+    "share_band": [
+     0.4,
+     0.6
+    ],
+    "share_from_first_bracket": 0.505
+   },
+   "record": {
+    "missing": [],
+    "path": "builds/T2embryo_s1.build.json",
+    "present": true,
+    "problems": [],
+    "source_row_fields": []
+   },
+   "sha256": "dc910d4b3fb1d62b643bf96e5765741f8f0ad011f7b2d928a7955928ddee1303",
+   "size_as_preregistered": true,
+   "sources": [
+    "T2/E7.5.h5ad",
+    "T2/E8.0.h5ad"
+   ],
+   "stamp": {
+    "clean": true,
+    "commit": "fa678e70859ec740edc352b3bbb2bd3b32dbe595",
+    "present": true,
+    "sha256_matches": true
+   },
+   "x": {
+    "finite": true,
+    "non_negative": true,
+    "pass": true
+   }
+  },
+  "builds/T2embryo_s2.h5ad": {
+   "board": "T2:embryo:test_interp",
+   "flags": [],
+   "moran": {
+    "agreement": 0.8522013480838053,
+    "file_mean_I": 0.13075256409352598,
+    "floor": 0.5,
+    "level_floor": 0.35,
+    "level_ratio": 0.8111644946982544,
+    "pass": true,
+    "per_source": {
+     "T2/E7.5.h5ad": {
+      "agreement": 0.8522013480838053,
+      "file_mean_I": 0.13075256409352598,
+      "level_ratio": 0.8111644946982544,
+      "shuffled_control_agreement": 0.0069238925799261905,
+      "source_mean_I": 0.16119118248902736
+     },
+     "T2/E8.0.h5ad": {
+      "agreement": 0.784484496861667,
+      "file_mean_I": 0.13158506589293087,
+      "level_ratio": 0.4546682699059832,
+      "shuffled_control_agreement": -0.15485221787802397,
+      "source_mean_I": 0.2894089484628874
+     }
+    },
+    "shuffled_control_agreement": 0.0069238925799261905,
+    "source": "T2/E7.5.h5ad",
+    "source_mean_I": 0.16119118248902736
+   },
+   "panel_names_in_order": true,
+   "pb": {
+    "floor": 0.95,
+    "pass": true,
+    "pearson": 0.9997731551140346,
+    "per_source": {
+     "T2/E7.5.h5ad": {
+      "pearson": 0.9338548460796858,
+      "spearman": 0.9328110129881504
+     },
+     "T2/E8.0.h5ad": {
+      "pearson": 0.9632141854375664,
+      "spearman": 0.9739150018650575
+     }
+    },
+    "spearman": 0.9985797020756486
+   },
+   "provenance": {
+    "exact_row_fraction": 1.0,
+    "floor": 0.99,
+    "k_sample": 2000,
+    "pass": true,
+    "share_band": [
+     0.4,
+     0.6
+    ],
+    "share_from_first_bracket": 0.516
+   },
+   "record": {
+    "missing": [],
+    "path": "builds/T2embryo_s2.build.json",
+    "present": true,
+    "problems": [],
+    "source_row_fields": []
+   },
+   "sha256": "574aa30b60a735c0ca3308886f5d10f6b1fd99fc7be8b6efab7aa3b4c98f0fac",
+   "size_as_preregistered": true,
+   "sources": [
+    "T2/E7.5.h5ad",
+    "T2/E8.0.h5ad"
+   ],
+   "stamp": {
+    "clean": true,
+    "commit": "fa678e70859ec740edc352b3bbb2bd3b32dbe595",
+    "present": true,
+    "sha256_matches": true
+   },
+   "x": {
+    "finite": true,
+    "non_negative": true,
+    "pass": true
+   }
+  },
+  "builds/T2heart_s1.h5ad": {
+   "board": "T2:heart:test_extrap",
+   "flags": [],
+   "moran": {
+    "agreement": 0.9853854981469867,
+    "file_mean_I": 0.13222697597718383,
+    "floor": 0.5,
+    "level_floor": 0.35,
+    "level_ratio": 0.7817871293791684,
+    "pass": true,
+    "per_source": {
+     "T2/E10.5.h5ad": {
+      "agreement": 0.9853854981469867,
+      "file_mean_I": 0.13222697597718383,
+      "level_ratio": 0.7817871293791684,
+      "shuffled_control_agreement": -0.04455879687242126,
+      "source_mean_I": 0.16913424512653172
+     }
+    },
+    "shuffled_control_agreement": -0.04455879687242126,
+    "source": "T2/E10.5.h5ad",
+    "source_mean_I": 0.16913424512653172
+   },
+   "panel_names_in_order": true,
+   "pb": {
+    "floor": 0.95,
+    "pass": true,
+    "pearson": 0.9964316999456644,
+    "spearman": 0.9940434641738568
+   },
+   "provenance": {
+    "floor": 0.05,
+    "k_sample": 2000,
+    "pass": true,
+    "z_level_fraction": 1.0
+   },
+   "record": {
+    "missing": [],
+    "path": "builds/T2heart_s1.build.json",
+    "present": true,
+    "problems": [],
+    "source_row_fields": []
+   },
+   "sha256": "e73d0396364806514c4acf1aa522e5923e395d610c4b0c3bb85112a89ef84355",
+   "size_as_preregistered": true,
+   "sources": [
+    "T2/E10.5.h5ad"
+   ],
+   "stamp": {
+    "clean": true,
+    "commit": "fa678e70859ec740edc352b3bbb2bd3b32dbe595",
+    "present": true,
+    "sha256_matches": true
+   },
+   "x": {
+    "finite": true,
+    "non_negative": true,
+    "pass": true
+   }
+  },
+  "builds/T2heart_s2.h5ad": {
+   "board": "T2:heart:test_extrap",
+   "flags": [],
+   "moran": {
+    "agreement": 0.9618514406391517,
+    "file_mean_I": 0.13102415840287115,
+    "floor": 0.5,
+    "level_floor": 0.35,
+    "level_ratio": 0.7746755147359432,
+    "pass": true,
+    "per_source": {
+     "T2/E10.5.h5ad": {
+      "agreement": 0.9618514406391517,
+      "file_mean_I": 0.13102415840287115,
+      "level_ratio": 0.7746755147359432,
+      "shuffled_control_agreement": 0.03353101814314184,
+      "source_mean_I": 0.16913424512653172
+     }
+    },
+    "shuffled_control_agreement": 0.03353101814314184,
+    "source": "T2/E10.5.h5ad",
+    "source_mean_I": 0.16913424512653172
+   },
+   "panel_names_in_order": true,
+   "pb": {
+    "floor": 0.95,
+    "pass": true,
+    "pearson": 0.9912078254408117,
+    "spearman": 0.9879656798627192
+   },
+   "provenance": {
+    "floor": 0.05,
+    "k_sample": 2000,
+    "pass": true,
+    "z_level_fraction": 1.0
+   },
+   "record": {
+    "missing": [],
+    "path": "builds/T2heart_s2.build.json",
+    "present": true,
+    "problems": [],
+    "source_row_fields": []
+   },
+   "sha256": "5a309434d4a2e66d7b3b838a9a0b23d7c1cd0bc49daec238cf87e194df158190",
+   "size_as_preregistered": true,
+   "sources": [
+    "T2/E10.5.h5ad"
+   ],
+   "stamp": {
+    "clean": true,
+    "commit": "fa678e70859ec740edc352b3bbb2bd3b32dbe595",
+    "present": true,
+    "sha256_matches": true
+   },
+   "x": {
+    "finite": true,
+    "non_negative": true,
+    "pass": true
+   }
+  },
+  "t3_build/allowed_s1.h5ad": {
+   "board": "T3:bcatenin",
+   "flags": [],
+   "moran": {
+    "agreement": 0.9466477469605803,
+    "file_mean_I": 0.19782670171040528,
+    "floor": 0.5,
+    "level_floor": 0.35,
+    "level_ratio": 0.7007144088005939,
+    "pass": true,
+    "per_source": {
+     "T2/E8.75.h5ad": {
+      "agreement": 0.9466477469605803,
+      "file_mean_I": 0.19782670171040528,
+      "level_ratio": 0.7007144088005939,
+      "shuffled_control_agreement": -0.07440617783699187,
+      "source_mean_I": 0.2823214411260978
+     }
+    },
+    "shuffled_control_agreement": -0.07440617783699187,
+    "source": "T2/E8.75.h5ad",
+    "source_mean_I": 0.2823214411260978
+   },
+   "panel_names_in_order": true,
+   "pb": {
+    "floor": 0.9,
+    "pass": true,
+    "pearson": 0.9628976950007202,
+    "spearman": 0.9664892419569677
+   },
+   "provenance": {
+    "exact_coord_fraction": 1.0,
+    "floor": 0.05,
+    "k_sample": 2000,
+    "pass": true
+   },
+   "record": {
+    "missing": [],
+    "path": "t3_build/allowed_s1.json",
+    "present": true,
+    "problems": [],
+    "source_row_fields": []
+   },
+   "sha256": "3d6c94a97b02b8f378b275070dad2767e54005e4194d093e4e01bdf3881b4203",
+   "sources": [
+    "T2/E8.75.h5ad"
+   ],
+   "stamp": {
+    "clean": true,
+    "commit": "fa678e70859ec740edc352b3bbb2bd3b32dbe595",
+    "present": true,
+    "sha256_matches": true
+   },
+   "x": {
+    "finite": true,
+    "non_negative": true,
+    "pass": true
+   }
+  },
+  "t3_build/barred_s1.h5ad": {
+   "board": "T3:bcatenin",
+   "flags": [],
+   "moran": {
+    "agreement": 0.9366782290387251,
+    "file_mean_I": 0.2258142075594452,
+    "floor": 0.5,
+    "level_floor": 0.35,
+    "level_ratio": 0.799847884945395,
+    "pass": true,
+    "per_source": {
+     "T2/E8.75.h5ad": {
+      "agreement": 0.9366782290387251,
+      "file_mean_I": 0.2258142075594452,
+      "level_ratio": 0.799847884945395,
+      "shuffled_control_agreement": -0.07046330984562779,
+      "source_mean_I": 0.2823214411260978
+     }
+    },
+    "shuffled_control_agreement": -0.07046330984562779,
+    "source": "T2/E8.75.h5ad",
+    "source_mean_I": 0.2823214411260978
+   },
+   "panel_names_in_order": true,
+   "pb": {
+    "floor": 0.9,
+    "pass": true,
+    "pearson": 0.9189514176705029,
+    "spearman": 0.9196912627650511
+   },
+   "provenance": {
+    "exact_coord_fraction": 1.0,
+    "floor": 0.05,
+    "k_sample": 2000,
+    "pass": true
+   },
+   "record": {
+    "missing": [],
+    "path": "t3_build/barred_s1.json",
+    "present": true,
+    "problems": [],
+    "source_row_fields": []
+   },
+   "sha256": "3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2",
+   "sources": [
+    "T2/E8.75.h5ad"
+   ],
+   "stamp": {
+    "clean": true,
+    "commit": "fa678e70859ec740edc352b3bbb2bd3b32dbe595",
+    "present": true,
+    "sha256_matches": true
+   },
+   "x": {
+    "finite": true,
+    "non_negative": true,
+    "pass": true
+   }
+  },
+  "t3_build/barred_s2.h5ad": {
+   "board": "T3:bcatenin",
+   "flags": [],
+   "moran": {
+    "agreement": 0.940523348224472,
+    "file_mean_I": 0.22779267709375073,
+    "floor": 0.5,
+    "level_floor": 0.35,
+    "level_ratio": 0.80685574636185,
+    "pass": true,
+    "per_source": {
+     "T2/E8.75.h5ad": {
+      "agreement": 0.940523348224472,
+      "file_mean_I": 0.22779267709375073,
+      "level_ratio": 0.80685574636185,
+      "shuffled_control_agreement": -0.06726734491670355,
+      "source_mean_I": 0.2823214411260978
+     }
+    },
+    "shuffled_control_agreement": -0.06726734491670355,
+    "source": "T2/E8.75.h5ad",
+    "source_mean_I": 0.2823214411260978
+   },
+   "panel_names_in_order": true,
+   "pb": {
+    "floor": 0.9,
+    "pass": true,
+    "pearson": 0.9197666366430074,
+    "spearman": 0.9200278401113604
+   },
+   "provenance": {
+    "exact_coord_fraction": 1.0,
+    "floor": 0.05,
+    "k_sample": 2000,
+    "pass": true
+   },
+   "record": {
+    "missing": [],
+    "path": "t3_build/barred_s2.json",
+    "present": true,
+    "problems": [],
+    "source_row_fields": []
+   },
+   "sha256": "1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f",
+   "sources": [
+    "T2/E8.75.h5ad"
+   ],
+   "stamp": {
+    "clean": true,
+    "commit": "fa678e70859ec740edc352b3bbb2bd3b32dbe595",
+    "present": true,
+    "sha256_matches": true
+   },
+   "x": {
+    "finite": true,
+    "non_negative": true,
+    "pass": true
+   }
+  },
+  "t3_build/refused_s1.h5ad": {
+   "board": "T3:bcatenin",
+   "flags": [],
+   "moran": {
+    "agreement": 0.9891658034829321,
+    "file_mean_I": 0.2436685832278588,
+    "floor": 0.5,
+    "level_floor": 0.35,
+    "level_ratio": 0.8630891874734556,
+    "pass": true,
+    "per_source": {
+     "T2/E8.75.h5ad": {
+      "agreement": 0.9891658034829321,
+      "file_mean_I": 0.2436685832278588,
+      "level_ratio": 0.8630891874734556,
+      "shuffled_control_agreement": -0.08865205602308185,
+      "source_mean_I": 0.2823214411260978
+     }
+    },
+    "shuffled_control_agreement": -0.08865205602308185,
+    "source": "T2/E8.75.h5ad",
+    "source_mean_I": 0.2823214411260978
+   },
+   "panel_names_in_order": true,
+   "pb": {
+    "floor": 0.9,
+    "pass": true,
+    "pearson": 0.9994698384186368,
+    "spearman": 0.998570554282217
+   },
+   "provenance": {
+    "exact_coord_fraction": 1.0,
+    "floor": 0.05,
+    "k_sample": 2000,
+    "pass": true
+   },
+   "record": {
+    "missing": [],
+    "path": "t3_build/refused_s1.json",
+    "present": true,
+    "problems": [],
+    "source_row_fields": []
+   },
+   "sha256": "0ac8901b2f4015cd4d89738a2a5188faec7a371e6ae7a68d3fdb1dd4140eb101",
+   "sources": [
+    "T2/E8.75.h5ad"
+   ],
+   "stamp": {
+    "clean": true,
+    "commit": "fa678e70859ec740edc352b3bbb2bd3b32dbe595",
+    "present": true,
+    "sha256_matches": true
+   },
+   "x": {
+    "finite": true,
+    "non_negative": true,
+    "pass": true
+   }
+  }
+ },
+ "flags": [],
+ "inputs": {
+  "archive_sha256sums": "f8fe540fe5e8c2b500b4c381a743537c4046dca3334ee569eaa10e7cfdee4bde",
+  "decisions_sha256": "9440ae67625608112666d5235e6ceaa5dd9f47a4b0bbd30e16943f32f35c5a8c",
+  "files_sha256": {
+   "builds/T1_s1.h5ad": "58ffcf61c6389ae6f84504f041d81714d3033a1c76977a2bc2e703bd673003fd",
+   "builds/T1_s2.h5ad": "d48d3a55e45dddcb2a57a16e2ac9b2eac385a8d74ac74244012059e36bcbce0e",
+   "builds/T2embryo_s1.h5ad": "dc910d4b3fb1d62b643bf96e5765741f8f0ad011f7b2d928a7955928ddee1303",
+   "builds/T2embryo_s2.h5ad": "574aa30b60a735c0ca3308886f5d10f6b1fd99fc7be8b6efab7aa3b4c98f0fac",
+   "builds/T2heart_s1.h5ad": "e73d0396364806514c4acf1aa522e5923e395d610c4b0c3bb85112a89ef84355",
+   "builds/T2heart_s2.h5ad": "5a309434d4a2e66d7b3b838a9a0b23d7c1cd0bc49daec238cf87e194df158190",
+   "t3_build/allowed_s1.h5ad": "3d6c94a97b02b8f378b275070dad2767e54005e4194d093e4e01bdf3881b4203",
+   "t3_build/barred_s1.h5ad": "3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2",
+   "t3_build/barred_s2.h5ad": "1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f",
+   "t3_build/refused_s1.h5ad": "0ac8901b2f4015cd4d89738a2a5188faec7a371e6ae7a68d3fdb1dd4140eb101"
+  },
+  "panels_sha256": {
+   "T1:test": "807549e15be019899fa83cbab864bec87ad278f60c272e39819c7302cc2285b8",
+   "T2:embryo:test_interp": "68d63317ac18edac4530e322d230d06596981fcb6302cb56baa126e243e7e86a",
+   "T2:heart:test_extrap": "a9a553108e19acb6cbf4323aa692e6bdc51b7192f7a7866307bc058a1573e1d6",
+   "T3:bcatenin": "a9a553108e19acb6cbf4323aa692e6bdc51b7192f7a7866307bc058a1573e1d6"
+  },
+  "size_json_sha256": {
+   "embryo": "dbbb3cf4899d072c474c1e4750e5b0e06986b93232ce2ca563324a0e725e3c79",
+   "heart": "5306e18c8de8a5ed1658122c1cb4cb771360474425f7a8a326e688fd6cc90d44"
+  },
+  "sources_sha256": {
+   "T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+   "T2/E10.5.h5ad": "d6b37967f9cf3533091964cd07421c48a5c7c04628e9321123a426cb2a9c7e8b",
+   "T2/E7.5.h5ad": "e8e47255ddeca96d5604c7cd4923bbf27765c24bc6a3cd44e800cd6ea05a7d54",
+   "T2/E8.0.h5ad": "17530e23fbfa6a139ff68d0353a489d83790f5b60f036b7d2f58303a1ff8a810",
+   "T2/E8.75.h5ad": "149ab6df7c99ad85046c8aebebcf0c43689b3720c59ffb7cc550edcf2f13a83c"
+  }
+ },
+ "label": "N14 (experiments/harness/TRIES.md; all boards, a diagnostic, not a try): the integrity pass of the ten frozen upload files against their released source stages (target-free: no score, no anchor, no cell count)",
+ "provenance": {
+  "archive": "runs/archive/builds_02abf39",
+  "commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+  "data": "data/raw",
+  "tree_clean": true,
+  "utc": "2026-11-09T21:27:30Z"
+ },
+ "rules": {
+  "embryo_share": [
+   0.4,
+   0.6
+  ],
+  "exact_floor": {
+   "embryo": 0.99,
+   "heart": 0.05,
+   "t1": 0.05,
+   "t3": 0.05
+  },
+  "k_sample": 2000,
+  "library": {
+   "band": [
+    0.99,
+    1.01
+   ],
+   "quantiles": [
+    0.001,
+    0.999
+   ],
+   "target": 10000.0
+  },
+  "moran": {
+   "floor": 0.5,
+   "genes": 200,
+   "k": 15,
+   "level_floor": 0.35
+  },
+  "pb_floor": {
+   "embryo": 0.95,
+   "heart": 0.95,
+   "t1": 0.9,
+   "t3": 0.9
+  },
+  "sample_seed": 20261109,
+  "size_tol": {
+   "embryo": 0.001,
+   "heart": 0.0001
+  }
+ },
+ "source_rows_in_build_records": false,
+ "verdict": "no flag"
+}

@@ -1,0 +1,21 @@
+{
+ "version": 1,
+ "file": "integrity.txt",
+ "sha256": "c41c22d69610ba94932aaa3b220a261a54486311ffa676414b30df9d7ae0d98d",
+ "size": 6675,
+ "commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+ "clean": true,
+ "why": null,
+ "unclean": [],
+ "unclean_count": 0,
+ "start_commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+ "started_utc": "2026-11-09T21:26:43+00:00",
+ "created_utc": "2026-11-09T21:27:30+00:00",
+ "hostname": "p01r10srv05",
+ "argv": [
+  "experiments/research_2026_11/diagnostics.py",
+  "integrity",
+  "--out",
+  "experiments/research_2026_11/results/integrity_02abf39"
+ ]
+}

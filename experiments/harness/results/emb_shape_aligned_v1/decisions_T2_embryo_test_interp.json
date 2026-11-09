@@ -1,0 +1,64 @@
+{
+ "board": "T2:embryo:test_interp",
+ "runs": "/home/prachh/v/virtual-embryo-challenge/runs/harness/emb_shape_aligned_v1",
+ "decisions": [
+  {
+   "base": "fgw_shape0",
+   "change": "fgw_shape0_aligned",
+   "counted": [],
+   "excluded": {
+    "T2e/E7.25+E8.0->E7.5": "change was tuned on it",
+    "T2e/E6.75+E7.5->E7.25": "change was tuned on it"
+   },
+   "configured": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "decided_on": "0 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "no pseudo-tasks",
+   "tasks": {},
+   "need": null,
+   "passed": 0,
+   "fit_checks": {}
+  }
+ ],
+ "summaries": {
+  "T2e/E6.75+E7.5->E7.25": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "fgw": [
+    58.78119083140672,
+    2.2035357504971294
+   ],
+   "fgw_shape0": [
+    53.66740928522209,
+    1.9439395785757863
+   ],
+   "fgw_shape0_aligned": [
+    54.66663577433845,
+    1.8262071405553517
+   ]
+  },
+  "T2e/E7.25+E8.0->E7.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "fgw": [
+    61.118922295807145,
+    0.8348261928410835
+   ],
+   "fgw_shape0": [
+    62.949740559126084,
+    0.7618931412546367
+   ],
+   "fgw_shape0_aligned": [
+    63.34233993745613,
+    0.544417134975972
+   ]
+  }
+ }
+}

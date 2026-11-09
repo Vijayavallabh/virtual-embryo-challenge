@@ -1,0 +1,4 @@
+g_mom against b0, group margins per cut (rule 2: at least 67% of the gain on distribution and covariance, on both cuts): True
+  T1/E9.5->E10.5: de_recovery +0.15, direction +0.12, distribution +0.58, covariance +0.29; sum +1.13 (scored margin +1.13); share on distribution and covariance 0.76
+  T1/E9.5->E10.5:chamber: de_recovery +0.20, direction +0.12, distribution +0.60, covariance +0.31; sum +1.23 (scored margin +1.23); share on distribution and covariance 0.74
+Commit 203c62350d135a14ef1dc695f9f477514f1a7312, tree clean False, UTC 2026-11-09T22:20:29Z

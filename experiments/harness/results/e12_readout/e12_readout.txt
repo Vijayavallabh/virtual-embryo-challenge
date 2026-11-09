@@ -1,0 +1,26 @@
+E12 readout (experiments/harness/TRIES.md, try E12): embryo s2 candidate fgw_shape0_aligned against fgw_shape0 (s2) and fgw (s1)
+Run emb_shape_aligned_v1 at commit 203c623, clean True, seeds 0-9, both embryo pseudo-tasks. Try count: this run is one counted embryo try (9 before it, 10 after).
+Verdict: STOP, no change proposed: kill(s) d (see above)
+
+T2e/E7.25+E8.0->E7.5
+  mean (SD): floor 50.00 (0.00); fgw 61.12 (0.83); fgw_shape0 62.95 (0.76); fgw_shape0_aligned 63.34 (0.54)
+  candidate's paired gain: over fgw_shape0 +0.39, ahead 9/10; over fgw +2.22, ahead 10/10; over floor +13.34, ahead 10/10
+  mean skills (fgw / fgw_shape0 / candidate): d2_shape 0.372 / 0.439 / 0.501; occupancy_dice 0.385 / 0.494 / 0.540; scale_log_ratio 0.727 / 0.727 / 0.727; neighborhood_mmd 0.640 / 0.654 / 0.634; de_score 0.581 / 0.581 / 0.581; de_direction 0.703 / 0.703 / 0.703; mmd_u 0.671 / 0.671 / 0.671; variogram 0.664 / 0.664 / 0.664
+T2e/E6.75+E7.5->E7.25
+  mean (SD): floor 50.00 (0.00); fgw 58.78 (2.20); fgw_shape0 53.67 (1.94); fgw_shape0_aligned 54.67 (1.83)
+  candidate's paired gain: over fgw_shape0 +1.00, ahead 10/10; over fgw -4.11, ahead 0/10; over floor +4.67, ahead 10/10
+  mean skills (fgw / fgw_shape0 / candidate): d2_shape 0.717 / 0.383 / 0.482; occupancy_dice 0.595 / 0.434 / 0.466; scale_log_ratio 0.624 / 0.624 / 0.624; neighborhood_mmd 0.602 / 0.563 / 0.559; de_score 0.683 / 0.683 / 0.683; de_direction 0.702 / 0.702 / 0.702; mmd_u 0.497 / 0.497 / 0.497; variogram 0.283 / 0.283 / 0.283
+
+Kill list (the row's):
+  (a) expected better of fgw and it, mean of both tasks: 61.062 (bar 61.02; fgw_shape0 60.865); per task T2e/E7.25+E8.0->E7.5 63.342, T2e/E6.75+E7.5->E7.25 58.781 -> ok
+  (b) on E7.5 against fgw_shape0: paired mean +0.393 (need above +0.3), ahead in 9 of 10 (need 8) -> ok
+  (c) expression skill difference from fgw_shape0, largest on any seed of either task: de_score 0.00e+00, de_direction 0.00e+00, mmd_u 0.00e+00, variogram 0.00e+00 (rounding 1e-06) -> ok
+  (d) neighborhood_mmd skill change on E7.5 against fgw_shape0: -0.0202 (bar -0.01; expected sign down, E11 -0.010) -> KILLED
+  (e) test build's cloud guard: the build wrote its record: its cloud guard passed -> ok
+
+Mechanism read, E7.25's mirrored seeds 3, 4, 5, 8, 9 against the other five (reported, not judged):
+  mirrored_seeds: seeds [3, 4, 5, 8, 9]: gain over fgw_shape0 +0.986, ahead 5/5; ahead of fgw 0/5; skill change d2_shape +0.0984, occupancy_dice +0.0263, neighborhood_mmd -0.0021
+  other_seeds: seeds [0, 1, 2, 6, 7]: gain over fgw_shape0 +1.012, ahead 5/5; ahead of fgw 0/5; skill change d2_shape +0.0989, occupancy_dice +0.0388, neighborhood_mmd -0.0054
+
+Reproduction of emb_shape_v1 (fgw, fgw_shape0, per seed, tolerance 1e-06): ok (largest 0.00e+00)
+Commit 203c62350d135a14ef1dc695f9f477514f1a7312, tree clean True, UTC 2026-11-09T22:02:55Z

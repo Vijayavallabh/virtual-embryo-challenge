@@ -1,0 +1,32 @@
+N16 (experiments/harness/TRIES.md; a diagnostic, not a try): the midpoint draw's target-free gate (build seeds
+1,000,000-1,000,009). It reads the pairs' bracket stages only, no target and no score. Commit
+203c62350d135a14ef1dc695f9f477514f1a7312, tree clean True, UTC 2026-11-09T21:35:55Z.
+
+  T2e/E6.75+E7.5->E7.25 (t = 0.667; panel T2:embryo:val_interp): FAIL
+    ESS/pool per bracket: smallest 0.011 (needs 0.5 in every seed: False); library shift, tilted over uniform, largest 0.233
+    (needs at most 0.05 in every seed: False)
+    MMD(tilted, uniform) over MMD(uniform, second uniform): 2.69 to 4.07, median 3.12
+    (needs 3x in at least 8 of 10 seeds: 7 of 10 at the floor: False); a no-op's level, reported only: median 0.92
+    cloud guard clean in every seed: True; stratum shares exact in every seed: True
+
+  T2e/E7.25+E8.0->E7.5 (t = 0.333; panel T2:embryo:val_interp): FAIL
+    ESS/pool per bracket: smallest 0.009 (needs 0.5 in every seed: False); library shift, tilted over uniform, largest 0.371
+    (needs at most 0.05 in every seed: False)
+    MMD(tilted, uniform) over MMD(uniform, second uniform): 3.16 to 4.85, median 3.91
+    (needs 3x in at least 8 of 10 seeds: 10 of 10 at the floor: True); a no-op's level, reported only: median 0.91
+    cloud guard clean in every seed: True; stratum shares exact in every seed: True
+
+  test/E7.5+E8.0->E7.75 (t = 0.5; panel T2:embryo:test_interp): FAIL
+    ESS/pool per bracket: smallest 0.117 (needs 0.5 in every seed: False); library shift, tilted over uniform, largest 0.156
+    (needs at most 0.05 in every seed: False)
+    MMD(tilted, uniform) over MMD(uniform, second uniform): 2.44 to 3.90, median 2.73
+    (needs 3x in at least 8 of 10 seeds: 4 of 10 at the floor: False); a no-op's level, reported only: median 0.88
+    cloud guard clean in every seed: True; stratum shares exact in every seed: True
+
+Rule (row N16, fixed before the run): ESS/pool at least 0.5 in every bracket and seed; the median library size of the
+mixture and of each bracket within 5% of the uniform draw's in every seed (on the draw's expected shares); MMD(tilted,
+uniform) at least 3x MMD(uniform, second uniform) on the build's joint PCs in at least 8 of 10 seeds; no cloud-guard
+flag; exact stratum shares; on every pair. A pass allows row E13; a fail means no run and no count. Reported only: the
+finite-draw library ratio, each bracket's mean signed offset, and the ratio of a no-op (the same strata and quotas
+with flat weights) in the JSON.
+verdict: fail

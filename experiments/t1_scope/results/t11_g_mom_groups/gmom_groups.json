@@ -1,0 +1,43 @@
+{
+  "cuts": {
+    "T1/E9.5->E10.5": {
+      "margins": {
+        "de_recovery": 0.15197037567010657,
+        "direction": 0.1154036449801504,
+        "distribution": 0.5781456144065417,
+        "covariance": 0.28594000991865126
+      },
+      "sum_of_margins": 1.13145964497545,
+      "score_margin": 1.1314596449754504,
+      "n_seeds": 10,
+      "share_on_distribution_and_covariance": 0.7636910676950759
+    },
+    "T1/E9.5->E10.5:chamber": {
+      "margins": {
+        "de_recovery": 0.20182320216033584,
+        "direction": 0.12230971226956933,
+        "distribution": 0.5997834587013131,
+        "covariance": 0.30535073103441146
+      },
+      "sum_of_margins": 1.2292671041656298,
+      "score_margin": 1.2292671041656278,
+      "n_seeds": 10,
+      "share_on_distribution_and_covariance": 0.7363201916560586
+    }
+  },
+  "shape_share_required": 0.6666666666666666,
+  "rule2_gain_on_predicted_groups": true,
+  "row": "experiments/harness/TRIES.md, try T11",
+  "stamp": {
+    "commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+    "tree_clean": false,
+    "unclean_paths": [
+      "results/registry.csv"
+    ],
+    "utc": "2026-11-09T22:20:29Z",
+    "inputs": {
+      "runs/harness/t11_g_mom/T1_E9.5_E10.5.json": "e33236032e7c2bde61d7bd6c14bb6f8461ae9e6fcd85a6408ad12a5a1391b7f6",
+      "runs/harness/t11_g_mom/T1_E9.5_E10.5_chamber.json": "d67a8f472685c3f09e46ec4ce5c7f13f2a06c4fa39db1e825d2fd53a7e5654a2"
+    }
+  }
+}

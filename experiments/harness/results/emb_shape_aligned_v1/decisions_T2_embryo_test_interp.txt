@@ -1,0 +1,4 @@
+T2:embryo:test_interp: 2 pseudo-task(s) in /home/prachh/v/virtual-embryo-challenge/runs/harness/emb_shape_aligned_v1 (protocol bake, build main, anchors computed, seeds [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  T2e/E6.75+E7.5->E7.25 on pseudo:T2e/E6.75+E7.5->E7.25: floor 50.00 +/- 0.00; fgw 58.78 +/- 2.20; fgw_shape0 53.67 +/- 1.94; fgw_shape0_aligned 54.67 +/- 1.83 (commit 203c623, clean True)
+  T2e/E7.25+E8.0->E7.5 on T2:embryo:val_interp: floor 50.00 +/- 0.00; fgw 61.12 +/- 0.83; fgw_shape0 62.95 +/- 0.76; fgw_shape0_aligned 63.34 +/- 0.54 (commit 203c623, clean True)
+fgw_shape0_aligned against fgw_shape0: not kept (no pseudo-tasks; decided on 0 of 2 configured pseudo-tasks; not counted: {'T2e/E7.25+E8.0->E7.5': 'change was tuned on it', 'T2e/E6.75+E7.5->E7.25': 'change was tuned on it'})

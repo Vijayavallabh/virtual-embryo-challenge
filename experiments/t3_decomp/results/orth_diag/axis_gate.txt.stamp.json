@@ -1,0 +1,19 @@
+{
+ "version": 1,
+ "file": "axis_gate.txt",
+ "sha256": "b062fad6b336247d5a8f50b678659b4259bbc3d80acbebd604e293a9ed7d8b5f",
+ "size": 925,
+ "commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+ "clean": true,
+ "why": null,
+ "unclean": [],
+ "unclean_count": 0,
+ "start_commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+ "started_utc": "2026-11-09T21:26:42+00:00",
+ "created_utc": "2026-11-09T21:28:34+00:00",
+ "hostname": "p01r10srv05",
+ "argv": [
+  "experiments/t3_decomp/orth_diag.py",
+  "axis"
+ ]
+}

@@ -1,0 +1,102 @@
+{
+  "shift_1": {
+    "damping": 1.0,
+    "eps": 0.5,
+    "min_cells": 20,
+    "keep_depth": true,
+    "max_abs_log_factor": null,
+    "n_held_flat": 23,
+    "standin_momentum": false,
+    "restored_cells": 0,
+    "skipped": [
+      "epicardium",
+      "vascular_endothelium"
+    ],
+    "rows": [
+      {
+        "type": "blood",
+        "n_target": 111,
+        "n_start": 266,
+        "n_ref": 91,
+        "start_cells": "own",
+        "ref_cells": "own",
+        "status": "shifted",
+        "n_up": 2440,
+        "n_down": 2916,
+        "mean_abs_log_f": 0.046981757694990064,
+        "max_abs_log_f": 1.4270327887061733,
+        "median_depth_scale": 0.9968808332718909
+      },
+      {
+        "type": "cm",
+        "n_target": 3077,
+        "n_start": 3819,
+        "n_ref": 1882,
+        "start_cells": "own",
+        "ref_cells": "own",
+        "status": "shifted",
+        "n_up": 1154,
+        "n_down": 1169,
+        "mean_abs_log_f": 0.024660311097607288,
+        "max_abs_log_f": 1.3264463041046184,
+        "median_depth_scale": 1.004497145345849
+      },
+      {
+        "type": "endocardium",
+        "n_target": 912,
+        "n_start": 1139,
+        "n_ref": 553,
+        "start_cells": "own",
+        "ref_cells": "own",
+        "status": "shifted",
+        "n_up": 1377,
+        "n_down": 1737,
+        "mean_abs_log_f": 0.03141217640182959,
+        "max_abs_log_f": 1.6933243571003966,
+        "median_depth_scale": 0.9993582939830824
+      },
+      {
+        "type": "epicardium",
+        "n_target": 493,
+        "n_start": 1119,
+        "n_ref": 341,
+        "start_cells": "stand-in JCF",
+        "ref_cells": "own",
+        "status": "skipped: stand-in cells at a stage (identity, not development)",
+        "n_up": 0,
+        "n_down": 0,
+        "mean_abs_log_f": 0.0,
+        "max_abs_log_f": 0.0,
+        "median_depth_scale": 1.0
+      },
+      {
+        "type": "surrounding",
+        "n_target": 250,
+        "n_start": 2405,
+        "n_ref": 404,
+        "start_cells": "own, restricted",
+        "ref_cells": "own, restricted",
+        "status": "shifted",
+        "n_up": 1945,
+        "n_down": 1491,
+        "mean_abs_log_f": 0.03292867840746851,
+        "max_abs_log_f": 1.5004831523426891,
+        "median_depth_scale": 1.0128477332824168
+      },
+      {
+        "type": "vascular_endothelium",
+        "n_target": 157,
+        "n_start": 1139,
+        "n_ref": 98,
+        "start_cells": "stand-in Endothelium",
+        "ref_cells": "own",
+        "status": "skipped: stand-in cells at a stage (identity, not development)",
+        "n_up": 0,
+        "n_down": 0,
+        "mean_abs_log_f": 0.0,
+        "max_abs_log_f": 0.0,
+        "median_depth_scale": 1.0
+      }
+    ]
+  }
+}

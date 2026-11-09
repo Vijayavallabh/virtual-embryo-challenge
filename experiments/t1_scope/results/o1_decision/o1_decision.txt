@@ -1,0 +1,27 @@
+O1 readout: verdict stop (bar 1.5 points and 8/10 seeds; mean gain +0.010, ahead in 4/10; de_score and de_direction within 0.02: True)
+Descriptive: P +5.052 points (mean of both truths), R 0.002
+Truth library 1: transport - shift_1 +0.091 points (ahead 6/10), P +4.454, R 0.020; b0-like arm vs shift_1 -1.444, vs transport -1.535
+    copy_last                     mmd_u 0.501, variogram 0.495, de_score 0.518, de_direction 0.553; points (mmd_u + variogram) 24.92, above floor -0.08
+    oracle                        mmd_u 0.824, variogram 0.834, de_score 0.769, de_direction 0.912; points (mmd_u + variogram) 41.41, above floor +16.41
+    shift_1                       mmd_u 0.828, variogram 0.937, de_score 0.904, de_direction 0.978; points (mmd_u + variogram) 43.59, above floor +18.59
+    sibling_real                  mmd_u 0.935, variogram 1.000, de_score 0.971, de_direction 1.000; points (mmd_u + variogram) 48.04, above floor +23.04
+    state_transport_1.0           mmd_u 0.834, variogram 0.933, de_score 0.904, de_direction 0.978; points (mmd_u + variogram) 43.68, above floor +18.68
+    state_transport_b0like_1.0    mmd_u 0.822, variogram 0.874, de_score 0.880, de_direction 0.967; points (mmd_u + variogram) 42.14, above floor +17.14
+    state_transport_1.0: de_score -0.0003, de_direction -0.0003 skill vs shift_1
+    state_transport_b0like_1.0: de_score -0.0244, de_direction -0.0115 skill vs shift_1
+    cells reused, worst seed, oracle: none
+    cells reused, worst seed, sibling_real: none
+    cells reused, worst seed, state_transport_b0like_1.0: none
+Truth library 2: transport - shift_1 -0.071 points (ahead 1/10), P +5.650, R -0.013; b0-like arm vs shift_1 -2.640, vs transport -2.568
+    copy_last                     mmd_u 0.500, variogram 0.495, de_score 0.518, de_direction 0.554; points (mmd_u + variogram) 24.90, above floor -0.10
+    oracle                        mmd_u 0.848, variogram 0.806, de_score 0.770, de_direction 0.873; points (mmd_u + variogram) 41.57, above floor +16.57
+    shift_1                       mmd_u 0.858, variogram 0.903, de_score 0.887, de_direction 0.942; points (mmd_u + variogram) 43.80, above floor +18.80
+    sibling_real                  mmd_u 0.983, variogram 0.998, de_score 0.945, de_direction 1.000; points (mmd_u + variogram) 49.45, above floor +24.45
+    state_transport_1.0           mmd_u 0.861, variogram 0.894, de_score 0.886, de_direction 0.937; points (mmd_u + variogram) 43.73, above floor +18.73
+    state_transport_b0like_1.0    mmd_u 0.818, variogram 0.831, de_score 0.853, de_direction 0.923; points (mmd_u + variogram) 41.16, above floor +16.16
+    state_transport_1.0: de_score -0.0008, de_direction -0.0051 skill vs shift_1
+    state_transport_b0like_1.0: de_score -0.0332, de_direction -0.0185 skill vs shift_1
+    cells reused, worst seed, oracle: none
+    cells reused, worst seed, sibling_real: none
+    cells reused, worst seed, state_transport_b0like_1.0: none
+Commit 203c62350d135a14ef1dc695f9f477514f1a7312, tree clean True, UTC 2026-11-09T22:02:54Z

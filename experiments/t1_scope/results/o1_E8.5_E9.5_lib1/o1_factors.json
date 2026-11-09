@@ -1,0 +1,81 @@
+{
+  "record": {
+    "n_hvg": 2000,
+    "n_pcs": 30,
+    "pca_seed": 0,
+    "metacells_on": "earlier",
+    "categories": [
+      "blood",
+      "cm",
+      "endocardium",
+      "surrounding"
+    ],
+    "skipped": {
+      "epicardium": "stand-in cells at a stage (identity, not development)",
+      "vascular_endothelium": "stand-in cells at a stage (identity, not development)"
+    },
+    "finish": "zero below log 1.05, clip at log 3"
+  },
+  "skipped": {
+    "epicardium": "stand-in cells at a stage (identity, not development)",
+    "vascular_endothelium": "stand-in cells at a stage (identity, not development)"
+  },
+  "categories": {
+    "cm": {
+      "category": "cm",
+      "n_cells_a": 3819,
+      "n_cells_b": 3381,
+      "cells_a": "own",
+      "cells_b": "own",
+      "n_metacells": 25,
+      "median_cost": 159.1194264545587,
+      "last_marginal_error": 9.102663459507324e-06,
+      "converged": true,
+      "median_abs_log_f": 0.0043710465008616195,
+      "median_abs_log_f_finished": 0.0,
+      "finish": "zero below log 1.05, clip at log 3"
+    },
+    "endocardium": {
+      "category": "endocardium",
+      "n_cells_a": 1139,
+      "n_cells_b": 1002,
+      "cells_a": "own",
+      "cells_b": "own",
+      "n_metacells": 7,
+      "median_cost": 78.26070132414365,
+      "last_marginal_error": 1.8624770952947338e-06,
+      "converged": true,
+      "median_abs_log_f": 0.0051283912135575704,
+      "median_abs_log_f_finished": 0.0,
+      "finish": "zero below log 1.05, clip at log 3"
+    },
+    "blood": {
+      "category": "blood",
+      "n_cells_a": 266,
+      "n_cells_b": 122,
+      "cells_a": "own",
+      "cells_b": "own",
+      "n_metacells": 5,
+      "median_cost": 19.007097087601494,
+      "last_marginal_error": 8.004192533333469e-06,
+      "converged": true,
+      "median_abs_log_f": 0.0,
+      "median_abs_log_f_finished": 0.0,
+      "finish": "zero below log 1.05, clip at log 3"
+    },
+    "surrounding": {
+      "category": "surrounding",
+      "n_cells_a": 2405,
+      "n_cells_b": 700,
+      "cells_a": "own, restricted",
+      "cells_b": "own, restricted",
+      "n_metacells": 16,
+      "median_cost": 86.63433858779547,
+      "last_marginal_error": 7.1890985994992235e-06,
+      "converged": true,
+      "median_abs_log_f": 0.00649870521496132,
+      "median_abs_log_f_finished": 0.0,
+      "finish": "zero below log 1.05, clip at log 3"
+    }
+  }
+}

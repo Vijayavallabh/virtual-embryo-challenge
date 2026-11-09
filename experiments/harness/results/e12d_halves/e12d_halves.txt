@@ -1,0 +1,23 @@
+E12d (experiments/harness/TRIES.md; a diagnostic, not a try): fgw_shape0_aligned against fgw_shape0 at the test's mapped fraction (t = 1/2) with its mirrored partners,
+on the test pair's own section halves, in a pseudo-truth world keeping E7.5's geometry at t' = 1/2. Target-free: reads E7.5 and E8.0 only; no cell count is printed or written.
+
+World fgw_placed (the mapped E8.0 half of the pseudo-truth placed by the fgw coupling); usable seeds 8 of 10 (degenerate anchors in the others: [{'inverted': ['occupancy_dice'], 'missing': []}, {'inverted': ['occupancy_dice'], 'missing': []}]):
+  mean score fgw_shape0 95.634, candidate 93.385; paired gain -2.249 (SD 3.245), ahead in 3 of 8 seeds
+  mean skill change (candidate minus fgw_shape0): d2_shape -0.2564, occupancy_dice -0.0135, scale_log_ratio +0.0000, neighborhood_mmd +0.0000, de_score +0.0000, de_direction +0.0000, mmd_u +0.0000, variogram +0.0000
+  mean raw change, every seed (candidate minus fgw_shape0; below 0 is better for d2_shape, neighborhood_mmd and scale_log_ratio, above 0 for occupancy_dice): d2_shape +0.00908, occupancy_dice +0.00240, scale_log_ratio +0.00000, neighborhood_mmd +0.00036
+World aligned_placed (the mapped E8.0 half of the pseudo-truth placed by the aligned coupling); usable seeds 3 of 10 (degenerate anchors in the others: [{'inverted': ['d2_shape'], 'missing': []}, {'inverted': ['occupancy_dice'], 'missing': []}, {'inverted': ['d2_shape'], 'missing': []}, {'inverted': ['d2_shape'], 'missing': []}, {'inverted': ['d2_shape'], 'missing': []}, {'inverted': ['occupancy_dice'], 'missing': []}, {'inverted': ['occupancy_dice'], 'missing': []}]):
+  mean score fgw_shape0 89.873, candidate 95.744; paired gain +5.871 (SD 4.688), ahead in 3 of 3 seeds
+  mean skill change (candidate minus fgw_shape0): d2_shape +0.6215, occupancy_dice +0.0830, scale_log_ratio +0.0000, neighborhood_mmd +0.0000, de_score +0.0000, de_direction +0.0000, mmd_u +0.0000, variogram +0.0000
+  mean raw change, every seed (candidate minus fgw_shape0; below 0 is better for d2_shape, neighborhood_mmd and scale_log_ratio, above 0 for occupancy_dice): d2_shape -0.00763, occupancy_dice +0.02181, scale_log_ratio +0.00000, neighborhood_mmd -0.00261
+
+Mechanism (reported, not judged): smallest partner cross-correlation (below 0: mirrored) and the pool's thinnest axis over its RMS radius, per seed:
+  half B, fgw_shape0's coupling (FGW): cross-correlation -0.59 to 0.59; mirrored in 7 of 10 seeds; pool thinnest axis 0.47 to 0.52
+  half B, the candidate's coupling (aligned): cross-correlation 0.71 to 0.84; pool thinnest axis 0.51 to 0.53
+  half A, the FGW-placed world's coupling: cross-correlation -0.36 to 0.30; mirrored in 4 of 10 seeds
+  half A, the aligned-placed world's coupling: cross-correlation 0.71 to 0.80
+
+Reading (row E12d; it decides nothing by itself): no clear read
+Reading rule: supports if the candidate's paired mean gain is above +0.3 with at least 8 seeds ahead in the aligned-placed world and not below -0.3 in the FGW-placed world; against if it is below -0.3 in the aligned-placed world; otherwise no clear read (also when a world has fewer than 8 usable seeds).
+
+Inputs: {'T2/E7.5.h5ad': 'e8e47255ddeca96d5604c7cd4923bbf27765c24bc6a3cd44e800cd6ea05a7d54', 'T2/E8.0.h5ad': '17530e23fbfa6a139ff68d0353a489d83790f5b60f036b7d2f58303a1ff8a810', "panel (test board's gene list)": '68d63317ac18edac4530e322d230d06596981fcb6302cb56baa126e243e7e86a'}
+Commit 203c62350d135a14ef1dc695f9f477514f1a7312, tree clean True, UTC 2026-11-09T21:40:02Z

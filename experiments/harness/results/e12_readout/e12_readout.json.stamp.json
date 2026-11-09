@@ -1,0 +1,24 @@
+{
+ "version": 1,
+ "file": "e12_readout.json",
+ "sha256": "05490101f8eccd0d4ef7c9aeed8a96eeb90479bb637880e7a5a6a1e4c245b896",
+ "size": 7183,
+ "commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+ "clean": true,
+ "why": null,
+ "unclean": [],
+ "unclean_count": 0,
+ "start_commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+ "started_utc": "2026-11-09T22:02:55+00:00",
+ "created_utc": "2026-11-09T22:02:55+00:00",
+ "hostname": "p01r10srv05",
+ "argv": [
+  "experiments/harness/e12_readout.py",
+  "--runs",
+  "runs/harness/emb_shape_aligned_v1",
+  "--test-build-json",
+  "runs/builds/e12/T2embryo_s2_aligned_e12.build.json",
+  "--embryo-tries-before",
+  "9"
+ ]
+}

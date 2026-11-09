@@ -1,0 +1,53 @@
+N17: target-free gate of heart try H6 `b0_cfm` (reads reference and start stages only; no score, no cell count). Band
+      0.30 to 0.95, lineages with at least 200 reference cells and a direction above the edge. Directions are
+      eigenvalues above (1 + sqrt(p / n))^2.
+
+test/E9.5->E10.5 (start T2/E9.5.h5ad, reference T2/E10.5.h5ad, panel T2:heart:test_extrap): does NOT pass
+  eligible lineages: CM, CranialMesoderm, Ectoderm, Endoderm, Endothelial, NCC; acting: CM, CranialMesoderm, Ectoderm,
+      Endoderm, Endothelial, NCC; outside the band: CranialMesoderm, Ectoderm
+    CM                     12 direction(s), retained energy 0.005, Spearman 0.381, max abs factor ratio 2.29
+    CranialMesoderm        17 direction(s), retained energy 0.006, Spearman 0.099, max abs factor ratio 1.33
+    Ectoderm               3 direction(s), retained energy 0.000, Spearman 0.109, max abs factor ratio 2.10
+    Endoderm               7 direction(s), retained energy 0.015, Spearman 0.492, max abs factor ratio 2.04
+    Endothelial            13 direction(s), retained energy 0.012, Spearman 0.529, max abs factor ratio 1.77
+    NCC                    9 direction(s), retained energy 0.006, Spearman 0.340, max abs factor ratio 2.10
+    Untracked@end          skipped: fewer than 20 cells at a stage
+
+T2h/<=E9.5->E10.5 (start T2/E8.75.h5ad, reference T2/E9.5.h5ad, panel T2:heart:val_extrap): does NOT pass
+  eligible lineages: CM, CranialMesoderm, Ectoderm, Endoderm, Endothelial, NCC; acting: CM, CranialMesoderm, Ectoderm,
+      Endoderm, Endothelial, NCC; outside the band: CM, Endoderm, Endothelial, NCC
+    CM                     11 direction(s), retained energy 0.043, Spearman 0.226, max abs factor ratio 1.53
+    CranialMesoderm        10 direction(s), retained energy 0.050, Spearman 0.391, max abs factor ratio 1.48
+    Ectoderm               5 direction(s), retained energy 0.014, Spearman 0.332, max abs factor ratio 1.74
+    Endoderm               6 direction(s), retained energy 0.009, Spearman 0.134, max abs factor ratio 1.61
+    Endothelial            12 direction(s), retained energy 0.037, Spearman 0.299, max abs factor ratio 1.72
+    NCC                    7 direction(s), retained energy 0.015, Spearman 0.265, max abs factor ratio 1.48
+    Untracked@end          skipped: fewer than 20 cells at a stage
+
+T2h/<=E8.75->E10.5 (start T2/E8.5.h5ad, reference T2/E8.75.h5ad, panel T2:heart:val_extrap): does NOT pass
+  eligible lineages: CM, CranialMesoderm, Ectoderm, Endoderm, Endothelial, ExtraEmbryonicMeso, NCC, Neural; acting:
+      CM, CranialMesoderm, Ectoderm, Endoderm, Endothelial, ExtraEmbryonicMeso, NCC, Neural; outside the band:
+      CranialMesoderm, Ectoderm, Endoderm, NCC, Neural
+    CM                     7 direction(s), retained energy 0.056, Spearman 0.336, max abs factor ratio 1.50
+    CranialMesoderm        10 direction(s), retained energy 0.005, Spearman 0.139, max abs factor ratio 0.93
+    Ectoderm               9 direction(s), retained energy 0.008, Spearman 0.252, max abs factor ratio 0.73
+    Endoderm               7 direction(s), retained energy 0.019, Spearman 0.219, max abs factor ratio 1.23
+    Endothelial            9 direction(s), retained energy 0.029, Spearman 0.357, max abs factor ratio 1.45
+    EpiblastStreak         kept B0's factor: fewer than 200 reference cells with counts
+    ExtraEmbryonicMeso     5 direction(s), retained energy 0.068, Spearman 0.476, max abs factor ratio 2.35
+    NCC                    7 direction(s), retained energy 0.007, Spearman 0.114, max abs factor ratio 0.94
+    Neural                 6 direction(s), retained energy 0.014, Spearman 0.110, max abs factor ratio 1.04
+    Untracked@end          skipped: fewer than 20 cells at a stage
+
+Inputs (sha256): {"T2/E10.5.h5ad": "d6b37967f9cf3533091964cd07421c48a5c7c04628e9321123a426cb2a9c7e8b", "T2/E8.5.h5ad":
+      "41c76db18bfaa92c1d66f8220ec5fbb6d6acccb0a6b78241f40080a3096d37db", "T2/E8.75.h5ad":
+      "149ab6df7c99ad85046c8aebebcf0c43689b3720c59ffb7cc550edcf2f13a83c", "T2/E9.5.h5ad":
+      "371ca6530e084de2b6cd6703b49d95f4bb59546c9291659809575382a630ee9a"}
+Panels (sha256 of the gene list): {"T2:heart:test_extrap":
+      "a9a553108e19acb6cbf4323aa692e6bdc51b7192f7a7866307bc058a1573e1d6", "T2:heart:val_extrap":
+      "a9a553108e19acb6cbf4323aa692e6bdc51b7192f7a7866307bc058a1573e1d6"}
+Config: 7ebe0c245c99093eed4151adff6beb9e6f960ac218f658e4348038fbe1dfa73c
+Commit 203c62350d135a14ef1dc695f9f477514f1a7312, clean tree True, UTC 2026-11-09T21:26:55Z
+
+verdict: prune H6 by its gate, not run and not counted: fails on test/E9.5->E10.5; T2h/<=E9.5->E10.5;
+      T2h/<=E8.75->E10.5

@@ -1,0 +1,71 @@
+{
+ "board": "T2:embryo:test_interp",
+ "runs": "/home/prachh/v/virtual-embryo-challenge/runs/harness/emb_perm_v1",
+ "decisions": [
+  {
+   "base": "fgw",
+   "change": "fgw_perm",
+   "counted": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T2e/E6.75+E7.5->E7.25', 'T2e/E7.25+E8.0->E7.5']",
+   "tasks": {
+    "T2e/E7.25+E8.0->E7.5": {
+     "complete": true,
+     "mean_gain": -0.6232247861184426,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    },
+    "T2e/E6.75+E7.5->E7.25": {
+     "complete": true,
+     "mean_gain": -0.7446317137991528,
+     "seeds_ahead": 2,
+     "passes": false,
+     "vetoes": true
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  }
+ ],
+ "summaries": {
+  "T2e/E6.75+E7.5->E7.25": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "fgw": [
+    58.78119083140672,
+    2.2035357504971294
+   ],
+   "fgw_perm": [
+    58.03655911760757,
+    2.091367161973888
+   ]
+  },
+  "T2e/E7.25+E8.0->E7.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "fgw": [
+    61.118922295807145,
+    0.8348261928410835
+   ],
+   "fgw_perm": [
+    60.4956975096887,
+    0.7066016441182271
+   ]
+  }
+ }
+}

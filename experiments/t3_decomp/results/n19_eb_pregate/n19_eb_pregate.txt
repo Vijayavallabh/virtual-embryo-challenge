@@ -1,0 +1,17 @@
+N19: the target-free pre-gate of tries K4 and K4c (experiments/t3_decomp/eb_factor.py)
+Verdict: prune (prune only if both sources are no-ops: median weight >= 0.95 and fewer than 10 of the top 100 genes move more than 20 ranks)
+
+T3/Gata4->Mab21l2 source: median weight among the top 100 genes 0.982, moved >20 ranks: 1, no-op: True
+  sections used 90, amplitude constant 1.047, robust SD of log phi raw 0.3634, EB 0.3634 (1.000 x raw), control 0.3650 (1.005 x raw)
+  tau2 by decile of the denominator (lowest first): 0.09419, 0.1059, 0.4692, 0.2318, 0.1472, 0.1776, 0.2126, 0.1675, 0.1246, 0.1189
+  weight quantiles over the panel: 0.1: 0.905, 0.25: 0.949, 0.5: 0.975, 0.75: 0.987, 0.9: 0.992
+  Spearman of log phi with the raw factor's: EB 0.9995410220539337, control 0.9995755822004687
+
+T3/Mab21l2->Gata4rep2 source: median weight among the top 100 genes 0.982, moved >20 ranks: 0, no-op: True
+  sections used 35, amplitude constant 1.036, robust SD of log phi raw 0.4876, EB 0.4876 (1.000 x raw), control 0.4904 (1.006 x raw)
+  tau2 by decile of the denominator (lowest first): 0.08344, 0.3067, 0.3013, 0.6115, 0.6122, 0.479, 0.3849, 0.3639, 0.2071, 0.18
+  weight quantiles over the panel: 0.1: 0.920, 0.25: 0.958, 0.5: 0.976, 0.75: 0.986, 0.9: 0.991
+  Spearman of log phi with the raw factor's: EB 0.9995647302921402, control 0.9996948592613171
+
+Inputs (sha256): {'T3/E8.75_gata4_ko_1.h5ad': '3805715d25c85873a8c51c86be44e8e42affaec0557e1b05f9d99db2ef976cad', 'T3/E8.75_gata4_ko_2.h5ad': '1760657da7c477c4bf986352fdf1a066bb6a5fe995f1b9deca8ee859722074e4', 'T2/E8.75.h5ad': '149ab6df7c99ad85046c8aebebcf0c43689b3720c59ffb7cc550edcf2f13a83c', 'T3/E9.5_mab21l2_ko.h5ad': '5b1668ab982e64f7683fbf5f905218fab311c63548de5f5bc18a74f9d4d357e0', 'T2/E9.5.h5ad': '371ca6530e084de2b6cd6703b49d95f4bb59546c9291659809575382a630ee9a'}
+Commit 203c62350d135a14ef1dc695f9f477514f1a7312, tree clean True, UTC 2026-11-09T21:27:08Z

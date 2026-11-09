@@ -1,0 +1,14 @@
+N11 with U3d's measured cells (s1 in the not-shallow world = measured dm:xrep:F+depth; barred there = measured dm:transfer:mab21l2_all with probability q, else committed vs95), 10 cells, q-hat 0.562 (clipped to 0.562) as a stated stand-in for N11's probability q; 16 estimator self-checks.
+p_u2 p_anchor | q | dE half / zero / mixture | wc gain half / zero | dP mixture at q90, q95, lambda 0.5 and 1
+0.70 0.65 | 1.00 | +0.24 / +1.52 / +0.69 | +4.98 / +10.54 | +0.26 +0.11 +0.67 +0.40
+0.70 0.65 | 0.75 | -0.01 / +1.12 / +0.39 | +3.50 / +8.10 | +0.18 +0.08 +0.13 +0.02
+0.70 0.65 | 0.56 | -0.19 / +0.82 / +0.16 | +2.40 / +6.34 | +0.12 +0.05 -0.28 -0.28
+0.70 0.65 | 0.50 | -0.25 / +0.72 / +0.09 | +2.02 / +5.71 | +0.10 +0.05 -0.42 -0.38
+0.70 0.65 | 0.25 | -0.49 / +0.33 / -0.20 | +0.59 / +3.36 | +0.01 +0.01 -0.95 -0.77
+0.70 0.50 | 1.00 | -0.01 / +1.17 / +0.40 | +5.00 / +10.60 | +0.15 +0.05 -0.01 -0.14
+0.70 0.50 | 0.75 | -0.20 / +0.86 / +0.17 | +3.51 / +8.13 | +0.10 +0.04 -0.34 -0.34
+0.70 0.50 | 0.56 | -0.34 / +0.63 / -0.00 | +2.42 / +6.37 | +0.06 +0.02 -0.60 -0.51
+0.70 0.50 | 0.50 | -0.39 / +0.55 / -0.06 | +2.04 / +5.74 | +0.04 +0.02 -0.69 -0.56
+0.70 0.50 | 0.25 | -0.57 / +0.25 / -0.29 | +0.60 / +3.38 | -0.02 -0.01 -1.01 -0.77
+The row's no-answer rule: U3's outcome iii; N10's bar at q-hat with the measured cells at both bands: False. Change the no-answer default to the swap: False (the captain decides; an explicit half answer leaves ruling (b) as it is; B-perp can only ever be the slot-2 swap file, by his ruling).
+commit 203c62350d135a14ef1dc695f9f477514f1a7312, tree clean True, utc 2026-11-09T21:38:38Z

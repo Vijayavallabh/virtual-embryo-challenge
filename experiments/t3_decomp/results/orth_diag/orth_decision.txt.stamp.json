@@ -1,0 +1,23 @@
+{
+ "version": 1,
+ "file": "orth_decision.txt",
+ "sha256": "c5725a2da030a1eeef18f4ecd1e8ed788374ed2a94bf081781a2a3f7af01193d",
+ "size": 1316,
+ "commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+ "clean": true,
+ "why": null,
+ "unclean": [],
+ "unclean_count": 0,
+ "start_commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+ "started_utc": "2026-11-09T21:34:25+00:00",
+ "created_utc": "2026-11-09T21:38:36+00:00",
+ "hostname": "p01r10srv05",
+ "argv": [
+  "experiments/t3_decomp/orth_diag.py",
+  "score",
+  "--workers",
+  "8",
+  "--threads",
+  "2"
+ ]
+}

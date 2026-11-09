@@ -1,0 +1,18 @@
+{
+ "version": 1,
+ "file": "e12d_halves.json",
+ "sha256": "8c9476831d53fda1e1c7604e751531b39b3b26d4dee0c6e7d4a6d012d9f2695b",
+ "size": 24022,
+ "commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+ "clean": true,
+ "why": null,
+ "unclean": [],
+ "unclean_count": 0,
+ "start_commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+ "started_utc": "2026-11-09T21:26:58+00:00",
+ "created_utc": "2026-11-09T21:40:02+00:00",
+ "hostname": "p01r10srv05",
+ "argv": [
+  "experiments/harness/diag_e12_halves.py"
+ ]
+}

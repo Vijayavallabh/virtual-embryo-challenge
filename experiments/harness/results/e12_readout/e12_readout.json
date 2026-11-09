@@ -1,0 +1,269 @@
+{
+ "what": "E12 readout: the row's kill list and report for fgw_shape0_aligned",
+ "board": "T2:embryo:test_interp",
+ "candidate": "fgw_shape0_aligned",
+ "entries": {
+  "s2": "fgw_shape0",
+  "s1": "fgw"
+ },
+ "run_id": "emb_shape_aligned_v1",
+ "run_commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+ "run_clean": true,
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "tries_before": 9,
+ "tries_after": 10,
+ "rule": {
+  "better_of_two_bar": 61.02,
+  "adoption_min_gain": 0.3,
+  "adoption_min_ahead": 8,
+  "rounding": 1e-06,
+  "neighbourhood_bar": -0.01,
+  "reproduce_tol": 1e-06
+ },
+ "kills": {
+  "a": {
+   "what": "expected better of fgw and the candidate, mean of both tasks",
+   "candidate": 61.061765384431425,
+   "candidate_per_task": {
+    "T2e/E7.25+E8.0->E7.5": 63.34233993745613,
+    "T2e/E6.75+E7.5->E7.25": 58.78119083140672
+   },
+   "fgw_shape0": 60.8654656952664,
+   "fgw_shape0_per_task": {
+    "T2e/E7.25+E8.0->E7.5": 62.949740559126084,
+    "T2e/E6.75+E7.5->E7.25": 58.78119083140672
+   },
+   "bar": 61.02,
+   "killed": false
+  },
+  "b": {
+   "what": "on E7.5 against fgw_shape0, the adoption rule's form",
+   "mean_gain": 0.39259937833003916,
+   "seeds_ahead": 9,
+   "need_mean_above": 0.3,
+   "need_ahead": 8,
+   "killed": false
+  },
+  "c": {
+   "what": "expression metrics differ from fgw_shape0's beyond rounding (same cells expected)",
+   "max_abs_skill_diff": {
+    "de_score": 0.0,
+    "de_direction": 0.0,
+    "mmd_u": 0.0,
+    "variogram": 0.0
+   },
+   "rounding": 1e-06,
+   "killed": false
+  },
+  "d": {
+   "what": "neighborhood_mmd skill on E7.5 against fgw_shape0 (expected sign: down; E11 -0.010)",
+   "mean_change": -0.020167298245790267,
+   "bar": -0.01,
+   "killed": true
+  },
+  "e": {
+   "what": "the test build's cloud guard",
+   "killed": false,
+   "why": "the build wrote its record: its cloud guard passed"
+  }
+ },
+ "reproduction": {
+  "ok": true,
+  "max_abs_diff": {
+   "T2e/E7.25+E8.0->E7.5 fgw": 0.0,
+   "T2e/E7.25+E8.0->E7.5 fgw_shape0": 0.0,
+   "T2e/E6.75+E7.5->E7.25 fgw": 0.0,
+   "T2e/E6.75+E7.5->E7.25 fgw_shape0": 0.0
+  }
+ },
+ "verdict": "STOP, no change proposed: kill(s) d (see above)",
+ "tasks": {
+  "T2e/E7.25+E8.0->E7.5": {
+   "scores": {
+    "floor": {
+     "mean": 50.0,
+     "sd": 0.0
+    },
+    "fgw": {
+     "mean": 61.118922295807145,
+     "sd": 0.8348261928410835
+    },
+    "fgw_shape0": {
+     "mean": 62.949740559126084,
+     "sd": 0.7618931412546367
+    },
+    "fgw_shape0_aligned": {
+     "mean": 63.34233993745613,
+     "sd": 0.544417134975972
+    }
+   },
+   "gain_over_fgw_shape0": {
+    "mean": 0.39259937833003916,
+    "seeds_ahead": 9
+   },
+   "gain_over_fgw": {
+    "mean": 2.223417641648988,
+    "seeds_ahead": 10
+   },
+   "gain_over_floor": {
+    "mean": 13.342339937456128,
+    "seeds_ahead": 10
+   },
+   "skills": {
+    "fgw": {
+     "de_score": 0.5809625528744184,
+     "de_direction": 0.7025857959457641,
+     "mmd_u": 0.671105655570388,
+     "variogram": 0.6644763732022942,
+     "d2_shape": 0.3723902438457136,
+     "occupancy_dice": 0.3852224407202506,
+     "scale_log_ratio": 0.7272120685009085,
+     "neighborhood_mmd": 0.6395871904434196
+    },
+    "fgw_shape0": {
+     "de_score": 0.5809625528744184,
+     "de_direction": 0.7025857959457641,
+     "mmd_u": 0.671105655570388,
+     "variogram": 0.6644763732022942,
+     "d2_shape": 0.43908740913102096,
+     "occupancy_dice": 0.4943053729972907,
+     "scale_log_ratio": 0.7272120685009085,
+     "neighborhood_mmd": 0.6542265551220618
+    },
+    "fgw_shape0_aligned": {
+     "de_score": 0.5809625528744184,
+     "de_direction": 0.7025857959457641,
+     "mmd_u": 0.671105655570388,
+     "variogram": 0.6644763732022942,
+     "d2_shape": 0.5011518987412898,
+     "occupancy_dice": 0.5398547035239972,
+     "scale_log_ratio": 0.7272120685009085,
+     "neighborhood_mmd": 0.6340592568762716
+    }
+   }
+  },
+  "T2e/E6.75+E7.5->E7.25": {
+   "scores": {
+    "floor": {
+     "mean": 50.0,
+     "sd": 0.0
+    },
+    "fgw": {
+     "mean": 58.78119083140672,
+     "sd": 2.2035357504971294
+    },
+    "fgw_shape0": {
+     "mean": 53.66740928522209,
+     "sd": 1.9439395785757863
+    },
+    "fgw_shape0_aligned": {
+     "mean": 54.66663577433845,
+     "sd": 1.8262071405553517
+    }
+   },
+   "gain_over_fgw_shape0": {
+    "mean": 0.9992264891163607,
+    "seeds_ahead": 10
+   },
+   "gain_over_fgw": {
+    "mean": -4.114555057068254,
+    "seeds_ahead": 0
+   },
+   "gain_over_floor": {
+    "mean": 4.666635774338461,
+    "seeds_ahead": 10
+   },
+   "skills": {
+    "fgw": {
+     "de_score": 0.6831818797536086,
+     "de_direction": 0.7017729179780889,
+     "mmd_u": 0.4967602260924906,
+     "variogram": 0.28315591015129604,
+     "d2_shape": 0.7169444557110503,
+     "occupancy_dice": 0.5953680058063997,
+     "scale_log_ratio": 0.6241929405621673,
+     "neighborhood_mmd": 0.6019499339812013
+    },
+    "fgw_shape0": {
+     "de_score": 0.6831818797536086,
+     "de_direction": 0.7017729179780889,
+     "mmd_u": 0.4967602260924906,
+     "variogram": 0.28315591015129604,
+     "d2_shape": 0.38299269732704716,
+     "occupancy_dice": 0.43384524233412175,
+     "scale_log_ratio": 0.6241929405621673,
+     "neighborhood_mmd": 0.5625568460859104
+    },
+    "fgw_shape0_aligned": {
+     "de_score": 0.6831818797536086,
+     "de_direction": 0.7017729179780889,
+     "mmd_u": 0.4967602260924906,
+     "variogram": 0.28315591015129604,
+     "d2_shape": 0.48163669225293065,
+     "occupancy_dice": 0.46640047830838993,
+     "scale_log_ratio": 0.6241929405621673,
+     "neighborhood_mmd": 0.5587928286838477
+    }
+   }
+  }
+ },
+ "mechanism_e725": {
+  "mirrored_seeds": {
+   "seeds": [
+    3,
+    4,
+    5,
+    8,
+    9
+   ],
+   "mean_gain_over_fgw_shape0": 0.9862812014181472,
+   "seeds_ahead_of_fgw_shape0": 5,
+   "seeds_ahead_of_fgw": 0,
+   "mean_skill_change": {
+    "d2_shape": 0.09841683847592678,
+    "occupancy_dice": 0.026308355586909592,
+    "neighborhood_mmd": -0.0021238166308862995
+   }
+  },
+  "other_seeds": {
+   "seeds": [
+    0,
+    1,
+    2,
+    6,
+    7
+   ],
+   "mean_gain_over_fgw_shape0": 1.0121717768145744,
+   "seeds_ahead_of_fgw_shape0": 5,
+   "seeds_ahead_of_fgw": 0,
+   "mean_skill_change": {
+    "d2_shape": 0.09887115137584009,
+    "occupancy_dice": 0.03880211636162652,
+    "neighborhood_mmd": -0.005404218173239173
+   }
+  }
+ },
+ "inputs": {
+  "runs/harness/emb_shape_aligned_v1/T2e_E7.25_E8.0_E7.5.json": "e5ee4cb8ce9b28ee22cc11ee412fdc038ce11760fb658e384c24840a2b69dbf6",
+  "runs/harness/emb_shape_aligned_v1/T2e_E6.75_E7.5_E7.25.json": "9d8685e41d7d3ff69f8ae97360d9617fc2c0e90d1b3a12010a81795a66f76848",
+  "runs/builds/e12/T2embryo_s2_aligned_e12.build.json": "2ce48ed9ac25e1b8c986caad6a7c012eae142e534195a4a55e53930bd31eb293",
+  "/home/prachh/v/virtual-embryo-challenge/experiments/harness/results/emb_shape_v1/tasks/T2e_E7.25_E8.0_E7.5.json": "f8545e9002474a66d1d3e7ba4be4ad01b1e7fabda927a72bffd04de3356625e0",
+  "/home/prachh/v/virtual-embryo-challenge/experiments/harness/results/emb_shape_v1/tasks/T2e_E6.75_E7.5_E7.25.json": "2e58860ac1014e9a02c87caafaf420b58b1974fea37d213266f14cf68266c426"
+ },
+ "provenance": {
+  "commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+  "tree_clean": true,
+  "utc": "2026-11-09T22:02:55Z"
+ }
+}

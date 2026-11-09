@@ -1,0 +1,176 @@
+{
+  "shift_1": {
+    "damping": 1.0,
+    "eps": 0.5,
+    "min_cells": 20,
+    "keep_depth": true,
+    "max_abs_log_factor": null,
+    "n_held_flat": 23,
+    "standin_momentum": false,
+    "restored_cells": 0,
+    "skipped": [
+      "epicardium",
+      "vascular_endothelium"
+    ],
+    "rows": [
+      {
+        "type": "blood",
+        "n_target": 55,
+        "n_start": 266,
+        "n_ref": 91,
+        "start_cells": "own",
+        "ref_cells": "own",
+        "status": "shifted",
+        "n_up": 2440,
+        "n_down": 2916,
+        "mean_abs_log_f": 0.046981757694990064,
+        "max_abs_log_f": 1.4270327887061733,
+        "median_depth_scale": 0.994920901540618
+      },
+      {
+        "type": "cm",
+        "n_target": 1538,
+        "n_start": 3819,
+        "n_ref": 1882,
+        "start_cells": "own",
+        "ref_cells": "own",
+        "status": "shifted",
+        "n_up": 1154,
+        "n_down": 1169,
+        "mean_abs_log_f": 0.024660311097607288,
+        "max_abs_log_f": 1.3264463041046184,
+        "median_depth_scale": 1.0045665401533665
+      },
+      {
+        "type": "endocardium",
+        "n_target": 456,
+        "n_start": 1139,
+        "n_ref": 553,
+        "start_cells": "own",
+        "ref_cells": "own",
+        "status": "shifted",
+        "n_up": 1377,
+        "n_down": 1737,
+        "mean_abs_log_f": 0.03141217640182959,
+        "max_abs_log_f": 1.6933243571003966,
+        "median_depth_scale": 0.9963321596382957
+      },
+      {
+        "type": "epicardium",
+        "n_target": 247,
+        "n_start": 1119,
+        "n_ref": 341,
+        "start_cells": "stand-in JCF",
+        "ref_cells": "own",
+        "status": "skipped: stand-in cells at a stage (identity, not development)",
+        "n_up": 0,
+        "n_down": 0,
+        "mean_abs_log_f": 0.0,
+        "max_abs_log_f": 0.0,
+        "median_depth_scale": 1.0
+      },
+      {
+        "type": "surrounding",
+        "n_target": 125,
+        "n_start": 2405,
+        "n_ref": 404,
+        "start_cells": "own, restricted",
+        "ref_cells": "own, restricted",
+        "status": "shifted",
+        "n_up": 1945,
+        "n_down": 1491,
+        "mean_abs_log_f": 0.03292867840746851,
+        "max_abs_log_f": 1.5004831523426891,
+        "median_depth_scale": 1.0141012386886026
+      },
+      {
+        "type": "vascular_endothelium",
+        "n_target": 79,
+        "n_start": 1139,
+        "n_ref": 98,
+        "start_cells": "stand-in Endothelium",
+        "ref_cells": "own",
+        "status": "skipped: stand-in cells at a stage (identity, not development)",
+        "n_up": 0,
+        "n_down": 0,
+        "mean_abs_log_f": 0.0,
+        "max_abs_log_f": 0.0,
+        "median_depth_scale": 1.0
+      }
+    ]
+  },
+  "state_transport_1.0": {
+    "n_cells": 2500,
+    "n_edited": 2174,
+    "n_held_genes": 23,
+    "by_category": {
+      "cm": {
+        "n_edited": 1538
+      },
+      "endocardium": {
+        "n_edited": 456
+      },
+      "blood": {
+        "n_edited": 55
+      },
+      "surrounding": {
+        "n_edited": 125
+      }
+    },
+    "rescale": {
+      "cm": {
+        "iterations": 6,
+        "max_abs_log_rho": 1.3815890986414836e-07
+      },
+      "endocardium": {
+        "iterations": 5,
+        "max_abs_log_rho": 9.487014954294221e-07
+      },
+      "blood": {
+        "iterations": 7,
+        "max_abs_log_rho": 8.112771702857606e-08
+      },
+      "surrounding": {
+        "iterations": 6,
+        "max_abs_log_rho": 5.900059933655136e-07
+      }
+    },
+    "median_depth_scale": 0.9849096221890155,
+    "restored_cells": 0
+  },
+  "state_transport_b0like_1.0": {
+    "n_cells": 2500,
+    "n_edited": 2500,
+    "n_held_genes": 23,
+    "by_category": {
+      "cm": {
+        "n_edited": 1828
+      },
+      "endocardium": {
+        "n_edited": 545
+      },
+      "blood": {
+        "n_edited": 127
+      },
+      "surrounding": {
+        "n_edited": 0
+      }
+    },
+    "rescale": {
+      "cm": {
+        "iterations": 6,
+        "max_abs_log_rho": 1.0432570263413501e-07
+      },
+      "endocardium": {
+        "iterations": 5,
+        "max_abs_log_rho": 7.70251284540004e-07
+      },
+      "blood": {
+        "iterations": 6,
+        "max_abs_log_rho": 5.761038555901321e-07
+      }
+    },
+    "median_depth_scale": 0.9823617031767462,
+    "restored_cells": 0
+  }
+}

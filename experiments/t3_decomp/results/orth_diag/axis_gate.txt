@@ -1,0 +1,8 @@
+U3's gate (experiments/harness/TRIES.md; target-free: no Gata4 file, no score)
+self-check: corr(f_M, d) = 0.4225 against the committed D5 value 0.4225 (tolerance 0.01): passed
+barred factor recomputed from the run's label mask: max |diff log phi| 0.00e+00, labels in the mask 28 (committed 28): reproduced
+removal: b = +0.3911, SD of log phi 0.6964 -> 0.6234 (change -0.0730; no-op below 0.02), corr with the axis after the removal +0.0047, corr with the barred factor +0.9075, genes at the clip 0.016
+reported only: secondary axis (E9.5 vs E8.5) corr(f_M, d) 0.3053 (committed 0.3053), not scored; corr(f_M - f_M95, d) 0.5927 (committed 0.5927)
+decision: proceed to score U3 and U3d
+B-perp factor: runs/t3_decomp/orth_diag/factors/transfer_mab21l2_all_perp.csv sha256 09ca87aecc397851b926b7387b47a26ea9db724db23eb461af5a15c483f08fa0
+commit 203c62350d135a14ef1dc695f9f477514f1a7312, tree clean True, utc 2026-11-09T21:28:34Z

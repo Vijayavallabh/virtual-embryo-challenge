@@ -1,0 +1,86 @@
+{
+  "verdict": "pass",
+  "tolerances": {
+    "score_points": 0.02,
+    "ranked_skill": 0.002
+  },
+  "max_abs_differences": {
+    "1": {
+      "copy_last": {
+        "score": 0.0,
+        "skill:de_score": 0.0,
+        "skill:de_direction": 0.0,
+        "skill:mmd_u": 0.0,
+        "skill:variogram": 0.0
+      },
+      "oracle": {
+        "score": 0.0,
+        "skill:de_score": 0.0,
+        "skill:de_direction": 0.0,
+        "skill:mmd_u": 0.0,
+        "skill:variogram": 0.0
+      },
+      "shift_1": {
+        "score": 0.0,
+        "skill:de_score": 0.0,
+        "skill:de_direction": 0.0,
+        "skill:mmd_u": 0.0,
+        "skill:variogram": 0.0
+      }
+    },
+    "2": {
+      "copy_last": {
+        "score": 0.0,
+        "skill:de_score": 0.0,
+        "skill:de_direction": 0.0,
+        "skill:mmd_u": 0.0,
+        "skill:variogram": 0.0
+      },
+      "oracle": {
+        "score": 0.0,
+        "skill:de_score": 0.0,
+        "skill:de_direction": 0.0,
+        "skill:mmd_u": 0.0,
+        "skill:variogram": 0.0
+      },
+      "shift_1": {
+        "score": 0.0,
+        "skill:de_score": 0.0,
+        "skill:de_direction": 0.0,
+        "skill:mmd_u": 0.0,
+        "skill:variogram": 0.0
+      }
+    }
+  },
+  "problems": [],
+  "runs": {
+    "1": {
+      "tag": "o1_repro_lib1",
+      "committed": "pseudo_E8.5_E9.5_lib1",
+      "commit_of_new_run": "203c62350d135a14ef1dc695f9f477514f1a7312",
+      "tree_clean_of_new_run": true
+    },
+    "2": {
+      "tag": "o1_repro_lib2",
+      "committed": "pseudo_E8.5_E9.5_lib2",
+      "commit_of_new_run": "203c62350d135a14ef1dc695f9f477514f1a7312",
+      "tree_clean_of_new_run": true
+    }
+  },
+  "stamp": {
+    "commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+    "tree_clean": true,
+    "unclean_paths": [],
+    "utc": "2026-11-09T21:32:19Z",
+    "inputs": {
+      "experiments/t1_scope/results/o1_repro_lib1/run.json": "81fb14c590e8aa07c43947d68694a5ae1d87f7efcb006d0893abd4e84afd9288",
+      "experiments/t1_scope/results/o1_repro_lib1/scores.csv": "6fc6d1606462f5c7a2c781cde6a74830462ac10a22eeffced36e7622b6bded7b",
+      "experiments/t1_scope/results/pseudo_E8.5_E9.5_lib1/run.json": "a61116d449b2b9a79b901fbc35fb2001685cc93457b4044d4e77ae935759d59c",
+      "experiments/t1_scope/results/pseudo_E8.5_E9.5_lib1/scores.csv": "925488da90fbfa80606628666db36ff0389a58b0fc9c969c1c1a09288fb89657",
+      "experiments/t1_scope/results/o1_repro_lib2/run.json": "871897e2d19c8806f1de735f7856cfd5cd9df4e71bade8440e931ef7f0bb7089",
+      "experiments/t1_scope/results/o1_repro_lib2/scores.csv": "9e63869f56aeb0c25622b11c564015a9260c266d1fb357b4ba0104d7b1f6e7a7",
+      "experiments/t1_scope/results/pseudo_E8.5_E9.5_lib2/run.json": "30b1efedc5eddaaefe17d69c00d0d71cb0bdda472e540602c4aa147b3e7d212f",
+      "experiments/t1_scope/results/pseudo_E8.5_E9.5_lib2/scores.csv": "aeec2f4fe7573e34baa701fc8e3796ef812037384e40beca531c095d89bdaa4f"
+    }
+  }
+}

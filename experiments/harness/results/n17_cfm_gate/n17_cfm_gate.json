@@ -1,0 +1,371 @@
+{
+ "what": "row N17 of experiments/harness/TRIES.md (a diagnostic, not a try): the target-free gate of H6",
+ "rule": {
+  "band": [
+   0.3,
+   0.95
+  ],
+  "lineage_min_cells": 200,
+  "filter": "covariance filter of a lineage's momentum: for a lineage with at least 200 reference-stage cells with counts, the log1p CP10k of those cells is residualised, gene by gene, on a polynomial of degree 5 in the standardised log panel counts per cell (the depth axis, with the intercept), divided per gene by the residual SD and clipped at +-5 (no rescaling after); the momentum divided by the same per-gene SD is projected onto the eigenvectors of the residuals' covariance whose eigenvalue exceeds the Marchenko-Pastur edge (1 + sqrt(p / n))^2 (p: the genes that vary among those cells and are not held flat; n: the residual degrees of freedom, the cells minus the terms fitted), multiplied back by the SD and renormalised to the unfiltered factor's L2 norm over those genes. A lineage with fewer cells, or with no eigenvalue above the edge, keeps B0's factor, and so does a gene that does not vary among those cells"
+ },
+ "pairs": {
+  "test/E9.5->E10.5": {
+   "start": "T2/E9.5.h5ad",
+   "ref": "T2/E10.5.h5ad",
+   "panel_board": "T2:heart:test_extrap",
+   "lineages": [
+    {
+     "lineage": "CM",
+     "momentum": "shifted",
+     "eligible": true,
+     "filter": "filtered",
+     "directions": 12,
+     "retained_energy": 0.004535440239403871,
+     "spearman": 0.38073589094356375,
+     "max_abs_ratio": 2.2911516244230556
+    },
+    {
+     "lineage": "CranialMesoderm",
+     "momentum": "shifted",
+     "eligible": true,
+     "filter": "filtered",
+     "directions": 17,
+     "retained_energy": 0.006477232337760729,
+     "spearman": 0.09865969063876254,
+     "max_abs_ratio": 1.3257840423325125
+    },
+    {
+     "lineage": "Ectoderm",
+     "momentum": "shifted",
+     "eligible": true,
+     "filter": "filtered",
+     "directions": 3,
+     "retained_energy": 0.00038370431314361516,
+     "spearman": 0.10882967268387092,
+     "max_abs_ratio": 2.09705314095644
+    },
+    {
+     "lineage": "Endoderm",
+     "momentum": "shifted",
+     "eligible": true,
+     "filter": "filtered",
+     "directions": 7,
+     "retained_energy": 0.015368678217707002,
+     "spearman": 0.49192371013253866,
+     "max_abs_ratio": 2.0401704132833154
+    },
+    {
+     "lineage": "Endothelial",
+     "momentum": "shifted",
+     "eligible": true,
+     "filter": "filtered",
+     "directions": 13,
+     "retained_energy": 0.011988984387280402,
+     "spearman": 0.5287675230700922,
+     "max_abs_ratio": 1.766443078634138
+    },
+    {
+     "lineage": "NCC",
+     "momentum": "shifted",
+     "eligible": true,
+     "filter": "filtered",
+     "directions": 9,
+     "retained_energy": 0.005971119960192992,
+     "spearman": 0.3400589922359689,
+     "max_abs_ratio": 2.1009216537813615
+    },
+    {
+     "lineage": "Untracked@end",
+     "momentum": "skipped: fewer than 20 cells at a stage",
+     "eligible": false,
+     "filter": null,
+     "directions": 0,
+     "retained_energy": null,
+     "spearman": null,
+     "max_abs_ratio": null
+    }
+   ],
+   "judged": {
+    "eligible": [
+     "CM",
+     "CranialMesoderm",
+     "Ectoderm",
+     "Endoderm",
+     "Endothelial",
+     "NCC"
+    ],
+    "acting": [
+     "CM",
+     "CranialMesoderm",
+     "Ectoderm",
+     "Endoderm",
+     "Endothelial",
+     "NCC"
+    ],
+    "outside_band": [
+     "CranialMesoderm",
+     "Ectoderm"
+    ],
+    "passes": false
+   }
+  },
+  "T2h/<=E9.5->E10.5": {
+   "start": "T2/E8.75.h5ad",
+   "ref": "T2/E9.5.h5ad",
+   "panel_board": "T2:heart:val_extrap",
+   "lineages": [
+    {
+     "lineage": "CM",
+     "momentum": "shifted",
+     "eligible": true,
+     "filter": "filtered",
+     "directions": 11,
+     "retained_energy": 0.04275212233924309,
+     "spearman": 0.22584867939471756,
+     "max_abs_ratio": 1.5348224282274643
+    },
+    {
+     "lineage": "CranialMesoderm",
+     "momentum": "shifted",
+     "eligible": true,
+     "filter": "filtered",
+     "directions": 10,
+     "retained_energy": 0.05035108229080177,
+     "spearman": 0.39136687746750987,
+     "max_abs_ratio": 1.481571688105281
+    },
+    {
+     "lineage": "Ectoderm",
+     "momentum": "shifted",
+     "eligible": true,
+     "filter": "filtered",
+     "directions": 5,
+     "retained_energy": 0.013973966363365153,
+     "spearman": 0.33179633518534074,
+     "max_abs_ratio": 1.7427678920801941
+    },
+    {
+     "lineage": "Endoderm",
+     "momentum": "shifted",
+     "eligible": true,
+     "filter": "filtered",
+     "directions": 6,
+     "retained_energy": 0.008990319217834572,
+     "spearman": 0.13356919597648073,
+     "max_abs_ratio": 1.6122321034259335
+    },
+    {
+     "lineage": "Endothelial",
+     "momentum": "shifted",
+     "eligible": true,
+     "filter": "filtered",
+     "directions": 12,
+     "retained_energy": 0.03706158892375574,
+     "spearman": 0.298561866247465,
+     "max_abs_ratio": 1.7187308909375647
+    },
+    {
+     "lineage": "NCC",
+     "momentum": "shifted",
+     "eligible": true,
+     "filter": "filtered",
+     "directions": 7,
+     "retained_energy": 0.01472635642333855,
+     "spearman": 0.26546603667687857,
+     "max_abs_ratio": 1.4795047344428045
+    },
+    {
+     "lineage": "Untracked@end",
+     "momentum": "skipped: fewer than 20 cells at a stage",
+     "eligible": false,
+     "filter": null,
+     "directions": 0,
+     "retained_energy": null,
+     "spearman": null,
+     "max_abs_ratio": null
+    }
+   ],
+   "judged": {
+    "eligible": [
+     "CM",
+     "CranialMesoderm",
+     "Ectoderm",
+     "Endoderm",
+     "Endothelial",
+     "NCC"
+    ],
+    "acting": [
+     "CM",
+     "CranialMesoderm",
+     "Ectoderm",
+     "Endoderm",
+     "Endothelial",
+     "NCC"
+    ],
+    "outside_band": [
+     "CM",
+     "Endoderm",
+     "Endothelial",
+     "NCC"
+    ],
+    "passes": false
+   }
+  },
+  "T2h/<=E8.75->E10.5": {
+   "start": "T2/E8.5.h5ad",
+   "ref": "T2/E8.75.h5ad",
+   "panel_board": "T2:heart:val_extrap",
+   "lineages": [
+    {
+     "lineage": "CM",
+     "momentum": "shifted",
+     "eligible": true,
+     "filter": "filtered",
+     "directions": 7,
+     "retained_energy": 0.0559487087032464,
+     "spearman": 0.335562430249721,
+     "max_abs_ratio": 1.4988559995456703
+    },
+    {
+     "lineage": "CranialMesoderm",
+     "momentum": "shifted",
+     "eligible": true,
+     "filter": "filtered",
+     "directions": 10,
+     "retained_energy": 0.005079038749159981,
+     "spearman": 0.13918030072120288,
+     "max_abs_ratio": 0.9255880520311297
+    },
+    {
+     "lineage": "Ectoderm",
+     "momentum": "shifted",
+     "eligible": true,
+     "filter": "filtered",
+     "directions": 9,
+     "retained_energy": 0.008097994078301123,
+     "spearman": 0.25185691142764566,
+     "max_abs_ratio": 0.7251044677740658
+    },
+    {
+     "lineage": "Endoderm",
+     "momentum": "shifted",
+     "eligible": true,
+     "filter": "filtered",
+     "directions": 7,
+     "retained_energy": 0.01865483177355345,
+     "spearman": 0.21936999747998992,
+     "max_abs_ratio": 1.2267028867637675
+    },
+    {
+     "lineage": "Endothelial",
+     "momentum": "shifted",
+     "eligible": true,
+     "filter": "filtered",
+     "directions": 9,
+     "retained_energy": 0.029116549172911746,
+     "spearman": 0.357126708506834,
+     "max_abs_ratio": 1.447080916848961
+    },
+    {
+     "lineage": "EpiblastStreak",
+     "momentum": "shifted",
+     "eligible": false,
+     "filter": "kept B0's factor: fewer than 200 reference cells with counts",
+     "directions": 0,
+     "retained_energy": null,
+     "spearman": null,
+     "max_abs_ratio": null
+    },
+    {
+     "lineage": "ExtraEmbryonicMeso",
+     "momentum": "shifted",
+     "eligible": true,
+     "filter": "filtered",
+     "directions": 5,
+     "retained_energy": 0.06769647249699443,
+     "spearman": 0.47590148972644075,
+     "max_abs_ratio": 2.345071372140654
+    },
+    {
+     "lineage": "NCC",
+     "momentum": "shifted",
+     "eligible": true,
+     "filter": "filtered",
+     "directions": 7,
+     "retained_energy": 0.007171238924727826,
+     "spearman": 0.11354445417781671,
+     "max_abs_ratio": 0.9390284250288786
+    },
+    {
+     "lineage": "Neural",
+     "momentum": "shifted",
+     "eligible": true,
+     "filter": "filtered",
+     "directions": 6,
+     "retained_energy": 0.01357116573677488,
+     "spearman": 0.10971908666670328,
+     "max_abs_ratio": 1.0380049147380936
+    },
+    {
+     "lineage": "Untracked@end",
+     "momentum": "skipped: fewer than 20 cells at a stage",
+     "eligible": false,
+     "filter": null,
+     "directions": 0,
+     "retained_energy": null,
+     "spearman": null,
+     "max_abs_ratio": null
+    }
+   ],
+   "judged": {
+    "eligible": [
+     "CM",
+     "CranialMesoderm",
+     "Ectoderm",
+     "Endoderm",
+     "Endothelial",
+     "ExtraEmbryonicMeso",
+     "NCC",
+     "Neural"
+    ],
+    "acting": [
+     "CM",
+     "CranialMesoderm",
+     "Ectoderm",
+     "Endoderm",
+     "Endothelial",
+     "ExtraEmbryonicMeso",
+     "NCC",
+     "Neural"
+    ],
+    "outside_band": [
+     "CranialMesoderm",
+     "Ectoderm",
+     "Endoderm",
+     "NCC",
+     "Neural"
+    ],
+    "passes": false
+   }
+  }
+ },
+ "verdict": "prune H6 by its gate, not run and not counted: fails on test/E9.5->E10.5; T2h/<=E9.5->E10.5; T2h/<=E8.75->E10.5",
+ "inputs": {
+  "files": {
+   "T2/E9.5.h5ad": "371ca6530e084de2b6cd6703b49d95f4bb59546c9291659809575382a630ee9a",
+   "T2/E10.5.h5ad": "d6b37967f9cf3533091964cd07421c48a5c7c04628e9321123a426cb2a9c7e8b",
+   "T2/E8.75.h5ad": "149ab6df7c99ad85046c8aebebcf0c43689b3720c59ffb7cc550edcf2f13a83c",
+   "T2/E8.5.h5ad": "41c76db18bfaa92c1d66f8220ec5fbb6d6acccb0a6b78241f40080a3096d37db"
+  },
+  "panels": {
+   "T2:heart:test_extrap": "a9a553108e19acb6cbf4323aa692e6bdc51b7192f7a7866307bc058a1573e1d6",
+   "T2:heart:val_extrap": "a9a553108e19acb6cbf4323aa692e6bdc51b7192f7a7866307bc058a1573e1d6"
+  },
+  "config_sha256": "7ebe0c245c99093eed4151adff6beb9e6f960ac218f658e4348038fbe1dfa73c"
+ },
+ "stamp": {
+  "commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+  "tree_clean": true,
+  "utc": "2026-11-09T21:26:55Z"
+ }
+}

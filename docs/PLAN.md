@@ -1623,3 +1623,16 @@ open. No organiser reply to any of the four emails as of then.
     Anything that passes still comes to him for a ruling before it can change an upload.
   - **Left open:** disclosing torch and scvi-tools (the X005 amendment) is decided only if the generative embryo model
     (E14) passes; no recommendation was made on it.
+- 2026-11-10 (e), the first wave's results (all at 203c623; `experiments/harness/TRIES.md` rows N14-N19, E12-E15, H6, U3, K4,
+  T8-T11).
+  - **Integrity:** all ten frozen files pass N14 with no flag.
+  - **Dropped by their target-free gates, no try used:** H6 (heart filtered momentum), K4 and K4c (T3 shrinkage; a no-op on
+    both sources), E13 (embryo midpoint draw), E14 (generative embryo model; the X005 question is closed with it).
+  - **Run and not kept:** E12 (stopped by kill (d), neighbourhood -0.020 against a bar of -0.01), E15 (loses on both embryo
+    backtests).
+  - **T3 measurements (U3, U3d):** no change. Ruling 2026-11-06 (b) stands.
+  - **T1 within-type measurement (T8-T10):** O1 says stop, so the GPU line stops. Compute was not the limit.
+  - **T1 `g_mom` (T11): passes the adoption rule,** +1.13 and +1.23, 10 of 10 on both E10.5 cuts, about 75% of the gain on
+    distribution and covariance. This is the first keep of the campaign. Before it goes to the captain for a ruling it needs
+    placebo controls, a check of its factors at the test pair (start E9.5, reference E10.5, across the dissection change) and
+    a check of how it combines with M1. Try counts now: T1 11, embryo 11, heart 3, T3 6.

@@ -1,0 +1,10 @@
+U3 and U3d (experiments/harness/TRIES.md): reading of the barred factor without its stage part, and the two N11 cells measured on a depth-matched Gata4 target
+U3: B-perp 55.673 over 20 rows (0 at the severity floor), committed B 60.7745 and vs95 49.1371: q-hat 0.562 (a share of score on Gata4, not N11's probability q: B keeps its stage term, so if the stage does not carry B scores below what B-perp scored; fed to N11 as a stated stand-in).
+  rule outcome (iii): neither: no change, reported only.
+U3d, the depth-matched world (reference working copy and pool thinned to each replicate's per-label depth; anchors recomputed):
+  dm:transfer:mab21l2_all: mean 59.386 (rep1 54.51, rep2 64.26); at the severity floor in 5 of 20 rows; depth kept reference 0.592, pool 0.592
+  dm:xrep:F+depth: mean 53.893 (rep1 52.39, rep2 55.39); at the severity floor in 20 of 20 rows; depth kept reference 0.592, pool 0.592
+Rerun of B against the committed rows: max |diff t3| 7.105427357601002e-15, floor flags equal True, streams matched: True. If not matched, B counts as one more try on the new streams (the row).
+Tries used by this run (TRIES rule 4): U3 1, U3d 2, the rerun of B 0.
+N11 with the measured cells: run `orth_diag.py n11`.
+commit 203c62350d135a14ef1dc695f9f477514f1a7312, tree clean True, utc 2026-11-09T21:38:36Z

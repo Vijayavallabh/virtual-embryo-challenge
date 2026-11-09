@@ -1,0 +1,74 @@
+{
+ "board": "T1:test",
+ "runs": "/home/prachh/v/virtual-embryo-challenge/runs/harness/t11_g_mom",
+ "decisions": [
+  {
+   "base": "b0",
+   "change": "g_mom",
+   "counted": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber"
+   ],
+   "excluded": {
+    "T1/E8.5->E9.5": "change does not apply"
+   },
+   "configured": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber",
+    "T1/E8.5->E9.5"
+   ],
+   "decided_on": "2 of 3 configured pseudo-tasks",
+   "keep": true,
+   "reason": "passes on 2 of 2 pseudo-tasks (needs 2) and loses on none",
+   "tasks": {
+    "T1/E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": 1.1314596449754504,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    },
+    "T1/E9.5->E10.5:chamber": {
+     "complete": true,
+     "mean_gain": 1.2292671041656278,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 2,
+   "fit_checks": {}
+  }
+ ],
+ "summaries": {
+  "T1/E9.5->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "b0": [
+    44.116683628570335,
+    0.4633178753047292
+   ],
+   "g_mom": [
+    45.24814327354579,
+    0.5062320838798607
+   ]
+  },
+  "T1/E9.5->E10.5:chamber": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "b0": [
+    49.68290567973587,
+    0.6683315658494151
+   ],
+   "g_mom": [
+    50.9121727839015,
+    0.6963821539814895
+   ]
+  }
+ }
+}

@@ -1,0 +1,28 @@
+N15 (experiments/harness/TRIES.md; a diagnostic, not a try): bracket segregation of the embryo entry's mixture, per
+bracket pair at build seeds 1,000,000, 1,000,001, 1,000,002, 1,000,003, 1,000,004, 1,000,005, 1,000,006, 1,000,007,
+1,000,008, 1,000,009. Target-free: no target and no score; ratios only, no cell count of any stage or board. Commit
+203c62350d135a14ef1dc695f9f477514f1a7312, clean tree: True, UTC 2026-11-09T21:34:37Z.
+
+ratio_null: SD(f) over its within-coarse-type permutation null (median and range over the draws).
+ratio_binomial: SD(f) over sqrt(t(1-t)/15). null_over_binomial: the null's SD over the binomial's.
+after_over_built: SD(f) after the candidate's own re-arrangement over SD(f) as built.
+
+T2e/E6.75+E7.5->E7.25 (t = 0.667; board T2:embryo:val_interp; exceeds the bar: True):
+  ratio_null           median 2.079 (range 1.781 to 2.525)
+  ratio_binomial       median 2.179 (range 1.849 to 2.622)
+  null_over_binomial   median 1.042 (range 1.031 to 1.056)
+  after_over_built     median 0.787 (range 0.767 to 0.817)
+T2e/E7.25+E8.0->E7.5 (t = 0.333; board T2:embryo:val_interp; exceeds the bar: True):
+  ratio_null           median 1.585 (range 1.541 to 1.627)
+  ratio_binomial       median 2.239 (range 2.158 to 2.288)
+  null_over_binomial   median 1.401 (range 1.374 to 1.457)
+  after_over_built     median 0.869 (range 0.854 to 0.893)
+test/E7.5+E8.0->E7.75 (t = 0.500; board T2:embryo:test_interp; exceeds the bar: True):
+  ratio_null           median 1.550 (range 1.482 to 1.572)
+  ratio_binomial       median 2.211 (range 2.138 to 2.287)
+  null_over_binomial   median 1.454 (range 1.371 to 1.492)
+  after_over_built     median 0.878 (range 0.864 to 0.891)
+
+Rule (fixed in row N15 before this ran): the median of ratio_null over the 10 build seeds exceeds 1.5 on the test pair
+and on at least one backtest pair; otherwise the line closes and E15 is not registered.
+verdict: pass: the median ratio_null exceeds 1.5 on the test pair and on T2e/E6.75+E7.5->E7.25: register E15 (fgw_perm)

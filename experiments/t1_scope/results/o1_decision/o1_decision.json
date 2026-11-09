@@ -1,0 +1,644 @@
+{
+  "decision": {
+    "mean_transport_minus_shift_1": 0.009574594662349866,
+    "seeds_ahead_of_10": 4,
+    "bar_points": 1.5,
+    "bar_seeds": 8,
+    "bar_cleared": false,
+    "de_within_tolerance": true,
+    "de_skill_tol": 0.02,
+    "prize_P_mean_of_truths": 5.052327313917013,
+    "reach_R_ratio_of_means": 0.0018950859806679448,
+    "verdict": "stop"
+  },
+  "truths": {
+    "1": {
+      "seed_differences_transport_minus_shift_1": {
+        "0": 0.16942651147019916,
+        "1": -0.043228193029470674,
+        "2": 0.293677737225174,
+        "3": 0.1428855510050866,
+        "4": -0.014442736092554753,
+        "5": 0.09494045632016679,
+        "6": 0.08727349367269,
+        "7": 0.2538331101720388,
+        "8": -0.0011517830078489055,
+        "9": -0.0776174728265886
+      },
+      "mean_transport_minus_shift_1": 0.09055966749088924,
+      "seeds_ahead": 6,
+      "prize_P": 4.454459505842526,
+      "reach_R": 0.02033011353501138,
+      "arms": {
+        "copy_last": {
+          "de_score": 0.5180422078508163,
+          "de_direction": 0.5533558986041642,
+          "mmd_u": 0.5009596117833701,
+          "variogram": 0.49467594874329873,
+          "points_mmd_u_variogram": 24.922307328367076,
+          "points_above_floor_mmd_u_variogram": -0.07769267163292426
+        },
+        "oracle": {
+          "de_score": 0.7687517202256023,
+          "de_direction": 0.911558305655419,
+          "mmd_u": 0.8242734530419437,
+          "variogram": 0.8341310533535203,
+          "points_mmd_u_variogram": 41.41082465832872,
+          "points_above_floor_mmd_u_variogram": 16.41082465832872
+        },
+        "shift_1": {
+          "de_score": 0.9042953905967523,
+          "de_direction": 0.9784295112420237,
+          "mmd_u": 0.8283087338662438,
+          "variogram": 0.9369166242110433,
+          "points_mmd_u_variogram": 43.58759450020818,
+          "points_above_floor_mmd_u_variogram": 18.587594500208183
+        },
+        "sibling_real": {
+          "de_score": 0.9705765942240671,
+          "de_direction": 1.0,
+          "mmd_u": 0.9347351335350236,
+          "variogram": 1.0,
+          "points_mmd_u_variogram": 48.042054006050705,
+          "points_above_floor_mmd_u_variogram": 23.042054006050705
+        },
+        "state_transport_1.0": {
+          "de_score": 0.9039597531719867,
+          "de_direction": 0.9781757821947842,
+          "mmd_u": 0.8339897745900519,
+          "variogram": 0.9329230464998759,
+          "points_mmd_u_variogram": 43.67815416769908,
+          "points_above_floor_mmd_u_variogram": 18.678154167699077
+        },
+        "state_transport_b0like_1.0": {
+          "de_score": 0.8799390284741087,
+          "de_direction": 0.9668977667801035,
+          "mmd_u": 0.8223785643093369,
+          "variogram": 0.8736060828938694,
+          "points_mmd_u_variogram": 42.143478587157496,
+          "points_above_floor_mmd_u_variogram": 17.143478587157496
+        }
+      },
+      "de_skill_gap_vs_shift_1": {
+        "state_transport_1.0": {
+          "de_score": -0.0003356374247656113,
+          "de_direction": -0.00025372904723952594
+        },
+        "state_transport_b0like_1.0": {
+          "de_score": -0.024356362122643693,
+          "de_direction": -0.01153174446192018
+        }
+      },
+      "b0like": {
+        "vs_shift_1_points": -1.4441159130506904,
+        "vs_transport_points": -1.5346755805415797
+      }
+    },
+    "2": {
+      "seed_differences_transport_minus_shift_1": {
+        "0": -0.24891922208866646,
+        "1": -0.019011434974878227,
+        "2": -0.023019467588270004,
+        "3": -0.09843752019399687,
+        "4": -0.06420847857973655,
+        "5": -0.13198382746222137,
+        "6": 0.12150655526031073,
+        "7": -0.06117006041777984,
+        "8": -0.03759754516600111,
+        "9": -0.15126378045065536
+      },
+      "mean_transport_minus_shift_1": -0.0714104781661895,
+      "seeds_ahead": 1,
+      "prize_P": 5.6501951219915,
+      "reach_R": -0.012638586212403186,
+      "arms": {
+        "copy_last": {
+          "de_score": 0.517810931498904,
+          "de_direction": 0.5542634594842841,
+          "mmd_u": 0.5004097039668662,
+          "variogram": 0.49459282421682643,
+          "points_mmd_u_variogram": 24.904147603342516,
+          "points_above_floor_mmd_u_variogram": -0.09585239665748446
+        },
+        "oracle": {
+          "de_score": 0.7703201276331613,
+          "de_direction": 0.8734707925266554,
+          "mmd_u": 0.848036428940409,
+          "variogram": 0.8064678103017926,
+          "points_mmd_u_variogram": 41.570449074248124,
+          "points_above_floor_mmd_u_variogram": 16.570449074248124
+        },
+        "shift_1": {
+          "de_score": 0.8866360464070802,
+          "de_direction": 0.9417766700845487,
+          "mmd_u": 0.8580132869974744,
+          "variogram": 0.902966531132307,
+          "points_mmd_u_variogram": 43.79972923257037,
+          "points_above_floor_mmd_u_variogram": 18.79972923257037
+        },
+        "sibling_real": {
+          "de_score": 0.9447513084659155,
+          "de_direction": 1.0,
+          "mmd_u": 0.982939283913413,
+          "variogram": 0.9980872918579742,
+          "points_mmd_u_variogram": 49.44992435456187,
+          "points_above_floor_mmd_u_variogram": 24.449924354561873
+        },
+        "state_transport_1.0": {
+          "de_score": 0.885834052332988,
+          "de_direction": 0.9367004081789414,
+          "mmd_u": 0.8612795888508359,
+          "variogram": 0.8944965544439551,
+          "points_mmd_u_variogram": 43.728318754404185,
+          "points_above_floor_mmd_u_variogram": 18.728318754404185
+        },
+        "state_transport_b0like_1.0": {
+          "de_score": 0.8534076894662903,
+          "de_direction": 0.9232997775114742,
+          "mmd_u": 0.8179747512283132,
+          "variogram": 0.8310447988252976,
+          "points_mmd_u_variogram": 41.160138513355356,
+          "points_above_floor_mmd_u_variogram": 16.160138513355356
+        }
+      },
+      "de_skill_gap_vs_shift_1": {
+        "state_transport_1.0": {
+          "de_score": -0.0008019940740922049,
+          "de_direction": -0.005076261905607282
+        },
+        "state_transport_b0like_1.0": {
+          "de_score": -0.03322835694078985,
+          "de_direction": -0.0184768925730745
+        }
+      },
+      "b0like": {
+        "vs_shift_1_points": -2.6395907192150183,
+        "vs_transport_points": -2.568180241048829
+      }
+    }
+  },
+  "runs": {
+    "1": {
+      "tag": "o1_E8.5_E9.5_lib1",
+      "commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+      "tree_clean": true,
+      "cells_reused_per_seed": {
+        "oracle": {
+          "0": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "1": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "2": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "3": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "4": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "5": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "6": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "7": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "8": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "9": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          }
+        },
+        "sibling_real": {
+          "0": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "1": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "2": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "3": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "4": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "5": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "6": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "7": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "8": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "9": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          }
+        },
+        "state_transport_b0like_1.0": {
+          "0": {
+            "cm": 0,
+            "endocardium": 0,
+            "blood": 0
+          },
+          "1": {
+            "cm": 0,
+            "endocardium": 0,
+            "blood": 0
+          },
+          "2": {
+            "cm": 0,
+            "endocardium": 0,
+            "blood": 0
+          },
+          "3": {
+            "cm": 0,
+            "endocardium": 0,
+            "blood": 0
+          },
+          "4": {
+            "cm": 0,
+            "endocardium": 0,
+            "blood": 0
+          },
+          "5": {
+            "cm": 0,
+            "endocardium": 0,
+            "blood": 0
+          },
+          "6": {
+            "cm": 0,
+            "endocardium": 0,
+            "blood": 0
+          },
+          "7": {
+            "cm": 0,
+            "endocardium": 0,
+            "blood": 0
+          },
+          "8": {
+            "cm": 0,
+            "endocardium": 0,
+            "blood": 0
+          },
+          "9": {
+            "cm": 0,
+            "endocardium": 0,
+            "blood": 0
+          }
+        }
+      }
+    },
+    "2": {
+      "tag": "o1_E8.5_E9.5_lib2",
+      "commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+      "tree_clean": true,
+      "cells_reused_per_seed": {
+        "oracle": {
+          "0": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "1": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "2": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "3": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "4": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "5": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "6": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "7": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "8": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "9": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          }
+        },
+        "sibling_real": {
+          "0": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "1": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "2": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "3": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "4": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "5": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "6": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "7": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "8": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          },
+          "9": {
+            "cm": 0,
+            "endocardium": 0,
+            "epicardium": 0,
+            "vascular_endothelium": 0,
+            "blood": 0,
+            "surrounding": 0
+          }
+        },
+        "state_transport_b0like_1.0": {
+          "0": {
+            "cm": 0,
+            "endocardium": 0,
+            "blood": 0
+          },
+          "1": {
+            "cm": 0,
+            "endocardium": 0,
+            "blood": 0
+          },
+          "2": {
+            "cm": 0,
+            "endocardium": 0,
+            "blood": 0
+          },
+          "3": {
+            "cm": 0,
+            "endocardium": 0,
+            "blood": 0
+          },
+          "4": {
+            "cm": 0,
+            "endocardium": 0,
+            "blood": 0
+          },
+          "5": {
+            "cm": 0,
+            "endocardium": 0,
+            "blood": 0
+          },
+          "6": {
+            "cm": 0,
+            "endocardium": 0,
+            "blood": 0
+          },
+          "7": {
+            "cm": 0,
+            "endocardium": 0,
+            "blood": 0
+          },
+          "8": {
+            "cm": 0,
+            "endocardium": 0,
+            "blood": 0
+          },
+          "9": {
+            "cm": 0,
+            "endocardium": 0,
+            "blood": 0
+          }
+        }
+      }
+    }
+  },
+  "stamp": {
+    "commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+    "tree_clean": true,
+    "unclean_paths": [],
+    "utc": "2026-11-09T22:02:54Z",
+    "inputs": {
+      "experiments/t1_scope/results/o1_repro/o1_repro.json": "0ff960ce85c278126da1130e32c2d0e02c4cca96e3ccecf96ef4333e4594085d",
+      "experiments/t1_scope/results/o1_E8.5_E9.5_lib1/run.json": "5f3c2e88c6b3387b4f5eaf5c37499ec8dae57e577d806deccfbb3018b98a1172",
+      "experiments/t1_scope/results/o1_E8.5_E9.5_lib1/scores.csv": "b7708ecf41c2fa228d0c6d2a411b5e8f42e6488d56e2a7dab38562c123402266",
+      "experiments/t1_scope/results/o1_E8.5_E9.5_lib1/o1_reuse.json": "1192d0579c60c0f5b6457ba778abb5fbda5fcc6e8249e709d1d2c107a9dad722",
+      "experiments/t1_scope/results/o1_E8.5_E9.5_lib2/run.json": "cd980c02fbe72fc3d02be37d2aa188ca3c693f2da013a394e4c49d2b1a682084",
+      "experiments/t1_scope/results/o1_E8.5_E9.5_lib2/scores.csv": "d8e14cabf09a28ecfa7f4f48c60b84d7557295fb3885614d841676adc370d581",
+      "experiments/t1_scope/results/o1_E8.5_E9.5_lib2/o1_reuse.json": "1192d0579c60c0f5b6457ba778abb5fbda5fcc6e8249e709d1d2c107a9dad722"
+    }
+  },
+  "row": "experiments/harness/TRIES.md, tries T8 to T10"
+}

@@ -1,0 +1,71 @@
+{
+ "what": "U3's gate",
+ "script_sha256": "e70a439edd5a4455c7003a284f899a44d6535f0516922f729092c0a17f056612",
+ "t3_hashes": {
+  "t3_decompose_on_disk": "3e671c3bb5ff57bba5ceec80ea36fcc739b1f111399a1e2854400b5c9f5133d2",
+  "rules_on_disk": "cd2d94aa6e202529a2eead2a7ad60b312d9a2fd9ff0bd989d9320662de750c13",
+  "decision_script_sha256": "3e671c3bb5ff57bba5ceec80ea36fcc739b1f111399a1e2854400b5c9f5133d2",
+  "decision_rules_sha256": "cd2d94aa6e202529a2eead2a7ad60b312d9a2fd9ff0bd989d9320662de750c13",
+  "mismatch": [],
+  "allow_hash_mismatch": false
+ },
+ "gate": {
+  "corr_fM_d": 0.42253673162263483,
+  "corr_fM_d_committed": 0.42253673162263483,
+  "tolerance": 0.01,
+  "reported_only": {
+   "corr_all_minus_vs95_d": 0.5927167864408766,
+   "corr_all_minus_vs95_d_committed": 0.5927167864408766,
+   "secondary_axis": {
+    "axis": "E9.5 vs E8.5",
+    "corr_fM_d": 0.3053391300669087,
+    "corr_fM_d_committed": 0.3053391300669087,
+    "scored": false
+   }
+  },
+  "barred": {
+   "factor": "transfer_mab21l2_all",
+   "sha256": "64b1e0b8572c7193ed1e1f0b7339a26081e601f1e706e6b08193e1718dc5c7e8",
+   "labels_in_mask": 28,
+   "labels_in_mask_committed": 28,
+   "max_abs_diff_log_phi": 0.0,
+   "harmoniser_depth_target": 95.0
+  },
+  "removal": {
+   "b": 0.3910606036590459,
+   "corr_before_clip_with_axis": -2.992198551154838e-17,
+   "share_of_genes_clipped": 0.016,
+   "sd_log_phi_B": 0.6963983459868952,
+   "sd_log_phi_perp": 0.6234064148747269,
+   "sd_change": -0.07299193111216828,
+   "corr_log_phi_perp_with_axis": 0.004745129113082932,
+   "corr_log_phi_perp_with_barred": 0.9074598251899159
+  },
+  "self_check_passed": true,
+  "barred_reproduced": true,
+  "noop": false,
+  "proceed": true
+ },
+ "factor_perp": {
+  "file": "runs/t3_decomp/orth_diag/factors/transfer_mab21l2_all_perp.csv",
+  "sha256": "09ca87aecc397851b926b7387b47a26ea9db724db23eb461af5a15c483f08fa0"
+ },
+ "inputs_sha256": {
+  "data/raw/T2/E8.25_late.h5ad": "d56f94d3e2d719ed3074d86c03eae457ccf90b24145d33300f9958f0e8078593",
+  "data/raw/T2/E8.5.h5ad": "41c76db18bfaa92c1d66f8220ec5fbb6d6acccb0a6b78241f40080a3096d37db",
+  "data/raw/T2/E8.75.h5ad": "149ab6df7c99ad85046c8aebebcf0c43689b3720c59ffb7cc550edcf2f13a83c",
+  "data/raw/T2/E9.5.h5ad": "371ca6530e084de2b6cd6703b49d95f4bb59546c9291659809575382a630ee9a",
+  "data/raw/T3/E9.5_mab21l2_ko.h5ad": "5b1668ab982e64f7683fbf5f905218fab311c63548de5f5bc18a74f9d4d357e0",
+  "experiments/t3_decomp/results/gata4/gata4_decisions.json": "9440ae67625608112666d5235e6ceaa5dd9f47a4b0bbd30e16943f32f35c5a8c",
+  "experiments/research_2026_11/results/d5d6.json": "cd6b030856afb9a9cc331cb9869e941df866baa659ca9f9109f9f6ed5448eb87",
+  "experiments/t3_decomp/results/gata4/gata4_meta.json": "5aca9abcf74e52a863b95ef64707eef3813325065d2da3ae06fcc13dc7164d1a",
+  "runs/t3_decomp/gata4_20261028T122425Z/factors/transfer_mab21l2_all.csv": "64b1e0b8572c7193ed1e1f0b7339a26081e601f1e706e6b08193e1718dc5c7e8",
+  "runs/t3_decomp/gata4_20261028T122425Z/factors/transfer_mab21l2_vs95.csv": "89de692a770917f6524a8f0f26662e141221a9936c9e99d4885936c550337a90"
+ },
+ "stamp": {
+  "commit": "203c62350d135a14ef1dc695f9f477514f1a7312",
+  "tree_clean": true,
+  "utc": "2026-11-09T21:28:34Z",
+  "rerun_row": null
+ }
+}
