@@ -39,7 +39,7 @@ import subprocess
 import sys
 import tempfile
 import time
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field, replace
 from fnmatch import fnmatch
@@ -583,6 +583,73 @@ def _g_mom(ctx: BuildContext) -> Stage:
     no_edit = np.isin(labels, sorted(ts.r1_unbracketed_labels(np.unique(labels))))
     moved, _ = ts.apply_state_factors(pop, factors, held, [ctx.seed, 5], rescale=False, no_edit=no_edit)
     return finish(ctx, ref, dense(moved[:, ctx.board.genes].X).astype(np.float32), None)
+
+
+def g_mom_pair_factors(ref: ad.AnnData, src: str, start: ad.AnnData, start_src: str,
+                       categories: Sequence[str] | None = None) -> tuple[object, object]:
+    """Try T11's factors for one pair of released stages outside a pseudo-task (the test pair of `experiments/builds/
+    build_test.py t1 --g-mom`, diagnostic N21 of experiments/harness/TRIES.md): the steps of `_g_mom_factors` (OT within
+    each chamber category from `start` to `ref` in a joint PCA, metacells of the `ref` cells, the log ratio of each
+    metacell's mean CP10k to its transported partners', the per-category mean removed, damped by B0_DAMPING, zeroed and
+    clipped), on classified shallow copies of the two stages, the start stage's genes aligned to the reference's order
+    by name when the two files order them differently (as `vec.core.counts_of` reads a start's genes; a gene the start
+    lacks raises KeyError). categories default to the chamber categories with a positive share at `ref` (B0's rule);
+    src, start_src are the file stems. Returns (finished factors, the raw fit); `ref` and `start` are not modified."""
+    from vec import t1_scope
+    from vec import t1_state_transport as ts
+
+    spec = t1_scope.load_spec()
+    ref_c, start_c = _shallow(ref), _shallow(start)
+    if list(start_c.var_names) != list(ref_c.var_names):
+        start_c = start_c[:, list(ref_c.var_names)].copy()
+    t1_scope.classify(ref_c, source=src, spec=spec)
+    t1_scope.classify(start_c, source=start_src, spec=spec)
+    cats = ([c for c, s in t1_chamber_shares(ref, src).items() if s > 0] if categories is None else list(categories))
+    raw = ts.fit_state_factors(start_c, ref_c, "later", cats, earlier_fallback=spec.fallbacks(start_src),
+                               later_fallback=spec.fallbacks(src))
+    return ts.finish_momentum(raw, B0_DAMPING), raw
+
+
+# T1 tries T20 and T21 (experiments/harness/TRIES.md, registered before their run): g_mom's placebo arms, built like
+# g_mom on the same draws and base (the same stream), so a paired comparison reads the factors alone
+G_MOM_PERM_SEED = 20261110  # T21: one permutation, this seed (its row)
+
+
+def _g_mom_arm(ctx: BuildContext, transform: Callable[[object], object]) -> Stage:
+    """g_mom's own build (`_g_mom`, whose steps this repeats so that `_g_mom` stays as registered; tests/
+    test_g_mom_verify.py pins the two together) with `transform` applied to the fold's finished factors before they are
+    applied: the same reference, shares, B0 population, fit and random streams, so the arms differ from g_mom only in
+    the factors."""
+    from vec import t1_scope
+    from vec import t1_state_transport as ts
+
+    role = ctx.task.reference_role
+    ref, src = _shallow(ctx.inputs[role]), ctx.task.role_stems[role]
+    start, start_src = _shallow(ctx.inputs["start"]), ctx.task.role_stems["start"]
+    shares = t1_chamber_shares(ref, src)
+    held = list(ctx.derived["t1_held_flat"])
+    pop = ts.b0_population(ref, start, shares, count_for(ctx.board, ref.n_obs), ctx.seed, held, ref_source=src,
+                           start_source=start_src, damping=B0_DAMPING)
+    factors = transform(_g_mom_factors(ctx, ref, src, start, start_src, shares))
+    labels = pop.obs[t1_scope.LABEL_KEY].astype(str).to_numpy()
+    no_edit = np.isin(labels, sorted(ts.r1_unbracketed_labels(np.unique(labels))))
+    moved, _ = ts.apply_state_factors(pop, factors, held, [ctx.seed, 5], rescale=False, no_edit=no_edit)
+    return finish(ctx, ref, dense(moved[:, ctx.board.genes].X).astype(np.float32), None)
+
+
+def _g_mom_flip(ctx: BuildContext) -> Stage:
+    """Try T20: g_mom with every within-type factor's sign reversed (`vec.t1_state_transport.flip_factors`)."""
+    from vec import t1_state_transport as ts
+
+    return _g_mom_arm(ctx, ts.flip_factors)
+
+
+def _g_mom_perm(ctx: BuildContext) -> Stage:
+    """Try T21: g_mom with each category's metacell factor rows re-assigned among its metacells by one fixed derangement
+    (`vec.t1_state_transport.permute_factors`, seed G_MOM_PERM_SEED)."""
+    from vec import t1_state_transport as ts
+
+    return _g_mom_arm(ctx, lambda f: ts.permute_factors(f, G_MOM_PERM_SEED))
 
 
 def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool = False) -> Stage:
@@ -1172,6 +1239,18 @@ CANDIDATES = {
                                 "between the start stage and the reference (vec.t1_state_transport); R1's held types "
                                 "keep B0's cells", "damping": B0_DAMPING, "scope": "chamber"},
                        requires=_b0_applies, derived=("t1_held_flat",)),
+    # T1 tries T20 and T21 (experiments/harness/TRIES.md, registered before their run): g_mom's placebo arms, on g_mom's
+    # own draws, base and fit; judged by g_mom against each of them (a paired mean gain above 0.3 and 8 of 10 seeds on
+    # both E10.5 cuts, experiments/t1_scope/g_mom_verify.py placebo)
+    "g_mom_flip": Candidate("g_mom_flip", frozenset({"T1"}), (), _g_mom_flip,
+                            {"what": "try T20, a placebo: g_mom with every within-type log factor's sign reversed "
+                                     "(vec.t1_state_transport.flip_factors)", "damping": B0_DAMPING,
+                             "scope": "chamber"}, requires=_b0_applies, derived=("t1_held_flat",)),
+    "g_mom_perm": Candidate("g_mom_perm", frozenset({"T1"}), (), _g_mom_perm,
+                            {"what": "try T21, a placebo: g_mom with each category's metacell factor rows re-assigned "
+                                     "among its metacells by one fixed derangement (vec.t1_state_transport."
+                                     "permute_factors)", "permutation_seed": G_MOM_PERM_SEED, "damping": B0_DAMPING,
+                             "scope": "chamber"}, requires=_b0_applies, derived=("t1_held_flat",)),
     # heart try H3 (experiments/harness/TRIES.md, registered before its run)
     "b0_depth": Candidate("b0_depth", frozenset({"T2"}), (), _b0_depth,
                           {"what": "B0 on a T2 extrapolation board with its cells binomially thinned to the target's "

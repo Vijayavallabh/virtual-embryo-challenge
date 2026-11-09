@@ -17,6 +17,8 @@ new script option.
 2. Two finishes, each fixed in its row. `finish_oracle` (O1): the factors as they are, zeroed below |log f| < log 1.05
    and clipped to +-log 3. `finish_momentum` (g_mom): the per-category cell-weighted mean of the log factor removed
    per gene (a within-type edit, on top of the per-type momentum of B0), damped, then zeroed and clipped the same way.
+   `flip_factors` and `permute_factors` (tries T20 and T21, g_mom's placebos) make placebo arms from finished factors;
+   they touch no other caller.
 3. `apply_state_factors` edits a re-weighted population's counts by the factor of each cell's metacell (`vec.core.
    apply_factors`: binomial thinning and Poisson top-up of its own counts, zeros kept, held-flat genes and the cell's
    expected depth kept). With `rescale=True` (O1), each category's per-gene factors are first multiplied by the constant
@@ -258,6 +260,41 @@ def finish_momentum(sf: StateFactors, damping: float) -> StateFactors:
                                "at log 3")
 
 
+def flip_factors(sf: StateFactors) -> StateFactors:
+    """Placebo T20 of candidate g_mom (experiments/harness/TRIES.md): the finished factors with the sign reversed,
+    log f -> -log f for every metacell and gene. The zeroing and the clip are symmetric, so zeros stay zero and clipped
+    values stay at the clip's other end."""
+    note = f"{sf.record.get('finish', 'finished')}; sign reversed (placebo T20)"
+    return _finished(sf, {c: -cf.logf for c, cf in sf.categories.items()}, note)
+
+
+def _derangement(k: int, rng: np.random.Generator) -> np.ndarray:
+    """A permutation of range(k) with no fixed point, uniform over such permutations (by rejection from `rng`); the
+    identity for k < 2, where none exists."""
+    if k < 2:
+        return np.arange(k)
+    while True:
+        perm = rng.permutation(k)
+        if not np.any(perm == np.arange(k)):
+            return perm
+
+
+def permute_factors(sf: StateFactors, seed: int) -> StateFactors:
+    """Placebo T21 of candidate g_mom (experiments/harness/TRIES.md): within each category the finished metacell factor
+    rows are re-assigned among the category's metacells by a random derangement (every metacell gets another metacell's
+    whole factor vector). The categories are visited in sorted order with one generator, default_rng(seed), so the
+    permutation is fixed by the seed and the metacell counts. Every factor value and each factor vector's gene programme
+    are kept exactly and the category's spread is kept up to the metacells' different sizes (the per-gene cell-weighted
+    mean is no longer exactly 0 where they differ); only which metacell carries which vector changes. Records the
+    permutation (per category, new row -> old row)."""
+    rng = np.random.default_rng(seed)
+    perms = {c: _derangement(sf.categories[c].n_metacells, rng) for c in sorted(sf.categories)}
+    note = f"{sf.record.get('finish', 'finished')}; metacell rows re-assigned per category (placebo T21, seed {seed})"
+    out = _finished(sf, {c: cf.logf[perms[c]] for c, cf in sf.categories.items()}, note)
+    perm_record = {"seed": int(seed), "per_category": {c: p.tolist() for c, p in perms.items()}}
+    return replace(out, record={**out.record, "permutation": perm_record})
+
+
 def r1_unbracketed_labels(labels: Iterable[str], config=R1_CONFIG) -> set[str]:
     """The labels among `labels` that map to no group with a Feng direction (`experiments/t1_direction/config.yaml`'s
     harmonisation regexes, ventricular CM labels counted as CM, as `experiments/t1_m1/feng_dirs.py` `label_groups`): the
@@ -401,5 +438,6 @@ def category_mean_cp10k(C, cats: np.ndarray, category: str) -> np.ndarray:
 
 __all__ = ["CLIP_AT", "METACELL_DIVISOR", "METACELL_MAX", "METACELL_MIN", "OT_EPSILON_FRACTION", "PSEUDOCOUNT",
            "R1_FENG_GROUPS", "ZERO_BELOW", "CategoryFactors", "StateFactors", "apply_state_factors", "b0_population",
-           "category_mean_cp10k", "finish_momentum", "finish_oracle", "fit_state_factors", "hvg_columns", "joint_pcs",
-           "metacell_labels", "r1_unbracketed_labels", "rescale_to_hold_pseudobulk", "sinkhorn_plan"]
+           "category_mean_cp10k", "finish_momentum", "finish_oracle", "fit_state_factors", "flip_factors",
+           "hvg_columns", "joint_pcs", "metacell_labels", "permute_factors", "r1_unbracketed_labels",
+           "rescale_to_hold_pseudobulk", "sinkhorn_plan"]

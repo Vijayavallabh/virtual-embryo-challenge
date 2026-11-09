@@ -13,7 +13,10 @@ machine, and an official upload needs the captain's go-ahead.
           damped E9.5 -> E10.5 momentum, M1 as built before R1). R2 of TRIES.md also holds R2's gene modules flat in
           Feng's direction (the union N12 wrote, pinned in configs/t1_hygiene.yaml): on by default with R1 since the
           build commit after N12 (docs/PLAN.md decision log 2026-11-06 (k)); --no-feng-hygiene rebuilds the s1 of
-          88b057f (M1 with R1, before R2)
+          88b057f (M1 with R1, before R2). --g-mom (default off; only by the captain's ruling on try T11 of TRIES.md)
+          adds g_mom's within-type factors: fitted on E9.5 -> E10.5 and applied last, after Feng's direction, on the
+          cells g_mom edits (metacell factors through apply_factors with keep_depth, R1's held labels left alone), so
+          no share, cell count or scope changes
   heart   B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
           procedure: --entry s1 = scope hypothesis H1; s2_trim = the s2 of docs/S2_RULES.md (H2 as a trim to half
           E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`)
@@ -197,13 +200,52 @@ def _t1_held(union: dict | None, direction_groups, build_genes) -> tuple[list[st
         "sources": union["sources"]}
 
 
+def _t1_g_mom(ref, categories: list[str], seed: int):
+    """The test build's g_mom step (--g-mom, default off; T1 try T11 of experiments/harness/TRIES.md; only the captain's
+    ruling puts it in an upload): E9.5 is loaded here and nowhere else, and the factors are fitted exactly as the
+    candidate's (`vec.harness.g_mom_pair_factors`: start E9.5, reference E10.5, the chamber categories of E10.5's own
+    mix, metacells of the E10.5 cells, damped by B0_DAMPING, zeroed and clipped). Returns the `post_cells` hook of
+    `t1_scope.build_submission` and a record (categories only, no cell number) that the hook completes when it runs.
+    The hook is the build's last count edit, after R1's hold and after Feng's direction (the order of the backtests:
+    g_mom was judged on top of B0's per-type shift, and at test Feng's direction takes that place). It edits the cells
+    of `vec.t1_state_transport.apply_state_factors`: a cell's source cell must sit in a fitted metacell; cells of R1's
+    held labels (no Feng group: `r1_unbracketed_labels`, the candidate's own mask) keep the counts they have, so R1
+    stands; the pre-registered held-flat genes are the candidate's own list (R2's union is held in Feng's direction
+    only, by its ruling); each edited cell keeps its expected depth (`apply_factors`, keep_depth), the T1 depth lever
+    stays closed; the cells, their number, shares and scope are untouched. The stream is [seed, 5], the candidate's."""
+    from vec import t1_state_transport as ts
+
+    start = load_stage(DATA / "T1/E9.5_RNA.h5ad", lineage=False)
+    factors, _ = harness.g_mom_pair_factors(ref, "E10.5_RNA", start, "E9.5_RNA", categories=categories)
+    held_flat = t1_scope.held_flat_genes()
+    record = {"rule": "try T11's within-type factors at test: OT within each chamber category from E9.5 to E10.5, "
+                      "metacells of the E10.5 cells, the per-category mean removed, damped by B0_DAMPING, zeroed and "
+                      "clipped; applied last (after Feng's direction); R1's held labels unedited; keep_depth",
+              "categories_with_factors": sorted(factors.categories),
+              "categories_without_factors": sorted(factors.skipped), "stream": [int(seed), 5],
+              "held_flat": "the candidate's pre-registered list (R2's union is held in Feng's direction only)"}
+
+    def hook(pop):
+        labels = pop.obs[t1_scope.LABEL_KEY].astype(str).to_numpy()
+        no_edit = np.isin(labels, sorted(ts.r1_unbracketed_labels(np.unique(labels))))
+        moved, rec = ts.apply_state_factors(pop, factors, held_flat, [seed, 5], rescale=False, no_edit=no_edit)
+        record["median_depth_scale"] = rec["median_depth_scale"]  # no cell number
+        return moved
+
+    return hook, record
+
+
 def build_t1(a) -> dict:
+    if a.g_mom and not a.hold_unbracketed:
+        sys.exit("--g-mom is refused with --no-hold-unbracketed: g_mom's factors at test add to M1 with R1 and R2 as "
+                 "they are (experiments/harness/TRIES.md, try T11)")
     hygiene_on = _feng_hygiene_on(a.feng_hygiene, a.hold_unbracketed)  # R2's refusals come before anything is read
     union = _t1_union(hygiene_on)
     board, dry = _board("t1", a.board)
     ref = load_stage(DATA / "T1/E10.5_RNA.h5ad", lineage=False)
     momentum = _t1_momentum(a.hold_unbracketed)
     shares = harness.t1_chamber_shares(harness._shallow(ref), "E10.5_RNA")
+    fit_categories = [c for c, s in shares.items() if s > 0]  # g_mom's fit, as the candidate's: E10.5's own mix
     if a.cm_share is not None:
         shares = t1_scope.with_share(shares, "cm", a.cm_share)
     if a.blood_share is not None:  # blood's share of all chamber cells, the other categories in proportion
@@ -213,15 +255,22 @@ def build_t1(a) -> dict:
     groups = feng_dirs.label_groups(ref.obs["celltype"].astype(str).unique())
     fraction = feng_dirs.bracket_fraction(10.5, 12.5)
     n = harness.count_for(board, ref.n_obs)
+    within_type, g_mom_record = ({}, None)
+    if a.g_mom:
+        hook, g_mom_record = _t1_g_mom(ref, fit_categories, a.seed)
+        within_type = {"post_cells": hook}
     sub, rep = t1_scope.build_submission(ref, board, shares, n, a.seed, held_flat=held,
                                          ref_source="E10.5_RNA", directions=directions, direction_fraction=fraction,
-                                         direction_groups=groups, herd=a.herd, **momentum)
+                                         direction_groups=groups, herd=a.herd, **momentum, **within_type)
     check = t1_scope.write_checked(sub, a.out, board)
-    return {"entry": "M1", "board": board.key, "dry_run": dry, "n_cells": n, "seed": a.seed, "fraction": fraction,
-            "herd": bool(a.herd), "hold_unbracketed": bool(a.hold_unbracketed), "feng_hygiene": feng_hygiene,
-            "cm_share_of_heart": t1_scope.share_of(shares, "cm", t1_scope.load_spec().heart),
-            "blood_share_of_chamber": float(shares.get("blood", 0.0)),
-            "shares": shares, "external": ext, "check_ok": check.ok, "realised": rep["realised"]}
+    rec = {"entry": "M1", "board": board.key, "dry_run": dry, "n_cells": n, "seed": a.seed, "fraction": fraction,
+           "herd": bool(a.herd), "hold_unbracketed": bool(a.hold_unbracketed), "feng_hygiene": feng_hygiene,
+           "cm_share_of_heart": t1_scope.share_of(shares, "cm", t1_scope.load_spec().heart),
+           "blood_share_of_chamber": float(shares.get("blood", 0.0)),
+           "shares": shares, "external": ext, "check_ok": check.ok, "realised": rep["realised"]}
+    if a.g_mom:
+        rec["g_mom"] = g_mom_record
+    return rec
 
 
 def build_heart(a) -> dict:
@@ -341,6 +390,12 @@ def build_parser() -> argparse.ArgumentParser:
                                 "direction (the union N12 wrote, pinned in configs/t1_hygiene.yaml; refused with "
                                 "--no-hold-unbracketed or while Blood has a Feng direction). Not given: on with "
                                 "--hold-unbracketed (the default), off with --no-hold-unbracketed")
+            p.add_argument("--g-mom", action="store_true",
+                           help="add g_mom's within-type factors at test (T1 try T11 of experiments/harness/TRIES.md; "
+                                "fitted on E9.5 -> E10.5, applied last, after Feng's direction, on the cells g_mom "
+                                "edits, R1's held labels left alone, each cell's expected depth kept, no share, cell "
+                                "count or scope changed; refused with --no-hold-unbracketed; off: the entry as built, "
+                                "and only the captain's ruling turns it on for an upload)")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "

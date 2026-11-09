@@ -626,6 +626,7 @@ def build_submission(ref: ad.AnnData, board: Board, target_shares: Mapping[str, 
                      fallback: Mapping[str, Sequence[str]] | None = None, spec: ChamberSpec | None = None,
                      directions: Mapping[str, np.ndarray] | None = None, direction_fraction: float = 0.0,
                      direction_groups: Mapping[str, str] | None = None, herd: bool = False,
+                     post_cells: Callable[[ad.AnnData], ad.AnnData] | None = None,
                      **shift_kw) -> tuple[ad.AnnData, dict]:
     """A T1 prediction: real `ref` cells re-weighted to `target_shares`, optionally moved by the damped `start` ->
     `ref` momentum, in the board's gene order as float32 log1p CP10k. Returns (AnnData, report).
@@ -644,7 +645,10 @@ def build_submission(ref: ad.AnnData, board: Board, target_shares: Mapping[str, 
     held_flat: genes the shift leaves alone (default: the pre-registered list, `held_flat_genes`). shift_kw go to
     `momentum_shift` (eps, min_cells, max_abs_log_factor, keep_depth, standin_momentum). Without a shift the rows are
     the released values of the drawn cells. `classify` writes obs["category"] on ref and start. herd: herd each
-    category's draw towards its pool's mean expression before any shift (`reweight`).
+    category's draw towards its pool's mean expression before any shift (`reweight`). post_cells (default None:
+    nothing): a last edit of the cells, called with the drawn and shifted population (counts in layers["counts"], obs
+    from `reweight`) after the directions and the momentum and before the board's panel is taken; it returns the
+    population (experiments/builds/build_test.py t1 --g-mom, within-type factors at test, try T11).
     """
     if board.task != "T1":
         raise ValueError(f"{board.key} is a {board.task} board; this builder makes T1 predictions")
@@ -695,6 +699,8 @@ def build_submission(ref: ad.AnnData, board: Board, target_shares: Mapping[str, 
         pop = _stack_rows(parts, pop.n_obs)
     elif momentum:
         pop, shift = with_momentum(pop)
+    if post_cells is not None:
+        pop = post_cells(pop)
     cols = pd.Index(pop.var_names).get_indexer(board.genes)
     if (cols < 0).any():
         missing = [g for g, i in zip(board.genes, cols, strict=True) if i < 0]
