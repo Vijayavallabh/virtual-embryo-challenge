@@ -687,6 +687,47 @@ def test_embryo_candidates_resize_to_the_size_rule_and_interpolate_inside_the_gu
     assert harness.t2_build.rms_radius(v.coords) == pytest.approx(want, rel=0.01)
 
 
+def test_e12_shape0_aligned_keeps_shape0s_cells_and_size_and_changes_the_mapped_half_only():
+    """Embryo try E12 (experiments/harness/TRIES.md): fgw_shape0's geometry with the moves of try E10's aligned
+    coupling. The before bracket keeps its positions (t_pos = 0), so the two candidates differ only in where the mapped
+    after bracket lands, and the cells, the expression and the size rule are the same. Both embryo tasks were selected
+    on when fgw_shape0 was chosen, so neither counts for it under the adoption rule."""
+    rng = np.random.default_rng(31)
+    base = rng.gamma(2.0, 2.0, size=(3, len(GENES)))
+    before = _pool(450, rng, base, [0.5, 0.3, 0.2])
+    after = _pool(700, rng, base * 1.4, [0.3, 0.4, 0.3], scale=1.6, stretch=(1.0, 1.3, 1.0))
+    board = Board(key="pseudo:synthetic_embryo", task="T2", genes=list(GENES), needs_coords=True, setting="embryo",
+                  min_cells=100, max_cells=400)
+    task = _task(**INTERP, key="syn_e12", inputs={"before": "T2/E7.25.h5ad", "after": "T2/E8.0.h5ad"})
+    tasks = {t.key: t for ts in load_tasks().values() for t in ts}
+    c = CANDIDATES["fgw_shape0_aligned"]
+    assert c.applies(task) and c.applies(tasks["T2e/E6.75+E7.5->E7.25"]) and c.applies(tasks["T2e/E7.25+E8.0->E7.5"])
+    assert not c.applies(tasks["T2h/<=E9.5->E10.5"])
+    assert c.tuned_on == {"T2e/E6.75+E7.5->E7.25", "T2e/E7.25+E8.0->E7.5"}  # not adoption evidence (TRIES.md, row E12)
+    ctx = harness.BuildContext(task=harness.TaskView.of(task), board=board, inputs={"before": before, "after": after},
+                               seed=harness.BUILD_SEED_OFFSET + 5)
+    shape0, aligned = CANDIDATES["fgw_shape0"].build(ctx), c.build(ctx)
+    np.testing.assert_array_equal(aligned.coords, harness._fgw(ctx, t_pos=0.0, move_coupling="aligned").coords)
+    np.testing.assert_array_equal(aligned.X, shape0.X)  # the same cells in the same order, the same expression
+    assert harness.t2_build.rms_radius(aligned.coords) == pytest.approx(harness.target_rms(ctx), rel=0.01)
+    assert not np.allclose(aligned.coords, shape0.coords)  # the mapped half lands elsewhere
+    # the same draw through the core: rows, stage and before-bracket positions (up to the size step's similarity) agree
+    kw = dict(seed=ctx.seed, target_rms=harness.target_rms(ctx), t_pos=0.0)
+    Cb, Ca = (np.asarray(a.obsm["spatial_3D"], float)[:, :3] for a in (before, after))
+    Eb, Ea = (harness.dense(a[:, board.genes].X).astype(np.float32) for a in (before, after))
+    n = harness.count_for(board, before.n_obs)
+    res_f = harness.t2_build.interpolate_clouds(Cb, Ca, Eb, Ea, 0.25 / 0.75, n, **kw)
+    res_a = harness.t2_build.interpolate_clouds(Cb, Ca, Eb, Ea, 0.25 / 0.75, n, move_coupling="aligned", **kw)
+    np.testing.assert_array_equal(res_a.rows, res_f.rows)
+    np.testing.assert_array_equal(res_a.stage, res_f.stage)
+    b0 = res_a.stage == 0
+    P, Q = res_f.coords[b0], res_a.coords[b0]
+    P, Q = P - P.mean(0), Q - Q.mean(0)
+    s = np.linalg.norm(Q) / np.linalg.norm(P)
+    np.testing.assert_allclose(Q, P * s, atol=1e-6)
+    assert not np.allclose(res_f.coords[~b0], res_a.coords[~b0])
+
+
 def test_depth_tries_keep_fgw_geometry_and_change_only_the_expression():
     """Tries E7 and E8 (experiments/harness/TRIES.md): fgw's cells and positions, expression at the predicted depth."""
     from scipy import sparse as sp
