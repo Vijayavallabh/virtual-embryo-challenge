@@ -761,3 +761,18 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     - `runs/r1_88b057f/compat/T1_s1.build.json`.
   - **What did not change.** No h5ad file, stamp or archived SHA256SUMS changed. No build record is tracked by git, and
     the two archived tarballs hold none.
+- 2026-11-10 (a), process notes from the third screened leaderboard read (`docs/PLAN.md` decision log 2026-11-10 (b)).
+  The main session received overall ranks and totals, the number of Human entries ranked and whether Mithril is listed.
+  - **The route.** The page is an application shell filled from the public route
+    `https://api.virtualembryo.ai/challenge/overall`, read unauthenticated with default headers. The first attempt sent
+    a `task` parameter that the page's own code omits on the overall view, got HTTP 400, and stopped as its brief said.
+    The second attempt was allowed to correct the parameters on that one route (a 400 is a malformed request; the
+    standing rule against workarounds concerns refusals such as a 403) and got HTTP 200 with no Cloudflare challenge.
+  - **Withheld by the screening agent, by class, values never printed:** per-board and per-task fields in the ranked
+    rows; a board descriptor list with label strings; the partner team's separate list, not counted among ranked
+    entries; baseline and counts blocks.
+  - **Seen in passing.** To find the parameters the agents read short windows of the page's script files (32 fetches),
+    which also showed neighbouring route definitions, including a board-listing route and a partner-members route.
+    Neither was requested. The auditor compared the ranked rows with the partner list in memory and printed only match
+    counts. Its one flag: the hand-over's notes name the partner team as a label for excluded material, with no row or
+    value attached.

@@ -1589,3 +1589,12 @@ open. No organiser reply to any of the four emails as of then.
     seeing the first score was worth +0.5 to +1.3 on T1. The campaign's review found that most of that came from
     blood-share files with no legal basis. On the legal menu it is worth about +0.2 at most. It was dropped, and no
     rule reads a test score.
+- 2026-11-10 (b), a third screened read of the public leaderboard, at the captain's request ("can you also check the
+  leaderboard now"): 2026-11-09 20:16 UTC (wf_e9ac9e3c-26e, audit clean, after a first attempt, wf_e1f201d7-ed0, that
+  stopped at a malformed request and read no ranking). Overall totals and ranks only; calibration, never a threshold or
+  evidence for a try, adoption or method choice.
+  - **Human Team overall, ranks 1-15:** 215.41, 209.31, 203.66, 202.36, 202.05, 200.58, 198.66, 197.14, 196.68, 193.49,
+    191.25, 191.23, 191.17, 189.32, 189.15. 91 Human entries are ranked. Mithril has not entered.
+  - **Since the reads of 2026-11-04** (209.3, 203.7, 202.1; sixth 197.1): first place rose by 6.1, third by 1.6 and
+    sixth by 3.5, and there are new entries among the top six.
+  - The captain's upload gate stays 209: later leaderboard reads do not move it (section 8).
