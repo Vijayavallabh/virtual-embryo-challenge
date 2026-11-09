@@ -11,6 +11,10 @@ group totals equal the readout's 2026-10-18 statistics to float rounding.
 
 The cell label -> group map is the readout's (config regexes), with the ventricular cardiomyocyte labels inside CM, as
 in the readout's population prediction (`cm_includes`).
+
+`bracket` (default today's E9.5 -> E14.5, byte-identical) names the two Feng stages a direction spans; the late-proxy
+tries (experiments/harness/TRIES.md T13-T18, the X002 amendment of 2026-11-10) use E14.5 -> E18.5, the one bracket
+legal on every T1 pseudo-task. `direction_halves` and `eb_shrink` serve the same tries.
 """
 
 from __future__ import annotations
@@ -38,9 +42,10 @@ def load_config(path: Path = CONFIG) -> dict:
     return yaml.safe_load(Path(path).read_text())
 
 
-def bracket_fraction(ref_day: float, target_day: float) -> float:
-    """The share of Feng's E9.5 -> E14.5 bracket a step covers: 0.4 for E10.5 -> E12.5, 0.2 for E9.5 -> E10.5."""
-    return (target_day - ref_day) / (BRACKET_DAYS[1] - BRACKET_DAYS[0])
+def bracket_fraction(ref_day: float, target_day: float, bracket_days: tuple[float, float] = BRACKET_DAYS) -> float:
+    """The share of Feng's bracket a step covers (default E9.5 -> E14.5: 0.4 for E10.5 -> E12.5, 0.2 for E9.5 ->
+    E10.5; for E14.5 -> E18.5, a one-day step is 1/4)."""
+    return (target_day - ref_day) / (bracket_days[1] - bracket_days[0])
 
 
 def label_groups(labels, cfg: dict | None = None) -> dict[str, str]:
@@ -56,15 +61,11 @@ def clean_stats_path() -> Path:
     return REPO / yaml.safe_load(SOURCES.read_text())["feng2022_geo"]["dst"] / "cd1_stats.npz"
 
 
-def feng_directions(genes, cfg: dict | None = None,
-                    stats_path: Path | None = None) -> tuple[dict[str, np.ndarray], dict]:
-    """group -> Feng E9.5 -> E14.5 log ratio on `genes` (NaN where unmapped), for every group with Feng labels and at
-    least min_cells_ext cells at both ends; and a record (file, sha256, groups, cells, mapped genes). stats_path:
-    default the clean GEO reduction's statistics."""
-    cfg = cfg or load_config()
-    path = Path(stats_path) if stats_path is not None else clean_stats_path()
-    entry = fio.verify_manifest_output(path)
-    st = dl.load_stats(path)
+def directions_from_stats(st: dict, genes, cfg: dict,
+                          bracket: tuple[str, str] = BRACKET) -> tuple[dict[str, np.ndarray], dict, np.ndarray]:
+    """From loaded statistics (`dirlib.load_stats`), group -> log ratio of mean CP10k across `bracket` on `genes` (NaN
+    where unmapped), for every group with Feng labels and at least min_cells_ext cells at both ends; the groups' cells
+    and the gene map. No file is read, so a late-proxy candidate can call it inside the harness's read guard."""
     idx = dl.sym_index(st["genes"], list(genes))
     eps, mc = cfg["metrics"]["pseudocount_cp10k"], cfg["metrics"]["min_cells_ext"]
     out, cells = {}, {}
@@ -72,12 +73,83 @@ def feng_directions(genes, cfg: dict | None = None,
         fl = labs[0] if labs else None
         if not fl or group in cfg.get("cm_includes", []):  # ventricularCM is inside CM (as in the population design)
             continue
-        a, b = dl.feng_sel(st, BRACKET[0], fl), dl.feng_sel(st, BRACKET[1], fl)
+        a, b = dl.feng_sel(st, bracket[0], fl), dl.feng_sel(st, bracket[1], fl)
         if a is None or b is None or min(a["n"], b["n"]) < mc:
             continue
         out[group] = dl.on_t1(dl.lfc_ratio(a, b, eps), idx)
-        cells[group] = {BRACKET[0]: int(a["n"]), BRACKET[1]: int(b["n"]), "feng_labels": list(fl)}
-    record = {"file": str(path.relative_to(REPO)), "sha256": entry["sha256"], "bracket": list(BRACKET),
+        cells[group] = {bracket[0]: int(a["n"]), bracket[1]: int(b["n"]), "feng_labels": list(fl)}
+    return out, cells, idx
+
+
+def feng_directions(genes, cfg: dict | None = None, stats_path: Path | None = None,
+                    bracket: tuple[str, str] = BRACKET) -> tuple[dict[str, np.ndarray], dict]:
+    """group -> Feng log ratio across `bracket` (default E9.5 -> E14.5, M1's) on `genes` (NaN where unmapped), for every
+    group with Feng labels and at least min_cells_ext cells at both ends; and a record (file, sha256, bracket, groups,
+    cells, mapped genes). stats_path: default the clean GEO reduction's statistics."""
+    cfg = cfg or load_config()
+    path = Path(stats_path) if stats_path is not None else clean_stats_path()
+    entry = fio.verify_manifest_output(path)
+    st = dl.load_stats(path)
+    out, cells, idx = directions_from_stats(st, genes, cfg, bracket)
+    eps, mc = cfg["metrics"]["pseudocount_cp10k"], cfg["metrics"]["min_cells_ext"]
+    record = {"file": str(path.relative_to(REPO)), "sha256": entry["sha256"], "bracket": list(bracket),
               "pseudocount_cp10k": eps, "min_cells_ext": mc, "groups": cells,
               "mapped_genes": int((idx >= 0).sum()), "of_genes": len(idx)}
     return out, record
+
+
+def bracket_stats(st: dict, bracket: tuple[str, str]) -> dict:
+    """The statistics rows whose stage is one of the bracket's two ends, so that a candidate handed them can reach no
+    other Feng stage. A bracket end with no row is refused: nothing else may stand in for it."""
+    stages = [k.split("|")[0] for k in st["keys"]]
+    missing = sorted(set(bracket) - set(stages))
+    if missing:
+        raise ValueError(f"Feng's statistics hold no stage {missing}: the bracket {list(bracket)} cannot be computed")
+    keep = np.isin(stages, list(bracket))
+    rows = len(st["keys"])
+    return {k: (v[keep] if k != "genes" and np.shape(v)[:1] == (rows,) else v) for k, v in st.items()}
+
+
+def direction_halves(st: dict, genes, cfg: dict, bracket: tuple[str, str] = BRACKET,
+                     groups=None) -> dict[str, dict[str, np.ndarray]]:
+    """Per group with a direction across `bracket` (or among `groups`), on `genes`' order (NaN where unmapped): the log
+    ratio from half A alone and from half B alone of the group's Feng cells (the statistics' per-cell halves), and the
+    mean CP10k averaged over the two ends (the decile basis of the shrinkage and of the permuted control, N12's). A
+    group with a direction but an empty half is refused: its split cannot be read."""
+    idx = dl.sym_index(st["genes"], list(genes))
+    eps, mc = cfg["metrics"]["pseudocount_cp10k"], cfg["metrics"]["min_cells_ext"]
+    out = {}
+    for group, labs in cfg["external_labels"].items():
+        fl = labs[0] if labs else None
+        if not fl or group in cfg.get("cm_includes", []) or (groups is not None and group not in groups):
+            continue
+        a, b = dl.feng_sel(st, bracket[0], fl), dl.feng_sel(st, bracket[1], fl)
+        if a is None or b is None or min(a["n"], b["n"]) < mc:
+            continue
+        parts = [dl.feng_sel(st, stage, fl, halves=(h,)) for stage in bracket for h in ("A", "B")]
+        if any(p is None for p in parts):
+            raise ValueError(f"{group}: a half of its Feng cells is empty at a bracket end: no split to read")
+        a_a, a_b, b_a, b_b = parts
+        out[group] = {"d_a": dl.on_t1(dl.lfc_ratio(a_a, b_a, eps), idx),
+                      "d_b": dl.on_t1(dl.lfc_ratio(a_b, b_b, eps), idx),
+                      "mean_cp": dl.on_t1((a["cp"] + b["cp"]) / 2.0, idx)}
+    return out
+
+
+def eb_shrink(d, d_a, d_b, basis, bins: int = 10) -> tuple[np.ndarray, list[float]]:
+    """Empirical-Bayes reliability shrinkage of a per-gene log ratio toward 0, by decile of expression (`basis`): within
+    each decile of the genes with a value, the noise variance of d is the mean of ((d_a - d_b) / 2) ** 2 (if each half
+    has noise variance s, d_a - d_b has variance 2 s and d, which pools both halves, about s / 2, a quarter of it), the
+    signal variance is the mean of d ** 2 less that noise (floored at 0), and every d in the decile is multiplied by
+    signal / (signal + noise). NaN stays NaN. Returns the shrunk d and each decile's factor, lowest expression first."""
+    d, d_a, d_b, basis = (np.asarray(x, dtype=np.float64) for x in (d, d_a, d_b, basis))
+    out = d.copy()
+    idx = np.flatnonzero(np.isfinite(d) & np.isfinite(d_a) & np.isfinite(d_b) & np.isfinite(basis))
+    factors: list[float] = []
+    for run in np.array_split(idx[np.argsort(basis[idx], kind="stable")], bins):
+        noise = float(np.mean(((d_a[run] - d_b[run]) / 2.0) ** 2)) if run.size else 0.0
+        signal = max(float(np.mean(d[run] ** 2)) - noise, 0.0) if run.size else 0.0
+        f = signal / (signal + noise) if signal + noise > 0 else 1.0
+        out[run] = f * d[run]
+        factors.append(f)
+    return out, factors
