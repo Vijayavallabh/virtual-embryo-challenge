@@ -538,7 +538,7 @@ def _copy_herd(ctx: BuildContext) -> Stage:
     return finish(ctx, pool, dense(pool[:, g].X[rows]).astype(np.float32), coords)
 
 
-def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False) -> Stage:
+def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool = False) -> Stage:
     """B0 on a T2 board: real reference cells at the count rule, moved in count space by the per-type change of the
     harmonised lineage level (obs["merged"]; groups without a stable cross-stage meaning held flat). Extrapolation:
     from `start` to the reference, damped by B0_DAMPING. Interpolation: from the earlier bracket towards the later one,
@@ -546,9 +546,12 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False) -> Stage:
     (the heart size cannot be backtested; the test build applies the pre-registered size). depth (extrapolation only;
     heart try H3 of experiments/harness/TRIES.md): the moved cells are then binomially thinned to the target depth that
     vec.t2_build.DEPTH_EXTRAP_RULE extrapolates at B0_DAMPING from the start's and the reference's median depths.
-    herd (try H4): the copy's draw herded towards the pool's mean panel expression (`draw_copy`)."""
+    herd (try H4): the copy's draw herded towards the pool's mean panel expression (`draw_copy`). cfm (extrapolation
+    only; heart try H6): each lineage's momentum goes through vec.t2_build.covariance_filter before it is applied."""
     from vec import t1_scope
 
+    if cfm and ctx.task.kind != "extrap":
+        raise ValueError("the covariance filter of B0 is for extrapolation boards")
     pool, rows, _, coords = draw_copy(ctx, herd=herd)
     t = ctx.task
     if t.kind == "extrap":
@@ -563,7 +566,7 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False) -> Stage:
 
     like = typed(pool, "start" if t.kind == "interp" else "end")[rows]
     shifted, _ = t1_scope.momentum_shift(typed(start, "start"), typed(end, "end"), like, damping, (), key="b0_type",
-                                         seed=[ctx.seed, 3])
+                                         seed=[ctx.seed, 3], logf_filter=t2_build.covariance_filter if cfm else None)
     g = ctx.board.genes
     if depth:
         if t.kind != "extrap":
@@ -663,6 +666,10 @@ def _b0_depth(ctx: BuildContext) -> Stage:
 
 def _b0_herd(ctx: BuildContext) -> Stage:
     return _b0_t1(B0_DAMPING, herd=True)(ctx) if ctx.task.task == "T1" else _b0_t2(ctx, herd=True)
+
+
+def _b0_cfm(ctx: BuildContext) -> Stage:
+    return _b0_t2(ctx, cfm=True)
 
 
 def _fgw_herd(ctx: BuildContext) -> Stage:
@@ -1118,6 +1125,13 @@ CANDIDATES = {
                                    "depth, extrapolated at B0's damping (half the latest log rate per day over the "
                                    "horizon)", "damping": B0_DAMPING, "rule": t2_build.DEPTH_EXTRAP_RULE,
                            "scope": "whole"}, requires=_t2_extrap_with_start),
+    # heart try H6 (experiments/harness/TRIES.md, registered before its run and run only if its target-free gate N17
+    # passes): each lineage's momentum filtered by the lineage's own within-stage covariance
+    "b0_cfm": Candidate("b0_cfm", frozenset({"T2"}), (), _b0_cfm,
+                        {"what": "B0 on a T2 extrapolation board with each lineage's momentum projected onto the "
+                                 "directions of that lineage's own within-stage covariance above the Marchenko-Pastur "
+                                 "edge and renormalised to its unfiltered L2 norm", "damping": B0_DAMPING,
+                         "rule": t2_build.CFM_RULE, "scope": "whole"}, requires=_t2_extrap_with_start),
     # T3 tries K2a and K2b (experiments/harness/TRIES.md, registered before their run): s1's Gata4 factor on the
     # Gata4 -> Mab21l2 fold, and its permuted control
     "t3_factor_xko": Candidate("t3_factor_xko", frozenset({"T3"}), (), _t3_factor_xko,

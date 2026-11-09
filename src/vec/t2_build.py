@@ -63,6 +63,7 @@ import anndata as ad
 import numpy as np
 from scipy import sparse
 from scipy.spatial import cKDTree
+from scipy.stats import rankdata
 
 from vec.boards import Board
 from vec.core import (
@@ -72,6 +73,7 @@ from vec.core import (
     draw_balanced,
     fgw_coupling,
     herd_rows,
+    log1p_cp10k,
     nearest_anchors,
     quotas,
 )
@@ -1881,6 +1883,104 @@ def thin_to_depth(a: ad.AnnData, genes, d_ref: float, target: float, seed) -> tu
 
     Cn, ln, retried = _keep_some_counts(make, C.shape[0], rng)
     return _log_normalise(Cn, ln), {**rec, "thinned": int(C.shape[0]), "retried": retried}
+
+
+# Covariance-filtered momentum (2026-11-09; heart try H6 `b0_cfm`, gate N17, experiments/harness/TRIES.md, fixed in
+# their rows before any run on project data). Its settings were read from synthetic counts only (Poisson at sparse-panel
+# depths: 40 to 120 counts per cell, log-depth SD 0.5 to 1.0, 150 to 500 genes; scratch runs, not committed).
+# CFM_DEPTH_DEGREE: log1p CP10k depends on depth along a curve, gene by gene, so a straight line in log depth leaves an
+# axis above the edge once depth varies widely (1.7 x the edge at 5,000 cells and log-depth SD 1.0) and a cubic can
+# leave one at several thousand cells when the gene mix itself trends with depth; with degree 5, K = 0 in all 72 draws
+# with per-gene log-share slopes of SD 0.2 or 0.5 per log depth (500 to 8,000 cells). CFM_Z_CLIP: rare genes'
+# standardised residuals are heavy-tailed, so on pure Poisson noise spurious eigenvalues clear the edge (at +-10, the
+# scanpy and Seurat default, up to 3.6 of them at 200 to 300 cells over 500 genes); at +-5 with degree 5, 7 of 900
+# pure-noise draws over the grid had any (all at 200 to 300 cells), and planted programmes are found as often as with
+# +-10. Neither value is a setting of a stage. CFM_RULE's K = 0 branch covers a lineage with no coordinated structure,
+# and the gate N17 reports what the rule does per lineage.
+CFM_MIN_CELLS = 200  # reference cells a lineage needs: with fewer it keeps B0's factor
+CFM_DEPTH_DEGREE = 5  # the depth model: a polynomial of this degree in the standardised log panel counts per cell
+CFM_Z_CLIP = 5.0  # the standardised residuals are clipped here and not rescaled after
+CFM_RULE = (f"covariance filter of a lineage's momentum: for a lineage with at least {CFM_MIN_CELLS} reference-stage "
+            "cells with counts, the log1p CP10k of those cells is residualised, gene by gene, on a polynomial of "
+            f"degree {CFM_DEPTH_DEGREE} in the standardised log panel counts per cell (the depth axis, with the "
+            f"intercept), divided per gene by the residual SD and clipped at +-{CFM_Z_CLIP:g} (no rescaling after); "
+            "the momentum divided by the same per-gene SD is projected onto the eigenvectors of the residuals' "
+            "covariance whose eigenvalue exceeds the Marchenko-Pastur edge (1 + sqrt(p / n))^2 (p: the genes that vary "
+            "among those cells and are not held flat; n: the residual degrees of freedom, the cells minus the terms "
+            "fitted), "
+            "multiplied back by the SD and renormalised to the unfiltered factor's L2 norm over those genes. A lineage "
+            "with fewer cells, or with no eigenvalue above the edge, keeps B0's factor, and so does a gene that does "
+            "not vary among those cells")
+
+
+def _depth_terms(log_depth) -> np.ndarray:
+    """An orthonormal basis (cells x terms) of the polynomial of degree CFM_DEPTH_DEGREE in the standardised log depth,
+    the intercept included; fewer terms when the depths take fewer distinct values than the degree needs."""
+    d = np.asarray(log_depth, dtype=np.float64)
+    if np.ptp(d) == 0:
+        return np.ones((d.size, 1)) / np.sqrt(d.size)
+    s = (d - d.mean()) / d.std()
+    U, sv, _ = np.linalg.svd(np.vander(s, CFM_DEPTH_DEGREE + 1, increasing=True), full_matrices=False)
+    return U[:, sv > sv[0] * 1e-9]
+
+
+def covariance_filter(logf, counts, held=None, *, min_cells: int = CFM_MIN_CELLS) -> tuple[np.ndarray, dict]:
+    """A lineage's momentum filtered by the lineage's own within-stage covariance (CFM_RULE; `vec.harness._b0_t2`
+    passes it to `vec.t1_scope.momentum_shift` for candidate `b0_cfm`).
+
+    logf: the lineage's log factors over genes (B0's damped log ratio of mean CP10k). counts: the lineage's
+    reference-stage cells over the same genes (integer counts, cells x genes). held: genes held flat (f = 1) by the
+    caller, boolean by gene (default none, as B0 on T2): they are left out of the filter, the edge's p and the norm
+    rule, and keep their factor. Returns the factors to apply and a record for the momentum report: "eligible" (at
+    least `min_cells` cells with counts), "status", "directions" (the eigenvalues above the edge), "retained_energy"
+    (the share of the standardised momentum's squared norm the kept directions hold, before renormalising), "spearman"
+    (between the filtered and the unfiltered factor over the genes the filter acts on) and "max_abs_ratio" (the largest
+    absolute filtered factor over the largest unfiltered one). The record holds no cell count and no eigenvalue, so
+    nothing in it gives a cell number.
+    """
+    logf = np.array(logf, dtype=np.float64)
+    C = sparse.csr_matrix(counts, dtype=np.float64)
+    if C.shape[1] != logf.size:
+        raise ValueError(f"counts have {C.shape[1]} genes, the factors {logf.size}")
+    flat = np.zeros(logf.size, dtype=bool) if held is None else np.asarray(held, dtype=bool)
+    if flat.size != logf.size:
+        raise ValueError(f"held has {flat.size} genes, the factors {logf.size}")
+    lib = np.asarray(C.sum(1)).ravel()
+    keep = lib > 0
+    rec = {"eligible": bool(int(keep.sum()) >= min_cells), "status": "", "directions": 0, "retained_energy": None,
+           "spearman": None, "max_abs_ratio": None}
+    if not rec["eligible"]:
+        return logf, {**rec, "status": f"kept B0's factor: fewer than {min_cells} reference cells with counts"}
+    C, lib = C[keep], lib[keep]
+    X = np.asarray(log1p_cp10k(C).toarray(), dtype=np.float64)
+    Q = _depth_terms(np.log(lib))
+    res = X - Q @ (Q.T @ X)  # the depth axis goes with the fitted terms
+    dof = C.shape[0] - Q.shape[1]
+    sd = np.sqrt((res ** 2).sum(0) / dof)
+    active = (sd > 1e-12) & ~flat
+    p = int(active.sum())
+    if p == 0:
+        return logf, {**rec, "status": "kept B0's factor: no gene varies among its reference cells"}
+    z = np.clip(res[:, active] / sd[active], -CFM_Z_CLIP, CFM_Z_CLIP)
+    ev, V = np.linalg.eigh(z.T @ z / dof)
+    k = int((ev > (1.0 + np.sqrt(p / dof)) ** 2).sum())
+    if k == 0:
+        return logf, {**rec, "status": "kept B0's factor: no eigenvalue above the Marchenko-Pastur edge"}
+    v = logf[active] / sd[active]
+    U = V[:, -k:]
+    kept = U @ (U.T @ v)
+    filtered, norm = sd[active] * kept, float(np.linalg.norm(logf[active]))
+    filtered_norm = float(np.linalg.norm(filtered))
+    if norm == 0.0 or filtered_norm <= 1e-12 * norm:
+        return logf, {**rec, "status": "kept B0's factor: the momentum or its filtered part is zero", "directions": k}
+    filtered *= norm / filtered_norm  # the norm rule: the filtered factor keeps the lineage's unfiltered L2 norm
+    out = logf.copy()
+    out[active] = filtered
+    rho = float(np.corrcoef(rankdata(filtered), rankdata(logf[active]))[0, 1])
+    return out, {**rec, "status": "filtered", "directions": k,
+                 "retained_energy": float((kept @ kept) / (v @ v)),
+                 "spearman": rho if np.isfinite(rho) else None,
+                 "max_abs_ratio": float(np.abs(out).max() / np.abs(logf).max())}
 
 
 def blend_expression(before: ad.AnnData, after: ad.AnnData, interp: Interpolation, genes, t: float,

@@ -1376,7 +1376,10 @@ RULE_LITERALS = {"COUNT_RULE_SEEDS": {10.0}, "COUNT_RULE_MIN_GAIN": {0.3}, "COUN
                  # 2026-11-09, try E13 (the midpoint draw): sizes of the computation and its fixed k-means seed, set
                  # before its run; MIDPOINT_STREAMS are random-stream ids, not values of a stage
                  "MIDPOINT_K_STRATA": {20.0}, "MIDPOINT_K_ANCHORS": {15.0}, "MIDPOINT_KMEANS_SEED": {20261109.0},
-                 "MIDPOINT_STREAMS": {8.0, 9.0}}
+                 "MIDPOINT_STREAMS": {8.0, 9.0},
+                 # 2026-11-09, try H6 (experiments/harness/TRIES.md): the smallest lineage the covariance filter acts
+                 # on, a fixed setting, not a value of a stage
+                 "CFM_MIN_CELLS": {200.0}}
 
 
 def _stray_literals(src: str) -> tuple[list[tuple[int, str]], set[str]]:
