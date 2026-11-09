@@ -1642,20 +1642,20 @@ open. No organiser reply to any of the four emails as of then.
     `experiments/harness/TRIES.md`, committed before any of them ran. The code had a review with fixes
     (wf_48ba2c05-75c) and is merged at cdc317f, synthetic tests only; nothing has touched project data yet.
   - **The bet's condition of 2026-11-10 (d), made operational.** A measured loss of more than 0.66 on any task stops the
-    build. A loss between 0.33 and 0.66 goes to the captain first, and the build proceeds only on his explicit reading.
-    Below that it still needs his ruling. On the weak-null control the cost is read in raw units as well, because
+    build. A loss between 0.33 and 0.66 goes to the captain first, and the build proceeds only on the captain's explicit
+    reading. Below that it still needs the captain's ruling. On the weak-null control the cost is read in raw units as well, because
     points there understate a test-like cost. The build itself refuses to write a file that the prior moves by more
     than 0.0035 raw mmd_u.
-  - **What changed from what he approved.** The review removed the fitted gene table: genes are now chosen by the
+  - **What changed from what the captain approved.** The review removed the fitted gene table: genes are now chosen by the
     reference's expression level alone, so no truth is read and the table's new use of X002 is gone. Its downside
-    estimate is now about -0.2 to -0.8 T1, wider than the -0.33 he approved; T12 measures it. On s2 only about 55-77%
+    estimate is now about -0.2 to -0.8 T1, wider than the -0.33 the captain approved; T12 measures it. On s2 only about 55-77%
     of the promoted genes land inside the likely bottom slots, so its upside there is smaller.
   - **Order.** N20 and the preflight are target-free and run first. The counted runs follow the plain summary to the
     captain and his sign-off (2026-11-04 (d)). T1's count goes from 11 to 13 with T12, to 16 with T13-T15, and to at
     most 19 only if the variants run.
   - **What the tournament can say.** It is a stand-in test on released backtests. A gate pass says T1's platform can
-    carry a Feng-bracket signal and is not independent of the earlier readout on E8.5 -> E9.5. It changes M1 only by his
-    ruling, and only through T17 or T18 at or above the similarity floor.
+    carry a Feng-bracket signal and is not independent of the earlier readout on E8.5 -> E9.5. It changes M1 only by the
+    captain's ruling, and only through T17 or T18 at or above the similarity floor.
 - 2026-11-10 (g), the late-proxy stand-in's stage label corrected, before any try.
   - **What happened.** N20's first run (f1103d2, target-free) stopped the tournament: Feng's file has no stage labelled
     E18.5. Its stages are E9.5, E14.5, E15.5, E16.5, E17.5, E18, P0, P1, P2, P3, P4, P5, P7 and P9. The design, and the
@@ -1663,6 +1663,11 @@ open. No organiser reply to any of the four emails as of then.
   - **By N20's row** T13-T18 as registered did not run and do not count, and a rerun is a new row.
   - **The correction.** N20b and the amended T13-T18 rows use Feng's E14.5 -> E18 (read as day 18.0), a 3.5-day bracket,
     so a one-day step takes 2/7 of it, not 1/4. It is the same stage the captain approved under a wrong label and not a
-    new data use, but it goes to him before N20b reads that stage. If he declines, T13-T18 are dropped and M1 is
+    new data use, but it goes to the captain before N20b reads that stage. If the captain declines, T13-T18 are dropped and M1 is
     unaffected. The code change is at e2af71f, whose message says the rows were amended too; they are amended in the
     commit after it.
+- 2026-11-10 (h), the captain, after the plain summary of the second wave and the stage-label correction, in the
+  captain's word: "go".
+  - **Both sets run.** T12a and T12b measure the cost of T1's strong-null bet. The late-proxy tournament runs on Feng's
+    E14.5 -> E18: N20b, the preflight, T13-T15, then T16-T18 only if that stage passes. The stop and keep rules are the
+    rows'. Nothing changes an upload without the captain's ruling.
