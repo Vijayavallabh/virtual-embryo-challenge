@@ -829,6 +829,135 @@ K2_PARAMS = {"factor": "s1's lead component: Gata4 replicates pooled against WT 
                       "kNN-smoothed top-up profile of rules.yaml note 5); no depth, no composition",
              "reference_labels": f"rules.yaml preset {K2_REFERENCE_PRESET}", "stream": K2_STREAM}
 
+# ------------------------------------------------------------------------------------------------ T3 tries K4 and K4c
+# Fixed in their experiments/harness/TRIES.md rows (registered before any fold is read): K2a's factor estimator on each
+# fold's own source (t3_factor_raw, the base arm), its gene-wise empirical-Bayes shrinkage (t3_factor_eb, try K4; the
+# estimator is experiments/t3_decomp/eb_factor.py) and the control that permutes the shrinkage weights within the same
+# deciles (t3_factor_eb_ctrl, try K4c), each built as K2a builds its factor. Decided twice by `run.py decide`, against
+# the raw base and against the control; both must keep on both counted cross-knockout folds. The replicate fold is
+# reported and never counted (`decide` excludes replicate folds).
+K4_FOLDS = {  # pseudo-task key -> its source: knockout roles and files, matched WT file, rules.yaml presets
+    "T3/Gata4->Mab21l2": {"ko_roles": ("ko_train", "ko_train_2"), "source_files": K2_FACTOR_FILES[:2],
+                          "wt_file": K2_FACTOR_FILES[2], "source_preset": "gata4", "reference_preset": "mab21l2",
+                          "counted": True},
+    "T3/Mab21l2->Gata4rep2": {"ko_roles": ("ko_train",), "source_files": ("T3/E9.5_mab21l2_ko.h5ad",),
+                              "wt_file": "T2/E9.5.h5ad", "source_preset": "mab21l2", "reference_preset": "gata4",
+                              "counted": True},
+    "T3/Gata4rep1->rep2": {"ko_roles": ("ko_train",), "source_files": K2_FACTOR_FILES[:1],
+                           "wt_file": K2_FACTOR_FILES[2], "source_preset": "gata4", "reference_preset": "gata4",
+                           "counted": False},
+}
+K4_CTRL_SEED = 20261109  # K4c: one permutation of the shrinkage weights, this seed (its row)
+K4_BINS = 10  # deciles of the factor's denominator
+K4_STREAM = K2_STREAM  # all three arms draw as K2a: t3_factor_raw on the Gata4 -> Mab21l2 fold is K2a's build
+_K4_PREP: dict = {}
+
+
+def _t3_eb():
+    """experiments/t3_decomp/eb_factor.py, imported as `_t3_head` imports build_submission."""
+    _t3_head()
+    import eb_factor
+
+    return eb_factor
+
+
+def t3_source_frame(wt: ad.AnnData, kos: list[ad.AnnData], rules: Mapping, preset: str,
+                    n_jobs: int = 1) -> SimpleNamespace:
+    """What K2a's factor estimator computes for a fold's source, for any rules.yaml preset (t3_gata4_factor's steps, in
+    its order, so `phi` is byte-identical to it on the Gata4 source), and the section blocks K4's jackknife needs. WT
+    `wt`'s own labels in the preset's label mode; each knockout file's cells (littermate wild types split off) called
+    into that vocabulary by the frozen harmoniser, depth-matched as there; all knockout cells pooled in file order;
+    gene_factor over the strict non-Mesp1 labels with at least min_cells cells on both sides, weighted by the WT
+    shares. Returns phi (K2a's factor), den, mu_wt, weights (V.p), mask, the pooled counts C and labels lab, block (each
+    pooled cell's section: eb_factor.block_ids over the files' kept cells, replicate-by-level ids when files are
+    pooled), n_levels, eps and clip. wt and kos as the harness loads them; none of them is modified."""
+    t3d = _t3_head().t3d
+    hp, fc = rules["harmonisation"], rules["components"]["factor"]
+    w = _shallow(wt)
+    t3d.add_label_column(w, rules["presets"][preset]["label_mode"])
+    V, wlab = _t3_vocab(t3d, w, rules)
+    Cw = t3d.dense_counts(w)
+    harm = t3d.Harmoniser(w, "t3_label", t3d.label_groups(w, "t3_label"), hp, n_jobs)
+    Cs, labs, zs = [], [], []
+    for a in kos:
+        a = _shallow(a)
+        littermates, _, _ = t3d.littermate_split(a)
+        if littermates.any():
+            a = a[~littermates].copy()
+        calls, _ = harm.calls(a, seed=hp["seed"])
+        Cs.append(t3d.dense_counts(a))
+        labs.append(t3d.calls_to_index(V, calls))
+        zs.append(np.asarray(a.obsm[COORD_KEY], dtype=np.float64)[:, 2])
+    C, lab = np.vstack(Cs), np.concatenate(labs)
+    block, n_levels = _t3_eb().block_ids(zs)
+    ok = ((np.bincount(lab[lab >= 0], minlength=V.L) >= fc["min_cells"])
+          & (np.bincount(wlab, minlength=V.L) >= fc["min_cells"]))
+    mask = ok & V.nm
+    mu_wt = t3d.props_type_means(Cw, wlab, V.L)
+    phi, den = t3d.gene_factor(t3d.props_type_means(C, lab, V.L), mu_wt, V.p, mask, fc["eps"], tuple(fc["clip"]))
+    return SimpleNamespace(phi=phi, den=den, mu_wt=mu_wt, weights=V.p, mask=mask, C=C, lab=lab, block=block,
+                           n_levels=n_levels, eps=fc["eps"], clip=tuple(fc["clip"]))
+
+
+def t3_k4_fit(frame: SimpleNamespace, seed: int = K4_CTRL_SEED, bins: int = K4_BINS):
+    """K4's and K4c's factors from a fold's source frame (`t3_source_frame`): eb_factor.jackknife, then
+    eb_factor.eb_factors."""
+    eb = _t3_eb()
+    jack = eb.jackknife(frame.C, frame.lab, frame.block, frame.mu_wt, frame.weights, frame.mask, frame.eps)
+    return eb.eb_factors(frame.phi, jack, clip=frame.clip, seed=seed, bins=bins)
+
+
+def _k4_prepared(ctx: BuildContext) -> dict:
+    """The fold's raw, EB and control factors and the fold's WT in t3_decompose's form, once per loaded fold (none
+    depends on the seed; the harness hands every seed the same input objects)."""
+    fold = K4_FOLDS[ctx.task.key]
+    roles = ("wt_train", *fold["ko_roles"], ctx.task.reference_role)
+    objs = tuple(ctx.inputs[r] for r in roles)
+    hit = _K4_PREP.get("fold")
+    if hit is None or hit["key"] != ctx.task.key or any(a is not b for a, b in zip(hit["inputs"], objs, strict=True)):
+        rules = _t3_head().load_rules()
+        wt, pool = ctx.inputs["wt_train"], ctx.inputs[ctx.task.reference_role]
+        if list(wt.var_names) != list(pool.var_names):
+            raise ValueError(f"{ctx.task.key}: the factor's WT and the reference hold different genes")
+        fit = t3_k4_fit(t3_source_frame(wt, [ctx.inputs[r] for r in fold["ko_roles"]], rules, fold["source_preset"]))
+        _K4_PREP.clear()
+        hit = _K4_PREP["fold"] = {"key": ctx.task.key, "inputs": objs, "raw": fit.raw, "eb": fit.eb, "ctrl": fit.ctrl,
+                                  "ref": t3_reference(pool, fold["reference_preset"], rules)}
+    return hit
+
+
+def _t3_factor_k4(arm: str) -> Callable[[BuildContext], Stage]:
+    """Tries K4 and K4c and their raw base (arm "eb", "ctrl", "raw"): the fold's arm factor, at exponent 1, on the
+    reference WT's real cells at its own composition, built as K2a builds its factor (`_t3_factor_xko`), from one
+    stream for all three arms."""
+
+    def build(ctx: BuildContext) -> Stage:
+        bs = _t3_head()
+        prep = _k4_prepared(ctx)
+        ref, pool = prep["ref"], ctx.inputs[ctx.task.reference_role]
+        built = bs.construct(ref, count_for(ctx.board, pool.n_obs), bs.t3d.stable_rng(ctx.seed, K4_STREAM), f=ref.V.p,
+                             phi=prep[arm])
+        X, coords, _ = bs.assemble(ref, built, list(ctx.board.genes),
+                                   bs.t3d.stable_rng(ctx.seed, f"{K4_STREAM}:assemble"))
+        return finish(ctx, pool, X, coords if ctx.board.needs_coords else None)
+
+    return build
+
+
+def _k4_applies(t: PseudoTask) -> bool:
+    """K4's arms run on the two counted cross-knockout folds and, reported only, on the replicate fold, each with its
+    own source (K4_FOLDS); `decide` never counts the replicate fold."""
+    fold = K4_FOLDS.get(t.key)
+    return (fold is not None and t.task == "T3"
+            and tuple(t.inputs.get(r) for r in (*fold["ko_roles"], "wt_train"))
+            == (*fold["source_files"], fold["wt_file"]))
+
+
+K4_PARAMS = {"factor": "K2a's estimator on the fold's own source against its matched WT (t3_source_frame): strict "
+                       "non-Mesp1 labels, gene_factor (rules.yaml components.factor), exponent 1",
+             "estimator": "experiments/t3_decomp/eb_factor.py", "bins": K4_BINS, "stream": K4_STREAM,
+             "build": "build_submission.construct and assemble, as K2a; no depth, no composition"}
+
 _ANY = (frozenset(),)
 CANDIDATES = {
     FLOOR: Candidate(FLOOR, frozenset(TASKS), _ANY, None,
@@ -911,6 +1040,22 @@ CANDIDATES = {
                                              "E8.75 mean expression (log1p CP10k over the deduplicated cells)",
                                      **K2_PARAMS, "permutation_seed": K2_PERM_SEED, "bins": K2_PERM_BINS},
                                     requires=_k2_applies),
+    # T3 tries K4 and K4c and their raw base (experiments/harness/TRIES.md, registered before their run): on the two
+    # counted cross-knockout folds (and, reported only, the replicate fold), K2a's factor estimator, its empirical-Bayes
+    # shrinkage, and the shrinkage-matched control
+    "t3_factor_raw": Candidate("t3_factor_raw", frozenset({"T3"}), (), _t3_factor_k4("raw"),
+                               {"what": "K4's base arm: K2a's factor estimator on the fold's own source, on the "
+                                        "reference WT's real cells at its own composition", **K4_PARAMS},
+                               requires=_k4_applies),
+    "t3_factor_eb": Candidate("t3_factor_eb", frozenset({"T3"}), (), _t3_factor_k4("eb"),
+                              {"what": "try K4: the raw factor, each gene's log ratio shrunk towards f = 1 by its "
+                                       "delete-one-section jackknife instability (DerSimonian-Laird within deciles "
+                                       "of the factor's denominator, numerator side), then rescaled to the raw "
+                                       "factor's robust SD by one constant", **K4_PARAMS}, requires=_k4_applies),
+    "t3_factor_eb_ctrl": Candidate("t3_factor_eb_ctrl", frozenset({"T3"}), (), _t3_factor_k4("ctrl"),
+                                   {"what": "try K4c: K4 with its shrinkage weights permuted across genes within the "
+                                            "same deciles (K2b's logic, one permutation), the same constant",
+                                    **K4_PARAMS, "permutation_seed": K4_CTRL_SEED}, requires=_k4_applies),
 }
 
 
