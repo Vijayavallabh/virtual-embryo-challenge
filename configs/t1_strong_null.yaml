@@ -1,0 +1,10 @@
+# T12, the strong-null down-tail prior of T1's s1 (experiments/harness/TRIES.md row T12, registered before any run; the
+# captain's ruling of 2026-11-10 (a), docs/PLAN.md). T1's s2 inherits it through the frozen "as s1" clause
+# (docs/S2_RULES.md) and goes back to him after the rebuild.
+#
+# The production table, written by experiments/t1_strong_null/calibrate.py from the E9.5 -> E10.5 transition (chamber
+# cut). `table_sha256` stays null until the build commit after T12's calibration and stop rule (the main session pins it
+# then, as R2's union_sha256 was pinned at its build commit); until then `build_test.py t1 --strong-null` refuses.
+# Every other constant of the rule is vec.t1_scope's (DP_*), registered in the row; a change is a new row.
+table_file: experiments/t1_strong_null/results/calibration/table_strong_chamber.json
+table_sha256: null

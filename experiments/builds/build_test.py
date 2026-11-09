@@ -13,7 +13,9 @@ machine, and an official upload needs the captain's go-ahead.
           damped E9.5 -> E10.5 momentum, M1 as built before R1). R2 of TRIES.md also holds R2's gene modules flat in
           Feng's direction (the union N12 wrote, pinned in configs/t1_hygiene.yaml): on by default with R1 since the
           build commit after N12 (docs/PLAN.md decision log 2026-11-06 (k)); --no-feng-hygiene rebuilds the s1 of
-          88b057f (M1 with R1, before R2)
+          88b057f (M1 with R1, before R2). T12 (TRIES.md; the captain's ruling of 2026-11-10 (a)): --strong-null adds
+          the strong-null down-tail prior after M1's steps (vec.t1_scope.apply_down_prior; its table pinned in
+          configs/t1_strong_null.yaml), off by default until a later build commit of the main session
   heart   B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
           procedure: --entry s1 = scope hypothesis H1; s2_trim = the s2 of docs/S2_RULES.md (H2 as a trim to half
           E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`)
@@ -54,8 +56,10 @@ from vec.prep import load_stage
 
 sys.path.insert(0, str(REPO_ROOT / "experiments" / "t1_m1"))
 sys.path.insert(0, str(REPO_ROOT / "experiments" / "t1_hygiene"))
+sys.path.insert(0, str(REPO_ROOT / "experiments" / "t1_strong_null"))
 import feng_dirs  # noqa: E402
 import hygiene  # noqa: E402
+import strong_null  # noqa: E402
 
 TEST_BOARDS = {"t1": "T1:test", "heart": "T2:heart:test_extrap", "embryo": "T2:embryo:test_interp"}
 DRY_BOARDS = {"t1": {"T1:val"}, "heart": {"T2:heart:val_extrap", "T2:heart:val_interp"},
@@ -177,6 +181,24 @@ def _t1_union(hygiene_on: bool) -> dict | None:
     return union
 
 
+def _t1_down_prior(on: bool, hold_unbracketed: bool, hygiene_on: bool) -> t1_scope.DownPrior | None:
+    """T12's option (experiments/harness/TRIES.md T12; the captain's ruling of 2026-11-10 (a)): the strong-null
+    down-tail prior after M1's steps. Off (the default): None, and nothing is read. On: refused unless the build is M1
+    with R1 and R2 (T12 departs from it) and unless configs/t1_strong_null.yaml pins the production table
+    (`strong_null.load_table`, R2's pattern), both before anything else is read. The prior's cells are the ones M1 moves
+    along Feng's direction (`covered_labels` None); `t1_scope.apply_down_prior` holds R2's and the pre-registered genes
+    exactly as M1's own step does."""
+    if not on:
+        return None
+    if not (hold_unbracketed and hygiene_on):
+        sys.exit("--strong-null is refused without R1 and R2 (--no-hold-unbracketed, --no-feng-hygiene): T12 departs "
+                 "from M1 with R1 and R2 (experiments/harness/TRIES.md T12)")
+    try:
+        return t1_scope.DownPrior(table=strong_null.load_table())
+    except strong_null.Refused as e:
+        sys.exit(f"--strong-null is refused: {e}")
+
+
 def _t1_held(union: dict | None, direction_groups, build_genes) -> tuple[list[str], dict | None]:
     """The held-flat genes build_t1 passes to build_submission, and the build record's feng_hygiene field. Off (no
     union): the pre-registered list exactly as before R2, so the file is byte-identical, and None. On (R2): that list
@@ -199,6 +221,7 @@ def _t1_held(union: dict | None, direction_groups, build_genes) -> tuple[list[st
 
 def build_t1(a) -> dict:
     hygiene_on = _feng_hygiene_on(a.feng_hygiene, a.hold_unbracketed)  # R2's refusals come before anything is read
+    prior = _t1_down_prior(a.strong_null, a.hold_unbracketed, hygiene_on)  # T12's, likewise
     union = _t1_union(hygiene_on)
     board, dry = _board("t1", a.board)
     ref = load_stage(DATA / "T1/E10.5_RNA.h5ad", lineage=False)
@@ -213,15 +236,24 @@ def build_t1(a) -> dict:
     groups = feng_dirs.label_groups(ref.obs["celltype"].astype(str).unique())
     fraction = feng_dirs.bracket_fraction(10.5, 12.5)
     n = harness.count_for(board, ref.n_obs)
+    extra = {} if prior is None else {"down_prior": prior}
     sub, rep = t1_scope.build_submission(ref, board, shares, n, a.seed, held_flat=held,
                                          ref_source="E10.5_RNA", directions=directions, direction_fraction=fraction,
-                                         direction_groups=groups, herd=a.herd, **momentum)
+                                         direction_groups=groups, herd=a.herd, **momentum, **extra)
+    strong = None
+    if prior is not None:  # T12's part (d): the file is written only if the target-free checks pass
+        strong = {"table": strong_null.table_record(),
+                  "constants": {"budget": prior.budget, "band": prior.band, "f_min": prior.f_min},
+                  **rep["down_prior"]}
+        if not strong["checks"]["passed"]:
+            sys.exit(f"the strong-null prior's target-free checks failed: {strong['checks']}")
     check = t1_scope.write_checked(sub, a.out, board)
-    return {"entry": "M1", "board": board.key, "dry_run": dry, "n_cells": n, "seed": a.seed, "fraction": fraction,
-            "herd": bool(a.herd), "hold_unbracketed": bool(a.hold_unbracketed), "feng_hygiene": feng_hygiene,
-            "cm_share_of_heart": t1_scope.share_of(shares, "cm", t1_scope.load_spec().heart),
-            "blood_share_of_chamber": float(shares.get("blood", 0.0)),
-            "shares": shares, "external": ext, "check_ok": check.ok, "realised": rep["realised"]}
+    rec = {"entry": "M1", "board": board.key, "dry_run": dry, "n_cells": n, "seed": a.seed, "fraction": fraction,
+           "herd": bool(a.herd), "hold_unbracketed": bool(a.hold_unbracketed), "feng_hygiene": feng_hygiene,
+           "cm_share_of_heart": t1_scope.share_of(shares, "cm", t1_scope.load_spec().heart),
+           "blood_share_of_chamber": float(shares.get("blood", 0.0)),
+           "shares": shares, "external": ext, "check_ok": check.ok, "realised": rep["realised"]}
+    return rec if strong is None else {**rec, "strong_null": strong}
 
 
 def build_heart(a) -> dict:
@@ -328,6 +360,10 @@ def build_parser() -> argparse.ArgumentParser:
                                 "direction (the union N12 wrote, pinned in configs/t1_hygiene.yaml; refused with "
                                 "--no-hold-unbracketed or while Blood has a Feng direction). Not given: on with "
                                 "--hold-unbracketed (the default), off with --no-hold-unbracketed")
+            p.add_argument("--strong-null", action=argparse.BooleanOptionalAction, default=False,
+                           help="T12 (experiments/harness/TRIES.md; the captain's ruling of 2026-11-10 (a)): add the "
+                                "strong-null down-tail prior after M1's steps (off by default; refused until "
+                                "configs/t1_strong_null.yaml pins its table, and without R1 and R2)")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
@@ -361,11 +397,14 @@ def main(argv=None) -> None:
             sys.exit(f"{a.out}: a dry run's file name must contain 'dry' (the file must never be uploaded)")
     elif "dry" in Path(a.out).name.lower():
         sys.exit(f"{a.out}: a test build's file name must not contain 'dry'")
+    if getattr(a, "strong_null", False) and Path(a.out).exists():
+        sys.exit(f"{a.out} exists: a build with --strong-null never overwrites a file (T12's row)")
     Path(a.out).parent.mkdir(parents=True, exist_ok=True)
     rec = {"t1": build_t1, "heart": build_heart, "embryo": build_embryo}[a.which](a)
     rec = _hide_counts(rec, load_boards()[rec["board"]])
     Path(a.out).with_suffix(".build.json").write_text(json.dumps(rec, indent=1, default=float))
-    print(json.dumps({k: v for k, v in rec.items() if k not in ("shares", "external", "realised")}, default=float))
+    print(json.dumps({k: v for k, v in rec.items() if k not in ("shares", "external", "realised", "strong_null")},
+                     default=float))
 
 
 if __name__ == "__main__":
