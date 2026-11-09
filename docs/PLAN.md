@@ -1614,3 +1614,12 @@ open. No organiser reply to any of the four emails as of then.
     campaign's own reviewer put the chance at 15-20%, not the 20-25% on record, because the one strong-null transition
     seen (E9.5 -> E10.5) also spans the change from embryo portion to dissected heart, which the test does not have. So
     its expected gain is about zero; it is a long shot.
+- 2026-11-10 (d), the captain, after the plain summary of the first wave and the correction on T1's strong-null bet, in
+  his words: "go ahead with your recommendation".
+  - **T1's strong-null bet stays, on the condition the AI assistant recommended.** It goes into T1's files only if its
+    measured cost on released data (try T12's downside reading) comes in near the -0.33 he approved. Otherwise the
+    numbers go back to him before any file changes.
+  - **The counted runs of the first wave proceed** once their gates finish, with the keep rules in their TRIES rows.
+    Anything that passes still comes to him for a ruling before it can change an upload.
+  - **Left open:** disclosing torch and scvi-tools (the X005 amendment) is decided only if the generative embryo model
+    (E14) passes; no recommendation was made on it.
