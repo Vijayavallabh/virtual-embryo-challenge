@@ -1,0 +1,9 @@
+# T12a and T12b, the strong-null down-tail prior of T1's s1 (experiments/harness/TRIES.md, registered before any run; the
+# captain's rulings of 2026-11-10 (a) and (d), docs/PLAN.md). T1's s2 inherits it through the frozen "as s1" clause
+# (docs/S2_RULES.md) and goes back to him after the rebuild.
+#
+# The prior orders genes by the reference's level alone (vec.t1_scope.DownPriorTable.level_only): there is no table to
+# pin. `approved` stays false until the build commit after the stop rule (experiments/t1_strong_null/stop_rule.py) and
+# the captain's ruling (the main session sets it then); until then `build_test.py t1 --strong-null` refuses. Every
+# constant of the rule is vec.t1_scope's (DP_*), registered in the rows; a change is a new row.
+approved: false
