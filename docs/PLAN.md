@@ -1598,3 +1598,19 @@ open. No organiser reply to any of the four emails as of then.
   - **Since the reads of 2026-11-04** (209.3, 203.7, 202.1; sixth 197.1): first place rose by 6.1, third by 1.6 and
     sixth by 3.5, and there are new entries among the top six.
   - The captain's upload gate stays 209: later leaderboard reads do not move it (section 8).
+- 2026-11-10 (c), the campaign's first wave registered.
+  - **Where it came from.** Six design lenses and their sharpeners (wf_426b3c83-403), then nine implementers
+    (wf_3266ec8f-de5). The code is merged at 25e53ae (DGX: ruff clean, 972 tests passed). Rows N14-N19, E12-E15, E12d,
+    H6, U3 and U3d, K4 and K4c, and T8-T11 are in `experiments/harness/TRIES.md`, committed before any of them ran. The
+    rows that depend on a gate (E13, E14, E15, H6, K4 and K4c) run only if that gate passes, and a try is counted only
+    if it runs.
+  - **Order.** The target-free gates and the integrity pass run first. The counted runs follow the plain summary to
+    the captain (decision log 2026-11-04 (d)).
+  - **Honest size.** The sharpeners priced the wave at about +0.5 to +1 Overall in expectation, with a few percent
+    chance of +2 to +3. Every report states the try counts.
+  - **Not pursued:** a second upload chosen after reading the first score (about +0.2 at most on legal files, see
+    2026-11-10 (a)), and the GPU modelling of T1 unless T9 and T11 succeed.
+  - **What the 2026-11-09 recommendation of T1's strong-null bet left out** (a side note to the captain caught it). The
+    campaign's own reviewer put the chance at 15-20%, not the 20-25% on record, because the one strong-null transition
+    seen (E9.5 -> E10.5) also spans the change from embryo portion to dissected heart, which the test does not have. So
+    its expected gain is about zero; it is a long shot.

@@ -90,6 +90,10 @@ the organisers say, before T3's first upload, that a floored severity scores zer
   - Both of T1's uploads are settled for the freeze (`runs/archive/builds_02abf39`).
   - 12 old T1 build records no longer carry the count-revealing `realised` field.
 - The red-team of DGX compute uses kept nothing (decision log 2026-11-06 (i)), and the GPUs stay idle.
+- 2026-11-09 and 10, the campaign (`docs/PLAN.md` decision log 2026-11-09 (a), 2026-11-10 (a)-(c)): first wave
+  implemented and merged (25e53ae, 972 tests pass on the DGX) and registered in the tries ledger; gates running next.
+  Separately, the T1 strong-null bet and the late-proxy check are being built (branches wave2/*). A screened leaderboard
+  read is in the decision log (2026-11-10 (b)), calibration only.
 **Active Feature:** feat-018 (s1 files). 2026-11-04: runbook step 1 is done (634b5fd). `vec boards update` still
 answered 403 at 07:29 UTC; a screened Slack and email sweep (wf_2489e0c9-951, two clean audits) found no objection, no
 fix and no rule change since the notice of 2026-10-31; the captain saved the board index and the embryo test gene
