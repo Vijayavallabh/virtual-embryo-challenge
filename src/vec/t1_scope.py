@@ -17,10 +17,9 @@ gap-fill 1). Predictions are built in four steps, each usable on its own:
    size is unchanged (the change is compositional, like the CP10k means it comes from).
 4. `build_submission`: the board's gene order and cell limits, float32 log1p CP10k; `write_checked` writes the file and
    runs `vec.io.check_submission` on it.
-5. Strong-null down-tail prior (T1 try T12, experiments/harness/TRIES.md; off unless a build asks for it):
-   `apply_down_prior` promotes the highly expressed genes a calibration table (`DownPriorTable`) marks as likely down
-   into the predicted bottom tail of the change, by binomial thinning through `apply_factors` with each cell's depth
-   kept, in chosen cells only.
+5. Strong-null down-tail prior (T1 tries T12a and T12b, experiments/harness/TRIES.md; off unless a build asks for it):
+   `apply_down_prior` promotes the most highly expressed genes the model calls flat into the predicted bottom tail of
+   the change, by binomial thinning through `apply_factors` with each cell's depth kept, in chosen cells only.
 
 Only real cells, count-space edits and log1p CP10k output (PLAN principle 1); never decoded means.
 
@@ -45,7 +44,7 @@ from scipy import sparse
 
 from vec.boards import RELEASED_T1_STAGES, REPO_ROOT, Board
 from vec.core import apply_factors, counts_of, draw_least_used, herd_rows, log1p_cp10k, mean_cp10k, quotas
-from vec.io import CheckReport, check_submission, make_submission, write_submission
+from vec.io import CheckReport, check_submission, dense, make_submission, write_submission
 from vec.prep import TARGET_SUM, lineage_map, recover_counts  # noqa: F401 (kept importable here; the core uses them)
 
 CHAMBER_CLASSES = REPO_ROOT / "configs" / "t1_chamber_classes.yaml"
@@ -606,36 +605,42 @@ def _stack_rows(parts: Sequence[tuple[np.ndarray, ad.AnnData]], n: int) -> ad.An
 
 
 # ---------------------------------------------------------------------------------------------------------------------
-# The strong-null down-tail prior (T1 try T12, experiments/harness/TRIES.md; the captain's ruling of 2026-11-10 (a))
+# The strong-null down-tail prior (T1 tries T12a and T12b, experiments/harness/TRIES.md; the captain's rulings of
+# 2026-11-10 (a) and (d))
 #
 # de_score fills the predicted bottom n_dn slots with the most negative dp = pb(prediction) - pb(reference). When a
 # transition is "strong-null" (E9.5 -> E10.5: mostly highly expressed genes going down) many highly expressed genes the
-# model calls flat are in the truth's down list. The prior orders genes by a calibrated P(gene in the truth's down list
-# | its reference level, its predicted change) and promotes the best into the bottom tail in count space. Every constant
-# below is the row's; a change is a new row.
+# model calls flat are in the truth's down list. The prior promotes the most highly expressed of the genes the model
+# calls near the tail or flat into the bottom tail in count space. Genes are ordered by the reference's level alone
+# (`DownPriorTable.level_only`, in the test build as in the backtests): nothing is fitted on any transition's truth,
+# and the backtests measure the selection the test build uses. Every constant below is the row's; a change is a new row.
 
 DP_LEVEL_EDGES = (100, 200, 400, 800, 1600, 3200)  # bins of the reference's level: rank edges, highest level first
 DP_CHANGE_EDGES = (400, 1600)  # bins of the predicted change: rank edges of dp, most negative first (the tail, near it)
 DP_CHANGE_TOP = 1600  # the top ranks of dp, predicted up
+DP_PROMOTED_LEVELS = 4  # a promoted gene's level bin: one of the first four (level rank below 800), where the
+# thinning's first-order solve meets the band at T1's depth (sparser genes' realised change falls short of it; the row)
 DP_PROMOTED_CHANGE = (1, 2)  # a promoted gene's change bin: near the tail or flat, never the tail or predicted up
-DP_SHRINK = 100.0  # a table cell shrinks towards its level's marginal by this many gene-seeds (cells pooled over seeds)
 DP_BUDGET = 200  # the genes promoted: a constant of the rule (half the strong-null transition's down list)
-DP_BAND = -0.15  # the change of the promoted genes' pseudobulk against the reference: inside the bottom 400 of dp of
-# s1 and s2 alike (their committed tails: experiments/research_2026_11/results/t1-tail.json and tails.json), the
-# strong-null down list's size (the row)
+DP_BAND = -0.15  # the change of the promoted genes' pseudobulk against the reference: between ranks 100 and 200 of s1's
+# committed dp tail and between ranks 200 and 400 of s2's (experiments/research_2026_11/results/t1-tail.json and
+# tails.json), so the promoted block sits inside s1's bottom 400 and only partly inside s2's (the row)
 DP_F_MIN = 0.5  # no promoted gene is thinned below this factor (its target is then out of reach: it is skipped)
 DP_MIN_PB = 0.25  # the scorer's MIN_LFC: a truth down-gene needs pb(reference) >= this, since log1p values are >= 0
 DP_ITERATIONS = 3  # fixed-point steps that account for the depth-keeping constant apply_factors applies on top
 DP_TOL = 0.02  # a promoted gene's realised dp may sit this far above its band; every other gene may fall by half this
 DP_DEPTH_TOL = 0.01  # the covered cells' realised library ratio stays this close to 1 on average
 DP_BOTTOM = 400  # the size of the bottom tail the band is meant to enter, reported with the checks (no count of test)
+DP_MMD_BOUND = 0.0035  # raw mmd_u: the file is written only if the prior moves it by no more than this (the scorer's
+# mmd_unbiased between the file before and after the prior; the same number as the stop rule's S2)
+DP_MMD_CELLS = 5000  # at most this many cells of the file enter that check, the same cells before and after
 
 
 @dataclass(frozen=True)
 class DownPriorTable:
-    """P(down | level bin, change bin), calibrated on a released transition (T1 try T12). `p` is levels x changes, the
-    levels and changes those of `down_prior_bins`, the last level bin holding every gene below the last edge (never
-    promoted)."""
+    """The promotion score per (level bin, change bin) of T1 tries T12a and T12b. `p` is levels x changes, the levels
+    and changes those of `down_prior_bins`, the last level bin holding every gene below the last edge (never promoted).
+    Both the test build and the backtests use `level_only`, which depends on the level alone."""
 
     p: np.ndarray
     level_edges: tuple[int, ...] = DP_LEVEL_EDGES
@@ -643,34 +648,14 @@ class DownPriorTable:
     change_top: int = DP_CHANGE_TOP
 
     @classmethod
-    def from_counts(cls, hits, genes, shrink: float = DP_SHRINK, level_edges: tuple[int, ...] = DP_LEVEL_EDGES,
-                    change_edges: tuple[int, ...] = DP_CHANGE_EDGES, change_top: int = DP_CHANGE_TOP) -> DownPriorTable:
-        """The table from pooled counts: hits[L, C] genes of cell (L, C) that were in the truth's down list and genes[L,
-        C] genes in the cell (both summed over the calibration's seeds, so in gene-seeds). Each cell is shrunk towards
-        its level's marginal: (hits + shrink x marginal) / (genes + shrink)."""
-        h, n = np.asarray(hits, dtype=np.float64), np.asarray(genes, dtype=np.float64)
-        marginal = np.divide(h.sum(1), n.sum(1), out=np.zeros(h.shape[0]), where=n.sum(1) > 0)
-        return cls(p=(h + shrink * marginal[:, None]) / (n + shrink), level_edges=tuple(level_edges),
-                   change_edges=tuple(change_edges), change_top=int(change_top))
-
-    @classmethod
     def level_only(cls, level_edges: tuple[int, ...] = DP_LEVEL_EDGES, change_edges: tuple[int, ...] = DP_CHANGE_EDGES,
                    change_top: int = DP_CHANGE_TOP) -> DownPriorTable:
-        """A table with no calibration at all, for try T12's control (it needs nothing a pseudo-task cannot legally
-        read): P falls with the level bin and does not depend on the predicted change; the last level bin is 0."""
+        """The rule's order, with no calibration at all (it reads no truth, so it is legal on every pseudo-task and at
+        test): the score falls with the level bin and does not depend on the predicted change; the last level bin is
+        0."""
         n_l, n_c = len(level_edges) + 1, len(change_edges) + 2
         p = np.tile(1.0 - np.arange(n_l, dtype=np.float64) / max(n_l - 1, 1), (n_c, 1)).T
         return cls(p=p, level_edges=tuple(level_edges), change_edges=tuple(change_edges), change_top=int(change_top))
-
-    @classmethod
-    def from_dict(cls, d: Mapping) -> DownPriorTable:
-        """The table from its JSON form (`to_dict`)."""
-        return cls(p=np.asarray(d["p"], dtype=np.float64), level_edges=tuple(int(x) for x in d["level_edges"]),
-                   change_edges=tuple(int(x) for x in d["change_edges"]), change_top=int(d["change_top"]))
-
-    def to_dict(self) -> dict:
-        return {"p": self.p.tolist(), "level_edges": list(self.level_edges), "change_edges": list(self.change_edges),
-                "change_top": self.change_top}
 
 
 def down_prior_bins(pb_ref, dp, table: DownPriorTable) -> tuple[np.ndarray, np.ndarray]:
@@ -691,11 +676,12 @@ def down_prior_bins(pb_ref, dp, table: DownPriorTable) -> tuple[np.ndarray, np.n
 
 
 def down_prior_order(table: DownPriorTable, level, change, pb_ref, dp, genes: Sequence[str], held) -> np.ndarray:
-    """Positions of the genes the prior may promote, best first (its table's P, then the most negative dp, then the
-    gene's name): a level bin other than the last, change bin DP_PROMOTED_CHANGE, not held, and pb_ref >= DP_MIN_PB."""
+    """Positions of the genes the prior may promote, best first (its table's score, then the most negative dp, then the
+    gene's name): a level bin among the first DP_PROMOTED_LEVELS and never the table's last, change bin
+    DP_PROMOTED_CHANGE, not held, and pb_ref >= DP_MIN_PB."""
     level, change = np.asarray(level), np.asarray(change)
-    ok = ((level < len(table.level_edges)) & np.isin(change, DP_PROMOTED_CHANGE) & ~np.asarray(held, dtype=bool)
-          & (np.asarray(pb_ref, dtype=np.float64) >= DP_MIN_PB))
+    ok = ((level < min(len(table.level_edges), DP_PROMOTED_LEVELS)) & np.isin(change, DP_PROMOTED_CHANGE)
+          & ~np.asarray(held, dtype=bool) & (np.asarray(pb_ref, dtype=np.float64) >= DP_MIN_PB))
     idx = np.flatnonzero(ok)
     score = table.p[level[idx], change[idx]]
     names = np.array([str(genes[i]) for i in idx], dtype=object).astype(str)
@@ -704,8 +690,8 @@ def down_prior_order(table: DownPriorTable, level, change, pb_ref, dp, genes: Se
 
 @dataclass(frozen=True)
 class DownPrior:
-    """A build's strong-null prior: the table and which cells it touches (`covered_labels`: None for the cells a
-    direction step covers, M1 at test; otherwise the labels of those cells). The other fields are the row's
+    """A build's strong-null prior: the promotion order and which cells it touches (`covered_labels`: None for the cells
+    a direction step covers, M1 at test; otherwise the labels of those cells). The other fields are the row's
     constants."""
 
     table: DownPriorTable
@@ -714,6 +700,29 @@ class DownPrior:
     band: float = DP_BAND
     f_min: float = DP_F_MIN
     tol: float = DP_TOL
+    mmd_bound: float = DP_MMD_BOUND
+
+
+def _prepost_distance(pre, post, covered: np.ndarray, seed: Seed) -> tuple[float, float]:
+    """How far the prior moves the file, with no truth read (T12's part (d)): the scorer's own mmd_unbiased(post, pre)
+    on the panel, and the norm of the covered cells' mean shift in 30 PCs fitted on `pre`. Both on at most DP_MMD_CELLS
+    cells, the same ones before and after; pre and post are the panel's log1p CP10k, cells x genes. Returns (mmd, shift)
+    and records no cell count."""
+    from common.core_metrics import mmd_unbiased  # the pinned scorer, as the harness scores with it
+    from sklearn.decomposition import PCA
+
+    n = pre.shape[0]
+    pick = np.arange(n)
+    if n > DP_MMD_CELLS:
+        pick = np.sort(np.random.default_rng([int(s) for s in np.atleast_1d(seed)] + [5]).choice(n, DP_MMD_CELLS,
+                                                                                              replace=False))
+    a, b = dense(pre[pick]).astype(np.float32), dense(post[pick]).astype(np.float32)
+    n_pc = min(30, a.shape[0] - 1, a.shape[1])
+    mmd = float(mmd_unbiased(b, a, n_pc=n_pc))
+    pca = PCA(n_components=n_pc, random_state=0).fit(a)
+    cov = np.asarray(covered, dtype=bool)[pick]
+    shift = float(np.linalg.norm(pca.components_ @ (b[cov].mean(0) - a[cov].mean(0)))) if cov.any() else 0.0
+    return mmd, shift
 
 
 def apply_down_prior(pop: ad.AnnData, pb_ref: np.ndarray, genes: Sequence[str], covered: np.ndarray,
@@ -723,15 +732,16 @@ def apply_down_prior(pop: ad.AnnData, pb_ref: np.ndarray, genes: Sequence[str], 
     genes: the panel the scorer ranks (the board's genes); pb_ref: the reference's mean log1p CP10k per panel gene (its
     full file, what the scorer's reference copy samples); covered: which rows of `pop` the prior may edit; held: genes
     left exactly as they are, outside the depth-keeping constant. dp = pb(pop) - pb_ref over the panel, all cells. The
-    genes promoted are the first `budget` of `down_prior_order` (P(down | level, predicted change) from the table) whose
-    target is in reach. A promoted gene moves to the band: in the covered cells its counts are thinned by one factor,
-    solved so that the population's mean log1p CP10k falls by band - dp, its dp landing at the prior's `band` (the
-    slope is the exact first-order change of the mean log1p under binomial thinning at
+    genes promoted are the first `budget` of `down_prior_order` (the table's order: the reference's level alone, then
+    the most negative dp) whose target is in reach. A promoted gene moves to the band: in the covered cells its counts
+    are thinned by one factor, solved so that the population's mean log1p CP10k falls by band - dp, its dp landing at
+    the prior's `band` (the slope is the exact first-order change of the mean log1p under binomial thinning at
     f = 1; the fixed-point steps account for the depth-keeping constant `apply_factors` adds). Factors below `f_min` are
     out of reach and the gene is skipped for the next. Nothing else is chosen: other genes in covered cells move only by
     that constant. Each covered cell's expected library is kept (apply_factors keep_depth), uncovered cells are returned
     unchanged, held genes are untouched.
-    Returns (pop edited, report). The report holds gene names, the band and the checks; no cell count."""
+    Returns (pop edited, report). The report holds gene names, the band and the checks, the prior's distance between the
+    file before and after among them (`_prepost_distance`); no cell count."""
     genes = [str(g) for g in genes]
     cols = pd.Index(pop.var_names).get_indexer(genes)
     if (cols < 0).any():
@@ -821,7 +831,11 @@ def apply_down_prior(pop: ad.AnnData, pb_ref: np.ndarray, genes: Sequence[str], 
     other_ok = bool((change_other >= -prior.tol / 2).all() and (change_other <= 1.5 * max_log_s + prior.tol / 2).all())
     uncovered_same = (new[rest_idx] != C[rest_idx]).nnz == 0
     held_same = (new[:, held_all] != C[:, held_all]).nnz == 0
-    checks = {"band_share": round(band_share, 4), "band_ok": band_share >= 0.95,
+    mmd_pre_post, pc_shift = _prepost_distance(pop.X[:, cols], out.X[:, cols], covered, seed)
+    checks = {"n_promoted_ok": len(promoted) == prior.budget,  # the rule's constant, not a floor: a shortfall refuses
+              "mmd_pre_post": round(mmd_pre_post, 6), "mmd_pre_post_ok": mmd_pre_post <= prior.mmd_bound,
+              "pc_mean_shift_covered": round(pc_shift, 4),  # reported, deciding nothing
+              "band_share": round(band_share, 4), "band_ok": band_share >= 0.95,
               "promoted_in_bottom_400_share": round(bottom_share, 4),  # reported, deciding nothing (it moves with s2)
               "depth_ratio_mean": round(depth_ratio, 6), "depth_ok": abs(depth_ratio - 1.0) <= DP_DEPTH_TOL,
               "expected_depth_max_error": expected_err, "expected_depth_ok": expected_err < 1e-6,
@@ -829,8 +843,9 @@ def apply_down_prior(pop: ad.AnnData, pb_ref: np.ndarray, genes: Sequence[str], 
               "other_genes_change_min": round(float(change_other.min()), 6) if change_other.size else 0.0,
               "other_genes_change_max": round(float(change_other.max()), 6) if change_other.size else 0.0,
               "other_genes_ok": other_ok, "no_cell_was_restored": not bool(dead.any())}
-    checks["passed"] = bool(checks["band_ok"] and checks["depth_ok"] and checks["expected_depth_ok"]
-                            and uncovered_same and held_same and other_ok)
+    checks["passed"] = bool(checks["n_promoted_ok"] and checks["mmd_pre_post_ok"] and checks["band_ok"]
+                            and checks["depth_ok"] and checks["expected_depth_ok"] and uncovered_same and held_same
+                            and other_ok)
     report = {"promoted": [genes[i] for i in promoted], "factors": {genes[i]: round(float(f), 4) for i, f in zip(
         promoted, fin, strict=True)}, "n_promoted": int(len(promoted)), "budget": int(prior.budget),
               "band_target_dp": round(target, 4), "f_min": float(prior.f_min), "keep_depth": True, "checks": checks}
@@ -867,9 +882,9 @@ def build_submission(ref: ad.AnnData, board: Board, target_shares: Mapping[str, 
     held_flat: genes the shift leaves alone (default: the pre-registered list, `held_flat_genes`). shift_kw go to
     `momentum_shift` (eps, min_cells, max_abs_log_factor, keep_depth, standin_momentum). Without a shift the rows are
     the released values of the drawn cells. `classify` writes obs["category"] on ref and start. herd: herd each
-    category's draw towards its pool's mean expression before any shift (`reweight`). down_prior (T1 try T12): after
-    every shift, the strong-null prior of `apply_down_prior` (`DownPrior`) on the cells the directions cover or on its
-    own labels; the report then holds its record under "down_prior". Off (None): nothing here changes.
+    category's draw towards its pool's mean expression before any shift (`reweight`). down_prior (T1 tries T12a and
+    T12b): after every shift, the strong-null prior of `apply_down_prior` (`DownPrior`) on the cells the directions
+    cover or on its own labels; the report then holds its record under "down_prior". Off (None): nothing here changes.
     """
     if board.task != "T1":
         raise ValueError(f"{board.key} is a {board.task} board; this builder makes T1 predictions")

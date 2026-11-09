@@ -13,9 +13,10 @@ machine, and an official upload needs the captain's go-ahead.
           damped E9.5 -> E10.5 momentum, M1 as built before R1). R2 of TRIES.md also holds R2's gene modules flat in
           Feng's direction (the union N12 wrote, pinned in configs/t1_hygiene.yaml): on by default with R1 since the
           build commit after N12 (docs/PLAN.md decision log 2026-11-06 (k)); --no-feng-hygiene rebuilds the s1 of
-          88b057f (M1 with R1, before R2). T12 (TRIES.md; the captain's ruling of 2026-11-10 (a)): --strong-null adds
-          the strong-null down-tail prior after M1's steps (vec.t1_scope.apply_down_prior; its table pinned in
-          configs/t1_strong_null.yaml), off by default until a later build commit of the main session
+          88b057f (M1 with R1, before R2). T12a and T12b (TRIES.md; the captain's rulings of 2026-11-10 (a) and (d)):
+          --strong-null adds the strong-null down-tail prior after M1's steps (vec.t1_scope.apply_down_prior, genes by
+          the reference's level alone), off by default and refused until configs/t1_strong_null.yaml says approved
+          (a later build commit of the main session, after the stop rule and the captain's ruling)
   heart   B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
           procedure: --entry s1 = scope hypothesis H1; s2_trim = the s2 of docs/S2_RULES.md (H2 as a trim to half
           E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`)
@@ -182,21 +183,23 @@ def _t1_union(hygiene_on: bool) -> dict | None:
 
 
 def _t1_down_prior(on: bool, hold_unbracketed: bool, hygiene_on: bool) -> t1_scope.DownPrior | None:
-    """T12's option (experiments/harness/TRIES.md T12; the captain's ruling of 2026-11-10 (a)): the strong-null
-    down-tail prior after M1's steps. Off (the default): None, and nothing is read. On: refused unless the build is M1
-    with R1 and R2 (T12 departs from it) and unless configs/t1_strong_null.yaml pins the production table
-    (`strong_null.load_table`, R2's pattern), both before anything else is read. The prior's cells are the ones M1 moves
+    """The option of T12a and T12b (experiments/harness/TRIES.md; the captain's rulings of 2026-11-10 (a) and (d)): the
+    strong-null down-tail prior after M1's steps. Off (the default): None, and nothing is read. On: refused unless the
+    build is M1 with R1 and R2 (T12 departs from it) and unless configs/t1_strong_null.yaml says approved
+    (`strong_null.check_approved`), both before anything else is read. The genes are ordered by the reference's level
+    alone (`DownPriorTable.level_only`, the selection the backtests measured); the prior's cells are the ones M1 moves
     along Feng's direction (`covered_labels` None); `t1_scope.apply_down_prior` holds R2's and the pre-registered genes
     exactly as M1's own step does."""
     if not on:
         return None
     if not (hold_unbracketed and hygiene_on):
         sys.exit("--strong-null is refused without R1 and R2 (--no-hold-unbracketed, --no-feng-hygiene): T12 departs "
-                 "from M1 with R1 and R2 (experiments/harness/TRIES.md T12)")
+                 "from M1 with R1 and R2 (experiments/harness/TRIES.md T12a, T12b)")
     try:
-        return t1_scope.DownPrior(table=strong_null.load_table())
+        strong_null.check_approved()
     except strong_null.Refused as e:
         sys.exit(f"--strong-null is refused: {e}")
+    return t1_scope.DownPrior(table=t1_scope.DownPriorTable.level_only())
 
 
 def _t1_held(union: dict | None, direction_groups, build_genes) -> tuple[list[str], dict | None]:
@@ -242,8 +245,9 @@ def build_t1(a) -> dict:
                                          direction_groups=groups, herd=a.herd, **momentum, **extra)
     strong = None
     if prior is not None:  # T12's part (d): the file is written only if the target-free checks pass
-        strong = {"table": strong_null.table_record(),
-                  "constants": {"budget": prior.budget, "band": prior.band, "f_min": prior.f_min},
+        strong = {"selection": "the reference's level alone (vec.t1_scope.DownPriorTable.level_only), no table",
+                  "constants": {"budget": prior.budget, "band": prior.band, "f_min": prior.f_min, "tol": prior.tol,
+                                "mmd_bound": prior.mmd_bound},
                   **rep["down_prior"]}
         if not strong["checks"]["passed"]:
             sys.exit(f"the strong-null prior's target-free checks failed: {strong['checks']}")
@@ -361,9 +365,9 @@ def build_parser() -> argparse.ArgumentParser:
                                 "--no-hold-unbracketed or while Blood has a Feng direction). Not given: on with "
                                 "--hold-unbracketed (the default), off with --no-hold-unbracketed")
             p.add_argument("--strong-null", action=argparse.BooleanOptionalAction, default=False,
-                           help="T12 (experiments/harness/TRIES.md; the captain's ruling of 2026-11-10 (a)): add the "
-                                "strong-null down-tail prior after M1's steps (off by default; refused until "
-                                "configs/t1_strong_null.yaml pins its table, and without R1 and R2)")
+                           help="T12a, T12b (experiments/harness/TRIES.md; the captain's rulings of 2026-11-10 (a) and "
+                                "(d)): add the strong-null down-tail prior after M1's steps (off by default; refused "
+                                "until configs/t1_strong_null.yaml says approved, and without R1 and R2)")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "

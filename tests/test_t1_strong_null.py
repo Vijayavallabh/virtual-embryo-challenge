@@ -1,6 +1,6 @@
-"""T12 (experiments/harness/TRIES.md), on synthetic data only: the strong-null down-tail prior's bins, table, gene
+"""T12a and T12b (experiments/harness/TRIES.md), on synthetic data only: the strong-null down-tail prior's bins, gene
 order and realisation (`vec.t1_scope`), its backtest candidates (`vec.harness`), the build option
-(`experiments/builds/build_test.py`) and the calibration and stop-rule scripts (`experiments/t1_strong_null`)."""
+(`experiments/builds/build_test.py`) and the stop-rule script (`experiments/t1_strong_null`)."""
 
 from __future__ import annotations
 
@@ -21,36 +21,36 @@ from test_hidden_counts import FENG_GROUPS, T1_GENES, _reference_file, bt, t1_en
 from vec import harness
 from vec import t1_scope as ts
 from vec.boards import Board
-from vec.evaluate import Stage
 from vec.harness import BuildContext, PseudoTask, TaskView
 from vec.prep import log1p_cp10k
 
 EXPERIMENT = Path(__file__).resolve().parents[1] / "experiments" / "t1_strong_null"
 sys.path.insert(0, str(EXPERIMENT))
-import calibrate  # noqa: E402
 import stop_rule  # noqa: E402
 import strong_null  # noqa: E402
 
 # ---------------------------------------------------------------------------------------------------------------------
-# The rule's numbers (T12's row)
+# The rule's numbers (the rows T12a and T12b)
 
 
-def test_the_constants_are_the_row():
-    assert ts.DP_LEVEL_EDGES == (100, 200, 400, 800, 1600, 3200)
+def test_the_constants_are_the_rows():
+    assert ts.DP_LEVEL_EDGES == (100, 200, 400, 800, 1600, 3200) and ts.DP_PROMOTED_LEVELS == 4
     assert ts.DP_CHANGE_EDGES == (400, 1600) and ts.DP_CHANGE_TOP == 1600 and ts.DP_PROMOTED_CHANGE == (1, 2)
-    assert ts.DP_SHRINK == 100.0 and ts.DP_BUDGET == 200 and ts.DP_BAND == -0.15
+    assert ts.DP_BUDGET == 200 and ts.DP_BAND == -0.15
     assert ts.DP_F_MIN == 0.5 and ts.DP_MIN_PB == 0.25 and ts.DP_ITERATIONS == 3 and ts.DP_TOL == 0.02
     assert ts.DP_DEPTH_TOL == 0.01 and ts.DP_BOTTOM == 400
-    assert stop_rule.LOSS_BOUND == -0.66 and stop_rule.DIST_BOUND == -0.33
+    assert ts.DP_MMD_BOUND == 0.0035 and ts.DP_MMD_CELLS == 5000
+    assert stop_rule.LOSS_BOUND == -0.66 and stop_rule.APPROVED_LOSS == -0.33 and stop_rule.DIST_BOUND == -0.33
+    assert stop_rule.RAW_MMD_BOUND == ts.DP_MMD_BOUND and stop_rule.RAW_VARIOGRAM_BOUND == 0.0004
+    assert stop_rule.DF_MMD == (0.024, 0.05, 0.08, 0.11) and stop_rule.DF_VARIOGRAM == (0.0009, 0.003, 0.0055, 0.01)
     assert stop_rule.PAIRS == {"T1/E9.5->E10.5": ("b0", "b0_strong_null"),
                                "T1/E9.5->E10.5:chamber": ("b0", "b0_strong_null"),
                                "T1/E8.5->E9.5": ("b0_scope", "scope_strong_null")}
     assert harness.T12_GROUPS == ("CM", "Endocardium", "Endothelium", "Epicardium")
-    assert calibrate.FRACTION == {9.5: 0.2}
 
 
 # ---------------------------------------------------------------------------------------------------------------------
-# Bins, table, gene order
+# Bins and gene order
 
 
 def test_bins_are_ranks_against_the_edges():
@@ -64,18 +64,6 @@ def test_bins_are_ranks_against_the_edges():
     level2, _ = ts.down_prior_bins(np.zeros(4), np.zeros(4), ts.DownPriorTable(p=np.zeros((3, 4)), level_edges=(1, 2),
                                                                                change_edges=(1,), change_top=1))
     assert level2.tolist() == [0, 1, 2, 2]
-
-
-def test_table_shrinks_each_cell_towards_its_levels_marginal():
-    h = np.array([[10.0, 0.0, 30.0, 0.0], [0.0, 0.0, 0.0, 0.0]])
-    n = np.array([[20.0, 0.0, 180.0, 0.0], [50.0, 0.0, 0.0, 0.0]])
-    t = ts.DownPriorTable.from_counts(h, n, shrink=100.0, level_edges=(5,), change_edges=(1, 2), change_top=1)
-    m = 40.0 / 200.0
-    assert t.p[0, 0] == pytest.approx((10.0 + 100.0 * m) / 120.0)
-    assert t.p[0, 1] == pytest.approx(m)  # an empty cell is its level's marginal
-    assert t.p[0, 2] == pytest.approx((30.0 + 100.0 * m) / 280.0)
-    assert t.p[1, 0] == pytest.approx(0.0)  # a level with no hits, including an empty cell
-    assert ts.DownPriorTable.from_dict(json.loads(json.dumps(t.to_dict()))).to_dict() == t.to_dict()
 
 
 def test_level_only_table_falls_with_the_level_and_ignores_the_change():
@@ -101,6 +89,19 @@ def test_order_takes_only_eligible_genes_best_first():
     assert [genes[i] for i in order] == ["a", "b", "c", "e", "d"]  # 0.9 a; 0.6 b; 0.5 c, e, d by dp
 
 
+def test_order_never_promotes_past_the_rank_800_cap_whatever_the_table_says():
+    n = 4000
+    pb = np.linspace(9.0, 0.5, n)  # gene 0 the highest level; every gene clears MIN_LFC
+    dp = np.linspace(-1.0, 1.0, n)[np.random.default_rng(0).permutation(n)]  # the change bins independent of the level
+    # a table that favours the low levels: the cap must still stop anything from level bin 4 on (level ranks 800+)
+    p = np.tile(np.arange(7, dtype=np.float64)[:, None], (1, 4))
+    table = ts.DownPriorTable(p=p)
+    level, change = ts.down_prior_bins(pb, dp, table)
+    order = ts.down_prior_order(table, level, change, pb, dp, [str(i) for i in range(n)], np.zeros(n, bool))
+    assert len(order) and level[order].max() == 3 and (np.isin(change[order], ts.DP_PROMOTED_CHANGE)).all()
+    assert order.max() < 800  # the genes' positions are their level ranks here, the highest level first
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 # The realisation
 
@@ -123,7 +124,8 @@ def _population(n_cells=1500, seed=0):
 def _prior(table=None, **kw):
     table = table or ts.DownPriorTable(p=np.array([[0.0, 0.9, 0.8, 0.0], [0.0, 0.5, 0.4, 0.0], [0.0, 0.1, 0.1, 0.0]]),
                                        level_edges=(20, 30), change_edges=(10, 20), change_top=10)
-    kw = {"budget": 5, "band": -0.2, "f_min": 0.3, "tol": 0.05, **kw}
+    kw = {"budget": 5, "band": -0.2, "f_min": 0.3, "tol": 0.05, "mmd_bound": 0.5, **kw}  # the 100-gene world's
+    # promoted genes are a twentieth of the panel, far more than the real panel's: its file-distance bound differs
     return ts.DownPrior(table=table, **kw)
 
 
@@ -162,8 +164,12 @@ def test_realisation_moves_the_promoted_genes_to_the_band_and_nothing_else():
     # each covered cell's expected library is kept; the realised libraries stay close to it on average
     lib0, lib1 = np.asarray(C0[covered].sum(1)).ravel(), np.asarray(C1[covered].sum(1)).ravel()
     assert abs(np.mean(lib1 / lib0) - 1.0) <= 0.01
-    assert rep["checks"]["passed"] and rep["checks"]["band_ok"] and rep["checks"]["expected_depth_ok"]
-    assert rep["checks"]["expected_depth_max_error"] < 1e-9
+    checks = rep["checks"]
+    assert checks["passed"] and checks["band_ok"] and checks["expected_depth_ok"] and checks["n_promoted_ok"]
+    assert checks["expected_depth_max_error"] < 1e-9
+    # the file-distance check runs and is reported (an unbiased MMD can be slightly negative at a true distance of 0)
+    assert checks["mmd_pre_post_ok"] and isinstance(checks["mmd_pre_post"], float)
+    assert checks["pc_mean_shift_covered"] > 0.0
     assert rep["keep_depth"] is True and rep["budget"] == 5 and rep["f_min"] == 0.3
     assert 0 < min(rep["factors"].values()) and max(rep["factors"].values()) < 1  # one thinning factor per gene
 
@@ -195,11 +201,70 @@ def test_no_covered_cells_is_refused():
         ts.apply_down_prior(pop, pb_ref, genes, np.zeros(pop.n_obs, bool), (), _prior(), 1)
 
 
+def test_a_shortfall_or_an_empty_promotion_fails_the_checks():
+    pop, genes = _population()
+    (_, rep), _, _ = _run(pop, genes, prior=_prior(budget=31))  # the 30 high genes are all that can reach the band
+    assert rep["n_promoted"] < 31 and not rep["checks"]["n_promoted_ok"] and not rep["checks"]["passed"]
+    # nothing eligible at all (every gene held): the file would be M1's, but the checks must refuse it, not pass it
+    (_, rep), _, _ = _run(pop, genes, held=tuple(genes), prior=_prior(budget=5))
+    assert rep["n_promoted"] == 0 and not rep["checks"]["n_promoted_ok"] and not rep["checks"]["passed"]
+
+
+def test_the_file_distance_above_its_bound_fails_the_checks():
+    pop, genes = _population()
+    (_, ok), _, _ = _run(pop, genes)
+    (_, refused), _, _ = _run(pop, genes, prior=_prior(mmd_bound=ok["checks"]["mmd_pre_post"] - 1e-4))
+    assert ok["checks"]["passed"] and not refused["checks"]["mmd_pre_post_ok"] and not refused["checks"]["passed"]
+    # the numbers are the same whether or not the bound refuses them (reported either way)
+    assert refused["checks"]["mmd_pre_post"] == ok["checks"]["mmd_pre_post"]
+
+
+def test_the_prepost_distance_is_the_scorers_mmd_between_the_two_files():
+    from common.core_metrics import mmd_unbiased
+
+    pop, genes = _population()
+    (out, rep), _, _ = _run(pop, genes)
+    a = pop[:, genes].X
+    b = out[:, genes].X
+    a, b = a.toarray() if sparse.issparse(a) else a, b.toarray() if sparse.issparse(b) else b
+    assert rep["checks"]["mmd_pre_post"] == pytest.approx(
+        mmd_unbiased(b.astype(np.float32), a.astype(np.float32), n_pc=30), abs=1e-5)
+
+
+def test_the_distance_check_reads_nothing_refused_under_the_harness_guard():
+    pop, genes = _population()
+    with harness.guarded_reads() as g:
+        _run(pop, genes)
+    assert g["refused"] == []
+
+
+def test_sparse_genes_inside_the_cap_meet_the_band_at_t1_depth():
+    # the row caps promotion at level rank 800 because the first-order solve undershoots the band for sparser genes;
+    # at T1's depth (about 12K UMI per cell) the genes the cap admits meet it
+    rng = np.random.default_rng(3)
+    n_genes, n_cells = 3400, 1200
+    weights = np.arange(1, n_genes + 1, dtype=np.float64) ** -1.1
+    mu = 12000.0 * weights / weights.sum()
+    C = sparse.csr_matrix(rng.poisson(mu, (n_cells, n_genes)).astype(np.int32))
+    genes = [f"g{i}" for i in range(n_genes)]
+    pop = ad.AnnData(X=log1p_cp10k(C), layers={"counts": C},
+                     obs=pd.DataFrame({"celltype": ["V-CM"] * n_cells}, index=[f"c{i}" for i in range(n_cells)]))
+    pop.var_names = genes
+    pb_pop = np.asarray(pop.X.mean(axis=0)).ravel().astype(np.float64)
+    pb_ref = pb_pop + rng.normal(0.0, 1e-4, n_genes)  # dp is a small noise, so the change bins do not follow the level
+    prior = ts.DownPrior(table=ts.DownPriorTable.level_only(), mmd_bound=1.0)
+    out, rep = ts.apply_down_prior(pop, pb_ref, genes, np.ones(n_cells, bool), (), prior, seed=[5, 4])
+    idx = np.array([genes.index(g) for g in rep["promoted"]])
+    level, _ = ts.down_prior_bins(pb_ref, pb_pop - pb_ref, prior.table)
+    assert rep["n_promoted"] == ts.DP_BUDGET and level[idx].max() < ts.DP_PROMOTED_LEVELS
+    assert rep["checks"]["band_ok"] and rep["checks"]["band_share"] >= 0.95 and rep["checks"]["n_promoted_ok"]
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 # build_test.py t1
 
 
-def test_strong_null_option_is_off_by_default_and_refused_without_its_pin(bt):  # noqa: F811
+def test_strong_null_option_is_off_by_default_and_refused_until_approved(bt):  # noqa: F811
     ap = bt.build_parser()
     assert ap.parse_args(["t1", "--out", "runs/x/T1_s1.h5ad"]).strong_null is False
     assert ap.parse_args(["t1", "--strong-null", "--out", "runs/x/T1_s1.h5ad"]).strong_null is True
@@ -208,13 +273,19 @@ def test_strong_null_option_is_off_by_default_and_refused_without_its_pin(bt):  
         bt._t1_down_prior(True, False, True)
     with pytest.raises(SystemExit, match="without R1 and R2"):
         bt._t1_down_prior(True, True, False)
-    with pytest.raises(SystemExit, match="pins no table_sha256"):  # the repository's config pins none yet
+    with pytest.raises(SystemExit, match="does not say approved"):  # the repository's config is not approved yet
         bt._t1_down_prior(True, True, True)
 
 
-def test_the_repository_config_pins_no_table_yet():
-    assert strong_null.load_config()["table_sha256"] is None
-    assert strong_null.load_config()["table_file"].endswith("results/calibration/table_strong_chamber.json")
+def test_the_repository_config_is_not_approved_yet():
+    assert strong_null.load_config()["approved"] is False
+
+
+def test_the_approval_switch_refuses_anything_but_true():
+    for cfg in ({"approved": False}, {"approved": "true"}, {}, {"approved": 1}):
+        with pytest.raises(strong_null.Refused, match="does not say approved"):
+            strong_null.check_approved(cfg)
+    assert strong_null.check_approved({"approved": True}) is None
 
 
 def test_a_strong_null_build_refuses_an_existing_file(bt, tmp_path):  # noqa: F811
@@ -240,15 +311,21 @@ def test_option_off_writes_todays_file(bt, t1_env, tmp_path, monkeypatch):  # no
 T1_HELD_NAMES = ["held_a", "held_b"]  # test_hidden_counts.T1_HELD, the synthetic pre-registered list
 
 
-def test_option_on_moves_only_the_covered_cells(bt, t1_env, tmp_path, monkeypatch):  # noqa: F811
-    # a small table for the 62-gene synthetic world: levels and changes on its own scale
+def _approved_world(bt, monkeypatch, **prior_kw):  # noqa: F811
+    """The synthetic world's build with the prior approved: a small order on its own scale (62 genes) and the rule's
+    constants made relative to it."""
     table = ts.DownPriorTable(p=np.array([[0.0, 0.9, 0.8, 0.0], [0.0, 0.7, 0.6, 0.0], [0.0, 0.1, 0.1, 0.0]]),
                               level_edges=(20, 40), change_edges=(12, 30), change_top=8)
     monkeypatch.setattr(bt.hygiene, "load_union", lambda *a, **k: {"file": "f", "sha256": "ab" * 32, "genes": ["g5"],
                                                                    "modules": {"D": 1}, "sources": {}})
-    monkeypatch.setattr(bt.strong_null, "load_table", lambda *a, **k: table)
-    monkeypatch.setattr(bt.strong_null, "table_record", lambda *a, **k: {"file": "t.json", "sha256": "cd" * 32})
-    monkeypatch.setattr(bt.t1_scope, "DownPrior", partial(ts.DownPrior, budget=4, band=-0.3, f_min=0.2, tol=0.2))
+    monkeypatch.setattr(bt.strong_null, "check_approved", lambda *a, **k: None)
+    monkeypatch.setattr(bt.t1_scope.DownPriorTable, "level_only", classmethod(lambda cls: table))
+    kw = {"budget": 4, "band": -0.3, "f_min": 0.2, "tol": 0.2, "mmd_bound": 5.0, **prior_kw}
+    monkeypatch.setattr(bt.t1_scope, "DownPrior", partial(ts.DownPrior, **kw))
+
+
+def test_option_on_moves_only_the_covered_cells(bt, t1_env, tmp_path, monkeypatch):  # noqa: F811
+    _approved_world(bt, monkeypatch)
     off, on = tmp_path / "off.h5ad", tmp_path / "on.h5ad"
     bt.main(["t1", "--out", str(off)])
     t1_env.reads.clear()
@@ -258,17 +335,28 @@ def test_option_on_moves_only_the_covered_cells(bt, t1_env, tmp_path, monkeypatc
     A, B = A.toarray() if sparse.issparse(A) else A, B.toarray() if sparse.issparse(B) else B
     assert A.shape == B.shape
     rec = json.loads(on.with_suffix(".build.json").read_text())
-    assert rec["strong_null"]["table"] == {"file": "t.json", "sha256": "cd" * 32}
-    assert rec["strong_null"]["checks"]["passed"] is True
-    assert rec["strong_null"]["n_promoted"] == 4 and rec["n_cells"] == "max_cells"
+    strong = rec["strong_null"]
+    assert "level" in strong["selection"] and "table" not in strong
+    checks = strong["checks"]
+    assert checks["passed"] is True and checks["n_promoted_ok"] and checks["mmd_pre_post_ok"]
+    assert isinstance(checks["mmd_pre_post"], float) and strong["constants"]["mmd_bound"] == 5.0
+    assert strong["n_promoted"] == 4 and rec["n_cells"] == "max_cells"
     assert str(t1_env.board.max_cells) not in on.with_suffix(".build.json").read_text()
     # the same cells drawn and ordered: only rows that hold covered cells differ, and only some hold promoted genes
     changed = (A != B).any(axis=1)
     assert changed.any() and not changed.all()  # R1's cells (blood, macrophages, Early VIC) are the unchanged rows
     assert (A[~changed] == B[~changed]).all()
     # the promoted genes are thinner in the on file
-    idx = [T1_GENES.index(g) for g in rec["strong_null"]["promoted"]]
+    idx = [T1_GENES.index(g) for g in strong["promoted"]]
     assert (B[:, idx].mean(0) < A[:, idx].mean(0)).all()
+
+
+def test_option_on_writes_no_file_when_a_check_refuses(bt, t1_env, tmp_path, monkeypatch):  # noqa: F811
+    _approved_world(bt, monkeypatch, mmd_bound=-1.0)  # a bound no estimate can meet: the file-distance check refuses
+    out = tmp_path / "on.h5ad"
+    with pytest.raises(SystemExit, match="target-free checks failed"):
+        bt.main(["t1", "--strong-null", "--out", str(out)])
+    assert not out.exists() and not out.with_suffix(".build.json").exists()
 
 
 def test_option_on_refused_before_reading_without_r1(bt, t1_env, tmp_path):  # noqa: F811
@@ -309,25 +397,26 @@ def _small_prior(table):
     return prior
 
 
-def test_candidates_apply_where_their_inputs_allow(monkeypatch):
+def test_candidates_apply_where_their_inputs_allow():
     tasks = {t.key: t for t in harness.load_tasks()["T1:test"]}
     b0 = harness.CANDIDATES["b0_strong_null"]
     control = harness.CANDIDATES["scope_strong_null"]
     assert b0.applies(tasks["T1/E9.5->E10.5"]) and b0.applies(tasks["T1/E9.5->E10.5:chamber"])
-    assert not b0.applies(tasks["T1/E8.5->E9.5"])  # its table's sources are not that task's inputs
-    assert control.applies(tasks["T1/E8.5->E9.5"]) and not control.applies(tasks["T1/E9.5->E10.5"])
-    d = harness.DERIVED["t1_down_prior_weak"]
-    assert d.path.name == "table_weak.json" and d.sources() == ("T1/E8.5_RNA.h5ad", "T1/E9.5_RNA.h5ad")
+    assert not b0.applies(tasks["T1/E8.5->E9.5"]) and control.applies(tasks["T1/E8.5->E9.5"])
+    assert not control.applies(tasks["T1/E9.5->E10.5"])
     assert b0.params["scope"] == "chamber" == control.params["scope"]
-    assert not harness.derived_ok("t1_down_prior_weak", tasks["T1/E8.5->E9.5"])
-    assert harness.derived_ok("t1_down_prior_weak", tasks["T1/E9.5->E10.5"])
+    assert b0.derived == ("t1_held_flat",) and control.derived == ()
+    assert "t1_down_prior_weak" not in harness.DERIVED
 
 
-def test_down_prior_load_round_trips_the_committed_form(tmp_path):
-    t = ts.DownPriorTable.from_counts(np.ones((7, 4)), 2 * np.ones((7, 4)))
-    p = tmp_path / "t.json"
-    p.write_text(json.dumps({**t.to_dict(), "extra": 1}))
-    assert harness._down_prior_load(p).to_dict() == t.to_dict()
+def test_both_candidates_order_genes_by_the_level_alone(monkeypatch):
+    seen = []
+    real = ts.DownPrior
+    monkeypatch.setattr(ts, "DownPrior", lambda **kw: seen.append(kw["table"]) or real(**kw))
+    monkeypatch.setattr(harness, "_t12_labels", lambda ctx: frozenset({"V-CM"}))
+    prior = harness._t12_prior(None)
+    assert prior.covered_labels == frozenset({"V-CM"})
+    assert seen[0].p.tolist() == ts.DownPriorTable.level_only().p.tolist()
 
 
 def test_candidate_shares_b0s_draw_and_moves_only_its_cells(monkeypatch):
@@ -337,7 +426,7 @@ def test_candidate_shares_b0s_draw_and_moves_only_its_cells(monkeypatch):
     ref, start = _labelled(1500, LABELS, 1, GENES), _labelled(1200, LABELS, 2, GENES)
     table = ts.DownPriorTable(p=np.array([[0.0, 0.9, 0.8, 0.0], [0.0, 0.7, 0.6, 0.0], [0.0, 0.1, 0.1, 0.0]]),
                               level_edges=(15, 30), change_edges=(10, 25), change_top=5)
-    derived = {"t1_held_flat": ("g49",), "t1_down_prior_weak": table}
+    derived = {"t1_held_flat": ("g49",)}
     base = harness.CANDIDATES["b0"].build(_ctx(task, {"ref": ref, "start": start}, derived))
     monkeypatch.setattr(harness, "_t12_prior", _small_prior(table))
     changed = harness.CANDIDATES["b0_strong_null"].build(_ctx(task, {"ref": ref, "start": start}, derived))
@@ -354,66 +443,18 @@ def test_control_candidate_needs_no_table_and_touches_only_its_cells(monkeypatch
                       reference="T1/E8.5_RNA.h5ad", inputs={"ref": "T1/E8.5_RNA.h5ad"}, twin_board="T1:val")
     ref = _labelled(1500, LABELS, 3, GENES)
     table = ts.DownPriorTable.level_only(level_edges=(15, 30), change_edges=(10, 25), change_top=5)
-    monkeypatch.setattr(harness, "_t12_control", _small_prior(table))
+    monkeypatch.setattr(harness, "_t12_prior", _small_prior(table))
     base = harness.CANDIDATES["b0_scope"].build(_ctx(task, {"ref": ref}))
     changed = harness.CANDIDATES["scope_strong_null"].build(_ctx(task, {"ref": ref}))
     assert (base.X != changed.X).any()
     assert base.X.shape == changed.X.shape
 
 
-def test_candidates_are_refused_a_data_read_under_the_guard(monkeypatch):
-    # the table comes as a derived input (read by the harness); a candidate reading the file itself is refused
-    task = PseudoTask(key="T1/E9.5->E10.5", test_board="T1:test", task="T1", kind="extrap", target="T1/E10.5_RNA.h5ad",
-                      reference="T1/E9.5_RNA.h5ad", inputs={"ref": "T1/E9.5_RNA.h5ad", "start": "T1/E8.5_RNA.h5ad"},
-                      validation_board="T1:val")
-    with harness.guarded_reads(), pytest.raises(PermissionError, match="refused"):
-        Path(harness.DERIVED["t1_down_prior_weak"].path).read_text()
-    assert harness.CANDIDATES["b0_strong_null"].derived_for(task) == ("t1_held_flat", "t1_down_prior_weak")
-
-
 # ---------------------------------------------------------------------------------------------------------------------
-# The calibration script and the stop rule
+# The stop rule
 
 
-def _stages(n_genes=3600, seed=0):
-    rng = np.random.default_rng(seed)
-    ref = rng.poisson(rng.gamma(1.0, 2.0, n_genes), (300, n_genes)).astype(np.float32)
-    target = ref[:260].copy()
-    # three highly expressed genes fall in the target (the truth's down list)
-    mu = rng.gamma(1.0, 2.0, n_genes)
-    base = rng.poisson(mu, (300, n_genes)).astype(np.float32)
-    base[:, :3] += 60.0
-    ref = np.log1p(base)
-    tgt = base[:260].copy()
-    tgt[:, :3] = np.round(tgt[:, :3] * 0.25)
-    target = np.log1p(tgt)
-    return Stage(X=target.astype(np.float32)), Stage(X=ref.astype(np.float32))
-
-
-def test_calibrate_counts_the_truths_down_list_in_the_right_cells():
-    target, ref = _stages()
-    pb_ref = np.asarray(ref.X, dtype=np.float64).mean(0)
-    noise = np.random.default_rng(1).normal(0.0, 1.0, pb_ref.size)
-    noise[:3] = 0.0  # genes 0-2 sit in the middle of the change bins
-    res = calibrate.calibrate_transition(target, ref, lambda seed: pb_ref + noise, seeds=(0, 1, 2))
-    p = np.asarray(res["p"])
-    assert p.shape == (7, 4) and res["seeds"] == [0, 1, 2] and res["shrink"] == ts.DP_SHRINK
-    hits, genes = np.asarray(res["hits"]), np.asarray(res["genes"])
-    assert genes.sum() == 3 * target.X.shape[1] and hits.sum() == sum(r["n_dn"] for r in res["per_seed"])
-    # genes 0-2 are the highest level (level bin 0) and always in the down list; dp is 0 there, the middle of dp's
-    # ranks, so change bin 2 (flat)
-    assert hits[0, 2] >= 3 * 3 and p[0, 2] > p[3, 2]
-    # the expected number of down-gene-seeds matches what the scorer returned for those seeds
-    assert all(r["n_dn"] >= 3 for r in res["per_seed"]) and res["mean_n_dn"] >= 3
-
-
-def test_calibrate_refuses_to_overwrite(tmp_path):
-    (tmp_path / "x").write_text("y")
-    with pytest.raises(SystemExit, match="already written"):
-        calibrate.main(["--out", str(tmp_path)])
-
-
-def _harness_result(key, base, change, delta, seeds=tuple(range(10)), dist=None):
+def _harness_result(key, base, change, delta, seeds=tuple(range(10)), dist=None, cov=None, raw=None):
     rows = []
     groups = {g: 0.5 for g in stop_rule.WEIGHTS}
     metrics = {m: 0.0 for m in ("de_score", "de_direction", "mmd_u", "variogram")}
@@ -421,61 +462,143 @@ def _harness_result(key, base, change, delta, seeds=tuple(range(10)), dist=None)
         dg = dict(groups)
         if dist is not None:
             dg["distribution"] += dist / (100 * stop_rule.WEIGHTS["distribution"])
+        if cov is not None:
+            dg["covariance"] += cov / (100 * stop_rule.WEIGHTS["covariance"])
+        change_metrics = {**metrics, **(raw or {})}
         rows.append({"seed": s, "scores": {base: 60.0, change: 60.0 + delta}, "groups": {base: groups, change: dg},
-                     "metrics": {base: metrics, change: metrics}})
+                     "metrics": {base: metrics, change: change_metrics}})
     return {"task": {"key": key}, "rows": rows}
 
 
-def test_stop_rule_decides_from_the_paired_numbers():
-    ok = {k: stop_rule.paired(_harness_result(k, *stop_rule.PAIRS[k], 0.1), *stop_rule.PAIRS[k])
-          for k in stop_rule.PAIRS}
-    assert stop_rule.verdict(ok)["verdict"] == "proceed"
-    loss = dict(ok)
-    loss["T1/E9.5->E10.5"] = stop_rule.paired(_harness_result("T1/E9.5->E10.5", "b0", "b0_strong_null", -0.7),
-                                              "b0", "b0_strong_null")
-    v = stop_rule.verdict(loss)
-    assert v["verdict"] == "STOP" and v["S1_failures"] and "T1/E9.5->E10.5" in v["S1_failures"][0]
-    edge = dict(ok)  # exactly at the bound is not below it
-    edge["T1/E9.5->E10.5:chamber"] = stop_rule.paired(_harness_result("c", "b0", "b0_strong_null", -0.66),
-                                                      "b0", "b0_strong_null")
-    assert stop_rule.verdict(edge)["verdict"] == "proceed" and not stop_rule.verdict(edge)["S1_failures"]
-    dist = dict(ok)
-    dist[stop_rule.CONTROL_TASK] = stop_rule.paired(
-        _harness_result(stop_rule.CONTROL_TASK, *stop_rule.PAIRS[stop_rule.CONTROL_TASK], 0.0, dist=-0.34),
-        *stop_rule.PAIRS[stop_rule.CONTROL_TASK])
-    v = stop_rule.verdict(dist)
+def _task(key, delta=0.1, **kw):
+    return stop_rule.paired(_harness_result(key, *stop_rule.PAIRS[key], delta, **kw), *stop_rule.PAIRS[key])
+
+
+def _clean():
+    return {k: _task(k) for k in stop_rule.PAIRS}
+
+
+def test_a_clean_run_proceeds():
+    v = stop_rule.verdict(_clean())
+    assert v["verdict"] == "proceed"
+    assert not (v["S1_failures"] or v["S2_failures"] or v["captain_band"] or v["problems"])
+
+
+def test_a_total_loss_below_the_stop_bound_stops():
+    t = _clean()
+    t["T1/E9.5->E10.5"] = _task("T1/E9.5->E10.5", -0.7)
+    v = stop_rule.verdict(t)
+    assert v["verdict"] == "STOP" and "T1/E9.5->E10.5" in v["S1_failures"][0] and "total" in v["S1_failures"][0]
+
+
+def test_a_distribution_loss_cannot_hide_behind_a_de_score_gain():
+    # a strong-null truth: the total is up (a de_score gain), the distribution and covariance groups together are down
+    t = _clean()
+    t["T1/E9.5->E10.5:chamber"] = _task("T1/E9.5->E10.5:chamber", 1.0, dist=-0.5, cov=-0.3)
+    v = stop_rule.verdict(t)
+    assert v["verdict"] == "STOP" and "distribution+covariance" in v["S1_failures"][0]
+    assert v["S1_failures"][0].startswith("T1/E9.5->E10.5:chamber")
+
+
+def test_a_loss_between_the_approved_price_and_the_stop_bound_goes_to_the_captain():
+    for k, kw in (("T1/E9.5->E10.5", {"delta": -0.5}), ("T1/E9.5->E10.5:chamber", {"delta": 0.2, "dist": -0.4}),
+                  (stop_rule.CONTROL_TASK, {"delta": -0.4})):
+        t = _clean()
+        t[k] = _task(k, **kw)
+        v = stop_rule.verdict(t)
+        assert v["verdict"] == "captain", (k, kw, v)
+        assert v["captain_band"] and k in v["captain_band"][0] and not v["S1_failures"]
+
+
+def test_edges_are_not_below_the_bound():
+    t = _clean()
+    t["T1/E9.5->E10.5:chamber"] = _task("T1/E9.5->E10.5:chamber", -0.66)  # at the stop bound: not below it, so the band
+    v = stop_rule.verdict(t)
+    assert v["verdict"] == "captain" and not v["S1_failures"]
+    t["T1/E9.5->E10.5:chamber"] = _task("T1/E9.5->E10.5:chamber", -0.33)  # at the approved price: not below it
+    assert stop_rule.verdict(t)["verdict"] == "proceed"
+
+
+def test_the_controls_raw_bounds_stop_on_their_own():
+    for raw, needle in (({"mmd_u": 0.004}, "raw mmd_u"), ({"variogram": 0.0005}, "raw variogram")):
+        t = _clean()
+        t[stop_rule.CONTROL_TASK] = _task(stop_rule.CONTROL_TASK, 0.0, raw=raw)
+        v = stop_rule.verdict(t)
+        assert v["verdict"] == "STOP" and needle in v["S2_failures"][0]
+    t = _clean()  # just under the raw bounds passes, and the raw increases are reported
+    t[stop_rule.CONTROL_TASK] = _task(stop_rule.CONTROL_TASK, 0.0,
+                                      raw={"mmd_u": 0.99 * stop_rule.RAW_MMD_BOUND,
+                                           "variogram": 0.99 * stop_rule.RAW_VARIOGRAM_BOUND})
+    v = stop_rule.verdict(t)
+    assert v["verdict"] == "proceed" and v["control_raw_increase"]["mmd_u"] == pytest.approx(0.99 * 0.0035)
+
+
+def test_a_raw_bound_elsewhere_than_the_control_does_not_stop():
+    t = _clean()
+    t["T1/E9.5->E10.5"] = _task("T1/E9.5->E10.5", 0.1, raw={"mmd_u": 0.01, "variogram": 0.01})
+    assert stop_rule.verdict(t)["verdict"] == "proceed"
+
+
+def test_the_controls_points_bound_as_first_written_still_stops():
+    t = _clean()
+    t[stop_rule.CONTROL_TASK] = _task(stop_rule.CONTROL_TASK, 0.0, dist=-0.34)
+    v = stop_rule.verdict(t)
     assert v["verdict"] == "STOP" and v["control_distributional_points"] == pytest.approx(-0.34)
-    dist[stop_rule.CONTROL_TASK] = stop_rule.paired(
-        _harness_result(stop_rule.CONTROL_TASK, *stop_rule.PAIRS[stop_rule.CONTROL_TASK], 0.0, dist=-0.32),
-        *stop_rule.PAIRS[stop_rule.CONTROL_TASK])
-    assert stop_rule.verdict(dist)["verdict"] == "proceed"
-    short = dict(ok)
-    short["T1/E9.5->E10.5"] = stop_rule.paired(_harness_result("c", "b0", "b0_strong_null", 0.1, seeds=(0, 1)),
-                                               "b0", "b0_strong_null")
-    v = stop_rule.verdict(short)
+    assert "distribution+covariance" in v["S2_failures"][0] and not v["S1_failures"]
+    t[stop_rule.CONTROL_TASK] = _task(stop_rule.CONTROL_TASK, 0.0, dist=-0.32)
+    assert stop_rule.verdict(t)["verdict"] == "proceed"
+
+
+def test_an_incomplete_run_stops():
+    t = _clean()
+    t["T1/E9.5->E10.5"] = _task("T1/E9.5->E10.5", 0.1, seeds=(0, 1))
+    v = stop_rule.verdict(t)
     assert v["verdict"] == "STOP" and v["problems"]
+    t = _clean()
+    del t[stop_rule.CONTROL_TASK]
+    assert stop_rule.verdict(t)["verdict"] == "STOP"
+
+
+def test_a_non_finite_score_stops_and_is_named():
+    for mutate, expect in ((lambda r: r["scores"].__setitem__("b0_strong_null", float("nan")), "non-finite"),
+                           (lambda r: r["groups"]["b0_strong_null"].__setitem__("covariance", float("nan")),
+                            "non-finite"),
+                           (lambda r: r["metrics"]["b0_strong_null"].__setitem__("mmd_u", float("inf")), "non-finite")):
+        res = _harness_result("T1/E9.5->E10.5", "b0", "b0_strong_null", 0.1)
+        res["rows"] = [{**r, "scores": dict(r["scores"]), "groups": {k: dict(v) for k, v in r["groups"].items()},
+                        "metrics": {k: dict(v) for k, v in r["metrics"].items()}} for r in res["rows"]]
+        mutate(res["rows"][0])
+        t = _clean()
+        t["T1/E9.5->E10.5"] = stop_rule.paired(res, "b0", "b0_strong_null")
+        v = stop_rule.verdict(t)
+        assert v["verdict"] == "STOP" and v["problems"] and expect in v["problems"][0], v
+
+
+def test_a_non_finite_control_is_not_read_as_a_pass_of_its_raw_bounds():
+    res = _harness_result(stop_rule.CONTROL_TASK, *stop_rule.PAIRS[stop_rule.CONTROL_TASK], 0.0)
+    res["rows"] = [{**r, "metrics": {k: dict(v) for k, v in r["metrics"].items()}} for r in res["rows"]]
+    res["rows"][0]["metrics"]["scope_strong_null"]["mmd_u"] = float("nan")
+    t = _clean()
+    t[stop_rule.CONTROL_TASK] = stop_rule.paired(res, *stop_rule.PAIRS[stop_rule.CONTROL_TASK])
+    v = stop_rule.verdict(t)
+    assert v["verdict"] == "STOP" and v["problems"] and v["control_raw_increase"] is None
+
+
+def test_implied_points_are_reported_for_several_d_f():
+    imp = stop_rule.implied_points(0.0035, 0.0004)
+    assert imp["mmd_u"]["0.08"] == pytest.approx(-7.5 / 0.08 * 0.0035)
+    assert imp["mmd_u"]["0.024"] == pytest.approx(-7.5 / 0.024 * 0.0035)
+    assert imp["variogram"]["0.0055"] == pytest.approx(-5.0 / 0.0055 * 0.0004)
+    assert set(imp["mmd_u"]) == {str(d) for d in stop_rule.DF_MMD}
+    assert set(imp["variogram"]) == {str(d) for d in stop_rule.DF_VARIOGRAM}
+    # the raw mmd_u bound is 0.33 points near the floor at d_f 0.08 (the row's statement), and more at a smaller d_f
+    assert imp["mmd_u"]["0.08"] == pytest.approx(-0.328, abs=0.001) and imp["mmd_u"]["0.024"] < -1.0
 
 
 def test_stop_rule_refuses_to_overwrite(tmp_path):
     (tmp_path / "x").write_text("y")
     with pytest.raises(SystemExit, match="already written"):
         stop_rule.main(["--runs", str(tmp_path), "--out", str(tmp_path)])
-
-
-def test_strong_null_table_is_refused_unless_pinned_and_round_trips_when_it_is(tmp_path):
-    t = ts.DownPriorTable.from_counts(np.ones((7, 4)), 2 * np.ones((7, 4)))
-    f = tmp_path / "t.json"
-    f.write_text(json.dumps(t.to_dict()))
-    sha = strong_null.sha256_file(f)
-    with pytest.raises(strong_null.Refused, match="pins no table_sha256"):
-        strong_null.table_record({"table_file": "t.json", "table_sha256": None}, tmp_path)
-    with pytest.raises(strong_null.Refused, match="no such file"):
-        strong_null.table_record({"table_file": "none.json", "table_sha256": "ab"}, tmp_path)
-    with pytest.raises(strong_null.Refused, match="is not the one"):
-        strong_null.table_record({"table_file": "t.json", "table_sha256": "ab"}, tmp_path)
-    assert strong_null.table_record({"table_file": "t.json", "table_sha256": sha}, tmp_path) == {"file": "t.json",
-                                                                                                 "sha256": sha}
-    assert strong_null.load_table({"table_file": "t.json", "table_sha256": sha}, tmp_path).to_dict() == t.to_dict()
 
 
 def test_the_prior_reads_nothing_refused_when_the_harness_imports_it_under_the_guard():
@@ -494,60 +617,16 @@ def test_the_prior_reads_nothing_refused_when_the_harness_imports_it_under_the_g
     assert out.stdout.strip().splitlines()[-1] == "['BEC', 'V-CM'] []"
 
 
-def _mini_world(tmp_path, monkeypatch):
-    """Everything calibrate.main reads, synthetic: three stages (E8.5, E9.5, E10.5) in panel order and the T1:val
-    board."""
-    genes = [f"g{i}" for i in range(50)]
-    labels = ["V-CM", "Endocardium", "Blood", "BEC"]
-    stages = {name: _labelled(800, labels, seed, genes) for seed, name in enumerate(
-        ("E8.5_RNA.h5ad", "E9.5_RNA.h5ad", "E10.5_RNA.h5ad"))}
-    board = Board(key="T1:val", task="T1", genes=genes, needs_coords=False, min_cells=10, max_cells=300)
-    monkeypatch.setattr(calibrate, "load_boards", lambda: {"T1:val": board})
-    monkeypatch.setattr(calibrate.harness, "task_board", lambda t, boards, n_t, n_r: board)
-    monkeypatch.setattr(calibrate, "read_stage", lambda path, g: stages[Path(path).name].copy())
-    monkeypatch.setattr(calibrate, "load_stage", lambda path, lineage: stages[Path(path).name].copy())
-    monkeypatch.setattr(calibrate.harness, "filter_target",
-                        lambda t, data, g: (Stage.from_anndata(stages[Path(t.target).name], g), {"kept": 800}))
-    monkeypatch.setattr(calibrate.hygiene, "load_union", lambda: {"genes": ["g3"], "sha256": "ab" * 32})
-    monkeypatch.setattr(calibrate.t1_scope, "held_flat_genes", lambda *a, **k: ["g49"])
-    monkeypatch.setattr(calibrate.hygiene, "sha256_file", lambda p: "cd" * 32)
-    dirs = {g: np.random.default_rng(0).normal(0.0, 0.5, len(genes)) for g in FENG_GROUPS}
-    monkeypatch.setattr(calibrate.feng_dirs, "feng_directions",
-                        lambda names, *a, **k: (dirs, {"sha256": "ef" * 32, "groups": {}}))
-    return tmp_path / "calibration"
-
-
-def test_calibrate_main_writes_three_stamped_tables_and_no_test_board_field(tmp_path, monkeypatch, own_repo):
-    out = _mini_world(tmp_path, monkeypatch)
-    # the real seed list is the adoption rule's; a smaller one keeps this synthetic check fast
-    real_transition = calibrate.calibrate_transition
-    monkeypatch.setattr(calibrate, "calibrate_transition",
-                        lambda target, ref, predict: real_transition(target, ref, predict, seeds=(0, 1)))
-    calibrate.main(["--out", str(out)])
-    names = {p.name for p in out.iterdir()}
-    assert {"table_strong_chamber.json", "table_strong_whole.json", "table_weak.json", "calibration.json",
-            "calibration.txt"} <= names and "table_weak.json.stamp.json" in names
-    weak = json.loads((out / "table_weak.json").read_text())
-    assert np.asarray(weak["p"]).shape == (7, 4) and weak["seeds"] == [0, 1]
-    assert weak["stamp"]["commit"] and "tree_clean" in weak["stamp"] and weak["inputs_sha256"]
-    assert weak["transition"]["task"] == "T1/E8.5->E9.5" and weak["transition"]["truth_filter"] is None
-    strong = json.loads((out / "table_strong_chamber.json").read_text())
-    assert strong["transition"]["task"] == "T1/E9.5->E10.5:chamber" and strong["predictor"].startswith("m1")
-    assert ts.DownPriorTable.from_dict(strong).p.shape == (7, 4)
-    assert "T1:test" not in json.dumps(strong) and "max_cells" not in (out / "calibration.txt").read_text()
-    with pytest.raises(SystemExit, match="already written"):  # it runs once
-        calibrate.main(["--out", str(out)])
-
-
-def _full_result(key, cands, deltas, commit="c0", clean=True):
+def _full_result(key, cands, deltas, commit="c0", clean=True, raw=None):
     """A harness result (the fields check_results reads) for stop_rule.main."""
     rows = []
     groups = {g: 0.5 for g in stop_rule.WEIGHTS}
     metrics = {m: 0.0 for m in ("de_score", "de_direction", "mmd_u", "variogram")}
     for s in range(10):
         scores = {c: 50.0 + deltas.get(c, 0.0) for c in cands}
+        per_candidate = {c: ({**metrics, **(raw or {})} if deltas.get(c) is not None else metrics) for c in cands}
         rows.append({"seed": s, "build_seed": harness.BUILD_SEED_OFFSET + s, "scores": scores,
-                     "groups": {c: groups for c in cands}, "metrics": {c: metrics for c in cands}})
+                     "groups": {c: groups for c in cands}, "metrics": per_candidate})
     return {"task": {"key": key, "test_board": "T1:test"}, "rows": rows, "candidates": list(cands),
             "protocol": harness.PROTOCOL, "build": harness.BUILD, "anchors": "computed", "frac": harness.SUBSAMPLE_FRAC,
             "seeds": list(range(10)),
@@ -560,7 +639,8 @@ def test_stop_rule_main_reads_the_runs_and_writes_a_stamped_verdict(tmp_path, mo
     runs.mkdir()
     for key, name in (("T1/E9.5->E10.5", "a"), ("T1/E9.5->E10.5:chamber", "b"), (stop_rule.CONTROL_TASK, "c")):
         base, change = stop_rule.PAIRS[key]
-        res = _full_result(key, ("floor", base, change), {change: -0.1})
+        res = _full_result(key, ("floor", base, change), {change: -0.1},
+                           raw={"mmd_u": 0.001, "variogram": 0.0001} if key == stop_rule.CONTROL_TASK else None)
         (runs / f"{name}.json").write_text(json.dumps(res))
     monkeypatch.setattr(harness, "_sha256", lambda p: "cf")
     out = tmp_path / "stop"
@@ -568,7 +648,11 @@ def test_stop_rule_main_reads_the_runs_and_writes_a_stamped_verdict(tmp_path, mo
     res = json.loads((out / "stop_rule.json").read_text())
     assert res["verdict"]["verdict"] == "proceed" and res["stamp"]["commit"] and len(res["tasks"]) == 3
     assert set(res["inputs_sha256"]) == {"a.json", "b.json", "c.json"}
-    assert "T12 stop rule: proceed" in (out / "stop_rule.txt").read_text()
+    assert res["verdict"]["control_raw_increase"]["mmd_u"] == pytest.approx(0.001)
+    implied = res["implied_points_near_floor"][stop_rule.CONTROL_TASK]
+    assert implied["mmd_u"]["0.08"] == pytest.approx(-7.5 / 0.08 * 0.001)
+    text = (out / "stop_rule.txt").read_text()
+    assert "T12a/T12b stop rule: proceed" in text and "implied points near the floor" in text and "d_f 0.024" in text
     # a dirty run is refused (check_results), nothing is written
     out2 = tmp_path / "stop2"
     res = _full_result("T1/E9.5->E10.5", ("floor", "b0", "b0_strong_null"), {}, clean=False)

@@ -28,15 +28,12 @@ size and count decisions measured on E10.5 and E7.5). External data a candidate 
 (Candidate.externals, by stage day) and is refused inside the pseudo-task's version of the test's window. A committed
 file computed from released stages (a derived input, DERIVED: the pre-registered T1 held-flat list) is read by the
 harness, never by the candidate, and handed over only on pseudo-tasks whose own inputs include every stage it was
-computed from (Candidate.derived; elsewhere the candidate does not apply). T1 try T12 (experiments/harness/TRIES.md)
-adds a second one, the calibration table of the E8.5 -> E9.5 transition (experiments/t1_strong_null/results/
-calibration/table_weak.json), handed to the prior's backtest candidates on the same terms.
+computed from (Candidate.derived; elsewhere the candidate does not apply).
 """
 
 from __future__ import annotations
 
 import hashlib
-import json
 import os
 import subprocess
 import sys
@@ -123,22 +120,11 @@ def _held_flat_load(path: Path) -> tuple[str, ...]:
     return tuple(t1_scope.held_flat_genes(path))
 
 
-def _down_prior_load(path: Path):
-    from vec import t1_scope
-
-    return t1_scope.DownPriorTable.from_dict(json.loads(Path(path).read_text()))
-
-
 DERIVED = {
     # the pre-registered list (experiments/t1_direction): genes named in its config (sex-linked, Y-linked, strain)
     # plus its pool rule on E8.5 and E9.5; committed 2026-10-19 (c992e7a), nine days before the E10.5 file reached us
     "t1_held_flat": Derived("T1", REPO_ROOT / "experiments" / "t1_direction" / "results" / "held_flat_genes.csv",
                             _held_flat_sources, _held_flat_load),
-    # T1 try T12: the down-tail prior's table calibrated on the E8.5 -> E9.5 transition (the weak-null regime); written
-    # by experiments/t1_strong_null/calibrate.py, computed from those two stages and nothing else
-    "t1_down_prior_weak": Derived("T1", REPO_ROOT / "experiments" / "t1_strong_null" / "results" / "calibration"
-                                  / "table_weak.json", lambda: ("T1/E8.5_RNA.h5ad", "T1/E9.5_RNA.h5ad"),
-                                  _down_prior_load),
 }
 
 
@@ -528,8 +514,8 @@ def t1_chamber_shares(ref: ad.AnnData, source: str) -> dict[str, float]:
 
 def _b0_t1(damping: float, herd: bool = False,
            prior: Callable[[BuildContext], object] | None = None) -> Callable[[BuildContext], Stage]:
-    """B0 on T1 (or, with damping 0, its chamber copy alone). prior (T1 try T12): a function of the context that gives
-    the strong-null down-tail prior for `vec.t1_scope.build_submission`."""
+    """B0 on T1 (or, with damping 0, its chamber copy alone). prior (T1 tries T12a and T12b): a function of the context
+    that gives the strong-null down-tail prior for `vec.t1_scope.build_submission`."""
     def build(ctx: BuildContext) -> Stage:
         from vec import t1_scope
 
@@ -695,13 +681,13 @@ def _b0_applies(t: PseudoTask) -> bool:
     return t.task == "T2" and t.kind == "interp" and {"before", "after"} <= set(t.inputs)
 
 
-# ------------------------------------------------------------------------------------------------ T1 try T12
-# The strong-null down-tail prior's downside, measured before any test build (experiments/harness/TRIES.md, row T12, its
-# constants in vec.t1_scope): the prior is applied by the same code as the test build (`vec.t1_scope.apply_down_prior`,
-# the same gene budget, band and thinning rule) on the B0 builds a backtest can make. The table of `b0_strong_null` is
-# the only legal one for a task on the E9.5 -> E10.5 transition: the other transition's, E8.5 -> E9.5. On the
-# E8.5 -> E9.5 task no table is legal (its other transition's truth is the task's own target), so `scope_strong_null`
-# promotes by the reference level alone (a table with no calibration), the same realisation against a weak-null truth.
+# ------------------------------------------------------------------------------------------------ T1 tries T12a, T12b
+# The strong-null down-tail prior's downside, measured before any test build (experiments/harness/TRIES.md, rows T12a
+# and T12b, their constants in vec.t1_scope): the prior is applied by the same code as the test build
+# (`vec.t1_scope.apply_down_prior`, the same gene budget, band and thinning rule) and with the same selection: genes
+# ordered by the reference's level alone (`DownPriorTable.level_only`, nothing fitted on any truth). T12a:
+# `b0_strong_null` on the B0 builds of the two E9.5 -> E10.5 tasks (a strong-null truth). T12b: `scope_strong_null` on
+# B0's chamber copy of the E8.5 -> E9.5 task (a weak-null truth).
 T12_GROUPS = ("CM", "Endocardium", "Endothelium", "Epicardium")  # the groups with a Feng direction at test (N12): the
 # cells the test build moves along Feng's direction, and so the ones the prior may touch (R1 holds the others)
 
@@ -720,12 +706,8 @@ def _t12_labels(ctx: BuildContext) -> frozenset[str]:
 
 
 def _t12_prior(ctx: BuildContext):
-    from vec import t1_scope
-
-    return t1_scope.DownPrior(table=ctx.derived["t1_down_prior_weak"], covered_labels=_t12_labels(ctx))
-
-
-def _t12_control(ctx: BuildContext):
+    """The prior of tries T12a and T12b: the test build's own selection (the reference's level alone, no table) on the
+    cells of T12_GROUPS."""
     from vec import t1_scope
 
     return t1_scope.DownPrior(table=t1_scope.DownPriorTable.level_only(), covered_labels=_t12_labels(ctx))
@@ -736,7 +718,7 @@ def _b0_strong_null(ctx: BuildContext) -> Stage:
 
 
 def _scope_strong_null(ctx: BuildContext) -> Stage:
-    return _b0_t1(0.0, prior=_t12_control)(ctx)
+    return _b0_t1(0.0, prior=_t12_prior)(ctx)
 
 
 # ------------------------------------------------------------------------------------------------ T3 tries K2a and K2b
@@ -957,15 +939,16 @@ CANDIDATES = {
     "copy_herd": Candidate("copy_herd", frozenset({"T1"}), _ANY, _copy_herd,
                            {"what": "a copy of the reference with its draw herded towards the pool's mean expression "
                                     "(a diagnostic)", "scope": "whole"}),
-    # T1 try T12 (experiments/harness/TRIES.md, registered before its run): the strong-null down-tail prior
+    # T1 tries T12a and T12b (experiments/harness/TRIES.md, registered before their run): the strong-null down-tail
+    # prior
     "b0_strong_null": Candidate("b0_strong_null", frozenset({"T1"}), (), _b0_strong_null,
-                                {"what": "T1 try T12: B0 plus the strong-null down-tail prior, its table calibrated "
-                                         "on the other transition (E8.5 -> E9.5, the weak-null regime)",
+                                {"what": "T1 try T12a: B0 plus the strong-null down-tail prior, genes chosen by the "
+                                         "reference level alone (the test build's selection, no table)",
                                  "damping": B0_DAMPING, "scope": "chamber"},
-                                requires=_b0_applies, derived=("t1_held_flat", "t1_down_prior_weak")),
+                                requires=_b0_applies, derived=("t1_held_flat",)),
     "scope_strong_null": Candidate("scope_strong_null", frozenset({"T1"}), (), _scope_strong_null,
-                                   {"what": "T1 try T12's control: B0's chamber copy plus the prior's realisation with "
-                                            "the genes chosen by the reference level alone (no calibration table)",
+                                   {"what": "T1 try T12b: B0's chamber copy plus the same prior, genes chosen by the "
+                                            "reference level alone (a weak-null truth)",
                                     "scope": "chamber"}, requires=lambda t: "start" not in t.inputs),
     # heart try H3 (experiments/harness/TRIES.md, registered before its run)
     "b0_depth": Candidate("b0_depth", frozenset({"T2"}), (), _b0_depth,
