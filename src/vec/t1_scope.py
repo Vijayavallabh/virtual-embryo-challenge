@@ -28,7 +28,7 @@ functions moved there from here and stay importable from here under their old na
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Mapping, Sequence
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path
@@ -457,7 +457,9 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
                    keep_depth: bool = True, within: Mapping[str, Sequence[str]] | None = None,
                    start_fallback: Mapping[str, Sequence[str]] | None = None,
                    ref_fallback: Mapping[str, Sequence[str]] | None = None,
-                   standin_momentum: bool = False, seed: Seed = 0) -> tuple[ad.AnnData, ShiftReport]:
+                   standin_momentum: bool = False, seed: Seed = 0,
+                   logf_filter: Callable[[np.ndarray, sparse.csr_matrix, np.ndarray], tuple[np.ndarray, dict]]
+                   | None = None) -> tuple[ad.AnnData, ShiftReport]:
     """Move `target_like` cells by the damped per-type change from `start` to `ref`, in count space.
 
     start, ref: the two stages whose change is the momentum (start is the earlier one; ref is normally the stage the
@@ -472,6 +474,13 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
     identity, not development (e.g. E8.5 JCF standing in for epicardium). The factors are applied by `apply_factors`
     (binomial thinning / Poisson top-up of each cell's own counts, zeros kept, held-flat counts unchanged, expected
     depth kept with keep_depth).
+
+    logf_filter (default None: the factors as above; heart try H6 of experiments/harness/TRIES.md,
+    vec.t2_build.covariance_filter): called once for each type whose factors are computed, after the clip and the
+    held-flat zeros and before `apply_factors`, as logf_filter(logf, counts, held) with counts the type's
+    reference-stage cells (in `genes` order, as `ref`'s rows of this type) and held the held-flat genes (boolean, by
+    gene); it returns (new logf, a record stored as the type's report row's "filter"). Held-flat genes stay at f = 1
+    whatever it returns.
 
     Returns a copy of target_like with layers["counts"] edited and X = log1p CP10k of the new counts (float32 CSR),
     and a per-type report.
@@ -512,6 +521,10 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
         if max_abs_log_factor is not None:
             logf = np.clip(logf, -max_abs_log_factor, max_abs_log_factor)
         logf[held] = 0.0
+        if logf_filter is not None:
+            logf, row["filter"] = logf_filter(logf, R[r_rows], held)
+            logf = np.array(logf, dtype=np.float64)
+            logf[held] = 0.0
         F[tindex[t]] = np.exp(logf)
         row.update(status="shifted", n_up=int((logf > np.log(1.1)).sum()), n_down=int((logf < -np.log(1.1)).sum()),
                    mean_abs_log_f=float(np.abs(logf).mean()), max_abs_log_f=float(np.abs(logf).max()))

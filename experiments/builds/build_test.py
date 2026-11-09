@@ -243,7 +243,7 @@ def build_heart(a) -> dict:
     count = _t2_count(board, pool.n_obs)
     ctx = harness.BuildContext(task=view, board=harness._candidate_board(board), inputs={"ref": pool, "start": start},
                                seed=a.seed)
-    stage = harness._b0_t2(ctx, depth=a.depth, herd=a.herd)  # the harness's B0 with its guard and checks
+    stage = harness._b0_t2(ctx, depth=a.depth, herd=a.herd, cfm=a.cfm)  # the harness's B0 with its guard and checks
     hyp = {"s1": "H1", "s2": "H2", "s2_trim": "H2"}[a.entry]
     # the size step checks its reference against the full E10.5 cloud it measured; it rescales the (trimmed) cells
     coords, size = t2_build.size_or_hold(stage.coords, SIZES["heart"], hyp, source_stage="E10.5", reference_cloud=ref,
@@ -253,6 +253,7 @@ def build_heart(a) -> dict:
         raise SystemExit(f"the built file fails its check: {report.errors}")
     return {"entry": f"B0 {a.entry} ({hyp})", "board": board.key, "dry_run": dry, "n_cells": int(stage.n),
             "seed": a.seed, "count_decision": count, "trim": trim, "depth_step": bool(a.depth),
+            **({"cfm_step": t2_build.CFM_RULE} if a.cfm else {}),
             "size": {k: size[k] for k in size if not isinstance(size[k], (dict, list))}}
 
 
@@ -336,6 +337,9 @@ def build_parser() -> argparse.ArgumentParser:
                            help="herd B0's draw towards the pool's mean expression (try H4; off: the entry so far)")
             p.add_argument("--depth", action="store_true",
                            help="thin B0's cells to the extrapolated E12.5 depth (heart try H3 of "
+                                "experiments/harness/TRIES.md; off: the entry as adopted so far)")
+            p.add_argument("--cfm", action="store_true",
+                           help="filter each lineage's momentum by its own within-stage covariance (heart try H6 of "
                                 "experiments/harness/TRIES.md; off: the entry as adopted so far)")
         if name == "embryo":
             p.add_argument("--method", choices=("pseudobulk_shift", *EMBRYO_T_POS), required=True,

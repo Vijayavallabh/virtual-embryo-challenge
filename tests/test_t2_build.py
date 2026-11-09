@@ -1372,7 +1372,10 @@ RULE_LITERALS = {"COUNT_RULE_SEEDS": {10.0}, "COUNT_RULE_MIN_GAIN": {0.3}, "COUN
                  # 2026-11-03, tries E7 and E8 (experiments/harness/TRIES.md): sizes of the computation, set before
                  # their run (a retry budget for thinned cells left without counts; the partner-sampling chunk)
                  "DEPTH_ZERO_RETRIES": {20.0}, "PARTNER_CHUNK": {4096.0},
-                 "HERD_STREAMS": {6.0, 7.0}}  # random-stream ids of the herded draws (try E9), not values of a stage
+                 "HERD_STREAMS": {6.0, 7.0},  # random-stream ids of the herded draws (try E9), not values of a stage
+                 # 2026-11-09, try H6 (experiments/harness/TRIES.md): the smallest lineage the covariance filter acts
+                 # on, a fixed setting, not a value of a stage
+                 "CFM_MIN_CELLS": {200.0}}
 
 
 def _stray_literals(src: str) -> tuple[list[tuple[int, str]], set[str]]:
