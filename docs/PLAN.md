@@ -1576,3 +1576,16 @@ open. No organiser reply to any of the four emails as of then.
     - the heart's composition trend, closed by his own ruling of 2026-11-01, stays closed until he reopens it.
   - **Lucky fits.** More tries raise the chance of one. Every report of this campaign states the try count, and
     promotions are judged on tasks the candidate was not tuned on.
+- 2026-11-10 (a), the captain on the two open questions of the campaign, in his words: "Approved".
+  - **T1's strong-null bet (sheet C of 2026-11-05 (f), declined by default on 2026-11-06 (e)) is taken.** The
+    recommendation he approved: +1.75 T1 if the E12.5 step looks like E9.5 -> E10.5, -0.33 if not, break-even near
+    a 16% chance, and no test can check it. It enters T1's s1 by his ruling, so T1's s2 inherits it through the frozen
+    "as s1" clause and goes back to him after the rebuild. It still needs a TRIES row fixing its rule and every constant
+    before any build, and it counts as a T1 try.
+  - **Feng's E14.5 -> E18.5 change may be used as a stand-in direction on T1's own backtests.** This is the X002
+    amendment the T1 evidence review asked for. It is narrower than the late-fetal family he declined on 2026-11-05 (c),
+    which stays declined. Candidates that use it are counted tries, each with a row before its run.
+  - **Correction, for the record.** On 2026-11-09 the AI assistant told him that choosing the second upload after
+    seeing the first score was worth +0.5 to +1.3 on T1. The campaign's review found that most of that came from
+    blood-share files with no legal basis. On the legal menu it is worth about +0.2 at most. It was dropped, and no
+    rule reads a test score.
