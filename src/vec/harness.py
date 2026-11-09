@@ -28,7 +28,11 @@ size and count decisions measured on E10.5 and E7.5). External data a candidate 
 (Candidate.externals, by stage day) and is refused inside the pseudo-task's version of the test's window. A committed
 file computed from released stages (a derived input, DERIVED: the pre-registered T1 held-flat list) is read by the
 harness, never by the candidate, and handed over only on pseudo-tasks whose own inputs include every stage it was
-computed from (Candidate.derived; elsewhere the candidate does not apply).
+computed from (Candidate.derived; elsewhere the candidate does not apply, unless it takes the input only where it can,
+Candidate.derived_optional). External statistics a candidate declares in Candidate.externals are handed over the same
+way, reduced to the declared stages (the T1 late-proxy tries, DERIVED "t1_late_proxy"). A T1 pseudo-task's target
+filter may name a chamber category (`within`), so that a read is made within one cell type: the target, the reference
+and the inputs are cut to it alike (the late-proxy tournament, configs/t1_late_proxy.yaml).
 """
 
 from __future__ import annotations
@@ -120,11 +124,63 @@ def _held_flat_load(path: Path) -> tuple[str, ...]:
     return tuple(t1_scope.held_flat_genes(path))
 
 
+# T1 late-proxy tries T13-T18 (experiments/harness/TRIES.md, registered before their run; the captain's approval of
+# 2026-11-10, docs/PLAN.md decision log, and the X002 amendment in EXTERNAL_DATA.md): the stand-in direction's Feng
+# bracket and the only stages of Feng's statistics a candidate is ever handed.
+LP_BRACKET = ("E14.5", "E18.5")
+LP_BRACKET_DAYS = (14.5, 18.5)
+LP_EXTERNAL = ("X002", 14.5, 18.5)  # as declared in Candidate.externals; legal on every T1 pseudo-task's window
+LP_STATS = REPO_ROOT / "data" / "external" / "feng2022_gse193346_geo" / "cd1_stats.npz"  # feng_dirs.clean_stats_path()
+
+
+def _feng_dirs():
+    """experiments/t1_m1/feng_dirs.py (M1's direction code; `.dl` the readout's dirlib, `.fio` the filter's
+    manifest check) and through it the late-proxy tries' statistics, imported as tests and diagnose.py import them."""
+    m1 = str(REPO_ROOT / "experiments" / "t1_m1")
+    if m1 not in sys.path:
+        sys.path.insert(0, m1)
+    import feng_dirs
+
+    return feng_dirs
+
+
+def _t1_hygiene():
+    """experiments/t1_hygiene/hygiene.py (R2's modules; it reads only the committed config and extracts)."""
+    d = str(REPO_ROOT / "experiments" / "t1_hygiene")
+    if d not in sys.path:
+        sys.path.insert(0, d)
+    import hygiene
+
+    return hygiene
+
+
+def _late_proxy_sources() -> tuple[str, ...]:
+    return ()  # an external source: no released T1 stage went into it (Candidate.externals declares its window)
+
+
+@lru_cache
+def _late_proxy_load(path: Path) -> dict:
+    """The late-proxy tries' hand-over, read by the harness outside the read guard (data/ is refused to a candidate):
+    Feng's clean statistics (X002, checked against the filter's manifest) reduced to the bracket's two end stages, so
+    no other Feng stage reaches a candidate; the T1 direction readout's config; the held-flat list's named genes (its
+    sex-linked, Y-linked and strain names, the part that needs no T1 stage); and R2's four module symbol lists (D and
+    N2 from the committed extracts, A1 and N1 from their patterns on Feng's gene symbols)."""
+    fd = _feng_dirs()
+    fd.fio.verify_manifest_output(path)
+    st = fd.dl.load_stats(path, fields=fd.dl.STAT_FIELDS)
+    cfg = fd.load_config()
+    named = sorted({str(g) for key in ("sex_linked", "y_linked", "strain_named") for g in cfg["held_flat"][key]})
+    return {"stats": fd.bracket_stats(st, LP_BRACKET), "cfg": cfg, "named": named,
+            "modules": _t1_hygiene().build_modules([str(g) for g in st["genes"]])}
+
+
 DERIVED = {
     # the pre-registered list (experiments/t1_direction): genes named in its config (sex-linked, Y-linked, strain)
     # plus its pool rule on E8.5 and E9.5; committed 2026-10-19 (c992e7a), nine days before the E10.5 file reached us
     "t1_held_flat": Derived("T1", REPO_ROOT / "experiments" / "t1_direction" / "results" / "held_flat_genes.csv",
                             _held_flat_sources, _held_flat_load),
+    # the late-proxy tries' statistics (above): external, so it enters through this hand-over and Candidate.externals
+    "t1_late_proxy": Derived("T1", LP_STATS, _late_proxy_sources, _late_proxy_load),
 }
 
 
@@ -179,6 +235,11 @@ def check_task(t: PseudoTask) -> PseudoTask:
         raise ValueError(f"{t.key}: validation_board or twin_board must name a validation board")
     if t.target_filter is not None and (t.task != "T1" or t.validation_board):
         raise ValueError(f"{t.key}: a target filter is for T1 pseudo-tasks on a synthetic board")
+    if t.target_filter is not None and t.target_filter.get("within") is not None:
+        from vec import t1_scope
+
+        if t.target_filter["within"] not in t1_scope.load_spec().categories:
+            raise ValueError(f"{t.key}: `within` must name a category of configs/t1_chamber_classes.yaml")
     files = list(t.inputs.values())
     unknown = [f for f in [t.target, t.reference, *files, *t.forbidden] if f not in STAGE_DAYS]
     if unknown:
@@ -314,7 +375,10 @@ class Candidate:
     `needs`, a tuple of alternative role sets) says so. `tuned_on` lists pseudo-task keys the candidate was tuned or
     selected on, which `decide` does not count for it; `externals` declares external data as (EXTERNAL_DATA id,
     first day, last day), refused inside a pseudo-task's version of the test window; `derived` names DERIVED inputs
-    it uses, and it does not apply where one of its task's cannot be handed over (`derived_ok`)."""
+    it uses, and it does not apply where one of its task's cannot be handed over (`derived_ok`); `derived_optional`
+    names inputs it takes only where they can be handed over and does without elsewhere (the late-proxy tries: the
+    held-flat list's pool rule, computed on E8.5 and E9.5, cannot be handed over on the E8.5 -> E9.5 task, whose target
+    is E9.5)."""
 
     name: str
     tasks: frozenset[str]
@@ -325,10 +389,13 @@ class Candidate:
     tuned_on: frozenset[str] = frozenset()
     externals: tuple[tuple[str, float, float], ...] = ()
     derived: tuple[str, ...] = ()
+    derived_optional: tuple[str, ...] = ()
 
     def derived_for(self, t: PseudoTask) -> tuple[str, ...]:
-        """The derived inputs this candidate uses on pseudo-task t (those of t's task)."""
-        return tuple(n for n in self.derived if DERIVED[n].task == t.task)
+        """The derived inputs this candidate uses on pseudo-task t: those of t's task, and its optional inputs where
+        they can be handed over."""
+        return tuple(n for n in self.derived if DERIVED[n].task == t.task) + tuple(
+            n for n in self.derived_optional if DERIVED[n].task == t.task and derived_ok(n, t))
 
     def applies(self, t: PseudoTask) -> bool:
         if t.task not in self.tasks:
@@ -587,6 +654,63 @@ def _g_mom(ctx: BuildContext) -> Stage:
     no_edit = np.isin(labels, sorted(ts.r1_unbracketed_labels(np.unique(labels))))
     moved, _ = ts.apply_state_factors(pop, factors, held, [ctx.seed, 5], rescale=False, no_edit=no_edit)
     return finish(ctx, ref, dense(moved[:, ctx.board.genes].X).astype(np.float32), None)
+
+
+# T1 late-proxy tries T13-T18 (experiments/harness/TRIES.md): their constants, fixed in their rows before any run.
+LP_GROUPS = ("CM", "Endocardium", "Endothelium", "Epicardium")  # M1's four direction groups (R2's guard: never Blood)
+LP_PERM_SEED = 20261110  # the permuted control: one permutation, this seed
+LP_BINS = 10  # the permuted control's and the shrinkage's expression deciles (K2b's bins)
+
+
+def _late_proxy(hold: tuple[str, ...] = (), flip: bool = False, permute: bool = False,
+                shrink: bool = False) -> Callable[[BuildContext], Stage]:
+    """T1 tries T13-T18: B0's chamber composition (b0_scope's cells, at the same seed) with the cells of M1's four
+    direction groups moved along Feng's E14.5 -> E18.5 per-group log ratio of mean CP10k (genes mapped by symbol, as
+    feng_dirs.feng_directions does) by the step's share of that four-day bracket (a one-day step takes 1/4), in count
+    space (vec.t1_scope.external_shift, as M1). No momentum and no other change: the cells without a direction stay as
+    drawn, as R1 keeps M1's. Held flat: the pre-registered list where the pseudo-task's inputs include its pool rule's
+    stages (derived_optional; on E8.5 -> E9.5, whose target is E9.5, only its named genes), plus R2's `hold` modules.
+    flip negates the direction (control Cflip); permute shuffles each group's values within deciles of the group's mean
+    CP10k averaged over the two ends (control Cperm, K2b's procedure, one permutation at LP_PERM_SEED); shrink is
+    feng_dirs.eb_shrink's reliability weighting."""
+
+    def build(ctx: BuildContext) -> Stage:
+        from vec import t1_scope
+
+        fd = _feng_dirs()
+        bundle = ctx.derived["t1_late_proxy"]
+        role = ctx.task.reference_role
+        ref, src = _shallow(ctx.inputs[role]), ctx.task.role_stems[role]
+        genes = list(ref.var_names)
+        dirs = {g: d for g, d in fd.directions_from_stats(bundle["stats"], genes, bundle["cfg"], LP_BRACKET)[0].items()
+                if g in LP_GROUPS}
+        if not dirs:
+            raise ValueError(f"{ctx.task.key}: Feng's statistics give no direction for any of {list(LP_GROUPS)}")
+        if permute or shrink:
+            halves = fd.direction_halves(bundle["stats"], genes, bundle["cfg"], LP_BRACKET, groups=set(dirs))
+        if shrink:
+            dirs = {g: fd.eb_shrink(d, halves[g]["d_a"], halves[g]["d_b"], halves[g]["mean_cp"], LP_BINS)[0]
+                    for g, d in dirs.items()}
+        if permute:
+            for g in dirs:
+                d, ok = dirs[g].copy(), np.isfinite(dirs[g])
+                d[ok] = t3_decile_permutation(d[ok], halves[g]["mean_cp"][ok], [LP_PERM_SEED, LP_GROUPS.index(g)],
+                                              LP_BINS)
+                dirs[g] = d
+        if flip:
+            dirs = {g: -d for g, d in dirs.items()}
+        frac = fd.bracket_fraction(ctx.task.role_days[role], ctx.task.target_day, LP_BRACKET_DAYS)
+        held = {*bundle["named"], *map(str, ctx.derived.get("t1_held_flat", ()))}  # the pool rule only where legal
+        for module in hold:
+            held |= set(bundle["modules"][module])
+        groups = fd.label_groups(ref.obs["celltype"].astype(str).unique(), bundle["cfg"])
+        shares = t1_chamber_shares(ref, src)
+        sub, _ = t1_scope.build_submission(ref, ctx.board, shares, count_for(ctx.board, ref.n_obs), ctx.seed,
+                                           held_flat=sorted(held), ref_source=src, directions=dirs,
+                                           direction_fraction=frac, direction_groups=groups)
+        return finish(ctx, ref, dense(sub.X), None)
+
+    return build
 
 
 def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool = False) -> Stage:
@@ -1109,6 +1233,18 @@ K4_PARAMS = {"factor": "K2a's estimator on the fold's own source against its mat
              "build": "build_submission.construct and assemble, as K2a; no depth, no composition"}
 
 _ANY = (frozenset(),)
+_LP_PARAMS = {"bracket": list(LP_BRACKET), "groups": list(LP_GROUPS), "fraction": "the step's share of the bracket "
+              "(target day - reference day) / 4; no momentum, no other change",
+              "held_flat": "the pre-registered list (named genes alone where its pool rule's stages are not inputs)",
+              "scope": "chamber"}
+
+
+def _lp(name: str, what: str, **build) -> Candidate:
+    """A T1 late-proxy try (`_late_proxy`), with its external bracket and the hand-over declared."""
+    return Candidate(name, frozenset({"T1"}), _ANY, _late_proxy(**build), {"what": what, **_LP_PARAMS},
+                     externals=(LP_EXTERNAL,), derived=("t1_late_proxy",), derived_optional=("t1_held_flat",))
+
+
 CANDIDATES = {
     FLOOR: Candidate(FLOOR, frozenset(TASKS), _ANY, None,
                      {"what": "the organisers' floor: the reference's 10% working copy (copy_last or wt_identity)",
@@ -1266,6 +1402,17 @@ CANDIDATES = {
                                    {"what": "try K4c: K4 with its shrinkage weights permuted across genes within the "
                                             "same deciles (K2b's logic, one permutation), the same constant",
                                     **K4_PARAMS, "permutation_seed": K4_CTRL_SEED}, requires=_k4_applies),
+    # T1 tries T13-T18 (experiments/harness/TRIES.md, registered before their run): the late-proxy tournament
+    "lp_proxy": _lp("lp_proxy", "try T13: Feng's E14.5 -> E18.5 direction at the step's share of its bracket, on "
+                    "B0's chamber copy (the stand-in for M1's real E9.5 -> E14.5 direction)"),
+    "lp_cflip": _lp("lp_cflip", "try T14, control Cflip: lp_proxy's direction negated", flip=True),
+    "lp_cperm": _lp("lp_cperm", "try T15, control Cperm: lp_proxy's direction permuted across genes within deciles of "
+                    "the group's mean CP10k (one permutation, seed 20261110)", permute=True),
+    "lp_hyg": _lp("lp_hyg", "try T16: lp_proxy with R2's classes D and A1 held flat", hold=("D", "A1")),
+    "lp_hyg_n": _lp("lp_hyg_n", "try T17: lp_proxy with R2's classes D, A1, N1 and N2 held flat (N1 and N2, the lines "
+                    "the captain dropped)", hold=("D", "A1", "N1", "N2")),
+    "lp_eb": _lp("lp_eb", "try T18: lp_proxy with empirical-Bayes reliability shrinkage per expression decile (from "
+                 "Feng's two per-cell halves)", shrink=True),
 }
 
 
@@ -1421,17 +1568,29 @@ def _sha256(path: Path) -> str:
     return h.hexdigest()
 
 
+def _within_rows(a: ad.AnnData, file: str, category: str) -> np.ndarray:
+    """Rows of a released T1 stage whose chamber category (configs/t1_chamber_classes.yaml, by the file's own per-file
+    rules) is `category`: a within-type pseudo-task cuts its target, reference and inputs the same way."""
+    from vec import t1_scope
+
+    return np.flatnonzero(t1_scope.classify(a, source=stem(file), key_added=None) == category)
+
+
 def filter_target(t: PseudoTask, data_dir: Path, genes) -> tuple[Stage, dict]:
     """The released T1 target cut by the task's target filter (fixed in the config before any result): the cells of
     the kept categories of configs/t1_chamber_classes.yaml, plus a share of contamination cells drawn at the filter's
-    seed from the named categories; returns the scoring Stage and a record (counts only)."""
+    seed from the named categories; or, for a within-type read (`within`: a category), only that category's cells.
+    Returns the scoring Stage and a record (counts only)."""
     from vec import t1_scope
 
     spec = t1_scope.load_spec()
     a = read_stage(data_dir / t.target, genes)
+    f = t.target_filter
+    if f.get("within") is not None:
+        rows = _within_rows(a, t.target, f["within"])
+        return Stage.from_anndata(a[rows], genes), {"kept": int(len(rows)), "within": f["within"], "of": int(a.n_obs)}
     t1_scope.classify(a, source=stem(t.target))
     cat = np.asarray(a.obs[t1_scope.CATEGORY_KEY]).astype(str)
-    f = t.target_filter
     keep = set(spec.in_scope(f["keep"]))
     kept = np.flatnonzero(np.isin(cat, sorted(keep)))
     pool = np.flatnonzero(np.isin(cat, list(f.get("contamination_from", ()))))
@@ -1452,14 +1611,20 @@ def run_task(t: PseudoTask, candidates: list[Candidate], seeds=SEEDS, data_dir: 
     check_task(t)
     genes = boards[t.panel_board].genes
     need_coords = boards[t.panel_board].needs_coords
+    within = (t.target_filter or {}).get("within")  # a within-type read cuts the reference and the inputs as the target
     if t.target_filter is not None:
         target, filt = filter_target(t, data_dir, genes)
     else:
         target, filt = Stage.from_anndata(read_stage(data_dir / t.target, genes), genes, need_coords=need_coords), None
-    ref = Stage.from_anndata(read_stage(data_dir / t.reference, genes), genes, need_coords=need_coords)
+    ref_cells = read_stage(data_dir / t.reference, genes)
+    if within is not None:
+        ref_cells = ref_cells[_within_rows(ref_cells, t.reference, within)]
+    ref = Stage.from_anndata(ref_cells, genes, need_coords=need_coords)
     board = task_board(t, boards, target.n, ref.n)
     if t.task == "T1":
         inputs = {r: load_stage(data_dir / f, lineage=False) for r, f in t.inputs.items()}
+        if within is not None:
+            inputs = {r: a[_within_rows(a, t.inputs[r], within)].copy() for r, a in inputs.items()}
     else:
         inputs = {r: load_stage(data_dir / f, genes=genes, drop_duplicates=True) for r, f in t.inputs.items()}
     for r, a in inputs.items():

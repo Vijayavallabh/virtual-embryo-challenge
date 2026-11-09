@@ -1,0 +1,50 @@
+# The within-type reads of the T1 late-proxy tournament (experiments/harness/TRIES.md T13-T18;
+# experiments/t1_m1/late_proxy.py; docs/PLAN.md decision log 2026-11-10 (a)). Each is a released-stage backtest whose
+# target, reference and inputs are cut to one chamber category (`target_filter.within`, configs/t1_chamber_classes.yaml),
+# so that the two E10.5 tasks' draw of E9.5's chamber mix cannot judge a cardiomyocyte-enriched gene class through
+# composition. Fixed before any result, under the same check as configs/pseudo_tasks.yaml (vec.harness.load_tasks); the
+# three whole-population tasks of configs/pseudo_tasks.yaml are read as they are. The harness hands candidates no file
+# paths and refuses, while one builds, any read of data/raw, runs/, experiments/*/results/ or docs/research/.
+
+T1:late_proxy:
+  - key: "T1/E8.5->E9.5:cm"
+    task: T1
+    kind: extrap
+    target: T1/E9.5_RNA.h5ad
+    reference: T1/E8.5_RNA.h5ad
+    inputs: {ref: T1/E8.5_RNA.h5ad}
+    validation_board: null
+    twin_board: "T1:val"
+    target_filter: {within: cm}
+    notes: "Read H of the tournament, T1's cardiomyocytes from E8.5 to E9.5: the read no counted candidate has run on.
+      It is not a clean read. The direction readout's smoke read Feng's real direction (E9.5 -> E14.5) within
+      cardiomyocytes on exactly this transition with the scorer's metric family (the committed
+      experiments/t1_direction/results/smoke_E8.5_E9.5/per_type.csv, type CM, predictor feng_E14.5, target full, held
+      flat: sign agreement 0.717, Spearman 0.428, de_direction 0.296, de_score 0.084 against a chance of 0.056; predictor
+      feng_E15.5: 0.681, 0.374, 0.265, 0.067). A named known feature: a pass here is consistent with that concordance
+      and is no independent evidence that a late Feng bracket transfers. Within type it carries no chamber mix. Cut to
+      E8.5's and E9.5's cardiomyocyte labels by configs/t1_chamber_classes.yaml."
+  - key: "T1/E9.5->E10.5:cm"
+    task: T1
+    kind: extrap
+    target: T1/E10.5_RNA.h5ad
+    reference: T1/E9.5_RNA.h5ad
+    inputs: {ref: T1/E9.5_RNA.h5ad, start: T1/E8.5_RNA.h5ad}
+    validation_board: null
+    twin_board: "T1:val"
+    target_filter: {within: cm}
+    notes: "Cardiomyocytes from E9.5 to E10.5. A known feature: the E9.5 -> E10.5 transition was read by the
+      pre-registered direction readout and M1's diagnostic (diag_v1) with Feng's E9.5 -> E14.5 direction, so a gain here
+      alone proves little; see the rule in experiments/harness/TRIES.md T13-T18."
+  - key: "T1/E9.5->E10.5:endocardium"
+    task: T1
+    kind: extrap
+    target: T1/E10.5_RNA.h5ad
+    reference: T1/E9.5_RNA.h5ad
+    inputs: {ref: T1/E9.5_RNA.h5ad, start: T1/E8.5_RNA.h5ad}
+    validation_board: null
+    twin_board: "T1:val"
+    target_filter: {within: endocardium}
+    notes: "Endocardium (E10.5's cushion EndoMT and Early VIC cells included by the chamber config) from E9.5 to E10.5.
+      The same known feature as the cardiomyocyte read. E8.5's only endocardium-category cells are its mixed
+      Endothelium label (a file override), so no E8.5 -> E9.5 endocardium read exists."
