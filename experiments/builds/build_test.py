@@ -280,17 +280,24 @@ def build_embryo(a) -> dict:
         res = t2_build.interpolate_clouds(np.asarray(before.obsm[COORD_KEY], float)[:, :3],
                                           np.asarray(after.obsm[COORD_KEY], float)[:, :3], Eb, Ea, 0.5,
                                           harness.count_for(board, before.n_obs), a.seed, target_rms=target,
-                                          t_pos=EMBRYO_T_POS[a.method], with_partners=a.expression == "blend",
-                                          herd=a.herd, move_coupling=a.move_coupling, draw=a.draw,
+                                          t_pos=EMBRYO_T_POS[a.method],
+                                          with_partners=a.expression in ("blend", "latent"), herd=a.herd,
+                                          move_coupling=a.move_coupling, draw=a.draw,
                                           log_depth=(None if a.draw == t2_build.DRAWS[0]
                                                      else (t2_build.log_panel_counts(before, genes),
-                                                           t2_build.log_panel_counts(after, genes))))
+                                                           t2_build.log_panel_counts(after, genes))),
+                                          with_coupling=a.expression == "latent")
         expr_rec = None
         if a.expression == "mixture":
             X = np.empty((len(res.rows), len(genes)), dtype=np.float32)
             X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
         elif a.expression == "depth":  # the harness's fgw_depth (try E7, experiments/harness/TRIES.md)
             X, expr_rec = t2_build.depth_matched_expression(before, after, res, genes, 0.5, [a.seed, 7])
+        elif a.expression == "latent":  # the harness's fgw_latent (try E14): torch and scvi-tools load only here
+            from vec import t2_latent
+
+            X, expr_rec = t2_latent.latent_midpoint_counts(t2_latent.task_model(before, after, genes), before, after,
+                                                           res, genes, 0.5, [a.seed, t2_latent.EXPRESSION_STREAM])
         else:  # the harness's fgw_blend (try E8)
             X, expr_rec = t2_build.blend_expression(before, after, res, genes, 0.5, [a.seed, 7])
         guard = t2_build.cloud_guard(res.coords, res.pool_coords, seed=a.seed, source_weights=res.pool_weights)
@@ -298,8 +305,10 @@ def build_embryo(a) -> dict:
             raise SystemExit(f"cloud guard flags {guard.flags}")
         coords, rec = res.coords, res.record
         if expr_rec is not None:
+            prefix = "latent" if a.expression == "latent" else "depth"
             rec = {**rec, "expression": a.expression,
-                   **{f"depth_{k}": v for k, v in expr_rec.items() if not isinstance(v, (dict, list))}}
+                   **{f"{prefix}_{k}": v for k, v in expr_rec.items() if not isinstance(v, (dict, list))
+                      and (prefix, k) != ("latent", "retried")}}  # a test build's record holds no cell number
     _, report = t2_build.build_submission(board, X, coords, genes=list(genes), out=a.out)
     if not report.ok:
         raise SystemExit(f"the built file fails its check: {report.errors}")
@@ -345,9 +354,10 @@ def build_parser() -> argparse.ArgumentParser:
                            help="fgw = s1; fgw_shape0 = the s2 of docs/S2_RULES.md (E7.5's geometry)")
             p.add_argument("--herd", action="store_true",
                            help="herd each bracket's draw towards its mean expression (try E9; off: the entry so far)")
-            p.add_argument("--expression", choices=("mixture", "depth", "blend"), default="mixture",
-                           help="fgw methods: the cells as released (the entry), or tries E7 / E8 of "
-                                "experiments/harness/TRIES.md (thinned to the predicted depth; blends)")
+            p.add_argument("--expression", choices=("mixture", "depth", "blend", "latent"), default="mixture",
+                           help="fgw methods: the cells as released (the entry), or tries E7 / E8 / E14 of "
+                                "experiments/harness/TRIES.md (thinned to the predicted depth; blends; a count-model "
+                                "latent interpolation, which needs the gpu dependency group)")
             p.add_argument("--move-coupling", choices=t2_build.MOVE_COUPLINGS, default=t2_build.MOVE_COUPLINGS[0],
                            help="fgw methods: which coupling sets the moves: fgw (the entry) or aligned (try E10 of "
                                 "experiments/harness/TRIES.md: an exact transport in the rotated common frame)")

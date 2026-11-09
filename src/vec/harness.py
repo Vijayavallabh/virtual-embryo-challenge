@@ -603,7 +603,8 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages. t_pos:
     the s2 shape variants' position fraction (0: the earlier bracket's geometry, 1: the later's; default: the
     mixture's). expression: "mixture" (the cells as released), "depth" (vec.t2_build.depth_matched_expression) or
-    "blend" (vec.t2_build.blend_expression); tries E7 and E8 of experiments/harness/TRIES.md. move_coupling: "fgw"
+    "blend" (vec.t2_build.blend_expression), tries E7 and E8 of experiments/harness/TRIES.md, or "latent" (try E14:
+    vec.t2_latent, the task's negative-binomial VAE trained once on both brackets' panel counts). move_coupling: "fgw"
     (the entry) or "aligned" (try E10: the moves from vec.core.aligned_coupling in the rotated common frame).
     local_perm (try E15): after the draw, the positions are re-arranged among the drawn cells within coarse type and a
     fixed radius (vec.t2_build.local_type_permutation); the expression rows stay where they are. draw: "uniform" (the
@@ -619,8 +620,10 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     res = t2_build.interpolate_clouds(np.asarray(before.obsm[COORD_KEY], dtype=float)[:, :3],
                                       np.asarray(after.obsm[COORD_KEY], dtype=float)[:, :3], Eb, Ea,
                                       frac, count_for(ctx.board, before.n_obs), ctx.seed,
-                                      target_rms=target_rms(ctx), t_pos=t_pos, with_partners=expression == "blend",
-                                      herd=herd, move_coupling=move_coupling, draw=draw, log_depth=log_depth)
+                                      target_rms=target_rms(ctx), t_pos=t_pos,
+                                      with_partners=expression in ("blend", "latent"),
+                                      herd=herd, move_coupling=move_coupling, draw=draw, log_depth=log_depth,
+                                      with_coupling=expression == "latent")
     if expression == "mixture":
         X = np.empty((len(res.rows), len(g)), dtype=np.float32)
         X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
@@ -628,6 +631,11 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
         X, _ = t2_build.depth_matched_expression(before, after, res, g, frac, [ctx.seed, 7])
     elif expression == "blend":
         X, _ = t2_build.blend_expression(before, after, res, g, frac, [ctx.seed, 7])
+    elif expression == "latent":  # try E14: t2_latent loads torch and scvi-tools only when it trains
+        from vec import t2_latent
+
+        X, _ = t2_latent.latent_midpoint_counts(t2_latent.task_model(before, after, g), before, after, res, g, frac,
+                                                [ctx.seed, t2_latent.EXPRESSION_STREAM])
     else:
         raise ValueError(f"unknown expression step {expression!r}")
     coords = res.coords
@@ -701,6 +709,10 @@ def _fgw_perm(ctx: BuildContext) -> Stage:
 
 def _fgw_midpoint(ctx: BuildContext) -> Stage:
     return _fgw(ctx, draw=t2_build.DRAWS[1])
+
+
+def _fgw_latent(ctx: BuildContext) -> Stage:
+    return _fgw(ctx, expression="latent")
 
 
 def _interp(t: PseudoTask) -> bool:
@@ -1088,6 +1100,15 @@ CANDIDATES = {
                                "k_strata": t2_build.MIDPOINT_K_STRATA, "k_anchors": t2_build.MIDPOINT_K_ANCHORS,
                                "kmeans_seed": t2_build.MIDPOINT_KMEANS_SEED,
                                "streams": list(t2_build.MIDPOINT_STREAMS), "scope": "whole"}, requires=_interp),
+    # embryo try E14 (experiments/harness/TRIES.md, registered before its run; it runs only if its target-free fidelity
+    # gate N18 passes): fgw's draws, partners and positions, expression from a count-model latent interpolation
+    "fgw_latent": Candidate("fgw_latent", frozenset({"T2"}), (), _fgw_latent,
+                            {"what": "fgw's draws, partners and positions with expression from a negative-binomial "
+                                     "VAE (scvi-tools, n_latent 20, gene dispersion, observed library, no batch key, "
+                                     "trained once per task on both brackets' panel counts): each coupled pair's "
+                                     "latent means interpolated with a variance-preserving term, counts sampled "
+                                     "(never a decoded mean) at the drawn real cell's panel library (vec.t2_latent)",
+                             "scope": "whole"}, requires=_interp),
     "copy_herd": Candidate("copy_herd", frozenset({"T1"}), _ANY, _copy_herd,
                            {"what": "a copy of the reference with its draw herded towards the pool's mean expression "
                                     "(a diagnostic)", "scope": "whole"}),
