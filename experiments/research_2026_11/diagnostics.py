@@ -27,6 +27,9 @@ Cell counts are never printed.
            - cos^2(dp, 1) over candidate gene sets, and the gate bar it implies;
            - dp's rank correlation with pb(WT) (the expression-level pattern that depth produces);
            - the depth step's share of s1's dp.
+  integrity  Row N14 of TRIES.md: the integrity pass of the ten frozen upload files in runs/archive/builds_02abf39
+           against their released source stages (no target, no score, no cell count). integrity.py, next to this file,
+           holds the checks, the thresholds, its own refusals and its outputs; this command only runs it.
 
 Every JSON records the commit, whether the tracked tree was clean, and the sha256 of every input file (the N1/N2
 precedent in experiments/harness/TRIES.md). Rows "diagnostic, not a try" in TRIES.md register these runs.
@@ -35,6 +38,7 @@ Run on the DGX from the repo root:
     uv run --frozen --no-sync python -I -B experiments/research_2026_11/diagnostics.py t1-tail --out DIR
     uv run --frozen --no-sync python -I -B experiments/research_2026_11/diagnostics.py t3-gate --out DIR
     uv run --frozen --no-sync python -I -B experiments/research_2026_11/diagnostics.py tails --out DIR
+    uv run --frozen --no-sync python -I -B experiments/research_2026_11/diagnostics.py integrity --out DIR
 """
 from __future__ import annotations
 
@@ -255,10 +259,16 @@ def tails(out: Path) -> dict:
 
 def main(argv=None) -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("which", choices=("t1-tail", "t3-gate", "tails"))
+    ap.add_argument("which", choices=("t1-tail", "t3-gate", "tails", "integrity"))
     ap.add_argument("--out", required=True, help="folder for the JSON result")
     ap.add_argument("--threads", type=int, default=16)
     a = ap.parse_args(argv)
+    if a.which == "integrity":  # N14: the checks, the refusals and the outputs are integrity.py's own
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import integrity
+
+        integrity.main(["--out", a.out])
+        return
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     res = {"t1-tail": lambda: t1_tail(out), "t3-gate": lambda: t3_gate(out, a.threads),
