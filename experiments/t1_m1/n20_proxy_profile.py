@@ -1,13 +1,14 @@
 #!/usr/bin/env python
-"""Row N20 of experiments/harness/TRIES.md (T1; a diagnostic, not a try): the late-proxy direction's profile, read
+"""Rows N20 and N20b of experiments/harness/TRIES.md (T1; a diagnostic, not a try): the late-proxy direction's profile,
+read
 before tries T13-T18 run. Target-free: it reads Feng's clean statistics (X002, manifest-checked, through feng_dirs), the
 committed extracts of X007 and X008 and the gene names of the released T1/E9.5_RNA.h5ad (names only, as N12: no
 matrix, no cell); no E10.5 file, target, score, board or built file, and it counts, prints and stores no T1 cell.
 
-Per direction group of M1 (vec.harness.LP_GROUPS: CM, Endocardium, Endothelium, Epicardium), with log f = 1/4 x Feng's
-E14.5 -> E18.5 log ratio of mean CP10k (a one-day step's share of the four-day bracket; the T1 gene order; the
+Per direction group of M1 (vec.harness.LP_GROUPS: CM, Endocardium, Endothelium, Epicardium), with log f = 2/7 x Feng's
+E14.5 -> E18 log ratio of mean CP10k (a one-day step's share of the 3.5-day bracket; the T1 gene order; the
 pre-registered held-flat list at 0) and d_real = Feng's E9.5 -> E14.5 log ratio (M1's real direction):
-  Feng's cells at each end (E14.5, E18.5; E9.5, E14.5) and the T1 genes with a value;
+  Feng's cells at each end (E14.5, E18; E9.5, E14.5) and the T1 genes with a value;
   the proxy's size: the mean abs(log f) and the genes it moves by more than 10% (abs(log f) > log 1.1);
   the proxy's similarity to the real direction, over the genes with a value in both: Spearman correlation, cosine,
   the share of the proxy's 400 largest abs(d_proxy) genes whose d_real has the same sign, and the overlap of the 400
@@ -18,7 +19,7 @@ pre-registered held-flat list at 0) and d_real = Feng's E9.5 -> E14.5 log ratio 
   of the decile shares (it cannot reorder a decile).
 
 Its gate (N20's row, fixed before anything is read): the tries T13-T18 run only if Feng's statistics hold a stage
-E14.5 and a stage E18.5, the direction group of each within-type read (READ_GROUPS: CM, and Endocardium for the
+E14.5 and a stage E18, the direction group of each within-type read (READ_GROUPS: CM, and Endocardium for the
 endocardium read) has at least min_cells_ext (10) cells at both ends of the proxy bracket, and at least 20,000 T1 genes
 have a Feng value. Otherwise the tries are not run and do not count.
 
@@ -38,7 +39,7 @@ clean):
   OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 NUMPY_MADVISE_HUGEPAGE=0 \\
       uv run --frozen --no-sync python -I -B experiments/t1_m1/n20_proxy_profile.py
 
-Writes experiments/t1_m1/results/n20_proxy_profile/n20_proxy_profile.{json,txt}, stamped (commit, vec.provenance's
+Writes experiments/t1_m1/results/n20b_proxy_profile/n20_proxy_profile.{json,txt}, stamped (commit, vec.provenance's
 clean-tree flag, UTC, the inputs' sha256); an existing output is refused (a rerun is a new row). The tries refuse to
 run on any commit but N20's, so nothing is committed between N20 and the tournament's last decision.
 """
@@ -67,10 +68,10 @@ import n12_hygiene_size as n12  # noqa: E402
 from vec import harness, provenance, t1_scope  # noqa: E402
 
 T1_FILE = REPO / "data" / "raw" / "T1" / "E9.5_RNA.h5ad"
-OUT = HERE / "results" / "n20_proxy_profile"
+OUT = HERE / "results" / "n20b_proxy_profile"
 PROXY = harness.LP_BRACKET
 REAL = feng_dirs.BRACKET
-FRACTION = 0.25  # a one-day step's share of the four-day proxy bracket
+FRACTION = 2 / 7  # a one-day step's share of the 3.5-day proxy bracket
 TOP = 400
 MIN_MAPPED = 20000
 GATE_GROUP = "CM"
@@ -150,8 +151,8 @@ def main(argv=None) -> None:
     ap.add_argument("--out", default=str(OUT))
     a = ap.parse_args(argv)
     out = Path(a.out)
-    if "N20" not in n12.tries_rows():
-        sys.exit("N20 has no row in experiments/harness/TRIES.md: a row is committed before its run")
+    if "N20b" not in n12.tries_rows():
+        sys.exit("N20b has no row in experiments/harness/TRIES.md: a row is committed before its run")
     if not feng_dirs.x002_amended():
         sys.exit(f"EXTERNAL_DATA.md's X002 row does not carry the amendment (its phrase {feng_dirs.X002_AMENDMENT!r}): "
                  "a use of an external dataset is logged before it enters anything")

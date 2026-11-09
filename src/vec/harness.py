@@ -127,9 +127,9 @@ def _held_flat_load(path: Path) -> tuple[str, ...]:
 # T1 late-proxy tries T13-T18 (experiments/harness/TRIES.md, registered before their run; the captain's approval of
 # 2026-11-10, docs/PLAN.md decision log, and the X002 amendment in EXTERNAL_DATA.md): the stand-in direction's Feng
 # bracket and the only stages of Feng's statistics a candidate is ever handed.
-LP_BRACKET = ("E14.5", "E18.5")
-LP_BRACKET_DAYS = (14.5, 18.5)
-LP_EXTERNAL = ("X002", 14.5, 18.5)  # as declared in Candidate.externals; legal on every T1 pseudo-task's window
+LP_BRACKET = ("E14.5", "E18")  # the file's own label for its last embryonic stage (N20's first run, row N20b)
+LP_BRACKET_DAYS = (14.5, 18.0)
+LP_EXTERNAL = ("X002", 14.5, 18.0)  # as declared in Candidate.externals; legal on every T1 pseudo-task's window
 LP_STATS = REPO_ROOT / "data" / "external" / "feng2022_gse193346_geo" / "cd1_stats.npz"  # feng_dirs.clean_stats_path()
 
 
@@ -665,8 +665,8 @@ LP_BINS = 10  # the permuted control's and the shrinkage's expression deciles (K
 def _late_proxy(hold: tuple[str, ...] = (), flip: bool = False, permute: bool = False,
                 shrink: bool = False) -> Callable[[BuildContext], Stage]:
     """T1 tries T13-T18: B0's chamber composition (b0_scope's cells, at the same seed) with the cells of M1's four
-    direction groups moved along Feng's E14.5 -> E18.5 per-group log ratio of mean CP10k (genes mapped by symbol, as
-    feng_dirs.feng_directions does) by the step's share of that four-day bracket (a one-day step takes 1/4), in count
+    direction groups moved along Feng's E14.5 -> E18 per-group log ratio of mean CP10k (genes mapped by symbol, as
+    feng_dirs.feng_directions does) by the step's share of that 3.5-day bracket (a one-day step takes 2/7), in count
     space (vec.t1_scope.external_shift, as M1). No momentum and no other change: the cells without a direction stay as
     drawn, as R1 keeps M1's. Held flat: the pre-registered list where the pseudo-task's inputs include its pool rule's
     stages (derived_optional; on E8.5 -> E9.5, whose target is E9.5, only its named genes), plus R2's `hold` modules.
@@ -1403,7 +1403,7 @@ CANDIDATES = {
                                             "same deciles (K2b's logic, one permutation), the same constant",
                                     **K4_PARAMS, "permutation_seed": K4_CTRL_SEED}, requires=_k4_applies),
     # T1 tries T13-T18 (experiments/harness/TRIES.md, registered before their run): the late-proxy tournament
-    "lp_proxy": _lp("lp_proxy", "try T13: Feng's E14.5 -> E18.5 direction at the step's share of its bracket, on "
+    "lp_proxy": _lp("lp_proxy", "try T13: Feng's E14.5 -> E18 direction at the step's share of its bracket, on "
                     "B0's chamber copy (the stand-in for M1's real E9.5 -> E14.5 direction)"),
     "lp_cflip": _lp("lp_cflip", "try T14, control Cflip: lp_proxy's direction negated", flip=True),
     "lp_cperm": _lp("lp_cperm", "try T15, control Cperm: lp_proxy's direction permuted across genes within deciles of "

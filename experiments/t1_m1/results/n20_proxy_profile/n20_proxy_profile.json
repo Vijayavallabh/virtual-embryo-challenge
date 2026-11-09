@@ -1,0 +1,82 @@
+{
+ "label": "N20: target-free profile of the late-proxy direction (no E10.5 file, no target, no score, no board, no built file, no T1 cell count); it gates tries T13-T18 by its row's rule",
+ "gate": {
+  "stages_present": false,
+  "cm_at_both_ends": false,
+  "direction_available": {
+   "T1/E8.5->E9.5:cm": false,
+   "T1/E9.5->E10.5:cm": false,
+   "T1/E9.5->E10.5:endocardium": false
+  },
+  "every_read_has_a_direction": false,
+  "mapped_genes": 0,
+  "mapped_genes_at_least": false
+ },
+ "proceed_to_tries": false,
+ "landing_floor": {
+  "group": "CM",
+  "spearman_cross_half": null,
+  "floor": 0.2,
+  "met": false
+ },
+ "proxy_close_to_real": false,
+ "t18_stop": {
+  "no_op_at": 0.9,
+  "deciles": "4-10",
+  "below_no_op": {
+   "CM": null,
+   "Endocardium": null
+  },
+  "runs": false
+ },
+ "t18_runs": false,
+ "proxy_cells": {},
+ "real_cells": {
+  "CM": {
+   "E9.5": 705,
+   "E14.5": 1777,
+   "feng_labels": [
+    "ventricular_cm",
+    "atrial_cm"
+   ]
+  },
+  "Endocardium": {
+   "E9.5": 70,
+   "E14.5": 107,
+   "feng_labels": [
+    "endocardial_ec"
+   ]
+  },
+  "Endothelium": {
+   "E9.5": 70,
+   "E14.5": 158,
+   "feng_labels": [
+    "endocardial_ec",
+    "vascular_ec"
+   ]
+  },
+  "Epicardium": {
+   "E9.5": 13,
+   "E14.5": 143,
+   "feng_labels": [
+    "epicardial"
+   ]
+  }
+ },
+ "groups": {},
+ "n_t1_genes": 32285,
+ "inputs": {
+  "t1_file": "data/raw/T1/E9.5_RNA.h5ad",
+  "t1_file_sha256": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+  "feng_stats": "data/external/feng2022_gse193346_geo/cd1_stats.npz",
+  "feng_stats_sha256": "28f188fb9409984142a70a5a940dde3d1d3187b033d94ee2d26337a216f295c3",
+  "t1_hygiene_config_sha256": "d0909b842bc7fe6cf6aeb747615ecffb4990c8f53b86792bc84a138665691785",
+  "held_flat_sha256": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c"
+ },
+ "stamp": {
+  "commit": "f1103d28fdfceaedb13e63599549e6052876646f",
+  "tree_clean_at_start": true,
+  "tree_clean_at_end": true,
+  "utc": "2026-11-09T22:41:42Z"
+ }
+}

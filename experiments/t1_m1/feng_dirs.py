@@ -13,7 +13,7 @@ The cell label -> group map is the readout's (config regexes), with the ventricu
 in the readout's population prediction (`cm_includes`).
 
 `bracket` (default today's E9.5 -> E14.5, byte-identical) names the two Feng stages a direction spans; the late-proxy
-tries (experiments/harness/TRIES.md T13-T18, the X002 amendment of 2026-11-10) use E14.5 -> E18.5, the one bracket
+tries (experiments/harness/TRIES.md T13-T18, the X002 amendment of 2026-11-10) use E14.5 -> E18, the one bracket
 legal on every T1 pseudo-task. `direction_halves` and `eb_shrink` serve the same tries.
 """
 
@@ -37,7 +37,7 @@ SOURCES = REPO / "experiments" / "external" / "sources.yaml"
 BRACKET = ("E9.5", "E14.5")  # the readout's primary predictor, feng_E14.5
 BRACKET_DAYS = (9.5, 14.5)
 REGISTER = REPO / "EXTERNAL_DATA.md"
-X002_AMENDMENT = "E14.5 -> E18.5"  # the key phrase of X002's late-proxy amendment (PLAN decision log 2026-11-10 (a))
+X002_AMENDMENT = "E14.5 -> E18"  # the key phrase of X002's late-proxy amendment (PLAN decision log 2026-11-10 (a))
 
 
 def load_config(path: Path = CONFIG) -> dict:
@@ -54,7 +54,7 @@ def x002_amended(path: Path | None = None) -> bool:
 
 def bracket_fraction(ref_day: float, target_day: float, bracket_days: tuple[float, float] = BRACKET_DAYS) -> float:
     """The share of Feng's bracket a step covers (default E9.5 -> E14.5: 0.4 for E10.5 -> E12.5, 0.2 for E9.5 ->
-    E10.5; for E14.5 -> E18.5, a one-day step is 1/4)."""
+    E10.5; for E14.5 -> E18, a one-day step is 2/7)."""
     return (target_day - ref_day) / (bracket_days[1] - bracket_days[0])
 
 

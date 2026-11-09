@@ -1,0 +1,6 @@
+N20: proceed to the tries: NO (gate {'stages_present': False, 'cm_at_both_ends': False, 'direction_available': {'T1/E8.5->E9.5:cm': False, 'T1/E9.5->E10.5:cm': False, 'T1/E9.5->E10.5:endocardium': False}, 'every_read_has_a_direction': False, 'mapped_genes': 0, 'mapped_genes_at_least': False})
+Landing floor (T16-T18): {'group': 'CM', 'spearman_cross_half': None, 'floor': 0.2, 'met': False}: not met (no recommendation for M1)
+T18's stop: {'no_op_at': 0.9, 'deciles': '4-10', 'below_no_op': {'CM': None, 'Endocardium': None}, 'runs': False}: T18 does not run or count
+  group  genes  mean|logf|  moved>10%  spearman(real)  cosine  top400 same-sign  top400 overlap
+Cells per group (Feng): proxy {}; real {'CM': {'E9.5': 705, 'E14.5': 1777, 'feng_labels': ['ventricular_cm', 'atrial_cm']}, 'Endocardium': {'E9.5': 70, 'E14.5': 107, 'feng_labels': ['endocardial_ec']}, 'Endothelium': {'E9.5': 70, 'E14.5': 158, 'feng_labels': ['endocardial_ec', 'vascular_ec']}, 'Epicardium': {'E9.5': 13, 'E14.5': 143, 'feng_labels': ['epicardial']}}
+Commit f1103d28fdfceaedb13e63599549e6052876646f, clean at end True, UTC 2026-11-09T22:41:42Z

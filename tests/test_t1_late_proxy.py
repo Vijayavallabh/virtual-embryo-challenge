@@ -31,7 +31,7 @@ import feng_dirs  # noqa: E402
 import late_proxy  # noqa: E402
 
 LP = ("lp_proxy", "lp_cflip", "lp_cperm", "lp_hyg", "lp_hyg_n", "lp_eb")
-STAGES = ("E9.5", "E14.5", "E18.5")
+STAGES = ("E9.5", "E14.5", "E18")
 LABELS = ("ventricular_cm", "atrial_cm", "endocardial_ec", "vascular_ec", "epicardial", "blood")
 
 
@@ -90,20 +90,20 @@ def test_the_default_bracket_is_todays_and_the_late_bracket_is_e14_5_to_e18_5(st
     out, rec = feng_dirs.feng_directions(list(GENES), stats_path=stats)
     assert rec["bracket"] == ["E9.5", "E14.5"]
     np.testing.assert_allclose(out["CM"], _manual(stats, "E9.5", "E14.5", ("ventricular_cm", "atrial_cm")))
-    # the late bracket: the same formula across E14.5 -> E18.5, and every group of the default bracket
-    late, rec_late = feng_dirs.feng_directions(list(GENES), stats_path=stats, bracket=("E14.5", "E18.5"))
-    assert rec_late["bracket"] == ["E14.5", "E18.5"] and set(late) == set(out)
-    np.testing.assert_allclose(late["CM"], _manual(stats, "E14.5", "E18.5", ("ventricular_cm", "atrial_cm")))
+    # the late bracket: the same formula across E14.5 -> E18, and every group of the default bracket
+    late, rec_late = feng_dirs.feng_directions(list(GENES), stats_path=stats, bracket=("E14.5", "E18"))
+    assert rec_late["bracket"] == ["E14.5", "E18"] and set(late) == set(out)
+    np.testing.assert_allclose(late["CM"], _manual(stats, "E14.5", "E18", ("ventricular_cm", "atrial_cm")))
     assert feng_dirs.bracket_fraction(10.5, 12.5) == pytest.approx(0.4)
     assert feng_dirs.bracket_fraction(9.5, 10.5) == pytest.approx(0.2)
-    assert feng_dirs.bracket_fraction(9.5, 10.5, (14.5, 18.5)) == pytest.approx(0.25)
+    assert feng_dirs.bracket_fraction(9.5, 10.5, (14.5, 18.0)) == pytest.approx(2 / 7)
 
 
 def test_directions_from_stats_is_what_feng_directions_computes_with_no_file_reads(stats):
     st = feng_dirs.dl.load_stats(stats, fields=feng_dirs.dl.STAT_FIELDS)
     cfg = feng_dirs.load_config()
-    a, cells, idx = feng_dirs.directions_from_stats(st, list(GENES), cfg, ("E14.5", "E18.5"))
-    b, rec = feng_dirs.feng_directions(list(GENES), cfg, stats, bracket=("E14.5", "E18.5"))
+    a, cells, idx = feng_dirs.directions_from_stats(st, list(GENES), cfg, ("E14.5", "E18"))
+    b, rec = feng_dirs.feng_directions(list(GENES), cfg, stats, bracket=("E14.5", "E18"))
     assert set(a) == set(b) and cells == rec["groups"] and (idx >= 0).sum() == len(GENES)
     for g in a:
         np.testing.assert_array_equal(a[g], b[g])
@@ -111,8 +111,8 @@ def test_directions_from_stats_is_what_feng_directions_computes_with_no_file_rea
 
 def test_bracket_stats_keeps_only_the_two_ends_and_refuses_a_missing_one(stats):
     st = feng_dirs.dl.load_stats(stats, fields=feng_dirs.dl.STAT_FIELDS)
-    cut = feng_dirs.bracket_stats(st, ("E14.5", "E18.5"))
-    assert {k.split("|")[0] for k in cut["keys"]} == {"E14.5", "E18.5"} and len(cut["genes"]) == len(GENES)
+    cut = feng_dirs.bracket_stats(st, ("E14.5", "E18"))
+    assert {k.split("|")[0] for k in cut["keys"]} == {"E14.5", "E18"} and len(cut["genes"]) == len(GENES)
     assert cut["S_cp"].shape == (len(cut["keys"]), len(GENES)) and len(cut["n"]) == len(cut["keys"])
     with pytest.raises(ValueError, match="no stage"):
         feng_dirs.bracket_stats(st, ("E14.5", "E19.5"))
@@ -136,7 +136,7 @@ def test_eb_shrink_scales_each_decile_by_its_signal_share_and_keeps_nan():
 def test_direction_halves_use_each_half_alone_and_the_mean_of_the_two_ends(stats):
     st = feng_dirs.dl.load_stats(stats, fields=feng_dirs.dl.STAT_FIELDS)
     cfg = feng_dirs.load_config()
-    h = feng_dirs.direction_halves(st, list(GENES), cfg, ("E14.5", "E18.5"))["CM"]
+    h = feng_dirs.direction_halves(st, list(GENES), cfg, ("E14.5", "E18"))["CM"]
     z = np.load(stats, allow_pickle=True)
     keys = [str(k) for k in z["keys"]]
 
@@ -145,9 +145,9 @@ def test_direction_halves_use_each_half_alone_and_the_mean_of_the_two_ends(stats
                       and k.split("|")[3] in halves for k in keys])
         return z["S_cp"][m].sum(0) / z["n"][m].sum()
 
-    np.testing.assert_allclose(h["d_a"], np.log((mean_cp("E18.5", ("A",)) + 0.5) / (mean_cp("E14.5", ("A",)) + 0.5)))
-    np.testing.assert_allclose(h["d_b"], np.log((mean_cp("E18.5", ("B",)) + 0.5) / (mean_cp("E14.5", ("B",)) + 0.5)))
-    np.testing.assert_allclose(h["mean_cp"], (mean_cp("E14.5") + mean_cp("E18.5")) / 2.0)
+    np.testing.assert_allclose(h["d_a"], np.log((mean_cp("E18", ("A",)) + 0.5) / (mean_cp("E14.5", ("A",)) + 0.5)))
+    np.testing.assert_allclose(h["d_b"], np.log((mean_cp("E18", ("B",)) + 0.5) / (mean_cp("E14.5", ("B",)) + 0.5)))
+    np.testing.assert_allclose(h["mean_cp"], (mean_cp("E14.5") + mean_cp("E18")) / 2.0)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -166,7 +166,7 @@ def test_the_late_proxy_candidates_are_legal_on_the_three_t1_tasks_and_declare_t
     tasks = _t1_tasks()
     for name in LP:
         c = CANDIDATES[name]
-        assert c.externals == (("X002", 14.5, 18.5),) and c.params["scope"] == "chamber"
+        assert c.externals == (("X002", 14.5, 18.0),) and c.params["scope"] == "chamber"
         for t in tasks.values():
             assert c.applies(t), (name, t.key)
             harness.check_externals(c, t)  # legal: the bracket lies outside the pseudo-task's version of the window
@@ -184,7 +184,7 @@ def test_the_candidates_take_the_held_flat_list_only_where_its_stages_are_inputs
 def test_the_hand_over_holds_only_the_bracket_stages_and_the_module_lists(monkeypatch, tmp_path):
     p = _stats(tmp_path / "x" / "cd1_stats.npz", list(GENES))
     bundle = harness._late_proxy_load(p)
-    assert {str(k).split("|")[0] for k in bundle["stats"]["keys"]} == {"E14.5", "E18.5"}  # no other Feng stage
+    assert {str(k).split("|")[0] for k in bundle["stats"]["keys"]} == {"E14.5", "E18"}  # no other Feng stage
     assert {"Xist", "Ddx3y"} <= set(bundle["named"]) and set(bundle["modules"]) >= {"D", "A1", "N1", "N2"}
 
 
@@ -243,10 +243,10 @@ def test_lp_proxy_moves_m1s_groups_along_the_proxy_at_its_time_fraction_and_leav
     base = CANDIDATES["b0_scope"].build(ctx_of(CANDIDATES["b0_scope"]))
     kw = calls[0]
     assert set(kw["directions"]) <= set(harness.LP_GROUPS) and "CM" in kw["directions"]  # Blood never moves
-    assert kw["direction_fraction"] == pytest.approx(0.25)
+    assert kw["direction_fraction"] == pytest.approx(2 / 7)
     assert kw["direction_groups"]["V-CM"] == "CM" and kw["direction_groups"]["Endocardium"] == "Endocardium"
     assert kw.get("start") is None and kw.get("damping", 0.0) == 0.0  # no momentum: the cells without a direction stay
-    np.testing.assert_allclose(kw["directions"]["CM"], _manual(stats_path, "E14.5", "E18.5",
+    np.testing.assert_allclose(kw["directions"]["CM"], _manual(stats_path, "E14.5", "E18",
                                                                ("ventricular_cm", "atrial_cm")))
     assert pred.n == base.n
     assert not np.array_equal(pred.X, base.X)
@@ -270,7 +270,7 @@ def test_the_held_flat_list_is_named_genes_only_where_its_pool_rule_would_leak(t
     held = set(calls[0]["held_flat"])
     assert {"Xist", "Ddx3y", "Cwc22"} <= held  # the named genes
     assert not {"Lin28a", "Abcb7", "Gm7324"} & held  # pool-rule genes are not handed over on this task
-    assert calls[0]["direction_fraction"] == pytest.approx(0.25)  # E8.5 -> E9.5, one day of the four-day bracket
+    assert calls[0]["direction_fraction"] == pytest.approx(2 / 7)  # E8.5 -> E9.5, one day of the 3.5-day bracket
 
 
 def test_the_controls_flip_and_permute_within_deciles_and_nothing_else(t1_ctx, monkeypatch):
@@ -342,7 +342,7 @@ def test_a_late_proxy_candidate_runs_inside_the_read_guard_and_records_its_hand_
     assert res["candidates"] == ["floor", "b0_scope", "lp_proxy"] and res["rows"][0]["scores"]["floor"] == 50.0
     assert not any("results" in p or p.startswith("data") for p in res["rows"][0]["reads"]["lp_proxy"])
     assert set(res["params"]["lp_proxy"]["derived"]) == {"t1_late_proxy", "t1_held_flat"}
-    assert [tuple(e) for e in res["params"]["lp_proxy"]["externals"]] == [("X002", 14.5, 18.5)]
+    assert [tuple(e) for e in res["params"]["lp_proxy"]["externals"]] == [("X002", 14.5, 18.0)]
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -657,7 +657,7 @@ def _n20_report(proceed: bool = True, close: bool = True, t18: bool = True, comm
 def _ready(monkeypatch, tmp_path, proceed: bool = True, t18: bool = True, commit: str = "c" * 40) -> str:
     """Everything `run` checks before anything else: the rows, X002's amendment, a clean tree, N20's stamped yes and,
     for the gate, a passed preflight at this commit."""
-    monkeypatch.setattr(late_proxy, "registered_rows", lambda: {"N20", "T13", "T14", "T15", "T16", "T17", "T18"})
+    monkeypatch.setattr(late_proxy, "registered_rows", lambda: {"N20b", "T13", "T14", "T15", "T16", "T17", "T18"})
     monkeypatch.setattr(feng_dirs, "x002_amended", lambda *a: True)
     monkeypatch.setattr(late_proxy.provenance, "git_state", lambda repo: (commit, []))
     n20 = tmp_path / "n20.json"
@@ -675,7 +675,7 @@ def test_run_needs_the_rows_and_n20s_yes(tmp_path, monkeypatch):
     argv = ["run", "--stage", "gate", "--out", str(tmp_path), "--n20", str(n20)]
     with pytest.raises(SystemExit, match="not in experiments/harness/TRIES.md"):
         late_proxy.main(argv)
-    monkeypatch.setattr(late_proxy, "registered_rows", lambda: {"N20", "T13", "T14", "T15"})
+    monkeypatch.setattr(late_proxy, "registered_rows", lambda: {"N20b", "T13", "T14", "T15"})
     with pytest.raises(SystemExit, match="N20 runs before the gate"):
         late_proxy.main(argv)
     n20.write_text(json.dumps(_n20_report(proceed=False)))
@@ -716,9 +716,9 @@ def test_a_stage_refuses_without_x002s_amendment_on_a_dirty_tree_or_off_n20s_com
 
 def test_x002_amended_reads_x002s_own_row_only(tmp_path):
     register = tmp_path / "EXTERNAL_DATA.md"
-    register.write_text("| X001 | E14.5 -> E18.5 elsewhere |\n| X002 | Feng, the plain row |\n")
+    register.write_text("| X001 | E14.5 -> E18 elsewhere |\n| X002 | Feng, the plain row |\n")
     assert feng_dirs.x002_amended(register) is False
-    register.write_text("| X001 | other |\n| X002 | Feng; from T13-T18: Feng's E14.5 -> E18.5 change is a stand-in |\n")
+    register.write_text("| X001 | other |\n| X002 | Feng; from T13-T18: Feng's E14.5 -> E18 change is a stand-in |\n")
     assert feng_dirs.x002_amended(register) is True
     register.write_text("| X001 | other |\n")
     assert feng_dirs.x002_amended(register) is False
@@ -978,11 +978,11 @@ def _in_repo(monkeypatch, tmp_path, repo: Path, head: str) -> tuple[Path, str]:
     monkeypatch.setattr(harness, "_git", git_there)
     monkeypatch.setattr(harness, "run_task", run_task)
     monkeypatch.setattr(late_proxy.provenance, "REPO_ROOT", repo)
-    monkeypatch.setattr(late_proxy, "registered_rows", lambda: {"N20", "T13", "T14", "T15", "T16", "T17", "T18"})
+    monkeypatch.setattr(late_proxy, "registered_rows", lambda: {"N20b", "T13", "T14", "T15", "T16", "T17", "T18"})
     monkeypatch.setattr(feng_dirs, "x002_amended", lambda *a: True)
     monkeypatch.setattr(late_proxy, "input_hashes", lambda: {"feng_stats_sha256": "a" * 64})
     out = repo / "experiments" / "t1_m1" / "results" / "late_proxy_v1"  # untracked and exempt, as on the DGX
-    n20 = repo / "experiments" / "t1_m1" / "results" / "n20_proxy_profile" / "n20_proxy_profile.json"
+    n20 = repo / "experiments" / "t1_m1" / "results" / "n20b_proxy_profile" / "n20_proxy_profile.json"
     n20.parent.mkdir(parents=True)
     n20.write_text(json.dumps(_n20_report(commit=head)))
     return out, str(n20)
@@ -1036,7 +1036,7 @@ def _n20_inputs(tmp_path, monkeypatch, stages=STAGES, small=None):
     monkeypatch.setattr(n20.feng_dirs, "clean_stats_path", lambda: stats_path)
     monkeypatch.setattr(n20.feng_dirs, "x002_amended", lambda *a: True)
     monkeypatch.setattr(n20.provenance, "git_state", lambda repo: ("c" * 40, []))
-    monkeypatch.setattr(n20.n12, "tries_rows", lambda *a: {"N20"})
+    monkeypatch.setattr(n20.n12, "tries_rows", lambda *a: {"N20b"})
     t1_file = tmp_path / "E9.5_RNA.h5ad"
     a = ad.AnnData(X=sparse.csr_matrix(np.zeros((3, len(genes)), np.float32)))
     a.var_names, a.obs_names = genes, ["c0", "c1", "c2"]
@@ -1101,7 +1101,7 @@ def test_n20s_read_groups_are_the_tournaments_within_type_reads(tmp_path, monkey
 
 
 def test_n20_stops_the_tries_when_the_endocardium_read_has_no_direction(tmp_path, monkeypatch):
-    n20, argv = _n20_inputs(tmp_path, monkeypatch, small=("endocardial_ec", "E18.5"))
+    n20, argv = _n20_inputs(tmp_path, monkeypatch, small=("endocardial_ec", "E18"))
     monkeypatch.setattr(n20, "MIN_MAPPED", 40)
     with pytest.raises(SystemExit, match="says no"):
         n20.main(argv)

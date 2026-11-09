@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """T1 tries T13-T18 of experiments/harness/TRIES.md: the late-proxy tournament, run and decided. The captain approved
-Feng's E14.5 -> E18.5 change as a stand-in direction on T1's own released backtests on 2026-11-10 (docs/PLAN.md decision
+Feng's E14.5 -> E18 change as a stand-in direction on T1's own released backtests on 2026-11-10 (docs/PLAN.md decision
 log 2026-11-10 (a); EXTERNAL_DATA.md X002 amendment). No counted task can judge a change to Feng's real direction,
-E9.5 -> E14.5, whose E9.5 lies inside every T1 pseudo-task's window; (X002, 14.5, 18.5) is legal on all three T1
+E9.5 -> E14.5, whose E9.5 lies inside every T1 pseudo-task's window; (X002, 14.5, 18.0) is legal on all three T1
 pseudo-tasks (vec.harness.check_externals) and it is the first counted check of direction changes on T1's own platform
 (nuclei, SoupX).
 
@@ -77,10 +77,10 @@ from vec.boards import GROUPS, REPO_ROOT
 
 CONFIG = REPO_ROOT / "configs" / "t1_late_proxy.yaml"
 OUT = REPO_ROOT / "experiments" / "t1_m1" / "results" / "late_proxy_v1"
-N20 = REPO_ROOT / "experiments" / "t1_m1" / "results" / "n20_proxy_profile" / "n20_proxy_profile.json"
+N20 = REPO_ROOT / "experiments" / "t1_m1" / "results" / "n20b_proxy_profile" / "n20_proxy_profile.json"
 TRIES = REPO_ROOT / "experiments" / "harness" / "TRIES.md"
 PREFLIGHT = "preflight.json"
-ROWS = {"gate": ("N20", "T13", "T14", "T15"), "variants": ("T16", "T17", "T18")}  # the rows each stage's run needs
+ROWS = {"gate": ("N20b", "T13", "T14", "T15"), "variants": ("T16", "T17", "T18")}  # the rows each stage's run needs
 BASE = "b0_scope"
 PROXY = "lp_proxy"
 CFLIP = "lp_cflip"
