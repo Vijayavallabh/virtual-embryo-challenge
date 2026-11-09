@@ -663,6 +663,10 @@ def _fgw_aligned(ctx: BuildContext) -> Stage:
     return _fgw(ctx, move_coupling="aligned")
 
 
+def _fgw_shape0_aligned(ctx: BuildContext) -> Stage:
+    return _fgw(ctx, t_pos=0.0, move_coupling="aligned")
+
+
 def _interp(t: PseudoTask) -> bool:
     return t.task == "T2" and t.kind == "interp" and {"before", "after"} <= set(t.inputs)
 
@@ -1021,6 +1025,15 @@ CANDIDATES = {
                                       "cost of expression and position in the rotated common frame "
                                       "(vec.core.aligned_coupling; FGW's rotation kept)",
                               "alpha": t2_build.INTERP_ALPHA, "scope": "whole"}, requires=_interp),
+    # embryo try E12 (experiments/harness/TRIES.md, registered before its run): the s2 shape variant fgw_shape0 with
+    # try E10's aligned moves, so its mapped later bracket lands on the side position says. Both embryo tasks were
+    # selected on when fgw_shape0 was chosen, so neither counts for it under the adoption rule (decide excludes them)
+    "fgw_shape0_aligned": Candidate("fgw_shape0_aligned", frozenset({"T2"}), (), _fgw_shape0_aligned,
+                                    {"what": "fgw_shape0 (the earlier bracket's geometry, t_pos = 0) with the moves "
+                                             "taken from the aligned coupling of try E10 (vec.core.aligned_coupling "
+                                             "in the rotated common frame; FGW's rotation kept)",
+                                     "alpha": t2_build.INTERP_ALPHA, "scope": "whole"}, requires=_interp,
+                                    tuned_on=frozenset({"T2e/E7.25+E8.0->E7.5", "T2e/E6.75+E7.5->E7.25"})),
     "copy_herd": Candidate("copy_herd", frozenset({"T1"}), _ANY, _copy_herd,
                            {"what": "a copy of the reference with its draw herded towards the pool's mean expression "
                                     "(a diagnostic)", "scope": "whole"}),
