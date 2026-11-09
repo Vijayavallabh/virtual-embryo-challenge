@@ -596,14 +596,16 @@ def _psb_size(ctx: BuildContext) -> Stage:
 
 
 def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixture", herd: bool = False,
-         move_coupling: str = t2_build.MOVE_COUPLINGS[0]) -> Stage:
+         move_coupling: str = t2_build.MOVE_COUPLINGS[0], local_perm: bool = False) -> Stage:
     """The T2 embryo pipeline (docs/PLAN.md 4.2): displacement interpolation between the brackets at the target's
     time fraction (vec.t2_build.interpolate_clouds: fused Gromov-Wasserstein coupling, proper rotation, McCann moves,
     a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages. t_pos:
     the s2 shape variants' position fraction (0: the earlier bracket's geometry, 1: the later's; default: the
     mixture's). expression: "mixture" (the cells as released), "depth" (vec.t2_build.depth_matched_expression) or
     "blend" (vec.t2_build.blend_expression); tries E7 and E8 of experiments/harness/TRIES.md. move_coupling: "fgw"
-    (the entry) or "aligned" (try E10: the moves from vec.core.aligned_coupling in the rotated common frame)."""
+    (the entry) or "aligned" (try E10: the moves from vec.core.aligned_coupling in the rotated common frame).
+    local_perm (try E15): after the draw, the positions are re-arranged among the drawn cells within coarse type and a
+    fixed radius (vec.t2_build.local_type_permutation); the expression rows stay where they are."""
     t = ctx.task
     before, after = ctx.inputs["before"], ctx.inputs["after"]
     lo, hi = t.role_days["before"], t.role_days["after"]
@@ -624,7 +626,11 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
         X, _ = t2_build.blend_expression(before, after, res, g, frac, [ctx.seed, 7])
     else:
         raise ValueError(f"unknown expression step {expression!r}")
-    return finish(ctx, before, X, res.coords, guard_source=res.pool_coords, guard_weights=res.pool_weights)
+    coords = res.coords
+    if local_perm:
+        coords = coords[nbhd_rearrangement(coords, t2_build.drawn_labels(res, before.obs["group"], after.obs["group"]),
+                                           ctx.seed)]
+    return finish(ctx, before, X, coords, guard_source=res.pool_coords, guard_weights=res.pool_weights)
 
 
 def _fgw_shape0(ctx: BuildContext) -> Stage:
@@ -665,6 +671,28 @@ def _fgw_aligned(ctx: BuildContext) -> Stage:
 
 def _fgw_shape0_aligned(ctx: BuildContext) -> Stage:
     return _fgw(ctx, t_pos=0.0, move_coupling="aligned")
+
+
+# embryo try E15 (experiments/harness/TRIES.md; registered before its run, and run only if its target-free gate, the
+# diagnostic N15, passes): every number below is fixed in the row, one value each, no sweep (a swept value is a try).
+NBHD_K = 15  # cells per neighbourhood, self included, as the scorer's (T2 metrics `neighborhood_mmd`)
+NBHD_RADIUS_FACTOR = 2.0  # how far a cell may end from where it started, in neighbourhood radii: try E15's fixed radius
+NBHD_SWEEPS = 30  # rounds of the swap chain, a size of the computation (the mixing's plateau, tests/test_nbhd.py)
+NBHD_STREAM = 20  # the swap chain's random stream, apart from the interpolation's and expression steps' 0-9
+
+
+def nbhd_rearrangement(coords: np.ndarray, labels: np.ndarray, seed: int) -> np.ndarray:
+    """E15's re-arrangement of one draw: `at` such that `coords[at]` holds the positions re-arranged among the drawn
+    cells within coarse type and the row's fixed radius (vec.t2_build.local_type_permutation at NBHD_RADIUS_FACTOR x the
+    draw's median 15-nearest-cell reach, NBHD_SWEEPS rounds, stream [seed, NBHD_STREAM]). The audit N15 (its reported
+    after_over_built) and the candidate both call this, so the audit measures exactly the candidate's own step."""
+    radius = NBHD_RADIUS_FACTOR * t2_build.neighbourhood_radius(coords, NBHD_K)
+    return t2_build.local_type_permutation(coords, labels, radius, NBHD_SWEEPS,
+                                           np.random.default_rng([seed, NBHD_STREAM]))
+
+
+def _fgw_perm(ctx: BuildContext) -> Stage:
+    return _fgw(ctx, local_perm=True)
 
 
 def _interp(t: PseudoTask) -> bool:
@@ -1034,6 +1062,13 @@ CANDIDATES = {
                                              "in the rotated common frame; FGW's rotation kept)",
                                      "alpha": t2_build.INTERP_ALPHA, "scope": "whole"}, requires=_interp,
                                     tuned_on=frozenset({"T2e/E7.25+E8.0->E7.5", "T2e/E6.75+E7.5->E7.25"})),
+    # embryo try E15 (experiments/harness/TRIES.md, registered before its run; it runs only if its target-free gate,
+    # the diagnostic N15, passes): fgw's cells and expression rows, positions re-arranged among them
+    "fgw_perm": Candidate("fgw_perm", frozenset({"T2"}), (), _fgw_perm,
+                          {"what": "fgw with the positions re-arranged among the drawn cells within coarse type "
+                                   "(the lineage map's group) and a fixed radius (vec.t2_build.local_type_permutation)",
+                           "k": NBHD_K, "radius_factor": NBHD_RADIUS_FACTOR, "sweeps": NBHD_SWEEPS,
+                           "scope": "whole"}, requires=_interp),
     "copy_herd": Candidate("copy_herd", frozenset({"T1"}), _ANY, _copy_herd,
                            {"what": "a copy of the reference with its draw herded towards the pool's mean expression "
                                     "(a diagnostic)", "scope": "whole"}),

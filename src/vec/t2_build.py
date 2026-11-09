@@ -1734,3 +1734,85 @@ def blend_expression(before: ad.AnnData, after: ad.AnnData, interp: Interpolatio
            "expected_share_before": float(wb * db / (wb * db + wa * da))}
     return _log_normalise(C, lib), rec
 
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Which real cell sits at which position (embryo try E15 of experiments/harness/TRIES.md; registered before its run, and
+# run only if its target-free gate, diagnostic N15, passes). Permuting positions among the drawn cells leaves the
+# expression rows untouched, so only the neighbourhood term of the scorer can move. Every number comes from the caller.
+def drawn_labels(interp: Interpolation, before_labels, after_labels) -> np.ndarray:
+    """The label of each output cell of `interpolate_clouds` (strings): the label of its row in its own stage."""
+    out = np.empty(len(interp.rows), dtype=object)
+    for s, lab in enumerate((before_labels, after_labels)):
+        out[interp.stage == s] = np.asarray(lab).astype(str)[interp.rows[interp.stage == s]]
+    return out.astype(str)
+
+
+def neighbourhood_radius(coords, k: int) -> float:
+    """The median distance from a cell to the farthest of its k nearest cells, the cell itself included: the reach of a
+    k-nearest-cell neighbourhood in this cloud (the scorer's T2 neighbourhoods at k = 15)."""
+    C = _as_coords(coords)
+    k = _whole(k, "k", 1)
+    if C.shape[0] < k:
+        raise ValueError(f"the cloud has {C.shape[0]} cells, fewer than k = {k}")
+    d = np.asarray(cKDTree(C).query(C, k=k)[0]).reshape(C.shape[0], k)
+    return float(np.median(d[:, k - 1]))
+
+
+def _within_label_partners(C: np.ndarray, codes: np.ndarray,
+                           radius: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """For every position the positions of the same label within `radius`, itself left out, as flat arrays:
+    (partners, start, length), partners[start[p] : start[p] + length[p]] listing position p's."""
+    rows, cols = [], []
+    for c in np.unique(codes):
+        idx = np.flatnonzero(codes == c)
+        tree = cKDTree(C[idx])
+        s = tree.sparse_distance_matrix(tree, radius, output_type="coo_matrix")
+        keep = s.row != s.col
+        rows.append(idx[s.row[keep]])
+        cols.append(idx[s.col[keep]])
+    r = np.concatenate(rows)
+    q = np.concatenate(cols)
+    order = np.lexsort((q, r))  # by position, then partner: the lists do not depend on the tree's traversal
+    r, q = r[order], q[order]
+    start = np.searchsorted(r, np.arange(C.shape[0] + 1))
+    return q, start[:-1], np.diff(start)
+
+
+def local_type_permutation(coords, labels, radius: float, sweeps: int, rng: np.random.Generator) -> np.ndarray:
+    """A random re-arrangement of which row sits at which position, within one label and within `radius`: returns `at`,
+    a permutation of the rows such that `coords[at]` is the re-arranged cloud, row r moving to the position that was
+    row at[r]'s. Every row keeps its label's positions (label[at[r]] == label[r]) and ends at most `radius` from where
+    it started; the multiset of positions is unchanged, so a metric that reads only positions as a multiset cannot
+    move, and one that reads only the expression rows does not either if the expression rows stay in place.
+
+    `sweeps` rounds of the swap chain: each round draws, for every position with a partner (a position of its own label
+    within `radius`, itself excluded), one partner at random, keeps a set of proposals that share no position (the
+    earliest of them, in a random order, at each position) and swaps the rows of each kept pair unless that takes either
+    row further than `radius` from its start. Rows without a partner stay put, so a radius below every label's spacing
+    returns the identity. The result depends on `rng` only (numpy's generator streams; no other randomness)."""
+    C = _as_coords(coords)
+    n = C.shape[0]
+    if not (np.isfinite(radius) and radius > 0):
+        raise ValueError(f"radius must be finite and positive, got {radius}")
+    sweeps = _whole(sweeps, "sweeps", 0)
+    codes = np.unique(np.asarray(labels).astype(str), return_inverse=True)[1].reshape(-1)
+    if codes.size != n:
+        raise ValueError(f"labels must have one entry per cell ({n}), got {codes.size}")
+    partners, start, length = _within_label_partners(C, codes, float(radius))
+    who = np.arange(n)
+    active = np.flatnonzero(length > 0)
+    for _ in range(sweeps if active.size else 0):
+        order = rng.permutation(active)
+        q = partners[start[order] + (rng.random(order.size) * length[order]).astype(np.int64)]
+        rank = np.arange(order.size)
+        first = np.full(n, order.size)
+        np.minimum.at(first, order, rank)
+        np.minimum.at(first, q, rank)
+        keep = (first[order] == rank) & (first[q] == rank)
+        pos_p, pos_q = order[keep], q[keep]
+        row_p, row_q = who[pos_p], who[pos_q]
+        allowed = (np.linalg.norm(C[row_q] - C[pos_p], axis=1) <= radius
+                   ) & (np.linalg.norm(C[row_p] - C[pos_q], axis=1) <= radius)
+        who[pos_p[allowed]], who[pos_q[allowed]] = row_q[allowed], row_p[allowed]
+    return np.argsort(who)
+
