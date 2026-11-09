@@ -48,6 +48,12 @@ assistant under the captain's delegation of 2026-11-02, and he can overrule them
    rules, the captain's go-ahead for every official upload and his upload gate (209, below) all stand; a closed lever
    (`TRIES.md` rule 6) stays closed whatever its headroom.
 
+8. **Campaign of 2026-11-09.** The captain asked for an ambitious strategy and high-risk, high-reward experiments
+   (`docs/PLAN.md` decision log 2026-11-09 (a)). That lifts the ledger's limits on research effort: the prune of
+   candidates expected to gain under 0.3 points, "no further try", and the lines the ledger closed after its own tries
+   (blend, herding, coupling). It does not lift rule 7's data rules, the post-exposure block, A15, the frozen rules, row
+   before run, try counting, the adoption rule or his ruling for any change to an upload, or his go-ahead for uploads.
+
 ## Startup Workflow
 
 Before writing code:

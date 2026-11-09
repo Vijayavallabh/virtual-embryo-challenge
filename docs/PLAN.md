@@ -1549,3 +1549,30 @@ open. No organiser reply to any of the four emails as of then.
   - **Put to the captain:** T1's s2. By `docs/S2_RULES.md` it is still s1's command plus `--cm-share 0.60` at the
     same commit, so it now carries the hygiene too (`runs/r2build_02abf39/t16/builds/T1_s2.h5ad`). The changed s1 sends
     it back to him (`docs/DATA_POLICY.md` 2026-11-04 (d)). The AI assistant recommends approving it as built.
+- 2026-11-09 (a), the captain's instruction, in his words: "Ultrathink: Develop and execute an ambitious strategy to
+  maximize our chances of finishing in the top 3 on the leaderboard. Make full use of the DGX's available compute
+  whenever it is free. If additional resources are occupied, tell me what you need so I can free them up. Prioritize
+  high-impact experiments, parallelize workloads where useful, and adapt the plan based on results. Be willing to pursue
+  high-risk, high-reward approaches. Ask for approval before taking destructive and irreversible actions."
+  - **How the AI assistant reads it; he can correct any of this.** "High-risk" means risk to the score, not risk to
+    the entry's validity.
+  - **Lifted for this campaign** (limits on research effort, which the AI assistant wrote under the delegation of
+    2026-11-02):
+    - rule 3's and rule 5's prune of a candidate expected to gain under 0.3 points: a try may now run if its upside
+      is large or it buys evidence;
+    - "no further try without a new reason that holds at test", "embryo: stop polishing" and "heart: no try"
+      (`experiments/harness/TRIES.md`, the order of the next tries);
+    - the lines the ledger closed after its own tries (blend, herding, coupling), which may be tried again.
+  - **Still standing, unchanged:**
+    - every data-window and data-use rule, the quarantines and the screened route;
+    - the post-exposure block (cell numbers, sizes and scope on every board; T3's composition; T1's composition except
+      by the legal route; T1 depth), since it protects validity after the exposures of 2026-11-04;
+    - A15 (no new cross-modal input until the organisers answer or the captain rules);
+    - "Scores choose, never compute";
+    - rule 1 (a row committed before each run) and rule 4 (every try counted and reported);
+    - rule 2: the adoption rule, or his own ruling, for any change to an upload;
+    - the frozen s2 and T3 rules, which change only by his ruling;
+    - his go-ahead for every official upload, and his upload gate;
+    - the heart's composition trend, closed by his own ruling of 2026-11-01, stays closed until he reopens it.
+  - **Lucky fits.** More tries raise the chance of one. Every report of this campaign states the try count, and
+    promotions are judged on tasks the candidate was not tuned on.
