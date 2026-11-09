@@ -1636,3 +1636,23 @@ open. No organiser reply to any of the four emails as of then.
     distribution and covariance. This is the first keep of the campaign. Before it goes to the captain for a ruling it needs
     placebo controls, a check of its factors at the test pair (start E9.5, reference E10.5, across the dissection change) and
     a check of how it combines with M1. Try counts now: T1 11, embryo 11, heart 3, T3 6.
+- 2026-11-10 (f), the campaign's second wave registered.
+  - **What.** Rows T12a and T12b (the measured cost of T1's strong-null bet) and N20 and T13-T18 (the late-proxy
+    tournament, with the X002 amendment for the stand-in approved on 2026-11-10 (a)) are in
+    `experiments/harness/TRIES.md`, committed before any of them ran. The code had a review with fixes
+    (wf_48ba2c05-75c) and is merged at cdc317f, synthetic tests only; nothing has touched project data yet.
+  - **The bet's condition of 2026-11-10 (d), made operational.** A measured loss of more than 0.66 on any task stops the
+    build. A loss between 0.33 and 0.66 goes to the captain first, and the build proceeds only on his explicit reading.
+    Below that it still needs his ruling. On the weak-null control the cost is read in raw units as well, because
+    points there understate a test-like cost. The build itself refuses to write a file that the prior moves by more
+    than 0.0035 raw mmd_u.
+  - **What changed from what he approved.** The review removed the fitted gene table: genes are now chosen by the
+    reference's expression level alone, so no truth is read and the table's new use of X002 is gone. Its downside
+    estimate is now about -0.2 to -0.8 T1, wider than the -0.33 he approved; T12 measures it. On s2 only about 55-77%
+    of the promoted genes land inside the likely bottom slots, so its upside there is smaller.
+  - **Order.** N20 and the preflight are target-free and run first. The counted runs follow the plain summary to the
+    captain and his sign-off (2026-11-04 (d)). T1's count goes from 11 to 13 with T12, to 16 with T13-T15, and to at
+    most 19 only if the variants run.
+  - **What the tournament can say.** It is a stand-in test on released backtests. A gate pass says T1's platform can
+    carry a Feng-bracket signal and is not independent of the earlier readout on E8.5 -> E9.5. It changes M1 only by his
+    ruling, and only through T17 or T18 at or above the similarity floor.
