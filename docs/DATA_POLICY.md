@@ -790,3 +790,8 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     a read of `docs/PLAN.md` showed the screened overall totals recorded there. None is quoted or used.
   - **Saved output.** A long print of the edit list was saved by the harness under `~/.claude-account`, once in the
     workflow and once in the main session. Neither file was opened; the text was re-read from the session scratchpad.
+- 2026-11-10 (c): the captain ruled "Open it" for the Data Protocol page's text on how the T2 heart E12.5 and embryo E7.75 stacks
+  and the test knockout were collected, withheld since 2026-11-01 (b). The screen releases it in the same form as the Task 1 text:
+  qualitative, every number replaced, audited before the main session reads it (`docs/PLAN.md` decision log 2026-11-10 (y), written
+  before the read). The block of 2026-11-04 is not lifted by this: any change to a cell number, a size, a scope or a composition
+  still needs the captain's ruling.

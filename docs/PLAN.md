@@ -1961,3 +1961,24 @@ open. No organiser reply to any of the four emails as of then.
     severity of zero would cost 9 to 12.5 on T3, at about 0.15, with no free hedge; the ruling of 2026-11-06 (b) stands. Human
     Team status was never asked: rejection about 0.03, disqualification-class; the screened check quotes the Rules' definition.
   - **Generality.** Eligibility if reached moves from 0.4 in (w) to 0.35. Nothing else changes.
+- 2026-11-10 (y), the captain, in the captain's words: "Open it": the organisers' published text on how the T2 heart E12.5 and
+  embryo E7.75 stacks and the test knockout were collected, withheld since 2026-11-01 (b). This entry is written and committed
+  before the read, so nothing in it is fitted to the text.
+  - **How it is read.** Through the route of 2026-11-01 (b), on one page only (https://virtualembryo.ai/challenge/data-protocol).
+    A screening agent releases the qualitative description of how those three samples were collected, with every number replaced,
+    and an independent auditor checks it against the page before the main session sees it. The Removed and Kept list in
+    `docs/DATA_POLICY.md` still binds, with this one exception by the captain's ruling. Statements of a measured or relative
+    property of those targets (size, cell count, composition, expression, depth, quality) stay withheld. Nothing else is opened:
+    not the Data page, the task pages, the test boards' format item, or the Task 1 statement in `docs/DATA_POLICY.md` 2026-11-06 (a).
+  - **What the read does not do.** It changes nothing by itself. The block of 2026-11-04 stands: no cell number, size, scope or
+    composition changes and no file is rebuilt unless the captain rules after reading the outcome. The frozen s2 rules change
+    only on the captain's own say-so. No number is derived from the text.
+  - **What the AI assistant will recommend, fixed now.**
+    - Heart: only if the text states that the E12.5 hearts were dissected free, so the sections hold no surrounding embryo tissue,
+      recommend the pair of the half trim (today's s2 file) and the full trim (`core_radial`), priced from the committed hedge
+      tables before it goes to the captain. Anything else, including tissue partly retained: no change.
+    - Embryo: only if the text states that the E7.75 embryos were cut in a different orientation from E7.5 and E8.0, bring the
+      captain a priced option for the z-convention risk (up to about 0.25 in log, section 4.2). Otherwise no change.
+    - Task 3: no change whatever the text says. It was priced at about +0.05 against -6 to -8 for a misread, and its rules are frozen.
+    - A silent or ambiguous text means no change. Any other qualitative fact is reported and recommended against unless
+      committed results can price it.
