@@ -243,7 +243,8 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str]):
     held labels (no Feng group: `r1_unbracketed_labels`, the candidate's own mask) keep the counts they have, so R1
     stands; R3b: the fit is the candidate's, over all `categories`, and only cells of G_MOM_EDIT_CATEGORIES are edited,
     the mask added to R1's (a category the fit skipped stops the build); the pre-registered held-flat genes are the
-    candidate's own list (R2's union is held in Feng's direction only, by its ruling; if the captain wants R2 held in this step too, that is a new variant with its own row, since
+    candidate's own list (R2's union is held in Feng's direction only, by its ruling; if the captain wants R2 held
+    in this step too, that is a new variant with its own row, since
     T11 was judged without it); each edited cell keeps its expected depth (`apply_factors`, keep_depth), the T1 depth
     lever stays closed; the cells, their number, shares and scope are untouched. The stream is [seed, 5], the
     candidate's. covered_labels: the labels the build moved along Feng's direction (`label_groups` mapped to a group
@@ -460,7 +461,8 @@ def build_parser() -> argparse.ArgumentParser:
                            help="add g_mom's within-type factors at test (T1 try T11 of experiments/harness/TRIES.md; "
                                 "fitted on E9.5 -> E10.5, applied last, after Feng's direction, on cardiomyocytes and "
                                 "endocardium only (R3b), R1's held labels left alone, each cell's expected depth "
-                                "kept, no share, cell count or scope changed; refused with --no-hold-unbracketed; off: the entry as built, "
+                                "kept, no share, cell count or scope changed; refused with --no-hold-unbracketed; "
+                                "off: the entry as built, "
                                 "and only the captain's ruling turns it on for an upload)")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim"), required=True,
