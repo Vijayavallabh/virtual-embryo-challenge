@@ -1,0 +1,12 @@
+Try T22: try T22: g_mom against b0 at the truth's own chamber mix (an oracle base, the construction of experiments/s2_hedge/payoff.py t1-grid); not an adoption result, it can only veto the proposal
+Rule (chamber cut): the gain at or above +0.3 points in at least 8 of 10 seeds: PASSES
+Reproduction of the committed t1-grid's oracle-base b0 (bown_cown) on the chamber cut: fresh mean 69.919, committed 69.919 (tolerance 0.02): yes
+Chamber cut, g_mom minus b0 at the oracle mix: mean +0.87; seeds at or above the bar 10 of 10, above 0 10; per seed +0.88, +0.89, +0.93, +0.79, +1.01, +0.95, +0.70, +0.83, +0.83, +0.91; by group de_recovery +0.11, direction +0.08, distribution +0.45, covariance +0.23
+    variance_ratio at the oracle mix (mean over seeds): b0 0.8777, g_mom 0.8847, g_mom_held 0.8833
+Chamber cut, g_mom_held minus b0 at the oracle mix (reported, deciding nothing; the pseudobulk held, O1's construction): mean +0.32; seeds at or above the bar 6 of 10; by group de_recovery -0.02, direction +0.01, distribution +0.21, covariance +0.12
+Companion (reported, deciding nothing; g_mom minus b0 at the prediction's own chamber mix against the chamber truth re-sampled to that mix, seed 20261110; the edited share does not shrink): mean +2.31; seeds at or above the bar 10 of 10, above 0 10; by group de_recovery +0.17, direction +0.30, distribution +1.31, covariance +0.52
+Whole cut (reported, deciding nothing: a whole-mix oracle base could be drawn from E9.5's non-chamber cells, but it would not be the chamber-scoped candidate, so the whole cut is scored for the same two predictions and keeps its non-chamber composition gap): mean +0.86; seeds at or above the bar 10 of 10; by group de_recovery +0.10, direction +0.08, distribution +0.47, covariance +0.22
+Oracle mix (shares of the prediction): blood 0.241, cm 0.201, endocardium 0.332, epicardium 0.176, vascular_endothelium 0.049
+Median library size (docs/DATA_POLICY.md 2026-11-04 (f)(3); first seed): the oracle-mix population 11010, E10.5's 6723, ratio 1.638 (beyond 5%: this goes to the captain)
+Limit: one transition and one fit; the seeds are draw and scoring noise, not biological replication.
+Commit d4580bf856c155f8561cfc1e744668e7b5383b02, tree clean True, UTC 2026-11-10T07:45:08Z

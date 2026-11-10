@@ -1,0 +1,12 @@
+Try T25: g_mom against b0 within one chamber category (rule: a paired mean gain above 0.3 points and ahead in at least 8 of 10 seeds on T1/E9.5->E10.5:cm, no mean loss above 0.3 on T1/E9.5->E10.5:endocardium): PASSES
+Reproduction of the late-proxy gate's b0 (per seed, within 0.02 points): yes (largest difference 0.0000)
+g_mom minus b0
+    T1/E9.5->E10.5:cm: paired mean gain +3.59, ahead in 10 of 10, passes True, loses above 0.3: False; by group de_recovery +0.16, direction +0.38, distribution +2.41, covariance +0.64
+    T1/E9.5->E10.5:endocardium: paired mean gain +1.87, ahead in 10 of 10, passes True, loses above 0.3: False; by group de_recovery +0.14, direction +0.12, distribution +1.34, covariance +0.27
+reported, deciding nothing: g_mom minus g_mom_null
+    T1/E9.5->E10.5:cm: paired mean gain +2.55, ahead in 10 of 10, passes True, loses above 0.3: False; by group de_recovery +0.06, direction +0.27, distribution +1.89, covariance +0.33
+    T1/E9.5->E10.5:endocardium: paired mean gain +1.37, ahead in 10 of 10, passes True, loses above 0.3: False; by group de_recovery +0.10, direction +0.08, distribution +1.07, covariance +0.13
+    T1/E9.5->E10.5:cm panel (mean over seeds): floor: variance_ratio 0.8183, mmd_u 0.0952, variogram 0.0042, energy_distance 1.6436, pb_rel_err 0.1775; b0: variance_ratio 0.8296, mmd_u 0.0915, variogram 0.0038, energy_distance 1.4415, pb_rel_err 0.1664; g_mom: variance_ratio 0.8512, mmd_u 0.0790, variogram 0.0034, energy_distance 1.3172, pb_rel_err 0.1611; g_mom_null: variance_ratio 0.8461, mmd_u 0.0884, variogram 0.0036, energy_distance 1.3790, pb_rel_err 0.1644
+    T1/E9.5->E10.5:endocardium panel (mean over seeds): floor: variance_ratio 0.8112, mmd_u 0.1322, variogram 0.0047, energy_distance 1.9410, pb_rel_err 0.2016; b0: variance_ratio 0.8262, mmd_u 0.1261, variogram 0.0038, energy_distance 1.7784, pb_rel_err 0.1854; g_mom: variance_ratio 0.8428, mmd_u 0.1113, variogram 0.0036, energy_distance 1.6955, pb_rel_err 0.1828; g_mom_null: variance_ratio 0.8387, mmd_u 0.1228, variogram 0.0037, energy_distance 1.7314, pb_rel_err 0.1843
+Limit: the two reads share one E8.5 -> E9.5 fit with the counted cuts, so the seeds are draw noise and this is one comparison, not a replication of the biology
+Commit d4580bf856c155f8561cfc1e744668e7b5383b02, tree clean True, UTC 2026-11-10T07:17:44Z

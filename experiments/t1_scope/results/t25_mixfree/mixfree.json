@@ -1,0 +1,206 @@
+{
+ "label": "try T25: g_mom against b0 within one chamber category",
+ "rule": {
+  "min_mean_gain": 0.3,
+  "min_seeds_ahead": 8,
+  "max_mean_loss": 0.3,
+  "primary": "T1/E9.5->E10.5:cm",
+  "second": "T1/E9.5->E10.5:endocardium"
+ },
+ "reproduction_of_late_proxy_b0": {
+  "tolerance_points": 0.02,
+  "largest_difference": 0.0,
+  "per_read": {
+   "T1/E9.5->E10.5:cm": 0.0,
+   "T1/E9.5->E10.5:endocardium": 0.0
+  },
+  "reproduced": true
+ },
+ "vs_b0": {
+  "T1/E9.5->E10.5:cm": {
+   "complete": true,
+   "mean_gain": 3.5887736532348304,
+   "seeds_ahead": 10,
+   "passes": true,
+   "vetoes": false,
+   "group_margins": {
+    "margins": {
+     "de_recovery": 0.15651444772830841,
+     "direction": 0.38099161827541833,
+     "distribution": 2.409503160809466,
+     "covariance": 0.6417644264216373
+    },
+    "sum_of_margins": 3.5887736532348304,
+    "score_margin": 3.5887736532348304,
+    "n_seeds": 10,
+    "share_on_distribution_and_covariance": 0.8502256988207566
+   }
+  },
+  "T1/E9.5->E10.5:endocardium": {
+   "complete": true,
+   "mean_gain": 1.8739413754871315,
+   "seeds_ahead": 10,
+   "passes": true,
+   "vetoes": false,
+   "group_margins": {
+    "margins": {
+     "de_recovery": 0.13673174112717873,
+     "direction": 0.1229051581426152,
+     "distribution": 1.3406108858974852,
+     "covariance": 0.2736935903198514
+    },
+    "sum_of_margins": 1.8739413754871306,
+    "score_margin": 1.8739413754871315,
+    "n_seeds": 10,
+    "share_on_distribution_and_covariance": 0.8614487610626018
+   }
+  }
+ },
+ "vs_null_reported": {
+  "T1/E9.5->E10.5:cm": {
+   "complete": true,
+   "mean_gain": 2.545756018085941,
+   "seeds_ahead": 10,
+   "passes": true,
+   "vetoes": false,
+   "group_margins": {
+    "margins": {
+     "de_recovery": 0.0643289082486817,
+     "direction": 0.26516257510346253,
+     "distribution": 1.8874353432253048,
+     "covariance": 0.32882919150848977
+    },
+    "sum_of_margins": 2.545756018085939,
+    "score_margin": 2.545756018085941,
+    "n_seeds": 10,
+    "share_on_distribution_and_covariance": 0.8705722461181191
+   }
+  },
+  "T1/E9.5->E10.5:endocardium": {
+   "complete": true,
+   "mean_gain": 1.3721441633296003,
+   "seeds_ahead": 10,
+   "passes": true,
+   "vetoes": false,
+   "group_margins": {
+    "margins": {
+     "de_recovery": 0.10244317831854144,
+     "direction": 0.07535297222466819,
+     "distribution": 1.066715704701008,
+     "covariance": 0.12763230808538228
+    },
+    "sum_of_margins": 1.3721441633296,
+    "score_margin": 1.3721441633296003,
+    "n_seeds": 10,
+    "share_on_distribution_and_covariance": 0.8704245841692206
+   }
+  }
+ },
+ "panels": {
+  "T1/E9.5->E10.5:cm": {
+   "floor": {
+    "variance_ratio": 0.8183000000000001,
+    "mmd_u": 0.095193,
+    "variogram": 0.0041887,
+    "energy_distance": 1.6435650000000002,
+    "pb_rel_err": 0.17748,
+    "de_score": 0.0,
+    "de_direction": 0.0,
+    "library_size_ratio": 1.0,
+    "pseudobulk_pearson": 0.9841900000000001
+   },
+   "b0": {
+    "variance_ratio": 0.8296000000000001,
+    "mmd_u": 0.091466,
+    "variogram": 0.0037634,
+    "energy_distance": 1.441462,
+    "pb_rel_err": 0.16637,
+    "de_score": 0.14777,
+    "de_direction": 0.26492,
+    "library_size_ratio": 1.0,
+    "pseudobulk_pearson": 0.9860999999999999
+   },
+   "g_mom": {
+    "variance_ratio": 0.8512000000000001,
+    "mmd_u": 0.07897099999999999,
+    "variogram": 0.0034235999999999997,
+    "energy_distance": 1.317223,
+    "pb_rel_err": 0.16114,
+    "de_score": 0.16038000000000002,
+    "de_direction": 0.28388,
+    "library_size_ratio": 1.0,
+    "pseudobulk_pearson": 0.9863600000000001
+   },
+   "g_mom_null": {
+    "variance_ratio": 0.8461000000000001,
+    "mmd_u": 0.08843599999999999,
+    "variogram": 0.0035928,
+    "energy_distance": 1.379033,
+    "pb_rel_err": 0.16437000000000002,
+    "de_score": 0.1552,
+    "de_direction": 0.27078,
+    "library_size_ratio": 1.0,
+    "pseudobulk_pearson": 0.9861799999999998
+   }
+  },
+  "T1/E9.5->E10.5:endocardium": {
+   "floor": {
+    "variance_ratio": 0.8112,
+    "mmd_u": 0.13215700000000002,
+    "variogram": 0.0046727999999999995,
+    "energy_distance": 1.94101,
+    "pb_rel_err": 0.2016,
+    "de_score": 0.0,
+    "de_direction": 0.0,
+    "library_size_ratio": 1.0,
+    "pseudobulk_pearson": 0.97882
+   },
+   "b0": {
+    "variance_ratio": 0.8262,
+    "mmd_u": 0.126058,
+    "variogram": 0.0038205999999999995,
+    "energy_distance": 1.7783920000000002,
+    "pb_rel_err": 0.18544999999999998,
+    "de_score": 0.10615000000000001,
+    "de_direction": 0.37426,
+    "library_size_ratio": 1.0,
+    "pseudobulk_pearson": 0.98171
+   },
+   "g_mom": {
+    "variance_ratio": 0.8427999999999999,
+    "mmd_u": 0.11133699999999999,
+    "variogram": 0.0036485999999999997,
+    "energy_distance": 1.695532,
+    "pb_rel_err": 0.18284999999999998,
+    "de_score": 0.12023999999999999,
+    "de_direction": 0.38182,
+    "library_size_ratio": 1.0,
+    "pseudobulk_pearson": 0.98181
+   },
+   "g_mom_null": {
+    "variance_ratio": 0.8386999999999999,
+    "mmd_u": 0.122847,
+    "variogram": 0.0037276999999999996,
+    "energy_distance": 1.731354,
+    "pb_rel_err": 0.18430000000000002,
+    "de_score": 0.10969,
+    "de_direction": 0.37720000000000004,
+    "library_size_ratio": 1.0,
+    "pseudobulk_pearson": 0.9817199999999999
+   }
+  }
+ },
+ "passes": true,
+ "stamp": {
+  "commit": "d4580bf856c155f8561cfc1e744668e7b5383b02",
+  "tree_clean": true,
+  "utc": "2026-11-10T07:17:44Z",
+  "inputs": {
+   "configs/t1_late_proxy.yaml": "73d876993c756c04fd277ec00bc0a3e095b4aaf2ec4e10b790150fbe5d4c7c2b",
+   "experiments/t1_scope/results/t25_mixfree/tasks/T1_E9.5_E10.5_cm.json": "38a53c8dc4db66a165b5984c2f2e3178c7f2fd7282a8d66bedc195a135044754",
+   "experiments/t1_scope/results/t25_mixfree/tasks/T1_E9.5_E10.5_endocardium.json": "a21daaebb79e98a5e2bdf07da8423bbce6911357276448645dacf95db4f92afd",
+   "experiments/t1_m1/results/late_proxy_v1/gate/T1_E9.5_E10.5_cm.json": "fd55784ee01fc0a7d057087e7e6d6f1ae23d6d8a23cbf0f45c1028429d581aed",
+   "experiments/t1_m1/results/late_proxy_v1/gate/T1_E9.5_E10.5_endocardium.json": "b9fa868f64fe40c959d4a9452a35c64a1e05857a192dc209eb972d49f6ccde19"
+  }
+ }
+}

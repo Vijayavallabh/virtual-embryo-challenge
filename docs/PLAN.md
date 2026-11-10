@@ -1737,3 +1737,28 @@ open. No organiser reply to any of the four emails as of then.
   - **The six counted tries T20-T25 proceed**, by the rules of their rows, with the commit that holds this entry as their
     run commit. If all six run, T1's try count goes from 16 to 22. Nothing here changes an upload; g_mom can change one
     only if it passes and the captain then rules it in (row R3).
+- 2026-11-10 (m), g_mom's controls: all six passed (`experiments/harness/TRIES.md` rows T20-T25, run at d4580bf; T1's try
+  count is now 22). Judged before the run at about 10% for a joint pass.
+  - Paired gains, ten seeds, 10 of 10 ahead throughout, whole cut then chamber cut, reproduction gates all yes: g_mom
+    minus the sign flip +1.68, +1.85; minus the permutation +0.86, +0.93; minus the no-development control +0.69, +0.77;
+    the held arm minus b0 +0.66, +0.67 (validity within 0.002). T22 at the truth's chamber mix +0.87, 10 of 10 at the bar.
+    T25 inside one type: cardiomyocytes +3.59, endocardium +1.87.
+  - What this does and does not show. The six rule out the three doubts they were built for on these cuts: the gain is
+    not only the mix, not only each type's mean, and not only spread. It is still one E8.5 -> E9.5 fit read on one E10.5
+    library, n = 1 for the biology, and those cuts are the ones T11 was selected on, so none is adoption evidence for a
+    stack (section 3 item 8). The size-matched no-development control keeps +0.44 and +0.46 over b0 by itself, so about
+    40% of g_mom's gain comes with nothing developing. With the mix matched and the pseudobulk held together, the gain
+    is +0.32 and 6 of 10 seeds at the bar (reported, deciding nothing). N21's reading stands beside this: at the test
+    pair the gene sizes carry from the backtest's fit (Spearman 0.79 and 0.68) and the leading direction does not (|cos|
+    0.20 and 0.29 against ceilings 0.91 and 0.84).
+  - T22 raises the library flag of DATA_POLICY 2026-11-04 (f)(3): the oracle-mix population's median library size is
+    1.638 times E10.5's. Both arms carry it and T22 changes no upload, so it goes to the captain as information.
+  - R3 now meets its condition for a ruling and goes to the captain with N21. Not built; the option stays off and no file
+    changes. Still unmeasured: g_mom on top of M1, the base the test build would use (2026-11-10 (e)). R3 as registered
+    also edits the epicardium and vascular endothelium, which no backtest reads.
+  - Recommendation sent to the captain (by the AI assistant, under the 2026-11-02 delegation; the captain rules): do not
+    rule yet. First the panel's target-free additivity check (a diagnostic, not a try), then one labelled read of M1 with
+    the factors on top in diag_v1's geometry (A2, one counted T1 try, in-sample, never adoption evidence, with the panel's
+    raw-unit interference bar: the factors' raw mmd_u gain under half of T11's, or the raw variogram gain under half of
+    T11's, means interference). Then a ruling on a re-registered R3 limited to cardiomyocytes and endocardium, by 24 Nov
+    (the rebuild date). A changed s1 sends T1's s2 back to the captain.

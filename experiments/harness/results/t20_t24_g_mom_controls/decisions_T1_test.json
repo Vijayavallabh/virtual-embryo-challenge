@@ -1,0 +1,258 @@
+{
+ "board": "T1:test",
+ "runs": "/home/prachh/v/virtual-embryo-challenge/runs/harness/t20_t24_g_mom_controls",
+ "decisions": [
+  {
+   "base": "b0",
+   "change": "g_mom",
+   "counted": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber"
+   ],
+   "excluded": {
+    "T1/E8.5->E9.5": "change does not apply"
+   },
+   "configured": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber",
+    "T1/E8.5->E9.5"
+   ],
+   "decided_on": "2 of 3 configured pseudo-tasks",
+   "keep": true,
+   "reason": "passes on 2 of 2 pseudo-tasks (needs 2) and loses on none",
+   "tasks": {
+    "T1/E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": 1.1314596449754504,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    },
+    "T1/E9.5->E10.5:chamber": {
+     "complete": true,
+     "mean_gain": 1.2292671041656278,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 2,
+   "fit_checks": {}
+  },
+  {
+   "base": "b0",
+   "change": "g_mom_flip",
+   "counted": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber"
+   ],
+   "excluded": {
+    "T1/E8.5->E9.5": "change does not apply"
+   },
+   "configured": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber",
+    "T1/E8.5->E9.5"
+   ],
+   "decided_on": "2 of 3 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T1/E9.5->E10.5', 'T1/E9.5->E10.5:chamber']",
+   "tasks": {
+    "T1/E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": -0.5512479078133907,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    },
+    "T1/E9.5->E10.5:chamber": {
+     "complete": true,
+     "mean_gain": -0.621267176917776,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  },
+  {
+   "base": "b0",
+   "change": "g_mom_perm",
+   "counted": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber"
+   ],
+   "excluded": {
+    "T1/E8.5->E9.5": "change does not apply"
+   },
+   "configured": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber",
+    "T1/E8.5->E9.5"
+   ],
+   "decided_on": "2 of 3 configured pseudo-tasks",
+   "keep": false,
+   "reason": "passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 1 of 2 pseudo-tasks; needs 2",
+   "tasks": {
+    "T1/E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": 0.27609317245004733,
+     "seeds_ahead": 10,
+     "passes": false,
+     "vetoes": false
+    },
+    "T1/E9.5->E10.5:chamber": {
+     "complete": true,
+     "mean_gain": 0.3024985852479155,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 1,
+   "fit_checks": {}
+  },
+  {
+   "base": "b0",
+   "change": "g_mom_null",
+   "counted": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber"
+   ],
+   "excluded": {
+    "T1/E8.5->E9.5": "change does not apply"
+   },
+   "configured": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber",
+    "T1/E8.5->E9.5"
+   ],
+   "decided_on": "2 of 3 configured pseudo-tasks",
+   "keep": true,
+   "reason": "passes on 2 of 2 pseudo-tasks (needs 2) and loses on none",
+   "tasks": {
+    "T1/E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": 0.4371353851020515,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    },
+    "T1/E9.5->E10.5:chamber": {
+     "complete": true,
+     "mean_gain": 0.4572281178805646,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 2,
+   "fit_checks": {}
+  },
+  {
+   "base": "b0",
+   "change": "g_mom_held",
+   "counted": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber"
+   ],
+   "excluded": {
+    "T1/E8.5->E9.5": "change does not apply"
+   },
+   "configured": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber",
+    "T1/E8.5->E9.5"
+   ],
+   "decided_on": "2 of 3 configured pseudo-tasks",
+   "keep": true,
+   "reason": "passes on 2 of 2 pseudo-tasks (needs 2) and loses on none",
+   "tasks": {
+    "T1/E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": 0.6601219911763166,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    },
+    "T1/E9.5->E10.5:chamber": {
+     "complete": true,
+     "mean_gain": 0.6694220509648978,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 2,
+   "fit_checks": {}
+  }
+ ],
+ "summaries": {
+  "T1/E9.5->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "b0": [
+    44.116683628570335,
+    0.4633178753047292
+   ],
+   "g_mom": [
+    45.24814327354579,
+    0.5062320838798607
+   ],
+   "g_mom_flip": [
+    43.56543572075695,
+    0.44228362358125306
+   ],
+   "g_mom_perm": [
+    44.39277680102038,
+    0.4632315046413673
+   ],
+   "g_mom_null": [
+    44.55381901367239,
+    0.48577475800221864
+   ],
+   "g_mom_held": [
+    44.77680561974665,
+    0.4815755587241411
+   ]
+  },
+  "T1/E9.5->E10.5:chamber": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "b0": [
+    49.68290567973587,
+    0.6683315658494151
+   ],
+   "g_mom": [
+    50.9121727839015,
+    0.6963821539814895
+   ],
+   "g_mom_flip": [
+    49.06163850281809,
+    0.6708739832244945
+   ],
+   "g_mom_perm": [
+    49.98540426498378,
+    0.6759456544062975
+   ],
+   "g_mom_null": [
+    50.14013379761643,
+    0.6976557393259927
+   ],
+   "g_mom_held": [
+    50.352327730700765,
+    0.6846818674193891
+   ]
+  }
+ }
+}

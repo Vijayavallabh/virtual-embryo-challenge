@@ -3,6 +3,9 @@
 ## Current State
 
 **Last Updated:** 2026-11-10
+**2026-11-10, g_mom's controls (T20-T25, run at d4580bf):** all six passed, results in `docs/PLAN.md` decision log
+2026-11-10 (m). No upload changes: R3 is now eligible for the captain's ruling, the recommendation is to read M1 plus
+g_mom first (A2). Tries: T1 22, embryo 11, heart 3, T3 6. T1's strong-null bet is out (2026-11-10 (l)).
 **2026-11-10, the campaign's second wave:** results in `docs/PLAN.md` decision log 2026-11-10 (i). T12's stop rule says
 proceed (cost 0.195 on the control; +0.84 and +0.78 on the strong-null backtests), and the strong-null build stays off
 until the captain rules. The late-proxy tournament's gate failed on its endocardium veto, so nothing changes and T16-T18
