@@ -1711,3 +1711,21 @@ open. No organiser reply to any of the four emails as of then.
     not proposed; the numbers go to the captain either way. If all six run, T1's try count goes from 16 to 22.
   - The plain summary goes to the captain before the counted runs (2026-11-04 (d)). N21 reads no target and no score and
     is not a try, so it does not wait for that sign-off. Nothing here changes an upload.
+- 2026-11-10 (k), a correction to (i) and to the message that reported it, on the cost of T1's strong-null bet (raised by
+  a side agent's note the captain passed on, and checked against `experiments/t1_strong_null/results/stop_rule/` and
+  rows T12a and T12b). Nothing has been built and `configs/t1_strong_null.yaml` still says `approved: false`.
+  - **What was wrong.** (i) set the control's 0.195 points against the 0.33 the captain approved and derived a break-even
+    near 20% and an expected value of about zero. Points do not carry across tasks: the skill map's slope depends on the
+    floor distances, and the test's are hidden. That is why the stop rule reads the control in raw units, and (f) said so
+    when it registered the rule. The measurement that does carry is the raw shift: mmd_u +0.00152 and variogram +0.00013,
+    inside the bounds. The row's own estimate of the real cost stands at about 0.2 to 0.8 T1.
+  - **What the raw shift implies.** Near the floor, with the hypothetical floor distances `stop_rule.py` lists: about 0.17
+    points at mmd_u 0.11 and variogram 0.01, 0.26 at 0.08 and 0.0055, 0.45 at 0.05 and 0.003, and 1.2 at 0.024 and 0.0009.
+    Nothing we hold says which applies to the test, and no leaderboard figure may be used to find out.
+  - **Break-even chance that the test is in the bet's regime.** With the measured gain of +0.8: about 20% at a 0.2 loss,
+    38% at 0.5, 50% at 0.8. With the +1.2 to +1.75 estimated earlier for M1 at the test (an estimate, and the gain's points
+    have the same problem): 10-14%, 22-29% and 31-40%. At 17.5%, the middle of the reviewer's 15-20%, the expected value
+    with +0.8 is -0.03 at a 0.2 loss, -0.27 at 0.5 and -0.52 at 0.8; with +1.75 it is +0.14, -0.11 and -0.35.
+  - **Recommendation of the AI assistant to the captain:** leave the bet out of T1's files. Its expected value is negative
+    over most of that range at the reviewer's odds. The ruling is the captain's and stays open until T1's rebuild (by 24
+    Nov).
