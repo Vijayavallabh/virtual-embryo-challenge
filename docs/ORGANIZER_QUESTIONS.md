@@ -276,11 +276,13 @@ Best regards,
 Vijayavallabh J
 Team captain, Mithril
 
-## Sixth email (drafted 2026-11-10, not sent)
+## Sixth email (sent 2026-11-10)
 
 Drafted by the AI assistant on 2026-11-10 on the captain's "go ahead with your recommendation" (`docs/PLAN.md` decision
-log 2026-11-10 (u)), in the drafts of be23b041@smail.iitm.ac.in, to virtual.embryo.moonshot@gmail.com. The captain reads
-and sends it; on sending, this heading and `ASSUMPTIONS.md` A21 get the date. It corrects the architecture described in
+log 2026-11-10 (u)), in the drafts of be23b041@smail.iitm.ac.in, to virtual.embryo.moonshot@gmail.com. The captain sent
+it on 2026-11-10 (the captain's words in the main session: "i sent the email"; the draft had left the drafts folder when
+checked, and the sent copy was not opened, so any edit before sending is not recorded). Answers: _pending_ (record them
+in `docs/DATA_POLICY.md`). It corrects the architecture described in
 question 4 of the 18 October email and question 3 of the third email (the D3 review, decision log 2026-11-10 (s)). Text
 as drafted:
 

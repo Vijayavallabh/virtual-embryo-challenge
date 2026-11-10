@@ -3,8 +3,8 @@
 ## Current State
 
 **Last Updated:** 2026-11-10
-**2026-11-10, correction to the organisers drafted (decision log 2026-11-10 (u)):** a sixth email in the sender's Gmail
-drafts corrects the architecture described on 18 and 21 October. Not sent: the captain reads and sends it. M2 stays unbuilt.
+**2026-11-10, correction sent to the organisers (decision log 2026-11-10 (u), (v)):** the captain sent the sixth email, which
+corrects the architecture described on 18 and 21 October. No answer yet; the screened check before the first upload looks for one. M2 stays unbuilt.
 **2026-11-10, M2 not built (decision log 2026-11-10 (t)):** the reasons are now recorded. As a specialised pipeline it
 would need more than +3 on T1 alone (D3), and O1's oracle within-type move gained +0.010 against a bar of +1.5. The
 captain can overrule. No upload, build or try count changed.

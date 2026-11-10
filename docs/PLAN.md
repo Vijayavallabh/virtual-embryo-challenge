@@ -1897,3 +1897,6 @@ open. No organiser reply to any of the four emails as of then.
   functions, and asks whether this counts as one shared architecture. The statements were checked against the code at
   1020c09 and (s). The captain reads and sends it; on sending, that file and A21 get the date. No upload, build, rule or
   try count changes.
+- 2026-11-10 (v), the captain sent the sixth organiser email of (u), in the captain's words: "i sent the email". The draft had
+  left the drafts folder when checked; the sent copy was not opened. `docs/ORGANIZER_QUESTIONS.md` and A21 carry the date, and
+  the screened check before the first upload looks for the answer. No upload, build, rule or try count changes.

@@ -263,7 +263,7 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     2026-11-10 (`docs/PLAN.md` decision log 2026-11-10 (s)): the screened check before the first upload (26-27 Nov) also
     reads, from the Rules and Prizes pages, where and by when the method summary goes in, and how the source and stages
     of external data are to be stated with the submission: the client keeps the `--disclose` ids in the local ledger
-    and sends none of them.
+    and sends none of them. It also looks for the organisers' answer to the sixth email (`ASSUMPTIONS.md` A21).
   - T2: `vec.t2_build`, run from the repo root (the paths are relative). Count by `n_cells_from_decision(board,
     pool.n_obs, "experiments/density/results/release/count_decision.json")` (step 4.5; null keeps max_cells; a
     decided level below the test board's lower limit gives way to the next passing count up, the passing level with
