@@ -45,13 +45,14 @@ upload.
                configs/t1_late_proxy.yaml (T1/E9.5->E10.5:cm and T1/E9.5->E10.5:endocardium: target, reference and
                inputs cut to the category), where there is no chamber mix to repair and g_mom edits every cell of the
                read but R1's held labels, so the gain does not shrink as T22's does. The harness runs floor, b0, g_mom
-               and g_mom_null on both reads (seeds 0-9). Before reading anything the run's b0 must reproduce the committed late-proxy gate's
-               b0 on both reads within 0.02 points per seed (experiments/t1_m1/results/late_proxy_v1/gate/; otherwise
-               the reading is void and goes to the captain). Rule, vec.adoption's paired statistics: on the
-               cardiomyocyte read a paired mean gain above 0.3 points and ahead in at least 8 of 10 seeds, and on the
-               endocardium read no mean loss above 0.3 points; otherwise the gain is not shown within a type and g_mom
-               is not proposed. Reported, deciding nothing: g_mom against g_mom_null on both reads, the margins by
-               scored group and the metric panels. A read that cannot be built or scored voids the try, uncounted.
+               and g_mom_null on both reads (seeds 0-9). Before reading anything the run's b0 must reproduce the
+               committed late-proxy gate's b0 on both reads within 0.02 points per seed
+               (experiments/t1_m1/results/late_proxy_v1/gate/; otherwise the reading is void and goes to the captain).
+               Rule, vec.adoption's paired statistics: on the cardiomyocyte read a paired mean gain above 0.3 points and
+               ahead in at least 8 of 10 seeds, and on the endocardium read no mean loss above 0.3 points; otherwise the
+               gain is not shown within a type and g_mom is not proposed. Reported, deciding nothing: g_mom against
+               g_mom_null on both reads, the margins by scored group and the metric panels. A read that cannot be built
+               or scored voids the try, uncounted.
   n21          Diagnostic N21, target-free, the test pair. g_mom's factors fitted exactly as the test would fit them
                (start E9.5, reference E10.5, chamber categories; R1's held labels excluded at application), and the
                backtest's fit (start E8.5, reference E9.5) on the categories in both. Reported per category, deciding
