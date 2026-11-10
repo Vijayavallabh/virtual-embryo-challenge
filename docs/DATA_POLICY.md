@@ -795,3 +795,7 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   qualitative, every number replaced, audited before the main session reads it (`docs/PLAN.md` decision log 2026-11-10 (y), written
   before the read). The block of 2026-11-04 is not lifted by this: any change to a cell number, a size, a scope or a composition
   still needs the captain's ruling.
+- 2026-11-10 (d), process notes from the screened read of (c) (wf_3f55caa1-c95). One page only. In each agent WebFetch returned a
+  model-written summary, so each then made one plain curl request with default headers (HTTP 200) and stripped the markup locally
+  to stdout; no text was written to a file and no other page was opened. The auditor added two short clarifications and found no
+  residual number. Withheld, by class and count only: measured or relative property of a target: 3; sample other than the three released (held-out or otherwise outside this ruling): 13; test-board format or file property: 1; gene-level statement about losing a gene: 2; unsure, withheld by default: 4; passage or section outside the release definition (not about how the three samples were collected): 8.

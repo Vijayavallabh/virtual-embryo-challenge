@@ -3,6 +3,9 @@
 ## Current State
 
 **Last Updated:** 2026-11-10
+**2026-11-10, the withheld protocol text opened through the screen (decision log 2026-11-10 (y), (z)):** no entry changes. The E12.5
+hearts are described as dissected and sectioned whole, as E10.5 already was, which supports today's heart pair. No upload, build, rule or
+try count changed.
 **2026-11-10, the organisers' logical position assumed for every email (decision log 2026-11-10 (x)):** predicted, not ruled.
 The team already acts on the logical answer to nearly every question. All the strictness together is worth about +1 overall,
 against 19.66 points to third. The disclosure step is tightened to an email before the first upload. No upload, build, rule or

@@ -1982,3 +1982,19 @@ open. No organiser reply to any of the four emails as of then.
     - Task 3: no change whatever the text says. It was priced at about +0.05 against -6 to -8 for a misread, and its rules are frozen.
     - A silent or ambiguous text means no change. Any other qualitative fact is reported and recommended against unless
       committed results can price it.
+- 2026-11-10 (z), the outcome of (y). The screened read (wf_3f55caa1-c95; audit "fixed": two clarifications added, no residual
+  number) released the collection text for the three samples, now in `docs/DATA_NOTES.md`. **By the rules fixed in (y), no entry
+  changes.** Nothing was built or scored, and no upload, rule or try count changes.
+  - **Heart.** The text says the E12.5 hearts were dissected directly from the embryos and the entire heart sectioned, and it
+    does not say whether surrounding tissue stayed attached. (y)'s condition is a text stating that the sections hold no
+    surrounding embryo tissue, so it is not met. The AI assistant first read it as met and told the captain so, with a gain of
+    +2.3 to +2.5 heart points from the hedge tables; that was wrong and the figures do not apply. E10.5 is already on record
+    with the same description (`docs/DATA_NOTES.md`, the page's "hearts dissected and sectioned whole"), and its stack is 77%
+    outside the core, which is CM plus endocardium only. The tables' core-only truth is therefore no stand-in for a dissected
+    heart. What the text does support is that E12.5 is sampled like E10.5: that is today's s1, with today's s2 hedging a
+    tighter dissection. The arithmetic on the committed hedge rows is not counted as a try.
+  - **Embryo.** The sectioning orientation is not stated, so no change. New fact: the page gives E7.75 the same procedure as
+    E8.0 (sections from the yolk sac-embryo boundary to where the cardiac crescent ends). Today's s2 uses E7.5's geometry, so
+    this is a reason to prefer E8.0's; no committed result can price it (E8.0's geometry lost on the E7.5 pseudo-task, and this
+    release does not cover how E7.5 was collected), so by (y) it is reported and recommended against.
+  - **Task 3.** No change, as fixed in (y). The text adds nothing to the notes of 2026-10-31 that changes a rule.
