@@ -39,7 +39,7 @@ C-numbers claims in `experiments/coords/REPORT.md`, A-numbers rows of `ASSUMPTIO
 **Task 1, E12.5, beyond E10.5 verbatim.** s1 = M1 with R1 (cells without a Feng group keep their E10.5 expression; the
 captain's ruling of 2026-11-05), with R2's gene modules held in Feng's direction and, by the captain's ruling of
 2026-11-10 (R3b), within-type factors on cardiomyocytes and endocardium; s2 = the same with cardiomyocytes at 60% of
-heart cells (s2's new build awaits the captain's approval).
+heart cells.
 
 | Facet | Change beyond the baseline | Held-out evidence |
 |---|---|---|

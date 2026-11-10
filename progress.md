@@ -5,7 +5,7 @@
 **Last Updated:** 2026-11-10
 **2026-11-10, R3b built at f337dc6 (the captain's ruling, decision log 2026-11-10 (p), (q)):** g_mom's factors added to
 T1 for cardiomyocytes and endocardium only. T1's s1 and s2 rebuilt, the other eight files byte-identical; the
-freeze-morning reference is now `runs/archive/builds_f337dc6/SHA256SUMS`. T1's new s2 waits on the captain. With
+freeze-morning reference is now `runs/archive/builds_f337dc6/SHA256SUMS`. The captain approved T1's new s2 (decision log 2026-11-10 (r)). With
 `--g-mom`, T1's files depend on the BLAS thread count, and are byte-reproducible at build_all.sh's default of 16.
 Tries unchanged: T1 23, embryo 11, heart 3, T3 6. Nothing uploaded.
 **2026-11-10, g_mom on M1 (N22 and T26, run at 6d7babe):** N22 passed; T26 is void by its reproduction gate (a stale

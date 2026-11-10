@@ -1800,3 +1800,8 @@ open. No organiser reply to any of the four emails as of then.
     order in the fit's PCA, k-means or Sinkhorn steps; not traced further.
   - **The estimate stands** (184 committed). R3b's price is +0.2 to +0.6 if the gain carries, 0 to -0.2 if it is an
     artefact. Headroom tables unchanged, as with R1 and R2.
+- 2026-11-10 (r), the captain, on the plain report of (q), in the captain's words: "go ahead with your recommendation".
+  **T1's s2 approved as rebuilt:** s1's command plus `--cm-share 0.60` at f337dc6, carrying R3b
+  (`runs/archive/builds_f337dc6/builds/T1_s2.h5ad`, sha256 30f0cf594425...). It replaces the 02abf39 s2 (d48d3a55e45d...).
+  Both of T1's uploads are settled for the freeze; a later change to T1's s1 would send the s2 back again. Each official
+  upload still needs the captain's go-ahead at the time.
