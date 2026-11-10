@@ -1,0 +1,36 @@
+N21: diagnostic N21: g_mom's factors at the test pair (start E9.5, reference E10.5), against the backtest's (start E8.5, reference E9.5); target-free: no target, no score, no board, no built file, no cell count. Decides nothing; reported to the captain with the ruling.
+R1's held labels (no edit): Blood, Early VIC, Macrophage. Cells edited: 0.69 of the fitted categories' cells
+Depth, all edited cells: largest |E[depth after] / depth - 1| 7.23e-14 (kept by construction); realised depth ratio median 1.000, 1% to 99% 0.993 to 1.007; held cells' depth identical True
+blood: 27 metacells; mean |log f| 0.022 (not zeroed 0.149, 90% quantile 0.285); entries touched 0.221, genes touched 0.516, entries at the clip 0.000; cells touched 0.00 of the category (held by R1 1.00: Blood, Macrophage); expected depth moves at most 0.00e+00, realised depth ratio median n/a
+    amplification (the finished factors' regression on the metacell's own deviation, through the origin): test pair slope 0.397, R^2 0.417; backtest pair slope 0.392, R^2 0.602
+    share of the factor size on R2's union genes (the technical modules Feng's direction holds flat; g_mom's step does not hold them): l2 0.011, l1 0.006 of 40 union genes (test pair)
+    concordance with the backtest's fit: |cos| of the leading axes 0.137, Spearman of the per-gene sizes 0.718
+    the same after projecting the amplification component out of each fit: |cos| 0.143, Spearman 0.892
+    no-development reference (the concordance of two same-stage halves' fits, E10.5's and E9.5's: what these statistics read with nothing developing): |cos| 0.013, Spearman 0.588
+    size of the no-development fit against g_mom's fit (before T23 scales it up to g_mom's size): test pair 0.472, backtest pair 1.483
+    split-half ceilings (half-data estimates, each halving the cells of a fit and so under-estimating the full-data ceiling; test pair; backtest pair; their geometric mean): axis |cos| 0.577; 0.016; 0.095; size Spearman 0.795; 0.487
+cm: 23 metacells; mean |log f| 0.009 (not zeroed 0.095, 90% quantile 0.154); entries touched 0.106, genes touched 0.376, entries at the clip 0.000; cells touched 1.00 of the category (held by R1 0.00: none); expected depth moves at most 6.64e-14, realised depth ratio median 1.000
+    amplification (the finished factors' regression on the metacell's own deviation, through the origin): test pair slope 0.180, R^2 0.350; backtest pair slope 0.184, R^2 0.372
+    share of the factor size on R2's union genes (the technical modules Feng's direction holds flat; g_mom's step does not hold them): l2 0.025, l1 0.012 of 40 union genes (test pair)
+    concordance with the backtest's fit: |cos| of the leading axes 0.203, Spearman of the per-gene sizes 0.786
+    the same after projecting the amplification component out of each fit: |cos| 0.041, Spearman 0.955
+    no-development reference (the concordance of two same-stage halves' fits, E10.5's and E9.5's: what these statistics read with nothing developing): |cos| 0.028, Spearman 0.357
+    size of the no-development fit against g_mom's fit (before T23 scales it up to g_mom's size): test pair 0.514, backtest pair 0.450
+    split-half ceilings (half-data estimates, each halving the cells of a fit and so under-estimating the full-data ceiling; test pair; backtest pair; their geometric mean): axis |cos| 0.902; 0.916; 0.909; size Spearman 0.694; 0.808
+endocardium: 38 metacells; mean |log f| 0.012 (not zeroed 0.098, 90% quantile 0.162); entries touched 0.127, genes touched 0.414, entries at the clip 0.000; cells touched 0.80 of the category (held by R1 0.20: Early VIC); expected depth moves at most 6.31e-14, realised depth ratio median 1.000
+    amplification (the finished factors' regression on the metacell's own deviation, through the origin): test pair slope 0.288, R^2 0.642; backtest pair slope 0.280, R^2 0.527
+    share of the factor size on R2's union genes (the technical modules Feng's direction holds flat; g_mom's step does not hold them): l2 0.012, l1 0.008 of 40 union genes (test pair)
+    concordance with the backtest's fit: |cos| of the leading axes 0.286, Spearman of the per-gene sizes 0.682
+    the same after projecting the amplification component out of each fit: |cos| 0.081, Spearman 0.929
+    no-development reference (the concordance of two same-stage halves' fits, E10.5's and E9.5's: what these statistics read with nothing developing): |cos| 0.007, Spearman 0.267
+    size of the no-development fit against g_mom's fit (before T23 scales it up to g_mom's size): test pair 0.476, backtest pair 0.482
+    split-half ceilings (half-data estimates, each halving the cells of a fit and so under-estimating the full-data ceiling; test pair; backtest pair; their geometric mean): axis |cos| 0.929; 0.757; 0.838; size Spearman 0.822; 0.329
+epicardium: 20 metacells; mean |log f| 0.006 (not zeroed 0.092, 90% quantile 0.150); entries touched 0.097, genes touched 0.400, entries at the clip 0.000; cells touched 1.00 of the category (held by R1 0.00: none); expected depth moves at most 7.23e-14, realised depth ratio median 1.000
+    amplification (the finished factors' regression on the metacell's own deviation, through the origin): test pair slope 0.264, R^2 0.512
+    share of the factor size on R2's union genes (the technical modules Feng's direction holds flat; g_mom's step does not hold them): l2 0.026, l1 0.012 of 40 union genes (test pair)
+    not in the backtest's fit: no concordance
+vascular_endothelium: 5 metacells; mean |log f| 0.010 (not zeroed 0.089, 90% quantile 0.141); entries touched 0.110, genes touched 0.261, entries at the clip 0.000; cells touched 1.00 of the category (held by R1 0.00: none); expected depth moves at most 5.15e-14, realised depth ratio median 1.000
+    amplification (the finished factors' regression on the metacell's own deviation, through the origin): test pair slope 0.352, R^2 0.614
+    share of the factor size on R2's union genes (the technical modules Feng's direction holds flat; g_mom's step does not hold them): l2 0.003, l1 0.004 of 40 union genes (test pair)
+    not in the backtest's fit: no concordance
+Commit 55244eb66e0a2a8963036da776b76aeb99493521, tree clean True, UTC 2026-11-10T01:56:48Z

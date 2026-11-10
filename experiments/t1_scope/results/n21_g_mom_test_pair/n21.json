@@ -1,0 +1,343 @@
+{
+ "label": "diagnostic N21: g_mom's factors at the test pair (start E9.5, reference E10.5), against the backtest's (start E8.5, reference E9.5); target-free: no target, no score, no board, no built file, no cell count",
+ "pairs": {
+  "test": [
+   "E9.5",
+   "E10.5"
+  ],
+  "backtest": [
+   "E8.5",
+   "E9.5"
+  ]
+ },
+ "categories_test_pair": [
+  "blood",
+  "cm",
+  "endocardium",
+  "epicardium",
+  "vascular_endothelium"
+ ],
+ "categories_backtest_pair": [
+  "blood",
+  "cm",
+  "endocardium"
+ ],
+ "categories_in_both": [
+  "blood",
+  "cm",
+  "endocardium"
+ ],
+ "skipped_test_pair": [],
+ "skipped_backtest_pair": [
+  "epicardium",
+  "vascular_endothelium"
+ ],
+ "r1_held_labels": [
+  "Blood",
+  "Early VIC",
+  "Macrophage"
+ ],
+ "test_pair": {
+  "blood": {
+   "factor_size": {
+    "mean_abs_log_f": 0.022101419698700085,
+    "mean_abs_log_f_nonzero": 0.1486618210030452,
+    "q90_abs_log_f_nonzero": 0.28461446675107027,
+    "share_entries_touched": 0.22055187044958294,
+    "share_genes_touched": 0.516489988221437,
+    "share_entries_at_clip": 0.00023763767487033248,
+    "n_metacells": 27
+   },
+   "share_of_category_cells_touched": 0.0,
+   "share_of_category_cells_held_by_r1": 1.0,
+   "held_labels_in_category": [
+    "Blood",
+    "Macrophage"
+   ],
+   "amplification": {
+    "test": {
+     "slope": 0.3967518742054822,
+     "r2": 0.4172891498913157
+    },
+    "backtest": {
+     "slope": 0.3924553450988938,
+     "r2": 0.6017872180852477
+    }
+   },
+   "r2_union_share": {
+    "test": {
+     "l2_share": 0.011111301452051067,
+     "l1_share": 0.00610020432399832,
+     "union_genes_in_fit": 40
+    }
+   },
+   "concordance_with_backtest": {
+    "axis_abs_cosine": 0.1373455334749647,
+    "size_spearman": 0.7183483258600168
+   },
+   "concordance_after_projecting_amplification": {
+    "axis_abs_cosine": 0.14338652532337778,
+    "size_spearman": 0.8923872473890219
+   },
+   "split_half_ceiling": {
+    "axis_abs_cosine_test": 0.5772882819336195,
+    "axis_abs_cosine_backtest": 0.015650478197006514,
+    "axis_geometric_mean": 0.09505176310721154,
+    "size_spearman_test": 0.794549882894643,
+    "size_spearman_backtest": 0.48683272633025104
+   },
+   "no_development_reference": {
+    "axis_abs_cosine": 0.013474977365123101,
+    "size_spearman": 0.5881303517196363
+   },
+   "no_development_size_ratio": {
+    "test": 0.4723656621926934,
+    "backtest": 1.4828697380257168
+   }
+  },
+  "cm": {
+   "factor_size": {
+    "mean_abs_log_f": 0.009373831539689206,
+    "mean_abs_log_f_nonzero": 0.09477493874406072,
+    "q90_abs_log_f_nonzero": 0.153505410667529,
+    "share_entries_touched": 0.10633859190917838,
+    "share_genes_touched": 0.3762011034653772,
+    "share_entries_at_clip": 2.695323344465019e-06,
+    "n_metacells": 23
+   },
+   "share_of_category_cells_touched": 1.0,
+   "share_of_category_cells_held_by_r1": 0.0,
+   "held_labels_in_category": [],
+   "amplification": {
+    "test": {
+     "slope": 0.18007864958089537,
+     "r2": 0.3501402338730003
+    },
+    "backtest": {
+     "slope": 0.18382638334866522,
+     "r2": 0.37167785816180143
+    }
+   },
+   "r2_union_share": {
+    "test": {
+     "l2_share": 0.024892713044141472,
+     "l1_share": 0.012015318701303743,
+     "union_genes_in_fit": 40
+    }
+   },
+   "concordance_with_backtest": {
+    "axis_abs_cosine": 0.20292128515984528,
+    "size_spearman": 0.7859300895720831
+   },
+   "concordance_after_projecting_amplification": {
+    "axis_abs_cosine": 0.04133148093608268,
+    "size_spearman": 0.9549792021332321
+   },
+   "split_half_ceiling": {
+    "axis_abs_cosine_test": 0.9022706487854391,
+    "axis_abs_cosine_backtest": 0.9155647499787652,
+    "axis_geometric_mean": 0.9088933936212865,
+    "size_spearman_test": 0.6942407162751266,
+    "size_spearman_backtest": 0.8078570257359474
+   },
+   "no_development_reference": {
+    "axis_abs_cosine": 0.02814518317682942,
+    "size_spearman": 0.35678177238000675
+   },
+   "no_development_size_ratio": {
+    "test": 0.5144447864057561,
+    "backtest": 0.4498582262918821
+   }
+  },
+  "endocardium": {
+   "factor_size": {
+    "mean_abs_log_f": 0.011758810972004513,
+    "mean_abs_log_f_nonzero": 0.09755168661014002,
+    "q90_abs_log_f_nonzero": 0.16185296838109697,
+    "share_entries_touched": 0.12656653256723732,
+    "share_genes_touched": 0.4142334635174509,
+    "share_entries_at_clip": 6.525519676073203e-06,
+    "n_metacells": 38
+   },
+   "share_of_category_cells_touched": 0.800070089363939,
+   "share_of_category_cells_held_by_r1": 0.19992991063606097,
+   "held_labels_in_category": [
+    "Early VIC"
+   ],
+   "amplification": {
+    "test": {
+     "slope": 0.28845357673019983,
+     "r2": 0.6423650649771935
+    },
+    "backtest": {
+     "slope": 0.28020530582267283,
+     "r2": 0.5265570083001396
+    }
+   },
+   "r2_union_share": {
+    "test": {
+     "l2_share": 0.012056581546888517,
+     "l1_share": 0.007753284368556065,
+     "union_genes_in_fit": 40
+    }
+   },
+   "concordance_with_backtest": {
+    "axis_abs_cosine": 0.2862949075112252,
+    "size_spearman": 0.6822714867711926
+   },
+   "concordance_after_projecting_amplification": {
+    "axis_abs_cosine": 0.08100892673922616,
+    "size_spearman": 0.9285906421986981
+   },
+   "split_half_ceiling": {
+    "axis_abs_cosine_test": 0.9287070362937963,
+    "axis_abs_cosine_backtest": 0.7567798042533744,
+    "axis_geometric_mean": 0.838347618315428,
+    "size_spearman_test": 0.8220720585760198,
+    "size_spearman_backtest": 0.32880105496481715
+   },
+   "no_development_reference": {
+    "axis_abs_cosine": 0.00657143875198621,
+    "size_spearman": 0.267034758535956
+   },
+   "no_development_size_ratio": {
+    "test": 0.47579511779247563,
+    "backtest": 0.482390968792363
+   }
+  },
+  "epicardium": {
+   "factor_size": {
+    "mean_abs_log_f": 0.005870889199337818,
+    "mean_abs_log_f_nonzero": 0.09160953229070597,
+    "q90_abs_log_f_nonzero": 0.15017114191505668,
+    "share_entries_touched": 0.09704916000247969,
+    "share_genes_touched": 0.40006819168061497,
+    "share_entries_at_clip": 0.0,
+    "n_metacells": 20
+   },
+   "share_of_category_cells_touched": 1.0,
+   "share_of_category_cells_held_by_r1": 0.0,
+   "held_labels_in_category": [],
+   "amplification": {
+    "test": {
+     "slope": 0.2644883613978864,
+     "r2": 0.5117099670353448
+    }
+   },
+   "r2_union_share": {
+    "test": {
+     "l2_share": 0.026402281540950076,
+     "l1_share": 0.011846253736126766,
+     "union_genes_in_fit": 40
+    }
+   }
+  },
+  "vascular_endothelium": {
+   "factor_size": {
+    "mean_abs_log_f": 0.009590584101065653,
+    "mean_abs_log_f_nonzero": 0.08919497852744733,
+    "q90_abs_log_f_nonzero": 0.14135712765569966,
+    "share_entries_touched": 0.10991878990763126,
+    "share_genes_touched": 0.2610191556630091,
+    "share_entries_at_clip": 0.0,
+    "n_metacells": 5
+   },
+   "share_of_category_cells_touched": 1.0,
+   "share_of_category_cells_held_by_r1": 0.0,
+   "held_labels_in_category": [],
+   "amplification": {
+    "test": {
+     "slope": 0.3522708075635765,
+     "r2": 0.6144993321099642
+    }
+   },
+   "r2_union_share": {
+    "test": {
+     "l2_share": 0.0029673390318082087,
+     "l1_share": 0.0036222223725149313,
+     "union_genes_in_fit": 40
+    }
+   }
+  }
+ },
+ "depth": {
+  "max_abs_expected_ratio_minus_1": 7.227551890309769e-14,
+  "share_of_fitted_cells_edited": 0.6926079105260092,
+  "realised_depth_ratio_edited": {
+   "median": 1.0,
+   "q01": 0.992960569848673,
+   "q99": 1.0070099355633417
+  },
+  "realised_depth_identical_when_held": true,
+  "per_category": {
+   "blood": {
+    "max_abs_expected_ratio_minus_1": 0.0,
+    "realised_depth_ratio": {
+     "median": null,
+     "q01": null,
+     "q99": null
+    }
+   },
+   "cm": {
+    "max_abs_expected_ratio_minus_1": 6.639133687258436e-14,
+    "realised_depth_ratio": {
+     "median": 1.0,
+     "q01": 0.992465019031918,
+     "q99": 1.0075507239532124
+    }
+   },
+   "endocardium": {
+    "max_abs_expected_ratio_minus_1": 6.306066779870889e-14,
+    "realised_depth_ratio": {
+     "median": 1.0,
+     "q01": 0.9925490509646339,
+     "q99": 1.007286247834624
+    }
+   },
+   "epicardium": {
+    "max_abs_expected_ratio_minus_1": 7.227551890309769e-14,
+    "realised_depth_ratio": {
+     "median": 1.0,
+     "q01": 0.9943546259115249,
+     "q99": 1.0051777764494483
+    }
+   },
+   "vascular_endothelium": {
+    "max_abs_expected_ratio_minus_1": 5.1514348342607263e-14,
+    "realised_depth_ratio": {
+     "median": 1.0,
+     "q01": 0.993022940554397,
+     "q99": 1.006683604384668
+    }
+   }
+  }
+ },
+ "settings": {
+  "damping": 0.5,
+  "split_seed": 20261110,
+  "no_development_streams": {
+   "test": 2,
+   "backtest": 3
+  },
+  "apply_stream": [
+   20261110,
+   5
+  ],
+  "zero_below": 0.04879016416943204,
+  "clip_at": 1.0986122886681098
+ },
+ "stamp": {
+  "commit": "55244eb66e0a2a8963036da776b76aeb99493521",
+  "tree_clean": true,
+  "utc": "2026-11-10T01:56:48Z",
+  "inputs": {
+   "data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+   "data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+   "data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+   "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+   "configs/t1_chamber_classes.yaml": "fa627bb9d6f29f4b6ac9eac8f7897cfb2de66b39b4967df0c7465c7ed6664970",
+   "experiments/t1_direction/config.yaml": "bae9b7aa747b17658aa25b4c1984bc3f7a3dbaca9a0970f7b60aa8e9b504c69f",
+   "experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841"
+  }
+ }
+}
