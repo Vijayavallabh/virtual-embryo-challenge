@@ -3,6 +3,9 @@
 ## Current State
 
 **Last Updated:** 2026-11-10
+**2026-11-10, M2 not built (decision log 2026-11-10 (t)):** the reasons are now recorded. As a specialised pipeline it
+would need more than +3 on T1 alone (D3), and O1's oracle within-type move gained +0.010 against a bar of +1.5. The
+captain can overrule. No upload, build or try count changed.
 **2026-11-10, D3 read ahead of its date (decision log 2026-11-10 (s)):** claim the Generality Award by the rule's default.
 No specialised pipeline has a score on any board, so the comparison was not run and cannot be run as written; A16 stays
 untested. `METHOD_SUMMARY.md` corrected: the T3 files call no core function, and no core function runs on more than two

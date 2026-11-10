@@ -215,7 +215,7 @@ Facts that shape it (`docs/research/digest_2026-10-19.md`, gap-fills 1 and 3):
 |---|---|---|---|
 | B0 floor-plus | E10.5 real cells re-weighted to a chamber-only composition (surrounding, second-heart-field, pericardial and pharyngeal types dropped; blood at E10.5's own chamber share, about 24%, captain 2026-11-01) plus a per-type count-space momentum shift | 2 days | passes the adoption rule against copy_last |
 | M1 main | B0's composition with the cardiomyocyte share as the hedged parameter, per-type count-space shifts with direction from the Feng bracket (E10.5 to E14.5+, t ≈ 0.5) if the readout passes, damped momentum otherwise, and cheap proxy births by the legal route | 1-2 weeks | passes the adoption rule against B0 |
-| M2 diverse bet | moscot OT bracketing from our E10.5 to external E14.5 in a shared scVI latent, decoded by count sampling; built only if the readout passes | 2-3 weeks | passes the adoption rule against M1 |
+| M2 diverse bet | moscot OT bracketing from our E10.5 to external E14.5 in a shared scVI latent, decoded by count sampling; built only if the readout passes (it passed on 2026-10-28; not built, decision log 2026-11-10 (t)) | 2-3 weeks | passes the adoption rule against M1 |
 | Stretch | Whole-ladder non-autonomous flow with growth (VGFM-style, reimplemented on torchcfm/POT) | only if time | passes the adoption rule against M1 |
 
 Validation: predict E10.5 from E8.5 and E9.5 (plus legal external data), scored by the emulator over 10 seeds. Bracket
@@ -1863,3 +1863,29 @@ open. No organiser reply to any of the four emails as of then.
     the organisers "with the submission" (`docs/DATA_POLICY.md`): the client keeps the `--disclose` ids in the local
     ledger and sends none, and its only free-text fields are `model` and `architecture`, 200 characters each. That and
     the route and date for the summary are added to the screened check before the first upload (`docs/P3_RUNBOOK.md`).
+- 2026-11-10 (t), M2 is not built (the AI assistant, under the captain's delegation of 2026-11-02; the captain can overrule).
+  A side agent's note, relayed by the captain, asked for M2 to be built or the reason recorded; this settles the M2 item
+  left open in (s). M2 is the plan's T1 "diverse bet": moscot OT from our E10.5 to Feng's E14.5 in a shared scVI latent,
+  decoded by count sampling. Its gate said build on 2026-10-28 (`experiments/t1_direction/results/E10.5/decision.json`:
+  de_score +0.175 and de_direction +0.188 over momentum against a bar of 0.05, cardiomyocyte sign agreement 0.912 against
+  0.70). The same verdict set M1's direction to Feng, which M1 uses; M2 itself was never started and no code for it exists.
+  - **The bar it would have to clear.** Under D3's rule specialised code replaces the shared core only if it wins by more
+    than 3 points of overall standing, and T1 counts once in that total, so M2 would have to gain more than +3 on T1 alone.
+    Anything less keeps the shared-core entry.
+  - **The closest measurement.** O1 (T8-T10, `experiments/t1_scope/results/o1_decision/`): an oracle within-type move
+    towards the real later-stage sibling library, each type's pseudobulk held, gained +0.010 points on mmd_u + variogram
+    over the per-type shift (ahead in 4 of 10 seeds; bar +1.5 and 8 of 10), where real sibling cells at the truth's shares
+    gain +5.05. By the rule written before it ran, that stopped the G line (G-LT, G-Full), the campaign's GPU generators of
+    within-type state, Feng-anchored like M2. Its limit: one earlier transition, E8.5 to E9.5. T11's cheaper within-type
+    step did gain on the E10.5 cuts (+1.13 and +1.23, about 40% of it with nothing developing) and is in T1 already as R3b,
+    so M2 would have to beat that gain before adding to it.
+  - **What is left for it to change.** Since 2026-11-04 no try changes a cell number, a size, a scope, T1's depth or, except
+    by the legal route, T1's composition, so M2's growth marginals are closed and only within-type expression remains, the
+    part O1 read.
+  - **It cannot be judged or finished in time.** Its condition was the adoption rule against M1, and no T1 pseudo-task can
+    score M1 (Feng's E9.5 lies inside every window), so it could enter only by the captain's ruling. It also needs the X002
+    and X005 rulings that were never asked because O1 stopped that line, uses an scVI decoder of the kind that failed its
+    target-free fidelity gate on the embryo (E14, N18), and was estimated at 2-3 weeks against 17 days to the freeze.
+  - **Effect and limits.** No upload, build or try count changes (T1 23, embryo 11, heart 3, T3 6). What M2 itself would
+    score is not measured: this rests on the evidence above, not on a run of it. If the captain wants it tried, the first
+    step is a target-free check of the decoder's fidelity on T1's cells, one GPU job before any row that costs a try.

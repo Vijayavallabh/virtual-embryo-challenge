@@ -579,6 +579,11 @@ captain's delegation of 2026-11-02; he can overrule. Design only: no try ran, an
   - the embryo s2 at fraction 1/4: declined (today's s2 stands);
   - the heart hold: declined (sheet E's default);
   - T3's acquisition-text depth premise: not done.
+- **T1: M2, moscot OT from E10.5 to Feng's E14.5 in a shared scVI latent, decoded by count sampling** (2026-11-10,
+  `docs/PLAN.md` decision log 2026-11-10 (t)). Its gate said build on 2026-10-28; no code was written. As a specialised
+  pipeline it would have to win by more than 3 overall points to be used (D3), so more than +3 on T1 alone. O1 read an
+  oracle within-type move at +0.010 against a bar of +1.5, the block closes its growth step, no T1 pseudo-task can score
+  M1 to judge it against, and it was estimated at 2-3 weeks with 17 days left. Not run and not counted.
 
 ## Diagnostics behind these choices
 

@@ -157,7 +157,7 @@
         "feat-020"
       ],
       "status": "not-started",
-      "evidence": "2026-10-28: the pre-registered T1 direction readout (runbook step 4.3, 3c5cc66, experiments/t1_direction/results/E10.5/decision.json) says build. Not started. 2026-11-10: still not started; no file records a decision to drop it (the nearest record is the stop of T1's GPU modelling, docs/PLAN.md decision log 2026-11-10 (c), (e), which does not name it). Decision log 2026-11-10 (s)."
+      "evidence": "2026-10-28: the pre-registered T1 direction readout (runbook step 4.3, 3c5cc66, experiments/t1_direction/results/E10.5/decision.json) says build. Not started. 2026-11-10: still not started; no file records a decision to drop it (the nearest record is the stop of T1's GPU modelling, docs/PLAN.md decision log 2026-11-10 (c), (e), which does not name it). Decision log 2026-11-10 (s). 2026-11-10: not to be built unless the captain overrules (docs/PLAN.md decision log 2026-11-10 (t)); nothing was run for it."
     },
     {
       "id": "feat-016",
