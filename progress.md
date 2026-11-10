@@ -2,7 +2,9 @@
 
 ## Current State
 
-**Last Updated:** 2026-11-10
+**Last Updated:** 2026-11-11
+**2026-11-11, E16 and E17 registered (decision log 2026-11-11 (a)):** the embryo s2's geometry priced on a pseudo-task that copies
+the test's structure (target sampled like the later bracket). Row and script committed before the run; two counted embryo tries.
 **2026-11-10, the withheld protocol text opened through the screen (decision log 2026-11-10 (y), (z)):** no entry changes. The E12.5
 hearts are described as dissected and sectioned whole, as E10.5 already was, which supports today's heart pair. No upload, build, rule or
 try count changed.

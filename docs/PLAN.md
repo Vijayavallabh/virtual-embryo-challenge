@@ -1998,3 +1998,9 @@ open. No organiser reply to any of the four emails as of then.
     this is a reason to prefer E8.0's; no committed result can price it (E8.0's geometry lost on the E7.5 pseudo-task, and this
     release does not cover how E7.5 was collected), so by (y) it is reported and recommended against.
   - **Task 3.** No change, as fixed in (y). The text adds nothing to the notes of 2026-10-31 that changes a rule.
+- 2026-11-11 (a), the captain, in the captain's words: "Go ahead", on a side agent's note and the AI assistant's plain summary of
+  the test and its rule: price the embryo s2's geometry. Tries E16 and E17 are registered in `experiments/harness/TRIES.md` and
+  coded in `experiments/harness/sampling_shape.py`, both committed before the run. On T2e/E8.0+E8.5->E8.25_late, the switch of
+  s2 to fgw_shape1 is recommended if the better of fgw and fgw_shape1 beats the better of fgw and fgw_shape0 by more than 0.3
+  points in the mean and in at least 8 of 10 seeds; the control T2e/E8.25_late+E8.75->E8.5 decides nothing. Two counted embryo
+  tries (11 to 13). Any change to s2 is the captain's ruling, before the freeze of 2026-11-27.
