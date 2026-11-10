@@ -37,7 +37,9 @@ baselines"). In this section, D-numbers are the pre-registered Task 3 rules (`ex
 C-numbers claims in `experiments/coords/REPORT.md`, A-numbers rows of `ASSUMPTIONS.md` and E11 a `TRIES.md` row.
 
 **Task 1, E12.5, beyond E10.5 verbatim.** s1 = M1 with R1 (cells without a Feng group keep their E10.5 expression; the
-captain's ruling of 2026-11-05); s2 = the same with cardiomyocytes at 60% of heart cells.
+captain's ruling of 2026-11-05), with R2's gene modules held in Feng's direction and, by the captain's ruling of
+2026-11-10 (R3b), within-type factors on cardiomyocytes and endocardium; s2 = the same with cardiomyocytes at 60% of
+heart cells (s2's new build awaits the captain's approval).
 
 | Facet | Change beyond the baseline | Held-out evidence |
 |---|---|---|
@@ -172,6 +174,14 @@ Task 3's s2 is the wild type plus a five-state depletion, by design.
   lie inside each one's external window). A labelled end-to-end diagnostic in the readout's geometry: +1.29 and +1.09
   board points over B0, 10 of 10 seeds, measured before R1 (`experiments/t1_m1/results/diag_v1/`). Sex-linked, Y-linked
   and strain-variable genes are held flat (a list fixed from E8.5 and E9.5 before E10.5 was released).
+- **Within-type states (R3b, the captain's ruling of 2026-11-10).** On cardiomyocytes and endocardium only, after
+  Feng's direction, each cell also takes a per-metacell, category-mean-free change fitted by optimal transport within its
+  category from E9.5 to E10.5 (damped by 0.5, zeroed below log 1.05, clipped at log 3, expected depth kept; shares, cell
+  numbers and scope untouched). Evidence: T11 passed the adoption rule on two E10.5 cuts and its controls T20 to T25
+  passed (`experiments/harness/TRIES.md`; one fit, cuts T11 was selected on). M1 does not interfere with it: the
+  factors kept 0.96 to 0.99 of their gain on M1 (T26, void by its reproduction gate; the captain accepted its numbers).
+  At the test pair the per-gene sizes carry but the leading axis does not (N21), and the one-day step is applied
+  unscaled to the two-day horizon, which is untested.
 - **What the T1 scorer rewards.** On the released E9.5 -> E10.5 transition the changed genes are mostly highly
   expressed genes going down, which de_score's expression-magnitude null names 39-41% of; a copy names 11%
   (`experiments/harness/results/t1_de_v1/`). Direction quality is what moves de_score above its floor.

@@ -3,6 +3,8 @@
 # (s1, s2, t3alt) with experiments/builds/build_all.sh at each BLAS thread count given, each into its own folder, then
 # compares every file's SHA256 with an archived set. It protects the freeze-morning hash check: a file that changes
 # with the thread count, or between runs, would make that check fail for a reason that is not a method change.
+# Since R3b (docs/PLAN.md decision log 2026-11-10 (q)) T1's two files depend on the thread count: they match the archive at
+# build_all.sh's default of 16 only, and other thread counts flag those two files.
 # Target-free: the same builders on the released inputs; it reads no target and computes no score. Nothing is
 # uploaded.
 #

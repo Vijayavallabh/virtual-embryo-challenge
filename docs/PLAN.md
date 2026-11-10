@@ -1783,3 +1783,20 @@ open. No organiser reply to any of the four emails as of then.
   carries the panel's clauses: held set named, no horizon scaling, edited share, running count). T1's s1 is rebuilt at the
   row's clean commit and T1's s2 goes back to the captain. T1's try count stays 23: the ruling and the build are not tries.
   The estimate stands (184 committed), as with R1 and R2, which entered by ruling with no counted run.
+- 2026-11-10 (q), R3b built at f337dc6 (the row is e6f8320; f337dc6 only wraps two long lines that e6f8320's commit let
+  through a failed lint check, with no change in behaviour). No score, no try, nothing uploaded; T1's count stays 23.
+  - **Checks.** Full suite on the DGX: 1176 passed, 1 skipped. `vec check` passed on all ten files, stamps clean. Against
+    the 02abf39 archive only T1's two files changed; the other eight are byte-identical. Each new T1 file has the old
+    file's cells and genes in the same order; 0.53 of s1's rows and 0.40 of s2's are identical to the old files, as the
+    row's edited shares (0.47 and 0.60) say.
+  - **The new freeze-morning reference** is `runs/archive/builds_f337dc6/SHA256SUMS`: T1_s1 c098c6aa0a16..., T1_s2
+    30f0cf594425... T1_s1 is the new s1. T1_s2 is built by the unchanged rule (s1's command plus `--cm-share 0.60`) and
+    goes back to the captain; until then the s2 they approved stays the 02abf39 file, d48d3a55e45d...
+  - **New limit on determinism.** With `--g-mom` T1's two files depend on the BLAS thread count: at 16 and at 8 threads,
+    0.41 of s1's rows differ, in 0.043 of its entries (largest cell depth difference 0.008). A repeat at 16 threads
+    is byte-identical (c098c6aa0a16...), and the fit does not depend on other jobs' load (one 16-thread build ran beside
+    the 8-thread chain, the repeat ran alone). So builds meant for an upload use build_all.sh's default of 16, and
+    `determinism_check.sh` at other thread counts will now flag T1's two files. The cause is expected to be floating-point
+    order in the fit's PCA, k-means or Sinkhorn steps; not traced further.
+  - **The estimate stands** (184 committed). R3b's price is +0.2 to +0.6 if the gain carries, 0 to -0.2 if it is an
+    artefact. Headroom tables unchanged, as with R1 and R2.
