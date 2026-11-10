@@ -1692,3 +1692,22 @@ open. No organiser reply to any of the four emails as of then.
     show the mechanism, or on an expected value near +0.01 Overall. The one survivor is a single labelled check of how
     g_mom combines with M1, in-sample and never adoption evidence, only if g_mom's controls pass. No new try is
     registered from it yet.
+- 2026-11-10 (j), g_mom's controls registered (merge b61913a; `experiments/harness/TRIES.md` rows T20-T25, N21, R3; no
+  counted run yet, and nothing has run on project data). T11 (g_mom) is the only change of the campaign to pass the
+  adoption rule, so before it can go to the captain for a ruling it has to survive controls for three doubts: O1's +0.01
+  for an oracle within-type shape (the gain may be a per-type mean effect), the cardiomyocyte-heavy E9.5 mix of both
+  counted E10.5 cuts (the gain may be a repair of that mix, or spread the metrics reward), and the break between an E9.5
+  embryo portion and a dissected E10.5 heart at test.
+  - The workflow's adversarial review (wf_683bce94-f60, verdict "fix", nine issues, none rejected) showed the first
+    design's sign flip and permutation could not tell momentum from state-aligned spread, so T23 (the same pipeline
+    between two halves of the reference stage, at g_mom's size) and T24 (the same factors with each type's mean held)
+    were added, and T20 and T21 are now labelled for what a pass says.
+  - Two additions of the main session after that review, neither reviewed by it: T25, g_mom against b0 inside one
+    chamber category (the design panel's mix-free read; it does not shrink as T22 does); and `build_test.py t1` refuses
+    `--g-mom` with `--strong-null`, since no row fixes the order of the two count edits.
+  - The rule: g_mom is proposed only if T20, T21 and T23 are each beaten on both cuts, T24's held arm keeps its gain, and
+    the rules of T22 and T25 pass. All six read one E8.5 -> E9.5 fit, so ten seeds are draw noise and this is one
+    comparison, n = 1 for the biology. By judgement about a 10% chance that all six pass. A failed control means g_mom is
+    not proposed; the numbers go to the captain either way. If all six run, T1's try count goes from 16 to 22.
+  - The plain summary goes to the captain before the counted runs (2026-11-04 (d)). N21 reads no target and no score and
+    is not a try, so it does not wait for that sign-off. Nothing here changes an upload.
