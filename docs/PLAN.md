@@ -1762,3 +1762,7 @@ open. No organiser reply to any of the four emails as of then.
     raw-unit interference bar: the factors' raw mmd_u gain under half of T11's, or the raw variogram gain under half of
     T11's, means interference). Then a ruling on a re-registered R3 limited to cardiomyocytes and endocardium, by 24 Nov
     (the rebuild date). A changed s1 sends T1's s2 back to the captain.
+- 2026-11-10 (n), the captain, after the plain summary of the M1 check in (m), in the captain's words: "go ahead with your
+  recommendation". Diagnostic N22 (target-free, not a try) and try T26 (one labelled read of M1 with R1 and R2 and g_mom's
+  factors on top) run by their rows in `experiments/harness/TRIES.md`, N22 first; T26 runs only if N22 passes. T1's try
+  count goes from 22 to 23 if T26 runs. Nothing here changes an upload.
