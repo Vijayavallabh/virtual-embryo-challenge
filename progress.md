@@ -3,6 +3,9 @@
 ## Current State
 
 **Last Updated:** 2026-11-10
+**2026-11-10, g_mom on M1 (N22 and T26, run at 6d7babe):** N22 passed; T26 is void by its reproduction gate (a stale
+reference, decision log 2026-11-10 (o)), its numbers show no interference if the captain accepts them. Tries: T1 23,
+embryo 11, heart 3, T3 6. No upload changes; waiting on the captain's ruling on T26's numbers and R3.
 **2026-11-10, g_mom's controls (T20-T25, run at d4580bf):** all six passed, results in `docs/PLAN.md` decision log
 2026-11-10 (m). No upload changes: R3 is now eligible for the captain's ruling, the recommendation is to read M1 plus
 g_mom first (A2). Tries: T1 22, embryo 11, heart 3, T3 6. T1's strong-null bet is out (2026-11-10 (l)).

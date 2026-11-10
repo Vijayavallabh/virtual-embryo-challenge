@@ -1,0 +1,11 @@
+diagnostic N22: do g_mom's factors act the same on counts M1 has moved; target-free: no target, no score, no board, no built file, no cell count
+Rule: |slope with M1 / slope without - 1| <= 0.1 on cm, endocardium at both pairs: PASSES
+test pair: Feng's step 0.4
+    cm: slope without M1 0.7664, with M1 0.7689, ratio 1.0034 (rounding noise alone 1.0029), in the rule
+    endocardium: slope without M1 0.7683, with M1 0.7793, ratio 1.0143 (rounding noise alone 1.0025), in the rule
+    epicardium: slope without M1 0.7649, with M1 0.7635, ratio 0.9981 (rounding noise alone 1.0070), reported
+    vascular_endothelium: slope without M1 0.7766, with M1 0.7785, ratio 1.0025 (rounding noise alone 0.9997), reported
+backtest pair: Feng's step 0.2
+    cm: slope without M1 0.7773, with M1 0.7768, ratio 0.9994 (rounding noise alone 0.9992), in the rule
+    endocardium: slope without M1 0.7872, with M1 0.7877, ratio 1.0006 (rounding noise alone 1.0002), in the rule
+Commit 6d7babe41938989c0f6fa253b0c3b93bbb871aa1, tree clean True, UTC 2026-11-10T11:07:03Z

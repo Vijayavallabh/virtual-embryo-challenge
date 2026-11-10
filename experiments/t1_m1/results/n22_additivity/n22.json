@@ -1,0 +1,90 @@
+{
+ "label": "diagnostic N22: do g_mom's factors act the same on counts M1 has moved; target-free: no target, no score, no board, no built file, no cell count",
+ "pairs": {
+  "test": {
+   "cm": {
+    "slope_without_m1": 0.766362537680156,
+    "slope_with_m1": 0.7689324081595331,
+    "ratio": 1.003353335207585,
+    "noise_ratio": 1.002937557323265,
+    "entries_in_the_regression": 19891,
+    "passes": true
+   },
+   "endocardium": {
+    "slope_without_m1": 0.768316681348461,
+    "slope_with_m1": 0.7793141672243777,
+    "ratio": 1.0143137408608847,
+    "noise_ratio": 1.0024849074484643,
+    "entries_in_the_regression": 35160,
+    "passes": true
+   },
+   "epicardium": {
+    "slope_without_m1": 0.7649443199304469,
+    "slope_with_m1": 0.763520298319976,
+    "ratio": 0.9981383983469537,
+    "noise_ratio": 1.0070443874385708,
+    "entries_in_the_regression": 14103,
+    "passes": true
+   },
+   "vascular_endothelium": {
+    "slope_without_m1": 0.7765682819752971,
+    "slope_with_m1": 0.7784870799835156,
+    "ratio": 1.002470868374044,
+    "noise_ratio": 0.9997071813646918,
+    "entries_in_the_regression": 4512,
+    "passes": true
+   }
+  },
+  "backtest": {
+   "cm": {
+    "slope_without_m1": 0.7772701057235863,
+    "slope_with_m1": 0.7768147003629642,
+    "ratio": 0.9994140963903427,
+    "noise_ratio": 0.9992433026586898,
+    "entries_in_the_regression": 30892,
+    "passes": true
+   },
+   "endocardium": {
+    "slope_without_m1": 0.7871995309035893,
+    "slope_with_m1": 0.7877109572616451,
+    "ratio": 1.000649678179392,
+    "noise_ratio": 1.0001728272453068,
+    "entries_in_the_regression": 8141,
+    "passes": true
+   }
+  }
+ },
+ "fractions": {
+  "test": 0.4,
+  "backtest": 0.2
+ },
+ "reading": {
+  "passes": true,
+  "missing": [],
+  "failing": []
+ },
+ "settings": {
+  "tolerance": 0.1,
+  "categories": [
+   "cm",
+   "endocardium"
+  ],
+  "min_cp10k": 1.0,
+  "seed": 20261110,
+  "pseudocount": 0.5
+ },
+ "stamp": {
+  "commit": "6d7babe41938989c0f6fa253b0c3b93bbb871aa1",
+  "tree_clean": true,
+  "utc": "2026-11-10T11:07:03Z",
+  "inputs": {
+   "data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+   "data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+   "data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+   "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+   "configs/t1_chamber_classes.yaml": "fa627bb9d6f29f4b6ac9eac8f7897cfb2de66b39b4967df0c7465c7ed6664970",
+   "experiments/t1_direction/config.yaml": "bae9b7aa747b17658aa25b4c1984bc3f7a3dbaca9a0970f7b60aa8e9b504c69f",
+   "experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841"
+  }
+ }
+}

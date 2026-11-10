@@ -1,0 +1,14 @@
+try T26, a labelled diagnostic, not an adoption result: M1 with R1 and R2 with g_mom's factors on top, in diag_v1's geometry (Feng's E9.5 cells lie inside these pseudo-tasks' external windows; both cuts are ones T11 was selected on)
+Rule: the factors' raw gain on M1 under 0.5 of T11's on mmd_u or variogram, on either cut, is interference: VOID
+T1/E9.5->E10.5:chamber (primary): reproduction of diag_v1 NO (largest difference b0 0.0000, m1_feng 0.0434)
+    mmd_u: gain on M1 0.00803, T11's 0.00840, share 0.96, bar 0.00420, above
+    variogram: gain on M1 0.00044, T11's 0.00045, share 0.99, bar 0.00022, above
+    points, reported: factors on M1 +1.23 (ahead 10 of 10; by group de_recovery +0.01, direction +0.00, distribution +0.02, covariance +0.02); M1 with R1 and R2 minus b0 +1.15 (ahead 10 of 10)
+    mean scores: b0 49.68, m1_feng 50.99, m1_r 50.83, m1_r_gmom 52.06
+T1/E9.5->E10.5 (scope differs from the test; reported): reproduction of diag_v1 NO (largest difference b0 0.0000, m1_feng 0.0621)
+    mmd_u: gain on M1 0.00870, T11's 0.00910, share 0.96, bar 0.00455, above
+    variogram: gain on M1 0.00049, T11's 0.00051, share 0.97, bar 0.00026, above
+    points, reported: factors on M1 +1.14 (ahead 10 of 10; by group de_recovery +0.01, direction +0.00, distribution +0.02, covariance +0.01); M1 with R1 and R2 minus b0 +0.97 (ahead 10 of 10)
+    mean scores: b0 44.12, m1_feng 45.22, m1_r 45.09, m1_r_gmom 46.23
+Limit: in-sample labelled diagnostic, one fit; never adoption evidence
+Commit 6d7babe41938989c0f6fa253b0c3b93bbb871aa1, tree clean True, UTC 2026-11-10T11:39:10Z

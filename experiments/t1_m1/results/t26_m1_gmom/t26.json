@@ -1,0 +1,145 @@
+{
+ "label": "try T26, a labelled diagnostic, not an adoption result: M1 with R1 and R2 with g_mom's factors on top, in diag_v1's geometry (Feng's E9.5 cells lie inside these pseudo-tasks' external windows; both cuts are ones T11 was selected on)",
+ "reading": {
+  "outcome": "VOID",
+  "reproduction": {
+   "T1/E9.5->E10.5:chamber": {
+    "largest_difference": {
+     "b0": 0.0,
+     "m1_feng": 0.04343569641984146
+    },
+    "missing_seeds": [],
+    "holds": false
+   },
+   "T1/E9.5->E10.5": {
+    "largest_difference": {
+     "b0": 0.0,
+     "m1_feng": 0.06210630700709174
+    },
+    "missing_seeds": [],
+    "holds": false
+   }
+  },
+  "cuts": {
+   "T1/E9.5->E10.5:chamber": {
+    "raw": {
+     "mmd_u": {
+      "gain_on_m1": 0.008034000000000001,
+      "t11_gain": 0.0084,
+      "bar": 0.0042,
+      "share_of_t11": 0.9564285714285716,
+      "below_bar": false
+     },
+     "variogram": {
+      "gain_on_m1": 0.00044379999999999995,
+      "t11_gain": 0.00045,
+      "bar": 0.000225,
+      "share_of_t11": 0.9862222222222221,
+      "below_bar": false
+     }
+    },
+    "interferes": false,
+    "gmom_on_m1_points": {
+     "mean": 1.2279030889554257,
+     "ahead": 10,
+     "of": 10
+    },
+    "gmom_on_m1_points_by_group": {
+     "de_recovery": 0.009063571673524307,
+     "direction": 0.004604986987262494,
+     "distribution": 0.01935761093539757,
+     "covariance": 0.015273039718691307
+    },
+    "m1_r_minus_b0_points": {
+     "mean": 1.1483826061200468,
+     "ahead": 10,
+     "of": 10
+    },
+    "mean_scores": {
+     "b0": 49.68290567973587,
+     "m1_feng": 50.98929971341361,
+     "m1_r": 50.831288285855905,
+     "m1_r_gmom": 52.059191374811334
+    }
+   },
+   "T1/E9.5->E10.5": {
+    "raw": {
+     "mmd_u": {
+      "gain_on_m1": 0.008702999999999997,
+      "t11_gain": 0.0091,
+      "bar": 0.00455,
+      "share_of_t11": 0.956373626373626,
+      "below_bar": false
+     },
+     "variogram": {
+      "gain_on_m1": 0.0004929000000000002,
+      "t11_gain": 0.00051,
+      "bar": 0.000255,
+      "share_of_t11": 0.9664705882352945,
+      "below_bar": false
+     }
+    },
+    "interferes": false,
+    "gmom_on_m1_points": {
+     "mean": 1.1405979062336165,
+     "ahead": 10,
+     "of": 10
+    },
+    "gmom_on_m1_points_by_group": {
+     "de_recovery": 0.0073726941824422965,
+     "direction": 0.004438992174254463,
+     "distribution": 0.018701578747673607,
+     "covariance": 0.01421291924429952
+    },
+    "m1_r_minus_b0_points": {
+     "mean": 0.9691295444235933,
+     "ahead": 10,
+     "of": 10
+    },
+    "mean_scores": {
+     "b0": 44.116683628570335,
+     "m1_feng": 45.22286614118965,
+     "m1_r": 45.08581317299393,
+     "m1_r_gmom": 46.22641107922755
+    }
+   }
+  }
+ },
+ "stamps": {
+  "T1/E9.5->E10.5:chamber": {
+   "commit": "6d7babe41938989c0f6fa253b0c3b93bbb871aa1",
+   "tree_clean": true,
+   "utc": "2026-11-10T11:36:49Z",
+   "inputs": {
+    "data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+    "data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+    "data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+    "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+    "experiments/t1_direction/config.yaml": "bae9b7aa747b17658aa25b4c1984bc3f7a3dbaca9a0970f7b60aa8e9b504c69f",
+    "experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841"
+   }
+  },
+  "T1/E9.5->E10.5": {
+   "commit": "6d7babe41938989c0f6fa253b0c3b93bbb871aa1",
+   "tree_clean": true,
+   "utc": "2026-11-10T11:39:06Z",
+   "inputs": {
+    "data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+    "data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+    "data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+    "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+    "experiments/t1_direction/config.yaml": "bae9b7aa747b17658aa25b4c1984bc3f7a3dbaca9a0970f7b60aa8e9b504c69f",
+    "experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841"
+   }
+  }
+ },
+ "stamp": {
+  "commit": "6d7babe41938989c0f6fa253b0c3b93bbb871aa1",
+  "tree_clean": true,
+  "utc": "2026-11-10T11:39:10Z",
+  "inputs": {
+   "experiments/t1_m1/results/t26_m1_gmom/tasks/T1_E9.5_E10.5_chamber.json": "b412c8007d4462c2f0cbf39b7b3441c533cdcf1f501163299895924374fb5d99",
+   "experiments/t1_m1/results/t26_m1_gmom/tasks/T1_E9.5_E10.5.json": "ad7cba732a018076590a7937a2aaab97e081a3a695c87987f5a2fcb8b4c7a43a"
+  }
+ }
+}

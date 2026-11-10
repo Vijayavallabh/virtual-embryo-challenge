@@ -1766,3 +1766,14 @@ open. No organiser reply to any of the four emails as of then.
   recommendation". Diagnostic N22 (target-free, not a try) and try T26 (one labelled read of M1 with R1 and R2 and g_mom's
   factors on top) run by their rows in `experiments/harness/TRIES.md`, N22 first; T26 runs only if N22 passes. T1's try
   count goes from 22 to 23 if T26 runs. Nothing here changes an upload.
+- 2026-11-10 (o), N22 and T26 (rows in `experiments/harness/TRIES.md`, run at 6d7babe; T1's try count is now 23). N22 passed:
+  the factors act the same on counts M1 has moved (ratios 0.999 to 1.014 against a 0.10 bar). T26 is void by its reproduction
+  gate and goes to the captain. b0 matched diag_v1 exactly; m1_feng differed by up to 0.043 and 0.062 points against a 0.02
+  bar. The likely cause is a mistake in the row, by the AI assistant: diag_v1 ran on the older Feng statistics file before
+  ac4cf3c, so its m1_feng was not the right reference for today's code. The two files' directions differ by at most 5.6e-07
+  (target-free). Not confirmed by a rebuild on the old file, which would be another scored run.
+  - The numbers, which are not a reading unless the captain accepts them: the factors keep 0.96 to 0.99 of T11's raw gain on
+    M1 against a bar of 0.5; +1.23 chamber and +1.14 whole in points, 10 of 10 seeds. A rerun with a corrected gate would give
+    the same numbers and another counted try, so none is proposed.
+  - Recommendation sent to the captain: accept the numbers as no interference, the void staying on record, and rule on R3
+    limited to cardiomyocytes and endocardium. No file changes before that ruling.
