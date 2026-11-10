@@ -776,3 +776,17 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     Neither was requested. The auditor compared the ranked rows with the partner list in memory and printed only match
     counts. Its one flag: the hand-over's notes name the partner team as a label for excluded material, with no row or
     value attached.
+- 2026-11-10 (b), process notes from the D3 workflow (wf_3d1b8228-721; `docs/PLAN.md` decision log 2026-11-10 (s)), from
+  its agents' own reports. Read-only; nothing ran on the DGX and the tree was unchanged at its end. No test file, board
+  file or Data page was opened.
+  - **Greps that printed lines from screened notes.** Three agents' recursive greps, with the prescribed exclusions,
+    printed a few truncated lines from `experiments/research_2026_11/notes/` and
+    `experiments/research_2026_11_sota/notes/`. Those are the committed notes left after screening (`progress.md`; this
+    file, 2026-11-06 (a)), not the raw research-workflow outputs of `AGENTS.md`'s quarantine. Nothing from the lines was
+    used.
+  - **`docs/reference/`.** One repository-root grep did not exclude the folder. Its two PDFs are binary and `grep -I` skips
+    them, so nothing was read or printed from them.
+  - **Seen in passing.** A layout probe printed a practice task's cell limits (a practice board, not a test board), and
+    a read of `docs/PLAN.md` showed the screened overall totals recorded there. None is quoted or used.
+  - **Saved output.** A long print of the edit list was saved by the harness under `~/.claude-account`, once in the
+    workflow and once in the main session. Neither file was opened; the text was re-read from the session scratchpad.

@@ -523,11 +523,12 @@ change (on T3 the genotype's response), and coupling and moves carry the spatial
 baselines are the operator with every step at identity, so an entry's change beyond its baseline is the list of steps
 it switches on (`METHOD_SUMMARY.md`).
 
-The award needs the same architecture under every task we enter (Rules s.14), so both submissions on every board are
-built through the shared core, and new pipeline code goes into the core or a task head, never into a separate per-task
-model. The core is in code: `src/vec/core.py` (feat-020, a pure refactor with outputs unchanged bit for bit;
+The award needs the same architecture under every task we enter (Rules s.14), so both submissions on T1 and both T2
+boards are built through the shared core, the T3 files by the pre-registered script's own functions (decision log
+2026-11-10 (s)), and new pipeline code goes into the core or a task head, never into a separate per-task model. The core is in code: `src/vec/core.py` (feat-020, a pure refactor with outputs unchanged bit for bit;
 `experiments/core/REPORT.md`). `vec.t1_scope` and `vec.t2_build` are heads that call it; the pre-registered T3 script
-keeps its own hash-pinned primitives, which the core copies exactly (`tests/test_core.py` proves them identical). The
+keeps its own hash-pinned primitives, five of which the core copies exactly (`tests/test_core.py` proves those
+identical; `lognorm` is not a copy). The
 v1 pipelines are built on it.
 
 Decision point D3 (2026-11-12): claim the award unless the best specialised variants beat the shared-core builds by
@@ -602,7 +603,7 @@ Next:
 | Oct 20-26 | The organisers moved the final phase to Oct 27. Work that needs no release data: external data through committed window filters (Feng reduction, feat-007); T2 embryo FGW pipeline, T2 heart growth and T1 M1 v1 built and tested on released stages and pseudo-tasks; B0 builds checked with `vec check` on the validation boards (DGX, nothing sent). Validation-board anchors stay unused until the release. Pre-registered rules stay as committed unless the user approves a change | - |
 | Oct 27-Nov 2 | Release-day runbook (`docs/P3_RUNBOOK.md`): board intake with anchors stripped, data, label map, pre-registered runs (size, T3 decomposition, T1 direction readout, harmonisation, density, anchor check); emulator calibration; T3 day-1 diagnostics; B0 on all four boards | D1 (Oct 29): test-board reference stages fixed |
 | Nov 3-9 | The v1 pipelines rerun on the release data (T2 embryo FGW, T1 M1, T3 F+C, T2 heart growth); T1 external directions and births; T1 M2 if the readout passed | D2 (Nov 6): every board beats its floor on internal validation |
-| Nov 10-16 | T3 leave-one-knockout-out weights (pathway programme only if its check passes); T2 heart emergent populations and scope hypotheses; ablations, seed robustness, freeze s1 candidates (Nov 16) | D3 (Nov 12): shared core vs specialised |
+| Nov 10-16 | T3 leave-one-knockout-out weights (pathway programme only if its check passes); T2 heart emergent populations and scope hypotheses; ablations, seed robustness, freeze s1 candidates (Nov 16) | D3 (Nov 12; read 2026-11-10, decision log (s)): shared core vs specialised |
 | Nov 17-23 | s1 on T1 and both T2 boards by Nov 22 (after user approval; T3: s2 first, s1 last); s2 rules frozen and hashed on 2026-11-03 (`docs/S2_RULES.md`) | D4: read scores to mark finals; no s2 rule reads a score |
 | Nov 24-30 | s2 by Nov 30; method summary and disclosures; final nomination | - |
 | Dec 1-2 | Buffer only. Archive every submitted file with its code hash for the 14-day winners' report | - |
@@ -1805,3 +1806,60 @@ open. No organiser reply to any of the four emails as of then.
   (`runs/archive/builds_f337dc6/builds/T1_s2.h5ad`, sha256 30f0cf594425...). It replaces the 02abf39 s2 (d48d3a55e45d...).
   Both of T1's uploads are settled for the freeze; a later change to T1's s1 would send the s2 back again. Each official
   upload still needs the captain's go-ahead at the time.
+- 2026-11-10 (s), D3 (the Generality decision, not the tries ledger's second-wave D3) read two days ahead of its date, by
+  the AI assistant under the captain's delegation of 2026-11-02, on the captain's "go ahead with your recommendation" of
+  the same day. No recommendation was open (T1's s2 was settled at (r)); the AI assistant read the message as covering
+  D3, the only listed item that could be settled then, and said so; the captain can overrule the reading or the outcome.
+  Read-only workflow wf_3d1b8228-721 (four evidence streams, one adversary on each, one agent applying the rule); its
+  edits were checked in the main session before they went in. **Outcome: claim, by the rule's default. It is not a
+  comparison passed.**
+  - **The comparison was not run and could not be.** No specialised pipeline has a score on any board. The one coded, E14
+    (`fgw_latent`), stopped at its target-free gate N18 (variogram ratios 1.991 and 1.572 against 1.3) before any run. M2's
+    gate said build on 2026-10-28 and feat-015 was never started; no file records dropping it (the nearest record is the
+    stop of T1's GPU modelling, (c) and (e), which does not name it). On the shared-core side only the embryo entries are
+    scored as built: T1 and the heart are read through stand-ins, and no backtest runs the T3 entries. No board counts in
+    either direction, and a gap of 0 would be absence of evidence.
+  - **What the reading rests on.** Section 5's rule makes claiming the default and needs a measured win above 3 points to
+    drop it; its stated reason is that a few points are a bad trade for the award and that the claim costs nothing if the
+    team does not place. DROP has no win and no specialised code to use. The reading also assumes that "specialised"
+    means per-task pipelines, which the rule does not define, and that the repository holds everything that ran. It does
+    not say specialised code would lose. A16 moves from open to revised and stays untested.
+  - **For context, not D3 evidence.** Against today's entries the log-space paths (the organisers' pseudobulk_shift and
+    shift_transfer, the team's psb_size) win on a counted task only on one heart fold (+0.452), which is +0.226 Overall if
+    each board is capped at 0, and -5.26 uncapped with the heart's two-fold mean. Only T1's whole-E10.5 cut would pass 3,
+    and the harness excludes it on a premise (A6). The figures against m1_r_gmom come from T26, which is void. Before fgw
+    existed, psb_size beat B0 by 3.81 Overall on the E7.5 task, so the shared-core side was rebuilt after losing there.
+    These figures, like T26's paired reading of R1 and R2 now in the summary (-0.16 and -0.14 against M1 without them,
+    ahead in 0 of 10 seeds on each cut, in a void in-sample diagnostic at 1/5 of Feng's step, under the adoption rule's
+    0.3 and deciding nothing), are arithmetic on committed per-seed rows: nothing was built or scored and no try is
+    counted (T1 23, embryo 11, heart 3, T3 6). The captain can rule otherwise on the count.
+  - **Corrected in text, no build changed.** `METHOD_SUMMARY.md` now asks to be considered, records this reading, and
+    corrects the sentence that both submissions on every board go through the core: that is false for T3, whose script
+    calls no core function (five of its functions are pinned to copies in the core; `lognorm` is not a copy). No core
+    function runs on more than two of the four boards, and the summary now says so. The audited corrections to the rest
+    of the summary went in with it, among them the claim that the public board file is never opened, which now records
+    the captain's paste of 2026-11-04 as the organisers were told that day. The same sentence is corrected in section 5
+    and in `ASSUMPTIONS.md` A4 and A21; `EXTERNAL_DATA.md` X005 now names R3b's use of POT; the summary carries the data
+    credit of Terms of Use clause 14. `AGENTS.md`'s Shared core rule stays as written (right but for `lognorm`). No rule,
+    upload or file under runs/ changes, and nothing is rebuilt.
+  - **Checked in the main session.** Each of the 54 edits' anchors matched exactly once, with no overlaps; the T3 scripts
+    have no reference to `vec.core`; `herd_rows`, the one core function named in the heads of three boards, is off in
+    `experiments/builds/build_all.sh`; the T26, N21, K2a, T3-swap and U3 figures were read back from their files; the
+    eight unchanged files' hashes in `runs/archive/builds_f337dc6/SHA256SUMS` equal those with the server's format-ok rows
+    of 2026-11-04 in `results/submissions.csv` and those of `runs/archive/builds_88b057f`, the set the determinism check
+    compared with. T1's two rebuilt files have no format-check row yet, as the summary says.
+  - **Not verified.** Anything run off the repository; whether T3's files would rebuild byte-identical through the core;
+    whether the organisers accept this as one architecture (A21 has no written answer); organiser replies after
+    2026-11-05; the live Rules s.14, read only through `docs/CHALLENGE.md`; the emulator's 66 anchors and the coordinate
+    evidence C7 and C10, which no stream re-derived. Eligibility (entries on at least two tasks, the floor) cannot be read
+    until official scores exist.
+  - **Still the captain's.** Overruling this reading; naming specialised variants if the comparison is to be run; M2;
+    Task 3's place in the claim (the AI assistant recommends no change: the T3 files stay as frozen and the summary says
+    what they are); a corrected description to the organisers, whose emails of 18 and 21 October describe unbalanced
+    transport, a velocity and growth network and a single operator building every prediction, which the code does not
+    match, so an answer to that text would not settle A21; whether the wording about the paste stays in what is handed
+    in; what goes over if the organisers ask for code (a fresh repository is the recommendation; the rule of 2026-11-05
+    covers public release only). Before the first upload on 2026-11-27: how the source and stages of external data reach
+    the organisers "with the submission" (`docs/DATA_POLICY.md`): the client keeps the `--disclose` ids in the local
+    ledger and sends none, and its only free-text fields are `model` and `architecture`, 200 characters each. That and
+    the route and date for the summary are added to the screened check before the first upload (`docs/P3_RUNBOOK.md`).

@@ -157,7 +157,7 @@
         "feat-020"
       ],
       "status": "not-started",
-      "evidence": "2026-10-28: the pre-registered T1 direction readout (runbook step 4.3, 3c5cc66, experiments/t1_direction/results/E10.5/decision.json) says build. Not started."
+      "evidence": "2026-10-28: the pre-registered T1 direction readout (runbook step 4.3, 3c5cc66, experiments/t1_direction/results/E10.5/decision.json) says build. Not started. 2026-11-10: still not started; no file records a decision to drop it (the nearest record is the stop of T1's GPU modelling, docs/PLAN.md decision log 2026-11-10 (c), (e), which does not name it). Decision log 2026-11-10 (s)."
     },
     {
       "id": "feat-016",
@@ -192,7 +192,7 @@
         "feat-020"
       ],
       "status": "in-progress",
-      "evidence": "2026-11-04 (feat-021): METHOD_SUMMARY.md is framed by the captain's guiding principle: per board and facet, the change beyond the published baseline and its held-out evidence, and what no entry predicts yet; the shared-architecture section maps the core's steps onto the four predictions (which states, their proportions, their expression, their spatial organisation). Status, entries and file checks brought up to 2026-11-04. D3 (2026-11-12) has not run. 2026-11-05: the captain ruled that any public release of the code is a fresh repository built from the final tree, never this repository or its history (docs/PLAN.md decision log 2026-11-05 (e))."
+      "evidence": "2026-11-04 (feat-021): METHOD_SUMMARY.md is framed by the captain's guiding principle: per board and facet, the change beyond the published baseline and its held-out evidence, and what no entry predicts yet; the shared-architecture section maps the core's steps onto the four predictions (which states, their proportions, their expression, their spatial organisation). Status, entries and file checks brought up to 2026-11-04. D3 (2026-11-12) has not run. 2026-11-05: the captain ruled that any public release of the code is a fresh repository built from the final tree, never this repository or its history (docs/PLAN.md decision log 2026-11-05 (e)). 2026-11-10: D3 read ahead of its date: claim by the rule's default, no comparison passed (no specialised pipeline has a score on any board; docs/PLAN.md decision log 2026-11-10 (s)). METHOD_SUMMARY.md corrected: it asks to be considered and says the T3 files call no core function. The hand-in version and the route remain."
     },
     {
       "id": "feat-018",

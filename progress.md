@@ -3,6 +3,10 @@
 ## Current State
 
 **Last Updated:** 2026-11-10
+**2026-11-10, D3 read ahead of its date (decision log 2026-11-10 (s)):** claim the Generality Award by the rule's default.
+No specialised pipeline has a score on any board, so the comparison was not run and cannot be run as written; A16 stays
+untested. `METHOD_SUMMARY.md` corrected: the T3 files call no core function, and no core function runs on more than two
+of the four boards. No upload, rule or build changed. Tries unchanged: T1 23, embryo 11, heart 3, T3 6.
 **2026-11-10, R3b built at f337dc6 (the captain's ruling, decision log 2026-11-10 (p), (q)):** g_mom's factors added to
 T1 for cardiomyocytes and endocardium only. T1's s1 and s2 rebuilt, the other eight files byte-identical; the
 freeze-morning reference is now `runs/archive/builds_f337dc6/SHA256SUMS`. The captain approved T1's new s2 (decision log 2026-11-10 (r)). With
@@ -675,7 +679,7 @@ headroom tables in `experiments/harness/TRIES.md`):
    barred-branch s1) was refuted by three adversarial reviewers, and A10 and A11 are killed in the ledger; T3's uploads
    stay as frozen (`docs/PLAN.md` decision log 2026-11-05 (d), (e)).
 4. Keep the headroom tables and `METHOD_SUMMARY.md` current after every kept change or new entry (`TRIES.md` rule 8;
-   feat-021, done once a full `./init.sh` passes); D3 on 2026-11-12 (feat-017).
+   feat-021, done once a full `./init.sh` passes); D3 read on 2026-11-10 (feat-017; decision log 2026-11-10 (s)).
 5. Heart and embryo: no try without an open lever and a reason that holds at test; the rebuild design re-examined
    both and found none. N1 (done) held: the embryo test pair's coupling and geometry on the 497-gene test panel
    match the record (target-free, not a try; no risk note).
