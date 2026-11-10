@@ -1671,3 +1671,24 @@ open. No organiser reply to any of the four emails as of then.
   - **Both sets run.** T12a and T12b measure the cost of T1's strong-null bet. The late-proxy tournament runs on Feng's
     E14.5 -> E18: N20b, the preflight, T13-T15, then T16-T18 only if that stage passes. The stop and keep rules are the
     rows'. Nothing changes an upload without the captain's ruling.
+- 2026-11-10 (i), the second wave's results (run at fc6ebf5 on a clean tree; `experiments/harness/TRIES.md` rows T12a, T12b,
+  N20b, T13-T18).
+  - **T12, the measured cost of T1's strong-null bet.** The stop rule says proceed. On the weak-null control (E8.5 ->
+    E9.5) the prior cost 0.195 points (raw mmd_u +0.00152, raw variogram +0.00013, inside the bounds), less than the 0.33
+    the captain approved. On the two strong-null backtests it gained +0.84 and +0.78, 10 of 10, mostly on de_score,
+    about half the +1.75 quoted when the captain approved it (the row's +1.2 to +1.75 was an estimate for the test, on
+    M1 rather than B0). So the break-even moves from about 16% to about 20%, and at the reviewer's 15-20% chance the
+    expected value is about zero. The harness's KEEP line is not this row's test. The build stays off until the
+    captain rules.
+  - **The late-proxy tournament.** N20b passed. The first stage failed on its veto: the stand-in lost 0.70 on the
+    endocardium read (0 of 10), although it gained +0.91 and +4.14 on the two cardiomyocyte reads and beat both controls
+    there. By T13's row nothing changes, and T16-T18 did not run and do not count. Feng's late direction carries a
+    cardiomyocyte signal on T1's platform. That says nothing direct about M1's real direction, and N20b's similarity
+    figures (CM 0.162, the other three groups negative) show the stand-in and the real direction are close to unrelated
+    outside cardiomyocytes.
+  - **Try counts:** T1 16 (+5), embryo 11, heart 3, T3 6.
+  - **Third-wave design panel (wf_f58aab15-e2a; committed text only, nothing run).** Four lenses proposed ten candidates
+    and skeptics attacked the top six. Every heart and embryo idea was dropped, on legality, on backtests that could not
+    show the mechanism, or on an expected value near +0.01 Overall. The one survivor is a single labelled check of how
+    g_mom combines with M1, in-sample and never adoption evidence, only if g_mom's controls pass. No new try is
+    registered from it yet.

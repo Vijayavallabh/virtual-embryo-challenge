@@ -1,0 +1,20 @@
+{
+ "version": 1,
+ "file": "stop_rule.txt",
+ "sha256": "7d07223fff0d834948ebdcb6b16573807e8b4eb392b01dd795411ab56982a334",
+ "size": 1886,
+ "commit": "fc6ebf5e7a840038f002fd34a2a8b4d22eb233f5",
+ "clean": true,
+ "why": null,
+ "unclean": [],
+ "unclean_count": 0,
+ "start_commit": "fc6ebf5e7a840038f002fd34a2a8b4d22eb233f5",
+ "started_utc": "2026-11-09T23:58:15+00:00",
+ "created_utc": "2026-11-09T23:58:15+00:00",
+ "hostname": "p01r10srv05",
+ "argv": [
+  "experiments/t1_strong_null/stop_rule.py",
+  "--runs",
+  "runs/harness/t12_v1"
+ ]
+}

@@ -1,0 +1,89 @@
+{
+ "board": "T1:test",
+ "runs": "/home/prachh/v/virtual-embryo-challenge/runs/harness/t12_v1",
+ "decisions": [
+  {
+   "base": "b0_scope",
+   "change": "scope_strong_null",
+   "counted": [
+    "T1/E8.5->E9.5"
+   ],
+   "excluded": {
+    "T1/E9.5->E10.5": "change does not apply",
+    "T1/E9.5->E10.5:chamber": "change does not apply"
+   },
+   "configured": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber",
+    "T1/E8.5->E9.5"
+   ],
+   "decided_on": "1 of 3 configured pseudo-tasks",
+   "keep": false,
+   "reason": "passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 1 pseudo-tasks; needs 1",
+   "tasks": {
+    "T1/E8.5->E9.5": {
+     "complete": true,
+     "mean_gain": -0.19541078332452172,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": false
+    }
+   },
+   "need": 1,
+   "passed": 0,
+   "fit_checks": {}
+  }
+ ],
+ "summaries": {
+  "T1/E8.5->E9.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "b0_scope": [
+    38.93101965722862,
+    1.8625366634481164
+   ],
+   "scope_strong_null": [
+    38.735608873904106,
+    1.8349121996701003
+   ]
+  },
+  "T1/E9.5->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "b0": [
+    44.116683628570335,
+    0.4633178753047292
+   ],
+   "b0_scope": [
+    43.38230642903072,
+    0.4435127849875099
+   ],
+   "b0_strong_null": [
+    44.95352280682596,
+    0.5334692718927019
+   ]
+  },
+  "T1/E9.5->E10.5:chamber": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "b0": [
+    49.68290567973587,
+    0.6683315658494151
+   ],
+   "b0_scope": [
+    48.87844196735013,
+    0.6431969918843083
+   ],
+   "b0_strong_null": [
+    50.46218124595566,
+    0.6225575723483968
+   ]
+  }
+ }
+}

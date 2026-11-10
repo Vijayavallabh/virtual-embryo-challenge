@@ -2,7 +2,12 @@
 
 ## Current State
 
-**Last Updated:** 2026-11-06
+**Last Updated:** 2026-11-10
+**2026-11-10, the campaign's second wave:** results in `docs/PLAN.md` decision log 2026-11-10 (i). T12's stop rule says
+proceed (cost 0.195 on the control; +0.84 and +0.78 on the strong-null backtests), and the strong-null build stays off
+until the captain rules. The late-proxy tournament's gate failed on its endocardium veto, so nothing changes and T16-T18
+did not run. Tries: T1 16, embryo 11, heart 3, T3 6. Open: g_mom's controls (T20-T22, N21) before any ruling on it, and
+one T1 rebuild decision for both changes by 24 Nov.
 **2026-11-05, the captain's rulings** ("No purge, go with your recommendations on all six [the ones that will maximize
 our chances on placing at Top 3 in the leaderboard at all drastic costs]"): no purge of the withdrawn heart figure; the
 deadline exception's reading and the better-of-two estimate confirmed; R1 kept and built (88b057f: only T1's s1 and s2

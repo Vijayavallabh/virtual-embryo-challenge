@@ -1,0 +1,258 @@
+{
+ "label": "N20: target-free profile of the late-proxy direction (no E10.5 file, no target, no score, no board, no built file, no T1 cell count); it gates tries T13-T18 by its row's rule",
+ "gate": {
+  "stages_present": true,
+  "cm_at_both_ends": true,
+  "direction_available": {
+   "T1/E8.5->E9.5:cm": true,
+   "T1/E9.5->E10.5:cm": true,
+   "T1/E9.5->E10.5:endocardium": true
+  },
+  "every_read_has_a_direction": true,
+  "mapped_genes": 29715,
+  "mapped_genes_at_least": true
+ },
+ "proceed_to_tries": true,
+ "landing_floor": {
+  "group": "CM",
+  "spearman_cross_half": 0.2073337392591314,
+  "floor": 0.2,
+  "met": true
+ },
+ "proxy_close_to_real": true,
+ "t18_stop": {
+  "no_op_at": 0.9,
+  "deciles": "4-10",
+  "below_no_op": {
+   "CM": true,
+   "Endocardium": true
+  },
+  "runs": true
+ },
+ "t18_runs": true,
+ "proxy_cells": {
+  "CM": {
+   "E14.5": 1777,
+   "E18": 2343,
+   "feng_labels": [
+    "ventricular_cm",
+    "atrial_cm"
+   ]
+  },
+  "Endocardium": {
+   "E14.5": 107,
+   "E18": 246,
+   "feng_labels": [
+    "endocardial_ec"
+   ]
+  },
+  "Endothelium": {
+   "E14.5": 158,
+   "E18": 462,
+   "feng_labels": [
+    "endocardial_ec",
+    "vascular_ec"
+   ]
+  },
+  "Epicardium": {
+   "E14.5": 143,
+   "E18": 51,
+   "feng_labels": [
+    "epicardial"
+   ]
+  }
+ },
+ "real_cells": {
+  "CM": {
+   "E9.5": 705,
+   "E14.5": 1777,
+   "feng_labels": [
+    "ventricular_cm",
+    "atrial_cm"
+   ]
+  },
+  "Endocardium": {
+   "E9.5": 70,
+   "E14.5": 107,
+   "feng_labels": [
+    "endocardial_ec"
+   ]
+  },
+  "Endothelium": {
+   "E9.5": 70,
+   "E14.5": 158,
+   "feng_labels": [
+    "endocardial_ec",
+    "vascular_ec"
+   ]
+  },
+  "Epicardium": {
+   "E9.5": 13,
+   "E14.5": 143,
+   "feng_labels": [
+    "epicardial"
+   ]
+  }
+ },
+ "groups": {
+  "CM": {
+   "genes_with_value": 29715,
+   "proxy_mean_abs_log_f": 0.010503313806546741,
+   "proxy_genes_moved_gt_10pct": 578,
+   "spearman_with_real": 0.16181652199081134,
+   "cosine_with_real": 0.30219381409625473,
+   "top400_sign_agreement_with_real": 0.7275,
+   "top400_abs_overlap_with_real": 116,
+   "modules": {
+    "top_400_up": {
+     "A1": 1,
+     "D": 2,
+     "N1": 5,
+     "N2": 1
+    },
+    "top_400_down": {
+     "A1": 3,
+     "D": 3,
+     "N1": 0,
+     "N2": 2
+    }
+   },
+   "eb_factors": [
+    1.0,
+    1.0,
+    1.0,
+    0.0003,
+    0.164,
+    0.7446,
+    0.9307,
+    0.9694,
+    0.9833,
+    0.9951
+   ],
+   "eb_spearman": 0.9998154291131078
+  },
+  "Endocardium": {
+   "genes_with_value": 29715,
+   "proxy_mean_abs_log_f": 0.01154086032021492,
+   "proxy_genes_moved_gt_10pct": 512,
+   "spearman_with_real": -0.2878246324695193,
+   "cosine_with_real": -0.2316990453857267,
+   "top400_sign_agreement_with_real": 0.34,
+   "top400_abs_overlap_with_real": 86,
+   "modules": {
+    "top_400_up": {
+     "A1": 0,
+     "D": 4,
+     "N1": 0,
+     "N2": 0
+    },
+    "top_400_down": {
+     "A1": 6,
+     "D": 1,
+     "N1": 9,
+     "N2": 1
+    }
+   },
+   "eb_factors": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.2057,
+    0.2909,
+    0.4966,
+    0.6373,
+    0.8785
+   ],
+   "eb_spearman": 0.9991792381471762
+  },
+  "Endothelium": {
+   "genes_with_value": 29715,
+   "proxy_mean_abs_log_f": 0.01063931424491322,
+   "proxy_genes_moved_gt_10pct": 481,
+   "spearman_with_real": -0.1584670505161526,
+   "cosine_with_real": -0.040452601057860756,
+   "top400_sign_agreement_with_real": 0.49,
+   "top400_abs_overlap_with_real": 95,
+   "modules": {
+    "top_400_up": {
+     "A1": 0,
+     "D": 3,
+     "N1": 0,
+     "N2": 0
+    },
+    "top_400_down": {
+     "A1": 6,
+     "D": 4,
+     "N1": 9,
+     "N2": 1
+    }
+   },
+   "eb_factors": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.0504,
+    0.2054,
+    0.4012,
+    0.6361,
+    0.7559,
+    0.9238
+   ],
+   "eb_spearman": 0.9993765565950863
+  },
+  "Epicardium": {
+   "genes_with_value": 29715,
+   "proxy_mean_abs_log_f": 0.015415199101110067,
+   "proxy_genes_moved_gt_10pct": 1005,
+   "spearman_with_real": -0.044851886883988404,
+   "cosine_with_real": 0.07100111639249945,
+   "top400_sign_agreement_with_real": 0.655,
+   "top400_abs_overlap_with_real": 89,
+   "modules": {
+    "top_400_up": {
+     "A1": 0,
+     "D": 6,
+     "N1": 1,
+     "N2": 1
+    },
+    "top_400_down": {
+     "A1": 6,
+     "D": 7,
+     "N1": 3,
+     "N2": 0
+    }
+   },
+   "eb_factors": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.1236,
+    0.384,
+    0.5044,
+    0.6396,
+    0.8857
+   ],
+   "eb_spearman": 0.9990748993432089
+  }
+ },
+ "n_t1_genes": 32285,
+ "inputs": {
+  "t1_file": "data/raw/T1/E9.5_RNA.h5ad",
+  "t1_file_sha256": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+  "feng_stats": "data/external/feng2022_gse193346_geo/cd1_stats.npz",
+  "feng_stats_sha256": "28f188fb9409984142a70a5a940dde3d1d3187b033d94ee2d26337a216f295c3",
+  "t1_hygiene_config_sha256": "d0909b842bc7fe6cf6aeb747615ecffb4990c8f53b86792bc84a138665691785",
+  "held_flat_sha256": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c"
+ },
+ "stamp": {
+  "commit": "fc6ebf5e7a840038f002fd34a2a8b4d22eb233f5",
+  "tree_clean_at_start": true,
+  "tree_clean_at_end": true,
+  "utc": "2026-11-09T22:54:05Z"
+ }
+}

@@ -1,0 +1,9 @@
+T12a/T12b stop rule: proceed. S1 (a task's total or distribution+covariance points below -0.66): none. S2 (control: raw mmd_u above 0.0035, raw variogram above 0.0004, distribution+covariance points below -0.33): none. Between -0.33 and -0.66 (only on the captain's explicit reading): none. Problems: none
+Commit fc6ebf5e7a840038f002fd34a2a8b4d22eb233f5, tree clean True, UTC 2026-11-09T23:58:15Z
+
+T1/E9.5->E10.5: b0_strong_null minus b0: mean +0.837 (sd 0.257, ahead in 10 of 10); distribution+covariance -0.116; groups de_recovery +1.023, direction -0.070, distribution +0.027, covariance -0.143; metrics de_score +0.17767, de_direction -0.00702, mmd_u -0.00044, variogram +0.00027
+  raw increases' implied points near the floor: mmd_u d_f 0.024: +0.14, d_f 0.05: +0.07, d_f 0.08: +0.04, d_f 0.11: +0.03; variogram d_f 0.0009: -1.47, d_f 0.003: -0.44, d_f 0.0055: -0.24, d_f 0.01: -0.13
+T1/E9.5->E10.5:chamber: b0_strong_null minus b0: mean +0.779 (sd 0.121, ahead in 10 of 10); distribution+covariance -0.068; groups de_recovery +0.925, direction -0.078, distribution +0.080, covariance -0.148; metrics de_score +0.13562, de_direction -0.00667, mmd_u -0.00116, variogram +0.00023
+  raw increases' implied points near the floor: mmd_u d_f 0.024: +0.36, d_f 0.05: +0.17, d_f 0.08: +0.11, d_f 0.11: +0.08; variogram d_f 0.0009: -1.28, d_f 0.003: -0.38, d_f 0.0055: -0.21, d_f 0.01: -0.11
+T1/E8.5->E9.5: scope_strong_null minus b0_scope: mean -0.195 (sd 0.036, ahead in 0 of 10); distribution+covariance -0.185; groups de_recovery +0.000, direction -0.011, distribution -0.077, covariance -0.107; metrics de_score +0.00000, de_direction -0.00065, mmd_u +0.00152, variogram +0.00013
+  raw increases' implied points near the floor: mmd_u d_f 0.024: -0.47, d_f 0.05: -0.23, d_f 0.08: -0.14, d_f 0.11: -0.10; variogram d_f 0.0009: -0.73, d_f 0.003: -0.22, d_f 0.0055: -0.12, d_f 0.01: -0.07

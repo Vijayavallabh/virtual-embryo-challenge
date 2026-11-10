@@ -1,0 +1,13 @@
+{
+ "passed": true,
+ "reads": {
+  "T1/E8.5->E9.5:cm": "ok",
+  "T1/E9.5->E10.5:cm": "ok",
+  "T1/E9.5->E10.5:endocardium": "ok"
+ },
+ "stamp": {
+  "commit": "fc6ebf5e7a840038f002fd34a2a8b4d22eb233f5",
+  "tree_clean": true,
+  "utc": "2026-11-09T22:57:40Z"
+ }
+}
