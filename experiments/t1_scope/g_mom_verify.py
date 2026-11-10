@@ -44,8 +44,8 @@ upload.
   mixfree      Try T25. g_mom against b0 inside one chamber category, on the two within-type E10.5 reads of
                configs/t1_late_proxy.yaml (T1/E9.5->E10.5:cm and T1/E9.5->E10.5:endocardium: target, reference and
                inputs cut to the category), where there is no chamber mix to repair and g_mom edits every cell of the
-               read, so the gain does not shrink as T22's does. The harness runs floor, b0, g_mom and g_mom_null on both
-               reads (seeds 0-9). Before reading anything the run's b0 must reproduce the committed late-proxy gate's
+               read but R1's held labels, so the gain does not shrink as T22's does. The harness runs floor, b0, g_mom
+               and g_mom_null on both reads (seeds 0-9). Before reading anything the run's b0 must reproduce the committed late-proxy gate's
                b0 on both reads within 0.02 points per seed (experiments/t1_m1/results/late_proxy_v1/gate/; otherwise
                the reading is void and goes to the captain). Rule, vec.adoption's paired statistics: on the
                cardiomyocyte read a paired mean gain above 0.3 points and ahead in at least 8 of 10 seeds, and on the
