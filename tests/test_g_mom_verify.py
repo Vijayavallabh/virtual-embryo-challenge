@@ -1,6 +1,7 @@
-"""The g_mom verification (tries T20 to T22 and diagnostic N21 of experiments/harness/TRIES.md) on synthetic data: the
-placebo factors, their harness arms, the pair fit shared by N21 and the test build, the placebo readout, the
-composition arms at the truth's own chamber mix, N21 and the --g-mom option of the T1 test build."""
+"""The g_mom verification (tries T20 to T24 and diagnostic N21 of experiments/harness/TRIES.md) on synthetic data: the
+placebo and no-development factors, the pseudobulk-held arm, their harness arms, the pair fit shared by N21 and the test
+build, the controls' readout, the composition arms at the truth's own chamber mix, N21, the --g-mom option of the T1
+test build, and a pair of synthetic worlds (with and without within-type momentum) that the controls must separate."""
 
 from __future__ import annotations
 
@@ -16,7 +17,7 @@ import pandas as pd
 import pytest
 from scipy import sparse
 from test_hidden_counts import T1_GENES, T1_HELD, UNION, _reference_file, bt, t1_env  # noqa: F401
-from test_t1_scope import GENES, HELD
+from test_t1_scope import GENES, HELD, _profiles
 from test_t1_state_transport import _gmom_ctx, _t1_task, _toy_population, states_stage
 
 from vec import harness, t1_scope
@@ -122,6 +123,57 @@ def test_permute_factors_changes_nothing_for_identical_rows_only_the_assignment(
     assert not np.array_equal(out.logf, logf)
 
 
+# ------------------------------------------------------------------------------------------ the no-development factors
+def _raw_fit(prefix, seed, n_meta=6, genes=40):
+    """A raw fit on its own cells (names prefix_i), the sizes unequal so the cell weighting matters."""
+    rng = np.random.default_rng(seed)
+    sizes = rng.integers(5, 40, size=n_meta)
+    names = [f"{prefix}{i}" for i in range(int(sizes.sum()))]
+    index = dict(zip(names, np.repeat(np.arange(n_meta), sizes).tolist(), strict=True))
+    cf = ts.CategoryFactors("cm", index, sizes, rng.normal(0.0, 0.3, size=(n_meta, genes)))
+    return ts.StateFactors(genes=[f"g{i}" for i in range(genes)], metacells_on="later", categories={"cm": cf},
+                           skipped={}, record={})
+
+
+def test_no_development_finish_is_cross_fitted_mean_free_per_direction_and_matched_to_g_moms_size():
+    held = ["g0", "g1"]
+    first, second = _raw_fit("a", 1), _raw_fit("b", 2)
+    target = ts.finish_momentum(_raw_fit("x", 3), 0.5)
+    out = ts.finish_no_development(first, second, target, held, 0.5)
+    cf = out.categories["cm"]
+    # the two directions' metacells are stacked: every cell of both halves has a metacell, the second's shifted
+    ka = first.categories["cm"].n_metacells
+    assert cf.n_metacells == ka + second.categories["cm"].n_metacells and len(cf.index) == (
+        len(first.categories["cm"].index) + len(second.categories["cm"].index))
+    assert all(m >= ka for n, m in cf.index.items() if n.startswith("b"))
+    free = np.array([g not in held for g in out.genes])
+    # the size is g_mom's per category: the cell-weighted root mean square over the metacells and the free genes
+    want = ts._factor_rms(target.categories["cm"].logf, target.categories["cm"].sizes, free)
+    assert ts._factor_rms(cf.logf, cf.sizes, free) == pytest.approx(want, rel=0.02)
+    rec = cf.record["no_development"]
+    assert rec["rms_target"] == pytest.approx(want) and rec["relative_error"] < 0.02 and rec["damping"] > 0
+    # each direction's mean was removed before the stacking, and the finish is the zero-and-clip of g_mom
+    assert np.abs(cf.logf).max() <= ts.CLIP_AT + 1e-12
+    assert np.all((np.abs(cf.logf) >= ts.ZERO_BELOW - 1e-12) | (cf.logf == 0))
+    # what is matched is the size, not the direction: another target size scales the factors, the zero set aside
+    bigger = ts.finish_momentum(_raw_fit("x", 3), 1.5)
+    scaled = ts.finish_no_development(first, second, bigger, held, 0.5).categories["cm"]
+    assert ts._factor_rms(scaled.logf, scaled.sizes, free) > ts._factor_rms(cf.logf, cf.sizes, free) * 1.3
+
+
+def test_no_development_finish_refuses_shared_cells_and_skips_a_category_it_cannot_match():
+    first = _raw_fit("a", 1)
+    with pytest.raises(ValueError, match="share cells"):
+        ts.finish_no_development(first, first, ts.finish_momentum(_raw_fit("x", 3), 0.5), [], 0.5)
+    second = _raw_fit("b", 2)
+    # a category g_mom has no factors for gets none; a category fitted in one direction only is skipped and recorded
+    target = ts.finish_momentum(_raw_fit("x", 3), 0.5)
+    only_one = ts.StateFactors(genes=second.genes, metacells_on="later", categories={}, skipped={"cm": "too few"},
+                               record={})
+    out = ts.finish_no_development(first, only_one, target, [], 0.5)
+    assert not out.categories and "cm" in out.skipped
+
+
 # ------------------------------------------------------------------------------------------------ the harness arms
 def test_g_mom_arm_with_the_identity_is_byte_for_byte_g_mom(world):
     """g_mom itself is unchanged, and the arm repeats its steps: with an identity transform the arm's file is g_mom."""
@@ -163,8 +215,85 @@ def test_the_flip_uses_the_same_stream_and_the_permutation_one_fixed_seed(world)
     assert not np.array_equal(one.X, other.X)  # another build seed: another draw of cells and counts
 
 
+def test_the_no_development_arm_uses_g_moms_draws_and_stream_and_factors_for_every_reference_cell(world):
+    """T23: the same base and draws as g_mom (R1's held labels keep B0's counts), cross-fitted so that every cell of
+    g_mom's fitted categories has a factor from the direction in which its own half carries the metacells, at g_mom's
+    factor size per category, and fitted once per fold (the object stays the same for another seed)."""
+    ref, start, _ = world
+    ctx = _gmom_ctx(ref, start)
+    b0, gm = harness._b0_t1(harness.B0_DAMPING)(ctx), harness._g_mom(ctx)
+    null = CANDIDATES["g_mom_null"].build(ctx)
+    assert not np.array_equal(null.X, gm.X)
+    shares = harness.t1_chamber_shares(harness._shallow(ref), "E9.5_RNA")
+    pop = ts.b0_population(harness._shallow(ref), harness._shallow(start), shares, 600, ctx.seed, list(HELD),
+                           ref_source="E9.5_RNA", start_source="E8.5_RNA", damping=harness.B0_DAMPING)
+    blood = pop.obs["celltype"].astype(str).to_numpy() == "Blood"
+    assert blood.any() and np.array_equal(null.X[blood], b0.X[blood])
+    finished = harness._G_MOM_PREP["fold"]["factors"]
+    factors = harness._G_MOM_NULL_PREP["fold"]["factors"]
+    assert harness._G_MOM_NULL_PREP["fold"]["ref"] is ctx.inputs["ref"]
+    assert set(factors.categories) <= set(finished.categories)  # g_mom's categories, and the control edits only them
+    t1_scope_cats = harness._shallow(ref)
+    t1_scope.classify(t1_scope_cats, source="E9.5_RNA")
+    cats = t1_scope_cats.obs["category"].astype(str).to_numpy()
+    for c, cf in factors.categories.items():
+        # the two halves' metacells together cover the category's own cells (the cells g_mom's fit covers)
+        assert set(cf.index) == set(finished.categories[c].index) or cf.index.keys() >= set(
+            np.asarray(ref.obs_names)[cats == c].tolist())
+    # the size is g_mom's, the record says so, and a second build (another seed) reuses the fold's fit
+    free = np.array([g not in set(HELD) for g in factors.genes])
+    for c, cf in factors.categories.items():
+        goal = finished.categories[c]
+        assert ts._factor_rms(cf.logf, cf.sizes, free) == pytest.approx(ts._factor_rms(goal.logf, goal.sizes, free),
+                                                                        rel=0.1)
+        assert cf.record["no_development"]["rms_target"] > 0
+    CANDIDATES["g_mom_null"].build(_gmom_ctx(ref, start, seed=1000002))
+    assert harness._G_MOM_NULL_PREP["fold"]["factors"] is factors
+    assert CANDIDATES["g_mom_null"].params["split_seed"] == harness.G_MOM_NULL_SEED == 20261110
+
+
+def test_the_halves_are_disjoint_and_cover_the_reference(world):
+    ref, _, _ = world
+    stage = harness._shallow(ref)
+    t1_scope.classify(stage, source="E9.5_RNA")
+    a = ts.category_halves(stage, np.random.default_rng(harness.G_MOM_NULL_SEED))
+    b = ts.category_halves(stage, np.random.default_rng(harness.G_MOM_NULL_SEED))
+    assert np.array_equal(a, b)  # the seed fixes the halves
+    cats = stage.obs["category"].astype(str).to_numpy()
+    for c in set(cats):
+        assert a[cats == c].sum() == (cats == c).sum() // 2
+
+
+def test_the_held_arm_is_g_mom_through_the_rescale_on_the_same_factors_and_stream(world, monkeypatch):
+    """T24: the same factors, draws and stream as g_mom through rescale=True (T9's construction): the category's mean
+    CP10k is held per gene in expectation, and R1's held labels keep B0's counts."""
+    ref, start, _ = world
+    ctx = _gmom_ctx(ref, start)
+    b0, gm = harness._b0_t1(harness.B0_DAMPING)(ctx), harness._g_mom(ctx)
+    calls = []
+    real = ts.apply_state_factors
+
+    def spy(pop, sf, held_flat, seed, **kw):
+        calls.append((sf, list(seed), kw["rescale"]))
+        return real(pop, sf, held_flat, seed, **kw)
+
+    monkeypatch.setattr(ts, "apply_state_factors", spy)
+    held_arm = CANDIDATES["g_mom_held"].build(ctx)
+    monkeypatch.setattr(ts, "apply_state_factors", real)
+    assert len(calls) == 1 and calls[0][1] == [ctx.seed, 5] and calls[0][2] is True
+    assert calls[0][0] is harness._G_MOM_PREP["fold"]["factors"]  # g_mom's own finished factors, untransformed
+    assert not np.array_equal(held_arm.X, gm.X) and not np.array_equal(held_arm.X, b0.X)
+    twin = harness._g_mom_arm(ctx, lambda f: f, rescale=True)
+    assert np.array_equal(twin.X, held_arm.X)  # the stream is fixed: the build is repeatable
+    shares = harness.t1_chamber_shares(harness._shallow(ref), "E9.5_RNA")
+    pop = ts.b0_population(harness._shallow(ref), harness._shallow(start), shares, 600, ctx.seed, list(HELD),
+                           ref_source="E9.5_RNA", start_source="E8.5_RNA", damping=harness.B0_DAMPING)
+    blood = pop.obs["celltype"].astype(str).to_numpy() == "Blood"
+    assert blood.any() and np.array_equal(held_arm.X[blood], b0.X[blood])
+
+
 def test_the_placebo_arms_build_inside_the_read_guard(monkeypatch, tmp_path):
-    """The harness's own run of g_mom and its placebos on a T1 pseudo-task (one seed): nothing a candidate must not read
+    """The harness's own run of g_mom and its controls on a T1 pseudo-task (one seed): nothing a candidate must not read
     is read, and every arm is scored against the shared anchors."""
     ref, start, tgt = _small_inputs(seed=47)
     harness._G_MOM_PREP.clear()
@@ -183,25 +312,122 @@ def test_the_placebo_arms_build_inside_the_read_guard(monkeypatch, tmp_path):
     monkeypatch.setattr(harness, "_sha256", lambda path: "0" * 64)
     monkeypatch.setattr(harness, "task_board", lambda t, boards, n_t, n_r: board)
     monkeypatch.setattr(harness, "derived_ok", lambda name, t: True)
-    names = ["b0", "g_mom", "g_mom_flip", "g_mom_perm"]
+    names = ["b0", "g_mom", "g_mom_flip", "g_mom_perm", "g_mom_null", "g_mom_held"]
     res = harness.run_task(task, [CANDIDATES[n] for n in names], seeds=(0,), data_dir=tmp_path,
                            boards={"T1:val": replace(board, key="T1:val")}, log=None)
     row = res["rows"][0]
     assert res["candidates"] == ["floor", *names] and row["scores"]["floor"] == 50.0
     for name in names:
         assert np.isfinite(row["scores"][name]) and row["n_cells"][name] == 400
-    for name in ("g_mom", "g_mom_flip", "g_mom_perm"):
+        assert "variance_ratio" in row["metrics"][name] and "de_score" in row["skills"][name]  # the readout's inputs
+    for name in ("g_mom", "g_mom_flip", "g_mom_perm", "g_mom_null", "g_mom_held"):
         assert not any("results" in p or p.startswith(("data/", "runs/")) for p in row["reads"][name])
 
 
-def test_the_placebo_candidates_apply_where_g_mom_does():
+def test_the_control_candidates_apply_where_g_mom_does():
     tasks = {t.key: t for ts_ in harness.load_tasks().values() for t in ts_}
-    for name in ("g_mom_flip", "g_mom_perm"):
+    for name in ("g_mom_flip", "g_mom_perm", "g_mom_null", "g_mom_held"):
         c = CANDIDATES[name]
         assert c.applies(tasks["T1/E9.5->E10.5"]) and c.applies(tasks["T1/E9.5->E10.5:chamber"])
         assert not c.applies(tasks["T1/E8.5->E9.5"]) and not c.applies(tasks["T2h/<=E9.5->E10.5"])
         assert c.params["scope"] == CANDIDATES["g_mom"].params["scope"] and c.derived == ("t1_held_flat",)
     assert CANDIDATES["g_mom_perm"].params["permutation_seed"] == harness.G_MOM_PERM_SEED
+    assert CANDIDATES["g_mom_held"].params["scope"] == "chamber"
+    for name in ("g_mom_null", "g_mom_held"):
+        assert CANDIDATES[name].derived == ("t1_held_flat",)
+
+
+# ------------------------------------------------------------------------------------------------ two synthetic worlds
+def _world_stage(seed, sizes, step, momentum, target=False):
+    """A T1-like stage whose V-CM cells have two states (half of them with g30-g39 up 8x at every stage). With momentum,
+    the second state also moves along its own programme g40-g44 by a factor 6 per stage (step 0, 1, 2 = start,
+    reference, target), so the reference's own state contrast barely shows on those genes at the start and the true
+    within-type change keeps going past the reference; without momentum nothing within a type changes between stages,
+    only the whole-population shift the target carries (target=True, a broader version of `states_stage`'s)."""
+    rng = np.random.default_rng(seed)
+    prof = _profiles()
+    blocks, labels = [], []
+    for lab, n in sizes.items():
+        mu = np.tile(prof[lab], (n, 1)) * rng.gamma(10.0, 0.1, size=(n, 1))
+        if lab == "V-CM":
+            second = np.arange(n) < n // 2
+            mu[second, 30:40] *= 8.0
+            if momentum:
+                mu[second, 40:45] *= 6.0 ** step
+        if target:  # the whole population's change, over enough genes that the scorer's DE sets are stable
+            mu[:, :15] *= 4.0
+            mu[:, 15:30] *= 0.25
+        C = rng.poisson(mu)
+        C[np.arange(n), rng.integers(0, C.shape[1], n)] += 1
+        blocks.append(C)
+        labels += [lab] * n
+    C = sparse.csr_matrix(np.vstack(blocks).astype(np.int32))
+    a = ad.AnnData(X=log1p_cp10k(C))
+    a.var_names = GENES
+    a.obs_names = [f"w{seed}_{i}" for i in range(a.n_obs)]
+    a.obs["celltype"] = labels
+    a.layers["counts"] = C
+    return a
+
+
+WORLD_ARMS = ["b0", "g_mom", "g_mom_flip", "g_mom_perm", "g_mom_null", "g_mom_held"]
+
+
+def _run_world(monkeypatch, tmp_path, momentum, seed=71, seeds=(0, 1, 2)):
+    """One world through the harness's own run on a T1 pseudo-task and the real scorer: per arm the mean over seeds of
+    the score, the scores per seed, and the factors fitted (g_mom's and the no-development arm's)."""
+    ref = _world_stage(seed, {"V-CM": 1800, "Endocardium": 600, "Blood": 200, "Foregut": 300}, 1, momentum)
+    start = _world_stage(seed + 1, {"V-CM": 1400, "Endothelium": 500, "Blood": 180, "Foregut": 240}, 0, momentum)
+    tgt = _world_stage(seed + 2, {"V-CM": 2200, "Endocardium": 800, "Blood": 240, "Foregut": 400}, 2, momentum,
+                       target=True)
+    harness._G_MOM_PREP.clear()
+    harness._G_MOM_NULL_PREP.clear()
+    task = _t1_task()
+    board = Board(key="pseudo:t1gm", task="T1", genes=list(GENES), needs_coords=False, min_cells=100, max_cells=1200,
+                  truth_cells=tgt.n_obs, ref_cells=ref.n_obs)
+
+    def read(path, genes):
+        stage = tgt if str(path).endswith(task.target) else ref
+        return ad.AnnData(X=np.asarray(stage.X.todense()), var=pd.DataFrame(index=GENES))
+
+    by_file = {"T1/E9.5_RNA.h5ad": ref, "T1/E8.5_RNA.h5ad": start}
+    monkeypatch.setattr(harness, "read_stage", read)
+    monkeypatch.setattr(harness, "load_stage", lambda path, **kw: by_file[str(path).split(str(tmp_path) + "/")[1]])
+    monkeypatch.setattr(harness, "_sha256", lambda path: "0" * 64)
+    monkeypatch.setattr(harness, "task_board", lambda t, boards, n_t, n_r: board)
+    monkeypatch.setattr(harness, "derived_ok", lambda name, t: True)
+    res = harness.run_task(task, [CANDIDATES[n] for n in WORLD_ARMS], seeds=seeds, data_dir=tmp_path,
+                           boards={"T1:val": replace(board, key="T1:val")}, log=None)
+    scores = {arm: [row["scores"][arm] for row in res["rows"]] for arm in WORLD_ARMS}
+    return scores, res["rows"], (harness._G_MOM_PREP["fold"]["factors"], harness._G_MOM_NULL_PREP["fold"]["factors"])
+
+
+def _gains(scores, arm, base):
+    return float(np.mean(np.array(scores[arm]) - np.array(scores[base])))
+
+
+def test_the_controls_separate_a_world_with_within_type_momentum_from_one_without(monkeypatch, tmp_path):
+    """Through the real pipeline and scorer (toy size; no project data): without within-type momentum g_mom gains little
+    over its no-development control, with real momentum (the second state keeps moving along a programme the reference's
+    state contrast barely shows at the start) it gains clearly over it, the sign flip and the permutation; and the
+    no-development arm, cross-fitted between halves of the reference, carries no g40-g44 momentum."""
+    still, _, _ = _run_world(monkeypatch, tmp_path, momentum=False)
+    moving, _, (moving_gm, moving_null) = _run_world(monkeypatch, tmp_path, momentum=True)
+    # no within-type development: g_mom has nothing to gain over its no-development control, or over b0
+    assert abs(_gains(still, "g_mom", "g_mom_null")) < 0.3 and _gains(still, "g_mom", "b0") < 0.3
+    # real momentum: g_mom gains over b0 and over every control, and the gain survives the pseudobulk hold
+    assert _gains(moving, "g_mom", "b0") > 0.5
+    for control in ("g_mom_null", "g_mom_flip", "g_mom_perm"):
+        assert _gains(moving, "g_mom", control) > 0.5, control
+    assert _gains(moving, "g_mom_held", "b0") > 0.3
+    # the no-development arm, which sees no development, cannot be the source of g_mom's gain in the moving world: on
+    # the programme genes its factors are the smaller, though both arms have the same factor size per category
+    cm_gm, cm_null = moving_gm.categories["cm"], moving_null.categories["cm"]
+    idx = [GENES.index(f"g{i}") for i in range(40, 45)]
+    w_gm, w_null = cm_gm.sizes / cm_gm.sizes.sum(), cm_null.sizes / cm_null.sizes.sum()
+    size_gm = float((w_gm * np.abs(cm_gm.logf[:, idx]).mean(1)).sum())
+    size_null = float((w_null * np.abs(cm_null.logf[:, idx]).mean(1)).sum())
+    assert size_null < 0.8 * size_gm
 
 
 # ------------------------------------------------------------------------------------------------ the pair fit
@@ -231,16 +457,31 @@ def test_pair_factors_are_the_folds_factors_and_align_the_start_stages_genes(wor
 
 
 # ------------------------------------------------------------------------------------------------ the placebo readout
-def _run_rows(b0, g_mom, flip, perm, seeds=range(10), t11=None):
-    """Per-seed rows of a harness run: scores and group skills per arm; t11: scores for b0 and g_mom to use instead."""
+ARMS = ("floor", "b0", "g_mom", "g_mom_flip", "g_mom_perm", "g_mom_null", "g_mom_held")
+PANEL = {"variance_ratio": 0.70, "mmd_u": 0.12, "variogram": 0.008, "energy_distance": 3.5, "pb_rel_err": 0.28,
+         "de_score": -0.3, "de_direction": 0.17, "library_size_ratio": 1.0, "pseudobulk_pearson": 0.9}
+
+
+def _run_rows(b0, g_mom, flip, perm, null=None, held=None, seeds=range(10), t11=None, vr=None, de_skill=None):
+    """Per-seed rows of a harness run: scores, group skills, the metric panel and the skills per arm. null, held:
+    default below g_mom by 1.0 and above b0 by 0.8 (the rule passes); t11: scores for b0 and g_mom to use instead; vr:
+    arm -> variance_ratio; de_skill: arm -> (de_score, de_direction) skill."""
     rows = []
+    vr = {"b0": 0.70, "g_mom": 0.712, "g_mom_flip": 0.688, "g_mom_perm": 0.711, "g_mom_null": 0.712,
+          "g_mom_held": 0.711, "floor": 0.77, **(vr or {})}
+    de_skill = {**{a: (0.5, 0.5) for a in ARMS}, **(de_skill or {})}
     for i, s in enumerate(seeds):
-        scores = {"floor": 50.0, "b0": b0[i], "g_mom": g_mom[i], "g_mom_flip": flip[i], "g_mom_perm": perm[i]}
+        scores = {"floor": 50.0, "b0": b0[i], "g_mom": g_mom[i], "g_mom_flip": flip[i], "g_mom_perm": perm[i],
+                  "g_mom_null": g_mom[i] - 1.0 if null is None else null[i],
+                  "g_mom_held": b0[i] + 0.8 if held is None else held[i]}
         if t11 is not None:
             scores["b0"], scores["g_mom"] = t11
         groups = {arm: {"de_recovery": 0.6, "direction": 0.6, "distribution": 0.7 + (v - 50) / 100,
                         "covariance": 0.7 + (v - 50) / 200} for arm, v in scores.items()}
-        rows.append({"seed": s, "build_seed": harness.BUILD_SEED_OFFSET + s, "scores": scores, "groups": groups})
+        metrics = {arm: {**PANEL, "variance_ratio": vr[arm]} for arm in ARMS}
+        skills = {arm: {"de_score": de_skill[arm][0], "de_direction": de_skill[arm][1]} for arm in ARMS}
+        rows.append({"seed": s, "build_seed": harness.BUILD_SEED_OFFSET + s, "scores": scores, "groups": groups,
+                     "metrics": metrics, "skills": skills})
     return rows
 
 
@@ -251,7 +492,7 @@ def _write_run(tmp_path, folder, rows_by_cut, sha):
                       ("T1/E9.5->E10.5:chamber", "T1_E9.5_E10.5_chamber.json")):
         (d / name).write_text(json.dumps(
             {"task": {"key": key, "test_board": "T1:test"},
-             "candidates": ["floor", "b0", "g_mom", "g_mom_flip", "g_mom_perm"], "rows": rows_by_cut[key],
+             "candidates": list(ARMS), "rows": rows_by_cut[key],
              "protocol": "bake", "build": "main", "anchors": "computed", "frac": 0.1,
              "seeds": list(range(10)), "provenance": {"commit": "run1", "tree_clean": True, "config_sha256": sha,
                                                       "files_sha256": {"T1/E9.5_RNA.h5ad": "f"}}}))
@@ -269,22 +510,28 @@ def t11_dir(vm, tmp_path, monkeypatch):
     return d
 
 
-def _matching_rows(gain_flip, gain_perm):
+def _matching_rows(gain_flip, gain_perm, gain_null=None, held_gain=None, **kw):
+    """Rows whose b0 and g_mom match try T11's committed scores; each control's gain per seed is g_mom minus it."""
     b0 = [49.0 + 0.1 * s for s in range(10)]
     g_mom = [50.0 + 0.1 * s for s in range(10)]
     flip = [g - gain_flip[i] for i, g in enumerate(g_mom)]
     perm = [g - gain_perm[i] for i, g in enumerate(g_mom)]
-    return _run_rows(b0, g_mom, flip, perm)
+    null = None if gain_null is None else [g - gain_null[i] for i, g in enumerate(g_mom)]
+    held = None if held_gain is None else [b + held_gain[i] for i, b in enumerate(b0)]
+    return _run_rows(b0, g_mom, flip, perm, null=null, held=held, **kw)
 
 
-def test_placebo_survives_only_when_each_placebo_is_beaten_on_both_cuts(vm, t11_dir, tmp_path):
+def test_placebo_survives_only_when_each_control_is_beaten_and_the_held_arm_keeps_its_gain(vm, t11_dir, tmp_path):
     sha = vm.harness._sha256(vm.harness.CONFIG)
     good = {k: _matching_rows([1.0] * 10, [0.8] * 10) for k in vm.CUTS}
     run = _write_run(tmp_path, "good", good, sha)
     vm.main(["placebo", "--runs", str(run), "--out", "p_good"])
     rec = json.loads((vm.RESULTS / "p_good" / "placebo.json").read_text())
     assert rec["survives"] is True and rec["reproduction_of_t11"]["reproduced"] is True
-    assert set(rec["placebos"]) == {"g_mom_flip", "g_mom_perm"}
+    assert set(rec["placebos"]) == {"g_mom_flip", "g_mom_perm", "g_mom_null"}
+    assert rec["held"]["try"] == "T24" and rec["held"]["passes"] is True and rec["held"]["void"] is False
+    assert rec["held"]["decision"]["base"] == "b0" and rec["held"]["decision"]["change"] == "g_mom_held"
+    assert rec["held"]["decision"]["tasks"]["T1/E9.5->E10.5"]["mean_gain"] == pytest.approx(0.8)
     dec = rec["placebos"]["g_mom_perm"]["decision"]
     assert dec["keep"] and dec["base"] == "g_mom_perm" and dec["change"] == "g_mom"
     assert dec["tasks"]["T1/E9.5->E10.5"]["mean_gain"] == pytest.approx(0.8)
@@ -292,31 +539,85 @@ def test_placebo_survives_only_when_each_placebo_is_beaten_on_both_cuts(vm, t11_
     assert rec["placebos"]["g_mom_flip"]["group_margins"]["T1/E9.5->E10.5"]["n_seeds"] == 10
     assert rec["stamp"]["commit"] == "abc123" and rec["stamp"]["tree_clean"] is True
     assert len(rec["stamp"]["inputs"]) == 4
+    # the metric panels are in the record per arm and cut, and the spread reading reads them
+    panel = rec["panels"]["T1/E9.5->E10.5"]
+    assert set(panel) == set(ARMS) and panel["g_mom"]["variance_ratio"] == pytest.approx(0.712)
+    assert panel["b0"]["mmd_u"] == pytest.approx(0.12) and "energy_distance" in panel["g_mom_null"]
+    assert "pb_rel_err" in panel["g_mom_perm"]
+    spread = rec["spread"]
+    assert spread["t21_is_a_spread_control"] is True and spread["tolerance"] == 0.003
+    cut = spread["per_cut"]["T1/E9.5->E10.5"]
+    # the flip's variance ratio against b0 minus what g_mom added (the sign-odd reading of the row)
+    assert cut["flip_if_sign_odd"] == pytest.approx(0.70 - 0.012) and cut["flip_near_sign_odd_expectation"]
+    assert cut["perm_within_tolerance"] and spread["t20_sign_odd_reading_holds"] is True
     text = (vm.RESULTS / "p_good" / "placebo.txt").read_text()
     assert "SURVIVES" in text and "T20 g_mom_flip: beaten" in text and "T21 g_mom_perm: beaten" in text
+    assert "T23 g_mom_null: beaten" in text and "T24 g_mom_held" in text and "keeps its gain" in text
+    assert "variance_ratio" in text and "T21 may be read as a spread control" in text
+    assert "neither is a spread control or evidence of momentum" in text
+    assert "one fit and one permutation draw" in text
     with pytest.raises(SystemExit, match="already holds"):
         vm.main(["placebo", "--runs", str(run), "--out", "p_good"])
 
 
-@pytest.mark.parametrize("flip_gain, perm_gain, survives", [
-    ([1.0] * 10, [0.1] * 10, False),  # the permutation is not beaten by more than 0.3
-    ([0.25] * 10, [1.0] * 10, False),  # the flip is within 0.3 of g_mom
-    ([1.0] * 7 + [-0.5] * 3, [1.0] * 10, False),  # mean above 0.3 but only 7 of 10 seeds ahead
-    ([1.0] * 10, [0.9] * 10, True),
+@pytest.mark.parametrize("flip_gain, perm_gain, null_gain, held_gain, survives", [
+    ([1.0] * 10, [0.1] * 10, None, None, False),  # the permutation is not beaten by more than 0.3
+    ([0.25] * 10, [1.0] * 10, None, None, False),  # the flip is within 0.3 of g_mom
+    ([1.0] * 7 + [-0.5] * 3, [1.0] * 10, None, None, False),  # mean above 0.3 but only 7 of 10 seeds ahead
+    ([1.0] * 10, [0.9] * 10, [0.1] * 10, None, False),  # the no-development arm is not beaten (T23)
+    ([1.0] * 10, [0.9] * 10, None, [0.1] * 10, False),  # the held arm keeps no gain (T24): a per-type mean effect
+    ([1.0] * 10, [0.9] * 10, None, None, True),
 ])
-def test_placebo_rule_needs_mean_and_seeds_on_every_cut(vm, t11_dir, tmp_path, flip_gain, perm_gain, survives):
+def test_placebo_rule_needs_mean_and_seeds_on_every_cut(vm, t11_dir, tmp_path, flip_gain, perm_gain, null_gain,
+                                                        held_gain, survives):
     sha = vm.harness._sha256(vm.harness.CONFIG)
-    rows = {k: _matching_rows(flip_gain, perm_gain) for k in vm.CUTS}
+    rows = {k: _matching_rows(flip_gain, perm_gain, null_gain, held_gain) for k in vm.CUTS}
     run = _write_run(tmp_path, "r", rows, sha)
     vm.main(["placebo", "--runs", str(run), "--out", "p"])
     rec = json.loads((vm.RESULTS / "p" / "placebo.json").read_text())
     assert rec["survives"] is survives
     # one cut failing is enough: g_mom beaten only on the whole cut
     if survives:
-        worse = {**rows, "T1/E9.5->E10.5:chamber": _matching_rows([0.1] * 10, [0.1] * 10)}
+        worse = {**rows, "T1/E9.5->E10.5:chamber": _matching_rows([0.1] * 10, [0.1] * 10, null_gain, held_gain)}
         run2 = _write_run(tmp_path, "r2", worse, sha)
         vm.main(["placebo", "--runs", str(run2), "--out", "p2"])
         assert json.loads((vm.RESULTS / "p2" / "placebo.json").read_text())["survives"] is False
+
+
+def test_the_held_arms_reading_is_void_when_its_de_skills_drift(vm, t11_dir, tmp_path):
+    """T24's validity, as T9's: the held arm's de_score and de_direction skills within 0.02 of b0's on each cut (mean
+    over seeds), otherwise the pseudobulk was not held and the reading is void, whatever the score."""
+    sha = vm.harness._sha256(vm.harness.CONFIG)
+    rows = {k: _matching_rows([1.0] * 10, [1.0] * 10, de_skill={"g_mom_held": (0.53, 0.5)}) for k in vm.CUTS}
+    run = _write_run(tmp_path, "void_held", rows, sha)
+    vm.main(["placebo", "--runs", str(run), "--out", "p_void_held"])
+    rec = json.loads((vm.RESULTS / "p_void_held" / "placebo.json").read_text())
+    assert rec["held"]["void"] is True and rec["held"]["passes"] is False and rec["survives"] is False
+    assert rec["held"]["validity"]["de_skill_gap_vs_b0"]["T1/E9.5->E10.5"]["de_score"] == pytest.approx(0.03)
+    assert "VOID" in (vm.RESULTS / "p_void_held" / "placebo.txt").read_text()
+
+
+def test_t21_may_be_read_as_a_spread_control_only_within_its_variance_gate(vm, t11_dir, tmp_path):
+    """The permuted arm's variance_ratio within 0.003 of g_mom's on both cuts, or else T21 says only that the assignment
+    matters; a pass of the rule is unaffected."""
+    sha = vm.harness._sha256(vm.harness.CONFIG)
+    near = {k: _matching_rows([1.0] * 10, [1.0] * 10, vr={"g_mom_perm": 0.7115}) for k in vm.CUTS}
+    run = _write_run(tmp_path, "near", near, sha)
+    vm.main(["placebo", "--runs", str(run), "--out", "p_near"])
+    assert json.loads((vm.RESULTS / "p_near" / "placebo.json").read_text())["spread"]["t21_is_a_spread_control"] is True
+    far = {k: _matching_rows([1.0] * 10, [1.0] * 10, vr={"g_mom_perm": 0.702}) for k in vm.CUTS}
+    run2 = _write_run(tmp_path, "far", far, sha)
+    vm.main(["placebo", "--runs", str(run2), "--out", "p_far"])
+    rec = json.loads((vm.RESULTS / "p_far" / "placebo.json").read_text())
+    assert rec["spread"]["t21_is_a_spread_control"] is False and rec["survives"] is True
+    assert rec["spread"]["per_cut"]["T1/E9.5->E10.5"]["perm_within_tolerance"] is False
+    assert "T21 may NOT be read as a spread control" in (vm.RESULTS / "p_far" / "placebo.txt").read_text()
+    # and the flip's reading is only reported: a flip far from b0 minus what g_mom added is said so
+    odd = {k: _matching_rows([1.0] * 10, [1.0] * 10, vr={"g_mom_flip": 0.70}) for k in vm.CUTS}
+    run3 = _write_run(tmp_path, "odd", odd, sha)
+    vm.main(["placebo", "--runs", str(run3), "--out", "p_odd"])
+    spread_odd = json.loads((vm.RESULTS / "p_odd" / "placebo.json").read_text())["spread"]
+    assert spread_odd["t20_sign_odd_reading_holds"] is False
 
 
 def test_placebo_is_void_when_t11_does_not_reproduce(vm, t11_dir, tmp_path):
@@ -359,9 +660,9 @@ def test_placebo_refuses_a_missing_cut_or_a_run_without_the_placebos(vm, t11_dir
     run2 = _write_run(tmp_path, "r2", {k: _matching_rows([1.0] * 10, [1.0] * 10) for k in vm.CUTS}, sha)
     for f in run2.iterdir():
         r = json.loads(f.read_text())
-        r["candidates"] = ["floor", "b0", "g_mom"]
+        r["candidates"] = ["floor", "b0", "g_mom", "g_mom_flip", "g_mom_perm"]  # no no-development or held arm
         f.write_text(json.dumps(r))
-    with pytest.raises(SystemExit, match="both placebos"):
+    with pytest.raises(SystemExit, match="the controls and the held arm"):
         vm.main(["placebo", "--runs", str(run2), "--out", "p4"])
 
 
@@ -416,8 +717,11 @@ def _t22_io(vm, monkeypatch, tmp_path, full=False, committed_mean=None, seeds_pa
     monkeypatch.setattr(vm, "T1_GRID", grid_path)
     monkeypatch.setattr(vm.payoff, "chamber_cut", lambda t, data, genes: (cut, cut_cat))
     monkeypatch.setattr(vm, "read_stage", lambda path, genes: (tgt if "E10.5" in str(path) else ref)[:, genes].copy())
-    monkeypatch.setattr(vm, "load_stage",
-                        lambda path, lineage=False: ref.copy() if "E9.5" in str(path) else start.copy())
+
+    def load(path, lineage=False):
+        return (tgt if "E10.5" in str(path) else ref if "E9.5" in str(path) else start).copy()
+
+    monkeypatch.setattr(vm, "load_stage", load)
     monkeypatch.setattr(vm, "load_boards", lambda: {"T1:val": T22_BOARD})
     monkeypatch.setattr(vm.harness, "task_board", lambda t, boards, n_t, n_r: T22_BOARD)
     monkeypatch.setattr(vm.t1_scope, "held_flat_genes", lambda *a, **k: list(HELD))
@@ -434,13 +738,35 @@ def test_composition_builds_both_arms_at_the_oracle_mix_and_reads_the_rule(vm, m
     rec = json.loads((vm.RESULTS / "t22" / "composition.json").read_text())
     assert rec["oracle_shares"] == pytest.approx(shares) and rec["complete_seeds"] is False
     row = rec["rows"][0]
-    assert set(row) >= {"seed", "chamber", "whole"} and row["chamber"]["floor"] == pytest.approx(50.0)
+    assert set(row) >= {"seed", "chamber", "whole", "companion"} and row["chamber"]["floor"] == pytest.approx(50.0)
     for key in ("chamber", "whole"):
         assert row[key]["b0"]["score"] != row[key]["g_mom"]["score"]
         assert set(row[key]["g_mom"]["groups"]) == {"de_recovery", "direction", "distribution", "covariance"}
+        assert set(row[key]) >= {"b0", "g_mom", "g_mom_held", "floor"}
+        # the metric panel of every arm is kept (the spread reading reads variance_ratio)
+        panel = set(row[key]["g_mom"]["metrics"])
+        assert {"variance_ratio", "mmd_u", "variogram", "energy_distance", "pb_rel_err"} <= panel
     assert rec["chamber"]["passes"] is False and rec["reproduction_of_oracle_b0"]["reproduced"] is None
+    assert "variance_ratio" in rec["chamber"]["panel"]["g_mom_held"]
+    # the companion: the arms at the prediction's own mix against the chamber truth re-sampled to that mix
+    assert set(row["companion"]) >= {"floor", "b0", "g_mom"} and row["companion"]["floor"] == pytest.approx(50.0)
+    assert rec["companion"]["n_seeds"] == 1 and "group_margins" in rec["companion"]
+    assert rec["companion_truth"]["resample_seed"] == 20261110
+    want = harness.t1_chamber_shares(harness._shallow(ref), "E9.5_RNA")
+    mix = rec["companion_truth"]["mix"]
+    chamber_part = {k: v for k, v in mix.items() if k in want}
+    assert sum(mix.values()) == pytest.approx(1.0) and set(want) <= set(mix)
+    assert {k: v / sum(chamber_part.values()) for k, v in chamber_part.items()} == pytest.approx(want)
+    assert rec["chamber_held"]["n_seeds"] == 1
+    # the median library size report, DATA_POLICY 2026-11-04 (f)(3): shares and the two medians, no cell number
+    lib = rec["median_library_size"]
+    assert lib["ratio"] == pytest.approx(lib["oracle_mix_population"] / lib["e10_5_released"])
+    assert lib["beyond_5_percent"] == (abs(lib["ratio"] - 1.0) > 0.05)
     text = (vm.RESULTS / "t22" / "composition.txt").read_text()
     assert "not all ten seeds" in text and "Oracle mix" in text and "Whole cut" in text
+    assert "Companion (reported, deciding nothing" in text and "g_mom_held minus b0" in text
+    assert "Median library size" in text and "one transition and one fit" in text
+    assert "a whole-mix oracle base could be drawn" in text and "chamber-scoped candidate" in text
     assert rec["stamp"]["commit"] == "abc123" and any("E10.5" in k for k in rec["stamp"]["inputs"])
     with pytest.raises(SystemExit, match="already holds"):
         vm.main(["composition", "--seeds", "0", "--out", "t22", "--data", str(tmp_path)])
@@ -452,7 +778,8 @@ def test_composition_b0_arm_is_the_b0_population_and_the_g_mom_arm_edits_it(vm, 
                                                              if t.key == vm.TASK_CHAMBER)),
                                board=harness._candidate_board(T22_BOARD), inputs={"ref": ref, "start": start},
                                seed=1000003, derived={"t1_held_flat": tuple(HELD)})
-    b0, gm = vm.oracle_arms(ctx, shares, HELD)
+    arms, population = vm.oracle_arms(ctx, shares, HELD)
+    b0, gm, held_arm = arms["b0"], arms["g_mom"], arms["g_mom_held"]
     # the b0 arm is B0's own population at the mix, as payoff.py builds it through build_submission
     n = harness.count_for(harness._candidate_board(T22_BOARD), ref.n_obs)
     want, _ = t1_scope.build_submission(harness._shallow(ref), T22_BOARD, shares, n, 1000003,
@@ -460,14 +787,28 @@ def test_composition_b0_arm_is_the_b0_population_and_the_g_mom_arm_edits_it(vm, 
                                         ref_source="E9.5_RNA", start_source="E8.5_RNA")
     assert np.array_equal(b0.X, np.asarray(want.X)) and b0.X.shape[0] == n
     assert gm.X.shape == b0.X.shape and not np.array_equal(gm.X, b0.X)
+    assert held_arm.X.shape == b0.X.shape and not np.array_equal(held_arm.X, gm.X)
     # the g_mom arm's edit is the population at the oracle mix through g_mom's own fold factors (R1's held labels stay)
     r1, s1 = harness._shallow(ref), harness._shallow(start)
     pop = ts.b0_population(r1, s1, shares, n, 1000003, list(HELD), ref_source="E9.5_RNA", start_source="E8.5_RNA",
                            damping=harness.B0_DAMPING)
     blood = pop.obs["celltype"].astype(str).to_numpy() == "Blood"
-    assert blood.any() and np.array_equal(gm.X[blood], b0.X[blood])
+    assert blood.any() and np.array_equal(gm.X[blood], b0.X[blood]) and np.array_equal(held_arm.X[blood], b0.X[blood])
+    assert population.n_obs == n and "counts" in population.layers
+    # the held arm is the same factors through the rescale: it holds each category's pseudobulk per gene in expectation
     # the fold's factors are fitted on the reference's own chamber categories, as g_mom's
     assert harness._G_MOM_PREP["fold"]["factors"].metacells_on == "later"
+
+
+def test_companion_mix_is_the_predictions_chamber_mix_with_the_cuts_surrounding_share(vm):
+    own = {"cm": 0.6, "endocardium": 0.2, "blood": 0.2}
+    cut_mix = {"cm": 0.2, "endocardium": 0.3, "blood": 0.25, "epicardium": 0.2, "surrounding": 0.05}
+    mix, dropped = vm.companion_mix(own, cut_mix)
+    assert dropped == [] and mix["surrounding"] == pytest.approx(0.05) and sum(mix.values()) == pytest.approx(1.0)
+    assert mix["cm"] == pytest.approx(0.6 * 0.95) and "epicardium" not in mix
+    # a category of the prediction that the cut lacks is dropped and renormalised, and named
+    mix2, dropped2 = vm.companion_mix({"cm": 0.5, "vascular_endothelium": 0.5}, {"cm": 0.95, "surrounding": 0.05})
+    assert dropped2 == ["vascular_endothelium"] and mix2["cm"] == pytest.approx(0.95)
 
 
 def test_composition_is_void_when_the_oracle_base_does_not_reproduce(vm, monkeypatch, tmp_path):
@@ -476,6 +817,8 @@ def test_composition_is_void_when_the_oracle_base_does_not_reproduce(vm, monkeyp
         vm.main(["composition", "--seeds", "0", "--out", "t22v", "--data", str(tmp_path)])
     rec = json.loads((vm.RESULTS / "t22v" / "composition.json").read_text())
     assert rec["reproduction_of_oracle_b0"]["reproduced"] is False and rec["complete_seeds"] is True
+    text = (vm.RESULTS / "t22v" / "composition.txt").read_text()
+    assert "VOID" in text and "NO, the reading is void" in text and "PASSES" not in text.split("\n")[1]
 
 
 def test_composition_refuses_another_oracle_mix(vm, monkeypatch, tmp_path):
@@ -550,7 +893,11 @@ def test_gene_size_and_profile_spearman(vm):
     assert vm.profile_spearman(np.array([1.0, 2.0, 3.0]), np.array([1.0, 3.0, 2.0])) == pytest.approx(0.5)
 
 
-def test_expected_depth_ratio_is_one_on_cells_with_free_genes_and_real_counts(vm):
+def test_expected_depth_ratio_checks_the_constant_apply_factors_returns(vm):
+    """The check reads the keep-depth constant the real `apply_factors` returned for these factors: it is 1 for that
+    constant and not 1 for another, so a change to the function's constant would be caught."""
+    from vec.core import apply_factors
+
     rng = np.random.default_rng(1)
     C = sparse.csr_matrix(rng.poisson(1.0, size=(100, 30)).astype(np.int64))
     C = C + sparse.csr_matrix(np.eye(100, 30, dtype=np.int64))  # every cell has a count
@@ -559,14 +906,70 @@ def test_expected_depth_ratio_is_one_on_cells_with_free_genes_and_real_counts(vm
     held = np.zeros(30, dtype=bool)
     held[:5] = True
     F[:, held] = 1.0
-    ratio = vm.expected_depth_ratio(C, F, row, held)
-    assert np.allclose(ratio, 1.0, atol=1e-12)
+    _, scale, _ = apply_factors(C, F, row, held, keep_depth=True, seed=0)
+    assert np.allclose(vm.expected_depth_ratio(C, F, row, held, scale), 1.0, atol=1e-12)
+    assert not np.allclose(vm.expected_depth_ratio(C, F, row, held, scale * 1.01), 1.0, atol=1e-6)
     # apply_factors really keeps it in expectation: the realised totals agree on average
-    from vec.core import apply_factors
     depth = np.asarray(C.sum(1)).ravel().astype(np.float64)
     many = np.mean([np.asarray(apply_factors(C, F, row, held, keep_depth=True, seed=s)[0].sum(1)).ravel() / depth
                     for s in range(30)], axis=0)
     assert abs(float(many.mean()) - 1.0) < 0.02
+
+
+def _amplified_factors(vm, seed=3, K=6, n_per=30, genes=30, slope=0.4, noise=0.05):
+    """A stage whose metacells differ (so the own deviation is not zero) and factors that are a known multiple of that
+    deviation plus noise, to read the amplification regression on."""
+    rng = np.random.default_rng(seed)
+    gene_names = [f"g{i}" for i in range(genes)]
+    C = sparse.csr_matrix(rng.poisson(5.0 * np.exp(rng.normal(0, 1.0, size=(K, genes)))[np.repeat(np.arange(K), n_per)]
+                                      + 1e-9, size=(K * n_per, genes)).astype(np.int64))
+    names = [f"c{i}" for i in range(K * n_per)]
+    stage = ad.AnnData(X=log1p_cp10k(C), var=pd.DataFrame(index=gene_names), obs=pd.DataFrame(index=names))
+    stage.layers["counts"] = C
+    index = {n: int(i // n_per) for i, n in enumerate(names)}
+    sizes = np.full(K, n_per)
+    cf = ts.CategoryFactors("cm", index, sizes, np.zeros((K, genes)))
+    dev = vm.own_deviation(stage, cf, gene_names, gene_names)
+    logf = slope * dev + rng.normal(0, noise, size=dev.shape)
+    return stage, ts.StateFactors(genes=gene_names, metacells_on="later", skipped={},
+                                  categories={"cm": replace(cf, logf=logf)}), dev
+
+
+def test_own_deviation_and_amplification_read_a_planted_self_amplifier(vm):
+    stage, sf, dev = _amplified_factors(vm)
+    amp = vm.amplification(sf.categories["cm"].logf, dev, sf.categories["cm"].sizes)
+    assert amp["slope"] == pytest.approx(0.4, abs=0.05) and amp["r2"] > 0.9
+    # cell-weighted, the deviation of the metacells has mean zero per gene
+    w = sf.categories["cm"].sizes / sf.categories["cm"].sizes.sum()
+    assert np.allclose((w[:, None] * dev).sum(0), 0.0, atol=1e-12)
+    # projecting the component out removes what the regression explained; the held-flat genes are left alone
+    proj, record = vm.projected_fit(sf, stage, ["cm"], {"g0"})
+    assert record["cm"]["slope"] == pytest.approx(0.4, abs=0.05)
+    assert np.array_equal(proj.categories["cm"].logf[:, 0], sf.categories["cm"].logf[:, 0])
+    keep = sf.genes[1:]
+    dev_keep = vm.own_deviation(stage, sf.categories["cm"], sf.genes, keep)
+    again = vm.amplification(proj.categories["cm"].logf[:, 1:], dev_keep, sf.categories["cm"].sizes)
+    assert abs(again["slope"]) < 0.02 and again["r2"] < 0.02
+
+
+def test_amplification_of_zero_factors_is_not_a_number(vm):
+    dev = np.ones((4, 3))
+    amp = vm.amplification(np.zeros((4, 3)), dev, np.ones(4, dtype=np.int64))
+    assert amp["slope"] == 0.0 and np.isnan(amp["r2"])
+    amp2 = vm.amplification(np.ones((4, 3)), np.zeros((4, 3)), np.ones(4, dtype=np.int64))
+    assert np.isnan(amp2["slope"]) and np.isnan(amp2["r2"])
+
+
+def test_union_share_reads_the_factor_size_on_the_union_genes(vm):
+    logf = np.array([[2.0, 0.0, 1.0, 1.0], [0.0, 2.0, 1.0, -1.0]])
+    cf = ts.CategoryFactors("cm", {}, np.array([1, 1]), logf)
+    genes = ["a", "b", "c", "held"]
+    out = vm.union_share(cf, genes, {"c", "held", "gone"}, {"held"})  # held-flat genes are out of the comparison
+    assert out["union_genes_in_fit"] == 1
+    assert out["l2_share"] == pytest.approx(1.0 / 5.0, abs=1e-12)
+    assert out["l1_share"] == pytest.approx(1.0 / 3.0, abs=1e-12)
+    zero = ts.CategoryFactors("cm", {}, np.array([1, 1]), np.zeros((2, 4)))
+    assert np.isnan(vm.union_share(zero, genes, {"c"}, set())["l2_share"])
 
 
 def _n21_stages(seed=11):
@@ -632,6 +1035,7 @@ def test_run_n21_on_synthetic_stages_reports_no_cell_number(vm, monkeypatch, tmp
 
     monkeypatch.setattr(vm, "load_stage", load)
     monkeypatch.setattr(vm.t1_scope, "held_flat_genes", lambda *a, **k: list(HELD))
+    monkeypatch.setattr(vm.hygiene, "load_union", lambda *a, **k: UNION)
     monkeypatch.setattr(vm, "sha256_file", lambda path: "0" * 64)
     vm.main(["n21", "--out", "n21", "--data", str(tmp_path)])
     rec = json.loads((vm.RESULTS / "n21" / "n21.json").read_text())
@@ -644,12 +1048,46 @@ def test_run_n21_on_synthetic_stages_reports_no_cell_number(vm, monkeypatch, tmp
     assert rec["depth"]["per_category"]["cm"]["realised_depth_ratio"]["median"] is not None
     # blood's cells are R1's held labels: none is edited, yet its factors are fitted and reported
     assert rec["test_pair"]["blood"]["share_of_category_cells_touched"] == 0.0 and "Blood" in rec["r1_held_labels"]
+    # the additions of the review: the amplification share, the projected concordance, the no-development reference
+    # and the share on R2's union genes, per category (both fits' amplification where the category is in both)
+    assert set(cm["amplification"]) == {"test", "backtest"} and np.isfinite(cm["amplification"]["test"]["r2"])
+    assert 0.0 <= cm["concordance_after_projecting_amplification"]["axis_abs_cosine"] <= 1.0
+    assert cm["no_development_reference"] is not None and "size_spearman" in cm["no_development_reference"]
+    assert cm["no_development_size_ratio"]["test"] > 0 and cm["no_development_size_ratio"]["backtest"] > 0
+    assert cm["r2_union_share"]["test"]["union_genes_in_fit"] == 2  # g5 and g7 are free genes here (held_a is not held)
+    assert 0.0 <= cm["r2_union_share"]["test"]["l2_share"] <= 1.0
+    assert rec["settings"]["no_development_streams"] == {"test": 2, "backtest": 3}
     text = (vm.RESULTS / "n21" / "n21.txt").read_text()
     assert "Decides nothing" in text and "split-half" in text
+    assert "half-data estimates" in text and "no-development reference" in text
+    assert "amplification (the finished factors' regression" in text and "R2's union genes" in text
     assert "n_cells" not in json.dumps(rec) and "truth_cells" not in json.dumps(rec) and "n_obs" not in text
     assert rec["stamp"]["commit"] == "abc123" and rec["stamp"]["tree_clean"] is True
+    assert any(k.endswith("hygiene_genes.csv") for k in rec["stamp"]["inputs"])  # the union file is an input
     with pytest.raises(SystemExit, match="already holds"):
         vm.main(["n21", "--out", "n21", "--data", str(tmp_path)])
+
+
+def test_n21_without_the_union_file_reports_no_union_share(vm, monkeypatch, tmp_path):
+    stages = _n21_stages(seed=29)
+
+    def load(path, lineage=False):
+        for k, a in stages.items():
+            if f"/{k}_RNA" in f"/{Path(path).name}":
+                return a.copy()
+        raise AssertionError(f"unexpected read {path}")
+
+    def refuse(*a, **k):
+        raise vm.hygiene.Refused("no union file")
+
+    monkeypatch.setattr(vm, "load_stage", load)
+    monkeypatch.setattr(vm.t1_scope, "held_flat_genes", lambda *a, **k: list(HELD))
+    monkeypatch.setattr(vm.hygiene, "load_union", refuse)
+    monkeypatch.setattr(vm, "sha256_file", lambda path: "0" * 64)
+    vm.main(["n21", "--out", "n21b", "--data", str(tmp_path)])
+    rec = json.loads((vm.RESULTS / "n21b" / "n21.json").read_text())
+    assert rec["test_pair"]["cm"]["r2_union_share"] is None
+    assert "not available" in (vm.RESULTS / "n21b" / "n21.txt").read_text()
 
 
 def test_n21_fit_is_the_candidates_fit(vm):
@@ -737,7 +1175,9 @@ def test_g_mom_on_keeps_each_cells_expected_depth_and_the_shares(bt, t1_env, mon
     _g_mom_loads(bt, t1_env, monkeypatch)
     ref = t1_env.ref.copy()
     cats = [c for c, s in bt.harness.t1_chamber_shares(bt.harness._shallow(ref), "E10.5_RNA").items() if s > 0]
-    hook, rec = bt._t1_g_mom(ref, cats, 1000001)
+    covered = {lab for lab, g in bt.feng_dirs.label_groups(ref.obs["celltype"].astype(str).unique()).items()
+               if g in ("CM", "Endocardium", "Endothelium", "Epicardium")}
+    hook, rec = bt._t1_g_mom(ref, cats, 1000001, covered)
     assert rec["categories_with_factors"] and set(rec["categories_with_factors"]) <= set(cats)
     # a population as build_submission would hand it over: real cells with obs and counts
     t1_scope.classify(ref, source="E10.5_RNA")
@@ -753,6 +1193,21 @@ def test_g_mom_on_keeps_each_cells_expected_depth_and_the_shares(bt, t1_env, mon
     assert edited.any() and np.array_equal(before[held], after[held])
     assert np.abs(after[edited] / before[edited] - 1.0).mean() < 0.15  # expected depth kept: a noise-sized change
     assert rec["median_depth_scale"] > 0 and "n_edited" not in rec
+
+
+def test_the_hook_refuses_a_label_the_builds_feng_direction_does_not_cover(bt, t1_env, monkeypatch):  # noqa: F811
+    """The hook's own R1 mask and the build's Feng-covered labels are derived separately; a label edited outside the
+    covered set stops the build rather than editing a label Feng's direction never moved."""
+    _g_mom_loads(bt, t1_env, monkeypatch)
+    ref = t1_env.ref.copy()
+    cats = [c for c, s in bt.harness.t1_chamber_shares(bt.harness._shallow(ref), "E10.5_RNA").items() if s > 0]
+    hook, _ = bt._t1_g_mom(ref, cats, 1000001, {"V-CM"})  # only the ventricular CM label is covered here
+    t1_scope.classify(ref, source="E10.5_RNA")
+    pop, _ = t1_scope.reweight(ref, {c: 1 / len(cats) for c in cats}, 200, 5,
+                               fallback=t1_scope.load_spec().fallbacks("E10.5_RNA"))
+    assert set(pop.obs["celltype"].astype(str)) - {"V-CM"}  # the draw holds other edited labels
+    with pytest.raises(ValueError, match="does not cover"):
+        hook(pop)
 
 
 def test_g_mom_with_r2_keeps_the_candidates_held_flat_list(bt, t1_env, tmp_path, monkeypatch):  # noqa: F811

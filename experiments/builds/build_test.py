@@ -200,7 +200,7 @@ def _t1_held(union: dict | None, direction_groups, build_genes) -> tuple[list[st
         "sources": union["sources"]}
 
 
-def _t1_g_mom(ref, categories: list[str], seed: int):
+def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str]):
     """The test build's g_mom step (--g-mom, default off; T1 try T11 of experiments/harness/TRIES.md; only the captain's
     ruling puts it in an upload): E9.5 is loaded here and nowhere else, and the factors are fitted exactly as the
     candidate's (`vec.harness.g_mom_pair_factors`: start E9.5, reference E10.5, the chamber categories of E10.5's own
@@ -211,8 +211,12 @@ def _t1_g_mom(ref, categories: list[str], seed: int):
     of `vec.t1_state_transport.apply_state_factors`: a cell's source cell must sit in a fitted metacell; cells of R1's
     held labels (no Feng group: `r1_unbracketed_labels`, the candidate's own mask) keep the counts they have, so R1
     stands; the pre-registered held-flat genes are the candidate's own list (R2's union is held in Feng's direction
-    only, by its ruling); each edited cell keeps its expected depth (`apply_factors`, keep_depth), the T1 depth lever
-    stays closed; the cells, their number, shares and scope are untouched. The stream is [seed, 5], the candidate's."""
+    only, by its ruling; if the captain wants R2 held in this step too, that is a new variant with its own row, since
+    T11 was judged without it); each edited cell keeps its expected depth (`apply_factors`, keep_depth), the T1 depth
+    lever stays closed; the cells, their number, shares and scope are untouched. The stream is [seed, 5], the
+    candidate's. covered_labels: the labels the build moved along Feng's direction (`label_groups` mapped to a group
+    with a direction); the hook checks that every label it edits is one of them, so R1's mask and the build's own mask
+    of Feng-covered labels cannot disagree silently."""
     from vec import t1_state_transport as ts
 
     start = load_stage(DATA / "T1/E9.5_RNA.h5ad", lineage=False)
@@ -228,6 +232,11 @@ def _t1_g_mom(ref, categories: list[str], seed: int):
     def hook(pop):
         labels = pop.obs[t1_scope.LABEL_KEY].astype(str).to_numpy()
         no_edit = np.isin(labels, sorted(ts.r1_unbracketed_labels(np.unique(labels))))
+        cats = pop.obs[t1_scope.CATEGORY_KEY].astype(str).to_numpy()
+        edited = set(labels[~no_edit & np.isin(cats, list(factors.categories))])
+        if not edited <= set(covered_labels):
+            extra = sorted(edited - set(covered_labels))
+            raise ValueError(f"--g-mom would edit labels Feng's direction does not cover: {extra}")
         moved, rec = ts.apply_state_factors(pop, factors, held_flat, [seed, 5], rescale=False, no_edit=no_edit)
         record["median_depth_scale"] = rec["median_depth_scale"]  # no cell number
         return moved
@@ -257,7 +266,8 @@ def build_t1(a) -> dict:
     n = harness.count_for(board, ref.n_obs)
     within_type, g_mom_record = ({}, None)
     if a.g_mom:
-        hook, g_mom_record = _t1_g_mom(ref, fit_categories, a.seed)
+        covered = {lab for lab, group in groups.items() if group in directions}  # the build's Feng-covered labels
+        hook, g_mom_record = _t1_g_mom(ref, fit_categories, a.seed, covered)
         within_type = {"post_cells": hook}
     sub, rep = t1_scope.build_submission(ref, board, shares, n, a.seed, held_flat=held,
                                          ref_source="E10.5_RNA", directions=directions, direction_fraction=fraction,

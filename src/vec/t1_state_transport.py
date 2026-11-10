@@ -18,7 +18,8 @@ new script option.
    and clipped to +-log 3. `finish_momentum` (g_mom): the per-category cell-weighted mean of the log factor removed
    per gene (a within-type edit, on top of the per-type momentum of B0), damped, then zeroed and clipped the same way.
    `flip_factors` and `permute_factors` (tries T20 and T21, g_mom's placebos) make placebo arms from finished factors;
-   they touch no other caller.
+   they touch no other caller. `finish_no_development` (try T23, the no-development control) finishes a cross-fit
+   between two halves of one stage at g_mom's size; `category_halves` draws those halves.
 3. `apply_state_factors` edits a re-weighted population's counts by the factor of each cell's metacell (`vec.core.
    apply_factors`: binomial thinning and Poisson top-up of its own counts, zeros kept, held-flat genes and the cell's
    expected depth kept). With `rescale=True` (O1), each category's per-gene factors are first multiplied by the constant
@@ -62,6 +63,8 @@ ZERO_BELOW = float(np.log(1.05))
 CLIP_AT = float(np.log(3.0))
 RESCALE_ITERS = 100
 RESCALE_TOL = 1e-6
+SIZE_MATCH_DAMPING = (1e-3, 1e3)  # try T23: the bisection's range for the damping that matches g_mom's size
+SIZE_MATCH_ITERS = 64
 R1_FENG_GROUPS = ("CM", "Endocardium", "Endothelium", "Epicardium")  # the groups with a Feng direction (build_t1, N12)
 R1_CONFIG = REPO_ROOT / "experiments" / "t1_direction" / "config.yaml"
 
@@ -295,6 +298,95 @@ def permute_factors(sf: StateFactors, seed: int) -> StateFactors:
     return replace(out, record={**out.record, "permutation": perm_record})
 
 
+def category_halves(adata: ad.AnnData, rng: np.random.Generator, key: str = CATEGORY_KEY) -> np.ndarray:
+    """A random half of each category's cells: a boolean mask over the rows of a classified stage with floor(n / 2)
+    cells of each category in half A, the categories taken in sorted order from one generator (diagnostic N21's halves
+    and the no-development arm's, try T23, experiments/harness/TRIES.md)."""
+    cats = adata.obs[key].astype(str).to_numpy()
+    mask = np.zeros(adata.n_obs, dtype=bool)
+    for c in sorted(set(cats)):
+        idx = np.flatnonzero(cats == c)
+        mask[rng.permutation(idx)[:len(idx) // 2]] = True
+    return mask
+
+
+def _factor_rms(logf: np.ndarray, sizes: np.ndarray, free: np.ndarray) -> float:
+    """The size of a factor matrix: the cell-weighted root mean square over the metacells (weights `sizes`) and the free
+    genes."""
+    w = sizes / sizes.sum()
+    return float(np.sqrt((w * (logf[:, free] ** 2).mean(1)).sum()))
+
+
+def _finish_to_size(mean_removed: np.ndarray, sizes: np.ndarray, free: np.ndarray,
+                    target_rms: float) -> tuple[np.ndarray, dict]:
+    """g_mom's finish (`_zero_and_clip` of the mean-removed factors times a damping) with the damping, found by
+    bisection on a log scale over SIZE_MATCH_DAMPING, at which the finished factors' `_factor_rms` equals target_rms (it
+    rises with the damping, since each entry's absolute value does). Returns the finished factors and a record; a matrix
+    with nothing to scale stays at zero (no factors)."""
+    if target_rms <= 0 or not np.any(mean_removed[:, free]):
+        return np.zeros_like(mean_removed), {"damping": None, "rms_achieved": 0.0, "relative_error": None}
+    lo, hi = np.log(SIZE_MATCH_DAMPING[0]), np.log(SIZE_MATCH_DAMPING[1])
+    best: tuple[float, float, np.ndarray] | None = None
+    for _ in range(SIZE_MATCH_ITERS):
+        mid = 0.5 * (lo + hi)
+        finished = _zero_and_clip(mean_removed * np.exp(mid))
+        rms = _factor_rms(finished, sizes, free)
+        if best is None or abs(rms - target_rms) < abs(best[0] - target_rms):
+            best = (rms, float(np.exp(mid)), finished)
+        if rms < target_rms:
+            lo = mid
+        else:
+            hi = mid
+        if hi - lo < 1e-9:
+            break
+    rms, damping, finished = best
+    return finished, {"damping": damping, "rms_achieved": rms, "relative_error": abs(rms - target_rms) / target_rms}
+
+
+def finish_no_development(first: StateFactors, second: StateFactors, target: StateFactors, held_flat: Iterable[str],
+                          reference_damping: float) -> StateFactors:
+    """Try T23's factors (candidate g_mom_null, experiments/harness/TRIES.md): the two directions of a cross-fit between
+    two halves of one stage, raw as `fit_state_factors` returns them, so that nothing develops between the halves and
+    every cell of the stage carries a factor (`first`'s metacells on one half, `second`'s on the other). Per category
+    fitted in both and present in `target` (g_mom's finished factors): each direction's cell-weighted per-gene mean
+    removed, the metacell rows stacked (first's, then second's, the second's cell index shifted), and g_mom's finish
+    (zero below log 1.05, clip at log 3) with the damping replaced by the constant at which the finished factors'
+    cell-weighted root mean square over the metacells and the genes not held flat equals `target`'s for the category
+    (`_finish_to_size`: the control has g_mom's size; only where its direction comes from differs). `reference_damping`:
+    g_mom's own damping (the record notes the root mean square there, before the matching). Other categories get no
+    factors."""
+    genes = target.genes
+    if first.genes != genes or second.genes != genes:
+        raise ValueError("the fits' genes differ from the target's")
+    held = set(map(str, held_flat))
+    free = np.array([g not in held for g in genes], dtype=bool)
+    cats, skipped = {}, {**first.skipped, **second.skipped}
+    for cat, goal in target.categories.items():
+        if cat not in first.categories or cat not in second.categories:
+            skipped[cat] = "not fitted in both directions of the cross-fit"
+            continue
+        a, b = first.categories[cat], second.categories[cat]
+        if set(a.index) & set(b.index):
+            raise ValueError(f"{cat}: the two halves share cells")
+        removed = [cf.logf - np.average(cf.logf, axis=0, weights=cf.sizes) for cf in (a, b)]
+        stacked = np.vstack(removed)
+        sizes = np.concatenate([a.sizes, b.sizes])
+        index = {**a.index, **{name: m + a.n_metacells for name, m in b.index.items()}}
+        target_rms = _factor_rms(goal.logf, goal.sizes, free)
+        at_reference = _factor_rms(_zero_and_clip(stacked * float(reference_damping)), sizes, free)
+        finished, match = _finish_to_size(stacked, sizes, free, target_rms)
+        match.update(rms_target=target_rms, rms_at_reference_damping=at_reference,
+                     reference_damping=float(reference_damping))
+        cats[cat] = CategoryFactors(category=cat, index=index, sizes=sizes, logf=finished,
+                                    record={"category": cat, "n_metacells": int(len(sizes)), "no_development": match,
+                                            "finish": "no-development cross-fit of two halves of one stage: per "
+                                                      "direction the per-category mean removed, damped to g_mom's "
+                                                      "size per category, zero below log 1.05, clip at log 3"})
+    record = {"finish": "no-development control (halves of one stage, cross-fitted), finished at g_mom's size",
+              "categories": sorted(cats), "skipped": dict(skipped)}
+    return StateFactors(genes=genes, metacells_on="later", categories=cats, skipped=skipped, record=record)
+
+
 def r1_unbracketed_labels(labels: Iterable[str], config=R1_CONFIG) -> set[str]:
     """The labels among `labels` that map to no group with a Feng direction (`experiments/t1_direction/config.yaml`'s
     harmonisation regexes, ventricular CM labels counted as CM, as `experiments/t1_m1/feng_dirs.py` `label_groups`): the
@@ -437,7 +529,8 @@ def category_mean_cp10k(C, cats: np.ndarray, category: str) -> np.ndarray:
 
 
 __all__ = ["CLIP_AT", "METACELL_DIVISOR", "METACELL_MAX", "METACELL_MIN", "OT_EPSILON_FRACTION", "PSEUDOCOUNT",
-           "R1_FENG_GROUPS", "ZERO_BELOW", "CategoryFactors", "StateFactors", "apply_state_factors", "b0_population",
-           "category_mean_cp10k", "finish_momentum", "finish_oracle", "fit_state_factors", "flip_factors",
-           "hvg_columns", "joint_pcs", "metacell_labels", "permute_factors", "r1_unbracketed_labels",
-           "rescale_to_hold_pseudobulk", "sinkhorn_plan"]
+           "R1_FENG_GROUPS", "SIZE_MATCH_DAMPING", "SIZE_MATCH_ITERS", "ZERO_BELOW", "CategoryFactors", "StateFactors",
+           "apply_state_factors", "b0_population", "category_halves", "category_mean_cp10k", "finish_momentum",
+           "finish_no_development", "finish_oracle", "fit_state_factors", "flip_factors", "hvg_columns", "joint_pcs",
+           "metacell_labels", "permute_factors", "r1_unbracketed_labels", "rescale_to_hold_pseudobulk",
+           "sinkhorn_plan"]

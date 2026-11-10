@@ -610,16 +610,19 @@ def g_mom_pair_factors(ref: ad.AnnData, src: str, start: ad.AnnData, start_src: 
     return ts.finish_momentum(raw, B0_DAMPING), raw
 
 
-# T1 tries T20 and T21 (experiments/harness/TRIES.md, registered before their run): g_mom's placebo arms, built like
-# g_mom on the same draws and base (the same stream), so a paired comparison reads the factors alone
+# T1 tries T20, T21, T23 and T24 (experiments/harness/TRIES.md, registered before their run): g_mom's control arms,
+# built like g_mom on the same draws and base (the same stream), so a paired comparison reads the factors alone
 G_MOM_PERM_SEED = 20261110  # T21: one permutation, this seed (its row)
+G_MOM_NULL_SEED = 20261110  # T23: one split of the reference stage into two halves, this seed (its row)
+_G_MOM_NULL_PREP: dict = {}
 
 
-def _g_mom_arm(ctx: BuildContext, transform: Callable[[object], object]) -> Stage:
+def _g_mom_arm(ctx: BuildContext, transform: Callable[[object], object], *, rescale: bool = False) -> Stage:
     """g_mom's own build (`_g_mom`, whose steps this repeats so that `_g_mom` stays as registered; tests/
     test_g_mom_verify.py pins the two together) with `transform` applied to the fold's finished factors before they are
     applied: the same reference, shares, B0 population, fit and random streams, so the arms differ from g_mom only in
-    the factors."""
+    the factors. rescale: as `vec.t1_state_transport.apply_state_factors` (False is g_mom's; True, try T24, holds each
+    category's pseudobulk per gene, on the same stream)."""
     from vec import t1_scope
     from vec import t1_state_transport as ts
 
@@ -633,8 +636,56 @@ def _g_mom_arm(ctx: BuildContext, transform: Callable[[object], object]) -> Stag
     factors = transform(_g_mom_factors(ctx, ref, src, start, start_src, shares))
     labels = pop.obs[t1_scope.LABEL_KEY].astype(str).to_numpy()
     no_edit = np.isin(labels, sorted(ts.r1_unbracketed_labels(np.unique(labels))))
-    moved, _ = ts.apply_state_factors(pop, factors, held, [ctx.seed, 5], rescale=False, no_edit=no_edit)
+    moved, _ = ts.apply_state_factors(pop, factors, held, [ctx.seed, 5], rescale=rescale, no_edit=no_edit)
     return finish(ctx, ref, dense(moved[:, ctx.board.genes].X).astype(np.float32), None)
+
+
+def g_mom_no_development_factors(ref: ad.AnnData, src: str, categories: Sequence[str], target, held_flat: Sequence[str],
+                                 seed: int = G_MOM_NULL_SEED):
+    """Try T23's factors, the no-development control of g_mom: `ref` (the reference stage, the file stem `src`) split at
+    random within each category into two halves (`ts.category_halves`, default_rng(seed)), T11's fit
+    (`g_mom_pair_factors`) from one half to the other and back with each half in the start role in turn, so every
+    reference cell of the fitted categories has a factor from the direction in which its own half carries the
+    metacells, and the raw factors finished per category at the size of `target` (g_mom's finished factors,
+    `ts.finish_no_development`, over the genes not in held_flat). categories: g_mom's fitted categories, so that the
+    control edits the same cells as g_mom. Nothing develops between the halves, so whatever such factors gain is
+    state-aligned spread and noise."""
+    from vec import t1_scope
+    from vec import t1_state_transport as ts
+
+    stage = _shallow(ref)
+    t1_scope.classify(stage, source=src, spec=t1_scope.load_spec())
+    in_a = ts.category_halves(stage, np.random.default_rng(seed))
+    half_a, half_b = ref[in_a].copy(), ref[~in_a].copy()
+    _, raw_on_b = g_mom_pair_factors(half_b, src, half_a, src, categories=categories)
+    _, raw_on_a = g_mom_pair_factors(half_a, src, half_b, src, categories=categories)
+    return ts.finish_no_development(raw_on_b, raw_on_a, target, held_flat, B0_DAMPING)
+
+
+def _g_mom_null_factors(ctx: BuildContext, finished) -> object:
+    """The no-development factors for one fold, fitted once per loaded reference and g_mom fit (the harness hands every
+    seed the same objects), as `_g_mom_factors` is."""
+    role = ctx.task.reference_role
+    ref, src = ctx.inputs[role], ctx.task.role_stems[role]
+    hit = _G_MOM_NULL_PREP.get("fold")
+    if hit is None or hit["ref"] is not ref or hit["target"] is not finished:
+        _G_MOM_NULL_PREP.clear()
+        factors = g_mom_no_development_factors(ref, src, sorted(finished.categories), finished,
+                                               list(ctx.derived["t1_held_flat"]))
+        hit = _G_MOM_NULL_PREP["fold"] = {"ref": ref, "target": finished, "factors": factors}
+    return hit["factors"]
+
+
+def _g_mom_null(ctx: BuildContext) -> Stage:
+    """Try T23: g_mom's draws, base and stream with the no-development factors (`g_mom_no_development_factors`: the same
+    pipeline between two halves of the reference stage, at g_mom's size per category) in place of g_mom's."""
+    return _g_mom_arm(ctx, lambda finished: _g_mom_null_factors(ctx, finished))
+
+
+def _g_mom_held(ctx: BuildContext) -> Stage:
+    """Try T24: g_mom with each category's pseudobulk held per gene (the rescale of T9, `apply_state_factors` with
+    rescale=True): the same factors, draws and stream, so what is left of g_mom's gain is within-type shape."""
+    return _g_mom_arm(ctx, lambda finished: finished, rescale=True)
 
 
 def _g_mom_flip(ctx: BuildContext) -> Stage:
@@ -1251,6 +1302,21 @@ CANDIDATES = {
                                      "among its metacells by one fixed derangement (vec.t1_state_transport."
                                      "permute_factors)", "permutation_seed": G_MOM_PERM_SEED, "damping": B0_DAMPING,
                              "scope": "chamber"}, requires=_b0_applies, derived=("t1_held_flat",)),
+    # T1 tries T23 and T24 (experiments/harness/TRIES.md, registered before their run): g_mom's no-development control
+    # (the same pipeline between two halves of the reference stage, at g_mom's size) and its pseudobulk-held arm, on
+    # g_mom's own draws, base and stream (experiments/t1_scope/g_mom_verify.py placebo)
+    "g_mom_null": Candidate("g_mom_null", frozenset({"T1"}), (), _g_mom_null,
+                            {"what": "try T23, a no-development control: g_mom's draws and stream with factors from "
+                                     "the same pipeline fitted between two random halves of the reference stage "
+                                     "(cross-fitted both ways), per category at g_mom's own root-mean-square size "
+                                     "(vec.harness.g_mom_no_development_factors)", "split_seed": G_MOM_NULL_SEED,
+                             "damping": B0_DAMPING, "scope": "chamber"}, requires=_b0_applies,
+                            derived=("t1_held_flat",)),
+    "g_mom_held": Candidate("g_mom_held", frozenset({"T1"}), (), _g_mom_held,
+                            {"what": "try T24: g_mom with each category's pseudobulk held per gene (rescale=True of "
+                                     "vec.t1_state_transport.apply_state_factors, T9's construction), the same "
+                                     "factors, draws and stream", "damping": B0_DAMPING, "scope": "chamber"},
+                            requires=_b0_applies, derived=("t1_held_flat",)),
     # heart try H3 (experiments/harness/TRIES.md, registered before its run)
     "b0_depth": Candidate("b0_depth", frozenset({"T2"}), (), _b0_depth,
                           {"what": "B0 on a T2 extrapolation board with its cells binomially thinned to the target's "
