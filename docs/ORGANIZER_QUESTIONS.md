@@ -276,6 +276,41 @@ Best regards,
 Vijayavallabh J
 Team captain, Mithril
 
+## Sixth email (drafted 2026-11-10, not sent)
+
+Drafted by the AI assistant on 2026-11-10 on the captain's "go ahead with your recommendation" (`docs/PLAN.md` decision
+log 2026-11-10 (u)), in the drafts of be23b041@smail.iitm.ac.in, to virtual.embryo.moonshot@gmail.com. The captain reads
+and sends it; on sending, this heading and `ASSUMPTIONS.md` A21 get the date. It corrects the architecture described in
+question 4 of the 18 October email and question 3 of the third email (the D3 review, decision log 2026-11-10 (s)). Text
+as drafted:
+
+**Subject:** Human Team: correction to our Generality Award question (team Mithril)
+
+Hello organisers,
+
+This corrects how we described our entry when we asked about the Generality Award (question 4 of our 18 October email
+and question 3 of our 21 October email). Neither description matches what we built, so please do not judge our request
+on them.
+
+The 18 October text mentioned unbalanced optimal transport, a conditional velocity/growth network and one calibration
+protocol. Our entries use none of these.
+
+The 21 October text said a single operator builds every prediction, with task-specific heads only. That overstates what
+is shared. What our tasks have in common is the design: every submitted cell is a real released cell, and its expression
+is edited only in count space or not at all. On Task 1 and both Task 2 boards, shared library functions draw the cells
+and make the count edits, and each task's code runs the steps it needs; no single function runs on more than two of our
+four boards. Task 3 is built by a script we pre-registered before that library existed. It calls none of the library's
+functions, though five of its own are identical to the library's copies, which a test enforces.
+
+Our method summary will set this out and ask to be considered for the award. Does this structure count as one shared
+architecture? If you judge that it does not, we will withdraw the request, and our entries would not change.
+
+Please reply privately, as this describes our method.
+
+Best regards,
+Vijayavallabh J
+Team captain, Mithril
+
 ## Planned Slack DM (drafted 2026-11-06; sent by the captain the same day)
 
 The state-of-the-art research recommends it (`experiments/research_2026_11_sota/REPORT.md` section 8; `docs/PLAN.md`

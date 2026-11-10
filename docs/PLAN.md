@@ -1889,3 +1889,11 @@ open. No organiser reply to any of the four emails as of then.
   - **Effect and limits.** No upload, build or try count changes (T1 23, embryo 11, heart 3, T3 6). What M2 itself would
     score is not measured: this rests on the evidence above, not on a run of it. If the captain wants it tried, the first
     step is a target-free check of the decoder's fidelity on T1's cells, one GPU job before any row that costs a try.
+- 2026-11-10 (u), the captain, on the reports of (s) and (t), in the captain's words: "go ahead with your recommendation".
+  The AI assistant read this as covering the two recommendations then open: M2 stays unbuilt ((t) stands), and the
+  architecture description given to the organisers is corrected. **Sixth organiser email drafted, not sent:** in the drafts
+  of be23b041@smail.iitm.ac.in, to virtual.embryo.moonshot@gmail.com, text in `docs/ORGANIZER_QUESTIONS.md`. It withdraws
+  the descriptions of 18 and 21 October, states what the entries share, says T3's script calls none of the library's
+  functions, and asks whether this counts as one shared architecture. The statements were checked against the code at
+  1020c09 and (s). The captain reads and sends it; on sending, that file and A21 get the date. No upload, build, rule or
+  try count changes.
