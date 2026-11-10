@@ -1729,3 +1729,11 @@ open. No organiser reply to any of the four emails as of then.
   - **Recommendation of the AI assistant to the captain:** leave the bet out of T1's files. Its expected value is negative
     over most of that range at the reviewer's odds. The ruling is the captain's and stays open until T1's rebuild (by 24
     Nov).
+- 2026-11-10 (l), the captain, after the plain summary of g_mom's controls (j) and the correction (k), in the captain's
+  words: "go, and leave the bet out".
+  - **T1's strong-null bet is out.** It does not go into T1's files: `configs/t1_strong_null.yaml` stays `approved: false`,
+    `build_test.py t1 --strong-null` stays refused, and T1's s1 and s2 are not rebuilt for it. T12's results stand as
+    measured. This closes the condition of 2026-11-10 (d).
+  - **The six counted tries T20-T25 proceed**, by the rules of their rows, with the commit that holds this entry as their
+    run commit. If all six run, T1's try count goes from 16 to 22. Nothing here changes an upload; g_mom can change one
+    only if it passes and the captain then rules it in (row R3).
