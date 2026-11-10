@@ -21,6 +21,44 @@ under "Third email" below. The user sent a fourth email (the HTTP 403 on the pan
 of the A20 reading) on 2026-10-28 at 15:41 IST; its text is under "Fourth email" below. As of then none of the four
 emails had a reply, and the last screened Slack sweep (2026-10-23) found no organiser post or reply.
 
+## Working answers (2026-11-10): every question sent, predicted, not ruled
+
+The captain, 2026-11-10: "so far they have not replied to a single email. So assume their logical position with the
+contrast of the leaderboard scores to judge", and "i meant for all the emails sent to them so far". These are working
+assumptions, never organiser rulings. A real answer replaces one the day it arrives, and acting on a prediction gives no
+protection under Rules s.10, where only an answer given in advance counts. Confidences are the AI assistant's, after an
+independent prediction from the rules alone and two adversarial reviews, one for where the team is too strict and one
+for where it is too loose (`docs/PLAN.md` decision log 2026-11-10 (x)). They replace the table of 31 October below where
+they differ.
+
+The overall standings bear on only two rows: the stakes of the Generality request, and weakly the board specs, since 91
+ranked entries show that the specs reach teams. Their main use is scale, in the decision log.
+
+| Question | Logical position (confidence) | What the team does |
+|---|---|---|
+| Released data across tasks (18 Oct Q1; A15) | Yes: released and unlocked official files may train any task; the windows bind external data (0.8) | No new cross-modal input. What it would unlock is measured as about nothing (heart concordance null; T3 programme +0.02 to +0.05). Feng on the heart is legal external data rather than an A15 matter, and its null holds anyway |
+| Textbook background in a protected window (18 Oct Q2) | Yes if qualitative: it may choose populations, with no measured in-window values (0.75; their 15 October answer on broad background) | No change: births are estimated at about -0.2 (range -2 to +0.6), and today's T1 pair is within about 1.5 of the best under every stated prior |
+| truth_cells for the count (18 Oct Q3) | Yes where published; the test boards publish only limits (0.7) | Moot: max_cells by the committed count rule |
+| Generality scope (18 Oct Q4; 21 Oct Q3) | Must underlie every task entered; heads and training may differ; judged from the summary (0.85) | See the next row |
+| Generality as corrected (sixth email) | No ruling in advance. As described, more likely not one architecture under every task: about 0.35 eligible if our request is reached | The request stays, at no cost; no further work and no method change for it. The standings make reaching it unlikely: every team above us has to not ask or not qualify |
+| Scorer (18 Oct Q5; 19 Oct Q1) | The live board's metric set and build through the final evaluation; PR #6 not adopted; parity pairs not endorsed (0.8) | No change: no parity pair; the row-order seed fixed in code |
+| Leak report (18 Oct; 19 Oct Q8) | Thanks; no penalty for reporting; leaked values stay barred; targets and scoring unchanged (0.8) | No change: never used |
+| Wrong-sign severity (19 Oct Q2; fifth email; Slack DM) | Skill 0.5: the scorer returns the floor value, and the published wt_identity 50 needs that floor to score 0.5 (0.85) | Today's T3 s2 stands (decision log 2026-11-06 (b)). If they ever say zero, that ruling's switch applies |
+| Gata4 replicates in T3 (19 Oct Q3; 28 Oct Q3) | Yes: the unlocked files may inform the beta-catenin prediction; external perturbation data of either gene stays barred (0.88) | Allowed branch for s1; s2 holds no Gata4 number. The pre-upload email says so |
+| Duplicated and interpolated records (19 Oct Q4) | Pipeline artefacts; truth sets processed alike, not cleaned (0.6) | No change |
+| z coordinate and test stacks (19 Oct Q5) | Points to the Data Protocol page; stored z as given; nothing more on the test stacks (0.6) | No change |
+| truth_cells for tissue size (19 Oct Q6) | No: counts are format limits, not a route to a hidden size (0.75) | No change: sizes come from the pre-registered procedure |
+| Stage conventions for external data (19 Oct Q7) | Standard somite and Theiler conversion; conflicting labels stay out (0.6) | No change: ambiguous embryos stay dropped |
+| Validation answers as training data and inputs (21 Oct Q2; 28 Oct Q3; A20) | Yes, E10.5 as the starting stage included (0.92) | No change |
+| Board specs, HTTP 403 (28 Oct Q1) | An unintended Cloudflare block; a browser copy of the linked file is fine (0.8) | Done: saved file, read by code |
+| Final entries (28 Oct Q2) | Marks per board, editable until 2 December UTC; an unmarked board counts its best official upload (0.7) | Every board is marked explicitly after its last upload |
+| Notice of 31 October | No objection to the browser save, validation inputs or per-board marks (0.8) | No change; silence is not an answer under s.10 |
+| Exposure notice of 4 November | Seeing what every signed-in team sees is no breach and carries no penalty; keep it out of the methods (0.8) | The block of 2026-11-04 stays. One correction goes in the pre-upload email: T3's count default was fixed on 2026-11-01, after the release and before the exposure |
+| Embryo-series stage labels (Slack DM, optional) | Timed matings refined by morphological staging; probably unanswered (0.55) | No change |
+| External sources "with each submission" (not asked; `EXTERNAL_DATA.md`) | The form has no disclosure field, so a dated private statement before the upload meets it (0.8) | Private email before the first upload (`docs/P3_RUNBOOK.md`); `--model sources-disclosed-by-email` on every upload |
+| Where the method summary goes (not asked) | The organisers' address, since no route is published for a claimant outside the places (0.55) | Sent privately in the plan's 24-30 Nov slot unless the screened check finds a route |
+| Human Team status (not asked) | A team steering AI tools, with a person deciding every upload, is a Human Team; the Agent track is locked, unsteered runs (about 0.97, low confidence: the Rules' definition is in no file the review could read) | The screened check before the first upload quotes the Rules' definition |
+
 ## Working answers (2026-10-31): predicted, not ruled
 
 Notice sent: the captain replied on the fourth-email thread on 2026-10-31 at 18:59 UTC (drafted by the AI assistant):

@@ -263,7 +263,8 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     2026-11-10 (`docs/PLAN.md` decision log 2026-11-10 (s)): the screened check before the first upload (26-27 Nov) also
     reads, from the Rules and Prizes pages, where and by when the method summary goes in, and how the source and stages
     of external data are to be stated with the submission: the client keeps the `--disclose` ids in the local ledger
-    and sends none of them. It also looks for the organisers' answer to the sixth email (`ASSUMPTIONS.md` A21).
+    and sends none of them. It also looks for the organisers' answer to the sixth email (`ASSUMPTIONS.md` A21), and quotes the Rules' definition of a
+    Human Team and anything they say about AI assistance (decision log 2026-11-10 (x)).
   - T2: `vec.t2_build`, run from the repo root (the paths are relative). Count by `n_cells_from_decision(board,
     pool.n_obs, "experiments/density/results/release/count_decision.json")` (step 4.5; null keeps max_cells; a
     decided level below the test board's lower limit gives way to the next passing count up, the passing level with
@@ -290,11 +291,16 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
   choice is safe, leaving one out is not. T1:test (s1 and s2): `X001,X002,X003,X005,X006,X007,X008,X009` (X007-X009 since R2's build, 2026-11-06 (k)). T2:heart:test_extrap and
   T2:embryo:test_interp: `X001,X004,X005`. T3:bcatenin: `X001,X004,X005`. A row added later joins the boards its
   Tasks column names.
-  2026-11-10, working answers (`docs/ORGANIZER_QUESTIONS.md`; decision log 2026-11-10 (w)), unless the screened check finds
-  otherwise: the ids stay in the local ledger, so a private email to the organisers on the day of the first official upload
-  states each board's external sources and stages (drafted by the AI assistant, sent by the captain). Every format check and
-  upload carries the same neutral `--architecture mithril-recipe-v1`; nothing about the methods goes in the form's `model` or
-  `architecture` fields, whose visibility is unknown.
+  2026-11-10, working answers (`docs/ORGANIZER_QUESTIONS.md`; decision log 2026-11-10 (w), (x)), unless the screened check finds
+  otherwise: the ids stay in the local ledger, and `EXTERNAL_DATA.md` asks for every source "with each submission", so a private
+  email to the organisers goes **before the first official upload is pressed**, copied by Slack DM to Weize Xu (drafted by the
+  AI assistant, sent by the captain). For every planned upload it gives the board, the file's SHA-256, the register ids and
+  each external source's stages, with the removal of E10.5-E13.5 cells and the all-stage object's brief holding (X002). It says
+  T3's s1 uses the two released Gata4 replicates and T3's s2 no number from them, and it corrects the note of 4 November on one
+  point: T3's cell-count default, the board's maximum, was fixed on 2026-11-01, after the release and before that exposure. An
+  upload it does not list gets one line before it goes. Every format check and upload carries the same
+  `--architecture mithril-recipe-v1` and `--model sources-disclosed-by-email`; nothing about the methods goes in those
+  fields, whose visibility is unknown.
 - **(user)** Final entries. The account page (seen in the site's public script, 2026-10-28): "The leaderboard shows
   your team's best score on each board, so there is nothing to nominate yet. In the final phase the captain picks
   which submission counts." While nominations are open, the captain sees a "Final" column in the team's submission

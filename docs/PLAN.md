@@ -1930,3 +1930,34 @@ open. No organiser reply to any of the four emails as of then.
     has no disclosure field and the visibility of its free-text fields is unknown; and the method summary goes privately to
     the organisers' address in the plan's 24-30 November slot. Both are drafted by the AI assistant and sent by the captain.
     Every format check and upload carries the same neutral `--architecture mithril-recipe-v1`.
+- 2026-11-10 (x), the captain, clarifying (w), in the captain's words: "i meant for all the emails sent to them so far". Every
+  question in the six emails, the two notices and the Slack notes now has a working answer (`docs/ORGANIZER_QUESTIONS.md`, the
+  table of 2026-11-10). Predictions, never rulings, and acting on one gives no protection under Rules s.10. Three read-only
+  agents: one predicted each answer from the rules alone, one looked for where the team is stricter than the logical answer
+  and what that costs, one for where the plan relies on an answer the organisers might reject. None opened the site, the
+  leaderboard, Slack or mail, and the only standings used are those of (b). The AI assistant checked against the files every
+  claim that changes anything, and set the confidences. No upload, build, rule or try count changes.
+  - **Outcome.** The team already acts on the logical answer to nearly every question, or the answer does not touch an entry.
+  - **The standings (overall totals of (b); calibration, never a threshold or evidence for a try, adoption or method choice).**
+    They bear on the stakes of the Generality request and, weakly, on the board specs. Their main use is scale: everything the
+    team holds stricter than the logical answer adds up to about +1 overall, about +3 if every upper end landed together (the
+    reviewer's estimates), against 19.66 points to third and 31.41 to first from the estimate of 184. Waiting on the organisers
+    is not what separates the team from the leaders.
+  - **Where the team is stricter, and why each stays.**
+    - Cross-task data (A15): logically yes, and what it unlocks is measured as about nothing. The prune's label is loose for
+      Feng on the heart, which is legal external data; its null holds anyway.
+    - Textbook background: logically yes; births are estimated at about -0.2.
+    - The organiser-published text on the heart, embryo and knockout test stacks, withheld since 2026-11-01 (b): logically open
+      to read, and estimated at +0.5 (0 to +1.5) through the heart's scope pair. It stays withheld, the captain's call, because
+      a scope or size change after the exposure of 2026-11-04 would contradict what the organisers were told that day.
+    - T3's s2 as the refused branch: about 0.
+    - A score-conditioned s2 was proposed and is not taken: its +0.66 rests on the blood-share files that (a) excluded, the
+      legal menu is worth about +0.2 at most, and the s2 rules are frozen.
+  - **Where the plan relied on an answer they might reject.** `EXTERNAL_DATA.md` says every source is disclosed "with each
+    submission", and one email on the first upload's day did not meet that. `docs/P3_RUNBOOK.md` now has a private email before
+    the first upload is pressed, listing every planned upload with its hash, ids and stages, saying T3's s1 uses the two
+    Gata4 replicates and its s2 no number from them, and correcting the note of 4 November on T3's count default; a later
+    upload not listed gets one line first; every upload and format check carries `--model sources-disclosed-by-email`. A
+    severity of zero would cost 9 to 12.5 on T3, at about 0.15, with no free hedge; the ruling of 2026-11-06 (b) stands. Human
+    Team status was never asked: rejection about 0.03, disqualification-class; the screened check quotes the Rules' definition.
+  - **Generality.** Eligibility if reached moves from 0.4 in (w) to 0.35. Nothing else changes.

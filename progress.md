@@ -3,6 +3,10 @@
 ## Current State
 
 **Last Updated:** 2026-11-10
+**2026-11-10, the organisers' logical position assumed for every email (decision log 2026-11-10 (x)):** predicted, not ruled.
+The team already acts on the logical answer to nearly every question. All the strictness together is worth about +1 overall,
+against 19.66 points to third. The disclosure step is tightened to an email before the first upload. No upload, build, rule or
+try count changed.
 **2026-11-10, the organisers' logical position assumed (decision log 2026-11-10 (w)):** predicted, not ruled: no ruling in
 advance, about 0.4 eligible for the Generality Award if our request is reached, and the standings make reaching it unlikely.
 The request stays and gets no more work. External sources go by private email on the first upload's day; the summary goes
