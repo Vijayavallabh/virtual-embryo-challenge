@@ -40,7 +40,7 @@ t3() {  # branch submission out
 
 case "$set_name" in
   s1)
-    $U run python experiments/builds/build_test.py t1 --out $O/builds/T1_s1.h5ad
+    $U run python experiments/builds/build_test.py t1 --g-mom --out $O/builds/T1_s1.h5ad
     $U run python experiments/builds/build_test.py heart --entry s1 --out $O/builds/T2heart_s1.h5ad
     $U run python experiments/builds/build_test.py embryo --method fgw --expression "$EMBRYO_EXPRESSION" \
       --out $O/builds/T2embryo_s1.h5ad
@@ -50,7 +50,7 @@ case "$set_name" in
     ;;
   s2)
     sha256sum -c docs/S2_RULES.sha256
-    $U run python experiments/builds/build_test.py t1 --cm-share 0.60 --out $O/builds/T1_s2.h5ad
+    $U run python experiments/builds/build_test.py t1 --g-mom --cm-share 0.60 --out $O/builds/T1_s2.h5ad
     $U run python experiments/builds/build_test.py heart --entry s2_trim --out $O/builds/T2heart_s2.h5ad
     $U run python experiments/builds/build_test.py embryo --method fgw_shape0 --expression "$EMBRYO_EXPRESSION" \
       --out $O/builds/T2embryo_s2.h5ad

@@ -1314,6 +1314,47 @@ def test_g_mom_on_keeps_each_cells_expected_depth_and_the_shares(bt, t1_env, mon
     assert rec["median_depth_scale"] > 0 and "n_edited" not in rec
 
 
+def _edit_scope_inputs():
+    """A reference and start with cells in four fitted categories: R3b's two, epicardium, vascular endothelium."""
+    ref = states_stage(11, {"V-CM": 300, "Endocardium": 160, "Proepicardium": 120, "BEC": 110}, later=True)
+    start = states_stage(12, {"V-CM": 260, "Endocardium": 150, "Proepicardium": 110, "BEC": 100})
+    return ref, start
+
+
+def test_r3b_edits_cardiomyocytes_and_endocardium_only(bt, monkeypatch):  # noqa: F811
+    """The fit stays the candidate's, over every category; cells outside R3b's two categories keep every count."""
+    ref, start = _edit_scope_inputs()
+    monkeypatch.setattr(bt, "load_stage", lambda *a, **k: start.copy())
+    cats = ["cm", "endocardium", "epicardium", "vascular_endothelium"]
+    labels = {"V-CM", "Endocardium", "Proepicardium", "BEC"}
+    hook, rec = bt._t1_g_mom(ref, cats, 1000001, labels)
+    assert rec["edit_categories"] == ["cm", "endocardium"]
+    assert {"epicardium", "vascular_endothelium", "cm", "endocardium"} <= set(rec["categories_with_factors"])
+    t1_scope.classify(ref, source="E10.5_RNA")
+    pop, _ = t1_scope.reweight(ref, {c: 1 / len(cats) for c in cats}, 400, 5,
+                               fallback=t1_scope.load_spec().fallbacks("E10.5_RNA"))
+    out = hook(pop)
+    in_scope = np.isin(pop.obs["category"].astype(str).to_numpy(), ["cm", "endocardium"])
+    before, after = sparse.csr_matrix(pop.layers["counts"]), sparse.csr_matrix(out.layers["counts"])
+    assert (~in_scope).any() and (before[~in_scope] != after[~in_scope]).nnz == 0
+    for cat in ("cm", "endocardium"):
+        idx = pop.obs["category"].astype(str).to_numpy() == cat
+        assert idx.any() and (before[idx] != after[idx]).nnz > 0
+
+
+def test_r3b_stops_the_build_when_a_category_it_edits_has_no_factors(bt, monkeypatch):  # noqa: F811
+    ref, start = _edit_scope_inputs()
+    monkeypatch.setattr(bt, "load_stage", lambda *a, **k: start.copy())
+    with pytest.raises(ValueError, match="no factors for a category R3b edits"):
+        bt._t1_g_mom(ref, ["cm", "epicardium"], 1000001, {"V-CM", "Proepicardium"})
+
+
+def test_the_freeze_builds_carry_r3b_in_both_of_t1s_files():
+    text = (REPO_ROOT / "experiments" / "builds" / "build_all.sh").read_text()
+    assert "build_test.py t1 --g-mom --out $O/builds/T1_s1.h5ad" in text
+    assert "build_test.py t1 --g-mom --cm-share 0.60 --out $O/builds/T1_s2.h5ad" in text
+
+
 def test_the_hook_refuses_a_label_the_builds_feng_direction_does_not_cover(bt, t1_env, monkeypatch):  # noqa: F811
     """The hook's own R1 mask and the build's Feng-covered labels are derived separately; a label edited outside the
     covered set stops the build rather than editing a label Feng's direction never moved."""

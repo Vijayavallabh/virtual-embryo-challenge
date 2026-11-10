@@ -1777,3 +1777,9 @@ open. No organiser reply to any of the four emails as of then.
     the same numbers and another counted try, so none is proposed.
   - Recommendation sent to the captain: accept the numbers as no interference, the void staying on record, and rule on R3
     limited to cardiomyocytes and endocardium. No file changes before that ruling.
+- 2026-11-10 (p), the captain, after the plain report of N22 and T26, in the captain's words: "go ahead with your
+  recommendation". Ruled: T26's numbers are accepted as no interference, with the void staying on record, and g_mom's
+  factors enter T1 for cardiomyocytes and endocardium only (R3b in `experiments/harness/TRIES.md`, which supersedes R3 and
+  carries the panel's clauses: held set named, no horizon scaling, edited share, running count). T1's s1 is rebuilt at the
+  row's clean commit and T1's s2 goes back to the captain. T1's try count stays 23: the ruling and the build are not tries.
+  The estimate stands (184 committed), as with R1 and R2, which entered by ruling with no counted run.

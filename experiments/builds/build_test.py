@@ -20,7 +20,9 @@ machine, and an official upload needs the captain's go-ahead.
           off; only by the captain's ruling on try T11 of TRIES.md; refused together with --strong-null, whose order
           against it no row fixes) adds g_mom's within-type factors: fitted on E9.5 -> E10.5 and applied last, after
           Feng's direction, on the cells g_mom edits (metacell factors through apply_factors with keep_depth, R1's held
-          labels left alone), so no share, cell count or scope changes
+          labels left alone), so no share, cell count or scope changes. Row R3b (the captain's ruling of 2026-11-10
+          (p)): the factors edit cardiomyocytes and endocardium only; epicardium and vascular endothelium keep M1's
+          counts
   heart   B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
           procedure: --entry s1 = scope hypothesis H1; s2_trim = the s2 of docs/S2_RULES.md (H2 as a trim to half
           E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`)
@@ -76,6 +78,9 @@ SIZES = {"heart": REPO_ROOT / "experiments/coords/results/p3/size_heart_E12.5.js
 DATA = harness.DATA_DIR
 # fgw and its s2 shape variants (docs/S2_RULES.md): the position fraction passed to interpolate_clouds
 EMBRYO_T_POS = {"fgw": None, "fgw_shape0": 0.0, "fgw_shape1": 1.0}
+# R3b of experiments/harness/TRIES.md (the captain's ruling of 2026-11-10 (p)): the only categories g_mom's factors edit
+# at test. These are the two any backtest read (T25, T26); epicardium and vascular endothelium have factors but no read.
+G_MOM_EDIT_CATEGORIES = ("cm", "endocardium")
 
 
 def _view(key: str, task: str, kind: str, setting: str | None, test_board: str, roles: dict[str, tuple[str, float]],
@@ -236,8 +241,9 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str]):
     g_mom was judged on top of B0's per-type shift, and at test Feng's direction takes that place). It edits the cells
     of `vec.t1_state_transport.apply_state_factors`: a cell's source cell must sit in a fitted metacell; cells of R1's
     held labels (no Feng group: `r1_unbracketed_labels`, the candidate's own mask) keep the counts they have, so R1
-    stands; the pre-registered held-flat genes are the candidate's own list (R2's union is held in Feng's direction
-    only, by its ruling; if the captain wants R2 held in this step too, that is a new variant with its own row, since
+    stands; R3b: the fit is the candidate's, over all `categories`, and only cells of G_MOM_EDIT_CATEGORIES are edited,
+    the mask added to R1's (a category the fit skipped stops the build); the pre-registered held-flat genes are the
+    candidate's own list (R2's union is held in Feng's direction only, by its ruling; if the captain wants R2 held in this step too, that is a new variant with its own row, since
     T11 was judged without it); each edited cell keeps its expected depth (`apply_factors`, keep_depth), the T1 depth
     lever stays closed; the cells, their number, shares and scope are untouched. The stream is [seed, 5], the
     candidate's. covered_labels: the labels the build moved along Feng's direction (`label_groups` mapped to a group
@@ -247,18 +253,25 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str]):
 
     start = load_stage(DATA / "T1/E9.5_RNA.h5ad", lineage=False)
     factors, _ = harness.g_mom_pair_factors(ref, "E10.5_RNA", start, "E9.5_RNA", categories=categories)
+    missing = sorted(set(G_MOM_EDIT_CATEGORIES) - set(factors.categories))
+    if missing:
+        raise ValueError(f"--g-mom has no factors for a category R3b edits: {missing}")
     held_flat = t1_scope.held_flat_genes()
     record = {"rule": "try T11's within-type factors at test: OT within each chamber category from E9.5 to E10.5, "
                       "metacells of the E10.5 cells, the per-category mean removed, damped by B0_DAMPING, zeroed and "
-                      "clipped; applied last (after Feng's direction); R1's held labels unedited; keep_depth",
+                      "clipped; applied last (after Feng's direction); R1's held labels unedited; keep_depth; R3b: "
+                      "only the categories in edit_categories are edited; the factors are not scaled to the two-day "
+                      "step",
+              "edit_categories": list(G_MOM_EDIT_CATEGORIES),
               "categories_with_factors": sorted(factors.categories),
               "categories_without_factors": sorted(factors.skipped), "stream": [int(seed), 5],
               "held_flat": "the candidate's pre-registered list (R2's union is held in Feng's direction only)"}
 
     def hook(pop):
         labels = pop.obs[t1_scope.LABEL_KEY].astype(str).to_numpy()
-        no_edit = np.isin(labels, sorted(ts.r1_unbracketed_labels(np.unique(labels))))
         cats = pop.obs[t1_scope.CATEGORY_KEY].astype(str).to_numpy()
+        no_edit = (np.isin(labels, sorted(ts.r1_unbracketed_labels(np.unique(labels))))
+                   | ~np.isin(cats, G_MOM_EDIT_CATEGORIES))
         edited = set(labels[~no_edit & np.isin(cats, list(factors.categories))])
         if not edited <= set(covered_labels):
             extra = sorted(edited - set(covered_labels))
@@ -445,9 +458,9 @@ def build_parser() -> argparse.ArgumentParser:
                                 "until configs/t1_strong_null.yaml says approved, and without R1 and R2)")
             p.add_argument("--g-mom", action="store_true",
                            help="add g_mom's within-type factors at test (T1 try T11 of experiments/harness/TRIES.md; "
-                                "fitted on E9.5 -> E10.5, applied last, after Feng's direction, on the cells g_mom "
-                                "edits, R1's held labels left alone, each cell's expected depth kept, no share, cell "
-                                "count or scope changed; refused with --no-hold-unbracketed; off: the entry as built, "
+                                "fitted on E9.5 -> E10.5, applied last, after Feng's direction, on cardiomyocytes and "
+                                "endocardium only (R3b), R1's held labels left alone, each cell's expected depth "
+                                "kept, no share, cell count or scope changed; refused with --no-hold-unbracketed; off: the entry as built, "
                                 "and only the captain's ruling turns it on for an upload)")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim"), required=True,
