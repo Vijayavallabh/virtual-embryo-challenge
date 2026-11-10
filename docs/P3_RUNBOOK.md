@@ -290,6 +290,11 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
   choice is safe, leaving one out is not. T1:test (s1 and s2): `X001,X002,X003,X005,X006,X007,X008,X009` (X007-X009 since R2's build, 2026-11-06 (k)). T2:heart:test_extrap and
   T2:embryo:test_interp: `X001,X004,X005`. T3:bcatenin: `X001,X004,X005`. A row added later joins the boards its
   Tasks column names.
+  2026-11-10, working answers (`docs/ORGANIZER_QUESTIONS.md`; decision log 2026-11-10 (w)), unless the screened check finds
+  otherwise: the ids stay in the local ledger, so a private email to the organisers on the day of the first official upload
+  states each board's external sources and stages (drafted by the AI assistant, sent by the captain). Every format check and
+  upload carries the same neutral `--architecture mithril-recipe-v1`; nothing about the methods goes in the form's `model` or
+  `architecture` fields, whose visibility is unknown.
 - **(user)** Final entries. The account page (seen in the site's public script, 2026-10-28): "The leaderboard shows
   your team's best score on each board, so there is nothing to nominate yet. In the final phase the captain picks
   which submission counts." While nominations are open, the captain sees a "Final" column in the team's submission

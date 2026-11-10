@@ -1900,3 +1900,33 @@ open. No organiser reply to any of the four emails as of then.
 - 2026-11-10 (v), the captain sent the sixth organiser email of (u), in the captain's words: "i sent the email". The draft had
   left the drafts folder when checked; the sent copy was not opened. `docs/ORGANIZER_QUESTIONS.md` and A21 carry the date, and
   the screened check before the first upload looks for the answer. No upload, build, rule or try count changes.
+- 2026-11-10 (w), the captain, in the captain's words: "so far they have not replied to a single email. So assume their logical
+  position with the contrast of the leaderboard scores to judge". The AI assistant read this as: predict what the organisers
+  would logically rule on the corrected Generality question (the sixth email), weigh it against the screened overall
+  standings, and stop waiting for a reply. These are working assumptions, never rulings: a real answer replaces them the day
+  it arrives. The estimates are the AI assistant's alone, no panel ran, and nothing new was read from the site or the
+  leaderboard. No upload, build, rule or try count changes.
+  - **Their logical position.** No ruling in advance, and probably no reply. The award follows final standing among eligible
+    entries, so they read method summaries after the final standing, best claimant first. The rule's exclusion is "an
+    unrelated model per task", and our entries are not that, which favours the request. Against it, the shared code does the
+    generic part (drawing real cells, thinning counts), each board's main step is its own, and no function spans the boards;
+    the working answer of 31 October already said the summary must show the shared part doing the main work. About 0.4
+    eligible if our request is reached.
+  - **The standings ((b), read 2026-11-09 20:16 UTC, overall totals only; calibration, never a threshold or evidence for a
+    try, adoption or method choice).** Of 91 Human entries, ranks 1, 3, 6 and 15 stand at 215.41, 203.66, 200.58 and 189.15.
+    Our estimate, 184 (170-198), is below all fifteen at its centre, 19.66 short of third and 16.58 short of sixth, would be
+    eighth at the top of its range, and clears the floor of 150. The award spans both tracks, so Agent entries may stand above
+    us too. Our request is reached only if every higher team does not ask or does not qualify: if one in ten of them both
+    asks and qualifies, the chance that none does is about 0.2 with fifteen above us and 0.5 with seven; at one in five, 0.04
+    and 0.2. With 0.4 eligibility, the award is a few percent at best.
+  - **If the leaderboard is read as D3's comparator.** The 31 points to the leader exceed D3's 3 but cannot trigger the rule:
+    its comparison is paired over the emulator seeds on honest validation, those teams' architectures are unknown, 184 is an
+    estimate and not a score, and the drop branch needs specialised code of our own to use, which does not exist. Dropping
+    the claim would gain nothing.
+  - **What follows.** The request stays: it is free, and the same files go in either way. No further work goes to it, no method
+    changes for it, and T3 stays as frozen. Silence blocks nothing else: every open question has a default that runs without
+    a reply. Two more working answers replace waiting, unless the screened check of 26-27 November finds otherwise: external
+    sources and stages go to the organisers by private email on the day of the first official upload, because the upload form
+    has no disclosure field and the visibility of its free-text fields is unknown; and the method summary goes privately to
+    the organisers' address in the plan's 24-30 November slot. Both are drafted by the AI assistant and sent by the captain.
+    Every format check and upload carries the same neutral `--architecture mithril-recipe-v1`.

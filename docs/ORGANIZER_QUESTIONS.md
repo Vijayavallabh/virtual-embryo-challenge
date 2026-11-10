@@ -60,6 +60,9 @@ prediction the day it arrives, and every disclosure says which is which. Confide
 | z coordinate (follow-up Q5) | As far as the Data Protocol page goes: use the stored z as given; its unit is not stated | No change |
 | External staging (follow-up Q7) | Standard references; an embryo either label puts inside a window stays out (0.45) | No change |
 | Leak report (follow-up Q8) | Thanks and removal; nothing more from the team (0.55) | No change |
+| Generality as corrected (sixth email, 2026-11-10) | No ruling in advance and probably no reply; judged from the method summary after final standing, best claimant first. "Not an unrelated model per task" favours the request; the shared code being the generic part, with each board's main step its own, counts against it (about 0.4 eligible if our request is reached; the AI assistant alone, 2026-11-10) | The request stays, at no cost; no further work on it and no method change for it |
+| Stating external sources "with the submission" (not asked, 2026-11-10) | The upload form has no disclosure field, so a private statement to the organisers on the day of the upload, with the method report, meets it (0.6; the AI assistant alone) | Private email on the day of the first official upload: sources and stages per board. The form's free-text fields carry a neutral label only |
+| Where the method summary goes (not asked, 2026-11-10) | The report is due 14 days after notification for winners; no route is published for a claimant outside the places, so the organisers' address is the natural one (0.55; the AI assistant alone) | Sent privately in the plan's 24-30 Nov slot unless the screened check of 26-27 Nov finds a published route |
 
 Dropped because they are already answered (see `docs/DATA_POLICY.md`):
 - T3 literature: gene-level knockout findings are prohibited, broad phenotype background is allowed (2026-10-15).
@@ -282,7 +285,8 @@ Drafted by the AI assistant on 2026-11-10 on the captain's "go ahead with your r
 log 2026-11-10 (u)), in the drafts of be23b041@smail.iitm.ac.in, to virtual.embryo.moonshot@gmail.com. The captain sent
 it on 2026-11-10 (the captain's words in the main session: "i sent the email"; the draft had left the drafts folder when
 checked, and the sent copy was not opened, so any edit before sending is not recorded). Answers: _pending_ (record them
-in `docs/DATA_POLICY.md`). It corrects the architecture described in
+in `docs/DATA_POLICY.md`); the captain, 2026-11-10: "so far they have not replied to a single email", so a working answer stands in
+the table above (decision log 2026-11-10 (w)). It corrects the architecture described in
 question 4 of the 18 October email and question 3 of the third email (the D3 review, decision log 2026-11-10 (s)). Text
 as drafted:
 

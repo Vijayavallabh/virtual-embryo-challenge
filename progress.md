@@ -3,6 +3,10 @@
 ## Current State
 
 **Last Updated:** 2026-11-10
+**2026-11-10, the organisers' logical position assumed (decision log 2026-11-10 (w)):** predicted, not ruled: no ruling in
+advance, about 0.4 eligible for the Generality Award if our request is reached, and the standings make reaching it unlikely.
+The request stays and gets no more work. External sources go by private email on the first upload's day; the summary goes
+privately in the 24-30 Nov slot. No upload, build, rule or try count changed.
 **2026-11-10, correction sent to the organisers (decision log 2026-11-10 (u), (v)):** the captain sent the sixth email, which
 corrects the architecture described on 18 and 21 October. No answer yet; the screened check before the first upload looks for one. M2 stays unbuilt.
 **2026-11-10, M2 not built (decision log 2026-11-10 (t)):** the reasons are now recorded. As a specialised pipeline it
