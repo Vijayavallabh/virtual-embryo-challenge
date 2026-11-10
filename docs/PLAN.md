@@ -2004,3 +2004,12 @@ open. No organiser reply to any of the four emails as of then.
   s2 to fgw_shape1 is recommended if the better of fgw and fgw_shape1 beats the better of fgw and fgw_shape0 by more than 0.3
   points in the mean and in at least 8 of 10 seeds; the control T2e/E8.25_late+E8.75->E8.5 decides nothing. Two counted embryo
   tries (11 to 13). Any change to s2 is the captain's ruling, before the freeze of 2026-11-27.
+- 2026-11-11 (b), E16 and E17 (run at a3d8b41 on a clean tree; `experiments/harness/results/e16_sampling_shape/`). **No change:
+  the embryo's s2 stays fgw_shape0**, by the rule of (a). On the main task, built to copy the test's sampling (the target
+  collected like its later bracket), neither shape variant beat fgw in any seed, so the better of the two is fgw either way
+  (D +0.00, ahead in 0 of 10). fgw_shape1 lost -2.12 and fgw_shape0 -3.04, every arm below the floor there. On the control, where
+  all three stages were collected alike and the target is nearer the earlier bracket, fgw_shape0 gained +3.09 (10 of 10) and
+  fgw_shape1 lost -1.11. Across the four tasks now run, the later bracket's geometry never beats fgw, and the earlier's helps only
+  where the target is nearer to it in time. The idea that the bracket collected like the target gives the better geometry is
+  not supported. At the test's t = 1/2 neither bracket is nearer, so what today's s2 adds there stays an open question;
+  nothing here argues for changing it. Embryo tries 11 to 13; no upload, build or rule changes.

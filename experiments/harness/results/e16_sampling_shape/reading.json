@@ -1,0 +1,176 @@
+{
+ "void": false,
+ "why": [],
+ "rule": {
+  "bar": 0.3,
+  "min_ahead": 8,
+  "task": "T2e/E8.0+E8.5->E8.25_late"
+ },
+ "main": {
+  "seeds": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "mean_score": {
+   "floor": 50.0,
+   "fgw": 47.94818448775662,
+   "fgw_shape0": 44.903875538893246,
+   "fgw_shape1": 45.83050820566558
+  },
+  "shape0_minus_fgw": -3.0443089488633683,
+  "shape0_ahead_of_fgw": 0,
+  "shape1_minus_fgw": -2.117676282091046,
+  "shape1_ahead_of_fgw": 0,
+  "pair_with_shape0": 47.94818448775662,
+  "pair_with_shape1": 47.94818448775662,
+  "D_mean": 0.0,
+  "D_ahead": 0,
+  "D_per_seed": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "mean_skills": {
+   "floor": {
+    "de_score": 0.5,
+    "de_direction": 0.5,
+    "mmd_u": 0.5,
+    "variogram": 0.5,
+    "d2_shape": 0.5,
+    "occupancy_dice": 0.5,
+    "scale_log_ratio": 0.5,
+    "neighborhood_mmd": 0.5
+   },
+   "fgw": {
+    "de_score": 0.680695743834457,
+    "de_direction": 0.7323523349737054,
+    "mmd_u": 0.5204774671920448,
+    "variogram": 0.44312608644094026,
+    "d2_shape": 0.5264486993808555,
+    "occupancy_dice": 0.4828696587164683,
+    "scale_log_ratio": 0.24611636172398885,
+    "neighborhood_mmd": 0.39240127152722193
+   },
+   "fgw_shape0": {
+    "de_score": 0.680695743834457,
+    "de_direction": 0.7323523349737054,
+    "mmd_u": 0.5204774671920448,
+    "variogram": 0.44312608644094026,
+    "d2_shape": 0.4446316193908742,
+    "occupancy_dice": 0.5928337520912687,
+    "scale_log_ratio": 0.24611636172398885,
+    "neighborhood_mmd": 0.3235985068293523
+   },
+   "fgw_shape1": {
+    "de_score": 0.680695743834457,
+    "de_direction": 0.7323523349737054,
+    "mmd_u": 0.5204774671920448,
+    "variogram": 0.44312608644094026,
+    "d2_shape": 0.43938540745358035,
+    "occupancy_dice": 0.43590467835114344,
+    "scale_log_ratio": 0.24611636172398885,
+    "neighborhood_mmd": 0.36470370128622676
+   }
+  }
+ },
+ "control": {
+  "seeds": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "mean_score": {
+   "floor": 50.0,
+   "fgw": 60.518882465601735,
+   "fgw_shape0": 63.61094695107515,
+   "fgw_shape1": 59.411686390384
+  },
+  "shape0_minus_fgw": 3.092064485473416,
+  "shape0_ahead_of_fgw": 10,
+  "shape1_minus_fgw": -1.1071960752177241,
+  "shape1_ahead_of_fgw": 0,
+  "pair_with_shape0": 63.61094695107515,
+  "pair_with_shape1": 60.518882465601735,
+  "D_mean": -3.092064485473416,
+  "D_ahead": 0,
+  "D_per_seed": [
+   -3.7079949354056367,
+   -3.3245728932976633,
+   -4.05961576026192,
+   -3.500953946105298,
+   -1.9430256846144545,
+   -3.8098632003601196,
+   -2.1352369649306198,
+   -2.7481282141806247,
+   -1.982853371494464,
+   -3.708399884083356
+  ],
+  "mean_skills": {
+   "floor": {
+    "de_score": 0.5,
+    "de_direction": 0.5,
+    "mmd_u": 0.5,
+    "variogram": 0.5,
+    "d2_shape": 0.5,
+    "occupancy_dice": 0.5,
+    "scale_log_ratio": 0.5,
+    "neighborhood_mmd": 0.5
+   },
+   "fgw": {
+    "de_score": 0.6291311192175473,
+    "de_direction": 0.6766296932184561,
+    "mmd_u": 0.6199261213118504,
+    "variogram": 0.5737951348031206,
+    "d2_shape": 0.38889953719780734,
+    "occupancy_dice": 0.520433576483821,
+    "scale_log_ratio": 0.7731267321921357,
+    "neighborhood_mmd": 0.6055812170731212
+   },
+   "fgw_shape0": {
+    "de_score": 0.6291311192175473,
+    "de_direction": 0.6766296932184561,
+    "mmd_u": 0.6199261213118504,
+    "variogram": 0.5737951348031206,
+    "d2_shape": 0.790840534091964,
+    "occupancy_dice": 0.5033469321264006,
+    "scale_log_ratio": 0.7731267321921357,
+    "neighborhood_mmd": 0.6009790123131458
+   },
+   "fgw_shape1": {
+    "de_score": 0.6291311192175473,
+    "de_direction": 0.6766296932184561,
+    "mmd_u": 0.6199261213118504,
+    "variogram": 0.5737951348031206,
+    "d2_shape": 0.28939529261413666,
+    "occupancy_dice": 0.4931381544166012,
+    "scale_log_ratio": 0.7731267321921357,
+    "neighborhood_mmd": 0.6035599296147092
+   }
+  }
+ },
+ "passes": false,
+ "recommendation": "no change: s2 stays fgw_shape0",
+ "commit": "a3d8b41a5661a86ef6084aebc9b9b29a577bd583"
+}

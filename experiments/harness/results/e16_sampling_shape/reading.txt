@@ -1,0 +1,10 @@
+Tries E16 and E17 (commit a3d8b41a5661a86ef6084aebc9b9b29a577bd583): no change: s2 stays fgw_shape0
+rule: on T2e/E8.0+E8.5->E8.25_late, mean D > 0.3 and D > 0 in at least 8 of 10 seeds, D = max(fgw, fgw_shape1) - max(fgw, fgw_shape0)
+main: floor 50.00, fgw 47.95, fgw_shape0 44.90, fgw_shape1 45.83
+  fgw_shape0 - fgw -3.04 (ahead 0 of 10); fgw_shape1 - fgw -2.12 (ahead 0 of 10)
+  better of fgw and shape0 47.95; of fgw and shape1 47.95; D +0.00, ahead 0 of 10
+  shape skills (d2_shape, occupancy_dice, neighborhood_mmd): {'fgw': {'d2_shape': 0.526, 'occupancy_dice': 0.483, 'neighborhood_mmd': 0.392}, 'fgw_shape0': {'d2_shape': 0.445, 'occupancy_dice': 0.593, 'neighborhood_mmd': 0.324}, 'fgw_shape1': {'d2_shape': 0.439, 'occupancy_dice': 0.436, 'neighborhood_mmd': 0.365}}
+control: floor 50.00, fgw 60.52, fgw_shape0 63.61, fgw_shape1 59.41
+  fgw_shape0 - fgw +3.09 (ahead 10 of 10); fgw_shape1 - fgw -1.11 (ahead 0 of 10)
+  better of fgw and shape0 63.61; of fgw and shape1 60.52; D -3.09, ahead 0 of 10
+  shape skills (d2_shape, occupancy_dice, neighborhood_mmd): {'fgw': {'d2_shape': 0.389, 'occupancy_dice': 0.52, 'neighborhood_mmd': 0.606}, 'fgw_shape0': {'d2_shape': 0.791, 'occupancy_dice': 0.503, 'neighborhood_mmd': 0.601}, 'fgw_shape1': {'d2_shape': 0.289, 'occupancy_dice': 0.493, 'neighborhood_mmd': 0.604}}

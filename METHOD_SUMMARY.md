@@ -69,7 +69,9 @@ the half trim.
 
 **Task 2 embryo, E7.75, beyond E7.5 with its coordinates.** s1 = fgw; s2 = fgw_shape0. On the two backtests
 that chose it as the entry (selected on, not tuned on), fgw gains +4.15 against the organisers' pseudobulk_shift on E7.5
-and +4.92 against B0 on E7.25, ahead in 10 of 10 seeds each.
+and +4.92 against B0 on E7.25, ahead in 10 of 10 seeds each. After the organisers' protocol text showed E7.75 collected like
+E8.0, tries E16 and E17 (2026-11-11) tested whether s2 should take E8.0's geometry instead: on a backtest that copies that
+sampling structure, neither geometry beat fgw in any seed, so s2 is unchanged.
 
 | Facet | Change beyond the baseline | Held-out evidence |
 |---|---|---|
