@@ -1,0 +1,2288 @@
+{
+ "task": {
+  "key": "T2e/E7.25+E8.0->E7.5",
+  "test_board": "T2:embryo:test_interp",
+  "task": "T2",
+  "kind": "interp",
+  "target": "T2/E7.5.h5ad",
+  "reference": "T2/E7.25.h5ad",
+  "inputs": {
+   "before": "T2/E7.25.h5ad",
+   "after": "T2/E8.0.h5ad",
+   "earlier": "T2/E6.75.h5ad"
+  },
+  "validation_board": "T2:embryo:val_interp",
+  "twin_board": null,
+  "setting": "embryo",
+  "forbidden": [],
+  "adoption": true,
+  "replicate": false,
+  "target_filter": null,
+  "notes": "t = 1/3 between the brackets (test: E7.75 at t = 1/2 between E7.5 and E8.0)."
+ },
+ "board": {
+  "key": "T2:embryo:val_interp",
+  "task": "T2",
+  "setting": "embryo",
+  "split": "val_interp",
+  "target_ko": null,
+  "needs_coords": true,
+  "min_cells": 583,
+  "max_cells": 5000,
+  "truth_cells": 583,
+  "ref_cells": 1330,
+  "floor_model": "copy_last"
+ },
+ "target_filter_record": null,
+ "candidates": [
+  "floor",
+  "fgw",
+  "fgw_latent"
+ ],
+ "params": {
+  "floor": {
+   "what": "the organisers' floor: the reference's 10% working copy (copy_last or wt_identity)",
+   "scope": "whole",
+   "tuned_on": [],
+   "externals": []
+  },
+  "fgw": {
+   "what": "displacement interpolation between the brackets (fused Gromov-Wasserstein coupling, proper rotation, McCann moves) with a mixture of real cells of both, scaled to the embryo size rule",
+   "alpha": 0.5,
+   "n_anchor": 2000,
+   "n_pc": 30,
+   "k": 8,
+   "scope": "whole",
+   "tuned_on": [],
+   "externals": []
+  },
+  "fgw_latent": {
+   "what": "fgw's draws, partners and positions with expression from a negative-binomial VAE (scvi-tools, n_latent 20, gene dispersion, observed library, no batch key, trained once per task on both brackets' panel counts): each coupled pair's latent means interpolated with a variance-preserving term, counts sampled (never a decoded mean) at the drawn real cell's panel library (vec.t2_latent)",
+   "scope": "whole",
+   "tuned_on": [],
+   "externals": []
+  }
+ },
+ "protocol": "bake",
+ "build": "main",
+ "anchors": "computed",
+ "frac": 0.1,
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "rows": [
+  {
+   "seed": 0,
+   "build_seed": 1000000,
+   "scores": {
+    "floor": 50.0,
+    "fgw": 61.37347588827742,
+    "fgw_latent": 60.19332505875554
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5,
+     "d2_shape": 0.5,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.5,
+     "neighborhood_mmd": 0.5
+    },
+    "fgw": {
+     "de_score": 0.5760750479320734,
+     "de_direction": 0.6983197749562837,
+     "mmd_u": 0.6703439325113563,
+     "variogram": 0.6744300073547439,
+     "d2_shape": 0.39819791337337973,
+     "occupancy_dice": 0.43239436619718313,
+     "scale_log_ratio": 0.7341463414634146,
+     "neighborhood_mmd": 0.6241837212935478
+    },
+    "fgw_latent": {
+     "de_score": 0.5698706225022014,
+     "de_direction": 0.6987979306147292,
+     "mmd_u": 0.6748877092690894,
+     "variogram": 0.6609970155293642,
+     "d2_shape": 0.39819791337337973,
+     "occupancy_dice": 0.43239436619718313,
+     "scale_log_ratio": 0.7341463414634146,
+     "neighborhood_mmd": 0.5824877536738978
+    }
+   },
+   "metrics": {
+    "floor": {
+     "de_score": 0.0,
+     "de_direction": 0.0,
+     "energy_distance": 2.84119,
+     "mmd_u": 0.08571,
+     "variogram": 0.053533,
+     "d2_shape": 0.05306,
+     "sliced_wasserstein": 0.05713,
+     "occupancy_dice": 0.7047,
+     "scale_log_ratio": -0.3063,
+     "count_log_ratio": 0.8247,
+     "neighborhood_mmd": 0.21105,
+     "pb_rel_err": 0.5636,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.639,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8028,
+     "morans_I_agreement": 0.7101,
+     "_de_raw": 0.0,
+     "_de_chance": 0.4793,
+     "_n_up": 108,
+     "_n_dn": 13,
+     "_sw_flip_spread": 0.01062,
+     "_dice_voxel_over_nn": 3.7
+    },
+    "fgw": {
+     "de_score": 0.2222,
+     "de_direction": 0.5217,
+     "energy_distance": 1.52987,
+     "mmd_u": 0.04371,
+     "variogram": 0.026496,
+     "d2_shape": 0.07882,
+     "sliced_wasserstein": 0.08013,
+     "occupancy_dice": 0.6855,
+     "scale_log_ratio": -0.1143,
+     "count_log_ratio": 2.149,
+     "neighborhood_mmd": 0.13156,
+     "pb_rel_err": 0.4511,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.922,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8615,
+     "morans_I_agreement": 0.6499,
+     "_de_raw": 0.595,
+     "_de_chance": 0.4793,
+     "_n_up": 108,
+     "_n_dn": 13,
+     "_sw_flip_spread": 0.01572,
+     "_dice_voxel_over_nn": 3.7
+    },
+    "fgw_latent": {
+     "de_score": 0.2063,
+     "de_direction": 0.5226,
+     "energy_distance": 1.55896,
+     "mmd_u": 0.04288,
+     "variogram": 0.028071,
+     "d2_shape": 0.07882,
+     "sliced_wasserstein": 0.08013,
+     "occupancy_dice": 0.6855,
+     "scale_log_ratio": -0.1143,
+     "count_log_ratio": 2.149,
+     "neighborhood_mmd": 0.15447,
+     "pb_rel_err": 0.4604,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.934,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8683,
+     "morans_I_agreement": 0.6534,
+     "_de_raw": 0.5868,
+     "_de_chance": 0.4793,
+     "_n_up": 108,
+     "_n_dn": 13,
+     "_sw_flip_spread": 0.01572,
+     "_dice_voxel_over_nn": 3.7
+    }
+   },
+   "n_cells": {
+    "floor": 1330,
+    "fgw": 5000,
+    "fgw_latent": 5000
+   },
+   "groups": {
+    "floor": {
+     "expression_change": 0.5,
+     "cell_state": 0.5,
+     "shape_growth": 0.5,
+     "local_organisation": 0.5
+    },
+    "fgw": {
+     "expression_change": 0.6371974114441785,
+     "cell_state": 0.6719783624487113,
+     "shape_growth": 0.5215795403446591,
+     "local_organisation": 0.6241837212935478
+    },
+    "fgw_latent": {
+     "expression_change": 0.6343342765584653,
+     "cell_state": 0.6693314317731993,
+     "shape_growth": 0.5215795403446591,
+     "local_organisation": 0.5824877536738978
+    }
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8413
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.9185
+    },
+    "mmd_u": {
+     "floor": 0.08571,
+     "ceiling": 0.00307
+    },
+    "variogram": {
+     "floor": 0.053533,
+     "ceiling": 0.001264
+    },
+    "d2_shape": {
+     "floor": 0.05306,
+     "ceiling": 0.00268
+    },
+    "occupancy_dice": {
+     "floor": 0.7047,
+     "ceiling": 0.7661
+    },
+    "scale_log_ratio": {
+     "floor": -0.3063,
+     "ceiling": 0.0053
+    },
+    "neighborhood_mmd": {
+     "floor": 0.21105,
+     "ceiling": 0.01128
+    }
+   },
+   "reads": {
+    "fgw": [
+     ".venv-gpu/lib/python3.12/site-packages/absl_py-2.5.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/aiofiles-25.1.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/aiohappyeyeballs-2.7.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/aiohttp-3.14.5.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/aiosignal-1.4.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/anndata-0.13.4.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/annotated_doc-0.0.5.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/annotated_types-0.8.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/array_api_compat-1.15.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/attrs-26.1.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/certifi-2026.7.22.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/cloudpickle-3.1.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/contourpy-1.4.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/cuda_bindings-13.4.4.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/cuda_pathfinder-1.8.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/cuda_toolkit-13.0.3.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/cycler-0.12.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/diffrax-0.7.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/docrep-0.3.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/docstring_inheritance-3.0.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/donfig-0.8.1.post1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/equinox-0.13.8.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/etils-1.14.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/fast_array_utils-1.5.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/filelock-4.2.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/flax-0.12.10.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/fonttools-4.67.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/formulaic-1.2.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/frozenlist-1.8.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/fsspec-2026.9.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/geomloss-0.3.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/google_crc32c-1.9.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/grpcio-1.84.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/h5py-3.16.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/humanize-4.16.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/idna-3.20.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/iniconfig-2.3.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/interface_meta-2.0.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/jax-0.11.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/jax_cuda13_pjrt-0.11.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/jax_cuda13_plugin-0.11.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/jaxlib-0.11.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/jaxopt-0.8.5.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/jaxtyping-0.3.11.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/jinja2-3.1.6.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/joblib-1.6.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/kiwisolver-1.5.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/legacy_api_wrap-1.5.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/lightning-2.6.6.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/lightning_utilities-0.15.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/lineax-0.1.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/llvmlite-0.50.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/markdown-3.11.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/markdown_it_py-4.2.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/markupsafe-3.0.4.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib-3.11.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/mdurl-0.1.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/ml_collections-1.1.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/ml_dtypes-0.6.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/moscot-0.5.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/mpmath-1.3.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/msgpack-1.2.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/msgspec-0.22.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/mudata-0.4.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/multidict-7.1.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/narwhals-2.27.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/natsort-8.4.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/networkx-3.7.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/numba-0.68.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/numcodecs-0.17.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/numpy-2.5.4.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cublas-13.1.1.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cuda_crt-13.4.92.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cuda_cupti-13.0.85.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cuda_nvcc-13.4.92.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cuda_nvrtc-13.0.88.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cuda_runtime-13.0.96.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cudnn_cu13-9.24.0.43.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cufft-12.0.0.61.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cufile-1.15.1.6.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_curand-10.4.0.35.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cusolver-12.0.4.66.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cusparse-12.6.3.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cusparselt_cu13-0.8.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_nccl_cu13-2.30.7.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_nvjitlink-13.4.92.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_nvshmem_cu13-3.4.5.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_nvtx-13.0.85.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_nvvm-13.4.92.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/opt_einsum-3.4.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/optax-0.2.8.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/optimistix-0.1.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/orbax_checkpoint-0.12.7.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/ott_jax-0.6.1.dev30+g36338c947.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/packaging-26.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pandas-2.3.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/patsy-1.0.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pillow-13.0.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pluggy-1.7.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pot-0.9.7.post1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/prometheus_client-0.26.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/propcache-0.5.4.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/protobuf-7.36.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/psutil-7.2.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pydantic-2.14.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pydantic_core-2.50.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pydantic_settings-2.16.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pygments-2.21.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pynndescent-0.6.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pyparsing-3.3.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pyro_api-0.1.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pyro_ppl-1.9.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pytest-9.1.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/python_dateutil-2.9.0.post0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/python_dotenv-1.2.4.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pytorch_lightning-2.6.6.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pytz-2026.5.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pyyaml-6.0.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/rich-15.0.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/ruff-0.17.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/scanpy-1.12.4.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/scikit_learn-1.9.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/scikit_misc-0.5.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/scipy-1.18.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/scverse_misc-0.1.7.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/scvi_tools-1.5.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/seaborn-0.13.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/session_info2-0.4.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/setuptools-81.0.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/shellingham-1.5.4.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/simplejson-4.2.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/six-1.17.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/sparse-0.19.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/statsmodels-0.15.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/sympy-1.14.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/tensorboard-2.21.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/tensorboard_data_server-0.7.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/tensorstore-0.1.85.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/threadpoolctl-3.7.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/torch-2.14.1+cu130.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/torchcfm-1.0.7.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/torchdiffeq-0.2.5.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/torchmetrics-1.9.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/tqdm-4.70.1.dist-info/METADATA",
+     ".venv-gpu/lib/python3.12/site-packages/tqdm-4.70.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/treescope-0.1.10.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/triton-3.8.0.dist-info/METADATA",
+     ".venv-gpu/lib/python3.12/site-packages/triton-3.8.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/typer-0.27.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/typing_extensions-4.16.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/typing_inspection-0.4.4.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/tzdata-2026.5.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/umap_learn-0.5.12.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/uvloop-0.23.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/vec-0.1.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/veckit-0.1.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/wadler_lindig-0.1.7.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/werkzeug-3.1.9.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/wrapt-2.5.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/xarray-2026.9.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/yarl-1.25.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/zarr-3.4.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/zipp-4.1.1.dist-info/entry_points.txt"
+    ],
+    "fgw_latent": [
+     ".venv-gpu/lib/python3.12/site-packages/absl_py-2.5.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/aiofiles-25.1.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/aiohappyeyeballs-2.7.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/aiohttp-3.14.5.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/aiosignal-1.4.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/anndata-0.13.4.dist-info/METADATA",
+     ".venv-gpu/lib/python3.12/site-packages/anndata-0.13.4.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/annotated_doc-0.0.5.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/annotated_types-0.8.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/array_api_compat-1.15.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/attrs-26.1.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/certifi-2026.7.22.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/cloudpickle-3.1.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/contourpy-1.4.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/cuda_bindings-13.4.4.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/cuda_pathfinder-1.8.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/cuda_toolkit-13.0.3.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/cycler-0.12.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/diffrax-0.7.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/docrep-0.3.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/docstring_inheritance-3.0.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/donfig-0.8.1.post1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/equinox-0.13.8.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/etils-1.14.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/fast_array_utils-1.5.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/filelock-4.2.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/flax-0.12.10.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/fonttools-4.67.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/formulaic-1.2.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/frozenlist-1.8.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/fsspec-2026.9.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/geomloss-0.3.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/google_crc32c-1.9.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/grpcio-1.84.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/h5py-3.16.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/humanize-4.16.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/idna-3.20.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/iniconfig-2.3.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/interface_meta-2.0.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/jax-0.11.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/jax_cuda13_pjrt-0.11.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/jax_cuda13_plugin-0.11.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/jaxlib-0.11.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/jaxopt-0.8.5.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/jaxtyping-0.3.11.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/jinja2-3.1.6.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/joblib-1.6.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/kiwisolver-1.5.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/legacy_api_wrap-1.5.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/lightning-2.6.6.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/lightning/version.info",
+     ".venv-gpu/lib/python3.12/site-packages/lightning_utilities-0.15.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/lineax-0.1.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/llvmlite-0.50.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/markdown-3.11.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/markdown_it_py-4.2.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/markupsafe-3.0.4.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib-3.11.2.dist-info/METADATA",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib-3.11.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/matplotlibrc",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/Solarize_Light2.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/_classic_test_patch.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/_mpl-gallery-nogrid.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/_mpl-gallery.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/bmh.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/classic.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/dark_background.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/fast.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/fivethirtyeight.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/ggplot.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/grayscale.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/petroff10.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/petroff6.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/petroff8.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/seaborn-v0_8-bright.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/seaborn-v0_8-colorblind.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/seaborn-v0_8-dark-palette.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/seaborn-v0_8-dark.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/seaborn-v0_8-darkgrid.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/seaborn-v0_8-deep.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/seaborn-v0_8-muted.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/seaborn-v0_8-notebook.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/seaborn-v0_8-paper.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/seaborn-v0_8-pastel.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/seaborn-v0_8-poster.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/seaborn-v0_8-talk.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/seaborn-v0_8-ticks.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/seaborn-v0_8-white.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/seaborn-v0_8-whitegrid.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/seaborn-v0_8.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/matplotlib/mpl-data/stylelib/tableau-colorblind10.mplstyle",
+     ".venv-gpu/lib/python3.12/site-packages/mdurl-0.1.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/ml_collections-1.1.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/ml_dtypes-0.6.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/moscot-0.5.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/mpmath-1.3.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/msgpack-1.2.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/msgspec-0.22.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/mudata-0.4.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/multidict-7.1.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/narwhals-2.27.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/natsort-8.4.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/networkx-3.7.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/numba-0.68.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/numcodecs-0.17.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/numpy-2.5.4.dist-info/METADATA",
+     ".venv-gpu/lib/python3.12/site-packages/numpy-2.5.4.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cublas-13.1.1.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cuda_crt-13.4.92.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cuda_cupti-13.0.85.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cuda_nvcc-13.4.92.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cuda_nvrtc-13.0.88.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cuda_runtime-13.0.96.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cudnn_cu13-9.24.0.43.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cufft-12.0.0.61.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cufile-1.15.1.6.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_curand-10.4.0.35.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cusolver-12.0.4.66.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cusparse-12.6.3.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_cusparselt_cu13-0.8.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_nccl_cu13-2.30.7.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_nvjitlink-13.4.92.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_nvshmem_cu13-3.4.5.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_nvtx-13.0.85.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/nvidia_nvvm-13.4.92.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/opt_einsum-3.4.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/optax-0.2.8.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/optimistix-0.1.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/orbax_checkpoint-0.12.7.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/ott_jax-0.6.1.dev30+g36338c947.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/packaging-26.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pandas-2.3.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/patsy-1.0.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pillow-13.0.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pluggy-1.7.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pot-0.9.7.post1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/prometheus_client-0.26.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/propcache-0.5.4.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/protobuf-7.36.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/psutil-7.2.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pydantic-2.14.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pydantic_core-2.50.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pydantic_settings-2.16.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pygments-2.21.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pynndescent-0.6.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pyparsing-3.3.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pyro_api-0.1.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pyro_ppl-1.9.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pytest-9.1.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/python_dateutil-2.9.0.post0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/python_dotenv-1.2.4.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pytorch_lightning-2.6.6.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pytz-2026.5.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/pyyaml-6.0.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/rich-15.0.0.dist-info/METADATA",
+     ".venv-gpu/lib/python3.12/site-packages/rich-15.0.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/ruff-0.17.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/scanpy-1.12.4.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/scikit_learn-1.9.1.dist-info/METADATA",
+     ".venv-gpu/lib/python3.12/site-packages/scikit_learn-1.9.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/scikit_misc-0.5.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/scipy-1.18.1.dist-info/METADATA",
+     ".venv-gpu/lib/python3.12/site-packages/scipy-1.18.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/scverse_misc-0.1.7.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/scvi_tools-1.5.1.dist-info/METADATA",
+     ".venv-gpu/lib/python3.12/site-packages/scvi_tools-1.5.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/seaborn-0.13.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/session_info2-0.4.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/setuptools-81.0.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/shellingham-1.5.4.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/simplejson-4.2.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/six-1.17.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/sparse-0.19.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/statsmodels-0.15.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/sympy-1.14.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/tensorboard-2.21.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/tensorboard_data_server-0.7.2.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/tensorstore-0.1.85.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/threadpoolctl-3.7.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/torch-2.14.1+cu130.dist-info/METADATA",
+     ".venv-gpu/lib/python3.12/site-packages/torch-2.14.1+cu130.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/torchcfm-1.0.7.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/torchdiffeq-0.2.5.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/torchmetrics-1.9.0.dist-info/METADATA",
+     ".venv-gpu/lib/python3.12/site-packages/torchmetrics-1.9.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/tqdm-4.70.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/treescope-0.1.10.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/triton-3.8.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/typer-0.27.3.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/typing_extensions-4.16.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/typing_inspection-0.4.4.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/tzdata-2026.5.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/umap_learn-0.5.12.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/uvloop-0.23.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/vec-0.1.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/veckit-0.1.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/wadler_lindig-0.1.7.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/werkzeug-3.1.9.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/wrapt-2.5.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/xarray-2026.9.0.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/yarl-1.25.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/zarr-3.4.1.dist-info/entry_points.txt",
+     ".venv-gpu/lib/python3.12/site-packages/zipp-4.1.1.dist-info/entry_points.txt"
+    ]
+   },
+   "seconds": 1199.8
+  },
+  {
+   "seed": 1,
+   "build_seed": 1000001,
+   "scores": {
+    "floor": 50.0,
+    "fgw": 60.95728031676193,
+    "fgw_latent": 59.63340174045838
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5,
+     "d2_shape": 0.5,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.5,
+     "neighborhood_mmd": 0.5
+    },
+    "fgw": {
+     "de_score": 0.5824160609207338,
+     "de_direction": 0.7115429100161924,
+     "mmd_u": 0.6462400271600747,
+     "variogram": 0.6597203072680717,
+     "d2_shape": 0.3651893253562151,
+     "occupancy_dice": 0.4240362811791382,
+     "scale_log_ratio": 0.7395408163265306,
+     "neighborhood_mmd": 0.6300907803781128
+    },
+    "fgw_latent": {
+     "de_score": 0.5638362040077742,
+     "de_direction": 0.7141309394830523,
+     "mmd_u": 0.6535622317596567,
+     "variogram": 0.6549813573905562,
+     "d2_shape": 0.3651893253562151,
+     "occupancy_dice": 0.4240362811791382,
+     "scale_log_ratio": 0.7395408163265306,
+     "neighborhood_mmd": 0.5826338082402773
+    }
+   },
+   "metrics": {
+    "floor": {
+     "de_score": 0.0,
+     "de_direction": 0.0,
+     "energy_distance": 2.70296,
+     "mmd_u": 0.07883,
+     "variogram": 0.051832,
+     "d2_shape": 0.05217,
+     "sliced_wasserstein": 0.06375,
+     "occupancy_dice": 0.682,
+     "scale_log_ratio": -0.3026,
+     "count_log_ratio": 0.8247,
+     "neighborhood_mmd": 0.16201,
+     "pb_rel_err": 0.5484,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.651,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8142,
+     "morans_I_agreement": 0.6637,
+     "_de_raw": 0.0,
+     "_de_chance": 0.4474,
+     "_n_up": 100,
+     "_n_dn": 14,
+     "_sw_flip_spread": 0.00741,
+     "_dice_voxel_over_nn": 3.7
+    },
+    "fgw": {
+     "de_score": 0.2381,
+     "de_direction": 0.5487,
+     "energy_distance": 1.55916,
+     "mmd_u": 0.04437,
+     "variogram": 0.027505,
+     "d2_shape": 0.08642,
+     "sliced_wasserstein": 0.09204,
+     "occupancy_dice": 0.6552,
+     "scale_log_ratio": -0.1148,
+     "count_log_ratio": 2.149,
+     "neighborhood_mmd": 0.09953,
+     "pb_rel_err": 0.4486,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.927,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8627,
+     "morans_I_agreement": 0.569,
+     "_de_raw": 0.5789,
+     "_de_chance": 0.4474,
+     "_n_up": 100,
+     "_n_dn": 14,
+     "_sw_flip_spread": 0.01388,
+     "_dice_voxel_over_nn": 3.7
+    },
+    "fgw_latent": {
+     "de_score": 0.1905,
+     "de_direction": 0.5534,
+     "energy_distance": 1.533,
+     "mmd_u": 0.04305,
+     "variogram": 0.028056,
+     "d2_shape": 0.08642,
+     "sliced_wasserstein": 0.09204,
+     "occupancy_dice": 0.6552,
+     "scale_log_ratio": -0.1148,
+     "count_log_ratio": 2.149,
+     "neighborhood_mmd": 0.11909,
+     "pb_rel_err": 0.4539,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.947,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8721,
+     "morans_I_agreement": 0.6291,
+     "_de_raw": 0.5526,
+     "_de_chance": 0.4474,
+     "_n_up": 100,
+     "_n_dn": 14,
+     "_sw_flip_spread": 0.01388,
+     "_dice_voxel_over_nn": 3.7
+    }
+   },
+   "n_cells": {
+    "floor": 1330,
+    "fgw": 5000,
+    "fgw_latent": 5000
+   },
+   "groups": {
+    "floor": {
+     "expression_change": 0.5,
+     "cell_state": 0.5,
+     "shape_growth": 0.5,
+     "local_organisation": 0.5
+    },
+    "fgw": {
+     "expression_change": 0.6469794854684632,
+     "cell_state": 0.6516321392032735,
+     "shape_growth": 0.509588807620628,
+     "local_organisation": 0.6300907803781128
+    },
+    "fgw_latent": {
+     "expression_change": 0.6389835717454133,
+     "cell_state": 0.6541298820120165,
+     "shape_growth": 0.509588807620628,
+     "local_organisation": 0.5826338082402773
+    }
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8413
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.9228
+    },
+    "mmd_u": {
+     "floor": 0.07883,
+     "ceiling": 0.00269
+    },
+    "variogram": {
+     "floor": 0.051832,
+     "ceiling": 0.001591
+    },
+    "d2_shape": {
+     "floor": 0.05217,
+     "ceiling": 0.00578
+    },
+    "occupancy_dice": {
+     "floor": 0.682,
+     "ceiling": 0.7568
+    },
+    "scale_log_ratio": {
+     "floor": -0.3026,
+     "ceiling": 0.0127
+    },
+    "neighborhood_mmd": {
+     "floor": 0.16201,
+     "ceiling": 0.0107
+    }
+   },
+   "reads": {
+    "fgw": [],
+    "fgw_latent": []
+   },
+   "seconds": 32.5
+  },
+  {
+   "seed": 2,
+   "build_seed": 1000002,
+   "scores": {
+    "floor": 50.0,
+    "fgw": 60.27770876458764,
+    "fgw_latent": 58.558472266247094
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5,
+     "d2_shape": 0.5,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.5,
+     "neighborhood_mmd": 0.5
+    },
+    "fgw": {
+     "de_score": 0.5744825708061002,
+     "de_direction": 0.7096054756594632,
+     "mmd_u": 0.6793302653480857,
+     "variogram": 0.6644015957446808,
+     "d2_shape": 0.35779193205944804,
+     "occupancy_dice": 0.2103725346968587,
+     "scale_log_ratio": 0.7316486161251504,
+     "neighborhood_mmd": 0.6624345022168481
+    },
+    "fgw_latent": {
+     "de_score": 0.5933895921237693,
+     "de_direction": 0.7035992069543999,
+     "mmd_u": 0.6776714201992576,
+     "variogram": 0.6502297010632622,
+     "d2_shape": 0.35779193205944804,
+     "occupancy_dice": 0.2103725346968587,
+     "scale_log_ratio": 0.7316486161251504,
+     "neighborhood_mmd": 0.5938787309387873
+    }
+   },
+   "metrics": {
+    "floor": {
+     "de_score": 0.0,
+     "de_direction": 0.0,
+     "energy_distance": 2.71085,
+     "mmd_u": 0.07257,
+     "variogram": 0.05154,
+     "d2_shape": 0.04885,
+     "sliced_wasserstein": 0.05581,
+     "occupancy_dice": 0.7105,
+     "scale_log_ratio": -0.3106,
+     "count_log_ratio": 0.8247,
+     "neighborhood_mmd": 0.17406,
+     "pb_rel_err": 0.5508,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.662,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8117,
+     "morans_I_agreement": 0.6412,
+     "_de_raw": 0.0,
+     "_de_chance": 0.4386,
+     "_n_up": 102,
+     "_n_dn": 12,
+     "_sw_flip_spread": 0.00846,
+     "_dice_voxel_over_nn": 3.8
+    },
+    "fgw": {
+     "de_score": 0.2188,
+     "de_direction": 0.5451,
+     "energy_distance": 1.50608,
+     "mmd_u": 0.03594,
+     "variogram": 0.026814,
+     "d2_shape": 0.08234,
+     "sliced_wasserstein": 0.07784,
+     "occupancy_dice": 0.6312,
+     "scale_log_ratio": -0.1181,
+     "count_log_ratio": 2.149,
+     "neighborhood_mmd": 0.09346,
+     "pb_rel_err": 0.4374,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.939,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8699,
+     "morans_I_agreement": 0.622,
+     "_de_raw": 0.5614,
+     "_de_chance": 0.4386,
+     "_n_up": 102,
+     "_n_dn": 12,
+     "_sw_flip_spread": 0.01045,
+     "_dice_voxel_over_nn": 3.8
+    },
+    "fgw_latent": {
+     "de_score": 0.2656,
+     "de_direction": 0.534,
+     "energy_distance": 1.53069,
+     "mmd_u": 0.03619,
+     "variogram": 0.028453,
+     "d2_shape": 0.08234,
+     "sliced_wasserstein": 0.07784,
+     "occupancy_dice": 0.6312,
+     "scale_log_ratio": -0.1181,
+     "count_log_ratio": 2.149,
+     "neighborhood_mmd": 0.1221,
+     "pb_rel_err": 0.4496,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.949,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8736,
+     "morans_I_agreement": 0.6542,
+     "_de_raw": 0.5877,
+     "_de_chance": 0.4386,
+     "_n_up": 102,
+     "_n_dn": 12,
+     "_sw_flip_spread": 0.01045,
+     "_dice_voxel_over_nn": 3.8
+    }
+   },
+   "n_cells": {
+    "floor": 1330,
+    "fgw": 5000,
+    "fgw_latent": 5000
+   },
+   "groups": {
+    "floor": {
+     "expression_change": 0.5,
+     "cell_state": 0.5,
+     "shape_growth": 0.5,
+     "local_organisation": 0.5
+    },
+    "fgw": {
+     "expression_change": 0.6420440232327818,
+     "cell_state": 0.6733587975067237,
+     "shape_growth": 0.43327102762715236,
+     "local_organisation": 0.6624345022168481
+    },
+    "fgw_latent": {
+     "expression_change": 0.6484943995390846,
+     "cell_state": 0.6666947325448594,
+     "shape_growth": 0.43327102762715236,
+     "local_organisation": 0.5938787309387873
+    }
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8438
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.9227
+    },
+    "mmd_u": {
+     "floor": 0.07257,
+     "ceiling": 0.00319
+    },
+    "variogram": {
+     "floor": 0.05154,
+     "ceiling": 0.001577
+    },
+    "d2_shape": {
+     "floor": 0.04885,
+     "ceiling": 0.00672
+    },
+    "occupancy_dice": {
+     "floor": 0.7105,
+     "ceiling": 0.7393
+    },
+    "scale_log_ratio": {
+     "floor": -0.3106,
+     "ceiling": 0.0066
+    },
+    "neighborhood_mmd": {
+     "floor": 0.17406,
+     "ceiling": 0.00971
+    }
+   },
+   "reads": {
+    "fgw": [],
+    "fgw_latent": []
+   },
+   "seconds": 47.9
+  },
+  {
+   "seed": 3,
+   "build_seed": 1000003,
+   "scores": {
+    "floor": 50.0,
+    "fgw": 62.52606042827493,
+    "fgw_latent": 60.80340877731159
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5,
+     "d2_shape": 0.5,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.5,
+     "neighborhood_mmd": 0.5
+    },
+    "fgw": {
+     "de_score": 0.5954983460376815,
+     "de_direction": 0.7059700321644308,
+     "mmd_u": 0.6783205085312813,
+     "variogram": 0.6668987660051836,
+     "d2_shape": 0.3693283460725321,
+     "occupancy_dice": 0.46442432082794305,
+     "scale_log_ratio": 0.7360890302066774,
+     "neighborhood_mmd": 0.653275850806715
+    },
+    "fgw_latent": {
+     "de_score": 0.5888920494950932,
+     "de_direction": 0.7100923222599227,
+     "mmd_u": 0.671135385633896,
+     "variogram": 0.6513771866853063,
+     "d2_shape": 0.3693283460725321,
+     "occupancy_dice": 0.46442432082794305,
+     "scale_log_ratio": 0.7360890302066774,
+     "neighborhood_mmd": 0.5961314934581111
+    }
+   },
+   "metrics": {
+    "floor": {
+     "de_score": 0.0,
+     "de_direction": 0.0,
+     "energy_distance": 2.86641,
+     "mmd_u": 0.0842,
+     "variogram": 0.0535,
+     "d2_shape": 0.05104,
+     "sliced_wasserstein": 0.05521,
+     "occupancy_dice": 0.6887,
+     "scale_log_ratio": -0.2863,
+     "count_log_ratio": 0.8247,
+     "neighborhood_mmd": 0.21259,
+     "pb_rel_err": 0.5719,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.644,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.7947,
+     "morans_I_agreement": 0.6468,
+     "_de_raw": 0.0,
+     "_de_chance": 0.4386,
+     "_n_up": 100,
+     "_n_dn": 14,
+     "_sw_flip_spread": 0.0117,
+     "_dice_voxel_over_nn": 3.6
+    },
+    "fgw": {
+     "de_score": 0.2656,
+     "de_direction": 0.5251,
+     "energy_distance": 1.5784,
+     "mmd_u": 0.04156,
+     "variogram": 0.027613,
+     "d2_shape": 0.08318,
+     "sliced_wasserstein": 0.08389,
+     "occupancy_dice": 0.6667,
+     "scale_log_ratio": -0.1081,
+     "count_log_ratio": 2.149,
+     "neighborhood_mmd": 0.11873,
+     "pb_rel_err": 0.4614,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.925,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8557,
+     "morans_I_agreement": 0.6251,
+     "_de_raw": 0.5877,
+     "_de_chance": 0.4386,
+     "_n_up": 100,
+     "_n_dn": 14,
+     "_sw_flip_spread": 0.01789,
+     "_dice_voxel_over_nn": 3.6
+    },
+    "fgw_latent": {
+     "de_score": 0.25,
+     "de_direction": 0.5325,
+     "energy_distance": 1.57943,
+     "mmd_u": 0.04284,
+     "variogram": 0.029461,
+     "d2_shape": 0.08318,
+     "sliced_wasserstein": 0.08389,
+     "occupancy_dice": 0.6667,
+     "scale_log_ratio": -0.1081,
+     "count_log_ratio": 2.149,
+     "neighborhood_mmd": 0.14808,
+     "pb_rel_err": 0.4715,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.941,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.863,
+     "morans_I_agreement": 0.6528,
+     "_de_raw": 0.5789,
+     "_de_chance": 0.4386,
+     "_n_up": 100,
+     "_n_dn": 14,
+     "_sw_flip_spread": 0.01789,
+     "_dice_voxel_over_nn": 3.6
+    }
+   },
+   "n_cells": {
+    "floor": 1330,
+    "fgw": 5000,
+    "fgw_latent": 5000
+   },
+   "groups": {
+    "floor": {
+     "expression_change": 0.5,
+     "cell_state": 0.5,
+     "shape_growth": 0.5,
+     "local_organisation": 0.5
+    },
+    "fgw": {
+     "expression_change": 0.6507341891010561,
+     "cell_state": 0.6737518115208423,
+     "shape_growth": 0.5232805657023841,
+     "local_organisation": 0.653275850806715
+    },
+    "fgw_latent": {
+     "expression_change": 0.649492185877508,
+     "cell_state": 0.6632321060544601,
+     "shape_growth": 0.5232805657023841,
+     "local_organisation": 0.5961314934581111
+    }
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8281
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.8999
+    },
+    "mmd_u": {
+     "floor": 0.0842,
+     "ceiling": 0.0031
+    },
+    "variogram": {
+     "floor": 0.0535,
+     "ceiling": 0.00178
+    },
+    "d2_shape": {
+     "floor": 0.05104,
+     "ceiling": 0.00562
+    },
+    "occupancy_dice": {
+     "floor": 0.6887,
+     "ceiling": 0.8323
+    },
+    "scale_log_ratio": {
+     "floor": -0.2863,
+     "ceiling": 0.0085
+    },
+    "neighborhood_mmd": {
+     "floor": 0.21259,
+     "ceiling": 0.01257
+    }
+   },
+   "reads": {
+    "fgw": [],
+    "fgw_latent": []
+   },
+   "seconds": 39.4
+  },
+  {
+   "seed": 4,
+   "build_seed": 1000004,
+   "scores": {
+    "floor": 50.0,
+    "fgw": 62.13883086803268,
+    "fgw_latent": 60.62314390620509
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5,
+     "d2_shape": 0.5,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.5,
+     "neighborhood_mmd": 0.5
+    },
+    "fgw": {
+     "de_score": 0.619556639644164,
+     "de_direction": 0.7080136726167869,
+     "mmd_u": 0.6662116040955631,
+     "variogram": 0.6729723549141173,
+     "d2_shape": 0.3893198334285948,
+     "occupancy_dice": 0.44581818181818195,
+     "scale_log_ratio": 0.7090261282660333,
+     "neighborhood_mmd": 0.6381307929969103
+    },
+    "fgw_latent": {
+     "de_score": 0.6000138956437157,
+     "de_direction": 0.7040561975980059,
+     "mmd_u": 0.6668944311581825,
+     "variogram": 0.66947663764013,
+     "d2_shape": 0.3893198334285948,
+     "occupancy_dice": 0.44581818181818195,
+     "scale_log_ratio": 0.7090261282660333,
+     "neighborhood_mmd": 0.5902420147054446
+    }
+   },
+   "metrics": {
+    "floor": {
+     "de_score": 0.0,
+     "de_direction": 0.0,
+     "energy_distance": 2.85077,
+     "mmd_u": 0.08088,
+     "variogram": 0.054196,
+     "d2_shape": 0.05291,
+     "sliced_wasserstein": 0.06798,
+     "occupancy_dice": 0.6897,
+     "scale_log_ratio": -0.3021,
+     "count_log_ratio": 0.8247,
+     "neighborhood_mmd": 0.20858,
+     "pb_rel_err": 0.5624,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.641,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8035,
+     "morans_I_agreement": 0.6485,
+     "_de_raw": 0.0,
+     "_de_chance": 0.45,
+     "_n_up": 107,
+     "_n_dn": 13,
+     "_sw_flip_spread": 0.00872,
+     "_dice_voxel_over_nn": 3.8
+    },
+    "fgw": {
+     "de_score": 0.3333,
+     "de_direction": 0.5477,
+     "energy_distance": 1.5369,
+     "mmd_u": 0.04192,
+     "variogram": 0.026966,
+     "d2_shape": 0.08002,
+     "sliced_wasserstein": 0.08973,
+     "occupancy_dice": 0.6599,
+     "scale_log_ratio": -0.1261,
+     "count_log_ratio": 2.149,
+     "neighborhood_mmd": 0.12274,
+     "pb_rel_err": 0.4435,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.915,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8656,
+     "morans_I_agreement": 0.6601,
+     "_de_raw": 0.6333,
+     "_de_chance": 0.45,
+     "_n_up": 107,
+     "_n_dn": 13,
+     "_sw_flip_spread": 0.01017,
+     "_dice_voxel_over_nn": 3.8
+    },
+    "fgw_latent": {
+     "de_score": 0.2879,
+     "de_direction": 0.5403,
+     "energy_distance": 1.5093,
+     "mmd_u": 0.0418,
+     "variogram": 0.027377,
+     "d2_shape": 0.08002,
+     "sliced_wasserstein": 0.08973,
+     "occupancy_dice": 0.6599,
+     "scale_log_ratio": -0.1261,
+     "count_log_ratio": 2.149,
+     "neighborhood_mmd": 0.14795,
+     "pb_rel_err": 0.4541,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.927,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8711,
+     "morans_I_agreement": 0.6425,
+     "_de_raw": 0.6083,
+     "_de_chance": 0.45,
+     "_n_up": 107,
+     "_n_dn": 13,
+     "_sw_flip_spread": 0.01017,
+     "_dice_voxel_over_nn": 3.8
+    }
+   },
+   "n_cells": {
+    "floor": 1330,
+    "fgw": 5000,
+    "fgw_latent": 5000
+   },
+   "groups": {
+    "floor": {
+     "expression_change": 0.5,
+     "cell_state": 0.5,
+     "shape_growth": 0.5,
+     "local_organisation": 0.5
+    },
+    "fgw": {
+     "expression_change": 0.6637851561304755,
+     "cell_state": 0.6689159044229849,
+     "shape_growth": 0.5147213811709366,
+     "local_organisation": 0.6381307929969103
+    },
+    "fgw_latent": {
+     "expression_change": 0.6520350466208608,
+     "cell_state": 0.6679273137509615,
+     "shape_growth": 0.5147213811709366,
+     "local_organisation": 0.5902420147054446
+    }
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8636
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.9321
+    },
+    "mmd_u": {
+     "floor": 0.08088,
+     "ceiling": 0.0028
+    },
+    "variogram": {
+     "floor": 0.054196,
+     "ceiling": 0.001225
+    },
+    "d2_shape": {
+     "floor": 0.05291,
+     "ceiling": 0.00523
+    },
+    "occupancy_dice": {
+     "floor": 0.6897,
+     "ceiling": 0.8123
+    },
+    "scale_log_ratio": {
+     "floor": -0.3021,
+     "ceiling": 0.0036
+    },
+    "neighborhood_mmd": {
+     "floor": 0.20858,
+     "ceiling": 0.0103
+    }
+   },
+   "reads": {
+    "fgw": [],
+    "fgw_latent": []
+   },
+   "seconds": 34.3
+  },
+  {
+   "seed": 5,
+   "build_seed": 1000005,
+   "scores": {
+    "floor": 50.0,
+    "fgw": 61.262959936201945,
+    "fgw_latent": 60.5036479007936
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5,
+     "d2_shape": 0.5,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.5,
+     "neighborhood_mmd": 0.5
+    },
+    "fgw": {
+     "de_score": 0.5976839745984311,
+     "de_direction": 0.7065702415756271,
+     "mmd_u": 0.667355030563357,
+     "variogram": 0.6756790322780959,
+     "d2_shape": 0.38439612346282265,
+     "occupancy_dice": 0.38779688779688787,
+     "scale_log_ratio": 0.7222085889570553,
+     "neighborhood_mmd": 0.6295727913728743
+    },
+    "fgw_latent": {
+     "de_score": 0.6117611072876041,
+     "de_direction": 0.7119931777657184,
+     "mmd_u": 0.6885120163627066,
+     "variogram": 0.6791286980401948,
+     "d2_shape": 0.38439612346282265,
+     "occupancy_dice": 0.38779688779688787,
+     "scale_log_ratio": 0.7222085889570553,
+     "neighborhood_mmd": 0.575376217732459
+    }
+   },
+   "metrics": {
+    "floor": {
+     "de_score": 0.0,
+     "de_direction": 0.0,
+     "energy_distance": 2.95013,
+     "mmd_u": 0.08439,
+     "variogram": 0.056051,
+     "d2_shape": 0.05687,
+     "sliced_wasserstein": 0.05849,
+     "occupancy_dice": 0.6735,
+     "scale_log_ratio": -0.302,
+     "count_log_ratio": 0.8247,
+     "neighborhood_mmd": 0.16601,
+     "pb_rel_err": 0.5651,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.648,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8008,
+     "morans_I_agreement": 0.6023,
+     "_de_raw": 0.0,
+     "_de_chance": 0.4628,
+     "_n_up": 107,
+     "_n_dn": 14,
+     "_sw_flip_spread": 0.01185,
+     "_dice_voxel_over_nn": 4.1
+    },
+    "fgw": {
+     "de_score": 0.2615,
+     "de_direction": 0.537,
+     "energy_distance": 1.6443,
+     "mmd_u": 0.04387,
+     "variogram": 0.02776,
+     "d2_shape": 0.08526,
+     "sliced_wasserstein": 0.0741,
+     "occupancy_dice": 0.6187,
+     "scale_log_ratio": -0.1209,
+     "count_log_ratio": 2.149,
+     "neighborhood_mmd": 0.10353,
+     "pb_rel_err": 0.4459,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.913,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8631,
+     "morans_I_agreement": 0.5622,
+     "_de_raw": 0.6033,
+     "_de_chance": 0.4628,
+     "_n_up": 107,
+     "_n_dn": 14,
+     "_sw_flip_spread": 0.02058,
+     "_dice_voxel_over_nn": 4.1
+    },
+    "fgw_latent": {
+     "de_score": 0.2923,
+     "de_direction": 0.5469,
+     "energy_distance": 1.53314,
+     "mmd_u": 0.04015,
+     "variogram": 0.027351,
+     "d2_shape": 0.08526,
+     "sliced_wasserstein": 0.0741,
+     "occupancy_dice": 0.6187,
+     "scale_log_ratio": -0.1209,
+     "count_log_ratio": 2.149,
+     "neighborhood_mmd": 0.12624,
+     "pb_rel_err": 0.4473,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.93,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8713,
+     "morans_I_agreement": 0.6067,
+     "_de_raw": 0.6198,
+     "_de_chance": 0.4628,
+     "_n_up": 107,
+     "_n_dn": 14,
+     "_sw_flip_spread": 0.02058,
+     "_dice_voxel_over_nn": 4.1
+    }
+   },
+   "n_cells": {
+    "floor": 1330,
+    "fgw": 5000,
+    "fgw_latent": 5000
+   },
+   "groups": {
+    "floor": {
+     "expression_change": 0.5,
+     "cell_state": 0.5,
+     "shape_growth": 0.5,
+     "local_organisation": 0.5
+    },
+    "fgw": {
+     "expression_change": 0.6521271080870291,
+     "cell_state": 0.6706846312492525,
+     "shape_growth": 0.4981338667389219,
+     "local_organisation": 0.6295727913728743
+    },
+    "fgw_latent": {
+     "expression_change": 0.6618771425266612,
+     "cell_state": 0.684758689033702,
+     "shape_growth": 0.4981338667389219,
+     "local_organisation": 0.575376217732459
+    }
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.9184
+    },
+    "mmd_u": {
+     "floor": 0.08439,
+     "ceiling": 0.0036
+    },
+    "variogram": {
+     "floor": 0.056051,
+     "ceiling": 0.001646
+    },
+    "d2_shape": {
+     "floor": 0.05687,
+     "ceiling": 0.00967
+    },
+    "occupancy_dice": {
+     "floor": 0.6735,
+     "ceiling": 0.7682
+    },
+    "scale_log_ratio": {
+     "floor": -0.302,
+     "ceiling": 0.0077
+    },
+    "neighborhood_mmd": {
+     "floor": 0.16601,
+     "ceiling": 0.01422
+    }
+   },
+   "reads": {
+    "fgw": [],
+    "fgw_latent": []
+   },
+   "seconds": 36.8
+  },
+  {
+   "seed": 6,
+   "build_seed": 1000006,
+   "scores": {
+    "floor": 50.0,
+    "fgw": 59.687499753810435,
+    "fgw_latent": 57.82829951494768
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5,
+     "d2_shape": 0.5,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.5,
+     "neighborhood_mmd": 0.5
+    },
+    "fgw": {
+     "de_score": 0.5652058609030033,
+     "de_direction": 0.6972587307547877,
+     "mmd_u": 0.657644609396216,
+     "variogram": 0.6549044346612262,
+     "d2_shape": 0.36393618653167664,
+     "occupancy_dice": 0.31371799770729863,
+     "scale_log_ratio": 0.7410909090909091,
+     "neighborhood_mmd": 0.6268041237113402
+    },
+    "fgw_latent": {
+     "de_score": 0.5652058609030033,
+     "de_direction": 0.6900550022298201,
+     "mmd_u": 0.6498211091234346,
+     "variogram": 0.6461450856794766,
+     "d2_shape": 0.36393618653167664,
+     "occupancy_dice": 0.31371799770729863,
+     "scale_log_ratio": 0.7410909090909091,
+     "neighborhood_mmd": 0.5642358181756826
+    }
+   },
+   "metrics": {
+    "floor": {
+     "de_score": 0.0,
+     "de_direction": 0.0,
+     "energy_distance": 2.64938,
+     "mmd_u": 0.07572,
+     "variogram": 0.050232,
+     "d2_shape": 0.05801,
+     "sliced_wasserstein": 0.05627,
+     "occupancy_dice": 0.6968,
+     "scale_log_ratio": -0.3164,
+     "count_log_ratio": 0.8247,
+     "neighborhood_mmd": 0.17602,
+     "pb_rel_err": 0.5545,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.659,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.809,
+     "morans_I_agreement": 0.6518,
+     "_de_raw": 0.0,
+     "_de_chance": 0.4649,
+     "_n_up": 101,
+     "_n_dn": 13,
+     "_sw_flip_spread": 0.00898,
+     "_dice_voxel_over_nn": 3.8
+    },
+    "fgw": {
+     "de_score": 0.1967,
+     "de_direction": 0.5253,
+     "energy_distance": 1.51951,
+     "mmd_u": 0.04089,
+     "variogram": 0.02715,
+     "d2_shape": 0.09349,
+     "sliced_wasserstein": 0.08345,
+     "occupancy_dice": 0.5993,
+     "scale_log_ratio": -0.1175,
+     "count_log_ratio": 2.149,
+     "neighborhood_mmd": 0.10837,
+     "pb_rel_err": 0.4545,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.93,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8603,
+     "morans_I_agreement": 0.5581,
+     "_de_raw": 0.5702,
+     "_de_chance": 0.4649,
+     "_n_up": 101,
+     "_n_dn": 13,
+     "_sw_flip_spread": 0.0143,
+     "_dice_voxel_over_nn": 3.8
+    },
+    "fgw_latent": {
+     "de_score": 0.1967,
+     "de_direction": 0.5114,
+     "energy_distance": 1.52346,
+     "mmd_u": 0.04222,
+     "variogram": 0.02816,
+     "d2_shape": 0.09349,
+     "sliced_wasserstein": 0.08345,
+     "occupancy_dice": 0.5993,
+     "scale_log_ratio": -0.1175,
+     "count_log_ratio": 2.149,
+     "neighborhood_mmd": 0.13795,
+     "pb_rel_err": 0.4611,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.945,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8701,
+     "morans_I_agreement": 0.6013,
+     "_de_raw": 0.5702,
+     "_de_chance": 0.4649,
+     "_n_up": 101,
+     "_n_dn": 13,
+     "_sw_flip_spread": 0.0143,
+     "_dice_voxel_over_nn": 3.8
+    }
+   },
+   "n_cells": {
+    "floor": 1330,
+    "fgw": 5000,
+    "fgw_latent": 5000
+   },
+   "groups": {
+    "floor": {
+     "expression_change": 0.5,
+     "cell_state": 0.5,
+     "shape_growth": 0.5,
+     "local_organisation": 0.5
+    },
+    "fgw": {
+     "expression_change": 0.6312322958288955,
+     "cell_state": 0.6565485395022201,
+     "shape_growth": 0.47291503110996147,
+     "local_organisation": 0.6268041237113402
+    },
+    "fgw_latent": {
+     "expression_change": 0.6276304315664116,
+     "cell_state": 0.6483506997458515,
+     "shape_growth": 0.47291503110996147,
+     "local_organisation": 0.5642358181756826
+    }
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8525
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.9284
+    },
+    "mmd_u": {
+     "floor": 0.07572,
+     "ceiling": 0.00307
+    },
+    "variogram": {
+     "floor": 0.050232,
+     "ceiling": 0.001439
+    },
+    "d2_shape": {
+     "floor": 0.05801,
+     "ceiling": 0.01056
+    },
+    "occupancy_dice": {
+     "floor": 0.6968,
+     "ceiling": 0.7789
+    },
+    "scale_log_ratio": {
+     "floor": -0.3164,
+     "ceiling": 0.0107
+    },
+    "neighborhood_mmd": {
+     "floor": 0.17602,
+     "ceiling": 0.00882
+    }
+   },
+   "reads": {
+    "fgw": [],
+    "fgw_latent": []
+   },
+   "seconds": 42.4
+  },
+  {
+   "seed": 7,
+   "build_seed": 1000007,
+   "scores": {
+    "floor": 50.0,
+    "fgw": 61.40689242701618,
+    "fgw_latent": 59.77649477436424
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5,
+     "d2_shape": 0.5,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.5,
+     "neighborhood_mmd": 0.5
+    },
+    "fgw": {
+     "de_score": 0.5591263855184626,
+     "de_direction": 0.7151666536570136,
+     "mmd_u": 0.6878724150017526,
+     "variogram": 0.6618252427184466,
+     "d2_shape": 0.3781151752166245,
+     "occupancy_dice": 0.42731781762685994,
+     "scale_log_ratio": 0.7210216110019647,
+     "neighborhood_mmd": 0.6328574301226624
+    },
+    "fgw_latent": {
+     "de_score": 0.5652058609030033,
+     "de_direction": 0.7143302666458756,
+     "mmd_u": 0.6742248561367344,
+     "variogram": 0.6505407812698817,
+     "d2_shape": 0.3781151752166245,
+     "occupancy_dice": 0.42731781762685994,
+     "scale_log_ratio": 0.7210216110019647,
+     "neighborhood_mmd": 0.5777222997283207
+    }
+   },
+   "metrics": {
+    "floor": {
+     "de_score": 0.0,
+     "de_direction": 0.0,
+     "energy_distance": 2.76257,
+     "mmd_u": 0.08165,
+     "variogram": 0.052337,
+     "d2_shape": 0.05413,
+     "sliced_wasserstein": 0.05683,
+     "occupancy_dice": 0.6712,
+     "scale_log_ratio": -0.2938,
+     "count_log_ratio": 0.8247,
+     "neighborhood_mmd": 0.1684,
+     "pb_rel_err": 0.5617,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.654,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.803,
+     "morans_I_agreement": 0.6329,
+     "_de_raw": 0.0,
+     "_de_chance": 0.4554,
+     "_n_up": 100,
+     "_n_dn": 12,
+     "_sw_flip_spread": 0.006,
+     "_dice_voxel_over_nn": 3.8
+    },
+    "fgw": {
+     "de_score": 0.1803,
+     "de_direction": 0.5513,
+     "energy_distance": 1.58419,
+     "mmd_u": 0.03877,
+     "variogram": 0.027335,
+     "d2_shape": 0.08592,
+     "sliced_wasserstein": 0.07717,
+     "occupancy_dice": 0.6331,
+     "scale_log_ratio": -0.1138,
+     "count_log_ratio": 2.149,
+     "neighborhood_mmd": 0.10233,
+     "pb_rel_err": 0.4538,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.936,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8607,
+     "morans_I_agreement": 0.6005,
+     "_de_raw": 0.5536,
+     "_de_chance": 0.4554,
+     "_n_up": 100,
+     "_n_dn": 12,
+     "_sw_flip_spread": 0.019,
+     "_dice_voxel_over_nn": 3.8
+    },
+    "fgw_latent": {
+     "de_score": 0.1967,
+     "de_direction": 0.5498,
+     "energy_distance": 1.60765,
+     "mmd_u": 0.04108,
+     "variogram": 0.028675,
+     "d2_shape": 0.08592,
+     "sliced_wasserstein": 0.07717,
+     "occupancy_dice": 0.6331,
+     "scale_log_ratio": -0.1138,
+     "count_log_ratio": 2.149,
+     "neighborhood_mmd": 0.12606,
+     "pb_rel_err": 0.4676,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.952,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8665,
+     "morans_I_agreement": 0.6184,
+     "_de_raw": 0.5625,
+     "_de_chance": 0.4554,
+     "_n_up": 100,
+     "_n_dn": 12,
+     "_sw_flip_spread": 0.019,
+     "_dice_voxel_over_nn": 3.8
+    }
+   },
+   "n_cells": {
+    "floor": 1330,
+    "fgw": 5000,
+    "fgw_latent": 5000
+   },
+   "groups": {
+    "floor": {
+     "expression_change": 0.5,
+     "cell_state": 0.5,
+     "shape_growth": 0.5,
+     "local_organisation": 0.5
+    },
+    "fgw": {
+     "expression_change": 0.6371465195877382,
+     "cell_state": 0.6774535460884301,
+     "shape_growth": 0.5088182012818163,
+     "local_organisation": 0.6328574301226624
+    },
+    "fgw_latent": {
+     "expression_change": 0.6397680637744394,
+     "cell_state": 0.6647512261899933,
+     "shape_growth": 0.5088182012818163,
+     "local_organisation": 0.5777222997283207
+    }
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8525
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.9162
+    },
+    "mmd_u": {
+     "floor": 0.08165,
+     "ceiling": 0.00315
+    },
+    "variogram": {
+     "floor": 0.052337,
+     "ceiling": 0.001211
+    },
+    "d2_shape": {
+     "floor": 0.05413,
+     "ceiling": 0.00482
+    },
+    "occupancy_dice": {
+     "floor": 0.6712,
+     "ceiling": 0.7832
+    },
+    "scale_log_ratio": {
+     "floor": -0.2938,
+     "ceiling": -0.0002
+    },
+    "neighborhood_mmd": {
+     "floor": 0.1684,
+     "ceiling": 0.01104
+    }
+   },
+   "reads": {
+    "fgw": [],
+    "fgw_latent": []
+   },
+   "seconds": 34.4
+  },
+  {
+   "seed": 8,
+   "build_seed": 1000008,
+   "scores": {
+    "floor": 50.0,
+    "fgw": 60.96598244589653,
+    "fgw_latent": 60.01814244559056
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5,
+     "d2_shape": 0.5,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.5,
+     "neighborhood_mmd": 0.5
+    },
+    "fgw": {
+     "de_score": 0.5666666666666667,
+     "de_direction": 0.6796374087994694,
+     "mmd_u": 0.6701929060360922,
+     "variogram": 0.6552441498365443,
+     "d2_shape": 0.3511333729518635,
+     "occupancy_dice": 0.4206349206349206,
+     "scale_log_ratio": 0.7293697978596908,
+     "neighborhood_mmd": 0.6508944927310285
+    },
+    "fgw_latent": {
+     "de_score": 0.5862068965517241,
+     "de_direction": 0.6735319894829097,
+     "mmd_u": 0.6720449277946158,
+     "variogram": 0.6510463474130184,
+     "d2_shape": 0.3511333729518635,
+     "occupancy_dice": 0.4206349206349206,
+     "scale_log_ratio": 0.7293697978596908,
+     "neighborhood_mmd": 0.6068313953488372
+    }
+   },
+   "metrics": {
+    "floor": {
+     "de_score": 0.0,
+     "de_direction": 0.0,
+     "energy_distance": 2.70338,
+     "mmd_u": 0.07803,
+     "variogram": 0.052032,
+     "d2_shape": 0.04674,
+     "sliced_wasserstein": 0.06878,
+     "occupancy_dice": 0.7047,
+     "scale_log_ratio": -0.3081,
+     "count_log_ratio": 0.8247,
+     "neighborhood_mmd": 0.17788,
+     "pb_rel_err": 0.5543,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.659,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8088,
+     "morans_I_agreement": 0.6824,
+     "_de_raw": 0.0,
+     "_de_chance": 0.4737,
+     "_n_up": 102,
+     "_n_dn": 12,
+     "_sw_flip_spread": 0.00442,
+     "_dice_voxel_over_nn": 3.7
+    },
+    "fgw": {
+     "de_score": 0.2,
+     "de_direction": 0.4875,
+     "energy_distance": 1.57289,
+     "mmd_u": 0.03974,
+     "variogram": 0.028003,
+     "d2_shape": 0.08181,
+     "sliced_wasserstein": 0.09777,
+     "occupancy_dice": 0.6667,
+     "scale_log_ratio": -0.1152,
+     "count_log_ratio": 2.149,
+     "neighborhood_mmd": 0.10045,
+     "pb_rel_err": 0.4537,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.927,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8596,
+     "morans_I_agreement": 0.5942,
+     "_de_raw": 0.5789,
+     "_de_chance": 0.4737,
+     "_n_up": 102,
+     "_n_dn": 12,
+     "_sw_flip_spread": 0.01344,
+     "_dice_voxel_over_nn": 3.7
+    },
+    "fgw_latent": {
+     "de_score": 0.25,
+     "de_direction": 0.4752,
+     "energy_distance": 1.52547,
+     "mmd_u": 0.03943,
+     "variogram": 0.028502,
+     "d2_shape": 0.08181,
+     "sliced_wasserstein": 0.09777,
+     "occupancy_dice": 0.6667,
+     "scale_log_ratio": -0.1152,
+     "count_log_ratio": 2.149,
+     "neighborhood_mmd": 0.11908,
+     "pb_rel_err": 0.4581,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.942,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8694,
+     "morans_I_agreement": 0.5892,
+     "_de_raw": 0.6053,
+     "_de_chance": 0.4737,
+     "_n_up": 102,
+     "_n_dn": 12,
+     "_sw_flip_spread": 0.01344,
+     "_dice_voxel_over_nn": 3.7
+    }
+   },
+   "n_cells": {
+    "floor": 1330,
+    "fgw": 5000,
+    "fgw_latent": 5000
+   },
+   "groups": {
+    "floor": {
+     "expression_change": 0.5,
+     "cell_state": 0.5,
+     "shape_growth": 0.5,
+     "local_organisation": 0.5
+    },
+    "fgw": {
+     "expression_change": 0.623152037733068,
+     "cell_state": 0.664213403556273,
+     "shape_growth": 0.5003793638154916,
+     "local_organisation": 0.6508944927310285
+    },
+    "fgw_latent": {
+     "expression_change": 0.6298694430173168,
+     "cell_state": 0.6636454956419768,
+     "shape_growth": 0.5003793638154916,
+     "local_organisation": 0.6068313953488372
+    }
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.85
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.9222
+    },
+    "mmd_u": {
+     "floor": 0.07803,
+     "ceiling": 0.00264
+    },
+    "variogram": {
+     "floor": 0.052032,
+     "ceiling": 0.001322
+    },
+    "d2_shape": {
+     "floor": 0.04674,
+     "ceiling": 0.00538
+    },
+    "occupancy_dice": {
+     "floor": 0.7047,
+     "ceiling": 0.8054
+    },
+    "scale_log_ratio": {
+     "floor": -0.3081,
+     "ceiling": 0.0014
+    },
+    "neighborhood_mmd": {
+     "floor": 0.17788,
+     "ceiling": 0.01088
+    }
+   },
+   "reads": {
+    "fgw": [],
+    "fgw_latent": []
+   },
+   "seconds": 37.0
+  },
+  {
+   "seed": 9,
+   "build_seed": 1000009,
+   "scores": {
+    "floor": 50.0,
+    "fgw": 60.59189787748432,
+    "fgw_latent": 59.420653907181176
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5,
+     "d2_shape": 0.5,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.5,
+     "neighborhood_mmd": 0.5
+    },
+    "fgw": {
+     "de_score": 0.572913975716869,
+     "de_direction": 0.693773059257586,
+     "mmd_u": 0.6875452570601014,
+     "variogram": 0.6586878412418326,
+     "d2_shape": 0.3664942300039793,
+     "occupancy_dice": 0.3257110987172337,
+     "scale_log_ratio": 0.7079788457116578,
+     "neighborhood_mmd": 0.6476020487350612
+    },
+    "fgw_latent": {
+     "de_score": 0.5851197150583735,
+     "de_direction": 0.6966580976863753,
+     "mmd_u": 0.6838930404249572,
+     "variogram": 0.6614620115820695,
+     "d2_shape": 0.3664942300039793,
+     "occupancy_dice": 0.3257110987172337,
+     "scale_log_ratio": 0.7079788457116578,
+     "neighborhood_mmd": 0.5942885628827802
+    }
+   },
+   "metrics": {
+    "floor": {
+     "de_score": 0.0,
+     "de_direction": 0.0,
+     "energy_distance": 2.77734,
+     "mmd_u": 0.07921,
+     "variogram": 0.052966,
+     "d2_shape": 0.05386,
+     "sliced_wasserstein": 0.05549,
+     "occupancy_dice": 0.7224,
+     "scale_log_ratio": -0.3136,
+     "count_log_ratio": 0.8247,
+     "neighborhood_mmd": 0.17834,
+     "pb_rel_err": 0.5567,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.654,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8079,
+     "morans_I_agreement": 0.6407,
+     "_de_raw": 0.0,
+     "_de_chance": 0.4561,
+     "_n_up": 101,
+     "_n_dn": 13,
+     "_sw_flip_spread": 0.00898,
+     "_dice_voxel_over_nn": 3.7
+    },
+    "fgw": {
+     "de_score": 0.2258,
+     "de_direction": 0.5147,
+     "energy_distance": 1.58241,
+     "mmd_u": 0.03777,
+     "variogram": 0.028145,
+     "d2_shape": 0.08741,
+     "sliced_wasserstein": 0.08298,
+     "occupancy_dice": 0.6599,
+     "scale_log_ratio": -0.1327,
+     "count_log_ratio": 2.149,
+     "neighborhood_mmd": 0.10226,
+     "pb_rel_err": 0.447,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.934,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8637,
+     "morans_I_agreement": 0.5692,
+     "_de_raw": 0.5789,
+     "_de_chance": 0.4561,
+     "_n_up": 101,
+     "_n_dn": 13,
+     "_sw_flip_spread": 0.00843,
+     "_dice_voxel_over_nn": 3.7
+    },
+    "fgw_latent": {
+     "de_score": 0.2581,
+     "de_direction": 0.5202,
+     "energy_distance": 1.49183,
+     "mmd_u": 0.03836,
+     "variogram": 0.027817,
+     "d2_shape": 0.08741,
+     "sliced_wasserstein": 0.08298,
+     "occupancy_dice": 0.6599,
+     "scale_log_ratio": -0.1327,
+     "count_log_ratio": 2.149,
+     "neighborhood_mmd": 0.12538,
+     "pb_rel_err": 0.4506,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.945,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.8722,
+     "morans_I_agreement": 0.5843,
+     "_de_raw": 0.5965,
+     "_de_chance": 0.4561,
+     "_n_up": 101,
+     "_n_dn": 13,
+     "_sw_flip_spread": 0.00843,
+     "_dice_voxel_over_nn": 3.7
+    }
+   },
+   "n_cells": {
+    "floor": 1330,
+    "fgw": 5000,
+    "fgw_latent": 5000
+   },
+   "groups": {
+    "floor": {
+     "expression_change": 0.5,
+     "cell_state": 0.5,
+     "shape_growth": 0.5,
+     "local_organisation": 0.5
+    },
+    "fgw": {
+     "expression_change": 0.6333435174872275,
+     "cell_state": 0.6760022907327938,
+     "shape_growth": 0.46672805814429025,
+     "local_organisation": 0.6476020487350612
+    },
+    "fgw_latent": {
+     "expression_change": 0.6408889063723744,
+     "cell_state": 0.6749206288878021,
+     "shape_growth": 0.46672805814429025,
+     "local_organisation": 0.5942885628827802
+    }
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.8871
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.9214
+    },
+    "mmd_u": {
+     "floor": 0.07921,
+     "ceiling": 0.00325
+    },
+    "variogram": {
+     "floor": 0.052966,
+     "ceiling": 0.001452
+    },
+    "d2_shape": {
+     "floor": 0.05386,
+     "ceiling": 0.00781
+    },
+    "occupancy_dice": {
+     "floor": 0.7224,
+     "ceiling": 0.7808
+    },
+    "scale_log_ratio": {
+     "floor": -0.3136,
+     "ceiling": -0.0057
+    },
+    "neighborhood_mmd": {
+     "floor": 0.17834,
+     "ceiling": 0.01144
+    }
+   },
+   "reads": {
+    "fgw": [],
+    "fgw_latent": []
+   },
+   "seconds": 50.9
+  }
+ ],
+ "provenance": {
+  "commit": "8e578f64db7a8917bec294e044dc6c4a253fc86d",
+  "tree_clean": true,
+  "config_sha256": "7ebe0c245c99093eed4151adff6beb9e6f960ac218f658e4348038fbe1dfa73c",
+  "files_sha256": {
+   "T2/E6.75.h5ad": "ab58b9217d1b9a18b0181f498475a9eb821ac2c92ab2b7e45a623da0e4fffe70",
+   "T2/E7.25.h5ad": "c34192a31036b783b97ce1877ac50fc920b39faa3e00dc3c637b3e7e04255ee6",
+   "T2/E7.5.h5ad": "e8e47255ddeca96d5604c7cd4923bbf27765c24bc6a3cd44e800cd6ea05a7d54",
+   "T2/E8.0.h5ad": "17530e23fbfa6a139ff68d0353a489d83790f5b60f036b7d2f58303a1ff8a810"
+  },
+  "derived_sha256": {},
+  "build_seed_offset": 1000000,
+  "utc": "2026-11-11 22:15:03"
+ },
+ "run_id": "e21_latent_20261111T212811Z",
+ "seconds": 1556.6
+}
