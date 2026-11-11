@@ -55,7 +55,7 @@ import hashlib
 import json
 import re
 import tempfile
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
@@ -1926,6 +1926,104 @@ def depth_rendered_expression(before: ad.AnnData, after: ad.AnnData, interp: Int
             rec["topped_up"][name] = int(m.sum())
         out[m] = _log_normalise(Cn, ln)
         rec["rendered_median"][name] = float(np.median(ln))
+    return out, rec
+
+
+# The later bracket's run profile on the shallower bracket's cells (2026-11-12; embryo try E24, registered before its
+# run). The depth rendering "hi" moves the shallower bracket's cells to the deeper bracket's depth and leaves each
+# gene's share as it is. Between E7.5 and E8.0 the per-gene shares inside one labelled cell type differ by more than
+# twofold for most panel genes, and those differences agree across cell types (target-free reading of the test pair),
+# as a run's per-gene detection does. Task 3 measures such a factor where the knockout cannot act and applies it to
+# every cell (experiments/t3_decomp, `gene_factor`); here it is measured on the extraembryonic cell types both
+# brackets label alike, where half a day of development changes least.
+SERIES_MIN_CELLS = 100  # cells a matched extraembryonic label needs in each bracket
+SERIES_EPS = 1e-5  # the T3 script's gene_factor settings (experiments/t3_decomp/rules.yaml, components.factor)
+SERIES_CLIP = (0.25, 4.0)
+SERIES_RULE = ("series: the shallower bracket's drawn cells are moved by a per-gene factor and then to the deeper "
+               "bracket's depth (RENDER_RULE, hi). The factor is the T3 script's gene_factor over the cell-type labels "
+               "that both brackets hold by name with at least SERIES_MIN_CELLS cells each and that are extraembryonic "
+               "(a name starting with EXE-, or the lineage group ExtraEmbryonicMeso): the ratio of the two brackets' "
+               "share-weighted mean within-cell panel proportions, weights the shallower bracket's label shares, eps "
+               "1e-5, rescaled so the weighted total proportion is unchanged, clipped to 0.25-4. It is applied in "
+               "count space (binomial thinning below 1, Poisson top-up from the cell's kNN-smoothed proportions above "
+               "1). The deeper bracket's cells stay as released")
+
+
+def series_labels(names_before, groups_before, names_after) -> list[str]:
+    """The matched extraembryonic labels of SERIES_RULE, sorted."""
+    nb, gb, na = (np.asarray(x).astype(str) for x in (names_before, groups_before, names_after))
+    out = []
+    for lab in sorted(set(nb) & set(na)):
+        if (nb == lab).sum() < SERIES_MIN_CELLS or (na == lab).sum() < SERIES_MIN_CELLS:
+            continue
+        groups, counts = np.unique(gb[nb == lab], return_counts=True)
+        if lab.startswith("EXE-") or groups[np.argmax(counts)] == "ExtraEmbryonicMeso":
+            out.append(str(lab))
+    return out
+
+
+def series_factor(C_from: sparse.csr_matrix, names_from, C_to: sparse.csr_matrix, names_to,
+                  labels: Sequence[str]) -> np.ndarray:
+    """The per-gene factor that moves `from` cells to the `to` bracket's profile: gene_factor of the T3 script over
+    `labels` (mean within-cell panel proportions per label, weights the from-bracket's label shares among them)."""
+    nf, nt = np.asarray(names_from).astype(str), np.asarray(names_to).astype(str)
+    if not len(labels):
+        raise ValueError("no matched extraembryonic label: the series factor is not defined")
+
+    def props(C, rows):
+        sub = sparse.csr_matrix(C[rows], dtype=np.float64)
+        tot = np.asarray(sub.sum(1)).ravel()
+        return np.asarray((sparse.diags(1.0 / np.maximum(tot, 1.0)) @ sub).mean(0)).ravel()
+
+    w = np.array([(nf == lab).sum() for lab in labels], dtype=np.float64)
+    w /= w.sum()
+    num = sum(wi * props(C_to, np.flatnonzero(nt == lab)) for wi, lab in zip(w, labels, strict=True))
+    den = sum(wi * props(C_from, np.flatnonzero(nf == lab)) for wi, lab in zip(w, labels, strict=True))
+    phi = (num + SERIES_EPS) / (den + SERIES_EPS)
+    phi = phi / (den @ phi / max(den.sum(), 1e-12))
+    return np.clip(phi, *SERIES_CLIP)
+
+
+def series_rendered_expression(before: ad.AnnData, after: ad.AnnData, interp: Interpolation, genes, t: float,
+                               seed) -> tuple[np.ndarray, dict]:
+    """The interpolation's cells with the shallower bracket's cells moved into the deeper bracket's run profile
+    (SERIES_RULE): expression (cells x genes, float32, log(1 + 1e4 c / N)) and a record. Needs obs["celltype"] and
+    obs["group"] on both brackets."""
+    from vec.core import apply_gene_factor
+
+    rng = np.random.default_rng(seed)
+    stages = (before, after)
+    parts = [_stage_counts(a, genes) for a in stages]
+    d = [float(np.median(p[2])) for p in parts]
+    lo, hi = (0, 1) if d[0] <= d[1] else (1, 0)
+    names = [np.asarray(a.obs["celltype"]).astype(str) for a in stages]
+    labels = series_labels(names[lo], np.asarray(stages[lo].obs["group"]).astype(str), names[hi])
+    phi = series_factor(parts[lo][1], names[lo], parts[hi][1], names[hi], labels)
+    ratio = d[hi] / d[lo]
+    out = np.empty((len(interp.rows), len(genes)), dtype=np.float32)
+    m_hi, m_lo = interp.stage == hi, interp.stage == lo
+    out[m_hi] = parts[hi][0][interp.rows[m_hi]]
+    rec = {"rule": SERIES_RULE, "t": float(t), "median_depth": {"before": d[0], "after": d[1]},
+           "moved": "before" if lo == 0 else "after", "labels": labels, "ratio": ratio,
+           "sd_log_factor": float(np.log(phi).std()), "genes_above_2x": int((np.abs(np.log(phi)) > np.log(2.0)).sum())}
+    if m_lo.any():
+        E, C, lib, other = parts[lo]
+        rows = interp.rows[m_lo]
+        S = _smoothed_props(E, C, lib, rows)  # expected panel counts per unit of library
+        P = S / np.maximum(S.sum(1, keepdims=True), 1e-12)  # the cell's smoothed proportions over the panel
+        C0 = np.asarray(C[rows].toarray(), dtype=np.int32)
+        C1 = apply_gene_factor(C0, phi, P, rng).astype(np.int64)
+        if ratio > 1.0:
+            Sp = S * phi
+            Sp *= (S.sum(1) / np.maximum(Sp.sum(1), 1e-12))[:, None]  # the moved profile at the cell's panel share
+            C1 = C1 + rng.poisson(Sp * ((ratio - 1.0) * lib[rows])[:, None])
+            oth = other[rows] + rng.poisson((ratio - 1.0) * other[rows])
+        else:
+            oth = other[rows]
+        Cn = sparse.csr_matrix(C1)
+        ln = np.asarray(Cn.sum(1)).ravel() + oth
+        out[m_lo] = _log_normalise(Cn, ln)
+        rec["rendered_median"] = float(np.median(ln))
     return out, rec
 
 

@@ -927,6 +927,8 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
         X, _ = t2_build.depth_matched_expression(before, after, res, g, frac, [ctx.seed, 7])
     elif expression == "blend":
         X, _ = t2_build.blend_expression(before, after, res, g, frac, [ctx.seed, 7])
+    elif expression == "series":  # try E24: the shallower bracket's cells in the deeper bracket's run profile
+        X, _ = t2_build.series_rendered_expression(before, after, res, g, frac, [ctx.seed, 7])
     elif expression in RENDER_EXPRESSIONS:  # tries E19a-E19c: every cell moved to one depth (t2_build.RENDER_RULE)
         X, _ = t2_build.depth_rendered_expression(before, after, res, g, frac, [ctx.seed, 7],
                                                   mode=RENDER_EXPRESSIONS[expression])
@@ -945,6 +947,26 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
 
 
 RENDER_EXPRESSIONS = {f"render_{m}": m for m in t2_build.RENDER_MODES}
+
+
+def _fgw_series(ctx: BuildContext) -> Stage:
+    """Embryo try E24: fgw's draws and positions; the shallower bracket's cells moved by the extraembryonic per-gene
+    factor and to the deeper bracket's depth (vec.t2_build.SERIES_RULE)."""
+    return _fgw(ctx, expression="series")
+
+
+def _series_applies(t: PseudoTask) -> bool:
+    return _interp(t)
+
+
+def _fgw_shape0_hi(ctx: BuildContext) -> Stage:
+    """Embryo try E24b: today's s2 geometry (the earlier bracket's, t_pos = 0) with the depth top-up of E19c."""
+    return _fgw(ctx, t_pos=0.0, expression="render_hi")
+
+
+def _fgw_shape0_series(ctx: BuildContext) -> Stage:
+    """Embryo try E24c: today's s2 geometry with the series rendering of E24a."""
+    return _fgw(ctx, t_pos=0.0, expression="series")
 
 
 def _fgw_render(mode: str) -> Callable[[BuildContext], Stage]:
@@ -1421,6 +1443,19 @@ CANDIDATES = {
                                     "predicted depth (log-linear between the brackets' median counts per cell; a "
                                     "shallower bracket kept as released)", "rule": t2_build.DEPTH_RULE,
                             "scope": "whole"}, requires=_interp),
+    # embryo try E24 (experiments/harness/TRIES.md, registered before its run): the later bracket's run profile
+    "fgw_series": Candidate("fgw_series", frozenset({"T2"}), (), _fgw_series,
+                            {"what": "fgw's draws and positions with the shallower bracket's cells moved by a per-gene "
+                                     "factor measured on the extraembryonic cell types both brackets label alike, then "
+                                     "to the deeper bracket's depth", "rule": t2_build.SERIES_RULE, "scope": "whole"},
+                            requires=_series_applies),
+    "fgw_shape0_hi": Candidate("fgw_shape0_hi", frozenset({"T2"}), (), _fgw_shape0_hi,
+                               {"what": "fgw_shape0 (the earlier bracket's geometry) with every cell at the deeper "
+                                        "bracket's depth: the shape cover of today's s2 and the depth top-up in one "
+                                        "file", "rule": t2_build.RENDER_RULE, "scope": "whole"}, requires=_interp),
+    "fgw_shape0_series": Candidate("fgw_shape0_series", frozenset({"T2"}), (), _fgw_shape0_series,
+                                   {"what": "fgw_shape0 (the earlier bracket's geometry) with the series rendering",
+                                    "rule": t2_build.SERIES_RULE, "scope": "whole"}, requires=_series_applies),
     # embryo try E23 (experiments/harness/TRIES.md, registered before its run): the later bracket's cells only
     "fgw_late": Candidate("fgw_late", frozenset({"T2"}), (), _fgw_late,
                           {"what": "fgw's coupling, moves and size rule with every cell drawn from the later bracket "

@@ -1382,7 +1382,11 @@ RULE_LITERALS = {"COUNT_RULE_SEEDS": {10.0}, "COUNT_RULE_MIN_GAIN": {0.3}, "COUN
                  "CFM_MIN_CELLS": {200.0},
                  # 2026-11-12, tries E19a-E19c (experiments/harness/TRIES.md): sizes of the depth rendering's
                  # neighbour profile (principal components and neighbours), set before their run, not values of a stage
-                 "RENDER_N_PC": {30.0}, "RENDER_K": {15.0}}
+                 "RENDER_N_PC": {30.0}, "RENDER_K": {15.0},
+                 # 2026-11-12, try E24 (the series rendering): the T3 script's gene_factor settings (rules.yaml,
+                 # components.factor: eps 1e-5; its clip, 0.25-4, is made of allowed literals) and the smallest
+                 # matched label, set before its run
+                 "SERIES_MIN_CELLS": {100.0}, "SERIES_EPS": {1e-5}}
 
 
 def _stray_literals(src: str) -> tuple[list[tuple[int, str]], set[str]]:
@@ -1821,6 +1825,65 @@ def test_depth_rendering_top_up_follows_the_cells_own_profile_and_refuses_an_unk
     assert rec["factor"]["before"] > 3 and off.mean() < 0.02
     with pytest.raises(ValueError, match="mode"):
         tb.depth_rendered_expression(before, after, res, panel, 0.5, seed=5, mode="deep")
+
+
+def _labelled_pair(rng):
+    """Two brackets whose cells are of two labelled kinds: an extraembryonic label both stages hold, and an embryonic
+    one. Between the stages every cell's genes 0-3 double and genes 4-7 halve (a run's per-gene factor); the embryonic
+    label also switches genes 8-11 on (development), which the series factor must not pick up."""
+    import pandas as pd
+
+    base = np.r_[np.ones(4), np.ones(4), np.full(4, 0.2), np.ones(3)]
+    run = np.r_[np.full(4, 2.0), np.full(4, 0.5), np.ones(4), np.ones(3)]
+    dev = np.r_[np.ones(8), np.full(4, 6.0), np.ones(3)]
+    parts_b, parts_a = [], []
+    for lab, grp, d in (("EXE-Endoderm", "Endoderm", np.ones(15)), ("SOM", "ParaxialMesoderm", dev)):
+        b, panel, _ = _counted(rng, 300, 40.0, profile=base)
+        a, _, _ = _counted(rng, 300, 200.0, profile=base * run * d)
+        for x in (b, a):
+            x.obs = pd.DataFrame({"celltype": [lab] * x.n_obs, "group": [grp] * x.n_obs}, index=x.obs_names)
+        parts_b.append(b)
+        parts_a.append(a)
+    before, after = ad.concat(parts_b), ad.concat(parts_a)
+    for x in (before, after):
+        x.obs_names_make_unique()
+    return before, after, panel
+
+
+def test_series_rendering_moves_the_shallower_bracket_by_the_extraembryonic_factor():
+    """Embryo try E24: the per-gene factor comes from the extraembryonic label both brackets hold, so it carries the
+    run's factor and not the embryonic label's own development; the deeper bracket's cells are untouched."""
+    rng = np.random.default_rng(61)
+    before, after, panel = _labelled_pair(rng)
+    assert tb.series_labels(before.obs["celltype"], before.obs["group"], after.obs["celltype"]) == ["EXE-Endoderm"]
+    Eb, Ea = (np.asarray(x[:, panel].X.toarray(), np.float32) for x in (before, after))
+    res = tb.interpolate_clouds(before.obsm[COORD_KEY], after.obsm[COORD_KEY], Eb, Ea, 0.5, 500, seed=3,
+                                target_rms=1.0, n_anchor=150, k=4)
+    X, rec = tb.series_rendered_expression(before, after, res, panel, 0.5, seed=[1, 7])
+    b, a = res.stage == 0, res.stage == 1
+    np.testing.assert_array_equal(X[a], Ea[res.rows[a]])  # the deeper bracket keeps its released rows
+    assert rec["moved"] == "before" and rec["labels"] == ["EXE-Endoderm"] and rec["ratio"] > 3
+    assert rec["rendered_median"] == pytest.approx(rec["median_depth"]["after"], rel=0.15)
+    c = np.expm1(X[b].astype(np.float64))
+    c0 = np.expm1(Eb[res.rows[b]].astype(np.float64))
+    up = (c[:, :4].sum(1) / c.sum(1)).mean() / (c0[:, :4].sum(1) / c0.sum(1)).mean()
+    down = (c[:, 4:8].sum(1) / c.sum(1)).mean() / (c0[:, 4:8].sum(1) / c0.sum(1)).mean()
+    assert up > 1.2 and down < 0.8  # the run's factor is applied (shares of the doubled genes rise, of the halved fall)
+    som = np.asarray(before.obs["celltype"])[res.rows[b]] == "SOM"
+    dev_share = (c[som][:, 8:12].sum(1) / c[som].sum(1)).mean() / (c0[som][:, 8:12].sum(1) / c0[som].sum(1)).mean()
+    assert dev_share < 1.5  # the embryonic label's sixfold switch is not carried over
+    assert np.isfinite(X).all() and (X >= 0).all() and ((X > 0).sum(1) >= 1).all()
+    X2, _ = tb.series_rendered_expression(before, after, res, panel, 0.5, seed=[1, 7])
+    np.testing.assert_array_equal(X, X2)
+    with pytest.raises(ValueError, match="no matched extraembryonic label"):
+        tb.series_factor(sparse_counts(before, panel), before.obs["celltype"], sparse_counts(after, panel),
+                         after.obs["celltype"], [])
+
+
+def sparse_counts(a, panel):
+    from scipy import sparse as sp
+
+    return sp.csr_matrix(a[:, panel].layers["counts"], dtype=np.int64)
 
 
 def test_thinning_never_adds_counts_and_keeps_integers():
