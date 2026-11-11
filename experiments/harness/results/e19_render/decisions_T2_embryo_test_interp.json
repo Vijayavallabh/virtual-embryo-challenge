@@ -1,0 +1,173 @@
+{
+ "board": "T2:embryo:test_interp",
+ "runs": "/mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/runs/harness/e19_render_20261111T211059Z",
+ "decisions": [
+  {
+   "base": "fgw",
+   "change": "fgw_render_mid",
+   "counted": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T2e/E7.25+E8.0->E7.5']",
+   "tasks": {
+    "T2e/E7.25+E8.0->E7.5": {
+     "complete": true,
+     "mean_gain": -1.6485094119919665,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    },
+    "T2e/E6.75+E7.5->E7.25": {
+     "complete": true,
+     "mean_gain": 0.4529434089618604,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 1,
+   "fit_checks": {}
+  },
+  {
+   "base": "fgw",
+   "change": "fgw_render_lo",
+   "counted": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T2e/E6.75+E7.5->E7.25', 'T2e/E7.25+E8.0->E7.5']",
+   "tasks": {
+    "T2e/E7.25+E8.0->E7.5": {
+     "complete": true,
+     "mean_gain": -7.072422815906014,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    },
+    "T2e/E6.75+E7.5->E7.25": {
+     "complete": true,
+     "mean_gain": -0.6279745888585232,
+     "seeds_ahead": 1,
+     "passes": false,
+     "vetoes": true
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  },
+  {
+   "base": "fgw",
+   "change": "fgw_render_hi",
+   "counted": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T2e/E6.75+E7.5->E7.25', 'T2e/E7.25+E8.0->E7.5']",
+   "tasks": {
+    "T2e/E7.25+E8.0->E7.5": {
+     "complete": true,
+     "mean_gain": -0.9495837246812989,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    },
+    "T2e/E6.75+E7.5->E7.25": {
+     "complete": true,
+     "mean_gain": -0.9362368399439284,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  }
+ ],
+ "summaries": {
+  "T2e/E6.75+E7.5->E7.25": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    53.26757396706354,
+    1.471194079501692
+   ],
+   "fgw": [
+    58.78119083140672,
+    2.2035357504971294
+   ],
+   "fgw_depth": [
+    59.51962302087651,
+    2.145985098295529
+   ],
+   "fgw_render_mid": [
+    59.234134240368576,
+    2.1868381713621705
+   ],
+   "fgw_render_lo": [
+    58.1532162425482,
+    2.127521217002458
+   ],
+   "fgw_render_hi": [
+    57.84495399146279,
+    2.276893549385234
+   ]
+  },
+  "T2e/E7.25+E8.0->E7.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    50.58057238864761,
+    0.8512907478747145
+   ],
+   "fgw": [
+    61.118858870634405,
+    0.834839073814499
+   ],
+   "fgw_depth": [
+    56.9419857597941,
+    0.9906634576564219
+   ],
+   "fgw_render_mid": [
+    59.47034945864243,
+    0.9899071181867167
+   ],
+   "fgw_render_lo": [
+    54.046436054728396,
+    0.9932752142005983
+   ],
+   "fgw_render_hi": [
+    60.16927514595311,
+    1.0370306230777184
+   ]
+  }
+ }
+}

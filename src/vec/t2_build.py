@@ -1544,7 +1544,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
                        emd_max_iter: int = INTERP_EMD_ITER, t_pos: float | None = None,
                        with_partners: bool = False, herd: bool = False, move_coupling: str = MOVE_COUPLINGS[0],
                        with_coupling: bool = False, draw: str = DRAWS[0],
-                       log_depth: tuple[np.ndarray, np.ndarray] | None = None) -> Interpolation:
+                       log_depth: tuple[np.ndarray, np.ndarray] | None = None,
+                       t_mix: float | None = None) -> Interpolation:
     """Displacement interpolation between two stages at time fraction t (0 = before, 1 = after).
 
     1. Each cloud is centred and divided by its RMS radius (no PCA axes, so no sign choice).
@@ -1580,6 +1581,10 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     frame position settles which side a partner is on. The draws, the mixture and every random stream are unchanged.
     with_coupling: also return the coupling's internals (`Interpolation.coupling`) for the target-free diagnostic.
 
+    t_mix (embryo try E23 of experiments/harness/TRIES.md; default: t): the later bracket's share of the drawn cells,
+    apart from t, which still sets the moves. 1 draws every cell from the after stage (at its moved position). Left
+    unset, the result is bit-identical to t_mix = t. Not with draw="midpoint".
+
     draw (embryo try E13 of experiments/harness/TRIES.md): "uniform" (default, the entry) draws the rows at random as
     above. "midpoint" keeps every cell real and at its own moved position and changes only which cells are drawn: within
     k-means strata of the joint PCs, cells near the local displacement midpoint along the local bracket axis are drawn
@@ -1596,6 +1601,11 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     tp = t if t_pos is None else float(t_pos)
     if not 0.0 <= tp <= 1.0:
         raise ValueError(f"t_pos must lie in [0, 1], got {t_pos}")
+    tm = t if t_mix is None else float(t_mix)
+    if not 0.0 <= tm <= 1.0:
+        raise ValueError(f"t_mix must lie in [0, 1], got {t_mix}")
+    if t_mix is not None and draw != DRAWS[0]:
+        raise ValueError("t_mix changes the uniform draw only")
     if move_coupling not in MOVE_COUPLINGS:
         raise ValueError(f"move_coupling must be one of {MOVE_COUPLINGS}, got {move_coupling!r}")
     if draw not in DRAWS:
@@ -1627,7 +1637,7 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     near_b, near_a = nearest_anchors(Zb, Zb[ib], k)[1], nearest_anchors(Za_b, Za_b[ia], k)[1]
     pos_b = Zb + tp * db[near_b].mean(1)
     pos_a = Za_b + (1.0 - tp) * da[near_a].mean(1)
-    n_b = int(round((1.0 - t) * n))
+    n_b = int(round((1.0 - tm) * n))
     n_a = n - n_b
     empty = np.array([], dtype=np.int64)
     rows_b = draw_balanced(len(Zb), n_b, np.random.default_rng([seed, 0])) if n_b else empty
@@ -1656,7 +1666,7 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     scale = target_rms / rms_radius(Z)
     coords = cb + (Z - zc) * scale
     pool = cb + (np.vstack([pos_b, pos_a]) - zc) * scale
-    weights = np.r_[np.full(len(Zb), (1.0 - t) / len(Zb)), np.full(len(Za), t / len(Za))]
+    weights = np.r_[np.full(len(Zb), (1.0 - tm) / len(Zb)), np.full(len(Za), tm / len(Za))]
     if midpoint is not None:
         weights = midpoint["pool_weights"]
     _, first = np.unique(coords.astype(np.float32), axis=0, return_index=True)
@@ -1666,7 +1676,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         coords[dup] += _ball_shifts(int(dup.sum()), JITTER_NN_FRAC * median_nn_distance(coords),
                                     np.random.default_rng([seed, 3]))
     angle = float(np.degrees(np.arccos(np.clip((np.trace(R) - 1.0) / 2.0, -1.0, 1.0))))
-    record = {"t": float(t), "t_pos": float(tp), "n": n, "n_before": n_b, "n_after": n_a, "alpha": float(alpha),
+    record = {"t": float(t), "t_pos": float(tp), "t_mix": float(tm), "n": n, "n_before": n_b, "n_after": n_a,
+              "alpha": float(alpha),
               "n_anchor": [len(ib), len(ia)], "n_pc": int(Fb.shape[1]), "k": int(k), "max_iter": int(max_iter),
               "rotation_deg": angle,
               "coupling_nonzero": int((T > 0).sum()), "target_rms": float(target_rms),

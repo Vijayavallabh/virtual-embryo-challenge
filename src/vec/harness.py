@@ -893,7 +893,7 @@ def _psb_size(ctx: BuildContext) -> Stage:
 
 def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixture", herd: bool = False,
          move_coupling: str = t2_build.MOVE_COUPLINGS[0], local_perm: bool = False,
-         draw: str = t2_build.DRAWS[0]) -> Stage:
+         draw: str = t2_build.DRAWS[0], t_mix: float | None = None) -> Stage:
     """The T2 embryo pipeline (docs/PLAN.md 4.2): displacement interpolation between the brackets at the target's
     time fraction (vec.t2_build.interpolate_clouds: fused Gromov-Wasserstein coupling, proper rotation, McCann moves,
     a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages. t_pos:
@@ -919,7 +919,7 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
                                       target_rms=target_rms(ctx), t_pos=t_pos,
                                       with_partners=expression in ("blend", "latent"),
                                       herd=herd, move_coupling=move_coupling, draw=draw, log_depth=log_depth,
-                                      with_coupling=expression == "latent")
+                                      with_coupling=expression == "latent", t_mix=t_mix)
     if expression == "mixture":
         X = np.empty((len(res.rows), len(g)), dtype=np.float32)
         X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
@@ -950,6 +950,11 @@ RENDER_EXPRESSIONS = {f"render_{m}": m for m in t2_build.RENDER_MODES}
 def _fgw_render(mode: str) -> Callable[[BuildContext], Stage]:
     """Embryo tries E19a (mid), E19b (lo) and E19c (hi): fgw's draws and positions, every cell moved to one depth."""
     return lambda ctx: _fgw(ctx, expression=f"render_{mode}")
+
+
+def _fgw_late(ctx: BuildContext) -> Stage:
+    """Embryo try E23: fgw's coupling, moves and size, every cell drawn from the later bracket (t_mix = 1)."""
+    return _fgw(ctx, t_mix=1.0)
 
 
 def _fgw_shape0(ctx: BuildContext) -> Stage:
@@ -1416,6 +1421,11 @@ CANDIDATES = {
                                     "predicted depth (log-linear between the brackets' median counts per cell; a "
                                     "shallower bracket kept as released)", "rule": t2_build.DEPTH_RULE,
                             "scope": "whole"}, requires=_interp),
+    # embryo try E23 (experiments/harness/TRIES.md, registered before its run): the later bracket's cells only
+    "fgw_late": Candidate("fgw_late", frozenset({"T2"}), (), _fgw_late,
+                          {"what": "fgw's coupling, moves and size rule with every cell drawn from the later bracket "
+                                   "(t_mix = 1): the same-series bracket alone, at its moved positions",
+                           "scope": "whole"}, requires=_interp),
     # embryo tries E19a-E19c (experiments/harness/TRIES.md, registered before their run): one depth for every cell
     **{f"fgw_render_{m}": Candidate(f"fgw_render_{m}", frozenset({"T2"}), (), _fgw_render(m),
                                     {"what": "fgw's draws and positions with every cell moved to one depth: the "

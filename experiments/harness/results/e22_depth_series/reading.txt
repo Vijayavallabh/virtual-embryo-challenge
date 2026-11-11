@@ -1,0 +1,12 @@
+Tries E22a and E22b (commit 8e578f64db7a8917bec294e044dc6c4a253fc86d): no recommendation: s2 stays fgw_shape0
+rule: on both tasks, mean H > 1.0, mean D > 0.3, D > 0 in at least 8 of 10 seeds and at least 50% of H on cell_state; H = fgw_render_hi - fgw, D = max(fgw, fgw_render_hi) - max(fgw, fgw_shape0)
+T2e/E7.5+E8.5->E8.0 (does not pass): floor 50.00, fgw 65.99, fgw_shape0 66.74, fgw_render_hi 69.85, fgw_render_mid 65.51
+  H +3.86 (sd 0.22, ahead 10 of 10), on cell_state +1.82 (share 0.47); mid - fgw -0.48; shape0 - fgw +0.75
+  better of fgw and hi 69.85; of fgw and shape0 66.74; D +3.11, ahead 10 of 10
+  cell-state skill (0.6 mmd_u + 0.4 variogram): fgw 0.700, fgw_render_mid 0.688, fgw_render_hi 0.773; dose ordered: False
+  skills: fgw: de_score 0.668, de_direction 0.768, mmd_u 0.695, variogram 0.709, d2_shape 0.554, occupancy_dice 0.579, scale_log_ratio 0.574, neighborhood_mmd 0.652; fgw_render_hi: de_score 0.686, de_direction 0.770, mmd_u 0.768, variogram 0.781, d2_shape 0.554, occupancy_dice 0.579, scale_log_ratio 0.574, neighborhood_mmd 0.724; fgw_render_mid: de_score 0.685, de_direction 0.767, mmd_u 0.686, variogram 0.692, d2_shape 0.554, occupancy_dice 0.579, scale_log_ratio 0.574, neighborhood_mmd 0.637; fgw_shape0: de_score 0.668, de_direction 0.768, mmd_u 0.695, variogram 0.709, d2_shape 0.624, occupancy_dice 0.550, scale_log_ratio 0.574, neighborhood_mmd 0.669
+T2e/E7.5+E8.25_late->E8.0 (passes): floor 50.00, fgw 80.53, fgw_shape0 80.25, fgw_render_hi 82.07, fgw_render_mid 79.41
+  H +1.55 (sd 0.37, ahead 10 of 10), on cell_state +1.08 (share 0.70); mid - fgw -1.12; shape0 - fgw -0.28
+  better of fgw and hi 82.07; of fgw and shape0 81.24; D +0.83, ahead 8 of 10
+  cell-state skill (0.6 mmd_u + 0.4 variogram): fgw 0.857, fgw_render_mid 0.843, fgw_render_hi 0.900; dose ordered: False
+  skills: fgw: de_score 0.833, de_direction 0.925, mmd_u 0.850, variogram 0.868, d2_shape 0.624, occupancy_dice 0.528, scale_log_ratio 0.793, neighborhood_mmd 0.837; fgw_render_hi: de_score 0.806, de_direction 0.891, mmd_u 0.900, variogram 0.900, d2_shape 0.624, occupancy_dice 0.528, scale_log_ratio 0.793, neighborhood_mmd 0.886; fgw_render_mid: de_score 0.833, de_direction 0.911, mmd_u 0.840, variogram 0.846, d2_shape 0.624, occupancy_dice 0.528, scale_log_ratio 0.793, neighborhood_mmd 0.813; fgw_shape0: de_score 0.833, de_direction 0.925, mmd_u 0.850, variogram 0.868, d2_shape 0.577, occupancy_dice 0.526, scale_log_ratio 0.793, neighborhood_mmd 0.842

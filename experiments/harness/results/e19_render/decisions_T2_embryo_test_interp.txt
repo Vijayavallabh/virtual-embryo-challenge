@@ -1,0 +1,12 @@
+T2:embryo:test_interp: 2 pseudo-task(s) in /mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/runs/harness/e19_render_20261111T211059Z (protocol bake, build main, anchors computed, seeds [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  T2e/E6.75+E7.5->E7.25 on pseudo:T2e/E6.75+E7.5->E7.25: floor 50.00 +/- 0.00; copy 53.27 +/- 1.47; fgw 58.78 +/- 2.20; fgw_depth 59.52 +/- 2.15; fgw_render_mid 59.23 +/- 2.19; fgw_render_lo 58.15 +/- 2.13; fgw_render_hi 57.84 +/- 2.28 (commit 66ac2f4, clean True)
+  T2e/E7.25+E8.0->E7.5 on T2:embryo:val_interp: floor 50.00 +/- 0.00; copy 50.58 +/- 0.85; fgw 61.12 +/- 0.83; fgw_depth 56.94 +/- 0.99; fgw_render_mid 59.47 +/- 0.99; fgw_render_lo 54.05 +/- 0.99; fgw_render_hi 60.17 +/- 1.04 (commit 66ac2f4, clean True)
+fgw_render_mid against fgw: not kept (loses more than 0.3 points on average on ['T2e/E7.25+E8.0->E7.5']; decided on 2 of 2 configured pseudo-tasks; not counted: none)
+    T2e/E7.25+E8.0->E7.5: paired mean gain -1.65, ahead in 0 of 10 seeds, passes False, vetoes True
+    T2e/E6.75+E7.5->E7.25: paired mean gain +0.45, ahead in 10 of 10 seeds, passes True, vetoes False
+fgw_render_lo against fgw: not kept (loses more than 0.3 points on average on ['T2e/E6.75+E7.5->E7.25', 'T2e/E7.25+E8.0->E7.5']; decided on 2 of 2 configured pseudo-tasks; not counted: none)
+    T2e/E7.25+E8.0->E7.5: paired mean gain -7.07, ahead in 0 of 10 seeds, passes False, vetoes True
+    T2e/E6.75+E7.5->E7.25: paired mean gain -0.63, ahead in 1 of 10 seeds, passes False, vetoes True
+fgw_render_hi against fgw: not kept (loses more than 0.3 points on average on ['T2e/E6.75+E7.5->E7.25', 'T2e/E7.25+E8.0->E7.5']; decided on 2 of 2 configured pseudo-tasks; not counted: none)
+    T2e/E7.25+E8.0->E7.5: paired mean gain -0.95, ahead in 0 of 10 seeds, passes False, vetoes True
+    T2e/E6.75+E7.5->E7.25: paired mean gain -0.94, ahead in 0 of 10 seeds, passes False, vetoes True

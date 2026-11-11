@@ -1,0 +1,10 @@
+E14's smoke abort (fgw_latent against fgw, seeds 0 and 1 of the E7.5 backtest): CONTINUE
+Rule (row E14): the try stops if fgw_latent's mmd_u or variogram skill is, on average over seeds 0 and 1 of the E7.5
+backtest, more than 0.05 below fgw's. An aborted run still counts as the try.
+
+  mmd_u      skill difference (fgw_latent - fgw) per seed +0.0045, +0.0073; mean +0.0059: ok
+  variogram  skill difference (fgw_latent - fgw) per seed -0.0134, -0.0047; mean -0.0091: ok
+
+Run T2e_E7.25_E8.0_E7.5.json sha256 66870d23c844ee2b089ae520ca6670e9c50d1a4e143201fb2c94aa9702085295, commit b4a6c38b6cecd5327946c7ee6aac568d6611988c, tree clean True
+This check: commit 8e578f64db7a8917bec294e044dc6c4a253fc86d, tree clean True, UTC 2026-11-11T21:49:03Z
+verdict: continue

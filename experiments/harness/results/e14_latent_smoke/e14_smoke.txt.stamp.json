@@ -1,0 +1,20 @@
+{
+ "version": 1,
+ "file": "e14_smoke.txt",
+ "sha256": "056c5d374b3f4d580d56516534fe9d9d3b564ed01ea2d022e0342a54280c6d9b",
+ "size": 760,
+ "commit": "8e578f64db7a8917bec294e044dc6c4a253fc86d",
+ "clean": true,
+ "why": null,
+ "unclean": [],
+ "unclean_count": 0,
+ "start_commit": "8e578f64db7a8917bec294e044dc6c4a253fc86d",
+ "started_utc": "2026-11-11T21:49:03+00:00",
+ "created_utc": "2026-11-11T21:49:03+00:00",
+ "hostname": "cessa-G242-Z11-00",
+ "argv": [
+  "experiments/harness/e14_smoke.py",
+  "--run",
+  "runs/harness/e21_latent_20261111T212811Z_smoke"
+ ]
+}

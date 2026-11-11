@@ -1379,7 +1379,10 @@ RULE_LITERALS = {"COUNT_RULE_SEEDS": {10.0}, "COUNT_RULE_MIN_GAIN": {0.3}, "COUN
                  "MIDPOINT_STREAMS": {8.0, 9.0},
                  # 2026-11-09, try H6 (experiments/harness/TRIES.md): the smallest lineage the covariance filter acts
                  # on, a fixed setting, not a value of a stage
-                 "CFM_MIN_CELLS": {200.0}}
+                 "CFM_MIN_CELLS": {200.0},
+                 # 2026-11-12, tries E19a-E19c (experiments/harness/TRIES.md): sizes of the depth rendering's
+                 # neighbour profile (principal components and neighbours), set before their run, not values of a stage
+                 "RENDER_N_PC": {30.0}, "RENDER_K": {15.0}}
 
 
 def _stray_literals(src: str) -> tuple[list[tuple[int, str]], set[str]]:
@@ -1734,6 +1737,25 @@ def test_depth_matching_thins_only_the_deeper_bracket_to_the_predicted_depth():
     if rec2["factor"]["before"] == 1.0 and rec2["factor"]["after"] == 1.0:
         np.testing.assert_array_equal(X2, mix2)
     assert min(rec2["factor"].values()) > 0.9
+
+
+def test_t_mix_changes_only_the_brackets_shares_and_defaults_to_t():
+    """Embryo try E23: t_mix sets the later bracket's share of the drawn cells apart from t, which still sets the
+    moves. Unset, the result is the entry's, bit for bit; at 1 every cell comes from the after stage."""
+    rng = np.random.default_rng(51)
+    before, after, panel, res, _ = _interp_pair(rng, 40.0, 200.0)
+    Eb, Ea = (np.asarray(x[:, panel].X.toarray(), np.float32) for x in (before, after))
+    kw = dict(seed=3, target_rms=1.0, n_anchor=150, k=4)
+    same = tb.interpolate_clouds(before.obsm[COORD_KEY], after.obsm[COORD_KEY], Eb, Ea, 0.5, 500, t_mix=0.5, **kw)
+    for f in ("stage", "rows", "coords", "pool_coords", "pool_weights"):
+        np.testing.assert_array_equal(getattr(res, f), getattr(same, f))
+    late = tb.interpolate_clouds(before.obsm[COORD_KEY], after.obsm[COORD_KEY], Eb, Ea, 0.5, 500, t_mix=1.0, **kw)
+    assert (late.stage == 1).all() and late.record["n_before"] == 0 and late.record["t_mix"] == 1.0
+    assert late.record["t"] == 0.5 and late.record["t_pos"] == 0.5  # the moves are still the half-way moves
+    assert late.pool_weights[: before.n_obs].sum() == 0.0 and late.pool_weights.sum() == pytest.approx(1.0)
+    assert tb.rms_radius(late.coords) == pytest.approx(1.0, rel=1e-6)
+    with pytest.raises(ValueError, match="t_mix"):
+        tb.interpolate_clouds(before.obsm[COORD_KEY], after.obsm[COORD_KEY], Eb, Ea, 0.5, 500, t_mix=1.5, **kw)
 
 
 def _implied_library(X, C):
