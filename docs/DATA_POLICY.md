@@ -828,3 +828,30 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   open the agents' transcripts or the run's journal; deleting them is the captain's call. The exception of (a) is spent:
   nothing from the page is used, and a second read needs a new ruling.
 - 2026-11-12: Open questions: the floored-severity question is noted as public, posted on 2026-11-12.
+- 2026-11-12 (b), process notes from the campaign's first workflow (wf_2e6a3eb6-db4; `docs/PLAN.md` decision log
+  2026-11-12 (a)) and its devil's-advocate review, from the agents' own reports; written by the AI assistant. The main
+  session opened no raw research note and no agent transcript.
+  - **What ran.** Four board analysts read committed files only and changed nothing. Four researchers used the web
+    under a brief that quoted this file's Removed and Kept list and barred the challenge site, veckit on PyPI and its
+    pull request 6, Yukon and other participants' material. A screening agent built the released text from their raw
+    notes; a second agent counter-reviewed and audited it. The released text is
+    `experiments/research_2026_11_runs/REPORT.md`. The raw notes sat in the session's scratch folder and are not kept.
+  - **Removed by the screen, by class:** hidden-target 3, in-window measurement 1, leaderboard 0, gene-level knockout
+    0. All four were removed under the doubt rule; none was an unambiguous banned item. The auditor deleted nothing
+    more. The researchers report three banned items met and not recorded (one hidden-target item in a source, one
+    in-window item on a page left unopened, one search listing naming a benchmark inside a barred window).
+  - **Slips.** (1) After an HTTP 403 on one paper a researcher tried a second host, which answered HTTP 500; nothing
+    was read from either. The brief said not to work around a 403, so this is a slip against the brief; this file's
+    403 rule itself concerns the board file and the board endpoints. (2) Another researcher read public copies of five
+    papers after a block that was not a 403, and two papers were read from a mirror or from PMC after a refused
+    connection or a sign-in redirect. Reading a paper's public copy breaks no rule here; the figures are kept and the
+    report flags them. (3) The fetch tool saved copies into the harness's store by itself; the agents report opening
+    none. (4) One researcher read the pinned scorer's function bodies with the docstrings stripped, as the rule on
+    that file allows, and computed no metric.
+  - **The devil's-advocate agent** got the claim, its evidence and the project's rules, and nothing of the
+    conversation. It read committed files (the ledger, the plan's decision log, result files) and reported no other
+    access.
+  - **Competition data on the local machine.** The fifteen released files and the filtered external data were copied
+    from the DGX to this machine's `data/` on 2026-11-12 for the campaign, with owner-only permissions; the released
+    files were checked against `data/raw/SHA256SUMS`. Nothing was copied anywhere else, and the team API key was not
+    involved.
