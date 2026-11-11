@@ -1736,6 +1736,71 @@ def test_depth_matching_thins_only_the_deeper_bracket_to_the_predicted_depth():
     assert min(rec2["factor"].values()) > 0.9
 
 
+def _implied_library(X, C):
+    """Median library size the released form implies for rows whose first panel gene is detected: 1e4 c / expm1(x)."""
+    x, c = np.asarray(X, np.float64)[:, 0], np.asarray(C, np.float64)[:, 0]
+    m = (x > 0) & (c > 0)
+    return float(np.median(1e4 * c[m] / np.expm1(x[m])))
+
+
+@pytest.mark.parametrize("mode", tb.RENDER_MODES)
+def test_depth_rendering_moves_every_bracket_to_one_depth(mode):
+    """Embryo tries E19a-E19c: mid renders both brackets to the log-linear depth, lo thins the deeper bracket to the
+    shallower one's depth and hi tops the shallower one up to the deeper one's; a bracket already there is untouched."""
+    rng = np.random.default_rng(41)
+    before, after, panel, res, mix = _interp_pair(rng, 40.0, 200.0)
+    X, rec = tb.depth_rendered_expression(before, after, res, panel, 0.5, seed=[1, 7], mode=mode)
+    b, a = res.stage == 0, res.stage == 1
+    d = rec["median_depth"]
+    want = {"mid": np.sqrt(d["before"] * d["after"]), "lo": d["before"], "hi": d["after"]}[mode]
+    assert rec["target"] == pytest.approx(want)
+    assert np.isfinite(X).all() and (X >= 0).all() and X.max() <= np.log1p(1e4) + 1e-4
+    assert ((X > 0).sum(1) >= 1).all()  # no cell is left without a panel count
+    # each bracket's rendered median library size sits at the target (Poisson and binomial noise only)
+    for name in ("before", "after"):
+        assert rec["rendered_median"][name] == pytest.approx(want, rel=0.12)
+    if mode == "lo":  # the shallower bracket keeps its released rows; the deeper one loses detected genes
+        np.testing.assert_array_equal(X[b], mix[b])
+        assert rec["topped_up"] == {"before": 0, "after": 0} and rec["thinned"]["after"] == int(a.sum())
+        assert (X[a] > 0).sum(1).mean() < (mix[a] > 0).sum(1).mean()
+    if mode == "hi":  # the deeper bracket keeps its released rows; the shallower one gains detected genes
+        np.testing.assert_array_equal(X[a], mix[a])
+        assert rec["thinned"] == {"before": 0, "after": 0} and rec["topped_up"]["before"] == int(b.sum())
+        assert (X[b] > 0).sum(1).mean() > (mix[b] > 0).sum(1).mean()
+    if mode == "mid":  # both move, in opposite directions
+        assert rec["topped_up"]["before"] == int(b.sum()) and rec["thinned"]["after"] == int(a.sum())
+        assert (X[b] > 0).sum(1).mean() > (mix[b] > 0).sum(1).mean()
+        assert (X[a] > 0).sum(1).mean() < (mix[a] > 0).sum(1).mean()
+    # the draws and positions are fgw's: only the expression step differs, and it is reproducible from its seed
+    X2, _ = tb.depth_rendered_expression(before, after, res, panel, 0.5, seed=[1, 7], mode=mode)
+    np.testing.assert_array_equal(X, X2)
+
+
+def test_depth_rendering_top_up_follows_the_cells_own_profile_and_refuses_an_unknown_mode():
+    """A topped-up cell's added counts follow its neighbours' proportions: genes its state does not express stay near
+    zero. Two states with disjoint panel genes must not leak counts into each other."""
+    rng = np.random.default_rng(42)
+    pa = np.r_[np.ones(6), np.full(6, 1e-9), np.ones(3)]
+    pb = np.r_[np.full(6, 1e-9), np.ones(6), np.ones(3)]
+    s1, panel, _ = _counted(rng, 300, 40.0, profile=pa)
+    s2, _, _ = _counted(rng, 300, 40.0, profile=pb)
+    before = ad.concat([s1, s2])
+    before.obs_names_make_unique()
+    after, _, _ = _counted(rng, 600, 200.0, profile=(pa + pb) / 2)
+    Eb, Ea = (np.asarray(x[:, panel].X.toarray(), np.float32) for x in (before, after))
+    res = tb.interpolate_clouds(before.obsm[COORD_KEY], after.obsm[COORD_KEY], Eb, Ea, 0.5, 500, seed=3,
+                                target_rms=1.0, n_anchor=150, k=4)
+    X, rec = tb.depth_rendered_expression(before, after, res, panel, 0.5, seed=5, mode="hi")
+    b = res.stage == 0
+    rows = res.rows[b]
+    first = rows < 300  # cells of the first state: genes 6-11 must stay almost empty after the top-up
+    c = np.expm1(X[b].astype(np.float64))
+    off = np.where(first, c[:, 6:12].sum(1), c[:, :6].sum(1)) / c.sum(1)
+    assert rec["factor"]["before"] > 3 and off.mean() < 0.02
+    with pytest.raises(ValueError, match="mode"):
+        tb.depth_rendered_expression(before, after, res, panel, 0.5, seed=5, mode="deep")
+
+
 def test_thinning_never_adds_counts_and_keeps_integers():
     rng = np.random.default_rng(33)
     from scipy import sparse as sp

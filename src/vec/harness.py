@@ -927,6 +927,9 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
         X, _ = t2_build.depth_matched_expression(before, after, res, g, frac, [ctx.seed, 7])
     elif expression == "blend":
         X, _ = t2_build.blend_expression(before, after, res, g, frac, [ctx.seed, 7])
+    elif expression in RENDER_EXPRESSIONS:  # tries E19a-E19c: every cell moved to one depth (t2_build.RENDER_RULE)
+        X, _ = t2_build.depth_rendered_expression(before, after, res, g, frac, [ctx.seed, 7],
+                                                  mode=RENDER_EXPRESSIONS[expression])
     elif expression == "latent":  # try E14: t2_latent loads torch and scvi-tools only when it trains
         from vec import t2_latent
 
@@ -939,6 +942,14 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
         coords = coords[nbhd_rearrangement(coords, t2_build.drawn_labels(res, before.obs["group"], after.obs["group"]),
                                            ctx.seed)]
     return finish(ctx, before, X, coords, guard_source=res.pool_coords, guard_weights=res.pool_weights)
+
+
+RENDER_EXPRESSIONS = {f"render_{m}": m for m in t2_build.RENDER_MODES}
+
+
+def _fgw_render(mode: str) -> Callable[[BuildContext], Stage]:
+    """Embryo tries E19a (mid), E19b (lo) and E19c (hi): fgw's draws and positions, every cell moved to one depth."""
+    return lambda ctx: _fgw(ctx, expression=f"render_{mode}")
 
 
 def _fgw_shape0(ctx: BuildContext) -> Stage:
@@ -1405,6 +1416,12 @@ CANDIDATES = {
                                     "predicted depth (log-linear between the brackets' median counts per cell; a "
                                     "shallower bracket kept as released)", "rule": t2_build.DEPTH_RULE,
                             "scope": "whole"}, requires=_interp),
+    # embryo tries E19a-E19c (experiments/harness/TRIES.md, registered before their run): one depth for every cell
+    **{f"fgw_render_{m}": Candidate(f"fgw_render_{m}", frozenset({"T2"}), (), _fgw_render(m),
+                                    {"what": "fgw's draws and positions with every cell moved to one depth: the "
+                                             "deeper bracket thinned, the shallower topped up from kNN-smoothed "
+                                             "profiles", "mode": m, "rule": t2_build.RENDER_RULE, "scope": "whole"},
+                                    requires=_interp) for m in t2_build.RENDER_MODES},
     "fgw_blend": Candidate("fgw_blend", frozenset({"T2"}), (), _fgw_blend,
                            {"what": "fgw's cells as binomial blends of each cell and a coupled partner of the other "
                                     "bracket, splitting the expected counts (1 - t) : t at the predicted depth",

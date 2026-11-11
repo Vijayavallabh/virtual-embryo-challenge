@@ -1841,6 +1841,83 @@ def depth_matched_expression(before: ad.AnnData, after: ad.AnnData, interp: Inte
     return out, rec
 
 
+# Depth rendering of the interpolation's cells (2026-11-12; embryo tries E19a-E19c, experiments/harness/TRIES.md,
+# registered before their run). DEPTH_RULE only thins the deeper bracket, which pulls the population's average log
+# depth below the target's (try E7). Here every drawn cell is moved to one depth, down by thinning or up by a top-up.
+RENDER_MODES = ("mid", "lo", "hi")
+RENDER_N_PC = 30  # principal components of a bracket's log1p panel expression that define its cells' neighbours
+RENDER_K = 15  # neighbours, the cell itself included, whose proportions give a cell's expected profile for a top-up
+RENDER_RULE = ("depth render: every drawn cell of a bracket is moved by the bracket's ratio target / d, d = the "
+               "bracket's median counts per cell over all its cells. The target is DEPTH_RULE's log-linear depth "
+               "(mid), the shallower bracket's median (lo) or the deeper bracket's median (hi). A ratio below 1 thins "
+               "the cell binomially, as DEPTH_RULE does. A ratio above 1 adds Poisson counts with mean (ratio - 1) x "
+               f"the cell's library size x the mean proportions of its {RENDER_K} nearest cells of its own bracket "
+               f"(itself included; {RENDER_N_PC} principal components of the bracket's log1p panel expression), and "
+               "adds Poisson((ratio - 1) x n) to its n counts outside the panel. A ratio of 1 leaves the rows as "
+               "released")
+
+
+def _smoothed_props(E: np.ndarray, C: sparse.csr_matrix, lib: np.ndarray, rows: np.ndarray) -> np.ndarray:
+    """For each of `rows`, the mean over its RENDER_K nearest cells of the bracket (itself included, Euclidean in the
+    first RENDER_N_PC principal components of the bracket's log1p panel expression E) of panel counts / library size:
+    the expected panel proportions a top-up draws from. Dense float64, rows x genes."""
+    from sklearn.decomposition import PCA
+    from sklearn.neighbors import NearestNeighbors
+
+    n_pc = int(min(RENDER_N_PC, E.shape[0] - 1, E.shape[1]))
+    Z = PCA(n_components=n_pc, svd_solver="full").fit_transform(np.asarray(E, dtype=np.float64))
+    k = int(min(RENDER_K, E.shape[0]))
+    nn = NearestNeighbors(n_neighbors=k).fit(Z).kneighbors(Z[rows], return_distance=False)
+    P = sparse.diags(1.0 / np.asarray(lib, dtype=np.float64)) @ sparse.csr_matrix(C, dtype=np.float64)
+    A = sparse.csr_matrix((np.full(nn.size, 1.0 / k), nn.ravel(), np.arange(0, nn.size + 1, k)),
+                          shape=(len(rows), E.shape[0]))
+    return np.asarray((A @ P).toarray(), dtype=np.float64)
+
+
+def depth_rendered_expression(before: ad.AnnData, after: ad.AnnData, interp: Interpolation, genes, t: float, seed,
+                              mode: str) -> tuple[np.ndarray, dict]:
+    """The interpolation's cells with every bracket's cells moved to one depth (RENDER_RULE): expression (cells x
+    genes, float32, log(1 + 1e4 c / N)) and a record. mode: "mid", "lo" or "hi" (RENDER_MODES)."""
+    if mode not in RENDER_MODES:
+        raise ValueError(f"mode must be one of {RENDER_MODES}, got {mode!r}")
+    rng = np.random.default_rng(seed)
+    parts = [_stage_counts(a, genes) for a in (before, after)]
+    d = [float(np.median(p[2])) for p in parts]
+    target = {"mid": depth_target(d[0], d[1], t), "lo": min(d), "hi": max(d)}[mode]
+    out = np.empty((len(interp.rows), len(genes)), dtype=np.float32)
+    rec = {"rule": RENDER_RULE, "mode": mode, "t": float(t), "median_depth": {"before": d[0], "after": d[1]},
+           "target": target, "factor": {}, "thinned": {}, "topped_up": {}, "retried": {}, "rendered_median": {}}
+    for s, name in ((0, "before"), (1, "after")):
+        m = interp.stage == s
+        E, C, lib, other = parts[s]
+        f = target / d[s]
+        rows = interp.rows[m]
+        rec["factor"][name] = f
+        rec["thinned"][name], rec["topped_up"][name], rec["retried"][name] = 0, 0, 0
+        rec["rendered_median"][name] = float(np.median(lib[rows])) if m.any() else None
+        if not m.any() or f == 1.0:
+            out[m] = E[rows]
+            continue
+        if f < 1.0:
+            w = np.full(len(rows), f)
+
+            def make(idx, g, C=C, other=other, rows=rows, w=w):
+                Cn, on = _binomial_rows(C[rows[idx]], other[rows[idx]], w[idx], g)
+                return Cn, np.asarray(Cn.sum(1)).ravel() + on
+
+            Cn, ln, retried = _keep_some_counts(make, len(rows), rng)
+            rec["thinned"][name], rec["retried"][name] = int(m.sum()), retried
+        else:
+            S = _smoothed_props(E, C, lib, rows)
+            add = rng.poisson(S * ((f - 1.0) * lib[rows])[:, None])
+            Cn = sparse.csr_matrix(np.asarray(C[rows].toarray(), dtype=np.int64) + add)
+            ln = np.asarray(Cn.sum(1)).ravel() + other[rows] + rng.poisson((f - 1.0) * other[rows])
+            rec["topped_up"][name] = int(m.sum())
+        out[m] = _log_normalise(Cn, ln)
+        rec["rendered_median"][name] = float(np.median(ln))
+    return out, rec
+
+
 # Detection depth of an extrapolated stage (2026-11-03; heart try H3, experiments/harness/TRIES.md, registered before
 # its run). Counts per cell fall steadily through heart development in the released series (median counts per cell:
 # E8.25_late 233, E8.5 166, E8.75 130, E9.5 75, E10.5 56).
