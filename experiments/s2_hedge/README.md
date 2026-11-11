@@ -239,6 +239,24 @@ Run these from the repo root. The same heart command reproduces `heart_scope_e82
 `experiments/s2_hedge/results/per_seed/heart-scope-e825/*` and `.../heart-scope-e875/*` as the runs and the matching `--out`.
 `summarise` and `step5` take the same run folders.
 
+## The Task 1 statement rule (`statement_rule.py`, `results/t1_grid/statement_rule.*`; 2026-11-11)
+
+Prices the rule fixed before the screened read of the organisers' Task 1 page statement (`docs/PLAN.md` decision log
+2026-11-11 (c)), on the committed per-seed T1 grid above: if the statement gave a mix's shares, the pair the rule leaves
+against today's pair (s1 `bown_cown`, s2 `bown_c0.6`), the better of two paired by seed. Gains, uniform over the 15
+mixes / a third on own / blood at its own share:
+
+| Statement gives | Rule | Gain |
+|---|---|---|
+| cardiomyocyte share (exact conversion) | the nearer upload moves to it | +0.51 / +0.36 / +0.53 |
+| cardiomyocyte share of all cells, blood unstated (snapped to the grid) | as above, converted with E10.5's own blood | +0.38 / +0.27 / +0.53 |
+| blood share | both uploads move to it | +2.30 / +1.64 / 0.00 |
+| both | both take the blood share, the nearer one the cardiomyocyte share | +2.90 / +2.08 / +0.53 |
+| not taken: cardiomyocyte share, s2 blood at 40% | both move to it, s2 with blood 40% | +1.95 / +1.39 / +0.53 |
+
+Blood 0 and one-sided bounds lie off the grid and are unpriced. Outcome: the read found no such statement, so nothing
+changed (decision log 2026-11-11 (d)). Reproduce from the repo root: `python -I -B experiments/s2_hedge/statement_rule.py`.
+
 ## Per-set marks (`bundle_sim.py`, `results/bundle_sim/`)
 
 What the s2 set gains if one final mark covers a whole set of boards instead of each board. These are exact

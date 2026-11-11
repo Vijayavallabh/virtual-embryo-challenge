@@ -666,6 +666,24 @@ scorer reproduces every published validation anchor exactly. The release-day rul
 
 ### What's Next
 
+Updated 2026-11-12. The older list below is kept for its record; where the two differ, this one holds.
+
+1. **19 Nov:** if no organiser has answered the public Slack question on floored T3 severity, the captain may post one
+   short follow-up in the same thread, drafted by the AI assistant. Replies are read only through the screened check
+   (`docs/ORGANIZER_QUESTIONS.md`, "Public Slack question").
+2. **24-30 Nov:** the method summary goes privately to the organisers. The private email before the first upload lists
+   every planned upload with its hash, ids and stages (`docs/P3_RUNBOOK.md` section 5); it has nothing to add for the
+   Task 1 statement, whose read returned none.
+3. **26-27 Nov:** the screened check. It picks T3's s2 by the ruling of 2026-11-06 (b): an organiser's zero switches it,
+   and an answer other than zero or 0.5 goes to the captain. It also covers the DM and email answers, the Rules and
+   Prizes pages, and the Human Team definition.
+4. **27 Nov from 05:30 IST:** rebuild at the freeze commit with `build_all.sh` (16 BLAS threads), compare with
+   `runs/archive/builds_f337dc6/SHA256SUMS`, then `vec check`, the server format checks, the plain summary, and the
+   captain's go-ahead for each upload. First round: T1 s1, heart s1, embryo s1, T3's s2.
+5. **29 Nov:** T1, heart and embryo s2. **30 Nov:** T3's s1. **1 Dec:** outage buffer, and the final marks by 12:00 UTC.
+6. **Levers:** none open that the record prices above about +0.3 overall (decision log 2026-11-10 (x)); the Task 1
+   statement exception is spent (2026-11-11 (d)). Tries: T1 23, embryo 13, heart 3, T3 6. Nothing is uploaded.
+
 Updated 2026-11-05 (the order, set on 2026-11-04 after the captain's guiding principle in `AGENTS.md`, comes from the
 headroom tables in `experiments/harness/TRIES.md`):
 
@@ -721,6 +739,10 @@ headroom tables in `experiments/harness/TRIES.md`):
 
 ## Blockers / Risks
 
+- [ ] 2026-11-12: no organiser answer is recorded to any of the six emails, the 6 Nov DM or the public Slack question
+      (posted 2026-11-12); the next screened check is on 26-27 Nov, and the working answers in
+      `docs/ORGANIZER_QUESTIONS.md` stand (decision log 2026-11-10 (w), (x)). The largest open risk is A24: if a
+      floored T3 severity scores zero, T3 loses 9 to 12.5 whatever the team does.
 - [ ] Awaiting organiser replies: leak report (Slack DM, sent 2026-10-18), the rules questions (email, 2026-10-18) and
       the follow-up (scorer build and parity defect, wrong-sign severity, released Gata4 in the T3 prediction,
       duplicated/interpolated records, z units, truth_cells and size, stage conventions; sent 2026-10-19). Screened
@@ -895,6 +917,13 @@ headroom tables in `experiments/harness/TRIES.md`):
 
 ## Notes for Next Session
 
+- 2026-11-12: the exception for the Task 1 page's share figure is spent. One screened read found no such statement, a
+  second read needs a new ruling, and nothing from the page is in any file (decision log 2026-11-11 (c), (d)).
+- The public Slack thread on floored T3 severity (posted 2026-11-12) is read only through the screened check. A reply
+  quoting test-board numbers, veckit 0.1.2 or PR #6 is skipped.
+- On the DGX, do not run `./init.sh` as it is: its `uv sync --locked` would drop the gpu and jax groups, which the DGX
+  syncs with `--group gpu --group jax` (`docs/COMPUTE.md`). Run `uv lock --check`, then
+  `uv run --frozen --no-sync ruff check src tests` and `uv run --frozen --no-sync python -I -B -m pytest -q`.
 - Before choosing or changing work on an entry, read the guiding principle at the top of `AGENTS.md` and the headroom
   tables in `experiments/harness/TRIES.md` (after a kept change, rerun `python3 -I experiments/harness/headroom.py`,
   commit its output and copy the tables: `TRIES.md` rule 8).

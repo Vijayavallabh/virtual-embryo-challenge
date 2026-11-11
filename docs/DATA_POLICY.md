@@ -272,6 +272,9 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
 - **2026-10-31: no reply to any email, and no organiser answer to any team's rule question on Slack since 2026-10-16.**
   At the captain's instruction the team proceeds on predicted answers, recorded as working answers (never rulings) in
   `docs/ORGANIZER_QUESTIONS.md`. A real answer replaces a prediction the day it arrives.
+- **2026-11-12: the floored-severity question (T3) is also public,** posted by the captain in #virtual-embryo-challenge
+  (`docs/ORGANIZER_QUESTIONS.md`, "Public Slack question"). Only an organiser's answer counts, read through the
+  screened check; record it here with the date.
 
 ## Change notes
 
@@ -824,3 +827,4 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   code returned no value and no sentence. Withheld, as one total: 3 other items on the page. The main session did not
   open the agents' transcripts or the run's journal; deleting them is the captain's call. The exception of (a) is spent:
   nothing from the page is used, and a second read needs a new ruling.
+- 2026-11-12: Open questions: the floored-severity question is noted as public, posted on 2026-11-12.

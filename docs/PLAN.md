@@ -630,6 +630,7 @@ every T3 upload after its screened check of mail, Slack and the Rules page (`doc
 
 | Day (IST) | Work |
 |---|---|
+| 19 Nov | If no organiser has answered the public Slack question on floored T3 severity (posted 2026-11-12), the captain may post one short follow-up in the same thread, drafted by the AI assistant (decision log 2026-11-11 (e)) |
 | 26-27 Nov | The screened check that picks T3's s2 (ruling 2026-11-06 (b)), run no earlier than 26 Nov |
 | 27 Nov, from 05:30 | Rebuild at the freeze commit and check (`vec check`, the server format checks, the archived hashes); the plain summary to the captain; then the first round: T1 s1, heart s1, embryo s1 and T3's s2 |
 | 29 Nov | T1, heart and embryo s2, each after its screened check |
@@ -730,6 +731,12 @@ user on 2026-10-28 at 15:41 IST (10:11 UTC), signed "Team captain, Mithril": the
 what counts on a board where the captain marks no final entry, and confirmation of the A20 reading (which would also
 answer follow-up question 3, the Gata4 files in the beta-catenin prediction); it notes that the scorer build is still
 open. No organiser reply to any of the four emails as of then.
+
+Since then: the fifth email (2026-11-05, how a floored T3 severity scores), the Slack DM to Weize Xu (2026-11-06, the
+same question), the sixth email (2026-11-10, the Generality scope as corrected) and, in public, the severity question
+in #virtual-embryo-challenge (posted by the captain on 2026-11-12; decision log 2026-11-11 (e)). No answer to any of
+them is recorded as of 2026-11-12; the next screened check is on 26-27 Nov. The team proceeds on the working answers
+in `docs/ORGANIZER_QUESTIONS.md` (decision log 2026-11-10 (w), (x)).
 
 ## Decision log
 
