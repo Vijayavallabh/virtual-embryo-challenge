@@ -30,6 +30,12 @@ Rule, fixed in the row: a ruling request for a library-3 base is prepared only i
 1.0 board point, ahead in at least 8 of 10 seeds. The reading is an upper bound for the test, where two days of
 development lie between the base and the truth.
 
+Try T29 (registered before its run) reuses this geometry with `--truth-depth F` (F < 1): the truth half's counts are
+thinned binomially to F times their depth and normalised again, which is what a shallower sequencing of the same
+library gives. The question is whether the library-3 base stays ahead of today's base when the dissected-heart truth
+is shallower than library 3. The arm lib3_whole is then replaced by lib3_base_thin (lib3_base's cells thinned by the
+same F: the base at the truth's own depth). With the default F = 1 the script is T27's, draw for draw.
+
 Usage (repo root; about 15 minutes):
   OMP_NUM_THREADS=8 OPENBLAS_NUM_THREADS=8 MKL_NUM_THREADS=8 uv run --frozen --no-sync python -I -B \
       experiments/t1_scope/kind_gap.py --out runs/t1_kind_gap/<stamp>
@@ -61,6 +67,8 @@ TWIN = "T1:val"
 DISSECTED = "3"  # the library of dissected hearts (94% chamber cells)
 SPLIT_SEED = 20261112
 ARMS = ("copy", "s1_base", "s1_base_lib3mix", "lib3_base", "lib12_base", "lib3_whole")
+THIN_ARM = "lib3_base_thin"  # T29 only; its draw is lib3_base's
+THIN_SEED = 20261113  # the truth half's thinning (one draw); the thinned arm uses [seed, THIN_SEED]
 READINGS = (("lib3_base", "s1_base"), ("s1_base_lib3mix", "s1_base"), ("lib3_base", "s1_base_lib3mix"),
             ("lib3_whole", "lib3_base"), ("lib12_base", "s1_base"))
 MIN_GAIN = 1.0
@@ -72,7 +80,26 @@ def library_of(obs_names) -> np.ndarray:
     return pd.Series(np.asarray(obs_names, dtype=str)).str.split("_").str[-1].to_numpy()
 
 
-def prepare(data_dir: Path) -> dict:
+def lognorm(C) -> sparse.csr_matrix:
+    """log(1 + 1e4 c / N) over every gene, as the released T1 files store it (float32, sparse)."""
+    C = sparse.csr_matrix(C, dtype=np.float64)
+    tot = np.asarray(C.sum(1)).ravel()
+    X = sparse.diags(1e4 / np.maximum(tot, 1.0)) @ C
+    X.data = np.log1p(X.data)
+    return sparse.csr_matrix(X, dtype=np.float32)
+
+
+def thin(C, factor: float, rng) -> sparse.csr_matrix:
+    """Binomial thinning of integer counts by `factor`: a shallower sequencing of the same library."""
+    C = sparse.csr_matrix(C, dtype=np.int64)
+    out = sparse.csr_matrix((rng.binomial(C.data, factor), C.indices.copy(), C.indptr.copy()), shape=C.shape)
+    out.eliminate_zeros()
+    if (np.asarray(out.sum(1)).ravel() == 0).any():
+        raise ValueError("thinning left a cell without counts")
+    return out
+
+
+def prepare(data_dir: Path, truth_depth: float = 1.0) -> dict:
     a = load_stage(data_dir / FILE, lineage=False)
     spec = t1_scope.load_spec()
     b = harness._shallow(a)
@@ -97,14 +124,20 @@ def prepare(data_dir: Path) -> dict:
     lib3_mix = shares(half_b)
     lib3_share = {c: float(((cat == c) & (lib == DISSECTED)).sum()) / float(max((cat == c).sum(), 1)) for c in chamber}
     X = sparse.csr_matrix(a.X)
-    tot = np.asarray(counts_of(a).sum(1)).ravel()
+    C = counts_of(a)
+    tot = np.asarray(C.sum(1)).ravel()
+    x_truth = X[half_a]
+    if truth_depth < 1.0:
+        x_truth = lognorm(thin(C[half_a], truth_depth, np.random.default_rng(THIN_SEED)))
     boards = load_boards()
     harness.check_index(boards)
     board = replace(boards[TWIN], key="pseudo:T1/E10.5 kind gap", split="pseudo", anchors={},
                     **harness.pseudo_counts(len(half_a), len(ref_rows)))
     pools = {"b": {c: half_b[cat[half_b] == c] for c in chamber},
              "o": {c: other[cat[other] == c] for c in chamber}}
-    return {"X": X, "cat": cat, "lib": lib, "chamber": chamber, "half_a": half_a, "half_b": half_b,
+    return {"X": X, "C": C, "x_truth": x_truth, "truth_depth": float(truth_depth),
+            "arms": ARMS if truth_depth >= 1.0 else (*ARMS[:5], THIN_ARM),
+            "cat": cat, "lib": lib, "chamber": chamber, "half_a": half_a, "half_b": half_b,
             "ref_rows": ref_rows, "pooled_mix": pooled_mix, "lib3_mix": lib3_mix, "lib3_share": lib3_share,
             "tot": tot, "board": board, "pools": pools, "n_obs": int(a.n_obs)}
 
@@ -119,6 +152,7 @@ def _draw(pool: np.ndarray, k: int, rng) -> np.ndarray:
 
 def arm_rows(arm: str, n: int, seed: int) -> np.ndarray:
     d = _D
+    arm = "lib3_base" if arm == THIN_ARM else arm
     rng = np.random.default_rng([seed, ARMS.index(arm)])
     if arm == "copy":
         return np.sort(d["ref_rows"][draw_balanced(len(d["ref_rows"]), n, rng)])
@@ -143,30 +177,39 @@ def score_seed(seed: int) -> dict:
     d = _D
     t0 = time.time()
     X, board = d["X"], d["board"]
-    target, ref = Stage(X=X[d["half_a"]]), Stage(X=X[d["ref_rows"]])
+    target, ref = Stage(X=d["x_truth"]), Stage(X=X[d["ref_rows"]])
     f = score_board(board, subsample(ref, SUBSAMPLE_FRAC, seed), target, ref, seed=seed, anchors="computed",
                     build=harness.BUILD, protocol=harness.PROTOCOL)
     if abs(f.score - 50.0) > 1e-9 or set(RANKED_METRICS["T1"]) - set(f.anchors):
         raise ValueError(f"seed {seed}: the floor scores {f.score}")
     n = harness.count_for(board, len(d["ref_rows"]))
     row = {"seed": seed, "scores": {}, "skills": {}, "median_library": {}}
-    for arm in ARMS:
+    for arm in d["arms"]:
         rows = arm_rows(arm, n, harness.BUILD_SEED_OFFSET + seed)
-        r = score_board(board, Stage(X=X[rows]), target, ref, seed=seed, anchors=f.anchors, build=harness.BUILD,
+        if arm == THIN_ARM:
+            Ct = thin(d["C"][rows], d["truth_depth"], np.random.default_rng([seed, THIN_SEED]))
+            pred, med = Stage(X=lognorm(Ct)), float(np.median(np.asarray(Ct.sum(1)).ravel()))
+        else:
+            pred, med = Stage(X=X[rows]), float(np.median(d["tot"][rows]))
+        r = score_board(board, pred, target, ref, seed=seed, anchors=f.anchors, build=harness.BUILD,
                         protocol=harness.PROTOCOL)
         row["scores"][arm], row["skills"][arm] = r.score, r.skills
-        row["median_library"][arm] = float(np.median(d["tot"][rows]))
+        row["median_library"][arm] = med
     row["seconds"] = round(time.time() - t0, 1)
     print(f"seed {seed}: " + ", ".join(f"{k} {v:.2f}" for k, v in row["scores"].items()), flush=True)
     return row
 
 
 def summarise(rows: list[dict]) -> dict:
-    out = {"mean_score": {a: float(np.mean([r["scores"][a] for r in rows])) for a in ARMS},
+    arms = tuple(rows[0]["scores"])
+    out = {"mean_score": {a: float(np.mean([r["scores"][a] for r in rows])) for a in arms},
            "mean_skills": {a: {m: float(np.mean([r["skills"][a][m] for r in rows])) for m in rows[0]["skills"][a]}
-                           for a in ARMS},
+                           for a in arms},
            "median_library_first_seed": rows[0]["median_library"], "readings": {}}
-    for x, y in READINGS:
+    readings = [p for p in READINGS if p[0] in arms and p[1] in arms]
+    if THIN_ARM in arms:
+        readings += [(THIN_ARM, "lib3_base"), (THIN_ARM, "s1_base")]
+    for x, y in readings:
         diff = np.array([r["scores"][x] - r["scores"][y] for r in rows])
         out["readings"][f"{x} - {y}"] = {
             "mean": float(diff.mean()), "sd": float(diff.std(ddof=1)), "ahead": int((diff > 0).sum()),
@@ -184,10 +227,14 @@ def main(argv=None) -> None:
     ap.add_argument("--out", required=True)
     ap.add_argument("--data", default=str(harness.DATA_DIR))
     ap.add_argument("--jobs", type=int, default=5)
+    ap.add_argument("--truth-depth", type=float, default=1.0,
+                    help="T29: thin the truth half to this share of its depth (default 1: T27 as registered)")
     a = ap.parse_args(argv)
+    if not 0.0 < a.truth_depth <= 1.0:
+        raise SystemExit("--truth-depth must lie in (0, 1]")
     commit = harness._git("rev-parse", "HEAD")
     clean = harness._git("status", "--porcelain", "--untracked-files=no") == ""
-    _D.update(prepare(Path(a.data)))
+    _D.update(prepare(Path(a.data), a.truth_depth))
     d = _D
     if a.jobs > 1:
         with mp.get_context("fork").Pool(a.jobs) as pool:
@@ -196,6 +243,8 @@ def main(argv=None) -> None:
         rows = [score_seed(s) for s in SEEDS]
     rows = sorted(rows, key=lambda r: r["seed"])
     res = {"commit": commit, "tree_clean": clean, "file": FILE, "split_seed": SPLIT_SEED, "seeds": list(SEEDS),
+           "truth_depth": d["truth_depth"],
+           "median_library_truth": float(np.median(d["tot"][d["half_a"]]) * d["truth_depth"]),
            "protocol": harness.PROTOCOL, "build": harness.BUILD, "frac": SUBSAMPLE_FRAC,
            "pooled_chamber_mix": d["pooled_mix"], "library3_chamber_mix": d["lib3_mix"],
            "library3_share_of_each_category": d["lib3_share"],
@@ -204,7 +253,9 @@ def main(argv=None) -> None:
     out.mkdir(parents=True, exist_ok=True)
     (out / "kind_gap.json").write_text(json.dumps(res, indent=1))
     s = res["summary"]
-    lines = [f"Try T27 (commit {commit}, clean {clean}): ruling request by the rule: {s['rule']['ruling_request']}",
+    name = "T27" if d["truth_depth"] >= 1.0 else f"T29, truth at {d['truth_depth']:.2f} of its depth"
+    lines = [f"Try {name} (commit {commit}, clean {clean}): lib3_base beats s1_base by the rule: "
+             f"{s['rule']['ruling_request']}",
              "mean board score: " + ", ".join(f"{k} {v:.2f}" for k, v in s["mean_score"].items())]
     for k, v in s["readings"].items():
         lines.append(f"  {k}: {v['mean']:+.2f} (sd {v['sd']:.2f}, ahead {v['ahead']} of {v['seeds']}); "
