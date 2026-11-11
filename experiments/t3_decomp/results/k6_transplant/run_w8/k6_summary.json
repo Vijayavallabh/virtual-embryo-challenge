@@ -1,0 +1,274 @@
+{
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "protocol_as_registered": true,
+ "git": {
+  "commit": "ecf5f1c8b2a4f106ed73181e7668ba3be1a7edc5",
+  "status": ""
+ },
+ "sha256": {
+  "rules": "cd2d94aa6e202529a2eead2a7ad60b312d9a2fd9ff0bd989d9320662de750c13",
+  "t3_decompose": "3e671c3bb5ff57bba5ceec80ea36fcc739b1f111399a1e2854400b5c9f5133d2",
+  "script": "92ae7c9076765e7205a133a702688a92adca788e6789768b0ab9c2f970c59541"
+ },
+ "variants": {
+  "rep1": {
+   "share_nm": 0.42156820806775896,
+   "nm_labels": [
+    "Neural Tube",
+    "NCC",
+    "d-CSE",
+    "V-CSE",
+    "a-FG",
+    "D-FG",
+    "Lateral FG",
+    "EXE-Endoderm",
+    "pSE",
+    "Gut Endoderm",
+    "Forebrain",
+    "Hindgut"
+   ],
+   "labels_absent_from_sibling": [
+    "Unknown"
+   ]
+  },
+  "rep2": {
+   "share_nm": 0.42156820806775896,
+   "nm_labels": [
+    "Neural Tube",
+    "NCC",
+    "d-CSE",
+    "V-CSE",
+    "a-FG",
+    "D-FG",
+    "Lateral FG",
+    "EXE-Endoderm",
+    "pSE",
+    "Gut Endoderm",
+    "Forebrain",
+    "Hindgut"
+   ],
+   "labels_absent_from_sibling": [
+    "Unknown"
+   ]
+  }
+ },
+ "reproduction_gate": {
+  "rows": 60,
+  "missing": 0,
+  "max_abs_diff": 1.3112555615483075,
+  "tolerance": 0.05,
+  "passed": false,
+  "by_variant": {
+   "xrep:F+depth": 0.7975926786527481,
+   "xrep:draw": 1.3112555615483075,
+   "xrep:sys": 0.7209312360084823
+  }
+ },
+ "means": {
+  "xrep:F+depth": {
+   "rep1": 74.75538970286514,
+   "rep2": 72.24416956711609
+  },
+  "xrep:draw": {
+   "rep1": 82.01261437718988,
+   "rep2": 82.17993456324734
+  },
+  "xrep:hyb": {
+   "rep1": 74.49238591439442,
+   "rep2": 73.16683997900901
+  },
+  "xrep:sys": {
+   "rep1": 62.99592701296645,
+   "rep2": 69.42661343143298
+  },
+  "xrep:sys@p": {
+   "rep1": 71.117880610093,
+   "rep2": 68.95957325259363
+  },
+  "xrep:within": {
+   "rep1": 81.20193760687299,
+   "rep2": 77.5765846408274
+  }
+ },
+ "K6a_xrep:hyb_vs_xrep:F+depth": {
+  "rep1": {
+   "mean_change": 74.49238591439442,
+   "mean_base": 74.75538970286514,
+   "paired_mean": -0.2630037884707363,
+   "paired_sd": 0.3043411859783174,
+   "ahead": 2,
+   "seeds": 10,
+   "floored_change": 0,
+   "skill_gain": {
+    "de_score": -0.016684654584475222,
+    "de_direction": 0.010738580058702374,
+    "severity_slope": 0.0024410383605369735,
+    "mmd_u": -0.010606514240684062,
+    "variogram": 0.004415444933843493
+   }
+  },
+  "rep2": {
+   "mean_change": 73.16683997900901,
+   "mean_base": 72.24416956711609,
+   "paired_mean": 0.9226704118929063,
+   "paired_sd": 0.440684696052894,
+   "ahead": 10,
+   "seeds": 10,
+   "floored_change": 0,
+   "skill_gain": {
+    "de_score": 0.006921462250282706,
+    "de_direction": 0.01362364328115485,
+    "severity_slope": 0.002905632746043829,
+    "mmd_u": 0.01573502479043124,
+    "variogram": 0.014121793277410932
+   }
+  }
+ },
+ "K6b_xrep:within_vs_xrep:F+depth": {
+  "rep1": {
+   "mean_change": 81.20193760687299,
+   "mean_base": 74.75538970286514,
+   "paired_mean": 6.446547904007842,
+   "paired_sd": 0.9329898512369202,
+   "ahead": 10,
+   "seeds": 10,
+   "floored_change": 0,
+   "skill_gain": {
+    "de_score": 0.07634780156696139,
+    "de_direction": 0.08325958160921539,
+    "severity_slope": 0.010132804900121228,
+    "mmd_u": 0.08033377425567347,
+    "variogram": 0.10716236289968772
+   }
+  },
+  "rep2": {
+   "mean_change": 77.5765846408274,
+   "mean_base": 72.24416956711609,
+   "paired_mean": 5.332415073711287,
+   "paired_sd": 0.5962465179995059,
+   "ahead": 10,
+   "seeds": 10,
+   "floored_change": 0,
+   "skill_gain": {
+    "de_score": 0.08459371111791689,
+    "de_direction": 0.07340259939928398,
+    "severity_slope": 0.007096208940876869,
+    "mmd_u": 0.03776890490120556,
+    "variogram": 0.04111333410691154
+   }
+  }
+ },
+ "K6c_xrep:sys@p_vs_xrep:F+depth": {
+  "rep1": {
+   "mean_change": 71.117880610093,
+   "mean_base": 74.75538970286514,
+   "paired_mean": -3.6375090927721585,
+   "paired_sd": 0.9705299323654996,
+   "ahead": 0,
+   "seeds": 10,
+   "floored_change": 0,
+   "skill_gain": {
+    "de_score": -0.0704844368721165,
+    "de_direction": -0.0055627906950925675,
+    "severity_slope": -0.08010964829963622,
+    "mmd_u": 0.03339804177581941,
+    "variogram": 0.027257310868714957
+   }
+  },
+  "rep2": {
+   "mean_change": 68.95957325259363,
+   "mean_base": 72.24416956711609,
+   "paired_mean": -3.28459631452247,
+   "paired_sd": 0.8553150545000532,
+   "ahead": 0,
+   "seeds": 10,
+   "floored_change": 0,
+   "skill_gain": {
+    "de_score": -0.0032907522148282855,
+    "de_direction": 0.005937870496371111,
+    "severity_slope": -0.0701144941013249,
+    "mmd_u": -0.06770313478335117,
+    "variogram": -0.0961275675691951
+   }
+  }
+ },
+ "K6a_minus_K6c": {
+  "rep1": {
+   "mean_change": 74.49238591439442,
+   "mean_base": 71.117880610093,
+   "paired_mean": 3.3745053043014224,
+   "paired_sd": 0.9456336964035907,
+   "ahead": 10,
+   "seeds": 10,
+   "floored_change": 0,
+   "skill_gain": {
+    "de_score": 0.053799782287641276,
+    "de_direction": 0.016301370753794942,
+    "severity_slope": 0.0825506866601732,
+    "mmd_u": -0.04400455601650347,
+    "variogram": -0.022841865934871464
+   }
+  },
+  "rep2": {
+   "mean_change": 73.16683997900901,
+   "mean_base": 68.95957325259363,
+   "paired_mean": 4.2072667264153765,
+   "paired_sd": 0.7011894602182908,
+   "ahead": 10,
+   "seeds": 10,
+   "floored_change": 0,
+   "skill_gain": {
+    "de_score": 0.010212214465110992,
+    "de_direction": 0.00768577278478374,
+    "severity_slope": 0.07302012684736874,
+    "mmd_u": 0.08343815957378241,
+    "variogram": 0.11024936084660604
+   }
+  }
+ },
+ "K6b_minus_K6a": {
+  "rep1": {
+   "mean_change": 81.20193760687299,
+   "mean_base": 74.49238591439442,
+   "paired_mean": 6.709551692478579,
+   "paired_sd": 0.9058668320243316,
+   "ahead": 10,
+   "seeds": 10,
+   "floored_change": 0,
+   "skill_gain": {
+    "de_score": 0.0930324561514366,
+    "de_direction": 0.07252100155051301,
+    "severity_slope": 0.007691766539584255,
+    "mmd_u": 0.09094028849635752,
+    "variogram": 0.10274691796584423
+   }
+  },
+  "rep2": {
+   "mean_change": 77.5765846408274,
+   "mean_base": 73.16683997900901,
+   "paired_mean": 4.409744661818381,
+   "paired_sd": 0.7094540705490109,
+   "ahead": 10,
+   "seeds": 10,
+   "floored_change": 0,
+   "skill_gain": {
+    "de_score": 0.07767224886763417,
+    "de_direction": 0.059778956118129126,
+    "severity_slope": 0.00419057619483304,
+    "mmd_u": 0.02203388011077432,
+    "variogram": 0.026991540829500605
+   }
+  }
+ }
+}
