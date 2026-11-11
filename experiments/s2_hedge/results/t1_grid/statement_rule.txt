@@ -1,0 +1,9 @@
+Gain of the statement rule over today's T1 pair (s1 bown_cown, s2 bown_c0.6), better of two paired by seed, 10 seeds, if the statement gives the truth's shares exactly
+                                rule          uniform        own_third   blood_own_only
+                           cm_stated            +0.51            +0.36            +0.53
+              cm_stated_of_all_cells            +0.38            +0.27            +0.53
+                        blood_stated            +2.30            +1.64            +0.00
+                         both_stated            +2.90            +2.08            +0.53
+   not_taken_cm_stated_s2_blood_0.05            +1.47            +1.05            +0.53
+    not_taken_cm_stated_s2_blood_0.4            +1.95            +1.39            +0.53
+               today (better of two)            68.28            68.75            70.56

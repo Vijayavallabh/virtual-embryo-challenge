@@ -216,6 +216,24 @@ def test_with_share_moves_only_the_cm_share_of_heart_cells():
     assert sum(new.values()) == pytest.approx(1.0)
 
 
+@pytest.mark.parametrize("b", [0.0, 0.05, 0.4])
+def test_with_share_blood_over_all_categories_keeps_the_cm_share_of_heart_cells(b):
+    """build_test.py t1 --blood-share (decision 2026-11-11 (c)): blood's share of every category, the others in
+    proportion; it commutes with --cm-share and keeps the cardiomyocyte share of heart cells."""
+    heart = load_spec().heart
+    cm = with_share(SHARES, "cm", 0.6)
+    cm_then_blood = with_share(cm, "blood", b, within=list(cm))
+    blood_then_cm = with_share(with_share(SHARES, "blood", b, within=list(SHARES)), "cm", 0.6)
+    assert cm_then_blood["blood"] == pytest.approx(b)
+    assert share_of(cm_then_blood, "cm", heart) == pytest.approx(0.6)
+    assert set(cm_then_blood) == set(blood_then_cm)
+    for c in cm_then_blood:
+        assert cm_then_blood[c] == pytest.approx(blood_then_cm[c], abs=1e-12)
+    ratio = cm_then_blood["endocardium"] / cm_then_blood["epicardium"]
+    assert ratio == pytest.approx(SHARES["endocardium"] / SHARES["epicardium"])
+    assert sum(cm_then_blood.values()) == pytest.approx(1.0)
+
+
 @pytest.mark.parametrize("n", [0, 1, 7, 333, 5000])
 def test_quotas_sum_exactly(n):
     shares = load_shares(SHARES)

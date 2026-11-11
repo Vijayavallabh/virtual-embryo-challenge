@@ -38,7 +38,9 @@ predictions", and the Data page: "you may use those released validation files fo
 permit access to hidden test data or other restricted external sources." The user decided on 2026-10-28 that this
 covers using them as model inputs when producing the test predictions (A20 passed; organiser confirmation asked in the
 fourth email). The exception covers those files only: external data from the validation stages and genotypes is still
-prohibited, and the test windows (T1 and T2 heart E12.5, T2 embryo E7.75, the beta-catenin KO) are unchanged.
+prohibited, and the test windows (T1 and T2 heart E12.5, T2 embryo E7.75, the beta-catenin KO) are unchanged. A
+second exception, by the captain's ruling of 2026-11-11, covers one share figure in one organiser statement on the
+Task 1 page and nothing else (2026-11-11 (a) below).
 
 ## External data windows
 
@@ -799,3 +801,17 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   model-written summary, so each then made one plain curl request with default headers (HTTP 200) and stripped the markup locally
   to stdout; no text was written to a file and no other page was opened. The auditor added two short clarifications and found no
   residual number. Withheld, by class and count only: measured or relative property of a target: 3; sample other than the three released (held-out or otherwise outside this ruling): 13; test-board format or file property: 1; gene-level statement about losing a gene: 2; unsure, withheld by default: 4; passage or section outside the release definition (not about how the three samples were collected): 8.
+- 2026-11-11 (a): the captain ruled a deliberate exception to the held-out rule above ("no measured data from these, by
+  any route") and to the Final-phase paragraph's "the one exception", for one statement. It is the organisers' statement
+  on the public Task 1 page about the change to the T1 test target, which carries a share figure (class A, withheld since
+  2026-11-06 (a)). A side agent's note pointed out that the figure is measured on the hidden E12.5 test target. The AI
+  assistant had compared it with the collection text released on 2026-11-01 (b) and 2026-11-10 (c), and that comparison
+  was wrong in kind. Asked again with that stated, the captain chose the option "Yes, named exception (Recommended)";
+  "(Recommended)" was the AI assistant's label. The screen may release only the cardiomyocyte or blood share of the
+  scored T1 target that the rule reads, and the sentence or sentences carrying it, with every other number masked. Every
+  other property of the target stays Removed: shares before the change, other denominators, scope, counts, sizes and
+  limits. A rule committed before the read decides the use, on T1's two uploads only (`docs/PLAN.md` decision log
+  2026-11-11 (c); its list of the rules this breaks is the authoritative one). For that figure only, the exception also
+  covers the Removed list's "any other property of a hidden target" and the block of 2026-11-04 on T1's composition.
+  Nothing else changes: the page's other statements and the Task 2 and Task 3 pages stay withheld. Whenever the read
+  returns a cardiomyocyte or blood share, the private email to the organisers before the first upload says so.

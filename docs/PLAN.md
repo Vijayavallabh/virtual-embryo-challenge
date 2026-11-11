@@ -2013,3 +2013,134 @@ open. No organiser reply to any of the four emails as of then.
   where the target is nearer to it in time. The idea that the bracket collected like the target gives the better geometry is
   not supported. At the test's t = 1/2 neither bracket is nearer, so what today's s2 adds there stays an open question;
   nothing here argues for changing it. Embryo tries 11 to 13; no upload, build or rule changes.
+- 2026-11-11 (c), the captain, in the captain's words: "yes", to the first recommendation in the AI assistant's answer to
+  "what else can we do to reach top 3". The recommendation was a screened read of the organisers' statement on the public
+  Task 1 page about the change to the T1 test target, which carries a share figure (class A, withheld since 2026-11-06 (a)),
+  used by a rule fixed before the read. A side agent's note then pointed out that the figure is measured on the hidden test
+  target. The AI assistant had compared it with the E12.5 collection note, and that comparison was wrong in kind: the note
+  says how the samples were collected, while this figure measures the target. The captain was asked again, in a question
+  that named the exception and gave the price as about +0.5 on T1 for a cardiomyocyte share, +2.3 for blood, +2.9 for both
+  and 0 for anything else. The captain chose the option "Yes, named exception (Recommended)"; "(Recommended)" was the AI
+  assistant's label. The rule below was drafted by the AI assistant and revised after two independent reviews
+  (wf_7ceb073c-ff4: mechanics, and compliance and leak paths). The captain's ruling covers its substance: a stated
+  cardiomyocyte share moves the nearer of T1's two uploads to it, a stated blood share moves both, anything else changes
+  nothing, and only that statement is released. This entry is written and committed before the read. Nothing in it is
+  fitted to the text beyond its topic, which has been known since 2026-11-06 (a).
+  - **A deliberate exception, for this one statement and T1's two uploads only.** It is the captain's direct ruling. It is
+    not a reading of the principle (`AGENTS.md` rule 7) or a lift by the campaign of 2026-11-09 (rule 8), and both rules
+    stand for everything else. Using the figure breaks:
+    - the Data-use invariant of `AGENTS.md` and the held-out rule of `docs/DATA_POLICY.md` ("no measured data from these,
+      by any route"; the validation files as "the one exception"; "the test windows ... are unchanged"), because the figure
+      measures the T1 E12.5 test target;
+    - the screen's Removed list ("any other property of a hidden target"), and (y), which opened no task page and kept
+      every composition figure withheld;
+    - the block of 2026-11-04 on T1's composition (`docs/DATA_POLICY.md` 2026-11-04 (b)), with (c)'s "the cardiomyocyte
+      and blood shares stay as the s1 and s2 rules set them" and (d)'s legal route;
+    - the captain's ruling of 2026-11-01 that B0 and M1 keep E10.5's own chamber share of blood (section 4.1);
+    - the frozen T1 s2 rule (`docs/S2_RULES.md`: "T1 adds `--cm-share 0.60`"; "Blood stays at E10.5's own chamber share,
+      as in s1"), which changes only as below.
+    Why it is taken: the organisers published the statement on their public task page, to every team, as part of their
+    description of the board they score. Nothing in it comes from the exposure of 2026-11-04, and no test score is read.
+    The organisers have not confirmed that teams may use it, and the captain accepts that risk. It gets no row in
+    `EXTERNAL_DATA.md`: like the E12.5 collection note, it is organiser material, not an external dataset, model or code.
+    The email and `METHOD_SUMMARY.md` disclose it instead (below). Nothing else opens: the page's other statements, the
+    Task 2 and Task 3 pages, and every count, size, limit and scope figure stay withheld, and no other rule changes.
+  - **Where the figure may go.** Only into this rule, on T1:test's two uploads. It enters no other board (the T2 heart
+    E12.5 target included), no try, no backtest weighting or prior, no adoption or final-mark choice, and no estimate: the
+    upload gate's estimate is left unchanged for it, as for R1. The outcome entry records only the category, each figure
+    as read (value, kind, denominator), the converted share, which upload moved and the new commands, with process notes
+    by class and count. The statement's text is copied into no file, `docs/DATA_NOTES.md` included. Besides that entry,
+    the figure may appear only in:
+    - `experiments/harness/TRIES.md` R4 and `experiments/builds/build_all.sh`;
+    - `tests/test_g_mom_verify.py` and N14's T1 job (`experiments/research_2026_11/integrity.py`,
+      `tests/test_integrity.py`);
+    - `docs/S2_RULES.md` and its hash, only if s2 moves;
+    - `METHOD_SUMMARY.md`, `progress.md` and the build stamps on the DGX.
+  - **How it is read; one read only.** One address, https://virtualembryo.ai/challenge/tasks/temporal, with plain curl and
+    default headers. No WebFetch, browser or other tool, no other user agent, and no script, asset, API or other address.
+    No `-L`: a redirect to the same address with a trailing slash may be followed once, and any other redirect ends the
+    read. Scripts, styles, templates and markup are stripped locally (`experiments/intake/page_text.py`), and the visible
+    text is printed to stdout in windows small enough that no output is saved to a file. Nothing is written to a file. A
+    403 or any other failure ends the read. A failed, disputed or not-found read is final: a second read needs a new
+    ruling. Two screening agents read the page independently, and an auditor reads it and checks both, field by field. The
+    main session never opens the agents' transcripts, saved outputs or the run's journal, and the workflow logs no agent
+    text. Deleting them is the captain's call.
+  - **What the main session receives.** Only when both screeners and the auditor agree on Cardiomyocytes, Blood or Both:
+    each figure the rule reads (value, kind and denominator, from fixed lists), and the sentence or sentences carrying it.
+    The workflow's code keeps only the confirmed figures' own characters. It masks every other digit run and every number
+    word (one to twenty, the tens, hundred, thousand, million, k, dozen, half, third, quarter, fifth, tenth, twice,
+    double), and it returns a value only if it is a share from 0 to 1. Under Other, not found, not read or disputed, the
+    main session receives the categories and a reason class only, never a value or a sentence. The page's other withheld
+    items come back as one total.
+  - **Figures and categories.** Each figure is read on its own, and several passages about the change are read together.
+    A figure counts only if it is a share of the scored T1 test target after the change, for cardiomyocytes or for blood
+    (erythroid, or all blood cells), or if the statement says blood cells were removed or excluded from the scored
+    target, filtered out of it, or are absent from it (blood 0). Every other figure is masked, and its reading is not
+    returned: a share before the change, a count, a size or cell-number limit, a share of another class or sample, or a
+    share over a denominator this rule does not define. The category follows the figures that count: Cardiomyocytes,
+    Blood, or Both (one of each). If none counts, the category is Other.
+    - Precedence: a statement that blood cells were removed or are absent is Blood (share 0), not scope. "Depleted",
+      "reduced" or "lysed" without a figure is Other.
+    - A scope statement (which tissue or cells the target covers) is Other. A cardiomyocyte or blood figure stated beside
+      one still counts, and the scope fact is neither used nor released.
+    - An erythroid figure sets our whole blood category, macrophages included. Immune cells alone are Other.
+    - Conflicting figures for one class make the statement Other, including two passages that disagree.
+  - **Reading a figure.** Only a number is a figure: digits, a percent, or a named fraction such as a third. "Most", "a
+    majority", "few" or "mainly" without a number is Other, and so are a complement ("non-blood cells are 90%") and a
+    share given only as counts (the counts stay withheld). "About X", "~X" and "X ± Y" give X. A point given with a range
+    gives the point, and a range alone gives its midpoint; a range wider than 0.20, measured on the stated figures, is
+    Other. A one-sided bound ("under", "at most", "capped at", "over", "at least") is read as a share at the bound.
+    - Denominators: a share among non-blood cells in so many words ("of non-blood cells", "excluding blood cells") is
+      among non-blood cells; for blood, that is Other. A share of a narrower named group ("of the ventricles", "of muscle
+      cells") is Other. Every other wording ("of the cells", "of the sample", "of the heart", "of heart cells", "of cardiac
+      cells", "of the test set", or none) is among all the target's cells.
+    - Screener values agree when they are equal at three decimals.
+  - **The rule.**
+    - Blood b: both T1 uploads add `--blood-share b` (three decimals), blood's share of chamber cells; our files hold
+      chamber cells only. For a bound, both move to it if they break it (they carry one blood value).
+    - Cardiomyocytes p is converted to the builder's share of heart cells (chamber cells other than blood). It is p itself
+      if among non-blood cells, and p / (1 - b) if among all cells, where b is the blood share both uploads carry after
+      the blood step (the stated share or the bound they moved to; E10.5's own 0.2409 otherwise). The conversion and the
+      comparison use the unrounded figures, and the build takes three decimals. The nearer upload takes the converted
+      share with `--cm-share`: s1 if it is below 0.4325, s2 if it is 0.4325 or above (E10.5's own 0.2650 against 0.60).
+      The other upload stays as built. For a bound, only the nearer upload can move, to the bound, and only if it breaks
+      it.
+    - Both: the blood step, then the cardiomyocyte step.
+    - No change: Other, not found, not read or disputed; and a converted cardiomyocyte share above 1, which voids the
+      whole statement, blood included. An upload whose share already equals the target value at three decimals
+      (cardiomyocytes 0.265 or 0.600, blood 0.241) stays as built. Converted shares from about 0.92 to 1 (a cardiomyocyte
+      share of about 0.70 to 0.76 of all cells, blood unstated) are built as they come.
+  - **After the read**, if a command changes:
+    - The T1 lines of `experiments/builds/build_all.sh` change. Both keep `--g-mom`, new flags follow it (`--cm-share`,
+      then `--blood-share`), and each changed line carries a comment citing this entry. The two strings pinned in
+      `tests/test_g_mom_verify.py` and N14's T1 jobs (`integrity.py` JOBS, `tests/test_integrity.py`) are updated
+      mechanically to the same commands, and nothing else in those files changes.
+    - If s2's command departs from `docs/S2_RULES.md` (a cardiomyocyte share other than 0.60 in s2), that file's T1
+      section is amended by its own procedure for changes after the freeze: in its own commit, with the captain's words
+      from this entry, the reason, and the new sha256 in `docs/S2_RULES.sha256` and this log. A blood change reaches s2
+      through the "as s1" clause. This ruling is the return of T1's s2 to the captain that S2_RULES asks for when "s1
+      changes the parameter its s2 hedges".
+    - Both sets are rebuilt on the DGX with `build_all.sh s1` and `s2`, at 16 BLAS threads, on a clean tree at the commit
+      that records the outcome, well before 24 Nov. The other eight files must come out byte-identical to
+      `runs/archive/builds_f337dc6`, and a new archive folder's SHA256SUMS becomes the freeze-morning reference
+      (`progress.md`).
+    - `METHOD_SUMMARY.md`'s T1 composition lines say which upload takes the stated share.
+    Whenever the read returns Cardiomyocytes, Blood or Both, even if no command changes, the private email before the
+    first upload says three things (`docs/P3_RUNBOOK.md`): which T1 upload or uploads take the share stated on the Task 1
+    page, the date it was read, and that it is used without the organisers' confirmation. It is not a try: a build scores
+    nothing (R4 in `experiments/harness/TRIES.md`, as R3b; T1's running total stays 23), and it is kept by this ruling,
+    not by the adoption rule.
+  - **Price.** Target-free, on the committed T1 grid (10 seeds; the better of two, paired by seed, against today's pair;
+    `experiments/s2_hedge/statement_rule.py`, `results/t1_grid/statement_rule.*`). The gain if the statement gives the
+    truth's shares, uniform over the 15 tissue mixes / a third on E10.5's own / blood at its own share only:
+    - cardiomyocytes, converting exactly (among non-blood cells, or blood at its own share): +0.51 / +0.36 / +0.53;
+    - cardiomyocytes among all cells with blood unstated, as written (snapped to the grid, so approximate): +0.38 / +0.27
+      / +0.53;
+    - blood: +2.30 / +1.64 / 0.00;
+    - both: +2.90 / +2.08 / +0.53;
+    - Other: 0.
+    Wherever a gain is above 0, it is ahead in 10 of 10 seeds. On single mixes: cardiomyocytes -0.63 to +3.83 (as
+    written, -0.96 to +3.83), blood 0 to +4.88, both -0.12 to +8.12. Blood 0 and bounds lie off the grid and are unpriced.
+  - **Priced and not taken.** With only the cardiomyocyte share stated, moving both uploads to it, with s2's blood at 40%,
+    prices higher (+1.95 / +1.39 / +0.53). But blood values away from E10.5's own have no legal basis (2026-11-10 (a)), and
+    the captain's ruling is for the rule above.

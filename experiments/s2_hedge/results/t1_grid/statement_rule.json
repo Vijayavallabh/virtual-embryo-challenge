@@ -1,0 +1,253 @@
+{
+ "source": "results/per_seed/t1-grid (commit 90b25d3)",
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "priors": {
+  "uniform": {
+   "today": 68.278,
+   "cm_stated": {
+    "gain": 0.51,
+    "sd": 0.129,
+    "seeds_ahead": 10
+   },
+   "cm_stated_of_all_cells": {
+    "gain": 0.375,
+    "sd": 0.132,
+    "seeds_ahead": 10
+   },
+   "blood_stated": {
+    "gain": 2.296,
+    "sd": 0.283,
+    "seeds_ahead": 10
+   },
+   "both_stated": {
+    "gain": 2.904,
+    "sd": 0.3,
+    "seeds_ahead": 10
+   },
+   "not_taken_cm_stated_s2_blood_0.05": {
+    "gain": 1.466,
+    "sd": 0.219,
+    "seeds_ahead": 10
+   },
+   "not_taken_cm_stated_s2_blood_0.4": {
+    "gain": 1.949,
+    "sd": 0.222,
+    "seeds_ahead": 10
+   }
+  },
+  "own_third": {
+   "today": 68.747,
+   "cm_stated": {
+    "gain": 0.364,
+    "sd": 0.092,
+    "seeds_ahead": 10
+   },
+   "cm_stated_of_all_cells": {
+    "gain": 0.268,
+    "sd": 0.094,
+    "seeds_ahead": 10
+   },
+   "blood_stated": {
+    "gain": 1.64,
+    "sd": 0.202,
+    "seeds_ahead": 10
+   },
+   "both_stated": {
+    "gain": 2.075,
+    "sd": 0.214,
+    "seeds_ahead": 10
+   },
+   "not_taken_cm_stated_s2_blood_0.05": {
+    "gain": 1.047,
+    "sd": 0.156,
+    "seeds_ahead": 10
+   },
+   "not_taken_cm_stated_s2_blood_0.4": {
+    "gain": 1.392,
+    "sd": 0.158,
+    "seeds_ahead": 10
+   }
+  },
+  "blood_own_only": {
+   "today": 70.564,
+   "cm_stated": {
+    "gain": 0.531,
+    "sd": 0.158,
+    "seeds_ahead": 10
+   },
+   "cm_stated_of_all_cells": {
+    "gain": 0.531,
+    "sd": 0.158,
+    "seeds_ahead": 10
+   },
+   "blood_stated": {
+    "gain": 0.0,
+    "sd": 0.0,
+    "seeds_ahead": 0
+   },
+   "both_stated": {
+    "gain": 0.531,
+    "sd": 0.158,
+    "seeds_ahead": 10
+   },
+   "not_taken_cm_stated_s2_blood_0.05": {
+    "gain": 0.531,
+    "sd": 0.158,
+    "seeds_ahead": 10
+   },
+   "not_taken_cm_stated_s2_blood_0.4": {
+    "gain": 0.531,
+    "sd": 0.158,
+    "seeds_ahead": 10
+   }
+  }
+ },
+ "per_truth": {
+  "bown_c0.15": {
+   "today": 71.15,
+   "cm_stated": -0.12,
+   "cm_stated_of_all_cells": -0.12,
+   "blood_stated": 0.0,
+   "both_stated": -0.12,
+   "not_taken_cm_stated_s2_blood_0.05": -0.12,
+   "not_taken_cm_stated_s2_blood_0.4": -0.12
+  },
+  "bown_cown": {
+   "today": 69.92,
+   "cm_stated": 0.0,
+   "cm_stated_of_all_cells": 0.0,
+   "blood_stated": 0.0,
+   "both_stated": 0.0,
+   "not_taken_cm_stated_s2_blood_0.05": 0.0,
+   "not_taken_cm_stated_s2_blood_0.4": 0.0
+  },
+  "bown_c0.45": {
+   "today": 69.48,
+   "cm_stated": 1.15,
+   "cm_stated_of_all_cells": 1.15,
+   "blood_stated": 0.0,
+   "both_stated": 1.15,
+   "not_taken_cm_stated_s2_blood_0.05": 1.15,
+   "not_taken_cm_stated_s2_blood_0.4": 1.15
+  },
+  "bown_c0.6": {
+   "today": 71.22,
+   "cm_stated": 0.0,
+   "cm_stated_of_all_cells": 0.0,
+   "blood_stated": 0.0,
+   "both_stated": 0.0,
+   "not_taken_cm_stated_s2_blood_0.05": 0.0,
+   "not_taken_cm_stated_s2_blood_0.4": 0.0
+  },
+  "bown_c0.75": {
+   "today": 71.05,
+   "cm_stated": 1.63,
+   "cm_stated_of_all_cells": 1.63,
+   "blood_stated": 0.0,
+   "both_stated": 1.63,
+   "not_taken_cm_stated_s2_blood_0.05": 1.63,
+   "not_taken_cm_stated_s2_blood_0.4": 1.63
+  },
+  "b0.05_c0.15": {
+   "today": 65.06,
+   "cm_stated": 0.68,
+   "cm_stated_of_all_cells": 0.68,
+   "blood_stated": 2.88,
+   "both_stated": 2.67,
+   "not_taken_cm_stated_s2_blood_0.05": 2.67,
+   "not_taken_cm_stated_s2_blood_0.4": 0.68
+  },
+  "b0.05_cown": {
+   "today": 64.04,
+   "cm_stated": 0.0,
+   "cm_stated_of_all_cells": 0.0,
+   "blood_stated": 2.04,
+   "both_stated": 2.04,
+   "not_taken_cm_stated_s2_blood_0.05": 2.06,
+   "not_taken_cm_stated_s2_blood_0.4": 0.0
+  },
+  "b0.05_c0.45": {
+   "today": 61.94,
+   "cm_stated": 0.08,
+   "cm_stated_of_all_cells": 0.0,
+   "blood_stated": 1.57,
+   "both_stated": 2.84,
+   "not_taken_cm_stated_s2_blood_0.05": 2.84,
+   "not_taken_cm_stated_s2_blood_0.4": 0.08
+  },
+  "b0.05_c0.6": {
+   "today": 64.88,
+   "cm_stated": 0.0,
+   "cm_stated_of_all_cells": 0.04,
+   "blood_stated": 3.26,
+   "both_stated": 3.26,
+   "not_taken_cm_stated_s2_blood_0.05": 3.26,
+   "not_taken_cm_stated_s2_blood_0.4": 0.0
+  },
+  "b0.05_c0.75": {
+   "today": 64.94,
+   "cm_stated": 3.83,
+   "cm_stated_of_all_cells": 3.83,
+   "blood_stated": 4.78,
+   "both_stated": 8.12,
+   "not_taken_cm_stated_s2_blood_0.05": 8.12,
+   "not_taken_cm_stated_s2_blood_0.4": 3.83
+  },
+  "b0.4_c0.15": {
+   "today": 71.51,
+   "cm_stated": -0.63,
+   "cm_stated_of_all_cells": -0.63,
+   "blood_stated": 3.56,
+   "both_stated": 3.76,
+   "not_taken_cm_stated_s2_blood_0.05": -0.63,
+   "not_taken_cm_stated_s2_blood_0.4": 3.76
+  },
+  "b0.4_cown": {
+   "today": 70.13,
+   "cm_stated": 0.0,
+   "cm_stated_of_all_cells": 0.0,
+   "blood_stated": 4.52,
+   "both_stated": 4.52,
+   "not_taken_cm_stated_s2_blood_0.05": 0.0,
+   "not_taken_cm_stated_s2_blood_0.4": 4.52
+  },
+  "b0.4_c0.45": {
+   "today": 68.71,
+   "cm_stated": 1.12,
+   "cm_stated_of_all_cells": 0.0,
+   "blood_stated": 4.88,
+   "both_stated": 5.47,
+   "not_taken_cm_stated_s2_blood_0.05": 1.12,
+   "not_taken_cm_stated_s2_blood_0.4": 5.47
+  },
+  "b0.4_c0.6": {
+   "today": 69.87,
+   "cm_stated": 0.0,
+   "cm_stated_of_all_cells": -0.96,
+   "blood_stated": 3.63,
+   "both_stated": 3.63,
+   "not_taken_cm_stated_s2_blood_0.05": 0.0,
+   "not_taken_cm_stated_s2_blood_0.4": 3.63
+  },
+  "b0.4_c0.75": {
+   "today": 70.28,
+   "cm_stated": -0.09,
+   "cm_stated_of_all_cells": 0.0,
+   "blood_stated": 3.32,
+   "both_stated": 4.61,
+   "not_taken_cm_stated_s2_blood_0.05": -0.09,
+   "not_taken_cm_stated_s2_blood_0.4": 4.61
+  }
+ }
+}
