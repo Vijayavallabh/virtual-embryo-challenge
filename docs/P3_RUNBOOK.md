@@ -302,7 +302,8 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
   `--architecture mithril-recipe-v1` and `--model sources-disclosed-by-email`; nothing about the methods goes in those
   fields, whose visibility is unknown. If the screened read of `docs/PLAN.md` decision log 2026-11-11 (c) returned a
   cardiomyocyte or blood share, the email also says which T1 upload or uploads take the share stated on the organisers'
-  Task 1 page, the date it was read, and that it is used without their confirmation (even if no file changed).
+  Task 1 page, the date it was read, and that it is used without their confirmation (even if no file changed). The
+  read of 2026-11-11 returned none (decision log 2026-11-11 (d)), so this does not apply.
 - **(user)** Final entries. The account page (seen in the site's public script, 2026-10-28): "The leaderboard shows
   your team's best score on each board, so there is nothing to nominate yet. In the final phase the captain picks
   which submission counts." While nominations are open, the captain sees a "Final" column in the team's submission

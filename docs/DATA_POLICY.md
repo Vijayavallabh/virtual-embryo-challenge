@@ -40,7 +40,8 @@ covers using them as model inputs when producing the test predictions (A20 passe
 fourth email). The exception covers those files only: external data from the validation stages and genotypes is still
 prohibited, and the test windows (T1 and T2 heart E12.5, T2 embryo E7.75, the beta-catenin KO) are unchanged. A
 second exception, by the captain's ruling of 2026-11-11, covers one share figure in one organiser statement on the
-Task 1 page and nothing else (2026-11-11 (a) below).
+Task 1 page and nothing else (2026-11-11 (a) below); its one read found no such statement, so nothing is used
+(2026-11-11 (b)).
 
 ## External data windows
 
@@ -815,3 +816,11 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   covers the Removed list's "any other property of a hidden target" and the block of 2026-11-04 on T1's composition.
   Nothing else changes: the page's other statements and the Task 2 and Task 3 pages stay withheld. Whenever the read
   returns a cardiomyocyte or blood share, the private email to the organisers before the first upload says so.
+- 2026-11-11 (b), process notes from the screened read of (a) (wf_dc78ec65-4a3, at 74834bd; `docs/PLAN.md` decision log
+  2026-11-11 (d)). One page, https://virtualembryo.ai/challenge/tasks/temporal. Each of the three agents checked that HEAD
+  was 74834bd with a clean tree, then made two plain curl requests with default headers (HTTP 200 each). Each stripped the
+  markup locally with `experiments/intake/page_text.py` and read the visible text to stdout; no output was saved to a file
+  and nothing was written. Outcome: not found (all three: category None; the auditor confirmed both screeners), so the
+  code returned no value and no sentence. Withheld, as one total: 3 other items on the page. The main session did not
+  open the agents' transcripts or the run's journal; deleting them is the captain's call. The exception of (a) is spent:
+  nothing from the page is used, and a second read needs a new ruling.

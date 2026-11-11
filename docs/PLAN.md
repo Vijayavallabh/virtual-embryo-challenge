@@ -2144,3 +2144,18 @@ open. No organiser reply to any of the four emails as of then.
   - **Priced and not taken.** With only the cardiomyocyte share stated, moving both uploads to it, with s2's blood at 40%,
     prices higher (+1.95 / +1.39 / +0.53). But blood values away from E10.5's own have no legal basis (2026-11-10 (a)), and
     the captain's ruling is for the rule above.
+- 2026-11-11 (d), the outcome of (c). The screened read (wf_dc78ec65-4a3, at 74834bd) found no statement about a change
+  to the T1 test target that carries a share figure in the visible text of the Task 1 page. Both screeners and the
+  auditor returned category None, and the auditor confirmed both screeners against the page. **By the rule of (c),
+  nothing changes.** T1's two uploads stay as built (s1 `--g-mom`, s2 `--g-mom --cm-share 0.60`), and no command, test,
+  rule, estimate or try count changes. No figure from the page reached the main session or any file. The read is final:
+  a second read needs a new ruling.
+  - **What the read cannot tell.** The statement seen on 2026-11-06 may have been taken down. It may also sit outside the
+    page's visible text, in a script or application payload, which (c) kept closed. The AI assistant recommends leaving it
+    there: the lever was worth about +0.4 to +2.9 on T1 if found and usable, and a payload read would also show whatever
+    else the application carries.
+  - **Disclosure.** The private email before the first upload has nothing to add for it: its trigger is a returned share.
+  - **A code check, not a try.** The `--blood-share` path, never used in a build before, was dry-run on T1:val at 74834bd
+    (DGX, `runs/dry_2026-11-11/`; validation board, never uploaded). Blood 0 with `--g-mom` built and passed `vec check`,
+    with blood at 0 and cardiomyocytes kept at 0.2650 of heart cells.
+  - Process notes: `docs/DATA_POLICY.md` 2026-11-11 (b).

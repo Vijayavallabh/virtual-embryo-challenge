@@ -3,6 +3,10 @@
 ## Current State
 
 **Last Updated:** 2026-11-11
+**2026-11-11, the Task 1 page statement (decision log 2026-11-11 (c), (d)):** the captain ruled a named exception to the
+held-out rule for one organiser statement (a share figure for the T1 test target). The rule was fixed and pushed before
+the read (74834bd). The screened read found no such statement on the page, so nothing changes: T1's uploads stay as
+built, the exception is spent, and no upload, build, rule or try count changed (T1 23, embryo 13, heart 3, T3 6).
 **2026-11-11, E16 and E17 run (decision log 2026-11-11 (a), (b)):** the embryo s2 stays fgw_shape0. On a backtest copying the test's
 sampling structure neither geometry beat fgw in any seed. Tries: T1 23, embryo 13, heart 3, T3 6. No upload, build or rule changed.
 **2026-11-10, the withheld protocol text opened through the screen (decision log 2026-11-10 (y), (z)):** no entry changes. The E12.5
