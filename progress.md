@@ -911,6 +911,9 @@ headroom tables in `experiments/harness/TRIES.md`):
 
 ## Evidence of Completion
 
+- [x] 2026-11-12, on the DGX at b3184c3 (clean tree; `runs/logs/checks_2026-11-12.log`): `uv lock --check` OK, ruff clean
+      on `src tests`, 1184 tests passed and 1 skipped (`tests/test_t2_latent.py`: torch is not importable), in 71 minutes.
+      `./init.sh` itself was not run there: its `uv sync --locked` would drop the gpu and jax groups.
 - [x] `./init.sh` on 2026-10-28: lock check, ruff clean, 402 tests pass. Recorded on 2026-10-19 (237 tests then):
       experiment tests 203 pass, 2 skipped locally (the T3 end-to-end tests, which pass on the DGX: 50 T3 tests in all).
 - [x] DGX: torch 2.14.1+cu130 with CUDA, jax 0.11.2, moscot 0.5.2, scvi-tools 1.5.1 import (runs/logs/setup2.log).
@@ -924,6 +927,10 @@ headroom tables in `experiments/harness/TRIES.md`):
 - On the DGX, do not run `./init.sh` as it is: its `uv sync --locked` would drop the gpu and jax groups, which the DGX
   syncs with `--group gpu --group jax` (`docs/COMPUTE.md`). Run `uv lock --check`, then
   `uv run --frozen --no-sync ruff check src tests` and `uv run --frozen --no-sync python -I -B -m pytest -q`.
+- The DGX venv has no torch, jax, scvi-tools or moscot today (checked 2026-11-12): the gpu and jax groups were synced
+  away at some point after `runs/logs/setup2.log`. Nothing frozen needs them (the archived builds at f337dc6 were made
+  in this environment, and M2 is not built), so leave the venv as it is until the freeze-morning rebuild is done: a
+  re-sync could change what the hash check compares.
 - Before choosing or changing work on an entry, read the guiding principle at the top of `AGENTS.md` and the headroom
   tables in `experiments/harness/TRIES.md` (after a kept change, rerun `python3 -I experiments/harness/headroom.py`,
   commit its output and copy the tables: `TRIES.md` rule 8).
