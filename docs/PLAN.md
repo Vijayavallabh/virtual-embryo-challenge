@@ -2231,3 +2231,25 @@ in `docs/ORGANIZER_QUESTIONS.md` (decision log 2026-11-10 (w), (x)).
     re-arguing them, (ii) looks for points that pay off in the worlds where those bets land, since only those worlds
     reach the top three, and (iii) brings each resulting change to the captain as a ruling request. Every report states
     the try counts.
+- 2026-11-12 (b), the campaign's first measurements and its devil's-advocate review. Written by the AI assistant.
+  - **K6a-K6c (T3, replicate fold; `experiments/harness/TRIES.md`).** Real cells of the sibling replicate's run inside the
+    prediction are not supported: -0.2 on rep1 and +1.0 on rep2 against s1's stand-in, where the rule needed more than
+    +1.0 on both. The sibling's own Mesp1-lineage cells carry +5 to +6.5, the shared genotype, which cannot carry to
+    another knockout. The transplant line stays closed and no ruling is requested. T3 tries 6 to 9.
+  - **The review** (the devil-advocate skill: one cold reviewer given only the claim, its evidence and the project's
+    rules; it read committed files). The plan under attack: measure the high-upside prunes, look for points that pay in
+    the worlds where the unvalidatable bets land, and build no new generative class unless a target-free gate passes.
+    - *Its strongest point.* The measured headroom lies behind the excluded class (T1 within-type states up to +5.05,
+      row T8; T3's within-lineage response 4.5 to 6.6, K6b minus K6a), and no generator has ever been scored: gate N18
+      stopped the built embryo candidate E14 on a variogram ratio whose excess is tiny beside the entry's own distance
+      from its targets.
+    - *Its three attacks, each checked from committed files.* (1) N18's failed check is worth about 0.03 board points:
+      landed. (2) Since fgw no embryo candidate has been positive on both backtests, and one change in about 35 tries
+      passed adoption: landed, as a base rate for every try that follows. (3) The ledger's target-free gates did not
+      predict scored results (E10's gate failed, E11 gained 2.13 on E7.5; N15 passed, E15 lost on both): landed.
+    - *Its estimate that the plan was a mistake:* 35%. Verdict: revise.
+  - **What changes.** The built generative candidate is scored instead of gated (row E21, registered before its run).
+    The embryo oracle ladder is dropped before registration: it would read both counted embryo targets, and nothing it
+    found could be adopted. No further T3 try is planned. Classes are closed by a score where a score is cheap, not by
+    a gate. One question goes to the captain with the next report: whether a model that no backtest can validate may
+    ever fill a second upload.
