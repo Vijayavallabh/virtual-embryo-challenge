@@ -1,0 +1,32 @@
+Tries E23a and E23b (commit 993d9edaedc48cfcd1b6d5eb26870f9433ddebca): recommend to the captain: embryo s2 = fgw_render_hi for the heart-series world
+E23b, fgw_render_hi confirmed on the two new truths: True
+E23a, fgw_late better than fgw_render_hi: False (mean over tasks +0.58)
+candidate fgw_render_hi, D above 0.3 on 4 of 4 tasks
+half T2e/E7.5+E8.5->E8.0: floor 50.00, fgw 65.99, fgw_shape0 66.74, fgw_render_hi 69.85, fgw_late 68.94
+  hi_vs_fgw: +3.86 (sd 0.22, ahead 10 of 10)
+  late_vs_fgw: +2.95 (sd 0.78, ahead 10 of 10)
+  late_vs_hi: -0.91 (sd 0.64, ahead 0 of 10)
+  shape0_vs_fgw: +0.75 (sd 0.36, ahead 10 of 10)
+  D (better of fgw and X, minus better of fgw and shape0): fgw_render_hi +3.11 (ahead 10), fgw_late +2.20 (ahead 10)
+  skills: fgw: de_score 0.668, de_direction 0.768, mmd_u 0.695, variogram 0.709, d2_shape 0.554, occupancy_dice 0.579, scale_log_ratio 0.574, neighborhood_mmd 0.652; fgw_render_hi: de_score 0.686, de_direction 0.770, mmd_u 0.768, variogram 0.781, d2_shape 0.554, occupancy_dice 0.579, scale_log_ratio 0.574, neighborhood_mmd 0.724; fgw_late: de_score 0.670, de_direction 0.774, mmd_u 0.757, variogram 0.759, d2_shape 0.508, occupancy_dice 0.545, scale_log_ratio 0.574, neighborhood_mmd 0.736
+late T2e/E7.5+E8.25_late->E8.0: floor 50.00, fgw 80.53, fgw_shape0 80.25, fgw_render_hi 82.07, fgw_late 85.47
+  hi_vs_fgw: +1.55 (sd 0.37, ahead 10 of 10)
+  late_vs_fgw: +4.94 (sd 0.64, ahead 10 of 10)
+  late_vs_hi: +3.39 (sd 0.73, ahead 10 of 10)
+  shape0_vs_fgw: -0.28 (sd 1.91, ahead 6 of 10)
+  D (better of fgw and X, minus better of fgw and shape0): fgw_render_hi +0.83 (ahead 8), fgw_late +4.22 (ahead 10)
+  skills: fgw: de_score 0.833, de_direction 0.925, mmd_u 0.850, variogram 0.868, d2_shape 0.624, occupancy_dice 0.528, scale_log_ratio 0.793, neighborhood_mmd 0.837; fgw_render_hi: de_score 0.806, de_direction 0.891, mmd_u 0.900, variogram 0.900, d2_shape 0.624, occupancy_dice 0.528, scale_log_ratio 0.793, neighborhood_mmd 0.886; fgw_late: de_score 0.840, de_direction 0.930, mmd_u 0.942, variogram 0.938, d2_shape 0.622, occupancy_dice 0.547, scale_log_ratio 0.793, neighborhood_mmd 0.939
+new1 T2e/E7.5+E8.5->E8.25_late: floor 50.00, fgw 75.97, fgw_shape0 76.72, fgw_render_hi 77.43, fgw_late 78.01
+  hi_vs_fgw: +1.46 (sd 0.09, ahead 10 of 10)
+  late_vs_fgw: +2.04 (sd 0.24, ahead 10 of 10)
+  late_vs_hi: +0.58 (sd 0.25, ahead 10 of 10)
+  shape0_vs_fgw: +0.75 (sd 0.41, ahead 9 of 10)
+  D (better of fgw and X, minus better of fgw and shape0): fgw_render_hi +0.70 (ahead 9), fgw_late +1.28 (ahead 10)
+  skills: fgw: de_score 0.731, de_direction 0.859, mmd_u 0.837, variogram 0.826, d2_shape 0.657, occupancy_dice 0.555, scale_log_ratio 0.606, neighborhood_mmd 0.805; fgw_render_hi: de_score 0.740, de_direction 0.864, mmd_u 0.860, variogram 0.857, d2_shape 0.657, occupancy_dice 0.555, scale_log_ratio 0.606, neighborhood_mmd 0.830; fgw_late: de_score 0.733, de_direction 0.860, mmd_u 0.858, variogram 0.841, d2_shape 0.709, occupancy_dice 0.537, scale_log_ratio 0.606, neighborhood_mmd 0.855
+new2 T2e/E7.5+E8.75->E8.5: floor 50.00, fgw 71.39, fgw_shape0 70.74, fgw_render_hi 72.81, fgw_late 72.07
+  hi_vs_fgw: +1.42 (sd 0.16, ahead 10 of 10)
+  late_vs_fgw: +0.68 (sd 0.34, ahead 10 of 10)
+  late_vs_hi: -0.74 (sd 0.40, ahead 1 of 10)
+  shape0_vs_fgw: -0.64 (sd 0.69, ahead 0 of 10)
+  D (better of fgw and X, minus better of fgw and shape0): fgw_render_hi +1.42 (ahead 10), fgw_late +0.68 (ahead 10)
+  skills: fgw: de_score 0.759, de_direction 0.816, mmd_u 0.769, variogram 0.717, d2_shape 0.591, occupancy_dice 0.517, scale_log_ratio 0.584, neighborhood_mmd 0.756; fgw_render_hi: de_score 0.776, de_direction 0.820, mmd_u 0.793, variogram 0.738, d2_shape 0.591, occupancy_dice 0.517, scale_log_ratio 0.584, neighborhood_mmd 0.780; fgw_late: de_score 0.761, de_direction 0.815, mmd_u 0.776, variogram 0.715, d2_shape 0.583, occupancy_dice 0.505, scale_log_ratio 0.584, neighborhood_mmd 0.786
