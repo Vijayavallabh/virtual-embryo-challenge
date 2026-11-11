@@ -1,0 +1,9 @@
+Try T29, truth at 0.35 of its depth (commit 4b72ecaa9970115ec9dfacf290ab98a0cba6c924, clean True): lib3_base beats s1_base by the rule: False
+mean board score: copy 51.46, s1_base 84.75, s1_base_lib3mix 81.01, lib3_base 77.64, lib12_base 67.91, lib3_base_thin 100.00
+  lib3_base - s1_base: -7.11 (sd 1.60, ahead 0 of 10); de_score +0.047, de_direction -0.044, mmd_u -0.135, variogram -0.156
+  s1_base_lib3mix - s1_base: -3.74 (sd 1.88, ahead 0 of 10); de_score +0.001, de_direction -0.006, mmd_u -0.083, variogram -0.057
+  lib3_base - s1_base_lib3mix: -3.37 (sd 1.51, ahead 0 of 10); de_score +0.046, de_direction -0.039, mmd_u -0.052, variogram -0.099
+  lib12_base - s1_base: -16.84 (sd 2.15, ahead 0 of 10); de_score -0.220, de_direction -0.255, mmd_u -0.351, variogram +0.278
+  lib3_base_thin - lib3_base: +22.36 (sd 1.25, ahead 10 of 10); de_score +0.053, de_direction +0.063, mmd_u +0.144, variogram +0.758
+  lib3_base_thin - s1_base: +15.25 (sd 1.59, ahead 10 of 10); de_score +0.099, de_direction +0.018, mmd_u +0.009, variogram +0.602
+median library size, first seed: copy 5487, s1_base 8294, s1_base_lib3mix 8821, lib3_base 10518, lib12_base 4913, lib3_base_thin 3677; whole stage 6723
