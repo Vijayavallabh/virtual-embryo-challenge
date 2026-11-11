@@ -1,0 +1,127 @@
+{
+  "date": "2026-11-12 04:42:41",
+  "git": {
+    "commit": "162a918",
+    "uncommitted": [],
+    "sha256": {
+      "src/vec/t1_scope.py": "f168b91040968e3c10dbc6607133d63e832481d896d5b928821957a79e18c6a3",
+      "src/vec/core.py": "b80a70f29d73c71b916e1615b764c3efb855f30a929f1ae9ed9655ca8dbf6206",
+      "configs/t1_chamber_classes.yaml": "fa627bb9d6f29f4b6ac9eac8f7897cfb2de66b39b4967df0c7465c7ed6664970",
+      "experiments/t1_scope/pseudo_task.py": "03e6730cad6863ff033ec02ffd834b8e017f84d5aa2650c4d6dbc754f203c3bd",
+      "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c"
+    }
+  },
+  "board": "T1:val",
+  "inputs": {
+    "data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+    "data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+    "data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504"
+  },
+  "truth": {
+    "library": "2",
+    "n_chamber": 1803,
+    "n_contamination": 0,
+    "contamination_labels_available": 0,
+    "categories": [
+      "blood",
+      "cm",
+      "endocardium",
+      "epicardium",
+      "vascular_endothelium"
+    ],
+    "chamber_scope": [
+      "cm",
+      "endocardium",
+      "epicardium",
+      "vascular_endothelium",
+      "blood"
+    ],
+    "contamination": 0.0,
+    "contamination_labels": [
+      "Foregut",
+      "Epithelium"
+    ],
+    "contamination_label_cells": null,
+    "truth_seed": 0,
+    "n_cells": 1803,
+    "cm_share_of_heart": 0.4464454976303317
+  },
+  "sibling_library": "1,3",
+  "n_cells": 5000,
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "frac": 0.1,
+  "build": "main",
+  "cm_delta": 0.1,
+  "blood_delta": 0.1,
+  "shift": {
+    "dampings": [
+      0.5,
+      1.0
+    ],
+    "flip_dampings": [
+      0.5
+    ],
+    "eps": 0.5,
+    "min_cells": 20,
+    "standin_momentum": false,
+    "n_held_flat": 23
+  },
+  "fallback_ref": {},
+  "momentum_start": "data/raw/T1/E8.5_RNA.h5ad",
+  "score_board_check": {
+    "seed": 0,
+    "score_board": 44.923780769946134,
+    "loop": 44.923780769946134,
+    "abs_diff": 0.0
+  },
+  "format_smoke": {
+    "ok": true,
+    "warnings": [],
+    "n_cells": 5000,
+    "n_genes": 32285,
+    "dtype": "float32",
+    "file_mb": 46.0,
+    "same_rows_as_reweight": true,
+    "board": "T1:val",
+    "limits": [
+      1000,
+      5118
+    ]
+  },
+  "seconds": 317.7,
+  "seconds_per_seed": [
+    102.8,
+    72.6,
+    73.0,
+    72.0,
+    71.7,
+    71.6,
+    71.8,
+    71.5,
+    72.4,
+    68.7
+  ],
+  "provenance": {
+    "commit": "162a91854f8a7ebbda5e3077ef282d1a04a17370",
+    "commit_at_write": "656cee4fd93bbffa5739a7627c02fc023ad7d469",
+    "tree_clean": false,
+    "unclean_paths": null,
+    "utc": "2026-11-11T23:12:42Z",
+    "inputs_sha256": {
+      "data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+      "data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+      "data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504"
+    }
+  }
+}
