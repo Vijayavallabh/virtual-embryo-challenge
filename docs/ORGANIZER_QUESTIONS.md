@@ -374,3 +374,26 @@ optional.
 > (Optional) Also, are the embryo-series stage labels gestational (plug-dated) or morphological?
 >
 > Thanks, Vijayavallabh (captain, Mithril)
+
+## Public Slack question (drafted 2026-11-11; the captain posts it)
+
+The captain, 2026-11-11: "yes, draft the Slack question", on the AI assistant's offer to draft a public question in
+#virtual-embryo-challenge (`docs/PLAN.md` decision log 2026-11-11 (d) and the answer to "what else can we do to reach
+top 3"). It asks a fourth time, now in public, what the 19 October follow-up (Q2), the fifth email and the Slack DM
+asked; none has an answer. The 2026-11-06 choice to post nothing in public is superseded for this question only. The
+answer decides T3's s2 by the ruling of 2026-11-06 (b): zero switches s2 to the barred s1; half, or nothing before T3's
+s2 goes up, keeps it. An answer after T3's s2 is up changes nothing. It holds nothing about our methods, files or any
+target: the gates and the worst value are in the public scorer, and the floor is the published wt_identity baseline's.
+Posted: _pending_ (record the date, and any answer here and in `docs/DATA_POLICY.md`). Text as drafted:
+
+> Hi organisers, a short scoring question about Task 3. It affects every team the same way, so I'm asking here.
+>
+> When the predicted severity slope has the wrong sign (beta <= 0) or a poor fit (R^2 <= 0.01), the current scorer
+> gives severity_slope its worst value, log(1e-3). That is the value the wt_identity baseline gets, so on the live
+> leaderboard this case scores skill 0.5. The Evaluation page and the competition proposal call this case "undefined",
+> which would suggest skill 0.
+>
+> Which will the final evaluation of the test boards use for this case: skill 0.5 or skill 0?
+>
+> We also asked by email. Answering here means every team works to the same rule. Thanks!
+> Vijayavallabh (captain, Mithril)
