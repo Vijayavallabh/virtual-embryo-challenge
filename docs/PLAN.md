@@ -2160,3 +2160,20 @@ open. No organiser reply to any of the four emails as of then.
     blood 0, with cardiomyocytes kept at 0.2650 of heart cells; and cardiomyocytes 0.659 with blood 0.05, each share as
     set.
   - Process notes: `docs/DATA_POLICY.md` 2026-11-11 (b).
+- 2026-11-11 (e), the captain, in the captain's words: "yes, draft the Slack question", then "rewrite the draft after
+  thorough introspection". The question on how a floored T3 severity scores goes to #virtual-embryo-challenge in public,
+  posted by the captain. It replaces, for this question only, the 2026-11-06 choice to post nothing in public. The ruling
+  of 2026-11-06 (b) is unchanged: an organiser's zero switches T3's s2 to the barred s1, and skill 0.5, a "yes" or
+  silence keeps it. Any other answer (for example "dropped") goes to the captain before T3's s2.
+  - **The rewrite.** A three-lens panel (wf_b4e17573-4cb: accuracy, strategy, public tone) found the first draft worse
+    than not posting, at about -0.1 to -0.2 T3. It argued in public for the zero reading, and it quoted the Evaluation page
+    and the proposal as calling the case "undefined", which no record we hold supports. The rewrite asks for a yes or no on
+    the scorer's present behaviour, and is worth about +0.03 to +0.1 T3 against not posting. Text and handling:
+    `docs/ORGANIZER_QUESTIONS.md`, "Public Slack question".
+  - **Correction.** The 19 October follow-up, the fifth email and the DM said the Evaluation page and the proposal call
+    this case "undefined". That is the AI assistant's paraphrase, and no record holds a quoted sentence. The scorer's own
+    comment calls the case "a finite floor, not credited and not dropped". The baseline's published 50 fixes only the
+    no-response branch, so it is no evidence for the beta and r2 cases. A24's working answer stays skill 0.5 at 0.85, now
+    resting on the scorer's comment and on P3 scores being published on upload (`ASSUMPTIONS.md`).
+  - **Worth.** It cannot move the standings: if the rule is zero, T3 loses 9 to 12.5 whatever the team does, and the
+    switch recovers 0.5 to 2.5. The post buys certainty on one T3 branch. Not posting is also defensible.

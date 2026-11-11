@@ -255,7 +255,8 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     2026-11-06, the captain's ruling ("go with your recommendation"; `docs/PLAN.md` decision log 2026-11-06 (b)):
     - The screened check before T3's first upload also looks for the organisers' answer to the fifth email, on how a
       floored severity scores (`docs/ORGANIZER_QUESTIONS.md`), and from 2026-11-11 in the DM and in the replies to the
-      public Slack question once the captain has posted it.
+      public Slack question once the captain has posted it. Only an organiser's answer counts; an answer other than
+      zero or 0.5 (for example "dropped") goes to the captain before T3's s2.
     - If they have said zero, T3's s2 is `runs/t3_build/barred_s1.h5ad`, even if the Gata4 files are allowed.
     - If they have said half, or nothing by then, T3's s2 stays the refused s1.
     - If the barred s1 went first and the Gata4 files are restricted before the last upload, the last upload is

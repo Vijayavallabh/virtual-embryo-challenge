@@ -43,7 +43,7 @@ ranked entries show that the specs reach teams. Their main use is scale, in the 
 | Generality as corrected (sixth email) | No ruling in advance. As described, more likely not one architecture under every task: about 0.35 eligible if our request is reached | The request stays, at no cost; no further work and no method change for it. The standings make reaching it unlikely: every team above us has to not ask or not qualify |
 | Scorer (18 Oct Q5; 19 Oct Q1) | The live board's metric set and build through the final evaluation; PR #6 not adopted; parity pairs not endorsed (0.8) | No change: no parity pair; the row-order seed fixed in code |
 | Leak report (18 Oct; 19 Oct Q8) | Thanks; no penalty for reporting; leaked values stay barred; targets and scoring unchanged (0.8) | No change: never used |
-| Wrong-sign severity (19 Oct Q2; fifth email; Slack DM) | Skill 0.5: the scorer returns the floor value, and the published wt_identity 50 needs that floor to score 0.5 (0.85) | Today's T3 s2 stands (decision log 2026-11-06 (b)). If they ever say zero, that ruling's switch applies |
+| Wrong-sign severity (19 Oct Q2; fifth email; Slack DM; the public Slack question of 2026-11-11) | Skill 0.5: the scorer's comment calls the case a finite floor, "not credited and not dropped", and P3 scores are published on upload, so a later change would rescore published results. The published wt_identity 50 fixes only the no-response branch, and the "undefined" label of our questions is our own paraphrase (decision log 2026-11-11 (e)) (0.85) | Today's T3 s2 stands (decision log 2026-11-06 (b)). If they ever say zero, that ruling's switch applies |
 | Gata4 replicates in T3 (19 Oct Q3; 28 Oct Q3) | Yes: the unlocked files may inform the beta-catenin prediction; external perturbation data of either gene stays barred (0.88) | Allowed branch for s1; s2 holds no Gata4 number. The pre-upload email says so |
 | Duplicated and interpolated records (19 Oct Q4) | Pipeline artefacts; truth sets processed alike, not cleaned (0.6) | No change |
 | z coordinate and test stacks (19 Oct Q5) | Points to the Data Protocol page; stored z as given; nothing more on the test stacks (0.6) | No change |
@@ -375,25 +375,38 @@ optional.
 >
 > Thanks, Vijayavallabh (captain, Mithril)
 
-## Public Slack question (drafted 2026-11-11; the captain posts it)
+## Public Slack question (drafted 2026-11-11, rewritten the same day; the captain posts it)
 
-The captain, 2026-11-11: "yes, draft the Slack question", on the AI assistant's offer to draft a public question in
-#virtual-embryo-challenge (`docs/PLAN.md` decision log 2026-11-11 (d) and the answer to "what else can we do to reach
-top 3"). It asks a fourth time, now in public, what the 19 October follow-up (Q2), the fifth email and the Slack DM
-asked; none has an answer. The 2026-11-06 choice to post nothing in public is superseded for this question only. The
-answer decides T3's s2 by the ruling of 2026-11-06 (b): zero switches s2 to the barred s1; half, or nothing before T3's
-s2 goes up, keeps it. An answer after T3's s2 is up changes nothing. It holds nothing about our methods, files or any
-target: the gates and the worst value are in the public scorer, and the floor is the published wt_identity baseline's.
-Posted: _pending_ (record the date, and any answer here and in `docs/DATA_POLICY.md`). Text as drafted:
+The captain, 2026-11-11: "yes, draft the Slack question", on the AI assistant's offer, then "rewrite the draft after
+thorough introspection". It asks in public what the 19 October follow-up (Q2), the fifth email and the Slack DM asked;
+none has an answer. The 2026-11-06 choice to post nothing in public is superseded for this question only (`docs/PLAN.md`
+decision log 2026-11-11 (e)). By the ruling of 2026-11-06 (b), an organiser's answer of zero switches T3's s2 to the
+barred s1. Skill 0.5, a "yes" to the confirmation, or no answer before T3's s2 goes up keeps it. Any other answer (for
+example "dropped") goes to the captain before T3's s2. An answer after T3's s2 is up changes nothing.
 
-> Hi organisers, a short scoring question about Task 3. It affects every team the same way, so I'm asking here.
->
-> When the predicted severity slope has the wrong sign (beta <= 0) or a poor fit (R^2 <= 0.01), the current scorer
-> gives severity_slope its worst value, log(1e-3). That is the value the wt_identity baseline gets, so on the live
-> leaderboard this case scores skill 0.5. The Evaluation page and the competition proposal call this case "undefined",
-> which would suggest skill 0.
->
-> Which will the final evaluation of the test boards use for this case: skill 0.5 or skill 0?
->
-> We also asked by email. Answering here means every team works to the same rule. Thanks!
-> Vijayavallabh (captain, Mithril)
+A three-lens panel (wf_b4e17573-4cb: accuracy, strategy, public tone) found the first draft worse than not posting:
+- It put "undefined" in the mouths of the Evaluation page and the proposal. No record we hold quotes either document
+  saying so; the label is our own paraphrase, first used in the 19 October follow-up. Our condensed Evaluation text gives
+  this case "worst = log(1e-3)". The scorer's comment calls it "a finite floor, not credited and not dropped", and the
+  scorer returns NaN ("undefined") only for board-level failures.
+- Citing "undefined, which would suggest skill 0" and offering 0 as an equal option argued in public for the outcome
+  that costs T3 9 to 12.5, and invited competitors to argue for it.
+- "Wrong sign" could be read as a negative log-slope, which is scored normally; the gate is on beta.
+- "We also asked by email" and the team signature pointed at unanswered mail and tied Mithril to the gated case.
+
+The rewrite asks for a yes or no on the code's present behaviour. It names the scorer's own conditions, with the
+no-response case beside them, and gives the value as the code's, not as a live observation. It says nothing about our
+entry. Expected value against not posting: about +0.03 to +0.1 T3, with an answer by the screened check at about 0.2.
+The first draft's was about -0.1 to -0.2.
+
+Handling: post it once, as one top-level message with no @-mention, soon and in US Pacific working hours. The captain
+does not argue in the thread and does not answer competitors, and replies only to clarify an organiser's unclear
+answer. The screened Slack check reads the replies. A reply quoting test-board numbers, veckit 0.1.2 or PR #6 is
+skipped. If nothing has come by about 19 November, one short reply may follow in the same thread (an @-mention is fine
+there). Posted: _pending_ (record the date, and any answer here and in `docs/DATA_POLICY.md`). Text:
+
+> Hi organisers, a quick Task 3 scoring check. Currently, veckit's `severity_slope` returns `log(1e-3)` when a
+> prediction shows no response, or when `beta <= 0` or `r2 <= 0.01` (wrong sign, or almost no fit). That is the value
+> `wt_identity` gets, so these cases score at the floor (skill 0.5). Can you confirm the final evaluation will score
+> them the same way? A yes or no is plenty. An answer here before the final uploads keeps every team on the same rule.
+> Thanks!
