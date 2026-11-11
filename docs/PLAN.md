@@ -2156,6 +2156,7 @@ open. No organiser reply to any of the four emails as of then.
     else the application carries.
   - **Disclosure.** The private email before the first upload has nothing to add for it: its trigger is a returned share.
   - **A code check, not a try.** The `--blood-share` path, never used in a build before, was dry-run on T1:val at 74834bd
-    (DGX, `runs/dry_2026-11-11/`; validation board, never uploaded). Blood 0 with `--g-mom` built and passed `vec check`,
-    with blood at 0 and cardiomyocytes kept at 0.2650 of heart cells.
+    (DGX, `runs/dry_2026-11-11/`; validation board, never uploaded). Both builds passed `vec check` with `--g-mom`:
+    blood 0, with cardiomyocytes kept at 0.2650 of heart cells; and cardiomyocytes 0.659 with blood 0.05, each share as
+    set.
   - Process notes: `docs/DATA_POLICY.md` 2026-11-11 (b).
