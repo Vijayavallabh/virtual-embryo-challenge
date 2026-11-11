@@ -50,7 +50,7 @@ from scipy import sparse
 
 from vec import harness, t1_scope
 from vec.adoption import SEEDS
-from vec.boards import RANKED_METRICS, REPO_ROOT, load_boards
+from vec.boards import RANKED_METRICS, load_boards
 from vec.core import counts_of, draw_balanced, quotas
 from vec.evaluate import SUBSAMPLE_FRAC, Stage, score_board, subsample
 from vec.prep import load_stage
