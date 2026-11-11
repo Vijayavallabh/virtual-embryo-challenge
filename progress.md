@@ -2,7 +2,10 @@
 
 ## Current State
 
-**Last Updated:** 2026-11-11
+**Last Updated:** 2026-11-12
+**2026-11-12, the public Slack question on floored T3 severity is posted (decision log 2026-11-11 (e)):** rewritten after a
+three-lens panel as a yes or no confirmation of the scorer's present behaviour; the captain posted it on 2026-11-12. An
+organiser's zero before T3's s2 switches s2 (2026-11-06 (b)); 0.5, a yes or silence keeps it. No upload, build or rule changed.
 **2026-11-11, the Task 1 page statement (decision log 2026-11-11 (c), (d)):** the captain ruled a named exception to the
 held-out rule for one organiser statement (a share figure for the T1 test target). The rule was fixed and pushed before
 the read (74834bd). The screened read found no such statement on the page, so nothing changes: T1's uploads stay as

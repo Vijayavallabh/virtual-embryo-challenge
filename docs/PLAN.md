@@ -2177,3 +2177,5 @@ open. No organiser reply to any of the four emails as of then.
     resting on the scorer's comment and on P3 scores being published on upload (`ASSUMPTIONS.md`).
   - **Worth.** It cannot move the standings: if the rule is zero, T3 loses 9 to 12.5 whatever the team does, and the
     switch recovers 0.5 to 2.5. The post buys certainty on one T3 branch. Not posting is also defensible.
+  - **Posted** on 2026-11-12 by the captain ("i posted it"). The thread is read only by the screened check; one short
+    follow-up in the same thread may go in if no organiser has answered by about 19 Nov.

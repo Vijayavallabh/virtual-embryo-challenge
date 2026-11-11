@@ -403,7 +403,8 @@ Handling: post it once, as one top-level message with no @-mention, soon and in 
 does not argue in the thread and does not answer competitors, and replies only to clarify an organiser's unclear
 answer. The screened Slack check reads the replies. A reply quoting test-board numbers, veckit 0.1.2 or PR #6 is
 skipped. If nothing has come by about 19 November, one short reply may follow in the same thread (an @-mention is fine
-there). Posted: _pending_ (record the date, and any answer here and in `docs/DATA_POLICY.md`). Text:
+there). Posted on 2026-11-12 by the captain (the captain's words: "i posted it"). The posted copy was not opened, so any
+edit before posting is not recorded. Answers: _pending_ (record any here and in `docs/DATA_POLICY.md`). Text as drafted:
 
 > Hi organisers, a quick Task 3 scoring check. Currently, veckit's `severity_slope` returns `log(1e-3)` when a
 > prediction shows no response, or when `beta <= 0` or `r2 <= 0.01` (wrong sign, or almost no fit). That is the value
