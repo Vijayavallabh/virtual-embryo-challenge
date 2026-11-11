@@ -2186,3 +2186,48 @@ in `docs/ORGANIZER_QUESTIONS.md` (decision log 2026-11-10 (w), (x)).
     switch recovers 0.5 to 2.5. The post buys certainty on one T3 branch. Not posting is also defensible.
   - **Posted** on 2026-11-12 by the captain ("i posted it"). The thread is read only by the screened check; one short
     follow-up in the same thread may go in if no organiser has answered by about 19 Nov.
+- 2026-11-12 (a), the captain's instruction, in the captain's words: "Our current best Virtual Embryo Challenge solutions
+  still don't beat Top 1 leaderboard score. Using your existing challenge context, code, and results, identify their
+  biggest weaknesses and improve them drastically—not just through minor tweaks. Focus on temporal cell-state prediction,
+  joint expression–spatial structure, and unseen-knockout generalization, prioritizing the failure modes revealed by
+  evaluation. Assume exclusive access to all otherwise-unused compute on this machine and the dgx until the deadline. Run
+  extensive parallel experiments, broad searches, unconventional approaches, and fundamental redesigns. Keep compute
+  productively occupied, scale promising ideas, and abandon weak ones based on reliable local evaluation. Continuously and
+  autonomously iterate: analyze failures → use /deep-research to investigate weaknesses and discover promising methods →
+  propose improvements → use /devil-advocate:devil-advocate to challenge assumptions and expose failure modes →
+  experiment, evaluate, and refine. Feed experimental findings, including negative results, back into both skills
+  throughout. Respect the challenge's relevant data restrictions and evaluation constraints; avoid leakage and leaderboard
+  overfitting. Preserve reproducible experiments, strongest checkpoints, and required audit logs. Do not consume official
+  submission attempts without authorization." This entry was written by the AI assistant.
+  - **How the AI assistant reads it; the captain can correct any of this.** It renews the campaign of 2026-11-09 (a) with a
+    wider brief: redesigns, not tweaks, on the three task types, a research, critique and experiment loop, and compute on
+    this machine as well as the DGX.
+  - **Lifted for this campaign:**
+    - the compute rule that heavy work never runs on the local machine (`AGENTS.md` invariants, `docs/COMPUTE.md`), for
+      its otherwise-unused GPUs and cores only. The competition files were copied from the DGX to this machine's `data/`
+      on 2026-11-12, with owner-only permissions and every file checked against `data/raw/SHA256SUMS`. The team API key
+      stays local and is not involved;
+    - the ledger's own closure of the depth line on the embryo board, for tries only (it was closed after tries E7 and
+      H3, not by the post-exposure block, and the exposure of 2026-11-04 showed no embryo file size). T1 depth and the
+      heart's depth stay closed;
+    - the earlier prunes that rested on an estimated gain or on the cost of a read of a counted target ("buys
+      evidence"): such a candidate or diagnostic may now run as a counted try, with its row first.
+  - **Still standing, unchanged:** everything listed as standing under 2026-11-09 (a). His words name the challenge's
+    data restrictions, leakage, leaderboard overfitting, audit logs and his authorisation for every official upload.
+    The AI assistant does not read them as lifting our own stricter safeguards: the post-exposure block, A15, the
+    frozen s2 and T3 rules, the heart's composition trend, row before run, try counting, the adoption rule or his
+    ruling for any change to an upload, and his upload gate. A candidate that needs one of them lifted goes to him as a
+    priced ruling request and changes nothing until he rules.
+  - **Compute found on 2026-11-12.** DGX: no free GPU (0 and 1 are held by two of the captain's own older processes at
+    0% utilisation, 2 to 7 by another user) and the CPUs are saturated by another user (load about 420 on 192 cores).
+    This machine: two A100 80 GB free and about 50 idle cores. The campaign therefore runs here first; the harness
+    reproduces the committed embryo scores here to four decimals (`runs/harness/smoke_local_20261112`, seeds 0 and 1,
+    fgw 61.3735 and 60.9573). A separate environment, `.venv-gpu` (the locked `gpu` and `jax` groups), leaves `.venv`
+    as `./init.sh` builds it. The DGX checkout and its environment are not touched.
+  - **What the first reading of the record shows** (before any new run). The earlier panels pruned most redesign classes
+    on estimates, not measurements, and the entries stand near the published baselines on every backtest that can
+    judge them; the committed estimate comes mostly from bets no backtest can score (T1's tissue mix, the heart's size
+    and scope, T3's run-sharing factor). So this campaign (i) measures the highest-upside prunes instead of
+    re-arguing them, (ii) looks for points that pay off in the worlds where those bets land, since only those worlds
+    reach the top three, and (iii) brings each resulting change to the captain as a ruling request. Every report states
+    the try counts.
