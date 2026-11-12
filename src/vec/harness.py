@@ -1023,6 +1023,22 @@ def _fgw_shape0_aligned(ctx: BuildContext) -> Stage:
     return _fgw(ctx, t_pos=0.0, move_coupling="aligned")
 
 
+def _fgw_aligned_series(ctx: BuildContext) -> Stage:
+    """Embryo try E25a: try E10's aligned moves with the series rendering of E24a (fgw_series' cells and expression)."""
+    return _fgw(ctx, move_coupling="aligned", expression="series")
+
+
+def _fgw_shape1_series(ctx: BuildContext) -> Stage:
+    """Embryo try E25b: the later bracket's geometry (t_pos = 1) with the series rendering of E24a."""
+    return _fgw(ctx, t_pos=1.0, expression="series")
+
+
+def _fgw_late_shape1(ctx: BuildContext) -> Stage:
+    """Embryo try E25c: the later bracket's cells alone at their own positions (t_mix = 1, t_pos = 1), at the size
+    rule: no cell and no move from the earlier bracket."""
+    return _fgw(ctx, t_pos=1.0, t_mix=1.0)
+
+
 # embryo try E15 (experiments/harness/TRIES.md; registered before its run, and run only if its target-free gate, the
 # diagnostic N15, passes): every number below is fixed in the row, one value each, no sweep (a swept value is a try).
 NBHD_K = 15  # cells per neighbourhood, self included, as the scorer's (T2 metrics `neighborhood_mmd`)
@@ -1456,6 +1472,21 @@ CANDIDATES = {
     "fgw_shape0_series": Candidate("fgw_shape0_series", frozenset({"T2"}), (), _fgw_shape0_series,
                                    {"what": "fgw_shape0 (the earlier bracket's geometry) with the series rendering",
                                     "rule": t2_build.SERIES_RULE, "scope": "whole"}, requires=_series_applies),
+    # embryo tries E25a-E25c (experiments/harness/TRIES.md, registered before their run): the geometry that goes with
+    # the series rendering, and the later bracket alone
+    "fgw_aligned_series": Candidate("fgw_aligned_series", frozenset({"T2"}), (), _fgw_aligned_series,
+                                    {"what": "fgw_series (the series rendering) with the moves taken from the aligned "
+                                             "coupling of try E10 (vec.core.aligned_coupling in the rotated common "
+                                             "frame; FGW's rotation kept)", "rule": t2_build.SERIES_RULE,
+                                     "alpha": t2_build.INTERP_ALPHA, "scope": "whole"}, requires=_series_applies),
+    "fgw_shape1_series": Candidate("fgw_shape1_series", frozenset({"T2"}), (), _fgw_shape1_series,
+                                   {"what": "fgw_shape1 (the later bracket's geometry, t_pos = 1) with the series "
+                                            "rendering", "rule": t2_build.SERIES_RULE, "scope": "whole"},
+                                   requires=_series_applies),
+    "fgw_late_shape1": Candidate("fgw_late_shape1", frozenset({"T2"}), (), _fgw_late_shape1,
+                                 {"what": "the later bracket's cells alone at their own positions (t_mix = 1, "
+                                          "t_pos = 1), scaled to the embryo size rule", "scope": "whole"},
+                                 requires=_interp),
     # embryo try E23 (experiments/harness/TRIES.md, registered before its run): the later bracket's cells only
     "fgw_late": Candidate("fgw_late", frozenset({"T2"}), (), _fgw_late,
                           {"what": "fgw's coupling, moves and size rule with every cell drawn from the later bracket "

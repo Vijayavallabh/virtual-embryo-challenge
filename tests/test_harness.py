@@ -687,6 +687,52 @@ def test_embryo_candidates_resize_to_the_size_rule_and_interpolate_inside_the_gu
     assert harness.t2_build.rms_radius(v.coords) == pytest.approx(want, rel=0.01)
 
 
+def test_e25_variants_reuse_the_series_rendering_and_change_only_positions_or_the_drawn_bracket(monkeypatch):
+    """Embryo tries E25a-E25c (experiments/harness/TRIES.md). fgw_aligned_series and fgw_shape1_series take the series
+    rendering's expression at fgw_aligned's and fgw_shape1's positions; fgw_late_shape1 is the later bracket's cells
+    alone at their own positions, at the size rule."""
+    rng = np.random.default_rng(41)
+    base = rng.gamma(2.0, 2.0, size=(3, len(GENES)))
+    before = _pool(1200, rng, base, [0.5, 0.3, 0.2])  # large enough that a later-only draw's radius is a steady one
+    after = _pool(3000, rng, base * 1.4, [0.3, 0.4, 0.3], scale=1.6, stretch=(1.0, 1.3, 1.0))
+    board = Board(key="pseudo:synthetic_embryo", task="T2", genes=list(GENES), needs_coords=True, setting="embryo",
+                  min_cells=100, max_cells=1000)
+    task = _task(**INTERP, key="syn_e25", inputs={"before": "T2/E7.25.h5ad", "after": "T2/E8.0.h5ad"})
+    tasks = {t.key: t for ts in load_tasks().values() for t in ts}
+    ctx = harness.BuildContext(task=harness.TaskView.of(task), board=board, inputs={"before": before, "after": after},
+                               seed=harness.BUILD_SEED_OFFSET + 3)
+    calls = []
+
+    def fake_series(b, a, res, genes, frac, seed):  # the rendering itself is tested in tests/test_t2_build.py
+        calls.append((len(res.rows), frac, tuple(seed)))
+        return np.full((len(res.rows), len(genes)), 7.0, np.float32), {}
+
+    monkeypatch.setattr(harness.t2_build, "series_rendered_expression", fake_series)
+    for name, twin in (("fgw_aligned_series", "fgw_aligned"), ("fgw_shape1_series", "fgw_shape1")):
+        c = CANDIDATES[name]
+        assert c.applies(task) and c.applies(tasks["T2e/E7.25+E8.0->E7.5"])
+        assert not c.applies(tasks["T2h/<=E9.5->E10.5"]) and not c.tuned_on
+        v, w = c.build(ctx), CANDIDATES[twin].build(ctx)
+        np.testing.assert_array_equal(v.coords, w.coords)  # the twin's positions, cell for cell
+        assert np.all(v.X == 7.0) and not np.all(w.X == 7.0)  # the expression is the rendering's
+    assert len(calls) == 2 and calls[0] == calls[1]
+    late = CANDIDATES["fgw_late_shape1"]
+    assert late.applies(task) and not late.applies(tasks["T2h/<=E9.5->E10.5"])
+    v = late.build(ctx)
+    Cb, Ca = (np.asarray(a.obsm["spatial_3D"], float)[:, :3] for a in (before, after))
+    Eb, Ea = (harness.dense(a[:, board.genes].X).astype(np.float32) for a in (before, after))
+    res = harness.t2_build.interpolate_clouds(Cb, Ca, Eb, Ea, 0.25 / 0.75, harness.count_for(board, before.n_obs),
+                                              ctx.seed, target_rms=harness.target_rms(ctx), t_pos=1.0, t_mix=1.0)
+    assert np.all(res.stage == 1)  # no cell of the earlier bracket
+    np.testing.assert_array_equal(v.X, Ea[res.rows])
+    assert harness.t2_build.rms_radius(v.coords) == pytest.approx(harness.target_rms(ctx), rel=0.01)
+    own = Ca[res.rows]  # their own positions up to the build's rotation and the size step: distances keep one ratio
+    i, j = rng.integers(0, len(own), 300), rng.integers(0, len(own), 300)
+    keep = np.linalg.norm(own[i] - own[j], axis=1) > 1e-6
+    ratio = np.linalg.norm(v.coords[i] - v.coords[j], axis=1)[keep] / np.linalg.norm(own[i] - own[j], axis=1)[keep]
+    assert ratio.std() / ratio.mean() < 1e-3
+
+
 def test_e12_shape0_aligned_keeps_shape0s_cells_and_size_and_changes_the_mapped_half_only():
     """Embryo try E12 (experiments/harness/TRIES.md): fgw_shape0's geometry with the moves of try E10's aligned
     coupling. The before bracket keeps its positions (t_pos = 0), so the two candidates differ only in where the mapped
