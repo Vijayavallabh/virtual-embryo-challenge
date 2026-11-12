@@ -15,7 +15,11 @@ recommendation, which leaves today's pair. It is a depth choice in effect (+27% 
 after the hidden E12.5 file's size and a cell count were pasted on 2026-11-04; the AI assistant holds neither number,
 the captain saw them. View: decline, unless an organiser's procedural answer (R-C) or a reason from the
 released-data table alone supports the switch. **R-C:** one procedural question to the
-organisers by email. T3 and the heart: no try kept and no request. Second cold review: its strongest point (T1
+organisers by email. Diagnostic E26: on a second, unrelated profile jump the depth top-up
+gains on all three practice tasks and the per-gene factor on one, so the factor's edge rests on the test pair's own
+kind of brackets (a caveat to R-A, which stands). The second research pass is in
+`experiments/research_2026_11_runs/REPORT2.md`: it supports the readings and names nothing new worth building.
+T3 and the heart: no try kept and no request. Second cold review: its strongest point (T1
 unpriced) was conceded and answered by T30. Tries: T1 27, embryo 27, heart 3, T3 9.
 **2026-11-12, the public Slack question on floored T3 severity is posted (decision log 2026-11-11 (e)):** rewritten after a
 three-lens panel as a yes or no confirmation of the scorer's present behaviour; the captain posted it on 2026-11-12. An
