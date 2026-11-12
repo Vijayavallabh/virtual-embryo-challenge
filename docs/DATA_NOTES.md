@@ -174,11 +174,16 @@ in `experiments/harness/TRIES.md`.
 
   | Stage, library | Cells | Chamber categories' share of all cells | Cardiomyocytes, share of heart cells | Blood, share of chamber cells | Median counts per cardiomyocyte |
   |---|---|---|---|---|---|
-  | E8.5, 1 and 2 | 9,996 and 6,791 | 0.31 and 0.32 | 0.77 and 0.77 | 0.05 and 0.05 | not read |
-  | E9.5, 1 and 2 | 6,291 and 10,766 | 0.47 and 0.49 | 0.66 and 0.66 | 0.03 and 0.02 | not read |
+  | E8.5, 1 and 2 | 9,996 and 6,791 | 0.31 and 0.32 | 0.77 and 0.77 | 0.05 and 0.05 | 16,113 and 15,564 |
+  | E9.5, 1 and 2 | 6,291 and 10,766 | 0.47 and 0.49 | 0.66 and 0.66 | 0.03 and 0.02 | 16,322 and 15,046 |
   | E10.5, 1 | 8,957 | 0.47 | 0.27 | 0.32 | 4,799 |
   | E10.5, 2 | 4,204 | 0.43 | 0.45 | 0.42 | 9,441 |
   | E10.5, 3 | 11,818 | 0.94 | 0.24 | 0.18 | 13,778 |
+
+  Median counts per chamber cell (2026-11-12, the census behind try T30): 14,755 and 13,990 at E8.5, 14,656 and
+  13,704 at E9.5, and 4,030, 6,148 and 10,503 at E10.5 (libraries 1, 2, 3). Four of the seven released libraries
+  are about 1.37 times deeper than library 3, and the pooled chamber base s1 draws (median 8,294) is shallower
+  than five of them.
 
   Libraries 1 and 2 of E10.5 are embryo portions like the earlier stages (pharyngeal, surrounding, progenitor and
   pericardial cells make up 53 to 57% of them). Library 3 is a dissected-heart sample: its non-chamber cells are 5.7%

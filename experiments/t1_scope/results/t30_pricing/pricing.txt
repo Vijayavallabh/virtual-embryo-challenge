@@ -1,0 +1,26 @@
+Try T30 (commit 2c0700daa9f85043dd08d88a86352b987e92a447): no recommendation: the pairs are within the priors' reach; the captain is shown the table
+expected better-of-two score by prior (main: census x flat; checks: latest x flat, census x like):
+  prior (depth x cm)            today   base_hedge     switched   | single arms:   s1_base    s1_cm60  lib3_base
+  census x flat                 89.03        86.81        92.00   |                  79.66      81.98      85.53
+  census x like                 88.29        90.98        92.85   |                  83.16      75.62      89.37
+  census x rich                 89.73        82.05        90.83   |                  75.67      89.67      81.15
+  latest x flat                 92.19        83.81        91.76   |                  81.16      84.65      80.83
+  latest x like                 91.63        88.23        90.65   |                  85.52      78.08      84.49
+  latest x rich                 92.72        78.76        93.01   |                  76.18      92.70      76.66
+  flat x flat                   90.81        85.12        91.86   |                  80.51      83.48      82.89
+  flat x like                   90.17        89.43        91.61   |                  84.49      77.00      86.62
+  flat x rich                   91.41        80.20        92.06   |                  75.96      91.38      78.62
+mean score by scenario (truth depth relative to library 3, truth cardiomyocyte share):
+  scenario             copy    s1_base    s1_cm60  lib3_base  |       today   base_hedge     switched
+  d0.35 cm0.45        51.25      74.71      86.26      70.40  |       86.26        74.71        86.26
+  d0.35 cm0.60        51.04      68.46      89.08      65.44  |       89.08        68.46        89.08
+  d0.35 cmown         51.46      84.75      69.86      77.64  |       84.75        84.75        77.89
+  d0.68 cm0.45        51.39      83.89      96.54      80.34  |       96.54        84.37        96.69
+  d0.68 cm0.60        51.20      74.82      98.39      74.11  |       98.39        75.28        98.39
+  d0.68 cmown         51.90      97.20      68.77      90.18  |       97.20        97.24        90.18
+  d1.0 cm0.45         51.05      81.00      91.12      88.81  |       91.24        88.91        92.84
+  d1.0 cm0.60         51.02      74.19      94.81      80.85  |       94.81        80.85        94.81
+  d1.0 cmown          51.53      91.45      67.06      99.69  |       91.45        99.69        99.69
+  d1.37 cm0.45        51.08      77.84      84.93      88.01  |       85.09        88.01        88.52
+  d1.37 cm0.60        51.03      72.74      89.87      81.03  |       89.87        81.03        89.87
+  d1.37 cmown         51.19      85.04      65.11      98.14  |       85.04        98.14        98.14
