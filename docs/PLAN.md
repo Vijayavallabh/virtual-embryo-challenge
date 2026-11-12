@@ -2352,10 +2352,11 @@ in `docs/ORGANIZER_QUESTIONS.md` (decision log 2026-11-10 (w), (x)).
       trails by at most 1.0 and leads by up to 4.6, unless the captain thinks it more likely than not that E12.5 was
       sequenced much shallower than library 3. What the exposure of 2026-11-04 means for this choice is the captain's to
       weigh, and declining is the safe default.
-    - *R-C, one question to the organisers* (a draft for the captain's review, by email): whether the E7.75 sections
-      were imaged in the same run as E8.0's, and whether the E12.5 single-cell libraries were prepared and sequenced
-      like E10.5's dissected-heart library. Both ask about procedure, not about a measured value. View: worth one email;
-      R-A and R-B do not wait for an answer.
+    - *R-C, one question to the organisers* (a draft for the captain's review, by email, after the usual three-lens
+      review): whether the E7.75 sections were imaged in the same run as E8.0's, and whether the E12.5 single-cell
+      libraries were prepared and sequenced like E10.5's dissected-heart library. Both ask about procedure, not about a
+      measured value. View: optional. No organiser has answered any of the six emails; a private answer would settle R-A
+      or R-B, and a public one would also tell every team that the run matters. R-A and R-B do not wait for it.
   - **The estimate.** `results/upload_gate.json` is unchanged (184; 170 to 198), since its procedure reads the counted
     backtests. As a reading beside it: if E7.75 has E8.0's profile or one of its own, the embryo board would score well
     above the 60 the estimate uses (66 to 80 on the practice tasks for fgw alone), which is worth about 3 to 5 Overall
