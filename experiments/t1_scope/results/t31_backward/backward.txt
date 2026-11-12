@@ -1,0 +1,6 @@
+Try T31 (commit 178bcf23d3970eb83cb4b8341ed552ad811851e1, clean True): T30's deeper-truth scenario at a real one-day gap: unclear
+mean board score: copy 50.31, pooled_base 74.00, lib3_base 74.99, lib12_base 60.96
+truth: 8185 E9.5 chamber cells, median library 14009; median library of each arm, first seed: copy 6614, pooled_base 10474, lib3_base 12509, lib12_base 5624; largest number of times one cell is drawn, first seed: copy 1, pooled_base 2, lib3_base 3, lib12_base 4
+  lib3_base - pooled_base: +0.99 (sd 0.65, ahead 10 of 10); de_score -0.010, de_direction -0.006, mmd_u +0.013, variogram +0.050
+  lib12_base - pooled_base: -13.04 (sd 0.77, ahead 0 of 10); de_score -0.043, de_direction -0.080, mmd_u -0.174, variogram -0.238
+  lib3_base - lib12_base: +14.03 (sd 1.22, ahead 10 of 10); de_score +0.033, de_direction +0.074, mmd_u +0.187, variogram +0.288
