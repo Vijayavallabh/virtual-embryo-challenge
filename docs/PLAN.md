@@ -2297,6 +2297,15 @@ in `docs/ORGANIZER_QUESTIONS.md` (decision log 2026-11-10 (w), (x)).
       The AI assistant puts the chance that E7.75 shares E8.0's profile at about 0.4 to 0.5, down from 0.6 to 0.7 before
       N23. At 0.45 the switch is worth about +1.3 board points, +0.6 Overall, on the worst-case reading and about +2.0
       board points if the other cases are spread evenly.
+    - *A second profile jump (diagnostic E26, registered before its run; existing candidates).* On three practice tasks
+      across the jump from E8.5 to E8.75 the plain top-up to the deeper bracket's depth gains on all three (+1.06 to
+      +3.76, as on all four tasks of E24), but the per-gene factor adds to it on one only (+0.54, -2.26, -4.93). By the
+      reading fixed beforehand the factor's gain is so far shown on the test pair's own kind of brackets only. A target-
+      free reading gives the reason: across that jump the factor is measured on three labels holding 5% of the cells and
+      is half again as large as the embryonic cell types' own, while on the test pair it rests on four labels holding a
+      third of the cells and matches the embryonic types in size (0.79 against 0.88). R-A names the rendered file all
+      the same: against today's pair it gains more and breaks even lower than the top-up-only file (0.24 against 0.37)
+      on the tasks built from the test pair's brackets.
     - *Checked without reading any target.* On the test pair today's s1 cloud is flatter than every released stage
       (thinnest axis 0.24 of its RMS radius, against 0.37 to 0.53 in all nine stages), today's s2 sits at 0.48 and the
       candidate at 0.43. The candidate builds on the test pair and passes the cloud guard and the file check

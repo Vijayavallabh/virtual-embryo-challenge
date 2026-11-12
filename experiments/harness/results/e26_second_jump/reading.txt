@@ -1,0 +1,10 @@
+Diagnostic E26 (commit ed122835ad4983a6606fc2cdaff2f3d9a3c529d8): the rendering carries to the second profile jump: False (over fgw on 1 of 3 tasks, over the plain top-up on 1 of 3)
+x1 T2e/E8.0+E8.75->E8.25_late: floor 50.00, fgw 37.99, fgw_shape0 38.80, fgw_render_hi 41.75, fgw_series 42.29, fgw_aligned_series 42.47
+  series vs fgw +4.30 (10/10); series vs hi +0.54 (8/10); hi vs fgw +3.76 (10/10); aligned series vs series +0.18 (6/10); shape0 vs fgw +0.82 (10/10)
+  skills fgw / fgw_series: de_score 0.598 / 0.595, de_direction 0.641 / 0.642, mmd_u 0.385 / 0.481, variogram 0.348 / 0.468, d2_shape 0.487 / 0.487, occupancy_dice 0.518 / 0.518, scale_log_ratio 0.233 / 0.233, neighborhood_mmd 0.290 / 0.327
+x2 T2e/E8.0+E8.75->E8.5: floor 50.00, fgw 65.78, fgw_shape0 62.63, fgw_render_hi 68.18, fgw_series 65.92, fgw_aligned_series 64.44
+  series vs fgw +0.15 (7/10); series vs hi -2.26 (0/10); hi vs fgw +2.41 (10/10); aligned series vs series -1.48 (0/10); shape0 vs fgw -3.15 (0/10)
+  skills fgw / fgw_series: de_score 0.699 / 0.669, de_direction 0.709 / 0.696, mmd_u 0.632 / 0.657, variogram 0.571 / 0.596, d2_shape 0.566 / 0.566, occupancy_dice 0.585 / 0.585, scale_log_ratio 0.938 / 0.938, neighborhood_mmd 0.623 / 0.626
+x3 T2e/E8.25_late+E8.75->E8.5: floor 50.00, fgw 60.52, fgw_shape0 63.61, fgw_render_hi 61.58, fgw_series 56.64, fgw_aligned_series 55.96
+  series vs fgw -3.87 (0/10); series vs hi -4.93 (0/10); hi vs fgw +1.06 (10/10); aligned series vs series -0.68 (0/10); shape0 vs fgw +3.09 (10/10)
+  skills fgw / fgw_series: de_score 0.629 / 0.598, de_direction 0.677 / 0.617, mmd_u 0.620 / 0.578, variogram 0.574 / 0.541, d2_shape 0.389 / 0.389, occupancy_dice 0.520 / 0.520, scale_log_ratio 0.773 / 0.773, neighborhood_mmd 0.606 / 0.534
