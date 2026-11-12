@@ -1383,6 +1383,8 @@ RULE_LITERALS = {"COUNT_RULE_SEEDS": {10.0}, "COUNT_RULE_MIN_GAIN": {0.3}, "COUN
                  # 2026-11-12, tries E19a-E19c (experiments/harness/TRIES.md): sizes of the depth rendering's
                  # neighbour profile (principal components and neighbours), set before their run, not values of a stage
                  "RENDER_N_PC": {30.0}, "RENDER_K": {15.0},
+                 # 2026-11-12, try E27: the neighbourhood diagnostic N24b picked on a target-free round trip
+                 "RENDER_K_WIDE": {100.0},
                  # 2026-11-12, try E24 (the series rendering): the T3 script's gene_factor settings (rules.yaml,
                  # components.factor: eps 1e-5; its clip, 0.25-4, is made of allowed literals) and the smallest
                  # matched label, set before its run
@@ -1875,6 +1877,14 @@ def test_series_rendering_moves_the_shallower_bracket_by_the_extraembryonic_fact
     assert np.isfinite(X).all() and (X >= 0).all() and ((X > 0).sum(1) >= 1).all()
     X2, _ = tb.series_rendered_expression(before, after, res, panel, 0.5, seed=[1, 7])
     np.testing.assert_array_equal(X, X2)
+    # try E27: the default neighbourhood is unchanged, and a wider one changes the rendered cells only
+    X3, rec3 = tb.series_rendered_expression(before, after, res, panel, 0.5, seed=[1, 7], k=tb.RENDER_K)
+    np.testing.assert_array_equal(X, X3)
+    assert "k" not in rec and "k" not in rec3
+    X4, rec4 = tb.series_rendered_expression(before, after, res, panel, 0.5, seed=[1, 7], k=40)
+    assert rec4["k"] == 40 and not np.array_equal(X4[b], X[b])
+    np.testing.assert_array_equal(X4[a], X[a])
+    assert rec4["rendered_median"] == pytest.approx(rec["rendered_median"], rel=0.1)
     with pytest.raises(ValueError, match="no matched extraembryonic label"):
         tb.series_factor(sparse_counts(before, panel), before.obs["celltype"], sparse_counts(after, panel),
                          after.obs["celltype"], [])

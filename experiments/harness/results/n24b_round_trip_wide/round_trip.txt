@@ -1,0 +1,23 @@
+N24 (commit b3268d8585d3a16e79e8f0bfe2ea15c4c9896eaf, clean True; target-free): the top-up's round trip, thinning to 1/3.42
+E8.0 (28570 cells; median panel counts 212):
+  thin         mmd_u 0.05513 (sd 0.00175; gap closed 0.000)   variogram 0.06035 (sd 0.00177; gap closed 0.000)   median counts 62
+  true         mmd_u 0.00006 (sd 0.00014; gap closed 1.000)   variogram 0.00079 (sd 0.00013; gap closed 1.000)   median counts 214
+  poisson_k15  mmd_u 0.00435 (sd 0.00043; gap closed 0.922)   variogram 0.00561 (sd 0.00054; gap closed 0.919)   median counts 212
+  poisson_k50  mmd_u 0.00254 (sd 0.00030; gap closed 0.955)   variogram 0.00390 (sd 0.00028; gap closed 0.948)   median counts 213
+  poisson_k100 mmd_u 0.00195 (sd 0.00023; gap closed 0.966)   variogram 0.00343 (sd 0.00022; gap closed 0.956)   median counts 213
+  poisson_k200 mmd_u 0.00176 (sd 0.00024; gap closed 0.969)   variogram 0.00316 (sd 0.00027; gap closed 0.960)   median counts 214
+E8.25_late (54431 cells; median panel counts 233):
+  thin         mmd_u 0.05133 (sd 0.00115; gap closed 0.000)   variogram 0.06116 (sd 0.00049; gap closed 0.000)   median counts 67
+  true         mmd_u -0.00000 (sd 0.00010; gap closed 1.000)   variogram 0.00074 (sd 0.00007; gap closed 1.000)   median counts 232
+  poisson_k15  mmd_u 0.00227 (sd 0.00033; gap closed 0.956)   variogram 0.00486 (sd 0.00028; gap closed 0.932)   median counts 230
+  poisson_k50  mmd_u 0.00123 (sd 0.00022; gap closed 0.976)   variogram 0.00371 (sd 0.00030; gap closed 0.951)   median counts 231
+  poisson_k100 mmd_u 0.00104 (sd 0.00020; gap closed 0.980)   variogram 0.00341 (sd 0.00025; gap closed 0.956)   median counts 228
+  poisson_k200 mmd_u 0.00104 (sd 0.00020; gap closed 0.980)   variogram 0.00334 (sd 0.00024; gap closed 0.957)   median counts 230
+E8.5 (23710 cells; median panel counts 167):
+  thin         mmd_u 0.05659 (sd 0.00185; gap closed 0.000)   variogram 0.06250 (sd 0.00181; gap closed 0.000)   median counts 49
+  true         mmd_u -0.00000 (sd 0.00011; gap closed 1.000)   variogram 0.00075 (sd 0.00010; gap closed 1.000)   median counts 167
+  poisson_k15  mmd_u 0.00275 (sd 0.00038; gap closed 0.951)   variogram 0.00508 (sd 0.00033; gap closed 0.930)   median counts 167
+  poisson_k50  mmd_u 0.00141 (sd 0.00023; gap closed 0.975)   variogram 0.00378 (sd 0.00023; gap closed 0.951)   median counts 166
+  poisson_k100 mmd_u 0.00124 (sd 0.00017; gap closed 0.978)   variogram 0.00349 (sd 0.00021; gap closed 0.956)   median counts 167
+  poisson_k200 mmd_u 0.00144 (sd 0.00011; gap closed 0.975)   variogram 0.00367 (sd 0.00026; gap closed 0.953)   median counts 166
+reading: poisson_k100 goes to a confirmation try; mean ratio to poisson_k15: poisson_k50 0.641 (passes), poisson_k100 0.560 (passes), poisson_k200 0.560 (passes)

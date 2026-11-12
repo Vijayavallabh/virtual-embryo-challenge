@@ -929,6 +929,9 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
         X, _ = t2_build.blend_expression(before, after, res, g, frac, [ctx.seed, 7])
     elif expression == "series":  # try E24: the shallower bracket's cells in the deeper bracket's run profile
         X, _ = t2_build.series_rendered_expression(before, after, res, g, frac, [ctx.seed, 7])
+    elif expression == "series_wide":  # try E27: the same with the wider neighbourhood of diagnostic N24b
+        X, _ = t2_build.series_rendered_expression(before, after, res, g, frac, [ctx.seed, 7],
+                                                   k=t2_build.RENDER_K_WIDE)
     elif expression in RENDER_EXPRESSIONS:  # tries E19a-E19c: every cell moved to one depth (t2_build.RENDER_RULE)
         X, _ = t2_build.depth_rendered_expression(before, after, res, g, frac, [ctx.seed, 7],
                                                   mode=RENDER_EXPRESSIONS[expression])
@@ -1026,6 +1029,11 @@ def _fgw_shape0_aligned(ctx: BuildContext) -> Stage:
 def _fgw_aligned_series(ctx: BuildContext) -> Stage:
     """Embryo try E25a: try E10's aligned moves with the series rendering of E24a (fgw_series' cells and expression)."""
     return _fgw(ctx, move_coupling="aligned", expression="series")
+
+
+def _fgw_aligned_series_wide(ctx: BuildContext) -> Stage:
+    """Embryo try E27: fgw_aligned_series with each rendered cell's profile smoothed over RENDER_K_WIDE neighbours."""
+    return _fgw(ctx, move_coupling="aligned", expression="series_wide")
 
 
 def _fgw_shape1_series(ctx: BuildContext) -> Stage:
@@ -1479,6 +1487,13 @@ CANDIDATES = {
                                              "coupling of try E10 (vec.core.aligned_coupling in the rotated common "
                                              "frame; FGW's rotation kept)", "rule": t2_build.SERIES_RULE,
                                      "alpha": t2_build.INTERP_ALPHA, "scope": "whole"}, requires=_series_applies),
+    # embryo try E27 (experiments/harness/TRIES.md, registered before its run): the wider smoothing of N24b
+    "fgw_aligned_series_wide": Candidate("fgw_aligned_series_wide", frozenset({"T2"}), (), _fgw_aligned_series_wide,
+                                         {"what": "fgw_aligned_series with each rendered cell's profile taken from "
+                                                  "its RENDER_K_WIDE nearest cells instead of RENDER_K",
+                                          "rule": t2_build.SERIES_RULE, "k": t2_build.RENDER_K_WIDE,
+                                          "alpha": t2_build.INTERP_ALPHA, "scope": "whole"},
+                                         requires=_series_applies),
     "fgw_shape1_series": Candidate("fgw_shape1_series", frozenset({"T2"}), (), _fgw_shape1_series,
                                    {"what": "fgw_shape1 (the later bracket's geometry, t_pos = 1) with the series "
                                             "rendering", "rule": t2_build.SERIES_RULE, "scope": "whole"},

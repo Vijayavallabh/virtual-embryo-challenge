@@ -1858,6 +1858,7 @@ def depth_matched_expression(before: ad.AnnData, after: ad.AnnData, interp: Inte
 RENDER_MODES = ("mid", "lo", "hi")
 RENDER_N_PC = 30  # principal components of a bracket's log1p panel expression that define its cells' neighbours
 RENDER_K = 15  # neighbours, the cell itself included, whose proportions give a cell's expected profile for a top-up
+RENDER_K_WIDE = 100  # try E27: the neighbourhood the top-up's round trip picked (diagnostic N24b, target-free)
 RENDER_RULE = ("depth render: every drawn cell of a bracket is moved by the bracket's ratio target / d, d = the "
                "bracket's median counts per cell over all its cells. The target is DEPTH_RULE's log-linear depth "
                "(mid), the shallower bracket's median (lo) or the deeper bracket's median (hi). A ratio below 1 thins "
@@ -1868,16 +1869,17 @@ RENDER_RULE = ("depth render: every drawn cell of a bracket is moved by the brac
                "released")
 
 
-def _smoothed_props(E: np.ndarray, C: sparse.csr_matrix, lib: np.ndarray, rows: np.ndarray) -> np.ndarray:
-    """For each of `rows`, the mean over its RENDER_K nearest cells of the bracket (itself included, Euclidean in the
-    first RENDER_N_PC principal components of the bracket's log1p panel expression E) of panel counts / library size:
-    the expected panel proportions a top-up draws from. Dense float64, rows x genes."""
+def _smoothed_props(E: np.ndarray, C: sparse.csr_matrix, lib: np.ndarray, rows: np.ndarray,
+                    k: int = RENDER_K) -> np.ndarray:
+    """For each of `rows`, the mean over its k nearest cells of the bracket (default RENDER_K; itself included,
+    Euclidean in the first RENDER_N_PC principal components of the bracket's log1p panel expression E) of panel counts
+    / library size: the expected panel proportions a top-up draws from. Dense float64, rows x genes."""
     from sklearn.decomposition import PCA
     from sklearn.neighbors import NearestNeighbors
 
     n_pc = int(min(RENDER_N_PC, E.shape[0] - 1, E.shape[1]))
     Z = PCA(n_components=n_pc, svd_solver="full").fit_transform(np.asarray(E, dtype=np.float64))
-    k = int(min(RENDER_K, E.shape[0]))
+    k = int(min(k, E.shape[0]))
     nn = NearestNeighbors(n_neighbors=k).fit(Z).kneighbors(Z[rows], return_distance=False)
     P = sparse.diags(1.0 / np.asarray(lib, dtype=np.float64)) @ sparse.csr_matrix(C, dtype=np.float64)
     A = sparse.csr_matrix((np.full(nn.size, 1.0 / k), nn.ravel(), np.arange(0, nn.size + 1, k)),
@@ -1985,10 +1987,11 @@ def series_factor(C_from: sparse.csr_matrix, names_from, C_to: sparse.csr_matrix
 
 
 def series_rendered_expression(before: ad.AnnData, after: ad.AnnData, interp: Interpolation, genes, t: float,
-                               seed) -> tuple[np.ndarray, dict]:
+                               seed, k: int = RENDER_K) -> tuple[np.ndarray, dict]:
     """The interpolation's cells with the shallower bracket's cells moved into the deeper bracket's run profile
     (SERIES_RULE): expression (cells x genes, float32, log(1 + 1e4 c / N)) and a record. Needs obs["celltype"] and
-    obs["group"] on both brackets."""
+    obs["group"] on both brackets. k: the neighbours behind each cell's smoothed profile (default RENDER_K; try E27
+    passes RENDER_K_WIDE); with the default the result is what it was before k existed."""
     from vec.core import apply_gene_factor
 
     rng = np.random.default_rng(seed)
@@ -2006,10 +2009,12 @@ def series_rendered_expression(before: ad.AnnData, after: ad.AnnData, interp: In
     rec = {"rule": SERIES_RULE, "t": float(t), "median_depth": {"before": d[0], "after": d[1]},
            "moved": "before" if lo == 0 else "after", "labels": labels, "ratio": ratio,
            "sd_log_factor": float(np.log(phi).std()), "genes_above_2x": int((np.abs(np.log(phi)) > np.log(2.0)).sum())}
+    if k != RENDER_K:
+        rec["k"] = int(k)
     if m_lo.any():
         E, C, lib, other = parts[lo]
         rows = interp.rows[m_lo]
-        S = _smoothed_props(E, C, lib, rows)  # expected panel counts per unit of library
+        S = _smoothed_props(E, C, lib, rows, k)  # expected panel counts per unit of library
         P = S / np.maximum(S.sum(1, keepdims=True), 1e-12)  # the cell's smoothed proportions over the panel
         C0 = np.asarray(C[rows].toarray(), dtype=np.int32)
         C1 = apply_gene_factor(C0, phi, P, rng).astype(np.int64)

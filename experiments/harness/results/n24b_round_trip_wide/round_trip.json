@@ -1,0 +1,209 @@
+{
+ "what": "Diagnostic N24 of experiments/harness/TRIES.md (target-free, not a try): how faithful is the depth top-up of the",
+ "commit": "b3268d8585d3a16e79e8f0bfe2ea15c4c9896eaf",
+ "tree_clean": true,
+ "ratio": 3.42,
+ "stages": {
+  "E8.0": {
+   "cells": 28570,
+   "median_counts_deep": 212.0,
+   "median_phi": {},
+   "variants": {
+    "thin": {
+     "mmd_u": 0.05512808710336685,
+     "mmd_u_sd": 0.0017530152385297143,
+     "variogram": 0.0603525698184967,
+     "variogram_sd": 0.0017696829098752921,
+     "median_counts": 62.0,
+     "mmd_u_gap_closed": 0.0,
+     "variogram_gap_closed": 0.0
+    },
+    "true": {
+     "mmd_u": 5.8082940267922825e-05,
+     "mmd_u_sd": 0.00014371501505541597,
+     "variogram": 0.0007923860801383853,
+     "variogram_sd": 0.00012964027891251625,
+     "median_counts": 214.0,
+     "mmd_u_gap_closed": 1.0,
+     "variogram_gap_closed": 1.0
+    },
+    "poisson_k15": {
+     "mmd_u": 0.004347218340262771,
+     "mmd_u_sd": 0.0004340697854391669,
+     "variogram": 0.005613723583519459,
+     "variogram_sd": 0.0005442156771688401,
+     "median_counts": 212.0,
+     "mmd_u_gap_closed": 0.9221148524468626,
+     "variogram_gap_closed": 0.9190509968108778
+    },
+    "poisson_k50": {
+     "mmd_u": 0.002537932991981506,
+     "mmd_u_sd": 0.0002967565936176021,
+     "variogram": 0.00390312778763473,
+     "variogram_sd": 0.00028039827371223133,
+     "median_counts": 213.0,
+     "mmd_u_gap_closed": 0.9549691326630538,
+     "variogram_gap_closed": 0.9477714554884265
+    },
+    "poisson_k100": {
+     "mmd_u": 0.0019545209826901553,
+     "mmd_u_sd": 0.00023108315068087336,
+     "variogram": 0.003428937401622534,
+     "variogram_sd": 0.00022483275554597366,
+     "median_counts": 213.0,
+     "mmd_u_gap_closed": 0.9655631396575599,
+     "variogram_gap_closed": 0.9557329887854906
+    },
+    "poisson_k200": {
+     "mmd_u": 0.0017613640753552317,
+     "mmd_u_sd": 0.00023817433933766405,
+     "variogram": 0.0031638499349355698,
+     "variogram_sd": 0.0002711451586045474,
+     "median_counts": 214.0,
+     "mmd_u_gap_closed": 0.9690706190970539,
+     "variogram_gap_closed": 0.9601837384314532
+    }
+   }
+  },
+  "E8.25_late": {
+   "cells": 54431,
+   "median_counts_deep": 233.0,
+   "median_phi": {},
+   "variants": {
+    "thin": {
+     "mmd_u": 0.051326220482587816,
+     "mmd_u_sd": 0.0011486126159197415,
+     "variogram": 0.061157926172018054,
+     "variogram_sd": 0.000491804642020597,
+     "median_counts": 67.0,
+     "mmd_u_gap_closed": 0.0,
+     "variogram_gap_closed": 0.0
+    },
+    "true": {
+     "mmd_u": -3.668069621198811e-06,
+     "mmd_u_sd": 0.000103598722027467,
+     "variogram": 0.0007384023396298289,
+     "variogram_sd": 7.496500377131505e-05,
+     "median_counts": 232.0,
+     "mmd_u_gap_closed": 1.0,
+     "variogram_gap_closed": 1.0
+    },
+    "poisson_k15": {
+     "mmd_u": 0.0022676262073218823,
+     "mmd_u_sd": 0.0003261333496826051,
+     "variogram": 0.0048552856780588625,
+     "variogram_sd": 0.0002794297622218987,
+     "median_counts": 229.5,
+     "mmd_u_gap_closed": 0.9557510382156219,
+     "variogram_gap_closed": 0.9318617050036704
+    },
+    "poisson_k50": {
+     "mmd_u": 0.0012339738197624684,
+     "mmd_u_sd": 0.00021649866660686533,
+     "variogram": 0.0037136214785277845,
+     "variogram_sd": 0.00029587260255871243,
+     "median_counts": 231.0,
+     "mmd_u_gap_closed": 0.9758884750329269,
+     "variogram_gap_closed": 0.9507573222994672
+    },
+    "poisson_k100": {
+     "mmd_u": 0.001035250723361969,
+     "mmd_u_sd": 0.00019605534342158676,
+     "variogram": 0.0034142363350838424,
+     "variogram_sd": 0.00025449495303273554,
+     "median_counts": 228.5,
+     "mmd_u_gap_closed": 0.9797599639842106,
+     "variogram_gap_closed": 0.9557124282727363
+    },
+    "poisson_k200": {
+     "mmd_u": 0.0010388922761194407,
+     "mmd_u_sd": 0.0002048620476585482,
+     "variogram": 0.0033369772136211395,
+     "variogram_sd": 0.00023858750477289502,
+     "median_counts": 230.0,
+     "mmd_u_gap_closed": 0.9796890198839956,
+     "variogram_gap_closed": 0.9569911394667707
+    }
+   }
+  },
+  "E8.5": {
+   "cells": 23710,
+   "median_counts_deep": 167.0,
+   "median_phi": {},
+   "variants": {
+    "thin": {
+     "mmd_u": 0.05658843740820885,
+     "mmd_u_sd": 0.0018457265596402803,
+     "variogram": 0.06250042319297791,
+     "variogram_sd": 0.001806529885258018,
+     "median_counts": 49.0,
+     "mmd_u_gap_closed": 0.0,
+     "variogram_gap_closed": 0.0
+    },
+    "true": {
+     "mmd_u": -9.492039680480957e-07,
+     "mmd_u_sd": 0.00010978752428624285,
+     "variogram": 0.0007470873184502125,
+     "variogram_sd": 9.628977517124612e-05,
+     "median_counts": 167.0,
+     "mmd_u_gap_closed": 1.0,
+     "variogram_gap_closed": 1.0
+    },
+    "poisson_k15": {
+     "mmd_u": 0.0027498426847159863,
+     "mmd_u_sd": 0.00038458531516423315,
+     "variogram": 0.005077494587749243,
+     "variogram_sd": 0.00033476499472060995,
+     "median_counts": 167.0,
+     "mmd_u_gap_closed": 0.9513903215184856,
+     "variogram_gap_closed": 0.9298757353271137
+    },
+    "poisson_k50": {
+     "mmd_u": 0.0014137032674625516,
+     "mmd_u_sd": 0.00022892274611238585,
+     "variogram": 0.0037795006297528743,
+     "variogram_sd": 0.00023198848312448516,
+     "median_counts": 166.5,
+     "mmd_u_gap_closed": 0.9750014524609426,
+     "variogram_gap_closed": 0.9508947449014898
+    },
+    "poisson_k100": {
+     "mmd_u": 0.001239439845085144,
+     "mmd_u_sd": 0.0001669282688810361,
+     "variogram": 0.0034929192159324886,
+     "variogram_sd": 0.00021289727986637745,
+     "median_counts": 167.0,
+     "mmd_u_gap_closed": 0.9780808889561937,
+     "variogram_gap_closed": 0.9555354887538167
+    },
+    "poisson_k200": {
+     "mmd_u": 0.001439315383322537,
+     "mmd_u_sd": 0.00011383246639995639,
+     "variogram": 0.003672773530706763,
+     "variogram_sd": 0.00026466082869978187,
+     "median_counts": 166.0,
+     "mmd_u_gap_closed": 0.9745488567112217,
+     "variogram_gap_closed": 0.9526230256094821
+    }
+   }
+  }
+ },
+ "wide": true,
+ "reading": {
+  "qualifies": {
+   "poisson_k50": {
+    "passes": true,
+    "mean_ratio_to_base": 0.6410979114873462
+   },
+   "poisson_k100": {
+    "passes": true,
+    "mean_ratio_to_base": 0.5598006506975685
+   },
+   "poisson_k200": {
+    "passes": true,
+    "mean_ratio_to_base": 0.5601586379176957
+   }
+  },
+  "pick": "poisson_k100"
+ }
+}
