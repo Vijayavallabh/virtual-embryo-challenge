@@ -884,3 +884,17 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   - **The skill files.** The main session located and read the devil-advocate skill's instruction file inside the
     plugins folder of `~/.claude-account` (a by-name search confined to that folder) and the deep-research skill's
     reference files under `~/.claude/skills`. Neither is a session log, transcript, tool-output store or memory file.
+  - **The second research workflow** (wf_8782b4d2-c54; eleven agents, none failed). Three researchers used the web under
+    a brief that barred the challenge's site, leaderboard, board files and Slack, other teams' pages, measured external
+    data from the three embryonic-day windows and gene-level knockout findings, and told them to put no name, file name
+    or number of ours into any outbound request. Each raw note was screened by its own agent against this file's Removed
+    and Kept list before anything else read it; the synthesis, both counter-reviews and the final edit worked from the
+    screened notes, and a compliance auditor read the final text before the main session did. Removed by the three
+    screens, by class: one link that was not a publication (a tool's sign-up link); nothing in the hidden-target,
+    leaderboard, knockout or barred-window classes. One source (a public denoising benchmark's results page) was
+    withheld as a precaution, since a tie to the challenge could not be ruled out, and no finding cites it. The auditor
+    reworded one line of the counter-review record that quoted a passage cut upstream on a compliance flag (closest
+    class: an outside measurement in a barred window, unconfirmed) and removed nothing else. The released text is
+    `experiments/research_2026_11_runs/REPORT2.md`; the raw notes sit in the session's scratch folder and are not kept.
+    The agents' own reports of blocked pages or other slips were not collected by this workflow: the brief carried the
+    403 rule, and the main session read only the screened notes' findings and the audited report.

@@ -2354,6 +2354,26 @@ in `docs/ORGANIZER_QUESTIONS.md` (decision log 2026-11-10 (w), (x)).
     - *Attack: wait for E25 and send one note.* Conceded; this entry is that note.
     - *Its estimate that the claim as written was a mistake:* 40%. Verdict after the checks: proceed, with the T1 clause
       rewritten as request R-B and the chance behind R-A lowered.
+  - **The second research pass** (the deep-research skill in its light mode, workflow wf_8782b4d2-c54: three
+    researchers, a screen of each note, a synthesis, two counter-reviews, a final edit and a compliance audit; released
+    text `experiments/research_2026_11_runs/REPORT2.md`). It was given the campaign's findings and asked what the
+    literature offers on library depth in droplet single-cell RNA, on run-to-run detection in imaging transcriptomics
+    and on two uploads where the better counts. Ninety sources; the share of official sources (17.8%) is under the
+    skill's 20% gate, which the report states.
+    - *What it supports.* Depth carries into every metric of log-normalised data, and binomial thinning matches the
+      noise of UMI counts, so T29's and T30's thinned truths are a fair stand-in for a shallower sequencing of one
+      library, though not for a library with other background or chemistry. Per-gene detection differences between
+      imaging runs are documented, partly tied to barcode rounds, probe number and crowding, and not uniformly shared
+      across cell types; every published correction needs the target run's own cells, so an unseen run's profile cannot
+      be predicted: only covered. No validated method renders a library at a higher depth.
+    - *What it asks for, and where that stands.* Its first recipe, a check of what the rendering's gains were measured
+      against and one frozen table of second uploads scored as complements to the first, is what E24 and E25 are: the
+      gains are against fgw in the same run and seeds, the factor is fitted on the two brackets only, and the rules were
+      fixed before each run. Its second, one question to the captain about reopening T1's depth, is answered by T30 and
+      by R-B as framed above. A pooling-identity diagnostic, a sharper rendering tuned on a round trip, and an earlier-
+      side specialist by gene-wise thinning are not run: no request turns on them, and the second is the follow-up if
+      R-A is granted. Predicting the unseen run's profile and lifting depth with denoisers are judged not worth doing,
+      and are not done.
   - **What goes to the captain** (nothing changes until the captain rules; each with the AI assistant's view, which the
     captain can overrule).
     - *R-A, embryo second upload.* Replace fgw_shape0 by `fgw_aligned_series`. Gain +3.4 to +6.7 board points if E7.75
