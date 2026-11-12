@@ -1,0 +1,115 @@
+{
+ "task": "T2e/E6.75+E7.5->E7.25",
+ "name": "e725",
+ "t": 0.6666666666666666,
+ "before": "T2/E6.75.h5ad",
+ "after": "T2/E7.5.h5ad",
+ "gate": {
+  "DEFECT_XCORR": 0.3,
+  "DEFECT_THIN": 0.9
+ },
+ "commit": "798908aa7a62e52f11ec1b1eb0d570d7858b28d1",
+ "tree_clean": true,
+ "seeds": [
+  {
+   "seed": 0,
+   "build_seed": 1000000,
+   "xcorr_min": 0.5884874658929372,
+   "thin_ratio": 1.1908403143414013,
+   "thin_over_rms_at_t": 0.4492375008727352,
+   "thin_over_rms_before": 0.37724411532136254,
+   "thin_over_rms_after": 0.5318575964136574,
+   "defect": false
+  },
+  {
+   "seed": 1,
+   "build_seed": 1000001,
+   "xcorr_min": 0.6249831714664015,
+   "thin_ratio": 1.2163452396554335,
+   "thin_over_rms_at_t": 0.45885908385916474,
+   "thin_over_rms_before": 0.37724411532136254,
+   "thin_over_rms_after": 0.5318575964136574,
+   "defect": false
+  },
+  {
+   "seed": 2,
+   "build_seed": 1000002,
+   "xcorr_min": 0.6444221044103959,
+   "thin_ratio": 1.219193075730309,
+   "thin_over_rms_at_t": 0.4599334132598114,
+   "thin_over_rms_before": 0.37724411532136254,
+   "thin_over_rms_after": 0.5318575964136575,
+   "defect": false
+  },
+  {
+   "seed": 3,
+   "build_seed": 1000003,
+   "xcorr_min": -0.618176595390639,
+   "thin_ratio": 0.7776272106227441,
+   "thin_over_rms_at_t": 0.29335528912119596,
+   "thin_over_rms_before": 0.37724411532136254,
+   "thin_over_rms_after": 0.5318575964136577,
+   "defect": true
+  },
+  {
+   "seed": 4,
+   "build_seed": 1000004,
+   "xcorr_min": -0.6564360530203526,
+   "thin_ratio": 0.769970887393668,
+   "thin_over_rms_at_t": 0.29046698623802875,
+   "thin_over_rms_before": 0.37724411532136254,
+   "thin_over_rms_after": 0.5318575964136575,
+   "defect": true
+  },
+  {
+   "seed": 5,
+   "build_seed": 1000005,
+   "xcorr_min": -0.5963554654021348,
+   "thin_ratio": 0.7835871153611741,
+   "thin_over_rms_at_t": 0.2956036281116446,
+   "thin_over_rms_before": 0.37724411532136254,
+   "thin_over_rms_after": 0.5318575964136574,
+   "defect": true
+  },
+  {
+   "seed": 6,
+   "build_seed": 1000006,
+   "xcorr_min": 0.664023792916016,
+   "thin_ratio": 1.2214246195040177,
+   "thin_over_rms_at_t": 0.460775250016525,
+   "thin_over_rms_before": 0.37724411532136254,
+   "thin_over_rms_after": 0.5318575964136575,
+   "defect": false
+  },
+  {
+   "seed": 7,
+   "build_seed": 1000007,
+   "xcorr_min": 0.6299503815908098,
+   "thin_ratio": 1.2157227927002856,
+   "thin_over_rms_at_t": 0.4586242694082355,
+   "thin_over_rms_before": 0.37724411532136254,
+   "thin_over_rms_after": 0.5318575964136575,
+   "defect": false
+  },
+  {
+   "seed": 8,
+   "build_seed": 1000008,
+   "xcorr_min": -0.6530003875029282,
+   "thin_ratio": 0.7752617171730996,
+   "thin_over_rms_at_t": 0.2924629206374863,
+   "thin_over_rms_before": 0.37724411532136254,
+   "thin_over_rms_after": 0.531857596413657,
+   "defect": true
+  },
+  {
+   "seed": 9,
+   "build_seed": 1000009,
+   "xcorr_min": -0.5494539764743087,
+   "thin_ratio": 0.8015912416835481,
+   "thin_over_rms_at_t": 0.3023955788182626,
+   "thin_over_rms_before": 0.37724411532136254,
+   "thin_over_rms_after": 0.5318575964136574,
+   "defect": true
+  }
+ ]
+}

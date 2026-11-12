@@ -1,0 +1,46 @@
+Tries E25a-E25c (commit 798908aa7a62e52f11ec1b1eb0d570d7858b28d1): embryo s2 = fgw_aligned_series (replaces E24's recommendation); s1 stays fgw
+pairs of uploads, the better of the two per seed (all seeds):
+  s1, s2                                  m_H     m_E    G(p=0.3)  G(p=0.5)  G(p=0.7)  G(p=0.9)
+  fgw, fgw_shape0                         74.02   60.87    64.81    67.44    70.08    72.71
+  fgw, fgw_shape0_series                  77.16   60.01    65.15    68.58    72.01    75.45
+  fgw, fgw_aligned_series                 77.66   60.16    65.41    68.91    72.41    75.91
+  fgw, fgw_shape1_series                  76.69   59.95    64.97    68.32    71.67    75.02
+  fgw, fgw_late_shape1                    76.29   59.95    64.85    68.12    71.39    74.66
+  fgw_aligned, fgw_shape0                 74.10   60.24    64.40    67.17    69.94    72.71
+  fgw_aligned, fgw_shape0_series          77.12   60.22    65.29    68.67    72.05    75.43
+  fgw_aligned, fgw_aligned_series         77.62   60.22    65.44    68.92    72.40    75.88
+  fgw_aligned, fgw_shape1_series          76.68   60.22    65.16    68.45    71.74    75.04
+  fgw_aligned, fgw_late_shape1            76.26   60.22    65.03    68.24    71.45    74.66
+rule (1), against fgw_shape0_series as s2 beside fgw: fgw_aligned_series G(0.5) +0.32, ahead on 3 of 4 H tasks, passes True; fgw_shape1_series G(0.5) -0.26, ahead on 2 of 4 H tasks, passes False; fgw_late_shape1 G(0.5) -0.46, ahead on 1 of 4 H tasks, passes False
+rule (2): best aligned-first pair (fgw_aligned, fgw_aligned_series), G(0.5) +0.02 against (fgw, fgw_aligned_series); request False
+rule (3), reported: the same pairs over the defect seeds only:
+  s1, s2                                  m_H     m_E    G(p=0.3)  G(p=0.5)  G(p=0.7)  G(p=0.9)
+  fgw, fgw_shape0                         74.15   60.94    64.90    67.55    70.19    72.83
+  fgw, fgw_shape0_series                  77.35   60.08    65.26    68.71    72.17    75.62
+  fgw, fgw_aligned_series                 77.78   60.23    65.49    69.00    72.51    76.02
+  fgw, fgw_shape1_series                  76.74   60.03    65.04    68.38    71.72    75.07
+  fgw, fgw_late_shape1                    76.46   60.03    64.96    68.24    71.53    74.82
+  fgw_aligned, fgw_shape0                 74.12   60.49    64.58    67.31    70.03    72.76
+  fgw_aligned, fgw_shape0_series          77.14   60.47    65.47    68.81    72.14    75.48
+  fgw_aligned, fgw_aligned_series         77.62   60.47    65.62    69.05    72.48    75.90
+  fgw_aligned, fgw_shape1_series          76.70   60.47    65.34    68.59    71.83    75.08
+  fgw_aligned, fgw_late_shape1            76.32   60.47    65.23    68.40    71.57    74.74
+  open question for the captain: False
+half (10 defect seeds of 10): floor 50.00, fgw 65.99, fgw_shape0 66.74, fgw_series 73.39, fgw_shape0_series 74.01, fgw_aligned 65.93, fgw_aligned_series 73.43, fgw_shape1_series 71.34, fgw_late_shape1 69.09
+  against fgw (all; defect; clear seeds): fgw_shape0 +0.75 (10/10; +0.75; n/a), fgw_series +7.41 (10/10; +7.41; n/a), fgw_shape0_series +8.03 (10/10; +8.03; n/a), fgw_aligned -0.06 (3/10; -0.06; n/a), fgw_aligned_series +7.44 (10/10; +7.44; n/a), fgw_shape1_series +5.35 (10/10; +5.35; n/a), fgw_late_shape1 +3.10 (10/10; +3.10; n/a)
+  against fgw_shape0_series: fgw_aligned_series -0.58 (0/10), fgw_shape1_series -2.68 (0/10), fgw_late_shape1 -4.93 (0/10)
+late (6 defect seeds of 10): floor 50.00, fgw 80.53, fgw_shape0 80.25, fgw_series 83.96, fgw_shape0_series 83.44, fgw_aligned 81.31, fgw_aligned_series 84.80, fgw_shape1_series 84.29, fgw_late_shape1 85.62
+  against fgw (all; defect; clear seeds): fgw_shape0 -0.28 (6/10; +1.19; -2.49), fgw_series +3.43 (10/10; +3.34; +3.57), fgw_shape0_series +2.91 (10/10; +4.25; +0.90), fgw_aligned +0.78 (6/10; +2.17; -1.31), fgw_aligned_series +4.27 (10/10; +5.57; +2.32), fgw_shape1_series +3.76 (10/10; +5.11; +1.73), fgw_late_shape1 +5.09 (10/10; +6.47; +3.02)
+  against fgw_shape0_series: fgw_aligned_series +1.36 (10/10), fgw_shape1_series +0.85 (10/10), fgw_late_shape1 +2.18 (10/10)
+new1 (10 defect seeds of 10): floor 50.00, fgw 75.97, fgw_shape0 76.72, fgw_series 78.59, fgw_shape0_series 79.16, fgw_aligned 77.49, fgw_aligned_series 80.15, fgw_shape1_series 78.53, fgw_late_shape1 78.34
+  against fgw (all; defect; clear seeds): fgw_shape0 +0.75 (9/10; +0.75; n/a), fgw_series +2.62 (10/10; +2.62; n/a), fgw_shape0_series +3.19 (10/10; +3.19; n/a), fgw_aligned +1.52 (10/10; +1.52; n/a), fgw_aligned_series +4.18 (10/10; +4.18; n/a), fgw_shape1_series +2.56 (10/10; +2.56; n/a), fgw_late_shape1 +2.37 (10/10; +2.37; n/a)
+  against fgw_shape0_series: fgw_aligned_series +0.99 (10/10), fgw_shape1_series -0.63 (1/10), fgw_late_shape1 -0.82 (1/10)
+new2 (2 defect seeds of 10): floor 50.00, fgw 71.39, fgw_shape0 70.74, fgw_series 72.69, fgw_shape0_series 71.87, fgw_aligned 70.78, fgw_aligned_series 72.12, fgw_shape1_series 72.57, fgw_late_shape1 72.01
+  against fgw (all; defect; clear seeds): fgw_shape0 -0.64 (0/10; -1.86; -0.34), fgw_series +1.30 (10/10; +1.23; +1.32), fgw_shape0_series +0.48 (8/10; -0.82; +0.80), fgw_aligned -0.61 (1/10; -1.91; -0.28), fgw_aligned_series +0.73 (8/10; -0.63; +1.07), fgw_shape1_series +1.18 (8/10; -0.14; +1.51), fgw_late_shape1 +0.62 (8/10; -0.57; +0.92)
+  against fgw_shape0_series: fgw_aligned_series +0.25 (8/10), fgw_shape1_series +0.70 (10/10), fgw_late_shape1 +0.14 (6/10)
+e75 (10 defect seeds of 10): floor 50.00, fgw 61.12, fgw_shape0 62.95, fgw_series 58.84, fgw_shape0_series 60.36, fgw_aligned 63.25, fgw_aligned_series 61.29, fgw_shape1_series 57.73, fgw_late_shape1 51.16
+  against fgw (all; defect; clear seeds): fgw_shape0 +1.83 (10/10; +1.83; n/a), fgw_series -2.28 (0/10; -2.28; n/a), fgw_shape0_series -0.76 (1/10; -0.76; n/a), fgw_aligned +2.13 (10/10; +2.13; n/a), fgw_aligned_series +0.17 (5/10; +0.17; n/a), fgw_shape1_series -3.39 (0/10; -3.39; n/a), fgw_late_shape1 -9.96 (0/10; -9.96; n/a)
+  against fgw_shape0_series: fgw_aligned_series +0.93 (10/10), fgw_shape1_series -2.63 (0/10), fgw_late_shape1 -9.20 (0/10)
+e725 (5 defect seeds of 10): floor 50.00, fgw 58.78, fgw_shape0 53.67, fgw_series 52.19, fgw_shape0_series 47.38, fgw_aligned 57.20, fgw_aligned_series 50.78, fgw_shape1_series 50.99, fgw_late_shape1 44.44
+  against fgw (all; defect; clear seeds): fgw_shape0 -5.11 (0/10; -5.07; -5.16), fgw_series -6.59 (0/10; -6.43; -6.76), fgw_shape0_series -11.40 (0/10; -11.14; -11.67), fgw_aligned -1.59 (1/10; -1.23; -1.94), fgw_aligned_series -8.00 (0/10; -7.41; -8.59), fgw_shape1_series -7.79 (0/10; -7.41; -8.17), fgw_late_shape1 -14.34 (0/10; -14.18; -14.50)
+  against fgw_shape0_series: fgw_aligned_series +3.40 (10/10), fgw_shape1_series +3.61 (10/10), fgw_late_shape1 -2.94 (0/10)
