@@ -197,3 +197,17 @@ in `experiments/harness/TRIES.md`.
   Primitive Streak and SOM). The page puts the test target E7.75 in the MERFISH heart series with E8.0 ("sections from
   E7.75 to E9.5 were chosen to contain heart tissue"; one collection procedure for E7.75 and E8.0). Whether E7.75 is as
   deep as E8.0 is not known: it is a judgement from that text.
+- **Task 2 embryo: a series is not one run (diagnostic N23, 2026-11-12, target-free).** The per-gene factor
+  between two stages, measured on the extraembryonic cell types they label alike, is nearly one vector from E7.5
+  to E8.0, E8.25_late or E8.5 (Spearman 0.95 and 0.82 with the test pair's), and factors between neighbouring
+  stages do not go with it (-0.23 to +0.05): it is the sample's detection profile, not development. Two
+  neighbour steps change the profile as much as the depth step does (SD of the log factor 0.79 from E7.5 to
+  E8.0): E7.25 to E7.5 (0.88) and E8.5 to E8.75 (0.83), against 0.31 from E8.0 to E8.25_late, 0.46 from
+  E8.25_late to E8.5 and 0.57 from E6.75 to E7.25. E8.0, E8.25_late and E8.5 share a profile; E7.5 and E8.75
+  each have their own. So the hidden E7.75 may share E8.0's profile, E7.5's, or neither, and the organisers'
+  sentence about E7.75 to E9.5 does not decide which.
+- **Task 2 embryo: how thick the released clouds are (2026-11-12, target-free).** The thinnest principal axis
+  over the RMS radius is 0.38, 0.38, 0.53, 0.37, 0.41, 0.40, 0.50, 0.43 and 0.46 from E6.75 to E10.5 (25 to 44
+  section levels), with no difference between early and late stages. On the test pair the first upload's cloud
+  sits at 0.21 to 0.25 in every draw, E7.5's geometry at 0.47 to 0.51 and the aligned moves at 0.43 to 0.44
+  (`experiments/harness/results/diag_emb_coupling/`).

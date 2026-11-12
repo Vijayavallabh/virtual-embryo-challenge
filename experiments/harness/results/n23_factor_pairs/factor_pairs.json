@@ -1,0 +1,227 @@
+{
+ "what": "Diagnostic N23 of experiments/harness/TRIES.md (target-free, not a try): is the per-gene factor of the series",
+ "commit": "bba597ee033ad9374b90405f8f0b155897f9e501",
+ "tree_clean": true,
+ "board_panel": "T2:embryo:test_interp",
+ "n_genes": 497,
+ "rule": "series: the shallower bracket's drawn cells are moved by a per-gene factor and then to the deeper bracket's depth (RENDER_RULE, hi). The factor is the T3 script's gene_factor over the cell-type labels that both brackets hold by name with at least SERIES_MIN_CELLS cells each and that are extraembryonic (a name starting with EXE-, or the lineage group ExtraEmbryonicMeso): the ratio of the two brackets' share-weighted mean within-cell panel proportions, weights the shallower bracket's label shares, eps 1e-5, rescaled so the weighted total proportion is unchanged, clipped to 0.25-4. It is applied in count space (binomial thinning below 1, Poisson top-up from the cell's kNN-smoothed proportions above 1). The deeper bracket's cells stay as released",
+ "median_counts_per_cell": {
+  "E6.75": 30.0,
+  "E7.25": 35.0,
+  "E7.5": 62.0,
+  "E8.0": 212.0,
+  "E8.25_late": 233.0,
+  "E8.5": 166.0,
+  "E8.75": 130.0,
+  "E9.5": 75.0,
+  "E10.5": 56.0
+ },
+ "pairs": {
+  "E7.5->E8.0": {
+   "kind": "across the step",
+   "days": 0.5,
+   "labels": [
+    "Allantois",
+    "EXE-Endoderm",
+    "ExEM-1",
+    "ExEM-2"
+   ],
+   "sd_log_factor": 0.7936507342397423,
+   "genes_beyond_2x": 267,
+   "genes_at_the_clip": 82,
+   "depth_ratio": 3.4193548387096775
+  },
+  "E7.5->E8.25_late": {
+   "kind": "across the step",
+   "days": 0.8000000000000007,
+   "labels": [
+    "Allantois",
+    "EXE-Endoderm",
+    "ExEM-1",
+    "ExEM-2"
+   ],
+   "sd_log_factor": 0.8123755848670488,
+   "genes_beyond_2x": 261,
+   "genes_at_the_clip": 92,
+   "depth_ratio": 3.7580645161290325,
+   "spearman_with_test_pair": 0.9477064402744537
+  },
+  "E7.5->E8.5": {
+   "kind": "across the step",
+   "days": 1.0,
+   "labels": [
+    "Allantois",
+    "EXE-Endoderm",
+    "ExEM-1",
+    "ExEM-2"
+   ],
+   "sd_log_factor": 0.8255567637173221,
+   "genes_beyond_2x": 265,
+   "genes_at_the_clip": 104,
+   "depth_ratio": 2.6774193548387095,
+   "spearman_with_test_pair": 0.8198105987688201
+  },
+  "E7.5->E8.75": {
+   "kind": "across the step",
+   "days": 1.25,
+   "labels": [
+    "EXE-Endoderm",
+    "ExEM-1",
+    "ExEM-2"
+   ],
+   "sd_log_factor": 0.93802824066658,
+   "genes_beyond_2x": 315,
+   "genes_at_the_clip": 173,
+   "depth_ratio": 2.096774193548387,
+   "spearman_with_test_pair": 0.5279628810150588
+  },
+  "E7.25->E8.0": {
+   "kind": "across the step",
+   "days": 0.75,
+   "labels": [
+    "Allantois",
+    "EXE-Endoderm",
+    "ExEM-1",
+    "ExEM-2"
+   ],
+   "sd_log_factor": 0.8606529690188489,
+   "genes_beyond_2x": 316,
+   "genes_at_the_clip": 177,
+   "depth_ratio": 6.057142857142857,
+   "spearman_with_test_pair": 0.3949724953661953
+  },
+  "E6.75->E7.25": {
+   "kind": "one side",
+   "days": 0.5,
+   "labels": [
+    "Allantois",
+    "EXE-Ectoderm",
+    "EXE-Endoderm",
+    "ExEM-1",
+    "ExEM-2"
+   ],
+   "sd_log_factor": 0.5710554876854419,
+   "genes_beyond_2x": 94,
+   "genes_at_the_clip": 23,
+   "depth_ratio": 1.1666666666666667,
+   "spearman_with_test_pair": -0.03769802365170473
+  },
+  "E7.25->E7.5": {
+   "kind": "one side",
+   "days": 0.25,
+   "labels": [
+    "Allantois",
+    "EXE-Ectoderm",
+    "EXE-Endoderm",
+    "ExEM-1",
+    "ExEM-2"
+   ],
+   "sd_log_factor": 0.8835797659198958,
+   "genes_beyond_2x": 286,
+   "genes_at_the_clip": 147,
+   "depth_ratio": 1.7714285714285714,
+   "spearman_with_test_pair": -0.23437098442908313
+  },
+  "E6.75->E7.5": {
+   "kind": "one side",
+   "days": 0.75,
+   "labels": [
+    "Allantois",
+    "EXE-Ectoderm",
+    "EXE-Endoderm",
+    "ExEM-1",
+    "ExEM-2"
+   ],
+   "sd_log_factor": 0.9242421359778886,
+   "genes_beyond_2x": 307,
+   "genes_at_the_clip": 167,
+   "depth_ratio": 2.066666666666667,
+   "spearman_with_test_pair": -0.1972523151439626
+  },
+  "E8.0->E8.25_late": {
+   "kind": "one side",
+   "days": 0.3000000000000007,
+   "labels": [
+    "Allantois",
+    "EXE-Endoderm",
+    "ExEM-1",
+    "ExEM-2"
+   ],
+   "sd_log_factor": 0.30786782630369297,
+   "genes_beyond_2x": 22,
+   "genes_at_the_clip": 2,
+   "depth_ratio": 1.099056603773585,
+   "spearman_with_test_pair": 0.05498001055824428
+  },
+  "E8.25_late->E8.5": {
+   "kind": "one side",
+   "days": 0.1999999999999993,
+   "labels": [
+    "Allantois",
+    "EXE-Endoderm",
+    "ExEM-1",
+    "ExEM-2"
+   ],
+   "sd_log_factor": 0.4603398424499826,
+   "genes_beyond_2x": 63,
+   "genes_at_the_clip": 10,
+   "depth_ratio": 0.7124463519313304,
+   "spearman_with_test_pair": -0.1894844119654281
+  },
+  "E8.5->E8.75": {
+   "kind": "one side",
+   "days": 0.25,
+   "labels": [
+    "EXE-Endoderm",
+    "ExEM-1",
+    "ExEM-2"
+   ],
+   "sd_log_factor": 0.8327067476592888,
+   "genes_beyond_2x": 245,
+   "genes_at_the_clip": 83,
+   "depth_ratio": 0.7831325301204819,
+   "spearman_with_test_pair": -0.07962586186816079
+  },
+  "E8.0->E8.5": {
+   "kind": "one side",
+   "days": 0.5,
+   "labels": [
+    "Allantois",
+    "EXE-Endoderm",
+    "ExEM-1",
+    "ExEM-2"
+   ],
+   "sd_log_factor": 0.5340233229397701,
+   "genes_beyond_2x": 84,
+   "genes_at_the_clip": 12,
+   "depth_ratio": 0.7830188679245284,
+   "spearman_with_test_pair": -0.12181487175377949
+  },
+  "E8.0->E8.75": {
+   "kind": "one side",
+   "days": 0.75,
+   "labels": [
+    "EXE-Endoderm",
+    "ExEM-1",
+    "ExEM-2"
+   ],
+   "sd_log_factor": 0.8750022389829196,
+   "genes_beyond_2x": 252,
+   "genes_at_the_clip": 100,
+   "depth_ratio": 0.6132075471698113,
+   "spearman_with_test_pair": -0.1462047861444025
+  },
+  "E8.75->E9.5": {
+   "kind": "one side",
+   "days": 0.75,
+   "labels": [],
+   "note": "no matched label"
+  },
+  "E9.5->E10.5": {
+   "kind": "one side",
+   "days": 1.0,
+   "labels": [],
+   "note": "no matched label"
+  }
+ }
+}

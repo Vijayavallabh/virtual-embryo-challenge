@@ -1,0 +1,17 @@
+N23 (commit bba597ee033ad9374b90405f8f0b155897f9e501, clean True; target-free): the series factor between released stages, 497 panel genes
+  pair                      kind             days  labels  SD log factor  beyond 2x  at clip  depth ratio  Spearman with E7.5->E8.0
+  E7.5->E8.0                across the step  0.50       4          0.794        267       82         3.42  (itself)
+  E7.5->E8.25_late          across the step  0.80       4          0.812        261       92         3.76  +0.95
+  E7.5->E8.5                across the step  1.00       4          0.826        265      104         2.68  +0.82
+  E7.5->E8.75               across the step  1.25       3          0.938        315      173         2.10  +0.53
+  E7.25->E8.0               across the step  0.75       4          0.861        316      177         6.06  +0.39
+  E6.75->E7.25              one side         0.50       5          0.571         94       23         1.17  -0.04
+  E7.25->E7.5               one side         0.25       5          0.884        286      147         1.77  -0.23
+  E6.75->E7.5               one side         0.75       5          0.924        307      167         2.07  -0.20
+  E8.0->E8.25_late          one side         0.30       4          0.308         22        2         1.10  +0.05
+  E8.25_late->E8.5          one side         0.20       4          0.460         63       10         0.71  -0.19
+  E8.5->E8.75               one side         0.25       3          0.833        245       83         0.78  -0.08
+  E8.0->E8.5                one side         0.50       4          0.534         84       12         0.78  -0.12
+  E8.0->E8.75               one side         0.75       3          0.875        252      100         0.61  -0.15
+  E8.75->E9.5               one side         0.75  none
+  E9.5->E10.5               one side         1.00  none
