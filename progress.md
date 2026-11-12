@@ -937,6 +937,11 @@ headroom tables in `experiments/harness/TRIES.md`):
 
 ## Evidence of Completion
 
+- [x] 2026-11-12, on this machine at 4b14559 (clean tree; `runs/logs/checks_local_2026-11-12b.log`): `uv lock --check`
+      OK, ruff clean on `src tests`, 1191 tests passed and 1 skipped (`tests/test_t2_latent.py`: torch is not in the
+      standard environment), in 16 minutes. A first run at f6a62ed had 1 failure, a guard that pins the embryo build's
+      `--expression` choices; the test now includes `series` and still pins the default (4b14559). The commits after
+      4b14559 change records only. `./init.sh` itself was not run.
 - [x] 2026-11-12, on the DGX at b3184c3 (clean tree; `runs/logs/checks_2026-11-12.log`): `uv lock --check` OK, ruff clean
       on `src tests`, 1184 tests passed and 1 skipped (`tests/test_t2_latent.py`: torch is not importable), in 71 minutes.
       `./init.sh` itself was not run there: its `uv sync --locked` would drop the gpu and jax groups.
