@@ -855,3 +855,32 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     from the DGX to this machine's `data/` on 2026-11-12 for the campaign, with owner-only permissions; the released
     files were checked against `data/raw/SHA256SUMS`. Nothing was copied anywhere else, and the team API key was not
     involved.
+- 2026-11-12 (c), process notes from the campaign's second wave (`docs/PLAN.md` decision log 2026-11-12 (c)); written by
+  the AI assistant. The main session opened no raw research note, no agent transcript and no workflow journal.
+  - **Readings of released data.** Every reading behind the second wave used released or unlocked files only: the embryo
+    stages' counts, labels and coordinates (diagnostic N23, the lag-one reading, the clouds' thickness, the coupling's
+    defect flags) and the three T1 stages' libraries (the depth census). No test-board file, limit or count was read or
+    quoted. The practice tasks of tries E22 to E26 take released stages as targets; they are not in
+    `configs/pseudo_tasks.yaml` and never count for adoption.
+  - **A build on the test pair.** `build_test.py embryo --method fgw --move-coupling aligned --expression series` was
+    run once on the test board at the default build seed, to see whether request R-A's candidate passes the cloud guard
+    and the file check. It reads the two brackets and the board's panel and limits in code. Its printed record was not
+    read; from the written record only the fields that hold no cell number were read (the build tool masks the count),
+    and the file's coordinates gave one aspect ratio. The file sits in `runs/builds_check_local/`, is no entry and is
+    never uploaded.
+  - **Request R-B is a depth choice in effect.** Drawing T1's first upload from E10.5's dissected-heart library raises
+    the drawn cells' median library by 27%. Clause 2026-11-04 (f)(3) above closed T1's depth after the hidden E12.5
+    file's size and a cell count were pasted into the session, and sends any shift above 5% to the captain. The AI
+    assistant's context holds neither number; the captain saw them. So the request is recorded with this condition: it
+    is ruled on the released-data table of try T30 alone, or declined. T30's rule, fixed before its run, gives no
+    recommendation, and the AI assistant's advice is to decline (it first added a lean to the switch from a reading made
+    after the table; a side note to the captain flagged it the same day and the lean was withdrawn). No candidate's
+    depth is changed by these tries: T29 and T30 thin scenario truths, T30's deeper-truth scenario thins every arm and
+    the floor alike, and T29's one thinned arm (the base at the truth's own depth) was declared beforehand to decide
+    nothing.
+  - **The second devil's-advocate agent** got the claim, its evidence, a list of committed files it might read and the
+    project's rules, with the instruction to open nothing else, and nothing of the conversation. Its transcript was not
+    opened.
+  - **The skill files.** The main session located and read the devil-advocate skill's instruction file inside the
+    plugins folder of `~/.claude-account` (a by-name search confined to that folder) and the deep-research skill's
+    reference files under `~/.claude/skills`. Neither is a session log, transcript, tool-output store or memory file.
