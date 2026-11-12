@@ -319,8 +319,8 @@ def test_fgw_latent_keeps_fgw_geometry_and_changes_only_the_expression(monkeypat
 def test_the_expression_option_is_only_added_for_the_new_try():
     src = (REPO / "experiments" / "builds" / "build_test.py").read_text()
     assert '"latent"' in src and 'with_partners=a.expression in ("blend", "latent")' in src
-    # the entry's default stays the released cells
-    assert 'choices=("mixture", "depth", "blend", "latent"), default="mixture"' in src
+    # the entry's default stays the released cells ("series" joined the choices with tries E24 and E25, no entry)
+    assert 'choices=("mixture", "depth", "blend", "latent", "series"), default="mixture"' in src
     sys.path.insert(0, str(REPO / "experiments" / "builds"))
     import build_test
 
@@ -328,6 +328,7 @@ def test_the_expression_option_is_only_added_for_the_new_try():
     base = ["embryo", "--method", "fgw", "--out", "runs/x/T2embryo_s1.h5ad"]
     assert ap.parse_args(base).expression == "mixture" and ap.parse_args(base).seed >= harness.BUILD_SEED_OFFSET
     assert ap.parse_args([*base, "--expression", "latent"]).expression == "latent"
+    assert ap.parse_args([*base, "--expression", "series"]).expression == "series"
 
 
 # ------------------------------------------------------------------------------------------------ the fidelity gate N18
