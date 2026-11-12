@@ -2340,8 +2340,8 @@ in `docs/ORGANIZER_QUESTIONS.md` (decision log 2026-11-10 (w), (x)).
       check conceded something else: profile jumps occur inside each series, so the chance that E7.75 shares E8.0's
       profile is lower than the organisers' text alone suggested.
     - *Attack: wait for E25 and send one note.* Conceded; this entry is that note.
-    - *Its estimate that the claim as written was a mistake:* 40%. Verdict after the checks: proceed if the captain
-      rules on the two requests below; the T1 clause was rewritten.
+    - *Its estimate that the claim as written was a mistake:* 40%. Verdict after the checks: proceed, with the T1 clause
+      rewritten as request R-B and the chance behind R-A lowered.
   - **What goes to the captain** (nothing changes until the captain rules; each with the AI assistant's view, which the
     captain can overrule).
     - *R-A, embryo second upload.* Replace fgw_shape0 by `fgw_aligned_series`. Gain +3.4 to +6.7 board points if E7.75
