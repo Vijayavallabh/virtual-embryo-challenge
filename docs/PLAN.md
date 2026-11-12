@@ -2328,11 +2328,14 @@ in `docs/ORGANIZER_QUESTIONS.md` (decision log 2026-11-10 (w), (x)).
       is also taken as the guide to the cell mix, but trails by 0.43 and 0.98 under two of the three priors in which
       only E10.5's three libraries inform the depth. Over the nine priors its largest shortfall is 0.98, today's pair's
       4.56. All sizes are zero-gap upper bounds; the order is what was read.
-    - *Why it is the captain's alone.* The base change raises the drawn cells' median library by 27%, and
-      `docs/DATA_POLICY.md` 2026-11-04 (f)(3) sends any shift above 5% to the captain; that clause exists because the AI
-      assistant saw file properties of the hidden E12.5 file on 2026-11-04 (its present context holds none of them). A
-      switch also means a new s1 build whose adopted steps (Feng's direction, R1, R2, the g_mom factors) were all
-      checked on the pooled base, about a day of work with the rebuild rehearsal.
+    - *Why this is not an ordinary ruling.* The base change raises the drawn cells' median library by 27%, so it is a
+      depth choice in effect, and `docs/DATA_POLICY.md` 2026-11-04 (f)(3) sends any shift above 5% to the captain. That
+      clause exists because the size and a cell count of the hidden E12.5 file were pasted into the session on
+      2026-11-04; together they hint at E12.5's depth. The AI assistant's present context holds neither number, but the
+      captain saw them. A ruling swayed by them would rest the entry on a property of a hidden target, which the data
+      rules forbid, and nobody who saw them can be sure of setting them aside. A switch would also mean a new s1 build
+      whose adopted steps (Feng's direction, R1, R2, the g_mom factors) were all checked on the pooled base, about a day
+      of work with the rebuild rehearsal.
   - **Heart and T3.** No try and no request. A reversal of the heart's last step was checked on the released ladder and
     pruned before running: the reversal is there at quarter-day gaps and gone at one-day gaps. T3's transplant line was
     closed in (b); the idea of a depth-free twin of s1 in T3's second slot is not put forward, because the frozen rules
@@ -2357,10 +2360,13 @@ in `docs/ORGANIZER_QUESTIONS.md` (decision log 2026-11-10 (w), (x)).
       was measured like E8.0, +0.9 if it is deep with a profile of its own, loss 1.4 if it is shallow with a profile of
       its own, nothing if it was measured like E7.5; break-even chance about a quarter. View: yes.
     - *R-B, Task 1 first upload.* Keep the pooled base, or draw the base from library 3 at library 3's mix with today's
-      s2 unchanged. T30's rule gives no recommendation. View: a mild lean to the switch, since across the nine priors it
-      trails by at most 1.0 and leads by up to 4.6, unless the captain thinks it more likely than not that E12.5 was
-      sequenced much shallower than library 3. What the exposure of 2026-11-04 means for this choice is the captain's to
-      weigh, and declining is the safe default.
+      s2 unchanged. T30's rule, fixed before its run and read on released data only, gives no recommendation, which
+      leaves today's pair. View, revised the same day after a side note to the captain: decline. The AI assistant first
+      leaned to the switch on a reading made after the table was seen (it trails by at most 1.0 and leads by up to 4.6
+      across the nine priors); that lean is withdrawn, because it is not the pre-set rule, any rule written now would be
+      written knowing its outcome, and the captain's own judgement on E12.5's depth cannot be assumed free of the pasted
+      numbers. The clean ways to reopen it are an organiser's answer about how the E12.5 libraries were prepared (R-C)
+      or a reason the captain can state from the released-data table alone.
     - *R-C, one question to the organisers* (a draft for the captain's review, by email, after the usual three-lens
       review): whether the E7.75 sections were imaged in the same run as E8.0's, and whether the E12.5 single-cell
       libraries were prepared and sequenced like E10.5's dissected-heart library. Both ask about procedure, not about a

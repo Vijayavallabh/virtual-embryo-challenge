@@ -10,9 +10,11 @@ released T1 libraries span 4,030 to 14,755 counts per chamber cell in two kinds 
 fgw_shape0 to `fgw_aligned_series` (tries E24, E25): as better of two against today's pair +3.4 to +6.7 board points
 if E7.75 was measured like E8.0, +0.9 if deep with a profile of its own, -1.4 on the backtest built like the test
 pair, 0 if measured like E7.5; break-even chance about a quarter against the AI assistant's 0.4 to 0.5; view: yes.
-**R-B, T1 s1's base:** today's pooled base or library 3's cells (tries T27 to T30): T30's rule gives no
-recommendation; the switch leads by up to 4.6 and trails by at most 1.0 across nine priors, at zero time gap; a mild
-lean to the switch, and the depth clause makes it the captain's alone. **R-C:** one procedural question to the
+**R-B, T1 s1's base:** today's pooled base or library 3's cells (tries T27 to T30): T30's pre-set rule gives no
+recommendation, which leaves today's pair. It is a depth choice in effect (+27% median library), the choice closed
+after the hidden E12.5 file's size and a cell count were pasted on 2026-11-04; the AI assistant holds neither number,
+the captain saw them. View: decline, unless an organiser's procedural answer (R-C) or a reason from the
+released-data table alone supports the switch. **R-C:** one procedural question to the
 organisers by email. T3 and the heart: no try kept and no request. Second cold review: its strongest point (T1
 unpriced) was conceded and answered by T30. Tries: T1 27, embryo 27, heart 3, T3 9.
 **2026-11-12, the public Slack question on floored T3 severity is posted (decision log 2026-11-11 (e)):** rewritten after a
