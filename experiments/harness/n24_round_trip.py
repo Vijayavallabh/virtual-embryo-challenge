@@ -58,6 +58,7 @@ N_RENDER = 6000  # cells of half A rendered and scored
 N_TRUTH = 6000  # cells of half B scored against
 SCORER_SEEDS = (0, 1, 2, 3, 4)
 KS = (15, 30, 50)
+KS_WIDE = (15, 50, 100, 200)  # N24b (--wide), added after N24: the distances were still falling at 50; Poisson only
 N_PC = t2_build.RENDER_N_PC
 ALPHA_CAP = 1e6
 VARIANTS = ("thin", "true", *[f"poisson_k{k}" for k in KS], *[f"post_k{k}" for k in KS], "self")
@@ -124,7 +125,12 @@ def main(argv=None) -> None:
 
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--out", required=True)
+    ap.add_argument("--wide", action="store_true", help="N24b: Poisson draws at 15, 50, 100 and 200 neighbours")
     a = ap.parse_args(argv)
+    global KS, VARIANTS
+    if a.wide:
+        KS = KS_WIDE
+        VARIANTS = ("thin", "true", *[f"poisson_k{k}" for k in KS])
     commit = harness._git("rev-parse", "HEAD")
     clean = harness._git("status", "--porcelain", "--untracked-files=no") == ""
     genes = list(load_boards()[BOARD].genes)
@@ -144,7 +150,8 @@ def main(argv=None) -> None:
         rrng = np.random.default_rng([RENDER_SEED, si])
         rows = np.sort(rrng.choice(ok, min(N_RENDER, len(ok)), replace=False))
         truth = lognorm(Cb[np.sort(rrng.choice(Cb.shape[0], min(N_TRUTH, Cb.shape[0]), replace=False))])
-        phi = {k: dispersions(Cb, k, np.random.default_rng([RENDER_SEED, si, k])) for k in KS}
+        phi = ({} if a.wide else
+               {k: dispersions(Cb, k, np.random.default_rng([RENDER_SEED, si, k])) for k in KS})
         out = {}
         for vi, v in enumerate(VARIANTS):
             vr = np.random.default_rng([RENDER_SEED, si, 100 + vi])
@@ -165,15 +172,16 @@ def main(argv=None) -> None:
                 gap = out["thin"][met] - out["true"][met]
                 out[v][f"{met}_gap_closed"] = float(1.0 - (out[v][met] - out["true"][met]) / gap) if gap > 0 else None
         res["stages"][stage] = {"cells": int(C.shape[0]), "median_counts_deep": float(np.median(np.asarray(
-            Ca.sum(1)).ravel())), "median_phi": {str(k): float(np.median(phi[k])) for k in KS}, "variants": out}
+            Ca.sum(1)).ravel())), "median_phi": {str(k): float(np.median(v)) for k, v in phi.items()}, "variants": out}
         deep = res["stages"][stage]["median_counts_deep"]
-        lines.append(f"{stage} ({C.shape[0]} cells; median panel counts {deep:.0f}; median dispersion at k = 15: "
-                     f"{np.median(phi[15]):.3f}):")
+        disp = f"; median dispersion at k = 15: {np.median(phi[15]):.3f}" if phi else ""
+        lines.append(f"{stage} ({C.shape[0]} cells; median panel counts {deep:.0f}{disp}):")
         for v in VARIANTS:
             o = out[v]
             lines.append(f"  {v:<12} mmd_u {o['mmd_u']:.5f} (sd {o['mmd_u_sd']:.5f}; gap closed "
                          f"{o['mmd_u_gap_closed']:.3f})   variogram {o['variogram']:.5f} (sd {o['variogram_sd']:.5f}; "
                          f"gap closed {o['variogram_gap_closed']:.3f})   median counts {o['median_counts']:.0f}")
+    res["wide"] = bool(a.wide)
     cands = [v for v in VARIANTS if v not in ("thin", "true", "self", BASE)]
     qualifies = {}
     for v in cands:
