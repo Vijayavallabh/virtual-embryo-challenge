@@ -2253,3 +2253,110 @@ in `docs/ORGANIZER_QUESTIONS.md` (decision log 2026-11-10 (w), (x)).
     found could be adopted. No further T3 try is planned. Classes are closed by a score where a score is cheap, not by
     a gate. One question goes to the captain with the next report: whether a model that no backtest can validate may
     ever fill a second upload.
+- 2026-11-12 (c), the campaign's second wave, its second cold review and what goes to the captain. Written by the AI
+  assistant. Every number is in `experiments/harness/TRIES.md` (rows E19 to E25, N23, T27 to T30); tries after it: T1
+  27, embryo 27, heart 3, T3 9. No upload, build, rule or gate record changed.
+  - **What the campaign found: the samples differ more than the stages do.** On every board the scored distance between
+    a prediction and its target is dominated by how each sample was measured, and the entries were built as if only
+    development separated them.
+    - *MERFISH (diagnostic N23 and a target-free reading of the ladder).* The per-gene share of a cell's counts inside
+      one labelled cell type differs more than twofold for about half the panel between some neighbouring samples (E7.25
+      to E7.5, E7.5 to E8.0, E8.5 to E8.75) and far less between others (E8.0, E8.25_late and E8.5 share a profile). The
+      difference is the sample's detection profile, not development: from E7.5 it is the same vector whichever of E8.0,
+      E8.25_late or E8.5 it is measured against (Spearman 0.95 and 0.82), and over quarter-day gaps successive changes
+      reverse (-0.44, 25 cell types). Counts per cell step from 62 at E7.5 to 212 at E8.0.
+    - *Task 1 (a target-free census).* E10.5 holds three libraries of two kinds; the seven released libraries have
+      4,030, 6,148 and 10,503 median counts per chamber cell at E10.5 and about 14,000 at E8.5 and E9.5. At zero time
+      gap a base at the truth's own depth is worth +9.7 to +22.4 board points (T29), and two libraries of one kind
+      scored 66 against 80 as targets (T28).
+  - **Embryo.** On the two counted backtests nothing beats fgw: the three depth renderings lose (E19: -7.07 to +0.45),
+    the decoded generative candidate loses (E21: -1.38 and -5.11) and that class is closed by score, the later bracket
+    alone loses 12 (E23). The released stages also allow four practice tasks built like the test pair in a second sense,
+    with E7.5 as earlier bracket and a later-run stage as target (E22, E23). There fgw scores 65.99, 80.53, 75.97 and
+    71.39, far above its 61.12 and 58.78 on the counted backtests, because the published baseline, a copy of E7.5,
+    carries the wrong profile.
+    - *The rendering.* Moving the E7.5-drawn cells by the per-gene factor measured on the four extraembryonic cell types
+      both brackets label alike, then topping them up to E8.0's depth (`fgw_series`, E24), adds +7.41, +3.43, +2.62 and
+      +1.30 to fgw on those four tasks and loses 2.28 and 6.59 on the counted backtests. It gains where the target
+      shares its later bracket's profile (the first three) and adds nothing over a plain top-up where it does not (the
+      fourth), which is what N23 explains.
+    - *The pair, by the pre-registered rules (E24, then E25).* s1 stays fgw. The recommended s2 is `fgw_aligned_series`:
+      the rendering at the positions of the aligned moves (try E10's coupling). It passed E25's rule against E24's first
+      pick, `fgw_shape0_series`, by 0.02 over a bar of 0.3; the two differ little, and what matters is the switch to a
+      rendered file. An aligned first upload gains nothing as a pair (+0.02) and is not requested.
+    - *Both sides of the switch, as the better of two uploads against today's pair (fgw, fgw_shape0), in board points
+      (the embryo board counts half in Overall).* Target measured like E8.0: +6.69, +3.56 and +3.42 on the three
+      practice targets of that kind (mean +4.56). Target as deep as E8.0 with a profile of its own: +0.86 (one practice
+      target). Target as shallow as E7.5 with a profile of its own: -1.42 (the E7.5 backtest, the one built like the
+      test pair). Target measured like the earlier bracket: 0.00 (the E7.25 backtest). The switch pays if the chance
+      that E7.75 was measured like E8.0 is above 0.24 to 0.28, counting every other case as the worst one, or above 0.16
+      on the rule's own mean. An earlier note in the ledger gave 0.45; it had counted the loss twice and is corrected
+      there.
+    - *The chance itself is a judgement.* The organisers' text gives one collection procedure for E7.75 and E8.0, but
+      N23 shows that a shared procedure does not make a shared profile (E8.75 differs from E8.5 inside the same group).
+      The AI assistant puts the chance that E7.75 shares E8.0's profile at about 0.4 to 0.5, down from 0.6 to 0.7 before
+      N23. At 0.45 the switch is worth about +1.3 board points, +0.6 Overall, on the worst-case reading and about +2.0
+      board points if the other cases are spread evenly.
+    - *Checked without reading any target.* On the test pair today's s1 cloud is flatter than every released stage
+      (thinnest axis 0.24 of its RMS radius, against 0.37 to 0.53 in all nine stages), today's s2 sits at 0.48 and the
+      candidate at 0.43. The candidate builds on the test pair and passes the cloud guard and the file check
+      (`build_test.py embryo --method fgw --move-coupling aligned --expression series`, a new option that is no entry
+      until the captain rules).
+  - **Task 1.** T27 found a base of library 3's cells (the dissected-heart library, the like-for-like sample for E12.5)
+    8.24 ahead of today's pooled base at zero time gap. T29, registered to answer "what if E12.5 is shallow", found it
+    7.0 and 7.1 behind when the truth is thinned to 0.68 and 0.35 of library 3's depth, and by T29's rule the request
+    for that base was withdrawn. T29 looked at the shallow side only. T30 priced pairs of uploads on one grid of four
+    truth depths, the deeper side included, by three truth cardiomyocyte shares.
+    - *Against a truth 1.37 times deeper than library 3, as the E8.5 and E9.5 libraries are, the library-3 base is 8 to
+      13 points ahead of today's base; at library 3's depth 7 to 8 ahead; at 0.68 and 0.35, 1 to 7 behind.*
+    - *The cardiomyocyte share is the larger swing.* Today's s2 rule (cardiomyocytes 0.60 of heart cells) is 7 to 24
+      points ahead of the s1 base where the truth holds 0.45 or 0.60 and 15 to 28 behind where it keeps its own 0.24.
+      Nothing on the menu replaces that cover, so a second upload that hedges depth instead is not asked for, and the
+      closed T1 depth lever does not need reopening: the choice of base spans the depth question without changing any
+      cell's counts.
+    - *By T30's rule there is no recommendation.* The pair with library 3's base first and today's s2 second leads
+      today's pair by 2.97 under the main prior (each released library one vote for the depth) and by 4.56 if library 3
+      is also taken as the guide to the cell mix, but trails by 0.43 and 0.98 under two of the three priors in which
+      only E10.5's three libraries inform the depth. Over the nine priors its largest shortfall is 0.98, today's pair's
+      4.56. All sizes are zero-gap upper bounds; the order is what was read.
+    - *Why it is the captain's alone.* The base change raises the drawn cells' median library by 27%, and
+      `docs/DATA_POLICY.md` 2026-11-04 (f)(3) sends any shift above 5% to the captain; that clause exists because the AI
+      assistant saw file properties of the hidden E12.5 file on 2026-11-04 (its present context holds none of them). A
+      switch also means a new s1 build whose adopted steps (Feng's direction, R1, R2, the g_mom factors) were all
+      checked on the pooled base, about a day of work with the rebuild rehearsal.
+  - **Heart and T3.** No try and no request. A reversal of the heart's last step was checked on the released ladder and
+    pruned before running: the reversal is there at quarter-day gaps and gone at one-day gaps. T3's transplant line was
+    closed in (b); the idea of a depth-free twin of s1 in T3's second slot is not put forward, because the frozen rules
+    keep one T3 upload free of the Gata4 factor (rules.yaml, note 6) and that hedge is the sounder one.
+  - **The second cold review** (the devil-advocate skill; one reviewer given only the claim, its evidence, a list of
+    files and the project's rules). The claim under attack: the embryo switch is worth about half a point Overall, and
+    no change on T1, T3 or the heart has a better-supported gain.
+    - *Its strongest point:* the T1 half was unpriced. The ledger showed depth effects many times the size of the embryo
+      switch, and no arm compared a second upload that covers depth with the one that covers the cardiomyocyte share.
+      Conceded; T30 is the answer, and it changed the conclusion from "no change" to an open question about the first
+      upload's base.
+    - *Attack: the practice tasks cannot tell a run effect from development.* Rebutted by its own check (N23): the
+      factor is one vector whichever later sample it is measured against and unrelated to neighbours' factors. The same
+      check conceded something else: profile jumps occur inside each series, so the chance that E7.75 shares E8.0's
+      profile is lower than the organisers' text alone suggested.
+    - *Attack: wait for E25 and send one note.* Conceded; this entry is that note.
+    - *Its estimate that the claim as written was a mistake:* 40%. Verdict after the checks: proceed if the captain
+      rules on the two requests below; the T1 clause was rewritten.
+  - **What goes to the captain** (nothing changes until the captain rules; each with the AI assistant's view, which the
+    captain can overrule).
+    - *R-A, embryo second upload.* Replace fgw_shape0 by `fgw_aligned_series`. Gain +3.4 to +6.7 board points if E7.75
+      was measured like E8.0, +0.9 if it is deep with a profile of its own, loss 1.4 if it is shallow with a profile of
+      its own, nothing if it was measured like E7.5; break-even chance about a quarter. View: yes.
+    - *R-B, Task 1 first upload.* Keep the pooled base, or draw the base from library 3 at library 3's mix with today's
+      s2 unchanged. T30's rule gives no recommendation. View: a mild lean to the switch, since across the nine priors it
+      trails by at most 1.0 and leads by up to 4.6, unless the captain thinks it more likely than not that E12.5 was
+      sequenced much shallower than library 3. What the exposure of 2026-11-04 means for this choice is the captain's to
+      weigh, and declining is the safe default.
+    - *R-C, one question to the organisers* (a draft for the captain's review, by email): whether the E7.75 sections
+      were imaged in the same run as E8.0's, and whether the E12.5 single-cell libraries were prepared and sequenced
+      like E10.5's dissected-heart library. Both ask about procedure, not about a measured value. View: worth one email;
+      R-A and R-B do not wait for an answer.
+  - **The estimate.** `results/upload_gate.json` is unchanged (184; 170 to 198), since its procedure reads the counted
+    backtests. As a reading beside it: if E7.75 has E8.0's profile or one of its own, the embryo board would score well
+    above the 60 the estimate uses (66 to 80 on the practice tasks for fgw alone), which is worth about 3 to 5 Overall
+    at the chances above; nothing here brings the total near 209.

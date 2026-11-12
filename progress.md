@@ -3,6 +3,18 @@
 ## Current State
 
 **Last Updated:** 2026-11-12
+**2026-11-12, the campaign of that day (decision log 2026-11-12 (a) to (c)):** no upload, build, rule or gate record
+changed; three requests wait for the captain. The finding: on every board the samples differ more by how they were
+measured than by stage. Each MERFISH sample carries its own per-gene detection profile (diagnostic N23), and the seven
+released T1 libraries span 4,030 to 14,755 counts per chamber cell in two kinds of sample. **R-A, embryo s2:** from
+fgw_shape0 to `fgw_aligned_series` (tries E24, E25): as better of two against today's pair +3.4 to +6.7 board points
+if E7.75 was measured like E8.0, +0.9 if deep with a profile of its own, -1.4 on the backtest built like the test
+pair, 0 if measured like E7.5; break-even chance about a quarter against the AI assistant's 0.4 to 0.5; view: yes.
+**R-B, T1 s1's base:** today's pooled base or library 3's cells (tries T27 to T30): T30's rule gives no
+recommendation; the switch leads by up to 4.6 and trails by at most 1.0 across nine priors, at zero time gap; a mild
+lean to the switch, and the depth clause makes it the captain's alone. **R-C:** one procedural question to the
+organisers by email. T3 and the heart: no try kept and no request. Second cold review: its strongest point (T1
+unpriced) was conceded and answered by T30. Tries: T1 27, embryo 27, heart 3, T3 9.
 **2026-11-12, the public Slack question on floored T3 severity is posted (decision log 2026-11-11 (e)):** rewritten after a
 three-lens panel as a yes or no confirmation of the scorer's present behaviour; the captain posted it on 2026-11-12. An
 organiser's zero before T3's s2 switches s2 (2026-11-06 (b)); 0.5, a yes or silence keeps it. No upload, build or rule changed.
@@ -668,6 +680,12 @@ scorer reproduces every published validation anchor exactly. The release-day rul
 
 Updated 2026-11-12. The older list below is kept for its record; where the two differ, this one holds.
 
+0. **The captain's rulings on R-A, R-B and R-C** (decision log 2026-11-12 (c)). On a yes to R-A: the s2 command is
+   `build_test.py embryo --method fgw --move-coupling aligned --expression series`; `docs/S2_RULES.md` takes a dated
+   ruling by the captain's own say-so; the file joins the freeze-morning rebuild, and the determinism check runs on it
+   by 24 Nov. On a yes to R-B: a base option for the T1 build (library 3's cells at library 3's mix), its ledger row,
+   tests and a rebuild rehearsal by 24 Nov; T1's s2 keeps the pooled base. On R-C: a draft through the three-lens
+   review, which the captain sends.
 1. **19 Nov:** if no organiser has answered the public Slack question on floored T3 severity, the captain may post one
    short follow-up in the same thread, drafted by the AI assistant. Replies are read only through the screened check
    (`docs/ORGANIZER_QUESTIONS.md`, "Public Slack question").
@@ -739,6 +757,12 @@ headroom tables in `experiments/harness/TRIES.md`):
 
 ## Blockers / Risks
 
+- [ ] 2026-11-12: the embryo board turns on how E7.75 was measured (like E8.0, like E7.5, or with a profile of its
+      own), which no released file shows; the AI assistant's 0.4 to 0.5 for "like E8.0" is a judgement (N23). Today's
+      pair covers the first case poorly (R-A).
+- [ ] 2026-11-12: T1's two unhedged swings at zero time gap are the cardiomyocyte share (7 to 28 points either way,
+      covered by s2) and the library's depth and kind (7 to 13 either way, covered by nothing; R-B). Depth changes
+      stay closed.
 - [ ] 2026-11-12: no organiser answer is recorded to any of the six emails, the 6 Nov DM or the public Slack question
       (posted 2026-11-12); the next screened check is on 26-27 Nov, and the working answers in
       `docs/ORGANIZER_QUESTIONS.md` stand (decision log 2026-11-10 (w), (x)). The largest open risk is A24: if a
@@ -920,6 +944,17 @@ headroom tables in `experiments/harness/TRIES.md`):
 
 ## Notes for Next Session
 
+- 2026-11-12: by the captain's instruction (decision log 2026-11-12 (a)) the campaign runs on this machine; `data/`
+  and `runs/` here are owner-only, and the DGX checkout (6402b64) was not synced. A multi-task run starts each task as
+  its own process, all together, because provenance is read at each task's start; read `git status` before committing
+  while one runs.
+- 2026-11-12: `runs/builds_check_local/T2embryo_s2_aligned_series.h5ad` is a build check of R-A's candidate (default
+  build seed; cloud guard and file check passed). It is no entry and is never uploaded; on a ruling it is rebuilt at
+  the freeze commit.
+- 2026-11-12: the practice tasks with E7.5 as earlier bracket and a later-run target live in
+  `experiments/harness/series_world.py`; they are not in `configs/pseudo_tasks.yaml` and never count for adoption. The
+  pair-pricing scripts are `experiments/harness/s2_pricing.py`, `pair_pricing.py` and
+  `experiments/t1_scope/t30_pricing.py`.
 - 2026-11-12: the exception for the Task 1 page's share figure is spent. One screened read found no such statement, a
   second read needs a new ruling, and nothing from the page is in any file (decision log 2026-11-11 (c), (d)).
 - The public Slack thread on floored T3 severity (posted 2026-11-12) is read only through the screened check. A reply
