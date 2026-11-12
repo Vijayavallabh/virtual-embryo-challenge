@@ -336,6 +336,13 @@ A row's registration commit is named with its outcome.
   fractions in opposite directions (E7.25 near E6.75; E7.5 about midway between E7.25 and E8.0 by mmd_u), and at test
   the nominal fraction is 1/2. Nothing measured on released stages says which way E7.75 would sit.
 - **Sweeps of FGW alpha, k or the anchor count.** No physical reason for another value than the plan's.
+- **A reversal of the heart's last step** (2026-11-12; the research report's recipe R3, raised again by
+  diagnostic N23). If each MERFISH sample carries its own per-gene profile, the last step should partly
+  reverse rather than continue. A target-free reading of the released ladder (`docs/DATA_NOTES.md`,
+  "successive changes reverse at short gaps") finds the reversal at quarter-day gaps (multiplier -0.54 on the
+  last step, 25 cell types) but not at the heart board's gaps: -0.10 to 0.00 over E8.75, E9.5 and E10.5 in the
+  three cell types that can be followed, which the report's moments turn into a small positive multiplier for
+  a one-day last gap and a two-day horizon. B0 already applies a damped continuation; no heart try is opened.
 
 From the ideas workflow of 2026-11-03 (seven read-only proposers, three critics per idea, a ranking; results not
 committed, their synthetic toys in the AI assistant's scratch). E10 above was its one survivor worth a try.

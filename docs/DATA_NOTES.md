@@ -206,6 +206,16 @@ in `experiments/harness/TRIES.md`.
   E8.25_late to E8.5 and 0.57 from E6.75 to E7.25. E8.0, E8.25_late and E8.5 share a profile; E7.5 and E8.75
   each have their own. So the hidden E7.75 may share E8.0's profile, E7.5's, or neither, and the organisers'
   sentence about E7.75 to E9.5 does not decide which.
+- **Task 2, both boards: successive changes reverse at short gaps (2026-11-12, target-free, scratch reading).**
+  Inside one labelled cell type, the per-gene change of the mean panel proportions from one released stage to
+  the next is followed by the opposite change. Over E8.25_late, E8.5 and E8.75 (gaps 0.20 and 0.25 days) the
+  rank correlation of the two steps is negative in all 25 cell types with at least 100 cells at each stage
+  (-0.12 to -0.71, median -0.44; least-squares multiplier on the last step -0.54), close to the -0.5 that
+  independent per-sample deviations give with no development at all. Over E8.5, E8.75 and E9.5 it is -0.26 (5
+  types; multiplier -0.34), and over E8.75, E9.5 and E10.5 it is -0.07 (3 types; multiplier -0.10 to 0.00):
+  as the gaps reach a day, development offsets the samples' own deviations. For the heart board (last gap one
+  day, horizon two) these moments give a small positive multiplier on the last step, not a reversal, so they
+  open no try there; they say that at quarter-day gaps a stage's profile is mostly its own sample's.
 - **Task 2 embryo: how thick the released clouds are (2026-11-12, target-free).** The thinnest principal axis
   over the RMS radius is 0.38, 0.38, 0.53, 0.37, 0.41, 0.40, 0.50, 0.43 and 0.46 from E6.75 to E10.5 (25 to 44
   section levels), with no difference between early and late stages. On the test pair the first upload's cloud
