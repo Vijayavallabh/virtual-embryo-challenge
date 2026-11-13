@@ -3285,3 +3285,26 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     scores equal to row H11's, an independent review of the builder change, `docs/S2_RULES.md` amended with these
     words and re-pinned, `build_all.sh`'s two heart lines, a third rehearsal on the DGX and a new reference list
     (by 24 Nov), the checked local copy refreshed, and server format checks for the two new heart files.
+- 2026-11-13 (x), a sixth forwarded side note; four server format checks run at the captain's word. Written by the
+  AI assistant; the captain's words are quoted.
+  - **The note** (a side agent's, forwarded by the captain): four of the ten upload files have never passed the
+    server's format check, and those checks are planned for the upload mornings; a rejection then would mean an
+    unrehearsed fix, after the 24 Nov cutoff for rehearsing a changed build. "Consider asking the main agent to run
+    the four checks now, on the archived files."
+  - **Checked.** The record agrees: T1's two files, the embryo's second file and T3's refused-branch file with the
+    wild-type factor had only our local check; the other six passed the server's on 2026-11-04. The plan to wait
+    for the upload mornings was the AI assistant's own scheduling, not a rule, and the note's point holds. A
+    format check goes to the organisers' server, so the AI assistant asked before sending.
+  - **The question as put:** whether to run the format checks now from the checked copy of the archived reference
+    files, with what a format check is (our client's default mode; inspected, not scored; none of the two scored
+    uploads per board is used; a scored upload needs two extra flags and the client's gate refuses it before 27
+    Nov) and that the four files are untouched by the heart ruling. Options: "Run the four now (Recommended)",
+    "All six after rehearsal", "Keep to upload mornings".
+  - **The captain's answer:** "Run the four now (Recommended)".
+  - **Done.** The four files were checked against the reference list (four of four OK; the local list equals the
+    committed one) and sent one at a time with `vec submit upload <file> --board <key>` in its default mode. All
+    four: mode `format`, server status `format_ok`, HTTP 200 (`results/submissions.csv`, rows of 2026-11-13
+    14:13 to 14:14 UTC; sha256 a294062f..., f169ea49..., 41982d8a..., 0394575a...). Only the ledger's mode, status
+    and hash were read; the client's output is kept unread in the run folder. The ledger holds no official upload.
+  - **Still owed:** server format checks for the two heart files once they are rebuilt with the trend and
+    rehearsed (w); after that every file of the reference set has passed the server's check.
