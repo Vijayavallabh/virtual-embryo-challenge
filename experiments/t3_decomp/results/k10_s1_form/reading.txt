@@ -1,0 +1,28 @@
+Tries K10a-K10b (commit 69057bc64054ee8b6f3efce04062f0b728adb0c1): NOT CONFIRMED: no request; K9's reading is not carried to the first-choice file's form
+A reading for a request, NOT the adoption rule: both folds (r12 and its mirror r21) are replicate folds on one slide, never counted by the adoption rule. The base s1x is the frozen stand-in for the first-choice file (xrep:F+depth: factor and depth from the other replicate), without the file's composition term, which is fixed by the frozen rules and whose magnitude was set from both replicates.
+Checks: r12: s1x_res - s1x yes; r12: s1x_res - s1x_res_perm yes; r21: s1x_res - s1x no; r21: s1x_res - s1x_res_perm yes
+Reported, deciding nothing:
+r12 (replicate fold, never counted): floor 50.00, s1x 72.07, s1x_res 72.68, s1x_res_perm 71.75
+    s1x_res - s1x: +0.61 (sd 0.52, ahead 9 of 10)  passes
+    s1x_res - s1x_res_perm: +0.94 (sd 0.41, ahead 10 of 10)  passes
+    s1x_res_perm - s1x: -0.32 (sd 0.46, ahead 3 of 10)
+    s1x - floor: +22.07 (sd 0.79, ahead 10 of 10)  passes
+    s1x_res - floor: +22.68 (sd 0.64, ahead 10 of 10)  passes
+    floor         severity no_response 10
+    s1x           severity scored 10
+    s1x_res       severity scored 10
+    s1x_res_perm  severity scored 10
+    skills s1x_res - s1x: de_score +0.009, de_direction +0.000, severity_slope +0.002, mmd_u +0.017, variogram +0.011
+    cosine of log(phi_src) with the weighted mean log(rho): 0.058; groups with a per-group factor 12; labels with a depth ratio 36
+r21 (replicate fold, never counted): floor 50.00, s1x 74.54, s1x_res 73.92, s1x_res_perm 73.56
+    s1x_res - s1x: -0.62 (sd 0.51, ahead 1 of 10)
+    s1x_res - s1x_res_perm: +0.36 (sd 0.44, ahead 8 of 10)  passes
+    s1x_res_perm - s1x: -0.98 (sd 0.57, ahead 1 of 10)
+    s1x - floor: +24.54 (sd 0.85, ahead 10 of 10)  passes
+    s1x_res - floor: +23.92 (sd 0.70, ahead 10 of 10)  passes
+    floor         severity no_response 10
+    s1x           severity scored 10
+    s1x_res       severity scored 10
+    s1x_res_perm  severity scored 10
+    skills s1x_res - s1x: de_score -0.008, de_direction -0.006, severity_slope -0.000, mmd_u -0.013, variogram -0.007
+    cosine of log(phi_src) with the weighted mean log(rho): 0.008; groups with a per-group factor 12; labels with a depth ratio 37

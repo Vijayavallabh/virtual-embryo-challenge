@@ -1,0 +1,11 @@
+run folder on the DGX: ~/v/vec-campaign/runs/harness/k10_s1_form (campaign checkout)
+commit: 69057bc64054ee8b6f3efce04062f0b728adb0c1 (branch campaign/k10fix)
+tree at start (bytes of git status --porcelain): 0
+tree at end (bytes): 0
+started UTC: 2026-11-13T17:50:21Z
+ended UTC: 2026-11-13T17:53:49Z
+CPU only, 8 BLAS threads, one process per fold
+commands: experiments/t3_decomp/k10_s1_form.py run --task r12|r21 --out <runs>; then read --runs <runs> --out <reading>
+tasks/: the two task files as written by the run; reading.json and reading.txt: the fixed reading as the script wrote it
+cross-check: the base arm s1x scores 72.07 (truth replicate 2) and 74.54 (truth replicate 1); the frozen run's own
+"xrep:F+depth" scored 72.15 and 74.50 on those replicates in its own scorer (experiments/t3_decomp/results/gata4)

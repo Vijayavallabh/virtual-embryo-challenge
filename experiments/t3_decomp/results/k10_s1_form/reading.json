@@ -1,0 +1,156 @@
+{
+ "void": false,
+ "why": [],
+ "commit": "69057bc64054ee8b6f3efce04062f0b728adb0c1",
+ "tasks": {
+  "r12": {
+   "counted_fold": false,
+   "mean_score": {
+    "floor": 50.0,
+    "s1x": 72.07063009081142,
+    "s1x_res": 72.68210789944231,
+    "s1x_res_perm": 71.74654630858379
+   },
+   "paired": {
+    "s1x_res - s1x": {
+     "mean": 0.6114778086308903,
+     "sd": 0.5187279494797545,
+     "ahead": 9,
+     "n": 10,
+     "passes": true
+    },
+    "s1x_res - s1x_res_perm": {
+     "mean": 0.9355615908585235,
+     "sd": 0.4120489020971836,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "s1x_res_perm - s1x": {
+     "mean": -0.32408378222763334,
+     "sd": 0.4610994224199977,
+     "ahead": 3,
+     "n": 10,
+     "passes": false
+    },
+    "s1x - floor": {
+     "mean": 22.070630090811427,
+     "sd": 0.7857677341524578,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "s1x_res - floor": {
+     "mean": 22.68210789944232,
+     "sd": 0.6373899174858583,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "s1x": {
+     "scored": 10
+    },
+    "s1x_res": {
+     "scored": 10
+    },
+    "s1x_res_perm": {
+     "scored": 10
+    }
+   },
+   "skill_diff_s1x_res_minus_s1x": {
+    "de_score": 0.00875872050859856,
+    "de_direction": 0.00012453268507440774,
+    "severity_slope": 0.002230782269620346,
+    "mmd_u": 0.017062471803063018,
+    "variogram": 0.01063545723360102
+   },
+   "cosine_log_phi_raw_mean_log_rho": 0.05845408261626812,
+   "groups_with_a_factor": 12,
+   "labels_with_a_depth_ratio": 36
+  },
+  "r21": {
+   "counted_fold": false,
+   "mean_score": {
+    "floor": 50.0,
+    "s1x": 74.53700277817354,
+    "s1x_res": 73.92020226693154,
+    "s1x_res_perm": 73.55701933789685
+   },
+   "paired": {
+    "s1x_res - s1x": {
+     "mean": -0.6168005112420019,
+     "sd": 0.5125277056294967,
+     "ahead": 1,
+     "n": 10,
+     "passes": false
+    },
+    "s1x_res - s1x_res_perm": {
+     "mean": 0.36318292903468147,
+     "sd": 0.4394669742537,
+     "ahead": 8,
+     "n": 10,
+     "passes": true
+    },
+    "s1x_res_perm - s1x": {
+     "mean": -0.9799834402766834,
+     "sd": 0.568767626602439,
+     "ahead": 1,
+     "n": 10,
+     "passes": false
+    },
+    "s1x - floor": {
+     "mean": 24.537002778173537,
+     "sd": 0.8497554556052073,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "s1x_res - floor": {
+     "mean": 23.920202266931533,
+     "sd": 0.7011461770926238,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "s1x": {
+     "scored": 10
+    },
+    "s1x_res": {
+     "scored": 10
+    },
+    "s1x_res_perm": {
+     "scored": 10
+    }
+   },
+   "skill_diff_s1x_res_minus_s1x": {
+    "de_score": -0.008299100242225854,
+    "de_direction": -0.005868759984388294,
+    "severity_slope": -0.00038896019897562974,
+    "mmd_u": -0.013042677757670373,
+    "variogram": -0.006859045787385632
+   },
+   "cosine_log_phi_raw_mean_log_rho": 0.007637291262015435,
+   "groups_with_a_factor": 12,
+   "labels_with_a_depth_ratio": 37
+  }
+ },
+ "checks": {
+  "r12: s1x_res - s1x": true,
+  "r12: s1x_res - s1x_res_perm": true,
+  "r21: s1x_res - s1x": false,
+  "r21: s1x_res - s1x_res_perm": true
+ },
+ "k10_confirmed": false,
+ "verdict": "NOT CONFIRMED: no request; K9's reading is not carried to the first-choice file's form",
+ "label": "A reading for a request, NOT the adoption rule: both folds (r12 and its mirror r21) are replicate folds on one slide, never counted by the adoption rule. The base s1x is the frozen stand-in for the first-choice file (xrep:F+depth: factor and depth from the other replicate), without the file's composition term, which is fixed by the frozen rules and whose magnitude was set from both replicates."
+}
