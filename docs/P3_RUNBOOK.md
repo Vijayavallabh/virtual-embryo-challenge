@@ -272,7 +272,8 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     reply, in the Slack channel or as a line on the Data Protocol page, and each is read through a screen with the scope
     fixed in `docs/ORGANIZER_QUESTIONS.md` ("Seventh email"): procedure only, every number replaced, everything else
     withheld. Two extra screened reads are asked of the captain for about 19 and 23 Nov, because a build change has to
-    be rehearsed by 24 Nov; the check of 26-27 Nov repeats the read. A reply in the captain's inbox is not pasted into
+    be rehearsed by 24 Nov; the check of 26-27 Nov repeats the read. The captain approved both on 2026-11-13; the
+    screening agent's brief is `docs/SCREENED_READ_SEVENTH_EMAIL.md`. A reply in the captain's inbox is not pasted into
     the session. What each answer changes is fixed in the same place, and nothing changes without the captain's ruling.
   - T2: `vec.t2_build`, run from the repo root (the paths are relative). Count by `n_cells_from_decision(board,
     pool.n_obs, "experiments/density/results/release/count_decision.json")` (step 4.5; null keeps max_cells; a
@@ -292,13 +293,19 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     calls.
   - T1: `vec.t1_scope.build_submission` once the shares are fixed by their written rule (docs/PLAN.md section 4.1);
     pass `ref_source` (the reference file's stem) so the per-file label remaps apply.
-  - Candidate files that are no entries (2026-11-13): the embryo's second upload has two candidates before the captain
-    (request R-A, `docs/PLAN.md` decision log 2026-11-13 (a)): `build_test.py embryo --method fgw --move-coupling
-    aligned --expression series` and `build_test.py embryo --method fgw_shape0 --expression render_hi`. Both build
-    reproducibly at 16 BLAS threads (`experiments/builds/results/determinism_1f8956b.txt`). Neither joins
-    `build_all.sh` or the freeze-morning rebuild unless the captain rules for it in `docs/S2_RULES.md`; without a
-    ruling the s2 stays `--method fgw_shape0`. T3's second upload stays the refused branch's s1: the wild-type-only
-    factor of tries K7 and K8 has no builder and enters only if the captain reopens the frozen T3 rules.
+  - **The amendments of 2026-11-13** (`docs/S2_RULES.md`, last section; `docs/PLAN.md` decision log 2026-11-13 (d)).
+    `build_all.sh` now builds: T1 s1 with `--base lib3` (library 3's cells; s2 unchanged on the pooled base); the
+    embryo s2 as `build_test.py embryo --method fgw --move-coupling aligned --expression series`; T3's refused s1
+    with `--wt-revert` (it reads the six other wild-type stage files under `data/raw/T2`). The other seven files are
+    as archived. Dry builds on the local machine (`experiments/builds/results/rulings_9cf5ca5.txt`): each new file
+    twice with one sha256, `vec check` passed, and the unchanged T1 s2, embryo s1 and T3 refused s1 without the
+    option reproduce `runs/archive/builds_f337dc6/SHA256SUMS`.
+  - **Where the reference hashes come from.** T1's s1 as built until 2026-11-13 gives one sha256 on the local machine
+    and another on the DGX (same code, 16 threads), so a hash made on one machine cannot check a build on the other.
+    The uploads are pulled from the DGX: by 24 Nov, sync the DGX when no build runs there, run `build_all.sh s1`,
+    `s2` and `t3alt` into a fresh folder, repeat once for determinism, archive that set with its SHA256SUMS, and use
+    it as the freeze-morning reference. The server format checks for the three new files and T1's two wait for the
+    freeze morning, on the captain's watch.
 - Update `ASSUMPTIONS.md` (A1, A2, A3, A13, A19) and `progress.md`. A1 is confirmed (2026-10-28).
 - **Disclosure ids for each official upload** (prepared 2026-11-05 by the AI assistant; the captain confirms them on
   the morning). The client refuses an official upload without `--disclose` ids from `EXTERNAL_DATA.md`. Rule used:

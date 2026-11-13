@@ -4,21 +4,21 @@
 
 - Goal: a compliant Human-track entry on all four test boards that finishes as high as it can. The final phase runs
   through 2026-12-02 (UTC), with two scored uploads per board for the whole phase; none is used as of 2026-11-13.
-- Current status (2026-11-13): the entries are built and their methods chosen (T1: M1 with R1, R2 and R3b; heart: B0
-  with the pre-registered size; embryo: fgw; T3: the frozen rules' files). All ten test files pass `vec check`; eight
-  have passed the server's format check, and T1's two, rebuilt with R3b, get theirs on the freeze morning
-  (`METHOD_SUMMARY.md`). Nothing is uploaded. The captain's upload gate holds every first upload until the team's
-  own estimate passes 209 (it is 184, range 170 to 198) or the deadline exception opens at 2026-11-27 00:00 UTC; each
-  upload then needs the captain's go-ahead at the time, and the captain runs the commands.
-- What waits for the captain (`docs/PLAN.md` decision log 2026-11-13 (a) to (c)):
-  - R-A, the embryo's second upload: `fgw_aligned_series`, `fgw_shape0_hi`, or today's fgw_shape0;
-  - R-B, T1's first upload on library 3's cells: the advice is to decline;
-  - two options their pre-set rules closed and only the captain can reopen: the first embryo upload's shape fix
-    (`fgw_aligned`) and a wild-type-only factor on T3's second upload (tries K7 and K8).
-  The seventh organiser email (R-C) was sent by the captain on 2026-11-13; an answer is read as
-  `docs/ORGANIZER_QUESTIONS.md` ("Seventh email") fixes it, through a screening agent. The email invites an answer on
-  the Data Protocol page, which nobody reads otherwise: the captain's say-so is asked for two screened reads, about
-  19 and 23 Nov. A reply in the captain's inbox is not pasted into the session.
+- Current status (2026-11-13): the entries are built and their methods chosen. T1: M1 with R1, R2 and R3b, its first
+  upload drawn from E10.5's dissected-heart library since 2026-11-13 and its second on the pooled base at 60%
+  cardiomyocytes. Heart: B0 with the pre-registered size. Embryo: fgw, with `fgw_aligned_series` as second upload
+  since 2026-11-13. T3: the frozen rules' files, the second upload now with a wild-type-only factor. Nothing is
+  uploaded. The captain's upload gate holds every first upload until the team's own estimate passes 209 (it is 184,
+  range 170 to 198) or the deadline exception opens at 2026-11-27 00:00 UTC; each upload then needs the captain's
+  go-ahead at the time, and the captain runs the commands.
+- Nothing waits for a ruling (`docs/PLAN.md` decision log 2026-11-13 (d); `docs/S2_RULES.md`, "Amendments of
+  2026-11-13"). What is owed:
+  - by 24 Nov, a rehearsal of all ten files on the DGX (sync it first, when no build runs there), run twice, archived
+    as the freeze-morning reference: the three changed files have only local dry builds so far, and T1's s1 has
+    different bytes on the two machines (`experiments/builds/results/rulings_9cf5ca5.txt`);
+  - on 19 and 23 Nov, the approved screened reads for an organiser answer to the seventh email
+    (`docs/SCREENED_READ_SEVENTH_EMAIL.md`; a reply in the captain's inbox is not pasted into the session);
+  - about 19 Nov, the Slack follow-up draft on floored T3 severity if no organiser has answered.
 - Branch / commit: `main` on GitHub (private). The DGX checkout (`PrakashDGX_H2:~/v/virtual-embryo-challenge`) is at
   6402b64: it has not been synced since the campaign moved to the local machine on 2026-11-12.
 
@@ -37,7 +37,9 @@
       its pre-set reading, with both readings given to the captain. Both R-A candidate files reproduce at 16 BLAS
       threads (`experiments/builds/results/determinism_1f8956b.txt`), and R-A's second option has a build command
       (`build_test.py embryo --method fgw_shape0 --expression render_hi`).
-- [x] No entry, upload, rule, default or gate record changed in any wave. Tries: T1 28, embryo 36, heart 4, T3 15.
+- [x] The captain's rulings of 2026-11-13 (decision log (d)): the embryo's second upload, T3's second upload and T1's
+      first-upload base changed (rows R4, R5, R6), with `docs/S2_RULES.md` amended, two build options, two independent
+      code reviews, and dry builds with one sha256 per new file. No upload. Tries: T1 28, embryo 36, heart 4, T3 15.
 
 ## Completed Earlier (2026-10-27 to 2026-10-28)
 
@@ -84,6 +86,7 @@
 |---|---|---|---|
 | Lint and tests (2026-11-13) | `uv lock --check`; `uv run --frozen --no-sync ruff check src tests`; `uv run --frozen --no-sync pytest -q` | 1198 passed, 1 skipped (torch not installed) | local machine, started at 1435c22 on a clean tree (`runs/logs/checks_local_2026-11-13b.log`); the tests added later ran on their own; `./init.sh` itself not run |
 | Reproducibility of R-A's candidate files | `experiments/builds/build_test.py embryo ...` at 16 BLAS threads, then `vec check` | one sha256 per file over four and three builds | `experiments/builds/results/determinism_1f8956b.txt`; build logs not read |
+| Dry builds of the amended entries | the commands of `docs/S2_RULES.md` (last section) at 16 BLAS threads, then `vec check` | one sha256 over three builds of each new file; unchanged files reproduce the DGX archive, T1's old s1 excepted | `experiments/builds/results/rulings_9cf5ca5.txt`; build logs not read |
 | T3 tries K7 and K8 | `experiments/t3_decomp/k7_wt_revert.py` and `k8_s2_form.py` (`run` per task, then `read`) | `experiments/t3_decomp/results/k7_wt_revert/`, `k8_s2_form/` | 10 seeds, clean trees at 33204be and 9dc6af1 |
 | Lint and tests | `./init.sh` | passes (2026-10-28) | `uv run pytest -q` 402 tests (90+ on 2026-10-19); experiment tests in `experiments/*/test_*.py` run separately |
 | Pre-registered runs (step 4) | `docs/P3_RUNBOOK.md` step 4 commands (DGX, 2026-10-28) | all six ran, exit 0 | outputs committed before reading: f5be247 to 12151e0; the commits are listed in the runbook's step 4 status |
@@ -136,14 +139,12 @@
 
 ## Recommended Next Step
 
-- 2026-11-13 (latest): wait for the captain's rulings (R-A, R-B, T3's second upload, the embryo's first-upload shape)
-  and carry out whichever is ruled: a dated ruling in `docs/S2_RULES.md` by the captain's own say-so, the build
-  change with tests, a dry build, and a rehearsal by 24 Nov. Then the dated plan in `progress.md`, What's Next: the
-  Slack follow-up draft about 19 Nov, the screened reads for an answer to the seventh email on 19 and 23 Nov if the
-  captain says yes, the method summary and the disclosure email on 24-30 Nov, the screened check on
-  26-27 Nov, the freeze-morning rebuild and the first round on 27 Nov, the second round on 29-30 Nov, the final marks
-  on 1 Dec. Before any reading that compares a predictor with a fold target, write its ledger row (row N25 records
-  the one time this was skipped).
+- 2026-11-13 (latest): the rulings are given and built in. Next, in order: the screened reads on 19 and 23 Nov and
+  the Slack follow-up draft about 19 Nov; the DGX sync and the ten-file rehearsal by 24 Nov; the method summary and
+  the disclosure email (with the new files' hashes) on 24-30 Nov; the screened check on 26-27 Nov; the freeze-morning
+  rebuild against the DGX reference and the first round on 27 Nov, each upload on the captain's go-ahead; the second
+  round on 29-30 Nov; the final marks on 1 Dec. Before any reading that compares a predictor with a fold target,
+  write its ledger row (row N25 records the one time this was skipped).
 
 Earlier notes, kept as history (superseded where `progress.md` says otherwise):
 

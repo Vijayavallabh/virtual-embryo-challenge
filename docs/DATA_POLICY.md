@@ -955,3 +955,21 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     embryo test file. It is not a cell number and it is no property of a hidden target, but it follows from the
     board's count rule, so it is quoted in no file and used for nothing. Stamps are read by named field from now on
     (commit, clean, sha256).
+- 2026-11-13 (d), process notes on the captain's rulings of that day (`docs/PLAN.md` decision log 2026-11-13 (d));
+  written by the AI assistant.
+  - **T1's base and the block of 2026-11-04 (f)(3).** Drawing T1's first upload from library 3 raises the drawn
+    cells' median library by 27%, above the 5% that sends a rule to the captain. It was sent, with the released-data
+    facts and "decline" as the default; the captain chose no direction ("do whatever it takes to top the
+    leaderboard"), and the AI assistant, which holds none of the exposed figures, decided the direction from released
+    data alone, with its reasons written in ledger row R6 before any build. No cell's counts are changed: the choice
+    is which real cells are drawn. A later change of base in either direction needs a reason from released data or
+    an organiser's answer read through the screen. The rest of the block stands: cell numbers, sizes and scope on
+    every board, T3's composition, the heart's depth.
+  - **T3's second upload** now carries a factor fitted on released wild-type stage files alone. It reads no knockout
+    file and no Gata4-derived number. Its adoption was decided knowing tries K7 and K8, which read Gata4 and Mab21l2
+    scores, so the ruling switches of `docs/S2_RULES.md` treat the file as they treat the refused file.
+  - **The two screened reads for an answer to the seventh email are approved** (19 and 23 Nov). Their brief was
+    written before any read: `docs/SCREENED_READ_SEVENTH_EMAIL.md`.
+  - **Reviewer and advocate agents** of that day (two code reviewers, one cold reviewer) worked read-only on named
+    files; none opened a board file, a data file or a transcript. The archived hashes of the ten frozen files were
+    read from the DGX as a list of sha256 values and file names, nothing else.

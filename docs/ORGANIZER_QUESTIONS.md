@@ -374,7 +374,8 @@ before the read, as on 2026-11-11. The captain confirmed this classification by 
 
 **Where an answer can appear, and who reads it** (added 2026-11-13 after a side agent's note to the captain). The
 email lets the organisers answer by reply or with a line on their Data Protocol page, and they have also answered in
-public before. None of these reads has run; each needs the captain's say-so.
+public before. The captain approved the two reads on 2026-11-13 ("yes to the screened reads on 19 and 23 Nov"); their
+brief, written before any read, is `docs/SCREENED_READ_SEVENTH_EMAIL.md`. None has run yet.
 - A reply by email reaches the captain's inbox. The captain tells the session that one has arrived and does not paste
   it; a screening agent reads it and passes on the procedural answer only.
 - A line on the Data Protocol page. Only a screening agent reads that page, at the captain's say-so, and the screened
@@ -411,6 +412,9 @@ The strategy reviewer put the chance of a useful reply before the freeze at 5 to
 - Embryo, "a batch of its own", or with any other stage: the advice becomes to keep today's fgw_shape0. On the two
   practice tasks whose target has a profile of its own, option 1 scores +0.86 and -1.42 and option 2 +0.77 and -1.14.
 - Embryo, "not recorded" or no answer: R-A stays as `docs/PLAN.md` decision log 2026-11-13 (a) puts it.
+- (Since 2026-11-13, row R6, T1's first upload is already drawn from library 3; the two Task 1 lines below are kept as
+  they were fixed. An answer "with library `_3`" or "the same protocol" now confirms the built file; an answer
+  "separately and with another protocol" goes to the captain with try T30's rows, and nothing changes by itself.)
 - Task 1, "prepared with library `_3` and sequenced with it", or "the same protocol": R-B goes back to the captain with
   the advice changed to yes, read on try T30's rows at library 3's depth alone. There the switched pair against today's
   pair is +1.60, 0.00 and +8.24 at a true cardiomyocyte share of 0.45, 0.60 and library 3's own. This is the organiser's

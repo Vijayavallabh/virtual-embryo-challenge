@@ -3,6 +3,18 @@
 ## Current State
 
 **Last Updated:** 2026-11-13
+**2026-11-13, the captain's rulings (decision log 2026-11-13 (d)): three entries changed; nothing is uploaded.** Asked
+about each rule with its numbers, the captain chose the run-corrected file for the embryo's second upload ("Run-
+corrected file (Recommended)"), reopened T3's second upload for the wild-type-only factor ("Yes, add it
+(Recommended)"), and left the base of T1's first upload to the AI assistant ("do whatever it takes to top the
+leaderboard"), which decided, from released data alone, to draw it from E10.5's dissected-heart library (row R6). The
+two screened reads for an organiser answer are approved for 19 and 23 Nov. `docs/S2_RULES.md` carries the amendments
+(new sha256 99b8709e...), `build_all.sh` builds the new set, and two independent code reviews of the new upload paths
+led to fixes (9cf5ca5). Dry builds here: each new file three times with one sha256, `vec check` passed, and the files
+whose commands did not change reproduce the DGX archive, except that T1's old s1 has different bytes on the two
+machines, so the freeze-morning reference must be rebuilt on the DGX by 24 Nov
+(`experiments/builds/results/rulings_9cf5ca5.txt`). The estimate stays 184. Tries unchanged: T1 28, embryo 36, heart
+4, T3 15 (rows R4 to R6 are rulings without a new scored run).
 **2026-11-13, the R-C email is sent and the handoff files are current (decision log 2026-11-13 (c)):** the captain
 sent the seventh organiser email (the captain's words: "i also sent the draft"), which confirms its classification
 as a question about procedure; an answer is read as fixed beforehand, through a screening agent. At the captain's
@@ -743,30 +755,32 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       - Heart: no try kept and no request; N25 found no revert signal at the end of a series.
       - Reviews: two research passes, four cold reviews, one independent recomputation of the record, a three-lens
         review of the seventh organiser email, which the captain sent on 2026-11-13.
+      - 2026-11-13 (d): the captain's rulings carried out. `docs/S2_RULES.md` amended with the captain's words (the
+        embryo's s2, T3's second upload, T1's s1 base), `build_all.sh` and two build options (`--base lib3`,
+        `--wt-revert`) with tests, two independent code reviews and their fixes, dry builds with one sha256 per new
+        file, and the screened reads approved and briefed (`docs/SCREENED_READ_SEVENTH_EMAIL.md`).
 
 ### What's Next
 
 Updated 2026-11-13. The older list below is kept for its record; where the two differ, this one holds.
 
-0. **The captain's rulings** (decision log 2026-11-13 (a) and (b)): R-A with its three options
-   (`fgw_aligned_series`; `fgw_shape0_hi`; today's), the first embryo upload's shape fix if the captain reopens it,
-   R-B (advice: decline), and T3's second upload if the captain reopens it (the wild-type-only factor of tries K7
-   and K8: closed by its pre-set reading, both readings in decision log (b)). The R-C email was sent on 2026-11-13. On a
-   yes to R-A's first option the s2 command is `build_test.py embryo --method fgw --move-coupling aligned --expression
-   series`; on its second, `build_test.py embryo --method fgw_shape0 --expression render_hi`. Both built reproducibly
-   on this machine at 16 BLAS threads on 2026-11-13. Either way `docs/S2_RULES.md` takes a dated ruling by the
-   captain's own say-so and the file joins the freeze-morning rebuild. On a yes to R-B: a base option for the T1
-   build, its ledger row, tests and a rebuild rehearsal by 24 Nov. If the captain reopens T3's second upload: a
-   dated ruling in `docs/S2_RULES.md`, a new factor source in `experiments/t3_decomp/build_submission.py` with its
-   hash record and tests (about a day), a dry build, and the rebuild rehearsal by 24 Nov. An organiser's answer to
-   R-C is read as `docs/ORGANIZER_QUESTIONS.md` fixes it, through a screening agent and never pasted into the session.
+0. **Rulings given on 2026-11-13** (decision log 2026-11-13 (d); `docs/S2_RULES.md`, "Amendments of 2026-11-13"): the
+   embryo's s2 is `fgw_aligned_series`, T3's second upload carries the wild-type-only factor (`--wt-revert`), and
+   T1's s1 is drawn from library 3's cells (`--base lib3`; s2 keeps the pooled base). Nothing is requested any more:
+   the embryo's first-upload shape fix stays closed by its rule. **Owed by 24 Nov:** sync the DGX when no build runs
+   there, rehearse all ten files there twice with `build_all.sh` (16 BLAS threads), archive that set with its
+   SHA256SUMS as the freeze-morning reference (a local hash cannot check T1's s1 built on the DGX), and record it. The
+   server format checks of the changed files wait for the freeze morning. An organiser's answer to the seventh email
+   is read as `docs/ORGANIZER_QUESTIONS.md` fixes it, through a screening agent and never pasted into the session.
 1. **19 Nov:** if no organiser has answered the public Slack question on floored T3 severity, the captain may post one
    short follow-up in the same thread, drafted by the AI assistant. Replies are read only through the screened check
    (`docs/ORGANIZER_QUESTIONS.md`, "Public Slack question").
    **19 and 23 Nov, on the captain's say-so:** a screened read for an answer to the seventh email (the Data Protocol
    page, the Slack channel, the mailbox), with the scope fixed in `docs/ORGANIZER_QUESTIONS.md` ("Seventh email"). The
    email invites an answer on that page, which nobody reads otherwise, and 23 Nov is the last day an answer can still
-   change a build (rehearsal by 24 Nov). The captain has not yet said yes to these reads.
+   change a build (rehearsal by 24 Nov). The captain approved both on 2026-11-13; the screening agent's brief is
+   `docs/SCREENED_READ_SEVENTH_EMAIL.md`. Session reminders are set for both mornings and die with the session, so a
+   new session runs the reads from this line.
 2. **24-30 Nov:** the method summary goes privately to the organisers. The private email before the first upload lists
    every planned upload with its hash, ids and stages (`docs/P3_RUNBOOK.md` section 5); it has nothing to add for the
    Task 1 statement, whose read returned none.
@@ -778,10 +792,10 @@ Updated 2026-11-13. The older list below is kept for its record; where the two d
    `runs/archive/builds_f337dc6/SHA256SUMS`, then `vec check`, the server format checks, the plain summary, and the
    captain's go-ahead for each upload. First round: T1 s1, heart s1, embryo s1, T3's s2.
 5. **29 Nov:** T1, heart and embryo s2. **30 Nov:** T3's s1. **1 Dec:** outage buffer, and the final marks by 12:00 UTC.
-6. **Levers:** none open without a ruling. What the campaign priced above about +0.3 overall sits with the captain:
-   R-A (about +0.5 overall at the AI assistant's chance for "E7.75 measured like E8.0") and T3's second upload if
-   reopened (about +1 for the board in expectation, the AI assistant's estimate). The Task 1 statement exception is
-   spent (2026-11-11 (d)). Tries: T1 28, embryo 36, heart 4, T3 15. Nothing is uploaded.
+6. **Levers:** the three the campaign priced above about +0.3 overall are now in the entries by the rulings of
+   2026-11-13 (the embryo's s2, T3's second upload, T1's base). None other is open without a new reason and a
+   ruling. The Task 1 statement exception is spent (2026-11-11 (d)). Tries: T1 28, embryo 36, heart 4, T3 15.
+   Nothing is uploaded.
 
 Updated 2026-11-05 (the order, set on 2026-11-04 after the captain's guiding principle in `AGENTS.md`, comes from the
 headroom tables in `experiments/harness/TRIES.md`):
@@ -838,14 +852,21 @@ headroom tables in `experiments/harness/TRIES.md`):
 
 ## Blockers / Risks
 
-- [ ] 2026-11-13: T3's second upload is the file uploaded first on T3. If the captain reopens it for the wild-type-only
-      factor (tries K7, K8), the builder change, its tests, a dry build and the rehearsal have to be done by about
-      24 Nov; the gain there rests on a thin margin over the scorer's severity gate and on one knockout run.
+- [ ] 2026-11-13: the freeze-morning reference hashes do not exist yet for the entries as amended. T1's s1 has
+      different bytes on the local machine and on the DGX, so the reference set has to be built on the DGX (sync it
+      first, when no build runs there) by 24 Nov. Until then only the local dry builds vouch for the new files.
+- [ ] 2026-11-13: three bets are now placed that no backtest can settle: E7.75 measured like E8.0 (embryo s2; it
+      gives up E7.5's shape hedge), E12.5 no shallower than about 0.7 of library 3 (T1 s1), and WT E8.75's own
+      deviation clearing the severity gate against the beta-catenin run (T3's second upload; a thin margin on one
+      knockout run of another gene).
+- [ ] 2026-11-13: T1's base was decided by the AI assistant under the captain's delegation because the captain has seen
+      figures that bear on E12.5's depth. A later change of base in either direction needs a reason from released
+      data or an organiser's answer (`docs/S2_RULES.md`, "Amendments of 2026-11-13").
 - [ ] 2026-11-13: a reply to the seventh organiser email may carry figures about held-out samples. It is read by a
       screening agent first, never pasted into the main session (`docs/ORGANIZER_QUESTIONS.md`, "Seventh email"). An
       answer may also appear only on the Data Protocol page, which nobody reads without a screened read at the
-      captain's say-so: two are asked for, about 19 and 23 Nov, since the check of 26-27 Nov is too late for a
-      Task 1 build change. Until the captain says yes, an answer there would go unseen.
+      captain's say-so: two were asked for and approved on 2026-11-13, for 19 and 23 Nov, since the check of
+      26-27 Nov is too late for a build change. The reminders set for them live only in the session that set them.
 - [ ] 2026-11-13: the account's usage limit stopped 16 agent calls of the independent check ("You've reached your
       Fable limit"); its second stage did not run for most findings. Single reviewer agents (on Opus) ran later the
       same day; larger agent workflows wait for the captain's word on credits.
@@ -1026,7 +1047,9 @@ headroom tables in `experiments/harness/TRIES.md`):
   and this machine's otherwise-unused GPUs and cores as well as the DGX. Method decisions inside it are the AI
   assistant's, logged; every change to an upload, a rule or the gate stays the captain's (decision log 2026-11-12 (a)).
 - **2026-11-13** (captain): the seventh organiser email (processing batches of two held-out samples; procedure only)
-  sent. No ruling yet on R-A, R-B, the embryo's first-upload shape or T3's second upload.
+  sent. Later that day, asked about each rule: the embryo's s2 is `fgw_aligned_series`; T3's second upload carries
+  the wild-type-only factor; T1's base was left to the AI assistant, which chose library 3's cells; screened reads
+  for an organiser answer on 19 and 23 Nov (decision log 2026-11-13 (d)).
 - **Uploads pull from the DGX** (user, 2026-10-19): `vec submit PATH --board KEY --from-dgx` streams the built file
   from the DGX into the client's private temporary copy at upload time; no lasting local copy, and the key never
   leaves this machine.
@@ -1060,6 +1083,10 @@ headroom tables in `experiments/harness/TRIES.md`):
 
 ## Notes for Next Session
 
+- 2026-11-13: the entries' build commands changed (`docs/S2_RULES.md`, last section; `experiments/builds/build_all.sh`).
+  T1 s1: `build_test.py t1 --g-mom --base lib3`. Embryo s2: `build_test.py embryo --method fgw --move-coupling aligned
+  --expression series`. T3 second upload: the refused s1 command plus `--wt-revert`. Never check a T1 s1 built on the
+  DGX against a hash made on this machine, or the reverse (`experiments/builds/results/rulings_9cf5ca5.txt`).
 - 2026-11-13: tries K7 live in `experiments/t3_decomp/k7_wt_revert.py` (three diagnostic pseudo-tasks with the
   wild-type stage files as the only inputs; they are not in `configs/pseudo_tasks.yaml`). Its arms are not harness
   candidates and no T3 builder knows the factor: nothing of it can reach an upload without the captain's ruling and

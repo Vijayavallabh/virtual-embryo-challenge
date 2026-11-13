@@ -26,6 +26,26 @@ to 2026-11-13 (c)) and kept nothing. What it found is under "Tries ledger" below
 embryo's second upload, the base of T1's first upload, and two options that their pre-set rules closed) changes
 nothing until the captain rules.
 
+Entries changed on 2026-11-13 (later that day; `docs/S2_RULES.md`, "Amendments of 2026-11-13"; rows R4 to R6 of
+`experiments/harness/TRIES.md`; `docs/PLAN.md` decision log 2026-11-13 (d)). None of the three passed the adoption
+rule; each entered by the captain's ruling or delegation, after the captain was asked about each one with its
+numbers. No scored submission has been made.
+- **Task 2 embryo, s2:** `fgw_aligned_series` in place of fgw_shape0 (the captain's choice among three options). E7.5's
+  cells are rendered into E8.0's per-gene detection profile and depth, and the moves come from the aligned coupling.
+  It pays if E7.75 was measured like E8.0 (+3.4 to +6.7 as better of two on the practice tasks of that kind) and gives
+  up E7.5's shape hedge (-1.42 on the counted E7.5 backtest).
+- **Task 3, second upload:** the refused branch's s1 also carries a per-gene factor fitted on released wild-type
+  samples alone (WT E8.75's own deviation from a trend through the other wild-type stages), applied per lineage
+  group at exponent 0.5 (the captain's ruling, which reopens the ruling of 2026-11-01 for this file). On this file's
+  form it adds +4.72 and +7.12 on the two Gata4 replicates; the gain is the severity gate cleared by a thin margin.
+- **Task 1, s1:** the cells are drawn from E10.5's dissected-heart library alone (library 3) at its own chamber mix,
+  instead of from all three E10.5 libraries; every other step is unchanged, and s2 keeps the pooled base at 60%
+  cardiomyocytes. The captain left the direction to the AI assistant ("do whatever it takes to top the leaderboard"),
+  which decided from released data alone: the hidden sample is a dissected heart, as library 3 is; five of the seven
+  released libraries are at least as deep as library 3; and across one real day library 3's base was ahead of the
+  pooled one in 10 of 10 seeds. It is a depth choice in effect (+27% median library), and it loses if E12.5 is
+  shallower than about 0.7 of library 3.
+
 ## Team and track
 
 Team Mithril, Track 1 (Human Team). A person reviews results and makes every submission decision; coding agents do
@@ -55,7 +75,8 @@ damped momentum, on Task 2 a copy with damped momentum or bracket interpolation,
 **Task 1, E12.5, beyond E10.5 verbatim.** s1 = M1 with R1 (cells without a Feng group keep their E10.5 expression; the
 captain's ruling of 2026-11-05), with R2's two gene modules (the captain's ruling of 2026-11-06) held flat in Feng's direction and, by the captain's ruling of
 2026-11-10 (R3b), within-type factors on cardiomyocytes and endocardium; s2 = the same with cardiomyocytes at 60% of
-heart cells.
+heart cells. (Since 2026-11-13, row R6: s1 draws these cells from library 3 alone at its own chamber mix; s2 is
+unchanged, on the pooled base.)
 
 | Facet | Change beyond the baseline | Held-out evidence |
 |---|---|---|
@@ -73,7 +94,8 @@ the half trim.
 | Expression | Half the E9.5 -> E10.5 change of each harmonised lineage, in count space | E10.5 from E9.5 and from <= E8.75: +0.47 and +0.90 over a copy (9 and 10 of 10 seeds), +0.43 and +1.45 over the floor (7 and 10 of 10); every metric within 1.3 points of the floor (`experiments/harness/results/d2_v1/`). The expression-change group itself moves +0.77 and -0.03 against a copy (+0.38 and -0.46 against the floor); on the 1.75-day backtest the gain over a copy sits on neighbourhoods (+0.50) and cell state (+0.43), not on the group the momentum's reason targets (`TRIES.md` rule 2; `experiments/harness/results/headroom/`) |
 | Spatial organisation | E10.5's tissue and shape; the core grown by 1.58 x the E9.5 -> E10.5 log growth (a fixed three-rule average), xy grown and z held | None is possible. No released pseudo-target reaches the E10.5-E12.5 regime, and on E9.5 every growth rule scores like copy_last (`experiments/coords/REPORT.md`, C7; A8). The one released scope check (n = 1) ranked s1's scope, which equals H0 as built, last of three (C10) |
 
-**Task 2 embryo, E7.75, beyond E7.5 with its coordinates.** s1 = fgw; s2 = fgw_shape0. On the two backtests
+**Task 2 embryo, E7.75, beyond E7.5 with its coordinates.** s1 = fgw; s2 = fgw_shape0 until 2026-11-13 and
+`fgw_aligned_series` since (row R4, the captain's ruling). On the two backtests
 that chose it as the entry (selected on, not tuned on), fgw gains +4.15 against the organisers' pseudobulk_shift on E7.5
 and +4.92 against B0 on E7.25, ahead in 10 of 10 seeds each. After the organisers' protocol text showed E7.75 collected like
 E8.0, tries E16 and E17 (2026-11-11) tested whether s2 should take E8.0's geometry instead: on a backtest that copies that
@@ -310,6 +332,7 @@ Task 3's s2 is the wild type plus a five-state depletion, by design.
   pseudobulk_shift and 58.83 for it with the size rule, and 58.78 on E7.25 against 53.86 for B0, every gap ahead in
   10 of 10 seeds (`experiments/harness/results/emb_fgw_v1/`). It loses on shape on E7.5, where E8.0's sampling differs;
   the s2 is fgw_shape0, fgw's mixture in E7.5's geometry, chosen by a rule fixed before its run (`docs/S2_RULES.md`).
+  Since the captain's ruling of 2026-11-13 the s2 is `fgw_aligned_series` instead (above; row R4).
 - **Spatial hygiene:** random rows only, jitter of at most 0.25 nearest-neighbour distances to break duplicate
   coordinates, proper rotations only, native coordinates (`experiments/density/REPORT.md`, `experiments/coords/REPORT.md`).
 
@@ -338,7 +361,8 @@ Task 3's s2 is the wild type plus a five-state depletion, by design.
   magnitude was derived from them (`experiments/t3_decomp/rules.yaml`, notes).
 - **Outcome (2026-10-28, run once):** the Gata4 replicates transfer to each other, the Mab21l2 factor does not transfer
   to Gata4. s1 = the allowed branch's first submission; s2 = the refused branch's first (wild-type cells, the central
-  composition at the Mab21l2 magnitude, no number from the Gata4 files), uploaded first (approved 2026-11-01). The
+  composition at the Mab21l2 magnitude, no number from the Gata4 files), uploaded first (approved 2026-11-01); since
+  the captain's ruling of 2026-11-13 it also carries the wild-type-only factor per lineage group (above; row R5). The
   harness gives these entries no verdict (every fold is one they were selected or fitted on); they stand on the
   pre-registered rules and the captain's ruling of 2026-11-01, although the two assumptions behind those rules' bets
   have since been killed: A10 (D11b failed on 2026-10-28, K2a found no support and a review traced most of the factor's

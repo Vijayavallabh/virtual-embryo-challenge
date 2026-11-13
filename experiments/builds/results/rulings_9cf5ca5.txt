@@ -1,0 +1,38 @@
+# Dry builds for the amendments of 2026-11-13 (docs/S2_RULES.md, last section; rows R4, R5 and R6 of
+# experiments/harness/TRIES.md), on the local machine. None of these files was uploaded or format-checked on the
+# server. Every build: the default build seed (1000001), OMP_NUM_THREADS = OPENBLAS_NUM_THREADS = MKL_NUM_THREADS = 16,
+# NUMPY_MADVISE_HUGEPAGE=0. Target-free: released inputs only, no target read, no score. Read: exit codes, sha256,
+# the stamps' commit and clean fields, and for the T3 file the sidecar's factor record. Not read: the build and check
+# logs, which print cell numbers. The archive is runs/archive/builds_f337dc6/SHA256SUMS on the DGX, read as a list of
+# hashes on 2026-11-13.
+== new files (each: two builds at 2dc55d8 on a clean tree, one at 9cf5ca5 from a worktree; vec check passed at 2dc55d8)
+T1 s1, library 3's cells:  build_test.py t1 --g-mom --base lib3
+  a294062f5f7bbb2dae19ef695979cc21f03f38df40d22be9ccdd30af36e3bdef  (three builds, one sha256)
+T3 refused s1 with the wild-type-only factor:  build_submission.py build ... --branch refused --submission s1 --wt-revert
+  386bcf2db2fb0304d009514212db954e30352c48ca16d1b9d41b89c15b18f721  (three builds, one sha256)
+  factor record: 12 lineage groups with their own factor, SD of the pooled log factor 0.535991, 16 genes at the clip:
+  equal to the record of tries K8 (experiments/t3_decomp/results/k8_s2_form/tasks/g2.json)
+embryo s2, the aligned series file:  build_test.py embryo --method fgw --move-coupling aligned --expression series
+  41982d8afd784ecb07a4021077f701c3806c3bdb06eda92c2cb99fcc41b19b73  (four builds: experiments/builds/results/determinism_1f8956b.txt)
+== files whose commands did not change, built here with the changed scripts, against the DGX archive
+T1 s2:  build_test.py t1 --g-mom --cm-share 0.60
+  30f0cf59442591810833061756e1324b46728cc4373048d8a8c90696a1ae3737  = archive builds/T1_s2.h5ad
+T3 refused s1 without the option (at 2dc55d8 and at 9cf5ca5):
+  0ac8901b2f4015cd4d89738a2a5188faec7a371e6ae7a68d3fdb1dd4140eb101  = archive t3_build/refused_s1.h5ad
+embryo s1 and the old embryo s2 (built here on 2026-11-12):
+  dc910d4b3fb1d62b643bf96e5765741f8f0ad011f7b2d928a7955928ddee1303  = archive builds/T2embryo_s1.h5ad
+  574aa30b60a735c0ca3308886f5d10f6b1fd99fc7be8b6efab7aa3b4c98f0fac  = archive builds/T2embryo_s2.h5ad (no longer the s2)
+== a file that differs between machines
+T1 s1 as built until 2026-11-13:  build_test.py t1 --g-mom
+  28436b3e265347ea7ac1a6eac7ad05dba2ef8db00b388455d48b8fb39dc121ca  here, at 2dc55d8 and with the build script of 44df96d
+  c098c6aa0a160fde3d7edac343abde5db5ec72d52f5670bc9449c519ed1568fe  archive builds/T1_s1.h5ad (DGX, f337dc6)
+  The same code at 16 threads gives different bytes on the two machines (R3b's fit; docs/PLAN.md decision log
+  2026-11-10 (q) found the same file moving with the thread count). So the new T1 s1's sha256 above holds for this
+  machine only.
+== not built here
+T3 allowed s1 and the barred files need the run folder runs/t3_decomp/gata4_20261028T122425Z, which is on the DGX; the
+heart files were not rebuilt. Their commands did not change.
+== what follows
+The reference set for the freeze-morning rebuild is made on the DGX, where the uploads are built: by 24 Nov, sync it
+when no build runs there, run build_all.sh s1, s2 and t3alt twice into fresh folders, and archive one set with its
+SHA256SUMS.
