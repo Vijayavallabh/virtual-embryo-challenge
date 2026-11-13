@@ -33,16 +33,19 @@ here:
   (`experiments/builds/results/determinism_1f8956b.txt`).
 - The DGX checkout was not synced during the campaign (it stayed at 6402b64). It was synced on 2026-11-13 to fd2683a,
   with no build running there, for the rebuild rehearsal of that day
-  (`experiments/builds/results/rehearsal_fd2683a.txt`). Sync it only when no build runs there.
+  (`experiments/builds/results/rehearsal_fd2683a.txt`), and again that evening to 38616fe for the second rehearsal,
+  after the captain's ruling on T1's second upload (`experiments/builds/results/rehearsal_38616fe.txt`). Sync it
+  only when no build runs there.
 - `.venv-gpu` exists on this machine only: the sync line below leaves it out.
 - Since 2026-11-13 this machine holds a verified copy of what the uploads need from the DGX, so that a DGX outage in
-  the upload week does not mean rebuilding under deadline: `runs/archive/builds_fd2683a/` (the ten reference files
-  with their stamps, sidecars and SHA256SUMS; check with `sha256sum -c SHA256SUMS` there) and
+  the upload week does not mean rebuilding under deadline: `runs/archive/builds_38616fe/` (the ten reference files
+  of the second rehearsal, with their stamps, sidecars and SHA256SUMS; check with `sha256sum -c SHA256SUMS` there;
+  the copy of the first rehearsal's set, `runs/archive/builds_fd2683a/`, is still on disk and is superseded) and
   `runs/t3_decomp/gata4_20261028T122425Z/` (the run folder every T3 build reads). Both are owner-only and ignored by
   git. This is the one exception to "bring back only scores and small figures" below. If a build changes, the copy
   of that file is stale until the new reference is copied and checked (`docs/P3_RUNBOOK.md`, "A copy off the DGX").
-  The copy sets aside the "no lasting local copy" part of the choice of 2026-10-19 for these files and waits for the
-  captain's confirmation (`docs/PLAN.md` decision log 2026-11-13 (f)).
+  The copy sets aside the "no lasting local copy" part of the choice of 2026-10-19 for these files; the captain
+  confirmed it on 2026-11-13 ("Keep it (Recommended)", `docs/PLAN.md` decision log 2026-11-13 (k)).
 
 ### The campaign checkout on the DGX (2026-11-13)
 
@@ -69,15 +72,18 @@ runs on the DGX go in a second copy of the repository, `~/v/vec-campaign`, so th
   on 2026-11-13 (`experiments/builds/results/rehearsal_fd2683a.txt`), and repeated builds of each file on the local
   machine. T1's two files and the rendered embryo files also move with the thread count, so every build uses
   `build_all.sh`'s default of 16.
-- **Across the two machines** seven of the ten files are byte-identical: T1's two, the embryo's two, the heart's two
+- **Across the two machines** seven of the ten files of the first rehearsal's set (fd2683a) are byte-identical; six
+  of them are in today's set, and the seventh, T1's second file, was replaced by the ruling of 2026-11-13 (its
+  successor has been built on the DGX only). The seven: T1's two, the embryo's two, the heart's two
   and T3's barred s2. The three T3 files that apply a per-gene factor (allowed s1, refused s1 with the wild-type-only
   factor, barred s1) hold the same cells in the same order with the same coordinates, but a few cells are drawn
   differently (3, 84 and 14 cells). The builder smooths each cell's profile over its nearest neighbours in a PCA, and
   the PCA's scores differ by up to 3e-4 between OpenBLAS's kernels: Haswell on this machine's EPYC 7742, SkylakeX on
   the DGX's Xeon Platinum 8468. A few cells then get other neighbours. T1's s1 as built until 2026-11-13 differed between the machines too.
 - **So a hash checks a file only on the machine that built it.** The uploads are built on the DGX, and the reference
-  list is the DGX's `runs/archive/builds_fd2683a/SHA256SUMS` (copy in the repository:
-  `experiments/builds/results/builds_fd2683a.SHA256SUMS`).
+  list is the DGX's `runs/archive/builds_38616fe/SHA256SUMS` (copy in the repository:
+  `experiments/builds/results/builds_38616fe.SHA256SUMS`). T1's second file as ruled on 2026-11-13 (the mid base)
+  has been built on the DGX only; whether this machine gives the same bytes is not known.
 - **Keep the DGX's environment as it is until the uploads are done.** The numerical libraries come from `uv.lock`; a
   change of the lock, of the Python environment there or of the processor can change those three files' bytes, and
   then the freeze-morning check names them. A change to `uv.lock` before 2 December needs a new rehearsal.

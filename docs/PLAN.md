@@ -633,7 +633,7 @@ every T3 upload after its screened check of mail, Slack and the Rules page (`doc
 | 19 Nov | If no organiser has answered the public Slack question on floored T3 severity (posted 2026-11-12), the captain may post one short follow-up in the same thread, drafted by the AI assistant (decision log 2026-11-11 (e)). On the captain's say-so, a screened read for an answer to the seventh email: the Data Protocol page, the Slack channel and the mailbox (decision log 2026-11-13 (c)) |
 | 23 Nov | On the captain's say-so, a second screened read for an answer to the seventh email; it is the last day an answer can still change a build, which has to be rehearsed by 24 Nov |
 | 26-27 Nov | The screened check that picks T3's s2 (ruling 2026-11-06 (b)), run no earlier than 26 Nov; it also looks for an answer to the seventh email, the Data Protocol page included |
-| 27 Nov, from 05:30 | Rebuild at the freeze commit and check (`vec check`, the server format checks, the archived hashes: since 2026-11-13 `runs/archive/builds_fd2683a/SHA256SUMS` on the DGX, through `determinism_check.sh ... 16`, decision log 2026-11-13 (e)); the plain summary to the captain; then the first round, pulled from the folder that command built: T1 s1, heart s1, embryo s1 and T3's s2 |
+| 27 Nov, from 05:30 | Rebuild at the freeze commit and check (`vec check`, the server format checks, the archived hashes: since the second rehearsal of 2026-11-13 `runs/archive/builds_38616fe/SHA256SUMS` on the DGX, through `determinism_check.sh ... 16`, decision log 2026-11-13 (e) and (m)); the plain summary to the captain; then the first round, pulled from the folder that command built: T1 s1, heart s1, embryo s1 and T3's s2 |
 | 29 Nov | T1, heart and embryo s2, each after its screened check |
 | 30 Nov | T3's s1, after its screened check; every upload done by the end of the day |
 | 1 Dec | Outage buffer only; each board's final mark as soon as both its uploads are scored, by 12:00 UTC |
@@ -660,7 +660,8 @@ Do not front-load the second round: a late A20 bar or Gata4 restriction is absor
     So the s1 methods freeze at 2026-11-27 00:00 UTC (05:30 IST). That morning the AI assistant rebuilds the files at
     the freeze commit, checks them (`vec check`, the server format checks, the hashes archived in
     `runs/archive/builds_02abf39` since R2's build, decision log 2026-11-06 (k); before it `builds_88b057f`; since
-    2026-11-13 `runs/archive/builds_fd2683a`, decision log 2026-11-13 (e)) and gives
+    2026-11-13 `runs/archive/builds_fd2683a`, decision log 2026-11-13 (e), and from that evening
+    `runs/archive/builds_38616fe`, decision log 2026-11-13 (m)) and gives
     the captain the plain summary; the first round (T1 s1, heart s1, embryo s1
     and T3's s2) may then go in whatever the estimate, each upload only on his go-ahead at the time. The words are his
     own, written in his message in the main session (a note on a side agent's text he forwarded), not an agent's relay.
@@ -3034,3 +3035,47 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     T11 already read in other forms; the heart's first backtest has four input stages, where a time-dependent
     forecast is a different thing from B0's last step. And the organisers' own learned-flow reference rows sit below
     the floor on the T1 and heart-extrapolation validation boards (`docs/CHALLENGE.md`, "Reference rows").
+- 2026-11-13 (m), the second rehearsal, after the ruling of (k) on T1's second upload. Written by the AI assistant.
+  - **What was done.** The DGX reference checkout was synced from fd2683a to 38616fe with no build running there. All
+    ten files were built twice from empty folders with `build_all.sh` (both chains exit 0, about ten minutes), then a
+    third time by the freeze-morning command. The three builds are byte-identical; every stamp is clean at 38616fe;
+    every file passed `vec check`. Nine files equal the first rehearsal's; T1_s2 is the new file
+    (f169ea492e8dbac7e8b298f7dfa13fcceba71b5ff35e12ccfdc3a9504346304f), the sha256 its dry builds gave.
+  - **The reference.** `runs/archive/builds_38616fe/SHA256SUMS` on the DGX replaces `builds_fd2683a`; the list is in
+    the repository (`experiments/builds/results/builds_38616fe.SHA256SUMS`; both copies sha256 bf1ffb92...). The
+    freeze-morning command is `bash experiments/builds/determinism_check.sh runs/archive/builds_38616fe/SHA256SUMS 16`
+    (tried: exit 0, ten of ten OK). Record: `experiments/builds/results/rehearsal_38616fe.txt`.
+  - **The copy off the DGX,** kept by the captain's word (k), was refreshed: `runs/archive/builds_38616fe/` on this
+    machine, ten of ten OK; the client's stamp guard and local format check pass on all ten (nothing sent). The first
+    rehearsal's copy is still there, superseded.
+  - **Server format checks:** none sent. Four files have none in the ledger and need one before their official
+    upload: T1's s1 and T3's refused s1 (first round), T1's new s2 and the embryo's s2 (second round).
+  - **Unchanged.** The estimate (184, range 170 to 198) and the gate. By the forecast's own model the new second
+    upload moves the total's mean by +0.15 to +0.48 (decision log (j)); the gate's figure is restated only by its
+    procedure. A build change after this needs a third rehearsal by 24 Nov.
+- 2026-11-13 (n), the heart try's outcome and the design of the learned-forecast arm. Written by the AI assistant.
+  - **Heart tries H7 and H7c** (the captain's order, (k); `experiments/harness/TRIES.md`): not kept. The within-lineage
+    step loses 0.51 on the one-day backtest (ahead in 0 of 10 seeds, a veto) and gains 0.76 on the 1.75-day one (10 of
+    10); the no-development control moves every metric the same way at about half the size, and the step does not
+    beat it on the one-day task. So what the step adds on the heart is mostly structured spread, whose sign differs
+    between the two tasks. The gate N26 pointed the same way on the task whose fit is the longer step. Heart tries: 6.
+    The code stays on `campaign/h7`.
+  - **The design panel for the learned-forecast arm** (one workflow, eight agents on another model, read-only:
+    three independent designs, one attacker each, a synthesis, a completeness critic; nothing scored). All three
+    designs needed fixes. The attackers put the chance of beating B0 by the adoption rule at 0.03 to 0.07 on the
+    heart and 0.02 to 0.3 on T1. The synthesis chose a velocity field in the count model's latent, learned by flow
+    matching on optimal-transport pairs between all consecutive input stages and read over B0's own displacement
+    budget on B0's own cells. The critic then showed three things. (1) Read at the reference cells, such a field is
+    the smoothed incoming velocity of the last step: a per-cell form of B0's step plus a state-dependent residual of
+    H7's class, both of which are scored or about to be. (2) The synthesis's step for removing each sample's
+    measurement profile removes only about 9% of a profile that sits on the reference stage of the first heart task,
+    and it revives a line the ledger pruned. (3) On T1, with two input stages, no learned forecast exists that is not
+    g_mom's signal plus B0's step through a decoder; the synthesis says the same.
+  - **Decided by the AI assistant** (a try is its to register; the captain can strike or widen it). The learned-
+    forecast arm is scored once, on the heart only, in a simplified form: the same count model and the same
+    realisation as the ratio arm that keeps B0's forecast, with one difference, the displacement, which comes from
+    the learned field (all input transitions, weighted by the square of their gap) instead of each lineage's mean
+    step. No profile step. The reading that answers the side note is fixed in its row before the run: the arm
+    against the ratio arm that keeps B0's forecast, in the same vehicle. T1 gets no learned-forecast arm: with two
+    input stages it could not test what the note asks, and its two cuts have no unread reading left. Counted reads
+    for the generator tests: T1 two (the two vehicle arms), heart three; five in all, not the six announced.

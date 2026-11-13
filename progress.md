@@ -3,6 +3,24 @@
 ## Current State
 
 **Last Updated:** 2026-11-13
+**2026-11-13, evening: the captain's answers and what followed (decision log 2026-11-13 (k) to (n)). T1's second
+upload is on the mid base, the ten files are rehearsed again, and nothing is uploaded.** The captain chose "Half-way
+base (Recommended)" for T1's second upload, "Generator tests + heart try" for the GPUs and "Keep it (Recommended)"
+for the checked local copy. Done since: (1) row R7: `build_test.py t1 --base mid` (every library-3 cell and a
+seeded fraction s / (1 + s) of the other libraries' cells per chamber category), tested, reviewed independently
+(nothing that stops the build), dry-built twice with one sha256; `docs/S2_RULES.md` amended in the captain's
+words (new sha256 23ae5197...) and `build_all.sh`'s s2 line changed. (2) The second DGX rehearsal, at 38616fe:
+all ten files built three times with identical bytes (two chains and the freeze-morning command), nine equal to
+the first rehearsal's and T1_s2 new (f169ea49...); **the reference is now `runs/archive/builds_38616fe/SHA256SUMS`
+on the DGX** (`experiments/builds/results/rehearsal_38616fe.txt`, `builds_38616fe.SHA256SUMS`); the checked local
+copy was refreshed (ten of ten OK; the client's stamp guard and local format check pass on all ten). (3) Heart
+tries H7 and H7c, run at the captain's order after their gate failed: not kept (-0.51 on the one-day backtest,
+ahead in 0 of 10 seeds; +0.76 on the 1.75-day one; the control moves every metric the same way at half size).
+Tries: T1 30, embryo 36, heart 6, T3 15. (4) The generator tests: two arms that keep B0's forecast inside a count
+model are being built by an agent; after a side agent's note the captain forwarded, a design panel (three designs,
+each attacked, a synthesis and a critic) drafted a learned-forecast arm, found it close to pieces already scored,
+and it will be scored in a simplified form on the heart only; rows come before every scored run. No GPU run has
+been scored yet.
 **2026-11-13, the campaign's fifth round (decision log 2026-11-13 (g) to (j)): one request for the captain, on
 T1's second upload; nothing uploaded, no entry changed.** The captain renewed the campaign through the
 ambition-lift skill, naming all eight GPUs and the top leaderboard score as the bar ((g); nothing was lifted beyond
@@ -817,12 +835,12 @@ scorer reproduces every published validation anchor exactly. The release-day rul
 
 Updated 2026-11-13. The older list below is kept for its record; where the two differ, this one holds.
 
-0. **For the captain (decision log 2026-11-13 (j)):** (i) T1's second upload: try T33's rule puts the mid base
-   (pair mid_s2) forward; without a ruling today's file stays; a yes needs a builder option, an amendment of
-   `docs/S2_RULES.md` in the captain's words, the s2 line of `build_all.sh` and a new DGX rehearsal by 24 Nov.
-   (ii) The GPUs are idle by the AI assistant's choice; a class-closing run on them happens only at the captain's
-   word. (iii) Confirm the checked copy of the reference files on this machine, or have it removed (it
-   sets aside "no lasting local copy" of 2026-10-19 for these files; decision log 2026-11-13 (f)).
+0. **Nothing waits for the captain** (2026-11-13, evening). The three points of decision log (j) are answered (k):
+   T1's second upload is on the mid base (row R7; built in and rehearsed: the reference is
+   `runs/archive/builds_38616fe/SHA256SUMS`), the heart try was run and not kept, the checked local copy stays.
+   **In progress:** the generator tests the captain ordered (two arms that keep B0's forecast, on T1 and the
+   heart; one learned-forecast arm on the heart), each with its ledger row before its scored run. A build change
+   after today needs a third rehearsal and a new reference by 24 Nov.
    **Rulings given on 2026-11-13** (decision log 2026-11-13 (d); `docs/S2_RULES.md`, "Amendments of 2026-11-13"): the
    embryo's s2 is `fgw_aligned_series`, T3's second upload carries the wild-type-only factor (`--wt-revert`), and
    T1's s1 is drawn from library 3's cells (`--base lib3`; s2 keeps the pooled base). Nothing is requested any more:
@@ -1127,15 +1145,28 @@ headroom tables in `experiments/harness/TRIES.md`):
   from the DGX into the client's private temporary copy at upload time; no lasting local copy, and the key never
   leaves this machine. 2026-11-13: after a side agent's note the captain forwarded, a checked copy of the ten
   reference files and of the T3 run folder is kept on this machine (owner-only) as the fallback for a DGX outage.
-  That sets "no lasting local copy" aside for these files and **waits for the captain's confirmation** (decision log
-  2026-11-13 (e), (f)); the default route is unchanged.
+  That sets "no lasting local copy" aside for these files; **the captain confirmed it on 2026-11-13** ("Keep it
+  (Recommended)", decision log 2026-11-13 (k)); the default route is unchanged, and the copy is refreshed whenever
+  a reference file changes.
 - **The freeze-morning procedure** (the AI assistant, 2026-11-13; a procedure, not a method choice; decision log
-  2026-11-13 (e)): rebuild on the DGX with `determinism_check.sh` against `runs/archive/builds_fd2683a/SHA256SUMS`
+  2026-11-13 (e)): rebuild on the DGX with `determinism_check.sh` against the current reference list (since the
+  second rehearsal of 2026-11-13 `runs/archive/builds_38616fe/SHA256SUMS`)
   into a fresh folder and upload only from that folder; the DGX's `runs/builds` and `runs/t3_build` are never a
   source; a file that differs from the list waits for the captain; server format checks stay on the upload mornings.
 
 ## Evidence of Completion
 
+- [x] 2026-11-13 (m), the second rehearsal, on the DGX's reference checkout at 38616fe
+      (`experiments/builds/results/rehearsal_38616fe.txt`): two chains of `build_all.sh s1`, `s2`, `t3alt` from
+      empty folders, both exit 0, ten of ten files byte-identical, clean stamps; nine equal to
+      `runs/archive/builds_fd2683a/SHA256SUMS`, T1_s2 new; archived as `runs/archive/builds_38616fe/`; the
+      freeze-morning command against the new list: exit 0, ten of ten OK. Local copy: `sha256sum -c` ten of ten
+      OK; the client's stamp guard and local format check pass on all ten (nothing sent). Before it: the option's
+      tests (`pytest tests/test_hidden_counts.py`, 32 passed), the tests that pin the rules hash and the build
+      script's lines (188 passed), an independent code review, dry builds at 6369e07
+      (`experiments/builds/results/r7_mid_6369e07.txt`). Heart tries H7 and H7c: `run.py run` on the two heart
+      tasks at b4e8223 (clean tree), `run.py decide` against b0 and against the control
+      (`experiments/harness/results/h7_v1/`).
 - [x] 2026-11-13 (j), the campaign's fifth round. Tries T32 and T33: twelve scenarios each, 10 seeds, clean trees
       at 2e4e939 and c004527 in the DGX's campaign checkout; the rerun arms reproduce T30's stored scores within
       0.0099; both tables recomputed by independent agents (175 and 422 numbers, no mismatch)
@@ -1196,6 +1227,11 @@ headroom tables in `experiments/harness/TRIES.md`):
 
 ## Notes for Next Session
 
+- 2026-11-13 (m): the DGX reference checkout is at 38616fe (synced that evening; nothing runs there). The
+  freeze-morning command is `bash experiments/builds/determinism_check.sh
+  runs/archive/builds_38616fe/SHA256SUMS 16`. Branch work on the DGX uses a third checkout,
+  `~/v/vec-campaign-h7` (own environment), checked out detached; `~/v/vec-campaign` follows main. An unclean build
+  stamp there once came from a bare `data` link (now a folder of links).
 - 2026-11-13 (j): campaign runs on the DGX use `~/v/vec-campaign` (`docs/COMPUTE.md`), never the reference
   checkout. The heart candidates live on the branch `campaign/h7` (pushed), not on main. If the captain rules for
   T1's mid base: write the builder option (keep every library-3 cell and a seeded fraction s / (1 + s) of the

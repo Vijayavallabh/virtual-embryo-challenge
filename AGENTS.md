@@ -127,8 +127,8 @@ If baseline verification is failing, repair that first before adding new scope.
   make official uploads: use it only through this repo's own tools, never with community "submit" tools or ad-hoc
   scripts. Validate files with `vec check` or format-only uploads; real uploads go through the submission client
   (feat-016), which defaults to format-only. An official upload sends only a file whose sha256 is in the current
-  reference list (since 2026-11-13 `experiments/builds/results/builds_fd2683a.SHA256SUMS`, the DGX's
-  `runs/archive/builds_fd2683a/SHA256SUMS`), taken from the folder the freeze-morning command builds and never from
+  reference list (since the second rehearsal of 2026-11-13 `experiments/builds/results/builds_38616fe.SHA256SUMS`,
+  the DGX's `runs/archive/builds_38616fe/SHA256SUMS`), taken from the folder the freeze-morning command builds and never from
   the DGX's `runs/builds` or `runs/t3_build`, which hold older files whose clean stamps the client accepts
   (`docs/P3_RUNBOOK.md`, "The freeze-morning rebuild"); if the DGX cannot be reached, the checked copy of the same
   bytes on the local machine can go, at the captain's word. A file that differs from the list is not uploaded until the
@@ -182,7 +182,8 @@ If baseline verification is failing, repair that first before adding new scope.
 - `experiments/builds/`: the test-file builders (`build_test.py` for T1 and T2; T3's is
   `experiments/t3_decomp/build_submission.py`), `build_all.sh` (one submission set, built and checked),
   `determinism_check.sh` (rebuild into a fresh folder and compare with a reference list: the freeze-morning command)
-  and `results/` (rehearsal records and the reference list `builds_fd2683a.SHA256SUMS`).
+  and `results/` (rehearsal records and the reference list, `builds_38616fe.SHA256SUMS` since the second rehearsal
+  of 2026-11-13).
 - `boards/`: public board specs from the challenge site (`index.json`, panel gene lists, T1 composition). Since 634b5fd
   `index.json` also holds the test boards' cell limits: code reads it; nobody opens it or quotes a test board's limits
   (`docs/DATA_POLICY.md`).

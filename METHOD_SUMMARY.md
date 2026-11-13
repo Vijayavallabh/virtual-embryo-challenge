@@ -61,6 +61,23 @@ On the heart, the within-type step that Task 1 carries (R3b) was written for the
 target-free gate before any scored run (diagnostic N26). A forecast of the total as a distribution
 (`experiments/gate/forecast.py`) is on record beside the gate's figure, which is unchanged.
 
+Entry changed on 2026-11-13, later that day (`docs/S2_RULES.md`, last section; row R7; `docs/PLAN.md` decision log
+2026-11-13 (k) to (m)). By the captain's ruling, after try T33's pre-set rule put it forward:
+- **Task 1, s2:** the cells are drawn from a base half-way between the pooled base and library 3 (every library-3
+  cell and, per chamber category, a seeded fraction of the other libraries' cells, so that library 3 supplies
+  about 0.82 of the drawn cells instead of 0.65), still with cardiomyocytes at 60% of heart cells; every other step
+  is unchanged, and s1 stays on library 3. With both uploads spent on the cardiomyocyte share, the base's library
+  is a second hidden axis, and a blend hedges it inside one file. On the zero-time-gap grid of try T30 the pair
+  leads the pair as built before under all nine priors (+2.43 under the main one); its lead rests on the scenarios
+  where the hidden sample is as deep as library 3, and it loses 1.6 to 1.9 where the sample is much shallower.
+  It is a depth choice in effect and entered by ruling, not by the adoption rule.
+The ten test-board files as they now stand are the set in `runs/archive/builds_38616fe/SHA256SUMS` on the build
+machine (rebuilt there three times that evening, byte-identical, all passing `vec check`;
+`experiments/builds/results/rehearsal_38616fe.txt`): Task 1's new s2 and nine files byte-identical to the set of
+fd2683a. Four of them have no server format check on record yet (Task 1's two, the embryo's s2, Task 3's second
+upload). The heart try of the same day (tries H7 and H7c: Task 1's within-type step on the heart head) was run at
+the captain's order and not kept (it loses on the one-day backtest); tries stand at T1 30, embryo 36, heart 6, T3 15.
+
 ## Team and track
 
 Team Mithril, Track 1 (Human Team). A person reviews results and makes every submission decision; coding agents do
@@ -90,8 +107,8 @@ damped momentum, on Task 2 a copy with damped momentum or bracket interpolation,
 **Task 1, E12.5, beyond E10.5 verbatim.** s1 = M1 with R1 (cells without a Feng group keep their E10.5 expression; the
 captain's ruling of 2026-11-05), with R2's two gene modules (the captain's ruling of 2026-11-06) held flat in Feng's direction and, by the captain's ruling of
 2026-11-10 (R3b), within-type factors on cardiomyocytes and endocardium; s2 = the same with cardiomyocytes at 60% of
-heart cells. (Since 2026-11-13, row R6: s1 draws these cells from library 3 alone at its own chamber mix; s2 is
-unchanged, on the pooled base.)
+heart cells. (Since 2026-11-13, row R6: s1 draws these cells from library 3 alone at its own chamber mix. Since the
+same day, row R7: s2 draws them from the base half-way between the pooled base and library 3.)
 
 | Facet | Change beyond the baseline | Held-out evidence |
 |---|---|---|

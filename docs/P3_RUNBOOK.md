@@ -300,6 +300,15 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     as archived. Dry builds on the local machine (`experiments/builds/results/rulings_9cf5ca5.txt`): each new file
     twice with one sha256, `vec check` passed, and the unchanged T1 s2, embryo s1 and T3 refused s1 without the
     option reproduce `runs/archive/builds_f337dc6/SHA256SUMS`.
+  - **The amendment of 2026-11-13, later that day** (`docs/S2_RULES.md`, last section; row R7; `docs/PLAN.md`
+    decision log 2026-11-13 (k) to (m)). By the captain's ruling T1's s2 is built as `build_test.py t1 --g-mom --base
+    mid --cm-share 0.60` (the base half-way between the pooled base and library 3); `build_all.sh s2` builds it. The
+    other nine files are unchanged. Everything below that names the reference was remade the same evening: **the
+    reference is now `runs/archive/builds_38616fe/SHA256SUMS` on the DGX** (in the repository:
+    `experiments/builds/results/builds_38616fe.SHA256SUMS`; record `experiments/builds/results/rehearsal_38616fe.txt`),
+    and the freeze-morning command is `bash experiments/builds/determinism_check.sh
+    runs/archive/builds_38616fe/SHA256SUMS 16`. Where the three paragraphs below say `builds_fd2683a`, read
+    `builds_38616fe`; they are kept as the record of the first rehearsal.
   - **The reference hashes (2026-11-13).** The rehearsal on the DGX at fd2683a
     (`experiments/builds/results/rehearsal_fd2683a.txt`; `docs/PLAN.md` decision log 2026-11-13 (e)) rebuilt all ten
     files twice from empty folders. The two sets are byte-identical, every stamp is clean, every file passed `vec
@@ -334,10 +343,13 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     stand-in: it gives seven of the ten reference files byte for byte, and the three T3 files that apply a per-gene
     factor (allowed s1, refused s1, barred s1) with a few cells drawn differently (3, 84 and 14 cells), so with
     hashes the disclosure email does not list. If a build changes after 2026-11-13, copy and check the new
-    reference the same day. The copy sets aside, for these files, the "no lasting local copy" part of the choice of
-    2026-10-19 (uploads pull from the DGX); it was made after a side agent's note the captain forwarded and waits for
-    the captain's confirmation (`docs/PLAN.md` decision log 2026-11-13 (f)). To remove it: `rm -r
-    runs/archive/builds_fd2683a runs/t3_decomp/gata4_20261028T122425Z` on the local machine, at the captain's word.
+    reference the same day (done for the second rehearsal: `runs/archive/builds_38616fe/` on the local machine,
+    ten of ten OK, the client's stamp guard and local format check passing on all ten; the first rehearsal's copy
+    is still there and superseded). The copy sets aside, for these files, the "no lasting local copy" part of the
+    choice of 2026-10-19 (uploads pull from the DGX); it was made after a side agent's note the captain forwarded,
+    and the captain confirmed it on 2026-11-13 ("Keep it (Recommended)", `docs/PLAN.md` decision log 2026-11-13
+    (k)). To remove it: `rm -r runs/archive/builds_38616fe runs/archive/builds_fd2683a
+    runs/t3_decomp/gata4_20261028T122425Z` on the local machine, at the captain's word.
 - Update `ASSUMPTIONS.md` (A1, A2, A3, A13, A19) and `progress.md`. A1 is confirmed (2026-10-28).
 - **Disclosure ids for each official upload** (prepared 2026-11-05 by the AI assistant; the captain confirms them on
   the morning). The client refuses an official upload without `--disclose` ids from `EXTERNAL_DATA.md`. Rule used:

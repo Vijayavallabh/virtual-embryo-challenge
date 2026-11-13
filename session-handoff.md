@@ -11,22 +11,22 @@
   uploaded. The captain's upload gate holds every first upload until the team's own estimate passes 209 (it is 184,
   range 170 to 198) or the deadline exception opens at 2026-11-27 00:00 UTC; each upload then needs the captain's
   go-ahead at the time, and the captain runs the commands.
-- No method ruling is open (`docs/PLAN.md` decision log 2026-11-13 (d); `docs/S2_RULES.md`, "Amendments of
-  2026-11-13"). The ten files as amended were rehearsed on the DGX on 2026-11-13 (decision log (e)): three
-  byte-identical builds, and the freeze-morning reference `runs/archive/builds_fd2683a/SHA256SUMS` there
-  (`experiments/builds/results/rehearsal_fd2683a.txt`). What is owed:
+- No method ruling is open (`docs/PLAN.md` decision log 2026-11-13 (d) and (k); `docs/S2_RULES.md`, its last two
+  sections). After the captain's ruling of the evening of 2026-11-13 (T1's second upload on the mid base, row R7)
+  the ten files were rehearsed a second time on the DGX (decision log (m)): three byte-identical builds, and the
+  freeze-morning reference is now `runs/archive/builds_38616fe/SHA256SUMS` there
+  (`experiments/builds/results/rehearsal_38616fe.txt`; the first rehearsal's `builds_fd2683a` is superseded).
+  What is owed:
   - on 19 and 23 Nov, the approved screened reads for an organiser answer to the seventh email
     (`docs/SCREENED_READ_SEVENTH_EMAIL.md`; a reply in the captain's inbox is not pasted into the session);
   - about 19 Nov, the Slack follow-up draft on floored T3 severity if no organiser has answered;
   - a new rehearsal and reference by 24 Nov only if a build changes after 2026-11-13;
-  - the captain's ruling on T1's second upload (decision log 2026-11-13 (j)): try T33's rule puts a base half-way
-    between the pooled base and library 3 forward (pair mid_s2: +2.43 under the main prior, never below the built
-    pair under the nine priors, its lead resting on the deeper scenarios); without a ruling today's file stays; a
-    yes needs a builder option, the rules amended in the captain's words and a new rehearsal by 24 Nov;
-  - the captain's word on the GPUs, left idle by the AI assistant's choice (decision log 2026-11-13 (i), (j));
-  - the captain's word on the checked copy of the reference files kept on this machine since 2026-11-13: it sets
-    aside the "no lasting local copy" part of the choice of 2026-10-19, so it is confirmed or removed (decision log
-    2026-11-13 (f)).
+  - the generator tests the captain ordered on 2026-11-13 (decision log (k), (l)): two arms that keep B0's forecast
+    (cells decoded from a count model; real cells edited by its decoder's ratios) and one learned-forecast arm per
+    board, each with its ledger row before its scored run; they change an upload only by the adoption rule and
+    the captain's ruling, and a build change would need a third rehearsal by 24 Nov.
+  Settled on 2026-11-13 (decision log (k)): T1's second upload (the mid base; built in and rehearsed), the heart
+  try (run, not kept), and the checked copy of the reference files on this machine (kept, by the captain's word).
 - Branch / commit: `main` on GitHub (private). The DGX checkout (`PrakashDGX_H2:~/v/virtual-embryo-challenge`) is at
   fd2683a, synced on 2026-11-13 for the rehearsal; sync it again only when no build runs there.
 
@@ -55,7 +55,8 @@
       refused s1 with the factor does not (the draws of 84 cells; a nearest-neighbour step follows the BLAS kernel),
       so only DGX hashes check DGX builds. No server format check, no upload.
 - [x] A copy off the DGX (2026-11-13, after a side agent's note the captain forwarded): this machine holds a checked
-      copy of the reference set (`runs/archive/builds_fd2683a/`) and of the T3 run folder
+      copy of the reference set (`runs/archive/builds_fd2683a/`; since the second rehearsal
+      `runs/archive/builds_38616fe/`) and of the T3 run folder
       (`runs/t3_decomp/gata4_20261028T122425Z/`), owner-only. The client's build-stamp guard and local format check
       pass on all ten copies (nothing sent), so an upload can go from the copy if the DGX is down, at the captain's
       word (`docs/P3_RUNBOOK.md`, "A copy off the DGX"). Every file also builds here now: seven of ten byte-identical
@@ -71,6 +72,12 @@
       (`experiments/gate/forecast.py`); tries T32 and T33 on T1's pair, both recomputed independently; the heart's
       target-free gate N26, which failed, so no heart try ran. Tries: T1 30, embryo 36, heart 4, T3 15. Campaign
       runs on the DGX now use a second checkout (`~/v/vec-campaign`); no GPU job ran.
+- [x] The captain's answers of 2026-11-13 (decision log (k) to (m)) and what followed. T1's second upload moved to
+      the mid base (row R7): builder option with tests and an independent code review, rules amended in the
+      captain's words (new sha256 23ae5197...), `build_all.sh` changed, all ten files rehearsed on the DGX at
+      38616fe (three byte-identical builds; nine equal to the first rehearsal's, T1_s2 new), the reference list and
+      the checked local copy refreshed. The heart try H7 with its control was run and not kept (heart 4 to 6
+      tries). The checked local copy is confirmed.
 
 ## Completed Earlier (2026-10-27 to 2026-10-28)
 
@@ -177,13 +184,16 @@
 
 ## Recommended Next Step
 
-- 2026-11-13 (latest, after decision log (j)): first the captain's ruling on T1's second upload; if it changes,
-  the builder option, the amended rules and a new rehearsal of all ten files by 24 Nov. Otherwise as below.
+- 2026-11-13 (latest, after decision log (m)): the captain ruled, T1's second upload is on the mid base and the
+  ten files are rehearsed again (reference `runs/archive/builds_38616fe/SHA256SUMS`). Next: finish the generator
+  tests the captain ordered (rows first); then the dated items below, reading `builds_38616fe` for the reference.
 - 2026-11-13 (earlier that day): the rulings are given and built in, and the ten files are rehearsed on the DGX. Next, in
   order: the screened reads on 19 and 23 Nov and the Slack follow-up draft about 19 Nov; the method summary and the
-  disclosure email (with the hashes of `runs/archive/builds_fd2683a/SHA256SUMS`) on 24-30 Nov; the screened check on
+  disclosure email (with the hashes of `runs/archive/builds_38616fe/SHA256SUMS`, the list since the second
+  rehearsal) on 24-30 Nov; the screened check on
   26-27 Nov; on 27 Nov the DGX sync to the freeze commit, the freeze-morning command (`determinism_check.sh
-  runs/archive/builds_fd2683a/SHA256SUMS 16`), the server format checks and the first round, each upload on the
+  runs/archive/builds_38616fe/SHA256SUMS 16`, the list since the second rehearsal), the server format checks and
+  the first round, each upload on the
   captain's go-ahead and pulled from the folder that command built; the second round on 29-30 Nov; the final marks on
   1 Dec. Before any reading that compares a predictor with a fold target, write its ledger row (row N25 records the
   one time this was skipped).

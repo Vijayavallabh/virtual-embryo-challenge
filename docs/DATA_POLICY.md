@@ -1024,3 +1024,33 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     fields, which are board identifiers (four of them), and the task identifiers. No value from them was printed,
     and the names were not passed on. The distinct values of the track field were printed on purpose, to select the
     track.
+- 2026-11-13 (g), process notes from the campaign's fifth round and the evening's rulings (`docs/PLAN.md` decision log
+  2026-11-13 (g) to (n)); written by the AI assistant.
+  - **Reads of practice targets.** Tries T32 and T33 scored arms against scenario truths cut from the released E10.5
+    file at zero time gap (counted: T1 28 to 30; rows before runs). Diagnostic N26 read heart stages up to E9.5 only;
+    E10.5, the heart backtests' target, was not opened by it. Heart tries H7 and H7c read the two heart backtests
+    (counted: heart 4 to 6; the row and the captain's order before the run). No test score exists; nothing was
+    uploaded and no server was called.
+  - **Test builds, and one departure in how they were read.** Dry builds in the DGX's campaign checkouts (ea17e39,
+    6369e07) and the second rehearsal on the reference checkout (38616fe) were read by exit code, sha256 and the
+    stamps' commit and clean fields; their logs, sizes and the stamps' size field were not. Beyond that: the `why`,
+    `unclean` and `start_commit` fields of one stamp were read to explain a "clean: false" (an untracked `data` link
+    in the campaign checkout); and from the build record of the new T1 file the base, the category shares, the
+    cardiomyocyte and blood shares and the mid base's per-category library ratios were read to check them against
+    try T33's arm. All of these are ratios of released E10.5 cells or repository state; none is or depends on a
+    test board's count. The record's `n_cells` is the literal "max_cells", as for every file.
+  - **A practice board's count in an agent's report.** The agent that built the heart candidates reported the cell
+    number of its build-only smoke. It is the validation board's count rule (public), not a test board's.
+  - **The session scratchpad.** While looking for an agent's script the AI assistant printed the first twenty names
+    of the scratchpad's top level. Nothing was opened and the listing was not recursive, but older names from
+    October stand there; the standing practice is to name a path, not to list.
+  - **Agents.** Single agents on another model, each briefed with the reading rules: one screening agent (note (f)),
+    builders in their own worktrees (no scoring, no target), independent checkers of T32, T33 and the builder option
+    (read-only, own code), one cold reviewer. One workflow of eight agents on another model designed a
+    learned-forecast arm (read-only; nothing scored). Ultracode was on for the session and the captain had asked for
+    the generator tests; the AI assistant's earlier note that workflows wait for the captain's word was a caution
+    about the account's usage limit, and it used the workflow for this one design step.
+  - **A forwarded side note.** The captain forwarded a side agent's note on the generator test; it was checked
+    against the recorded answer (k) before anything was changed (decision log (l)).
+  - **Not opened:** the challenge site, the Data page, the board index by hand, Slack, the organisers' mail, any
+    external dataset, any held-out value.
