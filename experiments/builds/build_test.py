@@ -298,9 +298,13 @@ def build_t1(a) -> dict:
     if a.g_mom and not a.hold_unbracketed:
         sys.exit("--g-mom is refused with --no-hold-unbracketed: g_mom's factors at test add to M1 with R1 and R2 as "
                  "they are (experiments/harness/TRIES.md, try T11)")
-    if a.base == "lib3" and (a.cm_share is not None or a.blood_share is not None):
+    if a.lib3_pair and (a.base != "lib3" or a.cm_share is None or a.blood_share is not None):
+        sys.exit("--lib3-pair names the second file of the pair try T32 priced (library 3's cells with the "
+                 "cardiomyocyte share moved): it needs --base lib3 with --cm-share, and no --blood-share")
+    if a.base == "lib3" and (a.cm_share is not None or a.blood_share is not None) and not a.lib3_pair:
         sys.exit("--base lib3 is refused with --cm-share or --blood-share: the pair priced in try T30 keeps the "
-                 "second upload on the pooled base (experiments/harness/TRIES.md, row R6)")
+                 "second upload on the pooled base (experiments/harness/TRIES.md, row R6). --lib3-pair builds try "
+                 "T32's second file instead; it is no entry, and it is uploaded only by the captain's own ruling")
     if a.base == "lib3" and (not a.hold_unbracketed or a.strong_null or a.herd):
         sys.exit("--base lib3 is refused with --no-hold-unbracketed, --strong-null or --herd: each would fit or pull a "
                  "step on library 3's cells alone, which no try has read (experiments/harness/TRIES.md, row R6)")
@@ -355,6 +359,8 @@ def build_t1(a) -> dict:
            "cm_share_of_heart": t1_scope.share_of(shares, "cm", t1_scope.load_spec().heart),
            "blood_share_of_chamber": float(shares.get("blood", 0.0)),
            "shares": shares, "external": ext, "check_ok": check.ok, "realised": rep["realised"]}
+    if a.lib3_pair:  # written only for that file, so every other file's record is as before
+        rec["lib3_pair"] = True
     if a.g_mom:
         rec["g_mom"] = g_mom_record
     return rec if strong is None else {**rec, "strong_null": strong}
@@ -490,6 +496,11 @@ def build_parser() -> argparse.ArgumentParser:
                                 "second upload); lib3 = E10.5's dissected-heart library alone at its own chamber mix "
                                 "(row R6 of experiments/harness/TRIES.md). The count, Feng's direction, R1, R2 and "
                                 "g_mom's fit are the same either way")
+            p.add_argument("--lib3-pair", action="store_true",
+                           help="with --base lib3 and --cm-share: build the second file of the pair try T32 priced "
+                                "(experiments/harness/TRIES.md), library 3's cells with the cardiomyocyte share "
+                                "moved. Off by default and no entry: T1's second upload stays on the pooled base "
+                                "unless the captain rules")
             p.add_argument("--g-mom", action="store_true",
                            help="add g_mom's within-type factors at test (T1 try T11 of experiments/harness/TRIES.md; "
                                 "fitted on E9.5 -> E10.5, applied last, after Feng's direction, on cardiomyocytes and "

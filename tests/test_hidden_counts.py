@@ -353,6 +353,45 @@ def test_t1_base_lib3_draws_library_three_alone_at_its_own_mix(bt, t1_env, tmp_p
     assert len(seen) == 2
 
 
+def test_t1_lib3_pair_builds_try_t32s_second_file_only_with_its_flag(bt, t1_env, tmp_path, monkeypatch, capsys):
+    """Try T32 (2026-11-13): --lib3-pair with --base lib3 and --cm-share hands build_submission library 3's cells alone
+    at library 3's own chamber mix with the cardiomyocyte share moved (the s2 rule's with_share); without the flag the
+    combination stays refused, and the flag is refused without both options or with --blood-share. Off by default."""
+    ref = t1_env.ref
+    lab = ref.obs["celltype"].astype(str).to_numpy()
+    lib = np.where(lab == "V-CM", np.where(np.arange(ref.n_obs) % 4 == 0, 1, 3), np.arange(ref.n_obs) % 3 + 1)
+    ref.obs_names = [f"bc{i}-1_{k}" for i, k in enumerate(lib)]
+    seen = []
+
+    def spy(pool, board, shares, n, seed, **kw):
+        seen.append((list(pool.obs_names), dict(shares), n))
+        return t1_env.build(pool, board, shares, n, seed, **kw)
+
+    monkeypatch.setattr(bt.t1_scope, "build_submission", spy)
+    assert bt.build_parser().parse_args(["t1", "--out", "x.h5ad"]).lib3_pair is False
+    bt.main(["t1", "--no-feng-hygiene", "--base", "lib3", "--out", str(tmp_path / "lib3.h5ad")])
+    bt.main(["t1", "--no-feng-hygiene", "--base", "lib3", "--cm-share", "0.6", "--lib3-pair",
+             "--out", str(tmp_path / "pair.h5ad")])
+    (names_3, shares_3, n_3), (names_p, shares_p, n_p) = seen
+    assert names_p == names_3 and all(x.endswith("_3") for x in names_p) and n_p == n_3  # the same pool and count
+    want = bt.t1_scope.with_share(shares_3, "cm", 0.6)
+    assert shares_p == want and shares_p != shares_3
+    heart = bt.t1_scope.load_spec().heart
+    assert bt.t1_scope.share_of(shares_p, "cm", heart) == pytest.approx(0.6)
+    assert shares_p["blood"] == pytest.approx(shares_3["blood"])  # blood's share of chamber cells is kept
+    rec3, recp = (json.loads((tmp_path / f"{k}.build.json").read_text()) for k in ("lib3", "pair"))
+    assert recp["base"] == "lib3" and recp["lib3_pair"] is True and recp["cm_share_of_heart"] == pytest.approx(0.6)
+    assert "lib3_pair" not in rec3  # every other file's record is as it was
+    assert str(T1_SECRET) not in capsys.readouterr().out
+    with pytest.raises(SystemExit, match="refused with --cm-share or --blood-share"):  # still refused without the flag
+        bt.main(["t1", "--base", "lib3", "--cm-share", "0.6", "--out", str(tmp_path / "no.h5ad")])
+    for bad in (["--lib3-pair"], ["--cm-share", "0.6", "--lib3-pair"], ["--base", "lib3", "--lib3-pair"],
+                ["--base", "lib3", "--cm-share", "0.6", "--blood-share", "0.3", "--lib3-pair"]):
+        with pytest.raises(SystemExit, match="--lib3-pair names the second file"):
+            bt.main(["t1", *bad, "--out", str(tmp_path / "no.h5ad")])
+    assert len(seen) == 2  # nothing was built for the refused calls
+
+
 @pytest.mark.parametrize("argv", [["--feng-hygiene"], []])  # [] : the default since the build commit of (k)
 def test_t1_build_with_the_hygiene_holds_the_pinned_union(bt, t1_env, tmp_path, monkeypatch, argv):
     """--feng-hygiene, and the default with R1, build the same file as build_t1 with the union added to the held-flat
