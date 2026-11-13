@@ -1,0 +1,28 @@
+Reading N40 (runs e24_pricing:ccd33b5, e25_pairs:798908a, e28_nine_tasks:22513cf, n36_trend_second_upload:51b0672): the fit geometry of fgw_aligned_trend on the nine practice tasks and at the test; aggregation of committed scores and stage days, not a try
+fgw_aligned_trend as a first upload: NOT put forward (the fitted gain over fgw is at or below 0 at the test's earlier-bracket geometry)
+  quantity 'own': fgw_aligned_trend minus fgw (the rule reads this one)
+    task   t      like     weight  share      g     gain   ahead
+    half   0.500  after    0.558  0.500 +0.058   +1.41  10/10
+    late   0.625  after    0.623  0.625 -0.002   +0.84   6/10
+    new1   0.800  after    0.742  0.800 -0.058   +1.74  10/10
+    new2   0.800  own                            +0.63   8/10
+    e75    0.333  own                            +1.28  10/10
+    e725   0.667  before   0.474  0.333 +0.140   +2.11  10/10
+    x1     0.400  before   0.298  0.600 -0.302   -2.76   0/10
+    x2     0.667  before   0.328  0.333 -0.005   +0.47   9/10
+    x3     0.444  before   0.317  0.556 -0.239   +0.34   9/10
+    fit over all seven classed tasks: gain = +1.08 +8.40 g  (r +0.82, n 7); truth like E7.5: g -0.192 -> -0.53;  truth like E8.0: g +0.038 -> +1.41
+    fit over without e725: gain = +1.14 +8.74 g  (r +0.78, n 6); truth like E7.5: g -0.192 -> -0.54;  truth like E8.0: g +0.038 -> +1.48
+  quantity 'trend': fgw_aligned_trend minus fgw_aligned (reported, deciding nothing)
+    task   t      like     weight  share      g     gain   ahead
+    half   0.500  after    0.558  0.500 +0.058   +1.47  10/10
+    late   0.625  after    0.623  0.625 -0.002   +0.06   6/10
+    new1   0.800  after    0.742  0.800 -0.058   +0.22  10/10
+    new2   0.800  own                            +1.24  10/10
+    e75    0.333  own                            -0.85   0/10
+    e725   0.667  before   0.474  0.333 +0.140   +3.69  10/10
+    x1     0.400  before   0.298  0.600 -0.302   -2.84   0/10
+    x2     0.667  before   0.328  0.333 -0.005   +1.99  10/10
+    x3     0.444  before   0.317  0.556 -0.239   +1.03  10/10
+    fit over all seven classed tasks: gain = +1.39 +10.07 g  (r +0.79, n 7); truth like E7.5: g -0.192 -> -0.55;  truth like E8.0: g +0.038 -> +1.78
+    fit over without e725: gain = +1.06 +8.10 g  (r +0.69, n 6); truth like E7.5: g -0.192 -> -0.50;  truth like E8.0: g +0.038 -> +1.37
