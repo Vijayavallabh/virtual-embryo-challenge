@@ -20,13 +20,13 @@ scored submissions per board for the whole phase, which cannot be withdrawn. So 
   checks never read it;
 - refuses an official upload of a file that is not in the current reference list (guard "reference list"; AGENTS.md:
   an official upload sends only a file whose sha256 is in it), so that a superseded file left in an older archive
-  folder with a clean build stamp cannot go: the committed pointer REFERENCE_LIST (results/reference_list.json,
-  rewritten after each rehearsal) names the list (sha256sum output, a path inside the repository), its sha256 and, per
-  board, the list's names meant for that board (and, as "held", names no board may send, with the reason). The pointer
-  must parse (at most REFERENCE_LIST_MAX_BYTES), the list must lie inside the repository, exist and have that sha256,
-  the board must have names, none held, each of which occurs in the list exactly once, and the plan's sha256 (for a
-  pulled file, its copy's) must be the list's hash for one of the board's names. A format
-  check never refuses on it, and warns when an official upload of the file would fail it;
+  folder with a clean build stamp cannot go: the committed pointer (results/reference_list.json of the repository
+  the client runs in, rewritten after each rehearsal) names the list (sha256sum output, a path inside the repository),
+  its sha256 and, per board, the list's names meant for that board (and, as "held", names no board may send, with the
+  reason). The pointer must be a regular file and parse (at most REFERENCE_LIST_MAX_BYTES), the list must lie inside
+  the repository, exist and have that sha256, the board must have names, none held, each of which occurs in the list
+  exactly once, and the plan's sha256 (for a pulled file, its copy's) must be the list's hash for one of the board's
+  names. A format check never refuses on it, and warns when an official upload of the file would fail it;
 - ties an official upload to the code that built the file (guard "build stamp"): the stamp `<file>.stamp.json` next to
   the file's real path (written with the file by vec.io.write_submission; see vec.provenance) must exist and parse (at
   most STAMP_MAX_BYTES), its sha256 must be the plan's (the bytes that will be sent), it must say the build was clean
@@ -170,7 +170,8 @@ EXTERNAL_DATA = REPO_ROOT / "EXTERNAL_DATA.md"
 UPLOAD_GATE = REPO_ROOT / "results" / "upload_gate.json"  # the captain's upload gate record (docs/PLAN.md section 8)
 UPLOAD_GATE_MIN = 209.0  # the captain's figure (2026-11-05); only he changes it
 UPLOAD_GATE_MAX_BYTES = 64 * 1024
-REFERENCE_LIST = REPO_ROOT / "results" / "reference_list.json"  # names the current reference list (guard below)
+REFERENCE_POINTER = "results/reference_list.json"  # the pointer, relative to the repository root
+REFERENCE_LIST = REPO_ROOT / REFERENCE_POINTER  # the pointer read without a repo (guard below)
 REFERENCE_LIST_MAX_BYTES = 64 * 1024  # the pointer file
 REFERENCE_SUMS_MAX_BYTES = 1024 * 1024  # the list file it names (sha256sum output)
 SUMS_LINE = re.compile(r"^([0-9a-f]{64}) [ *](.+)$")  # one line of sha256sum output: hash, mode character, name
@@ -999,25 +1000,34 @@ def reference_list_guard(sha: str, board: str, pointer: str | Path | None = None
                          repo: str | Path | None = None) -> Guard:
     """The guard "reference list" (AGENTS.md: an official upload sends only a file whose sha256 is in the current
     reference list). The pointer (REFERENCE_LIST, JSON: {"list", "list_sha256", "boards": {board: [names]}, "held":
-    {name: reason}, ...}) names the list, sha256sum output at a path inside `repo` (default REPO_ROOT); "held"
+    {name: reason}, ...}) names the list, sha256sum output at a path inside `repo` (default REPO_ROOT); without
+    `pointer` it is `repo`/results/reference_list.json (REFERENCE_LIST when `repo` is None too). "held"
     (optional) names list entries no board may send, such as files a ruling replaced before a new list exists. Passes
-    only when the pointer parses (at most REFERENCE_LIST_MAX_BYTES), the list lies inside the repository, exists and
-    has the sha256 `list_sha256`, `board` has names, none of them held, each of which occurs in the list exactly once,
-    and `sha` is the list's hash for one of them. Every refusal says which condition failed and names the pointer file;
-    no message holds a path outside `repo`."""
+    only when the pointer is a regular file and parses (at most REFERENCE_LIST_MAX_BYTES), the list lies inside the
+    repository, exists and has the sha256 `list_sha256`, `board` has names, none of them held, each of which occurs in
+    the list exactly once, and `sha` is the list's hash for one of them. Every refusal says which condition failed and
+    names the pointer file; no message holds a path outside `repo`."""
     name = "reference list"
     root = Path(repo) if repo is not None else REPO_ROOT
-    p = Path(pointer) if pointer is not None else REFERENCE_LIST
+    p = Path(pointer) if pointer is not None else REFERENCE_LIST if repo is None else root / REFERENCE_POINTER
     shown = _inside(p, root) or p.name  # never a path outside the repository
 
     def refuse(why: str) -> Guard:
         return Guard(name, False, f"{shown}: {why}")
 
     try:
-        if p.stat().st_size > REFERENCE_LIST_MAX_BYTES:
+        st = p.stat()
+        if not (stat.S_ISREG(st.st_mode) or stat.S_ISDIR(st.st_mode)):  # a directory: IsADirectoryError below
+            return refuse("the pointer is not a regular file")  # a FIFO would block the read, /dev/zero never end it
+        if st.st_size > REFERENCE_LIST_MAX_BYTES:
             return refuse(f"the pointer is larger than {REFERENCE_LIST_MAX_BYTES} bytes")
-        rec = json.loads(p.read_text())
-    except (OSError, ValueError) as e:
+        with p.open() as fh:  # read no more than the limit, whatever the file became after the stat
+            text = fh.read(REFERENCE_LIST_MAX_BYTES + 1)
+        if len(text) > REFERENCE_LIST_MAX_BYTES:
+            return refuse(f"the pointer is larger than {REFERENCE_LIST_MAX_BYTES} bytes")
+        rec = json.loads(text)
+        json.dumps(rec, ensure_ascii=False).encode()  # a lone surrogate ("\ud800") in a string: UnicodeEncodeError
+    except (OSError, ValueError, RecursionError) as e:  # RecursionError: JSON nested too deep to parse
         return refuse(f"cannot read the reference list pointer ({type(e).__name__})")
     if not isinstance(rec, dict):
         return refuse("the pointer is not a JSON object")
