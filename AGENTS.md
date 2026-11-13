@@ -60,7 +60,9 @@ assistant under the captain's delegation of 2026-11-02, and he can overrule them
    and cores, the ledger's own closure of the embryo's depth line is lifted for tries, and a candidate once pruned on
    an estimated gain may run as a counted try with its row first. Nothing else is lifted: a candidate that needs a
    standing safeguard lifted goes to the captain as a priced ruling request and changes nothing until the captain
-   rules.
+   rules. The captain renewed it once more on 2026-11-13 (decision log 2026-11-13 (g)): nothing further is lifted, and
+   campaign runs on the DGX go in a second checkout (`~/v/vec-campaign`, `docs/COMPUTE.md`), so the reference checkout
+   stays as it was rehearsed.
 
 ## Startup Workflow
 

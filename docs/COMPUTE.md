@@ -44,6 +44,25 @@ here:
   The copy sets aside the "no lasting local copy" part of the choice of 2026-10-19 for these files and waits for the
   captain's confirmation (`docs/PLAN.md` decision log 2026-11-13 (f)).
 
+### The campaign checkout on the DGX (2026-11-13)
+
+Since the captain's renewal of the campaign on 2026-11-13 (`docs/PLAN.md` decision log 2026-11-13 (g)), campaign
+runs on the DGX go in a second copy of the repository, `~/v/vec-campaign`, so that the reference checkout
+(`~/v/virtual-embryo-challenge`), its `.venv` and `uv.lock` stay as the rehearsal left them.
+
+- It has its own `.venv`, built once with `uv sync --frozen --group gpu --group jax` from the same `uv.lock`
+  (7.3 GB), and its own `runs/`.
+- `data/` there is a folder holding links to the reference checkout's `data/raw` and `data/external`. A bare link
+  named `data` is not covered by `.gitignore`'s `data/`, and build stamps then say unclean
+  (`experiments/builds/results/lib3_pair_ea17e39.txt`).
+- Sync it with the line below and the target `PrakashDGX_H2:v/vec-campaign/`, only when nothing runs in it. A
+  branch is checked out there detached (`git checkout --detach campaign/h7`): the copied `.git` remembers this
+  machine's worktrees and refuses a plain checkout of a branch one of them holds.
+- Start runs from a script file copied with `scp`, detached, and wait with a background poller for an exit file,
+  as for the rehearsal.
+- A file built there is a check, never an upload source: uploads are built in the reference checkout by
+  `build_all.sh` at the freeze commit.
+
 ## What reproduces where (2026-11-13)
 
 - **On one machine**, at 16 BLAS threads, every upload file rebuilds byte for byte: three builds of all ten on the DGX

@@ -3,6 +3,27 @@
 ## Current State
 
 **Last Updated:** 2026-11-13
+**2026-11-13, the campaign's fifth round (decision log 2026-11-13 (g) to (j)): one request for the captain, on
+T1's second upload; nothing uploaded, no entry changed.** The captain renewed the campaign through the
+ambition-lift skill, naming all eight GPUs and the top leaderboard score as the bar ((g); nothing was lifted beyond
+the renewal of 2026-11-12). A fourth screened leaderboard read ((h); overall totals only, calibration): first
+215.41, third 205.32, sixth 203.00, fifteenth 197.14, 124 Human entries, Mithril not entered. A cold review of the
+first plan (a learned within-type step on the GPUs) returned 70% a mistake, verdict stop ((i)): no T1 counted cut
+is unread, the heart is worth +0.1 to +0.4 Overall, and row E21 had already closed the embryo form. What ran
+instead, all on the DGX's CPUs in a second checkout (`~/v/vec-campaign`): (1) a forecast of the total as a
+distribution (`experiments/gate/forecast.py`; upper reading: mean 193.7, chance of 203 19.4%, of 209 2.1%; every
+draw at or above 203 takes T3 from stand-in A); (2) try T32, the cardiomyocyte hedge on library 3's own cells: no
+recommendation by its rule (+2.91 under the main prior, -0.42 under one check); (3) try T33, a base half-way
+between the pooled base and library 3: as the second upload it leads the built pair under all nine priors (+2.43
+main, +0.39 at the least; largest scenario loss -1.87), and **its rule puts it to the captain**; its lead needs the
+scenarios where the truth is as deep as library 3, and the pair with both uploads on that base is the steadier
+one, which the rule holds back; (4) both tables recomputed independently, no number moved; (5) the heart: T11's
+within-type step written for the heart head (branch `campaign/h7`, off main) and stopped by its target-free gate
+N26 (S -0.44 and -0.55; the reading's own limit is stated in its row), so no heart try ran. Tries: T1 30, embryo
+36, heart 4, T3 15. `build_test.py t1` gained an option that is off by default (`--lib3-pair`, T32's file; ea17e39):
+the two T1 commands of `build_all.sh` still give the reference bytes, and the other eight files do not pass
+through the changed lines. No GPU job ran: after the review the AI assistant knows of none whose result could
+change an upload, and the captain is told so.
 **2026-11-13, the harness files brought up to date after the rehearsal (decision log 2026-11-13 (f)).** At the
 captain's request ("update all the harness files and other files and then commit and push"): `AGENTS.md` now carries
 the final-phase reading list, how a test build is read, where an upload's file comes from and the DGX sync rule;
@@ -796,7 +817,11 @@ scorer reproduces every published validation anchor exactly. The release-day rul
 
 Updated 2026-11-13. The older list below is kept for its record; where the two differ, this one holds.
 
-0. **For the captain:** confirm the checked copy of the reference files on this machine, or have it removed (it
+0. **For the captain (decision log 2026-11-13 (j)):** (i) T1's second upload: try T33's rule puts the mid base
+   (pair mid_s2) forward; without a ruling today's file stays; a yes needs a builder option, an amendment of
+   `docs/S2_RULES.md` in the captain's words, the s2 line of `build_all.sh` and a new DGX rehearsal by 24 Nov.
+   (ii) The GPUs are idle by the AI assistant's choice; a class-closing run on them happens only at the captain's
+   word. (iii) Confirm the checked copy of the reference files on this machine, or have it removed (it
    sets aside "no lasting local copy" of 2026-10-19 for these files; decision log 2026-11-13 (f)).
    **Rulings given on 2026-11-13** (decision log 2026-11-13 (d); `docs/S2_RULES.md`, "Amendments of 2026-11-13"): the
    embryo's s2 is `fgw_aligned_series`, T3's second upload carries the wild-type-only factor (`--wt-revert`), and
@@ -1111,6 +1136,20 @@ headroom tables in `experiments/harness/TRIES.md`):
 
 ## Evidence of Completion
 
+- [x] 2026-11-13 (j), the campaign's fifth round. Tries T32 and T33: twelve scenarios each, 10 seeds, clean trees
+      at 2e4e939 and c004527 in the DGX's campaign checkout; the rerun arms reproduce T30's stored scores within
+      0.0099; both tables recomputed by independent agents (175 and 422 numbers, no mismatch)
+      (`experiments/t1_scope/results/t32_pair/`, `t33_mid/`). Forecast: `python3 -I -B experiments/gate/forecast.py`
+      (50 self-checks; the old-files run reproduces the committed upper reading) and `forecast_t1_pair.py`. Dry
+      builds at ea17e39: T1's two reference hashes reproduced, T32's file one sha256 over two builds, `vec check`
+      exit 0 (`experiments/builds/results/lib3_pair_ea17e39.txt`). Builder option tests: `pytest
+      tests/test_hidden_counts.py`, 30 passed. N26 at b4e8223 on `campaign/h7`, clean tree, after the candidate's
+      eight unit tests passed there (`experiments/harness/results/n26_heart_persistence/`). After the harness files
+      were updated: `uv lock --check` OK, ruff clean on `src tests`, `sha256sum -c docs/S2_RULES.sha256` OK,
+      `feature_list.json` parses (21 features), the assumption ledger's linter finds no format error (the same two
+      accepted warnings), and the tests that read the edited ledgers, the build script and the builder options
+      pass (139). The full suite was not rerun on main: the one code change there is the builder option,
+      whose test file is among those run.
 - [x] 2026-11-13 (f), after the harness files were brought up to date a second time (records, `init.sh`'s closing
       lines and the ledgers; no code that builds or scores): `uv lock --check` OK, ruff clean on `src tests`,
       `sha256sum -c docs/S2_RULES.sha256` OK, `feature_list.json` parses (21 features), the assumption ledger's
@@ -1157,6 +1196,13 @@ headroom tables in `experiments/harness/TRIES.md`):
 
 ## Notes for Next Session
 
+- 2026-11-13 (j): campaign runs on the DGX use `~/v/vec-campaign` (`docs/COMPUTE.md`), never the reference
+  checkout. The heart candidates live on the branch `campaign/h7` (pushed), not on main. If the captain rules for
+  T1's mid base: write the builder option (keep every library-3 cell and a seeded fraction s / (1 + s) of the
+  other libraries' cells per chamber category, then the usual draw at that pool's own mix with `--cm-share 0.60`),
+  test it, have it reviewed, dry-build it twice, amend `docs/S2_RULES.md` and `build_all.sh`, and rehearse all ten
+  files on the reference checkout by 24 Nov. A gate that compares a factor with the next step through a shared
+  middle stage is biased against the factor (row N26): project out the shared term or use disjoint halves.
 - 2026-11-13 (e): the DGX checkout is at fd2683a (synced that day; nothing built there since). The freeze-morning
   reference is `runs/archive/builds_fd2683a/SHA256SUMS` on the DGX, and the command that rebuilds and checks against
   it is `bash experiments/builds/determinism_check.sh runs/archive/builds_fd2683a/SHA256SUMS 16` (output folder

@@ -19,6 +19,11 @@
     (`docs/SCREENED_READ_SEVENTH_EMAIL.md`; a reply in the captain's inbox is not pasted into the session);
   - about 19 Nov, the Slack follow-up draft on floored T3 severity if no organiser has answered;
   - a new rehearsal and reference by 24 Nov only if a build changes after 2026-11-13;
+  - the captain's ruling on T1's second upload (decision log 2026-11-13 (j)): try T33's rule puts a base half-way
+    between the pooled base and library 3 forward (pair mid_s2: +2.43 under the main prior, never below the built
+    pair under the nine priors, its lead resting on the deeper scenarios); without a ruling today's file stays; a
+    yes needs a builder option, the rules amended in the captain's words and a new rehearsal by 24 Nov;
+  - the captain's word on the GPUs, left idle by the AI assistant's choice (decision log 2026-11-13 (i), (j));
   - the captain's word on the checked copy of the reference files kept on this machine since 2026-11-13: it sets
     aside the "no lasting local copy" part of the choice of 2026-10-19, so it is confirmed or removed (decision log
     2026-11-13 (f)).
@@ -59,6 +64,13 @@
       `AGENTS.md` (final-phase reading list, how a test build is read, where an upload's file comes from, the DGX
       sync rule, the repository map), `docs/COMPUTE.md` ("What reproduces where"), `README.md`, `init.sh`,
       `ASSUMPTIONS.md` (A28), `feature_list.json`, `METHOD_SUMMARY.md`, ledger rows R4 to R6.
+
+- [x] The campaign's fifth round (2026-11-13; decision log (g) to (j)), after the captain renewed it through the
+      ambition-lift skill. A fourth screened leaderboard read (sixth place 203.00, 124 Human entries); a cold
+      review that stopped the first plan; a forecast of the total as a distribution
+      (`experiments/gate/forecast.py`); tries T32 and T33 on T1's pair, both recomputed independently; the heart's
+      target-free gate N26, which failed, so no heart try ran. Tries: T1 30, embryo 36, heart 4, T3 15. Campaign
+      runs on the DGX now use a second checkout (`~/v/vec-campaign`); no GPU job ran.
 
 ## Completed Earlier (2026-10-27 to 2026-10-28)
 
@@ -165,7 +177,9 @@
 
 ## Recommended Next Step
 
-- 2026-11-13 (latest): the rulings are given and built in, and the ten files are rehearsed on the DGX. Next, in
+- 2026-11-13 (latest, after decision log (j)): first the captain's ruling on T1's second upload; if it changes,
+  the builder option, the amended rules and a new rehearsal of all ten files by 24 Nov. Otherwise as below.
+- 2026-11-13 (earlier that day): the rulings are given and built in, and the ten files are rehearsed on the DGX. Next, in
   order: the screened reads on 19 and 23 Nov and the Slack follow-up draft about 19 Nov; the method summary and the
   disclosure email (with the hashes of `runs/archive/builds_fd2683a/SHA256SUMS`) on 24-30 Nov; the screened check on
   26-27 Nov; on 27 Nov the DGX sync to the freeze commit, the freeze-morning command (`determinism_check.sh

@@ -50,6 +50,17 @@ have no server format check on record yet.
   pooled one in 10 of 10 seeds. It is a depth choice in effect (+27% median library), and it loses if E12.5 is
   shallower than about 0.7 of library 3.
 
+Status 2026-11-13, after the campaign's fifth round (`docs/PLAN.md` decision log 2026-11-13 (g) to (j)): no entry has
+changed and no scored submission has been made. The tries stand at T1 30, embryo 36, heart 4, T3 15. Two pricings on
+the zero-time-gap grid of try T30 looked at Task 1's second upload (tries T32 and T33; both recomputed
+independently). Drawn from library 3's cells alone it gains where the hidden sample is at least as deep as library 3
+and loses where it is shallower, so its rule recommended nothing. Drawn from a base half-way between the pooled
+base and library 3 it leads today's pair under all nine priors of the grid (+2.43 under the main one), and its rule
+puts it to the captain; its lead comes from the deeper scenarios, and nothing changes without the captain's ruling.
+On the heart, the within-type step that Task 1 carries (R3b) was written for the heart head and stopped by a
+target-free gate before any scored run (diagnostic N26). A forecast of the total as a distribution
+(`experiments/gate/forecast.py`) is on record beside the gate's figure, which is unchanged.
+
 ## Team and track
 
 Team Mithril, Track 1 (Human Team). A person reviews results and makes every submission decision; coding agents do
