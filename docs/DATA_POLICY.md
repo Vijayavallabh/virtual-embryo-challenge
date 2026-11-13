@@ -898,3 +898,21 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     `experiments/research_2026_11_runs/REPORT2.md`; the raw notes sit in the session's scratch folder and are not kept.
     The agents' own reports of blocked pages or other slips were not collected by this workflow: the brief carried the
     403 rule, and the main session read only the screened notes' findings and the audited report.
+- 2026-11-13 (a), process notes from the campaign's third wave (`docs/PLAN.md` decision log 2026-11-13 (a)); written by
+  the AI assistant. The main session opened no agent transcript and no workflow journal.
+  - **An independent check of the record** (workflow wf_29b8901f-e70). Five checkers recomputed the figures and the rule
+    applications of decision log 2026-11-12 (c) from committed result files, read-only, with the standard library only:
+    no project import, no data file, no web, no git history. Each reported discrepancy was to be attacked by a fresh
+    agent; 16 of those 38 attempts failed on the account's usage limit, so most findings reached the main session
+    unattacked, and it judged them itself against the stored files. No finding concerned a hidden target; the checker of
+    compliance reported that no size, count, depth or share of a hidden target is stated anywhere in the text it read.
+  - **Slips the checkers reported about themselves,** none touching quarantined material: two printed more of
+    `progress.md` than the one paragraph named to them; one listed the file names of the session's scratch folder and
+    the first 40 characters of some ledger lines to find rows; and the five shared one scratch folder, so helper scripts
+    with generic names overwrote one another, and one failed run imported a sibling's script that printed only the
+    structure of the named T1 result files. A later workflow gives each agent its own scratch folder.
+  - **The third devil's-advocate agent** got a claim, its evidence, a list of committed files and the project's rules,
+    with the instruction to open nothing else. Its transcript was not opened.
+  - **Tries E27, E28, T31 and diagnostics N24, N24b** read released stages only. T31's truth is E9.5's chamber cells and
+    its bases are E10.5's libraries: no cell's counts change in any arm. N24 thins and re-renders cells of one released
+    stage and scores them against the same stage's other half.
