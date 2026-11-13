@@ -1,0 +1,530 @@
+{
+ "label": "diagnostic N27 (not a try): b0_trend's factor at the heart's test pair against B0's own; target-free, nothing built or scored, no cell number written",
+ "board": "T2:heart:test_extrap",
+ "stages": {
+  "earliest": "T2/E8.25_late.h5ad",
+  "earlier2": "T2/E8.5.h5ad",
+  "earlier": "T2/E8.75.h5ad",
+  "start": "T2/E9.5.h5ad",
+  "ref": "T2/E10.5.h5ad"
+ },
+ "rules": {
+  "trend": "B0 with each lineage's per-gene velocity taken as the least-squares slope of log(mean CP10k + eps) on the stage day over every input stage where the lineage has at least min_cells cells, times B0_DAMPING x the last gap in days; a lineage seen at only the last two stages keeps B0's own factor; draw, stream, depth rule and coordinates are B0's"
+ },
+ "pools": {
+  "s1": {
+   "rule": "vec.harness.B0_TREND_RULE",
+   "sized": false,
+   "stages": [
+    "earliest",
+    "earlier2",
+    "earlier",
+    "start",
+    "ref"
+   ],
+   "days": [
+    8.3,
+    8.5,
+    8.75,
+    9.5,
+    10.5
+   ],
+   "budget_days": 0.5,
+   "eps": 0.5,
+   "min_cells": 20,
+   "n_trend": 6,
+   "median_cosine": 0.5675529079530761,
+   "median_norm_ratio": 0.7246092050555131,
+   "lineages": [
+    {
+     "lineage": "CM",
+     "stages": [
+      "earliest",
+      "earlier2",
+      "earlier",
+      "start",
+      "ref"
+     ],
+     "days": [
+      8.3,
+      8.5,
+      8.75,
+      9.5,
+      10.5
+     ],
+     "own_factor": false,
+     "weights": [
+      0.04996915484268946,
+      0.109500308451573,
+      0.4117828500925351,
+      0.42874768661320106
+     ],
+     "cosine": 0.6937944230968746,
+     "norm_ratio": 0.7456573932075913,
+     "mean_abs_logf_trend": 0.19360195222080556,
+     "mean_abs_logf_b0": 0.27182931757938383,
+     "norm_ratio_applied": 0.7456573932075913,
+     "mean_abs_logf_applied": 0.19360195222080556,
+     "usable": {
+      "earliest": true,
+      "earlier2": true,
+      "earlier": true,
+      "start": true,
+      "ref": true
+     }
+    },
+    {
+     "lineage": "CranialMesoderm",
+     "stages": [
+      "earliest",
+      "earlier2",
+      "earlier",
+      "start",
+      "ref"
+     ],
+     "days": [
+      8.3,
+      8.5,
+      8.75,
+      9.5,
+      10.5
+     ],
+     "own_factor": false,
+     "weights": [
+      0.04996915484268946,
+      0.109500308451573,
+      0.4117828500925351,
+      0.42874768661320106
+     ],
+     "cosine": 0.49651108631155955,
+     "norm_ratio": 0.7586165015644357,
+     "mean_abs_logf_trend": 0.2162446959925899,
+     "mean_abs_logf_b0": 0.29530724964653426,
+     "norm_ratio_applied": 0.7586165015644357,
+     "mean_abs_logf_applied": 0.2162446959925899,
+     "usable": {
+      "earliest": true,
+      "earlier2": true,
+      "earlier": true,
+      "start": true,
+      "ref": true
+     }
+    },
+    {
+     "lineage": "Ectoderm",
+     "stages": [
+      "earliest",
+      "earlier2",
+      "earlier",
+      "start",
+      "ref"
+     ],
+     "days": [
+      8.3,
+      8.5,
+      8.75,
+      9.5,
+      10.5
+     ],
+     "own_factor": false,
+     "weights": [
+      0.04996915484268946,
+      0.109500308451573,
+      0.4117828500925351,
+      0.42874768661320106
+     ],
+     "cosine": 0.5977782543199902,
+     "norm_ratio": 0.6135556403325375,
+     "mean_abs_logf_trend": 0.19727880667614578,
+     "mean_abs_logf_b0": 0.32199435718060876,
+     "norm_ratio_applied": 0.6135556403325375,
+     "mean_abs_logf_applied": 0.19727880667614578,
+     "usable": {
+      "earliest": true,
+      "earlier2": true,
+      "earlier": true,
+      "start": true,
+      "ref": true
+     }
+    },
+    {
+     "lineage": "Endoderm",
+     "stages": [
+      "earliest",
+      "earlier2",
+      "earlier",
+      "start",
+      "ref"
+     ],
+     "days": [
+      8.3,
+      8.5,
+      8.75,
+      9.5,
+      10.5
+     ],
+     "own_factor": false,
+     "weights": [
+      0.04996915484268946,
+      0.109500308451573,
+      0.4117828500925351,
+      0.42874768661320106
+     ],
+     "cosine": 0.5644776722398908,
+     "norm_ratio": 0.5180760409529597,
+     "mean_abs_logf_trend": 0.19742870895861642,
+     "mean_abs_logf_b0": 0.39296411921169366,
+     "norm_ratio_applied": 0.5180760409529597,
+     "mean_abs_logf_applied": 0.19742870895861642,
+     "usable": {
+      "earliest": true,
+      "earlier2": true,
+      "earlier": true,
+      "start": true,
+      "ref": true
+     }
+    },
+    {
+     "lineage": "Endothelial",
+     "stages": [
+      "earliest",
+      "earlier2",
+      "earlier",
+      "start",
+      "ref"
+     ],
+     "days": [
+      8.3,
+      8.5,
+      8.75,
+      9.5,
+      10.5
+     ],
+     "own_factor": false,
+     "weights": [
+      0.04996915484268946,
+      0.109500308451573,
+      0.4117828500925351,
+      0.42874768661320106
+     ],
+     "cosine": 0.5706281436662614,
+     "norm_ratio": 0.7267133296506884,
+     "mean_abs_logf_trend": 0.1962533259749448,
+     "mean_abs_logf_b0": 0.2852971997514416,
+     "norm_ratio_applied": 0.7267133296506884,
+     "mean_abs_logf_applied": 0.1962533259749448,
+     "usable": {
+      "earliest": true,
+      "earlier2": true,
+      "earlier": true,
+      "start": true,
+      "ref": true
+     }
+    },
+    {
+     "lineage": "NCC",
+     "stages": [
+      "earliest",
+      "earlier2",
+      "earlier",
+      "start",
+      "ref"
+     ],
+     "days": [
+      8.3,
+      8.5,
+      8.75,
+      9.5,
+      10.5
+     ],
+     "own_factor": false,
+     "weights": [
+      0.04996915484268946,
+      0.109500308451573,
+      0.4117828500925351,
+      0.42874768661320106
+     ],
+     "cosine": 0.5388593903613232,
+     "norm_ratio": 0.7225050804603377,
+     "mean_abs_logf_trend": 0.23088340117038053,
+     "mean_abs_logf_b0": 0.3453057029950268,
+     "norm_ratio_applied": 0.7225050804603377,
+     "mean_abs_logf_applied": 0.23088340117038053,
+     "usable": {
+      "earliest": true,
+      "earlier2": true,
+      "earlier": true,
+      "start": true,
+      "ref": true
+     }
+    }
+   ],
+   "n_genes": 500,
+   "median_mean_abs_logf_b0": 0.30865080341357154,
+   "median_mean_abs_logf_trend": 0.1973537578173811
+  },
+  "s2_trim": {
+   "rule": "vec.harness.B0_TREND_RULE",
+   "sized": false,
+   "stages": [
+    "earliest",
+    "earlier2",
+    "earlier",
+    "start",
+    "ref"
+   ],
+   "days": [
+    8.3,
+    8.5,
+    8.75,
+    9.5,
+    10.5
+   ],
+   "budget_days": 0.5,
+   "eps": 0.5,
+   "min_cells": 20,
+   "n_trend": 6,
+   "median_cosine": 0.574589244388001,
+   "median_norm_ratio": 0.7270030861546477,
+   "lineages": [
+    {
+     "lineage": "CM",
+     "stages": [
+      "earliest",
+      "earlier2",
+      "earlier",
+      "start",
+      "ref"
+     ],
+     "days": [
+      8.3,
+      8.5,
+      8.75,
+      9.5,
+      10.5
+     ],
+     "own_factor": false,
+     "weights": [
+      0.04996915484268946,
+      0.109500308451573,
+      0.4117828500925351,
+      0.42874768661320106
+     ],
+     "cosine": 0.6937944230968746,
+     "norm_ratio": 0.7456573932075913,
+     "mean_abs_logf_trend": 0.19360195222080556,
+     "mean_abs_logf_b0": 0.27182931757938383,
+     "norm_ratio_applied": 0.7456573932075913,
+     "mean_abs_logf_applied": 0.19360195222080556,
+     "usable": {
+      "earliest": true,
+      "earlier2": true,
+      "earlier": true,
+      "start": true,
+      "ref": true
+     }
+    },
+    {
+     "lineage": "CranialMesoderm",
+     "stages": [
+      "earliest",
+      "earlier2",
+      "earlier",
+      "start",
+      "ref"
+     ],
+     "days": [
+      8.3,
+      8.5,
+      8.75,
+      9.5,
+      10.5
+     ],
+     "own_factor": false,
+     "weights": [
+      0.04996915484268946,
+      0.109500308451573,
+      0.4117828500925351,
+      0.42874768661320106
+     ],
+     "cosine": 0.5195093818580468,
+     "norm_ratio": 0.7560132891195753,
+     "mean_abs_logf_trend": 0.21818914776869697,
+     "mean_abs_logf_b0": 0.29710397660647914,
+     "norm_ratio_applied": 0.7560132891195753,
+     "mean_abs_logf_applied": 0.21818914776869697,
+     "usable": {
+      "earliest": true,
+      "earlier2": true,
+      "earlier": true,
+      "start": true,
+      "ref": true
+     }
+    },
+    {
+     "lineage": "Ectoderm",
+     "stages": [
+      "earliest",
+      "earlier2",
+      "earlier",
+      "start",
+      "ref"
+     ],
+     "days": [
+      8.3,
+      8.5,
+      8.75,
+      9.5,
+      10.5
+     ],
+     "own_factor": false,
+     "weights": [
+      0.04996915484268946,
+      0.109500308451573,
+      0.4117828500925351,
+      0.42874768661320106
+     ],
+     "cosine": 0.6251174750959119,
+     "norm_ratio": 0.6084114679788187,
+     "mean_abs_logf_trend": 0.20559216637979055,
+     "mean_abs_logf_b0": 0.33939050852177716,
+     "norm_ratio_applied": 0.6084114679788187,
+     "mean_abs_logf_applied": 0.20559216637979055,
+     "usable": {
+      "earliest": true,
+      "earlier2": true,
+      "earlier": true,
+      "start": true,
+      "ref": true
+     }
+    },
+    {
+     "lineage": "Endoderm",
+     "stages": [
+      "earliest",
+      "earlier2",
+      "earlier",
+      "start",
+      "ref"
+     ],
+     "days": [
+      8.3,
+      8.5,
+      8.75,
+      9.5,
+      10.5
+     ],
+     "own_factor": false,
+     "weights": [
+      0.04996915484268946,
+      0.109500308451573,
+      0.4117828500925351,
+      0.42874768661320106
+     ],
+     "cosine": 0.5699428853982091,
+     "norm_ratio": 0.5118162180233065,
+     "mean_abs_logf_trend": 0.1985759743109895,
+     "mean_abs_logf_b0": 0.3961871009770562,
+     "norm_ratio_applied": 0.5118162180233065,
+     "mean_abs_logf_applied": 0.1985759743109895,
+     "usable": {
+      "earliest": true,
+      "earlier2": true,
+      "earlier": true,
+      "start": true,
+      "ref": true
+     }
+    },
+    {
+     "lineage": "Endothelial",
+     "stages": [
+      "earliest",
+      "earlier2",
+      "earlier",
+      "start",
+      "ref"
+     ],
+     "days": [
+      8.3,
+      8.5,
+      8.75,
+      9.5,
+      10.5
+     ],
+     "own_factor": false,
+     "weights": [
+      0.04996915484268946,
+      0.109500308451573,
+      0.4117828500925351,
+      0.42874768661320106
+     ],
+     "cosine": 0.5792356033777929,
+     "norm_ratio": 0.7287161602734885,
+     "mean_abs_logf_trend": 0.19718586991199072,
+     "mean_abs_logf_b0": 0.2865457832920397,
+     "norm_ratio_applied": 0.7287161602734885,
+     "mean_abs_logf_applied": 0.19718586991199072,
+     "usable": {
+      "earliest": true,
+      "earlier2": true,
+      "earlier": true,
+      "start": true,
+      "ref": true
+     }
+    },
+    {
+     "lineage": "NCC",
+     "stages": [
+      "earliest",
+      "earlier2",
+      "earlier",
+      "start",
+      "ref"
+     ],
+     "days": [
+      8.3,
+      8.5,
+      8.75,
+      9.5,
+      10.5
+     ],
+     "own_factor": false,
+     "weights": [
+      0.04996915484268946,
+      0.109500308451573,
+      0.4117828500925351,
+      0.42874768661320106
+     ],
+     "cosine": 0.5244211961644428,
+     "norm_ratio": 0.725290012035807,
+     "mean_abs_logf_trend": 0.22680923347590792,
+     "mean_abs_logf_b0": 0.3398574159495214,
+     "norm_ratio_applied": 0.725290012035807,
+     "mean_abs_logf_applied": 0.22680923347590792,
+     "usable": {
+      "earliest": true,
+      "earlier2": true,
+      "earlier": true,
+      "start": true,
+      "ref": true
+     }
+    }
+   ],
+   "n_genes": 500,
+   "median_mean_abs_logf_b0": 0.3182472425641282,
+   "median_mean_abs_logf_trend": 0.20208407034539003
+  }
+ },
+ "provenance": {
+  "commit": "8bb23bfa15f87393a51d44a6ef9d7dbfa5032e64",
+  "tree_clean": true,
+  "utc": "2026-11-13 14:02:39",
+  "files_sha256": {
+   "T2/E8.25_late.h5ad": "d56f94d3e2d719ed3074d86c03eae457ccf90b24145d33300f9958f0e8078593",
+   "T2/E8.5.h5ad": "41c76db18bfaa92c1d66f8220ec5fbb6d6acccb0a6b78241f40080a3096d37db",
+   "T2/E8.75.h5ad": "149ab6df7c99ad85046c8aebebcf0c43689b3720c59ffb7cc550edcf2f13a83c",
+   "T2/E9.5.h5ad": "371ca6530e084de2b6cd6703b49d95f4bb59546c9291659809575382a630ee9a",
+   "T2/E10.5.h5ad": "d6b37967f9cf3533091964cd07421c48a5c7c04628e9321123a426cb2a9c7e8b"
+  }
+ }
+}

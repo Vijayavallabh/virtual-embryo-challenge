@@ -3232,3 +3232,34 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     today's factor (diagnostic N27, row first), so that the request can say what would change in the heart's
     files. A yes would need: the candidate merged to main with a builder option, both heart files rebuilt (the
     second upload follows the first with its trim), a third rehearsal and a new reference list by 24 Nov.
+- 2026-11-13 (v), the checks behind the heart request, and the request. Written by the AI assistant.
+  - **Repeat.** The scored run of rows H11 and H11s, repeated in the other campaign checkout (its own environment;
+    8bb23bf, clean tree), gives every score and skill again to the last digit.
+  - **Independent check** (one agent on another model, read-only, own code; it scored nothing and did not load
+    E10.5). The table and the adoption decision recomputed from the result files agree. Its own implementation of
+    the trend factor agrees with the candidate's to 4e-14 on every lineage. The reference candidates equal their
+    committed scores seed by seed. No path lets the arm read the target, its day or a forbidden file, and `b0` is
+    unchanged by the branch. Every number in row H11's outcome reproduces; two omissions were added to the row
+    (mmd_u also moves on the 1.75-day backtest; both gains lie above the row's own predicted range).
+  - **What the checker says a request must not claim:** that 10 of 10 seeds shows a robust method (the factor is
+    one per backtest; the seeds resample the scoring); that the two backtests are independent (one truth, nested
+    inputs); that the direction helps apart from the size (the size-matched twin is not kept and the better size
+    differs by backtest; on the one-day backtest the arm clears 0.3 through its smaller size, with three seeds at
+    or below 0.3); that the gain is all on the expression terms; that the result was expected; or that it carries
+    to the test's step.
+  - **At the test pair** (diagnostic N27, target-free): the trend's factor has a cosine of 0.57 to today's and 0.72
+    of its size, in six lineages, in both heart pools; the slope leans on the E9.5 to E10.5 step for 43% where
+    today's file leans on it for 100%. Today's factor across the break is about the size it has on the practice
+    pairs (0.31 against 0.27 and 0.28), largest in lineages that are not heart tissue.
+  - **The request to the captain** (row H11; one of two forms read): let both heart files take the trend in place
+    of the last step. Priced both ways. For: the pre-set adoption rule is passed, for the first time on this
+    board (+0.36 and +0.48 heart points, about +0.2 Overall if it carried in full); the trend halves the reliance
+    on the one step no practice task contains; and it is a smaller move, so it is nearer to a hold where a hold
+    is right. Against: the margin over the rule's threshold is 0.06 on one backtest; it is the one arm of seven
+    read on these backtests today that passes; the practice tasks say nothing about the step across the break, so
+    if that step is real development the trend dilutes it and loses about what it gained in practice; and it is
+    a build change ten days before the first round (a builder option, both heart files rebuilt, a third rehearsal
+    and a new reference list by 24 Nov, and server format checks for the two new heart files).
+  - **Options put to the captain:** the trend in both heart files (the adoption rule's outcome); the trend in the
+    second heart file only (the first stays as rehearsed; half the bet, and the second upload's rule would say so
+    in the captain's words); or no change.

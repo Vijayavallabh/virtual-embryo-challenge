@@ -1,0 +1,16 @@
+diagnostic N27 (not a try): b0_trend's factor at the heart's test pair against B0's own; target-free, nothing built or scored, no cell number written
+commit 8bb23bf, tree clean True
+pool s1: stages ['earliest', 'earlier2', 'earlier', 'start', 'ref'] at days [8.3, 8.5, 8.75, 9.5, 10.5], budget 0.5 days, 6 lineage(s) with a trend factor; median cosine 0.568, median size against B0's 0.725; median mean |log f|: B0 0.309, trend 0.197
+    CM                   stages earliest/earlier2/earlier/start/ref; weights 0.050, 0.110, 0.412, 0.429; cosine +0.694; size 0.746; mean |log f| B0 0.272, trend 0.194
+    CranialMesoderm      stages earliest/earlier2/earlier/start/ref; weights 0.050, 0.110, 0.412, 0.429; cosine +0.497; size 0.759; mean |log f| B0 0.295, trend 0.216
+    Ectoderm             stages earliest/earlier2/earlier/start/ref; weights 0.050, 0.110, 0.412, 0.429; cosine +0.598; size 0.614; mean |log f| B0 0.322, trend 0.197
+    Endoderm             stages earliest/earlier2/earlier/start/ref; weights 0.050, 0.110, 0.412, 0.429; cosine +0.564; size 0.518; mean |log f| B0 0.393, trend 0.197
+    Endothelial          stages earliest/earlier2/earlier/start/ref; weights 0.050, 0.110, 0.412, 0.429; cosine +0.571; size 0.727; mean |log f| B0 0.285, trend 0.196
+    NCC                  stages earliest/earlier2/earlier/start/ref; weights 0.050, 0.110, 0.412, 0.429; cosine +0.539; size 0.723; mean |log f| B0 0.345, trend 0.231
+pool s2_trim: stages ['earliest', 'earlier2', 'earlier', 'start', 'ref'] at days [8.3, 8.5, 8.75, 9.5, 10.5], budget 0.5 days, 6 lineage(s) with a trend factor; median cosine 0.575, median size against B0's 0.727; median mean |log f|: B0 0.318, trend 0.202
+    CM                   stages earliest/earlier2/earlier/start/ref; weights 0.050, 0.110, 0.412, 0.429; cosine +0.694; size 0.746; mean |log f| B0 0.272, trend 0.194
+    CranialMesoderm      stages earliest/earlier2/earlier/start/ref; weights 0.050, 0.110, 0.412, 0.429; cosine +0.520; size 0.756; mean |log f| B0 0.297, trend 0.218
+    Ectoderm             stages earliest/earlier2/earlier/start/ref; weights 0.050, 0.110, 0.412, 0.429; cosine +0.625; size 0.608; mean |log f| B0 0.339, trend 0.206
+    Endoderm             stages earliest/earlier2/earlier/start/ref; weights 0.050, 0.110, 0.412, 0.429; cosine +0.570; size 0.512; mean |log f| B0 0.396, trend 0.199
+    Endothelial          stages earliest/earlier2/earlier/start/ref; weights 0.050, 0.110, 0.412, 0.429; cosine +0.579; size 0.729; mean |log f| B0 0.287, trend 0.197
+    NCC                  stages earliest/earlier2/earlier/start/ref; weights 0.050, 0.110, 0.412, 0.429; cosine +0.524; size 0.725; mean |log f| B0 0.340, trend 0.227
