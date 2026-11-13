@@ -1,0 +1,130 @@
+{
+ "board": "T2:heart:test_extrap",
+ "runs": "/mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/experiments/harness/results/h18_kernels/tasks",
+ "decisions": [
+  {
+   "base": "b0_trend",
+   "change": "b0_trend_xt",
+   "counted": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2",
+   "tasks": {
+    "T2h/<=E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": -0.07414781558659271,
+     "seeds_ahead": 2,
+     "passes": false,
+     "vetoes": false
+    },
+    "T2h/<=E8.75->E10.5": {
+     "complete": true,
+     "mean_gain": 0.07336396500212601,
+     "seeds_ahead": 9,
+     "passes": false,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  },
+  {
+   "base": "b0_trend",
+   "change": "b0_trend_mn",
+   "counted": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T2h/<=E9.5->E10.5']",
+   "tasks": {
+    "T2h/<=E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": -3.0989004370694326,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    },
+    "T2h/<=E8.75->E10.5": {
+     "complete": true,
+     "mean_gain": 1.2893977070146179,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 1,
+   "fit_checks": {}
+  }
+ ],
+ "summaries": {
+  "T2h/<=E8.75->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    50.54677200019612,
+    0.7913080817718336
+   ],
+   "b0": [
+    51.446449911655364,
+    0.6052791869950301
+   ],
+   "b0_trend": [
+    51.9277094833677,
+    0.6771697555548825
+   ],
+   "b0_trend_xt": [
+    52.00107344836982,
+    0.656708016827212
+   ],
+   "b0_trend_mn": [
+    53.21710719038232,
+    0.6446837147584537
+   ]
+  },
+  "T2h/<=E9.5->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    49.955176642699044,
+    0.8224702162475157
+   ],
+   "b0": [
+    50.4272525233645,
+    0.7027599518307952
+   ],
+   "b0_trend": [
+    50.7845309339824,
+    0.7202187292775972
+   ],
+   "b0_trend_xt": [
+    50.71038311839581,
+    0.6619062777919988
+   ],
+   "b0_trend_mn": [
+    47.68563049691297,
+    0.7594785542053205
+   ]
+  }
+ }
+}
