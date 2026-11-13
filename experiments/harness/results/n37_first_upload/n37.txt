@@ -1,0 +1,12 @@
+Reading N37 (runs e24_pricing:ccd33b5, e25_pairs:798908a, e28_nine_tasks:22513cf, n35_second_upload:e709655, n36_trend_second_upload:51b0672): the new arms as first uploads beside the second upload fgw_aligned_series, against the pair as built (fgw, fgw_aligned_series); aggregation of committed scores, not a try
+requested first upload: fgw_trend_render
+  first upload             half   late   new1     x1     x2     x3   new2    e75   e725  |      D      O  S(0.3) S(0.45) S(0.6)   mean9  worst9  LOO-min  rule a b c d
+  fgw_trend_render        +0.00  +0.00  +0.00  +0.00  +1.92  +0.99  +0.39  -0.16  +3.65  |  +0.49  +1.30  +1.05  +0.93  +0.81   +0.76   42.47    +0.28  y y y y
+    its own mean - fgw    +1.42  +0.03  +0.21  -2.93  +1.92  +0.99  +1.21  -1.01  +3.65
+  fgw_aligned_trend       +0.00  +0.00  +0.00  +0.00  +0.47  +0.34  -0.12  +0.90  +2.11  |  +0.14  +0.96  +0.72  +0.59  +0.47   +0.41   42.47    +0.28  y y y y
+    its own mean - fgw    +1.41  +0.84  +1.74  -2.76  +0.47  +0.34  +0.63  +1.28  +2.11
+  fgw_aligned_hi          +0.00  +0.00  +0.00  +0.00  +0.96  +0.35  -0.00  +1.00  -2.47  |  +0.22  -0.49  -0.28  -0.17  -0.06   -0.02   42.47    -0.58  n n y n
+    its own mean - fgw    +3.88  +2.36  +3.01  +3.84  +0.96  +0.35  +0.83  +1.42  -2.47
+  fgw_early_specialist    +0.00  +0.00  +0.00  +0.00  -1.34  -4.56  -0.13  -0.24  +8.08  |  -0.98  +2.57  +1.50  +0.97  +0.44   +0.20   42.47    -0.54  y y y n
+    its own mean - fgw   -13.74 -24.16 -20.19 -10.98  -4.56 -11.17 -14.94 -11.69  +8.08
+  the pair as built: worst9 42.47; task means 73.43 84.80 80.15 42.47 65.78 60.52 72.25 61.53 58.78
