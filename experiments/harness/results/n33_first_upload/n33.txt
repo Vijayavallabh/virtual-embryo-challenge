@@ -1,0 +1,10 @@
+Reading N33 (runs e24_pricing:ccd33b5, e25_pairs:798908a, e28_nine_tasks:22513cf): first uploads beside the second upload fgw_aligned_series, against the pair as built (fgw, fgw_aligned_series); aggregation of committed scores, not a try
+requested first upload: none (the first upload stays fgw)
+  first upload           half   late   new1     x1     x2     x3   new2    e75   e725  |      D      O  S(0.3) S(0.45) S(0.6)   mean9  worst9  LOO-min  rule a b c d
+  fgw_aligned           +0.00  +0.00  +0.00  +0.00  -1.21  -0.69  -0.13  +1.72  -1.59  |  -0.32  +0.00  -0.09  -0.14  -0.19   -0.21   42.47    -0.61  n n y n
+  fgw_shape0            +0.00  +0.00  +0.00  +0.00  -1.34  +3.09  -0.13  +1.42  -5.11  |  +0.29  -1.27  -0.80  -0.57  -0.33   -0.23   42.47    -1.31  n n y n
+  fgw_render_hi         +0.00  +0.00  +0.00  +0.03  +2.41  +1.06  +0.56  -0.24  -0.94  |  +0.58  -0.20  +0.03  +0.15  +0.27   +0.32   42.50    -0.06  n y y n
+  fgw_shape0_hi         +0.00  +0.00  +0.00  +0.55  -0.70  +4.06  -0.02  +0.37  -5.91  |  +0.65  -1.85  -1.10  -0.73  -0.35   -0.18   43.02    -1.34  n n y n
+  fgw_series            +0.08  +0.50  +0.00  +0.19  +0.15  -3.87  +0.46  -0.24  -6.57  |  -0.49  -2.12  -1.63  -1.39  -1.14   -1.04   42.65    -2.10  n n y n
+  fgw_shape0_series     +0.58  +0.00  +0.00  +1.11  -1.34  -0.59  -0.11  -0.24  -8.00  |  -0.04  -2.78  -1.96  -1.55  -1.14   -0.95   43.57    -2.28  n n y n
+  the pair as built: worst9 42.47; task means 73.43 84.80 80.15 42.47 65.78 60.52 72.25 61.53 58.78
