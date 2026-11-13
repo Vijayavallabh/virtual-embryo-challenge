@@ -916,3 +916,24 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   - **Tries E27, E28, T31 and diagnostics N24, N24b** read released stages only. T31's truth is E9.5's chamber cells and
     its bases are E10.5's libraries: no cell's counts change in any arm. N24 thins and re-renders cells of one released
     stage and scores them against the same stage's other half.
+- 2026-11-13 (b), process notes from the campaign's fourth wave (`docs/PLAN.md` decision log 2026-11-13 (b)); written by
+  the AI assistant. The main session opened no agent transcript.
+  - **A reading before its row.** Reading N25 compared predictors with fold targets (the three released knockout
+    files, later wild-type stages) from the session's scratch folder before any ledger row existed. That breaks rule 1
+    of the tries ledger. It is recorded as row N25 with the script as run and its output, counted under rule 4 on the
+    three boards whose targets it read, and row K7 names what had been seen before it was written. It read released
+    and unlocked files only: no test board, no hidden target, no scorer call.
+  - **Tries K7a to K7c** hand the candidate wild-type stage files only. No knockout file is an input, and the factor
+    holds no number from a knockout, a test board or a score. T3's uploads are unchanged.
+  - **The organiser email draft (R-C)** asks which released samples two held-out samples were processed with, and by
+    which protocol: procedure, the class released through the screen on 2026-11-10, not a measured property. It asks
+    the organisers to leave figures out. A reply that carries a figure about a held-out sample is not read into any
+    file or decision without the captain's named exception, fixed before the read. Its three reviewers were single
+    agents with read-only briefs that named two files (`docs/DATA_NOTES.md` lines 100 to 215,
+    `docs/ORGANIZER_QUESTIONS.md`), quoted the Removed and Kept list and opened with the memory-index line; one of them
+    reported opening only the second file. The draft sits in the captain's mailbox; the captain sends it or not.
+  - **Test builds for the reproducibility check** (`runs/builds_check_local/det_20261113/`, never uploaded): five
+    embryo test files at seed 1000001 and 16 BLAS threads. The main session read their exit codes and sha256 only, not
+    the build logs or stamps' cell numbers. The second pair was built from a tree with the uncommitted build option.
+  - **The fourth devil's-advocate agent** got the claim, its evidence, the rules and a list of committed files, with
+    the instruction to open nothing else.

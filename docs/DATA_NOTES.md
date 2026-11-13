@@ -226,3 +226,18 @@ in `experiments/harness/TRIES.md`.
   section levels), with no difference between early and late stages. On the test pair the first upload's cloud
   sits at 0.21 to 0.25 in every draw, E7.5's geometry at 0.47 to 0.51 and the aligned moves at 0.43 to 0.44
   (`experiments/harness/results/diag_emb_coupling/`).
+- **Task 3: part of every knockout response is the reference's own deviation (reading N25, tries K7a to K7c,
+  2026-11-13).** A knockout is scored against the wild type of its stage, so its scored response is the knockout
+  sample's own profile, minus the reference sample's own profile, plus the genotype's effect. The middle term can be
+  estimated without any knockout file: per lineage group, the reference's mean panel proportions against a log-linear
+  trend through the other released wild-type samples, read at the reference's day. As a per-gene factor at half
+  strength on the reference's cells it scores +19.97 over the same cells without it on the Mab21l2 knockout against
+  WT E9.5 (71.02 against 51.04; over the truth's DE genes the scorer's r2 is 0.53), and +5.09 and +3.20 on the two
+  Gata4 replicates against WT E8.75 (r2 0.05 and 0.01; applied per lineage group +5.40 and +6.43, r2 0.07 and 0.03).
+  The same factor permuted across genes does nothing (+0.42, -1.08, -1.83). So WT E9.5's own deviation is most of that
+  knockout's scored response, and WT E8.75's, the test's reference, is a few per cent of Gata4's: there the gain is
+  the scorer's severity gate (r2 above 0.01 with a positive slope) cleared by a thin margin. Half the last step
+  between stages, which is B0's momentum in this space, is anti-correlated with the true change on all three knockout
+  pairs (-0.27 to -0.30) and on the heart-like pairs (-0.30 and -0.13). At the end of a series the reference's
+  deviation cannot be told from development, so nothing follows for the heart
+  (`experiments/t3_decomp/results/n25_revert_reading/`, `experiments/t3_decomp/results/k7_wt_revert/`).

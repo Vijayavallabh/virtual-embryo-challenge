@@ -2483,3 +2483,98 @@ in `docs/ORGANIZER_QUESTIONS.md` (decision log 2026-11-10 (w), (x)).
   - **Not done.** The check's second stage did not run for most findings (usage limit). The rendered file is byte-
     reproducible only at a fixed BLAS thread count (its scores move by up to 0.001 between runs); a determinism check at
     the build's 16 threads is owed before any such file is uploaded.
+
+- 2026-11-13 (b), the campaign's fourth wave: the organiser question drafted, the reference's own deviation read and
+  tried on T3, the rendered files' reproducibility, a build path for R-A's second option, and a fourth cold review.
+  Written by the AI assistant. Numbers: `experiments/harness/TRIES.md` rows N25 and K7, `docs/DATA_NOTES.md`,
+  `docs/ORGANIZER_QUESTIONS.md` ("Seventh email"). Tries after it: T1 28, embryo 36, heart 4, T3 13. No upload, build
+  default, rule or gate record changed, and the captain has ruled on none of the requests.
+  - **The captain's messages.** "ultrathink continue", after the report of (a). Then a side agent's note, forwarded to
+    the main session: the organiser email marked optional (R-C) "is the one step that could settle both open upload
+    bets, and it isn't drafted", ending "If you want it, ask the main agent to draft R-C now." The AI assistant read the
+    forwarded note as that request.
+  - **R-C is drafted and waits in the captain's mailbox.** One email, two procedural questions: whether the E7.75
+    sections were processed with those of any released MERFISH stage (same slide, or hybridised and imaged in one
+    batch), and whether the E12.5 Multiome libraries were prepared and sequenced with the released E10.5 library whose
+    cell names end in `_3`, or by its protocol. It asks for no figure and says so. Three single reviewers (accuracy,
+    strategy, tone) each returned "send with edits"; their edits are in the draft, and a Task 3 question the AI
+    assistant had added was cut. How each answer would be read is fixed in `docs/ORGANIZER_QUESTIONS.md` before any
+    answer: "with E8.0's group" turns the advice on R-A into option 1; "with E7.5" or "a batch of its own" into keeping
+    today's; "with library `_3`, or its protocol" turns the advice on R-B into yes, on T30's rows at library 3's depth
+    (+1.60, 0.00, +8.24). Classification: procedure, the class of the collection text released on 2026-11-10; a reply
+    carrying a figure about a held-out sample is not read without the captain's named exception. The strategy reviewer
+    put the chance of a useful reply before the freeze at 5 to 10%.
+  - **A reading run before its row (N25).** To see whether the campaign's finding (a sample's per-gene profile is
+    largely its own) could be turned into a prediction, the AI assistant compared, in scratch, five predictors of the
+    per-gene change between samples with the true change, on the three knockout files and on wild-type stage pairs.
+    That reads fold targets, and no row had been written: a breach of rule 1, recorded as row N25 and counted on the
+    three boards whose targets it read (T3 9 to 10, heart 3 to 4, embryo 35 to 36). What it showed: the reference's
+    deviation from a trend through the other wild-type samples correlates with the knockout's change from it (+0.32,
+    +0.37 and +0.49 on Gata4 replicates 1 and 2 and Mab21l2) but overshoots at full strength; half the last step
+    between stages, which is B0's momentum in that space, is anti-correlated with the true change on every pair read;
+    and at the end of a series, where the heart's reference sits, the deviation cannot be told from development.
+  - **Tries K7a to K7c (T3), registered before their run with what N25 had shown.** A per-gene factor that holds no
+    knockout data: the reference's own deviation, from the six other released wild-type stage files with the full
+    panel, at exponent 0.5, on the reference's cells at its own composition; pooled (K7a), per lineage group (K7b),
+    and permuted across genes (K7c, the control); against the same cells with no factor. Board points:
+
+    | Task | no factor | K7a pooled | K7b per group | K7c permuted | K7a - no factor | K7b - no factor |
+    |---|---|---|---|---|---|---|
+    | Gata4 replicate 1 against WT E8.75 | 51.12 | 56.21 | 56.52 | 51.54 | +5.09 (9 of 10 seeds) | +5.40 (10 of 10) |
+    | Gata4 replicate 2 against WT E8.75 | 49.20 | 52.40 | 55.63 | 48.12 | +3.20 (10 of 10) | +6.43 (10 of 10) |
+    | Mab21l2 against WT E9.5 | 51.04 | 71.02 | 71.04 | 49.21 | +19.97 (10 of 10) | +20.00 (10 of 10) |
+
+    *By the reading fixed before the run: not supported, so no request follows.* The reading asked K7a to beat the
+    no-factor cells, the floor and the control on all three tasks by more than 0.3 with at least 8 of 10 seeds ahead.
+    Eight of the nine comparisons pass. The ninth fails: K7a against the floor on Gata4 replicate 2 is +2.40, ahead in
+    6 of 10 seeds. There the no-factor cells themselves score under the floor (49.20), and the pooled factor clears
+    the scorer's severity gate in 6 seeds (r2 0.011 at the median; the gate is 0.01).
+    *What the rows show beside that verdict.* The factor is real: the control is at zero (+0.42, -1.08, -1.83 against
+    the no-factor cells) and K7a is ahead of it in 30 of 30 seeds. Against WT E9.5 it is most of the scored response
+    (r2 0.53; every metric moves). Against WT E8.75, the test's own reference, it is a few per cent of the Gata4
+    response (r2 0.05 and 0.01 pooled, 0.07 and 0.03 per group), and the gain is almost only the severity gate
+    cleared: de_direction +0.01 to +0.02, mmd_u and variogram -0.01 to -0.02. K7b clears the gate in 30 of 30 seeds
+    and beats the floor by +6.52, +5.63 and +21.04 (30 of 30; computed from the stored rows after the run); its lowest
+    r2 on replicate 2 is 0.012. The two Gata4 replicates share a slide: one knockout run read twice.
+  - **The rendered files are reproducible at the build's thread count.** `fgw_aligned_series` (R-A, option 1): three
+    builds on this machine at 16 BLAS threads and seed 1000001, one on 2026-11-12 at 772ef93 and two on 2026-11-13 at
+    33204be, give one sha256 (41982d8a...19b73). `fgw_shape0` with the top-up (option 2): two builds, one sha256
+    (735235e2...c149). Both pass the cloud guard and `vec check`. Only exit codes and hashes were read; the build logs,
+    which print cell numbers, were not. The check owed in (a) is done; the freeze-morning rebuild repeats it on the
+    compute machine.
+  - **Option 2 of R-A can now be built:** `build_test.py embryo --method fgw_shape0 --expression render_hi` (82dcd69).
+    No entry, default or rule changes; the option's test pins the default.
+  - **Considered and not run.** Second uploads that depend on the first upload's score: `docs/S2_RULES.md` reads no
+    test score by design, and the level of a first score is confounded by depth and development, so a threshold would
+    rarely separate the cases; the captain keeps the power to change a board's rule after its first upload. A
+    wild-type stand-in for a knockout, to test K7's factor against more runs: only one stand-in is clean (E9.5 against
+    WT E8.75, three quarters of a day apart), and development would dominate it. A trend rendering for the embryo: by
+    the pooling arithmetic of (c) it trails today's mixture wherever E7.75 shares a bracket's profile. A revert on the
+    heart: N25, above.
+  - **The fourth cold review** (the devil-advocate skill; one reviewer given the claim, its evidence, the rules and a
+    list of committed files). The claim under attack: tell the captain K7 is closed by its rule and recommend nothing.
+    Its strongest point: the one failed comparison is against the floor, a file the team does not upload; the choice
+    for the second slot is the no-factor file or the same file with the factor, and on that choice the factor wins on
+    every task; "closed" alone would steer the captain's decision by its framing. Conceded. Its first attack, that the
+    per-group arm passed every comparison on its own and was shut out only by the rule's nesting: conceded on the
+    numbers (recomputed from the committed rows), with the note that its lowest r2 on replicate 2 is 0.012. Its
+    second, that a silent close would protect the record of the AI assistant, which had broken rule 1 with N25, more
+    than the score: conceded; the report prices both readings. Its third, that the change costs little: conceded in
+    part. The frozen builder refuses a factor source it does not know and checks each factor file's hash against the
+    frozen decision file, and the per-group form needs a step after the pinned build function, so it is about a day
+    of work with tests and a dry build, not a vector passed in. Its estimate that the claim was a mistake: 35%.
+    Verdict: revise. The rule's verdict stands in the ledger, and the captain gets both readings with prices.
+  - **What goes to the captain.** Nothing changes until the captain rules.
+    - *R-C:* the draft, to send, edit or delete.
+    - *T3's second upload, an option the pre-set reading closed.* Reading 1, by the rule: closed, no request.
+      Reading 2, formed after the result: against the file actually on offer, the no-factor cells, the factor is
+      ahead on all three tasks (table above), per group in 30 of 30 seeds. Price for the pair of T3 uploads, as the
+      AI assistant's estimate: nothing where the first-choice file carries (it scores about 72 to 74 there and
+      wins); where it does not, the second file would be about 3 to 6 points higher on the Gata4 evidence, so about
+      0 to +5 for the board, and about +1 in expectation at even odds. The largest scored loss of a factor with no
+      relation to the truth is the control's: -1.83 against the no-factor cells. The risks: on the test's own
+      reference the margin over the severity gate is thin, the evidence there is one knockout run, the estimator's
+      form was chosen after N25, and the upload's composition term was not in the arms. Reopening is the captain's
+      alone (T3 is frozen); it would take a ruling in `docs/S2_RULES.md`, about a day for the builder change with
+      tests and a dry build, and the rebuild rehearsal. T3's second file is the one uploaded first.
+    - *R-A and R-B:* as in (a). Both of R-A's candidate files now build reproducibly.

@@ -3,6 +3,20 @@
 ## Current State
 
 **Last Updated:** 2026-11-13
+**2026-11-13, the campaign's fourth wave (decision log 2026-11-13 (b)):** no upload, build default, rule or gate
+record changed; the captain has ruled on none of the requests. **R-C is drafted** in the captain's mailbox: two
+procedural questions to the organisers, after a three-lens review, with the reading of each answer fixed beforehand
+(`docs/ORGANIZER_QUESTIONS.md`, "Seventh email"); the captain sends it or not. **T3, tries K7a to K7c:** a per-gene
+factor that holds no knockout data (the reference's own deviation, estimated from the other released wild-type
+samples) scores +5.09, +3.20 and +19.97 over the same cells without it on Gata4 replicates 1 and 2 and on Mab21l2;
+applied per lineage group +5.40, +6.43 and +20.00, ahead in 30 of 30 seeds; a permuted control is at zero. By the
+reading fixed before the run it is not supported, by one comparison of nine (the pooled factor against the floor on
+replicate 2: +2.40, ahead in 6 of 10 seeds), so nothing is requested. The fourth cold review found that verdict
+alone misleading, so the captain is given both readings: T3's second upload could carry the factor only by the
+captain's own ruling on the frozen T3 rules (about +1 for the board in expectation, the AI assistant's estimate; on
+the test's own reference the margin over the scorer's severity gate is thin). A scratch reading run before its row
+(N25) is recorded as a breach of rule 1 and counted. **R-A's two candidate files build reproducibly** at 16 BLAS
+threads, the check owed since (a), and option 2 has a build command. Tries: T1 28, embryo 36, heart 4, T3 13.
 **2026-11-13, the campaign's third wave (decision log 2026-11-13 (a), which corrects 2026-11-12 (c)):** no upload,
 build, rule or gate record changed; the captain has ruled on none of the requests. An independent check of the record
 recomputed about 1,950 figures: every number held, the presentation did not (the embryo request had left out three
@@ -702,13 +716,18 @@ scorer reproduces every published validation anchor exactly. The release-day rul
 
 Updated 2026-11-12. The older list below is kept for its record; where the two differ, this one holds.
 
-0. **The captain's rulings** (decision log 2026-11-13 (a)): R-A with its three options (`fgw_aligned_series`;
-   `fgw_shape0_hi`; today's), the first embryo upload's shape fix if the captain reopens it, R-B (advice: decline) and
-   R-C (optional). On a yes to R-A's first option the s2 command is `build_test.py embryo --method fgw --move-coupling
-   aligned --expression series`; on its second, a top-up option for the build has to be added (`fgw_shape0_hi` exists
-   in the harness only). Either way `docs/S2_RULES.md` takes a dated ruling by the captain's own say-so, the file
-   joins the freeze-morning rebuild, and a determinism check at 16 BLAS threads runs on it by 24 Nov. On a yes to R-B:
-   a base option for the T1 build, its ledger row, tests and a rebuild rehearsal by 24 Nov.
+0. **The captain's rulings** (decision log 2026-11-13 (a) and (b)): R-A with its three options
+   (`fgw_aligned_series`; `fgw_shape0_hi`; today's), the first embryo upload's shape fix if the captain reopens it,
+   R-B (advice: decline), the R-C email draft (send, edit or delete), and T3's second upload if the captain reopens
+   it (the wild-type-only factor of tries K7: closed by its pre-set reading, both readings in decision log (b)). On a
+   yes to R-A's first option the s2 command is `build_test.py embryo --method fgw --move-coupling aligned --expression
+   series`; on its second, `build_test.py embryo --method fgw_shape0 --expression render_hi`. Both built reproducibly
+   on this machine at 16 BLAS threads on 2026-11-13. Either way `docs/S2_RULES.md` takes a dated ruling by the
+   captain's own say-so and the file joins the freeze-morning rebuild. On a yes to R-B: a base option for the T1
+   build, its ledger row, tests and a rebuild rehearsal by 24 Nov. If the captain reopens T3's second upload: a
+   dated ruling in `docs/S2_RULES.md`, a new factor source in `experiments/t3_decomp/build_submission.py` with its
+   hash record and tests (about a day), a dry build, and the rebuild rehearsal by 24 Nov. An organiser's answer to
+   R-C is read as `docs/ORGANIZER_QUESTIONS.md` fixes it.
 1. **19 Nov:** if no organiser has answered the public Slack question on floored T3 severity, the captain may post one
    short follow-up in the same thread, drafted by the AI assistant. Replies are read only through the screened check
    (`docs/ORGANIZER_QUESTIONS.md`, "Public Slack question").
@@ -979,6 +998,16 @@ headroom tables in `experiments/harness/TRIES.md`):
 
 ## Notes for Next Session
 
+- 2026-11-13: tries K7 live in `experiments/t3_decomp/k7_wt_revert.py` (three diagnostic pseudo-tasks with the
+  wild-type stage files as the only inputs; they are not in `configs/pseudo_tasks.yaml`). Its arms are not harness
+  candidates and no T3 builder knows the factor: nothing of it can reach an upload without the captain's ruling and
+  a builder change. Row N25 records a scratch reading that ran before its row: write the row before any reading that
+  compares a predictor with a fold target, scratch included.
+- 2026-11-13: `runs/builds_check_local/det_20261113/` holds five embryo test builds made for the reproducibility
+  check (never uploaded). Read their hashes and exit codes only; the logs and stamps print cell numbers.
+- 2026-11-13: the R-C email is a draft in the captain's mailbox (`docs/ORGANIZER_QUESTIONS.md`, "Seventh email"). If
+  an answer comes, record it with its date there and in `docs/DATA_POLICY.md`, and apply the reading fixed beforehand;
+  a reply with a figure about a held-out sample is not read without the captain's named exception.
 - 2026-11-12: by the captain's instruction (decision log 2026-11-12 (a)) the campaign runs on this machine; `data/`
   and `runs/` here are owner-only, and the DGX checkout (6402b64) was not synced. A multi-task run starts each task as
   its own process, all together, because provenance is read at each task's start; read `git status` before committing
