@@ -1,0 +1,8 @@
+run folder on the DGX: ~/v/vec-campaign/runs/harness/n35_second_upload (campaign checkout); reading written to ~/v/vec-campaign/runs/round6/n35_read by the branch's own script
+commit: e709655 (campaign/emb-exprfix: ede98cd plus the early specialist's empty-cell rule)
+tree at start and at end (bytes of git status --porcelain): 0 and 0
+started UTC: 2026-11-13T19:43:58Z
+ended UTC: 2026-11-13T19:55:20Z
+CPU only, 8 BLAS threads, one process per task, nine tasks
+this is the second run: the first (at ede98cd, ~/v/vec-campaign-h7/runs/harness/n35_second_upload) stopped on task new2 with a build error of fgw_early_specialist; its eight task files were never opened and are not used
+fgw and fgw_aligned_series come from the committed runs of E24, E25 and E28 and were not rescored; floor agrees with the stored runs (the reading is not void)

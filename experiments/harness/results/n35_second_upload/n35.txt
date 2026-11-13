@@ -1,0 +1,6 @@
+n35 (runs e24_pricing:ccd33b5, e25_pairs:798908a, e28_nine_tasks:22513cf, n35_second_upload:e709655): second uploads beside fgw, against the pair as built (fgw, fgw_aligned_series)
+put forward: none (the second upload stays fgw_aligned_series)
+  second upload            half   late   new1     x1     x2     x3   new2    e75   e725  |      D      O  S(0.3) S(0.45) S(0.6)   mean9  worst9  LOO-min  rule a b c d
+  fgw_aligned_hi          -3.56  -1.91  -1.17  -0.64  +0.96  +0.41  +0.05  +1.00  +0.00  |  -0.98  +0.35  -0.05  -0.25  -0.45   -0.54   41.82    -0.43  n n n n
+  fgw_early_specialist    -7.44  -4.27  -4.18  -4.48  +0.00  +0.00  -0.86  -0.41  +8.08  |  -3.40  +2.27  +0.57  -0.28  -1.13   -1.51   37.99    -1.88  n n n n
+  the pair as built: worst9 42.47; task means 73.43 84.80 80.15 42.47 65.78 60.52 72.25 61.53 58.78
