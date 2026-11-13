@@ -119,11 +119,13 @@ released samples gains 3.65 on one counted backtest and loses 1.01 on the other,
 decoder cannot reach any infeasible gene. Task 3 (four tries): a lineage difference-in-differences contrast carries
 between replicates and not across knockouts, and a section-robust factor gains on one cross-knockout fold only. One
 request came out of a pre-set pair rule on the nine embryo practice tasks (reading N37, recomputed independently):
-the trend rendering as the embryo's first upload beside the second upload as built is worth +0.93 embryo points at
-the middle weighting, about half an Overall point (request R-D; the captain has not ruled, and nothing is built for
-it on main). The options for taking the team's own estimate past the leading total are used up: the forecast's upper
-reading is 194.4 (194.9 with R-D) against 215.41, and the committed estimate stays 184. Tries stand at T1 34, embryo
-47, heart 25, T3 23.
+the trend rendering as the embryo's first upload beside the second upload as built, tabled at +0.93 embryo points at
+the middle weighting (request R-D). A cold check and reading N39 then showed that the task carrying that gain differs
+from the test in the one thing the arm's sign depends on (how the fitted line weighs the samples against the
+mixture's shares: the fitted gain at the test's earlier-bracket geometry is -0.60), and the AI assistant's advice on
+R-D is no (decision log 2026-11-13 (gg)); the captain has not ruled and nothing is built for it on main. The options
+for taking the team's own estimate past the leading total are used up: the forecast's upper reading is 194.4 against
+215.41, and the committed estimate stays 184. Tries stand at T1 34, embryo 47, heart 25, T3 23.
 
 ## Team and track
 

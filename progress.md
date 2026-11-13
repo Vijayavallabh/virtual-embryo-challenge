@@ -3,8 +3,9 @@
 ## Current State
 
 **Last Updated:** 2026-11-13
-**2026-11-13, late night: the sixth round carried to the end of the ledger (decision log 2026-11-13 (ff)). Nothing
-passes the adoption rule; one request, R-D, goes to the captain; no file changes.** The session's stop check did not
+**2026-11-13, late night: the sixth round carried to the end of the ledger (decision log 2026-11-13 (ff) and (gg)).
+Nothing passes the adoption rule; one request, R-D, came out of a pair rule and the AI assistant advises against it
+after a cold check; no file changes.** The session's stop check did not
 accept the report of (ee) as an end, so every remaining line that the rules allow and a counted practice read can
 judge was read. Two agents swept the record and found 22 such lines dropped on an estimate; with three of the
 round's own they were built on campaign branches by agents, reviewed by others (five builds went back for a fix),
@@ -19,11 +20,16 @@ scores existed, recomputed independently; reading N38 for the second upload): ch
 from `fgw` to `fgw_trend_render` and keep `fgw_aligned_series` as second; +0.93 embryo points at the middle
 weighting (+0.81 to +1.05), about half an Overall point; forecast mean 194.41 to 194.87, the chance of 203 or more
 22.4% to 24.5%; a loss of 0.16 on one task; against it, the arm reached the nine tasks after try E33 and fails the
-adoption rule on one counted backtest. The AI assistant recommends yes. The builder port is being prepared on the
-branch `port/emb-s1-trend`, off main. **The options for taking our own estimate past 215.41 are used up**: the
-forecast's upper reading is 194.4 (194.9 with R-D), the committed estimate stays 184, and what could move the total
-by points is closed by rules that are the captain's or the organisers' to reopen. Main moved by documents, two
-reading scripts with tests and results only.
+adoption rule on one counted backtest. The AI assistant first recommended yes and withdrew it the same night
+(decision log (gg)): a cold adversarial check, confirmed by reading N39, showed that the arm's gain follows how the
+fitted line weighs the samples against the mixture's shares, and that the task carrying the gain (the E7.25
+backtest: 0.47 against one third) differs from the test in exactly that (0.31 against one half: a fitted loss of
+0.60 where the truth is like its earlier bracket, uncovered by the second upload). The advice is no; the request
+stays on record for the captain; the builder port stays on the branch `port/emb-s1-trend`, off main, and no test
+file is built for it. **The options for taking our own estimate past 215.41 are used up**: the forecast's upper
+reading is 194.4, the committed estimate stays 184, and what could move the total by points is closed by rules that
+are the captain's or the organisers' to reopen. Main moved by documents, three reading scripts with tests (N37, N38,
+N39) and results only.
 Checked last: the full test suite at 6c505ca in a DGX campaign checkout (lock, lint, 1,291 tests pass; clean tree); the
 document tests and lint again at f1408a4 on this machine (33 pass). The reference checkout is untouched at dc7b6ae.
 **2026-11-13, night: the campaign's sixth round (decision log 2026-11-13 (dd) and (ee)). Nothing is kept, nothing is

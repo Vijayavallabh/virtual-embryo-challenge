@@ -1172,3 +1172,19 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   - **Not opened:** the challenge site, the Data page, the board index by hand, Slack, the organisers' mail, any
     external dataset, any held-out value, the task notes under any `notes/` folder. No test file was built up to
     this entry, no format check was sent, and the DGX reference checkout was not touched.
+- 2026-11-13 (l), a short addition to (k) (`docs/PLAN.md` decision log 2026-11-13 (gg)); written by the AI
+  assistant.
+  - **A cold check and reading N39.** One adversarial agent was given a claim block for request R-D and a list of
+    committed files it might read (ledger rows, the log's last entries, the reading scripts and their text
+    results, the task configuration); by its report it stayed inside that list and named one file it wanted and
+    did not open. It worked a table by hand from the committed reading of try E35 and stage days, and the AI
+    assistant checked that arithmetic by hand before row N39 was written. So N39's row was registered knowing
+    which way the numbers pointed, which the row says; its rule could only withdraw the AI assistant's advice, and
+    it did. N39 read stage days, the nine tasks' definitions and per-seed scores committed by counted tries; it
+    opened no data file and scored nothing.
+  - **An independent check of the record** (three agents, read-only, given the ledger rows, the log entry and the
+    committed result files) recomputed about 550 quoted figures: every score, count and verdict matched; one
+    miscount and several wording slips were corrected, one of them a pair of labels the wrong way round in row
+    E33's outcome, which now carries a dated note.
+  - **Still true:** no test file was built, no format check was sent, nothing was uploaded, and the DGX reference
+    checkout was not touched. The builder port behind request R-D is on a branch only.

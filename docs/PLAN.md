@@ -3672,8 +3672,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
       its review, a dry build, a fourth rehearsal (three byte-identical builds), a new reference list and pointer,
       the server's format check of the new file at the captain's word, and the method summary and disclosure
       lines. About a day's work, inside the date of 24 Nov.
-    - *The AI assistant's recommendation:* yes to R-D as put (the first upload alone), on a positive expected
-      value with a small measured downside; it changes nothing in what follows about 215.4.
+    - *The AI assistant's recommendation when this entry was written:* yes to R-D as put (the first upload alone),
+      on a positive expected value with a small measured downside. **Withdrawn the same night after a cold check
+      and reading N39: see (gg). The advice is no.** Either way it changes nothing in what follows about 215.4.
   - **What the round adds up to.** Since (ee): 26 counted tries in 14 rows, three target-free or committed-score
     readings (N34, N37, N38) and one line closed by committed numbers. Nothing passes the adoption rule; one
     request (R-D) comes out of a pre-set pair rule. Tries stand at T1 34, embryo 47, heart 25, T3 23. **The options
@@ -3697,3 +3698,45 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     `campaign/heart-b` and `-bfix`, `campaign/heart-c` and `-cfix`, `campaign/t3-b` and `-bfix`, `campaign/t1-b`,
     `-bfix` and `-bfix2`, `campaign/gen-t1`, `campaign/emb-geo`, `campaign/emb-arr`, `campaign/emb-expr`,
     `-exprfix` and `campaign/emb-trend2`.
+- 2026-11-13 (gg), a cold check of request R-D, and the AI assistant's yes withdrawn. Written by the AI assistant.
+  - **The check** (the devil-advocate skill; one agent given only a claim block and a list of committed files it
+    might read). Its kill shot, in its words: "R-D is wrong because the +3.65 on the E7.25 backtest, 72% of S(0.45),
+    measures a geometry the test lacks. Across the seven tasks with a truth-like sample, the arm's gain over `fgw`
+    tracks the fitted line's weight on that sample minus its share of the mixture (r about 0.9): +0.14 on E7.25,
+    -0.30 on x1, where it loses 2.93. In the E7.5-like world, the one credited with +3.65, the test's mixture gives
+    E7.5 half and the line gives it 0.31 (E8.0 gets 0.54): -0.19, which prices near -1, uncovered by the second
+    upload." Its chance that a yes is a mistake: 60%.
+  - **Its three attacks, each checked; all three hold.**
+    1. *The gain follows a task's fit geometry, not its label.* The trend's profile is a weighted sum of the samples'
+       profiles, with the least-squares line's weights; the plain mixture holds its brackets in the shares 1 - t
+       and t. Reading N39 (row and script first; by its rule it could only withdraw; the agent's hand arithmetic
+       and the AI assistant's check of it came before the row, which the row says) put g, the line's weight on the
+       truth-like sample minus that sample's share, beside the arm's own gain over `fgw` on the seven tasks that
+       have a truth-like sample: gain = +1.35 + 10.13 g, correlation +0.79 (the agent's hand figure was about
+       0.9). On the E7.25 backtest g is +0.14 (0.47 against one third); at the test, for a truth like its earlier
+       bracket, g is -0.19 (0.31 against one half) and the fitted gain is -0.60, or -0.55 with the E7.25 backtest
+       left out of the fit. In that world the pair as built is `fgw` alone, so the loss would not be covered. For
+       a truth like its later bracket the fitted gain is +1.74, but there the second upload leads anyway.
+    2. *N37's D is not the test's.* Its +0.49 is x2 and x3, one truth with the deeper bracket earlier; the tasks
+       arranged like the test (half, late, new1) give 0.00. With D at 0, S(0.45) is +0.71, and +0.06 without the
+       E7.25 backtest.
+    3. *The mechanism failed its own forecast.* Row E33 expected the trend to lead where the target has a profile
+       of its own; by diagnostic N23 that is the E7.5 backtest, where it trailed in every seed. (The row's outcome
+       cell had the two targets the wrong way round until the independent check of the record corrected it; and
+       the claim put to the agent said row N33's rule was weeks old, which was wrong: it dates from 13 Nov.)
+    Verdict on the recommendation as it was put: stop.
+  - **What changes.** The AI assistant's advice on request R-D is no: keep `fgw` as the embryo's first upload. The
+    request stays on record as what reading N37's pre-set rule put forward, with N39 beside it; the captain can
+    rule either way, and a ruling for it would still need everything (ff) lists. No dry build of the trend file is
+    made, and the port stays on its branch, off main.
+  - **What the AI assistant got wrong.** It wrote a yes into (ff) before attacking it. The pair rule passed on
+    its own terms. What the rule cannot see is that the nine tasks' classes (deeper-side or other) do not carry
+    the one property this arm's sign depends on, how the fitted line weighs the samples against the mixture's
+    shares, and the single task with the large gain differs from the test in exactly that. For any request built
+    on practice tasks: first name the property of a task that the effect depends on and compute it for the test
+    from target-free quantities; and run the cold check before the recommendation is written, not after.
+  - **Where this leaves the round.** As (ff) with one change: nothing from the sixth round is recommended. The
+    closing statement of (ff) holds without its half point. The options for taking our own estimate past 215.41
+    are used up; the committed estimate is 184 (170 to 198) and the forecast's upper reading 194.4.
+  - **Unchanged.** No upload, build, rule, gate figure or reference list; the ten files of `builds_dc7b6ae` stand.
+    Main gained one more reading script with its tests (`n39_fit_geometry_check.py`) and its result.
