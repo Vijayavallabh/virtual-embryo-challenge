@@ -3186,3 +3186,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the readings on record that speak against it are named in the row.
   - **Not added:** a size-matched variant, a latent or learned variant, or the same arm on T1 (two input stages:
     the trend is B0's own step there).
+- 2026-11-13 (t), the trend arm gets a size-matched twin: two heart reads, not the one announced in (s). Written by
+  the AI assistant.
+  - **What the build-only smoke showed** (target reads refused, nothing scored): unlike the learned field, the trend
+    does differ from B0's last step. Its log factor against B0's own has a median cosine of 0.69 on the one-day
+    backtest and 0.80 on the other, and it is smaller: 0.80 and 0.60 of B0's size (pure per-sample offsets would give
+    0.58 and 0.55).
+  - **Why that changes the plan.** `b0` beats the plain copy on both backtests (+0.47 and +0.90), so a smaller move
+    by itself is expected to lose a little (about 0.09 and 0.36 if the loss is linear in the size). The natural trend
+    alone could then not tell "its direction is worse" from "its move is smaller". Entry (s) said no size-matched
+    variant would be added; that was written before the size was known.
+  - **Decided by the AI assistant, before any scored run** (the captain can strike either arm): two arms in one row
+    (H11 and H11s), `b0_trend` at its natural size and `b0_trend_sized` at B0's own size per lineage, each read
+    against `b0` by the adoption rule; a pass by one alone goes to the captain marked as one of two forms read.
+    Counted reads: heart 9 to 11. CPU only, a few minutes.
