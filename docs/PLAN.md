@@ -3415,3 +3415,57 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **What it does not do.** It does not replace the captain's reading of the 12 confirm characters against the
     list, and it does not protect against a wrong list: whoever rewrites the pointer after a rehearsal decides
     what may be uploaded, which is why the pointer and the list are tracked files under the clean-tree guard.
+- 2026-11-13 (dd), a sixth campaign round: can our own estimate be taken past the leading total? Written by the AI
+  assistant.
+  - **What was asked.** The captain renewed the campaign through the ambition-lift skill with a named target: exceed
+    the leaderboard's best total (215.41 at the screened read of 2026-11-13), by any method, with external data and
+    all compute, gains that generalise, everything reproducible; iterate until our estimate clearly beats it, or
+    until the options are exhausted, and then report what was tried and the best result. The AI assistant reads this
+    as effort and compute only, as in (g): no data rule, exposure block, frozen rule, ledger rule or go-ahead is
+    lifted, and every change to an upload stays the captain's ruling.
+  - **Where the points would have to come from** (`experiments/gate/forecast_built.py`, output
+    `experiments/gate/results/forecast_built_2026-11-13.json`; an aggregation of committed practice results through
+    `forecast.py`'s own model, not a try). For the files as built at the third rehearsal the forecast's mean is 194.4
+    (median 195.2, 5th to 95th percentile 178.4 to 207.9): the committed 193.7, plus T1's second upload on the mid
+    base (row R7, +0.48) and the heart's trend (row H11, +0.21). P(total >= 203) is 22.4%, P(>= 205.32) 12.8%,
+    P(>= 209) 2.9% and P(>= 215.41) 0.01%. The four boards' best practice outcomes sum to 219.0 in Overall units and
+    their 95th percentiles to 214.7, so in our own evidence even the best case on every board at once barely passes
+    215.4. The mean passes it only if T1 and T3 each rise by about 8 board points and both T2 boards by about 6,
+    together (a shift of that size gives a mean of 216.4). Where a gain counts most: +5 on T1 or on T3 takes
+    P(>= 205.32) from 12.8% to 33.5%; +5 on a T2 board takes it to 23.2%; +5 on T3 inside the world where the
+    Gata4 samples' profile carries to beta-catenin does almost all of T3's part (33.3%).
+  - **The gate record.** `results/upload_gate.json` gains the restatement owed after a kept change (row H11): the
+    figure stays 184 (170 to 198); the upper reading's mean moves from 193.7 to 194.4; no reading reaches 209.
+  - **The round** (wf_97454932-ce5: four agents mapped the boards from the committed record, three proposed lifts
+    through a metric-first, an expert-instruments and a red-team lens, and one judged them; read-only, nothing run).
+    The judge's verdict: nothing moves the honest estimate past 215.4 or near it; the proposals that survive add about
+    +0.4 to +0.7 Overall in expectation, each needs the captain's ruling, and the gap sits in hidden facts (E12.5's
+    depth and cardiomyocyte share, beta-catenin's run, E7.75's profile) and in closed levers (sizes, scope, depth,
+    T3's composition). Its red team holds that 193.7 is itself generous: T3's stand-in A, weighted one half, carries a
+    factor between two replicates of one knockout, while the two knockouts' factors correlate at 0.15 (N8), and T1
+    credits the oracle base in full; a central figure of 182 to 188 would be fairer. The committed 184 already sits
+    there, so no figure is changed.
+  - **A second file chosen after the first score** (the same script, part 3). The Official Rules let scores choose
+    among predictions; `docs/S2_RULES.md` fixes every second upload before any score. Priced on practice results: a
+    threshold on the first upload's board total picking the second file from the T1 grid's 15 files gains +0.6 (two
+    bins) to +1.2 (three bins) on held-out seeds if practice score levels carried to the test exactly, +0.3 to +0.5
+    with a level uncertainty of 4 board points and about +0.1 at 6; on the embryo's nine practice tasks it loses
+    (-0.4, leave one task out). The library lottery of try T28 alone is 14 points, so the level is not known to
+    4 points. A rule that maps a score level to a hidden share is also inversion in spirit. Priced and retired; no
+    rule changes and nothing is asked.
+  - **What runs next, each with its row first** (`experiments/harness/TRIES.md`): reading N33 (the embryo's first
+    upload priced beside the new second one, on committed scores) and three target-free kill checks that agents are
+    writing (code and row text only until the rows are committed): N28, whether T1's library-3 base already carries
+    the strong-null bet the captain left out on 2026-11-10 (l); N29, whether a per-lineage-group part of the
+    wild-type-only revert remains beyond the pooled part T3's first-choice file already carries; N32, whether an FGW
+    solve started from the aligned coupling keeps FGW's long moves without the mirrored partners of rows E10 and E11.
+    A check that passes leads to a counted try under its own row, and a try that passes to a priced request.
+  - **Not run, with the reason.** Centring T3's second file against the severity gate's constant term: a constant
+    log factor on every gene cancels when the builder renormalises to CP10k, so there is nothing to centre with. A
+    blend of the revert with the half-strength Mab21l2 factor in that file: two rulings hold the slot and the reading
+    could use the Gata4 replicates only. A pooled, shrunk run factor for the embryo's second file: N23 already found
+    the factor nearly one stable vector, and try E27 showed such refinements do not carry. A late-fetal practice
+    family, a nuclei bridge from the JAX atlas, Leonard's nuclei, births, a pathway or binding prior for the knockout
+    and a cross-modal heart direction: each is in the ledger's "Pruned before running" with its price, and the round
+    found no new reason for one of them.
+  - **Unchanged.** No upload, build, rule or try count. The ten files of `builds_dc7b6ae` stand.

@@ -1,0 +1,1139 @@
+{
+ "label": "the forecast restated for the files as built at the third rehearsal (rows R6, R7, H11), what a constant shift per board would do, and a second file chosen after the first score, priced on practice results: aggregation of committed results, not a try; no test score or leaderboard figure enters any number; the comparison lines are applied to the finished draws only",
+ "draws": 1000000,
+ "rng_seed": 20261105,
+ "lines": {
+  "197.00": "round line",
+  "200.00": "round line",
+  "203.00": "6th Human total, screened read 2026-11-13 (last prize)",
+  "205.32": "3rd Human total, screened read 2026-11-13",
+  "209.00": "the captain's gate",
+  "215.41": "1st Human total, screened read 2026-11-13"
+ },
+ "parameters": {
+  "t3_standin_A": 0.5,
+  "emb_p_deep": 0.45,
+  "t3_q_carry": 0.6,
+  "t1_p_deep": 0.7142857142857143,
+  "t1_k": 0.2,
+  "t1_prior": "uniform",
+  "heart_prior": "uniform"
+ },
+ "files": {
+  "sets": {
+   "files of 2026-11-13 (forecast.py, committed)": {
+    "mean": 193.71895373477886,
+    "median": 194.46633857639512,
+    "percentiles": {
+     "5": 177.7014149510977,
+     "25": 186.33590389076875,
+     "50": 194.46633857639512,
+     "75": 201.70615792221722,
+     "90": 205.42190799602594,
+     "95": 207.24539664285692
+    },
+    "boards_better_of_two": {
+     "T1": 70.1418689939369,
+     "heart": 53.85316177680092,
+     "embryo": 62.124346391192084,
+     "T3": 65.58169444360736
+    },
+    "p_at_least": {
+     "197.00": 0.424825,
+     "200.00": 0.32116,
+     "203.00": 0.194171,
+     "205.32": 0.103359,
+     "209.00": 0.021267,
+     "215.41": 7.6e-05
+    }
+   },
+   "with T1's second upload on the mid base (R7)": {
+    "mean": 194.19606377803785,
+    "median": 194.9479591269085,
+    "percentiles": {
+     "5": 178.21317390353346,
+     "25": 186.8031425754172,
+     "50": 194.9479591269085,
+     "75": 202.1954634807957,
+     "90": 205.88149567351297,
+     "95": 207.67116530082794
+    },
+    "boards_better_of_two": {
+     "T1": 70.61894454451107,
+     "heart": 53.85316177680092,
+     "embryo": 62.124346391192084,
+     "T3": 65.58169444360736
+    },
+    "p_at_least": {
+     "197.00": 0.439326,
+     "200.00": 0.339282,
+     "203.00": 0.214975,
+     "205.32": 0.11978,
+     "209.00": 0.026164,
+     "215.41": 8.5e-05
+    }
+   },
+   "the files as built: R7 and the heart trend (H11)": {
+    "mean": 194.40569827362043,
+    "median": 195.15759362249105,
+    "percentiles": {
+     "5": 178.42280839911604,
+     "25": 187.0127770709998,
+     "50": 195.15759362249105,
+     "75": 202.40509797637824,
+     "90": 206.09113016909555,
+     "95": 207.8807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 70.61894454451107,
+     "heart": 54.27243076796603,
+     "embryo": 62.124346391192084,
+     "T3": 65.58169444360736
+    },
+    "p_at_least": {
+     "197.00": 0.445772,
+     "200.00": 0.347186,
+     "203.00": 0.223971,
+     "205.32": 0.127615,
+     "209.00": 0.029167,
+     "215.41": 0.000116
+    }
+   }
+  },
+  "heart_trend_gain": {
+   "T2h_E9.5_E10.5": {
+    "mean": 0.35727841061790216,
+    "ahead": 10,
+    "seeds": 10
+   },
+   "T2h_E8.75_E10.5": {
+    "mean": 0.48125957171233935,
+    "ahead": 10,
+    "seeds": 10
+   }
+  },
+  "heart_shift": 0.41926899116512073,
+  "t1_pair": [
+   "lib3_base",
+   "mid_cm60"
+  ]
+ },
+ "what_it_takes": {
+  "boards": {
+   "T1": {
+    "mean": 70.61894454451107,
+    "q05_q25_q50_q75_q95": [
+     64.0094056103,
+     68.19391793860615,
+     71.44462755250521,
+     73.41621951730251,
+     75.1426831588471
+    ],
+    "max": 76.40615193305047
+   },
+   "heart": {
+    "mean": 54.27243076796603,
+    "q05_q25_q50_q75_q95": [
+     48.398919703761045,
+     51.13470472526415,
+     53.7807006792156,
+     57.00146971628958,
+     61.24580777937459
+    ],
+    "max": 61.9123995523327
+   },
+   "embryo": {
+    "mean": 62.124346391192084,
+    "q05_q25_q50_q75_q95": [
+     56.74758920230576,
+     59.95038484483906,
+     62.246374196109514,
+     64.1325808257376,
+     68.09915731487533
+    ],
+    "max": 70.81010892058791
+   },
+   "T3": {
+    "mean": 65.58169444360736,
+    "q05_q25_q50_q75_q95": [
+     50.38487723387348,
+     59.03308067361576,
+     65.92317129963386,
+     73.3650986142894,
+     74.93081536878196
+    ],
+    "max": 76.19522692962862
+   }
+  },
+  "sum_of_maxima": 218.9626330991394,
+  "sum_of_95th": 214.745981074754,
+  "board_shift": {
+   "T1 +2": {
+    "mean": 196.40569827362043,
+    "median": 197.15759362249105,
+    "percentiles": {
+     "5": 180.42280839911604,
+     "25": 189.0127770709998,
+     "50": 197.15759362249105,
+     "75": 204.40509797637824,
+     "90": 208.09113016909555,
+     "95": 209.8807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 72.61894454451107,
+     "heart": 54.27243076796603,
+     "embryo": 62.124346391192084,
+     "T3": 65.58169444360736
+    },
+    "p_at_least": {
+     "197.00": 0.504624,
+     "200.00": 0.4149,
+     "203.00": 0.308597,
+     "205.32": 0.210189,
+     "209.00": 0.072007,
+     "215.41": 0.001181
+    }
+   },
+   "T1 +5": {
+    "mean": 199.40569827362043,
+    "median": 200.15759362249105,
+    "percentiles": {
+     "5": 183.42280839911604,
+     "25": 192.0127770709998,
+     "50": 200.15759362249105,
+     "75": 207.40509797637824,
+     "90": 211.09113016909555,
+     "95": 212.8807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 75.6189445445111,
+     "heart": 54.27243076796603,
+     "embryo": 62.124346391192084,
+     "T3": 65.58169444360736
+    },
+    "p_at_least": {
+     "197.00": 0.59468,
+     "200.00": 0.504624,
+     "203.00": 0.4149,
+     "205.32": 0.33505,
+     "209.00": 0.18119,
+     "215.41": 0.013036
+    }
+   },
+   "T1 +8": {
+    "mean": 202.40569827362043,
+    "median": 203.15759362249108,
+    "percentiles": {
+     "5": 186.42280839911604,
+     "25": 195.0127770709998,
+     "50": 203.15759362249108,
+     "75": 210.40509797637824,
+     "90": 214.09113016909555,
+     "95": 215.8807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 78.61894454451108,
+     "heart": 54.27243076796603,
+     "embryo": 62.124346391192084,
+     "T3": 65.58169444360736
+    },
+    "p_at_least": {
+     "197.00": 0.688547,
+     "200.00": 0.59468,
+     "203.00": 0.504624,
+     "205.32": 0.435984,
+     "209.00": 0.308597,
+     "215.41": 0.061172
+    }
+   },
+   "T1 +10": {
+    "mean": 204.40569827362043,
+    "median": 205.15759362249108,
+    "percentiles": {
+     "5": 188.42280839911604,
+     "25": 197.0127770709998,
+     "50": 205.15759362249108,
+     "75": 212.40509797637824,
+     "90": 216.09113016909555,
+     "95": 217.8807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 80.61894454451107,
+     "heart": 54.27243076796603,
+     "embryo": 62.124346391192084,
+     "T3": 65.58169444360736
+    },
+    "p_at_least": {
+     "197.00": 0.750413,
+     "200.00": 0.6571,
+     "203.00": 0.564124,
+     "205.32": 0.495241,
+     "209.00": 0.382307,
+     "215.41": 0.124236
+    }
+   },
+   "heart +2": {
+    "mean": 195.40569827362043,
+    "median": 196.15759362249105,
+    "percentiles": {
+     "5": 179.42280839911604,
+     "25": 188.0127770709998,
+     "50": 196.15759362249105,
+     "75": 203.40509797637824,
+     "90": 207.09113016909555,
+     "95": 208.8807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 70.61894454451107,
+     "heart": 56.27243076796603,
+     "embryo": 62.124346391192084,
+     "T3": 65.58169444360736
+    },
+    "p_at_least": {
+     "197.00": 0.475527,
+     "200.00": 0.382307,
+     "203.00": 0.267257,
+     "205.32": 0.16747,
+     "209.00": 0.047426,
+     "215.41": 0.000414
+    }
+   },
+   "heart +5": {
+    "mean": 196.90569827362043,
+    "median": 197.65759362249105,
+    "percentiles": {
+     "5": 180.92280839911604,
+     "25": 189.5127770709998,
+     "50": 197.65759362249105,
+     "75": 204.90509797637824,
+     "90": 208.59113016909555,
+     "95": 210.3807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 70.61894454451107,
+     "heart": 59.272430767966036,
+     "embryo": 62.124346391192084,
+     "T3": 65.58169444360736
+    },
+    "p_at_least": {
+     "197.00": 0.519182,
+     "200.00": 0.430389,
+     "203.00": 0.328297,
+     "205.32": 0.23183,
+     "209.00": 0.08676,
+     "215.41": 0.001916
+    }
+   },
+   "heart +8": {
+    "mean": 198.40569827362043,
+    "median": 199.15759362249105,
+    "percentiles": {
+     "5": 182.42280839911604,
+     "25": 191.0127770709998,
+     "50": 199.15759362249105,
+     "75": 206.40509797637824,
+     "90": 210.09113016909555,
+     "95": 211.8807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 70.61894454451107,
+     "heart": 62.272430767966036,
+     "embryo": 62.124346391192084,
+     "T3": 65.58169444360736
+    },
+    "p_at_least": {
+     "197.00": 0.564124,
+     "200.00": 0.475527,
+     "203.00": 0.382307,
+     "205.32": 0.295579,
+     "209.00": 0.140004,
+     "215.41": 0.006571
+    }
+   },
+   "heart +10": {
+    "mean": 199.40569827362043,
+    "median": 200.15759362249105,
+    "percentiles": {
+     "5": 183.42280839911604,
+     "25": 192.0127770709998,
+     "50": 200.15759362249105,
+     "75": 207.40509797637824,
+     "90": 211.09113016909555,
+     "95": 212.8807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 70.61894454451107,
+     "heart": 64.27243076796603,
+     "embryo": 62.124346391192084,
+     "T3": 65.58169444360736
+    },
+    "p_at_least": {
+     "197.00": 0.59468,
+     "200.00": 0.504624,
+     "203.00": 0.4149,
+     "205.32": 0.33505,
+     "209.00": 0.18119,
+     "215.41": 0.013036
+    }
+   },
+   "embryo +2": {
+    "mean": 195.40569827362043,
+    "median": 196.15759362249105,
+    "percentiles": {
+     "5": 179.42280839911604,
+     "25": 188.0127770709998,
+     "50": 196.15759362249105,
+     "75": 203.40509797637824,
+     "90": 207.09113016909555,
+     "95": 208.8807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 70.61894454451107,
+     "heart": 54.27243076796603,
+     "embryo": 64.12434639119209,
+     "T3": 65.58169444360736
+    },
+    "p_at_least": {
+     "197.00": 0.475527,
+     "200.00": 0.382307,
+     "203.00": 0.267257,
+     "205.32": 0.16747,
+     "209.00": 0.047426,
+     "215.41": 0.000414
+    }
+   },
+   "embryo +5": {
+    "mean": 196.90569827362043,
+    "median": 197.65759362249105,
+    "percentiles": {
+     "5": 180.92280839911604,
+     "25": 189.5127770709998,
+     "50": 197.65759362249105,
+     "75": 204.90509797637824,
+     "90": 208.59113016909555,
+     "95": 210.3807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 70.61894454451107,
+     "heart": 54.27243076796603,
+     "embryo": 67.12434639119206,
+     "T3": 65.58169444360736
+    },
+    "p_at_least": {
+     "197.00": 0.519182,
+     "200.00": 0.430389,
+     "203.00": 0.328297,
+     "205.32": 0.23183,
+     "209.00": 0.08676,
+     "215.41": 0.001916
+    }
+   },
+   "embryo +8": {
+    "mean": 198.40569827362043,
+    "median": 199.15759362249105,
+    "percentiles": {
+     "5": 182.42280839911604,
+     "25": 191.0127770709998,
+     "50": 199.15759362249105,
+     "75": 206.40509797637824,
+     "90": 210.09113016909555,
+     "95": 211.8807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 70.61894454451107,
+     "heart": 54.27243076796603,
+     "embryo": 70.12434639119209,
+     "T3": 65.58169444360736
+    },
+    "p_at_least": {
+     "197.00": 0.564124,
+     "200.00": 0.475527,
+     "203.00": 0.382307,
+     "205.32": 0.295579,
+     "209.00": 0.140004,
+     "215.41": 0.006571
+    }
+   },
+   "embryo +10": {
+    "mean": 199.40569827362043,
+    "median": 200.15759362249105,
+    "percentiles": {
+     "5": 183.42280839911604,
+     "25": 192.0127770709998,
+     "50": 200.15759362249105,
+     "75": 207.40509797637824,
+     "90": 211.09113016909555,
+     "95": 212.8807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 70.61894454451107,
+     "heart": 54.27243076796603,
+     "embryo": 72.12434639119208,
+     "T3": 65.58169444360736
+    },
+    "p_at_least": {
+     "197.00": 0.59468,
+     "200.00": 0.504624,
+     "203.00": 0.4149,
+     "205.32": 0.33505,
+     "209.00": 0.18119,
+     "215.41": 0.013036
+    }
+   },
+   "T3 +2": {
+    "mean": 196.40569827362043,
+    "median": 197.15759362249105,
+    "percentiles": {
+     "5": 180.42280839911604,
+     "25": 189.0127770709998,
+     "50": 197.15759362249105,
+     "75": 204.40509797637824,
+     "90": 208.09113016909555,
+     "95": 209.8807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 70.61894454451107,
+     "heart": 54.27243076796603,
+     "embryo": 62.124346391192084,
+     "T3": 67.58169444360738
+    },
+    "p_at_least": {
+     "197.00": 0.504624,
+     "200.00": 0.4149,
+     "203.00": 0.308597,
+     "205.32": 0.210189,
+     "209.00": 0.072007,
+     "215.41": 0.001181
+    }
+   },
+   "T3 +5": {
+    "mean": 199.40569827362043,
+    "median": 200.15759362249105,
+    "percentiles": {
+     "5": 183.42280839911604,
+     "25": 192.0127770709998,
+     "50": 200.15759362249105,
+     "75": 207.40509797637824,
+     "90": 211.09113016909555,
+     "95": 212.8807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 70.61894454451107,
+     "heart": 54.27243076796603,
+     "embryo": 62.124346391192084,
+     "T3": 70.58169444360738
+    },
+    "p_at_least": {
+     "197.00": 0.59468,
+     "200.00": 0.504624,
+     "203.00": 0.4149,
+     "205.32": 0.33505,
+     "209.00": 0.18119,
+     "215.41": 0.013036
+    }
+   },
+   "T3 +8": {
+    "mean": 202.40569827362043,
+    "median": 203.15759362249105,
+    "percentiles": {
+     "5": 186.42280839911604,
+     "25": 195.0127770709998,
+     "50": 203.15759362249105,
+     "75": 210.40509797637824,
+     "90": 214.09113016909555,
+     "95": 215.8807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 70.61894454451107,
+     "heart": 54.27243076796603,
+     "embryo": 62.124346391192084,
+     "T3": 73.58169444360738
+    },
+    "p_at_least": {
+     "197.00": 0.688547,
+     "200.00": 0.59468,
+     "203.00": 0.504624,
+     "205.32": 0.435984,
+     "209.00": 0.308597,
+     "215.41": 0.061172
+    }
+   },
+   "T3 +10": {
+    "mean": 204.40569827362043,
+    "median": 205.15759362249105,
+    "percentiles": {
+     "5": 188.42280839911604,
+     "25": 197.0127770709998,
+     "50": 205.15759362249105,
+     "75": 212.40509797637824,
+     "90": 216.09113016909555,
+     "95": 217.8807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 70.61894454451107,
+     "heart": 54.27243076796603,
+     "embryo": 62.124346391192084,
+     "T3": 75.58169444360738
+    },
+    "p_at_least": {
+     "197.00": 0.750413,
+     "200.00": 0.6571,
+     "203.00": 0.564124,
+     "205.32": 0.495241,
+     "209.00": 0.382307,
+     "215.41": 0.124236
+    }
+   }
+  },
+  "world_shift": {
+   "T3 [stand-in A] +5": {
+    "mean": 196.9050182736204,
+    "median": 197.66213948161902,
+    "percentiles": {
+     "5": 178.42280839911604,
+     "25": 187.0155174642226,
+     "50": 197.66213948161902,
+     "75": 207.39528405810157,
+     "90": 211.09085213273306,
+     "95": 212.8807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 70.61894454451107,
+     "heart": 54.27243076796603,
+     "embryo": 62.124346391192084,
+     "T3": 68.08169444360738
+    },
+    "p_at_least": {
+     "197.00": 0.508623,
+     "200.00": 0.467774,
+     "203.00": 0.405376,
+     "205.32": 0.332793,
+     "209.00": 0.181087,
+     "215.41": 0.013036
+    }
+   },
+   "T3 [stand-in A] +8": {
+    "mean": 198.40461027362042,
+    "median": 199.1990130827106,
+    "percentiles": {
+     "5": 178.42280839911604,
+     "25": 187.0155174642226,
+     "50": 199.1990130827106,
+     "75": 210.39526304643562,
+     "90": 214.09085213273306,
+     "95": 215.8807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 70.61894454451107,
+     "heart": 54.27243076796603,
+     "embryo": 62.124346391192084,
+     "T3": 69.58169444360738
+    },
+    "p_at_least": {
+     "197.00": 0.515663,
+     "200.00": 0.494944,
+     "203.00": 0.465171,
+     "205.32": 0.42188,
+     "209.00": 0.307229,
+     "215.41": 0.061171
+    }
+   },
+   "T3 [stand-in B] +8": {
+    "mean": 196.41119427362042,
+    "median": 198.7527955329659,
+    "percentiles": {
+     "5": 178.5564030203823,
+     "25": 190.82054973628826,
+     "50": 198.7527955329659,
+     "75": 203.1926233656444,
+     "90": 206.3334557294206,
+     "95": 208.01106876200407
+    },
+    "boards_better_of_two": {
+     "T1": 70.61894454451107,
+     "heart": 54.27243076796603,
+     "embryo": 62.124346391192084,
+     "T3": 67.58169444360736
+    },
+    "p_at_least": {
+     "197.00": 0.581206,
+     "200.00": 0.433879,
+     "203.00": 0.260703,
+     "205.32": 0.141247,
+     "209.00": 0.03053,
+     "215.41": 0.000117
+    }
+   },
+   "T3 [stand-in K2a] +8": {
+    "mean": 196.40129027362042,
+    "median": 196.59186993501373,
+    "percentiles": {
+     "5": 183.86342192716282,
+     "25": 190.69385040356488,
+     "50": 196.59186993501373,
+     "75": 202.48939044644408,
+     "90": 206.09747897804178,
+     "95": 207.88200960654837
+    },
+    "boards_better_of_two": {
+     "T1": 70.61894454451107,
+     "heart": 54.27243076796603,
+     "embryo": 62.124346391192084,
+     "T3": 67.58169444360738
+    },
+    "p_at_least": {
+     "197.00": 0.483222,
+     "200.00": 0.360229,
+     "203.00": 0.226692,
+     "205.32": 0.128087,
+     "209.00": 0.029172,
+     "215.41": 0.000116
+    }
+   },
+   "T1 [depth 1.37] +5": {
+    "mean": 197.26481327362043,
+    "median": 197.98003144554468,
+    "percentiles": {
+     "5": 180.24217332397856,
+     "25": 189.75282336924175,
+     "50": 197.98003144554468,
+     "75": 205.22176677530723,
+     "90": 210.03705624626357,
+     "95": 212.18462593937272
+    },
+    "boards_better_of_two": {
+     "T1": 73.47608740165394,
+     "heart": 54.27243076796603,
+     "embryo": 62.124346391192084,
+     "T3": 65.58169444360736
+    },
+    "p_at_least": {
+     "197.00": 0.531336,
+     "200.00": 0.433164,
+     "203.00": 0.327382,
+     "205.32": 0.246737,
+     "209.00": 0.129121,
+     "215.41": 0.010537
+    }
+   },
+   "T1 [depth 1.0] +5": {
+    "mean": 195.11911827362042,
+    "median": 195.8961941706039,
+    "percentiles": {
+     "5": 178.84752977230906,
+     "25": 187.6853263014374,
+     "50": 195.8961941706039,
+     "75": 203.02696489142636,
+     "90": 207.03727851452336,
+     "95": 209.10972109497865
+    },
+    "boards_better_of_two": {
+     "T1": 71.33323025879679,
+     "heart": 54.27243076796603,
+     "embryo": 62.124346391192084,
+     "T3": 65.58169444360736
+    },
+    "p_at_least": {
+     "197.00": 0.466712,
+     "200.00": 0.368889,
+     "203.00": 0.251089,
+     "205.32": 0.158093,
+     "209.00": 0.052047,
+     "215.41": 0.001829
+    }
+   },
+   "embryo [D:] +5": {
+    "mean": 195.53136577362042,
+    "median": 196.30382132326952,
+    "percentiles": {
+     "5": 179.25809248496375,
+     "25": 188.09677197643717,
+     "50": 196.30382132326952,
+     "75": 203.45169174701218,
+     "90": 207.4877730882548,
+     "95": 209.51836967863704
+    },
+    "boards_better_of_two": {
+     "T1": 70.61894454451107,
+     "heart": 54.27243076796603,
+     "embryo": 64.37434639119209,
+     "T3": 65.58169444360736
+    },
+    "p_at_least": {
+     "197.00": 0.478876,
+     "200.00": 0.382892,
+     "203.00": 0.268357,
+     "205.32": 0.175209,
+     "209.00": 0.060644,
+     "215.41": 0.001681
+    }
+   },
+   "embryo [O:] +5": {
+    "mean": 195.78003077362044,
+    "median": 196.52566629114477,
+    "percentiles": {
+     "5": 179.79672760138908,
+     "25": 188.39648287327879,
+     "50": 196.52566629114477,
+     "75": 203.80573385470302,
+     "90": 207.47853140853914,
+     "95": 209.2221945867962
+    },
+    "boards_better_of_two": {
+     "T1": 70.61894454451107,
+     "heart": 54.27243076796603,
+     "embryo": 64.87434639119208,
+     "T3": 65.58169444360736
+    },
+    "p_at_least": {
+     "197.00": 0.486078,
+     "200.00": 0.394683,
+     "203.00": 0.283911,
+     "205.32": 0.184236,
+     "209.00": 0.055283,
+     "215.41": 0.000351
+    }
+   }
+  },
+  "joint_shift": {
+   "T1 +5, T3 +5, heart +5, embryo +5": {
+    "mean": 209.40569827362043,
+    "median": 210.15759362249105,
+    "percentiles": {
+     "5": 193.42280839911604,
+     "25": 202.0127770709998,
+     "50": 210.15759362249105,
+     "75": 217.40509797637824,
+     "90": 221.09113016909555,
+     "95": 222.8807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 75.6189445445111,
+     "heart": 59.272430767966036,
+     "embryo": 67.12434639119206,
+     "T3": 70.58169444360738
+    },
+    "p_at_least": {
+     "197.00": 0.886334,
+     "200.00": 0.809376,
+     "203.00": 0.719984,
+     "205.32": 0.647075,
+     "209.00": 0.534142,
+     "215.41": 0.331682
+    }
+   },
+   "T1 +8, T3 +8, heart +6, embryo +6": {
+    "mean": 216.40569827362043,
+    "median": 217.15759362249105,
+    "percentiles": {
+     "5": 200.42280839911604,
+     "25": 209.0127770709998,
+     "50": 217.15759362249105,
+     "75": 224.40509797637824,
+     "90": 228.09113016909555,
+     "95": 229.8807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 78.61894454451108,
+     "heart": 60.27243076796603,
+     "embryo": 68.12434639119209,
+     "T3": 73.58169444360738
+    },
+    "p_at_least": {
+     "197.00": 0.981908,
+     "200.00": 0.955373,
+     "203.00": 0.907523,
+     "205.32": 0.85472,
+     "209.00": 0.750413,
+     "215.41": 0.551805
+    }
+   },
+   "T1 +10, T3 +10, heart +8, embryo +8": {
+    "mean": 222.40569827362043,
+    "median": 223.15759362249105,
+    "percentiles": {
+     "5": 206.42280839911604,
+     "25": 215.0127770709998,
+     "50": 223.15759362249105,
+     "75": 230.40509797637824,
+     "90": 234.09113016909555,
+     "95": 235.8807997964105
+    },
+    "boards_better_of_two": {
+     "T1": 80.61894454451107,
+     "heart": 62.272430767966036,
+     "embryo": 70.12434639119209,
+     "T3": 75.58169444360738
+    },
+    "p_at_least": {
+     "197.00": 0.999018,
+     "200.00": 0.994449,
+     "203.00": 0.981908,
+     "205.32": 0.962995,
+     "209.00": 0.907523,
+     "215.41": 0.738062
+    }
+   }
+  }
+ },
+ "second_file_after_a_score": {
+  "T1": {
+   "fixed_pair": 68.277903668027,
+   "first_alone": 63.53507631258137,
+   "oracle_file_per_truth": 71.23578558715441,
+   "rules": {
+    "2 bins": {
+     "cuts_all_seeds": [
+      66.64523015433497
+     ],
+     "files_all_seeds": [
+      "bown_c0.6",
+      "b0.4_cown"
+     ],
+     "held_out_gain_over_fixed_pair": {
+      "sd 0": 0.5673466821072353,
+      "sd 2": 0.4893679177580168,
+      "sd 4": 0.3322010098721506,
+      "sd 6": 0.08101578676183863
+     }
+    },
+    "3 bins": {
+     "cuts_all_seeds": [
+      54.32573340917118,
+      66.64523015433497
+     ],
+     "files_all_seeds": [
+      "b0.05_c0.75",
+      "bown_c0.6",
+      "b0.4_cown"
+     ],
+     "held_out_gain_over_fixed_pair": {
+      "sd 0": 1.1820344698684693,
+      "sd 2": 0.9762051032331058,
+      "sd 4": 0.5393647242872888,
+      "sd 6": 0.0640989103323264
+     }
+    }
+   }
+  },
+  "embryo": {
+   "fixed_pair_mean9": 66.59217896193071,
+   "oracle_file_per_task": 67.79308264627299,
+   "rules": {
+    "2 bins": {
+     "cuts_all_tasks": [
+      62.05081441577453
+     ],
+     "files_all_tasks": [
+      "fgw_shape0_hi",
+      "fgw_aligned_series"
+     ],
+     "leave_one_task_out_gain_over_fixed_pair": {
+      "sd 0": -0.40741266845406365,
+      "sd 2": -0.3839876892989938,
+      "sd 4": -0.4258739003502991,
+      "sd 6": -0.4633441484286867
+     }
+    }
+   }
+  }
+ },
+ "checks": [
+  "T1 grid (experiments/s2_hedge/results/t1_grid/hedge_bown_cown.json): the per-seed runs give the hedge file's bown_cown alone under 5 stated priors (largest gap 2.1e-14)",
+  "T1 grid (experiments/s2_hedge/results/t1_grid/hedge_bown_cown.json): the per-seed runs give the hedge file's the better of bown_cown and bown_c0.6 under 5 stated priors (largest gap 1.4e-14)",
+  "T1 grid: the fixed pair's better of two is the estimator's 68.28",
+  "T1 grid: the per-seed runs give payoff.json's mean[truth][bown_c0.6] on 15 truths (largest gap 0.0e+00)",
+  "T1 grid: the per-seed runs give payoff.json's mean[truth][bown_cown] on 15 truths (largest gap 0.0e+00)",
+  "T1: diag_v1's B0 is the harness's B0 (d2_v1) seed for seed (largest gap 0.0e+00)",
+  "T1: the floor is 50 on every truth and seed of the grid and on the backtest (largest gap 0.0e+00)",
+  "T3 T3/Gata4->Mab21l2: the floor is 50 on every seed (largest gap 0.0e+00)",
+  "T3 rep1: K8b's gain over s2_form is the row's 4.72",
+  "T3 rep1: the records' seed means are gata4_summary.csv's t3 (3 variants) (largest gap 1.4e-14)",
+  "T3 rep2: K8b's gain over s2_form is the row's 7.12",
+  "T3 rep2: the records' seed means are gata4_summary.csv's t3 (3 variants) (largest gap 1.4e-14)",
+  "T30 d0.35 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d0.35 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d0.35 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d0.68 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d0.68 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d0.68 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d1.0 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d1.0 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d1.0 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d1.37 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d1.37 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d1.37 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "embryo T2e/E6.75+E7.5->E7.25: emb_shape_v1's fgw is emb_fgw_v1's seed for seed (largest gap 0.0e+00)",
+  "embryo T2e/E6.75+E7.5->E7.25: the floor is 50 on every seed (largest gap 0.0e+00)",
+  "embryo T2e/E7.25+E8.0->E7.5: emb_shape_v1's fgw is emb_fgw_v1's seed for seed (largest gap 0.0e+00)",
+  "embryo T2e/E7.25+E8.0->E7.5: the floor is 50 on every seed (largest gap 0.0e+00)",
+  "embryo e725: per-seed change gives E28's value (largest gap 0.0e+00)",
+  "embryo e75: per-seed change gives E28's value (largest gap 7.8e-15)",
+  "embryo half: per-seed change gives E28's value (largest gap 1.4e-14)",
+  "embryo late: per-seed change gives E28's value (largest gap 1.6e-14)",
+  "embryo new1: per-seed change gives E28's value (largest gap 2.3e-14)",
+  "embryo new2: per-seed change gives E28's value (largest gap 0.0e+00)",
+  "embryo x1: per-seed change gives E28's value (largest gap 2.7e-15)",
+  "embryo x2: per-seed change gives E28's value (largest gap 0.0e+00)",
+  "embryo x3: per-seed change gives E28's value (largest gap 8.9e-16)",
+  "embryo: all nine E28 tasks found",
+  "heart T2h/<=E8.75->E10.5 (experiments/s2_hedge/results/heart_scope_e875/hedge_hold.json): the per-seed runs give the hedge file's hold alone under 5 stated priors (largest gap 1.4e-14)",
+  "heart T2h/<=E8.75->E10.5 (experiments/s2_hedge/results/heart_scope_e875/hedge_hold.json): the per-seed runs give the hedge file's the better of hold and half_radial under 5 stated priors (largest gap 7.1e-15)",
+  "heart T2h/<=E8.75->E10.5: the floor is 50 on the released truth and on the backtest (largest gap 0.0e+00)",
+  "heart T2h/<=E9.5->E10.5 (experiments/s2_hedge/results/heart_scope/hedge_hold.json): the per-seed runs give the hedge file's hold alone under 5 stated priors (largest gap 7.1e-15)",
+  "heart T2h/<=E9.5->E10.5 (experiments/s2_hedge/results/heart_scope/hedge_hold.json): the per-seed runs give the hedge file's the better of hold and half_radial under 5 stated priors (largest gap 2.1e-14)",
+  "heart T2h/<=E9.5->E10.5: the floor is 50 on the released truth and on the backtest (largest gap 0.0e+00)",
+  "heart T2h_E8.75_E10.5: the trend's gain is row H11's",
+  "heart T2h_E9.5_E10.5: the trend's gain is row H11's",
+  "t30 d0.35 cm0.45: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.35 cm0.45: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.35 cm0.45: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.35 cm0.60: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.35 cm0.60: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.35 cm0.60: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.35 cmown: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.35 cmown: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.35 cmown: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.68 cm0.45: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.68 cm0.45: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.68 cm0.45: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.68 cm0.60: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.68 cm0.60: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.68 cm0.60: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.68 cmown: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.68 cmown: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.68 cmown: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.0 cm0.45: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.0 cm0.45: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.0 cm0.45: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.0 cm0.60: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.0 cm0.60: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.0 cm0.60: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.0 cmown: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.0 cmown: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.0 cmown: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.37 cm0.45: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.37 cm0.45: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.37 cm0.45: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.37 cm0.60: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.37 cm0.60: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.37 cm0.60: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.37 cmown: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.37 cmown: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.37 cmown: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30's reading is not void",
+  "t33 d0.35 cm0.45: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d0.35 cm0.60: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d0.35 cmown: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d0.68 cm0.45: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d0.68 cm0.60: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d0.68 cmown: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d1.0 cm0.45: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d1.0 cm0.60: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d1.0 cmown: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d1.37 cm0.45: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d1.37 cm0.60: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d1.37 cmown: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33's reading is not void"
+ ],
+ "inputs_sha256": {
+  "experiments/harness/results/d2_v1/tasks/T1_E9.5_E10.5_chamber.json": "ad5cef9cd5e1be2693295c60c6be2b6c5dd020064e100d4d91e8052e75385eab",
+  "experiments/harness/results/d2_v1/tasks/T2h_E8.75_E10.5.json": "abbdc05fe3ea40e71b089569c0dfefef2ed43f9da0538fc80959621929102cc7",
+  "experiments/harness/results/d2_v1/tasks/T2h_E9.5_E10.5.json": "7cc830d376fb890916fa97355740cfa5e3ff96d1a9002755776a64d8ec692c93",
+  "experiments/harness/results/e24_pricing/tasks/T2e_E6.75_E7.5_E7.25.json": "f644fa232da596d7272ee1a00ad6e16933df064cb292cac1b0b7f4b392412801",
+  "experiments/harness/results/e24_pricing/tasks/T2e_E7.25_E8.0_E7.5.json": "0ff1adc7e4ada571d971271f4cde850fe41601ded86207ae357eefde6b1c10ef",
+  "experiments/harness/results/e24_pricing/tasks/T2e_E7.5_E8.25_late_E8.0.json": "fd6c961b82c823af5638b9ecda3b00dc4a5a06ae8b6b9242ebd7067722dec416",
+  "experiments/harness/results/e24_pricing/tasks/T2e_E7.5_E8.5_E8.0.json": "5caadc156089a0380cd7471bf00902e43ed9dce84b248326ab42733c2b47de74",
+  "experiments/harness/results/e24_pricing/tasks/T2e_E7.5_E8.5_E8.25_late.json": "57ffa7dd40e666582c3663a0a487745407c2c9b0b479a8b36621dc3f72b8dbd5",
+  "experiments/harness/results/e24_pricing/tasks/T2e_E7.5_E8.75_E8.5.json": "bb49906cda87b27fe8c9b6ac819c128b798ed3c8394db446a43474c4cf8fccb2",
+  "experiments/harness/results/e25_pairs/tasks/T2e_E6.75_E7.5_E7.25.json": "8a4a6249cc5cdf83f1f88b718c1f7a1f80edb6e11999d74b7ef57ff08a12e3ec",
+  "experiments/harness/results/e25_pairs/tasks/T2e_E7.25_E8.0_E7.5.json": "224d2aef868effcd724f8358832174957e2338de49de6eacab5bd0b02e3e7d64",
+  "experiments/harness/results/e25_pairs/tasks/T2e_E7.5_E8.25_late_E8.0.json": "499a9b5db42448799d98257c56f41f02381e24df44673215357c86988943e2d7",
+  "experiments/harness/results/e25_pairs/tasks/T2e_E7.5_E8.5_E8.0.json": "4355130573dbcfd775761bab6f1b18f143525bf09784826d341c5db5545e1267",
+  "experiments/harness/results/e25_pairs/tasks/T2e_E7.5_E8.5_E8.25_late.json": "4ff694eeaff1c6ef2b472e667de0baa9f652ff1efa7f107d4dd8cc746883e177",
+  "experiments/harness/results/e25_pairs/tasks/T2e_E7.5_E8.75_E8.5.json": "996e147227b92982c02e540cfd0948787290e58b0f61730a00df656a6c27f546",
+  "experiments/harness/results/e28_nine_tasks/nine_tasks.json": "361c32063ccfa3145496d04693e66621ad0309637bc48a90737f6d23f8d8cdab",
+  "experiments/harness/results/e28_nine_tasks/tasks/T2e_E8.0_E8.75_E8.25_late.json": "ad25914d1b46bd7a85c92e543f16fbf9243f8720d3c273d295d80cd724124215",
+  "experiments/harness/results/e28_nine_tasks/tasks/T2e_E8.0_E8.75_E8.5.json": "9d95a7d79449a0ca58519219854602d801fd12657974c6516dd122277e10be7d",
+  "experiments/harness/results/e28_nine_tasks/tasks/T2e_E8.25_late_E8.75_E8.5.json": "cbbe06a27ac0467a4ba5268ce4ed0cdbdb5319ca6002825427a7429008e544c5",
+  "experiments/harness/results/emb_fgw_v1/tasks/T2e_E6.75_E7.5_E7.25.json": "0579ef165aa0d1f7ebea91f73eb30fe3d200a2165e09dc3c254ddfe9ded178e1",
+  "experiments/harness/results/emb_fgw_v1/tasks/T2e_E7.25_E8.0_E7.5.json": "50efea88a03f54a6d8e39fc89d34c43c5284ab938e471abdf5e442afc932e315",
+  "experiments/harness/results/emb_shape_v1/tasks/T2e_E6.75_E7.5_E7.25.json": "2e58860ac1014e9a02c87caafaf420b58b1974fea37d213266f14cf68266c426",
+  "experiments/harness/results/emb_shape_v1/tasks/T2e_E7.25_E8.0_E7.5.json": "f8545e9002474a66d1d3e7ba4be4ad01b1e7fabda927a72bffd04de3356625e0",
+  "experiments/harness/results/t3_k2_v1/tasks/T3_Gata4_Mab21l2.json": "99bd0535fd176d26115fd1ed000bcfc854a4c37fa21763763146b5b35d895269",
+  "experiments/harness/results/trend_heart_v1/tasks/T2h_E8.75_E10.5.json": "d06eba5b60e9bcbf16d5bb9544a3b623fbbae20ed1754182d03cf53ccb606fae",
+  "experiments/harness/results/trend_heart_v1/tasks/T2h_E9.5_E10.5.json": "003752fad9fb79e9349254a8f38bc7d1e12fdc4674bcdc2a8cf4d61fc90e83ec",
+  "experiments/s2_hedge/results/heart_scope/hedge_hold.json": "64734499b20e2ac0c64a3991fdf600aa67e39e74ca5dd1cbf08932129aaab6cb",
+  "experiments/s2_hedge/results/heart_scope_e875/hedge_hold.json": "7eccbc6d1aec19fdc6630c35b270c290a9edb178233993af482e03a9b4e2db3e",
+  "experiments/s2_hedge/results/per_seed/heart-scope-e875/0-1/heart-scope.json": "2a8d8708b4498a86298d0589a1385c8d51499e02d4b79e031f8b98db732c7d33",
+  "experiments/s2_hedge/results/per_seed/heart-scope-e875/2-3/heart-scope.json": "d997dca89bf932cb24d51921b300b853de0cbc05b2b0db41528ddcd893ebc7c6",
+  "experiments/s2_hedge/results/per_seed/heart-scope-e875/4-5/heart-scope.json": "c3b674b906a06c16794232ab074748b0dc59ac227021b245e6cd9103cd5b41d1",
+  "experiments/s2_hedge/results/per_seed/heart-scope-e875/6-7/heart-scope.json": "85b3d33fed9f8542b4825130d68f2a86bd707604ac5f0e42ff570ad8f76f2b88",
+  "experiments/s2_hedge/results/per_seed/heart-scope-e875/8-9/heart-scope.json": "9e8f6582962f37ffb37a4d6d6d1959d1f2fcf36d0884b6114551a9be1bdee02a",
+  "experiments/s2_hedge/results/per_seed/heart-scope/0-1/heart-scope.json": "2411bb6adebf47a2577b4e9a298cb4fa2a8013df06beeaadbd1bd499bac21ef5",
+  "experiments/s2_hedge/results/per_seed/heart-scope/2-3/heart-scope.json": "52685fce43a5c11762b8ddea396b83d6b5e86bdd866db0a0bdb750a53000a550",
+  "experiments/s2_hedge/results/per_seed/heart-scope/4-5/heart-scope.json": "0ae5a2064c668ff4702cf046ad5bc2157748c5c8889116f54c5e0a026201d995",
+  "experiments/s2_hedge/results/per_seed/heart-scope/6-7/heart-scope.json": "68f03fc4065604beeb817f285b31ac661077f4e2be53f1cacf3a1b8d0ef2a7c9",
+  "experiments/s2_hedge/results/per_seed/heart-scope/8-9/heart-scope.json": "03c324242c767790b414ccecae04e8fecf3f23d6d4c7fd8feed267f948ec755e",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p0_0-1/t1-grid.json": "99a189c5af827a1a7ee5ac5524c74f8d3f6832bd195558c719e5864e836272c7",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p0_2-3/t1-grid.json": "74266924bc4651f47d5511d6911777b4a01d7fa09d009b77215e5739a51ecdab",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p0_4-5/t1-grid.json": "fb20a9195bcce44c2f9dda8bc1b0480cda72a854c72399bdbb822a2cdde6cb3f",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p0_6-7/t1-grid.json": "d0f3f609be2adf13a6f5e4f9eb77ff6f4fc3603d304831125e4e51fe1be120c4",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p0_8-9/t1-grid.json": "ef5959c85ad915465ae420716528d0ad5600b1f44baa7fd4349e5d02fdf0fc02",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p1_0-1/t1-grid.json": "202265e22714589521f265fba0420e39baab9e25b503d16cac8b26793d3bee91",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p1_2-3/t1-grid.json": "48d9bb494a56270423095b1b2b2768c47527df80436c6b0d4a6bb43533741ff0",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p1_4-5/t1-grid.json": "de1cfd975fb8262da4524f41985bea8fb0629b4db6b965785d6e57d6ad0634b2",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p1_6-7/t1-grid.json": "caa3aeeb5350c4bfcb727a3cf6a5a1ae9b5f87e06b76bec56b39ed3a947090f5",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p1_8-9/t1-grid.json": "96541d5d4ca772f21dbe9d6c8097730ef38f2b4324362b6c69b1e2c741258cb2",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p2_0-1/t1-grid.json": "8e40497fc57ff360a989585ded16811490c0964d9b872ef730582a66eedb8c77",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p2_2-3/t1-grid.json": "f248dffea0cbf67bb8772a57b43b7633e9557956275c9e17f358fad40c23d7cb",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p2_4-5/t1-grid.json": "dac288505a3f6f3a67734975b0001b6b66b08a9ba3db2b52bed86d105bd2ff1e",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p2_6-7/t1-grid.json": "d1d80605f6de5a3c7409c9b288d88ee1ca91f37987e1ca300d52d4e2235e92ac",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p2_8-9/t1-grid.json": "024bc03261b7cbb20b179c2911da3d28e9606b949841925a3d5db2ba125473f7",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p3_0-1/t1-grid.json": "d7daa1ebdf3f9691ec1c58407303277cb0a33b2684d39772c13a2b792e576ed0",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p3_2-3/t1-grid.json": "b95cf2ab12b167eac5de6b243dc4f8facad99ebfff74102156da1cf87dee3e5b",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p3_4-5/t1-grid.json": "f88ee247abbd73f337ff70d3960e136ef4f1d34c8d9654a4c4a5692159dc0b4c",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p3_6-7/t1-grid.json": "0733dba83a7ac9ca571497cd869b4cbf9e0f658bf1b5d29120465714b71d3b40",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p3_8-9/t1-grid.json": "cb396170489f3b60295826729943d10dc482b1ee1b8756a1dfcc73b11c567834",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p4_0-1/t1-grid.json": "c54f18dbaf66c3c1951dc094cbb6728ada820e483e13a7ca96d847e3c479f335",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p4_2-3/t1-grid.json": "23fdd61decfea365708b02b9094fc4520c85c8a886ede81dbe9be74a1e50267a",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p4_4-5/t1-grid.json": "c97dff86b9b41d18a6f70c4a762d8132b3e7fe6078a8d795861be8642d236bab",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p4_6-7/t1-grid.json": "682d9ee6a3219f96f04d0b1091011263a91e59c5b4bd3647550e67b32c9836d4",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p4_8-9/t1-grid.json": "e918cd88bcd06dbfbe2333a31571ebdda48c338b8790fcb055e0f4075e811689",
+  "experiments/s2_hedge/results/t1_grid/hedge_bown_cown.json": "3480e76f5e3680fec6220a1e5c66b9f2ddb4d614908a530f289fc6515608e2be",
+  "experiments/s2_hedge/results/t1_grid/payoff.json": "8fc2ebbfe555a7cfc6d4c4ba9d36d7172ba55be0e8d22191dee5846e486463a5",
+  "experiments/t1_m1/results/diag_v1/T1_E9.5_E10.5_chamber.json": "e51d67c6f04271a438883fba2b4800de6cfc7dd006d13b7b49bf62c62dec39fe",
+  "experiments/t1_scope/results/t30_pricing/pricing.json": "fabfeed245e9bea94210baf8643844d1d9fd347744b7ca3f536ffa3ec0ddf88d",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d0.35_cm0.45.json": "d31e35784515895cd0e7cb7f24d114e6cd62ef83f1b9b6b9555981ab88345397",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d0.35_cm0.60.json": "9f634c2bb61641baced03f9fa9d486a60403a9fb58bbdbb0069360eba2d0706a",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d0.35_cmown.json": "f5cfe555ce8ec825d40f962cc1af2583e767b4b4400b60e37ad4789d535d3cc3",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d0.68_cm0.45.json": "72d0d0d6d548a569e83eb3a969db094c04049b001aa1bffe3b9987e291329a5d",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d0.68_cm0.60.json": "219df5f15ea6b7e8e0a5dff0eea8ece1abc2577cc20b0866232eb0a1d2ec3b40",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d0.68_cmown.json": "c057b487d015d9cbf2b3d41940550edb9ea6a0a05ab662a8a532d0d9813d4ced",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d1.0_cm0.45.json": "a953ecd8e4d810c1a64e17cf65606ff3bcdb095118460a9b289c677ec44afc66",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d1.0_cm0.60.json": "bc8dde814928cf7b74c75da431983be39de3e186c081fb307d3852b1e9240be5",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d1.0_cmown.json": "dddbb029093ed4e262c2f9759bbb7e0102310ffb69ec65c57644a8534ee32d9c",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d1.37_cm0.45.json": "041cacbf0c2a18dc898e345423a2f80b49b4d9d0eb536aeaf1439a02ee441a93",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d1.37_cm0.60.json": "7ff8b4296217ba7c9ce242ed785400e653ee4e31033da9305d08d8086df7fee4",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d1.37_cmown.json": "50e26b86f5075445a780c4472ff2e92ee9c657303084daa8540d05fbc408162f",
+  "experiments/t1_scope/results/t33_mid/pricing.json": "68e1826870e19bda3b7f4ba5fdfcb4ca2cc8215dbf3ae1198c89df962ddb7012",
+  "experiments/t1_scope/results/t33_mid/scenarios/t33_d0.35_cm0.45.json": "4aa539e6a9d2f91217352d055ee7764b356780c870c044f9e1ba81db5e0165a8",
+  "experiments/t1_scope/results/t33_mid/scenarios/t33_d0.35_cm0.60.json": "73ba71957469ce5fc3c757f5f6c2e29a5da3536ce541b387e78f59e57ed751cb",
+  "experiments/t1_scope/results/t33_mid/scenarios/t33_d0.35_cmown.json": "0497cb12c737898a67e010d632eb832d0728e772d8a612825fdb341da3349272",
+  "experiments/t1_scope/results/t33_mid/scenarios/t33_d0.68_cm0.45.json": "959139c70d21e0709d688ae725a9ff0e9bfc138024c56a4c6e967ebf6944132e",
+  "experiments/t1_scope/results/t33_mid/scenarios/t33_d0.68_cm0.60.json": "054478d9f84e573108be616e045f05f9b366b4e3d09229433927ccae17f13406",
+  "experiments/t1_scope/results/t33_mid/scenarios/t33_d0.68_cmown.json": "83ea99df82451c8062de0696d4e40e68ab6f05439d6934efd0201e8d7f6873c4",
+  "experiments/t1_scope/results/t33_mid/scenarios/t33_d1.0_cm0.45.json": "62fd69b16d3d9baf606de93ea303e43ed889e8dd4365c1061bcc3cd793bdf4d4",
+  "experiments/t1_scope/results/t33_mid/scenarios/t33_d1.0_cm0.60.json": "87202f69d041652e866f995fb6d207b5df07af7c5f0cf28d0abeb31ea73369b7",
+  "experiments/t1_scope/results/t33_mid/scenarios/t33_d1.0_cmown.json": "bc015c97fec2a63c0103275e7f15abc54576a1510527bba251b37c784ef0bc4c",
+  "experiments/t1_scope/results/t33_mid/scenarios/t33_d1.37_cm0.45.json": "16fd5817920f5ba79d61d641c1a48f059826ef342cf5c20bf40cf64cfdfcb1ec",
+  "experiments/t1_scope/results/t33_mid/scenarios/t33_d1.37_cm0.60.json": "87c861e159bf50d1c77e5f7b85e26ea44c6d023352f23af5baa586e2b069b06d",
+  "experiments/t1_scope/results/t33_mid/scenarios/t33_d1.37_cmown.json": "653d0b9212c79a46c1d68df08843d214f3e37a405c09cba02ab19262f6530c23",
+  "experiments/t3_decomp/results/gata4/gata4_records.csv": "62bc4a448f8f922b9809c47c1ed1285a7962d716d515ea0bb5718a40c62dfd0c",
+  "experiments/t3_decomp/results/gata4/gata4_summary.csv": "da46a3c2591b8481e3f0080f7ceadd393cac51c678fbca6e91f1171ed9daa628",
+  "experiments/t3_decomp/results/k7_wt_revert/tasks/g1.json": "0f39cd268ff76dedf43bf51c8f076d1d28639a98bc1753471acac22f5815aa9d",
+  "experiments/t3_decomp/results/k7_wt_revert/tasks/g2.json": "0afd12a0c9498b4b1859cfd65750fcc1c26fcd149c20daee18fffae2242a2f9a",
+  "experiments/t3_decomp/results/k8_s2_form/tasks/g1.json": "df4bd8fb6270c34b2869030bd7d90f61e0153a93d0c51a598a75ec94c6ccb90b",
+  "experiments/t3_decomp/results/k8_s2_form/tasks/g2.json": "e4d01295ddd1d28bc4db01adeb932debb82a871e74617aabebb1530482705cb0"
+ }
+}
