@@ -1,0 +1,318 @@
+{
+ "label": "the built T1 pair against the lib3 pair inside forecast.py's model: aggregation of committed results, not a try; the comparison lines are applied to the finished draws only",
+ "t32_commit": "2e4e939e8a658ffd8279ed5a38201dfaf4bf02df",
+ "draws": 1000000,
+ "rng_seed": 20261105,
+ "lines": {
+  "203.00": "6th Human total, screened read 2026-11-13 (last prize)",
+  "205.32": "3rd Human total, screened read 2026-11-13",
+  "209.00": "the captain's gate"
+ },
+ "table": {
+  "central": {
+   "p_deep": 0.7142857142857143,
+   "k": 0.2,
+   "depth_weights": null,
+   "built": {
+    "t1_mean_better_of_two": 70.1418689939369,
+    "total_mean": 193.718953734779,
+    "p_203.00": 0.194171,
+    "p_205.32": 0.103359,
+    "p_209.00": 0.021267
+   },
+   "lib3_pair": {
+    "t1_mean_better_of_two": 70.73781868918591,
+    "total_mean": 194.3152020306783,
+    "p_203.00": 0.220959,
+    "p_205.32": 0.126388,
+    "p_209.00": 0.029084
+   },
+   "lib3_pair_minus_built": {
+    "t1_mean_better_of_two": 0.5959496952490184,
+    "total_mean": 0.5962482958993007,
+    "p_203.00": 0.02678799999999998,
+    "p_205.32": 0.023028999999999994,
+    "p_209.00": 0.007816999999999998
+   }
+  },
+  "P(deep) low": {
+   "p_deep": 0.3333333333333333,
+   "k": 0.2,
+   "depth_weights": null,
+   "built": {
+    "t1_mean_better_of_two": 69.53244545185791,
+    "total_mean": 193.1062493789854,
+    "p_203.00": 0.166817,
+    "p_205.32": 0.081704,
+    "p_209.00": 0.013869
+   },
+   "lib3_pair": {
+    "t1_mean_better_of_two": 69.6289078607495,
+    "total_mean": 193.2036446674669,
+    "p_203.00": 0.173033,
+    "p_205.32": 0.088598,
+    "p_209.00": 0.016942
+   },
+   "lib3_pair_minus_built": {
+    "t1_mean_better_of_two": 0.09646240889158264,
+    "total_mean": 0.09739528848149348,
+    "p_203.00": 0.006215999999999999,
+    "p_205.32": 0.006893999999999997,
+    "p_209.00": 0.0030729999999999993
+   }
+  },
+  "P(deep) high": {
+   "p_deep": 0.8571428571428571,
+   "k": 0.2,
+   "depth_weights": null,
+   "built": {
+    "t1_mean_better_of_two": 70.37040282221655,
+    "total_mean": 193.94869637291845,
+    "p_203.00": 0.204356,
+    "p_205.32": 0.111536,
+    "p_209.00": 0.024194
+   },
+   "lib3_pair": {
+    "t1_mean_better_of_two": 71.15366024984957,
+    "total_mean": 194.73088678511527,
+    "p_203.00": 0.239383,
+    "p_205.32": 0.140538,
+    "p_209.00": 0.033848
+   },
+   "lib3_pair_minus_built": {
+    "t1_mean_better_of_two": 0.7832574276330178,
+    "total_mean": 0.782190412196826,
+    "p_203.00": 0.035027,
+    "p_205.32": 0.029002,
+    "p_209.00": 0.009654000000000003
+   }
+  },
+  "k low": {
+   "p_deep": 0.7142857142857143,
+   "k": 0.1,
+   "depth_weights": null,
+   "built": {
+    "t1_mean_better_of_two": 69.84729292896878,
+    "total_mean": 193.42433815758397,
+    "p_203.00": 0.180532,
+    "p_205.32": 0.089216,
+    "p_209.00": 0.014545
+   },
+   "lib3_pair": {
+    "t1_mean_better_of_two": 70.15211498166383,
+    "total_mean": 193.7293126504041,
+    "p_203.00": 0.193992,
+    "p_205.32": 0.09969,
+    "p_209.00": 0.017565
+   },
+   "lib3_pair_minus_built": {
+    "t1_mean_better_of_two": 0.3048220526950445,
+    "total_mean": 0.3049744928201221,
+    "p_203.00": 0.01346,
+    "p_205.32": 0.010473999999999997,
+    "p_209.00": 0.00302
+   }
+  },
+  "k high": {
+   "p_deep": 0.7142857142857143,
+   "k": 0.33,
+   "depth_weights": null,
+   "built": {
+    "t1_mean_better_of_two": 70.575734570559,
+    "total_mean": 194.1531359874036,
+    "p_203.00": 0.212872,
+    "p_205.32": 0.124982,
+    "p_209.00": 0.035502
+   },
+   "lib3_pair": {
+    "t1_mean_better_of_two": 71.50253531234772,
+    "total_mean": 195.08022311155773,
+    "p_203.00": 0.254107,
+    "p_205.32": 0.164383,
+    "p_209.00": 0.052487
+   },
+   "lib3_pair_minus_built": {
+    "t1_mean_better_of_two": 0.9268007417887105,
+    "total_mean": 0.9270871241541272,
+    "p_203.00": 0.04123500000000002,
+    "p_205.32": 0.039401000000000005,
+    "p_209.00": 0.016985
+   }
+  },
+  "P(deep) low, k high": {
+   "p_deep": 0.3333333333333333,
+   "k": 0.33,
+   "depth_weights": null,
+   "built": {
+    "t1_mean_better_of_two": 69.5389672180694,
+    "total_mean": 193.11252457761535,
+    "p_203.00": 0.168499,
+    "p_205.32": 0.088311,
+    "p_209.00": 0.020061
+   },
+   "lib3_pair": {
+    "t1_mean_better_of_two": 69.67502383211836,
+    "total_mean": 193.24988909207303,
+    "p_203.00": 0.177817,
+    "p_205.32": 0.101288,
+    "p_209.00": 0.027236
+   },
+   "lib3_pair_minus_built": {
+    "t1_mean_better_of_two": 0.13605661404895386,
+    "total_mean": 0.13736451445768694,
+    "p_203.00": 0.009317999999999993,
+    "p_205.32": 0.012977000000000002,
+    "p_209.00": 0.007175000000000001
+   }
+  },
+  "T30 latest depths": {
+   "p_deep": 0.3333333333333333,
+   "k": 0.2,
+   "depth_weights": {
+    "0.35": 0.3333333333333333,
+    "0.68": 0.3333333333333333,
+    "1.0": 0.3333333333333333
+   },
+   "built": {
+    "t1_mean_better_of_two": 69.42121250147062,
+    "total_mean": 192.99308726668113,
+    "p_203.00": 0.16171,
+    "p_205.32": 0.076776,
+    "p_209.00": 0.011531
+   },
+   "lib3_pair": {
+    "t1_mean_better_of_two": 69.39379670889696,
+    "total_mean": 192.96582670644977,
+    "p_203.00": 0.1623,
+    "p_205.32": 0.078811,
+    "p_209.00": 0.012781
+   },
+   "lib3_pair_minus_built": {
+    "t1_mean_better_of_two": -0.02741579257366311,
+    "total_mean": -0.027260560231354702,
+    "p_203.00": 0.0005900000000000072,
+    "p_205.32": 0.002035000000000009,
+    "p_209.00": 0.0012500000000000011
+   }
+  },
+  "T30 latest, k high": {
+   "p_deep": 0.3333333333333333,
+   "k": 0.33,
+   "depth_weights": {
+    "0.35": 0.3333333333333333,
+    "0.68": 0.3333333333333333,
+    "1.0": 0.3333333333333333
+   },
+   "built": {
+    "t1_mean_better_of_two": 69.34461374791341,
+    "total_mean": 192.91669691583627,
+    "p_203.00": 0.160722,
+    "p_205.32": 0.079529,
+    "p_209.00": 0.014494
+   },
+   "lib3_pair": {
+    "t1_mean_better_of_two": 69.28706347968419,
+    "total_mean": 192.85926968091687,
+    "p_203.00": 0.161726,
+    "p_205.32": 0.083996,
+    "p_209.00": 0.017428
+   },
+   "lib3_pair_minus_built": {
+    "t1_mean_better_of_two": -0.05755026822922105,
+    "total_mean": -0.057427234919401826,
+    "p_203.00": 0.0010040000000000049,
+    "p_205.32": 0.004466999999999999,
+    "p_209.00": 0.002933999999999999
+   }
+  },
+  "T30 flat depths": {
+   "p_deep": 0.5,
+   "k": 0.2,
+   "depth_weights": {
+    "0.35": 0.25,
+    "0.68": 0.25,
+    "1.0": 0.25,
+    "1.37": 0.25
+   },
+   "built": {
+    "t1_mean_better_of_two": 69.73649971692463,
+    "total_mean": 193.30751749064626,
+    "p_203.00": 0.175695,
+    "p_205.32": 0.088163,
+    "p_209.00": 0.015814
+   },
+   "lib3_pair": {
+    "t1_mean_better_of_two": 69.98180632527338,
+    "total_mean": 193.5543494915873,
+    "p_203.00": 0.187791,
+    "p_205.32": 0.099175,
+    "p_209.00": 0.019951
+   },
+   "lib3_pair_minus_built": {
+    "t1_mean_better_of_two": 0.24530660834875562,
+    "total_mean": 0.2468320009410263,
+    "p_203.00": 0.012096000000000023,
+    "p_205.32": 0.011011999999999994,
+    "p_209.00": 0.004136999999999998
+   }
+  }
+ },
+ "checks": [
+  "T1 grid (experiments/s2_hedge/results/t1_grid/hedge_bown_cown.json): the per-seed runs give the hedge file's bown_cown alone under 5 stated priors (largest gap 2.1e-14)",
+  "T1 grid (experiments/s2_hedge/results/t1_grid/hedge_bown_cown.json): the per-seed runs give the hedge file's the better of bown_cown and bown_c0.6 under 5 stated priors (largest gap 1.4e-14)",
+  "T1 grid: the per-seed runs give payoff.json's mean[truth][bown_c0.6] on 15 truths (largest gap 0.0e+00)",
+  "T1 grid: the per-seed runs give payoff.json's mean[truth][bown_cown] on 15 truths (largest gap 0.0e+00)",
+  "T1: diag_v1's B0 is the harness's B0 (d2_v1) seed for seed (largest gap 0.0e+00)",
+  "T1: the floor is 50 on every truth and seed of the grid and on the backtest (largest gap 0.0e+00)",
+  "T3 T3/Gata4->Mab21l2: the floor is 50 on every seed (largest gap 0.0e+00)",
+  "T3 rep1: K8b's gain over s2_form is the row's 4.72",
+  "T3 rep1: the records' seed means are gata4_summary.csv's t3 (3 variants) (largest gap 1.4e-14)",
+  "T3 rep2: K8b's gain over s2_form is the row's 7.12",
+  "T3 rep2: the records' seed means are gata4_summary.csv's t3 (3 variants) (largest gap 1.4e-14)",
+  "T30 d0.35 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d0.35 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d0.35 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d0.68 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d0.68 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d0.68 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d1.0 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d1.0 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d1.0 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d1.37 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d1.37 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d1.37 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T32 d0.35 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T32 d0.35 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T32 d0.35 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T32 d0.68 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T32 d0.68 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T32 d0.68 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T32 d1.0 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T32 d1.0 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T32 d1.0 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T32 d1.37 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T32 d1.37 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T32 d1.37 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T32's reading is not void",
+  "embryo T2e/E6.75+E7.5->E7.25: emb_shape_v1's fgw is emb_fgw_v1's seed for seed (largest gap 0.0e+00)",
+  "embryo T2e/E6.75+E7.5->E7.25: the floor is 50 on every seed (largest gap 0.0e+00)",
+  "embryo T2e/E7.25+E8.0->E7.5: emb_shape_v1's fgw is emb_fgw_v1's seed for seed (largest gap 0.0e+00)",
+  "embryo T2e/E7.25+E8.0->E7.5: the floor is 50 on every seed (largest gap 0.0e+00)",
+  "embryo e725: per-seed change gives E28's value (largest gap 0.0e+00)",
+  "embryo e75: per-seed change gives E28's value (largest gap 7.8e-15)",
+  "embryo half: per-seed change gives E28's value (largest gap 1.4e-14)",
+  "embryo late: per-seed change gives E28's value (largest gap 1.6e-14)",
+  "embryo new1: per-seed change gives E28's value (largest gap 2.3e-14)",
+  "embryo new2: per-seed change gives E28's value (largest gap 0.0e+00)",
+  "embryo x1: per-seed change gives E28's value (largest gap 2.7e-15)",
+  "embryo x2: per-seed change gives E28's value (largest gap 0.0e+00)",
+  "embryo x3: per-seed change gives E28's value (largest gap 8.9e-16)",
+  "embryo: all nine E28 tasks found",
+  "heart T2h/<=E8.75->E10.5 (experiments/s2_hedge/results/heart_scope_e875/hedge_hold.json): the per-seed runs give the hedge file's hold alone under 5 stated priors (largest gap 1.4e-14)",
+  "heart T2h/<=E8.75->E10.5 (experiments/s2_hedge/results/heart_scope_e875/hedge_hold.json): the per-seed runs give the hedge file's the better of hold and half_radial under 5 stated priors (largest gap 7.1e-15)",
+  "heart T2h/<=E8.75->E10.5: the floor is 50 on the released truth and on the backtest (largest gap 0.0e+00)",
+  "heart T2h/<=E9.5->E10.5 (experiments/s2_hedge/results/heart_scope/hedge_hold.json): the per-seed runs give the hedge file's hold alone under 5 stated priors (largest gap 7.1e-15)",
+  "heart T2h/<=E9.5->E10.5 (experiments/s2_hedge/results/heart_scope/hedge_hold.json): the per-seed runs give the hedge file's the better of hold and half_radial under 5 stated priors (largest gap 2.1e-14)",
+  "heart T2h/<=E9.5->E10.5: the floor is 50 on the released truth and on the backtest (largest gap 0.0e+00)"
+ ]
+}

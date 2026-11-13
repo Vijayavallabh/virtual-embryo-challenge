@@ -1,0 +1,30 @@
+Try T32 (commit 2e4e939e8a658ffd8279ed5a38201dfaf4bf02df): no recommendation: the pairs are within the priors' reach; the captain is shown the table
+rerun arms against T30's stored scores: largest difference 0.0099 points (tolerance 0.02)
+expected better-of-two score by prior (main: census x flat; checks: latest x flat, census x like):
+  prior (depth x cm)            built    lib3_pair   lib3_pair - built   | single arms: lib3_base    s1_cm60  lib3_cm60
+  census x flat                 92.00        94.90               +2.91   |                  85.53      81.98      85.59
+  census x like                 92.85        94.47               +1.62   |                  89.37      75.62      77.93
+  census x rich                 90.83        95.21               +4.38   |                  81.15      89.67      94.86
+  latest x flat                 91.76        91.34               -0.42   |                  80.83      84.65      82.50
+  latest x like                 90.65        90.26               -0.39   |                  84.49      78.08      74.53
+  latest x rich                 93.01        92.43               -0.58   |                  76.66      92.70      92.15
+  flat x flat                   91.86        92.90               +1.04   |                  82.89      83.48      83.85
+  flat x like                   91.61        92.10               +0.49   |                  86.62      77.00      76.02
+  flat x rich                   92.06        93.64               +1.59   |                  78.62      91.38      93.34
+mean score by scenario (truth depth relative to library 3, truth cardiomyocyte share); the pair difference with the seeds ahead and behind; the new arm's share of repeated draws:
+  scenario        lib3_base    s1_cm60  lib3_cm60  |       built    lib3_pair   difference (ahead/behind)   repeats
+  d0.35 cm0.45        70.40      86.26      82.17  |       86.26        82.17      -4.10 (0/10)            0.30
+  d0.35 cm0.60        65.44      89.08      86.22  |       89.08        86.22      -2.86 (0/10)            0.30
+  d0.35 cmown         77.64      69.86      58.60  |       77.89        77.64      -0.25 (0/1)            0.30
+  d0.68 cm0.45        80.34      96.54      90.18  |       96.69        91.35      -5.34 (1/8)            0.30
+  d0.68 cm0.60        74.11      98.39      97.67  |       98.39        97.67      -0.72 (5/5)            0.30
+  d0.68 cmown         90.18      68.77      62.21  |       90.18        90.18      +0.00 (0/0)            0.30
+  d1.0 cm0.45         88.81      91.13      96.87  |       92.84        97.37      +4.53 (8/1)            0.30
+  d1.0 cm0.60         80.85      94.81      99.80  |       94.81        99.80      +4.99 (10/0)            0.30
+  d1.0 cmown          99.69      67.06      68.74  |       99.69        99.69      +0.00 (0/0)            0.30
+  d1.37 cm0.45        88.01      84.93      94.70  |       88.52        95.49      +6.97 (8/0)            0.30
+  d1.37 cm0.60        81.03      89.87      99.10  |       89.87        99.10      +9.23 (10/0)            0.30
+  d1.37 cmown         98.14      65.11      69.91  |       98.14        98.14      +0.00 (0/0)            0.30
+reported, deciding nothing:
+  at library 3's depth alone (depth 1.0), built / lib3_pair: cm own: 99.69 / 99.69; cm 0.45: 92.84 / 97.37; cm 0.60: 94.81 / 99.80
+  weight of scenarios with a mean better-of-two of 95 or more (flat cell-mix prior), built / lib3_pair: census: 0.33 / 0.76; latest: 0.33 / 0.44; flat: 0.33 / 0.58
