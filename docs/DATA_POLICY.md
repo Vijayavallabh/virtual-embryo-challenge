@@ -1155,9 +1155,11 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     (`experiments/harness/TRIES.md`, "Pruned before running").
   - **Target-free.** Gate N34 read the inputs of the three embryo bracket pairs, the test pair's among them, and no
     target stage; summaries only, no cell number. The check lines of try T38 hold numbers of genes and factors.
-  - **Agents.** Seven workflows and two single agents built and reviewed code and ledger text in their own working
-    copies with synthetic tests only; none opened a released data file, ran on real tasks or scored anything, and
-    every brief opened with the memory-index line and named the exact `--exclude-dir` list. Every run on released
+  - **Agents.** Nine workflows and two single agents swept the record, built and reviewed code and ledger text, or
+    recomputed a table, in their own working copies with synthetic tests only (the ninth, the builder port behind
+    request R-D, was still at work when this was written); none opened a released data file, ran on real tasks or
+    scored anything, and every brief opened with the memory-index line and named the exact `--exclude-dir`
+    list. Every run on released
     data was launched by the main session on the DGX campaign checkouts at clean committed trees. Two things went
     other than planned, neither touching protected material. (1) Agents started while the session's working
     directory was the home folder were given working copies of the home repository; they made sparse clones of
@@ -1168,5 +1170,5 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     branch present; they are not imported by the run and its provenance note says so; later syncs first return the
     checkout to main.
   - **Not opened:** the challenge site, the Data page, the board index by hand, Slack, the organisers' mail, any
-    external dataset, any held-out value, the task notes under any `notes/` folder. No test file was built, no
-    format check was sent, and the DGX reference checkout was not touched.
+    external dataset, any held-out value, the task notes under any `notes/` folder. No test file was built up to
+    this entry, no format check was sent, and the DGX reference checkout was not touched.
