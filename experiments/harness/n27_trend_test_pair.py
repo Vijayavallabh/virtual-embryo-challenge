@@ -101,8 +101,8 @@ def main(argv=None) -> int:
                      f"{p['median_mean_abs_logf_b0']:.3f}, trend {p['median_mean_abs_logf_trend']:.3f}")
         for r in p["lineages"]:
             w = ", ".join(f"{x:.3f}" for x in r["weights"])
-            lines.append(f"    {r['lineage']:<20} stages {'/'.join(r['stages'])}; weights {w}; cosine {r['cosine']:+.3f}; "
-                         f"size {r['norm_ratio']:.3f}; mean |log f| B0 {r['mean_abs_logf_b0']:.3f}, trend "
+            lines.append(f"    {r['lineage']:<20} stages {'/'.join(r['stages'])}; weights {w}; cosine "
+                         f"{r['cosine']:+.3f}; size {r['norm_ratio']:.3f}; mean |log f| B0 {r['mean_abs_logf_b0']:.3f}, trend "
                          f"{r['mean_abs_logf_trend']:.3f}" + ("; keeps B0's own factor" if r["own_factor"] else ""))
     (out / "n27.txt").write_text("\n".join(lines) + "\n")
     print("\n".join(lines))
