@@ -3,6 +3,27 @@
 ## Current State
 
 **Last Updated:** 2026-11-13
+**2026-11-13, late night: the sixth round carried to the end of the ledger (decision log 2026-11-13 (ff)). Nothing
+passes the adoption rule; one request, R-D, goes to the captain; no file changes.** The session's stop check did not
+accept the report of (ee) as an end, so every remaining line that the rules allow and a counted practice read can
+judge was read. Two agents swept the record and found 22 such lines dropped on an estimate; with three of the
+round's own they were built on campaign branches by agents, reviewed by others (five builds went back for a fix),
+registered row first and run on the DGX campaign checkouts, the reference candidates exact in every run. 26 counted
+tries in 14 rows: heart H14 to H20 (16 to 25), embryo E29 and E31 to E35 (36 to 47), T1 T37 and T38 (32 to 34), T3
+K11a to K11d (19 to 23). Kept: nothing. Eight lines could not be built from the record and one was closed by
+committed numbers. Findings: on the heart the two backtests want opposite amounts of count noise (a smoothed top-up
++0.63 and -0.11, a whole-cell redraw -3.10 and +1.29), the closed depth lever; on the embryo the pair as built has
+no file for a target like its earlier bracket (the trend rendering +3.65 and the earlier-side specialist +8.08 on
+the E7.25 backtest, both losing elsewhere). **Request R-D** (reading N37, row N33's rule registered before the
+scores existed, recomputed independently; reading N38 for the second upload): change the embryo's first upload
+from `fgw` to `fgw_trend_render` and keep `fgw_aligned_series` as second; +0.93 embryo points at the middle
+weighting (+0.81 to +1.05), about half an Overall point; forecast mean 194.41 to 194.87, the chance of 203 or more
+22.4% to 24.5%; a loss of 0.16 on one task; against it, the arm reached the nine tasks after try E33 and fails the
+adoption rule on one counted backtest. The AI assistant recommends yes. The builder port is being prepared on the
+branch `port/emb-s1-trend`, off main. **The options for taking our own estimate past 215.41 are used up**: the
+forecast's upper reading is 194.4 (194.9 with R-D), the committed estimate stays 184, and what could move the total
+by points is closed by rules that are the captain's or the organisers' to reopen. Main moved by documents, two
+reading scripts with tests and results only.
 **2026-11-13, night: the campaign's sixth round (decision log 2026-11-13 (dd) and (ee)). Nothing is kept, nothing is
 requested, and no file changes.** The captain renewed the campaign with a named target: take our own estimate past
 the leading total (215.41), or exhaust the options and report. (1) Where the points would have to come from

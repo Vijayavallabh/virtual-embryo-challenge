@@ -23,6 +23,15 @@
   decision log (x)). The upload client refuses a scored upload of a file that is not on this list (guard
   "reference list", pointer `results/reference_list.json`; decision log (cc)).
   What is owed:
+  - **the captain's ruling on request R-D** (`docs/PLAN.md` decision log 2026-11-13 (ff); rows N37 and N38 of
+    `experiments/harness/TRIES.md`): change the embryo's first upload from `fgw` to `fgw_trend_render` (the same
+    cells and positions, each cell's expression moved to the profile a trend through the four released embryo
+    samples gives at E7.75), second upload unchanged. Worth +0.93 embryo points at the middle weighting by a pre-set
+    pair rule on the nine practice tasks, about half an Overall point; a loss of 0.16 on one task; it fails the
+    adoption rule on one counted backtest, so it is a ruling. The AI assistant recommends yes. A yes sets off the
+    builder port (prepared on the branch `port/emb-s1-trend`, off main), a dry build, a fourth rehearsal, a new
+    reference list and pointer, the server's format check of the new file at the captain's word, and the summary
+    and disclosure lines; a no changes nothing;
   - on 19 and 23 Nov, the approved screened reads for an organiser answer to the seventh email
     (`docs/SCREENED_READ_SEVENTH_EMAIL.md`; a reply in the captain's inbox is not pasted into the session);
   - about 19 Nov, the Slack follow-up draft on floored T3 severity if no organiser has answered; with it, for the
@@ -36,19 +45,26 @@
   upload, build or rule changed. The code is on the branch `campaign/gen` (pushed; 459916f), off main. The heart
   tries that followed (rows H11, H11s, H12, H12s; branch `campaign/trend`, pushed): `b0_trend` passed the adoption
   rule and was ruled into both heart files; its size-matched twin and the two parts of its factor read alone were
-  not kept. The sixth round that night (decision log (dd) and (ee); rows N33, N28, N29, N32, H13, K9, K10) kept
-  nothing and requested nothing: three more heart arms and two T3 readings were run and closed, three target-free
-  checks were read, and the forecast was restated for the files as built (mean 194.4, the upper reading; the gate
-  figure stays 184). Tries: T1 32, embryo 36, heart 16, T3 19.
+  not kept. The sixth round that night (decision log (dd), (ee) and (ff)) kept nothing by the adoption rule: its
+  first part (rows N33, N28, N29, N32, H13, K9, K10) ran three heart arms and two T3 readings and restated the
+  forecast for the files as built (mean 194.4, the upper reading; the gate figure stays 184); its second part read
+  every remaining allowed line (26 tries in 14 rows: H14 to H20, E29 and E31 to E35, T37, T38, K11) and produced
+  request R-D above. The options for taking our own estimate past the leading total are used up (decision log
+  (ff)). Tries: T1 34, embryo 47, heart 25, T3 23.
   Settled on 2026-11-13 (decision log (k)): T1's second upload (the mid base; built in and rehearsed), the heart
   try (run, not kept), and the checked copy of the reference files on this machine (kept, by the captain's word).
 - Branch / commit: `main` on GitHub (private). The DGX reference checkout
   (`PrakashDGX_H2:~/v/virtual-embryo-challenge`) is at dc7b6ae, the third rehearsal's commit, and stays untouched
   until the freeze-morning sync; campaign runs use `~/v/vec-campaign` and `~/v/vec-campaign-h7`, which sit at
-  campaign-branch commits after the sixth round.
+  campaign-branch commits after the sixth round. The round's candidate code is on pushed branches named in decision
+  log (ff); none of it is on main.
 
 ## Completed This Session (2026-11-12 to 2026-11-13: the campaign the captain asked for on 2026-11-12)
 
+- [x] Sixth round, second part (2026-11-13, late night; decision log (ff)). Every remaining allowed line with a
+      counted read: 26 tries in 14 rows on arms built and reviewed on campaign branches (heart H14 to H20, embryo
+      E29 and E31 to E35, T1 T37 and T38, T3 K11), gate N34, readings N37 and N38. Nothing passes the adoption rule;
+      eight lines could not be built from the record; request R-D came out of reading N37.
 - [x] First and second wave (2026-11-12; decision log 2026-11-12 (a) to (c)). The finding: released samples differ
       more by how they were measured than by stage (diagnostic N23; the T1 library census in `docs/DATA_NOTES.md`).
       Embryo tries E19 to E25 (depth and run renderings, pair pricing), T1 tries T27 to T30 (library kind and depth
@@ -163,6 +179,11 @@
 
 ## Blockers / Risks
 
+- 2026-11-13 (late night, after decision log (ff)): request R-D rests on nine practice tasks of which three share
+  one target stage and two are the counted backtests that prompted the read; its gain is expected to shrink (half
+  the tabled value is a fair working figure). If ruled in, the new first upload is a rendered file, which
+  reproduces only at the build's 16 BLAS threads, and at the test one sample's file lacks two panel genes (they
+  stay as `fgw` has them, a rule fixed before any build).
 - 2026-11-13 (night, after the sixth round): in our own evidence a total past the leading 215.41 lies beyond the
   best case of every board at once (their best practice outcomes sum to 219.0), and the forecast's upper reading
   (194.4) leans on one judgement that the record itself rates lower: that the beta-catenin samples share the Gata4
@@ -205,6 +226,17 @@
 
 ## Recommended Next Step
 
+- 2026-11-13 (latest, after decision log (ff)): the sixth round is closed and the options for passing the leading
+  total are used up; every allowed line with a counted read has been read. **One thing waits for the captain:
+  request R-D** (the embryo's first upload to `fgw_trend_render`, second upload unchanged; yes or no). On a yes: port
+  the branch `port/emb-s1-trend` to main after its review, set the embryo's first-upload expression in
+  `experiments/builds/build_all.sh`, dry-build, rehearse a fourth time on the DGX, write the new reference list and
+  the pointer `results/reference_list.json`, ask the captain before the one server format check of the new file,
+  update `METHOD_SUMMARY.md` and the gate record's restatement (the estimate rises by about half a point; the gate
+  is not affected), and note in `docs/S2_RULES.md`'s terms that the second upload stays. On a no: nothing changes.
+  Either way the dated items follow: the screened reads on 19 and 23 Nov, the follow-up draft about 19 Nov, the
+  method summary and disclosure email on 24-30 Nov, and the freeze morning. Report the expected total as 184 (170 to
+  198), with 194.4 named as the forecast's upper reading.
 - 2026-11-13 (latest, after decision log (ee)): the sixth campaign round is closed with nothing kept and nothing
   requested. No run is queued on any GPU, and the AI assistant knows of none whose result could change an upload
   under the standing rules. Next are the dated items: the screened reads on 19 and 23 Nov, the follow-up draft

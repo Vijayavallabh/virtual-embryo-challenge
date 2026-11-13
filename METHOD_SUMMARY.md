@@ -103,7 +103,27 @@ the other (tries K10). Target-free: Task 1's library-3 base neither carries nor 
 was left out on 2026-11-10 (N28); on the embryo, FGW started from the aligned coupling returns to its own mirrored
 solution at the test pair (N32), and no committed arm is worth requesting as first upload beside the new second one
 (N33). A second file chosen after the first upload's score was priced on practice results and retired
-(`experiments/gate/forecast_built.py`). Tries stand at T1 32, embryo 36, heart 16, T3 19.
+(`experiments/gate/forecast_built.py`). Tries then stood at T1 32, embryo 36, heart 16, T3 19.
+
+Status 2026-11-13, at the end of the sixth round (`docs/PLAN.md` decision log 2026-11-13 (ff)): no entry has changed
+and no scored submission has been made. Every remaining line that the rules allow and a counted practice read can
+judge was then read: 26 more tries, each with its row first, on arms built and reviewed on campaign branches. Kept
+by the adoption rule: nothing. Heart (nine tries on the kept trend: a fill for the cells it leaves unmoved, a mixture
+with the plain step, a smoothed top-up, a tail decoder, a persistence gate, an exact per-cell total, a whole-cell
+redraw, a run basis, a herded draw): none beats the trend on both backtests; the smoothed top-up and the redraw are
+mirror images (+0.63 and -0.11; -3.10 and +1.29), which is the depth of each truth against its reference. Embryo
+(eleven tries): re-arranging, relaxing or re-drawing cells loses or ties; a reflection-allowed frame alignment
+restores the cloud's thickness at the test pair but fails its gate; rendering every cell to a trend through the
+released samples gains 3.65 on one counted backtest and loses 1.01 on the other, and an earlier-side specialist gains
+8.08 on the first and loses elsewhere. Task 1 (two tries): an exact top-up loses a little on both cuts and a tail
+decoder cannot reach any infeasible gene. Task 3 (four tries): a lineage difference-in-differences contrast carries
+between replicates and not across knockouts, and a section-robust factor gains on one cross-knockout fold only. One
+request came out of a pre-set pair rule on the nine embryo practice tasks (reading N37, recomputed independently):
+the trend rendering as the embryo's first upload beside the second upload as built is worth +0.93 embryo points at
+the middle weighting, about half an Overall point (request R-D; the captain has not ruled, and nothing is built for
+it on main). The options for taking the team's own estimate past the leading total are used up: the forecast's upper
+reading is 194.4 (194.9 with R-D) against 215.41, and the committed estimate stays 184. Tries stand at T1 34, embryo
+47, heart 25, T3 23.
 
 ## Team and track
 
