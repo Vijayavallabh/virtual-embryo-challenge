@@ -1,0 +1,463 @@
+{
+ "void": false,
+ "why": [],
+ "commit": "33204be05be7e05cd6884c96a5c56c723c1eee6d",
+ "tasks": {
+  "g1": {
+   "mean_score": {
+    "floor": 50.0,
+    "wt_draw": 51.11847092705323,
+    "wt_revert": 56.209435405054464,
+    "wt_revert_grp": 56.51940004406886,
+    "wt_revert_perm": 51.54217142345793
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "severity_slope": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "wt_draw": {
+     "de_score": 0.44769631298467594,
+     "de_direction": 0.545409970468946,
+     "severity_slope": 0.5532927589481685,
+     "mmd_u": 0.5051372837650263,
+     "variogram": 0.5197957371130968
+    },
+    "wt_revert": {
+     "de_score": 0.46569910734730346,
+     "de_direction": 0.5571178226130264,
+     "severity_slope": 0.7365788121784588,
+     "mmd_u": 0.49157175368928635,
+     "variogram": 0.4996481588220991
+    },
+    "wt_revert_grp": {
+     "de_score": 0.4694937688633375,
+     "de_direction": 0.5604894502523379,
+     "severity_slope": 0.7352470306607124,
+     "mmd_u": 0.4962207478013543,
+     "variogram": 0.5108157477157793
+    },
+    "wt_revert_perm": {
+     "de_score": 0.4517498782910908,
+     "de_direction": 0.5168596525962308,
+     "severity_slope": 0.5984630055661349,
+     "mmd_u": 0.5073326439515781,
+     "variogram": 0.5023271116558902
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "wt_draw": {
+     "beta_gate": 1,
+     "r2_gate": 6,
+     "scored": 3
+    },
+    "wt_revert": {
+     "scored": 10
+    },
+    "wt_revert_grp": {
+     "scored": 10
+    },
+    "wt_revert_perm": {
+     "r2_gate": 6,
+     "scored": 4
+    }
+   },
+   "paired": {
+    "wt_revert - wt_draw": {
+     "mean": 5.090964478001231,
+     "sd": 3.2529233553957364,
+     "ahead": 9,
+     "n": 10,
+     "passes": true
+    },
+    "wt_revert - floor": {
+     "mean": 6.209435405054464,
+     "sd": 1.0420675414951026,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "wt_revert - wt_revert_perm": {
+     "mean": 4.667263981596536,
+     "sd": 3.2761975131226797,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "wt_revert_grp - wt_draw": {
+     "mean": 5.400929117015632,
+     "sd": 3.1432170970936695,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "wt_revert_grp - wt_revert": {
+     "mean": 0.30996463901440097,
+     "sd": 0.2878054980666407,
+     "ahead": 9,
+     "n": 10,
+     "passes": true
+    },
+    "wt_revert_perm - wt_draw": {
+     "mean": 0.4237004964046953,
+     "sd": 2.408080149910839,
+     "ahead": 6,
+     "n": 10,
+     "passes": false
+    }
+   },
+   "factor_record": {
+    "groups": [
+     "CM",
+     "CardiacProgenitor",
+     "Ectoderm",
+     "Endocardium",
+     "Endoderm",
+     "Endothelium",
+     "ExtraEmbryonicMeso",
+     "NCC",
+     "Neural",
+     "ParaxialMesoderm",
+     "Pericardium",
+     "PharyngealMesoderm"
+    ],
+    "sd_log_phi": 0.5359908127886033,
+    "genes_at_clip": 16,
+    "genes_beyond_twofold": 93,
+    "sd_log_phi_per_group": {
+     "CM": 0.5101076728441571,
+     "CardiacProgenitor": 0.636196506953993,
+     "Ectoderm": 0.6021004941905871,
+     "Endocardium": 0.5678826816424947,
+     "Endoderm": 0.7102075522403569,
+     "Endothelium": 0.6923963438131456,
+     "ExtraEmbryonicMeso": 0.8683594490397645,
+     "NCC": 0.5699794059014649,
+     "Neural": 0.7570059733967874,
+     "ParaxialMesoderm": 0.6700002862556046,
+     "Pericardium": 0.6620216647017211,
+     "PharyngealMesoderm": 0.5700022969676061
+    },
+    "other_samples": [
+     "E10.5",
+     "E7.5",
+     "E8.0",
+     "E8.25_late",
+     "E8.5",
+     "E9.5"
+    ],
+    "reference": "E8.75"
+   }
+  },
+  "g2": {
+   "mean_score": {
+    "floor": 50.0,
+    "wt_draw": 49.19811363052388,
+    "wt_revert": 52.3967581744403,
+    "wt_revert_grp": 55.627567325777775,
+    "wt_revert_perm": 48.11849905379471
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "severity_slope": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "wt_draw": {
+     "de_score": 0.41528181426651783,
+     "de_direction": 0.5319414290394546,
+     "severity_slope": 0.5320281114884232,
+     "mmd_u": 0.5013569184316515,
+     "variogram": 0.5155172085189484
+    },
+    "wt_revert": {
+     "de_score": 0.44402964355299945,
+     "de_direction": 0.5426018133852989,
+     "severity_slope": 0.6238033694134891,
+     "mmd_u": 0.49247436349405993,
+     "variogram": 0.5007558669939869
+    },
+    "wt_revert_grp": {
+     "de_score": 0.46072184937723665,
+     "de_direction": 0.5530106789212803,
+     "severity_slope": 0.714305333167001,
+     "mmd_u": 0.5018874656829985,
+     "variogram": 0.5125452442572069
+    },
+    "wt_revert_perm": {
+     "de_score": 0.4128770837347272,
+     "de_direction": 0.5081475188795119,
+     "severity_slope": 0.521860588584337,
+     "mmd_u": 0.4981083304117143,
+     "variogram": 0.5005854862770114
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "wt_draw": {
+     "beta_gate": 1,
+     "r2_gate": 7,
+     "scored": 2
+    },
+    "wt_revert": {
+     "r2_gate": 4,
+     "scored": 6
+    },
+    "wt_revert_grp": {
+     "scored": 10
+    },
+    "wt_revert_perm": {
+     "r2_gate": 9,
+     "scored": 1
+    }
+   },
+   "paired": {
+    "wt_revert - wt_draw": {
+     "mean": 3.1986445439164157,
+     "sd": 2.4491232713078204,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "wt_revert - floor": {
+     "mean": 2.3967581744402997,
+     "sd": 2.9284898615494876,
+     "ahead": 6,
+     "n": 10,
+     "passes": false
+    },
+    "wt_revert - wt_revert_perm": {
+     "mean": 4.278259120645596,
+     "sd": 2.873074802596379,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "wt_revert_grp - wt_draw": {
+     "mean": 6.429453695253881,
+     "sd": 2.263848358493311,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "wt_revert_grp - wt_revert": {
+     "mean": 3.230809151337465,
+     "sd": 2.552882788781374,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "wt_revert_perm - wt_draw": {
+     "mean": -1.0796145767291805,
+     "sd": 2.0465894886892073,
+     "ahead": 3,
+     "n": 10,
+     "passes": false
+    }
+   },
+   "factor_record": {
+    "groups": [
+     "CM",
+     "CardiacProgenitor",
+     "Ectoderm",
+     "Endocardium",
+     "Endoderm",
+     "Endothelium",
+     "ExtraEmbryonicMeso",
+     "NCC",
+     "Neural",
+     "ParaxialMesoderm",
+     "Pericardium",
+     "PharyngealMesoderm"
+    ],
+    "sd_log_phi": 0.5359908127886033,
+    "genes_at_clip": 16,
+    "genes_beyond_twofold": 93,
+    "sd_log_phi_per_group": {
+     "CM": 0.5101076728441571,
+     "CardiacProgenitor": 0.636196506953993,
+     "Ectoderm": 0.6021004941905871,
+     "Endocardium": 0.5678826816424947,
+     "Endoderm": 0.7102075522403569,
+     "Endothelium": 0.6923963438131456,
+     "ExtraEmbryonicMeso": 0.8683594490397645,
+     "NCC": 0.5699794059014649,
+     "Neural": 0.7570059733967874,
+     "ParaxialMesoderm": 0.6700002862556046,
+     "Pericardium": 0.6620216647017211,
+     "PharyngealMesoderm": 0.5700022969676061
+    },
+    "other_samples": [
+     "E10.5",
+     "E7.5",
+     "E8.0",
+     "E8.25_late",
+     "E8.5",
+     "E9.5"
+    ],
+    "reference": "E8.75"
+   }
+  },
+  "m": {
+   "mean_score": {
+    "floor": 50.0,
+    "wt_draw": 51.043372254940735,
+    "wt_revert": 71.01620988646016,
+    "wt_revert_grp": 71.04050503924265,
+    "wt_revert_perm": 49.212934088736105
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "severity_slope": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "wt_draw": {
+     "de_score": 0.49797494154916216,
+     "de_direction": 0.5178082351895769,
+     "severity_slope": 0.522250384020096,
+     "mmd_u": 0.5073545816699954,
+     "variogram": 0.5018004435230127
+    },
+    "wt_revert": {
+     "de_score": 0.6526276854086357,
+     "de_direction": 0.733838354137902,
+     "severity_slope": 0.8352549211228932,
+     "mmd_u": 0.6135720168662706,
+     "variogram": 0.605897905035744
+    },
+    "wt_revert_grp": {
+     "de_score": 0.6541223450385455,
+     "de_direction": 0.7377478219621911,
+     "severity_slope": 0.8334099166375111,
+     "mmd_u": 0.6079359591608695,
+     "variogram": 0.605332464145412
+    },
+    "wt_revert_perm": {
+     "de_score": 0.4980780098777263,
+     "de_direction": 0.49554897401367787,
+     "severity_slope": 0.5,
+     "mmd_u": 0.4727350937388204,
+     "variogram": 0.4636310396495656
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "wt_draw": {
+     "beta_gate": 5,
+     "r2_gate": 3,
+     "scored": 2
+    },
+    "wt_revert": {
+     "scored": 10
+    },
+    "wt_revert_grp": {
+     "scored": 10
+    },
+    "wt_revert_perm": {
+     "beta_gate": 9,
+     "r2_gate": 1
+    }
+   },
+   "paired": {
+    "wt_revert - wt_draw": {
+     "mean": 19.97283763151942,
+     "sd": 1.9175051536317227,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "wt_revert - floor": {
+     "mean": 21.016209886460157,
+     "sd": 0.9031851657640476,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "wt_revert - wt_revert_perm": {
+     "mean": 21.80327579772405,
+     "sd": 0.46611434004643504,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "wt_revert_grp - wt_draw": {
+     "mean": 19.997132784301918,
+     "sd": 1.8041917042570805,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "wt_revert_grp - wt_revert": {
+     "mean": 0.0242951527824971,
+     "sd": 0.32821820986851064,
+     "ahead": 6,
+     "n": 10,
+     "passes": false
+    },
+    "wt_revert_perm - wt_draw": {
+     "mean": -1.8304381662046303,
+     "sd": 1.9881487941303586,
+     "ahead": 0,
+     "n": 10,
+     "passes": false
+    }
+   },
+   "factor_record": {
+    "groups": [
+     "CM",
+     "CardiacProgenitor",
+     "Ectoderm",
+     "Endocardium",
+     "Endoderm",
+     "Endothelium",
+     "NCC",
+     "ParaxialMesoderm",
+     "Pericardium",
+     "PharyngealMesoderm"
+    ],
+    "sd_log_phi": 0.5289278480462356,
+    "genes_at_clip": 10,
+    "genes_beyond_twofold": 100,
+    "sd_log_phi_per_group": {
+     "CM": 0.5138038600231059,
+     "CardiacProgenitor": 0.7675881439166348,
+     "Ectoderm": 0.6550602169852527,
+     "Endocardium": 0.5541232706141034,
+     "Endoderm": 0.6912239567794075,
+     "Endothelium": 0.6320834482589754,
+     "NCC": 0.6970992743631008,
+     "ParaxialMesoderm": 0.6919444409498887,
+     "Pericardium": 0.5877527487119115,
+     "PharyngealMesoderm": 0.6195138714584213
+    },
+    "other_samples": [
+     "E10.5",
+     "E7.5",
+     "E8.0",
+     "E8.25_late",
+     "E8.5",
+     "E8.75"
+    ],
+    "reference": "E9.5"
+   }
+  }
+ },
+ "k7a_supported": false,
+ "k7b_replaces_k7a": false,
+ "verdict": "not supported: closed, no request"
+}

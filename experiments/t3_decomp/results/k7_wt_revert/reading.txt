@@ -1,0 +1,40 @@
+Tries K7a-K7c (commit 33204be05be7e05cd6884c96a5c56c723c1eee6d): not supported: closed, no request
+g1 T3w/WT->Gata4rep1: floor 50.00, wt_draw 51.12, wt_revert 56.21, wt_revert_grp 56.52, wt_revert_perm 51.54
+    wt_revert - wt_draw: +5.09 (sd 3.25, ahead 9 of 10)  passes
+    wt_revert - floor: +6.21 (sd 1.04, ahead 10 of 10)  passes
+    wt_revert - wt_revert_perm: +4.67 (sd 3.28, ahead 10 of 10)  passes
+    wt_revert_grp - wt_draw: +5.40 (sd 3.14, ahead 10 of 10)  passes
+    wt_revert_grp - wt_revert: +0.31 (sd 0.29, ahead 9 of 10)  passes
+    wt_revert_perm - wt_draw: +0.42 (sd 2.41, ahead 6 of 10)
+    floor           severity no_response 10; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    wt_draw         severity beta_gate 1, r2_gate 6, scored 3; skills de_score 0.448, de_direction 0.545, severity_slope 0.553, mmd_u 0.505, variogram 0.520
+    wt_revert       severity scored 10; skills de_score 0.466, de_direction 0.557, severity_slope 0.737, mmd_u 0.492, variogram 0.500
+    wt_revert_grp   severity scored 10; skills de_score 0.469, de_direction 0.560, severity_slope 0.735, mmd_u 0.496, variogram 0.511
+    wt_revert_perm  severity r2_gate 6, scored 4; skills de_score 0.452, de_direction 0.517, severity_slope 0.598, mmd_u 0.507, variogram 0.502
+    factor: groups 12, SD of log factor 0.536, genes beyond twofold 93, at the clip 16
+g2 T3w/WT->Gata4rep2: floor 50.00, wt_draw 49.20, wt_revert 52.40, wt_revert_grp 55.63, wt_revert_perm 48.12
+    wt_revert - wt_draw: +3.20 (sd 2.45, ahead 10 of 10)  passes
+    wt_revert - floor: +2.40 (sd 2.93, ahead 6 of 10)
+    wt_revert - wt_revert_perm: +4.28 (sd 2.87, ahead 10 of 10)  passes
+    wt_revert_grp - wt_draw: +6.43 (sd 2.26, ahead 10 of 10)  passes
+    wt_revert_grp - wt_revert: +3.23 (sd 2.55, ahead 10 of 10)  passes
+    wt_revert_perm - wt_draw: -1.08 (sd 2.05, ahead 3 of 10)
+    floor           severity no_response 10; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    wt_draw         severity beta_gate 1, r2_gate 7, scored 2; skills de_score 0.415, de_direction 0.532, severity_slope 0.532, mmd_u 0.501, variogram 0.516
+    wt_revert       severity r2_gate 4, scored 6; skills de_score 0.444, de_direction 0.543, severity_slope 0.624, mmd_u 0.492, variogram 0.501
+    wt_revert_grp   severity scored 10; skills de_score 0.461, de_direction 0.553, severity_slope 0.714, mmd_u 0.502, variogram 0.513
+    wt_revert_perm  severity r2_gate 9, scored 1; skills de_score 0.413, de_direction 0.508, severity_slope 0.522, mmd_u 0.498, variogram 0.501
+    factor: groups 12, SD of log factor 0.536, genes beyond twofold 93, at the clip 16
+m T3w/WT->Mab21l2: floor 50.00, wt_draw 51.04, wt_revert 71.02, wt_revert_grp 71.04, wt_revert_perm 49.21
+    wt_revert - wt_draw: +19.97 (sd 1.92, ahead 10 of 10)  passes
+    wt_revert - floor: +21.02 (sd 0.90, ahead 10 of 10)  passes
+    wt_revert - wt_revert_perm: +21.80 (sd 0.47, ahead 10 of 10)  passes
+    wt_revert_grp - wt_draw: +20.00 (sd 1.80, ahead 10 of 10)  passes
+    wt_revert_grp - wt_revert: +0.02 (sd 0.33, ahead 6 of 10)
+    wt_revert_perm - wt_draw: -1.83 (sd 1.99, ahead 0 of 10)
+    floor           severity no_response 10; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    wt_draw         severity beta_gate 5, r2_gate 3, scored 2; skills de_score 0.498, de_direction 0.518, severity_slope 0.522, mmd_u 0.507, variogram 0.502
+    wt_revert       severity scored 10; skills de_score 0.653, de_direction 0.734, severity_slope 0.835, mmd_u 0.614, variogram 0.606
+    wt_revert_grp   severity scored 10; skills de_score 0.654, de_direction 0.738, severity_slope 0.833, mmd_u 0.608, variogram 0.605
+    wt_revert_perm  severity beta_gate 9, r2_gate 1; skills de_score 0.498, de_direction 0.496, severity_slope 0.500, mmd_u 0.473, variogram 0.464
+    factor: groups 10, SD of log factor 0.529, genes beyond twofold 100, at the clip 10
