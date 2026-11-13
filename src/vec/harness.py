@@ -581,12 +581,13 @@ def t1_chamber_shares(ref: ad.AnnData, source: str) -> dict[str, float]:
 
 def _b0_t1(damping: float, herd: bool = False,
            prior: Callable[[BuildContext], object] | None = None, *, topup: bool = False,
-           tail: bool = False) -> Callable[[BuildContext], Stage]:
+           tail: bool = False, tail_reports: list | None = None) -> Callable[[BuildContext], Stage]:
     """B0 on T1 (or, with damping 0, its chamber copy alone). prior (T1 tries T12a and T12b): a function of the context
     that gives the strong-null down-tail prior for `vec.t1_scope.build_submission`. topup (candidate b0_topup; default
     False, B0's own-count top-up): the momentum's factors above 1 top up from the posterior-predictive expected counts
     (`vec.t1_scope.topup_profile` on the reference stage). tail (candidate b0_tail; default False, nothing): after the
-    shift, the tail decoder `vec.t1_scope.apply_tail_decoder` (stream [seed, TAIL_STREAM])."""
+    shift, the tail decoder `vec.t1_scope.apply_tail_decoder` (stream [seed, TAIL_STREAM]); its report is appended to
+    tail_reports when one is given."""
     def build(ctx: BuildContext) -> Stage:
         from vec import t1_scope
 
@@ -606,8 +607,13 @@ def _b0_t1(damping: float, herd: bool = False,
             if (ref_cols < 0).any():
                 raise KeyError(f"{int((ref_cols < 0).sum())} board genes are missing from the reference")
             pb_ref = np.asarray(sparse.csr_matrix(ref.X[:, ref_cols], dtype=np.float64).mean(axis=0)).ravel()
-            extra["post_cells"] = lambda pop: t1_scope.apply_tail_decoder(
-                pop, pb_ref, g, held or (), [ctx.seed, TAIL_STREAM])[0]
+            def post_cells(pop):
+                out, rep = t1_scope.apply_tail_decoder(pop, pb_ref, g, held or (), [ctx.seed, TAIL_STREAM])
+                if tail_reports is not None:
+                    tail_reports.append(rep)
+                return out
+
+            extra["post_cells"] = post_cells
         sub, _ = t1_scope.build_submission(ref, ctx.board, shares, count_for(ctx.board, ref.n_obs), ctx.seed,
                                            start=start, damping=damping, held_flat=held, ref_source=src,
                                            start_source=ctx.task.role_stems["start"] if damping else None,
@@ -1308,7 +1314,20 @@ TAIL_STREAM = 10  # the decoder's random stream, [seed, 10]: unused by every oth
 
 
 def _b0_tail(ctx: BuildContext) -> Stage:
-    return _b0_t1(B0_DAMPING, tail=True)(ctx)
+    """B0 plus the tail decoder; after the build, one line of the decoder's report goes to stdout (the runner's per-task
+    log), numbers of genes and factors only, so a read can tell an idle arm from a null effect."""
+    reports: list = []
+    stage = _b0_t1(B0_DAMPING, tail=True, tail_reports=reports)(ctx)
+    for rep in reports:
+        print(tail_check_line(ctx.task.key, ctx.seed, rep), flush=True)
+    return stage
+
+
+def tail_check_line(task_key: str, seed: int, rep: Mapping) -> str:
+    """The b0_tail check line: numbers of genes and factors only (never a cell number, a gene name or a score)."""
+    return (f"b0_tail check: task={task_key} seed={seed} infeasible_in_bottom={int(rep['n_infeasible_in_bottom'])} "
+            f"lifted={int(rep['n_lifted'])} skipped={int(rep['n_skipped'])} max_factor={rep['max_factor']:.3g} "
+            f"median_factor={rep['median_factor']:.3g}")
 
 
 def _b0_topup(ctx: BuildContext) -> Stage:
@@ -1776,9 +1795,10 @@ CANDIDATES = {
     # T1 batch t1-b (experiments/harness/TRIES.md, registered before any run): the tail decoder and the exact top-up
     "b0_tail": Candidate("b0_tail", frozenset({"T1"}), (), _b0_tail,
                          {"what": "B0 plus the tail decoder: genes among dp's bottom 400 with pb(reference) < 0.25 "
-                                  "topped up in count space to dp = 0 (vec.t1_scope.apply_tail_decoder; expected depth "
-                                  "kept, held-flat genes untouched)", "damping": B0_DAMPING, "scope": "chamber",
-                          "bottom": 400, "min_pb": 0.25, "target_dp": 0.0, "f_max": 2.0},
+                                  "topped up in count space to dp = 0 by the own-count top-up with whatever factor "
+                                  "the solve gives, no bound (vec.t1_scope.apply_tail_decoder; expected depth kept, "
+                                  "held-flat genes untouched)", "damping": B0_DAMPING, "scope": "chamber",
+                          "bottom": 400, "min_pb": 0.25, "target_dp": 0.0, "f_max": None},
                          requires=_b0_applies, derived=("t1_held_flat",)),
     "b0_topup": Candidate("b0_topup", frozenset({"T1"}), (), _b0_topup,
                           {"what": "B0 with the momentum's rises drawn as c + Poisson((f - 1) m), m the cell's library "
