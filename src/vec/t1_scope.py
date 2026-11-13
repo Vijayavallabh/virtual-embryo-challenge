@@ -462,7 +462,8 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
                    ref_fallback: Mapping[str, Sequence[str]] | None = None,
                    standin_momentum: bool = False, seed: Seed = 0,
                    logf_filter: Callable[[np.ndarray, sparse.csr_matrix, np.ndarray], tuple[np.ndarray, dict]]
-                   | None = None) -> tuple[ad.AnnData, ShiftReport]:
+                   | None = None,
+                   logf_by_type: Mapping[str, np.ndarray] | None = None) -> tuple[ad.AnnData, ShiftReport]:
     """Move `target_like` cells by the damped per-type change from `start` to `ref`, in count space.
 
     start, ref: the two stages whose change is the momentum (start is the earlier one; ref is normally the stage the
@@ -484,6 +485,12 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
     reference-stage cells (in `genes` order, as `ref`'s rows of this type) and held the held-flat genes (boolean, by
     gene); it returns (new logf, a record stored as the type's report row's "filter"). Held-flat genes stay at f = 1
     whatever it returns.
+
+    logf_by_type (default None: every type's factor as above, so every existing output is unchanged; heart candidate
+    b0_trend, vec.harness.B0_TREND_RULE): type -> a log factor (already damped, in `genes` order, float64) that replaces
+    `damping * log((m_ref + eps) / (m_start + eps))` for that type. Everything else applies to it as to the own factor:
+    the skip rules (a type skipped for too few cells or stand-ins stays skipped even if the mapping names it), the clip,
+    the held-flat zeros, logf_filter and the report row. Types the mapping does not name keep their own factor.
 
     Returns a copy of target_like with layers["counts"] edited and X = log1p CP10k of the new counts (float32 CSR),
     and a per-type report.
@@ -520,7 +527,12 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
                        mean_abs_log_f=0.0, max_abs_log_f=0.0)
             rows.append(row)
             continue
-        logf = damping * (np.log(mean_cp10k(R[r_rows]) + eps) - np.log(mean_cp10k(S[s_rows]) + eps))
+        if logf_by_type is not None and t in logf_by_type:
+            logf = np.array(logf_by_type[t], dtype=np.float64)
+            if logf.shape != (len(genes),):
+                raise ValueError(f"logf_by_type[{t!r}] has shape {logf.shape}, expected ({len(genes)},)")
+        else:
+            logf = damping * (np.log(mean_cp10k(R[r_rows]) + eps) - np.log(mean_cp10k(S[s_rows]) + eps))
         if max_abs_log_factor is not None:
             logf = np.clip(logf, -max_abs_log_factor, max_abs_log_factor)
         logf[held] = 0.0

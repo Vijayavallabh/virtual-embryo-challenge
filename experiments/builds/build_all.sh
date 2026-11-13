@@ -46,7 +46,7 @@ t3() {  # branch submission out [more options]
 case "$set_name" in
   s1)
     $U run python experiments/builds/build_test.py t1 --g-mom --base lib3 --out $O/builds/T1_s1.h5ad
-    $U run python experiments/builds/build_test.py heart --entry s1 --out $O/builds/T2heart_s1.h5ad
+    $U run python experiments/builds/build_test.py heart --entry s1 --trend --out $O/builds/T2heart_s1.h5ad
     $U run python experiments/builds/build_test.py embryo --method fgw --expression "$EMBRYO_EXPRESSION" \
       --out $O/builds/T2embryo_s1.h5ad
     t3 allowed s1 $O/t3_build/allowed_s1.h5ad
@@ -56,7 +56,7 @@ case "$set_name" in
   s2)
     sha256sum -c docs/S2_RULES.sha256
     $U run python experiments/builds/build_test.py t1 --g-mom --base mid --cm-share 0.60 --out $O/builds/T1_s2.h5ad
-    $U run python experiments/builds/build_test.py heart --entry s2_trim --out $O/builds/T2heart_s2.h5ad
+    $U run python experiments/builds/build_test.py heart --entry s2_trim --trend --out $O/builds/T2heart_s2.h5ad
     $U run python experiments/builds/build_test.py embryo --method fgw --move-coupling aligned --expression series \
       --out $O/builds/T2embryo_s2.h5ad
     t3 refused s1 $O/t3_build/refused_s1.h5ad --wt-revert
