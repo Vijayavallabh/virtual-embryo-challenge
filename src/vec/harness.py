@@ -1033,7 +1033,8 @@ def _psb_size(ctx: BuildContext) -> Stage:
 
 def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixture", herd: bool = False,
          move_coupling: str = t2_build.MOVE_COUPLINGS[0], local_perm: bool = False,
-         draw: str = t2_build.DRAWS[0], t_mix: float | None = None) -> Stage:
+         draw: str = t2_build.DRAWS[0], t_mix: float | None = None, depth_draw: bool = False,
+         relax_steps: int = 0) -> Stage:
     """The T2 embryo pipeline (docs/PLAN.md 4.2): displacement interpolation between the brackets at the target's
     time fraction (vec.t2_build.interpolate_clouds: fused Gromov-Wasserstein coupling, proper rotation, McCann moves,
     a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages. t_pos:
@@ -1044,7 +1045,12 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     (the entry) or "aligned" (try E10: the moves from vec.core.aligned_coupling in the rotated common frame).
     local_perm (try E15): after the draw, the positions are re-arranged among the drawn cells within coarse type and a
     fixed radius (vec.t2_build.local_type_permutation); the expression rows stay where they are. draw: "uniform" (the
-    entry) or "midpoint" (try E13, vec.t2_build._midpoint_draw; it needs the inputs' counts layer)."""
+    entry) or "midpoint" (try E13, vec.t2_build._midpoint_draw; it needs the inputs' counts layer).
+    depth_draw (fgw_depthdraw, branch campaign/emb-geo): which real cells of each bracket are drawn is shaped by their
+    library size towards DEPTH_RULE's target (vec.t2_build.DEPTH_DRAW_RULE; it needs the inputs' counts layer).
+    relax_steps (fgw_bluenoise, the same branch; 0 leaves fgw as it is): after the positions are set, that many Lloyd
+    steps over the interpolation's pool, the cloud then put back at its centroid and RMS radius
+    (vec.t2_build.lloyd_relax, RELAX_RULE)."""
     t = ctx.task
     before, after = ctx.inputs["before"], ctx.inputs["after"]
     lo, hi = t.role_days["before"], t.role_days["after"]
@@ -1059,7 +1065,9 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
                                       target_rms=target_rms(ctx), t_pos=t_pos,
                                       with_partners=expression in ("blend", "latent"),
                                       herd=herd, move_coupling=move_coupling, draw=draw, log_depth=log_depth,
-                                      with_coupling=expression == "latent", t_mix=t_mix)
+                                      with_coupling=expression == "latent", t_mix=t_mix,
+                                      depth_libs=(t2_build.cell_depths(before, g), t2_build.cell_depths(after, g))
+                                      if depth_draw else None)
     if expression == "mixture":
         X = np.empty((len(res.rows), len(g)), dtype=np.float32)
         X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
@@ -1083,6 +1091,8 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     else:
         raise ValueError(f"unknown expression step {expression!r}")
     coords = res.coords
+    if relax_steps:
+        coords, _ = t2_build.lloyd_relax(coords, res.pool_coords, res.pool_weights, relax_steps)
     if local_perm:
         coords = coords[nbhd_rearrangement(coords, t2_build.drawn_labels(res, before.obs["group"], after.obs["group"]),
                                            ctx.seed)]
@@ -1171,6 +1181,18 @@ def _fgw_blend(ctx: BuildContext) -> Stage:
 
 def _fgw_aligned(ctx: BuildContext) -> Stage:
     return _fgw(ctx, move_coupling="aligned")
+
+
+def _fgw_bluenoise(ctx: BuildContext) -> Stage:
+    """fgw_bluenoise (branch campaign/emb-geo): fgw with its positions relaxed towards even spacing inside the same
+    cloud, RELAX_STEPS Lloyd steps, count and size unchanged (vec.t2_build.RELAX_RULE)."""
+    return _fgw(ctx, relax_steps=t2_build.RELAX_STEPS)
+
+
+def _fgw_depthdraw(ctx: BuildContext) -> Stage:
+    """fgw_depthdraw (branch campaign/emb-geo): fgw with each bracket's real cells drawn with weights shaped by their
+    depth towards DEPTH_RULE's target (vec.t2_build.DEPTH_DRAW_RULE); no cell's counts are edited."""
+    return _fgw(ctx, depth_draw=True)
 
 
 def _fgw_shape0_aligned(ctx: BuildContext) -> Stage:
@@ -1684,6 +1706,20 @@ CANDIDATES = {
                                       "cost of expression and position in the rotated common frame "
                                       "(vec.core.aligned_coupling; FGW's rotation kept)",
                               "alpha": t2_build.INTERP_ALPHA, "scope": "whole"}, requires=_interp),
+    # the embryo geometry batch (branch campaign/emb-geo; rows in experiments/harness/TRIES.md before any run): fgw with
+    # one idea each. A partial or unbalanced coupling is not built: no record gives its share of unmatched mass
+    "fgw_bluenoise": Candidate("fgw_bluenoise", frozenset({"T2"}), (), _fgw_bluenoise,
+                               {"what": "fgw with its drawn positions relaxed towards even local density inside the "
+                                        "same cloud (discrete Lloyd steps over the interpolation's pool), then put "
+                                        "back at the drawn cloud's centroid and RMS radius",
+                                "steps": t2_build.RELAX_STEPS, "rule": t2_build.RELAX_RULE, "scope": "whole"},
+                               requires=_interp),
+    "fgw_depthdraw": Candidate("fgw_depthdraw", frozenset({"T2"}), (), _fgw_depthdraw,
+                               {"what": "fgw with each bracket's real cells drawn with weights lib^lam, lam putting "
+                                        "the drawn bracket's weighted median depth at the interpolated stage's "
+                                        "predicted depth; no counts edited, the bracket counts fgw's",
+                                "rule": t2_build.DEPTH_DRAW_RULE, "target": t2_build.DEPTH_RULE, "scope": "whole"},
+                               requires=_interp),
     # embryo try E12 (experiments/harness/TRIES.md, registered before its run): the s2 shape variant fgw_shape0 with
     # try E10's aligned moves, so its mapped later bracket lands on the side position says. Both embryo tasks were
     # selected on when fgw_shape0 was chosen, so neither counts for it under the adoption rule (decide excludes them)

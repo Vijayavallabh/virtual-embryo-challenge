@@ -1388,7 +1388,9 @@ RULE_LITERALS = {"COUNT_RULE_SEEDS": {10.0}, "COUNT_RULE_MIN_GAIN": {0.3}, "COUN
                  # 2026-11-12, try E24 (the series rendering): the T3 script's gene_factor settings (rules.yaml,
                  # components.factor: eps 1e-5; its clip, 0.25-4, is made of allowed literals) and the smallest
                  # matched label, set before its run
-                 "SERIES_MIN_CELLS": {100.0}, "SERIES_EPS": {1e-5}}
+                 "SERIES_MIN_CELLS": {100.0}, "SERIES_EPS": {1e-5},
+                 # the embryo geometry batch (branch campaign/emb-geo): random-stream ids of the depth-shaped draw
+                 "DEPTH_DRAW_STREAMS": {10.0, 11.0}}
 
 
 def _stray_literals(src: str) -> tuple[list[tuple[int, str]], set[str]]:

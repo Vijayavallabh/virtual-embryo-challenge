@@ -1353,6 +1353,27 @@ MIDPOINT_K_ANCHORS = 15  # the coupled anchor pairs nearest a cell's moved posit
 MIDPOINT_KMEANS_SEED = 20261109  # the fixed random_state of the deterministic k-means (lloyd, n_init=1)
 MIDPOINT_STREAMS = (8, 9)  # random streams of the midpoint draw (before, after): not the interpolation's 0-5 or the
 # herd's and expression's 6 and 7
+# The embryo geometry batch (branch campaign/emb-geo; each its own row in experiments/harness/TRIES.md before any run).
+# fgw_depthdraw: which real cells of each bracket are drawn, shaped by their depth towards DEPTH_RULE's target
+# (`depth_tilt`, `interpolate_clouds(..., depth_libs=...)`). No constant of its own: the weight floor is the midpoint
+# draw's (`_midpoint_weights`), the draw is `_draw_weighted` with one stratum per bracket.
+DEPTH_DRAW_STREAMS = (10, 11)  # random streams of the depth-shaped draw (before, after), apart from 0-9 above
+DEPTH_DRAW_RULE = ("depth-shaped draw: each bracket's rows are drawn without replacement with probability "
+                   "proportional to lib^lam (lib: a cell's library size, as DEPTH_RULE reads it), lam solved so that "
+                   "the weights put "
+                   "equal mass on the bracket's cells below and above DEPTH_RULE's target, i.e. the weighted median "
+                   "depth sits at the target; lam = 0, and the bracket keeps the uniform draw as it is, when its cells "
+                   "already split evenly about the target or its depths do not vary; no cell's counts are edited and "
+                   "each bracket's count is the mixture's own")
+# fgw_bluenoise: an even-spacing (blue-noise) relaxation of the drawn positions inside the same cloud (docs/PLAN.md 4.2
+# step 6, "optional blue-noise relaxation"; docs/research/digest_2026-10-19.md, "Lloyd 0.926"). The record names Lloyd's
+# method and no number of steps: one step is the simplest form.
+RELAX_STEPS = 1
+RELAX_RULE = ("blue-noise relaxation: RELAX_STEPS discrete Lloyd steps, each moving every drawn cell to the "
+              "draw-weighted centroid of the pool positions (every cell of both brackets at its moved place, weighted "
+              "by its chance of being drawn) nearer to it than to any other drawn cell (a cell without one stays); the "
+              "relaxed cloud is then put back at the drawn cloud's centroid and RMS radius, so the count and the size "
+              "rule's size are unchanged")
 
 
 def pchip_rms(days, rms, target_day: float) -> float:
@@ -1538,6 +1559,83 @@ def log_panel_counts(a: ad.AnnData, genes) -> np.ndarray:
     return np.log1p(np.asarray(sparse.csr_matrix(a[:, list(genes)].layers["counts"], dtype=np.float64).sum(1)).ravel())
 
 
+def cell_depths(a: ad.AnnData, genes) -> np.ndarray:
+    """Each cell's library size (`library_sizes` of the panel's expression and counts): the per-cell depth whose
+    median `median_depth` takes, and which the depth-shaped draw reads (`interpolate_clouds(..., depth_libs=...)`)."""
+    sub = a[:, list(genes)]
+    return library_sizes(sub.X, sub.layers["counts"])
+
+
+def depth_tilt(lib, target: float) -> tuple[float, np.ndarray]:
+    """The depth-shaped draw's weights over one bracket (DEPTH_DRAW_RULE): w proportional to lib^lam, lam the root of
+    sum_i sign(log lib_i - log target) lib_i^lam = 0 (equal weight below and above the target; the function rises
+    strictly with lam, so the root is unique). Returns (lam, w), w scaled to a maximum of 1 and floored at the midpoint
+    draw's 1e-12 so that a weighted draw always has enough non-zero entries. lam = 0 with flat weights when the
+    bracket's cells already split evenly about the target or its depths do not vary (nothing to shape). A target
+    outside the bracket's depths has no root and is refused."""
+    from scipy.optimize import brentq
+
+    lib = np.asarray(lib, dtype=np.float64)
+    if lib.ndim != 1 or not len(lib) or not (np.isfinite(lib).all() and (lib > 0).all()):
+        raise ValueError("library sizes: one finite positive value per cell")
+    if not (np.isfinite(target) and target > 0):
+        raise ValueError(f"the target depth must be finite and positive, got {target}")
+    s = np.log(lib) - np.log(float(target))
+    sign = np.sign(s)
+    if np.ptp(s) == 0.0 or sign.sum() == 0.0:
+        return 0.0, np.ones(len(lib), dtype=np.float64)
+    if not ((sign > 0).any() and (sign < 0).any()):
+        raise ValueError("the target depth lies outside the bracket's depths: no draw of its cells has it as median")
+
+    def h(lam: float) -> float:
+        z = lam * s
+        return float(sign @ np.exp(z - z.max()))
+
+    step = -1.0 if sign.sum() > 0 else 1.0  # more cells above the target: shallower cells are drawn more (lam < 0)
+    # ends: with cells on both sides, the most extreme cell on the far side dominates h once |lam| is large enough
+    while np.sign(h(step)) == np.sign(sign.sum()):
+        step *= 2.0
+    lam = float(brentq(h, min(0.0, step), max(0.0, step)))
+    z = lam * s
+    return lam, np.maximum(np.exp(z - z.max()), 1e-12)
+
+
+def lloyd_relax(coords, pool, pool_weights, steps: int = RELAX_STEPS) -> tuple[np.ndarray, dict]:
+    """RELAX_RULE: `steps` discrete Lloyd steps of the drawn cells' positions over the pool they were drawn from (each
+    cell to the weighted centroid of the pool points nearest to it; a cell with no pool point, or none of positive
+    weight, stays), then the cloud put back at the input's centroid and RMS radius. steps = 0, or a cloud the steps
+    leave where it was, returns the input exactly. Returns the positions and a record."""
+    from scipy.spatial import cKDTree
+
+    C = _as_coords(coords, "coords")
+    P = _as_coords(pool, "pool")
+    w = np.asarray(pool_weights, dtype=np.float64)
+    if w.shape != (len(P),) or not (np.isfinite(w).all() and (w >= 0).all()) or w.sum() <= 0:
+        raise ValueError("pool_weights: one finite non-negative weight per pool point, not all zero")
+    steps = _whole(steps, "steps", 0)
+    rec = {"rule": RELAX_RULE, "steps": steps, "static": []}
+    if steps == 0:
+        return C.copy(), rec
+    X = C.copy()
+    for _ in range(steps):
+        owner = cKDTree(X).query(P)[1]
+        mass = np.bincount(owner, weights=w, minlength=len(X))
+        moved = mass > 0
+        new = X.copy()
+        for d in range(X.shape[1]):
+            new[moved, d] = np.bincount(owner, weights=w * P[:, d], minlength=len(X))[moved] / mass[moved]
+        rec["static"].append(int((~moved).sum()))
+        X = new
+    if np.array_equal(X, C):
+        return C.copy(), rec
+    r0, r1 = rms_radius(C), rms_radius(X)
+    out = C.mean(0) + (X - X.mean(0)) * (r0 / r1)
+    rec.update(rms_before=float(r0), rms_relaxed=float(r1),
+               mean_shift=float(np.linalg.norm(out - C, axis=1).mean()),
+               exact_duplicates=int(len(out) - len(np.unique(out, axis=0))))
+    return out, rec
+
+
 def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: float, n: int, seed: int, *,
                        target_rms: float, alpha: float = INTERP_ALPHA, n_anchor: int = INTERP_N_ANCHOR,
                        n_pc: int = INTERP_N_PC, k: int = INTERP_K, max_iter: int = INTERP_MAX_ITER,
@@ -1545,7 +1643,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
                        with_partners: bool = False, herd: bool = False, move_coupling: str = MOVE_COUPLINGS[0],
                        with_coupling: bool = False, draw: str = DRAWS[0],
                        log_depth: tuple[np.ndarray, np.ndarray] | None = None,
-                       t_mix: float | None = None) -> Interpolation:
+                       t_mix: float | None = None,
+                       depth_libs: tuple[np.ndarray, np.ndarray] | None = None) -> Interpolation:
     """Displacement interpolation between two stages at time fraction t (0 = before, 1 = after).
 
     1. Each cloud is centred and divided by its RMS radius (no PCA axes, so no sign choice).
@@ -1591,6 +1690,13 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     more (`_midpoint_draw`, streams MIDPOINT_STREAMS), each bracket's count and each stratum's share of its bracket
     stay as the uniform draw's, and pool_weights carry the draw's probabilities for the cloud guard. It needs
     log_depth=(before, after), each cell's log panel counts (`log_panel_counts`), for the depth residualisation.
+
+    depth_libs (fgw_depthdraw, branch campaign/emb-geo; default None, the uniform draw): each cell's library size per
+    bracket (`cell_depths`), before and after. The uniform draw's rows of a bracket are replaced by a draw of the same
+    number of its real cells with weights `depth_tilt` towards DEPTH_RULE's target at t (DEPTH_DRAW_RULE, streams
+    DEPTH_DRAW_STREAMS); a bracket with nothing to shape keeps its uniform rows exactly. The coupling, the moves, every
+    cell's position and expression and the bracket counts are unchanged; pool_weights carry the draw's probabilities.
+    Not with draw="midpoint", herd or t_mix (each also sets the rows or the mixture; no try reads them together).
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1619,6 +1725,14 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         if (log_depth[0].shape != (Cb.shape[0],) or log_depth[1].shape != (Ca.shape[0],)
                 or not (np.isfinite(log_depth[0]).all() and np.isfinite(log_depth[1]).all())):
             raise ValueError("log_depth: one finite value per cell of each stage")
+    if depth_libs is not None:
+        if draw != DRAWS[0] or herd or t_mix is not None:
+            raise ValueError("depth_libs (the depth-shaped draw) is not defined with draw='midpoint', herd or t_mix")
+        if len(depth_libs) != 2:
+            raise ValueError("depth_libs needs (before, after), each cell's library size")
+        depth_libs = (np.asarray(depth_libs[0], dtype=np.float64), np.asarray(depth_libs[1], dtype=np.float64))
+        if depth_libs[0].shape != (Cb.shape[0],) or depth_libs[1].shape != (Ca.shape[0],):
+            raise ValueError("depth_libs: one library size per cell of each stage")
     if not (np.isfinite(target_rms) and target_rms > 0):
         raise ValueError(f"target_rms must be finite and positive, got {target_rms}")
     n, seed = _whole(n, "n", 1), _whole(seed, "seed", 0)
@@ -1647,6 +1761,23 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         midpoint = {**_midpoint_draw(Eb, Ea, ib, ia, Tm, pos_b, pos_a, t, n_b, n_a, log_depth, Fb.shape[1], seed),
                     "uniform_before": rows_b, "uniform_after": rows_a}
         rows_b, rows_a = midpoint["rows_before"], midpoint["rows_after"]
+    depth_draw = None
+    if depth_libs is not None:  # the rows above are the uniform draw: a bracket with nothing to shape keeps them
+        medians = [float(np.median(depth_libs[0])), float(np.median(depth_libs[1]))]
+        target = depth_target(medians[0], medians[1], t)
+        depth_draw = {"rule": DEPTH_DRAW_RULE, "median_depth": medians, "target": target, "lam": [], "p": []}
+        for s_, (lib, k) in enumerate(((depth_libs[0], n_b), (depth_libs[1], n_a))):
+            lam, w = depth_tilt(lib, target)
+            depth_draw["lam"].append(lam)
+            depth_draw["p"].append(None if lam == 0.0 else w / w.sum())
+            if lam == 0.0 or not k:
+                continue
+            drawn, _ = _draw_weighted(np.zeros(len(lib), dtype=np.int64), w, k,
+                                      np.random.default_rng([seed, DEPTH_DRAW_STREAMS[s_]]))
+            if s_ == 0:
+                rows_b = drawn
+            else:
+                rows_a = drawn
     herd_rec = None
     if herd:
         herd_rec = {}
@@ -1669,6 +1800,11 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     weights = np.r_[np.full(len(Zb), (1.0 - tm) / len(Zb)), np.full(len(Za), tm / len(Za))]
     if midpoint is not None:
         weights = midpoint["pool_weights"]
+    if depth_draw is not None:
+        if depth_draw["p"][0] is not None:
+            weights[: len(Zb)] = (1.0 - tm) * depth_draw["p"][0]
+        if depth_draw["p"][1] is not None:
+            weights[len(Zb):] = tm * depth_draw["p"][1]
     _, first = np.unique(coords.astype(np.float32), axis=0, return_index=True)
     dup = np.ones(n, dtype=bool)
     dup[first] = False
@@ -1693,6 +1829,11 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         record["draw"] = draw
         record["midpoint"] = {"k_strata": midpoint["k_strata"], "k_anchors": MIDPOINT_K_ANCHORS,
                               "ess_frac": midpoint["ess_frac"]}
+    if depth_draw is not None:
+        record["depth_draw"] = {"rule": DEPTH_DRAW_RULE, "median_depth": depth_draw["median_depth"],
+                                "target": depth_draw["target"], "lam": depth_draw["lam"],
+                                "ess_frac": [None if p is None else float(1.0 / (p @ p)) / len(p)
+                                             for p in depth_draw["p"]]}
     partners = None
     if with_partners:
         prng = np.random.default_rng([seed, 5])
