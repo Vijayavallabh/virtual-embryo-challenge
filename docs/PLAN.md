@@ -2805,3 +2805,64 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the edited ledgers and the build script (109 passed: the s2 rules, the gate estimate, `build_all.sh`'s lines, the
     embryo coupling diagnostic's ledger values); the assumption ledger's linter finds no format error. The full suite
     was not rerun: nothing it tests changed since the run at 7a5fbbc.
+- 2026-11-13 (g), the captain's instruction, given through the ambition-lift skill, in the captain's words: "You are
+  already actively working on this challenge. The current best solutions you've produced are still weak — they do not
+  yet beat the top leaderboard score by your own estimate. Re-examine them now, identify their biggest weaknesses, and
+  improve them drastically, with that top score as the explicit bar to clear. Continue to assume exclusive access to all
+  otherwise-unused compute on this machine until the deadline. In addition, press all 6 GPUs on the DGX machine and the
+  2 GPUs on this machine into continuous service. Use every one of them, and spend whatever compute it takes to reach
+  and surpass the top leaderboard score — improve it at all costs. Be exhaustive and bold: keep extensive parallel
+  experiments, broad searches, unconventional approaches, and fundamental redesigns running across the full 8-GPU
+  fleet — not just minor tweaks to what's already there. Distribute workloads so no GPU sits idle: scale out promising
+  ideas for more training, more seeds, and larger searches on the DGX while this machine's 2 GPUs handle evaluation,
+  ablations, and exploratory runs. Scale what works, and abandon the weak ideas without hesitation. Do not treat your
+  current trajectory as settled. Continue iterating autonomously until the deadline: analyze what you've learned so
+  far, use /deep-research to investigate the weaknesses you've uncovered and discover promising new methods, propose
+  improvements, use /devil-advocate:devil-advocate to challenge the assumptions underlying your current solutions and
+  expose their failure modes, experiment, evaluate, and refine. Keep feeding experimental findings back into both
+  skills throughout the loop, and keep checking your estimated score against the leaderboard's top entry as your north
+  star. Do not stop early, declare victory prematurely — even once you appear to beat the top score, keep pushing the
+  margin — or wait for further instructions." This entry was written by the AI assistant.
+  - **How the AI assistant reads it; the captain can correct any of this.** It renews the campaign of 2026-11-12 (a) a
+    second time, with the GPUs named: the DGX's six free H100s (2 to 7; 0 and 1 hold other processes and are left
+    alone) and this machine's two A100s that have free memory (0 and 1; 2 and 4 are full with another user's jobs).
+    "At all costs" and "whatever compute it takes" are read as effort and compute, not as a ruling: the words lift no
+    safeguard, and this request leaves out the sentence of 2026-11-12 (a) on data restrictions, leakage and upload
+    authorisation without saying it is withdrawn, so that sentence is taken to stand.
+  - **Lifted for this campaign:** nothing beyond 2026-11-12 (a) (heavy runs on this machine's otherwise-unused GPUs and
+    cores; the embryo's depth line for tries; earlier prunes that rested on an estimated gain may run as counted tries
+    with the row first). New in practice: campaign runs on the DGX go in a second checkout with its own environment
+    (`~/v/vec-campaign`), so the reference checkout, its `.venv` and `uv.lock` stay as the rehearsal left them
+    (`docs/COMPUTE.md`, "What reproduces where").
+  - **Still standing, unchanged:** the data rules and windows, the post-exposure block (cell numbers, sizes and scope on
+    every board, T3's composition, the heart's and T1's depth), A15, the frozen s2 and T3 rules, the heart's
+    composition ruling, row before run, try counting, the adoption rule, the captain's ruling for any change to an
+    upload, the captain's go-ahead for each upload, and the gate at 209. A candidate that needs one of them lifted
+    goes to the captain as one priced question per rule. "Keep checking ... against the leaderboard's top entry" is
+    read as the captain's request for screened reads of the leaderboard's overall totals and ranks, by the route of
+    2026-11-10 (b); nothing else about the leaderboard is opened. Agent workflows still wait for the captain's word
+    (single agents and the two named skills are used).
+  - **What the record says before any new run** (`experiments/harness/TRIES.md`; decision logs 2026-11-05 (b),
+    2026-11-10, 2026-11-12 (c), 2026-11-13 (b)). Three campaigns kept one change by the adoption rule (T11) in about
+    eighty tries. The points that separate 184 from the top sit in facts about the hidden samples that no released
+    file shows (how E12.5 was measured and what it is made of; whether the knockout runs share a released run's
+    profile; how E7.75 was measured; the heart's size), and the two uploads per board are bets on them. Compute does
+    not buy those facts. What compute can buy is a measurement where earlier panels only estimated: the learned
+    model classes pruned before any score.
+  - **What this campaign does** (the request, made deeper rather than wider):
+    1. *A forecast instead of a point.* The gate's figure (184) predates rows R4 to R6 and was never a distribution.
+       The estimate is rebuilt from committed results as a distribution over the worlds the uploads bet on, giving
+       the chance of passing 209 and of a paid place (six per track); it is recomputed independently. Every
+       candidate is then priced by what it does to those chances. An aggregation of committed results, not a try.
+    2. *A locked protocol for a broad search.* Tuning happens on development tasks only (practice tasks that are no
+       counted backtest, and series built from legal external data); a finalist is read once on its board's counted
+       backtests, with its row first. This keeps a search over many settings from fitting the two or three counted
+       targets.
+    3. *First tries.* The within-type step that passed on T1 (try T11), on the heart board, where it was never
+       tried; then a learned form of that step that keeps real cells (a count model supplies each cell's per-gene
+       factor as a ratio of its decoder's means, applied in count space through the shared core), on T1 and the
+       heart. Generators whose decoded cells are submitted lost on fidelity (E21); the ratio form has not been tried.
+    4. *The north star.* A screened read of the leaderboard's overall totals now and at the later screened checks.
+    5. *Research and a cold review,* as the captain asks, aimed at these tries and at the forecast's widest terms.
+  - **Compute found on 2026-11-13, 13:10 IST.** DGX: GPUs 2 to 7 free, load 8 on 192 cores, 1.6 TB free on `/home`,
+    no build running. This machine: load 90 on 64 cores; A100s 0 and 1 with 67 and 78 GB free.
