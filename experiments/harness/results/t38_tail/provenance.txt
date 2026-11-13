@@ -1,0 +1,8 @@
+run folder on the DGX: ~/v/vec-campaign-h7/runs/harness/t38_tail (campaign checkout)
+commit: 1976b6b (campaign/t1-bfix2)
+tree at start and at end (bytes of git status --porcelain): 0 and 0
+started UTC: 2026-11-13T20:11:01Z
+ended UTC: 2026-11-13T20:34:15Z
+CPU only, 16 BLAS threads, one process per backtest
+decisions_*: base b0, recomputed on this machine from the task files and registered
+the reference candidates (floor,copy,b0) reproduce their committed scores of experiments/harness/results/t1_herd_v1/tasks to 1e-6, seed for seed
