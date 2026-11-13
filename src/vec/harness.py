@@ -913,7 +913,16 @@ B0_TREND_H_RULE = ("b0_trend's least-squares slope carried over the prediction h
                    "day - reference day) x slope; a lineage seen at only the last two stages gets B0's own factor "
                    "times (target day - reference day) / (reference day - start day), so every shifted lineage is "
                    "carried over half the horizon at its own rate; everything else is b0_trend's")
-TREND_FORMS = ("ols", "eb", "ts", "horizon")
+# Heart try H15 (experiments/harness/TRIES.md; specification fixed by the main session before any code): b0_trend with
+# the cells it leaves unmoved given the shifted lineages' shared factor. Harness candidate only; the builders are
+# untouched.
+B0_TREND_FILL_RULE = ("b0_trend, and every drawn cell whose B0 type b0_trend does not shift (the Untracked types and "
+                      "every lineage below min_cells at start or the reference) moved in count space by the shared "
+                      "factor: per gene, the unweighted mean over the lineages b0_trend shifts on the task of their "
+                      "log factors as applied (the trend factor, or B0's own factor for a lineage that keeps it); "
+                      "with fewer than two shifted lineages there is no fill and the arm is b0_trend; the fill's "
+                      "draws follow the shifted cells' on the same random stream, so those cells are b0_trend's")
+TREND_FORMS = ("ols", "eb", "ts", "horizon", "fill")
 TREND_EB_BINS = 10
 
 
@@ -982,7 +991,14 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
     factor (eb: the ten bin weights and their median, and the norm ratio and cosine against OLS; ts: cosine and norm
     ratio against OLS) or, for horizon, budget_h, b0_trend's budget and their ratio; "n_trend" counts the lineages
     with a trend and "n_mapped" those in the mapping. The existing fields (cosine and norm ratio against B0's own
-    factor, the mean absolute log factor "mean_abs_logf_trend") then describe the arm's factor."""
+    factor, the mean absolute log factor "mean_abs_logf_trend") then describe the arm's factor.
+
+    "fill" (heart try H15, B0_TREND_FILL_RULE): the mapping and every per-lineage field are "ols"'s; the record adds
+    "n_shifted" (the lineages B0 shifts among `types`), "fill" (True when n_shifted >= 2), and with the fill
+    "shared_logf" (per gene, in `genes` order, the unweighted mean of the shifted lineages' log factors as applied: the
+    trend factor, or B0's own for a lineage that keeps it), "shared_norm" (its L2 norm), "median_shifted_norm" (the
+    median L2 norm of those factors) and "shared_norm_ratio" (the first over the second); without it these are None.
+    `_b0_t2` hands shared_logf to momentum_shift as fill_logf and adds the share of drawn cells it moves."""
     from vec.core import counts_of, mean_cp10k
 
     if form not in TREND_FORMS:
@@ -1003,6 +1019,7 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
     merged = {r: np.asarray(ctx.inputs[r].obs[T2_LINEAGE_KEY]).astype(str) for r, _ in stages}
     out: dict[str, np.ndarray] = {}
     lineages = []
+    applied: list[np.ndarray] = []  # each shifted lineage's log factor as momentum_shift applies it (form "fill")
     for lin in types:
         if lin == T2_UNTRACKED or lin.startswith(T2_UNTRACKED + "@"):
             continue
@@ -1038,6 +1055,7 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
             elif form == "horizon":
                 logf = trend_log_factor(ys, ds, budget_h)
             out[lin], kept = logf, False
+        applied.append(logf)
         n_own = float(np.linalg.norm(own))
         lineages.append({"lineage": lin, "stages": [r for r, _ in usable], "days": [d for _, d in usable],
                          "n_cells": [int(len(rows[r])) for r, _ in usable], "own_factor": kept,
@@ -1052,7 +1070,17 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
            "budget_days": budget, "eps": eps, "min_cells": min_cells, "n_trend": len(out), "lineages": lineages,
            "median_cosine": float(np.nanmedian(cos)) if lineages else float("nan"),
            "median_norm_ratio": float(np.nanmedian(ratio)) if lineages else float("nan")}
-    if form != "ols":
+    if form == "fill":
+        rec.update({"rule": "vec.harness.B0_TREND_FILL_RULE", "form": form, "n_mapped": len(out),
+                    "n_shifted": len(applied), "fill": len(applied) >= 2, "shared_logf": None, "shared_norm": None,
+                    "median_shifted_norm": None, "shared_norm_ratio": None})
+        if rec["fill"]:
+            shared = np.vstack(applied).mean(axis=0)
+            n_shared, n_med = float(np.linalg.norm(shared)), float(np.median([np.linalg.norm(f) for f in applied]))
+            rec.update({"shared_logf": [float(v) for v in shared], "shared_norm": n_shared,
+                        "median_shifted_norm": n_med,
+                        "shared_norm_ratio": n_shared / n_med if n_med > 0 else float("nan")})
+    elif form != "ols":
         rec["rule"] = {"eb": "vec.harness.B0_TREND_EB_RULE", "ts": "vec.harness.B0_TREND_TS_RULE",
                        "horizon": "vec.harness.B0_TREND_H_RULE"}[form]
         rec["form"] = form
@@ -1079,7 +1107,9 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
     lineage's log factor is its least-squares trend over every input stage (`b0_trend_factors`, B0_TREND_RULE); the
     draw, typing, stream and everything else are B0's. No try read it with depth, herd or cfm, so those raise.
     trend_record: a dict that receives b0_trend_factors' record (with trend only; the build record's source).
-    trend_form (with trend only; heart tries H13e, H13r, H13h): b0_trend_factors' `form`, default "ols" (b0_trend)."""
+    trend_form (with trend only; heart tries H13e, H13r, H13h, H15): b0_trend_factors' `form`, default "ols"
+    (b0_trend). With "fill" (B0_TREND_FILL_RULE) the record's shared factor goes to momentum_shift as fill_logf, and
+    the record gains "fill_share" (the share of drawn cells moved by it, 0 to 1) and "fill_types"."""
     from vec import t1_scope
 
     if trend and (depth or herd or cfm):
@@ -1111,9 +1141,21 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
                                              sorted(set(np.asarray(like.obs["b0_type"]).astype(str))), form=trend_form)
         if trend_record is not None:
             trend_record.update(rec)
-    shifted, _ = t1_scope.momentum_shift(typed(start, "start"), typed(end, "end"), like, damping, (), key="b0_type",
-                                         seed=[ctx.seed, 3], logf_filter=t2_build.covariance_filter if cfm else None,
-                                         logf_by_type=logf_by_type)
+    if trend_form != "fill":
+        shifted, _ = t1_scope.momentum_shift(typed(start, "start"), typed(end, "end"), like, damping, (),
+                                             key="b0_type", seed=[ctx.seed, 3],
+                                             logf_filter=t2_build.covariance_filter if cfm else None,
+                                             logf_by_type=logf_by_type)
+    else:  # heart try H15: the unshifted types' cells get the shared factor (none with fewer than two shifted)
+        fill_logf = np.asarray(rec["shared_logf"], dtype=np.float64) if rec["fill"] else None
+        shifted, rep = t1_scope.momentum_shift(typed(start, "start"), typed(end, "end"), like, damping, (),
+                                               key="b0_type", seed=[ctx.seed, 3], logf_by_type=logf_by_type,
+                                               fill_logf=fill_logf)
+        n_fill = sum(r["n_target"] for r in rep.rows if r["status"].startswith("filled"))
+        if trend_record is not None:
+            trend_record.update({"fill_share": n_fill / like.n_obs,
+                                 "fill_types": sorted(r["type"] for r in rep.rows
+                                                      if r["status"].startswith("filled"))})
     g = ctx.board.genes
     if depth:
         if t.kind != "extrap":
@@ -1936,6 +1978,13 @@ CANDIDATES = {
                                      "(target day - reference day)) instead of the last gap (heart only; count space)",
                              "damping": B0_DAMPING, "rule": "vec.harness.B0_TREND_H_RULE", "scope": "chamber"},
                             requires=_heart_extrap_with_start),
+    # heart try H15 (experiments/harness/TRIES.md): b0_trend with the cells it leaves unmoved given the shared factor
+    "b0_trend_fill": Candidate("b0_trend_fill", frozenset({"T2"}), (), _b0_trend_arm("b0_trend_fill", "fill"),
+                               {"what": "b0_trend with every drawn cell it leaves unmoved (Untracked, lineages too "
+                                        "small at start or the reference) moved by the unweighted mean of the "
+                                        "shifted lineages' log factors (heart only; count space)",
+                                "damping": B0_DAMPING, "rule": "vec.harness.B0_TREND_FILL_RULE", "scope": "chamber"},
+                               requires=_heart_extrap_with_start),
     # T3 tries K2a and K2b (experiments/harness/TRIES.md, registered before their run): s1's Gata4 factor on the
     # Gata4 -> Mab21l2 fold, and its permuted control
     "t3_factor_xko": Candidate("t3_factor_xko", frozenset({"T3"}), (), _t3_factor_xko,

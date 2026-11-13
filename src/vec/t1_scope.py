@@ -454,6 +454,41 @@ class ShiftReport:
                 "skipped": self.skipped, "rows": self.rows}
 
 
+def _apply_with_fill(C, F: np.ndarray, tidx: np.ndarray, held: np.ndarray, keep_depth: bool, seed: Seed,
+                     rows: list[dict], t_types: np.ndarray, fill_logf: np.ndarray,
+                     max_abs_log_factor: float | None, logf_filter) -> tuple[sparse.csr_matrix, np.ndarray, np.ndarray]:
+    """`momentum_shift`'s fill_logf step: the call without the fill (the unshifted types at f = 1), then the unshifted
+    types' cells moved by fill_logf from their own counts, on the same generator. Edits the unshifted rows in `rows`."""
+    if logf_filter is not None:
+        raise ValueError("fill_logf is not defined together with logf_filter")
+    logf = np.array(fill_logf, dtype=np.float64)
+    if logf.shape != (C.shape[1],):
+        raise ValueError(f"fill_logf has shape {logf.shape}, expected ({C.shape[1]},)")
+    if max_abs_log_factor is not None:
+        logf = np.clip(logf, -max_abs_log_factor, max_abs_log_factor)
+    logf[held] = 0.0
+    rng = np.random.default_rng(seed)
+    new, scale, dead = apply_factors(C, F, tidx, held, keep_depth=keep_depth, seed=rng)
+    unshifted = [r for r in rows if r["status"] != "shifted"]
+    fill = np.isin(t_types, [r["type"] for r in unshifted])
+    if not fill.any():
+        return new, scale, dead
+    for r in unshifted:
+        r.update(status=f"filled ({r['status']})", n_up=int((logf > np.log(1.1)).sum()),
+                 n_down=int((logf < -np.log(1.1)).sum()), mean_abs_log_f=float(np.abs(logf).mean()),
+                 max_abs_log_f=float(np.abs(logf).max()))
+    at = np.flatnonzero(fill)
+    f_new, f_scale, f_dead = apply_factors(sparse.csr_matrix(C)[at], np.exp(logf)[None, :],
+                                           np.zeros(len(at), dtype=np.int64), held, keep_depth=keep_depth, seed=rng)
+    keep = np.flatnonzero(~fill)
+    order = np.concatenate([keep, at])
+    stacked = sparse.vstack([new[keep], f_new], format="csr")
+    new = sparse.csr_matrix(stacked[np.argsort(order, kind="stable")])
+    scale, dead = scale.copy(), dead.copy()
+    scale[at], dead[at] = f_scale, f_dead
+    return new, scale, dead
+
+
 def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, damping: float,
                    held_flat: Iterable[str] = (), *, key: str = CATEGORY_KEY, label_key: str = LABEL_KEY,
                    eps: float = 0.5, min_cells: int = 20, max_abs_log_factor: float | None = None,
@@ -463,7 +498,8 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
                    standin_momentum: bool = False, seed: Seed = 0,
                    logf_filter: Callable[[np.ndarray, sparse.csr_matrix, np.ndarray], tuple[np.ndarray, dict]]
                    | None = None,
-                   logf_by_type: Mapping[str, np.ndarray] | None = None) -> tuple[ad.AnnData, ShiftReport]:
+                   logf_by_type: Mapping[str, np.ndarray] | None = None,
+                   fill_logf: np.ndarray | None = None) -> tuple[ad.AnnData, ShiftReport]:
     """Move `target_like` cells by the damped per-type change from `start` to `ref`, in count space.
 
     start, ref: the two stages whose change is the momentum (start is the earlier one; ref is normally the stage the
@@ -491,6 +527,16 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
     `damping * log((m_ref + eps) / (m_start + eps))` for that type. Everything else applies to it as to the own factor:
     the skip rules (a type skipped for too few cells or stand-ins stays skipped even if the mapping names it), the clip,
     the held-flat zeros, logf_filter and the report row. Types the mapping does not name keep their own factor.
+
+    fill_logf (default None: nothing below happens, the code path is the one above, so every existing output is
+    unchanged; heart try H15, vec.harness.B0_TREND_FILL_RULE): one log factor (already damped, in `genes` order,
+    float64) for every type this call leaves unshifted (skipped for too few cells or for stand-ins). The shifted types
+    are moved first, by exactly the call above (same factors, same draws), with the unshifted types at f = 1; then the
+    unshifted types' cells are moved from their own counts by `apply_factors` with fill_logf (after the clip and the
+    held-flat zeros, not through logf_filter, which this refuses together with fill_logf), continuing the same random
+    generator (`numpy.random.default_rng(seed)`, its draws taken after the shifted cells'). Their report rows keep their
+    counts of cells, get status "filled (<the skip reason>)" and the fill's n_up, n_down and mean and max |log f|. If
+    no type is unshifted, nothing more is drawn.
 
     Returns a copy of target_like with layers["counts"] edited and X = log1p CP10k of the new counts (float32 CSR),
     and a per-type report.
@@ -545,7 +591,11 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
                    mean_abs_log_f=float(np.abs(logf).mean()), max_abs_log_f=float(np.abs(logf).max()))
         rows.append(row)
     tidx = np.array([tindex[t] for t in t_types], dtype=np.int64)
-    new, scale, dead = apply_factors(C, F, tidx, held, keep_depth=keep_depth, seed=seed)
+    if fill_logf is None:
+        new, scale, dead = apply_factors(C, F, tidx, held, keep_depth=keep_depth, seed=seed)
+    else:
+        new, scale, dead = _apply_with_fill(C, F, tidx, held, keep_depth, seed, rows, t_types, fill_logf,
+                                            max_abs_log_factor, logf_filter)
     for row in rows:
         m = t_types == row["type"]
         row["median_depth_scale"] = float(np.median(scale[m])) if m.any() else float("nan")

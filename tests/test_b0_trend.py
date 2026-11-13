@@ -808,3 +808,237 @@ def test_each_arm_leaves_its_record_and_keeps_b0s_rows_coordinates_and_cell_numb
     assert set(base) <= set(rec) and rec["form"] == ARMS[name] and rec["rule"] != base["rule"]
     assert all(set(r0) <= set(r1) for r0, r1 in zip(base["lineages"], rec["lineages"], strict=True))
     assert not np.array_equal(a.X, CANDIDATES["b0_trend"].build(ctx).X)
+
+
+# ---------------------------------------------------------------------------------------------------- H15 (fill)
+# Heart try H15 (specification fixed by the main session before any code): b0_trend, and every drawn cell it leaves
+# unmoved moved by the shared factor, the unweighted mean of the shifted lineages' log factors as applied. Synthetic
+# data only; nothing scored.
+
+# taken on this branch BEFORE momentum_shift's fill_logf and the fill form were added (a0f3b5b, the synthetic stages
+# above, BUILD_SEED_OFFSET + 1): sha256 of each existing heart candidate's output X (float32) and of the H13 arms'
+# records in TREND_ARM_RECORDS (json.dumps(rec, sort_keys=True)); coordinates are PIN_COORDS for every one
+PIN_ARMS_X = {
+    ("three", "b0"): PIN_B0_X, ("four", "b0"): PIN_B0_X,
+    ("three", "b0_trend"): B0_TREND_SHA256, ("four", "b0_trend"): PIN_TREND_X["four"],
+    ("three", "b0_trend_eb"): "6bde13d2e2362877b1dbf56f2fd6d340cacc8e5822490b4036dea1f8601e2f86",
+    ("three", "b0_trend_ts"): "a9db9a36b36e5704cdb4abdce049babfd225a4453b4b175438e90b167df5f1b7",
+    ("three", "b0_trend_h"): "0e652f3362444d931a72ca6a386cc67c7a313a5eb0f26a2053100ccddf138e3e",
+    ("four", "b0_trend_eb"): "ac5bb900bbfdeaa6b8fb71b293430268a0d4f0010ae62d35b54919cef27c53e9",
+    ("four", "b0_trend_ts"): "dc92334d5fe0ab3651eae2958b8d1a280001d537a2966a69a1a3c8fb2d290ea8",
+    ("four", "b0_trend_h"): "daa3daa37539e369b51eaefe3596da89452f5d4849cde6167978b9e422d16d85"}
+PIN_ARMS_REC = {
+    ("three", "b0_trend_eb"): "4f8a4ba0201672423457f2db0b9ea523ac08e6ac8572db662afd0298002de883",
+    ("three", "b0_trend_ts"): "1c2d5230ee5d16c5d954cc21c1e561e98f0cb251eee03b67bbe4fc9d29c406ab",
+    ("three", "b0_trend_h"): "35146133a50117e2b1abc2191356d9a6abd3061714cad97028daec43709f35d1",
+    ("four", "b0_trend_eb"): "3c6103330e60da8fdca9388684919e76ab9b131f26913f2d07316b115855b988",
+    ("four", "b0_trend_ts"): "7ac201379600bd595d875ee67548d7f4d2bba1d63e28d9c7044d0becd2497715",
+    ("four", "b0_trend_h"): "12032f2ab4942c679159472651bfffbf8c7f500ef85412e6191eb84e71ec352f"}
+
+
+@pytest.mark.parametrize("case, name", sorted(PIN_ARMS_X))
+def test_earlier_heart_candidates_are_unchanged_by_the_fill(three, four, case, name):
+    """b0, b0_trend and the H13 arms build what they built before the fill was added (outputs, coordinates, records)."""
+    import json
+
+    inputs, view = (three, _view()) if case == "three" else (four, _view(inputs=FOUR_INPUTS))
+    harness.TREND_ARM_RECORDS.pop(name, None)
+    st = CANDIDATES[name].build(_ctx(inputs, view=view))
+    assert _h(st.X) == PIN_ARMS_X[(case, name)] and _h(st.coords) == PIN_COORDS
+    if (case, name) in PIN_ARMS_REC:
+        rec = harness.TREND_ARM_RECORDS[name]
+        assert hashlib.sha256(json.dumps(rec, sort_keys=True).encode()).hexdigest() == PIN_ARMS_REC[(case, name)]
+
+
+def test_momentum_shift_fill_moves_only_the_unshifted_types_on_the_same_stream(shift_inputs):
+    """fill_logf: A and B (shifted) are bit for bit what they are without it; C (skipped for too few start cells) is
+    moved from its own counts by apply_factors with the fill, continuing the generator after the shifted cells' draws;
+    its report row says "filled"; fill_logf=None is the pinned function."""
+    start, ref, like, genes = shift_inputs
+    kw = {"key": "b0_type", "seed": [7, 3]}
+    base, rep = t1_scope.momentum_shift(start, ref, like, 0.5, **kw)
+    none, _ = t1_scope.momentum_shift(start, ref, like, 0.5, fill_logf=None, **kw)
+    assert _sha(base) == _sha(none) == PRE_CHANGE_SHA256
+    fill = np.linspace(-0.8, 0.6, len(genes))
+    out, rep2 = t1_scope.momentum_shift(start, ref, like, 0.5, fill_logf=fill, **kw)
+    t = like.obs["b0_type"].to_numpy()
+    old, b, new = like.layers["counts"].toarray(), base.layers["counts"].toarray(), out.layers["counts"].toarray()
+    sh = np.isin(t, ["A", "B"])
+    np.testing.assert_array_equal(new[sh], b[sh])
+    np.testing.assert_array_equal(b[t == "C"], old[t == "C"])
+    assert not np.array_equal(new[t == "C"], old[t == "C"])
+    # by hand: the shifted call's factors (C at 1) on the generator, then C's cells with the fill on the same generator
+    rows_c = np.flatnonzero(t == "C")
+    types = sorted(set(t))
+    S, R, Cc = core.counts_of(start), core.counts_of(ref), core.counts_of(like)
+    F = np.ones((len(types), len(genes)))
+    for i, ty in enumerate(types):
+        if ty != "C":
+            s, r = (start.obs["b0_type"] == ty).to_numpy(), (ref.obs["b0_type"] == ty).to_numpy()
+            F[i] = np.exp(0.5 * (np.log(core.mean_cp10k(R[r]) + 0.5) - np.log(core.mean_cp10k(S[s]) + 0.5)))
+    rng = np.random.default_rng([7, 3])
+    no_held = np.zeros(len(genes), dtype=bool)
+    first, _, _ = core.apply_factors(Cc, F, np.array([types.index(x) for x in t]), no_held, seed=rng)
+    np.testing.assert_array_equal(first.toarray()[sh], b[sh])
+    want, _, _ = core.apply_factors(sparse.csr_matrix(Cc)[rows_c], np.exp(fill)[None, :],
+                                    np.zeros(len(rows_c), dtype=np.int64), no_held, seed=rng)
+    np.testing.assert_array_equal(new[rows_c], want.toarray())
+    rows, rows2 = {r["type"]: r for r in rep.rows}, {r["type"]: r for r in rep2.rows}
+    assert rows2["C"]["status"] == f"filled ({rows['C']['status']})"
+    assert rows2["C"]["mean_abs_log_f"] == pytest.approx(float(np.abs(fill).mean()))
+    assert rows2["A"] == rows["A"] and rows2["B"] == rows["B"]
+    with pytest.raises(ValueError, match="fill_logf has shape"):
+        t1_scope.momentum_shift(start, ref, like, 0.5, fill_logf=np.zeros(3), **kw)
+    with pytest.raises(ValueError, match="logf_filter"):
+        t1_scope.momentum_shift(start, ref, like, 0.5, fill_logf=fill, logf_filter=lambda f, c, h: (f, {}), **kw)
+
+
+def test_momentum_shift_fill_takes_the_clip_and_held_flat_genes(shift_inputs):
+    """The fill is clipped and zeroed on held-flat genes as a mapped factor is; a call where no type is unshifted
+    draws nothing more (the output is the call without the fill)."""
+    start, ref, like, genes = shift_inputs
+    kw = {"key": "b0_type", "seed": [7, 3]}
+    G, cap = len(genes), float(np.log(2.0))
+    big, _ = t1_scope.momentum_shift(start, ref, like, 0.5, max_abs_log_factor=cap, fill_logf=np.full(G, 3.0), **kw)
+    at, _ = t1_scope.momentum_shift(start, ref, like, 0.5, max_abs_log_factor=cap, fill_logf=np.full(G, cap), **kw)
+    np.testing.assert_array_equal(big.layers["counts"].toarray(), at.layers["counts"].toarray())
+    bump = np.linspace(-1.0, 1.0, G) + 0.05
+    zeroed = bump.copy()
+    zeroed[[0, 1, 7]] = 0.0
+    a, _ = t1_scope.momentum_shift(start, ref, like, 0.5, ["g0", "g1", "g7"], fill_logf=bump, **kw)
+    b, _ = t1_scope.momentum_shift(start, ref, like, 0.5, ["g0", "g1", "g7"], fill_logf=zeroed, **kw)
+    np.testing.assert_array_equal(a.layers["counts"].toarray(), b.layers["counts"].toarray())
+    ab = like[np.isin(like.obs["b0_type"].to_numpy(), ["A", "B"])].copy()
+    plain, _ = t1_scope.momentum_shift(start, ref, ab, 0.5, **kw)
+    filled, rep = t1_scope.momentum_shift(start, ref, ab, 0.5, fill_logf=bump, **kw)
+    np.testing.assert_array_equal(plain.layers["counts"].toarray(), filled.layers["counts"].toarray())
+    assert all(r["status"] == "shifted" for r in rep.rows)
+
+
+def _fill(ctx: harness.BuildContext):
+    rec: dict = {}
+    return harness._b0_t2(ctx, trend=True, trend_record=rec, trend_form="fill"), rec
+
+
+def _drawn(ctx: harness.BuildContext, inputs: dict) -> np.ndarray:
+    """The drawn cells' harmonised lineages (draw_copy is deterministic in the seed: the rows every B0 arm draws)."""
+    _, rows, _, _ = harness.draw_copy(ctx)
+    return np.asarray(inputs["ref"].obs["merged"]).astype(str)[rows]
+
+
+@pytest.mark.parametrize("case", ["three", "four"])
+def test_fill_keeps_the_shifted_lineages_cells_and_moves_untracked_and_too_small_ones(three, four, case):
+    """The shifted lineages' cells are b0_trend's bit for bit; Untracked cells and the too-small lineage's (Tiny) cells
+    move, where b0_trend leaves them as b0's; rows, coordinates and cell number are b0's."""
+    inputs, view = (three, _view()) if case == "three" else (four, _view(inputs=FOUR_INPUTS))
+    ctx = _ctx(inputs, view=view)
+    a, rec = _fill(ctx)
+    tr, b0 = CANDIDATES["b0_trend"].build(ctx), CANDIDATES["b0"].build(ctx)
+    merged = _drawn(ctx, inputs)
+    sh = np.isin(merged, ["CM", "Endothelial"])
+    assert a.n == tr.n == b0.n == BOARD.max_cells
+    np.testing.assert_array_equal(a.coords, b0.coords)
+    np.testing.assert_array_equal(a.X[sh], tr.X[sh])
+    for lin in ("Untracked", "Tiny"):
+        m = merged == lin
+        assert m.any()
+        np.testing.assert_array_equal(tr.X[m], b0.X[m])
+        assert not np.array_equal(a.X[m], tr.X[m])
+    assert rec["fill"] and rec["n_shifted"] == 2
+    assert rec["fill_share"] == pytest.approx(float((~sh).mean())) and 0 < rec["fill_share"] < 1
+    assert rec["fill_types"] == ["Tiny", "Untracked@end"]
+    np.testing.assert_array_equal(CANDIDATES["b0_trend_fill"].build(ctx).X, a.X)
+
+
+def test_the_filled_factor_is_the_unweighted_mean_of_the_shifted_lineages_factors(three):
+    """shared = the unweighted per-gene mean of the trend factors (CM, Endothelial); with lineages that keep B0's own
+    factor (only start and the reference usable) their own factors enter the mean. The record's norms follow."""
+    ctx = _ctx(three)
+    ols, _ = harness.b0_trend_factors(ctx, list(BOARD.genes), TYPES)
+    out, rec = harness.b0_trend_factors(ctx, list(BOARD.genes), TYPES, form="fill")
+    assert out.keys() == ols.keys() and all(np.array_equal(out[k], ols[k]) for k in out)
+    want = (ols["CM"] + ols["Endothelial"]) / 2.0
+    np.testing.assert_allclose(rec["shared_logf"], want, atol=1e-15, rtol=0)
+    assert rec["shared_norm"] == pytest.approx(np.linalg.norm(want))
+    med = float(np.median([np.linalg.norm(ols["CM"]), np.linalg.norm(ols["Endothelial"])]))
+    assert rec["median_shifted_norm"] == pytest.approx(med)
+    assert rec["shared_norm_ratio"] == pytest.approx(np.linalg.norm(want) / med)
+    assert rec["rule"] == "vec.harness.B0_TREND_FILL_RULE" and rec["form"] == "fill"
+    inputs = _only_start_and_ref(three)
+    out2, rec2 = harness.b0_trend_factors(_ctx(inputs), list(BOARD.genes), TYPES, form="fill")
+    assert out2 == {} and rec2["n_shifted"] == 2 and rec2["fill"]
+    own = {lin: B0_DAMPING * (_log_means(inputs["ref"], lin) - _log_means(inputs["start"], lin))
+           for lin in ("CM", "Endothelial")}
+    np.testing.assert_allclose(rec2["shared_logf"], (own["CM"] + own["Endothelial"]) / 2.0, atol=1e-12, rtol=0)
+
+
+def test_the_filled_cells_get_the_shared_factor_through_momentum_shift(three, monkeypatch):
+    """The fill_logf b0_trend_fill hands momentum_shift is the record's shared factor, and the report's filled rows
+    are the two unshifted types with |log f| the shared factor's."""
+    import functools
+
+    seen = {}
+    real = t1_scope.momentum_shift
+
+    @functools.wraps(real)  # keeps the signature: b0_trend_factors reads eps and min_cells from it
+    def spy(*args, **kw):
+        out = real(*args, **kw)
+        seen["fill"], seen["rep"] = kw.get("fill_logf"), out[1]
+        return out
+
+    monkeypatch.setattr(t1_scope, "momentum_shift", spy)
+    _, rec = _fill(_ctx(three))
+    shared = np.asarray(rec["shared_logf"])
+    np.testing.assert_array_equal(seen["fill"], shared)
+    filled = {r["type"]: r for r in seen["rep"].rows if r["status"].startswith("filled")}
+    assert set(filled) == {"Tiny", "Untracked@end"}
+    for r in filled.values():
+        assert r["mean_abs_log_f"] == pytest.approx(float(np.abs(shared).mean()))
+
+
+def test_with_fewer_than_two_shifted_lineages_the_fill_arm_is_b0_trend(three):
+    """Endothelial below min_cells at start: only CM is shifted, there is no fill, and the arm is b0_trend bit for
+    bit."""
+    n_min = harness._momentum_default("min_cells")
+    inputs = {**three, "start": _with_lineage_cells(three["start"], "Endothelial", n_min - 1)}
+    ctx = _ctx(inputs)
+    a, rec = _fill(ctx)
+    tr = CANDIDATES["b0_trend"].build(ctx)
+    np.testing.assert_array_equal(a.X, tr.X)
+    np.testing.assert_array_equal(a.coords, tr.coords)
+    assert rec["n_shifted"] == 1 and not rec["fill"] and rec["shared_logf"] is None and rec["fill_share"] == 0.0
+    assert rec["fill_types"] == []
+
+
+def test_fill_is_registered_and_refuses_like_the_h13_arms(three):
+    """Registered with b0_trend's tasks and requirement and its rule; refuses depth, herd, cfm, non-heart,
+    interpolation and two-stage tasks; leaves its record in TREND_ARM_RECORDS; never needs the target day."""
+    tasks = [t for ts_ in load_tasks().values() for t in ts_]
+    c, base = CANDIDATES["b0_trend_fill"], CANDIDATES["b0_trend"]
+    assert [t.key for t in tasks if c.applies(t)] == [t.key for t in tasks if base.applies(t)]
+    assert {t.key for t in tasks if c.applies(t)} == {"T2h/<=E9.5->E10.5", "T2h/<=E8.75->E10.5"}
+    assert c.tasks == base.tasks and c.derived == () and c.requires is harness._heart_extrap_with_start
+    assert c.params["scope"] == "chamber" and c.params["damping"] == B0_DAMPING
+    assert c.params["rule"] == "vec.harness.B0_TREND_FILL_RULE" and isinstance(harness.B0_TREND_FILL_RULE, str)
+    for kw in ({"depth": True}, {"herd": True}, {"cfm": True}):
+        with pytest.raises(ValueError, match="depth, herd or cfm"):
+            harness._b0_t2(_ctx(three), trend=True, trend_form="fill", **kw)
+    with pytest.raises(ValueError, match="trend_form"):
+        harness._b0_t2(_ctx(three), trend_form="fill")
+    with pytest.raises(ValueError, match="heart extrapolation"):
+        c.build(_ctx(three, view=replace(_view(), kind="interp")))
+    with pytest.raises(ValueError, match="heart extrapolation"):
+        c.build(_ctx(three, view=replace(_view(), setting="embryo")))
+    two = {k: three[k] for k in ("ref", "start")}
+    with pytest.raises(ValueError, match="three"):
+        c.build(_ctx(two, view=_view(inputs={"ref": "T2/E9.5.h5ad", "start": "T2/E8.75.h5ad"})))
+    harness.TREND_ARM_RECORDS.pop("b0_trend_fill", None)
+    blind = replace(_view(), target_day=float("nan"))
+    with harness.guarded_reads() as g:
+        a = c.build(_ctx(three, view=blind))
+    assert not g["refused"]
+    np.testing.assert_array_equal(a.X, c.build(_ctx(three)).X)
+    rec = harness.TREND_ARM_RECORDS["b0_trend_fill"]
+    _, plain = harness.b0_trend_factors(_ctx(three), list(BOARD.genes), TYPES)
+    assert set(plain) <= set(rec) and rec["form"] == "fill"
+    assert {"n_shifted", "fill_share", "shared_norm", "median_shifted_norm", "shared_norm_ratio"} <= set(rec)
