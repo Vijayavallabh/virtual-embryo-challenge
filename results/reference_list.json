@@ -1,0 +1,13 @@
+{
+  "list": "experiments/builds/results/builds_38616fe.SHA256SUMS",
+  "list_sha256": "bf1ffb92915117fef359be8f41935fb759a92e7ef6f1b40d6bcc274c212811be",
+  "boards": {
+    "T1:test": ["builds/T1_s1.h5ad", "builds/T1_s2.h5ad"],
+    "T2:heart:test_extrap": ["builds/T2heart_s1.h5ad", "builds/T2heart_s2.h5ad"],
+    "T2:embryo:test_interp": ["builds/T2embryo_s1.h5ad", "builds/T2embryo_s2.h5ad"],
+    "T3:bcatenin": ["t3_build/allowed_s1.h5ad", "t3_build/barred_s1.h5ad", "t3_build/barred_s2.h5ad",
+                    "t3_build/refused_s1.h5ad"]
+  },
+  "set": "2026-11-13, second rehearsal at 38616fe",
+  "note": "The files an official upload may send, by board: the submission client (guard \"reference list\", src/vec/submit.py) refuses an official upload whose sha256 is not the list's hash for one of the board's names. Rewrite this pointer (list, list_sha256 = sha256sum of the list file, boards) after each rehearsal that writes a new reference list."
+}

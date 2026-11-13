@@ -18,6 +18,14 @@ scored submissions per board for the whole phase, which cannot be withdrawn. So 
   captain's lift, or its deadline exception must have opened (2026-11-27 00:00 UTC; the captain: "I am fine with
   submitting our 1st submission at Nov 27 anyway"); an unreadable or inconsistent record refuses too. Format
   checks never read it;
+- refuses an official upload of a file that is not in the current reference list (guard "reference list"; AGENTS.md:
+  an official upload sends only a file whose sha256 is in it), so that a superseded file left in an older archive
+  folder with a clean build stamp cannot go: the committed pointer REFERENCE_LIST (results/reference_list.json,
+  rewritten after each rehearsal) names the list (sha256sum output, a path inside the repository), its sha256 and, per
+  board, the list's names meant for that board. The pointer must parse (at most REFERENCE_LIST_MAX_BYTES), the list
+  must lie inside the repository, exist and have that sha256, the board must have names, each of which occurs in the
+  list exactly once, and the plan's sha256 (for a pulled file, its copy's) must be the list's hash for one of the
+  board's names. A format check never refuses on it, and warns when an official upload of the file would fail it;
 - ties an official upload to the code that built the file (guard "build stamp"): the stamp `<file>.stamp.json` next to
   the file's real path (written with the file by vec.io.write_submission; see vec.provenance) must exist and parse (at
   most STAMP_MAX_BYTES), its sha256 must be the plan's (the bytes that will be sent), it must say the build was clean
@@ -161,6 +169,10 @@ EXTERNAL_DATA = REPO_ROOT / "EXTERNAL_DATA.md"
 UPLOAD_GATE = REPO_ROOT / "results" / "upload_gate.json"  # the captain's upload gate record (docs/PLAN.md section 8)
 UPLOAD_GATE_MIN = 209.0  # the captain's figure (2026-11-05); only he changes it
 UPLOAD_GATE_MAX_BYTES = 64 * 1024
+REFERENCE_LIST = REPO_ROOT / "results" / "reference_list.json"  # names the current reference list (guard below)
+REFERENCE_LIST_MAX_BYTES = 64 * 1024  # the pointer file
+REFERENCE_SUMS_MAX_BYTES = 1024 * 1024  # the list file it names (sha256sum output)
+SUMS_LINE = re.compile(r"^([0-9a-f]{64}) [ *](.+)$")  # one line of sha256sum output: hash, mode character, name
 FINAL_PHASE_LIMIT = 2  # scored submissions per board for the whole final phase
 LEDGER_FIELDS = ["utc_time", "board", "mode", "file", "upload_name", "sha256", "server_status", "server_id",
                  "http_status", "git_commit", "disclosure", "idempotency_key", "fields", "note", "detail", "origin",
@@ -974,6 +986,100 @@ def upload_gate_guard(path: str | Path | None = None, now: datetime | None = Non
                  "captain lifts it earlier")
 
 
+def _inside(path: Path, root: Path) -> str | None:
+    """`path` relative to `root` (both resolved, links followed) as a POSIX string, or None when it lies outside."""
+    try:
+        return path.resolve().relative_to(root.resolve()).as_posix()
+    except (OSError, RuntimeError, ValueError):
+        return None
+
+
+def reference_list_guard(sha: str, board: str, pointer: str | Path | None = None,
+                         repo: str | Path | None = None) -> Guard:
+    """The guard "reference list" (AGENTS.md: an official upload sends only a file whose sha256 is in the current
+    reference list). The pointer (REFERENCE_LIST, JSON: {"list", "list_sha256", "boards": {board: [names]}, ...}) names
+    the list, sha256sum output at a path inside `repo` (default REPO_ROOT). Passes only when the pointer parses (at
+    most REFERENCE_LIST_MAX_BYTES), the list lies inside the repository, exists and has the sha256 `list_sha256`,
+    `board` has names, each of which occurs in the list exactly once, and `sha` is the list's hash for one of them.
+    Every refusal says which condition failed and names the pointer file; no message holds a path outside `repo`."""
+    name = "reference list"
+    root = Path(repo) if repo is not None else REPO_ROOT
+    p = Path(pointer) if pointer is not None else REFERENCE_LIST
+    shown = _inside(p, root) or p.name  # never a path outside the repository
+
+    def refuse(why: str) -> Guard:
+        return Guard(name, False, f"{shown}: {why}")
+
+    try:
+        if p.stat().st_size > REFERENCE_LIST_MAX_BYTES:
+            return refuse(f"the pointer is larger than {REFERENCE_LIST_MAX_BYTES} bytes")
+        rec = json.loads(p.read_text())
+    except (OSError, ValueError) as e:
+        return refuse(f"cannot read the reference list pointer ({type(e).__name__})")
+    if not isinstance(rec, dict):
+        return refuse("the pointer is not a JSON object")
+    rel, want, boards = rec.get("list"), rec.get("list_sha256"), rec.get("boards")
+    if not isinstance(rel, str) or not rel.strip():
+        return refuse('the pointer names no list ("list" is not a non-empty string)')
+    if not isinstance(want, str) or not re.fullmatch(r"[0-9a-f]{64}", want):
+        return refuse('"list_sha256" is not 64 lowercase hex characters')
+    if not isinstance(boards, dict) or not all(
+            isinstance(v, list) and all(isinstance(n, str) and n for n in v) for v in boards.values()):
+        return refuse('"boards" is not an object of board keys with lists of names')
+    parts = Path(rel).parts
+    if Path(rel).is_absolute() or rel.startswith("~") or ".." in parts or re.search(r"[\x00-\x1f]", rel):
+        return refuse("the list it names lies outside the repository (an absolute path, ~, .. or a control "
+                      "character)")
+    list_path = root / rel
+    inside = _inside(list_path, root)
+    if inside is None:
+        return refuse("the list it names lies outside the repository (through a link)")
+    try:
+        st = list_path.stat()
+        if not stat.S_ISREG(st.st_mode):
+            return refuse(f"the list {inside} is not a regular file")
+        if st.st_size > REFERENCE_SUMS_MAX_BYTES:
+            return refuse(f"the list {inside} is larger than {REFERENCE_SUMS_MAX_BYTES} bytes")
+        raw = list_path.read_bytes()
+    except FileNotFoundError:
+        return refuse(f"the list {inside} does not exist")
+    except OSError as e:
+        return refuse(f"cannot read the list {inside} ({type(e).__name__})")
+    got = hashlib.sha256(raw).hexdigest()
+    if got != want:
+        return refuse(f"the list {inside} has sha256 {got[:12]}, not the pointer's list_sha256 {want[:12]}")
+    entries: list[tuple[str, str]] = []
+    try:
+        lines = raw.decode().splitlines()
+    except UnicodeDecodeError:
+        return refuse(f"the list {inside} is not UTF-8")
+    for i, line in enumerate(lines, 1):
+        if not line.strip():
+            continue
+        m = SUMS_LINE.match(line)
+        if m is None:
+            return refuse(f"line {i} of the list {inside} is not sha256sum output")
+        entries.append((m.group(1), m.group(2)))
+    names = boards.get(board)
+    if not names:
+        return refuse(f"the pointer lists no names for board {board}")
+    counts: dict[str, int] = {}
+    for _, n in entries:
+        counts[n] = counts.get(n, 0) + 1
+    for n in names:
+        if counts.get(n, 0) != 1:
+            return refuse(f"{board}'s name {n} occurs {counts.get(n, 0)} times in the list {inside}, not once")
+    hits = [n for h, n in entries if h == sha and n in names]
+    list_name = Path(inside).name
+    if hits:
+        return Guard(name, True, f"{list_name}: {hits[0]}")
+    others = [n for h, n in entries if h == sha]
+    if others:
+        return refuse(f"sha256 {sha[:12]} is in the list {list_name} only as {', '.join(others[:5])}, none of them "
+                      f"one of {board}'s names ({', '.join(names)})")
+    return refuse(f"sha256 {sha[:12]} is not in the list {list_name} ({board}'s names: {', '.join(names)})")
+
+
 def _dgx_provenance(dgx: DgxFile, changed: list[str] | None, local_head: str) -> Guard:
     """An official upload of a pulled file needs the DGX repo at the local HEAD and a tree that passes the clean-tree
     rule."""
@@ -1106,6 +1212,7 @@ def prepare(file: str | Path, board: str, official: bool, confirm: str | None, *
         state = "+unknown" if dgx_changed is None else "+dirty" if dgx_changed else ""  # unknown: git status failed
         plan.remote, plan.origin = dgx.path, f"{DGX_HOST}:{dgx.path}@{dgx.head}{state}"
         provenance = _dgx_provenance(dgx, dgx_changed, commit)
+    listed = reference_list_guard(sha, board, repo=repo)  # the plan's sha256: for a pulled file, its copy's
     if not official:
         if confirm:
             warnings.append("--confirm is ignored without --official: this is a format check")
@@ -1113,6 +1220,8 @@ def prepare(file: str | Path, board: str, official: bool, confirm: str | None, *
             warnings.append(f"an official upload of this file would fail build stamp: {built.detail}")
         if provenance is not None and not provenance.ok:
             warnings.append(f"an official upload of this file would fail dgx provenance: {provenance.detail}")
+        if not listed.ok:
+            warnings.append(f"an official upload of this file would fail reference list: {listed.detail}")
         if b is not None and ident:  # a format check the server stored anyway would land on the phase's split
             guards.append(_phase_guard(base, b, official=False))
         return plan
@@ -1130,6 +1239,7 @@ def prepare(file: str | Path, board: str, official: bool, confirm: str | None, *
     guards.append(built)
     if provenance is not None:
         guards.append(provenance)
+    guards.append(listed)  # always, so that a refused plan shows every reason
     _reuse_earlier_request(plan, rows)
     fmt_ok = any(r.get("mode") == "format" and r.get("board") == board and r.get("sha256") == sha
                  and r.get("server_status") == "format_ok" for r in rows)
