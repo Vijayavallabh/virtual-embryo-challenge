@@ -1,0 +1,58 @@
+Tries K11 (commit 74a6d20a33cce5496c76d93dcaee3985d613230b): raw_did CLOSED: no request; raw_c3 CLOSED: no request
+A labelled reading for a ruling, NOT the adoption rule: only x1 and x2 are counted cross-knockout folds; r12 is a replicate fold that never counts; x2's reference is WT E9.5, where K7 found reverts flattered.
+raw against K9's committed raw scores: not checked: tasks folder absent in this checkout
+Checks raw_did: x1: raw_did - raw no; x1: raw_did - raw_did_perm no; r12: raw_did - raw yes; r12: raw_did - raw_did_perm yes; x2: raw_did - raw not below -0.3 no
+Checks raw_c3: x1: raw_c3 - raw yes; x1: raw_c3 - raw_c3_perm yes; r12: raw_c3 - raw no; r12: raw_c3 - raw_c3_perm no; x2: raw_c3 - raw not below -0.3 yes
+Blocked, not built: raw_lvc: design not on record: R4's variance is a replicate difference of the two Gata4 runs, which holds the fold's truth on x1 and r12 and does not exist for x1's one-file Mab21l2 source; R4 names no estimator for its signal and run terms on one file; the only source-side level-windowed shrinkage on record is K4's (eb_factor.py, t3_factor_eb), already a counted try.; raw_r8: design not on record: R8 gives its rank as 1-3, no method for the sparse remainder, the interior-stage residual or the removal of the part monotone in level it asks for first, and no damping strength (it removes the in-basis run part; the brief's damping of the outside part is not in the report).
+Reported, deciding nothing:
+x1 T3/Mab21l2->Gata4rep2 (counted cross-knockout fold): floor 50.00, raw 46.47, raw_did 46.24, raw_did_perm 46.50, raw_c3 46.83, raw_c3_perm 46.12
+    raw - floor: -3.53 (sd 0.35, ahead 0 of 10)
+    raw_did - raw: -0.23 (sd 0.15, ahead 1 of 10)
+    raw_c3 - raw: +0.36 (sd 0.15, ahead 10 of 10)  passes
+    raw_did - raw_did_perm: -0.26 (sd 0.18, ahead 0 of 10)
+    raw_c3 - raw_c3_perm: +0.71 (sd 0.21, ahead 10 of 10)  passes
+    raw_did_perm - raw: +0.03 (sd 0.13, ahead 5 of 10)
+    raw_c3_perm - raw: -0.35 (sd 0.15, ahead 0 of 10)
+    floor         severity no_response 10
+    raw           severity r2_gate 10
+    raw_did       severity r2_gate 10
+    raw_did_perm  severity r2_gate 10
+    raw_c3        severity r2_gate 10
+    raw_c3_perm   severity r2_gate 10
+    skills raw_did - raw: de_score -0.004, de_direction -0.002, severity_slope +0.000, mmd_u -0.004, variogram +0.001
+    skills raw_c3 - raw: de_score +0.004, de_direction +0.007, severity_slope +0.000, mmd_u +0.001, variogram +0.007
+    cosine of log(phi_raw) with D -0.126; with log(phi_c3) 0.972; Mesp1-lineage labels in the contrast 13
+x2 T3/Gata4->Mab21l2 (counted cross-knockout fold): floor 50.00, raw 50.08, raw_did 49.36, raw_did_perm 49.42, raw_c3 49.96, raw_c3_perm 52.50
+    raw - floor: +0.08 (sd 0.47, ahead 5 of 10)
+    raw_did - raw: -0.73 (sd 0.21, ahead 0 of 10)
+    raw_c3 - raw: -0.12 (sd 0.17, ahead 3 of 10)
+    raw_did - raw_did_perm: -0.06 (sd 0.20, ahead 5 of 10)
+    raw_c3 - raw_c3_perm: -2.53 (sd 2.75, ahead 0 of 10)
+    raw_did_perm - raw: -0.67 (sd 0.16, ahead 0 of 10)
+    raw_c3_perm - raw: +2.41 (sd 2.87, ahead 9 of 10)  passes
+    floor         severity no_response 10
+    raw           severity r2_gate 10
+    raw_did       severity beta_gate 3, r2_gate 7
+    raw_did_perm  severity r2_gate 10
+    raw_c3        severity r2_gate 10
+    raw_c3_perm   severity r2_gate 6, scored 4
+    skills raw_did - raw: de_score -0.012, de_direction -0.005, severity_slope +0.000, mmd_u -0.018, variogram -0.005
+    skills raw_c3 - raw: de_score -0.000, de_direction +0.004, severity_slope +0.000, mmd_u -0.010, variogram -0.010
+    cosine of log(phi_raw) with D -0.470; with log(phi_c3) 0.962; Mesp1-lineage labels in the contrast 15
+r12 T3/Gata4rep1->rep2 (replicate fold, never counted): floor 50.00, raw 63.86, raw_did 65.20, raw_did_perm 62.67, raw_c3 63.53, raw_c3_perm 63.63
+    raw - floor: +13.86 (sd 0.60, ahead 10 of 10)  passes
+    raw_did - raw: +1.34 (sd 0.54, ahead 10 of 10)  passes
+    raw_c3 - raw: -0.33 (sd 0.34, ahead 2 of 10)
+    raw_did - raw_did_perm: +2.53 (sd 0.57, ahead 10 of 10)  passes
+    raw_c3 - raw_c3_perm: -0.10 (sd 0.41, ahead 3 of 10)
+    raw_did_perm - raw: -1.19 (sd 0.32, ahead 0 of 10)
+    raw_c3_perm - raw: -0.23 (sd 0.37, ahead 2 of 10)
+    floor         severity no_response 10
+    raw           severity scored 10
+    raw_did       severity scored 10
+    raw_did_perm  severity scored 10
+    raw_c3        severity scored 10
+    raw_c3_perm   severity scored 10
+    skills raw_did - raw: de_score +0.027, de_direction +0.021, severity_slope -0.001, mmd_u +0.001, variogram +0.001
+    skills raw_c3 - raw: de_score +0.001, de_direction -0.003, severity_slope -0.005, mmd_u -0.012, variogram -0.004
+    cosine of log(phi_raw) with D -0.433; with log(phi_c3) 0.958; Mesp1-lineage labels in the contrast 15

@@ -1,0 +1,10 @@
+run folder on the DGX: ~/v/vec-campaign-h7/runs/harness/k11_factor_arms (campaign checkout)
+commit: 74a6d20a33cce5496c76d93dcaee3985d613230b (branch campaign/t3-bfix)
+tree at start (bytes of git status --porcelain): 0
+tree at end (bytes): 0
+started UTC: 2026-11-13T20:04:03Z
+ended UTC: 2026-11-13T20:09:54Z
+CPU only, 8 BLAS threads, one process per fold
+commands: experiments/t3_decomp/k11_factor_arms.py run --task x1|x2|r12 --out <runs>; then read --runs <runs> --out <reading>
+tasks/: the three task files as written by the run; reading.json and reading.txt: the fixed reading as the script wrote it
+validity: the reading's own line says "not checked" because the branch does not hold K9's results folder; the main session compared the raw arm with K9's committed per-seed scores (experiments/t3_decomp/results/k9_residual/tasks on main) on all three folds: 10 seeds each, largest difference 0, and the floor likewise

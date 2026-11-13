@@ -1,0 +1,367 @@
+{
+ "void": false,
+ "why": [],
+ "commit": "74a6d20a33cce5496c76d93dcaee3985d613230b",
+ "tasks": {
+  "x1": {
+   "counted_fold": true,
+   "not_built": [],
+   "mean_score": {
+    "floor": 50.0,
+    "raw": 46.47338794948598,
+    "raw_did": 46.24201323302398,
+    "raw_did_perm": 46.50203670784975,
+    "raw_c3": 46.83293803018187,
+    "raw_c3_perm": 46.12263515164618
+   },
+   "paired": {
+    "raw - floor": {
+     "mean": -3.5266120505140224,
+     "sd": 0.34584140910797123,
+     "ahead": 0,
+     "n": 10,
+     "passes": false
+    },
+    "raw_did - raw": {
+     "mean": -0.23137471646199614,
+     "sd": 0.14889694568845233,
+     "ahead": 1,
+     "n": 10,
+     "passes": false
+    },
+    "raw_c3 - raw": {
+     "mean": 0.3595500806958981,
+     "sd": 0.15337966391452218,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "raw_did - raw_did_perm": {
+     "mean": -0.2600234748257648,
+     "sd": 0.1782504281211405,
+     "ahead": 0,
+     "n": 10,
+     "passes": false
+    },
+    "raw_c3 - raw_c3_perm": {
+     "mean": 0.7103028785357012,
+     "sd": 0.20778309659482622,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "raw_did_perm - raw": {
+     "mean": 0.028648758363768678,
+     "sd": 0.12510194092830623,
+     "ahead": 5,
+     "n": 10,
+     "passes": false
+    },
+    "raw_c3_perm - raw": {
+     "mean": -0.35075279783980307,
+     "sd": 0.15496727025195395,
+     "ahead": 0,
+     "n": 10,
+     "passes": false
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "raw": {
+     "r2_gate": 10
+    },
+    "raw_did": {
+     "r2_gate": 10
+    },
+    "raw_did_perm": {
+     "r2_gate": 10
+    },
+    "raw_c3": {
+     "r2_gate": 10
+    },
+    "raw_c3_perm": {
+     "r2_gate": 10
+    }
+   },
+   "skill_diff_minus_raw": {
+    "raw_did": {
+     "de_score": -0.004393046965870206,
+     "de_direction": -0.0024496890756593504,
+     "severity_slope": 0.0,
+     "mmd_u": -0.003907456163765,
+     "variogram": 0.0010685491713464668
+    },
+    "raw_c3": {
+     "de_score": 0.004008964350005012,
+     "de_direction": 0.006824189204690728,
+     "severity_slope": 0.0,
+     "mmd_u": 0.0007668196646538727,
+     "variogram": 0.007434323012829175
+    }
+   },
+   "record": {
+    "fold": "T3/Mab21l2->Gata4rep2",
+    "reference": "E8.75",
+    "source_mesp1_labels_in_contrast": 13,
+    "source_nonmesp1_labels": 4,
+    "cosine_log_phi_raw_did": -0.12593998094890838,
+    "cosine_log_phi_raw_log_phi_c3": 0.9721908731325639,
+    "sections": 35
+   }
+  },
+  "x2": {
+   "counted_fold": true,
+   "not_built": [],
+   "mean_score": {
+    "floor": 50.0,
+    "raw": 50.084296911174725,
+    "raw_did": 49.35615351661996,
+    "raw_did_perm": 49.41805041903092,
+    "raw_c3": 49.96163503377222,
+    "raw_c3_perm": 52.495390034312166
+   },
+   "paired": {
+    "raw - floor": {
+     "mean": 0.08429691117472657,
+     "sd": 0.4690720345284868,
+     "ahead": 5,
+     "n": 10,
+     "passes": false
+    },
+    "raw_did - raw": {
+     "mean": -0.7281433945547604,
+     "sd": 0.20868905058137469,
+     "ahead": 0,
+     "n": 10,
+     "passes": false
+    },
+    "raw_c3 - raw": {
+     "mean": -0.12266187740251056,
+     "sd": 0.17075095924521352,
+     "ahead": 3,
+     "n": 10,
+     "passes": false
+    },
+    "raw_did - raw_did_perm": {
+     "mean": -0.06189690241095676,
+     "sd": 0.20386281897589936,
+     "ahead": 5,
+     "n": 10,
+     "passes": false
+    },
+    "raw_c3 - raw_c3_perm": {
+     "mean": -2.533755000539948,
+     "sd": 2.751874023645898,
+     "ahead": 0,
+     "n": 10,
+     "passes": false
+    },
+    "raw_did_perm - raw": {
+     "mean": -0.6662464921438037,
+     "sd": 0.16162889276087905,
+     "ahead": 0,
+     "n": 10,
+     "passes": false
+    },
+    "raw_c3_perm - raw": {
+     "mean": 2.4110931231374373,
+     "sd": 2.8734150433956094,
+     "ahead": 9,
+     "n": 10,
+     "passes": true
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "raw": {
+     "r2_gate": 10
+    },
+    "raw_did": {
+     "beta_gate": 3,
+     "r2_gate": 7
+    },
+    "raw_did_perm": {
+     "r2_gate": 10
+    },
+    "raw_c3": {
+     "r2_gate": 10
+    },
+    "raw_c3_perm": {
+     "r2_gate": 6,
+     "scored": 4
+    }
+   },
+   "skill_diff_minus_raw": {
+    "raw_did": {
+     "de_score": -0.011549624322952128,
+     "de_direction": -0.005323408162038723,
+     "severity_slope": 0.0,
+     "mmd_u": -0.017538582254456286,
+     "variogram": -0.004763309220219452
+    },
+    "raw_c3": {
+     "de_score": -0.0003737037752793215,
+     "de_direction": 0.0035519492913307416,
+     "severity_slope": 0.0,
+     "mmd_u": -0.010054842545765458,
+     "variogram": -0.009948923234776896
+    }
+   },
+   "record": {
+    "fold": "T3/Gata4->Mab21l2",
+    "reference": "E9.5",
+    "source_mesp1_labels_in_contrast": 15,
+    "source_nonmesp1_labels": 10,
+    "cosine_log_phi_raw_did": -0.47029539186738245,
+    "cosine_log_phi_raw_log_phi_c3": 0.9623265089232058,
+    "sections": 90
+   }
+  },
+  "r12": {
+   "counted_fold": false,
+   "not_built": [],
+   "mean_score": {
+    "floor": 50.0,
+    "raw": 63.863084540451226,
+    "raw_did": 65.20374924391606,
+    "raw_did_perm": 62.67027015887337,
+    "raw_c3": 63.52914242217189,
+    "raw_c3_perm": 63.628294051996974
+   },
+   "paired": {
+    "raw - floor": {
+     "mean": 13.863084540451217,
+     "sd": 0.5968677948354641,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "raw_did - raw": {
+     "mean": 1.340664703464843,
+     "sd": 0.5378530205086968,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "raw_c3 - raw": {
+     "mean": -0.3339421182793217,
+     "sd": 0.3420551588823795,
+     "ahead": 2,
+     "n": 10,
+     "passes": false
+    },
+    "raw_did - raw_did_perm": {
+     "mean": 2.5334790850426905,
+     "sd": 0.5667066970731498,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "raw_c3 - raw_c3_perm": {
+     "mean": -0.09915162982508932,
+     "sd": 0.4133653820297222,
+     "ahead": 3,
+     "n": 10,
+     "passes": false
+    },
+    "raw_did_perm - raw": {
+     "mean": -1.1928143815778476,
+     "sd": 0.31791487215062897,
+     "ahead": 0,
+     "n": 10,
+     "passes": false
+    },
+    "raw_c3_perm - raw": {
+     "mean": -0.23479048845423237,
+     "sd": 0.3676240962584611,
+     "ahead": 2,
+     "n": 10,
+     "passes": false
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "raw": {
+     "scored": 10
+    },
+    "raw_did": {
+     "scored": 10
+    },
+    "raw_did_perm": {
+     "scored": 10
+    },
+    "raw_c3": {
+     "scored": 10
+    },
+    "raw_c3_perm": {
+     "scored": 10
+    }
+   },
+   "skill_diff_minus_raw": {
+    "raw_did": {
+     "de_score": 0.027482353622622534,
+     "de_direction": 0.02067926523352437,
+     "severity_slope": -0.0009996397020042846,
+     "mmd_u": 0.0012698845572823524,
+     "variogram": 0.0011206052263474154
+    },
+    "raw_c3": {
+     "de_score": 0.0010789386166384306,
+     "de_direction": -0.0028176084552850476,
+     "severity_slope": -0.004750002062493264,
+     "mmd_u": -0.012060363303822607,
+     "variogram": -0.004049456773518289
+    }
+   },
+   "record": {
+    "fold": "T3/Gata4rep1->rep2",
+    "reference": "E8.75",
+    "source_mesp1_labels_in_contrast": 15,
+    "source_nonmesp1_labels": 9,
+    "cosine_log_phi_raw_did": -0.43259948431437145,
+    "cosine_log_phi_raw_log_phi_c3": 0.9576761540825056,
+    "sections": 46
+   }
+  }
+ },
+ "k9_reproduction": "not checked: tasks folder absent in this checkout",
+ "arms": {
+  "raw_did": {
+   "supported": false,
+   "readable": true,
+   "not_built_on": [],
+   "checks": {
+    "x1: raw_did - raw": false,
+    "x1: raw_did - raw_did_perm": false,
+    "r12: raw_did - raw": true,
+    "r12: raw_did - raw_did_perm": true,
+    "x2: raw_did - raw not below -0.3": false
+   },
+   "verdict": "CLOSED: no request"
+  },
+  "raw_c3": {
+   "supported": false,
+   "readable": true,
+   "not_built_on": [],
+   "checks": {
+    "x1: raw_c3 - raw": true,
+    "x1: raw_c3 - raw_c3_perm": true,
+    "r12: raw_c3 - raw": false,
+    "r12: raw_c3 - raw_c3_perm": false,
+    "x2: raw_c3 - raw not below -0.3": true
+   },
+   "verdict": "CLOSED: no request"
+  }
+ },
+ "blocked": {
+  "raw_lvc": "design not on record: R4's variance is a replicate difference of the two Gata4 runs, which holds the fold's truth on x1 and r12 and does not exist for x1's one-file Mab21l2 source; R4 names no estimator for its signal and run terms on one file; the only source-side level-windowed shrinkage on record is K4's (eb_factor.py, t3_factor_eb), already a counted try.",
+  "raw_r8": "design not on record: R8 gives its rank as 1-3, no method for the sparse remainder, the interior-stage residual or the removal of the part monotone in level it asks for first, and no damping strength (it removes the in-basis run part; the brief's damping of the outside part is not in the report)."
+ },
+ "label": "A labelled reading for a ruling, NOT the adoption rule: only x1 and x2 are counted cross-knockout folds; r12 is a replicate fold that never counts; x2's reference is WT E9.5, where K7 found reverts flattered."
+}
