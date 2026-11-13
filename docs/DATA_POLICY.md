@@ -1100,3 +1100,24 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     the port; the upload guard), each briefed with the reading rules; none scored anything.
   - **Not opened:** the challenge site, the Data page, the board index by hand, Slack, the organisers' mail, any
     external dataset, any held-out value.
+- 2026-11-13 (j), process notes from the campaign's sixth round (`docs/PLAN.md` decision log 2026-11-13 (dd) and
+  (ee)); written by the AI assistant.
+  - **Reads of practice targets.** None new before the rows of (ee). Reading N33 (row first) aggregated per-seed
+    scores that tries E24, E25 and E28 had committed and counted; it opened no data file and scored nothing.
+    `experiments/gate/forecast_built.py` likewise reads committed results only, through the estimator's door.
+  - **Agents.** One read-only workflow of eight agents on another model mapped the boards from the committed record,
+    proposed lifts and judged them (wf_97454932-ce5): no run, no data file, no web. Two more workflows wrote code and
+    ledger text for the round's diagnostics and heart arms in their own worktrees, with synthetic tests only: no
+    released data file was opened by them, and nothing was scored. One cold adversarial agent read named files of
+    the record.
+  - **A slip by the adversarial agent, reported by it.** One of its greps over `*.md` from the repository root lacked
+    the exclusions for `docs/research/` and the research notes, and printed one line each from
+    `docs/research/engineering.md` and `experiments/research_2026_11_sota/notes/task-f.md`. By its report neither
+    line held a hidden-target value, a per-board figure or a knockout finding; nothing from them was passed on or
+    used, and the main session did not open either file. Its brief stated the exclusions; the lesson is the same as
+    2026-11-04 (e): a brief for an agent that can grep names the exact `--exclude-dir` list, which this one did in
+    words only.
+  - **Not opened:** the challenge site, the Data page, the board index by hand, Slack, the organisers' mail, any
+    external dataset beyond a listing of the JAX atlas's public cell-type table on the DGX (stage and broad
+    cell-type names per embryo of the registered legal set, to judge a proposal; no expression value), any held-out
+    value.
