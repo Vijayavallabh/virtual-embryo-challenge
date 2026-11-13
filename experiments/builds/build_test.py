@@ -93,6 +93,7 @@ G_MOM_EDIT_CATEGORIES = ("cm", "endocardium")
 T1_BASES = ("pooled", "lib3", "mid")
 T1_DISSECTED_LIBRARY = "3"
 T1_MID_STREAM = 21  # the mid base's draw of other-library cells: default_rng([seed, 21]), apart from every build stream
+T1_MID_CM_SHARE = 0.60  # the one cardiomyocyte share the mid base is ruled for (docs/S2_RULES.md: T1's s2)
 
 
 def _view(key: str, task: str, kind: str, setting: str | None, test_board: str, roles: dict[str, tuple[str, float]],
@@ -341,11 +342,12 @@ def build_t1(a) -> dict:
     if a.base == "lib3" and (not a.hold_unbracketed or a.strong_null or a.herd):
         sys.exit("--base lib3 is refused with --no-hold-unbracketed, --strong-null or --herd: each would fit or pull a "
                  "step on library 3's cells alone, which no try has read (experiments/harness/TRIES.md, row R6)")
-    if a.base == "mid" and (a.cm_share is None or a.blood_share is not None or a.lib3_pair or not a.hold_unbracketed
-                            or a.strong_null or a.herd):
+    if a.base == "mid" and (a.cm_share != T1_MID_CM_SHARE or a.blood_share is not None or a.lib3_pair
+                            or not a.hold_unbracketed or a.strong_null or a.herd):
         sys.exit("--base mid builds one file, T1's second upload by the captain's ruling of 2026-11-13 (row R7 of "
-                 "experiments/harness/TRIES.md; try T33): it needs --cm-share, and it is refused with --blood-share, "
-                 "--lib3-pair, --no-hold-unbracketed, --strong-null or --herd, which no try has read on that base")
+                 f"experiments/harness/TRIES.md; try T33): it needs --cm-share {T1_MID_CM_SHARE:.2f}, and it is "
+                 "refused with another share, --blood-share, --lib3-pair, --no-hold-unbracketed, --strong-null or "
+                 "--herd, which no try has read on that base")
     hygiene_on = _feng_hygiene_on(a.feng_hygiene, a.hold_unbracketed)  # R2's refusals come before anything is read
     prior = _t1_down_prior(a.strong_null, a.hold_unbracketed, hygiene_on)  # T12's, likewise
     union = _t1_union(hygiene_on)

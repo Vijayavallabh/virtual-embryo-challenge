@@ -456,6 +456,7 @@ def test_t1_base_mid_keeps_library_three_and_a_fraction_of_the_others(bt, t1_env
     with pytest.raises(SystemExit, match="--lib3-pair names the second file"):  # that flag belongs to --base lib3
         bt.main(["t1", "--base", "mid", "--cm-share", "0.6", "--lib3-pair", "--out", str(tmp_path / "no.h5ad")])
     for bad in (["--base", "mid"], ["--base", "mid", "--cm-share", "0.6", "--blood-share", "0.3"],
+                ["--base", "mid", "--cm-share", "0.45"],  # only the ruled share
                 ["--base", "mid", "--cm-share", "0.6", "--no-hold-unbracketed"],
                 ["--base", "mid", "--cm-share", "0.6", "--strong-null"],
                 ["--base", "mid", "--cm-share", "0.6", "--herd"]):
@@ -466,6 +467,49 @@ def test_t1_base_mid_keeps_library_three_and_a_fraction_of_the_others(bt, t1_env
     with pytest.raises(SystemExit, match="do not separate library 3"):
         bt.main([*argv, "--out", str(tmp_path / "no.h5ad")])
     assert len(seen) == 2
+    # a chamber category with no library-3 cell: the mid base is undefined there, and nothing is built
+    lib_no3 = np.where(lab == "V-CM", 1, np.arange(ref.n_obs) % 3 + 1)
+    lib_no3[np.flatnonzero(lab != "V-CM")[:3]] = 3  # library 3 exists, but holds no V-CM cell
+    ref.obs_names = [f"bc{i}-1_{k}" for i, k in enumerate(lib_no3)]
+    with pytest.raises(SystemExit, match="library 3 holds no cell of the chamber category"):
+        bt.main([*argv, "--out", str(tmp_path / "no.h5ad")])
+    assert len(seen) == 2
+
+
+def test_t1_mid_rows_shares_and_edge_cases(bt):
+    """`_t1_mid_rows` on its own (row R7): library 3 ends at (s + 1) / 2 of each mixed category up to rounding, a
+    category held by library 3 alone is kept whole, the rows are unique, sorted and repeat for a seed, and another
+    seed keeps other cells."""
+    import anndata as ad
+
+    rng = np.random.default_rng(3)
+    lab = np.array(["V-CM"] * 400 + ["Endocardium-1"] * 300 + ["Epicardium"] * 60)
+    lib = np.r_[rng.choice([1, 2, 3], size=400, p=[0.2, 0.15, 0.65]), rng.choice([1, 3], size=300, p=[0.7, 0.3]),
+                np.full(60, 3)]
+    a = ad.AnnData(X=np.zeros((760, 2), dtype=np.float32))
+    a.obs["celltype"] = lab
+    a.obs_names = [f"bc{i}-1_{k}" for i, k in enumerate(lib)]
+    in3 = lib == 3
+    rows, rec = bt._t1_mid_rows(a, in3, 1_000_001)
+    again, _ = bt._t1_mid_rows(a, in3, 1_000_001)
+    other, _ = bt._t1_mid_rows(a, in3, 1_000_002)
+    assert np.array_equal(rows, again) and not np.array_equal(rows, other)
+    assert len(np.unique(rows)) == len(rows) and np.all(np.diff(rows) > 0)
+    assert np.all(np.isin(np.flatnonzero(in3), rows))  # every library-3 cell
+    cats = {"cm": lab == "V-CM", "endocardium": lab == "Endocardium-1", "epicardium": lab == "Epicardium"}
+    assert set(rec) == set(cats)
+    kept = np.zeros(a.n_obs, dtype=bool)
+    kept[rows] = True
+    for c, m in cats.items():
+        s = in3[m].mean()
+        n3, n_o = int((m & in3).sum()), int((m & ~in3 & kept).sum())
+        assert n_o == int(round(int((m & ~in3).sum()) * s / (1 + s)))
+        assert rec[c]["library3_share_in_file"] == pytest.approx(s)
+        assert rec[c]["library3_share_in_pool"] == pytest.approx(n3 / (n3 + n_o))
+        if s < 1:
+            assert abs(n3 / (n3 + n_o) - (s + 1) / 2) <= 1.0 / (n3 + n_o)
+        else:
+            assert n_o == 0 and rec[c]["library3_share_in_pool"] == 1.0
 
 
 @pytest.mark.parametrize("argv", [["--feng-hygiene"], []])  # [] : the default since the build commit of (k)
