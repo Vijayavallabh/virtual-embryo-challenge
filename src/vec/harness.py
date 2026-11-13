@@ -1033,7 +1033,7 @@ def _psb_size(ctx: BuildContext) -> Stage:
 
 def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixture", herd: bool = False,
          move_coupling: str = t2_build.MOVE_COUPLINGS[0], local_perm: bool = False,
-         draw: str = t2_build.DRAWS[0], t_mix: float | None = None) -> Stage:
+         draw: str = t2_build.DRAWS[0], t_mix: float | None = None, arrange: str | None = None) -> Stage:
     """The T2 embryo pipeline (docs/PLAN.md 4.2): displacement interpolation between the brackets at the target's
     time fraction (vec.t2_build.interpolate_clouds: fused Gromov-Wasserstein coupling, proper rotation, McCann moves,
     a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages. t_pos:
@@ -1044,7 +1044,14 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     (the entry) or "aligned" (try E10: the moves from vec.core.aligned_coupling in the rotated common frame).
     local_perm (try E15): after the draw, the positions are re-arranged among the drawn cells within coarse type and a
     fixed radius (vec.t2_build.local_type_permutation); the expression rows stay where they are. draw: "uniform" (the
-    entry) or "midpoint" (try E13, vec.t2_build._midpoint_draw; it needs the inputs' counts layer)."""
+    entry) or "midpoint" (try E13, vec.t2_build._midpoint_draw; it needs the inputs' counts layer). arrange (the embryo
+    arrangement batch, campaign/emb-arr; default None, the entry): "balanced", "patchy" or "shuffle", the drawn
+    expression rows re-arranged over the unchanged positions by `bracket_arrangement` after the expression step."""
+    if arrange is not None:
+        if arrange not in ARRANGE_MODES:
+            raise ValueError(f"arrange must be one of {ARRANGE_MODES}, got {arrange!r}")
+        if local_perm:
+            raise ValueError("arrange and local_perm both re-arrange the cells; use one of them")
     t = ctx.task
     before, after = ctx.inputs["before"], ctx.inputs["after"]
     lo, hi = t.role_days["before"], t.role_days["after"]
@@ -1083,6 +1090,8 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     else:
         raise ValueError(f"unknown expression step {expression!r}")
     coords = res.coords
+    if arrange is not None:
+        X = X[bracket_arrangement(coords, res.stage, arrange, ctx.seed)]
     if local_perm:
         coords = coords[nbhd_rearrangement(coords, t2_build.drawn_labels(res, before.obs["group"], after.obs["group"]),
                                            ctx.seed)]
@@ -1218,6 +1227,40 @@ def nbhd_rearrangement(coords: np.ndarray, labels: np.ndarray, seed: int) -> np.
 
 def _fgw_perm(ctx: BuildContext) -> Stage:
     return _fgw(ctx, local_perm=True)
+
+
+# the embryo arrangement batch (campaign/emb-arr; experiments/harness/TRIES.md "Pruned before running", task g): fgw's
+# drawn rows re-arranged over fgw's own positions. One value per constant, none tuned: k is the scorer's neighbourhood
+# (NBHD_K, as try E15), the patches' k-means seed the midpoint draw's, the streams apart from every other step's.
+ARRANGE_MODES = ("balanced", "patchy", "shuffle")
+ARRANGE_STREAMS = {"balanced": 21, "patchy": 22, "shuffle": 23}  # apart from the interpolation's 0-9 and E15's 20
+
+
+def bracket_arrangement(coords: np.ndarray, stage: np.ndarray, mode: str, seed: int) -> np.ndarray:
+    """`at` with the arranged expression X[at] at the unchanged positions `coords` (stage: each position's bracket in
+    fgw's draw). "balanced": vec.t2_build.balanced_bracket_labels (k = NBHD_K) then relabel_rows; "patchy":
+    patchy_bracket_labels then relabel_rows; "shuffle": span_shuffle (k = NBHD_K), the rows permuted within groups of
+    NBHD_K nearby positions whatever their bracket. Stream [seed, ARRANGE_STREAMS[mode]]."""
+    if mode not in ARRANGE_MODES:
+        raise ValueError(f"mode must be one of {ARRANGE_MODES}, got {mode!r}")
+    rng = np.random.default_rng([seed, ARRANGE_STREAMS[mode]])
+    if mode == "shuffle":
+        return t2_build.span_shuffle(coords, NBHD_K, rng)
+    labels = (t2_build.balanced_bracket_labels(coords, stage, NBHD_K, rng) if mode == "balanced"
+              else t2_build.patchy_bracket_labels(coords, stage, rng))
+    return t2_build.relabel_rows(coords, stage, labels)
+
+
+def _fgw_balanced(ctx: BuildContext) -> Stage:
+    return _fgw(ctx, arrange="balanced")
+
+
+def _fgw_patchy(ctx: BuildContext) -> Stage:
+    return _fgw(ctx, arrange="patchy")
+
+
+def _fgw_shuffle(ctx: BuildContext) -> Stage:
+    return _fgw(ctx, arrange="shuffle")
 
 
 def _fgw_midpoint(ctx: BuildContext) -> Stage:
@@ -1684,6 +1727,27 @@ CANDIDATES = {
                                       "cost of expression and position in the rotated common frame "
                                       "(vec.core.aligned_coupling; FGW's rotation kept)",
                               "alpha": t2_build.INTERP_ALPHA, "scope": "whole"}, requires=_interp),
+    # the embryo arrangement batch (campaign/emb-arr; experiments/harness/TRIES.md "Pruned before running", task g;
+    # experiments/research_2026_11/REPORT.md section 6): fgw's drawn rows re-arranged over fgw's own positions
+    "fgw_balanced": Candidate("fgw_balanced", frozenset({"T2"}), (), _fgw_balanced,
+                              {"what": "fgw with its drawn cells re-arranged over its own positions so that each "
+                                       "position's k nearest positions hold the two brackets in the mixture's "
+                                       "proportion as closely as one greedy pass allows (vec.t2_build."
+                                       "balanced_bracket_labels); displaced cells swapped in nearest pairs "
+                                       "(relabel_rows)", "k": NBHD_K, "stream": ARRANGE_STREAMS["balanced"],
+                               "scope": "whole"}, requires=_interp),
+    "fgw_patchy": Candidate("fgw_patchy", frozenset({"T2"}), (), _fgw_patchy,
+                            {"what": "fgw with its drawn cells re-arranged over its own positions so that bracket "
+                                     "membership comes in spatially coherent patches, one bracket per k-means patch "
+                                     "of the positions, round(1 / min(p, 1 - p)) patches (vec.t2_build."
+                                     "patchy_bracket_labels); displaced cells swapped in nearest pairs (relabel_rows)",
+                             "kmeans_seed": t2_build.PATCH_KMEANS_SEED, "stream": ARRANGE_STREAMS["patchy"],
+                             "scope": "whole"}, requires=_interp),
+    "fgw_shuffle": Candidate("fgw_shuffle", frozenset({"T2"}), (), _fgw_shuffle,
+                             {"what": "fgw with its drawn rows permuted at random within groups of k nearby "
+                                      "positions, the span of the scorer's k-nearest-cell neighbourhoods, whatever "
+                                      "their bracket or type (vec.t2_build.span_shuffle)", "k": NBHD_K,
+                              "stream": ARRANGE_STREAMS["shuffle"], "scope": "whole"}, requires=_interp),
     # embryo try E12 (experiments/harness/TRIES.md, registered before its run): the s2 shape variant fgw_shape0 with
     # try E10's aligned moves, so its mapped later bracket lands on the side position says. Both embryo tasks were
     # selected on when fgw_shape0 was chosen, so neither counts for it under the adoption rule (decide excludes them)

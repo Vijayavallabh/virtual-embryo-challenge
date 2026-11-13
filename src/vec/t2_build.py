@@ -2286,3 +2286,155 @@ def local_type_permutation(coords, labels, radius: float, sweeps: int, rng: np.r
         who[pos_p[allowed]], who[pos_q[allowed]] = row_q[allowed], row_p[allowed]
     return np.argsort(who)
 
+
+
+# ------------------------------------------------------------------- embryo arrangement batch (campaign/emb-arr)
+# Each function below re-arranges fgw's drawn expression rows over fgw's own positions and returns `at`, a permutation
+# with the arranged expression X[at] at the unchanged positions (position i takes the row at[i]). fgw places every drawn
+# cell at its own moved position, so its bracket membership over space is whatever the two moved clouds give; these
+# steps change only which drawn cell sits at which position, never a cell, a position, a count or a bracket's number.
+PATCH_KMEANS_SEED = MIDPOINT_KMEANS_SEED  # the patches' deterministic k-means: the sibling midpoint draw's random_state
+
+
+def _bracket_codes(coords, stage) -> tuple[np.ndarray, np.ndarray]:
+    C = _as_coords(coords)
+    s = np.asarray(stage).reshape(-1)
+    if s.shape[0] != C.shape[0]:
+        raise ValueError(f"stage must have one entry per position ({C.shape[0]}), got {s.shape[0]}")
+    if not np.isin(s, (0, 1)).all():
+        raise ValueError("stage must hold brackets 0 (before) and 1 (after) only")
+    return C, s.astype(np.int64)
+
+
+def balanced_bracket_labels(coords, stage, k: int, rng: np.random.Generator) -> np.ndarray:
+    """A bracket for each position, with each bracket's number as in `stage`, balanced over space in one greedy pass:
+    positions are visited in the order rng.permutation(n); each takes the bracket that brings the later bracket's
+    share among the already-labelled positions of its k nearest positions (itself included) closest to the mixture's
+    own share p = n_after / n (the later bracket when c1 + 1/2 < p (c + 1), c of those positions labelled, c1 of them
+    later; on an exact tie the bracket with more positions still to fill, the earlier on a tie of that too). A bracket
+    whose number is used up takes no more positions. With one bracket only, `stage` comes back unchanged."""
+    C, s = _bracket_codes(coords, stage)
+    n = C.shape[0]
+    k = _whole(k, "k", 1)
+    left = np.array([(s == 0).sum(), (s == 1).sum()], dtype=np.int64)
+    if left.min() == 0:
+        return s.copy()
+    p = left[1] / n
+    near = np.asarray(cKDTree(C).query(C, k=min(k, n))[1]).reshape(n, -1)
+    out = np.full(n, -1, dtype=np.int64)
+    for i in rng.permutation(n):
+        lab = out[near[i]]
+        c, c1 = int((lab >= 0).sum()), int((lab == 1).sum())
+        goal = p * (c + 1)
+        if c1 + 0.5 < goal:
+            b = 1
+        elif c1 + 0.5 > goal:
+            b = 0
+        else:
+            b = int(left[1] > left[0])
+        if left[b] == 0:
+            b = 1 - b
+        out[i] = b
+        left[b] -= 1
+    return out
+
+
+def patch_count(stage) -> int:
+    """The patchy arm's number of patches: the fewest for which the smaller bracket fills one whole patch at the
+    mixture's proportion, round(1 / min(p, 1 - p)), at least 2 (p the later bracket's share)."""
+    s = np.asarray(stage).reshape(-1)
+    p = float((s == 1).mean())
+    return max(2, int(round(1.0 / min(p, 1.0 - p))))
+
+
+def patchy_bracket_labels(coords, stage, rng: np.random.Generator) -> np.ndarray:
+    """A bracket for each position, with each bracket's number as in `stage`, in spatially coherent patches: a
+    deterministic k-means of the positions into `patch_count(stage)` patches (lloyd, n_init 1, random_state
+    PATCH_KMEANS_SEED); the smaller bracket (the later on a tie) fills whole patches in the order rng.permutation of
+    the patches until its number is reached, the last of them split by taking its positions nearest its own k-means
+    centre; every other position takes the larger bracket. So bracket membership is one bracket per patch, the
+    mixture's proportion held to within one (split) patch. With one bracket only, `stage` comes back unchanged."""
+    from sklearn.cluster import KMeans
+
+    C, s = _bracket_codes(coords, stage)
+    n = C.shape[0]
+    counts = np.array([(s == 0).sum(), (s == 1).sum()], dtype=np.int64)
+    if counts.min() == 0:
+        return s.copy()
+    small = 0 if counts[0] < counts[1] else 1
+    m = min(patch_count(s), n)
+    km = KMeans(n_clusters=m, init="k-means++", n_init=1, algorithm="lloyd", random_state=PATCH_KMEANS_SEED).fit(C)
+    patch = km.labels_
+    out = np.full(n, 1 - small, dtype=np.int64)
+    need = int(counts[small])
+    for j in rng.permutation(m):
+        if need == 0:
+            break
+        members = np.flatnonzero(patch == j)
+        if members.size > need:
+            d = np.linalg.norm(C[members] - km.cluster_centers_[j], axis=1)
+            members = members[np.argsort(d, kind="stable")[:need]]
+        out[members] = small
+        need -= members.size
+    return out
+
+
+def relabel_rows(coords, stage, labels) -> np.ndarray:
+    """`at` such that position i takes row at[i] and the bracket of row at[i] is labels[i]. A position whose bracket
+    is unchanged keeps its own row. The rows displaced from positions that change from before to after and those
+    displaced from positions that change from after to before (equal in number, since each bracket's number is kept)
+    are exchanged in pairs, paired by the least total distance between the two positions (an exact assignment,
+    scipy's linear_sum_assignment): a set of swaps, each cell moving to the nearest position its new bracket allows."""
+    from scipy.optimize import linear_sum_assignment
+
+    C, s = _bracket_codes(coords, stage)
+    lab = np.asarray(labels).reshape(-1).astype(np.int64)
+    if lab.shape != s.shape or not np.isin(lab, (0, 1)).all():
+        raise ValueError("labels must give bracket 0 or 1 for every position")
+    if (lab == 1).sum() != (s == 1).sum():
+        raise ValueError("labels must keep each bracket's number")
+    at = np.arange(s.shape[0])
+    to_after, to_before = np.flatnonzero((s == 0) & (lab == 1)), np.flatnonzero((s == 1) & (lab == 0))
+    if to_after.size:
+        d = np.linalg.norm(C[to_after][:, None, :] - C[to_before][None, :, :], axis=2)
+        r, c = linear_sum_assignment(d)
+        at[to_after[r]], at[to_before[c]] = to_before[c], to_after[r]
+    return at
+
+
+def span_groups(coords, k: int, rng: np.random.Generator) -> np.ndarray:
+    """A partition of the positions into groups of k nearby positions, the span of the scorer's k-nearest-cell
+    neighbourhoods: positions visited in the order rng.permutation(n); each position not yet grouped forms a group with
+    its k - 1 nearest positions not yet grouped (fewer only when fewer are left). Returns each position's group
+    index."""
+    C = _as_coords(coords)
+    n = C.shape[0]
+    k = _whole(k, "k", 1)
+    tree = cKDTree(C)
+    group = np.full(n, -1, dtype=np.int64)
+    g = 0
+    for i in rng.permutation(n):
+        if group[i] >= 0:
+            continue
+        want = min(k, int((group < 0).sum()))
+        q = min(n, 2 * k)
+        while True:
+            idx = np.asarray(tree.query(C[i], k=q)[1]).reshape(-1)
+            free = idx[group[idx] < 0]
+            if free.size >= want or q == n:
+                break
+            q = min(n, 2 * q)
+        group[free[:want]] = g
+        g += 1
+    return group
+
+
+def span_shuffle(coords, k: int, rng: np.random.Generator) -> np.ndarray:
+    """`at` for the span-matched local shuffle: the rows permuted at random within each group of `span_groups(coords,
+    k, rng)` (one rng.permutation per group, in group order), every row ending within its own k-position group."""
+    group = span_groups(coords, k, rng)
+    at = np.arange(group.size)
+    for g in range(int(group.max()) + 1 if group.size else 0):
+        members = np.flatnonzero(group == g)
+        at[members] = members[rng.permutation(members.size)]
+    return at
