@@ -27,6 +27,8 @@ its branches (`campaign/trend2`, `round6/n32-fgw-warm`, `campaign/k9`, `campaign
 diagnostics and results only. Put to the captain: whether the Task 3 batch question goes into the follow-up planned
 about 19 Nov; whether any pruned line should be run regardless of its recorded reason; whether the campaign
 continues.
+Checked last: the full test suite at fb180e2 in a DGX campaign checkout (lock, lint, 1,273 tests pass; clean tree). The
+DGX reference checkout is untouched at dc7b6ae; no job is running on either machine.
 **2026-11-13, late evening: one heart change kept and ruled in, a third rehearsal, all format checks done, and a
 guard on scored uploads (decision log 2026-11-13 (s) to (cc)).** After the generator tests the captain forwarded
 further side notes; each was checked against the record first. What followed: (1) Heart rows H11 and H11s:
