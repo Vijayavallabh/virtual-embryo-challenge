@@ -22,10 +22,11 @@ scored submissions per board for the whole phase, which cannot be withdrawn. So 
   an official upload sends only a file whose sha256 is in it), so that a superseded file left in an older archive
   folder with a clean build stamp cannot go: the committed pointer REFERENCE_LIST (results/reference_list.json,
   rewritten after each rehearsal) names the list (sha256sum output, a path inside the repository), its sha256 and, per
-  board, the list's names meant for that board. The pointer must parse (at most REFERENCE_LIST_MAX_BYTES), the list
-  must lie inside the repository, exist and have that sha256, the board must have names, each of which occurs in the
-  list exactly once, and the plan's sha256 (for a pulled file, its copy's) must be the list's hash for one of the
-  board's names. A format check never refuses on it, and warns when an official upload of the file would fail it;
+  board, the list's names meant for that board (and, as "held", names no board may send, with the reason). The pointer
+  must parse (at most REFERENCE_LIST_MAX_BYTES), the list must lie inside the repository, exist and have that sha256,
+  the board must have names, none held, each of which occurs in the list exactly once, and the plan's sha256 (for a
+  pulled file, its copy's) must be the list's hash for one of the board's names. A format
+  check never refuses on it, and warns when an official upload of the file would fail it;
 - ties an official upload to the code that built the file (guard "build stamp"): the stamp `<file>.stamp.json` next to
   the file's real path (written with the file by vec.io.write_submission; see vec.provenance) must exist and parse (at
   most STAMP_MAX_BYTES), its sha256 must be the plan's (the bytes that will be sent), it must say the build was clean
@@ -997,11 +998,13 @@ def _inside(path: Path, root: Path) -> str | None:
 def reference_list_guard(sha: str, board: str, pointer: str | Path | None = None,
                          repo: str | Path | None = None) -> Guard:
     """The guard "reference list" (AGENTS.md: an official upload sends only a file whose sha256 is in the current
-    reference list). The pointer (REFERENCE_LIST, JSON: {"list", "list_sha256", "boards": {board: [names]}, ...}) names
-    the list, sha256sum output at a path inside `repo` (default REPO_ROOT). Passes only when the pointer parses (at
-    most REFERENCE_LIST_MAX_BYTES), the list lies inside the repository, exists and has the sha256 `list_sha256`,
-    `board` has names, each of which occurs in the list exactly once, and `sha` is the list's hash for one of them.
-    Every refusal says which condition failed and names the pointer file; no message holds a path outside `repo`."""
+    reference list). The pointer (REFERENCE_LIST, JSON: {"list", "list_sha256", "boards": {board: [names]}, "held":
+    {name: reason}, ...}) names the list, sha256sum output at a path inside `repo` (default REPO_ROOT); "held"
+    (optional) names list entries no board may send, such as files a ruling replaced before a new list exists. Passes
+    only when the pointer parses (at most REFERENCE_LIST_MAX_BYTES), the list lies inside the repository, exists and
+    has the sha256 `list_sha256`, `board` has names, none of them held, each of which occurs in the list exactly once,
+    and `sha` is the list's hash for one of them. Every refusal says which condition failed and names the pointer file;
+    no message holds a path outside `repo`."""
     name = "reference list"
     root = Path(repo) if repo is not None else REPO_ROOT
     p = Path(pointer) if pointer is not None else REFERENCE_LIST
@@ -1026,6 +1029,10 @@ def reference_list_guard(sha: str, board: str, pointer: str | Path | None = None
     if not isinstance(boards, dict) or not all(
             isinstance(v, list) and all(isinstance(n, str) and n for n in v) for v in boards.values()):
         return refuse('"boards" is not an object of board keys with lists of names')
+    held = rec.get("held", {})
+    if not isinstance(held, dict) or not all(isinstance(n, str) and n and isinstance(r, str) and r.strip()
+                                             for n, r in held.items()):
+        return refuse('"held" is not an object of names with reasons')
     parts = Path(rel).parts
     if Path(rel).is_absolute() or rel.startswith("~") or ".." in parts or re.search(r"[\x00-\x1f]", rel):
         return refuse("the list it names lies outside the repository (an absolute path, ~, .. or a control "
@@ -1067,6 +1074,8 @@ def reference_list_guard(sha: str, board: str, pointer: str | Path | None = None
     for _, n in entries:
         counts[n] = counts.get(n, 0) + 1
     for n in names:
+        if n in held:
+            return refuse(f"{board}'s name {n} is held by the pointer ({held[n]})")
         if counts.get(n, 0) != 1:
             return refuse(f"{board}'s name {n} occurs {counts.get(n, 0)} times in the list {inside}, not once")
     hits = [n for h, n in entries if h == sha and n in names]

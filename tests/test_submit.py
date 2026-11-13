@@ -906,24 +906,51 @@ def test_a_board_name_that_occurs_twice_or_not_at_all_in_the_list_refuses(env):
     assert _official(f).ok
 
 
+def test_a_held_name_refuses_and_held_must_be_names_with_reasons(env):
+    """A name the pointer holds back ("held": {name: reason}) refuses any board that lists it, with the reason."""
+    f = _checked(env, "a.h5ad", 0)
+    good = json.loads(env.pointer.read_text())
+    name = env.names[T1][0]
+    env.pointer.write_text(json.dumps({**good, "held": {name: "replaced by a ruling"}}))
+    assert f"T1:test's name {name} is held by the pointer (replaced by a ruling)" in _refused_for_the_list(env, f)
+    for bad in (["x"], {"x": ""}, {"": "why"}, {"x": 1}):
+        env.pointer.write_text(json.dumps({**good, "held": bad}))
+        assert '"held" is not an object of names with reasons' in _refused_for_the_list(env, f)
+    env.pointer.write_text(json.dumps({**good, "held": {"builds/other.h5ad": "not this board's"}}))
+    assert _official(f).ok
+    assert len(env.api.posts(official=True)) == 1
+
+
+HELD_HEART = ("builds/T2heart_s1.h5ad", "builds/T2heart_s2.h5ad")  # the pre-trend heart files of builds_38616fe
+
+
 def test_the_committed_reference_list_pointer_holds():
-    """results/reference_list.json parses, names a list inside the repository with its sha256, and its four test
-    boards together hold exactly the list's names, each once."""
+    """results/reference_list.json parses and names a list inside the repository with its sha256. Its boards and its
+    held names together hold exactly the list's names, each once. The heart board is absent and its two names are held
+    until the third rehearsal writes a new list: builds_38616fe predates the heart ruling of 2026-11-13 (decision log
+    (w)), so its heart files are the ones the ruling replaced, and no hash of the list passes the heart board."""
     root = Path(__file__).resolve().parents[1]
     pointer = root / "results" / "reference_list.json"
     rec = json.loads(pointer.read_text())
     sums = root / rec["list"]
     assert sums.is_file() and vs._inside(sums, root) == rec["list"]
     assert hashlib.sha256(sums.read_bytes()).hexdigest() == rec["list_sha256"]
-    assert set(rec["boards"]) == {"T1:test", "T2:heart:test_extrap", "T2:embryo:test_interp", "T3:bcatenin"}
     entries = [vs.SUMS_LINE.match(line).groups() for line in sums.read_text().splitlines() if line.strip()]
-    names = [n for b in rec["boards"].values() for n in b]
+    if rec["list"] == "experiments/builds/results/builds_38616fe.SHA256SUMS":
+        assert set(rec["boards"]) == {"T1:test", "T2:embryo:test_interp", "T3:bcatenin"}
+        assert set(rec["held"]) == set(HELD_HEART) and all(rec["held"].values())
+    else:  # a later list: the four test boards again
+        assert set(rec["boards"]) == {"T1:test", "T2:heart:test_extrap", "T2:embryo:test_interp", "T3:bcatenin"}
+    held = list(rec.get("held", {}))
+    names = [n for b in rec["boards"].values() for n in b] + held
     assert sorted(names) == sorted(n for _, n in entries) and len(set(names)) == len(names)
-    for board, listed in rec["boards"].items():  # a board passes its own hashes, and only those
+    for board in ("T1:test", "T2:heart:test_extrap", "T2:embryo:test_interp", "T3:bcatenin"):
+        listed = rec["boards"].get(board, [])
         own = [h for h, n in entries if n in listed]
-        for h, _ in entries:
+        for h, n in entries:  # a board passes its own hashes, and only those; a held name passes no board
             g = vs.reference_list_guard(h, board, pointer=pointer, repo=root)
             assert g.ok is (h in own), g.detail
+            assert not (g.ok and n in held), g.detail
             if g.ok:
                 assert g.detail == f"{sums.name}: {next(n for x, n in entries if x == h and n in listed)}"
     assert not vs.reference_list_guard("0" * 64, "T1:test", pointer=pointer, repo=root).ok
