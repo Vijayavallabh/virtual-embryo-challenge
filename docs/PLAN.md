@@ -2255,7 +2255,8 @@ in `docs/ORGANIZER_QUESTIONS.md` (decision log 2026-11-10 (w), (x)).
     ever fill a second upload.
 - 2026-11-12 (c), the campaign's second wave, its second cold review and what goes to the captain. Written by the AI
   assistant. Every number is in `experiments/harness/TRIES.md` (rows E19 to E25, N23, T27 to T30); tries after it: T1
-  27, embryo 27, heart 3, T3 9. No upload, build, rule or gate record changed.
+  27, embryo 27, heart 3, T3 9. No upload, build, rule or gate record changed. Corrected and completed by 2026-11-13
+  (a), which holds where the two differ.
   - **What the campaign found: the samples differ more than the stages do.** On every board the scored distance between
     a prediction and its target is dominated by how each sample was measured, and the entries were built as if only
     development separated them.
@@ -2396,3 +2397,89 @@ in `docs/ORGANIZER_QUESTIONS.md` (decision log 2026-11-10 (w), (x)).
     backtests. As a reading beside it: if E7.75 has E8.0's profile or one of its own, the embryo board would score well
     above the 60 the estimate uses (66 to 80 on the practice tasks for fgw alone), which is worth about 3 to 5 Overall
     at the chances above; nothing here brings the total near 209.
+- 2026-11-13 (a), the campaign's third wave: an independent check of entry 2026-11-12 (c), the corrections it led to,
+  four more runs, a third cold review, and the requests as they now stand. Written by the AI assistant. Where this entry
+  and (c) differ, this one holds. Numbers: `experiments/harness/TRIES.md` rows E24 to E28, N23, N24, T27 to T31, with
+  their dated corrections, and `docs/DATA_NOTES.md`. Tries after it: T1 28, embryo 35, heart 3, T3 9. No upload, build,
+  rule or gate record changed, and the captain has ruled on none of the requests.
+  - **The independent check** (workflow wf_29b8901f-e70). Five checkers, none of which wrote the record, recomputed
+    entry (c)'s figures and rule applications from the stored per-seed results: about 1,950 figures and statements.
+    Every number held to rounding. What did not hold was the presentation: 58 findings, none about a hidden target, most
+    small, a few material. Each finding was to be attacked by a fresh agent; 16 of those 38 attempts failed on the
+    account's usage limit, so the AI assistant judged the unattacked findings itself against the stored files. Three
+    side notes to the captain on 2026-11-12 and 13 had raised the two largest points first.
+  - **Corrections to entry (c).**
+    - *Request R-A was priced on six practice tasks and left out three.* Diagnostic E26 scored the same kind of file on
+      the second profile jump. In the request's own unit (the better of two uploads against today's pair) those three
+      tasks give +3.67, 0.00 and -3.09. So the largest scored loss of the switch is 3.09, not 1.42, and the break-even
+      chance is 0.24 only if those tasks are set aside; with them it is 0.37. The reason (c) gave for setting them
+      aside, that the factor is over-sized across that jump, was read from scratch figures after the result; it is a
+      reading after the fact and is stored nowhere. E26's own reading, fixed before its run, speaks of the rendering's
+      gain, not of the factor's alone, as (c) and the ledger's headline had it.
+    - *"An aligned first upload gains nothing as a pair (+0.02)"* is +1.72 on the E7.5 backtest, the practice task built
+      most like the test pair, and -1.58 on E7.25, with about nothing on the four other tasks of that run.
+    - *Wording that claimed more than the files show.* "On the two counted backtests nothing beats fgw": nothing beats
+      it on both; on E7.5 alone `fgw_aligned` (+2.13) and fgw_shape0 (+1.83) do. "The samples differ more than the
+      stages do" on "every board": it was read on the embryo ladder and on T1's libraries. "Each MERFISH sample carries
+      its own profile": some neighbours share one (E8.0, E8.25_late and E8.5). "+9.7 to +22.4" is the library-3 base at
+      the truth's depth against the same base as released; against today's pooled base that depth-matched base leads by
+      +2.7 and +15.2. "Three practice targets" are three tasks on two target stages (E8.0 twice, E8.25_late), and the
+      test pair's own factor, E7.5 to E8.0, was applied in no scored task: the factors that were applied agree with it
+      at Spearman 0.82 and 0.95 (N23). The estimate aside's "66 to 80" holds for targets as deep as E8.0; the shallow
+      target with a profile of its own scored 61. The earlier chance "0.6 to 0.7" was the AI assistant's unrecorded
+      estimate before (c).
+    - *Two places where (c) read as settled what is open.* The research pass's question on T1's depth is put to the
+      captain as R-B, not "answered" by it. And R-B does ask for a choice the post-exposure block closed: no thinned
+      second upload is requested, but drawing the base from library 3 is a depth choice in effect, which is why the
+      advice is to decline.
+    - *Try counts.* Rows E25 and E26 had left four reads uncounted that rule 4 and rows E22 and E23 count (`fgw_aligned`
+      on four new truths; three candidates on E26's tasks). Recounted: embryo 32 before tries E28.
+  - **New results.**
+    - *The top-up's fidelity (diagnostics N24 and N24b, target-free; try E27).* On a round trip inside one deep released
+      stage (thin to the shallow bracket's depth, render back, compare with held-out cells of the same stage) the top-up
+      as built closes 0.92 to 0.96 of the gap, and 0.96 to 0.98 with 100 neighbours instead of 15; a posterior draw adds
+      nothing. Scored on the six practice tasks, the 100-neighbour version is not kept: +0.23 on average over the three
+      like-E8.0 tasks against a bar of 0.3, -0.65 on the task nearest its target, -4.23 and -1.86 on the counted
+      backtests. The round trip predicted the size where it gained and the wrong sign elsewhere.
+    - *Depth across a real gap (try T31).* Predicting E9.5's chamber cells from E10.5's libraries, each at the truth's
+      own cell mix: the base at 0.40 of the truth's depth scores 60.96, the pooled base (0.75) 74.00 and library 3's
+      base (0.89) 74.99. So depth carries across a real one-day gap with no thinning anywhere, and it outweighs kind
+      there (the shallow base is the truth's own kind). Library 3's base is ahead of the pooled base in 10 of 10 seeds
+      by +0.99, under the reading's bar of 1.0: by the rule fixed beforehand, unclear.
+    - *The pair table on all nine practice tasks (tries E28).* Better of two against today's pair, on half, late, new1,
+      x1, x2, x3 (targets that share their deeper bracket's profile), then new2 (deep, a profile of its own), E7.5
+      (shallow, a profile of its own) and E7.25 (like its earlier bracket). Second upload `fgw_aligned_series`: +6.69,
+      +3.56, +3.42, +3.67, 0.00, -3.09, then +0.86, -1.42, 0.00; mean +1.52. Second upload `fgw_shape0_hi`, the plain
+      depth top-up in E7.5's geometry: +3.75, +0.68, +1.35, +3.98, +0.05, +0.97, then +0.77, -1.14, 0.00; mean +1.15.
+      With `fgw_aligned` first and `fgw_aligned_series` second: +6.69, +3.56, +3.42, +3.67, -1.21, -3.78, then +0.73,
+      +0.30, -1.59; mean +1.31.
+  - **The third cold review** (the devil-advocate skill). The claim under attack: nothing further is worth running under
+    the rules before the freeze, so the experiments should stop. Its strongest point: R-B is worth more than half a
+    point under most priors and was set aside for lack of evidence at a real gap, not for a small gain; conceded. Its
+    proposed run (library 3 predicted from E9.5 with two kinds of base) cannot be built, because E9.5's two libraries
+    are one kind and one depth; the mirror image can, and is try T31. Its second attack, a depth top-up on the heart, is
+    rebutted: counts per cell fall along the heart's ladder, the try that followed that trend lost 3.9 (H3), and the
+    heart's depth is closed. Its third, that going on costs nothing, is conceded. Verdict: the claim to stop did not
+    stand; T31 and E28 were run.
+  - **The requests as they now stand.** Nothing changes until the captain rules.
+    - *R-A, embryo second upload. Three options.* (1) `fgw_aligned_series`, the outcome of the rules fixed before tries
+      E24, E25 and E28: the highest expectation at every chance read (+0.58, +0.97 and +1.35 board points at 0.3, 0.45
+      and 0.6 for the chance that E7.75 shares its deeper bracket's profile, the other cases weighted equally); ahead of
+      today's pair on five practice tasks, level on two, behind on two (-1.42 and -3.09). (2) `fgw_shape0_hi`: +0.45,
+      +0.74 and +1.03; ahead on seven tasks, level on one, behind on one (-1.14). (3) Today's fgw_shape0: zero by
+      definition. Break-even chance for option 1, counting every other case as the E7.5 loss: 0.24 on the three tasks
+      built from E7.5 and E8.0's group, 0.37 with the three second-jump tasks; for option 2, 0.37 and 0.39. The AI
+      assistant's chance for "measured like E8.0" is 0.4 to 0.5, a judgement. View: option 1 by the pre-set rules;
+      option 2 if the captain weighs the worst case over the mean, at a cost of about 0.2 board points of expectation.
+      The embryo board counts half in Overall.
+    - *The first embryo upload's shape.* On the test pair today's first upload is flatter than every released stage
+      (thinnest axis 0.24 of its RMS radius against 0.36 to 0.53), and the aligned moves give 0.43. As the first of a
+      pair the aligned file is +1.72 on E7.5 and -1.59 on E7.25 against fgw, -1.21 and -0.69 on two second-jump tasks,
+      -0.13 on new2 and nothing elsewhere: by E25's and E28's rules it is not requested, and try E11's veto stands. The
+      captain can reopen it; both numbers are here for that.
+    - *R-B, Task 1 first upload.* As in (c): a depth choice in effect, to be ruled on the released-data table alone or
+      declined; the advice is to decline. T31 adds that the stakes are real at a real gap, in both directions.
+    - *R-C, one procedural question to the organisers.* As in (c): optional.
+  - **Not done.** The check's second stage did not run for most findings (usage limit). The rendered file is byte-
+    reproducible only at a fixed BLAS thread count (its scores move by up to 0.001 between runs); a determinism check at
+    the build's 16 threads is owed before any such file is uploaded.
