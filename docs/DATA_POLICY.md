@@ -1009,3 +1009,18 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   - **A slip in handling, not in data.** The first launch command failed on a quoting error before any build started;
     it left a partial script in the new rehearsal folder, which the real script replaced. Nothing ran on either
     machine. The launch, the checks and the comparisons were then run from script files.
+- 2026-11-13 (f), process notes from the fourth screened leaderboard read (`docs/PLAN.md` decision log 2026-11-13
+  (h)); written by the AI assistant.
+  - **The route.** One screening agent read `https://api.virtualembryo.ai/challenge/overall` twice, unauthenticated,
+    with default headers and no parameter (HTTP 200, no challenge page): first for the response's key names and value
+    types only, then through a filter that printed the allowed fields. No other route or page was requested, nothing
+    that identifies the team or a person was sent, the response was not saved, and no repository file was read.
+  - **What the main session received.** Human-track overall ranks 1 to 15 with their totals, the number of Human
+    entries ranked (124), and that Mithril is not listed.
+  - **Withheld by the screening agent, by class, values never printed:** per-board and per-task scores in the rows;
+    the board descriptor list; the task list; the baseline block; the counts block; the partner team's separate
+    list; team names and affiliations; agent-track rows; phase and update metadata.
+  - **Seen in passing by the screening agent.** Its key-names-only pass showed the keys of the per-board score
+    fields, which are board identifiers (four of them), and the task identifiers. No value from them was printed,
+    and the names were not passed on. The distinct values of the track field were printed on purpose, to select the
+    track.

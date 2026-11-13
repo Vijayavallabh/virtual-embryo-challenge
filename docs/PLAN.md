@@ -2866,3 +2866,45 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     5. *Research and a cold review,* as the captain asks, aimed at these tries and at the forecast's widest terms.
   - **Compute found on 2026-11-13, 13:10 IST.** DGX: GPUs 2 to 7 free, load 8 on 192 cores, 1.6 TB free on `/home`,
     no build running. This machine: load 90 on 64 cores; A100s 0 and 1 with 67 and 78 GB free.
+- 2026-11-13 (h), a fourth screened read of the public leaderboard, under the captain's words in (g) ("keep checking
+  your estimated score against the leaderboard's top entry as your north star"): 2026-11-13 07:52 UTC, one screening
+  agent, two requests to the one public route, no parameter corrected (`docs/DATA_POLICY.md` 2026-11-13 (f)). Overall
+  totals and ranks only; calibration, never a threshold or evidence for a try, an adoption or a method choice. Written
+  by the AI assistant.
+  - **Human Team overall, ranks 1-15:** 215.41, 209.31, 205.32, 203.66, 203.52, 203.00, 202.36, 202.05, 200.58, 200.25,
+    199.05, 199.00, 198.66, 198.56, 197.14. 124 Human entries are ranked. Mithril has not entered.
+  - **Since the read of 2026-11-09** (2026-11-10 (b)): first and second are unchanged; third rose by 1.66 (203.66 to
+    205.32), sixth, the last of the six prize places, by 2.42 (200.58 to 203.00), fifteenth by 7.99 (189.15 to 197.14);
+    seven of the top fifteen are new and 33 more entries are ranked (91 to 124).
+  - **Against our own estimate** (184, range 170 to 198; upper reading 191.5, range 176.8 to 204.0): the sixth place
+    now stands above the committed range and near the upper reading's top edge, and the fifteenth near the committed
+    range's top. The captain's upload gate stays 209: later leaderboard reads do not move it (section 8).
+- 2026-11-13 (i), the cold review of the plan in (g) and what it changed. Written by the AI assistant.
+  - **The review** (the devil-advocate skill: one cold reviewer on another model, given only the claim, its evidence
+    and the reading rules; it read committed files). The claim under attack: that building and testing the within-type
+    step on the heart and a count-model ratio form of it on T1, the heart and the embryo is the best open use of the
+    nine days and the eight GPUs, with about a 0.3 chance that one passes adoption, worth +0.5 to +2 Overall.
+    - *Its strongest point.* Reading N25 found B0's momentum anti-correlated with the next change on heart-like pairs
+      (-0.30 and -0.13), and N23 found each imaging sample carries its own per-gene profile; so a momentum fitted
+      between two heart samples mostly carries their measurement difference. On T1 the step is already in the uploads
+      (R3b), its leading axis does not carry from the backtest pair to the test pair (N21: 0.20 and 0.29 against
+      ceilings of 0.91 and 0.84), and about 40% of its gain needs no development (T23).
+    - *Its three attacks, each checked from committed files.* (1) The heart momentum may have the wrong sign per
+      metacell as it has per group: open; N25 reads group means and the within-type step removes them (T24: with each
+      type's pseudobulk held the T1 step kept +0.66 and +0.67), so only a reading of per-metacell factors can say.
+      (2) A heart gain counts half and the heart's expression gains are small: landed; about +0.1 to +0.4 Overall if
+      the step passes, not +0.5 to +2. (3) No T1 counted cut is unread: landed (`configs/pseudo_tasks.yaml`: the two
+      E9.5 to E10.5 cuts, both read by rows T11 to T26), so a learned form cannot produce adoption evidence on T1.
+    - *Its estimate that the plan was a mistake:* 70%. Verdict: stop.
+  - **What changes.** The plan of (g), item 3, is withdrawn as written. Not built: the count-model ratio form for T1
+    (no unread cut) and for the embryo (row E21 already showed by score that what loses there is the in-between state
+    itself, not the decoded cells' fidelity). Kept: a target-free reading of whether within-lineage factors persist
+    from one heart step to the next, on pairs that end at E9.5 (E10.5, the heart backtests' only target, is not read),
+    against a no-development split; the counted heart try runs only if that reading passes, with its row first. The
+    forecast of (g), item 1, goes on.
+  - **On the GPUs.** After this review the AI assistant knows of no GPU run whose result could change an upload
+    under the standing rules: the learned classes are limited by what is known about the hidden samples, not by
+    fidelity or capacity (E21), and every board's counted targets except the heart's have been read many times. The
+    six free DGX GPUs and this machine's two are therefore left idle for now, which departs from the captain's
+    words in (g) ("no GPU sits idle"); the captain is told so in the same report, with the one class-closing
+    measurement that could still be run on them if the captain wants it regardless of its odds.
