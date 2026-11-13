@@ -1,0 +1,18 @@
+{
+ "version": 1,
+ "file": "n28.txt",
+ "sha256": "2431267fe9009ad4218834b5aaa1742273c9ef27079e27168f920cfaedb05461",
+ "size": 1315,
+ "commit": "ee01992ebbc9e0ca6b9ca15bad379efa2e4f670e",
+ "clean": true,
+ "why": null,
+ "unclean": [],
+ "unclean_count": 0,
+ "start_commit": "ee01992ebbc9e0ca6b9ca15bad379efa2e4f670e",
+ "started_utc": "2026-11-13T17:18:37+00:00",
+ "created_utc": "2026-11-13T17:18:48+00:00",
+ "hostname": "p01r10srv05",
+ "argv": [
+  "experiments/t1_strong_null/n28_lib3_overlap.py"
+ ]
+}

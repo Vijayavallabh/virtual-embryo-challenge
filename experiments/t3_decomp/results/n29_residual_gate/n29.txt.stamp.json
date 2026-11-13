@@ -1,0 +1,18 @@
+{
+ "version": 1,
+ "file": "n29.txt",
+ "sha256": "a5536c6e3800d4e60cf354864af4b2314aadef7d7318acae63b03bd1112c992b",
+ "size": 1906,
+ "commit": "ee01992ebbc9e0ca6b9ca15bad379efa2e4f670e",
+ "clean": true,
+ "why": null,
+ "unclean": [],
+ "unclean_count": 0,
+ "start_commit": "ee01992ebbc9e0ca6b9ca15bad379efa2e4f670e",
+ "started_utc": "2026-11-13T17:18:37+00:00",
+ "created_utc": "2026-11-13T17:18:43+00:00",
+ "hostname": "p01r10srv05",
+ "argv": [
+  "experiments/t3_decomp/n29_residual_gate.py"
+ ]
+}

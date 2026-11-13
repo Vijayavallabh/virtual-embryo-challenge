@@ -1,0 +1,15 @@
+N28 (experiments/harness/TRIES.md): does the library-3 base already carry the strong-null bet?
+Verdict: open (kill if base A's redundancy >= 0.70, otherwise open)
+
+Base A (first upload, --base lib3): redundancy 0.185 (share of the top 200 eligible genes by reference level whose dp rank is below 400)
+  down_prior_order genes (capped at 200): 200, their median dp -0.004
+  share of dp's bottom 400 genes with reference level rank below 800: 0.278
+  Spearman of dp with -pb_ref (pb_ref >= 0.25): -0.085
+
+Base B (second upload, --base mid; reported only): redundancy 0.185 (share of the top 200 eligible genes by reference level whose dp rank is below 400)
+  down_prior_order genes (capped at 200): 200, their median dp -0.024
+  share of dp's bottom 400 genes with reference level rank below 800: 0.407
+  Spearman of dp with -pb_ref (pb_ref >= 0.25): 0.092
+
+Inputs (sha256): {'T1/E10.5_RNA.h5ad': '974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c', 'experiments/t1_direction/results/held_flat_genes.csv': 'd78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c', 'experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv': 'c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841'}
+Commit ee01992ebbc9e0ca6b9ca15bad379efa2e4f670e, tree clean True, UTC 2026-11-13T17:18:48Z

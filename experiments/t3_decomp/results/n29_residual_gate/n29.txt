@@ -1,0 +1,22 @@
+N29 (T3; target-free diagnostic, not a try): the per-group part of K7's wild-type revert factor beyond its pooled part
+Verdict: open (F = 0.890; gate: "prune" if F < 0.2, otherwise "open")
+
+Reported, deciding nothing: 12 groups covered, 500 panel genes, SD of the pooled log factor 0.5360
+  F by lineage: mesp1 0.986 (CM, CardiacProgenitor, Endocardium, Pericardium, PharyngealMesoderm), nonmesp1 0.878 (Ectoderm, Endoderm, NCC, Neural), other 0.838 (Endothelium, ExtraEmbryonicMeso, ParaxialMesoderm)
+  F with the pooled part over the strict non-Mesp1 groups only: 0.922
+  per group: |e_g|/|r_g|, cosine of r_g with r_pool
+    CM                   mesp1     1.025  0.501
+    CardiacProgenitor    mesp1     1.034  0.347
+    Ectoderm             nonmesp1  0.814  0.629
+    Endocardium          mesp1     1.044  0.406
+    Endoderm             nonmesp1  0.833  0.570
+    Endothelium          other     0.755  0.665
+    ExtraEmbryonicMeso   other     0.947  0.369
+    NCC                  nonmesp1  0.893  0.545
+    Neural               nonmesp1  0.927  0.456
+    ParaxialMesoderm     other     0.802  0.602
+    Pericardium          mesp1     0.998  0.413
+    PharyngealMesoderm   mesp1     0.901  0.551
+
+Inputs (sha256): {'T2/E7.5.h5ad': 'e8e47255ddeca96d5604c7cd4923bbf27765c24bc6a3cd44e800cd6ea05a7d54', 'T2/E8.0.h5ad': '17530e23fbfa6a139ff68d0353a489d83790f5b60f036b7d2f58303a1ff8a810', 'T2/E8.25_late.h5ad': 'd56f94d3e2d719ed3074d86c03eae457ccf90b24145d33300f9958f0e8078593', 'T2/E8.5.h5ad': '41c76db18bfaa92c1d66f8220ec5fbb6d6acccb0a6b78241f40080a3096d37db', 'T2/E8.75.h5ad': '149ab6df7c99ad85046c8aebebcf0c43689b3720c59ffb7cc550edcf2f13a83c', 'T2/E9.5.h5ad': '371ca6530e084de2b6cd6703b49d95f4bb59546c9291659809575382a630ee9a', 'T2/E10.5.h5ad': 'd6b37967f9cf3533091964cd07421c48a5c7c04628e9321123a426cb2a9c7e8b'}
+Commit ee01992ebbc9e0ca6b9ca15bad379efa2e4f670e, tree clean True, UTC 2026-11-13T17:18:43Z

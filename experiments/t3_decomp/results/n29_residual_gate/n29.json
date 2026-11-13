@@ -1,0 +1,119 @@
+{
+ "label": "N29 (experiments/harness/TRIES.md): the per-group residual of K7's wild-type revert factor; released wild-type stages only",
+ "verdict": "open",
+ "F": 0.889738397157431,
+ "gate": {
+  "F_prune": 0.2,
+  "rule": "\"prune\" if F < 0.2, otherwise \"open\""
+ },
+ "reported": {
+  "F_by_lineage": {
+   "mesp1": 0.9858247849061261,
+   "nonmesp1": 0.8783542934549112,
+   "other": 0.8376795271580968
+  },
+  "groups_by_lineage": {
+   "mesp1": [
+    "CM",
+    "CardiacProgenitor",
+    "Endocardium",
+    "Pericardium",
+    "PharyngealMesoderm"
+   ],
+   "nonmesp1": [
+    "Ectoderm",
+    "Endoderm",
+    "NCC",
+    "Neural"
+   ],
+   "other": [
+    "Endothelium",
+    "ExtraEmbryonicMeso",
+    "ParaxialMesoderm"
+   ]
+  },
+  "F_nonmesp1_pool": 0.9216735947290888,
+  "n_groups": 12,
+  "n_genes": 500,
+  "sd_r_pool": 0.5359908127886033,
+  "per_group": {
+   "CM": {
+    "lineage": "mesp1",
+    "residual_ratio": 1.0254961434402965,
+    "cosine_with_pool": 0.5012165099936446
+   },
+   "CardiacProgenitor": {
+    "lineage": "mesp1",
+    "residual_ratio": 1.0344198620473954,
+    "cosine_with_pool": 0.34653214667814886
+   },
+   "Ectoderm": {
+    "lineage": "nonmesp1",
+    "residual_ratio": 0.8137061247947127,
+    "cosine_with_pool": 0.6288723962350306
+   },
+   "Endocardium": {
+    "lineage": "mesp1",
+    "residual_ratio": 1.04379529338524,
+    "cosine_with_pool": 0.40615803511090803
+   },
+   "Endoderm": {
+    "lineage": "nonmesp1",
+    "residual_ratio": 0.8332692744746777,
+    "cosine_with_pool": 0.5703129057631974
+   },
+   "Endothelium": {
+    "lineage": "other",
+    "residual_ratio": 0.7545949232272192,
+    "cosine_with_pool": 0.665307990749147
+   },
+   "ExtraEmbryonicMeso": {
+    "lineage": "other",
+    "residual_ratio": 0.9473620233728449,
+    "cosine_with_pool": 0.36934955978285516
+   },
+   "NCC": {
+    "lineage": "nonmesp1",
+    "residual_ratio": 0.8931070756090702,
+    "cosine_with_pool": 0.544810047662064
+   },
+   "Neural": {
+    "lineage": "nonmesp1",
+    "residual_ratio": 0.927413073192325,
+    "cosine_with_pool": 0.455966290326816
+   },
+   "ParaxialMesoderm": {
+    "lineage": "other",
+    "residual_ratio": 0.802308629095295,
+    "cosine_with_pool": 0.6015467280470445
+   },
+   "Pericardium": {
+    "lineage": "mesp1",
+    "residual_ratio": 0.997997974625077,
+    "cosine_with_pool": 0.4131057541109351
+   },
+   "PharyngealMesoderm": {
+    "lineage": "mesp1",
+    "residual_ratio": 0.901197215216682,
+    "cosine_with_pool": 0.5511298046376055
+   }
+  }
+ },
+ "factor_rule": "per lineage group with >= 200 cells: mean within-cell panel proportions; per group held by >= 3 other wild-type samples: log(mean + 1e-5) fitted on stage day by least squares, read at the reference's day; t3_decompose.gene_factor of that trend against the reference's group means (weights: the reference's group sizes; eps 1e-5; clip 0.25-4); exponent 0.5",
+ "reference": "E8.75",
+ "panel_board": "T3:gata4",
+ "inputs": {
+  "T2/E7.5.h5ad": "e8e47255ddeca96d5604c7cd4923bbf27765c24bc6a3cd44e800cd6ea05a7d54",
+  "T2/E8.0.h5ad": "17530e23fbfa6a139ff68d0353a489d83790f5b60f036b7d2f58303a1ff8a810",
+  "T2/E8.25_late.h5ad": "d56f94d3e2d719ed3074d86c03eae457ccf90b24145d33300f9958f0e8078593",
+  "T2/E8.5.h5ad": "41c76db18bfaa92c1d66f8220ec5fbb6d6acccb0a6b78241f40080a3096d37db",
+  "T2/E8.75.h5ad": "149ab6df7c99ad85046c8aebebcf0c43689b3720c59ffb7cc550edcf2f13a83c",
+  "T2/E9.5.h5ad": "371ca6530e084de2b6cd6703b49d95f4bb59546c9291659809575382a630ee9a",
+  "T2/E10.5.h5ad": "d6b37967f9cf3533091964cd07421c48a5c7c04628e9321123a426cb2a9c7e8b"
+ },
+ "stamp": {
+  "commit": "ee01992ebbc9e0ca6b9ca15bad379efa2e4f670e",
+  "tree_clean": true,
+  "utc": "2026-11-13T17:18:43Z"
+ }
+}

@@ -1,0 +1,75 @@
+{
+ "label": "N28 (experiments/harness/TRIES.md): the library-3 base's overlap with the strong-null bet; the released E10.5 file only, no target, no score, no file built",
+ "verdict": "open",
+ "gate": {
+  "statistic": "base A's redundancy",
+  "kill_if_at_least": 0.7
+ },
+ "base_a": {
+  "pool": "build_test.py t1 --base lib3: library-3 cells of the chamber categories at the pool's own mix, before any draw or edit",
+  "categories": [
+   "blood",
+   "cm",
+   "endocardium",
+   "epicardium",
+   "vascular_endothelium"
+  ],
+  "redundancy": 0.185,
+  "top_genes": 200,
+  "prior_order_genes": 200,
+  "prior_order_median_dp": -0.003991253142881401,
+  "bottom_share_high_level": 0.2775,
+  "spearman_dp_vs_minus_pb_ref": -0.08548050058193477
+ },
+ "base_b_reported_only": {
+  "pool": "build_test.py t1 --base mid --cm-share 0.60: _t1_mid_rows at the builder's default build seed, cardiomyocytes at the ruled share of heart cells",
+  "seed": 1000001,
+  "cm_share_of_heart": 0.6,
+  "categories": [
+   "blood",
+   "cm",
+   "endocardium",
+   "epicardium",
+   "vascular_endothelium"
+  ],
+  "redundancy": 0.185,
+  "top_genes": 200,
+  "prior_order_genes": 200,
+  "prior_order_median_dp": -0.0244743318610684,
+  "bottom_share_high_level": 0.4075,
+  "spearman_dp_vs_minus_pb_ref": 0.09228907304172139
+ },
+ "held_genes_in_panel": 63,
+ "inputs": {
+  "T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+  "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+  "experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841"
+ },
+ "settings": {
+  "redundancy_kill": 0.7,
+  "dp_budget": 200,
+  "dp_bottom": 400,
+  "dp_min_pb": 0.25,
+  "dp_promoted_levels": 4,
+  "level_rank_cut": 800,
+  "level_edges": [
+   100,
+   200,
+   400,
+   800,
+   1600,
+   3200
+  ],
+  "change_edges": [
+   400,
+   1600
+  ],
+  "panel_board": "T1:test",
+  "mid_seed": 1000001
+ },
+ "stamp": {
+  "commit": "ee01992ebbc9e0ca6b9ca15bad379efa2e4f670e",
+  "tree_clean": true,
+  "utc": "2026-11-13T17:18:48Z"
+ }
+}
