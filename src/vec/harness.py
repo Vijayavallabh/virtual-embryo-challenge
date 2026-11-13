@@ -1795,10 +1795,11 @@ CANDIDATES = {
     # T1 batch t1-b (experiments/harness/TRIES.md, registered before any run): the tail decoder and the exact top-up
     "b0_tail": Candidate("b0_tail", frozenset({"T1"}), (), _b0_tail,
                          {"what": "B0 plus the tail decoder: genes among dp's bottom 400 with pb(reference) < 0.25 "
-                                  "topped up in count space to dp = 0 by the own-count top-up with whatever factor "
-                                  "the solve gives, no bound (vec.t1_scope.apply_tail_decoder; expected depth kept, "
-                                  "held-flat genes untouched)", "damping": B0_DAMPING, "scope": "chamber",
-                          "bottom": 400, "min_pb": 0.25, "target_dp": 0.0, "f_max": None},
+                                  "topped up in count space to dp = 0 by the own-count top-up, the factor at most 2: "
+                                  "genes needing more than twice their counts (or with none) are skipped "
+                                  "(vec.t1_scope.apply_tail_decoder; expected depth kept, held-flat genes untouched)",
+                          "damping": B0_DAMPING, "scope": "chamber",
+                          "bottom": 400, "min_pb": 0.25, "target_dp": 0.0, "f_max": 2.0},
                          requires=_b0_applies, derived=("t1_held_flat",)),
     "b0_topup": Candidate("b0_topup", frozenset({"T1"}), (), _b0_topup,
                           {"what": "B0 with the momentum's rises drawn as c + Poisson((f - 1) m), m the cell's library "

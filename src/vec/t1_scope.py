@@ -898,9 +898,9 @@ def apply_down_prior(pop: ad.AnnData, pb_ref: np.ndarray, genes: Sequence[str], 
 TAIL_MIN_PB = DP_MIN_PB  # the scorer's MIN_LFC, as N3 counts infeasible genes (research_2026_11/diagnostics.py)
 TAIL_BOTTOM = DP_BOTTOM  # the bottom tail N3 sized (its 20 of 400), the sibling b0_strong_null's DP_BOTTOM
 TAIL_TARGET_DP = 0.0  # compressed to flat: the parameter-free form (no partial compression)
-# No bound on the lift's factor (the parameter-free form): a sparse gene topped up from its own counts needs a large
-# factor, and a bound on no record would decide how far the arm reaches. A gene is skipped only where the solve has no
-# finite answer (no counts in the file: slope zero) or the fixed point leaves a non-finite factor.
+TAIL_F_MAX = 1.0 / DP_F_MIN  # a lift needing more than this factor is out of reach and skipped (the mirror of the
+# sibling's f_min on a thinning). The bound is a choice on no record (t1-bfix2): unbounded, the fixed point diverges on
+# sparse genes and one non-finite factor leaves the arm idle.
 # b0_topup, the exact own-count (posterior-predictive) top-up (REPORT.md section 5, "The count kernel for increases"):
 # T3's frozen kNN kernel (experiments/t3_decomp/rules.yaml, smoothing {n_pcs: 30, k: 15}; the same numbers as
 # vec.t2_build RENDER_N_PC and RENDER_K)
@@ -949,12 +949,12 @@ def apply_tail_decoder(pop: ad.AnnData, pb_ref: np.ndarray, genes: Sequence[str]
     pb_ref < TAIL_MIN_PB, dp < TAIL_TARGET_DP and it is not held. Its counts are topped up in every cell by one factor,
     solved so that its dp lands at TAIL_TARGET_DP (the exact first-order change of the mean log1p under the Poisson
     top-up c + Poisson((f - 1) c) at f = 1; DP_ITERATIONS fixed-point steps account for the depth-keeping constant,
-    as `apply_down_prior` does), with whatever factor that solve gives: there is no upper bound. A gene is skipped only
-    where the solve has no finite answer (no counts in the file, slope zero) or its factor is not finite after the
-    fixed point. Each cell's expected library is kept (apply_factors keep_depth), so every other free gene moves only
-    by that constant; held genes are untouched. Nothing lifted: pop is returned as it is. Returns (pop, report); the
-    report holds no cell count (n_infeasible_in_bottom, n_lifted and n_skipped are numbers of genes; max_factor and
-    median_factor summarise the lifted genes' factors, nan when none is lifted)."""
+    as `apply_down_prior` does). A gene needing more than TAIL_F_MAX, or with no counts in the file (slope zero), is
+    out of reach and skipped; the fixed point clips each factor to [1, TAIL_F_MAX]. Each cell's expected library is
+    kept (apply_factors keep_depth), so every other free gene moves only by that constant; held genes are untouched.
+    Nothing lifted: pop is returned as it is. Returns (pop, report); the report holds no cell count
+    (n_infeasible_in_bottom, n_lifted and n_skipped = n_infeasible_in_bottom - n_lifted are numbers of genes;
+    max_factor and median_factor summarise the lifted genes' factors, nan when none is lifted)."""
     genes = [str(g) for g in genes]
     cols = pd.Index(pop.var_names).get_indexer(genes)
     if (cols < 0).any():
@@ -978,35 +978,28 @@ def apply_tail_decoder(pop: ad.AnnData, pb_ref: np.ndarray, genes: Sequence[str]
     slope = np.bincount(entry_col, weights=term, minlength=M.shape[1]) / n
     with np.errstate(divide="ignore", invalid="ignore"):
         need = np.where(slope > 0, (TAIL_TARGET_DP - dp[cand]) / slope, np.inf)
-    with np.errstate(over="ignore"):
-        chosen = np.flatnonzero(np.isfinite(need) & np.isfinite(np.exp(need)))  # the solve has a finite answer
+    chosen = np.flatnonzero(need <= np.log(TAIL_F_MAX))
     lifted, lam = cand[chosen], need[chosen]
-    report = {"n_infeasible_in_bottom": int(len(cand)), "bottom": TAIL_BOTTOM, "min_pb": TAIL_MIN_PB,
-              "target_dp": TAIL_TARGET_DP, "f_max": None, "keep_depth": True}
-    Cs = M[:, chosen].toarray().astype(np.float64)
-    fin = np.ones(0)
-    if len(lifted):
-        with np.errstate(divide="ignore", invalid="ignore"):
-            B = Cs * (np.log1p(a[:, None] * (Cs + 1.0)) - np.log1p(a[:, None] * Cs))
-        B = np.nan_to_num(np.where(Cs > 0, B, 0.0))
-        held_n = np.asarray(C[:, held_all].sum(1)).ravel().astype(np.float64)
-        free = lib - held_n
-        with np.errstate(over="ignore", divide="ignore", invalid="ignore"):
-            fin = np.exp(lam)
-            for _ in range(DP_ITERATIONS):
-                freed = (Cs * (1.0 - fin)).sum(1)
-                s = np.divide(free, free - freed, out=np.ones_like(free), where=free - freed > 0)
-                adj = (B.T @ np.log(s)) / np.maximum(B.sum(0), 1e-12)
-                fin = np.maximum(np.exp(lam - adj), 1.0)
-        ok = np.isfinite(fin)  # the only guard: a gene whose factor is not finite is skipped, never capped
-        lifted, fin, Cs = lifted[ok], fin[ok], Cs[:, ok]
-    report.update(n_lifted=int(len(lifted)), n_skipped=int(len(cand) - len(lifted)),
-                  lifted=[genes[i] for i in lifted],
-                  max_factor=float(fin.max()) if len(fin) else float("nan"),
-                  median_factor=float(np.median(fin)) if len(fin) else float("nan"))
+    report = {"n_infeasible_in_bottom": int(len(cand)), "n_lifted": int(len(lifted)),
+              "n_skipped": int(len(cand) - len(lifted)), "lifted": [genes[i] for i in lifted], "bottom": TAIL_BOTTOM,
+              "min_pb": TAIL_MIN_PB, "target_dp": TAIL_TARGET_DP, "f_max": TAIL_F_MAX, "keep_depth": True}
     if not len(lifted):
-        report.update(factors={}, depth_ratio_mean=1.0, expected_depth_max_error=0.0)
+        report.update(factors={}, depth_ratio_mean=1.0, expected_depth_max_error=0.0, max_factor=float("nan"),
+                      median_factor=float("nan"))
         return pop, report
+    Cs = M[:, chosen].toarray().astype(np.float64)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        B = Cs * (np.log1p(a[:, None] * (Cs + 1.0)) - np.log1p(a[:, None] * Cs))
+    B = np.nan_to_num(np.where(Cs > 0, B, 0.0))
+    held_n = np.asarray(C[:, held_all].sum(1)).ravel().astype(np.float64)
+    free = lib - held_n
+    fin = np.exp(lam)
+    for _ in range(DP_ITERATIONS):
+        freed = (Cs * (1.0 - fin)).sum(1)
+        s = np.divide(free, free - freed, out=np.ones_like(free), where=free - freed > 0)
+        adj = (B.T @ np.log(s)) / np.maximum(B.sum(0), 1e-12)
+        fin = np.clip(np.exp(lam - adj), 1.0, TAIL_F_MAX)
+    report.update(max_factor=float(fin.max()), median_factor=float(np.median(fin)))
     F = np.ones((1, C.shape[1]))
     F[0, cols[lifted]] = fin
     new, scale, dead = apply_factors(C, F, np.zeros(n, dtype=np.int64), held_all, keep_depth=True, seed=seed)
