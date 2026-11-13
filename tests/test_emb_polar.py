@@ -10,6 +10,7 @@ calls it for each stage."""
 
 from __future__ import annotations
 
+import dataclasses
 import importlib.util
 import json
 import os
@@ -461,3 +462,93 @@ def test_the_two_frame_arms_are_registered_for_t2_and_call_fgw_with_the_frame_mo
     assert harness.CANDIDATES["fgw_polar_frame"].requires is harness.CANDIDATES["fgw"].requires
     assert harness.CANDIDATES["fgw_aligned_polar_frame_series"].requires is \
         harness.CANDIDATES["fgw_aligned_series"].requires
+
+
+FRAME_ARMS = {"fgw_polar_frame", "fgw_aligned_polar_frame_series"}
+
+
+def _fake_runner(score: dict[str, float]):
+    """run_task's shape without data or scorer: each candidate is built (its build may raise) and given a constant."""
+    calls = []
+
+    def runner(t, cands, seeds, data_dir):
+        calls.append([c.name for c in cands])
+        rows = []
+        for s in seeds:
+            row = {"seed": s, "scores": {"floor": 50.0}, "skills": {"floor": {}}, "metrics": {"floor": {}},
+                   "n_cells": {"floor": 1}, "groups": {"floor": {}}, "reads": {}}
+            for c in cands:
+                if c.name == "floor":
+                    continue
+                c.build(dataclasses.make_dataclass("Ctx", ["seed"])(seed=harness.BUILD_SEED_OFFSET + s))
+                row["scores"][c.name] = score[c.name]
+                for k in ("skills", "metrics", "groups"):
+                    row[k][c.name] = {}
+                row["n_cells"][c.name], row["reads"][c.name] = 1, []
+            rows.append(row)
+        return {"task": {"key": t.key, "inputs": dict(t.inputs)}, "rows": rows,
+                "candidates": [c.name for c in cands], "params": {c.name: {} for c in cands},
+                "provenance": {"commit": "a" * 40, "tree_clean": True}}
+
+    return runner, calls
+
+
+def _patch_builds(monkeypatch, n41, fail_on: set[str], key: str, seed_fails: int = 0):
+    """Every new arm's build replaced: the arms in fail_on raise the builder's cloud-guard refusal from seed_fails."""
+    cands = harness.CANDIDATES
+
+    def ok(ctx):
+        return "built"
+
+    def bad(ctx):
+        if ctx.seed - harness.BUILD_SEED_OFFSET >= seed_fails:
+            raise ValueError(f"{key}: cloud guard flags ['rms: RMS radius is 0.000 x the source, expected 0.436']")
+        return "built"
+
+    for x in n41.NEW:
+        monkeypatch.setitem(cands, x, dataclasses.replace(cands[x], build=bad if x in fail_on else ok))
+
+
+def test_an_arm_the_builder_refuses_is_recorded_and_the_other_arms_are_still_scored(tmp_path, monkeypatch, n41):
+    t = n41.nt.all_tasks()["e725"]
+    score = {"fgw_polar": 53.0, "fgw_aligned_polar_series": 54.0, "fgw_polar_frame": 0.0,
+             "fgw_aligned_polar_frame_series": 0.0}
+    _patch_builds(monkeypatch, n41, FRAME_ARMS, t.key, seed_fails=2)
+    runner, calls = _fake_runner(score)
+    res = n41.score_task(t, tmp_path, runner=runner)
+    assert calls == [["floor", *n41.NEW], *[["floor", n] for n in n41.NEW]]  # together first, then arm by arm
+    assert set(res["not_buildable"]) == FRAME_ARMS
+    rec = res["not_buildable"]["fgw_polar_frame"]
+    assert rec["status"] == n41.n36.NOT_BUILDABLE and rec["seed"] == 2
+    assert rec["message"] == ("ValueError: <task>: cloud guard flags ['rms: RMS radius is # x the source, "
+                              "expected #']")  # the task key named as such, every number masked
+    scored = {"floor", "fgw_polar", "fgw_aligned_polar_series"}
+    assert all(set(r["scores"]) == scored for r in res["rows"]) and set(res["candidates"]) == scored
+    assert [r["seed"] for r in res["rows"]] == list(n41.SEEDS)
+    # through the command: the task file loads, holds only the scored arms and carries the record
+    monkeypatch.setattr(n41.harness, "run_task", runner)
+    out = tmp_path / "runs"
+    n41.main(["run", "--task", "e725", "--out", str(out), "--data", str(tmp_path / "no_data")])
+    scores, why, _ = n41.nt._load([out])
+    assert why == [] and set(scores[t.key]) == scored
+    (path,) = out.glob("T2e_*.json")
+    assert set(json.loads(path.read_text())["not_buildable"]) == FRAME_ARMS
+    # every arm failing still leaves the floor scored
+    _patch_builds(monkeypatch, n41, set(n41.NEW), t.key)
+    runner, calls = _fake_runner(score)
+    res = n41.score_task(t, tmp_path, runner=runner)
+    assert set(res["not_buildable"]) == set(n41.NEW) and calls[-1] == ["floor"]
+    assert all(set(r["scores"]) == {"floor"} for r in res["rows"])
+    # nothing fails: one run, nothing recorded
+    _patch_builds(monkeypatch, n41, set(), t.key)
+    runner, calls = _fake_runner(score)
+    res = n41.score_task(t, tmp_path, runner=runner)
+    assert calls == [["floor", *n41.NEW]] and res["not_buildable"] == {}
+
+
+def test_a_failure_outside_a_build_stops_the_task(tmp_path, n41):
+    def runner(t, cands, seeds, data_dir):
+        raise OSError("the data are not there")
+
+    with pytest.raises(OSError, match="not there"):
+        n41.score_task(n41.nt.all_tasks()["x2"], tmp_path, runner=runner)
