@@ -1,0 +1,35 @@
+Dry builds for try T32's second file, 2026-11-13 (written by the AI assistant)
+==============================================================================
+
+What this is. `build_test.py t1` gained an option on 2026-11-13, off by default (commit ea17e39): `--lib3-pair` with
+`--base lib3` and `--cm-share` builds the second file of the pair try T32 priced (library 3's cells with the
+cardiomyocyte share moved). It is no entry. T1's second upload stays on the pooled base unless the captain rules
+(experiments/harness/TRIES.md, rows R6 and T32). These builds check two things: that the two T1 commands of
+experiments/builds/build_all.sh still give the reference bytes after the builder change, and that the new file builds,
+passes the local format check and repeats byte for byte.
+
+Where and how. The DGX, in the campaign checkout `~/v/vec-campaign` (a second checkout with its own environment from
+the same uv.lock; the reference checkout `~/v/virtual-embryo-challenge` was not touched), at commit ea17e39, 16 BLAS
+threads, NUMPY_MADVISE_HUGEPAGE=0, seed 1000001 (the builder's default), into `runs/t32_candidate_ea17e39/`.
+Read: exit codes, sha256 and the stamps' commit, clean, why and unclean fields. The build logs, the file sizes and the
+stamps' size field were not read.
+
+  command (after `uv run --frozen --no-sync python experiments/builds/build_test.py t1`)   sha256
+  --g-mom --base lib3                       (T1 s1 of build_all.sh)   a294062f5f7bbb2dae19ef695979cc21f03f38df40d22be9ccdd30af36e3bdef
+  --g-mom --cm-share 0.60                   (T1 s2 of build_all.sh)   30f0cf59442591810833061756e1324b46728cc4373048d8a8c90696a1ae3737
+  --g-mom --base lib3 --cm-share 0.60 --lib3-pair   (first build)     26771e751bf6c9714c91f116a5ac08ad2a25f7c424cf755306582f31315717c4
+  --g-mom --base lib3 --cm-share 0.60 --lib3-pair   (second build)    26771e751bf6c9714c91f116a5ac08ad2a25f7c424cf755306582f31315717c4
+
+Result.
+- All four builds exited 0. The first two equal the reference list (experiments/builds/results/builds_fd2683a.SHA256SUMS:
+  T1_s1 a294062f..., T1_s2 30f0cf59...), so the builder change leaves the two T1 upload files byte for byte as rehearsed.
+- The new file has one sha256 over two builds, and `vec check ... --board T1:test` exited 0 on it.
+- Every stamp names commit ea17e39 as both its start and its end commit and says clean: false, with one reason:
+  "uncommitted or untracked: data". In the campaign checkout `data` was a symbolic link to the reference checkout's
+  data folder, which .gitignore's `data/` does not cover. No tracked file differed. The link has since been replaced
+  by a folder holding links, which git ignores. These stamps are not upload-grade and are not meant to be: a file for
+  an upload is built in the reference checkout by build_all.sh at the freeze commit.
+
+Not done. No server format check, no upload, no change to build_all.sh, docs/S2_RULES.md or the reference list. If the
+captain rules for this file, build_all.sh's s2 line and docs/S2_RULES.md change, and the rebuild rehearsal is repeated
+on the DGX's reference checkout by 24 Nov (docs/P3_RUNBOOK.md, section 5).
