@@ -24,6 +24,8 @@ branch `port/emb-s1-trend`, off main. **The options for taking our own estimate 
 forecast's upper reading is 194.4 (194.9 with R-D), the committed estimate stays 184, and what could move the total
 by points is closed by rules that are the captain's or the organisers' to reopen. Main moved by documents, two
 reading scripts with tests and results only.
+Checked last: the full test suite at 6c505ca in a DGX campaign checkout (lock, lint, 1,291 tests pass; clean tree); the
+document tests and lint again at f1408a4 on this machine (33 pass). The reference checkout is untouched at dc7b6ae.
 **2026-11-13, night: the campaign's sixth round (decision log 2026-11-13 (dd) and (ee)). Nothing is kept, nothing is
 requested, and no file changes.** The captain renewed the campaign with a named target: take our own estimate past
 the leading total (215.41), or exhaust the options and report. (1) Where the points would have to come from
