@@ -62,7 +62,10 @@ assistant under the captain's delegation of 2026-11-02, and he can overrule them
    standing safeguard lifted goes to the captain as a priced ruling request and changes nothing until the captain
    rules. The captain renewed it once more on 2026-11-13 (decision log 2026-11-13 (g)): nothing further is lifted, and
    campaign runs on the DGX go in a second checkout (`~/v/vec-campaign`, `docs/COMPUTE.md`), so the reference checkout
-   stays as it was rehearsed.
+   stays as it was rehearsed. A further renewal that evening named the leading total as the target (decision log
+   2026-11-13 (dd) and (ee)): again nothing is lifted, a candidate's code stays on a campaign branch until a ruling
+   ports it, and where a counted backtest exists and a read costs minutes the row is written and the read is run
+   rather than pruned on the AI assistant's own pre-run odds, which under-called both changes the rule has kept.
 
 ## Startup Workflow
 

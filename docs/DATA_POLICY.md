@@ -1102,14 +1102,26 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     external dataset, any held-out value.
 - 2026-11-13 (j), process notes from the campaign's sixth round (`docs/PLAN.md` decision log 2026-11-13 (dd) and
   (ee)); written by the AI assistant.
-  - **Reads of practice targets.** None new before the rows of (ee). Reading N33 (row first) aggregated per-seed
-    scores that tries E24, E25 and E28 had committed and counted; it opened no data file and scored nothing.
+  - **Reads of practice targets.** Seven counted tries, each with its row committed before its run: H13e, H13r
+    and H13h (heart 13 to 16), K9a and K9b (T3 15 to 17), K10a and K10b (T3 17 to 19). Reruns of candidates whose
+    scores were already committed, inside those runs and not as tries: `floor`, `copy`, `b0` and `b0_trend` on the
+    two heart backtests (exact), and K2a's build as K9's base arm on one fold (exact). No other reading compared a
+    predictor with a fold or backtest target. Reading N33 (row first) aggregated per-seed scores that tries E24, E25
+    and E28 had committed and counted; it opened no data file and scored nothing, and
     `experiments/gate/forecast_built.py` likewise reads committed results only, through the estimator's door.
+  - **Target-free diagnostics, rows first.** N28 read the released E10.5 file as the test task's input; N29 the
+    seven released wild-type MERFISH stages and no knockout file; N32 the inputs of the three embryo bracket pairs,
+    the test pair's among them, and no target stage. Nothing was compared with a truth; no cell number was written.
+    N32's gate was amended while its run was in progress, by a commit made before any of its output was read beyond
+    one draw's line; both verdicts are in its row. N28's row let a counted try follow and the AI assistant declined
+    it on the diagnostic's own numbers, which the row's outcome says.
   - **Agents.** One read-only workflow of eight agents on another model mapped the boards from the committed record,
-    proposed lifts and judged them (wf_97454932-ce5): no run, no data file, no web. Two more workflows wrote code and
-    ledger text for the round's diagnostics and heart arms in their own worktrees, with synthetic tests only: no
-    released data file was opened by them, and nothing was scored. One cold adversarial agent read named files of
-    the record.
+    proposed lifts and judged them (wf_97454932-ce5): no run, no data file, no web. Four more workflows wrote and
+    reviewed code and ledger text for the round's diagnostics, heart arms and the two T3 readings in their own
+    worktrees, with synthetic tests only: no released data file was opened by them, and nothing was scored; the
+    agents that wrote K10 were not shown K9's results. Every run on released data was launched by the main session
+    on the DGX campaign checkouts at clean committed trees. One cold adversarial agent read named files of the
+    record.
   - **A slip by the adversarial agent, reported by it.** One of its greps over `*.md` from the repository root lacked
     the exclusions for `docs/research/` and the research notes, and printed one line each from
     `docs/research/engineering.md` and `experiments/research_2026_11_sota/notes/task-f.md`. By its report neither

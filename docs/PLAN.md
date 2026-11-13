@@ -3469,3 +3469,91 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     and a cross-modal heart direction: each is in the ledger's "Pruned before running" with its price, and the round
     found no new reason for one of them.
   - **Unchanged.** No upload, build, rule or try count. The ten files of `builds_dc7b6ae` stand.
+- 2026-11-13 (ee), the sixth round's cold check and the reads that followed it. Written by the AI assistant.
+  - **The cold check** (the devil-advocate skill; one agent given only a claim block: stop searching, change no
+    file, report a best forecast of 194.4). Its kill shot, in its words: "If 194.4 is an honest best forecast,
+    stopping is premature: that model credits 13 November's rulings with lifting P(>=203), the last prize place,
+    from 13.9% to 22.4% and prices each further T1 or T3 point at about four points of prize probability, so
+    'nothing reaches 215.41' is the wrong stopping test. If those gains are artefacts, as its own file says ('upper
+    readings'; 203 'unlikely' on the committed footing), 194.4 must not be the captain's headline. Either the stop
+    or the report is wrong." Its chance that stopping as claimed is a mistake: 25%, with the note that it "could
+    not kill the stop itself (no compliant lift I can name is worth a point)".
+  - **Its three attacks, each checked.**
+    1. *The headline is the upper reading, and the fact behind every draw above 203 was never asked.* Holds.
+       `experiments/gate/FORECAST_2026-11-13.md` calls its own figures upper readings; the estimator's README
+       records that T1's oracle base is credited in full; and `docs/ORGANIZER_QUESTIONS.md` records that the Task 3
+       question (was the beta-catenin knockout processed with the Gata4 replicates) was cut from the seventh email
+       in review, so it is not "unanswered": it was not sent. The data notes add that both Gata4 replicates sit on
+       one slide, so the forecast's favourable T3 case is a same-slide carry. What changes: every report of the
+       expected total leads with the committed 184 (170 to 198) and labels 194.4 the upper reading; and the cut
+       question goes back to the captain as a candidate line for the follow-up planned about 19 Nov (an answer
+       changes no file, since both T3 uploads are frozen, and would move the estimate by about 7 points either way).
+    2. *The adoption rule is not the gate; the AI assistant's pre-run odds are, and they under-called both keeps.*
+       Holds. Row T11 was priced at +0.2 to +0.8 with a 15 to 20% chance and scored +1.13 and +1.23; row H11 was
+       given a 0.03 chance and scored +0.36 and +0.48. What changes: where a counted backtest exists and a read
+       costs minutes, the row is written and the read is run instead of pruned on such odds (the reads below).
+    3. *The captain's order of (g) says not to stop early, and 24 Nov is self-imposed.* Holds in part. The order's
+       words are as quoted, and three rehearsals did run in one day, so a build change could be rehearsed later
+       than 24 Nov if it had to be. Entry (i) of the same day had told the captain why the GPUs were left idle.
+       What changes: the round does not declare the search over; it reports what was read and asks.
+    Verdict on the claim as it was put: revise.
+  - **A slip in the check, reported by the agent itself:** one of its searches lacked the exclusions for the
+    research folders and printed one line from each of two files there; nothing from them was used
+    (`docs/DATA_POLICY.md` 2026-11-13 (j)).
+  - **The reads, each with its row first** (`experiments/harness/TRIES.md`; code by agents to definitions fixed
+    before the code, each reviewed by a second agent; runs on the DGX campaign checkouts at clean committed trees).
+    - *N33, embryo (committed scores only, not a try).* No committed arm is worth requesting as the first upload
+      beside the new second one: the best, `fgw_render_hi`, leads `fgw` by +0.15 on S(0.45) against a bar of 0.3,
+      and its lead is one task's.
+    - *N28, T1 (target-free).* The library-3 base does not carry the strong-null bet (0.185 of the prior's 200
+      genes already sit in its bottom tail), but its own change against E10.5 as released is not strong-null
+      either: the genes the prior would promote are flat there (median change -0.004) and the change's rank
+      correlation with the reference level's negative is -0.09. So the change from embryo portions to a dissected
+      heart is not what made E9.5 to E10.5 strong-null, the red team's reason for expecting that regime at the test
+      falls, and ruling (l) of 2026-11-10 stands. By the letter of its row a counted try could follow; it is not
+      run, because its truth would be this same change and the outcome is in these numbers. The captain can ask
+      for it.
+    - *N29, T3 (target-free).* The per-group wild-type revert is far from the pooled one (F = 0.89), which fits
+      real group-specific deviation of the reference or small-group noise. That opened tries K9 (below).
+    - *H13e, H13r and H13h, heart (three counted tries; heart 13 to 16).* None is kept. Against `b0_trend` on the
+      one-day and the 1.75-day backtest: the slope shrunk by its sampling noise +0.22 and -0.34 (a veto); the
+      Theil-Sen slope -0.27 and +0.03; the step carried over half the horizon -0.62 and -0.60. A longer step is
+      worse on both. `b0_trend` stays.
+    - *N32, embryo (target-free).* Prune under both forms of its gate (the gate was amended before its output
+      was read, after the code's reviewer showed one check worked against the fix; both verdicts are in the row).
+      Started from the aligned coupling, FGW unmirrors only the E7.25 pair's five mirrored draws; on the E7.5 pair
+      and on the test pair it returns to its own solution in every draw. At the test pair that solution is the
+      mirrored one from both starts, at an objective 3.4% under the aligned coupling's, so it is not one of two
+      equal optima. No counted try of `fgw_warm` is registered; the embryo stays at 36.
+    - *K9a and K9b, T3 (two counted tries; T3 15 to 17).* Supported by the letter of the pre-set reading, mixed in
+      substance. The per-group residual of the wild-type revert, added to a knockout factor, gains +0.83 on the
+      cross-knockout fold scored against WT E8.75 (one seed's severity-gate flip is +5.80 of it; the other nine
+      seeds average +0.27) and +0.68 on the one-slide replicate fold (ahead in 10 of 10 seeds, no gate involved),
+      beats its permuted control on both, and loses 0.28 on the fold scored against WT E9.5 (0 of 10 seeds ahead).
+      Its arms carry no depth step, which the first-choice file has, so tries K10 read it on that file's own form
+      before any request.
+    - *K10a and K10b, T3 (two counted tries; T3 17 to 19).* Not confirmed, so no request. On the frozen stand-in
+      for the first-choice file (the other replicate's factor with its depth step) the residual gains +0.61 with
+      replicate 2 as the truth and loses 0.62 with replicate 1. K9's two supporting folds both had replicate 2 as
+      the truth, so what it read was that replicate's own profile. The line is closed. The base arm's 72.07 and
+      74.54 agree with the frozen run's own figures for stand-in A (72.15 and 74.50) within 0.1.
+  - **What the round adds up to.** Seven rows, each written before its read: four target-free or committed-score
+    readings (N33, N28, N29, N32) and seven counted tries in three rows (H13e, H13r, H13h; K9a, K9b; K10a, K10b).
+    Nothing is kept and nothing is requested. Tries stand at T1 32, embryo 36, heart 16, T3 19. Together with the mapping
+    round's verdict in (dd), the AI assistant knows of no change inside the standing rules that would raise the
+    honest estimate by a point, and of none at all that would take it past 215.4: in our own evidence that total
+    lies beyond the best case of every board at once. What still decides the outcome is how the hidden samples
+    were measured, which no released file shows.
+  - **Figures to quote.** The committed estimate stays 184 (170 to 198). The forecast for the files as built is its
+    upper reading: mean 194.4 with stand-in A weighted one half; 190.5 with a quarter and 189.0 with 0.15, the
+    record's own chance that the beta-catenin samples share the Gata4 slide's run (the same script's model, read
+    for this entry; aggregation only). P(total >= 215.41) is 0.01% or less in every one of these readings.
+  - **Put to the captain** (the report of this round): whether the Task 3 batch question, cut from the seventh
+    email, goes into the follow-up planned about 19 Nov; whether any line the ledger pruned should be run
+    regardless of its recorded reason (the red team's strong-null try in T27's geometry is the one this round
+    declined by reading its diagnostic); and whether the campaign continues past this round. The idle GPUs: no run
+    whose result could change an upload under the standing rules is known, as in (i).
+  - **Unchanged.** No upload, build, rule, gate figure or reference list. The ten files of `builds_dc7b6ae` stand;
+    main moved by documents, diagnostics and results only (no file under `src/` or `experiments/builds/` changed),
+    and the round's candidate code stays on its branches (`campaign/trend2`, `round6/n32-fgw-warm`, `campaign/k9`,
+    `campaign/k10fix`).

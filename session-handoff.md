@@ -25,7 +25,10 @@
   What is owed:
   - on 19 and 23 Nov, the approved screened reads for an organiser answer to the seventh email
     (`docs/SCREENED_READ_SEVENTH_EMAIL.md`; a reply in the captain's inbox is not pasted into the session);
-  - about 19 Nov, the Slack follow-up draft on floored T3 severity if no organiser has answered;
+  - about 19 Nov, the Slack follow-up draft on floored T3 severity if no organiser has answered; with it, for the
+    captain to keep or cut, the Task 3 batch question that was cut from the seventh email in review (was the
+    beta-catenin knockout processed with the Gata4 replicates): an answer changes no file and would move the
+    estimate by about 7 points either way (decision log 2026-11-13 (ee));
   - a new rehearsal and reference by 24 Nov only if a build changes after 2026-11-13 (and then the pointer
     `results/reference_list.json` is rewritten for the new list);
   The generator tests the captain ordered on 2026-11-13 are done (decision log (o) to (r); rows T34, T35, H8, H9,
@@ -33,11 +36,16 @@
   upload, build or rule changed. The code is on the branch `campaign/gen` (pushed; 459916f), off main. The heart
   tries that followed (rows H11, H11s, H12, H12s; branch `campaign/trend`, pushed): `b0_trend` passed the adoption
   rule and was ruled into both heart files; its size-matched twin and the two parts of its factor read alone were
-  not kept. Tries: T1 32, embryo 36, heart 13, T3 15.
+  not kept. The sixth round that night (decision log (dd) and (ee); rows N33, N28, N29, N32, H13, K9, K10) kept
+  nothing and requested nothing: three more heart arms and two T3 readings were run and closed, three target-free
+  checks were read, and the forecast was restated for the files as built (mean 194.4, the upper reading; the gate
+  figure stays 184). Tries: T1 32, embryo 36, heart 16, T3 19.
   Settled on 2026-11-13 (decision log (k)): T1's second upload (the mid base; built in and rehearsed), the heart
   try (run, not kept), and the checked copy of the reference files on this machine (kept, by the captain's word).
-- Branch / commit: `main` on GitHub (private). The DGX checkout (`PrakashDGX_H2:~/v/virtual-embryo-challenge`) is at
-  fd2683a, synced on 2026-11-13 for the rehearsal; sync it again only when no build runs there.
+- Branch / commit: `main` on GitHub (private). The DGX reference checkout
+  (`PrakashDGX_H2:~/v/virtual-embryo-challenge`) is at dc7b6ae, the third rehearsal's commit, and stays untouched
+  until the freeze-morning sync; campaign runs use `~/v/vec-campaign` and `~/v/vec-campaign-h7`, which sit at
+  campaign-branch commits after the sixth round.
 
 ## Completed This Session (2026-11-12 to 2026-11-13: the campaign the captain asked for on 2026-11-12)
 
@@ -155,6 +163,10 @@
 
 ## Blockers / Risks
 
+- 2026-11-13 (night, after the sixth round): in our own evidence a total past the leading 215.41 lies beyond the
+  best case of every board at once (their best practice outcomes sum to 219.0), and the forecast's upper reading
+  (194.4) leans on one judgement that the record itself rates lower: that the beta-catenin samples share the Gata4
+  slide's profile (weight one half; at 0.15 the mean is 189.0). The committed 184 is the figure to quote.
 - 2026-11-13: the estimate (184) is about 25 under the gate, and no change was adopted in the campaign. What can
   still move the outcome is how the hidden samples were measured (the bets behind R-A, R-B and T3's first-choice
   file), which no released file shows.
@@ -193,6 +205,13 @@
 
 ## Recommended Next Step
 
+- 2026-11-13 (latest, after decision log (ee)): the sixth campaign round is closed with nothing kept and nothing
+  requested. No run is queued on any GPU, and the AI assistant knows of none whose result could change an upload
+  under the standing rules. Next are the dated items: the screened reads on 19 and 23 Nov, the follow-up draft
+  about 19 Nov (floored severity, and the Task 3 batch question if the captain wants it back), the method summary
+  and disclosure email on 24-30 Nov, and the freeze morning. Report the expected total as 184 (170 to 198), with
+  194.4 named as the forecast's upper reading. Where a counted backtest exists and a read costs minutes, write the
+  row and run it rather than pruning on pre-run odds (`AGENTS.md` rule 8).
 - 2026-11-13 (latest, after decision log (cc)): the heart ruling is built in and rehearsed (reference
   `runs/archive/builds_dc7b6ae/SHA256SUMS`; every file format-checked on the server; the upload client refuses a
   scored upload of a file off that list). Next: the dated items below, reading `builds_dc7b6ae` for the reference

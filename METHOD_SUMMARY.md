@@ -89,6 +89,22 @@ least-squares trend of its log mean expression over all five released heart stag
 of its factor read alone (H12, H12s) were not kept. Every entry still edits real cells in count space. Tries stand
 at T1 32, embryo 36, heart 13, T3 15.
 
+Status 2026-11-13, after the campaign's sixth round (`docs/PLAN.md` decision log 2026-11-13 (dd) and (ee)): no entry
+has changed and no scored submission has been made. The round asked whether any change could take the team's own
+estimate past the leading total (215.41 at the last screened read) and found none: in our own practice evidence that
+total lies beyond the best case of every board at once (the boards' best practice outcomes sum to 219.0; the
+forecast for the files as built has a mean of 194.4, which is its upper reading, against the committed estimate of
+184). Seven rows were read, each written first. Kept: nothing. On the heart, three variants of the kept trend (the
+slope shrunk by its sampling noise, a Theil-Sen slope, the step carried over half the horizon) do not beat it
+(tries H13e, H13r, H13h; a longer step is worse on both backtests). On Task 3, adding each lineage group's part of
+the wild-type reference's own deviation to a knockout factor looked supported on two folds (tries K9) and was not
+confirmed on the first-choice file's own form: it gains with one Gata4 replicate as the truth and loses as much with
+the other (tries K10). Target-free: Task 1's library-3 base neither carries nor supports the strong-null prior that
+was left out on 2026-11-10 (N28); on the embryo, FGW started from the aligned coupling returns to its own mirrored
+solution at the test pair (N32), and no committed arm is worth requesting as first upload beside the new second one
+(N33). A second file chosen after the first upload's score was priced on practice results and retired
+(`experiments/gate/forecast_built.py`). Tries stand at T1 32, embryo 36, heart 16, T3 19.
+
 ## Team and track
 
 Team Mithril, Track 1 (Human Team). A person reviews results and makes every submission decision; coding agents do

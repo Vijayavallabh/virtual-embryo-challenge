@@ -3,6 +3,30 @@
 ## Current State
 
 **Last Updated:** 2026-11-13
+**2026-11-13, night: the campaign's sixth round (decision log 2026-11-13 (dd) and (ee)). Nothing is kept, nothing is
+requested, and no file changes.** The captain renewed the campaign with a named target: take our own estimate past
+the leading total (215.41), or exhaust the options and report. (1) Where the points would have to come from
+(`experiments/gate/forecast_built.py`, an aggregation of committed results): for the files as built the forecast's
+mean is 194.4, its upper reading (the committed estimate stays 184, range 170 to 198); the boards' best practice
+outcomes sum to 219.0, and the mean passes 215.4 only if T1 and T3 each rise by about 8 points and both T2 boards by
+about 6, together. The gate record carries the restatement owed after row H11. (2) A read-only round of eight
+agents mapped the boards, proposed lifts through three lenses and judged them: nothing reaches 215.4; the survivors
+were worth about +0.4 to +0.7 in all, each needing a ruling. (3) A cold adversarial check of "stop" held on three
+points: lead with 184, not the upper reading; the AI assistant's pre-run odds under-called both kept changes (T11,
+H11), so cheap counted reads are run rather than pruned on such odds; and the Task 3 batch question was cut from
+the seventh email, not left unanswered. (4) The reads, rows first: N33 (no committed arm is worth requesting as the
+embryo's first upload); N28 (T1's library-3 base neither carries nor supports the strong-null prior; ruling (l)
+stands); N32 (FGW started from the aligned coupling returns to its own mirrored solution at the test pair; pruned);
+H13e, H13r, H13h (three variants of the kept heart trend, none kept: +0.22 and -0.34; -0.27 and +0.03; -0.62 and
+-0.60 against `b0_trend`); N29 then K9 then K10 (the per-group part of the wild-type reference's deviation on top of
+a knockout factor: supported by the letter on K9's folds, +0.83 and +0.68, and not confirmed on the first-choice
+file's own form, +0.61 with one replicate as the truth and -0.62 with the other; closed). (5) A second file chosen
+after the first upload's score, priced on practice results: at most +0.5 on T1 once the score level is uncertain by
+a few points, negative on the embryo; retired. Tries: T1 32, embryo 36, heart 16, T3 19. Candidate code stays on
+its branches (`campaign/trend2`, `round6/n32-fgw-warm`, `campaign/k9`, `campaign/k10fix`); main moved by documents,
+diagnostics and results only. Put to the captain: whether the Task 3 batch question goes into the follow-up planned
+about 19 Nov; whether any pruned line should be run regardless of its recorded reason; whether the campaign
+continues.
 **2026-11-13, late evening: one heart change kept and ruled in, a third rehearsal, all format checks done, and a
 guard on scored uploads (decision log 2026-11-13 (s) to (cc)).** After the generator tests the captain forwarded
 further side notes; each was checked against the record first. What followed: (1) Heart rows H11 and H11s:
