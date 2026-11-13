@@ -1,0 +1,31 @@
+{
+ "what": "Build check of request R-A's candidate on the test pair (no entry; never uploaded). Written by the AI assistant on 2026-11-13 from the build's own record, after an independent check found the ledger's 'passes the cloud guard and the file check' had no committed evidence.",
+ "command": "experiments/builds/build_test.py embryo --method fgw --move-coupling aligned --expression series --out runs/builds_check_local/T2embryo_s2_aligned_series.h5ad",
+ "built": "2026-11-12, working tree at 772ef93 with the --expression series option not yet committed (it is commit f6a62ed); 16 BLAS threads",
+ "exit_status": "exit code 0",
+ "cloud_guard_flag_in_log": false,
+ "file_check_error_in_log": false,
+ "sha256": "41982d8afd784ecb07a4021077f701c3806c3bdb06eda92c2cb99fcc41b19b73",
+ "board": "T2:embryo:test_interp",
+ "seed": 1000001,
+ "n_cells": "max_cells",
+ "record_fields_without_cell_numbers": {
+  "t": 0.5,
+  "t_pos": 0.5,
+  "t_mix": 0.5,
+  "move_coupling": "aligned",
+  "rotation_deg": 123.659969889702,
+  "series_t": 0.5,
+  "series_moved": "before",
+  "series_ratio": 3.4193548387096775,
+  "series_sd_log_factor": 0.7936507342397423,
+  "series_genes_above_2x": 267,
+  "series_rendered_median": 211.5
+ },
+ "thinnest_axis_over_rms_radius": {
+  "T2embryo_s1 (fgw)": 0.24,
+  "T2embryo_s2 (fgw_shape0)": 0.48,
+  "candidate (fgw aligned, series)": 0.43
+ },
+ "note": "The rendered arms' scores move by up to 1e-3 between runs with the BLAS thread count (their neighbour search), so a test file of this kind is byte-reproducible only at a fixed thread count; build_all.sh's 16 was used here. The printed cell count was not read; the record's n_cells is masked by the build tool."
+}
