@@ -75,12 +75,15 @@ _PREP: dict = {}
 # ------------------------------------------------------------------------------------------------ the tasks
 def _mirror(t: harness.PseudoTask) -> harness.PseudoTask:
     """r12 with its two replicate files (source and target) swapped; the forbidden list gets the same swap and the
-    truth; every other field is kept."""
+    truth; every other field is kept, except the board: r12's is the published validation board, whose counts are
+    replicate 2's, so the mirror is scored on a synthetic board with that board's gene panel and its own files'
+    counts (vec.harness.task_board's twin form, as k7_wt_revert.py's replicate-1 task)."""
     src, truth = t.inputs["ko_train"], t.target
     swap = {src: truth, truth: src}
     forbidden = tuple(dict.fromkeys([swap.get(f, f) for f in t.forbidden] + [src]))
     return harness.check_task(replace(
         t, key="T3k10/r21", target=src, inputs={r: swap.get(f, f) for r, f in t.inputs.items()}, forbidden=forbidden,
+        validation_board=None, twin_board=t.validation_board or t.twin_board,
         notes="Tries K10: the mirror of fold T3/Gata4rep1->rep2 (replicate 2 against WT E8.75, truth replicate 1), "
               "with the released wild-type series added for the reference's revert."))
 

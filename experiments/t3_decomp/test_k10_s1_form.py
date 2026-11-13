@@ -58,8 +58,9 @@ def test_r12_is_k9s_r12_and_r21_its_mirror():
     assert {r: f for r, f in r21.inputs.items() if r != "ko_train"} == {r: f for r, f in r12.inputs.items()
                                                                          if r != "ko_train"}
     for f in fields(r12):
-        if f.name not in ("key", "notes", "target", "inputs", "forbidden"):
+        if f.name not in ("key", "notes", "target", "inputs", "forbidden", "validation_board", "twin_board"):
             assert getattr(r21, f.name) == getattr(r12, f.name), f.name
+    assert r12.validation_board == "T3:gata4" and r21.validation_board is None and r21.twin_board == "T3:gata4"
     swap = {REP1: REP2, REP2: REP1}
     assert set(r21.forbidden) == {swap.get(f, f) for f in r12.forbidden} | {REP1}
     for t in k10.TASKS.values():
@@ -357,3 +358,22 @@ def test_run_and_read_refuse_to_overwrite(tmp_path):
     (out / "reading.json").unlink()
     with pytest.raises(SystemExit, match="exists"):  # reading.txt alone also refuses
         k10.main(["read", "--runs", str(runs), "--out", str(out)])
+
+
+
+def test_each_task_gets_a_board_whatever_its_truths_size():
+    """r12 is scored on the published validation board, whose counts its files must reproduce; the mirror's truth is
+    the other replicate, of another size, so it must take the twin form (a synthetic board with its own counts)."""
+    from vec.boards import Board
+
+    n_truth, n_ref = 4000, 3000
+    pub = Board(key="T3:gata4", task="T3", genes=["g1", "g2"], needs_coords=True, split="validation",
+                target_ko="gata4", **harness.pseudo_counts(n_truth, n_ref))
+    boards = {"T3:gata4": pub}
+    b12 = harness.task_board(k10.TASKS["r12"], boards, n_truth, n_ref)
+    assert b12.key == "T3:gata4" and b12.anchors == {}
+    with pytest.raises(ValueError, match="published counts"):
+        harness.task_board(k10.TASKS["r12"], boards, n_truth + 600, n_ref)
+    b21 = harness.task_board(k10.TASKS["r21"], boards, n_truth + 600, n_ref)  # the other replicate's size
+    assert b21.key == "pseudo:T3k10/r21" and b21.split == "pseudo" and b21.genes == pub.genes
+    assert b21.truth_cells == harness.pseudo_counts(n_truth + 600, n_ref)["truth_cells"] != pub.truth_cells
