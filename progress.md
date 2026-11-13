@@ -3,6 +3,15 @@
 ## Current State
 
 **Last Updated:** 2026-11-13
+**2026-11-13, the R-C email is sent and the handoff files are current (decision log 2026-11-13 (c)):** the captain
+sent the seventh organiser email (the captain's words: "i also sent the draft"), which confirms its classification
+as a question about procedure; an answer is read as fixed beforehand, through a screening agent. At the captain's
+request ("update all the harness files and other files and then commit and push") the session handoff, `AGENTS.md`
+(rule 3, rule 8 and the compute invariant), `docs/COMPUTE.md`, `README.md`, `METHOD_SUMMARY.md`, the runbook and the
+ledger's prune list were brought up to date. Both of R-A's candidate files were built once more from the clean tree
+at 1f8956b and gave the same hashes (`experiments/builds/results/determinism_1f8956b.txt`). No upload, build
+default, rule or gate record changed, and the captain has ruled on none of R-A, R-B, the embryo's first-upload shape
+or T3's second upload.
 **2026-11-13, the campaign's fourth wave (decision log 2026-11-13 (b)):** no upload, build default, rule or gate
 record changed; the captain has ruled on none of the requests. **R-C is drafted** in the captain's mailbox: two
 procedural questions to the organisers, after a three-lens review, with the reading of each answer fixed beforehand
@@ -35,7 +44,7 @@ pair +1.72 on E7.5 and -1.59 on E7.25, -1.21 and -0.69 on two second-jump tasks;
 (T1 base) keeps its advice to decline; try T31 shows the base's depth matters across a real one-day gap (a base at
 0.40 of the truth's depth scores 13 under the deeper ones) and is unclear by its rule on library 3 against the pooled
 base (+0.99, bar 1.0). **R-C** optional. Not kept: the wider-neighbourhood top-up (E27). Owed before any rendered file
-is uploaded: a determinism check at the build's 16 BLAS threads.
+is uploaded: a determinism check at the build's 16 BLAS threads (done on 2026-11-13, above).
 **2026-11-12, the campaign of that day (decision log 2026-11-12 (a) to (c)):** no upload, build, rule or gate record
 changed; three requests wait for the captain. The finding (read on the embryo ladder and on T1's libraries): the samples differ more by how they were
 measured than by stage. MERFISH samples differ in their per-gene detection profile, some neighbours sharing one (diagnostic N23), and the seven
@@ -715,14 +724,34 @@ scorer reproduces every published validation anchor exactly. The release-day rul
       - The pricing recommends the swap (+1.38 T3 under the mixture).
       - The fifth organiser email was drafted and sent by the captain (`docs/ORGANIZER_QUESTIONS.md`).
 
+- [x] 2026-11-06 to 2026-11-11: logged in Current State above and in `docs/PLAN.md` decision log 2026-11-06 to
+      2026-11-11: R2 (the Feng-direction hygiene) and R3b (within-type factors) built into T1 by the captain's
+      rulings, the campaign of 2026-11-09 (two waves and g_mom's controls), the Generality decision D3, the fifth and
+      sixth organiser emails, the Slack DM and the public Slack question, the withheld protocol text opened through
+      the screen, tries E16 and E17, and the Task 1 page statement (read once; nothing found).
+- [x] 2026-11-12 and 2026-11-13: the campaign the captain asked for on 2026-11-12, on the local machine, in four
+      waves (decision log 2026-11-12 (a) to 2026-11-13 (c); `session-handoff.md` has the short list).
+      - The finding: released samples differ more by how they were measured than by stage (N23, the T1 library census,
+        the lag-one reading; `docs/DATA_NOTES.md`).
+      - Embryo: tries E19 to E28 and diagnostics N23, N24. Nothing adopted; request R-A prices three second uploads on
+        nine practice tasks. Both candidate files build reproducibly; option 2 has a build command (82dcd69).
+      - T1: tries T27 to T31. The base's library matters by 7 to 13 points at zero time gap and across one real day;
+        request R-B, with the advice to decline (a depth choice in effect).
+      - T3: tries K6, then reading N25 and tries K7 and K8 (a per-gene factor from wild-type samples alone: +4.7 to
+        +7.1 per lineage group on the second upload's form against WT E8.75, closed by its pre-set reading; both
+        readings went to the captain).
+      - Heart: no try kept and no request; N25 found no revert signal at the end of a series.
+      - Reviews: two research passes, four cold reviews, one independent recomputation of the record, a three-lens
+        review of the seventh organiser email, which the captain sent on 2026-11-13.
+
 ### What's Next
 
-Updated 2026-11-12. The older list below is kept for its record; where the two differ, this one holds.
+Updated 2026-11-13. The older list below is kept for its record; where the two differ, this one holds.
 
 0. **The captain's rulings** (decision log 2026-11-13 (a) and (b)): R-A with its three options
    (`fgw_aligned_series`; `fgw_shape0_hi`; today's), the first embryo upload's shape fix if the captain reopens it,
-   R-B (advice: decline), the R-C email draft (send, edit or delete), and T3's second upload if the captain reopens
-   it (the wild-type-only factor of tries K7: closed by its pre-set reading, both readings in decision log (b)). On a
+   R-B (advice: decline), and T3's second upload if the captain reopens it (the wild-type-only factor of tries K7
+   and K8: closed by its pre-set reading, both readings in decision log (b)). The R-C email was sent on 2026-11-13. On a
    yes to R-A's first option the s2 command is `build_test.py embryo --method fgw --move-coupling aligned --expression
    series`; on its second, `build_test.py embryo --method fgw_shape0 --expression render_hi`. Both built reproducibly
    on this machine at 16 BLAS threads on 2026-11-13. Either way `docs/S2_RULES.md` takes a dated ruling by the
@@ -730,22 +759,29 @@ Updated 2026-11-12. The older list below is kept for its record; where the two d
    build, its ledger row, tests and a rebuild rehearsal by 24 Nov. If the captain reopens T3's second upload: a
    dated ruling in `docs/S2_RULES.md`, a new factor source in `experiments/t3_decomp/build_submission.py` with its
    hash record and tests (about a day), a dry build, and the rebuild rehearsal by 24 Nov. An organiser's answer to
-   R-C is read as `docs/ORGANIZER_QUESTIONS.md` fixes it.
+   R-C is read as `docs/ORGANIZER_QUESTIONS.md` fixes it, through a screening agent and never pasted into the session.
 1. **19 Nov:** if no organiser has answered the public Slack question on floored T3 severity, the captain may post one
    short follow-up in the same thread, drafted by the AI assistant. Replies are read only through the screened check
    (`docs/ORGANIZER_QUESTIONS.md`, "Public Slack question").
+   **19 and 23 Nov, on the captain's say-so:** a screened read for an answer to the seventh email (the Data Protocol
+   page, the Slack channel, the mailbox), with the scope fixed in `docs/ORGANIZER_QUESTIONS.md` ("Seventh email"). The
+   email invites an answer on that page, which nobody reads otherwise, and 23 Nov is the last day an answer can still
+   change a build (rehearsal by 24 Nov). The captain has not yet said yes to these reads.
 2. **24-30 Nov:** the method summary goes privately to the organisers. The private email before the first upload lists
    every planned upload with its hash, ids and stages (`docs/P3_RUNBOOK.md` section 5); it has nothing to add for the
    Task 1 statement, whose read returned none.
 3. **26-27 Nov:** the screened check. It picks T3's s2 by the ruling of 2026-11-06 (b): an organiser's zero switches it,
-   and an answer other than zero or 0.5 goes to the captain. It also covers the DM and email answers, the Rules and
-   Prizes pages, and the Human Team definition.
+   and an answer other than zero or 0.5 goes to the captain. It also covers the DM and email answers (the seventh
+   email's among them: procedure only, any figure about a held-out sample withheld), the Rules and Prizes pages, and
+   the Human Team definition.
 4. **27 Nov from 05:30 IST:** rebuild at the freeze commit with `build_all.sh` (16 BLAS threads), compare with
    `runs/archive/builds_f337dc6/SHA256SUMS`, then `vec check`, the server format checks, the plain summary, and the
    captain's go-ahead for each upload. First round: T1 s1, heart s1, embryo s1, T3's s2.
 5. **29 Nov:** T1, heart and embryo s2. **30 Nov:** T3's s1. **1 Dec:** outage buffer, and the final marks by 12:00 UTC.
-6. **Levers:** none open that the record prices above about +0.3 overall (decision log 2026-11-10 (x)); the Task 1
-   statement exception is spent (2026-11-11 (d)). Tries: T1 23, embryo 13, heart 3, T3 6. Nothing is uploaded.
+6. **Levers:** none open without a ruling. What the campaign priced above about +0.3 overall sits with the captain:
+   R-A (about +0.5 overall at the AI assistant's chance for "E7.75 measured like E8.0") and T3's second upload if
+   reopened (about +1 for the board in expectation, the AI assistant's estimate). The Task 1 statement exception is
+   spent (2026-11-11 (d)). Tries: T1 28, embryo 36, heart 4, T3 15. Nothing is uploaded.
 
 Updated 2026-11-05 (the order, set on 2026-11-04 after the captain's guiding principle in `AGENTS.md`, comes from the
 headroom tables in `experiments/harness/TRIES.md`):
@@ -802,9 +838,17 @@ headroom tables in `experiments/harness/TRIES.md`):
 
 ## Blockers / Risks
 
+- [ ] 2026-11-13: T3's second upload is the file uploaded first on T3. If the captain reopens it for the wild-type-only
+      factor (tries K7, K8), the builder change, its tests, a dry build and the rehearsal have to be done by about
+      24 Nov; the gain there rests on a thin margin over the scorer's severity gate and on one knockout run.
+- [ ] 2026-11-13: a reply to the seventh organiser email may carry figures about held-out samples. It is read by a
+      screening agent first, never pasted into the main session (`docs/ORGANIZER_QUESTIONS.md`, "Seventh email"). An
+      answer may also appear only on the Data Protocol page, which nobody reads without a screened read at the
+      captain's say-so: two are asked for, about 19 and 23 Nov, since the check of 26-27 Nov is too late for a
+      Task 1 build change. Until the captain says yes, an answer there would go unseen.
 - [ ] 2026-11-13: the account's usage limit stopped 16 agent calls of the independent check ("You've reached your
-      Fable limit"); its second stage did not run for most findings, and further agent workflows wait for the
-      captain's word on credits.
+      Fable limit"); its second stage did not run for most findings. Single reviewer agents (on Opus) ran later the
+      same day; larger agent workflows wait for the captain's word on credits.
 - [ ] 2026-11-12: the embryo board turns on how E7.75 was measured (like E8.0, like E7.5, or with a profile of its
       own), which no released file shows; the AI assistant's 0.4 to 0.5 for "like E8.0" is a judgement (N23). Today's
       pair covers the first case poorly (R-A).
@@ -812,7 +856,8 @@ headroom tables in `experiments/harness/TRIES.md`):
       covered by s2) and the library's depth and kind (7 to 13 either way, covered by nothing; R-B). Depth changes
       stay closed.
 - [ ] 2026-11-12: no organiser answer is recorded to any of the six emails, the 6 Nov DM or the public Slack question
-      (posted 2026-11-12); the next screened check is on 26-27 Nov, and the working answers in
+      (posted 2026-11-12), nor yet to the seventh email (sent 2026-11-13); the next screened check is on 26-27 Nov,
+      and the working answers in
       `docs/ORGANIZER_QUESTIONS.md` stand (decision log 2026-11-10 (w), (x)). The largest open risk is A24: if a
       floored T3 severity scores zero, T3 loses 9 to 12.5 whatever the team does.
 - [ ] Awaiting organiser replies: leak report (Slack DM, sent 2026-10-18), the rules questions (email, 2026-10-18) and
@@ -977,12 +1022,21 @@ headroom tables in `experiments/harness/TRIES.md`):
   answers unlocked (P2 submissions end for the whole team) and read as allowed as training data and model inputs
   (A20; organiser confirmation asked); the go-ahead for runbook step 3.
 - **GPUs:** free VRAM only until the end of October; all eight H100s from November (user, 2026-10-19).
+- **Campaign of 2026-11-12** (captain): redesigns on the three task types, a research, critique and experiment loop,
+  and this machine's otherwise-unused GPUs and cores as well as the DGX. Method decisions inside it are the AI
+  assistant's, logged; every change to an upload, a rule or the gate stays the captain's (decision log 2026-11-12 (a)).
+- **2026-11-13** (captain): the seventh organiser email (processing batches of two held-out samples; procedure only)
+  sent. No ruling yet on R-A, R-B, the embryo's first-upload shape or T3's second upload.
 - **Uploads pull from the DGX** (user, 2026-10-19): `vec submit PATH --board KEY --from-dgx` streams the built file
   from the DGX into the client's private temporary copy at upload time; no lasting local copy, and the key never
   leaves this machine.
 
 ## Evidence of Completion
 
+- [x] 2026-11-13 (later), after the harness files were brought up to date (records only, plus
+      `experiments/builds/results/determinism_1f8956b.txt`): `uv lock --check` OK, ruff clean on `src tests`,
+      `sha256sum -c docs/S2_RULES.sha256` OK, and the tests of tries K7 and K8, the s2 rules and the gate estimate
+      pass (34). No code changed after the full run below except `experiments/t3_decomp/k8_s2_form.py` and its test.
 - [x] 2026-11-13, on this machine (`runs/logs/checks_local_2026-11-13b.log`): the full suite started at 1435c22 on a
       clean tree: 1198 tests passed and 1 skipped (torch is not in the standard environment), in 17 minutes; it covers
       the day's code (the K7 script and its tests, the embryo build's `render_hi` option at 82dcd69). The three tests of
@@ -1013,9 +1067,10 @@ headroom tables in `experiments/harness/TRIES.md`):
   compares a predictor with a fold target, scratch included.
 - 2026-11-13: `runs/builds_check_local/det_20261113/` holds five embryo test builds made for the reproducibility
   check (never uploaded). Read their hashes and exit codes only; the logs and stamps print cell numbers.
-- 2026-11-13: the R-C email is a draft in the captain's mailbox (`docs/ORGANIZER_QUESTIONS.md`, "Seventh email"). If
-  an answer comes, record it with its date there and in `docs/DATA_POLICY.md`, and apply the reading fixed beforehand;
-  a reply with a figure about a held-out sample is not read without the captain's named exception.
+- 2026-11-13: the R-C email was sent by the captain that day (`docs/ORGANIZER_QUESTIONS.md`, "Seventh email"). If an
+  answer comes, a screening agent reads it first; record the procedural answer with its date there and in
+  `docs/DATA_POLICY.md`, and apply the reading fixed beforehand. A reply with a figure about a held-out sample is not
+  read without the captain's named exception.
 - 2026-11-12: by the captain's instruction (decision log 2026-11-12 (a)) the campaign runs on this machine; `data/`
   and `runs/` here are owner-only, and the DGX checkout (6402b64) was not synced. A multi-task run starts each task as
   its own process, all together, because provenance is read at each task's start; read `git status` before committing

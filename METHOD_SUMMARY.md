@@ -20,6 +20,12 @@ Since 2026-11-04 the summary is framed by the team captain's guiding principle: 
 it predicts beyond the published baseline and by the held-out evidence for that change ("What each entry predicts
 beyond the published baselines", below).
 
+Status 2026-11-13: no entry has changed since 2026-11-10, and no scored submission has been made. The campaign the
+captain asked for on 2026-11-12 ran four waves of tries on released data (`docs/PLAN.md` decision log 2026-11-12 (a)
+to 2026-11-13 (c)) and kept nothing. What it found is under "Tries ledger" below. What it put to the captain (the
+embryo's second upload, the base of T1's first upload, and two options that their pre-set rules closed) changes
+nothing until the captain rules.
+
 ## Team and track
 
 Team Mithril, Track 1 (Human Team). A person reviews results and makes every submission decision; coding agents do
@@ -190,6 +196,18 @@ Task 3's s2 is the wild type plus a five-state depletion, by design.
   gate; T1's strong-null bet was measured (T12a and T12b) and left out by the captain; H6, E13, E14, K4 and K4c were
   stopped by their target-free gates and not counted (`experiments/harness/TRIES.md`; `docs/PLAN.md` decision log
   2026-11-10).
+  The campaign of 2026-11-12 and 2026-11-13 (running totals on 2026-11-13: T1 28, embryo 36, heart 4, T3 15; one
+  reading, N25, ran before its row and is counted). Its finding: released samples differ more by how they were
+  measured than by stage. On the embryo ladder some neighbouring samples share a per-gene detection profile and others
+  do not, and the seven released T1 libraries span 4,030 to 14,755 counts per chamber cell in two kinds of sample.
+  Tried and not kept on the embryo: every cell moved to one depth (E19), a count-model latent interpolation (E21,
+  scored this time) and a wider top-up neighbourhood (E27). Priced as second uploads on nine practice tasks and put to
+  the captain (request R-A): the shallower bracket's cells rendered into the deeper bracket's run profile (E24, E25,
+  E28). On T1, a base drawn from the dissected-heart library alone was priced at zero time gap and across one real day
+  (T27 to T31); it is a depth choice in effect and is not adopted. On T3, a per-gene factor estimated from wild-type
+  samples alone, the reference's own deviation, gained on both knockout runs that can be read (applied per lineage
+  group +4.7 to +7.1 against WT E8.75 and +20.0 against WT E9.5; pooled +1.2 to +5.1 and +20.0) but failed its
+  pre-set reading by one comparison of nine, so it is not used (K7, K8).
 - **Provenance:** every prediction file carries a build stamp (its sha256, the commit that built it, and whether the
   code was unchanged from the build's start to the write); an official upload is accepted only with a matching clean stamp
   (a format check records the stamp and warns when it is missing), and the submission ledger records the building commit
@@ -197,7 +215,9 @@ Task 3's s2 is the wild type plus a five-state depletion, by design.
   `experiments/builds/build_all.sh`, a repeat is byte-identical; at 8 threads 0.41 of s1's rows differ, in 0.043 of its
   entries (`docs/PLAN.md` decision log 2026-11-10 (q); the cause is expected to be floating-point order in the fit's
   PCA, k-means or Sinkhorn steps and was not traced further). The other eight files were byte-identical at 1, 4, 8 and
-  16 threads when last checked (`experiments/builds/results/determinism_6964b7d.txt`) and have not changed since.
+  16 threads when last checked (`experiments/builds/results/determinism_6964b7d.txt`) and have not changed since. The
+  two candidate second uploads of request R-A, which are no entries, reproduce at 16 threads on the local machine
+  (`experiments/builds/results/determinism_1f8956b.txt`).
 
 ## Task 1: temporal (E12.5) — M1
 

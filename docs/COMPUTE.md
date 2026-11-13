@@ -4,7 +4,7 @@
 
 | Machine | Use |
 |---|---|
-| Local (shared, overloaded) | editing, git, `./init.sh`, quick checks on tiny data |
+| Local (shared, overloaded) | editing, git, `./init.sh`, quick checks on tiny data; since 2026-11-12 also the campaign's runs on otherwise-unused GPUs and cores (below) |
 | `PrakashDGX_H2` (8x H100 80GB) | everything else: data processing, training, sampling, local board scoring on real data |
 
 The DGX workspace is `~/v/virtual-embryo-challenge` (a git clone of this repo). GPU allocation (user, 2026-10-19):
@@ -12,6 +12,26 @@ until the end of October 2026, use only GPUs with free memory (other jobs run on
 never kill a job you did not start); from November 2026 all eight H100s are available to this project. The final
 phase opened on 2026-10-27, so the release-week runs (Oct 27-31) still use free GPUs only. `/home` is
 shared and 89% full (1.6 TB free on 2026-10-28): ask before writing more than 50 GB.
+
+### The local machine during the campaign of 2026-11-12
+
+By the captain's instruction of 2026-11-12 (`docs/PLAN.md` decision log 2026-11-12 (a)) the campaign of that day may
+use this machine's otherwise-unused GPUs and cores; the DGX had no free GPU and saturated CPUs that day. What holds
+here:
+
+- The competition files were copied from the DGX to `data/` and checked against `data/raw/SHA256SUMS`. `data/` and
+  `runs/` are owner-only (mode 700). The team API key stays local, as before, and no experiment uses it.
+- The standard environment `.venv` is what `./init.sh` builds; the campaign's GPU work used a separate `.venv-gpu`
+  (the locked `gpu` and `jax` groups), so `.venv` stays as it is.
+- Run repository Python as `uv run --frozen --no-sync python -I -B ...` with `OMP_NUM_THREADS`,
+  `OPENBLAS_NUM_THREADS` and `MKL_NUM_THREADS` at 16 or less and `NUMPY_MADVISE_HUGEPAGE=0`. Check the load first
+  (`uptime`, `nvidia-smi`); other users' jobs run here and are never touched.
+- A multi-task run starts each task as its own process, all together: provenance (commit and clean tree) is read at
+  each task's start. Commit before starting, and do not edit tracked code while a run or a build is going.
+- Test builds made here are checks only (`runs/builds_check_local/`): an official file is rebuilt at the freeze commit
+  by `build_all.sh` at 16 BLAS threads. A rendered embryo file is byte-reproducible only at a fixed thread count
+  (`experiments/builds/results/determinism_1f8956b.txt`).
+- The DGX checkout was not synced during the campaign (it is at 6402b64). Sync it only when no build runs there.
 
 ## Setup on the DGX
 

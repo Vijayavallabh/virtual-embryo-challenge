@@ -151,6 +151,9 @@ seeds); the cells are means over the two replicates, and the WT column is WT cel
   on the two cross-knockout folds. It would depart from the frozen T3 rules' outcome, so only his own ruling makes it,
   and `experiments/t3_decomp/rules.yaml` is not edited. Without his ruling both T3 uploads stay as the frozen rules
   build them; the composition is closed.
+  (2026-11-13: tries K7 and K8, rows below, read such a factor built from wild-type samples alone. It gains on both
+  knockout runs that can be read and fails its pre-set reading by one comparison, so nothing is requested; the
+  captain has both readings in `docs/PLAN.md` decision log 2026-11-13 (b).)
 - Baseline rows on those folds (`results/baselines_v1/`; Gata4 -> Mab21l2, Mab21l2 -> Gata4 rep2): wt_identity 50 by
   construction; our copy of WT cells 50.74 and 48.59; the organisers' shift_transfer 47.05 and 42.18, against 69.75
   on the replicate fold.
@@ -352,6 +355,26 @@ A row's registration commit is named with its outcome.
   last step, 25 cell types) but not at the heart board's gaps: -0.10 to 0.00 over E8.75, E9.5 and E10.5 in the
   three cell types that can be followed, which the report's moments turn into a small positive multiplier for
   a one-day last gap and a two-day horizon. B0 already applies a damped continuation; no heart try is opened.
+- **Second uploads that depend on the first upload's score** (2026-11-13, considered in the campaign's fourth
+  wave). The Official Rules let a score choose between predictions, and a first score does say something about how
+  the hidden sample was measured. Not built: `docs/S2_RULES.md` reads no test score by design; a first score's level
+  is confounded by depth and by two days of development, so a threshold fitted at zero time gap would rarely
+  separate the cases (try T30's grid: the first upload scores 85 to 97 where its cardiomyocyte share is right and
+  68 to 84 where it is not, before any time gap); and the one hedge it would unlock on T1 is the base's depth, which
+  is closed. The captain keeps the power to change a board's rule after its first upload.
+- **A wild-type sample as a stand-in knockout** (2026-11-13), to read the wild-type-only factor of tries K7
+  against more runs with WT E8.75 as the reference. Only one stand-in is clean: E9.5, three quarters of a day
+  away, where development would dominate the scored response; the stages nearer to E8.75 share a run with samples
+  the factor is fitted on. Not run.
+- **A trend rendering for the embryo** (2026-11-13): every cell of both brackets rendered to the profile a trend
+  through all released samples gives at the target's day, instead of today's mixture of two run profiles. By the
+  pooling arithmetic of decision log 2026-11-12 (c) it leads the mixture only if E7.75 has a profile of its own
+  (about 1.2 against 1.5 units of run variance) and trails it if E7.75 shares either bracket's profile (1.0 against
+  0.5). Not built: the pair of today's first upload and request R-A's file covers those cases better.
+- **A revert of the heart's reference** (2026-11-13; the heart form of tries K7). Reading N25 finds the
+  reference's deviation from the earlier samples only weakly related to the next stage's change at a day's gap
+  (rank correlation +0.07 to +0.27, multipliers 0.06 to 0.27): at the end of a series it cannot be told from
+  development. No heart try is opened.
 
 From the ideas workflow of 2026-11-03 (seven read-only proposers, three critics per idea, a ranking; results not
 committed, their synthetic toys in the AI assistant's scratch). E10 above was its one survivor worth a try.

@@ -23,13 +23,19 @@ uv sync --group gpu --group jax   # DGX: CUDA torch (cu130), scvi-tools, moscot
 ## Layout
 
 ```
-src/vec/        package: io, boards, evaluate (local board emulator), baselines, cli
-boards/         public board specs from the challenge site (panels, anchors)
+src/vec/        package: io, boards, evaluate (local board emulator), baselines, cli, the shared core, the T1 and T2
+                heads, the pseudo-task harness
+experiments/    one folder per study (scripts, committed results); experiments/harness/TRIES.md is the tries ledger
+boards/         public board specs from the challenge site (panels; test-board anchors are stripped at intake)
 configs/        experiment configs
-results/        registry.csv, one row per scored run
-docs/           challenge reference, plan, data policy, compute, research notes
-data/           competition and external data (gitignored, DGX only)
+results/        registry.csv (one row per scored harness run), upload_gate.json
+docs/           challenge reference, plan and decision log, data policy, runbook, compute, research notes
+tests/          the test suite ./init.sh runs
+data/           competition and external data (gitignored; on the DGX, and since 2026-11-12 on the local machine)
 runs/           run outputs (gitignored)
 ```
+
+Where things stand: `session-handoff.md` (what waits), `progress.md` (the log), `feature_list.json` (feature state),
+`ASSUMPTIONS.md` (the bets), `METHOD_SUMMARY.md` (what each entry predicts and why).
 
 Competition data is unpublished and must not leave the team; see `docs/DATA_POLICY.md`.

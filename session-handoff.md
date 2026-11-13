@@ -2,19 +2,46 @@
 
 ## Current Objective
 
-- Goal: a compliant Human-track entry on all four test boards; the final phase opened on 2026-10-27 at 16:00 UTC,
-  postponed from 2026-10-20 by the organisers (2 scored uploads per board for the whole phase; none used as of
-  2026-11-04).
-- Current status (2026-11-04): the test-board specs are in `boards/` (634b5fd; D1 at ae6d6b3 leaves A3 unresolved),
-  and all ten test-board files, built at ae6d6b3, pass `vec check` and the server's format check; no scored upload
-  has been made. No official upload is made without the captain's explicit go-ahead at the time (he runs the
-  commands), and both T1 uploads also wait for the births decision. The captain's guiding principle (2026-11-04) now
-  opens `AGENTS.md`, and the headroom tables in `experiments/harness/TRIES.md` order the work. Every pre-release rule
-  stays as committed (size procedure, T3 decomposition rules, T1 direction readout, count rule, label-mapping rule,
-  the frozen s2 rules). Details: `progress.md`, Current State and What's Next.
-- Branch / commit: `main` on GitHub (private), mirrored to `PrakashDGX_H2:~/v/virtual-embryo-challenge`.
+- Goal: a compliant Human-track entry on all four test boards that finishes as high as it can. The final phase runs
+  through 2026-12-02 (UTC), with two scored uploads per board for the whole phase; none is used as of 2026-11-13.
+- Current status (2026-11-13): the entries are built and their methods chosen (T1: M1 with R1, R2 and R3b; heart: B0
+  with the pre-registered size; embryo: fgw; T3: the frozen rules' files). All ten test files pass `vec check`; eight
+  have passed the server's format check, and T1's two, rebuilt with R3b, get theirs on the freeze morning
+  (`METHOD_SUMMARY.md`). Nothing is uploaded. The captain's upload gate holds every first upload until the team's
+  own estimate passes 209 (it is 184, range 170 to 198) or the deadline exception opens at 2026-11-27 00:00 UTC; each
+  upload then needs the captain's go-ahead at the time, and the captain runs the commands.
+- What waits for the captain (`docs/PLAN.md` decision log 2026-11-13 (a) to (c)):
+  - R-A, the embryo's second upload: `fgw_aligned_series`, `fgw_shape0_hi`, or today's fgw_shape0;
+  - R-B, T1's first upload on library 3's cells: the advice is to decline;
+  - two options their pre-set rules closed and only the captain can reopen: the first embryo upload's shape fix
+    (`fgw_aligned`) and a wild-type-only factor on T3's second upload (tries K7 and K8).
+  The seventh organiser email (R-C) was sent by the captain on 2026-11-13; an answer is read as
+  `docs/ORGANIZER_QUESTIONS.md` ("Seventh email") fixes it, through a screening agent. The email invites an answer on
+  the Data Protocol page, which nobody reads otherwise: the captain's say-so is asked for two screened reads, about
+  19 and 23 Nov. A reply in the captain's inbox is not pasted into the session.
+- Branch / commit: `main` on GitHub (private). The DGX checkout (`PrakashDGX_H2:~/v/virtual-embryo-challenge`) is at
+  6402b64: it has not been synced since the campaign moved to the local machine on 2026-11-12.
 
-## Completed This Session (2026-10-27 to 2026-10-28)
+## Completed This Session (2026-11-12 to 2026-11-13: the campaign the captain asked for on 2026-11-12)
+
+- [x] First and second wave (2026-11-12; decision log 2026-11-12 (a) to (c)). The finding: released samples differ
+      more by how they were measured than by stage (diagnostic N23; the T1 library census in `docs/DATA_NOTES.md`).
+      Embryo tries E19 to E25 (depth and run renderings, pair pricing), T1 tries T27 to T30 (library kind and depth
+      at zero time gap), T3 tries K6, a second research pass (`experiments/research_2026_11_runs/REPORT2.md`), and
+      requests R-A, R-B and R-C.
+- [x] Third wave (2026-11-13; decision log (a)). An independent recomputation of the record: every number held, the
+      presentation was corrected. Tries E26 to E28 and T31, diagnostic N24. R-A restated with three options, priced
+      on nine practice tasks.
+- [x] Fourth wave (2026-11-13; decision log (b) and (c)). The R-C email, drafted after a three-lens review and sent
+      by the captain. Reading N25 and T3 tries K7 and K8: a per-gene factor from wild-type samples alone, closed by
+      its pre-set reading, with both readings given to the captain. Both R-A candidate files reproduce at 16 BLAS
+      threads (`experiments/builds/results/determinism_1f8956b.txt`), and R-A's second option has a build command
+      (`build_test.py embryo --method fgw_shape0 --expression render_hi`).
+- [x] No entry, upload, rule, default or gate record changed in any wave. Tries: T1 28, embryo 36, heart 4, T3 15.
+
+## Completed Earlier (2026-10-27 to 2026-10-28)
+
+2026-11-13: kept as history; the sessions of 2026-10-29 to 2026-11-11 are logged in `progress.md`.
 
 - [x] Release day (2026-10-27): the final phase opened and runbook step 0 passed; the user accepted the current Rules
       and Terms on the account page. Step 1 is blocked: `vec boards update` gets HTTP 403 on panels/index.json (not
@@ -55,6 +82,9 @@
 
 | Check | Command | Result | Notes |
 |---|---|---|---|
+| Lint and tests (2026-11-13) | `uv lock --check`; `uv run --frozen --no-sync ruff check src tests`; `uv run --frozen --no-sync pytest -q` | 1198 passed, 1 skipped (torch not installed) | local machine, started at 1435c22 on a clean tree (`runs/logs/checks_local_2026-11-13b.log`); the tests added later ran on their own; `./init.sh` itself not run |
+| Reproducibility of R-A's candidate files | `experiments/builds/build_test.py embryo ...` at 16 BLAS threads, then `vec check` | one sha256 per file over four and three builds | `experiments/builds/results/determinism_1f8956b.txt`; build logs not read |
+| T3 tries K7 and K8 | `experiments/t3_decomp/k7_wt_revert.py` and `k8_s2_form.py` (`run` per task, then `read`) | `experiments/t3_decomp/results/k7_wt_revert/`, `k8_s2_form/` | 10 seeds, clean trees at 33204be and 9dc6af1 |
 | Lint and tests | `./init.sh` | passes (2026-10-28) | `uv run pytest -q` 402 tests (90+ on 2026-10-19); experiment tests in `experiments/*/test_*.py` run separately |
 | Pre-registered runs (step 4) | `docs/P3_RUNBOOK.md` step 4 commands (DGX, 2026-10-28) | all six ran, exit 0 | outputs committed before reading: f5be247 to 12151e0; the commits are listed in the runbook's step 4 status |
 | Size procedure | `uv run pytest experiments/coords -q -p no:cacheprovider` | 33 passed (2026-10-19) | preflight requires committed procedure files |
@@ -64,12 +94,26 @@
 
 ## Decisions Made
 
+- Current: `docs/PLAN.md` decision log through 2026-11-13 (c), `docs/DATA_POLICY.md` change notes through
+  2026-11-13 (c), the frozen second-upload rules in `docs/S2_RULES.md`, and the captain's upload gate in
+  `results/upload_gate.json`. The campaign's method decisions are the AI assistant's, logged; every change to an
+  upload is the captain's ruling.
 - See `docs/PLAN.md` decision log (2026-10-18, 2026-10-19 a-d, 2026-10-20 a-c, 2026-10-21 a-c, 2026-10-28) and
   `docs/DATA_POLICY.md` records. The user's calls of 2026-10-27 and 2026-10-28 (the history rewrite, the unlock, the
   A20 reading, the go-ahead for step 3) are recorded in `progress.md` (Decisions Made, Blockers / Risks).
 
 ## Blockers / Risks
 
+- 2026-11-13: the estimate (184) is about 25 under the gate, and no change was adopted in the campaign. What can
+  still move the outcome is how the hidden samples were measured (the bets behind R-A, R-B and T3's first-choice
+  file), which no released file shows.
+- 2026-11-13: no organiser answer is recorded to any of the seven emails, the Slack DM or the public Slack
+  question. The next screened check is on 26-27 Nov; one follow-up in the Slack thread may be drafted about 19 Nov.
+- 2026-11-13: a ruling that changes a build is needed by about 24 Nov (a T3 builder change takes about a day, then
+  a dry build and the rebuild rehearsal). A rendered embryo file reproduces only at the build's 16 BLAS threads.
+- 2026-11-13: the account's usage limit stopped an agent workflow that morning; single reviewer agents ran later
+  the same day. Larger agent workflows wait for the captain's word.
+- Earlier items, kept as history:
 - Organiser answers pending (leak report; rules email). Follow-up email sent 2026-10-19; a third (three questions)
   sent 2026-10-21 01:24 IST; a fourth (403, final-entry nomination, A20) sent 2026-10-28 15:41 IST
   (`docs/ORGANIZER_QUESTIONS.md`); no reply to any of the four as of 2026-10-28. Slack last swept 2026-10-23.
@@ -84,20 +128,29 @@
 ## Next Session Startup
 
 1. Read `AGENTS.md`.
-2. Read `feature_list.json` and `progress.md`.
-3. Review this handoff and `docs/P3_RUNBOOK.md`.
-4. Run `./init.sh` before editing.
+2. Read `feature_list.json` and `progress.md` (Current State, What's Next).
+3. Review this handoff, `docs/P3_RUNBOOK.md`, and `docs/PLAN.md` decision log 2026-11-13 (a) to (c).
+4. Run `./init.sh` before editing. On the DGX do not run it as it is (`docs/COMPUTE.md`, `progress.md` notes).
 5. Before choosing or changing work on an entry, read the guiding principle in `AGENTS.md` and the headroom tables in
    `experiments/harness/TRIES.md`.
 
 ## Recommended Next Step
 
-- 2026-11-04 (latest): follow `progress.md`, What's Next: the T1 births decision (by 2026-11-10 at the latest), the
+- 2026-11-13 (latest): wait for the captain's rulings (R-A, R-B, T3's second upload, the embryo's first-upload shape)
+  and carry out whichever is ruled: a dated ruling in `docs/S2_RULES.md` by the captain's own say-so, the build
+  change with tests, a dry build, and a rehearsal by 24 Nov. Then the dated plan in `progress.md`, What's Next: the
+  Slack follow-up draft about 19 Nov, the screened reads for an answer to the seventh email on 19 and 23 Nov if the
+  captain says yes, the method summary and the disclosure email on 24-30 Nov, the screened check on
+  26-27 Nov, the freeze-morning rebuild and the first round on 27 Nov, the second round on 29-30 Nov, the final marks
+  on 1 Dec. Before any reading that compares a predictor with a fold target, write its ledger row (row N25 records
+  the one time this was skipped).
+
+Earlier notes, kept as history (superseded where `progress.md` says otherwise):
+
+- 2026-11-04: follow `progress.md`, What's Next: the T1 births decision (by 2026-11-10 at the latest), the
   T3 response-identity line through the adoption rule, and the headroom tables kept current. Official uploads only on
   the captain's go-ahead. Every change to an entry starts from its board's published baseline and a row in
   `experiments/harness/TRIES.md`, registered before its run (rules 5-8).
-
-Earlier notes, kept as history (superseded where `progress.md` says otherwise):
 
 - 2026-11-01: the s1 build path was reviewed (four reviewers, skeptic-verified; 11 findings) and fixed in
   46089fe. The critical one: both board intakes would have refused every gene list on 4 Nov (the site publishes a

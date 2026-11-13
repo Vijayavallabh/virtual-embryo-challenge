@@ -32,7 +32,9 @@ assistant under the captain's delegation of 2026-11-02, and he can overrule them
    an entry leaves at the baseline.
 3. **Answer the question before the run.** The `TRIES.md` row, committed before the run, names the predicted change
    beyond the baseline and the counting backtests or folds that would show it, none tuned or selected on (on T3 the
-   cross-knockout folds). A test score is never that evidence.
+   cross-knockout folds). A test score is never that evidence. A reading that compares a predictor with a fold or
+   backtest target is a try even when it runs from a scratch folder and never calls the scorer: its row comes first
+   (`TRIES.md` row N25 records the one breach, 2026-11-13).
 4. **Weakest weighted component first.** Before choosing or changing work on an entry, read the headroom tables in
    `TRIES.md`. A board's next try targets its scored group with the most points left (as `headroom.py` prints it) and
    an open lever; a try elsewhere says why. Overall units, ties and closed levers: `TRIES.md` rule 6.
@@ -53,6 +55,12 @@ assistant under the captain's delegation of 2026-11-02, and he can overrule them
    candidates expected to gain under 0.3 points, "no further try", and the lines the ledger closed after its own tries
    (blend, herding, coupling). It does not lift rule 7's data rules, the post-exposure block, A15, the frozen rules, row
    before run, try counting, the adoption rule or his ruling for any change to an upload, or his go-ahead for uploads.
+   The captain renewed the campaign on 2026-11-12 with a wider brief (decision log 2026-11-12 (a), the AI assistant's
+   reading of the captain's words). For that campaign heavy work may also run on this machine's otherwise-unused GPUs
+   and cores, the ledger's own closure of the embryo's depth line is lifted for tries, and a candidate once pruned on
+   an estimated gain may run as a counted try with its row first. Nothing else is lifted: a candidate that needs a
+   standing safeguard lifted goes to the captain as a priced ruling request and changes nothing until the captain
+   rules.
 
 ## Startup Workflow
 
@@ -63,8 +71,9 @@ Before writing code:
 3. Read `docs/CHALLENGE.md` (tasks, metrics, weights, rules), `docs/PLAN.md` (strategy and milestones),
    `docs/DATA_POLICY.md`, and `docs/COMPUTE.md`.
 4. Run `./init.sh` to verify the environment is healthy.
-5. Read `feature_list.json` for the current feature state and `progress.md` for the last session; before choosing
-   or changing work on an entry, the headroom tables in `experiments/harness/TRIES.md`.
+5. Read `feature_list.json` for the current feature state, `progress.md` for the last session and
+   `session-handoff.md` for what waits; before choosing or changing work on an entry, the headroom tables in
+   `experiments/harness/TRIES.md`.
 6. Review recent commits with `git log --oneline -5`.
 
 If baseline verification is failing, repair that first before adding new scope.
@@ -123,7 +132,8 @@ If baseline verification is failing, repair that first before adding new scope.
   (`docs/DATA_POLICY.md` 2026-11-05). The record is `results/upload_gate.json`; the submission client refuses an
   official upload while it does not pass (guard "upload gate").
 - **Heavy compute runs on the DGX** (`PrakashDGX_H2`, workspace `~/v/virtual-embryo-challenge`), never on the shared
-  local machine. See `docs/COMPUTE.md`.
+  local machine. See `docs/COMPUTE.md`. One exception, by the captain's instruction of 2026-11-12: the campaign of
+  that day (rule 8) may use this machine's otherwise-unused GPUs and cores, with `data/` and `runs/` here owner-only.
 - **uv only.** Use `uv add`, `uv sync`, `uv run`. No pip installs into the env, no conda.
 - **Human Team track.** A person reviews results and makes the calls; there is no Agent-track evidence to keep.
 
