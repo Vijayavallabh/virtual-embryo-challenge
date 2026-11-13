@@ -37,6 +37,7 @@ from vec.io import CheckReport, make_submission
 TOKEN = "tok-FAKE-never-print-3f9c1a77"
 T1 = "T1:test"
 X001 = "X001"
+EXCLUDED = "/experiments/builds/results/fixture.SHA256SUMS\n/results/reference_list.json\n"  # env's list and pointer
 REAL_DGX_RUN = vs.dgx_run  # the dgx fixture replaces it
 
 
@@ -228,21 +229,52 @@ def env(tmp_path, monkeypatch, api):
     gate = tmp_path / "upload_gate.json"  # a passing gate record, so the other guards are what these tests see
     gate.write_text(json.dumps({"threshold": 209, "estimate": 210.5, "review": "test fixture"}))
     monkeypatch.setattr(vs, "UPLOAD_GATE", gate)
+    # a reference list in the test's repository (under experiments/**/results/) and its pointer at the repository's
+    # results/reference_list.json, where the guard looks in the repository it is given; both excluded locally, so the
+    # tree stays clean and `git status` empty. The prediction helpers below add each file they build to the list
+    (repo / ".git" / "info").mkdir(exist_ok=True)
+    (repo / ".git" / "info" / "exclude").write_text(EXCLUDED)
+    pointer = repo / vs.REFERENCE_POINTER
+    pointer.parent.mkdir()
+    monkeypatch.setattr(vs, "REFERENCE_LIST", pointer)  # the default without a repository: the same file
     # wider than any path (PATH_MAX is 4096): no printed line wraps and no table cell is cropped, wherever pytest puts
     # its tmp files
     monkeypatch.setattr(cli, "console", Console(emoji=False, highlight=False, width=10_000))
-    return SimpleNamespace(tmp=tmp_path, boards=boards, repo=repo, ledger=tmp_path / "submissions.csv", api=api,
-                           gate=gate)
+    env = SimpleNamespace(tmp=tmp_path, boards=boards, repo=repo, ledger=tmp_path / "submissions.csv", api=api,
+                          gate=gate, pointer=pointer, sums="experiments/builds/results/fixture.SHA256SUMS",
+                          entries=[], names={})
+    _write_reference(env)
+    return env
 
 
-def _pred(env, name, seed, coords=False, where=None):
+def _write_reference(env):
+    """Write env.entries ((sha256, name) pairs, in order) as the list and env.names (board -> names) as its pointer."""
+    sums = env.repo / env.sums
+    sums.parent.mkdir(parents=True, exist_ok=True)
+    sums.write_text("".join(f"{h}  {n}\n" for h, n in env.entries))
+    env.pointer.write_text(json.dumps({"list": env.sums, "list_sha256": vs.sha256_file(sums),
+                                       "boards": {b: v for b, v in env.names.items() if v}, "set": "test fixture"}))
+
+
+def _listed(env, path, board=T1):
+    """Add `path`'s sha256 to the reference list under a new name for `board`; returns `path`."""
+    name = f"fixture/{len(env.entries)}_{Path(path).name}"
+    env.entries.append((vs.sha256_file(path), name))
+    env.names.setdefault(board, []).append(name)
+    _write_reference(env)
+    return path
+
+
+def _pred(env, name, seed, coords=False, where=None, listed=True):
     """A valid prediction file in `where` (default env.tmp), built as in a new process and stamped by write_submission
-    against the test's repository (clean, at its HEAD, unless a test has changed it)."""
+    against the test's repository (clean, at its HEAD, unless a test has changed it). Unless `listed` is False it is
+    added to the reference list, under T1 (under the heart board with `coords`)."""
     rng = np.random.default_rng(seed)
     counts = rng.poisson(2.0, size=(40, len(GENES)))
     X = np.log1p(1e4 * counts / counts.sum(1, keepdims=True).clip(min=1))
     xyz = rng.normal(size=(40, 3)) if coords else None
-    return build(make_submission(X, GENES, xyz), (where or env.tmp) / name, env.repo)
+    path = build(make_submission(X, GENES, xyz), (where or env.tmp) / name, env.repo)
+    return _listed(env, path, "T2:heart:test_extrap" if coords else T1) if listed else path
 
 
 def _official(path, **kw):
@@ -425,7 +457,7 @@ def test_dirty_tree_refuses_official_but_outputs_and_the_ledger_do_not(env, monk
     assert not env.api.posts(official=True)
 
     (env.repo / "method.py").write_text("x = 1\n")
-    (env.repo / "results").mkdir()
+    (env.repo / "results").mkdir(exist_ok=True)  # the fixture keeps its pointer there
     (env.repo / "results" / "scratch.txt").write_text("untracked output\n")
     ledger = env.repo / "results" / "submissions.csv"  # a committed ledger that a format check then modifies
     monkeypatch.setattr(vs, "LEDGER", ledger)
@@ -765,6 +797,266 @@ def test_the_committed_upload_gate_record_holds():
     assert vs.upload_gate_guard(path, now=datetime(2026, 11, 27, tzinfo=UTC)).ok
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# The reference list: an official upload sends only a file whose sha256 the current list holds for the board (AGENTS.md)
+
+
+def _refused_for_the_list(env, path, board=T1):
+    """An official upload of `path` refused by the guard "reference list" alone; returns its detail."""
+    with pytest.raises(vs.SubmitRefused, match="reference list") as e:
+        _official(path, board=board)
+    assert e.value.plan.failed == ["reference list"]
+    detail = _guard(e.value.plan, "reference list").detail
+    assert detail.startswith("results/reference_list.json: ")  # names the pointer file ...
+    assert str(env.tmp) not in detail  # ... and never a path outside the repository (nor an absolute one inside)
+    return detail
+
+
+def test_an_official_upload_needs_the_file_in_the_reference_list(env):
+    _pred(env, "s1.h5ad", 1)  # the board's file on the list
+    f = _pred(env, "old_s1.h5ad", 0, listed=False)  # a superseded file in an older archive folder, clean stamp and all
+    sha = vs.sha256_file(f)
+    res = vs.submit(f, T1)  # a format check goes out as before, and warns
+    assert res.server_status == "format_ok" and len(env.api.posts()) == 1
+    assert res.plan.warnings[-1] == ("an official upload of this file would fail reference list: "
+                                     f"results/reference_list.json: sha256 {sha[:12]} is not in the list "
+                                     f"fixture.SHA256SUMS (T1:test's names: {', '.join(env.names[T1])})")
+    assert "reference list" not in [g.name for g in res.plan.guards]
+    _refused_for_the_list(env, f)
+    assert not env.api.posts(official=True)
+    assert vs.read_ledger(env.ledger)[-1]["detail"] == "failed: reference list"
+    out = _output(CliRunner().invoke(cli.app, ["submit", str(f), "--board", T1, "--official", "--confirm", sha[:12],
+                                               "--disclose", X001]))
+    assert re.search(r"FAIL reference list +results/reference_list\.json: sha256", out) and "nothing was sent" in out
+
+    _listed(env, f)  # on the list under the board's own name: sent
+    res = _official(f)
+    assert res.ok and len(env.api.posts(official=True)) == 1
+    assert _guard(res.plan, "reference list").detail == f"fixture.SHA256SUMS: {env.names[T1][-1]}"
+
+
+def test_a_file_listed_only_under_another_boards_name_is_refused(env):
+    _pred(env, "s1.h5ad", 1)  # T1's file on the list
+    f = _pred(env, "a.h5ad", 0, listed=False)
+    _listed(env, f, "T2:heart:test_extrap")  # the same bytes listed for the heart only
+    res = vs.submit(f, T1)
+    assert res.server_status == "format_ok" and "would fail reference list" in res.plan.warnings[-1]
+    detail = _refused_for_the_list(env, f)
+    assert f"is in the list fixture.SHA256SUMS only as {env.names['T2:heart:test_extrap'][-1]}, none of them one of " \
+        "T1:test's names" in detail
+    assert not env.api.posts(official=True)
+
+
+def test_a_missing_or_broken_pointer_or_list_refuses_official_uploads(env):
+    f = _checked(env, "a.h5ad", 0)
+    good = json.loads(env.pointer.read_text())
+    sums = env.repo / env.sums
+    outside = env.tmp / "outside.SHA256SUMS"  # the same list, outside the repository
+    shutil.copy(sums, outside)
+    link = env.repo / "experiments" / "builds" / "results" / "link.SHA256SUMS"
+    link.symlink_to(outside)
+    (env.repo / ".git" / "info" / "exclude").write_text(EXCLUDED + "/experiments/builds/results/\n")
+
+    def refused(pointer, why):
+        if isinstance(pointer, dict):
+            env.pointer.write_text(json.dumps(pointer))
+        elif isinstance(pointer, str):
+            env.pointer.write_text(pointer)
+        assert why in _refused_for_the_list(env, f)
+        _write_reference(env)
+
+    env.pointer.unlink()
+    refused(None, "cannot read the reference list pointer (FileNotFoundError)")
+    refused("{not json", "cannot read the reference list pointer (JSONDecodeError)")
+    refused("[]", "the pointer is not a JSON object")
+    refused(" " * (vs.REFERENCE_LIST_MAX_BYTES + 1), "the pointer is larger than")
+    refused({**good, "boards": {"T2:heart:test_extrap": ["x"]}}, "the pointer lists no names for board T1:test")
+    refused({**good, "boards": {**good["boards"], T1: []}}, "the pointer lists no names for board T1:test")
+    refused({**good, "boards": {T1: "fixture/0_a.h5ad"}}, '"boards" is not an object')
+    refused({**good, "list": None}, "the pointer names no list")
+    refused({**good, "list_sha256": good["list_sha256"].upper()}, '"list_sha256" is not 64 lowercase hex')
+    for escape in (str(outside), "../outside.SHA256SUMS", "experiments/../../outside.SHA256SUMS", "~/x.SHA256SUMS"):
+        refused({**good, "list": escape}, "the list it names lies outside the repository (an absolute path")
+    refused({**good, "list": "experiments/builds/results/link.SHA256SUMS"},
+            "the list it names lies outside the repository (through a link)")
+    refused({**good, "list": "experiments/builds/results/none.SHA256SUMS"},
+            "the list experiments/builds/results/none.SHA256SUMS does not exist")
+    refused({**good, "list": "experiments"}, "the list experiments is not a regular file")
+    with sums.open("a") as fh:  # the list changed after the pointer was written
+        fh.write(f"{'0' * 64}  builds/late.h5ad\n")
+    refused(None, f"the list {env.sums} has sha256 {vs.sha256_file(sums)[:12]}, not the pointer's list_sha256 "
+            f"{good['list_sha256'][:12]}")
+    sums.write_text(sums.read_text() + "not a sha256sum line\n")
+    refused({**good, "list_sha256": vs.sha256_file(sums)}, "line 2 of the list")
+    assert not env.api.posts(official=True)
+    assert _official(f).ok  # the fixture's own pointer and list, written back
+
+
+def test_a_board_name_that_occurs_twice_or_not_at_all_in_the_list_refuses(env):
+    f = _checked(env, "a.h5ad", 0)
+    env.entries.append(env.entries[0])  # the same name twice
+    _write_reference(env)
+    assert f"T1:test's name {env.names[T1][0]} occurs 2 times in the list {env.sums}, not once" in \
+        _refused_for_the_list(env, f)
+    env.entries.pop()
+    env.names[T1].append("builds/T1_s2.h5ad")  # a name the list does not hold
+    _write_reference(env)
+    assert f"T1:test's name builds/T1_s2.h5ad occurs 0 times in the list {env.sums}, not once" in \
+        _refused_for_the_list(env, f)
+    assert not env.api.posts(official=True)
+    env.names[T1].pop()
+    _write_reference(env)
+    assert _official(f).ok
+
+
+def test_a_held_name_refuses_and_held_must_be_names_with_reasons(env):
+    """A name the pointer holds back ("held": {name: reason}) refuses any board that lists it, with the reason."""
+    f = _checked(env, "a.h5ad", 0)
+    good = json.loads(env.pointer.read_text())
+    name = env.names[T1][0]
+    env.pointer.write_text(json.dumps({**good, "held": {name: "replaced by a ruling"}}))
+    assert f"T1:test's name {name} is held by the pointer (replaced by a ruling)" in _refused_for_the_list(env, f)
+    for bad in (["x"], {"x": ""}, {"": "why"}, {"x": 1}):
+        env.pointer.write_text(json.dumps({**good, "held": bad}))
+        assert '"held" is not an object of names with reasons' in _refused_for_the_list(env, f)
+    env.pointer.write_text(json.dumps({**good, "held": {"builds/other.h5ad": "not this board's"}}))
+    assert _official(f).ok
+    assert len(env.api.posts(official=True)) == 1
+
+
+def test_a_pointer_that_cannot_be_parsed_safely_refuses_and_a_format_check_still_goes(env):
+    """A pointer nested too deep for the JSON parser (RecursionError, under the size limit), holding a string with a
+    lone surrogate (which no terminal or file can encode) or that is no regular file (a FIFO, a link to /dev/zero)
+    refuses an official upload like any unreadable pointer; a format check of the same file goes out, with the
+    warning, and its output prints."""
+    f = _checked(env, "a.h5ad", 0)
+    good = json.loads(env.pointer.read_text())
+    deep = "[" * 30_000 + "]" * 30_000  # Python 3.12's JSON parser gives up near 10 000 levels
+    nested = json.dumps({**good, "boards": {T1: env.names[T1]}, "x": None}).replace("null", deep)
+    surrogate = json.dumps({**good, "boards": {T1: ["\ud800"]}})
+    for text, error in ((deep, "RecursionError"), (nested, "RecursionError"), (surrogate, "UnicodeEncodeError")):
+        env.pointer.write_text(text)
+        assert env.pointer.stat().st_size <= vs.REFERENCE_LIST_MAX_BYTES
+        why = f"cannot read the reference list pointer ({error})"
+        assert vs.reference_list_guard(vs.sha256_file(f), T1, repo=env.repo).detail == \
+            f"results/reference_list.json: {why}"
+        res = vs.submit(f, T1)
+        assert res.server_status == "format_ok" and res.plan.warnings[-1] == \
+            f"an official upload of this file would fail reference list: results/reference_list.json: {why}"
+        out = CliRunner().invoke(cli.app, ["submit", str(f), "--board", T1])
+        assert out.exit_code == 0 and why in _output(out), out.exception
+        assert why in _refused_for_the_list(env, f)
+    for special in ("zero", "fifo"):  # a pointer that is no regular file: never read (no endless read, no hang)
+        env.pointer.unlink()
+        if special == "zero":
+            env.pointer.symlink_to("/dev/zero")
+        else:
+            os.mkfifo(env.pointer)
+        shown = "reference_list.json" if special == "zero" else "results/reference_list.json"  # never /dev/zero
+        res = vs.submit(f, T1)
+        assert res.server_status == "format_ok" and res.plan.warnings[-1] == \
+            f"an official upload of this file would fail reference list: {shown}: the pointer is not a regular file"
+        with pytest.raises(vs.SubmitRefused, match="reference list") as e:
+            _official(f)
+        assert e.value.plan.failed == ["reference list"]
+        assert _guard(e.value.plan, "reference list").detail == f"{shown}: the pointer is not a regular file"
+    env.pointer.unlink()
+    env.pointer.mkdir()  # a directory refuses as before
+    assert "cannot read the reference list pointer (IsADirectoryError)" in _refused_for_the_list(env, f)
+    env.pointer.rmdir()
+    assert not env.api.posts(official=True)
+    _write_reference(env)
+    assert _official(f).ok
+
+
+def test_the_guard_reads_the_pointer_of_the_repository_it_is_given(env, monkeypatch):
+    """Without `pointer`, the guard reads `repo`/results/reference_list.json, the pointer of the repository whose list
+    it resolves; REFERENCE_LIST is the default only without `repo`. prepare passes its repository."""
+    f = _checked(env, "a.h5ad", 0)
+    sha, name = vs.sha256_file(f), env.names[T1][-1]
+    elsewhere = env.tmp / "elsewhere.json"  # the module default moved away: another checkout's pointer, or none
+    monkeypatch.setattr(vs, "REFERENCE_LIST", elsewhere)
+    assert vs.reference_list_guard(sha, T1, repo=env.repo).detail == f"fixture.SHA256SUMS: {name}"
+    assert vs.reference_list_guard(sha, T1).detail == \
+        "elsewhere.json: cannot read the reference list pointer (FileNotFoundError)"
+    shutil.copy(env.pointer, elsewhere)  # a pointer that would pass is not read for another repository
+    other = make_repo(env.tmp / "other")
+    assert vs.reference_list_guard(sha, T1, repo=other).detail == \
+        "results/reference_list.json: cannot read the reference list pointer (FileNotFoundError)"
+    assert vs.reference_list_guard(sha, T1).ok
+    elsewhere.unlink()
+    res = _official(f)  # the client's own repository (env.repo) and its pointer
+    assert res.ok and _guard(res.plan, "reference list").detail == f"fixture.SHA256SUMS: {name}"
+
+
+def test_the_clean_tree_rule_covers_a_committed_pointer_and_list(env):
+    """With the pointer and the list committed (as in the real repository), an edit of either in the working tree fails
+    "clean tree"; an edit that breaks the pointer's hash of the list fails "reference list" too."""
+    f = _checked(env, "a.h5ad", 0)
+    sums = env.repo / env.sums
+    (env.repo / ".git" / "info" / "exclude").write_text("")
+    _git(env.repo, "add", vs.REFERENCE_POINTER, env.sums)
+    _git(env.repo, "commit", "-qm", "the reference list and its pointer")
+    assert not _git(env.repo, "status", "--porcelain", "--untracked-files=all")
+    good = json.loads(env.pointer.read_text())
+
+    def refused(failed, *paths):
+        with pytest.raises(vs.SubmitRefused, match="clean tree") as e:
+            _official(f)
+        assert e.value.plan.failed == failed
+        assert _guard(e.value.plan, "clean tree").detail == f"uncommitted or untracked: {', '.join(paths)}"
+        _git(env.repo, "checkout", "-q", "--", vs.REFERENCE_POINTER, env.sums)
+
+    env.pointer.write_text(json.dumps({**good, "set": "edited"}))  # the binding holds: clean tree alone
+    refused(["clean tree"], vs.REFERENCE_POINTER)
+    env.pointer.write_text(json.dumps({**good, "list_sha256": "0" * 64}))
+    refused(["clean tree", "reference list"], vs.REFERENCE_POINTER)
+    with sums.open("a") as fh:
+        fh.write(f"{vs.sha256_file(f)}  builds/late.h5ad\n")
+    refused(["clean tree", "reference list"], env.sums)
+    with sums.open("a") as fh:  # the list and the pointer edited together: the binding holds, the tree is not clean
+        fh.write(f"{'0' * 64}  builds/late.h5ad\n")
+    env.pointer.write_text(json.dumps({**good, "list_sha256": vs.sha256_file(sums)}))
+    refused(["clean tree"], *sorted([env.sums, vs.REFERENCE_POINTER]))
+    assert not env.api.posts(official=True)
+    assert _official(f).ok  # the committed pointer and list, checked out again
+
+
+HELD_HEART = ("builds/T2heart_s1.h5ad", "builds/T2heart_s2.h5ad")  # the pre-trend heart files of builds_38616fe
+
+
+def test_the_committed_reference_list_pointer_holds():
+    """results/reference_list.json parses and names a list inside the repository with its sha256. Its boards and its
+    held names together hold exactly the list's names, each once. The heart board is absent and its two names are held
+    until the third rehearsal writes a new list: builds_38616fe predates the heart ruling of 2026-11-13 (decision log
+    (w)), so its heart files are the ones the ruling replaced, and no hash of the list passes the heart board."""
+    root = Path(__file__).resolve().parents[1]
+    pointer = root / "results" / "reference_list.json"
+    rec = json.loads(pointer.read_text())
+    sums = root / rec["list"]
+    assert sums.is_file() and vs._inside(sums, root) == rec["list"]
+    assert hashlib.sha256(sums.read_bytes()).hexdigest() == rec["list_sha256"]
+    entries = [vs.SUMS_LINE.match(line).groups() for line in sums.read_text().splitlines() if line.strip()]
+    if rec["list"] == "experiments/builds/results/builds_38616fe.SHA256SUMS":
+        assert set(rec["boards"]) == {"T1:test", "T2:embryo:test_interp", "T3:bcatenin"}
+        assert set(rec["held"]) == set(HELD_HEART) and all(rec["held"].values())
+    else:  # a later list: the four test boards again
+        assert set(rec["boards"]) == {"T1:test", "T2:heart:test_extrap", "T2:embryo:test_interp", "T3:bcatenin"}
+    held = list(rec.get("held", {}))
+    names = [n for b in rec["boards"].values() for n in b] + held
+    assert sorted(names) == sorted(n for _, n in entries) and len(set(names)) == len(names)
+    for board in ("T1:test", "T2:heart:test_extrap", "T2:embryo:test_interp", "T3:bcatenin"):
+        listed = rec["boards"].get(board, [])
+        own = [h for h, n in entries if n in listed]
+        for h, n in entries:  # a board passes its own hashes, and only those; a held name passes no board
+            g = vs.reference_list_guard(h, board, pointer=pointer, repo=root)
+            assert g.ok is (h in own), g.detail
+            assert not (g.ok and n in held), g.detail
+            if g.ok:
+                assert g.detail == f"{sums.name}: {next(n for x, n in entries if x == h and n in listed)}"
+    assert not vs.reference_list_guard("0" * 64, "T1:test", pointer=pointer, repo=root).ok
+
+
 def test_a_file_rebuilt_without_a_new_stamp_is_refused(env):
     f = _checked(env, "a.h5ad", 0)
     old = json.loads(vs.stamp_path(f).read_text())
@@ -920,7 +1212,7 @@ def _build_in_a_new_process(env, name, during=lambda: None):
                 proc.kill()
                 proc.wait()
     assert proc.returncode == 0, err.read_text()
-    return out
+    return _listed(env, out)
 
 
 def test_a_file_whose_build_saw_a_new_commit_land_is_never_sent_officially(env):
@@ -991,7 +1283,7 @@ def _bigger_pred(env, name, seed):
     rng = np.random.default_rng(seed)
     counts = rng.poisson(2.0, size=(55, len(GENES)))
     X = np.log1p(1e4 * counts / counts.sum(1, keepdims=True).clip(min=1))
-    return build(make_submission(X, GENES), env.tmp / name, env.repo)
+    return _listed(env, build(make_submission(X, GENES), env.tmp / name, env.repo))
 
 
 def test_a_retry_sends_the_confirmed_bytes_even_if_the_file_is_rewritten(env):
@@ -1453,12 +1745,13 @@ def dgx(env, monkeypatch):
     return fake
 
 
-def _on_dgx(env, dgx, rel, seed):
+def _on_dgx(env, dgx, rel, seed, listed=True):
     """A valid prediction file at `rel` from the DGX repo root, with its build stamp next to it, as a builder there
-    leaves them (built clean at the HEAD the DGX clone shares with the local repo)."""
+    leaves them (built clean at the HEAD the DGX clone shares with the local repo); on the reference list unless
+    `listed` is False."""
     path = dgx.repo / rel
     path.parent.mkdir(parents=True, exist_ok=True)
-    built = _pred(env, f"dgx{seed}.h5ad", seed)
+    built = _pred(env, f"dgx{seed}.h5ad", seed, listed=listed)
     shutil.move(built, path)
     shutil.move(vs.stamp_path(built), vs.stamp_path(path))
     return path
@@ -1771,3 +2064,29 @@ def test_a_dgx_files_own_stamp_is_exempt_from_dgx_provenance_but_no_other_stamp(
         vs.STAMP_SUFFIX
     vs.stamp_path(dgx.repo / "preds" / "s2.h5ad").unlink()
     assert official().ok  # its own stamp, untracked next to it, is exempt like the ledger
+
+
+def test_a_pulled_file_off_the_reference_list_is_checked_with_a_warning_and_refused_officially(env, dgx):
+    """--from-dgx: the guard reads the pulled copy's sha256. A file the list does not hold goes out as a format check
+    with the warning and is refused officially on "reference list" alone; a listed pulled file passes it."""
+    _pred(env, "s1.h5ad", 1)  # the board's file on the list
+    rel, listed = "runs/builds/old_T1.h5ad", "runs/archive/new_T1.h5ad"  # e.g. an older file left in runs/builds
+    sha = vs.sha256_file(_on_dgx(env, dgx, rel, 0, listed=False))
+    res = vs.submit(rel, T1, from_dgx=True)
+    (post,) = env.api.posts()
+    assert res.server_status == "format_ok" and post["fields"]["format_only"] == "true" and post["sha256"] == sha
+    assert res.plan.warnings[-1] == ("an official upload of this file would fail reference list: "
+                                     f"results/reference_list.json: sha256 {sha[:12]} is not in the list "
+                                     f"fixture.SHA256SUMS (T1:test's names: {', '.join(env.names[T1])})")
+    with pytest.raises(vs.SubmitRefused, match="reference list") as e:
+        vs.submit(rel, T1, official=True, confirm=sha[:12], disclose=X001, from_dgx=True, sleep=lambda s: None)
+    assert e.value.plan.failed == ["reference list"]  # provenance, stamp and the rest pass
+    assert not env.api.posts(official=True)
+
+    sha = vs.sha256_file(_on_dgx(env, dgx, listed, 2))
+    res = vs.submit(listed, T1, from_dgx=True)
+    assert res.server_status == "format_ok" and not any("reference list" in w for w in res.plan.warnings)
+    res = vs.submit(listed, T1, official=True, confirm=sha[:12], disclose=X001, from_dgx=True, sleep=lambda s: None)
+    assert res.ok and _guard(res.plan, "reference list").detail == f"fixture.SHA256SUMS: {env.names[T1][-1]}"
+    (post,) = env.api.posts(official=True)
+    assert post["sha256"] == sha
