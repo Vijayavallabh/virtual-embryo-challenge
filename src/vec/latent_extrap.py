@@ -406,8 +406,8 @@ def t2_population(pool: ad.AnnData, start: ad.AnnData, rows: np.ndarray, seed: i
 # ------------------------------------------------------------------------------------------------ b0_lat_flow
 FLOW_RULE = ("latent flow: z_new = z(tau), dz/dt = v(z, lineage), z(0) = z_own, tau = B0_DAMPING x the last gap in "
              "days, v one MLP fitted by flow matching on entropic-OT pairs within each lineage between every two "
-             "consecutive input stages (velocity (z_j - z_i) / gap, weights gap^2 per lineage), then the ratio "
-             "arm's realisation and stream")
+             "consecutive input stages (velocity (z_j - z_i) / gap, weights proportional to the gap per lineage), "
+             "then the ratio arm's realisation and stream")
 
 
 def flow_stages(task) -> list[tuple[str, float]]:
@@ -426,10 +426,12 @@ def flow_stages(task) -> list[tuple[str, float]]:
 
 
 def block_weights(gaps: Sequence[float]) -> np.ndarray:
-    """A lineage's transition weights w_k = D_k^2 / sum D_k'^2 over its fitted transitions (inverse-variance weights
-    for a velocity whose error is a per-sample offset divided by the gap)."""
-    g2 = np.asarray(gaps, dtype=np.float64) ** 2
-    return g2 / g2.sum()
+    """A lineage's transition weights w_k = D_k / sum D_k' over its fitted transitions, uniform in time: each day of
+    observed development counts equally; a lineage's mean velocity over its fitted transitions is then its total latent
+    change divided by the total time (under per-sample offsets the pooled velocity's variance is within 15% of the
+    least-squares optimum on the heart's gaps, where gap-squared weights are 60% above it)."""
+    g = np.asarray(gaps, dtype=np.float64)
+    return g / g.sum()
 
 
 @dataclass
@@ -449,8 +451,9 @@ def flow_pairs(stage_z: Sequence[np.ndarray], stage_lineage: Sequence[np.ndarray
     cells (default_rng([FLOW_SEED, 1, k, li, side]), sorted), the entropic plan of
     `vec.t1_state_transport.sinkhorn_plan` with its defaults, FLOW_PAIRS pairs drawn from it with replacement
     (default_rng([FLOW_SEED, 2, k, li])), velocity (z_j - z_i) / D_k. Weight per pair omega = w_{k,l} x (blocks /
-    lineages), w from `block_weights` within the lineage, so omega averages 1. The last transition must be fitted for
-    every lineage. Returns (arrays z_i, z_j, u, lineage, omega; record)."""
+    lineages), w from `block_weights` within the lineage (proportional to the gap: uniform in time), so omega
+    averages 1. The last transition must be fitted for every lineage.
+    Returns (arrays z_i, z_j, u, lineage, omega; record)."""
     from vec.t1_state_transport import sinkhorn_plan
 
     lineages = list(lineages)

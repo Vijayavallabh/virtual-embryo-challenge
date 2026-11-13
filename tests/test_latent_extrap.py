@@ -474,9 +474,24 @@ def test_flow_with_the_ratio_arms_z_new_is_the_ratio_arm_bit_for_bit(standin, fl
     assert len(shas) == 1 and {r["candidate"] for r in latent_extrap.RECORDS} == {"b0_lat_ratio", "b0_lat_flow"}
 
 
-def test_flow_weights_are_inverse_variance_and_average_one():
-    np.testing.assert_allclose(latent_extrap.block_weights([0.2, 0.25, 0.75]), [0.0602, 0.0940, 0.8459], atol=5e-5)
-    np.testing.assert_allclose(latent_extrap.block_weights([0.2, 0.25]), [0.3902, 0.6098], atol=5e-5)
+def test_flow_weights_are_uniform_in_time_and_average_one():
+    np.testing.assert_allclose(latent_extrap.block_weights([0.2, 0.25, 0.75]), [0.166667, 0.208333, 0.625], atol=1e-6)
+    np.testing.assert_allclose(latent_extrap.block_weights([0.2, 0.25]), [0.444444, 0.555556], atol=1e-6)
+    # a lineage's omega-weighted mean pair velocity telescopes to its total latent change over the total time: four
+    # stages (gaps 0.2, 0.25, 0.75) of 1500 cells each, unit noise, means drifting irregularly (not linearly). The
+    # pairs reproduce each block's mean change up to the subsample (2000 of 1500: all cells) and the pair draw (8000
+    # pairs from an entropic plan with uniform marginals): the sampling error of a block's mean velocity is about
+    # sqrt(2 / 1500) / gap per axis, under 0.2 on the shortest gap, so 0.1 of a drift norm of 8 is ample and a
+    # last-step-only or gap-squared pooling (off by more than 2) fails it
+    rng4 = np.random.default_rng(7)
+    d4 = [8.3, 8.5, 8.75, 9.5]
+    means = np.array([[0.0, 0.0, 0.0], [3.0, -1.0, 0.0], [3.5, 1.0, 1.0], [6.0, 4.0, 2.0]])
+    zs4 = [rng4.normal(size=(1500, 3)) + m for m in means]
+    labs4 = [np.array(["A"] * 1500)] * 4
+    p4, _ = latent_extrap.flow_pairs(zs4, labs4, d4, ["A"])
+    pooled = (p4["omega"][:, None] * p4["u"]).sum(0) / p4["omega"].sum()
+    telescoped = (zs4[-1].mean(0) - zs4[0].mean(0)) / (d4[-1] - d4[0])
+    assert np.linalg.norm(pooled - telescoped) < 0.1 * np.linalg.norm(telescoped)
     rng = np.random.default_rng(0)
     # lineage A at all three stages, B too small at the first: A has two blocks, B one
     labs = [np.array(["A"] * 60 + ["B"] * 5), np.array(["A"] * 50 + ["B"] * 40), np.array(["A"] * 70 + ["B"] * 30)]
@@ -485,7 +500,7 @@ def test_flow_weights_are_inverse_variance_and_average_one():
     assert rec["n_blocks"] == 3 and rec["n_pairs"] == 3 * latent_extrap.FLOW_PAIRS
     assert pairs["omega"].mean() == pytest.approx(1.0)
     w = {(b["lineage"], b["transition"]): b["weight"] for b in rec["blocks"]}
-    assert w[("A", 1)] == pytest.approx(0.0625 / (0.0625 + 0.5625)) and w[("B", 2)] == 1.0
+    assert w[("A", 1)] == pytest.approx(0.25 / (0.25 + 0.75)) and w[("B", 2)] == 1.0
     assert all(b["converged"] for b in rec["blocks"])
     with pytest.raises(ValueError, match="last transition"):  # a moved lineage must have the last transition
         latent_extrap.flow_pairs(zs, [labs[0], labs[1], np.array(["A"] * 100)], [8.5, 8.75, 9.5], ["A", "B"])
