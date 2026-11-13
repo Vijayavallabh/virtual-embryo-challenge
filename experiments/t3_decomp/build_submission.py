@@ -91,6 +91,12 @@ FACTOR_FILES = {"gata4": "{preset}_pooled", "gata4_unvalidated": "{preset}_poole
 GATA4_SOURCES = ("gata4", "gata4_unvalidated")          # factor sources that are the pooled Gata4 factor
 COMPOSITION_KINDS = ("none", "central", "mild", "mild_raw")
 EXTRAS = ("depth", "stage", "coverage")
+# The captain's ruling of 2026-11-13 (docs/PLAN.md decision log 2026-11-13 (d); experiments/harness/TRIES.md row R5):
+# T3's second upload, the refused branch's s1, also carries the wild-type-only factor of tries K7b and K8b, applied per
+# lineage group at the tried exponent. It is fitted on released wild-type stage files alone (no knockout file), by the
+# tried estimator itself (k7_wt_revert). --wt-revert switches it on; without the flag every file builds as before.
+WT_REVERT_SLOT = ("refused", "s1")
+WT_REVERT_STREAM = "wt_revert"
 JITTER_NN = 0.25          # duplicate positions are moved by at most this x the WT median nearest-neighbour distance
 COORD_KEY = "spatial_3D"
 # scored Mab21l2 variants that `replay` rebuilds: which components each one switches on (rules.yaml components)
@@ -570,6 +576,72 @@ def prediction_inputs(ref: Reference, spec: dict, params: dict, phi: np.ndarray 
     return kw, info
 
 
+def wt_revert_series(wt: Path, given: dict[str, Path] | None = None) -> dict[str, Path]:
+    """The other released wild-type stage files the factor is fitted on: every stage of k7_wt_revert.FULL_PANEL but the
+    reference's own (`given` replaces the default paths under data/raw/T2; its names must be exactly those stages)."""
+    import k7_wt_revert as k7
+
+    want = sorted(n for n in k7.FULL_PANEL if n != Path(wt).stem)
+    if Path(wt).stem not in k7.FULL_PANEL:
+        raise Refused(f"--wt-revert: the reference {Path(wt).name} is not one of the stages {list(k7.FULL_PANEL)}")
+    series = {n: DATA / "T2" / f"{n}.h5ad" for n in want} if not given else {k: Path(v) for k, v in given.items()}
+    if sorted(series) != want:
+        raise Refused(f"--wt-revert needs exactly the stages {want}, got {sorted(series)}")
+    absent = [str(v) for v in series.values() if not v.is_file()]
+    if absent:
+        raise Refused(f"--wt-revert: wild-type stage files not found: {absent} (pass --wt-series NAME=PATH)")
+    return series
+
+
+def wt_revert_factors(wt: Path, series: dict[str, Path], genes: list[str]) -> tuple[np.ndarray, dict, np.ndarray, dict]:
+    """The wild-type-only factors of tries K7 and K8 for the reference `wt`, fitted exactly as tried
+    (k7_wt_revert.group_means, trend_at and revert_factors; the stage days of vec.harness.STAGE_DAYS; the samples in
+    sorted name order, as the tries' roles were): (the pooled factor, one factor per lineage group, each reference
+    cell's lineage group in the pool's row order, a record without any cell number)."""
+    import k7_wt_revert as k7
+
+    from vec.harness import STAGE_DAYS
+    from vec.prep import load_stage
+
+    def day(stem: str) -> float:
+        return float(STAGE_DAYS[f"T2/{stem}.h5ad"])
+
+    names = sorted(series)
+    ref = load_stage(wt, genes=genes, drop_duplicates=True)
+    ref_means, ref_sizes = k7.group_means(ref)
+    others = [k7.group_means(load_stage(series[n], genes=genes, drop_duplicates=True))[0] for n in names]
+    trend = k7.trend_at(others, [day(n) for n in names], day(Path(wt).stem))
+    phi, per, rec = k7.revert_factors(ref_means, ref_sizes, trend)
+    record = {"rule": k7.WT_REVERT_RULE, "exponent": k7.EXPONENT, "applied": "per lineage group (tries K7b, K8b)",
+              "estimator": "experiments/t3_decomp/k7_wt_revert.py",
+              "estimator_sha256": sha256(HERE / "k7_wt_revert.py"),
+              "series": {n: {"path": str(series[n]), "sha256": sha256(series[n])} for n in names},
+              "groups_with_a_factor": list(rec["groups"]), "sd_log_factor_pooled": rec["sd_log_phi"],
+              "sd_log_factor_per_group": rec["sd_log_phi_per_group"], "genes_at_clip_pooled": rec["genes_at_clip"]}
+    return phi, per, np.asarray(ref.obs["group"]).astype(str), record
+
+
+def apply_wt_revert(ref: Reference, built: Built, phi: np.ndarray, per: dict, group: np.ndarray,
+                    rng: np.random.Generator) -> tuple[Built, dict]:
+    """The drawn cells with each one's counts moved by its lineage group's factor at the tried exponent, through
+    t3_decompose.apply_gene_factor with the pool's smoothed profile (the arm of tries K7b and K8b); a group without a
+    factor of its own takes the pooled one. Draws, labels and source rows are unchanged."""
+    import k7_wt_revert as k7
+
+    if not np.all(built.source == "wt"):
+        raise Refused("--wt-revert expects every drawn cell to come from the reference pool (no stage mixing)")
+    if len(group) != ref.pool.C.shape[0]:
+        raise Refused("--wt-revert: the lineage groups do not line up with the reference pool's rows")
+    C, P = ref.pool.C[built.row].copy(), ref.pool.P[built.row]
+    drawn = group[built.row]
+    how = {}
+    for g in sorted(set(drawn)):
+        rows = np.flatnonzero(drawn == g)
+        C[rows] = t3d.apply_gene_factor(C[rows], per.get(g, phi) ** k7.EXPONENT, P[rows], rng)
+        how[g] = "its own factor" if g in per else "the pooled factor"
+    return Built(X=t3d.lognorm(C), lab=built.lab, source=built.source, row=built.row), {"factor_by_group": how}
+
+
 @dataclass
 class Built:
     """t3_decompose.build output and where each cell came from (its source pool and row)."""
@@ -753,7 +825,8 @@ def inputs_for(spec: dict, dec: dict, ref: Reference, run_dir: Path | None) -> t
 def build_submission(decision: Path, branch: str, submission: str, wt: Path, board, n_cells: int, out: Path,
                      run_dir: Path | None = None, preset: str | None = None, stage_paths_in: dict | None = None,
                      seed: int = 1_000_001, allow_hash_mismatch: bool = False,
-                     allow_unregistered_protocol: bool = False, overwrite: bool = False, threads: int = 16) -> dict:
+                     allow_unregistered_protocol: bool = False, overwrite: bool = False, threads: int = 16,
+                     wt_revert: dict[str, Path] | None = None) -> dict:
     """Build one submission from the decision file; returns the sidecar (also written next to the file). The seed is
     never below vec.harness.BUILD_SEED_OFFSET (docs/P3_RUNBOOK.md section 5: numpy's default_rng([s, 0]) is
     default_rng(s), and the server draws its working copies with seed 0)."""
@@ -763,6 +836,9 @@ def build_submission(decision: Path, branch: str, submission: str, wt: Path, boa
     if int(seed) < BUILD_SEED_OFFSET:
         raise Refused(f"build seed {seed} is below {BUILD_SEED_OFFSET} (docs/P3_RUNBOOK.md section 5: never build a "
                       "test file at seed 0)")
+    if wt_revert is not None and (branch, submission) != WT_REVERT_SLOT:
+        raise Refused("--wt-revert is ruled for T3's second upload only (--branch refused --submission s1; "
+                      "docs/S2_RULES.md, ruling of 2026-11-13)")
     t0 = time.time()
     pf = preflight(decision, branch, submission, board, n_cells, preset, allow_hash_mismatch,
                    allow_unregistered_protocol)
@@ -790,6 +866,15 @@ def build_submission(decision: Path, branch: str, submission: str, wt: Path, boa
                         f"variant): {info['composition']['states_missing']}")
     stream = f"submission:{branch}:{submission}"
     built = construct(ref, n_cells, t3d.stable_rng(seed, stream), **kw)
+    revert, streams = None, [stream, f"{stream}:assemble"]
+    if wt_revert is not None:
+        if kw["phi"] is not None or kw["ratio"] is not None or kw["alphas"] is not None:
+            raise Refused("--wt-revert is for a submission with no other factor, depth ratio or stage mixing")
+        phi_wr, per_wr, group_wr, revert = wt_revert_factors(Path(wt), wt_revert, ref.genes)
+        built, applied = apply_wt_revert(ref, built, phi_wr, per_wr, group_wr,
+                                         t3d.stable_rng(seed, f"{stream}:{WT_REVERT_STREAM}"))
+        revert = {**revert, **applied, "ruling": "the captain, 2026-11-13 (docs/S2_RULES.md)"}
+        streams.append(f"{stream}:{WT_REVERT_STREAM}")
     X, coords, ainfo = assemble(ref, built, board.genes, t3d.stable_rng(seed, f"{stream}:assemble"))
     write_submission(make_submission(X, board.genes, coords), out)
     rep = check_submission(out, board)
@@ -812,8 +897,8 @@ def build_submission(decision: Path, branch: str, submission: str, wt: Path, boa
                              **({"limits": "hidden (test board)"} if board.counts_hidden else
                                 {"min_cells": board.min_cells, "max_cells": board.max_cells})},
                    "n_cells": count_label(n_cells, board), "seed": int(seed),
-                   "rng_streams": [stream, f"{stream}:assemble"]},
-        "construction": {"function": "t3_decompose.build",
+                   "rng_streams": streams},
+        "construction": {"function": "t3_decompose.build", "wt_revert": revert,
                          "factor_exponent": kw["w"] if kw["phi"] is not None else None,
                          "depth_ratios": None if kw["ratio"] is None else
                          {t: float(r) for t, r in zip(ref.V.labels, kw["ratio"], strict=True) if r != 1.0},
@@ -865,16 +950,24 @@ def build(
                                                      "protocol (recorded)"),
     overwrite: bool = typer.Option(False, help="replace an existing output"),
     threads: int = typer.Option(16, help="BLAS threads while preparing the reference"),
+    wt_revert: bool = typer.Option(False, "--wt-revert", help="T3's second upload only (--branch refused --submission "
+                                   "s1; the captain's ruling of 2026-11-13): also apply the wild-type-only factor of "
+                                   "tries K7b and K8b per lineage group. Off: the file as the frozen rules built it"),
+    wt_series: list[str] = typer.Option(None, help="NAME=PATH wild-type stage files for --wt-revert (default: the "
+                                        "other full-panel stages under data/raw/T2)"),
 ):
     """Build submission s1 or s2 of one branch from the decision file."""
     try:
         b = board_spec(board, boards_dir)
+        series = wt_revert_series(wt, parse_pairs(wt_series, "--wt-series")) if wt_revert else None
+        if wt_series and not wt_revert:
+            raise Refused("--wt-series is given without --wt-revert")
         s = build_submission(decision, branch, submission, wt, b, resolve_n_cells(n_cells, b), out, run_dir=run_dir,
                              preset=preset,
                              stage_paths_in=parse_pairs(stage, "--stage"), seed=seed,
                              allow_hash_mismatch=allow_hash_mismatch,
                              allow_unregistered_protocol=allow_unregistered_protocol, overwrite=overwrite,
-                             threads=threads)
+                             threads=threads, wt_revert=series)
     except Refused as e:
         say(f"refused: {e}", "red")
         raise typer.Exit(2) from None

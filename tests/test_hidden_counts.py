@@ -306,6 +306,44 @@ def test_t1_build_without_the_hygiene_writes_todays_file(bt, t1_env, tmp_path, c
     assert str(T1_SECRET) not in text + capsys.readouterr().out
 
 
+def test_t1_base_lib3_draws_library_three_alone_at_its_own_mix(bt, t1_env, tmp_path, monkeypatch, capsys):
+    """Row R6 (2026-11-13): --base lib3 hands build_submission only the cells whose names end in _3, at that library's
+    own chamber mix and at the unchanged count; the default (pooled) hands it every E10.5 cell, as before; lib3 is
+    refused with a share option before anything is built."""
+    ref = t1_env.ref
+    lab = ref.obs["celltype"].astype(str).to_numpy()
+    lib = np.where(lab == "V-CM", np.where(np.arange(ref.n_obs) % 4 == 0, 1, 3), np.arange(ref.n_obs) % 3 + 1)
+    ref.obs_names = [f"bc{i}-1_{k}" for i, k in enumerate(lib)]
+    seen = []
+
+    def spy(pool, board, shares, n, seed, **kw):
+        seen.append((list(pool.obs_names), dict(shares), n))
+        return t1_env.build(pool, board, shares, n, seed, **kw)
+
+    monkeypatch.setattr(bt.t1_scope, "build_submission", spy)
+    assert bt.build_parser().parse_args(["t1", "--out", "x.h5ad"]).base == "pooled"
+    bt.main(["t1", "--no-feng-hygiene", "--out", str(tmp_path / "pooled.h5ad")])
+    bt.main(["t1", "--no-feng-hygiene", "--base", "lib3", "--out", str(tmp_path / "lib3.h5ad")])
+    (names_p, shares_p, n_p), (names_3, shares_3, n_3) = seen
+    assert names_p == list(ref.obs_names) and n_p == n_3 == bt.harness.count_for(t1_env.board, ref.n_obs)
+    assert names_3 and all(x.endswith("_3") for x in names_3) and len(names_3) == int((lib == 3).sum())
+    third = ref[lib == 3].copy()
+    assert shares_3 == bt.harness.t1_chamber_shares(bt.harness._shallow(third), "E10.5_RNA")
+    assert shares_p == bt.harness.t1_chamber_shares(bt.harness._shallow(ref.copy()), "E10.5_RNA")
+    assert shares_3["cm"] > shares_p["cm"]  # library 3 holds most of the cardiomyocytes here: its own mix, not E10.5's
+    recs = [json.loads((tmp_path / f"{k}.build.json").read_text()) for k in ("pooled", "lib3")]
+    assert [r["base"] for r in recs] == ["pooled", "lib3"] and all(r["n_cells"] == "max_cells" for r in recs)
+    assert (tmp_path / "pooled.h5ad").read_bytes() != (tmp_path / "lib3.h5ad").read_bytes()
+    assert str(T1_SECRET) not in capsys.readouterr().out
+    for extra in (["--cm-share", "0.6"], ["--blood-share", "0.3"]):
+        with pytest.raises(SystemExit, match="refused with --cm-share or --blood-share"):
+            bt.main(["t1", "--base", "lib3", *extra, "--out", str(tmp_path / "no.h5ad")])
+    assert len(seen) == 2  # nothing was built for the refused calls
+    ref.obs_names = [f"c{i}" for i in range(ref.n_obs)]  # names that carry no library
+    with pytest.raises(SystemExit, match="do not separate library 3"):
+        bt.main(["t1", "--no-feng-hygiene", "--base", "lib3", "--out", str(tmp_path / "no.h5ad")])
+
+
 @pytest.mark.parametrize("argv", [["--feng-hygiene"], []])  # [] : the default since the build commit of (k)
 def test_t1_build_with_the_hygiene_holds_the_pinned_union(bt, t1_env, tmp_path, monkeypatch, argv):
     """--feng-hygiene, and the default with R1, build the same file as build_t1 with the union added to the held-flat

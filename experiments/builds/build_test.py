@@ -81,6 +81,13 @@ EMBRYO_T_POS = {"fgw": None, "fgw_shape0": 0.0, "fgw_shape1": 1.0}
 # R3b of experiments/harness/TRIES.md (the captain's ruling of 2026-11-10 (p)): the only categories g_mom's factors edit
 # at test. These are the two any backtest read (T25, T26); epicardium and vascular endothelium have factors but no read.
 G_MOM_EDIT_CATEGORIES = ("cm", "endocardium")
+# R6 of experiments/harness/TRIES.md (2026-11-13: the AI assistant's decision under the captain's delegation,
+# docs/PLAN.md decision log 2026-11-13 (d)): the pool T1's cells are drawn from. "pooled": every E10.5 cell (the entry
+# until then, and still T1's second upload). "lib3": E10.5's dissected-heart library alone, whose cell names end in
+# this suffix, at that library's own chamber mix (tries T27 to T31). Feng's direction, R1, R2 and the fit of g_mom
+# are untouched.
+T1_BASES = ("pooled", "lib3")
+T1_DISSECTED_LIBRARY = "3"
 
 
 def _view(key: str, task: str, kind: str, setting: str | None, test_board: str, roles: dict[str, tuple[str, float]],
@@ -299,6 +306,17 @@ def build_t1(a) -> dict:
     momentum = _t1_momentum(a.hold_unbracketed)
     shares = harness.t1_chamber_shares(harness._shallow(ref), "E10.5_RNA")
     fit_categories = [c for c, s in shares.items() if s > 0]  # g_mom's fit, as the candidate's: E10.5's own mix
+    pool = ref
+    if a.base == "lib3":
+        if a.cm_share is not None or a.blood_share is not None:
+            sys.exit("--base lib3 is refused with --cm-share or --blood-share: the pair priced in try T30 keeps the "
+                     "second upload on the pooled base (experiments/harness/TRIES.md, row R6)")
+        library = np.array([str(x).rsplit("_", 1)[-1] for x in ref.obs_names])
+        rows = np.flatnonzero(library == T1_DISSECTED_LIBRARY)
+        if len(rows) == 0 or len(rows) == ref.n_obs:
+            sys.exit("--base lib3: the reference's cell names do not separate library 3 from the others")
+        pool = ref[rows].copy()
+        shares = harness.t1_chamber_shares(harness._shallow(pool), "E10.5_RNA")  # library 3's own chamber mix
     if a.cm_share is not None:
         shares = t1_scope.with_share(shares, "cm", a.cm_share)
     if a.blood_share is not None:  # blood's share of all chamber cells, the other categories in proportion
@@ -314,7 +332,7 @@ def build_t1(a) -> dict:
         covered = {lab for lab, group in groups.items() if group in directions}  # the build's Feng-covered labels
         hook, g_mom_record = _t1_g_mom(ref, fit_categories, a.seed, covered)
         within_type = {"post_cells": hook}
-    sub, rep = t1_scope.build_submission(ref, board, shares, n, a.seed, held_flat=held,
+    sub, rep = t1_scope.build_submission(pool, board, shares, n, a.seed, held_flat=held,
                                          ref_source="E10.5_RNA", directions=directions, direction_fraction=fraction,
                                          direction_groups=groups, herd=a.herd, **momentum, **extra, **within_type)
     strong = None
@@ -328,6 +346,7 @@ def build_t1(a) -> dict:
     check = t1_scope.write_checked(sub, a.out, board)
     rec = {"entry": "M1", "board": board.key, "dry_run": dry, "n_cells": n, "seed": a.seed, "fraction": fraction,
            "herd": bool(a.herd), "hold_unbracketed": bool(a.hold_unbracketed), "feng_hygiene": feng_hygiene,
+           "base": a.base,
            "cm_share_of_heart": t1_scope.share_of(shares, "cm", t1_scope.load_spec().heart),
            "blood_share_of_chamber": float(shares.get("blood", 0.0)),
            "shares": shares, "external": ext, "check_ok": check.ok, "realised": rep["realised"]}
@@ -461,6 +480,11 @@ def build_parser() -> argparse.ArgumentParser:
                            help="T12a, T12b (experiments/harness/TRIES.md; the captain's rulings of 2026-11-10 (a) and "
                                 "(d)): add the strong-null down-tail prior after M1's steps (off by default; refused "
                                 "until configs/t1_strong_null.yaml says approved, and without R1 and R2)")
+            p.add_argument("--base", choices=T1_BASES, default=T1_BASES[0],
+                           help="the pool the cells are drawn from: pooled = every E10.5 cell (the default, and T1's "
+                                "second upload); lib3 = E10.5's dissected-heart library alone at its own chamber mix "
+                                "(row R6 of experiments/harness/TRIES.md). The count, Feng's direction, R1, R2 and "
+                                "g_mom's fit are the same either way")
             p.add_argument("--g-mom", action="store_true",
                            help="add g_mom's within-type factors at test (T1 try T11 of experiments/harness/TRIES.md; "
                                 "fitted on E9.5 -> E10.5, applied last, after Feng's direction, on cardiomyocytes and "
