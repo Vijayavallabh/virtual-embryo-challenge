@@ -3079,3 +3079,20 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     against the ratio arm that keeps B0's forecast, in the same vehicle. T1 gets no learned-forecast arm: with two
     input stages it could not test what the note asks, and its two cuts have no unread reading left. Counted reads
     for the generator tests: T1 two (the two vehicle arms), heart three; five in all, not the six announced.
+- 2026-11-13 (o), a second forwarded side note, and the generator tests' rows. Written by the AI assistant.
+  - **The note** (forwarded by the captain; a side agent's): the learned-forecast test can barely test learning on
+    Task 1, where only two stages exist to learn from; the heart's practice task has four; the organisers' own learned
+    models score below the copy-last baseline on both boards; scored practice runs rise from four to six; "Consider
+    limiting it to the heart."
+  - **Checked against the record before acting.** The note describes the plan of entry (l) (one learned-forecast arm
+    per board, six counted reads). Entry (n), committed before the note arrived, had already limited the
+    learned-forecast arm to the heart and put the counted reads at five (T1 two, heart three). So the note's advice is
+    in force and nothing changes; no recorded choice is set aside. Its facts hold, with two details: of the heart's
+    two practice tasks one has four input stages and the other three; and `docs/CHALLENGE.md` ("Reference rows")
+    records more than the note says: the organisers' T1 reference `neural_ode` is an autonomous field flow-matched
+    on an entropic optimal-transport coupling, the family of the heart arm, and it "does NOT beat the constant
+    shift". Row H10 says so.
+  - **The captain can still strike the heart arm** (row H10) at any time before its run; the two vehicle arms per
+    board are the captain's own order (k).
+  - **Rows.** T34 and T35 (T1, the two vehicle arms) are registered with this entry; H8, H9 and H10 (heart) follow
+    when the heart arm's build-only smoke has been read. Code: `campaign/gen` at 069d6fc, off main.
