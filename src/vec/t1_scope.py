@@ -463,7 +463,8 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
                    standin_momentum: bool = False, seed: Seed = 0,
                    logf_filter: Callable[[np.ndarray, sparse.csr_matrix, np.ndarray], tuple[np.ndarray, dict]]
                    | None = None,
-                   logf_by_type: Mapping[str, np.ndarray] | None = None) -> tuple[ad.AnnData, ShiftReport]:
+                   logf_by_type: Mapping[str, np.ndarray] | None = None,
+                   factor_apply: Callable | None = None) -> tuple[ad.AnnData, ShiftReport]:
     """Move `target_like` cells by the damped per-type change from `start` to `ref`, in count space.
 
     start, ref: the two stages whose change is the momentum (start is the earlier one; ref is normally the stage the
@@ -491,6 +492,10 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
     `damping * log((m_ref + eps) / (m_start + eps))` for that type. Everything else applies to it as to the own factor:
     the skip rules (a type skipped for too few cells or stand-ins stays skipped even if the mapping names it), the clip,
     the held-flat zeros, logf_filter and the report row. Types the mapping does not name keep their own factor.
+
+    factor_apply (default None: `apply_factors`, so every existing output is unchanged; heart try b0_trend_smooth,
+    vec.harness.B0_TREND_SMOOTH_RULE): a function with `apply_factors`' signature and return value, called in its
+    place with the same arguments (the counts, the factors, the type index, the held-flat genes, keep_depth, seed).
 
     Returns a copy of target_like with layers["counts"] edited and X = log1p CP10k of the new counts (float32 CSR),
     and a per-type report.
@@ -545,7 +550,10 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
                    mean_abs_log_f=float(np.abs(logf).mean()), max_abs_log_f=float(np.abs(logf).max()))
         rows.append(row)
     tidx = np.array([tindex[t] for t in t_types], dtype=np.int64)
-    new, scale, dead = apply_factors(C, F, tidx, held, keep_depth=keep_depth, seed=seed)
+    if factor_apply is None:
+        new, scale, dead = apply_factors(C, F, tidx, held, keep_depth=keep_depth, seed=seed)
+    else:
+        new, scale, dead = factor_apply(C, F, tidx, held, keep_depth=keep_depth, seed=seed)
     for row in rows:
         m = t_types == row["type"]
         row["median_depth_scale"] = float(np.median(scale[m])) if m.any() else float("nan")

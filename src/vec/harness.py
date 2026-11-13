@@ -55,6 +55,7 @@ import anndata as ad
 import h5py
 import numpy as np
 import yaml
+from scipy import sparse
 
 from vec import t2_build
 from vec.adoption import SEEDS, keep_change
@@ -959,7 +960,7 @@ def theil_sen_slope(log_means: Sequence[np.ndarray], days: Sequence[float]) -> n
 
 
 def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[str],
-                     form: str = "ols") -> tuple[dict[str, np.ndarray], dict]:
+                     form: str = "ols", series_out: dict | None = None) -> tuple[dict[str, np.ndarray], dict]:
     """b0_trend's log factors (lineage -> damped log factor in `genes` order) and its target-free record. For each
     lineage among `types` (the drawn cells' B0 types; "Untracked" never) that B0 shifts on this task (at least
     min_cells own cells at `start` and at the reference), the usable stages are the input stages (`trend_stages`: day
@@ -982,7 +983,11 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
     factor (eb: the ten bin weights and their median, and the norm ratio and cosine against OLS; ts: cosine and norm
     ratio against OLS) or, for horizon, budget_h, b0_trend's budget and their ratio; "n_trend" counts the lineages
     with a trend and "n_mapped" those in the mapping. The existing fields (cosine and norm ratio against B0's own
-    factor, the mean absolute log factor "mean_abs_logf_trend") then describe the arm's factor."""
+    factor, the mean absolute log factor "mean_abs_logf_trend") then describe the arm's factor.
+
+    series_out (default None: nothing is handed back, and nothing else changes; heart tries b0_trend_pava and
+    b0_trend_r8): a dict that receives, for each lineage with a trend (three or more usable stages), (log means per
+    usable stage, their days), the series its factor was computed from."""
     from vec.core import counts_of, mean_cp10k
 
     if form not in TREND_FORMS:
@@ -1020,6 +1025,8 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
                 out[lin] = logf
         else:
             ys, ds = [y[r] for r, _ in usable], [d for _, d in usable]
+            if series_out is not None:
+                series_out[lin] = (ys, ds)
             logf = trend_log_factor(ys, ds, budget)
             if form == "eb":
                 ols = logf
@@ -1064,8 +1071,202 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
     return out, rec
 
 
+# Heart batch b (campaign/heart-b; four arms on b0_trend, each with one idea read from the record and nothing else
+# changed). Harness candidates only; the test builders are untouched.
+B0_TREND_SMOOTH_RULE = ("b0_trend with the count-space step's top-up taken from kNN-smoothed expected counts: where a "
+                        "cell's factor (after B0's keep-depth constant, computed as before) is above 1, the cell gains "
+                        "Poisson((f - 1) x its library size x the mean panel proportions of its t2_build.RENDER_K "
+                        "nearest reference cells, itself included, in t2_build.RENDER_N_PC principal components of "
+                        "the reference's log1p panel expression) on every gene, zeros included, instead of "
+                        "Poisson((f - 1) x its own count); thinning below 1 and everything else are b0_trend's "
+                        "(design: TRIES.md 'Pruned before running', b0_smooth; routine: t2_build._smoothed_props)")
+TAIL_PB_MIN = 0.25  # a truth down-gene needs pb(reference) >= 0.25 (experiments/research_2026_11/diagnostics.py, N3/N5)
+B0_TREND_TAIL_RULE = ("b0_trend with its bottom tail compressed to the down-feasible genes: a gene whose reference "
+                      "pseudobulk pb (the mean over the reference's cells of log1p CP10k, the scorer's pb) is below "
+                      "TAIL_PB_MIN cannot be a truth down-gene, so every shifted lineage's negative log factor on such "
+                      "a gene is set to 0 (applied after the trend, as a log-factor filter, to every shifted lineage); "
+                      "everything else is b0_trend's (design: TRIES.md N3, N5 and 'Pruned before running', tail "
+                      "decoders; experiments/research_2026_11/REPORT.md sections 2, 5 and 6)")
+B0_TREND_PAVA_RULE = ("b0_trend with R9's persistence gate and combiner (experiments/research_2026_11_runs/REPORT.md, "
+                      "R8 to R10) on each trend lineage's per-gene series: the series is fitted monotone in the "
+                      "direction of its last step by pool-adjacent-violators (equal stage weights); a gene whose "
+                      "last step is pooled (the reference shares a block with start) or zero gets factor 0; a gene "
+                      "whose last step stays unpooled and agrees in sign with the analogous series (the equal-weight "
+                      "mean of the other trend lineages' least-squares slopes) gets the budget x the mean of its own "
+                      "and the analogous slope; every other gene keeps b0_trend's factor; a lineage seen at only the "
+                      "last two stages keeps B0's own factor")
+R8_RANK = 1  # the record's rank is 1-3 (REPORT.md R8); the smallest, one value, no sweep
+B0_TREND_R8_RULE = ("b0_trend with R8's run basis removed (experiments/research_2026_11_runs/REPORT.md, R8 to R10): "
+                    "the control contrasts are the interior-stage residuals of every trend lineage's log means "
+                    "(r_k = y_k - (w y_(k-1) + (1 - w) y_(k+1)), w = (d_(k+1) - d_k) / (d_(k+1) - d_(k-1)), R2's "
+                    "form), from the task's own MERFISH heart stages; their rank-R8_RANK SVD basis V (uncentred) "
+                    "is the run-profile basis, and each trend lineage's factor loses its projection on V (the trend "
+                    "built on the remainder); no contrast or a zero basis leaves b0_trend's factor; a lineage seen "
+                    "at only the last two stages keeps B0's own factor")
+TREND_IDEAS = ("smooth", "tail", "pava", "r8")
+
+
+def smooth_expected_counts(pool: ad.AnnData, genes: Sequence[str], rows: np.ndarray) -> np.ndarray:
+    """b0_trend_smooth's expected counts for the drawn rows of the reference pool (rows x genes, float64): each cell's
+    library size x the mean panel proportions of its RENDER_K nearest pool cells (t2_build._smoothed_props, as the
+    embryo's render uses it)."""
+    E, C, lib, _ = t2_build._stage_counts(pool, list(genes))
+    S = t2_build._smoothed_props(E, C, lib, np.asarray(rows))
+    return S * np.asarray(lib, dtype=np.float64)[np.asarray(rows)][:, None]
+
+
+def apply_factors_smooth_up(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarray | None = None,
+                            keep_depth: bool = True, seed=0, *, expected: np.ndarray):
+    """`vec.core.apply_factors` with the top-up from `expected` (cells x genes) instead of each cell's own counts: the
+    keep-depth constant and the binomial thinning of counts with f < 1 are apply_factors' own (same random stream, in
+    the same order); then every entry with f > 1, zeros included, gains Poisson((f - 1) x expected). A cell left with
+    no counts gets its original counts back. With no factor above 1 the output is apply_factors' bit for bit."""
+    C = sparse.csr_matrix(C, dtype=np.int64, copy=True)
+    C.sort_indices()
+    n = C.shape[0]
+    factors = np.asarray(factors, dtype=np.float64)
+    if not np.all(np.isfinite(factors)) or (factors <= 0).any():
+        raise ValueError("factors must be finite and positive")
+    expected = np.asarray(expected, dtype=np.float64)
+    if expected.shape != C.shape or not np.all(np.isfinite(expected)) or (expected < 0).any():
+        raise ValueError(f"expected must be finite, non-negative and of shape {C.shape}")
+    type_index = np.asarray(type_index)
+    held = np.zeros(C.shape[1], dtype=bool) if held is None else np.asarray(held, dtype=bool)
+    row_of = np.repeat(np.arange(n), np.diff(C.indptr))
+    c = C.data.astype(np.float64)
+    f = factors[type_index[row_of], C.indices]
+    free = ~held[C.indices]
+    scale = np.ones(n)
+    Fd = factors[type_index]
+    if keep_depth:
+        num = np.bincount(row_of, weights=c * free, minlength=n)
+        den = np.bincount(row_of, weights=c * f * free, minlength=n)
+        scale = np.divide(num, den, out=np.ones(n), where=den > 0)
+        f = np.where(free, f * scale[row_of], 1.0)
+        Fd = np.where(held[None, :], 1.0, Fd * scale[:, None])
+    else:
+        f = np.where(free, f, 1.0)
+        Fd = np.where(held[None, :], 1.0, Fd)
+    rng = np.random.default_rng(seed)
+    new = C.data.copy()
+    down = f < 1.0
+    new[down] = rng.binomial(C.data[down], f[down])
+    up = Fd > 1.0
+    D = sparse.csr_matrix((new, C.indices.copy(), C.indptr.copy()), shape=C.shape).toarray()
+    D[up] += rng.poisson((Fd[up] - 1.0) * expected[up])
+    dead = D.sum(1) == 0
+    if dead.any():
+        D[dead] = C[np.flatnonzero(dead)].toarray()
+    out = sparse.csr_matrix(D)
+    out.eliminate_zeros()
+    return out, scale, dead
+
+
+def tail_infeasible(pool: ad.AnnData, genes: Sequence[str], pb_min: float | None = None) -> np.ndarray:
+    """b0_trend_tail's mask (in `genes` order): pb(reference) < TAIL_PB_MIN, pb the mean over the reference's cells
+    of its log1p CP10k X (the scorer's pseudobulk, as experiments/research_2026_11/diagnostics.py reads it)."""
+    X = pool[:, list(genes)].X
+    pb = np.asarray(X.mean(axis=0)).ravel().astype(np.float64)
+    return pb < (TAIL_PB_MIN if pb_min is None else pb_min)
+
+
+def tail_filter(infeasible: np.ndarray):
+    """The log-factor filter of b0_trend_tail (momentum_shift's logf_filter): a negative log factor on an infeasible
+    gene becomes 0; every other entry is returned as it came."""
+    infeasible = np.asarray(infeasible, dtype=bool)
+
+    def filt(logf: np.ndarray, counts, held) -> tuple[np.ndarray, dict]:
+        out = np.array(logf, dtype=np.float64)
+        hit = infeasible & (out < 0)
+        out[hit] = 0.0
+        return out, {"rule": "vec.harness.B0_TREND_TAIL_RULE", "n_compressed": int(hit.sum())}
+
+    return filt
+
+
+def pava_last_unpooled(y: Sequence[float]) -> bool:
+    """Pool-adjacent-violators for a non-decreasing fit of y (equal weights; a tie pools): True when the last value
+    ends in a block of its own, i.e. the last step is not pooled."""
+    blocks: list[list[float]] = []  # [sum, count, first index]
+    for i, v in enumerate(y):
+        blocks.append([float(v), 1.0, float(i)])
+        while len(blocks) > 1 and blocks[-2][0] / blocks[-2][1] >= blocks[-1][0] / blocks[-1][1]:
+            s, c, _ = blocks.pop()
+            blocks[-1][0] += s
+            blocks[-1][1] += c
+    return int(blocks[-1][2]) == len(y) - 1
+
+
+def persistence_gate(log_means: Sequence[np.ndarray]) -> tuple[np.ndarray, np.ndarray]:
+    """R9's gate per gene over one lineage's usable stages (n >= 3, day order): s = sign of the last step; the series
+    s x y is fitted non-decreasing by pool-adjacent-violators. Returns (open: last step nonzero and unpooled, s)."""
+    Y = np.vstack([np.asarray(y, dtype=np.float64) for y in log_means])
+    s = np.sign(Y[-1] - Y[-2])
+    open_ = np.array([s[g] != 0 and pava_last_unpooled(s[g] * Y[:, g]) for g in range(Y.shape[1])], dtype=bool)
+    return open_, s
+
+
+def trend_pava(logf_by_type: Mapping[str, np.ndarray], series: Mapping[str, tuple], budget: float
+               ) -> tuple[dict[str, np.ndarray], dict]:
+    """b0_trend_pava's mapping from b0_trend's (B0_TREND_PAVA_RULE) and its record. series: lineage -> (log means,
+    days) of each trend lineage (b0_trend_factors' series_out)."""
+    slope = {lin: trend_log_factor(ys, ds, 1.0) for lin, (ys, ds) in series.items()}
+    out, rows = dict(logf_by_type), []
+    for lin, (ys, _) in series.items():
+        logf = np.array(logf_by_type[lin], dtype=np.float64)
+        open_, s = persistence_gate(ys)
+        others = [slope[o] for o in series if o != lin]
+        logf[~open_] = 0.0
+        comb = np.zeros(len(logf), dtype=bool)
+        if others:
+            analog = np.mean(np.vstack(others), axis=0)
+            comb = open_ & (np.sign(analog) == s)
+            logf[comb] = budget * 0.5 * (slope[lin][comb] + analog[comb])
+        out[lin] = logf
+        rows.append({"lineage": lin, "n_closed": int((~open_).sum()), "n_combined": int(comb.sum()),
+                     "n_own": int((open_ & ~comb).sum()), "n_analogous": len(others),
+                     "cosine_b0_trend": _cosine(logf, np.asarray(logf_by_type[lin], dtype=np.float64))})
+    return out, {"rule": "vec.harness.B0_TREND_PAVA_RULE", "lineages": rows}
+
+
+def run_contrasts(series: Mapping[str, tuple]) -> np.ndarray:
+    """R8's control contrasts (rows x genes): each trend lineage's interior-stage residuals (B0_TREND_R8_RULE)."""
+    rows = []
+    for ys, ds in series.values():
+        for k in range(1, len(ds) - 1):
+            w = (ds[k + 1] - ds[k]) / (ds[k + 1] - ds[k - 1])
+            rows.append(np.asarray(ys[k], dtype=np.float64) - (w * np.asarray(ys[k - 1], dtype=np.float64)
+                                                              + (1.0 - w) * np.asarray(ys[k + 1], dtype=np.float64)))
+    return np.vstack(rows) if rows else np.zeros((0, 0))
+
+
+def trend_r8(logf_by_type: Mapping[str, np.ndarray], series: Mapping[str, tuple], rank: int | None = None
+             ) -> tuple[dict[str, np.ndarray], dict]:
+    """b0_trend_r8's mapping from b0_trend's (B0_TREND_R8_RULE) and its record."""
+    rank = R8_RANK if rank is None else int(rank)
+    M = run_contrasts(series)
+    rec: dict = {"rule": "vec.harness.B0_TREND_R8_RULE", "rank": rank, "n_contrasts": int(M.shape[0])}
+    out = dict(logf_by_type)
+    if M.shape[0] == 0 or not np.any(M):
+        rec.update(basis=False, lineages=[])
+        return out, rec
+    _, sv, Vt = np.linalg.svd(M, full_matrices=False)
+    keep = sv[:rank] > 0
+    V = Vt[:rank][keep]
+    rec.update(basis=bool(keep.any()), singular_values=[float(x) for x in sv],
+               basis_energy_share=float((sv[:rank][keep] ** 2).sum() / (sv ** 2).sum()), lineages=[])
+    for lin in series:
+        logf = np.asarray(logf_by_type[lin], dtype=np.float64)
+        new = logf - V.T @ (V @ logf)
+        out[lin] = new
+        n0 = float(np.linalg.norm(logf))
+        rec["lineages"].append({"lineage": lin, "removed_norm_share": float(np.linalg.norm(logf - new)) / n0
+                                if n0 > 0 else float("nan"), "cosine_b0_trend": _cosine(new, logf)})
+    return out, rec
+
+
 def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool = False, trend: bool = False,
-           trend_record: dict | None = None, trend_form: str = "ols") -> Stage:
+           trend_record: dict | None = None, trend_form: str = "ols", trend_idea: str | None = None) -> Stage:
     """B0 on a T2 board: real reference cells at the count rule, moved in count space by the per-type change of the
     harmonised lineage level (obs["merged"]; groups without a stable cross-stage meaning held flat). Extrapolation:
     from `start` to the reference, damped by B0_DAMPING. Interpolation: from the earlier bracket towards the later one,
@@ -1079,7 +1280,11 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
     lineage's log factor is its least-squares trend over every input stage (`b0_trend_factors`, B0_TREND_RULE); the
     draw, typing, stream and everything else are B0's. No try read it with depth, herd or cfm, so those raise.
     trend_record: a dict that receives b0_trend_factors' record (with trend only; the build record's source).
-    trend_form (with trend only; heart tries H13e, H13r, H13h): b0_trend_factors' `form`, default "ols" (b0_trend)."""
+    trend_form (with trend only; heart tries H13e, H13r, H13h): b0_trend_factors' `form`, default "ols" (b0_trend).
+    trend_idea (with trend and the "ols" form only; heart batch b): default None, b0_trend's own path; "smooth"
+    (B0_TREND_SMOOTH_RULE: the top-up from kNN-smoothed expected counts), "tail" (B0_TREND_TAIL_RULE: negative log
+    factors on down-infeasible genes set to 0), "pava" (B0_TREND_PAVA_RULE: R9's persistence gate and combiner) or
+    "r8" (B0_TREND_R8_RULE: R8's run basis removed from the trend factor). The record gains an "idea" block."""
     from vec import t1_scope
 
     if trend and (depth or herd or cfm):
@@ -1088,6 +1293,11 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
         raise ValueError("trend_record is for trend=True")
     if trend_form != "ols" and not trend:
         raise ValueError("trend_form is for trend=True")
+    if trend_idea is not None:
+        if trend_idea not in TREND_IDEAS:
+            raise ValueError(f"unknown trend idea {trend_idea!r}; known: {TREND_IDEAS}")
+        if not trend or trend_form != "ols":
+            raise ValueError("trend_idea is for trend=True with the ols trend form")
     if trend:
         _b0_trend_task_check(ctx.task)
     if cfm and ctx.task.kind != "extrap":
@@ -1106,14 +1316,36 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
 
     like = typed(pool, "start" if t.kind == "interp" else "end")[rows]
     logf_by_type = None
+    logf_filter = t2_build.covariance_filter if cfm else None
+    factor_apply = None
     if trend:
+        series: dict | None = {} if trend_idea in ("pava", "r8") else None
         logf_by_type, rec = b0_trend_factors(ctx, list(like.var_names),
-                                             sorted(set(np.asarray(like.obs["b0_type"]).astype(str))), form=trend_form)
+                                             sorted(set(np.asarray(like.obs["b0_type"]).astype(str))), form=trend_form,
+                                             series_out=series)
+        if trend_idea == "pava":
+            logf_by_type, rec["idea"] = trend_pava(logf_by_type, series, rec["budget_days"])
+        elif trend_idea == "r8":
+            logf_by_type, rec["idea"] = trend_r8(logf_by_type, series)
+        elif trend_idea == "tail":
+            infeasible = tail_infeasible(pool, list(like.var_names))
+            logf_filter = tail_filter(infeasible)
+            rec["idea"] = {"rule": "vec.harness.B0_TREND_TAIL_RULE", "pb_min": TAIL_PB_MIN,
+                           "n_infeasible": int(infeasible.sum()), "n_genes": int(len(infeasible))}
+        elif trend_idea == "smooth":
+            expected = smooth_expected_counts(pool, list(like.var_names), rows)
+
+            def smooth_apply(C, F, tidx, held, keep_depth=True, seed=0):
+                return apply_factors_smooth_up(C, F, tidx, held, keep_depth=keep_depth, seed=seed, expected=expected)
+
+            factor_apply = smooth_apply
+            rec["idea"] = {"rule": "vec.harness.B0_TREND_SMOOTH_RULE", "k": t2_build.RENDER_K,
+                           "n_pc": t2_build.RENDER_N_PC}
         if trend_record is not None:
             trend_record.update(rec)
     shifted, _ = t1_scope.momentum_shift(typed(start, "start"), typed(end, "end"), like, damping, (), key="b0_type",
-                                         seed=[ctx.seed, 3], logf_filter=t2_build.covariance_filter if cfm else None,
-                                         logf_by_type=logf_by_type)
+                                         seed=[ctx.seed, 3], logf_filter=logf_filter,
+                                         logf_by_type=logf_by_type, factor_apply=factor_apply)
     g = ctx.board.genes
     if depth:
         if t.kind != "extrap":
@@ -1277,6 +1509,19 @@ def _b0_trend_arm(name: str, form: str):
     def build(ctx: BuildContext) -> Stage:
         rec: dict = {}
         stage = _b0_t2(ctx, trend=True, trend_record=rec, trend_form=form)
+        TREND_ARM_RECORDS[name] = rec
+        return stage
+
+    return build
+
+
+def _b0_trend_idea_arm(name: str, idea: str):
+    """Heart batch b: `_b0_t2` with trend=True and one idea (TREND_IDEAS); the record goes to
+    TREND_ARM_RECORDS[name]."""
+
+    def build(ctx: BuildContext) -> Stage:
+        rec: dict = {}
+        stage = _b0_t2(ctx, trend=True, trend_record=rec, trend_idea=idea)
         TREND_ARM_RECORDS[name] = rec
         return stage
 
@@ -1936,6 +2181,30 @@ CANDIDATES = {
                                      "(target day - reference day)) instead of the last gap (heart only; count space)",
                              "damping": B0_DAMPING, "rule": "vec.harness.B0_TREND_H_RULE", "scope": "chamber"},
                             requires=_heart_extrap_with_start),
+    # heart batch b (campaign/heart-b): b0_trend with one idea each, read from the record
+    "b0_trend_smooth": Candidate("b0_trend_smooth", frozenset({"T2"}), (), _b0_trend_idea_arm("b0_trend_smooth",
+                                                                                              "smooth"),
+                                 {"what": "b0_trend with the count-space top-up (factor above 1) drawn from "
+                                          "kNN-smoothed expected counts instead of each cell's own counts (heart only)",
+                                  "damping": B0_DAMPING, "rule": "vec.harness.B0_TREND_SMOOTH_RULE",
+                                  "k": t2_build.RENDER_K, "n_pc": t2_build.RENDER_N_PC, "scope": "chamber"},
+                                 requires=_heart_extrap_with_start),
+    "b0_trend_tail": Candidate("b0_trend_tail", frozenset({"T2"}), (), _b0_trend_idea_arm("b0_trend_tail", "tail"),
+                               {"what": "b0_trend with negative log factors on down-infeasible genes (reference pb "
+                                        "below 0.25) set to 0, every shifted lineage (heart only; count space)",
+                                "damping": B0_DAMPING, "rule": "vec.harness.B0_TREND_TAIL_RULE",
+                                "pb_min": TAIL_PB_MIN, "scope": "chamber"}, requires=_heart_extrap_with_start),
+    "b0_trend_pava": Candidate("b0_trend_pava", frozenset({"T2"}), (), _b0_trend_idea_arm("b0_trend_pava", "pava"),
+                               {"what": "b0_trend with R9's persistence gate (pool-adjacent-violators on each trend "
+                                        "lineage's per-gene series) and combiner with the other lineages' mean slope "
+                                        "(heart only; count space)", "damping": B0_DAMPING,
+                                "rule": "vec.harness.B0_TREND_PAVA_RULE", "scope": "chamber"},
+                               requires=_heart_extrap_with_start),
+    "b0_trend_r8": Candidate("b0_trend_r8", frozenset({"T2"}), (), _b0_trend_idea_arm("b0_trend_r8", "r8"),
+                             {"what": "b0_trend with each trend lineage's factor projected off a rank-1 run-profile "
+                                      "basis of the task's own interior-stage residuals (R8; heart MERFISH only; count "
+                                      "space)", "damping": B0_DAMPING, "rule": "vec.harness.B0_TREND_R8_RULE",
+                              "rank": R8_RANK, "scope": "chamber"}, requires=_heart_extrap_with_start),
     # T3 tries K2a and K2b (experiments/harness/TRIES.md, registered before their run): s1's Gata4 factor on the
     # Gata4 -> Mab21l2 fold, and its permuted control
     "t3_factor_xko": Candidate("t3_factor_xko", frozenset({"T3"}), (), _t3_factor_xko,
