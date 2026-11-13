@@ -1,27 +1,29 @@
 #!/usr/bin/env python
-"""Readings of tries E36a and E36b of experiments/harness/TRIES.md (registered before any run): the two embryo arms
-with rotation-aware moves (recipe R10 of experiments/research_2026_11_runs/REPORT.md), `fgw_polar` and
-`fgw_aligned_polar_series`, scored on the nine practice tasks by `n41_polar_arms.py` on the branch
-`campaign/emb-polar`.
+"""Readings of tries E36a to E36d of experiments/harness/TRIES.md (registered before any run): the embryo arms with
+rotation-aware moves (recipe R10 of experiments/research_2026_11_runs/REPORT.md) in two forms, scored on the nine
+practice tasks by `n41_polar_arms.py` on the branch `campaign/emb-polar`:
+  `fgw_polar`, `fgw_aligned_polar_series`              the patch's linear map interpolated about the patch centroid;
+  `fgw_polar_frame`, `fgw_aligned_polar_frame_series`  the patch's affine map interpolated in the common frame.
 
 What it reads. Only per-seed board scores committed by counted tries: the stored runs of E24, E25 and E28
 (`nine_tasks.STORED` and `results/e28_nine_tasks/tasks`) and the committed task files of tries E36 given by `--runs`.
 It opens no data file, runs no candidate and no scorer.
 
 Three readings, each an existing rule applied unchanged, all fixed in the row before the run:
-  adoption       the adoption rule (vec.adoption.keep_change) for `fgw_polar` against the entry `fgw` on the two
-                 counted embryo backtests (the nine tasks' e75 and e725), seed for seed;
-  first upload   row N33's rule (n37_first_upload_new_arms.price), each arm as a first upload beside the second
-                 upload as built;
-  second upload  rows E34 and E35's rule (n38_second_beside_trend.price with the first upload `fgw`), each arm as a
-                 second upload beside `fgw`, against `fgw_aligned_series`.
+  adoption       the adoption rule (vec.adoption.keep_change) for each first-upload form (`fgw_polar`,
+                 `fgw_polar_frame`) against the entry `fgw` on the two counted embryo backtests (the nine tasks' e75
+                 and e725), seed for seed;
+  first upload   row N33's rule (n37_first_upload_new_arms.price), each of the four arms as a first upload beside
+                 the second upload as built;
+  second upload  rows E34 and E35's rule (n38_second_beside_trend.price with the first upload `fgw`), each of the
+                 four arms as a second upload beside `fgw`, against `fgw_aligned_series`.
 A pass of the adoption rule leads to a ruling request. A pass of a pair rule leads to a cold adversarial check and
 then, if it survives, to a priced request. Anything else closes the line. Reported, deciding nothing: each arm's own
-mean minus its base's on every task (`fgw_polar` against `fgw`; `fgw_aligned_polar_series` against
-`fgw_aligned_series`).
+mean minus its base's on every task (the arm it differs from by the move alone).
 
-Void on a missing task, arm or seed, a dirty tree, or a floor that differs from the committed runs by more than
-nine_tasks.TOL (nine_tasks._load checks every arm two runs share).
+Void on a missing task or seed, a dirty tree, or a floor that differs from the committed runs by more than
+nine_tasks.TOL (nine_tasks._load checks every arm two runs share). An arm without scores on every task is reported as
+not readable and cannot pass.
 
   python -I -B experiments/harness/n41_polar_readings.py --runs DIR --out DIR
 """
@@ -44,16 +46,17 @@ import nine_tasks as nt  # noqa: E402
 from vec.adoption import keep_change  # noqa: E402
 from vec.provenance import repo_state  # noqa: E402
 
-ARMS = ("fgw_polar", "fgw_aligned_polar_series")
 ENTRY = "fgw"  # the first upload as built
 SECOND = nt.RA  # fgw_aligned_series, the second upload as built
-BASE_OF = {"fgw_polar": ENTRY, "fgw_aligned_polar_series": SECOND}  # the arm each differs from by the move alone
-ADOPTION_ARM = "fgw_polar"
+BASE_OF = {"fgw_polar": ENTRY, "fgw_aligned_polar_series": SECOND,  # the arm each differs from by the move alone
+           "fgw_polar_frame": ENTRY, "fgw_aligned_polar_frame_series": SECOND}
+ARMS = tuple(BASE_OF)
+ADOPTION_ARMS = ("fgw_polar", "fgw_polar_frame")  # the first-upload forms: the entry with the move changed
 BACKTESTS = ("e75", "e725")  # the two counted embryo backtests among the nine tasks
 E28_RUNS = HERE / "results" / "e28_nine_tasks" / "tasks"
 
 
-def adoption(scores: dict, tasks: dict, arm: str = ADOPTION_ARM, base: str = ENTRY) -> dict:
+def adoption(scores: dict, tasks: dict, arm: str, base: str = ENTRY) -> dict:
     """The adoption rule on the two counted backtests, seed for seed (rows are in seed order)."""
     paired = {}
     for n in BACKTESTS:
@@ -69,10 +72,10 @@ def check(scores: dict, tasks: dict) -> dict:
     own = {a: {n: float(scores[tasks[n].key][a].mean() - scores[tasks[n].key][BASE_OF[a]].mean()) for n in names}
            for a in ARMS if readable[a]}
     out = {"arms": list(ARMS), "readable": readable, "own_minus_base": own,
-           "adoption": adoption(scores, tasks) if readable[ADOPTION_ARM] else None,
+           "adoption": {a: (adoption(scores, tasks, a) if readable[a] else None) for a in ADOPTION_ARMS},
            "first_upload": n37.price(scores, tasks, candidates=ARMS),
            "second_upload": n38.price(scores, tasks, first=ENTRY, candidates=ARMS)}
-    out["adopted"] = bool(out["adoption"] and out["adoption"]["keep"])
+    out["adopted"] = [a for a in ADOPTION_ARMS if out["adoption"][a] and out["adoption"][a]["keep"]]
     out["requested_first_upload"] = out["first_upload"]["requested_first_upload"]
     advised = out["second_upload"]["advised_second"]
     out["requested_second_upload"] = None if advised == SECOND else advised
@@ -96,20 +99,20 @@ def text(res: dict) -> str:
     if res["void"]:
         return "VOID: " + "; ".join(res["why"]) + "\n"
     names = [*nt.DEEP, *nt.OTHER]
-    lines = [f"Readings of tries E36a and E36b (runs {', '.join(res['runs'])}): the rotation-aware moves on the nine "
+    passed = [x for x in (("the adoption rule is passed by " + ", ".join(res["adopted"])) if res["adopted"] else "",
+                          f"first upload put forward: {res['requested_first_upload']}"
+                          if res["requested_first_upload"] else "",
+                          f"second upload put forward: {res['requested_second_upload']}"
+                          if res["requested_second_upload"] else "") if x]
+    lines = [f"Readings of tries E36a to E36d (runs {', '.join(res['runs'])}): the rotation-aware moves on the nine "
              "practice tasks; aggregation of committed scores",
-             "outcome: " + ("closed: no rule is passed" if res["closed"] else "; ".join(
-                 x for x in (("the adoption rule is passed by " + ADOPTION_ARM) if res["adopted"] else "",
-                             f"first upload put forward: {res['requested_first_upload']}"
-                             if res["requested_first_upload"] else "",
-                             f"second upload put forward: {res['requested_second_upload']}"
-                             if res["requested_second_upload"] else "") if x))]
-    a = res["adoption"]
-    if a is None:
-        lines.append(f"  adoption rule, {ADOPTION_ARM} against {ENTRY}: not readable")
-    else:
+             "outcome: " + ("closed: no rule is passed" if res["closed"] else "; ".join(passed))]
+    for arm, a in res["adoption"].items():
+        if a is None:
+            lines.append(f"  adoption rule, {arm} against {ENTRY}: not readable")
+            continue
         parts = [f"{n} {t['mean_gain']:+.2f} ({t['seeds_ahead']}/10)" for n, t in a["tasks"].items()]
-        lines.append(f"  adoption rule, {ADOPTION_ARM} against {ENTRY}: " + ", ".join(parts)
+        lines.append(f"  adoption rule, {arm} against {ENTRY}: " + ", ".join(parts)
                      + f" -> {'kept' if a['keep'] else 'not kept'} ({a['reason']})")
     for arm in res["arms"]:
         if not res["readable"][arm]:
@@ -125,10 +128,10 @@ def text(res: dict) -> str:
         for arm in res["arms"]:
             v = block[key][arm]
             if not v["readable"]:
-                lines.append(f"    {arm:<26} not readable: no scores on {', '.join(v['missing_on'])}")
+                lines.append(f"    {arm:<32} not readable: no scores on {', '.join(v['missing_on'])}")
                 continue
             r = v["rule"]
-            lines.append(f"    {arm:<26} {v['D']:+6.2f} {v['O']:+6.2f}  "
+            lines.append(f"    {arm:<32} {v['D']:+6.2f} {v['O']:+6.2f}  "
                          + "  ".join(f"{v[f'S{p}']:+5.2f}" for p in nt.PS)
                          + f"  {v['S0.45_leave_one_task_out_min']:+7.2f}  "
                          + " ".join("y" if r[k] else "n" for k in sorted(r)))
