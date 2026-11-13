@@ -1056,6 +1056,11 @@ headroom tables in `experiments/harness/TRIES.md`):
 
 ## Evidence of Completion
 
+- [x] 2026-11-13 (d), on this machine (`runs/logs/checks_local_2026-11-13c.log`): the full suite with the code and
+      tests of 7a5fbbc (it started at 9cf5ca5 with the build-set and rules edits already in the tree; the commits
+      after that change records only): 1207 tests passed and 1 skipped (torch is not in the standard environment),
+      in 20 minutes; `uv lock --check` OK, ruff clean on `src tests`, `sha256sum -c docs/S2_RULES.sha256` OK. It
+      covers the two new build options and their tests. `./init.sh` itself was not run.
 - [x] 2026-11-13 (later), after the harness files were brought up to date (records only, plus
       `experiments/builds/results/determinism_1f8956b.txt`): `uv lock --check` OK, ruff clean on `src tests`,
       `sha256sum -c docs/S2_RULES.sha256` OK, and the tests of tries K7 and K8, the s2 rules and the gate estimate
