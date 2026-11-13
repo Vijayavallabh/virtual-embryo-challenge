@@ -1,0 +1,114 @@
+{
+ "board": "T2:embryo:test_interp",
+ "runs": "/mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/experiments/harness/results/emb_c_v1/tasks",
+ "decisions": [
+  {
+   "base": "fgw",
+   "change": "fgw_tail",
+   "counted": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2",
+   "tasks": {
+    "T2e/E7.25+E8.0->E7.5": {
+     "complete": true,
+     "mean_gain": -0.009110861089899914,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": false
+    },
+    "T2e/E6.75+E7.5->E7.25": {
+     "complete": true,
+     "mean_gain": 0.003730098603303844,
+     "seeds_ahead": 6,
+     "passes": false,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  },
+  {
+   "base": "fgw",
+   "change": "fgw_geoshares",
+   "counted": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2",
+   "tasks": {
+    "T2e/E7.25+E8.0->E7.5": {
+     "complete": true,
+     "mean_gain": -0.21946308875909254,
+     "seeds_ahead": 3,
+     "passes": false,
+     "vetoes": false
+    },
+    "T2e/E6.75+E7.5->E7.25": {
+     "complete": true,
+     "mean_gain": -0.1792084715825517,
+     "seeds_ahead": 2,
+     "passes": false,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  }
+ ],
+ "summaries": {
+  "T2e/E6.75+E7.5->E7.25": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "fgw": [
+    58.78119083140672,
+    2.2035357504971294
+   ],
+   "fgw_tail": [
+    58.78492093001002,
+    2.2032373378532712
+   ],
+   "fgw_geoshares": [
+    58.60198235982416,
+    2.153680471309879
+   ]
+  },
+  "T2e/E7.25+E8.0->E7.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "fgw": [
+    61.118922295807145,
+    0.8348261928410835
+   ],
+   "fgw_tail": [
+    61.109811434717244,
+    0.8332858185038977
+   ],
+   "fgw_geoshares": [
+    60.899459207048054,
+    0.8743463698622218
+   ]
+  }
+ }
+}

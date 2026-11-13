@@ -1,0 +1,40 @@
+fgw_geoshares check: task=T2e/E6.75+E7.5->E7.25 seed=1000000 idle=False tv_q_linear=0.02613 edited_share=0.0272
+fgw_geoshares check: task=T2e/E6.75+E7.5->E7.25 seed=1000001 idle=False tv_q_linear=0.02613 edited_share=0.0312
+fgw_geoshares check: task=T2e/E6.75+E7.5->E7.25 seed=1000002 idle=False tv_q_linear=0.02613 edited_share=0.0346
+fgw_geoshares check: task=T2e/E6.75+E7.5->E7.25 seed=1000003 idle=False tv_q_linear=0.02613 edited_share=0.0314
+fgw_geoshares check: task=T2e/E6.75+E7.5->E7.25 seed=1000004 idle=False tv_q_linear=0.02613 edited_share=0.0322
+fgw_geoshares check: task=T2e/E6.75+E7.5->E7.25 seed=1000005 idle=False tv_q_linear=0.02613 edited_share=0.0286
+fgw_geoshares check: task=T2e/E6.75+E7.5->E7.25 seed=1000006 idle=False tv_q_linear=0.02613 edited_share=0.0358
+fgw_geoshares check: task=T2e/E6.75+E7.5->E7.25 seed=1000007 idle=False tv_q_linear=0.02613 edited_share=0.031
+fgw_geoshares check: task=T2e/E6.75+E7.5->E7.25 seed=1000008 idle=False tv_q_linear=0.02613 edited_share=0.0316
+fgw_geoshares check: task=T2e/E6.75+E7.5->E7.25 seed=1000009 idle=False tv_q_linear=0.02613 edited_share=0.0372
+fgw_geoshares check: task=T2e/E7.25+E8.0->E7.5 seed=1000000 idle=False tv_q_linear=0.1003 edited_share=0.0896
+fgw_geoshares check: task=T2e/E7.25+E8.0->E7.5 seed=1000001 idle=False tv_q_linear=0.1003 edited_share=0.1064
+fgw_geoshares check: task=T2e/E7.25+E8.0->E7.5 seed=1000002 idle=False tv_q_linear=0.1003 edited_share=0.0996
+fgw_geoshares check: task=T2e/E7.25+E8.0->E7.5 seed=1000003 idle=False tv_q_linear=0.1003 edited_share=0.1078
+fgw_geoshares check: task=T2e/E7.25+E8.0->E7.5 seed=1000004 idle=False tv_q_linear=0.1003 edited_share=0.1046
+fgw_geoshares check: task=T2e/E7.25+E8.0->E7.5 seed=1000005 idle=False tv_q_linear=0.1003 edited_share=0.0972
+fgw_geoshares check: task=T2e/E7.25+E8.0->E7.5 seed=1000006 idle=False tv_q_linear=0.1003 edited_share=0.1046
+fgw_geoshares check: task=T2e/E7.25+E8.0->E7.5 seed=1000007 idle=False tv_q_linear=0.1003 edited_share=0.1058
+fgw_geoshares check: task=T2e/E7.25+E8.0->E7.5 seed=1000008 idle=False tv_q_linear=0.1003 edited_share=0.1014
+fgw_geoshares check: task=T2e/E7.25+E8.0->E7.5 seed=1000009 idle=False tv_q_linear=0.1003 edited_share=0.0972
+fgw_tail check: task=T2e/E6.75+E7.5->E7.25 seed=1000000 infeasible=45 lifted=7 skipped=38 in_bottom80=45 max_factor=1.56 median_factor=1.31
+fgw_tail check: task=T2e/E6.75+E7.5->E7.25 seed=1000001 infeasible=41 lifted=8 skipped=33 in_bottom80=41 max_factor=1.96 median_factor=1.26
+fgw_tail check: task=T2e/E6.75+E7.5->E7.25 seed=1000002 infeasible=46 lifted=11 skipped=35 in_bottom80=46 max_factor=1.95 median_factor=1.56
+fgw_tail check: task=T2e/E6.75+E7.5->E7.25 seed=1000003 infeasible=42 lifted=11 skipped=31 in_bottom80=42 max_factor=1.89 median_factor=1.26
+fgw_tail check: task=T2e/E6.75+E7.5->E7.25 seed=1000004 infeasible=41 lifted=10 skipped=31 in_bottom80=41 max_factor=1.95 median_factor=1.41
+fgw_tail check: task=T2e/E6.75+E7.5->E7.25 seed=1000005 infeasible=43 lifted=5 skipped=38 in_bottom80=43 max_factor=1.62 median_factor=1.31
+fgw_tail check: task=T2e/E6.75+E7.5->E7.25 seed=1000006 infeasible=44 lifted=8 skipped=36 in_bottom80=44 max_factor=1.99 median_factor=1.59
+fgw_tail check: task=T2e/E6.75+E7.5->E7.25 seed=1000007 infeasible=50 lifted=12 skipped=38 in_bottom80=50 max_factor=2 median_factor=1.33
+fgw_tail check: task=T2e/E6.75+E7.5->E7.25 seed=1000008 infeasible=48 lifted=5 skipped=43 in_bottom80=48 max_factor=1.96 median_factor=1.66
+fgw_tail check: task=T2e/E6.75+E7.5->E7.25 seed=1000009 infeasible=42 lifted=9 skipped=33 in_bottom80=42 max_factor=1.91 median_factor=1.65
+fgw_tail check: task=T2e/E7.25+E8.0->E7.5 seed=1000000 infeasible=11 lifted=5 skipped=6 in_bottom80=11 max_factor=1.88 median_factor=1.37
+fgw_tail check: task=T2e/E7.25+E8.0->E7.5 seed=1000001 infeasible=9 lifted=6 skipped=3 in_bottom80=9 max_factor=1.6 median_factor=1.42
+fgw_tail check: task=T2e/E7.25+E8.0->E7.5 seed=1000002 infeasible=12 lifted=4 skipped=8 in_bottom80=12 max_factor=1.57 median_factor=1.14
+fgw_tail check: task=T2e/E7.25+E8.0->E7.5 seed=1000003 infeasible=12 lifted=5 skipped=7 in_bottom80=12 max_factor=1.92 median_factor=1.48
+fgw_tail check: task=T2e/E7.25+E8.0->E7.5 seed=1000004 infeasible=15 lifted=8 skipped=7 in_bottom80=15 max_factor=1.9 median_factor=1.33
+fgw_tail check: task=T2e/E7.25+E8.0->E7.5 seed=1000005 infeasible=11 lifted=7 skipped=4 in_bottom80=11 max_factor=1.84 median_factor=1.25
+fgw_tail check: task=T2e/E7.25+E8.0->E7.5 seed=1000006 infeasible=14 lifted=8 skipped=6 in_bottom80=14 max_factor=1.75 median_factor=1.44
+fgw_tail check: task=T2e/E7.25+E8.0->E7.5 seed=1000007 infeasible=14 lifted=8 skipped=6 in_bottom80=14 max_factor=1.47 median_factor=1.26
+fgw_tail check: task=T2e/E7.25+E8.0->E7.5 seed=1000008 infeasible=13 lifted=7 skipped=6 in_bottom80=13 max_factor=1.91 median_factor=1.31
+fgw_tail check: task=T2e/E7.25+E8.0->E7.5 seed=1000009 infeasible=11 lifted=6 skipped=5 in_bottom80=11 max_factor=1.96 median_factor=1.58

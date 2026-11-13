@@ -1,0 +1,9 @@
+T2:embryo:test_interp: 2 pseudo-task(s) in /mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/experiments/harness/results/emb_c_v1/tasks (protocol bake, build main, anchors computed, seeds [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  T2e/E6.75+E7.5->E7.25 on pseudo:T2e/E6.75+E7.5->E7.25: floor 50.00 +/- 0.00; fgw 58.78 +/- 2.20; fgw_tail 58.78 +/- 2.20; fgw_geoshares 58.60 +/- 2.15 (commit 9591a7c, clean True)
+  T2e/E7.25+E8.0->E7.5 on T2:embryo:val_interp: floor 50.00 +/- 0.00; fgw 61.12 +/- 0.83; fgw_tail 61.11 +/- 0.83; fgw_geoshares 60.90 +/- 0.87 (commit 9591a7c, clean True)
+fgw_tail against fgw: not kept (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2; decided on 2 of 2 configured pseudo-tasks; not counted: none)
+    T2e/E7.25+E8.0->E7.5: paired mean gain -0.01, ahead in 0 of 10 seeds, passes False, vetoes False
+    T2e/E6.75+E7.5->E7.25: paired mean gain +0.00, ahead in 6 of 10 seeds, passes False, vetoes False
+fgw_geoshares against fgw: not kept (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2; decided on 2 of 2 configured pseudo-tasks; not counted: none)
+    T2e/E7.25+E8.0->E7.5: paired mean gain -0.22, ahead in 3 of 10 seeds, passes False, vetoes False
+    T2e/E6.75+E7.5->E7.25: paired mean gain -0.18, ahead in 2 of 10 seeds, passes False, vetoes False
