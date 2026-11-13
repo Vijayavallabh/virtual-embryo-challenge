@@ -41,6 +41,27 @@ here:
   `runs/t3_decomp/gata4_20261028T122425Z/` (the run folder every T3 build reads). Both are owner-only and ignored by
   git. This is the one exception to "bring back only scores and small figures" below. If a build changes, the copy
   of that file is stale until the new reference is copied and checked (`docs/P3_RUNBOOK.md`, "A copy off the DGX").
+  The copy sets aside the "no lasting local copy" part of the choice of 2026-10-19 for these files and waits for the
+  captain's confirmation (`docs/PLAN.md` decision log 2026-11-13 (f)).
+
+## What reproduces where (2026-11-13)
+
+- **On one machine**, at 16 BLAS threads, every upload file rebuilds byte for byte: three builds of all ten on the DGX
+  on 2026-11-13 (`experiments/builds/results/rehearsal_fd2683a.txt`), and repeated builds of each file on the local
+  machine. T1's two files and the rendered embryo files also move with the thread count, so every build uses
+  `build_all.sh`'s default of 16.
+- **Across the two machines** seven of the ten files are byte-identical: T1's two, the embryo's two, the heart's two
+  and T3's barred s2. The three T3 files that apply a per-gene factor (allowed s1, refused s1 with the wild-type-only
+  factor, barred s1) hold the same cells in the same order with the same coordinates, but a few cells are drawn
+  differently (3, 84 and 14 cells). The builder smooths each cell's profile over its nearest neighbours in a PCA, and
+  the PCA's scores differ by up to 3e-4 between OpenBLAS's kernels: Haswell on this machine's EPYC 7742, SkylakeX on
+  the DGX's Xeon Platinum 8468. A few cells then get other neighbours. T1's s1 as built until 2026-11-13 differed between the machines too.
+- **So a hash checks a file only on the machine that built it.** The uploads are built on the DGX, and the reference
+  list is the DGX's `runs/archive/builds_fd2683a/SHA256SUMS` (copy in the repository:
+  `experiments/builds/results/builds_fd2683a.SHA256SUMS`).
+- **Keep the DGX's environment as it is until the uploads are done.** The numerical libraries come from `uv.lock`; a
+  change of the lock, of the Python environment there or of the processor can change those three files' bytes, and
+  then the freeze-morning check names them. A change to `uv.lock` before 2 December needs a new rehearsal.
 
 ## Setup on the DGX
 

@@ -11,14 +11,17 @@
   uploaded. The captain's upload gate holds every first upload until the team's own estimate passes 209 (it is 184,
   range 170 to 198) or the deadline exception opens at 2026-11-27 00:00 UTC; each upload then needs the captain's
   go-ahead at the time, and the captain runs the commands.
-- Nothing waits for a ruling (`docs/PLAN.md` decision log 2026-11-13 (d); `docs/S2_RULES.md`, "Amendments of
-  2026-11-13"). The ten files as amended were rehearsed on the DGX on 2026-11-13 (decision log (e)): two byte-identical
-  sets, and the freeze-morning reference `runs/archive/builds_fd2683a/SHA256SUMS` there
+- No method ruling is open (`docs/PLAN.md` decision log 2026-11-13 (d); `docs/S2_RULES.md`, "Amendments of
+  2026-11-13"). The ten files as amended were rehearsed on the DGX on 2026-11-13 (decision log (e)): three
+  byte-identical builds, and the freeze-morning reference `runs/archive/builds_fd2683a/SHA256SUMS` there
   (`experiments/builds/results/rehearsal_fd2683a.txt`). What is owed:
   - on 19 and 23 Nov, the approved screened reads for an organiser answer to the seventh email
     (`docs/SCREENED_READ_SEVENTH_EMAIL.md`; a reply in the captain's inbox is not pasted into the session);
   - about 19 Nov, the Slack follow-up draft on floored T3 severity if no organiser has answered;
-  - a new rehearsal and reference by 24 Nov only if a build changes after 2026-11-13.
+  - a new rehearsal and reference by 24 Nov only if a build changes after 2026-11-13;
+  - the captain's word on the checked copy of the reference files kept on this machine since 2026-11-13: it sets
+    aside the "no lasting local copy" part of the choice of 2026-10-19, so it is confirmed or removed (decision log
+    2026-11-13 (f)).
 - Branch / commit: `main` on GitHub (private). The DGX checkout (`PrakashDGX_H2:~/v/virtual-embryo-challenge`) is at
   fd2683a, synced on 2026-11-13 for the rehearsal; sync it again only when no build runs there.
 
@@ -52,6 +55,10 @@
       pass on all ten copies (nothing sent), so an upload can go from the copy if the DGX is down, at the captain's
       word (`docs/P3_RUNBOOK.md`, "A copy off the DGX"). Every file also builds here now: seven of ten byte-identical
       to the DGX's, the three T3 factor files with a few cells drawn differently (3, 84 and 14 cells).
+- [x] The harness files brought up to date a second time on 2026-11-13 (decision log (f)), at the captain's request:
+      `AGENTS.md` (final-phase reading list, how a test build is read, where an upload's file comes from, the DGX
+      sync rule, the repository map), `docs/COMPUTE.md` ("What reproduces where"), `README.md`, `init.sh`,
+      `ASSUMPTIONS.md` (A28), `feature_list.json`, `METHOD_SUMMARY.md`, ledger rows R4 to R6.
 
 ## Completed Earlier (2026-10-27 to 2026-10-28)
 
@@ -110,7 +117,7 @@
 
 ## Decisions Made
 
-- Current: `docs/PLAN.md` decision log through 2026-11-13 (e), `docs/DATA_POLICY.md` change notes through
+- Current: `docs/PLAN.md` decision log through 2026-11-13 (f), `docs/DATA_POLICY.md` change notes through
   2026-11-13 (e), the second-upload rules in `docs/S2_RULES.md` as amended on 2026-11-13, and the captain's upload gate in
   `results/upload_gate.json`. The campaign's method decisions are the AI assistant's, logged; every change to an
   upload is the captain's ruling.
@@ -151,7 +158,7 @@
 
 1. Read `AGENTS.md`.
 2. Read `feature_list.json` and `progress.md` (Current State, What's Next).
-3. Review this handoff, `docs/P3_RUNBOOK.md`, and `docs/PLAN.md` decision log 2026-11-13 (a) to (e).
+3. Review this handoff, `docs/P3_RUNBOOK.md`, and `docs/PLAN.md` decision log 2026-11-13 (a) to (f).
 4. Run `./init.sh` before editing. On the DGX do not run it as it is (`docs/COMPUTE.md`, `progress.md` notes).
 5. Before choosing or changing work on an entry, read the guiding principle in `AGENTS.md` and the headroom tables in
    `experiments/harness/TRIES.md`.

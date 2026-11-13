@@ -334,7 +334,10 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     stand-in: it gives seven of the ten reference files byte for byte, and the three T3 files that apply a per-gene
     factor (allowed s1, refused s1, barred s1) with a few cells drawn differently (3, 84 and 14 cells), so with
     hashes the disclosure email does not list. If a build changes after 2026-11-13, copy and check the new
-    reference the same day.
+    reference the same day. The copy sets aside, for these files, the "no lasting local copy" part of the choice of
+    2026-10-19 (uploads pull from the DGX); it was made after a side agent's note the captain forwarded and waits for
+    the captain's confirmation (`docs/PLAN.md` decision log 2026-11-13 (f)). To remove it: `rm -r
+    runs/archive/builds_fd2683a runs/t3_decomp/gata4_20261028T122425Z` on the local machine, at the captain's word.
 - Update `ASSUMPTIONS.md` (A1, A2, A3, A13, A19) and `progress.md`. A1 is confirmed (2026-10-28).
 - **Disclosure ids for each official upload** (prepared 2026-11-05 by the AI assistant; the captain confirms them on
   the morning). The client refuses an official upload without `--disclose` ids from `EXTERNAL_DATA.md`. Rule used:

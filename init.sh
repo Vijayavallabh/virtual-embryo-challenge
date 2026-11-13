@@ -15,6 +15,8 @@ uv run pytest -q
 echo "=== Verification Complete ==="
 echo ""
 echo "Next steps:"
+echo "0. Read session-handoff.md: it says what waits. In the final phase the uploads follow docs/P3_RUNBOOK.md"
+echo "   (section 5), each on the captain's go-ahead, and only files in the current reference list"
 echo "1. Read feature_list.json to see current feature state"
 echo "2. Pick ONE unfinished feature to work on"
 echo "3. Before choosing or changing work on an entry: the guiding principle in AGENTS.md, then the headroom"

@@ -659,7 +659,8 @@ Do not front-load the second round: a late A20 bar or Gata4 restriction is absor
     and so no place and no Generality Award standing): "I am fine with submitting our 1st submission at Nov 27 anyway".
     So the s1 methods freeze at 2026-11-27 00:00 UTC (05:30 IST). That morning the AI assistant rebuilds the files at
     the freeze commit, checks them (`vec check`, the server format checks, the hashes archived in
-    `runs/archive/builds_02abf39` since R2's build, decision log 2026-11-06 (k); before it `builds_88b057f`) and gives
+    `runs/archive/builds_02abf39` since R2's build, decision log 2026-11-06 (k); before it `builds_88b057f`; since
+    2026-11-13 `runs/archive/builds_fd2683a`, decision log 2026-11-13 (e)) and gives
     the captain the plain summary; the first round (T1 s1, heart s1, embryo s1
     and T3's s2) may then go in whatever the estimate, each upload only on his go-ahead at the time. The words are his
     own, written in his message in the main session (a note on a side agent's text he forwarded), not an agent's relay.
@@ -2772,3 +2773,35 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     machine at 7a5fbbc, and fd2683a changes records only. The build logs were not read.
   - **Unchanged.** The estimate (184, range 170 to 198), the gate, the tries (T1 28, embryo 36, heart 4, T3 15) and
     every entry. The disclosure email before the first upload lists the hashes of the new reference.
+- 2026-11-13 (f), the captain, after the report of (e), in the captain's words: "update all the harness files and
+  other files and then commit and push". What was brought up to date, written by the AI assistant. No code that
+  builds or scores, no build, rule, upload or gate record changed.
+  - **`AGENTS.md`.** The startup list names the runbook and the second-upload rules for the final phase. The
+    invariants now say how a test build is read (its exit code, its sha256 and its stamp's commit and clean fields;
+    never its log, its size or the stamp's size field), where an official upload's file comes from (a file in the
+    current reference list, from the folder the freeze-morning command builds, never from the DGX's default folders),
+    that nothing is synced to the DGX while a build runs there, and that a hash checks a file only on the machine
+    that built it. The repository map names the builders, the runbook, the rules file and the two ledgers under
+    `results/`.
+  - **Other files.** `docs/COMPUTE.md` has a section "What reproduces where", with the rule to leave the DGX's
+    environment and `uv.lock` as they are until the uploads are done. `README.md` has a dated status. `init.sh`
+    closes by pointing to the handoff and the runbook. `ASSUMPTIONS.md` has A28, the one operational bet the uploads
+    rest on: the DGX reachable and numerically unchanged on the upload days, tested by the freeze-morning command,
+    with the checked copy as fallback. The ledger's linter flagged three overdue rows, and they now say what is
+    true: A6 is revised (on the chamber-cut backtest the distribution group stays at the baseline, so its backtest
+    half was not met; what is left reads out per metric after the announcement), and A25 and A26 carry the upload
+    days as their readout. No entry changes with that. `feature_list.json` has the day's evidence for the embryo,
+    heart, T1 and submission-client features. `METHOD_SUMMARY.md` says what reproduces on one machine and across two. Ledger rows
+    R4 to R6 carry the rehearsal's outcome; no try is added (T1 28, embryo 36, heart 4, T3 15). `progress.md` and
+    `session-handoff.md` follow.
+  - **One point for the captain, found while doing this.** `progress.md` records the choice of 2026-10-19 that
+    uploads pull from the DGX into a private copy for each call, with no lasting local copy. The copy made under (e)
+    keeps the ten reference files and the T3 run folder on the local machine, so it sets that part of the choice
+    aside for these files. The AI assistant acted on the forwarded side note without checking it against that
+    record. The copy is owner-only, changes nothing about the default route, and goes with one command
+    (`docs/P3_RUNBOOK.md`, "A copy off the DGX"). The captain is asked to confirm it or have it removed; until then
+    it stays.
+  - **Checks.** `uv lock --check`, ruff on `src tests`, `sha256sum -c docs/S2_RULES.sha256`, and the tests that read
+    the edited ledgers and the build script (109 passed: the s2 rules, the gate estimate, `build_all.sh`'s lines, the
+    embryo coupling diagnostic's ledger values); the assumption ledger's linter finds no format error. The full suite
+    was not rerun: nothing it tests changed since the run at 7a5fbbc.

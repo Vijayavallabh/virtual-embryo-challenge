@@ -243,7 +243,12 @@ Task 3's s2 is the wild type plus a five-state depletion, by design.
   PCA, k-means or Sinkhorn steps and was not traced further). The other eight files were byte-identical at 1, 4, 8 and
   16 threads when last checked (`experiments/builds/results/determinism_6964b7d.txt`) and have not changed since. The
   two candidate second uploads of request R-A, which are no entries, reproduce at 16 threads on the local machine
-  (`experiments/builds/results/determinism_1f8956b.txt`).
+  (`experiments/builds/results/determinism_1f8956b.txt`). On 2026-11-13 the ten files as amended were built three
+  times on the build machine at 16 threads with identical bytes (`experiments/builds/results/rehearsal_fd2683a.txt`).
+  Between two machines with different processors seven of the ten are byte-identical; the three T3 files that apply
+  a per-gene factor hold the same cells in the same order, with the expression of a few cells drawn differently (3,
+  84 and 14 cells), because a nearest-neighbour smoothing step follows the linear-algebra library's processor-specific
+  kernel. The hashes on record are the build machine's.
 
 ## Task 1: temporal (E12.5) — M1
 

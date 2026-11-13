@@ -3,6 +3,14 @@
 ## Current State
 
 **Last Updated:** 2026-11-13
+**2026-11-13, the harness files brought up to date after the rehearsal (decision log 2026-11-13 (f)).** At the
+captain's request ("update all the harness files and other files and then commit and push"): `AGENTS.md` now carries
+the final-phase reading list, how a test build is read, where an upload's file comes from and the DGX sync rule;
+`docs/COMPUTE.md` says what reproduces on one machine and across two; `README.md`, `init.sh`'s closing lines,
+`ASSUMPTIONS.md` (A28, the one operational bet the uploads rest on; A6 revised and two readout dates corrected after
+its linter's warnings), `feature_list.json`, `METHOD_SUMMARY.md` and ledger rows R4 to R6 follow. No code, build, rule, upload or gate record changed. **One point waits for the
+captain:** the checked copy of the reference files on this machine sets aside the "no lasting local copy" part of
+the choice of 2026-10-19; confirm it or have it removed.
 **2026-11-13, the DGX rehearsal (decision log 2026-11-13 (e)): the freeze-morning reference exists; nothing is
 uploaded.** At the captain's instruction ("sync the dgx and run the rehearsal now") the DGX checkout was synced from
 6402b64 to fd2683a with no build running there, and all ten files were rebuilt twice from empty folders with
@@ -788,7 +796,9 @@ scorer reproduces every published validation anchor exactly. The release-day rul
 
 Updated 2026-11-13. The older list below is kept for its record; where the two differ, this one holds.
 
-0. **Rulings given on 2026-11-13** (decision log 2026-11-13 (d); `docs/S2_RULES.md`, "Amendments of 2026-11-13"): the
+0. **For the captain:** confirm the checked copy of the reference files on this machine, or have it removed (it
+   sets aside "no lasting local copy" of 2026-10-19 for these files; decision log 2026-11-13 (f)).
+   **Rulings given on 2026-11-13** (decision log 2026-11-13 (d); `docs/S2_RULES.md`, "Amendments of 2026-11-13"): the
    embryo's s2 is `fgw_aligned_series`, T3's second upload carries the wild-type-only factor (`--wt-revert`), and
    T1's s1 is drawn from library 3's cells (`--base lib3`; s2 keeps the pooled base). Nothing is requested any more:
    the embryo's first-upload shape fix stays closed by its rule. **Done on 2026-11-13** (decision log 2026-11-13
@@ -1090,10 +1100,24 @@ headroom tables in `experiments/harness/TRIES.md`):
   for an organiser answer on 19 and 23 Nov (decision log 2026-11-13 (d)).
 - **Uploads pull from the DGX** (user, 2026-10-19): `vec submit PATH --board KEY --from-dgx` streams the built file
   from the DGX into the client's private temporary copy at upload time; no lasting local copy, and the key never
-  leaves this machine.
+  leaves this machine. 2026-11-13: after a side agent's note the captain forwarded, a checked copy of the ten
+  reference files and of the T3 run folder is kept on this machine (owner-only) as the fallback for a DGX outage.
+  That sets "no lasting local copy" aside for these files and **waits for the captain's confirmation** (decision log
+  2026-11-13 (e), (f)); the default route is unchanged.
+- **The freeze-morning procedure** (the AI assistant, 2026-11-13; a procedure, not a method choice; decision log
+  2026-11-13 (e)): rebuild on the DGX with `determinism_check.sh` against `runs/archive/builds_fd2683a/SHA256SUMS`
+  into a fresh folder and upload only from that folder; the DGX's `runs/builds` and `runs/t3_build` are never a
+  source; a file that differs from the list waits for the captain; server format checks stay on the upload mornings.
 
 ## Evidence of Completion
 
+- [x] 2026-11-13 (f), after the harness files were brought up to date a second time (records, `init.sh`'s closing
+      lines and the ledgers; no code that builds or scores): `uv lock --check` OK, ruff clean on `src tests`,
+      `sha256sum -c docs/S2_RULES.sha256` OK, `feature_list.json` parses (21 features), the assumption ledger's
+      linter finds no format error (28 rows; two accepted warnings), and the tests that read the edited ledgers and
+      the build script pass (109: the s2 rules, the gate estimate, `build_all.sh`'s lines, the embryo coupling
+      diagnostic's ledger values). The full suite was not rerun and `./init.sh` itself was not run: nothing they
+      test changed since the run at 7a5fbbc.
 - [x] 2026-11-13 (e), on the DGX at fd2683a (`experiments/builds/results/rehearsal_fd2683a.txt`): two chains of
       `build_all.sh s1`, `s2` and `t3alt` from empty folders, both with exit code 0; ten of ten files byte-identical
       between the chains, every stamp clean at fd2683a, seven files equal to `runs/archive/builds_f337dc6/SHA256SUMS`;

@@ -996,6 +996,10 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     aggregates of the two released Gata4 replicates, which this machine has held under `data/` since 2026-11-12. The
     copies were checked by sha256 only. The client's build-stamp guard and local format check were run on them as
     local logic (no token read, no server call); their output was read as pass or fail, with no cell count.
+    The copy departs from one part of the choice of 2026-10-19 (uploads pull from the DGX into a private copy for the
+    call, with no lasting local copy). The AI assistant acted on the forwarded note without checking it against that
+    record, found the conflict the same day and put it to the captain: confirm the copy or have it removed
+    (`docs/PLAN.md` decision log 2026-11-13 (f)). Until then it stays, owner-only.
   - **Five check builds on the local machine** (the heart files and three T3 files; target-free, never uploaded;
     `runs/builds_check_local/rehearsal_fd2683a/local/`). Read: exit codes, sha256 and the stamps' commit and clean
     fields. Two of them were compared with the DGX's files by the number of cells and entries that differ.

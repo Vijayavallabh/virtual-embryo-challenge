@@ -69,7 +69,9 @@ Before writing code:
 1. Confirm the working directory with `pwd`.
 2. Read this file completely.
 3. Read `docs/CHALLENGE.md` (tasks, metrics, weights, rules), `docs/PLAN.md` (strategy and milestones),
-   `docs/DATA_POLICY.md`, and `docs/COMPUTE.md`.
+   `docs/DATA_POLICY.md`, and `docs/COMPUTE.md`. In the final phase also `docs/P3_RUNBOOK.md` (section 5: the builds,
+   the freeze-morning rebuild, the uploads) and `docs/S2_RULES.md` (the second-upload rules; its hash is pinned in
+   `docs/S2_RULES.sha256`).
 4. Run `./init.sh` to verify the environment is healthy.
 5. Read `feature_list.json` for the current feature state, `progress.md` for the last session and
    `session-handoff.md` for what waits; before choosing or changing work on an entry, the headroom tables in
@@ -93,7 +95,10 @@ If baseline verification is failing, repair that first before adding new scope.
   targets). Refresh boards only with `vec boards update` (it strips test anchors in memory), and never work around its
   HTTP 403. Its `--from-file` intake reads a copy the captain saves in the browser, a route he cleared on 2026-11-01
   with conditions (notice first, not before 2026-11-04; `docs/DATA_POLICY.md`): nobody opens the saved file, and
-  test-board counts are read by code only, never quoted. Read research results through the screened digest; see
+  test-board counts are read by code only, never quoted. A test build is read by its exit code, its sha256 and its
+  stamp's `commit` and `clean` fields: its log, its file size and its stamp's `size` field follow from a test board's
+  count and are neither read nor quoted (`docs/DATA_POLICY.md` 2026-11-13 (c), (e)). Read research results through
+  the screened digest; see
   `docs/DATA_POLICY.md`. Recursive searches skip `boards/` and `docs/research/` (`grep -r --exclude-dir=boards
   --exclude-dir=research`), and nothing searches the whole filesystem. Agents never open session logs, transcripts,
   harness-saved tool outputs or memory files (under `~/.claude-account` or `~/.claude`), and run the repository's
@@ -119,7 +124,13 @@ If baseline verification is failing, repair that first before adding new scope.
   `format_only=true`**. The team API key (`~/.config/vec/token`, mode 600, local machine only, never on the DGX) can
   make official uploads: use it only through this repo's own tools, never with community "submit" tools or ad-hoc
   scripts. Validate files with `vec check` or format-only uploads; real uploads go through the submission client
-  (feat-016), which defaults to format-only.
+  (feat-016), which defaults to format-only. An official upload sends only a file whose sha256 is in the current
+  reference list (since 2026-11-13 `experiments/builds/results/builds_fd2683a.SHA256SUMS`, the DGX's
+  `runs/archive/builds_fd2683a/SHA256SUMS`), taken from the folder the freeze-morning command builds and never from
+  the DGX's `runs/builds` or `runs/t3_build`, which hold older files whose clean stamps the client accepts
+  (`docs/P3_RUNBOOK.md`, "The freeze-morning rebuild"); if the DGX cannot be reached, the checked copy of the same
+  bytes on the local machine can go, at the captain's word. A file that differs from the list is not uploaded until the
+  captain has the explanation.
 - **The captain's upload gate (2026-11-05).** In his words: "Until our estimated score in leaderboard crosses 209, don't
   submit our 1st submission." No first official upload on any board (T3's first is its s2) while our estimated
   leaderboard total is 209 or below. The estimate is the overall total the leaderboard would show for our entries, each
@@ -134,6 +145,9 @@ If baseline verification is failing, repair that first before adding new scope.
 - **Heavy compute runs on the DGX** (`PrakashDGX_H2`, workspace `~/v/virtual-embryo-challenge`), never on the shared
   local machine. See `docs/COMPUTE.md`. One exception, by the captain's instruction of 2026-11-12: the campaign of
   that day (rule 8) may use this machine's otherwise-unused GPUs and cores, with `data/` and `runs/` here owner-only.
+  Never sync, pull or check out on the DGX while a build runs there (the build stamps then say unclean). Never check a
+  file built on one machine against a hash made on the other: three T3 files come out with a few cells drawn
+  differently on the two machines (`docs/COMPUTE.md`, "What reproduces where").
 - **uv only.** Use `uv add`, `uv sync`, `uv run`. No pip installs into the env, no conda.
 - **Human Team track.** A person reviews results and makes the calls; there is no Agent-track evidence to keep.
 
@@ -156,16 +170,25 @@ If baseline verification is failing, repair that first before adding new scope.
 - `src/vec/`: package (`io.py` loading and submission writing, `boards.py` board specs, `evaluate.py` server-faithful
   local board emulator, `baselines.py` reference baselines, `cli.py` the `vec` command, `core.py` the shared core,
   `t1_scope.py` and `t2_build.py` the T1 and T2 heads).
-- `configs/`: experiment configs. `runs/` (gitignored): per-run outputs. `results/registry.csv`: one row per scored run.
+- `configs/`: experiment configs. `runs/` (gitignored): per-run outputs; on the local machine also the checked copy
+  of the reference upload files and of the T3 run folder (`docs/COMPUTE.md`). `results/registry.csv`: one row per
+  scored run; `results/submissions.csv`: the upload ledger; `results/upload_gate.json`: the captain's gate.
 - `experiments/`: one folder per study (scripts, reports, committed `results/`); `docs/P3_RUNBOOK.md` step 4 names the
   pre-registered ones, and `labels/` holds the classifier evidence for the validation answers (step 3, 2026-10-28).
 - `experiments/harness/`: `TRIES.md` (the tries ledger and the headroom tables per test board), `headroom.py` (writes
   those tables' numbers to `results/headroom/` from committed results), `run.py` (harness runs and adoption decisions).
+- `experiments/builds/`: the test-file builders (`build_test.py` for T1 and T2; T3's is
+  `experiments/t3_decomp/build_submission.py`), `build_all.sh` (one submission set, built and checked),
+  `determinism_check.sh` (rebuild into a fresh folder and compare with a reference list: the freeze-morning command)
+  and `results/` (rehearsal records and the reference list `builds_fd2683a.SHA256SUMS`).
 - `boards/`: public board specs from the challenge site (`index.json`, panel gene lists, T1 composition). Since 634b5fd
   `index.json` also holds the test boards' cell limits: code reads it; nobody opens it or quotes a test board's limits
   (`docs/DATA_POLICY.md`).
 - `data/` (gitignored): `raw/` competition files, `external/` disclosed external data.
-- `docs/`: `CHALLENGE.md`, `PLAN.md`, `DATA_POLICY.md`, `COMPUTE.md`, `research/` (background reports).
+- `docs/`: `CHALLENGE.md`, `PLAN.md` (strategy, timeline, decision log), `DATA_POLICY.md`, `COMPUTE.md`,
+  `P3_RUNBOOK.md` (the final phase, step by step), `S2_RULES.md` (the second-upload rules, hash-pinned),
+  `ORGANIZER_QUESTIONS.md` (every question sent and the reading of each answer fixed beforehand), `DATA_NOTES.md`,
+  `research/` (background reports; screened digests only).
 - `EXTERNAL_DATA.md`: disclosure register (required with every submission). `METHOD_SUMMARY.md`: running method summary
   (required for the winners' report and the Generality Award).
 
@@ -184,7 +207,7 @@ A feature is done only when ALL of the following are true:
 
 ## End of Session
 
-1. Update `progress.md` with the current state.
+1. Update `progress.md` with the current state and `session-handoff.md` with what waits.
 2. Update `feature_list.json` with the new feature status and evidence.
 3. Record unresolved risks or blockers.
 4. Commit with a descriptive message once work is in a safe state.
