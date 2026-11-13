@@ -3263,3 +3263,25 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Options put to the captain:** the trend in both heart files (the adoption rule's outcome); the trend in the
     second heart file only (the first stays as rehearsed; half the bet, and the second upload's rule would say so
     in the captain's words); or no change.
+- 2026-11-13 (w), the captain's ruling on the heart: the trend goes into both heart files. Written by the AI
+  assistant; the captain's words are quoted.
+  - **The question as put** (one question, after the checks of (v)): "Heart uploads: tonight a new heart method
+    passed our own adoption rule, the first heart change ever to do so. Instead of continuing each cell type's last
+    step (today's method), it follows each cell type's trend over all earlier stages. On the two heart practice
+    tasks it scored +0.36 and +0.48 points over today's method, about +0.2 on our overall total if it carried in
+    full. The evidence is thin: the margin over the rule's threshold is 0.06 on one task, it is the one arm of
+    seven tried tonight that passed, and no practice task contains the E9.5 to E10.5 step the real test uses.
+    Adopting it means a builder change, rebuilt heart files and a third rehearsal by 24 Nov. Should the heart
+    files take the trend method?" The options: "Both files (Recommended)", "Second file only", "No change", each
+    with its price as in (v).
+  - **The captain's answer:** "Both files (Recommended)".
+  - **What it changes.** Both heart uploads are built with B0's draw, cells, coordinates, size rule and trim as
+    today, and with each lineage's per-gene step taken from the least-squares trend over E8.25_late, E8.5, E8.75,
+    E9.5 and E10.5 instead of the E9.5 to E10.5 step alone (row H11's `b0_trend`, the natural size). The second
+    upload follows the first with its half trim, as `docs/S2_RULES.md` says; that file's rule sends a changed
+    first-upload method back to the captain, and this answer names both files. Nothing else changes: T1, the
+    embryo and T3 keep their files, and the size-matched twin stays on its branch.
+  - **What is owed before it counts:** the candidate ported to main with a builder option and tests, the port's
+    scores equal to row H11's, an independent review of the builder change, `docs/S2_RULES.md` amended with these
+    words and re-pinned, `build_all.sh`'s two heart lines, a third rehearsal on the DGX and a new reference list
+    (by 24 Nov), the checked local copy refreshed, and server format checks for the two new heart files.
