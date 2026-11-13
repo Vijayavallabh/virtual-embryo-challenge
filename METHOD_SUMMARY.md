@@ -108,9 +108,9 @@ solution at the test pair (N32), and no committed arm is worth requesting as fir
 Status 2026-11-13, at the end of the sixth round (`docs/PLAN.md` decision log 2026-11-13 (ff)): no entry has changed
 and no scored submission has been made. Every remaining line that the rules allow and a counted practice read can
 judge was then read: 26 more tries, each with its row first, on arms built and reviewed on campaign branches. Kept
-by the adoption rule: nothing. Heart (nine tries on the kept trend: a fill for the cells it leaves unmoved, a mixture
-with the plain step, a smoothed top-up, a tail decoder, a persistence gate, an exact per-cell total, a whole-cell
-redraw, a run basis, a herded draw): none beats the trend on both backtests; the smoothed top-up and the redraw are
+by the adoption rule: nothing. Heart (nine tries; eight on the kept trend: a fill for the cells it leaves unmoved, a
+mixture with the plain step, a smoothed top-up, a tail decoder, a persistence gate, an exact per-cell total, a
+whole-cell redraw, a run basis; and a herded draw on the plain step): none beats its base on both backtests; the smoothed top-up and the redraw are
 mirror images (+0.63 and -0.11; -3.10 and +1.29), which is the depth of each truth against its reference. Embryo
 (eleven tries): re-arranging, relaxing or re-drawing cells loses or ties; a reflection-allowed frame alignment
 restores the cloud's thickness at the test pair but fails its gate; rendering every cell to a trend through the

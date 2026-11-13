@@ -3571,15 +3571,17 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     of that last class is 22 lines. All 22 were taken up, with three the round itself had left on an estimate (a
     fill for the cells the heart trend leaves unmoved; a reflection-allowed frame alignment for the embryo, which
     row N32's outcome had declined; the strong-null try that row N28 allowed).
-  - **How each was handled.** One agent built the arm on a campaign branch from a brief fixed before the code, with
-    synthetic tests and the existing candidates pinned bit for bit; a second agent, given the code and not the
-    builder's reasoning, reviewed it, and five builds went back for a fix before any run (a count kernel that redrew
-    every count, a run basis missing a step of the record, a control that was missing, and a tail decoder twice);
-    the row was committed on main before the run; the run was made on a DGX campaign checkout at a clean committed
-    tree, and the reference candidates reproduced their committed scores seed for seed in every run; `run.py decide`
-    or the row's fixed reading gave the verdict; the outcome went into the row. Where the record gave no constant the
-    simplest parameter-free form was taken and named in the row; where it gave no method the builder reported
-    "design not on record" and nothing was invented.
+  - **How each was handled.** Two reads (H14, E29) used candidates already registered on main. For the others, one
+    agent built the arm on a campaign branch from a brief fixed before the code, with synthetic tests and the
+    existing candidates pinned bit for bit; a second agent, given the code and not the builder's reasoning,
+    reviewed it, and five builds went back for a fix before any run (a count kernel that redrew every count, a run
+    basis missing a step of the record, a control that was missing, and a tail decoder twice); the row was
+    committed on main before the run; the run was made on a DGX campaign checkout at a committed tree with no
+    tracked file changed (one heart run started with two untracked files of the checkout's previous branch
+    present, which it does not import), and the reference candidates reproduced their committed scores seed for
+    seed in every run; `run.py decide` or the row's fixed reading gave the verdict; the outcome went into the row.
+    Where the record gave no constant the simplest parameter-free form was taken and named in the row; where it
+    gave no method the builder reported "design not on record" and nothing was invented.
   - **The reads, by board** (paired means against the base over 10 seeds).
     - *Heart* (base `b0_trend`; the one-day then the 1.75-day backtest; heart 16 to 25 tries). H14 herded draw
       (base `b0`) +0.01 and 0.00. H15 a fill for the cells the trend leaves unmoved -0.30 (a veto) and -0.02. H16
@@ -3655,12 +3657,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
       x1, where the second upload covers it; a hidden target of that kind which the second upload did not cover
       would cost up to that.
     - *Against it.* (1) The arm reached the nine tasks after try E33 showed it one-sided on two of them, so part of
-      the selection is on tasks the reading uses; the clause that guards this holds at +0.28, close to the bar of
-      0.3 that the full table has to clear. (2) The gain rests on two truths (E7.25, and E8.5 under three
-      bracketings) with a small loss on a third. (3) It fails the adoption rule on the counted backtests (the veto
-      on E7.5), so this is a ruling and not an adoption; the heart trend, by contrast, passed the rule before its
-      ruling. (4) A gain found among 47 embryo tries is expected to shrink: half of the tabled value is a fair
-      working figure.
+      the selection is on tasks the reading uses; the clause that guards this (the value has to stay above 0 with
+      any one task left out) holds at +0.28; for scale, the full table's own bar is 0.3. (2) The gain rests on two
+      truths (E7.25, and E8.5 under three bracketings) with a small loss on a third. (3) It fails the adoption rule
+      on the counted backtests (the veto on E7.5), so this is a ruling and not an adoption; the heart trend, by
+      contrast, passed the rule before its ruling. (4) A gain found among 47 embryo tries is expected to shrink:
+      half of the tabled value is a fair working figure.
     - *The alternative that also passes:* `fgw_aligned_trend` (+0.59; forecast mean 194.70). Its own scores on
       the two counted backtests are +1.28 and +2.11 over `fgw`, ahead in 10 of 10 seeds on each, which is the
       adoption rule's size; but that reading was not registered as an adoption read before its run, and with it
