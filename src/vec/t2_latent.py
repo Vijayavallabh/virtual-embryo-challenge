@@ -77,14 +77,17 @@ def _batch_size(n_cells: int, batch_size: int) -> int:
 
 
 def train_nbvae(counts, seed: int = TRAIN_SEED, *, n_latent: int = N_LATENT, max_epochs: int = MAX_EPOCHS,
-                batch_size: int = BATCH_SIZE, threads: int = TRAIN_THREADS, device: str = "cpu") -> NBVAE:
+                batch_size: int = BATCH_SIZE, threads: int = TRAIN_THREADS, device: str = "cpu",
+                history: dict | None = None) -> NBVAE:
     """Train the negative-binomial VAE on a cells x genes count matrix (the two brackets' panel counts, before then
     after): scvi-tools `SCVI` with `n_latent`, NB likelihood, gene-wise dispersion, observed library, no batch key, on
     every cell (no validation split, no early stopping, the fixed seed; `device` "cpu" or "cuda:<i>", the CPU path being
     the one the determinism check can pass). Returns its encoder means and decoder as an `NBVAE`.
 
     torch and scvi-tools are imported only here: the `gpu` dependency group, not installed in the project's main
-    environment (docs/COMPUTE.md)."""
+    environment (docs/COMPUTE.md). history (default None: nothing): a dict that receives the last epoch's value of each
+    training curve scvi-tools logs (e.g. "train_loss") and the epochs run; the model and its record are the same
+    with or without it (vec.latent_extrap reads the final training loss through it)."""
     import scvi
     import torch
 
@@ -105,6 +108,11 @@ def train_nbvae(counts, seed: int = TRAIN_SEED, *, n_latent: int = N_LATENT, max
         model.train(max_epochs=int(max_epochs), accelerator=accelerator, devices=devices, train_size=1.0,
                     batch_size=_batch_size(C.shape[0], batch_size), early_stopping=False, enable_progress_bar=False,
                     enable_checkpointing=False, default_root_dir=tmp)
+    if history is not None:
+        for name, curve in model.history.items():
+            if len(curve):
+                history[name] = float(np.asarray(curve, dtype=np.float64).ravel()[-1])
+        history["epochs_run"] = int(max((len(c) for c in model.history.values()), default=0))
     module = model.module
     module.eval()
     dev = next(module.parameters()).device
