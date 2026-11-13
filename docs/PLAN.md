@@ -3351,3 +3351,15 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     against `b0_trend` by the adoption rule. Counted reads: heart 11 to 13. CPU only. The third rehearsal waits for
     the reading, as the note advises, so that a ruled change would be rehearsed once. A pass would be the second
     among nine arms read on these two backtests today and would go to the captain with that said.
+- 2026-11-13 (aa), the split arms' outcome; the third rehearsal goes ahead with the trend as ruled. Written by the AI
+  assistant.
+  - **Rows H12 and H12s** (72a75c6 on `campaign/trend`, clean tree; every validity condition holds;
+    `experiments/harness/results/trend_split_v1/`). Against `b0_trend`: the lineage-specific part alone +0.00 (6 of
+    10 seeds) and -0.06 (4 of 10), a tie; the shared part alone -0.29 (1 of 10) and -0.68 (0 of 10, a veto). Neither
+    is kept. Tries: T1 32, embryo 36, heart 13, T3 15.
+  - **What it says.** Dropping what all lineages share costs nothing and gains nothing on the practice tasks; the
+    shared part alone still beats the copy (+0.54 and +0.70), so it is not pure measurement offset. The split does
+    not isolate a nuisance. No request: only a pass against the ruled entry could lead to one.
+  - **Full test suite at main 147fd4f** (the port and the amended rules), run in a DGX campaign checkout: lock,
+    lint and 1,244 tests pass.
+  - **The third rehearsal** starts now on the DGX reference checkout, at main's commit after this entry.

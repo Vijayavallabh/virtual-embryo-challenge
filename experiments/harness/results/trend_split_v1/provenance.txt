@@ -1,0 +1,9 @@
+run folder on the DGX: ~/v/vec-campaign/runs/harness/trend_split_v1 (second campaign checkout)
+commit: 72a75c69ca3b28674e443108eacae724f4c361f9
+tree at start (bytes of git status --porcelain): 0
+tree at end (bytes): 0
+started UTC: 2026-11-13T14:53:51Z
+ended UTC: 2026-11-13T15:01:42Z
+CPU only, 16 BLAS threads, one process per backtest
+command per task: experiments/harness/run.py run --board T2:heart:test_extrap --task <key> --candidates floor,copy,b0,b0_trend,b0_trend_contrast,b0_trend_shared
+decisions_*: base b0_trend (the row's reading); against_b0/: base b0 (description only)
