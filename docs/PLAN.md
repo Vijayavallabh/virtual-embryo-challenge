@@ -3096,3 +3096,32 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     board are the captain's own order (k).
   - **Rows.** T34 and T35 (T1, the two vehicle arms) are registered with this entry; H8, H9 and H10 (heart) follow
     when the heart arm's build-only smoke has been read. Code: `campaign/gen` at 069d6fc, off main.
+- 2026-11-13 (p), the captain on the heart's learned-forecast arm. Written by the AI assistant.
+  - After entry (o) was reported, with the statement that the heart arm (row H10) would run unless struck, the
+    captain answered: "keep the heart arm and continue". Row H10 is registered with that word; it stays one counted
+    heart read with the two readings its row fixes, and it changes no upload by itself.
+- 2026-11-13 (q), a third forwarded side note, and the heart arm's weights corrected. Written by the AI assistant.
+  - **The note** (forwarded by the captain after (p)): on the heart the learned-forecast test "still puts about 85%
+    of its weight on the last step our current method already uses" (61% on the three-stage task), because each
+    step is weighted by the square of its length in days; a tie is the likely result, the AI assistant's own chance
+    that it helps is 4 to 7%, a loss would rule out only this narrow form, it adds one scored heart read (8 to 9),
+    and it had not started: "you can still cancel it".
+  - **Checked.** Every figure in the note is right and was in the draft row. The captain's last word on the arm is
+    (p), "keep the heart arm and continue", and the note asks for no change, so the arm stays. But the check of the
+    85% found an error of the AI assistant's in the specification. The squared weights were called inverse-variance
+    weights for a velocity whose error is a sample's offset divided by the gap. That treats the transitions' errors
+    as independent; under the same model adjacent transitions share a sample. With stage means equal to a trend
+    plus independent per-sample offsets, the variance of the pooled velocity on the one-day task's gaps (0.2, 0.25,
+    0.75 days) is 3.56 times the offset's variance for the last step alone, 1.93 with squared weights, 1.39 with
+    gap weights and 1.21 at the least-squares optimum; on the other task's gaps (0.2, 0.25) it is 32.0, 9.99, 9.88
+    and 9.84.
+  - **Decided by the AI assistant, before any scored run and before the arm's build-only smoke was read** (a method
+    choice; the captain can overrule): the weights become proportional to the gap, so every day of observed
+    development counts equally and a lineage's mean velocity is its total change over all observed stages divided
+    by the total time. The last step's share falls from 85% to 62.5% on the four-stage task and from 61% to 56% on
+    the three-stage one. Nothing else in the arm changes. What the note says of the outcome still holds: the last
+    step is the longest observed step and keeps the largest share, the target-free readings of the ladder on
+    record find little persistence of a step at day-scale gaps ("Pruned before running: a reversal of the heart's
+    last step"), a tie with the arm that keeps B0's forecast remains the likely result, and a loss closes only this
+    form. One further limit, stated in row H10: where the stages' cells do not overlap in the count model's latent,
+    the field at the reference cells is set by the last transition whatever the weights.
