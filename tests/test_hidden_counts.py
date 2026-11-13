@@ -338,10 +338,19 @@ def test_t1_base_lib3_draws_library_three_alone_at_its_own_mix(bt, t1_env, tmp_p
     for extra in (["--cm-share", "0.6"], ["--blood-share", "0.3"]):
         with pytest.raises(SystemExit, match="refused with --cm-share or --blood-share"):
             bt.main(["t1", "--base", "lib3", *extra, "--out", str(tmp_path / "no.h5ad")])
+    for extra in (["--no-hold-unbracketed"], ["--strong-null"], ["--herd"]):  # each would fit or pull on library 3
+        with pytest.raises(SystemExit, match="refused with --no-hold-unbracketed, --strong-null or --herd"):
+            bt.main(["t1", "--base", "lib3", *extra, "--out", str(tmp_path / "no.h5ad")])
     assert len(seen) == 2  # nothing was built for the refused calls
-    ref.obs_names = [f"c{i}" for i in range(ref.n_obs)]  # names that carry no library
-    with pytest.raises(SystemExit, match="do not separate library 3"):
-        bt.main(["t1", "--no-feng-hygiene", "--base", "lib3", "--out", str(tmp_path / "no.h5ad")])
+    good = list(ref.obs_names)
+    for bad in ([f"c{i}" for i in range(ref.n_obs)],                       # names that carry no library
+                [x.replace("_3", "_3-1") for x in good],                   # a suffix that is not a library number
+                [x.rsplit("_", 1)[0] + "_3" for x in good],                # every cell in library 3
+                [x.rsplit("_", 1)[0] + "_1" for x in good]):               # no library 3
+        ref.obs_names = bad
+        with pytest.raises(SystemExit, match="do not separate library 3"):
+            bt.main(["t1", "--no-feng-hygiene", "--base", "lib3", "--out", str(tmp_path / "no.h5ad")])
+    assert len(seen) == 2
 
 
 @pytest.mark.parametrize("argv", [["--feng-hygiene"], []])  # [] : the default since the build commit of (k)

@@ -298,6 +298,12 @@ def build_t1(a) -> dict:
     if a.g_mom and not a.hold_unbracketed:
         sys.exit("--g-mom is refused with --no-hold-unbracketed: g_mom's factors at test add to M1 with R1 and R2 as "
                  "they are (experiments/harness/TRIES.md, try T11)")
+    if a.base == "lib3" and (a.cm_share is not None or a.blood_share is not None):
+        sys.exit("--base lib3 is refused with --cm-share or --blood-share: the pair priced in try T30 keeps the "
+                 "second upload on the pooled base (experiments/harness/TRIES.md, row R6)")
+    if a.base == "lib3" and (not a.hold_unbracketed or a.strong_null or a.herd):
+        sys.exit("--base lib3 is refused with --no-hold-unbracketed, --strong-null or --herd: each would fit or pull a "
+                 "step on library 3's cells alone, which no try has read (experiments/harness/TRIES.md, row R6)")
     hygiene_on = _feng_hygiene_on(a.feng_hygiene, a.hold_unbracketed)  # R2's refusals come before anything is read
     prior = _t1_down_prior(a.strong_null, a.hold_unbracketed, hygiene_on)  # T12's, likewise
     union = _t1_union(hygiene_on)
@@ -308,14 +314,13 @@ def build_t1(a) -> dict:
     fit_categories = [c for c, s in shares.items() if s > 0]  # g_mom's fit, as the candidate's: E10.5's own mix
     pool = ref
     if a.base == "lib3":
-        if a.cm_share is not None or a.blood_share is not None:
-            sys.exit("--base lib3 is refused with --cm-share or --blood-share: the pair priced in try T30 keeps the "
-                     "second upload on the pooled base (experiments/harness/TRIES.md, row R6)")
-        library = np.array([str(x).rsplit("_", 1)[-1] for x in ref.obs_names])
-        rows = np.flatnonzero(library == T1_DISSECTED_LIBRARY)
-        if len(rows) == 0 or len(rows) == ref.n_obs:
-            sys.exit("--base lib3: the reference's cell names do not separate library 3 from the others")
-        pool = ref[rows].copy()
+        names = [str(x) for x in ref.obs_names]
+        library = np.array([x.rsplit("_", 1)[-1] if "_" in x else "" for x in names])
+        kinds = set(library.tolist())
+        if not all(k.isdigit() for k in kinds) or T1_DISSECTED_LIBRARY not in kinds or len(kinds) < 2:
+            sys.exit("--base lib3: the reference's cell names do not separate library 3 from the others (every name "
+                     "must end in _<library number>, and library 3 must be one of at least two)")
+        pool = ref[np.flatnonzero(library == T1_DISSECTED_LIBRARY)].copy()
         shares = harness.t1_chamber_shares(harness._shallow(pool), "E10.5_RNA")  # library 3's own chamber mix
     if a.cm_share is not None:
         shares = t1_scope.with_share(shares, "cm", a.cm_share)

@@ -593,11 +593,13 @@ def wt_revert_series(wt: Path, given: dict[str, Path] | None = None) -> dict[str
     return series
 
 
-def wt_revert_factors(wt: Path, series: dict[str, Path], genes: list[str]) -> tuple[np.ndarray, dict, np.ndarray, dict]:
+def wt_revert_factors(wt: Path, series: dict[str, Path], genes: list[str],
+                      pool_counts: np.ndarray | None = None) -> tuple[np.ndarray, dict, np.ndarray, dict]:
     """The wild-type-only factors of tries K7 and K8 for the reference `wt`, fitted exactly as tried
     (k7_wt_revert.group_means, trend_at and revert_factors; the stage days of vec.harness.STAGE_DAYS; the samples in
     sorted name order, as the tries' roles were): (the pooled factor, one factor per lineage group, each reference
-    cell's lineage group in the pool's row order, a record without any cell number)."""
+    cell's lineage group in the pool's row order, a record without any cell number). pool_counts: the reference pool's
+    counts (`Reference.pool.C`); when given, the reference as loaded here must hold exactly those rows and columns."""
     import k7_wt_revert as k7
 
     from vec.harness import STAGE_DAYS
@@ -607,9 +609,14 @@ def wt_revert_factors(wt: Path, series: dict[str, Path], genes: list[str]) -> tu
         return float(STAGE_DAYS[f"T2/{stem}.h5ad"])
 
     names = sorted(series)
-    ref = load_stage(wt, genes=genes, drop_duplicates=True)
+    try:
+        ref = load_stage(wt, genes=genes, drop_duplicates=True)
+        others = [k7.group_means(load_stage(series[n], genes=genes, drop_duplicates=True))[0] for n in names]
+    except KeyError as e:  # a stage file without one of the reference's genes
+        raise Refused(f"--wt-revert: {e}") from e
+    if pool_counts is not None and not np.array_equal(t3d.dense_counts(ref), pool_counts):
+        raise Refused("--wt-revert: the reference as loaded for the factor is not the pool the cells are drawn from")
     ref_means, ref_sizes = k7.group_means(ref)
-    others = [k7.group_means(load_stage(series[n], genes=genes, drop_duplicates=True))[0] for n in names]
     trend = k7.trend_at(others, [day(n) for n in names], day(Path(wt).stem))
     phi, per, rec = k7.revert_factors(ref_means, ref_sizes, trend)
     record = {"rule": k7.WT_REVERT_RULE, "exponent": k7.EXPONENT, "applied": "per lineage group (tries K7b, K8b)",
@@ -843,6 +850,13 @@ def build_submission(decision: Path, branch: str, submission: str, wt: Path, boa
     pf = preflight(decision, branch, submission, board, n_cells, preset, allow_hash_mismatch,
                    allow_unregistered_protocol)
     rules, dec, spec, preset, warnings = pf["rules"], pf["dec"], pf["spec"], pf["preset"], pf["warnings"]
+    if wt_revert is not None:  # the form tries K8 read: the refused s1 as the decision file states it
+        import k8_s2_form as k8
+
+        tried, comp = k8.spec()["composition"], spec.get("composition", {})
+        if spec.get("coverage") or any(comp.get(k) != tried[k] for k in ("kind", "depleted_states", "log2_magnitude")):
+            raise Refused("--wt-revert was tried on the refused branch's s1 with the central composition of the "
+                          "decision file (tries K8); this submission's composition differs")
     out = Path(out)
     side = out.with_suffix(".json")
     if not overwrite and (out.exists() or side.exists()):
@@ -870,7 +884,7 @@ def build_submission(decision: Path, branch: str, submission: str, wt: Path, boa
     if wt_revert is not None:
         if kw["phi"] is not None or kw["ratio"] is not None or kw["alphas"] is not None:
             raise Refused("--wt-revert is for a submission with no other factor, depth ratio or stage mixing")
-        phi_wr, per_wr, group_wr, revert = wt_revert_factors(Path(wt), wt_revert, ref.genes)
+        phi_wr, per_wr, group_wr, revert = wt_revert_factors(Path(wt), wt_revert, ref.genes, ref.pool.C)
         built, applied = apply_wt_revert(ref, built, phi_wr, per_wr, group_wr,
                                          t3d.stable_rng(seed, f"{stream}:{WT_REVERT_STREAM}"))
         revert = {**revert, **applied, "ruling": "the captain, 2026-11-13 (docs/S2_RULES.md)"}
@@ -984,6 +998,9 @@ def build(
             "yellow" if n6["applies"] and submission == "s2" else None)
     say(f"  factor {sp['factor']['source']} exponent {sp['factor']['exponent']}"
         + (f" ({s['inputs']['factor']['file']})" if s["inputs"]["factor"] else ""))
+    if c.get("wt_revert"):
+        say(f"  plus the wild-type-only factor per lineage group at exponent {c['wt_revert']['exponent']} "
+            "(--wt-revert; the captain's ruling of 2026-11-13)")
     say(f"  composition {comp['kind']}" + (f", log2 magnitude {comp['log2_magnitude']:.3f}"
                                            if comp["kind"] != "none" else "")
         + "".join(f", {k} on" for k in EXTRAS if sp.get(k)))

@@ -103,6 +103,26 @@ def test_the_factors_are_the_tried_estimators(tmp_path, monkeypatch):
     assert rec["exponent"] == k7.EXPONENT == 0.5 and rec["rule"] == k7.WT_REVERT_RULE
     assert set(rec["series"]) == set(names) and all(len(v["sha256"]) == 64 for v in rec["series"].values())
     assert "sizes" not in rec and not any("cells" in k for k in rec)  # a build record holds no cell number
+    C = bs.t3d.dense_counts(stages["E8.75"])
+    bs.wt_revert_factors(files["E8.75"], series, GENES, C)  # the pool it was fitted for: accepted
+    with pytest.raises(bs.Refused, match="not the pool"):
+        bs.wt_revert_factors(files["E8.75"], series, GENES, C[:-1])
+
+    def lacking(path, **kw):
+        raise KeyError(f"{path}: 1 panel genes missing")
+
+    monkeypatch.setattr(vec.prep, "load_stage", lacking)
+    with pytest.raises(bs.Refused, match="panel genes missing"):
+        bs.wt_revert_factors(files["E8.75"], series, GENES)
+
+
+def test_the_form_must_be_the_one_the_tries_read():
+    import k8_s2_form as k8
+
+    src = (T3_DIR / "build_submission.py").read_text()
+    assert 'tried, comp = k8.spec()["composition"], spec.get("composition", {})' in src
+    assert 'for k in ("kind", "depleted_states", "log2_magnitude")' in src and 'spec.get("coverage") or any(' in src
+    assert set(k8.spec()["composition"]) == {"kind", "depleted_states", "log2_magnitude"}
 
 
 def _reference(rng, n=90):
