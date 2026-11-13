@@ -500,7 +500,8 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
     `apply_factors` call on one stream, so a mapped factor equal to the own one gives the default output bit for bit.
     The shifted types' report rows then add "n_own_factor_cells". Not defined together with logf_filter (raises).
 
-    kernel (default "independent"): `apply_factors`' kernel (heart arm b0_trend_xt: "exact_total").
+    kernel (default "independent"): `apply_factors`' kernel (heart arms b0_trend_xt: "exact_total", the repair form;
+    b0_trend_mn: "multinomial", the whole-cell redraw).
 
     Returns a copy of target_like with layers["counts"] edited and X = log1p CP10k of the new counts (float32 CSR),
     and a per-type report.

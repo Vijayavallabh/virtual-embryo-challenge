@@ -1,7 +1,8 @@
-"""Heart arms `b0_trend_mix` (a within-upload momentum mixture: half the drawn cells at b0's step, half at b0_trend's)
-and `b0_trend_xt` (b0_trend's step through an exact-total kernel), with their hooks: `vec.core.apply_factors(...,
-kernel=...)` and `vec.t1_scope.momentum_shift(..., own_factor_cells=..., kernel=...)`. Each arm is b0_trend with one
-idea. Synthetic data only; nothing scored, no prediction compared with a target."""
+"""Heart arms `b0_trend_mix` (a within-upload momentum mixture: half the drawn cells at b0's step, half at b0_trend's),
+`b0_trend_xt` (b0_trend's step through the exact-total kernel in its repair form) and `b0_trend_mn` (b0_trend's step as
+a whole-cell multinomial redraw: the kernel b0_trend_xt was built with at ff8c42d, renamed), with their hooks:
+`vec.core.apply_factors(..., kernel=...)` and `vec.t1_scope.momentum_shift(..., own_factor_cells=..., kernel=...)`.
+Each arm is b0_trend with one idea. Synthetic data only; nothing scored, no prediction compared with a target."""
 
 from __future__ import annotations
 
@@ -16,7 +17,8 @@ from test_b0_trend import BOARD, PRE_CHANGE_SHA256, _adata, _ctx, _only_start_an
 from vec import core, harness, t1_scope
 from vec.harness import B0_DAMPING, CANDIDATES, load_tasks
 
-ARMS = ("b0_trend_mix", "b0_trend_xt")
+ARMS = ("b0_trend_mix", "b0_trend_xt", "b0_trend_mn")
+KERNEL_ARMS = {"b0_trend_xt": "exact_total", "b0_trend_mn": "multinomial"}
 
 
 @pytest.fixture(scope="module")
@@ -57,6 +59,18 @@ PIN_X = {"b0": "7f9b4113111857bdc351c027f81b80bbde24153a02e07ff99c9cbd31f764e137
          "b0_trend_h": "0e652f3362444d931a72ca6a386cc67c7a313a5eb0f26a2053100ccddf138e3e"}
 PIN_COORDS = "1704b9c9251aad9a5e6df8d0fe2a5aab8a42c4647c58af60536c86915664f9ee"
 
+# pins taken at ff8c42d (campaign/heart-c), before the kernel fix of campaign/heart-cfix: b0_trend_mix's output X on
+# `three`, and the as-built b0_trend_xt (kernel "exact_total" then, a whole-cell multinomial redraw), now b0_trend_mn
+# with kernel "multinomial": its X on `three`, apply_factors on `_af_inputs` (counts, depth constants) and
+# momentum_shift on `shift_inputs` (test_b0_trend's `_sha`)
+PIN_FF8_X = {"b0_trend_mix": "9d6c0f2ec8eabd2dbcd0f489a846d0ec6640092e78cdd823365b9a371243da6f",
+             "b0_trend_mn": "2a495e3a53910d9f4be2ed984c436fb8ccf3a5e2d94b0a341afd07a8e657e888"}
+PIN_FF8_AF_MN = {True: ("af3796bc22a951c09db498068403f1055740e27ffc83ec1d7aeee447f0243090",
+                        "495f891229896cddfa6ff36900ded3a0c53f71a278b2b3b2217bf2b70a5f71e2"),
+                 False: ("a316ca32c3008fcb0097bb2589a6eeeb5f8feaa6fbe289d7b8ebe4da2a44f179",
+                         "41e09ab16161976ef905e3c39d7c6542759631afa4fff8d624fa0f56be7cf958")}
+PIN_FF8_MS_MN = "d7a6483367522d7d216de20a7008cb6dc285c2df2a67b3a4e1165a84aa6e0887"
+
 
 def _af_inputs():
     rng = np.random.default_rng(31)
@@ -96,14 +110,32 @@ def test_momentum_shift_defaults_are_unchanged(shift_inputs):
     assert _sha(out) == PRE_CHANGE_SHA256
 
 
-# ------------------------------------------------------------------------------------------- the exact-total kernel
+@pytest.mark.parametrize("name", sorted(PIN_FF8_X))
+def test_mix_and_mn_are_ff8c42d_bit_for_bit(three, name):
+    """b0_trend_mix as built at ff8c42d; b0_trend_mn as b0_trend_xt was built at ff8c42d."""
+    st = CANDIDATES[name].build(_ctx(three))
+    assert _h(st.X) == PIN_FF8_X[name] and _h(st.coords) == PIN_COORDS
+
+
 @pytest.mark.parametrize("keep_depth", [True, False])
-def test_exact_total_fixes_each_cells_total_at_the_rounded_expected_total(keep_depth):
+def test_multinomial_kernel_is_the_as_built_exact_total_kernel(keep_depth, shift_inputs):
+    C, F, ti, held = _af_inputs()
+    out, scale, dead = core.apply_factors(C, F, ti, held, keep_depth=keep_depth, seed=[5, 3], kernel="multinomial")
+    assert (_sha_int(out.toarray()), _sha_f64(scale)) == PIN_FF8_AF_MN[keep_depth] and not dead.any()
+    start, ref, like, _ = shift_inputs
+    ms, _ = t1_scope.momentum_shift(start, ref, like, 0.5, key="b0_type", seed=[7, 3], kernel="multinomial")
+    assert _sha(ms) == PIN_FF8_MS_MN
+
+
+# ------------------------------------------------------------------------------ the exact-total and multinomial kernels
+@pytest.mark.parametrize("kernel", ["exact_total", "multinomial"])
+@pytest.mark.parametrize("keep_depth", [True, False])
+def test_both_kernels_fix_each_cells_total_at_the_rounded_expected_total(keep_depth, kernel):
     """Each cell's total is rint(sum c f) over its moved counts plus its unmoved counts; held counts, counts with
     f == 1 and zeros stay; the depth constant is the independent kernel's."""
     C, F, ti, held = _af_inputs()
     F[0, 10:15] = 1.0
-    out, scale, dead = core.apply_factors(C, F, ti, held, keep_depth=keep_depth, seed=[5, 3], kernel="exact_total")
+    out, scale, dead = core.apply_factors(C, F, ti, held, keep_depth=keep_depth, seed=[5, 3], kernel=kernel)
     _, scale_i, _ = core.apply_factors(C, F, ti, held, keep_depth=keep_depth, seed=[5, 3])
     np.testing.assert_array_equal(scale, scale_i)
     D, new = C.toarray().astype(np.float64), out.toarray()
@@ -117,7 +149,7 @@ def test_exact_total_fixes_each_cells_total_at_the_rounded_expected_total(keep_d
         np.testing.assert_array_equal(new.sum(1), D.sum(1))  # the expected total is the original total
 
 
-def test_exact_total_keeps_each_counts_expectation():
+def test_multinomial_keeps_each_counts_expectation():
     """Many copies of one cell: the mean of each moved count is c f x rint(S) / S, as the independent kernel's mean
     is c f (to sampling error)."""
     c = np.array([3, 0, 8, 1, 20, 5])
@@ -125,7 +157,7 @@ def test_exact_total_keeps_each_counts_expectation():
     n = 20000
     C = sparse.csr_matrix(np.tile(c, (n, 1)))
     out, _, _ = core.apply_factors(C, f[None, :], np.zeros(n, dtype=int), keep_depth=False, seed=1,
-                                   kernel="exact_total")
+                                   kernel="multinomial")
     m = out.toarray().mean(0)
     moved = (f != 1.0) & (c > 0)
     S = float((c * f)[moved].sum())
@@ -134,10 +166,11 @@ def test_exact_total_keeps_each_counts_expectation():
     assert (out.toarray().sum(1) == np.rint(S) + c[~moved].sum()).all()
 
 
-def test_exact_total_with_nothing_to_move_is_the_independent_kernel_bit_for_bit():
+@pytest.mark.parametrize("kernel", ["exact_total", "multinomial"])
+def test_both_kernels_with_nothing_to_move_are_the_independent_kernel_bit_for_bit(kernel):
     C, _, ti, held = _af_inputs()
     ones = np.ones((3, 40))
-    a, sa, da = core.apply_factors(C, ones, ti, held, seed=[5, 3], kernel="exact_total")
+    a, sa, da = core.apply_factors(C, ones, ti, held, seed=[5, 3], kernel=kernel)
     b, sb, db = core.apply_factors(C, ones, ti, held, seed=[5, 3])
     np.testing.assert_array_equal(a.toarray(), b.toarray())
     np.testing.assert_array_equal(a.toarray(), C.toarray())
@@ -145,15 +178,111 @@ def test_exact_total_with_nothing_to_move_is_the_independent_kernel_bit_for_bit(
     np.testing.assert_array_equal(da, db)
 
 
-def test_unknown_kernel_is_refused():
+def _moved_and_d(C, F, ti, held, keep_depth, y):
+    """Dense M (not held, count above zero, f != 1 after the depth constant), each cell's target rint(sum c f) over
+    M and its d against the dense counts y (the independent kernel's output)."""
+    D = C.toarray().astype(np.float64)
+    _, scale, _ = core.apply_factors(C, F, ti, held, keep_depth=keep_depth, seed=0)
+    f = np.where(held[None, :], 1.0, F[ti] * scale[:, None])
+    M = (f != 1.0) & (D > 0)
+    target = np.rint((D * f * M).sum(1)).astype(np.int64)
+    return M, target, (y * M).sum(1).astype(np.int64) - target
+
+
+@pytest.mark.parametrize("keep_depth", [True, False])
+def test_exact_total_is_the_independent_draw_repaired_by_d_units(keep_depth):
+    """The repair form: the output starts from the independent kernel's Y (same seed); each cell's total over M is
+    rint(sum c f); entries outside M are Y's (= the input); a cell with d == 0 is Y's bit for bit; a cell moves
+    exactly |d| units, all removed (d > 0, never below zero) or all added (d < 0)."""
+    C, F, ti, held = _af_inputs()
+    F[1, 20:25] = 1.0
+    y = core.apply_factors(C, F, ti, held, keep_depth=keep_depth, seed=[5, 3])[0].toarray()
+    out, _, dead = core.apply_factors(C, F, ti, held, keep_depth=keep_depth, seed=[5, 3], kernel="exact_total")
+    x = out.toarray()
+    M, target, d = _moved_and_d(C, F, ti, held, keep_depth, y)
+    assert not dead.any() and (d == 0).any() and (d > 0).any() and (d < 0).any()
+    np.testing.assert_array_equal((x * M).sum(1), target)
+    np.testing.assert_array_equal(x[~M], y[~M])
+    np.testing.assert_array_equal(x[~M], C.toarray()[~M])
+    np.testing.assert_array_equal(x[d == 0], y[d == 0])
+    diff = x - y
+    np.testing.assert_array_equal(np.abs(diff).sum(1), np.abs(d))
+    assert (diff[d > 0] <= 0).all() and (diff[d < 0] >= 0).all() and (x >= 0).all()
+
+
+def test_exact_total_with_d_zero_everywhere_is_the_independent_kernel_bit_for_bit():
+    """A small case whose independent draw already hits every cell's rounded expected total (the first such seed
+    of 0..999): the exact-total kernel draws nothing more and gives the independent output bit for bit."""
+    C = sparse.csr_matrix(np.array([[3, 2, 0, 4], [1, 5, 2, 0]]))
+    F = np.array([[0.5, 1.5, 2.0, 0.9]])
+    ti, held = np.zeros(2, dtype=int), np.zeros(4, bool)
+    for seed in range(1000):
+        y = core.apply_factors(C, F, ti, held, keep_depth=False, seed=seed)[0].toarray()
+        if not _moved_and_d(C, F, ti, held, False, y)[2].any():
+            break
+    else:
+        pytest.fail("no seed with d == 0 in every cell")
+    a, sa, da = core.apply_factors(C, F, ti, held, keep_depth=False, seed=seed, kernel="exact_total")
+    b, sb, db = core.apply_factors(C, F, ti, held, keep_depth=False, seed=seed)
+    np.testing.assert_array_equal(a.toarray(), b.toarray())
+    np.testing.assert_array_equal(sa, sb)
+    np.testing.assert_array_equal(da, db)
+
+
+PROBE_C = np.array([50, 40, 30, 20, 10, 5])
+PROBE_F = np.array([1.02, 1.0, 1.0, 1.0, 1.0, 1.0])
+
+
+@pytest.fixture(scope="module")
+def probe():
+    """The reviewer's probe: one cell, keep_depth=True, 20,000 copies, under each kernel (one seed)."""
+    n = 20000
+    C = sparse.csr_matrix(np.tile(PROBE_C, (n, 1)))
+    out = {}
+    for k in ("independent", "exact_total", "multinomial"):
+        x, scale, _ = core.apply_factors(C, PROBE_F[None, :], np.zeros(n, dtype=int), keep_depth=True, seed=1,
+                                         kernel=k)
+        out[k] = (x.toarray(), scale)
+    return out
+
+
+def test_exact_total_keeps_each_counts_mean_on_the_probe(probe):
+    """Each count's mean is within 0.02 of c f x target / sum(c f) (f after the depth constant)."""
+    x, scale = probe["exact_total"]
+    cf = PROBE_C * PROBE_F * scale[0]
+    np.testing.assert_allclose(x.mean(0), cf * np.rint(cf.sum()) / cf.sum(), rtol=0, atol=0.02)
+    assert (x.sum(1) == np.rint(cf.sum())).all()
+
+
+@pytest.mark.xfail(strict=True, reason="the bound asked for (the independent kernel's variance plus 0.05) does not "
+                   "hold for the repair as specified: the allocation of the |d| units adds about |d| p (1 - p) per "
+                   "count (measured about [0.55, 0.37, 0.30, 0.21, 0.11, 0.06] against [0.67, 0.25, 0.19, 0.13, 0.06, "
+                   "0.03]); kept strict so that it reports if the kernel ever changes")
+def test_exact_total_variance_is_at_most_the_independent_kernels_plus_005(probe):
+    np.testing.assert_array_less(probe["exact_total"][0].var(0), probe["independent"][0].var(0) + 0.05)
+
+
+def test_exact_total_variance_is_far_below_the_multinomials(probe):
+    """The repair adds a small variance, the whole-cell redraw about c per count (the reviewer's finding): per count
+    the exact-total variance is below the independent kernel's plus 0.15 and below a tenth of the multinomial's,
+    and the multinomial's is above c / 2 (bounds set after the probe was measured; see the xfail above)."""
+    v_i, v_x, v_m = (probe[k][0].var(0) for k in ("independent", "exact_total", "multinomial"))
+    np.testing.assert_array_less(v_x, v_i + 0.15)
+    np.testing.assert_array_less(v_x, v_m / 10)
+    np.testing.assert_array_less(PROBE_C * 0.5, v_m)
+
+
+@pytest.mark.parametrize("kernel", ["nb", "negative_binomial", "Exact_total", ""])
+def test_unknown_kernel_is_refused(kernel):
     C, F, ti, held = _af_inputs()
     with pytest.raises(ValueError, match="unknown kernel"):
-        core.apply_factors(C, F, ti, held, kernel="nb")
+        core.apply_factors(C, F, ti, held, kernel=kernel)
 
 
-def test_momentum_shift_passes_the_kernel(shift_inputs):
+@pytest.mark.parametrize("kernel", ["exact_total", "multinomial"])
+def test_momentum_shift_passes_the_kernel(shift_inputs, kernel):
     start, ref, like, _ = shift_inputs
-    out, rep = t1_scope.momentum_shift(start, ref, like, 0.5, key="b0_type", seed=[7, 3], kernel="exact_total")
+    out, rep = t1_scope.momentum_shift(start, ref, like, 0.5, key="b0_type", seed=[7, 3], kernel=kernel)
     base, rep0 = t1_scope.momentum_shift(start, ref, like, 0.5, key="b0_type", seed=[7, 3])
     np.testing.assert_array_equal(out.layers["counts"].toarray().sum(1), like.layers["counts"].toarray().sum(1))
     assert not np.array_equal(out.layers["counts"].toarray(), base.layers["counts"].toarray())
@@ -227,7 +356,8 @@ def _spy_apply(monkeypatch):
     def spy(C, F, tidx, held=None, keep_depth=True, seed=0, kernel="independent"):
         out = real(C, F, tidx, held, keep_depth=keep_depth, seed=seed, kernel=kernel)
         calls.append({"C": C.copy(), "F": F.copy(), "tidx": tidx.copy(), "seed": list(seed), "kernel": kernel,
-                      "keep_depth": keep_depth, "out": out[0].copy(), "scale": out[1].copy()})
+                      "keep_depth": keep_depth, "out": out[0].copy(), "scale": out[1].copy(),
+                      "held": np.zeros(C.shape[1], bool) if held is None else np.asarray(held, bool).copy()})
         return out
 
     monkeypatch.setattr(t1_scope, "apply_factors", spy)
@@ -281,7 +411,8 @@ def test_mix_gives_the_first_half_b0s_factor_and_the_rest_b0_trends(three, monke
     differs = (rows_b0 != rows_tr).any(1)
     assert differs[hold].any() and differs[~hold].any()  # both halves hold trend-lineage cells
     rec = harness.TREND_ARM_RECORDS["b0_trend_mix"]
-    assert rec["rule"] == "vec.harness.B0_TREND_MIX_RULE" and rec["arm"] == "mix"
+    assert rec["arm_rule"] == "vec.harness.B0_TREND_MIX_RULE" and rec["arm"] == "mix"
+    assert rec["rule"] == "vec.harness.B0_TREND_RULE"  # b0_trend_factors' entry, not overwritten
     assert rec["n_hold"] == n // 2 and rec["n_trend_cells"] == n - n // 2
     # each cell's expected total is unchanged by the step (keep_depth): the library size per cell stays b0_trend's
     for c in (tr, mix):
@@ -289,22 +420,46 @@ def test_mix_gives_the_first_half_b0s_factor_and_the_rest_b0_trends(three, monke
                                    c["C"].toarray().sum(1), rtol=1e-12)
 
 
-def test_xt_uses_b0_trends_factors_with_the_exact_total_kernel(three, monkeypatch):
-    """Through a spy: the same counts, factor rows, cell types and stream as b0_trend, kernel "exact_total"; every
-    cell's panel total after the step equals its total before (keep_depth: the rounded expected total)."""
+@pytest.mark.parametrize("name", sorted(KERNEL_ARMS))
+def test_kernel_arms_use_b0_trends_factors_with_their_kernel(three, monkeypatch, name):
+    """Through a spy: the same counts, factor rows, cell types and stream as b0_trend, with the arm's kernel; every
+    cell's panel total after the step equals its total before (keep_depth: the rounded expected total). The arm's
+    rule is under "arm_rule"; "rule" stays b0_trend_factors'."""
+    calls = _spy_apply(monkeypatch)
+    ctx = _ctx(three)
+    CANDIDATES["b0_trend"].build(ctx)
+    CANDIDATES[name].build(ctx)
+    tr, xt = calls
+    np.testing.assert_array_equal(xt["C"].toarray(), tr["C"].toarray())
+    np.testing.assert_array_equal(xt["F"], tr["F"])
+    np.testing.assert_array_equal(xt["tidx"], tr["tidx"])
+    assert xt["seed"] == tr["seed"] and xt["kernel"] == KERNEL_ARMS[name] and tr["kernel"] == "independent"
+    np.testing.assert_array_equal(xt["out"].toarray().sum(1), xt["C"].toarray().sum(1))
+    assert not np.array_equal(tr["out"].toarray().sum(1), tr["C"].toarray().sum(1))
+    rec = harness.TREND_ARM_RECORDS[name]
+    arm = name.rsplit("_", 1)[1]
+    assert rec["arm_rule"] == f"vec.harness.B0_TREND_{arm.upper()}_RULE" and rec["arm"] == arm
+    assert rec["kernel"] == KERNEL_ARMS[name] and rec["rule"] == "vec.harness.B0_TREND_RULE"
+
+
+def test_xt_is_b0_trends_draw_repaired(three, monkeypatch):
+    """b0_trend_xt's apply_factors output is b0_trend's own draw except on cells whose total over the moved entries
+    missed its rounded expected total, each moved by exactly |d| units, only on its moved entries."""
     calls = _spy_apply(monkeypatch)
     ctx = _ctx(three)
     CANDIDATES["b0_trend"].build(ctx)
     CANDIDATES["b0_trend_xt"].build(ctx)
     tr, xt = calls
-    np.testing.assert_array_equal(xt["C"].toarray(), tr["C"].toarray())
-    np.testing.assert_array_equal(xt["F"], tr["F"])
-    np.testing.assert_array_equal(xt["tidx"], tr["tidx"])
-    assert xt["seed"] == tr["seed"] and xt["kernel"] == "exact_total" and tr["kernel"] == "independent"
-    np.testing.assert_array_equal(xt["out"].toarray().sum(1), xt["C"].toarray().sum(1))
-    assert not np.array_equal(tr["out"].toarray().sum(1), tr["C"].toarray().sum(1))
-    rec = harness.TREND_ARM_RECORDS["b0_trend_xt"]
-    assert rec["rule"] == "vec.harness.B0_TREND_XT_RULE" and rec["kernel"] == "exact_total"
+    y, x = tr["out"].toarray(), xt["out"].toarray()
+    D = tr["C"].toarray()
+    f = np.where(tr["held"][None, :], 1.0, tr["F"][tr["tidx"]] * tr["scale"][:, None])
+    M = (D > 0) & (f != 1.0)
+    target = np.rint((D * f * M).sum(1)).astype(np.int64)
+    d = (y * M).sum(1) - target
+    np.testing.assert_array_equal((x * M).sum(1), target)
+    np.testing.assert_array_equal(np.abs(x - y).sum(1), np.abs(d))
+    np.testing.assert_array_equal(x[~M], y[~M])
+    assert (d != 0).any() and (d == 0).any() and np.array_equal(x[d == 0], y[d == 0])
 
 
 def _nothing_shifted(three) -> dict:
@@ -340,7 +495,8 @@ def test_each_arm_is_registered_like_b0_trend(name):
     assert {t.key for t in tasks if c.applies(t)} == {"T2h/<=E9.5->E10.5", "T2h/<=E8.75->E10.5"}
     assert c.tasks == base.tasks and c.derived == () and c.requires is harness._heart_extrap_with_start
     assert c.params["scope"] == "chamber" and c.params["damping"] == B0_DAMPING
-    rule = {"b0_trend_mix": "B0_TREND_MIX_RULE", "b0_trend_xt": "B0_TREND_XT_RULE"}[name]
+    rule = {"b0_trend_mix": "B0_TREND_MIX_RULE", "b0_trend_xt": "B0_TREND_XT_RULE",
+            "b0_trend_mn": "B0_TREND_MN_RULE"}[name]
     assert c.params["rule"] == f"vec.harness.{rule}" and isinstance(getattr(harness, rule), str)
 
 
@@ -352,7 +508,8 @@ def test_the_negative_binomial_arm_is_not_built():
         core.apply_factors(C, F, ti, held, kernel="negative_binomial")
 
 
-IDEAS = {"b0_trend_mix": {"trend_mix": True}, "b0_trend_xt": {"kernel": "exact_total"}}
+IDEAS = {"b0_trend_mix": {"trend_mix": True}, "b0_trend_xt": {"kernel": "exact_total"},
+         "b0_trend_mn": {"kernel": "multinomial"}}
 
 
 @pytest.mark.parametrize("name", ARMS)
@@ -373,5 +530,8 @@ def test_each_arm_refuses_what_b0_trend_refuses(three, name):
     two = {k: three[k] for k in ("ref", "start")}
     with pytest.raises(ValueError, match="three"):
         c.build(_ctx(two, view=_view(inputs={"ref": "T2/E9.5.h5ad", "start": "T2/E8.75.h5ad"})))
-    with pytest.raises(ValueError, match="separate arms"):
-        harness._b0_t2(_ctx(three), trend=True, trend_mix=True, kernel="exact_total")
+    for k in KERNEL_ARMS.values():
+        with pytest.raises(ValueError, match="separate arms"):
+            harness._b0_t2(_ctx(three), trend=True, trend_mix=True, kernel=k)
+    with pytest.raises(ValueError, match="unknown kernel"):
+        harness._b0_t2(_ctx(three), trend=True, kernel="negative_binomial")

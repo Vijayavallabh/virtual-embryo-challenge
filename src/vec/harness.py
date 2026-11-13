@@ -1064,18 +1064,33 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
     return out, rec
 
 
-# Heart arms b0_trend_mix and b0_trend_xt (the heart mixture and kernel batch, branch campaign/heart-c): b0_trend with
-# one idea each, from lines the ledger pruned before running (experiments/harness/TRIES.md, "Pruned before running":
-# "a heart momentum mixture" and "exact-total kernels"). Harness candidates only; the test builders are untouched.
+# Heart arms b0_trend_mix, b0_trend_xt and b0_trend_mn (the heart mixture and kernel batch, branches campaign/heart-c
+# and campaign/heart-cfix): b0_trend with one idea each, from lines the ledger pruned before running
+# (experiments/harness/TRIES.md, "Pruned before running": "a heart momentum mixture", "exact-total kernels" and
+# "negative-binomial resampling"). Harness candidates only; the test builders are untouched.
 B0_TREND_MIX_RULE = ("b0_trend's draw, cells, coordinates and stream, with a within-upload mixture over two step "
                      "sizes: the drawn cells in the first half of the seeded draw order (positions below n // 2) get "
                      "B0's own factor (b0's rule: no trend step), the rest b0_trend's factor; one apply_factors call "
                      "on b0_trend's stream; everything else is b0_trend's")
-B0_TREND_XT_RULE = ("b0_trend with the step realised by an exact-total kernel (vec.core.apply_factors, "
-                    "kernel='exact_total'): per cell the moved counts are redrawn together as Multinomial(rint(S), "
-                    "c f / S) with S the sum of c f over them, so each cell's total is the rounded expected total of "
-                    "the step and each count keeps its expected value c f (up to the rounding); counts with f == 1 and "
-                    "held counts stay; everything else is b0_trend's")
+B0_TREND_XT_RULE = ("b0_trend with the step realised by an exact-total kernel in its repair form "
+                    "(vec.core.apply_factors, kernel='exact_total'): b0_trend's independent per-count draws, unchanged"
+                    " and on the same generator (output Y); then per cell, with M its moved entries (not held, count "
+                    "above zero before the step, factor not exactly 1 after the keep-depth constant), target = "
+                    "rint(sum over M of c f) and d = (sum over M of Y) - target: if d > 0, d units are removed from Y "
+                    "on M by one multivariate hypergeometric draw over Y's units there (every unit equally likely, "
+                    "without replacement); if d < 0, -d units are added on M by one multinomial draw with "
+                    "probabilities proportional to c f over M; if d == 0 or M is empty, nothing is drawn and the cell "
+                    "is Y's; the repair's draws come after all the independent draws on the same generator, cells in "
+                    "row order; entries outside M are never touched; no other constant; everything else is b0_trend's")
+B0_TREND_MN_RULE = ("b0_trend with the step realised as a whole-cell multinomial redraw (vec.core.apply_factors, "
+                    "kernel='multinomial'): per cell every moved count (not held, count above zero before the step, "
+                    "factor not exactly 1 after the keep-depth constant) is redrawn together as one "
+                    "Multinomial(rint(S), c f / S), S the sum of c f over them: the step's expected profile with the "
+                    "cell's rounded expected total. With keep_depth this resamples every such count of a shifted cell,"
+                    " adding a variance of about c per count even where f is about 1. It is the ledger's resampling "
+                    "line in its dispersion-free form (a negative binomial needs a dispersion that is not on record); "
+                    "counts outside the moved set stay; everything else is b0_trend's")
+TREND_KERNEL_ARMS = {"exact_total": "xt", "multinomial": "mn"}  # apply_factors kernel -> heart arm (b0_trend_<arm>)
 
 
 def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool = False, trend: bool = False,
@@ -1097,7 +1112,9 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
     trend_form (with trend only; heart tries H13e, H13r, H13h): b0_trend_factors' `form`, default "ols" (b0_trend).
     trend_mix (with trend only; arm b0_trend_mix, B0_TREND_MIX_RULE): the drawn cells at positions below n // 2 of the
     seeded draw order get B0's own factor (momentum_shift's own_factor_cells), the rest the trend's.
-    kernel (with trend only; arm b0_trend_xt, B0_TREND_XT_RULE): apply_factors' kernel, default "independent"."""
+    kernel (with trend only; arms b0_trend_xt, B0_TREND_XT_RULE, kernel "exact_total", and b0_trend_mn,
+    B0_TREND_MN_RULE, kernel "multinomial"): apply_factors' kernel, default "independent".
+    The arms' own rule goes into the record under "arm_rule"; "rule" stays b0_trend_factors' entry."""
     from vec import t1_scope
 
     if trend and (depth or herd or cfm):
@@ -1108,6 +1125,8 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
         raise ValueError("trend_form is for trend=True")
     if trend_mix and not trend:
         raise ValueError("trend_mix is for trend=True")
+    if kernel not in TREND_KERNEL_ARMS and kernel != "independent":
+        raise ValueError(f"unknown kernel {kernel!r}; known: independent, {', '.join(TREND_KERNEL_ARMS)}")
     if kernel != "independent" and not trend:
         raise ValueError("kernel is for trend=True")
     if trend_mix and kernel != "independent":
@@ -1144,12 +1163,13 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
         hold = np.arange(like.n_obs) < like.n_obs // 2
         extra["own_factor_cells"] = hold
         if trend_record is not None:
-            trend_record.update({"rule": "vec.harness.B0_TREND_MIX_RULE", "arm": "mix", "n_hold": int(hold.sum()),
-                                 "n_trend_cells": int((~hold).sum())})
+            trend_record.update({"arm_rule": "vec.harness.B0_TREND_MIX_RULE", "arm": "mix",
+                                 "n_hold": int(hold.sum()), "n_trend_cells": int((~hold).sum())})
     if kernel != "independent":
         extra["kernel"] = kernel
         if trend_record is not None:
-            trend_record.update({"rule": "vec.harness.B0_TREND_XT_RULE", "arm": "xt", "kernel": kernel})
+            arm = TREND_KERNEL_ARMS[kernel]
+            trend_record.update({"arm_rule": f"vec.harness.B0_TREND_{arm.upper()}_RULE", "arm": arm, "kernel": kernel})
     shifted, _ = t1_scope.momentum_shift(typed(start, "start"), typed(end, "end"), like, damping, (), key="b0_type",
                                          seed=[ctx.seed, 3], logf_filter=t2_build.covariance_filter if cfm else None,
                                          logf_by_type=logf_by_type, **extra)
@@ -1323,8 +1343,9 @@ def _b0_trend_arm(name: str, form: str):
 
 
 def _b0_trend_idea(name: str, **idea):
-    """Heart arms b0_trend_mix (trend_mix=True) and b0_trend_xt (kernel="exact_total"): `_b0_t2` with trend=True and
-    the arm's one idea; the record goes to TREND_ARM_RECORDS[name]."""
+    """Heart arms b0_trend_mix (trend_mix=True), b0_trend_xt (kernel="exact_total") and b0_trend_mn
+    (kernel="multinomial"): `_b0_t2` with trend=True and the arm's one idea; the record goes to
+    TREND_ARM_RECORDS[name]."""
 
     def build(ctx: BuildContext) -> Stage:
         rec: dict = {}
@@ -1997,10 +2018,18 @@ CANDIDATES = {
                               requires=_heart_extrap_with_start),
     "b0_trend_xt": Candidate("b0_trend_xt", frozenset({"T2"}), (),
                              _b0_trend_idea("b0_trend_xt", kernel="exact_total"),
-                             {"what": "b0_trend with its step realised by an exact-total kernel: each cell's moved "
-                                      "counts redrawn together, multinomially, at the step's rounded expected total "
-                                      "(heart only; count space)", "damping": B0_DAMPING,
+                             {"what": "b0_trend with its step realised by an exact-total kernel in its repair form: "
+                                      "b0_trend's independent draws, then per cell the excess or shortfall against the "
+                                      "step's rounded expected total over the moved counts removed (hypergeometric) "
+                                      "or added (multinomial at c f) (heart only; count space)", "damping": B0_DAMPING,
                               "rule": "vec.harness.B0_TREND_XT_RULE", "scope": "chamber"},
+                             requires=_heart_extrap_with_start),
+    "b0_trend_mn": Candidate("b0_trend_mn", frozenset({"T2"}), (),
+                             _b0_trend_idea("b0_trend_mn", kernel="multinomial"),
+                             {"what": "b0_trend with its step realised as a whole-cell multinomial redraw: each cell's "
+                                      "moved counts redrawn together at the step's expected profile with the cell's "
+                                      "rounded expected total (heart only; count space)", "damping": B0_DAMPING,
+                              "rule": "vec.harness.B0_TREND_MN_RULE", "scope": "chamber"},
                              requires=_heart_extrap_with_start),
     # T3 tries K2a and K2b (experiments/harness/TRIES.md, registered before their run): s1's Gata4 factor on the
     # Gata4 -> Mab21l2 fold, and its permuted control

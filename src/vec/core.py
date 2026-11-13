@@ -201,13 +201,21 @@ def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarr
     ((f - 1) c), with f == 1 stays c. Zeros stay zero. A cell left with no counts gets its original counts back.
     Returns (counts as CSR int64, per-cell depth constant, restored-cell mask).
 
-    kernel (default "independent": the per-count draws above, every existing output unchanged; heart arm b0_trend_xt,
-    vec.harness.B0_TREND_XT_RULE): "exact_total" realises the same per-count expectations with each cell's total fixed.
-    Per cell, the moved counts (non-held, nonzero, f != 1 after the depth constant) are redrawn together as
-    Multinomial(N, c f / S) with S = sum of c f over them and N = rint(S); counts with f == 1 and held counts stay as
-    they are. The cell's total is then the rounded expected total of the step (its counts' dot product with the
-    factors), and each moved count's expectation is c f x N / S. Zeros stay zero; the restore rule is the same. One
-    stream, cells in row order.
+    kernel (default "independent": the per-count draws above, every existing output unchanged). A cell's moved entries
+    M are its non-held entries with a count above zero before the step and f != 1 after the depth constant; S is the
+    sum of c f over M (the step's expected total there). Entries outside M stay as they are under every kernel.
+    "exact_total" (heart arm b0_trend_xt, vec.harness.B0_TREND_XT_RULE; the repair form): the independent draws above,
+    unchanged and on the same generator (output Y); then per cell, with d = (sum of Y over M) - rint(S): if d > 0, d
+    units are removed from Y on M by one multivariate hypergeometric draw over Y's units there (every unit equally
+    likely, without replacement); if d < 0, -d units are added on M by one multinomial draw with probabilities c f / S;
+    if d == 0 or M is empty, nothing is drawn. The repair's draws follow all the independent draws on the same stream,
+    cells in row order, so a step where every cell has d == 0 gives the independent kernel's output bit for bit. Each
+    cell's total over M is then rint(S) (unless the restore rule below brings its original counts back).
+    "multinomial" (heart arm b0_trend_mn, vec.harness.B0_TREND_MN_RULE; a whole-cell resampling, not a repair): per
+    cell the counts on M are redrawn together as Multinomial(rint(S), c f / S); each count's expectation is c f x
+    rint(S) / S. With keep_depth every free nonzero count with f != 1 is in M, so this resamples every such count of a
+    shifted cell and adds a variance of about c per count even where f is about 1. One stream, cells in row order.
+    Under every kernel zeros stay zero and the restore rule is the same.
     """
     C = sparse.csr_matrix(C, dtype=np.int64, copy=True)
     C.sort_indices()
@@ -229,11 +237,11 @@ def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarr
         f = np.where(free, f * scale[row_of], 1.0)
     else:
         f = np.where(free, f, 1.0)
-    if kernel not in ("independent", "exact_total"):
-        raise ValueError(f"unknown kernel {kernel!r}; known: independent, exact_total")
+    if kernel not in ("independent", "exact_total", "multinomial"):
+        raise ValueError(f"unknown kernel {kernel!r}; known: independent, exact_total, multinomial")
     rng = np.random.default_rng(seed)
     new = C.data.copy()
-    if kernel == "exact_total":
+    if kernel == "multinomial":
         moved = (f != 1.0) & (C.data > 0)
         w = np.where(moved, c * f, 0.0)
         for i in np.unique(row_of[moved]):
@@ -246,6 +254,8 @@ def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarr
         down, up = f < 1.0, f > 1.0
         new[down] = rng.binomial(C.data[down], f[down])
         new[up] = C.data[up] + rng.poisson((f[up] - 1.0) * C.data[up])
+        if kernel == "exact_total":
+            _repair_totals(new, C, c * f, (f != 1.0) & (C.data > 0), row_of, rng)
     dead = np.bincount(row_of, weights=new, minlength=n) == 0
     if dead.any():
         back = dead[row_of]
@@ -253,6 +263,27 @@ def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarr
     out = sparse.csr_matrix((new, C.indices.copy(), C.indptr.copy()), shape=C.shape)
     out.eliminate_zeros()
     return out, scale, dead
+
+
+def _repair_totals(new: np.ndarray, C: sparse.csr_matrix, w: np.ndarray, moved: np.ndarray, row_of: np.ndarray,
+                   rng: np.random.Generator) -> np.ndarray:
+    """apply_factors' "exact_total" repair, in place on `new` (C's data order): per cell, d = (sum of new over the
+    moved entries) - rint(sum of w over them); d > 0 removes d units by one multivariate hypergeometric draw over the
+    moved entries' units, d < 0 adds -d units by one multinomial draw with probabilities w / sum(w) over them. Cells
+    with d == 0 draw nothing; cells in row order. Returns the per-cell d (int64)."""
+    n = C.shape[0]
+    target = np.rint(np.bincount(row_of[moved], weights=w[moved], minlength=n)).astype(np.int64)
+    have = np.bincount(row_of[moved], weights=new[moved], minlength=n).astype(np.int64)
+    d = have - target
+    for i in np.flatnonzero(d):
+        lo, hi = C.indptr[i], C.indptr[i + 1]
+        idx = lo + np.flatnonzero(moved[lo:hi])
+        if d[i] > 0:
+            new[idx] -= rng.multivariate_hypergeometric(new[idx], int(d[i]))
+        else:
+            wi = w[idx]
+            new[idx] += rng.multinomial(int(-d[i]), wi / wi.sum())
+    return d
 
 
 def thin(C, p, rng) -> np.ndarray:
