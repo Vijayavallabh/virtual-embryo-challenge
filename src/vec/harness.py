@@ -1033,7 +1033,7 @@ def _psb_size(ctx: BuildContext) -> Stage:
 
 def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixture", herd: bool = False,
          move_coupling: str = t2_build.MOVE_COUPLINGS[0], local_perm: bool = False,
-         draw: str = t2_build.DRAWS[0], t_mix: float | None = None) -> Stage:
+         draw: str = t2_build.DRAWS[0], t_mix: float | None = None, reflect: bool = False) -> Stage:
     """The T2 embryo pipeline (docs/PLAN.md 4.2): displacement interpolation between the brackets at the target's
     time fraction (vec.t2_build.interpolate_clouds: fused Gromov-Wasserstein coupling, proper rotation, McCann moves,
     a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages. t_pos:
@@ -1044,7 +1044,8 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     (the entry) or "aligned" (try E10: the moves from vec.core.aligned_coupling in the rotated common frame).
     local_perm (try E15): after the draw, the positions are re-arranged among the drawn cells within coarse type and a
     fixed radius (vec.t2_build.local_type_permutation); the expression rows stay where they are. draw: "uniform" (the
-    entry) or "midpoint" (try E13, vec.t2_build._midpoint_draw; it needs the inputs' counts layer)."""
+    entry) or "midpoint" (try E13, vec.t2_build._midpoint_draw; it needs the inputs' counts layer). reflect (try E30,
+    FGW_REFLECT_RULE): the frame alignment allows a reflection; left False, the entry's call unchanged."""
     t = ctx.task
     before, after = ctx.inputs["before"], ctx.inputs["after"]
     lo, hi = t.role_days["before"], t.role_days["after"]
@@ -1059,7 +1060,7 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
                                       target_rms=target_rms(ctx), t_pos=t_pos,
                                       with_partners=expression in ("blend", "latent"),
                                       herd=herd, move_coupling=move_coupling, draw=draw, log_depth=log_depth,
-                                      with_coupling=expression == "latent", t_mix=t_mix)
+                                      with_coupling=expression == "latent", t_mix=t_mix, reflect=reflect)
     if expression == "mixture":
         X = np.empty((len(res.rows), len(g)), dtype=np.float32)
         X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
@@ -1171,6 +1172,19 @@ def _fgw_blend(ctx: BuildContext) -> Stage:
 
 def _fgw_aligned(ctx: BuildContext) -> Stage:
     return _fgw(ctx, move_coupling="aligned")
+
+
+FGW_REFLECT_RULE = ("fgw with the later bracket brought into the earlier one's frame by the orthogonal matrix (a "
+                    "reflection allowed: the orthogonal Procrustes solution without Kabsch's determinant correction) "
+                    "that best fits the same FGW coupling (vec.core.coupling_rotation(allow_reflection=True)); the "
+                    "moves from that coupling, the mixture, the size rule, the expression and every random stream "
+                    "stay fgw's code on the transformed cloud (diagnostic N34 of experiments/harness/TRIES.md gates "
+                    "the counted try E30)")
+
+
+def _fgw_reflect(ctx: BuildContext) -> Stage:
+    """Candidate fgw_reflect (try E30, FGW_REFLECT_RULE): fgw with reflect=True."""
+    return _fgw(ctx, reflect=True)
 
 
 def _fgw_shape0_aligned(ctx: BuildContext) -> Stage:
@@ -1684,6 +1698,13 @@ CANDIDATES = {
                                       "cost of expression and position in the rotated common frame "
                                       "(vec.core.aligned_coupling; FGW's rotation kept)",
                               "alpha": t2_build.INTERP_ALPHA, "scope": "whole"}, requires=_interp),
+    # embryo try E30 (experiments/harness/TRIES.md; it runs only if its target-free gate, the diagnostic N34, opens):
+    # the brackets' frames aligned by the best orthogonal matrix, a reflection allowed
+    "fgw_reflect": Candidate("fgw_reflect", frozenset({"T2"}), (), _fgw_reflect,
+                             {"what": "fgw with the later bracket aligned to the earlier one's frame by the orthogonal "
+                                      "matrix that best fits the FGW coupling, a reflection allowed",
+                              "rule": FGW_REFLECT_RULE, "alpha": t2_build.INTERP_ALPHA, "scope": "whole"},
+                             requires=_interp),
     # embryo try E12 (experiments/harness/TRIES.md, registered before its run): the s2 shape variant fgw_shape0 with
     # try E10's aligned moves, so its mapped later bracket lands on the side position says. Both embryo tasks were
     # selected on when fgw_shape0 was chosen, so neither counts for it under the adoption rule (decide excludes them)

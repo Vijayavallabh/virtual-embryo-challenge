@@ -1545,14 +1545,14 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
                        with_partners: bool = False, herd: bool = False, move_coupling: str = MOVE_COUPLINGS[0],
                        with_coupling: bool = False, draw: str = DRAWS[0],
                        log_depth: tuple[np.ndarray, np.ndarray] | None = None,
-                       t_mix: float | None = None) -> Interpolation:
+                       t_mix: float | None = None, reflect: bool = False) -> Interpolation:
     """Displacement interpolation between two stages at time fraction t (0 = before, 1 = after).
 
     1. Each cloud is centred and divided by its RMS radius (no PCA axes, so no sign choice).
     2. A fused Gromov-Wasserstein coupling (vec.core) of n_anchor random cells per stage: features are the first n_pc
        principal components of both stages' anchors' log1p panel expression, structure the within-cloud distances.
        The proper rotation that maps before onto after under the coupling brings the after cloud into the before
-       stage's frame (a rotation, never a mirror image).
+       stage's frame (a rotation, never a mirror image, unless reflect is set below).
     3. Each anchor's displacement to its coupled partners' mean; every cell of either stage moves by the mean
        displacement of its k nearest anchors of its own stage: a before cell t of the way towards after, an after cell
        1 - t of the way back (McCann interpolation, carried to every cell).
@@ -1591,6 +1591,14 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     more (`_midpoint_draw`, streams MIDPOINT_STREAMS), each bracket's count and each stratum's share of its bracket
     stay as the uniform draw's, and pool_weights carry the draw's probabilities for the cloud guard. It needs
     log_depth=(before, after), each cell's log panel counts (`log_panel_counts`), for the depth residualisation.
+
+    reflect (embryo try E30 of experiments/harness/TRIES.md, gated by the target-free diagnostic N34): the frame
+    alignment of step 2 takes the orthogonal matrix that best fits the same FGW coupling, a reflection allowed
+    (`vec.core.coupling_rotation(..., allow_reflection=True)`), for two brackets whose coordinate frames may be mirror
+    images of each other, which no proper rotation aligns. Everything after it (the moves from the same coupling, the
+    mixture, the size rule, every random stream) is the code above on the transformed later cloud, and the record adds
+    "reflect" and "rotation_det" (the matrix's determinant, +1 or -1; "rotation_deg" is then read off its trace by the
+    same formula). Left False, the result is bit-identical to the code before the option.
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1629,7 +1637,7 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     ia = np.sort(rng.choice(len(Za), min(n_anchor, len(Za)), replace=False))
     Fb, Fa = _joint_pcs(Eb[ib], Ea[ia], n_pc)
     T = fgw_coupling(Fb, Fa, Zb[ib], Za[ia], alpha, max_iter, emd_max_iter)
-    R = coupling_rotation(Zb[ib], Za[ia], T)
+    R = coupling_rotation(Zb[ib], Za[ia], T, allow_reflection=reflect)
     Za_b = Za @ R
     Tm = T if move_coupling == MOVE_COUPLINGS[0] else aligned_coupling(Fb, Fa, Zb[ib], Za_b[ia], alpha, emd_max_iter)
     db = barycentric(Tm, Za_b[ia]) - Zb[ib]
@@ -1686,6 +1694,9 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
               "n_jittered": int(dup.sum())}
     if herd_rec is not None:
         record["herd"] = herd_rec
+    if reflect:
+        record["reflect"] = True
+        record["rotation_det"] = 1 if np.linalg.det(R) > 0 else -1
     if move_coupling != MOVE_COUPLINGS[0]:
         record["move_coupling"] = move_coupling
         record["coupling_nonzero_moves"] = int((Tm > 0).sum())

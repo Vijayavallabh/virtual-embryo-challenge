@@ -337,15 +337,22 @@ def aligned_coupling(features_a, features_b, coords_a, coords_b, alpha: float, e
     return np.asarray(ot.emd(p, q, (1.0 - alpha) * M + alpha * D, numItermax=emd_max_iter), dtype=np.float64)
 
 
-def coupling_rotation(coords_a, coords_b, coupling) -> np.ndarray:
+def coupling_rotation(coords_a, coords_b, coupling, allow_reflection: bool = False) -> np.ndarray:
     """The proper rotation R (det +1) minimising sum_ij T_ij |R a_i - b_j|^2 for centred clouds a and b under the
-    coupling T (weighted Kabsch): R maps a's frame onto b's, so b's points in a's frame are `coords_b @ R`."""
+    coupling T (weighted Kabsch): R maps a's frame onto b's, so b's points in a's frame are `coords_b @ R`.
+
+    allow_reflection (embryo try E30 of experiments/harness/TRIES.md): the orthogonal matrix (det +1 or -1) minimising
+    the same sum, the orthogonal Procrustes solution without Kabsch's determinant correction, so two clouds whose
+    frames are mirror images of each other can be aligned. Left False, the result is the proper rotation, bit for bit
+    as before."""
     A, B = np.asarray(coords_a, dtype=np.float64), np.asarray(coords_b, dtype=np.float64)
     T = np.asarray(coupling, dtype=np.float64)
     if T.shape != (A.shape[0], B.shape[0]):
         raise ValueError(f"coupling shape {T.shape} does not match the clouds ({A.shape[0]}, {B.shape[0]})")
     H = A.T @ T @ B
     U, _, Vt = np.linalg.svd(H)
+    if allow_reflection:
+        return Vt.T @ U.T
     D = np.eye(H.shape[0])
     if np.linalg.det(Vt.T @ U.T) < 0:
         D[-1, -1] = -1.0
