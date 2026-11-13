@@ -352,3 +352,164 @@ def test_each_arm_leaves_its_own_record(three):
     assert [r["candidate"] for r in recs] == ["b0_trend", "b0_trend_sized"]
     assert [r["sized"] for r in recs] == [False, True] and {r["task"] for r in recs} == {ctx.task.key}
     assert not np.array_equal(a.X, s.X) and np.array_equal(a.coords, s.coords)
+
+
+# ---------------------------------------------------------------------------------------------------- the split arms
+# b0_trend_contrast (lineage-specific part) and b0_trend_shared (the unweighted mean over the shifted lineages). The
+# synthetic `three` has exactly two shifted lineages (CM, Endothelial; Tiny is short at start), so the mean of two
+# equal float64 arrays is that array and the mean of x and -x is 0, both exactly: cases 2 and 3 are exact comparisons.
+# sha256 of the outputs X (float32 bytes) on `three` at BUILD_SEED_OFFSET + 1, computed at e9d96aa (before the split
+# arms)
+PRE_SPLIT_SHA256 = {"b0": "7f9b4113111857bdc351c027f81b80bbde24153a02e07ff99c9cbd31f764e137",
+                    "b0_trend": "8320700817f003ae9b5daff16ac5375fcb8442313f3454e69a048e7bfe87855c",
+                    "b0_trend_sized": "2eb66dab3ee33c6426a70ac41391c3cee0c44cf89cf53e58c5f8f0546d17c7fb"}
+SPLIT_ARMS = ("b0_trend_contrast", "b0_trend_shared")
+TYPES = ["CM", "Endothelial", "Tiny", "Untracked@end"]
+
+
+def _patch_trend(monkeypatch, factors):
+    """Replace the trend factor by the given arrays, in call order (one call per lineage with a trend, lineages in
+    sorted order: CM then Endothelial), cycling over builds."""
+    import itertools
+
+    it = itertools.cycle(factors)
+    monkeypatch.setattr(harness, "trend_log_factor", lambda log_means, days, budget: next(it).copy())
+
+
+def test_outputs_before_the_split_arms_are_unchanged(three):
+    """7. b0, b0_trend and b0_trend_sized give the outputs pinned before the split arms."""
+    for name, sha in PRE_SPLIT_SHA256.items():
+        st = CANDIDATES[name].build(_ctx(three))
+        assert hashlib.sha256(np.ascontiguousarray(st.X, dtype=np.float32).tobytes()).hexdigest() == sha, name
+    latent_extrap.RECORDS.clear()
+
+
+def test_contrast_plus_shared_is_the_trend_and_contrasts_sum_to_zero(three):
+    """1. contrast + shared = the trend factor per lineage, and the contrasts sum to zero per gene (1e-12); 4 (the
+    general case): shared_share_of_total is in (0, 1) and equals n ||shared||^2 / sum_l ||trend_l||^2."""
+    ctx, genes = _ctx(three), list(BOARD.genes)
+    nat, _ = harness.b0_trend_factors(ctx, genes, TYPES)
+    con, rec_c = harness.b0_trend_factors(ctx, genes, TYPES, split="contrast")
+    sha, rec_s = harness.b0_trend_factors(ctx, genes, TYPES, split="shared")
+    assert set(nat) == set(con) == set(sha) == {"CM", "Endothelial"}
+    for lin in nat:
+        np.testing.assert_allclose(con[lin] + sha[lin], nat[lin], atol=1e-12, rtol=0)
+    np.testing.assert_allclose(sum(con.values()), 0.0, atol=1e-12)
+    s = sha["CM"]
+    share = 2 * float(s @ s) / sum(float(v @ v) for v in nat.values())
+    assert 0 < rec_c["shared_share_of_total"] < 1
+    assert rec_c["shared_share_of_total"] == pytest.approx(share, rel=1e-12)
+    assert rec_c["n_shifted"] == 2 and rec_c["split"] == "contrast" and rec_s["split"] == "shared"
+    assert rec_c["rule"] == "vec.harness.B0_TREND_CONTRAST_RULE" and rec_s["rule"] == "vec.harness.B0_TREND_SHARED_RULE"
+    for row in rec_c["lineages"]:
+        t, c = nat[row["lineage"]], con[row["lineage"]]
+        assert row["norm_trend"] == pytest.approx(np.linalg.norm(t), rel=1e-12)
+        assert row["norm_ratio_contrast"] == pytest.approx(np.linalg.norm(c) / np.linalg.norm(t), rel=1e-12)
+        assert row["norm_ratio_shared"] == pytest.approx(np.linalg.norm(s) / np.linalg.norm(t), rel=1e-12)
+        assert row["cos2_trend_shared"] == pytest.approx((t @ s) ** 2 / ((t @ t) * (s @ s)), rel=1e-12)
+        assert "cosine" in row and "norm_ratio" in row  # the natural-trend fields are kept
+    assert rec_c["median_norm_ratio_contrast"] == pytest.approx(
+        np.median([r["norm_ratio_contrast"] for r in rec_c["lineages"]]))
+
+
+def test_equal_factors_shared_is_b0_trend_and_contrast_is_the_copy(three, monkeypatch):
+    """2 and 4. Every lineage given the same trend factor: b0_trend_shared is b0_trend bit for bit, b0_trend_contrast
+    leaves the drawn cells' counts as they are (b0 at damping 0) bit for bit, and shared_share_of_total is 1."""
+    x = np.random.default_rng(9).normal(0.0, 0.3, len(BOARD.genes))
+    _patch_trend(monkeypatch, [x])
+    ctx = _ctx(three)
+    latent_extrap.RECORDS.clear()
+    a, b = CANDIDATES["b0_trend_shared"].build(ctx), CANDIDATES["b0_trend"].build(ctx)
+    np.testing.assert_array_equal(a.X, b.X)
+    pool, rows, _, _, shifted = harness._b0_t2_shift(ctx, trend="contrast")
+    np.testing.assert_array_equal(shifted.layers["counts"].toarray(), core.counts_of(pool).toarray()[rows])
+    recs = {r["candidate"]: r for r in latent_extrap.RECORDS}
+    latent_extrap.RECORDS.clear()
+    assert recs["b0_trend_shared"]["shared_share_of_total"] == 1.0
+    assert recs["b0_trend_contrast"]["shared_share_of_total"] == 1.0
+
+
+def test_opposite_factors_contrast_is_b0_trend(three, monkeypatch):
+    """3 and 4. Lineage factors that sum to zero per gene (x and -x): b0_trend_contrast is b0_trend bit for bit, and
+    shared_share_of_total is 0."""
+    x = np.random.default_rng(10).normal(0.0, 0.3, len(BOARD.genes))
+    _patch_trend(monkeypatch, [x, -x])
+    ctx = _ctx(three)
+    latent_extrap.RECORDS.clear()
+    a, b = CANDIDATES["b0_trend_contrast"].build(ctx), CANDIDATES["b0_trend"].build(ctx)
+    np.testing.assert_array_equal(a.X, b.X)
+    rec = latent_extrap.RECORDS[0]
+    latent_extrap.RECORDS.clear()
+    assert rec["candidate"] == "b0_trend_contrast" and rec["shared_share_of_total"] == 0.0
+
+
+def test_one_shifted_lineage_raises_and_an_own_factor_lineage_is_in_the_split(three):
+    """5. With Endothelial gone (relabelled Untracked at every stage) one lineage is shifted and both split arms raise
+    (b0_trend still builds). With Endothelial short at the earlier stage it keeps B0's own factor, and it enters the
+    mean and both mappings."""
+    def relabel(a, lin, to):
+        a = a.copy()
+        m = np.asarray(a.obs["merged"]).astype(str)
+        a.obs["merged"] = np.where(m == lin, to, m)
+        return a
+
+    one = {r: relabel(a, "Endothelial", "Untracked") for r, a in three.items()}
+    for name in SPLIT_ARMS:
+        with pytest.raises(ValueError, match="at least two shifted lineages"):
+            CANDIDATES[name].build(_ctx(one))
+    CANDIDATES["b0_trend"].build(_ctx(one))
+    own_inputs = {**three, "earlier": relabel(three["earlier"], "Endothelial", "Elsewhere")}
+    ctx, genes = _ctx(own_inputs), list(BOARD.genes)
+    nat, rec = harness.b0_trend_factors(ctx, genes, TYPES)
+    assert set(nat) == {"CM"}
+    endo = next(r for r in rec["lineages"] if r["lineage"] == "Endothelial")
+    assert endo["own_factor"]
+    con, _ = harness.b0_trend_factors(ctx, genes, TYPES, split="contrast")
+    sha, _ = harness.b0_trend_factors(ctx, genes, TYPES, split="shared")
+    assert set(con) == set(sha) == {"CM", "Endothelial"}
+    own = con["Endothelial"] + sha["Endothelial"]  # B0's own factor for Endothelial
+    np.testing.assert_allclose(sha["CM"], (nat["CM"] + own) / 2, atol=1e-12, rtol=0)
+    np.testing.assert_allclose(con["CM"], nat["CM"] - sha["CM"], atol=1e-12, rtol=0)
+    latent_extrap.RECORDS.clear()
+
+
+def test_split_registration_records_and_cells(three, monkeypatch):
+    """6 and 8. Registered as b0_trend (tasks, requires, scope, damping), refused where it is; each arm leaves its own
+    record; rows, coordinates and cell number are b0's for the same seed."""
+    tasks = {t.key: t for ts_ in load_tasks().values() for t in ts_}
+    n = CANDIDATES["b0_trend"]
+    two = {k: three[k] for k in ("ref", "start")}
+    for name in SPLIT_ARMS:
+        c = CANDIDATES[name]
+        assert all(c.applies(t) == n.applies(t) for t in tasks.values())
+        assert c.tasks == n.tasks and c.requires is n.requires and c.derived == ()
+        assert c.params["scope"] == n.params["scope"] and c.params["damping"] == B0_DAMPING
+        assert c.params["rule"] == {"b0_trend_contrast": "vec.harness.B0_TREND_CONTRAST_RULE",
+                                    "b0_trend_shared": "vec.harness.B0_TREND_SHARED_RULE"}[name]
+        with pytest.raises(ValueError, match="three"):
+            c.build(_ctx(two, view=_view(inputs={"ref": "T2/E9.5.h5ad", "start": "T2/E8.75.h5ad"})))
+        with pytest.raises(ValueError, match="heart extrapolation"):
+            c.build(_ctx(three, view=replace(_view(), kind="interp")))
+        with pytest.raises(ValueError, match="heart extrapolation"):
+            c.build(_ctx(three, view=replace(_view(), task="T1", setting=None)))
+    seen = []
+    real = harness.draw_copy
+
+    def spy(ctx, herd=False):
+        out = real(ctx, herd=herd)
+        seen.append(out[1].copy())
+        return out
+
+    monkeypatch.setattr(harness, "draw_copy", spy)
+    ctx = _ctx(three)
+    latent_extrap.RECORDS.clear()
+    with harness.guarded_reads() as g:
+        built = {name: CANDIDATES[name].build(ctx) for name in ("b0", *SPLIT_ARMS)}
+    assert not g["refused"]
+    assert [r["candidate"] for r in latent_extrap.RECORDS] == list(SPLIT_ARMS)
+    latent_extrap.RECORDS.clear()
+    assert len(seen) == 3 and all(np.array_equal(s, seen[0]) for s in seen)
+    for name in SPLIT_ARMS:
+        assert built[name].n == built["b0"].n
+        np.testing.assert_array_equal(built[name].coords, built["b0"].coords)
+    assert not np.array_equal(built["b0_trend_contrast"].X, built["b0_trend_shared"].X)

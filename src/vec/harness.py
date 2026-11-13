@@ -863,8 +863,9 @@ def _b0_t2_shift(ctx: BuildContext, herd: bool = False, cfm: bool = False,
 
         logf_by_type, rec = b0_trend_factors(ctx, list(like.var_names),
                                              sorted(set(np.asarray(like.obs["b0_type"]).astype(str))),
-                                             sized=mode == "sized")
-        name = "b0_trend_sized" if mode == "sized" else "b0_trend"
+                                             sized=mode == "sized",
+                                             split=mode if mode in ("contrast", "shared") else None)
+        name = TREND_ARMS[mode]
         le.RECORDS.append({"task": t.key, "candidate": name, "build_seed": int(ctx.seed), **rec})
     shifted, _ = t1_scope.momentum_shift(typed(start, "start"), typed(end, "end"), like, damping, (), key="b0_type",
                                          seed=[ctx.seed, 3], logf_filter=t2_build.covariance_filter if cfm else None,
@@ -883,17 +884,28 @@ B0_TREND_RULE = ("B0 with each lineage's per-gene velocity taken as the least-sq
 B0_TREND_SIZED_RULE = ("b0_trend's direction at B0's own size: each lineage's trend log factor rescaled to the L2 norm "
                        "(over genes) of B0's own log factor for that lineage; a lineage that keeps B0's own factor is "
                        "unchanged")
+# The split arms (specification of 2026-11-13): b0_trend's factor split into the part all shifted lineages share (where
+# a sample's per-gene detection profile sits, with shared biology) and the lineage-specific rest, each applied alone.
+B0_TREND_CONTRAST_RULE = ("b0_trend's lineage-specific part: each shifted lineage's trend log factor (B0's own where "
+                          "it keeps it) minus the unweighted mean over the shifted lineages per gene, applied to every "
+                          "shifted lineage; at least two shifted lineages")
+B0_TREND_SHARED_RULE = ("b0_trend's lineage-shared part: the unweighted mean over the shifted lineages per gene of "
+                        "their trend log factors (B0's own where a lineage keeps it), applied to every shifted "
+                        "lineage; at least two shifted lineages")
+TREND_ARMS = {"natural": "b0_trend", "sized": "b0_trend_sized", "contrast": "b0_trend_contrast",
+              "shared": "b0_trend_shared"}
 
 
 def _trend_mode(trend: bool | str) -> str | None:
-    """`_b0_t2`'s trend argument: False (B0), True or "natural" (b0_trend), "sized" (b0_trend_sized)."""
+    """`_b0_t2`'s trend argument: False (B0), True or "natural" (b0_trend), "sized" (b0_trend_sized), "contrast"
+    (b0_trend_contrast), "shared" (b0_trend_shared)."""
     if trend is False:
         return None
-    if trend is True or trend == "natural":
+    if trend is True:
         return "natural"
-    if trend == "sized":
-        return "sized"
-    raise ValueError(f"trend must be False, True, 'natural' or 'sized', got {trend!r}")
+    if isinstance(trend, str) and trend in TREND_ARMS:
+        return trend
+    raise ValueError(f"trend must be False, True or one of {sorted(TREND_ARMS)}, got {trend!r}")
 
 
 def _momentum_default(name: str):
@@ -938,8 +950,8 @@ def _cosine(x: np.ndarray, y: np.ndarray) -> float:
     return float(x @ y / (nx * ny)) if nx > 0 and ny > 0 else float("nan")
 
 
-def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[str],
-                     sized: bool = False) -> tuple[dict[str, np.ndarray], dict]:
+def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[str], sized: bool = False,
+                     split: str | None = None) -> tuple[dict[str, np.ndarray], dict]:
     """b0_trend's log factors (lineage -> damped log factor in `genes` order) and its target-free record. For each
     lineage among `types` (the drawn cells' B0 types; "Untracked" never) that B0 shifts on this task (at least
     min_cells own cells at `start` and at the reference), the usable stages are the input stages (vec.latent_extrap.
@@ -951,7 +963,13 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
     on the same rows; and the medians of cosine and norm ratio over the shifted lineages. eps and min_cells are
     momentum_shift's defaults, as B0 uses them. sized (b0_trend_sized, B0_TREND_SIZED_RULE): each trend factor is
     rescaled to the L2 norm of B0's own factor for that lineage (a zero trend factor is left out, so the lineage takes
-    B0's own); cosine and norm_ratio stay the natural trend's, and norm_ratio_applied is the applied factor's."""
+    B0's own); cosine and norm_ratio stay the natural trend's, and norm_ratio_applied is the applied factor's.
+    split ("contrast": b0_trend_contrast, B0_TREND_CONTRAST_RULE; "shared": b0_trend_shared, B0_TREND_SHARED_RULE):
+    see `_trend_split`; every shifted lineage is then in the mapping."""
+    if split not in (None, "contrast", "shared"):
+        raise ValueError(f"split must be None, 'contrast' or 'shared', got {split!r}")
+    if split and sized:
+        raise ValueError("the split arms are not size-matched")
     from vec import latent_extrap as le
     from vec.core import counts_of, mean_cp10k
 
@@ -964,6 +982,8 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
     C = {r: counts_of(ctx.inputs[r], genes) for r, _ in stages}
     merged = {r: np.asarray(ctx.inputs[r].obs[T2_LINEAGE_KEY]).astype(str) for r, _ in stages}
     out: dict[str, np.ndarray] = {}
+    natural: dict[str, np.ndarray] = {}  # every shifted lineage's natural factor (B0's own where it keeps it)
+    owns: dict[str, np.ndarray] = {}
     lineages = []
     for lin in types:
         if lin == T2_UNTRACKED or lin.startswith(T2_UNTRACKED + "@"):
@@ -979,6 +999,7 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
         else:
             logf = trend_log_factor([y[r] for r, _ in usable], [d for _, d in usable], budget)
             out[lin], kept = logf, False
+        natural[lin], owns[lin] = logf, own
         n_own, n_trend = float(np.linalg.norm(own)), float(np.linalg.norm(logf))
         applied = logf
         if sized and not kept:
@@ -1004,6 +1025,58 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
            "budget_days": budget, "eps": eps, "min_cells": min_cells, "n_trend": len(out), "lineages": lineages,
            "median_cosine": float(np.nanmedian(cos)) if lineages else float("nan"),
            "median_norm_ratio": float(np.nanmedian(ratio)) if lineages else float("nan")}
+    if split:
+        out, split_rec = _trend_split(natural, owns, split)
+        for row in lineages:
+            row.update(split_rec["by_lineage"][row["lineage"]])
+            applied = out[row["lineage"]]
+            n_own = float(np.linalg.norm(owns[row["lineage"]]))
+            row["norm_ratio_applied"] = float(np.linalg.norm(applied)) / n_own if n_own > 0 else float("nan")
+            row["mean_abs_logf_applied"] = float(np.abs(applied).mean())
+        rec.update({k: v for k, v in split_rec.items() if k != "by_lineage"})
+        rec["rule"] = {"contrast": "vec.harness.B0_TREND_CONTRAST_RULE",
+                       "shared": "vec.harness.B0_TREND_SHARED_RULE"}[split]
+        rec["split"] = split
+    return out, rec
+
+
+def _trend_split(natural: Mapping[str, np.ndarray], owns: Mapping[str, np.ndarray],
+                 split: str) -> tuple[dict[str, np.ndarray], dict]:
+    """The split arms' factors and record. natural: every shifted lineage's natural trend factor (B0's own where the
+    lineage keeps it); shared = their unweighted mean per gene, contrast[l] = natural[l] - shared. "contrast" maps every
+    shifted lineage to its contrast, "shared" every one to shared. Raises with fewer than two shifted lineages. The
+    record per lineage: norm_trend, norm_contrast, norm_shared, cos2_trend_shared = (trend . shared)^2 / (||trend||^2
+    ||shared||^2), norm_ratio_contrast and norm_ratio_shared (over ||trend||), cosine_contrast_b0; over all lineages
+    shared_share_of_total = n ||shared||^2 / sum_l ||trend_l||^2 (a variance share: the contrasts sum to zero), the
+    number of shifted lineages and the medians of the per-lineage ratios."""
+    names = sorted(natural)
+    if len(names) < 2:
+        raise ValueError(f"the trend split needs at least two shifted lineages, got {names}")
+    shared = np.vstack([np.asarray(natural[n], dtype=np.float64) for n in names]).mean(0)
+    contrast = {n: np.asarray(natural[n], dtype=np.float64) - shared for n in names}
+    n_shared = float(np.linalg.norm(shared))
+    by = {}
+    for n in names:
+        tr = natural[n]
+        n_tr = float(np.linalg.norm(tr))
+        by[n] = {"norm_trend": n_tr, "norm_contrast": float(np.linalg.norm(contrast[n])), "norm_shared": n_shared,
+                 "cos2_trend_shared": (_cosine(tr, shared) ** 2) if n_tr > 0 and n_shared > 0 else float("nan"),
+                 "norm_ratio_contrast": float(np.linalg.norm(contrast[n])) / n_tr if n_tr > 0 else float("nan"),
+                 "norm_ratio_shared": n_shared / n_tr if n_tr > 0 else float("nan"),
+                 "cosine_contrast_b0": _cosine(contrast[n], owns[n])}
+    total = float(sum(float(natural[n] @ natural[n]) for n in names))
+
+    def median(key: str) -> float:
+        v = np.array([by[n][key] for n in names], dtype=np.float64)
+        return float(np.median(v[np.isfinite(v)])) if np.isfinite(v).any() else float("nan")
+
+    rec = {"n_shifted": len(names),
+           "shared_share_of_total": len(names) * float(shared @ shared) / total if total > 0 else float("nan"),
+           "median_norm_ratio_contrast": median("norm_ratio_contrast"),
+           "median_norm_ratio_shared": median("norm_ratio_shared"),
+           "median_cos2_trend_shared": median("cos2_trend_shared"),
+           "by_lineage": by}
+    out = {n: (contrast[n] if split == "contrast" else shared.copy()) for n in names}
     return out, rec
 
 
@@ -1244,6 +1317,16 @@ def _b0_trend(ctx: BuildContext) -> Stage:
 def _b0_trend_sized(ctx: BuildContext) -> Stage:
     """Heart candidate b0_trend_sized (B0_TREND_SIZED_RULE): `_b0_t2` with trend="sized"."""
     return _b0_t2(ctx, trend="sized")
+
+
+def _b0_trend_contrast(ctx: BuildContext) -> Stage:
+    """Heart candidate b0_trend_contrast (B0_TREND_CONTRAST_RULE): `_b0_t2` with trend="contrast"."""
+    return _b0_t2(ctx, trend="contrast")
+
+
+def _b0_trend_shared(ctx: BuildContext) -> Stage:
+    """Heart candidate b0_trend_shared (B0_TREND_SHARED_RULE): `_b0_t2` with trend="shared"."""
+    return _b0_t2(ctx, trend="shared")
 
 
 def _extrap_with_start(t: PseudoTask) -> bool:
@@ -2066,6 +2149,18 @@ CANDIDATES = {
                                          "count space)", "damping": B0_DAMPING,
                                  "rule": "vec.harness.B0_TREND_SIZED_RULE", "scope": "chamber"},
                                 requires=_heart_extrap_with_start),
+    "b0_trend_contrast": Candidate("b0_trend_contrast", frozenset({"T2"}), (), _b0_trend_contrast,
+                                   {"what": "b0_trend's lineage-specific part: each shifted lineage's trend log factor "
+                                            "minus the unweighted mean over the shifted lineages (heart only; count "
+                                            "space)", "damping": B0_DAMPING,
+                                    "rule": "vec.harness.B0_TREND_CONTRAST_RULE", "scope": "chamber"},
+                                   requires=_heart_extrap_with_start),
+    "b0_trend_shared": Candidate("b0_trend_shared", frozenset({"T2"}), (), _b0_trend_shared,
+                                 {"what": "b0_trend's lineage-shared part: the unweighted mean over the shifted "
+                                          "lineages of their trend log factors, on every shifted lineage (heart only; "
+                                          "count space)", "damping": B0_DAMPING,
+                                  "rule": "vec.harness.B0_TREND_SHARED_RULE", "scope": "chamber"},
+                                 requires=_heart_extrap_with_start),
     # T3 tries K2a and K2b (experiments/harness/TRIES.md, registered before their run): s1's Gata4 factor on the
     # Gata4 -> Mab21l2 fold, and its permuted control
     "t3_factor_xko": Candidate("t3_factor_xko", frozenset({"T3"}), (), _t3_factor_xko,
