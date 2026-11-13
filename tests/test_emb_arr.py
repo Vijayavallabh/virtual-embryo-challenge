@@ -1,6 +1,7 @@
 """Embryo arrangement batch (campaign/emb-arr): fgw_balanced, fgw_patchy and fgw_shuffle, fgw with one re-arrangement
-of its drawn expression rows over its own positions (vec.t2_build.balanced_bracket_labels, patchy_bracket_labels,
-relabel_rows, span_groups). Synthetic data only; nothing scored, no target read."""
+of which drawn cell sits at which of its own positions (vec.t2_build.balanced_bracket_labels, patchy_bracket_labels,
+relabel_rows, span_groups); the expression rows stay in place and the positions move among them, as in try E15.
+Synthetic data only; nothing scored, no target read."""
 
 from __future__ import annotations
 
@@ -142,14 +143,13 @@ def test_refusals(ctx):
 def test_arm_keeps_fgws_cells_positions_and_counts_and_moves_rows_only(ctx, name):
     base, arm = CANDIDATES["fgw"].build(ctx), CANDIDATES[name].build(ctx)
     assert arm.n == base.n == ctx.board.max_cells
-    np.testing.assert_array_equal(arm.coords, base.coords)  # the same positions, in the same order
-    np.testing.assert_array_equal(_sorted_rows(arm.X), _sorted_rows(base.X))  # the same drawn cells
-    np.testing.assert_array_equal(np.sort(arm.X.sum(1)), np.sort(base.X.sum(1)))  # every cell's total kept
-    assert not np.array_equal(arm.X, base.X)  # something moved
+    np.testing.assert_array_equal(arm.X, base.X)  # the same drawn cells, rows in place: every cell's total kept
+    np.testing.assert_array_equal(_sorted_rows(arm.coords), _sorted_rows(base.coords))  # the same positions
+    assert not np.array_equal(arm.coords, base.coords)  # which cell sits where moved
     res = _res(ctx)
     at = harness.bracket_arrangement(res.coords, res.stage, name.removeprefix("fgw_"), ctx.seed)
     assert np.array_equal(np.sort(at), np.arange(base.n))
-    np.testing.assert_array_equal(arm.X, base.X[at])  # exactly the arrangement step, nothing else
+    np.testing.assert_array_equal(arm.coords, base.coords[np.argsort(at)])  # exactly the arrangement step
     assert (res.stage[at] == 1).sum() == (res.stage == 1).sum()
 
 

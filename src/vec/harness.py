@@ -1045,8 +1045,10 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     local_perm (try E15): after the draw, the positions are re-arranged among the drawn cells within coarse type and a
     fixed radius (vec.t2_build.local_type_permutation); the expression rows stay where they are. draw: "uniform" (the
     entry) or "midpoint" (try E13, vec.t2_build._midpoint_draw; it needs the inputs' counts layer). arrange (the embryo
-    arrangement batch, campaign/emb-arr; default None, the entry): "balanced", "patchy" or "shuffle", the drawn
-    expression rows re-arranged over the unchanged positions by `bracket_arrangement` after the expression step."""
+    arrangement batch, campaign/emb-arr; default None, the entry): "balanced", "patchy" or "shuffle", which drawn cell
+    sits at which of fgw's positions re-arranged by `bracket_arrangement` after the expression step; as with local_perm
+    the expression rows stay in place (so a scorer's fixed-seed row subsets read the same expression rows) and the
+    multiset of positions moves among them: row r takes the position p with at[p] = r."""
     if arrange is not None:
         if arrange not in ARRANGE_MODES:
             raise ValueError(f"arrange must be one of {ARRANGE_MODES}, got {arrange!r}")
@@ -1090,8 +1092,8 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     else:
         raise ValueError(f"unknown expression step {expression!r}")
     coords = res.coords
-    if arrange is not None:
-        X = X[bracket_arrangement(coords, res.stage, arrange, ctx.seed)]
+    if arrange is not None:  # as try E15: the expression rows stay in place and the positions move among them
+        coords = coords[np.argsort(bracket_arrangement(coords, res.stage, arrange, ctx.seed), kind="stable")]
     if local_perm:
         coords = coords[nbhd_rearrangement(coords, t2_build.drawn_labels(res, before.obs["group"], after.obs["group"]),
                                            ctx.seed)]
@@ -1237,8 +1239,9 @@ ARRANGE_STREAMS = {"balanced": 21, "patchy": 22, "shuffle": 23}  # apart from th
 
 
 def bracket_arrangement(coords: np.ndarray, stage: np.ndarray, mode: str, seed: int) -> np.ndarray:
-    """`at` with the arranged expression X[at] at the unchanged positions `coords` (stage: each position's bracket in
-    fgw's draw). "balanced": vec.t2_build.balanced_bracket_labels (k = NBHD_K) then relabel_rows; "patchy":
+    """`at`: position p of `coords` takes drawn row at[p] (stage: each row's bracket in fgw's draw, which is also its
+    position's there); `_fgw` applies it as coords[argsort(at)], the rows kept in place. "balanced":
+    vec.t2_build.balanced_bracket_labels (k = NBHD_K) then relabel_rows; "patchy":
     patchy_bracket_labels then relabel_rows; "shuffle": span_shuffle (k = NBHD_K), the rows permuted within groups of
     NBHD_K nearby positions whatever their bracket. Stream [seed, ARRANGE_STREAMS[mode]]."""
     if mode not in ARRANGE_MODES:
