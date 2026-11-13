@@ -1,0 +1,82 @@
+{
+ "board": "T1:test",
+ "runs": "/mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/experiments/harness/results/t39_tail_profile/tasks",
+ "decisions": [
+  {
+   "base": "b0",
+   "change": "b0_tail_profile",
+   "counted": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber"
+   ],
+   "excluded": {
+    "T1/E8.5->E9.5": "base does not apply"
+   },
+   "configured": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber",
+    "T1/E8.5->E9.5"
+   ],
+   "decided_on": "2 of 3 configured pseudo-tasks",
+   "keep": false,
+   "reason": "passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2",
+   "tasks": {
+    "T1/E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": 0.0,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": false
+    },
+    "T1/E9.5->E10.5:chamber": {
+     "complete": true,
+     "mean_gain": 0.0,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  }
+ ],
+ "summaries": {
+  "T1/E9.5->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    47.97674341689909,
+    1.0833523075516147
+   ],
+   "b0": [
+    44.116683628570335,
+    0.4633178753047292
+   ],
+   "b0_tail_profile": [
+    44.116683628570335,
+    0.4633178753047292
+   ]
+  },
+  "T1/E9.5->E10.5:chamber": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    48.06103129437448,
+    1.2049221129933374
+   ],
+   "b0": [
+    49.68290567973587,
+    0.6683315658494151
+   ],
+   "b0_tail_profile": [
+    49.68290567973587,
+    0.6683315658494151
+   ]
+  }
+ }
+}

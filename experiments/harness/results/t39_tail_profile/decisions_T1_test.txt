@@ -1,0 +1,6 @@
+T1:test: 2 pseudo-task(s) in /mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/experiments/harness/results/t39_tail_profile/tasks (protocol bake, build main, anchors computed, seeds [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  T1/E9.5->E10.5 on T1:val: floor 50.00 +/- 0.00; copy 47.98 +/- 1.08; b0 44.12 +/- 0.46; b0_tail_profile 44.12 +/- 0.46 (commit 355363d, clean True)
+  T1/E9.5->E10.5:chamber on pseudo:T1/E9.5->E10.5:chamber: floor 50.00 +/- 0.00; copy 48.06 +/- 1.20; b0 49.68 +/- 0.67; b0_tail_profile 49.68 +/- 0.67 (commit 355363d, clean True)
+b0_tail_profile against b0: not kept (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2; decided on 2 of 3 configured pseudo-tasks; not counted: {'T1/E8.5->E9.5': 'base does not apply'})
+    T1/E9.5->E10.5: paired mean gain +0.00, ahead in 0 of 10 seeds, passes False, vetoes False
+    T1/E9.5->E10.5:chamber: paired mean gain +0.00, ahead in 0 of 10 seeds, passes False, vetoes False
