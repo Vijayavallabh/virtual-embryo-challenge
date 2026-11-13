@@ -1,0 +1,23 @@
+N26: gate FAILS (S > 0 with p <= 0.05 on both triples); commit b4e8223, tree clean True
+  E8.25_late -> E8.5 predicts E8.5 -> E8.75: S -0.439, permutation null mean -0.001 sd 0.019 (95th +0.030), p 1.0000: fails
+      CM                           cells   1919, metacells  12, corr -0.432 (before damping, zeroing and clipping -0.427; raw -0.432), entries moved 0.81
+      CranialMesoderm              cells   5490, metacells  36, corr -0.298 (before damping, zeroing and clipping -0.296; raw -0.298), entries moved 0.84
+      Ectoderm                     cells   2593, metacells  17, corr -0.412 (before damping, zeroing and clipping -0.405; raw -0.413), entries moved 0.83
+      Endoderm                     cells   2591, metacells  17, corr -0.639 (before damping, zeroing and clipping -0.624; raw -0.640), entries moved 0.87
+      Endothelial                  cells   1702, metacells  11, corr -0.395 (before damping, zeroing and clipping -0.391; raw -0.397), entries moved 0.86
+      EpiblastStreak               cells   1148, metacells   7, corr -0.349 (before damping, zeroing and clipping -0.347; raw -0.350), entries moved 0.78
+      ExtraEmbryonicMeso           cells   3154, metacells  21, corr -0.415 (before damping, zeroing and clipping -0.413; raw -0.413), entries moved 0.83
+      NCC                          cells   1461, metacells   9, corr -0.622 (before damping, zeroing and clipping -0.619; raw -0.623), entries moved 0.82
+      Neural                       cells   1517, metacells  10, corr -0.648 (before damping, zeroing and clipping -0.643; raw -0.648), entries moved 0.84
+  E8.5 -> E8.75 predicts E8.75 -> E9.5: S -0.552, permutation null mean -0.000 sd 0.020 (95th +0.030), p 1.0000: fails
+      CM                           cells   3076, metacells  20, corr -0.532 (before damping, zeroing and clipping -0.524; raw -0.533), entries moved 0.84
+      CranialMesoderm              cells   4779, metacells  31, corr -0.536 (before damping, zeroing and clipping -0.529; raw -0.537), entries moved 0.86
+      Ectoderm                     cells   2670, metacells  17, corr -0.560 (before damping, zeroing and clipping -0.560; raw -0.560), entries moved 0.85
+      Endoderm                     cells   1883, metacells  12, corr -0.579 (before damping, zeroing and clipping -0.569; raw -0.579), entries moved 0.88
+      Endothelial                  cells   2307, metacells  15, corr -0.550 (before damping, zeroing and clipping -0.542; raw -0.550), entries moved 0.84
+      EpiblastStreak               skipped: fewer than 20 cells at a stage (45 earlier, 0 later)
+      ExtraEmbryonicMeso           skipped: fewer than 20 cells at a stage (1039 earlier, 0 later)
+      NCC                          cells   1838, metacells  12, corr -0.593 (before damping, zeroing and clipping -0.591; raw -0.594), entries moved 0.84
+      Neural                       skipped: fewer than 20 cells at a stage (3530 earlier, 0 later)
+  reported only, N21's concordance, E8.25_late->E8.5 vs E8.5->E8.75: leading-axis |cosine| median 0.21 over 9 lineages; per-gene size Spearman median 0.48
+  reported only, N21's concordance, E8.5->E8.75 vs E8.75->E9.5: leading-axis |cosine| median 0.15 over 6 lineages; per-gene size Spearman median 0.41

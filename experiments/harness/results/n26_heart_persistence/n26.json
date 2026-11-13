@@ -1,0 +1,271 @@
+{
+ "triples": [
+  {
+   "triple": [
+    "E8.25_late",
+    "E8.5",
+    "E8.75"
+   ],
+   "lineages": {
+    "CM": {
+     "n_cells": 1919,
+     "n_metacells": 12,
+     "corr_finished": -0.4324920985457857,
+     "corr_before_damping": -0.4270940566985766,
+     "corr_raw_mean_free": -0.4322027072539772,
+     "share_entries_nonzero": 0.8055
+    },
+    "CranialMesoderm": {
+     "n_cells": 5490,
+     "n_metacells": 36,
+     "corr_finished": -0.2976823253118286,
+     "corr_before_damping": -0.2956870550304921,
+     "corr_raw_mean_free": -0.2982017585817736,
+     "share_entries_nonzero": 0.8445
+    },
+    "Ectoderm": {
+     "n_cells": 2593,
+     "n_metacells": 17,
+     "corr_finished": -0.4124436917434399,
+     "corr_before_damping": -0.4045730641374727,
+     "corr_raw_mean_free": -0.41310130049724825,
+     "share_entries_nonzero": 0.8308235294117647
+    },
+    "Endoderm": {
+     "n_cells": 2591,
+     "n_metacells": 17,
+     "corr_finished": -0.6390417804898799,
+     "corr_before_damping": -0.6239050217355038,
+     "corr_raw_mean_free": -0.639646102613668,
+     "share_entries_nonzero": 0.8695294117647059
+    },
+    "Endothelial": {
+     "n_cells": 1702,
+     "n_metacells": 11,
+     "corr_finished": -0.3949008022029799,
+     "corr_before_damping": -0.39133100070693855,
+     "corr_raw_mean_free": -0.39674695862236276,
+     "share_entries_nonzero": 0.8565454545454545
+    },
+    "EpiblastStreak": {
+     "n_cells": 1148,
+     "n_metacells": 7,
+     "corr_finished": -0.34896135224966734,
+     "corr_before_damping": -0.34746138397741977,
+     "corr_raw_mean_free": -0.3495369043956581,
+     "share_entries_nonzero": 0.7848571428571428
+    },
+    "ExtraEmbryonicMeso": {
+     "n_cells": 3154,
+     "n_metacells": 21,
+     "corr_finished": -0.41465164414154215,
+     "corr_before_damping": -0.41257681948155783,
+     "corr_raw_mean_free": -0.41278237268578605,
+     "share_entries_nonzero": 0.8296190476190476
+    },
+    "NCC": {
+     "n_cells": 1461,
+     "n_metacells": 9,
+     "corr_finished": -0.6222278138607484,
+     "corr_before_damping": -0.6191124449305101,
+     "corr_raw_mean_free": -0.6225739473113223,
+     "share_entries_nonzero": 0.8168888888888889
+    },
+    "Neural": {
+     "n_cells": 1517,
+     "n_metacells": 10,
+     "corr_finished": -0.6475539596403691,
+     "corr_before_damping": -0.6425529660913812,
+     "corr_raw_mean_free": -0.6478763228226345,
+     "share_entries_nonzero": 0.843
+    }
+   },
+   "lineages_used": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "skipped_predicted": {},
+   "S": -0.43853563500305115,
+   "p_upper": 1.0,
+   "null_mean": -0.0006305520830353375,
+   "null_sd": 0.01903306224677451,
+   "null_q95": 0.029966714864252737,
+   "passes": false
+  },
+  {
+   "triple": [
+    "E8.5",
+    "E8.75",
+    "E9.5"
+   ],
+   "lineages": {
+    "CM": {
+     "n_cells": 3076,
+     "n_metacells": 20,
+     "corr_finished": -0.5320312287804341,
+     "corr_before_damping": -0.5238068327350048,
+     "corr_raw_mean_free": -0.5330575715874264,
+     "share_entries_nonzero": 0.8381
+    },
+    "CranialMesoderm": {
+     "n_cells": 4779,
+     "n_metacells": 31,
+     "corr_finished": -0.5362259606511245,
+     "corr_before_damping": -0.5289195566048576,
+     "corr_raw_mean_free": -0.5365408384024539,
+     "share_entries_nonzero": 0.8554193548387097
+    },
+    "Ectoderm": {
+     "n_cells": 2670,
+     "n_metacells": 17,
+     "corr_finished": -0.5599426797403987,
+     "corr_before_damping": -0.5595679858455668,
+     "corr_raw_mean_free": -0.55997342194185,
+     "share_entries_nonzero": 0.8494117647058823
+    },
+    "Endoderm": {
+     "n_cells": 1883,
+     "n_metacells": 12,
+     "corr_finished": -0.579113860785152,
+     "corr_before_damping": -0.5685351655158727,
+     "corr_raw_mean_free": -0.5793590684497552,
+     "share_entries_nonzero": 0.8775
+    },
+    "Endothelial": {
+     "n_cells": 2307,
+     "n_metacells": 15,
+     "corr_finished": -0.5496478820908183,
+     "corr_before_damping": -0.5417496602660313,
+     "corr_raw_mean_free": -0.5500844631168791,
+     "share_entries_nonzero": 0.8404
+    },
+    "EpiblastStreak": {
+     "skipped": "fewer than 20 cells at a stage (45 earlier, 0 later)"
+    },
+    "ExtraEmbryonicMeso": {
+     "skipped": "fewer than 20 cells at a stage (1039 earlier, 0 later)"
+    },
+    "NCC": {
+     "n_cells": 1838,
+     "n_metacells": 12,
+     "corr_finished": -0.5928246530852952,
+     "corr_before_damping": -0.5907733382136025,
+     "corr_raw_mean_free": -0.5939047123344738,
+     "share_entries_nonzero": 0.8355
+    },
+    "Neural": {
+     "skipped": "fewer than 20 cells at a stage (3530 earlier, 0 later)"
+    }
+   },
+   "lineages_used": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "NCC"
+   ],
+   "skipped_predicted": {},
+   "S": -0.5523059056847662,
+   "p_upper": 1.0,
+   "null_mean": -0.0004503584868964237,
+   "null_sd": 0.019791581429333426,
+   "null_q95": 0.03004000556030576,
+   "passes": false
+  }
+ ],
+ "consecutive_fit_concordance": {
+  "E8.25_late->E8.5 vs E8.5->E8.75": {
+   "CM": {
+    "axis_abs_cosine": 0.3097164988884999,
+    "size_spearman": 0.5181024564098257
+   },
+   "CranialMesoderm": {
+    "axis_abs_cosine": 0.20803330025100816,
+    "size_spearman": 0.5959042396169585
+   },
+   "Ectoderm": {
+    "axis_abs_cosine": 0.0930797597484488,
+    "size_spearman": 0.5603535694142776
+   },
+   "Endoderm": {
+    "axis_abs_cosine": 0.4879632392796469,
+    "size_spearman": 0.47974396697586785
+   },
+   "Endothelial": {
+    "axis_abs_cosine": 0.20907854591330766,
+    "size_spearman": 0.27707899631598526
+   },
+   "EpiblastStreak": {
+    "axis_abs_cosine": 0.058101724433342744,
+    "size_spearman": -0.057514176621978
+   },
+   "ExtraEmbryonicMeso": {
+    "axis_abs_cosine": 0.06439239912150276,
+    "size_spearman": 0.2720434881739527
+   },
+   "NCC": {
+    "axis_abs_cosine": 0.05600531612099756,
+    "size_spearman": 0.46728350113400446
+   },
+   "Neural": {
+    "axis_abs_cosine": 0.5347212265121262,
+    "size_spearman": 0.5838435193740775
+   }
+  },
+  "E8.5->E8.75 vs E8.75->E9.5": {
+   "CM": {
+    "axis_abs_cosine": 0.04590036252268736,
+    "size_spearman": 0.36589259957039827
+   },
+   "CranialMesoderm": {
+    "axis_abs_cosine": 0.10318607958295484,
+    "size_spearman": 0.48427940911763645
+   },
+   "Ectoderm": {
+    "axis_abs_cosine": 0.1986291968022967,
+    "size_spearman": 0.44897747590990367
+   },
+   "Endoderm": {
+    "axis_abs_cosine": 0.3623010330396292,
+    "size_spearman": 0.36970467881871527
+   },
+   "Endothelial": {
+    "axis_abs_cosine": 0.4219443016762627,
+    "size_spearman": 0.4585249060996244
+   },
+   "NCC": {
+    "axis_abs_cosine": 0.07497131781914747,
+    "size_spearman": 0.3426853707414829
+   }
+  }
+ },
+ "gate": {
+  "rule": "S > 0 with p <= 0.05 on both triples",
+  "passes": false
+ },
+ "settings": {
+  "n_perm": 2000,
+  "perm_seed": 20261113,
+  "alpha": 0.05,
+  "damping": 0.5,
+  "panel_board": "T2:heart:val_extrap",
+  "stages": {
+   "E8.25_late": "T2/E8.25_late.h5ad",
+   "E8.5": "T2/E8.5.h5ad",
+   "E8.75": "T2/E8.75.h5ad",
+   "E9.5": "T2/E9.5.h5ad"
+  },
+  "zero_below": 0.04879016416943204,
+  "clip_at": 1.0986122886681098
+ },
+ "commit": "b4e822341558283ce3fe8c722ef60e32082e7f43",
+ "tree_clean": true
+}

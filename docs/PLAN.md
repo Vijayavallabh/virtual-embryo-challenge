@@ -2908,3 +2908,63 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     six free DGX GPUs and this machine's two are therefore left idle for now, which departs from the captain's
     words in (g) ("no GPU sits idle"); the captain is told so in the same report, with the one class-closing
     measurement that could still be run on them if the captain wants it regardless of its odds.
+- 2026-11-13 (j), what the campaign did after the cold review of (i): T1's pair of uploads re-priced (tries T32 and
+  T33), the heart's gate read (N26), and one request for the captain. Written by the AI assistant. No upload, build
+  script line, rule or gate record changed; tries: T1 30, embryo 36, heart 4, T3 15.
+  - **The forecast** (`experiments/gate/forecast.py`, written by an agent of the AI assistant; committed results only,
+    not a try, not the gate figure). On the estimator's upper reading the three files changed on 2026-11-13 move the
+    total's mean from 191.5 to 193.7, the chance of 203 (the sixth Human total at the read of (h)) from 13.9% to
+    19.4% and the chance of 209 from 0.43% to 2.1%. Every draw at or above 203 takes T3 from stand-in A (weight 0.5,
+    a judgement: at 0.25 the chance of 203 is 9.8%). The committed outlook (184) sits about 7.5 lower; the gate record
+    is unchanged.
+  - **T32** (`experiments/harness/TRIES.md`): the one T1 pair T30 had not priced, the cardiomyocyte hedge on library
+    3's own cells. Against the built pair it gains 4.5 to 9.2 where the truth is as deep as library 3 or deeper and
+    cardiomyocyte-rich and loses 0.7 to 5.3 where it is shallower; +2.91 under the main prior, -0.42 under one check.
+    By its rule: no recommendation. It is row R6's depth bet taken a second time.
+  - **T33**: a base half-way between the pooled base and library 3 (library 3's share of each category's draws at the
+    midpoint), on the reason that the scored distribution metrics are quadratic in a mixture's weights. As the second
+    upload beside the built first upload (pair mid_s2) it leads the built pair under all nine priors: +2.43 under
+    the main one, +0.74 and +1.41 under the checks, +0.39 at the least; by scenario +0.2 to +6.0 on
+    cardiomyocyte-rich truths at depths 0.68 to 1.37, -1.6 and -1.9 at depth 0.35, 0 where the truth keeps its own
+    mix. **By its rule it is put to the captain.** Its limits, from the independent check: the lead needs the
+    scenarios where the truth is as deep as library 3 (over the two shallower depths alone it trails by 0.36), so it
+    is a smaller bet on a deep truth, not a hedge free of the depth question; and the pair with both uploads on the
+    mid base (mid_both), which the rule holds back because it changes the first upload and trails mid_s2 by 0.36
+    under the main prior, is the steadier one across depth priors (+0.99 at the least; +4.3 and +6.3 on shallow
+    truths with their own mix, -0.6 and -3.3 on deep ones).
+  - **Both tables were recomputed independently** (single agents on another model, own code from the per-seed
+    files; 175 and 422 numbers; the arms' construction and the reading read line by line). No number of either
+    table moved. Two remarks on T32's new arm in the ledger were wrong and are corrected there (its quota against its
+    pool, and median libraries quoted from one seed).
+  - **Inside the forecast's model** (`experiments/gate/forecast_t1_pair.py`, computed after the tables; the same draws
+    price every pair; the zero-gap differences enter at a fifth of their size): mid_s2 moves the total's mean by
+    +0.48 and the chance of 203 from 19.4% to 21.5% at the central values, and by +0.15 and 16.2% to 16.9% under
+    T30's latest depth prior; mid_both by +0.44 and +0.43, about 1.9 points of chance either way; the lib3 pair by
+    +0.60 and -0.03.
+  - **A build option for T32's file, off by default** (`build_test.py t1 --base lib3 --cm-share 0.60 --lib3-pair`,
+    ea17e39): dry-built twice in the DGX's campaign checkout with one sha256, local format check passed; the two T1
+    commands of `build_all.sh` still give the reference bytes
+    (`experiments/builds/results/lib3_pair_ea17e39.txt`). No option exists yet for the mid base; it is written if
+    the captain rules for it.
+  - **The heart** (rows N26 and H7). An agent of the AI assistant wrote T11's within-type step for the heart head
+    (branch `campaign/h7`, off main; `b0` unchanged; tests pass; nothing scored). The target-free gate N26 then
+    failed: on heart stages up to E9.5 the factor the step would apply is anti-correlated with the next step in
+    every lineage (S -0.44 and -0.55; null SD 0.02). The scored try is dropped, not run and not counted. The reading
+    has a limit the AI assistant should have seen when fixing the gate: its two sides share the middle stage's
+    metacell mean with opposite signs, so a negative S follows whenever a metacell's own deviation dominates,
+    development or not. What it does show is that the step would mostly amplify each metacell's own deviation from
+    its lineage, the spread the cold review named. The captain can order the scored run.
+  - **Compute.** All of this ran on the DGX's CPUs in a second checkout (`~/v/vec-campaign`, own environment from
+    the same lock); the reference checkout, its environment and `uv.lock` were not touched. No GPU job ran, for the
+    reason in (i).
+  - **For the captain, each with its default:**
+    1. *T1's second upload.* The rule's outcome is the mid base (mid_s2). Default without a ruling: today's file
+       stays. The other options on the table are both uploads on the mid base (steadier; changes the first upload
+       decided in row R6) and library 3 alone (the larger depth bet; the rule gave no recommendation). Each is a
+       depth choice in effect, so it is the captain's own ruling, on released data. A yes needs a builder option,
+       an amendment of `docs/S2_RULES.md` in the captain's words, the s2 line of `build_all.sh` and a new DGX
+       rehearsal by 24 Nov.
+    2. *The GPUs.* Left idle, against the words of (g); the one class-closing measurement that could run on them
+       (a scored generator on T1 and the heart, four counted reads, a 5 to 10% chance of changing an upload by the
+       AI assistant's estimate) runs only if the captain wants it regardless.
+    3. *The checked copy on the local machine* (decision log (f)): confirm or remove, still open.
