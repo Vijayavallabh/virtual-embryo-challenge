@@ -392,6 +392,82 @@ def test_t1_lib3_pair_builds_try_t32s_second_file_only_with_its_flag(bt, t1_env,
     assert len(seen) == 2  # nothing was built for the refused calls
 
 
+def test_t1_base_mid_keeps_library_three_and_a_fraction_of_the_others(bt, t1_env, tmp_path, monkeypatch, capsys):
+    """Row R7 (the captain's ruling of 2026-11-13; try T33): --base mid with --cm-share hands build_submission every
+    library-3 cell and, per chamber category, round(n_other * s / (1 + s)) of the other libraries' cells (s: library
+    3's share of the category in the file), drawn by default_rng([seed, T1_MID_STREAM]) in sorted category order, at
+    that pool's own chamber mix with the cardiomyocyte share moved; the build repeats byte for byte; the record holds
+    shares only; and the base is refused without --cm-share or with any option no try read on it."""
+    ref = t1_env.ref
+    lab = ref.obs["celltype"].astype(str).to_numpy()
+    lib = np.where(lab == "V-CM", np.where(np.arange(ref.n_obs) % 4 == 0, 1, 3), np.arange(ref.n_obs) % 3 + 1)
+    ref.obs_names = [f"bc{i}-1_{k}" for i, k in enumerate(lib)]
+    names = np.asarray(ref.obs_names).astype(str)
+    seen = []
+
+    def spy(pool, board, shares, n, seed, **kw):
+        seen.append((list(pool.obs_names), dict(shares), n, seed))
+        return t1_env.build(pool, board, shares, n, seed, **kw)
+
+    monkeypatch.setattr(bt.t1_scope, "build_submission", spy)
+    argv = ["t1", "--no-feng-hygiene", "--base", "mid", "--cm-share", "0.6"]
+    bt.main([*argv, "--out", str(tmp_path / "mid.h5ad")])
+    bt.main([*argv, "--out", str(tmp_path / "again.h5ad")])
+    (pool_names, shares, n, seed), again = seen
+    assert again[0] == pool_names and again[1] == shares  # the same pool and mix on a repeat
+    assert (tmp_path / "mid.h5ad").read_bytes() == (tmp_path / "again.h5ad").read_bytes()
+    assert n == bt.harness.count_for(t1_env.board, ref.n_obs)  # the count is the pooled build's
+    # the pool, rebuilt here from the rule
+    spec = bt.t1_scope.load_spec()
+    b = bt.harness._shallow(ref)
+    bt.t1_scope.classify(b, source="E10.5_RNA", spec=spec)
+    cat = np.asarray(b.obs[bt.t1_scope.CATEGORY_KEY]).astype(str)
+    in3 = lib == 3
+    rng = np.random.default_rng([seed, bt.T1_MID_STREAM])
+    keep, checked = [np.flatnonzero(in3)], 0
+    for c in sorted(spec.in_scope("chamber")):
+        rows3, rows_o = np.flatnonzero(in3 & (cat == c)), np.flatnonzero(~in3 & (cat == c))
+        if len(rows3) + len(rows_o) == 0:
+            continue
+        s = len(rows3) / (len(rows3) + len(rows_o))
+        k = int(round(len(rows_o) * s / (1.0 + s)))
+        keep.append(np.sort(rng.choice(rows_o, size=k, replace=False)) if k else np.array([], dtype=np.int64))
+        in_pool = np.isin(names[(cat == c)], pool_names)
+        got3 = int((in_pool & in3[cat == c]).sum())
+        got_o = int((in_pool & ~in3[cat == c]).sum())
+        assert got3 == len(rows3) and got_o == k  # every library-3 cell, and the rule's number of the others
+        if k:
+            assert abs(got3 / (got3 + got_o) - (s + 1) / 2) <= 1.0 / (got3 + got_o)  # library 3 half-way to 1
+            checked += 1
+    assert checked >= 1  # at least one category mixes libraries in this fixture
+    want_rows = np.sort(np.concatenate(keep))
+    assert pool_names == names[want_rows].tolist()
+    pool = ref[want_rows].copy()
+    own = bt.harness.t1_chamber_shares(bt.harness._shallow(pool), "E10.5_RNA")
+    assert shares == bt.t1_scope.with_share(own, "cm", 0.6)
+    rec = json.loads((tmp_path / "mid.build.json").read_text())
+    assert rec["base"] == "mid" and rec["n_cells"] == "max_cells" and "lib3_pair" not in rec
+    assert rec["cm_share_of_heart"] == pytest.approx(0.6)
+    assert rec["mid_base"]["stream"] == [seed, bt.T1_MID_STREAM]
+    for v in rec["mid_base"]["categories"].values():  # shares only: nothing a cell number could be read from
+        assert set(v) == {"library3_share_in_file", "other_fraction_kept", "library3_share_in_pool"}
+        assert all(isinstance(x, float) and 0.0 <= x <= 1.0 for x in v.values())
+    assert str(T1_SECRET) not in (tmp_path / "mid.build.json").read_text() + capsys.readouterr().out
+    with pytest.raises(SystemExit, match="--lib3-pair names the second file"):  # that flag belongs to --base lib3
+        bt.main(["t1", "--base", "mid", "--cm-share", "0.6", "--lib3-pair", "--out", str(tmp_path / "no.h5ad")])
+    for bad in (["--base", "mid"], ["--base", "mid", "--cm-share", "0.6", "--blood-share", "0.3"],
+                ["--base", "mid", "--cm-share", "0.6", "--no-hold-unbracketed"],
+                ["--base", "mid", "--cm-share", "0.6", "--strong-null"],
+                ["--base", "mid", "--cm-share", "0.6", "--herd"]):
+        with pytest.raises(SystemExit, match="--base mid builds one file"):
+            bt.main(["t1", *bad, "--out", str(tmp_path / "no.h5ad")])
+    assert len(seen) == 2  # nothing was built for the refused calls
+    ref.obs_names = [f"c{i}" for i in range(ref.n_obs)]  # names that carry no library
+    with pytest.raises(SystemExit, match="do not separate library 3"):
+        bt.main([*argv, "--out", str(tmp_path / "no.h5ad")])
+    assert len(seen) == 2
+
+
 @pytest.mark.parametrize("argv", [["--feng-hygiene"], []])  # [] : the default since the build commit of (k)
 def test_t1_build_with_the_hygiene_holds_the_pinned_union(bt, t1_env, tmp_path, monkeypatch, argv):
     """--feng-hygiene, and the default with R1, build the same file as build_t1 with the union added to the held-flat

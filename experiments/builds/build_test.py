@@ -86,8 +86,13 @@ G_MOM_EDIT_CATEGORIES = ("cm", "endocardium")
 # until then, and still T1's second upload). "lib3": E10.5's dissected-heart library alone, whose cell names end in
 # this suffix, at that library's own chamber mix (tries T27 to T31). Feng's direction, R1, R2 and the fit of g_mom
 # are untouched.
-T1_BASES = ("pooled", "lib3")
+# R7 (the captain's ruling of 2026-11-13, docs/PLAN.md decision log 2026-11-13 (k); try T33): "mid", the base half-way
+# between the two, for T1's second upload: every library-3 cell and, per chamber category, a seeded random fraction
+# s / (1 + s) of the other libraries' cells (s: library 3's share of that category's cells in the file), so that
+# library 3 supplies (s + 1) / 2 of each category, at that pool's own chamber mix.
+T1_BASES = ("pooled", "lib3", "mid")
 T1_DISSECTED_LIBRARY = "3"
+T1_MID_STREAM = 21  # the mid base's draw of other-library cells: default_rng([seed, 21]), apart from every build stream
 
 
 def _view(key: str, task: str, kind: str, setting: str | None, test_board: str, roles: dict[str, tuple[str, float]],
@@ -291,6 +296,34 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str]):
     return hook, record
 
 
+def _t1_mid_rows(ref, in3: np.ndarray, seed: int) -> tuple[np.ndarray, dict]:
+    """The mid base's pool (row R7; try T33's arm as a builder gets it): every library-3 cell of the reference, and in
+    each chamber category a random fraction s / (1 + s) of the other libraries' cells, s being library 3's share of that
+    category's cells in the file. Categories in sorted order, one generator, default_rng([seed, T1_MID_STREAM]). The
+    other libraries' cells outside the chamber categories are left out (no draw takes them). Returns the kept rows in
+    file order and a record of shares only (no cell number)."""
+    spec = t1_scope.load_spec()
+    b = harness._shallow(ref)
+    t1_scope.classify(b, source="E10.5_RNA", spec=spec)
+    cat = np.asarray(b.obs[t1_scope.CATEGORY_KEY]).astype(str)
+    rng = np.random.default_rng([seed, T1_MID_STREAM])
+    keep = [np.flatnonzero(in3)]
+    record = {}
+    for c in sorted(spec.in_scope("chamber")):
+        rows3, rows_o = np.flatnonzero(in3 & (cat == c)), np.flatnonzero(~in3 & (cat == c))
+        if len(rows3) + len(rows_o) == 0:
+            continue
+        if len(rows3) == 0:
+            sys.exit(f"--base mid: library 3 holds no cell of the chamber category {c}, so the mid base is undefined")
+        s = len(rows3) / (len(rows3) + len(rows_o))
+        k = int(round(len(rows_o) * s / (1.0 + s)))
+        kept = np.sort(rng.choice(rows_o, size=k, replace=False)) if k else np.array([], dtype=np.int64)
+        keep.append(kept)
+        record[c] = {"library3_share_in_file": s, "other_fraction_kept": k / len(rows_o) if len(rows_o) else 0.0,
+                     "library3_share_in_pool": len(rows3) / (len(rows3) + k)}
+    return np.sort(np.concatenate(keep)), record
+
+
 def build_t1(a) -> dict:
     if a.g_mom and a.strong_null:
         sys.exit("--g-mom is refused with --strong-null: the two count edits have no ruled order and were never tested "
@@ -308,6 +341,11 @@ def build_t1(a) -> dict:
     if a.base == "lib3" and (not a.hold_unbracketed or a.strong_null or a.herd):
         sys.exit("--base lib3 is refused with --no-hold-unbracketed, --strong-null or --herd: each would fit or pull a "
                  "step on library 3's cells alone, which no try has read (experiments/harness/TRIES.md, row R6)")
+    if a.base == "mid" and (a.cm_share is None or a.blood_share is not None or a.lib3_pair or not a.hold_unbracketed
+                            or a.strong_null or a.herd):
+        sys.exit("--base mid builds one file, T1's second upload by the captain's ruling of 2026-11-13 (row R7 of "
+                 "experiments/harness/TRIES.md; try T33): it needs --cm-share, and it is refused with --blood-share, "
+                 "--lib3-pair, --no-hold-unbracketed, --strong-null or --herd, which no try has read on that base")
     hygiene_on = _feng_hygiene_on(a.feng_hygiene, a.hold_unbracketed)  # R2's refusals come before anything is read
     prior = _t1_down_prior(a.strong_null, a.hold_unbracketed, hygiene_on)  # T12's, likewise
     union = _t1_union(hygiene_on)
@@ -317,15 +355,21 @@ def build_t1(a) -> dict:
     shares = harness.t1_chamber_shares(harness._shallow(ref), "E10.5_RNA")
     fit_categories = [c for c, s in shares.items() if s > 0]  # g_mom's fit, as the candidate's: E10.5's own mix
     pool = ref
-    if a.base == "lib3":
+    mid_record = None
+    if a.base in ("lib3", "mid"):
         names = [str(x) for x in ref.obs_names]
         library = np.array([x.rsplit("_", 1)[-1] if "_" in x else "" for x in names])
         kinds = set(library.tolist())
         if not all(k.isdigit() for k in kinds) or T1_DISSECTED_LIBRARY not in kinds or len(kinds) < 2:
-            sys.exit("--base lib3: the reference's cell names do not separate library 3 from the others (every name "
-                     "must end in _<library number>, and library 3 must be one of at least two)")
-        pool = ref[np.flatnonzero(library == T1_DISSECTED_LIBRARY)].copy()
-        shares = harness.t1_chamber_shares(harness._shallow(pool), "E10.5_RNA")  # library 3's own chamber mix
+            sys.exit(f"--base {a.base}: the reference's cell names do not separate library 3 from the others (every "
+                     "name must end in _<library number>, and library 3 must be one of at least two)")
+        in3 = library == T1_DISSECTED_LIBRARY
+        if a.base == "lib3":
+            pool = ref[np.flatnonzero(in3)].copy()
+        else:
+            rows, mid_record = _t1_mid_rows(ref, in3, a.seed)
+            pool = ref[rows].copy()
+        shares = harness.t1_chamber_shares(harness._shallow(pool), "E10.5_RNA")  # the pool's own chamber mix
     if a.cm_share is not None:
         shares = t1_scope.with_share(shares, "cm", a.cm_share)
     if a.blood_share is not None:  # blood's share of all chamber cells, the other categories in proportion
@@ -361,6 +405,8 @@ def build_t1(a) -> dict:
            "shares": shares, "external": ext, "check_ok": check.ok, "realised": rep["realised"]}
     if a.lib3_pair:  # written only for that file, so every other file's record is as before
         rec["lib3_pair"] = True
+    if mid_record is not None:  # likewise: shares only, no cell number
+        rec["mid_base"] = {"stream": [int(a.seed), T1_MID_STREAM], "categories": mid_record}
     if a.g_mom:
         rec["g_mom"] = g_mom_record
     return rec if strong is None else {**rec, "strong_null": strong}
@@ -492,10 +538,12 @@ def build_parser() -> argparse.ArgumentParser:
                                 "(d)): add the strong-null down-tail prior after M1's steps (off by default; refused "
                                 "until configs/t1_strong_null.yaml says approved, and without R1 and R2)")
             p.add_argument("--base", choices=T1_BASES, default=T1_BASES[0],
-                           help="the pool the cells are drawn from: pooled = every E10.5 cell (the default, and T1's "
-                                "second upload); lib3 = E10.5's dissected-heart library alone at its own chamber mix "
-                                "(row R6 of experiments/harness/TRIES.md). The count, Feng's direction, R1, R2 and "
-                                "g_mom's fit are the same either way")
+                           help="the pool the cells are drawn from: pooled = every E10.5 cell (the default); lib3 = "
+                                "E10.5's dissected-heart library alone at its own chamber mix (row R6 of "
+                                "experiments/harness/TRIES.md; T1's first upload); mid = every library-3 cell and, "
+                                "per chamber category, a seeded fraction of the other libraries' cells that puts "
+                                "library 3's share half-way to 1 (row R7; T1's second upload, with --cm-share). The "
+                                "count, Feng's direction, R1, R2 and g_mom's fit are the same in all three")
             p.add_argument("--lib3-pair", action="store_true",
                            help="with --base lib3 and --cm-share: build the second file of the pair try T32 priced "
                                 "(experiments/harness/TRIES.md), library 3's cells with the cardiomyocyte share "
