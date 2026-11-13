@@ -267,3 +267,88 @@ def test_cells_coordinates_and_rows_are_b0s(three, monkeypatch):
     flat = (merged == "Untracked") | (merged == "Tiny")
     assert flat.any() and np.array_equal(a.X[flat], b.X[flat])
     assert not np.array_equal(a.X[merged == "CM"], b.X[merged == "CM"])
+
+
+# ---------------------------------------------------------------------------------------------------- b0_trend_sized
+# sha256 of b0_trend's output X (float32 bytes) on `three` at BUILD_SEED_OFFSET + 1, computed at 28f25fd (before the
+# sized arm was added)
+B0_TREND_SHA256 = "8320700817f003ae9b5daff16ac5375fcb8442313f3454e69a048e7bfe87855c"
+
+
+def test_b0_trend_output_is_unchanged_by_the_sized_arm(three):
+    """(e) b0_trend's output on a fixed synthetic case is the one pinned before the sized arm."""
+    st = CANDIDATES["b0_trend"].build(_ctx(three))
+    latent_extrap.RECORDS.clear()
+    assert hashlib.sha256(np.ascontiguousarray(st.X, dtype=np.float32).tobytes()).hexdigest() == B0_TREND_SHA256
+
+
+def test_the_sized_factor_has_b0s_norm_and_the_trends_direction(three):
+    """(a) For every lineage with a trend factor, the applied factor's L2 norm is B0's own and its cosine with the
+    natural trend factor is 1 (both to 1e-12); the record keeps the natural direction's figures."""
+    ctx = _ctx(three)
+    genes = list(BOARD.genes)
+    types = ["CM", "Endothelial", "Tiny", "Untracked@end"]
+    nat, rec_n = harness.b0_trend_factors(ctx, genes, types)
+    siz, rec_s = harness.b0_trend_factors(ctx, genes, types, sized=True)
+    assert set(nat) == set(siz) == {"CM", "Endothelial"}
+    for lin in nat:
+        row_s = next(r for r in rec_s["lineages"] if r["lineage"] == lin)
+        row_n = next(r for r in rec_n["lineages"] if r["lineage"] == lin)
+        own_norm = np.linalg.norm(nat[lin]) / row_n["norm_ratio"]
+        assert np.linalg.norm(siz[lin]) == pytest.approx(own_norm, abs=1e-12, rel=0)
+        cos = siz[lin] @ nat[lin] / (np.linalg.norm(siz[lin]) * np.linalg.norm(nat[lin]))
+        assert cos == pytest.approx(1.0, abs=1e-12)
+        assert row_s["norm_ratio_applied"] == pytest.approx(1.0, abs=1e-12)
+        assert row_n["norm_ratio_applied"] == row_n["norm_ratio"] != pytest.approx(1.0)
+        assert row_s["cosine"] == row_n["cosine"] and row_s["norm_ratio"] == row_n["norm_ratio"]
+    assert rec_s["sized"] is True and rec_n["sized"] is False
+    assert rec_s["rule"] == "vec.harness.B0_TREND_SIZED_RULE" and rec_n["rule"] == "vec.harness.B0_TREND_RULE"
+    assert rec_s["median_cosine"] == rec_n["median_cosine"]
+
+
+def test_sized_with_no_lineage_usable_before_start_is_b0_bit_for_bit(three):
+    """(b) As test 3, for the sized arm."""
+    early = three["earlier"].copy()
+    early.obs["merged"] = np.where(np.arange(early.n_obs) % 2 == 0, "Elsewhere", "Untracked")
+    inputs = {**three, "earlier": early}
+    a = CANDIDATES["b0_trend_sized"].build(_ctx(inputs))
+    b = CANDIDATES["b0"].build(_ctx(inputs))
+    latent_extrap.RECORDS.clear()
+    np.testing.assert_array_equal(a.X, b.X)
+    np.testing.assert_array_equal(a.coords, b.coords)
+
+
+def test_sized_registration_and_refusals(three):
+    """(c) As b0_trend: the two heart backtests only, b0's scope, the same refusals."""
+    tasks = {t.key: t for ts_ in load_tasks().values() for t in ts_}
+    c, n = CANDIDATES["b0_trend_sized"], CANDIDATES["b0_trend"]
+    assert all(c.applies(t) == n.applies(t) for t in tasks.values())
+    assert {k for k, t in tasks.items() if c.applies(t)} == {"T2h/<=E9.5->E10.5", "T2h/<=E8.75->E10.5"}
+    assert c.tasks == n.tasks and c.derived == () and c.requires is n.requires
+    assert c.params["scope"] == CANDIDATES["b0"].params["scope"] and c.params["damping"] == B0_DAMPING
+    assert c.params["rule"] == "vec.harness.B0_TREND_SIZED_RULE"
+    two = {k: three[k] for k in ("ref", "start")}
+    with pytest.raises(ValueError, match="three"):
+        c.build(_ctx(two, view=_view(inputs={"ref": "T2/E9.5.h5ad", "start": "T2/E8.75.h5ad"})))
+    with pytest.raises(ValueError, match="heart extrapolation"):
+        c.build(_ctx(three, view=replace(_view(), kind="interp")))
+    with pytest.raises(ValueError, match="heart extrapolation"):
+        c.build(_ctx(three, view=replace(_view(), task="T1", setting=None)))
+    with pytest.raises(ValueError, match="trend must be"):
+        harness._b0_t2(_ctx(three), trend="other")
+
+
+def test_each_arm_leaves_its_own_record(three):
+    """(d) Both arms on one task and seed: two records, each with its own candidate name; the sized arm's output
+    differs from the natural one's and keeps its coordinates."""
+    latent_extrap.RECORDS.clear()
+    ctx = _ctx(three)
+    with harness.guarded_reads() as g:
+        a = CANDIDATES["b0_trend"].build(ctx)
+        s = CANDIDATES["b0_trend_sized"].build(ctx)
+    assert not g["refused"]
+    recs = list(latent_extrap.RECORDS)
+    latent_extrap.RECORDS.clear()
+    assert [r["candidate"] for r in recs] == ["b0_trend", "b0_trend_sized"]
+    assert [r["sized"] for r in recs] == [False, True] and {r["task"] for r in recs} == {ctx.task.key}
+    assert not np.array_equal(a.X, s.X) and np.array_equal(a.coords, s.coords)
