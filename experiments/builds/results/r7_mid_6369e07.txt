@@ -1,0 +1,51 @@
+Dry builds and review for row R7: T1's second upload on the mid base, 2026-11-13 (written by the AI assistant)
+==============================================================================================================
+
+What this is. By the captain's ruling of 2026-11-13 (docs/PLAN.md decision log 2026-11-13 (k); row R7 of
+experiments/harness/TRIES.md) T1's second upload is drawn from the base half-way between the pooled base and library 3,
+with cardiomyocytes at 0.60 of heart cells: `build_test.py t1 --g-mom --base mid --cm-share 0.60`. This file records
+the option's dry builds and its independent code review, both made before docs/S2_RULES.md and build_all.sh were
+changed.
+
+Dry builds. The DGX, in the campaign checkout `~/v/vec-campaign` (not the reference checkout), at commit 6369e07 on a
+fully clean tree, 16 BLAS threads, NUMPY_MADVISE_HUGEPAGE=0, seed 1000001 (the builder's default), the four builds
+started together, into `runs/r7_candidate_6369e07/`. Read: exit codes, sha256, the stamps' commit and clean fields,
+and from the new file's build record the base, the shares and the mid base's per-category ratios. The build logs,
+the file sizes and the stamps' size field were not read.
+
+  command (after `uv run --frozen --no-sync python experiments/builds/build_test.py t1`)   sha256
+  --g-mom --base lib3                    (T1 s1 of build_all.sh)       a294062f5f7bbb2dae19ef695979cc21f03f38df40d22be9ccdd30af36e3bdef
+  --g-mom --cm-share 0.60                (T1 s2 until this ruling)     30f0cf59442591810833061756e1324b46728cc4373048d8a8c90696a1ae3737
+  --g-mom --base mid --cm-share 0.60     (first build)                 f169ea492e8dbac7e8b298f7dfa13fcceba71b5ff35e12ccfdc3a9504346304f
+  --g-mom --base mid --cm-share 0.60     (second build)                f169ea492e8dbac7e8b298f7dfa13fcceba71b5ff35e12ccfdc3a9504346304f
+
+- All four exited 0; every stamp says commit 6369e07 and clean: true.
+- The first two equal the reference list of 2026-11-13 (experiments/builds/results/builds_fd2683a.SHA256SUMS), so the
+  new option leaves the existing commands' files byte for byte as rehearsed.
+- The new file has one sha256 over two builds, and `vec check ... --board T1:test` exited 0 on it.
+- Its record: base "mid", cardiomyocytes 0.600 of heart cells, chamber mix cm 0.478, endocardium 0.190, epicardium
+  0.102, vascular endothelium 0.027, blood 0.203, which is try T33's `mid_cm60` mix to three decimals; library 3's
+  share of the pool per category: blood 0.746, cm 0.821, endocardium 0.859, epicardium 0.870, vascular endothelium
+  0.829, try T33's shares.
+
+Independent code review (one agent on another model, read-only, given the commit, row R7 and try T33's arm as the
+specification). Its verdict: nothing should stop the build. `_t1_mid_rows` implements the rule; the pool's own mix is
+what the draw uses and the cardiomyocyte share is moved on it; the count, the within-type fit (on the whole of
+E10.5), the direction step, the held genes and every other random stream are as for the other bases; the two
+existing commands execute no new line that changes their output. Its findings, and what was done:
+1. When a category's quota is larger than that category's cells in the mid pool, the builder repeats its fixed
+   subset of the other libraries' cells, where try T33's arm would have drawn further cells from all of them;
+   library 3's expected share is the same. Whether that happens depends on the test board's count, which nobody
+   reads. Not changed: row R7 and the rules text describe the reduced pool; the difference is stated in row R7.
+2. The guard accepted any cardiomyocyte share with the mid base. Fixed at 81f0106: only 0.60 is accepted. It still
+   accepts the base without `--g-mom` and with `--no-feng-hygiene`, as the library-3 base does; the upload file is
+   built by build_all.sh, whose line is pinned by a test, and is checked against the reference list.
+3. In a category of a handful of cells the kept number can round to none. Not relevant to E10.5's five chamber
+   categories; the record shows the realised share.
+4. Library 3's share of the drawn cells is the pool's share in expectation, not by quota (row R7 already says so).
+5. The first test repeated the implementation in part and missed some cases. Added at 81f0106: a chamber category
+   with no library-3 cell stops the build; `_t1_mid_rows` checked on its own on synthetic cells; another share is
+   refused. No unit test runs `--g-mom` on the mid base; the dry builds above do.
+
+Not done here. No server format check, no upload. The reference list changes for T1_s2 only, by a rehearsal on the
+DGX's reference checkout (docs/P3_RUNBOOK.md, section 5).

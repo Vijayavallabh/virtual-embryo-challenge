@@ -7,9 +7,10 @@
 #   bash experiments/builds/build_all.sh s1     the s1 entries (T3: the allowed branch's s1, uploaded last)
 #   bash experiments/builds/build_all.sh s2     the s2 entries of docs/S2_RULES.md (checked against its hash first)
 #
-# Since the amendments of 2026-11-13 (docs/S2_RULES.md, last section; rows R4 to R6 of experiments/harness/TRIES.md):
-# T1's s1 is drawn from library 3's cells (--base lib3) while its s2 keeps the pooled base; the embryo's s2 is the
-# aligned series file; T3's refused s1 also carries the wild-type-only factor (--wt-revert).
+# Since the amendments of 2026-11-13 (docs/S2_RULES.md, last two sections; rows R4 to R7 of
+# experiments/harness/TRIES.md): T1's s1 is drawn from library 3's cells (--base lib3) and its s2 from the base
+# half-way between the pooled base and library 3 (--base mid --cm-share 0.60); the embryo's s2 is the aligned series
+# file; T3's refused s1 also carries the wild-type-only factor (--wt-revert).
 #   bash experiments/builds/build_all.sh t3alt  the T3 switch files of docs/S2_RULES.md (barred branch s1 and s2)
 #
 # BUILD_OUT (default runs) and BUILD_THREADS (default 16) exist for the determinism check
@@ -54,7 +55,7 @@ case "$set_name" in
     ;;
   s2)
     sha256sum -c docs/S2_RULES.sha256
-    $U run python experiments/builds/build_test.py t1 --g-mom --cm-share 0.60 --out $O/builds/T1_s2.h5ad
+    $U run python experiments/builds/build_test.py t1 --g-mom --base mid --cm-share 0.60 --out $O/builds/T1_s2.h5ad
     $U run python experiments/builds/build_test.py heart --entry s2_trim --out $O/builds/T2heart_s2.h5ad
     $U run python experiments/builds/build_test.py embryo --method fgw --move-coupling aligned --expression series \
       --out $O/builds/T2embryo_s2.h5ad

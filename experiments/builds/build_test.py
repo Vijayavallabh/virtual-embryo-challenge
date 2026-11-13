@@ -43,6 +43,8 @@ Usage (DGX, repo root, BLAS threads capped):
   uv run python experiments/builds/build_test.py heart --entry s1 --out runs/builds/T2heart_s1.h5ad
   uv run python experiments/builds/build_test.py embryo --method fgw --out runs/builds/T2embryo_s1.h5ad
   uv run python experiments/builds/build_test.py t1 --cm-share 0.60 --out runs/builds/T1_s2.h5ad
+The commands of the entries as they stand are in experiments/builds/build_all.sh and docs/S2_RULES.md (since
+2026-11-13 T1's two files are `t1 --g-mom --base lib3` and `t1 --g-mom --base mid --cm-share 0.60`).
   uv run python experiments/builds/build_test.py heart --entry s2_trim --out runs/builds/T2heart_s2.h5ad
   uv run python experiments/builds/build_test.py embryo --method fgw_shape0 --out runs/builds/T2embryo_s2.h5ad
 """

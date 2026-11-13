@@ -382,3 +382,43 @@ The AI assistant reads those words as leaving the direction to it, and decided t
 command and T3's refused s1 with `--wt-revert`. T1's s1 as built until 2026-11-13 came out with different bytes on
 the local machine and on the DGX, from the same code at 16 BLAS threads (`docs/PLAN.md` decision log 2026-11-13 (d)),
 so the reference hashes for the freeze-morning rebuild come from a rehearsal on the machine that builds the uploads.
+
+## Amendment of 2026-11-13, later that day: T1's s2 is drawn from the mid base (the captain's own say-so)
+
+Written by the AI assistant. The quoted words are the captain's, given in the main session on 2026-11-13 in answer to
+one question that named this rule and gave its numbers (`docs/PLAN.md` decision log 2026-11-13 (k)). No test score
+existed: nothing had been uploaded. The row is R7 of `experiments/harness/TRIES.md`.
+
+**The captain's words:** "Half-way base (Recommended)", the first of four options (a base half-way between the pooled
+base and library 3 for the second upload; that base for both uploads; library 3's cells for both; keep today's file),
+each offered with its practice numbers and with the request to decide from those numbers alone.
+
+- **s2:** `uv run python experiments/builds/build_test.py t1 --g-mom --base mid --cm-share 0.60 --out
+  runs/builds/T1_s2.h5ad`. It replaces "s2 stays as built" in the section above: the second upload no longer draws
+  from the pooled base.
+- **What the mid base is.** Every library-3 cell of E10.5 (names ending in `_3`) and, in each chamber category, a
+  random fraction s / (1 + s) of the other libraries' cells, s being library 3's share of that category's cells in the
+  file; the fraction is drawn by the build seed's own stream (`build_test.py`, `_t1_mid_rows`). Library 3 then
+  supplies (s + 1) / 2 of each category, half-way between its share in the pooled base and 1. The cells are drawn at
+  that pool's own chamber mix with cardiomyocytes moved to 0.60 of heart cells. The count, Feng's direction, R1, R2
+  and the fit of R3b's factors on the whole of E10.5 are unchanged.
+- **s1 is unchanged:** library 3's cells at library 3's own chamber mix (the section above; row R6).
+- **Why.** Both uploads are spent on the cardiomyocyte share, and which base suits a cardiomyocyte-rich truth turns on
+  E12.5's depth, which no released file shows (tries T30 and T32). The scored distribution metrics are quadratic in a
+  mixture's weights, so a blend of the two bases gives up about a quarter of each gap, not half. On try T30's grid
+  (try T33; zero time gap, sizes are upper bounds) the pair with this second upload leads the pair as built until
+  today under all nine priors: +2.43 under the main one, +0.39 at the least; by scenario +0.2 to +6.0 on
+  cardiomyocyte-rich truths at depths 0.68 and above, 0 where the truth keeps its own mix. It is the outcome of the
+  rule fixed before try T33, recomputed independently.
+- **What it gives up, as the captain was told.** Where the truth is much shallower than library 3 and
+  cardiomyocyte-rich it loses 1.6 to 1.9 against the pooled base. Its lead rests on the scenarios where the truth is
+  as deep as library 3: over the two shallower depths alone the pair trails by 0.36. The pair with both uploads on the
+  mid base, steadier across depth priors, was offered and not chosen. It enters by ruling, not by the adoption rule.
+- **This is a depth choice in effect** (library 3's share of the drawn cells rises from about 0.65 to about 0.82), which
+  `docs/DATA_POLICY.md` 2026-11-04 (f)(3) sends to the captain; the question asked for a decision from the practice
+  numbers alone. A later change of either T1 base needs a reason that can be stated from released data, or an
+  organiser's answer read as `docs/ORGANIZER_QUESTIONS.md` ("Seventh email") fixes it.
+- **Builds.** The s2 set of `experiments/builds/build_all.sh` builds T1's file with this command. The option is refused
+  with any other cardiomyocyte share and with every option no try read on that base. The reference list for the
+  freeze-morning rebuild changes for this one file and is remade by a rehearsal on the machine that builds the
+  uploads (`docs/P3_RUNBOOK.md`, section 5).

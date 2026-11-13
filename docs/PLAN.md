@@ -3000,3 +3000,37 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     default upload route still pulls from the DGX. It is the fallback if the DGX is unreachable on 27 to 30 Nov." The
     copy stays, and the open point of (f) is closed. When a reference file changes, its copy is refreshed and
     checked.
+- 2026-11-13 (l), what followed the captain's answers of (k). Written by the AI assistant.
+  - **T1's second upload: the rules are amended and the builder is ready; the rehearsal comes next.**
+    `docs/S2_RULES.md` has a new last section, "Amendment of 2026-11-13, later that day", with the captain's words
+    ("Half-way base (Recommended)"); its new sha256 is
+    23ae51971150b4df630e9265d6c8ac0f34c6a0f2c5bd6299f90365042a94b49c, in `docs/S2_RULES.sha256`. The s2 line of
+    `experiments/builds/build_all.sh` is `build_test.py t1 --g-mom --base mid --cm-share 0.60`. The option
+    (`--base mid`, commits 6369e07 and 81f0106) keeps every library-3 cell and, per chamber category, a seeded
+    fraction s / (1 + s) of the other libraries' cells, and is refused with any share but 0.60 and with every option
+    no try read on that base. Dry builds in the DGX's campaign checkout at 6369e07 on a clean tree: the new file
+    twice with one sha256 (f169ea49...), local format check passed, and the two existing T1 commands still give
+    the reference bytes. Its record shows try T33's mix and library shares to three decimals. An independent code
+    review found nothing that should stop the build; its findings and what was done are in
+    `experiments/builds/results/r7_mid_6369e07.txt` (one difference from T33's arm is not removed: when a category's
+    quota passes its cells in the mid pool, the builder repeats its fixed subset of the other libraries' cells). The
+    reference list changes for T1_s2 alone, by a rehearsal on the DGX's reference checkout.
+  - **The heart try** (rows N26 and H7) runs in a third checkout on the DGX (`~/v/vec-campaign-h7`, the branch
+    `campaign/h7` at b4e8223), on its CPUs.
+  - **A side agent's note, forwarded by the captain, on the generator test** ("the generator test being built reuses
+    our current method's forecast rule, so it can't show whether a learned model predicts development better ... If
+    you want a learned forecast tested too, say so before the scored runs start"). The note is right. The two arms
+    briefed to the building agent keep B0's forecast (each category moves by half its last observed change) and
+    change only the vehicle: cells sampled from a count model, or real cells edited by its decoder's ratios. A loss
+    would close "model-made cells" on those boards, not "a model that learns how cells develop". Checked against the
+    record before acting: answer (k) asks for "a learned generator" scored on T1 and on the heart "so those model
+    classes are closed by a score instead of by argument", so a learned forecast lies inside what the captain asked
+    for, and no recorded choice is set aside. What it changes is the price the AI assistant quoted (four counted
+    reads): one more arm on each board makes six. **Decided by the AI assistant under the campaign's rules (a try is
+    its to register; the captain can strike it):** one learned-forecast arm per board is added, designed first by a
+    panel (three independent designs, each attacked, then one synthesis) and registered with its row before any
+    scored run; the scored generator runs wait for it. Two limits are stated now. On T1's backtest only two stages
+    are inputs, so a forecast learned there is a per-cell continuation of the one observed step, which tries T9 and
+    T11 already read in other forms; the heart's first backtest has four input stages, where a time-dependent
+    forecast is a different thing from B0's last step. And the organisers' own learned-flow reference rows sit below
+    the floor on the T1 and heart-extrapolation validation boards (`docs/CHALLENGE.md`, "Reference rows").

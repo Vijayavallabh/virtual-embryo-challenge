@@ -1352,7 +1352,8 @@ def test_r3b_stops_the_build_when_a_category_it_edits_has_no_factors(bt, monkeyp
 def test_the_freeze_builds_carry_r3b_in_both_of_t1s_files():
     text = (REPO_ROOT / "experiments" / "builds" / "build_all.sh").read_text()
     assert "build_test.py t1 --g-mom --base lib3 --out $O/builds/T1_s1.h5ad" in text  # R6: s1's base, 2026-11-13
-    assert "build_test.py t1 --g-mom --cm-share 0.60 --out $O/builds/T1_s2.h5ad" in text
+    # R7 (the captain's ruling of 2026-11-13): s2 on the base half-way between the pooled base and library 3
+    assert "build_test.py t1 --g-mom --base mid --cm-share 0.60 --out $O/builds/T1_s2.h5ad" in text
 
 
 def test_the_hook_refuses_a_label_the_builds_feng_direction_does_not_cover(bt, t1_env, monkeypatch):  # noqa: F811
