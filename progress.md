@@ -34,8 +34,9 @@ on the one task where the truth is like its earlier bracket), was attacked cold 
 a specialist cannot be the file that stands alone. What would reopen it is fixed: an organiser answer that the hidden
 embryo sample was processed with E7.5, with per-board marks confirmed. Main moved by documents, three reading scripts
 with tests (N37, N38, N39) and results only.
-Checked last: the full test suite at 6c505ca in a DGX campaign checkout (lock, lint, 1,291 tests pass; clean tree); the
-document tests and lint again at f1408a4 on this machine (33 pass). The reference checkout is untouched at dc7b6ae.
+Checked last: the full test suite at 32fdaad in a DGX campaign checkout (lock, lint, 1,298 tests pass; clean tree),
+after a first attempt there failed on a full system disk and was rerun with its temp files on the large volume; the
+document tests and lint again on this machine at the closing commit. The reference checkout is untouched at dc7b6ae.
 **2026-11-13, night: the campaign's sixth round (decision log 2026-11-13 (dd) and (ee)). Nothing is kept, nothing is
 requested, and no file changes.** The captain renewed the campaign with a named target: take our own estimate past
 the leading total (215.41), or exhaust the options and report. (1) Where the points would have to come from
