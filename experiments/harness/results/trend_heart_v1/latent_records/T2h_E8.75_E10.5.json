@@ -1,0 +1,5722 @@
+[
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_trend",
+  "build_seed": 1000000,
+  "rule": "vec.harness.B0_TREND_RULE",
+  "sized": false,
+  "stages": [
+   "earlier",
+   "start",
+   "ref"
+  ],
+  "days": [
+   8.3,
+   8.5,
+   8.75
+  ],
+  "budget_days": 0.125,
+  "eps": 0.5,
+  "min_cells": 20,
+  "n_trend": 9,
+  "lineages": [
+   {
+    "lineage": "CM",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1357,
+     1919,
+     3076
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.705126965230826,
+    "norm_ratio": 0.46182380548608976,
+    "mean_abs_logf_trend": 0.10012657856374102,
+    "mean_abs_logf_b0": 0.21483231174167827,
+    "norm_ratio_applied": 0.46182380548608976,
+    "mean_abs_logf_applied": 0.10012657856374102
+   },
+   {
+    "lineage": "CranialMesoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     8246,
+     5490,
+     4779
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8724285810519313,
+    "norm_ratio": 0.5778559708392658,
+    "mean_abs_logf_trend": 0.14435116723290306,
+    "mean_abs_logf_b0": 0.2519275032775385,
+    "norm_ratio_applied": 0.5778559708392658,
+    "mean_abs_logf_applied": 0.14435116723290306
+   },
+   {
+    "lineage": "Ectoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     4681,
+     2593,
+     2670
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8051020772804306,
+    "norm_ratio": 0.6144711451327793,
+    "mean_abs_logf_trend": 0.13167560097936698,
+    "mean_abs_logf_b0": 0.22072185106144052,
+    "norm_ratio_applied": 0.6144711451327793,
+    "mean_abs_logf_applied": 0.13167560097936698
+   },
+   {
+    "lineage": "Endoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10205,
+     2591,
+     1883
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8012371975575502,
+    "norm_ratio": 0.6889320869864665,
+    "mean_abs_logf_trend": 0.20098761761542616,
+    "mean_abs_logf_b0": 0.28941409144414276,
+    "norm_ratio_applied": 0.6889320869864665,
+    "mean_abs_logf_applied": 0.20098761761542616
+   },
+   {
+    "lineage": "Endothelial",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     6519,
+     1702,
+     2307
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7122001609639119,
+    "norm_ratio": 0.7244222486804337,
+    "mean_abs_logf_trend": 0.1724206367989974,
+    "mean_abs_logf_b0": 0.23697157769978866,
+    "norm_ratio_applied": 0.7244222486804337,
+    "mean_abs_logf_applied": 0.1724206367989974
+   },
+   {
+    "lineage": "EpiblastStreak",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1339,
+     1148,
+     45
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.9510429992019129,
+    "norm_ratio": 0.562409819268882,
+    "mean_abs_logf_trend": 0.3286815497206078,
+    "mean_abs_logf_b0": 0.5726394481908638,
+    "norm_ratio_applied": 0.562409819268882,
+    "mean_abs_logf_applied": 0.3286815497206078
+   },
+   {
+    "lineage": "ExtraEmbryonicMeso",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10327,
+     3154,
+     1039
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.826901370936835,
+    "norm_ratio": 0.6022486796432819,
+    "mean_abs_logf_trend": 0.19349799937399623,
+    "mean_abs_logf_b0": 0.3262685470704024,
+    "norm_ratio_applied": 0.6022486796432819,
+    "mean_abs_logf_applied": 0.19349799937399623
+   },
+   {
+    "lineage": "NCC",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3303,
+     1461,
+     1838
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7074553951137131,
+    "norm_ratio": 0.5943048129551207,
+    "mean_abs_logf_trend": 0.13077629046983263,
+    "mean_abs_logf_b0": 0.22336976586756407,
+    "norm_ratio_applied": 0.5943048129551207,
+    "mean_abs_logf_applied": 0.13077629046983263
+   },
+   {
+    "lineage": "Neural",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3686,
+     1517,
+     3530
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.6481207353390463,
+    "norm_ratio": 0.6476168187262545,
+    "mean_abs_logf_trend": 0.13968558559068978,
+    "mean_abs_logf_b0": 0.2271534204807644,
+    "norm_ratio_applied": 0.6476168187262545,
+    "mean_abs_logf_applied": 0.13968558559068978
+   }
+  ],
+  "median_cosine": 0.8012371975575502,
+  "median_norm_ratio": 0.6022486796432819
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_trend_sized",
+  "build_seed": 1000000,
+  "rule": "vec.harness.B0_TREND_SIZED_RULE",
+  "sized": true,
+  "stages": [
+   "earlier",
+   "start",
+   "ref"
+  ],
+  "days": [
+   8.3,
+   8.5,
+   8.75
+  ],
+  "budget_days": 0.125,
+  "eps": 0.5,
+  "min_cells": 20,
+  "n_trend": 9,
+  "lineages": [
+   {
+    "lineage": "CM",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1357,
+     1919,
+     3076
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.705126965230826,
+    "norm_ratio": 0.46182380548608976,
+    "mean_abs_logf_trend": 0.10012657856374102,
+    "mean_abs_logf_b0": 0.21483231174167827,
+    "norm_ratio_applied": 0.9999999999999999,
+    "mean_abs_logf_applied": 0.21680688040399607
+   },
+   {
+    "lineage": "CranialMesoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     8246,
+     5490,
+     4779
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8724285810519313,
+    "norm_ratio": 0.5778559708392658,
+    "mean_abs_logf_trend": 0.14435116723290306,
+    "mean_abs_logf_b0": 0.2519275032775385,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.24980475155989212
+   },
+   {
+    "lineage": "Ectoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     4681,
+     2593,
+     2670
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8051020772804306,
+    "norm_ratio": 0.6144711451327793,
+    "mean_abs_logf_trend": 0.13167560097936698,
+    "mean_abs_logf_b0": 0.22072185106144052,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.2142909427438022
+   },
+   {
+    "lineage": "Endoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10205,
+     2591,
+     1883
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8012371975575502,
+    "norm_ratio": 0.6889320869864665,
+    "mean_abs_logf_trend": 0.20098761761542616,
+    "mean_abs_logf_b0": 0.28941409144414276,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.29173792513364877
+   },
+   {
+    "lineage": "Endothelial",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     6519,
+     1702,
+     2307
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7122001609639119,
+    "norm_ratio": 0.7244222486804337,
+    "mean_abs_logf_trend": 0.1724206367989974,
+    "mean_abs_logf_b0": 0.23697157769978866,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.23801123876726457
+   },
+   {
+    "lineage": "EpiblastStreak",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1339,
+     1148,
+     45
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.9510429992019129,
+    "norm_ratio": 0.562409819268882,
+    "mean_abs_logf_trend": 0.3286815497206078,
+    "mean_abs_logf_b0": 0.5726394481908638,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.5844164494636406
+   },
+   {
+    "lineage": "ExtraEmbryonicMeso",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10327,
+     3154,
+     1039
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.826901370936835,
+    "norm_ratio": 0.6022486796432819,
+    "mean_abs_logf_trend": 0.19349799937399623,
+    "mean_abs_logf_b0": 0.3262685470704024,
+    "norm_ratio_applied": 1.0000000000000002,
+    "mean_abs_logf_applied": 0.321292525686577
+   },
+   {
+    "lineage": "NCC",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3303,
+     1461,
+     1838
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7074553951137131,
+    "norm_ratio": 0.5943048129551207,
+    "mean_abs_logf_trend": 0.13077629046983263,
+    "mean_abs_logf_b0": 0.22336976586756407,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.22004918624091355
+   },
+   {
+    "lineage": "Neural",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3686,
+     1517,
+     3530
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.6481207353390463,
+    "norm_ratio": 0.6476168187262545,
+    "mean_abs_logf_trend": 0.13968558559068978,
+    "mean_abs_logf_b0": 0.2271534204807644,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.21569172009063345
+   }
+  ],
+  "median_cosine": 0.8012371975575502,
+  "median_norm_ratio": 0.6022486796432819
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_trend",
+  "build_seed": 1000001,
+  "rule": "vec.harness.B0_TREND_RULE",
+  "sized": false,
+  "stages": [
+   "earlier",
+   "start",
+   "ref"
+  ],
+  "days": [
+   8.3,
+   8.5,
+   8.75
+  ],
+  "budget_days": 0.125,
+  "eps": 0.5,
+  "min_cells": 20,
+  "n_trend": 9,
+  "lineages": [
+   {
+    "lineage": "CM",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1357,
+     1919,
+     3076
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.705126965230826,
+    "norm_ratio": 0.46182380548608976,
+    "mean_abs_logf_trend": 0.10012657856374102,
+    "mean_abs_logf_b0": 0.21483231174167827,
+    "norm_ratio_applied": 0.46182380548608976,
+    "mean_abs_logf_applied": 0.10012657856374102
+   },
+   {
+    "lineage": "CranialMesoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     8246,
+     5490,
+     4779
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8724285810519313,
+    "norm_ratio": 0.5778559708392658,
+    "mean_abs_logf_trend": 0.14435116723290306,
+    "mean_abs_logf_b0": 0.2519275032775385,
+    "norm_ratio_applied": 0.5778559708392658,
+    "mean_abs_logf_applied": 0.14435116723290306
+   },
+   {
+    "lineage": "Ectoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     4681,
+     2593,
+     2670
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8051020772804306,
+    "norm_ratio": 0.6144711451327793,
+    "mean_abs_logf_trend": 0.13167560097936698,
+    "mean_abs_logf_b0": 0.22072185106144052,
+    "norm_ratio_applied": 0.6144711451327793,
+    "mean_abs_logf_applied": 0.13167560097936698
+   },
+   {
+    "lineage": "Endoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10205,
+     2591,
+     1883
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8012371975575502,
+    "norm_ratio": 0.6889320869864665,
+    "mean_abs_logf_trend": 0.20098761761542616,
+    "mean_abs_logf_b0": 0.28941409144414276,
+    "norm_ratio_applied": 0.6889320869864665,
+    "mean_abs_logf_applied": 0.20098761761542616
+   },
+   {
+    "lineage": "Endothelial",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     6519,
+     1702,
+     2307
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7122001609639119,
+    "norm_ratio": 0.7244222486804337,
+    "mean_abs_logf_trend": 0.1724206367989974,
+    "mean_abs_logf_b0": 0.23697157769978866,
+    "norm_ratio_applied": 0.7244222486804337,
+    "mean_abs_logf_applied": 0.1724206367989974
+   },
+   {
+    "lineage": "EpiblastStreak",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1339,
+     1148,
+     45
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.9510429992019129,
+    "norm_ratio": 0.562409819268882,
+    "mean_abs_logf_trend": 0.3286815497206078,
+    "mean_abs_logf_b0": 0.5726394481908638,
+    "norm_ratio_applied": 0.562409819268882,
+    "mean_abs_logf_applied": 0.3286815497206078
+   },
+   {
+    "lineage": "ExtraEmbryonicMeso",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10327,
+     3154,
+     1039
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.826901370936835,
+    "norm_ratio": 0.6022486796432819,
+    "mean_abs_logf_trend": 0.19349799937399623,
+    "mean_abs_logf_b0": 0.3262685470704024,
+    "norm_ratio_applied": 0.6022486796432819,
+    "mean_abs_logf_applied": 0.19349799937399623
+   },
+   {
+    "lineage": "NCC",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3303,
+     1461,
+     1838
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7074553951137131,
+    "norm_ratio": 0.5943048129551207,
+    "mean_abs_logf_trend": 0.13077629046983263,
+    "mean_abs_logf_b0": 0.22336976586756407,
+    "norm_ratio_applied": 0.5943048129551207,
+    "mean_abs_logf_applied": 0.13077629046983263
+   },
+   {
+    "lineage": "Neural",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3686,
+     1517,
+     3530
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.6481207353390463,
+    "norm_ratio": 0.6476168187262545,
+    "mean_abs_logf_trend": 0.13968558559068978,
+    "mean_abs_logf_b0": 0.2271534204807644,
+    "norm_ratio_applied": 0.6476168187262545,
+    "mean_abs_logf_applied": 0.13968558559068978
+   }
+  ],
+  "median_cosine": 0.8012371975575502,
+  "median_norm_ratio": 0.6022486796432819
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_trend_sized",
+  "build_seed": 1000001,
+  "rule": "vec.harness.B0_TREND_SIZED_RULE",
+  "sized": true,
+  "stages": [
+   "earlier",
+   "start",
+   "ref"
+  ],
+  "days": [
+   8.3,
+   8.5,
+   8.75
+  ],
+  "budget_days": 0.125,
+  "eps": 0.5,
+  "min_cells": 20,
+  "n_trend": 9,
+  "lineages": [
+   {
+    "lineage": "CM",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1357,
+     1919,
+     3076
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.705126965230826,
+    "norm_ratio": 0.46182380548608976,
+    "mean_abs_logf_trend": 0.10012657856374102,
+    "mean_abs_logf_b0": 0.21483231174167827,
+    "norm_ratio_applied": 0.9999999999999999,
+    "mean_abs_logf_applied": 0.21680688040399607
+   },
+   {
+    "lineage": "CranialMesoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     8246,
+     5490,
+     4779
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8724285810519313,
+    "norm_ratio": 0.5778559708392658,
+    "mean_abs_logf_trend": 0.14435116723290306,
+    "mean_abs_logf_b0": 0.2519275032775385,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.24980475155989212
+   },
+   {
+    "lineage": "Ectoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     4681,
+     2593,
+     2670
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8051020772804306,
+    "norm_ratio": 0.6144711451327793,
+    "mean_abs_logf_trend": 0.13167560097936698,
+    "mean_abs_logf_b0": 0.22072185106144052,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.2142909427438022
+   },
+   {
+    "lineage": "Endoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10205,
+     2591,
+     1883
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8012371975575502,
+    "norm_ratio": 0.6889320869864665,
+    "mean_abs_logf_trend": 0.20098761761542616,
+    "mean_abs_logf_b0": 0.28941409144414276,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.29173792513364877
+   },
+   {
+    "lineage": "Endothelial",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     6519,
+     1702,
+     2307
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7122001609639119,
+    "norm_ratio": 0.7244222486804337,
+    "mean_abs_logf_trend": 0.1724206367989974,
+    "mean_abs_logf_b0": 0.23697157769978866,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.23801123876726457
+   },
+   {
+    "lineage": "EpiblastStreak",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1339,
+     1148,
+     45
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.9510429992019129,
+    "norm_ratio": 0.562409819268882,
+    "mean_abs_logf_trend": 0.3286815497206078,
+    "mean_abs_logf_b0": 0.5726394481908638,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.5844164494636406
+   },
+   {
+    "lineage": "ExtraEmbryonicMeso",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10327,
+     3154,
+     1039
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.826901370936835,
+    "norm_ratio": 0.6022486796432819,
+    "mean_abs_logf_trend": 0.19349799937399623,
+    "mean_abs_logf_b0": 0.3262685470704024,
+    "norm_ratio_applied": 1.0000000000000002,
+    "mean_abs_logf_applied": 0.321292525686577
+   },
+   {
+    "lineage": "NCC",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3303,
+     1461,
+     1838
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7074553951137131,
+    "norm_ratio": 0.5943048129551207,
+    "mean_abs_logf_trend": 0.13077629046983263,
+    "mean_abs_logf_b0": 0.22336976586756407,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.22004918624091355
+   },
+   {
+    "lineage": "Neural",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3686,
+     1517,
+     3530
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.6481207353390463,
+    "norm_ratio": 0.6476168187262545,
+    "mean_abs_logf_trend": 0.13968558559068978,
+    "mean_abs_logf_b0": 0.2271534204807644,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.21569172009063345
+   }
+  ],
+  "median_cosine": 0.8012371975575502,
+  "median_norm_ratio": 0.6022486796432819
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_trend",
+  "build_seed": 1000002,
+  "rule": "vec.harness.B0_TREND_RULE",
+  "sized": false,
+  "stages": [
+   "earlier",
+   "start",
+   "ref"
+  ],
+  "days": [
+   8.3,
+   8.5,
+   8.75
+  ],
+  "budget_days": 0.125,
+  "eps": 0.5,
+  "min_cells": 20,
+  "n_trend": 9,
+  "lineages": [
+   {
+    "lineage": "CM",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1357,
+     1919,
+     3076
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.705126965230826,
+    "norm_ratio": 0.46182380548608976,
+    "mean_abs_logf_trend": 0.10012657856374102,
+    "mean_abs_logf_b0": 0.21483231174167827,
+    "norm_ratio_applied": 0.46182380548608976,
+    "mean_abs_logf_applied": 0.10012657856374102
+   },
+   {
+    "lineage": "CranialMesoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     8246,
+     5490,
+     4779
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8724285810519313,
+    "norm_ratio": 0.5778559708392658,
+    "mean_abs_logf_trend": 0.14435116723290306,
+    "mean_abs_logf_b0": 0.2519275032775385,
+    "norm_ratio_applied": 0.5778559708392658,
+    "mean_abs_logf_applied": 0.14435116723290306
+   },
+   {
+    "lineage": "Ectoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     4681,
+     2593,
+     2670
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8051020772804306,
+    "norm_ratio": 0.6144711451327793,
+    "mean_abs_logf_trend": 0.13167560097936698,
+    "mean_abs_logf_b0": 0.22072185106144052,
+    "norm_ratio_applied": 0.6144711451327793,
+    "mean_abs_logf_applied": 0.13167560097936698
+   },
+   {
+    "lineage": "Endoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10205,
+     2591,
+     1883
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8012371975575502,
+    "norm_ratio": 0.6889320869864665,
+    "mean_abs_logf_trend": 0.20098761761542616,
+    "mean_abs_logf_b0": 0.28941409144414276,
+    "norm_ratio_applied": 0.6889320869864665,
+    "mean_abs_logf_applied": 0.20098761761542616
+   },
+   {
+    "lineage": "Endothelial",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     6519,
+     1702,
+     2307
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7122001609639119,
+    "norm_ratio": 0.7244222486804337,
+    "mean_abs_logf_trend": 0.1724206367989974,
+    "mean_abs_logf_b0": 0.23697157769978866,
+    "norm_ratio_applied": 0.7244222486804337,
+    "mean_abs_logf_applied": 0.1724206367989974
+   },
+   {
+    "lineage": "EpiblastStreak",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1339,
+     1148,
+     45
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.9510429992019129,
+    "norm_ratio": 0.562409819268882,
+    "mean_abs_logf_trend": 0.3286815497206078,
+    "mean_abs_logf_b0": 0.5726394481908638,
+    "norm_ratio_applied": 0.562409819268882,
+    "mean_abs_logf_applied": 0.3286815497206078
+   },
+   {
+    "lineage": "ExtraEmbryonicMeso",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10327,
+     3154,
+     1039
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.826901370936835,
+    "norm_ratio": 0.6022486796432819,
+    "mean_abs_logf_trend": 0.19349799937399623,
+    "mean_abs_logf_b0": 0.3262685470704024,
+    "norm_ratio_applied": 0.6022486796432819,
+    "mean_abs_logf_applied": 0.19349799937399623
+   },
+   {
+    "lineage": "NCC",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3303,
+     1461,
+     1838
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7074553951137131,
+    "norm_ratio": 0.5943048129551207,
+    "mean_abs_logf_trend": 0.13077629046983263,
+    "mean_abs_logf_b0": 0.22336976586756407,
+    "norm_ratio_applied": 0.5943048129551207,
+    "mean_abs_logf_applied": 0.13077629046983263
+   },
+   {
+    "lineage": "Neural",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3686,
+     1517,
+     3530
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.6481207353390463,
+    "norm_ratio": 0.6476168187262545,
+    "mean_abs_logf_trend": 0.13968558559068978,
+    "mean_abs_logf_b0": 0.2271534204807644,
+    "norm_ratio_applied": 0.6476168187262545,
+    "mean_abs_logf_applied": 0.13968558559068978
+   }
+  ],
+  "median_cosine": 0.8012371975575502,
+  "median_norm_ratio": 0.6022486796432819
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_trend_sized",
+  "build_seed": 1000002,
+  "rule": "vec.harness.B0_TREND_SIZED_RULE",
+  "sized": true,
+  "stages": [
+   "earlier",
+   "start",
+   "ref"
+  ],
+  "days": [
+   8.3,
+   8.5,
+   8.75
+  ],
+  "budget_days": 0.125,
+  "eps": 0.5,
+  "min_cells": 20,
+  "n_trend": 9,
+  "lineages": [
+   {
+    "lineage": "CM",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1357,
+     1919,
+     3076
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.705126965230826,
+    "norm_ratio": 0.46182380548608976,
+    "mean_abs_logf_trend": 0.10012657856374102,
+    "mean_abs_logf_b0": 0.21483231174167827,
+    "norm_ratio_applied": 0.9999999999999999,
+    "mean_abs_logf_applied": 0.21680688040399607
+   },
+   {
+    "lineage": "CranialMesoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     8246,
+     5490,
+     4779
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8724285810519313,
+    "norm_ratio": 0.5778559708392658,
+    "mean_abs_logf_trend": 0.14435116723290306,
+    "mean_abs_logf_b0": 0.2519275032775385,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.24980475155989212
+   },
+   {
+    "lineage": "Ectoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     4681,
+     2593,
+     2670
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8051020772804306,
+    "norm_ratio": 0.6144711451327793,
+    "mean_abs_logf_trend": 0.13167560097936698,
+    "mean_abs_logf_b0": 0.22072185106144052,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.2142909427438022
+   },
+   {
+    "lineage": "Endoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10205,
+     2591,
+     1883
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8012371975575502,
+    "norm_ratio": 0.6889320869864665,
+    "mean_abs_logf_trend": 0.20098761761542616,
+    "mean_abs_logf_b0": 0.28941409144414276,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.29173792513364877
+   },
+   {
+    "lineage": "Endothelial",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     6519,
+     1702,
+     2307
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7122001609639119,
+    "norm_ratio": 0.7244222486804337,
+    "mean_abs_logf_trend": 0.1724206367989974,
+    "mean_abs_logf_b0": 0.23697157769978866,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.23801123876726457
+   },
+   {
+    "lineage": "EpiblastStreak",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1339,
+     1148,
+     45
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.9510429992019129,
+    "norm_ratio": 0.562409819268882,
+    "mean_abs_logf_trend": 0.3286815497206078,
+    "mean_abs_logf_b0": 0.5726394481908638,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.5844164494636406
+   },
+   {
+    "lineage": "ExtraEmbryonicMeso",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10327,
+     3154,
+     1039
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.826901370936835,
+    "norm_ratio": 0.6022486796432819,
+    "mean_abs_logf_trend": 0.19349799937399623,
+    "mean_abs_logf_b0": 0.3262685470704024,
+    "norm_ratio_applied": 1.0000000000000002,
+    "mean_abs_logf_applied": 0.321292525686577
+   },
+   {
+    "lineage": "NCC",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3303,
+     1461,
+     1838
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7074553951137131,
+    "norm_ratio": 0.5943048129551207,
+    "mean_abs_logf_trend": 0.13077629046983263,
+    "mean_abs_logf_b0": 0.22336976586756407,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.22004918624091355
+   },
+   {
+    "lineage": "Neural",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3686,
+     1517,
+     3530
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.6481207353390463,
+    "norm_ratio": 0.6476168187262545,
+    "mean_abs_logf_trend": 0.13968558559068978,
+    "mean_abs_logf_b0": 0.2271534204807644,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.21569172009063345
+   }
+  ],
+  "median_cosine": 0.8012371975575502,
+  "median_norm_ratio": 0.6022486796432819
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_trend",
+  "build_seed": 1000003,
+  "rule": "vec.harness.B0_TREND_RULE",
+  "sized": false,
+  "stages": [
+   "earlier",
+   "start",
+   "ref"
+  ],
+  "days": [
+   8.3,
+   8.5,
+   8.75
+  ],
+  "budget_days": 0.125,
+  "eps": 0.5,
+  "min_cells": 20,
+  "n_trend": 9,
+  "lineages": [
+   {
+    "lineage": "CM",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1357,
+     1919,
+     3076
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.705126965230826,
+    "norm_ratio": 0.46182380548608976,
+    "mean_abs_logf_trend": 0.10012657856374102,
+    "mean_abs_logf_b0": 0.21483231174167827,
+    "norm_ratio_applied": 0.46182380548608976,
+    "mean_abs_logf_applied": 0.10012657856374102
+   },
+   {
+    "lineage": "CranialMesoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     8246,
+     5490,
+     4779
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8724285810519313,
+    "norm_ratio": 0.5778559708392658,
+    "mean_abs_logf_trend": 0.14435116723290306,
+    "mean_abs_logf_b0": 0.2519275032775385,
+    "norm_ratio_applied": 0.5778559708392658,
+    "mean_abs_logf_applied": 0.14435116723290306
+   },
+   {
+    "lineage": "Ectoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     4681,
+     2593,
+     2670
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8051020772804306,
+    "norm_ratio": 0.6144711451327793,
+    "mean_abs_logf_trend": 0.13167560097936698,
+    "mean_abs_logf_b0": 0.22072185106144052,
+    "norm_ratio_applied": 0.6144711451327793,
+    "mean_abs_logf_applied": 0.13167560097936698
+   },
+   {
+    "lineage": "Endoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10205,
+     2591,
+     1883
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8012371975575502,
+    "norm_ratio": 0.6889320869864665,
+    "mean_abs_logf_trend": 0.20098761761542616,
+    "mean_abs_logf_b0": 0.28941409144414276,
+    "norm_ratio_applied": 0.6889320869864665,
+    "mean_abs_logf_applied": 0.20098761761542616
+   },
+   {
+    "lineage": "Endothelial",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     6519,
+     1702,
+     2307
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7122001609639119,
+    "norm_ratio": 0.7244222486804337,
+    "mean_abs_logf_trend": 0.1724206367989974,
+    "mean_abs_logf_b0": 0.23697157769978866,
+    "norm_ratio_applied": 0.7244222486804337,
+    "mean_abs_logf_applied": 0.1724206367989974
+   },
+   {
+    "lineage": "EpiblastStreak",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1339,
+     1148,
+     45
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.9510429992019129,
+    "norm_ratio": 0.562409819268882,
+    "mean_abs_logf_trend": 0.3286815497206078,
+    "mean_abs_logf_b0": 0.5726394481908638,
+    "norm_ratio_applied": 0.562409819268882,
+    "mean_abs_logf_applied": 0.3286815497206078
+   },
+   {
+    "lineage": "ExtraEmbryonicMeso",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10327,
+     3154,
+     1039
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.826901370936835,
+    "norm_ratio": 0.6022486796432819,
+    "mean_abs_logf_trend": 0.19349799937399623,
+    "mean_abs_logf_b0": 0.3262685470704024,
+    "norm_ratio_applied": 0.6022486796432819,
+    "mean_abs_logf_applied": 0.19349799937399623
+   },
+   {
+    "lineage": "NCC",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3303,
+     1461,
+     1838
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7074553951137131,
+    "norm_ratio": 0.5943048129551207,
+    "mean_abs_logf_trend": 0.13077629046983263,
+    "mean_abs_logf_b0": 0.22336976586756407,
+    "norm_ratio_applied": 0.5943048129551207,
+    "mean_abs_logf_applied": 0.13077629046983263
+   },
+   {
+    "lineage": "Neural",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3686,
+     1517,
+     3530
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.6481207353390463,
+    "norm_ratio": 0.6476168187262545,
+    "mean_abs_logf_trend": 0.13968558559068978,
+    "mean_abs_logf_b0": 0.2271534204807644,
+    "norm_ratio_applied": 0.6476168187262545,
+    "mean_abs_logf_applied": 0.13968558559068978
+   }
+  ],
+  "median_cosine": 0.8012371975575502,
+  "median_norm_ratio": 0.6022486796432819
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_trend_sized",
+  "build_seed": 1000003,
+  "rule": "vec.harness.B0_TREND_SIZED_RULE",
+  "sized": true,
+  "stages": [
+   "earlier",
+   "start",
+   "ref"
+  ],
+  "days": [
+   8.3,
+   8.5,
+   8.75
+  ],
+  "budget_days": 0.125,
+  "eps": 0.5,
+  "min_cells": 20,
+  "n_trend": 9,
+  "lineages": [
+   {
+    "lineage": "CM",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1357,
+     1919,
+     3076
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.705126965230826,
+    "norm_ratio": 0.46182380548608976,
+    "mean_abs_logf_trend": 0.10012657856374102,
+    "mean_abs_logf_b0": 0.21483231174167827,
+    "norm_ratio_applied": 0.9999999999999999,
+    "mean_abs_logf_applied": 0.21680688040399607
+   },
+   {
+    "lineage": "CranialMesoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     8246,
+     5490,
+     4779
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8724285810519313,
+    "norm_ratio": 0.5778559708392658,
+    "mean_abs_logf_trend": 0.14435116723290306,
+    "mean_abs_logf_b0": 0.2519275032775385,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.24980475155989212
+   },
+   {
+    "lineage": "Ectoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     4681,
+     2593,
+     2670
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8051020772804306,
+    "norm_ratio": 0.6144711451327793,
+    "mean_abs_logf_trend": 0.13167560097936698,
+    "mean_abs_logf_b0": 0.22072185106144052,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.2142909427438022
+   },
+   {
+    "lineage": "Endoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10205,
+     2591,
+     1883
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8012371975575502,
+    "norm_ratio": 0.6889320869864665,
+    "mean_abs_logf_trend": 0.20098761761542616,
+    "mean_abs_logf_b0": 0.28941409144414276,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.29173792513364877
+   },
+   {
+    "lineage": "Endothelial",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     6519,
+     1702,
+     2307
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7122001609639119,
+    "norm_ratio": 0.7244222486804337,
+    "mean_abs_logf_trend": 0.1724206367989974,
+    "mean_abs_logf_b0": 0.23697157769978866,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.23801123876726457
+   },
+   {
+    "lineage": "EpiblastStreak",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1339,
+     1148,
+     45
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.9510429992019129,
+    "norm_ratio": 0.562409819268882,
+    "mean_abs_logf_trend": 0.3286815497206078,
+    "mean_abs_logf_b0": 0.5726394481908638,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.5844164494636406
+   },
+   {
+    "lineage": "ExtraEmbryonicMeso",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10327,
+     3154,
+     1039
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.826901370936835,
+    "norm_ratio": 0.6022486796432819,
+    "mean_abs_logf_trend": 0.19349799937399623,
+    "mean_abs_logf_b0": 0.3262685470704024,
+    "norm_ratio_applied": 1.0000000000000002,
+    "mean_abs_logf_applied": 0.321292525686577
+   },
+   {
+    "lineage": "NCC",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3303,
+     1461,
+     1838
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7074553951137131,
+    "norm_ratio": 0.5943048129551207,
+    "mean_abs_logf_trend": 0.13077629046983263,
+    "mean_abs_logf_b0": 0.22336976586756407,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.22004918624091355
+   },
+   {
+    "lineage": "Neural",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3686,
+     1517,
+     3530
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.6481207353390463,
+    "norm_ratio": 0.6476168187262545,
+    "mean_abs_logf_trend": 0.13968558559068978,
+    "mean_abs_logf_b0": 0.2271534204807644,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.21569172009063345
+   }
+  ],
+  "median_cosine": 0.8012371975575502,
+  "median_norm_ratio": 0.6022486796432819
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_trend",
+  "build_seed": 1000004,
+  "rule": "vec.harness.B0_TREND_RULE",
+  "sized": false,
+  "stages": [
+   "earlier",
+   "start",
+   "ref"
+  ],
+  "days": [
+   8.3,
+   8.5,
+   8.75
+  ],
+  "budget_days": 0.125,
+  "eps": 0.5,
+  "min_cells": 20,
+  "n_trend": 9,
+  "lineages": [
+   {
+    "lineage": "CM",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1357,
+     1919,
+     3076
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.705126965230826,
+    "norm_ratio": 0.46182380548608976,
+    "mean_abs_logf_trend": 0.10012657856374102,
+    "mean_abs_logf_b0": 0.21483231174167827,
+    "norm_ratio_applied": 0.46182380548608976,
+    "mean_abs_logf_applied": 0.10012657856374102
+   },
+   {
+    "lineage": "CranialMesoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     8246,
+     5490,
+     4779
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8724285810519313,
+    "norm_ratio": 0.5778559708392658,
+    "mean_abs_logf_trend": 0.14435116723290306,
+    "mean_abs_logf_b0": 0.2519275032775385,
+    "norm_ratio_applied": 0.5778559708392658,
+    "mean_abs_logf_applied": 0.14435116723290306
+   },
+   {
+    "lineage": "Ectoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     4681,
+     2593,
+     2670
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8051020772804306,
+    "norm_ratio": 0.6144711451327793,
+    "mean_abs_logf_trend": 0.13167560097936698,
+    "mean_abs_logf_b0": 0.22072185106144052,
+    "norm_ratio_applied": 0.6144711451327793,
+    "mean_abs_logf_applied": 0.13167560097936698
+   },
+   {
+    "lineage": "Endoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10205,
+     2591,
+     1883
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8012371975575502,
+    "norm_ratio": 0.6889320869864665,
+    "mean_abs_logf_trend": 0.20098761761542616,
+    "mean_abs_logf_b0": 0.28941409144414276,
+    "norm_ratio_applied": 0.6889320869864665,
+    "mean_abs_logf_applied": 0.20098761761542616
+   },
+   {
+    "lineage": "Endothelial",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     6519,
+     1702,
+     2307
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7122001609639119,
+    "norm_ratio": 0.7244222486804337,
+    "mean_abs_logf_trend": 0.1724206367989974,
+    "mean_abs_logf_b0": 0.23697157769978866,
+    "norm_ratio_applied": 0.7244222486804337,
+    "mean_abs_logf_applied": 0.1724206367989974
+   },
+   {
+    "lineage": "EpiblastStreak",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1339,
+     1148,
+     45
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.9510429992019129,
+    "norm_ratio": 0.562409819268882,
+    "mean_abs_logf_trend": 0.3286815497206078,
+    "mean_abs_logf_b0": 0.5726394481908638,
+    "norm_ratio_applied": 0.562409819268882,
+    "mean_abs_logf_applied": 0.3286815497206078
+   },
+   {
+    "lineage": "ExtraEmbryonicMeso",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10327,
+     3154,
+     1039
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.826901370936835,
+    "norm_ratio": 0.6022486796432819,
+    "mean_abs_logf_trend": 0.19349799937399623,
+    "mean_abs_logf_b0": 0.3262685470704024,
+    "norm_ratio_applied": 0.6022486796432819,
+    "mean_abs_logf_applied": 0.19349799937399623
+   },
+   {
+    "lineage": "NCC",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3303,
+     1461,
+     1838
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7074553951137131,
+    "norm_ratio": 0.5943048129551207,
+    "mean_abs_logf_trend": 0.13077629046983263,
+    "mean_abs_logf_b0": 0.22336976586756407,
+    "norm_ratio_applied": 0.5943048129551207,
+    "mean_abs_logf_applied": 0.13077629046983263
+   },
+   {
+    "lineage": "Neural",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3686,
+     1517,
+     3530
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.6481207353390463,
+    "norm_ratio": 0.6476168187262545,
+    "mean_abs_logf_trend": 0.13968558559068978,
+    "mean_abs_logf_b0": 0.2271534204807644,
+    "norm_ratio_applied": 0.6476168187262545,
+    "mean_abs_logf_applied": 0.13968558559068978
+   }
+  ],
+  "median_cosine": 0.8012371975575502,
+  "median_norm_ratio": 0.6022486796432819
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_trend_sized",
+  "build_seed": 1000004,
+  "rule": "vec.harness.B0_TREND_SIZED_RULE",
+  "sized": true,
+  "stages": [
+   "earlier",
+   "start",
+   "ref"
+  ],
+  "days": [
+   8.3,
+   8.5,
+   8.75
+  ],
+  "budget_days": 0.125,
+  "eps": 0.5,
+  "min_cells": 20,
+  "n_trend": 9,
+  "lineages": [
+   {
+    "lineage": "CM",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1357,
+     1919,
+     3076
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.705126965230826,
+    "norm_ratio": 0.46182380548608976,
+    "mean_abs_logf_trend": 0.10012657856374102,
+    "mean_abs_logf_b0": 0.21483231174167827,
+    "norm_ratio_applied": 0.9999999999999999,
+    "mean_abs_logf_applied": 0.21680688040399607
+   },
+   {
+    "lineage": "CranialMesoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     8246,
+     5490,
+     4779
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8724285810519313,
+    "norm_ratio": 0.5778559708392658,
+    "mean_abs_logf_trend": 0.14435116723290306,
+    "mean_abs_logf_b0": 0.2519275032775385,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.24980475155989212
+   },
+   {
+    "lineage": "Ectoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     4681,
+     2593,
+     2670
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8051020772804306,
+    "norm_ratio": 0.6144711451327793,
+    "mean_abs_logf_trend": 0.13167560097936698,
+    "mean_abs_logf_b0": 0.22072185106144052,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.2142909427438022
+   },
+   {
+    "lineage": "Endoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10205,
+     2591,
+     1883
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8012371975575502,
+    "norm_ratio": 0.6889320869864665,
+    "mean_abs_logf_trend": 0.20098761761542616,
+    "mean_abs_logf_b0": 0.28941409144414276,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.29173792513364877
+   },
+   {
+    "lineage": "Endothelial",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     6519,
+     1702,
+     2307
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7122001609639119,
+    "norm_ratio": 0.7244222486804337,
+    "mean_abs_logf_trend": 0.1724206367989974,
+    "mean_abs_logf_b0": 0.23697157769978866,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.23801123876726457
+   },
+   {
+    "lineage": "EpiblastStreak",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1339,
+     1148,
+     45
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.9510429992019129,
+    "norm_ratio": 0.562409819268882,
+    "mean_abs_logf_trend": 0.3286815497206078,
+    "mean_abs_logf_b0": 0.5726394481908638,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.5844164494636406
+   },
+   {
+    "lineage": "ExtraEmbryonicMeso",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10327,
+     3154,
+     1039
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.826901370936835,
+    "norm_ratio": 0.6022486796432819,
+    "mean_abs_logf_trend": 0.19349799937399623,
+    "mean_abs_logf_b0": 0.3262685470704024,
+    "norm_ratio_applied": 1.0000000000000002,
+    "mean_abs_logf_applied": 0.321292525686577
+   },
+   {
+    "lineage": "NCC",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3303,
+     1461,
+     1838
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7074553951137131,
+    "norm_ratio": 0.5943048129551207,
+    "mean_abs_logf_trend": 0.13077629046983263,
+    "mean_abs_logf_b0": 0.22336976586756407,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.22004918624091355
+   },
+   {
+    "lineage": "Neural",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3686,
+     1517,
+     3530
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.6481207353390463,
+    "norm_ratio": 0.6476168187262545,
+    "mean_abs_logf_trend": 0.13968558559068978,
+    "mean_abs_logf_b0": 0.2271534204807644,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.21569172009063345
+   }
+  ],
+  "median_cosine": 0.8012371975575502,
+  "median_norm_ratio": 0.6022486796432819
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_trend",
+  "build_seed": 1000005,
+  "rule": "vec.harness.B0_TREND_RULE",
+  "sized": false,
+  "stages": [
+   "earlier",
+   "start",
+   "ref"
+  ],
+  "days": [
+   8.3,
+   8.5,
+   8.75
+  ],
+  "budget_days": 0.125,
+  "eps": 0.5,
+  "min_cells": 20,
+  "n_trend": 9,
+  "lineages": [
+   {
+    "lineage": "CM",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1357,
+     1919,
+     3076
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.705126965230826,
+    "norm_ratio": 0.46182380548608976,
+    "mean_abs_logf_trend": 0.10012657856374102,
+    "mean_abs_logf_b0": 0.21483231174167827,
+    "norm_ratio_applied": 0.46182380548608976,
+    "mean_abs_logf_applied": 0.10012657856374102
+   },
+   {
+    "lineage": "CranialMesoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     8246,
+     5490,
+     4779
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8724285810519313,
+    "norm_ratio": 0.5778559708392658,
+    "mean_abs_logf_trend": 0.14435116723290306,
+    "mean_abs_logf_b0": 0.2519275032775385,
+    "norm_ratio_applied": 0.5778559708392658,
+    "mean_abs_logf_applied": 0.14435116723290306
+   },
+   {
+    "lineage": "Ectoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     4681,
+     2593,
+     2670
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8051020772804306,
+    "norm_ratio": 0.6144711451327793,
+    "mean_abs_logf_trend": 0.13167560097936698,
+    "mean_abs_logf_b0": 0.22072185106144052,
+    "norm_ratio_applied": 0.6144711451327793,
+    "mean_abs_logf_applied": 0.13167560097936698
+   },
+   {
+    "lineage": "Endoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10205,
+     2591,
+     1883
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8012371975575502,
+    "norm_ratio": 0.6889320869864665,
+    "mean_abs_logf_trend": 0.20098761761542616,
+    "mean_abs_logf_b0": 0.28941409144414276,
+    "norm_ratio_applied": 0.6889320869864665,
+    "mean_abs_logf_applied": 0.20098761761542616
+   },
+   {
+    "lineage": "Endothelial",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     6519,
+     1702,
+     2307
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7122001609639119,
+    "norm_ratio": 0.7244222486804337,
+    "mean_abs_logf_trend": 0.1724206367989974,
+    "mean_abs_logf_b0": 0.23697157769978866,
+    "norm_ratio_applied": 0.7244222486804337,
+    "mean_abs_logf_applied": 0.1724206367989974
+   },
+   {
+    "lineage": "EpiblastStreak",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1339,
+     1148,
+     45
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.9510429992019129,
+    "norm_ratio": 0.562409819268882,
+    "mean_abs_logf_trend": 0.3286815497206078,
+    "mean_abs_logf_b0": 0.5726394481908638,
+    "norm_ratio_applied": 0.562409819268882,
+    "mean_abs_logf_applied": 0.3286815497206078
+   },
+   {
+    "lineage": "ExtraEmbryonicMeso",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10327,
+     3154,
+     1039
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.826901370936835,
+    "norm_ratio": 0.6022486796432819,
+    "mean_abs_logf_trend": 0.19349799937399623,
+    "mean_abs_logf_b0": 0.3262685470704024,
+    "norm_ratio_applied": 0.6022486796432819,
+    "mean_abs_logf_applied": 0.19349799937399623
+   },
+   {
+    "lineage": "NCC",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3303,
+     1461,
+     1838
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7074553951137131,
+    "norm_ratio": 0.5943048129551207,
+    "mean_abs_logf_trend": 0.13077629046983263,
+    "mean_abs_logf_b0": 0.22336976586756407,
+    "norm_ratio_applied": 0.5943048129551207,
+    "mean_abs_logf_applied": 0.13077629046983263
+   },
+   {
+    "lineage": "Neural",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3686,
+     1517,
+     3530
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.6481207353390463,
+    "norm_ratio": 0.6476168187262545,
+    "mean_abs_logf_trend": 0.13968558559068978,
+    "mean_abs_logf_b0": 0.2271534204807644,
+    "norm_ratio_applied": 0.6476168187262545,
+    "mean_abs_logf_applied": 0.13968558559068978
+   }
+  ],
+  "median_cosine": 0.8012371975575502,
+  "median_norm_ratio": 0.6022486796432819
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_trend_sized",
+  "build_seed": 1000005,
+  "rule": "vec.harness.B0_TREND_SIZED_RULE",
+  "sized": true,
+  "stages": [
+   "earlier",
+   "start",
+   "ref"
+  ],
+  "days": [
+   8.3,
+   8.5,
+   8.75
+  ],
+  "budget_days": 0.125,
+  "eps": 0.5,
+  "min_cells": 20,
+  "n_trend": 9,
+  "lineages": [
+   {
+    "lineage": "CM",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1357,
+     1919,
+     3076
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.705126965230826,
+    "norm_ratio": 0.46182380548608976,
+    "mean_abs_logf_trend": 0.10012657856374102,
+    "mean_abs_logf_b0": 0.21483231174167827,
+    "norm_ratio_applied": 0.9999999999999999,
+    "mean_abs_logf_applied": 0.21680688040399607
+   },
+   {
+    "lineage": "CranialMesoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     8246,
+     5490,
+     4779
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8724285810519313,
+    "norm_ratio": 0.5778559708392658,
+    "mean_abs_logf_trend": 0.14435116723290306,
+    "mean_abs_logf_b0": 0.2519275032775385,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.24980475155989212
+   },
+   {
+    "lineage": "Ectoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     4681,
+     2593,
+     2670
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8051020772804306,
+    "norm_ratio": 0.6144711451327793,
+    "mean_abs_logf_trend": 0.13167560097936698,
+    "mean_abs_logf_b0": 0.22072185106144052,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.2142909427438022
+   },
+   {
+    "lineage": "Endoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10205,
+     2591,
+     1883
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8012371975575502,
+    "norm_ratio": 0.6889320869864665,
+    "mean_abs_logf_trend": 0.20098761761542616,
+    "mean_abs_logf_b0": 0.28941409144414276,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.29173792513364877
+   },
+   {
+    "lineage": "Endothelial",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     6519,
+     1702,
+     2307
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7122001609639119,
+    "norm_ratio": 0.7244222486804337,
+    "mean_abs_logf_trend": 0.1724206367989974,
+    "mean_abs_logf_b0": 0.23697157769978866,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.23801123876726457
+   },
+   {
+    "lineage": "EpiblastStreak",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1339,
+     1148,
+     45
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.9510429992019129,
+    "norm_ratio": 0.562409819268882,
+    "mean_abs_logf_trend": 0.3286815497206078,
+    "mean_abs_logf_b0": 0.5726394481908638,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.5844164494636406
+   },
+   {
+    "lineage": "ExtraEmbryonicMeso",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10327,
+     3154,
+     1039
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.826901370936835,
+    "norm_ratio": 0.6022486796432819,
+    "mean_abs_logf_trend": 0.19349799937399623,
+    "mean_abs_logf_b0": 0.3262685470704024,
+    "norm_ratio_applied": 1.0000000000000002,
+    "mean_abs_logf_applied": 0.321292525686577
+   },
+   {
+    "lineage": "NCC",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3303,
+     1461,
+     1838
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7074553951137131,
+    "norm_ratio": 0.5943048129551207,
+    "mean_abs_logf_trend": 0.13077629046983263,
+    "mean_abs_logf_b0": 0.22336976586756407,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.22004918624091355
+   },
+   {
+    "lineage": "Neural",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3686,
+     1517,
+     3530
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.6481207353390463,
+    "norm_ratio": 0.6476168187262545,
+    "mean_abs_logf_trend": 0.13968558559068978,
+    "mean_abs_logf_b0": 0.2271534204807644,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.21569172009063345
+   }
+  ],
+  "median_cosine": 0.8012371975575502,
+  "median_norm_ratio": 0.6022486796432819
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_trend",
+  "build_seed": 1000006,
+  "rule": "vec.harness.B0_TREND_RULE",
+  "sized": false,
+  "stages": [
+   "earlier",
+   "start",
+   "ref"
+  ],
+  "days": [
+   8.3,
+   8.5,
+   8.75
+  ],
+  "budget_days": 0.125,
+  "eps": 0.5,
+  "min_cells": 20,
+  "n_trend": 9,
+  "lineages": [
+   {
+    "lineage": "CM",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1357,
+     1919,
+     3076
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.705126965230826,
+    "norm_ratio": 0.46182380548608976,
+    "mean_abs_logf_trend": 0.10012657856374102,
+    "mean_abs_logf_b0": 0.21483231174167827,
+    "norm_ratio_applied": 0.46182380548608976,
+    "mean_abs_logf_applied": 0.10012657856374102
+   },
+   {
+    "lineage": "CranialMesoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     8246,
+     5490,
+     4779
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8724285810519313,
+    "norm_ratio": 0.5778559708392658,
+    "mean_abs_logf_trend": 0.14435116723290306,
+    "mean_abs_logf_b0": 0.2519275032775385,
+    "norm_ratio_applied": 0.5778559708392658,
+    "mean_abs_logf_applied": 0.14435116723290306
+   },
+   {
+    "lineage": "Ectoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     4681,
+     2593,
+     2670
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8051020772804306,
+    "norm_ratio": 0.6144711451327793,
+    "mean_abs_logf_trend": 0.13167560097936698,
+    "mean_abs_logf_b0": 0.22072185106144052,
+    "norm_ratio_applied": 0.6144711451327793,
+    "mean_abs_logf_applied": 0.13167560097936698
+   },
+   {
+    "lineage": "Endoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10205,
+     2591,
+     1883
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8012371975575502,
+    "norm_ratio": 0.6889320869864665,
+    "mean_abs_logf_trend": 0.20098761761542616,
+    "mean_abs_logf_b0": 0.28941409144414276,
+    "norm_ratio_applied": 0.6889320869864665,
+    "mean_abs_logf_applied": 0.20098761761542616
+   },
+   {
+    "lineage": "Endothelial",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     6519,
+     1702,
+     2307
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7122001609639119,
+    "norm_ratio": 0.7244222486804337,
+    "mean_abs_logf_trend": 0.1724206367989974,
+    "mean_abs_logf_b0": 0.23697157769978866,
+    "norm_ratio_applied": 0.7244222486804337,
+    "mean_abs_logf_applied": 0.1724206367989974
+   },
+   {
+    "lineage": "EpiblastStreak",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1339,
+     1148,
+     45
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.9510429992019129,
+    "norm_ratio": 0.562409819268882,
+    "mean_abs_logf_trend": 0.3286815497206078,
+    "mean_abs_logf_b0": 0.5726394481908638,
+    "norm_ratio_applied": 0.562409819268882,
+    "mean_abs_logf_applied": 0.3286815497206078
+   },
+   {
+    "lineage": "ExtraEmbryonicMeso",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10327,
+     3154,
+     1039
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.826901370936835,
+    "norm_ratio": 0.6022486796432819,
+    "mean_abs_logf_trend": 0.19349799937399623,
+    "mean_abs_logf_b0": 0.3262685470704024,
+    "norm_ratio_applied": 0.6022486796432819,
+    "mean_abs_logf_applied": 0.19349799937399623
+   },
+   {
+    "lineage": "NCC",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3303,
+     1461,
+     1838
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7074553951137131,
+    "norm_ratio": 0.5943048129551207,
+    "mean_abs_logf_trend": 0.13077629046983263,
+    "mean_abs_logf_b0": 0.22336976586756407,
+    "norm_ratio_applied": 0.5943048129551207,
+    "mean_abs_logf_applied": 0.13077629046983263
+   },
+   {
+    "lineage": "Neural",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3686,
+     1517,
+     3530
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.6481207353390463,
+    "norm_ratio": 0.6476168187262545,
+    "mean_abs_logf_trend": 0.13968558559068978,
+    "mean_abs_logf_b0": 0.2271534204807644,
+    "norm_ratio_applied": 0.6476168187262545,
+    "mean_abs_logf_applied": 0.13968558559068978
+   }
+  ],
+  "median_cosine": 0.8012371975575502,
+  "median_norm_ratio": 0.6022486796432819
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_trend_sized",
+  "build_seed": 1000006,
+  "rule": "vec.harness.B0_TREND_SIZED_RULE",
+  "sized": true,
+  "stages": [
+   "earlier",
+   "start",
+   "ref"
+  ],
+  "days": [
+   8.3,
+   8.5,
+   8.75
+  ],
+  "budget_days": 0.125,
+  "eps": 0.5,
+  "min_cells": 20,
+  "n_trend": 9,
+  "lineages": [
+   {
+    "lineage": "CM",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1357,
+     1919,
+     3076
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.705126965230826,
+    "norm_ratio": 0.46182380548608976,
+    "mean_abs_logf_trend": 0.10012657856374102,
+    "mean_abs_logf_b0": 0.21483231174167827,
+    "norm_ratio_applied": 0.9999999999999999,
+    "mean_abs_logf_applied": 0.21680688040399607
+   },
+   {
+    "lineage": "CranialMesoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     8246,
+     5490,
+     4779
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8724285810519313,
+    "norm_ratio": 0.5778559708392658,
+    "mean_abs_logf_trend": 0.14435116723290306,
+    "mean_abs_logf_b0": 0.2519275032775385,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.24980475155989212
+   },
+   {
+    "lineage": "Ectoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     4681,
+     2593,
+     2670
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8051020772804306,
+    "norm_ratio": 0.6144711451327793,
+    "mean_abs_logf_trend": 0.13167560097936698,
+    "mean_abs_logf_b0": 0.22072185106144052,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.2142909427438022
+   },
+   {
+    "lineage": "Endoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10205,
+     2591,
+     1883
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8012371975575502,
+    "norm_ratio": 0.6889320869864665,
+    "mean_abs_logf_trend": 0.20098761761542616,
+    "mean_abs_logf_b0": 0.28941409144414276,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.29173792513364877
+   },
+   {
+    "lineage": "Endothelial",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     6519,
+     1702,
+     2307
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7122001609639119,
+    "norm_ratio": 0.7244222486804337,
+    "mean_abs_logf_trend": 0.1724206367989974,
+    "mean_abs_logf_b0": 0.23697157769978866,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.23801123876726457
+   },
+   {
+    "lineage": "EpiblastStreak",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1339,
+     1148,
+     45
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.9510429992019129,
+    "norm_ratio": 0.562409819268882,
+    "mean_abs_logf_trend": 0.3286815497206078,
+    "mean_abs_logf_b0": 0.5726394481908638,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.5844164494636406
+   },
+   {
+    "lineage": "ExtraEmbryonicMeso",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10327,
+     3154,
+     1039
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.826901370936835,
+    "norm_ratio": 0.6022486796432819,
+    "mean_abs_logf_trend": 0.19349799937399623,
+    "mean_abs_logf_b0": 0.3262685470704024,
+    "norm_ratio_applied": 1.0000000000000002,
+    "mean_abs_logf_applied": 0.321292525686577
+   },
+   {
+    "lineage": "NCC",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3303,
+     1461,
+     1838
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7074553951137131,
+    "norm_ratio": 0.5943048129551207,
+    "mean_abs_logf_trend": 0.13077629046983263,
+    "mean_abs_logf_b0": 0.22336976586756407,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.22004918624091355
+   },
+   {
+    "lineage": "Neural",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3686,
+     1517,
+     3530
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.6481207353390463,
+    "norm_ratio": 0.6476168187262545,
+    "mean_abs_logf_trend": 0.13968558559068978,
+    "mean_abs_logf_b0": 0.2271534204807644,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.21569172009063345
+   }
+  ],
+  "median_cosine": 0.8012371975575502,
+  "median_norm_ratio": 0.6022486796432819
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_trend",
+  "build_seed": 1000007,
+  "rule": "vec.harness.B0_TREND_RULE",
+  "sized": false,
+  "stages": [
+   "earlier",
+   "start",
+   "ref"
+  ],
+  "days": [
+   8.3,
+   8.5,
+   8.75
+  ],
+  "budget_days": 0.125,
+  "eps": 0.5,
+  "min_cells": 20,
+  "n_trend": 9,
+  "lineages": [
+   {
+    "lineage": "CM",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1357,
+     1919,
+     3076
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.705126965230826,
+    "norm_ratio": 0.46182380548608976,
+    "mean_abs_logf_trend": 0.10012657856374102,
+    "mean_abs_logf_b0": 0.21483231174167827,
+    "norm_ratio_applied": 0.46182380548608976,
+    "mean_abs_logf_applied": 0.10012657856374102
+   },
+   {
+    "lineage": "CranialMesoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     8246,
+     5490,
+     4779
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8724285810519313,
+    "norm_ratio": 0.5778559708392658,
+    "mean_abs_logf_trend": 0.14435116723290306,
+    "mean_abs_logf_b0": 0.2519275032775385,
+    "norm_ratio_applied": 0.5778559708392658,
+    "mean_abs_logf_applied": 0.14435116723290306
+   },
+   {
+    "lineage": "Ectoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     4681,
+     2593,
+     2670
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8051020772804306,
+    "norm_ratio": 0.6144711451327793,
+    "mean_abs_logf_trend": 0.13167560097936698,
+    "mean_abs_logf_b0": 0.22072185106144052,
+    "norm_ratio_applied": 0.6144711451327793,
+    "mean_abs_logf_applied": 0.13167560097936698
+   },
+   {
+    "lineage": "Endoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10205,
+     2591,
+     1883
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8012371975575502,
+    "norm_ratio": 0.6889320869864665,
+    "mean_abs_logf_trend": 0.20098761761542616,
+    "mean_abs_logf_b0": 0.28941409144414276,
+    "norm_ratio_applied": 0.6889320869864665,
+    "mean_abs_logf_applied": 0.20098761761542616
+   },
+   {
+    "lineage": "Endothelial",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     6519,
+     1702,
+     2307
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7122001609639119,
+    "norm_ratio": 0.7244222486804337,
+    "mean_abs_logf_trend": 0.1724206367989974,
+    "mean_abs_logf_b0": 0.23697157769978866,
+    "norm_ratio_applied": 0.7244222486804337,
+    "mean_abs_logf_applied": 0.1724206367989974
+   },
+   {
+    "lineage": "EpiblastStreak",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1339,
+     1148,
+     45
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.9510429992019129,
+    "norm_ratio": 0.562409819268882,
+    "mean_abs_logf_trend": 0.3286815497206078,
+    "mean_abs_logf_b0": 0.5726394481908638,
+    "norm_ratio_applied": 0.562409819268882,
+    "mean_abs_logf_applied": 0.3286815497206078
+   },
+   {
+    "lineage": "ExtraEmbryonicMeso",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10327,
+     3154,
+     1039
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.826901370936835,
+    "norm_ratio": 0.6022486796432819,
+    "mean_abs_logf_trend": 0.19349799937399623,
+    "mean_abs_logf_b0": 0.3262685470704024,
+    "norm_ratio_applied": 0.6022486796432819,
+    "mean_abs_logf_applied": 0.19349799937399623
+   },
+   {
+    "lineage": "NCC",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3303,
+     1461,
+     1838
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7074553951137131,
+    "norm_ratio": 0.5943048129551207,
+    "mean_abs_logf_trend": 0.13077629046983263,
+    "mean_abs_logf_b0": 0.22336976586756407,
+    "norm_ratio_applied": 0.5943048129551207,
+    "mean_abs_logf_applied": 0.13077629046983263
+   },
+   {
+    "lineage": "Neural",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3686,
+     1517,
+     3530
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.6481207353390463,
+    "norm_ratio": 0.6476168187262545,
+    "mean_abs_logf_trend": 0.13968558559068978,
+    "mean_abs_logf_b0": 0.2271534204807644,
+    "norm_ratio_applied": 0.6476168187262545,
+    "mean_abs_logf_applied": 0.13968558559068978
+   }
+  ],
+  "median_cosine": 0.8012371975575502,
+  "median_norm_ratio": 0.6022486796432819
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_trend_sized",
+  "build_seed": 1000007,
+  "rule": "vec.harness.B0_TREND_SIZED_RULE",
+  "sized": true,
+  "stages": [
+   "earlier",
+   "start",
+   "ref"
+  ],
+  "days": [
+   8.3,
+   8.5,
+   8.75
+  ],
+  "budget_days": 0.125,
+  "eps": 0.5,
+  "min_cells": 20,
+  "n_trend": 9,
+  "lineages": [
+   {
+    "lineage": "CM",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1357,
+     1919,
+     3076
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.705126965230826,
+    "norm_ratio": 0.46182380548608976,
+    "mean_abs_logf_trend": 0.10012657856374102,
+    "mean_abs_logf_b0": 0.21483231174167827,
+    "norm_ratio_applied": 0.9999999999999999,
+    "mean_abs_logf_applied": 0.21680688040399607
+   },
+   {
+    "lineage": "CranialMesoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     8246,
+     5490,
+     4779
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8724285810519313,
+    "norm_ratio": 0.5778559708392658,
+    "mean_abs_logf_trend": 0.14435116723290306,
+    "mean_abs_logf_b0": 0.2519275032775385,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.24980475155989212
+   },
+   {
+    "lineage": "Ectoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     4681,
+     2593,
+     2670
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8051020772804306,
+    "norm_ratio": 0.6144711451327793,
+    "mean_abs_logf_trend": 0.13167560097936698,
+    "mean_abs_logf_b0": 0.22072185106144052,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.2142909427438022
+   },
+   {
+    "lineage": "Endoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10205,
+     2591,
+     1883
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8012371975575502,
+    "norm_ratio": 0.6889320869864665,
+    "mean_abs_logf_trend": 0.20098761761542616,
+    "mean_abs_logf_b0": 0.28941409144414276,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.29173792513364877
+   },
+   {
+    "lineage": "Endothelial",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     6519,
+     1702,
+     2307
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7122001609639119,
+    "norm_ratio": 0.7244222486804337,
+    "mean_abs_logf_trend": 0.1724206367989974,
+    "mean_abs_logf_b0": 0.23697157769978866,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.23801123876726457
+   },
+   {
+    "lineage": "EpiblastStreak",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1339,
+     1148,
+     45
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.9510429992019129,
+    "norm_ratio": 0.562409819268882,
+    "mean_abs_logf_trend": 0.3286815497206078,
+    "mean_abs_logf_b0": 0.5726394481908638,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.5844164494636406
+   },
+   {
+    "lineage": "ExtraEmbryonicMeso",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10327,
+     3154,
+     1039
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.826901370936835,
+    "norm_ratio": 0.6022486796432819,
+    "mean_abs_logf_trend": 0.19349799937399623,
+    "mean_abs_logf_b0": 0.3262685470704024,
+    "norm_ratio_applied": 1.0000000000000002,
+    "mean_abs_logf_applied": 0.321292525686577
+   },
+   {
+    "lineage": "NCC",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3303,
+     1461,
+     1838
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7074553951137131,
+    "norm_ratio": 0.5943048129551207,
+    "mean_abs_logf_trend": 0.13077629046983263,
+    "mean_abs_logf_b0": 0.22336976586756407,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.22004918624091355
+   },
+   {
+    "lineage": "Neural",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3686,
+     1517,
+     3530
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.6481207353390463,
+    "norm_ratio": 0.6476168187262545,
+    "mean_abs_logf_trend": 0.13968558559068978,
+    "mean_abs_logf_b0": 0.2271534204807644,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.21569172009063345
+   }
+  ],
+  "median_cosine": 0.8012371975575502,
+  "median_norm_ratio": 0.6022486796432819
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_trend",
+  "build_seed": 1000008,
+  "rule": "vec.harness.B0_TREND_RULE",
+  "sized": false,
+  "stages": [
+   "earlier",
+   "start",
+   "ref"
+  ],
+  "days": [
+   8.3,
+   8.5,
+   8.75
+  ],
+  "budget_days": 0.125,
+  "eps": 0.5,
+  "min_cells": 20,
+  "n_trend": 9,
+  "lineages": [
+   {
+    "lineage": "CM",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1357,
+     1919,
+     3076
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.705126965230826,
+    "norm_ratio": 0.46182380548608976,
+    "mean_abs_logf_trend": 0.10012657856374102,
+    "mean_abs_logf_b0": 0.21483231174167827,
+    "norm_ratio_applied": 0.46182380548608976,
+    "mean_abs_logf_applied": 0.10012657856374102
+   },
+   {
+    "lineage": "CranialMesoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     8246,
+     5490,
+     4779
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8724285810519313,
+    "norm_ratio": 0.5778559708392658,
+    "mean_abs_logf_trend": 0.14435116723290306,
+    "mean_abs_logf_b0": 0.2519275032775385,
+    "norm_ratio_applied": 0.5778559708392658,
+    "mean_abs_logf_applied": 0.14435116723290306
+   },
+   {
+    "lineage": "Ectoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     4681,
+     2593,
+     2670
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8051020772804306,
+    "norm_ratio": 0.6144711451327793,
+    "mean_abs_logf_trend": 0.13167560097936698,
+    "mean_abs_logf_b0": 0.22072185106144052,
+    "norm_ratio_applied": 0.6144711451327793,
+    "mean_abs_logf_applied": 0.13167560097936698
+   },
+   {
+    "lineage": "Endoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10205,
+     2591,
+     1883
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8012371975575502,
+    "norm_ratio": 0.6889320869864665,
+    "mean_abs_logf_trend": 0.20098761761542616,
+    "mean_abs_logf_b0": 0.28941409144414276,
+    "norm_ratio_applied": 0.6889320869864665,
+    "mean_abs_logf_applied": 0.20098761761542616
+   },
+   {
+    "lineage": "Endothelial",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     6519,
+     1702,
+     2307
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7122001609639119,
+    "norm_ratio": 0.7244222486804337,
+    "mean_abs_logf_trend": 0.1724206367989974,
+    "mean_abs_logf_b0": 0.23697157769978866,
+    "norm_ratio_applied": 0.7244222486804337,
+    "mean_abs_logf_applied": 0.1724206367989974
+   },
+   {
+    "lineage": "EpiblastStreak",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1339,
+     1148,
+     45
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.9510429992019129,
+    "norm_ratio": 0.562409819268882,
+    "mean_abs_logf_trend": 0.3286815497206078,
+    "mean_abs_logf_b0": 0.5726394481908638,
+    "norm_ratio_applied": 0.562409819268882,
+    "mean_abs_logf_applied": 0.3286815497206078
+   },
+   {
+    "lineage": "ExtraEmbryonicMeso",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10327,
+     3154,
+     1039
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.826901370936835,
+    "norm_ratio": 0.6022486796432819,
+    "mean_abs_logf_trend": 0.19349799937399623,
+    "mean_abs_logf_b0": 0.3262685470704024,
+    "norm_ratio_applied": 0.6022486796432819,
+    "mean_abs_logf_applied": 0.19349799937399623
+   },
+   {
+    "lineage": "NCC",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3303,
+     1461,
+     1838
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7074553951137131,
+    "norm_ratio": 0.5943048129551207,
+    "mean_abs_logf_trend": 0.13077629046983263,
+    "mean_abs_logf_b0": 0.22336976586756407,
+    "norm_ratio_applied": 0.5943048129551207,
+    "mean_abs_logf_applied": 0.13077629046983263
+   },
+   {
+    "lineage": "Neural",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3686,
+     1517,
+     3530
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.6481207353390463,
+    "norm_ratio": 0.6476168187262545,
+    "mean_abs_logf_trend": 0.13968558559068978,
+    "mean_abs_logf_b0": 0.2271534204807644,
+    "norm_ratio_applied": 0.6476168187262545,
+    "mean_abs_logf_applied": 0.13968558559068978
+   }
+  ],
+  "median_cosine": 0.8012371975575502,
+  "median_norm_ratio": 0.6022486796432819
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_trend_sized",
+  "build_seed": 1000008,
+  "rule": "vec.harness.B0_TREND_SIZED_RULE",
+  "sized": true,
+  "stages": [
+   "earlier",
+   "start",
+   "ref"
+  ],
+  "days": [
+   8.3,
+   8.5,
+   8.75
+  ],
+  "budget_days": 0.125,
+  "eps": 0.5,
+  "min_cells": 20,
+  "n_trend": 9,
+  "lineages": [
+   {
+    "lineage": "CM",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1357,
+     1919,
+     3076
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.705126965230826,
+    "norm_ratio": 0.46182380548608976,
+    "mean_abs_logf_trend": 0.10012657856374102,
+    "mean_abs_logf_b0": 0.21483231174167827,
+    "norm_ratio_applied": 0.9999999999999999,
+    "mean_abs_logf_applied": 0.21680688040399607
+   },
+   {
+    "lineage": "CranialMesoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     8246,
+     5490,
+     4779
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8724285810519313,
+    "norm_ratio": 0.5778559708392658,
+    "mean_abs_logf_trend": 0.14435116723290306,
+    "mean_abs_logf_b0": 0.2519275032775385,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.24980475155989212
+   },
+   {
+    "lineage": "Ectoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     4681,
+     2593,
+     2670
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8051020772804306,
+    "norm_ratio": 0.6144711451327793,
+    "mean_abs_logf_trend": 0.13167560097936698,
+    "mean_abs_logf_b0": 0.22072185106144052,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.2142909427438022
+   },
+   {
+    "lineage": "Endoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10205,
+     2591,
+     1883
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8012371975575502,
+    "norm_ratio": 0.6889320869864665,
+    "mean_abs_logf_trend": 0.20098761761542616,
+    "mean_abs_logf_b0": 0.28941409144414276,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.29173792513364877
+   },
+   {
+    "lineage": "Endothelial",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     6519,
+     1702,
+     2307
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7122001609639119,
+    "norm_ratio": 0.7244222486804337,
+    "mean_abs_logf_trend": 0.1724206367989974,
+    "mean_abs_logf_b0": 0.23697157769978866,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.23801123876726457
+   },
+   {
+    "lineage": "EpiblastStreak",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1339,
+     1148,
+     45
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.9510429992019129,
+    "norm_ratio": 0.562409819268882,
+    "mean_abs_logf_trend": 0.3286815497206078,
+    "mean_abs_logf_b0": 0.5726394481908638,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.5844164494636406
+   },
+   {
+    "lineage": "ExtraEmbryonicMeso",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10327,
+     3154,
+     1039
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.826901370936835,
+    "norm_ratio": 0.6022486796432819,
+    "mean_abs_logf_trend": 0.19349799937399623,
+    "mean_abs_logf_b0": 0.3262685470704024,
+    "norm_ratio_applied": 1.0000000000000002,
+    "mean_abs_logf_applied": 0.321292525686577
+   },
+   {
+    "lineage": "NCC",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3303,
+     1461,
+     1838
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7074553951137131,
+    "norm_ratio": 0.5943048129551207,
+    "mean_abs_logf_trend": 0.13077629046983263,
+    "mean_abs_logf_b0": 0.22336976586756407,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.22004918624091355
+   },
+   {
+    "lineage": "Neural",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3686,
+     1517,
+     3530
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.6481207353390463,
+    "norm_ratio": 0.6476168187262545,
+    "mean_abs_logf_trend": 0.13968558559068978,
+    "mean_abs_logf_b0": 0.2271534204807644,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.21569172009063345
+   }
+  ],
+  "median_cosine": 0.8012371975575502,
+  "median_norm_ratio": 0.6022486796432819
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_trend",
+  "build_seed": 1000009,
+  "rule": "vec.harness.B0_TREND_RULE",
+  "sized": false,
+  "stages": [
+   "earlier",
+   "start",
+   "ref"
+  ],
+  "days": [
+   8.3,
+   8.5,
+   8.75
+  ],
+  "budget_days": 0.125,
+  "eps": 0.5,
+  "min_cells": 20,
+  "n_trend": 9,
+  "lineages": [
+   {
+    "lineage": "CM",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1357,
+     1919,
+     3076
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.705126965230826,
+    "norm_ratio": 0.46182380548608976,
+    "mean_abs_logf_trend": 0.10012657856374102,
+    "mean_abs_logf_b0": 0.21483231174167827,
+    "norm_ratio_applied": 0.46182380548608976,
+    "mean_abs_logf_applied": 0.10012657856374102
+   },
+   {
+    "lineage": "CranialMesoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     8246,
+     5490,
+     4779
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8724285810519313,
+    "norm_ratio": 0.5778559708392658,
+    "mean_abs_logf_trend": 0.14435116723290306,
+    "mean_abs_logf_b0": 0.2519275032775385,
+    "norm_ratio_applied": 0.5778559708392658,
+    "mean_abs_logf_applied": 0.14435116723290306
+   },
+   {
+    "lineage": "Ectoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     4681,
+     2593,
+     2670
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8051020772804306,
+    "norm_ratio": 0.6144711451327793,
+    "mean_abs_logf_trend": 0.13167560097936698,
+    "mean_abs_logf_b0": 0.22072185106144052,
+    "norm_ratio_applied": 0.6144711451327793,
+    "mean_abs_logf_applied": 0.13167560097936698
+   },
+   {
+    "lineage": "Endoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10205,
+     2591,
+     1883
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8012371975575502,
+    "norm_ratio": 0.6889320869864665,
+    "mean_abs_logf_trend": 0.20098761761542616,
+    "mean_abs_logf_b0": 0.28941409144414276,
+    "norm_ratio_applied": 0.6889320869864665,
+    "mean_abs_logf_applied": 0.20098761761542616
+   },
+   {
+    "lineage": "Endothelial",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     6519,
+     1702,
+     2307
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7122001609639119,
+    "norm_ratio": 0.7244222486804337,
+    "mean_abs_logf_trend": 0.1724206367989974,
+    "mean_abs_logf_b0": 0.23697157769978866,
+    "norm_ratio_applied": 0.7244222486804337,
+    "mean_abs_logf_applied": 0.1724206367989974
+   },
+   {
+    "lineage": "EpiblastStreak",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1339,
+     1148,
+     45
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.9510429992019129,
+    "norm_ratio": 0.562409819268882,
+    "mean_abs_logf_trend": 0.3286815497206078,
+    "mean_abs_logf_b0": 0.5726394481908638,
+    "norm_ratio_applied": 0.562409819268882,
+    "mean_abs_logf_applied": 0.3286815497206078
+   },
+   {
+    "lineage": "ExtraEmbryonicMeso",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10327,
+     3154,
+     1039
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.826901370936835,
+    "norm_ratio": 0.6022486796432819,
+    "mean_abs_logf_trend": 0.19349799937399623,
+    "mean_abs_logf_b0": 0.3262685470704024,
+    "norm_ratio_applied": 0.6022486796432819,
+    "mean_abs_logf_applied": 0.19349799937399623
+   },
+   {
+    "lineage": "NCC",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3303,
+     1461,
+     1838
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7074553951137131,
+    "norm_ratio": 0.5943048129551207,
+    "mean_abs_logf_trend": 0.13077629046983263,
+    "mean_abs_logf_b0": 0.22336976586756407,
+    "norm_ratio_applied": 0.5943048129551207,
+    "mean_abs_logf_applied": 0.13077629046983263
+   },
+   {
+    "lineage": "Neural",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3686,
+     1517,
+     3530
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.6481207353390463,
+    "norm_ratio": 0.6476168187262545,
+    "mean_abs_logf_trend": 0.13968558559068978,
+    "mean_abs_logf_b0": 0.2271534204807644,
+    "norm_ratio_applied": 0.6476168187262545,
+    "mean_abs_logf_applied": 0.13968558559068978
+   }
+  ],
+  "median_cosine": 0.8012371975575502,
+  "median_norm_ratio": 0.6022486796432819
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_trend_sized",
+  "build_seed": 1000009,
+  "rule": "vec.harness.B0_TREND_SIZED_RULE",
+  "sized": true,
+  "stages": [
+   "earlier",
+   "start",
+   "ref"
+  ],
+  "days": [
+   8.3,
+   8.5,
+   8.75
+  ],
+  "budget_days": 0.125,
+  "eps": 0.5,
+  "min_cells": 20,
+  "n_trend": 9,
+  "lineages": [
+   {
+    "lineage": "CM",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1357,
+     1919,
+     3076
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.705126965230826,
+    "norm_ratio": 0.46182380548608976,
+    "mean_abs_logf_trend": 0.10012657856374102,
+    "mean_abs_logf_b0": 0.21483231174167827,
+    "norm_ratio_applied": 0.9999999999999999,
+    "mean_abs_logf_applied": 0.21680688040399607
+   },
+   {
+    "lineage": "CranialMesoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     8246,
+     5490,
+     4779
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8724285810519313,
+    "norm_ratio": 0.5778559708392658,
+    "mean_abs_logf_trend": 0.14435116723290306,
+    "mean_abs_logf_b0": 0.2519275032775385,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.24980475155989212
+   },
+   {
+    "lineage": "Ectoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     4681,
+     2593,
+     2670
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8051020772804306,
+    "norm_ratio": 0.6144711451327793,
+    "mean_abs_logf_trend": 0.13167560097936698,
+    "mean_abs_logf_b0": 0.22072185106144052,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.2142909427438022
+   },
+   {
+    "lineage": "Endoderm",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10205,
+     2591,
+     1883
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.8012371975575502,
+    "norm_ratio": 0.6889320869864665,
+    "mean_abs_logf_trend": 0.20098761761542616,
+    "mean_abs_logf_b0": 0.28941409144414276,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.29173792513364877
+   },
+   {
+    "lineage": "Endothelial",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     6519,
+     1702,
+     2307
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7122001609639119,
+    "norm_ratio": 0.7244222486804337,
+    "mean_abs_logf_trend": 0.1724206367989974,
+    "mean_abs_logf_b0": 0.23697157769978866,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.23801123876726457
+   },
+   {
+    "lineage": "EpiblastStreak",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     1339,
+     1148,
+     45
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.9510429992019129,
+    "norm_ratio": 0.562409819268882,
+    "mean_abs_logf_trend": 0.3286815497206078,
+    "mean_abs_logf_b0": 0.5726394481908638,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.5844164494636406
+   },
+   {
+    "lineage": "ExtraEmbryonicMeso",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     10327,
+     3154,
+     1039
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.826901370936835,
+    "norm_ratio": 0.6022486796432819,
+    "mean_abs_logf_trend": 0.19349799937399623,
+    "mean_abs_logf_b0": 0.3262685470704024,
+    "norm_ratio_applied": 1.0000000000000002,
+    "mean_abs_logf_applied": 0.321292525686577
+   },
+   {
+    "lineage": "NCC",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3303,
+     1461,
+     1838
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.7074553951137131,
+    "norm_ratio": 0.5943048129551207,
+    "mean_abs_logf_trend": 0.13077629046983263,
+    "mean_abs_logf_b0": 0.22336976586756407,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.22004918624091355
+   },
+   {
+    "lineage": "Neural",
+    "stages": [
+     "earlier",
+     "start",
+     "ref"
+    ],
+    "days": [
+     8.3,
+     8.5,
+     8.75
+    ],
+    "n_cells": [
+     3686,
+     1517,
+     3530
+    ],
+    "own_factor": false,
+    "weights": [
+     0.42622950819672134,
+     0.5737704918032828
+    ],
+    "cosine": 0.6481207353390463,
+    "norm_ratio": 0.6476168187262545,
+    "mean_abs_logf_trend": 0.13968558559068978,
+    "mean_abs_logf_b0": 0.2271534204807644,
+    "norm_ratio_applied": 1.0,
+    "mean_abs_logf_applied": 0.21569172009063345
+   }
+  ],
+  "median_cosine": 0.8012371975575502,
+  "median_norm_ratio": 0.6022486796432819
+ }
+]

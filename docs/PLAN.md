@@ -3200,3 +3200,35 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     (H11 and H11s), `b0_trend` at its natural size and `b0_trend_sized` at B0's own size per lineage, each read
     against `b0` by the adoption rule; a pass by one alone goes to the captain marked as one of two forms read.
     Counted reads: heart 9 to 11. CPU only, a few minutes.
+- 2026-11-13 (u), the trend arm passes the adoption rule; a fifth forwarded note; what comes before a request.
+  Written by the AI assistant.
+  - **Result** (rows H11 and H11s; 8bb23bf on `campaign/trend`; `experiments/harness/results/trend_heart_v1/`; every
+    validity condition holds). `b0_trend`, B0 with each lineage's least-squares trend over every input stage in
+    place of the last step, gains +0.36 on the one-day heart backtest and +0.48 on the 1.75-day one against `b0`,
+    ahead in 10 of 10 seeds on each: it passes the adoption rule on both, the first heart candidate to do so in
+    eleven tries. Its size-matched twin gains +0.15 (9 of 10) and +1.00 (10 of 10) and is not kept. The gain is
+    on the de terms on the 1.75-day backtest, and half on the de terms and half on the distribution and
+    covariance terms on the one-day one. Tries: T1 32, embryo 36, heart 11, T3 15.
+  - **What limits it, said before any request.** The one-day margin is small (+0.36 against the rule's 0.3). Seven
+    arms were read on these two backtests today and this is the one that passes both; it is one of two trend
+    forms. The two backtests share one truth. Neither contains the step the test uses.
+  - **The fifth note** (a side agent's, forwarded by the captain): at the test B0 extends the E9.5 to E10.5 step,
+    which mixes growth with the change from sectioned embryo portions to dissected hearts; both practice tasks
+    use earlier steps, so "tonight's heart results, kept or not, may say little about the real test"; "Consider
+    asking the main agent whether the first heart upload should rely on this step."
+  - **The record on that question.** It was weighed twice. On 2026-11-01 the captain dropped the heart's
+    composition trend for this reason (section 4.2, pipeline item 2), so the heart holds E10.5's composition.
+    For expression, the research of 2026-11-05 priced a hold of the momentum at about +-0.25 Overall, expected
+    about +0.05 (`experiments/research_2026_11/REPORT.md`, "The heart's momentum crosses the sampling break",
+    sheet E), and the hold was declined as below the line (decision log 2026-11-05 (f) and the rulings after it).
+    So today's first heart upload does rely on that step, at half strength, for expression only; no backtest can
+    test it, as the note says. What tonight adds: on steps that do not cross the break, B0's expression step is
+    worth +0.47 and +0.90 board points over the copy, which is what a hold would give up if the test's step
+    behaved like those; and the trend arm, if the captain rules it in, would use the across-break step for 43%
+    of its slope instead of 100% (weights 0.05, 0.11, 0.41 and 0.43 over the four steps to E10.5).
+  - **Before the request goes to the captain** (the practice for any table behind an upload ruling): the scored
+    run repeated in the other campaign checkout; an independent recomputation of the table and an independent
+    implementation of the trend factor; and a target-free reading of the trend factor at the test pair against
+    today's factor (diagnostic N27, row first), so that the request can say what would change in the heart's
+    files. A yes would need: the candidate merged to main with a builder option, both heart files rebuilt (the
+    second upload follows the first with its trim), a third rehearsal and a new reference list by 24 Nov.
