@@ -43,7 +43,17 @@ import yaml
 from scipy import sparse
 
 from vec.boards import RELEASED_T1_STAGES, REPO_ROOT, Board
-from vec.core import apply_factors, counts_of, draw_least_used, herd_rows, log1p_cp10k, mean_cp10k, quotas
+from vec.core import (
+    _profile_depth_constant,
+    apply_factors,
+    apply_factors_profile,
+    counts_of,
+    draw_least_used,
+    herd_rows,
+    log1p_cp10k,
+    mean_cp10k,
+    quotas,
+)
 from vec.io import CheckReport, check_submission, dense, make_submission, write_submission
 from vec.prep import TARGET_SUM, lineage_map, recover_counts  # noqa: F401 (kept importable here; the core uses them)
 
@@ -940,21 +950,11 @@ def topup_profile(source: ad.AnnData, cells: ad.AnnData, n_pcs: int = TOPUP_N_PC
     return sparse.csr_matrix(sparse.diags(lib) @ Pu)
 
 
-def apply_tail_decoder(pop: ad.AnnData, pb_ref: np.ndarray, genes: Sequence[str], held: Iterable[str],
-                       seed: Seed) -> tuple[ad.AnnData, dict]:
-    """The tail decoder of T1 candidate b0_tail: lift the down-infeasible genes out of the predicted bottom tail.
-
-    genes: the panel the scorer ranks (the board's genes); pb_ref: the reference's mean log1p CP10k per panel gene; dp =
-    pb(pop) - pb_ref over the panel, all cells. A gene is lifted if it is among the TAIL_BOTTOM most negative dp,
-    pb_ref < TAIL_MIN_PB, dp < TAIL_TARGET_DP and it is not held. Its counts are topped up in every cell by one factor,
-    solved so that its dp lands at TAIL_TARGET_DP (the exact first-order change of the mean log1p under the Poisson
-    top-up c + Poisson((f - 1) c) at f = 1; DP_ITERATIONS fixed-point steps account for the depth-keeping constant,
-    as `apply_down_prior` does). A gene needing more than TAIL_F_MAX, or with no counts in the file (slope zero), is
-    out of reach and skipped; the fixed point clips each factor to [1, TAIL_F_MAX]. Each cell's expected library is
-    kept (apply_factors keep_depth), so every other free gene moves only by that constant; held genes are untouched.
-    Nothing lifted: pop is returned as it is. Returns (pop, report); the report holds no cell count
-    (n_infeasible_in_bottom, n_lifted and n_skipped = n_infeasible_in_bottom - n_lifted are numbers of genes;
-    max_factor and median_factor summarise the lifted genes' factors, nan when none is lifted)."""
+def _tail_selection(pop: ad.AnnData, pb_ref: np.ndarray, genes: Sequence[str], held: Iterable[str]):
+    """The tail decoders' shared selection (b0_tail and b0_tail_profile): dp = pb(pop) - pb_ref over the panel, all
+    cells; the candidates are among the TAIL_BOTTOM most negative dp, with pb_ref < TAIL_MIN_PB, dp < TAIL_TARGET_DP
+    and not held. Returns (genes, cols, counts, n cells, held over pop's genes, library, 1e4 / library, dp, candidate
+    panel positions)."""
     genes = [str(g) for g in genes]
     cols = pd.Index(pop.var_names).get_indexer(genes)
     if (cols < 0).any():
@@ -971,6 +971,25 @@ def apply_tail_decoder(pop: ad.AnnData, pb_ref: np.ndarray, genes: Sequence[str]
     dp = pb_before - pb_ref
     bottom = np.argsort(dp, kind="stable")[:TAIL_BOTTOM]
     cand = bottom[(pb_ref[bottom] < TAIL_MIN_PB) & (dp[bottom] < TAIL_TARGET_DP) & ~held_panel[bottom]]
+    return genes, cols, C, n, held_all, lib, a, dp, cand
+
+
+def apply_tail_decoder(pop: ad.AnnData, pb_ref: np.ndarray, genes: Sequence[str], held: Iterable[str],
+                       seed: Seed) -> tuple[ad.AnnData, dict]:
+    """The tail decoder of T1 candidate b0_tail: lift the down-infeasible genes out of the predicted bottom tail.
+
+    genes: the panel the scorer ranks (the board's genes); pb_ref: the reference's mean log1p CP10k per panel gene; dp =
+    pb(pop) - pb_ref over the panel, all cells. A gene is lifted if it is among the TAIL_BOTTOM most negative dp,
+    pb_ref < TAIL_MIN_PB, dp < TAIL_TARGET_DP and it is not held. Its counts are topped up in every cell by one factor,
+    solved so that its dp lands at TAIL_TARGET_DP (the exact first-order change of the mean log1p under the Poisson
+    top-up c + Poisson((f - 1) c) at f = 1; DP_ITERATIONS fixed-point steps account for the depth-keeping constant,
+    as `apply_down_prior` does). A gene needing more than TAIL_F_MAX, or with no counts in the file (slope zero), is
+    out of reach and skipped; the fixed point clips each factor to [1, TAIL_F_MAX]. Each cell's expected library is
+    kept (apply_factors keep_depth), so every other free gene moves only by that constant; held genes are untouched.
+    Nothing lifted: pop is returned as it is. Returns (pop, report); the report holds no cell count
+    (n_infeasible_in_bottom, n_lifted and n_skipped = n_infeasible_in_bottom - n_lifted are numbers of genes;
+    max_factor and median_factor summarise the lifted genes' factors, nan when none is lifted)."""
+    genes, cols, C, n, held_all, lib, a, dp, cand = _tail_selection(pop, pb_ref, genes, held)
     M = C[:, cols[cand]].tocsc()
     entry_col = np.repeat(np.arange(M.shape[1]), np.diff(M.indptr))
     c = M.data.astype(np.float64)
@@ -1010,6 +1029,81 @@ def apply_tail_decoder(pop: ad.AnnData, pb_ref: np.ndarray, genes: Sequence[str]
     freed = (Cs * (1.0 - fin)).sum(1)
     with np.errstate(divide="ignore", invalid="ignore"):
         expected = scale * (free - freed) + held_n
+        report.update(factors={genes[i]: round(float(f), 4) for i, f in zip(lifted, fin, strict=True)},
+                      depth_ratio_mean=float(np.nanmean(new_lib / lib)),
+                      expected_depth_max_error=float(np.nanmax(np.abs(expected / lib - 1.0))),
+                      no_cell_was_restored=not bool(dead.any()))
+    return out, report
+
+
+def apply_tail_decoder_profile(pop: ad.AnnData, pb_ref: np.ndarray, genes: Sequence[str], held: Iterable[str],
+                               seed: Seed, source: ad.AnnData) -> tuple[ad.AnnData, dict]:
+    """The tail decoder of T1 candidate b0_tail_profile: `apply_tail_decoder` with one change, the kernel.
+
+    The genes are `apply_tail_decoder`'s (`_tail_selection`). A lifted gene's count in a cell becomes
+    c + Poisson((f - 1) m), m its entry in the profile of `topup_profile(source, pop)` (the cell's library times the
+    mean proportions of its source row's nearest source cells, T37's kernel), zeros included, through
+    `vec.core.apply_factors_profile` (factor f on the lifted genes, 1 on every other gene, held genes untouched, each
+    cell's expected library kept exactly). The factor is solved as `apply_tail_decoder` solves it, with this kernel's
+    first-order slope: the change of the gene's mean log1p CP10k per unit of (f - 1) at f = 1, the mean over cells of
+    m [log1p(a (c + 1)) - log1p(a c)], a = 1e4 / library, zeros included (the exact derivative of E log1p(a (c + P))
+    in the Poisson mean (f - 1) m). At f = 1 a unit of (f - 1) is a unit of log f, so the need (TAIL_TARGET_DP - dp) /
+    slope is read in log f, bounded by log(TAIL_F_MAX), and the factor is exp(need) corrected by DP_ITERATIONS
+    fixed-point steps for the depth-keeping constant, as in `apply_tail_decoder`; the constant there is this kernel's
+    (`vec.core._profile_depth_constant`, exact) and each cell's weight its own term of the slope. A gene needing more
+    than TAIL_F_MAX, or with no profile mass (slope zero), is skipped and counted. Nothing lifted: pop is returned as it
+    is. Returns (pop, report) with `apply_tail_decoder`'s fields (numbers of genes and factors; no cell count)."""
+    genes, cols, C, n, held_all, lib, a, dp, cand = _tail_selection(pop, pb_ref, genes, held)
+    report = {"bottom": TAIL_BOTTOM, "min_pb": TAIL_MIN_PB, "target_dp": TAIL_TARGET_DP, "f_max": TAIL_F_MAX,
+              "keep_depth": True, "kernel": "profile"}
+
+    def idle(lifted_names: list, n_cand: int) -> tuple[ad.AnnData, dict]:
+        report.update(n_infeasible_in_bottom=n_cand, n_lifted=0, n_skipped=n_cand, lifted=lifted_names, factors={},
+                      depth_ratio_mean=1.0, expected_depth_max_error=0.0, max_factor=float("nan"),
+                      median_factor=float("nan"))
+        return pop, report
+
+    if not len(cand):
+        return idle([], 0)
+    Mp = sparse.csr_matrix(topup_profile(source, pop)[:, cols[cand]]).toarray()
+    Cc = C[:, cols[cand]].toarray().astype(np.float64)
+    Bc = Mp * (np.log1p(a[:, None] * (Cc + 1.0)) - np.log1p(a[:, None] * Cc))
+    slope = Bc.sum(0) / n
+    with np.errstate(divide="ignore", invalid="ignore"):
+        need = np.where(slope > 0, (TAIL_TARGET_DP - dp[cand]) / slope, np.inf)
+    chosen = np.flatnonzero(need <= np.log(TAIL_F_MAX))
+    lifted, lam = cand[chosen], need[chosen]
+    if not len(lifted):
+        return idle([], int(len(cand)))
+    report.update(n_infeasible_in_bottom=int(len(cand)), n_lifted=int(len(lifted)),
+                  n_skipped=int(len(cand) - len(lifted)), lifted=[genes[i] for i in lifted])
+    B, Cs, Ms = Bc[:, chosen], Cc[:, chosen], Mp[:, chosen]
+    held_n = np.asarray(C[:, held_all].sum(1)).ravel().astype(np.float64)
+    other = lib - held_n - Cs.sum(1)  # every free gene but the lifted ones: factor 1, the same breakpoint, one entry
+
+    def depth(f: np.ndarray) -> np.ndarray:
+        fe = np.r_[1.0, f]
+        return np.array([_profile_depth_constant(np.r_[other[i], Cs[i]], fe, np.r_[0.0, Ms[i]]) for i in range(n)])
+
+    fin = np.exp(lam)
+    for _ in range(DP_ITERATIONS):
+        s = depth(fin)
+        adj = (B.T @ np.log(s)) / B.sum(0)
+        fin = np.clip(np.exp(lam - adj), 1.0, TAIL_F_MAX)
+    report.update(max_factor=float(fin.max()), median_factor=float(np.median(fin)))
+    F = np.ones((1, C.shape[1]))
+    F[0, cols[lifted]] = fin
+    P = sparse.csr_matrix((Ms.ravel(), (np.repeat(np.arange(n), len(lifted)), np.tile(cols[lifted], n))),
+                          shape=C.shape)  # the profile on the lifted genes: no other gene's factor exceeds 1
+    new, scale, dead = apply_factors_profile(C, F, np.zeros(n, dtype=np.int64), P, held_all, keep_depth=True,
+                                             seed=seed)
+    out = pop.copy()
+    out.layers["counts"] = new.astype(np.int32)
+    out.X = log1p_cp10k(new)
+    new_lib = np.asarray(new.sum(1)).ravel().astype(np.float64)
+    fe = fin[None, :] * scale[:, None]
+    expected = scale * other + np.where(fe > 1.0, Cs + (fe - 1.0) * Ms, Cs * fe).sum(1) + held_n
+    with np.errstate(divide="ignore", invalid="ignore"):
         report.update(factors={genes[i]: round(float(f), 4) for i, f in zip(lifted, fin, strict=True)},
                       depth_ratio_mean=float(np.nanmean(new_lib / lib)),
                       expected_depth_max_error=float(np.nanmax(np.abs(expected / lib - 1.0))),

@@ -581,13 +581,16 @@ def t1_chamber_shares(ref: ad.AnnData, source: str) -> dict[str, float]:
 
 def _b0_t1(damping: float, herd: bool = False,
            prior: Callable[[BuildContext], object] | None = None, *, topup: bool = False,
-           tail: bool = False, tail_reports: list | None = None) -> Callable[[BuildContext], Stage]:
+           tail: bool = False, tail_reports: list | None = None,
+           tail_profile: bool = False) -> Callable[[BuildContext], Stage]:
     """B0 on T1 (or, with damping 0, its chamber copy alone). prior (T1 tries T12a and T12b): a function of the context
     that gives the strong-null down-tail prior for `vec.t1_scope.build_submission`. topup (candidate b0_topup; default
     False, B0's own-count top-up): the momentum's factors above 1 top up from the posterior-predictive expected counts
     (`vec.t1_scope.topup_profile` on the reference stage). tail (candidate b0_tail; default False, nothing): after the
     shift, the tail decoder `vec.t1_scope.apply_tail_decoder` (stream [seed, TAIL_STREAM]); its report is appended to
-    tail_reports when one is given."""
+    tail_reports when one is given. tail_profile (candidate b0_tail_profile; default False, nothing): with tail, the
+    decoder's kernel is the neighbour profile of the reference stage, `vec.t1_scope.apply_tail_decoder_profile`
+    (stream [seed, TAIL_PROFILE_STREAM])."""
     def build(ctx: BuildContext) -> Stage:
         from vec import t1_scope
 
@@ -608,7 +611,11 @@ def _b0_t1(damping: float, herd: bool = False,
                 raise KeyError(f"{int((ref_cols < 0).sum())} board genes are missing from the reference")
             pb_ref = np.asarray(sparse.csr_matrix(ref.X[:, ref_cols], dtype=np.float64).mean(axis=0)).ravel()
             def post_cells(pop):
-                out, rep = t1_scope.apply_tail_decoder(pop, pb_ref, g, held or (), [ctx.seed, TAIL_STREAM])
+                if tail_profile:
+                    out, rep = t1_scope.apply_tail_decoder_profile(pop, pb_ref, g, held or (),
+                                                                   [ctx.seed, TAIL_PROFILE_STREAM], ref)
+                else:
+                    out, rep = t1_scope.apply_tail_decoder(pop, pb_ref, g, held or (), [ctx.seed, TAIL_STREAM])
                 if tail_reports is not None:
                     tail_reports.append(rep)
                 return out
@@ -1323,15 +1330,32 @@ def _b0_tail(ctx: BuildContext) -> Stage:
     return stage
 
 
-def tail_check_line(task_key: str, seed: int, rep: Mapping) -> str:
-    """The b0_tail check line: numbers of genes and factors only (never a cell number, a gene name or a score)."""
-    return (f"b0_tail check: task={task_key} seed={seed} infeasible_in_bottom={int(rep['n_infeasible_in_bottom'])} "
+def tail_check_line(task_key: str, seed: int, rep: Mapping, name: str = "b0_tail") -> str:
+    """The b0_tail (or, with name, b0_tail_profile) check line: numbers of genes and factors only (never a cell
+    number, a gene name or a score)."""
+    return (f"{name} check: task={task_key} seed={seed} infeasible_in_bottom={int(rep['n_infeasible_in_bottom'])} "
             f"lifted={int(rep['n_lifted'])} skipped={int(rep['n_skipped'])} max_factor={rep['max_factor']:.3g} "
             f"median_factor={rep['median_factor']:.3g}")
 
 
 def _b0_topup(ctx: BuildContext) -> Stage:
     return _b0_t1(B0_DAMPING, topup=True)(ctx)
+
+
+# ------------------------------------------------------------------------------------------------ T1 batch t1-c
+# b0_tail_profile: b0_tail with one change, the decoder's kernel: the lifted genes are topped up from the neighbour
+# profile of b0_topup (`vec.t1_scope.topup_profile` on the reference stage, `vec.core.apply_factors_profile`), which
+# can raise zeros, in place of their own counts; the same selection, target, bound (TAIL_F_MAX) and fixed point.
+TAIL_PROFILE_STREAM = 15  # its decoder's random stream, [seed, 15]: unused by every other step
+
+
+def _b0_tail_profile(ctx: BuildContext) -> Stage:
+    """B0 plus the profile-kernel tail decoder; after the build one check line per decoder report, as b0_tail's."""
+    reports: list = []
+    stage = _b0_t1(B0_DAMPING, tail=True, tail_reports=reports, tail_profile=True)(ctx)
+    for rep in reports:
+        print(tail_check_line(ctx.task.key, ctx.seed, rep, name="b0_tail_profile"), flush=True)
+    return stage
 
 
 # ------------------------------------------------------------------------------------------------ T3 tries K2a and K2b
@@ -1808,6 +1832,18 @@ CANDIDATES = {
                                    "exactly (vec.core.apply_factors_profile)", "damping": B0_DAMPING,
                            "scope": "chamber", "n_pcs": 30, "k": 15},
                           requires=_b0_applies, derived=("t1_held_flat",)),
+    # T1 batch t1-c: the tail decoder with the neighbour-profile kernel
+    "b0_tail_profile": Candidate("b0_tail_profile", frozenset({"T1"}), (), _b0_tail_profile,
+                                 {"what": "B0 plus the tail decoder with b0_topup's neighbour-profile kernel: genes "
+                                          "among dp's bottom 400 with pb(reference) < 0.25 topped up in count space "
+                                          "to dp = 0 as c + Poisson((f - 1) m), m the cell's library times the mean "
+                                          "proportions of its 15 nearest reference-stage cells in 30 PCs, zeros "
+                                          "included, the factor at most 2: genes needing more (or with no profile "
+                                          "mass) are skipped (vec.t1_scope.apply_tail_decoder_profile; expected depth "
+                                          "kept exactly, held-flat genes untouched)",
+                                  "damping": B0_DAMPING, "scope": "chamber", "bottom": 400, "min_pb": 0.25,
+                                  "target_dp": 0.0, "f_max": 2.0, "n_pcs": 30, "k": 15},
+                                 requires=_b0_applies, derived=("t1_held_flat",)),
     # T1 tries T20 and T21 (experiments/harness/TRIES.md, registered before their run): g_mom's placebo arms, on g_mom's
     # own draws, base and fit; judged by g_mom against each of them (a paired mean gain above 0.3 and 8 of 10 seeds on
     # both E10.5 cuts, experiments/t1_scope/g_mom_verify.py placebo)
