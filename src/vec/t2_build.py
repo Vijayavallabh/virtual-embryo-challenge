@@ -2032,6 +2032,159 @@ def series_rendered_expression(before: ad.AnnData, after: ad.AnnData, interp: In
     return out, rec
 
 
+# The trend rendering (campaign branch campaign/emb-expr; experiments/harness/TRIES.md, "Pruned before running", "A
+# trend rendering for the embryo", 2026-11-13): every drawn cell of both brackets moved to the run profile that a trend
+# through all the task's samples gives at the target's day, instead of fgw's mixture of the two brackets' profiles. The
+# profile is SERIES_RULE's (mean within-cell panel proportions over the matched extraembryonic labels), the trend is the
+# least-squares line of log(profile + eps) on the stage day read at the target's day (the form of WT_REVERT_RULE, row
+# K7), and the factor is the T3 script's gene_factor of that trend against the bracket's own profile (SERIES_RULE's
+# eps, rescale and clip), applied at full strength by the core's apply_gene_factor. No constant is new.
+TREND_RENDER_RULE = ("trend render: each bracket's drawn cells are moved by a per-gene factor to the run profile a "
+                     "trend through every sample of the task gives at the target's day. A sample's profile is its "
+                     "share-weighted mean within-cell panel proportions over the labels every sample holds with at "
+                     "least SERIES_MIN_CELLS cells that are extraembryonic as SERIES_RULE says (the before bracket's "
+                     "groups), weights the moved bracket's label shares; the trend is the least-squares line of "
+                     "log(profile + 1e-5) on the stage day, read at the target's day; the factor is exp(trend) / "
+                     "(own profile + 1e-5), rescaled so the weighted total proportion is unchanged and clipped to "
+                     "0.25-4, applied in count space (binomial thinning below 1, Poisson top-up from the cell's "
+                     "kNN-smoothed proportions above 1; vec.core.apply_gene_factor). Depth is not moved: the counts "
+                     "outside the panel stay as released")
+
+
+def trend_labels(names: Sequence, groups_first) -> list[str]:
+    """TREND_RENDER_RULE's labels: series_labels of the first sample against every other sample, intersected (each
+    label held by every sample with at least SERIES_MIN_CELLS cells, extraembryonic by the first sample's groups)."""
+    if len(names) < 2:
+        raise ValueError("a trend needs at least two samples")
+    out = set(series_labels(names[0], groups_first, names[1]))
+    for other in names[2:]:
+        out &= set(series_labels(names[0], groups_first, other))
+    return sorted(out)
+
+
+def _label_profile(C: sparse.csr_matrix, names: np.ndarray, labels: Sequence[str], w: np.ndarray) -> np.ndarray:
+    """The w-weighted mean over `labels` of each label's mean within-cell panel proportions (series_factor's own
+    profile, written out here so that series_factor stays as it was)."""
+    prof = np.zeros(C.shape[1])
+    for wi, lab in zip(w, labels, strict=True):
+        sub = sparse.csr_matrix(C[np.flatnonzero(names == lab)], dtype=np.float64)
+        tot = np.asarray(sub.sum(1)).ravel()
+        prof = prof + wi * np.asarray((sparse.diags(1.0 / np.maximum(tot, 1.0)) @ sub).mean(0)).ravel()
+    return prof
+
+
+def trend_factor(C_from: sparse.csr_matrix, names_from, samples: Sequence[tuple[sparse.csr_matrix, Sequence]],
+                 days: Sequence[float], target_day: float, labels: Sequence[str]) -> np.ndarray:
+    """The per-gene factor of TREND_RENDER_RULE that moves `from` cells (one of `samples`) to the trend's profile at
+    target_day. samples: (panel counts, cell-type names) per sample, in the order of `days`."""
+    if not len(labels):
+        raise ValueError("no extraembryonic label held by every sample: the trend factor is not defined")
+    d = np.asarray(days, dtype=np.float64)
+    if len(d) != len(samples) or len(np.unique(d)) < 2:
+        raise ValueError("a trend needs one day per sample and at least two distinct days")
+    nf = np.asarray(names_from).astype(str)
+    w = np.array([(nf == lab).sum() for lab in labels], dtype=np.float64)
+    w /= w.sum()
+    den = _label_profile(C_from, nf, labels, w)
+    Y = np.log(np.vstack([_label_profile(C, np.asarray(nm).astype(str), labels, w) for C, nm in samples]) + SERIES_EPS)
+    dc = d - d.mean()
+    slope = dc @ (Y - Y.mean(0)) / (dc @ dc)
+    phi = np.exp(Y.mean(0) + slope * (float(target_day) - d.mean())) / (den + SERIES_EPS)
+    phi = phi / (den @ phi / max(den.sum(), 1e-12))
+    return np.clip(phi, *SERIES_CLIP)
+
+
+def trend_rendered_expression(before: ad.AnnData, after: ad.AnnData, interp: Interpolation, genes,
+                              samples: Sequence[tuple[ad.AnnData, float]], target_day: float,
+                              seed) -> tuple[np.ndarray, dict]:
+    """The interpolation's cells, each bracket's moved to the trend's run profile at target_day (TREND_RENDER_RULE):
+    expression (cells x genes, float32, log(1 + 1e4 c / N)) and a record. samples: every sample of the task as (stage,
+    day), the two brackets among them (the same objects). Needs obs["celltype"] on every sample and obs["group"] on
+    `before`. A bracket whose factor is exactly 1 for every gene keeps its released rows."""
+    from vec.core import apply_gene_factor
+
+    if not any(s is before for s, _ in samples) or not any(s is after for s, _ in samples):
+        raise ValueError("the brackets must be among the trend's samples")
+    rng = np.random.default_rng(seed)
+    parts = [_stage_counts(a, genes) for a in (before, after)]
+    counts = [sparse.csr_matrix(a[:, list(genes)].layers["counts"], dtype=np.int64) for a, _ in samples]
+    names = [np.asarray(a.obs["celltype"]).astype(str) for a, _ in samples]
+    days = [float(day) for _, day in samples]
+    first = next(i for i, (a, _) in enumerate(samples) if a is before)
+    order = [first] + [i for i in range(len(samples)) if i != first]
+    labels = trend_labels([names[i] for i in order], np.asarray(before.obs["group"]).astype(str))
+    out = np.empty((len(interp.rows), len(genes)), dtype=np.float32)
+    rec = {"rule": TREND_RENDER_RULE, "target_day": float(target_day), "days": days, "labels": labels,
+           "sd_log_factor": {}, "genes_above_2x": {}, "moved": {}}
+    for s, (name, a) in enumerate((("before", before), ("after", after))):
+        m = interp.stage == s
+        E, C, lib, other = parts[s]
+        own = np.asarray(a.obs["celltype"]).astype(str)
+        phi = trend_factor(C, own, list(zip(counts, names, strict=True)), days, target_day, labels)
+        rec["sd_log_factor"][name] = float(np.log(phi).std())
+        rec["genes_above_2x"][name] = int((np.abs(np.log(phi)) > np.log(2.0)).sum())
+        rows = interp.rows[m]
+        rec["moved"][name] = int(m.sum()) if bool(np.any(phi != 1.0)) else 0
+        if not m.any() or not np.any(phi != 1.0):
+            out[m] = E[rows]
+            continue
+        S = _smoothed_props(E, C, lib, rows)
+        P = S / np.maximum(S.sum(1, keepdims=True), 1e-12)
+        C1 = apply_gene_factor(np.asarray(C[rows].toarray(), dtype=np.int32), phi, P, rng).astype(np.int64)
+        Cn = sparse.csr_matrix(C1)
+        out[m] = _log_normalise(Cn, np.asarray(Cn.sum(1)).ravel() + other[rows])
+    return out, rec
+
+
+# The trend rendering on samples that do not all hold the whole panel (port/emb-s1-trend, for the embryo's test build;
+# the missing-gene rule as the main session fixed it, 2026-11-14). The test's samples are E6.75, E7.25, E7.5 and E8.0 on
+# the test board's panel, and a sample's file can lack a few panel genes. TREND_RENDER_RULE is then applied unchanged on
+# a panel made of the genes every sample holds; the other panel genes keep fgw's expression. No constant is new.
+TREND_COMMON_RULE = (TREND_RENDER_RULE + ". Missing panel genes: the profiles, the trend and the factors are computed "
+                     "on the panel genes every sample's file holds (the common genes), exactly as on a panel made of "
+                     "those genes alone (each cell's proportions, the rescale and the smoothed top-up profile over the "
+                     "common genes; the counts of the other panel genes count as outside the panel). A panel gene that "
+                     "any sample lacks keeps factor 1 for every cell: its column is the cell's released expression, as "
+                     "fgw has it. When every sample holds every panel gene this is TREND_RENDER_RULE bit for bit")
+
+
+def trend_common_genes(genes, samples: Sequence[tuple[ad.AnnData, float]]) -> list[str]:
+    """TREND_COMMON_RULE's common genes: the panel genes (in panel order) that every sample holds."""
+    held = [set(map(str, a.var_names)) for a, _ in samples]
+    return [g for g in genes if all(g in h for h in held)]
+
+
+def trend_rendered_expression_common(before: ad.AnnData, after: ad.AnnData, interp: Interpolation, genes,
+                                     samples: Sequence[tuple[ad.AnnData, float]], target_day: float,
+                                     seed) -> tuple[np.ndarray, dict]:
+    """trend_rendered_expression under TREND_COMMON_RULE: the samples may lack panel genes (the brackets hold all of
+    them). Rendered on the common genes alone; a panel gene some sample lacks keeps the interpolation's released row
+    (fgw's mixture expression). With every gene common the call is trend_rendered_expression's, bit for bit. The record
+    is trend_rendered_expression's with this rule and "panel_genes_unrendered", the number of panel genes left as fgw
+    has them (a number of genes; no gene name)."""
+    genes = list(genes)
+    for a in (before, after):
+        if any(g not in set(map(str, a.var_names)) for g in genes):
+            raise ValueError("a bracket lacks panel genes: the trend rendering needs the brackets on the whole panel")
+    common = trend_common_genes(genes, samples)
+    if not common:
+        raise ValueError("no panel gene is held by every sample: the trend factor is not defined")
+    if len(common) == len(genes):
+        out, rec = trend_rendered_expression(before, after, interp, genes, samples, target_day, seed)
+    else:
+        sub, rec = trend_rendered_expression(before, after, interp, common, samples, target_day, seed)
+        out = np.empty((len(interp.rows), len(genes)), dtype=np.float32)
+        pos = {g: i for i, g in enumerate(genes)}
+        keep = np.array([pos[g] for g in common])
+        lack = np.array([i for i, g in enumerate(genes) if g not in set(common)])
+        out[:, keep] = sub
+        for s, a in enumerate((before, after)):
+            m = interp.stage == s
+            out[np.ix_(m, lack)] = dense(a[:, [genes[i] for i in lack]].X).astype(np.float32)[interp.rows[m]]
+    rec = {**rec, "rule": TREND_COMMON_RULE, "panel_genes_unrendered": len(genes) - len(common)}
+    return out, rec
+
+
 # Detection depth of an extrapolated stage (2026-11-03; heart try H3, experiments/harness/TRIES.md, registered before
 # its run). Counts per cell fall steadily through heart development in the released series (median counts per cell:
 # E8.25_late 233, E8.5 166, E8.75 130, E9.5 75, E10.5 56).

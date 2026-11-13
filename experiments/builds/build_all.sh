@@ -29,6 +29,7 @@ export OMP_NUM_THREADS=$T OPENBLAS_NUM_THREADS=$T MKL_NUM_THREADS=$T NUMPY_MADVI
 U=${UV:-uv}
 SEED=1000001
 EMBRYO_EXPRESSION=mixture  # the embryo s1's expression step (its s2 names its own since the ruling of 2026-11-13)
+# build_test.py embryo --expression trend (fgw_trend_render, port/emb-s1-trend) is an option only, until the captain rules
 T3_DECISIONS=experiments/t3_decomp/results/gata4/gata4_decisions.json
 T3_RUN_DIR=runs/t3_decomp/gata4_20261028T122425Z
 mkdir -p "$O/builds" "$O/t3_build"

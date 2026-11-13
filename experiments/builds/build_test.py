@@ -31,7 +31,11 @@ machine, and an official upload needs the captain's go-ahead.
           E10.5 in place of the E9.5 -> E10.5 step alone
   embryo  --method pseudobulk_shift | fgw | fgw_shape0 | fgw_shape1: E7.5 cells moved by the E7.25 -> E7.5 change, or
           the FGW interpolation between E7.5 and E8.0 at t = 1/2 (fgw_shape0, the s2 of docs/S2_RULES.md, keeps the
-          mixture in E7.5's geometry); sized by the pre-registered embryo procedure (size_embryo_E7.75.json)
+          mixture in E7.5's geometry); sized by the pre-registered embryo procedure (size_embryo_E7.75.json).
+          --expression trend (port/emb-s1-trend; not an entry until the captain rules): the harness candidate
+          fgw_trend_render, fgw's draws and positions with each drawn cell moved to the profile a trend through E6.75,
+          E7.25, E7.5 and E8.0 gives at E7.75; panel genes a sample's file lacks keep fgw's expression
+          (vec.t2_build.TREND_COMMON_RULE). It is built only into a campaign folder until a ruling (the command below)
 
 The board is the test board from boards/ (after the intake, `vec boards update --from-file`); before that, --board
 may name a validation board of the same task for a dry run, and the script refuses a dry run whose output file name
@@ -53,6 +57,9 @@ files carry --trend: the captain's ruling of 2026-11-13, docs/PLAN.md decision l
   uv run python experiments/builds/build_test.py embryo --method fgw_shape0 --out runs/builds/T2embryo_s2.h5ad
 Without --trend the heart builder gives the heart file as it was before that ruling (B0's E9.5 -> E10.5 step alone),
 kept for reproducing the earlier reference set (builds_38616fe).
+The embryo trend option, no entry (a build to see whether the test file builds, in the campaign checkout):
+  uv run python experiments/builds/build_test.py embryo --method fgw --expression trend \\
+    --out runs/round6/dry_trend/T2embryo_s1_trend.h5ad
 """
 
 from __future__ import annotations
@@ -106,6 +113,11 @@ T1_MID_CM_SHARE = 0.60  # the one cardiomyocyte share the mid base is ruled for 
 # decision log (w)): role -> (file, day as vec.harness.STAGE_DAYS gives it); with E9.5 ("start") and E10.5 ("ref")
 HEART_TREND_STAGES = {role: (f, harness.STAGE_DAYS[f]) for role, f in
                       (("e8_75", "T2/E8.75.h5ad"), ("e8_5", "T2/E8.5.h5ad"), ("e8_25_late", "T2/E8.25_late.h5ad"))}
+# The embryo's trend rendering (--expression trend; port/emb-s1-trend, the harness candidate fgw_trend_render as a
+# first-upload option, no entry until the captain rules): the embryo series' stages outside the bracket, role -> (file,
+# day). Each is loaded without a gene list (a file may lack panel genes; vec.t2_build.TREND_COMMON_RULE says what then).
+EMBRYO_TREND_STAGES = {"e6_75": ("T2/E6.75.h5ad", 6.75), "e7_25": ("T2/E7.25.h5ad", 7.25)}
+EMBRYO_TARGET_DAY = 7.75
 
 
 def _view(key: str, task: str, kind: str, setting: str | None, test_board: str, roles: dict[str, tuple[str, float]],
@@ -490,10 +502,20 @@ def _trend_record(rec: dict) -> dict:
 def build_embryo(a) -> dict:
     board, dry = _board("embryo", a.board)
     genes = board.genes
+    trend = a.expression == "trend"
+    if trend and (a.method == "pseudobulk_shift" or a.herd):
+        sys.exit("--expression trend is refused with --method pseudobulk_shift and --herd (fgw_trend_render is fgw's "
+                 "draws and positions; no try read those combinations)")
     files = {"before": ("T2/E7.5.h5ad", 7.5), "after": ("T2/E8.0.h5ad", 8.0)}
     if a.method == "pseudobulk_shift":  # only it uses the stage before the bracket (E7.25 lacks two panel genes)
         files["earlier"] = ("T2/E7.25.h5ad", 7.25)
     inputs = {r: load_stage(DATA / f, genes=genes, drop_duplicates=True) for r, (f, _) in files.items()}
+    trend_samples = []
+    if trend:  # the series' other stages, each on the panel genes its file holds (TREND_COMMON_RULE)
+        for f, day in EMBRYO_TREND_STAGES.values():
+            s = load_stage(DATA / f, drop_duplicates=True)
+            held = set(map(str, s.var_names))
+            trend_samples.append((s[:, [g for g in genes if g in held]].copy(), day))
     count = _t2_count(board, inputs["before"].n_obs)
     view = _view("test:T2e", "T2", "interp", "embryo", board.key, files, "before", 7.75)
     ctx = harness.BuildContext(task=view, board=harness._candidate_board(board), inputs=inputs, seed=a.seed)
@@ -533,6 +555,10 @@ def build_embryo(a) -> dict:
             X, expr_rec = t2_build.series_rendered_expression(before, after, res, genes, 0.5, [a.seed, 7])
         elif a.expression == "render_hi":  # the harness's depth top-up to the deeper bracket (tries E19c and E24b)
             X, expr_rec = t2_build.depth_rendered_expression(before, after, res, genes, 0.5, [a.seed, 7], mode="hi")
+        elif trend:  # the harness's fgw_trend_render on the test's four stages, under TREND_COMMON_RULE
+            samples = [*trend_samples, (before, files["before"][1]), (after, files["after"][1])]
+            X, expr_rec = t2_build.trend_rendered_expression_common(before, after, res, genes, samples,
+                                                                    EMBRYO_TARGET_DAY, [a.seed, 7])
         else:  # the harness's fgw_blend (try E8)
             X, expr_rec = t2_build.blend_expression(before, after, res, genes, 0.5, [a.seed, 7])
         guard = t2_build.cloud_guard(res.coords, res.pool_coords, seed=a.seed, source_weights=res.pool_weights)
@@ -540,7 +566,7 @@ def build_embryo(a) -> dict:
             raise SystemExit(f"cloud guard flags {guard.flags}")
         coords, rec = res.coords, res.record
         if expr_rec is not None:
-            prefix = a.expression if a.expression in ("latent", "series", "render_hi") else "depth"
+            prefix = a.expression if a.expression in ("latent", "series", "render_hi", "trend") else "depth"
             rec = {**rec, "expression": a.expression,
                    **{f"{prefix}_{k}": v for k, v in expr_rec.items() if not isinstance(v, (dict, list))
                       and (prefix, k) != ("latent", "retried")}}  # a test build's record holds no cell number
@@ -620,13 +646,19 @@ def build_parser() -> argparse.ArgumentParser:
                            help="fgw = s1; fgw_shape0 = the s2 of docs/S2_RULES.md (E7.5's geometry)")
             p.add_argument("--herd", action="store_true",
                            help="herd each bracket's draw towards its mean expression (try E9; off: the entry so far)")
-            p.add_argument("--expression", choices=("mixture", "depth", "blend", "latent", "series", "render_hi"),
+            p.add_argument("--expression", choices=("mixture", "depth", "blend", "latent", "series", "render_hi",
+                                                    "trend"),
                            default="mixture",
                            help="fgw methods: the cells as released (the entry), or tries E7, E8, E14, E24 and E19c "
                                 "of experiments/harness/TRIES.md: thinned to the predicted depth; blends; a count "
                                 "model's latent interpolation (needs the gpu dependency group); the shallower "
                                 "bracket's cells in the deeper bracket's run profile; every cell topped up to the "
-                                "deeper bracket's depth. Neither of the last two is an entry until the captain rules")
+                                "deeper bracket's depth. Neither of the last two is an entry until the captain rules. "
+                                "trend: the harness candidate fgw_trend_render, every drawn cell of both brackets "
+                                "moved by a per-gene factor to the profile a least-squares trend through E6.75, "
+                                "E7.25, E7.5 and E8.0 gives at E7.75 (vec.t2_build.TREND_COMMON_RULE: panel genes a "
+                                "sample lacks are left as released); refused with pseudobulk_shift and --herd; not "
+                                "an entry until the captain rules")
             p.add_argument("--move-coupling", choices=t2_build.MOVE_COUPLINGS, default=t2_build.MOVE_COUPLINGS[0],
                            help="fgw methods: which coupling sets the moves: fgw (the entry) or aligned (try E10 of "
                                 "experiments/harness/TRIES.md: an exact transport in the rotated common frame)")

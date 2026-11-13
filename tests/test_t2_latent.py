@@ -321,7 +321,9 @@ def test_the_expression_option_is_only_added_for_the_new_try():
     assert '"latent"' in src and 'with_partners=a.expression in ("blend", "latent")' in src
     # the entry's default stays the released cells ("series" joined the choices with tries E24 and E25, "render_hi"
     # with request R-A's second option; neither is an entry)
-    assert 'choices=("mixture", "depth", "blend", "latent", "series", "render_hi"),' in src
+    # ("trend" joined them on port/emb-s1-trend, no entry either)
+    assert 'choices=("mixture", "depth", "blend", "latent", "series", "render_hi",\n' in src
+    assert '"trend"),' in src
     assert src.count('default="mixture"') == 1
     sys.path.insert(0, str(REPO / "experiments" / "builds"))
     import build_test
