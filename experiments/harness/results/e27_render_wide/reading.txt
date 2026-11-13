@@ -1,0 +1,13 @@
+Try E27 (commit cf359d6d3add20dd69110d15ed693442a19f6d3c): the wider neighbourhood is kept: False (mean over half, late, new1 +0.23 against a bar of 0.3; clauses a False, b True, c False)
+half: floor 50.00, fgw 65.99, fgw_shape0 66.74, fgw_aligned_series 73.43, fgw_aligned_series_wide 74.19; wide - reference +0.76 (10/10); better of two with fgw 74.19 against 73.43
+  skills reference / wide: mmd_u 0.822 / 0.832, variogram 0.844 / 0.849, neighborhood_mmd 0.769 / 0.785, de_score 0.708 / 0.719, de_direction 0.810 / 0.813
+late: floor 50.00, fgw 80.53, fgw_shape0 80.25, fgw_aligned_series 84.80, fgw_aligned_series_wide 84.15; wide - reference -0.65 (0/10); better of two with fgw 84.15 against 84.80
+  skills reference / wide: mmd_u 0.926 / 0.917, variogram 0.936 / 0.920, neighborhood_mmd 0.904 / 0.893, de_score 0.834 / 0.831, de_direction 0.915 / 0.912
+new1: floor 50.00, fgw 75.97, fgw_shape0 76.72, fgw_aligned_series 80.15, fgw_aligned_series_wide 80.71; wide - reference +0.56 (10/10); better of two with fgw 80.71 against 80.15
+  skills reference / wide: mmd_u 0.878 / 0.886, variogram 0.873 / 0.880, neighborhood_mmd 0.847 / 0.857, de_score 0.744 / 0.751, de_direction 0.879 / 0.883
+new2: floor 50.00, fgw 71.39, fgw_shape0 70.74, fgw_aligned_series 72.12, fgw_aligned_series_wide 72.29; wide - reference +0.17 (10/10); better of two with fgw 72.38 against 72.25
+  skills reference / wide: mmd_u 0.793 / 0.797, variogram 0.737 / 0.740, neighborhood_mmd 0.780 / 0.786, de_score 0.769 / 0.766, de_direction 0.816 / 0.814
+e75: floor 50.00, fgw 61.12, fgw_shape0 62.95, fgw_aligned_series 61.29, fgw_aligned_series_wide 57.05; wide - reference -4.23 (0/10); better of two with fgw 61.12 against 61.53
+  skills reference / wide: mmd_u 0.663 / 0.583, variogram 0.510 / 0.408, neighborhood_mmd 0.593 / 0.524, de_score 0.603 / 0.586, de_direction 0.728 / 0.728
+e725: floor 50.00, fgw 58.78, fgw_shape0 53.67, fgw_aligned_series 50.78, fgw_aligned_series_wide 48.92; wide - reference -1.86 (0/10); better of two with fgw 58.78 against 58.78
+  skills reference / wide: mmd_u 0.379 / 0.352, variogram 0.203 / 0.186, neighborhood_mmd 0.485 / 0.461, de_score 0.661 / 0.651, de_direction 0.677 / 0.676
