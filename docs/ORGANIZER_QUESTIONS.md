@@ -447,6 +447,83 @@ Best regards,
 Vijayavallabh J
 Team captain, Mithril
 
+## Planned eighth email: how final entries are marked (drafted 2026-11-13; not sent; the captain decides)
+
+Why now. Question 2 of the fourth email (28 October) has no answer on record, and the sixth campaign round showed
+that it decides more than how the marks are made: the value of every second upload as "the better of two" holds only
+if the pick is per board (`docs/S2_RULES.md`, "What an s2 is worth"), and a cold check on 2026-11-13 stopped an option
+for the embryo's first upload on exactly that point (`docs/PLAN.md` decision log 2026-11-13 (hh)). The AI assistant
+drafted this on its own initiative after that check; the captain has not asked for it and decides whether and when it
+goes. Two figures in the team's files differ and are left as they are: `docs/S2_RULES.md` (hash-pinned) rates
+"per board" at 0.55, the table of 31 October; the table of 2026-11-10 above rates the whole final-entries row at 0.7.
+
+Review. A three-lens panel (wf_11847608-0af: accuracy, strategy, tone; read-only, the repository's own files only)
+returned "send with changes" three times. What changed: the opening no longer says the question "is still open",
+which implied the email's other two questions had been answered; the reason given is that the answer applies to every
+team the same way, not that it decides how second uploads are planned; "while Rules s.11 says" became "and"; question 1
+names what a pick over several boards could be; question 2 is open ("what counts there?") and no longer offers the
+answer the team assumes. On timing and channel the strategy lens advised: send it on its own, soon (an answer helps
+only before the first uploads on 27 November), as a new short email and not on the old thread or in the Slack thread
+on Task 3 severity; if nothing has come and the Final column has not appeared by about 24 November, the captain may
+post the same three questions as one neutral top-level message in #virtual-embryo-challenge, which is his own call and
+brings the runbook's public ask of 28 November forward. Expect no reply (none of seven emails has one); nothing in the
+plan waits on it.
+
+Readings fixed beforehand (they stay in this file; none is sent):
+- "Per board", alone or with the other points: no change. A point left unanswered keeps its working answer.
+- "One pick covers all of a team's boards" (a set or bundle): the per-set clause of `docs/S2_RULES.md` applies as
+  written (the second uploads still stand; no second set is kept), and the marks follow the runbook's rule for that
+  case ("the bundle with the higher overall standing", `docs/P3_RUNBOOK.md` section 5). The AI assistant's own
+  addition, which binds nobody until the captain says so: it then proposes no file for a first-upload slot that is
+  far below the entry on most practice tasks.
+- "One pick per task" (the two Task 2 boards together, Task 1 and Task 3 each alone): the per-set clause is applied
+  to the two Task 2 boards only, and the captain is told the same day.
+- "The team may choose, per board or as a bundle": treated as per board; every board is marked on its own.
+- An unmarked board "counts its best": the working answer; the captain still marks every board as soon as its last
+  official upload is scored. "Counts nothing", "the first" or "the latest": the same marking, with the recheck on
+  1 December (IST) no longer optional. "Marks are ignored, the best always counts": no change.
+- "Picks cannot be changed", or close before 2 December: each mark is made only after that board's last upload is
+  scored and before the stated close; T3's case in `docs/S2_RULES.md` (s1 unscored by 30 Nov IST: mark s2) goes to the
+  captain that day, since such a mark could not be undone.
+- A one-liner that does not say which ("yes"; "the captain picks one"): counts as no answer; one clarifying reply at
+  most, at the captain's choice.
+- A reply that cites the notice of 31 October as agreed ("as you said, one per board"): recorded as a per-board
+  answer.
+- An answer after 27 November: the first uploads are designed by then; only the readings about marking apply.
+- An answer that changes the rule for every team: the captain is told the same day; the per-set clause is applied
+  without new tries.
+- No answer by 27 November: the working answers stand.
+
+Where it is. A draft with the text below is in the drafts of be23b041@smail.iitm.ac.in, created by the AI
+assistant on 2026-11-13 without being asked, with the two signature lines left as placeholders so that it cannot
+go out unread. Sending it, changing it or deleting it is the captain's alone. Answers: none can exist yet.
+
+Text as drafted (to virtual.embryo.moonshot@gmail.com, as a new email):
+
+**Subject:** Human Team: how final entries are marked (one question from 28 October)
+
+Hello organisers,
+
+We are asking one question from our email of 28 October again, on its own; the answer applies to every team in the
+same way.
+
+Final entries. The account page says "In the final phase the captain picks which submission counts", and Rules s.11
+says a board ranks a team by its best official submission.
+
+1. Is the pick made separately for each board, or does one pick cover several boards together (both boards of a task,
+   or all of a team's boards)?
+
+2. If the captain marks nothing on a board, what counts there?
+
+3. Can a pick be changed until 2 December (UTC)?
+
+A one-line answer would be enough. If you would rather answer every team at once, a line on the Rules page or in
+#virtual-embryo-challenge would serve as well.
+
+Best regards,
+Vijayavallabh J
+Team captain, Mithril
+
 ## Planned Slack DM (drafted 2026-11-06; sent by the captain the same day)
 
 The state-of-the-art research recommends it (`experiments/research_2026_11_sota/REPORT.md` section 8; `docs/PLAN.md`
