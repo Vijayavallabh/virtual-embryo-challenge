@@ -295,12 +295,19 @@ def test_geoshares_adds_unused_rows_before_repeating():
         assert len(np.unique(geo.rows[m])) == int(m.sum()) == len(np.unique(base.rows[m]))
 
 
-@pytest.mark.parametrize("case", ["identical", "t0", "t1"])
+@pytest.mark.parametrize("case", ["identical", "one_shared", "proportional", "t0", "t1"])
 def test_geoshares_with_q_equal_to_the_linear_shares_is_fgw_bit_for_bit(case):
     Cb, Ca, Eb, Ea, lb, la, t = _geo_pair(seed=13)
     if case == "identical":  # the same label shares in both brackets (different cells, different pool sizes)
         lb = np.repeat(["epi", "meso", "exe"], [300, 180, 120])
         la = np.repeat(["epi", "meso", "exe"], [350, 210, 140])
+    elif case == "one_shared":  # exactly one label present in both brackets
+        lb = np.repeat(["epi", "exe"], [300, 300])
+        la = np.repeat(["epi", "late"], [250, 450])
+    elif case == "proportional":  # shared labels with ratio 4 / 3 (shares differ), one label per bracket alone
+        lb = np.repeat(["epi", "meso", "exe"], [300, 150, 150])
+        la = np.repeat(["epi", "meso", "late"], [400, 200, 100])
+        assert not np.isclose(300 / 600, 400 / 700)  # the shared labels' shares are not identical
     else:
         t = 0.0 if case == "t0" else 1.0
     base = tb.interpolate_clouds(Cb, Ca, Eb, Ea, t, 500, seed=5, **KW)

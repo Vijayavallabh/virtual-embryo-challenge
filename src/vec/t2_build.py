@@ -1367,8 +1367,9 @@ GEOSHARES_RULE = ("geometric shares: a label present in both brackets gets a sha
                   "counts stay exact. The entry's drawn rows are then edited the least: a (bracket, label) group over "
                   "its quota loses rows at random, one under it gains rows of that label and bracket at random, unused "
                   "rows first (repeats only when the bracket has no unused row of that label), each gained row taking "
-                  "a lost row's place. With q equal to the linear shares (t = 0 or 1, or identical label shares in "
-                  "both brackets) nothing is edited")
+                  "a lost row's place. With q equal to the linear shares (t = 0 or 1, or every label present in both "
+                  "brackets with the same ratio count_after / count_before, tested exactly on the integer counts, "
+                  "which covers zero or one shared label and identical shares) nothing is fitted or edited")
 
 
 def pchip_rms(days, rms, target_day: float) -> float:
@@ -1771,7 +1772,11 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         p_b, p_a = cnt_b / len(codes_b), cnt_a / len(codes_a)
         lin = (1.0 - tm) * p_b + tm * p_a
         geo = {"rule": "vec.t2_build.GEOSHARES_RULE", "idle": True, "tv_q_linear": 0.0, "edited_share": 0.0}
-        if 0.0 < tm < 1.0 and not np.array_equal(p_b, p_a):
+        # idle (q is the linear shares) when t_mix is 0 or 1 or every label present in both brackets has the same
+        # ratio count_after / count_before, tested exactly on the integer counts (covers zero or one shared label)
+        shared = [(int(cnt_b[k]), int(cnt_a[k])) for k in np.flatnonzero((cnt_b > 0) & (cnt_a > 0))]
+        proportional = all(ak * bj == aj * bk for bk, ak in shared for bj, aj in shared)
+        if 0.0 < tm < 1.0 and not proportional:
             q = geometric_shares(p_b, p_a, tm)
             table, ipf = ipf_table(np.vstack([(1.0 - tm) * p_b, tm * p_a]), np.array([n_b, n_a]) / n, q)
             quota = _geoshare_quotas(table, n_b, n_a)
