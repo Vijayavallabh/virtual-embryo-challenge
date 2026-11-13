@@ -1099,7 +1099,13 @@ R8_RANK = 1  # the record's rank is 1-3 (REPORT.md R8); the smallest, one value,
 B0_TREND_R8_RULE = ("b0_trend with R8's run basis removed (experiments/research_2026_11_runs/REPORT.md, R8 to R10): "
                     "the control contrasts are the interior-stage residuals of every trend lineage's log means "
                     "(r_k = y_k - (w y_(k-1) + (1 - w) y_(k+1)), w = (d_(k+1) - d_k) / (d_(k+1) - d_(k-1)), R2's "
-                    "form), from the task's own MERFISH heart stages; their rank-R8_RANK SVD basis V (uncentred) "
+                    "form), from the task's own MERFISH heart stages; before the SVD each contrast loses its part "
+                    "monotone in reference level (REPORT.md section 6, common rules: the part de_direction partials "
+                    "out): genes are ordered by the reference pseudobulk pb (the mean over the reference's cells of "
+                    "log1p CP10k, b0_trend_tail's pb), the contrast is fitted both non-decreasing and non-increasing "
+                    "in that order by pool-adjacent-violators (equal gene weights; genes of equal pb share one fitted "
+                    "value), and the fit with the smaller residual sum of squares is subtracted; their rank-R8_RANK "
+                    "SVD basis V (uncentred) "
                     "is the run-profile basis, and each trend lineage's factor loses its projection on V (the trend "
                     "built on the remainder); no contrast or a zero basis leaves b0_trend's factor; a lineage seen "
                     "at only the last two stages keeps B0's own factor")
@@ -1184,16 +1190,24 @@ def tail_filter(infeasible: np.ndarray):
     return filt
 
 
-def pava_last_unpooled(y: Sequence[float]) -> bool:
-    """Pool-adjacent-violators for a non-decreasing fit of y (equal weights; a tie pools): True when the last value
-    ends in a block of its own, i.e. the last step is not pooled."""
+def pava_blocks(y: Sequence[float], counts: Sequence[float] | None = None) -> list[list[float]]:
+    """Pool-adjacent-violators for a non-decreasing fit (a tie pools): the blocks [sum, count, first index] left
+    after pooling. y holds the values (counts None: one value per position, count 1) or, with counts, each position's
+    sum of values and its number of values; a block's fitted value is sum / count."""
     blocks: list[list[float]] = []  # [sum, count, first index]
     for i, v in enumerate(y):
-        blocks.append([float(v), 1.0, float(i)])
+        blocks.append([float(v), 1.0 if counts is None else float(counts[i]), float(i)])
         while len(blocks) > 1 and blocks[-2][0] / blocks[-2][1] >= blocks[-1][0] / blocks[-1][1]:
             s, c, _ = blocks.pop()
             blocks[-1][0] += s
             blocks[-1][1] += c
+    return blocks
+
+
+def pava_last_unpooled(y: Sequence[float]) -> bool:
+    """Pool-adjacent-violators for a non-decreasing fit of y (equal weights; a tie pools): True when the last value
+    ends in a block of its own, i.e. the last step is not pooled."""
+    blocks = pava_blocks(y)
     return int(blocks[-1][2]) == len(y) - 1
 
 
@@ -1240,14 +1254,66 @@ def run_contrasts(series: Mapping[str, tuple]) -> np.ndarray:
     return np.vstack(rows) if rows else np.zeros((0, 0))
 
 
-def trend_r8(logf_by_type: Mapping[str, np.ndarray], series: Mapping[str, tuple], rank: int | None = None
-             ) -> tuple[dict[str, np.ndarray], dict]:
-    """b0_trend_r8's mapping from b0_trend's (B0_TREND_R8_RULE) and its record."""
+def reference_pb(pool: ad.AnnData, genes: Sequence[str]) -> np.ndarray:
+    """The reference pseudobulk pb in `genes` order (float64): the mean over the reference's cells of its log1p CP10k
+    X, computed exactly as tail_infeasible computes the pb it holds against TAIL_PB_MIN."""
+    X = pool[:, list(genes)].X
+    return np.asarray(X.mean(axis=0)).ravel().astype(np.float64)
+
+
+def level_monotone_fit(v: np.ndarray, level: np.ndarray) -> tuple[np.ndarray, str]:
+    """The part of v (one value per gene) monotone in `level` (B0_TREND_R8_RULE): genes ordered by level (genes of
+    equal level form one position, so they share one fitted value), v fitted non-decreasing and non-increasing by
+    pool-adjacent-violators (pava_blocks; equal gene weights), and the fit with the smaller residual sum of squares
+    returned (the non-decreasing one on a tie) with its direction, "up" or "down"."""
+    v = np.asarray(v, dtype=np.float64)
+    level = np.asarray(level, dtype=np.float64)
+    if v.shape != level.shape or v.ndim != 1:
+        raise ValueError(f"v and level must be 1-d of one length; got {v.shape} and {level.shape}")
+    if v.size == 0:
+        return v.copy(), "up"
+    order = np.argsort(level, kind="stable")
+    lv, vv = level[order], v[order]
+    starts = np.flatnonzero(np.r_[True, lv[1:] != lv[:-1]])
+    sums = np.add.reduceat(vv, starts)
+    counts = np.diff(np.r_[starts, len(vv)])
+
+    def fit(sign: float) -> np.ndarray:
+        blocks = pava_blocks(sign * sums, counts)
+        edges = [int(b[2]) for b in blocks] + [len(sums)]
+        g = np.empty(len(sums))
+        for b, lo, hi in zip(blocks, edges[:-1], edges[1:], strict=True):
+            g[lo:hi] = sign * (b[0] / b[1])
+        return np.repeat(g, counts)
+
+    up, down = fit(1.0), fit(-1.0)
+    use_up = float(((vv - up) ** 2).sum()) <= float(((vv - down) ** 2).sum())
+    out = np.empty_like(v)
+    out[order] = up if use_up else down
+    return out, "up" if use_up else "down"
+
+
+def trend_r8(logf_by_type: Mapping[str, np.ndarray], series: Mapping[str, tuple], ref_level: np.ndarray,
+             rank: int | None = None) -> tuple[dict[str, np.ndarray], dict]:
+    """b0_trend_r8's mapping from b0_trend's (B0_TREND_R8_RULE) and its record. ref_level: the reference pb per gene
+    (reference_pb, in the factors' gene order); each control contrast loses its level-monotone part
+    (level_monotone_fit) before the SVD."""
     rank = R8_RANK if rank is None else int(rank)
     M = run_contrasts(series)
     rec: dict = {"rule": "vec.harness.B0_TREND_R8_RULE", "rank": rank, "n_contrasts": int(M.shape[0])}
     out = dict(logf_by_type)
-    if M.shape[0] == 0 or not np.any(M):
+    if M.shape[0] == 0:
+        rec.update(basis=False, lineages=[])
+        return out, rec
+    level_rows = []
+    for i in range(M.shape[0]):
+        fit, direction = level_monotone_fit(M[i], ref_level)
+        e0 = float((M[i] ** 2).sum())
+        level_rows.append({"direction": direction, "removed_energy_share": float((fit ** 2).sum()) / e0
+                           if e0 > 0 else float("nan")})
+        M[i] = M[i] - fit
+    rec["level_monotone"] = {"level": "reference pb (reference_pb)", "contrasts": level_rows}
+    if not np.any(M):
         rec.update(basis=False, lineages=[])
         return out, rec
     _, sv, Vt = np.linalg.svd(M, full_matrices=False)
@@ -1284,7 +1350,8 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
     trend_idea (with trend and the "ols" form only; heart batch b): default None, b0_trend's own path; "smooth"
     (B0_TREND_SMOOTH_RULE: the top-up from kNN-smoothed expected counts), "tail" (B0_TREND_TAIL_RULE: negative log
     factors on down-infeasible genes set to 0), "pava" (B0_TREND_PAVA_RULE: R9's persistence gate and combiner) or
-    "r8" (B0_TREND_R8_RULE: R8's run basis removed from the trend factor). The record gains an "idea" block."""
+    "r8" (B0_TREND_R8_RULE: R8's run basis, from contrasts with their reference-level-monotone part removed, removed
+    from the trend factor). The record gains an "idea" block."""
     from vec import t1_scope
 
     if trend and (depth or herd or cfm):
@@ -1326,7 +1393,7 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
         if trend_idea == "pava":
             logf_by_type, rec["idea"] = trend_pava(logf_by_type, series, rec["budget_days"])
         elif trend_idea == "r8":
-            logf_by_type, rec["idea"] = trend_r8(logf_by_type, series)
+            logf_by_type, rec["idea"] = trend_r8(logf_by_type, series, reference_pb(pool, list(like.var_names)))
         elif trend_idea == "tail":
             infeasible = tail_infeasible(pool, list(like.var_names))
             logf_filter = tail_filter(infeasible)
@@ -2202,8 +2269,9 @@ CANDIDATES = {
                                requires=_heart_extrap_with_start),
     "b0_trend_r8": Candidate("b0_trend_r8", frozenset({"T2"}), (), _b0_trend_idea_arm("b0_trend_r8", "r8"),
                              {"what": "b0_trend with each trend lineage's factor projected off a rank-1 run-profile "
-                                      "basis of the task's own interior-stage residuals (R8; heart MERFISH only; count "
-                                      "space)", "damping": B0_DAMPING, "rule": "vec.harness.B0_TREND_R8_RULE",
+                                      "basis of the task's own interior-stage residuals, each first cleared of its "
+                                      "part monotone in reference pb by isotonic regression (R8; heart MERFISH only; "
+                                      "count space)", "damping": B0_DAMPING, "rule": "vec.harness.B0_TREND_R8_RULE",
                               "rank": R8_RANK, "scope": "chamber"}, requires=_heart_extrap_with_start),
     # T3 tries K2a and K2b (experiments/harness/TRIES.md, registered before their run): s1's Gata4 factor on the
     # Gata4 -> Mab21l2 fold, and its permuted control

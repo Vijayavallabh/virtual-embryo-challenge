@@ -454,18 +454,28 @@ def test_r8_on_exactly_linear_series_leaves_the_factor():
     days = [8.0, 9.0, 10.0, 11.0]
     ys = [np.array([1.0, 2.0, -1.0]) * d for d in days]
     logf = {"CM": harness.trend_log_factor(ys, days, 0.5)}
-    out, rec = harness.trend_r8(logf, {"CM": (ys, days)})
+    out, rec = harness.trend_r8(logf, {"CM": (ys, days)}, np.array([0.1, 2.0, 0.7]))
     assert not rec["basis"] and rec["n_contrasts"] == 2
     np.testing.assert_array_equal(out["CM"], logf["CM"])
 
 
+def _tied_levels_and_profile(rng, G: int = 200, n_groups: int = 4):
+    """Reference levels in n_groups tied groups (genes shuffled), and a unit run profile p with zero mean inside each
+    group: p has no part monotone in the level (its isotonic fit, a function of the level, is 0)."""
+    level = rng.permutation(np.repeat(np.arange(1.0, n_groups + 1.0) * 0.4, G // n_groups))
+    p = rng.normal(size=G)
+    for v in np.unique(level):
+        p[level == v] -= p[level == v].mean()
+    return level, p / np.linalg.norm(p)
+
+
 def test_r8_removes_a_planted_run_profile():
-    """Two lineages, linear trends plus one shared run profile p with a different weight at each stage: the rank-1
-    basis is p (to sign), and each factor loses exactly its component along p."""
+    """Two lineages, linear trends plus one shared run profile p with a different weight at each stage, p with no
+    part monotone in the reference level: the rank-1 basis is p (to sign), and each factor loses exactly its
+    component along p, as before the level step."""
     rng = np.random.default_rng(41)
     G = 200
-    p = rng.normal(size=G)
-    p /= np.linalg.norm(p)
+    level, p = _tied_levels_and_profile(rng, G)
     days = [8.3, 8.5, 8.75, 9.5]
     load = [0.0, 2.0, -1.5, 1.0]
     series = {}
@@ -473,8 +483,9 @@ def test_r8_removes_a_planted_run_profile():
         a, b = rng.normal(2.0, 1.0, G), rng.normal(0.0, 1.0, G)
         series[lin] = ([a + b * d + w * p for d, w in zip(days, load, strict=True)], days)
     logf = {k: harness.trend_log_factor(v[0], days, 0.375) for k, v in series.items()}
-    out, rec = harness.trend_r8(logf, series)
+    out, rec = harness.trend_r8(logf, series, level)
     assert rec["basis"] and rec["n_contrasts"] == 4 and rec["basis_energy_share"] > 0.999
+    assert all(r["removed_energy_share"] < 1e-20 for r in rec["level_monotone"]["contrasts"])
     for lin in series:
         np.testing.assert_allclose(out[lin], logf[lin] - (logf[lin] @ p) * p, atol=1e-9)
         assert abs(out[lin] @ p) < 1e-9
@@ -495,3 +506,193 @@ def test_r8_contrasts_come_from_the_tasks_own_stages(three, monkeypatch):
     CANDIDATES["b0_trend_r8"].build(_ctx(three))
     assert seen == [{"CM": [8.5, 8.75, 9.5], "Endothelial": [8.5, 8.75, 9.5]}]
     assert harness.TREND_ARM_RECORDS["b0_trend_r8"]["idea"]["n_contrasts"] == 2
+
+
+# ---------------------------------------------------------------------------------------------------- r8 level step
+# Fix of campaign/heart-b's b0_trend_r8 (REPORT.md section 6, common rules: "Before taking residuals (R2, R3, R8),
+# remove the part monotone in reference level"). Taken at e4b66d8 BEFORE the fix, on the synthetic stages above:
+# sha256 of the other three batch-b arms' output X and records (json.dumps(rec, sort_keys=True)), and of b0_trend_r8's
+# own output X as e4b66d8 built it.
+PIN_B_X = {"three": {"b0_trend_smooth": "1072a14e87248b1012dac2daec85b786dbe0cb2bf88661e2771ac178f5eab51b",
+                     "b0_trend_tail": "6e88977fd2d3fb7b54c65d6fffcb9ab97cce7bc83648e9c7e094744e7a091e8f",
+                     "b0_trend_pava": "c473f6dc29a93c719796e4128b7149885a7d64f1bcdd35d6a4c370913c8ad28a"},
+           "four": {"b0_trend_smooth": "62d3e8d50e4380054ec4734661c2abf5ff0bc08e350804fbf9a250ba7e650b36",
+                    "b0_trend_tail": "1f6af82912d039db1811531532e52197c58da18fe388c0e0f1cdf44a15eb693b",
+                    "b0_trend_pava": "8ca827e4728cd259a37bf8a8d02d8ba83243197035695168d5f0d4cd6754bf18"}}
+PIN_B_REC = {"three": {"b0_trend_smooth": "ff741cd0024b24298253dedb6cba24c91bb7fd4c8fcf3cb150f4e620a372db4d",
+                       "b0_trend_tail": "4b9a036dcefb88d4989bad745e68a3e8c088a11102a4753253305e9066e05073",
+                       "b0_trend_pava": "2dfd87ee8e3a82233bf37b016eed21101176c6e6dbc25bb7af3f43176e649093"},
+             "four": {"b0_trend_smooth": "49d7346fe2980095c10cd0254bc9452865aef0c195fd52cdef019bfd0652a7dc",
+                      "b0_trend_tail": "052c32aee1ef129b9b88a21daed30d300166a1ee7b79adebbcbdb585501d8cdf",
+                      "b0_trend_pava": "4d6fdeaa3ba5993c1429f30471aac45e2e94ffae0a87227e1f7b742d6fe083b8"}}
+PIN_R8_E4B66D8_X = {"three": "a7b8215f6cc8f045b34e8e015243e12a3171d36186c3bb60a6a71360f35bbc4b",
+                    "four": "98e919eccdfaf03072c8d9eef4b0a38866162d14ff6d7e8c53b5accbd4442044"}
+
+
+@pytest.mark.parametrize("case", ["three", "four"])
+def test_the_other_batch_b_arms_are_unchanged_by_the_r8_fix(three, four, case):
+    """b0_trend_smooth, b0_trend_tail and b0_trend_pava build what they built at e4b66d8 (output, coordinates and
+    record); the older candidates are pinned in test_existing_heart_candidates_are_unchanged."""
+    inputs, view = _case(three, four, case)
+    for name, want in PIN_B_X[case].items():
+        st = CANDIDATES[name].build(_ctx(inputs, view=view))
+        assert _h(st.X) == want, name
+        assert _h(st.coords) == PIN_COORDS, name
+        assert _rec_sha(harness.TREND_ARM_RECORDS[name]) == PIN_B_REC[case][name], name
+
+
+@pytest.mark.parametrize("case", ["three", "four"])
+def test_r8_with_the_level_fit_made_zero_is_its_e4b66d8_output(three, four, case, monkeypatch):
+    """The level step is the only change: with the level-monotone fit replaced by zeros, b0_trend_r8 builds its
+    e4b66d8 output bit for bit."""
+    inputs, view = _case(three, four, case)
+    monkeypatch.setattr(harness, "level_monotone_fit", lambda v, level: (np.zeros_like(v), "up"))
+    assert _h(CANDIDATES["b0_trend_r8"].build(_ctx(inputs, view=view)).X) == PIN_R8_E4B66D8_X[case]
+
+
+def _r8_e4b66d8(logf_by_type, series, rank=1):
+    """b0_trend_r8's mapping as e4b66d8 built it (no level step): the uncentred rank-1 SVD basis of the raw
+    contrasts, projected off each trend lineage's factor."""
+    M = harness.run_contrasts(series)
+    out = dict(logf_by_type)
+    if M.shape[0] == 0 or not np.any(M):
+        return out
+    _, sv, Vt = np.linalg.svd(M, full_matrices=False)
+    V = Vt[:rank][sv[:rank] > 0]
+    for lin in series:
+        logf = np.asarray(logf_by_type[lin], dtype=np.float64)
+        out[lin] = logf - V.T @ (V @ logf)
+    return out
+
+
+def test_r8_with_contrasts_that_have_no_monotone_part_is_its_e4b66d8_mapping():
+    """Contrasts with no part monotone in the reference level (zero mean within each tied level group): the
+    isotonic fits are 0, and the mapping equals e4b66d8's to 1e-9 (two profiles, so the rank-1 basis is a mix)."""
+    rng = np.random.default_rng(43)
+    G = 240
+    level, p = _tied_levels_and_profile(rng, G)
+    q = rng.normal(size=G)
+    for v in np.unique(level):
+        q[level == v] -= q[level == v].mean()
+    q /= np.linalg.norm(q)
+    days = [8.3, 8.5, 8.75, 9.5]
+    series = {}
+    for lin, (wp, wq) in {"CM": ([0.0, 2.0, -1.5, 1.0], [0.0, 0.5, 0.3, 0.0]),
+                          "Endothelial": ([0.0, -1.0, 0.8, 0.0], [1.0, 0.0, 0.7, -0.4])}.items():
+        a, b = rng.normal(2.0, 1.0, G), rng.normal(0.0, 1.0, G)
+        series[lin] = ([a + b * d + x * p + y * q for d, x, y in zip(days, wp, wq, strict=True)], days)
+    for row in harness.run_contrasts(series):
+        fit, _ = harness.level_monotone_fit(row, level)
+        assert np.abs(fit).max() < 1e-12
+    logf = {k: harness.trend_log_factor(v[0], days, 0.375) for k, v in series.items()}
+    out, rec = harness.trend_r8(logf, series, level)
+    want = _r8_e4b66d8(logf, series)
+    assert rec["basis"]
+    for lin in series:
+        assert not np.allclose(want[lin], logf[lin])
+        np.testing.assert_allclose(out[lin], want[lin], atol=1e-9, rtol=0)
+
+
+@pytest.mark.parametrize("tied", [False, True])
+def test_r8_basis_ignores_a_planted_level_monotone_component(tied):
+    """Contrasts = a non-monotone run profile p plus a large component m that rises with the reference level, with
+    the same sign in every lineage's contrasts. Without the level step (e4b66d8) the basis leans on m; with it the
+    basis is orthogonal to m within tolerance (exactly, when p has zero mean within tied level groups) and p is still
+    what each factor loses."""
+    rng = np.random.default_rng(47)
+    G = 300
+    if tied:
+        level, p = _tied_levels_and_profile(rng, G, n_groups=6)
+    else:
+        level = rng.gamma(1.0, 1.0, G)
+        p = rng.normal(size=G)
+        p /= np.linalg.norm(p)
+    m = np.log1p(level) - np.log1p(level).mean()
+    m /= np.linalg.norm(m)
+    days = [8.3, 8.5, 8.75, 9.5]
+    load = [0.0, 2.0, -1.5, 1.0]
+    series = {}
+    for amp, lin in ((6.0, "CM"), (7.0, "Endothelial")):
+        a, b = rng.normal(2.0, 1.0, G), rng.normal(0.0, 1.0, G)
+        series[lin] = ([a + b * d + w * p + (amp * m if k in (1, 2) else 0.0)
+                        for k, (d, w) in enumerate(zip(days, load, strict=True))], days)
+    M = harness.run_contrasts(series)
+    assert ((M @ m) > 0).all()  # the planted level component has one sign in every contrast
+    assert abs(np.linalg.svd(M, full_matrices=False)[2][0] @ m) > 0.5  # e4b66d8's basis leans on it
+    logf = {k: harness.trend_log_factor(v[0], days, 0.375) for k, v in series.items()}
+    out, rec = harness.trend_r8(logf, series, level)
+    assert rec["basis"]
+    assert {r["direction"] for r in rec["level_monotone"]["contrasts"]} == {"up"}
+    for lin in series:
+        d = logf[lin] - out[lin]
+        basis = d / np.linalg.norm(d)  # rank 1: what a factor loses lies along the basis
+        assert abs(basis @ m) < (1e-9 if tied else 0.05)
+        assert abs(basis @ p) > (1 - 1e-9 if tied else 0.95)
+        if tied:
+            np.testing.assert_allclose(out[lin], logf[lin] - (logf[lin] @ p) * p, atol=1e-9)
+
+
+@pytest.mark.parametrize("ties", [False, True])
+def test_level_monotone_residual_of_a_monotone_vector_is_zero(ties):
+    """A vector monotone in the level (rising or falling, genes in shuffled order, constant on tied levels) is its
+    own fit: the isotonic residual is 0; the direction names the fit used."""
+    rng = np.random.default_rng(53)
+    level = rng.permutation(np.repeat(np.linspace(0.0, 3.0, 25), 4)) if ties else rng.gamma(1.0, 1.0, 100)
+    for v, direction in ((np.sqrt(level) - 0.7, "up"), (-2.0 * level ** 2 + 1.0, "down")):
+        fit, got = harness.level_monotone_fit(v, level)
+        np.testing.assert_allclose(v - fit, 0.0, atol=1e-12)
+        assert got == direction
+    constant = np.full(100, 0.4)
+    fit, got = harness.level_monotone_fit(constant, level)
+    np.testing.assert_allclose(fit, constant, atol=1e-15)
+    assert got == "up"
+
+
+def test_level_monotone_fit_by_hand():
+    """Levels (0.1, 0.5, 0.2, 0.9) order the genes 0, 2, 1, 3, so v (1, 2, 3, 4) reads (1, 3, 2, 4) in level order:
+    the rising fit pools 3 and 2 to 2.5 (residual sum of squares 0.5), the falling one is the mean 2.5 throughout
+    (5.0), and the rising one is used. Tied levels share one value."""
+    fit, d = harness.level_monotone_fit(np.array([1.0, 2.0, 3.0, 4.0]), np.array([0.1, 0.5, 0.2, 0.9]))
+    np.testing.assert_allclose(fit, [1.0, 2.5, 2.5, 4.0])
+    assert d == "up"
+    fit, d = harness.level_monotone_fit(np.array([4.0, 0.0, 1.0]), np.array([0.3, 0.3, 0.1]))
+    np.testing.assert_allclose(fit, [2.0, 2.0, 1.0])
+    assert d == "up"
+    fit, d = harness.level_monotone_fit(np.array([3.0, 1.0, 2.0]), np.array([0.1, 0.2, 0.3]))
+    np.testing.assert_allclose(fit, [3.0, 1.5, 1.5])
+    assert d == "down"
+    with pytest.raises(ValueError, match="1-d"):
+        harness.level_monotone_fit(np.zeros(3), np.zeros(4))
+
+
+def test_pava_blocks_with_unit_counts_are_the_gates_routine():
+    """pava_last_unpooled reads pava_blocks with unit counts; counts weight a position as that many equal values."""
+    assert [b[:2] for b in harness.pava_blocks([3.0, 1.0, 2.5])] == [[4.0, 2.0], [2.5, 1.0]]
+    assert [b[:2] for b in harness.pava_blocks([6.0, 1.0], counts=[3, 1])] == [[7.0, 4.0]]  # means 2 > 1: pooled
+    assert [b[:2] for b in harness.pava_blocks([2.0, 1.0], counts=[3, 1])] == [[2.0, 3.0], [1.0, 1.0]]  # 2/3 < 1
+    assert [b[2] for b in harness.pava_blocks([1.0, 4.0, 2.0, 3.0])] == [0.0, 1.0]
+
+
+def test_r8_arm_orders_genes_by_the_tail_arms_reference_pb(three, monkeypatch):
+    """The arm's level is the reference pool's pb (mean log1p CP10k over its cells), the pb b0_trend_tail holds against
+    0.25, in the factors' gene order; the record names the level step for each contrast."""
+    seen = []
+    real = harness.trend_r8
+
+    def spy(logf, series, ref_level, rank=None):
+        seen.append(np.array(ref_level))
+        return real(logf, series, ref_level, rank)
+
+    monkeypatch.setattr(harness, "trend_r8", spy)
+    CANDIDATES["b0_trend_r8"].build(_ctx(three))
+    pool = three["ref"]
+    genes = list(BOARD.genes)
+    pb = np.asarray(pool[:, genes].X.mean(axis=0)).ravel().astype(np.float64)
+    assert len(seen) == 1
+    np.testing.assert_array_equal(seen[0], pb)
+    np.testing.assert_array_equal(harness.reference_pb(pool, genes), pb)
+    np.testing.assert_array_equal(harness.tail_infeasible(pool, genes), harness.reference_pb(pool, genes) < 0.25)
+    rows = harness.TREND_ARM_RECORDS["b0_trend_r8"]["idea"]["level_monotone"]["contrasts"]
+    assert len(rows) == 2
+    assert all(r["direction"] in ("up", "down") and 0.0 <= r["removed_energy_share"] <= 1.0 for r in rows)
+    assert "monotone in reference level" in harness.B0_TREND_R8_RULE
