@@ -1,0 +1,165 @@
+{
+ "board": "T2:heart:test_extrap",
+ "runs": "/home/prachh/v/vec-campaign/runs/harness/gen_heart_v1",
+ "decisions": [
+  {
+   "base": "b0",
+   "change": "b0_lat_dec",
+   "counted": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T2h/<=E8.75->E10.5']",
+   "tasks": {
+    "T2h/<=E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": 1.2577337682175618,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    },
+    "T2h/<=E8.75->E10.5": {
+     "complete": true,
+     "mean_gain": -2.0164578914832463,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    }
+   },
+   "need": 2,
+   "passed": 1,
+   "fit_checks": {}
+  },
+  {
+   "base": "b0",
+   "change": "b0_lat_ratio",
+   "counted": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T2h/<=E8.75->E10.5']",
+   "tasks": {
+    "T2h/<=E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": 0.9266892470861073,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    },
+    "T2h/<=E8.75->E10.5": {
+     "complete": true,
+     "mean_gain": -0.8247828144174527,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    }
+   },
+   "need": 2,
+   "passed": 1,
+   "fit_checks": {}
+  },
+  {
+   "base": "b0",
+   "change": "b0_lat_flow",
+   "counted": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 1 of 2 pseudo-tasks; needs 2",
+   "tasks": {
+    "T2h/<=E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": 1.1822860849353312,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    },
+    "T2h/<=E8.75->E10.5": {
+     "complete": true,
+     "mean_gain": -0.16818911783551727,
+     "seeds_ahead": 1,
+     "passes": false,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 1,
+   "fit_checks": {}
+  }
+ ],
+ "summaries": {
+  "T2h/<=E8.75->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    50.54677200019612,
+    0.7913080817718336
+   ],
+   "b0": [
+    51.446449911655364,
+    0.6052791869950301
+   ],
+   "b0_lat_dec": [
+    49.42999202017212,
+    0.6040258170910103
+   ],
+   "b0_lat_ratio": [
+    50.6216670972379,
+    0.6936049488557761
+   ],
+   "b0_lat_flow": [
+    51.27826079381985,
+    0.6904255698061641
+   ]
+  },
+  "T2h/<=E9.5->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    49.955176642699044,
+    0.8224702162475157
+   ],
+   "b0": [
+    50.4272525233645,
+    0.7027599518307952
+   ],
+   "b0_lat_dec": [
+    51.684986291582064,
+    0.8147548532054526
+   ],
+   "b0_lat_ratio": [
+    51.35394177045062,
+    0.7159531887659404
+   ],
+   "b0_lat_flow": [
+    51.60953860829983,
+    0.7088402978264623
+   ]
+  }
+ }
+}

@@ -1,0 +1,9 @@
+T1:test: 2 pseudo-task(s) in runs/harness/gen_t1_v1 (protocol bake, build main, anchors computed, seeds [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  T1/E9.5->E10.5 on T1:val: floor 50.00 +/- 0.00; copy 47.98 +/- 1.08; b0 44.12 +/- 0.46; b0_scope 43.38 +/- 0.44; b0_lat_dec 43.08 +/- 0.44; b0_lat_ratio 44.28 +/- 0.46 (commit 069d6fc, clean True)
+  T1/E9.5->E10.5:chamber on pseudo:T1/E9.5->E10.5:chamber: floor 50.00 +/- 0.00; copy 48.06 +/- 1.20; b0 49.68 +/- 0.67; b0_scope 48.88 +/- 0.64; b0_lat_dec 48.26 +/- 0.61; b0_lat_ratio 49.71 +/- 0.67 (commit 069d6fc, clean True)
+b0_lat_dec against b0: not kept (loses more than 0.3 points on average on ['T1/E9.5->E10.5', 'T1/E9.5->E10.5:chamber']; decided on 2 of 3 configured pseudo-tasks; not counted: {'T1/E8.5->E9.5': 'change does not apply'})
+    T1/E9.5->E10.5: paired mean gain -1.04, ahead in 0 of 10 seeds, passes False, vetoes True
+    T1/E9.5->E10.5:chamber: paired mean gain -1.43, ahead in 0 of 10 seeds, passes False, vetoes True
+b0_lat_ratio against b0: not kept (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2; decided on 2 of 3 configured pseudo-tasks; not counted: {'T1/E8.5->E9.5': 'change does not apply'})
+    T1/E9.5->E10.5: paired mean gain +0.16, ahead in 10 of 10 seeds, passes False, vetoes False
+    T1/E9.5->E10.5:chamber: paired mean gain +0.03, ahead in 8 of 10 seeds, passes False, vetoes False

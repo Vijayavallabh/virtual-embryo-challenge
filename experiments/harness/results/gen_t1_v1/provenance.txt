@@ -1,0 +1,9 @@
+run folder on the DGX: ~/v/vec-campaign-h7/runs/harness/gen_t1_v1 (branch campaign checkout)
+commit: 069d6fc875cc6f635f966db11d8b4cd672c2b0cd
+tree at start (bytes of git status --porcelain): 0
+tree at end (bytes): 0
+started UTC: 2026-11-13T12:20:00Z
+ended UTC: 2026-11-13T13:11:23Z
+GPUs: one H100 per cut (CUDA_VISIBLE_DEVICES 4 and 5); all candidates of a cut in one process
+command per cut: experiments/harness/run.py run --board T1:test --task <key> --candidates floor,copy,b0,b0_scope,b0_lat_dec,b0_lat_ratio
+the two cuts' separate GPU fits gave one latent_sha256 (f384401a11e5d629...): on this hardware the fit reproduced bit for bit

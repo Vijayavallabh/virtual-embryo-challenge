@@ -3125,3 +3125,64 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     last step"), a tie with the arm that keeps B0's forecast remains the likely result, and a loss closes only this
     form. One further limit, stated in row H10: where the stages' cells do not overlap in the count model's latent,
     the field at the reference cells is set by the last transition whatever the weights.
+- 2026-11-13 (r), the generator tests' outcome: nothing kept, nothing changes. Written by the AI assistant.
+  - **What ran.** Five counted reads, each with its row committed first (T34 and T35 at 08de5fc; H8, H9 and H10 at
+    e988f9d): the captain's order (k) for the four vehicle arms, the captain's word (p) for the heart's
+    learned-forecast arm. Code on `campaign/gen`, off main (069d6fc for T1, 459916f for the heart). DGX GPUs 2 to 5,
+    one task per process, about 50 minutes. Every validity condition of the rows holds: the reference candidates
+    reproduce their committed scores to the last digit, the heart arms share one fitted model per backtest and
+    keep B0's shape terms. Tries: T1 32, embryo 36, heart 9, T3 15.
+  - **Results** (paired mean against `b0`, seeds ahead of 10; the adoption rule needs more than +0.3 with at least 8
+    ahead on both tasks of a board):
+
+    | Arm | T1, whole cut | T1, chamber cut | Heart, one-day | Heart, 1.75-day | By the rule |
+    |---|---|---|---|---|---|
+    | cells made by the count model (`b0_lat_dec`) | -1.04 (0) | -1.43 (0) | +1.26 (10) | -2.02 (0) | not kept; closed on T1 by its kill criterion |
+    | real cells edited through the decoder (`b0_lat_ratio`) | +0.16 (10) | +0.03 (8) | +0.93 (10) | -0.82 (0) | not kept |
+    | the same with a learned field (`b0_lat_flow`) | not run | not run | +1.18 (10) | -0.17 (1) | not kept |
+
+    The learned field against the arm that keeps B0's forecast, in the same vehicle: +0.26 (9 of 10) and +0.66 (10
+    of 10). Its row asked for more than 0.3 on both, so by the row there is no support that a learned forecast adds;
+    the miss on the one-day backtest is 0.04, and the arm was ahead in 19 of 20 seeds.
+  - **What it settles.** (1) On T1 model-made cells lose to real cells (distribution and covariance, as predicted),
+    and real cells edited through the decoder tie with B0's own step: the count model carries the step and adds
+    nothing. (2) On the heart every latent arm gains about a point on the backtest whose momentum is a
+    three-quarter-day step and loses on the one whose momentum is a quarter-day step; try H7 did the reverse. Two
+    backtests that share one truth keep disagreeing in sign about expression steps, so no expression change on the
+    heart has passed the adoption rule in nine tries. (3) The learned field did not learn from the earlier stages:
+    its move per lineage points along B0's last step (cosine 0.99) at 1.07 to 1.18 times the size, with 27 to 29% of
+    its movement varying from cell to cell, with the squared weights and with the corrected ones alike. The third
+    forwarded note described the test correctly; the weights correction of (q) fixed a wrong reason but did not
+    change what the arm was, for the reason row H10 had stated before the run (the stages do not overlap in the
+    count model's latent).
+  - **What it does not settle.** Whether a model given a latent in which stages overlap, a time input or outside
+    data would forecast better; none of these has a legal, tested form here (a batch key by sample removes the
+    stage with the sample; outside data inside the window is barred).
+  - **Nothing changes.** No upload, build, rule, default or gate record; the estimate stays 184 (170 to 198); the
+    reference list is `builds_38616fe.SHA256SUMS` as rehearsed. No request goes to the captain: by their rows the
+    arms are not kept, and the one mixed reading (the learned field's +1.18 and -0.17) is a gain on one backtest
+    only, which the adoption rule exists to refuse.
+  - **GPUs.** Four of the DGX's six free GPUs worked for about 50 minutes; nothing further is queued. The AI
+    assistant knows of no run whose result could change an upload before the dated items below, and says so
+    rather than fill the machines.
+  - **Next, by date.** Screened reads for an organiser answer on 19 and 23 Nov; the method summary and disclosure
+    email between 24 and 30 Nov; the freeze-morning rebuild and the first round from 27 Nov 00:00 UTC on the
+    captain's go-ahead; the second round by 1 Dec 06:00 UTC.
+- 2026-11-13 (s), a fourth forwarded side note, and one more heart arm. Written by the AI assistant.
+  - **The note** (forwarded by the captain after the heart results): the weight fix made no difference; the
+    learned-forecast arm's moves still point along the last step (0.99), 7 to 18% larger and more varied between
+    cells; likely because each stage's cells sit apart inside the model; +1.18 and -0.17, not kept. "So whether
+    learning from earlier stages helps is still untested. An arm following each cell type's average trend over all
+    stages would test it; the main agent has not planned one."
+  - **Checked.** Every statement agrees with entry (r) and row H10's outcome. The AI assistant had weighed such an
+    arm while correcting the weights (q) and left it out as a control to add only if H10 met a reading; H10 did
+    not, and the question the first note raised is still open, as the note says.
+  - **Decided by the AI assistant** (a try is its to register; the captain can strike it before its run): one arm,
+    `b0_trend`, on the heart only, in count space. It is B0 itself with each lineage's per-gene velocity taken as
+    the least-squares trend through every input stage instead of the last step, over the same time budget. No
+    count model, so a kept form could enter the heart builder as it is. Reading: the adoption rule against `b0` on
+    both backtests; a partial-hold line and a "B0's step again" label are fixed in its row (H11) as description
+    only. One counted read (heart 9 to 10), CPU only. The AI assistant's chance that it is kept: about 0.06;
+    the readings on record that speak against it are named in the row.
+  - **Not added:** a size-matched variant, a latent or learned variant, or the same arm on T1 (two input stages:
+    the trend is B0's own step there).

@@ -21,10 +21,10 @@
     (`docs/SCREENED_READ_SEVENTH_EMAIL.md`; a reply in the captain's inbox is not pasted into the session);
   - about 19 Nov, the Slack follow-up draft on floored T3 severity if no organiser has answered;
   - a new rehearsal and reference by 24 Nov only if a build changes after 2026-11-13;
-  - the generator tests the captain ordered on 2026-11-13 (decision log (k), (l)): two arms that keep B0's forecast
-    (cells decoded from a count model; real cells edited by its decoder's ratios) and one learned-forecast arm per
-    board, each with its ledger row before its scored run; they change an upload only by the adoption rule and
-    the captain's ruling, and a build change would need a third rehearsal by 24 Nov.
+  The generator tests the captain ordered on 2026-11-13 are done (decision log (o) to (r); rows T34, T35, H8, H9,
+  H10; results `experiments/harness/results/gen_t1_v1/` and `gen_heart_v1/`): five counted reads, nothing kept, no
+  upload, build or rule changed. The code is on the branch `campaign/gen` (pushed; 459916f), off main. Tries: T1 32,
+  embryo 36, heart 9, T3 15.
   Settled on 2026-11-13 (decision log (k)): T1's second upload (the mid base; built in and rehearsed), the heart
   try (run, not kept), and the checked copy of the reference files on this machine (kept, by the captain's word).
 - Branch / commit: `main` on GitHub (private). The DGX checkout (`PrakashDGX_H2:~/v/virtual-embryo-challenge`) is at
@@ -185,8 +185,9 @@
 ## Recommended Next Step
 
 - 2026-11-13 (latest, after decision log (m)): the captain ruled, T1's second upload is on the mid base and the
-  ten files are rehearsed again (reference `runs/archive/builds_38616fe/SHA256SUMS`). Next: finish the generator
-  tests the captain ordered (rows first); then the dated items below, reading `builds_38616fe` for the reference.
+  ten files are rehearsed again (reference `runs/archive/builds_38616fe/SHA256SUMS`). The generator tests the
+  captain ordered are done and changed nothing (decision log (r)). Next: the dated items below, reading
+  `builds_38616fe` for the reference. No run is queued on any GPU.
 - 2026-11-13 (earlier that day): the rulings are given and built in, and the ten files are rehearsed on the DGX. Next, in
   order: the screened reads on 19 and 23 Nov and the Slack follow-up draft about 19 Nov; the method summary and the
   disclosure email (with the hashes of `runs/archive/builds_38616fe/SHA256SUMS`, the list since the second

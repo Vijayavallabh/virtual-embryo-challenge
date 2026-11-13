@@ -1054,3 +1054,23 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     against the recorded answer (k) before anything was changed (decision log (l)).
   - **Not opened:** the challenge site, the Data page, the board index by hand, Slack, the organisers' mail, any
     external dataset, any held-out value.
+- 2026-11-13 (h), process notes from the generator tests (`docs/PLAN.md` decision log 2026-11-13 (o) to (r));
+  written by the AI assistant.
+  - **Reads of practice targets.** Five counted tries, each with its row committed before its run: T34 and T35 on
+    T1's two counted cuts (T1 30 to 32), H8, H9 and H10 on the two heart backtests (heart 6 to 9). No other reading
+    compared a predictor with a fold or backtest target. The agent that wrote the candidates ran build-only smokes
+    with the target reads refused (its guard recorded none) and scored nothing.
+  - **Organiser material.** The organisers' published reference rows were re-read from `docs/CHALLENGE.md` (which
+    models they are and that the learned one "does NOT beat the constant shift"); no score of theirs was used for a
+    choice, and the site was not opened.
+  - **An agent's output file.** While the agent was running the AI assistant read the last 2,500 characters of the
+    harness's output file for it (one tool call of the agent, a wait loop) to see whether it was still working, and
+    did not open it again. The standing rule keeps agents out of session logs and transcripts; the main session
+    reads an agent's hand-back, and that is the practice it returns to.
+  - **Three forwarded side notes.** Each was checked against the record before anything changed (decision log (l),
+    (o), (q)); the second asked for what was already decided, the third led to a correction of a derivation, made
+    before any scored run and before the arm's smoke was read.
+  - **Machines.** The DGX's reference checkout was not touched. Two stale copies of committed files were removed
+    from a campaign checkout after their hashes matched the committed ones, and one synced copy of an uncommitted
+    file was restored there to its committed state (`docs/COMPUTE.md`). Nothing was uploaded and no server was
+    called.

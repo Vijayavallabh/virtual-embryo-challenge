@@ -1,0 +1,5052 @@
+[
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_dec",
+  "build_seed": 1000000,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "share_cells_moved": 0.9052384923944558,
+   "mean_abs_latent_step": 0.10456165868366026,
+   "mean_abs_latent_step_moved_cells": 0.1155073050496153,
+   "displacement_norm": {
+    "CM": 1.696674151026269,
+    "CranialMesoderm": 1.815638211059743,
+    "Ectoderm": 1.616567745468958,
+    "Endoderm": 1.8624017925923477,
+    "Endothelial": 1.7210305575274294,
+    "EpiblastStreak": 2.6210717231318803,
+    "ExtraEmbryonicMeso": 1.951179782968709,
+    "NCC": 1.8731961461030595,
+    "Neural": 1.7517487014856898
+   }
+  },
+  "expression": {
+   "arm": "decoded",
+   "retried": 31,
+   "median_library_out": 129.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.8977202430596926,
+   "zero_share_real": 0.8965570515111799,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_ratio",
+  "build_seed": 1000000,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "share_cells_moved": 0.9052384923944558,
+   "mean_abs_latent_step": 0.10456165868366026,
+   "mean_abs_latent_step_moved_cells": 0.1155073050496153,
+   "displacement_norm": {
+    "CM": 1.696674151026269,
+    "CranialMesoderm": 1.815638211059743,
+    "Ectoderm": 1.616567745468958,
+    "Endoderm": 1.8624017925923477,
+    "Endothelial": 1.7210305575274294,
+    "EpiblastStreak": 2.6210717231318803,
+    "ExtraEmbryonicMeso": 1.951179782968709,
+    "NCC": 1.8731961461030595,
+    "Neural": 1.7517487014856898
+   }
+  },
+  "expression": {
+   "arm": "ratio",
+   "n_cells_moved": 22793,
+   "n_acting_entries": 1193323,
+   "sd_log_factor": 0.22151963496731433,
+   "p1_log_factor": -0.6970546371141152,
+   "p99_log_factor": 0.4315849820197884,
+   "n_at_clip": 2661,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 130.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.9028514238055523,
+   "zero_share_real": 0.8965570515111799,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_flow",
+  "build_seed": 1000000,
+  "rule": "latent flow: z_new = z(tau), dz/dt = v(z, lineage), z(0) = z_own, tau = B0_DAMPING x the last gap in days, v one MLP fitted by flow matching on entropic-OT pairs within each lineage between every two consecutive input stages (velocity (z_j - z_i) / gap, weights proportional to the gap per lineage), then the ratio arm's realisation and stream",
+  "latent": {
+   "share_cells_moved": 0.9052384923944558,
+   "mean_abs_latent_step": 0.14162554336067243,
+   "mean_abs_latent_step_moved_cells": 0.15645108394148954,
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "per_lineage": {
+    "lineages": {
+     "CM": {
+      "cosine_to_b0": 0.9933397188379012,
+      "norm_ratio_to_b0": 1.0697063102509206,
+      "within_share": 0.2014177178207225
+     },
+     "CranialMesoderm": {
+      "cosine_to_b0": 0.9575307389784711,
+      "norm_ratio_to_b0": 1.0839682261533699,
+      "within_share": 0.29010774455680743
+     },
+     "Ectoderm": {
+      "cosine_to_b0": 0.9900539583046806,
+      "norm_ratio_to_b0": 1.0311582291821146,
+      "within_share": 0.2968423046885961
+     },
+     "Endoderm": {
+      "cosine_to_b0": 0.9602174374680935,
+      "norm_ratio_to_b0": 1.0284823215808967,
+      "within_share": 0.31364711608333756
+     },
+     "Endothelial": {
+      "cosine_to_b0": 0.9933525634285384,
+      "norm_ratio_to_b0": 1.1066163942526286,
+      "within_share": 0.2237632723798124
+     },
+     "EpiblastStreak": {
+      "cosine_to_b0": 0.9888554736869866,
+      "norm_ratio_to_b0": 0.9090329823124377,
+      "within_share": 0.30105781992077185
+     },
+     "ExtraEmbryonicMeso": {
+      "cosine_to_b0": 0.9889177599711002,
+      "norm_ratio_to_b0": 1.0131132477701432,
+      "within_share": 0.30313930168152875
+     },
+     "NCC": {
+      "cosine_to_b0": 0.9946539392569737,
+      "norm_ratio_to_b0": 1.1248216510599252,
+      "within_share": 0.2155152018342711
+     },
+     "Neural": {
+      "cosine_to_b0": 0.996446582736835,
+      "norm_ratio_to_b0": 1.101849444432113,
+      "within_share": 0.18871907457932677
+     }
+    },
+    "median": {
+     "cosine_to_b0": 0.9900539583046806,
+     "norm_ratio_to_b0": 1.0697063102509206,
+     "within_share": 0.29010774455680743
+    }
+   }
+  },
+  "expression": {
+   "arm": "flow",
+   "n_cells_moved": 22793,
+   "n_acting_entries": 1193323,
+   "sd_log_factor": 0.2832161817879656,
+   "p1_log_factor": -0.9283448501152087,
+   "p99_log_factor": 0.5681297703952285,
+   "n_at_clip": 6348,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 130.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.9052844036697247,
+   "zero_share_real": 0.8965570515111799,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  },
+  "flow": {
+   "n_blocks": 18,
+   "n_pairs": 144000,
+   "gaps_days": [
+    0.1999999999999993,
+    0.25
+   ],
+   "blocks": [
+    {
+     "transition": 1,
+     "lineage": "CM",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 1357,
+     "n_later": 1919,
+     "median_cost": 10.0590730040086,
+     "last_marginal_error": 9.522276736318864e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "CM",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1919,
+     "n_later": 2000,
+     "median_cost": 13.047417771008632,
+     "last_marginal_error": 6.123731241745799e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "CranialMesoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 17.10812424167593,
+     "last_marginal_error": 5.089804373294239e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "CranialMesoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 18.348512544205047,
+     "last_marginal_error": 1.1145908715929158e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Ectoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 13.419951579831071,
+     "last_marginal_error": 8.158203820989431e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Ectoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 14.97078790787981,
+     "last_marginal_error": 3.000103201984632e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Endoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 19.26709811789145,
+     "last_marginal_error": 2.8171210300075106e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Endoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 1883,
+     "median_cost": 17.584122153198145,
+     "last_marginal_error": 6.750654814354784e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Endothelial",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1702,
+     "median_cost": 15.830284913043581,
+     "last_marginal_error": 5.4443256143254306e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Endothelial",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1702,
+     "n_later": 2000,
+     "median_cost": 14.292867780209198,
+     "last_marginal_error": 5.287189698403638e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "EpiblastStreak",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 1339,
+     "n_later": 1148,
+     "median_cost": 6.42974785203611,
+     "last_marginal_error": 6.66897729702818e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "EpiblastStreak",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1148,
+     "n_later": 45,
+     "median_cost": 13.961872211331812,
+     "last_marginal_error": 6.216738381452842e-07,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "ExtraEmbryonicMeso",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 12.995916086423271,
+     "last_marginal_error": 3.899807643711426e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "ExtraEmbryonicMeso",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 1039,
+     "median_cost": 14.691327906968976,
+     "last_marginal_error": 5.2478955816891606e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "NCC",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1461,
+     "median_cost": 9.030229217448284,
+     "last_marginal_error": 2.3828947570287555e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "NCC",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1461,
+     "n_later": 1838,
+     "median_cost": 12.60239783074893,
+     "last_marginal_error": 6.061539857138312e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Neural",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1517,
+     "median_cost": 9.845626735592925,
+     "last_marginal_error": 2.8416461281964393e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Neural",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1517,
+     "n_later": 2000,
+     "median_cost": 11.472290081793183,
+     "last_marginal_error": 3.7204825994143692e-06,
+     "converged": true
+    }
+   ],
+   "mean_omega": 1.0,
+   "loss_first": 115.06711585998535,
+   "loss_last": 76.27005928039551,
+   "steps": 4000,
+   "fit_seconds": 13.5,
+   "params_sha256": "995588a87886e3326668f7b41138dd815e6231c7d84e27f14ee54beb8484ad56",
+   "torch": "2.14.1+cu130",
+   "cells_left_out": {
+    "earlier": 0
+   },
+   "stages": [
+    "earlier",
+    "start",
+    "ref"
+   ],
+   "lineages": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "tau_days": 0.125,
+   "rk4_steps": 8
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_dec",
+  "build_seed": 1000001,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "share_cells_moved": 0.9063902458397871,
+   "mean_abs_latent_step": 0.1047367365859149,
+   "mean_abs_latent_step_moved_cells": 0.11555368900607971,
+   "displacement_norm": {
+    "CM": 1.696674151026269,
+    "CranialMesoderm": 1.815638211059743,
+    "Ectoderm": 1.616567745468958,
+    "Endoderm": 1.8624017925923477,
+    "Endothelial": 1.7210305575274294,
+    "EpiblastStreak": 2.6210717231318803,
+    "ExtraEmbryonicMeso": 1.951179782968709,
+    "NCC": 1.8731961461030595,
+    "Neural": 1.7517487014856898
+   }
+  },
+  "expression": {
+   "arm": "decoded",
+   "retried": 31,
+   "median_library_out": 129.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.8978522578339092,
+   "zero_share_real": 0.8965495849716033,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_ratio",
+  "build_seed": 1000001,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "share_cells_moved": 0.9063902458397871,
+   "mean_abs_latent_step": 0.1047367365859149,
+   "mean_abs_latent_step_moved_cells": 0.11555368900607971,
+   "displacement_norm": {
+    "CM": 1.696674151026269,
+    "CranialMesoderm": 1.815638211059743,
+    "Ectoderm": 1.616567745468958,
+    "Endoderm": 1.8624017925923477,
+    "Endothelial": 1.7210305575274294,
+    "EpiblastStreak": 2.6210717231318803,
+    "ExtraEmbryonicMeso": 1.951179782968709,
+    "NCC": 1.8731961461030595,
+    "Neural": 1.7517487014856898
+   }
+  },
+  "expression": {
+   "arm": "ratio",
+   "n_cells_moved": 22822,
+   "n_acting_entries": 1194816,
+   "sd_log_factor": 0.2217253430797888,
+   "p1_log_factor": -0.6973866122901167,
+   "p99_log_factor": 0.43246174707340707,
+   "n_at_clip": 2672,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 130.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.9028472933794035,
+   "zero_share_real": 0.8965495849716033,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_flow",
+  "build_seed": 1000001,
+  "rule": "latent flow: z_new = z(tau), dz/dt = v(z, lineage), z(0) = z_own, tau = B0_DAMPING x the last gap in days, v one MLP fitted by flow matching on entropic-OT pairs within each lineage between every two consecutive input stages (velocity (z_j - z_i) / gap, weights proportional to the gap per lineage), then the ratio arm's realisation and stream",
+  "latent": {
+   "share_cells_moved": 0.9063902458397871,
+   "mean_abs_latent_step": 0.14189078572285957,
+   "mean_abs_latent_step_moved_cells": 0.15654491690981862,
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "per_lineage": {
+    "lineages": {
+     "CM": {
+      "cosine_to_b0": 0.9933798349095705,
+      "norm_ratio_to_b0": 1.0685224292979711,
+      "within_share": 0.2015425914350491
+     },
+     "CranialMesoderm": {
+      "cosine_to_b0": 0.9578918608641456,
+      "norm_ratio_to_b0": 1.0837285538420827,
+      "within_share": 0.29060086732566726
+     },
+     "Ectoderm": {
+      "cosine_to_b0": 0.9901279129565015,
+      "norm_ratio_to_b0": 1.034538917987013,
+      "within_share": 0.2952878019853286
+     },
+     "Endoderm": {
+      "cosine_to_b0": 0.9604232185376126,
+      "norm_ratio_to_b0": 1.0298410257181165,
+      "within_share": 0.3133697113907758
+     },
+     "Endothelial": {
+      "cosine_to_b0": 0.9933138823854321,
+      "norm_ratio_to_b0": 1.1053375643930925,
+      "within_share": 0.2242247447020957
+     },
+     "EpiblastStreak": {
+      "cosine_to_b0": 0.9880532993329066,
+      "norm_ratio_to_b0": 0.9131280386618512,
+      "within_share": 0.2914728135562123
+     },
+     "ExtraEmbryonicMeso": {
+      "cosine_to_b0": 0.9884618151751828,
+      "norm_ratio_to_b0": 1.0094635363897082,
+      "within_share": 0.30478732646476875
+     },
+     "NCC": {
+      "cosine_to_b0": 0.9947804509086919,
+      "norm_ratio_to_b0": 1.12724650123819,
+      "within_share": 0.2166555491665116
+     },
+     "Neural": {
+      "cosine_to_b0": 0.9963109498406587,
+      "norm_ratio_to_b0": 1.1021224878710176,
+      "within_share": 0.18901668971029625
+     }
+    },
+    "median": {
+     "cosine_to_b0": 0.9901279129565015,
+     "norm_ratio_to_b0": 1.0685224292979711,
+     "within_share": 0.29060086732566726
+    }
+   }
+  },
+  "expression": {
+   "arm": "flow",
+   "n_cells_moved": 22822,
+   "n_acting_entries": 1194816,
+   "sd_log_factor": 0.2834030500672868,
+   "p1_log_factor": -0.9283994526903873,
+   "p99_log_factor": 0.5701040465143896,
+   "n_at_clip": 6371,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 130.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.9052773342865086,
+   "zero_share_real": 0.8965495849716033,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  },
+  "flow": {
+   "n_blocks": 18,
+   "n_pairs": 144000,
+   "gaps_days": [
+    0.1999999999999993,
+    0.25
+   ],
+   "blocks": [
+    {
+     "transition": 1,
+     "lineage": "CM",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 1357,
+     "n_later": 1919,
+     "median_cost": 10.0590730040086,
+     "last_marginal_error": 9.522276736318864e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "CM",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1919,
+     "n_later": 2000,
+     "median_cost": 13.047417771008632,
+     "last_marginal_error": 6.123731241745799e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "CranialMesoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 17.10812424167593,
+     "last_marginal_error": 5.089804373294239e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "CranialMesoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 18.348512544205047,
+     "last_marginal_error": 1.1145908715929158e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Ectoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 13.419951579831071,
+     "last_marginal_error": 8.158203820989431e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Ectoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 14.97078790787981,
+     "last_marginal_error": 3.000103201984632e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Endoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 19.26709811789145,
+     "last_marginal_error": 2.8171210300075106e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Endoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 1883,
+     "median_cost": 17.584122153198145,
+     "last_marginal_error": 6.750654814354784e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Endothelial",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1702,
+     "median_cost": 15.830284913043581,
+     "last_marginal_error": 5.4443256143254306e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Endothelial",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1702,
+     "n_later": 2000,
+     "median_cost": 14.292867780209198,
+     "last_marginal_error": 5.287189698403638e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "EpiblastStreak",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 1339,
+     "n_later": 1148,
+     "median_cost": 6.42974785203611,
+     "last_marginal_error": 6.66897729702818e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "EpiblastStreak",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1148,
+     "n_later": 45,
+     "median_cost": 13.961872211331812,
+     "last_marginal_error": 6.216738381452842e-07,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "ExtraEmbryonicMeso",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 12.995916086423271,
+     "last_marginal_error": 3.899807643711426e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "ExtraEmbryonicMeso",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 1039,
+     "median_cost": 14.691327906968976,
+     "last_marginal_error": 5.2478955816891606e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "NCC",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1461,
+     "median_cost": 9.030229217448284,
+     "last_marginal_error": 2.3828947570287555e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "NCC",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1461,
+     "n_later": 1838,
+     "median_cost": 12.60239783074893,
+     "last_marginal_error": 6.061539857138312e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Neural",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1517,
+     "median_cost": 9.845626735592925,
+     "last_marginal_error": 2.8416461281964393e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Neural",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1517,
+     "n_later": 2000,
+     "median_cost": 11.472290081793183,
+     "last_marginal_error": 3.7204825994143692e-06,
+     "converged": true
+    }
+   ],
+   "mean_omega": 1.0,
+   "loss_first": 115.06711585998535,
+   "loss_last": 76.27005928039551,
+   "steps": 4000,
+   "fit_seconds": 13.5,
+   "params_sha256": "995588a87886e3326668f7b41138dd815e6231c7d84e27f14ee54beb8484ad56",
+   "torch": "2.14.1+cu130",
+   "cells_left_out": {
+    "earlier": 0
+   },
+   "stages": [
+    "earlier",
+    "start",
+    "ref"
+   ],
+   "lineages": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "tau_days": 0.125,
+   "rk4_steps": 8
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_dec",
+  "build_seed": 1000002,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "share_cells_moved": 0.9047619047619048,
+   "mean_abs_latent_step": 0.10452849171743171,
+   "mean_abs_latent_step_moved_cells": 0.11553149084558242,
+   "displacement_norm": {
+    "CM": 1.696674151026269,
+    "CranialMesoderm": 1.815638211059743,
+    "Ectoderm": 1.616567745468958,
+    "Endoderm": 1.8624017925923477,
+    "Endothelial": 1.7210305575274294,
+    "EpiblastStreak": 2.6210717231318803,
+    "ExtraEmbryonicMeso": 1.951179782968709,
+    "NCC": 1.8731961461030595,
+    "Neural": 1.7517487014856898
+   }
+  },
+  "expression": {
+   "arm": "decoded",
+   "retried": 27,
+   "median_library_out": 129.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.897743993010048,
+   "zero_share_real": 0.8965472814647126,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_ratio",
+  "build_seed": 1000002,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "share_cells_moved": 0.9047619047619048,
+   "mean_abs_latent_step": 0.10452849171743171,
+   "mean_abs_latent_step_moved_cells": 0.11553149084558242,
+   "displacement_norm": {
+    "CM": 1.696674151026269,
+    "CranialMesoderm": 1.815638211059743,
+    "Ectoderm": 1.616567745468958,
+    "Endoderm": 1.8624017925923477,
+    "Endothelial": 1.7210305575274294,
+    "EpiblastStreak": 2.6210717231318803,
+    "ExtraEmbryonicMeso": 1.951179782968709,
+    "NCC": 1.8731961461030595,
+    "Neural": 1.7517487014856898
+   }
+  },
+  "expression": {
+   "arm": "ratio",
+   "n_cells_moved": 22781,
+   "n_acting_entries": 1192861,
+   "sd_log_factor": 0.2216122999406067,
+   "p1_log_factor": -0.6972002421004214,
+   "p99_log_factor": 0.43199416585486095,
+   "n_at_clip": 2650,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 130.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.9028402239961872,
+   "zero_share_real": 0.8965472814647126,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_flow",
+  "build_seed": 1000002,
+  "rule": "latent flow: z_new = z(tau), dz/dt = v(z, lineage), z(0) = z_own, tau = B0_DAMPING x the last gap in days, v one MLP fitted by flow matching on entropic-OT pairs within each lineage between every two consecutive input stages (velocity (z_j - z_i) / gap, weights proportional to the gap per lineage), then the ratio arm's realisation and stream",
+  "latent": {
+   "share_cells_moved": 0.9047619047619048,
+   "mean_abs_latent_step": 0.14168118070871907,
+   "mean_abs_latent_step_moved_cells": 0.15659498920437376,
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "per_lineage": {
+    "lineages": {
+     "CM": {
+      "cosine_to_b0": 0.9933640183641428,
+      "norm_ratio_to_b0": 1.0697842103366417,
+      "within_share": 0.20171112664463356
+     },
+     "CranialMesoderm": {
+      "cosine_to_b0": 0.9581431674584323,
+      "norm_ratio_to_b0": 1.084498995866158,
+      "within_share": 0.2905540257644098
+     },
+     "Ectoderm": {
+      "cosine_to_b0": 0.9901648977825698,
+      "norm_ratio_to_b0": 1.0319584969895288,
+      "within_share": 0.29641114910734734
+     },
+     "Endoderm": {
+      "cosine_to_b0": 0.9608782793989383,
+      "norm_ratio_to_b0": 1.0289161284102915,
+      "within_share": 0.3138135341271226
+     },
+     "Endothelial": {
+      "cosine_to_b0": 0.9933621150352038,
+      "norm_ratio_to_b0": 1.1060303822454902,
+      "within_share": 0.2240137898072662
+     },
+     "EpiblastStreak": {
+      "cosine_to_b0": 0.9906206070638774,
+      "norm_ratio_to_b0": 0.896786060518783,
+      "within_share": 0.30295382804867865
+     },
+     "ExtraEmbryonicMeso": {
+      "cosine_to_b0": 0.9886781880407466,
+      "norm_ratio_to_b0": 1.0135552514382749,
+      "within_share": 0.3057998439261466
+     },
+     "NCC": {
+      "cosine_to_b0": 0.9946753562892668,
+      "norm_ratio_to_b0": 1.128430796983794,
+      "within_share": 0.2160840652508925
+     },
+     "Neural": {
+      "cosine_to_b0": 0.9964026940377635,
+      "norm_ratio_to_b0": 1.1022331482065952,
+      "within_share": 0.18855772774820095
+     }
+    },
+    "median": {
+     "cosine_to_b0": 0.9906206070638774,
+     "norm_ratio_to_b0": 1.0697842103366417,
+     "within_share": 0.2905540257644098
+    }
+   }
+  },
+  "expression": {
+   "arm": "flow",
+   "n_cells_moved": 22781,
+   "n_acting_entries": 1192861,
+   "sd_log_factor": 0.28351240063638317,
+   "p1_log_factor": -0.9295275142559281,
+   "p99_log_factor": 0.5695594761414402,
+   "n_at_clip": 6382,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 130.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.9052542197863299,
+   "zero_share_real": 0.8965472814647126,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  },
+  "flow": {
+   "n_blocks": 18,
+   "n_pairs": 144000,
+   "gaps_days": [
+    0.1999999999999993,
+    0.25
+   ],
+   "blocks": [
+    {
+     "transition": 1,
+     "lineage": "CM",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 1357,
+     "n_later": 1919,
+     "median_cost": 10.0590730040086,
+     "last_marginal_error": 9.522276736318864e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "CM",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1919,
+     "n_later": 2000,
+     "median_cost": 13.047417771008632,
+     "last_marginal_error": 6.123731241745799e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "CranialMesoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 17.10812424167593,
+     "last_marginal_error": 5.089804373294239e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "CranialMesoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 18.348512544205047,
+     "last_marginal_error": 1.1145908715929158e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Ectoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 13.419951579831071,
+     "last_marginal_error": 8.158203820989431e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Ectoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 14.97078790787981,
+     "last_marginal_error": 3.000103201984632e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Endoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 19.26709811789145,
+     "last_marginal_error": 2.8171210300075106e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Endoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 1883,
+     "median_cost": 17.584122153198145,
+     "last_marginal_error": 6.750654814354784e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Endothelial",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1702,
+     "median_cost": 15.830284913043581,
+     "last_marginal_error": 5.4443256143254306e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Endothelial",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1702,
+     "n_later": 2000,
+     "median_cost": 14.292867780209198,
+     "last_marginal_error": 5.287189698403638e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "EpiblastStreak",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 1339,
+     "n_later": 1148,
+     "median_cost": 6.42974785203611,
+     "last_marginal_error": 6.66897729702818e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "EpiblastStreak",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1148,
+     "n_later": 45,
+     "median_cost": 13.961872211331812,
+     "last_marginal_error": 6.216738381452842e-07,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "ExtraEmbryonicMeso",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 12.995916086423271,
+     "last_marginal_error": 3.899807643711426e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "ExtraEmbryonicMeso",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 1039,
+     "median_cost": 14.691327906968976,
+     "last_marginal_error": 5.2478955816891606e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "NCC",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1461,
+     "median_cost": 9.030229217448284,
+     "last_marginal_error": 2.3828947570287555e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "NCC",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1461,
+     "n_later": 1838,
+     "median_cost": 12.60239783074893,
+     "last_marginal_error": 6.061539857138312e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Neural",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1517,
+     "median_cost": 9.845626735592925,
+     "last_marginal_error": 2.8416461281964393e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Neural",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1517,
+     "n_later": 2000,
+     "median_cost": 11.472290081793183,
+     "last_marginal_error": 3.7204825994143692e-06,
+     "converged": true
+    }
+   ],
+   "mean_omega": 1.0,
+   "loss_first": 115.06711585998535,
+   "loss_last": 76.27005928039551,
+   "steps": 4000,
+   "fit_seconds": 13.5,
+   "params_sha256": "995588a87886e3326668f7b41138dd815e6231c7d84e27f14ee54beb8484ad56",
+   "torch": "2.14.1+cu130",
+   "cells_left_out": {
+    "earlier": 0
+   },
+   "stages": [
+    "earlier",
+    "start",
+    "ref"
+   ],
+   "lineages": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "tau_days": 0.125,
+   "rk4_steps": 8
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_dec",
+  "build_seed": 1000003,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "share_cells_moved": 0.9060725207514199,
+   "mean_abs_latent_step": 0.10464353870198288,
+   "mean_abs_latent_step_moved_cells": 0.11549135009105053,
+   "displacement_norm": {
+    "CM": 1.696674151026269,
+    "CranialMesoderm": 1.815638211059743,
+    "Ectoderm": 1.616567745468958,
+    "Endoderm": 1.8624017925923477,
+    "Endothelial": 1.7210305575274294,
+    "EpiblastStreak": 2.6210717231318803,
+    "ExtraEmbryonicMeso": 1.951179782968709,
+    "NCC": 1.8731961461030595,
+    "Neural": 1.7517487014856898
+   }
+  },
+  "expression": {
+   "arm": "decoded",
+   "retried": 28,
+   "median_library_out": 129.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.8978246951824933,
+   "zero_share_real": 0.8965302831724851,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_ratio",
+  "build_seed": 1000003,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "share_cells_moved": 0.9060725207514199,
+   "mean_abs_latent_step": 0.10464353870198288,
+   "mean_abs_latent_step_moved_cells": 0.11549135009105053,
+   "displacement_norm": {
+    "CM": 1.696674151026269,
+    "CranialMesoderm": 1.815638211059743,
+    "Ectoderm": 1.616567745468958,
+    "Endoderm": 1.8624017925923477,
+    "Endothelial": 1.7210305575274294,
+    "EpiblastStreak": 2.6210717231318803,
+    "ExtraEmbryonicMeso": 1.951179782968709,
+    "NCC": 1.8731961461030595,
+    "Neural": 1.7517487014856898
+   }
+  },
+  "expression": {
+   "arm": "ratio",
+   "n_cells_moved": 22814,
+   "n_acting_entries": 1194529,
+   "sd_log_factor": 0.22156159850364945,
+   "p1_log_factor": -0.6976224450786103,
+   "p99_log_factor": 0.43102832337945063,
+   "n_at_clip": 2638,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 130.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.9028037650422971,
+   "zero_share_real": 0.8965302831724851,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_flow",
+  "build_seed": 1000003,
+  "rule": "latent flow: z_new = z(tau), dz/dt = v(z, lineage), z(0) = z_own, tau = B0_DAMPING x the last gap in days, v one MLP fitted by flow matching on entropic-OT pairs within each lineage between every two consecutive input stages (velocity (z_j - z_i) / gap, weights proportional to the gap per lineage), then the ratio arm's realisation and stream",
+  "latent": {
+   "share_cells_moved": 0.9060725207514199,
+   "mean_abs_latent_step": 0.14176097624223152,
+   "mean_abs_latent_step_moved_cells": 0.15645654513908772,
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "per_lineage": {
+    "lineages": {
+     "CM": {
+      "cosine_to_b0": 0.9931937578869938,
+      "norm_ratio_to_b0": 1.068782341421246,
+      "within_share": 0.2028807170470981
+     },
+     "CranialMesoderm": {
+      "cosine_to_b0": 0.9576865553380098,
+      "norm_ratio_to_b0": 1.0827347388416353,
+      "within_share": 0.2904837662864259
+     },
+     "Ectoderm": {
+      "cosine_to_b0": 0.9900257037638446,
+      "norm_ratio_to_b0": 1.0319052169008858,
+      "within_share": 0.2955993990429075
+     },
+     "Endoderm": {
+      "cosine_to_b0": 0.959998483391592,
+      "norm_ratio_to_b0": 1.0303822984537068,
+      "within_share": 0.31250173152708766
+     },
+     "Endothelial": {
+      "cosine_to_b0": 0.9934147666660643,
+      "norm_ratio_to_b0": 1.1065907669332053,
+      "within_share": 0.22379127816844732
+     },
+     "EpiblastStreak": {
+      "cosine_to_b0": 0.9897350065012421,
+      "norm_ratio_to_b0": 0.9004578302943576,
+      "within_share": 0.2975700387864538
+     },
+     "ExtraEmbryonicMeso": {
+      "cosine_to_b0": 0.9888404659925566,
+      "norm_ratio_to_b0": 1.0112263370822518,
+      "within_share": 0.30355902953545666
+     },
+     "NCC": {
+      "cosine_to_b0": 0.9947432438458584,
+      "norm_ratio_to_b0": 1.1284062189742499,
+      "within_share": 0.21602061874977832
+     },
+     "Neural": {
+      "cosine_to_b0": 0.9963913447127909,
+      "norm_ratio_to_b0": 1.1027157431082388,
+      "within_share": 0.18878730214017997
+     }
+    },
+    "median": {
+     "cosine_to_b0": 0.9900257037638446,
+     "norm_ratio_to_b0": 1.068782341421246,
+     "within_share": 0.2904837662864259
+    }
+   }
+  },
+  "expression": {
+   "arm": "flow",
+   "n_cells_moved": 22814,
+   "n_acting_entries": 1194529,
+   "sd_log_factor": 0.28309232061710976,
+   "p1_log_factor": -0.9279596012417601,
+   "p99_log_factor": 0.5680912592673116,
+   "n_at_clip": 6323,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 130.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.9052434171333253,
+   "zero_share_real": 0.8965302831724851,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  },
+  "flow": {
+   "n_blocks": 18,
+   "n_pairs": 144000,
+   "gaps_days": [
+    0.1999999999999993,
+    0.25
+   ],
+   "blocks": [
+    {
+     "transition": 1,
+     "lineage": "CM",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 1357,
+     "n_later": 1919,
+     "median_cost": 10.0590730040086,
+     "last_marginal_error": 9.522276736318864e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "CM",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1919,
+     "n_later": 2000,
+     "median_cost": 13.047417771008632,
+     "last_marginal_error": 6.123731241745799e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "CranialMesoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 17.10812424167593,
+     "last_marginal_error": 5.089804373294239e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "CranialMesoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 18.348512544205047,
+     "last_marginal_error": 1.1145908715929158e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Ectoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 13.419951579831071,
+     "last_marginal_error": 8.158203820989431e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Ectoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 14.97078790787981,
+     "last_marginal_error": 3.000103201984632e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Endoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 19.26709811789145,
+     "last_marginal_error": 2.8171210300075106e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Endoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 1883,
+     "median_cost": 17.584122153198145,
+     "last_marginal_error": 6.750654814354784e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Endothelial",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1702,
+     "median_cost": 15.830284913043581,
+     "last_marginal_error": 5.4443256143254306e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Endothelial",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1702,
+     "n_later": 2000,
+     "median_cost": 14.292867780209198,
+     "last_marginal_error": 5.287189698403638e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "EpiblastStreak",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 1339,
+     "n_later": 1148,
+     "median_cost": 6.42974785203611,
+     "last_marginal_error": 6.66897729702818e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "EpiblastStreak",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1148,
+     "n_later": 45,
+     "median_cost": 13.961872211331812,
+     "last_marginal_error": 6.216738381452842e-07,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "ExtraEmbryonicMeso",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 12.995916086423271,
+     "last_marginal_error": 3.899807643711426e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "ExtraEmbryonicMeso",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 1039,
+     "median_cost": 14.691327906968976,
+     "last_marginal_error": 5.2478955816891606e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "NCC",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1461,
+     "median_cost": 9.030229217448284,
+     "last_marginal_error": 2.3828947570287555e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "NCC",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1461,
+     "n_later": 1838,
+     "median_cost": 12.60239783074893,
+     "last_marginal_error": 6.061539857138312e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Neural",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1517,
+     "median_cost": 9.845626735592925,
+     "last_marginal_error": 2.8416461281964393e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Neural",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1517,
+     "n_later": 2000,
+     "median_cost": 11.472290081793183,
+     "last_marginal_error": 3.7204825994143692e-06,
+     "converged": true
+    }
+   ],
+   "mean_omega": 1.0,
+   "loss_first": 115.06711585998535,
+   "loss_last": 76.27005928039551,
+   "steps": 4000,
+   "fit_seconds": 13.5,
+   "params_sha256": "995588a87886e3326668f7b41138dd815e6231c7d84e27f14ee54beb8484ad56",
+   "torch": "2.14.1+cu130",
+   "cells_left_out": {
+    "earlier": 0
+   },
+   "stages": [
+    "earlier",
+    "start",
+    "ref"
+   ],
+   "lineages": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "tau_days": 0.125,
+   "rk4_steps": 8
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_dec",
+  "build_seed": 1000004,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "share_cells_moved": 0.9052384923944558,
+   "mean_abs_latent_step": 0.10455810598495965,
+   "mean_abs_latent_step_moved_cells": 0.11550338044993196,
+   "displacement_norm": {
+    "CM": 1.696674151026269,
+    "CranialMesoderm": 1.815638211059743,
+    "Ectoderm": 1.616567745468958,
+    "Endoderm": 1.8624017925923477,
+    "Endothelial": 1.7210305575274294,
+    "EpiblastStreak": 2.6210717231318803,
+    "ExtraEmbryonicMeso": 1.951179782968709,
+    "NCC": 1.8731961461030595,
+    "Neural": 1.7517487014856898
+   }
+  },
+  "expression": {
+   "arm": "decoded",
+   "retried": 37,
+   "median_library_out": 129.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.8978849040867389,
+   "zero_share_real": 0.8965728583343262,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_ratio",
+  "build_seed": 1000004,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "share_cells_moved": 0.9052384923944558,
+   "mean_abs_latent_step": 0.10455810598495965,
+   "mean_abs_latent_step_moved_cells": 0.11550338044993196,
+   "displacement_norm": {
+    "CM": 1.696674151026269,
+    "CranialMesoderm": 1.815638211059743,
+    "Ectoderm": 1.616567745468958,
+    "Endoderm": 1.8624017925923477,
+    "Endothelial": 1.7210305575274294,
+    "EpiblastStreak": 2.6210717231318803,
+    "ExtraEmbryonicMeso": 1.951179782968709,
+    "NCC": 1.8731961461030595,
+    "Neural": 1.7517487014856898
+   }
+  },
+  "expression": {
+   "arm": "ratio",
+   "n_cells_moved": 22793,
+   "n_acting_entries": 1192796,
+   "sd_log_factor": 0.22135904684823396,
+   "p1_log_factor": -0.6962796565557632,
+   "p99_log_factor": 0.43120233029852395,
+   "n_at_clip": 2624,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 130.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.9028706461733984,
+   "zero_share_real": 0.8965728583343262,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_flow",
+  "build_seed": 1000004,
+  "rule": "latent flow: z_new = z(tau), dz/dt = v(z, lineage), z(0) = z_own, tau = B0_DAMPING x the last gap in days, v one MLP fitted by flow matching on entropic-OT pairs within each lineage between every two consecutive input stages (velocity (z_j - z_i) / gap, weights proportional to the gap per lineage), then the ratio arm's realisation and stream",
+  "latent": {
+   "share_cells_moved": 0.9052384923944558,
+   "mean_abs_latent_step": 0.14178637651694265,
+   "mean_abs_latent_step_moved_cells": 0.15662875331549594,
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "per_lineage": {
+    "lineages": {
+     "CM": {
+      "cosine_to_b0": 0.9932707959086194,
+      "norm_ratio_to_b0": 1.0699142899529868,
+      "within_share": 0.20125458683853117
+     },
+     "CranialMesoderm": {
+      "cosine_to_b0": 0.9578784356423831,
+      "norm_ratio_to_b0": 1.084901084332247,
+      "within_share": 0.2902753887851516
+     },
+     "Ectoderm": {
+      "cosine_to_b0": 0.9900641700804595,
+      "norm_ratio_to_b0": 1.0338412560604264,
+      "within_share": 0.2963058871243944
+     },
+     "Endoderm": {
+      "cosine_to_b0": 0.9609946605123194,
+      "norm_ratio_to_b0": 1.0310126577257377,
+      "within_share": 0.31201275486838115
+     },
+     "Endothelial": {
+      "cosine_to_b0": 0.9932999166090297,
+      "norm_ratio_to_b0": 1.107558695201217,
+      "within_share": 0.22344761944635044
+     },
+     "EpiblastStreak": {
+      "cosine_to_b0": 0.9889743981168069,
+      "norm_ratio_to_b0": 0.9065281115346258,
+      "within_share": 0.3009621376479359
+     },
+     "ExtraEmbryonicMeso": {
+      "cosine_to_b0": 0.9888579549203425,
+      "norm_ratio_to_b0": 1.014129990823167,
+      "within_share": 0.30383118831828704
+     },
+     "NCC": {
+      "cosine_to_b0": 0.9948274563013462,
+      "norm_ratio_to_b0": 1.1276927806222214,
+      "within_share": 0.21561766091814263
+     },
+     "Neural": {
+      "cosine_to_b0": 0.9963925912520769,
+      "norm_ratio_to_b0": 1.1021216563927705,
+      "within_share": 0.18891300049406062
+     }
+    },
+    "median": {
+     "cosine_to_b0": 0.9900641700804595,
+     "norm_ratio_to_b0": 1.0699142899529868,
+     "within_share": 0.2902753887851516
+    }
+   }
+  },
+  "expression": {
+   "arm": "flow",
+   "n_cells_moved": 22793,
+   "n_acting_entries": 1192796,
+   "sd_log_factor": 0.2834333137404901,
+   "p1_log_factor": -0.9279154026985338,
+   "p99_log_factor": 0.5704863372460829,
+   "n_at_clip": 6316,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 130.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.9052816235752016,
+   "zero_share_real": 0.8965728583343262,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  },
+  "flow": {
+   "n_blocks": 18,
+   "n_pairs": 144000,
+   "gaps_days": [
+    0.1999999999999993,
+    0.25
+   ],
+   "blocks": [
+    {
+     "transition": 1,
+     "lineage": "CM",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 1357,
+     "n_later": 1919,
+     "median_cost": 10.0590730040086,
+     "last_marginal_error": 9.522276736318864e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "CM",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1919,
+     "n_later": 2000,
+     "median_cost": 13.047417771008632,
+     "last_marginal_error": 6.123731241745799e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "CranialMesoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 17.10812424167593,
+     "last_marginal_error": 5.089804373294239e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "CranialMesoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 18.348512544205047,
+     "last_marginal_error": 1.1145908715929158e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Ectoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 13.419951579831071,
+     "last_marginal_error": 8.158203820989431e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Ectoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 14.97078790787981,
+     "last_marginal_error": 3.000103201984632e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Endoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 19.26709811789145,
+     "last_marginal_error": 2.8171210300075106e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Endoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 1883,
+     "median_cost": 17.584122153198145,
+     "last_marginal_error": 6.750654814354784e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Endothelial",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1702,
+     "median_cost": 15.830284913043581,
+     "last_marginal_error": 5.4443256143254306e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Endothelial",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1702,
+     "n_later": 2000,
+     "median_cost": 14.292867780209198,
+     "last_marginal_error": 5.287189698403638e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "EpiblastStreak",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 1339,
+     "n_later": 1148,
+     "median_cost": 6.42974785203611,
+     "last_marginal_error": 6.66897729702818e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "EpiblastStreak",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1148,
+     "n_later": 45,
+     "median_cost": 13.961872211331812,
+     "last_marginal_error": 6.216738381452842e-07,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "ExtraEmbryonicMeso",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 12.995916086423271,
+     "last_marginal_error": 3.899807643711426e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "ExtraEmbryonicMeso",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 1039,
+     "median_cost": 14.691327906968976,
+     "last_marginal_error": 5.2478955816891606e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "NCC",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1461,
+     "median_cost": 9.030229217448284,
+     "last_marginal_error": 2.3828947570287555e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "NCC",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1461,
+     "n_later": 1838,
+     "median_cost": 12.60239783074893,
+     "last_marginal_error": 6.061539857138312e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Neural",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1517,
+     "median_cost": 9.845626735592925,
+     "last_marginal_error": 2.8416461281964393e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Neural",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1517,
+     "n_later": 2000,
+     "median_cost": 11.472290081793183,
+     "last_marginal_error": 3.7204825994143692e-06,
+     "converged": true
+    }
+   ],
+   "mean_omega": 1.0,
+   "loss_first": 115.06711585998535,
+   "loss_last": 76.27005928039551,
+   "steps": 4000,
+   "fit_seconds": 13.5,
+   "params_sha256": "995588a87886e3326668f7b41138dd815e6231c7d84e27f14ee54beb8484ad56",
+   "torch": "2.14.1+cu130",
+   "cells_left_out": {
+    "earlier": 0
+   },
+   "stages": [
+    "earlier",
+    "start",
+    "ref"
+   ],
+   "lineages": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "tau_days": 0.125,
+   "rk4_steps": 8
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_dec",
+  "build_seed": 1000005,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "share_cells_moved": 0.9055165018467771,
+   "mean_abs_latent_step": 0.10458211295681097,
+   "mean_abs_latent_step_moved_cells": 0.115494430795594,
+   "displacement_norm": {
+    "CM": 1.696674151026269,
+    "CranialMesoderm": 1.815638211059743,
+    "Ectoderm": 1.616567745468958,
+    "Endoderm": 1.8624017925923477,
+    "Endothelial": 1.7210305575274294,
+    "EpiblastStreak": 2.6210717231318803,
+    "ExtraEmbryonicMeso": 1.951179782968709,
+    "NCC": 1.8731961461030595,
+    "Neural": 1.7517487014856898
+   }
+  },
+  "expression": {
+   "arm": "decoded",
+   "retried": 20,
+   "median_library_out": 129.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.8979029349855038,
+   "zero_share_real": 0.8965781007982843,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_ratio",
+  "build_seed": 1000005,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "share_cells_moved": 0.9055165018467771,
+   "mean_abs_latent_step": 0.10458211295681097,
+   "mean_abs_latent_step_moved_cells": 0.115494430795594,
+   "displacement_norm": {
+    "CM": 1.696674151026269,
+    "CranialMesoderm": 1.815638211059743,
+    "Ectoderm": 1.616567745468958,
+    "Endoderm": 1.8624017925923477,
+    "Endothelial": 1.7210305575274294,
+    "EpiblastStreak": 2.6210717231318803,
+    "ExtraEmbryonicMeso": 1.951179782968709,
+    "NCC": 1.8731961461030595,
+    "Neural": 1.7517487014856898
+   }
+  },
+  "expression": {
+   "arm": "ratio",
+   "n_cells_moved": 22800,
+   "n_acting_entries": 1193039,
+   "sd_log_factor": 0.2216050312743023,
+   "p1_log_factor": -0.6976567564294156,
+   "p99_log_factor": 0.4316204221234288,
+   "n_at_clip": 2653,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 130.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.9028463402041383,
+   "zero_share_real": 0.8965781007982843,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_flow",
+  "build_seed": 1000005,
+  "rule": "latent flow: z_new = z(tau), dz/dt = v(z, lineage), z(0) = z_own, tau = B0_DAMPING x the last gap in days, v one MLP fitted by flow matching on entropic-OT pairs within each lineage between every two consecutive input stages (velocity (z_j - z_i) / gap, weights proportional to the gap per lineage), then the ratio arm's realisation and stream",
+  "latent": {
+   "share_cells_moved": 0.9055165018467771,
+   "mean_abs_latent_step": 0.1417348486154219,
+   "mean_abs_latent_step_moved_cells": 0.15652376110911,
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "per_lineage": {
+    "lineages": {
+     "CM": {
+      "cosine_to_b0": 0.9933803850433028,
+      "norm_ratio_to_b0": 1.0687486969070035,
+      "within_share": 0.20218580684527215
+     },
+     "CranialMesoderm": {
+      "cosine_to_b0": 0.9575598266460532,
+      "norm_ratio_to_b0": 1.0838927369916544,
+      "within_share": 0.2901552200418185
+     },
+     "Ectoderm": {
+      "cosine_to_b0": 0.9902018331719,
+      "norm_ratio_to_b0": 1.032667194291043,
+      "within_share": 0.29612474958269963
+     },
+     "Endoderm": {
+      "cosine_to_b0": 0.960555859770454,
+      "norm_ratio_to_b0": 1.0321103578069681,
+      "within_share": 0.31241370495337756
+     },
+     "Endothelial": {
+      "cosine_to_b0": 0.9933975545808443,
+      "norm_ratio_to_b0": 1.106673772681153,
+      "within_share": 0.2233677979590775
+     },
+     "EpiblastStreak": {
+      "cosine_to_b0": 0.9883313405200239,
+      "norm_ratio_to_b0": 0.907354804612576,
+      "within_share": 0.29725350609635415
+     },
+     "ExtraEmbryonicMeso": {
+      "cosine_to_b0": 0.9891123787726751,
+      "norm_ratio_to_b0": 1.0118680197782333,
+      "within_share": 0.30308016910678925
+     },
+     "NCC": {
+      "cosine_to_b0": 0.9947842014812794,
+      "norm_ratio_to_b0": 1.1271193292153547,
+      "within_share": 0.21532274977185742
+     },
+     "Neural": {
+      "cosine_to_b0": 0.9963998646273753,
+      "norm_ratio_to_b0": 1.1018248142408542,
+      "within_share": 0.1887028234771088
+     }
+    },
+    "median": {
+     "cosine_to_b0": 0.9902018331719,
+     "norm_ratio_to_b0": 1.0687486969070035,
+     "within_share": 0.2901552200418185
+    }
+   }
+  },
+  "expression": {
+   "arm": "flow",
+   "n_cells_moved": 22800,
+   "n_acting_entries": 1193039,
+   "sd_log_factor": 0.2832425650686559,
+   "p1_log_factor": -0.9277709027664781,
+   "p99_log_factor": 0.5689140891395746,
+   "n_at_clip": 6355,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 130.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.9052713769411017,
+   "zero_share_real": 0.8965781007982843,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  },
+  "flow": {
+   "n_blocks": 18,
+   "n_pairs": 144000,
+   "gaps_days": [
+    0.1999999999999993,
+    0.25
+   ],
+   "blocks": [
+    {
+     "transition": 1,
+     "lineage": "CM",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 1357,
+     "n_later": 1919,
+     "median_cost": 10.0590730040086,
+     "last_marginal_error": 9.522276736318864e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "CM",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1919,
+     "n_later": 2000,
+     "median_cost": 13.047417771008632,
+     "last_marginal_error": 6.123731241745799e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "CranialMesoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 17.10812424167593,
+     "last_marginal_error": 5.089804373294239e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "CranialMesoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 18.348512544205047,
+     "last_marginal_error": 1.1145908715929158e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Ectoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 13.419951579831071,
+     "last_marginal_error": 8.158203820989431e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Ectoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 14.97078790787981,
+     "last_marginal_error": 3.000103201984632e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Endoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 19.26709811789145,
+     "last_marginal_error": 2.8171210300075106e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Endoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 1883,
+     "median_cost": 17.584122153198145,
+     "last_marginal_error": 6.750654814354784e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Endothelial",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1702,
+     "median_cost": 15.830284913043581,
+     "last_marginal_error": 5.4443256143254306e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Endothelial",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1702,
+     "n_later": 2000,
+     "median_cost": 14.292867780209198,
+     "last_marginal_error": 5.287189698403638e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "EpiblastStreak",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 1339,
+     "n_later": 1148,
+     "median_cost": 6.42974785203611,
+     "last_marginal_error": 6.66897729702818e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "EpiblastStreak",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1148,
+     "n_later": 45,
+     "median_cost": 13.961872211331812,
+     "last_marginal_error": 6.216738381452842e-07,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "ExtraEmbryonicMeso",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 12.995916086423271,
+     "last_marginal_error": 3.899807643711426e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "ExtraEmbryonicMeso",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 1039,
+     "median_cost": 14.691327906968976,
+     "last_marginal_error": 5.2478955816891606e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "NCC",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1461,
+     "median_cost": 9.030229217448284,
+     "last_marginal_error": 2.3828947570287555e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "NCC",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1461,
+     "n_later": 1838,
+     "median_cost": 12.60239783074893,
+     "last_marginal_error": 6.061539857138312e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Neural",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1517,
+     "median_cost": 9.845626735592925,
+     "last_marginal_error": 2.8416461281964393e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Neural",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1517,
+     "n_later": 2000,
+     "median_cost": 11.472290081793183,
+     "last_marginal_error": 3.7204825994143692e-06,
+     "converged": true
+    }
+   ],
+   "mean_omega": 1.0,
+   "loss_first": 115.06711585998535,
+   "loss_last": 76.27005928039551,
+   "steps": 4000,
+   "fit_seconds": 13.5,
+   "params_sha256": "995588a87886e3326668f7b41138dd815e6231c7d84e27f14ee54beb8484ad56",
+   "torch": "2.14.1+cu130",
+   "cells_left_out": {
+    "earlier": 0
+   },
+   "stages": [
+    "earlier",
+    "start",
+    "ref"
+   ],
+   "lineages": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "tau_days": 0.125,
+   "rk4_steps": 8
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_dec",
+  "build_seed": 1000006,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "share_cells_moved": 0.9062313832956035,
+   "mean_abs_latent_step": 0.10468596846546281,
+   "mean_abs_latent_step_moved_cells": 0.11551792444525759,
+   "displacement_norm": {
+    "CM": 1.696674151026269,
+    "CranialMesoderm": 1.815638211059743,
+    "Ectoderm": 1.616567745468958,
+    "Endoderm": 1.8624017925923477,
+    "Endothelial": 1.7210305575274294,
+    "EpiblastStreak": 2.6210717231318803,
+    "ExtraEmbryonicMeso": 1.951179782968709,
+    "NCC": 1.8731961461030595,
+    "Neural": 1.7517487014856898
+   }
+  },
+  "expression": {
+   "arm": "decoded",
+   "retried": 25,
+   "median_library_out": 129.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.8977634536717105,
+   "zero_share_real": 0.8964484689622304,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_ratio",
+  "build_seed": 1000006,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "share_cells_moved": 0.9062313832956035,
+   "mean_abs_latent_step": 0.10468596846546281,
+   "mean_abs_latent_step_moved_cells": 0.11551792444525759,
+   "displacement_norm": {
+    "CM": 1.696674151026269,
+    "CranialMesoderm": 1.815638211059743,
+    "Ectoderm": 1.616567745468958,
+    "Endoderm": 1.8624017925923477,
+    "Endothelial": 1.7210305575274294,
+    "EpiblastStreak": 2.6210717231318803,
+    "ExtraEmbryonicMeso": 1.951179782968709,
+    "NCC": 1.8731961461030595,
+    "Neural": 1.7517487014856898
+   }
+  },
+  "expression": {
+   "arm": "ratio",
+   "n_cells_moved": 22818,
+   "n_acting_entries": 1195588,
+   "sd_log_factor": 0.22149782078688984,
+   "p1_log_factor": -0.6971791625595788,
+   "p99_log_factor": 0.4311631717015297,
+   "n_at_clip": 2654,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 130.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.9027328329163191,
+   "zero_share_real": 0.8964484689622304,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_flow",
+  "build_seed": 1000006,
+  "rule": "latent flow: z_new = z(tau), dz/dt = v(z, lineage), z(0) = z_own, tau = B0_DAMPING x the last gap in days, v one MLP fitted by flow matching on entropic-OT pairs within each lineage between every two consecutive input stages (velocity (z_j - z_i) / gap, weights proportional to the gap per lineage), then the ratio arm's realisation and stream",
+  "latent": {
+   "share_cells_moved": 0.9062313832956035,
+   "mean_abs_latent_step": 0.1418811368838527,
+   "mean_abs_latent_step_moved_cells": 0.15656171205182431,
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "per_lineage": {
+    "lineages": {
+     "CM": {
+      "cosine_to_b0": 0.9933415272608923,
+      "norm_ratio_to_b0": 1.069787201467678,
+      "within_share": 0.2013125684819758
+     },
+     "CranialMesoderm": {
+      "cosine_to_b0": 0.9580146104684519,
+      "norm_ratio_to_b0": 1.0841172338491445,
+      "within_share": 0.2904392759647028
+     },
+     "Ectoderm": {
+      "cosine_to_b0": 0.9903183059717893,
+      "norm_ratio_to_b0": 1.0334445396423482,
+      "within_share": 0.2953518308042086
+     },
+     "Endoderm": {
+      "cosine_to_b0": 0.9605483646725779,
+      "norm_ratio_to_b0": 1.0304191470808102,
+      "within_share": 0.3130844855630008
+     },
+     "Endothelial": {
+      "cosine_to_b0": 0.9933358155039202,
+      "norm_ratio_to_b0": 1.105338266139731,
+      "within_share": 0.22354710904363992
+     },
+     "EpiblastStreak": {
+      "cosine_to_b0": 0.9892827723434653,
+      "norm_ratio_to_b0": 0.9026331100928254,
+      "within_share": 0.3024767217795179
+     },
+     "ExtraEmbryonicMeso": {
+      "cosine_to_b0": 0.9889459313349603,
+      "norm_ratio_to_b0": 1.0132188535802849,
+      "within_share": 0.30186762937408107
+     },
+     "NCC": {
+      "cosine_to_b0": 0.9947617722762094,
+      "norm_ratio_to_b0": 1.126250915278093,
+      "within_share": 0.2161140886724901
+     },
+     "Neural": {
+      "cosine_to_b0": 0.9963921181714349,
+      "norm_ratio_to_b0": 1.1028932560892462,
+      "within_share": 0.1887456740404689
+     }
+    },
+    "median": {
+     "cosine_to_b0": 0.9903183059717893,
+     "norm_ratio_to_b0": 1.069787201467678,
+     "within_share": 0.2904392759647028
+    }
+   }
+  },
+  "expression": {
+   "arm": "flow",
+   "n_cells_moved": 22818,
+   "n_acting_entries": 1195588,
+   "sd_log_factor": 0.28307828189442324,
+   "p1_log_factor": -0.9277201570598468,
+   "p99_log_factor": 0.5678707047996111,
+   "n_at_clip": 6307,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 130.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.9051564398903849,
+   "zero_share_real": 0.8964484689622304,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  },
+  "flow": {
+   "n_blocks": 18,
+   "n_pairs": 144000,
+   "gaps_days": [
+    0.1999999999999993,
+    0.25
+   ],
+   "blocks": [
+    {
+     "transition": 1,
+     "lineage": "CM",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 1357,
+     "n_later": 1919,
+     "median_cost": 10.0590730040086,
+     "last_marginal_error": 9.522276736318864e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "CM",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1919,
+     "n_later": 2000,
+     "median_cost": 13.047417771008632,
+     "last_marginal_error": 6.123731241745799e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "CranialMesoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 17.10812424167593,
+     "last_marginal_error": 5.089804373294239e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "CranialMesoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 18.348512544205047,
+     "last_marginal_error": 1.1145908715929158e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Ectoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 13.419951579831071,
+     "last_marginal_error": 8.158203820989431e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Ectoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 14.97078790787981,
+     "last_marginal_error": 3.000103201984632e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Endoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 19.26709811789145,
+     "last_marginal_error": 2.8171210300075106e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Endoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 1883,
+     "median_cost": 17.584122153198145,
+     "last_marginal_error": 6.750654814354784e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Endothelial",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1702,
+     "median_cost": 15.830284913043581,
+     "last_marginal_error": 5.4443256143254306e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Endothelial",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1702,
+     "n_later": 2000,
+     "median_cost": 14.292867780209198,
+     "last_marginal_error": 5.287189698403638e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "EpiblastStreak",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 1339,
+     "n_later": 1148,
+     "median_cost": 6.42974785203611,
+     "last_marginal_error": 6.66897729702818e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "EpiblastStreak",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1148,
+     "n_later": 45,
+     "median_cost": 13.961872211331812,
+     "last_marginal_error": 6.216738381452842e-07,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "ExtraEmbryonicMeso",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 12.995916086423271,
+     "last_marginal_error": 3.899807643711426e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "ExtraEmbryonicMeso",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 1039,
+     "median_cost": 14.691327906968976,
+     "last_marginal_error": 5.2478955816891606e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "NCC",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1461,
+     "median_cost": 9.030229217448284,
+     "last_marginal_error": 2.3828947570287555e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "NCC",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1461,
+     "n_later": 1838,
+     "median_cost": 12.60239783074893,
+     "last_marginal_error": 6.061539857138312e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Neural",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1517,
+     "median_cost": 9.845626735592925,
+     "last_marginal_error": 2.8416461281964393e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Neural",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1517,
+     "n_later": 2000,
+     "median_cost": 11.472290081793183,
+     "last_marginal_error": 3.7204825994143692e-06,
+     "converged": true
+    }
+   ],
+   "mean_omega": 1.0,
+   "loss_first": 115.06711585998535,
+   "loss_last": 76.27005928039551,
+   "steps": 4000,
+   "fit_seconds": 13.5,
+   "params_sha256": "995588a87886e3326668f7b41138dd815e6231c7d84e27f14ee54beb8484ad56",
+   "torch": "2.14.1+cu130",
+   "cells_left_out": {
+    "earlier": 0
+   },
+   "stages": [
+    "earlier",
+    "start",
+    "ref"
+   ],
+   "lineages": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "tau_days": 0.125,
+   "rk4_steps": 8
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_dec",
+  "build_seed": 1000007,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "share_cells_moved": 0.9061122363874657,
+   "mean_abs_latent_step": 0.10466672107636937,
+   "mean_abs_latent_step_moved_cells": 0.11551187245154082,
+   "displacement_norm": {
+    "CM": 1.696674151026269,
+    "CranialMesoderm": 1.815638211059743,
+    "Ectoderm": 1.616567745468958,
+    "Endoderm": 1.8624017925923477,
+    "Endothelial": 1.7210305575274294,
+    "EpiblastStreak": 2.6210717231318803,
+    "ExtraEmbryonicMeso": 1.951179782968709,
+    "NCC": 1.8731961461030595,
+    "Neural": 1.7517487014856898
+   }
+  },
+  "expression": {
+   "arm": "decoded",
+   "retried": 27,
+   "median_library_out": 129.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.8978518606775487,
+   "zero_share_real": 0.8966001826919259,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_ratio",
+  "build_seed": 1000007,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "share_cells_moved": 0.9061122363874657,
+   "mean_abs_latent_step": 0.10466672107636937,
+   "mean_abs_latent_step_moved_cells": 0.11551187245154082,
+   "displacement_norm": {
+    "CM": 1.696674151026269,
+    "CranialMesoderm": 1.815638211059743,
+    "Ectoderm": 1.616567745468958,
+    "Endoderm": 1.8624017925923477,
+    "Endothelial": 1.7210305575274294,
+    "EpiblastStreak": 2.6210717231318803,
+    "ExtraEmbryonicMeso": 1.951179782968709,
+    "NCC": 1.8731961461030595,
+    "Neural": 1.7517487014856898
+   }
+  },
+  "expression": {
+   "arm": "ratio",
+   "n_cells_moved": 22815,
+   "n_acting_entries": 1193754,
+   "sd_log_factor": 0.22154373973334499,
+   "p1_log_factor": -0.697560989458391,
+   "p99_log_factor": 0.43149292373182846,
+   "n_at_clip": 2664,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 130.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.902893601811033,
+   "zero_share_real": 0.8966001826919259,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_flow",
+  "build_seed": 1000007,
+  "rule": "latent flow: z_new = z(tau), dz/dt = v(z, lineage), z(0) = z_own, tau = B0_DAMPING x the last gap in days, v one MLP fitted by flow matching on entropic-OT pairs within each lineage between every two consecutive input stages (velocity (z_j - z_i) / gap, weights proportional to the gap per lineage), then the ratio arm's realisation and stream",
+  "latent": {
+   "share_cells_moved": 0.9061122363874657,
+   "mean_abs_latent_step": 0.14186868689958787,
+   "mean_abs_latent_step_moved_cells": 0.15656855873086667,
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "per_lineage": {
+    "lineages": {
+     "CM": {
+      "cosine_to_b0": 0.9932932659191143,
+      "norm_ratio_to_b0": 1.0684169623938216,
+      "within_share": 0.2020830871308895
+     },
+     "CranialMesoderm": {
+      "cosine_to_b0": 0.9580577805053596,
+      "norm_ratio_to_b0": 1.0834324985140455,
+      "within_share": 0.2913012533555992
+     },
+     "Ectoderm": {
+      "cosine_to_b0": 0.9902096945652408,
+      "norm_ratio_to_b0": 1.0318949617481652,
+      "within_share": 0.2962872608836623
+     },
+     "Endoderm": {
+      "cosine_to_b0": 0.9605624638262414,
+      "norm_ratio_to_b0": 1.0323346470891939,
+      "within_share": 0.31188104199831485
+     },
+     "Endothelial": {
+      "cosine_to_b0": 0.9934382118848555,
+      "norm_ratio_to_b0": 1.106719709921455,
+      "within_share": 0.2233360572636484
+     },
+     "EpiblastStreak": {
+      "cosine_to_b0": 0.9894986257856415,
+      "norm_ratio_to_b0": 0.9069700113838416,
+      "within_share": 0.292801076643917
+     },
+     "ExtraEmbryonicMeso": {
+      "cosine_to_b0": 0.9888549962738891,
+      "norm_ratio_to_b0": 1.0104889366075873,
+      "within_share": 0.305386851232509
+     },
+     "NCC": {
+      "cosine_to_b0": 0.9947115217486795,
+      "norm_ratio_to_b0": 1.1276645961851552,
+      "within_share": 0.216523990723237
+     },
+     "Neural": {
+      "cosine_to_b0": 0.9964330202571483,
+      "norm_ratio_to_b0": 1.1030133619413796,
+      "within_share": 0.18813228486563377
+     }
+    },
+    "median": {
+     "cosine_to_b0": 0.9902096945652408,
+     "norm_ratio_to_b0": 1.0684169623938216,
+     "within_share": 0.2913012533555992
+    }
+   }
+  },
+  "expression": {
+   "arm": "flow",
+   "n_cells_moved": 22815,
+   "n_acting_entries": 1193754,
+   "sd_log_factor": 0.2833893027618965,
+   "p1_log_factor": -0.9298748291443251,
+   "p99_log_factor": 0.5686785834006386,
+   "n_at_clip": 6408,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 130.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.9053539854640772,
+   "zero_share_real": 0.8966001826919259,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  },
+  "flow": {
+   "n_blocks": 18,
+   "n_pairs": 144000,
+   "gaps_days": [
+    0.1999999999999993,
+    0.25
+   ],
+   "blocks": [
+    {
+     "transition": 1,
+     "lineage": "CM",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 1357,
+     "n_later": 1919,
+     "median_cost": 10.0590730040086,
+     "last_marginal_error": 9.522276736318864e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "CM",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1919,
+     "n_later": 2000,
+     "median_cost": 13.047417771008632,
+     "last_marginal_error": 6.123731241745799e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "CranialMesoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 17.10812424167593,
+     "last_marginal_error": 5.089804373294239e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "CranialMesoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 18.348512544205047,
+     "last_marginal_error": 1.1145908715929158e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Ectoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 13.419951579831071,
+     "last_marginal_error": 8.158203820989431e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Ectoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 14.97078790787981,
+     "last_marginal_error": 3.000103201984632e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Endoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 19.26709811789145,
+     "last_marginal_error": 2.8171210300075106e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Endoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 1883,
+     "median_cost": 17.584122153198145,
+     "last_marginal_error": 6.750654814354784e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Endothelial",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1702,
+     "median_cost": 15.830284913043581,
+     "last_marginal_error": 5.4443256143254306e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Endothelial",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1702,
+     "n_later": 2000,
+     "median_cost": 14.292867780209198,
+     "last_marginal_error": 5.287189698403638e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "EpiblastStreak",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 1339,
+     "n_later": 1148,
+     "median_cost": 6.42974785203611,
+     "last_marginal_error": 6.66897729702818e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "EpiblastStreak",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1148,
+     "n_later": 45,
+     "median_cost": 13.961872211331812,
+     "last_marginal_error": 6.216738381452842e-07,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "ExtraEmbryonicMeso",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 12.995916086423271,
+     "last_marginal_error": 3.899807643711426e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "ExtraEmbryonicMeso",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 1039,
+     "median_cost": 14.691327906968976,
+     "last_marginal_error": 5.2478955816891606e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "NCC",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1461,
+     "median_cost": 9.030229217448284,
+     "last_marginal_error": 2.3828947570287555e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "NCC",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1461,
+     "n_later": 1838,
+     "median_cost": 12.60239783074893,
+     "last_marginal_error": 6.061539857138312e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Neural",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1517,
+     "median_cost": 9.845626735592925,
+     "last_marginal_error": 2.8416461281964393e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Neural",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1517,
+     "n_later": 2000,
+     "median_cost": 11.472290081793183,
+     "last_marginal_error": 3.7204825994143692e-06,
+     "converged": true
+    }
+   ],
+   "mean_omega": 1.0,
+   "loss_first": 115.06711585998535,
+   "loss_last": 76.27005928039551,
+   "steps": 4000,
+   "fit_seconds": 13.5,
+   "params_sha256": "995588a87886e3326668f7b41138dd815e6231c7d84e27f14ee54beb8484ad56",
+   "torch": "2.14.1+cu130",
+   "cells_left_out": {
+    "earlier": 0
+   },
+   "stages": [
+    "earlier",
+    "start",
+    "ref"
+   ],
+   "lineages": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "tau_days": 0.125,
+   "rk4_steps": 8
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_dec",
+  "build_seed": 1000008,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "share_cells_moved": 0.9050399142142261,
+   "mean_abs_latent_step": 0.10453064600463859,
+   "mean_abs_latent_step_moved_cells": 0.11549838229554131,
+   "displacement_norm": {
+    "CM": 1.696674151026269,
+    "CranialMesoderm": 1.815638211059743,
+    "Ectoderm": 1.616567745468958,
+    "Endoderm": 1.8624017925923477,
+    "Endothelial": 1.7210305575274294,
+    "EpiblastStreak": 2.6210717231318803,
+    "ExtraEmbryonicMeso": 1.951179782968709,
+    "NCC": 1.8731961461030595,
+    "Neural": 1.7517487014856898
+   }
+  },
+  "expression": {
+   "arm": "decoded",
+   "retried": 22,
+   "median_library_out": 129.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.8978133365105843,
+   "zero_share_real": 0.8965642003256682,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_ratio",
+  "build_seed": 1000008,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "share_cells_moved": 0.9050399142142261,
+   "mean_abs_latent_step": 0.10453064600463859,
+   "mean_abs_latent_step_moved_cells": 0.11549838229554131,
+   "displacement_norm": {
+    "CM": 1.696674151026269,
+    "CranialMesoderm": 1.815638211059743,
+    "Ectoderm": 1.616567745468958,
+    "Endoderm": 1.8624017925923477,
+    "Endothelial": 1.7210305575274294,
+    "EpiblastStreak": 2.6210717231318803,
+    "ExtraEmbryonicMeso": 1.951179782968709,
+    "NCC": 1.8731961461030595,
+    "Neural": 1.7517487014856898
+   }
+  },
+  "expression": {
+   "arm": "ratio",
+   "n_cells_moved": 22788,
+   "n_acting_entries": 1192919,
+   "sd_log_factor": 0.22145703913066167,
+   "p1_log_factor": -0.6968819813531525,
+   "p99_log_factor": 0.43139451637085446,
+   "n_at_clip": 2641,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 130.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.9028212399221573,
+   "zero_share_real": 0.8965642003256682,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_flow",
+  "build_seed": 1000008,
+  "rule": "latent flow: z_new = z(tau), dz/dt = v(z, lineage), z(0) = z_own, tau = B0_DAMPING x the last gap in days, v one MLP fitted by flow matching on entropic-OT pairs within each lineage between every two consecutive input stages (velocity (z_j - z_i) / gap, weights proportional to the gap per lineage), then the ratio arm's realisation and stream",
+  "latent": {
+   "share_cells_moved": 0.9050399142142261,
+   "mean_abs_latent_step": 0.14167363985492507,
+   "mean_abs_latent_step_moved_cells": 0.15653855441053002,
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "per_lineage": {
+    "lineages": {
+     "CM": {
+      "cosine_to_b0": 0.99316868462927,
+      "norm_ratio_to_b0": 1.0707341849032173,
+      "within_share": 0.20273102181367308
+     },
+     "CranialMesoderm": {
+      "cosine_to_b0": 0.9577740735323019,
+      "norm_ratio_to_b0": 1.0838607789365617,
+      "within_share": 0.2904086216239804
+     },
+     "Ectoderm": {
+      "cosine_to_b0": 0.9902633305901811,
+      "norm_ratio_to_b0": 1.0324054815764259,
+      "within_share": 0.29534330246027735
+     },
+     "Endoderm": {
+      "cosine_to_b0": 0.960247980086352,
+      "norm_ratio_to_b0": 1.031946098667615,
+      "within_share": 0.311143643805307
+     },
+     "Endothelial": {
+      "cosine_to_b0": 0.9933912258666447,
+      "norm_ratio_to_b0": 1.1062208442362014,
+      "within_share": 0.22338052708733966
+     },
+     "EpiblastStreak": {
+      "cosine_to_b0": 0.9889712284222983,
+      "norm_ratio_to_b0": 0.9058311826762513,
+      "within_share": 0.29627617084389785
+     },
+     "ExtraEmbryonicMeso": {
+      "cosine_to_b0": 0.9886512000141358,
+      "norm_ratio_to_b0": 1.015781886316694,
+      "within_share": 0.30382005297706915
+     },
+     "NCC": {
+      "cosine_to_b0": 0.9947138203807295,
+      "norm_ratio_to_b0": 1.1277558042760882,
+      "within_share": 0.21581144582657838
+     },
+     "Neural": {
+      "cosine_to_b0": 0.9963334371668688,
+      "norm_ratio_to_b0": 1.1022305601048625,
+      "within_share": 0.18913589402490677
+     }
+    },
+    "median": {
+     "cosine_to_b0": 0.9902633305901811,
+     "norm_ratio_to_b0": 1.0707341849032173,
+     "within_share": 0.2904086216239804
+    }
+   }
+  },
+  "expression": {
+   "arm": "flow",
+   "n_cells_moved": 22788,
+   "n_acting_entries": 1192919,
+   "sd_log_factor": 0.28325538067364214,
+   "p1_log_factor": -0.9282961651948056,
+   "p99_log_factor": 0.569067603371899,
+   "n_at_clip": 6351,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 130.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.9052013185591168,
+   "zero_share_real": 0.8965642003256682,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  },
+  "flow": {
+   "n_blocks": 18,
+   "n_pairs": 144000,
+   "gaps_days": [
+    0.1999999999999993,
+    0.25
+   ],
+   "blocks": [
+    {
+     "transition": 1,
+     "lineage": "CM",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 1357,
+     "n_later": 1919,
+     "median_cost": 10.0590730040086,
+     "last_marginal_error": 9.522276736318864e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "CM",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1919,
+     "n_later": 2000,
+     "median_cost": 13.047417771008632,
+     "last_marginal_error": 6.123731241745799e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "CranialMesoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 17.10812424167593,
+     "last_marginal_error": 5.089804373294239e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "CranialMesoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 18.348512544205047,
+     "last_marginal_error": 1.1145908715929158e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Ectoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 13.419951579831071,
+     "last_marginal_error": 8.158203820989431e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Ectoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 14.97078790787981,
+     "last_marginal_error": 3.000103201984632e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Endoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 19.26709811789145,
+     "last_marginal_error": 2.8171210300075106e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Endoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 1883,
+     "median_cost": 17.584122153198145,
+     "last_marginal_error": 6.750654814354784e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Endothelial",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1702,
+     "median_cost": 15.830284913043581,
+     "last_marginal_error": 5.4443256143254306e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Endothelial",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1702,
+     "n_later": 2000,
+     "median_cost": 14.292867780209198,
+     "last_marginal_error": 5.287189698403638e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "EpiblastStreak",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 1339,
+     "n_later": 1148,
+     "median_cost": 6.42974785203611,
+     "last_marginal_error": 6.66897729702818e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "EpiblastStreak",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1148,
+     "n_later": 45,
+     "median_cost": 13.961872211331812,
+     "last_marginal_error": 6.216738381452842e-07,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "ExtraEmbryonicMeso",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 12.995916086423271,
+     "last_marginal_error": 3.899807643711426e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "ExtraEmbryonicMeso",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 1039,
+     "median_cost": 14.691327906968976,
+     "last_marginal_error": 5.2478955816891606e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "NCC",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1461,
+     "median_cost": 9.030229217448284,
+     "last_marginal_error": 2.3828947570287555e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "NCC",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1461,
+     "n_later": 1838,
+     "median_cost": 12.60239783074893,
+     "last_marginal_error": 6.061539857138312e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Neural",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1517,
+     "median_cost": 9.845626735592925,
+     "last_marginal_error": 2.8416461281964393e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Neural",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1517,
+     "n_later": 2000,
+     "median_cost": 11.472290081793183,
+     "last_marginal_error": 3.7204825994143692e-06,
+     "converged": true
+    }
+   ],
+   "mean_omega": 1.0,
+   "loss_first": 115.06711585998535,
+   "loss_last": 76.27005928039551,
+   "steps": 4000,
+   "fit_seconds": 13.5,
+   "params_sha256": "995588a87886e3326668f7b41138dd815e6231c7d84e27f14ee54beb8484ad56",
+   "torch": "2.14.1+cu130",
+   "cells_left_out": {
+    "earlier": 0
+   },
+   "stages": [
+    "earlier",
+    "start",
+    "ref"
+   ],
+   "lineages": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "tau_days": 0.125,
+   "rk4_steps": 8
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_dec",
+  "build_seed": 1000009,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "share_cells_moved": 0.9052782080305016,
+   "mean_abs_latent_step": 0.10457214330368535,
+   "mean_abs_latent_step_moved_cells": 0.11551381926136237,
+   "displacement_norm": {
+    "CM": 1.696674151026269,
+    "CranialMesoderm": 1.815638211059743,
+    "Ectoderm": 1.616567745468958,
+    "Endoderm": 1.8624017925923477,
+    "Endothelial": 1.7210305575274294,
+    "EpiblastStreak": 2.6210717231318803,
+    "ExtraEmbryonicMeso": 1.951179782968709,
+    "NCC": 1.8731961461030595,
+    "Neural": 1.7517487014856898
+   }
+  },
+  "expression": {
+   "arm": "decoded",
+   "retried": 32,
+   "median_library_out": 128.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.8977436752849597,
+   "zero_share_real": 0.8965401326502244,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_ratio",
+  "build_seed": 1000009,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "share_cells_moved": 0.9052782080305016,
+   "mean_abs_latent_step": 0.10457214330368535,
+   "mean_abs_latent_step_moved_cells": 0.11551381926136237,
+   "displacement_norm": {
+    "CM": 1.696674151026269,
+    "CranialMesoderm": 1.815638211059743,
+    "Ectoderm": 1.616567745468958,
+    "Endoderm": 1.8624017925923477,
+    "Endothelial": 1.7210305575274294,
+    "EpiblastStreak": 2.6210717231318803,
+    "ExtraEmbryonicMeso": 1.951179782968709,
+    "NCC": 1.8731961461030595,
+    "Neural": 1.7517487014856898
+   }
+  },
+  "expression": {
+   "arm": "ratio",
+   "n_cells_moved": 22794,
+   "n_acting_entries": 1193025,
+   "sd_log_factor": 0.22150175217712093,
+   "p1_log_factor": -0.69709632717538,
+   "p99_log_factor": 0.43120865107652445,
+   "n_at_clip": 2675,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 130.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.9028240200166806,
+   "zero_share_real": 0.8965401326502244,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  }
+ },
+ {
+  "task": "T2h/<=E8.75->E10.5",
+  "candidate": "b0_lat_flow",
+  "build_seed": 1000009,
+  "rule": "latent flow: z_new = z(tau), dz/dt = v(z, lineage), z(0) = z_own, tau = B0_DAMPING x the last gap in days, v one MLP fitted by flow matching on entropic-OT pairs within each lineage between every two consecutive input stages (velocity (z_j - z_i) / gap, weights proportional to the gap per lineage), then the ratio arm's realisation and stream",
+  "latent": {
+   "share_cells_moved": 0.9052782080305016,
+   "mean_abs_latent_step": 0.14172821589035461,
+   "mean_abs_latent_step_moved_cells": 0.15655763568935857,
+   "damping": 0.5,
+   "categories_moved": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "n_categories_moved": 9,
+   "per_lineage": {
+    "lineages": {
+     "CM": {
+      "cosine_to_b0": 0.9933901743018574,
+      "norm_ratio_to_b0": 1.0696861774463984,
+      "within_share": 0.20122395739993176
+     },
+     "CranialMesoderm": {
+      "cosine_to_b0": 0.957499519809393,
+      "norm_ratio_to_b0": 1.0826111006794634,
+      "within_share": 0.29098546815633114
+     },
+     "Ectoderm": {
+      "cosine_to_b0": 0.9900965502372405,
+      "norm_ratio_to_b0": 1.0321221224072488,
+      "within_share": 0.29617665827961426
+     },
+     "Endoderm": {
+      "cosine_to_b0": 0.9608744658389804,
+      "norm_ratio_to_b0": 1.0295384245567416,
+      "within_share": 0.31293544304890386
+     },
+     "Endothelial": {
+      "cosine_to_b0": 0.9933174842839846,
+      "norm_ratio_to_b0": 1.1072083774821508,
+      "within_share": 0.22294712432331962
+     },
+     "EpiblastStreak": {
+      "cosine_to_b0": 0.989046057081302,
+      "norm_ratio_to_b0": 0.9068916886798576,
+      "within_share": 0.2973008343005758
+     },
+     "ExtraEmbryonicMeso": {
+      "cosine_to_b0": 0.9886257482099402,
+      "norm_ratio_to_b0": 1.0135854327533282,
+      "within_share": 0.30520738348330567
+     },
+     "NCC": {
+      "cosine_to_b0": 0.9947384984480456,
+      "norm_ratio_to_b0": 1.128798257189508,
+      "within_share": 0.21456767338855848
+     },
+     "Neural": {
+      "cosine_to_b0": 0.9963841422272354,
+      "norm_ratio_to_b0": 1.1017301147942997,
+      "within_share": 0.18846755445381716
+     }
+    },
+    "median": {
+     "cosine_to_b0": 0.9900965502372405,
+     "norm_ratio_to_b0": 1.0696861774463984,
+     "within_share": 0.29098546815633114
+    }
+   }
+  },
+  "expression": {
+   "arm": "flow",
+   "n_cells_moved": 22794,
+   "n_acting_entries": 1193025,
+   "sd_log_factor": 0.28322329623481707,
+   "p1_log_factor": -0.9285126936554788,
+   "p99_log_factor": 0.5683698570575423,
+   "n_at_clip": 6359,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 130.0,
+   "median_library_real": 130.0,
+   "zero_share_out": 0.9052554906866833,
+   "zero_share_real": 0.8965401326502244,
+   "any_counts_outside_panel": false
+  },
+  "n_held_genes": 0,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 845.6,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 177.6367645263672,
+    "elbo_train": 177.66868591308594,
+    "reconstruction_loss_train": 164.88702392578125,
+    "kl_local_train": 12.781655311584473,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 177.6367645263672,
+   "n_genes": 500,
+   "latent_sha256": "8768093ddf924f1da2c96e4cbef9bf1eb966fec5d7797f067ba4cd79cb6120aa"
+  },
+  "flow": {
+   "n_blocks": 18,
+   "n_pairs": 144000,
+   "gaps_days": [
+    0.1999999999999993,
+    0.25
+   ],
+   "blocks": [
+    {
+     "transition": 1,
+     "lineage": "CM",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 1357,
+     "n_later": 1919,
+     "median_cost": 10.0590730040086,
+     "last_marginal_error": 9.522276736318864e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "CM",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1919,
+     "n_later": 2000,
+     "median_cost": 13.047417771008632,
+     "last_marginal_error": 6.123731241745799e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "CranialMesoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 17.10812424167593,
+     "last_marginal_error": 5.089804373294239e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "CranialMesoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 18.348512544205047,
+     "last_marginal_error": 1.1145908715929158e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Ectoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 13.419951579831071,
+     "last_marginal_error": 8.158203820989431e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Ectoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 14.97078790787981,
+     "last_marginal_error": 3.000103201984632e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Endoderm",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 19.26709811789145,
+     "last_marginal_error": 2.8171210300075106e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Endoderm",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 1883,
+     "median_cost": 17.584122153198145,
+     "last_marginal_error": 6.750654814354784e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Endothelial",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1702,
+     "median_cost": 15.830284913043581,
+     "last_marginal_error": 5.4443256143254306e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Endothelial",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1702,
+     "n_later": 2000,
+     "median_cost": 14.292867780209198,
+     "last_marginal_error": 5.287189698403638e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "EpiblastStreak",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 1339,
+     "n_later": 1148,
+     "median_cost": 6.42974785203611,
+     "last_marginal_error": 6.66897729702818e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "EpiblastStreak",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1148,
+     "n_later": 45,
+     "median_cost": 13.961872211331812,
+     "last_marginal_error": 6.216738381452842e-07,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "ExtraEmbryonicMeso",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 2000,
+     "median_cost": 12.995916086423271,
+     "last_marginal_error": 3.899807643711426e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "ExtraEmbryonicMeso",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 2000,
+     "n_later": 1039,
+     "median_cost": 14.691327906968976,
+     "last_marginal_error": 5.2478955816891606e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "NCC",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1461,
+     "median_cost": 9.030229217448284,
+     "last_marginal_error": 2.3828947570287555e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "NCC",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1461,
+     "n_later": 1838,
+     "median_cost": 12.60239783074893,
+     "last_marginal_error": 6.061539857138312e-06,
+     "converged": true
+    },
+    {
+     "transition": 1,
+     "lineage": "Neural",
+     "gap_days": 0.1999999999999993,
+     "weight": 0.4444444444444436,
+     "n_earlier": 2000,
+     "n_later": 1517,
+     "median_cost": 9.845626735592925,
+     "last_marginal_error": 2.8416461281964393e-06,
+     "converged": true
+    },
+    {
+     "transition": 2,
+     "lineage": "Neural",
+     "gap_days": 0.25,
+     "weight": 0.5555555555555565,
+     "n_earlier": 1517,
+     "n_later": 2000,
+     "median_cost": 11.472290081793183,
+     "last_marginal_error": 3.7204825994143692e-06,
+     "converged": true
+    }
+   ],
+   "mean_omega": 1.0,
+   "loss_first": 115.06711585998535,
+   "loss_last": 76.27005928039551,
+   "steps": 4000,
+   "fit_seconds": 13.5,
+   "params_sha256": "995588a87886e3326668f7b41138dd815e6231c7d84e27f14ee54beb8484ad56",
+   "torch": "2.14.1+cu130",
+   "cells_left_out": {
+    "earlier": 0
+   },
+   "stages": [
+    "earlier",
+    "start",
+    "ref"
+   ],
+   "lineages": [
+    "CM",
+    "CranialMesoderm",
+    "Ectoderm",
+    "Endoderm",
+    "Endothelial",
+    "EpiblastStreak",
+    "ExtraEmbryonicMeso",
+    "NCC",
+    "Neural"
+   ],
+   "tau_days": 0.125,
+   "rk4_steps": 8
+  }
+ }
+]

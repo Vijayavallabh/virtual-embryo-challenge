@@ -1,0 +1,8 @@
+run folder on the DGX: ~/v/vec-campaign/runs/harness/gen_heart_v1 (second campaign checkout)
+commit: 459916f8a7e0bae9af6aafe5a574f99ae3f7c612
+tree at start (bytes of git status --porcelain): 0
+tree at end (bytes): 0
+started UTC: 2026-11-13T12:34:30Z
+ended UTC: 2026-11-13T13:08:58Z
+GPUs: one H100 per task (CUDA_VISIBLE_DEVICES 2 and 3); all candidates of a task in one process
+command per task: experiments/harness/run.py run --board T2:heart:test_extrap --task <key> --candidates floor,copy,b0,b0_lat_dec,b0_lat_ratio,b0_lat_flow

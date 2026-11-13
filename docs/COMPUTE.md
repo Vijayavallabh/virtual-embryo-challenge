@@ -65,6 +65,19 @@ runs on the DGX go in a second copy of the repository, `~/v/vec-campaign`, so th
   as for the rehearsal.
 - A file built there is a check, never an upload source: uploads are built in the reference checkout by
   `build_all.sh` at the freeze commit.
+- There are three checkouts in all since the heart try of 2026-11-13: the reference one, `~/v/vec-campaign` and
+  `~/v/vec-campaign-h7`, each with its own `.venv` from the same lock. Two campaign checkouts let runs at two
+  commits go on at once (the generator tests: T1 at 069d6fc in `vec-campaign-h7`, the heart at 459916f in
+  `vec-campaign`); nothing is ever checked out or synced in a checkout while a run is going in it.
+- Two things stop a branch checkout after a sync, both met on 2026-11-13. The sync line has no `--delete`, so
+  files that only an earlier branch tracked stay behind as untracked files and block the next branch that tracks
+  them: compare each with the committed copy (`git show <commit>:<path> | sha256sum`) and remove it only if equal.
+  And the sync copies this machine's uncommitted edits: commit first, or restore the copied file on the DGX
+  (`git checkout -- <path>` there; this machine's file is not touched).
+- A run that needs torch sees one GPU through `CUDA_VISIBLE_DEVICES`; GPUs 0 and 1 belong to other jobs. A count
+  model fitted on an H100 reproduced bit for bit between two processes on two of the DGX's GPUs (the generator
+  tests' `latent_sha256`), and differed from the fit on this machine's A100: a GPU fit is a per-hardware object,
+  so a kept arm would need an archived fit, as T3's run folder is archived.
 
 ## What reproduces where (2026-11-13)
 

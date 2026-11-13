@@ -1,0 +1,136 @@
+{
+ "board": "T1:test",
+ "runs": "/home/prachh/v/vec-campaign-h7/runs/harness/gen_t1_v1",
+ "decisions": [
+  {
+   "base": "b0",
+   "change": "b0_lat_dec",
+   "counted": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber"
+   ],
+   "excluded": {
+    "T1/E8.5->E9.5": "change does not apply"
+   },
+   "configured": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber",
+    "T1/E8.5->E9.5"
+   ],
+   "decided_on": "2 of 3 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T1/E9.5->E10.5', 'T1/E9.5->E10.5:chamber']",
+   "tasks": {
+    "T1/E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": -1.0377055942497158,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    },
+    "T1/E9.5->E10.5:chamber": {
+     "complete": true,
+     "mean_gain": -1.4268994537300812,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  },
+  {
+   "base": "b0",
+   "change": "b0_lat_ratio",
+   "counted": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber"
+   ],
+   "excluded": {
+    "T1/E8.5->E9.5": "change does not apply"
+   },
+   "configured": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber",
+    "T1/E8.5->E9.5"
+   ],
+   "decided_on": "2 of 3 configured pseudo-tasks",
+   "keep": false,
+   "reason": "passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2",
+   "tasks": {
+    "T1/E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": 0.1630986848579731,
+     "seeds_ahead": 10,
+     "passes": false,
+     "vetoes": false
+    },
+    "T1/E9.5->E10.5:chamber": {
+     "complete": true,
+     "mean_gain": 0.030250476958155303,
+     "seeds_ahead": 8,
+     "passes": false,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  }
+ ],
+ "summaries": {
+  "T1/E9.5->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    47.97674341689909,
+    1.0833523075516147
+   ],
+   "b0": [
+    44.116683628570335,
+    0.4633178753047292
+   ],
+   "b0_scope": [
+    43.38230642903072,
+    0.4435127849875099
+   ],
+   "b0_lat_dec": [
+    43.07897803432062,
+    0.43571174577822325
+   ],
+   "b0_lat_ratio": [
+    44.279782313428306,
+    0.45653747198226163
+   ]
+  },
+  "T1/E9.5->E10.5:chamber": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    48.06103129437448,
+    1.2049221129933374
+   ],
+   "b0": [
+    49.68290567973587,
+    0.6683315658494151
+   ],
+   "b0_scope": [
+    48.87844196735013,
+    0.6431969918843083
+   ],
+   "b0_lat_dec": [
+    48.256006226005795,
+    0.6145639261997788
+   ],
+   "b0_lat_ratio": [
+    49.71315615669402,
+    0.6682880520767225
+   ]
+  }
+ }
+}

@@ -16,11 +16,18 @@ on the DGX** (`experiments/builds/results/rehearsal_38616fe.txt`, `builds_38616f
 copy was refreshed (ten of ten OK; the client's stamp guard and local format check pass on all ten). (3) Heart
 tries H7 and H7c, run at the captain's order after their gate failed: not kept (-0.51 on the one-day backtest,
 ahead in 0 of 10 seeds; +0.76 on the 1.75-day one; the control moves every metric the same way at half size).
-Tries: T1 30, embryo 36, heart 6, T3 15. (4) The generator tests: two arms that keep B0's forecast inside a count
-model are being built by an agent; after a side agent's note the captain forwarded, a design panel (three designs,
-each attacked, a synthesis and a critic) drafted a learned-forecast arm, found it close to pieces already scored,
-and it will be scored in a simplified form on the heart only; rows come before every scored run. No GPU run has
-been scored yet.
+(4) The generator tests (decision log (o) to (r); rows T34, T35, H8, H9, H10; code on `campaign/gen`, off main):
+five counted reads on the DGX's GPUs, every row committed first, every validity condition met. **Nothing is kept
+and nothing changes.** On T1, cells made by the count model lose to real cells (-1.04 and -1.43 against `b0`,
+0 of 10 seeds; that vehicle is closed there by its kill criterion) and real cells edited through the decoder tie
+with B0's own step (+0.16 and +0.03). On the heart every latent arm gains on the one-day backtest and loses on the
+1.75-day one (decoded +1.26 and -2.02; edited +0.93 and -0.82; the learned field +1.18 and -0.17), the reverse of
+try H7. The learned field against the arm that keeps B0's forecast: +0.26 (9 of 10 seeds) and +0.66 (10 of 10),
+under the 0.3 its row asked for on the first, so by the row a learned forecast is not shown to add; its move
+points along B0's last step (cosine 0.99), a little larger and varying from cell to cell, so it did not learn
+from the earlier stages. Three side notes the captain forwarded were checked against the record: the second asked
+for what was already decided, the third led to a corrected derivation (the field's weights), and the captain's
+word on the heart arm was "keep the heart arm and continue". Tries: T1 32, embryo 36, heart 9, T3 15.
 **2026-11-13, the campaign's fifth round (decision log 2026-11-13 (g) to (j)): one request for the captain, on
 T1's second upload; nothing uploaded, no entry changed.** The captain renewed the campaign through the
 ambition-lift skill, naming all eight GPUs and the top leaderboard score as the bar ((g); nothing was lifted beyond
@@ -838,9 +845,10 @@ Updated 2026-11-13. The older list below is kept for its record; where the two d
 0. **Nothing waits for the captain** (2026-11-13, evening). The three points of decision log (j) are answered (k):
    T1's second upload is on the mid base (row R7; built in and rehearsed: the reference is
    `runs/archive/builds_38616fe/SHA256SUMS`), the heart try was run and not kept, the checked local copy stays.
-   **In progress:** the generator tests the captain ordered (two arms that keep B0's forecast, on T1 and the
-   heart; one learned-forecast arm on the heart), each with its ledger row before its scored run. A build change
-   after today needs a third rehearsal and a new reference by 24 Nov.
+   **Done:** the generator tests the captain ordered (rows T34, T35, H8, H9, H10; decision log (r)): five
+   counted reads, nothing kept, no upload or build changed. A build change after today needs a third rehearsal and
+   a new reference by 24 Nov; none is planned. Next are the dated items: the screened reads of 19 and 23 Nov, the
+   method summary and disclosure email (24 to 30 Nov), the freeze-morning rebuild and first round from 27 Nov.
    **Rulings given on 2026-11-13** (decision log 2026-11-13 (d); `docs/S2_RULES.md`, "Amendments of 2026-11-13"): the
    embryo's s2 is `fgw_aligned_series`, T3's second upload carries the wild-type-only factor (`--wt-revert`), and
    T1's s1 is drawn from library 3's cells (`--base lib3`; s2 keeps the pooled base). Nothing is requested any more:

@@ -1,0 +1,6 @@
+T2:heart:test_extrap: 2 pseudo-task(s) in runs/harness/gen_heart_v1 (protocol bake, build main, anchors computed, seeds [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  T2h/<=E8.75->E10.5 on pseudo:T2h/<=E8.75->E10.5: floor 50.00 +/- 0.00; copy 50.55 +/- 0.79; b0 51.45 +/- 0.61; b0_lat_dec 49.43 +/- 0.60; b0_lat_ratio 50.62 +/- 0.69; b0_lat_flow 51.28 +/- 0.69 (commit 459916f, clean True)
+  T2h/<=E9.5->E10.5 on T2:heart:val_extrap: floor 50.00 +/- 0.00; copy 49.96 +/- 0.82; b0 50.43 +/- 0.70; b0_lat_dec 51.68 +/- 0.81; b0_lat_ratio 51.35 +/- 0.72; b0_lat_flow 51.61 +/- 0.71 (commit 459916f, clean True)
+b0_lat_flow against b0_lat_ratio: not kept (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 1 of 2 pseudo-tasks; needs 2; decided on 2 of 2 configured pseudo-tasks; not counted: none)
+    T2h/<=E9.5->E10.5: paired mean gain +0.26, ahead in 9 of 10 seeds, passes False, vetoes False
+    T2h/<=E8.75->E10.5: paired mean gain +0.66, ahead in 10 of 10 seeds, passes True, vetoes False

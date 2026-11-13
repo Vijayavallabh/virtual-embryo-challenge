@@ -76,7 +76,13 @@ machine (rebuilt there three times that evening, byte-identical, all passing `ve
 `experiments/builds/results/rehearsal_38616fe.txt`): Task 1's new s2 and nine files byte-identical to the set of
 fd2683a. Four of them have no server format check on record yet (Task 1's two, the embryo's s2, Task 3's second
 upload). The heart try of the same day (tries H7 and H7c: Task 1's within-type step on the heart head) was run at
-the captain's order and not kept (it loses on the one-day backtest); tries stand at T1 30, embryo 36, heart 6, T3 15.
+the captain's order and not kept (it loses on the one-day backtest). The generator tests of the same evening (rows
+T34, T35, H8, H9 and H10 of `experiments/harness/TRIES.md`: B0's forecast realised through a count model, as cells
+the model makes or as real cells edited by its decoder, on Task 1 and the heart; and on the heart a velocity field
+learned by flow matching in the model's latent) were scored on the practice tasks and none is kept: model-made
+cells lose to real cells on Task 1, decoder-edited cells tie with the count-space step there, and on the heart
+every latent arm gains on one backtest and loses on the other. The entries are unchanged and still edit real cells
+in count space. Tries stand at T1 32, embryo 36, heart 9, T3 15.
 
 ## Team and track
 

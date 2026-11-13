@@ -1,0 +1,1222 @@
+[
+ {
+  "task": "T1/E9.5->E10.5:chamber",
+  "candidate": "b0_lat_dec",
+  "build_seed": 1000000,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "blood",
+    "cm",
+    "endocardium"
+   ],
+   "n_categories_moved": 3,
+   "share_cells_moved": 0.8589292692457992,
+   "mean_abs_latent_step": 0.1715056080973166,
+   "mean_abs_latent_step_moved_cells": 0.19967372662467386,
+   "displacement_norm": {
+    "blood": 2.1317842638126936,
+    "cm": 2.1029091032558442,
+    "endocardium": 2.1657099102464707
+   }
+  },
+  "expression": {
+   "arm": "decoded",
+   "retried": 0,
+   "median_library_out": 13763.5,
+   "median_library_real": 13803.5,
+   "zero_share_out": 0.8631789655715633,
+   "zero_share_real": 0.8648945744605716
+  },
+  "n_held_genes": 23,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 952.4,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 10486.9638671875,
+    "elbo_train": 10487.0703125,
+    "reconstruction_loss_train": 10443.1201171875,
+    "kl_local_train": 43.94997024536133,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 10486.9638671875,
+   "n_genes": 32285,
+   "latent_sha256": "f384401a11e5d62970bcdbba827c6641a489b79c2ea9f5b17ee9337c071cacb4"
+  }
+ },
+ {
+  "task": "T1/E9.5->E10.5:chamber",
+  "candidate": "b0_lat_ratio",
+  "build_seed": 1000000,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "blood",
+    "cm",
+    "endocardium"
+   ],
+   "n_categories_moved": 3,
+   "share_cells_moved": 0.8589292692457992,
+   "mean_abs_latent_step": 0.1715056080973166,
+   "mean_abs_latent_step_moved_cells": 0.19967372662467386,
+   "displacement_norm": {
+    "blood": 2.1317842638126936,
+    "cm": 2.1029091032558442,
+    "endocardium": 2.1657099102464707
+   }
+  },
+  "expression": {
+   "arm": "ratio",
+   "n_cells_moved": 4396,
+   "n_acting_entries": 19138415,
+   "sd_log_factor": 0.11992464209591654,
+   "p1_log_factor": -0.37742215980801636,
+   "p99_log_factor": 0.32637767189830746,
+   "n_at_clip": 2694,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 13801.5,
+   "median_library_real": 13803.5,
+   "zero_share_out": 0.867840125281244,
+   "zero_share_real": 0.8648945744605716
+  },
+  "n_held_genes": 23,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 952.4,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 10486.9638671875,
+    "elbo_train": 10487.0703125,
+    "reconstruction_loss_train": 10443.1201171875,
+    "kl_local_train": 43.94997024536133,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 10486.9638671875,
+   "n_genes": 32285,
+   "latent_sha256": "f384401a11e5d62970bcdbba827c6641a489b79c2ea9f5b17ee9337c071cacb4"
+  }
+ },
+ {
+  "task": "T1/E9.5->E10.5:chamber",
+  "candidate": "b0_lat_dec",
+  "build_seed": 1000001,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "blood",
+    "cm",
+    "endocardium"
+   ],
+   "n_categories_moved": 3,
+   "share_cells_moved": 0.8589292692457992,
+   "mean_abs_latent_step": 0.1715056080973166,
+   "mean_abs_latent_step_moved_cells": 0.1996737266246739,
+   "displacement_norm": {
+    "blood": 2.1317842638126936,
+    "cm": 2.1029091032558442,
+    "endocardium": 2.1657099102464707
+   }
+  },
+  "expression": {
+   "arm": "decoded",
+   "retried": 0,
+   "median_library_out": 13987.5,
+   "median_library_real": 13983.5,
+   "zero_share_out": 0.8628096362124574,
+   "zero_share_real": 0.8644892235967727
+  },
+  "n_held_genes": 23,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 952.4,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 10486.9638671875,
+    "elbo_train": 10487.0703125,
+    "reconstruction_loss_train": 10443.1201171875,
+    "kl_local_train": 43.94997024536133,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 10486.9638671875,
+   "n_genes": 32285,
+   "latent_sha256": "f384401a11e5d62970bcdbba827c6641a489b79c2ea9f5b17ee9337c071cacb4"
+  }
+ },
+ {
+  "task": "T1/E9.5->E10.5:chamber",
+  "candidate": "b0_lat_ratio",
+  "build_seed": 1000001,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "blood",
+    "cm",
+    "endocardium"
+   ],
+   "n_categories_moved": 3,
+   "share_cells_moved": 0.8589292692457992,
+   "mean_abs_latent_step": 0.1715056080973166,
+   "mean_abs_latent_step_moved_cells": 0.1996737266246739,
+   "displacement_norm": {
+    "blood": 2.1317842638126936,
+    "cm": 2.1029091032558442,
+    "endocardium": 2.1657099102464707
+   }
+  },
+  "expression": {
+   "arm": "ratio",
+   "n_cells_moved": 4396,
+   "n_acting_entries": 19190403,
+   "sd_log_factor": 0.1199587694902583,
+   "p1_log_factor": -0.37748047616778796,
+   "p99_log_factor": 0.32636248962719927,
+   "n_at_clip": 2782,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 13994.0,
+   "median_library_real": 13983.5,
+   "zero_share_out": 0.867428383505322,
+   "zero_share_real": 0.8644892235967727
+  },
+  "n_held_genes": 23,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 952.4,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 10486.9638671875,
+    "elbo_train": 10487.0703125,
+    "reconstruction_loss_train": 10443.1201171875,
+    "kl_local_train": 43.94997024536133,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 10486.9638671875,
+   "n_genes": 32285,
+   "latent_sha256": "f384401a11e5d62970bcdbba827c6641a489b79c2ea9f5b17ee9337c071cacb4"
+  }
+ },
+ {
+  "task": "T1/E9.5->E10.5:chamber",
+  "candidate": "b0_lat_dec",
+  "build_seed": 1000002,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "blood",
+    "cm",
+    "endocardium"
+   ],
+   "n_categories_moved": 3,
+   "share_cells_moved": 0.8589292692457992,
+   "mean_abs_latent_step": 0.17150560809731666,
+   "mean_abs_latent_step_moved_cells": 0.1996737266246739,
+   "displacement_norm": {
+    "blood": 2.1317842638126936,
+    "cm": 2.1029091032558442,
+    "endocardium": 2.1657099102464707
+   }
+  },
+  "expression": {
+   "arm": "decoded",
+   "retried": 0,
+   "median_library_out": 14043.0,
+   "median_library_real": 14051.0,
+   "zero_share_out": 0.8624956463424163,
+   "zero_share_real": 0.8642265728437193
+  },
+  "n_held_genes": 23,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 952.4,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 10486.9638671875,
+    "elbo_train": 10487.0703125,
+    "reconstruction_loss_train": 10443.1201171875,
+    "kl_local_train": 43.94997024536133,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 10486.9638671875,
+   "n_genes": 32285,
+   "latent_sha256": "f384401a11e5d62970bcdbba827c6641a489b79c2ea9f5b17ee9337c071cacb4"
+  }
+ },
+ {
+  "task": "T1/E9.5->E10.5:chamber",
+  "candidate": "b0_lat_ratio",
+  "build_seed": 1000002,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "blood",
+    "cm",
+    "endocardium"
+   ],
+   "n_categories_moved": 3,
+   "share_cells_moved": 0.8589292692457992,
+   "mean_abs_latent_step": 0.17150560809731666,
+   "mean_abs_latent_step_moved_cells": 0.1996737266246739,
+   "displacement_norm": {
+    "blood": 2.1317842638126936,
+    "cm": 2.1029091032558442,
+    "endocardium": 2.1657099102464707
+   }
+  },
+  "expression": {
+   "arm": "ratio",
+   "n_cells_moved": 4396,
+   "n_acting_entries": 19214066,
+   "sd_log_factor": 0.12006914081340801,
+   "p1_log_factor": -0.3775499460345678,
+   "p99_log_factor": 0.326956956132705,
+   "n_at_clip": 2793,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 14051.0,
+   "median_library_real": 14051.0,
+   "zero_share_out": 0.8671659385202727,
+   "zero_share_real": 0.8642265728437193
+  },
+  "n_held_genes": 23,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 952.4,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 10486.9638671875,
+    "elbo_train": 10487.0703125,
+    "reconstruction_loss_train": 10443.1201171875,
+    "kl_local_train": 43.94997024536133,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 10486.9638671875,
+   "n_genes": 32285,
+   "latent_sha256": "f384401a11e5d62970bcdbba827c6641a489b79c2ea9f5b17ee9337c071cacb4"
+  }
+ },
+ {
+  "task": "T1/E9.5->E10.5:chamber",
+  "candidate": "b0_lat_dec",
+  "build_seed": 1000003,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "blood",
+    "cm",
+    "endocardium"
+   ],
+   "n_categories_moved": 3,
+   "share_cells_moved": 0.8589292692457992,
+   "mean_abs_latent_step": 0.17150560809731666,
+   "mean_abs_latent_step_moved_cells": 0.1996737266246739,
+   "displacement_norm": {
+    "blood": 2.1317842638126936,
+    "cm": 2.1029091032558442,
+    "endocardium": 2.1657099102464707
+   }
+  },
+  "expression": {
+   "arm": "decoded",
+   "retried": 0,
+   "median_library_out": 13859.5,
+   "median_library_real": 13867.0,
+   "zero_share_out": 0.8629368310989046,
+   "zero_share_real": 0.8646628494281132
+  },
+  "n_held_genes": 23,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 952.4,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 10486.9638671875,
+    "elbo_train": 10487.0703125,
+    "reconstruction_loss_train": 10443.1201171875,
+    "kl_local_train": 43.94997024536133,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 10486.9638671875,
+   "n_genes": 32285,
+   "latent_sha256": "f384401a11e5d62970bcdbba827c6641a489b79c2ea9f5b17ee9337c071cacb4"
+  }
+ },
+ {
+  "task": "T1/E9.5->E10.5:chamber",
+  "candidate": "b0_lat_ratio",
+  "build_seed": 1000003,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "blood",
+    "cm",
+    "endocardium"
+   ],
+   "n_categories_moved": 3,
+   "share_cells_moved": 0.8589292692457992,
+   "mean_abs_latent_step": 0.17150560809731666,
+   "mean_abs_latent_step_moved_cells": 0.1996737266246739,
+   "displacement_norm": {
+    "blood": 2.1317842638126936,
+    "cm": 2.1029091032558442,
+    "endocardium": 2.1657099102464707
+   }
+  },
+  "expression": {
+   "arm": "ratio",
+   "n_cells_moved": 4396,
+   "n_acting_entries": 19162369,
+   "sd_log_factor": 0.12003579110261292,
+   "p1_log_factor": -0.3771375319718544,
+   "p99_log_factor": 0.3271442120320076,
+   "n_at_clip": 2801,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 13870.5,
+   "median_library_real": 13867.0,
+   "zero_share_out": 0.8675974400765747,
+   "zero_share_real": 0.8646628494281132
+  },
+  "n_held_genes": 23,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 952.4,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 10486.9638671875,
+    "elbo_train": 10487.0703125,
+    "reconstruction_loss_train": 10443.1201171875,
+    "kl_local_train": 43.94997024536133,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 10486.9638671875,
+   "n_genes": 32285,
+   "latent_sha256": "f384401a11e5d62970bcdbba827c6641a489b79c2ea9f5b17ee9337c071cacb4"
+  }
+ },
+ {
+  "task": "T1/E9.5->E10.5:chamber",
+  "candidate": "b0_lat_dec",
+  "build_seed": 1000004,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "blood",
+    "cm",
+    "endocardium"
+   ],
+   "n_categories_moved": 3,
+   "share_cells_moved": 0.8589292692457992,
+   "mean_abs_latent_step": 0.17150560809731666,
+   "mean_abs_latent_step_moved_cells": 0.1996737266246739,
+   "displacement_norm": {
+    "blood": 2.1317842638126936,
+    "cm": 2.1029091032558442,
+    "endocardium": 2.1657099102464707
+   }
+  },
+  "expression": {
+   "arm": "decoded",
+   "retried": 0,
+   "median_library_out": 13912.5,
+   "median_library_real": 13910.0,
+   "zero_share_out": 0.8628340620849273,
+   "zero_share_real": 0.8645858558826318
+  },
+  "n_held_genes": 23,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 952.4,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 10486.9638671875,
+    "elbo_train": 10487.0703125,
+    "reconstruction_loss_train": 10443.1201171875,
+    "kl_local_train": 43.94997024536133,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 10486.9638671875,
+   "n_genes": 32285,
+   "latent_sha256": "f384401a11e5d62970bcdbba827c6641a489b79c2ea9f5b17ee9337c071cacb4"
+  }
+ },
+ {
+  "task": "T1/E9.5->E10.5:chamber",
+  "candidate": "b0_lat_ratio",
+  "build_seed": 1000004,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "blood",
+    "cm",
+    "endocardium"
+   ],
+   "n_categories_moved": 3,
+   "share_cells_moved": 0.8589292692457992,
+   "mean_abs_latent_step": 0.17150560809731666,
+   "mean_abs_latent_step_moved_cells": 0.1996737266246739,
+   "displacement_norm": {
+    "blood": 2.1317842638126936,
+    "cm": 2.1029091032558442,
+    "endocardium": 2.1657099102464707
+   }
+  },
+  "expression": {
+   "arm": "ratio",
+   "n_cells_moved": 4396,
+   "n_acting_entries": 19176360,
+   "sd_log_factor": 0.11997278973645815,
+   "p1_log_factor": -0.37693299383220746,
+   "p99_log_factor": 0.3272237864426328,
+   "n_at_clip": 2711,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 13897.5,
+   "median_library_real": 13910.0,
+   "zero_share_out": 0.8675209125351023,
+   "zero_share_real": 0.8645858558826318
+  },
+  "n_held_genes": 23,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 952.4,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 10486.9638671875,
+    "elbo_train": 10487.0703125,
+    "reconstruction_loss_train": 10443.1201171875,
+    "kl_local_train": 43.94997024536133,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 10486.9638671875,
+   "n_genes": 32285,
+   "latent_sha256": "f384401a11e5d62970bcdbba827c6641a489b79c2ea9f5b17ee9337c071cacb4"
+  }
+ },
+ {
+  "task": "T1/E9.5->E10.5:chamber",
+  "candidate": "b0_lat_dec",
+  "build_seed": 1000005,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "blood",
+    "cm",
+    "endocardium"
+   ],
+   "n_categories_moved": 3,
+   "share_cells_moved": 0.8589292692457992,
+   "mean_abs_latent_step": 0.17150560809731666,
+   "mean_abs_latent_step_moved_cells": 0.1996737266246739,
+   "displacement_norm": {
+    "blood": 2.1317842638126936,
+    "cm": 2.1029091032558442,
+    "endocardium": 2.1657099102464707
+   }
+  },
+  "expression": {
+   "arm": "decoded",
+   "retried": 0,
+   "median_library_out": 13948.0,
+   "median_library_real": 13972.5,
+   "zero_share_out": 0.862771000243714,
+   "zero_share_real": 0.8644856771247045
+  },
+  "n_held_genes": 23,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 952.4,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 10486.9638671875,
+    "elbo_train": 10487.0703125,
+    "reconstruction_loss_train": 10443.1201171875,
+    "kl_local_train": 43.94997024536133,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 10486.9638671875,
+   "n_genes": 32285,
+   "latent_sha256": "f384401a11e5d62970bcdbba827c6641a489b79c2ea9f5b17ee9337c071cacb4"
+  }
+ },
+ {
+  "task": "T1/E9.5->E10.5:chamber",
+  "candidate": "b0_lat_ratio",
+  "build_seed": 1000005,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "blood",
+    "cm",
+    "endocardium"
+   ],
+   "n_categories_moved": 3,
+   "share_cells_moved": 0.8589292692457992,
+   "mean_abs_latent_step": 0.17150560809731666,
+   "mean_abs_latent_step_moved_cells": 0.1996737266246739,
+   "displacement_norm": {
+    "blood": 2.1317842638126936,
+    "cm": 2.1029091032558442,
+    "endocardium": 2.1657099102464707
+   }
+  },
+  "expression": {
+   "arm": "ratio",
+   "n_cells_moved": 4396,
+   "n_acting_entries": 19184672,
+   "sd_log_factor": 0.1200535628022097,
+   "p1_log_factor": -0.3769197666421267,
+   "p99_log_factor": 0.3277519732160873,
+   "n_at_clip": 2791,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 13973.0,
+   "median_library_real": 13972.5,
+   "zero_share_out": 0.8674145667890563,
+   "zero_share_real": 0.8644856771247045
+  },
+  "n_held_genes": 23,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 952.4,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 10486.9638671875,
+    "elbo_train": 10487.0703125,
+    "reconstruction_loss_train": 10443.1201171875,
+    "kl_local_train": 43.94997024536133,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 10486.9638671875,
+   "n_genes": 32285,
+   "latent_sha256": "f384401a11e5d62970bcdbba827c6641a489b79c2ea9f5b17ee9337c071cacb4"
+  }
+ },
+ {
+  "task": "T1/E9.5->E10.5:chamber",
+  "candidate": "b0_lat_dec",
+  "build_seed": 1000006,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "blood",
+    "cm",
+    "endocardium"
+   ],
+   "n_categories_moved": 3,
+   "share_cells_moved": 0.8589292692457992,
+   "mean_abs_latent_step": 0.1715056080973166,
+   "mean_abs_latent_step_moved_cells": 0.1996737266246739,
+   "displacement_norm": {
+    "blood": 2.1317842638126936,
+    "cm": 2.1029091032558442,
+    "endocardium": 2.1657099102464707
+   }
+  },
+  "expression": {
+   "arm": "decoded",
+   "retried": 0,
+   "median_library_out": 13966.0,
+   "median_library_real": 13981.5,
+   "zero_share_out": 0.8627140085586176,
+   "zero_share_real": 0.8644107231032623
+  },
+  "n_held_genes": 23,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 952.4,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 10486.9638671875,
+    "elbo_train": 10487.0703125,
+    "reconstruction_loss_train": 10443.1201171875,
+    "kl_local_train": 43.94997024536133,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 10486.9638671875,
+   "n_genes": 32285,
+   "latent_sha256": "f384401a11e5d62970bcdbba827c6641a489b79c2ea9f5b17ee9337c071cacb4"
+  }
+ },
+ {
+  "task": "T1/E9.5->E10.5:chamber",
+  "candidate": "b0_lat_ratio",
+  "build_seed": 1000006,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "blood",
+    "cm",
+    "endocardium"
+   ],
+   "n_categories_moved": 3,
+   "share_cells_moved": 0.8589292692457992,
+   "mean_abs_latent_step": 0.1715056080973166,
+   "mean_abs_latent_step_moved_cells": 0.1996737266246739,
+   "displacement_norm": {
+    "blood": 2.1317842638126936,
+    "cm": 2.1029091032558442,
+    "endocardium": 2.1657099102464707
+   }
+  },
+  "expression": {
+   "arm": "ratio",
+   "n_cells_moved": 4396,
+   "n_acting_entries": 19226576,
+   "sd_log_factor": 0.11991958267415358,
+   "p1_log_factor": -0.3770520531721302,
+   "p99_log_factor": 0.3267241403990431,
+   "n_at_clip": 2730,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 13983.0,
+   "median_library_real": 13981.5,
+   "zero_share_out": 0.8673439157396969,
+   "zero_share_real": 0.8644107231032623
+  },
+  "n_held_genes": 23,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 952.4,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 10486.9638671875,
+    "elbo_train": 10487.0703125,
+    "reconstruction_loss_train": 10443.1201171875,
+    "kl_local_train": 43.94997024536133,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 10486.9638671875,
+   "n_genes": 32285,
+   "latent_sha256": "f384401a11e5d62970bcdbba827c6641a489b79c2ea9f5b17ee9337c071cacb4"
+  }
+ },
+ {
+  "task": "T1/E9.5->E10.5:chamber",
+  "candidate": "b0_lat_dec",
+  "build_seed": 1000007,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "blood",
+    "cm",
+    "endocardium"
+   ],
+   "n_categories_moved": 3,
+   "share_cells_moved": 0.8589292692457992,
+   "mean_abs_latent_step": 0.1715056080973166,
+   "mean_abs_latent_step_moved_cells": 0.1996737266246739,
+   "displacement_norm": {
+    "blood": 2.1317842638126936,
+    "cm": 2.1029091032558442,
+    "endocardium": 2.1657099102464707
+   }
+  },
+  "expression": {
+   "arm": "decoded",
+   "retried": 0,
+   "median_library_out": 14037.5,
+   "median_library_real": 14042.5,
+   "zero_share_out": 0.8621769480162844,
+   "zero_share_real": 0.8639353505981162
+  },
+  "n_held_genes": 23,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 952.4,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 10486.9638671875,
+    "elbo_train": 10487.0703125,
+    "reconstruction_loss_train": 10443.1201171875,
+    "kl_local_train": 43.94997024536133,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 10486.9638671875,
+   "n_genes": 32285,
+   "latent_sha256": "f384401a11e5d62970bcdbba827c6641a489b79c2ea9f5b17ee9337c071cacb4"
+  }
+ },
+ {
+  "task": "T1/E9.5->E10.5:chamber",
+  "candidate": "b0_lat_ratio",
+  "build_seed": 1000007,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "blood",
+    "cm",
+    "endocardium"
+   ],
+   "n_categories_moved": 3,
+   "share_cells_moved": 0.8589292692457992,
+   "mean_abs_latent_step": 0.1715056080973166,
+   "mean_abs_latent_step_moved_cells": 0.1996737266246739,
+   "displacement_norm": {
+    "blood": 2.1317842638126936,
+    "cm": 2.1029091032558442,
+    "endocardium": 2.1657099102464707
+   }
+  },
+  "expression": {
+   "arm": "ratio",
+   "n_cells_moved": 4396,
+   "n_acting_entries": 19243568,
+   "sd_log_factor": 0.11996772466998666,
+   "p1_log_factor": -0.37655483800526907,
+   "p99_log_factor": 0.3273798597334235,
+   "n_at_clip": 2778,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 14044.0,
+   "median_library_real": 14042.5,
+   "zero_share_out": 0.8668796970707654,
+   "zero_share_real": 0.8639353505981162
+  },
+  "n_held_genes": 23,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 952.4,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 10486.9638671875,
+    "elbo_train": 10487.0703125,
+    "reconstruction_loss_train": 10443.1201171875,
+    "kl_local_train": 43.94997024536133,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 10486.9638671875,
+   "n_genes": 32285,
+   "latent_sha256": "f384401a11e5d62970bcdbba827c6641a489b79c2ea9f5b17ee9337c071cacb4"
+  }
+ },
+ {
+  "task": "T1/E9.5->E10.5:chamber",
+  "candidate": "b0_lat_dec",
+  "build_seed": 1000008,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "blood",
+    "cm",
+    "endocardium"
+   ],
+   "n_categories_moved": 3,
+   "share_cells_moved": 0.8589292692457992,
+   "mean_abs_latent_step": 0.17150560809731666,
+   "mean_abs_latent_step_moved_cells": 0.1996737266246739,
+   "displacement_norm": {
+    "blood": 2.1317842638126936,
+    "cm": 2.1029091032558442,
+    "endocardium": 2.1657099102464707
+   }
+  },
+  "expression": {
+   "arm": "decoded",
+   "retried": 0,
+   "median_library_out": 13915.0,
+   "median_library_real": 13921.0,
+   "zero_share_out": 0.862570842443863,
+   "zero_share_real": 0.8642998262531286
+  },
+  "n_held_genes": 23,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 952.4,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 10486.9638671875,
+    "elbo_train": 10487.0703125,
+    "reconstruction_loss_train": 10443.1201171875,
+    "kl_local_train": 43.94997024536133,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 10486.9638671875,
+   "n_genes": 32285,
+   "latent_sha256": "f384401a11e5d62970bcdbba827c6641a489b79c2ea9f5b17ee9337c071cacb4"
+  }
+ },
+ {
+  "task": "T1/E9.5->E10.5:chamber",
+  "candidate": "b0_lat_ratio",
+  "build_seed": 1000008,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "blood",
+    "cm",
+    "endocardium"
+   ],
+   "n_categories_moved": 3,
+   "share_cells_moved": 0.8589292692457992,
+   "mean_abs_latent_step": 0.17150560809731666,
+   "mean_abs_latent_step_moved_cells": 0.1996737266246739,
+   "displacement_norm": {
+    "blood": 2.1317842638126936,
+    "cm": 2.1029091032558442,
+    "endocardium": 2.1657099102464707
+   }
+  },
+  "expression": {
+   "arm": "ratio",
+   "n_cells_moved": 4396,
+   "n_acting_entries": 19175932,
+   "sd_log_factor": 0.11994770342285657,
+   "p1_log_factor": -0.3773558977434538,
+   "p99_log_factor": 0.3266252307786318,
+   "n_at_clip": 2733,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 13932.0,
+   "median_library_real": 13921.0,
+   "zero_share_out": 0.8672276386614598,
+   "zero_share_real": 0.8642998262531286
+  },
+  "n_held_genes": 23,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 952.4,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 10486.9638671875,
+    "elbo_train": 10487.0703125,
+    "reconstruction_loss_train": 10443.1201171875,
+    "kl_local_train": 43.94997024536133,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 10486.9638671875,
+   "n_genes": 32285,
+   "latent_sha256": "f384401a11e5d62970bcdbba827c6641a489b79c2ea9f5b17ee9337c071cacb4"
+  }
+ },
+ {
+  "task": "T1/E9.5->E10.5:chamber",
+  "candidate": "b0_lat_dec",
+  "build_seed": 1000009,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "blood",
+    "cm",
+    "endocardium"
+   ],
+   "n_categories_moved": 3,
+   "share_cells_moved": 0.8589292692457992,
+   "mean_abs_latent_step": 0.1715056080973166,
+   "mean_abs_latent_step_moved_cells": 0.1996737266246739,
+   "displacement_norm": {
+    "blood": 2.1317842638126936,
+    "cm": 2.1029091032558442,
+    "endocardium": 2.1657099102464707
+   }
+  },
+  "expression": {
+   "arm": "decoded",
+   "retried": 0,
+   "median_library_out": 13910.5,
+   "median_library_real": 13909.0,
+   "zero_share_out": 0.8629940164480049,
+   "zero_share_real": 0.8647367867135358
+  },
+  "n_held_genes": 23,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 952.4,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 10486.9638671875,
+    "elbo_train": 10487.0703125,
+    "reconstruction_loss_train": 10443.1201171875,
+    "kl_local_train": 43.94997024536133,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 10486.9638671875,
+   "n_genes": 32285,
+   "latent_sha256": "f384401a11e5d62970bcdbba827c6641a489b79c2ea9f5b17ee9337c071cacb4"
+  }
+ },
+ {
+  "task": "T1/E9.5->E10.5:chamber",
+  "candidate": "b0_lat_ratio",
+  "build_seed": 1000009,
+  "rule": "latent B0: z_new = z_own + damping * (mean z(ref cells of the category) - mean z(start cells of the category)) for B0's moved categories, z the encoder means of row E14's count model fitted once per fold on the start and reference stages; decoded: NB counts at the decoded rate of z_new and the real cell's own library, log1p CP10k with the counts outside the modelled genes; ratio: the real cell's counts times decoded-mean(z_new) / decoded-mean(z_own) via apply_factors (expected depth kept, zeros kept, held-flat genes 1), log factor clipped at +-log 3",
+  "latent": {
+   "damping": 0.5,
+   "categories_moved": [
+    "blood",
+    "cm",
+    "endocardium"
+   ],
+   "n_categories_moved": 3,
+   "share_cells_moved": 0.8589292692457992,
+   "mean_abs_latent_step": 0.1715056080973166,
+   "mean_abs_latent_step_moved_cells": 0.1996737266246739,
+   "displacement_norm": {
+    "blood": 2.1317842638126936,
+    "cm": 2.1029091032558442,
+    "endocardium": 2.1657099102464707
+   }
+  },
+  "expression": {
+   "arm": "ratio",
+   "n_cells_moved": 4396,
+   "n_acting_entries": 19143122,
+   "sd_log_factor": 0.11986485530426659,
+   "p1_log_factor": -0.3771577811308455,
+   "p99_log_factor": 0.3262536323003006,
+   "n_at_clip": 2782,
+   "n_both_zero_means": 0,
+   "restored_cells": 0,
+   "clip": 1.0986122886681098,
+   "median_library_out": 13929.5,
+   "median_library_real": 13909.0,
+   "zero_share_out": 0.8676760252980867,
+   "zero_share_real": 0.8647367867135358
+  },
+  "n_held_genes": 23,
+  "fold": {
+   "n_latent": 20,
+   "gene_likelihood": "nb",
+   "dispersion": "gene",
+   "max_epochs": 400,
+   "batch_size": 128,
+   "seed": 20261109,
+   "threads": 16,
+   "device": "cuda:0",
+   "scvi_tools": "1.5.1",
+   "torch": "2.14.1+cu130",
+   "fit_seconds": 952.4,
+   "history": {
+    "kl_weight": 0.9975000023841858,
+    "train_loss": 10486.9638671875,
+    "elbo_train": 10487.0703125,
+    "reconstruction_loss_train": 10443.1201171875,
+    "kl_local_train": 43.94997024536133,
+    "kl_global_train": 0.0,
+    "epochs_run": 400
+   },
+   "final_train_loss": 10486.9638671875,
+   "n_genes": 32285,
+   "latent_sha256": "f384401a11e5d62970bcdbba827c6641a489b79c2ea9f5b17ee9337c071cacb4"
+  }
+ }
+]
