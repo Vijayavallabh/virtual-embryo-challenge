@@ -1,0 +1,20 @@
+{
+ "version": 1,
+ "file": "n32_fgw_warm_gate.json",
+ "sha256": "36edf8853d4eb6b6b8389ff2a0ac2d3fbb2669bdd690158de59bae46330f6867",
+ "size": 45968,
+ "commit": "4c43275d4b2e31487be0fcabf228770eb6e7cf90",
+ "clean": true,
+ "why": null,
+ "unclean": [],
+ "unclean_count": 0,
+ "start_commit": "4c43275d4b2e31487be0fcabf228770eb6e7cf90",
+ "started_utc": "2026-11-13T17:23:03+00:00",
+ "created_utc": "2026-11-13T17:44:38+00:00",
+ "hostname": "p01r10srv05",
+ "argv": [
+  "experiments/harness/n32_fgw_warm_gate.py",
+  "--out",
+  "experiments/harness/results/n32_fgw_warm_gate"
+ ]
+}

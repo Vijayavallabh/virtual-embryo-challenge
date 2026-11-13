@@ -1,0 +1,54 @@
+N32 (experiments/harness/TRIES.md; a diagnostic, not a try): the embryo coupling started from the aligned coupling
+(fgw_warm) against the entry's (fgw), on the inputs of the three embryo bracket pairs, build seeds 1,000,000 to
+1,000,009. Target-free: no target stage opened, no score, no test-board file.
+Gate (fixed before the run): a draw passes if fgw_warm's xcorr_min >= 0.6, its thin_ratio >= 0.9 and its mean anchor
+shift >= 0.9 x fgw's; open only if at least 8 of 10 draws pass on each pair.
+
+T2e/E6.75+E7.5->E7.25 (T2:embryo:val_interp's panel): 5 of 10 draws pass
+  seed  fgw: xcorr  thin  shift  label | fgw_warm: xcorr  thin  shift  label | shift ratio  objective fgw / start / warm  pass
+     0  +0.59  1.19  0.632  0.619 | +0.61  1.20  0.626  0.615 | 0.99  0.13260 / 0.13464 / 0.13259  True
+     1  +0.62  1.22  0.629  0.632 | +0.64  1.22  0.620  0.629 | 0.99  0.12957 / 0.13158 / 0.12956  True
+     2  +0.64  1.22  0.611  0.603 | +0.67  1.23  0.601  0.604 | 0.98  0.12686 / 0.12876 / 0.12686  True
+     3  -0.62  0.78  0.907  0.613 | +0.47  1.18  0.700  0.618 | 0.77  0.12948 / 0.13244 / 0.12964  False
+     4  -0.66  0.77  0.898  0.618 | +0.50  1.17  0.660  0.622 | 0.74  0.13203 / 0.13462 / 0.13224  False
+     5  -0.60  0.78  0.883  0.626 | +0.51  1.18  0.657  0.627 | 0.74  0.13266 / 0.13514 / 0.13280  False
+     6  +0.66  1.22  0.618  0.596 | +0.69  1.24  0.605  0.598 | 0.98  0.13247 / 0.13427 / 0.13247  True
+     7  +0.63  1.22  0.622  0.608 | +0.64  1.22  0.620  0.616 | 1.00  0.13360 / 0.13570 / 0.13358  True
+     8  -0.65  0.78  0.908  0.614 | +0.50  1.19  0.696  0.622 | 0.77  0.12521 / 0.12829 / 0.12547  False
+     9  -0.55  0.80  0.882  0.606 | +0.48  1.19  0.701  0.600 | 0.79  0.13419 / 0.13668 / 0.13425  False
+  ranges: fgw_warm xcorr 0.47 to 0.69 (fgw -0.66 to 0.66); thin ratio 1.17 to 1.24 (fgw 0.77 to 1.22); shift ratio
+  0.74 to 1.00.
+
+T2e/E7.25+E8.0->E7.5 (T2:embryo:val_interp's panel): 0 of 10 draws pass
+  seed  fgw: xcorr  thin  shift  label | fgw_warm: xcorr  thin  shift  label | shift ratio  objective fgw / start / warm  pass
+     0  +0.02  0.73  0.663  0.510 | +0.04  0.74  0.659  0.509 | 1.00  0.16923 / 0.17197 / 0.16923  False
+     1  -0.05  0.70  0.685  0.504 | +0.01  0.72  0.674  0.503 | 0.98  0.17475 / 0.17749 / 0.17475  False
+     2  -0.06  0.70  0.678  0.522 | -0.05  0.71  0.677  0.521 | 1.00  0.17638 / 0.17906 / 0.17638  False
+     3  +0.00  0.72  0.672  0.520 | -0.01  0.72  0.674  0.519 | 1.00  0.16880 / 0.17130 / 0.16880  False
+     4  +0.09  0.76  0.668  0.513 | +0.16  0.79  0.659  0.513 | 0.99  0.17430 / 0.17685 / 0.17430  False
+     5  -0.01  0.72  0.669  0.509 | +0.04  0.74  0.662  0.507 | 0.99  0.17418 / 0.17672 / 0.17418  False
+     6  -0.03  0.71  0.696  0.520 | -0.04  0.71  0.697  0.517 | 1.00  0.17375 / 0.17657 / 0.17374  False
+     7  -0.01  0.72  0.688  0.503 | +0.03  0.73  0.680  0.508 | 0.99  0.17029 / 0.17291 / 0.17029  False
+     8  -0.00  0.72  0.671  0.487 | +0.02  0.73  0.666  0.485 | 0.99  0.17274 / 0.17544 / 0.17274  False
+     9  -0.06  0.71  0.698  0.508 | -0.02  0.73  0.690  0.508 | 0.99  0.17572 / 0.17855 / 0.17572  False
+  ranges: fgw_warm xcorr -0.05 to 0.16 (fgw -0.06 to 0.09); thin ratio 0.71 to 0.79 (fgw 0.70 to 0.76); shift ratio
+  0.98 to 1.00.
+
+test/E7.5+E8.0->E7.75 (T2:embryo:test_interp's panel): 0 of 10 draws pass
+  seed  fgw: xcorr  thin  shift  label | fgw_warm: xcorr  thin  shift  label | shift ratio  objective fgw / start / warm  pass
+     0  -0.50  0.58  0.853  0.505 | -0.50  0.57  0.853  0.505 | 1.00  0.14820 / 0.15369 / 0.14820  False
+     1  -0.31  0.67  0.815  0.484 | -0.31  0.67  0.816  0.488 | 1.00  0.15546 / 0.16041 / 0.15546  False
+     2  -0.44  0.64  0.852  0.483 | -0.31  0.68  0.828  0.482 | 0.97  0.15098 / 0.15664 / 0.15087  False
+     3  -0.44  0.59  0.836  0.490 | -0.45  0.59  0.833  0.489 | 1.00  0.15408 / 0.15843 / 0.15406  False
+     4  -0.37  0.64  0.831  0.482 | -0.35  0.65  0.826  0.482 | 0.99  0.15151 / 0.15630 / 0.15150  False
+     5  -0.46  0.62  0.860  0.470 | -0.43  0.63  0.848  0.471 | 0.99  0.15066 / 0.15652 / 0.15058  False
+     6  -0.42  0.61  0.830  0.466 | -0.39  0.62  0.821  0.467 | 0.99  0.15140 / 0.15616 / 0.15139  False
+     7  -0.28  0.69  0.805  0.480 | -0.26  0.70  0.801  0.480 | 1.00  0.14539 / 0.15010 / 0.14539  False
+     8  -0.44  0.62  0.843  0.490 | -0.44  0.62  0.843  0.490 | 1.00  0.14698 / 0.15248 / 0.14698  False
+     9  -0.40  0.63  0.827  0.474 | -0.40  0.62  0.829  0.477 | 1.00  0.15228 / 0.15741 / 0.15228  False
+  ranges: fgw_warm xcorr -0.50 to -0.26 (fgw -0.50 to -0.28); thin ratio 0.57 to 0.70 (fgw 0.58 to 0.69); shift ratio
+  0.97 to 1.00.
+
+Inputs (sha256): {'E6.75.h5ad': 'ab58b9217d1b9a18b0181f498475a9eb821ac2c92ab2b7e45a623da0e4fffe70', 'E7.5.h5ad': 'e8e47255ddeca96d5604c7cd4923bbf27765c24bc6a3cd44e800cd6ea05a7d54', 'E7.25.h5ad': 'c34192a31036b783b97ce1877ac50fc920b39faa3e00dc3c637b3e7e04255ee6', 'E8.0.h5ad': '17530e23fbfa6a139ff68d0353a489d83790f5b60f036b7d2f58303a1ff8a810'}
+Commit 4c43275d4b2e31487be0fcabf228770eb6e7cf90, tree clean True, UTC 2026-11-13T17:44:37Z
+verdict: prune
