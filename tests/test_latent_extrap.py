@@ -635,6 +635,21 @@ def test_flow_applies_to_the_heart_extrapolation_tasks_only():
     assert c.params["scope"] == CANDIDATES["b0_lat_ratio"].params["scope"]
 
 
+def test_flow_stage_rule_has_no_pairs_on_the_two_t1_cuts():
+    """Why the flow arm stays off T1 (the T1 latent-flow batch, reported blocked): the two counted cuts have two input
+    stages, start and ref, one transition, and the heart's rule as written needs at least three (the pairs between
+    every two consecutive input stages besides B0's own step); the pair builder refuses two stages as well."""
+    tasks = {t.key: t for ts_ in harness.load_tasks().values() for t in ts_}
+    for k in ("T1/E9.5->E10.5", "T1/E9.5->E10.5:chamber"):
+        v = harness.TaskView.of(tasks[k])
+        assert sorted(v.roles) == ["ref", "start"]
+        with pytest.raises(ValueError, match="three"):
+            latent_extrap.flow_stages(v)
+    z = np.zeros((30, 2))
+    with pytest.raises(ValueError, match="three stages"):
+        latent_extrap.flow_pairs([z, z], [np.array(["A"] * 30)] * 2, [8.5, 9.5], ["A"])
+
+
 def test_flow_is_refused_on_t1(standin, t1_inputs):
     ref, start = t1_inputs
     with pytest.raises(ValueError, match="heart"):
