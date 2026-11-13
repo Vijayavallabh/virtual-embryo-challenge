@@ -355,6 +355,75 @@ Best regards,
 Vijayavallabh J
 Team captain, Mithril
 
+## Seventh email (drafted 2026-11-13; waits for the captain)
+
+Request R-C of `docs/PLAN.md` decision log 2026-11-12 (c). On 2026-11-13 the captain forwarded a side agent's note to the
+main session ("If you want it, ask the main agent to draft R-C now"); the AI assistant read the forwarded note as that
+request and drafted the email in the drafts of be23b041@smail.iitm.ac.in, to virtual.embryo.moonshot@gmail.com. Not
+sent: the captain reviews and sends it, or deletes it. Answers: _pending_.
+
+**Classification, stated before any answer.** What it asks is procedure: which released sample a held-out sample was
+processed with, and whether a protocol was the same. That is the class of the collection text released through the
+screen on 2026-11-10, not a measured property. A reply that carries a figure about a held-out sample (a count, a depth,
+a size, a share) is not read into any file or decision; using one would need the captain's named exception, fixed
+before the read, as on 2026-11-11. The captain confirms this classification by sending the email.
+
+**The review.** Three reviewers (accuracy, strategy, tone; single agents given only the draft, the recorded quotes and
+the stakes) each returned "send with edits". What changed:
+- A Task 3 question (was the beta-catenin knockout processed with the Gata4 replicates) was cut: both T3 uploads are
+  fixed by frozen rules and the better one counts, so no answer changes what the team does. The AI assistant had added
+  it to R-C's two questions; the captain can restore it.
+- "Run" alone would get a useless answer, since a slide is usually its own imaging run. The embryo question now names
+  the slide and the hybridisation and imaging batch, and asks which stage, without offering only E8.0 and E7.5.
+- "The dissected hearts" as a name for E10.5's third library was our own inference, beside the page's "E10.5 five hearts
+  per replicate". The library is named by its cell-name suffix alone (`_3`, checked on the released file's names).
+- The Task 1 question separates library preparation from the sequencing run and asks about the protocol.
+- The guard against figures is explicit, a date gives a reason to answer now, and a public answer is offered as the
+  organisers' option.
+The strategy reviewer put the chance of a useful reply before the freeze at 5 to 10%.
+
+**How an answer is read, fixed before any answer.** Nothing changes without the captain's ruling.
+- Embryo, "processed with E8.0, E8.25_late or E8.5" (the released stages that share one profile, diagnostic N23): the
+  advice on R-A becomes option 1, `fgw_aligned_series`. On the three practice tasks built that way it scores +6.69,
+  +3.56 and +3.42 against today's pair (tries E28).
+- Embryo, "processed with E7.5": the advice becomes to keep today's fgw_shape0. On the practice task of that kind every
+  second upload scores 0.00 against today's pair. A specialist for E7.5's profile (the later bracket's cells rendered to
+  it) is not built; it would be registered as a try before any use.
+- Embryo, "a batch of its own", or with any other stage: the advice becomes to keep today's fgw_shape0. On the two
+  practice tasks whose target has a profile of its own, option 1 scores +0.86 and -1.42 and option 2 +0.77 and -1.14.
+- Embryo, "not recorded" or no answer: R-A stays as `docs/PLAN.md` decision log 2026-11-13 (a) puts it.
+- Task 1, "prepared with library `_3` and sequenced with it", or "the same protocol": R-B goes back to the captain with
+  the advice changed to yes, read on try T30's rows at library 3's depth alone. There the switched pair against today's
+  pair is +1.60, 0.00 and +8.24 at a true cardiomyocyte share of 0.45, 0.60 and library 3's own. This is the organiser's
+  procedural answer that decision log 2026-11-12 (c) names as a clean way to reopen R-B.
+- Task 1, "separately and with another protocol", "not recorded" or no answer: R-B stays declined.
+
+Text as drafted:
+
+**Subject:** Human Team: processing batches of two held-out samples (procedure only)
+
+Hello organisers,
+
+A short procedural question about two held-out samples. Please leave any figures about held-out samples (counts,
+depths, sizes) out of the answer: we cannot use them, and a word or two per item is plenty.
+
+The Data Protocol page says that knockout and control embryos were processed in separate runs. As with any assay,
+samples processed at different times can differ for reasons unrelated to stage, and we would like to account for that
+correctly.
+
+1. E7.75 (Task 2 embryo): were its sections processed together with those of any released MERFISH stage, meaning on the
+   same slide or hybridised and imaged in the same batch? If so, which stage?
+
+2. E12.5 (Task 1): were its Multiome libraries prepared together with the released E10.5 library whose cell names end in
+   "_3", and sequenced in the same run? If not, were they made and sequenced with the same protocol as that library?
+
+An answer before 27 November would reach our final entries. If you would rather answer every team, a line on the Data
+Protocol page would suit us equally.
+
+Best regards,
+Vijayavallabh J
+Team captain, Mithril
+
 ## Planned Slack DM (drafted 2026-11-06; sent by the captain the same day)
 
 The state-of-the-art research recommends it (`experiments/research_2026_11_sota/REPORT.md` section 8; `docs/PLAN.md`
