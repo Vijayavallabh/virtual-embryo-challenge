@@ -1,0 +1,6 @@
+T2:heart:test_extrap: 2 pseudo-task(s) in /home/prachh/v/vec-campaign-h7/runs/harness/h7_v1 (protocol bake, build main, anchors computed, seeds [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  T2h/<=E8.75->E10.5 on pseudo:T2h/<=E8.75->E10.5: floor 50.00 +/- 0.00; copy 50.55 +/- 0.79; b0 51.45 +/- 0.61; b0_gmom 52.20 +/- 0.62; b0_gmom_null 51.84 +/- 0.63 (commit b4e8223, clean True)
+  T2h/<=E9.5->E10.5 on T2:heart:val_extrap: floor 50.00 +/- 0.00; copy 49.96 +/- 0.82; b0 50.43 +/- 0.70; b0_gmom 49.92 +/- 0.59; b0_gmom_null 50.17 +/- 0.64 (commit b4e8223, clean True)
+b0_gmom against b0_gmom_null: not kept (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 1 of 2 pseudo-tasks; needs 2; decided on 2 of 2 configured pseudo-tasks; not counted: none)
+    T2h/<=E9.5->E10.5: paired mean gain -0.25, ahead in 0 of 10 seeds, passes False, vetoes False
+    T2h/<=E8.75->E10.5: paired mean gain +0.37, ahead in 10 of 10 seeds, passes True, vetoes False

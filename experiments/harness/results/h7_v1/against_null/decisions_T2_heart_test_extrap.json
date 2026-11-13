@@ -1,0 +1,87 @@
+{
+ "board": "T2:heart:test_extrap",
+ "runs": "/home/prachh/v/vec-campaign-h7/runs/harness/h7_v1",
+ "decisions": [
+  {
+   "base": "b0_gmom_null",
+   "change": "b0_gmom",
+   "counted": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 1 of 2 pseudo-tasks; needs 2",
+   "tasks": {
+    "T2h/<=E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": -0.24958162987833604,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": false
+    },
+    "T2h/<=E8.75->E10.5": {
+     "complete": true,
+     "mean_gain": 0.3677174505984048,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 1,
+   "fit_checks": {}
+  }
+ ],
+ "summaries": {
+  "T2h/<=E8.75->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    50.54677200019612,
+    0.7913080817718336
+   ],
+   "b0": [
+    51.446449911655364,
+    0.6052791869950301
+   ],
+   "b0_gmom": [
+    52.20323710559411,
+    0.618483042248214
+   ],
+   "b0_gmom_null": [
+    51.83551965499571,
+    0.6344539317649176
+   ]
+  },
+  "T2h/<=E9.5->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    49.955176642699044,
+    0.8224702162475157
+   ],
+   "b0": [
+    50.4272525233645,
+    0.7027599518307952
+   ],
+   "b0_gmom": [
+    49.92020107635707,
+    0.5883211289336172
+   ],
+   "b0_gmom_null": [
+    50.16978270623541,
+    0.6397220957378063
+   ]
+  }
+ }
+}
