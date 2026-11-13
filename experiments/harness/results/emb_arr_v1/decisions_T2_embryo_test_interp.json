@@ -1,0 +1,157 @@
+{
+ "board": "T2:embryo:test_interp",
+ "runs": "/mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/experiments/harness/results/emb_arr_v1/tasks",
+ "decisions": [
+  {
+   "base": "fgw",
+   "change": "fgw_balanced",
+   "counted": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T2e/E6.75+E7.5->E7.25', 'T2e/E7.25+E8.0->E7.5']",
+   "tasks": {
+    "T2e/E7.25+E8.0->E7.5": {
+     "complete": true,
+     "mean_gain": -1.8094591305165302,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    },
+    "T2e/E6.75+E7.5->E7.25": {
+     "complete": true,
+     "mean_gain": -1.3475217944142663,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  },
+  {
+   "base": "fgw",
+   "change": "fgw_patchy",
+   "counted": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T2e/E6.75+E7.5->E7.25', 'T2e/E7.25+E8.0->E7.5']",
+   "tasks": {
+    "T2e/E7.25+E8.0->E7.5": {
+     "complete": true,
+     "mean_gain": -0.3735182907377208,
+     "seeds_ahead": 2,
+     "passes": false,
+     "vetoes": true
+    },
+    "T2e/E6.75+E7.5->E7.25": {
+     "complete": true,
+     "mean_gain": -0.4164832577518318,
+     "seeds_ahead": 1,
+     "passes": false,
+     "vetoes": true
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  },
+  {
+   "base": "fgw",
+   "change": "fgw_shuffle",
+   "counted": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2e/E7.25+E8.0->E7.5",
+    "T2e/E6.75+E7.5->E7.25"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T2e/E6.75+E7.5->E7.25', 'T2e/E7.25+E8.0->E7.5']",
+   "tasks": {
+    "T2e/E7.25+E8.0->E7.5": {
+     "complete": true,
+     "mean_gain": -1.0454182999686843,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    },
+    "T2e/E6.75+E7.5->E7.25": {
+     "complete": true,
+     "mean_gain": -0.9059669752495921,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  }
+ ],
+ "summaries": {
+  "T2e/E6.75+E7.5->E7.25": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "fgw": [
+    58.78119083140672,
+    2.2035357504971294
+   ],
+   "fgw_balanced": [
+    57.433669036992455,
+    2.0698546330622682
+   ],
+   "fgw_patchy": [
+    58.36470757365488,
+    2.133186806069914
+   ],
+   "fgw_shuffle": [
+    57.87522385615713,
+    2.127560478805911
+   ]
+  },
+  "T2e/E7.25+E8.0->E7.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "fgw": [
+    61.118922295807145,
+    0.8348261928410835
+   ],
+   "fgw_balanced": [
+    59.30946316529061,
+    0.8729635623208982
+   ],
+   "fgw_patchy": [
+    60.74540400506942,
+    0.7690367770624132
+   ],
+   "fgw_shuffle": [
+    60.073503995838465,
+    0.6925942869920885
+   ]
+  }
+ }
+}

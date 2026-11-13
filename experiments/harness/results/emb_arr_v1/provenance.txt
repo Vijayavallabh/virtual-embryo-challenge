@@ -1,0 +1,8 @@
+run folder on the DGX: ~/v/vec-campaign/runs/harness/emb_arr_v1 (campaign checkout)
+commit: 2151209 (campaign/emb-arr)
+tree at start and at end (bytes of git status --porcelain): 0 and 0
+started UTC: 2026-11-13T19:03:56Z
+ended UTC: 2026-11-13T19:15:46Z
+CPU only, 16 BLAS threads, one process per backtest
+decisions_*: base fgw, recomputed on this machine from the task files and registered
+the reference candidates (floor,fgw) reproduce their committed scores of experiments/harness/results/emb_aligned_v1/tasks to 1e-6, seed for seed
