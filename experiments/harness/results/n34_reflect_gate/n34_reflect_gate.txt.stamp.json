@@ -1,0 +1,20 @@
+{
+ "version": 1,
+ "file": "n34_reflect_gate.txt",
+ "sha256": "593f8bf57a1184d610e3aefb408584d26ad8acf35be550114a80adb375d2bc14",
+ "size": 4337,
+ "commit": "eb39b1184a684142e42d704042e78698ed521473",
+ "clean": true,
+ "why": null,
+ "unclean": [],
+ "unclean_count": 0,
+ "start_commit": "eb39b1184a684142e42d704042e78698ed521473",
+ "started_utc": "2026-11-13T18:53:26+00:00",
+ "created_utc": "2026-11-13T19:08:46+00:00",
+ "hostname": "p01r10srv05",
+ "argv": [
+  "experiments/harness/n34_reflect_gate.py",
+  "--out",
+  "runs/round6/n34_reflect_gate"
+ ]
+}
