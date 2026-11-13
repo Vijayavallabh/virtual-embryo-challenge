@@ -3557,3 +3557,141 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     main moved by documents, diagnostics and results only (no file under `src/` or `experiments/builds/` changed),
     and the round's candidate code stays on its branches (`campaign/trend2`, `round6/n32-fgw-warm`, `campaign/k9`,
     `campaign/k10fix`).
+- 2026-11-13 (ff), the sixth round carried to the end of the ledger, and one request that came out of it. Written
+  by the AI assistant.
+  - **Why the round went on after (ee).** The session's stop check read the report of (ee) and did not accept it as
+    an end: the report had asked the captain whether to continue instead of saying the options were used up, and its
+    own cold check (attack 3) had found that the captain's order of (g) says not to stop early. Both points hold. So
+    the rule of (ee), "where a counted backtest exists and a read costs minutes, the row is written and the read is
+    run", was applied to the whole ledger and not to a sample of it.
+  - **The sweep** (two agents, each given the ledger, this log and the research reports and neither the other's list;
+    workflow wf_6aabc2ab-d6d). Each classed every line the record had left unrun: closed by a rule or a ruling (41
+    and 43 lines), with no counted read that could judge it (34 and 33), closed by a gate or a measurement (28 and
+    25), already run (10 and 14), and dropped on an estimate although a counted read existed (17 and 19). The union
+    of that last class is 22 lines. All 22 were taken up, with three the round itself had left on an estimate (a
+    fill for the cells the heart trend leaves unmoved; a reflection-allowed frame alignment for the embryo, which
+    row N32's outcome had declined; the strong-null try that row N28 allowed).
+  - **How each was handled.** One agent built the arm on a campaign branch from a brief fixed before the code, with
+    synthetic tests and the existing candidates pinned bit for bit; a second agent, given the code and not the
+    builder's reasoning, reviewed it, and five builds went back for a fix before any run (a count kernel that redrew
+    every count, a run basis missing a step of the record, a control that was missing, and a tail decoder twice);
+    the row was committed on main before the run; the run was made on a DGX campaign checkout at a clean committed
+    tree, and the reference candidates reproduced their committed scores seed for seed in every run; `run.py decide`
+    or the row's fixed reading gave the verdict; the outcome went into the row. Where the record gave no constant the
+    simplest parameter-free form was taken and named in the row; where it gave no method the builder reported
+    "design not on record" and nothing was invented.
+  - **The reads, by board** (paired means against the base over 10 seeds).
+    - *Heart* (base `b0_trend`; the one-day then the 1.75-day backtest; heart 16 to 25 tries). H14 herded draw
+      (base `b0`) +0.01 and 0.00. H15 a fill for the cells the trend leaves unmoved -0.30 (a veto) and -0.02. H16
+      a mixture of the step and the trend inside one file -0.05 and -0.23. H17a smoothed top-up +0.63 (ahead in 10
+      of 10 seeds) and -0.11. H17b tail decoder -0.05 and +0.04. H17c persistence gate +0.19 and -0.50 (a veto). H18
+      exact per-cell total -0.07 and +0.07. H19 whole-cell multinomial redraw -3.10 (a veto) and +1.29 (10 of 10).
+      H20 run basis -0.04 and +0.04. None is kept. H17a and H19 are mirror images: the two backtests want opposite
+      amounts of count noise, which is the depth of each truth against its reference, and depth is the heart's
+      closed lever, so neither goes to the captain.
+    - *Embryo* (base `fgw`; the E7.5 then the E7.25 backtest; embryo 36 to 47 tries). E29 herded draw +0.25 and
+      +0.09. N34, the gate of a reflection-allowed frame alignment: prune (at the test pair the reflection restores
+      the cloud's thickness in 10 of 10 draws, but the partners' alignment stays under the bar; and on the backtest
+      pairs the arm is `fgw` itself in about half the draws, so it could not have passed the adoption rule). E31a to
+      E31c, balancing, patching or shuffling the brackets over fgw's positions: six vetoes (-0.37 to -1.81). E32a
+      even-spacing relaxation -0.09 and -0.10; E32b depth-shaped draw -0.51 and -1.47. E33 trend rendering -1.01 (a
+      veto) and +3.65 (10 of 10): closed as an entry by the adoption rule. E34a and E34b (a top-up at the aligned
+      positions; the earlier-side specialist) and E35a and E35b (the trend rendering; the same at the aligned
+      positions) as second uploads on the nine practice tasks: S(0.45) -0.25, -0.28, -0.52 and -0.60, none put
+      forward; the specialist adds 8.08 on the E7.25 backtest and gives up the second upload's lead elsewhere.
+    - *T1* (base `b0`; the whole then the chamber cut; T1 32 to 34 tries). T37 exact top-up -0.17 and -0.15
+      (behind in every seed on both cuts). T38 tail decoder: idle; 30 to 32 infeasible genes sit in the bottom tail
+      and none is within reach of the bounded own-count lift, so the arm is B0 in every build (unbounded, the lift
+      diverges). The strong-null try in try T27's geometry was closed by committed numbers before any row: its base
+      arm scores 99.69 of 100 there, so its pass mark could not be met.
+    - *T3* (tries K9's folds, a labelled reading; T3 19 to 23 tries). K11a, the lineage difference-in-differences
+      contrast: +1.34 between the two Gata4 replicates (10 of 10) and -0.23 and -0.73 across knockouts: closed.
+      K11c, the section-robust source factor: +0.36 on the cross-knockout fold scored against WT E8.75 (10 of 10,
+      and +0.71 over its permuted control), -0.12 on the other cross-knockout fold and -0.33 on the replicate fold:
+      closed by the fixed reading, and not an adoption-rule pass either.
+  - **Lines that could not be built from the record** (each builder reported "design not on record" and each
+    reviewer confirmed it; none is counted): Potts sorting of positions (no update rule or constant); negative-
+    binomial resampling (no dispersion; its dispersion-free form is H19); a partial or unbalanced coupling (the
+    unmatched share is its one constant and is on no record; the ledger's own reason against it was a measured one,
+    the sectioning plane); the embryo's tail decoder (a purpose and no method); recipe R4 on T3 (its variance needs
+    the two Gata4 replicates' difference, which holds two folds' truth) and recipe R8 on T3 (no rank, fit or
+    damping; on the heart it was built in its simplest form, H20); the learned flow on T1 (it needs three input
+    stages and T1's cuts have two, as (n) had recorded); and the emergence-first second upload (its design sits in
+    notes no agent opens; its recorded value is negative).
+  - **What the embryo reads showed, and the two readings that followed.** Two arms gained a great deal on one task
+    and lost elsewhere: the trend rendering (+3.65 on the E7.25 backtest) and the earlier-side specialist (+8.08
+    there). The pair as built has no file for a target that is like its earlier, shallower bracket: on that backtest
+    the pair is `fgw` alone. As second uploads such arms fail, because they replace the file that carries the
+    deeper-side tasks. As a first upload they only have to beat `fgw` where the second upload does not already lead.
+    Reading N37 (row and script committed before any nine-task score of these arms existed; row N33's rule,
+    unchanged) priced the four new arms that way from committed scores:
+    - `fgw_trend_render` passes all four clauses: S(0.45) +0.93 embryo points (S(0.3) +1.05, S(0.6) +0.81; mean
+      of nine +0.76; worst-of-nine unchanged; +0.28 with the E7.25 backtest left out). By task: x2 +1.92, x3 +0.99,
+      new2 +0.39, the E7.5 backtest -0.16, the E7.25 backtest +3.65, and 0.00 on half, late, new1 and x1, where the
+      second upload leads in every seed whatever the first is.
+    - `fgw_aligned_trend` also passes: S(0.45) +0.59 (S(0.3) +0.72, S(0.6) +0.47).
+    - `fgw_early_specialist` fails the leave-one-task-out clause (all its value is the E7.25 backtest);
+      `fgw_aligned_hi` fails.
+    By the rule the larger S(0.45) is put forward: `fgw_trend_render`. An agent that was given only the task files
+    and the definitions recomputed the table with its own code: every number agrees. Its sensitivity, which the
+    rule does not ask for: three of the nine tasks (x2, x3, new2) share one target stage; with x2 and x3 counted
+    once S(0.45) is 0.84, and without any of the three 0.96. Reading N38 (row first) then priced every committed
+    second upload beside `fgw_trend_render`: none passes (the nearest is -0.18), so the second upload as built
+    stays.
+  - **Request R-D, to the captain: change the embryo's first upload from `fgw` to `fgw_trend_render`; the second
+    upload stays `fgw_aligned_series`.** The file would hold the same cells at the same positions as today's first
+    upload; each cell's expression is moved by one factor per gene to the profile that a line through the four
+    released embryo samples (E6.75, E7.25, E7.5, E8.0) gives at E7.75, so the file carries one profile where
+    today's carries a mixture of two samples' own.
+    - *Gain, in embryo board points, the better of the two uploads:* +3.65 where the truth is like its earlier
+      bracket (the E7.25 backtest); +1.92, +0.99 and +0.39 on the three tasks whose target is E8.5; +0.93 at the
+      middle weighting and +0.81 to +1.05 across the three weightings. The embryo counts half, so +0.40 to +0.53
+      Overall. In the forecast for the files as built (its upper reading; `experiments/gate/forecast_built.py`'s own
+      shift, an aggregation): mean 194.41 to 194.87, the chance of 203 or more 22.4% to 24.5%, of 205.32 or more
+      12.8% to 14.6%, of 215.41 or more 0.01% to 0.02%. The committed estimate of 184 would move by the same half
+      point when restated; the gate is not affected.
+    - *Loss:* -0.16 on the E7.5 backtest, the one task where the truth has a profile of its own and E8.0 is the
+      later bracket, as it is at the test. By its own score the arm is 1.01 behind `fgw` there and 2.93 behind on
+      x1, where the second upload covers it; a hidden target of that kind which the second upload did not cover
+      would cost up to that.
+    - *Against it.* (1) The arm reached the nine tasks after try E33 showed it one-sided on two of them, so part of
+      the selection is on tasks the reading uses; the clause that guards this holds at +0.28, close to the bar of
+      0.3 that the full table has to clear. (2) The gain rests on two truths (E7.25, and E8.5 under three
+      bracketings) with a small loss on a third. (3) It fails the adoption rule on the counted backtests (the veto
+      on E7.5), so this is a ruling and not an adoption; the heart trend, by contrast, passed the rule before its
+      ruling. (4) A gain found among 47 embryo tries is expected to shrink: half of the tabled value is a fair
+      working figure.
+    - *The alternative that also passes:* `fgw_aligned_trend` (+0.59; forecast mean 194.70). Its own scores on
+      the two counted backtests are +1.28 and +2.11 over `fgw`, ahead in 10 of 10 seeds on each, which is the
+      adoption rule's size; but that reading was not registered as an adoption read before its run, and with it
+      both uploads would sit at the aligned positions, giving up the pair's hedge between the two geometries.
+    - *What a yes sets off:* the builder port (being prepared on the branch `port/emb-s1-trend`, off main, with one
+      rule fixed before any build: a panel gene that one of the four samples' files lacks is left as `fgw` has it),
+      its review, a dry build, a fourth rehearsal (three byte-identical builds), a new reference list and pointer,
+      the server's format check of the new file at the captain's word, and the method summary and disclosure
+      lines. About a day's work, inside the date of 24 Nov.
+    - *The AI assistant's recommendation:* yes to R-D as put (the first upload alone), on a positive expected
+      value with a small measured downside; it changes nothing in what follows about 215.4.
+  - **What the round adds up to.** Since (ee): 26 counted tries in 14 rows, three target-free or committed-score
+    readings (N34, N37, N38) and one line closed by committed numbers. Nothing passes the adoption rule; one
+    request (R-D) comes out of a pre-set pair rule. Tries stand at T1 34, embryo 47, heart 25, T3 23. **The options
+    for taking our own estimate past 215.41 are used up.** Every line the rules allow and a counted practice read
+    can judge has now been read or shown unbuildable from the record; the largest effects found are one-sided
+    (+0.6, +1.3, +3.7 and +8.1 on one backtest against losses on the other), and the one change that survives a
+    pre-set rule is worth about half an Overall point. The distance from the forecast's upper reading to 215.41 is
+    21 points; in our own evidence that total lies beyond the best case of every board at once (the boards' best
+    practice outcomes sum to 219.0, their 95th percentiles to 214.7). What could move the total by points and not
+    tenths is closed by rules that are the captain's or the organisers' to reopen, not the AI assistant's: the
+    post-exposure block (cell numbers, sizes and scope on every board, T1's and the heart's depth, T3's
+    composition), cross-modal input (A15), the frozen T3 and second-upload rules, the rulings on the strong-null
+    prior and on the late-fetal practice family, and the external-data windows. And what decides most of the spread
+    is how the hidden samples were measured, which no released file shows.
+  - **Figures to quote.** The committed estimate stays 184 (170 to 198). The forecast for the files as built is
+    its upper reading: mean 194.4; with R-D, 194.9. P(total >= 215.41) is 0.02% or less in every reading.
+  - **Unchanged.** No upload, build, rule, gate figure or reference list. The ten files of `builds_dc7b6ae` stand.
+    Main moved by documents, two reading scripts with their tests (`n37_first_upload_new_arms.py`,
+    `n38_second_beside_trend.py`), and results; no file under `src/` or `experiments/builds/` changed. The round's
+    candidate code stays on its branches, all pushed: `campaign/trend3`, `round6/e30-reflect`, `campaign/t36`,
+    `campaign/heart-b` and `-bfix`, `campaign/heart-c` and `-cfix`, `campaign/t3-b` and `-bfix`, `campaign/t1-b`,
+    `-bfix` and `-bfix2`, `campaign/gen-t1`, `campaign/emb-geo`, `campaign/emb-arr`, `campaign/emb-expr`,
+    `-exprfix` and `campaign/emb-trend2`.

@@ -1133,3 +1133,40 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     external dataset beyond a listing of the JAX atlas's public cell-type table on the DGX (stage and broad
     cell-type names per embryo of the registered legal set, to judge a proposal; no expression value), any held-out
     value.
+- 2026-11-13 (k), process notes from the rest of the sixth round (`docs/PLAN.md` decision log 2026-11-13 (ff));
+  written by the AI assistant.
+  - **Reads of practice targets.** 26 counted tries in 14 rows, each row committed before its run: H14 to H20
+    (heart 16 to 25), E29 and E31a to E35b (embryo 36 to 47), T37 and T38 (T1 32 to 34), K11a to K11d (T3 19 to 23).
+    Reruns of candidates whose scores were already committed, inside those runs and not as tries, all exact, seed
+    for seed: `floor`, `copy`, `b0` and `b0_trend` on the heart backtests; `floor` and `fgw` on the embryo
+    backtests; `floor`, `copy` and `b0` on the T1 cuts; K9's `raw` arm and the floor on its three folds; and
+    `fgw_trend_render` on the two embryo backtests inside the nine-task run of row E35 (equal to try E33's).
+    Readings N37 and N38 (rows first) aggregated per-seed scores that counted tries had committed; they opened no
+    data file and scored nothing, and N37's table was recomputed by an agent that was given only the task files
+    and the definitions. The scratch pricing of request R-D shifted the committed forecast's embryo outcome by
+    N37's values through `experiments/gate/forecast_built.py`'s own functions; it read no target.
+  - **One row amended, before its scores were read.** The first nine-task run of row E34 stopped on one task with a
+    build error of the earlier-side specialist (a cell left without counts after every redraw). That is a fact
+    about the build and not about a score. The other eight task files of that run were never opened; the arm was
+    given the count core's own empty-cell rule on a branch, reviewed, the row was amended, and both arms were
+    scored again on all nine tasks. Only the second run is committed and read.
+  - **Not registered, by committed numbers.** The strong-null try in try T27's geometry was coded and reviewed and
+    then closed without a row or a run: its base arm's committed score leaves less headroom than its pass mark
+    (`experiments/harness/TRIES.md`, "Pruned before running").
+  - **Target-free.** Gate N34 read the inputs of the three embryo bracket pairs, the test pair's among them, and no
+    target stage; summaries only, no cell number. The check lines of try T38 hold numbers of genes and factors.
+  - **Agents.** Seven workflows and two single agents built and reviewed code and ledger text in their own working
+    copies with synthetic tests only; none opened a released data file, ran on real tasks or scored anything, and
+    every brief opened with the memory-index line and named the exact `--exclude-dir` list. Every run on released
+    data was launched by the main session on the DGX campaign checkouts at clean committed trees. Two things went
+    other than planned, neither touching protected material. (1) Agents started while the session's working
+    directory was the home folder were given working copies of the home repository; they made sparse clones of
+    this repository inside their own folders or the session scratchpad, leaving out `boards/`, `notes/`, `data/`,
+    `runs/`, `docs/reference/` and `docs/research/`, and the main session fetched their commits. (2) One reviewer
+    unpacked an archive of `src`, `tests` and `configs` into two scratch folders that already existed and said so
+    in its report. Separately, one heart run (row H16) started with two untracked files of the checkout's previous
+    branch present; they are not imported by the run and its provenance note says so; later syncs first return the
+    checkout to main.
+  - **Not opened:** the challenge site, the Data page, the board index by hand, Slack, the organisers' mail, any
+    external dataset, any held-out value, the task notes under any `notes/` folder. No test file was built, no
+    format check was sent, and the DGX reference checkout was not touched.
