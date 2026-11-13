@@ -66,6 +66,7 @@ NN_K = 15  # neighbours per cell, as the scorer's neighbourhoods
 NN_SAMPLE = 2000  # cells per stage in the neighbour check
 NN_STREAM = 11  # its random stream, apart from the interpolation's 0-7
 TRACKED_OUT = ("Untracked", "Unknown")
+E10_COUPLINGS = MOVE_COUPLINGS[:2]  # fgw and aligned, row E10's two (fgw_warm, added later, is N32's script's)
 
 # The gate, fixed in TRIES.md (row E10) before this ran; decided by the AI assistant under the captain's delegation of
 # 2026-11-02 (the ideas workflow's proposal, unchanged).
@@ -294,7 +295,7 @@ def main(argv=None) -> None:
             nn_rows = _nn_rows(seed, len(Cb), len(Ca))
             row = {"seed": s, "build_seed": seed}
             fgw_T = None
-            for mc in MOVE_COUPLINGS:
+            for mc in E10_COUPLINGS:
                 res = interpolate_clouds(Cb, Ca, Eb, Ea, t, N_DRAW, seed, target_rms=1.0, move_coupling=mc,
                                          with_coupling=True)
                 if fgw_T is None:

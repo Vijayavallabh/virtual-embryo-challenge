@@ -33,7 +33,8 @@ Steps implemented now:
    T2 head turns them into displacement interpolation (`vec.t2_build.interpolate_clouds`). `aligned_coupling`
    (2026-11-03, embryo try E10 of experiments/harness/TRIES.md): an exact transport of two clouds already in one frame
    on a fused cost of features and positions, which tells apart the mirror-image sides that the within-cloud distances
-   and left-right symmetric features cannot.
+   and left-right symmetric features cannot. `fgw_coupling` takes a start (G0) and `fgw_objective` evaluates its
+   objective (2026-11-13, diagnostic N32: the FGW coupling started from the aligned coupling).
 6. Herd a draw (2026-11-03, T1 try T5 of experiments/harness/TRIES.md): `herd_rows` swaps drawn rows for undrawn rows
    of the same pool when the swap brings the drawn rows' mean expression closer to the pool's, a variance reduction of
    the sample's pseudobulk with no change to what is drawn from.
@@ -75,7 +76,7 @@ from scipy import sparse
 from vec.prep import TARGET_SUM, log1p_cp10k, recover_counts
 
 __all__ = ["aligned_coupling", "alloc", "apply_factors", "apply_gene_factor", "barycentric", "counts_of",
-           "coupling_rotation", "draw_balanced", "draw_least_used", "fgw_coupling", "nearest_anchors",
+           "coupling_rotation", "draw_balanced", "draw_least_used", "fgw_coupling", "fgw_objective", "nearest_anchors",
            "draw_then_repeat", "log1p_cp10k", "mean_cp10k", "quotas", "rescale_depth", "thin"]
 
 Seed = int | Sequence[int]
@@ -276,16 +277,8 @@ def apply_gene_factor(C, phi, P, rng) -> np.ndarray:
 # 5. Coupling and displacement
 
 
-def fgw_coupling(features_a, features_b, coords_a, coords_b, alpha: float, max_iter: int,
-                 emd_max_iter: int) -> np.ndarray:
-    """A balanced fused Gromov-Wasserstein coupling of two populations with positions (POT's exact conditional
-    gradient, square loss, uniform masses).
-
-    The feature cost is the squared Euclidean distance between rows of features_a and features_b; the structure costs
-    are the Euclidean distances within each cloud, so the coupling ignores how the clouds are placed or rotated. Each
-    cost is divided by its maximum, which makes `alpha` (the structure term's weight: 0 features only, 1 structure
-    only) free of units. max_iter bounds the conditional-gradient steps, emd_max_iter the network simplex of each
-    step's exact transport. Returns the coupling (rows a, columns b; its entries sum to 1)."""
+def _fgw_problem(features_a, features_b, coords_a, coords_b, alpha: float):
+    """The scaled costs and uniform masses of `fgw_coupling`'s problem: (M, CA, CB, p, q)."""
     import ot
 
     FA, FB = np.asarray(features_a, dtype=np.float64), np.asarray(features_b, dtype=np.float64)
@@ -303,9 +296,44 @@ def fgw_coupling(features_a, features_b, coords_a, coords_b, alpha: float, max_i
             C /= top
     p = np.full(A.shape[0], 1.0 / A.shape[0])
     q = np.full(B.shape[0], 1.0 / B.shape[0])
+    return M, CA, CB, p, q
+
+
+def fgw_coupling(features_a, features_b, coords_a, coords_b, alpha: float, max_iter: int,
+                 emd_max_iter: int, G0=None) -> np.ndarray:
+    """A balanced fused Gromov-Wasserstein coupling of two populations with positions (POT's exact conditional
+    gradient, square loss, uniform masses).
+
+    The feature cost is the squared Euclidean distance between rows of features_a and features_b; the structure costs
+    are the Euclidean distances within each cloud, so the coupling ignores how the clouds are placed or rotated. Each
+    cost is divided by its maximum, which makes `alpha` (the structure term's weight: 0 features only, 1 structure
+    only) free of units. max_iter bounds the conditional-gradient steps, emd_max_iter the network simplex of each
+    step's exact transport. G0 (2026-11-13, diagnostic N32 of experiments/harness/TRIES.md): the coupling the solver
+    starts from (its marginals must be the uniform masses); left unset, POT's default start (the independent coupling)
+    and a call bit-for-bit the one before G0 existed. The objective has the same value on a coupling and on its mirror
+    image when the features cannot tell the two sides apart, so the start decides which of the two the solver reaches.
+    Returns the coupling (rows a, columns b; its entries sum to 1)."""
+    import ot
+
+    M, CA, CB, p, q = _fgw_problem(features_a, features_b, coords_a, coords_b, alpha)
+    start = {} if G0 is None else {"G0": np.asarray(G0, dtype=np.float64)}
     T = ot.gromov.fused_gromov_wasserstein(M, CA, CB, p, q, loss_fun="square_loss", alpha=alpha, max_iter=max_iter,
-                                           numItermaxEmd=emd_max_iter)
+                                           numItermaxEmd=emd_max_iter, **start)
     return np.asarray(T, dtype=np.float64)
+
+
+def fgw_objective(features_a, features_b, coords_a, coords_b, alpha: float, coupling) -> float:
+    """`fgw_coupling`'s objective at `coupling`, as POT's solver defines it (its log's fgw_dist): (1 - alpha) times the
+    feature cost plus alpha times the square-loss Gromov term, on the same scaled costs. For a diagnostic: it compares
+    two solutions of one problem (2026-11-13, N32)."""
+    import ot
+
+    M, CA, CB, p, q = _fgw_problem(features_a, features_b, coords_a, coords_b, alpha)
+    T = np.asarray(coupling, dtype=np.float64)
+    if T.shape != M.shape:
+        raise ValueError(f"coupling shape {T.shape} does not match the populations {M.shape}")
+    constC, hC1, hC2 = ot.gromov.init_matrix(CA, CB, p, q, loss_fun="square_loss")
+    return float((1.0 - alpha) * np.sum(M * T) + alpha * ot.gromov.gwloss(constC, hC1, hC2, T))
 
 
 def aligned_coupling(features_a, features_b, coords_a, coords_b, alpha: float, emd_max_iter: int) -> np.ndarray:

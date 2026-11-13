@@ -72,6 +72,7 @@ from vec.core import (
     coupling_rotation,
     draw_balanced,
     fgw_coupling,
+    fgw_objective,
     herd_rows,
     log1p_cp10k,
     nearest_anchors,
@@ -1343,7 +1344,8 @@ PARTNER_CHUNK = 4096  # cells per block when drawing coupled partners (memory on
 HERD_STREAMS = (6, 7)  # random streams of the herded draws (before, after), apart from the interpolation's 0-5
 # Which coupling sets the moves (embryo try E10 of experiments/harness/TRIES.md, registered before its run): "fgw" (the
 # entry so far) or "aligned" (vec.core.aligned_coupling of the same anchors in the before frame, after the rotation).
-MOVE_COUPLINGS = ("fgw", "aligned")
+# "fgw_warm" (diagnostic N32, 2026-11-13): the same FGW problem solved again from the aligned coupling as its start.
+MOVE_COUPLINGS = ("fgw", "aligned", "fgw_warm")
 # Which real cells of each bracket make up the mixture (embryo try E13 of experiments/harness/TRIES.md, registered
 # before its run; it runs only if its target-free gate N16 passes): "uniform" (the entry) or "midpoint"
 # (`_midpoint_draw`).
@@ -1579,6 +1581,12 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     symmetric expression cannot tell an embryo's two sides apart, so FGW's partners can sit at random or mirrored
     across the body's symmetric direction, and McCann moves then pull both clouds towards its mid-plane; in a common
     frame position settles which side a partner is on. The draws, the mixture and every random stream are unchanged.
+    "fgw_warm" (diagnostic N32, 2026-11-13) solves step 2's FGW problem a second time (the same anchors, features,
+    alpha, loss and solver settings) from the aligned coupling as its start (`vec.core.fgw_coupling(..., G0=...)`) and
+    takes the moves (and the partners) from that solution as "fgw" takes them from its own; the rotation is the first
+    solution's, as for "aligned". The Gromov term cannot tell a coupling from its mirror image, so the start decides
+    which of the two optima the solver settles in. The record then carries each coupling's FGW objective
+    (`vec.core.fgw_objective`).
     with_coupling: also return the coupling's internals (`Interpolation.coupling`) for the target-free diagnostic.
 
     t_mix (embryo try E23 of experiments/harness/TRIES.md; default: t): the later bracket's share of the drawn cells,
@@ -1632,7 +1640,13 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     R = coupling_rotation(Zb[ib], Za[ia], T)
     Za_b = Za @ R
     Tm = T if move_coupling == MOVE_COUPLINGS[0] else aligned_coupling(Fb, Fa, Zb[ib], Za_b[ia], alpha, emd_max_iter)
-    db = barycentric(Tm, Za_b[ia]) - Zb[ib]
+    objective = None
+    if move_coupling == MOVE_COUPLINGS[2]:
+        G0 = Tm
+        Tm = fgw_coupling(Fb, Fa, Zb[ib], Za[ia], alpha, max_iter, emd_max_iter, G0=G0)
+        objective = {name: fgw_objective(Fb, Fa, Zb[ib], Za[ia], alpha, C)
+                     for name, C in (("fgw", T), ("aligned_start", G0), ("fgw_warm", Tm))}
+    db =barycentric(Tm, Za_b[ia]) - Zb[ib]
     da = barycentric(Tm.T, Zb[ib]) - Za_b[ia]
     near_b, near_a = nearest_anchors(Zb, Zb[ib], k)[1], nearest_anchors(Za_b, Za_b[ia], k)[1]
     pos_b = Zb + tp * db[near_b].mean(1)
@@ -1689,6 +1703,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     if move_coupling != MOVE_COUPLINGS[0]:
         record["move_coupling"] = move_coupling
         record["coupling_nonzero_moves"] = int((Tm > 0).sum())
+    if objective is not None:
+        record["fgw_objective"] = objective
     if midpoint is not None:
         record["draw"] = draw
         record["midpoint"] = {"k_strata": midpoint["k_strata"], "k_anchors": MIDPOINT_K_ANCHORS,

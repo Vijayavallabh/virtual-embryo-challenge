@@ -1173,6 +1173,18 @@ def _fgw_aligned(ctx: BuildContext) -> Stage:
     return _fgw(ctx, move_coupling="aligned")
 
 
+FGW_WARM_RULE = ("fgw with the moves taken from the same fused Gromov-Wasserstein problem (the same anchors, features, "
+                 "alpha, square loss and solver settings) solved a second time from the aligned coupling of try E10 "
+                 "(vec.core.aligned_coupling in the rotated common frame) as the conditional-gradient start; the "
+                 "rotation, draws, expression, size rule and counts stay fgw's (diagnostic N32 of "
+                 "experiments/harness/TRIES.md gates any counted try)")
+
+
+def _fgw_warm(ctx: BuildContext) -> Stage:
+    """Candidate fgw_warm (diagnostic N32, FGW_WARM_RULE): fgw with move_coupling="fgw_warm"."""
+    return _fgw(ctx, move_coupling="fgw_warm")
+
+
 def _fgw_shape0_aligned(ctx: BuildContext) -> Stage:
     return _fgw(ctx, t_pos=0.0, move_coupling="aligned")
 
@@ -1684,7 +1696,13 @@ CANDIDATES = {
                                       "cost of expression and position in the rotated common frame "
                                       "(vec.core.aligned_coupling; FGW's rotation kept)",
                               "alpha": t2_build.INTERP_ALPHA, "scope": "whole"}, requires=_interp),
-    # embryo try E12 (experiments/harness/TRIES.md, registered before its run): the s2 shape variant fgw_shape0 with
+    # diagnostic N32 (experiments/harness/TRIES.md, 2026-11-13; a counted try needs its own row after N32's verdict):
+    # FGW solved again from the aligned coupling, so it keeps FGW's objective and settles on the side position says
+    "fgw_warm": Candidate("fgw_warm", frozenset({"T2"}), (), _fgw_warm,
+                          {"what": "fgw with the moves from the same FGW problem started from the aligned coupling of "
+                                   "try E10 (FGW's rotation kept)", "rule": FGW_WARM_RULE,
+                           "alpha": t2_build.INTERP_ALPHA, "scope": "whole"}, requires=_interp),
+    # embryo try E12(experiments/harness/TRIES.md, registered before its run): the s2 shape variant fgw_shape0 with
     # try E10's aligned moves, so its mapped later bracket lands on the side position says. Both embryo tasks were
     # selected on when fgw_shape0 was chosen, so neither counts for it under the adoption rule (decide excludes them)
     "fgw_shape0_aligned": Candidate("fgw_shape0_aligned", frozenset({"T2"}), (), _fgw_shape0_aligned,
