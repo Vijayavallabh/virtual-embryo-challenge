@@ -267,6 +267,13 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     of external data are to be stated with the submission: the client keeps the `--disclose` ids in the local ledger
     and sends none of them. It also looks for the organisers' answer to the sixth email (`ASSUMPTIONS.md` A21), and quotes the Rules' definition of a
     Human Team and anything they say about AI assistance (decision log 2026-11-10 (x)).
+    2026-11-13 (`docs/PLAN.md` decision log 2026-11-13 (c)): the seventh organiser email, sent that day, asks which
+    released samples the hidden E7.75 sections and E12.5 Multiome libraries were processed with. An answer may come by
+    reply, in the Slack channel or as a line on the Data Protocol page, and each is read through a screen with the scope
+    fixed in `docs/ORGANIZER_QUESTIONS.md` ("Seventh email"): procedure only, every number replaced, everything else
+    withheld. Two extra screened reads are asked of the captain for about 19 and 23 Nov, because a build change has to
+    be rehearsed by 24 Nov; the check of 26-27 Nov repeats the read. A reply in the captain's inbox is not pasted into
+    the session. What each answer changes is fixed in the same place, and nothing changes without the captain's ruling.
   - T2: `vec.t2_build`, run from the repo root (the paths are relative). Count by `n_cells_from_decision(board,
     pool.n_obs, "experiments/density/results/release/count_decision.json")` (step 4.5; null keeps max_cells; a
     decided level below the test board's lower limit gives way to the next passing count up, the passing level with
@@ -285,6 +292,13 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     calls.
   - T1: `vec.t1_scope.build_submission` once the shares are fixed by their written rule (docs/PLAN.md section 4.1);
     pass `ref_source` (the reference file's stem) so the per-file label remaps apply.
+  - Candidate files that are no entries (2026-11-13): the embryo's second upload has two candidates before the captain
+    (request R-A, `docs/PLAN.md` decision log 2026-11-13 (a)): `build_test.py embryo --method fgw --move-coupling
+    aligned --expression series` and `build_test.py embryo --method fgw_shape0 --expression render_hi`. Both build
+    reproducibly at 16 BLAS threads (`experiments/builds/results/determinism_1f8956b.txt`). Neither joins
+    `build_all.sh` or the freeze-morning rebuild unless the captain rules for it in `docs/S2_RULES.md`; without a
+    ruling the s2 stays `--method fgw_shape0`. T3's second upload stays the refused branch's s1: the wild-type-only
+    factor of tries K7 and K8 has no builder and enters only if the captain reopens the frozen T3 rules.
 - Update `ASSUMPTIONS.md` (A1, A2, A3, A13, A19) and `progress.md`. A1 is confirmed (2026-10-28).
 - **Disclosure ids for each official upload** (prepared 2026-11-05 by the AI assistant; the captain confirms them on
   the morning). The client refuses an official upload without `--disclose` ids from `EXTERNAL_DATA.md`. Rule used:

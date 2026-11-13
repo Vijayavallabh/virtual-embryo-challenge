@@ -630,8 +630,9 @@ every T3 upload after its screened check of mail, Slack and the Rules page (`doc
 
 | Day (IST) | Work |
 |---|---|
-| 19 Nov | If no organiser has answered the public Slack question on floored T3 severity (posted 2026-11-12), the captain may post one short follow-up in the same thread, drafted by the AI assistant (decision log 2026-11-11 (e)) |
-| 26-27 Nov | The screened check that picks T3's s2 (ruling 2026-11-06 (b)), run no earlier than 26 Nov |
+| 19 Nov | If no organiser has answered the public Slack question on floored T3 severity (posted 2026-11-12), the captain may post one short follow-up in the same thread, drafted by the AI assistant (decision log 2026-11-11 (e)). On the captain's say-so, a screened read for an answer to the seventh email: the Data Protocol page, the Slack channel and the mailbox (decision log 2026-11-13 (c)) |
+| 23 Nov | On the captain's say-so, a second screened read for an answer to the seventh email; it is the last day an answer can still change a build, which has to be rehearsed by 24 Nov |
+| 26-27 Nov | The screened check that picks T3's s2 (ruling 2026-11-06 (b)), run no earlier than 26 Nov; it also looks for an answer to the seventh email, the Data Protocol page included |
 | 27 Nov, from 05:30 | Rebuild at the freeze commit and check (`vec check`, the server format checks, the archived hashes); the plain summary to the captain; then the first round: T1 s1, heart s1, embryo s1 and T3's s2 |
 | 29 Nov | T1, heart and embryo s2, each after its screened check |
 | 30 Nov | T3's s1, after its screened check; every upload done by the end of the day |
@@ -737,6 +738,11 @@ same question), the sixth email (2026-11-10, the Generality scope as corrected) 
 in #virtual-embryo-challenge (posted by the captain on 2026-11-12; decision log 2026-11-11 (e)). No answer to any of
 them is recorded as of 2026-11-12; the next screened check is on 26-27 Nov. The team proceeds on the working answers
 in `docs/ORGANIZER_QUESTIONS.md` (decision log 2026-11-10 (w), (x)).
+
+The seventh email (2026-11-13, request R-C; sent by the captain): which released samples the hidden E7.75 sections and
+the hidden E12.5 Multiome libraries were processed with, and by which protocol. It asks for procedure only and for no
+figure. No answer is recorded. An answer may come by reply, on the Data Protocol page or in the Slack channel; each is
+read through a screen, and how each answer would be read is fixed in `docs/ORGANIZER_QUESTIONS.md` ("Seventh email").
 
 ## Decision log
 
@@ -2594,3 +2600,28 @@ in `docs/ORGANIZER_QUESTIONS.md` (decision log 2026-11-10 (w), (x)).
     now rests on the upload's own form: the per-group factor adds about 5 to 7 points to the second file on the one
     knockout run that can be read against WT E8.75, with a thin margin over the gate on one replicate. Tries after
     K8: T1 28, embryo 36, heart 4, T3 15.
+- 2026-11-13 (c), the captain, on the report of (b), in the captain's words: "update all the harness files and other
+  files and then commit and push", then "i also sent the draft". Written by the AI assistant. No upload, build default,
+  rule or gate record changed; the captain's words rule on none of R-A, R-B, the embryo's first-upload shape or T3's
+  second upload.
+  - **The seventh organiser email (R-C) is sent.** The draft had left the drafts folder when checked; the sent copy
+    was not opened, so any edit before sending is not recorded. Sending it confirms its classification as a question
+    about procedure. Its text, its review and the reading of each answer are in `docs/ORGANIZER_QUESTIONS.md`.
+  - **Where an answer can arrive, and a gap** (a side agent's note, forwarded by the captain the same day). The email
+    lets the organisers answer with a line on their Data Protocol page. Only a screening agent reads that page, at
+    the captain's say-so; the screened check of 26-27 Nov did not name it and comes after the last day a Task 1 build
+    change can still be rehearsed (about 24 Nov). So the AI assistant asks the captain for two screened reads, about
+    19 and 23 Nov, of the Data Protocol page, the Slack channel and the mailbox, with their scope fixed beforehand in
+    `docs/ORGANIZER_QUESTIONS.md`: only which released sample the two hidden samples were processed with, or by which
+    protocol; every number replaced; everything else withheld. A reply that reaches the captain's inbox is not pasted
+    into the session: a screening agent reads it first. None of these reads has run.
+  - **The harness files brought up to date:** `session-handoff.md` (it described 2026-11-04), `AGENTS.md` (rule 3:
+    a reading against a fold target needs its row first; rule 8: the renewal of 2026-11-12 and what it lifts; the
+    compute invariant's exception), `docs/COMPUTE.md` (the local machine during the campaign), `README.md`,
+    `METHOD_SUMMARY.md` (status and what the campaign tried), `progress.md` (every section), `feature_list.json`,
+    `ASSUMPTIONS.md`, `docs/P3_RUNBOOK.md` and the ledger's list of candidates pruned before running. Nothing in them
+    changes an entry or a rule.
+  - **One more build of each of R-A's candidate files,** from the clean tree at 1f8956b: the same hashes as before.
+    The record is `experiments/builds/results/determinism_1f8956b.txt` (four builds of option 1 and three of
+    option 2, one sha256 each).
+

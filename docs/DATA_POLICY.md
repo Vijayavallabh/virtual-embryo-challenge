@@ -937,3 +937,21 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     the build logs or stamps' cell numbers. The second pair was built from a tree with the uncommitted build option.
   - **The fourth devil's-advocate agent** got the claim, its evidence, the rules and a list of committed files, with
     the instruction to open nothing else.
+- 2026-11-13 (c), process notes after the captain sent the seventh organiser email (`docs/PLAN.md` decision log
+  2026-11-13 (c)); written by the AI assistant.
+  - **The email is sent, and its classification is confirmed by that:** a question about procedure (which released
+    sample a held-out sample was processed with; the same or another protocol), not about a measured property.
+  - **How an answer is read, fixed before any answer exists.** A reply in the captain's inbox is not pasted into the
+    main session; the captain says that one has arrived. Every read of an answer (the mailbox, the Slack channel, the
+    Data Protocol page) is made by a screening agent at the captain's say-so. The screen passes on only a statement of
+    which released sample the E7.75 sections or the E12.5 Multiome libraries were processed with, or of the same or
+    another protocol, with every number replaced by [n]. Withheld: any measured or relative property of a held-out
+    sample, anything about other held-out samples, and any other change to a page beyond the fact that it changed.
+    What each answer changes in the advice is fixed in `docs/ORGANIZER_QUESTIONS.md` ("Seventh email"); nothing in an
+    upload changes without the captain's ruling. The AI assistant asked the captain for two such reads, about 19 and
+    23 Nov; none has run.
+  - **A slip in reading build stamps.** While recording the reproducibility check, the main session printed the
+    provenance fields of two test-build stamps and, with them, the stamp's `size` field: the size in bytes of our own
+    embryo test file. It is not a cell number and it is no property of a hidden target, but it follows from the
+    board's count rule, so it is quoted in no file and used for nothing. Stamps are read by named field from now on
+    (commit, clean, sha256).

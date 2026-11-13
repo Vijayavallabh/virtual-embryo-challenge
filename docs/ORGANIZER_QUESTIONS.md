@@ -58,6 +58,7 @@ ranked entries show that the specs reach teams. Their main use is scale, in the 
 | External sources "with each submission" (not asked; `EXTERNAL_DATA.md`) | The form has no disclosure field, so a dated private statement before the upload meets it (0.8) | Private email before the first upload (`docs/P3_RUNBOOK.md`); `--model sources-disclosed-by-email` on every upload |
 | Where the method summary goes (not asked) | The organisers' address, since no route is published for a claimant outside the places (0.55) | Sent privately in the plan's 24-30 Nov slot unless the screened check finds a route |
 | Human Team status (not asked) | A team steering AI tools, with a person deciding every upload, is a Human Team; the Agent track is locked, unsteered runs (about 0.97, low confidence: the Rules' definition is in no file the review could read) | The screened check before the first upload quotes the Rules' definition |
+| Processing batches of two held-out samples (seventh email, 2026-11-13) | Probably unanswered. If answered: a one-line procedural reply, perhaps posted for every team (a useful reply before the freeze at about 0.05 to 0.1, the strategy reviewer's estimate of 2026-11-13; not part of the review of 2026-11-10) | R-A and R-B as they stand. An answer is read as "Seventh email" below fixes it, through a screening agent |
 
 ## Working answers (2026-10-31): predicted, not ruled
 
@@ -355,18 +356,36 @@ Best regards,
 Vijayavallabh J
 Team captain, Mithril
 
-## Seventh email (drafted 2026-11-13; waits for the captain)
+## Seventh email (sent 2026-11-13)
 
 Request R-C of `docs/PLAN.md` decision log 2026-11-12 (c). On 2026-11-13 the captain forwarded a side agent's note to the
 main session ("If you want it, ask the main agent to draft R-C now"); the AI assistant read the forwarded note as that
-request and drafted the email in the drafts of be23b041@smail.iitm.ac.in, to virtual.embryo.moonshot@gmail.com. Not
-sent: the captain reviews and sends it, or deletes it. Answers: _pending_.
+request and drafted the email in the drafts of be23b041@smail.iitm.ac.in, to virtual.embryo.moonshot@gmail.com. The
+captain sent it on 2026-11-13 (the captain's words in the main session: "i also sent the draft"; the draft had left
+the drafts folder when checked, and the sent copy was not opened, so any edit before sending is not recorded).
+Answers: _pending_ (record them here and in `docs/DATA_POLICY.md`). A reply is not pasted into the main session: a
+screening agent reads it first and passes on the procedural answer only, as the classification below requires.
 
 **Classification, stated before any answer.** What it asks is procedure: which released sample a held-out sample was
 processed with, and whether a protocol was the same. That is the class of the collection text released through the
 screen on 2026-11-10, not a measured property. A reply that carries a figure about a held-out sample (a count, a depth,
 a size, a share) is not read into any file or decision; using one would need the captain's named exception, fixed
-before the read, as on 2026-11-11. The captain confirms this classification by sending the email.
+before the read, as on 2026-11-11. The captain confirmed this classification by sending the email.
+
+**Where an answer can appear, and who reads it** (added 2026-11-13 after a side agent's note to the captain). The
+email lets the organisers answer by reply or with a line on their Data Protocol page, and they have also answered in
+public before. None of these reads has run; each needs the captain's say-so.
+- A reply by email reaches the captain's inbox. The captain tells the session that one has arrived and does not paste
+  it; a screening agent reads it and passes on the procedural answer only.
+- A line on the Data Protocol page. Only a screening agent reads that page, at the captain's say-so, and the screened
+  check of 26-27 Nov did not name it. That check is also too late for a Task 1 build change, which has to be
+  rehearsed by about 24 Nov. The AI assistant therefore asks the captain for two screened reads of the page, about
+  19 and 23 Nov.
+- A post in #virtual-embryo-challenge, read through the same screened check as the thread of 2026-11-11.
+- Scope of every such read, fixed before any of them: the screen passes on only a statement of which released sample
+  the E7.75 sections or the E12.5 Multiome libraries were processed with, or of the same or another protocol, with
+  every number replaced by [n]. Everything else stays withheld: any measured or relative property of a held-out
+  sample, anything about other held-out samples, and any other change to the page beyond the fact that it changed.
 
 **The review.** Three reviewers (accuracy, strategy, tone; single agents given only the draft, the recorded quotes and
 the stakes) each returned "send with edits". What changed:

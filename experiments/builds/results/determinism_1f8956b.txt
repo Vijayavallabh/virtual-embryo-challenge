@@ -1,0 +1,20 @@
+# Reproducibility of the two candidate second uploads of request R-A for the embryo board (docs/PLAN.md decision log
+# 2026-11-13 (a) and (b)), on the local machine, 2026-11-12 and 2026-11-13. Neither file is an entry; none was uploaded
+# or format-checked on the server. Each build: experiments/builds/build_test.py embryo at the default build seed
+# (1000001) with OMP_NUM_THREADS = OPENBLAS_NUM_THREADS = MKL_NUM_THREADS = 16 and NUMPY_MADVISE_HUGEPAGE=0; then
+# `vec check FILE --board T2:embryo:test_interp`. Target-free: released inputs only, no target read, no score.
+# Read: exit codes, the files' sha256 and the stamps' commit and clean fields. Not read: the build and check logs,
+# which print cell numbers. One thread count only: a rendered file's bytes follow the BLAS thread count (decision
+# log 2026-11-13 (a)), so the freeze-morning rebuild must run at 16 threads, as build_all.sh does.
+== option 1: --method fgw --move-coupling aligned --expression series
+2026-11-12 at 772ef93 (stamp not clean: the series option was then uncommitted): 41982d8afd784ecb07a4021077f701c3806c3bdb06eda92c2cb99fcc41b19b73, build exit 0
+2026-11-13 at 33204be (clean tree): 41982d8afd784ecb07a4021077f701c3806c3bdb06eda92c2cb99fcc41b19b73, build exit 0, vec check exit 0
+2026-11-13 at 33204be (clean tree): 41982d8afd784ecb07a4021077f701c3806c3bdb06eda92c2cb99fcc41b19b73, build exit 0
+2026-11-13 at 1f8956b (clean tree): 41982d8afd784ecb07a4021077f701c3806c3bdb06eda92c2cb99fcc41b19b73, build exit 0, vec check exit 0
+== option 2: --method fgw_shape0 --expression render_hi (the option was committed at 82dcd69)
+2026-11-13 at 33204be (stamp not clean: the option was then uncommitted): 735235e242ff61d69b85775aeaf2ea9db1b6e421615210cb465f5b2a2e8ac149, build exit 0, vec check exit 0
+2026-11-13 at 33204be (stamp not clean: the same): 735235e242ff61d69b85775aeaf2ea9db1b6e421615210cb465f5b2a2e8ac149, build exit 0
+2026-11-13 at 1f8956b (clean tree): 735235e242ff61d69b85775aeaf2ea9db1b6e421615210cb465f5b2a2e8ac149, build exit 0, vec check exit 0
+== verdict
+option 1: four builds, one sha256. option 2: three builds, one sha256. The files stay in runs/builds_check_local/ on
+the local machine (gitignored) and are rebuilt at the freeze commit if the captain rules for one of them.
