@@ -1,6 +1,23 @@
 {
- "label": "the built T1 pair against the lib3 pair inside forecast.py's model: aggregation of committed results, not a try; the comparison lines are applied to the finished draws only",
- "t32_commit": "2e4e939e8a658ffd8279ed5a38201dfaf4bf02df",
+ "label": "the built T1 pair against the pairs tries T32 and T33 priced, inside forecast.py's model: aggregation of committed results, not a try; the comparison lines are applied to the finished draws only",
+ "pairs": {
+  "built": [
+   "lib3_base",
+   "s1_cm60"
+  ],
+  "lib3_pair": [
+   "lib3_base",
+   "lib3_cm60"
+  ],
+  "mid_s2": [
+   "lib3_base",
+   "mid_cm60"
+  ],
+  "mid_both": [
+   "mid_base",
+   "mid_cm60"
+  ]
+ },
  "draws": 1000000,
  "rng_seed": 20261105,
  "lines": {
@@ -15,24 +32,61 @@
    "depth_weights": null,
    "built": {
     "t1_mean_better_of_two": 70.1418689939369,
+    "t1_mean_first_upload": 66.00311545681053,
     "total_mean": 193.718953734779,
     "p_203.00": 0.194171,
     "p_205.32": 0.103359,
     "p_209.00": 0.021267
    },
    "lib3_pair": {
-    "t1_mean_better_of_two": 70.73781868918591,
-    "total_mean": 194.3152020306783,
+    "t1_mean_better_of_two": 70.7378228599991,
+    "t1_mean_first_upload": 66.00311545681053,
+    "total_mean": 194.3152061948432,
     "p_203.00": 0.220959,
     "p_205.32": 0.126388,
     "p_209.00": 0.029084
    },
-   "lib3_pair_minus_built": {
-    "t1_mean_better_of_two": 0.5959496952490184,
-    "total_mean": 0.5962482958993007,
-    "p_203.00": 0.02678799999999998,
-    "p_205.32": 0.023028999999999994,
-    "p_209.00": 0.007816999999999998
+   "mid_s2": {
+    "t1_mean_better_of_two": 70.61894454451107,
+    "t1_mean_first_upload": 66.00311545681053,
+    "total_mean": 194.19606377803777,
+    "p_203.00": 0.214975,
+    "p_205.32": 0.11978,
+    "p_209.00": 0.026164
+   },
+   "mid_both": {
+    "t1_mean_better_of_two": 70.58091562526114,
+    "t1_mean_first_upload": 65.74722835458378,
+    "total_mean": 194.15815490823908,
+    "p_203.00": 0.213058,
+    "p_205.32": 0.115648,
+    "p_209.00": 0.023247
+   },
+   "minus_built": {
+    "lib3_pair": {
+     "t1_mean_better_of_two": 0.595953866062203,
+     "t1_mean_first_upload": 0.0,
+     "total_mean": 0.5962524600641927,
+     "p_203.00": 0.02678799999999998,
+     "p_205.32": 0.023028999999999994,
+     "p_209.00": 0.007816999999999998
+    },
+    "mid_s2": {
+     "t1_mean_better_of_two": 0.4770755505741704,
+     "t1_mean_first_upload": 0.0,
+     "total_mean": 0.4771100432587616,
+     "p_203.00": 0.02080399999999999,
+     "p_205.32": 0.01642099999999999,
+     "p_209.00": 0.004896999999999999
+    },
+    "mid_both": {
+     "t1_mean_better_of_two": 0.4390466313242456,
+     "t1_mean_first_upload": -0.25588710222675104,
+     "total_mean": 0.43920117346007714,
+     "p_203.00": 0.018886999999999987,
+     "p_205.32": 0.012288999999999994,
+     "p_209.00": 0.001979999999999999
+    }
    }
   },
   "P(deep) low": {
@@ -41,24 +95,61 @@
    "depth_weights": null,
    "built": {
     "t1_mean_better_of_two": 69.53244545185791,
+    "t1_mean_first_upload": 64.9109088260926,
     "total_mean": 193.1062493789854,
     "p_203.00": 0.166817,
     "p_205.32": 0.081704,
     "p_209.00": 0.013869
    },
    "lib3_pair": {
-    "t1_mean_better_of_two": 69.6289078607495,
-    "total_mean": 193.2036446674669,
+    "t1_mean_better_of_two": 69.62890980712898,
+    "t1_mean_first_upload": 64.9109088260926,
+    "total_mean": 193.20364661618967,
     "p_203.00": 0.173033,
     "p_205.32": 0.088598,
     "p_209.00": 0.016942
    },
-   "lib3_pair_minus_built": {
-    "t1_mean_better_of_two": 0.09646240889158264,
-    "total_mean": 0.09739528848149348,
-    "p_203.00": 0.006215999999999999,
-    "p_205.32": 0.006893999999999997,
-    "p_209.00": 0.0030729999999999993
+   "mid_s2": {
+    "t1_mean_better_of_two": 69.73239554892687,
+    "t1_mean_first_upload": 64.9109088260926,
+    "total_mean": 193.3067156727883,
+    "p_203.00": 0.17604,
+    "p_205.32": 0.089015,
+    "p_209.00": 0.016256
+   },
+   "mid_both": {
+    "t1_mean_better_of_two": 69.9491667474088,
+    "t1_mean_first_upload": 65.11700505836555,
+    "total_mean": 193.52378401552312,
+    "p_203.00": 0.185263,
+    "p_205.32": 0.093381,
+    "p_209.00": 0.016161
+   },
+   "minus_built": {
+    "lib3_pair": {
+     "t1_mean_better_of_two": 0.09646435527106689,
+     "t1_mean_first_upload": 0.0,
+     "total_mean": 0.09739723720426241,
+     "p_203.00": 0.006215999999999999,
+     "p_205.32": 0.006893999999999997,
+     "p_209.00": 0.0030729999999999993
+    },
+    "mid_s2": {
+     "t1_mean_better_of_two": 0.19995009706896383,
+     "t1_mean_first_upload": 0.0,
+     "total_mean": 0.20046629380289005,
+     "p_203.00": 0.009223000000000009,
+     "p_205.32": 0.007310999999999998,
+     "p_209.00": 0.0023870000000000002
+    },
+    "mid_both": {
+     "t1_mean_better_of_two": 0.4167212955508859,
+     "t1_mean_first_upload": 0.20609623227295515,
+     "total_mean": 0.4175346365377095,
+     "p_203.00": 0.018446000000000018,
+     "p_205.32": 0.011677000000000007,
+     "p_209.00": 0.002291999999999999
+    }
    }
   },
   "P(deep) high": {
@@ -67,24 +158,61 @@
    "depth_weights": null,
    "built": {
     "t1_mean_better_of_two": 70.37040282221655,
+    "t1_mean_first_upload": 66.41269294332972,
     "total_mean": 193.94869637291845,
     "p_203.00": 0.204356,
     "p_205.32": 0.111536,
     "p_209.00": 0.024194
    },
    "lib3_pair": {
-    "t1_mean_better_of_two": 71.15366024984957,
-    "total_mean": 194.73088678511527,
+    "t1_mean_better_of_two": 71.1536652548254,
+    "t1_mean_first_upload": 66.41269294332972,
+    "total_mean": 194.73089191831707,
     "p_203.00": 0.239383,
     "p_205.32": 0.140538,
     "p_209.00": 0.033848
    },
-   "lib3_pair_minus_built": {
-    "t1_mean_better_of_two": 0.7832574276330178,
-    "total_mean": 0.782190412196826,
-    "p_203.00": 0.035027,
-    "p_205.32": 0.029002,
-    "p_209.00": 0.009654000000000003
+   "mid_s2": {
+    "t1_mean_better_of_two": 70.95140041785515,
+    "t1_mean_first_upload": 66.41269294332972,
+    "total_mean": 194.52920079191384,
+    "p_203.00": 0.229831,
+    "p_205.32": 0.131377,
+    "p_209.00": 0.030136
+   },
+   "mid_both": {
+    "t1_mean_better_of_two": 70.81782145445578,
+    "t1_mean_first_upload": 65.98356209066561,
+    "total_mean": 194.39520143687744,
+    "p_203.00": 0.223791,
+    "p_205.32": 0.124179,
+    "p_209.00": 0.025914
+   },
+   "minus_built": {
+    "lib3_pair": {
+     "t1_mean_better_of_two": 0.7832624326088506,
+     "t1_mean_first_upload": 0.0,
+     "total_mean": 0.782195545398622,
+     "p_203.00": 0.035027,
+     "p_205.32": 0.029002,
+     "p_209.00": 0.009654000000000003
+    },
+    "mid_s2": {
+     "t1_mean_better_of_two": 0.5809975956386069,
+     "t1_mean_first_upload": 0.0,
+     "total_mean": 0.580504418995389,
+     "p_203.00": 0.025474999999999998,
+     "p_205.32": 0.019840999999999998,
+     "p_209.00": 0.005941999999999999
+    },
+    "mid_both": {
+     "t1_mean_better_of_two": 0.44741863223923417,
+     "t1_mean_first_upload": -0.4291308526641018,
+     "total_mean": 0.4465050639589947,
+     "p_203.00": 0.01943499999999998,
+     "p_205.32": 0.012643000000000001,
+     "p_209.00": 0.0017199999999999993
+    }
    }
   },
   "k low": {
@@ -93,24 +221,61 @@
    "depth_weights": null,
    "built": {
     "t1_mean_better_of_two": 69.84729292896878,
+    "t1_mean_first_upload": 65.41512844018017,
     "total_mean": 193.42433815758397,
     "p_203.00": 0.180532,
     "p_205.32": 0.089216,
     "p_209.00": 0.014545
    },
    "lib3_pair": {
-    "t1_mean_better_of_two": 70.15211498166383,
-    "total_mean": 193.7293126504041,
+    "t1_mean_better_of_two": 70.15211737693015,
+    "t1_mean_first_upload": 65.41512844018017,
+    "total_mean": 193.7293150487293,
     "p_203.00": 0.193992,
     "p_205.32": 0.09969,
     "p_209.00": 0.017565
    },
-   "lib3_pair_minus_built": {
-    "t1_mean_better_of_two": 0.3048220526950445,
-    "total_mean": 0.3049744928201221,
-    "p_203.00": 0.01346,
-    "p_205.32": 0.010473999999999997,
-    "p_209.00": 0.00302
+   "mid_s2": {
+    "t1_mean_better_of_two": 70.09318813930811,
+    "t1_mean_first_upload": 65.41512844018017,
+    "total_mean": 193.67026654538083,
+    "p_203.00": 0.191147,
+    "p_205.32": 0.097083,
+    "p_209.00": 0.016609
+   },
+   "mid_both": {
+    "t1_mean_better_of_two": 70.07498851588309,
+    "t1_mean_first_upload": 65.2871848890668,
+    "total_mean": 193.6521403079658,
+    "p_203.00": 0.190298,
+    "p_205.32": 0.095723,
+    "p_209.00": 0.015832
+   },
+   "minus_built": {
+    "lib3_pair": {
+     "t1_mean_better_of_two": 0.30482444796136576,
+     "t1_mean_first_upload": 0.0,
+     "total_mean": 0.3049768911453157,
+     "p_203.00": 0.01346,
+     "p_205.32": 0.010473999999999997,
+     "p_209.00": 0.00302
+    },
+    "mid_s2": {
+     "t1_mean_better_of_two": 0.24589521033932726,
+     "t1_mean_first_upload": 0.0,
+     "total_mean": 0.24592838779685167,
+     "p_203.00": 0.010615000000000013,
+     "p_205.32": 0.007866999999999999,
+     "p_209.00": 0.002063999999999998
+    },
+    "mid_both": {
+     "t1_mean_better_of_two": 0.22769558691430802,
+     "t1_mean_first_upload": -0.12794355111337552,
+     "total_mean": 0.2278021503818195,
+     "p_203.00": 0.009765999999999997,
+     "p_205.32": 0.006506999999999999,
+     "p_209.00": 0.0012869999999999982
+    }
    }
   },
   "k high": {
@@ -119,24 +284,61 @@
    "depth_weights": null,
    "built": {
     "t1_mean_better_of_two": 70.575734570559,
+    "t1_mean_first_upload": 66.76749857843,
     "total_mean": 194.1531359874036,
     "p_203.00": 0.212872,
     "p_205.32": 0.124982,
     "p_209.00": 0.035502
    },
    "lib3_pair": {
-    "t1_mean_better_of_two": 71.50253531234772,
-    "total_mean": 195.08022311155773,
-    "p_203.00": 0.254107,
+    "t1_mean_better_of_two": 71.50253941104728,
+    "t1_mean_first_upload": 66.76749857843,
+    "total_mean": 195.08022726907515,
+    "p_203.00": 0.254108,
     "p_205.32": 0.164383,
     "p_209.00": 0.052487
    },
-   "lib3_pair_minus_built": {
-    "t1_mean_better_of_two": 0.9268007417887105,
-    "total_mean": 0.9270871241541272,
-    "p_203.00": 0.04123500000000002,
-    "p_205.32": 0.039401000000000005,
-    "p_209.00": 0.016985
+   "mid_s2": {
+    "t1_mean_better_of_two": 71.30540242569799,
+    "t1_mean_first_upload": 66.76749857843,
+    "total_mean": 194.88256755430263,
+    "p_203.00": 0.244544,
+    "p_205.32": 0.152496,
+    "p_209.00": 0.045265
+   },
+   "mid_both": {
+    "t1_mean_better_of_two": 71.23981263750753,
+    "t1_mean_first_upload": 66.3452848597559,
+    "total_mean": 194.81718528865258,
+    "p_203.00": 0.242191,
+    "p_205.32": 0.145085,
+    "p_209.00": 0.037179
+   },
+   "minus_built": {
+    "lib3_pair": {
+     "t1_mean_better_of_two": 0.9268048404882734,
+     "t1_mean_first_upload": 0.0,
+     "total_mean": 0.9270912816715509,
+     "p_203.00": 0.041235999999999995,
+     "p_205.32": 0.039401000000000005,
+     "p_209.00": 0.016985
+    },
+    "mid_s2": {
+     "t1_mean_better_of_two": 0.7296678551389846,
+     "t1_mean_first_upload": 0.0,
+     "total_mean": 0.7294315668990237,
+     "p_203.00": 0.031672000000000006,
+     "p_205.32": 0.027513999999999997,
+     "p_209.00": 0.009763
+    },
+    "mid_both": {
+     "t1_mean_better_of_two": 0.6640780669485196,
+     "t1_mean_first_upload": -0.42221371867408664,
+     "total_mean": 0.6640493012489799,
+     "p_203.00": 0.029318999999999984,
+     "p_205.32": 0.020102999999999996,
+     "p_209.00": 0.001676999999999998
+    }
    }
   },
   "P(deep) low, k high": {
@@ -145,24 +347,61 @@
    "depth_weights": null,
    "built": {
     "t1_mean_better_of_two": 69.5389672180694,
+    "t1_mean_first_upload": 64.96535763774546,
     "total_mean": 193.11252457761535,
     "p_203.00": 0.168499,
     "p_205.32": 0.088311,
     "p_209.00": 0.020061
    },
    "lib3_pair": {
-    "t1_mean_better_of_two": 69.67502383211836,
-    "total_mean": 193.24988909207303,
+    "t1_mean_better_of_two": 69.67502574484482,
+    "t1_mean_first_upload": 64.96535763774546,
+    "total_mean": 193.24989103042068,
     "p_203.00": 0.177817,
     "p_205.32": 0.101288,
     "p_209.00": 0.027236
    },
-   "lib3_pair_minus_built": {
-    "t1_mean_better_of_two": 0.13605661404895386,
-    "total_mean": 0.13736451445768694,
-    "p_203.00": 0.009317999999999993,
-    "p_205.32": 0.012977000000000002,
-    "p_209.00": 0.007175000000000001
+   "mid_s2": {
+    "t1_mean_better_of_two": 69.84209610919332,
+    "t1_mean_first_upload": 64.96535763774546,
+    "total_mean": 193.41634797535156,
+    "p_203.00": 0.182452,
+    "p_205.32": 0.100853,
+    "p_209.00": 0.024738
+   },
+   "mid_both": {
+    "t1_mean_better_of_two": 70.19768357598228,
+    "t1_mean_first_upload": 65.30541642099578,
+    "total_mean": 193.7724029452803,
+    "p_203.00": 0.196596,
+    "p_205.32": 0.10609,
+    "p_209.00": 0.022604
+   },
+   "minus_built": {
+    "lib3_pair": {
+     "t1_mean_better_of_two": 0.13605852677541463,
+     "t1_mean_first_upload": 0.0,
+     "total_mean": 0.1373664528053382,
+     "p_203.00": 0.009317999999999993,
+     "p_205.32": 0.012977000000000002,
+     "p_209.00": 0.007175000000000001
+    },
+    "mid_s2": {
+     "t1_mean_better_of_two": 0.3031288911239187,
+     "t1_mean_first_upload": 0.0,
+     "total_mean": 0.3038233977362097,
+     "p_203.00": 0.013952999999999993,
+     "p_205.32": 0.012541999999999998,
+     "p_209.00": 0.004677000000000001
+    },
+    "mid_both": {
+     "t1_mean_better_of_two": 0.6587163579128799,
+     "t1_mean_first_upload": 0.3400587832503277,
+     "total_mean": 0.6598783676649589,
+     "p_203.00": 0.028096999999999983,
+     "p_205.32": 0.017779000000000003,
+     "p_209.00": 0.002543
+    }
    }
   },
   "T30 latest depths": {
@@ -175,24 +414,61 @@
    },
    "built": {
     "t1_mean_better_of_two": 69.42121250147062,
+    "t1_mean_first_upload": 64.74736924556343,
     "total_mean": 192.99308726668113,
     "p_203.00": 0.16171,
     "p_205.32": 0.076776,
     "p_209.00": 0.011531
    },
    "lib3_pair": {
-    "t1_mean_better_of_two": 69.39379670889696,
-    "total_mean": 192.96582670644977,
+    "t1_mean_better_of_two": 69.39379463352442,
+    "t1_mean_first_upload": 64.74736924556343,
+    "total_mean": 192.96582464894166,
     "p_203.00": 0.1623,
     "p_205.32": 0.078811,
     "p_209.00": 0.012781
    },
-   "lib3_pair_minus_built": {
-    "t1_mean_better_of_two": -0.02741579257366311,
-    "total_mean": -0.027260560231354702,
-    "p_203.00": 0.0005900000000000072,
-    "p_205.32": 0.002035000000000009,
-    "p_209.00": 0.0012500000000000011
+   "mid_s2": {
+    "t1_mean_better_of_two": 69.57331435929035,
+    "t1_mean_first_upload": 64.74736924556343,
+    "total_mean": 193.14519082074594,
+    "p_203.00": 0.168659,
+    "p_205.32": 0.082316,
+    "p_209.00": 0.013281
+   },
+   "mid_both": {
+    "t1_mean_better_of_two": 69.8494112417594,
+    "t1_mean_first_upload": 65.04886255317925,
+    "total_mean": 193.42149838508462,
+    "p_203.00": 0.180379,
+    "p_205.32": 0.089407,
+    "p_209.00": 0.014582
+   },
+   "minus_built": {
+    "lib3_pair": {
+     "t1_mean_better_of_two": -0.02741786794619827,
+     "t1_mean_first_upload": 0.0,
+     "total_mean": -0.027262617739467032,
+     "p_203.00": 0.0005900000000000072,
+     "p_205.32": 0.002035000000000009,
+     "p_209.00": 0.0012500000000000011
+    },
+    "mid_s2": {
+     "t1_mean_better_of_two": 0.15210185781972996,
+     "t1_mean_first_upload": 0.0,
+     "total_mean": 0.15210355406480858,
+     "p_203.00": 0.006949000000000011,
+     "p_205.32": 0.005540000000000003,
+     "p_209.00": 0.0017499999999999998
+    },
+    "mid_both": {
+     "t1_mean_better_of_two": 0.4281987402887779,
+     "t1_mean_first_upload": 0.3014933076158144,
+     "total_mean": 0.42841111840348844,
+     "p_203.00": 0.01866900000000002,
+     "p_205.32": 0.012631000000000003,
+     "p_209.00": 0.003051
+    }
    }
   },
   "T30 latest, k high": {
@@ -205,24 +481,61 @@
    },
    "built": {
     "t1_mean_better_of_two": 69.34461374791341,
+    "t1_mean_first_upload": 64.69551732987232,
     "total_mean": 192.91669691583627,
     "p_203.00": 0.160722,
     "p_205.32": 0.079529,
     "p_209.00": 0.014494
    },
    "lib3_pair": {
-    "t1_mean_better_of_two": 69.28706347968419,
-    "total_mean": 192.85926968091687,
+    "t1_mean_better_of_two": 69.28706005531951,
+    "t1_mean_first_upload": 64.69551732987232,
+    "total_mean": 192.85926628602851,
     "p_203.00": 0.161726,
     "p_205.32": 0.083996,
     "p_209.00": 0.017428
    },
-   "lib3_pair_minus_built": {
-    "t1_mean_better_of_two": -0.05755026822922105,
-    "total_mean": -0.057427234919401826,
-    "p_203.00": 0.0010040000000000049,
-    "p_205.32": 0.004466999999999999,
-    "p_209.00": 0.002933999999999999
+   "mid_s2": {
+    "t1_mean_better_of_two": 69.57908442340933,
+    "t1_mean_first_upload": 64.69551732987232,
+    "total_mean": 193.15111177813083,
+    "p_203.00": 0.171579,
+    "p_205.32": 0.08911,
+    "p_209.00": 0.017916
+   },
+   "mid_both": {
+    "t1_mean_better_of_two": 70.03339087548306,
+    "t1_mean_first_upload": 65.1929812874384,
+    "total_mean": 193.6057313229352,
+    "p_203.00": 0.189274,
+    "p_205.32": 0.098979,
+    "p_209.00": 0.019187
+   },
+   "minus_built": {
+    "lib3_pair": {
+     "t1_mean_better_of_two": -0.057553692593899086,
+     "t1_mean_first_upload": 0.0,
+     "total_mean": -0.057430629807754485,
+     "p_203.00": 0.0010040000000000049,
+     "p_205.32": 0.004466999999999999,
+     "p_209.00": 0.002933999999999999
+    },
+    "mid_s2": {
+     "t1_mean_better_of_two": 0.23447067549591338,
+     "t1_mean_first_upload": 0.0,
+     "total_mean": 0.23441486229455677,
+     "p_203.00": 0.010857000000000006,
+     "p_205.32": 0.009580999999999992,
+     "p_209.00": 0.0034220000000000014
+    },
+    "mid_both": {
+     "t1_mean_better_of_two": 0.6887771275696508,
+     "t1_mean_first_upload": 0.4974639575660831,
+     "total_mean": 0.6890344070989443,
+     "p_203.00": 0.028551999999999994,
+     "p_205.32": 0.019449999999999995,
+     "p_209.00": 0.004692999999999999
+    }
    }
   },
   "T30 flat depths": {
@@ -236,24 +549,61 @@
    },
    "built": {
     "t1_mean_better_of_two": 69.73649971692463,
+    "t1_mean_first_upload": 65.29675821298405,
     "total_mean": 193.30751749064626,
     "p_203.00": 0.175695,
     "p_205.32": 0.088163,
     "p_209.00": 0.015814
    },
    "lib3_pair": {
-    "t1_mean_better_of_two": 69.98180632527338,
-    "total_mean": 193.5543494915873,
+    "t1_mean_better_of_two": 69.98180698260711,
+    "t1_mean_first_upload": 65.29675821298405,
+    "total_mean": 193.55435015740187,
     "p_203.00": 0.187791,
-    "p_205.32": 0.099175,
+    "p_205.32": 0.099174,
     "p_209.00": 0.019951
    },
-   "lib3_pair_minus_built": {
-    "t1_mean_better_of_two": 0.24530660834875562,
-    "total_mean": 0.2468320009410263,
-    "p_203.00": 0.012096000000000023,
-    "p_205.32": 0.011011999999999994,
-    "p_209.00": 0.004136999999999998
+   "mid_s2": {
+    "t1_mean_better_of_two": 70.03077756532443,
+    "t1_mean_first_upload": 65.29675821298405,
+    "total_mean": 193.6025740701611,
+    "p_203.00": 0.188824,
+    "p_205.32": 0.09842,
+    "p_209.00": 0.018981
+   },
+   "mid_both": {
+    "t1_mean_better_of_two": 70.16944440954143,
+    "t1_mean_first_upload": 65.35439759129375,
+    "total_mean": 193.74094794729027,
+    "p_203.00": 0.194522,
+    "p_205.32": 0.100557,
+    "p_209.00": 0.018401
+   },
+   "minus_built": {
+    "lib3_pair": {
+     "t1_mean_better_of_two": 0.2453072656824844,
+     "t1_mean_first_upload": 0.0,
+     "total_mean": 0.24683266675560844,
+     "p_203.00": 0.012096000000000023,
+     "p_205.32": 0.011010999999999993,
+     "p_209.00": 0.004136999999999998
+    },
+    "mid_s2": {
+     "t1_mean_better_of_two": 0.2942778483998012,
+     "t1_mean_first_upload": 0.0,
+     "total_mean": 0.295056579514835,
+     "p_203.00": 0.013129000000000002,
+     "p_205.32": 0.010256999999999988,
+     "p_209.00": 0.0031669999999999997
+    },
+    "mid_both": {
+     "t1_mean_better_of_two": 0.43294469261680035,
+     "t1_mean_first_upload": 0.05763937830970178,
+     "total_mean": 0.4334304566440039,
+     "p_203.00": 0.01882700000000001,
+     "p_205.32": 0.012393999999999988,
+     "p_209.00": 0.002586999999999999
+    }
    }
   }
  },
@@ -281,19 +631,6 @@
   "T30 d1.37 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
   "T30 d1.37 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
   "T30 d1.37 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
-  "T32 d0.35 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
-  "T32 d0.35 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
-  "T32 d0.35 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
-  "T32 d0.68 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
-  "T32 d0.68 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
-  "T32 d0.68 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
-  "T32 d1.0 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
-  "T32 d1.0 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
-  "T32 d1.0 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
-  "T32 d1.37 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
-  "T32 d1.37 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
-  "T32 d1.37 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
-  "T32's reading is not void",
   "embryo T2e/E6.75+E7.5->E7.25: emb_shape_v1's fgw is emb_fgw_v1's seed for seed (largest gap 0.0e+00)",
   "embryo T2e/E6.75+E7.5->E7.25: the floor is 50 on every seed (largest gap 0.0e+00)",
   "embryo T2e/E7.25+E8.0->E7.5: emb_shape_v1's fgw is emb_fgw_v1's seed for seed (largest gap 0.0e+00)",
@@ -313,6 +650,82 @@
   "heart T2h/<=E8.75->E10.5: the floor is 50 on the released truth and on the backtest (largest gap 0.0e+00)",
   "heart T2h/<=E9.5->E10.5 (experiments/s2_hedge/results/heart_scope/hedge_hold.json): the per-seed runs give the hedge file's hold alone under 5 stated priors (largest gap 7.1e-15)",
   "heart T2h/<=E9.5->E10.5 (experiments/s2_hedge/results/heart_scope/hedge_hold.json): the per-seed runs give the hedge file's the better of hold and half_radial under 5 stated priors (largest gap 2.1e-14)",
-  "heart T2h/<=E9.5->E10.5: the floor is 50 on the released truth and on the backtest (largest gap 0.0e+00)"
+  "heart T2h/<=E9.5->E10.5: the floor is 50 on the released truth and on the backtest (largest gap 0.0e+00)",
+  "t30 d0.35 cm0.45: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.35 cm0.45: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.35 cm0.45: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.35 cm0.60: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.35 cm0.60: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.35 cm0.60: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.35 cmown: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.35 cmown: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.35 cmown: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.68 cm0.45: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.68 cm0.45: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.68 cm0.45: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.68 cm0.60: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.68 cm0.60: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.68 cm0.60: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.68 cmown: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.68 cmown: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d0.68 cmown: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.0 cm0.45: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.0 cm0.45: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.0 cm0.45: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.0 cm0.60: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.0 cm0.60: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.0 cm0.60: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.0 cmown: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.0 cmown: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.0 cmown: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.37 cm0.45: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.37 cm0.45: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.37 cm0.45: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.37 cm0.60: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.37 cm0.60: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.37 cm0.60: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.37 cmown: lib3_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.37 cmown: s1_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30 d1.37 cmown: s1_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t30's reading is not void",
+  "t32 d0.35 cm0.45: lib3_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t32 d0.35 cm0.60: lib3_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t32 d0.35 cmown: lib3_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t32 d0.68 cm0.45: lib3_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t32 d0.68 cm0.60: lib3_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t32 d0.68 cmown: lib3_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t32 d1.0 cm0.45: lib3_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t32 d1.0 cm0.60: lib3_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t32 d1.0 cmown: lib3_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t32 d1.37 cm0.45: lib3_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t32 d1.37 cm0.60: lib3_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t32 d1.37 cmown: lib3_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t32's reading is not void",
+  "t33 d0.35 cm0.45: mid_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d0.35 cm0.45: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d0.35 cm0.60: mid_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d0.35 cm0.60: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d0.35 cmown: mid_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d0.35 cmown: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d0.68 cm0.45: mid_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d0.68 cm0.45: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d0.68 cm0.60: mid_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d0.68 cm0.60: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d0.68 cmown: mid_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d0.68 cmown: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d1.0 cm0.45: mid_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d1.0 cm0.45: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d1.0 cm0.60: mid_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d1.0 cm0.60: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d1.0 cmown: mid_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d1.0 cmown: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d1.37 cm0.45: mid_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d1.37 cm0.45: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d1.37 cm0.60: mid_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d1.37 cm0.60: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d1.37 cmown: mid_base's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33 d1.37 cmown: mid_cm60's per-seed scores give pricing.json's mean (largest gap 0.0e+00)",
+  "t33's reading is not void",
+  "the first upload's move is forecast.py's (lib3_base - s1_base, per seed)"
  ]
 }
