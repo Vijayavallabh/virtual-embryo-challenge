@@ -1042,7 +1042,7 @@ def _psb_size(ctx: BuildContext) -> Stage:
 
 def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixture", herd: bool = False,
          move_coupling: str = t2_build.MOVE_COUPLINGS[0], local_perm: bool = False,
-         draw: str = t2_build.DRAWS[0], t_mix: float | None = None) -> Stage:
+         draw: str = t2_build.DRAWS[0], t_mix: float | None = None, moves: str = t2_build.MOVES[0]) -> Stage:
     """The T2 embryo pipeline (docs/PLAN.md 4.2): displacement interpolation between the brackets at the target's
     time fraction (vec.t2_build.interpolate_clouds: fused Gromov-Wasserstein coupling, proper rotation, McCann moves,
     a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages. t_pos:
@@ -1053,7 +1053,9 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     (the entry) or "aligned" (try E10: the moves from vec.core.aligned_coupling in the rotated common frame).
     local_perm (try E15): after the draw, the positions are re-arranged among the drawn cells within coarse type and a
     fixed radius (vec.t2_build.local_type_permutation); the expression rows stay where they are. draw: "uniform" (the
-    entry) or "midpoint" (try E13, vec.t2_build._midpoint_draw; it needs the inputs' counts layer)."""
+    entry) or "midpoint" (try E13, vec.t2_build._midpoint_draw; it needs the inputs' counts layer). moves: "mean" (the
+    entry) or "polar" (campaign branch campaign/emb-polar: vec.t2_build.polar_moves, each cell moved by its anchors'
+    local linear map interpolated along its polar factors)."""
     t = ctx.task
     before, after = ctx.inputs["before"], ctx.inputs["after"]
     lo, hi = t.role_days["before"], t.role_days["after"]
@@ -1068,7 +1070,7 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
                                       target_rms=target_rms(ctx), t_pos=t_pos,
                                       with_partners=expression in ("blend", "latent"),
                                       herd=herd, move_coupling=move_coupling, draw=draw, log_depth=log_depth,
-                                      with_coupling=expression == "latent", t_mix=t_mix)
+                                      with_coupling=expression == "latent", t_mix=t_mix, moves=moves)
     if expression == "mixture":
         X = np.empty((len(res.rows), len(g)), dtype=np.float32)
         X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
@@ -1219,6 +1221,18 @@ def _fgw_aligned_trend(ctx: BuildContext) -> Stage:
     with fgw_trend_render's expression, the two existing code paths combined as fgw_aligned_hi combines the aligned
     moves with the top-up render. No constant is new."""
     return _fgw(ctx, move_coupling="aligned", expression="trend")
+
+
+def _fgw_polar(ctx: BuildContext) -> Stage:
+    """Campaign arm (branch campaign/emb-polar; REPORT.md recipe R10): the entry with the polar move on FGW's own
+    partners (vec.t2_build.polar_moves). No constant is new."""
+    return _fgw(ctx, moves="polar")
+
+
+def _fgw_aligned_polar_series(ctx: BuildContext) -> Stage:
+    """Campaign arm (branch campaign/emb-polar): the second upload as built (fgw_aligned_series) with the polar
+    move."""
+    return _fgw(ctx, move_coupling="aligned", expression="series", moves="polar")
 
 
 def _fgw_aligned_hi(ctx: BuildContext) -> Stage:
@@ -1706,6 +1720,19 @@ CANDIDATES = {
                                             "profile a trend through all the task's samples gives at the target's day, "
                                             "at the aligned positions", "rule": t2_build.TREND_RENDER_RULE,
                                     "alpha": t2_build.INTERP_ALPHA, "scope": "whole"}, requires=_trend_applies),
+    # the embryo polar moves (campaign branch campaign/emb-polar; REPORT.md recipe R10): one idea, two arms
+    "fgw_polar": Candidate("fgw_polar", frozenset({"T2"}), (), _fgw_polar,
+                           {"what": "fgw with every cell moved by its k nearest anchors' least-squares local linear "
+                                    "map, interpolated along its polar factors (rotation by the fraction of its angle, "
+                                    "stretch linearly); the entry's mean move where the map is a reflection, "
+                                    "degenerate or not finite", "moves": "polar", "alpha": t2_build.INTERP_ALPHA,
+                            "k": t2_build.INTERP_K, "scope": "whole"}, requires=_interp),
+    "fgw_aligned_polar_series": Candidate("fgw_aligned_polar_series", frozenset({"T2"}), (),
+                                          _fgw_aligned_polar_series,
+                                          {"what": "fgw_aligned_series (the second upload as built) with fgw_polar's "
+                                                   "polar move", "moves": "polar", "rule": t2_build.SERIES_RULE,
+                                           "alpha": t2_build.INTERP_ALPHA, "k": t2_build.INTERP_K, "scope": "whole"},
+                                          requires=_series_applies),
     "fgw_aligned_hi": Candidate("fgw_aligned_hi", frozenset({"T2"}), (), _fgw_aligned_hi,
                                 {"what": "fgw_aligned (try E10's aligned moves) with every cell at the deeper "
                                          "bracket's depth: a top-up-only file at the aligned positions",

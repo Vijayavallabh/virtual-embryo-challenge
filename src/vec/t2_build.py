@@ -1353,6 +1353,10 @@ MIDPOINT_K_ANCHORS = 15  # the coupled anchor pairs nearest a cell's moved posit
 MIDPOINT_KMEANS_SEED = 20261109  # the fixed random_state of the deterministic k-means (lloyd, n_init=1)
 MIDPOINT_STREAMS = (8, 9)  # random streams of the midpoint draw (before, after): not the interpolation's 0-5 or the
 # herd's and expression's 6 and 7
+# How a cell moves (campaign branch campaign/emb-polar; experiments/research_2026_11_runs/REPORT.md recipe R10): "mean"
+# (the entry: the mean displacement of its k nearest anchors) or "polar" (`polar_moves`: the anchors' local linear map
+# interpolated along its polar factors). No constant beyond the entry's k.
+MOVES = ("mean", "polar")
 
 
 def pchip_rms(days, rms, target_day: float) -> float:
@@ -1531,6 +1535,62 @@ def _midpoint_draw(Eb: np.ndarray, Ea: np.ndarray, ib: np.ndarray, ia: np.ndarra
                           "w_before": w_b, "w_after": w_a, "expected_before": expected_b, "expected_after": expected_a}}
 
 
+def polar_moves(Z: np.ndarray, anchors: np.ndarray, shifts: np.ndarray, near: np.ndarray,
+                tau: float) -> tuple[np.ndarray, dict]:
+    """The polar move (`interpolate_clouds(..., moves="polar")`, recipe R10 of
+    experiments/research_2026_11_runs/REPORT.md): every cell of one stage, at Z in the common frame, moved by the
+    local linear map of its own nearest anchors instead of their mean displacement.
+
+    For a cell, P are the positions of its anchors `anchors[near[cell]]`, D their displacements `shifts[near[cell]]`,
+    Q = P + D, p and q the centroids. A is the least-squares linear map with A (P_i - p) ~ (Q_i - q) (the
+    pseudo-inverse of the centred P). If A is finite, of full rank (numpy's default rank tolerance: its smallest
+    singular value above the largest times 3 x machine epsilon) and det(A) > 0, A = R S by its singular value
+    decomposition (R = U V^T a proper rotation, S = V diag(s) V^T) and the cell moves to
+        c(tau) + R(tau) ((1 - tau) I + tau S) (x - p),   c(tau) = p + tau (q - p),
+    R(tau) the rotation about R's axis by tau times R's angle. Otherwise (a reflection, a degenerate patch, non-finite
+    values) the cell keeps the entry's move x + tau mean(D), computed exactly as the entry computes it.
+
+    Returns the positions and the stage's record: the share of cells on the polar path, and over those cells the median
+    rotation angle in degrees and the median ratio of S's largest to smallest eigenvalue (None without such a cell)."""
+    from scipy.spatial.transform import Rotation
+
+    Z = np.asarray(Z, dtype=np.float64)
+    pos = Z + tau * shifts[near].mean(1)  # the entry's move, bit for bit
+    n = len(Z)
+    P = np.asarray(anchors, dtype=np.float64)[near]
+    Q = P + np.asarray(shifts, dtype=np.float64)[near]
+    with np.errstate(invalid="ignore"):  # a non-finite displacement gives a non-finite patch, refused below
+        p, q = P.mean(1), Q.mean(1)
+        X, Y = P - p[:, None, :], Q - q[:, None, :]
+    ok = np.isfinite(X).all((1, 2)) & np.isfinite(Y).all((1, 2)) & np.isfinite(Z).all(1)
+    A = np.full((n, 3, 3), np.nan)
+    if ok.any():
+        A[ok] = np.swapaxes(np.linalg.pinv(X[ok]) @ Y[ok], 1, 2)  # X A^T ~ Y
+    ok &= np.isfinite(A).all((1, 2))
+    U = np.zeros((n, 3, 3))
+    s = np.zeros((n, 3))
+    Vt = np.zeros((n, 3, 3))
+    if ok.any():
+        U[ok], s[ok], Vt[ok] = np.linalg.svd(A[ok])
+    ok &= s[:, -1] > s[:, 0] * 3 * np.finfo(np.float64).eps  # full rank (numpy.linalg.matrix_rank's tolerance)
+    ok &= s[:, -1] > 0.0
+    if ok.any():
+        ok[ok] = np.linalg.det(A[ok]) > 0.0
+    rec = {"share": float(ok.mean()) if n else 0.0, "median_rotation_deg": None, "median_stretch_ratio": None}
+    if not ok.any():
+        return pos, rec
+    R = U[ok] @ Vt[ok]
+    S = np.swapaxes(Vt[ok], 1, 2) @ (s[ok][:, :, None] * Vt[ok])
+    rotvec = Rotation.from_matrix(R).as_rotvec()
+    Rt = Rotation.from_rotvec(tau * rotvec).as_matrix()
+    M = Rt @ ((1.0 - tau) * np.eye(3) + tau * S)
+    po, qo = p[ok], q[ok]
+    pos[ok] = po + tau * (qo - po) + (M @ (Z[ok] - po)[:, :, None])[:, :, 0]
+    rec["median_rotation_deg"] = float(np.median(np.degrees(np.linalg.norm(rotvec, axis=1))))
+    rec["median_stretch_ratio"] = float(np.median(s[ok][:, 0] / s[ok][:, -1]))
+    return pos, rec
+
+
 def log_panel_counts(a: ad.AnnData, genes) -> np.ndarray:
     """log1p of each cell's total counts over the panel (`layers["counts"]`, whatever its sparsity): the depth the
     midpoint draw's PCs are residualised on (`interpolate_clouds(..., draw="midpoint", log_depth=...)`). The log1p keeps
@@ -1545,7 +1605,7 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
                        with_partners: bool = False, herd: bool = False, move_coupling: str = MOVE_COUPLINGS[0],
                        with_coupling: bool = False, draw: str = DRAWS[0],
                        log_depth: tuple[np.ndarray, np.ndarray] | None = None,
-                       t_mix: float | None = None) -> Interpolation:
+                       t_mix: float | None = None, moves: str = MOVES[0]) -> Interpolation:
     """Displacement interpolation between two stages at time fraction t (0 = before, 1 = after).
 
     1. Each cloud is centred and divided by its RMS radius (no PCA axes, so no sign choice).
@@ -1591,6 +1651,15 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     more (`_midpoint_draw`, streams MIDPOINT_STREAMS), each bracket's count and each stratum's share of its bracket
     stay as the uniform draw's, and pool_weights carry the draw's probabilities for the cloud guard. It needs
     log_depth=(before, after), each cell's log panel counts (`log_panel_counts`), for the depth residualisation.
+
+    moves (campaign branch campaign/emb-polar; REPORT.md recipe R10): "mean" (default, the entry) moves each cell by the
+    mean displacement of its k nearest anchors as in step 3. "polar" moves it by those anchors' least-squares local
+    linear map, interpolated along its polar factors (`polar_moves`: rotation by tau times its angle, stretch linearly),
+    where the map is a proper, full-rank, finite one, and by the entry's move elsewhere; tau is the entry's fraction
+    (t_pos for a before cell, 1 - t_pos for an after cell). Anchors, coupling, rotation, draws, streams, scaling and
+    jitter are unchanged; the record gains "moves" and "polar" (per stage: the share of cells on the polar path, the
+    median rotation angle in degrees and the median ratio of the stretch's largest to smallest eigenvalue over them).
+    Left unset, the result is bit-identical to the entry.
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1610,6 +1679,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         raise ValueError(f"move_coupling must be one of {MOVE_COUPLINGS}, got {move_coupling!r}")
     if draw not in DRAWS:
         raise ValueError(f"draw must be one of {DRAWS}, got {draw!r}")
+    if moves not in MOVES:
+        raise ValueError(f"moves must be one of {MOVES}, got {moves!r}")
     if draw != DRAWS[0]:
         if herd:
             raise ValueError(f"draw={draw!r} and herd both choose the rows; use one of them")
@@ -1637,6 +1708,11 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     near_b, near_a = nearest_anchors(Zb, Zb[ib], k)[1], nearest_anchors(Za_b, Za_b[ia], k)[1]
     pos_b = Zb + tp * db[near_b].mean(1)
     pos_a = Za_b + (1.0 - tp) * da[near_a].mean(1)
+    polar_rec = None
+    if moves != MOVES[0]:
+        pos_b, rec_b = polar_moves(Zb, Zb[ib], db, near_b, tp)
+        pos_a, rec_a = polar_moves(Za_b, Za_b[ia], da, near_a, 1.0 - tp)
+        polar_rec = {key: [rec_b[key], rec_a[key]] for key in rec_b}
     n_b = int(round((1.0 - tm) * n))
     n_a = n - n_b
     empty = np.array([], dtype=np.int64)
@@ -1689,6 +1765,9 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     if move_coupling != MOVE_COUPLINGS[0]:
         record["move_coupling"] = move_coupling
         record["coupling_nonzero_moves"] = int((Tm > 0).sum())
+    if polar_rec is not None:
+        record["moves"] = moves
+        record["polar"] = polar_rec
     if midpoint is not None:
         record["draw"] = draw
         record["midpoint"] = {"k_strata": midpoint["k_strata"], "k_anchors": MIDPOINT_K_ANCHORS,

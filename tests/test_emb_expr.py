@@ -418,6 +418,7 @@ PINS_AT_E709655 = {
     },
 }
 NEW_AT_E35 = ("fgw_aligned_trend",)  # registered by the edit of tries E35a and E35b
+NEW_AT_POLAR = ("fgw_polar", "fgw_aligned_polar_series")  # campaign/emb-polar (tests/test_emb_polar.py)
 
 
 @pytest.fixture(scope="module")
@@ -433,11 +434,12 @@ def test_every_pre_existing_candidate_is_what_it_was_at_e709655(pinned_builds, r
 
 
 def test_the_pins_cover_every_pre_existing_candidate_that_builds_here():
-    """Every candidate applicable to a synthetic context is pinned, refused as pinned, or new at E35."""
+    """Every candidate applicable to a synthetic context is pinned, refused as pinned, or new at E35 or with the
+    polar arms."""
     for roles, pins in PINS_AT_E709655.items():
         t = task(roles)
         here = {n for n, c in CANDIDATES.items() if n != harness.FLOOR and c.applies(t)}
-        assert here - set(pins) <= {"b0", "b0_herd", "fgw_latent", *NEW_AT_E35}
+        assert here - set(pins) <= {"b0", "b0_herd", "fgw_latent", *NEW_AT_E35, *NEW_AT_POLAR}
     c = ctx()
     for name in ("b0", "b0_herd"):
         with pytest.raises(KeyError, match="merged"):
