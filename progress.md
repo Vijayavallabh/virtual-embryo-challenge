@@ -2,10 +2,26 @@
 
 ## Current State
 
-**Last Updated:** 2026-11-12
+**Last Updated:** 2026-11-13
+**2026-11-13, the campaign's third wave (decision log 2026-11-13 (a), which corrects 2026-11-12 (c)):** no upload,
+build, rule or gate record changed; the captain has ruled on none of the requests. An independent check of the record
+recomputed about 1,950 figures: every number held, the presentation did not (the embryo request had left out three
+practice tasks, an average had hidden two opposite numbers, several sentences claimed more than the files show). The
+ledger rows carry dated corrections and the try counts are recounted to rule 4: T1 28, embryo 35, heart 3, T3 9.
+**R-A, embryo second upload, three options** (better of two against today's pair on nine practice tasks):
+`fgw_aligned_series`, the outcome of the pre-set rules: +6.69, +3.56, +3.42, +3.67, 0.00, -3.09 on the six tasks whose
+target shares its deeper bracket's profile, then +0.86, -1.42, 0.00; mean +1.52; break-even chance 0.24 on the three
+tasks built from E7.5 and E8.0's group, 0.37 with the three second-jump tasks. `fgw_shape0_hi` (the plain depth top-up
+in E7.5's geometry), the steadier file: +3.75, +0.68, +1.35, +3.98, +0.05, +0.97, then +0.77, -1.14, 0.00; mean +1.15.
+Or today's. **The first embryo upload's shape fix** (`fgw_aligned`) is not requested by the rules: as the first of a
+pair +1.72 on E7.5 and -1.59 on E7.25, -1.21 and -0.69 on two second-jump tasks; the captain can reopen it. **R-B**
+(T1 base) keeps its advice to decline; try T31 shows the base's depth matters across a real one-day gap (a base at
+0.40 of the truth's depth scores 13 under the deeper ones) and is unclear by its rule on library 3 against the pooled
+base (+0.99, bar 1.0). **R-C** optional. Not kept: the wider-neighbourhood top-up (E27). Owed before any rendered file
+is uploaded: a determinism check at the build's 16 BLAS threads.
 **2026-11-12, the campaign of that day (decision log 2026-11-12 (a) to (c)):** no upload, build, rule or gate record
-changed; three requests wait for the captain. The finding: on every board the samples differ more by how they were
-measured than by stage. Each MERFISH sample carries its own per-gene detection profile (diagnostic N23), and the seven
+changed; three requests wait for the captain. The finding (read on the embryo ladder and on T1's libraries): the samples differ more by how they were
+measured than by stage. MERFISH samples differ in their per-gene detection profile, some neighbours sharing one (diagnostic N23), and the seven
 released T1 libraries span 4,030 to 14,755 counts per chamber cell in two kinds of sample. **R-A, embryo s2:** from
 fgw_shape0 to `fgw_aligned_series` (tries E24, E25): as better of two against today's pair +3.4 to +6.7 board points
 if E7.75 was measured like E8.0, +0.9 if deep with a profile of its own, -1.4 on the backtest built like the test
@@ -686,12 +702,13 @@ scorer reproduces every published validation anchor exactly. The release-day rul
 
 Updated 2026-11-12. The older list below is kept for its record; where the two differ, this one holds.
 
-0. **The captain's rulings on R-A, R-B and R-C** (decision log 2026-11-12 (c)). On a yes to R-A: the s2 command is
-   `build_test.py embryo --method fgw --move-coupling aligned --expression series`; `docs/S2_RULES.md` takes a dated
-   ruling by the captain's own say-so; the file joins the freeze-morning rebuild, and the determinism check runs on it
-   by 24 Nov. On a yes to R-B: a base option for the T1 build (library 3's cells at library 3's mix), its ledger row,
-   tests and a rebuild rehearsal by 24 Nov; T1's s2 keeps the pooled base. On R-C: a draft through the three-lens
-   review, which the captain sends.
+0. **The captain's rulings** (decision log 2026-11-13 (a)): R-A with its three options (`fgw_aligned_series`;
+   `fgw_shape0_hi`; today's), the first embryo upload's shape fix if the captain reopens it, R-B (advice: decline) and
+   R-C (optional). On a yes to R-A's first option the s2 command is `build_test.py embryo --method fgw --move-coupling
+   aligned --expression series`; on its second, a top-up option for the build has to be added (`fgw_shape0_hi` exists
+   in the harness only). Either way `docs/S2_RULES.md` takes a dated ruling by the captain's own say-so, the file
+   joins the freeze-morning rebuild, and a determinism check at 16 BLAS threads runs on it by 24 Nov. On a yes to R-B:
+   a base option for the T1 build, its ledger row, tests and a rebuild rehearsal by 24 Nov.
 1. **19 Nov:** if no organiser has answered the public Slack question on floored T3 severity, the captain may post one
    short follow-up in the same thread, drafted by the AI assistant. Replies are read only through the screened check
    (`docs/ORGANIZER_QUESTIONS.md`, "Public Slack question").
@@ -763,6 +780,9 @@ headroom tables in `experiments/harness/TRIES.md`):
 
 ## Blockers / Risks
 
+- [ ] 2026-11-13: the account's usage limit stopped 16 agent calls of the independent check ("You've reached your
+      Fable limit"); its second stage did not run for most findings, and further agent workflows wait for the
+      captain's word on credits.
 - [ ] 2026-11-12: the embryo board turns on how E7.75 was measured (like E8.0, like E7.5, or with a profile of its
       own), which no released file shows; the AI assistant's 0.4 to 0.5 for "like E8.0" is a judgement (N23). Today's
       pair covers the first case poorly (R-A).
