@@ -293,6 +293,65 @@ def test_early_specialist_at_strength_zero_is_fgw_bit_for_bit(monkeypatch):
     assert digest(CANDIDATES["fgw_early_specialist"].build(c)) == PRE_EDIT_SHA256["fgw"]
 
 
+# sha256 of the batch's three arms on `ctx()` at ede98cd, before the empty-cell rule was added to the early specialist
+# (OPENBLAS/OMP/MKL threads 4): where no cell is left empty the arms are bit for bit what they were
+ARMS_AT_EDE98CD = {
+    "fgw_early_specialist": "50c27daf50514a078346b8175914731fc46343ba0a99aba9d85936c939281565",
+    "fgw_aligned_hi": "4447d06a545ab542e6bc8bd22bff814eee05fbd03de3404fd68aa64ba5ec6f7b",
+    "fgw_trend_render": "a380d451db01db4d3f8ab02a6bea78eb5ed803708d620d84cecd182a75dfb7b7",
+}
+
+
+@pytest.mark.parametrize("name", sorted(ARMS_AT_EDE98CD))
+def test_the_empty_cell_rule_changes_no_arm_where_no_cell_is_left_empty(name):
+    c = ctx()
+    assert digest(CANDIDATES[name].build(c)) == ARMS_AT_EDE98CD[name]
+    if name == "fgw_early_specialist":
+        res, _, _, frac = _interp(c)
+        _, rec = tb.early_specialist_expression(c.inputs["before"], c.inputs["after"], res, list(BOARD.genes), frac,
+                                                [c.seed, 7])
+        assert rec["kept_as_released_share"] == 0.0
+
+
+def test_early_specialist_keeps_the_released_row_of_a_cell_no_retry_can_fill(monkeypatch):
+    """A depth ratio so small that no drawn cell of the deeper bracket keeps a panel count in any retry: the build
+    does not stop, every such cell keeps its released row, and the record says what share that was."""
+    c = ctx()
+    res, Eb, Ea, frac = _interp(c)
+    _depths(monkeypatch, 1e-9, 1.0, c)  # ratio 1e-9: with the factor at 1, every keep probability is 1e-9
+    monkeypatch.setattr(tb, "series_factor", lambda C_from, *a, **k: np.ones(C_from.shape[1]))
+    X, rec = tb.early_specialist_expression(c.inputs["before"], c.inputs["after"], res, list(BOARD.genes), frac, 3)
+    lo, hi = res.stage == 0, res.stage == 1
+    assert rec["moved"] == "after" and rec["kept_as_released_share"] == 1.0
+    np.testing.assert_array_equal(X[hi], Ea[res.rows[hi]])  # the deeper bracket's cells keep their released rows
+    np.testing.assert_array_equal(X[lo], Eb[res.rows[lo]])
+    assert np.isfinite(X).all() and ((X > 0).sum(1) >= 1).all()
+
+
+def test_early_specialist_mixes_moved_and_kept_rows_cell_by_cell(monkeypatch):
+    """Some cells keep a count and some never do: the kept ones are thinned as before, the empty ones are released
+    rows, and the retry helper still refuses an empty row for every caller that does not ask for it."""
+    c = ctx()
+    res, Eb, Ea, frac = _interp(c)
+    _depths(monkeypatch, 1.0, 40.0, c)  # ratio 0.025: a cell with few panel counts is often left empty
+    monkeypatch.setattr(tb, "series_factor", lambda C_from, *a, **k: np.ones(C_from.shape[1]))
+    monkeypatch.setattr(tb, "DEPTH_ZERO_RETRIES", 0)
+    X, rec = tb.early_specialist_expression(c.inputs["before"], c.inputs["after"], res, list(BOARD.genes), frac, 3)
+    hi = res.stage == 1
+    same = (X[hi] == Ea[res.rows[hi]]).all(1)
+    assert 0.0 < rec["kept_as_released_share"] < 1.0 and same.mean() == pytest.approx(rec["kept_as_released_share"])
+    assert ((X[hi][~same] > 0).sum(1) <= (Ea[res.rows[hi]][~same] > 0).sum(1)).all()  # the others are thinned
+    assert np.isfinite(X).all() and ((X > 0).sum(1) >= 1).all()
+
+    def never(idx, g):
+        return sparse.csr_matrix((len(idx), 3), dtype=np.int64), np.zeros(len(idx))
+
+    with pytest.raises(ValueError, match="without panel counts after every retry"):
+        tb._keep_some_counts(never, 4, np.random.default_rng(0))
+    C, lib, _ = tb._keep_some_counts(never, 4, np.random.default_rng(0), allow_empty=True)
+    assert C.shape == (4, 3) and C.nnz == 0
+
+
 def test_both_factor_arms_refuse_samples_without_a_matched_label():
     s = stages()
     for a in s.values():

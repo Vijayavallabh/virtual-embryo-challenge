@@ -1796,9 +1796,12 @@ def _stage_counts(a: ad.AnnData, genes) -> tuple[np.ndarray, sparse.csr_matrix, 
     return dense(sub.X).astype(np.float32), C, lib, lib - np.asarray(C.sum(1)).ravel()
 
 
-def _keep_some_counts(make, n_rows: int, rng: np.random.Generator) -> tuple[sparse.csr_matrix, np.ndarray, int]:
+def _keep_some_counts(make, n_rows: int, rng: np.random.Generator,
+                      allow_empty: bool = False) -> tuple[sparse.csr_matrix, np.ndarray, int]:
     """make(rows, rng) -> (panel counts, library sizes) for those rows; rows left without panel counts are made again,
-    up to DEPTH_ZERO_RETRIES times. Returns the counts, the library sizes and how many rows needed another try."""
+    up to DEPTH_ZERO_RETRIES times. Returns the counts, the library sizes and how many rows needed another try. A row
+    still without panel counts after every retry is an error, unless allow_empty is set: then it is returned empty and
+    the caller decides what such a cell keeps."""
     C, lib = make(np.arange(n_rows), rng)
     C, lib = sparse.csr_matrix(C), np.array(lib, dtype=np.float64)
     retried = 0
@@ -1813,7 +1816,7 @@ def _keep_some_counts(make, n_rows: int, rng: np.random.Generator) -> tuple[spar
         order = np.r_[np.flatnonzero(keep), empty]  # the original row of each stacked row
         C = sparse.vstack([C[keep], sparse.csr_matrix(Cn)]).tocsr()[np.argsort(order)]
         lib[empty] = ln
-    if (np.asarray(C.sum(1)).ravel() == 0).any():
+    if not allow_empty and (np.asarray(C.sum(1)).ravel() == 0).any():
         raise ValueError("thinning left a cell without panel counts after every retry")
     return C, lib, retried
 
@@ -2148,7 +2151,8 @@ EARLY_RULE = ("early specialist: the deeper bracket's drawn cells are moved gene
               "binomially thinned by q where q < 1 and topped up by Poisson(q - 1 x the cell's panel counts x its "
               f"{RENDER_K}-neighbour smoothed proportion) where q > 1 (vec.core.apply_gene_factor's two steps); the "
               "counts outside the panel are thinned by d_shallow / d_deep; a cell left without panel counts is drawn "
-              "again (DEPTH_ZERO_RETRIES). The shallower bracket's cells stay as released")
+              "again (DEPTH_ZERO_RETRIES), and one still without panel counts after that keeps its released row "
+              "(the empty-cell rule of vec.core.apply_gene_factor). The shallower bracket's cells stay as released")
 
 
 def early_specialist_expression(before: ad.AnnData, after: ad.AnnData, interp: Interpolation, genes, t: float,
@@ -2192,8 +2196,16 @@ def early_specialist_expression(before: ad.AnnData, after: ad.AnnData, interp: I
         on = g.binomial(np.asarray(other[rows[idx]], dtype=np.int64), min(ratio, 1.0))
         return sparse.csr_matrix(Cn), Cn.sum(1) + on
 
-    Cn, ln, rec["retried"] = _keep_some_counts(make, len(rows), rng)
-    out[m_hi] = _log_normalise(Cn, ln)
+    Cn, ln, rec["retried"] = _keep_some_counts(make, len(rows), rng, allow_empty=True)
+    still = np.asarray(Cn.sum(1)).ravel() == 0  # no panel count after every retry: the cell keeps its released row
+    rec["kept_as_released_share"] = float(still.mean())
+    if still.any():
+        moved = np.empty((len(rows), len(genes)), dtype=np.float32)
+        moved[~still] = _log_normalise(Cn[~still], ln[~still])
+        moved[still] = E[rows[still]]
+        out[m_hi] = moved
+    else:
+        out[m_hi] = _log_normalise(Cn, ln)
     rec["rendered_median"] = float(np.median(ln))
     return out, rec
 
