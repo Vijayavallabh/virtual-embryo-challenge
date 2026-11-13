@@ -284,7 +284,8 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     rows, approved rule 7 keeps max_cells: count with `n_cells(board, pool.n_obs)` and
     record why in `progress.md`. Then `sample_cells`. Heart size by `size_or_hold(coords,
     "experiments/coords/results/p3/size_heart_E12.5.json", "H1" (s1) or "H2" (s2; the heart s2 is H2 built as the half
-    trim, `build_test.py heart --entry s2_trim`, trim before the draw, `docs/S2_RULES.md`), source_stage="E10.5",
+    trim, `build_test.py heart --entry s2_trim` and, since the ruling of 2026-11-13, `--trend` on both heart
+    entries; trim before the draw, `docs/S2_RULES.md`), source_stage="E10.5",
     reference_cloud=<the full E10.5 pool from load_stage(..., drop_duplicates=True), before any scope filter>,
     expect_board="heart")`; embryo size by `apply_size_procedure` with
     `experiments/coords/results/p3/size_embryo_E7.75.json`. Then `cloud_guard` and `build_submission`. The module
@@ -309,6 +310,30 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     and the freeze-morning command is `bash experiments/builds/determinism_check.sh
     runs/archive/builds_38616fe/SHA256SUMS 16`. Where the three paragraphs below say `builds_fd2683a`, read
     `builds_38616fe`; they are kept as the record of the first rehearsal.
+  - **The amendment of 2026-11-13, evening** (`docs/S2_RULES.md`, last section; row H11; `docs/PLAN.md` decision
+    log 2026-11-13 (w) to (bb)). By the captain's ruling both heart files are built with `--trend`
+    (`build_test.py heart --entry s1 --trend` and `--entry s2_trim --trend`: each lineage's step is the
+    least-squares trend over E8.25_late to E10.5 instead of the E9.5 to E10.5 step alone); `build_all.sh` builds
+    them so. The other eight files are unchanged. The reference was remade by a third rehearsal: **the reference
+    is now `runs/archive/builds_dc7b6ae/SHA256SUMS` on the DGX** (in the repository:
+    `experiments/builds/results/builds_dc7b6ae.SHA256SUMS`; record
+    `experiments/builds/results/rehearsal_dc7b6ae.txt`), and the freeze-morning command is `bash
+    experiments/builds/determinism_check.sh runs/archive/builds_dc7b6ae/SHA256SUMS 16` (tried: exit 0, ten of ten
+    OK). Wherever this section says `builds_38616fe` or `builds_fd2683a`, read `builds_dc7b6ae`. **Every file of
+    the set has passed the server's format check** (six on 2026-11-13 at the captain's word, decision log (x); four
+    on 2026-11-04), so the upload mornings need none unless a build changes. The earlier archive folders, on the
+    DGX and on the local machine, still hold the two heart files this ruling replaced, with clean stamps: for the
+    heart the 12 characters to confirm are 3d6548382b24 (first upload) and 18c2cf552f98 (second), never
+    e73d03963648 or 5a309434d4a2. The checked local copy is `runs/archive/builds_dc7b6ae/` (ten of ten OK).
+  - **The client checks the list (2026-11-13).** `vec submit upload ... --official` now carries the guard
+    "reference list": it refuses unless the file's sha256 is in the list the pointer
+    `results/reference_list.json` names (its own sha256 is pinned there), under one of the board's names. Tried on
+    the three local copies: all ten files of `builds_dc7b6ae` pass; the two heart files of `builds_38616fe` and
+    `builds_fd2683a`, and the older T1 second file of `builds_fd2683a`, are refused. A format check is sent as
+    before and prints a warning when the file is off the list. The pointer and the list are tracked files, so
+    an edit to either also fails the clean-tree guard. A rehearsal that writes a new list rewrites the pointer
+    in the same commit (`python3 -c` or by hand: `list`, `list_sha256` = `sha256sum` of the list file, `boards`).
+    The guard is a second check, not a replacement for reading the 12 confirm characters against the list.
   - **The reference hashes (2026-11-13).** The rehearsal on the DGX at fd2683a
     (`experiments/builds/results/rehearsal_fd2683a.txt`; `docs/PLAN.md` decision log 2026-11-13 (e)) rebuilt all ten
     files twice from empty folders. The two sets are byte-identical, every stamp is clean, every file passed `vec
@@ -328,7 +353,8 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     passes the client's stamp guard, so only the confirmed hash tells such a file from the current one. `build_all.sh`
     at its default folder would also stop at the first T3 file, which the T3 builder will not write over. A file that
     differs from the reference on the morning is not uploaded until the difference is explained to the captain. The
-    server format checks for the three new files and T1's two wait for the freeze morning, on the captain's watch.
+    server format checks for the three new files and T1's two were to wait for the freeze morning; they were run on
+    2026-11-13 at the captain's word, with the two new heart files' (the evening amendment above).
     With `--from-dgx` an official upload also needs the DGX checkout at the local HEAD with a clean tree (the client's
     guard "dgx provenance"), so sync the DGX after the last local commit and before the upload, with no build running.
   - **A copy off the DGX (2026-11-13).** The local machine holds a verified copy of the reference set
@@ -348,7 +374,8 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     is still there and superseded). The copy sets aside, for these files, the "no lasting local copy" part of the
     choice of 2026-10-19 (uploads pull from the DGX); it was made after a side agent's note the captain forwarded,
     and the captain confirmed it on 2026-11-13 ("Keep it (Recommended)", `docs/PLAN.md` decision log 2026-11-13
-    (k)). To remove it: `rm -r runs/archive/builds_38616fe runs/archive/builds_fd2683a
+    (k)). Since the third rehearsal the current copy is `runs/archive/builds_dc7b6ae/` (ten of ten OK). To remove
+    the copies: `rm -r runs/archive/builds_dc7b6ae runs/archive/builds_38616fe runs/archive/builds_fd2683a
     runs/t3_decomp/gata4_20261028T122425Z` on the local machine, at the captain's word.
 - Update `ASSUMPTIONS.md` (A1, A2, A3, A13, A19) and `progress.md`. A1 is confirmed (2026-10-28).
 - **Disclosure ids for each official upload** (prepared 2026-11-05 by the AI assistant; the captain confirms them on

@@ -41,9 +41,11 @@ Where things stand: `session-handoff.md` (what waits), `progress.md` (the log), 
 `ASSUMPTIONS.md` (the bets), `METHOD_SUMMARY.md` (what each entry predicts and why).
 
 Status on 2026-11-13: the entry for each board is chosen and its two upload files are built. After the captain's
-ruling of that day on Task 1's second upload, all ten files (the first and second uploads and the Task 3 switch
-files) were rebuilt three times on the DGX with identical bytes; their hashes are in
-`experiments/builds/results/builds_38616fe.SHA256SUMS`. Nothing is uploaded yet. The first round may go
+rulings of that day (Task 1's second upload; the heart's expression step, which now follows each lineage's trend
+over all released heart stages), all ten files (the first and second uploads and the Task 3 switch files) were
+rebuilt three times on the DGX with identical bytes; their hashes are in
+`experiments/builds/results/builds_dc7b6ae.SHA256SUMS`, and every one has passed the server's format check.
+Nothing is uploaded yet. The first round may go
 in from 2026-11-27 00:00 UTC, each upload on the team captain's go-ahead (`docs/P3_RUNBOOK.md`, section 5).
 
 Competition data is unpublished and must not leave the team; see `docs/DATA_POLICY.md`.

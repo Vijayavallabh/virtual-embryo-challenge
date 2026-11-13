@@ -1074,3 +1074,29 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     from a campaign checkout after their hashes matched the committed ones, and one synced copy of an uncommitted
     file was restored there to its committed state (`docs/COMPUTE.md`). Nothing was uploaded and no server was
     called.
+- 2026-11-13 (i), process notes from the late evening (`docs/PLAN.md` decision log 2026-11-13 (s) to (cc)); written
+  by the AI assistant.
+  - **Reads of practice targets.** Four more counted heart tries, each with its row committed before its run:
+    H11 and H11s (heart 9 to 11), H12 and H12s (11 to 13). Three reruns of candidates whose scores were already
+    committed, to show reproduction and not as tries: rows H11's run repeated in a second checkout, the kept arm at
+    the port's commit, and the reference candidates inside every new run. No other reading compared a predictor
+    with a fold or backtest target. The agents that wrote candidates ran build-only smokes with target reads
+    refused and scored nothing; the independent checker recomputed from committed result files and did not load
+    E10.5.
+  - **E10.5 as an input.** Diagnostic N27 (row first; not a try) read E10.5 as the heart test pair's reference
+    stage, with the four earlier stages, to compare two factors at the test pair. Nothing was compared with it as
+    a truth; no cell number was written.
+  - **Test builds.** Dry builds of the two heart files (this machine, by an agent; a DGX campaign checkout) and the
+    third rehearsal were read by exit code, sha256 and the stamps' commit and clean fields. An agent's scratch
+    copies of test-board heart builds and of the repository tree (with `boards/`, which it did not open) were
+    deleted from the session scratchpad the same evening.
+  - **Server calls.** Six format checks through the client's default mode, at the captain's word to one question
+    that said what a format check is (decision log (x), (bb)). Only the ledger's mode, status and hash were read;
+    the client's output files are kept unread in `runs/format_checks_2026-11-13/` apart from a count of "would
+    fail" lines (none). No official upload; the token was read only by the client.
+  - **Forwarded side notes.** Eight in all that day; each was checked against the record before anything changed,
+    and each check is in the decision log with what the note got right and where it needed a limit.
+  - **Agents.** Single agents and three workflows on another model (a design panel earlier; a three-lens review of
+    the port; the upload guard), each briefed with the reading rules; none scored anything.
+  - **Not opened:** the challenge site, the Data page, the board index by hand, Slack, the organisers' mail, any
+    external dataset, any held-out value.

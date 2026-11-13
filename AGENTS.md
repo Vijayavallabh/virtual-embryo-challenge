@@ -127,12 +127,16 @@ If baseline verification is failing, repair that first before adding new scope.
   make official uploads: use it only through this repo's own tools, never with community "submit" tools or ad-hoc
   scripts. Validate files with `vec check` or format-only uploads; real uploads go through the submission client
   (feat-016), which defaults to format-only. An official upload sends only a file whose sha256 is in the current
-  reference list (since the second rehearsal of 2026-11-13 `experiments/builds/results/builds_38616fe.SHA256SUMS`,
-  the DGX's `runs/archive/builds_38616fe/SHA256SUMS`), taken from the folder the freeze-morning command builds and never from
-  the DGX's `runs/builds` or `runs/t3_build`, which hold older files whose clean stamps the client accepts
+  reference list (since the third rehearsal of 2026-11-13 `experiments/builds/results/builds_dc7b6ae.SHA256SUMS`,
+  the DGX's `runs/archive/builds_dc7b6ae/SHA256SUMS`), taken from the folder the freeze-morning command builds and never from
+  the DGX's `runs/builds` or `runs/t3_build`, or from an earlier archive folder (`builds_38616fe` and `builds_fd2683a`
+  hold the two heart files the ruling of 2026-11-13 replaced), which hold older files whose clean stamps the client accepts
   (`docs/P3_RUNBOOK.md`, "The freeze-morning rebuild"); if the DGX cannot be reached, the checked copy of the same
   bytes on the local machine can go, at the captain's word. A file that differs from the list is not uploaded until the
-  captain has the explanation.
+  captain has the explanation. The client enforces the list since 2026-11-13: its guard "reference list" refuses an
+  official upload unless the file's sha256 is in that list under one of the board's names, read through the pointer
+  `results/reference_list.json`; a rehearsal that writes a new list rewrites the pointer (the list's path and
+  sha256, the boards' names) in the same commit.
 - **The captain's upload gate (2026-11-05).** In his words: "Until our estimated score in leaderboard crosses 209, don't
   submit our 1st submission." No first official upload on any board (T3's first is its s2) while our estimated
   leaderboard total is 209 or below. The estimate is the overall total the leaderboard would show for our entries, each
@@ -174,7 +178,8 @@ If baseline verification is failing, repair that first before adding new scope.
   `t1_scope.py` and `t2_build.py` the T1 and T2 heads).
 - `configs/`: experiment configs. `runs/` (gitignored): per-run outputs; on the local machine also the checked copy
   of the reference upload files and of the T3 run folder (`docs/COMPUTE.md`). `results/registry.csv`: one row per
-  scored run; `results/submissions.csv`: the upload ledger; `results/upload_gate.json`: the captain's gate.
+  scored run; `results/submissions.csv`: the upload ledger; `results/upload_gate.json`: the captain's gate;
+  `results/reference_list.json`: the pointer to the current reference list, read by the client's guard.
 - `experiments/`: one folder per study (scripts, reports, committed `results/`); `docs/P3_RUNBOOK.md` step 4 names the
   pre-registered ones, and `labels/` holds the classifier evidence for the validation answers (step 3, 2026-10-28).
 - `experiments/harness/`: `TRIES.md` (the tries ledger and the headroom tables per test board), `headroom.py` (writes
@@ -182,7 +187,7 @@ If baseline verification is failing, repair that first before adding new scope.
 - `experiments/builds/`: the test-file builders (`build_test.py` for T1 and T2; T3's is
   `experiments/t3_decomp/build_submission.py`), `build_all.sh` (one submission set, built and checked),
   `determinism_check.sh` (rebuild into a fresh folder and compare with a reference list: the freeze-morning command)
-  and `results/` (rehearsal records and the reference list, `builds_38616fe.SHA256SUMS` since the second rehearsal
+  and `results/` (rehearsal records and the reference list, `builds_dc7b6ae.SHA256SUMS` since the third rehearsal
   of 2026-11-13).
 - `boards/`: public board specs from the challenge site (`index.json`, panel gene lists, T1 composition). Since 634b5fd
   `index.json` also holds the test boards' cell limits: code reads it; nobody opens it or quotes a test board's limits

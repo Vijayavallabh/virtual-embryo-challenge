@@ -381,7 +381,10 @@ Pipeline:
    organisers allow qualitative in-window background, and so does placement: each new cell goes next to the E10.5 cells
    it most resembles in expression, not by in-window anatomy. Expression comes from E10.5 precursors edited in count
    space, or from external post-E13.5 cells mapped to MERFISH (only if cross-task data use is confirmed).
-4. Expression direction per type from the external bracket where available, otherwise damped momentum.
+4. Expression direction per type from the external bracket where available, otherwise damped momentum. (Since the
+   captain's ruling of 2026-11-13, row H11 of `experiments/harness/TRIES.md`: the heart's momentum is each
+   lineage's least-squares trend over all five released heart stages, read over half a day, in place of half the
+   E9.5 -> E10.5 change.)
 5. Grow coordinates with the pre-registered size and keep E10.5's shape. A shape operation (axis stretch, radial trim,
    type-stratified subsampling) is adopted only if it improves both released transitions (E9.5 -> E10.5 and
    E8.25_late -> E8.5) by >= 0.15 d2 skill without lowering Dice and has a physical rationale; then it is applied at
@@ -633,7 +636,7 @@ every T3 upload after its screened check of mail, Slack and the Rules page (`doc
 | 19 Nov | If no organiser has answered the public Slack question on floored T3 severity (posted 2026-11-12), the captain may post one short follow-up in the same thread, drafted by the AI assistant (decision log 2026-11-11 (e)). On the captain's say-so, a screened read for an answer to the seventh email: the Data Protocol page, the Slack channel and the mailbox (decision log 2026-11-13 (c)) |
 | 23 Nov | On the captain's say-so, a second screened read for an answer to the seventh email; it is the last day an answer can still change a build, which has to be rehearsed by 24 Nov |
 | 26-27 Nov | The screened check that picks T3's s2 (ruling 2026-11-06 (b)), run no earlier than 26 Nov; it also looks for an answer to the seventh email, the Data Protocol page included |
-| 27 Nov, from 05:30 | Rebuild at the freeze commit and check (`vec check`, the server format checks, the archived hashes: since the second rehearsal of 2026-11-13 `runs/archive/builds_38616fe/SHA256SUMS` on the DGX, through `determinism_check.sh ... 16`, decision log 2026-11-13 (e) and (m)); the plain summary to the captain; then the first round, pulled from the folder that command built: T1 s1, heart s1, embryo s1 and T3's s2 |
+| 27 Nov, from 05:30 | Rebuild at the freeze commit and check (`vec check`, the server format checks, the archived hashes: since the third rehearsal of 2026-11-13 `runs/archive/builds_dc7b6ae/SHA256SUMS` on the DGX, through `determinism_check.sh ... 16`, decision log 2026-11-13 (e), (m) and (bb); every file of that set has passed the server's format check already); the plain summary to the captain; then the first round, pulled from the folder that command built: T1 s1, heart s1, embryo s1 and T3's s2 |
 | 29 Nov | T1, heart and embryo s2, each after its screened check |
 | 30 Nov | T3's s1, after its screened check; every upload done by the end of the day |
 | 1 Dec | Outage buffer only; each board's final mark as soon as both its uploads are scored, by 12:00 UTC |
@@ -661,7 +664,8 @@ Do not front-load the second round: a late A20 bar or Gata4 restriction is absor
     the freeze commit, checks them (`vec check`, the server format checks, the hashes archived in
     `runs/archive/builds_02abf39` since R2's build, decision log 2026-11-06 (k); before it `builds_88b057f`; since
     2026-11-13 `runs/archive/builds_fd2683a`, decision log 2026-11-13 (e), and from that evening
-    `runs/archive/builds_38616fe`, decision log 2026-11-13 (m)) and gives
+    `runs/archive/builds_38616fe`, decision log 2026-11-13 (m); since the heart ruling later that evening
+    `runs/archive/builds_dc7b6ae`, decision log 2026-11-13 (bb)) and gives
     the captain the plain summary; the first round (T1 s1, heart s1, embryo s1
     and T3's s2) may then go in whatever the estimate, each upload only on his go-ahead at the time. The words are his
     own, written in his message in the main session (a note on a side agent's text he forwarded), not an agent's relay.
@@ -3363,3 +3367,51 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Full test suite at main 147fd4f** (the port and the amended rules), run in a DGX campaign checkout: lock,
     lint and 1,244 tests pass.
   - **The third rehearsal** starts now on the DGX reference checkout, at main's commit after this entry.
+- 2026-11-13 (bb), the third rehearsal, the heart files' format checks, and an eighth forwarded side note. Written
+  by the AI assistant.
+  - **The third rehearsal** (`experiments/builds/results/rehearsal_dc7b6ae.txt`). The DGX reference checkout was
+    synced from 38616fe to dc7b6ae with no build running there. All ten files were built twice from empty folders
+    with `build_all.sh` (both chains exit 0, about ten minutes) and a third time by the freeze-morning command. The
+    three builds are byte-identical; every stamp is clean at dc7b6ae; every file passed `vec check`. Eight files
+    equal the second rehearsal's; the two heart files are new (3d6548382b24... and 18c2cf552f98...), with the sha256
+    their dry builds gave on both machines.
+  - **The reference.** `runs/archive/builds_dc7b6ae/SHA256SUMS` on the DGX replaces `builds_38616fe`; the list is
+    in the repository (`experiments/builds/results/builds_dc7b6ae.SHA256SUMS`; both copies sha256 f706e48c...). The
+    freeze-morning command is `bash experiments/builds/determinism_check.sh runs/archive/builds_dc7b6ae/SHA256SUMS
+    16` (tried: exit 0, ten of ten OK). The checked local copy is `runs/archive/builds_dc7b6ae/` (ten of ten OK);
+    the two earlier copies are still on disk and superseded.
+  - **Format checks.** The two new heart files were sent as format checks from that copy, under the captain's
+    answer of (x), which named them: both `format_ok` (HTTP 200; the client raised no stamp warning). Every file of
+    the reference set has now passed the server's format check; the ledger holds no official upload.
+  - **The eighth note** (a side agent's, forwarded by the captain): the upload tool does not check a file against
+    the reference list, so the replaced heart files, which stay on disk in earlier archive folders with clean stamps
+    and passed format checks, could still be uploaded by mistake; the 12 confirm characters are matched to the file
+    picked, not to the list. "On upload day, compare those 12 characters with the newest list, or ask the main
+    agent to make the tool refuse files not on it."
+  - **Checked.** It is right: the review of the port had said the same of the list (y), and `AGENTS.md` stated the
+    rule in words only. The AI assistant had the guard built the same evening (cc). Until it is merged, and as a
+    second check afterwards, the heart's confirm characters are 3d6548382b24 (first upload) and 18c2cf552f98
+    (second).
+  - **Unchanged.** The estimate (184, range 170 to 198) and the gate record. On the practice tasks the kept
+    change is worth +0.36 and +0.48 heart points, about +0.2 on the total if it carried in full; the gate's figure
+    is restated only by its procedure, and it stays far below 209 either way.
+- 2026-11-13 (cc), the upload client's reference-list guard. Written by the AI assistant.
+  - **What it is.** A new guard "reference list" in `src/vec/submit.py`, evaluated for every official upload: the
+    file's sha256 must be in the current reference list under one of the board's names. The list is found through
+    the committed pointer `results/reference_list.json` (the list's path inside the repository, its sha256, the
+    names per board, and an optional `held` map that withholds a name from every board). Anything unreadable,
+    missing, outside the repository or inconsistent refuses. A format check is never refused by it and prints a
+    warning when the file is off the list. No other guard was loosened, reordered or reworded.
+  - **How it was made.** One workflow of four agents on another model: an implementer in its own worktree, two
+    adversarial reviewers (one tried to get a file past the guard, one looked for false refusals and regressions),
+    one fix pass; then one more agent closed the reviewers' four minor findings. The reviewers found no bypass and
+    no false refusal. Their one serious finding was about the first pointer, which still named the second
+    rehearsal's list and so approved the old heart files; it was closed by holding those names, and then by the
+    pointer for the third rehearsal's list below. `tests/test_submit.py`: 102 pass. Merged at ac1b812.
+  - **The pointer now** names `experiments/builds/results/builds_dc7b6ae.SHA256SUMS` (sha256 f706e48c...) with the
+    four test boards and no held name. Tried on the local copies (local logic only, nothing sent): all ten files
+    of `builds_dc7b6ae` pass; the two heart files of `builds_38616fe` and of `builds_fd2683a`, and the older T1
+    second file of `builds_fd2683a`, are refused.
+  - **What it does not do.** It does not replace the captain's reading of the 12 confirm characters against the
+    list, and it does not protect against a wrong list: whoever rewrites the pointer after a rehearsal decides
+    what may be uploaded, which is why the pointer and the list are tracked files under the clean-tree guard.

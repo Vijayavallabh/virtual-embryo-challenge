@@ -6,25 +6,34 @@
   through 2026-12-02 (UTC), with two scored uploads per board for the whole phase; none is used as of 2026-11-13.
 - Current status (2026-11-13): the entries are built and their methods chosen. T1: M1 with R1, R2 and R3b, its first
   upload drawn from E10.5's dissected-heart library since 2026-11-13 and its second on the pooled base at 60%
-  cardiomyocytes. Heart: B0 with the pre-registered size. Embryo: fgw, with `fgw_aligned_series` as second upload
+  cardiomyocytes. Heart: B0 with the pre-registered size and, since the captain's ruling of the evening of
+  2026-11-13 (row H11), each lineage's expression step taken from its trend over all released heart stages.
+  Embryo: fgw, with `fgw_aligned_series` as second upload
   since 2026-11-13. T3: the frozen rules' files, the second upload now with a wild-type-only factor. Nothing is
   uploaded. The captain's upload gate holds every first upload until the team's own estimate passes 209 (it is 184,
   range 170 to 198) or the deadline exception opens at 2026-11-27 00:00 UTC; each upload then needs the captain's
   go-ahead at the time, and the captain runs the commands.
-- No method ruling is open (`docs/PLAN.md` decision log 2026-11-13 (d) and (k); `docs/S2_RULES.md`, its last two
-  sections). After the captain's ruling of the evening of 2026-11-13 (T1's second upload on the mid base, row R7)
-  the ten files were rehearsed a second time on the DGX (decision log (m)): three byte-identical builds, and the
-  freeze-morning reference is now `runs/archive/builds_38616fe/SHA256SUMS` there
-  (`experiments/builds/results/rehearsal_38616fe.txt`; the first rehearsal's `builds_fd2683a` is superseded).
+- No method ruling is open (`docs/PLAN.md` decision log 2026-11-13 (d), (k) and (w); `docs/S2_RULES.md`, its last
+  three sections). After the captain's rulings of the evening of 2026-11-13 (T1's second upload on the mid base,
+  row R7; both heart files with the trend, row H11) the ten files were rehearsed a third time on the DGX (decision
+  log (bb)): three byte-identical builds, and **the freeze-morning reference is now
+  `runs/archive/builds_dc7b6ae/SHA256SUMS` there** (`experiments/builds/results/rehearsal_dc7b6ae.txt`,
+  `builds_dc7b6ae.SHA256SUMS`; `builds_38616fe` and `builds_fd2683a` are superseded and hold the replaced heart
+  files). Every file of the set has passed the server's format check (six on 2026-11-13 at the captain's word,
+  decision log (x)). The upload client refuses a scored upload of a file that is not on this list (guard
+  "reference list", pointer `results/reference_list.json`; decision log (cc)).
   What is owed:
   - on 19 and 23 Nov, the approved screened reads for an organiser answer to the seventh email
     (`docs/SCREENED_READ_SEVENTH_EMAIL.md`; a reply in the captain's inbox is not pasted into the session);
   - about 19 Nov, the Slack follow-up draft on floored T3 severity if no organiser has answered;
-  - a new rehearsal and reference by 24 Nov only if a build changes after 2026-11-13;
+  - a new rehearsal and reference by 24 Nov only if a build changes after 2026-11-13 (and then the pointer
+    `results/reference_list.json` is rewritten for the new list);
   The generator tests the captain ordered on 2026-11-13 are done (decision log (o) to (r); rows T34, T35, H8, H9,
   H10; results `experiments/harness/results/gen_t1_v1/` and `gen_heart_v1/`): five counted reads, nothing kept, no
-  upload, build or rule changed. The code is on the branch `campaign/gen` (pushed; 459916f), off main. Tries: T1 32,
-  embryo 36, heart 9, T3 15.
+  upload, build or rule changed. The code is on the branch `campaign/gen` (pushed; 459916f), off main. The heart
+  tries that followed (rows H11, H11s, H12, H12s; branch `campaign/trend`, pushed): `b0_trend` passed the adoption
+  rule and was ruled into both heart files; its size-matched twin and the two parts of its factor read alone were
+  not kept. Tries: T1 32, embryo 36, heart 13, T3 15.
   Settled on 2026-11-13 (decision log (k)): T1's second upload (the mid base; built in and rehearsed), the heart
   try (run, not kept), and the checked copy of the reference files on this machine (kept, by the captain's word).
 - Branch / commit: `main` on GitHub (private). The DGX checkout (`PrakashDGX_H2:~/v/virtual-embryo-challenge`) is at
@@ -184,10 +193,14 @@
 
 ## Recommended Next Step
 
-- 2026-11-13 (latest, after decision log (m)): the captain ruled, T1's second upload is on the mid base and the
-  ten files are rehearsed again (reference `runs/archive/builds_38616fe/SHA256SUMS`). The generator tests the
-  captain ordered are done and changed nothing (decision log (r)). Next: the dated items below, reading
-  `builds_38616fe` for the reference. No run is queued on any GPU.
+- 2026-11-13 (latest, after decision log (cc)): the heart ruling is built in and rehearsed (reference
+  `runs/archive/builds_dc7b6ae/SHA256SUMS`; every file format-checked on the server; the upload client refuses a
+  scored upload of a file off that list). Next: the dated items below, reading `builds_dc7b6ae` for the reference
+  and skipping the server format checks, which are done. No run is queued on any GPU. On the upload mornings the
+  12 characters to confirm come from the list: heart 3d6548382b24 (first upload) and 18c2cf552f98 (second).
+- 2026-11-13 (after decision log (m)): the captain ruled, T1's second upload is on the mid base and the
+  ten files are rehearsed again (reference `runs/archive/builds_38616fe/SHA256SUMS`, since superseded). The
+  generator tests the captain ordered are done and changed nothing (decision log (r)).
 - 2026-11-13 (earlier that day): the rulings are given and built in, and the ten files are rehearsed on the DGX. Next, in
   order: the screened reads on 19 and 23 Nov and the Slack follow-up draft about 19 Nov; the method summary and the
   disclosure email (with the hashes of `runs/archive/builds_38616fe/SHA256SUMS`, the list since the second

@@ -3,6 +3,25 @@
 ## Current State
 
 **Last Updated:** 2026-11-13
+**2026-11-13, late evening: one heart change kept and ruled in, a third rehearsal, all format checks done, and a
+guard on scored uploads (decision log 2026-11-13 (s) to (cc)).** After the generator tests the captain forwarded
+further side notes; each was checked against the record first. What followed: (1) Heart rows H11 and H11s:
+`b0_trend`, B0 with each lineage's least-squares trend over every input stage in place of the last step, gained
++0.36 and +0.48 over `b0` on the two heart backtests (10 of 10 seeds each) and passed the adoption rule, the first
+heart candidate to do so; its size-matched twin did not (+0.15, +1.00). The run repeated to the last digit in a
+second checkout, and an independent checker recomputed the table and the factor. (2) The captain's ruling, to one
+priced question: "Both files (Recommended)": both heart uploads take the trend (`build_test.py heart --trend`;
+`docs/S2_RULES.md` amended, sha256 5ee8b2d8...). The port to main was reviewed by three independent agents (no
+defect), reproduces H11's scores exactly, and its six test gaps are closed. (3) Rows H12 and H12s, the trend's
+lineage-specific and lineage-shared parts read alone: a tie (+0.00, -0.06) and a loss (-0.29, -0.68); not kept.
+(4) The third DGX rehearsal at dc7b6ae: ten files built three times with identical bytes, eight equal to the
+second rehearsal's, the two heart files new (3d654838... and 18c2cf55...); **the reference is now
+`runs/archive/builds_dc7b6ae/SHA256SUMS`** (`experiments/builds/results/rehearsal_dc7b6ae.txt`); the checked local
+copy is refreshed. (5) Server format checks at the captain's word ("Run the four now (Recommended)"): all six
+files that lacked one returned `format_ok`, so every file of the set has passed; no official upload exists. (6)
+The upload client gained the guard "reference list": a scored upload is refused unless the file's sha256 is on
+the current list under one of the board's names (`results/reference_list.json`). Tries: T1 32, embryo 36, heart
+13, T3 15. Nothing is uploaded; the estimate and the gate record are unchanged.
 **2026-11-13, evening: the captain's answers and what followed (decision log 2026-11-13 (k) to (n)). T1's second
 upload is on the mid base, the ten files are rehearsed again, and nothing is uploaded.** The captain chose "Half-way
 base (Recommended)" for T1's second upload, "Generator tests + heart try" for the GPUs and "Keep it (Recommended)"
@@ -846,8 +865,10 @@ Updated 2026-11-13. The older list below is kept for its record; where the two d
    T1's second upload is on the mid base (row R7; built in and rehearsed: the reference is
    `runs/archive/builds_38616fe/SHA256SUMS`), the heart try was run and not kept, the checked local copy stays.
    **Done:** the generator tests the captain ordered (rows T34, T35, H8, H9, H10; decision log (r)): five
-   counted reads, nothing kept, no upload or build changed. A build change after today needs a third rehearsal and
-   a new reference by 24 Nov; none is planned. Next are the dated items: the screened reads of 19 and 23 Nov, the
+   counted reads, nothing kept. **Done after them:** the heart trend (row H11) kept, ruled into both heart files
+   by the captain, ported, reviewed and rehearsed (third rehearsal; reference `builds_dc7b6ae`); every file
+   format-checked on the server; the upload client's reference-list guard. A build change after today needs a
+   fourth rehearsal, a new reference and a rewritten `results/reference_list.json` by 24 Nov; none is planned. Next are the dated items: the screened reads of 19 and 23 Nov, the
    method summary and disclosure email (24 to 30 Nov), the freeze-morning rebuild and first round from 27 Nov.
    **Rulings given on 2026-11-13** (decision log 2026-11-13 (d); `docs/S2_RULES.md`, "Amendments of 2026-11-13"): the
    embryo's s2 is `fgw_aligned_series`, T3's second upload carries the wild-type-only factor (`--wt-revert`), and

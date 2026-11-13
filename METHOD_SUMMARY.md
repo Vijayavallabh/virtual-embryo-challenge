@@ -71,18 +71,23 @@ Entry changed on 2026-11-13, later that day (`docs/S2_RULES.md`, last section; r
   leads the pair as built before under all nine priors (+2.43 under the main one); its lead rests on the scenarios
   where the hidden sample is as deep as library 3, and it loses 1.6 to 1.9 where the sample is much shallower.
   It is a depth choice in effect and entered by ruling, not by the adoption rule.
-The ten test-board files as they now stand are the set in `runs/archive/builds_38616fe/SHA256SUMS` on the build
-machine (rebuilt there three times that evening, byte-identical, all passing `vec check`;
-`experiments/builds/results/rehearsal_38616fe.txt`): Task 1's new s2 and nine files byte-identical to the set of
-fd2683a. Four of them have no server format check on record yet (Task 1's two, the embryo's s2, Task 3's second
-upload). The heart try of the same day (tries H7 and H7c: Task 1's within-type step on the heart head) was run at
+The ten test-board files as they now stand are the set in `runs/archive/builds_dc7b6ae/SHA256SUMS` on the build
+machine (the third rehearsal of 2026-11-13: rebuilt there three times, byte-identical, all passing `vec check`;
+`experiments/builds/results/rehearsal_dc7b6ae.txt`): the two heart files with the trend (below) and eight files
+byte-identical to the set of 38616fe. Every one of the ten has passed the server's format check (six on
+2026-11-13, four on 2026-11-04). The heart try of the same day (tries H7 and H7c: Task 1's within-type step on the heart head) was run at
 the captain's order and not kept (it loses on the one-day backtest). The generator tests of the same evening (rows
 T34, T35, H8, H9 and H10 of `experiments/harness/TRIES.md`: B0's forecast realised through a count model, as cells
 the model makes or as real cells edited by its decoder, on Task 1 and the heart; and on the heart a velocity field
 learned by flow matching in the model's latent) were scored on the practice tasks and none is kept: model-made
 cells lose to real cells on Task 1, decoder-edited cells tie with the count-space step there, and on the heart
-every latent arm gains on one backtest and loses on the other. The entries are unchanged and still edit real cells
-in count space. Tries stand at T1 32, embryo 36, heart 9, T3 15.
+every latent arm gains on one backtest and loses on the other. Those tests changed no entry. Later that evening
+one count-space arm did pass the adoption rule on the heart and was ruled into both heart files by the captain
+(row H11, `docs/PLAN.md` decision log 2026-11-13 (w)): each lineage's expression step now follows the
+least-squares trend of its log mean expression over all five released heart stages instead of the last step alone
+(+0.36 and +0.48 against the last step on the two heart backtests). Its size-matched twin (H11s) and the two parts
+of its factor read alone (H12, H12s) were not kept. Every entry still edits real cells in count space. Tries stand
+at T1 32, embryo 36, heart 13, T3 15.
 
 ## Team and track
 
@@ -124,12 +129,12 @@ same day, row R7: s2 draws them from the base half-way between the pooled base a
 | Spatial organisation | Not scored on Task 1 | - |
 
 **Task 2 heart, E12.5, beyond E10.5 with its coordinates.** s1 = H1 (B0 with the pre-registered size); s2 = H2 as
-the half trim.
+the half trim. Since the captain's ruling of 2026-11-13 (row H11) the expression step in both is the trend.
 
 | Facet | Change beyond the baseline | Held-out evidence |
 |---|---|---|
 | States that emerge, proportions | None: E10.5's composition is held (the trend was dropped on 2026-11-01). s2 removes surrounding cells, farthest from the core first, to half the in-plane scope | s2 against s1 on the released targets: -5.88 on E10.5 from E9.5 (ahead in 0 of 10 seeds), +1.75 on E8.5 from E8.25_late (9 of 10), +1.57 on E10.5 from <= E8.75 (10 of 10), every prediction scaled to an oracle core size (`docs/S2_RULES.md`, `experiments/s2_hedge/`) |
-| Expression | Half the E9.5 -> E10.5 change of each harmonised lineage, in count space | E10.5 from E9.5 and from <= E8.75: +0.47 and +0.90 over a copy (9 and 10 of 10 seeds), +0.43 and +1.45 over the floor (7 and 10 of 10); every metric within 1.3 points of the floor (`experiments/harness/results/d2_v1/`). The expression-change group itself moves +0.77 and -0.03 against a copy (+0.38 and -0.46 against the floor); on the 1.75-day backtest the gain over a copy sits on neighbourhoods (+0.50) and cell state (+0.43), not on the group the momentum's reason targets (`TRIES.md` rule 2; `experiments/harness/results/headroom/`) |
+| Expression | Since 2026-11-13: per harmonised lineage, half a day of the least-squares trend of its log mean expression over E8.25_late, E8.5, E8.75, E9.5 and E10.5, in count space (`vec.harness.B0_TREND_RULE`). Until then: half the E9.5 -> E10.5 change | The trend against the last step: +0.36 and +0.48 on the two backtests, the adoption rule passed on both (row H11, `experiments/harness/results/trend_heart_v1/`; the port reproduces these scores exactly, and an independent check recomputed the table and the factor). With it the stand-in scores 50.78 and 51.93 (floor 50; a copy 49.96 and 50.55). What limits it: a margin of 0.06 over the rule's threshold on one backtest; the one arm of seven read on these backtests that day that passed; two backtests that share one truth; and no backtest holds the test's last step, across the change from sectioned embryo portions to dissected hearts, on which the trend leans for 43% instead of 100%. Before the ruling, the last step alone: E10.5 from E9.5 and from <= E8.75: +0.47 and +0.90 over a copy (9 and 10 of 10 seeds), +0.43 and +1.45 over the floor (7 and 10 of 10); every metric within 1.3 points of the floor (`experiments/harness/results/d2_v1/`). The expression-change group itself moves +0.77 and -0.03 against a copy (+0.38 and -0.46 against the floor); on the 1.75-day backtest the gain over a copy sits on neighbourhoods (+0.50) and cell state (+0.43), not on the group the momentum's reason targets (`TRIES.md` rule 2; `experiments/harness/results/headroom/`) |
 | Spatial organisation | E10.5's tissue and shape; the core grown by 1.58 x the E9.5 -> E10.5 log growth (a fixed three-rule average), xy grown and z held | None is possible. No released pseudo-target reaches the E10.5-E12.5 regime, and on E9.5 every growth rule scores like copy_last (`experiments/coords/REPORT.md`, C7; A8). The one released scope check (n = 1) ranked s1's scope, which equals H0 as built, last of three (C10) |
 
 **Task 2 embryo, E7.75, beyond E7.5 with its coordinates.** s1 = fgw; s2 = fgw_shape0 until 2026-11-13 and
@@ -357,8 +362,9 @@ Task 3's s2 is the wild type plus a five-state depletion, by design.
 
 - **Heart E12.5 — B0 with the pre-registered size:** real E10.5 tissue (synthetic records dropped), sampled at random
   to the pre-registered count (the board's maximum: the release-day density rerun, by a rule fixed in advance, kept it on both test
-  boards; `vec.t2_build.n_cells_from_decision`, decision dfee546), moved in count space by half the E9.5 -> E10.5 change of
-  each harmonised lineage; coordinates grown by the pre-registered size procedure (core = cardiomyocytes +
+  boards; `vec.t2_build.n_cells_from_decision`, decision dfee546), moved in count space, per harmonised lineage, by
+  half a day of the least-squares trend of its log mean expression over the five released heart stages (the
+  captain's ruling of 2026-11-13, row H11; until then by half the E9.5 -> E10.5 change alone); coordinates grown by the pre-registered size procedure (core = cardiomyocytes +
   endocardium; growth from E9.5 -> E10.5 only; a fixed three-rule average justified without an assumed rate; z held at
   E10.5 when the sectioning plane matches); the two submissions are the two scope hypotheses (H1; H2 as the half trim, amended after its released-data outcome,
   `docs/S2_RULES.md`). E10.5's

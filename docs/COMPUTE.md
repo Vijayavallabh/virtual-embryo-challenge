@@ -38,9 +38,10 @@ here:
   only when no build runs there.
 - `.venv-gpu` exists on this machine only: the sync line below leaves it out.
 - Since 2026-11-13 this machine holds a verified copy of what the uploads need from the DGX, so that a DGX outage in
-  the upload week does not mean rebuilding under deadline: `runs/archive/builds_38616fe/` (the ten reference files
-  of the second rehearsal, with their stamps, sidecars and SHA256SUMS; check with `sha256sum -c SHA256SUMS` there;
-  the copy of the first rehearsal's set, `runs/archive/builds_fd2683a/`, is still on disk and is superseded) and
+  the upload week does not mean rebuilding under deadline: `runs/archive/builds_dc7b6ae/` (the ten reference files
+  of the third rehearsal, with their stamps, sidecars and SHA256SUMS; check with `sha256sum -c SHA256SUMS` there;
+  the copies of the first two rehearsals' sets, `runs/archive/builds_fd2683a/` and `builds_38616fe/`, are still on
+  disk and are superseded: their two heart files are the ones the ruling of 2026-11-13 replaced) and
   `runs/t3_decomp/gata4_20261028T122425Z/` (the run folder every T3 build reads). Both are owner-only and ignored by
   git. This is the one exception to "bring back only scores and small figures" below. If a build changes, the copy
   of that file is stale until the new reference is copied and checked (`docs/P3_RUNBOOK.md`, "A copy off the DGX").
@@ -94,9 +95,10 @@ runs on the DGX go in a second copy of the repository, `~/v/vec-campaign`, so th
   the PCA's scores differ by up to 3e-4 between OpenBLAS's kernels: Haswell on this machine's EPYC 7742, SkylakeX on
   the DGX's Xeon Platinum 8468. A few cells then get other neighbours. T1's s1 as built until 2026-11-13 differed between the machines too.
 - **So a hash checks a file only on the machine that built it.** The uploads are built on the DGX, and the reference
-  list is the DGX's `runs/archive/builds_38616fe/SHA256SUMS` (copy in the repository:
-  `experiments/builds/results/builds_38616fe.SHA256SUMS`). T1's second file as ruled on 2026-11-13 (the mid base)
-  has been built on the DGX only; whether this machine gives the same bytes is not known.
+  list is the DGX's `runs/archive/builds_dc7b6ae/SHA256SUMS` (copy in the repository:
+  `experiments/builds/results/builds_dc7b6ae.SHA256SUMS`). T1's second file as ruled on 2026-11-13 (the mid base)
+  has been built on the DGX only; whether this machine gives the same bytes is not known. The two heart files as
+  ruled that evening (the trend) came out with the same bytes on both machines.
 - **Keep the DGX's environment as it is until the uploads are done.** The numerical libraries come from `uv.lock`; a
   change of the lock, of the Python environment there or of the processor can change those three files' bytes, and
   then the freeze-morning check names them. A change to `uv.lock` before 2 December needs a new rehearsal.

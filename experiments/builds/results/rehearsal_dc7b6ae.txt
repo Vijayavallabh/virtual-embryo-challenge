@@ -1,0 +1,74 @@
+Third rebuild rehearsal of 2026-11-13, on the DGX at dc7b6ae (written by the AI assistant)
+==========================================================================================
+
+Why. By the captain's ruling of 2026-11-13 (docs/PLAN.md decision log 2026-11-13 (w): "Both files (Recommended)"; row
+H11 of experiments/harness/TRIES.md; docs/S2_RULES.md, last section) both heart uploads are built with `--trend`:
+`build_test.py heart --entry s1 --trend` and `build_test.py heart --entry s2_trim --trend`. Two builds changed after
+the second rehearsal of that day (experiments/builds/results/rehearsal_38616fe.txt), so the ten files were rehearsed
+again and the reference list remade, as docs/P3_RUNBOOK.md section 5 requires. The rehearsal was held until the two
+split arms of row H12 had been read (neither kept), so that one rehearsal covers the evening's rulings.
+
+What was read. Exit codes, the times files, sha256 sums, and the build stamps' commit and clean fields. For T3's
+refused s1 the wild-type-only factor's record by named field, as in the earlier rehearsals. No build log, no file
+size, no other stamp or sidecar field. No target and no score.
+
+Before it. The port of the kept candidate (branch heart-trend, merged at c4501f5) was reviewed by three independent
+agents with no defect found; at the port's commit the kept arm reproduced row H11's scores exactly; the full test suite
+passed at main 147fd4f in a DGX campaign checkout (lock, lint, 1,244 tests); and dry builds of the two heart files in a
+campaign checkout gave one sha256 each, twice, equal to the builds on the local machine (decision log (y), (aa)).
+
+Sync. The DGX reference checkout `~/v/virtual-embryo-challenge` was at 38616fe with a clean tracked tree and no build
+running. It was synced by the rsync line of docs/COMPUTE.md from a clean local tree to dc7b6ae; afterwards
+`git status --porcelain --untracked-files=no` was empty at dc7b6ae (the four untracked files there are the earlier ones
+under experiments/harmonise/results/). `build_all.sh s2` checks `docs/S2_RULES.sha256` itself (5ee8b2d8... since the
+amendment for this ruling).
+
+Builds. Two chains side by side from empty folders (`runs/rehearsal_dc7b6ae/a` and `b`), each
+`BUILD_OUT=... bash experiments/builds/build_all.sh s1`, `s2`, `t3alt` at the defaults (16 BLAS threads, seed 1000001).
+Both exited 0 (15:03:40 to 15:13:42 UTC, about ten minutes). Every file passed `vec check` inside build_all.sh.
+
+  sha256 (chain a = chain b for every file; every stamp: commit dc7b6ae, clean true)        against the second rehearsal
+  a294062f5f7bbb2dae19ef695979cc21f03f38df40d22be9ccdd30af36e3bdef  builds/T1_s1.h5ad            same
+  f169ea492e8dbac7e8b298f7dfa13fcceba71b5ff35e12ccfdc3a9504346304f  builds/T1_s2.h5ad            same
+  dc910d4b3fb1d62b643bf96e5765741f8f0ad011f7b2d928a7955928ddee1303  builds/T2embryo_s1.h5ad      same
+  41982d8afd784ecb07a4021077f701c3806c3bdb06eda92c2cb99fcc41b19b73  builds/T2embryo_s2.h5ad      same
+  3d6548382b24e01445148d238b5b9ec832f09c4ef6ccddbf819ccfb6ade7c46c  builds/T2heart_s1.h5ad       NEW (was e73d0396...)
+  18c2cf552f986c45c3a75861037a797bc5f6941ab0b6807e9ae26dd09a3bd579  builds/T2heart_s2.h5ad       NEW (was 5a309434...)
+  3d6c94a97b02b8f378b275070dad2767e54005e4194d093e4e01bdf3881b4203  t3_build/allowed_s1.h5ad     same
+  3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2  t3_build/barred_s1.h5ad      same
+  1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f  t3_build/barred_s2.h5ad      same
+  0394575a11fcd4f915e0daf4972e5a783b6b89efa065ed4f85fe2445cbbb1545  t3_build/refused_s1.h5ad     same
+
+The two new heart files have the sha256 their dry builds gave in the campaign checkout at 272b6d9 and on the local
+machine, so the heart files are again the same bytes on both machines. The refused s1's factor record is the earlier
+rehearsals' (per lineage group, exponent 0.5, 12 groups, SD of the pooled log factor 0.5359908127886033, 16 genes at
+the clip).
+
+The new reference. Chain a's set was archived on the DGX as `runs/archive/builds_dc7b6ae/` (31 files: the ten files,
+their stamps and sidecars, and SHA256SUMS; `sha256sum -c` ten of ten OK). The list is in the repository as
+`experiments/builds/results/builds_dc7b6ae.SHA256SUMS`; both copies of the list have sha256
+f706e48c5d0a254de9e06234c80873ebf3e911b9ea7b815f9f89f09c1554888f. It replaces builds_38616fe.SHA256SUMS, from which it
+differs in the two heart lines.
+
+The freeze-morning command, tried against it the same evening:
+`bash experiments/builds/determinism_check.sh runs/archive/builds_dc7b6ae/SHA256SUMS 16` (15:14:05 to 15:24:02 UTC):
+exit 0, ten of ten OK, "all files byte-identical to the archived set at every thread count". So the ten files were
+built three times at dc7b6ae with identical bytes. Its output folder is `runs/determinism_dc7b6ae/t16/`.
+
+The copy off the DGX (kept by the captain's word of 2026-11-13, decision log (k)). The archive folder was copied to
+the local machine as `runs/archive/builds_dc7b6ae/` (owner-only): 31 files, `sha256sum -c` ten of ten OK, the list's
+sha256 as above, every stamp commit dc7b6ae and clean true. The earlier copies (`runs/archive/builds_38616fe/` and
+`builds_fd2683a/`) are still on the local machine and are superseded: their heart files are the ones the ruling
+replaced. The T3 run folder copy is unchanged.
+
+Server format checks (results/submissions.csv). With the captain's go-ahead of 2026-11-13 (decision log (x)) the six
+files that had none were sent as format checks that day, in the client's default mode, and all returned `format_ok`:
+T1's s1 and s2, the embryo's s2 and T3's refused s1 (from the second rehearsal's copy; the same bytes as here), and the
+two new heart files (from this rehearsal's copy; the client raised no stamp warning for them). The other four (embryo
+s1, T3's allowed s1, barred s1 and barred s2) passed theirs on 2026-11-04. So every file of this reference set has a
+passing server format check. No official upload exists.
+
+Still to do after this record: the old heart files remain on disk in the earlier archive folders with clean stamps. A
+guard that makes the upload client refuse an official upload of any file not on the current reference list is being
+added the same evening (decision log (bb)); until it is merged, the 12 confirm characters of an official heart upload
+must be checked against this list by eye: 3d6548382b24 (first heart upload) and 18c2cf552f98 (second).
