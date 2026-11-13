@@ -2032,6 +2032,172 @@ def series_rendered_expression(before: ad.AnnData, after: ad.AnnData, interp: In
     return out, rec
 
 
+# The trend rendering (campaign branch campaign/emb-expr; experiments/harness/TRIES.md, "Pruned before running", "A
+# trend rendering for the embryo", 2026-11-13): every drawn cell of both brackets moved to the run profile that a trend
+# through all the task's samples gives at the target's day, instead of fgw's mixture of the two brackets' profiles. The
+# profile is SERIES_RULE's (mean within-cell panel proportions over the matched extraembryonic labels), the trend is the
+# least-squares line of log(profile + eps) on the stage day read at the target's day (the form of WT_REVERT_RULE, row
+# K7), and the factor is the T3 script's gene_factor of that trend against the bracket's own profile (SERIES_RULE's
+# eps, rescale and clip), applied at full strength by the core's apply_gene_factor. No constant is new.
+TREND_RENDER_RULE = ("trend render: each bracket's drawn cells are moved by a per-gene factor to the run profile a "
+                     "trend through every sample of the task gives at the target's day. A sample's profile is its "
+                     "share-weighted mean within-cell panel proportions over the labels every sample holds with at "
+                     "least SERIES_MIN_CELLS cells that are extraembryonic as SERIES_RULE says (the before bracket's "
+                     "groups), weights the moved bracket's label shares; the trend is the least-squares line of "
+                     "log(profile + 1e-5) on the stage day, read at the target's day; the factor is exp(trend) / "
+                     "(own profile + 1e-5), rescaled so the weighted total proportion is unchanged and clipped to "
+                     "0.25-4, applied in count space (binomial thinning below 1, Poisson top-up from the cell's "
+                     "kNN-smoothed proportions above 1; vec.core.apply_gene_factor). Depth is not moved: the counts "
+                     "outside the panel stay as released")
+
+
+def trend_labels(names: Sequence, groups_first) -> list[str]:
+    """TREND_RENDER_RULE's labels: series_labels of the first sample against every other sample, intersected (each
+    label held by every sample with at least SERIES_MIN_CELLS cells, extraembryonic by the first sample's groups)."""
+    if len(names) < 2:
+        raise ValueError("a trend needs at least two samples")
+    out = set(series_labels(names[0], groups_first, names[1]))
+    for other in names[2:]:
+        out &= set(series_labels(names[0], groups_first, other))
+    return sorted(out)
+
+
+def _label_profile(C: sparse.csr_matrix, names: np.ndarray, labels: Sequence[str], w: np.ndarray) -> np.ndarray:
+    """The w-weighted mean over `labels` of each label's mean within-cell panel proportions (series_factor's own
+    profile, written out here so that series_factor stays as it was)."""
+    prof = np.zeros(C.shape[1])
+    for wi, lab in zip(w, labels, strict=True):
+        sub = sparse.csr_matrix(C[np.flatnonzero(names == lab)], dtype=np.float64)
+        tot = np.asarray(sub.sum(1)).ravel()
+        prof = prof + wi * np.asarray((sparse.diags(1.0 / np.maximum(tot, 1.0)) @ sub).mean(0)).ravel()
+    return prof
+
+
+def trend_factor(C_from: sparse.csr_matrix, names_from, samples: Sequence[tuple[sparse.csr_matrix, Sequence]],
+                 days: Sequence[float], target_day: float, labels: Sequence[str]) -> np.ndarray:
+    """The per-gene factor of TREND_RENDER_RULE that moves `from` cells (one of `samples`) to the trend's profile at
+    target_day. samples: (panel counts, cell-type names) per sample, in the order of `days`."""
+    if not len(labels):
+        raise ValueError("no extraembryonic label held by every sample: the trend factor is not defined")
+    d = np.asarray(days, dtype=np.float64)
+    if len(d) != len(samples) or len(np.unique(d)) < 2:
+        raise ValueError("a trend needs one day per sample and at least two distinct days")
+    nf = np.asarray(names_from).astype(str)
+    w = np.array([(nf == lab).sum() for lab in labels], dtype=np.float64)
+    w /= w.sum()
+    den = _label_profile(C_from, nf, labels, w)
+    Y = np.log(np.vstack([_label_profile(C, np.asarray(nm).astype(str), labels, w) for C, nm in samples]) + SERIES_EPS)
+    dc = d - d.mean()
+    slope = dc @ (Y - Y.mean(0)) / (dc @ dc)
+    phi = np.exp(Y.mean(0) + slope * (float(target_day) - d.mean())) / (den + SERIES_EPS)
+    phi = phi / (den @ phi / max(den.sum(), 1e-12))
+    return np.clip(phi, *SERIES_CLIP)
+
+
+def trend_rendered_expression(before: ad.AnnData, after: ad.AnnData, interp: Interpolation, genes,
+                              samples: Sequence[tuple[ad.AnnData, float]], target_day: float,
+                              seed) -> tuple[np.ndarray, dict]:
+    """The interpolation's cells, each bracket's moved to the trend's run profile at target_day (TREND_RENDER_RULE):
+    expression (cells x genes, float32, log(1 + 1e4 c / N)) and a record. samples: every sample of the task as (stage,
+    day), the two brackets among them (the same objects). Needs obs["celltype"] on every sample and obs["group"] on
+    `before`. A bracket whose factor is exactly 1 for every gene keeps its released rows."""
+    from vec.core import apply_gene_factor
+
+    if not any(s is before for s, _ in samples) or not any(s is after for s, _ in samples):
+        raise ValueError("the brackets must be among the trend's samples")
+    rng = np.random.default_rng(seed)
+    parts = [_stage_counts(a, genes) for a in (before, after)]
+    counts = [sparse.csr_matrix(a[:, list(genes)].layers["counts"], dtype=np.int64) for a, _ in samples]
+    names = [np.asarray(a.obs["celltype"]).astype(str) for a, _ in samples]
+    days = [float(day) for _, day in samples]
+    first = next(i for i, (a, _) in enumerate(samples) if a is before)
+    order = [first] + [i for i in range(len(samples)) if i != first]
+    labels = trend_labels([names[i] for i in order], np.asarray(before.obs["group"]).astype(str))
+    out = np.empty((len(interp.rows), len(genes)), dtype=np.float32)
+    rec = {"rule": TREND_RENDER_RULE, "target_day": float(target_day), "days": days, "labels": labels,
+           "sd_log_factor": {}, "genes_above_2x": {}, "moved": {}}
+    for s, (name, a) in enumerate((("before", before), ("after", after))):
+        m = interp.stage == s
+        E, C, lib, other = parts[s]
+        own = np.asarray(a.obs["celltype"]).astype(str)
+        phi = trend_factor(C, own, list(zip(counts, names, strict=True)), days, target_day, labels)
+        rec["sd_log_factor"][name] = float(np.log(phi).std())
+        rec["genes_above_2x"][name] = int((np.abs(np.log(phi)) > np.log(2.0)).sum())
+        rows = interp.rows[m]
+        rec["moved"][name] = int(m.sum()) if bool(np.any(phi != 1.0)) else 0
+        if not m.any() or not np.any(phi != 1.0):
+            out[m] = E[rows]
+            continue
+        S = _smoothed_props(E, C, lib, rows)
+        P = S / np.maximum(S.sum(1, keepdims=True), 1e-12)
+        C1 = apply_gene_factor(np.asarray(C[rows].toarray(), dtype=np.int32), phi, P, rng).astype(np.int64)
+        Cn = sparse.csr_matrix(C1)
+        out[m] = _log_normalise(Cn, np.asarray(Cn.sum(1)).ravel() + other[rows])
+    return out, rec
+
+
+# The earlier-side specialist by gene-wise thinning (campaign branch campaign/emb-expr; the second research pass,
+# experiments/research_2026_11_runs/REPORT2.md, recipe 5): the mirror image of SERIES_RULE. The deeper bracket's drawn
+# cells are thinned gene by gene towards the shallower bracket's profile and depth; a gene that would need a keep
+# probability above 1 gets a Poisson top-up from the cell's kNN-smoothed proportions, so only those genes are imputed.
+# The factor is series_factor with the brackets' roles swapped (same labels, eps, rescale and clip). No constant is new.
+EARLY_RULE = ("early specialist: the deeper bracket's drawn cells are moved gene by gene to the shallower bracket's "
+              "profile and depth: per gene the keep factor q = phi x d_shallow / d_deep, phi the T3 script's "
+              "gene_factor from the deeper to the shallower bracket over SERIES_RULE's matched extraembryonic labels "
+              "(weights the deeper bracket's label shares, eps 1e-5, rescaled, clipped to 0.25-4). Panel counts are "
+              "binomially thinned by q where q < 1 and topped up by Poisson(q - 1 x the cell's panel counts x its "
+              f"{RENDER_K}-neighbour smoothed proportion) where q > 1 (vec.core.apply_gene_factor's two steps); the "
+              "counts outside the panel are thinned by d_shallow / d_deep; a cell left without panel counts is drawn "
+              "again (DEPTH_ZERO_RETRIES). The shallower bracket's cells stay as released")
+
+
+def early_specialist_expression(before: ad.AnnData, after: ad.AnnData, interp: Interpolation, genes, t: float,
+                                seed) -> tuple[np.ndarray, dict]:
+    """The interpolation's cells with the deeper bracket's cells moved to the shallower bracket's profile and depth
+    (EARLY_RULE): expression (cells x genes, float32, log(1 + 1e4 c / N)) and a record. Needs obs["celltype"] and
+    obs["group"] on both brackets. Where every gene's keep factor is exactly 1 the rows are kept as released."""
+    rng = np.random.default_rng(seed)
+    stages = (before, after)
+    parts = [_stage_counts(a, genes) for a in stages]
+    d = [float(np.median(p[2])) for p in parts]
+    lo, hi = (0, 1) if d[0] <= d[1] else (1, 0)
+    names = [np.asarray(a.obs["celltype"]).astype(str) for a in stages]
+    labels = series_labels(names[lo], np.asarray(stages[lo].obs["group"]).astype(str), names[hi])
+    phi = series_factor(parts[hi][1], names[hi], parts[lo][1], names[lo], labels)
+    ratio = d[lo] / d[hi]
+    q = phi * ratio
+    out = np.empty((len(interp.rows), len(genes)), dtype=np.float32)
+    m_hi, m_lo = interp.stage == hi, interp.stage == lo
+    out[m_lo] = parts[lo][0][interp.rows[m_lo]]
+    rec = {"rule": EARLY_RULE, "t": float(t), "median_depth": {"before": d[0], "after": d[1]},
+           "moved": "before" if hi == 0 else "after", "labels": labels, "ratio": ratio,
+           "genes_topped_up": int((q > 1.0).sum()), "sd_log_factor": float(np.log(phi).std()), "retried": 0}
+    E, C, lib, other = parts[hi]
+    rows = interp.rows[m_hi]
+    if not m_hi.any() or not np.any(q != 1.0):
+        out[m_hi] = E[rows]
+        return out, rec
+    up, down = q > 1.0, q < 1.0
+    S = _smoothed_props(E, C, lib, rows) if up.any() else None
+    P = None if S is None else S / np.maximum(S.sum(1, keepdims=True), 1e-12)
+
+    def make(idx, g):
+        C0 = np.asarray(C[rows[idx]].toarray(), dtype=np.int64)
+        Cn = C0.copy()
+        if down.any():
+            Cn[:, down] = g.binomial(C0[:, down], q[down])
+        if up.any():
+            n = C0.sum(1, keepdims=True).astype(np.float64)
+            Cn[:, up] += g.poisson(P[idx][:, up] * n * (q[up] - 1.0))
+        on = g.binomial(np.asarray(other[rows[idx]], dtype=np.int64), min(ratio, 1.0))
+        return sparse.csr_matrix(Cn), Cn.sum(1) + on
+
+    Cn, ln, rec["retried"] = _keep_some_counts(make, len(rows), rng)
+    out[m_hi] = _log_normalise(Cn, ln)
+    rec["rendered_median"] = float(np.median(ln))
+    return out, rec
+
+
 # Detection depth of an extrapolated stage (2026-11-03; heart try H3, experiments/harness/TRIES.md, registered before
 # its run). Counts per cell fall steadily through heart development in the released series (median counts per cell:
 # E8.25_late 233, E8.5 166, E8.75 130, E9.5 75, E10.5 56).

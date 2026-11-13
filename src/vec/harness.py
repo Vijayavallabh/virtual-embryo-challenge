@@ -1072,6 +1072,12 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     elif expression == "series_wide":  # try E27: the same with the wider neighbourhood of diagnostic N24b
         X, _ = t2_build.series_rendered_expression(before, after, res, g, frac, [ctx.seed, 7],
                                                    k=t2_build.RENDER_K_WIDE)
+    elif expression == "trend":  # campaign/emb-expr: every cell to the trend's run profile (TREND_RENDER_RULE)
+        X, _ = t2_build.trend_rendered_expression(before, after, res, g,
+                                                  [(a, t.role_days[r]) for r, a in ctx.inputs.items()],
+                                                  t.target_day, [ctx.seed, 7])
+    elif expression == "early":  # campaign/emb-expr: the deeper bracket's cells to the shallower one's (EARLY_RULE)
+        X, _ = t2_build.early_specialist_expression(before, after, res, g, frac, [ctx.seed, 7])
     elif expression in RENDER_EXPRESSIONS:  # tries E19a-E19c: every cell moved to one depth (t2_build.RENDER_RULE)
         X, _ = t2_build.depth_rendered_expression(before, after, res, g, frac, [ctx.seed, 7],
                                                   mode=RENDER_EXPRESSIONS[expression])
@@ -1185,6 +1191,31 @@ def _fgw_aligned_series(ctx: BuildContext) -> Stage:
 def _fgw_aligned_series_wide(ctx: BuildContext) -> Stage:
     """Embryo try E27: fgw_aligned_series with each rendered cell's profile smoothed over RENDER_K_WIDE neighbours."""
     return _fgw(ctx, move_coupling="aligned", expression="series_wide")
+
+
+def _fgw_trend_render(ctx: BuildContext) -> Stage:
+    """Campaign arm (branch campaign/emb-expr; TRIES.md "Pruned before running", "A trend rendering for the embryo"):
+    fgw's draws and positions with every drawn cell of both brackets moved to the run profile a trend through all the
+    task's samples gives at the target's day (vec.t2_build.TREND_RENDER_RULE)."""
+    return _fgw(ctx, expression="trend")
+
+
+def _trend_applies(t: PseudoTask) -> bool:
+    """An embryo interpolation task with a third sample besides the brackets, every one a T2 stage."""
+    return _interp(t) and len(t.inputs) >= 3 and all(f.startswith("T2/") for f in t.inputs.values())
+
+
+def _fgw_aligned_hi(ctx: BuildContext) -> Stage:
+    """Campaign arm (branch campaign/emb-expr; TRIES.md row E26, its correction (v)): a top-up-only file at the aligned
+    positions, try E10's aligned moves (fgw_aligned) with every cell at the deeper bracket's depth (fgw_render_hi)."""
+    return _fgw(ctx, move_coupling="aligned", expression="render_hi")
+
+
+def _fgw_early_specialist(ctx: BuildContext) -> Stage:
+    """Campaign arm (branch campaign/emb-expr; experiments/research_2026_11_runs/REPORT2.md, recipe 5): fgw's draws and
+    positions with the deeper bracket's cells thinned gene by gene to the shallower bracket's profile and depth
+    (vec.t2_build.EARLY_RULE)."""
+    return _fgw(ctx, expression="early")
 
 
 def _fgw_shape1_series(ctx: BuildContext) -> Stage:
@@ -1645,6 +1676,22 @@ CANDIDATES = {
                                           "rule": t2_build.SERIES_RULE, "k": t2_build.RENDER_K_WIDE,
                                           "alpha": t2_build.INTERP_ALPHA, "scope": "whole"},
                                          requires=_series_applies),
+    # the embryo expression batch (campaign branch campaign/emb-expr; rows registered before any run): one idea each
+    "fgw_trend_render": Candidate("fgw_trend_render", frozenset({"T2"}), (), _fgw_trend_render,
+                                  {"what": "fgw's draws and positions with every drawn cell of both brackets moved by "
+                                           "a per-gene factor to the run profile a trend through all the task's "
+                                           "samples gives at the target's day", "rule": t2_build.TREND_RENDER_RULE,
+                                   "scope": "whole"}, requires=_trend_applies),
+    "fgw_aligned_hi": Candidate("fgw_aligned_hi", frozenset({"T2"}), (), _fgw_aligned_hi,
+                                {"what": "fgw_aligned (try E10's aligned moves) with every cell at the deeper "
+                                         "bracket's depth: a top-up-only file at the aligned positions",
+                                 "mode": "hi", "rule": t2_build.RENDER_RULE, "alpha": t2_build.INTERP_ALPHA,
+                                 "scope": "whole"}, requires=_interp),
+    "fgw_early_specialist": Candidate("fgw_early_specialist", frozenset({"T2"}), (), _fgw_early_specialist,
+                                      {"what": "fgw's draws and positions with the deeper bracket's cells thinned gene "
+                                               "by gene to the shallower bracket's profile and depth (a Poisson "
+                                               "top-up only where a gene's keep factor exceeds 1)",
+                                       "rule": t2_build.EARLY_RULE, "scope": "whole"}, requires=_series_applies),
     "fgw_shape1_series": Candidate("fgw_shape1_series", frozenset({"T2"}), (), _fgw_shape1_series,
                                    {"what": "fgw_shape1 (the later bracket's geometry, t_pos = 1) with the series "
                                             "rendering", "rule": t2_build.SERIES_RULE, "scope": "whole"},
