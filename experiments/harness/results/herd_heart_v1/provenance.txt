@@ -1,0 +1,8 @@
+run folder on the DGX: ~/v/vec-campaign/runs/harness/herd_heart_v1 (campaign checkout)
+commit: 4bf2c70 (main)
+tree at start and at end (bytes of git status --porcelain): 0 and 0
+started UTC: 2026-11-13T18:12:22Z
+ended UTC: 2026-11-13T18:18:49Z
+CPU only, 8 BLAS threads, one process per backtest
+decisions_*: base b0, recomputed on this machine from the task files and registered
+the reference candidates reproduce their committed scores exactly, seed for seed
