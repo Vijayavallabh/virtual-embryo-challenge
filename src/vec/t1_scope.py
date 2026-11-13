@@ -463,7 +463,8 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
                    standin_momentum: bool = False, seed: Seed = 0,
                    logf_filter: Callable[[np.ndarray, sparse.csr_matrix, np.ndarray], tuple[np.ndarray, dict]]
                    | None = None,
-                   logf_by_type: Mapping[str, np.ndarray] | None = None) -> tuple[ad.AnnData, ShiftReport]:
+                   logf_by_type: Mapping[str, np.ndarray] | None = None,
+                   topup_source: ad.AnnData | None = None) -> tuple[ad.AnnData, ShiftReport]:
     """Move `target_like` cells by the damped per-type change from `start` to `ref`, in count space.
 
     start, ref: the two stages whose change is the momentum (start is the earlier one; ref is normally the stage the
@@ -491,6 +492,12 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
     `damping * log((m_ref + eps) / (m_start + eps))` for that type. Everything else applies to it as to the own factor:
     the skip rules (a type skipped for too few cells or stand-ins stays skipped even if the mapping names it), the clip,
     the held-flat zeros, logf_filter and the report row. Types the mapping does not name keep their own factor.
+
+    topup_source (default None: the own-count top-up of `apply_factors`, so every existing output is unchanged; T1
+    candidate b0_topup): the stage the cells were drawn from (their obs["source_obs"] names its rows). A factor above 1
+    then tops a cell up from its posterior-predictive expected counts (`topup_profile` on that stage, applied by
+    `vec.core.apply_factors_profile`, expected depth kept exactly) in place of its own counts; the factors themselves,
+    the thinning and every other step are unchanged.
 
     Returns a copy of target_like with layers["counts"] edited and X = log1p CP10k of the new counts (float32 CSR),
     and a per-type report.
@@ -545,7 +552,11 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
                    mean_abs_log_f=float(np.abs(logf).mean()), max_abs_log_f=float(np.abs(logf).max()))
         rows.append(row)
     tidx = np.array([tindex[t] for t in t_types], dtype=np.int64)
-    new, scale, dead = apply_factors(C, F, tidx, held, keep_depth=keep_depth, seed=seed)
+    if topup_source is None:
+        new, scale, dead = apply_factors(C, F, tidx, held, keep_depth=keep_depth, seed=seed)
+    else:
+        new, scale, dead = apply_factors(C, F, tidx, held, keep_depth=keep_depth, seed=seed,
+                                         profile=topup_profile(topup_source, target_like))
     for row in rows:
         m = t_types == row["type"]
         row["median_depth_scale"] = float(np.median(scale[m])) if m.any() else float("nan")
@@ -874,6 +885,129 @@ def apply_down_prior(pop: ad.AnnData, pb_ref: np.ndarray, genes: Sequence[str], 
     report = {"promoted": [genes[i] for i in promoted], "factors": {genes[i]: round(float(f), 4) for i, f in zip(
         promoted, fin, strict=True)}, "n_promoted": int(len(promoted)), "budget": int(prior.budget),
               "band_target_dp": round(target, 4), "f_min": float(prior.f_min), "keep_depth": True, "checks": checks}
+    return out, report
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# T1 campaign candidates b0_tail and b0_topup (experiments/harness/TRIES.md; registered before any run)
+#
+# b0_tail, the tail decoder (diagnostic N3; experiments/research_2026_11/REPORT.md section 5, "The tail decoder"): a
+# truth down-gene needs pb(reference) >= 0.25, so a gene below that level in the predicted bottom tail is a guaranteed
+# miss there. The decoder compresses such a gene's predicted decrease to flat, by a top-up of its counts (the record:
+# "all of it would need a top-up of scope-driven genes"), so that feasible genes take its slots.
+TAIL_MIN_PB = DP_MIN_PB  # the scorer's MIN_LFC, as N3 counts infeasible genes (research_2026_11/diagnostics.py)
+TAIL_BOTTOM = DP_BOTTOM  # the bottom tail N3 sized (its 20 of 400), the sibling b0_strong_null's DP_BOTTOM
+TAIL_TARGET_DP = 0.0  # compressed to flat: the parameter-free form (no partial compression)
+TAIL_F_MAX = 1.0 / DP_F_MIN  # a lift needing more than this factor is out of reach and skipped (the mirror of the
+# sibling's f_min on a thinning)
+# b0_topup, the exact own-count (posterior-predictive) top-up (REPORT.md section 5, "The count kernel for increases"):
+# T3's frozen kNN kernel (experiments/t3_decomp/rules.yaml, smoothing {n_pcs: 30, k: 15}; the same numbers as
+# vec.t2_build RENDER_N_PC and RENDER_K)
+TOPUP_N_PCS = 30
+TOPUP_K = 15
+
+
+def topup_profile(source: ad.AnnData, cells: ad.AnnData, n_pcs: int = TOPUP_N_PCS,
+                  k: int = TOPUP_K) -> sparse.csr_matrix:
+    """Each of `cells`' expected counts per gene (cells x genes, in cells' gene order): its own library times the mean
+    within-cell proportions of the k nearest cells of `source` (all of its cells; the cell's own source row included),
+    in the first n_pcs principal components of source's log1p CP10k (T3's frozen kernel, `smoothed_props`, and
+    `vec.t2_build._smoothed_props`). cells.obs["source_obs"] names each cell's row of source (`reweight`)."""
+    from sklearn.decomposition import PCA
+    from sklearn.neighbors import NearestNeighbors
+
+    if "source_obs" not in cells.obs:
+        raise KeyError("cells have no obs['source_obs'] (drawn by reweight) to place them in the source stage")
+    genes = list(cells.var_names)
+    pos = pd.Index(source.obs_names).get_indexer(cells.obs["source_obs"].astype(str))
+    if (pos < 0).any():
+        raise KeyError(f"{int((pos < 0).sum())} cells are not rows of the source stage")
+    S = counts_of(source, genes)
+    lib_s = np.asarray(S.sum(1)).ravel().astype(np.float64)
+    E = sparse.csr_matrix(log1p_cp10k(S), dtype=np.float64)
+    n_pc = int(min(n_pcs, min(E.shape) - 1))
+    Z = PCA(n_components=n_pc, svd_solver="arpack", random_state=0).fit_transform(E)
+    uniq, inv = np.unique(pos, return_inverse=True)
+    kk = int(min(k, E.shape[0]))
+    nn = NearestNeighbors(n_neighbors=kk).fit(Z).kneighbors(Z[uniq], return_distance=False)
+    P = sparse.diags(np.divide(1.0, lib_s, out=np.zeros_like(lib_s), where=lib_s > 0)) @ sparse.csr_matrix(
+        S, dtype=np.float64)
+    A = sparse.csr_matrix((np.full(nn.size, 1.0 / kk), nn.ravel(), np.arange(0, nn.size + 1, kk)),
+                          shape=(len(uniq), E.shape[0]))
+    Pu = sparse.csr_matrix(A @ P)[inv]
+    lib = np.asarray(counts_of(cells).sum(1)).ravel().astype(np.float64)
+    return sparse.csr_matrix(sparse.diags(lib) @ Pu)
+
+
+def apply_tail_decoder(pop: ad.AnnData, pb_ref: np.ndarray, genes: Sequence[str], held: Iterable[str],
+                       seed: Seed) -> tuple[ad.AnnData, dict]:
+    """The tail decoder of T1 candidate b0_tail: lift the down-infeasible genes out of the predicted bottom tail.
+
+    genes: the panel the scorer ranks (the board's genes); pb_ref: the reference's mean log1p CP10k per panel gene; dp =
+    pb(pop) - pb_ref over the panel, all cells. A gene is lifted if it is among the TAIL_BOTTOM most negative dp,
+    pb_ref < TAIL_MIN_PB, dp < TAIL_TARGET_DP and it is not held. Its counts are topped up in every cell by one factor,
+    solved so that its dp lands at TAIL_TARGET_DP (the exact first-order change of the mean log1p under the Poisson
+    top-up c + Poisson((f - 1) c) at f = 1; DP_ITERATIONS fixed-point steps account for the depth-keeping constant,
+    as `apply_down_prior` does). A gene needing more than TAIL_F_MAX is out of reach and skipped. Each cell's expected
+    library is kept (apply_factors keep_depth), so every other free gene moves only by that constant; held genes are
+    untouched. Nothing lifted: pop is returned as it is. Returns (pop, report); the report holds no cell count."""
+    genes = [str(g) for g in genes]
+    cols = pd.Index(pop.var_names).get_indexer(genes)
+    if (cols < 0).any():
+        raise KeyError(f"{int((cols < 0).sum())} panel genes are missing from the prediction")
+    pb_ref = np.asarray(pb_ref, dtype=np.float64)
+    C = counts_of(pop)
+    n = C.shape[0]
+    held_set = {str(g) for g in held}
+    held_all = np.array([g in held_set for g in pop.var_names], dtype=bool)
+    held_panel = held_all[cols]
+    lib = np.asarray(C.sum(1)).ravel().astype(np.float64)
+    a = np.divide(TARGET_SUM, lib, out=np.zeros(n), where=lib > 0)
+    pb_before = np.asarray(sparse.csr_matrix(pop.X[:, cols], dtype=np.float64).sum(axis=0)).ravel() / n
+    dp = pb_before - pb_ref
+    bottom = np.argsort(dp, kind="stable")[:TAIL_BOTTOM]
+    cand = bottom[(pb_ref[bottom] < TAIL_MIN_PB) & (dp[bottom] < TAIL_TARGET_DP) & ~held_panel[bottom]]
+    M = C[:, cols[cand]].tocsc()
+    entry_col = np.repeat(np.arange(M.shape[1]), np.diff(M.indptr))
+    c = M.data.astype(np.float64)
+    term = c * (np.log1p(a[M.indices] * (c + 1.0)) - np.log1p(a[M.indices] * c))
+    slope = np.bincount(entry_col, weights=term, minlength=M.shape[1]) / n
+    with np.errstate(divide="ignore", invalid="ignore"):
+        need = np.where(slope > 0, (TAIL_TARGET_DP - dp[cand]) / slope, np.inf)
+    chosen = np.flatnonzero(need <= np.log(TAIL_F_MAX))
+    lifted, lam = cand[chosen], need[chosen]
+    report = {"n_infeasible_in_bottom": int(len(cand)), "n_lifted": int(len(lifted)),
+              "lifted": [genes[i] for i in lifted], "bottom": TAIL_BOTTOM, "min_pb": TAIL_MIN_PB,
+              "target_dp": TAIL_TARGET_DP, "f_max": TAIL_F_MAX, "keep_depth": True}
+    if not len(lifted):
+        report.update(factors={}, depth_ratio_mean=1.0, expected_depth_max_error=0.0)
+        return pop, report
+    Cs = M[:, chosen].toarray().astype(np.float64)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        B = Cs * (np.log1p(a[:, None] * (Cs + 1.0)) - np.log1p(a[:, None] * Cs))
+    B = np.nan_to_num(np.where(Cs > 0, B, 0.0))
+    held_n = np.asarray(C[:, held_all].sum(1)).ravel().astype(np.float64)
+    free = lib - held_n
+    fin = np.exp(lam)
+    for _ in range(DP_ITERATIONS):
+        freed = (Cs * (1.0 - fin)).sum(1)
+        s = np.divide(free, free - freed, out=np.ones_like(free), where=free - freed > 0)
+        adj = (B.T @ np.log(s)) / np.maximum(B.sum(0), 1e-12)
+        fin = np.clip(np.exp(lam - adj), 1.0, TAIL_F_MAX)
+    F = np.ones((1, C.shape[1]))
+    F[0, cols[lifted]] = fin
+    new, scale, dead = apply_factors(C, F, np.zeros(n, dtype=np.int64), held_all, keep_depth=True, seed=seed)
+    out = pop.copy()
+    out.layers["counts"] = new.astype(np.int32)
+    out.X = log1p_cp10k(new)
+    new_lib = np.asarray(new.sum(1)).ravel().astype(np.float64)
+    freed = (Cs * (1.0 - fin)).sum(1)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        expected = scale * (free - freed) + held_n
+        report.update(factors={genes[i]: round(float(f), 4) for i, f in zip(lifted, fin, strict=True)},
+                      depth_ratio_mean=float(np.nanmean(new_lib / lib)),
+                      expected_depth_max_error=float(np.nanmax(np.abs(expected / lib - 1.0))),
+                      no_cell_was_restored=not bool(dead.any()))
     return out, report
 
 

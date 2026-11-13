@@ -191,7 +191,8 @@ def mean_cp10k(C) -> np.ndarray:
 
 
 def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarray | None = None,
-                  keep_depth: bool = True, seed: Seed = 0) -> tuple[sparse.csr_matrix, np.ndarray, np.ndarray]:
+                  keep_depth: bool = True, seed: Seed = 0,
+                  profile=None) -> tuple[sparse.csr_matrix, np.ndarray, np.ndarray]:
     """Edit integer counts by per-(type, gene) factors in count space.
 
     C: (cells x genes) counts; factors: (types x genes), > 0; type_index: each cell's row of `factors`; held: genes
@@ -199,7 +200,14 @@ def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarr
     its expected total count unchanged. A count c with factor f < 1 becomes Binomial(c, f), with f > 1 c + Poisson
     ((f - 1) c), with f == 1 stays c. Zeros stay zero. A cell left with no counts gets its original counts back.
     Returns (counts as CSR int64, per-cell depth constant, restored-cell mask).
+
+    profile (default None: exactly the steps above; T1 candidate b0_topup, `apply_factors_profile`): each cell's
+    expected count per gene (cells x genes, >= 0). A factor above 1 then adds Poisson((f - 1) m) to c, m the profile's
+    entry, zeros included, so a sparse gene's intended rise is realised; keep_depth solves for the constant exactly
+    under that rule.
     """
+    if profile is not None:
+        return apply_factors_profile(C, factors, type_index, profile, held, keep_depth=keep_depth, seed=seed)
     C = sparse.csr_matrix(C, dtype=np.int64, copy=True)
     C.sort_indices()
     n = C.shape[0]
@@ -231,6 +239,91 @@ def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarr
         new[back] = C.data[back]
     out = sparse.csr_matrix((new, C.indices.copy(), C.indptr.copy()), shape=C.shape)
     out.eliminate_zeros()
+    return out, scale, dead
+
+
+def _profile_depth_constant(c: np.ndarray, f: np.ndarray, m: np.ndarray) -> float:
+    """The constant s that keeps a cell's expected total when each free entry (count c, factor f, expected count m)
+    becomes Binomial(c, f s) where f s <= 1 and c + Poisson((f s - 1) m) where f s > 1. The expected total
+    T(s) = sum over f s <= 1 of c f s + sum over f s > 1 of (c + (f s - 1) m) is continuous, non-decreasing and
+    piecewise linear in s with a break at each 1 / f, so it is solved exactly on the segment where it meets sum(c)."""
+    n = float(c.sum())
+    if n <= 0.0:
+        return 1.0
+    cf_total = float((c * f).sum())
+    if cf_total > 0.0 and not (f * (n / cf_total) > 1.0).any():
+        return n / cf_total  # no entry turns up: the own-count constant, and nothing for the profile to do
+    order = np.argsort(-f, kind="stable")  # the entries in the order in which they turn up as s grows
+    fo, co, mo = f[order], c[order], m[order]
+    cf, fm, cm = co * fo, fo * mo, co - mo
+    # segment j (j = 0..K): the first j entries are up; slope A_j and intercept B_j of T on it
+    A = np.concatenate([[cf.sum()], cf.sum() - np.cumsum(cf) + np.cumsum(fm)])
+    B = np.concatenate([[0.0], np.cumsum(cm)])
+    t = 1.0 / fo  # the breaks, ascending
+    at_breaks = t * A[:-1] + B[:-1]  # T at each break (continuous there)
+    j = int(np.searchsorted(at_breaks, n, side="right"))
+    if A[j] <= 0.0:
+        return float(t[j - 1]) if j else 1.0
+    return float((n - B[j]) / A[j])
+
+
+def apply_factors_profile(C, factors: np.ndarray, type_index: np.ndarray, profile, held: np.ndarray | None = None,
+                          keep_depth: bool = True, seed: Seed = 0) -> tuple[sparse.csr_matrix, np.ndarray,
+                                                                             np.ndarray]:
+    """`apply_factors` with the posterior-predictive top-up (T1 candidate b0_topup, experiments/harness/TRIES.md
+    "exact top-up"; experiments/research_2026_11/REPORT.md section 5, "The count kernel for increases").
+
+    profile: (cells x genes) expected counts m >= 0, the cell's library times its kNN-smoothed proportions
+    (`vec.t1_scope.topup_profile`). A count c with factor f < 1 becomes Binomial(c, f) as in `apply_factors`; with
+    f > 1, c + Poisson((f - 1) m), zeros included wherever m > 0, so the expected count is c + (f - 1) m in place of
+    f c; with f == 1 it stays c. Held genes keep their counts. With keep_depth, each cell's non-held factors are
+    multiplied by the constant that keeps its expected total count unchanged under this rule
+    (`_profile_depth_constant`, exact). A cell left with no counts gets its original counts back. Cells are drawn one
+    after another from one generator. Returns (counts as CSR int64, per-cell depth constant, restored-cell mask)."""
+    C = sparse.csr_matrix(C, dtype=np.int64, copy=True)
+    C.sort_indices()
+    M = sparse.csr_matrix(profile, dtype=np.float64, copy=True)
+    M.sort_indices()
+    if M.shape != C.shape:
+        raise ValueError(f"profile has shape {M.shape}, counts {C.shape}")
+    if M.nnz and (not np.all(np.isfinite(M.data)) or (M.data < 0).any()):
+        raise ValueError("profile must be finite and non-negative")
+    n = C.shape[0]
+    factors = np.asarray(factors, dtype=np.float64)
+    if not np.all(np.isfinite(factors)) or (factors <= 0).any():
+        raise ValueError("factors must be finite and positive")
+    type_index = np.asarray(type_index)
+    held = np.zeros(C.shape[1], dtype=bool) if held is None else np.asarray(held, dtype=bool)
+    rng = np.random.default_rng(seed)
+    scale, dead = np.ones(n), np.zeros(n, dtype=bool)
+    out_cols, out_vals, indptr = [], [], [0]
+    for i in range(n):
+        c_cols, c_vals = C.indices[C.indptr[i]:C.indptr[i + 1]], C.data[C.indptr[i]:C.indptr[i + 1]]
+        m_cols, m_vals = M.indices[M.indptr[i]:M.indptr[i + 1]], M.data[M.indptr[i]:M.indptr[i + 1]]
+        cols = np.union1d(c_cols, m_cols)
+        c = np.zeros(len(cols), dtype=np.int64)
+        c[np.searchsorted(cols, c_cols)] = c_vals
+        m = np.zeros(len(cols))
+        m[np.searchsorted(cols, m_cols)] = m_vals
+        f = factors[type_index[i], cols]
+        free = ~held[cols]
+        if keep_depth:
+            scale[i] = _profile_depth_constant(c[free].astype(np.float64), f[free], m[free])
+        fe = np.where(free, f * scale[i], 1.0)
+        new = c.copy()
+        down, up = fe < 1.0, fe > 1.0
+        new[down] = rng.binomial(c[down], fe[down])
+        new[up] = c[up] + rng.poisson((fe[up] - 1.0) * m[up])
+        if new.sum() == 0:
+            dead[i] = True
+            new = c
+        keep = new != 0
+        out_cols.append(cols[keep])
+        out_vals.append(new[keep])
+        indptr.append(indptr[-1] + int(keep.sum()))
+    out = sparse.csr_matrix((np.concatenate(out_vals) if n else np.zeros(0, np.int64),
+                             np.concatenate(out_cols) if n else np.zeros(0, np.int64), np.asarray(indptr)),
+                            shape=C.shape, dtype=np.int64)
     return out, scale, dead
 
 

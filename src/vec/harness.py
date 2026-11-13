@@ -580,9 +580,13 @@ def t1_chamber_shares(ref: ad.AnnData, source: str) -> dict[str, float]:
 
 
 def _b0_t1(damping: float, herd: bool = False,
-           prior: Callable[[BuildContext], object] | None = None) -> Callable[[BuildContext], Stage]:
+           prior: Callable[[BuildContext], object] | None = None, *, topup: bool = False,
+           tail: bool = False) -> Callable[[BuildContext], Stage]:
     """B0 on T1 (or, with damping 0, its chamber copy alone). prior (T1 tries T12a and T12b): a function of the context
-    that gives the strong-null down-tail prior for `vec.t1_scope.build_submission`."""
+    that gives the strong-null down-tail prior for `vec.t1_scope.build_submission`. topup (candidate b0_topup; default
+    False, B0's own-count top-up): the momentum's factors above 1 top up from the posterior-predictive expected counts
+    (`vec.t1_scope.topup_profile` on the reference stage). tail (candidate b0_tail; default False, nothing): after the
+    shift, the tail decoder `vec.t1_scope.apply_tail_decoder` (stream [seed, TAIL_STREAM])."""
     def build(ctx: BuildContext) -> Stage:
         from vec import t1_scope
 
@@ -592,6 +596,18 @@ def _b0_t1(damping: float, herd: bool = False,
         start = _shallow(ctx.inputs["start"]) if damping else None
         held = list(ctx.derived["t1_held_flat"]) if damping else None  # handed over: the guard refuses the file
         extra = {} if prior is None else {"down_prior": prior(ctx)}
+        if topup:
+            extra["topup_source"] = ref
+        if tail:
+            from scipy import sparse
+
+            g = list(ctx.board.genes)
+            ref_cols = ref.var_names.get_indexer(g)  # pb_ref as build_submission takes it for the down prior
+            if (ref_cols < 0).any():
+                raise KeyError(f"{int((ref_cols < 0).sum())} board genes are missing from the reference")
+            pb_ref = np.asarray(sparse.csr_matrix(ref.X[:, ref_cols], dtype=np.float64).mean(axis=0)).ravel()
+            extra["post_cells"] = lambda pop: t1_scope.apply_tail_decoder(
+                pop, pb_ref, g, held or (), [ctx.seed, TAIL_STREAM])[0]
         sub, _ = t1_scope.build_submission(ref, ctx.board, shares, count_for(ctx.board, ref.n_obs), ctx.seed,
                                            start=start, damping=damping, held_flat=held, ref_source=src,
                                            start_source=ctx.task.role_stems["start"] if damping else None,
@@ -1282,6 +1298,23 @@ def _scope_strong_null(ctx: BuildContext) -> Stage:
     return _b0_t1(0.0, prior=_t12_prior)(ctx)
 
 
+# ------------------------------------------------------------------------------------------------ T1 batch t1-b
+# Two edits of B0 on the two E9.5 -> E10.5 cuts (experiments/harness/TRIES.md, registered before any run), each B0 with
+# one idea and nothing else: the same draw, shares, count, scope, momentum factors and held genes. b0_tail: the tail
+# decoder after the shift (`vec.t1_scope.apply_tail_decoder`). b0_topup: the momentum's rises drawn from the
+# posterior-predictive expected counts (`vec.t1_scope.topup_profile`, `vec.core.apply_factors_profile`) in place of
+# the own-count top-up. Both keep each cell's expected library (T1 depth is closed).
+TAIL_STREAM = 10  # the decoder's random stream, [seed, 10]: unused by every other T1 step
+
+
+def _b0_tail(ctx: BuildContext) -> Stage:
+    return _b0_t1(B0_DAMPING, tail=True)(ctx)
+
+
+def _b0_topup(ctx: BuildContext) -> Stage:
+    return _b0_t1(B0_DAMPING, topup=True)(ctx)
+
+
 # ------------------------------------------------------------------------------------------------ T3 tries K2a and K2b
 # Fixed in their experiments/harness/TRIES.md rows (registered 2026-11-04 at 945de7d, before any run): s1's lead
 # component, the pooled Gata4 factor of the pre-registered T3 run, on the Gata4 -> Mab21l2 fold's WT E9.5 (K2a,
@@ -1740,6 +1773,20 @@ CANDIDATES = {
                                    {"what": "T1 try T12b: B0's chamber copy plus the same prior, genes chosen by the "
                                             "reference level alone (a weak-null truth)",
                                     "scope": "chamber"}, requires=lambda t: "start" not in t.inputs),
+    # T1 batch t1-b (experiments/harness/TRIES.md, registered before any run): the tail decoder and the exact top-up
+    "b0_tail": Candidate("b0_tail", frozenset({"T1"}), (), _b0_tail,
+                         {"what": "B0 plus the tail decoder: genes among dp's bottom 400 with pb(reference) < 0.25 "
+                                  "topped up in count space to dp = 0 (vec.t1_scope.apply_tail_decoder; expected depth "
+                                  "kept, held-flat genes untouched)", "damping": B0_DAMPING, "scope": "chamber",
+                          "bottom": 400, "min_pb": 0.25, "target_dp": 0.0, "f_max": 2.0},
+                         requires=_b0_applies, derived=("t1_held_flat",)),
+    "b0_topup": Candidate("b0_topup", frozenset({"T1"}), (), _b0_topup,
+                          {"what": "B0 with the momentum's rises drawn as c + Poisson((f - 1) m), m the cell's library "
+                                   "times the mean proportions of its 15 nearest reference-stage cells in 30 PCs "
+                                   "(T3's frozen kernel), in place of c + Poisson((f - 1) c); expected depth kept "
+                                   "exactly (vec.core.apply_factors_profile)", "damping": B0_DAMPING,
+                           "scope": "chamber", "n_pcs": 30, "k": 15},
+                          requires=_b0_applies, derived=("t1_held_flat",)),
     # T1 tries T20 and T21 (experiments/harness/TRIES.md, registered before their run): g_mom's placebo arms, on g_mom's
     # own draws, base and fit; judged by g_mom against each of them (a paired mean gain above 0.3 and 8 of 10 seeds on
     # both E10.5 cuts, experiments/t1_scope/g_mom_verify.py placebo)
