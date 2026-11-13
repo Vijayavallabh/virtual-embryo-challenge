@@ -236,7 +236,9 @@ in `experiments/harness/TRIES.md`.
   Gata4 replicates against WT E8.75 (r2 0.05 and 0.01; applied per lineage group +5.40 and +6.43, r2 0.07 and 0.03).
   The same factor permuted across genes does nothing (+0.42, -1.08, -1.83). So WT E9.5's own deviation is most of that
   knockout's scored response, and WT E8.75's, the test's reference, is a few per cent of Gata4's: there the gain is
-  the scorer's severity gate (r2 above 0.01 with a positive slope) cleared by a thin margin. Half the last step
+  the scorer's severity gate (r2 above 0.01 with a positive slope) cleared by a thin margin. On T3's second upload
+  as it is built today (the central composition; tries K8a and K8b) the per-group factor adds +4.72 and +7.12 on
+  the two replicates and the pooled one +4.42 and +1.24: on replicate 2 the pooled factor stays under the gate. Half the last step
   between stages, which is B0's momentum in this space, is anti-correlated with the true change on all three knockout
   pairs (-0.27 to -0.30) and on the heart-like pairs (-0.30 and -0.13). At the end of a series the reference's
   deviation cannot be told from development, so nothing follows for the heart

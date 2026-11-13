@@ -15,8 +15,11 @@ replicate 2: +2.40, ahead in 6 of 10 seeds), so nothing is requested. The fourth
 alone misleading, so the captain is given both readings: T3's second upload could carry the factor only by the
 captain's own ruling on the frozen T3 rules (about +1 for the board in expectation, the AI assistant's estimate; on
 the test's own reference the margin over the scorer's severity gate is thin). A scratch reading run before its row
-(N25) is recorded as a breach of rule 1 and counted. **R-A's two candidate files build reproducibly** at 16 BLAS
-threads, the check owed since (a), and option 2 has a build command. Tries: T1 28, embryo 36, heart 4, T3 13.
+(N25) is recorded as a breach of rule 1 and counted. Tries K8a and K8b then put the same factors on the second
+upload as it is built today: per lineage group +4.72 and +7.12 over today's file on the two Gata4 replicates, pooled
++4.42 and +1.24 (the pooled factor stays under the severity gate on replicate 2); no request follows from them
+either. **R-A's two candidate files build reproducibly** at 16 BLAS threads, the check owed since (a), and option 2
+has a build command. Tries: T1 28, embryo 36, heart 4, T3 15.
 **2026-11-13, the campaign's third wave (decision log 2026-11-13 (a), which corrects 2026-11-12 (c)):** no upload,
 build, rule or gate record changed; the captain has ruled on none of the requests. An independent check of the record
 recomputed about 1,950 figures: every number held, the presentation did not (the embryo request had left out three

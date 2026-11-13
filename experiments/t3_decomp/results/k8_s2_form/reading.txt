@@ -1,0 +1,21 @@
+Tries K8a-K8b (commit 9dc6af1655abb1c94d5b374d095369bc2e80bc40): the gain carries to the upload's form: s2_form_revert yes, s2_form_revert_grp yes. No request follows; K7's verdict stands.
+g1 T3w/WT->Gata4rep1: floor 50.00, s2_form 52.42, s2_form_revert 56.84, s2_form_revert_grp 57.14
+    s2_form_revert - s2_form: +4.42 (sd 3.08, ahead 9 of 10)  passes
+    s2_form_revert_grp - s2_form: +4.72 (sd 3.40, ahead 9 of 10)  passes
+    s2_form - floor: +2.42 (sd 4.07, ahead 5 of 10)
+    s2_form_revert - floor: +6.84 (sd 1.29, ahead 10 of 10)  passes
+    s2_form_revert_grp - floor: +7.14 (sd 1.06, ahead 10 of 10)  passes
+    floor               severity no_response 10; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    s2_form             severity r2_gate 5, scored 5; skills de_score 0.452, de_direction 0.536, severity_slope 0.600, mmd_u 0.522, variogram 0.524
+    s2_form_revert      severity scored 10; skills de_score 0.473, de_direction 0.550, severity_slope 0.753, mmd_u 0.504, variogram 0.502
+    s2_form_revert_grp  severity scored 10; skills de_score 0.473, de_direction 0.554, severity_slope 0.753, mmd_u 0.513, variogram 0.513
+g2 T3w/WT->Gata4rep2: floor 50.00, s2_form 48.02, s2_form_revert 49.26, s2_form_revert_grp 55.14
+    s2_form_revert - s2_form: +1.24 (sd 0.98, ahead 9 of 10)  passes
+    s2_form_revert_grp - s2_form: +7.12 (sd 1.72, ahead 10 of 10)  passes
+    s2_form - floor: -1.98 (sd 1.26, ahead 1 of 10)
+    s2_form_revert - floor: -0.74 (sd 0.55, ahead 1 of 10)
+    s2_form_revert_grp - floor: +5.14 (sd 2.09, ahead 9 of 10)  passes
+    floor               severity no_response 10; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    s2_form             severity r2_gate 10; skills de_score 0.422, de_direction 0.505, severity_slope 0.500, mmd_u 0.507, variogram 0.518
+    s2_form_revert      severity r2_gate 10; skills de_score 0.450, de_direction 0.532, severity_slope 0.500, mmd_u 0.495, variogram 0.502
+    s2_form_revert_grp  severity r2_gate 1, scored 9; skills de_score 0.459, de_direction 0.543, severity_slope 0.704, mmd_u 0.508, variogram 0.514

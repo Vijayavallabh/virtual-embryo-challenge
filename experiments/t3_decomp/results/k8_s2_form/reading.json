@@ -1,0 +1,191 @@
+{
+ "void": false,
+ "why": [],
+ "commit": "9dc6af1655abb1c94d5b374d095369bc2e80bc40",
+ "tasks": {
+  "g1": {
+   "mean_score": {
+    "floor": 50.0,
+    "s2_form": 52.415762771394085,
+    "s2_form_revert": 56.83645747211757,
+    "s2_form_revert_grp": 57.139074927215916
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "severity_slope": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "s2_form": {
+     "de_score": 0.45193143501182637,
+     "de_direction": 0.5357707142777398,
+     "severity_slope": 0.600199833100471,
+     "mmd_u": 0.5221631843983603,
+     "variogram": 0.5240747279754627
+    },
+    "s2_form_revert": {
+     "de_score": 0.4731160237395334,
+     "de_direction": 0.5502851686147499,
+     "severity_slope": 0.752772698181368,
+     "mmd_u": 0.5040625552050095,
+     "variogram": 0.5022224284460627
+    },
+    "s2_form_revert_grp": {
+     "de_score": 0.4734103062522609,
+     "de_direction": 0.5540159632088925,
+     "severity_slope": 0.7528641049009371,
+     "mmd_u": 0.5134038288658455,
+     "variogram": 0.5129897613140253
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "s2_form": {
+     "r2_gate": 5,
+     "scored": 5
+    },
+    "s2_form_revert": {
+     "scored": 10
+    },
+    "s2_form_revert_grp": {
+     "scored": 10
+    }
+   },
+   "paired": {
+    "s2_form_revert - s2_form": {
+     "mean": 4.420694700723481,
+     "sd": 3.0828493863159476,
+     "ahead": 9,
+     "n": 10,
+     "passes": true
+    },
+    "s2_form_revert_grp - s2_form": {
+     "mean": 4.723312155821825,
+     "sd": 3.3998201096458835,
+     "ahead": 9,
+     "n": 10,
+     "passes": true
+    },
+    "s2_form - floor": {
+     "mean": 2.415762771394088,
+     "sd": 4.074989505110743,
+     "ahead": 5,
+     "n": 10,
+     "passes": false
+    },
+    "s2_form_revert - floor": {
+     "mean": 6.83645747211757,
+     "sd": 1.286869198839057,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "s2_form_revert_grp - floor": {
+     "mean": 7.139074927215913,
+     "sd": 1.0567741525350407,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    }
+   }
+  },
+  "g2": {
+   "mean_score": {
+    "floor": 50.0,
+    "s2_form": 48.02034241505354,
+    "s2_form_revert": 49.26439814556516,
+    "s2_form_revert_grp": 55.13937670921458
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "severity_slope": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5
+    },
+    "s2_form": {
+     "de_score": 0.4221898751915427,
+     "de_direction": 0.505378972012686,
+     "severity_slope": 0.5,
+     "mmd_u": 0.5065163719596739,
+     "variogram": 0.5177469244342522
+    },
+    "s2_form_revert": {
+     "de_score": 0.4499584228548665,
+     "de_direction": 0.5322862467606453,
+     "severity_slope": 0.5,
+     "mmd_u": 0.49525150501226395,
+     "variogram": 0.5019339038444841
+    },
+    "s2_form_revert_grp": {
+     "de_score": 0.4586615167075556,
+     "de_direction": 0.5427932214780303,
+     "severity_slope": 0.7041055417009647,
+     "mmd_u": 0.5080002157986402,
+     "variogram": 0.5138824423661694
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "s2_form": {
+     "r2_gate": 10
+    },
+    "s2_form_revert": {
+     "r2_gate": 10
+    },
+    "s2_form_revert_grp": {
+     "r2_gate": 1,
+     "scored": 9
+    }
+   },
+   "paired": {
+    "s2_form_revert - s2_form": {
+     "mean": 1.244055730511627,
+     "sd": 0.9765612764838725,
+     "ahead": 9,
+     "n": 10,
+     "passes": true
+    },
+    "s2_form_revert_grp - s2_form": {
+     "mean": 7.1190342941610485,
+     "sd": 1.7195607850181347,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "s2_form - floor": {
+     "mean": -1.9796575849464646,
+     "sd": 1.257806388641784,
+     "ahead": 1,
+     "n": 10,
+     "passes": false
+    },
+    "s2_form_revert - floor": {
+     "mean": -0.7356018544348373,
+     "sd": 0.5500923444523813,
+     "ahead": 1,
+     "n": 10,
+     "passes": false
+    },
+    "s2_form_revert_grp - floor": {
+     "mean": 5.1393767092145834,
+     "sd": 2.0867433038193735,
+     "ahead": 9,
+     "n": 10,
+     "passes": true
+    }
+   }
+  }
+ },
+ "carries": {
+  "s2_form_revert": true,
+  "s2_form_revert_grp": true
+ }
+}

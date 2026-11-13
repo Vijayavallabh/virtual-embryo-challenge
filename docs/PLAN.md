@@ -2578,3 +2578,19 @@ in `docs/ORGANIZER_QUESTIONS.md` (decision log 2026-11-10 (w), (x)).
       alone (T3 is frozen); it would take a ruling in `docs/S2_RULES.md`, about a day for the builder change with
       tests and a dry build, and the rebuild rehearsal. T3's second file is the one uploaded first.
     - *R-A and R-B:* as in (a). Both of R-A's candidate files now build reproducibly.
+  - **Added the same day: tries K8a and K8b**, registered before their run, to measure the open risk named above
+    (the upload's composition term was not in K7's arms). The same factors on T3's second upload as it is built
+    today (wild-type cells with the central composition, no factor), on the two Gata4 replicates:
+
+    | Task | today's second upload | with the pooled factor | with the per-group factor |
+    |---|---|---|---|
+    | Gata4 replicate 1 | 52.42 | 56.84: +4.42 (ahead in 9 of 10 seeds) | 57.14: +4.72 (9 of 10) |
+    | Gata4 replicate 2 | 48.02 | 49.26: +1.24 (9 of 10) | 55.14: +7.12 (10 of 10) |
+
+    By the reading fixed before the run the gain carries to the upload's form for both arms; by the same row no
+    request follows, and K7's verdict stands. The severity gate decides the size: on replicate 2 the pooled factor
+    never clears it (r2 at most 0.010), and the per-group factor clears it in 9 seeds of 10 (r2 0.028 at the median,
+    0.001 at the lowest). Largest loss in one seed against today's file: -0.97 pooled, -0.56 per group. So reading 2
+    now rests on the upload's own form: the per-group factor adds about 5 to 7 points to the second file on the one
+    knockout run that can be read against WT E8.75, with a thin margin over the gate on one replicate. Tries after
+    K8: T1 28, embryo 36, heart 4, T3 15.
