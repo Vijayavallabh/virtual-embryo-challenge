@@ -1,0 +1,41 @@
+Tries K12 (commit 26d4cbc8bf8667279b93c2d335df9e7d23b7726e): raw_r8 CLOSED: no request
+A labelled reading for a ruling, NOT the adoption rule: only x1 and x2 are counted cross-knockout folds; r12 is a replicate fold that never counts; x2's reference is WT E9.5, where K7 found reverts flattered.
+raw against K9's committed raw scores: reproduced
+Checks: x1: raw_r8 - raw no; x1: raw_r8 - raw_r8_perm no; r12: raw_r8 - raw no; r12: raw_r8 - raw_r8_perm no; x2: raw_r8 - raw not below -0.3 yes
+Reported, deciding nothing:
+x1 T3/Mab21l2->Gata4rep2 (counted cross-knockout fold): floor 50.00, raw 46.47, raw_r8 46.46, raw_r8_perm 46.49
+    raw - floor: -3.53 (sd 0.35, ahead 0 of 10)
+    raw_r8 - raw: -0.02 (sd 0.16, ahead 4 of 10)
+    raw_r8 - raw_r8_perm: -0.04 (sd 0.18, ahead 3 of 10)
+    raw_r8_perm - raw: +0.02 (sd 0.10, ahead 6 of 10)
+    floor        severity no_response 10
+    raw          severity r2_gate 10
+    raw_r8       severity r2_gate 10
+    raw_r8_perm  severity r2_gate 10
+    skills raw_r8 - raw: de_score -0.006, de_direction +0.001, severity_slope +0.000, mmd_u +0.001, variogram +0.012
+    skills raw_r8_perm - raw: de_score -0.000, de_direction +0.001, severity_slope +0.000, mmd_u -0.001, variogram +0.002
+    share of y's squared norm removed: raw_r8 0.075, raw_r8_perm 0.003; contrasts 47
+x2 T3/Gata4->Mab21l2 (counted cross-knockout fold): floor 50.00, raw 50.08, raw_r8 50.07, raw_r8_perm 50.09
+    raw - floor: +0.08 (sd 0.47, ahead 5 of 10)
+    raw_r8 - raw: -0.02 (sd 0.09, ahead 3 of 10)
+    raw_r8 - raw_r8_perm: -0.02 (sd 0.15, ahead 4 of 10)
+    raw_r8_perm - raw: +0.00 (sd 0.12, ahead 5 of 10)
+    floor        severity no_response 10
+    raw          severity r2_gate 10
+    raw_r8       severity r2_gate 10
+    raw_r8_perm  severity r2_gate 10
+    skills raw_r8 - raw: de_score +0.000, de_direction +0.004, severity_slope +0.000, mmd_u -0.010, variogram -0.000
+    skills raw_r8_perm - raw: de_score +0.000, de_direction -0.000, severity_slope +0.000, mmd_u +0.000, variogram -0.001
+    share of y's squared norm removed: raw_r8 0.009, raw_r8_perm 0.000; contrasts 42
+r12 T3/Gata4rep1->rep2 (replicate fold, never counted): floor 50.00, raw 63.86, raw_r8 63.92, raw_r8_perm 63.92
+    raw - floor: +13.86 (sd 0.60, ahead 10 of 10)  passes
+    raw_r8 - raw: +0.06 (sd 0.22, ahead 6 of 10)
+    raw_r8 - raw_r8_perm: -0.00 (sd 0.30, ahead 5 of 10)
+    raw_r8_perm - raw: +0.06 (sd 0.27, ahead 4 of 10)
+    floor        severity no_response 10
+    raw          severity scored 10
+    raw_r8       severity scored 10
+    raw_r8_perm  severity scored 10
+    skills raw_r8 - raw: de_score +0.001, de_direction -0.002, severity_slope +0.001, mmd_u +0.002, variogram +0.003
+    skills raw_r8_perm - raw: de_score +0.004, de_direction -0.001, severity_slope -0.001, mmd_u -0.000, variogram -0.000
+    share of y's squared norm removed: raw_r8 0.003, raw_r8_perm 0.001; contrasts 47

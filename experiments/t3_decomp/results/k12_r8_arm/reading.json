@@ -1,0 +1,905 @@
+{
+ "void": false,
+ "why": [],
+ "commit": "26d4cbc8bf8667279b93c2d335df9e7d23b7726e",
+ "tasks": {
+  "x1": {
+   "counted_fold": true,
+   "mean_score": {
+    "floor": 50.0,
+    "raw": 46.47338794948598,
+    "raw_r8": 46.455279714266034,
+    "raw_r8_perm": 46.491863885197674
+   },
+   "paired": {
+    "raw - floor": {
+     "mean": -3.5266120505140224,
+     "sd": 0.34584140910797123,
+     "ahead": 0,
+     "n": 10,
+     "passes": false
+    },
+    "raw_r8 - raw": {
+     "mean": -0.01810823521995033,
+     "sd": 0.1604519224927018,
+     "ahead": 4,
+     "n": 10,
+     "passes": false
+    },
+    "raw_r8 - raw_r8_perm": {
+     "mean": -0.03658417093164701,
+     "sd": 0.18127687862637581,
+     "ahead": 3,
+     "n": 10,
+     "passes": false
+    },
+    "raw_r8_perm - raw": {
+     "mean": 0.01847593571169668,
+     "sd": 0.09754420807053804,
+     "ahead": 6,
+     "n": 10,
+     "passes": false
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "raw": {
+     "r2_gate": 10
+    },
+    "raw_r8": {
+     "r2_gate": 10
+    },
+    "raw_r8_perm": {
+     "r2_gate": 10
+    }
+   },
+   "skill_diff_minus_raw": {
+    "raw_r8": {
+     "de_score": -0.005607322297459155,
+     "de_direction": 0.0013860674916787385,
+     "severity_slope": 0.0,
+     "mmd_u": 0.001325831543528755,
+     "variogram": 0.012443720986188917
+    },
+    "raw_r8_perm": {
+     "de_score": -0.0004375480612688609,
+     "de_direction": 0.0010026549290301113,
+     "severity_slope": 0.0,
+     "mmd_u": -0.0005569450349815263,
+     "variogram": 0.0016524180929736731
+    }
+   },
+   "removed_share_y_r8": 0.07532525493204958,
+   "removed_share_y_r8_perm": 0.002524079209044601,
+   "gate": {
+    "G": 0.24289201996305138,
+    "null_median": 0.0018058224761442546,
+    "null_p95": 0.004450080242218477,
+    "n_contrasts": 47,
+    "n_groups_with_contrasts": 12,
+    "n_permutations": 200,
+    "gate_stream": 1,
+    "verdict": "inside",
+    "groups": 12
+   },
+   "record": {
+    "fold": "T3/Mab21l2->Gata4rep2",
+    "reference": "E8.75",
+    "series_days": [
+     7.5,
+     8.0,
+     8.3,
+     8.5,
+     8.75,
+     9.5,
+     10.5
+    ],
+    "groups": [
+     "CM",
+     "CardiacProgenitor",
+     "Ectoderm",
+     "Endocardium",
+     "Endoderm",
+     "Endothelium",
+     "ExtraEmbryonicMeso",
+     "NCC",
+     "Neural",
+     "ParaxialMesoderm",
+     "Pericardium",
+     "PharyngealMesoderm"
+    ],
+    "n_contrasts": 47,
+    "basis": true,
+    "level_monotone": [
+     {
+      "direction": "up",
+      "removed_energy_share": 0.10746758475491315
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.007884118572982726
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.06497574916428857
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.1362712992133917
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.041923425667826614
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.060665161375014584
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.14919529271159082
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.0636361815117675
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.040650665881159405
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.1155326226997433
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.13490869470800582
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.04307871067681806
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.01218679090573335
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.05220018456402172
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.10979621145250086
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.09634541527626073
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.030311222786642823
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.040865062304616964
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.01611463303928547
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.08215355673170618
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.09465032824939121
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.06510802853195947
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.15250241321067237
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.049490675439392534
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.045475744757910296
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.046571050010375176
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.016576634897276673
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.04558563095509725
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.05373123449823748
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.036605592035919204
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.026797789569939303
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.13943268085228924
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.06007162583695289
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.09415637473160175
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.060323617636426394
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.05877798395056561
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.030134133047921605
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.018693152060645372
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.0680971266034964
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.05248891486512442
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.007290344205007816
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.023120959076532735
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.07351177253693257
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.0151055921020519
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.027729298559157022
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.04161639930664732
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.010180905851289074
+     }
+    ],
+    "removed_share_y_r8": 0.07532525493204958,
+    "removed_share_y_r8_perm": 0.002524079209044601
+   }
+  },
+  "x2": {
+   "counted_fold": true,
+   "mean_score": {
+    "floor": 50.0,
+    "raw": 50.084296911174725,
+    "raw_r8": 50.06747787066844,
+    "raw_r8_perm": 50.087186441438725
+   },
+   "paired": {
+    "raw - floor": {
+     "mean": 0.08429691117472657,
+     "sd": 0.4690720345284868,
+     "ahead": 5,
+     "n": 10,
+     "passes": false
+    },
+    "raw_r8 - raw": {
+     "mean": -0.016819040506287308,
+     "sd": 0.09377651270233449,
+     "ahead": 3,
+     "n": 10,
+     "passes": false
+    },
+    "raw_r8 - raw_r8_perm": {
+     "mean": -0.019708570770283984,
+     "sd": 0.15142262607927282,
+     "ahead": 4,
+     "n": 10,
+     "passes": false
+    },
+    "raw_r8_perm - raw": {
+     "mean": 0.0028895302639966756,
+     "sd": 0.11941004066245575,
+     "ahead": 5,
+     "n": 10,
+     "passes": false
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "raw": {
+     "r2_gate": 10
+    },
+    "raw_r8": {
+     "r2_gate": 10
+    },
+    "raw_r8_perm": {
+     "r2_gate": 10
+    }
+   },
+   "skill_diff_minus_raw": {
+    "raw_r8": {
+     "de_score": 0.0003560924466748827,
+     "de_direction": 0.003965751970199022,
+     "severity_slope": 0.0,
+     "mmd_u": -0.010290392667935461,
+     "variogram": -0.0003951126432856056
+    },
+    "raw_r8_perm": {
+     "de_score": 0.0004122724667290911,
+     "de_direction": -9.642477709013719e-05,
+     "severity_slope": 0.0,
+     "mmd_u": 0.00013256052884333958,
+     "variogram": -0.0010823438320929247
+    }
+   },
+   "removed_share_y_r8": 0.008653131680141398,
+   "removed_share_y_r8_perm": 7.748672454572287e-05,
+   "gate": {
+    "G": 0.24289201996305138,
+    "null_median": 0.0018058224761442546,
+    "null_p95": 0.004450080242218477,
+    "n_contrasts": 47,
+    "n_groups_with_contrasts": 12,
+    "n_permutations": 200,
+    "gate_stream": 1,
+    "verdict": "inside",
+    "groups": 12
+   },
+   "record": {
+    "fold": "T3/Gata4->Mab21l2",
+    "reference": "E9.5",
+    "series_days": [
+     7.5,
+     8.0,
+     8.3,
+     8.5,
+     8.75,
+     9.5,
+     10.5
+    ],
+    "groups": [
+     "CM",
+     "CardiacProgenitor",
+     "Ectoderm",
+     "Endocardium",
+     "Endoderm",
+     "Endothelium",
+     "NCC",
+     "ParaxialMesoderm",
+     "Pericardium",
+     "PharyngealMesoderm"
+    ],
+    "n_contrasts": 42,
+    "basis": true,
+    "level_monotone": [
+     {
+      "direction": "down",
+      "removed_energy_share": 0.1013684917802154
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.04138484646792801
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.09184093146558746
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.1428381227687306
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.04607382706146342
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.17188768236453383
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.07541371167866688
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.02489888063691615
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.1298159356241514
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.1243582760732527
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.028945679534161904
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.09869351329813424
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.1377289157806305
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.02909779012807204
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.02600194624979953
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.057641833928818345
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.086610468084651
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.09512590552907774
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.12855396876991693
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.03240234153246332
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.04443119844962354
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.013016138848418112
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.11632508911971909
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.04900810081047256
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.017384037498114565
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.08161652842650521
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.06976494474213513
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.01758720712228142
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.08630501452443544
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.02492675691837664
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.06951743020068048
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.03306177797075289
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.12393194479978029
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.11470464819271547
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.08313487264606763
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.07773792480054499
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.07735544864873505
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.0800465790147458
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.10858323752195331
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.0674895802224541
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.09095139639832264
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.10851382674821256
+     }
+    ],
+    "removed_share_y_r8": 0.008653131680141398,
+    "removed_share_y_r8_perm": 7.748672454572287e-05
+   }
+  },
+  "r12": {
+   "counted_fold": false,
+   "mean_score": {
+    "floor": 50.0,
+    "raw": 63.863084540451226,
+    "raw_r8": 63.9186886248958,
+    "raw_r8_perm": 63.9214707706612
+   },
+   "paired": {
+    "raw - floor": {
+     "mean": 13.863084540451217,
+     "sd": 0.5968677948354641,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "raw_r8 - raw": {
+     "mean": 0.055604084444582466,
+     "sd": 0.21534178965920336,
+     "ahead": 6,
+     "n": 10,
+     "passes": false
+    },
+    "raw_r8 - raw_r8_perm": {
+     "mean": -0.0027821457654042094,
+     "sd": 0.2992805793328785,
+     "ahead": 5,
+     "n": 10,
+     "passes": false
+    },
+    "raw_r8_perm - raw": {
+     "mean": 0.05838623020998668,
+     "sd": 0.268019109292903,
+     "ahead": 4,
+     "n": 10,
+     "passes": false
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "raw": {
+     "scored": 10
+    },
+    "raw_r8": {
+     "scored": 10
+    },
+    "raw_r8_perm": {
+     "scored": 10
+    }
+   },
+   "skill_diff_minus_raw": {
+    "raw_r8": {
+     "de_score": 0.0010580098539960836,
+     "de_direction": -0.0017864242865168079,
+     "severity_slope": 0.000886176458569643,
+     "mmd_u": 0.0020127899375753655,
+     "variogram": 0.0027770631590594897
+    },
+    "raw_r8_perm": {
+     "de_score": 0.0037495644891713253,
+     "de_direction": -0.0010021020241454347,
+     "severity_slope": -0.0008315954794088087,
+     "mmd_u": -0.00039946453742827347,
+     "variogram": -0.0004330865533947348
+    }
+   },
+   "removed_share_y_r8": 0.003092045669606176,
+   "removed_share_y_r8_perm": 0.0012273734333389137,
+   "gate": {
+    "G": 0.24289201996305138,
+    "null_median": 0.0018058224761442546,
+    "null_p95": 0.004450080242218477,
+    "n_contrasts": 47,
+    "n_groups_with_contrasts": 12,
+    "n_permutations": 200,
+    "gate_stream": 1,
+    "verdict": "inside",
+    "groups": 12
+   },
+   "record": {
+    "fold": "T3/Gata4rep1->rep2",
+    "reference": "E8.75",
+    "series_days": [
+     7.5,
+     8.0,
+     8.3,
+     8.5,
+     8.75,
+     9.5,
+     10.5
+    ],
+    "groups": [
+     "CM",
+     "CardiacProgenitor",
+     "Ectoderm",
+     "Endocardium",
+     "Endoderm",
+     "Endothelium",
+     "ExtraEmbryonicMeso",
+     "NCC",
+     "Neural",
+     "ParaxialMesoderm",
+     "Pericardium",
+     "PharyngealMesoderm"
+    ],
+    "n_contrasts": 47,
+    "basis": true,
+    "level_monotone": [
+     {
+      "direction": "up",
+      "removed_energy_share": 0.10746758475491315
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.007884118572982726
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.06497574916428857
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.1362712992133917
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.041923425667826614
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.060665161375014584
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.14919529271159082
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.0636361815117675
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.040650665881159405
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.1155326226997433
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.13490869470800582
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.04307871067681806
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.01218679090573335
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.05220018456402172
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.10979621145250086
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.09634541527626073
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.030311222786642823
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.040865062304616964
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.01611463303928547
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.08215355673170618
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.09465032824939121
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.06510802853195947
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.15250241321067237
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.049490675439392534
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.045475744757910296
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.046571050010375176
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.016576634897276673
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.04558563095509725
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.05373123449823748
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.036605592035919204
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.026797789569939303
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.13943268085228924
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.06007162583695289
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.09415637473160175
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.060323617636426394
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.05877798395056561
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.030134133047921605
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.018693152060645372
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.0680971266034964
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.05248891486512442
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.007290344205007816
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.023120959076532735
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.07351177253693257
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.0151055921020519
+     },
+     {
+      "direction": "down",
+      "removed_energy_share": 0.027729298559157022
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.04161639930664732
+     },
+     {
+      "direction": "up",
+      "removed_energy_share": 0.010180905851289074
+     }
+    ],
+    "removed_share_y_r8": 0.003092045669606176,
+    "removed_share_y_r8_perm": 0.0012273734333389137
+   }
+  }
+ },
+ "k9_reproduction": "reproduced",
+ "checks": {
+  "x1: raw_r8 - raw": false,
+  "x1: raw_r8 - raw_r8_perm": false,
+  "r12: raw_r8 - raw": false,
+  "r12: raw_r8 - raw_r8_perm": false,
+  "x2: raw_r8 - raw not below -0.3": true
+ },
+ "supported": false,
+ "verdict": "CLOSED: no request",
+ "label": "A labelled reading for a ruling, NOT the adoption rule: only x1 and x2 are counted cross-knockout folds; r12 is a replicate fold that never counts; x2's reference is WT E9.5, where K7 found reverts flattered."
+}

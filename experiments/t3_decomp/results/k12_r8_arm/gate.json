@@ -1,0 +1,32 @@
+{
+ "references": {
+  "E8.75": {
+   "G": 0.24289201996305138,
+   "null_median": 0.0018058224761442546,
+   "null_p95": 0.004450080242218477,
+   "n_contrasts": 47,
+   "n_groups_with_contrasts": 12,
+   "n_permutations": 200,
+   "gate_stream": 1,
+   "verdict": "inside",
+   "groups": 12
+  },
+  "E9.5": {
+   "G": 0.24325403064390963,
+   "null_median": 0.0018344191854240749,
+   "null_p95": 0.004113733395811999,
+   "n_contrasts": 42,
+   "n_groups_with_contrasts": 10,
+   "n_permutations": 200,
+   "gate_stream": 1,
+   "verdict": "inside",
+   "groups": 10
+  }
+ },
+ "decides": "E8.75",
+ "perm_seed": 20261113,
+ "gate_stream": 1,
+ "leave_out": "one lineage group",
+ "commit": "26d4cbc8bf8667279b93c2d335df9e7d23b7726e",
+ "tree_clean": true
+}

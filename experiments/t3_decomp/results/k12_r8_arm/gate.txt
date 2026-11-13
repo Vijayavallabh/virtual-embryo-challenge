@@ -1,0 +1,3 @@
+Tries K12 gate (R8's own, target-free; commit 26d4cbc8bf8667279b93c2d335df9e7d23b7726e): the arms run only if WT E8.75 says "inside"
+WT E8.75: inside; G 0.243, null median 0.002, null 95th percentile 0.004, contrasts 47, permutations 200
+WT E9.5: inside; G 0.243, null median 0.002, null 95th percentile 0.004, contrasts 42, permutations 200
