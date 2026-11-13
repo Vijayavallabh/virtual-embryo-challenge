@@ -22,6 +22,9 @@ files that lacked one returned `format_ok`, so every file of the set has passed;
 The upload client gained the guard "reference list": a scored upload is refused unless the file's sha256 is on
 the current list under one of the board's names (`results/reference_list.json`). Tries: T1 32, embryo 36, heart
 13, T3 15. Nothing is uploaded; the estimate and the gate record are unchanged.
+Checked last: the full test suite at ae14074 in a DGX campaign checkout (lock, lint, 1,254 tests pass; clean tree). The
+DGX reference checkout stays at the rehearsed commit dc7b6ae until the freeze-morning sync; main has moved on by
+documents and the upload client's guard only, which change no built file.
 **2026-11-13, evening: the captain's answers and what followed (decision log 2026-11-13 (k) to (n)). T1's second
 upload is on the mid base, the ten files are rehearsed again, and nothing is uploaded.** The captain chose "Half-way
 base (Recommended)" for T1's second upload, "Generator tests + heart try" for the GPUs and "Keep it (Recommended)"
