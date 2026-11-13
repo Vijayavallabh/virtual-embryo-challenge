@@ -1,0 +1,8 @@
+run folder on the DGX: ~/v/vec-campaign/runs/harness/n36_trend_second_upload (campaign checkout); reading written to ~/v/vec-campaign/runs/round6/n36_read by the branch's own script
+commit: 51b0672 (campaign/emb-trend2)
+tree at start and at end (bytes of git status --porcelain): 0 and 0
+started UTC: 2026-11-13T20:19:48Z
+ended UTC: 2026-11-13T20:31:26Z
+CPU only, 8 BLAS threads, one process per task, nine tasks; both arms built on every task (no "not buildable" entry)
+fgw and fgw_aligned_series come from the committed runs of E24, E25 and E28 and were not rescored; the reading is not void
+checked by the main session: fgw_trend_render's per-seed scores on the two counted backtests equal try E33's committed ones (results/e33_trend_render), largest difference 0, and the floor likewise

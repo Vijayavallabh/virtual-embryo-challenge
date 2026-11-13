@@ -1,0 +1,9 @@
+n36, tries E35a and E35b (runs e24_pricing:ccd33b5, e25_pairs:798908a, e28_nine_tasks:22513cf, n36_trend_second_upload:51b0672): second uploads beside fgw, against the pair as built (fgw, fgw_aligned_series)
+put forward: none (the second upload stays fgw_aligned_series)
+  second upload            half   late   new1     x1     x2     x3   new2    e75   e725  |      D      O  S(0.3) S(0.45) S(0.6)   mean9  worst9  LOO-min  rule a b c d
+  fgw_trend_render        -6.02  -4.15  -3.97  -4.48  +1.92  +0.99  +0.35  -0.41  +3.65  |  -2.62  +1.20  +0.05  -0.52  -1.09   -1.35   37.99    -1.19  n n n n
+  fgw_aligned_trend       -6.03  -3.00  -2.44  -4.48  +0.53  +0.40  -0.09  +0.87  +2.11  |  -2.50  +0.96  -0.08  -0.60  -1.12   -1.35   37.99    -0.91  n n n n
+  the pair as built: worst9 42.47; task means 73.43 84.80 80.15 42.47 65.78 60.52 72.25 61.53 58.78
+deciding nothing: each arm's own mean and its paired difference from fgw (seeds ahead)
+  fgw_trend_render: half 67.41 (+1.42, 10/10); late 80.56 (+0.03, 5/10); new1 76.18 (+0.21, 10/10); x1 35.06 (-2.93, 0/10); x2 67.70 (+1.92, 10/10); x3 61.51 (+0.99, 10/10); new2 72.60 (+1.21, 10/10); e75 60.11 (-1.01, 0/10); e725 62.44 (+3.65, 10/10)
+  fgw_aligned_trend: half 67.40 (+1.41, 10/10); late 81.37 (+0.84, 6/10); new1 77.71 (+1.74, 10/10); x1 35.22 (-2.76, 0/10); x2 66.25 (+0.47, 9/10); x3 60.86 (+0.34, 9/10); new2 72.01 (+0.63, 8/10); e75 62.40 (+1.28, 10/10); e725 60.89 (+2.11, 10/10)
