@@ -831,13 +831,17 @@ def _g_mom_perm(ctx: BuildContext) -> Stage:
     return _g_mom_arm(ctx, lambda f: ts.permute_factors(f, G_MOM_PERM_SEED))
 
 
-def _b0_t2_shift(ctx: BuildContext, herd: bool = False,
-                 cfm: bool = False) -> tuple[ad.AnnData, np.ndarray, np.ndarray | None, ad.AnnData, ad.AnnData]:
+def _b0_t2_shift(ctx: BuildContext, herd: bool = False, cfm: bool = False,
+                 trend: bool = False) -> tuple[ad.AnnData, np.ndarray, np.ndarray | None, ad.AnnData, ad.AnnData]:
     """B0's draw and per-lineage shift on a T2 board (the steps of `_b0_t2` before its depth step and its finish):
     (pool, drawn rows, coords, the stage the momentum starts from, the shifted cells with obs["merged"] and their counts
-    in layers["counts"]). `_b0_t2` and heart try H7 (`_b0_gmom_arm`) both call it, so H7 starts from B0's very cells."""
+    in layers["counts"]). `_b0_t2` and heart try H7 (`_b0_gmom_arm`) both call it, so H7 starts from B0's very cells.
+    trend (heart candidate b0_trend, B0_TREND_RULE): each lineage's log factor from `b0_trend_factors` over every input
+    stage; the draw, typing, stream and everything else are B0's."""
     from vec import t1_scope
 
+    if trend:
+        _b0_trend_task_check(ctx.task)
     pool, rows, _, coords = draw_copy(ctx, herd=herd)
     t = ctx.task
     if t.kind == "extrap":
@@ -851,12 +855,127 @@ def _b0_t2_shift(ctx: BuildContext, herd: bool = False,
         return _shallow(a, b0_type=np.where(m == "Untracked", f"Untracked@{tag}", m))
 
     like = typed(pool, "start" if t.kind == "interp" else "end")[rows]
+    logf_by_type = None
+    if trend:
+        from vec import latent_extrap as le
+
+        logf_by_type, rec = b0_trend_factors(ctx, list(like.var_names),
+                                             sorted(set(np.asarray(like.obs["b0_type"]).astype(str))))
+        le.RECORDS.append({"task": t.key, "candidate": "b0_trend", "build_seed": int(ctx.seed), **rec})
     shifted, _ = t1_scope.momentum_shift(typed(start, "start"), typed(end, "end"), like, damping, (), key="b0_type",
-                                         seed=[ctx.seed, 3], logf_filter=t2_build.covariance_filter if cfm else None)
+                                         seed=[ctx.seed, 3], logf_filter=t2_build.covariance_filter if cfm else None,
+                                         logf_by_type=logf_by_type)
     return pool, rows, coords, start, shifted
 
 
-def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool = False) -> Stage:
+# Heart candidate b0_trend (campaign branch; specification of 2026-11-13): B0 with each lineage's per-gene velocity
+# taken as the least-squares trend over every input stage instead of the last step alone.
+B0_TREND_RULE = ("B0 with each lineage's per-gene velocity taken as the least-squares slope of log(mean CP10k + "
+                 "eps) on the stage day over every input stage where the lineage has at least min_cells cells, "
+                 "times B0_DAMPING x the last gap in days; a lineage seen at only the last two stages keeps B0's "
+                 "own factor; draw, stream, depth rule and coordinates are B0's")
+
+
+def _momentum_default(name: str):
+    """`vec.t1_scope.momentum_shift`'s own default for one keyword (eps, min_cells), the values B0 runs with."""
+    import inspect
+
+    from vec import t1_scope
+
+    return inspect.signature(t1_scope.momentum_shift).parameters[name].default
+
+
+def _b0_trend_task_check(t: TaskView) -> None:
+    """b0_trend is defined on heart extrapolation tasks with at least three input stages, `start` second to last and
+    the reference last (`vec.latent_extrap.flow_stages` raises otherwise)."""
+    if t.task != "T2" or t.setting != "heart" or t.kind != "extrap":
+        raise ValueError(f"b0_trend is defined on heart extrapolation tasks only, not {t.task} {t.setting} {t.kind}")
+    from vec import latent_extrap as le
+
+    le.flow_stages(t)
+
+
+def trend_transition_weights(days: Sequence[float]) -> np.ndarray:
+    """The weights with which the least-squares slope over stages at `days` uses each consecutive transition's
+    velocity (for the record only): with c_i = (d_i - dbar) / S_dd, slope = sum_k a_k (y_k - y_{k-1}) with
+    a_k = -sum_{i<k} c_i, and w_k = a_k * gap_k, so slope = sum_k w_k (y_k - y_{k-1}) / gap_k and the w_k sum to 1."""
+    d = np.asarray(days, dtype=np.float64)
+    c = (d - d.mean()) / float(((d - d.mean()) ** 2).sum())
+    return -np.cumsum(c)[:-1] * np.diff(d)
+
+
+def trend_log_factor(log_means: Sequence[np.ndarray], days: Sequence[float], budget: float) -> np.ndarray:
+    """Per gene, `budget` x the ordinary least-squares slope of y_k (one array per stage) on day_k:
+    slope = sum_k (d_k - dbar) y_k / sum_k (d_k - dbar)^2. b0_trend's budget is B0_DAMPING x the last gap in days."""
+    d = np.asarray(days, dtype=np.float64)
+    dc = d - d.mean()
+    Y = np.vstack([np.asarray(y, dtype=np.float64) for y in log_means])
+    return budget * (dc @ Y) / float((dc ** 2).sum())
+
+
+def _cosine(x: np.ndarray, y: np.ndarray) -> float:
+    nx, ny = float(np.linalg.norm(x)), float(np.linalg.norm(y))
+    return float(x @ y / (nx * ny)) if nx > 0 and ny > 0 else float("nan")
+
+
+def b0_trend_factors(ctx: BuildContext, genes: Sequence[str],
+                     types: Sequence[str]) -> tuple[dict[str, np.ndarray], dict]:
+    """b0_trend's log factors (lineage -> damped log factor in `genes` order) and its target-free record. For each
+    lineage among `types` (the drawn cells' B0 types; "Untracked" never) that B0 shifts on this task (at least
+    min_cells own cells at `start` and at the reference), the usable stages are the input stages (vec.latent_extrap.
+    flow_stages: day order, never the target) where it has at least min_cells own cells (obs["merged"]); with
+    y_k = log(mean CP10k + eps) there, its factor is B0_DAMPING x (day_ref - day_start) x the least-squares slope of
+    y_k on day_k. A lineage usable at `start` and the reference only is left out of the mapping, so momentum_shift
+    gives it B0's own factor from B0's own expression. The record holds, per shifted lineage, the usable stages, the
+    transition weights, and the cosine, L2-norm ratio (trend / B0) and mean absolute log factor against B0's own factor
+    on the same rows; and the medians of cosine and norm ratio over the shifted lineages. eps and min_cells are
+    momentum_shift's defaults, as B0 uses them."""
+    from vec import latent_extrap as le
+    from vec.core import counts_of, mean_cp10k
+
+    t = ctx.task
+    _b0_trend_task_check(t)
+    stages = le.flow_stages(t)
+    ref_role = t.reference_role
+    eps, min_cells = float(_momentum_default("eps")), int(_momentum_default("min_cells"))
+    budget = B0_DAMPING * (float(t.role_days[ref_role]) - float(t.role_days["start"]))
+    C = {r: counts_of(ctx.inputs[r], genes) for r, _ in stages}
+    merged = {r: np.asarray(ctx.inputs[r].obs[T2_LINEAGE_KEY]).astype(str) for r, _ in stages}
+    out: dict[str, np.ndarray] = {}
+    lineages = []
+    for lin in types:
+        if lin == T2_UNTRACKED or lin.startswith(T2_UNTRACKED + "@"):
+            continue
+        rows = {r: np.flatnonzero(merged[r] == lin) for r, _ in stages}
+        if len(rows["start"]) < min_cells or len(rows[ref_role]) < min_cells:
+            continue  # B0 does not shift it
+        usable = [(r, d) for r, d in stages if len(rows[r]) >= min_cells]
+        y = {r: np.log(mean_cp10k(C[r][rows[r]]) + eps) for r, _ in usable}
+        own = B0_DAMPING * (y[ref_role] - y["start"])
+        if [r for r, _ in usable] == ["start", ref_role]:
+            logf, kept = own, True
+        else:
+            logf = trend_log_factor([y[r] for r, _ in usable], [d for _, d in usable], budget)
+            out[lin], kept = logf, False
+        n_own = float(np.linalg.norm(own))
+        lineages.append({"lineage": lin, "stages": [r for r, _ in usable], "days": [d for _, d in usable],
+                         "n_cells": [int(len(rows[r])) for r, _ in usable], "own_factor": kept,
+                         "weights": [float(w) for w in trend_transition_weights([d for _, d in usable])],
+                         "cosine": _cosine(logf, own),
+                         "norm_ratio": float(np.linalg.norm(logf)) / n_own if n_own > 0 else float("nan"),
+                         "mean_abs_logf_trend": float(np.abs(logf).mean()),
+                         "mean_abs_logf_b0": float(np.abs(own).mean())})
+    cos = [r["cosine"] for r in lineages]
+    ratio = [r["norm_ratio"] for r in lineages]
+    rec = {"rule": "vec.harness.B0_TREND_RULE", "stages": [r for r, _ in stages], "days": [d for _, d in stages],
+           "budget_days": budget, "eps": eps, "min_cells": min_cells, "n_trend": len(out), "lineages": lineages,
+           "median_cosine": float(np.nanmedian(cos)) if lineages else float("nan"),
+           "median_norm_ratio": float(np.nanmedian(ratio)) if lineages else float("nan")}
+    return out, rec
+
+
+def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool = False,
+           trend: bool = False) -> Stage:
     """B0 on a T2 board: real reference cells at the count rule, moved in count space by the per-type change of the
     harmonised lineage level (obs["merged"]; groups without a stable cross-stage meaning held flat). Extrapolation:
     from `start` to the reference, damped by B0_DAMPING. Interpolation: from the earlier bracket towards the later one,
@@ -865,10 +984,12 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
     heart try H3 of experiments/harness/TRIES.md): the moved cells are then binomially thinned to the target depth that
     vec.t2_build.DEPTH_EXTRAP_RULE extrapolates at B0_DAMPING from the start's and the reference's median depths.
     herd (try H4): the copy's draw herded towards the pool's mean panel expression (`draw_copy`). cfm (extrapolation
-    only; heart try H6): each lineage's momentum goes through vec.t2_build.covariance_filter before it is applied."""
+    only; heart try H6): each lineage's momentum goes through vec.t2_build.covariance_filter before it is applied.
+    trend (heart candidate b0_trend): each lineage's log factor is its least-squares trend over every input stage
+    (`b0_trend_factors`, B0_TREND_RULE)."""
     if cfm and ctx.task.kind != "extrap":
         raise ValueError("the covariance filter of B0 is for extrapolation boards")
-    pool, rows, coords, start, shifted = _b0_t2_shift(ctx, herd=herd, cfm=cfm)
+    pool, rows, coords, start, shifted = _b0_t2_shift(ctx, herd=herd, cfm=cfm, trend=trend)
     t = ctx.task
     g = ctx.board.genes
     if depth:
@@ -1080,6 +1201,11 @@ def _b0_lat_ratio(ctx: BuildContext) -> Stage:
 def _b0_lat_flow(ctx: BuildContext) -> Stage:
     pool, X, coords, _ = b0_lat_population(ctx, "flow")
     return finish(ctx, pool, X, coords)
+
+
+def _b0_trend(ctx: BuildContext) -> Stage:
+    """Heart candidate b0_trend (B0_TREND_RULE): `_b0_t2` with trend=True."""
+    return _b0_t2(ctx, trend=True)
 
 
 def _extrap_with_start(t: PseudoTask) -> bool:
@@ -1890,6 +2016,12 @@ CANDIDATES = {
                                       "heart only)", "damping": B0_DAMPING, "rule": "vec.latent_extrap.FLOW_RULE",
                               "flow_seed": 20261113, "scope": "chamber"},
                              requires=_heart_extrap_with_start),
+    "b0_trend": Candidate("b0_trend", frozenset({"T2"}), (), _b0_trend,
+                          {"what": "B0 with each lineage's per-gene velocity the least-squares trend of log(mean CP10k "
+                                   "+ eps) over every input stage where it has min_cells cells, read over B0's time "
+                                   "budget (heart only; count space)", "damping": B0_DAMPING,
+                           "rule": "vec.harness.B0_TREND_RULE", "scope": "chamber"},
+                          requires=_heart_extrap_with_start),
     # T3 tries K2a and K2b (experiments/harness/TRIES.md, registered before their run): s1's Gata4 factor on the
     # Gata4 -> Mab21l2 fold, and its permuted control
     "t3_factor_xko": Candidate("t3_factor_xko", frozenset({"T3"}), (), _t3_factor_xko,
