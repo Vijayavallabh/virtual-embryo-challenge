@@ -1013,11 +1013,20 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
 
 
 # ------------------------------------------------------------------------------------------------ T2 embryo (feat-010)
+# Tries E35a and E35b (experiments/harness/n36_trend_second_upload.py): a stage handed to a task only as a sample of the
+# trend rendering has a role named TREND_SAMPLE_PREFIX + its stem. Such a role is not one of the task's own stages for
+# the size rule: target_rms leaves it out, so fgw's positions (and every path that reads the brackets alone) stay what
+# they are on the task without it. No task before E35 has such a role, so nothing built before changes.
+TREND_SAMPLE_PREFIX = "trend_"
+
+
 def target_rms(ctx: BuildContext) -> float:
     """The pre-registered embryo size rule (raw mode) on the task's own input stages: PCHIP of log RMS radius against
-    the stage day, read at the target's day (vec.t2_build.pchip_rms)."""
-    days = [ctx.task.role_days[r] for r in ctx.inputs]
-    rms = [t2_build.rms_radius(np.asarray(a.obsm[COORD_KEY], dtype=float)[:, :3]) for a in ctx.inputs.values()]
+    the stage day, read at the target's day (vec.t2_build.pchip_rms). Trend-sample roles (TREND_SAMPLE_PREFIX) are not
+    read."""
+    own = {r: a for r, a in ctx.inputs.items() if not r.startswith(TREND_SAMPLE_PREFIX)}
+    days = [ctx.task.role_days[r] for r in own]
+    rms = [t2_build.rms_radius(np.asarray(a.obsm[COORD_KEY], dtype=float)[:, :3]) for a in own.values()]
     return t2_build.pchip_rms(days, rms, ctx.task.target_day)
 
 
@@ -1203,6 +1212,13 @@ def _fgw_trend_render(ctx: BuildContext) -> Stage:
 def _trend_applies(t: PseudoTask) -> bool:
     """An embryo interpolation task with a third sample besides the brackets, every one a T2 stage."""
     return _interp(t) and len(t.inputs) >= 3 and all(f.startswith("T2/") for f in t.inputs.values())
+
+
+def _fgw_aligned_trend(ctx: BuildContext) -> Stage:
+    """Campaign arm (branch campaign/emb-trend2; TRIES.md row E35a and E35b): try E10's aligned moves (fgw_aligned)
+    with fgw_trend_render's expression, the two existing code paths combined as fgw_aligned_hi combines the aligned
+    moves with the top-up render. No constant is new."""
+    return _fgw(ctx, move_coupling="aligned", expression="trend")
 
 
 def _fgw_aligned_hi(ctx: BuildContext) -> Stage:
@@ -1682,6 +1698,14 @@ CANDIDATES = {
                                            "a per-gene factor to the run profile a trend through all the task's "
                                            "samples gives at the target's day", "rule": t2_build.TREND_RENDER_RULE,
                                    "scope": "whole"}, requires=_trend_applies),
+    # tries E35a and E35b (campaign branch campaign/emb-trend2; row registered before any run): the trend rendering at
+    # the aligned positions, read as a second upload with fgw_trend_render
+    "fgw_aligned_trend": Candidate("fgw_aligned_trend", frozenset({"T2"}), (), _fgw_aligned_trend,
+                                   {"what": "fgw_aligned (try E10's aligned moves) with fgw_trend_render's expression: "
+                                            "every drawn cell of both brackets moved by a per-gene factor to the run "
+                                            "profile a trend through all the task's samples gives at the target's day, "
+                                            "at the aligned positions", "rule": t2_build.TREND_RENDER_RULE,
+                                    "alpha": t2_build.INTERP_ALPHA, "scope": "whole"}, requires=_trend_applies),
     "fgw_aligned_hi": Candidate("fgw_aligned_hi", frozenset({"T2"}), (), _fgw_aligned_hi,
                                 {"what": "fgw_aligned (try E10's aligned moves) with every cell at the deeper "
                                          "bracket's depth: a top-up-only file at the aligned positions",
