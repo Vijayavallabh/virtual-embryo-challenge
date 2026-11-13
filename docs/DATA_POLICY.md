@@ -1186,5 +1186,16 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     committed result files) recomputed about 550 quoted figures: every score, count and verdict matched; one
     miscount and several wording slips were corrected, one of them a pair of labels the wrong way round in row
     E33's outcome, which now carries a dated note.
+  - **A second cold check, and one table without a row.** Before the second check (`docs/PLAN.md` decision log
+    2026-11-13 (hh)) the AI assistant printed, in the session, the mean board scores of the entry, the second upload
+    and the earlier-side specialist on the nine practice tasks, with the pair values. It is a regrouping of per-seed
+    scores that counted tries had committed, every pair value in it is in reading N37's committed table, and it
+    compared no new predictor with a target; it had no row of its own and is recorded here instead. The agent
+    stayed inside its list of files and named three it wanted and did not open.
+  - **A full disk on the DGX.** The last full test run failed with "No space left on device": the DGX's system
+    disk, which holds `/tmp`, was at 100%. The AI assistant removed its own four pytest temp folders there (about
+    0.7 GB, all from this repository's test runs) and nothing else, and reran the suite with its temp files on the
+    large volume. Other users' files were not touched; the captain is told.
   - **Still true:** no test file was built, no format check was sent, nothing was uploaded, and the DGX reference
-    checkout was not touched. The builder port behind request R-D is on a branch only.
+    checkout was not touched. The builder port behind request R-D is on a branch only (`port/emb-s1-trend`,
+    reviewed, pushed).

@@ -3740,3 +3740,43 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     are used up; the committed estimate is 184 (170 to 198) and the forecast's upper reading 194.4.
   - **Unchanged.** No upload, build, rule, gate figure or reference list; the ten files of `builds_dc7b6ae` stand.
     Main gained one more reading script with its tests (`n39_fit_geometry_check.py`) and its result.
+- 2026-11-13 (hh), an option examined and declined: an earlier-side file as the embryo's first upload. Written by
+  the AI assistant.
+  - **The option.** Reading N37's table, regrouped after the fact (no new score was read): with
+    `fgw_aligned_series` as second upload, `fgw` adds to the pair mainly on tasks where the second upload trails
+    it, and on the one task where the truth is like its earlier, shallower bracket (the E7.25 backtest) the
+    earlier-side specialist of try E34b beats `fgw` by 8.08 in every seed. As a first upload the specialist costs
+    0.00 on half, late, new1 and x1, 0.13 on new2, 0.24 on the E7.5 backtest, 1.34 on x2 and 4.56 on x3. The
+    pre-set rule does not put it forward (clause d of row N33's rule: all its value is one task). The AI assistant
+    considered offering it to the captain as a bet outside the rule and, after (gg), had it attacked cold before
+    writing any advice.
+  - **The cold check** (one agent, the claim block and a list of committed files). Its kill shot, in its words:
+    "The proposer's assumption is not the load-bearing one; 'a board shows the better of its two uploads' is. The
+    team's rules file holds per-board final marks as a working answer at 0.55, and the 13 November forecast lists
+    it as unmodelled. If one mark covers a set of boards, the first-upload set carries a file 5 to 24 embryo
+    points under fgw on eight of nine tasks: 'costs nothing' becomes 2 to 12 Overall points, or the second set on
+    every board, in four worlds of five." Its chance that offering it with a yes is a mistake: 60%.
+  - **Its attacks, each checked; all hold.**
+    1. *Per-set marks.* `docs/S2_RULES.md` ("What an s2 is worth") says the better-of-two value "holds if marks
+       are per board, which is a working answer at 0.55", and `experiments/gate/FORECAST_2026-11-13.md` lists
+       per-board marks among the working answers it does not model; the fourth email's question on it has no
+       answer on record. A first upload is the file that stands alone if marks are per set, or if a second upload
+       stays unscored; a specialist cannot be that file. The same point weighs against request R-D, whose arm is
+       1.01 and 2.93 behind `fgw` on two tasks by its own score.
+    2. *The price was inflated.* On the reading's own classes dropping `fgw` costs about 0.5 embryo points
+       outside the one gaining task, the break-even chance that E7.75 is like E7.5 is about 6% (about 13% with the
+       gain halved), and the 18% the AI assistant had used is an artefact of the family holding three "other"
+       tasks, not an estimate.
+    3. *The gain is one fitted factor.* Try E19b's depth-only twin lost 0.63 on the same backtest, so the whole
+       8.08 is the per-gene factor between that task's brackets; no row shows such a factor doing the same on the
+       test's pair.
+    Verdict: stop. Nothing is offered; the pair (`fgw`, `fgw_aligned_series`) stands.
+  - **What would reopen it, fixed now.** The seventh email (13 Nov) already asks the organisers which stage, if any,
+    the hidden embryo sample was hybridised and imaged with. If a screened read on 19 or 23 Nov returns "with
+    E7.5", and marks are confirmed to be per board, the earlier-side first upload goes to the captain as a priced
+    request, with a target-free check of the test pair's factor first. On any other answer, or none, nothing
+    changes. The AI assistant does not ask for either question to be sent again.
+  - **For the record of this round.** Two requests were drafted after the reads and both were stopped by a cold
+    check the same night, one after its yes had been written down ((gg)) and one before ((hh)). The round's result
+    stands as (ff) and (gg) give it: nothing is kept, nothing is recommended, the options for passing 215.41 are
+    used up, and the committed estimate is 184 (170 to 198).

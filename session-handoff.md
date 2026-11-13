@@ -35,7 +35,11 @@
     and pointer, the server's format check of the new file at the captain's word, and the summary and disclosure
     lines;
   - on 19 and 23 Nov, the approved screened reads for an organiser answer to the seventh email
-    (`docs/SCREENED_READ_SEVENTH_EMAIL.md`; a reply in the captain's inbox is not pasted into the session);
+    (`docs/SCREENED_READ_SEVENTH_EMAIL.md`; a reply in the captain's inbox is not pasted into the session). One
+    consequence was fixed on 2026-11-13 (decision log (hh)): if the answer is that the hidden embryo sample was
+    hybridised and imaged with E7.5, and final marks are confirmed to be per board, an earlier-side first upload
+    for the embryo goes to the captain as a priced request, after a target-free check of the test pair's factor;
+    on any other answer, or none, nothing changes;
   - about 19 Nov, the Slack follow-up draft on floored T3 severity if no organiser has answered; with it, for the
     captain to keep or cut, the Task 3 batch question that was cut from the seventh email in review (was the
     beta-catenin knockout processed with the Gata4 replicates): an answer changes no file and would move the
@@ -67,7 +71,8 @@
       counted read: 26 tries in 14 rows on arms built and reviewed on campaign branches (heart H14 to H20, embryo
       E29 and E31 to E35, T1 T37 and T38, T3 K11), gate N34, readings N37, N38 and N39. Nothing passes the adoption
       rule; eight lines could not be built from the record; request R-D came out of reading N37 and the AI
-      assistant advises against it after a cold check and reading N39 (decision log (gg)).
+      assistant advises against it after a cold check and reading N39 (decision log (gg)). A second option, an
+      earlier-side file as first upload, was attacked cold before any advice and declined (decision log (hh)).
 - [x] First and second wave (2026-11-12; decision log 2026-11-12 (a) to (c)). The finding: released samples differ
       more by how they were measured than by stage (diagnostic N23; the T1 library census in `docs/DATA_NOTES.md`).
       Embryo tries E19 to E25 (depth and run renderings, pair pricing), T1 tries T27 to T30 (library kind and depth

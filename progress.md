@@ -28,8 +28,12 @@ backtest: 0.47 against one third) differs from the test in exactly that (0.31 ag
 stays on record for the captain; the builder port stays on the branch `port/emb-s1-trend`, off main, and no test
 file is built for it. **The options for taking our own estimate past 215.41 are used up**: the forecast's upper
 reading is 194.4, the committed estimate stays 184, and what could move the total by points is closed by rules that
-are the captain's or the organisers' to reopen. Main moved by documents, three reading scripts with tests (N37, N38,
-N39) and results only.
+are the captain's or the organisers' to reopen. A second option, the earlier-side specialist as first upload (+8.08
+on the one task where the truth is like its earlier bracket), was attacked cold before any advice and declined
+(decision log (hh)): the better-of-two value holds only if final marks are per board, a working answer rated 0.55, and
+a specialist cannot be the file that stands alone. What would reopen it is fixed: an organiser answer that the hidden
+embryo sample was processed with E7.5, with per-board marks confirmed. Main moved by documents, three reading scripts
+with tests (N37, N38, N39) and results only.
 Checked last: the full test suite at 6c505ca in a DGX campaign checkout (lock, lint, 1,291 tests pass; clean tree); the
 document tests and lint again at f1408a4 on this machine (33 pass). The reference checkout is untouched at dc7b6ae.
 **2026-11-13, night: the campaign's sixth round (decision log 2026-11-13 (dd) and (ee)). Nothing is kept, nothing is
