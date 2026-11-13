@@ -1,0 +1,173 @@
+{
+ "board": "T2:heart:test_extrap",
+ "runs": "/mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/experiments/harness/results/trend2_v1/tasks",
+ "decisions": [
+  {
+   "base": "b0_trend",
+   "change": "b0_trend_eb",
+   "counted": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T2h/<=E8.75->E10.5']",
+   "tasks": {
+    "T2h/<=E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": 0.22143017417730276,
+     "seeds_ahead": 10,
+     "passes": false,
+     "vetoes": false
+    },
+    "T2h/<=E8.75->E10.5": {
+     "complete": true,
+     "mean_gain": -0.3370738094137756,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  },
+  {
+   "base": "b0_trend",
+   "change": "b0_trend_ts",
+   "counted": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2",
+   "tasks": {
+    "T2h/<=E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": -0.2664886167019048,
+     "seeds_ahead": 1,
+     "passes": false,
+     "vetoes": false
+    },
+    "T2h/<=E8.75->E10.5": {
+     "complete": true,
+     "mean_gain": 0.028037530871737458,
+     "seeds_ahead": 8,
+     "passes": false,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  },
+  {
+   "base": "b0_trend",
+   "change": "b0_trend_h",
+   "counted": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T2h/<=E8.75->E10.5', 'T2h/<=E9.5->E10.5']",
+   "tasks": {
+    "T2h/<=E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": -0.6196964025727333,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    },
+    "T2h/<=E8.75->E10.5": {
+     "complete": true,
+     "mean_gain": -0.6007826493553331,
+     "seeds_ahead": 1,
+     "passes": false,
+     "vetoes": true
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  }
+ ],
+ "summaries": {
+  "T2h/<=E8.75->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    50.54677200019612,
+    0.7913080817718336
+   ],
+   "b0": [
+    51.446449911655364,
+    0.6052791869950301
+   ],
+   "b0_trend": [
+    51.9277094833677,
+    0.6771697555548825
+   ],
+   "b0_trend_eb": [
+    51.59063567395393,
+    0.7142043992569846
+   ],
+   "b0_trend_ts": [
+    51.95574701423944,
+    0.6840566634668053
+   ],
+   "b0_trend_h": [
+    51.32692683401236,
+    0.38541505828201705
+   ]
+  },
+  "T2h/<=E9.5->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    49.955176642699044,
+    0.8224702162475157
+   ],
+   "b0": [
+    50.4272525233645,
+    0.7027599518307952
+   ],
+   "b0_trend": [
+    50.7845309339824,
+    0.7202187292775972
+   ],
+   "b0_trend_eb": [
+    51.00596110815971,
+    0.7376712367756278
+   ],
+   "b0_trend_ts": [
+    50.518042317280496,
+    0.7927025788727556
+   ],
+   "b0_trend_h": [
+    50.16483453140968,
+    0.6597971449255492
+   ]
+  }
+ }
+}
