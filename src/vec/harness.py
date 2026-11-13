@@ -1033,7 +1033,8 @@ def _psb_size(ctx: BuildContext) -> Stage:
 
 def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixture", herd: bool = False,
          move_coupling: str = t2_build.MOVE_COUPLINGS[0], local_perm: bool = False,
-         draw: str = t2_build.DRAWS[0], t_mix: float | None = None) -> Stage:
+         draw: str = t2_build.DRAWS[0], t_mix: float | None = None, tail_reports: list | None = None,
+         geo_reports: list | None = None) -> Stage:
     """The T2 embryo pipeline (docs/PLAN.md 4.2): displacement interpolation between the brackets at the target's
     time fraction (vec.t2_build.interpolate_clouds: fused Gromov-Wasserstein coupling, proper rotation, McCann moves,
     a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages. t_pos:
@@ -1044,7 +1045,12 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     (the entry) or "aligned" (try E10: the moves from vec.core.aligned_coupling in the rotated common frame).
     local_perm (try E15): after the draw, the positions are re-arranged among the drawn cells within coarse type and a
     fixed radius (vec.t2_build.local_type_permutation); the expression rows stay where they are. draw: "uniform" (the
-    entry) or "midpoint" (try E13, vec.t2_build._midpoint_draw; it needs the inputs' counts layer)."""
+    entry) or "midpoint" (try E13, vec.t2_build._midpoint_draw; it needs the inputs' counts layer). tail_reports
+    (candidate fgw_tail; default None, nothing): after the mixture, the embryo tail decoder
+    (vec.t2_build.tail_decoded_expression, stream [seed, EMB_TAIL_STREAM]), its report appended to the list.
+    geo_reports (candidate fgw_geoshares; default None, the entry's draw): the uniform draw edited to exponential-growth
+    state shares over the brackets' obs["group"] (interpolate_clouds geo_labels), the interpolation's record of it
+    appended to the list."""
     t = ctx.task
     before, after = ctx.inputs["before"], ctx.inputs["after"]
     lo, hi = t.role_days["before"], t.role_days["after"]
@@ -1059,7 +1065,14 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
                                       target_rms=target_rms(ctx), t_pos=t_pos,
                                       with_partners=expression in ("blend", "latent"),
                                       herd=herd, move_coupling=move_coupling, draw=draw, log_depth=log_depth,
-                                      with_coupling=expression == "latent", t_mix=t_mix)
+                                      with_coupling=expression == "latent", t_mix=t_mix,
+                                      geo_labels=None if geo_reports is None else (before.obs["group"],
+                                                                                   after.obs["group"]),
+                                      geo_stream=None if geo_reports is None else GEOSHARES_STREAM)
+    if geo_reports is not None:
+        geo_reports.append(res.record["geoshares"])
+    if tail_reports is not None and expression != "mixture":
+        raise ValueError("the embryo tail decoder reads the released counts of the mixture's cells")
     if expression == "mixture":
         X = np.empty((len(res.rows), len(g)), dtype=np.float32)
         X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
@@ -1082,6 +1095,10 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
                                                 [ctx.seed, t2_latent.EXPRESSION_STREAM])
     else:
         raise ValueError(f"unknown expression step {expression!r}")
+    if tail_reports is not None:
+        X, rep = t2_build.tail_decoded_expression(before, after, res, g, X, reference_pb(ctx),
+                                                  [ctx.seed, EMB_TAIL_STREAM], EMB_TAIL_REPORT_BOTTOM)
+        tail_reports.append(rep)
     coords = res.coords
     if local_perm:
         coords = coords[nbhd_rearrangement(coords, t2_build.drawn_labels(res, before.obs["group"], after.obs["group"]),
@@ -1226,6 +1243,57 @@ def _fgw_midpoint(ctx: BuildContext) -> Stage:
 
 def _fgw_latent(ctx: BuildContext) -> Stage:
     return _fgw(ctx, expression="latent")
+
+
+# ------------------------------------------------------------------------------------------------ embryo batch emb-c
+# Two edits of fgw (campaign branch emb-c), each fgw with one idea: the same coupling, moves, coordinates, cell number,
+# size rule and seed. fgw_tail: the embryo tail decoder after the mixture (vec.t2_build.EMB_TAIL_RULE). fgw_geoshares:
+# the draw edited to exponential-growth state shares (vec.t2_build.GEOSHARES_RULE). Their stream ids live here, as
+# NBHD_STREAM does, so that t2_build holds no new number (tests/test_t2_build.py, the literal guard).
+EMB_TAIL_STREAM = 24  # the decoder's random stream, [seed, 24]: apart from 0-12 and 20-23 (every step on main and on
+# the campaign branches) and GEOSHARES_STREAM
+GEOSHARES_STREAM = 25  # the geoshares edits' random stream, [seed, 25]
+EMB_TAIL_REPORT_BOTTOM = 80  # reported only: how many selected genes sit among the 80 most negative dp
+def reference_pb(ctx: BuildContext) -> np.ndarray:
+    """The reference stage's pseudobulk per board gene, as the heart sibling's `tail_infeasible` takes it on a MERFISH
+    board: the mean over the reference's cells (the task's reference role) of its released X, log(1 + 1e4 c / N)."""
+    from scipy import sparse
+
+    pool = ctx.inputs[ctx.task.reference_role]
+    return np.asarray(sparse.csr_matrix(pool[:, list(ctx.board.genes)].X, dtype=np.float64).mean(axis=0)).ravel()
+
+
+def _fgw_tail(ctx: BuildContext) -> Stage:
+    """fgw plus the embryo tail decoder; after the build, one check line to stdout (the runner's per-task log), numbers
+    of genes and factors only, so that a read can tell an idle arm from a null effect."""
+    reports: list = []
+    stage = _fgw(ctx, tail_reports=reports)
+    for rep in reports:
+        print(fgw_tail_check_line(ctx.task.key, ctx.seed, rep), flush=True)
+    return stage
+
+
+def fgw_tail_check_line(task_key: str, seed: int, rep: Mapping) -> str:
+    """The fgw_tail check line: numbers of genes and factors only (never a cell number, a gene name or a score)."""
+    return (f"fgw_tail check: task={task_key} seed={seed} infeasible={int(rep['n_selected'])} "
+            f"lifted={int(rep['n_lifted'])} skipped={int(rep['n_skipped'])} in_bottom80={int(rep['n_in_bottom'])} "
+            f"max_factor={rep['max_factor']:.3g} median_factor={rep['median_factor']:.3g}")
+
+
+def _fgw_geoshares(ctx: BuildContext) -> Stage:
+    """fgw with the draw edited to exponential-growth state shares; after the build, one record line to stdout: the
+    total variation between q and the linear shares and the share of drawn rows edited (shares only)."""
+    reports: list = []
+    stage = _fgw(ctx, geo_reports=reports)
+    for rep in reports:
+        print(fgw_geoshares_line(ctx.task.key, ctx.seed, rep), flush=True)
+    return stage
+
+
+def fgw_geoshares_line(task_key: str, seed: int, rep: Mapping) -> str:
+    """The fgw_geoshares record line: shares only (never a count of cells)."""
+    return (f"fgw_geoshares check: task={task_key} seed={seed} idle={bool(rep['idle'])} "
+            f"tv_q_linear={rep['tv_q_linear']:.4g} edited_share={rep['edited_share']:.4g}")
 
 
 def _interp(t: PseudoTask) -> bool:
@@ -1693,6 +1761,21 @@ CANDIDATES = {
                                              "in the rotated common frame; FGW's rotation kept)",
                                      "alpha": t2_build.INTERP_ALPHA, "scope": "whole"}, requires=_interp,
                                     tuned_on=frozenset({"T2e/E7.25+E8.0->E7.5", "T2e/E6.75+E7.5->E7.25"})),
+    # embryo batch emb-c (campaign branch): fgw with one idea each
+    "fgw_tail": Candidate("fgw_tail", frozenset({"T2"}), (), _fgw_tail,
+                          {"what": "fgw with the embryo tail decoder: every panel gene below the scorer's 0.25 "
+                                   "reference level whose predicted change is negative is topped up towards a flat "
+                                   "change (one factor per gene, each cell's expected panel total kept, factors above "
+                                   "2 skipped)", "rule": "vec.t2_build.EMB_TAIL_RULE",
+                           "min_pb": t2_build.EMB_TAIL_MIN_PB, "f_max": t2_build.EMB_TAIL_F_MAX,
+                           "stream": EMB_TAIL_STREAM, "report_bottom": EMB_TAIL_REPORT_BOTTOM, "scope": "whole"},
+                          requires=_interp),
+    "fgw_geoshares": Candidate("fgw_geoshares", frozenset({"T2"}), (), _fgw_geoshares,
+                               {"what": "fgw with its draw edited the least so that each state's (obs['group']) share "
+                                        "of the drawn cells follows exponential growth between the brackets, "
+                                        "p_before^(1 - t) p_after^t renormalised, at the entry's bracket counts",
+                                "rule": "vec.t2_build.GEOSHARES_RULE", "stream": GEOSHARES_STREAM,
+                                "scope": "whole"}, requires=_interp),
     # embryo try E15 (experiments/harness/TRIES.md, registered before its run; it runs only if its target-free gate,
     # the diagnostic N15, passes): fgw's cells and expression rows, positions re-arranged among them
     "fgw_perm": Candidate("fgw_perm", frozenset({"T2"}), (), _fgw_perm,

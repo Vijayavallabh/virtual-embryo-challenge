@@ -68,6 +68,7 @@ from scipy.stats import rankdata
 from vec.boards import Board
 from vec.core import (
     aligned_coupling,
+    apply_factors,
     barycentric,
     coupling_rotation,
     draw_balanced,
@@ -87,6 +88,7 @@ from vec.io import (
     write_submission,
 )
 from vec.provenance import stamp_path
+from vec.t1_scope import DP_F_MIN, DP_ITERATIONS, DP_MIN_PB
 
 JITTER_NN_FRAC = 0.25  # free jitter budget, as a fraction of the median nearest-neighbour distance (density)
 JITTER_MIN_FRAC = 0.5  # a broken duplicate moves 0.5-1 x the budget: clearly apart, never beyond the budget
@@ -1353,6 +1355,20 @@ MIDPOINT_K_ANCHORS = 15  # the coupled anchor pairs nearest a cell's moved posit
 MIDPOINT_KMEANS_SEED = 20261109  # the fixed random_state of the deterministic k-means (lloyd, n_init=1)
 MIDPOINT_STREAMS = (8, 9)  # random streams of the midpoint draw (before, after): not the interpolation's 0-5 or the
 # herd's and expression's 6 and 7
+# Exponential-growth state shares (candidate fgw_geoshares, campaign branch emb-c): the uniform draw's rows edited the
+# least so that each label's share of the drawn cells is p_before^(1 - t) p_after^t (renormalised), not the linear mix.
+GEOSHARES_RULE = ("geometric shares: a label present in both brackets gets a share proportional to p_before^(1 - t) "
+                  "p_after^t, a label present in one bracket only keeps its linear share (1 - t) p_before + t p_after, "
+                  "and the labels present in both are rescaled together so that every share sums to 1 (q). The 2 x K "
+                  "table of drawn shares (bracket by label) is the one closest in relative entropy to the entry's "
+                  "[(1 - t) p_before, t p_after] with row sums (n_before, n_after) / n and column sums q (iterative "
+                  "proportional fitting, rows then columns, run until the largest margin error stops decreasing; zero "
+                  "cells stay zero), rounded per bracket by largest remainders (vec.core.quotas) so that both bracket "
+                  "counts stay exact. The entry's drawn rows are then edited the least: a (bracket, label) group over "
+                  "its quota loses rows at random, one under it gains rows of that label and bracket at random, unused "
+                  "rows first (repeats only when the bracket has no unused row of that label), each gained row taking "
+                  "a lost row's place. With q equal to the linear shares (t = 0 or 1, or identical label shares in "
+                  "both brackets) nothing is edited")
 
 
 def pchip_rms(days, rms, target_day: float) -> float:
@@ -1531,6 +1547,87 @@ def _midpoint_draw(Eb: np.ndarray, Ea: np.ndarray, ib: np.ndarray, ia: np.ndarra
                           "w_before": w_b, "w_after": w_a, "expected_before": expected_b, "expected_after": expected_a}}
 
 
+def geometric_shares(p_before, p_after, t: float) -> np.ndarray:
+    """GEOSHARES_RULE's target shares q over the labels (both arrays over the same labels, each summing to 1)."""
+    pb, pa = np.asarray(p_before, dtype=np.float64), np.asarray(p_after, dtype=np.float64)
+    q = (1.0 - t) * pb + t * pa
+    both = (pb > 0) & (pa > 0)
+    if both.any():
+        g = np.zeros_like(q)
+        g[both] = np.exp((1.0 - t) * np.log(pb[both]) + t * np.log(pa[both]))
+        q[both] = g[both] * (1.0 - q[~both].sum()) / g[both].sum()
+    return q
+
+
+def ipf_table(start, row_sums, col_sums) -> tuple[np.ndarray, dict]:
+    """The table closest in relative entropy to `start` (zeros stay zero) with the given margins: iterative
+    proportional fitting, rows then columns per sweep, run until the largest absolute margin error stops decreasing
+    (the sweep with the smallest error is kept; an exact fit stops at once). Returns the table and a record (sweeps
+    run, the kept table's largest margin error)."""
+    M = np.array(start, dtype=np.float64)
+    r, c = np.asarray(row_sums, dtype=np.float64), np.asarray(col_sums, dtype=np.float64)
+
+    def error(T: np.ndarray) -> float:
+        return float(max(np.abs(T.sum(1) - r).max(), np.abs(T.sum(0) - c).max()))
+
+    best, best_err, sweeps = M.copy(), error(M), 0
+    while best_err > 0.0:
+        s = M.sum(1)
+        M *= np.divide(r, s, out=np.ones_like(s), where=s > 0)[:, None]
+        s = M.sum(0)
+        M *= np.divide(c, s, out=np.ones_like(s), where=s > 0)[None, :]
+        sweeps += 1
+        err = error(M)
+        if not err < best_err:
+            break
+        best, best_err = M.copy(), err
+    return best, {"sweeps": sweeps, "max_margin_error": best_err}
+
+
+def _geoshare_quotas(table: np.ndarray, n_b: int, n_a: int) -> np.ndarray:
+    """Whole counts per (bracket, label) from the fitted table: each bracket's row rounded by largest remainders to
+    its exact count (vec.core.quotas, ties by label index), so a zero cell never gets a cell."""
+    out = np.zeros(table.shape, dtype=np.int64)
+    for s, n_s in enumerate((n_b, n_a)):
+        tot = float(table[s].sum())
+        if n_s == 0 or tot <= 0.0:
+            continue
+        q = quotas({f"{k:09d}": float(v) / tot for k, v in enumerate(table[s])}, n_s)
+        out[s] = [q[f"{k:09d}"] for k in range(table.shape[1])]
+    return out
+
+
+def _geoshare_edit(rows: np.ndarray, codes: np.ndarray, quota: np.ndarray,
+                   rng: np.random.Generator) -> tuple[np.ndarray, int]:
+    """One bracket's drawn rows edited to the per-label quota (GEOSHARES_RULE): returns the edited rows (the same
+    length, every row not dropped at its own place) and how many places changed."""
+    rows = np.array(rows, dtype=np.int64)
+    if not len(rows):
+        return rows, 0
+    drawn = codes[rows]
+    have = np.bincount(drawn, minlength=len(quota))
+    drop, add = [], []
+    for k in range(len(quota)):
+        if quota[k] < have[k]:
+            drop.append(rng.choice(np.flatnonzero(drawn == k), int(have[k] - quota[k]), replace=False))
+        elif quota[k] > have[k]:
+            need = int(quota[k] - have[k])
+            pool = np.flatnonzero(codes == k)
+            unused = np.setdiff1d(pool, rows)
+            take = rng.choice(unused, min(need, len(unused)), replace=False)
+            if len(take) < need:
+                take = np.r_[take, rng.choice(pool, need - len(take), replace=True)]
+            add.append(take)
+    if not drop:
+        return rows, 0
+    places = np.sort(np.concatenate(drop))
+    new = rng.permutation(np.concatenate(add)).astype(np.int64)
+    if len(new) != len(places):
+        raise ValueError("the quotas do not keep the bracket's count")
+    rows[places] = new
+    return rows, int(len(places))
+
+
 def log_panel_counts(a: ad.AnnData, genes) -> np.ndarray:
     """log1p of each cell's total counts over the panel (`layers["counts"]`, whatever its sparsity): the depth the
     midpoint draw's PCs are residualised on (`interpolate_clouds(..., draw="midpoint", log_depth=...)`). The log1p keeps
@@ -1545,7 +1642,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
                        with_partners: bool = False, herd: bool = False, move_coupling: str = MOVE_COUPLINGS[0],
                        with_coupling: bool = False, draw: str = DRAWS[0],
                        log_depth: tuple[np.ndarray, np.ndarray] | None = None,
-                       t_mix: float | None = None) -> Interpolation:
+                       t_mix: float | None = None, geo_labels: tuple | None = None,
+                       geo_stream: int | None = None) -> Interpolation:
     """Displacement interpolation between two stages at time fraction t (0 = before, 1 = after).
 
     1. Each cloud is centred and divided by its RMS radius (no PCA axes, so no sign choice).
@@ -1591,6 +1689,14 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     more (`_midpoint_draw`, streams MIDPOINT_STREAMS), each bracket's count and each stratum's share of its bracket
     stay as the uniform draw's, and pool_weights carry the draw's probabilities for the cloud guard. It needs
     log_depth=(before, after), each cell's log panel counts (`log_panel_counts`), for the depth residualisation.
+
+    geo_labels (candidate fgw_geoshares; default None, the entry): (before labels, after labels), one per cell of each
+    stage. The uniform draw's rows are edited the least so that each label's share of the drawn cells follows
+    exponential growth between the brackets (GEOSHARES_RULE, random stream [seed, geo_stream], the caller's stream
+    index: vec.harness.GEOSHARES_STREAM for the candidate); the bracket counts,
+    positions, moves, scaling and jitter are the entry's steps on the edited draw, and pool_weights carry the edited
+    draw's per-(bracket, label) chances. With q equal to the linear shares the result is the entry's, bit for bit.
+    Uniform draw only, without herd or t_mix.
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1610,6 +1716,16 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         raise ValueError(f"move_coupling must be one of {MOVE_COUPLINGS}, got {move_coupling!r}")
     if draw not in DRAWS:
         raise ValueError(f"draw must be one of {DRAWS}, got {draw!r}")
+    if geo_labels is not None:
+        if draw != DRAWS[0] or herd or t_mix is not None:
+            raise ValueError("geo_labels edits the uniform draw only (no herd, midpoint draw or t_mix)")
+        if len(geo_labels) != 2:
+            raise ValueError("geo_labels: (before labels, after labels)")
+        if geo_stream is None:
+            raise ValueError("geo_labels needs geo_stream, the edits' random stream index")
+        lab_b, lab_a = (np.asarray(x).astype(str).reshape(-1) for x in geo_labels)
+        if lab_b.size != Cb.shape[0] or lab_a.size != Ca.shape[0]:
+            raise ValueError("geo_labels: one label per cell of each stage")
     if draw != DRAWS[0]:
         if herd:
             raise ValueError(f"draw={draw!r} and herd both choose the rows; use one of them")
@@ -1647,6 +1763,26 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         midpoint = {**_midpoint_draw(Eb, Ea, ib, ia, Tm, pos_b, pos_a, t, n_b, n_a, log_depth, Fb.shape[1], seed),
                     "uniform_before": rows_b, "uniform_after": rows_a}
         rows_b, rows_a = midpoint["rows_before"], midpoint["rows_after"]
+    geo = None
+    if geo_labels is not None:
+        names, codes = np.unique(np.r_[lab_b, lab_a], return_inverse=True)
+        codes_b, codes_a = codes[: len(lab_b)], codes[len(lab_b):]
+        cnt_b, cnt_a = np.bincount(codes_b, minlength=len(names)), np.bincount(codes_a, minlength=len(names))
+        p_b, p_a = cnt_b / len(codes_b), cnt_a / len(codes_a)
+        lin = (1.0 - tm) * p_b + tm * p_a
+        geo = {"rule": "vec.t2_build.GEOSHARES_RULE", "idle": True, "tv_q_linear": 0.0, "edited_share": 0.0}
+        if 0.0 < tm < 1.0 and not np.array_equal(p_b, p_a):
+            q = geometric_shares(p_b, p_a, tm)
+            table, ipf = ipf_table(np.vstack([(1.0 - tm) * p_b, tm * p_a]), np.array([n_b, n_a]) / n, q)
+            quota = _geoshare_quotas(table, n_b, n_a)
+            grng = np.random.default_rng([seed, int(geo_stream)])
+            rows_b, ed_b = _geoshare_edit(rows_b, codes_b, quota[0], grng)
+            rows_a, ed_a = _geoshare_edit(rows_a, codes_a, quota[1], grng)
+            geo.update(idle=False, tv_q_linear=float(0.5 * np.abs(q - lin).sum()), edited_share=(ed_b + ed_a) / n,
+                       ipf_sweeps=ipf["sweeps"], ipf_max_margin_error=ipf["max_margin_error"])
+            # each row's chance of being drawn: its group's quota over the group's rows, as a share of the n cells
+            geo["weights"] = np.r_[np.divide(quota[0], n * cnt_b, out=np.zeros(len(names)), where=cnt_b > 0)[codes_b],
+                                   np.divide(quota[1], n * cnt_a, out=np.zeros(len(names)), where=cnt_a > 0)[codes_a]]
     herd_rec = None
     if herd:
         herd_rec = {}
@@ -1669,6 +1805,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     weights = np.r_[np.full(len(Zb), (1.0 - tm) / len(Zb)), np.full(len(Za), tm / len(Za))]
     if midpoint is not None:
         weights = midpoint["pool_weights"]
+    if geo is not None and not geo["idle"]:
+        weights = geo.pop("weights")
     _, first = np.unique(coords.astype(np.float32), axis=0, return_index=True)
     dup = np.ones(n, dtype=bool)
     dup[first] = False
@@ -1686,6 +1824,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
               "n_jittered": int(dup.sum())}
     if herd_rec is not None:
         record["herd"] = herd_rec
+    if geo is not None:
+        record["geoshares"] = geo
     if move_coupling != MOVE_COUPLINGS[0]:
         record["move_coupling"] = move_coupling
         record["coupling_nonzero_moves"] = int((Tm > 0).sum())
@@ -2030,6 +2170,99 @@ def series_rendered_expression(before: ad.AnnData, after: ad.AnnData, interp: In
         out[m_lo] = _log_normalise(Cn, ln)
         rec["rendered_median"] = float(np.median(ln))
     return out, rec
+
+
+# The embryo tail decoder (candidate fgw_tail, campaign branch emb-c): a truth down-gene needs pb(reference) >= 0.25
+# (the scorer's threshold on the reference's mean log1p expression), so a panel gene below that level whose predicted
+# change is negative is a sure miss in the predicted down-list. Its form: the heart sibling's selection (no rank cut;
+# campaign/heart-b `tail_infeasible`) with T1's kernel and bound (campaign/t1-bfix2 `vec.t1_scope.apply_tail_decoder`).
+EMB_TAIL_MIN_PB = DP_MIN_PB  # the scorer's threshold, as T1's TAIL_MIN_PB
+EMB_TAIL_F_MAX = 1.0 / DP_F_MIN  # T1's bound TAIL_F_MAX (on no record; kept so that the board is the only change)
+EMB_TAIL_RULE = ("embryo tail decoder: pb_ref = the reference stage's mean released X (log(1 + 1e4 c / N)) per panel "
+                 "gene, dp = the mean of the drawn cells' X - pb_ref; every panel gene with pb_ref < 0.25 and dp < 0 "
+                 "is selected (no rank cut). A selected gene is lifted to dp = 0 by one factor f per gene, its counts "
+                 "in every drawn cell topped up c + Poisson((f - 1) c), log f solved at first order (the slope of the "
+                 "mean log1p in log f at f = 1) with DP_ITERATIONS fixed-point steps for the constant that keeps each "
+                 "cell's expected panel total (vec.core.apply_factors keep_depth); the counts outside the panel are "
+                 "kept, so each cell's expected library is kept. A gene needing f above 2, or without counts in the "
+                 "drawn cells, is skipped and counted. Nothing lifted: the drawn cells' expression as it was")
+
+
+def _drawn_counts(before: ad.AnnData, after: ad.AnnData, interp: Interpolation,
+                  genes) -> tuple[sparse.csr_matrix, np.ndarray, np.ndarray]:
+    """The drawn cells' panel counts (CSR int64), library sizes and counts outside the panel, in output order, as the
+    depth renders read a bracket (`_stage_counts`)."""
+    parts = [_stage_counts(a, genes) for a in (before, after)]
+    order = np.r_[np.flatnonzero(interp.stage == 0), np.flatnonzero(interp.stage == 1)]
+    sel = [interp.rows[interp.stage == s] for s in (0, 1)]
+    back = np.argsort(order, kind="stable")
+    C = sparse.vstack([parts[0][1][sel[0]], parts[1][1][sel[1]]]).tocsr()[back]
+    lib = np.r_[parts[0][2][sel[0]], parts[1][2][sel[1]]][back]
+    other = np.r_[parts[0][3][sel[0]], parts[1][3][sel[1]]][back]
+    return sparse.csr_matrix(C, dtype=np.int64), lib.astype(np.float64), other.astype(np.float64)
+
+
+def tail_decoded_expression(before: ad.AnnData, after: ad.AnnData, interp: Interpolation, genes, X, pb_ref,
+                            seed, report_bottom: int) -> tuple[np.ndarray, dict]:
+    """EMB_TAIL_RULE on the interpolation's drawn cells, whose expression as built is X (cells x genes, the order of
+    `genes`). pb_ref: the reference stage's mean X per gene. Returns the expression (float32, log(1 + 1e4 c / N), every
+    cell re-rendered from its edited counts) and a report of numbers of genes and factors only: n_selected, n_lifted,
+    n_skipped (= n_selected - n_lifted), n_in_bottom (selected genes among the report_bottom most negative dp; the
+    candidate passes vec.harness.EMB_TAIL_REPORT_BOTTOM, 80), max_factor and median_factor (nan when nothing is
+    lifted), the mean realised panel-total ratio and the largest error of each cell's expected panel total. Nothing
+    lifted: X is returned as given, the very object."""
+    pb_ref = np.asarray(pb_ref, dtype=np.float64).reshape(-1)
+    Xd = np.asarray(X)
+    if Xd.shape != (len(interp.rows), len(genes)) or pb_ref.size != len(genes):
+        raise ValueError("X must be cells x genes and pb_ref one value per gene")
+    dp = Xd.astype(np.float64).mean(0) - pb_ref
+    selected = np.flatnonzero((pb_ref < EMB_TAIL_MIN_PB) & (dp < 0.0))
+    bottom = np.argsort(dp, kind="stable")[:int(report_bottom)]
+    report = {"rule": "vec.t2_build.EMB_TAIL_RULE", "n_selected": int(len(selected)), "n_lifted": 0,
+              "n_skipped": int(len(selected)), "n_in_bottom": int(np.isin(selected, bottom).sum()),
+              "report_bottom": int(report_bottom),
+              "max_factor": float("nan"), "median_factor": float("nan"), "f_max": EMB_TAIL_F_MAX,
+              "min_pb": EMB_TAIL_MIN_PB, "depth_ratio_mean": 1.0, "expected_panel_max_error": 0.0}
+    if not len(selected):
+        return X, report
+    C, lib, other = _drawn_counts(before, after, interp, genes)
+    n = C.shape[0]
+    a = TARGET_LIBRARY_SIZE / lib
+    M = C[:, selected].tocsc()
+    entry_col = np.repeat(np.arange(M.shape[1]), np.diff(M.indptr))
+    c = M.data.astype(np.float64)
+    term = c * (np.log1p(a[M.indices] * (c + 1.0)) - np.log1p(a[M.indices] * c))
+    slope = np.bincount(entry_col, weights=term, minlength=M.shape[1]) / n
+    with np.errstate(divide="ignore", invalid="ignore"):
+        need = np.where(slope > 0, -dp[selected] / slope, np.inf)
+    chosen = np.flatnonzero(need <= np.log(EMB_TAIL_F_MAX))
+    lifted, lam = selected[chosen], need[chosen]
+    report.update(n_lifted=int(len(lifted)), n_skipped=int(len(selected) - len(lifted)))
+    if not len(lifted):
+        return X, report
+    Cs = M[:, chosen].toarray().astype(np.float64)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        B = Cs * (np.log1p(a[:, None] * (Cs + 1.0)) - np.log1p(a[:, None] * Cs))
+    B = np.nan_to_num(np.where(Cs > 0, B, 0.0))
+    free = np.asarray(C.sum(1)).ravel().astype(np.float64)  # no gene is held: the whole panel keeps its total
+    fin = np.exp(lam)
+    for _ in range(DP_ITERATIONS):
+        freed = (Cs * (1.0 - fin)).sum(1)
+        s = np.divide(free, free - freed, out=np.ones_like(free), where=free - freed > 0)
+        adj = (B.T @ np.log(s)) / np.maximum(B.sum(0), 1e-12)
+        fin = np.clip(np.exp(lam - adj), 1.0, EMB_TAIL_F_MAX)
+    F = np.ones((1, C.shape[1]))
+    F[0, lifted] = fin
+    new, scale, dead = apply_factors(C, F, np.zeros(n, dtype=np.int64), None, keep_depth=True, seed=seed)
+    new_panel = np.asarray(new.sum(1)).ravel().astype(np.float64)
+    freed = (Cs * (1.0 - fin)).sum(1)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        expected = scale * (free - freed)
+        report.update(max_factor=float(fin.max()), median_factor=float(np.median(fin)),
+                      depth_ratio_mean=float(np.nanmean(new_panel / free)),
+                      expected_panel_max_error=float(np.nanmax(np.abs(expected / free - 1.0))),
+                      no_cell_was_restored=not bool(dead.any()))
+    return _log_normalise(new, new_panel + other), report
 
 
 # Detection depth of an extrapolated stage (2026-11-03; heart try H3, experiments/harness/TRIES.md, registered before
