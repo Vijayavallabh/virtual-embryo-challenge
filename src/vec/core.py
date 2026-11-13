@@ -191,7 +191,8 @@ def mean_cp10k(C) -> np.ndarray:
 
 
 def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarray | None = None,
-                  keep_depth: bool = True, seed: Seed = 0) -> tuple[sparse.csr_matrix, np.ndarray, np.ndarray]:
+                  keep_depth: bool = True, seed: Seed = 0,
+                  kernel: str = "independent") -> tuple[sparse.csr_matrix, np.ndarray, np.ndarray]:
     """Edit integer counts by per-(type, gene) factors in count space.
 
     C: (cells x genes) counts; factors: (types x genes), > 0; type_index: each cell's row of `factors`; held: genes
@@ -199,6 +200,14 @@ def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarr
     its expected total count unchanged. A count c with factor f < 1 becomes Binomial(c, f), with f > 1 c + Poisson
     ((f - 1) c), with f == 1 stays c. Zeros stay zero. A cell left with no counts gets its original counts back.
     Returns (counts as CSR int64, per-cell depth constant, restored-cell mask).
+
+    kernel (default "independent": the per-count draws above, every existing output unchanged; heart arm b0_trend_xt,
+    vec.harness.B0_TREND_XT_RULE): "exact_total" realises the same per-count expectations with each cell's total fixed.
+    Per cell, the moved counts (non-held, nonzero, f != 1 after the depth constant) are redrawn together as
+    Multinomial(N, c f / S) with S = sum of c f over them and N = rint(S); counts with f == 1 and held counts stay as
+    they are. The cell's total is then the rounded expected total of the step (its counts' dot product with the
+    factors), and each moved count's expectation is c f x N / S. Zeros stay zero; the restore rule is the same. One
+    stream, cells in row order.
     """
     C = sparse.csr_matrix(C, dtype=np.int64, copy=True)
     C.sort_indices()
@@ -220,11 +229,23 @@ def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarr
         f = np.where(free, f * scale[row_of], 1.0)
     else:
         f = np.where(free, f, 1.0)
+    if kernel not in ("independent", "exact_total"):
+        raise ValueError(f"unknown kernel {kernel!r}; known: independent, exact_total")
     rng = np.random.default_rng(seed)
     new = C.data.copy()
-    down, up = f < 1.0, f > 1.0
-    new[down] = rng.binomial(C.data[down], f[down])
-    new[up] = C.data[up] + rng.poisson((f[up] - 1.0) * C.data[up])
+    if kernel == "exact_total":
+        moved = (f != 1.0) & (C.data > 0)
+        w = np.where(moved, c * f, 0.0)
+        for i in np.unique(row_of[moved]):
+            lo, hi = C.indptr[i], C.indptr[i + 1]
+            m = moved[lo:hi]
+            wi = w[lo:hi][m]
+            s = float(wi.sum())
+            new[lo:hi][m] = rng.multinomial(int(np.rint(s)), wi / s)
+    else:
+        down, up = f < 1.0, f > 1.0
+        new[down] = rng.binomial(C.data[down], f[down])
+        new[up] = C.data[up] + rng.poisson((f[up] - 1.0) * C.data[up])
     dead = np.bincount(row_of, weights=new, minlength=n) == 0
     if dead.any():
         back = dead[row_of]

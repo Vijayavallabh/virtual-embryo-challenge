@@ -463,7 +463,9 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
                    standin_momentum: bool = False, seed: Seed = 0,
                    logf_filter: Callable[[np.ndarray, sparse.csr_matrix, np.ndarray], tuple[np.ndarray, dict]]
                    | None = None,
-                   logf_by_type: Mapping[str, np.ndarray] | None = None) -> tuple[ad.AnnData, ShiftReport]:
+                   logf_by_type: Mapping[str, np.ndarray] | None = None,
+                   own_factor_cells: np.ndarray | None = None,
+                   kernel: str = "independent") -> tuple[ad.AnnData, ShiftReport]:
     """Move `target_like` cells by the damped per-type change from `start` to `ref`, in count space.
 
     start, ref: the two stages whose change is the momentum (start is the earlier one; ref is normally the stage the
@@ -492,6 +494,14 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
     the skip rules (a type skipped for too few cells or stand-ins stays skipped even if the mapping names it), the clip,
     the held-flat zeros, logf_filter and the report row. Types the mapping does not name keep their own factor.
 
+    own_factor_cells (default None: every cell as above; heart arm b0_trend_mix, vec.harness.B0_TREND_MIX_RULE): a
+    boolean mask over target_like's cells; a masked cell of a type the mapping names gets the type's own factor (as if
+    the mapping did not name it: the same clip and held-flat zeros) instead of the mapped one. All cells go through one
+    `apply_factors` call on one stream, so a mapped factor equal to the own one gives the default output bit for bit.
+    The shifted types' report rows then add "n_own_factor_cells". Not defined together with logf_filter (raises).
+
+    kernel (default "independent"): `apply_factors`' kernel (heart arm b0_trend_xt: "exact_total").
+
     Returns a copy of target_like with layers["counts"] edited and X = log1p CP10k of the new counts (float32 CSR),
     and a per-type report.
     """
@@ -511,6 +521,13 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
     types = sorted(set(t_types))
     tindex = {t: i for i, t in enumerate(types)}
     F = np.ones((len(types), len(genes)))
+    if own_factor_cells is not None:
+        if logf_filter is not None:
+            raise ValueError("own_factor_cells is not defined together with logf_filter")
+        own_factor_cells = np.asarray(own_factor_cells)
+        if own_factor_cells.dtype != bool or own_factor_cells.shape != (len(t_types),):
+            raise ValueError(f"own_factor_cells must be a boolean mask of shape ({len(t_types)},)")
+    own_rows: dict[str, np.ndarray] = {}  # type -> its own factor, for masked cells of a mapped type
     rows = []
     for t in types:
         s_rows, s_how = _type_rows(start, t, key, label_key, within, start_fallback, min_cells)
@@ -531,6 +548,15 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
             logf = np.array(logf_by_type[t], dtype=np.float64)
             if logf.shape != (len(genes),):
                 raise ValueError(f"logf_by_type[{t!r}] has shape {logf.shape}, expected ({len(genes)},)")
+            if own_factor_cells is not None:
+                n_own = int((own_factor_cells & (t_types == t)).sum())
+                row["n_own_factor_cells"] = n_own
+                if n_own:
+                    own = damping * (np.log(mean_cp10k(R[r_rows]) + eps) - np.log(mean_cp10k(S[s_rows]) + eps))
+                    if max_abs_log_factor is not None:
+                        own = np.clip(own, -max_abs_log_factor, max_abs_log_factor)
+                    own[held] = 0.0
+                    own_rows[t] = np.exp(own)
         else:
             logf = damping * (np.log(mean_cp10k(R[r_rows]) + eps) - np.log(mean_cp10k(S[s_rows]) + eps))
         if max_abs_log_factor is not None:
@@ -545,7 +571,11 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
                    mean_abs_log_f=float(np.abs(logf).mean()), max_abs_log_f=float(np.abs(logf).max()))
         rows.append(row)
     tidx = np.array([tindex[t] for t in t_types], dtype=np.int64)
-    new, scale, dead = apply_factors(C, F, tidx, held, keep_depth=keep_depth, seed=seed)
+    if own_rows:
+        F = np.vstack([F, *own_rows.values()])
+        for j, t in enumerate(own_rows):
+            tidx[own_factor_cells & (t_types == t)] = len(types) + j
+    new, scale, dead = apply_factors(C, F, tidx, held, keep_depth=keep_depth, seed=seed, kernel=kernel)
     for row in rows:
         m = t_types == row["type"]
         row["median_depth_scale"] = float(np.median(scale[m])) if m.any() else float("nan")

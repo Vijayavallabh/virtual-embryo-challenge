@@ -1064,8 +1064,23 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
     return out, rec
 
 
+# Heart arms b0_trend_mix and b0_trend_xt (the heart mixture and kernel batch, branch campaign/heart-c): b0_trend with
+# one idea each, from lines the ledger pruned before running (experiments/harness/TRIES.md, "Pruned before running":
+# "a heart momentum mixture" and "exact-total kernels"). Harness candidates only; the test builders are untouched.
+B0_TREND_MIX_RULE = ("b0_trend's draw, cells, coordinates and stream, with a within-upload mixture over two step "
+                     "sizes: the drawn cells in the first half of the seeded draw order (positions below n // 2) get "
+                     "B0's own factor (b0's rule: no trend step), the rest b0_trend's factor; one apply_factors call "
+                     "on b0_trend's stream; everything else is b0_trend's")
+B0_TREND_XT_RULE = ("b0_trend with the step realised by an exact-total kernel (vec.core.apply_factors, "
+                    "kernel='exact_total'): per cell the moved counts are redrawn together as Multinomial(rint(S), "
+                    "c f / S) with S the sum of c f over them, so each cell's total is the rounded expected total of "
+                    "the step and each count keeps its expected value c f (up to the rounding); counts with f == 1 and "
+                    "held counts stay; everything else is b0_trend's")
+
+
 def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool = False, trend: bool = False,
-           trend_record: dict | None = None, trend_form: str = "ols") -> Stage:
+           trend_record: dict | None = None, trend_form: str = "ols", trend_mix: bool = False,
+           kernel: str = "independent") -> Stage:
     """B0 on a T2 board: real reference cells at the count rule, moved in count space by the per-type change of the
     harmonised lineage level (obs["merged"]; groups without a stable cross-stage meaning held flat). Extrapolation:
     from `start` to the reference, damped by B0_DAMPING. Interpolation: from the earlier bracket towards the later one,
@@ -1079,7 +1094,10 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
     lineage's log factor is its least-squares trend over every input stage (`b0_trend_factors`, B0_TREND_RULE); the
     draw, typing, stream and everything else are B0's. No try read it with depth, herd or cfm, so those raise.
     trend_record: a dict that receives b0_trend_factors' record (with trend only; the build record's source).
-    trend_form (with trend only; heart tries H13e, H13r, H13h): b0_trend_factors' `form`, default "ols" (b0_trend)."""
+    trend_form (with trend only; heart tries H13e, H13r, H13h): b0_trend_factors' `form`, default "ols" (b0_trend).
+    trend_mix (with trend only; arm b0_trend_mix, B0_TREND_MIX_RULE): the drawn cells at positions below n // 2 of the
+    seeded draw order get B0's own factor (momentum_shift's own_factor_cells), the rest the trend's.
+    kernel (with trend only; arm b0_trend_xt, B0_TREND_XT_RULE): apply_factors' kernel, default "independent"."""
     from vec import t1_scope
 
     if trend and (depth or herd or cfm):
@@ -1088,6 +1106,16 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
         raise ValueError("trend_record is for trend=True")
     if trend_form != "ols" and not trend:
         raise ValueError("trend_form is for trend=True")
+    if trend_mix and not trend:
+        raise ValueError("trend_mix is for trend=True")
+    if kernel != "independent" and not trend:
+        raise ValueError("kernel is for trend=True")
+    if trend_mix and kernel != "independent":
+        raise ValueError("trend_mix and kernel are separate arms (each reads one idea)")
+    if trend_mix and trend_form != "ols":
+        raise ValueError("trend_mix is defined on b0_trend's own factor only")
+    if kernel != "independent" and trend_form != "ols":
+        raise ValueError("kernel is defined on b0_trend's own factor only")
     if trend:
         _b0_trend_task_check(ctx.task)
     if cfm and ctx.task.kind != "extrap":
@@ -1111,9 +1139,20 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
                                              sorted(set(np.asarray(like.obs["b0_type"]).astype(str))), form=trend_form)
         if trend_record is not None:
             trend_record.update(rec)
+    extra: dict = {}
+    if trend_mix:
+        hold = np.arange(like.n_obs) < like.n_obs // 2
+        extra["own_factor_cells"] = hold
+        if trend_record is not None:
+            trend_record.update({"rule": "vec.harness.B0_TREND_MIX_RULE", "arm": "mix", "n_hold": int(hold.sum()),
+                                 "n_trend_cells": int((~hold).sum())})
+    if kernel != "independent":
+        extra["kernel"] = kernel
+        if trend_record is not None:
+            trend_record.update({"rule": "vec.harness.B0_TREND_XT_RULE", "arm": "xt", "kernel": kernel})
     shifted, _ = t1_scope.momentum_shift(typed(start, "start"), typed(end, "end"), like, damping, (), key="b0_type",
                                          seed=[ctx.seed, 3], logf_filter=t2_build.covariance_filter if cfm else None,
-                                         logf_by_type=logf_by_type)
+                                         logf_by_type=logf_by_type, **extra)
     g = ctx.board.genes
     if depth:
         if t.kind != "extrap":
@@ -1277,6 +1316,19 @@ def _b0_trend_arm(name: str, form: str):
     def build(ctx: BuildContext) -> Stage:
         rec: dict = {}
         stage = _b0_t2(ctx, trend=True, trend_record=rec, trend_form=form)
+        TREND_ARM_RECORDS[name] = rec
+        return stage
+
+    return build
+
+
+def _b0_trend_idea(name: str, **idea):
+    """Heart arms b0_trend_mix (trend_mix=True) and b0_trend_xt (kernel="exact_total"): `_b0_t2` with trend=True and
+    the arm's one idea; the record goes to TREND_ARM_RECORDS[name]."""
+
+    def build(ctx: BuildContext) -> Stage:
+        rec: dict = {}
+        stage = _b0_t2(ctx, trend=True, trend_record=rec, **idea)
         TREND_ARM_RECORDS[name] = rec
         return stage
 
@@ -1936,6 +1988,20 @@ CANDIDATES = {
                                      "(target day - reference day)) instead of the last gap (heart only; count space)",
                              "damping": B0_DAMPING, "rule": "vec.harness.B0_TREND_H_RULE", "scope": "chamber"},
                             requires=_heart_extrap_with_start),
+    # heart mixture and kernel batch (campaign/heart-c): b0_trend with one idea each, lines pruned before running
+    "b0_trend_mix": Candidate("b0_trend_mix", frozenset({"T2"}), (), _b0_trend_idea("b0_trend_mix", trend_mix=True),
+                              {"what": "b0_trend with a within-upload momentum mixture: the first half of the drawn "
+                                       "cells in draw order get b0's own factor (no trend step), the rest b0_trend's "
+                                       "(heart only; count space)", "damping": B0_DAMPING,
+                               "rule": "vec.harness.B0_TREND_MIX_RULE", "scope": "chamber"},
+                              requires=_heart_extrap_with_start),
+    "b0_trend_xt": Candidate("b0_trend_xt", frozenset({"T2"}), (),
+                             _b0_trend_idea("b0_trend_xt", kernel="exact_total"),
+                             {"what": "b0_trend with its step realised by an exact-total kernel: each cell's moved "
+                                      "counts redrawn together, multinomially, at the step's rounded expected total "
+                                      "(heart only; count space)", "damping": B0_DAMPING,
+                              "rule": "vec.harness.B0_TREND_XT_RULE", "scope": "chamber"},
+                             requires=_heart_extrap_with_start),
     # T3 tries K2a and K2b (experiments/harness/TRIES.md, registered before their run): s1's Gata4 factor on the
     # Gata4 -> Mab21l2 fold, and its permuted control
     "t3_factor_xko": Candidate("t3_factor_xko", frozenset({"T3"}), (), _t3_factor_xko,
