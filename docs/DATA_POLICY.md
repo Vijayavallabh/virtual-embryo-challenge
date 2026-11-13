@@ -973,3 +973,30 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   - **Reviewer and advocate agents** of that day (two code reviewers, one cold reviewer) worked read-only on named
     files; none opened a board file, a data file or a transcript. The archived hashes of the ten frozen files were
     read from the DGX as a list of sha256 values and file names, nothing else.
+- 2026-11-13 (e), process notes on the DGX rehearsal of that day (`docs/PLAN.md` decision log 2026-11-13 (e));
+  written by the AI assistant.
+  - **What was read.** Exit codes, the chains' own times files, sha256 values, the build stamps' `sha256`, `commit`
+    and `clean` fields, the number of "built and checked" and "== vec check" lines in each log (counted, never
+    displayed), the per-file OK lines of the hash comparisons, and the `wt_revert` record of T3's refused s1 sidecar.
+    Not read: the build logs, any other stamp or sidecar field, any file size. Listings showed file names only.
+  - **One DGX-built test file was copied to the local machine**
+    (`runs/builds_check_local/rehearsal_fd2683a/refused_s1_dgx.h5ad`; owner-only, ignored by git), to compare it with
+    the local dry build of the same command. The comparison printed whether shapes, names and coordinates are equal
+    and how many cells and entries differ (84 and 5,041); it printed no cell count and no shape.
+  - **The cause of that difference was checked on a released file alone** (WT E8.75: counts, log-normalised values,
+    PCA scores, neighbour sets and smoothed profiles on both machines). No target, no score and no test board are
+    involved, so it has no ledger row.
+  - **Nothing was sent to the organisers' server**: no format check, no upload, and the team key was not used. The
+    DGX holds no key.
+  - **A copy of the reference set and of the T3 run folder is now on the local machine**
+    (`runs/archive/builds_fd2683a/`, `runs/t3_decomp/gata4_20261028T122425Z/`; owner-only, ignored by git), after a
+    side agent's note the captain forwarded. The ten files are the team's own predictions; the run folder holds
+    aggregates of the two released Gata4 replicates, which this machine has held under `data/` since 2026-11-12. The
+    copies were checked by sha256 only. The client's build-stamp guard and local format check were run on them as
+    local logic (no token read, no server call); their output was read as pass or fail, with no cell count.
+  - **A listing of file names** in the DGX's `runs/t3_build` showed October's practice-board smoke files, one of
+    which carries its cell number in its name. It is a practice build's figure, made before the test-board specs
+    were taken in, and it is quoted nowhere.
+  - **A slip in handling, not in data.** The first launch command failed on a quoting error before any build started;
+    it left a partial script in the new rehearsal folder, which the real script replaced. Nothing ran on either
+    machine. The launch, the checks and the comparisons were then run from script files.

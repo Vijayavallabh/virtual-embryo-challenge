@@ -1,0 +1,90 @@
+# Rebuild rehearsal at fd2683a, DGX (PrakashDGX_H2), 2026-11-13, at the captain's instruction ("sync the dgx and run
+# the rehearsal now"). It is the first build of the entries as amended on 2026-11-13 (docs/S2_RULES.md, last section)
+# on the machine that builds the uploads, and it makes the reference list for the freeze-morning rebuild.
+# Target-free: released inputs only, no target read, no score. No server format check and no upload.
+# Read: exit codes, the chains' times files, sha256, the build stamps' commit and clean fields, counts of the fixed
+# lines "built and checked" and "== vec check" in the logs, and the wt_revert record of T3's refused s1 sidecar.
+# Not read: the build logs, any other stamp or sidecar field, any file size.
+== the sync
+The DGX checkout went from 6402b64 to fd2683a with the rsync line of docs/COMPUTE.md plus --exclude .venv-gpu, with no
+build running there. A dry run first (-n --itemize-changes): 871 files, 22.5 MB; outside .git only tracked files, and
+the test and lint caches. After it: `git status --porcelain --untracked-files=no` empty at fd2683a,
+`sha256sum -c docs/S2_RULES.sha256` OK, the 15 released files under data/raw OK against data/raw/SHA256SUMS, and one
+`uv run` to settle the environment changed no tracked file (uv.lock is unchanged since 6402b64).
+== the builds
+Two chains, a and b, side by side, each from an empty folder, each in this order:
+  BUILD_OUT=runs/rehearsal_fd2683a/<a|b> bash experiments/builds/build_all.sh s1
+  BUILD_OUT=runs/rehearsal_fd2683a/<a|b> bash experiments/builds/build_all.sh s2
+  BUILD_OUT=runs/rehearsal_fd2683a/<a|b> bash experiments/builds/build_all.sh t3alt
+at the script's defaults (16 BLAS threads, NUMPY_MADVISE_HUGEPAGE=0, build seed 1000001). Both chains ended with exit
+code 0 (build_all.sh stops at the first failed build or failed `vec check`); each log holds three "built and checked"
+lines and ten `vec check` calls. Started 06:11:53Z, ended 06:21:00Z (a) and 06:21:15Z (b), by the DGX clock.
+== the ten files: sha256 (chain a = chain b for every file; every stamp: commit fd2683a, clean, sha256 as computed)
+a294062f5f7bbb2dae19ef695979cc21f03f38df40d22be9ccdd30af36e3bdef  builds/T1_s1.h5ad         new (--g-mom --base lib3)
+30f0cf59442591810833061756e1324b46728cc4373048d8a8c90696a1ae3737  builds/T1_s2.h5ad         = archive of f337dc6
+dc910d4b3fb1d62b643bf96e5765741f8f0ad011f7b2d928a7955928ddee1303  builds/T2embryo_s1.h5ad   = archive of f337dc6
+41982d8afd784ecb07a4021077f701c3806c3bdb06eda92c2cb99fcc41b19b73  builds/T2embryo_s2.h5ad   new (aligned series)
+e73d0396364806514c4acf1aa522e5923e395d610c4b0c3bb85112a89ef84355  builds/T2heart_s1.h5ad    = archive of f337dc6
+5a309434d4a2e66d7b3b838a9a0b23d7c1cd0bc49daec238cf87e194df158190  builds/T2heart_s2.h5ad    = archive of f337dc6
+3d6c94a97b02b8f378b275070dad2767e54005e4194d093e4e01bdf3881b4203  t3_build/allowed_s1.h5ad  = archive of f337dc6
+3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2  t3_build/barred_s1.h5ad   = archive of f337dc6
+1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f  t3_build/barred_s2.h5ad   = archive of f337dc6
+0394575a11fcd4f915e0daf4972e5a783b6b89efa065ed4f85fe2445cbbb1545  t3_build/refused_s1.h5ad  new (--wt-revert)
+The seven files whose commands did not change equal runs/archive/builds_f337dc6/SHA256SUMS, the reference until today.
+== the three new files against the local dry builds (experiments/builds/results/rulings_9cf5ca5.txt)
+T1 s1 on library 3:    the same sha256 on both machines (a294062f...). T1's s1 as built until 2026-11-13 was not.
+embryo s2:             the same sha256 on both machines (41982d8a...).
+T3 refused s1 with the wild-type-only factor: 0394575a... on the DGX, 386bcf2d... on the local machine.
+  The same cells in the same order, the same names and coordinates; the expression of 84 cells differs (5,041 entries
+  of the matrix). The factor record is identical on both machines apart from the input files' paths: 12 lineage groups
+  with their own factor, SD of the pooled log factor 0.5359908127886033, 16 genes at the clip, exponent 0.5.
+  The cause, checked on the released WT E8.75 pool alone (23,377 cells after the duplicate filter): the builder smooths
+  each cell's profile over its 15 nearest neighbours in a 30-component PCA (t3_decompose.smoothed_props). The counts
+  and the log-normalised values are identical on both machines; the PCA scores differ by up to 3.3e-4 (typical size
+  2.5), because the local machine (AMD EPYC 7742) runs OpenBLAS's Haswell kernel and the DGX (Xeon Platinum 8468) its
+  SkylakeX kernel. So 10 cells get another neighbour set and 3 another smoothed profile, and the Poisson top-up of the
+  genes whose factor is above 1, which draws from that profile, then draws differently for the 84 cells. Neither file
+  is wrong; they are two draws of the same construction. The uploads are built on the DGX, so the DGX's hash is the
+  reference. T3's first-choice file (allowed s1) uses the same smoothing and reproduces its DGX archive.
+== the new reference
+runs/archive/builds_fd2683a/ on the DGX: chain a's builds/ and t3_build/ with their stamps and sidecars, and
+SHA256SUMS (the ten lines above without the notes; the list's own sha256 is
+7a964a976dc500dfdc1b5bc546f8b6589ef277641c6ddeb37908ce33529c3838). The archive and both chains check against it
+(10 of 10 OK each). The chains stay in runs/rehearsal_fd2683a/.
+== the DGX's default folders are not upload sources
+runs/builds/T1_s1.h5ad and T1_s2.h5ad on the DGX are the builds of 2026-11-04 (stamp commit 1206d60; their hashes are
+in runs/archive/builds_ae6d6b3/SHA256SUMS): later T1 rebuilds went to their own folders. The other eight files at the
+top of runs/builds and runs/t3_build equal the archive of f337dc6, so the embryo s2 and the refused s1 there predate
+the amendments. A clean stamp at an ancestor commit passes the upload client's stamp guard, so only the hash the
+captain confirms tells such a file from the current one. The T3 builder also refuses to write over an existing file,
+so `build_all.sh` at its default folder would stop at the first T3 file. The freeze-morning rebuild therefore goes to
+a fresh folder, and the uploads are pulled from that folder.
+== the freeze-morning command, tried the same day (a third build of the ten files; exit code 0; 06:33:50Z to 06:43:05Z)
+$ bash experiments/builds/determinism_check.sh runs/archive/builds_fd2683a/SHA256SUMS 16
+== BLAS threads 16, against /home/prachh/v/virtual-embryo-challenge/runs/archive/builds_fd2683a/SHA256SUMS
+builds/T1_s1.h5ad: OK
+builds/T1_s2.h5ad: OK
+builds/T2embryo_s1.h5ad: OK
+builds/T2embryo_s2.h5ad: OK
+builds/T2heart_s1.h5ad: OK
+builds/T2heart_s2.h5ad: OK
+t3_build/allowed_s1.h5ad: OK
+t3_build/barred_s1.h5ad: OK
+t3_build/barred_s2.h5ad: OK
+t3_build/refused_s1.h5ad: OK
+all files byte-identical to the archived set at every thread count
+Its output folder is runs/determinism_fd2683a/t16/ on the DGX. The reference list is also in this folder of the
+repository, as builds_fd2683a.SHA256SUMS (the same bytes as the DGX's list).
+== a verified copy on the local machine (the same day, after a side agent's note the captain forwarded)
+runs/archive/builds_fd2683a/ on the local machine (owner-only, ignored by git) is a copy of the DGX's archive: the ten
+files with their stamps and sidecars and the list; `sha256sum -c SHA256SUMS` there gives 10 of 10 OK.
+runs/t3_decomp/gata4_20261028T122425Z/ on the local machine is a copy of the T3 run folder every T3 build reads
+(17 files, 1.3 MB; the sha256 of its sorted file manifest is the same on both machines:
+012b2c43facf6ce5fdc4364f984e41141b857858f1c33664a197710dc8fdf01f).
+The upload client's guards that depend on where a file lies, run on the ten local copies (local logic only: no token
+read, nothing sent): the build-stamp guard passes for all ten ("built from a clean tree at fd2683ac698d, the local
+HEAD or an ancestor of it"), and the client's local format check passes for all ten. So `vec submit
+runs/archive/builds_fd2683a/<file> --board KEY`, without --from-dgx, would take a local copy; with a local file the
+client does not ask for the DGX's state. No server call was made to try it.
+Server format checks in the ledger for these bytes (results/submissions.csv): heart s1 and s2, embryo s1, T3 allowed
+s1, barred s1 and barred s2 passed on 2026-11-04; T1 s1, T1 s2, embryo s2 and T3 refused s1 have none.

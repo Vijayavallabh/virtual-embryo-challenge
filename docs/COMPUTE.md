@@ -31,7 +31,16 @@ here:
 - Test builds made here are checks only (`runs/builds_check_local/`): an official file is rebuilt at the freeze commit
   by `build_all.sh` at 16 BLAS threads. A rendered embryo file is byte-reproducible only at a fixed thread count
   (`experiments/builds/results/determinism_1f8956b.txt`).
-- The DGX checkout was not synced during the campaign (it is at 6402b64). Sync it only when no build runs there.
+- The DGX checkout was not synced during the campaign (it stayed at 6402b64). It was synced on 2026-11-13 to fd2683a,
+  with no build running there, for the rebuild rehearsal of that day
+  (`experiments/builds/results/rehearsal_fd2683a.txt`). Sync it only when no build runs there.
+- `.venv-gpu` exists on this machine only: the sync line below leaves it out.
+- Since 2026-11-13 this machine holds a verified copy of what the uploads need from the DGX, so that a DGX outage in
+  the upload week does not mean rebuilding under deadline: `runs/archive/builds_fd2683a/` (the ten reference files
+  with their stamps, sidecars and SHA256SUMS; check with `sha256sum -c SHA256SUMS` there) and
+  `runs/t3_decomp/gata4_20261028T122425Z/` (the run folder every T3 build reads). Both are owner-only and ignored by
+  git. This is the one exception to "bring back only scores and small figures" below. If a build changes, the copy
+  of that file is stale until the new reference is copied and checked (`docs/P3_RUNBOOK.md`, "A copy off the DGX").
 
 ## Setup on the DGX
 
@@ -48,10 +57,14 @@ Competition data goes in `~/v/virtual-embryo-challenge/data/raw/` on the DGX onl
 `rsync` from the local clone (no GitHub credentials on the shared account):
 
 ```bash
-rsync -az --exclude .venv --exclude __pycache__ --exclude data --exclude runs --exclude .claude -e ssh ./ PrakashDGX_H2:v/virtual-embryo-challenge/
+rsync -az --exclude .venv --exclude .venv-gpu --exclude __pycache__ --exclude data --exclude runs --exclude .claude -e ssh ./ PrakashDGX_H2:v/virtual-embryo-challenge/
 ```
 
 `.claude/` holds Claude Code's workflow worktrees (gitignored); it stays off the DGX, whose tree must stay clean.
+`.venv-gpu` is the campaign's local environment (2026-11-12; several GB): it stays off the DGX too. Before a sync,
+check that no build runs there (`pgrep -af "[b]uild_all|[b]uild_test|[b]uild_submission"` prints nothing) and, after
+it, that `git status --porcelain --untracked-files=no` is empty at the expected commit. To see first what a sync
+would send, add `-n --itemize-changes`.
 
 Never sync while a build that writes prediction files runs on the DGX: the sync rewrites `.git` (HEAD's reflog), so
 the file's build stamp records that the code may have changed mid-build, and an official upload of it is refused

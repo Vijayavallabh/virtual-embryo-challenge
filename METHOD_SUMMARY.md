@@ -29,7 +29,11 @@ nothing until the captain rules.
 Entries changed on 2026-11-13 (later that day; `docs/S2_RULES.md`, "Amendments of 2026-11-13"; rows R4 to R6 of
 `experiments/harness/TRIES.md`; `docs/PLAN.md` decision log 2026-11-13 (d)). None of the three passed the adoption
 rule; each entered by the captain's ruling or delegation, after the captain was asked about each one with its
-numbers. No scored submission has been made.
+numbers. No scored submission has been made. The ten test-board files as they now stand are the set in
+`runs/archive/builds_fd2683a/SHA256SUMS` on the build machine (rebuilt there twice on 2026-11-13, byte-identical,
+all passing `vec check`; `experiments/builds/results/rehearsal_fd2683a.txt`): three new files (T1's s1, the embryo's
+s2, T3's second upload) and seven byte-identical to the set of f337dc6 named above. The three new files and T1's s2
+have no server format check on record yet.
 - **Task 2 embryo, s2:** `fgw_aligned_series` in place of fgw_shape0 (the captain's choice among three options). E7.5's
   cells are rendered into E8.0's per-gene detection profile and depth, and the moves come from the aligned coupling.
   It pays if E7.75 was measured like E8.0 (+3.4 to +6.7 as better of two on the practice tasks of that kind) and gives

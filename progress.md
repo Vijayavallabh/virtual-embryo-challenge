@@ -3,6 +3,24 @@
 ## Current State
 
 **Last Updated:** 2026-11-13
+**2026-11-13, the DGX rehearsal (decision log 2026-11-13 (e)): the freeze-morning reference exists; nothing is
+uploaded.** At the captain's instruction ("sync the dgx and run the rehearsal now") the DGX checkout was synced from
+6402b64 to fd2683a with no build running there, and all ten files were rebuilt twice from empty folders with
+`build_all.sh` at 16 BLAS threads. The two sets are byte-identical, every stamp is clean at fd2683a, every file passed
+`vec check`, and the seven files whose commands did not change equal the archive of f337dc6. The reference is now
+`runs/archive/builds_fd2683a/SHA256SUMS` on the DGX (`experiments/builds/results/rehearsal_fd2683a.txt`). Of the three
+new files, T1's s1 (a294062f...) and the embryo's s2 (41982d8a...) have the same sha256 on both machines; T3's refused
+s1 with the factor is 0394575a... on the DGX and 386bcf2d... here. Its cells, order and coordinates are the same, and
+the draws of 84 cells differ, because a nearest-neighbour smoothing step follows the machine's BLAS kernel (checked on
+released WT E8.75 alone); the DGX's file is the one to upload. The freeze-morning command was tried against the new
+list (`determinism_check.sh runs/archive/builds_fd2683a/SHA256SUMS 16`: ten of ten OK). The DGX's default folders
+`runs/builds` and `runs/t3_build` hold older files (T1's two there date from 2026-11-04) and are not upload sources.
+After a side agent's note that the captain forwarded (the verified files existed only on the shared DGX), this machine
+now holds a checked copy of the reference set (`runs/archive/builds_fd2683a/`, ten of ten OK) and of the T3 run
+folder (`runs/t3_decomp/gata4_20261028T122425Z/`, identical file by file), both owner-only. The client's build-stamp
+guard and local format check pass on all ten copies (local logic; nothing sent), so the same bytes can go from here
+if the DGX is down, at the captain's word. No server format check was sent. The estimate (184), the gate and the
+tries are unchanged.
 **2026-11-13, the captain's rulings (decision log 2026-11-13 (d)): three entries changed; nothing is uploaded.** Asked
 about each rule with its numbers, the captain chose the run-corrected file for the embryo's second upload ("Run-
 corrected file (Recommended)"), reopened T3's second upload for the wild-type-only factor ("Yes, add it
@@ -759,6 +777,10 @@ scorer reproduces every published validation anchor exactly. The release-day rul
         embryo's s2, T3's second upload, T1's s1 base), `build_all.sh` and two build options (`--base lib3`,
         `--wt-revert`) with tests, two independent code reviews and their fixes, dry builds with one sha256 per new
         file, and the screened reads approved and briefed (`docs/SCREENED_READ_SEVENTH_EMAIL.md`).
+      - 2026-11-13 (e): at the captain's instruction the DGX was synced to fd2683a and the ten files were rebuilt
+        there twice (byte-identical sets, clean stamps, `vec check` passed, seven files equal to the archive of
+        f337dc6). The set is archived as the freeze-morning reference (`runs/archive/builds_fd2683a/SHA256SUMS`), and
+        the freeze-morning command was tried against it (`experiments/builds/results/rehearsal_fd2683a.txt`).
 
 ### What's Next
 
@@ -767,11 +789,14 @@ Updated 2026-11-13. The older list below is kept for its record; where the two d
 0. **Rulings given on 2026-11-13** (decision log 2026-11-13 (d); `docs/S2_RULES.md`, "Amendments of 2026-11-13"): the
    embryo's s2 is `fgw_aligned_series`, T3's second upload carries the wild-type-only factor (`--wt-revert`), and
    T1's s1 is drawn from library 3's cells (`--base lib3`; s2 keeps the pooled base). Nothing is requested any more:
-   the embryo's first-upload shape fix stays closed by its rule. **Owed by 24 Nov:** sync the DGX when no build runs
-   there, rehearse all ten files there twice with `build_all.sh` (16 BLAS threads), archive that set with its
-   SHA256SUMS as the freeze-morning reference (a local hash cannot check T1's s1 built on the DGX), and record it. The
-   server format checks of the changed files wait for the freeze morning. An organiser's answer to the seventh email
-   is read as `docs/ORGANIZER_QUESTIONS.md` fixes it, through a screening agent and never pasted into the session.
+   the embryo's first-upload shape fix stays closed by its rule. **Done on 2026-11-13** (decision log 2026-11-13
+   (e)): the DGX is synced to fd2683a and all ten files were rehearsed there twice; the freeze-morning reference is
+   `runs/archive/builds_fd2683a/SHA256SUMS` on the DGX (`experiments/builds/results/rehearsal_fd2683a.txt`). A build
+   change after today needs a new rehearsal and a new reference by 24 Nov. Four of the ten reference files have no
+   server format check in the ledger, and the client needs one before an official upload: T1's s1 and T3's refused
+   s1 (both in the first round), T1's s2 and the embryo's s2 (second round). They wait for the freeze morning, on the
+   captain's watch; the other six passed theirs on 2026-11-04. An organiser's answer to the seventh email is read as
+   `docs/ORGANIZER_QUESTIONS.md` fixes it, through a screening agent and never pasted into the session.
 1. **19 Nov:** if no organiser has answered the public Slack question on floored T3 severity, the captain may post one
    short follow-up in the same thread, drafted by the AI assistant. Replies are read only through the screened check
    (`docs/ORGANIZER_QUESTIONS.md`, "Public Slack question").
@@ -788,9 +813,12 @@ Updated 2026-11-13. The older list below is kept for its record; where the two d
    and an answer other than zero or 0.5 goes to the captain. It also covers the DM and email answers (the seventh
    email's among them: procedure only, any figure about a held-out sample withheld), the Rules and Prizes pages, and
    the Human Team definition.
-4. **27 Nov from 05:30 IST:** rebuild at the freeze commit with `build_all.sh` (16 BLAS threads), compare with
-   `runs/archive/builds_f337dc6/SHA256SUMS`, then `vec check`, the server format checks, the plain summary, and the
-   captain's go-ahead for each upload. First round: T1 s1, heart s1, embryo s1, T3's s2.
+4. **27 Nov from 05:30 IST:** sync the DGX to the freeze commit (no build running there), then on the DGX `bash
+   experiments/builds/determinism_check.sh runs/archive/builds_fd2683a/SHA256SUMS 16`: it rebuilds all ten files into
+   `runs/determinism_<HEAD>/t16/`, runs `vec check` and compares each with the reference. The uploads are pulled from
+   that folder, never from the DGX's `runs/builds` or `runs/t3_build`, which hold older files (`docs/P3_RUNBOOK.md`,
+   "The freeze-morning rebuild"). Then the server format checks, the plain summary, and the captain's go-ahead for
+   each upload. First round: T1 s1, heart s1, embryo s1, T3's s2.
 5. **29 Nov:** T1, heart and embryo s2. **30 Nov:** T3's s1. **1 Dec:** outage buffer, and the final marks by 12:00 UTC.
 6. **Levers:** the three the campaign priced above about +0.3 overall are now in the entries by the rulings of
    2026-11-13 (the embryo's s2, T3's second upload, T1's base). None other is open without a new reason and a
@@ -852,9 +880,17 @@ headroom tables in `experiments/harness/TRIES.md`):
 
 ## Blockers / Risks
 
-- [ ] 2026-11-13: the freeze-morning reference hashes do not exist yet for the entries as amended. T1's s1 has
-      different bytes on the local machine and on the DGX, so the reference set has to be built on the DGX (sync it
-      first, when no build runs there) by 24 Nov. Until then only the local dry builds vouch for the new files.
+- [x] 2026-11-13: the freeze-morning reference hashes did not exist for the entries as amended. Resolved the same day:
+      the DGX rehearsal at fd2683a made `runs/archive/builds_fd2683a/SHA256SUMS` (decision log 2026-11-13 (e)).
+- [ ] 2026-11-13: T3's refused s1 with the factor is byte-reproducible on one machine and not across machines (the
+      draws of 84 cells; a nearest-neighbour step follows the BLAS kernel), as T1's s1 was until that day. If the DGX's
+      numerical libraries or processor change before 27 Nov, the freeze-morning check would name that file, or T3's
+      first-choice file, which uses the same step. Such a file is not uploaded until the difference is explained to
+      the captain (`docs/P3_RUNBOOK.md`, "The freeze-morning rebuild").
+- [ ] 2026-11-13: the DGX's default folders `runs/builds` and `runs/t3_build` hold older files with clean stamps (T1's
+      two there date from 2026-11-04). The client's stamp guard accepts a clean build at an ancestor commit, so only
+      the hash the captain confirms tells such a file from the current one. Uploads are pulled from the freeze-morning
+      folder only.
 - [ ] 2026-11-13: three bets are now placed that no backtest can settle: E7.75 measured like E8.0 (embryo s2; it
       gives up E7.5's shape hedge), E12.5 no shallower than about 0.7 of library 3 (T1 s1), and WT E8.75's own
       deviation clearing the severity gate against the beta-catenin run (T3's second upload; a thin margin on one
@@ -1056,6 +1092,13 @@ headroom tables in `experiments/harness/TRIES.md`):
 
 ## Evidence of Completion
 
+- [x] 2026-11-13 (e), on the DGX at fd2683a (`experiments/builds/results/rehearsal_fd2683a.txt`): two chains of
+      `build_all.sh s1`, `s2` and `t3alt` from empty folders, both with exit code 0; ten of ten files byte-identical
+      between the chains, every stamp clean at fd2683a, seven files equal to `runs/archive/builds_f337dc6/SHA256SUMS`;
+      the set archived as `runs/archive/builds_fd2683a/` with its SHA256SUMS; the freeze-morning command
+      (`determinism_check.sh` at 16 threads against the new list) then rebuilt the ten once more: ten of ten OK. The
+      15 released files on the DGX check against `data/raw/SHA256SUMS`. Not run there: `./init.sh` and the test suite
+      (the code is the one tested here at 7a5fbbc; fd2683a changes records only). Not sent: any server format check.
 - [x] 2026-11-13 (d), on this machine (`runs/logs/checks_local_2026-11-13c.log`): the full suite with the code and
       tests of 7a5fbbc (it started at 9cf5ca5 with the build-set and rules edits already in the tree; the commits
       after that change records only): 1207 tests passed and 1 skipped (torch is not in the standard environment),
@@ -1088,10 +1131,25 @@ headroom tables in `experiments/harness/TRIES.md`):
 
 ## Notes for Next Session
 
+- 2026-11-13 (e): the DGX checkout is at fd2683a (synced that day; nothing built there since). The freeze-morning
+  reference is `runs/archive/builds_fd2683a/SHA256SUMS` on the DGX, and the command that rebuilds and checks against
+  it is `bash experiments/builds/determinism_check.sh runs/archive/builds_fd2683a/SHA256SUMS 16` (output folder
+  `runs/determinism_<HEAD>/t16/`; it refuses if that folder exists). Never upload from the DGX's `runs/builds` or
+  `runs/t3_build`. The sync line now also leaves out `.venv-gpu` (`docs/COMPUTE.md`). Read a rehearsal by exit codes,
+  hashes and the stamps' commit and clean fields; the build logs and the other stamp fields stay unread.
+  `runs/builds_check_local/rehearsal_fd2683a/` here holds one DGX-built test file (T3's refused s1), pulled for the
+  comparison with the local dry build; it is never uploaded from here.
+- 2026-11-13 (e): `runs/archive/builds_fd2683a/` and `runs/t3_decomp/gata4_20261028T122425Z/` on this machine are
+  checked copies of the DGX's reference set and T3 run folder (owner-only, ignored by git). They are the fallback if
+  the DGX is unreachable on an upload day: upload the copy without `--from-dgx`, at the captain's word
+  (`docs/P3_RUNBOOK.md`, "A copy off the DGX"). Recheck the copy with `sha256sum -c SHA256SUMS` before using it, and
+  refresh it if a build changes. With `--from-dgx` an official upload needs the DGX checkout at the local HEAD with a
+  clean tree, so sync the DGX after the last local commit and before the upload.
 - 2026-11-13: the entries' build commands changed (`docs/S2_RULES.md`, last section; `experiments/builds/build_all.sh`).
   T1 s1: `build_test.py t1 --g-mom --base lib3`. Embryo s2: `build_test.py embryo --method fgw --move-coupling aligned
-  --expression series`. T3 second upload: the refused s1 command plus `--wt-revert`. Never check a T1 s1 built on the
-  DGX against a hash made on this machine, or the reverse (`experiments/builds/results/rulings_9cf5ca5.txt`).
+  --expression series`. T3 second upload: the refused s1 command plus `--wt-revert`. Never check a file built on the
+  DGX against a hash made on this machine, or the reverse: T1's s1 as built until 2026-11-13 and T3's refused s1 with
+  the factor differ between the machines (`experiments/builds/results/rulings_9cf5ca5.txt`, `rehearsal_fd2683a.txt`).
 - 2026-11-13: tries K7 live in `experiments/t3_decomp/k7_wt_revert.py` (three diagnostic pseudo-tasks with the
   wild-type stage files as the only inputs; they are not in `configs/pseudo_tasks.yaml`). Its arms are not harness
   candidates and no T3 builder knows the factor: nothing of it can reach an upload without the captain's ruling and
@@ -1104,7 +1162,7 @@ headroom tables in `experiments/harness/TRIES.md`):
   `docs/DATA_POLICY.md`, and apply the reading fixed beforehand. A reply with a figure about a held-out sample is not
   read without the captain's named exception.
 - 2026-11-12: by the captain's instruction (decision log 2026-11-12 (a)) the campaign runs on this machine; `data/`
-  and `runs/` here are owner-only, and the DGX checkout (6402b64) was not synced. A multi-task run starts each task as
+  and `runs/` here are owner-only, and the DGX checkout (6402b64) was not synced (it was on 2026-11-13, to fd2683a: the first note above). A multi-task run starts each task as
   its own process, all together, because provenance is read at each task's start; read `git status` before committing
   while one runs.
 - 2026-11-12: `runs/builds_check_local/T2embryo_s2_aligned_series.h5ad` is a build check of R-A's candidate (default

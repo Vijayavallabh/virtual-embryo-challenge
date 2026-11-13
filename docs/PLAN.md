@@ -633,7 +633,7 @@ every T3 upload after its screened check of mail, Slack and the Rules page (`doc
 | 19 Nov | If no organiser has answered the public Slack question on floored T3 severity (posted 2026-11-12), the captain may post one short follow-up in the same thread, drafted by the AI assistant (decision log 2026-11-11 (e)). On the captain's say-so, a screened read for an answer to the seventh email: the Data Protocol page, the Slack channel and the mailbox (decision log 2026-11-13 (c)) |
 | 23 Nov | On the captain's say-so, a second screened read for an answer to the seventh email; it is the last day an answer can still change a build, which has to be rehearsed by 24 Nov |
 | 26-27 Nov | The screened check that picks T3's s2 (ruling 2026-11-06 (b)), run no earlier than 26 Nov; it also looks for an answer to the seventh email, the Data Protocol page included |
-| 27 Nov, from 05:30 | Rebuild at the freeze commit and check (`vec check`, the server format checks, the archived hashes); the plain summary to the captain; then the first round: T1 s1, heart s1, embryo s1 and T3's s2 |
+| 27 Nov, from 05:30 | Rebuild at the freeze commit and check (`vec check`, the server format checks, the archived hashes: since 2026-11-13 `runs/archive/builds_fd2683a/SHA256SUMS` on the DGX, through `determinism_check.sh ... 16`, decision log 2026-11-13 (e)); the plain summary to the captain; then the first round, pulled from the folder that command built: T1 s1, heart s1, embryo s1 and T3's s2 |
 | 29 Nov | T1, heart and embryo s2, each after its screened check |
 | 30 Nov | T3's s1, after its screened check; every upload done by the end of the day |
 | 1 Dec | Outage buffer only; each board's final mark as soon as both its uploads are scored, by 12:00 UTC |
@@ -2697,3 +2697,73 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     set, and they die with the session). The freeze morning: the server format checks of the changed files. The
     disclosure email before the first upload lists the new files' hashes; no new external source is involved.
 
+- 2026-11-13 (e), the captain, after the report of (d), in the captain's words: "sync the dgx and run the rehearsal
+  now". What was done, written by the AI assistant. No upload was made and no server format check was sent; the
+  upload gate, the go-ahead for each upload, every data rule and the quarantine stand as they were.
+  - **The sync.** No build was running on the DGX and its tree was clean at 6402b64. A dry run of the sync line
+    (`docs/COMPUTE.md`, now with `--exclude .venv-gpu`) listed 871 files and 22.5 MB: outside `.git`, tracked files
+    and the test and lint caches only. After the sync the DGX was clean at fd2683a, `docs/S2_RULES.sha256` checked,
+    and the 15 released files there checked against `data/raw/SHA256SUMS`. `uv.lock` has not changed since 6402b64.
+  - **The rehearsal** (`experiments/builds/results/rehearsal_fd2683a.txt`). Two chains side by side, each from an
+    empty folder, each running `build_all.sh s1`, `s2` and `t3alt` at the script's defaults (16 BLAS threads, seed
+    1000001). Both ended with exit code 0, so every file was built and passed `vec check`. All ten files are
+    byte-identical between the chains, and every stamp says clean at fd2683a. The seven files whose commands did not
+    change equal `runs/archive/builds_f337dc6/SHA256SUMS`, the reference until today.
+  - **The three new files against the local dry builds of (d).** T1's s1 on library 3 (a294062f...) and the embryo's
+    s2 (41982d8a...) have the same sha256 on both machines. T3's refused s1 with the wild-type-only factor does not:
+    0394575a... on the DGX, 386bcf2d... locally. The two files hold the same cells in the same order with the same
+    coordinates, and the factor record is identical; the expression of 84 cells differs.
+  - **Why, checked on released WT E8.75 alone.** The builder smooths each cell's profile over its 15 nearest
+    neighbours in a 30-component PCA. Counts and log-normalised values are identical on the two machines, but the
+    PCA scores differ by up to 3.3e-4, because the local processor runs OpenBLAS's Haswell kernel and the DGX's its
+    SkylakeX kernel. Ten of the pool's 23,377 cells get another neighbour set and three another smoothed profile, and
+    the Poisson top-up of the genes with a factor above 1, which draws from that profile, then draws differently for
+    the 84 cells. Neither file is wrong: they are two draws of one construction. T1's s1 as built until today
+    differed between the machines in the same way (entry (d)); the new one does not.
+  - **What follows from it.** Only a hash made on the DGX can check a file built on the DGX, and the uploads are built
+    there. A change of the DGX's numerical libraries or processor before 27 Nov would show as a mismatch on the freeze
+    morning, in this file or in T3's first-choice file, which uses the same smoothing (it reproduces its archive of
+    2026-11-10 today). A file that differs that morning is not uploaded until the captain has the explanation.
+  - **The new reference.** `runs/archive/builds_fd2683a/` on the DGX holds chain a's ten files with their stamps and
+    sidecars, and `SHA256SUMS`. T1_s1 a294062f5f7b..., T1_s2 30f0cf594425..., T2embryo_s1 dc910d4b3fb1...,
+    T2embryo_s2 41982d8afd78..., T2heart_s1 e73d03963648..., T2heart_s2 5a309434d4a2..., allowed_s1 3d6c94a97b02...,
+    barred_s1 3712c3f9988d..., barred_s2 1b69521e3c28..., refused_s1 0394575a11fc... (the full values are in the
+    record). It replaces `runs/archive/builds_f337dc6` as the freeze-morning reference.
+  - **The freeze-morning command, tried the same day.** `bash experiments/builds/determinism_check.sh
+    runs/archive/builds_fd2683a/SHA256SUMS 16` rebuilt the ten files a third time into `runs/determinism_fd2683a/t16/`
+    and compared them with the new list: ten of ten OK. That command is the freeze-morning rebuild, and the uploads
+    are pulled from the folder it builds (`docs/P3_RUNBOOK.md`, "The freeze-morning rebuild").
+  - **A trap found and closed by procedure.** The DGX's default folders `runs/builds` and `runs/t3_build` are not
+    current: T1's two files there are the builds of 2026-11-04 (stamp commit 1206d60), and the embryo's s2 and the
+    refused s1 there predate the amendments. Each has a clean stamp at an ancestor commit, which the upload client's
+    stamp guard accepts, so only the hash the captain confirms tells such a file from the current one. Nothing there
+    was moved or changed. The runbook now says where uploads come from, and that `build_all.sh` at its default
+    folder would stop at the first T3 file, which the T3 builder will not write over.
+  - **A copy off the DGX.** While the rehearsal was being recorded the captain forwarded a side agent's note: the
+    verified files existed only on the shared DGX, whose disk is 89% full, and T3's first-choice file needs a run
+    folder kept only there; "Consider asking the main agent to keep a verified copy of the ten files and that run
+    folder on this machine, and to check that the upload tool accepts a local copy." The AI assistant took the
+    forwarded note as the request and did it, since it is reversible and stays inside the project's own folders.
+    - The local machine now holds `runs/archive/builds_fd2683a/` (the ten files with stamps, sidecars and the list;
+      ten of ten OK) and `runs/t3_decomp/gata4_20261028T122425Z/` (17 files; identical file by file), both
+      owner-only and ignored by git. The list is also in the repository
+      (`experiments/builds/results/builds_fd2683a.SHA256SUMS`).
+    - The client's guards that depend on where a file lies were run on the ten copies, as local logic with no token
+      and nothing sent: the build-stamp guard passes for all ten (a clean build at fd2683a, an ancestor of the local
+      HEAD) and so does the local format check. A local file is uploaded without `--from-dgx`, and the client then
+      does not ask for the DGX's state. What stays untested is the server's side, which no check short of a server
+      call can show.
+    - The copy is a fallback for an outage, at the captain's word: it skips the freeze-morning rebuild, and the
+      ledger then names fd2683a as the build commit. The main route is unchanged (`docs/P3_RUNBOOK.md`).
+    - Read in the client's code while checking this: with `--from-dgx`, an official upload needs the DGX checkout at
+      the local HEAD with a clean tree. So on an upload day the DGX is synced after the last local commit and before
+      the upload.
+  - **Server format checks.** Six of the ten reference files passed theirs on 2026-11-04 (`results/submissions.csv`).
+    Four have none, and the client needs one before an official upload: T1's s1 and T3's refused s1 (first round),
+    T1's s2 and the embryo's s2 (second round). They wait for the freeze morning, on the captain's watch, as decided
+    on 2026-11-06 (k): a format check can come back stored as a submission, and these files' structure did not
+    change.
+  - **Not done.** The test suite and `./init.sh` were not run on the DGX: the code is the one tested on the local
+    machine at 7a5fbbc, and fd2683a changes records only. The build logs were not read.
+  - **Unchanged.** The estimate (184, range 170 to 198), the gate, the tries (T1 28, embryo 36, heart 4, T3 15) and
+    every entry. The disclosure email before the first upload lists the hashes of the new reference.

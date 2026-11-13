@@ -300,12 +300,39 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     as archived. Dry builds on the local machine (`experiments/builds/results/rulings_9cf5ca5.txt`): each new file
     twice with one sha256, `vec check` passed, and the unchanged T1 s2, embryo s1 and T3 refused s1 without the
     option reproduce `runs/archive/builds_f337dc6/SHA256SUMS`.
-  - **Where the reference hashes come from.** T1's s1 as built until 2026-11-13 gives one sha256 on the local machine
-    and another on the DGX (same code, 16 threads), so a hash made on one machine cannot check a build on the other.
-    The uploads are pulled from the DGX: by 24 Nov, sync the DGX when no build runs there, run `build_all.sh s1`,
-    `s2` and `t3alt` into a fresh folder, repeat once for determinism, archive that set with its SHA256SUMS, and use
-    it as the freeze-morning reference. The server format checks for the three new files and T1's two wait for the
-    freeze morning, on the captain's watch.
+  - **The reference hashes (2026-11-13).** The rehearsal on the DGX at fd2683a
+    (`experiments/builds/results/rehearsal_fd2683a.txt`; `docs/PLAN.md` decision log 2026-11-13 (e)) rebuilt all ten
+    files twice from empty folders. The two sets are byte-identical, every stamp is clean, every file passed `vec
+    check`, and the seven files whose commands did not change equal the archive of f337dc6. The reference for the
+    freeze morning is `runs/archive/builds_fd2683a/SHA256SUMS` on the DGX. A hash made on another machine cannot stand
+    in for it: T3's refused s1 with the factor has other bytes on the local machine (the draws of 84 cells, through
+    the BLAS kernel's effect on a nearest-neighbour step), as T1's s1 had until 2026-11-13.
+  - **The freeze-morning rebuild.** On the DGX, synced to the freeze commit with no build running there and a clean
+    tree: `bash experiments/builds/determinism_check.sh runs/archive/builds_fd2683a/SHA256SUMS 16`. It builds the three
+    sets into the fresh folder `runs/determinism_<HEAD>/t16/`, runs `vec check` on every file and compares every file
+    with the reference; it ends with "all files byte-identical to the archived set" or names the files that differ
+    (tried at fd2683a on 2026-11-13: ten of ten OK). The uploads are pulled from that folder (`vec submit
+    runs/determinism_<HEAD>/t16/builds/T1_s1.h5ad --board T1:test --from-dgx ...`); where this runbook or
+    `docs/S2_RULES.md` names `runs/builds/...` or `runs/t3_build/...`, read the same name under that folder. The
+    DGX's own `runs/builds` and `runs/t3_build` hold older files (T1's two there date from 2026-11-04; the embryo s2
+    and the refused s1 predate the amendments) and are never an upload source: a clean stamp at an ancestor commit
+    passes the client's stamp guard, so only the confirmed hash tells such a file from the current one. `build_all.sh`
+    at its default folder would also stop at the first T3 file, which the T3 builder will not write over. A file that
+    differs from the reference on the morning is not uploaded until the difference is explained to the captain. The
+    server format checks for the three new files and T1's two wait for the freeze morning, on the captain's watch.
+    With `--from-dgx` an official upload also needs the DGX checkout at the local HEAD with a clean tree (the client's
+    guard "dgx provenance"), so sync the DGX after the last local commit and before the upload, with no build running.
+  - **A copy off the DGX (2026-11-13).** The local machine holds a verified copy of the reference set
+    (`runs/archive/builds_fd2683a/`, ten of ten OK against its SHA256SUMS; the list is also in the repository as
+    `experiments/builds/results/builds_fd2683a.SHA256SUMS`) and of the T3 run folder
+    (`runs/t3_decomp/gata4_20261028T122425Z/`, identical file by file). The client's build-stamp guard and its local
+    format check pass on all ten copies (local logic only; nothing was sent). If the DGX cannot be reached on an
+    upload day, the same bytes can go from the copy, at the captain's word: `uv run vec submit
+    runs/archive/builds_fd2683a/builds/T1_s1.h5ad --board T1:test ...` without `--from-dgx`; the hash to confirm is
+    the same, the ledger then names fd2683a as the build commit, and the client does not ask for the DGX's state. This
+    skips the freeze-morning rebuild, so it is for an outage only. A rebuild on the local machine is a weaker
+    stand-in: T3's refused s1 comes out with other bytes there. If a build changes after 2026-11-13, copy and check
+    the new reference the same day.
 - Update `ASSUMPTIONS.md` (A1, A2, A3, A13, A19) and `progress.md`. A1 is confirmed (2026-10-28).
 - **Disclosure ids for each official upload** (prepared 2026-11-05 by the AI assistant; the captain confirms them on
   the morning). The client refuses an official upload without `--disclose` ids from `EXTERNAL_DATA.md`. Rule used:
