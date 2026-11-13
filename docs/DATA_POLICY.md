@@ -979,6 +979,8 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     and `clean` fields, the number of "built and checked" and "== vec check" lines in each log (counted, never
     displayed), the per-file OK lines of the hash comparisons, and the `wt_revert` record of T3's refused s1 sidecar.
     Not read: the build logs, any other stamp or sidecar field, any file size. Listings showed file names only.
+    One exception, stated for exactness: the creation time of the two old T1 stamps in the DGX's default folder was
+    read, to date those files; it says nothing about a hidden target.
   - **One DGX-built test file was copied to the local machine**
     (`runs/builds_check_local/rehearsal_fd2683a/refused_s1_dgx.h5ad`; owner-only, ignored by git), to compare it with
     the local dry build of the same command. The comparison printed whether shapes, names and coordinates are equal

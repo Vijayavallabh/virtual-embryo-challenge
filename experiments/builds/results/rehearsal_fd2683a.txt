@@ -4,7 +4,8 @@
 # Target-free: released inputs only, no target read, no score. No server format check and no upload.
 # Read: exit codes, the chains' times files, sha256, the build stamps' commit and clean fields, counts of the fixed
 # lines "built and checked" and "== vec check" in the logs, and the wt_revert record of T3's refused s1 sidecar.
-# Not read: the build logs, any other stamp or sidecar field, any file size.
+# Not read: the build logs, any other stamp or sidecar field, any file size. One exception: the creation time of
+# the two old T1 stamps in the DGX's default folder, read to date them (the section on the DGX's default folders).
 == the sync
 The DGX checkout went from 6402b64 to fd2683a with the rsync line of docs/COMPUTE.md plus --exclude .venv-gpu, with no
 build running there. A dry run first (-n --itemize-changes): 871 files, 22.5 MB; outside .git only tracked files, and
