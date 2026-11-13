@@ -10,7 +10,8 @@
 # Since the amendments of 2026-11-13 (docs/S2_RULES.md, last two sections; rows R4 to R7 of
 # experiments/harness/TRIES.md): T1's s1 is drawn from library 3's cells (--base lib3) and its s2 from the base
 # half-way between the pooled base and library 3 (--base mid --cm-share 0.60); the embryo's s2 is the aligned series
-# file; T3's refused s1 also carries the wild-type-only factor (--wt-revert).
+# file; T3's refused s1 also carries the wild-type-only factor (--wt-revert). Both heart files are built with --trend
+# (b0_trend: the captain's ruling of 2026-11-13, docs/PLAN.md decision log (w); row H11 of TRIES.md).
 #   bash experiments/builds/build_all.sh t3alt  the T3 switch files of docs/S2_RULES.md (barred branch s1 and s2)
 #
 # BUILD_OUT (default runs) and BUILD_THREADS (default 16) exist for the determinism check
@@ -46,7 +47,7 @@ t3() {  # branch submission out [more options]
 case "$set_name" in
   s1)
     $U run python experiments/builds/build_test.py t1 --g-mom --base lib3 --out $O/builds/T1_s1.h5ad
-    $U run python experiments/builds/build_test.py heart --entry s1 --out $O/builds/T2heart_s1.h5ad
+    $U run python experiments/builds/build_test.py heart --entry s1 --trend --out $O/builds/T2heart_s1.h5ad
     $U run python experiments/builds/build_test.py embryo --method fgw --expression "$EMBRYO_EXPRESSION" \
       --out $O/builds/T2embryo_s1.h5ad
     t3 allowed s1 $O/t3_build/allowed_s1.h5ad
@@ -56,7 +57,7 @@ case "$set_name" in
   s2)
     sha256sum -c docs/S2_RULES.sha256
     $U run python experiments/builds/build_test.py t1 --g-mom --base mid --cm-share 0.60 --out $O/builds/T1_s2.h5ad
-    $U run python experiments/builds/build_test.py heart --entry s2_trim --out $O/builds/T2heart_s2.h5ad
+    $U run python experiments/builds/build_test.py heart --entry s2_trim --trend --out $O/builds/T2heart_s2.h5ad
     $U run python experiments/builds/build_test.py embryo --method fgw --move-coupling aligned --expression series \
       --out $O/builds/T2embryo_s2.h5ad
     t3 refused s1 $O/t3_build/refused_s1.h5ad --wt-revert

@@ -25,7 +25,10 @@ machine, and an official upload needs the captain's go-ahead.
           counts
   heart   B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
           procedure: --entry s1 = scope hypothesis H1; s2_trim = the s2 of docs/S2_RULES.md (H2 as a trim to half
-          E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`)
+          E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`). --trend
+          (both heart files since the captain's ruling of 2026-11-13, docs/PLAN.md decision log (w); row H11 of
+          experiments/harness/TRIES.md): b0_trend, each lineage's momentum the least-squares trend over E8.25_late to
+          E10.5 in place of the E9.5 -> E10.5 step alone
   embryo  --method pseudobulk_shift | fgw | fgw_shape0 | fgw_shape1: E7.5 cells moved by the E7.25 -> E7.5 change, or
           the FGW interpolation between E7.5 and E8.0 at t = 1/2 (fgw_shape0, the s2 of docs/S2_RULES.md, keeps the
           mixture in E7.5's geometry); sized by the pre-registered embryo procedure (size_embryo_E7.75.json)
@@ -40,13 +43,16 @@ test board no cell count is printed or stored: the record says "max_cells" when 
 
 Usage (DGX, repo root, BLAS threads capped):
   uv run python experiments/builds/build_test.py t1 --out runs/builds/T1_s1.h5ad
-  uv run python experiments/builds/build_test.py heart --entry s1 --out runs/builds/T2heart_s1.h5ad
+  uv run python experiments/builds/build_test.py heart --entry s1 --trend --out runs/builds/T2heart_s1.h5ad
   uv run python experiments/builds/build_test.py embryo --method fgw --out runs/builds/T2embryo_s1.h5ad
   uv run python experiments/builds/build_test.py t1 --cm-share 0.60 --out runs/builds/T1_s2.h5ad
 The commands of the entries as they stand are in experiments/builds/build_all.sh and docs/S2_RULES.md (since
-2026-11-13 T1's two files are `t1 --g-mom --base lib3` and `t1 --g-mom --base mid --cm-share 0.60`).
-  uv run python experiments/builds/build_test.py heart --entry s2_trim --out runs/builds/T2heart_s2.h5ad
+2026-11-13 T1's two files are `t1 --g-mom --base lib3` and `t1 --g-mom --base mid --cm-share 0.60`, and both heart
+files carry --trend: the captain's ruling of 2026-11-13, docs/PLAN.md decision log (w); row H11).
+  uv run python experiments/builds/build_test.py heart --entry s2_trim --trend --out runs/builds/T2heart_s2.h5ad
   uv run python experiments/builds/build_test.py embryo --method fgw_shape0 --out runs/builds/T2embryo_s2.h5ad
+Without --trend the heart builder gives the heart file as it was before that ruling (B0's E9.5 -> E10.5 step alone),
+kept for reproducing the earlier reference set (builds_38616fe).
 """
 
 from __future__ import annotations
@@ -96,6 +102,10 @@ T1_BASES = ("pooled", "lib3", "mid")
 T1_DISSECTED_LIBRARY = "3"
 T1_MID_STREAM = 21  # the mid base's draw of other-library cells: default_rng([seed, 21]), apart from every build stream
 T1_MID_CM_SHARE = 0.60  # the one cardiomyocyte share the mid base is ruled for (docs/S2_RULES.md: T1's s2)
+# b0_trend's earlier input stages for the heart (--trend; row H11, the captain's ruling of 2026-11-13, docs/PLAN.md
+# decision log (w)): role -> (file, day as vec.harness.STAGE_DAYS gives it); with E9.5 ("start") and E10.5 ("ref")
+HEART_TREND_STAGES = {role: (f, harness.STAGE_DAYS[f]) for role, f in
+                      (("e8_75", "T2/E8.75.h5ad"), ("e8_5", "T2/E8.5.h5ad"), ("e8_25_late", "T2/E8.25_late.h5ad"))}
 
 
 def _view(key: str, task: str, kind: str, setting: str | None, test_board: str, roles: dict[str, tuple[str, float]],
@@ -419,6 +429,8 @@ def build_t1(a) -> dict:
 def build_heart(a) -> dict:
     board, dry = _board("heart", a.board)
     genes = board.genes
+    if a.trend and (a.entry == "s2" or a.depth or a.herd or a.cfm):
+        sys.exit("--trend is refused with --entry s2, --depth, --herd and --cfm (no try read those combinations)")
     ref = load_stage(DATA / "T2/E10.5.h5ad", genes=genes, drop_duplicates=True)
     start = load_stage(DATA / "T2/E9.5.h5ad", genes=genes, drop_duplicates=True)
     pool, trim = ref, None
@@ -430,12 +442,20 @@ def build_heart(a) -> dict:
         trim = {"rule": "surrounding cells removed farthest in plane from the core first, to half the in-plane scope",
                 "kept_share": float(keep.mean()), "xy_scope_before": t2_build.xy_scope(C, core),
                 "xy_scope_after": t2_build.xy_scope(C[keep], core[keep])}
-    view = _view("test:T2h", "T2", "extrap", "heart", board.key,
-                 {"ref": ("T2/E10.5.h5ad", 10.5), "start": ("T2/E9.5.h5ad", 9.5)}, "ref", 12.5)
+    roles = {"ref": ("T2/E10.5.h5ad", 10.5), "start": ("T2/E9.5.h5ad", 9.5)}
+    inputs = {"ref": pool, "start": start}
+    if a.trend:  # b0_trend (row H11): the earlier stages on the board's panel, loaded as the two above, never trimmed
+        for role, (f, day) in HEART_TREND_STAGES.items():
+            inputs[role] = load_stage(DATA / f, genes=genes, drop_duplicates=True)
+            roles[role] = (f, day)
+    view = _view("test:T2h", "T2", "extrap", "heart", board.key, roles, "ref", 12.5)
     count = _t2_count(board, pool.n_obs)
-    ctx = harness.BuildContext(task=view, board=harness._candidate_board(board), inputs={"ref": pool, "start": start},
-                               seed=a.seed)
-    stage = harness._b0_t2(ctx, depth=a.depth, herd=a.herd, cfm=a.cfm)  # the harness's B0 with its guard and checks
+    ctx = harness.BuildContext(task=view, board=harness._candidate_board(board), inputs=inputs, seed=a.seed)
+    trend_rec: dict = {}
+    if a.trend:
+        stage = harness._b0_t2(ctx, trend=True, trend_record=trend_rec)  # b0_trend, the harness's B0 otherwise
+    else:
+        stage = harness._b0_t2(ctx, depth=a.depth, herd=a.herd, cfm=a.cfm)  # the harness's B0 with its guard and checks
     hyp = {"s1": "H1", "s2": "H2", "s2_trim": "H2"}[a.entry]
     # the size step checks its reference against the full E10.5 cloud it measured; it rescales the (trimmed) cells
     coords, size = t2_build.size_or_hold(stage.coords, SIZES["heart"], hyp, source_stage="E10.5", reference_cloud=ref,
@@ -446,7 +466,25 @@ def build_heart(a) -> dict:
     return {"entry": f"B0 {a.entry} ({hyp})", "board": board.key, "dry_run": dry, "n_cells": int(stage.n),
             "seed": a.seed, "count_decision": count, "trim": trim, "depth_step": bool(a.depth),
             **({"cfm_step": t2_build.CFM_RULE} if a.cfm else {}),
+            **({"trend": _trend_record(trend_rec)} if a.trend else {}),
             "size": {k: size[k] for k in size if not isinstance(size[k], (dict, list))}}
+
+
+TREND_LINEAGE_FIELDS = ("lineage", "stages", "days", "own_factor", "weights", "cosine", "norm_ratio",
+                        "mean_abs_logf_trend", "mean_abs_logf_b0")
+
+
+def _trend_record(rec: dict) -> dict:
+    """b0_trend's record (vec.harness.b0_trend_factors) for the build record: the rule, the stage roles and days, the
+    transition weights, and per lineage the usable stages, cosine and size ratio (L2 norm, trend / B0) against B0's own
+    factor and the two mean absolute log factors, plus the medians. Built from named fields only, so no cell number of
+    any stage or pool enters it (the harness's per-stage cell numbers and min_cells are left out), on a dry run as on
+    the test board."""
+    return {"rule": "vec.harness.B0_TREND_RULE", "stages": list(rec["stages"]), "days": list(rec["days"]),
+            "weights": [float(w) for w in harness.trend_transition_weights(rec["days"])],
+            "budget_days": rec["budget_days"],
+            "lineages": [{k: row[k] for k in TREND_LINEAGE_FIELDS} for row in rec["lineages"]],
+            "median_cosine": rec["median_cosine"], "median_norm_ratio": rec["median_norm_ratio"]}
 
 
 def build_embryo(a) -> dict:
@@ -572,6 +610,11 @@ def build_parser() -> argparse.ArgumentParser:
             p.add_argument("--cfm", action="store_true",
                            help="filter each lineage's momentum by its own within-stage covariance (heart try H6 of "
                                 "experiments/harness/TRIES.md; off: the entry as adopted so far)")
+            p.add_argument("--trend", action="store_true",
+                           help="b0_trend: each lineage's momentum the least-squares trend over E8.25_late, E8.5, "
+                                "E8.75, E9.5 and E10.5, over B0's time budget (the captain's ruling of 2026-11-13, "
+                                "docs/PLAN.md decision log (w); ledger row H11 of experiments/harness/TRIES.md); "
+                                "with --entry s1 or s2_trim, refused with --entry s2, --depth, --herd and --cfm")
         if name == "embryo":
             p.add_argument("--method", choices=("pseudobulk_shift", *EMBRYO_T_POS), required=True,
                            help="fgw = s1; fgw_shape0 = the s2 of docs/S2_RULES.md (E7.5's geometry)")
