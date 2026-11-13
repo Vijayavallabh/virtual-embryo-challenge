@@ -1,0 +1,8 @@
+run folder on the DGX: ~/v/vec-campaign-h7/runs/harness/h16_trend_mix (campaign checkout)
+commit: ff8c42d (campaign/heart-c)
+tree at start and at end: no tracked file changed; git status --porcelain lists two untracked files at both times, left in the checkout from the branch it held before (experiments/harness/n34_reflect_gate.py and tests/test_fgw_reflect.py of round6/e30-reflect), which this run does not import
+started UTC: 2026-11-13T19:10:49Z
+ended UTC: 2026-11-13T19:17:37Z
+CPU only, 16 BLAS threads, one process per backtest
+decisions_*: base b0_trend, recomputed on this machine from the task files and registered
+the reference candidates (floor,copy,b0,b0_trend) reproduce their committed scores of experiments/harness/results/trend_heart_v1/tasks to 1e-6, seed for seed
