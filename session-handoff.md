@@ -50,7 +50,8 @@
       copy of the reference set (`runs/archive/builds_fd2683a/`) and of the T3 run folder
       (`runs/t3_decomp/gata4_20261028T122425Z/`), owner-only. The client's build-stamp guard and local format check
       pass on all ten copies (nothing sent), so an upload can go from the copy if the DGX is down, at the captain's
-      word (`docs/P3_RUNBOOK.md`, "A copy off the DGX").
+      word (`docs/P3_RUNBOOK.md`, "A copy off the DGX"). Every file also builds here now: seven of ten byte-identical
+      to the DGX's, the three T3 factor files with a few cells drawn differently (3, 84 and 14 cells).
 
 ## Completed Earlier (2026-10-27 to 2026-10-28)
 
@@ -126,8 +127,8 @@
   question. The next screened check is on 26-27 Nov; one follow-up in the Slack thread may be drafted about 19 Nov.
 - 2026-11-13: a ruling that changes a build is needed by about 24 Nov (a T3 builder change takes about a day, then
   a dry build and the rebuild rehearsal). A rendered embryo file reproduces only at the build's 16 BLAS threads.
-- 2026-11-13: only DGX hashes check DGX builds. T3's refused s1 with the factor has other bytes on the local machine
-  (as T1's s1 had until that day), so a change of the DGX's numerical libraries or processor before 27 Nov would show
+- 2026-11-13: only DGX hashes check DGX builds. The three T3 files that apply a per-gene factor have other bytes on
+  the local machine (as T1's s1 had until that day), so a change of the DGX's numerical libraries or processor before 27 Nov would show
   as a mismatch on the freeze morning; a file that differs is not uploaded until the captain has the explanation.
 - 2026-11-13: the DGX's default folders `runs/builds` and `runs/t3_build` hold older files with clean stamps (T1's
   two date from 2026-11-04). Uploads are pulled only from the folder the freeze-morning command builds

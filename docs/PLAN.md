@@ -2719,7 +2719,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     SkylakeX kernel. Ten of the pool's 23,377 cells get another neighbour set and three another smoothed profile, and
     the Poisson top-up of the genes with a factor above 1, which draws from that profile, then draws differently for
     the 84 cells. Neither file is wrong: they are two draws of one construction. T1's s1 as built until today
-    differed between the machines in the same way (entry (d)); the new one does not.
+    also differed between the machines (entry (d)); the new one does not.
+  - **All ten files across the two machines.** The five files never built on the local machine were built there
+    the same day (the heart files and the three T3 files that read the run folder; exit code 0 each). Seven of the
+    ten files are byte-identical on both machines: T1's two, the embryo's two, the heart's two and T3's barred s2.
+    The three T3 files that apply a per-gene factor come out with a few cells drawn differently: allowed s1 (3
+    cells), refused s1 with the factor (84) and barred s1 (14).
   - **What follows from it.** Only a hash made on the DGX can check a file built on the DGX, and the uploads are built
     there. A change of the DGX's numerical libraries or processor before 27 Nov would show as a mismatch on the freeze
     morning, in this file or in T3's first-choice file, which uses the same smoothing (it reproduces its archive of

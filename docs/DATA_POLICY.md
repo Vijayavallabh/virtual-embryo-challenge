@@ -994,6 +994,9 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     aggregates of the two released Gata4 replicates, which this machine has held under `data/` since 2026-11-12. The
     copies were checked by sha256 only. The client's build-stamp guard and local format check were run on them as
     local logic (no token read, no server call); their output was read as pass or fail, with no cell count.
+  - **Five check builds on the local machine** (the heart files and three T3 files; target-free, never uploaded;
+    `runs/builds_check_local/rehearsal_fd2683a/local/`). Read: exit codes, sha256 and the stamps' commit and clean
+    fields. Two of them were compared with the DGX's files by the number of cells and entries that differ.
   - **A listing of file names** in the DGX's `runs/t3_build` showed October's practice-board smoke files, one of
     which carries its cell number in its name. It is a practice build's figure, made before the test-board specs
     were taken in, and it is quoted nowhere.

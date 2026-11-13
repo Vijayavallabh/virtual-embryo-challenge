@@ -19,7 +19,9 @@ After a side agent's note that the captain forwarded (the verified files existed
 now holds a checked copy of the reference set (`runs/archive/builds_fd2683a/`, ten of ten OK) and of the T3 run
 folder (`runs/t3_decomp/gata4_20261028T122425Z/`, identical file by file), both owner-only. The client's build-stamp
 guard and local format check pass on all ten copies (local logic; nothing sent), so the same bytes can go from here
-if the DGX is down, at the captain's word. No server format check was sent. The estimate (184), the gate and the
+if the DGX is down, at the captain's word. With the run folder here, every file also builds on this machine: seven
+of the ten come out byte-identical to the DGX's, and the three T3 files that apply a per-gene factor with a few cells
+drawn differently (allowed s1 3 cells, refused s1 84, barred s1 14). No server format check was sent. The estimate (184), the gate and the
 tries are unchanged.
 **2026-11-13, the captain's rulings (decision log 2026-11-13 (d)): three entries changed; nothing is uploaded.** Asked
 about each rule with its numbers, the captain chose the run-corrected file for the embryo's second upload ("Run-
@@ -882,10 +884,10 @@ headroom tables in `experiments/harness/TRIES.md`):
 
 - [x] 2026-11-13: the freeze-morning reference hashes did not exist for the entries as amended. Resolved the same day:
       the DGX rehearsal at fd2683a made `runs/archive/builds_fd2683a/SHA256SUMS` (decision log 2026-11-13 (e)).
-- [ ] 2026-11-13: T3's refused s1 with the factor is byte-reproducible on one machine and not across machines (the
-      draws of 84 cells; a nearest-neighbour step follows the BLAS kernel), as T1's s1 was until that day. If the DGX's
-      numerical libraries or processor change before 27 Nov, the freeze-morning check would name that file, or T3's
-      first-choice file, which uses the same step. Such a file is not uploaded until the difference is explained to
+- [ ] 2026-11-13: the three T3 files that apply a per-gene factor (allowed s1, refused s1, barred s1) are
+      byte-reproducible on one machine and not across machines (the draws of 3, 84 and 14 cells; a nearest-neighbour
+      step follows the BLAS kernel), as T1's s1 was until that day. If the DGX's numerical libraries or processor
+      change before 27 Nov, the freeze-morning check would name those files. Such a file is not uploaded until the difference is explained to
       the captain (`docs/P3_RUNBOOK.md`, "The freeze-morning rebuild").
 - [ ] 2026-11-13: the DGX's default folders `runs/builds` and `runs/t3_build` hold older files with clean stamps (T1's
       two there date from 2026-11-04). The client's stamp guard accepts a clean build at an ancestor commit, so only

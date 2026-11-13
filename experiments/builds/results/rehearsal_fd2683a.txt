@@ -88,3 +88,21 @@ runs/archive/builds_fd2683a/<file> --board KEY`, without --from-dgx, would take 
 client does not ask for the DGX's state. No server call was made to try it.
 Server format checks in the ledger for these bytes (results/submissions.csv): heart s1 and s2, embryo s1, T3 allowed
 s1, barred s1 and barred s2 passed on 2026-11-04; T1 s1, T1 s2, embryo s2 and T3 refused s1 have none.
+== local rebuilds of the five files never built on this machine (the same day, at 851521f, a clean tree)
+The two heart files and the three T3 files that read the run folder, with build_all.sh's commands at 16 BLAS threads
+and the default seed, into runs/builds_check_local/rehearsal_fd2683a/local/ (never uploaded). All five builds ended
+with exit code 0 and a clean stamp, so the copied run folder is enough to build every T3 file here.
+e73d0396364806514c4acf1aa522e5923e395d610c4b0c3bb85112a89ef84355  T2heart_s1.h5ad   = the DGX's
+5a309434d4a2e66d7b3b838a9a0b23d7c1cd0bc49daec238cf87e194df158190  T2heart_s2.h5ad   = the DGX's
+1b69521e3c28bc84185410e838efc6fcbcff898434e73f9a7547208a4c82711f  barred_s2.h5ad    = the DGX's
+629111b5dff77ffa992f284f6961fe71fe423a0ad18648e5d40c7cf88cda4966  allowed_s1.h5ad   differs (the DGX's: 3d6c94a9...)
+293faf38352062af7f6c0df97599818a196635134a6ecb876a6e8ed49edc5ac8  barred_s1.h5ad    differs (the DGX's: 3712c3f9...)
+Each differing file holds the same cells in the same order with the same names and coordinates as the DGX's; the
+expression of 3 cells differs in allowed s1 (166 entries) and of 14 cells in barred s1 (1,046 entries).
+== the ten files across the two machines, from all the builds on record
+Byte-identical on both (7): T1 s1, T1 s2, embryo s1, embryo s2, heart s1, heart s2, T3 barred s2.
+A few cells drawn differently (3): T3 allowed s1 (3 cells), T3 refused s1 with the factor (84 cells), T3 barred s1
+(14 cells). These are the three files that apply a per-gene factor through the smoothed profiles described above.
+(The local T1 s2 and embryo s1 builds are those of experiments/builds/results/rulings_9cf5ca5.txt.)
+So a rebuild on the local machine would give seven of the ten reference hashes and three near-identical T3 files
+with other hashes. The checked copy of the DGX's own files, above, is what stands in for the DGX.

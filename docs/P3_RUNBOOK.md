@@ -305,8 +305,8 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     files twice from empty folders. The two sets are byte-identical, every stamp is clean, every file passed `vec
     check`, and the seven files whose commands did not change equal the archive of f337dc6. The reference for the
     freeze morning is `runs/archive/builds_fd2683a/SHA256SUMS` on the DGX. A hash made on another machine cannot stand
-    in for it: T3's refused s1 with the factor has other bytes on the local machine (the draws of 84 cells, through
-    the BLAS kernel's effect on a nearest-neighbour step), as T1's s1 had until 2026-11-13.
+    in for it: the three T3 files that apply a per-gene factor have other bytes on the local machine (the draws of a
+    few cells, through the BLAS kernel's effect on a nearest-neighbour step), as T1's s1 had until 2026-11-13.
   - **The freeze-morning rebuild.** On the DGX, synced to the freeze commit with no build running there and a clean
     tree: `bash experiments/builds/determinism_check.sh runs/archive/builds_fd2683a/SHA256SUMS 16`. It builds the three
     sets into the fresh folder `runs/determinism_<HEAD>/t16/`, runs `vec check` on every file and compares every file
@@ -331,8 +331,10 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     runs/archive/builds_fd2683a/builds/T1_s1.h5ad --board T1:test ...` without `--from-dgx`; the hash to confirm is
     the same, the ledger then names fd2683a as the build commit, and the client does not ask for the DGX's state. This
     skips the freeze-morning rebuild, so it is for an outage only. A rebuild on the local machine is a weaker
-    stand-in: T3's refused s1 comes out with other bytes there. If a build changes after 2026-11-13, copy and check
-    the new reference the same day.
+    stand-in: it gives seven of the ten reference files byte for byte, and the three T3 files that apply a per-gene
+    factor (allowed s1, refused s1, barred s1) with a few cells drawn differently (3, 84 and 14 cells), so with
+    hashes the disclosure email does not list. If a build changes after 2026-11-13, copy and check the new
+    reference the same day.
 - Update `ASSUMPTIONS.md` (A1, A2, A3, A13, A19) and `progress.md`. A1 is confirmed (2026-10-28).
 - **Disclosure ids for each official upload** (prepared 2026-11-05 by the AI assistant; the captain confirms them on
   the morning). The client refuses an official upload without `--disclose` ids from `EXTERNAL_DATA.md`. Rule used:
