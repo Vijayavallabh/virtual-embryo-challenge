@@ -418,7 +418,8 @@ PINS_AT_E709655 = {
     },
 }
 NEW_AT_E35 = ("fgw_aligned_trend",)  # registered by the edit of tries E35a and E35b
-NEW_AT_POLAR = ("fgw_polar", "fgw_aligned_polar_series")  # campaign/emb-polar (tests/test_emb_polar.py)
+NEW_AT_POLAR = ("fgw_polar", "fgw_aligned_polar_series",  # campaign/emb-polar (tests/test_emb_polar.py)
+                "fgw_polar_frame", "fgw_aligned_polar_frame_series")
 
 
 @pytest.fixture(scope="module")

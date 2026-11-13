@@ -1354,9 +1354,11 @@ MIDPOINT_KMEANS_SEED = 20261109  # the fixed random_state of the deterministic k
 MIDPOINT_STREAMS = (8, 9)  # random streams of the midpoint draw (before, after): not the interpolation's 0-5 or the
 # herd's and expression's 6 and 7
 # How a cell moves (campaign branch campaign/emb-polar; experiments/research_2026_11_runs/REPORT.md recipe R10): "mean"
-# (the entry: the mean displacement of its k nearest anchors) or "polar" (`polar_moves`: the anchors' local linear map
-# interpolated along its polar factors). No constant beyond the entry's k.
-MOVES = ("mean", "polar")
+# (the entry: the mean displacement of its k nearest anchors), "polar" (`polar_moves`: the anchors' local linear map
+# interpolated along its polar factors about the patch centroid, the centroid moving along the chord) or "polar_frame"
+# (`polar_moves(..., frame=True)`: the patch's whole affine map of the common frame, translation included,
+# interpolated along the same factors about the frame origin). No constant beyond the entry's k.
+MOVES = ("mean", "polar", "polar_frame")
 
 
 def pchip_rms(days, rms, target_day: float) -> float:
@@ -1536,7 +1538,7 @@ def _midpoint_draw(Eb: np.ndarray, Ea: np.ndarray, ib: np.ndarray, ia: np.ndarra
 
 
 def polar_moves(Z: np.ndarray, anchors: np.ndarray, shifts: np.ndarray, near: np.ndarray,
-                tau: float) -> tuple[np.ndarray, dict]:
+                tau: float, frame: bool = False) -> tuple[np.ndarray, dict]:
     """The polar move (`interpolate_clouds(..., moves="polar")`, recipe R10 of
     experiments/research_2026_11_runs/REPORT.md): every cell of one stage, at Z in the common frame, moved by the
     local linear map of its own nearest anchors instead of their mean displacement.
@@ -1549,6 +1551,12 @@ def polar_moves(Z: np.ndarray, anchors: np.ndarray, shifts: np.ndarray, near: np
         c(tau) + R(tau) ((1 - tau) I + tau S) (x - p),   c(tau) = p + tau (q - p),
     R(tau) the rotation about R's axis by tau times R's angle. Otherwise (a reflection, a degenerate patch, non-finite
     values) the cell keeps the entry's move x + tau mean(D), computed exactly as the entry computes it.
+
+    frame=True (`moves="polar_frame"`): the same patch, map, test, factors and R(tau), with the pivot as the one
+    difference. The patch's affine map of the common frame is x -> A x + b, b = q - A p, and the cell moves to
+        R(tau) ((1 - tau) I + tau S) x + tau b,
+    the same end point at tau = 1, the entry's move x + tau (q - p) with A = I. frame=False is the form above, bit for
+    bit.
 
     Returns the positions and the stage's record: the share of cells on the polar path, and over those cells the median
     rotation angle in degrees and the median ratio of S's largest to smallest eigenvalue (None without such a cell)."""
@@ -1585,7 +1593,11 @@ def polar_moves(Z: np.ndarray, anchors: np.ndarray, shifts: np.ndarray, near: np
     Rt = Rotation.from_rotvec(tau * rotvec).as_matrix()
     M = Rt @ ((1.0 - tau) * np.eye(3) + tau * S)
     po, qo = p[ok], q[ok]
-    pos[ok] = po + tau * (qo - po) + (M @ (Z[ok] - po)[:, :, None])[:, :, 0]
+    if frame:
+        b = qo - (A[ok] @ po[:, :, None])[:, :, 0]
+        pos[ok] = (M @ Z[ok][:, :, None])[:, :, 0] + tau * b
+    else:
+        pos[ok] = po + tau * (qo - po) + (M @ (Z[ok] - po)[:, :, None])[:, :, 0]
     rec["median_rotation_deg"] = float(np.median(np.degrees(np.linalg.norm(rotvec, axis=1))))
     rec["median_stretch_ratio"] = float(np.median(s[ok][:, 0] / s[ok][:, -1]))
     return pos, rec
@@ -1655,7 +1667,9 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     moves (campaign branch campaign/emb-polar; REPORT.md recipe R10): "mean" (default, the entry) moves each cell by the
     mean displacement of its k nearest anchors as in step 3. "polar" moves it by those anchors' least-squares local
     linear map, interpolated along its polar factors (`polar_moves`: rotation by tau times its angle, stretch linearly),
-    where the map is a proper, full-rank, finite one, and by the entry's move elsewhere; tau is the entry's fraction
+    where the map is a proper, full-rank, finite one, and by the entry's move elsewhere; "polar_frame" interpolates the
+    patch's whole affine map of the common frame, translation included (`polar_moves(..., frame=True)`), with the same
+    test and fallback; tau is the entry's fraction
     (t_pos for a before cell, 1 - t_pos for an after cell). Anchors, coupling, rotation, draws, streams, scaling and
     jitter are unchanged; the record gains "moves" and "polar" (per stage: the share of cells on the polar path, the
     median rotation angle in degrees and the median ratio of the stretch's largest to smallest eigenvalue over them).
@@ -1710,8 +1724,9 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     pos_a = Za_b + (1.0 - tp) * da[near_a].mean(1)
     polar_rec = None
     if moves != MOVES[0]:
-        pos_b, rec_b = polar_moves(Zb, Zb[ib], db, near_b, tp)
-        pos_a, rec_a = polar_moves(Za_b, Za_b[ia], da, near_a, 1.0 - tp)
+        frame = moves == "polar_frame"
+        pos_b, rec_b = polar_moves(Zb, Zb[ib], db, near_b, tp, frame=frame)
+        pos_a, rec_a = polar_moves(Za_b, Za_b[ia], da, near_a, 1.0 - tp, frame=frame)
         polar_rec = {key: [rec_b[key], rec_a[key]] for key in rec_b}
     n_b = int(round((1.0 - tm) * n))
     n_a = n - n_b

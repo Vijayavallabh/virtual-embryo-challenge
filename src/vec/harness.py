@@ -1054,8 +1054,9 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     local_perm (try E15): after the draw, the positions are re-arranged among the drawn cells within coarse type and a
     fixed radius (vec.t2_build.local_type_permutation); the expression rows stay where they are. draw: "uniform" (the
     entry) or "midpoint" (try E13, vec.t2_build._midpoint_draw; it needs the inputs' counts layer). moves: "mean" (the
-    entry) or "polar" (campaign branch campaign/emb-polar: vec.t2_build.polar_moves, each cell moved by its anchors'
-    local linear map interpolated along its polar factors)."""
+    entry), "polar" (campaign branch campaign/emb-polar: vec.t2_build.polar_moves, each cell moved by its anchors'
+    local linear map interpolated along its polar factors about the patch centroid) or "polar_frame" (the patch's whole
+    affine map of the common frame, translation included, interpolated along the same factors)."""
     t = ctx.task
     before, after = ctx.inputs["before"], ctx.inputs["after"]
     lo, hi = t.role_days["before"], t.role_days["after"]
@@ -1233,6 +1234,19 @@ def _fgw_aligned_polar_series(ctx: BuildContext) -> Stage:
     """Campaign arm (branch campaign/emb-polar): the second upload as built (fgw_aligned_series) with the polar
     move."""
     return _fgw(ctx, move_coupling="aligned", expression="series", moves="polar")
+
+
+def _fgw_polar_frame(ctx: BuildContext) -> Stage:
+    """Campaign arm (branch campaign/emb-polar, fix C2): the entry with the polar move in its frame form (the patch's
+    whole affine map interpolated, translation included; vec.t2_build.polar_moves with frame=True). No constant is
+    new."""
+    return _fgw(ctx, moves="polar_frame")
+
+
+def _fgw_aligned_polar_frame_series(ctx: BuildContext) -> Stage:
+    """Campaign arm (branch campaign/emb-polar, fix C2): the second upload as built (fgw_aligned_series) with the
+    polar move in its frame form."""
+    return _fgw(ctx, move_coupling="aligned", expression="series", moves="polar_frame")
 
 
 def _fgw_aligned_hi(ctx: BuildContext) -> Stage:
@@ -1733,6 +1747,19 @@ CANDIDATES = {
                                                    "polar move", "moves": "polar", "rule": t2_build.SERIES_RULE,
                                            "alpha": t2_build.INTERP_ALPHA, "k": t2_build.INTERP_K, "scope": "whole"},
                                           requires=_series_applies),
+    "fgw_polar_frame": Candidate("fgw_polar_frame", frozenset({"T2"}), (), _fgw_polar_frame,
+                                 {"what": "fgw_polar with the patch's whole affine map of the common frame "
+                                          "(translation included) interpolated along its polar factors, instead of "
+                                          "the offset from the patch centroid", "moves": "polar_frame",
+                                  "alpha": t2_build.INTERP_ALPHA, "k": t2_build.INTERP_K, "scope": "whole"},
+                                 requires=_interp),
+    "fgw_aligned_polar_frame_series": Candidate("fgw_aligned_polar_frame_series", frozenset({"T2"}), (),
+                                                _fgw_aligned_polar_frame_series,
+                                                {"what": "fgw_aligned_series (the second upload as built) with "
+                                                         "fgw_polar_frame's move", "moves": "polar_frame",
+                                                 "rule": t2_build.SERIES_RULE, "alpha": t2_build.INTERP_ALPHA,
+                                                 "k": t2_build.INTERP_K, "scope": "whole"},
+                                                requires=_series_applies),
     "fgw_aligned_hi": Candidate("fgw_aligned_hi", frozenset({"T2"}), (), _fgw_aligned_hi,
                                 {"what": "fgw_aligned (try E10's aligned moves) with every cell at the deeper "
                                          "bracket's depth: a top-up-only file at the aligned positions",

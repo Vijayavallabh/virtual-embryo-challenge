@@ -8,16 +8,19 @@ the mean displacement of its 8 nearest anchors; the polar move replaces that tra
 linear map, interpolated along its polar factors (vec.t2_build.polar_moves). No constant is new.
 
 Arms:
-  fgw_polar                 the entry with the polar move on FGW's own partners
-  fgw_aligned_polar_series  the second upload as built (fgw_aligned_series) with the polar move
+  fgw_polar                       the entry with the polar move on FGW's own partners
+  fgw_aligned_polar_series        the second upload as built (fgw_aligned_series) with the polar move
+  fgw_polar_frame                 the entry with the polar move in its frame form (fix C2: the patch's whole affine
+                                  map of the common frame interpolated, translation included)
+  fgw_aligned_polar_frame_series  the second upload as built with the frame form
 
 Tasks: the nine of experiments/harness/nine_tasks.py (half, late, new1, new2, e75, e725, x1, x2, x3), each with exactly
-the inputs nine_tasks.all_tasks() gives it, 10 seeds (vec.adoption.SEEDS). Only the floor and the two arms are scored;
+the inputs nine_tasks.all_tasks() gives it, 10 seeds (vec.adoption.SEEDS). Only the floor and the four arms are scored;
 fgw and fgw_aligned_series are NOT rescored. The task file is the harness's own result (vec.harness.run_task, which
 records the commit and the tree state), so nine_tasks._load reads it. This script reads nothing: the reading is a
 separate script on main, registered in the ledger row by the main session.
 
-  run   --task NAME --out DIR   score the floor and the two arms on ONE task; start the nine together so that they
+  run   --task NAME --out DIR   score the floor and the four arms on ONE task; start the nine together so that they
                                 record one commit; refuses an existing task file
 """
 
@@ -36,7 +39,7 @@ import series_world as sw  # noqa: E402
 from vec import harness  # noqa: E402
 from vec.adoption import SEEDS  # noqa: E402
 
-NEW = ("fgw_polar", "fgw_aligned_polar_series")
+NEW = ("fgw_polar", "fgw_aligned_polar_series", "fgw_polar_frame", "fgw_aligned_polar_frame_series")
 ARMS = (harness.FLOOR, *NEW)
 NOT_RESCORED = ("fgw", nt.RA)
 

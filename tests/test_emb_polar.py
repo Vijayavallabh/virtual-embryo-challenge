@@ -27,6 +27,7 @@ from vec.core import nearest_anchors
 REPO = Path(__file__).resolve().parents[1]
 HARNESS = REPO / "experiments" / "harness"
 BASE = "51b0672"  # campaign/emb-trend2, the branch's base
+POLAR_AT = "b0751f6"  # the commit that built moves="polar" (fix C2 adds "polar_frame" and must leave "polar" as is)
 K = tb.INTERP_K
 
 
@@ -56,17 +57,17 @@ KW = dict(seed=1, target_rms=10.0, n_anchor=200)
 
 
 # ------------------------------------------------------------------------------------------ 1. moves unset
-def _base_module(tmp_path: Path):
-    """vec.t2_build as it stands on the base commit, loaded from git (read-only)."""
+def _base_module(tmp_path: Path, commit: str = BASE):
+    """vec.t2_build as it stands on a commit (default the base), loaded from git (read-only)."""
     env = {**os.environ, "GIT_OPTIONAL_LOCKS": "0"}
     try:
-        src = subprocess.run(["git", "show", f"{BASE}:src/vec/t2_build.py"], cwd=REPO, env=env, check=True,
+        src = subprocess.run(["git", "show", f"{commit}:src/vec/t2_build.py"], cwd=REPO, env=env, check=True,
                              capture_output=True, text=True).stdout
     except (OSError, subprocess.CalledProcessError):
-        pytest.skip(f"the base commit {BASE} is not reachable here")
-    path = tmp_path / "t2_build_base.py"
+        pytest.skip(f"the commit {commit} is not reachable here")
+    path = tmp_path / f"t2_build_{commit}.py"
     path.write_text(src)
-    spec = importlib.util.spec_from_file_location("t2_build_base", path)
+    spec = importlib.util.spec_from_file_location(f"t2_build_{commit}", path)
     mod = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = mod
     spec.loader.exec_module(mod)
@@ -240,8 +241,9 @@ def n41():
     return mod
 
 
-def test_the_runner_scores_the_floor_and_the_two_arms_on_the_nine_tasks(n41):
-    assert n41.ARMS == (harness.FLOOR, "fgw_polar", "fgw_aligned_polar_series")
+def test_the_runner_scores_the_floor_and_the_four_arms_on_the_nine_tasks(n41):
+    assert n41.ARMS == (harness.FLOOR, "fgw_polar", "fgw_aligned_polar_series", "fgw_polar_frame",
+                        "fgw_aligned_polar_frame_series")
     assert not set(n41.ARMS) & {"fgw", "fgw_aligned_series"}  # never rescored
     tasks = n41.nt.all_tasks()
     assert set(tasks) == {"half", "late", "new1", "new2", "e75", "e725", "x1", "x2", "x3"}
@@ -285,7 +287,9 @@ def emb_expr():
     return mod
 
 
-@pytest.mark.parametrize("arm, base", [("fgw_polar", "fgw"), ("fgw_aligned_polar_series", "fgw_aligned_series")])
+@pytest.mark.parametrize("arm, base", [("fgw_polar", "fgw"), ("fgw_aligned_polar_series", "fgw_aligned_series"),
+                                       ("fgw_polar_frame", "fgw"),
+                                       ("fgw_aligned_polar_frame_series", "fgw_aligned_series")])
 def test_the_arms_build_on_a_synthetic_embryo_and_move_only_the_positions(emb_expr, arm, base):
     s = emb_expr.stages()
     c = emb_expr.ctx(inputs=s, roles=("before", "after"))
@@ -293,3 +297,167 @@ def test_the_arms_build_on_a_synthetic_embryo_and_move_only_the_positions(emb_ex
     assert emb_expr.digest(a) == emb_expr.digest(again)  # same seed, same output
     assert np.array_equal(a.X, b.X)  # the same draws and expression
     assert not np.array_equal(a.coords, b.coords) and np.isfinite(a.coords).all()
+
+
+# ================================================================================ fix C2: moves="polar_frame"
+def _framed(A: np.ndarray, D: np.ndarray, tau: float, k: int = K):
+    """The move step on cloud A with displacements D (identity pairing, every cell an anchor): the frame form, its
+    record, the centroid form and the entry's move."""
+    near = nearest_anchors(A, A, k)[1]
+    pos, rec = tb.polar_moves(A, A, D, near, tau, frame=True)
+    cen, _ = tb.polar_moves(A, A, D, near, tau)
+    return pos, rec, cen, A + tau * D[near].mean(1)
+
+
+# ------------------------------------------------------------------------------------------ C2 1. polar is pinned
+@pytest.mark.parametrize("move_coupling", tb.MOVE_COUPLINGS)
+def test_polar_is_bit_for_bit_what_b0751f6_gives(tmp_path, move_coupling):
+    A, B, E, EB = _pair()
+    old_mod = _base_module(tmp_path, POLAR_AT)
+    old = old_mod.interpolate_clouds(A, B, E, EB, 0.4, 300, move_coupling=move_coupling, moves="polar",
+                                     with_partners=True, **KW)
+    new = tb.interpolate_clouds(A, B, E, EB, 0.4, 300, move_coupling=move_coupling, moves="polar",
+                                with_partners=True, **KW)
+    _same(old, new)
+    assert np.array_equal(old.partners, new.partners)
+    rng = np.random.default_rng(11)
+    Z = rng.normal(size=(300, 3))
+    D = Z @ (_rot_z(0.8) @ np.diag([1.3, 1.0, 0.8])).T - Z + rng.normal(scale=0.05, size=Z.shape)
+    near = nearest_anchors(Z, Z, K)[1]
+    po, ro = old_mod.polar_moves(Z, Z, D, near, 0.3)
+    pn, rn = tb.polar_moves(Z, Z, D, near, 0.3)
+    assert np.array_equal(po, pn) and ro == rn
+    # moves unset is still the entry (as of the base commit), and the frame form differs from both
+    entry = tb.interpolate_clouds(A, B, E, EB, 0.4, 300, move_coupling=move_coupling, with_partners=True, **KW)
+    _same(_base_module(tmp_path).interpolate_clouds(A, B, E, EB, 0.4, 300, move_coupling=move_coupling,
+                                                    with_partners=True, **KW), entry)
+    frame = tb.interpolate_clouds(A, B, E, EB, 0.4, 300, move_coupling=move_coupling, moves="polar_frame", **KW)
+    assert np.array_equal(frame.rows, entry.rows) and np.array_equal(frame.stage, entry.stage)
+    assert not np.array_equal(frame.coords, entry.coords) and not np.array_equal(frame.coords, new.coords)
+    assert frame.record["moves"] == "polar_frame" and set(frame.record["polar"]) == set(new.record["polar"])
+
+
+# ------------------------------------------------------------------------------------------ C2 2. a rigid rotation
+@pytest.mark.parametrize("n", [50, 400, 3000])
+def test_polar_frame_keeps_a_rigidly_rotated_cloud_at_every_size(n):
+    """A cloud centred on the frame origin and its copy rotated by 1.6 rad about the z axis through that centre,
+    identity pairing, t = 1/2: every patch has A = R and b = 0, so every cell moves on its arc. The RMS radius is kept
+    to 1e-9 at every size; the entry shrinks it by about cos(angle / 2) (0.70; the entry's ratio is 0.75 at 50 cells
+    and 0.72 at 3000, approaching it from above, hence the 0.06 tolerance)."""
+    rng = np.random.default_rng(n)
+    angle = 1.6
+    A = rng.normal(size=(n, 3)) * [3.0, 3.0, 1.0]
+    A -= A.mean(0)
+    pos, rec, _, entry = _framed(A, A @ _rot_z(angle).T - A, 0.5)
+    r0 = tb.rms_radius(A)
+    assert tb.rms_radius(pos) / r0 == pytest.approx(1.0, abs=1e-9)
+    assert np.abs(pos - A @ _rot_z(angle / 2).T).max() < 1e-8
+    assert tb.rms_radius(entry) / r0 == pytest.approx(np.cos(angle / 2), abs=0.06)
+    assert rec["share"] == 1.0 and rec["median_rotation_deg"] == pytest.approx(np.degrees(angle), abs=1e-6)
+    assert rec["median_stretch_ratio"] == pytest.approx(1.0, abs=1e-9)
+
+
+# ------------------------------------------------------------------------------------------ C2 3. a rotating part
+def test_polar_frame_keeps_a_part_that_rotates_about_its_own_centre():
+    """A part (1000 cells about (40, 0, 0)) rotates by 1.6 rad about its own centroid while the rest (1000 cells about
+    the origin, far from it) stays, identity pairing, t = 1/2. Each of the part's patches has A = R and
+    b = c - R c, so the offsets from the part's interpolated centre rotate rigidly: the part's RMS size about its own
+    centroid is kept to 1e-9 (tolerance stated here) and the entry shrinks it by about cos(angle / 2). The rest keeps
+    its place."""
+    rng = np.random.default_rng(7)
+    angle = 1.6
+    part = rng.normal(size=(1000, 3)) * [3.0, 3.0, 1.0] + [40.0, 0.0, 0.0]
+    rest = rng.normal(size=(1000, 3)) * [3.0, 3.0, 1.0]
+    c = part.mean(0)
+    Z = np.vstack([part, rest])
+    D = np.vstack([(part - c) @ _rot_z(angle).T + c - part, np.zeros_like(rest)])
+    pos, rec, _, entry = _framed(Z, D, 0.5)
+    r0 = tb.rms_radius(part)
+    assert tb.rms_radius(pos[:1000]) / r0 == pytest.approx(1.0, abs=1e-9)
+    assert tb.rms_radius(entry[:1000]) / r0 == pytest.approx(np.cos(angle / 2), abs=0.05)
+    assert np.allclose(pos[1000:], rest, rtol=0, atol=1e-9)
+    assert rec["share"] == 1.0
+
+
+# ------------------------------------------------------------------------------------------ C2 4. a pure stretch
+def test_polar_frame_on_a_pure_stretch_is_the_linear_interpolation():
+    rng = np.random.default_rng(2)
+    A = rng.normal(size=(300, 3))
+    S = np.diag([2.0, 1.0, 0.5])
+    for tau in (0.3, 0.5, 1.0):
+        pos, rec, cen, entry = _framed(A, A @ S.T - A, tau)
+        assert np.allclose(pos, (1 - tau) * A + tau * A @ S.T, rtol=0, atol=1e-9)
+        assert np.allclose(pos, cen, rtol=0, atol=1e-9)  # b = 0 here: the two forms agree
+        assert rec["share"] == 1.0 and rec["median_stretch_ratio"] == pytest.approx(4.0, rel=1e-9)
+        assert not np.allclose(pos, entry)
+
+
+def test_polar_frame_ends_where_polar_ends():
+    rng = np.random.default_rng(12)
+    Z = rng.normal(size=(300, 3))
+    D = Z @ (_rot_z(0.8) @ np.diag([1.3, 1.0, 0.8])).T - Z + rng.normal(scale=0.05, size=Z.shape) + 2.0
+    pos, _, cen, _ = _framed(Z, D, 1.0)
+    assert np.allclose(pos, cen, rtol=0, atol=1e-9)
+
+
+# ------------------------------------------------------------------------------------------ C2 5. mirror, degenerate
+def test_polar_frame_keeps_the_entrys_move_on_mirrored_and_degenerate_patches():
+    rng = np.random.default_rng(4)
+    A = rng.normal(size=(300, 3))
+    pos, rec, _, entry = _framed(A, A @ np.diag([1.0, 1.0, -1.0]).T - A, 0.5)
+    assert np.array_equal(pos, entry) and rec["share"] == 0.0
+    assert rec["median_rotation_deg"] is None and rec["median_stretch_ratio"] is None
+    flat = np.c_[rng.normal(size=(200, 2)), np.zeros(200)]  # coplanar anchors
+    pos, rec, _, entry = _framed(flat, flat @ _rot_z(0.7).T - flat, 0.5)
+    assert rec["share"] == 0.0 and np.isfinite(pos).all() and np.array_equal(pos, entry)
+    rep = np.repeat(rng.normal(size=(3, 3)), 10, axis=0)  # repeated anchors
+    cells = rng.normal(size=(50, 3))
+    D = rng.normal(size=rep.shape)
+    near = nearest_anchors(cells, rep, K)[1]
+    pos, rec = tb.polar_moves(cells, rep, D, near, 0.5, frame=True)
+    assert rec["share"] == 0.0 and np.array_equal(pos, cells + 0.5 * D[near].mean(1))
+    B = rng.normal(size=(200, 3))
+    D = B @ _rot_z(0.4).T - B
+    D[7] = np.inf
+    near = nearest_anchors(B, B, K)[1]
+    pos, rec = tb.polar_moves(B, B, D, near, 0.5, frame=True)
+    hit = (near == 7).any(1)
+    assert np.array_equal(pos[hit], (B + 0.5 * D[near].mean(1))[hit]) and np.isfinite(pos[~hit]).all()
+
+
+# ------------------------------------------------------------------------------------------ C2 6. a pure translation
+def test_polar_frame_with_the_identity_map_is_the_entrys_move():
+    rng = np.random.default_rng(0)
+    A = rng.normal(size=(200, 3)) + 5.0
+    D = np.broadcast_to(np.array([0.7, -1.2, 0.3]), A.shape).copy()
+    pos, rec, _, entry = _framed(A, D, 0.35)
+    assert rec["share"] == 1.0 and rec["median_rotation_deg"] == pytest.approx(0.0, abs=1e-6)
+    assert np.allclose(pos, entry, rtol=0, atol=1e-12)
+
+
+# ------------------------------------------------------------------------------------------ C2 7. reproducible
+def test_polar_frame_is_reproducible_and_records_its_shares():
+    A, B, E, EB = _pair()
+    a = tb.interpolate_clouds(A, B, E, EB, 0.5, 300, moves="polar_frame", **KW)
+    b = tb.interpolate_clouds(A, B, E, EB, 0.5, 300, moves="polar_frame", **KW)
+    _same(a, b)
+    rec = a.record["polar"]
+    assert a.record["moves"] == "polar_frame" and set(rec) == {"share", "median_rotation_deg", "median_stretch_ratio"}
+    assert all(len(v) == 2 for v in rec.values()) and all(0.0 <= s <= 1.0 for s in rec["share"])
+    assert tb.rms_radius(a.coords) == pytest.approx(10.0)
+    other = tb.interpolate_clouds(A, B, E, EB, 0.5, 300, moves="polar_frame", **{**KW, "seed": 2})
+    assert not np.array_equal(a.coords, other.coords)
+
+
+def test_the_two_frame_arms_are_registered_for_t2_and_call_fgw_with_the_frame_move(monkeypatch):
+    seen = {}
+    monkeypatch.setattr(harness, "_fgw", lambda ctx, **kw: seen.setdefault(ctx, kw))
+    for name, kw in (("fgw_polar_frame", {"moves": "polar_frame"}),
+                     ("fgw_aligned_polar_frame_series", {"move_coupling": "aligned", "expression": "series",
+                                                         "moves": "polar_frame"})):
+        c = harness.CANDIDATES[name]
+        assert c.tasks == frozenset({"T2"}) and c.name == name and c.params["moves"] == "polar_frame"
+        assert c.build(name) == kw
+    assert harness.CANDIDATES["fgw_polar_frame"].requires is harness.CANDIDATES["fgw"].requires
+    assert harness.CANDIDATES["fgw_aligned_polar_frame_series"].requires is \
+        harness.CANDIDATES["fgw_aligned_series"].requires
