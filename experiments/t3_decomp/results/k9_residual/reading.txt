@@ -1,0 +1,40 @@
+Tries K9a-K9b (commit 30ede1f6da098ec3bbefc9e3ea2278d4f1131797): SUPPORTED: a priced request may go to the captain
+A labelled reading for a ruling, NOT the adoption rule: only x1 and x2 are counted cross-knockout folds; r12 is a replicate fold that never counts; x2's reference is WT E9.5, where K7 found reverts flattered.
+Checks: x1: raw_res - raw yes; x1: raw_res - raw_res_perm yes; r12: raw_res - raw yes; r12: raw_res - raw_res_perm yes; x2: raw_res - raw not below -0.3 yes
+Reported, deciding nothing:
+x1 T3/Mab21l2->Gata4rep2 (counted cross-knockout fold): floor 50.00, raw 46.47, raw_res 47.30, raw_res_perm 46.69
+    raw_res - raw: +0.83 (sd 1.76, ahead 9 of 10)  passes
+    raw_res - raw_res_perm: +0.62 (sd 2.85, ahead 9 of 10)  passes
+    raw_res_perm - raw: +0.21 (sd 1.93, ahead 2 of 10)
+    raw - floor: -3.53 (sd 0.35, ahead 0 of 10)
+    raw_res - floor: -2.70 (sd 2.03, ahead 1 of 10)
+    floor         severity no_response 10
+    raw           severity r2_gate 10
+    raw_res       severity r2_gate 9, scored 1
+    raw_res_perm  severity r2_gate 9, scored 1
+    skills raw_res - raw: de_score -0.001, de_direction +0.004, severity_slope +0.023, mmd_u +0.010, variogram +0.009
+    cosine of log(phi_raw) with the weighted mean log(rho): -0.128 (above 0.8: the residual is more of what the factor already holds); groups with a per-group factor 12
+x2 T3/Gata4->Mab21l2 (counted cross-knockout fold): floor 50.00, raw 50.08, raw_res 49.80, raw_res_perm 54.75
+    raw_res - raw: -0.28 (sd 0.14, ahead 0 of 10)
+    raw_res - raw_res_perm: -4.94 (sd 2.28, ahead 0 of 10)
+    raw_res_perm - raw: +4.66 (sd 2.33, ahead 10 of 10)  passes
+    raw - floor: +0.08 (sd 0.47, ahead 5 of 10)
+    raw_res - floor: -0.20 (sd 0.53, ahead 4 of 10)
+    floor         severity no_response 10
+    raw           severity r2_gate 10
+    raw_res       severity r2_gate 10
+    raw_res_perm  severity r2_gate 2, scored 8
+    skills raw_res - raw: de_score -0.001, de_direction -0.004, severity_slope +0.000, mmd_u -0.009, variogram -0.005
+    cosine of log(phi_raw) with the weighted mean log(rho): 0.063 (above 0.8: the residual is more of what the factor already holds); groups with a per-group factor 10
+r12 T3/Gata4rep1->rep2 (replicate fold, never counted): floor 50.00, raw 63.86, raw_res 64.55, raw_res_perm 63.16
+    raw_res - raw: +0.68 (sd 0.38, ahead 10 of 10)  passes
+    raw_res - raw_res_perm: +1.38 (sd 0.59, ahead 10 of 10)  passes
+    raw_res_perm - raw: -0.70 (sd 0.48, ahead 0 of 10)
+    raw - floor: +13.86 (sd 0.60, ahead 10 of 10)  passes
+    raw_res - floor: +14.55 (sd 0.68, ahead 10 of 10)  passes
+    floor         severity no_response 10
+    raw           severity scored 10
+    raw_res       severity scored 10
+    raw_res_perm  severity scored 10
+    skills raw_res - raw: de_score +0.004, de_direction +0.016, severity_slope +0.002, mmd_u +0.008, variogram +0.002
+    cosine of log(phi_raw) with the weighted mean log(rho): 0.058 (above 0.8: the residual is more of what the factor already holds); groups with a per-group factor 12

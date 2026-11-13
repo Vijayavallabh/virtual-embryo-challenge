@@ -1,0 +1,227 @@
+{
+ "void": false,
+ "why": [],
+ "commit": "30ede1f6da098ec3bbefc9e3ea2278d4f1131797",
+ "tasks": {
+  "x1": {
+   "counted_fold": true,
+   "mean_score": {
+    "floor": 50.0,
+    "raw": 46.47338794948598,
+    "raw_res": 47.30101029773207,
+    "raw_res_perm": 46.6856958915282
+   },
+   "paired": {
+    "raw_res - raw": {
+     "mean": 0.8276223482460885,
+     "sd": 1.7577625457489514,
+     "ahead": 9,
+     "n": 10,
+     "passes": true
+    },
+    "raw_res - raw_res_perm": {
+     "mean": 0.6153144062038762,
+     "sd": 2.848163654342969,
+     "ahead": 9,
+     "n": 10,
+     "passes": true
+    },
+    "raw_res_perm - raw": {
+     "mean": 0.21230794204221226,
+     "sd": 1.9329068891349863,
+     "ahead": 2,
+     "n": 10,
+     "passes": false
+    },
+    "raw - floor": {
+     "mean": -3.5266120505140224,
+     "sd": 0.34584140910797123,
+     "ahead": 0,
+     "n": 10,
+     "passes": false
+    },
+    "raw_res - floor": {
+     "mean": -2.6989897022679337,
+     "sd": 2.030406509815018,
+     "ahead": 1,
+     "n": 10,
+     "passes": false
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "raw": {
+     "r2_gate": 10
+    },
+    "raw_res": {
+     "r2_gate": 9,
+     "scored": 1
+    },
+    "raw_res_perm": {
+     "r2_gate": 9,
+     "scored": 1
+    }
+   },
+   "skill_diff_raw_res_minus_raw": {
+    "de_score": -0.0009090878331574293,
+    "de_direction": 0.00352642182517367,
+    "severity_slope": 0.02318165893431572,
+    "mmd_u": 0.009854359728525552,
+    "variogram": 0.008617580938908614
+   },
+   "cosine_log_phi_raw_mean_log_rho": -0.1283390878916796,
+   "groups_with_a_factor": 12
+  },
+  "x2": {
+   "counted_fold": true,
+   "mean_score": {
+    "floor": 50.0,
+    "raw": 50.084296911174725,
+    "raw_res": 49.804772447539186,
+    "raw_res_perm": 54.74807234016614
+   },
+   "paired": {
+    "raw_res - raw": {
+     "mean": -0.2795244636355399,
+     "sd": 0.13888730933597973,
+     "ahead": 0,
+     "n": 10,
+     "passes": false
+    },
+    "raw_res - raw_res_perm": {
+     "mean": -4.943299892626958,
+     "sd": 2.284176994734977,
+     "ahead": 0,
+     "n": 10,
+     "passes": false
+    },
+    "raw_res_perm - raw": {
+     "mean": 4.663775428991418,
+     "sd": 2.3349269246454636,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "raw - floor": {
+     "mean": 0.08429691117472657,
+     "sd": 0.4690720345284868,
+     "ahead": 5,
+     "n": 10,
+     "passes": false
+    },
+    "raw_res - floor": {
+     "mean": -0.1952275524608133,
+     "sd": 0.5287899266708295,
+     "ahead": 4,
+     "n": 10,
+     "passes": false
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "raw": {
+     "r2_gate": 10
+    },
+    "raw_res": {
+     "r2_gate": 10
+    },
+    "raw_res_perm": {
+     "r2_gate": 2,
+     "scored": 8
+    }
+   },
+   "skill_diff_raw_res_minus_raw": {
+    "de_score": -0.0012276238296236252,
+    "de_direction": -0.003951669365440729,
+    "severity_slope": 0.0,
+    "mmd_u": -0.008638921255312954,
+    "variogram": -0.00502961994338223
+   },
+   "cosine_log_phi_raw_mean_log_rho": 0.06271477699761295,
+   "groups_with_a_factor": 10
+  },
+  "r12": {
+   "counted_fold": false,
+   "mean_score": {
+    "floor": 50.0,
+    "raw": 63.863084540451226,
+    "raw_res": 64.54553565355495,
+    "raw_res_perm": 63.163323350417365
+   },
+   "paired": {
+    "raw_res - raw": {
+     "mean": 0.6824511131037326,
+     "sd": 0.38440357294485217,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "raw_res - raw_res_perm": {
+     "mean": 1.382212303137586,
+     "sd": 0.5912161195969369,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "raw_res_perm - raw": {
+     "mean": -0.6997611900338534,
+     "sd": 0.4790739096754424,
+     "ahead": 0,
+     "n": 10,
+     "passes": false
+    },
+    "raw - floor": {
+     "mean": 13.863084540451217,
+     "sd": 0.5968677948354641,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "raw_res - floor": {
+     "mean": 14.545535653554946,
+     "sd": 0.6830576904976666,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "raw": {
+     "scored": 10
+    },
+    "raw_res": {
+     "scored": 10
+    },
+    "raw_res_perm": {
+     "scored": 10
+    }
+   },
+   "skill_diff_raw_res_minus_raw": {
+    "de_score": 0.0037119301412054384,
+    "de_direction": 0.016032422408936865,
+    "severity_slope": 0.002228955412807676,
+    "mmd_u": 0.00803075350853697,
+    "variogram": 0.002273715152689071
+   },
+   "cosine_log_phi_raw_mean_log_rho": 0.05845408261626812,
+   "groups_with_a_factor": 12
+  }
+ },
+ "checks": {
+  "x1: raw_res - raw": true,
+  "x1: raw_res - raw_res_perm": true,
+  "r12: raw_res - raw": true,
+  "r12: raw_res - raw_res_perm": true,
+  "x2: raw_res - raw not below -0.3": true
+ },
+ "k9a_supported": true,
+ "verdict": "SUPPORTED: a priced request may go to the captain",
+ "label": "A labelled reading for a ruling, NOT the adoption rule: only x1 and x2 are counted cross-knockout folds; r12 is a replicate fold that never counts; x2's reference is WT E9.5, where K7 found reverts flattered."
+}

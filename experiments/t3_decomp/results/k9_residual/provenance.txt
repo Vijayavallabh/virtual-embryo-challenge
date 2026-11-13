@@ -1,0 +1,10 @@
+run folder on the DGX: ~/v/vec-campaign/runs/harness/k9_residual (campaign checkout)
+commit: 30ede1f6da098ec3bbefc9e3ea2278d4f1131797 (branch campaign/k9)
+tree at start (bytes of git status --porcelain): 0
+tree at end (bytes): 0
+started UTC: 2026-11-13T17:32:51Z
+ended UTC: 2026-11-13T17:37:18Z
+CPU only, 8 BLAS threads, one process per fold
+commands: experiments/t3_decomp/k9_residual.py run --task x1|x2|r12 --out <runs>; then read --runs <runs> --out <reading>
+tasks/: the three task files as written by the run; reading.json and reading.txt: the fixed reading as the script wrote it
+validity: the raw arm on x2 is try K2a's build and reproduces its committed mean (50.08)
