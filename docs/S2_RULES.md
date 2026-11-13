@@ -1,5 +1,9 @@
 # s2 rules (pre-registration, frozen 2026-11-03)
 
+**Amended on 2026-11-13 by the captain's own say-so:** the last section, "Amendments of 2026-11-13", changes the embryo's
+s2, adds a factor to T3's second upload and records a change of T1's s1 that its s2 does not follow. Where that section
+and the text before it differ, that section holds; the text before it is kept as the record of 2026-11-03.
+
 Dates are local (IST) unless marked UTC.
 
 **Authorship.** The AI assistant wrote these rules under the captain's delegation of 2026-11-02 (`docs/PLAN.md`
@@ -295,3 +299,86 @@ screened check of mail, Slack and the Rules page. s1 is fixed whatever s2 scores
   uploaded entry is allowed by the rulings received, the captain asks the organisers before marking.
 - These choices beyond the runbook were made by the AI assistant under the delegation on 2026-11-03: the barred s1
   under a restriction, the full-bar switches, and the T3 unscored-s1 mark.
+
+## Amendments of 2026-11-13 (after the freeze; the captain's own say-so)
+
+Written by the AI assistant. The quoted words are the captain's, given in the main session on 2026-11-13 in answer to
+three questions that named each rule and gave its numbers (`docs/PLAN.md` decision log 2026-11-13 (d)). No test score
+existed: nothing had been uploaded. The rows are R4, R5 and R6 of `experiments/harness/TRIES.md`.
+
+### T2 embryo: s2 = `fgw_aligned_series`
+
+**The captain's words:** "Run-corrected file (Recommended)", the first of three options (this file; the plain depth
+top-up in E7.5's geometry; today's fgw_shape0), each offered with its numbers on nine practice tasks.
+
+`uv run python experiments/builds/build_test.py embryo --method fgw --move-coupling aligned --expression series --out runs/builds/T2embryo_s2.h5ad`
+
+- It replaces `--method fgw_shape0`. For the embryo, "as s1" now reads: s1's command plus `--move-coupling aligned
+  --expression series`.
+- **What it is.** fgw's draws, with E7.5's cells rendered into E8.0's per-gene detection profile and depth, and the
+  moves taken from the aligned coupling (`vec.t2_build.series_rendered_expression`; tries E24, E25, E28).
+- **Why.** E8.0, E8.25_late and E8.5 share one detection profile and E7.5 has its own (diagnostic N23), so fgw's
+  mixture is half wrong if E7.75 was measured like E8.0. As better of two against the pair of 2026-11-03, on nine
+  practice tasks: +6.69, +3.56, +3.42, +3.67, 0.00 and -3.09 where the target shares its deeper bracket's profile;
+  +0.86, -1.42 and 0.00 elsewhere. It is the outcome of the rules fixed before tries E24, E25 and E28.
+- **What it gives up.** On the two backtests the adoption rule counts it scores -1.42 (E7.5) and 0.00 (E7.25) against
+  the old pair: E7.5's shape hedge is gone. It enters by ruling, not by the adoption rule.
+
+### T3: the second upload also carries a wild-type-only factor
+
+**The captain's words:** "Yes, add it (Recommended)", to the question whether to reopen the ruling of 2026-11-01 for
+this file and add the per-cell-group correction built from wild-type samples only. The question gave both readings of
+tries K7 and K8, the risks and the cost.
+
+The command of the T3 section above with one more option:
+
+```bash
+uv run python experiments/t3_decomp/build_submission.py build experiments/t3_decomp/results/gata4/gata4_decisions.json \
+  --branch refused --submission s1 --wt data/raw/T2/E8.75.h5ad --run-dir runs/t3_decomp/gata4_20261028T122425Z \
+  --board T3:bcatenin --seed 1000001 --wt-revert --out runs/t3_build/refused_s1.h5ad
+```
+
+- **What it is.** The refused branch's s1 as before (wild-type E8.75 cells, the central composition at the Mab21l2
+  magnitude), with each drawn cell's counts then moved by its lineage group's per-gene factor at exponent 0.5. The
+  factor is WT E8.75's own deviation from a trend through the six other released wild-type stage files with the full
+  panel (tries K7b and K8b; the estimator is `experiments/t3_decomp/k7_wt_revert.py`).
+- **What it reads.** Released wild-type stage files only. No knockout file, no Gata4-derived number, nothing from the
+  decision file beyond what the refused s1 already takes. `rules.yaml` and `t3_decompose.py` are unchanged.
+- **How the ruling switches treat it.** Exactly as they treat the refused file. Its adoption was decided knowing tries
+  K7 and K8, which read Gata4 and Mab21l2 scores, so like the refused file's "no factor" it was chosen on those scores:
+  under a full bar it is not uploaded, or not marked final if already up. The ruling of 2026-11-06 (b) stands: an
+  organiser's "zero" on a floored severity still puts the barred s1 in this slot.
+- **Unchanged:** T3's first-choice file (the allowed branch's s1), the barred files, the order (this file goes first,
+  s1 last) and every switch above.
+- **Why.** On this file's own form the factor adds +4.72 and +7.12 on the two Gata4 replicates (tries K8; ahead in 19
+  of 20 seeds). **The risks the captain was given:** the gain is the scorer's severity gate cleared by a thin margin,
+  on one knockout run of another gene; the pre-set reading of tries K7 closed the factor by one comparison of nine.
+
+### T1: s1 is drawn from library 3's cells, and s2 does not follow it
+
+**The captain's words,** to the question whether to draw T1's first upload from E10.5's dissected-heart library alone,
+asked with the released-data facts and three options (decline, the default; switch only on an organiser's answer;
+switch on released data alone): "do whatever it takes to top the leaderboard".
+
+The AI assistant reads those words as leaving the direction to it, and decided to switch, from released data alone
+(row R6 has the reasons, fixed before any build). It holds no figure of the exposure of 2026-11-04.
+
+- **s1:** `uv run python experiments/builds/build_test.py t1 --g-mom --base lib3 --out runs/builds/T1_s1.h5ad`.
+  Library 3's cells (names ending in `_3`) at library 3's own chamber mix. The count, Feng's direction, R1, R2 and
+  the fit of R3b's factors on the whole of E10.5 are unchanged.
+- **s2 stays as built:** `uv run python experiments/builds/build_test.py t1 --g-mom --cm-share 0.60 --out
+  runs/builds/T1_s2.h5ad`, the pooled base. This departs from "as s1": the base option is not carried into s2. The
+  pair that try T30 priced keeps the second upload on the pooled base, so s2 now hedges the base as well as the
+  cardiomyocyte share.
+- **This is a depth choice in effect** (the drawn cells' median library rises by 27%), which `docs/DATA_POLICY.md`
+  2026-11-04 (f)(3) sends to the captain. It was sent; the direction was then decided by the party that holds none of
+  the exposed figures. The captain's go-ahead on the upload day is for uploading the planned file. A change of base
+  after 2026-11-13, in either direction, needs a reason that can be stated from released data, or an organiser's
+  answer read as `docs/ORGANIZER_QUESTIONS.md` ("Seventh email") fixes it.
+
+### Builds
+
+`experiments/builds/build_all.sh` builds these files: set s1 has T1 with `--base lib3`; set s2 has the embryo's new
+command and T3's refused s1 with `--wt-revert`. T1's s1 as built until 2026-11-13 came out with different bytes on
+the local machine and on the DGX, from the same code at 16 BLAS threads (`docs/PLAN.md` decision log 2026-11-13 (d)),
+so the reference hashes for the freeze-morning rebuild come from a rehearsal on the machine that builds the uploads.

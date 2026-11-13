@@ -2624,4 +2624,76 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **One more build of each of R-A's candidate files,** from the clean tree at 1f8956b: the same hashes as before.
     The record is `experiments/builds/results/determinism_1f8956b.txt` (four builds of option 1 and three of
     option 2, one sha256 each).
+- 2026-11-13 (d), the captain's rulings on the open items, in the captain's words, and what was built for them.
+  Written by the AI assistant. No upload was made and none is authorised by this entry; the upload gate, the
+  go-ahead for each upload, every data rule and the quarantine stand as they were.
+  - **The captain's words.** First, after the report of (c): "yes to the screened reads on 19 and 23 Nov and yes to
+    anything that would improve our chances to beat the top leaderboard score at all drastic costs". The AI assistant
+    then asked three questions, one per rule, each with its numbers (why: the cold review below). The answers:
+    - embryo, second upload (three options): "Run-corrected file (Recommended)";
+    - T3, second upload (reopen the ruling of 2026-11-01 and add the wild-type-only correction, or keep the frozen
+      file): "Yes, add it (Recommended)";
+    - T1, first upload on library 3's cells (decline, the default; switch only on an organiser's answer; switch on
+      released data alone): the captain typed, in place of an option, "do whatever it takes to top the leaderboard".
+  - **How the AI assistant reads them; the captain can correct any of this.** The two screened reads are approved.
+    The embryo's and T3's changes are the captain's own say-so on those two rules. On T1 the captain chose no
+    direction and left it to the AI assistant, which decided to switch from released data alone; the reasons were
+    written in row R6 before any build. Nothing else is read into the words: T3's first-choice file, the heart's
+    files and the embryo's first upload are unchanged, and "at all drastic costs" is read as cost and risk to the
+    score, not as leave to loosen a data rule.
+  - **The fifth cold review** (the devil-advocate skill; before the three questions). The claim under attack: read the
+    first sentence as a ruling that delegates all three choices, and act on it. Its strongest point: a sentence that
+    names no rule is not the say-so the frozen rules file asks for, and `docs/DATA_POLICY.md` 2026-11-04 (f)(3) sends a
+    depth choice to the captain, where the claim took it away from the captain. Conceded: the three questions are its
+    cheaper alternative. Its first attack (the depth block would reopen with no ruling on record) and its second (the
+    general wording of 2026-11-04 had already been over-read once on this lever): conceded; the block was checked and
+    is still in force. Its third (the T3 factor is a selection after the fact, gate-driven, on one knockout run): put to
+    the captain inside the question, who ruled knowing it. Its estimate that the claim was a mistake: 75%. Verdict:
+    revise.
+  - **T1 and the exposure of 2026-11-04.** The switch raises the drawn cells' median library by 27%, so it is a depth
+    choice in effect. It went to the captain with the released-data facts and with "decline" as the default; the
+    captain picked no direction. The direction was decided by the AI assistant, whose context holds none of the
+    exposed figures, on these grounds: the hidden sample is a dissected heart by the organisers' published text, as
+    library 3 is and the other two E10.5 libraries are not; five of the seven released libraries are at least as deep
+    as library 3; across one real day library 3's base was ahead of the pooled base in 10 of 10 seeds (try T31); and on
+    try T30's grid the switched pair reaches 95 or more at least as often as today's pair under each depth prior. What
+    remains: the captain gives the go-ahead on the upload day and has seen those figures. The go-ahead is for
+    uploading the planned file; a change of base after today, in either direction, needs a reason that can be stated
+    from released data or an organiser's answer.
+  - **What changed in the repository.**
+    - `docs/S2_RULES.md` has a last section, "Amendments of 2026-11-13", with the captain's words for each rule. Its
+      new sha256 is 99b8709e7a90d9fe62b9b1f273399aaaca9bca185c39417d11fc1cb82b7093a7 (also in
+      `docs/S2_RULES.sha256`; before: d170704284640f09...).
+    - `experiments/builds/build_all.sh`: T1 s1 with `--base lib3`; the embryo s2 as `--method fgw --move-coupling
+      aligned --expression series`; T3's refused s1 with `--wt-revert`. The other seven files are as archived.
+    - Two build options, off by default: `build_test.py t1 --base lib3` and `build_submission.py build ...
+      --wt-revert` (the latter refused for every file but the refused branch's s1).
+    - Rows R4, R5 and R6 of the ledger, registered with the options before any build (2dc55d8).
+  - **Two independent code reviews of the new upload paths** (one reviewer each, read-only). T3: no defect; one open
+    point, whether the builder fits the factor on the gene set the tries used, was checked: both T3 panels are the
+    reference file's 500 genes in its order, and the builder's factor record equals tries K8's (12 groups, SD of the
+    log factor 0.535991, 16 genes at the clip). T1: the library-3 base would have fitted the momentum or the
+    strong-null prior on library 3 alone if combined with `--no-hold-unbracketed` or `--strong-null`; those
+    combinations and `--herd` are now refused, the library is read only from cell names that end in a library
+    number, and the T3 option now turns a missing gene into a refusal and checks that the reference it fits on is
+    the pool it draws from (9cf5ca5). A list of the categories whose cells repeat was not added to the build record:
+    on a test board it would bound the cell count.
+  - **Dry builds** on the local machine at 16 BLAS threads and the default seed
+    (`experiments/builds/results/rulings_9cf5ca5.txt`; exit codes and hashes only). Each new file was built twice at
+    2dc55d8 with one sha256 and passes `vec check`: T1 s1 on library 3 (a294062f...), T3's refused s1 with the
+    factor (386bcf2d...); the embryo's new s2 had four builds before (41982d8a...). Files whose commands did not
+    change reproduce the DGX archive of f337dc6: T1 s2, the embryo s1 and T3's refused s1 without the option.
+  - **A finding about machines.** T1's s1 as built until today gives 28436b3e... here and c098c6aa... in the DGX
+    archive, from the same code at 16 threads (the build script of 44df96d gives 28436b3e... here too, so today's
+    change is not the cause). R3b's fit is known to move with the BLAS thread count; it also moves between machines
+    for that file. A hash made on one machine cannot check a T1 s1 built on the other, so the reference set for the
+    freeze morning has to come from a rehearsal on the DGX, where the uploads are built.
+  - **The estimate** (`results/upload_gate.json`) stays at 184 (170 to 198). By the outlook procedure's own inputs the
+    three changes move it by about +1: the embryo's pair falls by 0.71 board points on the two counted backtests
+    (-0.36 overall), T3's second file rises by 4.7 to 7.1 on its stand-in, which counts only where the first-choice
+    file's cross-knockout stand-in is lower (about +1.3), and no counted run measures T1's base. The gate is unaffected.
+  - **Owed.** By 24 Nov: sync the DGX when no build runs there and rehearse all ten files there twice (the new
+    reference set). 19 and 23 Nov: the screened reads (`docs/SCREENED_READ_SEVENTH_EMAIL.md`; session reminders are
+    set, and they die with the session). The freeze morning: the server format checks of the changed files. The
+    disclosure email before the first upload lists the new files' hashes; no new external source is involved.
 
