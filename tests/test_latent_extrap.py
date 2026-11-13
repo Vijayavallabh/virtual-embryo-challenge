@@ -6,8 +6,10 @@ on the CPU with a few epochs, is skipped where they are not installed."""
 from __future__ import annotations
 
 import inspect
+import json
 import subprocess
 import sys
+from dataclasses import replace
 from pathlib import Path
 
 import numpy as np
@@ -48,9 +50,13 @@ def _standin(calls: list):
             return np.asarray(library, dtype=np.float64)[:, None] * e / e.sum(1, keepdims=True), \
                 np.full(C.shape[1], 200.0)
 
+        def encode(counts):
+            X = sparse.csr_matrix(counts).toarray().astype(np.float64)
+            return np.log((X + 0.5) / (X.sum(1, keepdims=True) + 0.5 * X.shape[1]))
+
         if history is not None:
             history["train_loss"] = 1.0
-        return t2_latent.NBVAE(latent=latent, decode=decode, record={"stand_in": True})
+        return t2_latent.NBVAE(latent=latent, decode=decode, record={"stand_in": True}, encode=encode)
 
     return train
 
@@ -61,6 +67,8 @@ def standin(monkeypatch):
     monkeypatch.setattr(t2_latent, "train_nbvae", _standin(calls))
     monkeypatch.setattr(latent_extrap, "fit_device", lambda: "cpu")
     monkeypatch.setattr(latent_extrap, "_FOLD", {})
+    monkeypatch.setattr(latent_extrap, "_FLOW", {})
+    monkeypatch.setattr(latent_extrap, "RECORDS", [])
     return calls
 
 
@@ -395,3 +403,239 @@ def test_log1p_cp10k_is_what_b0_writes_for_unmoved_counts():
     C = sparse.csr_matrix(np.array([[1, 0, 3], [0, 2, 2]]))
     np.testing.assert_array_equal(log1p_cp10k(C).toarray(),
                                   np.log1p(np.diag(1e4 / np.array([4.0, 4.0])) @ C.toarray()).astype(np.float32))
+
+
+# ================================================================================================ b0_lat_flow (heart)
+FLOW_INPUTS = {"ref": "T2/E9.5.h5ad", "start": "T2/E8.75.h5ad", "earlier": "T2/E8.5.h5ad"}
+
+
+@pytest.fixture(scope="module")
+def flow_inputs():
+    """Three heart-like stages (days 8.5, 8.75, 9.5): CM and Endothelial lineages, Untracked cells, and a lineage too
+    small at the start stage for B0 (Tiny)."""
+    return {"ref": heart_stage(1600, seed=2, shift=0.0, tiny=60),
+            "start": heart_stage(1100, seed=3, shift=0.8, tiny=10),
+            "earlier": heart_stage(900, seed=5, shift=1.6, tiny=10)}
+
+
+def flow_ctx(inputs, seed: int = harness.BUILD_SEED_OFFSET + 1, view=None) -> harness.BuildContext:
+    view = view or harness.TaskView.of(_heart_task(inputs=FLOW_INPUTS))
+    return harness.BuildContext(task=view, board=HEART_BOARD, inputs=inputs, seed=seed)
+
+
+def _constant_field(monkeypatch):
+    """fold_flow replaced by the constant per-lineage field (mean z_ref(l) - mean z_start(l)) / D_{K-1}."""
+
+    def fold_flow(fold, stages, pool, start, lineages):
+        mp = np.asarray(pool.obs["merged"]).astype(str)
+        ms = np.asarray(start.obs["merged"]).astype(str)
+        gap = stages[-1][1] - stages[-2][1]
+        c = np.array([(fold.z_ref[mp == lin].mean(0) - fold.z_start[ms == lin].mean(0)) / gap for lin in lineages])
+        return latent_extrap.FlowField(lineages=list(lineages), velocity=lambda z, li: c[li].copy(),
+                                       record={"constant": True})
+
+    monkeypatch.setattr(latent_extrap, "fold_flow", fold_flow)
+
+
+def test_flow_constant_field_integrates_to_the_ratio_arms_z_new(standin, flow_inputs, monkeypatch):
+    """Spec section 3 identity, part (a): with the constant field, RK4 over B0's time budget lands on b0_lat_ratio's
+    z_new to 1e-12."""
+    _constant_field(monkeypatch)
+    seen = _spy(monkeypatch, "ratio_counts")
+    ctx = flow_ctx(flow_inputs)
+    harness.b0_lat_population(ctx, "ratio")
+    harness.b0_lat_population(ctx, "flow")
+    (r_own, r_new), (f_own, f_new) = ((s["args"][2], s["args"][3]) for s in seen)
+    np.testing.assert_array_equal(f_own, r_own)
+    np.testing.assert_allclose(f_new, r_new, rtol=0, atol=1e-12)
+    assert np.abs(r_new - r_own).max() > 0
+
+
+def test_flow_with_the_ratio_arms_z_new_is_the_ratio_arm_bit_for_bit(standin, flow_inputs, monkeypatch):
+    """Spec section 3 identity, part (b), the vehicle: handed the very z_new of b0_lat_ratio (injected, not
+    integrated), b0_lat_flow's file is b0_lat_ratio's to the last bit (one model, the same cells, ratio_counts call and
+    stream)."""
+
+    def inject(fold, stages, pool, start, types, moved, z_own, damping):
+        z_new = z_own.copy()
+        for lin, (s_rows, r_rows) in moved.items():
+            d = fold.z_ref[r_rows].mean(0) - fold.z_start[s_rows].mean(0)
+            m = types == lin
+            z_new[m] = z_own[m] + float(damping) * d
+        return z_new, {"injected": True}
+
+    monkeypatch.setattr(latent_extrap, "flow_latent", inject)
+    ctx = flow_ctx(flow_inputs)
+    ratio, flow = CANDIDATES["b0_lat_ratio"].build(ctx), CANDIDATES["b0_lat_flow"].build(ctx)
+    np.testing.assert_array_equal(flow.X, ratio.X)
+    np.testing.assert_array_equal(flow.coords, ratio.coords)
+    assert len(standin) == 1  # one count model for both arms
+    shas = {r["fold"]["latent_sha256"] for r in latent_extrap.RECORDS}
+    assert len(shas) == 1 and {r["candidate"] for r in latent_extrap.RECORDS} == {"b0_lat_ratio", "b0_lat_flow"}
+
+
+def test_flow_weights_are_inverse_variance_and_average_one():
+    np.testing.assert_allclose(latent_extrap.block_weights([0.2, 0.25, 0.75]), [0.0602, 0.0940, 0.8459], atol=5e-5)
+    np.testing.assert_allclose(latent_extrap.block_weights([0.2, 0.25]), [0.3902, 0.6098], atol=5e-5)
+    rng = np.random.default_rng(0)
+    # lineage A at all three stages, B too small at the first: A has two blocks, B one
+    labs = [np.array(["A"] * 60 + ["B"] * 5), np.array(["A"] * 50 + ["B"] * 40), np.array(["A"] * 70 + ["B"] * 30)]
+    zs = [rng.normal(size=(len(x), 3)) + k for k, x in enumerate(labs)]
+    pairs, rec = latent_extrap.flow_pairs(zs, labs, [8.5, 8.75, 9.5], ["A", "B"])
+    assert rec["n_blocks"] == 3 and rec["n_pairs"] == 3 * latent_extrap.FLOW_PAIRS
+    assert pairs["omega"].mean() == pytest.approx(1.0)
+    w = {(b["lineage"], b["transition"]): b["weight"] for b in rec["blocks"]}
+    assert w[("A", 1)] == pytest.approx(0.0625 / (0.0625 + 0.5625)) and w[("B", 2)] == 1.0
+    assert all(b["converged"] for b in rec["blocks"])
+    with pytest.raises(ValueError, match="last transition"):  # a moved lineage must have the last transition
+        latent_extrap.flow_pairs(zs, [labs[0], labs[1], np.array(["A"] * 100)], [8.5, 8.75, 9.5], ["A", "B"])
+
+
+def test_flow_stages_are_in_day_order_with_start_then_the_reference_last():
+    tasks = {t.key: t for ts_ in harness.load_tasks().values() for t in ts_}
+    st = latent_extrap.flow_stages(harness.TaskView.of(tasks["T2h/<=E9.5->E10.5"]))
+    assert [r for r, _ in st] == ["earliest", "earlier", "start", "ref"]
+    assert [d for _, d in st] == [8.3, 8.5, 8.75, 9.5]
+    assert [r for r, _ in latent_extrap.flow_stages(harness.TaskView.of(tasks["T2h/<=E8.75->E10.5"]))] == [
+        "earlier", "start", "ref"]
+    with pytest.raises(ValueError, match="three"):
+        latent_extrap.flow_stages(harness.TaskView.of(_heart_task()))
+    v = harness.TaskView.of(_heart_task(inputs=FLOW_INPUTS))
+    with pytest.raises(ValueError, match="start"):  # an input after the start stage that is not the reference
+        latent_extrap.flow_stages(replace(v, role_days={**v.role_days, "earlier": 9.0}))
+    with pytest.raises(ValueError, match="reference"):
+        latent_extrap.flow_stages(replace(v, role_days={**v.role_days, "ref": 8.6}))
+
+
+def _planted(rng, v, days, n=600, d=4):
+    """Two lineages drifting along latent axis 0 at +v and -v per day through the given days."""
+    zs, labs = [], []
+    for day in days:
+        z = rng.normal(size=(2 * n, d)) * 0.5
+        z[:n, 0] += v * (day - days[0])
+        z[n:, 0] -= v * (day - days[0])
+        z[n:, 1] += 3.0
+        zs.append(z)
+        labs.append(np.array(["A"] * n + ["B"] * n))
+    return zs, labs
+
+
+def test_flow_recovers_a_planted_linear_flow(monkeypatch):
+    pytest.importorskip("torch")
+    monkeypatch.setattr(latent_extrap, "FLOW_STEPS", 1500)
+    days, v = [8.5, 8.75, 9.5], 2.0
+    zs, labs = _planted(np.random.default_rng(1), v, days)
+    pairs, _ = latent_extrap.flow_pairs(zs, labs, days, ["A", "B"])
+    ff = latent_extrap.fit_flow(pairs, ["A", "B"])
+    tau = 0.5 * (days[-1] - days[-2])
+    for li, sign in ((0, 1.0), (1, -1.0)):
+        ref = zs[-1][labs[-1] == ["A", "B"][li]]
+        vel = ff.velocity(ref, np.full(len(ref), li))[:, 0].mean()
+        assert np.sign(vel) == sign and abs(vel) == pytest.approx(v, rel=0.25)
+        z_new = latent_extrap.integrate(ff.velocity, ref, np.full(len(ref), li), tau)
+        assert (z_new - ref)[:, 0].mean() == pytest.approx(sign * v * tau, rel=0.25)
+
+
+def test_flow_fit_is_deterministic(monkeypatch):
+    pytest.importorskip("torch")
+    monkeypatch.setattr(latent_extrap, "FLOW_STEPS", 200)
+    days = [8.5, 8.75, 9.5]
+    zs, labs = _planted(np.random.default_rng(2), 1.0, days, n=2500)  # above FLOW_SIDE_MAX: subsampled sides
+    p1, r1 = latent_extrap.flow_pairs(zs, labs, days, ["A", "B"])
+    p2, _ = latent_extrap.flow_pairs(zs, labs, days, ["A", "B"])
+    for k in p1:
+        np.testing.assert_array_equal(p1[k], p2[k])
+    assert all(b["n_earlier"] == latent_extrap.FLOW_SIDE_MAX for b in r1["blocks"])
+    a, b = latent_extrap.fit_flow(p1, ["A", "B"]), latent_extrap.fit_flow(p2, ["A", "B"])
+    assert a.record["params_sha256"] == b.record["params_sha256"] and a.record["loss_last"] == b.record["loss_last"]
+
+
+def test_flow_never_reads_the_target(standin, flow_inputs, monkeypatch):
+    pytest.importorskip("torch")
+    monkeypatch.setattr(latent_extrap, "FLOW_STEPS", 100)
+    view = harness.TaskView.of(_heart_task(inputs=FLOW_INPUTS))
+    blind = replace(view, target_day=float("nan"))
+    assert set(flow_inputs) == set(FLOW_INPUTS)  # no target among the inputs
+    with harness.guarded_reads() as g:
+        a = CANDIDATES["b0_lat_flow"].build(flow_ctx(flow_inputs, view=blind))
+    assert not g["refused"] and np.isfinite(a.X).all()
+    rec = latent_extrap.RECORDS[-1]
+    assert rec["flow"]["stages"] == ["earlier", "start", "ref"] and rec["flow"]["tau_days"] == pytest.approx(0.375)
+    assert rec["flow"]["n_blocks"] >= 2 and np.isfinite(rec["flow"]["loss_last"])
+    b = CANDIDATES["b0_lat_flow"].build(flow_ctx(flow_inputs, view=view))  # the target's day changes nothing
+    np.testing.assert_array_equal(a.X, b.X)
+    assert len(standin) == 1  # the fold model is fitted once
+
+
+def test_flow_leaves_unmoved_lineages_and_untracked_cells_at_their_own_latent(standin, flow_inputs, monkeypatch):
+    _constant_field(monkeypatch)
+    seen = _spy(monkeypatch, "ratio_counts")
+    ctx = flow_ctx(flow_inputs)
+    flow, ratio = CANDIDATES["b0_lat_flow"].build(ctx), CANDIDATES["b0_lat_ratio"].build(ctx)
+    pool, rows, _, _ = harness.draw_copy(ctx)
+    merged = np.asarray(pool.obs["merged"]).astype(str)[rows]
+    z_own, z_new = seen[0]["args"][2], seen[0]["args"][3]
+    for kept in ("Untracked", "Tiny"):
+        m = merged == kept
+        assert m.any()
+        np.testing.assert_array_equal(z_new[m], z_own[m])
+        np.testing.assert_array_equal(flow.X[m], ratio.X[m])  # factor 1: the cells' own counts, as in the ratio arm
+    rec = [r for r in latent_extrap.RECORDS if r["candidate"] == "b0_lat_flow"][0]
+    assert rec["latent"]["categories_moved"] == ["CM", "Endothelial"]
+    per = rec["latent"]["per_lineage"]
+    assert set(per["lineages"]) == {"CM", "Endothelial"}
+    for lin in per["lineages"].values():  # the constant field is B0's displacement: cosine 1, norm ratio 1
+        assert lin["cosine_to_b0"] == pytest.approx(1.0) and lin["norm_ratio_to_b0"] == pytest.approx(1.0)
+        assert lin["within_share"] == pytest.approx(0.0, abs=1e-12)
+
+
+def test_encode_reproduces_the_training_latents_of_the_standin():
+    C = sparse.csr_matrix(np.random.default_rng(3).poisson(4.0, size=(50, 12)) + 1)
+    m = _standin([])(C)
+    np.testing.assert_allclose(m.encode(C), m.latent, atol=1e-12)
+
+
+def test_encode_reproduces_the_training_latents_of_a_real_fit():
+    pytest.importorskip("torch")
+    pytest.importorskip("scvi")
+    rng = np.random.default_rng(30)
+    C = sparse.csr_matrix(rng.poisson(rng.gamma(2.0, 2.0, size=(1, 40)), size=(300, 40)) + 1)
+    m = t2_latent.train_nbvae(C, 123, max_epochs=3, threads=2, device="cpu")
+    np.testing.assert_allclose(m.encode(C), m.latent, atol=1e-5)
+
+
+def test_flow_applies_to_the_heart_extrapolation_tasks_only():
+    tasks = {t.key: t for ts_ in harness.load_tasks().values() for t in ts_}
+    c = CANDIDATES["b0_lat_flow"]
+    assert {k for k, t in tasks.items() if c.applies(t)} == {"T2h/<=E9.5->E10.5", "T2h/<=E8.75->E10.5"}
+    test_like = _heart_task(key="heart_test_like", inputs={"ref": "T2/E9.5.h5ad", "start": "T2/E8.75.h5ad",
+                                                           "earlier": "T2/E8.5.h5ad",
+                                                           "earliest": "T2/E8.25_late.h5ad"})
+    assert c.applies(test_like)
+    for k in ("T1/E9.5->E10.5", "T1/E9.5->E10.5:chamber", "T1/E8.5->E9.5", "T2e/E7.25+E8.0->E7.5",
+              "T2e/E6.75+E7.5->E7.25"):
+        assert not c.applies(tasks[k])
+    assert not c.applies(replace(test_like, setting="embryo"))
+    assert c.derived == () and c.params["flow_seed"] == latent_extrap.FLOW_SEED
+    assert c.params["scope"] == CANDIDATES["b0_lat_ratio"].params["scope"]
+
+
+def test_flow_is_refused_on_t1(standin, t1_inputs):
+    ref, start = t1_inputs
+    with pytest.raises(ValueError, match="heart"):
+        harness.b0_lat_population(t1_ctx(ref, start), "flow")
+
+
+def test_records_reach_a_file_per_task(standin, heart_inputs, tmp_path):
+    ctx = heart_ctx(heart_inputs)
+    for name in ARMS:
+        CANDIDATES[name].build(ctx)
+    latent_extrap.RECORDS.append({"task": "another", "candidate": "x"})  # left by a failed task: dropped
+    n = latent_extrap.write_records(tmp_path / "latent_records" / "t.json", ctx.task.key)
+    recs = json.loads((tmp_path / "latent_records" / "t.json").read_text())
+    assert n == 2 and [r["candidate"] for r in recs] == ["b0_lat_dec", "b0_lat_ratio"]
+    assert len({r["fold"]["latent_sha256"] for r in recs}) == 1 and not latent_extrap.RECORDS
+    assert latent_extrap.write_records(tmp_path / "none.json", "nothing") == 0
+    assert not (tmp_path / "none.json").exists()
+    src = (REPO / "experiments" / "harness" / "run.py").read_text()
+    assert 'latent_extrap.write_records(out / "latent_records" / f"{safe(t.key)}.json", t.key)' in src

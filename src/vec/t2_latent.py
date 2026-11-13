@@ -65,6 +65,7 @@ class NBVAE:
     latent: np.ndarray
     decode: Callable[[np.ndarray, np.ndarray], tuple[np.ndarray, np.ndarray]]
     record: dict = field(default_factory=dict)
+    encode: Callable[[object], np.ndarray] | None = None  # counts (cells x the training genes) -> encoder means
 
 
 def _batch_size(n_cells: int, batch_size: int) -> int:
@@ -149,7 +150,16 @@ def train_nbvae(counts, seed: int = TRAIN_SEED, *, n_latent: int = N_LATENT, max
               "batch_size": _batch_size(C.shape[0], batch_size), "seed": int(seed), "threads": int(threads),
               "device": device, "scvi_tools": str(getattr(scvi, "__version__", "unknown")),
               "torch": str(torch.__version__)}
-    return NBVAE(latent=latent, decode=decode, record=record)
+    def encode(counts) -> np.ndarray:
+        """Encoder means of other cells' counts on the training genes, in the training columns' order (vec.latent_extrap
+        encodes the stages before the fold's `start` with it)."""
+        X = sparse.csr_matrix(counts, dtype=np.float32)
+        if X.shape[1] != C.shape[1]:
+            raise ValueError("encode needs counts on the model's training genes")
+        return np.asarray(model.get_latent_representation(ad.AnnData(X=X), give_mean=True, batch_size=DECODE_CHUNK),
+                          dtype=np.float64)
+
+    return NBVAE(latent=latent, decode=decode, record=record, encode=encode)
 
 
 def input_key(count_matrices: Sequence, genes: Sequence[str]) -> str:

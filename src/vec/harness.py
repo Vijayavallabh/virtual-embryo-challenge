@@ -1028,13 +1028,17 @@ def _b0_gmom_null(ctx: BuildContext) -> Stage:
 def b0_lat_population(ctx: BuildContext, arm: str) -> tuple[ad.AnnData, np.ndarray, np.ndarray | None, dict]:
     """B0's drawn cells (T1: `vec.t1_scope.reweight` as B0 calls it; T2: `draw_copy`), without B0's count-space shift,
     moved by B0_DAMPING of their category's mean latent displacement from `start` to the reference in the fold's count
-    model, and expressed by one arm of `vec.latent_extrap` ("decoded" or "ratio"). Returns (pool, expression in board
-    gene order, coords or None, record)."""
+    model, and expressed by one arm of `vec.latent_extrap` ("decoded" or "ratio"); or ("flow", heart only) moved by
+    the fold's flow field over the task's input stages and expressed by the ratio arm's code. The record is also
+    appended to `vec.latent_extrap.RECORDS` with the task, candidate and build seed (experiments/harness/run.py writes
+    it to <out>/latent_records/). Returns (pool, expression in board gene order, coords or None, record)."""
     from vec import latent_extrap as le
 
     t = ctx.task
     if t.kind != "extrap" or "start" not in t.roles:
         raise ValueError("the latent B0 arms are for extrapolation boards with a start stage")
+    if arm == "flow" and (t.task != "T2" or t.setting != "heart"):
+        raise ValueError("the flow arm is defined on the heart board only")
     if t.task == "T1":
         role = t.reference_role
         ref, src = _shallow(ctx.inputs[role]), t.role_stems[role]
@@ -1045,14 +1049,22 @@ def b0_lat_population(ctx: BuildContext, arm: str) -> tuple[ad.AnnData, np.ndarr
                                          ref_source=src, start_source=start_src, damping=B0_DAMPING, arm=arm)
         pool, coords = ref, None
     else:
+        stages = None
+        if arm == "flow":  # the input stages in day order, from the view's roles and days (never the target's day)
+            stages = [(r, d, ctx.inputs[r]) for r, d in le.flow_stages(t)]
         pool, rows, _, coords = draw_copy(ctx)
-        X, genes, rec = le.t2_population(pool, ctx.inputs["start"], rows, ctx.seed, damping=B0_DAMPING, arm=arm)
+        X, genes, rec = le.t2_population(pool, ctx.inputs["start"], rows, ctx.seed, damping=B0_DAMPING, arm=arm,
+                                         stages=stages)
     pos = {g: i for i, g in enumerate(genes)}
     missing = [g for g in ctx.board.genes if g not in pos]
     if missing:
         raise KeyError(f"{len(missing)} board genes are missing from the fold's genes, e.g. {missing[:5]}")
     cols = np.array([pos[g] for g in ctx.board.genes], dtype=np.int64)
+    le.RECORDS.append({"task": t.key, "candidate": B0_LAT_NAMES[arm], "build_seed": int(ctx.seed), **rec})
     return pool, dense(X[:, cols]).astype(np.float32), coords, rec
+
+
+B0_LAT_NAMES = {"decoded": "b0_lat_dec", "ratio": "b0_lat_ratio", "flow": "b0_lat_flow"}
 
 
 def _b0_lat_dec(ctx: BuildContext) -> Stage:
@@ -1065,9 +1077,20 @@ def _b0_lat_ratio(ctx: BuildContext) -> Stage:
     return finish(ctx, pool, X, coords)
 
 
+def _b0_lat_flow(ctx: BuildContext) -> Stage:
+    pool, X, coords, _ = b0_lat_population(ctx, "flow")
+    return finish(ctx, pool, X, coords)
+
+
 def _extrap_with_start(t: PseudoTask) -> bool:
     """T1 or T2 extrapolation with a `start` stage (B0's momentum tasks on the two extrapolation boards)."""
     return t.task in ("T1", "T2") and t.kind == "extrap" and "start" in t.inputs
+
+
+def _heart_extrap_with_start(t: PseudoTask) -> bool:
+    """A heart extrapolation task with a `start` stage (the flow arm's tasks; the setting is named, so a future
+    non-heart T2 extrapolation task does not match)."""
+    return t.task == "T2" and t.kind == "extrap" and "start" in t.inputs and t.setting == "heart"
 
 
 # ------------------------------------------------------------------------------------------------ T2 embryo (feat-010)
@@ -1859,6 +1882,14 @@ CANDIDATES = {
                                        "log factor clipped at +-log 3; vec.latent_extrap, ratio arm)",
                                "damping": B0_DAMPING, "rule": "vec.latent_extrap.RULE", "scope": "chamber"},
                               requires=_extrap_with_start, derived=("t1_held_flat",)),
+    "b0_lat_flow": Candidate("b0_lat_flow", frozenset({"T2"}), (), _b0_lat_flow,
+                             {"what": "b0_lat_ratio's model, cells, realisation and stream with the latent move from a "
+                                      "velocity field fitted by flow matching on entropic-OT pairs within each "
+                                      "lineage between every two consecutive input stages, integrated (RK4) over "
+                                      "B0's time budget, B0_DAMPING x the last gap (vec.latent_extrap, flow arm; "
+                                      "heart only)", "damping": B0_DAMPING, "rule": "vec.latent_extrap.FLOW_RULE",
+                              "flow_seed": 20261113, "scope": "chamber"},
+                             requires=_heart_extrap_with_start),
     # T3 tries K2a and K2b (experiments/harness/TRIES.md, registered before their run): s1's Gata4 factor on the
     # Gata4 -> Mab21l2 fold, and its permuted control
     "t3_factor_xko": Candidate("t3_factor_xko", frozenset({"T3"}), (), _t3_factor_xko,

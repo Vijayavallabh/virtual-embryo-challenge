@@ -28,7 +28,7 @@ from pathlib import Path
 
 import numpy as np
 
-from vec import harness, registry
+from vec import harness, latent_extrap, registry
 from vec.adoption import SEEDS
 from vec.boards import REPO_ROOT
 
@@ -82,6 +82,7 @@ def cmd_run(a) -> None:
         res["seconds"] = round(time.time() - t0, 1)
         path.write_text(json.dumps(res, indent=1, default=float))
         print(f"wrote {path} ({res['seconds']} s)", flush=True)
+        latent_extrap.write_records(out / "latent_records" / f"{safe(t.key)}.json", t.key)  # latent arms only
     if failed:
         sys.exit(f"{len(failed)} pseudo-task(s) failed: {failed}")
 
