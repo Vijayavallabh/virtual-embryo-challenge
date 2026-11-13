@@ -983,6 +983,11 @@ headroom tables in `experiments/harness/TRIES.md`):
 
 ## Evidence of Completion
 
+- [x] 2026-11-13, on this machine (`runs/logs/checks_local_2026-11-13b.log`): the full suite started at 1435c22 on a
+      clean tree: 1198 tests passed and 1 skipped (torch is not in the standard environment), in 17 minutes; it covers
+      the day's code (the K7 script and its tests, the embryo build's `render_hi` option at 82dcd69). The three tests of
+      `tests/test_k8_s2_form.py`, written while it ran, passed on their own at aba9fda with `uv lock --check`, ruff
+      clean on `src tests` and `sha256sum -c docs/S2_RULES.sha256`. `./init.sh` itself was not run.
 - [x] 2026-11-13, on this machine at a9dabf6 (clean tree at the start; `runs/logs/checks_local_2026-11-13.log`): `uv lock
       --check` OK, ruff clean on `src tests`, 1191 tests passed and 1 skipped (torch is not in the standard
       environment), in 17 minutes. It covers the day's code changes (the series rendering's neighbourhood option, the
