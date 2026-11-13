@@ -19,11 +19,16 @@ y = log(group mean proportion + k7.EPS) (k7.group_means), w = (d_(k+1) - d_k) / 
 expression (harness.t3_mean_expression, the mean over its cells of log1p CP10k: H20's reference pb) by H20's
 level_monotone_fit (copied below unchanged). Basis u: the rank-1 uncentred SVD direction of the cleaned contrasts.
 
-Gate (target-free, before any arm): s_j = cos^2(c_j, u_(-j)), u_(-j) from the other contrasts; G = mean s_j. Null:
+Gate (target-free, before any arm; amended by fix brief D2 before any gate output existed): one lineage GROUP out.
+For a contrast c_j of group g, u_(-g) is the rank-1 uncentred SVD direction of the cleaned contrasts of all other
+groups (groups hold disjoint cells, so nothing of g enters its own basis); s_j = cos^2(c_j, u_(-g)); G = mean s_j.
+With fewer than two groups that have contrasts, or a zero basis for every group, "not inside" with the reason. Null:
 the same G with every left-out contrast permuted across genes within deciles of the reference's mean expression
-(harness.t3_decile_permutation; draw p uses the seed [k9.PERM_SEED, p], one permutation for every contrast of a draw),
-GATE_PERMS draws. "inside" if G is above the null's 95th percentile. Computed for WT E8.75 (x1, r12) and WT E9.5 (x2);
-the arms are run only if it says "inside" for WT E8.75; otherwise the line is closed by the recipe's own gate.
+(harness.t3_decile_permutation; draw p uses the seed [k9.PERM_SEED, GATE_STREAM, p], one permutation for every
+contrast of a draw, the bases unpermuted), GATE_PERMS draws. "inside" if G is above the null's 95th percentile.
+Computed for WT E8.75 (x1, r12) and WT E9.5 (x2); the arms are run only if it says "inside" for WT E8.75; otherwise the
+line is closed by the recipe's own gate. A run records the gate file's commit and tree state; the reading is void if
+that commit differs from the runs' or the gate's tree was dirty.
 
 Arms (K9's stream, the same drawn cells in every arm; all through k9.arm_built's raw path):
   raw           K9's raw arm exactly.
@@ -34,8 +39,8 @@ Arms (K9's stream, the same drawn cells in every arm; all through k9.arm_built's
 
 Reading, fixed (K9's form, the adoption rule's constants): raw_r8 is SUPPORTED if on x1 AND on r12 it beats raw by a
 paired mean above 0.3 with at least 8 of 10 seeds ahead and beats raw_r8_perm the same way, and on x2 its paired mean
-against raw is not below -0.3; anything else CLOSED. Void if raw does not reproduce K9's committed raw scores to 1e-6
-(k11.k9_reproduction), on a missing seed or arm, or a dirty tree.
+against raw is not below -0.3; anything else CLOSED. Void if K9's committed raw scores (RESULTS_K9) are absent or raw
+does not reproduce them to 1e-6 (k11.k9_reproduction), on a missing seed or arm, or a dirty tree.
 
   gate  --out DIR                     the gate; writes gate.json and gate.txt (refuses to overwrite)
   run   --task x1|x2|r12 --out DIR    one task per process (refuses an existing task file; refuses unless gate.json
@@ -68,6 +73,7 @@ from vec.prep import load_stage  # noqa: E402
 PERM_SEED = k9.PERM_SEED
 STREAM = k9.STREAM
 GATE_PERMS = 200  # the brief's number of null draws
+GATE_STREAM = 1  # the null draws' stream: seed [PERM_SEED, GATE_STREAM, p] (fix brief D2, item 2)
 GATE_REFERENCE = "E8.75"  # the gate that decides: the reference of x1 and r12, and the test's own
 GATE_TASKS = {"E8.75": "x1", "E9.5": "x2"}  # a task that carries each reference and its series
 INSIDE, NOT_INSIDE = "inside", "not inside"
@@ -196,37 +202,55 @@ def _cos2(c: np.ndarray, u: np.ndarray | None) -> float:
     return float((c @ u) ** 2 / (nc ** 2 * float(u @ u)))
 
 
-def loo_bases(M: np.ndarray) -> list[np.ndarray | None]:
-    """u_(-j) for every contrast j: the rank-1 basis of the other contrasts."""
-    return [rank1_basis(np.delete(M, j, axis=0)) for j in range(M.shape[0])]
+def group_out_bases(M: np.ndarray, groups: Sequence) -> list[np.ndarray | None]:
+    """u_(-g) for every contrast j of group g: the rank-1 basis of the contrasts of all OTHER groups (groups hold
+    disjoint cells, so nothing of group g enters its own basis)."""
+    groups = list(groups)
+    if len(groups) != M.shape[0]:
+        raise ValueError(f"{len(groups)} group labels for {M.shape[0]} contrasts")
+    lab = np.array([str(g) for g in groups], dtype=object)
+    by_group = {g: rank1_basis(M[lab != g]) for g in sorted(set(lab))}
+    return [by_group[g] for g in lab]
 
 
-def gate_statistic(M: np.ndarray, bases: list | None = None) -> float | None:
-    """G = mean over contrasts of cos^2(c_j, u_(-j)); None with fewer than two contrasts."""
-    if M.shape[0] < 2:
+def gate_statistic(M: np.ndarray, groups: Sequence, bases: list | None = None) -> float | None:
+    """G = mean over contrasts of cos^2(c_j, u_(-g)), g the group of contrast j; None with fewer than two groups."""
+    if len(set(map(str, groups))) < 2:
         return None
-    bases = loo_bases(M) if bases is None else bases
+    bases = group_out_bases(M, groups) if bases is None else bases
     return float(np.mean([_cos2(M[j], bases[j]) for j in range(M.shape[0])]))
 
 
-def gate(M: np.ndarray, basis: np.ndarray, perms: int | None = None, seed: int = PERM_SEED) -> dict:
-    """The recipe's gate on cleaned contrasts M: G, its null (each left-out contrast permuted within deciles of
-    `basis`; draw p with seed [seed, p], one permutation for every contrast of the draw), and the verdict."""
+def null_seed(p: int, seed: int = PERM_SEED) -> list[int]:
+    """The seed of the null's draw p: [seed, GATE_STREAM, p], a stream no other step uses ([seed, 0] would be the
+    generator of `seed` alone, the control arm's own permutation)."""
+    return [int(seed), GATE_STREAM, int(p)]
+
+
+def gate(M: np.ndarray, basis: np.ndarray, groups: Sequence, perms: int | None = None, seed: int = PERM_SEED
+         ) -> dict:
+    """The recipe's gate on cleaned contrasts M, one group out: G (gate_statistic), its null (every left-out contrast
+    permuted within deciles of `basis`, the bases unpermuted; draw p with seed null_seed(p), one permutation for every
+    contrast of the draw), and the verdict, "inside" if G is above the null's 95th percentile."""
     perms = GATE_PERMS if perms is None else int(perms)
     n = int(M.shape[0])
-    if n < 2:
-        return {"G": None, "null_median": None, "null_p95": None, "n_contrasts": n, "n_permutations": perms,
-                "verdict": NOT_INSIDE, "why": "fewer than two contrasts"}
-    bases = loo_bases(M)
-    G = gate_statistic(M, bases)
+    n_groups = len(set(map(str, groups)))
+    rec = {"G": None, "null_median": None, "null_p95": None, "n_contrasts": n, "n_groups_with_contrasts": n_groups,
+           "n_permutations": perms, "gate_stream": GATE_STREAM}
+    if n_groups < 2:
+        return rec | {"verdict": NOT_INSIDE, "why": "fewer than two lineage groups with contrasts"}
+    bases = group_out_bases(M, groups)
+    if all(b is None for b in bases):
+        return rec | {"verdict": NOT_INSIDE, "why": "a zero basis for every group"}
+    G = gate_statistic(M, groups, bases)
     ar = np.arange(M.shape[1], dtype=np.float64)
     null = []
     for p in range(perms):
-        idx = harness.t3_decile_permutation(ar, basis, [int(seed), p]).astype(np.int64)
+        idx = harness.t3_decile_permutation(ar, basis, null_seed(p, seed)).astype(np.int64)
         null.append(float(np.mean([_cos2(M[j][idx], bases[j]) for j in range(n)])))
     p95 = float(np.percentile(null, 95))
-    return {"G": G, "null_median": float(np.median(null)), "null_p95": p95, "n_contrasts": n,
-            "n_permutations": perms, "verdict": INSIDE if G > p95 else NOT_INSIDE}
+    return rec | {"G": G, "null_median": float(np.median(null)), "null_p95": p95,
+                  "verdict": INSIDE if G > p95 else NOT_INSIDE}
 
 
 def series_contrasts(pool, series: list, series_days: list[float], ref_day: float, genes: Sequence[str]) -> dict:
@@ -373,7 +397,7 @@ def gate_reference(inputs: dict, task) -> dict:
     days = {r: harness.STAGE_DAYS[f] for r, f in task.inputs.items()}
     sc = series_contrasts(pool, [inputs[r] for r in series], [days[r] for r in series], days[ref_role],
                           list(pool.var_names))
-    return gate(sc["M"], sc["level"]) | {"groups": len(sc["groups"])}
+    return gate(sc["M"], sc["level"], [g for _, g in sc["labels"]]) | {"groups": len(sc["groups"])}
 
 
 def cmd_gate(a) -> None:
@@ -389,7 +413,8 @@ def cmd_gate(a) -> None:
         inputs = {r: load_stage(Path(a.data) / f, genes=genes, drop_duplicates=True)
                   for r, f in gate_files(name).items()}
         res[stem] = gate_reference(inputs, t)
-    doc = {"references": res, "decides": GATE_REFERENCE, "perm_seed": PERM_SEED,
+    doc = {"references": res, "decides": GATE_REFERENCE, "perm_seed": PERM_SEED, "gate_stream": GATE_STREAM,
+           "leave_out": "one lineage group",
            "commit": harness._git("rev-parse", "HEAD"),
            "tree_clean": harness._git("status", "--porcelain", "--untracked-files=no") == ""}
     out.mkdir(parents=True, exist_ok=True)
@@ -404,23 +429,24 @@ def gate_text(doc: dict) -> str:
     for stem, g in doc["references"].items():
         lines.append(f"WT {stem}: {g['verdict']}; G {_fmt(g['G'])}, null median {_fmt(g['null_median'])}, null 95th "
                      f"percentile {_fmt(g['null_p95'])}, contrasts {g['n_contrasts']}, permutations "
-                     f"{g['n_permutations']}")
+                     f"{g['n_permutations']}" + (f"; {g['why']}" if g.get("why") else ""))
     return "\n".join(lines) + "\n"
 
 
-def gate_says_inside(path: Path) -> tuple[bool, dict | None]:
-    """(True, the deciding reference's entry) when the gate file says "inside" for GATE_REFERENCE."""
+def gate_says_inside(path: Path) -> tuple[bool, dict | None, dict | None]:
+    """(True, the deciding reference's entry, the gate file's commit and tree state) when the gate file says "inside"
+    for GATE_REFERENCE."""
     if not path.exists():
-        return False, None
+        return False, None, None
     doc = json.loads(path.read_text())
     entry = (doc.get("references") or {}).get(GATE_REFERENCE) or {}
-    return entry.get("verdict") == INSIDE, entry
+    return entry.get("verdict") == INSIDE, entry, {"commit": doc.get("commit"), "tree_clean": doc.get("tree_clean")}
 
 
 def cmd_run(a) -> None:
     out = Path(a.out)
     gpath = Path(a.gate) if a.gate else out.resolve().parent / "gate.json"
-    ok, entry = gate_says_inside(gpath)
+    ok, entry, gate_file = gate_says_inside(gpath)
     if not ok:
         sys.exit(f"{gpath} does not say \"{INSIDE}\" for WT {GATE_REFERENCE}: the line is closed by the recipe's own "
                  f"gate, not run and not counted")
@@ -433,6 +459,7 @@ def cmd_run(a) -> None:
     res["task_source"] = "experiments/t3_decomp/k12_r8_arm.py"
     res["factor_record"] = _PREP["fold"]["record"]
     res["gate"] = entry
+    res["gate_file"] = gate_file
     path.write_text(json.dumps(res, indent=1, default=float))
     print(f"wrote {path}", flush=True)
 
@@ -461,6 +488,11 @@ def reading(runs: Path, k9_dir: Path = RESULTS_K9) -> dict:
             continue
         if not r["provenance"]["tree_clean"]:
             why.append(f"{name}: a dirty tree")
+        gf = r.get("gate_file") or {}
+        if gf.get("commit") != r["provenance"]["commit"]:
+            why.append(f"{name}: the gate's commit {gf.get('commit')} is not the run's {r['provenance']['commit']}")
+        if gf.get("tree_clean") is not True:
+            why.append(f"{name}: the gate's tree was dirty or is not recorded")
         missing = sorted(set(ARMS) - set.intersection(*(set(q["scores"]) for q in rows)))
         if missing:
             why.append(f"{name}: missing arms {missing}")
@@ -484,6 +516,8 @@ def reading(runs: Path, k9_dir: Path = RESULTS_K9) -> dict:
             "gate": r.get("gate"), "record": rec}
     if len(commits) > 1:
         why.append(f"results from different commits {sorted(commits)}")
+    if not Path(k9_dir).is_dir():
+        why.append(f"K9's committed raw scores ({k9_dir}) are absent from this checkout")
     status, repro_why = k11.k9_reproduction(all_rows, k9_dir) if not why else ("not checked", [])
     why += repro_why
     if why:

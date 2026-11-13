@@ -34,7 +34,8 @@ def bs():
 # ----------------------------------------------------------------------------------------------- constants and tasks
 def test_the_fixed_constants_and_arms():
     assert k12.PERM_SEED == k9.PERM_SEED == 20261113 and k12.STREAM == k9.STREAM == harness.K4_STREAM
-    assert k12.GATE_PERMS == 200 and k12.GATE_REFERENCE == "E8.75"
+    assert k12.GATE_PERMS == 200 and k12.GATE_REFERENCE == "E8.75" and k12.GATE_STREAM >= 1
+    assert k12.null_seed(7) == [k12.PERM_SEED, k12.GATE_STREAM, 7]
     assert (k12.MIN_GAIN, k12.MIN_AHEAD, k12.X2_FLOOR) == (0.3, 8, -0.3)
     assert k12.ARMS == ("raw", "raw_r8", "raw_r8_perm") and k12.CONTROLS == {"raw_r8": "raw_r8_perm"}
     assert k12.TASKS is k9.TASKS
@@ -108,32 +109,89 @@ def test_a_planted_shared_direction_is_recovered_and_the_gate_says_inside():
         + 0.02 * rng.normal(size=(n_c, n_genes))
     u = k12.rank1_basis(M)
     assert abs(float(u @ d)) > 0.99 and np.linalg.norm(u) == pytest.approx(1.0)
-    g = k12.gate(M, level)
+    g = k12.gate(M, level, [f"g{j % 4}" for j in range(n_c)])
     assert g["verdict"] == "inside" and g["G"] > g["null_p95"] and g["n_contrasts"] == n_c
-    assert g["n_permutations"] == 200 and g["null_median"] <= g["null_p95"]
+    assert g["n_permutations"] == 200 and g["null_median"] <= g["null_p95"] and g["n_groups_with_contrasts"] == 4
+    assert g["gate_stream"] == k12.GATE_STREAM
 
 
-def test_independent_noise_contrasts_give_not_inside():
-    rng = np.random.default_rng(3)
-    level = rng.gamma(2.0, size=200)
-    g = k12.gate(rng.normal(size=(12, 200)), level)
+DAYS = [8.5, 8.75, 9.5, 10.5]
+
+
+def _stage_contrasts(seed: int, n_groups: int = 4, n_genes: int = 200, shared: float = 0.0):
+    """Cleaned interior-stage contrasts of a synthetic series: per stage and per group independent log-normal means
+    (no shared direction), plus, with `shared`, a stage profile along one gene direction common to every group (a
+    bump at the second stage, so both interior residuals hold it). Neighbouring residuals of a group share stage
+    means, as in the run."""
+    rng = np.random.default_rng(seed)
+    level = rng.gamma(2.0, size=n_genes)
+    d = rng.normal(size=n_genes)
+    bump = np.array([0.0, 1.0, 0.0, 0.0])
+    groups = [f"g{i}" for i in range(n_groups)]
+    means = [{g: np.exp(rng.normal(-6.0, 0.5, n_genes) + shared * bump[k] * d) for g in groups}
+             for k in range(len(DAYS))]
+    M, labels = k12.run_contrasts(means, DAYS, groups)
+    Mc, _ = k12.clean_contrasts(M, level)
+    return Mc, level, [g for _, g in labels]
+
+
+def test_independent_per_stage_per_group_noise_gives_not_inside():
+    M, level, groups = _stage_contrasts(3)
+    assert M.shape[0] == 8 and len(set(groups)) == 4
+    g = k12.gate(M, level, groups)
     assert g["verdict"] == "not inside" and g["G"] <= g["null_p95"]
-    assert k12.gate(rng.normal(size=(1, 200)), level)["verdict"] == "not inside"  # too few contrasts
-    assert k12.gate(np.zeros((0, 200)), level)["G"] is None
+    # a small batch of seeds: the group-out gate says "inside" in at most a few (2 of these 20 seeds, 114 and 117;
+    # the review of 71f85a6 found its one-contrast-out gate said "inside" on such noise in 30 of 30 runs)
+    inside = [s for s in range(100, 120) if k12.gate(*_stage_contrasts(s))["verdict"] == "inside"]
+    assert len(inside) <= 2, inside
 
 
-def test_the_gate_statistic_is_the_mean_left_out_cos2():
+def test_a_planted_stage_profile_shared_by_the_groups_gives_inside():
+    M, level, groups = _stage_contrasts(3, shared=0.5)
+    g = k12.gate(M, level, groups)
+    assert g["verdict"] == "inside" and g["G"] > g["null_p95"]
+
+
+def test_one_group_only_gives_not_inside_with_its_reason():
+    M, level, groups = _stage_contrasts(4, n_groups=1)
+    assert M.shape[0] == 2
+    g = k12.gate(M, level, groups)
+    assert g["verdict"] == "not inside" and g["G"] is None
+    assert g["why"] == "fewer than two lineage groups with contrasts"
+    g0 = k12.gate(np.zeros((0, 200)), level, [])
+    assert g0["verdict"] == "not inside" and g0["G"] is None and "fewer than two" in g0["why"]
+    gz = k12.gate(np.zeros((4, 200)), level, ["a", "a", "b", "b"])
+    assert gz["verdict"] == "not inside" and gz["why"] == "a zero basis for every group"
+    assert "fewer than two lineage groups" in k12.gate_text(
+        {"commit": "abc", "decides": "E8.75", "references": {"E8.75": g}})
+
+
+def test_the_gate_statistic_is_the_mean_group_out_cos2():
     rng = np.random.default_rng(4)
-    M = rng.normal(size=(5, 30))
+    M = rng.normal(size=(6, 30))
+    groups = ["a", "a", "b", "b", "c", "c"]
     want = []
-    for j in range(5):
-        _, _, Vt = np.linalg.svd(np.delete(M, j, axis=0), full_matrices=False)
+    for j in range(6):
+        others = [i for i in range(6) if groups[i] != groups[j]]
+        _, _, Vt = np.linalg.svd(M[others], full_matrices=False)
         want.append((M[j] @ Vt[0]) ** 2 / (M[j] @ M[j]))
-    assert k12.gate_statistic(M) == pytest.approx(float(np.mean(want)))
-    # the null's draws use new seeds derived from PERM_SEED, never PERM_SEED itself
-    a = harness.t3_decile_permutation(np.arange(30.0), rng.gamma(2.0, size=30), [k12.PERM_SEED, 0])
-    b = harness.t3_decile_permutation(np.arange(30.0), rng.gamma(2.0, size=30), k12.PERM_SEED)
-    assert sorted(a) == sorted(b)
+    assert k12.gate_statistic(M, groups) == pytest.approx(float(np.mean(want)))
+    # nothing of a contrast's own group enters its basis: changing group a's other contrast leaves a's bases as they are
+    M2 = M.copy()
+    M2[1] = rng.normal(size=30)
+    b1, b2 = k12.group_out_bases(M, groups), k12.group_out_bases(M2, groups)
+    assert np.array_equal(b1[0], b2[0]) and np.array_equal(b1[1], b2[1])
+    assert k12.gate_statistic(M, ["a"] * 6) is None
+
+
+def test_the_null_draws_do_not_reuse_the_controls_permutation():
+    rng = np.random.default_rng(5)
+    ar, basis = np.arange(60.0), rng.gamma(2.0, size=60)
+    draw0 = harness.t3_decile_permutation(ar, basis, k12.null_seed(0))
+    control = harness.t3_decile_permutation(ar, basis, k12.PERM_SEED)
+    assert not np.array_equal(draw0, control)
+    # the old seed [PERM_SEED, 0] was the control's own generator (numpy pads the entropy with zeros)
+    assert np.array_equal(harness.t3_decile_permutation(ar, basis, [k12.PERM_SEED, 0]), control)
 
 
 # ----------------------------------------------------------------------------------------------- the factors
@@ -236,13 +294,14 @@ def test_end_to_end_raw_is_k9s_raw_and_raw_r8_moves_it(world, monkeypatch):
 
 
 # ----------------------------------------------------------------------------------------------- the reading
-def _result(key, scores, clean=True, commit="abc"):
+def _result(key, scores, clean=True, commit="abc", gate_file=None):
     rows = [{"seed": s, "scores": {a: v[i] for a, v in scores.items()},
              "skills": {a: {"de_score": 0.5, "severity": 0.6} for a in scores},
              "t3": {a: {"severity": {"state": "scored"}} for a in scores}} for i, s in enumerate(SEEDS)]
     return {"task": {"key": key}, "rows": rows, "provenance": {"commit": commit, "tree_clean": clean},
             "factor_record": {"n_contrasts": 9, "removed_share_y_r8": 0.1, "removed_share_y_r8_perm": 0.01},
-            "gate": {"verdict": "inside"}}
+            "gate": {"verdict": "inside"},
+            "gate_file": {"commit": commit, "tree_clean": True} if gate_file is None else gate_file}
 
 
 def _scores(r8=54.0, perm=50.0, raw=52.0):
@@ -250,11 +309,19 @@ def _scores(r8=54.0, perm=50.0, raw=52.0):
     return {harness.FLOOR: [50.0] * n, "raw": [raw] * n, "raw_r8": [r8] * n, "raw_r8_perm": [perm] * n}
 
 
+def _k9_dir(d: Path, raw: float = 52.0) -> Path:
+    """A stand-in for K9's committed task results: raw scores `raw` on every seed of every task."""
+    d.mkdir()
+    for name in k12.TASKS:
+        (d / f"{name}.json").write_text(json.dumps(_result(k9.TASKS[name].key, {"raw": [raw] * len(SEEDS)})))
+    return d
+
+
 def _read(d: Path, k9_dir=None, **per_task):
     d.mkdir()
     for name, sc in per_task.items():
         (d / f"{name}.json").write_text(json.dumps(_result(k12.TASKS[name].key, sc)))
-    return k12.reading(d, k9_dir if k9_dir is not None else d / "no_k9")
+    return k12.reading(d, k9_dir if k9_dir is not None else _k9_dir(d / "k9"))
 
 
 def test_the_reading_supported(tmp_path):
@@ -287,10 +354,7 @@ def test_the_reading_needs_eight_seeds_ahead(tmp_path):
 
 
 def test_the_reading_is_void_on_a_raw_mismatch(tmp_path):
-    k9_dir = tmp_path / "k9"
-    k9_dir.mkdir()
-    for name in k12.TASKS:
-        (k9_dir / f"{name}.json").write_text(json.dumps(_result(k9.TASKS[name].key, {"raw": [52.0] * len(SEEDS)})))
+    k9_dir = _k9_dir(tmp_path / "k9")
     ok = _read(tmp_path / "ok", k9_dir, x1=_scores(), r12=_scores(), x2=_scores())
     assert not ok["void"] and ok["k9_reproduction"] == "reproduced"
     off = _read(tmp_path / "off", k9_dir, x1=_scores(raw=52.01), r12=_scores(), x2=_scores())
@@ -298,7 +362,28 @@ def test_the_reading_is_void_on_a_raw_mismatch(tmp_path):
     assert k12.text(off).startswith("VOID")
 
 
+def test_the_reading_is_void_without_k9s_committed_scores(tmp_path):
+    res = _read(tmp_path / "r", tmp_path / "absent", x1=_scores(), r12=_scores(), x2=_scores())
+    assert res["void"] and res["why"] == [f"K9's committed raw scores ({tmp_path / 'absent'}) are absent from this "
+                                          f"checkout"]
+    assert k12.RESULTS_K9.is_dir()  # the folder is on the branch, so the default reading checks it
+
+
+def test_the_reading_is_void_on_the_gates_commit_or_dirty_tree(tmp_path):
+    k9_dir = _k9_dir(tmp_path / "k9")
+    for case, gf in (("other", {"commit": "def", "tree_clean": True}),
+                     ("dirty", {"commit": "abc", "tree_clean": False}), ("none", {})):
+        d = tmp_path / case
+        d.mkdir()
+        for name in k12.TASKS:
+            r = _result(k12.TASKS[name].key, _scores(), gate_file=gf if name == "r12" else None)
+            (d / f"{name}.json").write_text(json.dumps(r))
+        res = k12.reading(d, k9_dir)
+        assert res["void"] and all(w.startswith("r12: the gate's") for w in res["why"]), (case, res["why"])
+
+
 def test_the_reading_is_void_on_missing_arm_seed_or_dirty_tree(tmp_path):
+    k9_dir = _k9_dir(tmp_path / "k9")
     assert _read(tmp_path / "m", x1=_scores(), r12=_scores())["void"]
     sc = _scores()
     del sc["raw_r8_perm"]
@@ -310,12 +395,12 @@ def test_the_reading_is_void_on_missing_arm_seed_or_dirty_tree(tmp_path):
         if name == "x1":
             r["rows"] = r["rows"][:-1]
         (d / f"{name}.json").write_text(json.dumps(r))
-    assert k12.reading(d, tmp_path / "none")["void"]
+    assert k12.reading(d, k9_dir)["void"]
     d = tmp_path / "dirty"
     d.mkdir()
     for name in k12.TASKS:
         (d / f"{name}.json").write_text(json.dumps(_result(k12.TASKS[name].key, _scores(), clean=name != "x2")))
-    assert k12.reading(d, tmp_path / "none")["void"]
+    assert k12.reading(d, k9_dir)["void"]
 
 
 # ----------------------------------------------------------------------------------------------- the commands
@@ -339,6 +424,17 @@ def test_run_refuses_without_an_inside_gate(tmp_path, monkeypatch):
     with pytest.raises(RuntimeError, match="run_task reached"):
         k12.main([*args, "--gate", str(other)])
     assert len(called) == 1
+
+
+def test_run_records_the_gate_files_commit_and_tree_state(tmp_path, monkeypatch):
+    gate = {"references": {"E8.75": {"verdict": "inside"}}, "commit": "abc123", "tree_clean": True}
+    (tmp_path / "gate.json").write_text(json.dumps(gate))
+    monkeypatch.setattr(harness, "run_task", lambda *a, **kw: {"rows": []})
+    monkeypatch.setitem(k12._PREP, "fold", {"record": {"n_contrasts": 0}})
+    runs = tmp_path / "runs"
+    k12.main(["run", "--task", "x1", "--out", str(runs), "--data", str(tmp_path / "nowhere")])
+    res = json.loads((runs / "x1.json").read_text())
+    assert res["gate_file"] == {"commit": "abc123", "tree_clean": True} and res["gate"] == {"verdict": "inside"}
 
 
 def test_run_gate_and_read_refuse_to_overwrite(tmp_path):
