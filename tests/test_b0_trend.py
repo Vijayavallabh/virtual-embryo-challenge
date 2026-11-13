@@ -6,7 +6,10 @@ uses, `vec.t1_scope.momentum_shift(..., logf_by_type=...)`. Synthetic data only;
 from __future__ import annotations
 
 import hashlib
+import inspect
+import sys
 from dataclasses import replace
+from pathlib import Path
 
 import anndata as ad
 import numpy as np
@@ -349,3 +352,118 @@ B0_TREND_SHA256 = "8320700817f003ae9b5daff16ac5375fcb8442313f3454e69a048e7bfe878
 def test_b0_trend_output_is_the_campaign_branchs(three):
     st = CANDIDATES["b0_trend"].build(_ctx(three))
     assert hashlib.sha256(np.ascontiguousarray(st.X, dtype=np.float32).tobytes()).hexdigest() == B0_TREND_SHA256
+
+
+# ---------------------------------------------------------------------------------------------------- review follow-up
+# (the main session's review of 272b6d9: a lineage usable at only some earlier stages, the min_cells boundary, the
+# mapping with the clip and held-flat genes, and the record's top-level weights)
+FOUR_INPUTS = {"ref": "T2/E9.5.h5ad", "start": "T2/E8.75.h5ad", "earlier": "T2/E8.5.h5ad",
+               "earliest": "T2/E8.25_late.h5ad"}
+FOUR_DAYS = [8.3, 8.5, 8.75, 9.5]
+TYPES = ["CM", "Endothelial", "Tiny", "Untracked@end"]
+
+
+@pytest.fixture(scope="module")
+def four(three):
+    return {**three, "earliest": _stage(1000, seed=7, shift=2.2, tiny=10)}
+
+
+def _with_lineage_cells(a: ad.AnnData, lineage: str, keep: int) -> ad.AnnData:
+    """`a` with only the first `keep` cells of `lineage` left in it (the others relabelled to a lineage absent
+    elsewhere)."""
+    out = a.copy()
+    m = np.asarray(out.obs["merged"]).astype(object)
+    idx = np.flatnonzero(m == lineage)
+    assert len(idx) > keep
+    m[idx[keep:]] = "Elsewhere"
+    out.obs["merged"] = m.astype(str)
+    return out
+
+
+def _log_means(a: ad.AnnData, lineage: str) -> np.ndarray:
+    m = np.asarray(a.obs["merged"]).astype(str) == lineage
+    return np.log(core.mean_cp10k(core.counts_of(a, list(BOARD.genes))[np.flatnonzero(m)]) + 0.5)
+
+
+@pytest.fixture(scope="module")
+def bt():
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "experiments" / "builds"))
+    import build_test
+
+    return build_test
+
+
+def test_a_lineage_short_at_one_earlier_stage_takes_the_slope_over_its_usable_stages(four, bt):
+    """Endothelial falls one cell below min_cells at `earlier` only: its factor is the budget x the least-squares slope
+    over earliest, start and ref; its record lists those stages and their own transition weights; CM is unaffected.
+    The build record's top-level weights come from all four stage days, each lineage's from its usable days."""
+    n_min = harness._momentum_default("min_cells")
+    view = _view(inputs=FOUR_INPUTS)
+    partial = {**four, "earlier": _with_lineage_cells(four["earlier"], "Endothelial", n_min - 1)}
+    out, rec = harness.b0_trend_factors(_ctx(partial, view=view), list(BOARD.genes), TYPES)
+    full, rec_full = harness.b0_trend_factors(_ctx(four, view=view), list(BOARD.genes), TYPES)
+    assert set(out) == set(full) == {"CM", "Endothelial"}
+    budget = B0_DAMPING * (9.5 - 8.75)
+    y = [_log_means(partial[r], "Endothelial") for r in ("earliest", "start", "ref")]
+    want = harness.trend_log_factor(y, [8.3, 8.75, 9.5], budget)
+    np.testing.assert_allclose(out["Endothelial"], want, atol=1e-12, rtol=0)
+    own = B0_DAMPING * (y[2] - y[1])
+    assert not np.allclose(out["Endothelial"], own) and not np.allclose(out["Endothelial"], full["Endothelial"])
+    np.testing.assert_array_equal(out["CM"], full["CM"])
+    rows = {r["lineage"]: r for r in rec["lineages"]}
+    assert rows["Endothelial"]["stages"] == ["earliest", "start", "ref"]
+    assert rows["Endothelial"]["days"] == [8.3, 8.75, 9.5] and not rows["Endothelial"]["own_factor"]
+    w3 = harness.trend_transition_weights([8.3, 8.75, 9.5]).tolist()
+    w4 = harness.trend_transition_weights(FOUR_DAYS).tolist()
+    assert rows["Endothelial"]["weights"] == w3 and rows["CM"]["weights"] == w4
+    assert rows["CM"] == next(r for r in rec_full["lineages"] if r["lineage"] == "CM")
+    assert rec["stages"] == ["earliest", "earlier", "start", "ref"] and rec["days"] == FOUR_DAYS
+    block = bt._trend_record(rec)  # what the build record shows
+    assert block["weights"] == w4 and block["days"] == FOUR_DAYS
+    shown = {r["lineage"]: r for r in block["lineages"]}
+    assert shown["Endothelial"]["weights"] == w3 and shown["CM"]["weights"] == w4
+    assert shown["Endothelial"]["stages"] == ["earliest", "start", "ref"]
+
+
+@pytest.mark.parametrize("delta, usable", [(0, True), (-1, False)])
+def test_the_min_cells_boundary_is_momentum_shifts_own(three, delta, usable):
+    """An earlier stage with exactly min_cells cells of a lineage is usable, one cell fewer is not; min_cells is
+    momentum_shift's own default (the value B0 runs with), and the record says so."""
+    n_min = inspect.signature(t1_scope.momentum_shift).parameters["min_cells"].default
+    assert harness._momentum_default("min_cells") == n_min
+    inputs = {**three, "earlier": _with_lineage_cells(three["earlier"], "Endothelial", n_min + delta)}
+    out, rec = harness.b0_trend_factors(_ctx(inputs), list(BOARD.genes), TYPES)
+    assert rec["min_cells"] == n_min
+    row = next(r for r in rec["lineages"] if r["lineage"] == "Endothelial")
+    if usable:
+        assert row["stages"] == ["earlier", "start", "ref"] and "Endothelial" in out
+    else:
+        assert row["stages"] == ["start", "ref"] and row["own_factor"] and "Endothelial" not in out
+    assert next(r for r in rec["lineages"] if r["lineage"] == "CM")["stages"] == ["earlier", "start", "ref"]
+
+
+def test_a_mapped_factor_is_clipped_and_keeps_held_flat_genes_at_one(shift_inputs):
+    """With logf_by_type, the clip (max_abs_log_factor) and the held-flat zeros apply to the mapped factor as to the
+    own one: a mapped factor of 3 clipped at log 2 is the mapped factor log 2, and a mapped factor that is nonzero on
+    held-flat genes gives what it gives with those genes zeroed (counts and report)."""
+    start, ref, like, genes = shift_inputs
+    G, cap = len(genes), float(np.log(2.0))
+    kw = {"key": "b0_type", "seed": [7, 3]}
+    big, rep_big = t1_scope.momentum_shift(start, ref, like, 0.5, max_abs_log_factor=cap,
+                                           logf_by_type={"A": np.full(G, 3.0)}, **kw)
+    at_cap, rep_cap = t1_scope.momentum_shift(start, ref, like, 0.5, max_abs_log_factor=cap,
+                                              logf_by_type={"A": np.full(G, cap)}, **kw)
+    np.testing.assert_array_equal(big.layers["counts"].toarray(), at_cap.layers["counts"].toarray())
+    assert rep_big.rows == rep_cap.rows
+    row_a = next(r for r in rep_big.rows if r["type"] == "A")
+    assert row_a["max_abs_log_f"] == pytest.approx(cap, abs=1e-15)
+    held = ["g0", "g1", "g7"]
+    bump = np.linspace(-1.0, 1.0, G) + 0.05
+    zeroed = bump.copy()
+    zeroed[[0, 1, 7]] = 0.0
+    a, rep_a = t1_scope.momentum_shift(start, ref, like, 0.5, held, logf_by_type={"A": bump}, **kw)
+    b, rep_b = t1_scope.momentum_shift(start, ref, like, 0.5, held, logf_by_type={"A": zeroed}, **kw)
+    np.testing.assert_array_equal(a.layers["counts"].toarray(), b.layers["counts"].toarray())
+    assert rep_a.rows == rep_b.rows
+    row = next(r for r in rep_a.rows if r["type"] == "A")
+    assert row["mean_abs_log_f"] == pytest.approx(float(np.abs(zeroed).mean()), abs=1e-15)

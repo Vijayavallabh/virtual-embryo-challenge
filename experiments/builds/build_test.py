@@ -43,13 +43,16 @@ test board no cell count is printed or stored: the record says "max_cells" when 
 
 Usage (DGX, repo root, BLAS threads capped):
   uv run python experiments/builds/build_test.py t1 --out runs/builds/T1_s1.h5ad
-  uv run python experiments/builds/build_test.py heart --entry s1 --out runs/builds/T2heart_s1.h5ad
+  uv run python experiments/builds/build_test.py heart --entry s1 --trend --out runs/builds/T2heart_s1.h5ad
   uv run python experiments/builds/build_test.py embryo --method fgw --out runs/builds/T2embryo_s1.h5ad
   uv run python experiments/builds/build_test.py t1 --cm-share 0.60 --out runs/builds/T1_s2.h5ad
 The commands of the entries as they stand are in experiments/builds/build_all.sh and docs/S2_RULES.md (since
-2026-11-13 T1's two files are `t1 --g-mom --base lib3` and `t1 --g-mom --base mid --cm-share 0.60`).
-  uv run python experiments/builds/build_test.py heart --entry s2_trim --out runs/builds/T2heart_s2.h5ad
+2026-11-13 T1's two files are `t1 --g-mom --base lib3` and `t1 --g-mom --base mid --cm-share 0.60`, and both heart
+files carry --trend: the captain's ruling of 2026-11-13, docs/PLAN.md decision log (w); row H11).
+  uv run python experiments/builds/build_test.py heart --entry s2_trim --trend --out runs/builds/T2heart_s2.h5ad
   uv run python experiments/builds/build_test.py embryo --method fgw_shape0 --out runs/builds/T2embryo_s2.h5ad
+Without --trend the heart builder gives the heart file as it was before that ruling (B0's E9.5 -> E10.5 step alone),
+kept for reproducing the earlier reference set (builds_38616fe).
 """
 
 from __future__ import annotations

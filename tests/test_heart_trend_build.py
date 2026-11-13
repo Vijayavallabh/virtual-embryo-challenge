@@ -131,6 +131,41 @@ def test_trend_flag_is_off_by_default(bt):
 
 
 @pytest.mark.parametrize("entry", ["s1", "s2_trim"])
+def test_the_trend_build_is_b0_trend_on_the_five_stages_seed_and_pool(bt, heart_env, tmp_path, entry):
+    """The file --trend writes is b0_trend (`vec.harness._b0_t2(ctx, trend=True)`) built here independently on the five
+    synthetic stages (E10.5 the reference, E9.5 `start`, the three earlier stages untrimmed), at the build's seed, with
+    the trimmed E10.5 pool as the reference for s2_trim, then the size stand-in: same expression and coordinates. A
+    wiring change in the builder's trend branch (seed, inputs, roles, pool) fails here."""
+    from vec import harness, t2_build
+    from vec.io import COORD_KEY, dense
+
+    out, _, _ = _build(bt, tmp_path, "t", "--entry", entry, "--trend")
+    stages = {f: synthetic_stage(*v) for f, v in STAGES.items()}
+    ref = stages["E10.5.h5ad"]
+    if entry == "s2_trim":
+        keep = t2_build.radial_trim_mask(np.asarray(ref.obsm[COORD_KEY], dtype=float)[:, :3],
+                                         np.asarray(ref.obs["core"], dtype=bool), 0.5)
+        assert 0 < keep.sum() < ref.n_obs
+        ref = ref[keep].copy()
+    days = {"ref": 10.5, "start": 9.5, "a": 8.75, "b": 8.5, "c": 8.3}
+    files = {"ref": None, "start": "E9.5.h5ad", "a": "E8.75.h5ad", "b": "E8.5.h5ad", "c": "E8.25_late.h5ad"}
+    inputs = {r: ref if f is None else stages[f] for r, f in files.items()}
+    view = harness.TaskView(key="expected", task="T2", kind="extrap", setting="heart",
+                            test_board=heart_test_board().key, roles=tuple(days), role_days=days,
+                            role_stems={r: r for r in days}, reference_role="ref", target_day=float("nan"))
+    ctx = harness.BuildContext(task=view, board=harness._candidate_board(heart_test_board()), inputs=inputs,
+                               seed=harness.BUILD_SEED_OFFSET + 1)
+    want = harness._b0_t2(ctx, trend=True)
+    plain = harness._b0_t2(ctx)
+    got = ad.read_h5ad(out)
+    X = dense(got.X).astype(np.float32)
+    assert X.shape == want.X.shape and not np.array_equal(want.X, plain.X)
+    np.testing.assert_array_equal(X, want.X)
+    np.testing.assert_array_equal(np.asarray(got.obsm[COORD_KEY], dtype=np.float32)[:, :3],
+                                  (np.asarray(want.coords, dtype=float) * 1.25).astype(np.float32))
+
+
+@pytest.mark.parametrize("entry", ["s1", "s2_trim"])
 def test_a_build_without_trend_is_todays(bt, heart_env, tmp_path, capsys, entry):
     """The file without --trend is byte for byte the one main's builder wrote before --trend (pinned), it reads E10.5
     and E9.5 only, and its record has no "trend" key."""
