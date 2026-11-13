@@ -413,6 +413,8 @@ def build_embryo(a) -> dict:
                                                            res, genes, 0.5, [a.seed, t2_latent.EXPRESSION_STREAM])
         elif a.expression == "series":  # the harness's series rendering (tries E24a-E24c, E25a-E25b)
             X, expr_rec = t2_build.series_rendered_expression(before, after, res, genes, 0.5, [a.seed, 7])
+        elif a.expression == "render_hi":  # the harness's depth top-up to the deeper bracket (tries E19c and E24b)
+            X, expr_rec = t2_build.depth_rendered_expression(before, after, res, genes, 0.5, [a.seed, 7], mode="hi")
         else:  # the harness's fgw_blend (try E8)
             X, expr_rec = t2_build.blend_expression(before, after, res, genes, 0.5, [a.seed, 7])
         guard = t2_build.cloud_guard(res.coords, res.pool_coords, seed=a.seed, source_weights=res.pool_weights)
@@ -420,7 +422,7 @@ def build_embryo(a) -> dict:
             raise SystemExit(f"cloud guard flags {guard.flags}")
         coords, rec = res.coords, res.record
         if expr_rec is not None:
-            prefix = a.expression if a.expression in ("latent", "series") else "depth"
+            prefix = a.expression if a.expression in ("latent", "series", "render_hi") else "depth"
             rec = {**rec, "expression": a.expression,
                    **{f"{prefix}_{k}": v for k, v in expr_rec.items() if not isinstance(v, (dict, list))
                       and (prefix, k) != ("latent", "retried")}}  # a test build's record holds no cell number
@@ -483,11 +485,13 @@ def build_parser() -> argparse.ArgumentParser:
                            help="fgw = s1; fgw_shape0 = the s2 of docs/S2_RULES.md (E7.5's geometry)")
             p.add_argument("--herd", action="store_true",
                            help="herd each bracket's draw towards its mean expression (try E9; off: the entry so far)")
-            p.add_argument("--expression", choices=("mixture", "depth", "blend", "latent", "series"), default="mixture",
-                           help="fgw methods: the cells as released (the entry), or tries E7 / E8 / E14 / E24 of "
-                                "experiments/harness/TRIES.md (thinned to the predicted depth; blends; a count-model "
-                                "latent interpolation, which needs the gpu dependency group; the shallower bracket's "
-                                "cells in the deeper bracket's run profile, no entry until the captain rules)")
+            p.add_argument("--expression", choices=("mixture", "depth", "blend", "latent", "series", "render_hi"),
+                           default="mixture",
+                           help="fgw methods: the cells as released (the entry), or tries E7, E8, E14, E24 and E19c "
+                                "of experiments/harness/TRIES.md: thinned to the predicted depth; blends; a count "
+                                "model's latent interpolation (needs the gpu dependency group); the shallower "
+                                "bracket's cells in the deeper bracket's run profile; every cell topped up to the "
+                                "deeper bracket's depth. Neither of the last two is an entry until the captain rules")
             p.add_argument("--move-coupling", choices=t2_build.MOVE_COUPLINGS, default=t2_build.MOVE_COUPLINGS[0],
                            help="fgw methods: which coupling sets the moves: fgw (the entry) or aligned (try E10 of "
                                 "experiments/harness/TRIES.md: an exact transport in the rotated common frame)")

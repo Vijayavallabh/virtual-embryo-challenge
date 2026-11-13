@@ -319,8 +319,10 @@ def test_fgw_latent_keeps_fgw_geometry_and_changes_only_the_expression(monkeypat
 def test_the_expression_option_is_only_added_for_the_new_try():
     src = (REPO / "experiments" / "builds" / "build_test.py").read_text()
     assert '"latent"' in src and 'with_partners=a.expression in ("blend", "latent")' in src
-    # the entry's default stays the released cells ("series" joined the choices with tries E24 and E25, no entry)
-    assert 'choices=("mixture", "depth", "blend", "latent", "series"), default="mixture"' in src
+    # the entry's default stays the released cells ("series" joined the choices with tries E24 and E25, "render_hi"
+    # with request R-A's second option; neither is an entry)
+    assert 'choices=("mixture", "depth", "blend", "latent", "series", "render_hi"),' in src
+    assert src.count('default="mixture"') == 1
     sys.path.insert(0, str(REPO / "experiments" / "builds"))
     import build_test
 
@@ -329,6 +331,8 @@ def test_the_expression_option_is_only_added_for_the_new_try():
     assert ap.parse_args(base).expression == "mixture" and ap.parse_args(base).seed >= harness.BUILD_SEED_OFFSET
     assert ap.parse_args([*base, "--expression", "latent"]).expression == "latent"
     assert ap.parse_args([*base, "--expression", "series"]).expression == "series"
+    assert ap.parse_args([*base, "--expression", "render_hi"]).expression == "render_hi"
+    assert 'depth_rendered_expression(before, after, res, genes, 0.5, [a.seed, 7], mode="hi")' in src
 
 
 # ------------------------------------------------------------------------------------------------ the fidelity gate N18
