@@ -1,0 +1,977 @@
+{
+ "label": "forecast of our leaderboard total from committed practice results only: aggregation, not a try; no test score and no leaderboard figure enters any world, weight or distribution",
+ "total": "T1 + T3 + (heart + embryo) / 2, each board at the better of its two uploads",
+ "correlation": "boards independent (estimate.py's assumption; no committed result links two boards' hidden facts); within a board the new worlds independent of the old ones",
+ "judgement_parameters": {
+  "t3_standin_A": {
+   "central": 0.5,
+   "low": 0.25,
+   "high": 0.75,
+   "what": "T3: weight of stand-in A (central = estimate.T3_WEIGHTS_K2A)"
+  },
+  "emb_p_deep": {
+   "central": 0.45,
+   "low": 0.3,
+   "high": 0.6,
+   "what": "embryo: P(E7.75 shares its deeper bracket's profile)"
+  },
+  "t3_q_carry": {
+   "central": 0.6,
+   "low": 0.35,
+   "high": 0.85,
+   "what": "T3: P(the WT-only factor's Gata4 gain carries to beta-catenin)"
+  },
+  "t1_p_deep": {
+   "central": 0.7142857142857143,
+   "low": 0.3333333333333333,
+   "high": 0.8571428571428571,
+   "what": "T1: P(E12.5 at least as deep as library 3)"
+  },
+  "t1_k": {
+   "central": 0.2,
+   "low": 0.1,
+   "high": 0.33,
+   "what": "T1: real-gap size of T30's zero-gap base effect"
+  }
+ },
+ "comparison_lines": {
+  "197.00": "round line",
+  "200.00": "round line",
+  "203.00": "6th Human total, screened read 2026-11-13 (last prize)",
+  "205.32": "3rd Human total, screened read 2026-11-13",
+  "209.00": "the captain's gate",
+  "215.41": "1st Human total, screened read 2026-11-13"
+ },
+ "draws": 1000000,
+ "rng_seed": 20261105,
+ "sets": {
+  "2026-11-05": {
+   "files": "old",
+   "parameters": {
+    "t3_standin_A": 0.5,
+    "emb_p_deep": 0.45,
+    "t3_q_carry": 0.6,
+    "t1_p_deep": 0.7142857142857143,
+    "t1_k": 0.2,
+    "t1_prior": "uniform",
+    "heart_prior": "uniform"
+   },
+   "mean_exact": 191.51279688633718,
+   "mean_draws": 191.5143818455867,
+   "median": 192.88584803752153,
+   "percentiles": {
+    "5": 174.02884993070603,
+    "25": 182.61209012515056,
+    "50": 192.88584803752153,
+    "75": 200.58798558447003,
+    "90": 203.9677155586727,
+    "95": 205.56405251994752
+   },
+   "board_mean_better_of_two": {
+    "T1": 69.56996877899542,
+    "heart": 53.85316177680092,
+    "embryo": 60.86546569526639,
+    "T3": 64.58351437130811
+   },
+   "board_mean_first_upload": {
+    "T1": 64.82714142354978,
+    "heart": 49.19517981245728,
+    "embryo": 59.950056563606914,
+    "T3": 50.83865853445631
+   },
+   "total_first_round_mean": 170.23841814603819,
+   "p_at_least": {
+    "197.00": 0.387313,
+    "200.00": 0.276266,
+    "203.00": 0.139126,
+    "205.32": 0.056285,
+    "209.00": 0.00431,
+    "215.41": 0.0
+   },
+   "tail": {
+    "203.00": {
+     "draws": 139126,
+     "boards": {
+      "T1": {
+       "mean_in_tail": 72.02185857028707,
+       "worlds": {
+        "truth b0.05_c0.15": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.00395325100987594
+        },
+        "truth b0.05_c0.45": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 5.031410376205742e-05
+        },
+        "truth b0.05_c0.6": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.004240760174230553
+        },
+        "truth b0.05_c0.75": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.006102382013426678
+        },
+        "truth b0.05_cown": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.002436640167905352
+        },
+        "truth b0.4_c0.15": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.13478429624944296
+        },
+        "truth b0.4_c0.45": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.052506361140261346
+        },
+        "truth b0.4_c0.6": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.08591492603826748
+        },
+        "truth b0.4_c0.75": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.09620775412216265
+        },
+        "truth b0.4_cown": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.08971723473685723
+        },
+        "truth bown_c0.15": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.12227045987090839
+        },
+        "truth bown_c0.45": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.07309920503716055
+        },
+        "truth bown_c0.6": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.12367925477624599
+        },
+        "truth bown_c0.75": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.1198410074321119
+        },
+        "truth bown_cown": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.08519615312738094
+        }
+       }
+      },
+      "heart": {
+       "mean_in_tail": 56.54540766415938,
+       "worlds": {
+        "heart (old procedure)": {
+         "weight": 1.0000000000000004,
+         "share_of_tail": 1.0
+        }
+       }
+      },
+      "embryo": {
+       "mean_in_tail": 61.899450256967306,
+       "worlds": {
+        "counted backtests": {
+         "weight": 1.0,
+         "share_of_tail": 1.0
+        }
+       }
+      },
+      "T3": {
+       "mean_in_tail": 73.971126650957,
+       "worlds": {
+        "stand-in A": {
+         "weight": 0.5,
+         "share_of_tail": 1.0
+        },
+        "stand-in B": {
+         "weight": 0.25,
+         "share_of_tail": 0.0
+        },
+        "stand-in K2a": {
+         "weight": 0.25000000000000006,
+         "share_of_tail": 0.0
+        }
+       }
+      }
+     }
+    },
+    "209.00": {
+     "draws": 4310,
+     "boards": {
+      "T1": {
+       "mean_in_tail": 73.01288060251503,
+       "worlds": {
+        "truth b0.05_c0.15": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.0
+        },
+        "truth b0.05_c0.45": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.0
+        },
+        "truth b0.05_c0.6": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.0
+        },
+        "truth b0.05_c0.75": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.0
+        },
+        "truth b0.05_cown": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.0
+        },
+        "truth b0.4_c0.15": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.22761020881670532
+        },
+        "truth b0.4_c0.45": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.005568445475638051
+        },
+        "truth b0.4_c0.6": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.05382830626450116
+        },
+        "truth b0.4_c0.75": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.07030162412993039
+        },
+        "truth b0.4_cown": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.048955916473317866
+        },
+        "truth bown_c0.15": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.1691415313225058
+        },
+        "truth bown_c0.45": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.01716937354988399
+        },
+        "truth bown_c0.6": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.19930394431554524
+        },
+        "truth bown_c0.75": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.1691415313225058
+        },
+        "truth bown_cown": {
+         "weight": 0.06666666666666665,
+         "share_of_tail": 0.03897911832946636
+        }
+       }
+      },
+      "heart": {
+       "mean_in_tail": 60.364980601060815,
+       "worlds": {
+        "heart (old procedure)": {
+         "weight": 1.0000000000000004,
+         "share_of_tail": 1.0
+        }
+       }
+      },
+      "embryo": {
+       "mean_in_tail": 62.982164433732166,
+       "worlds": {
+        "counted backtests": {
+         "weight": 1.0,
+         "share_of_tail": 1.0
+        }
+       }
+      },
+      "T3": {
+       "mean_in_tail": 75.07629576724452,
+       "worlds": {
+        "stand-in A": {
+         "weight": 0.5,
+         "share_of_tail": 1.0
+        },
+        "stand-in B": {
+         "weight": 0.25,
+         "share_of_tail": 0.0
+        },
+        "stand-in K2a": {
+         "weight": 0.25000000000000006,
+         "share_of_tail": 0.0
+        }
+       }
+      }
+     }
+    }
+   },
+   "sensitivity": {
+    "t3_standin_A": {
+     "what": "T3: weight of stand-in A (central = estimate.T3_WEIGHTS_K2A)",
+     "central": 0.5,
+     "low": {
+      "value": 0.25,
+      "mean": 187.13854209262263,
+      "p_203": 0.069546,
+      "p_209": 0.002102
+     },
+     "high": {
+      "value": 0.75,
+      "mean": 195.8893139819166,
+      "p_203": 0.208544,
+      "p_209": 0.006444
+     }
+    },
+    "t1_prior": {
+     "what": "t1: the hedge file's stated priors (OLD: uniform)",
+     "central": "uniform",
+     "own_third": {
+      "mean": 191.98481850370376,
+      "p_203": 0.149749,
+      "p_209": 0.003967
+     },
+     "blood_own_cm_own_up": {
+      "mean": 193.65872624936898,
+      "p_203": 0.209308,
+      "p_209": 0.007232
+     },
+     "cm_0.45_up": {
+      "mean": 191.28115969509454,
+      "p_203": 0.130652,
+      "p_209": 0.003659
+     },
+     "cm_own_blood_varies": {
+      "mean": 191.268190006902,
+      "p_203": 0.123477,
+      "p_209": 0.001975
+     }
+    },
+    "heart_prior": {
+     "what": "heart: the hedge file's stated priors (OLD: uniform)",
+     "central": "uniform",
+     "own_third": {
+      "mean": 191.33480856202948,
+      "p_203": 0.129188,
+      "p_209": 0.003591
+     },
+     "released": {
+      "mean": 190.4490504817031,
+      "p_203": 0.081574,
+      "p_209": 3e-06
+     },
+     "radial_family": {
+      "mean": 190.63214715677458,
+      "p_203": 0.094962,
+      "p_209": 9.6e-05
+     },
+     "thin_family": {
+      "mean": 192.8367787145785,
+      "p_203": 0.205104,
+      "p_209": 0.01074
+     }
+    }
+   }
+  },
+  "2026-11-13": {
+   "files": "new",
+   "parameters": {
+    "t3_standin_A": 0.5,
+    "emb_p_deep": 0.45,
+    "t3_q_carry": 0.6,
+    "t1_p_deep": 0.7142857142857143,
+    "t1_k": 0.2,
+    "t1_prior": "uniform",
+    "heart_prior": "uniform"
+   },
+   "mean_exact": 193.71231752154074,
+   "mean_draws": 193.718953734779,
+   "median": 194.46633857639512,
+   "percentiles": {
+    "5": 177.7014149510977,
+    "25": 186.33590389076875,
+    "50": 194.46633857639512,
+    "75": 201.70615792221722,
+    "90": 205.42190799602594,
+    "95": 207.24539664285692
+   },
+   "board_mean_better_of_two": {
+    "T1": 70.1418689939369,
+    "heart": 53.85316177680092,
+    "embryo": 62.124346391192084,
+    "T3": 65.58169444360736
+   },
+   "board_mean_first_upload": {
+    "T1": 66.00311545681053,
+    "heart": 49.19517981245728,
+    "embryo": 59.95005656360692,
+    "T3": 54.26017965338628
+   },
+   "total_first_round_mean": 174.83591329822892,
+   "p_at_least": {
+    "197.00": 0.424825,
+    "200.00": 0.32116,
+    "203.00": 0.194171,
+    "205.32": 0.103359,
+    "209.00": 0.021267,
+    "215.41": 7.6e-05
+   },
+   "tail": {
+    "203.00": {
+     "draws": 194171,
+     "boards": {
+      "T1": {
+       "mean_in_tail": 72.66323608973792,
+       "worlds": {
+        "depth 0.35": {
+         "weight": 0.14285714285714282,
+         "share_of_tail": 0.10566974470956014
+        },
+        "truth b0.05_c0.15": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.021893073630974758
+        },
+        "truth b0.05_c0.45": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.0005150099654428312
+        },
+        "truth b0.05_c0.6": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.00732859180825149
+        },
+        "truth b0.05_c0.75": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.008755169412528133
+        },
+        "truth b0.05_cown": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.01578505544082278
+        },
+        "truth b0.4_c0.15": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.13056017633941217
+        },
+        "truth b0.4_c0.45": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.05702705347348472
+        },
+        "truth b0.4_c0.6": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.0761596736896859
+        },
+        "truth b0.4_c0.75": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.08139217493858505
+        },
+        "truth b0.4_cown": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.10593239979193597
+        },
+        "truth bown_c0.15": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.12308223164118226
+        },
+        "truth bown_c0.45": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.06961904712856193
+        },
+        "truth bown_c0.6": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.10119430810986194
+        },
+        "truth bown_c0.75": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.09899521555742102
+        },
+        "truth bown_cown": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.10176081907184904
+        },
+        "depth 0.68": {
+         "weight": 0.14285714285714282,
+         "share_of_tail": 0.10507748324930088
+        },
+        "depth 1.0": {
+         "weight": 0.14285714285714282,
+         "share_of_tail": 0.14712804692770803
+        },
+        "depth 1.37": {
+         "weight": 0.5714285714285713,
+         "share_of_tail": 0.642124725113431
+        }
+       }
+      },
+      "heart": {
+       "mean_in_tail": 55.686861174457604,
+       "worlds": {
+        "heart (old procedure)": {
+         "weight": 1.0000000000000004,
+         "share_of_tail": 1.0
+        }
+       }
+      },
+      "embryo": {
+       "mean_in_tail": 63.38777050630397,
+       "worlds": {
+        "D: like its deeper bracket": {
+         "weight": 0.4500000000000002,
+         "share_of_tail": 0.5269633467407594
+        },
+        "O: other": {
+         "weight": 0.55,
+         "share_of_tail": 0.47303665325924055
+        }
+       }
+      },
+      "T3": {
+       "mean_in_tail": 73.77093783473391,
+       "worlds": {
+        "factor carries": {
+         "weight": 0.6,
+         "share_of_tail": 0.6006561226959741
+        },
+        "stand-in A": {
+         "weight": 0.5,
+         "share_of_tail": 0.9991038826601295
+        },
+        "stand-in B": {
+         "weight": 0.25,
+         "share_of_tail": 0.0008961173398705265
+        },
+        "stand-in K2a": {
+         "weight": 0.2500000000000001,
+         "share_of_tail": 0.0
+        },
+        "factor vanishes": {
+         "weight": 0.4000000000000001,
+         "share_of_tail": 0.3993438773040259
+        }
+       }
+      }
+     }
+    },
+    "209.00": {
+     "draws": 21267,
+     "boards": {
+      "T1": {
+       "mean_in_tail": 74.18142090729053,
+       "worlds": {
+        "depth 0.35": {
+         "weight": 0.14285714285714282,
+         "share_of_tail": 0.046127803639441384
+        },
+        "truth b0.05_c0.15": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.0015516998166172945
+        },
+        "truth b0.05_c0.45": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.0
+        },
+        "truth b0.05_c0.6": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.0
+        },
+        "truth b0.05_c0.75": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.00018808482625664176
+        },
+        "truth b0.05_cown": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.0018808482625664175
+        },
+        "truth b0.4_c0.15": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.2600742935063714
+        },
+        "truth b0.4_c0.45": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.012272534913245873
+        },
+        "truth b0.4_c0.6": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.03390228993275968
+        },
+        "truth b0.4_c0.75": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.040532280058306294
+        },
+        "truth b0.4_cown": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.1279917242676447
+        },
+        "truth bown_c0.15": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.21578031692293226
+        },
+        "truth bown_c0.45": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.02233507311797621
+        },
+        "truth bown_c0.6": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.08680114731744015
+        },
+        "truth bown_c0.75": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.07960690271312362
+        },
+        "truth bown_cown": {
+         "weight": 0.06666666666666667,
+         "share_of_tail": 0.11708280434475948
+        },
+        "depth 0.68": {
+         "weight": 0.14285714285714282,
+         "share_of_tail": 0.05021864861052335
+        },
+        "depth 1.0": {
+         "weight": 0.14285714285714282,
+         "share_of_tail": 0.13678468989514272
+        },
+        "depth 1.37": {
+         "weight": 0.5714285714285713,
+         "share_of_tail": 0.7668688578548926
+        }
+       }
+      },
+      "heart": {
+       "mean_in_tail": 58.511925160691355,
+       "worlds": {
+        "heart (old procedure)": {
+         "weight": 1.0000000000000004,
+         "share_of_tail": 1.0
+        }
+       }
+      },
+      "embryo": {
+       "mean_in_tail": 65.4130216071537,
+       "worlds": {
+        "D: like its deeper bracket": {
+         "weight": 0.4500000000000002,
+         "share_of_tail": 0.6866506794564349
+        },
+        "O: other": {
+         "weight": 0.55,
+         "share_of_tail": 0.3133493205435651
+        }
+       }
+      },
+      "T3": {
+       "mean_in_tail": 74.38252374113647,
+       "worlds": {
+        "factor carries": {
+         "weight": 0.6,
+         "share_of_tail": 0.6003667654112005
+        },
+        "stand-in A": {
+         "weight": 0.5,
+         "share_of_tail": 1.0
+        },
+        "stand-in B": {
+         "weight": 0.25,
+         "share_of_tail": 0.0
+        },
+        "stand-in K2a": {
+         "weight": 0.2500000000000001,
+         "share_of_tail": 0.0
+        },
+        "factor vanishes": {
+         "weight": 0.4000000000000001,
+         "share_of_tail": 0.39963323458879957
+        }
+       }
+      }
+     }
+    }
+   },
+   "sensitivity": {
+    "t3_standin_A": {
+     "what": "T3: weight of stand-in A (central = estimate.T3_WEIGHTS_K2A)",
+     "central": 0.5,
+     "low": {
+      "value": 0.25,
+      "mean": 189.84650152506688,
+      "p_203": 0.097555,
+      "p_209": 0.010635
+     },
+     "high": {
+      "value": 0.75,
+      "mean": 197.5917721967949,
+      "p_203": 0.291551,
+      "p_209": 0.032045
+     }
+    },
+    "emb_p_deep": {
+     "what": "embryo: P(E7.75 shares its deeper bracket's profile)",
+     "central": 0.45,
+     "low": {
+      "value": 0.3,
+      "mean": 193.5209409804655,
+      "p_203": 0.185512,
+      "p_209": 0.018308
+     },
+     "high": {
+      "value": 0.6,
+      "mean": 193.92276650519526,
+      "p_203": 0.20311,
+      "p_209": 0.02417
+     }
+    },
+    "t3_q_carry": {
+     "what": "T3: P(the WT-only factor's Gata4 gain carries to beta-catenin)",
+     "central": 0.6,
+     "low": {
+      "value": 0.35,
+      "mean": 193.3257715229518,
+      "p_203": 0.194591,
+      "p_209": 0.021215
+     },
+     "high": {
+      "value": 0.85,
+      "mean": 194.10949951382509,
+      "p_203": 0.193856,
+      "p_209": 0.021337
+     }
+    },
+    "t1_p_deep": {
+     "what": "T1: P(E12.5 at least as deep as library 3)",
+     "central": 0.7142857142857143,
+     "low": {
+      "value": 0.3333333333333333,
+      "mean": 193.1062493789854,
+      "p_203": 0.166817,
+      "p_209": 0.013869
+     },
+     "high": {
+      "value": 0.8571428571428571,
+      "mean": 193.94869637291845,
+      "p_203": 0.204356,
+      "p_209": 0.024194
+     }
+    },
+    "t1_k": {
+     "what": "T1: real-gap size of T30's zero-gap base effect",
+     "central": 0.2,
+     "low": {
+      "value": 0.1,
+      "mean": 193.42433815758397,
+      "p_203": 0.180532,
+      "p_209": 0.014545
+     },
+     "high": {
+      "value": 0.33,
+      "mean": 194.1531359874036,
+      "p_203": 0.212872,
+      "p_209": 0.035502
+     }
+    },
+    "t1_prior": {
+     "what": "t1: the hedge file's stated priors (OLD: uniform)",
+     "central": "uniform",
+     "own_third": {
+      "mean": 194.40341630067329,
+      "p_203": 0.224244,
+      "p_209": 0.02578
+     },
+     "blood_own_cm_own_up": {
+      "mean": 195.67195466551777,
+      "p_203": 0.271717,
+      "p_209": 0.024475
+     },
+     "cm_0.45_up": {
+      "mean": 192.97675595312532,
+      "p_203": 0.161675,
+      "p_209": 0.009961
+     },
+     "cm_own_blood_varies": {
+      "mean": 194.22765758124004,
+      "p_203": 0.218335,
+      "p_209": 0.026294
+     }
+    },
+    "heart_prior": {
+     "what": "heart: the hedge file's stated priors (OLD: uniform)",
+     "central": "uniform",
+     "own_third": {
+      "mean": 193.53938045122158,
+      "p_203": 0.185816,
+      "p_209": 0.018558
+     },
+     "released": {
+      "mean": 192.65362237089508,
+      "p_203": 0.143764,
+      "p_209": 0.004867
+     },
+     "radial_family": {
+      "mean": 192.83671904596665,
+      "p_203": 0.154083,
+      "p_209": 0.007192
+     },
+     "thin_family": {
+      "mean": 195.0413506037704,
+      "p_203": 0.254149,
+      "p_209": 0.042426
+     }
+    }
+   }
+  }
+ },
+ "one_board_at_a_time": {
+  "T1": {
+   "board_mean_change": 0.5719002149414791,
+   "total_mean": 192.09331240769234,
+   "p_203": 0.167015,
+   "p_209": 0.011921
+  },
+  "embryo": {
+   "board_mean_change": 1.258880695925697,
+   "total_mean": 192.14223187540532,
+   "p_203": 0.167549,
+   "p_209": 0.010807
+  },
+  "T3": {
+   "board_mean_change": 0.9981800722992489,
+   "total_mean": 192.51217314285498,
+   "p_203": 0.138836,
+   "p_209": 0.004307
+  }
+ },
+ "checks": [
+  "T1 grid (experiments/s2_hedge/results/t1_grid/hedge_bown_cown.json): the per-seed runs give the hedge file's bown_cown alone under 5 stated priors (largest gap 2.1e-14)",
+  "T1 grid (experiments/s2_hedge/results/t1_grid/hedge_bown_cown.json): the per-seed runs give the hedge file's the better of bown_cown and bown_c0.6 under 5 stated priors (largest gap 1.4e-14)",
+  "T1 grid: the per-seed runs give payoff.json's mean[truth][bown_c0.6] on 15 truths (largest gap 0.0e+00)",
+  "T1 grid: the per-seed runs give payoff.json's mean[truth][bown_cown] on 15 truths (largest gap 0.0e+00)",
+  "T1: diag_v1's B0 is the harness's B0 (d2_v1) seed for seed (largest gap 0.0e+00)",
+  "T1: the floor is 50 on every truth and seed of the grid and on the backtest (largest gap 0.0e+00)",
+  "T3 T3/Gata4->Mab21l2: the floor is 50 on every seed (largest gap 0.0e+00)",
+  "T3 rep1: K8b's gain over s2_form is the row's 4.72",
+  "T3 rep1: the records' seed means are gata4_summary.csv's t3 (3 variants) (largest gap 1.4e-14)",
+  "T3 rep2: K8b's gain over s2_form is the row's 7.12",
+  "T3 rep2: the records' seed means are gata4_summary.csv's t3 (3 variants) (largest gap 1.4e-14)",
+  "T30 d0.35 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d0.35 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d0.35 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d0.68 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d0.68 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d0.68 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d1.0 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d1.0 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d1.0 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d1.37 cm0.45: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d1.37 cm0.60: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "T30 d1.37 cmown: per-seed files give pricing.json's arm means (largest gap 0.0e+00)",
+  "embryo T2e/E6.75+E7.5->E7.25: emb_shape_v1's fgw is emb_fgw_v1's seed for seed (largest gap 0.0e+00)",
+  "embryo T2e/E6.75+E7.5->E7.25: the floor is 50 on every seed (largest gap 0.0e+00)",
+  "embryo T2e/E7.25+E8.0->E7.5: emb_shape_v1's fgw is emb_fgw_v1's seed for seed (largest gap 0.0e+00)",
+  "embryo T2e/E7.25+E8.0->E7.5: the floor is 50 on every seed (largest gap 0.0e+00)",
+  "embryo e725: per-seed change gives E28's value (largest gap 0.0e+00)",
+  "embryo e75: per-seed change gives E28's value (largest gap 7.8e-15)",
+  "embryo half: per-seed change gives E28's value (largest gap 1.4e-14)",
+  "embryo late: per-seed change gives E28's value (largest gap 1.6e-14)",
+  "embryo new1: per-seed change gives E28's value (largest gap 2.3e-14)",
+  "embryo new2: per-seed change gives E28's value (largest gap 0.0e+00)",
+  "embryo x1: per-seed change gives E28's value (largest gap 2.7e-15)",
+  "embryo x2: per-seed change gives E28's value (largest gap 0.0e+00)",
+  "embryo x3: per-seed change gives E28's value (largest gap 8.9e-16)",
+  "embryo: all nine E28 tasks found",
+  "heart T2h/<=E8.75->E10.5 (experiments/s2_hedge/results/heart_scope_e875/hedge_hold.json): the per-seed runs give the hedge file's hold alone under 5 stated priors (largest gap 1.4e-14)",
+  "heart T2h/<=E8.75->E10.5 (experiments/s2_hedge/results/heart_scope_e875/hedge_hold.json): the per-seed runs give the hedge file's the better of hold and half_radial under 5 stated priors (largest gap 7.1e-15)",
+  "heart T2h/<=E8.75->E10.5: the floor is 50 on the released truth and on the backtest (largest gap 0.0e+00)",
+  "heart T2h/<=E9.5->E10.5 (experiments/s2_hedge/results/heart_scope/hedge_hold.json): the per-seed runs give the hedge file's hold alone under 5 stated priors (largest gap 7.1e-15)",
+  "heart T2h/<=E9.5->E10.5 (experiments/s2_hedge/results/heart_scope/hedge_hold.json): the per-seed runs give the hedge file's the better of hold and half_radial under 5 stated priors (largest gap 2.1e-14)",
+  "heart T2h/<=E9.5->E10.5: the floor is 50 on the released truth and on the backtest (largest gap 0.0e+00)",
+  "heart unchanged",
+  "old files, T1: rebuilt outcomes equal estimate.py's",
+  "old files, T3: rebuilt outcomes equal estimate.py's",
+  "old files, embryo: rebuilt outcomes equal estimate.py's",
+  "old files, heart: rebuilt outcomes equal estimate.py's",
+  "old files: estimate.py's boards at 200,000 draws give path_to_target's committed mean exactly",
+  "old files: the mean matches the committed upper reading (estimate_2026-11-05.json readings.A.Overall 191.51279688633716) within 0.5",
+  "old files: the mean matches the committed upper reading (upload_gate.json estimate_reproducible.better_of_two 191.51) within 0.5",
+  "a fixed seed gives identical output (the whole forecast run twice)"
+ ],
+ "inputs_sha256": {
+  "experiments/gate/estimate.py": "425c5a5594632c081c3d512687cf852c83d8fa495e7cbcbfb7dd14a6d185e281",
+  "experiments/gate/forecast.py": "6ad5a5a137a7ae1d8a73296ef4ef79fa86b161e73a6d1386d1f7921e6ef0f6be",
+  "experiments/gate/path_to_target.py": "0c9f558e3a3d10db184445aba7871db359fc0b22c16038caf1cfa6b1333125ac",
+  "experiments/gate/results/estimate_2026-11-05.json": "f18cdf9748625de28a30ffa9c75e6ec43a429cc615ea5c11c5507dd4eff56468",
+  "experiments/harness/results/d2_v1/tasks/T1_E9.5_E10.5_chamber.json": "ad5cef9cd5e1be2693295c60c6be2b6c5dd020064e100d4d91e8052e75385eab",
+  "experiments/harness/results/d2_v1/tasks/T2h_E8.75_E10.5.json": "abbdc05fe3ea40e71b089569c0dfefef2ed43f9da0538fc80959621929102cc7",
+  "experiments/harness/results/d2_v1/tasks/T2h_E9.5_E10.5.json": "7cc830d376fb890916fa97355740cfa5e3ff96d1a9002755776a64d8ec692c93",
+  "experiments/harness/results/e24_pricing/tasks/T2e_E6.75_E7.5_E7.25.json": "f644fa232da596d7272ee1a00ad6e16933df064cb292cac1b0b7f4b392412801",
+  "experiments/harness/results/e24_pricing/tasks/T2e_E7.25_E8.0_E7.5.json": "0ff1adc7e4ada571d971271f4cde850fe41601ded86207ae357eefde6b1c10ef",
+  "experiments/harness/results/e24_pricing/tasks/T2e_E7.5_E8.25_late_E8.0.json": "fd6c961b82c823af5638b9ecda3b00dc4a5a06ae8b6b9242ebd7067722dec416",
+  "experiments/harness/results/e24_pricing/tasks/T2e_E7.5_E8.5_E8.0.json": "5caadc156089a0380cd7471bf00902e43ed9dce84b248326ab42733c2b47de74",
+  "experiments/harness/results/e24_pricing/tasks/T2e_E7.5_E8.5_E8.25_late.json": "57ffa7dd40e666582c3663a0a487745407c2c9b0b479a8b36621dc3f72b8dbd5",
+  "experiments/harness/results/e24_pricing/tasks/T2e_E7.5_E8.75_E8.5.json": "bb49906cda87b27fe8c9b6ac819c128b798ed3c8394db446a43474c4cf8fccb2",
+  "experiments/harness/results/e25_pairs/tasks/T2e_E6.75_E7.5_E7.25.json": "8a4a6249cc5cdf83f1f88b718c1f7a1f80edb6e11999d74b7ef57ff08a12e3ec",
+  "experiments/harness/results/e25_pairs/tasks/T2e_E7.25_E8.0_E7.5.json": "224d2aef868effcd724f8358832174957e2338de49de6eacab5bd0b02e3e7d64",
+  "experiments/harness/results/e25_pairs/tasks/T2e_E7.5_E8.25_late_E8.0.json": "499a9b5db42448799d98257c56f41f02381e24df44673215357c86988943e2d7",
+  "experiments/harness/results/e25_pairs/tasks/T2e_E7.5_E8.5_E8.0.json": "4355130573dbcfd775761bab6f1b18f143525bf09784826d341c5db5545e1267",
+  "experiments/harness/results/e25_pairs/tasks/T2e_E7.5_E8.5_E8.25_late.json": "4ff694eeaff1c6ef2b472e667de0baa9f652ff1efa7f107d4dd8cc746883e177",
+  "experiments/harness/results/e25_pairs/tasks/T2e_E7.5_E8.75_E8.5.json": "996e147227b92982c02e540cfd0948787290e58b0f61730a00df656a6c27f546",
+  "experiments/harness/results/e28_nine_tasks/nine_tasks.json": "361c32063ccfa3145496d04693e66621ad0309637bc48a90737f6d23f8d8cdab",
+  "experiments/harness/results/e28_nine_tasks/tasks/T2e_E8.0_E8.75_E8.25_late.json": "ad25914d1b46bd7a85c92e543f16fbf9243f8720d3c273d295d80cd724124215",
+  "experiments/harness/results/e28_nine_tasks/tasks/T2e_E8.0_E8.75_E8.5.json": "9d95a7d79449a0ca58519219854602d801fd12657974c6516dd122277e10be7d",
+  "experiments/harness/results/e28_nine_tasks/tasks/T2e_E8.25_late_E8.75_E8.5.json": "cbbe06a27ac0467a4ba5268ce4ed0cdbdb5319ca6002825427a7429008e544c5",
+  "experiments/harness/results/emb_fgw_v1/tasks/T2e_E6.75_E7.5_E7.25.json": "0579ef165aa0d1f7ebea91f73eb30fe3d200a2165e09dc3c254ddfe9ded178e1",
+  "experiments/harness/results/emb_fgw_v1/tasks/T2e_E7.25_E8.0_E7.5.json": "50efea88a03f54a6d8e39fc89d34c43c5284ab938e471abdf5e442afc932e315",
+  "experiments/harness/results/emb_shape_v1/tasks/T2e_E6.75_E7.5_E7.25.json": "2e58860ac1014e9a02c87caafaf420b58b1974fea37d213266f14cf68266c426",
+  "experiments/harness/results/emb_shape_v1/tasks/T2e_E7.25_E8.0_E7.5.json": "f8545e9002474a66d1d3e7ba4be4ad01b1e7fabda927a72bffd04de3356625e0",
+  "experiments/harness/results/t3_k2_v1/tasks/T3_Gata4_Mab21l2.json": "99bd0535fd176d26115fd1ed000bcfc854a4c37fa21763763146b5b35d895269",
+  "experiments/s2_hedge/results/heart_scope/hedge_hold.json": "64734499b20e2ac0c64a3991fdf600aa67e39e74ca5dd1cbf08932129aaab6cb",
+  "experiments/s2_hedge/results/heart_scope_e875/hedge_hold.json": "7eccbc6d1aec19fdc6630c35b270c290a9edb178233993af482e03a9b4e2db3e",
+  "experiments/s2_hedge/results/per_seed/heart-scope-e875/0-1/heart-scope.json": "2a8d8708b4498a86298d0589a1385c8d51499e02d4b79e031f8b98db732c7d33",
+  "experiments/s2_hedge/results/per_seed/heart-scope-e875/2-3/heart-scope.json": "d997dca89bf932cb24d51921b300b853de0cbc05b2b0db41528ddcd893ebc7c6",
+  "experiments/s2_hedge/results/per_seed/heart-scope-e875/4-5/heart-scope.json": "c3b674b906a06c16794232ab074748b0dc59ac227021b245e6cd9103cd5b41d1",
+  "experiments/s2_hedge/results/per_seed/heart-scope-e875/6-7/heart-scope.json": "85b3d33fed9f8542b4825130d68f2a86bd707604ac5f0e42ff570ad8f76f2b88",
+  "experiments/s2_hedge/results/per_seed/heart-scope-e875/8-9/heart-scope.json": "9e8f6582962f37ffb37a4d6d6d1959d1f2fcf36d0884b6114551a9be1bdee02a",
+  "experiments/s2_hedge/results/per_seed/heart-scope/0-1/heart-scope.json": "2411bb6adebf47a2577b4e9a298cb4fa2a8013df06beeaadbd1bd499bac21ef5",
+  "experiments/s2_hedge/results/per_seed/heart-scope/2-3/heart-scope.json": "52685fce43a5c11762b8ddea396b83d6b5e86bdd866db0a0bdb750a53000a550",
+  "experiments/s2_hedge/results/per_seed/heart-scope/4-5/heart-scope.json": "0ae5a2064c668ff4702cf046ad5bc2157748c5c8889116f54c5e0a026201d995",
+  "experiments/s2_hedge/results/per_seed/heart-scope/6-7/heart-scope.json": "68f03fc4065604beeb817f285b31ac661077f4e2be53f1cacf3a1b8d0ef2a7c9",
+  "experiments/s2_hedge/results/per_seed/heart-scope/8-9/heart-scope.json": "03c324242c767790b414ccecae04e8fecf3f23d6d4c7fd8feed267f948ec755e",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p0_0-1/t1-grid.json": "99a189c5af827a1a7ee5ac5524c74f8d3f6832bd195558c719e5864e836272c7",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p0_2-3/t1-grid.json": "74266924bc4651f47d5511d6911777b4a01d7fa09d009b77215e5739a51ecdab",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p0_4-5/t1-grid.json": "fb20a9195bcce44c2f9dda8bc1b0480cda72a854c72399bdbb822a2cdde6cb3f",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p0_6-7/t1-grid.json": "d0f3f609be2adf13a6f5e4f9eb77ff6f4fc3603d304831125e4e51fe1be120c4",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p0_8-9/t1-grid.json": "ef5959c85ad915465ae420716528d0ad5600b1f44baa7fd4349e5d02fdf0fc02",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p1_0-1/t1-grid.json": "202265e22714589521f265fba0420e39baab9e25b503d16cac8b26793d3bee91",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p1_2-3/t1-grid.json": "48d9bb494a56270423095b1b2b2768c47527df80436c6b0d4a6bb43533741ff0",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p1_4-5/t1-grid.json": "de1cfd975fb8262da4524f41985bea8fb0629b4db6b965785d6e57d6ad0634b2",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p1_6-7/t1-grid.json": "caa3aeeb5350c4bfcb727a3cf6a5a1ae9b5f87e06b76bec56b39ed3a947090f5",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p1_8-9/t1-grid.json": "96541d5d4ca772f21dbe9d6c8097730ef38f2b4324362b6c69b1e2c741258cb2",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p2_0-1/t1-grid.json": "8e40497fc57ff360a989585ded16811490c0964d9b872ef730582a66eedb8c77",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p2_2-3/t1-grid.json": "f248dffea0cbf67bb8772a57b43b7633e9557956275c9e17f358fad40c23d7cb",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p2_4-5/t1-grid.json": "dac288505a3f6f3a67734975b0001b6b66b08a9ba3db2b52bed86d105bd2ff1e",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p2_6-7/t1-grid.json": "d1d80605f6de5a3c7409c9b288d88ee1ca91f37987e1ca300d52d4e2235e92ac",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p2_8-9/t1-grid.json": "024bc03261b7cbb20b179c2911da3d28e9606b949841925a3d5db2ba125473f7",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p3_0-1/t1-grid.json": "d7daa1ebdf3f9691ec1c58407303277cb0a33b2684d39772c13a2b792e576ed0",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p3_2-3/t1-grid.json": "b95cf2ab12b167eac5de6b243dc4f8facad99ebfff74102156da1cf87dee3e5b",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p3_4-5/t1-grid.json": "f88ee247abbd73f337ff70d3960e136ef4f1d34c8d9654a4c4a5692159dc0b4c",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p3_6-7/t1-grid.json": "0733dba83a7ac9ca571497cd869b4cbf9e0f658bf1b5d29120465714b71d3b40",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p3_8-9/t1-grid.json": "cb396170489f3b60295826729943d10dc482b1ee1b8756a1dfcc73b11c567834",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p4_0-1/t1-grid.json": "c54f18dbaf66c3c1951dc094cbb6728ada820e483e13a7ca96d847e3c479f335",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p4_2-3/t1-grid.json": "23fdd61decfea365708b02b9094fc4520c85c8a886ede81dbe9be74a1e50267a",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p4_4-5/t1-grid.json": "c97dff86b9b41d18a6f70c4a762d8132b3e7fe6078a8d795861be8642d236bab",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p4_6-7/t1-grid.json": "682d9ee6a3219f96f04d0b1091011263a91e59c5b4bd3647550e67b32c9836d4",
+  "experiments/s2_hedge/results/per_seed/t1-grid/p4_8-9/t1-grid.json": "e918cd88bcd06dbfbe2333a31571ebdda48c338b8790fcb055e0f4075e811689",
+  "experiments/s2_hedge/results/t1_grid/hedge_bown_cown.json": "3480e76f5e3680fec6220a1e5c66b9f2ddb4d614908a530f289fc6515608e2be",
+  "experiments/s2_hedge/results/t1_grid/payoff.json": "8fc2ebbfe555a7cfc6d4c4ba9d36d7172ba55be0e8d22191dee5846e486463a5",
+  "experiments/t1_m1/results/diag_v1/T1_E9.5_E10.5_chamber.json": "e51d67c6f04271a438883fba2b4800de6cfc7dd006d13b7b49bf62c62dec39fe",
+  "experiments/t1_scope/results/t30_pricing/pricing.json": "fabfeed245e9bea94210baf8643844d1d9fd347744b7ca3f536ffa3ec0ddf88d",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d0.35_cm0.45.json": "d31e35784515895cd0e7cb7f24d114e6cd62ef83f1b9b6b9555981ab88345397",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d0.35_cm0.60.json": "9f634c2bb61641baced03f9fa9d486a60403a9fb58bbdbb0069360eba2d0706a",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d0.35_cmown.json": "f5cfe555ce8ec825d40f962cc1af2583e767b4b4400b60e37ad4789d535d3cc3",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d0.68_cm0.45.json": "72d0d0d6d548a569e83eb3a969db094c04049b001aa1bffe3b9987e291329a5d",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d0.68_cm0.60.json": "219df5f15ea6b7e8e0a5dff0eea8ece1abc2577cc20b0866232eb0a1d2ec3b40",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d0.68_cmown.json": "c057b487d015d9cbf2b3d41940550edb9ea6a0a05ab662a8a532d0d9813d4ced",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d1.0_cm0.45.json": "a953ecd8e4d810c1a64e17cf65606ff3bcdb095118460a9b289c677ec44afc66",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d1.0_cm0.60.json": "bc8dde814928cf7b74c75da431983be39de3e186c081fb307d3852b1e9240be5",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d1.0_cmown.json": "dddbb029093ed4e262c2f9759bbb7e0102310ffb69ec65c57644a8534ee32d9c",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d1.37_cm0.45.json": "041cacbf0c2a18dc898e345423a2f80b49b4d9d0eb536aeaf1439a02ee441a93",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d1.37_cm0.60.json": "7ff8b4296217ba7c9ce242ed785400e653ee4e31033da9305d08d8086df7fee4",
+  "experiments/t1_scope/results/t30_pricing/scenarios/t30_d1.37_cmown.json": "50e26b86f5075445a780c4472ff2e92ee9c657303084daa8540d05fbc408162f",
+  "experiments/t3_decomp/results/gata4/gata4_records.csv": "62bc4a448f8f922b9809c47c1ed1285a7962d716d515ea0bb5718a40c62dfd0c",
+  "experiments/t3_decomp/results/gata4/gata4_summary.csv": "da46a3c2591b8481e3f0080f7ceadd393cac51c678fbca6e91f1171ed9daa628",
+  "experiments/t3_decomp/results/k7_wt_revert/tasks/g1.json": "0f39cd268ff76dedf43bf51c8f076d1d28639a98bc1753471acac22f5815aa9d",
+  "experiments/t3_decomp/results/k7_wt_revert/tasks/g2.json": "0afd12a0c9498b4b1859cfd65750fcc1c26fcd149c20daee18fffae2242a2f9a",
+  "experiments/t3_decomp/results/k8_s2_form/tasks/g1.json": "df4bd8fb6270c34b2869030bd7d90f61e0153a93d0c51a598a75ec94c6ccb90b",
+  "experiments/t3_decomp/results/k8_s2_form/tasks/g2.json": "e4d01295ddd1d28bc4db01adeb932debb82a871e74617aabebb1530482705cb0",
+  "results/upload_gate.json": "c08139fe4e551860518dd2ed9772864396e4f4cc49e28df76beb91ccfdaa8a1a"
+ }
+}
