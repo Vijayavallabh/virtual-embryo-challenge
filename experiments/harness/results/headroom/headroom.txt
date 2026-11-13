@@ -20,7 +20,7 @@ Summary, means over the counted practice tasks (n; for T3 the two Gata4 replicat
   board and in Overall units (x 0.5 on a T2 board), and what it gained over the floor.
   board                  slot entry                                      n  score  +floor  weakest group        left Overall gained
   T1:test                s1   M1 *                                       1  50.97   +0.97  distribution        15.08   15.08  -0.08
-  T2:heart:test_extrap   s1   H1 *                                       2  50.94   +0.94  expression_change   12.54    6.27  -0.04
+  T2:heart:test_extrap   s1   H1 *                                       2  51.36   +1.36  shape_growth        12.44    6.22  +0.06
   T2:embryo:test_interp  s1   fgw                                        2  59.95   +9.95  cell_state          11.50    5.75  +1.00
   T2:embryo:test_interp  s2   fgw_shape0                                 2  58.31   +8.31  shape_growth        12.08    6.04  +0.42
   T3:bcatenin            s1   allowed s1 ~ xrep:F+depth *                2  73.33  +23.33  response_identity   11.89   11.89  +3.11
@@ -28,13 +28,13 @@ Summary, means over the counted practice tasks (n; for T3 the two Gata4 replicat
   T3:bcatenin            s2   refused s1 ~ blind:G2_bcat_central_d50 *   2  50.87   +0.87  response_identity   16.67   16.67  -1.67
 
 Weakest metric (single metrics, for reference), where it is not in the weakest weighted component:
-  T2:heart:test_extrap s1 H1: neighborhood_mmd 11.64 left, in another group than expression_change (12.54)
+  T2:heart:test_extrap s1 H1: neighborhood_mmd 11.69 left, in another group than shape_growth (12.44)
   T2:embryo:test_interp s1 fgw: neighborhood_mmd 9.48 left, in another group than cell_state (11.50)
   T2:embryo:test_interp s2 fgw_shape0: neighborhood_mmd 9.79 left, in another group than shape_growth (12.08)
 
 Points left in Overall units per board (100 - board score, x 0.5 on a T2 board), s1 or its stand-ins:
    49.03  T1:test (M1)
-   24.53  T2:heart:test_extrap (H1)
+   24.32  T2:heart:test_extrap (H1)
    20.02  T2:embryo:test_interp (fgw)
    26.67  T3:bcatenin (allowed s1 ~ xrep:F+depth)
    39.23  T3:bcatenin (allowed s1 ~ transfer:mab21l2_all)
@@ -50,10 +50,10 @@ Points left per scored group in Overall units, s1 (or its stand-ins; T3 has two)
    10.08  T3:bcatenin mutant_state (allowed s1 ~ transfer:mab21l2_all)
     9.49  T1:test direction (M1)
     8.05  T3:bcatenin response_direction (allowed s1 ~ xrep:F+depth)
-    6.27  T2:heart:test_extrap expression_change (H1)
-    6.22  T2:heart:test_extrap cell_state (H1)
     6.22  T2:heart:test_extrap shape_growth (H1)
-    5.82  T2:heart:test_extrap local_organisation (H1)
+    6.15  T2:heart:test_extrap cell_state (H1)
+    6.11  T2:heart:test_extrap expression_change (H1)
+    5.85  T2:heart:test_extrap local_organisation (H1)
     5.75  T2:embryo:test_interp cell_state (fgw)
     5.70  T3:bcatenin mutant_state (allowed s1 ~ xrep:F+depth)
     5.37  T2:embryo:test_interp shape_growth (fgw)
@@ -71,7 +71,7 @@ Points left per metric in Overall units, s1 (or its stand-ins), largest first (t
    11.29  T3:bcatenin de_direction (allowed s1 ~ transfer:mab21l2_all)
     9.49  T1:test de_direction (M1)
     8.05  T3:bcatenin de_direction (allowed s1 ~ xrep:F+depth)
-    5.82  T2:heart:test_extrap neighborhood_mmd (H1)
+    5.85  T2:heart:test_extrap neighborhood_mmd (H1)
     5.70  T3:bcatenin mmd_u (allowed s1 ~ transfer:mab21l2_all)
     4.74  T2:embryo:test_interp neighborhood_mmd (fgw)
     4.38  T3:bcatenin variogram (allowed s1 ~ transfer:mab21l2_all)
@@ -141,60 +141,67 @@ T1:test  (weight in Overall: 1; floor = copy_last)
 
 ======================================================================================================================
 T2:heart:test_extrap  (weight in Overall: 0.5; floor = copy_last)
-  E12.5 MERFISH, extrapolation. s1 = H1: B0 on real E10.5 tissue with the pre-registered size (METHOD_SUMMARY.md). s2
-    = H2 as the half trim (docs/S2_RULES.md).
+  E12.5 MERFISH, extrapolation. s1 = H1: B0 with the trend (b0_trend: each lineage's least-squares trend over every
+    input stage in place of the last step; row H11, the captain's ruling of 2026-11-13) on real E10.5 tissue with the
+    pre-registered size (METHOD_SUMMARY.md). s2 = H2 as the half trim (docs/S2_RULES.md).
 
-  s1 = H1 (candidate b0)
-    STAND-IN: the harness's b0 is H1 without the pre-registered size step; its coordinates and size stay the
+  s1 = H1 (candidate b0_trend)
+    STAND-IN: the harness's b0_trend is H1 without the pre-registered size step; its coordinates and size stay the
       reference stage's (src/vec/harness.py _b0_t2), so its shape and scale skills equal a copy's and say nothing
       about the size the test build applies, which no backtest can check.
-    Counted practice tasks from experiments/harness/results/d2_v1/decisions_T2_heart_test_extrap.json (floor -> b0):
-      T2h/<=E9.5->E10.5, T2h/<=E8.75->E10.5; not counted: none.
+    Counted practice tasks from experiments/harness/results/trend_heart_v1/decisions_T2_heart_test_extrap.json (b0 ->
+      b0_trend): T2h/<=E9.5->E10.5, T2h/<=E8.75->E10.5; not counted: none.
 
    task T2h/<=E9.5->E10.5 [counted]
-    source: experiments/harness/results/d2_v1/tasks/T2h_E9.5_E10.5.json (commit eae34eb, clean True, seeds 0-9, bake,
-      build main, anchors computed)
-    board: entry 50.43, floor 50.00, copy 49.96; structure gate mean 0.999, min 0.994
+    source: experiments/harness/results/trend_heart_v1/tasks/T2h_E9.5_E10.5.json (commit 8bb23bf, clean True, seeds
+      0-9, bake, build main, anchors computed)
+    board: entry 50.78, floor 50.00, copy 49.96; structure gate mean 0.999, min 0.994
+    context: B0 with the last step alone: the entry until the ruling of 2026-11-13 (h7_v1): board 50.43; skills
+      de_score 0.510, de_direction 0.521, mmd_u 0.466, variogram 0.519, d2_shape 0.489, occupancy_dice 0.504,
+      scale_log_ratio 0.500, neighborhood_mmd 0.517
     metric             weight   entry   floor    copy   +floor    +copy    left
-    de_score           0.1250   0.510   0.500   0.464    +0.12    +0.57    6.13
-    de_direction       0.1250   0.521   0.500   0.505    +0.26    +0.20    5.99
-    mmd_u              0.1500   0.466   0.500   0.494    -0.51    -0.42    8.01
-    variogram          0.1000   0.519   0.500   0.497    +0.19    +0.22    4.81
-    d2_shape           0.0833   0.489   0.500   0.489    -0.10    +0.00    4.26
+    de_score           0.1250   0.520   0.500   0.464    +0.25    +0.70    6.00
+    de_direction       0.1250   0.525   0.500   0.505    +0.31    +0.24    5.94
+    mmd_u              0.1500   0.474   0.500   0.494    -0.40    -0.31    7.90
+    variogram          0.1000   0.526   0.500   0.497    +0.26    +0.29    4.74
+    d2_shape           0.0833   0.489   0.500   0.489    -0.10    +0.00    4.27
     occupancy_dice     0.0833   0.504   0.500   0.504    +0.03    +0.00    4.14
     scale_log_ratio    0.0833   0.500   0.500   0.500    -0.01    +0.00    4.17
     neighborhood_mmd   0.2500   0.517   0.500   0.521    +0.44    -0.10   12.06
-    board (sum)        0.9999   50.43                    +0.43    +0.47   49.57
-    groups (left / +floor): expression_change 12.12 / +0.38; cell_state 12.82 / -0.32; shape_growth 12.57 / -0.07;
+    board (sum)        0.9998   50.78                    +0.78    +0.83   49.22
+    groups (left / +floor): expression_change 11.94 / +0.56; cell_state 12.64 / -0.14; shape_growth 12.57 / -0.07;
       local_organisation 12.06 / +0.44
-    weakest weighted component (group): cell_state (12.82 points left, -0.32 gained over the floor); weakest metric:
+    weakest weighted component (group): cell_state (12.64 points left, -0.14 gained over the floor); weakest metric:
       neighborhood_mmd (12.06 left)
 
    task T2h/<=E8.75->E10.5 [counted]
-    source: experiments/harness/results/d2_v1/tasks/T2h_E8.75_E10.5.json (commit eae34eb, clean True, seeds 0-9,
-      bake, build main, anchors computed)
-    board: entry 51.45, floor 50.00, copy 50.55; structure gate mean 1.000, min 1.000
+    source: experiments/harness/results/trend_heart_v1/tasks/T2h_E8.75_E10.5.json (commit 8bb23bf, clean True, seeds
+      0-9, bake, build main, anchors computed)
+    board: entry 51.93, floor 50.00, copy 50.55; structure gate mean 1.000, min 1.000
+    context: B0 with the last step alone: the entry until the ruling of 2026-11-13 (h7_v1): board 51.45; skills
+      de_score 0.454, de_direction 0.510, mmd_u 0.510, variogram 0.529, d2_shape 0.502, occupancy_dice 0.521,
+      scale_log_ratio 0.500, neighborhood_mmd 0.551
     metric             weight   entry   floor    copy   +floor    +copy    left
-    de_score           0.1250   0.454   0.500   0.449    -0.58    +0.05    6.83
-    de_direction       0.1250   0.510   0.500   0.516    +0.12    -0.08    6.13
-    mmd_u              0.1500   0.510   0.500   0.498    +0.15    +0.18    7.35
-    variogram          0.1000   0.529   0.500   0.504    +0.29    +0.25    4.71
+    de_score           0.1250   0.475   0.500   0.449    -0.31    +0.32    6.56
+    de_direction       0.1250   0.527   0.500   0.516    +0.33    +0.13    5.92
+    mmd_u              0.1500   0.516   0.500   0.498    +0.24    +0.27    7.26
+    variogram          0.1000   0.530   0.500   0.504    +0.30    +0.27    4.70
     d2_shape           0.0833   0.502   0.500   0.502    +0.02    +0.00    4.15
     occupancy_dice     0.0833   0.521   0.500   0.521    +0.17    +0.00    3.99
     scale_log_ratio    0.0833   0.500   0.500   0.500    +0.00    +0.00    4.17
-    neighborhood_mmd   0.2500   0.551   0.500   0.531    +1.28    +0.50   11.22
-    board (sum)        1.0000   51.45                    +1.45    +0.90   48.55
-    groups (left / +floor): expression_change 12.96 / -0.46; cell_state 12.06 / +0.44; shape_growth 12.31 / +0.19;
-      local_organisation 11.22 / +1.28
-    weakest weighted component (group): expression_change (12.96 points left, -0.46 gained over the floor); weakest
-      metric: neighborhood_mmd (11.22 left)
+    neighborhood_mmd   0.2500   0.547   0.500   0.531    +1.17    +0.40   11.33
+    board (sum)        1.0000   51.93                    +1.93    +1.38   48.07
+    groups (left / +floor): expression_change 12.48 / +0.02; cell_state 11.96 / +0.54; shape_growth 12.31 / +0.19;
+      local_organisation 11.33 / +1.17
+    weakest weighted component (group): expression_change (12.48 points left, +0.02 gained over the floor); weakest
+      metric: neighborhood_mmd (11.33 left)
 
-   s1 over the 2 counted task(s): board 50.94; weakest weighted component (group) expression_change, 12.54 points
-     left (6.27 in Overall), -0.04 gained over the floor; weakest metric neighborhood_mmd (11.64 left)
-    groups, points left, most first: expression_change 12.54, cell_state 12.44, shape_growth 12.44,
-      local_organisation 11.64
-    metrics, points left, most first: neighborhood_mmd 11.64, mmd_u 7.68, de_score 6.48, de_direction 6.06, variogram
-      4.76, d2_shape 4.21, scale_log_ratio 4.17, occupancy_dice 4.06
+   s1 over the 2 counted task(s): board 51.36; weakest weighted component (group) shape_growth, 12.44 points left
+     (6.22 in Overall), +0.06 gained over the floor; weakest metric neighborhood_mmd (11.69 left)
+    groups, points left, most first: shape_growth 12.44, cell_state 12.30, expression_change 12.21,
+      local_organisation 11.69
+    metrics, points left, most first: neighborhood_mmd 11.69, mmd_u 7.58, de_score 6.28, de_direction 5.93, variogram
+      4.72, d2_shape 4.21, scale_log_ratio 4.17, occupancy_dice 4.06
 
   Not in the table: s2 (H2 as the half trim) is not a harness candidate; its evidence is the oracle-core-size
     sensitivity analysis in experiments/s2_hedge/results/heart_scope*/ (not an adoption result).
@@ -544,18 +551,18 @@ Inputs (sha256):
   experiments/harness/results/baselines_v1/tasks/T3_Gata4_Mab21l2.json  7bbb0e9bbaa8806463a5498e290794465962cf94a3d9d50dd1fa0d1c8b66fb1f
   experiments/harness/results/baselines_v1/tasks/T3_Mab21l2_Gata4rep2.json  bd0d1e494f20cef4b0fdf088260a300aa7544fd0c2e0ff4653ba1df6f8859861
   experiments/harness/results/d2_v1/decisions_T1_test.json  9cfbb6d1cc7996c1359377d25bec9c9b1f43502e5755eafbe2123ba10b6add24
-  experiments/harness/results/d2_v1/decisions_T2_heart_test_extrap.json  57872ddb94fe9087fc5d10d8ff2a1ca75826d091db6aa2893afa79e5b5eaeb8e
   experiments/harness/results/d2_v1/tasks/T1_E9.5_E10.5.json  65b3291835db4755d1b6bf2013a83188ba22ca35d1c44abeee00cfa3c15b7535
   experiments/harness/results/d2_v1/tasks/T1_E9.5_E10.5_chamber.json  ad5cef9cd5e1be2693295c60c6be2b6c5dd020064e100d4d91e8052e75385eab
-  experiments/harness/results/d2_v1/tasks/T2h_E8.75_E10.5.json  abbdc05fe3ea40e71b089569c0dfefef2ed43f9da0538fc80959621929102cc7
-  experiments/harness/results/d2_v1/tasks/T2h_E9.5_E10.5.json  7cc830d376fb890916fa97355740cfa5e3ff96d1a9002755776a64d8ec692c93
   experiments/harness/results/emb_fgw_v1/fgw_vs_b0/decisions_T2_embryo_test_interp.json  39aada363e7fba19bd958d089b29cc11841087e018bfb20b6bd77466809197c3
   experiments/harness/results/emb_fgw_v1/tasks/T2e_E6.75_E7.5_E7.25.json  0579ef165aa0d1f7ebea91f73eb30fe3d200a2165e09dc3c254ddfe9ded178e1
   experiments/harness/results/emb_fgw_v1/tasks/T2e_E7.25_E8.0_E7.5.json  50efea88a03f54a6d8e39fc89d34c43c5284ab938e471abdf5e442afc932e315
   experiments/harness/results/emb_shape_v1/decisions_T2_embryo_test_interp.json  4a4000b4e83473f61d1150e29d6cd76b46e0592ac0e5b9abd35c3f3a3d658fe6
   experiments/harness/results/emb_shape_v1/tasks/T2e_E6.75_E7.5_E7.25.json  2e58860ac1014e9a02c87caafaf420b58b1974fea37d213266f14cf68266c426
   experiments/harness/results/emb_shape_v1/tasks/T2e_E7.25_E8.0_E7.5.json  f8545e9002474a66d1d3e7ba4be4ad01b1e7fabda927a72bffd04de3356625e0
+  experiments/harness/results/trend_heart_v1/decisions_T2_heart_test_extrap.json  b8a930917631924eee6ab8b0d41590366130769342d2e1675afc3a5a05c9d6b1
+  experiments/harness/results/trend_heart_v1/tasks/T2h_E8.75_E10.5.json  d06eba5b60e9bcbf16d5bb9544a3b623fbbae20ed1754182d03cf53ccb606fae
+  experiments/harness/results/trend_heart_v1/tasks/T2h_E9.5_E10.5.json  003752fad9fb79e9349254a8f38bc7d1e12fdc4674bcdc2a8cf4d61fc90e83ec
   experiments/t1_m1/results/diag_v1/T1_E9.5_E10.5.json  8682656022b4a96df01a056cb713b4213a5ed6cba6dc80ac38dbd00c63749822
   experiments/t1_m1/results/diag_v1/T1_E9.5_E10.5_chamber.json  e51d67c6f04271a438883fba2b4800de6cfc7dd006d13b7b49bf62c62dec39fe
   experiments/t3_decomp/results/gata4/gata4_records.csv  62bc4a448f8f922b9809c47c1ed1285a7962d716d515ea0bb5718a40c62dfd0c
-  results/registry.csv  e3fd930e103c79a5f76dab2fc9b76fa066ca3d23b16cfa901418ef70b4f3651a
+  results/registry.csv  3063cb548a26e0d6d68baf00dccde2018162ea856e7b2e2b3b4f121ba8321006

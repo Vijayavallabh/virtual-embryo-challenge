@@ -293,18 +293,20 @@ BOARDS = [
                 "block, but no backtest can judge a change to Feng's direction (Feng's E9.5 lies inside every T1 "
                 "window).")},
     {"board": "T2:heart:test_extrap", "task": "T2", "floor_model": "copy_last",
-     "what": ("E12.5 MERFISH, extrapolation. s1 = H1: B0 on real E10.5 tissue with the pre-registered size "
-              "(METHOD_SUMMARY.md). s2 = H2 as the half trim (docs/S2_RULES.md)."),
+     "what": ("E12.5 MERFISH, extrapolation. s1 = H1: B0 with the trend (b0_trend: each lineage's least-squares trend "
+              "over every input stage in place of the last step; row H11, the captain's ruling of 2026-11-13) on real "
+              "E10.5 tissue with the pre-registered size (METHOD_SUMMARY.md). s2 = H2 as the half trim "
+              "(docs/S2_RULES.md)."),
      "entries": [
-         {"slot": "s1", "name": "H1", "cand": "b0", "source": "harness",
-          "decision": (H + "d2_v1/decisions_T2_heart_test_extrap.json", "floor", "b0"),
-          "label": ("STAND-IN: the harness's b0 is H1 without the pre-registered size step; its coordinates and size "
-                    "stay the reference stage's (src/vec/harness.py _b0_t2), so its shape and scale skills equal a "
-                    "copy's and say nothing about the size the test build applies, which no backtest can check.")}],
-     "context": [],
+         {"slot": "s1", "name": "H1", "cand": "b0_trend", "source": "harness",
+          "decision": (H + "trend_heart_v1/decisions_T2_heart_test_extrap.json", "b0", "b0_trend"),
+          "label": ("STAND-IN: the harness's b0_trend is H1 without the pre-registered size step; its coordinates and "
+                    "size stay the reference stage's (src/vec/harness.py _b0_t2), so its shape and scale skills equal "
+                    "a copy's and say nothing about the size the test build applies, which no backtest can check.")}],
+     "context": [("b0", "harness", "B0 with the last step alone: the entry until the ruling of 2026-11-13 (h7_v1)")],
      "tasks": [
-         {"key": "T2h/<=E9.5->E10.5", "harness": H + "d2_v1/tasks/T2h_E9.5_E10.5.json"},
-         {"key": "T2h/<=E8.75->E10.5", "harness": H + "d2_v1/tasks/T2h_E8.75_E10.5.json"}],
+         {"key": "T2h/<=E9.5->E10.5", "harness": H + "trend_heart_v1/tasks/T2h_E9.5_E10.5.json"},
+         {"key": "T2h/<=E8.75->E10.5", "harness": H + "trend_heart_v1/tasks/T2h_E8.75_E10.5.json"}],
      "not_scored": ("s2 (H2 as the half trim) is not a harness candidate; its evidence is the oracle-core-size "
                     "sensitivity analysis in experiments/s2_hedge/results/heart_scope*/ (not an adoption result)."),
      "closed": ("Cell numbers, the size and the scope are closed to tries after the 2026-11-04 exposure "

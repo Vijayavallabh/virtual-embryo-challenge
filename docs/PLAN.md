@@ -3308,3 +3308,46 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     and hash were read; the client's output is kept unread in the run folder. The ledger holds no official upload.
   - **Still owed:** server format checks for the two heart files once they are rebuilt with the trend and
     rehearsed (w); after that every file of the reference set has passed the server's check.
+- 2026-11-13 (y), the heart ruling built in: port merged, rules amended and re-pinned. Written by the AI assistant.
+  - **The port.** Branch `heart-trend` (272b6d9, then 819a70b for tests and usage text only), merged into main at
+    c4501f5: the candidate `b0_trend` on main, `vec.t1_scope.momentum_shift`'s keyword `logf_by_type` (default off:
+    every other build is unchanged), and `build_test.py heart --trend`, on in both heart lines of `build_all.sh`
+    and refused with `--entry s2`, `--depth`, `--herd` and `--cfm`. The size-matched twin stays on its branch.
+  - **Shown before the merge.** (1) Main-side factors equal the scored branch's on both backtests, bit for bit, and
+    a one-seed build has the same checksum in both trees. (2) The kept arm rerun at 272b6d9 in a DGX campaign
+    checkout gives every score and skill of row H11's committed run exactly. (3) A review by three independent
+    agents on another model (equivalence with the scored code; the builder; tests and leaks), each non-minor
+    finding checked by a skeptic: no defect in the code. Without `--trend` the builder's file and record are
+    byte-identical to before; two `--trend` builds are byte-identical; no path reads a target, its day or a
+    forbidden file. Its two non-minor findings were both about text: the hash-pinned rules still gave the heart
+    commands without `--trend` (real; closed by the amendment below and by a new test that every heart command of
+    `build_all.sh` appears word for word in the rules), and the reference list still held the old heart files
+    (not a defect of the commit: the third rehearsal replaces it). Six test gaps it showed by mutation are closed
+    in 819a70b (the builder's trend output is now pinned against the candidate; a lineage missing at one earlier
+    stage; the minimum-cells boundary; the mapping with a clip and with held genes). (4) Dry builds of the two
+    heart files in a DGX campaign checkout: each twice, one sha256 each (3d654838... and 18c2cf55...), equal to the
+    builds on this machine, clean stamps.
+  - **`docs/S2_RULES.md` amended** with the captain's words of (w) ("Both files (Recommended)") in a new last
+    section, and with a pointer under the heart rule's command. New sha256, in `docs/S2_RULES.sha256`:
+    5ee8b2d8a7c49b2b5a6c6a3d863b37f1689981f27b5551a232273fb66c07bd2e.
+  - **Headroom.** `experiments/harness/headroom.py` rerun with the heart's entry as `b0_trend`; the heart lines of
+    the ledger's tables are replaced (51.36 over the two backtests against 50.94 before).
+  - **Not yet done:** the third rehearsal and the new reference list. It is held for the reading of row H12 (z).
+- 2026-11-13 (z), a seventh forwarded side note; two more heart arms before the rehearsal. Written by the AI
+  assistant.
+  - **The note** (a side agent's, forwarded by the captain): each heart sample was measured in its own run, which
+    reads some genes a little high or low and shifts every cell type the same way; the heart method carries that
+    forward. "The idea: subtract the change all cell types share and keep what is specific to each type." It was
+    shelved in early November without a run; the AI assistant's rough odds are 10 to 15%; one or two more scored
+    heart runs. "Consider asking for it now, on top of the trend method. If kept after the third rehearsal, it
+    needs a fourth by 24 Nov."
+  - **Checked.** The record agrees: "lineage-contrast momentum" was pruned on 2026-11-06 because the shared part
+    cannot be told apart from shared biology, and the AI assistant weighed it again tonight (u) and left it. One
+    statement of the note needs a limit: the change from sectioned embryo portions to dissected hearts selects
+    cells differently in each lineage, so much of it sits in the lineage-specific part, not in the shared one; what
+    the shared part surely holds is each sample's own measurement profile.
+  - **Decided by the AI assistant** (tries are its to register; the captain can strike them): two arms in one row
+    (H12 and H12s) on top of the trend, the lineage-specific part alone and the shared part alone, each read
+    against `b0_trend` by the adoption rule. Counted reads: heart 11 to 13. CPU only. The third rehearsal waits for
+    the reading, as the note advises, so that a ruled change would be rehearsed once. A pass would be the second
+    among nine arms read on these two backtests today and would go to the captain with that said.

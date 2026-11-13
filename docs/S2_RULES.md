@@ -35,6 +35,8 @@ built from, plus only the change its rule names:
 - the embryo uses `--method fgw_shape0` in place of `--method fgw`.
 
 Today's s1 commands are `build_test.py t1`, `build_test.py heart --entry s1` and `build_test.py embryo --method fgw`.
+(That sentence is of 2026-11-02. The amendments of 2026-11-13 at the end of this file change T1's s1 command and, in
+the evening, both heart commands, which now carry `--trend`.)
 
 A change to s1 that its builder makes for every entry carries over to s2. An example is a new step in `build_t1`, or
 in the heart pipeline that every heart entry runs. That board's s2 goes back to the captain before any s2 build in
@@ -122,6 +124,10 @@ and the priors are stated assumptions.
 **s2 is H2 built as the half trim:**
 
 `uv run python experiments/builds/build_test.py heart --entry s2_trim --out runs/builds/T2heart_s2.h5ad`
+
+Since the amendment of 2026-11-13, evening (the last section of this file), this command and s1's carry `--trend`:
+`uv run python experiments/builds/build_test.py heart --entry s2_trim --trend --out runs/builds/T2heart_s2.h5ad`.
+Without `--trend` the builder gives the file as it was before that ruling.
 
 Not `--entry s2`, which is H2 as first built.
 1. **Trim.** E10.5's surrounding (non-core) cells are removed, farthest in plane from the core centroid first, until
@@ -422,3 +428,38 @@ each offered with its practice numbers and with the request to decide from those
   with any other cardiomyocyte share and with every option no try read on that base. The reference list for the
   freeze-morning rebuild changes for this one file and is remade by a rehearsal on the machine that builds the
   uploads (`docs/P3_RUNBOOK.md`, section 5).
+
+## Amendment of 2026-11-13, evening: both heart uploads take the trend (the captain's own say-so)
+
+Written by the AI assistant. The quoted words are the captain's, given in the main session on 2026-11-13 in answer to
+one question that named the change and gave its numbers (`docs/PLAN.md` decision log 2026-11-13 (w)). No test score
+existed: nothing had been uploaded. The row is H11 of `experiments/harness/TRIES.md`.
+
+**The captain's words:** "Both files (Recommended)", the first of three options (the trend in both heart files; in the
+second file only; no change), each offered with its price.
+
+- **s1:** `uv run python experiments/builds/build_test.py heart --entry s1 --trend --out runs/builds/T2heart_s1.h5ad`.
+- **s2:** `uv run python experiments/builds/build_test.py heart --entry s2_trim --trend --out
+  runs/builds/T2heart_s2.h5ad`. It is s1's command with the trim, as "as s1" says. Point 2 of the heart rule
+  ("Expression") now reads: s1's heart pipeline runs on the trimmed cells, and since this amendment that pipeline is
+  B0 with the trend, fitted on E8.25_late, E8.5, E8.75, E9.5 and the trimmed E10.5 cells.
+- **What the trend is.** B0's draw, cells, coordinates, count rule, size step and trim are unchanged. For each lineage
+  B0 shifts, the per-gene log factor is 0.5 x the last gap (one day) x the least-squares slope of log(mean CP10k + 0.5)
+  on the stage day over every released heart stage where the lineage has at least 20 cells (E8.25_late, E8.5, E8.75,
+  E9.5 and E10.5), in place of half the E9.5 to E10.5 log ratio. A lineage seen at only the last two stages would keep
+  the earlier factor; none is (diagnostic N27). The rule text is `vec.harness.B0_TREND_RULE`.
+- **Why.** Row H11: on the two heart backtests the trend scores +0.36 and +0.48 over B0's last step, ahead in 10 of 10
+  seeds on each, and passes the adoption rule on both, the first heart candidate to do so. At the test it leans on the
+  E9.5 to E10.5 step, which crosses the change from sectioned embryo portions to dissected hearts and which no backtest
+  contains, for 43% of its slope instead of all of it.
+- **What it rests on, as the captain was told.** The margin over the rule's threshold is 0.06 on one backtest. It is
+  the one arm of seven read on these two backtests that day that passes, and one of two trend forms (the size-matched
+  twin does not pass). The two backtests share one truth, and the ten seeds resample the scoring, not the method. No
+  backtest contains the test's last step: if that step is real development, the trend dilutes it. At the test pair
+  the trend's factor has a cosine of 0.57 to the earlier one and 0.72 of its size (N27).
+- **The rule on a changed s1 method** (above: that board's s2 goes back to the captain when s1 moves to a different
+  method). The captain's answer names both files, so the s2 follows s1 with its trim.
+- **Builds.** `experiments/builds/build_all.sh` builds both heart files with `--trend`. The option is refused with
+  `--entry s2`, `--depth`, `--herd` and `--cfm`, which no try read with it. The reference list for the freeze-morning
+  rebuild changes for these two files and is remade by a third rehearsal on the machine that builds the uploads
+  (`docs/P3_RUNBOOK.md`, section 5).

@@ -76,7 +76,9 @@ Since this ledger: see "Tries since 2026-11-03" and "Tries since 2026-11-04 (rul
 
 ## Where the entries stand against the published baselines
 
-Built on 2026-11-04 by `experiments/harness/headroom.py` from the committed results at fcd8964 (stdlib only:
+Built on 2026-11-04 by `experiments/harness/headroom.py` from the committed results at fcd8964, and rerun on
+2026-11-13 at c4501f5 after heart row H11 was kept (the heart's entry is now `b0_trend`; the other boards' lines are
+unchanged) (stdlib only:
 `python3 -I experiments/harness/headroom.py`; output in `results/headroom/headroom.txt` and `headroom.json`, with the
 sha256 of its 19 inputs; the script and its output are added by the commit that adds this section). It reads
 committed practice-task results only, never a target, a test-board file or a cell count, and it runs no candidate, so
@@ -112,17 +114,20 @@ to 1.00 in every row, so the shape column is ungated in effect.
 
 | Board; entry; backtest | Score (copy) | Expression change | Cell state | Shape and growth | Neighbourhoods |
 |---|---|---|---|---|---|
-| Heart s1, H1*: `b0`, H1 without the pre-registered size (`results/d2_v1/`, eae34eb); E10.5 from E9.5 | 50.43 (49.96) | +0.38 / 12.12 | -0.32 / 12.82 | -0.07 / 12.57 | +0.44 / 12.06 |
+| Heart s1, H1*: `b0_trend`, H1 without the pre-registered size (`results/trend_heart_v1/`, 8bb23bf; the entry since the captain's ruling of 2026-11-13, row H11); E10.5 from E9.5 | 50.78 (49.96) | +0.56 / 11.94 | -0.14 / 12.64 | -0.07 / 12.57 | +0.44 / 12.06 |
+| same; E10.5 from <= E8.75 | 51.93 (50.55) | +0.02 / 12.48 | +0.54 / 11.96 | +0.19 / 12.31 | +1.17 / 11.33 |
+| For comparison, the heart entry until that ruling, `b0` (`results/d2_v1/`, eae34eb); E10.5 from E9.5 | 50.43 (49.96) | +0.38 / 12.12 | -0.32 / 12.82 | -0.07 / 12.57 | +0.44 / 12.06 |
 | same; E10.5 from <= E8.75 | 51.45 (50.55) | -0.46 / 12.96 | +0.44 / 12.06 | +0.19 / 12.31 | +1.28 / 11.22 |
 | Embryo s1, fgw (`results/emb_fgw_v1/`, bd2e433); E7.5, t = 1/3 | 61.12 (50.58) | +3.54 / 8.96 | +4.21 / 8.29 | -0.13 / 12.63 | +3.49 / 9.01 |
 | same; E7.25, t = 2/3 | 58.78 (53.27) | +4.81 / 7.69 | -2.22 / 14.72 | +3.64 / 8.86 | +2.55 / 9.95 |
 | Embryo s2, fgw_shape0 (`results/emb_shape_v1/`, 90ddaaa); E7.5 | 62.95 (50.58) | +3.54 / 8.96 | +4.21 / 8.29 | +1.34 / 11.16 | +3.86 / 8.64 |
 | same; E7.25 | 53.67 (53.27) | +4.81 / 7.69 | -2.22 / 14.72 | -0.49 / 12.99 | +1.56 / 10.94 |
 
-- Weakest group, mean of the two backtests: heart, expression change (12.54 left, -0.04 against the baseline; every
-  heart metric is within 1.3 points of it), a near-tie: cell state and shape leave 12.44 each, and the two backtests
-  name different weakest groups (cell state on E10.5 from E9.5, 12.82; expression change from <= E8.75, 12.96), so
-  they count as tied (rule 6); embryo s1, cell state (11.50 left, +1.00; the gap is E7.25's, the known feature in rule
+- Weakest group, mean of the two backtests: heart, shape and growth (12.44 left, +0.06 against the baseline; its
+  levers are closed), a near-tie with cell state (12.30) and expression change (12.21), and the two backtests name
+  different weakest groups (cell state on E10.5 from E9.5, 12.64; expression change from <= E8.75, 12.48), so they
+  count as tied (rule 6); every heart metric is within 1.2 points of the baseline. (Heart lines regenerated on
+  2026-11-13 after row H11 was kept; before it the entry was `b0`: expression change 12.54 left, -0.04.); embryo s1, cell state (11.50 left, +1.00; the gap is E7.25's, the known feature in rule
   2), tied with shape (10.74), which E7.5 names (12.63); embryo s2, shape and growth (12.08 left), tied with cell state
   (11.50) in the same way.
 - No open lever with a reason that holds at test on either board (`docs/PLAN.md` decision log 2026-11-04). Sizes,

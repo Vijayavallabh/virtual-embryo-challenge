@@ -16,3 +16,16 @@ def test_s2_rules_match_their_frozen_hash():
     got = hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
     assert got == want, ("docs/S2_RULES.md differs from its frozen sha256: a rule changes only with the captain's "
                          "say-so, logged with his words, the reason and the new sha256")
+
+
+def test_the_heart_commands_of_build_all_are_the_ones_the_rules_give():
+    """Each heart build command of experiments/builds/build_all.sh (from `build_test.py heart` up to its --out)
+    appears word for word in docs/S2_RULES.md, so the script and the frozen rules cannot drift apart unnoticed (a
+    review finding of 2026-11-13: after the heart ruling the script carried --trend before the rules said so)."""
+    rules = " ".join((ROOT / "docs" / "S2_RULES.md").read_text().split())
+    script = (ROOT / "experiments" / "builds" / "build_all.sh").read_text().splitlines()
+    commands = [line[line.index("build_test.py heart"):line.index(" --out")].strip()
+                for line in script if "build_test.py heart" in line and " --out" in line]
+    assert len(commands) == 2, commands  # the first upload's line and the second's
+    for c in commands:
+        assert c in rules, f"build_all.sh runs `{c}`, which docs/S2_RULES.md does not give"

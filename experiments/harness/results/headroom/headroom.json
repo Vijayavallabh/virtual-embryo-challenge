@@ -246,158 +246,158 @@
    "not_scored": "s2 (M1 at 0.60 cardiomyocytes) is not a harness candidate; its evidence is the oracle-base sensitivity grid in experiments/s2_hedge/results/t1_grid/ (not an adoption result)."
   },
   "T2:heart:test_extrap": {
-   "what": "E12.5 MERFISH, extrapolation. s1 = H1: B0 on real E10.5 tissue with the pre-registered size (METHOD_SUMMARY.md). s2 = H2 as the half trim (docs/S2_RULES.md).",
+   "what": "E12.5 MERFISH, extrapolation. s1 = H1: B0 with the trend (b0_trend: each lineage's least-squares trend over every input stage in place of the last step; row H11, the captain's ruling of 2026-11-13) on real E10.5 tissue with the pre-registered size (METHOD_SUMMARY.md). s2 = H2 as the half trim (docs/S2_RULES.md).",
    "floor_model": "copy_last",
    "overall_factor": 0.5,
    "entries": [
     {
      "slot": "s1",
      "entry": "H1",
-     "candidate": "b0",
-     "label": "STAND-IN: the harness's b0 is H1 without the pre-registered size step; its coordinates and size stay the reference stage's (src/vec/harness.py _b0_t2), so its shape and scale skills equal a copy's and say nothing about the size the test build applies, which no backtest can check.",
-     "counted_by": "experiments/harness/results/d2_v1/decisions_T2_heart_test_extrap.json (floor -> b0: 2 of 2 configured pseudo-tasks)",
+     "candidate": "b0_trend",
+     "label": "STAND-IN: the harness's b0_trend is H1 without the pre-registered size step; its coordinates and size stay the reference stage's (src/vec/harness.py _b0_t2), so its shape and scale skills equal a copy's and say nothing about the size the test build applies, which no backtest can check.",
+     "counted_by": "experiments/harness/results/trend_heart_v1/decisions_T2_heart_test_extrap.json (b0 -> b0_trend: 2 of 2 configured pseudo-tasks)",
      "excluded": {},
      "tasks": {
       "T2h/<=E9.5->E10.5": {
        "metrics": {
         "de_score": {
          "weight": 0.125,
-         "entry": 0.509602777837326,
+         "entry": 0.5201497473105106,
          "floor": 0.5,
          "copy": 0.4639297611738248,
-         "gain_floor": 0.12003472296657502,
-         "gain_copy": 0.5709127082937653,
-         "left": 6.129965277033425
+         "gain_floor": 0.2518718413813808,
+         "gain_copy": 0.702749826708571,
+         "left": 5.998128158618619
         },
         "de_direction": {
          "weight": 0.125,
-         "entry": 0.5211115659269187,
+         "entry": 0.5247570907391408,
          "floor": 0.5,
          "copy": 0.5052595582170707,
-         "gain_floor": 0.2638945740864834,
-         "gain_copy": 0.19815009637309897,
-         "left": 5.986105425913516
+         "gain_floor": 0.30946363423925954,
+         "gain_copy": 0.2437191565258751,
+         "left": 5.940536365760741
         },
         "mmd_u": {
          "weight": 0.15,
-         "entry": 0.4659438712726744,
+         "entry": 0.47353705312796474,
          "floor": 0.5,
          "copy": 0.49408288874071105,
-         "gain_floor": -0.5108419309098828,
-         "gain_copy": -0.422085262020549,
-         "left": 8.010841930909882
+         "gain_floor": -0.39694420308053047,
+         "gain_copy": -0.30818753419119665,
+         "left": 7.89694420308053
         },
         "variogram": {
          "weight": 0.1,
-         "entry": 0.5190339260991343,
+         "entry": 0.5256008169466504,
          "floor": 0.5,
          "copy": 0.4969876188663315,
-         "gain_floor": 0.1903392609913431,
-         "gain_copy": 0.22046307232802817,
-         "left": 4.809660739008657
+         "gain_floor": 0.25600816946650456,
+         "gain_copy": 0.28613198080318963,
+         "left": 4.743991830533496
         },
         "d2_shape": {
-         "weight": 0.0832874836251042,
+         "weight": 0.0832809748203151,
          "entry": 0.48853072427898125,
          "floor": 0.5,
          "copy": 0.48853072427898125,
-         "gain_floor": -0.09804612811826371,
-         "gain_copy": 0.0009227912457195231,
-         "left": 4.264712794784929
+         "gain_floor": -0.09839660222229218,
+         "gain_copy": 0.0005723171416910589,
+         "left": 4.265063268888958
         },
         "occupancy_dice": {
-         "weight": 0.0832874836251042,
+         "weight": 0.0832809748203151,
          "entry": 0.5040791165371908,
          "floor": 0.5,
          "copy": 0.5040791165371908,
-         "gain_floor": 0.0316218460652137,
-         "gain_copy": 0.0008861466665525342,
-         "left": 4.135044820601452
+         "gain_floor": 0.031285289492491056,
+         "gain_copy": 0.0005495900938298881,
+         "left": 4.135381377174175
         },
         "scale_log_ratio": {
-         "weight": 0.0832874836251042,
+         "weight": 0.0832809748203151,
          "entry": 0.49965402632429967,
          "floor": 0.5,
          "copy": 0.49965402632429967,
-         "gain_floor": -0.005193292206805733,
-         "gain_copy": 0.0008634907530035818,
-         "left": 4.171859958873471
+         "gain_floor": -0.005521244112937929,
+         "gain_copy": 0.0005355388468713862,
+         "left": 4.172187910779604
         },
         "neighborhood_mmd": {
          "weight": 0.25,
-         "entry": 0.5174177388195936,
+         "entry": 0.5174705619527411,
          "floor": 0.5,
          "copy": 0.5213392253385603,
-         "gain_floor": 0.43544347048984056,
-         "gain_copy": -0.09803716297416454,
-         "left": 12.06455652951016
+         "gain_floor": 0.43676404881852837,
+         "gain_copy": -0.09671658464547672,
+         "left": 12.06323595118147
         }
        },
-       "gate_mean": 0.9994498035012505,
-       "gate_min": 0.9944980350125046,
-       "score": 50.4272525233645,
+       "gate_mean": 0.9993716978437812,
+       "gate_min": 0.9937169784378124,
+       "score": 50.784530933982396,
        "floor_score": 49.99999999999999,
        "copy_score": 49.95517664269905,
        "groups": {
         "expression_change": {
-         "left": 12.116070702946942,
-         "gain_floor": 0.38392929705305845
+         "left": 11.938664524379359,
+         "gain_floor": 0.5613354756206403
         },
         "cell_state": {
-         "left": 12.82050266991854,
-         "gain_floor": -0.3205026699185397
+         "left": 12.640936033614025,
+         "gain_floor": -0.1409360336140259
         },
         "shape_growth": {
-         "left": 12.571617574259852,
-         "gain_floor": -0.07161757425985574
+         "left": 12.572632556842736,
+         "gain_floor": -0.07263255684273906
         },
         "local_organisation": {
-         "left": 12.06455652951016,
-         "gain_floor": 0.43544347048984056
+         "left": 12.06323595118147,
+         "gain_floor": 0.43676404881852837
         }
        },
        "weakest_group": "cell_state",
        "weakest_metric": "neighborhood_mmd",
        "status": "counted",
-       "source": "experiments/harness/results/d2_v1/tasks/T2h_E9.5_E10.5.json (commit eae34eb, clean True, seeds 0-9, bake, build main, anchors computed)"
+       "source": "experiments/harness/results/trend_heart_v1/tasks/T2h_E9.5_E10.5.json (commit 8bb23bf, clean True, seeds 0-9, bake, build main, anchors computed)"
       },
       "T2h/<=E8.75->E10.5": {
        "metrics": {
         "de_score": {
          "weight": 0.125,
-         "entry": 0.4535797327465202,
+         "entry": 0.4748623706096802,
          "floor": 0.5,
          "copy": 0.4493827856654787,
-         "gain_floor": -0.5802533406684978,
-         "gain_copy": 0.05246183851301822,
-         "left": 6.830253340668497
+         "gain_floor": -0.3142203673789982,
+         "gain_copy": 0.31849481180251776,
+         "left": 6.564220367378999
         },
         "de_direction": {
          "weight": 0.125,
-         "entry": 0.5098997636183765,
+         "entry": 0.5266193439547,
          "floor": 0.5,
          "copy": 0.5162542331192344,
-         "gain_floor": 0.12374704522970621,
-         "gain_copy": -0.07943086876072333,
-         "left": 6.126252954770294
+         "gain_floor": 0.3327417994337504,
+         "gain_copy": 0.12956388544332081,
+         "left": 5.91725820056625
         },
         "mmd_u": {
          "weight": 0.15,
-         "entry": 0.509993586748245,
+         "entry": 0.5159502389646164,
          "floor": 0.5,
          "copy": 0.4980115949538675,
-         "gain_floor": 0.1499038012236773,
-         "gain_copy": 0.17972987691566464,
-         "left": 7.350096198776322
+         "gain_floor": 0.23925358446924933,
+         "gain_copy": 0.2690796601612367,
+         "left": 7.260746415530751
         },
         "variogram": {
          "weight": 0.1,
-         "entry": 0.5285476361938969,
+         "entry": 0.5303391294100979,
          "floor": 0.5,
          "copy": 0.503513566857319,
-         "gain_floor": 0.2854763619389682,
-         "gain_copy": 0.25034069336577797,
-         "left": 4.714523638061033
+         "gain_floor": 0.30339129410097926,
+         "gain_copy": 0.26825562552778903,
+         "left": 4.696608705899021
         },
         "d2_shape": {
          "weight": 0.08333333333333333,
@@ -428,140 +428,172 @@
         },
         "neighborhood_mmd": {
          "weight": 0.25,
-         "entry": 0.5510000137480947,
+         "entry": 0.5469586989005433,
          "floor": 0.5,
          "copy": 0.5311369588910748,
-         "gain_floor": 1.2750003437023698,
-         "gain_copy": 0.49657637142549815,
-         "left": 11.22499965629763
+         "gain_floor": 1.1739674725135836,
+         "gain_copy": 0.3955435002367119,
+         "left": 11.326032527486415
         }
        },
        "gate_mean": 1.0,
        "gate_min": 1.0,
-       "score": 51.44644991165535,
+       "score": 51.92770948336771,
        "floor_score": 49.99999999999999,
        "copy_score": 50.54677200019613,
        "groups": {
         "expression_change": {
-         "left": 12.95650629543879,
-         "gain_floor": -0.45650629543879157
+         "left": 12.48147856794525,
+         "gain_floor": 0.01852143205475215
         },
         "cell_state": {
-         "left": 12.064619836837355,
-         "gain_floor": 0.4353801631626455
+         "left": 11.957355121429773,
+         "gain_floor": 0.5426448785702286
         },
         "shape_growth": {
          "left": 12.307424299770862,
          "gain_floor": 0.19257570022913698
         },
         "local_organisation": {
-         "left": 11.22499965629763,
-         "gain_floor": 1.2750003437023698
+         "left": 11.326032527486415,
+         "gain_floor": 1.1739674725135836
         }
        },
        "weakest_group": "expression_change",
        "weakest_metric": "neighborhood_mmd",
        "status": "counted",
-       "source": "experiments/harness/results/d2_v1/tasks/T2h_E8.75_E10.5.json (commit eae34eb, clean True, seeds 0-9, bake, build main, anchors computed)"
+       "source": "experiments/harness/results/trend_heart_v1/tasks/T2h_E8.75_E10.5.json (commit 8bb23bf, clean True, seeds 0-9, bake, build main, anchors computed)"
+      }
+     },
+     "context": {
+      "T2h/<=E9.5->E10.5": {
+       "candidate": "b0",
+       "what": "B0 with the last step alone: the entry until the ruling of 2026-11-13 (h7_v1)",
+       "score": 50.4272525233645,
+       "skills": {
+        "de_score": 0.509602777837326,
+        "de_direction": 0.5211115659269187,
+        "mmd_u": 0.4659438712726744,
+        "variogram": 0.5190339260991343,
+        "d2_shape": 0.48853072427898125,
+        "occupancy_dice": 0.5040791165371908,
+        "scale_log_ratio": 0.49965402632429967,
+        "neighborhood_mmd": 0.5174177388195936
+       }
+      },
+      "T2h/<=E8.75->E10.5": {
+       "candidate": "b0",
+       "what": "B0 with the last step alone: the entry until the ruling of 2026-11-13 (h7_v1)",
+       "score": 51.44644991165535,
+       "skills": {
+        "de_score": 0.4535797327465202,
+        "de_direction": 0.5098997636183765,
+        "mmd_u": 0.509993586748245,
+        "variogram": 0.5285476361938969,
+        "d2_shape": 0.5022071716771024,
+        "occupancy_dice": 0.5207163005597193,
+        "scale_log_ratio": 0.5001856117906748,
+        "neighborhood_mmd": 0.5510000137480947
+       }
       }
      },
      "aggregate": {
       "metrics": {
        "de_score": {
         "weight": 0.125,
-        "entry": 0.4815912552919231,
+        "entry": 0.49750605896009537,
         "floor": 0.5,
         "copy": 0.45665627341965176,
-        "gain_floor": -0.23010930885096137,
-        "gain_copy": 0.31168727340339175,
-        "left": 6.480109308850961
+        "gain_floor": -0.03117426299880871,
+        "gain_copy": 0.5106223192555444,
+        "left": 6.2811742629988085
        },
        "de_direction": {
         "weight": 0.125,
-        "entry": 0.5155056647726476,
+        "entry": 0.5256882173469204,
         "floor": 0.5,
         "copy": 0.5107568956681525,
-        "gain_floor": 0.1938208096580948,
-        "gain_copy": 0.059359613806187816,
-        "left": 6.056179190341905
+        "gain_floor": 0.32110271683650493,
+        "gain_copy": 0.18664152098459796,
+        "left": 5.928897283163495
        },
        "mmd_u": {
         "weight": 0.15,
-        "entry": 0.48796872901045973,
+        "entry": 0.4947436460462906,
         "floor": 0.5,
         "copy": 0.49604724184728927,
-        "gain_floor": -0.18046906484310277,
-        "gain_copy": -0.12117769255244219,
-        "left": 7.680469064843102
+        "gain_floor": -0.07884530930564057,
+        "gain_copy": -0.019553937014979983,
+        "left": 7.57884530930564
        },
        "variogram": {
         "weight": 0.1,
-        "entry": 0.5237907811465157,
+        "entry": 0.5279699731783741,
         "floor": 0.5,
         "copy": 0.5002505928618253,
-        "gain_floor": 0.23790781146515566,
-        "gain_copy": 0.23540188284690305,
-        "left": 4.7620921885348455
+        "gain_floor": 0.2796997317837419,
+        "gain_copy": 0.27719380316548936,
+        "left": 4.720300268216258
        },
        "d2_shape": {
-        "weight": 0.08331040847921876,
+        "weight": 0.08330715407682421,
         "entry": 0.4953689479780418,
         "floor": 0.5,
         "copy": 0.4953689479780418,
-        "gain_floor": -0.03982651540453876,
-        "gain_copy": 0.00046139562285976157,
-        "left": 4.206493182071204
+        "gain_floor": -0.040001752456553,
+        "gain_copy": 0.00028615857084552944,
+        "left": 4.206668419123218
        },
        "occupancy_dice": {
-        "weight": 0.08331040847921876,
+        "weight": 0.08330715407682421,
         "entry": 0.512397708548455,
         "floor": 0.5,
         "copy": 0.512397708548455,
-        "gain_floor": 0.10212884203143757,
-        "gain_copy": 0.0004430733332762671,
-        "left": 4.064537824635228
+        "gain_floor": 0.10196056374507625,
+        "gain_copy": 0.00027479504691494403,
+        "left": 4.06470610292159
        },
        "scale_log_ratio": {
-        "weight": 0.08331040847921876,
+        "weight": 0.08330715407682421,
         "entry": 0.4999198190574872,
         "floor": 0.5,
         "copy": 0.4999198190574872,
-        "gain_floor": -0.0018232636422581992,
-        "gain_copy": 0.0004317453765017909,
-        "left": 4.168489930308924
+        "gain_floor": -0.0019872395953242973,
+        "gain_copy": 0.0002677694234356931,
+        "left": 4.168653906261991
        },
        "neighborhood_mmd": {
         "weight": 0.25,
-        "entry": 0.5342088762838442,
+        "entry": 0.5322146304266422,
         "floor": 0.5,
         "copy": 0.5262380921148175,
-        "gain_floor": 0.8552219070961051,
-        "gain_copy": 0.1992696042256668,
-        "left": 11.644778092903895
+        "gain_floor": 0.805365760666056,
+        "gain_copy": 0.1494134577956176,
+        "left": 11.694634239333944
        }
       },
-      "score": 50.936851217509926,
+      "score": 51.35612020867505,
       "n_tasks": 2,
       "floor_score": 49.99999999999999,
       "groups": {
        "expression_change": {
-        "left": 12.536288499192867,
-        "gain_floor": -0.03628849919286656
+        "left": 12.210071546162304,
+        "gain_floor": 0.2899284538376962
        },
        "cell_state": {
-        "left": 12.442561253377947,
-        "gain_floor": 0.057438746622052894
+        "left": 12.299145577521898,
+        "gain_floor": 0.20085442247810134
        },
        "shape_growth": {
-        "left": 12.439520937015358,
-        "gain_floor": 0.06047906298464061
+        "left": 12.4400284283068,
+        "gain_floor": 0.05997157169319896
        },
        "local_organisation": {
-        "left": 11.644778092903895,
-        "gain_floor": 0.8552219070961051
+        "left": 11.694634239333944,
+        "gain_floor": 0.805365760666056
        }
       },
-      "weakest_group": "expression_change",
+      "weakest_group": "shape_growth",
       "weakest_metric": "neighborhood_mmd"
      }
     }
@@ -2389,30 +2421,30 @@
    "entry": "H1",
    "stand_in": true,
    "n_tasks": 2,
-   "board_score": 50.936851217509926,
-   "gain_over_floor": 0.9368512175099326,
-   "left_overall_board": 24.531574391245037,
-   "weakest_group": "expression_change",
-   "weakest_group_left": 12.536288499192867,
-   "weakest_group_left_overall": 6.268144249596434,
-   "weakest_group_gain_floor": -0.03628849919286656,
+   "board_score": 51.35612020867505,
+   "gain_over_floor": 1.3561202086750583,
+   "left_overall_board": 24.321939895662474,
+   "weakest_group": "shape_growth",
+   "weakest_group_left": 12.4400284283068,
+   "weakest_group_left_overall": 6.2200142141534,
+   "weakest_group_gain_floor": 0.05997157169319896,
    "weakest_metric": "neighborhood_mmd",
-   "weakest_metric_left": 11.644778092903895,
+   "weakest_metric_left": 11.694634239333944,
    "left_by_group": {
-    "expression_change": 12.536288499192867,
-    "cell_state": 12.442561253377947,
-    "shape_growth": 12.439520937015358,
-    "local_organisation": 11.644778092903895
+    "expression_change": 12.210071546162304,
+    "cell_state": 12.299145577521898,
+    "shape_growth": 12.4400284283068,
+    "local_organisation": 11.694634239333944
    },
    "left_by_metric": {
-    "de_score": 6.480109308850961,
-    "de_direction": 6.056179190341905,
-    "mmd_u": 7.680469064843102,
-    "variogram": 4.7620921885348455,
-    "d2_shape": 4.206493182071204,
-    "occupancy_dice": 4.064537824635228,
-    "scale_log_ratio": 4.168489930308924,
-    "neighborhood_mmd": 11.644778092903895
+    "de_score": 6.2811742629988085,
+    "de_direction": 5.928897283163495,
+    "mmd_u": 7.57884530930564,
+    "variogram": 4.720300268216258,
+    "d2_shape": 4.206668419123218,
+    "occupancy_dice": 4.06470610292159,
+    "scale_log_ratio": 4.168653906261991,
+    "neighborhood_mmd": 11.694634239333944
    }
   },
   {
@@ -2574,7 +2606,7 @@
    "entry": "M1"
   },
   {
-   "left_overall": 24.531574391245037,
+   "left_overall": 24.321939895662474,
    "board": "T2:heart:test_extrap",
    "entry": "H1"
   },
@@ -2650,25 +2682,25 @@
    "group": "response_direction"
   },
   {
-   "left_overall": 6.268144249596434,
-   "board": "T2:heart:test_extrap",
-   "entry": "H1",
-   "group": "expression_change"
-  },
-  {
-   "left_overall": 6.221280626688974,
-   "board": "T2:heart:test_extrap",
-   "entry": "H1",
-   "group": "cell_state"
-  },
-  {
-   "left_overall": 6.219760468507679,
+   "left_overall": 6.2200142141534,
    "board": "T2:heart:test_extrap",
    "entry": "H1",
    "group": "shape_growth"
   },
   {
-   "left_overall": 5.822389046451947,
+   "left_overall": 6.149572788760949,
+   "board": "T2:heart:test_extrap",
+   "entry": "H1",
+   "group": "cell_state"
+  },
+  {
+   "left_overall": 6.105035773081152,
+   "board": "T2:heart:test_extrap",
+   "entry": "H1",
+   "group": "expression_change"
+  },
+  {
+   "left_overall": 5.847317119666972,
    "board": "T2:heart:test_extrap",
    "entry": "H1",
    "group": "local_organisation"
@@ -2766,7 +2798,7 @@
    "metric": "de_direction"
   },
   {
-   "left_overall": 5.822389046451947,
+   "left_overall": 5.847317119666972,
    "board": "T2:heart:test_extrap",
    "entry": "H1",
    "metric": "neighborhood_mmd"
@@ -2790,7 +2822,7 @@
    "metric": "variogram"
   },
   {
-   "left_overall": 3.840234532421551,
+   "left_overall": 3.78942265465282,
    "board": "T2:heart:test_extrap",
    "entry": "H1",
    "metric": "mmd_u"
@@ -2802,7 +2834,7 @@
    "metric": "mmd_u"
   },
   {
-   "left_overall": 3.2400546544254807,
+   "left_overall": 3.1405871314994043,
    "board": "T2:heart:test_extrap",
    "entry": "H1",
    "metric": "de_score"
@@ -2814,7 +2846,7 @@
    "metric": "mmd_u"
   },
   {
-   "left_overall": 3.0280895951709526,
+   "left_overall": 2.9644486415817477,
    "board": "T2:heart:test_extrap",
    "entry": "H1",
    "metric": "de_direction"
@@ -2832,7 +2864,7 @@
    "metric": "variogram"
   },
   {
-   "left_overall": 2.3810460942674228,
+   "left_overall": 2.360150134108129,
    "board": "T2:heart:test_extrap",
    "entry": "H1",
    "metric": "variogram"
@@ -2850,19 +2882,19 @@
    "metric": "occupancy_dice"
   },
   {
-   "left_overall": 2.103246591035602,
+   "left_overall": 2.103334209561609,
    "board": "T2:heart:test_extrap",
    "entry": "H1",
    "metric": "d2_shape"
   },
   {
-   "left_overall": 2.084244965154462,
+   "left_overall": 2.0843269531309954,
    "board": "T2:heart:test_extrap",
    "entry": "H1",
    "metric": "scale_log_ratio"
   },
   {
-   "left_overall": 2.032268912317614,
+   "left_overall": 2.032353051460795,
    "board": "T2:heart:test_extrap",
    "entry": "H1",
    "metric": "occupancy_dice"
@@ -2923,21 +2955,21 @@
   "experiments/harness/results/baselines_v1/tasks/T3_Gata4_Mab21l2.json": "7bbb0e9bbaa8806463a5498e290794465962cf94a3d9d50dd1fa0d1c8b66fb1f",
   "experiments/harness/results/baselines_v1/tasks/T3_Mab21l2_Gata4rep2.json": "bd0d1e494f20cef4b0fdf088260a300aa7544fd0c2e0ff4653ba1df6f8859861",
   "experiments/harness/results/d2_v1/decisions_T1_test.json": "9cfbb6d1cc7996c1359377d25bec9c9b1f43502e5755eafbe2123ba10b6add24",
-  "experiments/harness/results/d2_v1/decisions_T2_heart_test_extrap.json": "57872ddb94fe9087fc5d10d8ff2a1ca75826d091db6aa2893afa79e5b5eaeb8e",
   "experiments/harness/results/d2_v1/tasks/T1_E9.5_E10.5.json": "65b3291835db4755d1b6bf2013a83188ba22ca35d1c44abeee00cfa3c15b7535",
   "experiments/harness/results/d2_v1/tasks/T1_E9.5_E10.5_chamber.json": "ad5cef9cd5e1be2693295c60c6be2b6c5dd020064e100d4d91e8052e75385eab",
-  "experiments/harness/results/d2_v1/tasks/T2h_E8.75_E10.5.json": "abbdc05fe3ea40e71b089569c0dfefef2ed43f9da0538fc80959621929102cc7",
-  "experiments/harness/results/d2_v1/tasks/T2h_E9.5_E10.5.json": "7cc830d376fb890916fa97355740cfa5e3ff96d1a9002755776a64d8ec692c93",
   "experiments/harness/results/emb_fgw_v1/fgw_vs_b0/decisions_T2_embryo_test_interp.json": "39aada363e7fba19bd958d089b29cc11841087e018bfb20b6bd77466809197c3",
   "experiments/harness/results/emb_fgw_v1/tasks/T2e_E6.75_E7.5_E7.25.json": "0579ef165aa0d1f7ebea91f73eb30fe3d200a2165e09dc3c254ddfe9ded178e1",
   "experiments/harness/results/emb_fgw_v1/tasks/T2e_E7.25_E8.0_E7.5.json": "50efea88a03f54a6d8e39fc89d34c43c5284ab938e471abdf5e442afc932e315",
   "experiments/harness/results/emb_shape_v1/decisions_T2_embryo_test_interp.json": "4a4000b4e83473f61d1150e29d6cd76b46e0592ac0e5b9abd35c3f3a3d658fe6",
   "experiments/harness/results/emb_shape_v1/tasks/T2e_E6.75_E7.5_E7.25.json": "2e58860ac1014e9a02c87caafaf420b58b1974fea37d213266f14cf68266c426",
   "experiments/harness/results/emb_shape_v1/tasks/T2e_E7.25_E8.0_E7.5.json": "f8545e9002474a66d1d3e7ba4be4ad01b1e7fabda927a72bffd04de3356625e0",
+  "experiments/harness/results/trend_heart_v1/decisions_T2_heart_test_extrap.json": "b8a930917631924eee6ab8b0d41590366130769342d2e1675afc3a5a05c9d6b1",
+  "experiments/harness/results/trend_heart_v1/tasks/T2h_E8.75_E10.5.json": "d06eba5b60e9bcbf16d5bb9544a3b623fbbae20ed1754182d03cf53ccb606fae",
+  "experiments/harness/results/trend_heart_v1/tasks/T2h_E9.5_E10.5.json": "003752fad9fb79e9349254a8f38bc7d1e12fdc4674bcdc2a8cf4d61fc90e83ec",
   "experiments/t1_m1/results/diag_v1/T1_E9.5_E10.5.json": "8682656022b4a96df01a056cb713b4213a5ed6cba6dc80ac38dbd00c63749822",
   "experiments/t1_m1/results/diag_v1/T1_E9.5_E10.5_chamber.json": "e51d67c6f04271a438883fba2b4800de6cfc7dd006d13b7b49bf62c62dec39fe",
   "experiments/t3_decomp/results/gata4/gata4_records.csv": "62bc4a448f8f922b9809c47c1ed1285a7962d716d515ea0bb5718a40c62dfd0c",
-  "results/registry.csv": "e3fd930e103c79a5f76dab2fc9b76fa066ca3d23b16cfa901418ef70b4f3651a"
+  "results/registry.csv": "3063cb548a26e0d6d68baf00dccde2018162ea856e7b2e2b3b4f121ba8321006"
  },
  "weights": {
   "T1": {
