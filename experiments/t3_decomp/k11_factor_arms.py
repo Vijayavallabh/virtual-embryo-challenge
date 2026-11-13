@@ -30,15 +30,23 @@ Arms built:
                 K y - (K - 1) y^(-k) (eb_factor.jackknife's sections, deletions and conventions, recomputed here because
                 that function returns only their variance), then gene_factor's last two steps (eb_factor.finalize:
                 rescale to the WT-weighted total, clip). The median of the pseudo-values is the simplest
-                parameter-free robust form; the record names no estimator. No vector is added, so it has no control.
+                parameter-free robust form; the record names no estimator. In log it is the raw factor's y moved by the
+                per-gene vector (m - y), m the robust value, then rescaled and clipped.
+  raw_c3_perm   its control (the independent review of a21b484): finalize(y + perm(m - y)), the shift (m - y)
+                permuted across genes within deciles of the reference's mean expression by
+                harness.t3_decile_permutation at k9.PERM_SEED (the machinery raw_did_perm uses), built through the same
+                BASE path and the same drawn cells as raw_c3. With m == y it is raw's factor through finalize.
 
 Blocked (design not on record; BLOCKED below): raw_lvc (R4) and raw_r8 (R8).
 
 Reading, fixed (K9's form, per arm, the adoption rule's constants: a paired mean gain above 0.3 with at least 8 of 10
-seeds ahead): an arm is SUPPORTED if on x1 AND on r12 it beats raw that way, and beats its permuted control that way
-where it has one, and on x2 its paired mean against raw is not below -0.3; anything else CLOSED. A supported arm is next
-read on the first-choice file's own form (as K10 did) before any request. The read also checks that `raw` reproduces
-K9's committed raw scores (RESULTS_K9, if that folder exists in the checkout) to 1e-6 per seed, and is void if not.
+seeds ahead): an arm is SUPPORTED if on x1 AND on r12 it beats raw that way and beats its permuted control that way
+(raw_did against raw_did_perm, raw_c3 against raw_c3_perm), and on x2 its paired mean against raw is not below -0.3;
+anything else CLOSED. raw_did is "not built" on a fold whose source gives the contrast no Mesp1-lineage label or no
+non-Mesp1 label (the factor record's counts; D is then zero and raw_did is raw): if that happens on x1 or r12 its
+reading is NOT READABLE, not CLOSED. A supported arm is next read on the first-choice file's own form (as K10 did)
+before any request. The read also checks that `raw` reproduces K9's committed raw scores (RESULTS_K9, if that folder
+exists in the checkout) to 1e-6 per seed, and is void if not.
 
   run   --task x1|x2|r12 --out DIR    one task per process (refuses an existing task file)
   read  --runs DIR --out DIR          apply the reading; write reading.json and reading.txt (refuses to overwrite)
@@ -68,9 +76,10 @@ PERM_SEED = k9.PERM_SEED
 STREAM = k9.STREAM
 MESP1 = "yes"  # the lineage map's flag for the Mesp1 lineage (L)
 BASE = k9.BASE  # "raw"
-DID, DID_PERM, C3 = "raw_did", "raw_did_perm", "raw_c3"
-ARMS = (BASE, DID, DID_PERM, C3)
-CONTROLS = {DID: DID_PERM, C3: None}  # each read arm and its permuted control (None: no vector is added)
+DID, DID_PERM, C3, C3_PERM = "raw_did", "raw_did_perm", "raw_c3", "raw_c3_perm"
+ARMS = (BASE, DID, DID_PERM, C3, C3_PERM)
+CONTROLS = {DID: DID_PERM, C3: C3_PERM}  # each read arm and its permuted control
+NOT_BUILT_KEYS = ("source_mesp1_labels_in_contrast", "source_nonmesp1_labels")  # raw_did needs both above zero
 MIN_GAIN, MIN_AHEAD, X2_FLOOR = k9.MIN_GAIN, k9.MIN_AHEAD, k9.X2_FLOOR
 TASKS = k9.TASKS
 KEYS = k9.KEYS
@@ -83,6 +92,8 @@ DID_RULE = ("G = DID_C x ([KO - WT in Mesp1-lineage labels] - [KO - WT in strict
             "Mesp1-lineage cells, phi_raw elsewhere; applied once per class with t3_decompose.apply_gene_factor")
 C3_RULE = ("the per-gene median over the source's sections of the delete-one-section jackknife pseudo-values of "
            "gene_factor's log ratio (eb_factor.jackknife's sections and conventions), then eb_factor.finalize")
+C3_PERM_RULE = ("finalize(y + perm(m - y)): raw_c3's shift m - y of gene_factor's log ratio permuted across genes "
+                "within deciles of the reference's t3_mean_expression (harness.t3_decile_permutation, k9.PERM_SEED)")
 BLOCKED = {
     "raw_lvc": "design not on record: R4's variance is a replicate difference of the two Gata4 runs, which holds the "
                "fold's truth on x1 and r12 and does not exist for x1's one-file Mab21l2 source; R4 names no estimator "
@@ -200,6 +211,18 @@ def c3_factor(frame, strength: float | None = None) -> np.ndarray:
     return harness._t3_eb().finalize(y + s * (m - y), den, frame.clip)
 
 
+def c3_perm_factor(frame, basis: np.ndarray, seed: int = PERM_SEED, strength: float | None = None) -> np.ndarray:
+    """raw_c3_perm's factor: as c3_factor with its per-gene shift (m - y) permuted within deciles of `basis` (the
+    reference's mean expression) by harness.t3_decile_permutation at `seed`; at strength 0 the frame's raw factor."""
+    s = C3_STRENGTH if strength is None else strength
+    if s == 0:
+        return np.array(frame.phi, dtype=np.float64)
+    y, ys, den, _ = section_estimates(frame.C, frame.lab, frame.block, frame.mu_wt, frame.weights, frame.mask,
+                                      frame.eps)
+    shift = harness.t3_decile_permutation(robust_log_ratio(y, ys) - y, basis, seed)
+    return harness._t3_eb().finalize(y + s * shift, den, frame.clip)
+
+
 # ------------------------------------------------------------------------------------------------ the arms
 def _cosine(a: np.ndarray, b: np.ndarray) -> float | None:
     na, nb = float(np.linalg.norm(a)), float(np.linalg.norm(b))
@@ -228,11 +251,13 @@ def _prepared(ctx) -> dict:
         rho = did_factors(D)
         ref = harness.t3_reference(pool, fold["reference_preset"], rules)
         phi_c3 = c3_factor(frame)
+        basis = harness.t3_mean_expression(pool)
         _PREP.clear()
         hit = _PREP["fold"] = {
             "key": ctx.task.key, "inputs": objs, "phi_raw": phi_raw, "rho_did": rho,
-            "rho_did_perm": k9.permuted_residuals(rho, harness.t3_mean_expression(pool), PERM_SEED),
-            "phi_c3": phi_c3, "clip": tuple(float(c) for c in rules["components"]["factor"]["clip"]),
+            "rho_did_perm": k9.permuted_residuals(rho, basis, PERM_SEED),
+            "phi_c3": phi_c3, "phi_c3_perm": c3_perm_factor(frame, basis, PERM_SEED),
+            "clip": tuple(float(c) for c in rules["components"]["factor"]["clip"]),
             "classes": lineage_classes(ref.V, ref.pool.lab), "ref": ref,
             "record": {"fold": FOLD_OF[ctx.task.key], "reference": ctx.task.role_stems[ctx.task.reference_role],
                        "source_mesp1_labels_in_contrast": int(mask_l.sum()),
@@ -246,11 +271,13 @@ def _prepared(ctx) -> dict:
 def arm_built(bs, ref, n: int, seed: int, f, arm: str, prep: dict):
     """One arm's cells, before assembly, all through k9.arm_built on K9's stream: raw with phi_raw; raw_did and its
     control with phi_raw and the per-class multiplier (the same construct draws, then one apply_gene_factor per class);
-    raw_c3 as raw with its own factor in place of phi_raw."""
+    raw_c3 and its control as raw with their own factor in place of phi_raw."""
     if arm == BASE:
         return k9.arm_built(bs, ref, n, seed, f, BASE, prep["phi_raw"], None, None, prep["clip"])
     if arm == C3:
         return k9.arm_built(bs, ref, n, seed, f, BASE, prep["phi_c3"], None, None, prep["clip"])
+    if arm == C3_PERM:
+        return k9.arm_built(bs, ref, n, seed, f, BASE, prep["phi_c3_perm"], None, None, prep["clip"])
     rho = prep["rho_did" if arm == DID else "rho_did_perm"]
     return k9.arm_built(bs, ref, n, seed, f, arm, prep["phi_raw"], rho, prep["classes"], prep["clip"])
 
@@ -270,8 +297,9 @@ def candidates() -> list:
                                  params=harness.K4_PARAMS | {
                                      "did": DID_RULE if arm in (DID, DID_PERM) else None,
                                      "did_c": DID_C if arm in (DID, DID_PERM) else None,
-                                     "perm_seed": PERM_SEED if arm == DID_PERM else None,
-                                     "c3": C3_RULE if arm == C3 else None},
+                                     "perm_seed": PERM_SEED if arm in (DID_PERM, C3_PERM) else None,
+                                     "c3": C3_RULE if arm in (C3, C3_PERM) else None} | (
+                                     {"c3_perm": C3_PERM_RULE} if arm == C3_PERM else {}),
                                  requires=lambda t: t.key in KEYS)
 
     return [harness.CANDIDATES[harness.FLOOR], *(one(a) for a in ARMS)]
@@ -292,16 +320,37 @@ def cmd_run(a) -> None:
 
 
 # ------------------------------------------------------------------------------------------------ the reading
-def decide(per: dict) -> dict[str, tuple[bool, dict]]:
-    """The fixed reading per arm: supported only when the arm passes against raw (and against its control where it
-    has one) on x1 and on r12, and its paired mean against raw on x2 is not below X2_FLOOR."""
+def did_built(record: dict) -> bool:
+    """raw_did is built on a fold only when its source gives the contrast at least one Mesp1-lineage label and at least
+    one non-Mesp1 label (the factor record's counts); otherwise did_contrast is zero and raw_did is raw. A record
+    without the counts counts as not built."""
+    return all(int(record.get(k) or 0) >= 1 for k in NOT_BUILT_KEYS)
+
+
+def not_built(record: dict) -> list[str]:
+    """The arms not built on a fold, from its factor record: raw_did and its control when did_built is false."""
+    return [] if did_built(record) else [DID, DID_PERM]
+
+
+def decide(per: dict) -> dict[str, tuple[bool, dict, list[str]]]:
+    """The fixed reading per arm: (passes, checks, the read folds x1 and r12 where the arm was not built). It passes
+    only when the arm beats raw and its permuted control on x1 and on r12, and its paired mean against raw on x2 is not
+    below X2_FLOOR; an arm not built on x1 or r12 is not readable whatever its checks say."""
     out = {}
     for arm, ctrl in CONTROLS.items():
-        ys = (BASE,) if ctrl is None else (BASE, ctrl)
-        checks = {f"{n}: {arm} - {y}": per[n]["paired"][f"{arm} - {y}"]["passes"] for n in ("x1", "r12") for y in ys}
+        checks = {f"{n}: {arm} - {y}": per[n]["paired"][f"{arm} - {y}"]["passes"]
+                  for n in ("x1", "r12") for y in (BASE, ctrl)}
         checks[f"x2: {arm} - {BASE} not below {X2_FLOOR}"] = per["x2"]["paired"][f"{arm} - {BASE}"]["mean"] >= X2_FLOOR
-        out[arm] = (all(checks.values()), checks)
+        unbuilt = [n for n in ("x1", "r12") if arm in per[n].get("not_built", [])]
+        out[arm] = (all(checks.values()), checks, unbuilt)
     return out
+
+
+def verdict(ok: bool, unbuilt: list[str]) -> str:
+    if unbuilt:
+        return (f"NOT READABLE: not built on {', '.join(unbuilt)} (the source's contrast holds no Mesp1-lineage or no "
+                f"non-Mesp1 label with min_cells on both sides, so the arm is raw there); no request")
+    return f"SUPPORTED: {NEXT}" if ok else "CLOSED: no request"
 
 
 def k9_reproduction(runs_rows: dict[str, list[dict]], k9_dir: Path = RESULTS_K9) -> tuple[str, list[str]]:
@@ -345,15 +394,17 @@ def reading(runs: Path, k9_dir: Path = RESULTS_K9) -> dict:
         metrics = list(rows[0]["skills"][BASE])
         pairs = [(BASE, harness.FLOOR)] + [(a, BASE) for a in CONTROLS] + [
             (a, c) for a, c in CONTROLS.items() if c] + [(c, BASE) for c in CONTROLS.values() if c]
+        rec = r.get("factor_record") or {}
         per[name] = {
             "counted_fold": name in COUNTED,
+            "not_built": not_built(rec),
             "mean_score": {x: float(np.mean([q["scores"][x] for q in rows])) for x in arms},
             "paired": {f"{x} - {y}": k9._paired(rows, x, y) for x, y in pairs},
             "severity_states": {x: {s: sum(q["t3"][x]["severity"]["state"] == s for q in rows)
                                     for s in sorted({q["t3"][x]["severity"]["state"] for q in rows})} for x in arms},
             "skill_diff_minus_raw": {a: {m: float(np.mean([q["skills"][a][m] - q["skills"][BASE][m] for q in rows]))
                                          for m in metrics} for a in CONTROLS},
-            "record": r.get("factor_record") or {}}
+            "record": rec}
     if len(commits) > 1:
         why.append(f"results from different commits {sorted(commits)}")
     status, repro_why = k9_reproduction(all_rows, k9_dir) if not why else ("not checked", [])
@@ -362,9 +413,9 @@ def reading(runs: Path, k9_dir: Path = RESULTS_K9) -> dict:
         return {"void": True, "why": why}
     decided = decide(per)
     return {"void": False, "why": [], "commit": sorted(commits)[0], "tasks": per, "k9_reproduction": status,
-            "arms": {a: {"supported": bool(ok), "checks": checks,
-                         "verdict": (f"SUPPORTED: {NEXT}" if ok else "CLOSED: no request")}
-                     for a, (ok, checks) in decided.items()},
+            "arms": {a: {"supported": bool(ok and not unbuilt), "readable": not unbuilt, "not_built_on": unbuilt,
+                         "checks": checks, "verdict": verdict(ok, unbuilt)}
+                     for a, (ok, checks, unbuilt) in decided.items()},
             "blocked": BLOCKED, "label": LABEL}
 
 
@@ -402,6 +453,10 @@ def text(res: dict) -> str:
         lines.append(f"    cosine of log(phi_raw) with D {_fmt(rec.get('cosine_log_phi_raw_did'))}; with log(phi_c3) "
                      f"{_fmt(rec.get('cosine_log_phi_raw_log_phi_c3'))}; Mesp1-lineage labels in the contrast "
                      f"{rec.get('source_mesp1_labels_in_contrast')}")
+        if v["not_built"]:
+            lines.append(f"    not built on this fold: {', '.join(v['not_built'])} (the contrast's Mesp1-lineage "
+                         f"labels {rec.get('source_mesp1_labels_in_contrast')}, non-Mesp1 labels "
+                         f"{rec.get('source_nonmesp1_labels')}: D is zero, the arm is raw)")
     return "\n".join(lines) + "\n"
 
 
