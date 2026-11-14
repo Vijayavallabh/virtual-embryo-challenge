@@ -3,6 +3,17 @@
 ## Current State
 
 **Last Updated:** 2026-11-14
+**2026-11-14, morning UTC: the organisers' replies assumed (decision log 2026-11-14 (a)). No file changes; no set of
+replies reaches 215.41.** The captain: "Assume logical replies from the organizers for relevant mails". Three
+independent predictors and two adversarial reviewers put the replies at: final marks per board (0.60 to 0.80); Task
+1's E12.5 libraries made with library 3's protocol, separately or together (0.70 to 0.90 between them); the embryo's
+E7.75 sections with E8.0 or in a run of their own, about evenly, and with E7.5 least likely (about 0.10); the
+beta-catenin knockout on a slide of its own (0.65 to 0.80). They confirm the files as built on every board, so nothing
+changes and nothing waits on the organisers; the reads of 19 and 23 Nov stay as checks. The committed estimate stays
+184 (170 to 198). The forecast for the files as built is 194.4 as committed and 182.5 to 203.7 with every judgement
+weight at one end (`experiments/gate/forecast_weights.py`): replies were never the route to the leading total. A first
+note to the captain that the replies lower the estimate to about 179 was withdrawn after an independent check: the
+weight it moved is not defined by the Task 3 reply.
 **2026-11-14, early morning UTC: the round's audit (decision log 2026-11-13 (ii)). Nothing passes a rule; no file
 changes; the options for passing 215.41 are used up within the rules.** The stop check refused the report of (ff) to
 (hh) a second time: closures rested on the AI assistant's own odds and two planned checks were open. Done since: the

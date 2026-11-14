@@ -23,6 +23,10 @@
   decision log (x)). The upload client refuses a scored upload of a file that is not on this list (guard
   "reference list", pointer `results/reference_list.json`; decision log (cc)).
   What is owed:
+  - nothing to the organisers: on 2026-11-14 the captain had their logical replies assumed for the questions still
+    open (decision log 2026-11-14 (a); `docs/ORGANIZER_QUESTIONS.md`, "Working answers (2026-11-14)"). The replies
+    confirm the files as built; the items below about the eighth email, the Task 3 batch question and the screened
+    reads stand only as the captain's options and as checks;
   - the captain's decision on a drafted question, if the captain wants it sent: an eighth email asking the organisers
     how final entries are marked (per board or one pick over several boards; what counts on an unmarked board; until
     when a pick can change). It is reviewed and staged in `docs/ORGANIZER_QUESTIONS.md` with its readings fixed

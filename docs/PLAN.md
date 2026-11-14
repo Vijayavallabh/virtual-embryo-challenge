@@ -3965,3 +3965,58 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the captain could reopen and for which no released file gives a value. Twenty counted tries in this entry (T39,
     T40 and T41; K12a and K12b; K13a and K13b; E36a to E36d; E37a and E37b; E38a to E38d; E39a to E39c) and one
     reading (N40): T1 37, embryo 60, heart 25, T3 27.
+- 2026-11-14 (a), the organisers' replies assumed for the four questions that had no working answer: what that changes
+  and what it cannot. Written by the AI assistant; the captain can overrule any of it.
+  - **The instruction.** The captain, 2026-11-14, on being told by a side agent that two questions for the organisers
+    waited on a decision: "so far organizers have not answered any of my single mail too". Then, after asking for the
+    estimate and why the leading total is out of reach: "Assume logical replies from the organizers for relevant
+    mails". The AI assistant reads this as the instruction of 2026-11-10 (decision log 2026-11-10 (x)) extended to the
+    questions that had no working answer: the two of the seventh email, the Task 3 question cut from it, and the
+    drafted eighth email's. It is not read as a ruling on any upload, frozen rule or closed lever.
+  - **How the replies were derived.** As on 2026-11-10: independent predictions first, adversarial review after
+    (workflow wf_48f6fcf6-157, read only). Three predictors (the lab that made the samples; an organiser answering a
+    short email; a statistician on base rates) and two reviewers, one looking for answers that suit the team too well
+    and one for the opposite, worked from one digest of target-free facts: the screened Data Protocol text in
+    `docs/DATA_NOTES.md`, the released files' signatures, diagnostic N23's table, and a listing of the batch columns
+    of the released files made for this entry. That listing read obs columns only (no expression, no target, no
+    score): the wild-type MERFISH files carry no slide or batch column; the Mab21l2 knockout is on slide M125; both
+    Gata4 replicates are on slide M164 as embryos M164-KO1 and M164-KO2; `perturb_batch` numbers the three knockout
+    embryos 0, 1 and 2.
+  - **The replies assumed** (the five agents' range; the table is in `docs/ORGANIZER_QUESTIONS.md`, "Working answers
+    (2026-11-14)"). Final entries: marked per board, and where nothing is marked the best official upload counts (0.60
+    to 0.80). Task 1: E12.5's libraries were prepared separately from E10.5's library 3 with the same protocol (0.45
+    to 0.54), or together with it (0.20 to 0.40); another protocol 0.10 to 0.30. Embryo: no single reply; E7.75
+    processed with E8.0 (0.30 to 0.55) or in a run of its own (0.33 to 0.62); with E7.5 0.08 to 0.12. Task 3: the
+    beta-catenin knockout on a slide and in a run of its own (0.65 to 0.80).
+  - **What changes: nothing in any file.** Task 1's first upload is already drawn from library 3 (row R6), which the
+    likelier replies confirm; request R-B is not reopened, since its fixed reading names an organiser's answer and an
+    assumed one is not that. The embryo pair stands: without an answer the fixed reading keeps it, and the pair rule
+    that chose it holds for a chance of 0.30 to 0.60 that the hidden sample shares E8.0's profile, which covers every
+    agent's figure. The first upload built for a hidden sample like E7.5 (decision log 2026-11-13 (hh): +8.08 on the
+    one practice task of that kind) stays declined: its trigger names the reply the agents rate least likely, and with
+    reading N37's task values weighted at the agents' middle figures (0.45 like E8.0, 0.10 like E7.5, 0.45 neither) it
+    is worth about +0.3 embryo points, on one practice task's evidence. Task 3's two uploads are fixed by frozen
+    rules. Marks: every board is marked explicitly after its last upload, as planned.
+  - **What it settles.** Nothing in the plan waits for an organiser reply any more. The screened reads approved for 19
+    and 23 November stay as checks, since a real answer still replaces a working one. The drafted eighth email and the
+    Task 3 question need not be sent; sending either stays the captain's choice.
+  - **The estimate, and a correction.** The committed estimate stays 184 (170 to 198). The AI assistant first told the
+    captain that the assumed replies lower it by about 5 points, to about 179, and the forecast's upper reading from
+    194.4 to 187.6 or 189.2. An independent recomputation reproduced every figure and rejected that reading: the
+    weight it had moved, the forecast's stand-in A, is a kind of fold (a Gata4 factor read on the other Gata4
+    replicate), and nothing in the forecast defines it as the chance that the test knockout shared a slide with those
+    replicates; in its words the totals "should be presented as a sensitivity of the A weight, not as what that reply
+    implies". "About 179" is withdrawn. What stands is that sensitivity (`experiments/gate/forecast_weights.py`, its
+    output `experiments/gate/results/forecast_weights_2026-11-14.json` and tests; an aggregation of committed results,
+    not a try): the forecast for the files as built is 194.4 as committed, 190.5 and 198.3 at the two ends of the
+    stand-in's stated range, 182.5 with every judgement weight at the end that suits the files least, and 203.7 with
+    every one at the end that suits them most. Task 3 is where the figure is softest: that board reads 57.8 to 73.3
+    over the stand-in's whole range.
+  - **What it shows about the target.** No set of organiser replies takes the forecast past 203.7, and at that end the
+    chance of 215.41 is 0.08%. Answers were never the route to the leading total; the levers of that size stay the
+    ones the post-exposure block and the frozen rules close (decision log 2026-11-13 (ii)).
+  - **What the reviewers said that binds.** The readings fixed for each possible answer are readings of real answers,
+    and nothing changes without the captain's ruling. An assumed reply gives no protection where only an answer given
+    in advance counts (Rules s.10): the uses that already rest on working answers (the unlocked validation files as
+    inputs; the Gata4 replicates in Task 3) are as exposed as before. A Task 3 figure from the favourable end of the
+    stand-in's range must not feed the upload gate.

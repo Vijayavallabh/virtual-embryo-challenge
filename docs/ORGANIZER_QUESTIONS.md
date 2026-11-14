@@ -21,6 +21,38 @@ under "Third email" below. The user sent a fourth email (the HTTP 403 on the pan
 of the A20 reading) on 2026-10-28 at 15:41 IST; its text is under "Fourth email" below. As of then none of the four
 emails had a reply, and the last screened Slack sweep (2026-10-23) found no organiser post or reply.
 
+## Working answers (2026-11-14): the four questions that had none
+
+The captain, 2026-11-14, after being told that two questions for the organisers waited on a decision and that the
+leading total is out of reach: "so far organizers have not answered any of my single mail too", and "Assume logical
+replies from the organizers for relevant mails". Four questions had no working answer that anything rested on: the two
+of the seventh email, the Task 3 question cut from it, and the drafted eighth email's. These are working assumptions,
+never organiser rulings. A real answer replaces one the day it arrives, and where only an answer given in advance
+counts (Rules s.10) an assumed reply gives no protection.
+
+How they were made (`docs/PLAN.md` decision log 2026-11-14 (a)). Three independent predictors (the lab that made the
+samples; an organiser answering a short email; a statistician on base rates) worked from one digest of released-file
+facts and the screened Data Protocol text, and two reviewers attacked their answers, one for where they suit the team
+too well and one for the opposite (workflow wf_48f6fcf6-157, read only). The figures are the five agents' range and
+its middle; they are judgements.
+
+| Question | Assumed reply (the agents' range) | What the team does |
+|---|---|---|
+| Final entries (eighth email, drafted, not sent) | Marked per board; the marked upload counts and, where nothing is marked, the best official one (0.60 to 0.80, middle 0.75). One pick over a set of boards: 0.05 to 0.13 | No change. Every board is marked explicitly after its last upload, which removes the dependence on what an unmarked board counts. The draft stays unsent unless the captain decides otherwise |
+| Task 1: E12.5's libraries and E10.5's library `_3` (seventh email) | Prepared separately, with the same protocol (0.45 to 0.54); prepared together and sequenced in one run (0.20 to 0.40); another protocol (0.10 to 0.30) | No change. Either of the first two confirms the first upload as built (row R6, drawn from library 3). Request R-B is not reopened by an assumed reply: its fixed reading below names an organiser's answer |
+| Embryo: E7.75's sections (seventh email) | No single reply: processed with E8.0 (0.30 to 0.55, middle 0.50) or in a run of its own (0.33 to 0.62, middle 0.42); with E7.5 0.08 to 0.12 | No change. Without an answer the fixed reading below keeps the pair as built, and the pair rule that chose it holds from 0.30 to 0.60. The first upload built for a target like E7.5 stays declined: its trigger names the reply the agents rate least likely |
+| Task 3: beta-catenin and the Gata4 replicates (cut from the seventh email) | On a slide and in a run of its own (0.65 to 0.80, middle 0.73): each released knockout line has its own slide (M125, M164) and both littermates of one line share it | No change: both uploads are fixed by frozen rules. The question need not be sent |
+
+What the assumption settles. Nothing in the plan waits for an organiser reply. The screened reads approved for 19 and
+23 November stay as checks, since a real answer would still replace a working one. The eighth email and the Task 3
+question need not be sent; sending either stays the captain's choice.
+
+What it does not do. It moves no file, reopens no request and lifts no closed lever: the readings fixed below for each
+possible answer are readings of real answers, and nothing changes without the captain's ruling. It does not move the
+committed estimate either. The forecast's judgement weights are not defined by these replies;
+`experiments/gate/forecast_weights.py` gives the forecast's sensitivity to them for the files as built: 194.4 as
+committed, 182.5 to 203.7 with every weight at one end, so no set of replies reaches the leading total.
+
 ## Working answers (2026-11-10): every question sent, predicted, not ruled
 
 The captain, 2026-11-10: "so far they have not replied to a single email. So assume their logical position with the
