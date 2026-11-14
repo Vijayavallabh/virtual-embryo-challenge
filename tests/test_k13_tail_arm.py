@@ -209,13 +209,15 @@ def test_end_to_end_raw_is_k9s_raw_and_raw_tail_moves_it(world, monkeypatch):
 
 
 # ----------------------------------------------------------------------------------------------- the reading
-def _result(key, scores, clean=True, commit="abc", negative=5):
+def _result(key, scores, clean=True, commit="abc", negative=5, short=0):
     rows = [{"seed": s, "scores": {a: v[i] for a, v in scores.items()},
              "skills": {a: {"de_score": 0.5, "severity": 0.6} for a in scores},
              "t3": {a: {"severity": {"state": "scored"}} for a in scores}} for i, s in enumerate(SEEDS)]
-    chk = {"infeasible": 9, "negative": negative, "control_changed": 4, "control_short": 1}
+    chk = {"infeasible": 9, "negative": negative, "control_changed": max(negative - short, 0), "control_short": short}
+    mass = {"wt_mass_share_arm": 0.01, "wt_mass_share_control": 0.2, "finalize_divisor_raw": 1.3,
+            "finalize_divisor_arm": 1.31, "finalize_divisor_control": 1.37}
     return {"task": {"key": key}, "rows": rows, "provenance": {"commit": commit, "tree_clean": clean},
-            "factor_record": {"tail_check": chk}, "tail_check": chk}
+            "factor_record": {"tail_check": chk, "mass": mass}, "tail_check": chk}
 
 
 def _scores(tail=54.0, perm=50.0, raw=52.0):
@@ -231,12 +233,12 @@ def _k9_dir(d: Path, raw: float = 52.0) -> Path:
     return d
 
 
-def _read(d: Path, k9_dir=None, negative=None, **per_task):
+def _read(d: Path, k9_dir=None, negative=None, short=None, **per_task):
     d.mkdir()
-    negative = negative or {}
+    negative, short = negative or {}, short or {}
     for name, sc in per_task.items():
-        (d / f"{name}.json").write_text(json.dumps(_result(k13.TASKS[name].key, sc,
-                                                           negative=negative.get(name, 5))))
+        (d / f"{name}.json").write_text(json.dumps(_result(k13.TASKS[name].key, sc, negative=negative.get(name, 5),
+                                                           short=short.get(name, 0))))
     return k13.reading(d, k9_dir if k9_dir is not None else _k9_dir(d / "k9"))
 
 
@@ -276,6 +278,38 @@ def test_the_reading_idle_on_a_deciding_fold_is_closed(tmp_path, fold):
     assert not res["void"] and not res["supported"] and res["idle_folds"] == [fold]
     assert res["verdict"].startswith("CLOSED") and "idle" in res["verdict"] and fold in res["verdict"]
     assert f"{fold} " in k13.text(res) and "IDLE" in k13.text(res)
+
+
+@pytest.mark.parametrize("fold", ["x1", "r12"])
+def test_the_reading_with_a_short_control_on_a_deciding_fold_is_closed(tmp_path, fold):
+    # the scores would pass; the fold's control found fewer feasible genes than the arm changed
+    res = _read(tmp_path / fold, short={fold: 2}, x1=_scores(), r12=_scores(), x2=_scores())
+    assert not res["void"] and not res["supported"] and res["control_short_folds"] == [fold]
+    assert res["verdict"].startswith("CLOSED") and "falls short" in res["verdict"] and fold in res["verdict"]
+    assert all(res["checks"].values())  # every score clause holds; the control clause is what cannot be read
+
+
+def test_the_reading_with_a_short_control_on_x2_alone_decides_nothing_and_the_text_shows_the_mass(tmp_path):
+    res = _read(tmp_path / "x2", short={"x2": 3}, x1=_scores(), r12=_scores(), x2=_scores(tail=52.0))
+    assert not res["void"] and res["supported"] and res["control_short_folds"] == []
+    assert "WT mass share on the changed genes: arm 0.0100, control 0.2000" in k13.text(res)
+
+
+def test_the_mass_record_shows_what_each_mask_moves():
+    y = np.array([-1.0, -0.5, 0.3, -0.2, 0.0, -2.0])
+    den = np.array([0.01, 0.02, 0.3, 0.4, 0.07, 0.2])
+    infeasible = np.array([True, True, False, False, False, False])
+    control = np.array([False, False, False, True, False, True])
+    m = k13.mass_record(y, den, infeasible, control)
+    assert m["wt_mass_share_arm"] == pytest.approx(0.03) and m["wt_mass_share_control"] == pytest.approx(0.6)
+    assert m["finalize_divisor_raw"] == pytest.approx(float(den @ np.exp(y)))  # den sums to 1 here
+    ya, yc = y.copy(), y.copy()
+    ya[[0, 1]] = 0.0
+    yc[[3, 5]] = 0.0
+    assert m["finalize_divisor_arm"] == pytest.approx(float(den @ np.exp(ya)))
+    assert m["finalize_divisor_control"] == pytest.approx(float(den @ np.exp(yc)))
+    raw = m["finalize_divisor_raw"]
+    assert m["finalize_divisor_control"] - raw > m["finalize_divisor_arm"] - raw  # the control moves more mass
 
 
 def test_the_reading_idle_on_x2_alone_is_reported_and_decides_nothing(tmp_path):

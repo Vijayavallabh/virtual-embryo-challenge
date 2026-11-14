@@ -29,7 +29,9 @@ Each run prints one check line per task (numbers of genes only) and writes the s
 Reading, fixed (K9's form, the adoption rule's constants, as k12): raw_tail is SUPPORTED if on x1 AND on r12 it beats
 raw by a paired mean above 0.3 with at least 8 of 10 seeds ahead and beats raw_tail_ctrl the same way, and on x2 its
 paired mean against raw is not below -0.3; anything else CLOSED. A fold where the filter changes no gene is IDLE (the
-arm is raw there); idle on x1 or on r12 means CLOSED with the word "idle" in the verdict. Void if K9's committed raw
+arm is raw there); idle on x1 or on r12 means CLOSED with the word "idle" in the verdict. A control that falls short
+on x1 or on r12 (fewer feasible genes with a negative entry than the arm changes) no longer answers its question, so
+the control clause cannot be read there and the verdict is CLOSED, never SUPPORTED. Void if K9's committed raw
 scores (RESULTS_K9) are absent or raw does not reproduce them to 1e-6 (k11.k9_reproduction), on a missing seed, arm or
 check record, or a dirty tree.
 
@@ -139,6 +141,22 @@ def tail_check(y: np.ndarray, infeasible: np.ndarray, control: np.ndarray, short
             "control_changed": int((control & neg).sum()), "control_short": int(short)}
 
 
+def mass_record(y: np.ndarray, den: np.ndarray, infeasible: np.ndarray, control: np.ndarray) -> dict[str, float]:
+    """Scalars that show how unlike the arm and its control are, beyond the number of genes each changes: the
+    WT-weighted share of the panel's mass on the genes each changes (den over those genes, over den's total), and
+    finalize's divisor, den @ exp(y') / sum(den), for raw's y, the arm's and the control's. A count-matched control
+    is not matched in mass or in that rescale; these numbers let a reader see by how much."""
+    y, den = np.asarray(y, dtype=np.float64), np.asarray(den, dtype=np.float64)
+    total = max(float(den.sum()), 1e-12)
+    ya, hit_a = tail_filter(y, infeasible)
+    yc, hit_c = tail_filter(y, control)
+    return {"wt_mass_share_arm": float(den[hit_a].sum() / total),
+            "wt_mass_share_control": float(den[hit_c].sum() / total),
+            "finalize_divisor_raw": float(den @ np.exp(y) / total),
+            "finalize_divisor_arm": float(den @ np.exp(ya) / total),
+            "finalize_divisor_control": float(den @ np.exp(yc) / total)}
+
+
 def check_line(task: str, chk: dict) -> str:
     return (f"raw_tail check: task={task} infeasible={chk['infeasible']} negative={chk['negative']} "
             f"control_changed={chk['control_changed']} control_short={chk['control_short']}")
@@ -175,7 +193,7 @@ def _prepared(ctx) -> dict:
             "phi_tail_ctrl": tail_factor(y, den, clip, control, phi_raw),
             "clip": clip, "ref": harness.t3_reference(pool, fold["reference_preset"], rules),
             "record": {"fold": FOLD_OF[ctx.task.key], "reference": ctx.task.role_stems[ref_role],
-                       "pb_min": TAIL_PB_MIN, "tail_check": chk,
+                       "pb_min": TAIL_PB_MIN, "tail_check": chk, "mass": mass_record(y, den, infeasible, control),
                        "control_seed": [PERM_SEED, TAIL_STREAM]}}
     return hit
 
@@ -283,15 +301,19 @@ def reading(runs: Path, k9_dir: Path = RESULTS_K9) -> dict:
         return {"void": True, "why": why}
     ok, checks = decide(per)
     idle = [n for n in DECIDING if per[n]["idle"]]
-    supported = bool(ok) and not idle
+    short = [n for n in DECIDING if not per[n]["idle"] and int(per[n]["tail_check"]["control_short"]) > 0]
+    supported = bool(ok) and not idle and not short
     if idle:
         verdict = (f"CLOSED: idle on {' and '.join(idle)} (the filter changes no gene there, so the arm is raw); "
                    f"no request")
+    elif short:
+        verdict = (f"CLOSED: the control falls short on {' and '.join(short)} (fewer feasible genes with a negative "
+                   f"entry than the arm changes), so the control clause cannot be read there; no request")
     else:
         verdict = f"SUPPORTED: {NEXT}" if supported else "CLOSED: no request"
     return {"void": False, "why": [], "commit": sorted(commits)[0], "tasks": per, "k9_reproduction": status,
-            "checks": checks, "idle_folds": [n for n in TASKS if per[n]["idle"]], "supported": supported,
-            "verdict": verdict, "label": LABEL}
+            "checks": checks, "idle_folds": [n for n in TASKS if per[n]["idle"]], "control_short_folds": short,
+            "supported": supported, "verdict": verdict, "label": LABEL}
 
 
 NEXT = ("read next on the first-choice file's own form (as K10 did) before any request; no request goes on this "
@@ -313,6 +335,11 @@ def text(res: dict) -> str:
         lines.append(f"{n} {FOLD_OF[t.key]} ({kind}){' IDLE' if v['idle'] else ''}: "
                      + ", ".join(f"{a} {s:.2f}" for a, s in v["mean_score"].items()))
         lines.append("    " + check_line(n, v["tail_check"]))
+        m = v["record"].get("mass")
+        if m:
+            lines.append(f"    WT mass share on the changed genes: arm {m['wt_mass_share_arm']:.4f}, control "
+                         f"{m['wt_mass_share_control']:.4f}; finalize's divisor: raw {m['finalize_divisor_raw']:.4f}, "
+                         f"arm {m['finalize_divisor_arm']:.4f}, control {m['finalize_divisor_control']:.4f}")
         for k, d in v["paired"].items():
             lines.append(f"    {k}: {d['mean']:+.2f} (sd {d['sd']:.2f}, ahead {d['ahead']} of {d['n']})"
                          + ("  passes" if d["passes"] else ""))
