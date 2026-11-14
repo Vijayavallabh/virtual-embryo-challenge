@@ -1245,10 +1245,13 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     nothing and are named in the row. While checking a committed practice-task file the main session printed its board
     field, which holds a validation board's published limits; that board is public and the line describes no test
     board.
-  - **Two checks that stopped before handing back.** A cold adversarial check of the one reading that passed (tries
-    E41b) and an independent recomputation of its tables were started on 2026-11-14 and both ended on the account's
-    usage limit without a result. Nothing they might have said is on record or was used; they are to be resumed, and
-    no request rests on the reading until they have handed back.
+  - **Two checks that stopped and were resumed.** A cold adversarial check of the one reading that passed (tries E41b)
+    and an independent recomputation of its tables were started on 2026-11-14 and both ended on the account's usage
+    limit without a result. Both were resumed the same morning from where they had stopped and handed back; their
+    results are in row E41 and in decision log (ii), line 18. The recomputing agent reported one slip of its own: a
+    `find` over directory names walked the excluded folders without pruning; it printed nothing and opened no file. To
+    test one of the cold check's attacks the main session reran one practice task of tries E41 at another thread count
+    on the DGX (arms already counted, a practice task on released stages, no new try); the scores were identical.
   - **Released-file listings made by the main session on 2026-11-14.** For decision log 2026-11-14 (a) a script listed
     the obs columns of the released T2 and T3 files and the slide and batch identifiers of the three knockout files;
     for row K14 another read the counts layers of the three knockout files and their two wild-type references and

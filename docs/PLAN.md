@@ -3920,10 +3920,19 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
         anchors do not move) and that the share comes from cell-type names that are not harmonised across stages; at
         the test pair the share is 0.417, inside the practice range. On 2026-11-14 the captain asked for the same test
         with cells simply moved less; three control arms are specified for it (every anchor moved by the same share;
-        the same number of anchors left unmoved at random; no movement). A cold adversarial check and an independent
-        recomputation of the tables were started and stopped on the account's usage limit before handing back; they
-        are to be resumed. Until they and the controls are read, the pass is a pass of the rules and not a
-        recommendation.
+        the same number of anchors left unmoved at random; no movement). An independent recomputation reproduced every
+        figure of the reading and found the row committed twelve minutes before the run. A cold adversarial check
+        returned "revise" (P(mistake) 45% for a yes now), and its command checks were run. Confirmed: the arm repairs
+        a defect of the entry and does not match tissue (on one task its gain tracks how broken the entry's shape is,
+        correlation -0.99 over seeds: it wins the six seeds where the shape is broken and loses the four where it is
+        not; on the E7.25 backtest its shape gain sits only in the mirrored seeds). Confirmed: its pair value exists
+        only where the first upload leads the pair; on the four practice tasks whose earlier bracket is E7.5, as at
+        the test, it adds 0.00, 0.00, 0.00 and -0.13, and without two of the nine tasks S(0.45) falls to +0.13. Not
+        supported: that the partial solver's result moves with the thread count (one practice task rebuilt at 16
+        threads against 8: identical scores in all ten seeds for every arm). Still to run, as the check asked: the
+        damped control and the arm with its share taken at the lineage-group level, the level `docs/DATA_NOTES.md`
+        prescribes across stages (0.587 at the test pair against 0.417). Until those are read the pass is a pass of
+        the rules and not a recommendation.
   - **The closures "not buildable from the record", tested** (workflow wf_7bb9d8b1-464, read only: a designer tried to
     write, for each such closure, a form with no free number that the rules allow and a counted read can judge; a
     verifier attacked each class). Eighteen closures were listed. Sixteen stand, on both agents' reading: five are
