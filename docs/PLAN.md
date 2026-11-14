@@ -3728,7 +3728,8 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **What changes.** The AI assistant's advice on request R-D is no: keep `fgw` as the embryo's first upload. The
     request stays on record as what reading N37's pre-set rule put forward, with N39 beside it; the captain can
     rule either way, and a ruling for it would still need everything (ff) lists. No dry build of the trend file is
-    made, and the port stays on its branch, off main.
+    made, and the port stays on its branch, off main. [Later the same night one dry build was made after all, as
+    a planned check the stop check named; it changes nothing here: decision log (ii).]
   - **What the AI assistant got wrong.** It wrote a yes into (ff) before attacking it. The pair rule passed on
     its own terms. What the rule cannot see is that the nine tasks' classes (deeper-side or other) do not carry
     the one property this arm's sign depends on, how the fitted line weighs the samples against the mixture's
