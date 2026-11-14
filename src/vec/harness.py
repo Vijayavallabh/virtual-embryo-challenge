@@ -582,7 +582,8 @@ def t1_chamber_shares(ref: ad.AnnData, source: str) -> dict[str, float]:
 def _b0_t1(damping: float, herd: bool = False,
            prior: Callable[[BuildContext], object] | None = None, *, topup: bool = False,
            tail: bool = False, tail_reports: list | None = None,
-           tail_profile: bool = False) -> Callable[[BuildContext], Stage]:
+           tail_profile: bool = False, tail_filter: bool = False,
+           filter_record: dict | None = None) -> Callable[[BuildContext], Stage]:
     """B0 on T1 (or, with damping 0, its chamber copy alone). prior (T1 tries T12a and T12b): a function of the context
     that gives the strong-null down-tail prior for `vec.t1_scope.build_submission`. topup (candidate b0_topup; default
     False, B0's own-count top-up): the momentum's factors above 1 top up from the posterior-predictive expected counts
@@ -590,7 +591,12 @@ def _b0_t1(damping: float, herd: bool = False,
     shift, the tail decoder `vec.t1_scope.apply_tail_decoder` (stream [seed, TAIL_STREAM]); its report is appended to
     tail_reports when one is given. tail_profile (candidate b0_tail_profile; default False, nothing): with tail, the
     decoder's kernel is the neighbour profile of the reference stage, `vec.t1_scope.apply_tail_decoder_profile`
-    (stream [seed, TAIL_PROFILE_STREAM])."""
+    (stream [seed, TAIL_PROFILE_STREAM]). tail_filter (candidate b0_tail_filter; default False, nothing): every
+    shifted type's negative log factor on a down-infeasible panel gene (pb_ref below `vec.t1_scope.TAIL_MIN_PB`, pb_ref
+    taken as the tail decoders take it) is set to 0 through momentum_shift's logf_filter
+    (`vec.t1_scope.tail_logf_filter`), before the counts are edited; no new random stream. filter_record, when given,
+    receives n_infeasible (panel genes below the level), n_compressed ((type, gene) factors set to 0) and
+    n_genes_compressed (genes with at least one factor set to 0)."""
     def build(ctx: BuildContext) -> Stage:
         from vec import t1_scope
 
@@ -602,7 +608,7 @@ def _b0_t1(damping: float, herd: bool = False,
         extra = {} if prior is None else {"down_prior": prior(ctx)}
         if topup:
             extra["topup_source"] = ref
-        if tail:
+        if tail or tail_filter:
             from scipy import sparse
 
             g = list(ctx.board.genes)
@@ -610,6 +616,11 @@ def _b0_t1(damping: float, herd: bool = False,
             if (ref_cols < 0).any():
                 raise KeyError(f"{int((ref_cols < 0).sum())} board genes are missing from the reference")
             pb_ref = np.asarray(sparse.csr_matrix(ref.X[:, ref_cols], dtype=np.float64).mean(axis=0)).ravel()
+        hits: list = []
+        if tail_filter:
+            infeasible = t1_scope.tail_infeasible_mask(pb_ref, g, list(ref.var_names))
+            extra["logf_filter"] = t1_scope.tail_logf_filter(infeasible, hits)
+        if tail:
             def post_cells(pop):
                 if tail_profile:
                     out, rep = t1_scope.apply_tail_decoder_profile(pop, pb_ref, g, held or (),
@@ -625,6 +636,11 @@ def _b0_t1(damping: float, herd: bool = False,
                                            start=start, damping=damping, held_flat=held, ref_source=src,
                                            start_source=ctx.task.role_stems["start"] if damping else None,
                                            herd=herd, **extra)
+        if tail_filter and filter_record is not None:
+            filter_record.update(
+                n_infeasible=int((pb_ref < t1_scope.TAIL_MIN_PB).sum()),
+                n_compressed=int(sum(int(h.sum()) for h in hits)),
+                n_genes_compressed=int(np.logical_or.reduce(hits).sum()) if hits else 0)
         return finish(ctx, ref, dense(sub.X), None)
     return build
 
@@ -1358,6 +1374,29 @@ def _b0_tail_profile(ctx: BuildContext) -> Stage:
     return stage
 
 
+# ------------------------------------------------------------------------------------------------ T1 batch t1-e
+# b0_tail_filter: the tail decoder in the heart's form (campaign/heart-b, try H17b, B0_TREND_TAIL_RULE there) on T1:
+# B0 exactly (draw, shares, count, scope, held-flat genes, streams) with one change in the momentum step: every shifted
+# type's negative log factor on a down-infeasible panel gene (pb_ref < vec.t1_scope.TAIL_MIN_PB) is set to 0 before the
+# counts are edited (`vec.t1_scope.tail_logf_filter`). Everything after is B0's count edit with its depth constant; no
+# rank cut, kernel, bound, solve, constant or random stream of its own.
+
+
+def _b0_tail_filter(ctx: BuildContext) -> Stage:
+    """B0 with the heart's tail filter on its momentum factors; after the build one check line (numbers only)."""
+    record: dict = {}
+    stage = _b0_t1(B0_DAMPING, tail_filter=True, filter_record=record)(ctx)
+    print(tail_filter_check_line(ctx.task.key, ctx.seed, record), flush=True)
+    return stage
+
+
+def tail_filter_check_line(task_key: str, seed: int, rec: Mapping) -> str:
+    """The b0_tail_filter check line: numbers of genes and factors only (never a gene name, a number of cells or a
+    score)."""
+    return (f"b0_tail_filter check: task={task_key} seed={seed} infeasible={int(rec['n_infeasible'])} "
+            f"compressed={int(rec['n_compressed'])} genes_compressed={int(rec['n_genes_compressed'])}")
+
+
 # ------------------------------------------------------------------------------------------------ T3 tries K2a and K2b
 # Fixed in their experiments/harness/TRIES.md rows (registered 2026-11-04 at 945de7d, before any run): s1's lead
 # component, the pooled Gata4 factor of the pre-registered T3 run, on the Gata4 -> Mab21l2 fold's WT E9.5 (K2a,
@@ -1844,6 +1883,14 @@ CANDIDATES = {
                                   "damping": B0_DAMPING, "scope": "chamber", "bottom": 400, "min_pb": 0.25,
                                   "target_dp": 0.0, "f_max": 2.0, "n_pcs": 30, "k": 15},
                                  requires=_b0_applies, derived=("t1_held_flat",)),
+    # T1 batch t1-e: the tail decoder in the heart's form (try H17b's filter) on B0's momentum factors
+    "b0_tail_filter": Candidate("b0_tail_filter", frozenset({"T1"}), (), _b0_tail_filter,
+                                {"what": "B0 with every shifted type's negative log momentum factor on a panel gene "
+                                         "with pb(reference) < 0.25 set to 0 before the counts are edited (the "
+                                         "heart's tail filter, try H17b; vec.t1_scope.tail_logf_filter); everything "
+                                         "else, the depth-keeping constant and the streams included, is B0's",
+                                 "damping": B0_DAMPING, "scope": "chamber", "min_pb": 0.25},
+                                requires=_b0_applies, derived=("t1_held_flat",)),
     # T1 tries T20 and T21 (experiments/harness/TRIES.md, registered before their run): g_mom's placebo arms, on g_mom's
     # own draws, base and fit; judged by g_mom against each of them (a paired mean gain above 0.3 and 8 of 10 seeds on
     # both E10.5 cuts, experiments/t1_scope/g_mom_verify.py placebo)

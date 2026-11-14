@@ -1112,6 +1112,46 @@ def apply_tail_decoder_profile(pop: ad.AnnData, pb_ref: np.ndarray, genes: Seque
 
 
 # ---------------------------------------------------------------------------------------------------------------------
+# T1 batch t1-e: b0_tail_filter, the tail decoder in the heart's form (campaign/heart-b, try H17b: vec.harness's
+# tail_filter and B0_TREND_TAIL_RULE there) on B0's momentum factors. A gene of the board's panel whose reference level
+# pb_ref is below TAIL_MIN_PB cannot be a truth down-gene, so every shifted type's negative log factor on it is set to
+# 0 through momentum_shift's logf_filter hook, before the counts are edited. No rank cut, kernel, bound or solve.
+
+
+def tail_infeasible_mask(pb_ref: np.ndarray, panel: Sequence[str], genes: Sequence[str]) -> np.ndarray:
+    """The down-infeasible genes, as a boolean mask in `genes` order (momentum_shift's genes): a gene is True if it is
+    in `panel` (the board's genes) and its pb_ref (in panel order, the reference's mean log1p CP10k as the T1 decoders
+    take it) is below TAIL_MIN_PB. Genes outside the panel and genes at or above the level are False."""
+    panel = [str(g) for g in panel]
+    pb_ref = np.asarray(pb_ref, dtype=np.float64)
+    if pb_ref.shape != (len(panel),):
+        raise ValueError(f"pb_ref has shape {pb_ref.shape}, expected ({len(panel)},)")
+    low = {g for g, v in zip(panel, pb_ref, strict=True) if v < TAIL_MIN_PB}
+    return np.array([str(g) in low for g in genes], dtype=bool)
+
+
+def tail_logf_filter(infeasible: np.ndarray, hits: list | None = None
+                     ) -> Callable[[np.ndarray, sparse.csr_matrix, np.ndarray], tuple[np.ndarray, dict]]:
+    """momentum_shift's logf_filter for b0_tail_filter: a negative log factor on an infeasible gene (and not held)
+    becomes 0; every other entry is returned as it came, so with nothing to compress the factors are B0's bit for bit.
+    hits (optional): each call's mask of the entries set to 0 is appended to it (one mask per shifted type). The
+    record stored in the type's report row is the number of entries set to 0."""
+    infeasible = np.asarray(infeasible, dtype=bool)
+
+    def filt(logf: np.ndarray, counts, held) -> tuple[np.ndarray, dict]:
+        out = np.array(logf, dtype=np.float64)
+        if out.shape != infeasible.shape:
+            raise ValueError(f"log factors have shape {out.shape}, the infeasible mask {infeasible.shape}")
+        hit = infeasible & (out < 0) & ~np.asarray(held, dtype=bool)
+        out[hit] = 0.0
+        if hits is not None:
+            hits.append(hit)
+        return out, {"rule": "b0_tail_filter", "n_compressed": int(hit.sum())}
+
+    return filt
+
+
+# ---------------------------------------------------------------------------------------------------------------------
 # Submission
 
 
