@@ -133,3 +133,16 @@ def test_the_reading_is_void_without_a_base_and_the_text_states_the_outcome(n42,
     res = n42.reading([])
     assert res["void"] and any("no scores for fgw_series" in w for w in res["why"])
     assert n42.text(res).startswith("VOID")
+
+
+def test_the_count_of_seeds_equal_to_the_base_shows_where_a_gate_fired(n42):
+    scores, tasks = tables(n42)
+    key = tasks["e725"].key
+    gated = scores[key]["fgw_mirrorgate"].copy()
+    gated[[1, 4, 7]] += 0.8  # the gate fires in three seeds: there the arm is no longer its base
+    gated[2] += 0.004  # a difference inside the tolerance between runs still counts as the base
+    scores[key]["fgw_mirrorgate"] = gated
+    res = n42.check(scores, tasks)
+    assert res["seeds_equal_to_base"]["fgw_mirrorgate"]["e725"] == 7
+    assert res["seeds_equal_to_base"]["fgw_mirrorgate"]["half"] == 10
+    assert "seeds (of 10) in which fgw_mirrorgate scores as fgw:" in n42.text({"void": False, "runs": ["x:0"], **res})

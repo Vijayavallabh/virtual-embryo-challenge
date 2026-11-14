@@ -22,7 +22,9 @@ run:
                  second upload beside `fgw`, against `fgw_aligned_series`.
 A pass of the adoption rule leads to a ruling request. A pass of a pair rule leads to a cold adversarial check and
 then, if it survives, to a priced request. Anything else closes the line. Reported, deciding nothing: each arm's own
-mean minus its base's on every task (the arm it differs from by the correction alone: `fgw` and `fgw_series`).
+mean minus its base's on every task (the arm it differs from by the correction alone: `fgw` and `fgw_series`), and
+on every task the number of seeds in which the arm's score is its base's (within nine_tasks.TOL): a gated arm whose
+gate stays closed in a seed is its base there, so this count shows where the gate fired.
 
 Void on a missing task or seed, a dirty tree, or a floor that differs from the committed runs by more than
 nine_tasks.TOL (nine_tasks._load checks every arm two runs share). An arm without scores on every task is reported as
@@ -74,7 +76,9 @@ def check(scores: dict, tasks: dict) -> dict:
                 for a in ARMS}
     own = {a: {n: float(scores[tasks[n].key][a].mean() - scores[tasks[n].key][BASE_OF[a]].mean()) for n in names}
            for a in ARMS if readable[a]}
-    out = {"arms": list(ARMS), "readable": readable, "own_minus_base": own,
+    same = {a: {n: int((np.abs(scores[tasks[n].key][a] - scores[tasks[n].key][BASE_OF[a]]) <= nt.TOL).sum())
+                for n in names} for a in ARMS if readable[a]}
+    out = {"arms": list(ARMS), "readable": readable, "own_minus_base": own, "seeds_equal_to_base": same,
            "adoption": {a: (adoption(scores, tasks, a) if readable[a] else None) for a in ADOPTION_ARMS},
            "first_upload": n37.price(scores, tasks, candidates=ARMS),
            "second_upload": n38.price(scores, tasks, first=ENTRY, candidates=ARMS)}
@@ -123,6 +127,8 @@ def text(res: dict) -> str:
             continue
         lines.append(f"  {arm} minus {BASE_OF[arm]}, own means: "
                      + " ".join(f"{n} {res['own_minus_base'][arm][n]:+.2f}" for n in names))
+        lines.append(f"    seeds (of 10) in which {arm} scores as {BASE_OF[arm]}: "
+                     + " ".join(f"{n} {res['seeds_equal_to_base'][arm][n]}" for n in names))
     for title, block, key in (("as a first upload (row N33's rule)", res["first_upload"], "first_uploads"),
                               ("as a second upload beside fgw (rows E34 and E35's rule)", res["second_upload"],
                                "second_uploads")):
