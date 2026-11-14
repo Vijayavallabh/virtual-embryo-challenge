@@ -100,8 +100,12 @@ def test_the_arms_differ_from_the_base_build_in_the_fraction_and_the_directions_
     for seed in (1000000, 1000003):
         calls.clear()
         ctx = Ctx(seed)
-        arms = pr.perm_arms(ctx, dirs, placebo, groups, 0.2, held_m1, held_f)
+        built = pr.perm_arms(ctx, dirs, placebo, groups, 0.2, held_m1, held_f)
+        arms = built["arms"]
         assert set(arms) == {"m1_r_gmom", *pr.CONTROLS, "m1_r_gmom_x2"}
+        # the directions each arm was built with are the objects the build received (the placebo hashes come from these)
+        assert all(built["directions"][a] is calls[i]["directions"] for i, a in enumerate(pr.M1_ARMS))
+        assert built["directions"]["m1_r_gmom_p1"] is placebo and built["directions"]["m1_r_gmom_p2"] is placebo
         assert [c["fraction"] for c in calls] == [0.2, 0.4, 0.0, 0.2, 0.4, 0.4]
         assert [c["directions"] for c in calls] == [dirs, dirs, dirs, placebo, placebo, dirs]
         assert all(c["directions"] is (placebo if i in (3, 4) else dirs) for i, c in enumerate(calls))
@@ -113,6 +117,11 @@ def test_the_arms_differ_from_the_base_build_in_the_fraction_and_the_directions_
         seen[seed] = [c["directions"] for c in calls[3:5]]
     # the same placebo object at both fractions and for two build seeds
     assert all(d is placebo for ds in seen.values() for d in ds)
+    # the run's record hashes what each arm was built with: one record when every seed agrees, a voiding one if not
+    sha = {a: {json.dumps(pr.direction_sha(placebo), sort_keys=True)} for a in pr.PLACEBO_ARMS}
+    assert pr.placebo_record(sha) == {a: pr.direction_sha(placebo) for a in pr.PLACEBO_ARMS}
+    sha["m1_r_gmom_p2"].add(json.dumps(pr.direction_sha(dirs), sort_keys=True))
+    assert pr.DIFFERS in pr.placebo_record(sha)["m1_r_gmom_p2"]
     assert pr.arm_fractions(0.2) == {"m1_r_gmom": 0.2, "m1_r_gmom_x2": 0.4, "m1_r_gmom_x0": 0.0,
                                      "m1_r_gmom_p1": 0.2, "m1_r_gmom_p2": 0.4, "m1_r_gmom_x2b": [0.4, -0.2]}
 
@@ -253,6 +262,105 @@ def test_there_and_backs_expected_counts_are_the_bases(pr):
     assert (np.abs(once[cov] - base[cov]) / base[cov]).mean() > 3 * rel.mean()
 
 
+def _sparse_toy(n_cells=40, n_genes=60, seed=11):
+    """Poisson-gamma counts with mean about 0.4 (mostly zeros), as in a shallow single-cell matrix."""
+    rng = np.random.default_rng(seed)
+    C = rng.poisson(rng.gamma(0.5, 0.8, size=(n_cells, n_genes)))
+    C[:, 3] += 1  # no empty cell
+    labels = np.array(["V-CM"] * (n_cells - 6) + ["Foregut"] * 6)
+    a = ad.AnnData(X=log1p_cp10k(sparse.csr_matrix(C)), obs={t1_scope.LABEL_KEY: labels})
+    a.var_names = [f"g{i}" for i in range(n_genes)]
+    a.obs_names = [f"c{i}" for i in range(n_cells)]
+    a.layers["counts"] = sparse.csr_matrix(C.astype(np.int32))
+    d = rng.normal(0, 0.6, n_genes)
+    d[0] = np.nan
+    return a, {"CM": d}, {"V-CM": "CM", "Foregut": "other:Foregut"}, ["g1", "g2"]
+
+
+def test_there_and_backs_expected_counts_are_the_bases_on_sparse_counts(pr):
+    """The same claim on mostly-zero counts, where zeros stay zero and the depth constants vary most: the mean over
+    the draws of x2b's counts minus the base's is within four standard errors of 0, and the larger step's is not."""
+    a, dirs, groups, held = _sparse_toy()
+    C = counts_of(a).toarray()
+    assert (C == 0).mean() > 0.5 and C.mean() < 0.7
+    draws = 600
+    base, back, once = [], [], []
+    for i in range(draws):
+        base.append(counts_of(pr.gc.moved_by_feng(a, dirs, 0.2, groups, held, [i, 2])).toarray())
+        first = pr.gc.moved_by_feng(a, dirs, 0.4, groups, held, [i, 2])
+        once.append(counts_of(first).toarray())
+        back.append(counts_of(pr.second_edit(dirs, groups, -0.2, held, i)(first)).toarray())
+    base, back, once = np.array(base, dtype=float), np.array(back, dtype=float), np.array(once, dtype=float)
+    cov = a.obs[t1_scope.LABEL_KEY].to_numpy() == "V-CM"
+    free = np.ones(C.shape[1], dtype=bool)
+    free[[1, 2]] = False
+    m = np.zeros(C.shape, dtype=bool)
+    m[np.ix_(cov, free)] = True
+    m &= C > 0
+    assert np.array_equal(back[:, ~cov], np.broadcast_to(C[~cov], back[:, ~cov].shape))
+    assert np.array_equal(back[:, :, [1, 2]], np.broadcast_to(C[:, [1, 2]], back[:, :, [1, 2]].shape))
+    assert (back[:, C == 0] == 0).all(), "zeros stay zero"
+
+    # the mean over entries of the draws' mean difference from the base, in standard errors of that mean
+    diff = back[:, m].mean(axis=0) - base[:, m].mean(axis=0)
+    se = np.sqrt((back[:, m].var(axis=0, ddof=1) + base[:, m].var(axis=0, ddof=1)).sum() / draws) / m.sum()
+    assert abs(diff.mean() / se) < 4, diff.mean() / se
+    # per entry, x2b's mean is the base's to the sampling error, and one edit at 0.4 is not
+    dev_b = (back[:, m].mean(axis=0) - base[:, m].mean(axis=0))
+    dev_o = (once[:, m].mean(axis=0) - base[:, m].mean(axis=0))
+    se_e = np.sqrt((back[:, m].var(axis=0, ddof=1) + base[:, m].var(axis=0, ddof=1)) / draws)
+    assert np.mean((dev_b / se_e) ** 2) < 1.5, "x2b's per-entry means match the base's within the sampling error"
+    assert np.mean((dev_o / se_e) ** 2) > 3 * np.mean((dev_b / se_e) ** 2)
+    # and x2b carries more count variance than the base: the excess noise the count-noise statement names
+    assert back[:, m].var(axis=0).mean() > base[:, m].var(axis=0).mean()
+
+
+def test_the_redraw_probe_passes_every_arm_through_bit_for_bit_and_measures_each_arms_redraw(pr):
+    """perm_arms with its redraw probe builds every arm bit for bit as the same call without it, restores what it
+    patched, and records target-free redraw measures: none at fraction 0, more at 0.4 than at 0.2."""
+    ctx, groups, dirs, held = _arms_world()
+    rng = np.random.default_rng(9)
+    placebo = {g: rng.permutation(d) for g, d in dirs.items()}
+    shift, hook = t1_scope.external_shift, pr.gc.gmom_hook
+    built = pr.perm_arms(ctx, dirs, placebo, groups, 0.2, held, held)
+    assert t1_scope.external_shift is shift and pr.gc.gmom_hook is hook
+    plain = {"m1_r_gmom": (dirs, 0.2), "m1_r_gmom_x2": (dirs, 0.4), "m1_r_gmom_x0": (dirs, 0.0),
+             "m1_r_gmom_p1": (placebo, 0.2), "m1_r_gmom_p2": (placebo, 0.4)}
+    for a, (d, f) in plain.items():
+        want = pr.gc.m1_r_arms(ctx, d, groups, f, held, held)["m1_r_gmom"]
+        assert built["arms"][a].X.tobytes() == want.X.tobytes(), a
+    back = pr.there_and_back(ctx, dirs, groups, 0.2, held, held)
+    assert built["arms"]["m1_r_gmom_x2b"].X.tobytes() == back.X.tobytes()
+    rd = built["redraw"]
+    assert set(rd) == set(pr.M1_ARMS) and all(set(v) == set(pr.REDRAW_KEYS) for v in rd.values())
+    x0 = rd["m1_r_gmom_x0"]
+    assert x0["share_nonzero_changed"] == 0.0 and x0["share_nonzero_zeroed"] == 0.0
+    assert x0["detected_per_cell"] == x0["detected_per_cell_drawn"]
+    assert len({v["detected_per_cell_drawn"] for v in rd.values()}) == 1, "every arm starts from the same drawn cells"
+    base, x2, x2b = rd["m1_r_gmom"], rd["m1_r_gmom_x2"], rd["m1_r_gmom_x2b"]
+    assert 0 < base["share_nonzero_changed"] < x2["share_nonzero_changed"]
+    assert x2b["share_nonzero_changed"] > base["share_nonzero_changed"]
+    assert x2b["share_nonzero_zeroed"] > base["share_nonzero_zeroed"]
+
+
+def test_redraw_measures_and_applied_size_on_a_hand_example(pr):
+    B = np.array([[2, 0, 1, 3], [0, 4, 1, 0]])
+    A = np.array([[2, 0, 0, 5], [0, 4, 1, 0]])
+    m = pr.redraw_measures(sparse.csr_matrix(B), A)
+    assert m == {"share_nonzero_changed": 2 / 5, "share_nonzero_zeroed": 1 / 5, "detected_per_cell": 2.0,
+                 "detected_per_cell_drawn": 2.5}
+    with pytest.raises(ValueError, match="not the drawn ones"):
+        pr.redraw_measures(B, A[:1])
+    d = {"CM": np.array([1.0, np.nan, -2.0, 4.0])}
+    s = pr.applied_size(d, ["g3"], ["g0", "g1", "g2", "g3"], 0.5)
+    assert s == {"CM": {"mean_abs_logf": pytest.approx((0.5 + 0 + 1.0) / 3), "sum_sq_logf": pytest.approx(1.25)}}
+    sizes = {"fraction": 0.2, "feng": {"CM": {"mean_abs_logf": 1.0, "sum_sq_logf": 2.0}},
+             "placebo": {"CM": {"mean_abs_logf": 1.05, "sum_sq_logf": 2.9}}}
+    flags = pr.size_flags(sizes)
+    assert len(flags) == 1 and "sum_sq_logf" in flags[0]
+    assert pr.size_flags({**sizes, "placebo": {"CM": {"mean_abs_logf": 1.09, "sum_sq_logf": 1.82}}}) == []
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 # The reading
 
@@ -267,6 +375,10 @@ B0, BASE = 50.0, 53.0
 CONTROLS = ("m1_r_gmom_x0", "m1_r_gmom_p1", "m1_r_gmom_p2", "m1_r_gmom_x2b")
 FENG = {g: f"{i}" * 64 for i, g in enumerate(("CM", "Endocardium", "Endothelium", "Epicardium"))}
 PERM = {g: f"{i + 4}" * 64 for i, g in enumerate(FENG)}
+REDRAW = {"m1_r_gmom": 0.3, "m1_r_gmom_x2": 0.4, "m1_r_gmom_x0": 0.0, "m1_r_gmom_p1": 0.3, "m1_r_gmom_p2": 0.4,
+          "m1_r_gmom_x2b": 0.5}
+SIZES = {"fraction": 0.2, "feng": {g: {"mean_abs_logf": 0.1, "sum_sq_logf": 2.0} for g in FENG},
+         "placebo": {g: {"mean_abs_logf": 0.1, "sum_sq_logf": 2.9 if g == "CM" else 2.0} for g in FENG}}
 
 
 def _task(gains, seeds=range(10), commit="c" * 40, clean=True, task=None, fraction=0.2, fractions=None,
@@ -279,13 +391,15 @@ def _task(gains, seeds=range(10), commit="c" * 40, clean=True, task=None, fracti
         for a in ("m1_r_gmom_x2", *CONTROLS):
             g = per_seed[a][i] if per_seed and a in per_seed else gains.get(a, 0.0)
             arms[a] = _arm(base + g, mmd_u=0.1 if a in identical else 0.1 + 1e-9)
-        rows.append({"seed": s, "floor": 50.0, "arms": arms})
+        redraw = {a: {"share_nonzero_changed": REDRAW[a], "share_nonzero_zeroed": REDRAW[a] / 4,
+                      "detected_per_cell": 128.2 - 30 * REDRAW[a], "detected_per_cell_drawn": 128.2} for a in REDRAW}
+        rows.append({"seed": s, "floor": 50.0, "arms": arms, "redraw": redraw})
     fr = fractions or {"m1_r_gmom": fraction, "m1_r_gmom_x2": fraction * 2, "m1_r_gmom_x0": 0.0,
                        "m1_r_gmom_p1": fraction, "m1_r_gmom_p2": fraction * 2,
                        "m1_r_gmom_x2b": [fraction * 2, -fraction]}
     pl = placebo or {"m1_r_gmom_p1": dict(PERM), "m1_r_gmom_p2": dict(PERM)}
     return {"label": "synthetic", "task": task, "fraction": fraction, "fractions": fr, "seeds": list(seeds),
-            "feng_sha256": dict(FENG), "placebo_sha256": pl, "rows": rows,
+            "feng_sha256": dict(FENG), "placebo_sha256": pl, "rows": rows, "applied_size": copy.deepcopy(SIZES),
             "stamp": {"commit": commit, "tree_clean": clean, "utc": "x", "inputs": {}}}
 
 
@@ -333,27 +447,62 @@ def _read(pr, tmp_path, gains=None, per_seed=None, committed_shift=None, **over)
 @pytest.mark.parametrize("gains, genes", [
     ({"m1_r_gmom_x2": 1.0}, "needs the direction's genes"),
     ({"m1_r_gmom_x2": 1.0, "m1_r_gmom_p2": 1.0}, "a placebo gains as well"),
-    ({"m1_r_gmom_x2": 2.0, "m1_r_gmom_p2": 1.0}, "a placebo gains as well"),
-    ({"m1_r_gmom_x2": 0.1}, "not separated"),
-    ({}, "not separated"),
+    ({"m1_r_gmom_x2": 2.0, "m1_r_gmom_p2": 1.0}, "a placebo gains as well; the direction more"),
+    ({"m1_r_gmom_x2": 0.5, "m1_r_gmom_p2": 0.25}, "not separated"),
+    ({"m1_r_gmom_x2": 1.0, "m1_r_gmom_p1": 0.5, "m1_r_gmom_p2": 1.4}, "a placebo gains as well"),
+    ({"m1_r_gmom_x2": 0.1}, "no larger-step gain to explain"),
+    ({}, "no larger-step gain to explain"),
 ])
 def test_each_gene_identity_statement_is_reached_by_a_table_built_for_it(pr, tmp_path, gains, genes):
     r = _read(pr, tmp_path, gains)
     assert r["valid"] and r["statements"]["gene identity"] == genes
     a = r["comparisons"]["a"]
-    assert a["base"] == "m1_r_gmom_p2" and a["change"] == "m1_r_gmom_x2"
-    want = gains.get("m1_r_gmom_x2", 0.0) - gains.get("m1_r_gmom_p2", 0.0)
+    assert a["base"] == "m1_r_gmom_p2 - m1_r_gmom_p1" and a["change"] == "m1_r_gmom_x2 - m1_r_gmom"
+    x2, p1, p2 = (gains.get(k, 0.0) for k in ("m1_r_gmom_x2", "m1_r_gmom_p1", "m1_r_gmom_p2"))
+    want = x2 - (p2 - p1)  # the larger step's increment against the placebo's, paired by seed
     cut = a["cuts"][pr.gc.TASK_CHAMBER]
     assert cut["mean"] == pytest.approx(want) and cut["range"] == pytest.approx([want, want])
     assert set(cut["skills"]) == {"de_score", "de_direction", "mmd_u", "variogram"}
     assert cut["skills"]["de_score"] == pytest.approx(want / 200)
+    assert r["comparisons"]["a0"]["cuts"][pr.gc.TASK_CHAMBER]["mean"] == pytest.approx(x2 - p2)
+    assert ("gene_identity_note" in r) == (genes == "a placebo gains as well; the direction more")
+
+
+def test_a_is_the_increment_not_the_level(pr, tmp_path):
+    """The reviewer's case: the entry's own step gains 1.0 over the placebo's at 0.2 on every seed (e), and the larger
+    step's increment is the same for Feng's direction and the placebo (+0.5). The level x2 over p2 gains 1.0 and would
+    have read 'needs the direction's genes'; the increment comparison does not pass."""
+    inc_p = [1.0] * 6 + [0.5] + [-0.5] * 3  # p2 - p1: mean 0.5, 7 of 10 seeds ahead
+    per_seed = {"m1_r_gmom_p1": [-1.0] * 10, "m1_r_gmom_p2": [-1.0 + x for x in inc_p],
+                "m1_r_gmom_x2": [0.5] * 10}  # x2 - base = +0.5 every seed
+    r = _read(pr, tmp_path, per_seed=per_seed)
+    assert r["valid"]
+    c = r["comparisons"]
+    assert c["e"]["cuts"][pr.gc.TASK_WHOLE]["mean"] == pytest.approx(1.0)
+    assert c["a0"]["passes"] and c["a0"]["cuts"][pr.gc.TASK_WHOLE]["mean"] == pytest.approx(1.0)
+    assert c["a"]["cuts"][pr.gc.TASK_WHOLE]["mean"] == pytest.approx(0.0) and not c["a"]["passes"]
+    assert not c["b"]["passes"] and c["h"]["passes"]
+    assert r["statements"]["gene identity"] == "not separated"
+
+
+def test_no_larger_step_gain_means_neither_statement_is_read(pr, tmp_path):
+    """(a) and (c) pass but (h), x2 over m1_r_gmom, does not: both statements read 'no larger-step gain to explain'."""
+    r = _read(pr, tmp_path, {"m1_r_gmom_x2": 0.2, "m1_r_gmom_p2": -0.5, "m1_r_gmom_x2b": -0.5})
+    c = r["comparisons"]
+    assert r["valid"] and c["a"]["passes"] and c["c"]["passes"] and not c["h"]["passes"]
+    assert r["statements"] == {"gene identity": "no larger-step gain to explain",
+                               "count noise": "no larger-step gain to explain"}
+    assert (c["h"]["base"], c["h"]["change"]) == ("m1_r_gmom", "m1_r_gmom_x2")
+    text = (tmp_path / "out" / "t45.txt").read_text()
+    assert "the two statements are not read" in text and "(h) gates the two statements" in text
 
 
 @pytest.mark.parametrize("gains, noise", [
-    ({"m1_r_gmom_x2": 1.0, "m1_r_gmom_x2b": 1.0}, "is count noise"),
+    ({"m1_r_gmom_x2": 1.0, "m1_r_gmom_x2b": 1.0}, "count noise of x2b's size gains"),
     ({"m1_r_gmom_x2": 1.0}, "is not count noise"),
-    ({"m1_r_gmom_x2": 2.0, "m1_r_gmom_x2b": 1.0}, "not separated"),
-    ({"m1_r_gmom_x2": 0.1, "m1_r_gmom_x2b": 0.05}, "not separated"),
+    ({"m1_r_gmom_x2": 2.0, "m1_r_gmom_x2b": 1.0}, "part of each"),
+    ({"m1_r_gmom_x2": 0.5, "m1_r_gmom_x2b": 0.25}, "not separated"),
+    ({"m1_r_gmom_x2": 0.1, "m1_r_gmom_x2b": 0.05}, "no larger-step gain to explain"),
 ])
 def test_each_count_noise_statement_is_reached_by_a_table_built_for_it(pr, tmp_path, gains, noise):
     r = _read(pr, tmp_path, gains)
@@ -370,19 +519,27 @@ def test_each_count_noise_statement_is_reached_by_a_table_built_for_it(pr, tmp_p
     assert r["t43c"]["base"] == "b0" and r["t43c"]["change"] == "b0_mn"
 
 
-def test_the_seven_comparisons_and_the_reported_numbers(pr, tmp_path):
+def test_the_comparisons_and_the_reported_numbers(pr, tmp_path):
     gains = {"m1_r_gmom_x2": 1.5, "m1_r_gmom_x0": -0.7, "m1_r_gmom_p1": -0.4, "m1_r_gmom_p2": 0.2,
              "m1_r_gmom_x2b": 0.6}
     r = _read(pr, tmp_path, gains)
-    want = {"a": 1.3, "b": 0.6, "c": 0.9, "d": 0.6, "e": 0.4, "f": 0.3, "g": 0.7}
+    want = {"a": 0.9, "a0": 1.3, "b": 0.6, "c": 0.9, "d": 0.6, "e": 0.4, "f": 0.3, "g": 0.7, "h": 1.5}
     assert set(r["comparisons"]) == set(want)
     for c, w in want.items():
         assert r["comparisons"][c]["cuts"][pr.gc.TASK_WHOLE]["mean"] == pytest.approx(w)
     assert r["mean_scores"][pr.gc.TASK_CHAMBER]["m1_r_gmom_x0"] == pytest.approx(BASE - 0.7)
     out = tmp_path / "out" / "t45.txt"
     text = out.read_text()
-    assert "(e) reported, decides nothing" in text and "try T43c's full count redraw" in text
+    for c in ("a0", "e", "f", "g"):
+        assert f"({c}) reported, decides nothing" in text
+    assert "(a): m1_r_gmom_x2 - m1_r_gmom over m1_r_gmom_p2 - m1_r_gmom_p1" in text
     assert text.count("try T43c's full count redraw") == 2
+    # the redraw measures beside (c) and (d), the placebo's applied size (and its >10% flag) beside (a) and (b)
+    assert text.count("redraw of the covered cells before g_mom") == 4
+    assert "m1_r_gmom_x2b changed 0.5000, zeroed 0.1250" in text
+    assert text.count("differs from Feng's by more than 10%: CM sum_sq_logf") == 4
+    assert r["size_flags"][pr.gc.TASK_WHOLE] == ["CM sum_sq_logf: Feng 2, placebo 2.9"]
+    assert r["redraw"][pr.gc.TASK_WHOLE]["m1_r_gmom_x0"]["share_nonzero_changed"] == 0.0
 
 
 def test_a_gain_of_exactly_point_three_does_not_pass(pr, tmp_path):
@@ -391,7 +548,13 @@ def test_a_gain_of_exactly_point_three_does_not_pass(pr, tmp_path):
     assert r["valid"]
     assert [row["arms"]["m1_r_gmom_x2"]["score"] - row["arms"]["m1_r_gmom_p2"]["score"]
             for row in [_task({"m1_r_gmom_x2": 0.3}, base=0.2)["rows"][0]]] == [0.3]
-    assert not r["comparisons"]["a"]["passes"] and r["statements"]["gene identity"] == "not separated"
+    assert not r["comparisons"]["a"]["passes"] and not r["comparisons"]["h"]["passes"]
+    assert r["statements"]["gene identity"] == "no larger-step gain to explain"
+    # (a) at exactly 0.3 with (h) passing: x2 gains 0.5 over the base, the placebo's increment 0.2
+    r = _read(pr, tmp_path / "inc", {"m1_r_gmom_x2": 0.5, "m1_r_gmom_p2": 0.2}, TASK_CHAMBER={"base": 0.0},
+              TASK_WHOLE={"base": 0.0})
+    assert [0.5 - 0.0 - (0.2 - 0.0)] == [0.3]
+    assert r["comparisons"]["h"]["passes"] and not r["comparisons"]["a"]["passes"]
     r = _read(pr, tmp_path / "more", {"m1_r_gmom_x2": 0.31})
     assert r["comparisons"]["a"]["passes"] and r["statements"]["gene identity"] == "needs the direction's genes"
 
@@ -421,6 +584,8 @@ def test_a_loss_beyond_point_three_on_one_cut_vetoes(pr, tmp_path):
     ({"TASK_WHOLE": {"placebo": {"m1_r_gmom_p1": dict(PERM), "m1_r_gmom_p2": {**PERM, "CM": "f" * 64}}}},
      "do not record the same permuted directions"),
     ({"TASK_WHOLE": {"placebo": {"m1_r_gmom_p1": dict(PERM)}}}, "do not record the same permuted directions"),
+    ({"TASK_WHOLE": {"placebo": {"m1_r_gmom_p1": dict(PERM), "m1_r_gmom_p2": {"differs between seeds": ["x", "y"]}}}},
+     "different directions on different seeds"),
 ])
 def test_the_void_cases(pr, tmp_path, over, reason):
     r = _read(pr, tmp_path, {"m1_r_gmom_x2": 1.0, "m1_r_gmom_p1": 0.1}, **over)
