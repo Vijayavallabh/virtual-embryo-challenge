@@ -36,7 +36,8 @@
     no**: a cold check and reading N39 showed that the gain follows the fit geometry and that the test's geometry
     is the losing kind where the truth is like its earlier bracket (fitted gain -0.60, uncovered). The request
     stays on record as the rule's outcome; if the captain rules for it all the same, it needs the builder port
-    (prepared on the branch `port/emb-s1-trend`, off main), a dry build, a fourth rehearsal, a new reference list
+    (prepared on the branch `port/emb-s1-trend`, off main, and dry-built once at 394f59f with exit 0, decision log
+    (ii); a new dry build only if the port's commit changes), a fourth rehearsal, a new reference list
     and pointer, the server's format check of the new file at the captain's word, and the summary and disclosure
     lines;
   - nothing on the runner-up either unless the captain wants it: `fgw_aligned_trend` also passed the pair rule as a

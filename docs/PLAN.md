@@ -3873,8 +3873,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
         invisible on this render as on the heart and on T1.
     12. *The tail decoder in the heart's form on T1* (try T41; added by the AI assistant to the same batch, so that no
         form of the decoder stays closed on diagnostic N3's inference). The filter sets 23,906 negative factors to 0
-        on 15,290 infeasible genes and moves the score by +0.012 and +0.049: not kept. Diagnostic N3's inference, that
-        those genes are not what fills the down-list, stands as a measurement.
+        on 15,290 infeasible genes and moves the score by +0.011 and +0.049: not kept. What the run measures is that
+        stopping the factors' push on those genes barely moves the down-list term (+0.0004 and +0.0011 in skill);
+        where the infeasible genes of the down-list come from was not measured.
   - **Two critics, asked to attack the claim that the options are used up** (workflow wf_e1f10462-6d0, read only). The
     first listed every lever worth 3 points of the total or more: nine, none open. Closed by a rule: T1's depth (the
     largest: +10 to +22 T1 at zero gap, try T29), T3's depth step, and the heart's size, scope and cell numbers.
@@ -3884,9 +3885,16 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     could reopen, not exhausted by measurement." The second looked for lines the ledger does not hold and proposed
     seven; none is open: three are closed by a rule (an outside atlas for the embryo is cross-modal input; gene
     embeddings for T3 carry gene-level knowledge of the held-out gene; a shape model for the heart touches its closed
-    scope), two are variants of lines already read (a quadratic trend; another transport), one is blind (a new T1
-    practice family would count only with the captain's approval) and one has no source (a Cre-driver-only effect).
-    The largest was priced at about +0.5 of the total.
+    scope), two it classed as variants of lines already read (a quadratic trend; another transport), one is blind (a
+    new T1 practice family would count only with the captain's approval) and one has no source (a Cre-driver-only
+    effect). The largest was priced at about +0.5 of the total. The sixth pass (below) said that "variant" and "no
+    source" were that agent's classifications. What stands in their place: the quadratic trend is a different form
+    from the line and is read, on the embryo and on the heart (tries E40c, E40d and H21, below); another transport (a
+    Schrodinger bridge or an unbalanced coupling) needs a constant that no record gives, the entropy weight of the one
+    and the unmatched share of the other, the ground on which row E32 left the unbalanced coupling unbuilt; and for a
+    Cre-driver-only effect the runs report's search found no outside source, any such source would be cross-modal
+    input (A15), and its released-only form is the ledger's pruned Mesp1-lineage contrast shared by the released
+    knockouts, which the ledger closes with the timing shift whose estimator failed its known-lag check.
   - **Corrections to the record.** (a) Decision log (hh) and `docs/S2_RULES.md` quote 0.55 for the working answer that
     final marks are per board. The table of 2026-11-10 in `docs/ORGANIZER_QUESTIONS.md`, which replaces the 31 October
     table where they differ, rates the final-entries row at 0.7 and "no objection to per-board marks" at 0.8. The
@@ -3922,12 +3930,27 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     committed before its run and no closure resting on the AI assistant's judgement, and named four record errors,
     since corrected (a false sentence in row E38, row N40's unlabelled "not put forward", two stale lines in the
     handoff); its sweep of 175 lines found one still open, which became line 9. A fifth pass (workflow
-    wf_425d2359-6e1, two more agents) recomputed line 9 (no mismatch, the row before its run), corrected this
-    paragraph's own wording and three loose phrases in rows T38, T39 and T40, said that line 9's closing remark about
-    the embryo's render was a classification and not a read, and its sweep of 143 lines found one line open; these
-    became lines 10 and 11. So the sweeps found four, then two, then one, then one. A sixth pass by two more agents
-    follows this commit, one on lines 10 to 12 and this paragraph, one sweeping the ledger again; its result is added
-    here when it hands back.
+    wf_425d2359-6e1, two more agents) recomputed line 9 (no mismatch, the row before its run), named faults in this
+    paragraph's own wording and three loose phrases in rows T38, T39 and T40, which the AI assistant then corrected,
+    said that line 9's closing remark about the embryo's render was a classification and not a read, and its sweep of
+    143 lines found one line open; these became lines 10 and 11. So the sweeps found four, then two, then one, then
+    one. A sixth pass (workflow wf_7e205d24-ab9, two more agents) recomputed lines 10 to 12 (84 figures) and found the
+    two rows committed before their runs. One figure was wrong: line 12's gain on the whole cut is +0.011, not +0.012,
+    a rounding slip of the AI assistant, corrected in the row, here and in the progress file. It named two sentences
+    that claimed more than the files show (line 12's remark on diagnostic N3, reworded here and in row T41; row E39's
+    validity check, which cannot fail because the floor is 50 in every task file: noted in the row, and the next
+    embryo run rescores committed arms and is void if they do not reproduce), three stale status lines, since
+    corrected, and said that the second critic's "variant" and "no source" closures were classifications by an agent
+    of the AI assistant; the critics' paragraph above now gives each its ground, and the quadratic trend is read. Its
+    sweep of 142 lines found one still open: the ledger's within-file mixture, read on the heart only (try H16), on
+    the embryo's second-upload render. It also listed the sixteen closures that had rested on a toy or an analogy
+    (nine are read by now) and named its own hard calls: the whole-cell multinomial redraw on the embryo's render,
+    which it classed a variant of line 11, and the mixture on T3, which it classed as blocked by extending line 9's
+    sentence on T3's frozen rules. So that no label stands in for a read, the open line, both hard calls, the
+    exact-total and multinomial kernels on the T3 folds and the quadratic trend on the embryo and on the heart are
+    being built as tries E40a to E40d, K14a to K14d and H21, each with its row before its run; their lines are added
+    to this entry when they are read. So the sweeps found four, then two, then one, then one, then one. A seventh pass
+    follows those reads.
   - **Where it leaves the target.** Nothing read in this entry passes the adoption rule or a pair rule, so no upload,
     build, rule, gate figure or reference list changes; the ten files of `builds_dc7b6ae` stand. The committed
     estimate stays 184 (170 to 198); the forecast for the files as built stays its upper reading, 194.4, with P(total

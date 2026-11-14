@@ -13,27 +13,32 @@ each; two critics, who found no open lever worth 3 points and no new line; and a
 recomputed every figure of the entry (168, no mismatch), relabelled one closure as the AI assistant's advice and found
 two more lines open; and a fourth, which recomputed lines 1, 7 and 8 (about 305 figures, no mismatch) and found one
 more line; and a fifth, which recomputed that read and named one more line and one closure that rested on a
-classification. All are read. The reads: N40, `fgw_aligned_trend` follows the trend's fit geometry (fitted -0.53 at
-the test's earlier-bracket geometry): advice no, left to the captain like R-D. The strong-null try: ruled out by
-arithmetic (its base is at 100 in 6 of 10 seeds). T39, the T1 tail decoder with the neighbour-profile kernel: idle, as
-T38. T40, the exact-total count kernel on T1: +0.009 and +0.013, ahead in 10 of 10 seeds and 23 to 35 times under the
-bar. T41, the decoder in the heart's form on T1: +0.012 and +0.049, though it zeroes 23,906 factors. K12a and K12b,
-recipe R8 on T3: the gate opens (G 0.243 against 0.004) and K9's reading closes it (-0.02, +0.06, -0.02). E37a and
-E37b: the embryo tail decoder is a tie and the exponential-growth shares lose a little (-0.22 and -0.18). E36a to
-E36d, rotation-aware moves on the nine tasks: the patch-centroid form passes no rule (-0.30 and -0.17) and the frame
-form is refused by the builder's cloud guard on eight of nine tasks. E38a to E38d, a mirror-only correction of the
-partners: +1.95 and -0.62 (a veto) ungated, +1.39 and -0.21 gated, no pair rule passed: try E11's pattern. E39a to
-E39c: a coupling on tissue profiles loses on both backtests (-0.35 and -1.50, two vetoes) and an exact per-cell total
-in the second upload's render differs from it by 0.04 at most. K13a and K13b, the T3 tail decoder: +0.40 in 10 of 10
-seeds on x1, +0.13 on r12, -0.06 on x2: closed by K9's reading. One caveat of the critics is kept as written: the
-large levers are closed by rules the captain or the organisers could reopen, not exhausted by measurement. Six of the
-AI assistant's own briefs or texts were corrected by reviewers before anything ran on them (a gate that passed pure
-noise, a pivot that could not deliver its reason, an idle case that was not exact, a sign test that also flips noisy
-partners, a control that was the arm itself, and a control that could fall short unnoticed). The committed estimate
-stays 184 (170 to 198); the upper reading stays 194.4. Tries: T1 37, embryo 60, heart 25, T3 27. Main moved by
-documents, three reading scripts with tests (N40, the polar and the mirror readings) and results only; the candidates
-are on the pushed branches `campaign/t1-c`, `campaign/t1-d`, `campaign/t1-e`, `campaign/emb-c`, `campaign/emb-polar`,
-`campaign/emb-mirror`, `campaign/emb-d`, `campaign/t3-c` and `campaign/t3-d`.
+classification. All are read. A sixth pass recomputed the last three reads (one rounding slip of the AI assistant,
++0.012 for +0.011 on try T41, corrected), found one more line open (the within-file mixture on the embryo's
+second-upload render) and named hard calls of its own (a multinomial redraw of that render; the mixture and the count
+kernels on the T3 folds); with a quadratic trend on the embryo and on the heart these are being built as tries E40a to
+E40d, K14a to K14d and H21, each with its row before its run, and a seventh pass follows them. The reads so far: N40,
+`fgw_aligned_trend` follows the trend's fit geometry (fitted -0.53 at the test's earlier-bracket geometry): advice no,
+left to the captain like R-D. The strong-null try: ruled out by arithmetic (its base is at 100 in 6 of 10 seeds). T39,
+the T1 tail decoder with the neighbour-profile kernel: idle, as T38. T40, the exact-total count kernel on T1: +0.009
+and +0.013, ahead in 10 of 10 seeds and 23 to 35 times under the bar. T41, the decoder in the heart's form on T1:
++0.011 and +0.049, though it zeroes 23,906 factors. K12a and K12b, recipe R8 on T3: the gate opens (G 0.243 against
+0.004) and K9's reading closes it (-0.02, +0.06, -0.02). E37a and E37b: the embryo tail decoder is a tie and the
+exponential-growth shares lose a little (-0.22 and -0.18). E36a to E36d, rotation-aware moves on the nine tasks: the
+patch-centroid form passes no rule (-0.30 and -0.17) and the frame form is refused by the builder's cloud guard on
+eight of nine tasks. E38a to E38d, a mirror-only correction of the partners: +1.95 and -0.62 (a veto) ungated, +1.39
+and -0.21 gated, no pair rule passed: try E11's pattern. E39a to E39c: a coupling on tissue profiles loses on both
+backtests (-0.35 and -1.50, two vetoes) and an exact per-cell total in the second upload's render differs from it by
+0.04 at most. K13a and K13b, the T3 tail decoder: +0.40 in 10 of 10 seeds on x1, +0.13 on r12, -0.06 on x2: closed by
+K9's reading. One caveat of the critics is kept as written: the large levers are closed by rules the captain or the
+organisers could reopen, not exhausted by measurement. Six of the AI assistant's own briefs or texts were corrected by
+reviewers before anything ran on them (a gate that passed pure noise, a pivot that could not deliver its reason, an
+idle case that was not exact, a sign test that also flips noisy partners, a control that was the arm itself, and a
+control that could fall short unnoticed). The committed estimate stays 184 (170 to 198); the upper reading stays
+194.4. Tries: T1 37, embryo 60, heart 25, T3 27. Main moved by documents, five reading scripts with tests (N40, the
+polar, the mirror and the tissue-coupling readings, and the one written for the next embryo arms) and results only;
+the candidates are on the pushed branches `campaign/t1-c`, `campaign/t1-d`, `campaign/t1-e`, `campaign/emb-c`,
+`campaign/emb-polar`, `campaign/emb-mirror`, `campaign/emb-d`, `campaign/t3-c` and `campaign/t3-d`.
 **2026-11-13, late night: the sixth round carried to the end of the ledger (decision log 2026-11-13 (ff) and (gg)).
 Nothing passes the adoption rule; one request, R-D, came out of a pair rule and the AI assistant advises against it
 after a cold check; no file changes.** The session's stop check did not

@@ -467,7 +467,9 @@ only before the first uploads on 27 November), as a new short email and not on t
 on Task 3 severity; if nothing has come and the Final column has not appeared by about 24 November, the captain may
 post the same three questions as one neutral top-level message in #virtual-embryo-challenge, which is his own call and
 brings the runbook's public ask of 28 November forward. Expect no reply (none of seven emails has one); nothing in the
-plan waits on it.
+plan waits on it. The captain, 2026-11-14, on being reminded that this draft and the Task 3 batch question wait: "so
+far organizers have not answered any of my single mail too". The draft stays unsent unless the captain decides
+otherwise; the public message of about 24 November stays the captain's own call.
 
 Readings fixed beforehand (they stay in this file; none is sent):
 - "Per board", alone or with the other points: no change. A point left unanswered keeps its working answer.
