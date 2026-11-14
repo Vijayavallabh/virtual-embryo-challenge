@@ -1,0 +1,30 @@
+Readings of tries E38a to E38d (runs e24_pricing:ccd33b5, e25_pairs:798908a, e28_nine_tasks:22513cf, n42_mirrorfix_arms:217520d): the mirror-only correction on the nine practice tasks; aggregation of committed scores
+outcome: closed: no rule is passed
+  adoption rule, fgw_mirrorfix against fgw: e75 +1.95 (10/10), e725 -0.62 (1/10) -> not kept (loses more than 0.3 points on average on ['e725'])
+  adoption rule, fgw_mirrorgate against fgw: e75 +1.39 (7/10), e725 -0.21 (1/10) -> not kept (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2)
+  fgw_mirrorfix minus fgw, own means: half -0.20 late +0.73 new1 +1.41 x1 +0.60 x2 -1.34 x3 -0.64 new2 -0.48 e75 +1.95 e725 -0.62
+    seeds (of 10) in which fgw_mirrorfix scores as fgw: half 0 late 0 new1 0 x1 0 x2 0 x3 0 new2 0 e75 0 e725 0
+  fgw_mirrorfix_series minus fgw_series, own means: half -0.16 late +0.74 new1 +1.44 x1 +0.66 x2 -1.35 x3 -0.65 new2 -0.46 e75 +2.10 e725 -0.53
+    seeds (of 10) in which fgw_mirrorfix_series scores as fgw_series: half 0 late 0 new1 0 x1 0 x2 0 x3 0 new2 1 e75 0 e725 1
+  fgw_mirrorgate minus fgw, own means: half -0.10 late +1.24 new1 +0.93 x1 +0.54 x2 -0.88 x3 -0.44 new2 -0.38 e75 +1.39 e725 -0.21
+    seeds (of 10) in which fgw_mirrorgate scores as fgw: half 4 late 4 new1 4 x1 4 x2 4 x3 4 new2 8 e75 3 e725 5
+  fgw_mirrorgate_series minus fgw_series, own means: half -0.06 late +1.23 new1 +0.94 x1 +0.59 x2 -0.89 x3 -0.43 new2 -0.37 e75 +1.52 e725 -0.13
+    seeds (of 10) in which fgw_mirrorgate_series scores as fgw_series: half 4 late 4 new1 4 x1 4 x2 4 x3 4 new2 8 e75 3 e725 5
+  as a first upload (row N33's rule):      D      O  S(0.3) S(0.45) S(0.6)  LOO-min  rule a b c d
+    fgw_mirrorfix                     -0.29  +0.26  +0.10  +0.01  -0.07    -0.34  n n y n
+      per task half +0.00 late +0.00 new1 +0.00 x1 +0.00 x2 -1.12 x3 -0.64 new2 -0.13 e75 +1.54 e725 -0.62
+    fgw_mirrorfix_series              -0.84  -2.44  -1.96  -1.72  -1.48    -2.40  n n y n
+      per task half +0.02 late +0.06 new1 +0.01 x1 +0.49 x2 -1.16 x3 -4.46 new2 +0.05 e75 -0.23 e725 -7.12
+    fgw_mirrorgate                    -0.22  +0.29  +0.14  +0.06  -0.01    -0.19  n n y n
+      per task half +0.00 late +0.00 new1 +0.00 x1 +0.00 x2 -0.86 x3 -0.44 new2 -0.13 e75 +1.22 e725 -0.21
+    fgw_mirrorgate_series             -0.66  -2.29  -1.80  -1.55  -1.31    -2.21  n n y n
+      per task half +0.06 late +0.51 new1 +0.00 x1 +0.45 x2 -0.72 x3 -4.26 new2 +0.11 e75 -0.24 e725 -6.72
+  as a second upload beside fgw (rows E34 and E35's rule):      D      O  S(0.3) S(0.45) S(0.6)  LOO-min  rule a b c d
+    fgw_mirrorfix                     -2.84  +0.25  -0.68  -1.14  -1.61    -1.49  n n n n
+      per task half -7.40 late -3.03 new1 -2.76 x1 -3.87 x2 +0.00 x3 +0.00 new2 -0.85 e75 +1.54 e725 +0.08
+    fgw_mirrorfix_series              +0.01  -0.02  -0.01  -0.00  +0.00    -0.05  n n y n
+      per task half -0.19 late -0.10 new1 -0.12 x1 +0.48 x2 +0.00 x3 +0.00 new2 +0.11 e75 -0.16 e725 +0.00
+    fgw_mirrorgate                    -2.94  +0.07  -0.83  -1.28  -1.73    -1.55  n n n n
+      per task half -7.40 late -3.03 new1 -3.25 x1 -3.92 x2 +0.00 x3 +0.00 new2 -0.86 e75 +0.98 e725 +0.08
+    fgw_mirrorgate_series             +0.05  -0.04  -0.02  -0.00  +0.01    -0.07  n n y n
+      per task half -0.10 late +0.39 new1 -0.62 x1 +0.41 x2 +0.20 x3 +0.00 new2 +0.20 e75 -0.32 e725 +0.00
