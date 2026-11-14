@@ -1,0 +1,9 @@
+run folder on the DGX: ~/v/vec-campaign/runs/harness/n46_embryo_g_arms (campaign checkout)
+commit: b33595ea2edc942d2080c112f2171e3a5a462bdb (branch campaign/emb-g-fix)
+tree at start and at end (bytes of git status --porcelain): 0 and 0
+started UTC: 2026-11-14T10:37:06Z
+ended UTC: 2026-11-14T11:13:51Z
+CPU only, 8 BLAS threads, one process per practice task
+command: experiments/harness/n46_embryo_g_arms.py run --task <task> --out <tasks>, the nine tasks started together
+tasks/: the nine task files as the run wrote them; each holds the floor, the arms that built and the committed arms it rescored, and under "not_buildable" any arm the builder refused on that task
+the reading is experiments/harness/n46_embryo_g_readings.py on main (results/n46_embryo_g_readings/)
