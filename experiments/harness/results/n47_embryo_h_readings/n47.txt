@@ -1,0 +1,7 @@
+Reading of try E43 (runs e24_pricing:ccd33b5, e25_pairs:798908a, e28_nine_tasks:22513cf, n45_embryo_f_arms:fcc1f6b, n47_embryo_h_arms:f8adf82): the partial coupling with its share from the lineage-group labels, on the nine practice tasks; aggregation of committed scores
+the partial form is label-robust: the arm passes both rules
+  rescored arms against their committed scores, largest difference over tasks and seeds: floor 0.0e+00, fgw 0.0e+00, fgw_partial 0.0e+00 (void above 0.01)
+  fgw_partial_grp  adoption against fgw: e75 +1.38 (10/10), e725 +0.72 (9/10) -> kept; first upload S(0.45) +0.49, clauses y y y y
+  fgw_partial      adoption against fgw: e75 +1.88 (10/10), e725 +0.71 (9/10) -> kept; first upload S(0.45) +0.56, clauses y y y y
+  fgw_partial_grp own mean minus fgw: half +0.34 late +1.15 new1 +0.91 x1 +3.30 x2 +0.40 x3 +2.26 new2 -0.00 e75 +1.38 e725 +0.72
+  fgw_partial_grp own mean minus fgw_partial: half +0.08 late +0.27 new1 -1.01 x1 -0.45 x2 +0.76 x3 -0.39 new2 +0.26 e75 -0.50 e725 +0.01
