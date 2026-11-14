@@ -17,34 +17,76 @@ Definitions (the entry's own wherever one exists):
            min_cells_t1 gives no value.
   genes    per group: Feng's direction finite and the gene not in M1's held list (try T44's: gmom_combo.held_feng).
   change   dirlib.lfc_ratio of the two sets' mean CP10k with the config's pseudocount; d = Feng's direction.
+  r_d      per group, the reliability of Feng's direction, computed here from the bracket's two halves
+           (feng_dirs.direction_halves on the same bracket statistics: d_a from half A's cells at both ends, d_b from
+           half B's) over the share's own gene mask: r_d = max(0, mean(d^2) - mean(((d_a - d_b) / 2)^2)) / mean(d^2)
+           over the genes in the mask where d, d_a and d_b are finite (contrast_reliability, N48's js formula; NaN,
+           not N48's 1.0, where mean(d^2) = 0 or no gene has the three values). N48's committed 'js_without_held' and
+           'js' scales (whose gene set leaves out only the pre-registered held list, not R2's union) are reported
+           beside it and enter nothing.
   share    s = sum(change x d) / sum(d x d); beside it the Pearson correlation, the slope with an intercept, the share
-           over the half of the genes with the larger |d|, s / the group's N48 James-Stein scale r_d (N48's
-           'js_without_held' record: the share's own gene set), the effective gene number n_eff = (sum d^2)^2 /
-           sum d^4, the share without the top-|d| genes that carry half of sum d^2, and the Pearson correlation over
-           the genes with d != 0 (the share itself is the same over those genes: a gene with d = 0 adds nothing).
+           over the half of the genes with the larger |d|, share_corrected = s / r_d (where r_d > 0), the effective
+           gene number n_eff = (sum d^2)^2 / sum d^4, the share without the top-|d| genes that carry half of sum d^2,
+           and the Pearson correlation over the genes with d != 0 (the share itself is the same over those genes: a
+           gene with d = 0 adds nothing).
   combined the groups' shares averaged, weighted by the groups' cells in E10.5's library 3, and unweighted.
   (a) E8.5 -> E9.5; (b) E9.5 -> E10.5 library 1, 2, 3 and pooled; (c) E10.5 libraries 1+2 -> 3 and 1 -> 2;
   (d) per pair of groups, the slope through the origin of the challenge's E9.5 contrast (g against h) on Feng's E9.5
       contrast, over the genes both groups keep; L = the median over the pairs whose Feng label sets do not overlap
       (the median over every pair beside it); the pair's Feng reliability r_c = max(0, mean(c^2) - mean(((c_a -
       c_b) / 2)^2)) / mean(c^2) from Feng's two halves (N48's formula on the contrast), L_corr = the median of slope
-      / r_c; beside it E10.5 library 3 on Feng E14.5.
+      / r_c over the same pairs where r_c > 0; beside it E10.5 library 3 on Feng E14.5. The pairs each of L, L_corr
+      and L over every pair rests on (a finite value at the point) are written by name and number.
   calibration  M1's own one-day step (t1_scope.external_shift, fraction 0.2, stream (47, 1)) applied to E10.5
            library 3's cells, read before -> after with the same share code: the share M1's 0.2 produces.
 Every value has a bootstrap over the challenge's cells (200 draws, cells resampled within label, stage and library;
-Feng's statistics and the calibration are fixed) with its 5th and 95th percentiles and its number of undefined draws.
+Feng's statistics, r_d, r_c and the calibration are fixed) with its 5th and 95th percentiles and its number of
+undefined draws.
 
 The reading (fixed in row T47 before the run; written with the numbers): A = combined share of (b) libraries 1 and 2,
-averaged; K = combined share of (b) library 3 - A; both over the groups with a share in all three libraries (common
-support); P = combined share of (a) (beside it P over the groups whose cells are their own at E8.5 and E9.5); L = the
-scale of (d). A is attenuated by the noise in Feng's direction and L by the noise in Feng's E9.5 contrast; the pace and
-the entry-fraction statements are read on the corrected pair (A_corr from share_corrected, L_corr; the fractions times
-the weighted r_d, the units of the noisy d that M1 applies) and on the raw pair, and are "not separated" where the two
-disagree. Statements on the kind (K against 0.1), the pace (A / L against 0.2 and 0.3) and the entry's fraction 0.4
-against f_max = L - A, f_even = (L - A) / 2 and f_decay = L (x - x^3) / (1 - x^5) with (1 - x) / (1 - x^5) = A / L
-(f_decay = 0 where A / L >= 1, no decaying course where A / L <= 0). A statement whose quantity is undefined in any draw
-reads "not computable (n of N draws undefined)". The read puts nothing forward by itself; its result can only go to the
-team captain. The output holds shares, slopes, correlations, gene numbers and percentiles only: no cell count.
+averaged; K = combined share of (b) library 3 - A; A_corr and K_corr the same from share_corrected; all four over one
+set of groups, those with a share and a share_corrected in all three libraries (the groups each condition drops are
+written); P_own_cells = combined share of (a) over the groups whose cells are their own at E8.5 and E9.5 (the reading's
+P), and beside it P = the same over every group with an (a) value; L = the scale of (d). A is attenuated by the noise
+in Feng's direction and L by the noise in Feng's E9.5 contrast; the pace and the entry-fraction statements are read on
+the corrected pair (A_corr, L_corr: the courses in units of Feng's true direction) and on the raw pair, and are "not
+separated" where the two disagree (which of the two causes applies is written). Statements on the kind (K against 0.1),
+the pace (A / L against 0.2 and 0.3) and the entry's fraction 0.4 against f_max = L - A, f_even = (L - A) / 2 and
+f_decay = L (x - x^3) / (1 - x^5) with (1 - x) / (1 - x^5) = A / L (f_decay = 0 where A / L >= 1, no decaying course
+where A / L <= 0). "above the bound" is read from f_max alone; a statement whose quantity is undefined in any draw reads
+"not computable (n of N draws undefined)", and the corrected pace and fraction statements read "not computable" where
+L_corr rests on fewer pairs than L. The courses times the weighted r_d (f_*_corr_noisy_d) are reported only. The read
+puts nothing forward by itself; its result can only go to the team captain. The output holds shares, slopes,
+correlations, gene numbers and percentiles only: no cell count.
+
+Ledger sentences (printed in t47.txt as notes):
+- A is attenuated by the noise in Feng's direction and L by the noise in Feng's E9.5 contrast; the pace and the
+  entry-fraction statements are read on the corrected pair and are not separated where raw and corrected disagree.
+- A share is a d^2-weighted average dominated by the few genes with the largest Feng change; n_eff is reported beside
+  it.
+- The corrected fraction statement compares 0.4 with the courses in units of Feng's true direction; the courses times
+  r_d (the best multiple of the noisy d, which includes N48's shrinkage) are reported beside it and decide nothing.
+- r_d is computed in this read from the bracket's two halves over the share's own genes; N48's scales are reported
+  beside it and enter nothing.
+- The intervals hold only the challenge's cell sampling; Feng's own noise, of the same size as the cell sampling on the
+  reviewer's synthetic check, is not in them, so a separated statement is weaker than its interval reads.
+- K counts any difference between the heart library and the embryo libraries that lies along Feng's direction, ambient
+  heart RNA included (2% soup gives about 0.13 on synthetic data); a depth difference alone gives none. A K above 0.1
+  does not show that dissected-heart cells are further along in development.
+- L is the size of between-type contrasts at E9.5 in the challenge's data relative to Feng's; using it for the
+  within-type change over five days assumes one scale for both, which the read cannot test; the E10.5 library 3
+  against E14.5 slope and each pair's correlation are reported as the only check.
+- A share is what the genes with the largest Feng change say; where share and share_without_top_d2_half differ by more
+  than their intervals, the statements describe a handful of genes, not the direction.
+- Not separated may mean that correcting for Feng's noise changes the statement; the corrected statement is the
+  estimate and the raw statement shows how much the correction moves it.
+- The courses assume the same E9.5 and E14.5 in both datasets, one scale for all genes and groups and a course that
+  never turns back; they are two courses among many, and a statement about 0.4 says nothing about scores (T44 found
+  larger steps score better).
+- P over own cells is the reading; P with fallback groups compares one group's cells at E8.5 with another group's at
+  E9.5 and is shown only beside it.
+- No statement of T47 is a reason to change M1's fraction; any change goes as a counted try on the E10.5 cuts with its
+  own row.
 
   uv run --frozen --no-sync python -I -B experiments/t1_m1/share_read.py run --out t47_share_read
 
@@ -118,6 +160,7 @@ COMBINED_FIELDS = ("share", "share_corrected")
 SHARE_FIELDS = ("share", "pearson", "slope_intercept", "share_top_half", "share_corrected", "n_eff",
                 "share_without_top_d2_half", "pearson_d_nonzero", "genes_d_nonzero")
 COURSE_KEYS = ("f_max", "f_even", "f_decay")
+NOISY_D = "_noisy_d"  # suffix of the corrected courses times the weighted r_d: reported only, read by no statement
 
 KIND_ALONG = "the change of kind lies along Feng's direction"
 KIND_NOT = "it does not"
@@ -133,12 +176,27 @@ LABEL_T47 = ("try T47, a labelled diagnostic, counted, never an adoption result:
              "along Feng's E9.5 -> E14.5 direction, by kind of sample, with M1's own formula; it compares a predictor "
              "with the cuts' target stage, scores nothing and calls no scorer; the read puts nothing forward by itself "
              "and its result can only go to the team captain")
-LEDGER_NOTES = (
-    "A is attenuated by the noise in Feng's direction and L by the noise in Feng's E9.5 contrast; the pace and the "
-    "entry-fraction statements are read on the corrected pair and are not separated where raw and corrected disagree.",
-    "A share is a d^2-weighted average dominated by the few genes with the largest Feng change; n_eff is reported "
-    "beside it.",
-)
+CORRECTION_CHANGES = "the correction changes the statement"
+INTERVAL_STRADDLES = "the interval does not separate"
+
+
+def _ledger_notes(doc: str | None) -> tuple[str, ...]:
+    """The ledger sentences of the module docstring (its 'Ledger sentences' list), one string each."""
+    if not doc or "Ledger sentences" not in doc:
+        raise RuntimeError("the module docstring holds the ledger sentences; run without -OO")
+    lines = doc.split("Ledger sentences", 1)[1].split("\n")[1:]
+    notes: list[str] = []
+    for line in lines:
+        if line.startswith("- "):
+            notes.append(line[2:].strip())
+        elif line.startswith("  ") and notes:
+            notes[-1] += " " + line.strip()
+        else:
+            break
+    return tuple(notes)
+
+
+LEDGER_NOTES = _ledger_notes(__doc__)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -316,19 +374,21 @@ def common_support(out: Mapping[str, float], groups: Sequence[str], names: Seque
 
 
 def reading_values(out: Mapping[str, float], setup: Mapping, info: dict | None = None) -> dict:
-    """A, K, P, L and the courses, raw and corrected, from one measurement's per-group values. A and K over the groups
-    with a value in libraries 1, 2 and 3 (common support), P over the groups with an (a) value and, beside it, over
-    those whose cells are their own at E8.5 and E9.5. info, when given, receives the group lists."""
+    """A, K, P, L and the courses, raw and corrected, from one measurement's per-group values. A, K, A_corr and K_corr
+    over one set of groups: those with a share and a share_corrected in libraries 1, 2 and 3 (the intersection of the
+    two common supports). P over the groups with an (a) value and, beside it, over those whose cells are their own at
+    E8.5 and E9.5. The corrected courses are in units of Feng's true direction; times the weighted r_d (NOISY_D) they
+    are reported only. info, when given, receives the group lists."""
     groups, w = list(setup["dirs"]), setup["weights"]
 
     def wmean(name, field, support):
         return combine({g: out[f"{name}/{g}/{field}"] for g in support}, w)[0]
 
     rv: dict[str, float] = {}
-    ak = {}
+    sup_raw = common_support(out, groups, AK_COMPARISONS, "share")
+    sup_corr = common_support(out, groups, AK_COMPARISONS, "share_corrected")
+    sup = [g for g in sup_raw if g in sup_corr]
     for field, tag in (("share", ""), ("share_corrected", "_corr")):
-        sup = common_support(out, groups, AK_COMPARISONS, field)
-        ak[field] = sup
         A = (wmean(AK_COMPARISONS[0], field, sup) + wmean(AK_COMPARISONS[1], field, sup)) / 2.0
         rv[f"A{tag}"] = A
         rv[f"K{tag}"] = wmean(AK_COMPARISONS[2], field, sup) - A
@@ -337,8 +397,7 @@ def reading_values(out: Mapping[str, float], setup: Mapping, info: dict | None =
     rv["P"] = wmean("a_E8.5_E9.5", "share", p_sup)
     rv["P_own_cells"] = wmean("a_E8.5_E9.5", "share", p_own)
     sc = setup["scales"]
-    rv["r_d_weighted"] = combine({g: (sc.get(g) if sc.get(g) is not None else float("nan"))
-                                  for g in ak["share_corrected"]}, w)[0]
+    rv["r_d_weighted"] = combine({g: (sc.get(g) if sc.get(g) is not None else float("nan")) for g in sup}, w)[0]
     L = out["scale_E9.5/median_slope"]
     L_corr = out["scale_E9.5/median_slope_corrected"]
     rv["L"], rv["L_all_pairs"], rv["L_corr"] = L, out["scale_E9.5/median_slope_all_pairs"], L_corr
@@ -346,12 +405,13 @@ def reading_values(out: Mapping[str, float], setup: Mapping, info: dict | None =
         rv[k] = v
     cc = courses(rv["A_corr"], L_corr)
     rv["A_over_L_corr"], rv["x_corr"] = cc["A_over_L"], cc["x"]
-    for k in COURSE_KEYS:  # in the units of the noisy d that M1 applies
-        rv[f"{k}_corr"] = cc[k] * rv["r_d_weighted"]
+    for k in COURSE_KEYS:
+        rv[f"{k}_corr"] = cc[k]  # in units of Feng's true direction: what the corrected statement reads
+        rv[f"{k}_corr{NOISY_D}"] = cc[k] * rv["r_d_weighted"]  # the best multiple of the noisy d: reported only
     if info is not None:
-        excl = {f: [g for g in groups if g not in ak[f]] for f in ak}
-        info.update({"A_K_support": ak["share"], "A_K_excluded": excl["share"],
-                     "A_K_support_corrected": ak["share_corrected"], "A_K_excluded_corrected": excl["share_corrected"],
+        info.update({"A_K_support": sup, "A_K_excluded": [g for g in groups if g not in sup],
+                     "A_K_excluded_no_share": [g for g in groups if g not in sup_raw],
+                     "A_K_excluded_no_share_corrected": [g for g in groups if g in sup_raw and g not in sup_corr],
                      "P_support": p_sup, "P_own_cells_support": p_own,
                      "P_fallback_groups": [g for g in p_sup if g not in p_own]})
     return rv
@@ -409,6 +469,14 @@ def measure(tabs: Mapping[str, dict], sums: Mapping[str, np.ndarray], setup: Map
         out[f"scale_{sname}/median_slope"] = pair_median(kept)
         out[f"scale_{sname}/median_slope_all_pairs"] = pair_median(every)
         out[f"scale_{sname}/median_slope_corrected"] = pair_median(corrected)
+        if info is not None:  # the pairs each median rests on (a finite value)
+            names = [f"{g}~{h}" for g, h in setup["pairs"]]
+            kept_names = [p for p, (g, h) in zip(names, setup["pairs"], strict=True)
+                          if (g, h) not in setup["overlap_pairs"]]
+            info.setdefault("pairs", {})[sname] = {
+                "L": [p for p in kept_names if np.isfinite(out[f"scale_{sname}/{p}/slope"])],
+                "L_corr": [p for p in kept_names if np.isfinite(out[f"scale_{sname}/{p}/slope_corrected"])],
+                "L_all_pairs": [p for p in names if np.isfinite(out[f"scale_{sname}/{p}/slope"])]}
 
     for k, v in reading_values(out, setup, info).items():
         out[f"reading/{k}"] = v
@@ -444,13 +512,16 @@ def pace_statement(lo: float, hi: float) -> str:
 
 
 def fraction_statement(f_max: Mapping, f_even: Mapping, f_decay: Mapping, fraction: float = ENTRY_FRACTION) -> str:
-    """The statement on the entry's fraction: "above the bound" if it is above f_max's upper percentile; else against
-    the range from the lower of the two courses' lower percentiles to the higher of their upper percentiles."""
-    vals = [f_max["p95"], f_even["p5"], f_even["p95"], f_decay["p5"], f_decay["p95"]]
-    if not all(np.isfinite(v) for v in vals):
+    """The statement on the entry's fraction: "above the bound" if it is above f_max's upper percentile (read from f_max
+    alone); else against the range from the lower of the two courses' lower percentiles to the higher of their upper
+    percentiles."""
+    if not np.isfinite(f_max["p95"]):
         return NOT_COMPUTABLE
     if fraction > f_max["p95"]:
         return ABOVE_BOUND
+    vals = [f_even["p5"], f_even["p95"], f_decay["p5"], f_decay["p95"]]
+    if not all(np.isfinite(v) for v in vals):
+        return NOT_COMPUTABLE
     lo, hi = min(f_even["p5"], f_decay["p5"]), max(f_even["p95"], f_decay["p95"])
     if lo <= fraction <= hi:
         return INSIDE
@@ -475,17 +546,49 @@ def joined(raw: str, corrected: str) -> str:
     return raw if raw == corrected else NOT_SEPARATED
 
 
-def statements(r: Mapping[str, Mapping], n_boot: int) -> dict:
-    """The three statements from the reading's records (value, p5, p95, nonfinite_draws)."""
+def not_separated_cause(raw: str, corrected: str) -> str | None:
+    """Why a joined statement reads 'not separated': the correction changes a separated statement, or an interval
+    straddles a threshold (raw, corrected or both); None where the joined statement is not 'not separated'."""
+    if joined(raw, corrected) != NOT_SEPARATED:
+        return None
+    if raw != NOT_SEPARATED and corrected != NOT_SEPARATED:
+        return CORRECTION_CHANGES
+    which = [lab for lab, s in (("raw", raw), ("corrected", corrected)) if s == NOT_SEPARATED]
+    return f"{INTERVAL_STRADDLES} ({' and '.join(which)})"
+
+
+def entry_fraction_statement(recs: Sequence[Mapping], n_boot: int) -> str:
+    """The fraction statement with undefined draws: 'above the bound' needs only f_max defined in every draw; the
+    comparison with the two courses needs f_even and f_decay defined in every draw (f_decay has no value where A / L
+    <= 0), else it reads 'not computable (n of N draws undefined)'."""
+    f_max, f_even, f_decay = recs
+    u = undefined([f_max], n_boot)
+    if u is not None:
+        return u
+    if fraction_statement(f_max, f_even, f_decay) == ABOVE_BOUND:
+        return ABOVE_BOUND
+    return undefined([f_even, f_decay], n_boot) or fraction_statement(f_max, f_even, f_decay)
+
+
+def statements(r: Mapping[str, Mapping], n_boot: int, pairs: Mapping[str, Sequence[str]] | None = None) -> dict:
+    """The three statements from the reading's records (value, p5, p95, nonfinite_draws). pairs: the pairs L and
+    L_corr rest on; where L_corr rests on fewer, the corrected pace and fraction statements are 'not computable'."""
     out = {"kind": undefined([r["K"]], n_boot) or kind_statement(*_interval(r["K"]))}
+    short = None
+    if pairs is not None and len(pairs["L_corr"]) < len(pairs["L"]):
+        short = f"{NOT_COMPUTABLE} (L_corr rests on {len(pairs['L_corr'])} of the {len(pairs['L'])} pairs of L)"
     for tag in ("", "_corr"):
         lab = "raw" if tag == "" else "corrected"
         q = r[f"A_over_L{tag}"]
-        out[f"pace_{lab}"] = undefined([q], n_boot) or pace_statement(*_interval(q))
         recs = [r[f"{k}{tag}"] for k in COURSE_KEYS]
-        out[f"entry_fraction_{lab}"] = undefined(recs, n_boot) or fraction_statement(*recs)
-    out["pace"] = joined(out["pace_raw"], out["pace_corrected"])
-    out["entry_fraction"] = joined(out["entry_fraction_raw"], out["entry_fraction_corrected"])
+        if tag and short:
+            out[f"pace_{lab}"] = out[f"entry_fraction_{lab}"] = short
+            continue
+        out[f"pace_{lab}"] = undefined([q], n_boot) or pace_statement(*_interval(q))
+        out[f"entry_fraction_{lab}"] = entry_fraction_statement(recs, n_boot)
+    for s in ("pace", "entry_fraction"):
+        out[s] = joined(out[f"{s}_raw"], out[f"{s}_corrected"])
+        out[f"{s}_why_not_separated"] = not_separated_cause(out[f"{s}_raw"], out[f"{s}_corrected"])
     return out
 
 
@@ -588,11 +691,20 @@ def feng_pair_contrasts(feng: dict, pairs, cfg: Mapping, idx: np.ndarray, masks:
     return contrast, reliability
 
 
-def reading(stages: Mapping[str, ad.AnnData], feng: dict, held: Sequence[str], scales: Mapping[str, float],
+def direction_reliability(feng: dict, genes: Sequence[str], cfg: Mapping, dirs: Mapping[str, np.ndarray],
+                          masks: Mapping[str, np.ndarray]) -> dict[str, float]:
+    """Per group, r_d: contrast_reliability of Feng's direction d against its two halves' directions d_a and d_b
+    (feng_dirs.direction_halves on the bracket, the same statistics) over the group's share mask."""
+    halves = feng_dirs.direction_halves(feng, list(genes), dict(cfg), BRACKET, groups=list(dirs))
+    return {g: (contrast_reliability(dirs[g], halves[g]["d_a"], halves[g]["d_b"], masks[g]) if g in halves
+                else float("nan")) for g in dirs}
+
+
+def reading(stages: Mapping[str, ad.AnnData], feng: dict, held: Sequence[str], n48: Mapping[str, float] | None,
             cfg: Mapping, n_boot: int = N_BOOT, seed=BOOT_SEED, calibrate: bool = False) -> dict:
     """The whole read on loaded inputs: T1 stages (stage -> AnnData), Feng's statistics (only the bracket's two ends),
-    M1's held list and each group's N48 scale. calibrate: run the calibration arm (it needs counts recoverable from
-    E10.5's .X, as the released files have)."""
+    M1's held list and N48's scales (reported beside r_d only; r_d is computed here from the bracket's halves).
+    calibrate: run the calibration arm (it needs counts recoverable from E10.5's .X, as the released files have)."""
     label_key = cfg.get("label_key", "celltype")
     genes = list(stages[GENE_STAGE].var_names)
     dirs, _, idx = feng_dirs.directions_from_stats(feng, genes, cfg, BRACKET)
@@ -601,6 +713,8 @@ def reading(stages: Mapping[str, ad.AnnData], feng: dict, held: Sequence[str], s
     held_set = set(map(str, held))
     not_held = np.array([g not in held_set for g in genes], dtype=bool)
     masks = {g: np.isfinite(dirs[g]) & not_held for g in groups}
+    r_d = direction_reliability(feng, genes, cfg, dirs, masks)
+    n48 = n48 or {}
     labels, source = group_labels_by_stage(stages, groups, cfg, label_key)
     keep = {s: {lab for g in groups for lab in labels[s][g]} for s in stages}
     tabs = {s: stage_table(stages[s], genes, keep[s], label_key) for s in stages}
@@ -617,7 +731,7 @@ def reading(stages: Mapping[str, ad.AnnData], feng: dict, held: Sequence[str], s
         weights[g] = (float(sum(n for (lab, li), n in zip(heart["keys"], heart["n_block"], strict=True)
                                 if lab in labs and li == LIB_HEART)) if heart is not None else 0.0)
     setup = {"eps": eps, "min_cells": mc, "dirs": dirs, "masks": masks, "labels": labels, "source": source,
-             "scales": {g: scales.get(g) for g in groups}, "weights": weights, "pairs": pairs,
+             "scales": r_d, "weights": weights, "pairs": pairs,
              "feng_contrast": feng_contrast, "feng_reliability": feng_rel, "overlap_pairs": set(overlap)}
     info: dict = {}
     point = measure(tabs, {s: block_sums(t) for s, t in tabs.items()}, setup, info)
@@ -639,10 +753,12 @@ def reading(stages: Mapping[str, ad.AnnData], feng: dict, held: Sequence[str], s
             groups_of[f"{name}/combined_weighted/{f}"] = wg
             groups_of[f"{name}/combined_unweighted/{f}"] = ug
     pair_genes = {f"{g}~{h}": int((masks[g] & masks[h]).sum()) for g, h in pairs}
+    scale_pairs = info.pop("pairs")
     res = {"groups": groups, "genes_per_group": {g: int(masks[g].sum()) for g in groups},
-           "genes_per_pair": pair_genes, "label_source": source,
-           "n48_scale": {g: scales.get(g) for g in groups}, "values": values, "reading": r,
-           "statements": statements(r, n_boot), "support": info, "combined_groups": groups_of,
+           "genes_per_pair": pair_genes, "label_source": source, "r_d": r_d,
+           "n48_scale": {g: n48.get(g) for g in groups}, "values": values, "reading": r,
+           "statements": statements(r, n_boot, scale_pairs["E9.5"]), "support": info, "combined_groups": groups_of,
+           "scale_pairs": scale_pairs,
            "excluded_pairs_shared_feng_labels": [f"{g}~{h}" for g, h in overlap],
            "feng_reliability": {sname: {f"{g}~{h}": v for (g, h), v in d.items()} for sname, d in feng_rel.items()},
            "n_boot": n_boot, "seed": list(seed), "percentiles": list(PERCENTILES),
@@ -672,9 +788,9 @@ def feng_inputs(path: Path | None = None) -> tuple[dict, dict]:
 
 
 def n48_scales(path: Path = N48_JSON, field: str = "js_without_held") -> dict[str, float]:
-    """Each group's scalar James-Stein scale from N48's record: by default 'js_without_held', the scale over the genes
-    the shares use (the held genes left out); field='js' gives N48's rule's own record (held genes included), which the
-    run reports beside it."""
+    """Each group's scalar James-Stein scale from N48's record, reported beside the read's own r_d and entering
+    nothing: by default 'js_without_held' (N48 leaves out only the pre-registered held list, not R2's union, so its
+    gene set is not the shares'); field='js' gives N48's rule's own record (held genes included)."""
     rep = json.loads(Path(path).read_text())
     return {g: r[field]["scale"] for g, r in rep["groups"].items() if r[field]["scale"] is not None}
 
@@ -694,28 +810,39 @@ def text(res: Mapping) -> str:
     def f(k):
         return _fmt(rd[k], nb)
 
+    def why(s):
+        cause = st.get(f"{s}_why_not_separated")
+        return f" [{cause}]" if cause else ""
+
+    sp = r["scale_pairs"]["E9.5"]
     lines = [res["label"],
              f"Kind: {st['kind']} (K = {f('K')}, against {KIND_AT})",
-             f"Pace: {st['pace']} (raw: {st['pace_raw']}, A / L = {f('A_over_L')}; corrected: {st['pace_corrected']}, "
-             f"A_corr / L_corr = {f('A_over_L_corr')}; against {PACE_FIFTH} and {PACE_UPPER})",
-             f"Entry's fraction {ENTRY_FRACTION}: {st['entry_fraction']} (two courses among many, not a bracket)",
+             f"Pace: {st['pace']}{why('pace')} (raw: {st['pace_raw']}, A / L = {f('A_over_L')}; corrected: "
+             f"{st['pace_corrected']}, A_corr / L_corr = {f('A_over_L_corr')}; against {PACE_FIFTH} and {PACE_UPPER})",
+             f"Entry's fraction {ENTRY_FRACTION}: {st['entry_fraction']}{why('entry_fraction')} (two courses among "
+             f"many, not a bracket)",
              f"    raw: {st['entry_fraction_raw']}; f_max {f('f_max')}; f_even {f('f_even')}; f_decay {f('f_decay')}",
-             f"    corrected (times the weighted r_d {f('r_d_weighted')}): {st['entry_fraction_corrected']}; "
+             f"    corrected (units of Feng's true direction): {st['entry_fraction_corrected']}; "
              f"f_max {f('f_max_corr')}; f_even {f('f_even_corr')}; f_decay {f('f_decay_corr')}",
+             f"    reported only, the corrected courses times the weighted r_d {f('r_d_weighted')} (units of the noisy "
+             f"d): f_max {f('f_max_corr' + NOISY_D)}; f_even {f('f_even_corr' + NOISY_D)}; f_decay "
+             f"{f('f_decay_corr' + NOISY_D)}",
              f"A {f('A')}; K {f('K')}; A_corr {f('A_corr')}; K_corr {f('K_corr')}",
-             f"    A and K over {sup['A_K_support']} (excluded: {sup['A_K_excluded']}); corrected over "
-             f"{sup['A_K_support_corrected']} (excluded: {sup['A_K_excluded_corrected']})",
-             f"P {f('P')} over {sup['P_support']} (fallback groups: {sup['P_fallback_groups']}); P without them "
-             f"{f('P_own_cells')} over {sup['P_own_cells_support']}",
+             f"    A, K, A_corr and K_corr over {sup['A_K_support']} (excluded: {sup['A_K_excluded']}; no share in "
+             f"every library: {sup['A_K_excluded_no_share']}; no corrected share in every library: "
+             f"{sup['A_K_excluded_no_share_corrected']})",
+             f"P over own cells {f('P_own_cells')} over {sup['P_own_cells_support']}; beside it P {f('P')} over "
+             f"{sup['P_support']} (fallback groups: {sup['P_fallback_groups']})",
              f"L {f('L')} (pairs with shared Feng labels excluded: {r['excluded_pairs_shared_feng_labels']}); "
              f"L over every pair {f('L_all_pairs')}; L_corr {f('L_corr')}",
+             *(f"    {k} rests on {len(sp[k])} pairs: {sp[k]}" for k in ("L", "L_corr", "L_all_pairs")),
              f"(value [p{PERCENTILES[0]:g}, p{PERCENTILES[1]:g}], {nb} draws, stream {r['seed']})",
-             "Groups (genes kept; N48 scale js_without_held; label source E8.5 / E9.5 / E10.5): " + "; ".join(
-                 f"{g} ({r['genes_per_group'][g]}; {r['n48_scale'][g]}; "
-                 + " / ".join(r["label_source"].get(s, {}).get(g, "-") for s in T1_STAGES) + ")"
-                 for g in r["groups"])]
+             "Groups (genes kept; r_d; N48 js_without_held, beside it only; label source E8.5 / E9.5 / E10.5): "
+             + "; ".join(f"{g} ({r['genes_per_group'][g]}; {r['r_d'][g]:.3f}; {r['n48_scale'][g]}; "
+                         + " / ".join(r["label_source"].get(s, {}).get(g, "-") for s in T1_STAGES) + ")"
+                         for g in r["groups"])]
     if res.get("n48_js") is not None:
-        lines.append(f"N48 'js' (held genes included), beside it: {res['n48_js']}")
+        lines.append(f"N48 'js' (held genes included), beside it only: {res['n48_js']}")
     cal = r.get("calibration")
     if cal is not None:
         lines.append(f"Calibration: M1's step of {cal['fraction']} on E10.5 library 3 reads a combined weighted share "
@@ -766,10 +893,10 @@ def run(out_name: str, files: Mapping[str, Path] = T1_FILES) -> dict:
     preregistered = t1_scope.held_flat_genes()
     held = gc.held_feng(union, preregistered)
     feng, feng_rec = feng_inputs()
-    scales = n48_scales()
+    n48 = n48_scales()  # reported beside r_d only
     js = n48_scales(field="js")
     stages = {s: ad.read_h5ad(files[s]) for s in T1_STAGES}
-    read = reading(stages, feng, held, scales, cfg, calibrate=True)
+    read = reading(stages, feng, held, n48, cfg, calibrate=True)
     res = {"label": LABEL_T47, "read": read, "feng": feng_rec, "held_genes": len(held), "n48_js": js}
     res["stamp"] = gv.stamp(started, [*files.values(), feng_dirs.clean_stats_path(), t1_scope.HELD_FLAT_GENES,
                                       REPO / union["file"], N48_JSON])
