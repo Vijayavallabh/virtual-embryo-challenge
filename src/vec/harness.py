@@ -1043,7 +1043,8 @@ def _psb_size(ctx: BuildContext) -> Stage:
 def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixture", herd: bool = False,
          move_coupling: str = t2_build.MOVE_COUPLINGS[0], local_perm: bool = False,
          draw: str = t2_build.DRAWS[0], t_mix: float | None = None, moves: str = t2_build.MOVES[0],
-         partners: str = t2_build.PARTNERS[0], features: str = t2_build.FEATURES[0]) -> Stage:
+         partners: str = t2_build.PARTNERS[0], features: str = t2_build.FEATURES[0],
+         coupling: str = t2_build.COUPLINGS[0], potts: bool = False, build_record: dict | None = None) -> Stage:
     """The T2 embryo pipeline (docs/PLAN.md 4.2): displacement interpolation between the brackets at the target's
     time fraction (vec.t2_build.interpolate_clouds: fused Gromov-Wasserstein coupling, proper rotation, McCann moves,
     a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages. t_pos:
@@ -1064,9 +1065,19 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     features (campaign branch campaign/emb-d): "own" (the entry) or "tissue" (the coupling's features formed from each
     anchor's tissue profile over NBHD_K cells, vec.t2_build.tissue_profiles). expression "series_xt" (campaign branch
     campaign/emb-d): the series rendering with an exact per-cell total (kernel "exact_total", repair stream
-    [seed, SERIES_XT_STREAM])."""
+    [seed, SERIES_XT_STREAM]).
+    coupling (campaign branch campaign/emb-f): "fgw" (the entry) or "partial" (vec.t2_build.partial_fgw_coupling, the
+    transported share the overlap of the brackets' anchors' obs["celltype"] distributions). potts (campaign branch
+    campaign/emb-f): after the expression step, which drawn cell (its expression row and its obs["group"] label) sits at
+    which of the positions is sorted by vec.t2_build.potts_arrangement (NBHD_K, streams [seed, POTTS_STREAMS[0]] and
+    [seed, POTTS_STREAMS[1]]); the positions array is left as it is. build_record: a dict that receives the arm's
+    record ("potts" and/or "partial"; shares, s, masses and a count of swaps only)."""
+    if potts and local_perm:
+        raise ValueError("potts and local_perm both re-arrange the cells; use one of them")
     t = ctx.task
     before, after = ctx.inputs["before"], ctx.inputs["after"]
+    if potts and not ("group" in before.obs and "group" in after.obs):
+        raise ValueError("the Potts sorting needs obs['group'] in both brackets")
     lo, hi = t.role_days["before"], t.role_days["after"]
     g = ctx.board.genes
     frac = (t.target_day - lo) / (hi - lo)
@@ -1081,7 +1092,12 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
                                       herd=herd, move_coupling=move_coupling, draw=draw, log_depth=log_depth,
                                       with_coupling=expression == "latent", t_mix=t_mix, moves=moves,
                                       partners=partners, features=features,
-                                      tissue_k=None if features == t2_build.FEATURES[0] else NBHD_K)
+                                      tissue_k=None if features == t2_build.FEATURES[0] else NBHD_K,
+                                      **({} if coupling == t2_build.COUPLINGS[0] else
+                                         {"coupling": coupling,
+                                          "coupling_labels": (before.obs["celltype"], after.obs["celltype"])}))
+    if build_record is not None and "partial" in res.record:
+        build_record["partial"] = res.record["partial"]
     if expression == "mixture":
         X = np.empty((len(res.rows), len(g)), dtype=np.float32)
         X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
@@ -1118,6 +1134,11 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     if local_perm:
         coords = coords[nbhd_rearrangement(coords, t2_build.drawn_labels(res, before.obs["group"], after.obs["group"]),
                                            ctx.seed)]
+    if potts:  # the cells move among the positions; the positions array stays fgw's
+        at, rec = potts_order(res, before, after, frac, ctx.seed)
+        X = X[at]
+        if build_record is not None:
+            build_record["potts"] = rec
     return finish(ctx, before, X, coords, guard_source=res.pool_coords, guard_weights=res.pool_weights)
 
 
@@ -1298,6 +1319,40 @@ def _fgw_tissue_series(ctx: BuildContext) -> Stage:
     """Campaign arm (branch campaign/emb-d): the second upload's expression (series) on partners coupled on tissue
     profiles."""
     return _fgw(ctx, features="tissue", expression="series")
+
+
+# campaign branch campaign/emb-f: the Potts sorting's two random streams, [seed, 26] (the brackets' draws of the file's
+# number of cells) and [seed, 27] (the swap proposals), apart from every stream a step uses on main and on the campaign
+# branches (0-12 and 20-25)
+POTTS_STREAMS = (26, 27)
+
+
+def potts_order(res: t2_build.Interpolation, before: ad.AnnData, after: ad.AnnData, frac: float,
+                seed: int) -> tuple[np.ndarray, dict]:
+    """fgw_potts's step on fgw's interpolation `res`: `at` (position p takes the drawn cell at[p]) and the record, from
+    vec.t2_build.potts_arrangement on the file's positions and the drawn cells' obs["group"] labels, the brackets'
+    released positions and labels, the task's fraction and NBHD_K."""
+    labels = t2_build.drawn_labels(res, before.obs["group"], after.obs["group"])
+    brackets = tuple((np.asarray(a.obsm[COORD_KEY], dtype=float)[:, :3], np.asarray(a.obs["group"]).astype(str))
+                     for a in (before, after))
+    return t2_build.potts_arrangement(res.coords, labels, brackets, frac, NBHD_K,
+                                      np.random.default_rng([seed, POTTS_STREAMS[0]]),
+                                      np.random.default_rng([seed, POTTS_STREAMS[1]]))
+
+
+def _fgw_potts(ctx: BuildContext, build_record: dict | None = None) -> Stage:
+    """Campaign arm (branch campaign/emb-f; the ledger's row E31): the entry with which drawn cell sits at which of its
+    positions sorted by a zero-temperature Potts rule towards the brackets' interpolated same-group neighbour share
+    (vec.t2_build.potts_arrangement). No constant is new."""
+    return _fgw(ctx, potts=True, build_record=build_record)
+
+
+def _fgw_partial(ctx: BuildContext, build_record: dict | None = None) -> Stage:
+    """Campaign arm (branch campaign/emb-f; the ledger's row E32): the entry with a partial FGW coupling transporting
+    the overlap of the brackets' anchors' cell-type distributions (vec.t2_build.partial_fgw_coupling). No constant is
+    new; the label level, the overlap as the share and the zero displacement of an unmatched anchor are choices no
+    record fixes."""
+    return _fgw(ctx, coupling="partial", build_record=build_record)
 
 
 def _fgw_aligned_series_xt(ctx: BuildContext) -> Stage:
@@ -1863,6 +1918,27 @@ CANDIDATES = {
                                     "features": "tissue", "tissue_k": NBHD_K, "rule": t2_build.SERIES_RULE,
                                     "alpha": t2_build.INTERP_ALPHA, "k": t2_build.INTERP_K, "scope": "whole"},
                                    requires=_series_applies),
+    # the embryo batch F (campaign branch campaign/emb-f): two candidates the ledger had left unbuilt (rows E31, E32)
+    "fgw_potts": Candidate("fgw_potts", frozenset({"T2"}), (), _fgw_potts,
+                           {"what": "fgw with which drawn cell sits at which of its positions sorted by a "
+                                    "zero-temperature Potts rule: a cell and one of its nearest neighbours swap "
+                                    "(rows and labels, not positions) only if the swap moves the mean same-group "
+                                    "share of the 14 nearest other positions strictly closer to (1 - t) H_b + t H_a, "
+                                    "each bracket's share on a draw of the file's number of its cells; it stops at "
+                                    "or past the target or after n proposals in a row with none accepted",
+                            "label": "group", "k": NBHD_K, "streams": list(POTTS_STREAMS), "scope": "whole"},
+                           requires=_interp),
+    "fgw_partial": Candidate("fgw_partial", frozenset({"T2"}), (), _fgw_partial,
+                             {"what": "fgw with a partial FGW coupling (POT's partial_fused_gromov_wasserstein on "
+                                      "the entry's costs and alpha, uniform masses) transporting the share s, the "
+                                      "overlap of the brackets' anchors' celltype distributions; an anchor with no "
+                                      "mass does not move; the entry's coupling where s is exactly 1",
+                              "label": "celltype", "alpha": t2_build.INTERP_ALPHA, "k": t2_build.INTERP_K,
+                              "num_iter_max": t2_build.INTERP_EMD_ITER,
+                              "choices_on_no_record": ["the label level (celltype)", "the overlap as the estimate "
+                                                       "of the share", "the zero displacement of an unmatched "
+                                                       "anchor"], "scope": "whole"},
+                             requires=_interp),
     "fgw_aligned_series_xt": Candidate("fgw_aligned_series_xt", frozenset({"T2"}), (), _fgw_aligned_series_xt,
                                        {"what": "fgw_aligned_series (the second upload as built) with each rendered "
                                                 "cell's panel total and outside count brought to their rounded "

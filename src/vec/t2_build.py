@@ -57,6 +57,7 @@ import re
 import tempfile
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass, field
+from fractions import Fraction
 from pathlib import Path
 
 import anndata as ad
@@ -1372,6 +1373,11 @@ PARTNERS = ("coupled", "mirror_fixed", "mirror_gated")
 # the mean of that expression over the anchor and its nearest cells in space within its own bracket, the number of
 # cells passed in by the caller, the harness's NBHD_K, the scorer's neighbourhood size).
 FEATURES = ("own", "tissue")
+# Which coupling sets the anchors' partners and the rotation (campaign branch campaign/emb-f; the ledger's row E32):
+# "fgw" (the entry: vec.core.fgw_coupling, balanced) or "partial" (`partial_fgw_coupling`: POT's partial fused
+# Gromov-Wasserstein on the entry's costs and alpha, transporting the share s = `label_overlap` of the anchors' labels;
+# an anchor whose row or column carries no mass does not move). No constant: s comes from the inputs.
+COUPLINGS = ("fgw", "partial")
 
 
 def pchip_rms(days, rms, target_day: float) -> float:
@@ -1712,6 +1718,80 @@ def log_panel_counts(a: ad.AnnData, genes) -> np.ndarray:
     return np.log1p(np.asarray(sparse.csr_matrix(a[:, list(genes)].layers["counts"], dtype=np.float64).sum(1)).ravel())
 
 
+def label_overlap(labels_a, labels_b) -> Fraction:
+    """The overlap coefficient of two label distributions (`interpolate_clouds(..., coupling="partial")`; campaign
+    branch campaign/emb-f): the sum over labels l of min(p_a(l), p_b(l)), p_x(l) the share of label l among x's
+    entries. Exact (fractions of the counts), so that two identical distributions give exactly 1."""
+    a = np.asarray(labels_a).astype(str).reshape(-1)
+    b = np.asarray(labels_b).astype(str).reshape(-1)
+    if a.size == 0 or b.size == 0:
+        raise ValueError("each side needs at least one label")
+    ua, ca = np.unique(a, return_counts=True)
+    ub, cb = np.unique(b, return_counts=True)
+    pa = {str(u): Fraction(int(c), a.size) for u, c in zip(ua, ca, strict=True)}
+    pb = {str(u): Fraction(int(c), b.size) for u, c in zip(ub, cb, strict=True)}
+    return sum((min(p, pb[u]) for u, p in pa.items() if u in pb), Fraction(0))
+
+
+def _fgw_costs(features_a, features_b, coords_a, coords_b) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """The feature cost and the two structure matrices exactly as `vec.core.fgw_coupling` forms them: squared Euclidean
+    feature distances and Euclidean within-cloud distances, each divided by its maximum."""
+    import ot
+
+    FA, FB = np.asarray(features_a, dtype=np.float64), np.asarray(features_b, dtype=np.float64)
+    A, B = np.asarray(coords_a, dtype=np.float64), np.asarray(coords_b, dtype=np.float64)
+    if FA.shape[0] != A.shape[0] or FB.shape[0] != B.shape[0]:
+        raise ValueError("each population needs one feature row per position")
+    M = ot.dist(FA, FB)
+    CA = ot.dist(A, A, metric="euclidean")
+    CB = ot.dist(B, B, metric="euclidean")
+    for C in (M, CA, CB):
+        top = C.max()
+        if top > 0:
+            C /= top
+    return M, CA, CB
+
+
+def partial_fgw_coupling(features_a, features_b, coords_a, coords_b, alpha: float, m: float,
+                         num_iter_max: int) -> np.ndarray:
+    """A partial fused Gromov-Wasserstein coupling (`interpolate_clouds(..., coupling="partial")`; campaign branch
+    campaign/emb-f): POT's `ot.gromov.partial_fused_gromov_wasserstein` on the entry's feature cost, structure matrices
+    and alpha (`_fgw_costs`), uniform masses on both sides, transported mass m of the total. Every other argument is
+    POT's default (loss_fun "square_loss", nb_dummies 1, G0 None, thres 1, tol 1e-8, symmetric None, warn True);
+    num_iter_max is POT's one iteration cap, which bounds both the conditional-gradient loop and the network simplex of
+    every step (the caller passes the entry's network-simplex cap). A solver that raises, or a coupling that is not
+    finite, raises ValueError: the build refuses and does not fall back to the entry."""
+    import ot
+
+    if not 0.0 <= alpha <= 1.0:
+        raise ValueError(f"alpha must lie in [0, 1], got {alpha}")
+    M, CA, CB = _fgw_costs(features_a, features_b, coords_a, coords_b)
+    p = np.full(CA.shape[0], 1.0 / CA.shape[0])
+    q = np.full(CB.shape[0], 1.0 / CB.shape[0])
+    try:
+        T = ot.gromov.partial_fused_gromov_wasserstein(M, CA, CB, p, q, m=float(m), alpha=alpha,
+                                                       numItermax=num_iter_max)
+    except Exception as e:  # the solver's own refusal, whatever its type
+        raise ValueError(f"the partial FGW solver failed: {type(e).__name__}: {e}") from e
+    T = np.asarray(T, dtype=np.float64)
+    if T.shape != (CA.shape[0], CB.shape[0]) or not np.isfinite(T).all():
+        raise ValueError("the partial FGW solver returned a coupling that is not finite")
+    return T
+
+
+def partial_partners(coupling, own, other) -> np.ndarray:
+    """Each row's partner under a partial coupling: its barycentre (the row's coupling-weighted mean of `other`, the row
+    divided by its own mass), or the row's own position `own` where the row carries no mass, so that its displacement
+    (partner - own) is exactly 0."""
+    T = np.asarray(coupling, dtype=np.float64)
+    out = np.array(own, dtype=np.float64, copy=True)
+    w = T.sum(1)
+    has = w > 0.0
+    if has.any():
+        out[has] = (T[has] @ np.asarray(other, dtype=np.float64)) / w[has, None]
+    return out
+
+
 def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: float, n: int, seed: int, *,
                        target_rms: float, alpha: float = INTERP_ALPHA, n_anchor: int = INTERP_N_ANCHOR,
                        n_pc: int = INTERP_N_PC, k: int = INTERP_K, max_iter: int = INTERP_MAX_ITER,
@@ -1721,7 +1801,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
                        log_depth: tuple[np.ndarray, np.ndarray] | None = None,
                        t_mix: float | None = None, moves: str = MOVES[0],
                        partners: str = PARTNERS[0], features: str = FEATURES[0],
-                       tissue_k: int | None = None) -> Interpolation:
+                       tissue_k: int | None = None, coupling: str = COUPLINGS[0],
+                       coupling_labels: tuple | None = None) -> Interpolation:
     """Displacement interpolation between two stages at time fraction t (0 = before, 1 = after).
 
     1. Each cloud is centred and divided by its RMS radius (no PCA axes, so no sign choice).
@@ -1801,6 +1882,18 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     harness passes its NBHD_K, the scorer's neighbourhood size). Anchors, components, alpha, rotation rule, moves,
     draws, streams, each drawn cell's expression, scaling and jitter are unchanged; the record gains "features". Left
     unset, the result is bit-identical to the entry.
+
+    coupling (campaign branch campaign/emb-f; the ledger's row E32): "fgw" (default, the entry) or "partial". With
+    "partial", coupling_labels=(before labels, after labels), one label per cell of each bracket (the harness passes
+    obs["celltype"]), and s = `label_overlap` of the anchors' labels. If s is exactly 1 the coupling is the entry's own
+    call and the result is the entry's bit for bit. Otherwise the coupling is `partial_fgw_coupling` on the entry's
+    features, structure, alpha and network-simplex cap, transporting mass s; an anchor's partner is its row's (column's)
+    barycentre, the row divided by its own mass, and an anchor whose row (column) carries no mass has displacement 0
+    (`partial_partners`); the rotation is `coupling_rotation` on this coupling. Anchors, joint PCs, the k-anchor mean
+    displacement, draws, streams, expression, scaling and jitter are unchanged. Refused with move_coupling="aligned",
+    draw="midpoint" and with_partners (each reads the coupling's rows as a balanced coupling's). The record gains
+    "coupling" and "partial": s, the transported mass the solver returns (None where s is 1 and the entry's coupling
+    is used) and the share of anchors with no mass per side (before, after).
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1830,6 +1923,20 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         raise ValueError(f"features must be one of {FEATURES}, got {features!r}")
     if (features == FEATURES[0]) != (tissue_k is None):
         raise ValueError(f"tissue_k is given with features={FEATURES[1]!r} and only then")
+    if coupling not in COUPLINGS:
+        raise ValueError(f"coupling must be one of {COUPLINGS}, got {coupling!r}")
+    if (coupling == COUPLINGS[0]) != (coupling_labels is None):
+        raise ValueError(f"coupling_labels are given with coupling={COUPLINGS[1]!r} and only then")
+    if coupling != COUPLINGS[0]:
+        if move_coupling != MOVE_COUPLINGS[0] or draw != DRAWS[0] or with_partners:
+            raise ValueError(f"coupling={coupling!r} changes the entry's coupling only (move_coupling "
+                             f"{MOVE_COUPLINGS[0]!r}, draw {DRAWS[0]!r}, no partners)")
+        if len(coupling_labels) != 2:
+            raise ValueError("coupling_labels must be (before labels, after labels)")
+        lab_b = np.asarray(coupling_labels[0]).astype(str).reshape(-1)
+        lab_a = np.asarray(coupling_labels[1]).astype(str).reshape(-1)
+        if lab_b.shape != (Cb.shape[0],) or lab_a.shape != (Ca.shape[0],):
+            raise ValueError("coupling_labels: one label per cell of each bracket")
     if draw != DRAWS[0]:
         if herd:
             raise ValueError(f"draw={draw!r} and herd both choose the rows; use one of them")
@@ -1851,11 +1958,25 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         Fb, Fa = _joint_pcs(Eb[ib], Ea[ia], n_pc)
     else:
         Fb, Fa = _joint_pcs(tissue_profiles(Cb, Eb, ib, tissue_k), tissue_profiles(Ca, Ea, ia, tissue_k), n_pc)
-    T = fgw_coupling(Fb, Fa, Zb[ib], Za[ia], alpha, max_iter, emd_max_iter)
+    partial_rec, partial = None, False
+    if coupling == COUPLINGS[0]:
+        T = fgw_coupling(Fb, Fa, Zb[ib], Za[ia], alpha, max_iter, emd_max_iter)
+    else:
+        s = label_overlap(lab_b[ib], lab_a[ia])
+        partial = s != 1
+        if partial:
+            T = partial_fgw_coupling(Fb, Fa, Zb[ib], Za[ia], alpha, float(s), emd_max_iter)
+        else:  # the overlap is exactly 1: the entry's own call
+            T = fgw_coupling(Fb, Fa, Zb[ib], Za[ia], alpha, max_iter, emd_max_iter)
+        partial_rec = {"s": float(s), "transported_mass": float(T.sum()) if partial else None,
+                       "no_mass_share": [float((T.sum(1) <= 0.0).mean()), float((T.sum(0) <= 0.0).mean())]}
     R = coupling_rotation(Zb[ib], Za[ia], T)
     Za_b = Za @ R
     Tm = T if move_coupling == MOVE_COUPLINGS[0] else aligned_coupling(Fb, Fa, Zb[ib], Za_b[ia], alpha, emd_max_iter)
-    yb, ya = barycentric(Tm, Za_b[ia]), barycentric(Tm.T, Zb[ib])
+    if partial:
+        yb, ya = partial_partners(Tm, Zb[ib], Za_b[ia]), partial_partners(Tm.T, Za_b[ia], Zb[ib])
+    else:
+        yb, ya = barycentric(Tm, Za_b[ia]), barycentric(Tm.T, Zb[ib])
     mirror_rec = None
     if partners != PARTNERS[0]:
         gate = {"gated": True} if partners == "mirror_gated" else {}
@@ -1933,6 +2054,9 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         record["mirror"] = mirror_rec
     if features != FEATURES[0]:
         record["features"] = features
+    if partial_rec is not None:
+        record["coupling"] = coupling
+        record["partial"] = partial_rec
     if midpoint is not None:
         record["draw"] = draw
         record["midpoint"] = {"k_strata": midpoint["k_strata"], "k_anchors": MIDPOINT_K_ANCHORS,
@@ -2794,4 +2918,150 @@ def local_type_permutation(coords, labels, radius: float, sweeps: int, rng: np.r
                    ) & (np.linalg.norm(C[row_p] - C[pos_q], axis=1) <= radius)
         who[pos_p[allowed]], who[pos_q[allowed]] = row_q[allowed], row_p[allowed]
     return np.argsort(who)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# A zero-temperature Potts sorting of which drawn cell sits where (campaign branch campaign/emb-f; the ledger's row
+# E31: "Potts sorting ... is not built: no update rule or constant is on record"). No temperature, no coupling constant:
+# the statistic's neighbourhood is the scorer's (the caller passes the harness's NBHD_K), the target is read from the
+# brackets, the stop is the target itself or a run of n rejected proposals, n the file's number of cells.
+POTTS_STOPS = ("at_target", "reached", "stalled")
+
+
+def knn_others(coords, k: int) -> np.ndarray:
+    """Each position's nearest other positions, k positions with itself (the scorer's neighbourhood size), so k - 1
+    others (n - 1 where the cloud holds fewer than k): positions x min(k, n) - 1. Where coincident positions tie with
+    the position itself, it is left out of its own list and the farthest of the k returned gives way, as in
+    `tissue_profiles`."""
+    C = _as_coords(coords)
+    n = C.shape[0]
+    k = min(_whole(k, "k", 1), n)
+    if n == 0:
+        return np.zeros((0, 0), dtype=np.int64)
+    idx = np.asarray(cKDTree(C).query(C, k=k)[1], dtype=np.int64).reshape(n, k)
+    own = np.arange(n)
+    lost = ~(idx == own[:, None]).any(1)
+    idx[lost, -1] = own[lost]
+    return idx[idx != own[:, None]].reshape(n, k - 1)
+
+
+def _label_codes(labels, n: int) -> np.ndarray:
+    codes = np.unique(np.asarray(labels).astype(str), return_inverse=True)[1].reshape(-1).astype(np.int64)
+    if codes.size != n:
+        raise ValueError(f"labels must have one entry per cell ({n}), got {codes.size}")
+    return codes
+
+
+def same_group_share(coords, labels, k: int) -> float:
+    """H: the mean over the cells of the share of their nearest other positions (`knn_others`, k with the cell itself)
+    that hold a cell of the same label. Computed from the integer count of same-label pairs, so that an incremental
+    count and a full recomputation give the same float."""
+    nb = knn_others(coords, k)
+    n, K = nb.shape
+    if K == 0:
+        raise ValueError("the share needs at least two cells")
+    code = _label_codes(labels, n)
+    return int((code[nb] == code[:, None]).sum()) / (n * K)
+
+
+def bracket_share(coords, labels, n: int, k: int, rng: np.random.Generator) -> float:
+    """H of one bracket at the file's point density: `same_group_share` on a uniform draw without replacement of n of
+    its cells (all of them, without a draw, where it holds n or fewer), at their own released positions."""
+    C = _as_coords(coords)
+    lab = np.asarray(labels).astype(str).reshape(-1)
+    if lab.size != C.shape[0]:
+        raise ValueError("labels must have one entry per cell")
+    n = _whole(n, "n", 1)
+    rows = np.arange(C.shape[0]) if C.shape[0] <= n else rng.choice(C.shape[0], n, replace=False)
+    return same_group_share(C[rows], lab[rows], k)
+
+
+def potts_sort(coords, labels, target: float, k: int, rng: np.random.Generator,
+               trace: list | None = None) -> tuple[np.ndarray, dict]:
+    """The zero-temperature Potts sorting of one file: which cell sits at which position, positions fixed. Returns
+    `at` (position p takes the cell that was at position at[p]; X[at] is the sorted expression) and the record.
+
+    H is `same_group_share` of the current assignment. Repeatedly a position i is drawn uniformly and one of its
+    nearest other positions j uniformly (`knn_others`), and the two cells (their rows and labels; the positions stay)
+    are swapped if and only if the swap moves H strictly closer to `target`. The run stops when H reaches or crosses
+    the target ("reached"), or after n proposals in a row with none accepted ("stalled"), n the number of cells. If H
+    equals the target at the start, nothing is drawn and `at` is the identity ("at_target"). H is kept incrementally: a
+    swap changes only the neighbourhoods centred on i or j or holding i or j. Draws come from `rng` in blocks of n
+    proposals (n positions, then n neighbour ranks). trace (tests): receives (at, H) after every accepted swap."""
+    C = _as_coords(coords)
+    n = C.shape[0]
+    nb = knn_others(C, k)
+    K = nb.shape[1]
+    if K == 0:
+        raise ValueError("the sorting needs at least two cells")
+    code = _label_codes(labels, n).copy()
+    target = float(target)
+    if not np.isfinite(target):
+        raise ValueError(f"the target must be finite, got {target}")
+    denom = n * K
+    same = (code[nb] == code[:, None]).sum(1).astype(np.int64)
+    total = int(same.sum())
+    h0 = total / denom
+    at = np.arange(n)
+    rec = {"H_start": h0, "H_final": h0, "accepted_swaps": 0, "stop": POTTS_STOPS[0]}
+    if h0 == target:
+        return at, rec
+    up = target > h0
+    flat = nb.ravel()
+    order = np.argsort(flat, kind="stable")
+    holders = np.repeat(np.arange(n), K)[order]
+    start = np.searchsorted(flat[order], np.arange(n + 1))
+    h, accepted, idle = h0, 0, 0
+    ii = jj = np.zeros(0, dtype=np.int64)
+    pos = 0
+    while True:
+        if pos == ii.size:
+            ii, jj, pos = rng.integers(0, n, size=n), rng.integers(0, K, size=n), 0
+        i = int(ii[pos])
+        j = int(nb[i, jj[pos]])
+        pos += 1
+        if code[i] != code[j]:
+            aff = np.unique(np.r_[i, j, holders[start[i]:start[i + 1]], holders[start[j]:start[j + 1]]])
+            code[i], code[j] = code[j], code[i]
+            new = (code[nb[aff]] == code[aff, None]).sum(1)
+            new_total = total - int(same[aff].sum()) + int(new.sum())
+            h_new = new_total / denom
+            if abs(h_new - target) < abs(h - target):
+                same[aff], total, h = new, new_total, h_new
+                at[i], at[j] = at[j], at[i]
+                accepted += 1
+                idle = 0
+                if trace is not None:
+                    trace.append((at.copy(), h))
+                if (up and h >= target) or (not up and h <= target):
+                    stop = POTTS_STOPS[1]
+                    break
+                continue
+            code[i], code[j] = code[j], code[i]
+        idle += 1
+        if idle >= n:
+            stop = POTTS_STOPS[2]
+            break
+    rec.update({"H_final": h, "accepted_swaps": accepted, "stop": stop})
+    return at, rec
+
+
+def potts_arrangement(coords, labels, brackets, t: float, k: int, bracket_rng: np.random.Generator,
+                      swap_rng: np.random.Generator) -> tuple[np.ndarray, dict]:
+    """The arm fgw_potts's step on one file (campaign branch campaign/emb-f): the target H* = (1 - t) H_b + t H_a, H_b
+    and H_a each bracket's `bracket_share` at the file's number of cells (before first, then after, both from
+    bracket_rng), and `potts_sort` towards it (swap_rng). brackets: ((before coords, before labels), (after coords,
+    after labels)), the released positions and labels. Returns `at` and the record: H of the file as given (H_fgw), H_b,
+    H_a, H*, the final H, the number of accepted swaps and the stop (shares and a count of swaps only)."""
+    C = _as_coords(coords)
+    n = C.shape[0]
+    if not 0.0 <= t <= 1.0:
+        raise ValueError(f"t must lie in [0, 1], got {t}")
+    (cb, lb), (ca, la) = brackets
+    h_b = bracket_share(cb, lb, n, k, bracket_rng)
+    h_a = bracket_share(ca, la, n, k, bracket_rng)
+    target = (1.0 - t) * h_b + t * h_a
+    at, rec = potts_sort(C, labels, target, k, swap_rng)
+    return at, {"H_fgw": rec["H_start"], "H_before": h_b, "H_after": h_a, "H_target": target,
+                "H_final": rec["H_final"], "accepted_swaps": rec["accepted_swaps"], "stop": rec["stop"]}
 
