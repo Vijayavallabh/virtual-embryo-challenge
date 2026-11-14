@@ -4,7 +4,7 @@
 
 - Goal: a compliant Human-track entry on all four test boards that finishes as high as it can. The final phase runs
   through 2026-12-02 (UTC), with two scored uploads per board for the whole phase; none is used as of 2026-11-13.
-- Current status (2026-11-13): the entries are built and their methods chosen. T1: M1 with R1, R2 and R3b, its first
+- Current status (2026-11-14): the entries are built and their methods chosen. T1: M1 with R1, R2 and R3b, its first
   upload drawn from E10.5's dissected-heart library since 2026-11-13 and its second on the pooled base at 60%
   cardiomyocytes. Heart: B0 with the pre-registered size and, since the captain's ruling of the evening of
   2026-11-13 (row H11), each lineage's expression step taken from its trend over all released heart stages.
@@ -65,8 +65,8 @@
   forecast for the files as built (mean 194.4, the upper reading; the gate figure stays 184); its second part read
   every remaining allowed line (26 tries in 14 rows: H14 to H20, E29 and E31 to E35, T37, T38, K11) and produced
   request R-D above, which the AI assistant advises against. The options for taking our own estimate past the
-  leading total are used up (decision log (ff) and (gg)). The round's audit (decision log (ii)) then read the six
-  lines that independent passes over the record found open (tries T39, K12, E36, E37, E38, K13) and replaced every
+  leading total were declared used up in decision log (ff) and (gg), too early: the round's audit ((ii)) then read the
+  six lines that independent passes over the record found open (tries T39, K12, E36, E37, E38, K13) and replaced every
   closure that rested on the AI assistant's own odds by a row-first read, a pre-set gate or arithmetic, or left it to
   the captain: nothing passes, nothing changes, and two critics found no open lever. Tries: T1 35, embryo 57, heart
   25, T3 27.
