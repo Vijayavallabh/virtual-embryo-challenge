@@ -192,7 +192,8 @@ def mean_cp10k(C) -> np.ndarray:
 
 def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarray | None = None,
                   keep_depth: bool = True, seed: Seed = 0,
-                  kernel: str = "independent") -> tuple[sparse.csr_matrix, np.ndarray, np.ndarray]:
+                  kernel: str = "independent",
+                  repair_record: dict | None = None) -> tuple[sparse.csr_matrix, np.ndarray, np.ndarray]:
     """Edit integer counts by per-(type, gene) factors in count space.
 
     C: (cells x genes) counts; factors: (types x genes), > 0; type_index: each cell's row of `factors`; held: genes
@@ -216,6 +217,10 @@ def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarr
     rint(S) / S. With keep_depth every free nonzero count with f != 1 is in M, so this resamples every such count of a
     shifted cell and adds a variance of about c per count even where f is about 1. One stream, cells in row order.
     Under every kernel zeros stay zero and the restore rule is the same.
+
+    repair_record (default None: nothing recorded; T1 arm b0_xt, vec.harness.B0_XT_RULE): a dict that receives, under
+    the "exact_total" kernel only, "off" (each cell's d, int64, before any repair or restore) and "moved_cells" (the
+    cells with at least one moved entry, boolean). It records; it draws nothing and changes no output.
     """
     C = sparse.csr_matrix(C, dtype=np.int64, copy=True)
     C.sort_indices()
@@ -255,7 +260,11 @@ def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarr
         new[down] = rng.binomial(C.data[down], f[down])
         new[up] = C.data[up] + rng.poisson((f[up] - 1.0) * C.data[up])
         if kernel == "exact_total":
-            _repair_totals(new, C, c * f, (f != 1.0) & (C.data > 0), row_of, rng)
+            moved = (f != 1.0) & (C.data > 0)
+            d = _repair_totals(new, C, c * f, moved, row_of, rng)
+            if repair_record is not None:
+                repair_record["off"] = d
+                repair_record["moved_cells"] = np.bincount(row_of[moved], minlength=n) > 0
     dead = np.bincount(row_of, weights=new, minlength=n) == 0
     if dead.any():
         back = dead[row_of]

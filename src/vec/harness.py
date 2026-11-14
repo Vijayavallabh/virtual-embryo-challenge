@@ -580,9 +580,17 @@ def t1_chamber_shares(ref: ad.AnnData, source: str) -> dict[str, float]:
 
 
 def _b0_t1(damping: float, herd: bool = False,
-           prior: Callable[[BuildContext], object] | None = None) -> Callable[[BuildContext], Stage]:
+           prior: Callable[[BuildContext], object] | None = None,
+           kernel: str = "independent") -> Callable[[BuildContext], Stage]:
     """B0 on T1 (or, with damping 0, its chamber copy alone). prior (T1 tries T12a and T12b): a function of the context
-    that gives the strong-null down-tail prior for `vec.t1_scope.build_submission`."""
+    that gives the strong-null down-tail prior for `vec.t1_scope.build_submission`. kernel (default "independent":
+    every existing output unchanged; T1 arm b0_xt, B0_XT_RULE: "exact_total"): `apply_factors`' kernel for the
+    momentum step, B0's only count edit on T1; the build then prints its check line and records it (`_b0_xt_check`)."""
+    if kernel not in ("independent", "exact_total"):
+        raise ValueError(f"unknown kernel {kernel!r} for B0 on T1; known: independent, exact_total")
+    if kernel != "independent" and (not damping or prior is not None or herd):
+        raise ValueError("the T1 kernel arm is B0 alone (a momentum step, no prior, no herd)")
+
     def build(ctx: BuildContext) -> Stage:
         from vec import t1_scope
 
@@ -591,13 +599,50 @@ def _b0_t1(damping: float, herd: bool = False,
         shares = t1_chamber_shares(ref, src)
         start = _shallow(ctx.inputs["start"]) if damping else None
         held = list(ctx.derived["t1_held_flat"]) if damping else None  # handed over: the guard refuses the file
-        extra = {} if prior is None else {"down_prior": prior(ctx)}
+        extra: dict = {} if prior is None else {"down_prior": prior(ctx)}
+        repair: dict = {}
+        if kernel != "independent":
+            extra.update(kernel=kernel, kernel_record=repair)
         sub, _ = t1_scope.build_submission(ref, ctx.board, shares, count_for(ctx.board, ref.n_obs), ctx.seed,
                                            start=start, damping=damping, held_flat=held, ref_source=src,
                                            start_source=ctx.task.role_stems["start"] if damping else None,
                                            herd=herd, **extra)
+        if kernel != "independent":
+            _b0_xt_check(ctx, repair)
         return finish(ctx, ref, dense(sub.X), None)
     return build
+
+
+# T1 arm b0_xt (campaign/t1-d): b0 on T1 with its momentum step realised by the exact-total kernel in its repair form,
+# heart arm b0_trend_xt's kernel unchanged (experiments/harness/TRIES.md, "Pruned before running": "exact-total
+# kernels"; read once on the heart, try H18). A harness candidate only; the test builders are untouched.
+B0_XT_RULE = ("b0 on T1 (the same draw, shares, count, scope, factors, held-flat genes and streams) with its count "
+              "edit, the momentum step (B0's only apply_factors call on T1), realised by vec.core.apply_factors with "
+              "kernel='exact_total' (B0_TREND_XT_RULE's repair form, unchanged): b0's independent per-count draws on "
+              "b0's momentum stream, then per cell, with M its moved entries (not held, count above zero, factor not "
+              "exactly 1 after the keep-depth constant) and d = (sum over M of the draw) - rint(sum over M of c f), "
+              "d units removed by one multivariate hypergeometric draw if d > 0 or -d units added by one multinomial "
+              "draw at c f if d < 0, after all the independent draws on the same generator, cells in row order; "
+              "nothing drawn where d == 0; no other constant; everything else is b0's")
+# The arm's record from its latest build: target-free (shares and means only), overwritten by the next build.
+T1_ARM_RECORDS: dict[str, dict] = {}
+
+
+def _b0_xt_check(ctx: BuildContext, repair: Mapping) -> dict:
+    """b0_xt's check line and record from the kernel's repair record: repaired_share, the share of the moved cells (at
+    least one moved entry) whose drawn total over the moved entries was off its rounded expected total (d != 0), and
+    mean_abs_off, the mean of |d| over the moved cells, in counts (both 0.0 when no cell moved). No gene name, no count
+    of cells, no score."""
+    moved = np.asarray(repair.get("moved_cells", np.zeros(0, bool)), dtype=bool)
+    off = np.asarray(repair.get("off", np.zeros(moved.size, np.int64)))[moved]
+    share = float((off != 0).mean()) if off.size else 0.0
+    mean_abs = float(np.abs(off).mean()) if off.size else 0.0
+    rec = {"arm": "xt", "arm_rule": "vec.harness.B0_XT_RULE", "kernel": "exact_total", "task": ctx.task.key,
+           "seed": int(ctx.seed), "repaired_share": share, "mean_abs_off": mean_abs}
+    T1_ARM_RECORDS["b0_xt"] = rec
+    print(f"b0_xt check: task={ctx.task.key} seed={int(ctx.seed)} repaired_share={share:.4f} "
+          f"mean_abs_off={mean_abs:.4f}", flush=True)
+    return rec
 
 
 def _copy_herd(ctx: BuildContext) -> Stage:
@@ -1797,6 +1842,14 @@ CANDIDATES = {
                     {"what": "B0 (feat-009): T1 chamber-only copy plus damped momentum; T2 copy plus damped momentum "
                              "or bracket interpolation, both in count space", "damping": B0_DAMPING,
                      "scope": "chamber"}, requires=_b0_applies, derived=("t1_held_flat",)),
+    # T1 arm b0_xt (campaign/t1-d): b0 on T1 with its momentum step through the exact-total kernel (repair form)
+    "b0_xt": Candidate("b0_xt", frozenset({"T1"}), (), _b0_t1(B0_DAMPING, kernel="exact_total"),
+                       {"what": "b0 on T1 with its momentum step realised by the exact-total kernel in its repair "
+                                "form: b0's independent draws, then per cell the excess or shortfall against the "
+                                "step's rounded expected total over the moved counts removed (hypergeometric) or added "
+                                "(multinomial at c f) (count space)", "damping": B0_DAMPING,
+                        "rule": "vec.harness.B0_XT_RULE", "scope": "chamber"},
+                       requires=_b0_applies, derived=("t1_held_flat",)),
     "b0_scope": Candidate("b0_scope", frozenset({"T1"}), _ANY, _b0_t1(0.0),
                           {"what": "T1 chamber-only copy without a shift (B0's composition alone)",
                            "scope": "chamber"}),
