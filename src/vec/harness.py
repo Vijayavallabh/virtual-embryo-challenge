@@ -953,31 +953,15 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
     return out, rec
 
 
-def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool = False, trend: bool = False,
-           trend_record: dict | None = None) -> Stage:
-    """B0 on a T2 board: real reference cells at the count rule, moved in count space by the per-type change of the
-    harmonised lineage level (obs["merged"]; groups without a stable cross-stage meaning held flat). Extrapolation:
-    from `start` to the reference, damped by B0_DAMPING. Interpolation: from the earlier bracket towards the later one,
-    by the target's fraction of the bracket (its day is part of the geometry). Coordinates and size stay the source's
-    (the heart size cannot be backtested; the test build applies the pre-registered size). depth (extrapolation only;
-    heart try H3 of experiments/harness/TRIES.md): the moved cells are then binomially thinned to the target depth that
-    vec.t2_build.DEPTH_EXTRAP_RULE extrapolates at B0_DAMPING from the start's and the reference's median depths.
-    herd (try H4): the copy's draw herded towards the pool's mean panel expression (`draw_copy`). cfm (extrapolation
-    only; heart try H6): each lineage's momentum goes through vec.t2_build.covariance_filter before it is applied.
-    trend (heart candidate b0_trend, row H11; heart extrapolation with at least three input stages only): each
-    lineage's log factor is its least-squares trend over every input stage (`b0_trend_factors`, B0_TREND_RULE); the
-    draw, typing, stream and everything else are B0's. No try read it with depth, herd or cfm, so those raise.
-    trend_record: a dict that receives b0_trend_factors' record (with trend only; the build record's source)."""
+def _b0_t2_shift(ctx: BuildContext, herd: bool = False, cfm: bool = False, trend: bool = False,
+                 trend_record: dict | None = None) -> tuple[ad.AnnData, np.ndarray, np.ndarray | None, ad.AnnData,
+                                                           ad.AnnData]:
+    """B0's draw and per-lineage shift on a T2 board (the steps of `_b0_t2` before its depth step and its finish):
+    (pool, drawn rows, coords, the stage the momentum starts from, the shifted cells with obs["merged"] and their counts
+    in layers["counts"]). `_b0_t2` and heart try H7 (`_b0_gmom_arm`) both call it, so H7 starts from B0's very cells.
+    trend and trend_record are `_b0_t2`'s (b0_trend's factors; the caller checks them)."""
     from vec import t1_scope
 
-    if trend and (depth or herd or cfm):
-        raise ValueError("the trend of B0 is not defined together with depth, herd or cfm (no try read them)")
-    if trend_record is not None and not trend:
-        raise ValueError("trend_record is for trend=True")
-    if trend:
-        _b0_trend_task_check(ctx.task)
-    if cfm and ctx.task.kind != "extrap":
-        raise ValueError("the covariance filter of B0 is for extrapolation boards")
     pool, rows, _, coords = draw_copy(ctx, herd=herd)
     t = ctx.task
     if t.kind == "extrap":
@@ -1000,6 +984,34 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
     shifted, _ = t1_scope.momentum_shift(typed(start, "start"), typed(end, "end"), like, damping, (), key="b0_type",
                                          seed=[ctx.seed, 3], logf_filter=t2_build.covariance_filter if cfm else None,
                                          logf_by_type=logf_by_type)
+    return pool, rows, coords, start, shifted
+
+
+def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool = False, trend: bool = False,
+           trend_record: dict | None = None) -> Stage:
+    """B0 on a T2 board: real reference cells at the count rule, moved in count space by the per-type change of the
+    harmonised lineage level (obs["merged"]; groups without a stable cross-stage meaning held flat). Extrapolation:
+    from `start` to the reference, damped by B0_DAMPING. Interpolation: from the earlier bracket towards the later one,
+    by the target's fraction of the bracket (its day is part of the geometry). Coordinates and size stay the source's
+    (the heart size cannot be backtested; the test build applies the pre-registered size). depth (extrapolation only;
+    heart try H3 of experiments/harness/TRIES.md): the moved cells are then binomially thinned to the target depth that
+    vec.t2_build.DEPTH_EXTRAP_RULE extrapolates at B0_DAMPING from the start's and the reference's median depths.
+    herd (try H4): the copy's draw herded towards the pool's mean panel expression (`draw_copy`). cfm (extrapolation
+    only; heart try H6): each lineage's momentum goes through vec.t2_build.covariance_filter before it is applied.
+    trend (heart candidate b0_trend, row H11; heart extrapolation with at least three input stages only): each
+    lineage's log factor is its least-squares trend over every input stage (`b0_trend_factors`, B0_TREND_RULE); the
+    draw, typing, stream and everything else are B0's. No try read it with depth, herd or cfm, so those raise.
+    trend_record: a dict that receives b0_trend_factors' record (with trend only; the build record's source)."""
+    if trend and (depth or herd or cfm):
+        raise ValueError("the trend of B0 is not defined together with depth, herd or cfm (no try read them)")
+    if trend_record is not None and not trend:
+        raise ValueError("trend_record is for trend=True")
+    if trend:
+        _b0_trend_task_check(ctx.task)
+    if cfm and ctx.task.kind != "extrap":
+        raise ValueError("the covariance filter of B0 is for extrapolation boards")
+    pool, rows, coords, start, shifted = _b0_t2_shift(ctx, herd=herd, cfm=cfm, trend=trend, trend_record=trend_record)
+    t = ctx.task
     g = ctx.board.genes
     if depth:
         if t.kind != "extrap":
@@ -1010,6 +1022,217 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
         X, _ = t2_build.thin_to_depth(shifted, g, d_ref, target, [ctx.seed, 8])
         return finish(ctx, pool, X, coords)
     return finish(ctx, pool, dense(shifted[:, g].X), coords)
+
+
+# Heart tries H7 and H7c (experiments/harness/TRIES.md): T1 try T11's within-type momentum (g_mom) and its
+# no-development control (T23) on the heart head, on top of B0's own cells and shift. Every constant is T11's
+# (vec.t1_state_transport); the category is the harmonised lineage, and "Untracked" gets no factor.
+T2_LINEAGE_KEY = "merged"
+T2_UNTRACKED = "Untracked"
+B0_GMOM_SOURCE_KEY = "b0_gmom_source"  # the drawn cell's name in the pool, which the metacell index is keyed on
+_B0_GMOM_PREP: dict = {}
+_B0_GMOM_NULL_PREP: dict = {}
+
+
+def t2_lineages(start: ad.AnnData, end: ad.AnnData) -> list[str]:
+    """The harmonised lineages (obs["merged"]) present at both stages, "Untracked" left out (it has no stable
+    cross-stage meaning, so it gets no factor, as B0 holds it flat); sorted. T11's minimum of cells is applied by
+    `fit_state_factors`, which skips (and records) a lineage short of it at either stage."""
+    a = set(np.asarray(start.obs[T2_LINEAGE_KEY]).astype(str))
+    b = set(np.asarray(end.obs[T2_LINEAGE_KEY]).astype(str))
+    return sorted((a & b) - {T2_UNTRACKED})
+
+
+def _shared_genes(start: ad.AnnData, end: ad.AnnData) -> tuple[ad.AnnData, ad.AnnData]:
+    """The two stages on the genes they share, in `end`'s order (the harness hands T2 inputs on the board's panel, so
+    this is normally the whole panel and the stages come back as they are)."""
+    have = set(start.var_names)
+    genes = [g for g in end.var_names if g in have]
+    if genes == list(end.var_names) and genes == list(start.var_names):
+        return start, end
+    return start[:, genes], end[:, genes]
+
+
+def t2_gmom_pair_factors(start: ad.AnnData, end: ad.AnnData, categories: Sequence[str] | None = None,
+                         damping: float = B0_DAMPING) -> tuple[object, object]:
+    """Heart try H7's factors for one pair of T2 stages: T11's fit (`vec.t1_state_transport.fit_state_factors`, its
+    constants unchanged) with the harmonised lineage as the category, from `start` to `end` with the metacells on
+    `end`'s cells, then T11's finish (`finish_momentum`, per-lineage cell-weighted mean removed per gene, damped, zeroed
+    below log 1.05, clipped at log 3). T11 picks 2,000 highly variable genes for its PCA; a T2 panel holds about 500, so
+    the PCA takes every gene the two stages share that passes T11's detection rule (in at least 1% of the pooled cells;
+    `hvg_columns` with n_top = the number of genes), and the factors cover all shared genes. No T1 label classification,
+    stand-ins or fallbacks: a lineage's cells are its own (`_type_rows` with no `within` and no fallback). categories
+    default to `t2_lineages`. Returns (finished factors, raw fit); the inputs are not modified."""
+    from vec import t1_state_transport as ts
+
+    s, e = _shared_genes(start, end)
+    cats = t2_lineages(s, e) if categories is None else [c for c in categories if c != T2_UNTRACKED]
+    raw = ts.fit_state_factors(s, e, "later", cats, key=T2_LINEAGE_KEY, n_hvg=e.n_vars)
+    return ts.finish_momentum(raw, damping), raw
+
+
+def _b0_gmom_factors(ctx: BuildContext):
+    """Try H7's finished factors for this fold, fitted once per pair of loaded inputs (the harness hands every seed the
+    same objects), between the `start` stage and the reference stage (the pool), as `_g_mom_factors` is on T1."""
+    objs = (ctx.inputs[ctx.task.reference_role], ctx.inputs["start"])
+    hit = _B0_GMOM_PREP.get("fold")
+    if hit is None or any(a is not b for a, b in zip(hit["inputs"], objs, strict=True)):
+        _B0_GMOM_PREP.clear()
+        finished, _ = t2_gmom_pair_factors(objs[1], objs[0])
+        hit = _B0_GMOM_PREP["fold"] = {"inputs": objs, "factors": finished}
+    return hit["factors"]
+
+
+def t2_gmom_no_development_factors(stage: ad.AnnData, target, seed: int = G_MOM_NULL_SEED):
+    """Heart try H7c's factors, T23's construction (`g_mom_no_development_factors`) on a T2 stage: `stage` (the
+    reference) split at random within each harmonised lineage into two halves (`ts.category_halves` on obs["merged"],
+    default_rng(seed)), H7's fit from one half to the other and back with each half carrying the metacells in turn,
+    finished per lineage at the size of `target` (H7's finished factors, `ts.finish_no_development`; T2's B0 holds no
+    gene flat, so the size is over all genes). Only H7's fitted lineages get factors."""
+    from vec import t1_state_transport as ts
+
+    in_a = ts.category_halves(stage, np.random.default_rng(seed), key=T2_LINEAGE_KEY)
+    half_a, half_b = stage[in_a].copy(), stage[~in_a].copy()
+    cats = sorted(target.categories)
+    _, raw_on_b = t2_gmom_pair_factors(half_a, half_b, categories=cats)
+    _, raw_on_a = t2_gmom_pair_factors(half_b, half_a, categories=cats)
+    return ts.finish_no_development(raw_on_b, raw_on_a, target, (), B0_DAMPING)
+
+
+def _b0_gmom_null_factors(ctx: BuildContext, finished):
+    """The no-development factors for one fold, fitted once per reference and H7 fit, as `_g_mom_null_factors`."""
+    ref = ctx.inputs[ctx.task.reference_role]
+    hit = _B0_GMOM_NULL_PREP.get("fold")
+    if hit is None or hit["ref"] is not ref or hit["target"] is not finished:
+        _B0_GMOM_NULL_PREP.clear()
+        hit = _B0_GMOM_NULL_PREP["fold"] = {"ref": ref, "target": finished,
+                                            "factors": t2_gmom_no_development_factors(ref, finished)}
+    return hit["factors"]
+
+
+def _factors_on_genes(sf, genes: Sequence[str]):
+    """The factors on another gene order, log f = 0 for a gene they do not cover (normally the same genes: returned
+    as they are)."""
+    from vec import t1_state_transport as ts
+
+    genes = list(genes)
+    if sf.genes == genes:
+        return sf
+    pos = {g: i for i, g in enumerate(sf.genes)}
+    idx = np.array([pos.get(g, -1) for g in genes])
+    cats = {}
+    for c, cf in sf.categories.items():
+        logf = np.zeros((cf.n_metacells, len(genes)))
+        logf[:, idx >= 0] = cf.logf[:, idx[idx >= 0]]
+        cats[c] = replace(cf, logf=logf)
+    return ts.StateFactors(genes=genes, metacells_on=sf.metacells_on, categories=cats, skipped=sf.skipped,
+                           record=sf.record)
+
+
+def b0_gmom_population(ctx: BuildContext, factors) -> tuple[ad.AnnData, np.ndarray, np.ndarray | None, dict]:
+    """B0's drawn and shifted cells (`_b0_t2_shift`, the same draw and stream) edited by each cell's own reference
+    metacell's factor through `vec.core.apply_factors` (`ts.apply_state_factors`, stream [seed, 5], rescale=False,
+    expected depth kept, zeros kept, no gene held). A cell whose lineage has no factors ("Untracked", too few cells)
+    keeps B0's counts. Returns (pool, the edited cells, coords, apply's record)."""
+    from vec import t1_state_transport as ts
+
+    if ctx.task.kind != "extrap" or "start" not in ctx.task.roles:
+        raise ValueError("heart try H7 is for extrapolation boards with a start stage")
+    pool, rows, coords, _, shifted = _b0_t2_shift(ctx)
+    shifted.obs[B0_GMOM_SOURCE_KEY] = np.asarray(pool.obs_names)[rows].astype(str)
+    moved, rec = ts.apply_state_factors(shifted, _factors_on_genes(factors, shifted.var_names), (), [ctx.seed, 5],
+                                        rescale=False, key=T2_LINEAGE_KEY, source_key=B0_GMOM_SOURCE_KEY)
+    return pool, moved, coords, rec
+
+
+def _b0_gmom_arm(ctx: BuildContext, transform: Callable[[object], object]) -> Stage:
+    """Try H7's build with `transform` applied to the fold's finished factors (the identity for H7)."""
+    pool, moved, coords, _ = b0_gmom_population(ctx, transform(_b0_gmom_factors(ctx)))
+    return finish(ctx, pool, dense(moved[:, ctx.board.genes].X), coords)
+
+
+def _b0_gmom(ctx: BuildContext) -> Stage:
+    """Heart try H7: B0's cells, shift and coordinates with T11's mean-free within-lineage momentum per reference-stage
+    metacell on top (`t2_gmom_pair_factors`)."""
+    return _b0_gmom_arm(ctx, lambda finished: finished)
+
+
+def _b0_gmom_null(ctx: BuildContext) -> Stage:
+    """Heart try H7c: H7's draws, base and stream with the no-development factors (`t2_gmom_no_development_factors`, at
+    H7's size per lineage) in place of H7's."""
+    return _b0_gmom_arm(ctx, lambda finished: _b0_gmom_null_factors(ctx, finished))
+
+
+# The learned-generator extrapolation tries (the captain's request for a learned generator scored once on Task 1 and
+# once on the heart; experiments/harness/TRIES.md): B0 moved in a count model's latent space (vec.latent_extrap), the
+# extrapolation counterpart of embryo row E21. Two arms, one form each; the count, draw, composition, scope and
+# coordinates are B0's.
+def b0_lat_population(ctx: BuildContext, arm: str) -> tuple[ad.AnnData, np.ndarray, np.ndarray | None, dict]:
+    """B0's drawn cells (T1: `vec.t1_scope.reweight` as B0 calls it; T2: `draw_copy`), without B0's count-space shift,
+    moved by B0_DAMPING of their category's mean latent displacement from `start` to the reference in the fold's count
+    model, and expressed by one arm of `vec.latent_extrap` ("decoded" or "ratio"); or ("flow", heart only) moved by
+    the fold's flow field over the task's input stages and expressed by the ratio arm's code. The record is also
+    appended to `vec.latent_extrap.RECORDS` with the task, candidate and build seed (experiments/harness/run.py writes
+    it to <out>/latent_records/). Returns (pool, expression in board gene order, coords or None, record)."""
+    from vec import latent_extrap as le
+
+    t = ctx.task
+    if t.kind != "extrap" or "start" not in t.roles:
+        raise ValueError("the latent B0 arms are for extrapolation boards with a start stage")
+    if arm == "flow" and (t.task != "T2" or t.setting != "heart"):
+        raise ValueError("the flow arm is defined on the heart board only")
+    if t.task == "T1":
+        role = t.reference_role
+        ref, src = _shallow(ctx.inputs[role]), t.role_stems[role]
+        start, start_src = _shallow(ctx.inputs["start"]), t.role_stems["start"]
+        shares = t1_chamber_shares(ref, src)
+        X, genes, rec = le.t1_population(ctx.inputs[role], ctx.inputs["start"], ref, start, shares,
+                                         count_for(ctx.board, ref.n_obs), ctx.seed, list(ctx.derived["t1_held_flat"]),
+                                         ref_source=src, start_source=start_src, damping=B0_DAMPING, arm=arm)
+        pool, coords = ref, None
+    else:
+        stages = None
+        if arm == "flow":  # the input stages in day order, from the view's roles and days (never the target's day)
+            stages = [(r, d, ctx.inputs[r]) for r, d in le.flow_stages(t)]
+        pool, rows, _, coords = draw_copy(ctx)
+        X, genes, rec = le.t2_population(pool, ctx.inputs["start"], rows, ctx.seed, damping=B0_DAMPING, arm=arm,
+                                         stages=stages)
+    pos = {g: i for i, g in enumerate(genes)}
+    missing = [g for g in ctx.board.genes if g not in pos]
+    if missing:
+        raise KeyError(f"{len(missing)} board genes are missing from the fold's genes, e.g. {missing[:5]}")
+    cols = np.array([pos[g] for g in ctx.board.genes], dtype=np.int64)
+    le.RECORDS.append({"task": t.key, "candidate": B0_LAT_NAMES[arm], "build_seed": int(ctx.seed), **rec})
+    return pool, dense(X[:, cols]).astype(np.float32), coords, rec
+
+
+B0_LAT_NAMES = {"decoded": "b0_lat_dec", "ratio": "b0_lat_ratio", "flow": "b0_lat_flow"}
+
+
+def _b0_lat_dec(ctx: BuildContext) -> Stage:
+    pool, X, coords, _ = b0_lat_population(ctx, "decoded")
+    return finish(ctx, pool, X, coords)
+
+
+def _b0_lat_ratio(ctx: BuildContext) -> Stage:
+    pool, X, coords, _ = b0_lat_population(ctx, "ratio")
+    return finish(ctx, pool, X, coords)
+
+
+def _b0_lat_flow(ctx: BuildContext) -> Stage:
+    pool, X, coords, _ = b0_lat_population(ctx, "flow")
+    return finish(ctx, pool, X, coords)
+
+
+def _extrap_with_start(t: PseudoTask) -> bool:
+    """T1 or T2 extrapolation with a `start` stage (B0's momentum tasks on the two extrapolation boards)."""
+    return t.task in ("T1", "T2") and t.kind == "extrap" and "start" in t.inputs
+
+
+def _heart_extrap_with_start(t: PseudoTask) -> bool:
+    """A heart extrapolation task with a `start` stage (the flow arm's tasks; the setting is named, so a future
+    non-heart T2 extrapolation task does not match)."""
+    return t.task == "T2" and t.kind == "extrap" and "start" in t.inputs and t.setting == "heart"
 
 
 # ------------------------------------------------------------------------------------------------ T2 embryo (feat-010)
@@ -1788,6 +2011,46 @@ CANDIDATES = {
                                    "budget (heart only; count space)", "damping": B0_DAMPING,
                            "rule": "vec.harness.B0_TREND_RULE", "scope": "chamber"},
                           requires=_heart_extrap_with_start),
+    # heart tries H7 and H7c (experiments/harness/TRIES.md): T1 try T11's within-type momentum (g_mom) on the heart
+    # head, and its no-development control (T23's construction), both on B0's own draws, shift and coordinates
+    "b0_gmom": Candidate("b0_gmom", frozenset({"T2"}), (), _b0_gmom,
+                         {"what": "heart try H7: B0 on a T2 extrapolation board plus T11's mean-free within-lineage "
+                                  "momentum per reference-stage metacell, from an OT within each harmonised lineage "
+                                  "between the start stage and the reference (vec.t1_state_transport, its constants "
+                                  "unchanged; the PCA on the shared panel genes); Untracked cells keep B0's cells",
+                          "damping": B0_DAMPING, "scope": "whole"}, requires=_t2_extrap_with_start),
+    "b0_gmom_null": Candidate("b0_gmom_null", frozenset({"T2"}), (), _b0_gmom_null,
+                              {"what": "heart try H7c, a no-development control: H7's draws and stream with factors "
+                                       "from the same pipeline fitted between two random halves of the reference "
+                                       "stage per lineage (cross-fitted both ways), per lineage at H7's own "
+                                       "root-mean-square size (vec.harness.t2_gmom_no_development_factors)",
+                               "split_seed": G_MOM_NULL_SEED, "damping": B0_DAMPING, "scope": "whole"},
+                              requires=_t2_extrap_with_start),
+    # the learned-generator extrapolation tries (vec.latent_extrap): B0 in a count model's latent space, two arms
+    "b0_lat_dec": Candidate("b0_lat_dec", frozenset({"T1", "T2"}), (), _b0_lat_dec,
+                            {"what": "B0's drawn cells without B0's shift, each moved in the latent space of row E14's "
+                                     "count model (scvi-tools SCVI, n_latent 20, gene dispersion, observed library, "
+                                     "no batch key, fitted once per fold on the start and reference stages) by "
+                                     "B0_DAMPING of its category's mean latent displacement (B0's moved categories), "
+                                     "then NB counts sampled at the decoded rate and the real cell's library "
+                                     "(vec.latent_extrap, decoded arm)", "damping": B0_DAMPING,
+                             "rule": "vec.latent_extrap.RULE", "scope": "chamber"},
+                            requires=_extrap_with_start, derived=("t1_held_flat",)),
+    "b0_lat_ratio": Candidate("b0_lat_ratio", frozenset({"T1", "T2"}), (), _b0_lat_ratio,
+                              {"what": "the same latent move kept on the real cell: its counts edited by the decoder's "
+                                       "per-gene mean ratio between the moved and its own latent through "
+                                       "vec.core.apply_factors (expected depth kept, zeros kept, held-flat genes 1, "
+                                       "log factor clipped at +-log 3; vec.latent_extrap, ratio arm)",
+                               "damping": B0_DAMPING, "rule": "vec.latent_extrap.RULE", "scope": "chamber"},
+                              requires=_extrap_with_start, derived=("t1_held_flat",)),
+    "b0_lat_flow": Candidate("b0_lat_flow", frozenset({"T2"}), (), _b0_lat_flow,
+                             {"what": "b0_lat_ratio's model, cells, realisation and stream with the latent move from a "
+                                      "velocity field fitted by flow matching on entropic-OT pairs within each "
+                                      "lineage between every two consecutive input stages, integrated (RK4) over "
+                                      "B0's time budget, B0_DAMPING x the last gap (vec.latent_extrap, flow arm; "
+                                      "heart only)", "damping": B0_DAMPING, "rule": "vec.latent_extrap.FLOW_RULE",
+                              "flow_seed": 20261113, "scope": "chamber"},
+                             requires=_heart_extrap_with_start),
     # T3 tries K2a and K2b (experiments/harness/TRIES.md, registered before their run): s1's Gata4 factor on the
     # Gata4 -> Mab21l2 fold, and its permuted control
     "t3_factor_xko": Candidate("t3_factor_xko", frozenset({"T3"}), (), _t3_factor_xko,
