@@ -1,0 +1,12 @@
+Reading of try E45 (runs e24_pricing:ccd33b5, e25_pairs:798908a, e28_nine_tasks:22513cf, n46_embryo_g_arms:b33595e, n47_embryo_h_arms:f8adf82, n50_embryo_j_arms:5904a94): the lineage-level twin of the movement-matched control, on the nine practice tasks; aggregation of committed scores
+fgw_damp_m_grp does not pass both rules: the line closes with no request (rows E42 and E43)
+  rescored arms against their committed scores, largest difference over tasks and seeds: floor 0.0e+00, fgw 0.0e+00, fgw_partial_grp 0.0e+00, fgw_damp_m 0.0e+00 (void above 0.01)
+  fgw_damp_m_grp against fgw_partial_grp, largest difference of the cells' share of the entry's distance over tasks, seeds and brackets: 2.2e-16 (void above 1e-06)
+  fgw_damp_m_grp  adoption against fgw: e75 +0.77 (10/10), e725 +0.77 (9/10) -> kept; first upload S(0.45) +0.26, clauses n y y y
+  fgw_damp_m      adoption against fgw: e75 +1.43 (10/10), e725 +0.65 (9/10) -> kept; first upload S(0.45) +0.32, clauses y y y y
+  fgw_damp_m_grp own mean minus fgw: half +0.36 late +1.25 new1 +0.68 x1 +2.38 x2 +0.04 x3 +0.58 new2 -0.25 e75 +0.77 e725 +0.77
+  fgw_damp_m_grp own mean minus fgw_damp_m: half +0.09 late +0.06 new1 -1.00 x1 -1.32 x2 +0.11 x3 +0.00 new2 -0.05 e75 -0.66 e725 +0.11
+  fgw_damp_m_grp own mean minus fgw_partial_grp: half +0.03 late +0.10 new1 -0.23 x1 -0.92 x2 -0.36 x3 -1.68 new2 -0.25 e75 -0.61 e725 +0.04
+  fgw_damp_m's factors, earlier and later bracket, lowest to highest over seeds: half 0.32-0.36 0.34-0.41; late 0.31-0.76 0.32-0.76; new1 0.32-0.36 0.34-0.41; new2 0.10-0.32 0.10-0.31; e75 0.48-0.62 0.54-0.69; e725 0.43-1.59 0.49-1.29; x1 0.26-0.35 0.28-0.36; x2 0.26-0.35 0.28-0.36; x3 0.55-0.65 0.60-0.72
+  fgw_damp_m_grp's factors, earlier and later bracket, lowest to highest over seeds: half 0.59-0.74 0.65-0.82; late 0.38-1.05 0.39-1.08; new1 0.59-0.74 0.65-0.82; new2 0.29-0.92 0.29-0.91; e75 0.65-0.83 0.70-0.92; e725 0.44-1.81 0.51-1.45; x1 0.57-0.72 0.61-0.75; x2 0.57-0.72 0.61-0.75; x3 0.63-0.78 0.68-0.83
+  on e725, the twin's gain over fgw on the mirrored seeds [3, 4, 5, 8, 9]: +1.37; on the other five: +0.16
