@@ -1378,6 +1378,13 @@ FEATURES = ("own", "tissue")
 # Gromov-Wasserstein on the entry's costs and alpha, transporting the share s = `label_overlap` of the anchors' labels;
 # an anchor whose row or column carries no mass does not move). No constant: s comes from the inputs.
 COUPLINGS = ("fgw", "partial")
+# What displacement each anchor carries into the k-anchor mean (campaign branch campaign/emb-g; three controls for the
+# partial coupling of campaign/emb-f, "the same test with cells simply moved less"): "coupled" (the entry: each anchor's
+# displacement to its coupled partners' mean), "damped" (every anchor's displacement times s, the `label_overlap` of the
+# anchors' labels that coupling="partial" transports), "random_still" (in each bracket a uniformly random subset of
+# round(s x its anchors) anchors keeps the entry's displacement, the others get 0; `still_anchor_subset`) or "still"
+# (every anchor's displacement 0). The entry's balanced coupling, partners and rotation in all three. No constant.
+ANCHOR_MOVES = ("coupled", "damped", "random_still", "still")
 
 
 def pchip_rms(days, rms, target_day: float) -> float:
@@ -1792,6 +1799,35 @@ def partial_partners(coupling, own, other) -> np.ndarray:
     return out
 
 
+def still_anchor_subset(n_anchor: int, s: Fraction, rng: np.random.Generator) -> np.ndarray:
+    """The anchors of one bracket that keep their displacement under anchor_moves="random_still" (campaign branch
+    campaign/emb-g): a boolean mask over its n_anchor anchors with exactly round(s x n_anchor) True, the subset drawn
+    uniformly without replacement from `rng`. The count is rounded exactly (a Fraction, halves to even, as numpy's
+    rint)."""
+    keep = np.zeros(n_anchor, dtype=bool)
+    keep[rng.choice(n_anchor, int(round(Fraction(s) * n_anchor)), replace=False)] = True
+    return keep
+
+
+def controlled_displacements(db: np.ndarray, da: np.ndarray, anchor_moves: str, s: Fraction | None,
+                             rng: np.random.Generator | None) -> tuple[np.ndarray, np.ndarray]:
+    """The anchors' displacements (before, after) under `anchor_moves` (campaign branch campaign/emb-g), from the
+    entry's db and da: "coupled" returns them as they are, "damped" multiplies both by s, "random_still" keeps them on
+    `still_anchor_subset` of each bracket (the before bracket's draw first, then the after bracket's, both from `rng`)
+    and sets the others to 0, "still" sets every one to 0."""
+    if anchor_moves == ANCHOR_MOVES[0]:
+        return db, da
+    if anchor_moves == "damped":
+        return db * float(s), da * float(s)
+    if anchor_moves == "random_still":
+        keep_b = still_anchor_subset(len(db), s, rng)
+        keep_a = still_anchor_subset(len(da), s, rng)
+        return np.where(keep_b[:, None], db, 0.0), np.where(keep_a[:, None], da, 0.0)
+    if anchor_moves == "still":
+        return np.zeros_like(db), np.zeros_like(da)
+    raise ValueError(f"anchor_moves must be one of {ANCHOR_MOVES}, got {anchor_moves!r}")
+
+
 def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: float, n: int, seed: int, *,
                        target_rms: float, alpha: float = INTERP_ALPHA, n_anchor: int = INTERP_N_ANCHOR,
                        n_pc: int = INTERP_N_PC, k: int = INTERP_K, max_iter: int = INTERP_MAX_ITER,
@@ -1802,7 +1838,9 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
                        t_mix: float | None = None, moves: str = MOVES[0],
                        partners: str = PARTNERS[0], features: str = FEATURES[0],
                        tissue_k: int | None = None, coupling: str = COUPLINGS[0],
-                       coupling_labels: tuple | None = None) -> Interpolation:
+                       coupling_labels: tuple | None = None, anchor_moves: str = ANCHOR_MOVES[0],
+                       anchor_labels: tuple | None = None,
+                       anchor_rng: np.random.Generator | None = None) -> Interpolation:
     """Displacement interpolation between two stages at time fraction t (0 = before, 1 = after).
 
     1. Each cloud is centred and divided by its RMS radius (no PCA axes, so no sign choice).
@@ -1894,6 +1932,22 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     draw="midpoint" and with_partners (each reads the coupling's rows as a balanced coupling's). The record gains
     "coupling" and "partial": s, the transported mass the solver returns (None where s is 1 and the entry's coupling
     is used) and the share of anchors with no mass per side (before, after).
+
+    anchor_moves (campaign branch campaign/emb-g; three controls for coupling="partial"): "coupled" (default, the
+    entry) or one change to the displacement each anchor carries into the k-anchor mean of step 3, after the entry's
+    balanced coupling, partners and rotation (`controlled_displacements`): "damped" multiplies every anchor's
+    displacement, of both brackets, by s; "random_still" keeps the entry's displacement on a uniformly random subset of
+    round(s x its anchors) anchors of each bracket (`still_anchor_subset`, from anchor_rng: the before bracket's draw
+    first, then the after bracket's) and sets the others to 0; "still" sets every anchor's displacement to 0 and reads
+    no label. s is `label_overlap` of the anchors' labels, exactly coupling="partial"'s, with anchor_labels=(before
+    labels, after labels), one per cell of each bracket (the harness passes obs["celltype"]); anchor_labels are given
+    with "damped" and "random_still" and only then, anchor_rng with "random_still" and only then. With s exactly 1
+    "damped" and "random_still" give the entry's file bit for bit. Anchors, coupling, rotation, draws, streams,
+    expression, scaling and jitter are the entry's. Refused with coupling="partial", move_coupling="aligned", and
+    partners and moves other than the entry's (each changes the displacements this keyword controls). The record
+    gains "anchor_moves" and "anchor_move": s (not for "still"), the share of anchors with a non-zero displacement per
+    bracket (before, after) and the mean norm of the anchors' displacements as a ratio to the entry's on the same
+    anchors per bracket (None where the entry's is 0). Left unset, the result is the entry's bit for bit.
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1937,6 +1991,25 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         lab_a = np.asarray(coupling_labels[1]).astype(str).reshape(-1)
         if lab_b.shape != (Cb.shape[0],) or lab_a.shape != (Ca.shape[0],):
             raise ValueError("coupling_labels: one label per cell of each bracket")
+    if anchor_moves not in ANCHOR_MOVES:
+        raise ValueError(f"anchor_moves must be one of {ANCHOR_MOVES}, got {anchor_moves!r}")
+    if (anchor_moves in ("damped", "random_still")) != (anchor_labels is not None):
+        raise ValueError("anchor_labels are given with anchor_moves 'damped' or 'random_still' and only then")
+    if (anchor_moves == "random_still") != (anchor_rng is not None):
+        raise ValueError("anchor_rng is given with anchor_moves='random_still' and only then")
+    if anchor_moves != ANCHOR_MOVES[0]:
+        if (coupling != COUPLINGS[0] or move_coupling != MOVE_COUPLINGS[0] or partners != PARTNERS[0]
+                or moves != MOVES[0]):
+            raise ValueError(f"anchor_moves={anchor_moves!r} changes the entry's anchor displacements only (coupling "
+                             f"{COUPLINGS[0]!r}, move_coupling {MOVE_COUPLINGS[0]!r}, partners {PARTNERS[0]!r}, "
+                             f"moves {MOVES[0]!r})")
+        if anchor_labels is not None:
+            if len(anchor_labels) != 2:
+                raise ValueError("anchor_labels must be (before labels, after labels)")
+            alab_b = np.asarray(anchor_labels[0]).astype(str).reshape(-1)
+            alab_a = np.asarray(anchor_labels[1]).astype(str).reshape(-1)
+            if alab_b.shape != (Cb.shape[0],) or alab_a.shape != (Ca.shape[0],):
+                raise ValueError("anchor_labels: one label per cell of each bracket")
     if draw != DRAWS[0]:
         if herd:
             raise ValueError(f"draw={draw!r} and herd both choose the rows; use one of them")
@@ -1985,6 +2058,18 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         mirror_rec = {key: [rec_b[key], rec_a[key]] for key in rec_b}
     db = yb - Zb[ib]
     da = ya - Za_b[ia]
+    anchor_rec = None
+    if anchor_moves != ANCHOR_MOVES[0]:
+        s_anchor = label_overlap(alab_b[ib], alab_a[ia]) if anchor_labels is not None else None
+        db0, da0 = db, da
+        db, da = controlled_displacements(db0, da0, anchor_moves, s_anchor, anchor_rng)
+        anchor_rec = {} if s_anchor is None else {"s": float(s_anchor)}
+        anchor_rec["moving_share"] = [float((d != 0.0).any(1).mean()) for d in (db, da)]
+        ratio = []
+        for d, d0 in ((db, db0), (da, da0)):
+            m0 = float(np.linalg.norm(d0, axis=1).mean())
+            ratio.append(float(np.linalg.norm(d, axis=1).mean()) / m0 if m0 > 0.0 else None)
+        anchor_rec["shift_ratio"] = ratio
     near_b, near_a = nearest_anchors(Zb, Zb[ib], k)[1], nearest_anchors(Za_b, Za_b[ia], k)[1]
     pos_b = Zb + tp * db[near_b].mean(1)
     pos_a = Za_b + (1.0 - tp) * da[near_a].mean(1)
@@ -2054,6 +2139,9 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         record["mirror"] = mirror_rec
     if features != FEATURES[0]:
         record["features"] = features
+    if anchor_rec is not None:
+        record["anchor_moves"] = anchor_moves
+        record["anchor_move"] = anchor_rec
     if partial_rec is not None:
         record["coupling"] = coupling
         record["partial"] = partial_rec

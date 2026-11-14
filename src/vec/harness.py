@@ -1044,7 +1044,8 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
          move_coupling: str = t2_build.MOVE_COUPLINGS[0], local_perm: bool = False,
          draw: str = t2_build.DRAWS[0], t_mix: float | None = None, moves: str = t2_build.MOVES[0],
          partners: str = t2_build.PARTNERS[0], features: str = t2_build.FEATURES[0],
-         coupling: str = t2_build.COUPLINGS[0], potts: bool = False, build_record: dict | None = None) -> Stage:
+         coupling: str = t2_build.COUPLINGS[0], potts: bool = False, build_record: dict | None = None,
+         anchor_moves: str = t2_build.ANCHOR_MOVES[0]) -> Stage:
     """The T2 embryo pipeline (docs/PLAN.md 4.2): displacement interpolation between the brackets at the target's
     time fraction (vec.t2_build.interpolate_clouds: fused Gromov-Wasserstein coupling, proper rotation, McCann moves,
     a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages. t_pos:
@@ -1070,8 +1071,11 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     transported share the overlap of the brackets' anchors' obs["celltype"] distributions). potts (campaign branch
     campaign/emb-f): after the expression step, which drawn cell (its expression row and its obs["group"] label) sits at
     which of the positions is sorted by vec.t2_build.potts_arrangement (NBHD_K, streams [seed, POTTS_STREAMS[0]] and
-    [seed, POTTS_STREAMS[1]]); the positions array is left as it is. build_record: a dict that receives the arm's
-    record ("potts" and/or "partial"; shares, s, masses and a count of swaps only)."""
+    [seed, POTTS_STREAMS[1]]); the positions array is left as it is. anchor_moves (campaign branch campaign/emb-g):
+    "coupled" (the entry), "damped", "random_still" (stream [seed, ANCHOR_STILL_STREAM]) or "still", the controls of
+    vec.t2_build.interpolate_clouds for the partial coupling, s the overlap of the brackets' anchors' obs["celltype"]
+    distributions. build_record: a dict that receives the arm's record ("potts", "partial" and/or "anchor_move";
+    shares, ratios, s, masses and a count of swaps only)."""
     if potts and local_perm:
         raise ValueError("potts and local_perm both re-arrange the cells; use one of them")
     t = ctx.task
@@ -1095,9 +1099,12 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
                                       tissue_k=None if features == t2_build.FEATURES[0] else NBHD_K,
                                       **({} if coupling == t2_build.COUPLINGS[0] else
                                          {"coupling": coupling,
-                                          "coupling_labels": (before.obs["celltype"], after.obs["celltype"])}))
+                                          "coupling_labels": (before.obs["celltype"], after.obs["celltype"])}),
+                                      **_anchor_move_kw(anchor_moves, before, after, ctx.seed))
     if build_record is not None and "partial" in res.record:
         build_record["partial"] = res.record["partial"]
+    if build_record is not None and "anchor_move" in res.record:
+        build_record["anchor_move"] = {"anchor_moves": res.record["anchor_moves"], **res.record["anchor_move"]}
     if expression == "mixture":
         X = np.empty((len(res.rows), len(g)), dtype=np.float32)
         X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
@@ -1353,6 +1360,43 @@ def _fgw_partial(ctx: BuildContext, build_record: dict | None = None) -> Stage:
     new; the label level, the overlap as the share and the zero displacement of an unmatched anchor are choices no
     record fixes."""
     return _fgw(ctx, coupling="partial", build_record=build_record)
+
+
+# campaign branch campaign/emb-g: the random_still control's subset draw, [seed, 28], apart from every stream a
+# step uses on main and on the campaign branches (0-15 and 20-27)
+ANCHOR_STILL_STREAM = 28
+
+
+def _anchor_move_kw(anchor_moves: str, before: ad.AnnData, after: ad.AnnData, seed: int) -> dict:
+    """interpolate_clouds' keywords for `anchor_moves`: none for the entry's (its call unchanged), the brackets'
+    obs["celltype"] for "damped" and "random_still", the stream [seed, ANCHOR_STILL_STREAM] for "random_still"."""
+    if anchor_moves == t2_build.ANCHOR_MOVES[0]:
+        return {}
+    kw: dict = {"anchor_moves": anchor_moves}
+    if anchor_moves in ("damped", "random_still"):
+        kw["anchor_labels"] = (before.obs["celltype"], after.obs["celltype"])
+    if anchor_moves == "random_still":
+        kw["anchor_rng"] = np.random.default_rng([seed, ANCHOR_STILL_STREAM])
+    return kw
+
+
+def _fgw_damp(ctx: BuildContext, build_record: dict | None = None) -> Stage:
+    """Campaign arm (branch campaign/emb-g; a control for fgw_partial): the entry with every anchor's displacement, of
+    both brackets, multiplied by fgw_partial's share s. No constant is new."""
+    return _fgw(ctx, anchor_moves="damped", build_record=build_record)
+
+
+def _fgw_part_rand(ctx: BuildContext, build_record: dict | None = None) -> Stage:
+    """Campaign arm (branch campaign/emb-g; a control for fgw_partial): the entry with a uniformly random subset of
+    round(s x its anchors) anchors of each bracket keeping its displacement and the others still. No constant is
+    new."""
+    return _fgw(ctx, anchor_moves="random_still", build_record=build_record)
+
+
+def _fgw_still(ctx: BuildContext, build_record: dict | None = None) -> Stage:
+    """Campaign arm (branch campaign/emb-g; a control for fgw_partial): the entry with no anchor displaced. No label
+    is read and no number is used."""
+    return _fgw(ctx, anchor_moves="still", build_record=build_record)
 
 
 def _fgw_aligned_series_xt(ctx: BuildContext) -> Stage:
@@ -1939,6 +1983,26 @@ CANDIDATES = {
                                                        "of the share", "the zero displacement of an unmatched "
                                                        "anchor"], "scope": "whole"},
                              requires=_interp),
+    # the embryo batch G (campaign branch campaign/emb-g): three controls for fgw_partial, the entry's coupling with one
+    # change to the anchors' displacements each
+    "fgw_damp": Candidate("fgw_damp", frozenset({"T2"}), (), _fgw_damp,
+                          {"what": "fgw with every anchor's displacement, of both brackets, multiplied by s, the "
+                                   "overlap of the brackets' anchors' celltype distributions (fgw_partial's share); "
+                                   "the entry's balanced coupling, partners and rotation", "anchor_moves": "damped",
+                           "label": "celltype", "alpha": t2_build.INTERP_ALPHA, "k": t2_build.INTERP_K,
+                           "scope": "whole"}, requires=_interp),
+    "fgw_part_rand": Candidate("fgw_part_rand", frozenset({"T2"}), (), _fgw_part_rand,
+                               {"what": "fgw with a uniformly random subset of round(s x its anchors) anchors of each "
+                                        "bracket keeping the entry's displacement and the others still, s "
+                                        "fgw_partial's share; the entry's balanced coupling, partners and rotation",
+                                "anchor_moves": "random_still", "label": "celltype", "stream": ANCHOR_STILL_STREAM,
+                                "alpha": t2_build.INTERP_ALPHA, "k": t2_build.INTERP_K, "scope": "whole"},
+                               requires=_interp),
+    "fgw_still": Candidate("fgw_still", frozenset({"T2"}), (), _fgw_still,
+                           {"what": "fgw with every anchor's displacement 0: each bracket's cells at their own "
+                                    "normalised positions, the later bracket's rotated into the earlier's frame by the "
+                                    "entry's rotation", "anchor_moves": "still", "alpha": t2_build.INTERP_ALPHA,
+                            "k": t2_build.INTERP_K, "scope": "whole"}, requires=_interp),
     "fgw_aligned_series_xt": Candidate("fgw_aligned_series_xt", frozenset({"T2"}), (), _fgw_aligned_series_xt,
                                        {"what": "fgw_aligned_series (the second upload as built) with each rendered "
                                                 "cell's panel total and outside count brought to their rounded "
