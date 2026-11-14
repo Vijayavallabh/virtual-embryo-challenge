@@ -1,0 +1,2609 @@
+{
+ "task": {
+  "key": "T2e/E7.5+E8.5->E8.25_late",
+  "test_board": "T2:embryo:test_interp",
+  "task": "T2",
+  "kind": "interp",
+  "target": "T2/E8.25_late.h5ad",
+  "reference": "T2/E7.5.h5ad",
+  "inputs": {
+   "before": "T2/E7.5.h5ad",
+   "after": "T2/E8.5.h5ad",
+   "trend_E6.75": "T2/E6.75.h5ad",
+   "trend_E7.25": "T2/E7.25.h5ad"
+  },
+  "validation_board": null,
+  "twin_board": "T2:embryo:val_interp",
+  "setting": "embryo",
+  "forbidden": [],
+  "adoption": false,
+  "replicate": false,
+  "target_filter": null,
+  "notes": "Tries E23a and E23b, new1: t = 0.8."
+ },
+ "board": {
+  "key": "pseudo:T2e/E7.5+E8.5->E8.25_late",
+  "task": "T2",
+  "setting": "embryo",
+  "split": "pseudo",
+  "target_ko": null,
+  "needs_coords": true,
+  "min_cells": 1000,
+  "max_cells": 8808,
+  "truth_cells": 2936,
+  "ref_cells": 1166,
+  "floor_model": "copy_last"
+ },
+ "target_filter_record": null,
+ "candidates": [
+  "floor",
+  "fgw",
+  "fgw_trend_render",
+  "fgw_resid"
+ ],
+ "params": {
+  "floor": {
+   "what": "the organisers' floor: the reference's 10% working copy (copy_last or wt_identity)",
+   "scope": "whole",
+   "tuned_on": [],
+   "externals": []
+  },
+  "fgw": {
+   "what": "displacement interpolation between the brackets (fused Gromov-Wasserstein coupling, proper rotation, McCann moves) with a mixture of real cells of both, scaled to the embryo size rule",
+   "alpha": 0.5,
+   "n_anchor": 2000,
+   "n_pc": 30,
+   "k": 8,
+   "scope": "whole",
+   "tuned_on": [],
+   "externals": []
+  },
+  "fgw_trend_render": {
+   "what": "fgw's draws and positions with every drawn cell of both brackets moved by a per-gene factor to the run profile a trend through all the task's samples gives at the target's day",
+   "rule": "trend render: each bracket's drawn cells are moved by a per-gene factor to the run profile a trend through every sample of the task gives at the target's day. A sample's profile is its share-weighted mean within-cell panel proportions over the labels every sample holds with at least SERIES_MIN_CELLS cells that are extraembryonic as SERIES_RULE says (the before bracket's groups), weights the moved bracket's label shares; the trend is the least-squares line of log(profile + 1e-5) on the stage day, read at the target's day; the factor is exp(trend) / (own profile + 1e-5), rescaled so the weighted total proportion is unchanged and clipped to 0.25-4, applied in count space (binomial thinning below 1, Poisson top-up from the cell's kNN-smoothed proportions above 1; vec.core.apply_gene_factor). Depth is not moved: the counts outside the panel stay as released",
+   "scope": "whole",
+   "tuned_on": [],
+   "externals": []
+  },
+  "fgw_resid": {
+   "what": "fgw's draws and positions with each bracket that has an earlier and a later sample moved by a per-gene factor removing the share L = 1 / (1 + w1^2 + w2^2) of its residual from the line through those two samples, at its own day",
+   "rule": "reference-residual render: each bracket that has, among the task's other samples (the other bracket included, the target never), an earlier and a later one has its drawn cells moved by a per-gene factor that removes the share L of its residual from the straight line through the nearest earlier and the nearest later sample by stage day. Samples, labels and profiles are TREND_RENDER_RULE's (weights the moved bracket's label shares, eps 1e-5). With d the bracket's day and d1 < d < d2 the neighbours', w1 = (d2 - d) / (d2 - d1), w2 = 1 - w1, line = w1 log(p1 + eps) + w2 log(p2 + eps), r = log(own + eps) - line, L = 1 / (1 + w1^2 + w2^2); the factor exp(-L r) is rescaled so the weighted total proportion is unchanged and clipped to 0.25-4, applied in count space (vec.core.apply_gene_factor). A bracket without an earlier or a later sample keeps its drawn cells as released. Depth is not moved: the counts outside the panel stay as released",
+   "scope": "whole",
+   "tuned_on": [],
+   "externals": []
+  }
+ },
+ "protocol": "bake",
+ "build": "main",
+ "anchors": "computed",
+ "frac": 0.1,
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "rows": [
+  {
+   "seed": 0,
+   "build_seed": 1000000,
+   "scores": {
+    "floor": 50.0,
+    "fgw": 75.20468864122675,
+    "fgw_trend_render": 75.33852904219846,
+    "fgw_resid": 75.54970441134789
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5,
+     "d2_shape": 0.5,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.5,
+     "neighborhood_mmd": 0.5
+    },
+    "fgw": {
+     "de_score": 0.7328470663674255,
+     "de_direction": 0.8496182551256757,
+     "mmd_u": 0.8202618304107614,
+     "variogram": 0.8299306572367876,
+     "d2_shape": 0.6275161412837068,
+     "occupancy_dice": 0.5387661525635681,
+     "scale_log_ratio": 0.6047191480476092,
+     "neighborhood_mmd": 0.8024917097963864
+    },
+    "fgw_trend_render": {
+     "de_score": 0.727251034043907,
+     "de_direction": 0.8416758732047251,
+     "mmd_u": 0.8311933304935192,
+     "variogram": 0.8335287140250965,
+     "d2_shape": 0.6275161412837068,
+     "occupancy_dice": 0.5387661525635681,
+     "scale_log_ratio": 0.6047191480476092,
+     "neighborhood_mmd": 0.8066164101925114
+    },
+    "fgw_resid": {
+     "de_score": 0.7328470663674255,
+     "de_direction": 0.8593492407809111,
+     "mmd_u": 0.8258661345909668,
+     "variogram": 0.8334246537338484,
+     "d2_shape": 0.6275161412837068,
+     "occupancy_dice": 0.5387661525635681,
+     "scale_log_ratio": 0.6047191480476092,
+     "neighborhood_mmd": 0.8066666666666666
+    }
+   },
+   "metrics": {
+    "floor": {
+     "de_score": 0.0,
+     "de_direction": 0.0,
+     "energy_distance": 4.44359,
+     "mmd_u": 0.13696,
+     "variogram": 0.121036,
+     "d2_shape": 0.06827,
+     "sliced_wasserstein": 0.06137,
+     "occupancy_dice": 0.681,
+     "scale_log_ratio": -0.5826,
+     "count_log_ratio": -0.9235,
+     "neighborhood_mmd": 0.26023,
+     "pb_rel_err": 0.5568,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.772,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.7897,
+     "morans_I_agreement": 0.5144,
+     "_de_raw": 0.0,
+     "_de_chance": 0.4588,
+     "_n_up": 169,
+     "_n_dn": 25,
+     "_sw_flip_spread": 0.01346,
+     "_dice_voxel_over_nn": 4.3
+    },
+    "fgw": {
+     "de_score": 0.581,
+     "de_direction": 0.8151,
+     "energy_distance": 0.96576,
+     "mmd_u": 0.0303,
+     "variogram": 0.025496,
+     "d2_shape": 0.04141,
+     "sliced_wasserstein": 0.06155,
+     "occupancy_dice": 0.7182,
+     "scale_log_ratio": -0.382,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06502,
+     "pb_rel_err": 0.2766,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.979,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9468,
+     "morans_I_agreement": 0.824,
+     "_de_raw": 0.7732,
+     "_de_chance": 0.4588,
+     "_n_up": 169,
+     "_n_dn": 25,
+     "_sw_flip_spread": 0.00209,
+     "_dice_voxel_over_nn": 6.4
+    },
+    "fgw_trend_render": {
+     "de_score": 0.5714,
+     "de_direction": 0.8041,
+     "energy_distance": 1.00126,
+     "mmd_u": 0.02811,
+     "variogram": 0.024871,
+     "d2_shape": 0.04141,
+     "sliced_wasserstein": 0.06155,
+     "occupancy_dice": 0.7182,
+     "scale_log_ratio": -0.382,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06337,
+     "pb_rel_err": 0.2844,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.989,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9397,
+     "morans_I_agreement": 0.8343,
+     "_de_raw": 0.768,
+     "_de_chance": 0.4588,
+     "_n_up": 169,
+     "_n_dn": 25,
+     "_sw_flip_spread": 0.00209,
+     "_dice_voxel_over_nn": 6.4
+    },
+    "fgw_resid": {
+     "de_score": 0.581,
+     "de_direction": 0.8283,
+     "energy_distance": 0.92786,
+     "mmd_u": 0.02917,
+     "variogram": 0.024889,
+     "d2_shape": 0.04141,
+     "sliced_wasserstein": 0.06155,
+     "occupancy_dice": 0.7182,
+     "scale_log_ratio": -0.382,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06335,
+     "pb_rel_err": 0.2711,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.978,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9493,
+     "morans_I_agreement": 0.816,
+     "_de_raw": 0.7732,
+     "_de_chance": 0.4588,
+     "_n_up": 169,
+     "_n_dn": 25,
+     "_sw_flip_spread": 0.00209,
+     "_dice_voxel_over_nn": 6.4
+    }
+   },
+   "n_cells": {
+    "floor": 1166,
+    "fgw": 8808,
+    "fgw_trend_render": 8808,
+    "fgw_resid": 8808
+   },
+   "groups": {
+    "floor": {
+     "expression_change": 0.5,
+     "cell_state": 0.5,
+     "shape_growth": 0.5,
+     "local_organisation": 0.5
+    },
+    "fgw": {
+     "expression_change": 0.7912326607465505,
+     "cell_state": 0.8241293611411719,
+     "shape_growth": 0.5903338139649613,
+     "local_organisation": 0.8024917097963864
+    },
+    "fgw_trend_render": {
+     "expression_change": 0.784463453624316,
+     "cell_state": 0.8321274839061501,
+     "shape_growth": 0.5903338139649613,
+     "local_organisation": 0.8066164101925114
+    },
+    "fgw_resid": {
+     "expression_change": 0.7960981535741682,
+     "cell_state": 0.8288895422481195,
+     "shape_growth": 0.5903338139649613,
+     "local_organisation": 0.8066666666666666
+    }
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.9143
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.9904
+    },
+    "mmd_u": {
+     "floor": 0.13696,
+     "ceiling": 0.00037
+    },
+    "variogram": {
+     "floor": 0.121036,
+     "ceiling": 0.000872
+    },
+    "d2_shape": {
+     "floor": 0.06827,
+     "ceiling": 0.00218
+    },
+    "occupancy_dice": {
+     "floor": 0.681,
+     "ceiling": 0.9395
+    },
+    "scale_log_ratio": {
+     "floor": -0.5826,
+     "ceiling": -0.0034
+    },
+    "neighborhood_mmd": {
+     "floor": 0.26023,
+     "ceiling": 0.00129
+    }
+   },
+   "reads": {
+    "fgw": [],
+    "fgw_trend_render": [],
+    "fgw_resid": []
+   },
+   "seconds": 79.2
+  },
+  {
+   "seed": 1,
+   "build_seed": 1000001,
+   "scores": {
+    "floor": 50.0,
+    "fgw": 75.93150145950715,
+    "fgw_trend_render": 76.50504888678343,
+    "fgw_resid": 76.49388897379514
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5,
+     "d2_shape": 0.5,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.5,
+     "neighborhood_mmd": 0.5
+    },
+    "fgw": {
+     "de_score": 0.7111162468222787,
+     "de_direction": 0.8577133431721504,
+     "mmd_u": 0.8408350050150452,
+     "variogram": 0.8106586536801023,
+     "d2_shape": 0.694326391840204,
+     "occupancy_dice": 0.5703412073490813,
+     "scale_log_ratio": 0.6063944696478721,
+     "neighborhood_mmd": 0.8003934426229509
+    },
+    "fgw_trend_render": {
+     "de_score": 0.73848,
+     "de_direction": 0.8472686733556297,
+     "mmd_u": 0.8470476791916641,
+     "variogram": 0.8188719795133728,
+     "d2_shape": 0.694326391840204,
+     "occupancy_dice": 0.5703412073490813,
+     "scale_log_ratio": 0.6063944696478721,
+     "neighborhood_mmd": 0.8078628631941227
+    },
+    "fgw_resid": {
+     "de_score": 0.7272512408414086,
+     "de_direction": 0.866970866970867,
+     "mmd_u": 0.8461392884178652,
+     "variogram": 0.8155202846381566,
+     "d2_shape": 0.694326391840204,
+     "occupancy_dice": 0.5703412073490813,
+     "scale_log_ratio": 0.6063944696478721,
+     "neighborhood_mmd": 0.8050654618606339
+    }
+   },
+   "metrics": {
+    "floor": {
+     "de_score": 0.0,
+     "de_direction": 0.0,
+     "energy_distance": 4.3495,
+     "mmd_u": 0.13421,
+     "variogram": 0.118305,
+     "d2_shape": 0.07012,
+     "sliced_wasserstein": 0.06629,
+     "occupancy_dice": 0.6846,
+     "scale_log_ratio": -0.5695,
+     "count_log_ratio": -0.9235,
+     "neighborhood_mmd": 0.24519,
+     "pb_rel_err": 0.549,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.775,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.7937,
+     "morans_I_agreement": 0.5172,
+     "_de_raw": 0.0,
+     "_de_chance": 0.4611,
+     "_n_up": 169,
+     "_n_dn": 24,
+     "_sw_flip_spread": 0.01583,
+     "_dice_voxel_over_nn": 4.3
+    },
+    "fgw": {
+     "de_score": 0.5481,
+     "de_direction": 0.8241,
+     "energy_distance": 1.02184,
+     "mmd_u": 0.02547,
+     "variogram": 0.02836,
+     "d2_shape": 0.03354,
+     "sliced_wasserstein": 0.05228,
+     "occupancy_dice": 0.7382,
+     "scale_log_ratio": -0.3725,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06195,
+     "pb_rel_err": 0.2694,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.976,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9514,
+     "morans_I_agreement": 0.8361,
+     "_de_raw": 0.7565,
+     "_de_chance": 0.4611,
+     "_n_up": 169,
+     "_n_dn": 24,
+     "_sw_flip_spread": 0.01348,
+     "_dice_voxel_over_nn": 6.3
+    },
+    "fgw_trend_render": {
+     "de_score": 0.5962,
+     "de_direction": 0.8099,
+     "energy_distance": 1.02651,
+     "mmd_u": 0.0243,
+     "variogram": 0.026908,
+     "d2_shape": 0.03354,
+     "sliced_wasserstein": 0.05228,
+     "occupancy_dice": 0.7382,
+     "scale_log_ratio": -0.3725,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.05913,
+     "pb_rel_err": 0.2763,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.985,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9443,
+     "morans_I_agreement": 0.846,
+     "_de_raw": 0.7824,
+     "_de_chance": 0.4611,
+     "_n_up": 169,
+     "_n_dn": 24,
+     "_sw_flip_spread": 0.01348,
+     "_dice_voxel_over_nn": 6.3
+    },
+    "fgw_resid": {
+     "de_score": 0.5769,
+     "de_direction": 0.8364,
+     "energy_distance": 0.97685,
+     "mmd_u": 0.02447,
+     "variogram": 0.027497,
+     "d2_shape": 0.03354,
+     "sliced_wasserstein": 0.05228,
+     "occupancy_dice": 0.7382,
+     "scale_log_ratio": -0.3725,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06018,
+     "pb_rel_err": 0.2638,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.975,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9538,
+     "morans_I_agreement": 0.8287,
+     "_de_raw": 0.772,
+     "_de_chance": 0.4611,
+     "_n_up": 169,
+     "_n_dn": 24,
+     "_sw_flip_spread": 0.01348,
+     "_dice_voxel_over_nn": 6.3
+    }
+   },
+   "n_cells": {
+    "floor": 1166,
+    "fgw": 8808,
+    "fgw_trend_render": 8808,
+    "fgw_resid": 8808
+   },
+   "groups": {
+    "floor": {
+     "expression_change": 0.5,
+     "cell_state": 0.5,
+     "shape_growth": 0.5,
+     "local_organisation": 0.5
+    },
+    "fgw": {
+     "expression_change": 0.7844147949972146,
+     "cell_state": 0.8287644644810681,
+     "shape_growth": 0.6236873562790524,
+     "local_organisation": 0.8003934426229509
+    },
+    "fgw_trend_render": {
+     "expression_change": 0.7928743366778148,
+     "cell_state": 0.8357773993203476,
+     "shape_growth": 0.6236873562790524,
+     "local_organisation": 0.8078628631941227
+    },
+    "fgw_resid": {
+     "expression_change": 0.7971110539061378,
+     "cell_state": 0.8338916869059818,
+     "shape_growth": 0.6236873562790524,
+     "local_organisation": 0.8050654618606339
+    }
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.9231
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.988
+    },
+    "mmd_u": {
+     "floor": 0.13421,
+     "ceiling": 8e-05
+    },
+    "variogram": {
+     "floor": 0.118305,
+     "ceiling": 0.00095
+    },
+    "d2_shape": {
+     "floor": 0.07012,
+     "ceiling": 0.00477
+    },
+    "occupancy_dice": {
+     "floor": 0.6846,
+     "ceiling": 0.9019
+    },
+    "scale_log_ratio": {
+     "floor": -0.5695,
+     "ceiling": 0.0081
+    },
+    "neighborhood_mmd": {
+     "floor": 0.24519,
+     "ceiling": 0.00107
+    }
+   },
+   "reads": {
+    "fgw": [],
+    "fgw_trend_render": [],
+    "fgw_resid": []
+   },
+   "seconds": 107.4
+  },
+  {
+   "seed": 2,
+   "build_seed": 1000002,
+   "scores": {
+    "floor": 50.0,
+    "fgw": 75.89350888182172,
+    "fgw_trend_render": 76.10606268503474,
+    "fgw_resid": 76.22408525917032
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5,
+     "d2_shape": 0.5,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.5,
+     "neighborhood_mmd": 0.5
+    },
+    "fgw": {
+     "de_score": 0.7173863893285101,
+     "de_direction": 0.8647798742138364,
+     "mmd_u": 0.8421923855067132,
+     "variogram": 0.8262877220270252,
+     "d2_shape": 0.6405357699096667,
+     "occupancy_dice": 0.5787316132143717,
+     "scale_log_ratio": 0.6057671616096407,
+     "neighborhood_mmd": 0.8004818551422979
+    },
+    "fgw_trend_render": {
+     "de_score": 0.7122334455667788,
+     "de_direction": 0.8597481545809813,
+     "mmd_u": 0.8496938207459641,
+     "variogram": 0.8310832989949924,
+     "d2_shape": 0.6405357699096667,
+     "occupancy_dice": 0.5787316132143717,
+     "scale_log_ratio": 0.6057671616096407,
+     "neighborhood_mmd": 0.8076572470373747
+    },
+    "fgw_resid": {
+     "de_score": 0.7173863893285101,
+     "de_direction": 0.8752541773494829,
+     "mmd_u": 0.8466042154566745,
+     "variogram": 0.8295190759342782,
+     "d2_shape": 0.6405357699096667,
+     "occupancy_dice": 0.5787316132143717,
+     "scale_log_ratio": 0.6057671616096407,
+     "neighborhood_mmd": 0.8045281191355408
+    }
+   },
+   "metrics": {
+    "floor": {
+     "de_score": 0.0,
+     "de_direction": 0.0,
+     "energy_distance": 4.40897,
+     "mmd_u": 0.13733,
+     "variogram": 0.11981,
+     "d2_shape": 0.06476,
+     "sliced_wasserstein": 0.06462,
+     "occupancy_dice": 0.6972,
+     "scale_log_ratio": -0.5704,
+     "count_log_ratio": -0.9235,
+     "neighborhood_mmd": 0.26636,
+     "pb_rel_err": 0.5535,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.772,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.7908,
+     "morans_I_agreement": 0.5282,
+     "_de_raw": 0.0,
+     "_de_chance": 0.4526,
+     "_n_up": 169,
+     "_n_dn": 21,
+     "_sw_flip_spread": 0.01451,
+     "_dice_voxel_over_nn": 4.2
+    },
+    "fgw": {
+     "de_score": 0.5769,
+     "de_direction": 0.8352,
+     "energy_distance": 0.95138,
+     "mmd_u": 0.0257,
+     "variogram": 0.02583,
+     "d2_shape": 0.03769,
+     "sliced_wasserstein": 0.05727,
+     "occupancy_dice": 0.7625,
+     "scale_log_ratio": -0.3738,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06681,
+     "pb_rel_err": 0.2704,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.98,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9504,
+     "morans_I_agreement": 0.8338,
+     "_de_raw": 0.7684,
+     "_de_chance": 0.4526,
+     "_n_up": 169,
+     "_n_dn": 21,
+     "_sw_flip_spread": 0.01042,
+     "_dice_voxel_over_nn": 6.2
+    },
+    "fgw_trend_render": {
+     "de_score": 0.5673,
+     "de_direction": 0.8285,
+     "energy_distance": 0.97897,
+     "mmd_u": 0.02426,
+     "variogram": 0.024999,
+     "d2_shape": 0.03769,
+     "sliced_wasserstein": 0.05727,
+     "occupancy_dice": 0.7625,
+     "scale_log_ratio": -0.3738,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06386,
+     "pb_rel_err": 0.2781,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.99,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9431,
+     "morans_I_agreement": 0.8418,
+     "_de_raw": 0.7632,
+     "_de_chance": 0.4526,
+     "_n_up": 169,
+     "_n_dn": 21,
+     "_sw_flip_spread": 0.01042,
+     "_dice_voxel_over_nn": 6.2
+    },
+    "fgw_resid": {
+     "de_score": 0.5769,
+     "de_direction": 0.8489,
+     "energy_distance": 0.91867,
+     "mmd_u": 0.02485,
+     "variogram": 0.025269,
+     "d2_shape": 0.03769,
+     "sliced_wasserstein": 0.05727,
+     "occupancy_dice": 0.7625,
+     "scale_log_ratio": -0.3738,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06514,
+     "pb_rel_err": 0.2662,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.979,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9522,
+     "morans_I_agreement": 0.8247,
+     "_de_raw": 0.7684,
+     "_de_chance": 0.4526,
+     "_n_up": 169,
+     "_n_dn": 21,
+     "_sw_flip_spread": 0.01042,
+     "_dice_voxel_over_nn": 6.2
+    }
+   },
+   "n_cells": {
+    "floor": 1166,
+    "fgw": 8808,
+    "fgw_trend_render": 8808,
+    "fgw_resid": 8808
+   },
+   "groups": {
+    "floor": {
+     "expression_change": 0.5,
+     "cell_state": 0.5,
+     "shape_growth": 0.5,
+     "local_organisation": 0.5
+    },
+    "fgw": {
+     "expression_change": 0.7910831317711733,
+     "cell_state": 0.8358305201148379,
+     "shape_growth": 0.6083448482445597,
+     "local_organisation": 0.8004818551422979
+    },
+    "fgw_trend_render": {
+     "expression_change": 0.78599080007388,
+     "cell_state": 0.8422496120455754,
+     "shape_growth": 0.6083448482445597,
+     "local_organisation": 0.8076572470373747
+    },
+    "fgw_resid": {
+     "expression_change": 0.7963202833389964,
+     "cell_state": 0.839770159647716,
+     "shape_growth": 0.6083448482445597,
+     "local_organisation": 0.8045281191355408
+    }
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.9519
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.99
+    },
+    "mmd_u": {
+     "floor": 0.13733,
+     "ceiling": -4e-05
+    },
+    "variogram": {
+     "floor": 0.11981,
+     "ceiling": 0.000813
+    },
+    "d2_shape": {
+     "floor": 0.06476,
+     "ceiling": 0.00307
+    },
+    "occupancy_dice": {
+     "floor": 0.6972,
+     "ceiling": 0.9372
+    },
+    "scale_log_ratio": {
+     "floor": -0.5704,
+     "ceiling": 0.0074
+    },
+    "neighborhood_mmd": {
+     "floor": 0.26636,
+     "ceiling": 0.00056
+    }
+   },
+   "reads": {
+    "fgw": [],
+    "fgw_trend_render": [],
+    "fgw_resid": []
+   },
+   "seconds": 90.3
+  },
+  {
+   "seed": 3,
+   "build_seed": 1000003,
+   "scores": {
+    "floor": 50.0,
+    "fgw": 76.27321871553919,
+    "fgw_trend_render": 76.47732105112053,
+    "fgw_resid": 76.53674493381484
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5,
+     "d2_shape": 0.5,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.5,
+     "neighborhood_mmd": 0.5
+    },
+    "fgw": {
+     "de_score": 0.74816,
+     "de_direction": 0.863279888462879,
+     "mmd_u": 0.8356231599607459,
+     "variogram": 0.8368641371215229,
+     "d2_shape": 0.6296182266009852,
+     "occupancy_dice": 0.5408415841584158,
+     "scale_log_ratio": 0.6071726438698916,
+     "neighborhood_mmd": 0.816545102021974
+    },
+    "fgw_trend_render": {
+     "de_score": 0.74816,
+     "de_direction": 0.8585666002253227,
+     "mmd_u": 0.8412472985489348,
+     "variogram": 0.8410688270617915,
+     "d2_shape": 0.6296182266009852,
+     "occupancy_dice": 0.5408415841584158,
+     "scale_log_ratio": 0.6071726438698916,
+     "neighborhood_mmd": 0.8220094804349847
+    },
+    "fgw_resid": {
+     "de_score": 0.7372487189594009,
+     "de_direction": 0.8764929664690789,
+     "mmd_u": 0.8404688463911166,
+     "variogram": 0.8396010243968189,
+     "d2_shape": 0.6296182266009852,
+     "occupancy_dice": 0.5408415841584158,
+     "scale_log_ratio": 0.6071726438698916,
+     "neighborhood_mmd": 0.8219330855018588
+    }
+   },
+   "metrics": {
+    "floor": {
+     "de_score": 0.0,
+     "de_direction": 0.0,
+     "energy_distance": 4.35566,
+     "mmd_u": 0.13615,
+     "variogram": 0.119284,
+     "d2_shape": 0.06621,
+     "sliced_wasserstein": 0.06388,
+     "occupancy_dice": 0.6753,
+     "scale_log_ratio": -0.5829,
+     "count_log_ratio": -0.9235,
+     "neighborhood_mmd": 0.26611,
+     "pb_rel_err": 0.557,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.778,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.7857,
+     "morans_I_agreement": 0.5176,
+     "_de_raw": 0.0,
+     "_de_chance": 0.4346,
+     "_n_up": 166,
+     "_n_dn": 25,
+     "_sw_flip_spread": 0.01271,
+     "_dice_voxel_over_nn": 4.2
+    },
+    "fgw": {
+     "de_score": 0.6204,
+     "de_direction": 0.8338,
+     "energy_distance": 0.9112,
+     "mmd_u": 0.02671,
+     "variogram": 0.024004,
+     "d2_shape": 0.04095,
+     "sliced_wasserstein": 0.06116,
+     "occupancy_dice": 0.7149,
+     "scale_log_ratio": -0.3773,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.0604,
+     "pb_rel_err": 0.2692,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.978,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9501,
+     "morans_I_agreement": 0.8166,
+     "_de_raw": 0.7853,
+     "_de_chance": 0.4346,
+     "_n_up": 166,
+     "_n_dn": 25,
+     "_sw_flip_spread": 0.00532,
+     "_dice_voxel_over_nn": 6.3
+    },
+    "fgw_trend_render": {
+     "de_score": 0.6204,
+     "de_direction": 0.8275,
+     "energy_distance": 0.94757,
+     "mmd_u": 0.02562,
+     "variogram": 0.023297,
+     "d2_shape": 0.04095,
+     "sliced_wasserstein": 0.06116,
+     "occupancy_dice": 0.7149,
+     "scale_log_ratio": -0.3773,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.05824,
+     "pb_rel_err": 0.2768,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.988,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9432,
+     "morans_I_agreement": 0.8302,
+     "_de_raw": 0.7853,
+     "_de_chance": 0.4346,
+     "_n_up": 166,
+     "_n_dn": 25,
+     "_sw_flip_spread": 0.00532,
+     "_dice_voxel_over_nn": 6.3
+    },
+    "fgw_resid": {
+     "de_score": 0.6019,
+     "de_direction": 0.8511,
+     "energy_distance": 0.87907,
+     "mmd_u": 0.02577,
+     "variogram": 0.023543,
+     "d2_shape": 0.04095,
+     "sliced_wasserstein": 0.06116,
+     "occupancy_dice": 0.7149,
+     "scale_log_ratio": -0.3773,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.05827,
+     "pb_rel_err": 0.2643,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.977,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9523,
+     "morans_I_agreement": 0.8098,
+     "_de_raw": 0.7749,
+     "_de_chance": 0.4346,
+     "_n_up": 166,
+     "_n_dn": 25,
+     "_sw_flip_spread": 0.00532,
+     "_dice_voxel_over_nn": 6.3
+    }
+   },
+   "n_cells": {
+    "floor": 1166,
+    "fgw": 8808,
+    "fgw_trend_render": 8808,
+    "fgw_resid": 8808
+   },
+   "groups": {
+    "floor": {
+     "expression_change": 0.5,
+     "cell_state": 0.5,
+     "shape_growth": 0.5,
+     "local_organisation": 0.5
+    },
+    "fgw": {
+     "expression_change": 0.8057199442314396,
+     "cell_state": 0.8361195508250567,
+     "shape_growth": 0.5925441515430975,
+     "local_organisation": 0.816545102021974
+    },
+    "fgw_trend_render": {
+     "expression_change": 0.8033633001126614,
+     "cell_state": 0.8411759099540775,
+     "shape_growth": 0.5925441515430975,
+     "local_organisation": 0.8220094804349847
+    },
+    "fgw_resid": {
+     "expression_change": 0.8068708427142399,
+     "cell_state": 0.8401217175933975,
+     "shape_growth": 0.5925441515430975,
+     "local_organisation": 0.8219330855018588
+    }
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.9352
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.9907
+    },
+    "mmd_u": {
+     "floor": 0.13615,
+     "ceiling": -9e-05
+    },
+    "variogram": {
+     "floor": 0.119284,
+     "ceiling": 0.000933
+    },
+    "d2_shape": {
+     "floor": 0.06621,
+     "ceiling": 0.00486
+    },
+    "occupancy_dice": {
+     "floor": 0.6753,
+     "ceiling": 0.9375
+    },
+    "scale_log_ratio": {
+     "floor": -0.5829,
+     "ceiling": 0.0005
+    },
+    "neighborhood_mmd": {
+     "floor": 0.26611,
+     "ceiling": 0.00079
+    }
+   },
+   "reads": {
+    "fgw": [],
+    "fgw_trend_render": [],
+    "fgw_resid": []
+   },
+   "seconds": 79.6
+  },
+  {
+   "seed": 4,
+   "build_seed": 1000004,
+   "scores": {
+    "floor": 50.0,
+    "fgw": 77.15704012188044,
+    "fgw_trend_render": 77.22962530574297,
+    "fgw_resid": 77.56176275948137
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5,
+     "d2_shape": 0.5,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.5,
+     "neighborhood_mmd": 0.5
+    },
+    "fgw": {
+     "de_score": 0.7401781453793541,
+     "de_direction": 0.8571676200381348,
+     "mmd_u": 0.8492477740251766,
+     "variogram": 0.8416242651780863,
+     "d2_shape": 0.6922663224696138,
+     "occupancy_dice": 0.5841495992876224,
+     "scale_log_ratio": 0.6096577158003919,
+     "neighborhood_mmd": 0.8127191391609236
+    },
+    "fgw_trend_render": {
+     "de_score": 0.7460521042084168,
+     "de_direction": 0.8407719119272296,
+     "mmd_u": 0.8559757380701863,
+     "variogram": 0.8400828396531442,
+     "d2_shape": 0.6922663224696138,
+     "occupancy_dice": 0.5841495992876224,
+     "scale_log_ratio": 0.6096577158003919,
+     "neighborhood_mmd": 0.8174632129393166
+    },
+    "fgw_resid": {
+     "de_score": 0.7460521042084168,
+     "de_direction": 0.8664038545773106,
+     "mmd_u": 0.8558697939228912,
+     "variogram": 0.8437738785906326,
+     "d2_shape": 0.6922663224696138,
+     "occupancy_dice": 0.5841495992876224,
+     "scale_log_ratio": 0.6096577158003919,
+     "neighborhood_mmd": 0.816519890677194
+    }
+   },
+   "metrics": {
+    "floor": {
+     "de_score": 0.0,
+     "de_direction": 0.0,
+     "energy_distance": 4.39878,
+     "mmd_u": 0.13857,
+     "variogram": 0.120283,
+     "d2_shape": 0.06907,
+     "sliced_wasserstein": 0.0651,
+     "occupancy_dice": 0.6544,
+     "scale_log_ratio": -0.5541,
+     "count_log_ratio": -0.9235,
+     "neighborhood_mmd": 0.27026,
+     "pb_rel_err": 0.5528,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.774,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.7919,
+     "morans_I_agreement": 0.5725,
+     "_de_raw": 0.0,
+     "_de_chance": 0.4511,
+     "_n_up": 162,
+     "_n_dn": 22,
+     "_sw_flip_spread": 0.01131,
+     "_dice_voxel_over_nn": 4.3
+    },
+    "fgw": {
+     "de_score": 0.604,
+     "de_direction": 0.8242,
+     "energy_distance": 0.89926,
+     "mmd_u": 0.02482,
+     "variogram": 0.023466,
+     "d2_shape": 0.03332,
+     "sliced_wasserstein": 0.05514,
+     "occupancy_dice": 0.73,
+     "scale_log_ratio": -0.3638,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06334,
+     "pb_rel_err": 0.266,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.979,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9523,
+     "morans_I_agreement": 0.805,
+     "_de_raw": 0.7826,
+     "_de_chance": 0.4511,
+     "_n_up": 162,
+     "_n_dn": 22,
+     "_sw_flip_spread": 0.0152,
+     "_dice_voxel_over_nn": 6.2
+    },
+    "fgw_trend_render": {
+     "de_score": 0.6139,
+     "de_direction": 0.8017,
+     "energy_distance": 0.97033,
+     "mmd_u": 0.02354,
+     "variogram": 0.023726,
+     "d2_shape": 0.03332,
+     "sliced_wasserstein": 0.05514,
+     "occupancy_dice": 0.73,
+     "scale_log_ratio": -0.3638,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06142,
+     "pb_rel_err": 0.2724,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.989,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9456,
+     "morans_I_agreement": 0.8156,
+     "_de_raw": 0.788,
+     "_de_chance": 0.4511,
+     "_n_up": 162,
+     "_n_dn": 22,
+     "_sw_flip_spread": 0.0152,
+     "_dice_voxel_over_nn": 6.2
+    },
+    "fgw_resid": {
+     "de_score": 0.6139,
+     "de_direction": 0.8365,
+     "energy_distance": 0.87651,
+     "mmd_u": 0.02356,
+     "variogram": 0.023105,
+     "d2_shape": 0.03332,
+     "sliced_wasserstein": 0.05514,
+     "occupancy_dice": 0.73,
+     "scale_log_ratio": -0.3638,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.0618,
+     "pb_rel_err": 0.2609,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.978,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9544,
+     "morans_I_agreement": 0.7969,
+     "_de_raw": 0.788,
+     "_de_chance": 0.4511,
+     "_n_up": 162,
+     "_n_dn": 22,
+     "_sw_flip_spread": 0.0152,
+     "_dice_voxel_over_nn": 6.2
+    }
+   },
+   "n_cells": {
+    "floor": 1166,
+    "fgw": 8808,
+    "fgw_trend_render": 8808,
+    "fgw_resid": 8808
+   },
+   "groups": {
+    "floor": {
+     "expression_change": 0.5,
+     "cell_state": 0.5,
+     "shape_growth": 0.5,
+     "local_organisation": 0.5
+    },
+    "fgw": {
+     "expression_change": 0.7986728827087445,
+     "cell_state": 0.8461983704863405,
+     "shape_growth": 0.6286912125192093,
+     "local_organisation": 0.8127191391609236
+    },
+    "fgw_trend_render": {
+     "expression_change": 0.7934120080678232,
+     "cell_state": 0.8496185787033695,
+     "shape_growth": 0.6286912125192093,
+     "local_organisation": 0.8174632129393166
+    },
+    "fgw_resid": {
+     "expression_change": 0.8062279793928637,
+     "cell_state": 0.8510314277899877,
+     "shape_growth": 0.6286912125192093,
+     "local_organisation": 0.816519890677194
+    }
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.9307
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.989
+    },
+    "mmd_u": {
+     "floor": 0.13857,
+     "ceiling": 0.00027
+    },
+    "variogram": {
+     "floor": 0.120283,
+     "ceiling": 0.001024
+    },
+    "d2_shape": {
+     "floor": 0.06907,
+     "ceiling": 0.00471
+    },
+    "occupancy_dice": {
+     "floor": 0.6544,
+     "ceiling": 0.9168
+    },
+    "scale_log_ratio": {
+     "floor": -0.5541,
+     "ceiling": 0.0251
+    },
+    "neighborhood_mmd": {
+     "floor": 0.27026,
+     "ceiling": 0.00138
+    }
+   },
+   "reads": {
+    "fgw": [],
+    "fgw_trend_render": [],
+    "fgw_resid": []
+   },
+   "seconds": 65.6
+  },
+  {
+   "seed": 5,
+   "build_seed": 1000005,
+   "scores": {
+    "floor": 50.0,
+    "fgw": 75.72432458759903,
+    "fgw_trend_render": 75.74226799481764,
+    "fgw_resid": 75.9405225575423
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5,
+     "d2_shape": 0.5,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.5,
+     "neighborhood_mmd": 0.5
+    },
+    "fgw": {
+     "de_score": 0.7461599999999999,
+     "de_direction": 0.8541001983271537,
+     "mmd_u": 0.8327624174210912,
+     "variogram": 0.8212858804574781,
+     "d2_shape": 0.6655352986811481,
+     "occupancy_dice": 0.5396322130627774,
+     "scale_log_ratio": 0.6045606830217227,
+     "neighborhood_mmd": 0.797428350116189
+    },
+    "fgw_trend_render": {
+     "de_score": 0.7348723605420736,
+     "de_direction": 0.84708800136834,
+     "mmd_u": 0.8417212810683813,
+     "variogram": 0.8226469438856001,
+     "d2_shape": 0.6655352986811481,
+     "occupancy_dice": 0.5396322130627774,
+     "scale_log_ratio": 0.6045606830217227,
+     "neighborhood_mmd": 0.8013762610536803
+    },
+    "fgw_resid": {
+     "de_score": 0.7404731660844713,
+     "de_direction": 0.860705596107056,
+     "mmd_u": 0.8370634530250861,
+     "variogram": 0.8245624215695518,
+     "d2_shape": 0.6655352986811481,
+     "occupancy_dice": 0.5396322130627774,
+     "scale_log_ratio": 0.6045606830217227,
+     "neighborhood_mmd": 0.8017257491745063
+    }
+   },
+   "metrics": {
+    "floor": {
+     "de_score": 0.0,
+     "de_direction": 0.0,
+     "energy_distance": 4.25356,
+     "mmd_u": 0.13635,
+     "variogram": 0.114506,
+     "d2_shape": 0.07244,
+     "sliced_wasserstein": 0.06157,
+     "occupancy_dice": 0.6739,
+     "scale_log_ratio": -0.5718,
+     "count_log_ratio": -0.9235,
+     "neighborhood_mmd": 0.25858,
+     "pb_rel_err": 0.5518,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.775,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.7914,
+     "morans_I_agreement": 0.4945,
+     "_de_raw": 0.0,
+     "_de_chance": 0.4497,
+     "_n_up": 166,
+     "_n_dn": 23,
+     "_sw_flip_spread": 0.01952,
+     "_dice_voxel_over_nn": 4.4
+    },
+    "fgw": {
+     "de_score": 0.6154,
+     "de_direction": 0.8213,
+     "energy_distance": 0.97072,
+     "mmd_u": 0.02755,
+     "variogram": 0.025567,
+     "d2_shape": 0.0383,
+     "sliced_wasserstein": 0.05615,
+     "occupancy_dice": 0.7114,
+     "scale_log_ratio": -0.3783,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06659,
+     "pb_rel_err": 0.2728,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.98,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9491,
+     "morans_I_agreement": 0.8089,
+     "_de_raw": 0.7884,
+     "_de_chance": 0.4497,
+     "_n_up": 166,
+     "_n_dn": 23,
+     "_sw_flip_spread": 0.0085,
+     "_dice_voxel_over_nn": 6.3
+    },
+    "fgw_trend_render": {
+     "de_score": 0.5962,
+     "de_direction": 0.8117,
+     "energy_distance": 1.03002,
+     "mmd_u": 0.02581,
+     "variogram": 0.025338,
+     "d2_shape": 0.0383,
+     "sliced_wasserstein": 0.05615,
+     "occupancy_dice": 0.7114,
+     "scale_log_ratio": -0.3783,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.065,
+     "pb_rel_err": 0.2817,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.99,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9414,
+     "morans_I_agreement": 0.8224,
+     "_de_raw": 0.7778,
+     "_de_chance": 0.4497,
+     "_n_up": 166,
+     "_n_dn": 23,
+     "_sw_flip_spread": 0.0085,
+     "_dice_voxel_over_nn": 6.3
+    },
+    "fgw_resid": {
+     "de_score": 0.6058,
+     "de_direction": 0.8302,
+     "energy_distance": 0.93412,
+     "mmd_u": 0.02671,
+     "variogram": 0.025017,
+     "d2_shape": 0.0383,
+     "sliced_wasserstein": 0.05615,
+     "occupancy_dice": 0.7114,
+     "scale_log_ratio": -0.3783,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06486,
+     "pb_rel_err": 0.2678,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.979,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9513,
+     "morans_I_agreement": 0.8016,
+     "_de_raw": 0.7831,
+     "_de_chance": 0.4497,
+     "_n_up": 166,
+     "_n_dn": 23,
+     "_sw_flip_spread": 0.0085,
+     "_dice_voxel_over_nn": 6.3
+    }
+   },
+   "n_cells": {
+    "floor": 1166,
+    "fgw": 8808,
+    "fgw_trend_render": 8808,
+    "fgw_resid": 8808
+   },
+   "groups": {
+    "floor": {
+     "expression_change": 0.5,
+     "cell_state": 0.5,
+     "shape_growth": 0.5,
+     "local_organisation": 0.5
+    },
+    "fgw": {
+     "expression_change": 0.8001300991635768,
+     "cell_state": 0.8281718026356459,
+     "shape_growth": 0.6032427315885494,
+     "local_organisation": 0.797428350116189
+    },
+    "fgw_trend_render": {
+     "expression_change": 0.7909801809552068,
+     "cell_state": 0.8340915461952688,
+     "shape_growth": 0.6032427315885494,
+     "local_organisation": 0.8013762610536803
+    },
+    "fgw_resid": {
+     "expression_change": 0.8005893810957636,
+     "cell_state": 0.8320630404428724,
+     "shape_growth": 0.6032427315885494,
+     "local_organisation": 0.8017257491745063
+    }
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.9327
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.9905
+    },
+    "mmd_u": {
+     "floor": 0.13635,
+     "ceiling": 0.00021
+    },
+    "variogram": {
+     "floor": 0.114506,
+     "ceiling": 0.000831
+    },
+    "d2_shape": {
+     "floor": 0.07244,
+     "ceiling": 0.00381
+    },
+    "occupancy_dice": {
+     "floor": 0.6739,
+     "ceiling": 0.9292
+    },
+    "scale_log_ratio": {
+     "floor": -0.5718,
+     "ceiling": -0.0124
+    },
+    "neighborhood_mmd": {
+     "floor": 0.25858,
+     "ceiling": 0.00121
+    }
+   },
+   "reads": {
+    "fgw": [],
+    "fgw_trend_render": [],
+    "fgw_resid": []
+   },
+   "seconds": 67.9
+  },
+  {
+   "seed": 6,
+   "build_seed": 1000006,
+   "scores": {
+    "floor": 50.0,
+    "fgw": 75.19958683635055,
+    "fgw_trend_render": 75.2697313002603,
+    "fgw_resid": 75.5430197866611
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5,
+     "d2_shape": 0.5,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.5,
+     "neighborhood_mmd": 0.5
+    },
+    "fgw": {
+     "de_score": 0.7348419820522826,
+     "de_direction": 0.8597281149883107,
+     "mmd_u": 0.8344260340922637,
+     "variogram": 0.8223369889787719,
+     "d2_shape": 0.6296850172913356,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.6021336680263571,
+     "neighborhood_mmd": 0.8038351137809605
+    },
+    "fgw_trend_render": {
+     "de_score": 0.72932156133829,
+     "de_direction": 0.8488501325126101,
+     "mmd_u": 0.8417002344736368,
+     "variogram": 0.8237793519790065,
+     "d2_shape": 0.6296850172913356,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.6021336680263571,
+     "neighborhood_mmd": 0.8098986285032796
+    },
+    "fgw_resid": {
+     "de_score": 0.72932156133829,
+     "de_direction": 0.8707357712882576,
+     "mmd_u": 0.8395802098950526,
+     "variogram": 0.8257835447092418,
+     "d2_shape": 0.6296850172913356,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.6021336680263571,
+     "neighborhood_mmd": 0.8103576862265445
+    }
+   },
+   "metrics": {
+    "floor": {
+     "de_score": 0.0,
+     "de_direction": 0.0,
+     "energy_distance": 4.44263,
+     "mmd_u": 0.1403,
+     "variogram": 0.121956,
+     "d2_shape": 0.07159,
+     "sliced_wasserstein": 0.06428,
+     "occupancy_dice": 0.6984,
+     "scale_log_ratio": -0.5778,
+     "count_log_ratio": -0.9235,
+     "neighborhood_mmd": 0.27271,
+     "pb_rel_err": 0.5583,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.764,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.7887,
+     "morans_I_agreement": 0.4962,
+     "_de_raw": 0.0,
+     "_de_chance": 0.4798,
+     "_n_up": 175,
+     "_n_dn": 23,
+     "_sw_flip_spread": 0.01447,
+     "_dice_voxel_over_nn": 4.3
+    },
+    "fgw": {
+     "de_score": 0.6019,
+     "de_direction": 0.8309,
+     "energy_distance": 0.9847,
+     "mmd_u": 0.02808,
+     "variogram": 0.026962,
+     "d2_shape": 0.04384,
+     "sliced_wasserstein": 0.06483,
+     "occupancy_dice": 0.6984,
+     "scale_log_ratio": -0.3825,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06736,
+     "pb_rel_err": 0.2755,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.979,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9484,
+     "morans_I_agreement": 0.8286,
+     "_de_raw": 0.7929,
+     "_de_chance": 0.4798,
+     "_n_up": 175,
+     "_n_dn": 23,
+     "_sw_flip_spread": 0.00598,
+     "_dice_voxel_over_nn": 6.2
+    },
+    "fgw_trend_render": {
+     "de_score": 0.5922,
+     "de_direction": 0.8161,
+     "energy_distance": 1.03786,
+     "mmd_u": 0.02663,
+     "variogram": 0.026704,
+     "d2_shape": 0.04384,
+     "sliced_wasserstein": 0.06483,
+     "occupancy_dice": 0.6984,
+     "scale_log_ratio": -0.3825,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06483,
+     "pb_rel_err": 0.2828,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.989,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9412,
+     "morans_I_agreement": 0.8417,
+     "_de_raw": 0.7879,
+     "_de_chance": 0.4798,
+     "_n_up": 175,
+     "_n_dn": 23,
+     "_sw_flip_spread": 0.00598,
+     "_dice_voxel_over_nn": 6.2
+    },
+    "fgw_resid": {
+     "de_score": 0.5922,
+     "de_direction": 0.8455,
+     "energy_distance": 0.94804,
+     "mmd_u": 0.02705,
+     "variogram": 0.026347,
+     "d2_shape": 0.04384,
+     "sliced_wasserstein": 0.06483,
+     "occupancy_dice": 0.6984,
+     "scale_log_ratio": -0.3825,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06464,
+     "pb_rel_err": 0.27,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.978,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9508,
+     "morans_I_agreement": 0.8196,
+     "_de_raw": 0.7879,
+     "_de_chance": 0.4798,
+     "_n_up": 175,
+     "_n_dn": 23,
+     "_sw_flip_spread": 0.00598,
+     "_dice_voxel_over_nn": 6.2
+    }
+   },
+   "n_cells": {
+    "floor": 1166,
+    "fgw": 8808,
+    "fgw_trend_render": 8808,
+    "fgw_resid": 8808
+   },
+   "groups": {
+    "floor": {
+     "expression_change": 0.5,
+     "cell_state": 0.5,
+     "shape_growth": 0.5,
+     "local_organisation": 0.5
+    },
+    "fgw": {
+     "expression_change": 0.7972850485202967,
+     "cell_state": 0.829590416046867,
+     "shape_growth": 0.5772728951058976,
+     "local_organisation": 0.8038351137809605
+    },
+    "fgw_trend_render": {
+     "expression_change": 0.78908584692545,
+     "cell_state": 0.8345318814757847,
+     "shape_growth": 0.5772728951058976,
+     "local_organisation": 0.8098986285032796
+    },
+    "fgw_resid": {
+     "expression_change": 0.8000286663132739,
+     "cell_state": 0.8340615438207283,
+     "shape_growth": 0.5772728951058976,
+     "local_organisation": 0.8103576862265445
+    }
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.9417
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.9929
+    },
+    "mmd_u": {
+     "floor": 0.1403,
+     "ceiling": 0.0003
+    },
+    "variogram": {
+     "floor": 0.121956,
+     "ceiling": 0.000783
+    },
+    "d2_shape": {
+     "floor": 0.07159,
+     "ceiling": 0.00422
+    },
+    "occupancy_dice": {
+     "floor": 0.6984,
+     "ceiling": 0.9191
+    },
+    "scale_log_ratio": {
+     "floor": -0.5778,
+     "ceiling": -0.0021
+    },
+    "neighborhood_mmd": {
+     "floor": 0.27271,
+     "ceiling": 0.00107
+    }
+   },
+   "reads": {
+    "fgw": [],
+    "fgw_trend_render": [],
+    "fgw_resid": []
+   },
+   "seconds": 86.1
+  },
+  {
+   "seed": 7,
+   "build_seed": 1000007,
+   "scores": {
+    "floor": 50.0,
+    "fgw": 76.23336695334338,
+    "fgw_trend_render": 76.49809471997348,
+    "fgw_resid": 76.58013561908201
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5,
+     "d2_shape": 0.5,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.5,
+     "neighborhood_mmd": 0.5
+    },
+    "fgw": {
+     "de_score": 0.7238834652932585,
+     "de_direction": 0.8533011549732804,
+     "mmd_u": 0.8384086150164523,
+     "variogram": 0.8250356912913249,
+     "d2_shape": 0.6687487406810397,
+     "occupancy_dice": 0.5727196300966794,
+     "scale_log_ratio": 0.6079281183932347,
+     "neighborhood_mmd": 0.811217426083746
+    },
+    "fgw_trend_render": {
+     "de_score": 0.7238834652932585,
+     "de_direction": 0.8511735878256383,
+     "mmd_u": 0.8462049393152588,
+     "variogram": 0.8274504298999825,
+     "d2_shape": 0.6687487406810397,
+     "occupancy_dice": 0.5727196300966794,
+     "scale_log_ratio": 0.6079281183932347,
+     "neighborhood_mmd": 0.8172266303000247
+    },
+    "fgw_resid": {
+     "de_score": 0.7185258660155653,
+     "de_direction": 0.8682687247851253,
+     "mmd_u": 0.845031355523396,
+     "variogram": 0.8276072672132989,
+     "d2_shape": 0.6687487406810397,
+     "occupancy_dice": 0.5727196300966794,
+     "scale_log_ratio": 0.6079281183932347,
+     "neighborhood_mmd": 0.8152809127732599
+    }
+   },
+   "metrics": {
+    "floor": {
+     "de_score": 0.0,
+     "de_direction": 0.0,
+     "energy_distance": 4.35439,
+     "mmd_u": 0.14028,
+     "variogram": 0.118655,
+     "d2_shape": 0.07333,
+     "sliced_wasserstein": 0.06208,
+     "occupancy_dice": 0.6684,
+     "scale_log_ratio": -0.5808,
+     "count_log_ratio": -0.9235,
+     "neighborhood_mmd": 0.26501,
+     "pb_rel_err": 0.5557,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.763,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.7919,
+     "morans_I_agreement": 0.5267,
+     "_de_raw": 0.0,
+     "_de_chance": 0.4635,
+     "_n_up": 170,
+     "_n_dn": 22,
+     "_sw_flip_spread": 0.02118,
+     "_dice_voxel_over_nn": 4.2
+    },
+    "fgw": {
+     "de_score": 0.5825,
+     "de_direction": 0.8198,
+     "energy_distance": 0.9601,
+     "mmd_u": 0.02715,
+     "variogram": 0.025765,
+     "d2_shape": 0.03983,
+     "sliced_wasserstein": 0.06475,
+     "occupancy_dice": 0.7376,
+     "scale_log_ratio": -0.3766,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.0627,
+     "pb_rel_err": 0.2678,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.978,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9506,
+     "morans_I_agreement": 0.8202,
+     "_de_raw": 0.776,
+     "_de_chance": 0.4635,
+     "_n_up": 170,
+     "_n_dn": 22,
+     "_sw_flip_spread": 0.00447,
+     "_dice_voxel_over_nn": 6.3
+    },
+    "fgw_trend_render": {
+     "de_score": 0.5825,
+     "de_direction": 0.8169,
+     "energy_distance": 0.99899,
+     "mmd_u": 0.02561,
+     "variogram": 0.025348,
+     "d2_shape": 0.03983,
+     "sliced_wasserstein": 0.06475,
+     "occupancy_dice": 0.7376,
+     "scale_log_ratio": -0.3766,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06031,
+     "pb_rel_err": 0.2751,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.988,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9438,
+     "morans_I_agreement": 0.8292,
+     "_de_raw": 0.776,
+     "_de_chance": 0.4635,
+     "_n_up": 170,
+     "_n_dn": 22,
+     "_sw_flip_spread": 0.00447,
+     "_dice_voxel_over_nn": 6.3
+    },
+    "fgw_resid": {
+     "de_score": 0.5728,
+     "de_direction": 0.8398,
+     "energy_distance": 0.92896,
+     "mmd_u": 0.02584,
+     "variogram": 0.025321,
+     "d2_shape": 0.03983,
+     "sliced_wasserstein": 0.06475,
+     "occupancy_dice": 0.7376,
+     "scale_log_ratio": -0.3766,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06108,
+     "pb_rel_err": 0.2631,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.977,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9526,
+     "morans_I_agreement": 0.8129,
+     "_de_raw": 0.7708,
+     "_de_chance": 0.4635,
+     "_n_up": 170,
+     "_n_dn": 22,
+     "_sw_flip_spread": 0.00447,
+     "_dice_voxel_over_nn": 6.3
+    }
+   },
+   "n_cells": {
+    "floor": 1166,
+    "fgw": 8808,
+    "fgw_trend_render": 8808,
+    "fgw_resid": 8808
+   },
+   "groups": {
+    "floor": {
+     "expression_change": 0.5,
+     "cell_state": 0.5,
+     "shape_growth": 0.5,
+     "local_organisation": 0.5
+    },
+    "fgw": {
+     "expression_change": 0.7885923101332695,
+     "cell_state": 0.8330594455264013,
+     "shape_growth": 0.6164654963903179,
+     "local_organisation": 0.811217426083746
+    },
+    "fgw_trend_render": {
+     "expression_change": 0.7875285265594485,
+     "cell_state": 0.8387031355491483,
+     "shape_growth": 0.6164654963903179,
+     "local_organisation": 0.8172266303000247
+    },
+    "fgw_resid": {
+     "expression_change": 0.7933972954003453,
+     "cell_state": 0.8380617201993572,
+     "shape_growth": 0.6164654963903179,
+     "local_organisation": 0.8152809127732599
+    }
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.9417
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.99
+    },
+    "mmd_u": {
+     "floor": 0.14028,
+     "ceiling": 0.00014
+    },
+    "variogram": {
+     "floor": 0.118655,
+     "ceiling": 0.000764
+    },
+    "d2_shape": {
+     "floor": 0.07333,
+     "ceiling": 0.00695
+    },
+    "occupancy_dice": {
+     "floor": 0.6684,
+     "ceiling": 0.9409
+    },
+    "scale_log_ratio": {
+     "floor": -0.5808,
+     "ceiling": 0.0057
+    },
+    "neighborhood_mmd": {
+     "floor": 0.26501,
+     "ceiling": 0.00134
+    }
+   },
+   "reads": {
+    "fgw": [],
+    "fgw_trend_render": [],
+    "fgw_resid": []
+   },
+   "seconds": 102.8
+  },
+  {
+   "seed": 8,
+   "build_seed": 1000008,
+   "scores": {
+    "floor": 50.0,
+    "fgw": 75.91945473017901,
+    "fgw_trend_render": 76.3832801062047,
+    "fgw_resid": 76.22850880831227
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5,
+     "d2_shape": 0.5,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.5,
+     "neighborhood_mmd": 0.5
+    },
+    "fgw": {
+     "de_score": 0.7132469893206089,
+     "de_direction": 0.8611861011930682,
+     "mmd_u": 0.8409568261376896,
+     "variogram": 0.8157845611366542,
+     "d2_shape": 0.6612495134293499,
+     "occupancy_dice": 0.6011294708220037,
+     "scale_log_ratio": 0.6073632687805917,
+     "neighborhood_mmd": 0.7954263061357316
+    },
+    "fgw_trend_render": {
+     "de_score": 0.72932156133829,
+     "de_direction": 0.8506666666666666,
+     "mmd_u": 0.8535559898146503,
+     "variogram": 0.8186372119807674,
+     "d2_shape": 0.6612495134293499,
+     "occupancy_dice": 0.6011294708220037,
+     "scale_log_ratio": 0.6073632687805917,
+     "neighborhood_mmd": 0.802501193887297
+    },
+    "fgw_resid": {
+     "de_score": 0.7132469893206089,
+     "de_direction": 0.866468062735477,
+     "mmd_u": 0.8460409696542819,
+     "variogram": 0.8203275998720748,
+     "d2_shape": 0.6612495134293499,
+     "occupancy_dice": 0.6011294708220037,
+     "scale_log_ratio": 0.6073632687805917,
+     "neighborhood_mmd": 0.8002797868857339
+    }
+   },
+   "metrics": {
+    "floor": {
+     "de_score": 0.0,
+     "de_direction": 0.0,
+     "energy_distance": 4.42529,
+     "mmd_u": 0.14408,
+     "variogram": 0.118851,
+     "d2_shape": 0.07147,
+     "sliced_wasserstein": 0.07123,
+     "occupancy_dice": 0.6577,
+     "scale_log_ratio": -0.5772,
+     "count_log_ratio": -0.9235,
+     "neighborhood_mmd": 0.26984,
+     "pb_rel_err": 0.5589,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.763,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.7869,
+     "morans_I_agreement": 0.5404,
+     "_de_raw": 0.0,
+     "_de_chance": 0.4663,
+     "_n_up": 171,
+     "_n_dn": 22,
+     "_sw_flip_spread": 0.00757,
+     "_dice_voxel_over_nn": 4.2
+    },
+    "fgw": {
+     "de_score": 0.5631,
+     "de_direction": 0.8295,
+     "energy_distance": 1.02375,
+     "mmd_u": 0.0272,
+     "variogram": 0.027504,
+     "d2_shape": 0.03833,
+     "sliced_wasserstein": 0.05515,
+     "occupancy_dice": 0.7544,
+     "scale_log_ratio": -0.3754,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.07012,
+     "pb_rel_err": 0.2743,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.976,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9492,
+     "morans_I_agreement": 0.8455,
+     "_de_raw": 0.7668,
+     "_de_chance": 0.4663,
+     "_n_up": 171,
+     "_n_dn": 22,
+     "_sw_flip_spread": 0.01123,
+     "_dice_voxel_over_nn": 6.2
+    },
+    "fgw_trend_render": {
+     "de_score": 0.5922,
+     "de_direction": 0.8153,
+     "energy_distance": 1.06879,
+     "mmd_u": 0.02467,
+     "variogram": 0.027,
+     "d2_shape": 0.03833,
+     "sliced_wasserstein": 0.05515,
+     "occupancy_dice": 0.7544,
+     "scale_log_ratio": -0.3754,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06714,
+     "pb_rel_err": 0.281,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.986,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9423,
+     "morans_I_agreement": 0.8541,
+     "_de_raw": 0.7824,
+     "_de_chance": 0.4663,
+     "_n_up": 171,
+     "_n_dn": 22,
+     "_sw_flip_spread": 0.01123,
+     "_dice_voxel_over_nn": 6.2
+    },
+    "fgw_resid": {
+     "de_score": 0.5631,
+     "de_direction": 0.8365,
+     "energy_distance": 0.97958,
+     "mmd_u": 0.02617,
+     "variogram": 0.026703,
+     "d2_shape": 0.03833,
+     "sliced_wasserstein": 0.05515,
+     "occupancy_dice": 0.7544,
+     "scale_log_ratio": -0.3754,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06807,
+     "pb_rel_err": 0.2689,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.975,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9516,
+     "morans_I_agreement": 0.8382,
+     "_de_raw": 0.7668,
+     "_de_chance": 0.4663,
+     "_n_up": 171,
+     "_n_dn": 22,
+     "_sw_flip_spread": 0.01123,
+     "_dice_voxel_over_nn": 6.2
+    }
+   },
+   "n_cells": {
+    "floor": 1166,
+    "fgw": 8808,
+    "fgw_trend_render": 8808,
+    "fgw_resid": 8808
+   },
+   "groups": {
+    "floor": {
+     "expression_change": 0.5,
+     "cell_state": 0.5,
+     "shape_growth": 0.5,
+     "local_organisation": 0.5
+    },
+    "fgw": {
+     "expression_change": 0.7872165452568385,
+     "cell_state": 0.8308879201372755,
+     "shape_growth": 0.6232474176773151,
+     "local_organisation": 0.7954263061357316
+    },
+    "fgw_trend_render": {
+     "expression_change": 0.7899941140024782,
+     "cell_state": 0.8395884786810972,
+     "shape_growth": 0.6232474176773151,
+     "local_organisation": 0.802501193887297
+    },
+    "fgw_resid": {
+     "expression_change": 0.7898575260280429,
+     "cell_state": 0.8357556217413991,
+     "shape_growth": 0.6232474176773151,
+     "local_organisation": 0.8002797868857339
+    }
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.9417
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.9889
+    },
+    "mmd_u": {
+     "floor": 0.14408,
+     "ceiling": -6e-05
+    },
+    "variogram": {
+     "floor": 0.118851,
+     "ceiling": 0.00086
+    },
+    "d2_shape": {
+     "floor": 0.07147,
+     "ceiling": 0.00352
+    },
+    "occupancy_dice": {
+     "floor": 0.6577,
+     "ceiling": 0.9451
+    },
+    "scale_log_ratio": {
+     "floor": -0.5772,
+     "ceiling": -0.0064
+    },
+    "neighborhood_mmd": {
+     "floor": 0.26984,
+     "ceiling": 0.00097
+    }
+   },
+   "reads": {
+    "fgw": [],
+    "fgw_trend_render": [],
+    "fgw_resid": []
+   },
+   "seconds": 87.5
+  },
+  {
+   "seed": 9,
+   "build_seed": 1000009,
+   "scores": {
+    "floor": 50.0,
+    "fgw": 76.17471409834663,
+    "fgw_trend_render": 76.23747624488509,
+    "fgw_resid": 76.21637636386696
+   },
+   "skills": {
+    "floor": {
+     "de_score": 0.5,
+     "de_direction": 0.5,
+     "mmd_u": 0.5,
+     "variogram": 0.5,
+     "d2_shape": 0.5,
+     "occupancy_dice": 0.5,
+     "scale_log_ratio": 0.5,
+     "neighborhood_mmd": 0.5
+    },
+    "fgw": {
+     "de_score": 0.746274448928904,
+     "de_direction": 0.8662587412587411,
+     "mmd_u": 0.8344212228277141,
+     "variogram": 0.8333701140201291,
+     "d2_shape": 0.6626436781609195,
+     "occupancy_dice": 0.5253029223093371,
+     "scale_log_ratio": 0.6067785082747676,
+     "neighborhood_mmd": 0.8084794866203546
+    },
+    "fgw_trend_render": {
+     "de_score": 0.7353166105842766,
+     "de_direction": 0.8568217188310565,
+     "mmd_u": 0.8435645961980869,
+     "variogram": 0.8374133980230222,
+     "d2_shape": 0.6626436781609195,
+     "occupancy_dice": 0.5253029223093371,
+     "scale_log_ratio": 0.6067785082747676,
+     "neighborhood_mmd": 0.8140840652446676
+    },
+    "fgw_resid": {
+     "de_score": 0.729957485575463,
+     "de_direction": 0.8729739252995067,
+     "mmd_u": 0.8379337302303205,
+     "variogram": 0.836558923237002,
+     "d2_shape": 0.6626436781609195,
+     "occupancy_dice": 0.5253029223093371,
+     "scale_log_ratio": 0.6067785082747676,
+     "neighborhood_mmd": 0.8115638387691924
+    }
+   },
+   "metrics": {
+    "floor": {
+     "de_score": 0.0,
+     "de_direction": 0.0,
+     "energy_distance": 4.52883,
+     "mmd_u": 0.13951,
+     "variogram": 0.125438,
+     "d2_shape": 0.07147,
+     "sliced_wasserstein": 0.06432,
+     "occupancy_dice": 0.712,
+     "scale_log_ratio": -0.5532,
+     "count_log_ratio": -0.9235,
+     "neighborhood_mmd": 0.26062,
+     "pb_rel_err": 0.5569,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.76,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.7917,
+     "morans_I_agreement": 0.5334,
+     "_de_raw": 0.0,
+     "_de_chance": 0.4667,
+     "_n_up": 174,
+     "_n_dn": 21,
+     "_sw_flip_spread": 0.00758,
+     "_dice_voxel_over_nn": 4.3
+    },
+    "fgw": {
+     "de_score": 0.6346,
+     "de_direction": 0.838,
+     "energy_distance": 0.9476,
+     "mmd_u": 0.02782,
+     "variogram": 0.025737,
+     "d2_shape": 0.03751,
+     "sliced_wasserstein": 0.05912,
+     "occupancy_dice": 0.7333,
+     "scale_log_ratio": -0.3648,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06257,
+     "pb_rel_err": 0.2663,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.978,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9527,
+     "morans_I_agreement": 0.8196,
+     "_de_raw": 0.8051,
+     "_de_chance": 0.4667,
+     "_n_up": 174,
+     "_n_dn": 21,
+     "_sw_flip_spread": 0.01366,
+     "_dice_voxel_over_nn": 6.2
+    },
+    "fgw_trend_render": {
+     "de_score": 0.6154,
+     "de_direction": 0.8254,
+     "energy_distance": 0.97799,
+     "mmd_u": 0.02601,
+     "variogram": 0.025015,
+     "d2_shape": 0.03751,
+     "sliced_wasserstein": 0.05912,
+     "occupancy_dice": 0.7333,
+     "scale_log_ratio": -0.3648,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06036,
+     "pb_rel_err": 0.2724,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.987,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9461,
+     "morans_I_agreement": 0.8326,
+     "_de_raw": 0.7949,
+     "_de_chance": 0.4667,
+     "_n_up": 174,
+     "_n_dn": 21,
+     "_sw_flip_spread": 0.01366,
+     "_dice_voxel_over_nn": 6.2
+    },
+    "fgw_resid": {
+     "de_score": 0.6058,
+     "de_direction": 0.8468,
+     "energy_distance": 0.91582,
+     "mmd_u": 0.02712,
+     "variogram": 0.025167,
+     "d2_shape": 0.03751,
+     "sliced_wasserstein": 0.05912,
+     "occupancy_dice": 0.7333,
+     "scale_log_ratio": -0.3648,
+     "count_log_ratio": 1.0986,
+     "neighborhood_mmd": 0.06135,
+     "pb_rel_err": 0.2616,
+     "library_size_ratio": 1.0,
+     "variance_ratio": 0.977,
+     "composition_JSD": null,
+     "pseudobulk_pearson": 0.9547,
+     "morans_I_agreement": 0.8125,
+     "_de_raw": 0.7897,
+     "_de_chance": 0.4667,
+     "_n_up": 174,
+     "_n_dn": 21,
+     "_sw_flip_spread": 0.01366,
+     "_dice_voxel_over_nn": 6.2
+    }
+   },
+   "n_cells": {
+    "floor": 1166,
+    "fgw": 8808,
+    "fgw_trend_render": 8808,
+    "fgw_resid": 8808
+   },
+   "groups": {
+    "floor": {
+     "expression_change": 0.5,
+     "cell_state": 0.5,
+     "shape_growth": 0.5,
+     "local_organisation": 0.5
+    },
+    "fgw": {
+     "expression_change": 0.8062665950938226,
+     "cell_state": 0.8340007793046801,
+     "shape_growth": 0.598241702915008,
+     "local_organisation": 0.8084794866203546
+    },
+    "fgw_trend_render": {
+     "expression_change": 0.7960691647076665,
+     "cell_state": 0.841104116928061,
+     "shape_growth": 0.598241702915008,
+     "local_organisation": 0.8140840652446676
+    },
+    "fgw_resid": {
+     "expression_change": 0.8014657054374849,
+     "cell_state": 0.8373838074329931,
+     "shape_growth": 0.598241702915008,
+     "local_organisation": 0.8115638387691924
+    }
+   },
+   "anchors": {
+    "de_score": {
+     "floor": 0.0,
+     "ceiling": 0.9615
+    },
+    "de_direction": {
+     "floor": 0.0,
+     "ceiling": 0.991
+    },
+    "mmd_u": {
+     "floor": 0.13951,
+     "ceiling": 0.00017
+    },
+    "variogram": {
+     "floor": 0.125438,
+     "ceiling": 0.00082
+    },
+    "d2_shape": {
+     "floor": 0.07147,
+     "ceiling": 0.00229
+    },
+    "occupancy_dice": {
+     "floor": 0.712,
+     "ceiling": 0.9331
+    },
+    "scale_log_ratio": {
+     "floor": -0.5532,
+     "ceiling": 0.0179
+    },
+    "neighborhood_mmd": {
+     "floor": 0.26062,
+     "ceiling": 0.00109
+    }
+   },
+   "reads": {
+    "fgw": [],
+    "fgw_trend_render": [],
+    "fgw_resid": []
+   },
+   "seconds": 66.8
+  }
+ ],
+ "provenance": {
+  "commit": "5b8e12623c2663b5b92a45ffe57b9604b56601a9",
+  "tree_clean": true,
+  "config_sha256": "7ebe0c245c99093eed4151adff6beb9e6f960ac218f658e4348038fbe1dfa73c",
+  "files_sha256": {
+   "T2/E6.75.h5ad": "ab58b9217d1b9a18b0181f498475a9eb821ac2c92ab2b7e45a623da0e4fffe70",
+   "T2/E7.25.h5ad": "c34192a31036b783b97ce1877ac50fc920b39faa3e00dc3c637b3e7e04255ee6",
+   "T2/E7.5.h5ad": "e8e47255ddeca96d5604c7cd4923bbf27765c24bc6a3cd44e800cd6ea05a7d54",
+   "T2/E8.25_late.h5ad": "d56f94d3e2d719ed3074d86c03eae457ccf90b24145d33300f9958f0e8078593",
+   "T2/E8.5.h5ad": "41c76db18bfaa92c1d66f8220ec5fbb6d6acccb0a6b78241f40080a3096d37db"
+  },
+  "derived_sha256": {},
+  "build_seed_offset": 1000000,
+  "utc": "2026-11-14 11:28:37"
+ },
+ "not_buildable": {},
+ "build_records": {
+  "fgw_resid": {
+   "0": {
+    "resid": {
+     "rule": "reference-residual render: each bracket that has, among the task's other samples (the other bracket included, the target never), an earlier and a later one has its drawn cells moved by a per-gene factor that removes the share L of its residual from the straight line through the nearest earlier and the nearest later sample by stage day. Samples, labels and profiles are TREND_RENDER_RULE's (weights the moved bracket's label shares, eps 1e-5). With d the bracket's day and d1 < d < d2 the neighbours', w1 = (d2 - d) / (d2 - d1), w2 = 1 - w1, line = w1 log(p1 + eps) + w2 log(p2 + eps), r = log(own + eps) - line, L = 1 / (1 + w1^2 + w2^2); the factor exp(-L r) is rescaled so the weighted total proportion is unchanged and clipped to 0.25-4, applied in count space (vec.core.apply_gene_factor). A bracket without an earlier or a later sample keeps its drawn cells as released. Depth is not moved: the counts outside the panel stay as released",
+     "brackets": {
+      "before": {
+       "corrected": true,
+       "neighbours": [
+        "E7.25",
+        "E8.5"
+       ],
+       "w1": 0.8,
+       "w2": 0.19999999999999996,
+       "L": 0.5952380952380952,
+       "clipped_share": 0.020080321285140562,
+       "mean_abs_log_factor": 0.4846356125413795
+      },
+      "after": {
+       "corrected": false
+      }
+     }
+    }
+   },
+   "1": {
+    "resid": {
+     "rule": "reference-residual render: each bracket that has, among the task's other samples (the other bracket included, the target never), an earlier and a later one has its drawn cells moved by a per-gene factor that removes the share L of its residual from the straight line through the nearest earlier and the nearest later sample by stage day. Samples, labels and profiles are TREND_RENDER_RULE's (weights the moved bracket's label shares, eps 1e-5). With d the bracket's day and d1 < d < d2 the neighbours', w1 = (d2 - d) / (d2 - d1), w2 = 1 - w1, line = w1 log(p1 + eps) + w2 log(p2 + eps), r = log(own + eps) - line, L = 1 / (1 + w1^2 + w2^2); the factor exp(-L r) is rescaled so the weighted total proportion is unchanged and clipped to 0.25-4, applied in count space (vec.core.apply_gene_factor). A bracket without an earlier or a later sample keeps its drawn cells as released. Depth is not moved: the counts outside the panel stay as released",
+     "brackets": {
+      "before": {
+       "corrected": true,
+       "neighbours": [
+        "E7.25",
+        "E8.5"
+       ],
+       "w1": 0.8,
+       "w2": 0.19999999999999996,
+       "L": 0.5952380952380952,
+       "clipped_share": 0.020080321285140562,
+       "mean_abs_log_factor": 0.4846356125413795
+      },
+      "after": {
+       "corrected": false
+      }
+     }
+    }
+   },
+   "2": {
+    "resid": {
+     "rule": "reference-residual render: each bracket that has, among the task's other samples (the other bracket included, the target never), an earlier and a later one has its drawn cells moved by a per-gene factor that removes the share L of its residual from the straight line through the nearest earlier and the nearest later sample by stage day. Samples, labels and profiles are TREND_RENDER_RULE's (weights the moved bracket's label shares, eps 1e-5). With d the bracket's day and d1 < d < d2 the neighbours', w1 = (d2 - d) / (d2 - d1), w2 = 1 - w1, line = w1 log(p1 + eps) + w2 log(p2 + eps), r = log(own + eps) - line, L = 1 / (1 + w1^2 + w2^2); the factor exp(-L r) is rescaled so the weighted total proportion is unchanged and clipped to 0.25-4, applied in count space (vec.core.apply_gene_factor). A bracket without an earlier or a later sample keeps its drawn cells as released. Depth is not moved: the counts outside the panel stay as released",
+     "brackets": {
+      "before": {
+       "corrected": true,
+       "neighbours": [
+        "E7.25",
+        "E8.5"
+       ],
+       "w1": 0.8,
+       "w2": 0.19999999999999996,
+       "L": 0.5952380952380952,
+       "clipped_share": 0.020080321285140562,
+       "mean_abs_log_factor": 0.4846356125413795
+      },
+      "after": {
+       "corrected": false
+      }
+     }
+    }
+   },
+   "3": {
+    "resid": {
+     "rule": "reference-residual render: each bracket that has, among the task's other samples (the other bracket included, the target never), an earlier and a later one has its drawn cells moved by a per-gene factor that removes the share L of its residual from the straight line through the nearest earlier and the nearest later sample by stage day. Samples, labels and profiles are TREND_RENDER_RULE's (weights the moved bracket's label shares, eps 1e-5). With d the bracket's day and d1 < d < d2 the neighbours', w1 = (d2 - d) / (d2 - d1), w2 = 1 - w1, line = w1 log(p1 + eps) + w2 log(p2 + eps), r = log(own + eps) - line, L = 1 / (1 + w1^2 + w2^2); the factor exp(-L r) is rescaled so the weighted total proportion is unchanged and clipped to 0.25-4, applied in count space (vec.core.apply_gene_factor). A bracket without an earlier or a later sample keeps its drawn cells as released. Depth is not moved: the counts outside the panel stay as released",
+     "brackets": {
+      "before": {
+       "corrected": true,
+       "neighbours": [
+        "E7.25",
+        "E8.5"
+       ],
+       "w1": 0.8,
+       "w2": 0.19999999999999996,
+       "L": 0.5952380952380952,
+       "clipped_share": 0.020080321285140562,
+       "mean_abs_log_factor": 0.4846356125413795
+      },
+      "after": {
+       "corrected": false
+      }
+     }
+    }
+   },
+   "4": {
+    "resid": {
+     "rule": "reference-residual render: each bracket that has, among the task's other samples (the other bracket included, the target never), an earlier and a later one has its drawn cells moved by a per-gene factor that removes the share L of its residual from the straight line through the nearest earlier and the nearest later sample by stage day. Samples, labels and profiles are TREND_RENDER_RULE's (weights the moved bracket's label shares, eps 1e-5). With d the bracket's day and d1 < d < d2 the neighbours', w1 = (d2 - d) / (d2 - d1), w2 = 1 - w1, line = w1 log(p1 + eps) + w2 log(p2 + eps), r = log(own + eps) - line, L = 1 / (1 + w1^2 + w2^2); the factor exp(-L r) is rescaled so the weighted total proportion is unchanged and clipped to 0.25-4, applied in count space (vec.core.apply_gene_factor). A bracket without an earlier or a later sample keeps its drawn cells as released. Depth is not moved: the counts outside the panel stay as released",
+     "brackets": {
+      "before": {
+       "corrected": true,
+       "neighbours": [
+        "E7.25",
+        "E8.5"
+       ],
+       "w1": 0.8,
+       "w2": 0.19999999999999996,
+       "L": 0.5952380952380952,
+       "clipped_share": 0.020080321285140562,
+       "mean_abs_log_factor": 0.4846356125413795
+      },
+      "after": {
+       "corrected": false
+      }
+     }
+    }
+   },
+   "5": {
+    "resid": {
+     "rule": "reference-residual render: each bracket that has, among the task's other samples (the other bracket included, the target never), an earlier and a later one has its drawn cells moved by a per-gene factor that removes the share L of its residual from the straight line through the nearest earlier and the nearest later sample by stage day. Samples, labels and profiles are TREND_RENDER_RULE's (weights the moved bracket's label shares, eps 1e-5). With d the bracket's day and d1 < d < d2 the neighbours', w1 = (d2 - d) / (d2 - d1), w2 = 1 - w1, line = w1 log(p1 + eps) + w2 log(p2 + eps), r = log(own + eps) - line, L = 1 / (1 + w1^2 + w2^2); the factor exp(-L r) is rescaled so the weighted total proportion is unchanged and clipped to 0.25-4, applied in count space (vec.core.apply_gene_factor). A bracket without an earlier or a later sample keeps its drawn cells as released. Depth is not moved: the counts outside the panel stay as released",
+     "brackets": {
+      "before": {
+       "corrected": true,
+       "neighbours": [
+        "E7.25",
+        "E8.5"
+       ],
+       "w1": 0.8,
+       "w2": 0.19999999999999996,
+       "L": 0.5952380952380952,
+       "clipped_share": 0.020080321285140562,
+       "mean_abs_log_factor": 0.4846356125413795
+      },
+      "after": {
+       "corrected": false
+      }
+     }
+    }
+   },
+   "6": {
+    "resid": {
+     "rule": "reference-residual render: each bracket that has, among the task's other samples (the other bracket included, the target never), an earlier and a later one has its drawn cells moved by a per-gene factor that removes the share L of its residual from the straight line through the nearest earlier and the nearest later sample by stage day. Samples, labels and profiles are TREND_RENDER_RULE's (weights the moved bracket's label shares, eps 1e-5). With d the bracket's day and d1 < d < d2 the neighbours', w1 = (d2 - d) / (d2 - d1), w2 = 1 - w1, line = w1 log(p1 + eps) + w2 log(p2 + eps), r = log(own + eps) - line, L = 1 / (1 + w1^2 + w2^2); the factor exp(-L r) is rescaled so the weighted total proportion is unchanged and clipped to 0.25-4, applied in count space (vec.core.apply_gene_factor). A bracket without an earlier or a later sample keeps its drawn cells as released. Depth is not moved: the counts outside the panel stay as released",
+     "brackets": {
+      "before": {
+       "corrected": true,
+       "neighbours": [
+        "E7.25",
+        "E8.5"
+       ],
+       "w1": 0.8,
+       "w2": 0.19999999999999996,
+       "L": 0.5952380952380952,
+       "clipped_share": 0.020080321285140562,
+       "mean_abs_log_factor": 0.4846356125413795
+      },
+      "after": {
+       "corrected": false
+      }
+     }
+    }
+   },
+   "7": {
+    "resid": {
+     "rule": "reference-residual render: each bracket that has, among the task's other samples (the other bracket included, the target never), an earlier and a later one has its drawn cells moved by a per-gene factor that removes the share L of its residual from the straight line through the nearest earlier and the nearest later sample by stage day. Samples, labels and profiles are TREND_RENDER_RULE's (weights the moved bracket's label shares, eps 1e-5). With d the bracket's day and d1 < d < d2 the neighbours', w1 = (d2 - d) / (d2 - d1), w2 = 1 - w1, line = w1 log(p1 + eps) + w2 log(p2 + eps), r = log(own + eps) - line, L = 1 / (1 + w1^2 + w2^2); the factor exp(-L r) is rescaled so the weighted total proportion is unchanged and clipped to 0.25-4, applied in count space (vec.core.apply_gene_factor). A bracket without an earlier or a later sample keeps its drawn cells as released. Depth is not moved: the counts outside the panel stay as released",
+     "brackets": {
+      "before": {
+       "corrected": true,
+       "neighbours": [
+        "E7.25",
+        "E8.5"
+       ],
+       "w1": 0.8,
+       "w2": 0.19999999999999996,
+       "L": 0.5952380952380952,
+       "clipped_share": 0.020080321285140562,
+       "mean_abs_log_factor": 0.4846356125413795
+      },
+      "after": {
+       "corrected": false
+      }
+     }
+    }
+   },
+   "8": {
+    "resid": {
+     "rule": "reference-residual render: each bracket that has, among the task's other samples (the other bracket included, the target never), an earlier and a later one has its drawn cells moved by a per-gene factor that removes the share L of its residual from the straight line through the nearest earlier and the nearest later sample by stage day. Samples, labels and profiles are TREND_RENDER_RULE's (weights the moved bracket's label shares, eps 1e-5). With d the bracket's day and d1 < d < d2 the neighbours', w1 = (d2 - d) / (d2 - d1), w2 = 1 - w1, line = w1 log(p1 + eps) + w2 log(p2 + eps), r = log(own + eps) - line, L = 1 / (1 + w1^2 + w2^2); the factor exp(-L r) is rescaled so the weighted total proportion is unchanged and clipped to 0.25-4, applied in count space (vec.core.apply_gene_factor). A bracket without an earlier or a later sample keeps its drawn cells as released. Depth is not moved: the counts outside the panel stay as released",
+     "brackets": {
+      "before": {
+       "corrected": true,
+       "neighbours": [
+        "E7.25",
+        "E8.5"
+       ],
+       "w1": 0.8,
+       "w2": 0.19999999999999996,
+       "L": 0.5952380952380952,
+       "clipped_share": 0.020080321285140562,
+       "mean_abs_log_factor": 0.4846356125413795
+      },
+      "after": {
+       "corrected": false
+      }
+     }
+    }
+   },
+   "9": {
+    "resid": {
+     "rule": "reference-residual render: each bracket that has, among the task's other samples (the other bracket included, the target never), an earlier and a later one has its drawn cells moved by a per-gene factor that removes the share L of its residual from the straight line through the nearest earlier and the nearest later sample by stage day. Samples, labels and profiles are TREND_RENDER_RULE's (weights the moved bracket's label shares, eps 1e-5). With d the bracket's day and d1 < d < d2 the neighbours', w1 = (d2 - d) / (d2 - d1), w2 = 1 - w1, line = w1 log(p1 + eps) + w2 log(p2 + eps), r = log(own + eps) - line, L = 1 / (1 + w1^2 + w2^2); the factor exp(-L r) is rescaled so the weighted total proportion is unchanged and clipped to 0.25-4, applied in count space (vec.core.apply_gene_factor). A bracket without an earlier or a later sample keeps its drawn cells as released. Depth is not moved: the counts outside the panel stay as released",
+     "brackets": {
+      "before": {
+       "corrected": true,
+       "neighbours": [
+        "E7.25",
+        "E8.5"
+       ],
+       "w1": 0.8,
+       "w2": 0.19999999999999996,
+       "L": 0.5952380952380952,
+       "clipped_share": 0.020080321285140562,
+       "mean_abs_log_factor": 0.4846356125413795
+      },
+      "after": {
+       "corrected": false
+      }
+     }
+    }
+   }
+  }
+ },
+ "task_source": "experiments/harness/n49_embryo_i_arms.py",
+ "sample_rule": {
+  "series": [
+   "T2/E6.75.h5ad",
+   "T2/E7.25.h5ad",
+   "T2/E7.5.h5ad",
+   "T2/E8.0.h5ad"
+  ],
+  "samples": [
+   "T2/E6.75.h5ad",
+   "T2/E7.25.h5ad",
+   "T2/E7.5.h5ad",
+   "T2/E8.5.h5ad"
+  ]
+ }
+}
