@@ -1,8 +1,11 @@
 #!/usr/bin/env python
-"""Readings of tries E38a and E38b of experiments/harness/TRIES.md (registered before any run): the embryo arms with
+"""Readings of tries E38a to E38d of experiments/harness/TRIES.md (registered before any run): the embryo arms with
 a mirror-only correction of FGW's partners (the ledger's pruned line of that name: keep FGW's moves; put each partner
-on its anchor's side of the symmetric direction), `fgw_mirrorfix` and `fgw_mirrorfix_series`, scored on the nine
-practice tasks by `n42_mirrorfix_arms.py` on the branch `campaign/emb-mirror`.
+on its anchor's side of the symmetric direction) in two forms, scored on the nine practice tasks by
+`n42_mirrorfix_arms.py` on the branch `campaign/emb-mirror`:
+  `fgw_mirrorfix`, `fgw_mirrorfix_series`    every partner on the wrong side of the direction is mirrored;
+  `fgw_mirrorgate`, `fgw_mirrorgate_series`  the same, only in a stage whose partners are mirrored along it
+                                             (smallest eigenvalue below 0).
 
 What it reads. Only per-seed board scores committed by counted tries: the stored runs of E24, E25 and E28
 (`nine_tasks.STORED` and `results/e28_nine_tasks/tasks`) and the committed task files of tries E38 given by `--runs`.
@@ -10,8 +13,9 @@ It opens no data file, runs no candidate and no scorer.
 
 Three readings, each an existing rule applied unchanged (the same three as tries E36), all fixed in the row before the
 run:
-  adoption       the adoption rule (vec.adoption.keep_change) for `fgw_mirrorfix` against the entry `fgw` on the two
-                 counted embryo backtests (the nine tasks' e75 and e725), seed for seed;
+  adoption       the adoption rule (vec.adoption.keep_change) for each first-upload form (`fgw_mirrorfix`,
+                 `fgw_mirrorgate`) against the entry `fgw` on the two counted embryo backtests (the nine tasks' e75
+                 and e725), seed for seed;
   first upload   row N33's rule (n37_first_upload_new_arms.price), each arm as a first upload beside the second
                  upload as built;
   second upload  rows E34 and E35's rule (n38_second_beside_trend.price with the first upload `fgw`), each arm as a
@@ -47,9 +51,10 @@ from vec.provenance import repo_state  # noqa: E402
 
 ENTRY = "fgw"  # the first upload as built
 SECOND = nt.RA  # fgw_aligned_series, the second upload as built
-BASE_OF = {"fgw_mirrorfix": ENTRY, "fgw_mirrorfix_series": "fgw_series"}  # each arm without the correction
+BASE_OF = {"fgw_mirrorfix": ENTRY, "fgw_mirrorfix_series": "fgw_series",  # each arm without the correction
+           "fgw_mirrorgate": ENTRY, "fgw_mirrorgate_series": "fgw_series"}
 ARMS = tuple(BASE_OF)
-ADOPTION_ARMS = ("fgw_mirrorfix",)  # the first-upload form: the entry with its partners corrected
+ADOPTION_ARMS = ("fgw_mirrorfix", "fgw_mirrorgate")  # the first-upload forms: the entry with its partners corrected
 BACKTESTS = ("e75", "e725")  # the two counted embryo backtests among the nine tasks
 E28_RUNS = HERE / "results" / "e28_nine_tasks" / "tasks"
 
@@ -102,7 +107,7 @@ def text(res: dict) -> str:
                           if res["requested_first_upload"] else "",
                           f"second upload put forward: {res['requested_second_upload']}"
                           if res["requested_second_upload"] else "") if x]
-    lines = [f"Readings of tries E38a and E38b (runs {', '.join(res['runs'])}): the mirror-only correction on the nine "
+    lines = [f"Readings of tries E38a to E38d (runs {', '.join(res['runs'])}): the mirror-only correction on the nine "
              "practice tasks; aggregation of committed scores",
              "outcome: " + ("closed: no rule is passed" if res["closed"] else "; ".join(passed))]
     for arm, a in res["adoption"].items():
