@@ -1,0 +1,17 @@
+try T44, a labelled in-sample diagnostic, never an adoption result: M1 (with R1, R2 and g_mom's factors, the entry's form) with its Feng step multiplied by 1.5 and by 2, on T42's route; Feng's E9.5 cells lie inside these pseudo-tasks' external windows, the cuts are ones earlier T1 choices were made on, and the truth of a one-day cut differs from its reference in the kind of sample as well as in age; the result can only go to the team captain
+Verdict: a larger step scores better on these cuts: m1_r_gmom_x15, m1_r_gmom_x2
+T1/E9.5->E10.5:chamber: largest per-seed difference from T42's committed scores: b0 0, m1_r_gmom 0 (gate 1e-09)
+T1/E9.5->E10.5: largest per-seed difference from T42's committed scores: b0 0, m1_r_gmom 0 (gate 1e-09)
+mean scores T1/E9.5->E10.5:chamber: b0 49.68, m1_r_gmom 52.06, m1_r_gmom_x15 53.01, m1_r_gmom_x2 53.87
+mean scores T1/E9.5->E10.5: b0 44.12, m1_r_gmom 46.23, m1_r_gmom_x15 47.11, m1_r_gmom_x2 47.90
+x1.5: m1_r_gmom_x15 against m1_r_gmom: PASSES (passes on 2 of 2 pseudo-tasks (needs 2) and loses on none)
+    T1/E9.5->E10.5:chamber: +0.95 points, ahead 10 of 10, per seed +0.83 to +1.06; skills: de_direction +0.0068, de_score +0.0175, mmd_u +0.0060, variogram +0.0081
+    T1/E9.5->E10.5: +0.89 points, ahead 10 of 10, per seed +0.76 to +1.08; skills: de_direction +0.0064, de_score +0.0177, mmd_u +0.0049, variogram +0.0070
+x2: m1_r_gmom_x2 against m1_r_gmom: PASSES (passes on 2 of 2 pseudo-tasks (needs 2) and loses on none)
+    T1/E9.5->E10.5:chamber: +1.81 points, ahead 10 of 10, per seed +1.60 to +2.07; skills: de_direction +0.0130, de_score +0.0329, mmd_u +0.0112, variogram +0.0162
+    T1/E9.5->E10.5: +1.68 points, ahead 10 of 10, per seed +1.52 to +1.97; skills: de_direction +0.0123, de_score +0.0324, mmd_u +0.0092, variogram +0.0141
+T42's scalar control, the smaller side (committed files, reported): m1_r_gmom_js against m1_r_gmom: does not pass (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2)
+    T1/E9.5->E10.5:chamber: -0.13 points, ahead 0 of 10, per seed -0.19 to -0.06; skills: de_direction -0.0009, de_score -0.0021, mmd_u -0.0011, variogram -0.0010
+    T1/E9.5->E10.5: -0.13 points, ahead 0 of 10, per seed -0.21 to -0.07; skills: de_direction -0.0007, de_score -0.0026, mmd_u -0.0010, variogram -0.0009
+Limit: in-sample labelled diagnostic; never adoption evidence; puts nothing forward by itself; it can only go to the team captain
+Commit 5bcda9a68545c251fcb8f48aedee007eff04ab42, tree clean True, UTC 2026-11-14T15:08:42Z
