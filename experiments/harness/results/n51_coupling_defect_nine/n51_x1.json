@@ -1,0 +1,97 @@
+{
+ "key": "T2e/E8.0+E8.75->E8.25_late",
+ "brackets": [
+  "E8.0",
+  "E8.75"
+ ],
+ "panel_board": "T2:embryo:val_interp",
+ "fraction": 0.40000000000000097,
+ "draws": [
+  {
+   "seed": 0,
+   "build_seed": 1000000,
+   "xcorr_min": -0.06771215288377162,
+   "thin_ratio": 0.7856270748191592,
+   "defect": true,
+   "by": "both"
+  },
+  {
+   "seed": 1,
+   "build_seed": 1000001,
+   "xcorr_min": -0.10929544982248099,
+   "thin_ratio": 0.7681967588150193,
+   "defect": true,
+   "by": "both"
+  },
+  {
+   "seed": 2,
+   "build_seed": 1000002,
+   "xcorr_min": 0.05977068620096376,
+   "thin_ratio": 0.901884110471506,
+   "defect": true,
+   "by": "xcorr"
+  },
+  {
+   "seed": 3,
+   "build_seed": 1000003,
+   "xcorr_min": 0.19482347111753123,
+   "thin_ratio": 0.9375698741762393,
+   "defect": true,
+   "by": "xcorr"
+  },
+  {
+   "seed": 4,
+   "build_seed": 1000004,
+   "xcorr_min": -0.07453458171909393,
+   "thin_ratio": 0.7998972714380115,
+   "defect": true,
+   "by": "both"
+  },
+  {
+   "seed": 5,
+   "build_seed": 1000005,
+   "xcorr_min": -0.22611425891525339,
+   "thin_ratio": 0.740822453490945,
+   "defect": true,
+   "by": "both"
+  },
+  {
+   "seed": 6,
+   "build_seed": 1000006,
+   "xcorr_min": 0.1262139509801053,
+   "thin_ratio": 0.9020641265217864,
+   "defect": true,
+   "by": "xcorr"
+  },
+  {
+   "seed": 7,
+   "build_seed": 1000007,
+   "xcorr_min": -0.007508013712479511,
+   "thin_ratio": 0.890982240538763,
+   "defect": true,
+   "by": "both"
+  },
+  {
+   "seed": 8,
+   "build_seed": 1000008,
+   "xcorr_min": -0.13776104277113935,
+   "thin_ratio": 0.7805065411625599,
+   "defect": true,
+   "by": "both"
+  },
+  {
+   "seed": 9,
+   "build_seed": 1000009,
+   "xcorr_min": 0.2421204713924933,
+   "thin_ratio": 1.028493179427028,
+   "defect": true,
+   "by": "xcorr"
+  }
+ ],
+ "n_defect": 10,
+ "task": "x1",
+ "row": "N51",
+ "commit": "0543200e5586f08298d2503bb757d5dcafb6ba3a",
+ "clean": true,
+ "utc": "2026-11-14T12:43:03+00:00"
+}

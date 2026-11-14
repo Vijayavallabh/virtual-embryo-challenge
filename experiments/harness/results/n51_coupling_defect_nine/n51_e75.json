@@ -1,0 +1,98 @@
+{
+ "key": "T2e/E7.25+E8.0->E7.5",
+ "brackets": [
+  "E7.25",
+  "E8.0"
+ ],
+ "panel_board": "T2:embryo:val_interp",
+ "fraction": 0.3333333333333333,
+ "draws": [
+  {
+   "seed": 0,
+   "build_seed": 1000000,
+   "xcorr_min": 0.017758032322431644,
+   "thin_ratio": 0.7275242075692315,
+   "defect": true,
+   "by": "both"
+  },
+  {
+   "seed": 1,
+   "build_seed": 1000001,
+   "xcorr_min": -0.048200403957535,
+   "thin_ratio": 0.7010153960739992,
+   "defect": true,
+   "by": "both"
+  },
+  {
+   "seed": 2,
+   "build_seed": 1000002,
+   "xcorr_min": -0.05925314839231538,
+   "thin_ratio": 0.7029954079880117,
+   "defect": true,
+   "by": "both"
+  },
+  {
+   "seed": 3,
+   "build_seed": 1000003,
+   "xcorr_min": 0.0006725864191854844,
+   "thin_ratio": 0.7222288195396362,
+   "defect": true,
+   "by": "both"
+  },
+  {
+   "seed": 4,
+   "build_seed": 1000004,
+   "xcorr_min": 0.08686147040282255,
+   "thin_ratio": 0.7561393575061433,
+   "defect": true,
+   "by": "both"
+  },
+  {
+   "seed": 5,
+   "build_seed": 1000005,
+   "xcorr_min": -0.005031063876512006,
+   "thin_ratio": 0.7212462204145206,
+   "defect": true,
+   "by": "both"
+  },
+  {
+   "seed": 6,
+   "build_seed": 1000006,
+   "xcorr_min": -0.0313204888952591,
+   "thin_ratio": 0.712733179473696,
+   "defect": true,
+   "by": "both"
+  },
+  {
+   "seed": 7,
+   "build_seed": 1000007,
+   "xcorr_min": -0.012970442731606597,
+   "thin_ratio": 0.7180779643728715,
+   "defect": true,
+   "by": "both"
+  },
+  {
+   "seed": 8,
+   "build_seed": 1000008,
+   "xcorr_min": -0.0007245703222426066,
+   "thin_ratio": 0.7244577761797591,
+   "defect": true,
+   "by": "both"
+  },
+  {
+   "seed": 9,
+   "build_seed": 1000009,
+   "xcorr_min": -0.05930393229639098,
+   "thin_ratio": 0.7142575073745108,
+   "defect": true,
+   "by": "both"
+  }
+ ],
+ "n_defect": 10,
+ "gate_max_abs_difference": 0.0,
+ "task": "e75",
+ "row": "N51",
+ "commit": "0543200e5586f08298d2503bb757d5dcafb6ba3a",
+ "clean": true,
+ "utc": "2026-11-14T12:41:38+00:00"
+}

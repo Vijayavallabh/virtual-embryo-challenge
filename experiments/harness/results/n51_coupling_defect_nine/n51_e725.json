@@ -1,0 +1,98 @@
+{
+ "key": "T2e/E6.75+E7.5->E7.25",
+ "brackets": [
+  "E6.75",
+  "E7.5"
+ ],
+ "panel_board": "T2:embryo:val_interp",
+ "fraction": 0.6666666666666666,
+ "draws": [
+  {
+   "seed": 0,
+   "build_seed": 1000000,
+   "xcorr_min": 0.5884874658929377,
+   "thin_ratio": 1.190840314341405,
+   "defect": false,
+   "by": null
+  },
+  {
+   "seed": 1,
+   "build_seed": 1000001,
+   "xcorr_min": 0.6249831714664007,
+   "thin_ratio": 1.2163452396554348,
+   "defect": false,
+   "by": null
+  },
+  {
+   "seed": 2,
+   "build_seed": 1000002,
+   "xcorr_min": 0.6444221044103949,
+   "thin_ratio": 1.2191930757303115,
+   "defect": false,
+   "by": null
+  },
+  {
+   "seed": 3,
+   "build_seed": 1000003,
+   "xcorr_min": -0.6181765953906381,
+   "thin_ratio": 0.7776272106227435,
+   "defect": true,
+   "by": "both"
+  },
+  {
+   "seed": 4,
+   "build_seed": 1000004,
+   "xcorr_min": -0.6564360530203528,
+   "thin_ratio": 0.7699708873936713,
+   "defect": true,
+   "by": "both"
+  },
+  {
+   "seed": 5,
+   "build_seed": 1000005,
+   "xcorr_min": -0.5963554654021344,
+   "thin_ratio": 0.7835871153611749,
+   "defect": true,
+   "by": "both"
+  },
+  {
+   "seed": 6,
+   "build_seed": 1000006,
+   "xcorr_min": 0.6640237929160154,
+   "thin_ratio": 1.22142461950402,
+   "defect": false,
+   "by": null
+  },
+  {
+   "seed": 7,
+   "build_seed": 1000007,
+   "xcorr_min": 0.6299503815908107,
+   "thin_ratio": 1.215722792700288,
+   "defect": false,
+   "by": null
+  },
+  {
+   "seed": 8,
+   "build_seed": 1000008,
+   "xcorr_min": -0.6530003875029275,
+   "thin_ratio": 0.7752617171731023,
+   "defect": true,
+   "by": "both"
+  },
+  {
+   "seed": 9,
+   "build_seed": 1000009,
+   "xcorr_min": -0.5494539764743082,
+   "thin_ratio": 0.8015912416835482,
+   "defect": true,
+   "by": "both"
+  }
+ ],
+ "n_defect": 5,
+ "gate_max_abs_difference": 0.0,
+ "task": "e725",
+ "row": "N51",
+ "commit": "0543200e5586f08298d2503bb757d5dcafb6ba3a",
+ "clean": true,
+ "utc": "2026-11-14T12:42:03+00:00"
+}

@@ -1,0 +1,875 @@
+{
+ "what": "Row N51 of experiments/harness/TRIES.md (a diagnostic, not a try; target-free): is the entry's coupling of the",
+ "row": "N51",
+ "commit": "0543200e5586f08298d2503bb757d5dcafb6ba3a",
+ "clean": true,
+ "utc": "2026-11-14T12:43:07+00:00",
+ "thresholds": {
+  "DEFECT_XCORR": 0.3,
+  "DEFECT_THIN": 0.9
+ },
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "build_seed_offset": 1000000,
+ "gate": {
+  "tasks": [
+   "e75",
+   "e725"
+  ],
+  "tol": 1e-06,
+  "max_abs_difference": 0.0,
+  "committed": "experiments/harness/results/diag_emb_coupling/diag_emb_coupling.json",
+  "committed_commit": "5baba46ad00aba1a1b54dd2b0b20c1e7dfdb8734"
+ },
+ "parts_utc": {
+  "half": "2026-11-14T12:42:33+00:00",
+  "late": "2026-11-14T12:42:15+00:00",
+  "new1": "2026-11-14T12:42:37+00:00",
+  "new2": "2026-11-14T12:42:09+00:00",
+  "e75": "2026-11-14T12:41:38+00:00",
+  "e725": "2026-11-14T12:42:03+00:00",
+  "x1": "2026-11-14T12:43:03+00:00",
+  "x2": "2026-11-14T12:43:05+00:00",
+  "x3": "2026-11-14T12:42:15+00:00"
+ },
+ "tasks": {
+  "half": {
+   "key": "T2e/E7.5+E8.5->E8.0",
+   "brackets": [
+    "E7.5",
+    "E8.5"
+   ],
+   "panel_board": "T2:embryo:val_interp",
+   "fraction": 0.5,
+   "n_defect": 10,
+   "draws": [
+    {
+     "seed": 0,
+     "build_seed": 1000000,
+     "xcorr_min": -0.1485215450309566,
+     "thin_ratio": 0.8011150671198178,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 1,
+     "build_seed": 1000001,
+     "xcorr_min": 0.11777108450990764,
+     "thin_ratio": 0.9259619055047243,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 2,
+     "build_seed": 1000002,
+     "xcorr_min": 0.10352570445934582,
+     "thin_ratio": 0.9323813960734957,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 3,
+     "build_seed": 1000003,
+     "xcorr_min": -0.16347152111933422,
+     "thin_ratio": 0.7983168147419208,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 4,
+     "build_seed": 1000004,
+     "xcorr_min": 0.11105957787991928,
+     "thin_ratio": 0.9423292678588064,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 5,
+     "build_seed": 1000005,
+     "xcorr_min": -0.11027307448373032,
+     "thin_ratio": 0.8264537011910748,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 6,
+     "build_seed": 1000006,
+     "xcorr_min": -0.19027182933772105,
+     "thin_ratio": 0.7818191225497152,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 7,
+     "build_seed": 1000007,
+     "xcorr_min": -0.13629627625142146,
+     "thin_ratio": 0.8199488165446244,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 8,
+     "build_seed": 1000008,
+     "xcorr_min": 0.01692998471695836,
+     "thin_ratio": 0.884251512011454,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 9,
+     "build_seed": 1000009,
+     "xcorr_min": -0.014309206598157024,
+     "thin_ratio": 0.8941847777327168,
+     "defect": true,
+     "by": "both"
+    }
+   ]
+  },
+  "late": {
+   "key": "T2e/E7.5+E8.25_late->E8.0",
+   "brackets": [
+    "E7.5",
+    "E8.25_late"
+   ],
+   "panel_board": "T2:embryo:val_interp",
+   "fraction": 0.6249999999999994,
+   "n_defect": 6,
+   "draws": [
+    {
+     "seed": 0,
+     "build_seed": 1000000,
+     "xcorr_min": 0.5537018916783435,
+     "thin_ratio": 1.116601882640628,
+     "defect": false,
+     "by": null
+    },
+    {
+     "seed": 1,
+     "build_seed": 1000001,
+     "xcorr_min": 0.5700296395993515,
+     "thin_ratio": 1.105657737206829,
+     "defect": false,
+     "by": null
+    },
+    {
+     "seed": 2,
+     "build_seed": 1000002,
+     "xcorr_min": -0.5674423135270092,
+     "thin_ratio": 0.4955761581895612,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 3,
+     "build_seed": 1000003,
+     "xcorr_min": -0.6245523887645007,
+     "thin_ratio": 0.47409070261786557,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 4,
+     "build_seed": 1000004,
+     "xcorr_min": 0.5741876213171296,
+     "thin_ratio": 1.1055675297175513,
+     "defect": false,
+     "by": null
+    },
+    {
+     "seed": 5,
+     "build_seed": 1000005,
+     "xcorr_min": -0.5301118425502674,
+     "thin_ratio": 0.5348720382766357,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 6,
+     "build_seed": 1000006,
+     "xcorr_min": -0.5637994729173097,
+     "thin_ratio": 0.48593397119130644,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 7,
+     "build_seed": 1000007,
+     "xcorr_min": -0.6165809217711689,
+     "thin_ratio": 0.4759762115830526,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 8,
+     "build_seed": 1000008,
+     "xcorr_min": 0.5780065186159113,
+     "thin_ratio": 1.1114055093992132,
+     "defect": false,
+     "by": null
+    },
+    {
+     "seed": 9,
+     "build_seed": 1000009,
+     "xcorr_min": -0.598067091493506,
+     "thin_ratio": 0.48432178574875706,
+     "defect": true,
+     "by": "both"
+    }
+   ]
+  },
+  "new1": {
+   "key": "T2e/E7.5+E8.5->E8.25_late",
+   "brackets": [
+    "E7.5",
+    "E8.5"
+   ],
+   "panel_board": "T2:embryo:val_interp",
+   "fraction": 0.8000000000000007,
+   "n_defect": 10,
+   "draws": [
+    {
+     "seed": 0,
+     "build_seed": 1000000,
+     "xcorr_min": -0.1485215450309566,
+     "thin_ratio": 0.8616539396986412,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 1,
+     "build_seed": 1000001,
+     "xcorr_min": 0.11777108450990764,
+     "thin_ratio": 0.9170479711679399,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 2,
+     "build_seed": 1000002,
+     "xcorr_min": 0.10352570445934582,
+     "thin_ratio": 0.9119995709408741,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 3,
+     "build_seed": 1000003,
+     "xcorr_min": -0.16347152111933422,
+     "thin_ratio": 0.8523762619439229,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 4,
+     "build_seed": 1000004,
+     "xcorr_min": 0.11105957787991928,
+     "thin_ratio": 0.91686707838168,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 5,
+     "build_seed": 1000005,
+     "xcorr_min": -0.11027307448373032,
+     "thin_ratio": 0.8630089704752226,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 6,
+     "build_seed": 1000006,
+     "xcorr_min": -0.19027182933772105,
+     "thin_ratio": 0.8550521960239401,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 7,
+     "build_seed": 1000007,
+     "xcorr_min": -0.13629627625142146,
+     "thin_ratio": 0.8600584559199047,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 8,
+     "build_seed": 1000008,
+     "xcorr_min": 0.01692998471695836,
+     "thin_ratio": 0.8831486151920316,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 9,
+     "build_seed": 1000009,
+     "xcorr_min": -0.014309206598157024,
+     "thin_ratio": 0.892925182268955,
+     "defect": true,
+     "by": "both"
+    }
+   ]
+  },
+  "new2": {
+   "key": "T2e/E7.5+E8.75->E8.5",
+   "brackets": [
+    "E7.5",
+    "E8.75"
+   ],
+   "panel_board": "T2:embryo:val_interp",
+   "fraction": 0.8,
+   "n_defect": 2,
+   "draws": [
+    {
+     "seed": 0,
+     "build_seed": 1000000,
+     "xcorr_min": 0.6980330077027274,
+     "thin_ratio": 1.016175552363096,
+     "defect": false,
+     "by": null
+    },
+    {
+     "seed": 1,
+     "build_seed": 1000001,
+     "xcorr_min": -0.6589174145662956,
+     "thin_ratio": 0.7356710305664028,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 2,
+     "build_seed": 1000002,
+     "xcorr_min": 0.6769316934976688,
+     "thin_ratio": 1.004893119989206,
+     "defect": false,
+     "by": null
+    },
+    {
+     "seed": 3,
+     "build_seed": 1000003,
+     "xcorr_min": 0.6652584784845564,
+     "thin_ratio": 1.0178678165235509,
+     "defect": false,
+     "by": null
+    },
+    {
+     "seed": 4,
+     "build_seed": 1000004,
+     "xcorr_min": 0.7246567179103164,
+     "thin_ratio": 1.0034119173629878,
+     "defect": false,
+     "by": null
+    },
+    {
+     "seed": 5,
+     "build_seed": 1000005,
+     "xcorr_min": 0.6905429276277968,
+     "thin_ratio": 1.0087633536079768,
+     "defect": false,
+     "by": null
+    },
+    {
+     "seed": 6,
+     "build_seed": 1000006,
+     "xcorr_min": 0.6735586282970741,
+     "thin_ratio": 1.007477049457452,
+     "defect": false,
+     "by": null
+    },
+    {
+     "seed": 7,
+     "build_seed": 1000007,
+     "xcorr_min": -0.7207511040393739,
+     "thin_ratio": 0.7354291649530813,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 8,
+     "build_seed": 1000008,
+     "xcorr_min": 0.682635603027464,
+     "thin_ratio": 1.0061529620739162,
+     "defect": false,
+     "by": null
+    },
+    {
+     "seed": 9,
+     "build_seed": 1000009,
+     "xcorr_min": 0.6901873471859834,
+     "thin_ratio": 0.9968296860885528,
+     "defect": false,
+     "by": null
+    }
+   ]
+  },
+  "e75": {
+   "key": "T2e/E7.25+E8.0->E7.5",
+   "brackets": [
+    "E7.25",
+    "E8.0"
+   ],
+   "panel_board": "T2:embryo:val_interp",
+   "fraction": 0.3333333333333333,
+   "n_defect": 10,
+   "draws": [
+    {
+     "seed": 0,
+     "build_seed": 1000000,
+     "xcorr_min": 0.017758032322431644,
+     "thin_ratio": 0.7275242075692315,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 1,
+     "build_seed": 1000001,
+     "xcorr_min": -0.048200403957535,
+     "thin_ratio": 0.7010153960739992,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 2,
+     "build_seed": 1000002,
+     "xcorr_min": -0.05925314839231538,
+     "thin_ratio": 0.7029954079880117,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 3,
+     "build_seed": 1000003,
+     "xcorr_min": 0.0006725864191854844,
+     "thin_ratio": 0.7222288195396362,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 4,
+     "build_seed": 1000004,
+     "xcorr_min": 0.08686147040282255,
+     "thin_ratio": 0.7561393575061433,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 5,
+     "build_seed": 1000005,
+     "xcorr_min": -0.005031063876512006,
+     "thin_ratio": 0.7212462204145206,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 6,
+     "build_seed": 1000006,
+     "xcorr_min": -0.0313204888952591,
+     "thin_ratio": 0.712733179473696,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 7,
+     "build_seed": 1000007,
+     "xcorr_min": -0.012970442731606597,
+     "thin_ratio": 0.7180779643728715,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 8,
+     "build_seed": 1000008,
+     "xcorr_min": -0.0007245703222426066,
+     "thin_ratio": 0.7244577761797591,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 9,
+     "build_seed": 1000009,
+     "xcorr_min": -0.05930393229639098,
+     "thin_ratio": 0.7142575073745108,
+     "defect": true,
+     "by": "both"
+    }
+   ]
+  },
+  "e725": {
+   "key": "T2e/E6.75+E7.5->E7.25",
+   "brackets": [
+    "E6.75",
+    "E7.5"
+   ],
+   "panel_board": "T2:embryo:val_interp",
+   "fraction": 0.6666666666666666,
+   "n_defect": 5,
+   "draws": [
+    {
+     "seed": 0,
+     "build_seed": 1000000,
+     "xcorr_min": 0.5884874658929377,
+     "thin_ratio": 1.190840314341405,
+     "defect": false,
+     "by": null
+    },
+    {
+     "seed": 1,
+     "build_seed": 1000001,
+     "xcorr_min": 0.6249831714664007,
+     "thin_ratio": 1.2163452396554348,
+     "defect": false,
+     "by": null
+    },
+    {
+     "seed": 2,
+     "build_seed": 1000002,
+     "xcorr_min": 0.6444221044103949,
+     "thin_ratio": 1.2191930757303115,
+     "defect": false,
+     "by": null
+    },
+    {
+     "seed": 3,
+     "build_seed": 1000003,
+     "xcorr_min": -0.6181765953906381,
+     "thin_ratio": 0.7776272106227435,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 4,
+     "build_seed": 1000004,
+     "xcorr_min": -0.6564360530203528,
+     "thin_ratio": 0.7699708873936713,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 5,
+     "build_seed": 1000005,
+     "xcorr_min": -0.5963554654021344,
+     "thin_ratio": 0.7835871153611749,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 6,
+     "build_seed": 1000006,
+     "xcorr_min": 0.6640237929160154,
+     "thin_ratio": 1.22142461950402,
+     "defect": false,
+     "by": null
+    },
+    {
+     "seed": 7,
+     "build_seed": 1000007,
+     "xcorr_min": 0.6299503815908107,
+     "thin_ratio": 1.215722792700288,
+     "defect": false,
+     "by": null
+    },
+    {
+     "seed": 8,
+     "build_seed": 1000008,
+     "xcorr_min": -0.6530003875029275,
+     "thin_ratio": 0.7752617171731023,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 9,
+     "build_seed": 1000009,
+     "xcorr_min": -0.5494539764743082,
+     "thin_ratio": 0.8015912416835482,
+     "defect": true,
+     "by": "both"
+    }
+   ]
+  },
+  "x1": {
+   "key": "T2e/E8.0+E8.75->E8.25_late",
+   "brackets": [
+    "E8.0",
+    "E8.75"
+   ],
+   "panel_board": "T2:embryo:val_interp",
+   "fraction": 0.40000000000000097,
+   "n_defect": 10,
+   "draws": [
+    {
+     "seed": 0,
+     "build_seed": 1000000,
+     "xcorr_min": -0.06771215288377162,
+     "thin_ratio": 0.7856270748191592,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 1,
+     "build_seed": 1000001,
+     "xcorr_min": -0.10929544982248099,
+     "thin_ratio": 0.7681967588150193,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 2,
+     "build_seed": 1000002,
+     "xcorr_min": 0.05977068620096376,
+     "thin_ratio": 0.901884110471506,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 3,
+     "build_seed": 1000003,
+     "xcorr_min": 0.19482347111753123,
+     "thin_ratio": 0.9375698741762393,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 4,
+     "build_seed": 1000004,
+     "xcorr_min": -0.07453458171909393,
+     "thin_ratio": 0.7998972714380115,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 5,
+     "build_seed": 1000005,
+     "xcorr_min": -0.22611425891525339,
+     "thin_ratio": 0.740822453490945,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 6,
+     "build_seed": 1000006,
+     "xcorr_min": 0.1262139509801053,
+     "thin_ratio": 0.9020641265217864,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 7,
+     "build_seed": 1000007,
+     "xcorr_min": -0.007508013712479511,
+     "thin_ratio": 0.890982240538763,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 8,
+     "build_seed": 1000008,
+     "xcorr_min": -0.13776104277113935,
+     "thin_ratio": 0.7805065411625599,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 9,
+     "build_seed": 1000009,
+     "xcorr_min": 0.2421204713924933,
+     "thin_ratio": 1.028493179427028,
+     "defect": true,
+     "by": "xcorr"
+    }
+   ]
+  },
+  "x2": {
+   "key": "T2e/E8.0+E8.75->E8.5",
+   "brackets": [
+    "E8.0",
+    "E8.75"
+   ],
+   "panel_board": "T2:embryo:val_interp",
+   "fraction": 0.6666666666666666,
+   "n_defect": 10,
+   "draws": [
+    {
+     "seed": 0,
+     "build_seed": 1000000,
+     "xcorr_min": -0.06771215288377162,
+     "thin_ratio": 1.029003950913656,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 1,
+     "build_seed": 1000001,
+     "xcorr_min": -0.10929544982248099,
+     "thin_ratio": 1.0400160949823969,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 2,
+     "build_seed": 1000002,
+     "xcorr_min": 0.05977068620096376,
+     "thin_ratio": 1.1744582995999169,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 3,
+     "build_seed": 1000003,
+     "xcorr_min": 0.19482347111753123,
+     "thin_ratio": 1.1616655207425988,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 4,
+     "build_seed": 1000004,
+     "xcorr_min": -0.07453458171909393,
+     "thin_ratio": 1.0676283712266506,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 5,
+     "build_seed": 1000005,
+     "xcorr_min": -0.22611425891525339,
+     "thin_ratio": 1.0623226200466558,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 6,
+     "build_seed": 1000006,
+     "xcorr_min": 0.1262139509801053,
+     "thin_ratio": 1.1340871884084558,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 7,
+     "build_seed": 1000007,
+     "xcorr_min": -0.007508013712479511,
+     "thin_ratio": 1.2039099693136734,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 8,
+     "build_seed": 1000008,
+     "xcorr_min": -0.13776104277113935,
+     "thin_ratio": 1.0805193097840708,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 9,
+     "build_seed": 1000009,
+     "xcorr_min": 0.2421204713924933,
+     "thin_ratio": 1.3000938357604048,
+     "defect": true,
+     "by": "xcorr"
+    }
+   ]
+  },
+  "x3": {
+   "key": "T2e/E8.25_late+E8.75->E8.5",
+   "brackets": [
+    "E8.25_late",
+    "E8.75"
+   ],
+   "panel_board": "T2:embryo:val_interp",
+   "fraction": 0.4444444444444436,
+   "n_defect": 10,
+   "draws": [
+    {
+     "seed": 0,
+     "build_seed": 1000000,
+     "xcorr_min": -0.0838511365537197,
+     "thin_ratio": 0.9056288713350665,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 1,
+     "build_seed": 1000001,
+     "xcorr_min": 0.2915071021165927,
+     "thin_ratio": 1.1737247533107182,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 2,
+     "build_seed": 1000002,
+     "xcorr_min": -0.07280756550812938,
+     "thin_ratio": 0.9100725050066671,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 3,
+     "build_seed": 1000003,
+     "xcorr_min": -0.07553828237504757,
+     "thin_ratio": 0.897783052625526,
+     "defect": true,
+     "by": "both"
+    },
+    {
+     "seed": 4,
+     "build_seed": 1000004,
+     "xcorr_min": 0.12310184577367134,
+     "thin_ratio": 1.0161442296733787,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 5,
+     "build_seed": 1000005,
+     "xcorr_min": -0.08649947965590536,
+     "thin_ratio": 0.9141245708860751,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 6,
+     "build_seed": 1000006,
+     "xcorr_min": 0.25847024614382336,
+     "thin_ratio": 1.0540987838175608,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 7,
+     "build_seed": 1000007,
+     "xcorr_min": -0.07050384642787479,
+     "thin_ratio": 0.9199635139853863,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 8,
+     "build_seed": 1000008,
+     "xcorr_min": -0.09992097191901327,
+     "thin_ratio": 0.9047501437949266,
+     "defect": true,
+     "by": "xcorr"
+    },
+    {
+     "seed": 9,
+     "build_seed": 1000009,
+     "xcorr_min": 0.12903395327248657,
+     "thin_ratio": 1.0018258835705558,
+     "defect": true,
+     "by": "xcorr"
+    }
+   ]
+  }
+ }
+}
