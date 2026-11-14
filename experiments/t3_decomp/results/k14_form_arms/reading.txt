@@ -1,0 +1,77 @@
+Tries K14 (commit 750d6f133e0ab2eb175e8fd57bbcbb1dfef741e5):
+  raw_half CLOSED: no request
+  raw_xt CLOSED: no request
+  raw_mn CLOSED: no request
+A labelled reading for a ruling, NOT the adoption rule: only x1 and x2 are counted cross-knockout folds; r12 is a replicate fold that never counts; x2's reference is WT E9.5, where K7 found reverts flattered.
+raw_half_ctrl, the control of raw_half: every drawn cell through K9's raw path with phi_ctrl = (1 + phi_raw) / 2 elementwise (no finalize): it moves each gene's expected count exactly as far as raw_half's mixture does, in every cell, without two kinds of cells in the file.
+raw against K9's committed raw scores: reproduced
+Checks raw_half: x1: raw_half - raw yes; x1: raw_half - raw_half_ctrl no; r12: raw_half - raw no; r12: raw_half - raw_half_ctrl no; x2: raw_half - raw not below -0.3 yes
+Checks raw_xt: x1: raw_xt - raw no; r12: raw_xt - raw no; x2: raw_xt - raw not below -0.3 yes
+Checks raw_mn: x1: raw_mn - raw yes; r12: raw_mn - raw yes; x2: raw_mn - raw not below -0.3 no
+Reported, deciding nothing:
+x1 T3/Mab21l2->Gata4rep2 (counted cross-knockout fold): floor 50.00, raw 46.47, raw_half 47.57, raw_half_ctrl 47.36, raw_xt 46.58, raw_mn 48.84
+    k14 check: task=x1 arm=raw share=0.0000 mean_abs_off=0.0000
+    k14 check: task=x1 arm=raw_half share=0.9985 mean_abs_off=0.0000
+    k14 check: task=x1 arm=raw_half_ctrl share=0.9984 mean_abs_off=0.0000
+    k14 check: task=x1 arm=raw_xt share=0.9349 mean_abs_off=6.0748
+    k14 check: task=x1 arm=raw_mn share=0.9993 mean_abs_off=0.0000
+    raw - floor: -3.53 (sd 0.35, ahead 0 of 10)
+    raw_half - raw: +1.10 (sd 0.22, ahead 10 of 10)  passes
+    raw_half - raw_half_ctrl: +0.21 (sd 0.13, ahead 9 of 10)
+    raw_half_ctrl - raw: +0.89 (sd 0.23, ahead 10 of 10)  passes
+    raw_xt - raw: +0.10 (sd 0.08, ahead 9 of 10)
+    raw_mn - raw: +2.37 (sd 0.15, ahead 10 of 10)  passes
+    floor          severity no_response 10
+    raw            severity r2_gate 10
+    raw_half       severity r2_gate 10
+    raw_half_ctrl  severity beta_gate 2, r2_gate 8
+    raw_xt         severity r2_gate 10
+    raw_mn         severity r2_gate 10
+    skills raw_half - raw: de_score +0.002, de_direction +0.006, severity_slope +0.000, mmd_u +0.033, variogram +0.063
+    skills raw_half_ctrl - raw: de_score +0.003, de_direction +0.006, severity_slope +0.000, mmd_u +0.021, variogram +0.049
+    skills raw_xt - raw: de_score +0.001, de_direction +0.000, severity_slope +0.000, mmd_u +0.003, variogram +0.004
+    skills raw_mn - raw: de_score +0.029, de_direction +0.003, severity_slope +0.000, mmd_u +0.066, variogram +0.077
+x2 T3/Gata4->Mab21l2 (counted cross-knockout fold): floor 50.00, raw 50.08, raw_half 51.57, raw_half_ctrl 52.43, raw_xt 49.93, raw_mn 46.64
+    k14 check: task=x2 arm=raw share=0.0000 mean_abs_off=0.0000
+    k14 check: task=x2 arm=raw_half share=1.0000 mean_abs_off=0.0000
+    k14 check: task=x2 arm=raw_half_ctrl share=1.0000 mean_abs_off=0.0000
+    k14 check: task=x2 arm=raw_xt share=0.9122 mean_abs_off=3.9881
+    k14 check: task=x2 arm=raw_mn share=1.0000 mean_abs_off=0.0000
+    raw - floor: +0.08 (sd 0.47, ahead 5 of 10)
+    raw_half - raw: +1.49 (sd 1.90, ahead 10 of 10)  passes
+    raw_half - raw_half_ctrl: -0.86 (sd 1.69, ahead 3 of 10)
+    raw_half_ctrl - raw: +2.35 (sd 2.23, ahead 10 of 10)  passes
+    raw_xt - raw: -0.15 (sd 0.06, ahead 0 of 10)
+    raw_mn - raw: -3.45 (sd 0.21, ahead 0 of 10)
+    floor          severity no_response 10
+    raw            severity r2_gate 10
+    raw_half       severity r2_gate 8, scored 2
+    raw_half_ctrl  severity r2_gate 6, scored 4
+    raw_xt         severity r2_gate 10
+    raw_mn         severity beta_gate 10
+    skills raw_half - raw: de_score -0.002, de_direction +0.002, severity_slope +0.035, mmd_u +0.022, variogram +0.044
+    skills raw_half_ctrl - raw: de_score -0.002, de_direction +0.002, severity_slope +0.068, mmd_u +0.027, variogram +0.043
+    skills raw_xt - raw: de_score -0.001, de_direction -0.001, severity_slope +0.000, mmd_u -0.007, variogram -0.003
+    skills raw_mn - raw: de_score -0.016, de_direction -0.016, severity_slope +0.000, mmd_u -0.156, variogram -0.088
+r12 T3/Gata4rep1->rep2 (replicate fold, never counted): floor 50.00, raw 63.86, raw_half 61.86, raw_half_ctrl 61.58, raw_xt 64.09, raw_mn 69.59
+    k14 check: task=r12 arm=raw share=0.0000 mean_abs_off=0.0000
+    k14 check: task=r12 arm=raw_half share=0.9967 mean_abs_off=0.0000
+    k14 check: task=r12 arm=raw_half_ctrl share=0.9968 mean_abs_off=0.0000
+    k14 check: task=r12 arm=raw_xt share=0.9126 mean_abs_off=4.4726
+    k14 check: task=r12 arm=raw_mn share=0.9987 mean_abs_off=0.0000
+    raw - floor: +13.86 (sd 0.60, ahead 10 of 10)  passes
+    raw_half - raw: -2.00 (sd 0.50, ahead 0 of 10)
+    raw_half - raw_half_ctrl: +0.28 (sd 0.15, ahead 10 of 10)
+    raw_half_ctrl - raw: -2.28 (sd 0.50, ahead 0 of 10)
+    raw_xt - raw: +0.23 (sd 0.10, ahead 10 of 10)
+    raw_mn - raw: +5.73 (sd 0.46, ahead 10 of 10)  passes
+    floor          severity no_response 10
+    raw            severity scored 10
+    raw_half       severity scored 10
+    raw_half_ctrl  severity scored 10
+    raw_xt         severity scored 10
+    raw_mn         severity scored 10
+    skills raw_half - raw: de_score +0.005, de_direction -0.006, severity_slope -0.063, mmd_u -0.023, variogram -0.021
+    skills raw_half_ctrl - raw: de_score +0.005, de_direction -0.005, severity_slope -0.070, mmd_u -0.028, variogram -0.029
+    skills raw_xt - raw: de_score +0.002, de_direction -0.000, severity_slope +0.003, mmd_u +0.005, variogram +0.006
+    skills raw_mn - raw: de_score +0.052, de_direction +0.004, severity_slope +0.058, mmd_u +0.115, variogram +0.153

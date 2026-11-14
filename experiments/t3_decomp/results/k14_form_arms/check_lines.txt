@@ -1,0 +1,15 @@
+k14 check: task=r12 arm=raw_half_ctrl share=0.9968 mean_abs_off=0.0000
+k14 check: task=r12 arm=raw_half share=0.9967 mean_abs_off=0.0000
+k14 check: task=r12 arm=raw_mn share=0.9987 mean_abs_off=0.0000
+k14 check: task=r12 arm=raw share=0.0000 mean_abs_off=0.0000
+k14 check: task=r12 arm=raw_xt share=0.9126 mean_abs_off=4.4726
+k14 check: task=x1 arm=raw_half_ctrl share=0.9984 mean_abs_off=0.0000
+k14 check: task=x1 arm=raw_half share=0.9985 mean_abs_off=0.0000
+k14 check: task=x1 arm=raw_mn share=0.9993 mean_abs_off=0.0000
+k14 check: task=x1 arm=raw share=0.0000 mean_abs_off=0.0000
+k14 check: task=x1 arm=raw_xt share=0.9349 mean_abs_off=6.0748
+k14 check: task=x2 arm=raw_half_ctrl share=1.0000 mean_abs_off=0.0000
+k14 check: task=x2 arm=raw_half share=1.0000 mean_abs_off=0.0000
+k14 check: task=x2 arm=raw_mn share=1.0000 mean_abs_off=0.0000
+k14 check: task=x2 arm=raw share=0.0000 mean_abs_off=0.0000
+k14 check: task=x2 arm=raw_xt share=0.9122 mean_abs_off=3.9881

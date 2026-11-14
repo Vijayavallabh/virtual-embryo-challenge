@@ -1,0 +1,11 @@
+run folder on the DGX: ~/v/vec-campaign-h7/runs/harness/k14_form_arms (campaign checkout)
+commit: 750d6f133e0ab2eb175e8fd57bbcbb1dfef741e5 (branch campaign/t3-e-fix)
+tree at start (bytes of git status --porcelain): 0
+tree at end (bytes): 0
+started UTC: 2026-11-14T06:33:09Z
+ended UTC: 2026-11-14T06:40:00Z
+CPU only, 8 BLAS threads, one process per fold
+commands: experiments/t3_decomp/k14_form_arms.py run --task x1|x2|r12 --out <runs>; then read --runs <runs> --out <reading>
+tasks/: the three task files as written by the run; reading.json and reading.txt: the fixed reading as the script wrote it
+check_lines.txt: the check lines from the run's logs (shares and means only)
+validity: the reading's own line says whether raw reproduces K9's committed raw scores (the K9 task files are on the branch)

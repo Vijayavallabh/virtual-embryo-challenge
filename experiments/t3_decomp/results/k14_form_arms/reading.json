@@ -1,0 +1,457 @@
+{
+ "void": false,
+ "why": [],
+ "commit": "750d6f133e0ab2eb175e8fd57bbcbb1dfef741e5",
+ "tasks": {
+  "x1": {
+   "counted_fold": true,
+   "k14_check": {
+    "raw": {
+     "share": 0.0,
+     "mean_abs_off": 0.0
+    },
+    "raw_half": {
+     "share": 0.9984964424755001,
+     "mean_abs_off": 0.0
+    },
+    "raw_half_ctrl": {
+     "share": 0.9983621962679553,
+     "mean_abs_off": 0.0
+    },
+    "raw_xt": {
+     "share": 0.934890589340851,
+     "mean_abs_off": 6.0747617129816085
+    },
+    "raw_mn": {
+     "share": 0.9992884951000134,
+     "mean_abs_off": 0.0
+    }
+   },
+   "mean_score": {
+    "floor": 50.0,
+    "raw": 46.47338794948598,
+    "raw_half": 47.57167718856678,
+    "raw_half_ctrl": 47.3640176819185,
+    "raw_xt": 46.57645179560346,
+    "raw_mn": 48.84456726865291
+   },
+   "paired": {
+    "raw - floor": {
+     "mean": -3.5266120505140224,
+     "sd": 0.34584140910797123,
+     "ahead": 0,
+     "n": 10,
+     "passes": false
+    },
+    "raw_half - raw": {
+     "mean": 1.0982892390807997,
+     "sd": 0.21819821389797228,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "raw_half - raw_half_ctrl": {
+     "mean": 0.20765950664827743,
+     "sd": 0.1311766948990331,
+     "ahead": 9,
+     "n": 10,
+     "passes": false
+    },
+    "raw_half_ctrl - raw": {
+     "mean": 0.8906297324325223,
+     "sd": 0.23369723975783693,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "raw_xt - raw": {
+     "mean": 0.10306384611747887,
+     "sd": 0.08198446418058866,
+     "ahead": 9,
+     "n": 10,
+     "passes": false
+    },
+    "raw_mn - raw": {
+     "mean": 2.371179319166933,
+     "sd": 0.14505456748654735,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "raw": {
+     "r2_gate": 10
+    },
+    "raw_half": {
+     "r2_gate": 10
+    },
+    "raw_half_ctrl": {
+     "beta_gate": 2,
+     "r2_gate": 8
+    },
+    "raw_xt": {
+     "r2_gate": 10
+    },
+    "raw_mn": {
+     "r2_gate": 10
+    }
+   },
+   "skill_diff_minus_raw": {
+    "raw_half": {
+     "de_score": 0.001787014364213163,
+     "de_direction": 0.0059699458538506,
+     "severity_slope": 0.0,
+     "mmd_u": 0.03264357453458462,
+     "variogram": 0.06296340842414065
+    },
+    "raw_half_ctrl": {
+     "de_score": 0.003101441254358983,
+     "de_direction": 0.005964843181132012,
+     "severity_slope": 0.0,
+     "mmd_u": 0.021489705705776352,
+     "variogram": 0.048823618350517024
+    },
+    "raw_xt": {
+     "de_score": 0.0008875691694742727,
+     "de_direction": 0.00021679729761595046,
+     "severity_slope": 0.0,
+     "mmd_u": 0.0031953838713801807,
+     "variogram": 0.0040840290170362226
+    },
+    "raw_mn": {
+     "de_score": 0.02938138370047579,
+     "de_direction": 0.003072993338222102,
+     "severity_slope": 0.0,
+     "mmd_u": 0.0661188275486766,
+     "variogram": 0.07743588051412349
+    }
+   },
+   "record": {
+    "fold": "T3/Mab21l2->Gata4rep2",
+    "reference": "E8.75",
+    "max_abs_log_finalize_y_over_phi_raw": 1.9984014443252837e-15,
+    "streams": {
+     "raw_half": "t3_factor_xko:k14_half",
+     "raw_xt": "t3_factor_xko:k14_xt",
+     "raw_mn": "t3_factor_xko:k14_mn"
+    }
+   }
+  },
+  "x2": {
+   "counted_fold": true,
+   "k14_check": {
+    "raw": {
+     "share": 0.0,
+     "mean_abs_off": 0.0
+    },
+    "raw_half": {
+     "share": 1.0,
+     "mean_abs_off": 0.0
+    },
+    "raw_half_ctrl": {
+     "share": 0.9999937972956209,
+     "mean_abs_off": 0.0
+    },
+    "raw_xt": {
+     "share": 0.9122379357399826,
+     "mean_abs_off": 3.9880846048877316
+    },
+    "raw_mn": {
+     "share": 1.0,
+     "mean_abs_off": 0.0
+    }
+   },
+   "mean_score": {
+    "floor": 50.0,
+    "raw": 50.084296911174725,
+    "raw_half": 51.570332057926734,
+    "raw_half_ctrl": 52.432769018261446,
+    "raw_xt": 49.92992132470139,
+    "raw_mn": 46.63740942297386
+   },
+   "paired": {
+    "raw - floor": {
+     "mean": 0.08429691117472657,
+     "sd": 0.4690720345284868,
+     "ahead": 5,
+     "n": 10,
+     "passes": false
+    },
+    "raw_half - raw": {
+     "mean": 1.486035146752009,
+     "sd": 1.8967507311988996,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "raw_half - raw_half_ctrl": {
+     "mean": -0.8624369603347091,
+     "sd": 1.69324129325209,
+     "ahead": 3,
+     "n": 10,
+     "passes": false
+    },
+    "raw_half_ctrl - raw": {
+     "mean": 2.3484721070867183,
+     "sd": 2.2293407318112544,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "raw_xt - raw": {
+     "mean": -0.15437558647333988,
+     "sd": 0.05821886317923834,
+     "ahead": 0,
+     "n": 10,
+     "passes": false
+    },
+    "raw_mn - raw": {
+     "mean": -3.446887488200864,
+     "sd": 0.20860555674188233,
+     "ahead": 0,
+     "n": 10,
+     "passes": false
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "raw": {
+     "r2_gate": 10
+    },
+    "raw_half": {
+     "r2_gate": 8,
+     "scored": 2
+    },
+    "raw_half_ctrl": {
+     "r2_gate": 6,
+     "scored": 4
+    },
+    "raw_xt": {
+     "r2_gate": 10
+    },
+    "raw_mn": {
+     "beta_gate": 10
+    }
+   },
+   "skill_diff_minus_raw": {
+    "raw_half": {
+     "de_score": -0.0016542508420466563,
+     "de_direction": 0.0021800962085109623,
+     "severity_slope": 0.03482116995591576,
+     "mmd_u": 0.021521656870553785,
+     "variogram": 0.044046391932012034
+    },
+    "raw_half_ctrl": {
+     "de_score": -0.0021133383651074644,
+     "de_direction": 0.0018296687716835348,
+     "severity_slope": 0.06795370880753106,
+     "mmd_u": 0.027006379416284605,
+     "variogram": 0.04290140819551995
+    },
+    "raw_xt": {
+     "de_score": -0.0008307830818096162,
+     "de_direction": -0.0008296063661212216,
+     "severity_slope": 0.0,
+     "mmd_u": -0.0073604051745527034,
+     "variogram": -0.0025483840964236615
+    },
+    "raw_mn": {
+     "de_score": -0.015584664850868435,
+     "de_direction": -0.015951942512856525,
+     "severity_slope": 0.0,
+     "mmd_u": -0.1563506584583557,
+     "variogram": -0.08804263479414139
+    }
+   },
+   "record": {
+    "fold": "T3/Gata4->Mab21l2",
+    "reference": "E9.5",
+    "max_abs_log_finalize_y_over_phi_raw": 1.443289932012693e-14,
+    "streams": {
+     "raw_half": "t3_factor_xko:k14_half",
+     "raw_xt": "t3_factor_xko:k14_xt",
+     "raw_mn": "t3_factor_xko:k14_mn"
+    }
+   }
+  },
+  "r12": {
+   "counted_fold": false,
+   "k14_check": {
+    "raw": {
+     "share": 0.0,
+     "mean_abs_off": 0.0
+    },
+    "raw_half": {
+     "share": 0.9966572694321385,
+     "mean_abs_off": 0.0
+    },
+    "raw_half_ctrl": {
+     "share": 0.9967512417774198,
+     "mean_abs_off": 0.0
+    },
+    "raw_xt": {
+     "share": 0.9125520204054236,
+     "mean_abs_off": 4.472613773660894
+    },
+    "raw_mn": {
+     "share": 0.9987112364075715,
+     "mean_abs_off": 0.0
+    }
+   },
+   "mean_score": {
+    "floor": 50.0,
+    "raw": 63.863084540451226,
+    "raw_half": 61.8605144288447,
+    "raw_half_ctrl": 61.583653484596574,
+    "raw_xt": 64.0885927141928,
+    "raw_mn": 69.59145789375461
+   },
+   "paired": {
+    "raw - floor": {
+     "mean": 13.863084540451217,
+     "sd": 0.5968677948354641,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "raw_half - raw": {
+     "mean": -2.002570111606514,
+     "sd": 0.4964412126932586,
+     "ahead": 0,
+     "n": 10,
+     "passes": false
+    },
+    "raw_half - raw_half_ctrl": {
+     "mean": 0.27686094424813773,
+     "sd": 0.14886364999683038,
+     "ahead": 10,
+     "n": 10,
+     "passes": false
+    },
+    "raw_half_ctrl - raw": {
+     "mean": -2.279431055854652,
+     "sd": 0.5006377924111592,
+     "ahead": 0,
+     "n": 10,
+     "passes": false
+    },
+    "raw_xt - raw": {
+     "mean": 0.22550817374157717,
+     "sd": 0.09814950399025603,
+     "ahead": 10,
+     "n": 10,
+     "passes": false
+    },
+    "raw_mn - raw": {
+     "mean": 5.728373353303384,
+     "sd": 0.4619747927820788,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "raw": {
+     "scored": 10
+    },
+    "raw_half": {
+     "scored": 10
+    },
+    "raw_half_ctrl": {
+     "scored": 10
+    },
+    "raw_xt": {
+     "scored": 10
+    },
+    "raw_mn": {
+     "scored": 10
+    }
+   },
+   "skill_diff_minus_raw": {
+    "raw_half": {
+     "de_score": 0.005383873845045978,
+     "de_direction": -0.005707808593468833,
+     "severity_slope": -0.06331285116345028,
+     "mmd_u": -0.02261228785633177,
+     "variogram": -0.020902797344866875
+    },
+    "raw_half_ctrl": {
+     "de_score": 0.005211583743260117,
+     "de_direction": -0.004821364096322445,
+     "severity_slope": -0.07009970636975295,
+     "mmd_u": -0.027775544931646058,
+     "variogram": -0.02868065841510231
+    },
+    "raw_xt": {
+     "de_score": 0.0017751902573897305,
+     "de_direction": -0.0002760920303961245,
+     "severity_slope": 0.002522010459817492,
+     "mmd_u": 0.005488498184210278,
+     "variogram": 0.006280315884228493
+    },
+    "raw_mn": {
+     "de_score": 0.05247401346991905,
+     "de_direction": 0.004236653508514576,
+     "severity_slope": 0.057583504973490365,
+     "mmd_u": 0.11525684160284885,
+     "variogram": 0.15319586099018795
+    }
+   },
+   "record": {
+    "fold": "T3/Gata4rep1->rep2",
+    "reference": "E8.75",
+    "max_abs_log_finalize_y_over_phi_raw": 5.329070518200737e-15,
+    "streams": {
+     "raw_half": "t3_factor_xko:k14_half",
+     "raw_xt": "t3_factor_xko:k14_xt",
+     "raw_mn": "t3_factor_xko:k14_mn"
+    }
+   }
+  }
+ },
+ "k9_reproduction": "reproduced",
+ "arms": {
+  "raw_half": {
+   "supported": false,
+   "checks": {
+    "x1: raw_half - raw": true,
+    "x1: raw_half - raw_half_ctrl": false,
+    "r12: raw_half - raw": false,
+    "r12: raw_half - raw_half_ctrl": false,
+    "x2: raw_half - raw not below -0.3": true
+   },
+   "verdict": "CLOSED: no request"
+  },
+  "raw_xt": {
+   "supported": false,
+   "checks": {
+    "x1: raw_xt - raw": false,
+    "r12: raw_xt - raw": false,
+    "x2: raw_xt - raw not below -0.3": true
+   },
+   "verdict": "CLOSED: no request"
+  },
+  "raw_mn": {
+   "supported": false,
+   "checks": {
+    "x1: raw_mn - raw": true,
+    "r12: raw_mn - raw": true,
+    "x2: raw_mn - raw not below -0.3": false
+   },
+   "verdict": "CLOSED: no request"
+  }
+ },
+ "label": "A labelled reading for a ruling, NOT the adoption rule: only x1 and x2 are counted cross-knockout folds; r12 is a replicate fold that never counts; x2's reference is WT E9.5, where K7 found reverts flattered.",
+ "control": {
+  "raw_half_ctrl": "every drawn cell through K9's raw path with phi_ctrl = (1 + phi_raw) / 2 elementwise (no finalize): it moves each gene's expected count exactly as far as raw_half's mixture does, in every cell, without two kinds of cells in the file"
+ }
+}
