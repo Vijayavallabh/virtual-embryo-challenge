@@ -587,7 +587,7 @@ def test_the_run_reads_n48_without_held_and_runs_the_calibration(sr, monkeypatch
     monkeypatch.setattr(sr, "reading", spy)
     with pytest.raises(RuntimeError, match="stop"):
         sr.run("x")
-    assert seen == {"scales": {"CM": "js_without_held"}, "calibrate": True}
+    assert seen == {"scales": {"CM": "js_without_held"}, "calibrate": True, "self_check": True}
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -738,7 +738,7 @@ def test_why_a_joined_statement_is_not_separated(sr):
 
 def test_the_ledger_sentences_are_in_the_docstring_and_printed(sr, cfg):
     flat = " ".join(sr.__doc__.split())
-    assert len(sr.LEDGER_NOTES) == 12 and all(n in flat for n in sr.LEDGER_NOTES)
+    assert len(sr.LEDGER_NOTES) == 21 and all(n in flat for n in sr.LEDGER_NOTES)
     for start in ("The corrected fraction statement compares 0.4 with the courses in units of Feng's true direction",
                   "K counts any difference between the heart library", "L is the size of between-type contrasts",
                   "A share is what the genes with the largest Feng change say", "Not separated may mean",
@@ -776,3 +776,369 @@ def test_every_unchanged_quantity_keeps_its_output_bit_for_bit(sr, cfg):
     assert hashlib.sha256(json.dumps(kept, sort_keys=True).encode()).hexdigest() == GOLDEN_SHA
     assert {s: r["statements"][s] for s in ("kind", "pace_raw", "entry_fraction_raw")} == {
         "kind": sr.KIND_ALONG, "pace_raw": sr.PACE_FIFTH_OR_LESS, "entry_fraction_raw": sr.BELOW_BOTH}
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Third review: the self-check arm and the widened statements, the calibration's r_d, undefined at the point, K's
+# support, own cells at E9.5, two labels in the calibration, an empty Feng half, the new ledger sentences
+
+
+def count_world(sr, cfg, n=80, depth=60.0, seed=21, c_lib=(0.2, 0.3, 0.9), half_noise=0.0):
+    """Three T1 stages of Poisson counts (X = log1p CP10k of them, counts recoverable), n cells per label and library:
+    E9.5 at Feng's E9.5 means (libraries 1 and 2), E10.5 libraries 1, 2 and 3 moved by c_lib times each group's
+    direction, E8.5 with V-CM and BEC (library 1)."""
+    genes, fst = world(seed=seed, half_noise=half_noise)
+    dirs, _, idx = sr.feng_dirs.directions_from_stats(fst, genes, cfg, sr.BRACKET)
+    rng = np.random.default_rng(seed + 1)
+    e95 = {}
+    for g in T1_LABEL:
+        v = sr.dl.on_t1(sr.dl.feng_sel(fst, "E9.5", cfg["external_labels"][g][0])["cp"], idx)
+        v[~np.isfinite(v)] = 5.0
+        e95[g] = v
+    d0 = {g: np.nan_to_num(dirs[g]) for g in dirs}
+
+    def build(blocks):
+        rows, labs, names = [], [], []
+        for (lab, lib), mean in blocks.items():
+            C = rng.poisson(np.maximum(mean, 0.0) * depth, size=(n, len(genes)))
+            rows.append(C)
+            labs += [lab] * n
+            names += [f"c{len(names) + i}_{lib}" for i in range(n)]
+        C = np.vstack(rows).astype(np.int64)
+        C[:, 0] = 1  # g0 (no Feng value): a count of one in every cell, so counts are recoverable from .X
+        C = sparse.csr_matrix(C)
+        return ad.AnnData(X=sr.t1_scope.log1p_cp10k(C), obs=pd.DataFrame({"celltype": labs}, index=names),
+                          var=pd.DataFrame(index=list(genes)))
+
+    E95 = {(T1_LABEL[g], li): e95[g] for g in T1_LABEL for li in ("1", "2")}
+    E105 = {(T1_LABEL[g], li): (e95[g] + EPS) * np.exp(c * d0[g]) - EPS for g in T1_LABEL
+            for li, c in zip(("1", "2", "3"), c_lib, strict=True)}
+    E85 = {("V-CM", "1"): e95["CM"], ("BEC", "1"): e95["Endothelium"]}
+    return genes, fst, {"E8.5": build(E85), "E9.5": build(E95), "E10.5": build(E105)}
+
+
+def test_the_self_check_split_is_seeded_and_splits_every_block_into_quarters_quarters_and_half(sr):
+    a = _noisy_stage()
+    parts = sr.split_cells(a)
+    again = sr.split_cells(a)
+    assert all(np.array_equal(parts[p], again[p]) for p in parts)
+    other = sr.split_cells(a, seed=(47, 4))
+    assert not all(np.array_equal(parts[p], other[p]) for p in parts)
+    every = np.concatenate([parts["H1a"], parts["H1b"], parts["H2"]])
+    assert sorted(every) == list(range(a.n_obs))  # a partition of the cells
+    labs = a.obs["celltype"].to_numpy()
+    libs = np.array([n.split("_")[-1] for n in a.obs_names])
+    for lab, lib in (("A", "1"), ("A", "2"), ("B", "1")):  # blocks of 7, 5 and 6 cells
+        m = (labs == lab) & (libs == lib)
+        n = int(m.sum())
+        cnt = {p: int(m[parts[p]].sum()) for p in parts}
+        assert cnt == {"H1a": n // 4, "H1b": n // 2 - n // 4, "H2": n - n // 2}
+    assert sr.SPLIT_STREAM == (47, 3) and sr.SELF_STREAM == (47, 2)
+
+
+def test_the_self_check_world_and_its_bias(sr, cfg, monkeypatch):
+    genes, fst, stages = count_world(sr, cfg)
+    seen = {}
+    real = sr.t1_scope.external_shift
+
+    def spy(adata, dirs, fraction, group_of, held, **kw):
+        seen.setdefault("calls", []).append({"n": adata.n_obs, "fraction": fraction, "seed": kw.get("seed"),
+                                             "held": list(held), "group_of": dict(group_of)})
+        return real(adata, dirs, fraction, group_of, held, **kw)
+
+    monkeypatch.setattr(sr.t1_scope, "external_shift", spy)
+    held = [genes[4]]
+    r = sr.reading(stages, fst, held, {}, cfg, n_boot=2, self_check=True)
+    sc = r["self_check"]
+    parts = sr.split_cells(stages["E9.5"])
+    (call,) = seen["calls"]  # one shift: H1's cells, M1's 0.2 step on stream (47, 2), the held genes flat
+    assert call["n"] == len(parts["H1a"]) + len(parts["H1b"]) and call["fraction"] == 0.2
+    assert call["seed"] == [47, 2] and call["held"] == held
+    assert call["group_of"] == {"V-CM": "CM", "Endocardium": "Endocardium", "BEC": "Endothelium",
+                                "Epicardium": "Epicardium"}
+    known = {"A": 0.2, "L": 1.0, "A_over_L": 0.2, "f_max": 0.8, "f_even": 0.4, "f_decay": 0.4}
+    assert sc["known"] == {**known, **{f"{k}_corr": v for k, v in known.items()}}
+    for k, v in sc["bias"].items():
+        assert v == sc["measured"][k] - sc["known"][k]
+    # high counts: the world recovers its known answer closely, and r_d = 1 makes A_corr the raw A
+    assert sc["measured"]["A"] == pytest.approx(0.2, abs=0.02)
+    assert sc["measured"]["A_corr"] == sc["measured"]["A"]
+    assert sc["measured"]["L_corr"] == pytest.approx(1.0, abs=0.05)
+    assert sc["support"] == r["support"]["A_K_support"]
+    # measured by hand: the courses from the measured (A, L)
+    c = sr.courses(sc["measured"]["A"], sc["measured"]["L"])
+    assert sc["measured"]["f_even"] == c["f_even"] and sc["measured"]["f_decay"] == c["f_decay"]
+    for p, rec in sc["pairs"].items():
+        if p != "Endocardium~Endothelium":
+            assert 0 < rec["r_c"] <= 1 and rec["slope_corrected"] == pytest.approx(rec["slope"] / rec["r_c"])
+    for s in ("pace_raw", "pace_corrected", "entry_fraction_raw", "entry_fraction_corrected"):
+        assert r["statements"][f"{s}_decided_by"] in (sr.BOOT_WIDTH, sr.BIAS_WIDTH)
+    txt = sr.text({"label": sr.LABEL_T47, "read": r, "stamp": {"commit": "abc", "tree_clean": True, "utc": "t"}})
+    assert "Self-check (a known world from E9.5's cells" in txt and "[decided by the " in txt
+
+
+def test_the_self_check_scale_by_hand_on_its_own_world(sr, cfg):
+    """One pair's self-check slope by hand: the challenge's E9.5 contrast from H2's cells on the stand-in Feng contrast
+    from H1's cells, both g against h, over the genes both groups keep."""
+    genes, fst, stages = count_world(sr, cfg, seed=31)
+    r = sr.reading(stages, fst, [], {}, cfg, n_boot=1, self_check=True)
+    sc = r["self_check"]
+    a95 = stages["E9.5"]
+    parts = sr.split_cells(a95)
+    h1 = np.sort(np.concatenate([parts["H1a"], parts["H1b"]]))
+    lab = a95.obs["celltype"].to_numpy()
+
+    def mean(idx, g):
+        m = idx[lab[idx] == T1_LABEL[g]]
+        return np.expm1(a95.X[m].toarray().astype(np.float32)).astype(np.float64).mean(0)
+
+    def contrast(idx):
+        return np.log((mean(idx, "CM") + EPS) / (mean(idx, "Epicardium") + EPS))
+
+    dirs = sr.feng_dirs.directions_from_stats(fst, genes, cfg, sr.BRACKET)[0]
+    m = np.isfinite(dirs["CM"]) & np.isfinite(dirs["Epicardium"])
+    x, y = contrast(h1)[m], contrast(parts["H2"])[m]
+    assert sc["pairs"]["CM~Epicardium"]["slope"] == pytest.approx(float(y @ x / (x @ x)), rel=1e-5)
+    xa, xb = contrast(parts["H1a"])[m], contrast(parts["H1b"])[m]
+    rc = (np.mean(x ** 2) - np.mean(((xa - xb) / 2) ** 2)) / np.mean(x ** 2)
+    assert sc["pairs"]["CM~Epicardium"]["r_c"] == pytest.approx(rc, rel=1e-4)
+
+
+def _bias(value=0.0, **kw):
+    keys = [f"{k}{t}" for t in ("", "_corr") for k in ("A", "L", "A_over_L", "f_max", "f_even", "f_decay")]
+    return {**dict.fromkeys(keys, value), **kw}
+
+
+def test_the_fraction_statement_is_not_separated_where_0_4_lies_inside_the_bias_widening(sr):
+    # the reviewer's case: true 0.4, both courses read about 0.38 with intervals of +-0.0015: "above both courses" on
+    # the bootstrap interval; a self-check bias of -0.03 on the courses widens them past 0.4
+    rv = {"K": 0.3, **sr.courses(0.19, 0.95)}  # f_even 0.38, f_decay 0.38
+    recs = {k: {"value": v, "p5": v - 0.0015, "p95": v + 0.0015, "nonfinite_draws": 0} for k, v in rv.items()}
+    r = {**recs, **{f"{k}_corr": v for k, v in recs.items()}}
+    plain = sr.statements(r, 10)
+    assert plain["entry_fraction"] == sr.ABOVE_BOTH and "entry_fraction_raw_decided_by" not in plain
+    st = sr.statements(r, 10, bias=_bias(0.0, f_even=-0.03, f_decay=-0.03, f_even_corr=-0.03, f_decay_corr=-0.03))
+    assert st["entry_fraction_raw"] == st["entry_fraction_corrected"] == st["entry_fraction"] == sr.NOT_SEPARATED
+    assert st["entry_fraction_raw_decided_by"] == st["entry_fraction_corrected_decided_by"] == sr.BIAS_WIDTH
+    assert st["entry_fraction_why_not_separated"] == ("the interval does not separate (raw widened by the self-check's "
+                                                      "bias and corrected widened by the self-check's bias)")
+    # a bias smaller than the margin leaves the statement, decided by the bootstrap interval
+    st = sr.statements(r, 10, bias=_bias(0.005))
+    assert st["entry_fraction"] == sr.ABOVE_BOTH and st["entry_fraction_raw_decided_by"] == sr.BOOT_WIDTH
+    # the sign of the bias does not matter: each side widens by its absolute value
+    assert sr.statements(r, 10, bias=_bias(0.0, f_even=0.03, f_decay=0.03, f_even_corr=0.03, f_decay_corr=0.03))[
+        "entry_fraction"] == sr.NOT_SEPARATED
+    # "inside" on the bootstrap interval stays "inside"; "above the bound" widened by f_max's own bias
+    assert sr.statements(r, 10, bias=_bias(0.0, f_max=0.05))["entry_fraction"] == sr.ABOVE_BOTH
+    rv2 = {"K": 0.3, **sr.courses(0.2, 1.0)}
+    r2 = {k: {"value": v, "p5": v - 0.01, "p95": v + 0.01, "nonfinite_draws": 0} for k, v in rv2.items()}
+    r2 = {**r2, **{f"{k}_corr": v for k, v in r2.items()}}
+    assert sr.statements(r2, 10, bias=_bias(0.2))["entry_fraction"] == sr.INSIDE
+    rv3 = {"K": 0.3, **sr.courses(0.05, 0.42)}  # f_max 0.37 < 0.4: above the bound
+    r3 = {k: {"value": v, "p5": v - 0.005, "p95": v + 0.005, "nonfinite_draws": 0} for k, v in rv3.items()}
+    r3 = {**r3, **{f"{k}_corr": v for k, v in r3.items()}}
+    assert sr.statements(r3, 10, bias=_bias(0.0))["entry_fraction"] == sr.ABOVE_BOUND
+    st = sr.statements(r3, 10, bias=_bias(0.0, f_max=-0.03, f_max_corr=0.03))
+    assert st["entry_fraction"] == sr.NOT_SEPARATED and st["entry_fraction_raw_decided_by"] == sr.BIAS_WIDTH
+    # an undefined bias makes the statement not computable
+    st = sr.statements(r3, 10, bias=_bias(0.0, f_decay_corr=float("nan")))
+    assert st["entry_fraction_corrected"] == "not computable (the self-check's bias of f_decay_corr is undefined)"
+    assert st["entry_fraction_corrected_decided_by"] is None and st["entry_fraction"] == st["entry_fraction_corrected"]
+
+
+def test_the_pace_statement_widens_by_the_bias_of_a_over_l(sr):
+    r = _draw_records(sr, [0.21] * 10, [1.0] * 10, A0=0.21)  # A / L = 0.21 in every draw: "more than a fifth"
+    assert sr.statements(r, 10)["pace"] == sr.PACE_MORE
+    st = sr.statements(r, 10, bias=_bias(0.0, A_over_L=0.02))  # 0.2 inside the widened raw interval
+    assert st["pace_raw"] == sr.NOT_SEPARATED and st["pace_raw_decided_by"] == sr.BIAS_WIDTH
+    assert st["pace_corrected"] == sr.PACE_MORE and st["pace_corrected_decided_by"] == sr.BOOT_WIDTH
+    assert st["pace"] == sr.NOT_SEPARATED
+    assert st["pace_why_not_separated"] == "the interval does not separate (raw widened by the self-check's bias)"
+    r = _draw_records(sr, [0.18] * 10, [1.0] * 10, A0=0.18)  # "about a fifth or less" until 0.3 enters the widening
+    assert sr.statements(r, 10, bias=_bias(0.1))["pace"] == sr.PACE_FIFTH_OR_LESS
+    assert sr.statements(r, 10, bias=_bias(0.13))["pace"] == sr.NOT_SEPARATED
+    # the bias of the quantity the statement reads, and no other
+    assert sr.statements(r, 10, bias=_bias(0.0, A=0.5, L=0.5, A_corr=0.5, L_corr=0.5))["pace"] == \
+        sr.PACE_FIFTH_OR_LESS
+
+
+def test_the_self_check_leaves_every_existing_value_bit_for_bit(sr, cfg):
+    genes, fst, stages = count_world(sr, cfg, seed=41, half_noise=0.05)
+    off = sr.reading(stages, fst, [genes[7]], {}, cfg, n_boot=3, calibrate=True)
+    on = sr.reading(stages, fst, [genes[7]], {}, cfg, n_boot=3, calibrate=True, self_check=True)
+    assert json.dumps(off["values"], sort_keys=True) == json.dumps(on["values"], sort_keys=True)
+    for k in ("reading", "r_d", "support", "scale_pairs", "feng_reliability", "combined_groups"):
+        assert json.dumps(off[k], sort_keys=True, default=str) == json.dumps(on[k], sort_keys=True, default=str)
+    assert json.dumps(off["calibration"], sort_keys=True) == json.dumps(on["calibration"], sort_keys=True)
+    assert on["statements"]["kind"] == off["statements"]["kind"]
+    assert "self_check" in on and "self_check" not in off
+
+
+def test_no_feng_stage_other_than_the_bracket_ends_is_read_with_the_self_check(sr, cfg, monkeypatch):
+    genes, fst, stages = count_world(sr, cfg)
+    seen, state = [], {"in_arm": False}
+    real_sel, real_arm = sr.dl.feng_sel, sr.self_check_arm
+
+    def spy(st, stage, labels, halves=("A", "B")):
+        seen.append((stage, state["in_arm"]))
+        return real_sel(st, stage, labels, halves)
+
+    def arm(*a, **k):
+        state["in_arm"] = True
+        try:
+            return real_arm(*a, **k)
+        finally:
+            state["in_arm"] = False
+
+    monkeypatch.setattr(sr.dl, "feng_sel", spy)
+    monkeypatch.setattr(sr, "self_check_arm", arm)
+    r = sr.reading(stages, fst, [], {}, cfg, n_boot=1, self_check=True)
+    assert "self_check" in r and seen
+    assert {s for s, _ in seen} <= set(sr.BRACKET)
+    assert not any(inside for _, inside in seen)  # the arm reads no Feng statistics: only d, from the setup
+
+
+def test_the_calibration_divides_by_the_reads_r_d(sr, cfg):
+    genes, fst, stages = count_world(sr, cfg, half_noise=0.1, seed=51)
+    r = sr.reading(stages, fst, [], {}, cfg, n_boot=1, calibrate=True)
+    cal = r["calibration"]
+    for g, rec in cal["groups"].items():
+        assert 0 < r["r_d"][g] < 1
+        assert rec["share_corrected"] == pytest.approx(rec["share"] / r["r_d"][g], rel=1e-12)
+    s_cal = cal["combined_weighted"]
+    for k in ("f_max", "f_even", "f_decay", "f_max_corr", "f_even_corr", "f_decay_corr"):
+        assert cal[f"{k}_in_M1_fraction"] == pytest.approx(r["reading"][k]["value"] * 0.2 / s_cal)
+
+
+def test_the_calibration_share_corrected_uses_the_scales_handed_over(sr):
+    rng = np.random.default_rng(5)
+    G, n = 200, 120
+    genes = [f"g{i}" for i in range(G)]
+    C = rng.poisson(rng.uniform(5, 60, G), size=(n, G)).astype(np.int64)
+    C[:, 0] = 1  # counts recoverable from .X
+    a = ad.AnnData(X=sr.t1_scope.log1p_cp10k(sparse.csr_matrix(C)),
+                   obs=pd.DataFrame({"celltype": ["V-CM"] * n}, index=[f"c{i}_3" for i in range(n)]),
+                   var=pd.DataFrame(index=genes))
+    d = rng.normal(0, 0.5, G)
+    cal = sr.calibration(a, genes, {"CM": d}, {"CM": np.ones(G, bool)}, {"CM": ["V-CM"]}, [], {"CM": 0.5},
+                         {"CM": 1.0}, EPS, 20)
+    assert cal["groups"]["CM"]["share_corrected"] == cal["groups"]["CM"]["share"] / 0.5
+
+
+def test_the_calibration_takes_every_label_of_a_group(sr):
+    rng = np.random.default_rng(6)
+    G, n = 200, 120
+    genes = [f"g{i}" for i in range(G)]
+    C = np.vstack([rng.poisson(rng.uniform(5, 60, G), size=(n, G)), rng.poisson(rng.uniform(1, 9, G), size=(n, G))])
+    C[:, 0] = 1  # counts recoverable from .X
+    two = ["V-CM"] * n + ["A-CM"] * n
+    names = [f"c{i}_3" for i in range(2 * n)]
+
+    def adata(labels):
+        return ad.AnnData(X=sr.t1_scope.log1p_cp10k(sparse.csr_matrix(C.astype(np.int64))),
+                          obs=pd.DataFrame({"celltype": labels}, index=names), var=pd.DataFrame(index=genes))
+
+    d = rng.normal(0, 0.5, G)
+    args = ({"CM": d}, {"CM": np.ones(G, bool)})
+    both = sr.calibration(adata(two), genes, *args, {"CM": ["V-CM", "A-CM"]}, [], {}, {"CM": 1.0}, EPS, 20)
+    one_label = sr.calibration(adata(["V-CM"] * (2 * n)), genes, *args, {"CM": ["V-CM"]}, [], {}, {"CM": 1.0}, EPS,
+                               20)
+    assert both["groups"]["CM"]["share"] == one_label["groups"]["CM"]["share"]  # both labels' cells enter
+    first = sr.calibration(adata(two), genes, *args, {"CM": ["V-CM"]}, [], {}, {"CM": 1.0}, EPS, 20)
+    assert first["groups"]["CM"]["share"] != both["groups"]["CM"]["share"]
+
+
+def test_a_statement_undefined_at_the_point_says_so(sr):
+    nan = float("nan")
+    k = {"value": nan, "p5": 0.2, "p95": 0.3, "nonfinite_draws": 0}
+    assert sr.undefined([k], 200) == "not computable (undefined at the point; 0 of 200 draws undefined)"
+    r = _draw_records(sr, [0.5] * 30, [1.0] * 30)
+    r["K"] = k
+    assert sr.statements(r, 30)["kind"] == "not computable (undefined at the point; 0 of 30 draws undefined)"
+    assert sr.undefined([{**k, "value": 0.1, "nonfinite_draws": 3}], 200) == "not computable (3 of 200 draws undefined)"
+    assert sr.undefined([{**k, "nonfinite_draws": 3}], 200) == \
+        "not computable (undefined at the point; 3 of 200 draws undefined)"
+
+
+def test_K_is_read_over_the_joint_support(sr):
+    nan = float("nan")
+    setup = {"dirs": {"CM": None, "Endothelium": None, "Epicardium": None},
+             "weights": {"CM": 1.0, "Endothelium": 3.0, "Epicardium": 1.0},
+             "scales": {"CM": 0.5, "Endothelium": nan, "Epicardium": 0.8}, "source": {"E8.5": {}, "E9.5": {}}}
+    out = _fake_measure(sr, {"CM": 0.1, "Endothelium": 0.4, "Epicardium": nan},
+                        {"CM": 0.2, "Endothelium": nan, "Epicardium": nan})
+    out["b_E9.5_E10.5_lib3/CM/share"], out["b_E9.5_E10.5_lib3/CM/share_corrected"] = 0.7, 1.4
+    out["b_E9.5_E10.5_lib3/Endothelium/share"] = 0.9  # outside the joint support: must not enter K
+    rv = sr.reading_values(out, setup)
+    assert rv["K"] == pytest.approx(0.7 - 0.1) and rv["K_corr"] == pytest.approx(1.4 - 0.2)
+
+
+def test_a_group_that_falls_back_at_e9_5_leaves_p_over_own_cells(sr, cfg):
+    genes, fst = world()
+    stages, _ = build_t1(sr, cfg, genes, fst)
+    e95 = stages["E9.5"]
+    endo = e95[e95.obs["celltype"] == "Endocardium"].copy()
+    endo.obs_names = [f"e{i}_1" for i in range(endo.n_obs)]
+    stages["E8.5"] = ad.concat([stages["E8.5"], endo])  # Endocardium's own cells at E8.5
+    stages["E9.5"] = e95[e95.obs["celltype"] != "Endocardium"].copy()  # and none at E9.5
+    r = sr.reading(stages, fst, [], {}, cfg, n_boot=1)
+    assert r["label_source"]["E8.5"]["Endocardium"] == "own"
+    assert r["label_source"]["E9.5"]["Endocardium"] == "fallback:Endothelium"
+    assert "Endocardium" in r["support"]["P_support"]
+    assert "Endocardium" not in r["support"]["P_own_cells_support"]
+    assert "Endocardium" in r["support"]["P_fallback_groups"]
+
+
+def test_an_empty_feng_half_gives_that_group_no_r_d_and_the_read_goes_on(sr, cfg):
+    genes, fst = world(half_noise=0.1)
+    keys = list(fst["keys"])
+    i = keys.index("E14.5|z|epicardial|B")
+    j = keys.index("E14.5|z|epicardial|A")
+    for f in ("S_log", "S_cp", "S_nz"):  # half B's cells moved into half A: the pooled mean is unchanged
+        fst[f][j] = fst[f][j] + fst[f][i]
+        fst[f][i] = 0.0
+    fst["n"][j], fst["n"][i] = fst["n"][j] + fst["n"][i], 0.0
+    with pytest.raises(ValueError, match="a half of its Feng cells is empty"):
+        sr.feng_dirs.direction_halves(fst, genes, cfg, sr.BRACKET)
+    stages, _ = build_t1(sr, cfg, genes, fst)
+    r = sr.reading(stages, fst, [], {}, cfg, n_boot=1)
+    assert np.isnan(r["r_d"]["Epicardium"])
+    assert all(0 < r["r_d"][g] <= 1 for g in ("CM", "Endocardium", "Endothelium"))
+    assert "Epicardium" in r["support"]["A_K_excluded_no_share_corrected"]
+    assert "Epicardium" not in r["support"]["A_K_support"]
+    # the other groups' r_d as a joint call gives them
+    dirs, _, _ = sr.feng_dirs.directions_from_stats(fst, genes, cfg, sr.BRACKET)
+    halves = sr.feng_dirs.direction_halves(fst, genes, cfg, sr.BRACKET, groups=["CM"])
+    m = np.isfinite(dirs["CM"])
+    assert r["r_d"]["CM"] == sr.contrast_reliability(dirs["CM"], halves["CM"]["d_a"], halves["CM"]["d_b"], m)
+
+
+REVIEW3_SENTENCES = (
+    "On synthetic data with the truth at 0.4, the cell-sampling intervals are about +-0.002 wide and L_corr reads 3-6% "
+    "low (12-15% at scale 1.5) from the pseudocount and the two datasets' different depths; a fraction statement whose "
+    "margin is smaller than that bias says nothing about 0.4.",
+    "At a pace near 0.2 the corrected pace statement turns on differences of 1-3%, inside the read's own systematic "
+    "error on synthetic data; 'the day holds more than a fifth' with p5 within 0.01 of 0.2 is not a finding.",
+    "The intervals are a few thousandths wide at the released cell numbers; every statement is decided by the read's "
+    "systematic errors (pseudocount, label purity, one scale for between-type and within-type change), which the "
+    "intervals do not hold.",
+    "The raw pace is biased by the ratio of the direction's to the contrast's reliability; a 'not separated' that "
+    "comes from raw against corrected is that bias, not uncertainty.",
+    "A is read on the embryo libraries alone; any difference between E9.5's and E10.5's embryo portions (dissection, "
+    "composition within a label) that lies along Feng's direction is read as pace and subtracted from K.",
+    "L is lowered by any impurity of the challenge's labels or any pooling of Feng's labels (10% mislabelled cells "
+    "lowered it by a fifth on synthetic data), and A and L rest on different groups and weights; an 'above both "
+    "courses' can come from L alone.",
+    "0.4 is compared with the courses in share units; M1's own 0.2 step reads as s_cal in those units, so the fraction "
+    "M1 would need is the course times 0.2 / s_cal, which is reported and decides nothing; neither unit says what "
+    "scores.",
+    "No statement of T47 measures the test's interval, sample kind or scoring; 'above both courses' means only that "
+    "the released embryo days, at the E9.5 between-type scale, move less along Feng's direction than five even days "
+    "would, and it is consistent with T44's finding that larger steps score better.",
+)
+
+
+def test_the_third_reviews_ledger_sentences_are_in_the_docstring_in_its_words(sr):
+    for s in REVIEW3_SENTENCES:
+        assert s in sr.LEDGER_NOTES
+    assert sr.LEDGER_NOTES[-1].startswith("The self-check stands Feng in with the challenge's own E9.5 cells")

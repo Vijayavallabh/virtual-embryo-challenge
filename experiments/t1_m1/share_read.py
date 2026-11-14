@@ -38,10 +38,26 @@ Definitions (the entry's own wherever one exists):
       / r_c over the same pairs where r_c > 0; beside it E10.5 library 3 on Feng E14.5. The pairs each of L, L_corr
       and L over every pair rests on (a finite value at the point) are written by name and number.
   calibration  M1's own one-day step (t1_scope.external_shift, fraction 0.2, stream (47, 1)) applied to E10.5
-           library 3's cells, read before -> after with the same share code: the share M1's 0.2 produces.
+           library 3's cells, read before -> after with the same share code: the share M1's 0.2 produces (s_cal);
+           A, K and the courses times 0.2 / s_cal (M1's units) are reported beside it.
+  self-check   the same reading (measure, with the same groups, masks, held list, pseudocount, min_cells_t1, pairs,
+           excluded pair and library-3 weights) on a world with a known answer built from the released E9.5 cells alone.
+           Within each (label, library) block of E9.5, in sorted block order, the cells are permuted on stream (47, 3);
+           the first floor(n / 4) are half H1a, the next floor(n / 2) - floor(n / 4) half H1b (H1 = H1a and H1b), the
+           rest H2. The world's E9.5 is H2. Its E10.5 libraries 1 and 2 (the portion libraries) are H1's cells moved by
+           t1_scope.external_shift (fraction 0.2, M1's one-day step, along Feng's direction d with the held genes flat,
+           stream (47, 2)), each cell keeping its own E9.5 library 1 or 2; the world has no library 3. Feng's E9.5
+           contrast between groups g and h is stood in for by the challenge's own E9.5 contrast between the same
+           groups' cells in H1 (lfc_ratio of h's H1 cells against g's), so that the scale is 1 by construction, and
+           Feng's two halves by H1a and H1b (r_c from them with the same formula). The direction is d itself, which the
+           world's cells were moved along, so r_d = 1 by construction. No Feng stage other than the bracket's two ends
+           is read (only d). Known: A = 0.2, L = 1, A / L = 0.2, f_max = 0.8, f_even = 0.4, f_decay = 0.4, raw and
+           corrected alike. Measured at the point (no bootstrap): A (and A_corr) = the mean of the library-3-weighted
+           combined shares of libraries 1 and 2 over the real read's A/K groups that have both; L and L_corr as in (d)
+           (E9.5 set); the courses from them. The bias of each is measured minus known.
 Every value has a bootstrap over the challenge's cells (200 draws, cells resampled within label, stage and library;
-Feng's statistics, r_d, r_c and the calibration are fixed) with its 5th and 95th percentiles and its number of
-undefined draws.
+Feng's statistics, r_d, r_c, the calibration and the self-check are fixed) with its 5th and 95th percentiles and its
+number of undefined draws.
 
 The reading (fixed in row T47 before the run; written with the numbers): A = combined share of (b) libraries 1 and 2,
 averaged; K = combined share of (b) library 3 - A; A_corr and K_corr the same from share_corrected; all four over one
@@ -54,10 +70,15 @@ separated" where the two disagree (which of the two causes applies is written). 
 the pace (A / L against 0.2 and 0.3) and the entry's fraction 0.4 against f_max = L - A, f_even = (L - A) / 2 and
 f_decay = L (x - x^3) / (1 - x^5) with (1 - x) / (1 - x^5) = A / L (f_decay = 0 where A / L >= 1, no decaying course
 where A / L <= 0). "above the bound" is read from f_max alone; a statement whose quantity is undefined in any draw reads
-"not computable (n of N draws undefined)", and the corrected pace and fraction statements read "not computable" where
-L_corr rests on fewer pairs than L. The courses times the weighted r_d (f_*_corr_noisy_d) are reported only. The read
-puts nothing forward by itself; its result can only go to the team captain. The output holds shares, slopes,
-correlations, gene numbers and percentiles only: no cell count.
+"not computable (n of N draws undefined)" ("not computable (undefined at the point; n of N draws undefined)" where it
+is undefined at the point), and the corrected pace and fraction statements read "not computable" where L_corr rests on
+fewer pairs than L. Each pace and fraction statement (raw and corrected) is read twice: on the bootstrap interval and
+on that interval widened on both sides by the absolute self-check bias of the quantity it reads (A / L for the pace;
+f_max, f_even and f_decay for the fraction, each its own); where the two readings differ it reads "not separated",
+decided by the widened interval, else the shared reading, decided by the bootstrap interval (the text says which). It
+reads "not computable" where a bias it needs is undefined (the fraction statement needs all three). The courses times
+the weighted r_d (f_*_corr_noisy_d) are reported only. The read puts nothing forward by itself; its result can only go
+to the team captain. The output holds shares, slopes, correlations, gene numbers and percentiles only: no cell count.
 
 Ledger sentences (printed in t47.txt as notes):
 - A is attenuated by the noise in Feng's direction and L by the noise in Feng's E9.5 contrast; the pace and the
@@ -87,6 +108,29 @@ Ledger sentences (printed in t47.txt as notes):
   E9.5 and is shown only beside it.
 - No statement of T47 is a reason to change M1's fraction; any change goes as a counted try on the E10.5 cuts with its
   own row.
+- On synthetic data with the truth at 0.4, the cell-sampling intervals are about +-0.002 wide and L_corr reads 3-6% low
+  (12-15% at scale 1.5) from the pseudocount and the two datasets' different depths; a fraction statement whose margin
+  is smaller than that bias says nothing about 0.4.
+- At a pace near 0.2 the corrected pace statement turns on differences of 1-3%, inside the read's own systematic error
+  on synthetic data; 'the day holds more than a fifth' with p5 within 0.01 of 0.2 is not a finding.
+- The intervals are a few thousandths wide at the released cell numbers; every statement is decided by the read's
+  systematic errors (pseudocount, label purity, one scale for between-type and within-type change), which the
+  intervals do not hold.
+- The raw pace is biased by the ratio of the direction's to the contrast's reliability; a 'not separated' that comes
+  from raw against corrected is that bias, not uncertainty.
+- A is read on the embryo libraries alone; any difference between E9.5's and E10.5's embryo portions (dissection,
+  composition within a label) that lies along Feng's direction is read as pace and subtracted from K.
+- L is lowered by any impurity of the challenge's labels or any pooling of Feng's labels (10% mislabelled cells lowered
+  it by a fifth on synthetic data), and A and L rest on different groups and weights; an 'above both courses' can come
+  from L alone.
+- 0.4 is compared with the courses in share units; M1's own 0.2 step reads as s_cal in those units, so the fraction M1
+  would need is the course times 0.2 / s_cal, which is reported and decides nothing; neither unit says what scores.
+- No statement of T47 measures the test's interval, sample kind or scoring; 'above both courses' means only that the
+  released embryo days, at the E9.5 between-type scale, move less along Feng's direction than five even days would,
+  and it is consistent with T44's finding that larger steps score better.
+- The self-check stands Feng in with the challenge's own E9.5 cells, so its bias holds the pseudocount, M1's count-space
+  step and the cell sampling of one dataset at one point, not the depth difference between the two datasets nor label
+  impurity or pooling; a statement that survives the widening can still be decided by those.
 
   uv run --frozen --no-sync python -I -B experiments/t1_m1/share_read.py run --out t47_share_read
 
@@ -136,6 +180,12 @@ N_BOOT = 200
 BOOT_SEED = (47, 0)  # row T47's stream: no build seed applies to this read; no existing step draws on it
 CAL_STREAM = (47, 1)  # the calibration arm's draw (external_shift's depth restoration)
 CAL_FRACTION = 0.2  # M1's one-day step in the E9.5 -> E14.5 bracket (feng_dirs.bracket_fraction(9.5, 10.5))
+SELF_STREAM = (47, 2)  # the self-check's shift (external_shift's depth restoration)
+SPLIT_STREAM = (47, 3)  # the self-check's split of E9.5's cells into H1a, H1b and H2
+SELF_KNOWN_A, SELF_KNOWN_L = CAL_FRACTION, 1.0  # the self-check world's day share and scale, by construction
+BIAS_KEYS = ("A", "L", "A_over_L", "f_max", "f_even", "f_decay")  # each raw and with _corr
+BOOT_WIDTH = "the bootstrap interval"
+BIAS_WIDTH = "the bootstrap interval widened by the self-check's bias"
 PERCENTILES = (5.0, 95.0)
 LIB_EMBRYO = ("1", "2")  # E10.5's embryo-portion libraries (docs/DATA_NOTES.md)
 LIB_HEART = "3"  # E10.5's dissected-heart library
@@ -529,12 +579,32 @@ def fraction_statement(f_max: Mapping, f_even: Mapping, f_decay: Mapping, fracti
 
 
 def undefined(recs: Sequence[Mapping], n_boot: int) -> str | None:
-    """'not computable (n of N draws undefined)' when a quantity a statement reads is undefined in any draw or at the
-    point; None when every one is defined."""
+    """'not computable (n of N draws undefined)' when a quantity a statement reads is undefined in any draw, 'not
+    computable (undefined at the point; n of N draws undefined)' when one is undefined at the point; None when every one
+    is defined."""
     n = max(int(r["nonfinite_draws"]) for r in recs)
-    if n > 0 or not all(np.isfinite(r["value"]) for r in recs):
+    if not all(np.isfinite(r["value"]) for r in recs):
+        return f"{NOT_COMPUTABLE} (undefined at the point; {n} of {n_boot} draws undefined)"
+    if n > 0:
         return f"{NOT_COMPUTABLE} ({n} of {n_boot} draws undefined)"
     return None
+
+
+def widen(rec: Mapping, bias: float) -> dict:
+    """The record with its interval widened on both sides by |bias|."""
+    return {**rec, "p5": rec["p5"] - abs(bias), "p95": rec["p95"] + abs(bias)}
+
+
+def bias_undefined(bias: Mapping[str, float], keys: Sequence[str]) -> str | None:
+    """'not computable (the self-check's bias of ... is undefined)' when a bias a statement needs is not finite."""
+    bad = [k for k in keys if not np.isfinite(bias.get(k, float("nan")))]
+    return f"{NOT_COMPUTABLE} (the self-check's bias of {', '.join(bad)} is undefined)" if bad else None
+
+
+def with_bias(on_interval: str, on_widened: str) -> tuple[str, str]:
+    """(statement, the width that decided it): the shared reading where the bootstrap interval and the interval widened
+    by the self-check's bias read the same, else 'not separated', decided by the widening."""
+    return (on_interval, BOOT_WIDTH) if on_interval == on_widened else (NOT_SEPARATED, BIAS_WIDTH)
 
 
 def joined(raw: str, corrected: str) -> str:
@@ -546,14 +616,16 @@ def joined(raw: str, corrected: str) -> str:
     return raw if raw == corrected else NOT_SEPARATED
 
 
-def not_separated_cause(raw: str, corrected: str) -> str | None:
+def not_separated_cause(raw: str, corrected: str, widened: Sequence[str] = ()) -> str | None:
     """Why a joined statement reads 'not separated': the correction changes a separated statement, or an interval
-    straddles a threshold (raw, corrected or both); None where the joined statement is not 'not separated'."""
+    straddles a threshold (raw, corrected or both; 'widened by the self-check's bias' after a side in `widened`, the
+    sides whose 'not separated' the widening decided); None where the joined statement is not 'not separated'."""
     if joined(raw, corrected) != NOT_SEPARATED:
         return None
     if raw != NOT_SEPARATED and corrected != NOT_SEPARATED:
         return CORRECTION_CHANGES
-    which = [lab for lab, s in (("raw", raw), ("corrected", corrected)) if s == NOT_SEPARATED]
+    which = [lab + (" widened by the self-check's bias" if lab in widened else "")
+             for lab, s in (("raw", raw), ("corrected", corrected)) if s == NOT_SEPARATED]
     return f"{INTERVAL_STRADDLES} ({' and '.join(which)})"
 
 
@@ -570,25 +642,50 @@ def entry_fraction_statement(recs: Sequence[Mapping], n_boot: int) -> str:
     return undefined([f_even, f_decay], n_boot) or fraction_statement(f_max, f_even, f_decay)
 
 
-def statements(r: Mapping[str, Mapping], n_boot: int, pairs: Mapping[str, Sequence[str]] | None = None) -> dict:
+def statements(r: Mapping[str, Mapping], n_boot: int, pairs: Mapping[str, Sequence[str]] | None = None,
+               bias: Mapping[str, float] | None = None) -> dict:
     """The three statements from the reading's records (value, p5, p95, nonfinite_draws). pairs: the pairs L and
-    L_corr rest on; where L_corr rests on fewer, the corrected pace and fraction statements are 'not computable'."""
+    L_corr rest on; where L_corr rests on fewer, the corrected pace and fraction statements are 'not computable'.
+    bias: the self-check's measured-minus-known bias per quantity; when given, each pace and fraction statement is also
+    read on its interval widened by the absolute bias of the quantity it reads (with_bias), and '<statement>_decided_by'
+    names the width that decided it (None where it is not computable)."""
     out = {"kind": undefined([r["K"]], n_boot) or kind_statement(*_interval(r["K"]))}
     short = None
     if pairs is not None and len(pairs["L_corr"]) < len(pairs["L"]):
         short = f"{NOT_COMPUTABLE} (L_corr rests on {len(pairs['L_corr'])} of the {len(pairs['L'])} pairs of L)"
+    widened: dict[str, list[str]] = {"pace": [], "entry_fraction": []}
     for tag in ("", "_corr"):
         lab = "raw" if tag == "" else "corrected"
         q = r[f"A_over_L{tag}"]
         recs = [r[f"{k}{tag}"] for k in COURSE_KEYS]
         if tag and short:
             out[f"pace_{lab}"] = out[f"entry_fraction_{lab}"] = short
+            if bias is not None:
+                out[f"pace_{lab}_decided_by"] = out[f"entry_fraction_{lab}_decided_by"] = None
             continue
-        out[f"pace_{lab}"] = undefined([q], n_boot) or pace_statement(*_interval(q))
-        out[f"entry_fraction_{lab}"] = entry_fraction_statement(recs, n_boot)
+        stmt = {"pace": undefined([q], n_boot) or pace_statement(*_interval(q)),
+                "entry_fraction": entry_fraction_statement(recs, n_boot)}
+        if bias is not None:
+            keys = {"pace": [f"A_over_L{tag}"], "entry_fraction": [f"{k}{tag}" for k in COURSE_KEYS]}
+            for s in ("pace", "entry_fraction"):
+                dec = None
+                if not stmt[s].startswith(NOT_COMPUTABLE):
+                    stmt[s] = bias_undefined(bias, keys[s]) or stmt[s]
+                if not stmt[s].startswith(NOT_COMPUTABLE):
+                    if s == "pace":
+                        on_widened = pace_statement(*_interval(widen(q, bias[keys[s][0]])))
+                    else:
+                        on_widened = entry_fraction_statement(
+                            [widen(x, bias[k]) for x, k in zip(recs, keys[s], strict=True)], n_boot)
+                    stmt[s], dec = with_bias(stmt[s], on_widened)
+                    if dec == BIAS_WIDTH:
+                        widened[s].append(lab)
+                out[f"{s}_{lab}_decided_by"] = dec
+        out[f"pace_{lab}"] = stmt["pace"]
+        out[f"entry_fraction_{lab}"] = stmt["entry_fraction"]
     for s in ("pace", "entry_fraction"):
         out[s] = joined(out[f"{s}_raw"], out[f"{s}_corrected"])
-        out[f"{s}_why_not_separated"] = not_separated_cause(out[f"{s}_raw"], out[f"{s}_corrected"])
+        out[f"{s}_why_not_separated"] = not_separated_cause(out[f"{s}_raw"], out[f"{s}_corrected"], widened[s])
     return out
 
 
@@ -648,6 +745,109 @@ def calibration(adata: ad.AnnData, genes: Sequence[str], dirs: Mapping[str, np.n
 
 
 # ---------------------------------------------------------------------------------------------------------------------
+# The self-check arm: the same reading on a world with a known answer, built from the released E9.5 cells alone
+
+
+def split_cells(adata: ad.AnnData, label_key: str = "celltype", seed=SPLIT_STREAM) -> dict[str, np.ndarray]:
+    """E9.5's cells in three parts: within each (label, library) block, in sorted block order, the block's cells
+    permuted on `seed`; the first floor(n / 4) are H1a, the next floor(n / 2) - floor(n / 4) H1b, the rest H2. Each part
+    as sorted cell positions."""
+    labels = adata.obs[label_key].astype(str).to_numpy()
+    libs, _ = t1_stats.library_tags(adata.obs_names)
+    keys = np.asarray([f"{lab}|{li}" for lab, li in zip(labels, np.asarray(libs), strict=True)], dtype=str)
+    rng = np.random.default_rng(list(seed))
+    parts: dict[str, list[np.ndarray]] = {"H1a": [], "H1b": [], "H2": []}
+    for k in np.unique(keys):
+        perm = rng.permutation(np.flatnonzero(keys == k))
+        n = len(perm)
+        parts["H1a"].append(perm[: n // 4])
+        parts["H1b"].append(perm[n // 4: n // 2])
+        parts["H2"].append(perm[n // 2:])
+    return {p: np.sort(np.concatenate(v)) if v else np.zeros(0, int) for p, v in parts.items()}
+
+
+def self_check_values(out: Mapping[str, float], setup: Mapping, support: Sequence[str]) -> tuple[dict, list[str]]:
+    """The self-check's measured quantities from one measurement of its world: A and A_corr = the mean of the
+    library-3-weighted combined share (share_corrected) of libraries 1 and 2 over the groups of `support` with a value
+    in both; L and L_corr of the E9.5 scale set; the courses from (A, L) and (A_corr, L_corr)."""
+    lib12 = AK_COMPARISONS[:2]
+    sup = [g for g in support if all(np.isfinite(out[f"{n}/{g}/{f}"]) for n in lib12 for f in COMBINED_FIELDS)]
+    w = setup["weights"]
+    m: dict[str, float] = {}
+    for field, tag in (("share", ""), ("share_corrected", "_corr")):
+        m[f"A{tag}"] = sum(combine({g: out[f"{n}/{g}/{field}"] for g in sup}, w)[0] for n in lib12) / 2.0
+    m["L"], m["L_corr"] = out["scale_E9.5/median_slope"], out["scale_E9.5/median_slope_corrected"]
+    for tag in ("", "_corr"):
+        c = courses(m[f"A{tag}"], m[f"L{tag}"])
+        m[f"A_over_L{tag}"] = c["A_over_L"]
+        for k in COURSE_KEYS:
+            m[f"{k}{tag}"] = c[k]
+    return m, sup
+
+
+def self_check_arm(stage95: ad.AnnData, genes: Sequence[str], setup: Mapping, held: Sequence[str],
+               support: Sequence[str], label_key: str = "celltype") -> dict:
+    """The self-check arm (module docstring): the world from E9.5's cells (split_cells on SPLIT_STREAM; H1 moved by
+    t1_scope.external_shift at CAL_FRACTION on SELF_STREAM), measured with `measure` at the point; the known values,
+    the measured ones and their bias (measured minus known) for BIAS_KEYS, raw and corrected."""
+    dirs, masks, eps, mc = setup["dirs"], setup["masks"], setup["eps"], setup["min_cells"]
+    labels95 = setup["labels"]["E9.5"]
+    parts = split_cells(stage95, label_key)
+    h1 = np.sort(np.concatenate([parts["H1a"], parts["H1b"]]))
+    pos = stage95.var_names.get_indexer(list(genes))
+    full = {}
+    for g, v in dirs.items():
+        w = np.full(stage95.n_vars, np.nan)
+        w[pos] = v
+        full[g] = w
+    group_of = {lb: g for g in sorted(dirs) for lb in labels95.get(g) or []}
+    sub = stage95[h1].copy()
+    moved, _ = t1_scope.external_shift(sub, full, CAL_FRACTION, group_of, held, label_key=label_key,
+                                       seed=list(SELF_STREAM))
+    keep = {lab for g in dirs for lab in labels95.get(g) or []}
+    tabs = {"E9.5": stage_table(stage95[parts["H2"]], genes, keep, label_key),
+            "E10.5": stage_table(moved, genes, keep, label_key)}
+    stand = {p: stage_table(stage95[idx], genes, keep, label_key)
+             for p, idx in (("H1", h1), ("H1a", parts["H1a"]), ("H1b", parts["H1b"]))}
+    stand_sums = {p: block_sums(t) for p, t in stand.items()}
+
+    def stand_mean(p, g, min_cells):
+        labs = labels95.get(g)
+        return cell_set(stand[p], stand_sums[p], labs, None, min_cells) if labs else None
+
+    contrast, reliability = {}, {}
+    for g, h in setup["pairs"]:
+        fg, fh = stand_mean("H1", g, mc), stand_mean("H1", h, mc)
+        if fg is None or fh is None:
+            contrast[(g, h)], reliability[(g, h)] = None, float("nan")
+            continue
+        c = dl.lfc_ratio(fh, fg, eps)
+        contrast[(g, h)] = c
+        halves = []
+        for p in ("H1a", "H1b"):
+            hg, hh = stand_mean(p, g, 0), stand_mean(p, h, 0)
+            halves.append(None if hg is None or hh is None else dl.lfc_ratio(hh, hg, eps))
+        reliability[(g, h)] = (float("nan") if any(x is None for x in halves)
+                               else contrast_reliability(c, halves[0], halves[1], masks[g] & masks[h]))
+    others = [s for s in SCALE_SETS if s != "E9.5"]
+    world = {**setup, "labels": {"E9.5": labels95, "E10.5": labels95}, "scales": dict.fromkeys(dirs, 1.0),
+             "feng_contrast": {"E9.5": contrast, **{s: {} for s in others}},
+             "feng_reliability": {"E9.5": reliability, **{s: {} for s in others}}}
+    out = measure(tabs, {s: block_sums(t) for s, t in tabs.items()}, world)
+    measured, sup = self_check_values(out, world, support)
+    a0, l0 = SELF_KNOWN_A, SELF_KNOWN_L  # A / L = 0.2: x = 1 and f_decay = 0.4 L (courses)
+    known = {"A": a0, "L": l0, "A_over_L": a0 / l0, "f_max": l0 - a0, "f_even": (l0 - a0) / 2.0, "f_decay": 0.4 * l0}
+    known = {**known, **{f"{k}_corr": v for k, v in known.items()}}
+    keys = [f"{k}{tag}" for tag in ("", "_corr") for k in BIAS_KEYS]
+    return {"fraction": CAL_FRACTION, "stream": list(SELF_STREAM), "split_stream": list(SPLIT_STREAM),
+            "support": sup, "known": {k: known[k] for k in keys}, "measured": {k: measured[k] for k in keys},
+            "bias": {k: measured[k] - known[k] for k in keys},
+            "pairs": {f"{g}~{h}": {"slope": out[f"scale_E9.5/{g}~{h}/slope"],
+                                   "slope_corrected": out[f"scale_E9.5/{g}~{h}/slope_corrected"],
+                                   "r_c": reliability[(g, h)]} for g, h in setup["pairs"]}}
+
+
+# ---------------------------------------------------------------------------------------------------------------------
 # The read
 
 
@@ -694,17 +894,28 @@ def feng_pair_contrasts(feng: dict, pairs, cfg: Mapping, idx: np.ndarray, masks:
 def direction_reliability(feng: dict, genes: Sequence[str], cfg: Mapping, dirs: Mapping[str, np.ndarray],
                           masks: Mapping[str, np.ndarray]) -> dict[str, float]:
     """Per group, r_d: contrast_reliability of Feng's direction d against its two halves' directions d_a and d_b
-    (feng_dirs.direction_halves on the bracket, the same statistics) over the group's share mask."""
-    halves = feng_dirs.direction_halves(feng, list(genes), dict(cfg), BRACKET, groups=list(dirs))
-    return {g: (contrast_reliability(dirs[g], halves[g]["d_a"], halves[g]["d_b"], masks[g]) if g in halves
-                else float("nan")) for g in dirs}
+    (feng_dirs.direction_halves on the bracket, the same statistics, called per group) over the group's share mask.
+    NaN for a group whose halves direction_halves refuses (a half of its Feng cells empty at a bracket end) or does not
+    give."""
+    out = {}
+    for g in dirs:
+        try:
+            halves = feng_dirs.direction_halves(feng, list(genes), dict(cfg), BRACKET, groups=[g])
+        except ValueError:
+            halves = {}
+        out[g] = (contrast_reliability(dirs[g], halves[g]["d_a"], halves[g]["d_b"], masks[g]) if g in halves
+                  else float("nan"))
+    return out
 
 
 def reading(stages: Mapping[str, ad.AnnData], feng: dict, held: Sequence[str], n48: Mapping[str, float] | None,
-            cfg: Mapping, n_boot: int = N_BOOT, seed=BOOT_SEED, calibrate: bool = False) -> dict:
+            cfg: Mapping, n_boot: int = N_BOOT, seed=BOOT_SEED, calibrate: bool = False,
+            self_check: bool = False) -> dict:
     """The whole read on loaded inputs: T1 stages (stage -> AnnData), Feng's statistics (only the bracket's two ends),
     M1's held list and N48's scales (reported beside r_d only; r_d is computed here from the bracket's halves).
-    calibrate: run the calibration arm (it needs counts recoverable from E10.5's .X, as the released files have)."""
+    calibrate: run the calibration arm (it needs counts recoverable from E10.5's .X, as the released files have).
+    self_check: run the self-check arm (counts recoverable from E9.5's .X) and widen the pace and fraction statements
+    by its bias; without it the statements are read on the bootstrap intervals alone."""
     label_key = cfg.get("label_key", "celltype")
     genes = list(stages[GENE_STAGE].var_names)
     dirs, _, idx = feng_dirs.directions_from_stats(feng, genes, cfg, BRACKET)
@@ -754,10 +965,13 @@ def reading(stages: Mapping[str, ad.AnnData], feng: dict, held: Sequence[str], n
             groups_of[f"{name}/combined_unweighted/{f}"] = ug
     pair_genes = {f"{g}~{h}": int((masks[g] & masks[h]).sum()) for g, h in pairs}
     scale_pairs = info.pop("pairs")
+    sc = (self_check_arm(stages["E9.5"], genes, setup, held, info["A_K_support"], label_key) if self_check
+          else None)
     res = {"groups": groups, "genes_per_group": {g: int(masks[g].sum()) for g in groups},
            "genes_per_pair": pair_genes, "label_source": source, "r_d": r_d,
            "n48_scale": {g: n48.get(g) for g in groups}, "values": values, "reading": r,
-           "statements": statements(r, n_boot, scale_pairs["E9.5"]), "support": info, "combined_groups": groups_of,
+           "statements": statements(r, n_boot, scale_pairs["E9.5"], sc["bias"] if sc else None), "support": info,
+           "combined_groups": groups_of,
            "scale_pairs": scale_pairs,
            "excluded_pairs_shared_feng_labels": [f"{g}~{h}" for g, h in overlap],
            "feng_reliability": {sname: {f"{g}~{h}": v for (g, h), v in d.items()} for sname, d in feng_rel.items()},
@@ -770,7 +984,11 @@ def reading(stages: Mapping[str, ad.AnnData], feng: dict, held: Sequence[str], n
         ok = np.isfinite(s_cal) and s_cal != 0
         cal["A_in_M1_fraction"] = r["A"]["value"] * CAL_FRACTION / s_cal if ok else float("nan")
         cal["K_in_M1_fraction"] = r["K"]["value"] * CAL_FRACTION / s_cal if ok else float("nan")
+        for k in (*COURSE_KEYS, *(f"{c}_corr" for c in COURSE_KEYS)):  # the courses in M1's units: reported only
+            cal[f"{k}_in_M1_fraction"] = r[k]["value"] * CAL_FRACTION / s_cal if ok else float("nan")
         res["calibration"] = cal
+    if sc is not None:
+        res["self_check"] = sc
     return res
 
 
@@ -814,15 +1032,21 @@ def text(res: Mapping) -> str:
         cause = st.get(f"{s}_why_not_separated")
         return f" [{cause}]" if cause else ""
 
+    def dec(s):
+        return f" [decided by {st[s + '_decided_by']}]" if st.get(s + "_decided_by") else ""
+
     sp = r["scale_pairs"]["E9.5"]
     lines = [res["label"],
              f"Kind: {st['kind']} (K = {f('K')}, against {KIND_AT})",
-             f"Pace: {st['pace']}{why('pace')} (raw: {st['pace_raw']}, A / L = {f('A_over_L')}; corrected: "
-             f"{st['pace_corrected']}, A_corr / L_corr = {f('A_over_L_corr')}; against {PACE_FIFTH} and {PACE_UPPER})",
+             f"Pace: {st['pace']}{why('pace')} (raw: {st['pace_raw']}{dec('pace_raw')}, A / L = {f('A_over_L')}; "
+             f"corrected: {st['pace_corrected']}{dec('pace_corrected')}, A_corr / L_corr = {f('A_over_L_corr')}; "
+             f"against {PACE_FIFTH} and {PACE_UPPER})",
              f"Entry's fraction {ENTRY_FRACTION}: {st['entry_fraction']}{why('entry_fraction')} (two courses among "
              f"many, not a bracket)",
-             f"    raw: {st['entry_fraction_raw']}; f_max {f('f_max')}; f_even {f('f_even')}; f_decay {f('f_decay')}",
-             f"    corrected (units of Feng's true direction): {st['entry_fraction_corrected']}; "
+             f"    raw: {st['entry_fraction_raw']}{dec('entry_fraction_raw')}; f_max {f('f_max')}; f_even "
+             f"{f('f_even')}; f_decay {f('f_decay')}",
+             f"    corrected (units of Feng's true direction): {st['entry_fraction_corrected']}"
+             f"{dec('entry_fraction_corrected')}; "
              f"f_max {f('f_max_corr')}; f_even {f('f_even_corr')}; f_decay {f('f_decay_corr')}",
              f"    reported only, the corrected courses times the weighted r_d {f('r_d_weighted')} (units of the noisy "
              f"d): f_max {f('f_max_corr' + NOISY_D)}; f_even {f('f_even_corr' + NOISY_D)}; f_decay "
@@ -849,8 +1073,21 @@ def text(res: Mapping) -> str:
                      f"of {cal['combined_weighted']:+.3f} (unweighted {cal['combined_unweighted']:+.3f}; groups "
                      f"{cal['combined_groups']}); A in M1's fraction {cal['A_in_M1_fraction']:+.3f}, K "
                      f"{cal['K_in_M1_fraction']:+.3f}")
+        if "f_even_in_M1_fraction" in cal:
+            lines.append("    the courses in M1's fraction (times 0.2 / s_cal), reported only: " + "; ".join(
+                f"{k} {cal[k + '_in_M1_fraction']:+.3f}" for k in (*COURSE_KEYS, *(c + "_corr" for c in COURSE_KEYS))))
         for g, s in cal["groups"].items():
             lines.append(f"    {g}: share {s['share']:+.3f}")
+    sc = r.get("self_check")
+    if sc is not None:
+        lines.append(f"Self-check (a known world from E9.5's cells: H2 against H1 moved by M1's {sc['fraction']} step "
+                     f"on stream {sc['stream']}, split on stream {sc['split_stream']}; Feng's E9.5 contrast stood in "
+                     f"for by H1's, so the scale is 1; r_d = 1; at the point; groups {sc['support']}): "
+                     + "; ".join(f"{k} {sc['measured'][k]:+.4f} (known {sc['known'][k]:+.3f}, bias "
+                                 f"{sc['bias'][k]:+.4f})" for k in sc["bias"]))
+        for pair, p in sc["pairs"].items():
+            lines.append(f"    {pair}: slope {p['slope']:+.3f}, r_c {p['r_c']:.3f}, corrected "
+                         f"{p['slope_corrected']:+.3f}")
     v, cg = r["values"], r["combined_groups"]
     for name in COMPARISONS:
         kw, ku = f"{name}/combined_weighted/share", f"{name}/combined_unweighted/share"
@@ -896,7 +1133,7 @@ def run(out_name: str, files: Mapping[str, Path] = T1_FILES) -> dict:
     n48 = n48_scales()  # reported beside r_d only
     js = n48_scales(field="js")
     stages = {s: ad.read_h5ad(files[s]) for s in T1_STAGES}
-    read = reading(stages, feng, held, n48, cfg, calibrate=True)
+    read = reading(stages, feng, held, n48, cfg, calibrate=True, self_check=True)
     res = {"label": LABEL_T47, "read": read, "feng": feng_rec, "held_genes": len(held), "n48_js": js}
     res["stamp"] = gv.stamp(started, [*files.values(), feng_dirs.clean_stats_path(), t1_scope.HELD_FLAT_GENES,
                                       REPO / union["file"], N48_JSON])
