@@ -9,61 +9,118 @@ redraws more of every covered cell's counts (try T43c: a count redraw alone gain
 lever is closed); (3) any set of factors with this size profile, whatever the genes. The controls separate them.
 
   run    One E10.5 cut, 10 seeds, on the harness's draws and scoring exactly as T44's run; refused unless the committed
-         N22 passed, and unless experiments/harness/TRIES.md holds row T45. Arms per seed, all from one cell draw:
-         b0, m1_r_gmom (fraction 0.2, the entry's form) and m1_r_gmom_x2 (fraction 0.4) as T44 builds them; T45a
-         m1_r_gmom_x0, the same build at fraction 0 (external_shift accepts 0: every factor is exp(0) = 1, so no count
-         is redrawn); T45b m1_r_gmom_p1 and T45c m1_r_gmom_p2, the builds at 0.2 and 0.4 with try T15's permuted control
-         (harness.t3_decile_permutation within LP_BINS bins of feng_dirs.direction_halves' mean_cp on M1's bracket,
-         seed [LP_PERM_SEED, LP_GROUPS.index(group)]) in place of Feng's directions, one permutation per group for both
-         fractions and every seed; T45d m1_r_gmom_x2b, "there and back": the build at 0.4 with, before g_mom's
-         factors, a second application of Feng's directions at -0.2 to the covered cells (gmom_combo.moved_by_feng:
-         external_shift's own rule, R2's held genes) on stream [seed, SECOND_STREAM], through build_submission's
-         post_cells hook. Each arm is gmom_combo.m1_r_arms' m1_r_gmom with only its fraction, its directions or (T45d)
-         the hook's first edit changed. The task file holds every arm's fraction(s), each group's sha256 of Feng's
-         direction and of the directions object each placebo arm was built with, each group's applied size (mean
-         |log f| and sum of log f^2 over the non-held genes at the base fraction) for Feng and the placebo, and per
-         seed and arm the target-free redraw measures of the covered cells before g_mom against the drawn cells: the
-         share of non-zero counts changed, the share of non-zero counts set to zero, and the mean detected genes per
-         cell (drawn and edited).
+         N22 passed, unless experiments/harness/TRIES.md holds row T45, and unless the committed reading
+         experiments/t1_m1/results/t44_m1_step/t44.json is valid and names m1_r_gmom_x2 among the arms that pass (its
+         "comparisons" entry for m1_r_gmom_x2 has "passes" true). Arms per seed, all from one cell draw:
+         - b0, m1_r_gmom (fraction 0.2) and m1_r_gmom_x2 (0.4), as T44 builds them, rescored under their own names;
+         - T45a m1_r_gmom_x0: the same build at fraction 0 (external_shift accepts 0: every factor is exp(0) = 1, so no
+           count is redrawn);
+         - T45b m1_r_gmom_p1 (0.2) and T45c m1_r_gmom_p2 (0.4): the builds with try T15's permuted control in place of
+           Feng's directions (harness.t3_decile_permutation within LP_BINS bins of feng_dirs.direction_halves' mean_cp
+           on M1's bracket, seed [LP_PERM_SEED, LP_GROUPS.index(group)]), one permutation per group for both fractions
+           and every seed;
+         - T45d m1_r_gmom_x2b, "there and back": fractions [0.4, -0.2]: the build at 2 x 0.2 with, before g_mom's
+           factors, a second application of Feng's directions at (1 - 2) x 0.2 to the covered cells
+           (gmom_combo.moved_by_feng: external_shift's own rule, R2's held genes) on stream [seed, SECOND_STREAM] =
+           [seed, 15], through build_submission's post_cells hook;
+         - T45e m1_r_gmom_x15b, "there and back" from T44's 1.5 step: fractions [0.3, -0.1], that is [1.5 x 0.2,
+           (1 - 1.5) x 0.2], the same code with the first multiplier as its argument; its first edit is bit for bit
+           T44's m1_r_gmom_x15 build, its second edit on the same stream [seed, 15] as x2b's. The two arms can share
+           that index: each is a separate build from the same draw, each build uses stream 15 once, and every arm
+           already shares streams [seed, 2] and [seed, 5] with the others in the same way; no build runs both second
+           edits, so the shared index gives the two arms common random numbers, never one stream used twice in a build;
+         - m1_r_gmom_q1 (0.2) and m1_r_gmom_q2 (0.4): a second placebo pair, T15's permutation at seed
+           [LP_PERM_SEED + 1, LP_GROUPS.index(group)], built as p1 and p2; reported only, deciding nothing.
+         Each arm is gmom_combo.m1_r_arms' m1_r_gmom with only its fraction, its directions or (T45d, T45e) the hook's
+         first edit changed. The task file holds every arm's fraction(s), each group's sha256 of Feng's direction and of
+         the directions object each placebo arm (p1, p2, q1, q2) was built with, each group's applied size (mean |log f|
+         and sum of log f^2 over the non-held genes at the base fraction) for Feng and the first placebo, each group's
+         between-bin share of the direction's variance (over the finite genes, each gene given the mean of its T15 bin
+         (LP_BINS bins of mean_cp, the permutation's bins): the variance of those bin means over the variance of d),
+         and per seed and arm the target-free redraw measures of the covered cells before g_mom against the drawn
+         cells: the share of non-zero counts changed, the share of non-zero counts set to zero, and the mean detected
+         genes per cell (drawn and edited).
   read   T45's reading of both cuts' files (rule below, fixed in the row before the run).
 
 What a control shares with its twin and does not: every arm reaches external_shift with the same cells, groups, held
 genes and stream ([seed, 2]); downstream each covered cell's keep-depth constant follows the step, and with it which
 counts are thinned or topped up, and g_mom's factors (stream [seed, 5]) then act on different counts. A per-seed
-difference includes resampling noise the arms do not share. T45d's first edit is bit for bit the x2 arm's; its second
-edit redraws the covered cells' counts again: held genes keep their counts; every other gene of a covered cell, NaN-
-direction genes included, is redrawn, because the depth constant scales its factor of 1. x2b's expected counts are the
-base's, but on a synthetic build it carries about 1.6 times x2's per-entry count variance and zeroing, and 2.4 times
-x2's excess over the base. (d) passing measures the gain from that much redraw, not from the larger step's, and (c) is
-shifted by the difference, so either count-noise value overstates the side the noise favours; the read prints the
-redraw measures beside (c) and (d). The placebo permutes held and non-held genes together, as T15's did; the read
-prints each group's applied size for Feng and the placebo, and a difference of more than 10% is named beside (a) and
-(b).
+difference includes resampling noise the arms do not share. Each control differs from its twin in its fraction, its
+direction values, or (x2b, x15b) one extra edit on stream [seed, 15]; downstream, each covered cell's depth constant and
+every redraw on streams 2 and 5 follow the factors, and the placebo's applied size on the non-held genes is printed
+beside (a) and (b). T45d's first edit is bit for bit the x2 arm's and T45e's the x15 arm's; the second edit redraws the
+covered cells' counts again: held genes keep their counts; every other gene of a covered cell, NaN-direction genes
+included, is redrawn, because the depth constant scales its factor of 1. x2b's expected counts are the base's, but on a
+synthetic build it carries about 1.6 times x2's per-entry count variance and zeroing, and 2.4 times x2's excess over
+the base; x15b's expected counts are the base's as well, and on a synthetic build its count variance (0.483 against
+x2's 0.452), zeroing (0.040 against 0.036) and detected genes (172.3 against 173.1) are close to x2's. That is why the
+count-noise statement reads (c') and (d') and not (c) and (d). x2b's expected counts are the base's, but its per-cell
+log-expression is lower and sparser (a depth-like thinning), so (d) passing is a reading of the closed depth lever and
+is never a reason to add redraw; read (c) and (d) per metric: the pseudobulk metrics see x2b as the base, the per-cell
+metrics see it as a shallower base. (c) and (d) add up to (h) seed by seed, as (c') and (d') do; x2b carries about
+twice x2's excess redraw on an independent stream, so (d) bounds the noise share from above and (c) bounds the
+direction's share from below when a redraw helps (as T43c found), and the reverse when it hurts: (c) and (d) are
+reported as the upper bound of the noise reading. The read prints the redraw measures beside (c), (c'), (d) and (d').
+
+The placebo permutes held and non-held genes together, as T15's did; the read prints each group's applied size for Feng
+and the placebo and the ratio placebo over Feng for both measures, and names beside (a) and (b) any group where a
+measure differs from Feng's by more than SIZE_FLAG = 10% (relative to Feng's): that threshold only labels text and
+decides nothing. The placebo keeps each expression bin's values, so it keeps the part of Feng's direction that depends
+on expression level (its between-bin share is printed beside (a) and (b)); "a placebo gains as well" means a direction
+with Feng's level profile gains, not that any factors gain, and "needs the direction's genes" means needing more than
+that profile. The placebo is one permutation per group (T15's seed); the seed test measures build noise around that one
+draw, not the spread across permutations, so either gene-identity value is a statement about this permutation; the
+second pair (q1, q2, seed LP_PERM_SEED + 1) is printed beside (a) and (b) as (a2) and (b2) to show that spread and
+decides nothing. (a) is a difference of two paired increments and carries four arms' noise, so "not separated" is the
+expected value when the effects are small; "needs the direction's genes" includes the case where the placebo's larger
+step loses, and (b)'s mean is printed beside it. x0 has no Feng step and no redraw; (f) and (g) therefore measure the
+entry's step together with its count noise and decide nothing. T43c's +3.8 comes from a depth redraw; M1's arms keep
+each cell's expected depth and differ only in redraw and zeroing at that depth: the number is printed for scale, not as
+the same mechanism.
 
 NOT an adoption result: a labelled in-sample diagnostic, as tries T26, T42 and T44 are. Feng's E9.5 cells lie inside
 these pseudo-tasks' external windows, the cuts are ones earlier T1 choices were made on, and the truth of a one-day cut
-differs from its reference in the kind of sample as well as in age. The result can only go to the team captain.
+differs from its reference in the kind of sample as well as in age. Each statement is a description of these two
+in-sample cuts at ten seeds; "not separated" means the rule did not decide, not that the effects are absent, and no
+value is evidence for a change to the entry. The result can only go to the team captain.
 
-The reading. Void unless both cuts hold the ten seeds at one commit on a clean tree; b0 and m1_r_gmom equal, seed for
-seed, their committed scores in experiments/t1_m1/results/t42_m1_eb/tasks/ and m1_r_gmom_x2 its committed scores in
-experiments/t1_m1/results/t44_m1_step/tasks/, each to 1e-9; each file's task is its cut, its base fraction 0.2 and each
-arm's fraction(s) as above; no control scores exactly as m1_r_gmom on every seed of both cuts; m1_r_gmom_p1 and
-m1_r_gmom_p2 record the same permuted directions, and these differ from Feng's in every group. The test, used eight
-times, is the adoption rule's (vec.adoption.keep_change, paired by seed, both cuts); "A over B" is A as the change, B as
-the base: (a) compares the larger step's increment with the placebo's increment, (x2 - m1_r_gmom) against (p2 - p1)
-paired by seed; the level comparison x2 over p2 is reported as (a0) and decides nothing; (b) p2 over p1; (c) x2 over
-x2b; (d) x2b over m1_r_gmom; (e) m1_r_gmom over p1; (f) p1 over x0; (g) m1_r_gmom over x0; (h) x2 over m1_r_gmom, the
-adoption rule on these files (it reproduces T44's comparison). The two statements are read only if (h) passes;
-otherwise both read "no larger-step gain to explain" and the comparisons are reported only. Gene identity: "a placebo
-gains as well; the direction more" if (a) and (b) pass; "a placebo gains as well" if (b) passes and (a) does not;
-"needs the direction's genes" if (a) passes and (b) does not; otherwise "not separated". Count noise: "count noise of
-x2b's size gains" if (d) passes and (c) does not; "is not count noise" if (c) passes and (d) does not; "part of each"
-if both pass (the text gives the two sizes); otherwise "not separated". (a0), (e), (f) and (g) decide nothing.
+The reading. Void unless both cuts hold the ten seeds at one commit on a clean tree, with every arm on every row; b0 and
+m1_r_gmom equal, seed for seed, their committed scores in experiments/t1_m1/results/t42_m1_eb/tasks/ and m1_r_gmom_x2
+its committed scores in experiments/t1_m1/results/t44_m1_step/tasks/, each to 1e-9; each file's task is its cut, its
+base fraction 0.2 and each arm's fraction(s) as above (x0 0, p1 0.2, p2 0.4, x2b [0.4, -0.2], x15b [0.3, -0.1], q1 0.2,
+q2 0.4, to 1e-12); no control (x0, p1, p2, x2b, x15b, q1, q2) scores exactly as m1_r_gmom on every seed of both cuts;
+m1_r_gmom_p1 and m1_r_gmom_p2 record the same permuted directions on every seed, and these differ from Feng's in every
+group; m1_r_gmom_q1 and m1_r_gmom_q2 record the same permuted directions on every seed, and these differ from Feng's and
+from the first placebo's in every group. The test is the adoption rule's (vec.adoption.keep_change, paired by seed, both
+cuts: a mean gain above 0.3 with at least 8 of 10 seeds ahead on each, no loss beyond 0.3), used thirteen times on these
+files, once per comparison below, and once more on try T43c's committed files (reported only); "A over B" is A as the
+change, B as the base, and "X - Y" a paired per-seed increment:
+  (a)  (x2 - m1_r_gmom) over (p2 - p1): the larger step's increment against the first placebo's increment; decides the
+       gene-identity statement;
+  (a0) x2 over p2, the level comparison; reported, decides nothing;
+  (a2) (x2 - m1_r_gmom) over (q2 - q1): the larger step's increment against the second placebo's increment; reported,
+       decides nothing;
+  (b)  p2 over p1, the first placebo's larger step; decides the gene-identity statement;
+  (b2) q2 over q1, the second placebo's larger step; reported, decides nothing;
+  (c)  x2 over x2b; reported, decides nothing: the upper bound of the noise reading;
+  (c') x2 over x15b; decides the count-noise statement;
+  (d)  x2b over m1_r_gmom; reported, decides nothing: the upper bound of the noise reading;
+  (d') x15b over m1_r_gmom; decides the count-noise statement;
+  (e)  m1_r_gmom over p1; reported, decides nothing;
+  (f)  p1 over x0; reported, decides nothing;
+  (g)  m1_r_gmom over x0; reported, decides nothing;
+  (h)  x2 over m1_r_gmom, the adoption rule on these files (it reproduces T44's comparison); gates the two statements.
+The two statements are read only if (h) passes; otherwise both read "no larger-step gain to explain" and the comparisons
+are reported only. Gene identity: "a placebo gains as well; the direction more" if (a) and (b) pass; "a placebo gains as
+well" if (b) passes and (a) does not; "needs the direction's genes" if (a) passes and (b) does not; otherwise "not
+separated". Count noise: "count noise of x2b's size gains" if (d') passes and (c') does not; "is not count noise" if
+(c') passes and (d') does not; "part of each" if both pass (the text gives the two sizes of (c') and (d')); otherwise
+"not separated". The statements rest on the first permutation; (a2) and (b2) show the spread across permutations.
 Reported: per cut every arm's mean board score, each comparison's mean paired difference with seeds ahead and per-seed
-range, every metric's mean skill difference, the redraw measures beside (c) and (d), the placebo's applied size beside
-(a) and (b), and beside (b) and (d) try T43c's committed difference (b0_mn against b0 in
-experiments/harness/results/t43_t1_mix/tasks/), what a full count redraw does on the same cuts. The read puts nothing
-forward by itself.
+range, every metric's mean skill difference, the redraw measures beside (c), (c'), (d) and (d'), the first placebo's
+applied size, its ratio to Feng's and the between-bin share beside (a) and (b), and beside (b) and (d) try T43c's
+committed difference (b0_mn against b0 in experiments/harness/results/t43_t1_mix/tasks/), what a full count redraw does
+on the same cuts. The read puts nothing forward by itself.
 
 Usage: on the DGX campaign checkout, repo root, both cuts at one commit, committing nothing until both task files
 exist, and on the machine T42 and T44 ran on, so that b0, m1_r_gmom and m1_r_gmom_x2 reproduce. The environment
@@ -118,29 +175,45 @@ ROW = "T45"
 BASE = sr.BASE  # m1_r_gmom
 FRACTION = er.FRACTION  # 0.2, Feng's step on an E9.5 -> E10.5 cut
 X2, X0, P1, P2, X2B = "m1_r_gmom_x2", "m1_r_gmom_x0", "m1_r_gmom_p1", "m1_r_gmom_p2", "m1_r_gmom_x2b"
-CONTROLS = (X0, P1, P2, X2B)
+X15 = "m1_r_gmom_x15"  # T44's 1.5 step: x15b's first edit
+X15B, Q1, Q2 = "m1_r_gmom_x15b", "m1_r_gmom_q1", "m1_r_gmom_q2"
+X15_MULT = sr.MULTIPLIERS[X15]  # 1.5, T44's own multiplier
+CONTROLS = (X0, P1, P2, X2B, X15B, Q1, Q2)
 ARMS = ("b0", BASE, X2, *CONTROLS)
 PLACEBO_ARMS = (P1, P2)
-SECOND_STREAM = 15  # T45d's second edit: an index no existing step uses (build: 1, 2, 4; g_mom: 5; others 0-14, 20+)
+PLACEBO2_ARMS = (Q1, Q2)  # the second permutation: reported only
+PLACEBO2_OFFSET = 1  # its seed: [LP_PERM_SEED + 1, LP_GROUPS.index(group)]
+# The second edits of x2b and x15b: an index no existing step uses (build: 1, 2, 4; g_mom: 5; others 0-14, 20+); the two
+# arms share it, as every arm shares [seed, 2] and [seed, 5]: each is its own build, and each build uses it once.
+SECOND_STREAM = 15
 FRACTION_TOL = sr.FRACTION_TOL
 REPRO_TOL = sr.REPRO_TOL  # 1e-9: same machine and code path
 REPRO = {"t42": ("b0", BASE), "t44": (X2,)}
 M1_ARMS = (BASE, X2, *CONTROLS)  # the arms built through gmom_combo.m1_r_arms, in build order
-X2_INC, P2_INC = f"{X2} - {BASE}", f"{P2} - {P1}"  # (a)'s paired increments: the larger step's and the placebo's
-COMPARISONS = {"a": (P2_INC, X2_INC), "a0": (P2, X2), "b": (P1, P2), "c": (X2B, X2), "d": (BASE, X2B),
+X2_INC, P2_INC, Q2_INC = f"{X2} - {BASE}", f"{P2} - {P1}", f"{Q2} - {Q1}"  # paired increments for (a) and (a2)
+COMPARISONS = {"a": (P2_INC, X2_INC), "a0": (P2, X2), "a2": (Q2_INC, X2_INC), "b": (P1, P2), "b2": (Q1, Q2),
+               "c": (X2B, X2), "c'": (X15B, X2), "d": (BASE, X2B), "d'": (BASE, X15B),
                "e": (P1, BASE), "f": (X0, P1), "g": (X0, BASE), "h": (BASE, X2)}  # letter -> (base, change)
-REPORTED_ONLY = ("a0", "e", "f", "g")  # reported, decide nothing; (h) gates the two statements
+REPORTED_ONLY = ("a0", "a2", "b2", "c", "d", "e", "f", "g")  # reported, decide nothing; (h) gates the two statements
+NOTES = {"h": " gates the two statements",
+         "c": " reported, decides nothing: the upper bound of the noise reading (x2b carries more redraw than x2)",
+         "d": " reported, decides nothing: the upper bound of the noise reading (x2b carries more redraw than x2)",
+         "a2": " reported, decides nothing: the second permutation",
+         "b2": " reported, decides nothing: the second permutation"}
+T44_READING = T44_TASKS.parent / "t44.json"  # T44's committed reading: the run needs m1_r_gmom_x2 passing there
 T43C = ("b0", "b0_mn")  # (base, change): try T43c's full count redraw, reported beside (b) and (d)
 NEEDS_GENES, PLACEBO_GAINS, PLACEBO_LESS, NOT_SEPARATED = (
     "needs the direction's genes", "a placebo gains as well", "a placebo gains as well; the direction more",
     "not separated")
 IS_NOISE, NOT_NOISE, PART_OF_EACH = "count noise of x2b's size gains", "is not count noise", "part of each"
 NO_GAIN = "no larger-step gain to explain"
-SIZE_FLAG = 0.10  # the reviewer's 10%: a placebo applied size this far from Feng's is named beside (a) and (b)
+SIZE_FLAG = 0.10  # the reviewer's 10%: labels text only, decides nothing (a size this far from Feng's is named)
+REDRAW_BESIDE = {"c": (X2, X2B), "c'": (X2, X15B), "d": (X2B, BASE), "d'": (X15B, BASE)}  # arms printed beside
 REDRAW_KEYS = ("share_nonzero_changed", "share_nonzero_zeroed", "detected_per_cell", "detected_per_cell_drawn")
 LABEL_T45 = ("try T45, a labelled in-sample diagnostic, never an adoption result: M1 (with R1, R2 and g_mom's factors, "
              "the entry's form) at fractions 0, 0.2 and 0.4 of Feng's bracket, with try T15's permuted placebo at 0.2 "
-             "and 0.4, and a there-and-back step (0.4 then -0.2), on T44's route; Feng's E9.5 cells lie inside these "
+             "and 0.4 (and a second permutation, reported only), and two there-and-back steps (0.4 then -0.2, 0.3 then "
+             "-0.1), on T44's route; Feng's E9.5 cells lie inside these "
              "pseudo-tasks' external windows, the cuts are ones earlier T1 choices were made on, and the truth of a "
              "one-day cut differs from its reference in the kind of sample as well as in age; the result can only go "
              "to the team captain")
@@ -151,16 +224,18 @@ LABEL_T45 = ("try T45, a labelled in-sample diagnostic, never an adoption result
 
 
 def arm_fractions(fraction: float) -> dict[str, float | list[float]]:
-    """Every M1 arm's fraction; T45d's two, in the order applied."""
+    """Every M1 arm's fraction; T45d's and T45e's two, in the order applied (as there_and_back computes them)."""
     f = float(fraction)
-    return {BASE: f, X2: f * 2.0, X0: 0.0, P1: f, P2: f * 2.0, X2B: [f * 2.0, -f]}
+    return {BASE: f, X2: f * 2.0, X0: 0.0, P1: f, P2: f * 2.0, X2B: [f * 2.0, -f],
+            X15B: [f * X15_MULT, (1.0 - X15_MULT) * f], Q1: f, Q2: f * 2.0}
 
 
-def placebo_directions(directions: Mapping[str, np.ndarray], halves: Mapping[str, Mapping[str, np.ndarray]]
-                       ) -> dict[str, np.ndarray]:
+def placebo_directions(directions: Mapping[str, np.ndarray], halves: Mapping[str, Mapping[str, np.ndarray]],
+                       offset: int = 0) -> dict[str, np.ndarray]:
     """Try T15's permuted control (harness._late_proxy with permute=True), unchanged, on M1's directions: per group, the
     finite values permuted across genes within LP_BINS bins of the group's mean CP10k on M1's bracket, seed
-    [LP_PERM_SEED, LP_GROUPS.index(group)]. NaN stays NaN. A group outside LP_GROUPS or without halves is refused."""
+    [LP_PERM_SEED + offset, LP_GROUPS.index(group)] (offset 0: T15's own; 1: the second placebo pair). NaN stays NaN.
+    A group outside LP_GROUPS or without halves is refused."""
     out = {}
     for g, d in directions.items():
         if g not in harness.LP_GROUPS:
@@ -170,8 +245,29 @@ def placebo_directions(directions: Mapping[str, np.ndarray], halves: Mapping[str
         d = np.asarray(d, dtype=np.float64).copy()
         ok = np.isfinite(d)
         d[ok] = harness.t3_decile_permutation(d[ok], np.asarray(halves[g]["mean_cp"], dtype=np.float64)[ok],
-                                              [harness.LP_PERM_SEED, harness.LP_GROUPS.index(g)], harness.LP_BINS)
+                                              [harness.LP_PERM_SEED + offset, harness.LP_GROUPS.index(g)],
+                                              harness.LP_BINS)
         out[g] = d
+    return out
+
+
+def between_bin_share(directions: Mapping[str, np.ndarray], halves: Mapping[str, Mapping[str, np.ndarray]]
+                      ) -> dict[str, float]:
+    """Per group, the share of the direction's variance between T15's bins: over the finite genes, each gene given the
+    mean of its bin (LP_BINS runs of the stable mean_cp ranking, the bins t3_decile_permutation permutes within), the
+    variance of those bin means over the variance of d. The part of d a within-bin permutation keeps. Target-free; NaN
+    when d has no variance."""
+    out = {}
+    for g, d in sorted(directions.items()):
+        d = np.asarray(d, dtype=np.float64)
+        ok = np.isfinite(d)
+        v, basis = d[ok], np.asarray(halves[g]["mean_cp"], dtype=np.float64)[ok]
+        means = np.empty_like(v)
+        for genes in np.array_split(np.argsort(basis, kind="stable"), harness.LP_BINS):
+            if genes.size:
+                means[genes] = v[genes].mean()
+        total = float(v.var()) if v.size else 0.0
+        out[g] = float(means.var()) / total if total > 0 else float("nan")
     return out
 
 
@@ -243,8 +339,9 @@ def _redraw_probe(directions: Mapping, groups: Mapping, out: list) -> Iterator[N
 
 
 def second_edit(directions: Mapping, groups: Mapping, fraction: float, held: Sequence[str], seed: int):
-    """T45d's second edit: Feng's directions at `fraction` on the covered cells (gmom_combo.moved_by_feng, through
-    external_shift with its own rule), R2's held genes held, stream [seed, SECOND_STREAM]; other cells as they are."""
+    """T45d's and T45e's second edit: Feng's directions at `fraction` on the covered cells (gmom_combo.moved_by_feng,
+    through external_shift with its own rule), R2's held genes held, stream [seed, SECOND_STREAM]; other cells as they
+    are."""
     def edit(pop):
         return gc.moved_by_feng(pop, directions, fraction, groups, held, [seed, SECOND_STREAM])
 
@@ -278,33 +375,47 @@ def _before_gmom(edit) -> Iterator[None]:
 
 
 def there_and_back(ctx: harness.BuildContext, directions: Mapping, groups: Mapping, fraction: float,
-                   held_m1: Sequence[str], held_factors: Sequence[str]) -> Stage:
-    """T45d: gmom_combo.m1_r_arms at 2 * fraction (its first edit is the x2 arm's) with the second edit at -fraction
-    put in build_submission's post_cells hook before g_mom's factors."""
-    with _before_gmom(second_edit(directions, groups, -float(fraction), held_m1, ctx.seed)):
-        return gc.m1_r_arms(ctx, directions, groups, 2.0 * float(fraction), held_m1, held_factors)[BASE]
+                   held_m1: Sequence[str], held_factors: Sequence[str], multiplier: float = 2.0) -> Stage:
+    """gmom_combo.m1_r_arms at fraction * multiplier (T45d, multiplier 2: its first edit is the x2 arm's; T45e,
+    multiplier 1.5: T44's x15 arm's) with the second edit at (1 - multiplier) * fraction, back to a net `fraction`,
+    put in build_submission's post_cells hook before g_mom's factors, on stream [seed, SECOND_STREAM]."""
+    f, m = float(fraction), float(multiplier)
+    with _before_gmom(second_edit(directions, groups, (1.0 - m) * f, held_m1, ctx.seed)):
+        return gc.m1_r_arms(ctx, directions, groups, f * m, held_m1, held_factors)[BASE]
 
 
 def perm_arms(ctx: harness.BuildContext, directions: Mapping, placebo: Mapping, groups: Mapping, fraction: float,
-              held_m1: Sequence[str], held_factors: Sequence[str]) -> dict:
-    """The six M1 arms of one seed, each gmom_combo.m1_r_arms' m1_r_gmom as step_read.step_arms builds it: on Feng's
-    directions (base, x2, x0) and on the placebo (p1, p2), and T45d. The same context, groups, held genes and streams
-    for each. Returns {"arms": arm -> Stage, "directions": arm -> the directions object the arm was built with,
-    "redraw": arm -> redraw_measures of its covered cells before g_mom}."""
+              held_m1: Sequence[str], held_factors: Sequence[str], *, placebo2: Mapping) -> dict:
+    """The nine M1 arms of one seed, each gmom_combo.m1_r_arms' m1_r_gmom as step_read.step_arms builds it: on Feng's
+    directions (base, x2, x0), on the placebo (p1, p2) and on the second placebo (q1, q2), and T45d (x2b) and T45e
+    (x15b). The same context, groups, held genes and streams for each. Returns {"arms": arm -> Stage, "directions":
+    arm -> the directions object the arm was built with, "redraw": arm -> redraw_measures of its covered cells before
+    g_mom}."""
     f = float(fraction)
     spec = {BASE: (directions, f), X2: (directions, 2.0 * f), X0: (directions, 0.0), P1: (placebo, f),
-            P2: (placebo, 2.0 * f), X2B: (directions, None)}
+            P2: (placebo, 2.0 * f), X2B: (directions, 2.0), X15B: (directions, X15_MULT), Q1: (placebo2, f),
+            Q2: (placebo2, 2.0 * f)}  # x2b and x15b: their first multiplier
     arms, used, redraw = {}, {}, {}
     for arm in M1_ARMS:
         dirs, fr = spec[arm]
         rec = []
         with _redraw_probe(dirs, groups, rec):
-            if arm == X2B:
-                arms[arm] = there_and_back(ctx, dirs, groups, f, held_m1, held_factors)
+            if arm in (X2B, X15B):
+                arms[arm] = there_and_back(ctx, dirs, groups, f, held_m1, held_factors, multiplier=fr)
             else:
                 arms[arm] = gc.m1_r_arms(ctx, dirs, groups, fr, held_m1, held_factors)[BASE]
         used[arm], redraw[arm] = dirs, (rec[-1] if rec else None)
     return {"arms": arms, "directions": used, "redraw": redraw}
+
+
+def t44_names_x2(path: Path) -> bool:
+    """True when the committed T44 reading at `path` is valid and its "comparisons" entry for m1_r_gmom_x2 passes
+    (step_read.t44_reading: comparisons maps each scaled arm to eb_read.compare's record, with "passes")."""
+    try:
+        r = json.loads(Path(path).read_text())["reading"]
+        return r.get("valid") is True and r["comparisons"][X2]["passes"] is True
+    except (OSError, ValueError, KeyError, TypeError):
+        return False
 
 
 def cmd_run(a) -> None:
@@ -313,6 +424,9 @@ def cmd_run(a) -> None:
     n22 = RESULTS / a.n22 / "n22.json"
     if not gc.n22_passed(n22):
         sys.exit(f"T45 is refused: {gv._rel(n22)} does not hold a passing N22 (T26's route needs N22 passed)")
+    if not t44_names_x2(T44_READING):
+        sys.exit(f"T45 is refused: {gv._rel(T44_READING)} is not a valid committed T44 reading naming {X2} among the "
+                 "arms that pass (no larger-step gain to explain)")
     out = RESULTS / a.out
     name = re.sub(r"[^A-Za-z0-9.]+", "_", a.task).strip("_") + ".json"
     gv.refuse_existing(out / "tasks", (name,))
@@ -333,6 +447,7 @@ def cmd_run(a) -> None:
     if stats_sha != ext["sha256"]:
         sys.exit("the statistics the halves came from are not the ones M1's direction came from")
     placebo = placebo_directions(directions, halves)  # once: the same for both fractions and every build seed
+    placebo2 = placebo_directions(directions, halves, PLACEBO2_OFFSET)  # the second pair's, reported only
     groups = feng_dirs.label_groups(pool.obs["celltype"].astype(str).unique())
     fraction = feng_dirs.bracket_fraction(harness.STAGE_DAYS[t.reference], harness.STAGE_DAYS[t.target])
     preregistered = t1_scope.held_flat_genes()
@@ -340,14 +455,14 @@ def cmd_run(a) -> None:
     held_m1 = gc.held_feng(union, preregistered)
     view, cboard = harness.TaskView.of(t), harness._candidate_board(board)
     b0 = harness._b0_t1(harness.B0_DAMPING)
-    rows, built_sha = [], {a_: set() for a_ in PLACEBO_ARMS}
+    rows, built_sha = [], {a_: set() for a_ in (*PLACEBO_ARMS, *PLACEBO2_ARMS)}
     for s in seeds:
         t0 = time.time()
         f = gv.floor_anchors(t, board, target, ref_stage, s)
         ctx = harness.BuildContext(task=view, board=cboard, inputs=inputs, seed=harness.BUILD_SEED_OFFSET + s,
                                    derived={"t1_held_flat": preregistered})
-        built = perm_arms(ctx, directions, placebo, groups, fraction, held_m1, preregistered)
-        for a_ in PLACEBO_ARMS:  # the directions object each placebo arm was built with, hashed on every seed
+        built = perm_arms(ctx, directions, placebo, groups, fraction, held_m1, preregistered, placebo2=placebo2)
+        for a_ in (*PLACEBO_ARMS, *PLACEBO2_ARMS):  # each placebo arm's directions object, hashed on every seed
             built_sha[a_].add(json.dumps(direction_sha(built["directions"][a_]), sort_keys=True))
         arms = er.score_arms(board, target, ref_stage, s, f.anchors, {"b0": b0(ctx), **built["arms"]})
         rows.append({"seed": s, "floor": float(f.score), "arms": arms, "redraw": built["redraw"],
@@ -358,6 +473,7 @@ def cmd_run(a) -> None:
            "placebo_sha256": placebo_record(built_sha),
            "applied_size": {"fraction": fraction, "feng": applied_size(directions, held_m1, pool.var_names, fraction),
                             "placebo": applied_size(placebo, held_m1, pool.var_names, fraction)},
+           "between_bin_share": between_bin_share(directions, halves),
            "feng_stats_sha256": stats_sha, "external": ext, "seeds": list(seeds), "rows": rows,
            "stamp": gv.stamp(started, [data / t.target, data / t.reference, *[data / f for f in t.inputs.values()],
                                        t1_scope.HELD_FLAT_GENES, ts.R1_CONFIG, REPO_ROOT / union["file"],
@@ -396,6 +512,28 @@ def _fraction_ok(got, want) -> bool:
     return isinstance(got, int | float) and not isinstance(got, bool) and abs(got - want) <= FRACTION_TOL
 
 
+def _placebo_reasons(k: str, placebo: Mapping, pair: Sequence[str], feng: Mapping, other: Mapping, name: str
+                     ) -> list[str]:
+    """A placebo pair's void conditions: each arm built with one set of directions on every seed, the two arms the same
+    set, Feng's groups, and in every group different from Feng's and from `other` (the first placebo's, for the
+    second pair)."""
+    recorded = [placebo.get(a) for a in pair]
+    if any(isinstance(p, Mapping) and DIFFERS in p for p in recorded):
+        return [f"{k}: a placebo arm of {name} was built with different directions on different seeds"]
+    if any(not p for p in recorded) or any(p != recorded[0] for p in recorded):
+        return [f"{k}: {pair[0]} and {pair[1]} do not record the same permuted directions"]
+    if not feng or set(recorded[0]) != set(feng):
+        return [f"{k}: {name}'s groups {sorted(recorded[0])} are not Feng's {sorted(feng)}"]
+    out = []
+    same = sorted(g for g in feng if recorded[0][g] == feng[g])
+    if same:
+        out.append(f"{k}: {name} equals Feng's direction in groups {same}")
+    same = sorted(g for g in feng if g in other and recorded[0][g] == other[g])
+    if same:
+        out.append(f"{k}: {name} equals the first placebo in groups {same}")
+    return out
+
+
 def validity(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[str, Mapping]]) -> dict:
     """The void conditions. results: cut -> task file (a missing cut is absent); committed: "t42" and "t44" -> cut ->
     their committed task files."""
@@ -420,17 +558,10 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[str
         if bad:
             reasons.append(f"{k}: arm fractions {got_fr}, not {want_fr} (wrong fraction on {bad})")
         feng, placebo = r.get("feng_sha256") or {}, r.get("placebo_sha256") or {}
-        recorded = [placebo.get(a) for a in PLACEBO_ARMS]
-        if any(isinstance(p, Mapping) and DIFFERS in p for p in recorded):
-            reasons.append(f"{k}: a placebo arm was built with different directions on different seeds")
-        elif any(not p for p in recorded) or any(p != recorded[0] for p in recorded):
-            reasons.append(f"{k}: {P1} and {P2} do not record the same permuted directions")
-        elif not feng or set(recorded[0]) != set(feng):
-            reasons.append(f"{k}: the placebo's groups {sorted(recorded[0])} are not Feng's {sorted(feng)}")
-        else:
-            same = sorted(g for g in feng if recorded[0][g] == feng[g])
-            if same:
-                reasons.append(f"{k}: the placebo equals Feng's direction in groups {same}")
+        first = _placebo_reasons(k, placebo, PLACEBO_ARMS, feng, {}, "the placebo")
+        reasons += first
+        if not first:
+            reasons += _placebo_reasons(k, placebo, PLACEBO2_ARMS, feng, placebo[P1], "the second placebo")
     commits = {r["stamp"]["commit"] for r in results.values()}
     unclean = sorted(k for k, r in results.items() if r["stamp"]["tree_clean"] is not True)
     if unclean:
@@ -456,8 +587,8 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[str
 
 
 def statements(p: Mapping[str, bool]) -> dict[str, str]:
-    """The two statements about the larger step, from which comparisons pass; both read NO_GAIN unless (h), the larger
-    step over the base on these files, passes."""
+    """The two statements about the larger step, from which comparisons pass: gene identity from (a) and (b), count
+    noise from (c') and (d'); both read NO_GAIN unless (h), the larger step over the base on these files, passes."""
     if not p["h"]:
         return {"gene identity": NO_GAIN, "count noise": NO_GAIN}
     if p["b"]:
@@ -466,11 +597,11 @@ def statements(p: Mapping[str, bool]) -> dict[str, str]:
         genes = NEEDS_GENES
     else:
         genes = NOT_SEPARATED
-    if p["d"] and p["c"]:
+    if p["d'"] and p["c'"]:
         noise = PART_OF_EACH
-    elif p["d"]:
+    elif p["d'"]:
         noise = IS_NOISE
-    elif p["c"]:
+    elif p["c'"]:
         noise = NOT_NOISE
     else:
         noise = NOT_SEPARATED
@@ -488,18 +619,20 @@ def _arm_difference(change: Mapping, base: Mapping) -> dict:
 
 
 def with_increments(results: Mapping[str, Mapping]) -> dict:
-    """The task files with (a)'s two paired increments as arms of each row: X2_INC = x2 - m1_r_gmom and P2_INC =
-    p2 - p1, seed by seed, so that (a) is the adoption rule on (P2_INC, X2_INC) as the (base, change) pair."""
+    """The task files with the paired increments as arms of each row: X2_INC = x2 - m1_r_gmom, P2_INC = p2 - p1 and
+    Q2_INC = q2 - q1, seed by seed, so that (a) is the adoption rule on (P2_INC, X2_INC) and (a2) on (Q2_INC, X2_INC)
+    as the (base, change) pair."""
     return {k: {**r, "rows": [{**row, "arms": {**row["arms"],
                                                X2_INC: _arm_difference(row["arms"][X2], row["arms"][BASE]),
-                                               P2_INC: _arm_difference(row["arms"][P2], row["arms"][P1])}}
+                                               P2_INC: _arm_difference(row["arms"][P2], row["arms"][P1]),
+                                               Q2_INC: _arm_difference(row["arms"][Q2], row["arms"][Q1])}}
                               for row in r["rows"]]}
             for k, r in results.items()}
 
 
 def size_flags(sizes: Mapping | None) -> list[str]:
     """Groups whose placebo applied size (mean |log f| or sum of log f^2, non-held genes) differs from Feng's by more
-    than SIZE_FLAG, relative to Feng's."""
+    than SIZE_FLAG, relative to Feng's. Text only: the threshold decides nothing."""
     if not sizes:
         return []
     out = []
@@ -509,6 +642,15 @@ def size_flags(sizes: Mapping | None) -> list[str]:
             y = ps.get(m)
             if y is None or (x == 0 and y != 0) or (x != 0 and abs(y - x) / abs(x) > SIZE_FLAG):
                 out.append(f"{g} {m}: Feng {x:.4g}, placebo {y if y is None else f'{y:.4g}'}")
+    return out
+
+
+def size_ratios(sizes: Mapping | None) -> dict[str, dict[str, float | None]]:
+    """Per group and measure, the placebo's applied size over Feng's (None where Feng's is 0 or a value is missing)."""
+    out = {}
+    for g, fs in sorted((sizes or {}).get("feng", {}).items()):
+        ps = sizes.get("placebo", {}).get(g, {})
+        out[g] = {m: (float(ps[m]) / float(x) if x and ps.get(m) is not None else None) for m, x in fs.items()}
     return out
 
 
@@ -559,9 +701,10 @@ def t45_reading(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[
     out["statements"] = statements({c: comps[c]["passes"] for c in comps})
     out["outcome"] = "; ".join(f"{k}: {s}" for k, s in out["statements"].items())
     if out["statements"]["count noise"] == PART_OF_EACH:
-        out["count_noise_note"] = ("both (c) and (d) pass: part of each; sizes per cut, (c) "
-                                   + ", ".join(f"{c_['mean']:+.2f}" for c_ in comps["c"]["cuts"].values()) + "; (d) "
-                                   + ", ".join(f"{c_['mean']:+.2f}" for c_ in comps["d"]["cuts"].values()))
+        out["count_noise_note"] = ("both (c') and (d') pass: part of each; sizes per cut, (c') "
+                                   + ", ".join(f"{c_['mean']:+.2f}" for c_ in comps["c'"]["cuts"].values())
+                                   + "; (d') "
+                                   + ", ".join(f"{c_['mean']:+.2f}" for c_ in comps["d'"]["cuts"].values()))
     if out["statements"]["gene identity"] == PLACEBO_LESS:
         out["gene_identity_note"] = ("both (a) and (b) pass; sizes per cut, (a) "
                                      + ", ".join(f"{c_['mean']:+.2f}" for c_ in comps["a"]["cuts"].values())
@@ -572,6 +715,8 @@ def t45_reading(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[
     out["redraw"] = mean_redraw(results)
     out["applied_size"] = {k: r.get("applied_size") for k, r in results.items()}
     out["size_flags"] = {k: size_flags(r.get("applied_size")) for k, r in results.items()}
+    out["size_ratios"] = {k: size_ratios(r.get("applied_size")) for k, r in results.items()}
+    out["between_bin_share"] = {k: r.get("between_bin_share") for k, r in results.items()}
     t43c_comp = t43c(t43 or {})
     if t43c_comp is not None:
         out["t43c"] = t43c_comp
@@ -618,9 +763,16 @@ def t45_text(res: Mapping) -> str:
                              f"{g} Feng {fs['mean_abs_logf']:.4f}, {fs['sum_sq_logf']:.3f}, placebo "
                              f"{sizes['placebo'][g]['mean_abs_logf']:.4f}, {sizes['placebo'][g]['sum_sq_logf']:.3f}"
                              for g, fs in sorted(sizes.get("feng", {}).items()) if g in sizes.get("placebo", {})))
+            ratios = (r.get("size_ratios") or {}).get(k) or {}
+            lines.append(f"    the placebo's applied size over Feng's, {k} (mean |log f|, sum log f^2): " + "; ".join(
+                f"{g} " + ", ".join("n/a" if x is None else f"{x:.3f}" for x in rs.values())
+                for g, rs in sorted(ratios.items())))
             if flags:
                 lines.append(f"    the placebo's applied size differs from Feng's by more than {SIZE_FLAG:.0%}: "
-                             + "; ".join(flags))
+                             + "; ".join(flags) + " (a text label; the threshold decides nothing)")
+        for k, share in (r.get("between_bin_share") or {}).items():
+            lines.append(f"    between-bin share of the direction's variance (kept by the placebo), {k}: " + (
+                "not recorded" if not share else "; ".join(f"{g} {x:.3f}" for g, x in sorted(share.items()))))
 
     def block(name: str, comp: Mapping) -> None:
         lines.append(f"{name}: {comp['change']} over {comp['base']}: "
@@ -631,12 +783,15 @@ def t45_text(res: Mapping) -> str:
                          f"{cut['range'][0]:+.2f} to {cut['range'][1]:+.2f}; skills: {sk}")
 
     for c, comp in r.get("comparisons", {}).items():
-        note = {"h": " gates the two statements"}.get(c, " reported, decides nothing" if c in REPORTED_ONLY else "")
+        note = NOTES.get(c, " reported, decides nothing" if c in REPORTED_ONLY else "")
         block(f"({c}){note}", comp)
         if c in ("a", "b"):
             size_lines()
-        if c in ("c", "d"):
-            redraw_lines((X2, X2B) if c == "c" else (X2B, BASE))
+        if c in ("a2", "b2"):
+            lines.append("    the two statements rest on the first permutation (seed LP_PERM_SEED); this second "
+                         "permutation (LP_PERM_SEED + 1) shows the spread across permutations and decides nothing")
+        if c in REDRAW_BESIDE:
+            redraw_lines(REDRAW_BESIDE[c])
         if c in ("b", "d") and "t43c" in r:
             block("    beside it, try T43c's full count redraw (committed files, reported)", r["t43c"])
     lines.append("Limit: in-sample labelled diagnostic; never adoption evidence; puts nothing forward by itself; it "
