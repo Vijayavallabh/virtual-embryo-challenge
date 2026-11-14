@@ -1,0 +1,10 @@
+run folder on the DGX: ~/v/vec-campaign/runs/harness/n41_polar_arms (campaign checkout)
+commit: b7d6fa0f5c5ed01729c1adafe39a90f5426e7491 (branch campaign/emb-polar)
+tree at start and at end (bytes of git status --porcelain): 0 and 0
+started UTC: 2026-11-13T23:52:08Z
+ended UTC: 2026-11-14T00:22:54Z
+CPU only, 8 BLAS threads, one process per practice task
+command: experiments/harness/n41_polar_arms.py run --task <task> --out <tasks>, the nine tasks started together
+tasks/: the nine task files as the run wrote them; each holds the floor and the arms that built, and under "not_buildable" the arms the builder refused on that task (seed and message, every number masked)
+this is the second run: the first (a91ba76, 2026-11-13T23:29:22Z to 23:43:38Z; kept on the DGX as runs/harness/n41_polar_arms_first_a91ba76) wrote no task file, because the runner let a refused build end the task; no score exists from it
+the reading is experiments/harness/n41_polar_readings.py on main (results/n41_polar_readings/)
