@@ -955,7 +955,7 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
 
 def _b0_t2_shift(ctx: BuildContext, herd: bool = False, cfm: bool = False, trend: bool = False,
                  trend_record: dict | None = None,
-                 cell_factors: Callable[[BuildContext, ad.AnnData, np.ndarray, ad.AnnData], np.ndarray] | None = None
+                 cell_factors: Callable[[BuildContext, ad.AnnData, np.ndarray, ad.AnnData], object] | None = None
                  ) -> tuple[ad.AnnData, np.ndarray, np.ndarray | None, ad.AnnData, ad.AnnData]:
     """B0's draw and per-lineage shift on a T2 board (the steps of `_b0_t2` before its depth step and its finish):
     (pool, drawn rows, coords, the stage the momentum starts from, the shifted cells with obs["merged"] and their counts
@@ -991,7 +991,7 @@ def _b0_t2_shift(ctx: BuildContext, herd: bool = False, cfm: bool = False, trend
 
 def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool = False, trend: bool = False,
            trend_record: dict | None = None,
-           cell_factors: Callable[[BuildContext, ad.AnnData, np.ndarray, ad.AnnData], np.ndarray] | None = None
+           cell_factors: Callable[[BuildContext, ad.AnnData, np.ndarray, ad.AnnData], object] | None = None
            ) -> Stage:
     """B0 on a T2 board: real reference cells at the count rule, moved in count space by the per-type change of the
     harmonised lineage level (obs["merged"]; groups without a stable cross-stage meaning held flat). Extrapolation:
@@ -1008,7 +1008,8 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
     trend_record: a dict that receives b0_trend_factors' record (with trend only; the build record's source).
     cell_factors (with trend only; b0_trend_flow and its companions, vec.trend_flow): called as cell_factors(ctx, pool,
     rows, drawn cells typed as B0 types them) for the per-cell, per-gene factors D that momentum_shift multiplies into
-    the trend's factors in its one apply_factors call."""
+    the trend's factors in its one apply_factors call (an array, or a callable momentum_shift calls with the trend's
+    per-cell factors and the held mask; see momentum_shift)."""
     if cell_factors is not None and not trend:
         raise ValueError("cell_factors is for trend=True")
     if trend and (depth or herd or cfm):
@@ -1392,14 +1393,15 @@ def b0_trend_flow_build(ctx: BuildContext, arm: str) -> tuple[Stage, dict]:
     from vec import latent_extrap as le
     from vec import trend_flow as tf
 
-    rec: dict = {}
+    held: list = []
 
     def factors(c, pool, rows, like):
         D, r = tf.cell_factors(arm, c, pool, rows, like, B0_DAMPING)
-        rec.update(r)
+        held.append(r)
         return D
 
     st = _b0_t2(ctx, trend=True, cell_factors=factors)
+    rec: dict = dict(held[0])  # complete: momentum_shift has called D's callable, which fills "check"
     le.RECORDS.append({"task": ctx.task.key, "candidate": tf.NAMES[arm], "build_seed": int(ctx.seed), **rec})
     print(tf.check_line(ctx.task.key, int(ctx.seed), rec), flush=True)
     return st, rec
@@ -2087,8 +2089,8 @@ CANDIDATES = {
                               "flow_seed": 20261113, "scope": "chamber"},
                              requires=_heart_extrap_with_start),
     # heart batch G (campaign/heart-g; vec.trend_flow): b0_trend with a per-cell, per-gene factor D inside each moved
-    # lineage that leaves the lineage's expected pseudobulk unchanged, from H10's field, its stage-permuted placebo,
-    # the field on latents centred per lineage and stage, and that field's placebo
+    # lineage that leaves the lineage's expected count pseudobulk after b0_trend's depth rule unchanged, from H10's
+    # field, its residual-permuted placebo, the field on latents centred per lineage and stage, and that field's placebo
     **{name: Candidate(name, frozenset({"T2"}), (), _b0_trend_flow_arm(arm),
                        {"what": what, "damping": B0_DAMPING, "rule": "vec.trend_flow.RULE",
                         "trend_rule": "vec.harness.B0_TREND_RULE", "flow_seed": 20261113,
@@ -2097,13 +2099,14 @@ CANDIDATES = {
        for arm, name, what in (
            ("flow", "b0_trend_flow", "b0_trend with D from H10's field (vec.latent_extrap.fold_flow and flow_latent): "
             "r the decoder's mean ratio at z + du over z, du the move centred within the lineage's drawn cells, D = r "
-            "over its count-weighted lineage mean (vec.trend_flow; heart only)"),
-           ("flow_perm", "b0_trend_flow_perm", "b0_trend_flow's placebo: the field fitted with every cell's stage "
-            "permuted within its lineage (vec.trend_flow.stage_permutation)"),
+            "over G, G set so that the lineage's expected pseudobulk after b0_trend's depth rule is unchanged "
+            "(vec.trend_flow.recentre_after_depth; heart only)"),
+           ("flow_perm", "b0_trend_flow_perm", "b0_trend_flow's placebo: the field fitted with each lineage's stage "
+            "means kept and the within-lineage residuals permuted across stages (vec.trend_flow.permute_residuals)"),
            ("flow_pool", "b0_trend_flow_pool", "b0_trend_flow with the field fitted on latents centred on their "
             "lineage's mean at their stage, over every transition, the drawn cells' centred latents integrated"),
-           ("flow_pool_perm", "b0_trend_flow_pool_perm", "b0_trend_flow_pool's placebo: stages permuted within "
-            "lineage before the centring and the pairs"))},
+           ("flow_pool_perm", "b0_trend_flow_pool_perm", "b0_trend_flow_pool's placebo: the residuals centred on "
+            "their true (lineage, stage) means, then permuted across stages within lineage before the pairs"))},
     # T3 tries K2a and K2b (experiments/harness/TRIES.md, registered before their run): s1's Gata4 factor on the
     # Gata4 -> Mab21l2 fold, and its permuted control
     "t3_factor_xko": Candidate("t3_factor_xko", frozenset({"T3"}), (), _t3_factor_xko,

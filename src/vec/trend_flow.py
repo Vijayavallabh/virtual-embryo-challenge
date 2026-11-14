@@ -15,22 +15,29 @@ factor on drawn cell i, gene g is F(lineage, g) x D(i, g), applied in b0_trend's
 - Ratio. r(i, g) = decoder mean at z + du over decoder mean at z (both at library 1), the log clipped at +-CLIP as the
   ratio arm clips it (`ratio_log_factors`, the lines of `vec.latent_extrap.ratio_counts` that make the factor; that
   function also applies them, so it cannot be used unchanged). A cell with du = 0 gets r = 1 undecoded.
-- Recentring. D(i, g) = r(i, g) / G(lineage, g), G = sum_i c(i, g) r(i, g) / sum_i c(i, g) over the lineage's drawn
-  cells (c the drawn cells' counts), so sum_i c(i, g) D(i, g) = sum_i c(i, g). A gene with no count in the lineage keeps
-  D = 1, and so does every cell of a lineage b0_trend does not move.
+- Recentring. D(i, g) = r(i, g) / G(lineage, g), with G set so that each gene's expected total over the lineage's
+  drawn cells after b0_trend's depth rule is what it is without D: sum_i c F D s'_i = sum_i c F s_i, with c the drawn
+  cells' counts, F the trend factor and s_i (s'_i) the per-cell constant `vec.core.apply_factors` uses to keep each
+  cell's expected total without (with) D. s' changes with D, so the count-weighted mean of r, G0 = sum_i c r / sum_i c,
+  does not give that identity; G starts at G0 and is iterated, G <- G x (expected total with D / without D) with s'
+  recomputed each time, until the largest relative departure over the lineage's genes is at most RECENTRE_TOL
+  (`recentre_after_depth`). A gene with no count in the lineage, a held-flat gene and every cell of a lineage
+  b0_trend does not move keep D = 1.
 
 The four arms differ only in where dz comes from:
 1. flow: H10's field exactly (`vec.latent_extrap.fold_flow` and `flow_latent`, every FLOW_* constant unchanged).
-2. flow_perm, its placebo: the same, with the stage of every cell permuted within its lineage before the pairs are
-   formed (`stage_permutation`: each stage keeps its number of cells per lineage; one permutation drawn from
-   default_rng([FLOW_SEED, PERM_STREAM])); the drawn reference cells are still the cells that are moved, from their own
-   z.
+2. flow_perm, its placebo: the same, with each lineage's mean development kept and only the within-lineage residuals
+   permuted across stages before the pairs are formed (`permute_residuals`): u = z - mean z(lineage, true stage), the
+   u's permuted across the stages within each lineage (`stage_permutation`: each stage keeps its number of cells per
+   lineage; one permutation drawn from default_rng([FLOW_SEED, PERM_STREAM])), each stage's own lineage mean added
+   back; the drawn reference cells are still the cells that are moved, from their own z.
 3. flow_pool: every cell's latent centred on the mean of its own lineage at its own stage, u = z - mean z(lineage,
    stage); H10's pairs, weights, network and constants on u in place of z over every transition between consecutive
    input stages; the drawn reference cells' u (their z less their lineage's reference-stage mean) integrated over tau,
    dz that move.
-4. flow_pool_perm: 3 on stages permuted within lineage as in 2 (the centring then uses the permuted stages, and the
-   drawn cells' u uses the permuted reference stage's lineage mean).
+4. flow_pool_perm: 3 with the residuals centred on their true (lineage, stage) means first and then permuted across
+   stages within lineage as in 2 (no mean added back, no re-centring); the drawn cells' u is their z less the true
+   reference stage's lineage mean.
 Every field is fitted once per task with H10's FLOW_SEED (one field per backtest, the same on every build seed).
 """
 
@@ -49,10 +56,14 @@ ARMS = ("flow", "flow_perm", "flow_pool", "flow_pool_perm")
 NAMES = {"flow": "b0_trend_flow", "flow_perm": "b0_trend_flow_perm", "flow_pool": "b0_trend_flow_pool",
          "flow_pool_perm": "b0_trend_flow_pool_perm"}
 PERM_STREAM = 3  # the placebos' stage permutation: default_rng([FLOW_SEED, 3]); flow_pairs uses streams 1 and 2
+RECENTRE_TOL = 1e-12  # float tolerance of the recentring's fixed point (largest relative departure; not a model knob)
+RECENTRE_MAX_ITER = 10_000  # the recentring raises if it has not reached RECENTRE_TOL by then
 RULE = ("b0_trend x D: D(i, g) = r(i, g) / G(lineage, g), r = decoded mean at z + du over decoded mean at z (log "
-        "clipped at +-log 3), du = dz - mean dz over the lineage's drawn cells, G the count-weighted mean of r over "
-        "them; dz the move over B0's budget from H10's field (flow), its stage-permuted placebo (flow_perm), the field "
-        "on latents centred per lineage and stage (flow_pool) or that on permuted stages (flow_pool_perm)")
+        "clipped at +-log 3), du = dz - mean dz over the lineage's drawn cells, G set so that each gene's expected "
+        "total over the lineage's drawn cells after b0_trend's depth rule is unchanged (iterated to 1e-12 relative); "
+        "dz the move over B0's budget from H10's field (flow), its placebo with the within-lineage residuals permuted "
+        "across stages and each stage's lineage mean kept (flow_perm), the field on latents centred per lineage and "
+        "stage (flow_pool) or that on the centred residuals permuted across stages (flow_pool_perm)")
 _FIELDS: dict = {}  # arm -> {"fold", "key", "objects", "field", "ref_means"}: one field per arm and task
 
 
@@ -81,6 +92,23 @@ def permute_stages(zs: Sequence[np.ndarray], labs: Sequence[np.ndarray],
     return [Z[new == k] for k in range(len(zs))], [lab[new == k] for k in range(len(zs))]
 
 
+def permute_residuals(zs: Sequence[np.ndarray], labs: Sequence[np.ndarray], seed: Sequence[int],
+                      add_means: bool) -> tuple[list[np.ndarray], list[np.ndarray], list[dict]]:
+    """The placebos' stages: every cell's residual u = z - mean z(lineage, its true stage) goes to the stage
+    `stage_permutation` gives it (within its lineage; each stage keeps its number of cells per lineage). With
+    add_means the destination stage's true lineage mean is added back (flow_perm: each lineage's mean development is
+    kept, only the within-lineage residuals are permuted); without, the stages hold the permuted residuals as they are
+    (flow_pool_perm). Within a stage the cells keep their concatenation order. Returns the stages' latents, their
+    lineages and each true stage's lineage means."""
+    lab = np.concatenate([np.asarray(x).astype(str) for x in labs])
+    us, means = centre_by_stage(zs, labs)
+    U = np.concatenate(us)
+    new = stage_permutation(labs, seed)
+    if add_means:
+        U = U + np.array([means[k][lin] for k, lin in zip(new, lab, strict=True)]).reshape(U.shape)
+    return [U[new == k] for k in range(len(zs))], [lab[new == k] for k in range(len(zs))], means
+
+
 def centre_by_stage(zs: Sequence[np.ndarray], labs: Sequence[np.ndarray]) -> tuple[list[np.ndarray], list[dict]]:
     """u = z - mean z(lineage, stage) for every cell of every stage; returns the u's and each stage's lineage means."""
     us, means = [], []
@@ -101,7 +129,8 @@ def centre_by_stage(zs: Sequence[np.ndarray], labs: Sequence[np.ndarray]) -> tup
 def arm_field(arm: str, fold: le.FoldModel, stages: Sequence[tuple[str, float, ad.AnnData]], pool: ad.AnnData,
               start: ad.AnnData, lineages: Sequence[str]) -> tuple[le.FlowField, dict | None]:
     """The arm's field (fitted once per process per fold model object, stages and lineages) and, for the pooled arms,
-    the reference stage's lineage means the drawn cells are centred on. Arm "flow" is `vec.latent_extrap.fold_flow`."""
+    the true reference stage's lineage means the drawn cells are centred on. Arm "flow" is
+    `vec.latent_extrap.fold_flow`; the placebos' stages are `permute_residuals`'."""
     if arm == "flow":
         return le.fold_flow(fold, stages, pool, start, lineages), None
     if arm not in ARMS:
@@ -112,10 +141,13 @@ def arm_field(arm: str, fold: le.FoldModel, stages: Sequence[tuple[str, float, a
     if (hit is None or hit["fold"] is not fold or hit["key"] != key
             or any(a is not b for a, b in zip(hit["objects"], objects, strict=True))):
         zs, labs, left_out = le._stage_latents(fold, stages, pool, start)
-        if arm.endswith("_perm"):
-            zs, labs = permute_stages(zs, labs, [le.FLOW_SEED, PERM_STREAM])
+        pooled = arm.startswith("flow_pool")
         ref_means = None
-        if arm.startswith("flow_pool"):
+        if arm.endswith("_perm"):
+            zs, labs, means = permute_residuals(zs, labs, [le.FLOW_SEED, PERM_STREAM], add_means=not pooled)
+            if pooled:
+                ref_means = means[-1]
+        elif pooled:
             zs, means = centre_by_stage(zs, labs)
             ref_means = means[-1]
         pairs, prec = le.flow_pairs(zs, labs, [d for _, d, _ in stages], lineages)
@@ -218,6 +250,68 @@ def recentre(r: np.ndarray, C, types: np.ndarray, lineages: Sequence[str]) -> np
     return D
 
 
+def depth_scale(C: np.ndarray, Fc: np.ndarray, held: np.ndarray) -> np.ndarray:
+    """`vec.core.apply_factors`' per-cell depth constant (keep_depth) for dense counts C and per-cell factors Fc: the
+    sum of the free genes' counts over the sum of their counts x factors (1 where that is 0)."""
+    free = ~np.asarray(held, dtype=bool)
+    num = (C * free).sum(1)
+    den = (C * Fc * free).sum(1)
+    return np.divide(num, den, out=np.ones(len(C)), where=den > 0)
+
+
+def depth_departure(C: np.ndarray, Fc: np.ndarray, D: np.ndarray, held: np.ndarray) -> np.ndarray:
+    """Per gene, the relative departure of the expected total after the depth rule with D, sum_i c F D s'_i, from the
+    one without D, sum_i c F s_i (NaN for a held gene or a gene without a count)."""
+    held = np.asarray(held, dtype=bool)
+    FD = Fc * np.where(held[None, :], 1.0, D)
+    with_d = (C * FD * depth_scale(C, FD, held)[:, None]).sum(0)
+    without = (C * Fc * depth_scale(C, Fc, held)[:, None]).sum(0)
+    out = np.full(C.shape[1], np.nan)
+    ok = (without > 0) & ~held
+    out[ok] = with_d[ok] / without[ok] - 1.0
+    return out
+
+
+def recentre_after_depth(r: np.ndarray, C, Fc: np.ndarray, held: np.ndarray, types: np.ndarray,
+                         lineages: Sequence[str]) -> tuple[np.ndarray, dict]:
+    """D = r / G per lineage with G such that sum_i c F D s'_i = sum_i c F s_i for every free gene with a count (s, s'
+    the depth rule's per-cell constants without and with D, `depth_scale`): G starts at `recentre`'s count-weighted
+    mean and is multiplied per gene by (1 + departure), s' recomputed, until the largest departure is at most
+    RECENTRE_TOL (raises after RECENTRE_MAX_ITER). D = 1 for a gene without a count in the lineage, a held gene and
+    every cell outside `lineages`. Returns D and, over lineages and genes, the departure after the depth rule of the
+    one-step G (max and p90) and of the final G (max), and the largest number of iterations."""
+    r = np.asarray(r, dtype=np.float64)
+    Cd = sparse.csr_matrix(C).toarray().astype(np.float64) if sparse.issparse(C) else np.asarray(C, dtype=np.float64)
+    Fc = np.asarray(Fc, dtype=np.float64)
+    held = np.asarray(held, dtype=bool)
+    types = np.asarray(types).astype(str)
+    D = recentre(r, Cd, types, lineages)
+    D[:, held] = 1.0
+    one_step, final, iters = [], [], 0
+    for lin in lineages:
+        sel = types == lin
+        if not sel.any():
+            continue
+        c, f, Dl = Cd[sel], Fc[sel], D[sel]
+        dep = depth_departure(c, f, Dl, held)
+        ok = np.isfinite(dep)
+        one_step.extend(np.abs(dep[ok]).tolist())
+        k = 0
+        while ok.any() and np.abs(dep[ok]).max() > RECENTRE_TOL:
+            if k == RECENTRE_MAX_ITER:
+                raise RuntimeError(f"the recentring of {lin!r} did not reach {RECENTRE_TOL} in {k} iterations")
+            Dl[:, ok] = Dl[:, ok] / (1.0 + dep[ok])[None, :]
+            dep = depth_departure(c, f, Dl, held)
+            k += 1
+        iters = max(iters, k)
+        final.extend(np.abs(dep[ok]).tolist())
+        D[sel] = Dl
+    one = np.asarray(one_step)
+    return D, {"max_rel_departure_one_step": float(one.max()) if one.size else 0.0,
+               "p90_rel_departure_one_step": float(np.quantile(one, 0.9)) if one.size else 0.0,
+               "max_rel_departure": float(max(final)) if final else 0.0, "recentre_iterations": int(iters)}
+
+
 def _cos_rows(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     na, nb = np.linalg.norm(a, axis=1), float(np.linalg.norm(b))
     ok = (na > 0) & (nb > 0)
@@ -227,9 +321,11 @@ def _cos_rows(a: np.ndarray, b: np.ndarray) -> np.ndarray:
 
 
 def cell_factors(arm: str, ctx, pool: ad.AnnData, rows: np.ndarray, like: ad.AnnData,
-                 damping: float) -> tuple[np.ndarray, dict]:
-    """D for b0_trend's drawn cells `like` (typed as `_b0_t2_shift` types them, obs["b0_type"]) of `pool` (rows
-    `rows`), and the build's record (shares and ratios only)."""
+                 damping: float) -> tuple[object, dict]:
+    """For b0_trend's drawn cells `like` (typed as `_b0_t2_shift` types them, obs["b0_type"]) of `pool` (rows `rows`):
+    the callable `vec.t1_scope.momentum_shift` calls with the trend's per-cell factors and the held mask, which returns
+    D (`recentre_after_depth`) and completes the build's record under "check", and that record (shares and ratios
+    only)."""
     t = ctx.task
     start = ctx.inputs["start"]
     genes = list(map(str, like.var_names))
@@ -245,53 +341,68 @@ def cell_factors(arm: str, ctx, pool: ad.AnnData, rows: np.ndarray, like: ad.Ann
     du = centre_moves(dz, types, lineages)
     logr, both_zero = ratio_log_factors(fold.model, z_own, du)
     C = counts_of(like)
-    if logr is None:
-        D = np.ones(C.shape)
-        logr = np.zeros(C.shape)
-    else:
-        D = recentre(np.exp(logr), C, types, lineages)
-    rec = factor_record(D, logr, C, types, lineages, du, dz)
-    rec.update({"arm": arm, "candidate": NAMES[arm], "rule": "vec.trend_flow.RULE", "n_both_zero_means": both_zero,
-                "latent_sha256": fold.record.get("latent_sha256"), "params_sha256": frec.get("params_sha256"),
-                "tau_days": frec.get("tau_days")})
-    return D, {"check": rec, "flow": frec, "fold": fold.record}
+    out: dict = {"flow": frec, "fold": fold.record}
+
+    def factors(Fc: np.ndarray, held: np.ndarray) -> np.ndarray:
+        if logr is None:
+            D, L = np.ones(C.shape), np.zeros(C.shape)
+            dep = {"max_rel_departure_one_step": 0.0, "p90_rel_departure_one_step": 0.0, "max_rel_departure": 0.0,
+                   "recentre_iterations": 0}
+        else:
+            D, dep = recentre_after_depth(np.exp(logr), C, Fc, held, types, lineages)
+            L = logr
+        rec = factor_record(D, L, C, types, lineages, du, dz)
+        rec.update(dep)
+        rec.update({"arm": arm, "candidate": NAMES[arm], "rule": "vec.trend_flow.RULE",
+                    "n_both_zero_means": both_zero, "latent_sha256": fold.record.get("latent_sha256"),
+                    "params_sha256": frec.get("params_sha256"), "tau_days": frec.get("tau_days")})
+        out["check"] = rec
+        return D
+
+    return factors, out
 
 
 def factor_record(D, logr, C, types, lineages, du, dz) -> dict:
     """Shares and ratios only: the lineages moved, the SD of log D over the entries it acts on (a count in a drawn cell
-    of a moved lineage), the share of those entries at the clip, the largest relative departure of sum_i c D from
-    sum_i c over lineages and genes, the mean cosine between du and the lineage's uncentred mean move."""
+    of a moved lineage), the share of those entries at the clip, the mean cosine between du and the lineage's
+    uncentred mean move, and per lineage the within share of the move (sum ||du||^2 / sum ||dz||^2 over its drawn
+    cells, as `vec.latent_extrap.lineage_diagnostics` defines it) with its median. The departure after the depth rule
+    is `recentre_after_depth`'s."""
     Cd = sparse.csr_matrix(C).toarray().astype(np.float64)
     types = np.asarray(types).astype(str)
     in_moved = np.isin(types, list(lineages))
     acting = (Cd > 0) & in_moved[:, None]
     L = np.log(D[acting]) if acting.any() else np.zeros(0)
     at_clip = np.abs(logr[acting]) >= le.CLIP - 1e-12 if acting.any() else np.zeros(0, dtype=bool)
-    dep, cos = 0.0, []
+    cos, within = [], {}
     for lin in lineages:
         sel = types == lin
         if not sel.any():
             continue
-        tot = Cd[sel].sum(0)
-        has = tot > 0
-        if has.any():
-            dep = max(dep, float(np.max(np.abs((Cd[sel] * D[sel]).sum(0)[has] - tot[has]) / tot[has])))
         cos.extend(_cos_rows(du[sel], dz[sel].mean(0)).tolist())
+        ss = float((np.asarray(dz[sel]) ** 2).sum())
+        within[lin] = float((np.asarray(du[sel]) ** 2).sum()) / ss if ss > 0 else float("nan")
     cos = np.asarray(cos, dtype=np.float64)
     return {"lineages_moved": list(lineages), "sd_log_d": float(L.std()) if L.size else 0.0,
             "share_at_clip": float(at_clip.mean()) if at_clip.size else 0.0,
-            "max_rel_departure": dep,
-            "mean_cosine_du_mean_move": float(np.nanmean(cos)) if np.isfinite(cos).any() else float("nan")}
+            "mean_cosine_du_mean_move": float(np.nanmean(cos)) if np.isfinite(cos).any() else float("nan"),
+            "within_share": within,
+            "median_within_share": float(np.median(list(within.values()))) if within else float("nan")}
 
 
 def check_line(task_key: str, seed: int, rec: dict) -> str:
     c = rec["check"]
     return (f"check {c['candidate']} task={task_key} seed={seed} lineages={','.join(c['lineages_moved'])} "
             f"sd_log_d={c['sd_log_d']:.4g} share_at_clip={c['share_at_clip']:.4g} "
-            f"max_rel_departure={c['max_rel_departure']:.3g} mean_cos_du_move={c['mean_cosine_du_mean_move']:.4g} "
+            f"max_rel_departure={c['max_rel_departure']:.3g} "
+            f"max_rel_departure_one_step={c['max_rel_departure_one_step']:.3g} "
+            f"p90_rel_departure_one_step={c['p90_rel_departure_one_step']:.3g} "
+            f"recentre_iterations={c['recentre_iterations']} mean_cos_du_move={c['mean_cosine_du_mean_move']:.4g} "
+            f"median_within_share={c['median_within_share']:.4g} "
             f"latent_sha256={c['latent_sha256']} params_sha256={c['params_sha256']}")
 
 
-__all__ = ["ARMS", "NAMES", "PERM_STREAM", "RULE", "arm_field", "centre_by_stage", "centre_moves", "cell_factors",
-           "check_line", "factor_record", "latent_moves", "permute_stages", "ratio_log_factors", "recentre",
-           "stage_permutation"]
+__all__ = ["ARMS", "NAMES", "PERM_STREAM", "RECENTRE_MAX_ITER", "RECENTRE_TOL", "RULE", "arm_field", "centre_by_stage",
+           "centre_moves", "cell_factors", "check_line", "depth_departure", "depth_scale", "factor_record",
+           "latent_moves", "permute_residuals", "permute_stages", "ratio_log_factors", "recentre",
+           "recentre_after_depth", "stage_permutation"]

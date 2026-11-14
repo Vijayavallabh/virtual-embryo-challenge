@@ -464,7 +464,8 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
                    logf_filter: Callable[[np.ndarray, sparse.csr_matrix, np.ndarray], tuple[np.ndarray, dict]]
                    | None = None,
                    logf_by_type: Mapping[str, np.ndarray] | None = None,
-                   cell_factors: np.ndarray | None = None) -> tuple[ad.AnnData, ShiftReport]:
+                   cell_factors: np.ndarray | Callable[[np.ndarray, np.ndarray], np.ndarray] | None = None
+                   ) -> tuple[ad.AnnData, ShiftReport]:
     """Move `target_like` cells by the damped per-type change from `start` to `ref`, in count space.
 
     start, ref: the two stages whose change is the momentum (start is the earlier one; ref is normally the stage the
@@ -498,7 +499,9 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
     in target_like's row order and `genes` order; the factor on cell i, gene g becomes F[type(i), g] x D[i, g], applied
     in the same one `apply_factors` call (same depth rule, same stream). Held-flat genes keep f = 1 whatever D holds;
     a cell whose type is not shifted must have D = 1 (it raises otherwise). With D = 1 everywhere the output is the
-    output without it, bit for bit.
+    output without it, bit for bit. It may also be a callable, called once as cell_factors(F_cells, held) with
+    F_cells = the (cells x genes) factor each cell gets from its type before the depth rule and `held` the held-flat
+    mask, that returns D (so D can be set knowing the depth rule's per-cell constant; vec.trend_flow).
 
     Returns a copy of target_like with layers["counts"] edited and X = log1p CP10k of the new counts (float32 CSR),
     and a per-type report.
@@ -556,7 +559,8 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
     if cell_factors is None:
         new, scale, dead = apply_factors(C, F, tidx, held, keep_depth=keep_depth, seed=seed)
     else:
-        D = np.array(cell_factors, dtype=np.float64)
+        D = cell_factors(F[tidx], held.copy()) if callable(cell_factors) else cell_factors
+        D = np.array(D, dtype=np.float64)
         if D.shape != C.shape:
             raise ValueError(f"cell_factors has shape {D.shape}, expected {C.shape}")
         if not np.all(np.isfinite(D)) or (D <= 0).any():

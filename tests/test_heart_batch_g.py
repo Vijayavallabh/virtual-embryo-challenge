@@ -195,7 +195,8 @@ def test_a_constant_field_gives_d_one_up_to_rounding(stubs, three, monkeypatch):
 @pytest.mark.parametrize("arm", list(ARMS))
 def test_each_arm_keeps_b0_trends_cells_and_recentres(stubs, three, monkeypatch, arm):
     draws = _spy(monkeypatch, harness, "draw_copy")
-    rec_seen = _spy(monkeypatch, tf, "recentre")
+    rec_seen = _spy(monkeypatch, tf, "recentre_after_depth")
+    applied = _spy(monkeypatch, t1_scope, "apply_factors")
     ctx = _ctx(three)
     out = CANDIDATES[ARMS[arm]].build(ctx)
     base = CANDIDATES["b0_trend"].build(ctx)
@@ -205,24 +206,34 @@ def test_each_arm_keeps_b0_trends_cells_and_recentres(stubs, three, monkeypatch,
     assert out.n == base.n == BOARD.max_cells
     merged = _drawn_types(ctx)
     # lineages b0_trend does not move, and Untracked cells: D = 1 and their counts b0_trend's
-    D = rec_seen[0]["out"]
+    D = rec_seen[0]["out"][0]
     for kept in ("Untracked", "Tiny"):
         m = merged == kept
         assert m.any() and (D[m] == 1.0).all()
         np.testing.assert_array_equal(out.X[m], base.X[m])
-    # D acts inside CM and leaves each gene's expected total over each moved lineage as it was
+    # D acts inside CM and leaves each gene's expected total over each moved lineage, after b0_trend's depth rule, as
+    # it was: from the factors and the per-cell depth constants apply_factors itself used in the arm's call and in
+    # b0_trend's
     pool, rows, _, _ = harness.draw_copy(ctx)
     C = pool.layers["counts"][rows].toarray().astype(np.float64)
+    assert len(applied) == 2
+    arm_call, base_call = applied[0], applied[1]
+    f_arm = arm_call["args"][1][arm_call["args"][2]] * arm_call["out"][1][:, None]
+    f_base = base_call["args"][1][base_call["args"][2]] * base_call["out"][1][:, None]
     for lin in ("CM", "Endothelial"):
         m = merged == lin
         tot = C[m].sum(0)
         has = tot > 0
-        np.testing.assert_allclose((C[m] * D[m]).sum(0)[has], tot[has], rtol=1e-9, atol=0)
+        np.testing.assert_allclose((C[m] * f_arm[m]).sum(0)[has], (C[m] * f_base[m]).sum(0)[has], rtol=1e-9, atol=0)
         assert (D[m][:, ~has] == 1.0).all()
     assert np.abs(np.log(D[merged == "CM"])).max() > 0
     assert not np.array_equal(out.X[merged == "CM"], base.X[merged == "CM"])
     rec = latent_extrap.RECORDS[-1]
     assert rec["candidate"] == ARMS[arm] and rec["check"]["max_rel_departure"] < 1e-9
+    # the one-step G (the count-weighted mean of r) departs after the depth rule; the iteration removes it
+    assert rec["check"]["max_rel_departure_one_step"] > 1e-6 and rec["check"]["recentre_iterations"] > 0
+    assert set(rec["check"]["within_share"]) == {"CM", "Endothelial"}
+    assert all(0 < v <= 1 for v in rec["check"]["within_share"].values())
     assert rec["check"]["lineages_moved"] == ["CM", "Endothelial"] and rec["check"]["sd_log_d"] > 0
     assert rec["check"]["latent_sha256"] == latent_extrap._FOLD["fold"]["fold"].record["latent_sha256"]
     # the same seed, the same output
@@ -279,6 +290,11 @@ def test_the_placebos_field_ignores_the_build_seed_and_differs_from_the_real_one
     # the permuted stages hold the same cells per lineage as the real ones
     for k in range(len(real[1])):
         assert sorted(p1[1][k]) == sorted(real[1][k])
+    # and they are the real stages with each lineage's true stage means kept and only the residuals permuted
+    want, wlab, _ = tf.permute_residuals(real[0], real[1], [latent_extrap.FLOW_SEED, tf.PERM_STREAM], add_means=True)
+    for k in range(len(real[1])):
+        np.testing.assert_array_equal(p1[0][k], want[k])
+        np.testing.assert_array_equal(p1[1][k], wlab[k])
 
 
 # ------------------------------------------------------------------------------------------------ the pooled form
@@ -290,16 +306,23 @@ def test_the_pooled_forms_u_is_centred_per_lineage_and_stage_and_its_pairs_come_
     ctx = _ctx(three)
     CANDIDATES[ARMS[arm]].build(ctx)
     zs_u, labs = pairs_seen[0]["args"][0], pairs_seen[0]["args"][1]
-    for u, lab in zip(zs_u, labs, strict=True):
-        for lin in set(lab):
-            np.testing.assert_allclose(u[lab == lin].mean(0), 0.0, atol=1e-12)
+    if arm == "flow_pool":
+        for u, lab in zip(zs_u, labs, strict=True):
+            for lin in set(lab):
+                np.testing.assert_allclose(u[lab == lin].mean(0), 0.0, atol=1e-12)
     # the u's are the stages' latents less their (lineage, stage) means, the stages permuted first for the placebo
     fold = latent_extrap._FOLD["fold"]["fold"]
     stages = [(r, d, ctx.inputs[r]) for r, d in latent_extrap.flow_stages(ctx.task)]
     zs, lb, _ = latent_extrap._stage_latents(fold, stages, ctx.inputs["ref"], ctx.inputs["start"])
     if arm.endswith("_perm"):
-        zs, lb = tf.permute_stages(zs, lb, [latent_extrap.FLOW_SEED, tf.PERM_STREAM])
-    want, _ = tf.centre_by_stage(zs, lb)
+        # centred on the true stages first, then the residuals permuted (no re-centring)
+        want, _, _ = tf.permute_residuals(zs, lb, [latent_extrap.FLOW_SEED, tf.PERM_STREAM], add_means=False)
+        cu, _ = tf.centre_by_stage(zs, lb)
+        new = tf.stage_permutation(lb, [latent_extrap.FLOW_SEED, tf.PERM_STREAM])
+        for k, a in enumerate(want):
+            np.testing.assert_array_equal(a, np.concatenate(cu)[new == k])
+    else:
+        want, _ = tf.centre_by_stage(zs, lb)
     for a, b in zip(zs_u, want, strict=True):
         np.testing.assert_array_equal(a, b)
     # the pairs' velocities are differences of u, and the drawn cells start from their own u
@@ -309,7 +332,7 @@ def test_the_pooled_forms_u_is_centred_per_lineage_and_stage_and_its_pairs_come_
     pool, rows, _, _ = harness.draw_copy(ctx)
     merged = np.asarray(pool.obs["merged"]).astype(str)[rows]
     m = np.isin(merged, ["CM", "Endothelial"])
-    ref_lab = lb[-1]
+    ref_lab = lb[-1]  # the true reference stage (lb, zs are not permuted): its lineage means, for both arms
     means = {lin: zs[-1][ref_lab == lin].mean(0) for lin in ("CM", "Endothelial")}
     np.testing.assert_allclose(x0, fold.z_ref[rows][m] - np.array([means[t] for t in merged[m]]), atol=1e-12)
 
@@ -348,3 +371,108 @@ def test_momentum_shift_without_cell_factors_is_unchanged():
     a, _ = t1_scope.momentum_shift(start, ref, like, 0.5, key="b0_type", seed=[7, 3])
     b, _ = t1_scope.momentum_shift(start, ref, like, 0.5, key="b0_type", seed=[7, 3], cell_factors=np.ones(like.shape))
     np.testing.assert_array_equal(a.layers["counts"].toarray(), b.layers["counts"].toarray())
+
+
+# ------------------------------------------------------------------------------------------------ review fixes
+def test_the_placebo_keeps_each_lineages_mean_development_and_permutes_only_residuals():
+    """flow_perm's stages: residual about the true (lineage, stage) mean, permuted, the destination stage's true mean
+    added back. With no within-lineage spread the placebo's stages are the true stages: only within-lineage content is
+    permuted (a plain stage permutation mixes the stages' means)."""
+    rng = np.random.default_rng(4)
+    labs = [rng.choice(["A", "B"], size=n) for n in (120, 90, 150)]
+    mu = {(k, lin): rng.normal(size=3) * 3 for k in range(3) for lin in "AB"}
+    flat = [np.array([mu[(k, lin)] for lin in lab]) for k, lab in enumerate(labs)]
+    seed = [latent_extrap.FLOW_SEED, tf.PERM_STREAM]
+    pz, pl, _ = tf.permute_residuals(flat, labs, seed, add_means=True)
+    for k in range(3):
+        for lin in "AB":
+            m = pl[k] == lin
+            assert m.sum() == (labs[k] == lin).sum()
+            np.testing.assert_allclose(pz[k][m], np.tile(mu[(k, lin)], (m.sum(), 1)), atol=1e-12)
+    old, _ = tf.permute_stages(flat, labs, seed)
+    assert not np.allclose(np.concatenate(old), np.concatenate(pz))  # the stage permutation mixes the means
+    # with spread: each cell's residual is carried to its new stage, the means the true stages'
+    zs = [f + rng.normal(size=f.shape) for f in flat]
+    pz, pl, means = tf.permute_residuals(zs, labs, seed, add_means=True)
+    cu, _ = tf.centre_by_stage(zs, labs)
+    new = tf.stage_permutation(labs, seed)
+    U, lab = np.concatenate(cu), np.concatenate(labs)
+    for k in range(3):
+        want = U[new == k] + np.array([means[k][x] for x in lab[new == k]])
+        np.testing.assert_array_equal(pz[k], want)
+        np.testing.assert_array_equal(pl[k], lab[new == k])
+    pu, _, _ = tf.permute_residuals(zs, labs, seed, add_means=False)
+    for k in range(3):
+        np.testing.assert_array_equal(pu[k], U[new == k])
+
+
+def test_the_recentring_holds_after_apply_factors_depth_rule():
+    """sum_i c F D s'_i = sum_i c F s_i per lineage and gene, s and s' the per-cell constants apply_factors returns;
+    the one-step G (the count-weighted mean of r) misses it by far more than the tolerance."""
+    from vec.core import apply_factors
+
+    rng = np.random.default_rng(11)
+    types = np.array(["A"] * 60 + ["B"] * 40 + ["U"] * 20)
+    C = rng.poisson(rng.gamma(1.0, 3.0, 30), size=(120, 30)) * (rng.random((120, 30)) > 0.2)
+    C[:60, 7] = 0  # a gene with no count in A
+    held = np.zeros(30, dtype=bool)
+    held[3] = True
+    F = np.exp(rng.normal(scale=0.5, size=(3, 30)))
+    F[:, held] = 1.0
+    tidx = np.array([{"A": 0, "B": 1, "U": 2}[t] for t in types])
+    Fc = F[tidx]
+    r = np.exp(rng.normal(scale=0.4, size=C.shape))
+    D, info = tf.recentre_after_depth(r, C, Fc, held, types, ["A", "B"])
+    assert (D[types == "U"] == 1.0).all() and (D[:60, 7] == 1.0).all() and (D[:, held] == 1.0).all()
+    _, s0, _ = apply_factors(C, F, tidx, held, seed=0)
+    _, s1, _ = apply_factors(C, Fc * D, np.arange(len(C)), held, seed=0)
+    one = np.where(held, 1.0, tf.recentre(r, C, types, ["A", "B"]))
+    _, s2, _ = apply_factors(C, Fc * one, np.arange(len(C)), held, seed=0)
+    worst = 0.0
+    for lin in "AB":
+        m = types == lin
+        without = (C[m] * Fc[m] * s0[m, None]).sum(0)
+        ok = (without > 0) & ~held
+        np.testing.assert_allclose((C[m] * Fc[m] * D[m] * s1[m, None]).sum(0)[ok], without[ok], rtol=1e-9, atol=0)
+        got = (C[m] * Fc[m] * one[m] * s2[m, None]).sum(0)[ok]
+        worst = max(worst, float(np.abs(got / without[ok] - 1).max()))
+    assert worst > 1e-3
+    assert info["max_rel_departure"] <= tf.RECENTRE_TOL
+    assert info["max_rel_departure_one_step"] == pytest.approx(worst, rel=1e-6)
+
+
+def test_momentum_shift_calls_a_callable_hook_with_the_trend_factors_and_held_mask():
+    from test_b0_trend import _adata
+
+    rng = np.random.default_rng(21)
+    genes = [f"g{i}" for i in range(50)]
+    mu = rng.gamma(2.0, 2.0, 50)
+    start = _adata(rng.poisson(mu, (300, 50)), ["A"] * 200 + ["B"] * 100, genes, "s")
+    ref = _adata(rng.poisson(mu * np.linspace(0.5, 2.0, 50), (400, 50)), ["A"] * 250 + ["B"] * 120 + ["C"] * 30,
+                 genes, "r")
+    like = ref[np.arange(0, 400, 3)].copy()
+    seen = []
+
+    def hook(Fc, held):
+        seen.append((Fc.copy(), held.copy()))
+        return np.ones(Fc.shape)
+
+    a, _ = t1_scope.momentum_shift(start, ref, like, 0.5, ("g4",), key="b0_type", seed=[7, 3])
+    b, _ = t1_scope.momentum_shift(start, ref, like, 0.5, ("g4",), key="b0_type", seed=[7, 3], cell_factors=hook)
+    np.testing.assert_array_equal(a.layers["counts"].toarray(), b.layers["counts"].toarray())
+    Fc, held = seen[0]
+    assert Fc.shape == like.shape and held.tolist() == [g == "g4" for g in genes] and (Fc[:, 4] == 1.0).all()
+    t = np.asarray(like.obs["b0_type"]).astype(str)
+    assert (Fc[t == "C"] == 1.0).all() and not (Fc[t == "A"] == 1.0).all()
+
+
+@pytest.mark.parametrize("arm", list(ARMS))
+def test_every_arm_moves_over_damping_times_the_last_gap(stubs, three, monkeypatch, arm):
+    """tau = B0_DAMPING x (reference day - start day), in the record and in the integrator's call."""
+    moves = _spy(monkeypatch, latent_extrap, "integrate")
+    ctx = _ctx(three)
+    CANDIDATES[ARMS[arm]].build(ctx)
+    days = dict(latent_extrap.flow_stages(ctx.task))
+    want = harness.B0_DAMPING * (days[ctx.task.reference_role] - days["start"])
+    assert latent_extrap.RECORDS[-1]["check"]["tau_days"] == pytest.approx(want, rel=1e-15)
+    assert moves and all(float(m["args"][3]) == pytest.approx(want, rel=1e-15) for m in moves)
