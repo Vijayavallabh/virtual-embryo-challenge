@@ -16,13 +16,18 @@ Arms (K9's stream, the same drawn cells in every arm; all through k9.arm_built's
                   fold's reference level (harness.t3_mean_expression of the reference: the mean over its cells of
                   log1p CP10k, the level k12 uses) is below TAIL_PB_MIN. With no such gene, or none with a negative
                   entry, raw's factor bit for bit.
-  raw_tail_perm   the control: the same filter with the down-infeasible mask permuted across genes within deciles of
-                  the reference's mean expression (harness.t3_decile_permutation, k9.PERM_SEED).
+  raw_tail_ctrl   the control (fix brief F2; it replaces the decile-permuted mask, which the level itself defines, so
+                  that "control" was the arm on nearly every gene): the same filter applied to as many FEASIBLE genes
+                  (reference level at or above TAIL_PB_MIN) with a negative entry as the arm changes, drawn uniformly
+                  at random without replacement from those genes on the stream [k9.PERM_SEED, TAIL_STREAM]; with
+                  fewer such genes than the arm changes it takes all of them and the record says how many it fell
+                  short by. The arm and the control change disjoint sets of genes by construction. It asks whether a
+                  gain is specific to the down-infeasible genes or would come from removing any predicted decreases.
 
 Each run prints one check line per task (numbers of genes only) and writes the same numbers into the task file.
 
 Reading, fixed (K9's form, the adoption rule's constants, as k12): raw_tail is SUPPORTED if on x1 AND on r12 it beats
-raw by a paired mean above 0.3 with at least 8 of 10 seeds ahead and beats raw_tail_perm the same way, and on x2 its
+raw by a paired mean above 0.3 with at least 8 of 10 seeds ahead and beats raw_tail_ctrl the same way, and on x2 its
 paired mean against raw is not below -0.3; anything else CLOSED. A fold where the filter changes no gene is IDLE (the
 arm is raw there); idle on x1 or on r12 means CLOSED with the word "idle" in the verdict. Void if K9's committed raw
 scores (RESULTS_K9) are absent or raw does not reproduce them to 1e-6 (k11.k9_reproduction), on a missing seed, arm or
@@ -56,9 +61,12 @@ TAIL_PB_MIN = 0.25
 PERM_SEED = k9.PERM_SEED
 STREAM = k9.STREAM
 BASE = k9.BASE  # "raw"
-TAIL, TAIL_PERM = "raw_tail", "raw_tail_perm"
-ARMS = (BASE, TAIL, TAIL_PERM)
-CONTROLS = {TAIL: TAIL_PERM}
+# the control's draws: seed [PERM_SEED, TAIL_STREAM], a stream no other step uses (K12's gate uses 1, as
+# [PERM_SEED, 1, p]; the decile permutations use default_rng(PERM_SEED))
+TAIL_STREAM = 2
+TAIL, TAIL_CTRL = "raw_tail", "raw_tail_ctrl"
+ARMS = (BASE, TAIL, TAIL_CTRL)
+CONTROLS = {TAIL: TAIL_CTRL}
 MIN_GAIN, MIN_AHEAD, X2_FLOOR = k9.MIN_GAIN, k9.MIN_AHEAD, k9.X2_FLOOR
 TASKS = k9.TASKS
 KEYS = k9.KEYS
@@ -70,8 +78,9 @@ TAIL_RULE = ("eb_factor.finalize(y'), y gene_factor's log ratio as raw_c3 takes 
              "on a down-infeasible gene set to 0: a gene whose reference level (harness.t3_mean_expression, the mean "
              "over the reference's cells of log1p CP10k) is below TAIL_PB_MIN cannot be a truth down-gene (the "
              "heart's B0_TREND_TAIL_RULE form, campaign/heart-b); no gene changed: raw's factor bit for bit")
-TAIL_PERM_RULE = ("as raw_tail with the down-infeasible mask permuted across genes within deciles of the reference's "
-                  "t3_mean_expression (harness.t3_decile_permutation, k9.PERM_SEED)")
+TAIL_CTRL_RULE = ("as raw_tail on as many feasible genes (reference level at or above TAIL_PB_MIN) with a negative "
+                  "entry as raw_tail changes, drawn uniformly without replacement from those genes with "
+                  "default_rng([k9.PERM_SEED, TAIL_STREAM]); all of them, and the shortfall recorded, when fewer exist")
 _PREP: dict = {}
 
 
@@ -100,25 +109,39 @@ def tail_factor(y: np.ndarray, den: np.ndarray, clip: tuple[float, float], infea
     return harness._t3_eb().finalize(yf, den, clip)
 
 
-def permuted_mask(infeasible: np.ndarray, level: np.ndarray, seed: int = PERM_SEED) -> np.ndarray:
-    """The control's mask: the infeasible mask permuted across genes within deciles of `level`
-    (harness.t3_decile_permutation), so each decile keeps its number of masked genes."""
-    m = np.asarray(infeasible, dtype=bool).astype(np.float64)
-    return harness.t3_decile_permutation(m, level, seed) > 0.5
+def control_rng(seed: int = PERM_SEED) -> np.random.Generator:
+    """The control's generator: default_rng([seed, TAIL_STREAM])."""
+    return np.random.default_rng([int(seed), TAIL_STREAM])
 
 
-def tail_check(y: np.ndarray, infeasible: np.ndarray, control: np.ndarray) -> dict[str, int]:
+def control_mask(y: np.ndarray, infeasible: np.ndarray, seed: int = PERM_SEED) -> tuple[np.ndarray, int]:
+    """(the control's mask, the number it fell short by): as many feasible genes with a negative entry as the arm
+    changes (infeasible genes with a negative entry), drawn uniformly at random without replacement from the feasible
+    genes with a negative entry (in panel order) by control_rng(seed); all of them when fewer exist. Disjoint from the
+    arm's genes by construction."""
+    neg = np.asarray(y, dtype=np.float64) < 0
+    infeasible = np.asarray(infeasible, dtype=bool)
+    want = int((infeasible & neg).sum())
+    pool = np.flatnonzero(~infeasible & neg)
+    take = min(want, len(pool))
+    out = np.zeros(neg.shape, dtype=bool)
+    if take:
+        out[control_rng(seed).choice(pool, size=take, replace=False)] = True
+    return out, want - take
+
+
+def tail_check(y: np.ndarray, infeasible: np.ndarray, control: np.ndarray, short: int) -> dict[str, int]:
     """The check's numbers of genes: below the level, of those with a negative entry (the genes the filter changes),
-    and the genes the control changes."""
+    the genes the control changes, and the number the control fell short by."""
     neg = np.asarray(y, dtype=np.float64) < 0
     infeasible, control = np.asarray(infeasible, dtype=bool), np.asarray(control, dtype=bool)
     return {"infeasible": int(infeasible.sum()), "negative": int((infeasible & neg).sum()),
-            "control_changed": int((control & neg).sum())}
+            "control_changed": int((control & neg).sum()), "control_short": int(short)}
 
 
 def check_line(task: str, chk: dict) -> str:
     return (f"raw_tail check: task={task} infeasible={chk['infeasible']} negative={chk['negative']} "
-            f"control_changed={chk['control_changed']}")
+            f"control_changed={chk['control_changed']} control_short={chk['control_short']}")
 
 
 # ------------------------------------------------------------------------------------------------ the arms
@@ -140,26 +163,26 @@ def _prepared(ctx) -> dict:
         phi_raw = np.array(frame.phi, dtype=np.float64)
         level = harness.t3_mean_expression(pool)
         infeasible = tail_infeasible(level)
-        control = permuted_mask(infeasible, level, PERM_SEED)
         y, _, den, _ = k11.section_estimates(frame.C, frame.lab, frame.block, frame.mu_wt, frame.weights, frame.mask,
                                              frame.eps)
+        control, short = control_mask(y, infeasible, PERM_SEED)
         clip = tuple(float(c) for c in rules["components"]["factor"]["clip"])
-        chk = tail_check(y, infeasible, control)
+        chk = tail_check(y, infeasible, control, short)
         _PREP.clear()
         hit = _PREP["fold"] = {
             "key": ctx.task.key, "inputs": objs, "phi_raw": phi_raw, "infeasible": infeasible, "control": control,
             "phi_tail": tail_factor(y, den, clip, infeasible, phi_raw),
-            "phi_tail_perm": tail_factor(y, den, clip, control, phi_raw),
+            "phi_tail_ctrl": tail_factor(y, den, clip, control, phi_raw),
             "clip": clip, "ref": harness.t3_reference(pool, fold["reference_preset"], rules),
             "record": {"fold": FOLD_OF[ctx.task.key], "reference": ctx.task.role_stems[ref_role],
                        "pb_min": TAIL_PB_MIN, "tail_check": chk,
-                       "both_changed": int((infeasible & control & (np.asarray(y) < 0)).sum())}}
+                       "control_seed": [PERM_SEED, TAIL_STREAM]}}
     return hit
 
 
 def arm_built(bs, ref, n: int, seed: int, f, arm: str, prep: dict):
-    """One arm's cells through k9.arm_built's raw path, each with its own factor: phi_raw, phi_tail or phi_tail_perm."""
-    phi = {BASE: "phi_raw", TAIL: "phi_tail", TAIL_PERM: "phi_tail_perm"}[arm]
+    """One arm's cells through k9.arm_built's raw path, each with its own factor: phi_raw, phi_tail or phi_tail_ctrl."""
+    phi = {BASE: "phi_raw", TAIL: "phi_tail", TAIL_CTRL: "phi_tail_ctrl"}[arm]
     return k9.arm_built(bs, ref, n, seed, f, BASE, prep[phi], None, None, prep["clip"])
 
 
@@ -176,10 +199,10 @@ def candidates() -> list:
     def one(arm):
         return harness.Candidate(arm, frozenset({"T3"}), (), lambda ctx, arm=arm: _build(ctx, arm),
                                  params=harness.K4_PARAMS | {
-                                     "tail": TAIL_RULE if arm in (TAIL, TAIL_PERM) else None,
-                                     "pb_min": TAIL_PB_MIN if arm in (TAIL, TAIL_PERM) else None,
-                                     "perm_seed": PERM_SEED if arm == TAIL_PERM else None} | (
-                                     {"tail_perm": TAIL_PERM_RULE} if arm == TAIL_PERM else {}),
+                                     "tail": TAIL_RULE if arm in (TAIL, TAIL_CTRL) else None,
+                                     "pb_min": TAIL_PB_MIN if arm in (TAIL, TAIL_CTRL) else None,
+                                     "control_seed": [PERM_SEED, TAIL_STREAM] if arm == TAIL_CTRL else None} | (
+                                     {"tail_ctrl": TAIL_CTRL_RULE} if arm == TAIL_CTRL else {}),
                                  requires=lambda t: t.key in KEYS)
 
     return [harness.CANDIDATES[harness.FLOOR], *(one(a) for a in ARMS)]
@@ -204,10 +227,10 @@ def cmd_run(a) -> None:
 
 # ------------------------------------------------------------------------------------------------ the reading
 def decide(per: dict) -> tuple[bool, dict]:
-    """raw_tail passes only when it beats raw and raw_tail_perm on x1 and on r12, and its paired mean against raw on
+    """raw_tail passes only when it beats raw and raw_tail_ctrl on x1 and on r12, and its paired mean against raw on
     x2 is not below X2_FLOOR."""
     checks = {f"{n}: {TAIL} - {y}": per[n]["paired"][f"{TAIL} - {y}"]["passes"]
-              for n in DECIDING for y in (BASE, TAIL_PERM)}
+              for n in DECIDING for y in (BASE, TAIL_CTRL)}
     checks[f"x2: {TAIL} - {BASE} not below {X2_FLOOR}"] = per["x2"]["paired"][f"{TAIL} - {BASE}"]["mean"] >= X2_FLOOR
     return all(checks.values()), checks
 
@@ -231,7 +254,7 @@ def reading(runs: Path, k9_dir: Path = RESULTS_K9) -> dict:
             why.append(f"{name}: missing arms {missing}")
             continue
         chk = r.get("tail_check")
-        if not isinstance(chk, dict) or not {"infeasible", "negative", "control_changed"} <= set(chk):
+        if not isinstance(chk, dict) or not {"infeasible", "negative", "control_changed", "control_short"} <= set(chk):
             why.append(f"{name}: the raw_tail check record is missing")
             continue
         commits.add(r["provenance"]["commit"])
@@ -244,11 +267,11 @@ def reading(runs: Path, k9_dir: Path = RESULTS_K9) -> dict:
             "tail_check": chk,
             "mean_score": {x: float(np.mean([q["scores"][x] for q in rows])) for x in arms},
             "paired": {f"{x} - {y}": k9._paired(rows, x, y)
-                       for x, y in ((BASE, harness.FLOOR), (TAIL, BASE), (TAIL, TAIL_PERM), (TAIL_PERM, BASE))},
+                       for x, y in ((BASE, harness.FLOOR), (TAIL, BASE), (TAIL, TAIL_CTRL), (TAIL_CTRL, BASE))},
             "severity_states": {x: {s: sum(q["t3"][x]["severity"]["state"] == s for q in rows)
                                     for s in sorted({q["t3"][x]["severity"]["state"] for q in rows})} for x in arms},
             "skill_diff_minus_raw": {a: {m: float(np.mean([q["skills"][a][m] - q["skills"][BASE][m] for q in rows]))
-                                         for m in metrics} for a in (TAIL, TAIL_PERM)},
+                                         for m in metrics} for a in (TAIL, TAIL_CTRL)},
             "record": r.get("factor_record") or {}}
     if len(commits) > 1:
         why.append(f"results from different commits {sorted(commits)}")
