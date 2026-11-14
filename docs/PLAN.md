@@ -539,6 +539,9 @@ more than 3 points of overall standing (T1 + mean of the T2 boards + T3) on hone
 emulator seeds; in that case use specialised code where it wins and drop the claim. Changed on 2026-10-20 from "within
 1 point on every board" (proposed by the AI assistant, approved by the user): if we are strong enough to place we have
 a good chance at the award too, so a few points are a bad trade for it, and if we are not, the claim costs nothing.
+Changed again on 2026-11-14 (decision log 2026-11-14 (b), by the captain's delegation): the three-point bar is dropped; a
+specialised model enters wherever it passes the adoption rule, the shared form is taken where it costs no points, and
+the claim is withdrawn only when a specialised model is ported into a builder.
 
 ## 6. Infrastructure
 
@@ -4095,3 +4098,49 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     in advance counts (Rules s.10): the uses that already rest on working answers (the unlocked validation files as
     inputs; the Gata4 replicates in Task 3) are as exposed as before. A Task 3 figure from the favourable end of the
     stand-in's range must not feed the upload gate.
+- 2026-11-14 (b), two instructions of the captain on what the campaign may spend and what it protects: compute without
+  limit, and the three-point bar of decision point D3 dropped. Written by the AI assistant, which made the second
+  choice under the captain's delegation; the captain can overrule any of it.
+  - **Compute.** The captain, 2026-11-14: "I wouldn't mind if you would love to use all the available gpus in this
+    machine and in the dgx to train how much ever large model for as long as it takes as the only thing that matters
+    is to beat the leaderboard." The AI assistant's reading, labelled as its own: cost, model size and training time
+    are no longer reasons to prune a line; the bound is the freeze of 2026-11-27 00:00 UTC and a rehearsed build by
+    about 24 November. It lifts no rule: the organisers' held-out windows and their ruling on knockout knowledge, the
+    post-exposure block, A15, the frozen second-upload rules, row before run, the adoption rule and the captain's
+    go-ahead for every upload stand, and a line that needs one of them goes to the captain as one priced question.
+    Free at the time: six of the DGX's eight H100s and two of this machine's four A100s; the others carry jobs that
+    are not the campaign's and are left alone. A trained model can enter a build only as weights with a recorded hash
+    and an inference step that reproduces byte for byte.
+  - **What the AI assistant told the captain before acting on it.** That it does not expect a larger model to close
+    the gap, because capacity is not what limits any board: every learned generator scored so far lost or tied (rows
+    E21, T34 and T35, H8 to H10), the oracle reads leave little room in within-type moves on Task 1 (rows T8 and T9),
+    the largest effects on every board are properties of the hidden sample and the levers the rules keep closed, and
+    the one legal outside time course on disk (X003) has no data across the stretch Task 1 needs. And that this
+    expectation is not a closure: a design panel was convened the same hour (workflow wf_14a0efab-a85: three
+    independent designers, one per lens, then one adversary on rules and reproducibility and one on evidence), and
+    what survives it is started, row first. Its outcome gets its own entry.
+  - **D3: the question.** A side agent's note, forwarded by the captain, pointed out that section 5's decision point
+    D3 lets a specialised per-task model into the entry only if it beats the shared-core builds by more than 3 points
+    of Overall on honest validation, and that the AI assistant had not raised it. The AI assistant put it to the
+    captain as one priced question with three options: keep the bar and decide with a measured gain in hand (its own
+    recommendation); drop the bar; or build any large model as one architecture under every task it serves, which the
+    award's terms allow (separate training per task and task heads) and which never meets the bar.
+  - **D3: the ruling by delegation.** The captain, 2026-11-14: "choose the option as our philosophy is to do whatever
+    it takes to win this challenge". Under that delegation the AI assistant chose, against its own earlier
+    recommendation: **the three-point bar is dropped.** A specialised model enters an upload wherever it passes the
+    adoption rule on its board's counted backtests (or, where no adoption route exists, by the captain's ruling),
+    whatever the size of its gain. Where the same model can be built inside the shared architecture at no cost in
+    points, that form is taken, so that the claim to the Generality Award is kept for as long as it is free. The claim
+    is withdrawn from `METHOD_SUMMARY.md` in the commit that ports a specialised model into a builder, and not before;
+    today nothing specialised has passed, so the summary's request stands unchanged.
+  - **Why this option.** The captain's stated aim is the standing, not the award. For calibration only (the screened
+    read of 2026-11-13: third place 205.32, sixth and last prize place 203.00): the forecast for the files as built
+    gives 22.4% for 203 or more (decision log 2026-11-13 (dd)), a region where one to three points move the chance of
+    a place by more than the award is likely to be worth, since the award follows final standing among entries with
+    one shared architecture and the team's standing there is unknown. The reasoning of 2026-10-20 ("a few points are a
+    bad trade for the award") assumed the team would place comfortably or not at all; the forecast puts it at the
+    line. This is the AI assistant's judgement of the trade, made at the captain's word.
+  - **What does not change.** The adoption rule and every rule named above: a model that does not pass is refused
+    whatever its size and however long it trained. D3 of the tries ledger's second wave (T1's second upload at 0.75)
+    is another decision and is not touched. No upload, build, gate figure or reference list changes. The committed
+    estimate stays 184 (170 to 198).
