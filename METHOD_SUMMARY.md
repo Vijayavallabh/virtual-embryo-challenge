@@ -129,27 +129,27 @@ for taking the team's own estimate past the leading total are used up: the forec
 
 Status 2026-11-14, after the round's audit (`docs/PLAN.md` decision log 2026-11-13 (ii)): no entry has changed and no
 scored submission has been made. The session's stop check refused the declaration above twice. Independent passes over
-the record then named, between them, six lines still open by the rules and several closures that rested on the AI
+the record then named, between them, seven lines still open by the rules and several closures that rested on the AI
 assistant's own judgement; each line was read with its row first, and each closure now rests on a rule fixed
 beforehand, a read or arithmetic, or is left to the captain. Task 1: the tail decoder with the neighbour-profile
-kernel is idle like the own-count one (no infeasible gene comes within the bound under either), and the strong-null
-try in the zero-gap geometry is ruled out by arithmetic (its base scores 100 in 6 of 10 seeds, so no arm can lead in
-8). Task 3: a run basis taken from the wild-type series passes the recipe's own gate and changes the factor too little
-to matter (-0.02 and -0.02 on the cross-knockout folds, +0.06 on the replicate fold, at its control's level); a tail
-decoder on the factor gains 0.40 on one cross-knockout fold in every seed and nothing on the other two folds, which
-the fixed reading closes. Embryo: a tail decoder is a tie; exponential-growth state shares lose a little on both
-backtests (-0.22 and -0.18); rotation-aware moves pass no rule in the form that pivots at each patch (-0.30 and
--0.17), and in the form that interpolates in the common frame they are refused by the builder's own cloud guard on
-eight of nine practice tasks; a mirror-only correction of the coupled partners gains 1.95 on one backtest and loses
-0.62 on the other, as the aligned moves of try E11 did, and passes no pair rule. The second arm that had passed the
-first-upload pair rule (`fgw_aligned_trend`) follows the same fit geometry as request R-D's arm (a fitted gain of
--0.53 at the test's earlier-bracket geometry); like R-D it stays on record for the captain, with the AI assistant's
-advice against it. Two critics asked to attack the claim found no open lever worth 3 points of the total and no new
-line that is allowed, buildable and has a practice read. Kept: nothing. The options for taking the team's own estimate
-past the leading total are used up within the rules: the levers of that size are closed by the post-exposure block and
-the frozen rules or have no practice read that could judge them, and the rest is for the organisers to answer. The
-committed estimate stays 184 (170 to 198) and the forecast's upper reading 194.4. Tries stand at T1 35, embryo 57,
-heart 25, T3 27.
+kernel is idle like the own-count one (no infeasible gene comes within the bound under either), the exact-total count
+kernel moves the score by a hundredth of a point, and the strong-null try in the zero-gap geometry is ruled out by
+arithmetic (its base scores 100 in 6 of 10 seeds, so no arm can lead in 8). Task 3: a run basis taken from the
+wild-type series passes the recipe's own gate and changes the factor too little to matter (-0.02 and -0.02 on the
+cross-knockout folds, +0.06 on the replicate fold, at its control's level); a tail decoder on the factor gains 0.40 on
+one cross-knockout fold in every seed and nothing on the other two folds, which the fixed reading closes. Embryo: a
+tail decoder is a tie; exponential-growth state shares lose a little on both backtests (-0.22 and -0.18);
+rotation-aware moves pass no rule in the form that pivots at each patch (-0.30 and -0.17), and in the form that
+interpolates in the common frame they are refused by the builder's own cloud guard on eight of nine practice tasks; a
+mirror-only correction of the coupled partners gains 1.95 on one backtest and loses 0.62 on the other, as the aligned
+moves of try E11 did, and passes no pair rule. The second arm that had passed the first-upload pair rule
+(`fgw_aligned_trend`) follows the same fit geometry as request R-D's arm (a fitted gain of -0.53 at the test's
+earlier-bracket geometry); like R-D it stays on record for the captain, with the AI assistant's advice against it. Two
+critics asked to attack the claim found no open lever worth 3 points of the total and no new line that is allowed,
+buildable and has a practice read. Kept: nothing. The options for taking the team's own estimate past the leading
+total are used up within the rules: the levers of that size are closed by the post-exposure block and the frozen rules
+or have no practice read that could judge them, and the rest is for the organisers to answer. The committed estimate
+stays 184 (170 to 198) and the forecast's upper reading 194.4. Tries stand at T1 36, embryo 57, heart 25, T3 27.
 
 ## Team and track
 

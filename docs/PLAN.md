@@ -3853,6 +3853,15 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
        genes per fold and is closed by K9's fixed reading on two grounds: its +0.40 on the cross-knockout fold x1,
        ahead in 10 of 10 seeds, is not repeated on the replicate fold (+0.13, 5 of 10), and its control falls short on
        both deciding folds; -0.06 on x2. A gain on one fold only, as in tries K9 to K11.
+    9. *The exact-total count kernel on T1* (try T40; found open by the fourth pass, below). The ledger pruned
+       "exact-total kernels" for all boards; the kernel was built once, in its repair form, and read on the heart (try
+       H18, a tie). On T1 the entry moves counts through the same routine, so the same kernel was read there
+       unchanged. It repairs 98 to 99% of the moved cells and moves the score by +0.009 and +0.013, ahead in 10 of 10
+       seeds on both cuts and thirty times under the rule's 0.3: not kept. On the other two boards the line has
+       nothing to read: the embryo's entry moves no count (it is a mixture of real cells), and its second upload's
+       render has a kernel of its own (thinning to a common depth and a top-up from smoothed proportions), for which
+       an exact-total form would be a new kernel of an arm already read (the ledger's rule 3); T3's kernel is fixed by
+       its frozen rules.
   - **Two critics, asked to attack the claim that the options are used up** (workflow wf_e1f10462-6d0, read only). The
     first listed every lever worth 3 points of the total or more: nine, none open. Closed by a rule: T1's depth (the
     largest: +10 to +22 T1 at zero gap, try T29), T3's depth step, and the heart's size, scope and cell numbers.
@@ -3895,9 +3904,13 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     reading N40 as resting on the AI assistant's judgement after seeing results, which line 1 now says; it named three
     sentences that claimed more than the files show (rows T38, T39 and E37, corrected with dated notes) and the stale
     sentence in (gg) (correction (e)) and the unrecorded constants (correction (f)); and its sweep of 148 lines found
-    two still open by the rules, which became lines 7 and 8. A closing pass by two more agents follows this commit,
-    one on lines 7 and 8 and the reworded line 1, one sweeping the ledger again; its result is added here when it
-    hands back.
+    two still open by the rules, which became lines 7 and 8. A fourth pass (workflow wf_3e0a3e10-c56, two more agents)
+    recomputed lines 1, 7 and 8 (about 305 figures, no mismatch), found every row committed before its run and no
+    closure resting on the AI assistant's judgement, and named four record errors, since corrected (a false sentence
+    in row E38, row N40's unlabelled "not put forward", two stale lines in the handoff); its sweep of 175 lines found
+    one still open, which became line 9. So the sweeps found four, then two, then one. A fifth pass by two more agents
+    follows this commit, one on line 9 and this paragraph, one sweeping the ledger again; its result is added here
+    when it hands back.
   - **Where it leaves the target.** Nothing read in this entry passes the adoption rule or a pair rule, so no upload,
     build, rule, gate figure or reference list changes; the ten files of `builds_dc7b6ae` stand. The committed
     estimate stays 184 (170 to 198); the forecast for the files as built stays its upper reading, 194.4, with P(total
@@ -3905,10 +3918,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     rules: every line of the ledger, the plan and the research reports is now read, closed by a pre-set gate or by
     arithmetic, blocked by a named rule or ruling, without a practice read that could judge it, or not buildable from
     the record; the two first-upload arms that passed the pair rule are left to the captain, with the AI assistant's
-    advice against them labelled as such; what three independent sweeps named open is read, and two critics found no
-    open lever and no new line. What could still move the total lies outside the AI assistant's reach: how the hidden
-    samples were measured (the seventh email, screened reads on 19 and 23 Nov), how final entries are marked (the
-    drafted eighth email), and the levers the post-exposure block and the frozen rules keep closed, which only the
-    captain could reopen and for which no released file gives a value. Fifteen counted tries in this entry (T39; K12a
-    and K12b; E37a and E37b; E36a to E36d; E38a to E38d; K13a and K13b) and one reading (N40): T1 35, embryo 57, heart
-    25, T3 27.
+    advice against them labelled as such; every line the independent sweeps named open is read, and two critics found
+    no open lever and no new line. What could still move the total lies outside the AI assistant's reach: how the
+    hidden samples were measured (the seventh email, screened reads on 19 and 23 Nov), how final entries are marked
+    (the drafted eighth email), and the levers the post-exposure block and the frozen rules keep closed, which only
+    the captain could reopen and for which no released file gives a value. Sixteen counted tries in this entry (T39
+    and T40; K12a and K12b; K13a and K13b; E36a to E36d; E37a and E37b; E38a to E38d) and one reading (N40): T1 36,
+    embryo 57, heart 25, T3 27.
