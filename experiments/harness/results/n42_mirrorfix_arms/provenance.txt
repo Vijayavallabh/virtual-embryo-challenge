@@ -1,0 +1,9 @@
+run folder on the DGX: ~/v/vec-campaign/runs/harness/n42_mirrorfix_arms (campaign checkout)
+commit: 217520d5099f5781ebca0d3415f0f76b1afe9193 (branch campaign/emb-mirror)
+tree at start and at end (bytes of git status --porcelain): 0 and 0
+started UTC: 2026-11-14T01:42:40Z
+ended UTC: 2026-11-14T02:02:56Z
+CPU only, 8 BLAS threads, one process per practice task
+command: experiments/harness/n42_mirrorfix_arms.py run --task <task> --out <tasks>, the nine tasks started together
+tasks/: the nine task files as the run wrote them; each holds the floor and the four arms (no arm was refused by the builder on any task)
+the reading is experiments/harness/n42_mirrorfix_readings.py on main (results/n42_mirrorfix_readings/)
