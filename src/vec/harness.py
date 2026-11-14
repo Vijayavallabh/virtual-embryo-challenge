@@ -1044,7 +1044,8 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
          move_coupling: str = t2_build.MOVE_COUPLINGS[0], local_perm: bool = False,
          draw: str = t2_build.DRAWS[0], t_mix: float | None = None, moves: str = t2_build.MOVES[0],
          partners: str = t2_build.PARTNERS[0], features: str = t2_build.FEATURES[0],
-         coupling: str = t2_build.COUPLINGS[0], potts: bool = False, build_record: dict | None = None) -> Stage:
+         coupling: str = t2_build.COUPLINGS[0], potts: bool = False, build_record: dict | None = None,
+         coupling_label: str = "celltype") -> Stage:
     """The T2 embryo pipeline (docs/PLAN.md 4.2): displacement interpolation between the brackets at the target's
     time fraction (vec.t2_build.interpolate_clouds: fused Gromov-Wasserstein coupling, proper rotation, McCann moves,
     a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages. t_pos:
@@ -1067,7 +1068,10 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     campaign/emb-d): the series rendering with an exact per-cell total (kernel "exact_total", repair stream
     [seed, SERIES_XT_STREAM]).
     coupling (campaign branch campaign/emb-f): "fgw" (the entry) or "partial" (vec.t2_build.partial_fgw_coupling, the
-    transported share the overlap of the brackets' anchors' obs["celltype"] distributions). potts (campaign branch
+    transported share the overlap of the brackets' anchors' obs[coupling_label] distributions). coupling_label
+    (campaign branch campaign/emb-h): the obs column the partial coupling's labels are read from, "celltype" (default,
+    fgw_partial) or "group" (fgw_partial_grp, the lineage map's group); a bracket without that column refuses the
+    build. potts (campaign branch
     campaign/emb-f): after the expression step, which drawn cell (its expression row and its obs["group"] label) sits at
     which of the positions is sorted by vec.t2_build.potts_arrangement (NBHD_K, streams [seed, POTTS_STREAMS[0]] and
     [seed, POTTS_STREAMS[1]]); the positions array is left as it is. build_record: a dict that receives the arm's
@@ -1078,6 +1082,9 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     before, after = ctx.inputs["before"], ctx.inputs["after"]
     if potts and not ("group" in before.obs and "group" in after.obs):
         raise ValueError("the Potts sorting needs obs['group'] in both brackets")
+    if coupling != t2_build.COUPLINGS[0] and coupling_label != "celltype" and not (
+            coupling_label in before.obs and coupling_label in after.obs):
+        raise ValueError(f"the partial coupling needs obs[{coupling_label!r}] in both brackets")
     lo, hi = t.role_days["before"], t.role_days["after"]
     g = ctx.board.genes
     frac = (t.target_day - lo) / (hi - lo)
@@ -1095,7 +1102,8 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
                                       tissue_k=None if features == t2_build.FEATURES[0] else NBHD_K,
                                       **({} if coupling == t2_build.COUPLINGS[0] else
                                          {"coupling": coupling,
-                                          "coupling_labels": (before.obs["celltype"], after.obs["celltype"])}))
+                                          "coupling_labels": (before.obs[coupling_label],
+                                                              after.obs[coupling_label])}))
     if build_record is not None and "partial" in res.record:
         build_record["partial"] = res.record["partial"]
     if expression == "mixture":
@@ -1353,6 +1361,14 @@ def _fgw_partial(ctx: BuildContext, build_record: dict | None = None) -> Stage:
     new; the label level, the overlap as the share and the zero displacement of an unmatched anchor are choices no
     record fixes."""
     return _fgw(ctx, coupling="partial", build_record=build_record)
+
+
+def _fgw_partial_grp(ctx: BuildContext, build_record: dict | None = None) -> Stage:
+    """Campaign arm (branch campaign/emb-h): fgw_partial with its transported share s taken from the overlap of the
+    brackets' anchors' obs["group"] distributions (the lineage map's group, the level fgw_potts reads) in place of
+    obs["celltype"]; everything else is fgw_partial's. A bracket without obs["group"] refuses the build. No constant
+    is new."""
+    return _fgw(ctx, coupling="partial", build_record=build_record, coupling_label="group")
 
 
 def _fgw_aligned_series_xt(ctx: BuildContext) -> Stage:
@@ -1939,6 +1955,20 @@ CANDIDATES = {
                                                        "of the share", "the zero displacement of an unmatched "
                                                        "anchor"], "scope": "whole"},
                              requires=_interp),
+    # campaign branch campaign/emb-h: fgw_partial with the share taken at the lineage-group level
+    "fgw_partial_grp": Candidate("fgw_partial_grp", frozenset({"T2"}), (), _fgw_partial_grp,
+                                 {"what": "fgw_partial with the share s taken from the overlap of the brackets' "
+                                          "anchors' group distributions (the lineage map's group, the level "
+                                          "fgw_potts reads) in place of their celltype distributions; the solver, "
+                                          "its arguments, the costs, alpha, an unmatched anchor, the rotation, the "
+                                          "draws, the streams and the expression are fgw_partial's; the entry's "
+                                          "coupling where s is exactly 1; a bracket without group labels refuses",
+                                  "label": "group", "alpha": t2_build.INTERP_ALPHA, "k": t2_build.INTERP_K,
+                                  "num_iter_max": t2_build.INTERP_EMD_ITER,
+                                  "choices_on_no_record": ["the label level (group)", "the overlap as the "
+                                                           "estimate of the share", "the zero displacement of an "
+                                                           "unmatched anchor"], "scope": "whole"},
+                                 requires=_interp),
     "fgw_aligned_series_xt": Candidate("fgw_aligned_series_xt", frozenset({"T2"}), (), _fgw_aligned_series_xt,
                                        {"what": "fgw_aligned_series (the second upload as built) with each rendered "
                                                 "cell's panel total and outside count brought to their rounded "
