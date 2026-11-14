@@ -1,0 +1,137 @@
+Reading N52: committed per-seed scores split by row N51's flag (the entry's coupling of the misshapen kind). It decides nothing and puts nothing forward.
+runs e24_pricing:ccd33b5, e25_pairs:798908a, e28_nine_tasks:22513cf, n45_embryo_f_arms:fcc1f6b, n46_embryo_g_arms:b33595e, n47_embryo_h_arms:f8adf82, n50_embryo_j_arms:5904a94; n51 at 0543200e5586f08298d2503bb757d5dcafb6ba3a
+all-draw values against the committed readings of rows N45-N47: largest difference 1.7e-14 (void above 1e-09); checked: fgw_partial (n45.json, n46.json, n47.json), fgw_partial_grp (n47.json), fgw_damp_m (n46.json), fgw_damp (n46.json), fgw_part_rand (n46.json), fgw_still (n46.json); no committed reading, unchecked: fgw_damp_m_grp
+arithmetic check (n37.price on the same scores; it cannot tell whether they are the priced ones): largest difference 1.7e-14
+flagged draws per task: half 10, late 6, new1 10, x1 10, x2 10, x3 10, new2 2, e75 10, e725 5
+not read (no scores on all nine tasks): none
+
+What the flag is not: it pools draws whose partners sit at random (xcorr_min near 0) with mirrored ones (xcorr_min well below 0). On every flagged draw of the committed diagnostic (both backtests and the test pair) both conditions fire, so `by` reads 'both' and cannot tell the kinds apart; V_flag is a reading of draws past one of two thresholds, not of draws like the upload's.
+flagged draws per task (seed xcorr_min thin_ratio); the sign split of xcorr_min is not a kind:
+  half   below 0: 6, at or above 0: 4; by: both 7, xcorr 3; s0 -0.15 0.80, s1 +0.12 0.93, s2 +0.10 0.93, s3 -0.16 0.80, s4 +0.11 0.94, s5 -0.11 0.83, s6 -0.19 0.78, s7 -0.14 0.82, s8 +0.02 0.88, s9 -0.01 0.89
+  late   below 0: 6, at or above 0: 0; by: both 6; s2 -0.57 0.50, s3 -0.62 0.47, s5 -0.53 0.53, s6 -0.56 0.49, s7 -0.62 0.48, s9 -0.60 0.48
+  new1   below 0: 6, at or above 0: 4; by: both 7, xcorr 3; s0 -0.15 0.86, s1 +0.12 0.92, s2 +0.10 0.91, s3 -0.16 0.85, s4 +0.11 0.92, s5 -0.11 0.86, s6 -0.19 0.86, s7 -0.14 0.86, s8 +0.02 0.88, s9 -0.01 0.89
+  x1     below 0: 6, at or above 0: 4; by: both 6, xcorr 4; s0 -0.07 0.79, s1 -0.11 0.77, s2 +0.06 0.90, s3 +0.19 0.94, s4 -0.07 0.80, s5 -0.23 0.74, s6 +0.13 0.90, s7 -0.01 0.89, s8 -0.14 0.78, s9 +0.24 1.03
+  x2     below 0: 6, at or above 0: 4; by: xcorr 10; s0 -0.07 1.03, s1 -0.11 1.04, s2 +0.06 1.17, s3 +0.19 1.16, s4 -0.07 1.07, s5 -0.23 1.06, s6 +0.13 1.13, s7 -0.01 1.20, s8 -0.14 1.08, s9 +0.24 1.30
+  x3     below 0: 6, at or above 0: 4; by: xcorr 9, both 1; s0 -0.08 0.91, s1 +0.29 1.17, s2 -0.07 0.91, s3 -0.08 0.90, s4 +0.12 1.02, s5 -0.09 0.91, s6 +0.26 1.05, s7 -0.07 0.92, s8 -0.10 0.90, s9 +0.13 1.00
+  new2   below 0: 2, at or above 0: 0; by: both 2; s1 -0.66 0.74, s7 -0.72 0.74
+  e75    below 0: 7, at or above 0: 3; by: both 10; s0 +0.02 0.73, s1 -0.05 0.70, s2 -0.06 0.70, s3 +0.00 0.72, s4 +0.09 0.76, s5 -0.01 0.72, s6 -0.03 0.71, s7 -0.01 0.72, s8 -0.00 0.72, s9 -0.06 0.71
+  e725   below 0: 5, at or above 0: 0; by: both 5; s3 -0.62 0.78, s4 -0.66 0.77, s5 -0.60 0.78, s8 -0.65 0.78, s9 -0.55 0.80
+
+fgw_partial (pair value beside fgw_aligned_series, against (fgw, fgw_aligned_series); board points)
+  task   flagged  fgw flag  fgw rest  gain flag (ahead)  gain rest (ahead)   V_flag  V_rest   V_all
+  half     10/10     65.99       -   +0.26 ( 8)              - ( 0)        +0.00       -   +0.00
+  late      6/10     79.13     82.62   +2.31 ( 6)          -1.27 ( 0)        +0.00   +0.00   +0.00
+  new1     10/10     75.97       -   +1.92 (10)              - ( 0)        +0.00       -   +0.00
+  x1       10/10     37.99       -   +3.75 (10)              - ( 0)        +0.06       -   +0.06
+  x2       10/10     65.78       -   -0.37 ( 1)              - ( 0)        -0.36       -   -0.36
+  x3       10/10     60.52       -   +2.64 (10)              - ( 0)        +2.64       -   +2.64
+  new2      2/10     72.82     71.03   -1.54 ( 0)          +0.06 ( 5)        -0.63   +0.00   -0.13
+  e75      10/10     61.12       -   +1.88 (10)              - ( 0)        +1.51       -   +1.51
+  e725      5/10     58.93     58.63   +0.66 ( 4)          +0.76 ( 5)        +0.66   +0.76   +0.71
+  flagged    D  +0.39  O  +1.09  S(0.3)  +0.88  S(0.45)  +0.77  S(0.6)  +0.67   left out (fewer than 3 draws): new2
+  unflagged  D  +0.00  O  +0.38  S(0.3)  +0.27  S(0.45)  +0.21  S(0.6)  +0.15   left out (fewer than 3 draws): half, new1, x1, x2, x3, e75
+  all_draws  D  +0.39  O  +0.70  S(0.3)  +0.61  S(0.45)  +0.56  S(0.6)  +0.51
+  v on each flagged draw: half s0 +0.00 s1 +0.00 s2 +0.00 s3 +0.00 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; late s2 +0.00 s3 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s9 +0.00; new1 s0 +0.00 s1 +0.00 s2 +0.00 s3 +0.00 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; x1 s0 +0.02 s1 +0.00 s2 +0.00 s3 +0.57 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; x2 s0 -0.25 s1 -1.33 s2 +0.68 s3 -0.09 s4 -0.86 s5 -0.71 s6 -0.18 s7 -0.16 s8 -0.47 s9 -0.25; x3 s0 +1.51 s1 +3.16 s2 +2.35 s3 +2.68 s4 +2.08 s5 +2.33 s6 +2.23 s7 +2.07 s8 +3.46 s9 +4.57; new2 s1 -0.59 s7 -0.67; e75 s0 +0.00 s1 +1.10 s2 +2.42 s3 +0.81 s4 +2.44 s5 +2.94 s6 +0.94 s7 +1.21 s8 +0.78 s9 +2.47; e725 s3 +1.70 s4 +0.94 s5 +0.91 s8 -0.47 s9 +0.23
+  s = 1 (deciding nothing): half +0.00 flagged, late +0.00, new1 +0.00 flagged, x1 +0.00 flagged, x2 -1.33 flagged, x3 +3.16 flagged, new2 -0.59 flagged, e75 +1.10 flagged, e725 +0.21
+
+fgw_partial_grp (pair value beside fgw_aligned_series, against (fgw, fgw_aligned_series); board points)
+  task   flagged  fgw flag  fgw rest  gain flag (ahead)  gain rest (ahead)   V_flag  V_rest   V_all
+  half     10/10     65.99       -   +0.34 ( 8)              - ( 0)        +0.00       -   +0.00
+  late      6/10     79.13     82.62   +2.65 ( 6)          -1.09 ( 0)        +0.00   +0.00   +0.00
+  new1     10/10     75.97       -   +0.91 (10)              - ( 0)        +0.00       -   +0.00
+  x1       10/10     37.99       -   +3.30 (10)              - ( 0)        +0.02       -   +0.02
+  x2       10/10     65.78       -   +0.40 ( 8)              - ( 0)        +0.40       -   +0.40
+  x3       10/10     60.52       -   +2.26 (10)              - ( 0)        +2.26       -   +2.26
+  new2      2/10     72.82     71.03   -1.38 ( 0)          +0.35 ( 8)        -0.63   +0.00   -0.13
+  e75      10/10     61.12       -   +1.38 (10)              - ( 0)        +1.00       -   +1.00
+  e725      5/10     58.93     58.63   +0.66 ( 4)          +0.79 ( 5)        +0.66   +0.79   +0.72
+  flagged    D  +0.44  O  +0.83  S(0.3)  +0.71  S(0.45)  +0.66  S(0.6)  +0.60   left out (fewer than 3 draws): new2
+  unflagged  D  +0.00  O  +0.40  S(0.3)  +0.28  S(0.45)  +0.22  S(0.6)  +0.16   left out (fewer than 3 draws): half, new1, x1, x2, x3, e75
+  all_draws  D  +0.44  O  +0.53  S(0.3)  +0.51  S(0.45)  +0.49  S(0.6)  +0.48
+  v on each flagged draw: half s0 +0.00 s1 +0.00 s2 +0.00 s3 +0.00 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; late s2 +0.00 s3 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s9 +0.00; new1 s0 +0.00 s1 +0.00 s2 +0.00 s3 +0.00 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; x1 s0 +0.00 s1 +0.00 s2 +0.00 s3 +0.15 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; x2 s0 +0.44 s1 -0.82 s2 +1.47 s3 +0.74 s4 -0.55 s5 +0.53 s6 +0.49 s7 +0.79 s8 +0.06 s9 +0.83; x3 s0 +1.33 s1 +3.43 s2 +1.68 s3 +3.35 s4 +1.60 s5 +1.49 s6 +2.30 s7 +2.16 s8 +1.02 s9 +4.21; new2 s1 -0.59 s7 -0.67; e75 s0 +0.00 s1 +0.66 s2 +1.55 s3 +0.00 s4 +1.24 s5 +3.83 s6 +0.61 s7 +0.77 s8 +0.76 s9 +0.61; e725 s3 +1.21 s4 +0.64 s5 +1.34 s8 -0.96 s9 +1.07
+  s = 1 (deciding nothing): half +0.00 flagged, late +0.00, new1 +0.00 flagged, x1 +0.00 flagged, x2 -0.82 flagged, x3 +3.43 flagged, new2 -0.59 flagged, e75 +0.66 flagged, e725 +0.71
+
+fgw_damp_m (pair value beside fgw_aligned_series, against (fgw, fgw_aligned_series); board points)
+  task   flagged  fgw flag  fgw rest  gain flag (ahead)  gain rest (ahead)   V_flag  V_rest   V_all
+  half     10/10     65.99       -   +0.28 ( 9)              - ( 0)        +0.00       -   +0.00
+  late      6/10     79.13     82.62   +2.52 ( 6)          -0.81 ( 0)        +0.00   +0.00   +0.00
+  new1     10/10     75.97       -   +1.68 (10)              - ( 0)        +0.00       -   +0.00
+  x1       10/10     37.99       -   +3.70 (10)              - ( 0)        +0.00       -   +0.00
+  x2       10/10     65.78       -   -0.07 ( 5)              - ( 0)        -0.07       -   -0.07
+  x3       10/10     60.52       -   +0.58 (10)              - ( 0)        +0.58       -   +0.58
+  new2      2/10     72.82     71.03   -1.26 ( 0)          +0.07 ( 6)        -0.63   +0.00   -0.13
+  e75      10/10     61.12       -   +1.43 (10)              - ( 0)        +1.03       -   +1.03
+  e725      5/10     58.93     58.63   +1.24 ( 5)          +0.07 ( 4)        +1.24   +0.07   +0.65
+  flagged    D  +0.08  O  +1.13  S(0.3)  +0.82  S(0.45)  +0.66  S(0.6)  +0.50   left out (fewer than 3 draws): new2
+  unflagged  D  +0.00  O  +0.03  S(0.3)  +0.02  S(0.45)  +0.02  S(0.6)  +0.01   left out (fewer than 3 draws): half, new1, x1, x2, x3, e75
+  all_draws  D  +0.08  O  +0.52  S(0.3)  +0.39  S(0.45)  +0.32  S(0.6)  +0.26
+  v on each flagged draw: half s0 +0.00 s1 +0.00 s2 +0.00 s3 +0.00 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; late s2 +0.00 s3 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s9 +0.00; new1 s0 +0.00 s1 +0.00 s2 +0.00 s3 +0.00 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; x1 s0 +0.00 s1 +0.00 s2 +0.00 s3 +0.00 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; x2 s0 +0.06 s1 -0.73 s2 +0.56 s3 +0.11 s4 -0.64 s5 -0.09 s6 -0.35 s7 +0.12 s8 -0.27 s9 +0.48; x3 s0 +0.42 s1 +0.29 s2 +0.55 s3 +0.45 s4 +0.54 s5 +0.76 s6 +0.96 s7 +0.38 s8 +0.58 s9 +0.84; new2 s1 -0.59 s7 -0.67; e75 s0 +0.00 s1 +1.63 s2 +2.77 s3 +0.11 s4 +1.13 s5 +0.52 s6 +0.67 s7 +0.97 s8 +0.93 s9 +1.52; e725 s3 +1.49 s4 +0.20 s5 +1.62 s8 +0.29 s9 +2.61
+  s = 1 (deciding nothing): half +0.00 flagged, late +0.00, new1 +0.00 flagged, x1 +0.00 flagged, x2 -0.73 flagged, x3 +0.29 flagged, new2 -0.59 flagged, e75 +1.63 flagged, e725 +0.03
+
+fgw_damp_m_grp (pair value beside fgw_aligned_series, against (fgw, fgw_aligned_series); board points)
+  task   flagged  fgw flag  fgw rest  gain flag (ahead)  gain rest (ahead)   V_flag  V_rest   V_all
+  half     10/10     65.99       -   +0.36 (10)              - ( 0)        +0.00       -   +0.00
+  late      6/10     79.13     82.62   +2.46 ( 6)          -0.57 ( 1)        +0.00   +0.00   +0.00
+  new1     10/10     75.97       -   +0.68 (10)              - ( 0)        +0.00       -   +0.00
+  x1       10/10     37.99       -   +2.38 (10)              - ( 0)        +0.00       -   +0.00
+  x2       10/10     65.78       -   +0.04 ( 7)              - ( 0)        +0.04       -   +0.04
+  x3       10/10     60.52       -   +0.58 (10)              - ( 0)        +0.58       -   +0.58
+  new2      2/10     72.82     71.03   -1.05 ( 0)          -0.05 ( 5)        -0.63   +0.00   -0.13
+  e75      10/10     61.12       -   +0.77 (10)              - ( 0)        +0.52       -   +0.52
+  e725      5/10     58.93     58.63   +1.37 ( 5)          +0.16 ( 4)        +1.37   +0.16   +0.77
+  flagged    D  +0.10  O  +0.94  S(0.3)  +0.69  S(0.45)  +0.57  S(0.6)  +0.44   left out (fewer than 3 draws): new2
+  unflagged  D  +0.00  O  +0.08  S(0.3)  +0.06  S(0.45)  +0.04  S(0.6)  +0.03   left out (fewer than 3 draws): half, new1, x1, x2, x3, e75
+  all_draws  D  +0.10  O  +0.39  S(0.3)  +0.30  S(0.45)  +0.26  S(0.6)  +0.22
+  v on each flagged draw: half s0 +0.00 s1 +0.00 s2 +0.00 s3 +0.00 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; late s2 +0.00 s3 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s9 +0.00; new1 s0 +0.00 s1 +0.00 s2 +0.00 s3 +0.00 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; x1 s0 +0.00 s1 +0.00 s2 +0.00 s3 +0.00 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; x2 s0 +0.29 s1 -0.50 s2 +0.31 s3 +0.04 s4 -0.22 s5 +0.07 s6 -0.19 s7 +0.29 s8 +0.13 s9 +0.19; x3 s0 +0.60 s1 +0.25 s2 +0.78 s3 +0.46 s4 +0.44 s5 +0.58 s6 +0.75 s7 +0.44 s8 +0.75 s9 +0.74; new2 s1 -0.59 s7 -0.67; e75 s0 +0.00 s1 +0.62 s2 +1.19 s3 +0.00 s4 +1.08 s5 +0.04 s6 +0.08 s7 +0.55 s8 +0.50 s9 +1.10; e725 s3 +0.95 s4 +0.41 s5 +1.49 s8 +0.21 s9 +3.81
+  s = 1 (deciding nothing): half +0.00 flagged, late +0.00, new1 +0.00 flagged, x1 +0.00 flagged, x2 -0.50 flagged, x3 +0.25 flagged, new2 -0.59 flagged, e75 +0.62 flagged, e725 +0.26
+
+fgw_damp (pair value beside fgw_aligned_series, against (fgw, fgw_aligned_series); board points)
+  task   flagged  fgw flag  fgw rest  gain flag (ahead)  gain rest (ahead)   V_flag  V_rest   V_all
+  half     10/10     65.99       -   +0.22 ( 8)              - ( 0)        +0.00       -   +0.00
+  late      6/10     79.13     82.62   +2.51 ( 6)          -1.27 ( 0)        +0.00   +0.00   +0.00
+  new1     10/10     75.97       -   +1.87 (10)              - ( 0)        +0.00       -   +0.00
+  x1       10/10     37.99       -   +3.87 (10)              - ( 0)        +0.03       -   +0.03
+  x2       10/10     65.78       -   -0.23 ( 3)              - ( 0)        -0.23       -   -0.23
+  x3       10/10     60.52       -   +0.53 ( 9)              - ( 0)        +0.53       -   +0.53
+  new2      2/10     72.82     71.03   -1.32 ( 0)          +0.11 ( 6)        -0.63   +0.00   -0.13
+  e75      10/10     61.12       -   +1.81 (10)              - ( 0)        +1.39       -   +1.39
+  e725      5/10     58.93     58.63   +1.09 ( 5)          -0.07 ( 2)        +1.09   -0.07   +0.51
+  flagged    D  +0.06  O  +1.24  S(0.3)  +0.88  S(0.45)  +0.71  S(0.6)  +0.53   left out (fewer than 3 draws): new2
+  unflagged  D  +0.00  O  -0.04  S(0.3)  -0.03  S(0.45)  -0.02  S(0.6)  -0.01   left out (fewer than 3 draws): half, new1, x1, x2, x3, e75
+  all_draws  D  +0.06  O  +0.59  S(0.3)  +0.43  S(0.45)  +0.35  S(0.6)  +0.27
+  v on each flagged draw: half s0 +0.00 s1 +0.00 s2 +0.00 s3 +0.00 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; late s2 +0.00 s3 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s9 +0.00; new1 s0 +0.00 s1 +0.00 s2 +0.00 s3 +0.00 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; x1 s0 +0.10 s1 +0.00 s2 +0.05 s3 +0.19 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; x2 s0 -0.13 s1 -0.84 s2 +0.33 s3 -0.07 s4 -0.82 s5 -0.20 s6 -0.25 s7 +0.06 s8 -0.75 s9 +0.35; x3 s0 +0.63 s1 +0.56 s2 +0.34 s3 +0.56 s4 +0.56 s5 +0.73 s6 +0.77 s7 -0.15 s8 +0.55 s9 +0.80; new2 s1 -0.59 s7 -0.67; e75 s0 +0.36 s1 +2.04 s2 +3.19 s3 +0.39 s4 +1.56 s5 +0.95 s6 +1.13 s7 +1.28 s8 +1.85 s9 +1.20; e725 s3 +1.69 s4 +0.58 s5 +0.83 s8 +0.44 s9 +1.87
+  s = 1 (deciding nothing): half +0.00 flagged, late +0.00, new1 +0.00 flagged, x1 +0.00 flagged, x2 -0.84 flagged, x3 +0.56 flagged, new2 -0.59 flagged, e75 +2.04 flagged, e725 -0.18
+
+fgw_part_rand (pair value beside fgw_aligned_series, against (fgw, fgw_aligned_series); board points)
+  task   flagged  fgw flag  fgw rest  gain flag (ahead)  gain rest (ahead)   V_flag  V_rest   V_all
+  half     10/10     65.99       -   +0.08 ( 5)              - ( 0)        +0.00       -   +0.00
+  late      6/10     79.13     82.62   +2.29 ( 6)          -1.24 ( 0)        +0.00   +0.00   +0.00
+  new1     10/10     75.97       -   +1.99 (10)              - ( 0)        +0.00       -   +0.00
+  x1       10/10     37.99       -   +3.50 (10)              - ( 0)        +0.00       -   +0.00
+  x2       10/10     65.78       -   -0.34 ( 2)              - ( 0)        -0.32       -   -0.32
+  x3       10/10     60.52       -   +0.34 ( 9)              - ( 0)        +0.34       -   +0.34
+  new2      2/10     72.82     71.03   -1.28 ( 0)          +0.10 ( 6)        -0.63   +0.00   -0.13
+  e75      10/10     61.12       -   +1.66 (10)              - ( 0)        +1.24       -   +1.24
+  e725      5/10     58.93     58.63   +0.50 ( 4)          +0.04 ( 3)        +0.50   +0.04   +0.27
+  flagged    D  +0.00  O  +0.87  S(0.3)  +0.61  S(0.45)  +0.48  S(0.6)  +0.35   left out (fewer than 3 draws): new2
+  unflagged  D  +0.00  O  +0.02  S(0.3)  +0.01  S(0.45)  +0.01  S(0.6)  +0.01   left out (fewer than 3 draws): half, new1, x1, x2, x3, e75
+  all_draws  D  +0.00  O  +0.46  S(0.3)  +0.32  S(0.45)  +0.26  S(0.6)  +0.19
+  v on each flagged draw: half s0 +0.00 s1 +0.00 s2 +0.00 s3 +0.00 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; late s2 +0.00 s3 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s9 +0.00; new1 s0 +0.00 s1 +0.00 s2 +0.00 s3 +0.00 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; x1 s0 +0.00 s1 +0.00 s2 +0.00 s3 +0.00 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; x2 s0 -0.34 s1 -0.96 s2 +0.35 s3 -0.09 s4 -0.78 s5 -0.36 s6 -0.38 s7 -0.00 s8 -0.85 s9 +0.16; x3 s0 +0.12 s1 +0.14 s2 +0.21 s3 +0.24 s4 +0.17 s5 +0.60 s6 +0.94 s7 -0.21 s8 +0.27 s9 +0.91; new2 s1 -0.59 s7 -0.67; e75 s0 +0.84 s1 +1.35 s2 +2.63 s3 +0.49 s4 +1.97 s5 +1.05 s6 +1.10 s7 +1.14 s8 +0.80 s9 +1.06; e725 s3 +1.57 s4 +0.07 s5 +0.47 s8 -0.07 s9 +0.48
+  s = 1 (deciding nothing): half +0.00 flagged, late +0.00, new1 +0.00 flagged, x1 +0.00 flagged, x2 -0.96 flagged, x3 +0.14 flagged, new2 -0.59 flagged, e75 +1.35 flagged, e725 +0.05
+
+fgw_still (pair value beside fgw_aligned_series, against (fgw, fgw_aligned_series); board points)
+  task   flagged  fgw flag  fgw rest  gain flag (ahead)  gain rest (ahead)   V_flag  V_rest   V_all
+  half     10/10     65.99       -   +0.04 ( 6)              - ( 0)        +0.00       -   +0.00
+  late      6/10     79.13     82.62   +1.65 ( 6)          -1.79 ( 0)        +0.00   +0.00   +0.00
+  new1     10/10     75.97       -   +2.21 (10)              - ( 0)        +0.00       -   +0.00
+  x1       10/10     37.99       -   +3.96 (10)              - ( 0)        +0.16       -   +0.16
+  x2       10/10     65.78       -   -0.30 ( 3)              - ( 0)        -0.29       -   -0.29
+  x3       10/10     60.52       -   +0.27 ( 9)              - ( 0)        +0.27       -   +0.27
+  new2      2/10     72.82     71.03   -1.34 ( 0)          +0.16 ( 7)        -0.63   +0.00   -0.13
+  e75      10/10     61.12       -   +2.66 (10)              - ( 0)        +2.25       -   +2.25
+  e725      5/10     58.93     58.63   -0.64 ( 1)          -0.76 ( 0)        -0.64   -0.76   -0.70
+  flagged    D  +0.02  O  +0.80  S(0.3)  +0.57  S(0.45)  +0.45  S(0.6)  +0.34   left out (fewer than 3 draws): new2
+  unflagged  D  +0.00  O  -0.38  S(0.3)  -0.27  S(0.45)  -0.21  S(0.6)  -0.15   left out (fewer than 3 draws): half, new1, x1, x2, x3, e75
+  all_draws  D  +0.02  O  +0.47  S(0.3)  +0.34  S(0.45)  +0.27  S(0.6)  +0.20
+  v on each flagged draw: half s0 +0.00 s1 +0.00 s2 +0.00 s3 +0.00 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; late s2 +0.00 s3 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s9 +0.00; new1 s0 +0.00 s1 +0.00 s2 +0.00 s3 +0.00 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; x1 s0 +0.73 s1 +0.00 s2 +0.30 s3 +0.58 s4 +0.00 s5 +0.00 s6 +0.00 s7 +0.00 s8 +0.00 s9 +0.00; x2 s0 -0.24 s1 -1.24 s2 +0.44 s3 -0.09 s4 -0.94 s5 -0.22 s6 -0.44 s7 +0.05 s8 -0.93 s9 +0.68; x3 s0 +0.11 s1 +0.33 s2 +0.05 s3 +0.10 s4 +0.41 s5 +0.55 s6 +0.34 s7 -0.39 s8 +0.34 s9 +0.91; new2 s1 -0.59 s7 -0.67; e75 s0 +1.32 s1 +2.38 s2 +4.98 s3 +1.20 s4 +2.04 s5 +2.46 s6 +2.15 s7 +1.68 s8 +2.41 s9 +1.87; e725 s3 +0.28 s4 -1.40 s5 -0.13 s8 -1.49 s9 -0.49
+  s = 1 (deciding nothing): half +0.00 flagged, late +0.00, new1 +0.00 flagged, x1 +0.00 flagged, x2 -1.24 flagged, x3 +0.33 flagged, new2 -0.59 flagged, e75 +2.38 flagged, e725 -1.01
