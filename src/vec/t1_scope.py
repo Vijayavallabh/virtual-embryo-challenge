@@ -463,7 +463,8 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
                    standin_momentum: bool = False, seed: Seed = 0,
                    logf_filter: Callable[[np.ndarray, sparse.csr_matrix, np.ndarray], tuple[np.ndarray, dict]]
                    | None = None,
-                   logf_by_type: Mapping[str, np.ndarray] | None = None) -> tuple[ad.AnnData, ShiftReport]:
+                   logf_by_type: Mapping[str, np.ndarray] | None = None,
+                   cell_factors: np.ndarray | None = None) -> tuple[ad.AnnData, ShiftReport]:
     """Move `target_like` cells by the damped per-type change from `start` to `ref`, in count space.
 
     start, ref: the two stages whose change is the momentum (start is the earlier one; ref is normally the stage the
@@ -491,6 +492,13 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
     `damping * log((m_ref + eps) / (m_start + eps))` for that type. Everything else applies to it as to the own factor:
     the skip rules (a type skipped for too few cells or stand-ins stays skipped even if the mapping names it), the clip,
     the held-flat zeros, logf_filter and the report row. Types the mapping does not name keep their own factor.
+
+    cell_factors (default None: one factor row per type, so every existing output is unchanged; heart candidates
+    b0_trend_flow and its companions, vec.trend_flow): a (cells x genes) array of positive per-cell, per-gene factors D
+    in target_like's row order and `genes` order; the factor on cell i, gene g becomes F[type(i), g] x D[i, g], applied
+    in the same one `apply_factors` call (same depth rule, same stream). Held-flat genes keep f = 1 whatever D holds;
+    a cell whose type is not shifted must have D = 1 (it raises otherwise). With D = 1 everywhere the output is the
+    output without it, bit for bit.
 
     Returns a copy of target_like with layers["counts"] edited and X = log1p CP10k of the new counts (float32 CSR),
     and a per-type report.
@@ -545,7 +553,19 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
                    mean_abs_log_f=float(np.abs(logf).mean()), max_abs_log_f=float(np.abs(logf).max()))
         rows.append(row)
     tidx = np.array([tindex[t] for t in t_types], dtype=np.int64)
-    new, scale, dead = apply_factors(C, F, tidx, held, keep_depth=keep_depth, seed=seed)
+    if cell_factors is None:
+        new, scale, dead = apply_factors(C, F, tidx, held, keep_depth=keep_depth, seed=seed)
+    else:
+        D = np.array(cell_factors, dtype=np.float64)
+        if D.shape != C.shape:
+            raise ValueError(f"cell_factors has shape {D.shape}, expected {C.shape}")
+        if not np.all(np.isfinite(D)) or (D <= 0).any():
+            raise ValueError("cell_factors must be finite and positive")
+        D[:, held] = 1.0
+        shifted = {r["type"] for r in rows if r["status"] == "shifted"}
+        if (D[~np.isin(t_types, sorted(shifted))] != 1.0).any():
+            raise ValueError("cell_factors differ from 1 on a cell whose type is not shifted")
+        new, scale, dead = apply_factors(C, F[tidx] * D, np.arange(len(tidx)), held, keep_depth=keep_depth, seed=seed)
     for row in rows:
         m = t_types == row["type"]
         row["median_depth_scale"] = float(np.median(scale[m])) if m.any() else float("nan")

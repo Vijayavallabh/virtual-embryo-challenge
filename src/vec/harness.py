@@ -954,12 +954,13 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
 
 
 def _b0_t2_shift(ctx: BuildContext, herd: bool = False, cfm: bool = False, trend: bool = False,
-                 trend_record: dict | None = None) -> tuple[ad.AnnData, np.ndarray, np.ndarray | None, ad.AnnData,
-                                                           ad.AnnData]:
+                 trend_record: dict | None = None,
+                 cell_factors: Callable[[BuildContext, ad.AnnData, np.ndarray, ad.AnnData], np.ndarray] | None = None
+                 ) -> tuple[ad.AnnData, np.ndarray, np.ndarray | None, ad.AnnData, ad.AnnData]:
     """B0's draw and per-lineage shift on a T2 board (the steps of `_b0_t2` before its depth step and its finish):
     (pool, drawn rows, coords, the stage the momentum starts from, the shifted cells with obs["merged"] and their counts
     in layers["counts"]). `_b0_t2` and heart try H7 (`_b0_gmom_arm`) both call it, so H7 starts from B0's very cells.
-    trend and trend_record are `_b0_t2`'s (b0_trend's factors; the caller checks them)."""
+    trend, trend_record and cell_factors are `_b0_t2`'s (the caller checks them)."""
     from vec import t1_scope
 
     pool, rows, _, coords = draw_copy(ctx, herd=herd)
@@ -981,14 +982,17 @@ def _b0_t2_shift(ctx: BuildContext, herd: bool = False, cfm: bool = False, trend
                                              sorted(set(np.asarray(like.obs["b0_type"]).astype(str))))
         if trend_record is not None:
             trend_record.update(rec)
+    D = None if cell_factors is None else cell_factors(ctx, pool, rows, like)
     shifted, _ = t1_scope.momentum_shift(typed(start, "start"), typed(end, "end"), like, damping, (), key="b0_type",
                                          seed=[ctx.seed, 3], logf_filter=t2_build.covariance_filter if cfm else None,
-                                         logf_by_type=logf_by_type)
+                                         logf_by_type=logf_by_type, cell_factors=D)
     return pool, rows, coords, start, shifted
 
 
 def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool = False, trend: bool = False,
-           trend_record: dict | None = None) -> Stage:
+           trend_record: dict | None = None,
+           cell_factors: Callable[[BuildContext, ad.AnnData, np.ndarray, ad.AnnData], np.ndarray] | None = None
+           ) -> Stage:
     """B0 on a T2 board: real reference cells at the count rule, moved in count space by the per-type change of the
     harmonised lineage level (obs["merged"]; groups without a stable cross-stage meaning held flat). Extrapolation:
     from `start` to the reference, damped by B0_DAMPING. Interpolation: from the earlier bracket towards the later one,
@@ -1001,7 +1005,12 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
     trend (heart candidate b0_trend, row H11; heart extrapolation with at least three input stages only): each
     lineage's log factor is its least-squares trend over every input stage (`b0_trend_factors`, B0_TREND_RULE); the
     draw, typing, stream and everything else are B0's. No try read it with depth, herd or cfm, so those raise.
-    trend_record: a dict that receives b0_trend_factors' record (with trend only; the build record's source)."""
+    trend_record: a dict that receives b0_trend_factors' record (with trend only; the build record's source).
+    cell_factors (with trend only; b0_trend_flow and its companions, vec.trend_flow): called as cell_factors(ctx, pool,
+    rows, drawn cells typed as B0 types them) for the per-cell, per-gene factors D that momentum_shift multiplies into
+    the trend's factors in its one apply_factors call."""
+    if cell_factors is not None and not trend:
+        raise ValueError("cell_factors is for trend=True")
     if trend and (depth or herd or cfm):
         raise ValueError("the trend of B0 is not defined together with depth, herd or cfm (no try read them)")
     if trend_record is not None and not trend:
@@ -1010,7 +1019,8 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
         _b0_trend_task_check(ctx.task)
     if cfm and ctx.task.kind != "extrap":
         raise ValueError("the covariance filter of B0 is for extrapolation boards")
-    pool, rows, coords, start, shifted = _b0_t2_shift(ctx, herd=herd, cfm=cfm, trend=trend, trend_record=trend_record)
+    pool, rows, coords, start, shifted = _b0_t2_shift(ctx, herd=herd, cfm=cfm, trend=trend, trend_record=trend_record,
+                                                      cell_factors=cell_factors)
     t = ctx.task
     g = ctx.board.genes
     if depth:
@@ -1372,6 +1382,31 @@ def _b0_cfm(ctx: BuildContext) -> Stage:
 def _b0_trend(ctx: BuildContext) -> Stage:
     """Heart candidate b0_trend (row H11, B0_TREND_RULE): `_b0_t2` with trend=True."""
     return _b0_t2(ctx, trend=True)
+
+
+def b0_trend_flow_build(ctx: BuildContext, arm: str) -> tuple[Stage, dict]:
+    """Heart candidates b0_trend_flow and its three companions (vec.trend_flow): b0_trend (`_b0_t2` with trend=True)
+    with the arm's per-cell, per-gene factor D multiplied into the trend's factors in its one count-space call. The
+    build's record (shares and ratios, the count model's latent_sha256, the field's checksum) is appended to
+    `vec.latent_extrap.RECORDS` (run.py writes it to <out>/latent_records/) and printed as one check line."""
+    from vec import latent_extrap as le
+    from vec import trend_flow as tf
+
+    rec: dict = {}
+
+    def factors(c, pool, rows, like):
+        D, r = tf.cell_factors(arm, c, pool, rows, like, B0_DAMPING)
+        rec.update(r)
+        return D
+
+    st = _b0_t2(ctx, trend=True, cell_factors=factors)
+    le.RECORDS.append({"task": ctx.task.key, "candidate": tf.NAMES[arm], "build_seed": int(ctx.seed), **rec})
+    print(tf.check_line(ctx.task.key, int(ctx.seed), rec), flush=True)
+    return st, rec
+
+
+def _b0_trend_flow_arm(arm: str) -> Callable[[BuildContext], Stage]:
+    return lambda ctx: b0_trend_flow_build(ctx, arm)[0]
 
 
 def _fgw_herd(ctx: BuildContext) -> Stage:
@@ -2051,6 +2086,24 @@ CANDIDATES = {
                                       "heart only)", "damping": B0_DAMPING, "rule": "vec.latent_extrap.FLOW_RULE",
                               "flow_seed": 20261113, "scope": "chamber"},
                              requires=_heart_extrap_with_start),
+    # heart batch G (campaign/heart-g; vec.trend_flow): b0_trend with a per-cell, per-gene factor D inside each moved
+    # lineage that leaves the lineage's expected pseudobulk unchanged, from H10's field, its stage-permuted placebo,
+    # the field on latents centred per lineage and stage, and that field's placebo
+    **{name: Candidate(name, frozenset({"T2"}), (), _b0_trend_flow_arm(arm),
+                       {"what": what, "damping": B0_DAMPING, "rule": "vec.trend_flow.RULE",
+                        "trend_rule": "vec.harness.B0_TREND_RULE", "flow_seed": 20261113,
+                        **({"perm_stream": 3} if arm.endswith("_perm") else {}), "scope": "chamber"},
+                       requires=_heart_extrap_with_start)
+       for arm, name, what in (
+           ("flow", "b0_trend_flow", "b0_trend with D from H10's field (vec.latent_extrap.fold_flow and flow_latent): "
+            "r the decoder's mean ratio at z + du over z, du the move centred within the lineage's drawn cells, D = r "
+            "over its count-weighted lineage mean (vec.trend_flow; heart only)"),
+           ("flow_perm", "b0_trend_flow_perm", "b0_trend_flow's placebo: the field fitted with every cell's stage "
+            "permuted within its lineage (vec.trend_flow.stage_permutation)"),
+           ("flow_pool", "b0_trend_flow_pool", "b0_trend_flow with the field fitted on latents centred on their "
+            "lineage's mean at their stage, over every transition, the drawn cells' centred latents integrated"),
+           ("flow_pool_perm", "b0_trend_flow_pool_perm", "b0_trend_flow_pool's placebo: stages permuted within "
+            "lineage before the centring and the pairs"))},
     # T3 tries K2a and K2b (experiments/harness/TRIES.md, registered before their run): s1's Gata4 factor on the
     # Gata4 -> Mab21l2 fold, and its permuted control
     "t3_factor_xko": Candidate("t3_factor_xko", frozenset({"T3"}), (), _t3_factor_xko,
