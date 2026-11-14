@@ -1,0 +1,10 @@
+N48: the reliability shrinkage of M1's real direction (Feng E9.5 -> E14.5), target-free
+decile form (T18's rule): OPEN: it would change the direction (some factor of deciles 4-10 below 0.9: {'CM': True, 'Endocardium': True})
+scalar James-Stein scale: no-op: closed (scale below 0.9: {'CM': False, 'Endocardium': True})
+  group: genes; scalar scale (without held genes); halves' correlation; decile factors, lowest expression first
+  CM: 29715; 0.9891 (0.9891); 0.978; 1.000 1.000 1.000 0.000 0.203 0.744 0.932 0.966 0.982 0.994
+  Endocardium: 29715; 0.8634 (0.8632); 0.759; 1.000 1.000 1.000 1.000 1.000 0.104 0.422 0.665 0.793 0.930
+  Endothelium: 29715; 0.8746 (0.8743); 0.777; 1.000 1.000 1.000 1.000 1.000 0.111 0.524 0.697 0.825 0.932
+  Epicardium: 29715; 0.8650 (0.8649); 0.761; 1.000 1.000 1.000 1.000 1.000 0.333 0.566 0.667 0.791 0.925
+Cells per group at the two ends (Feng): {'CM': {'E9.5': 705, 'E14.5': 1777, 'feng_labels': ['ventricular_cm', 'atrial_cm']}, 'Endocardium': {'E9.5': 70, 'E14.5': 107, 'feng_labels': ['endocardial_ec']}, 'Endothelium': {'E9.5': 70, 'E14.5': 158, 'feng_labels': ['endocardial_ec', 'vascular_ec']}, 'Epicardium': {'E9.5': 13, 'E14.5': 143, 'feng_labels': ['epicardial']}}
+Commit 433d8e8113f404bfbd2268caedc98cd849c8d04b, clean at end True, UTC 2026-11-14T09:29:41Z
