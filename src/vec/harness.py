@@ -581,15 +581,22 @@ def t1_chamber_shares(ref: ad.AnnData, source: str) -> dict[str, float]:
 
 def _b0_t1(damping: float, herd: bool = False,
            prior: Callable[[BuildContext], object] | None = None,
-           kernel: str = "independent") -> Callable[[BuildContext], Stage]:
+           kernel: str = "independent", arm: str | None = None) -> Callable[[BuildContext], Stage]:
     """B0 on T1 (or, with damping 0, its chamber copy alone). prior (T1 tries T12a and T12b): a function of the context
     that gives the strong-null down-tail prior for `vec.t1_scope.build_submission`. kernel (default "independent":
     every existing output unchanged; T1 arm b0_xt, B0_XT_RULE: "exact_total"): `apply_factors`' kernel for the
-    momentum step, B0's only count edit on T1; the build then prints its check line and records it (`_b0_xt_check`)."""
+    momentum step, B0's only count edit on T1; the build then prints its check line and records it (`_b0_xt_check`).
+    arm (default None: every existing output unchanged; campaign/t1-f): one of T1_F_ARMS, B0 with that arm's one
+    change to its momentum step ("mn": B0_MN_RULE, "half": B0_HALF_RULE, "half_ctrl": B0_HALF_CTRL_RULE); the build
+    then prints its check line and records it (`_t1_f_check`)."""
     if kernel not in ("independent", "exact_total"):
         raise ValueError(f"unknown kernel {kernel!r} for B0 on T1; known: independent, exact_total")
     if kernel != "independent" and (not damping or prior is not None or herd):
         raise ValueError("the T1 kernel arm is B0 alone (a momentum step, no prior, no herd)")
+    if arm is not None and arm not in T1_F_ARMS:
+        raise ValueError(f"unknown T1 arm {arm!r}; known: {', '.join(T1_F_ARMS)}")
+    if arm is not None and (not damping or prior is not None or herd or kernel != "independent"):
+        raise ValueError("a T1 arm is B0 alone with one change (a momentum step, no prior, no herd, no other kernel)")
 
     def build(ctx: BuildContext) -> Stage:
         from vec import t1_scope
@@ -603,12 +610,23 @@ def _b0_t1(damping: float, herd: bool = False,
         repair: dict = {}
         if kernel != "independent":
             extra.update(kernel=kernel, kernel_record=repair)
-        sub, _ = t1_scope.build_submission(ref, ctx.board, shares, count_for(ctx.board, ref.n_obs), ctx.seed,
+        n = count_for(ctx.board, ref.n_obs)
+        step_cells = None
+        if arm == "mn":
+            extra.update(kernel="multinomial", kernel_record=repair)
+        elif arm == "half":  # reweight's draw order ends in a uniform permutation: its first n // 2 are a random half
+            step_cells = np.arange(n) < n // 2
+            extra["step_cells"] = step_cells
+        elif arm == "half_ctrl":
+            extra.update(step_weight=(n // 2) / n, kernel_record=repair)
+        sub, _ = t1_scope.build_submission(ref, ctx.board, shares, n, ctx.seed,
                                            start=start, damping=damping, held_flat=held, ref_source=src,
                                            start_source=ctx.task.role_stems["start"] if damping else None,
                                            herd=herd, **extra)
         if kernel != "independent":
             _b0_xt_check(ctx, repair)
+        if arm is not None:
+            _t1_f_check(ctx, arm, repair, step_cells)
         return finish(ctx, ref, dense(sub.X), None)
     return build
 
@@ -642,6 +660,59 @@ def _b0_xt_check(ctx: BuildContext, repair: Mapping) -> dict:
     T1_ARM_RECORDS["b0_xt"] = rec
     print(f"b0_xt check: task={ctx.task.key} seed={int(ctx.seed)} repaired_share={share:.4f} "
           f"mean_abs_off={mean_abs:.4f}", flush=True)
+    return rec
+
+
+# T1 arms b0_mn, b0_half and b0_half_ctrl (campaign/t1-f): b0 on T1 with one change each to its momentum step, B0's
+# only count edit on T1, from two lines the ledger closed on T1 without a read (experiments/harness/TRIES.md, "Pruned
+# before running": "negative-binomial resampling", read on the heart as b0_trend_mn; "within-upload mixtures over
+# shift sizes", read on the heart as b0_trend_mix and on T3 as raw_half with raw_half_ctrl). Harness candidates only;
+# the test builders are untouched.
+B0_MN_RULE = ("b0 on T1 (the same draw, shares, count, scope, factors, keep-depth constant, held-flat genes and "
+              "stream) with its momentum step realised by vec.core.apply_factors with kernel='multinomial' "
+              "(B0_TREND_MN_RULE's kernel, unchanged): per cell every moved count (not held, count above zero, factor "
+              "not exactly 1 after the keep-depth constant) redrawn together as one Multinomial(rint(S), c f / S), S "
+              "the sum of c f over them; counts outside the moved set stay; the dispersion-free form of the ledger's "
+              "resampling line; no constant; everything else is b0's")
+B0_HALF_RULE = ("b0 on T1 (the same draw, shares, count, scope, factors, keep-depth constant, held-flat genes and "
+                "stream) with the momentum step applied to the drawn cells at positions below n // 2 of the seeded "
+                "draw order (reweight's draw ends in a uniform permutation of the drawn cells, so these are a "
+                "uniformly random half, without replacement, and no new stream is drawn); each moved cell gets exactly "
+                "b0's factors and keep-depth constant, computed as b0 computes them; the other cells stay exactly as "
+                "drawn (factor 1 on every entry, no draw); one apply_factors call on b0's stream (step_cells)")
+B0_HALF_CTRL_RULE = ("b0 on T1 (the same draw, shares, count, scope, held-flat genes and stream) with every drawn "
+                     "cell moved, each entry's factor 1 + w (F - 1), F exactly the factor b0 applies to that entry "
+                     "(after its keep-depth constant; b0 on T1 applies no bound) and w = (n // 2) / n, the share of "
+                     "cells b0_half moves (w = 1/2, the factor (1 + F) / 2, for an even count); nothing recomputed: "
+                     "no new keep-depth constant, no bound; so every gene's expected mean over the drawn cells equals "
+                     "b0_half's and every cell's expected total equals b0's; one apply_factors call on b0's stream "
+                     "(step_weight)")
+T1_F_ARMS = {"mn": ("b0_mn", "vec.harness.B0_MN_RULE"), "half": ("b0_half", "vec.harness.B0_HALF_RULE"),
+             "half_ctrl": ("b0_half_ctrl", "vec.harness.B0_HALF_CTRL_RULE")}
+
+
+def _t1_f_check(ctx: BuildContext, arm: str, record: Mapping, step_cells: np.ndarray | None) -> dict:
+    """The campaign/t1-f arms' check line and record (T1_ARM_RECORDS[name]); shares and means only, no gene name, no
+    count of cells, no score. b0_mn: moved_share, the share of drawn cells with a moved entry, and mean_abs_total_off,
+    the mean over those cells of |realised total - expected total| in counts (0.0 when no cell moved). b0_half:
+    moved_share, the share of drawn cells the step is applied to, rounded to two decimals so that it cannot encode
+    an odd count. b0_half_ctrl: step_ratio, the mean over entries with F != 1 of |log(1 + w (F - 1))| / |log F|."""
+    name, rule = T1_F_ARMS[arm]
+    rec: dict = {"arm": arm, "arm_rule": rule, "task": ctx.task.key, "seed": int(ctx.seed)}
+    if arm == "mn":
+        moved = np.asarray(record.get("moved_cells", np.zeros(0, bool)), dtype=bool)
+        off = np.asarray(record.get("total_off", np.zeros(moved.size)), dtype=np.float64)[moved]
+        rec.update(kernel="multinomial", moved_share=float(moved.mean()) if moved.size else 0.0,
+                   mean_abs_total_off=float(np.abs(off).mean()) if off.size else 0.0)
+        line = f"moved_share={rec['moved_share']:.4f} mean_abs_total_off={rec['mean_abs_total_off']:.4f}"
+    elif arm == "half":
+        rec["moved_share"] = round(float(step_cells.mean()), 2) if step_cells is not None and step_cells.size else 0.0
+        line = f"moved_share={rec['moved_share']:.2f}"
+    else:
+        rec["step_ratio"] = float(record.get("step_ratio", 0.0))
+        line = f"step_ratio={rec['step_ratio']:.4f}"
+    T1_ARM_RECORDS[name] = rec
+    print(f"{name} check: task={ctx.task.key} seed={int(ctx.seed)} {line}", flush=True)
     return rec
 
 
@@ -1850,6 +1921,25 @@ CANDIDATES = {
                                 "(multinomial at c f) (count space)", "damping": B0_DAMPING,
                         "rule": "vec.harness.B0_XT_RULE", "scope": "chamber"},
                        requires=_b0_applies, derived=("t1_held_flat",)),
+    # T1 arms of campaign/t1-f: b0 on T1 with one change each to its momentum step
+    "b0_mn": Candidate("b0_mn", frozenset({"T1"}), (), _b0_t1(B0_DAMPING, arm="mn"),
+                       {"what": "b0 on T1 with its momentum step realised as a whole-cell multinomial redraw: each "
+                                "cell's moved counts redrawn together at the step's expected profile with the cell's "
+                                "rounded expected total (count space)", "damping": B0_DAMPING,
+                        "rule": "vec.harness.B0_MN_RULE", "scope": "chamber"},
+                       requires=_b0_applies, derived=("t1_held_flat",)),
+    "b0_half": Candidate("b0_half", frozenset({"T1"}), (), _b0_t1(B0_DAMPING, arm="half"),
+                         {"what": "b0 on T1 with a within-upload mixture: b0's momentum step on a uniformly random "
+                                  "half of the drawn cells (the first n // 2 of the seeded draw order), the rest "
+                                  "exactly as drawn (count space)", "damping": B0_DAMPING,
+                          "rule": "vec.harness.B0_HALF_RULE", "scope": "chamber"},
+                         requires=_b0_applies, derived=("t1_held_flat",)),
+    "b0_half_ctrl": Candidate("b0_half_ctrl", frozenset({"T1"}), (), _b0_t1(B0_DAMPING, arm="half_ctrl"),
+                              {"what": "b0_half's mean-matched control: every drawn cell moved, each entry by "
+                                       "1 + w (F - 1), F b0's factor after its keep-depth constant, w the share "
+                                       "b0_half moves (1/2 for an even count) (count space)", "damping": B0_DAMPING,
+                               "rule": "vec.harness.B0_HALF_CTRL_RULE", "scope": "chamber"},
+                              requires=_b0_applies, derived=("t1_held_flat",)),
     "b0_scope": Candidate("b0_scope", frozenset({"T1"}), _ANY, _b0_t1(0.0),
                           {"what": "T1 chamber-only copy without a shift (B0's composition alone)",
                            "scope": "chamber"}),

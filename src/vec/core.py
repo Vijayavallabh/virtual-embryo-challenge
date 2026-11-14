@@ -193,7 +193,9 @@ def mean_cp10k(C) -> np.ndarray:
 def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarray | None = None,
                   keep_depth: bool = True, seed: Seed = 0,
                   kernel: str = "independent",
-                  repair_record: dict | None = None) -> tuple[sparse.csr_matrix, np.ndarray, np.ndarray]:
+                  repair_record: dict | None = None,
+                  step_cells: np.ndarray | None = None,
+                  step_weight: float | None = None) -> tuple[sparse.csr_matrix, np.ndarray, np.ndarray]:
     """Edit integer counts by per-(type, gene) factors in count space.
 
     C: (cells x genes) counts; factors: (types x genes), > 0; type_index: each cell's row of `factors`; held: genes
@@ -220,7 +222,18 @@ def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarr
 
     repair_record (default None: nothing recorded; T1 arm b0_xt, vec.harness.B0_XT_RULE): a dict that receives, under
     the "exact_total" kernel only, "off" (each cell's d, int64, before any repair or restore) and "moved_cells" (the
-    cells with at least one moved entry, boolean). It records; it draws nothing and changes no output.
+    cells with at least one moved entry, boolean). It records; it draws nothing and changes no output. Under the
+    "multinomial" kernel (T1 arm b0_mn, vec.harness.B0_MN_RULE) it receives "moved_cells" and "total_off" (each cell's
+    realised total minus its expected total, the sum of c f over the cell with f after the depth constant, float64,
+    after the restore rule); with step_weight (T1 arm b0_half_ctrl) also "step_ratio" (the mean, over the entries with
+    a count above zero and f != 1 after the depth constant, of |log g| / |log f| with g the weighted factor below).
+
+    step_cells (default None: every cell; T1 arm b0_half, vec.harness.B0_HALF_RULE): a boolean mask over the cells.
+    The factors and the depth constant are computed as above for every cell; a cell outside the mask then gets f = 1
+    on every entry, so it is left exactly as it is and draws nothing.
+    step_weight (default None: f as above; T1 arm b0_half_ctrl, vec.harness.B0_HALF_CTRL_RULE): w in (0, 1]; each
+    entry's factor f, after the depth constant (nothing recomputed), becomes 1 + w (f - 1); with w = 1/2 that is
+    (1 + f) / 2. Held entries and entries with f == 1 keep 1. Both default to every existing output unchanged.
     """
     C = sparse.csr_matrix(C, dtype=np.int64, copy=True)
     C.sort_indices()
@@ -244,6 +257,20 @@ def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarr
         f = np.where(free, f, 1.0)
     if kernel not in ("independent", "exact_total", "multinomial"):
         raise ValueError(f"unknown kernel {kernel!r}; known: independent, exact_total, multinomial")
+    if step_cells is not None:
+        step_cells = np.asarray(step_cells)
+        if step_cells.dtype != bool or step_cells.shape != (n,):
+            raise ValueError(f"step_cells must be a boolean mask of shape ({n},)")
+        f = np.where(step_cells[row_of], f, 1.0)
+    if step_weight is not None:
+        if not 0.0 < step_weight <= 1.0:
+            raise ValueError(f"step_weight must lie in (0, 1], got {step_weight}")
+        f_full = f
+        f = np.where(f_full != 1.0, 1.0 + step_weight * (f_full - 1.0), 1.0)
+        if repair_record is not None:
+            on = (f_full != 1.0) & (C.data > 0)
+            ratio = np.abs(np.log(f[on])) / np.abs(np.log(f_full[on]))
+            repair_record["step_ratio"] = float(ratio.mean()) if ratio.size else 0.0
     rng = np.random.default_rng(seed)
     new = C.data.copy()
     if kernel == "multinomial":
@@ -255,6 +282,9 @@ def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarr
             wi = w[lo:hi][m]
             s = float(wi.sum())
             new[lo:hi][m] = rng.multinomial(int(np.rint(s)), wi / s)
+        if repair_record is not None:
+            repair_record["moved_cells"] = np.bincount(row_of[moved], minlength=n) > 0
+            expected = np.bincount(row_of, weights=c * f, minlength=n)
     else:
         down, up = f < 1.0, f > 1.0
         new[down] = rng.binomial(C.data[down], f[down])
@@ -269,6 +299,8 @@ def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarr
     if dead.any():
         back = dead[row_of]
         new[back] = C.data[back]
+    if kernel == "multinomial" and repair_record is not None:
+        repair_record["total_off"] = np.bincount(row_of, weights=new, minlength=n) - expected
     out = sparse.csr_matrix((new, C.indices.copy(), C.indptr.copy()), shape=C.shape)
     out.eliminate_zeros()
     return out, scale, dead

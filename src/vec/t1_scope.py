@@ -466,7 +466,9 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
                    logf_by_type: Mapping[str, np.ndarray] | None = None,
                    own_factor_cells: np.ndarray | None = None,
                    kernel: str = "independent",
-                   kernel_record: dict | None = None) -> tuple[ad.AnnData, ShiftReport]:
+                   kernel_record: dict | None = None,
+                   step_cells: np.ndarray | None = None,
+                   step_weight: float | None = None) -> tuple[ad.AnnData, ShiftReport]:
     """Move `target_like` cells by the damped per-type change from `start` to `ref`, in count space.
 
     start, ref: the two stages whose change is the momentum (start is the earlier one; ref is normally the stage the
@@ -506,6 +508,10 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
 
     kernel_record (default None: not passed on, every existing call unchanged; T1 arm b0_xt): handed to `apply_factors`
     as its repair_record (with kernel "exact_total": each cell's d and the cells with a moved entry).
+
+    step_cells, step_weight (default None: not passed on, every existing call unchanged; T1 arms b0_half and
+    b0_half_ctrl): handed to `apply_factors` as they are (a mask over target_like's cells outside which nothing moves;
+    a weight w that makes each factor 1 + w (f - 1) after the depth constant).
 
     Returns a copy of target_like with layers["counts"] edited and X = log1p CP10k of the new counts (float32 CSR),
     and a per-type report.
@@ -581,6 +587,10 @@ def momentum_shift(start: ad.AnnData, ref: ad.AnnData, target_like: ad.AnnData, 
         for j, t in enumerate(own_rows):
             tidx[own_factor_cells & (t_types == t)] = len(types) + j
     record_kw = {} if kernel_record is None else {"repair_record": kernel_record}
+    if step_cells is not None:
+        record_kw["step_cells"] = step_cells
+    if step_weight is not None:
+        record_kw["step_weight"] = step_weight
     new, scale, dead = apply_factors(C, F, tidx, held, keep_depth=keep_depth, seed=seed, kernel=kernel, **record_kw)
     for row in rows:
         m = t_types == row["type"]
@@ -944,7 +954,7 @@ def build_submission(ref: ad.AnnData, board: Board, target_shares: Mapping[str, 
     re-weighting quotas; a type drawn from stand-ins at either stage gets no momentum unless standin_momentum=True.
     held_flat: genes the shift leaves alone (default: the pre-registered list, `held_flat_genes`). shift_kw go to
     `momentum_shift` (eps, min_cells, max_abs_log_factor, keep_depth, standin_momentum; kernel and kernel_record for
-    the T1 arm b0_xt). Without a shift the rows are
+    the T1 arms b0_xt and b0_mn, step_cells for b0_half, step_weight for b0_half_ctrl). Without a shift the rows are
     the released values of the drawn cells. `classify` writes obs["category"] on ref and start. herd: herd each
     category's draw towards its pool's mean expression before any shift (`reweight`). down_prior (T1 tries T12a and
     T12b): after every shift, the strong-null prior of `apply_down_prior` (`DownPrior`) on the cells the directions
