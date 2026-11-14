@@ -13,6 +13,7 @@ import anndata as ad
 import numpy as np
 import pandas as pd
 import pytest
+from scipy import sparse
 
 from vec import harness
 from vec.io import COORD_KEY
@@ -150,7 +151,21 @@ def test_gate_stops_the_run_at_1e5(n51, world):
     world["committed"].write_text(json.dumps(committed_for(TASKS, shift=1e-5)))
     with pytest.raises(SystemExit, match="reproduction gate"):
         run(n51, world)
-    assert not (world["out"] / "n51.json").exists() and not (world["out"] / "n51_e725.json").exists()
+    assert not world["out"].exists() or not any(world["out"].iterdir())  # no part file, not even e75's
+
+
+def test_a_failed_gate_leaves_no_part_file_whatever_the_task_order(n51, world, monkeypatch):
+    """The nine come in all_tasks() order (e75 and e725 after four others): the gate is checked before any part file
+    is written, so a rerun after a failed gate is not refused as an overwrite."""
+    monkeypatch.setattr(n51, "nine", lambda: {"x1": TASKS["x1"], "e75": TASKS["e75"], "e725": TASKS["e725"]})
+    world["committed"].write_text(json.dumps(committed_for(TASKS, shift=1e-5)))
+    with pytest.raises(SystemExit, match="reproduction gate"):
+        run(n51, world)
+    assert not world["out"].exists() or not any(world["out"].iterdir())
+    world["committed"].write_text(json.dumps(committed_for(TASKS)))
+    run(n51, world)
+    rep = json.loads((world["out"] / "n51.json").read_text())
+    assert list(rep["tasks"]) == ["x1", "e75", "e725"]  # the merged report keeps the task list's order
 
 
 def test_gate_passes_below_tolerance(n51, world):
@@ -219,6 +234,57 @@ def test_outputs_hold_no_cell_count(n51, world):
                                                                              for k in r}
     assert keys == {"seed", "build_seed", "xcorr_min", "thin_ratio", "defect", "by",
                     "key", "brackets", "panel_board", "fraction", "n_defect", "draws"}
+
+
+def test_measure_task_equals_a_harness_style_call(n51, tmp_path, monkeypatch):
+    """measure_task (its real measure_draw) against a direct call of the harness's interpolate_clouds and the
+    diagnostic's _measure, on clouds larger than the coupling's anchor count, so that the anchors depend on the seed.
+    The direct call uses another draw size and target_rms: neither changes the coupling or the measures. The task's
+    fraction is 2/3, so passing 1 - fraction anywhere would show."""
+    from vec import t2_build
+
+    n_cells = t2_build.INTERP_N_ANCHOR + 40
+    data = tmp_path / "data"
+    (data / "T2").mkdir(parents=True)
+    for i, s in enumerate(["E6.75", "E7.5"]):
+        _stage(20 + i, n_cells).write_h5ad(data / "T2" / f"{s}.h5ad")
+    monkeypatch.setattr(n51, "_read", lambda path, genes: ad.read_h5ad(path))
+    monkeypatch.setattr(n51, "_genes", lambda t: list(GENES))
+    monkeypatch.setattr(n51, "SEEDS", (0, 3))
+    t = TASKS["e725"]
+    rec = n51.measure_task(t, data, log=lambda *a, **k: None)
+    frac = rec["fraction"]
+    assert frac == pytest.approx(2 / 3)
+    before, after = (ad.read_h5ad(data / t.inputs[r]) for r in ("before", "after"))
+    Cb, Ca, Eb, Ea, lab_b, lab_a = n51.dc._inputs(before, after, GENES)
+    direct = []
+    for s in (0, 3):
+        seed = harness.BUILD_SEED_OFFSET + s
+        res = t2_build.interpolate_clouds(Cb, Ca, Eb, Ea, frac, 1234, seed, target_rms=3.7, with_coupling=True)
+        m = n51.dc._measure(res, frac, lab_b, lab_a, n51.dc._nn_rows(seed, len(Cb), len(Ca)))
+        direct.append({k: float(m[k]) for k in n51.MEASURES})
+    got = [{k: d[k] for k in n51.MEASURES} for d in rec["draws"]]
+    assert got == direct
+    assert direct[0] != direct[1]  # the seed reaches the anchors: the comparison is not blind to the seed
+
+
+def test_read_drops_duplicate_records(n51, tmp_path):
+    """_read loads as run_task does, duplicate records dropped (a copied cell a level down, as vec.prep's tests)."""
+    from vec.prep import log1p_cp10k
+
+    rng = np.random.default_rng(3)
+    n, g = 300, len(GENES)
+    counts = rng.poisson(4.0, size=(n, g)).astype(np.float32)
+    coords = np.c_[rng.uniform(-100, 100, size=(n, 2)), np.repeat([30.0, 15.0, 0.0], n // 3)]
+    counts = np.vstack([counts, counts[[5]]])
+    coords = np.vstack([coords, coords[5] - [0, 0, 15.0]])
+    a = ad.AnnData(X=log1p_cp10k(counts), var=pd.DataFrame(index=GENES))
+    a.layers["counts"] = sparse.csr_matrix(counts)
+    a.obsm[COORD_KEY] = coords
+    a.obs["celltype"] = "V-CM"
+    a.write_h5ad(tmp_path / "E7.5.h5ad")
+    out = n51._read(tmp_path / "E7.5.h5ad", GENES[:5])
+    assert out.n_obs == n and list(out.var_names) == GENES[:5]
 
 
 def test_the_real_measure_runs_on_synthetic_clouds(n51):

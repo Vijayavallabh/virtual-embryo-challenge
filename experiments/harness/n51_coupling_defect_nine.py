@@ -24,15 +24,20 @@ script never touches).
 Target-free: it opens the two brackets of each task and nothing else; a path equal to the task's target is refused
 before it is opened. It scores nothing and writes no cell count of any stage.
 
-Reproduction gate, checked before n51.json and n51.txt are written and before a counted backtest's own part file is
-written: on the two counted backtests (e75, e725), xcorr_min and thin_ratio equal the committed ones in
-results/diag_emb_coupling/diag_emb_coupling.json within GATE_TOL on every seed; otherwise the script stops and
-writes nothing.
+Reproduction gate, checked before n51.json and n51.txt are written and, in a run, before any part file is written (the
+counted backtests among the run's tasks are measured first): on the two counted backtests (e75, e725), xcorr_min and
+thin_ratio equal the committed ones in results/diag_emb_coupling/diag_emb_coupling.json within GATE_TOL on every seed;
+otherwise the script stops and writes nothing.
 
 Refused: a run without row N51 in TRIES.md, a dirty tree, an existing output.
 
   run   [--tasks NAME ...] --out DIR   writes n51_<task>.json per task; without --tasks all nine, then the merge
   merge --out DIR                      applies the gate to the nine part files and writes n51.json and n51.txt
+
+Where it runs. Some builds differ between the two machines (docs/COMPUTE.md, "What reproduces where"), and the flag
+must come from the coupling on the machine that produced the committed arm scores of rows N45-N47: run it on the DGX
+campaign checkout (~/v/vec-campaign, where the campaign's harness runs go; AGENTS.md rule 8), with the BLAS threads
+capped at 16 as below. The gate ties this run to the diagnostic's committed run only, not to the score runs.
 
 Usage (DGX campaign checkout, repo root):
   OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 NUMPY_MADVISE_HUGEPAGE=0 \
@@ -207,15 +212,19 @@ def cmd_run(a) -> None:
         files += [out / "n51.json", out / "n51.txt"]
     commit, clean, _ = _guard(files)
     committed = _committed() if any(n in GATE_TASKS for n in names) else None
-    out.mkdir(parents=True, exist_ok=True)
     cache: dict = {}
-    for n in names:
+    # the counted backtests are measured and gated first, so that a failed gate leaves no part file behind
+    gated = {}
+    for n in [n for n in names if n in GATE_TASKS]:
         rec = measure_task(tasks[n], Path(a.data), cache)
-        if n in GATE_TASKS:
-            worst, why = gate({n: rec}, committed)
-            if why:
-                sys.exit("reproduction gate failed, nothing written for " + n + ": " + "; ".join(why))
-            rec["gate_max_abs_difference"] = worst
+        worst, why = gate({n: rec}, committed)
+        if why:
+            sys.exit("reproduction gate failed, nothing written: " + "; ".join(why))
+        rec["gate_max_abs_difference"] = worst
+        gated[n] = rec
+    out.mkdir(parents=True, exist_ok=True)
+    for n in [*gated, *(n for n in names if n not in GATE_TASKS)]:
+        rec = gated[n] if n in gated else measure_task(tasks[n], Path(a.data), cache)
         _, clean_end, utc = _state()
         rec.update({"task": n, "row": ROW, "commit": commit, "clean": bool(clean and clean_end), "utc": utc})
         part_path(out, n).write_text(json.dumps(rec, indent=1) + "\n")

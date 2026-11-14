@@ -22,11 +22,26 @@ For each arm read:
      V_flag(task) the mean of v over the task's flagged draws, V_rest(task) over its unflagged draws. A task enters the
      flagged summary only with at least MIN_DRAWS flagged draws, the unflagged summary only with at least MIN_DRAWS
      unflagged draws; the tasks left out are named. D, O and S(p) = p D + (1 - p) O for p in nine_tasks.PS, over the
-     DEEP and OTHER tasks that enter (none where no DEEP or no OTHER task enters). Beside them the all-draw values,
-     which must equal row N33's (n37_first_upload_new_arms.price) within CHECK_TOL, or the reading is void;
-  3. the same v on the single draw s = 1 of each task (the upload's seed), with its flag, deciding nothing.
+     DEEP and OTHER tasks that enter (none where no DEEP or no OTHER task enters). Beside them the all-draw values;
+  3. the same v on the single draw s = 1 of each task (the upload's seed), with its flag, deciding nothing;
+  4. each flagged draw of each task with its xcorr_min, thin_ratio and `by` from n51.json and the arm's v there, and per
+     task the number of flagged draws with xcorr_min below 0 and at or above 0 (a sign split, not a kind).
 
-  python -I -B experiments/harness/n52_defect_conditional_readings.py \
+Two checks, either of which voids the reading:
+  committed    for every arm with a committed reading (COMMITTED_READINGS: rows N45, N46 and N47, their
+               first_upload.first_uploads[arm]), the all-draw D, O and S(p) and the per-task V_all equal the committed
+               values within CHECK_TOL: the scores read here are the ones those rows priced. An arm without a committed
+               reading is named as unchecked;
+  arithmetic   the all-draw values equal n37_first_upload_new_arms.price on the same scores within CHECK_TOL. This
+               checks the arithmetic only: it reads the same scores, so it cannot tell whether they are the priced ones.
+
+What the flag is not. It pools draws whose coupling partners sit at random (xcorr_min near 0, as on the committed
+diagnostic's E7.5 backtest) with draws whose partners are mirrored (xcorr_min well below 0, as on its E7.25 backtest's
+flagged draws). On every flagged draw of the committed diagnostic (both backtests and the test pair) both conditions
+fire, so `by` reads "both" there and cannot tell the kinds apart. V_flag is a reading of draws past one of two
+thresholds, not of draws like the upload's.
+
+  uv run --frozen --no-sync python -I -B experiments/harness/n52_defect_conditional_readings.py \
     --n51 experiments/harness/results/n51_coupling_defect_nine/n51.json \
     --out experiments/harness/results/n52_defect_conditional_readings
 """
@@ -54,6 +69,9 @@ ARMS = ("fgw_partial", "fgw_partial_grp", "fgw_damp_m", "fgw_damp_m_grp", "fgw_d
 MIN_DRAWS = 3
 UPLOAD_SEED = 1  # s = 1, the upload's seed
 CHECK_TOL = 1e-9
+COMMITTED_READINGS = tuple(HERE / "results" / f for f in ("n45_embryo_f_readings/n45.json",
+                                                         "n46_embryo_g_readings/n46.json",
+                                                         "n47_embryo_h_readings/n47.json"))
 N51 = HERE / "results" / "n51_coupling_defect_nine" / "n51.json"
 RUNS = (*nt.STORED, HERE / "results" / "e28_nine_tasks" / "tasks", HERE / "results" / "n45_embryo_f_arms" / "tasks",
         HERE / "results" / "n46_embryo_g_arms" / "tasks", HERE / "results" / "n47_embryo_h_arms" / "tasks")
@@ -64,9 +82,10 @@ def run_dirs() -> list[Path]:
     return [*RUNS, *(d for d in OPTIONAL_RUNS if d.is_dir())]
 
 
-def flags(n51: dict, tasks: dict) -> tuple[dict, list[str]]:
-    """Per task name, the flag per seed (a bool array in SEEDS order), and the reasons the flag table is unusable."""
-    out, why = {}, []
+def flags(n51: dict, tasks: dict) -> tuple[dict, dict, list[str]]:
+    """Per task name, the flag per seed (a bool array in SEEDS order) and the draws' n51 records in SEEDS order, and
+    the reasons the flag table is unusable."""
+    out, draws, why = {}, {}, []
     if not n51.get("clean", False):
         why.append("n51.json comes from a dirty tree")
     for n, t in tasks.items():
@@ -82,7 +101,24 @@ def flags(n51: dict, tasks: dict) -> tuple[dict, list[str]]:
             why.append(f"{n}: n51.json's seeds are not {list(SEEDS)}")
             continue
         out[n] = np.array([by_seed[s] for s in SEEDS], dtype=bool)
-    return out, why
+        rec = {d["seed"]: d for d in r["draws"]}
+        draws[n] = [rec[s] for s in SEEDS]
+    return out, draws, why
+
+
+def flag_kinds(flag: dict, draws: dict) -> dict:
+    """Per task, its flagged draws' measures from n51.json, the `by` tally and a sign split of xcorr_min."""
+    out = {}
+    for n, f in flag.items():
+        fl = [{"seed": s, "xcorr_min": float(draws[n][i]["xcorr_min"]), "thin_ratio": float(draws[n][i]["thin_ratio"]),
+               "by": draws[n][i]["by"]} for i, s in enumerate(SEEDS) if f[i]]
+        by: dict = {}
+        for d in fl:
+            by[d["by"]] = by.get(d["by"], 0) + 1
+        out[n] = {"flagged_draws": fl, "by": by,
+                  "xcorr_below_0": sum(d["xcorr_min"] < 0 for d in fl),
+                  "xcorr_at_or_above_0": sum(d["xcorr_min"] >= 0 for d in fl)}
+    return out
 
 
 def _mean(x: np.ndarray) -> float | None:
@@ -99,7 +135,7 @@ def _summary(per: dict, counts: dict) -> dict:
     return {"tasks": enter, "left_out": [n for n in [*nt.DEEP, *nt.OTHER] if n not in enter], "D": d, "O": o, **s}
 
 
-def read_arm(scores: dict, tasks: dict, flag: dict, arm: str) -> dict:
+def read_arm(scores: dict, tasks: dict, flag: dict, arm: str, draws: dict) -> dict:
     names = [*nt.DEEP, *nt.OTHER]
     per_task, v_flag, v_rest, v_all, n_flag, n_rest, upload = {}, {}, {}, {}, {}, {}, {}
     for n in names:
@@ -111,7 +147,10 @@ def read_arm(scores: dict, tasks: dict, flag: dict, arm: str) -> dict:
                        "fgw_mean_flagged": _mean(s[ENTRY][f]), "fgw_mean_unflagged": _mean(s[ENTRY][~f]),
                        "gain_flagged": _mean(gain[f]), "ahead_flagged": int((gain[f] > 0).sum()),
                        "gain_unflagged": _mean(gain[~f]), "ahead_unflagged": int((gain[~f] > 0).sum()),
-                       "V_flag": _mean(v[f]), "V_rest": _mean(v[~f]), "V_all": float(v.mean())}
+                       "V_flag": _mean(v[f]), "V_rest": _mean(v[~f]), "V_all": float(v.mean()),
+                       "flagged_draws": [{"seed": s, "xcorr_min": float(draws[n][i]["xcorr_min"]),
+                                          "thin_ratio": float(draws[n][i]["thin_ratio"]), "v": float(v[i])}
+                                         for i, s in enumerate(SEEDS) if f[i]]}
         v_flag[n], v_rest[n], v_all[n] = per_task[n]["V_flag"], per_task[n]["V_rest"], per_task[n]["V_all"]
         n_flag[n], n_rest[n] = int(f.sum()), int((~f).sum())
         i = list(SEEDS).index(UPLOAD_SEED)
@@ -123,8 +162,56 @@ def read_arm(scores: dict, tasks: dict, flag: dict, arm: str) -> dict:
             "all_draws": all_draws, "upload_seed": upload}
 
 
-def check_all_draws(arms: dict, scores: dict, tasks: dict) -> tuple[float, list[str]]:
-    """The all-draw values against row N33's pricing (n37.price); the largest difference and the failures."""
+def _keys() -> tuple[str, ...]:
+    return ("D", "O", *(f"S{p}" for p in nt.PS))
+
+
+def load_committed(paths=None) -> tuple[dict, list[str]]:
+    """Per arm, the committed first-upload records (source file name, record) of rows N45-N47 (COMMITTED_READINGS
+    unless `paths` is given), and the reasons they cannot be used."""
+    out, why = {}, []
+    for path in map(Path, COMMITTED_READINGS if paths is None else paths):
+        if not path.is_file():
+            why.append(f"{path.name}: no committed reading")
+            continue
+        d = json.loads(path.read_text())
+        fu = d.get("first_upload") or {}
+        if d.get("void", True) or "first_uploads" not in fu:
+            why.append(f"{path.name}: void or without first_upload")
+            continue
+        if (fu.get("base_first"), fu.get("second")) != (ENTRY, SECOND):
+            why.append(f"{path.name}: its pair is ({fu.get('base_first')}, {fu.get('second')}), "
+                       f"not ({ENTRY}, {SECOND})")
+            continue
+        for arm, rec in fu["first_uploads"].items():
+            if rec.get("readable", False):
+                out.setdefault(arm, []).append((path.name, rec))
+    return out, why
+
+
+def check_committed(arms: dict, committed: dict) -> tuple[float, dict, list[str], list[str]]:
+    """The all-draw values and per-task V_all of every arm read against each committed reading of it: the largest
+    difference, the sources checked per arm, the arms without a committed reading, and the failures."""
+    worst, checked, unchecked, why = 0.0, {}, [], []
+    for arm, r in arms.items():
+        refs = committed.get(arm, [])
+        if not refs:
+            unchecked.append(arm)
+            continue
+        for src, ref in refs:
+            pairs = [(r["all_draws"][k], ref[k]) for k in _keys()]
+            pairs += [(r["tasks"][n]["V_all"], ref["tasks"][n]) for n in r["tasks"]]
+            d = max(abs(a - b) for a, b in pairs)
+            worst = max(worst, d)
+            checked.setdefault(arm, []).append(src)
+            if not d <= CHECK_TOL:
+                why.append(f"{arm}: the all-draw values differ from the committed reading {src} by {d:.2e}")
+    return worst, checked, unchecked, why
+
+
+def check_arithmetic(arms: dict, scores: dict, tasks: dict) -> tuple[float, list[str]]:
+    """The all-draw values against n37.price on the same scores, an arithmetic check only (it reads the same scores, so
+    it cannot tell whether they are the priced ones); the largest difference and the failures."""
     worst, why = 0.0, []
     if not arms:
         return worst, why
@@ -134,19 +221,20 @@ def check_all_draws(arms: dict, scores: dict, tasks: dict) -> tuple[float, list[
         if not ref.get("readable", False):
             why.append(f"{arm}: n37.price cannot read it")
             continue
-        pairs = [(r["all_draws"][k], ref[k]) for k in ("D", "O", *(f"S{p}" for p in nt.PS))]
+        pairs = [(r["all_draws"][k], ref[k]) for k in _keys()]
         pairs += [(r["tasks"][n]["V_all"], ref["tasks"][n]) for n in r["tasks"]]
         d = max(abs(a - b) for a, b in pairs)
         worst = max(worst, d)
         if not d <= CHECK_TOL:
-            why.append(f"{arm}: the all-draw values differ from n37.price's by {d:.2e}")
+            why.append(f"{arm}: the all-draw values differ from n37.price's on the same scores by {d:.2e}")
     return worst, why
 
 
-def compute(scores: dict, tasks: dict, n51: dict) -> dict:
-    """The reading on per-seed scores (task key -> arm -> array over SEEDS) and the flag table."""
+def compute(scores: dict, tasks: dict, n51: dict, committed: dict) -> dict:
+    """The reading on per-seed scores (task key -> arm -> array over SEEDS), the flag table and the committed
+    first-upload records per arm (load_committed)."""
     names = [*nt.DEEP, *nt.OTHER]
-    flag, why = flags(n51, tasks)
+    flag, draws, why = flags(n51, tasks)
     for n in names:
         for arm in (ENTRY, SECOND):
             if arm not in scores.get(tasks[n].key, {}):
@@ -155,21 +243,27 @@ def compute(scores: dict, tasks: dict, n51: dict) -> dict:
         return {"void": True, "why": why}
     readable = {a: all(a in scores[tasks[n].key] and np.isfinite(scores[tasks[n].key][a]).all() for n in names)
                 for a in ARMS}
-    arms = {a: read_arm(scores, tasks, flag, a) for a in ARMS if readable[a]}
-    worst, why = check_all_draws(arms, scores, tasks)
-    if why:
-        return {"void": True, "why": why, "check_max_abs_difference": worst}
+    arms = {a: read_arm(scores, tasks, flag, a, draws) for a in ARMS if readable[a]}
+    c_worst, checked, unchecked, c_why = check_committed(arms, committed)
+    a_worst, a_why = check_arithmetic(arms, scores, tasks)
+    checks = {"committed_check_max_abs_difference": c_worst, "committed_checked": checked,
+              "no_committed_reading": unchecked, "arithmetic_check_max_abs_difference": a_worst}
+    if c_why or a_why:
+        return {"void": True, "why": c_why + a_why, **checks}
     return {"void": False, "why": [], "min_draws": MIN_DRAWS, "upload_seed": UPLOAD_SEED,
-            "n_flagged": {n: int(flag[n].sum()) for n in names},
-            "not_read": [a for a in ARMS if not readable[a]], "check_max_abs_difference": worst, "arms": arms}
+            "n_flagged": {n: int(flag[n].sum()) for n in names}, "flag_kinds": flag_kinds(flag, draws),
+            "not_read": [a for a in ARMS if not readable[a]], **checks, "arms": arms}
 
 
 def reading(n51_path: Path, dirs=None) -> dict:
     scores, why, meta = nt._load(run_dirs() if dirs is None else dirs)
     if why:
         return {"void": True, "why": why}
+    committed, why = load_committed()
+    if why:
+        return {"void": True, "why": why}
     n51 = json.loads(Path(n51_path).read_text())
-    res = compute(scores, nt.all_tasks(), n51)
+    res = compute(scores, nt.all_tasks(), n51, committed)
     res["runs"] = meta
     res["n51"] = {"path": str(n51_path), "commit": n51.get("commit"), "clean": n51.get("clean")}
     return res
@@ -186,10 +280,26 @@ def text(res: dict) -> str:
     lines = ["Reading N52: committed per-seed scores split by row N51's flag (the entry's coupling of the misshapen "
              "kind). It decides nothing and puts nothing forward.",
              f"runs {', '.join(res.get('runs', []))}; n51 at {(res.get('n51') or {}).get('commit')}",
-             f"all-draw values against n37.price: largest difference {res['check_max_abs_difference']:.1e} "
-             f"(void above {CHECK_TOL:.0e})",
+             "all-draw values against the committed readings of rows N45-N47: largest difference "
+             f"{res['committed_check_max_abs_difference']:.1e} (void above {CHECK_TOL:.0e}); checked: "
+             + (", ".join(f"{a} ({', '.join(s)})" for a, s in res["committed_checked"].items()) or "none")
+             + f"; no committed reading, unchecked: {', '.join(res['no_committed_reading']) or 'none'}",
+             "arithmetic check (n37.price on the same scores; it cannot tell whether they are the priced ones): "
+             f"largest difference {res['arithmetic_check_max_abs_difference']:.1e}",
              "flagged draws per task: " + ", ".join(f"{n} {res['n_flagged'][n]}" for n in names),
-             f"not read (no scores on all nine tasks): {', '.join(res['not_read']) or 'none'}"]
+             f"not read (no scores on all nine tasks): {', '.join(res['not_read']) or 'none'}",
+             "",
+             "What the flag is not: it pools draws whose partners sit at random (xcorr_min near 0) with mirrored ones "
+             "(xcorr_min well below 0). On every flagged draw of the committed diagnostic (both backtests and the "
+             "test pair) both conditions fire, so `by` reads 'both' and cannot tell the kinds apart; V_flag is a "
+             "reading of draws past one of two thresholds, not of draws like the upload's.",
+             "flagged draws per task (seed xcorr_min thin_ratio); the sign split of xcorr_min is not a kind:"]
+    for n in names:
+        k = res["flag_kinds"][n]
+        lines.append(f"  {n:<6} below 0: {k['xcorr_below_0']}, at or above 0: {k['xcorr_at_or_above_0']}; by: "
+                     + (", ".join(f"{b} {c}" for b, c in k["by"].items()) or "-") + "; "
+                     + (", ".join(f"s{d['seed']} {d['xcorr_min']:+.2f} {d['thin_ratio']:.2f}"
+                                  for d in k["flagged_draws"]) or "none"))
     for arm, r in res["arms"].items():
         lines += ["", f"{arm} (pair value beside {SECOND}, against ({ENTRY}, {SECOND}); board points)",
                   "  task   flagged  fgw flag  fgw rest  gain flag (ahead)  gain rest (ahead)   V_flag  V_rest   V_all"]
@@ -206,6 +316,9 @@ def text(res: dict) -> str:
             if k != "all_draws":
                 row += f"   left out (fewer than {MIN_DRAWS} draws): {', '.join(s['left_out']) or 'none'}"
             lines.append(row)
+        lines.append("  v on each flagged draw: " + "; ".join(
+            f"{n} " + " ".join(f"s{d['seed']} {d['v']:+.2f}" for d in r["tasks"][n]["flagged_draws"])
+            for n in names if r["tasks"][n]["flagged_draws"]))
         lines.append(f"  s = {UPLOAD_SEED} (deciding nothing): " + ", ".join(
             f"{n} {r['upload_seed'][n]['v']:+.2f}{' flagged' if r['upload_seed'][n]['defect'] else ''}"
             for n in names))
