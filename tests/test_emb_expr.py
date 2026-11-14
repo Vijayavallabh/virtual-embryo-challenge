@@ -422,6 +422,8 @@ NEW_AT_POLAR = ("fgw_polar", "fgw_aligned_polar_series",  # campaign/emb-polar (
                 "fgw_polar_frame", "fgw_aligned_polar_frame_series")
 NEW_AT_MIRROR = ("fgw_mirrorfix", "fgw_mirrorfix_series",  # campaign/emb-mirror (tests/test_emb_mirror.py)
                  "fgw_mirrorgate", "fgw_mirrorgate_series")
+NEW_AT_EMB_D = ("fgw_tissue", "fgw_tissue_series",  # campaign/emb-d (tests/test_emb_batch_d.py)
+                "fgw_aligned_series_xt")
 
 
 @pytest.fixture(scope="module")
@@ -442,7 +444,8 @@ def test_the_pins_cover_every_pre_existing_candidate_that_builds_here():
     for roles, pins in PINS_AT_E709655.items():
         t = task(roles)
         here = {n for n, c in CANDIDATES.items() if n != harness.FLOOR and c.applies(t)}
-        assert here - set(pins) <= {"b0", "b0_herd", "fgw_latent", *NEW_AT_E35, *NEW_AT_POLAR, *NEW_AT_MIRROR}
+        assert here - set(pins) <= {"b0", "b0_herd", "fgw_latent", *NEW_AT_E35, *NEW_AT_POLAR, *NEW_AT_MIRROR,
+                                    *NEW_AT_EMB_D}
     c = ctx()
     for name in ("b0", "b0_herd"):
         with pytest.raises(KeyError, match="merged"):

@@ -234,6 +234,30 @@ def apply_factors(C, factors: np.ndarray, type_index: np.ndarray, held: np.ndarr
     return out, scale, dead
 
 
+def _repair_totals(new: np.ndarray, C: sparse.csr_matrix, w: np.ndarray, moved: np.ndarray, row_of: np.ndarray,
+                   rng: np.random.Generator) -> np.ndarray:
+    """apply_factors' "exact_total" repair, in place on `new` (C's data order): per cell, d = (sum of new over the
+    moved entries) - rint(sum of w over them); d > 0 removes d units by one multivariate hypergeometric draw over the
+    moved entries' units, d < 0 adds -d units by one multinomial draw with probabilities w / sum(w) over them. Cells
+    with d == 0 draw nothing; cells in row order. Returns the per-cell d (int64).
+
+    Copied unchanged from campaign/heart-cfix (try H18's repair); on this branch the embryo's exact-total series render
+    calls it (vec.t2_build.series_rendered_expression, kernel="exact_total"), and apply_factors is as it was."""
+    n = C.shape[0]
+    target = np.rint(np.bincount(row_of[moved], weights=w[moved], minlength=n)).astype(np.int64)
+    have = np.bincount(row_of[moved], weights=new[moved], minlength=n).astype(np.int64)
+    d = have - target
+    for i in np.flatnonzero(d):
+        lo, hi = C.indptr[i], C.indptr[i + 1]
+        idx = lo + np.flatnonzero(moved[lo:hi])
+        if d[i] > 0:
+            new[idx] -= rng.multivariate_hypergeometric(new[idx], int(d[i]))
+        else:
+            wi = w[idx]
+            new[idx] += rng.multinomial(int(-d[i]), wi / wi.sum())
+    return d
+
+
 def thin(C, p, rng) -> np.ndarray:
     """Binomial thinning with per-cell keep probability p; a cell that would become empty keeps its counts (dense
     counts, cells x genes). Frozen copy: experiments/t3_decomp/t3_decompose.py `thin`."""

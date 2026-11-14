@@ -1043,7 +1043,7 @@ def _psb_size(ctx: BuildContext) -> Stage:
 def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixture", herd: bool = False,
          move_coupling: str = t2_build.MOVE_COUPLINGS[0], local_perm: bool = False,
          draw: str = t2_build.DRAWS[0], t_mix: float | None = None, moves: str = t2_build.MOVES[0],
-         partners: str = t2_build.PARTNERS[0]) -> Stage:
+         partners: str = t2_build.PARTNERS[0], features: str = t2_build.FEATURES[0]) -> Stage:
     """The T2 embryo pipeline (docs/PLAN.md 4.2): displacement interpolation between the brackets at the target's
     time fraction (vec.t2_build.interpolate_clouds: fused Gromov-Wasserstein coupling, proper rotation, McCann moves,
     a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages. t_pos:
@@ -1060,7 +1060,11 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     affine map of the common frame, translation included, interpolated along the same factors). partners: "coupled"
     (the entry) or "mirror_fixed" (campaign branch campaign/emb-mirror: vec.t2_build.mirror_fixed_partners, FGW's
     partners kept, a partner on the wrong side of the pairs' symmetric direction moved to its mirror image) or
-    "mirror_gated" (fix E2: the same correction, applied to a stage only where its smallest eigenvalue is below 0)."""
+    "mirror_gated" (fix E2: the same correction, applied to a stage only where its smallest eigenvalue is below 0).
+    features (campaign branch campaign/emb-d): "own" (the entry) or "tissue" (the coupling's features formed from each
+    anchor's tissue profile over NBHD_K cells, vec.t2_build.tissue_profiles). expression "series_xt" (campaign branch
+    campaign/emb-d): the series rendering with an exact per-cell total (kernel "exact_total", repair stream
+    [seed, SERIES_XT_STREAM])."""
     t = ctx.task
     before, after = ctx.inputs["before"], ctx.inputs["after"]
     lo, hi = t.role_days["before"], t.role_days["after"]
@@ -1076,7 +1080,8 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
                                       with_partners=expression in ("blend", "latent"),
                                       herd=herd, move_coupling=move_coupling, draw=draw, log_depth=log_depth,
                                       with_coupling=expression == "latent", t_mix=t_mix, moves=moves,
-                                      partners=partners)
+                                      partners=partners, features=features,
+                                      tissue_k=None if features == t2_build.FEATURES[0] else NBHD_K)
     if expression == "mixture":
         X = np.empty((len(res.rows), len(g)), dtype=np.float32)
         X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
@@ -1086,6 +1091,10 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
         X, _ = t2_build.blend_expression(before, after, res, g, frac, [ctx.seed, 7])
     elif expression == "series":  # try E24: the shallower bracket's cells in the deeper bracket's run profile
         X, _ = t2_build.series_rendered_expression(before, after, res, g, frac, [ctx.seed, 7])
+    elif expression == "series_xt":  # campaign/emb-d: the series rendering with an exact per-cell total
+        X, _ = t2_build.series_rendered_expression(before, after, res, g, frac, [ctx.seed, 7],
+                                                   kernel=t2_build.SERIES_KERNELS[1],
+                                                   repair_seed=[ctx.seed, SERIES_XT_STREAM])
     elif expression == "series_wide":  # try E27: the same with the wider neighbourhood of diagnostic N24b
         X, _ = t2_build.series_rendered_expression(before, after, res, g, frac, [ctx.seed, 7],
                                                    k=t2_build.RENDER_K_WIDE)
@@ -1271,6 +1280,31 @@ def _fgw_mirrorgate_series(ctx: BuildContext) -> Stage:
     """Campaign arm (branch campaign/emb-mirror, fix E2): the second upload's expression (series) on FGW's partners
     with the gated mirror correction."""
     return _fgw(ctx, partners="mirror_gated", expression="series")
+
+
+# campaign branch campaign/emb-d: the exact-total repair of the series render draws on a stream of its own, apart from
+# the interpolation's and the expression steps' 0-9 and the swap chain's and the latent step's 20
+SERIES_XT_STREAM = 21
+
+
+def _fgw_tissue(ctx: BuildContext) -> Stage:
+    """Campaign arm (branch campaign/emb-d; the ledger's "Pruned before running": fgw_tissue): the entry with the
+    coupling's features formed from each anchor's tissue profile over NBHD_K cells of its own bracket
+    (vec.t2_build.tissue_profiles). No constant is new."""
+    return _fgw(ctx, features="tissue")
+
+
+def _fgw_tissue_series(ctx: BuildContext) -> Stage:
+    """Campaign arm (branch campaign/emb-d): the second upload's expression (series) on partners coupled on tissue
+    profiles."""
+    return _fgw(ctx, features="tissue", expression="series")
+
+
+def _fgw_aligned_series_xt(ctx: BuildContext) -> Stage:
+    """Campaign arm (branch campaign/emb-d; the ledger's "Pruned before running": exact-total kernels): the second
+    upload as built (fgw_aligned_series) with each rendered cell's panel total and outside count brought to their
+    rounded expected values by try H18's repair (vec.t2_build.series_rendered_expression, kernel="exact_total")."""
+    return _fgw(ctx, move_coupling="aligned", expression="series_xt")
 
 
 def _fgw_aligned_polar_frame_series(ctx: BuildContext) -> Stage:
@@ -1815,6 +1849,26 @@ CANDIDATES = {
                                        {"what": "fgw_mirrorgate with the second upload's expression (series)",
                                         "partners": "mirror_gated", "rule": t2_build.SERIES_RULE,
                                         "alpha": t2_build.INTERP_ALPHA, "k": t2_build.INTERP_K, "scope": "whole"},
+                                       requires=_series_applies),
+    # the embryo batch D (campaign branch campaign/emb-d): coupling on tissue profiles (two arms) and the exact-total
+    # series render (one arm)
+    "fgw_tissue": Candidate("fgw_tissue", frozenset({"T2"}), (), _fgw_tissue,
+                            {"what": "fgw with the coupling's features formed from each anchor's tissue profile (the "
+                                     "mean log1p panel expression over the anchor and its nearest cells in space "
+                                     "within its own bracket, NBHD_K cells, self included)", "features": "tissue",
+                             "tissue_k": NBHD_K, "alpha": t2_build.INTERP_ALPHA, "k": t2_build.INTERP_K,
+                             "scope": "whole"}, requires=_interp),
+    "fgw_tissue_series": Candidate("fgw_tissue_series", frozenset({"T2"}), (), _fgw_tissue_series,
+                                   {"what": "fgw_tissue with the second upload's expression (series)",
+                                    "features": "tissue", "tissue_k": NBHD_K, "rule": t2_build.SERIES_RULE,
+                                    "alpha": t2_build.INTERP_ALPHA, "k": t2_build.INTERP_K, "scope": "whole"},
+                                   requires=_series_applies),
+    "fgw_aligned_series_xt": Candidate("fgw_aligned_series_xt", frozenset({"T2"}), (), _fgw_aligned_series_xt,
+                                       {"what": "fgw_aligned_series (the second upload as built) with each rendered "
+                                                "cell's panel total and outside count brought to their rounded "
+                                                "expected values by try H18's repair",
+                                        "kernel": "exact_total", "rule": t2_build.SERIES_RULE,
+                                        "alpha": t2_build.INTERP_ALPHA, "scope": "whole"},
                                        requires=_series_applies),
     "fgw_aligned_hi": Candidate("fgw_aligned_hi", frozenset({"T2"}), (), _fgw_aligned_hi,
                                 {"what": "fgw_aligned (try E10's aligned moves) with every cell at the deeper "

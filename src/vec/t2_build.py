@@ -67,6 +67,7 @@ from scipy.stats import rankdata
 
 from vec.boards import Board
 from vec.core import (
+    _repair_totals,
     aligned_coupling,
     barycentric,
     coupling_rotation,
@@ -1366,6 +1367,11 @@ MOVES = ("mean", "polar", "polar_frame")
 # "mirror_gated" (fix E2: `mirror_fixed_partners(..., gated=True)`): the same correction, applied to a stage only where
 # that stage's smallest eigenvalue is below 0 (row E10's reading of a mirrored direction); the condition is a sign.
 PARTNERS = ("coupled", "mirror_fixed", "mirror_gated")
+# Which expression the coupling's features are formed from (campaign branch campaign/emb-d; the ledger's "Pruned before
+# running": fgw_tissue): "own" (the entry: each anchor's own log1p panel expression) or "tissue" (`tissue_profiles`:
+# the mean of that expression over the anchor and its nearest cells in space within its own bracket, the number of
+# cells passed in by the caller, the harness's NBHD_K, the scorer's neighbourhood size).
+FEATURES = ("own", "tissue")
 
 
 def pchip_rms(days, rms, target_day: float) -> float:
@@ -1680,6 +1686,25 @@ def mirror_fixed_partners(X, Y, gated: bool = False) -> tuple[np.ndarray, dict]:
     return out, rec
 
 
+def tissue_profiles(coords, expr, rows, k: int) -> np.ndarray:
+    """The tissue profile of each of `rows` of one bracket (`interpolate_clouds(..., features="tissue")`; campaign
+    branch campaign/emb-d): the mean of `expr` (cells x genes) over the cell itself and its k - 1 nearest other cells
+    in `coords` (Euclidean, the bracket's own coordinates), k cells in all, self included. A bracket with fewer than k
+    cells gives the mean over all of them. Where coincident positions tie with the cell itself, the cell is kept and
+    the farthest of the k returned neighbours gives way. Dense float64, rows x genes."""
+    C = np.asarray(coords, dtype=np.float64)
+    E = np.asarray(expr, dtype=np.float64)
+    rows = np.asarray(rows, dtype=np.int64)
+    k = _whole(k, "k", 1)
+    if E.shape[0] != C.shape[0]:
+        raise ValueError("expression must have one row per cell")
+    k = min(k, len(C))
+    idx = np.asarray(cKDTree(C).query(C[rows], k=k)[1], dtype=np.int64).reshape(len(rows), k)
+    lost = ~(idx == rows[:, None]).any(1)
+    idx[lost, -1] = rows[lost]
+    return E[idx].mean(1)
+
+
 def log_panel_counts(a: ad.AnnData, genes) -> np.ndarray:
     """log1p of each cell's total counts over the panel (`layers["counts"]`, whatever its sparsity): the depth the
     midpoint draw's PCs are residualised on (`interpolate_clouds(..., draw="midpoint", log_depth=...)`). The log1p keeps
@@ -1695,7 +1720,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
                        with_coupling: bool = False, draw: str = DRAWS[0],
                        log_depth: tuple[np.ndarray, np.ndarray] | None = None,
                        t_mix: float | None = None, moves: str = MOVES[0],
-                       partners: str = PARTNERS[0]) -> Interpolation:
+                       partners: str = PARTNERS[0], features: str = FEATURES[0],
+                       tissue_k: int | None = None) -> Interpolation:
     """Displacement interpolation between two stages at time fraction t (0 = before, 1 = after).
 
     1. Each cloud is centred and divided by its RMS radius (no PCA axes, so no sign choice).
@@ -1765,6 +1791,16 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     correction applied to a stage only where that stage's smallest eigenvalue is below 0 (`mirror_fixed_partners(...,
     gated=True)`); a stage at 0 or above keeps the entry's partners, and the record's "mirror" also says per stage
     whether it was corrected ("corrected").
+
+    features (campaign branch campaign/emb-d): "own" (default, the entry) forms the coupling's features from the
+    anchors' own log1p panel expression as in step 2. "tissue" forms them from the anchors' tissue profiles
+    (`tissue_profiles`: the mean of the same expression over the anchor and its nearest cells in space within its own
+    bracket, tissue_k cells in all, self included; the mean over the whole bracket if it has fewer cells), which then
+    go into `_joint_pcs` in place of the anchors' own expression, and through it into the FGW coupling and, with
+    move_coupling="aligned", into the aligned coupling. tissue_k is required with "tissue" and refused otherwise (the
+    harness passes its NBHD_K, the scorer's neighbourhood size). Anchors, components, alpha, rotation rule, moves,
+    draws, streams, each drawn cell's expression, scaling and jitter are unchanged; the record gains "features". Left
+    unset, the result is bit-identical to the entry.
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1790,6 +1826,10 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         raise ValueError(f"partners must be one of {PARTNERS}, got {partners!r}")
     if partners != PARTNERS[0] and moves != MOVES[0]:
         raise ValueError(f"partners={partners!r} changes the entry's moves only (moves={MOVES[0]!r})")
+    if features not in FEATURES:
+        raise ValueError(f"features must be one of {FEATURES}, got {features!r}")
+    if (features == FEATURES[0]) != (tissue_k is None):
+        raise ValueError(f"tissue_k is given with features={FEATURES[1]!r} and only then")
     if draw != DRAWS[0]:
         if herd:
             raise ValueError(f"draw={draw!r} and herd both choose the rows; use one of them")
@@ -1807,7 +1847,10 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     rng = np.random.default_rng([seed, 4])
     ib = np.sort(rng.choice(len(Zb), min(n_anchor, len(Zb)), replace=False))
     ia = np.sort(rng.choice(len(Za), min(n_anchor, len(Za)), replace=False))
-    Fb, Fa = _joint_pcs(Eb[ib], Ea[ia], n_pc)
+    if features == FEATURES[0]:
+        Fb, Fa = _joint_pcs(Eb[ib], Ea[ia], n_pc)
+    else:
+        Fb, Fa = _joint_pcs(tissue_profiles(Cb, Eb, ib, tissue_k), tissue_profiles(Ca, Ea, ia, tissue_k), n_pc)
     T = fgw_coupling(Fb, Fa, Zb[ib], Za[ia], alpha, max_iter, emd_max_iter)
     R = coupling_rotation(Zb[ib], Za[ia], T)
     Za_b = Za @ R
@@ -1888,6 +1931,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     if mirror_rec is not None:
         record["partner_fix"] = partners
         record["mirror"] = mirror_rec
+    if features != FEATURES[0]:
+        record["features"] = features
     if midpoint is not None:
         record["draw"] = draw
         record["midpoint"] = {"k_strata": midpoint["k_strata"], "k_anchors": MIDPOINT_K_ANCHORS,
@@ -2153,6 +2198,72 @@ SERIES_RULE = ("series: the shallower bracket's drawn cells are moved by a per-g
                "1). The deeper bracket's cells stay as released")
 
 
+# The series render with an exact per-cell total (campaign branch campaign/emb-d; the ledger's "Pruned before running":
+# exact-total kernels, read on the heart as try H18 and on T1 as try T40): "independent" (the entry: the render's
+# independent draws) or "exact_total" (the same draws, then each rendered cell's panel total brought to its rounded
+# expected value by try H18's repair, vec.core._repair_totals, and its count outside the panel set to its rounded
+# expected value; `series_expected_counts` gives the expectations).
+SERIES_KERNELS = ("independent", "exact_total")
+
+
+def series_expected_counts(C0, phi, P, top, other, ratio: float) -> tuple[np.ndarray, np.ndarray]:
+    """The expected counts of the series render (`series_rendered_expression`) for each rendered cell, given its panel
+    counts C0 (cells x genes), the factor phi, its smoothed proportions P (what apply_gene_factor tops up from), the
+    depth top-up's Poisson means `top` (cells x genes; zeros when ratio <= 1), its counts outside the panel and the
+    depth ratio. Returns (expected panel counts, cells x genes; expected outside counts).
+
+    Derived from the code as it stands. vec.core.apply_gene_factor draws, per gene, Binomial(c, phi) where phi < 1,
+    c + Poisson(P n (phi - 1)) where phi > 1 (n the cell's panel total before the step) and leaves c where phi = 1;
+    then a cell whose draws are all zero keeps its counts c. On that event every draw is 0, so E[out] = E[draw] +
+    c Pr(all draws zero), Pr(all draws zero) the product over genes of (1 - phi)^c (phi < 1), [c = 0] (phi = 1) and
+    [c = 0] exp(-P n (phi - 1)) (phi > 1). The depth top-up adds Poisson(top) to each gene, so its expectation adds
+    top. Outside the panel the render keeps the count o when ratio <= 1 and draws o + Poisson((ratio - 1) o) above,
+    whose expectation is o + (ratio - 1) o."""
+    c = np.asarray(C0, dtype=np.float64)
+    phi = np.asarray(phi, dtype=np.float64)
+    n = c.sum(1, keepdims=True)
+    down, up = phi < 1.0, phi > 1.0
+    mean = c.copy()
+    zero = (c == 0.0).astype(np.float64)
+    mean[:, down] = c[:, down] * phi[down]
+    zero[:, down] = (1.0 - phi[down]) ** c[:, down]
+    lam = np.asarray(P, dtype=np.float64)[:, up] * n * (phi[up] - 1.0)
+    mean[:, up] = c[:, up] + lam
+    zero[:, up] = np.where(c[:, up] == 0.0, np.exp(-lam), 0.0)
+    expected = mean + zero.prod(1, keepdims=True) * c + np.asarray(top, dtype=np.float64)
+    o = np.asarray(other, dtype=np.float64)
+    return expected, (o + (ratio - 1.0) * o if ratio > 1.0 else o)
+
+
+def _exact_series_totals(C1: np.ndarray, oth: np.ndarray, expected: np.ndarray, expected_other: np.ndarray,
+                         rng: np.random.Generator) -> tuple[np.ndarray, np.ndarray, dict]:
+    """The exact-total repair of the series render's drawn cells: each cell's panel total brought to rint of its
+    expected panel total by try H18's repair (vec.core._repair_totals, unchanged) over the genes whose expected count is
+    above 0 (a surplus removed by one multivariate hypergeometric draw over the drawn units, a shortfall added by one
+    multinomial draw at the expected profile), cells in row order on `rng`; its count outside the panel set to rint of
+    its expected value. A gene whose expected count is 0 is drawn 0 and stays 0. Returns the panel counts, the outside
+    counts and the record (the share of cells repaired and the mean absolute size of the repair in counts, panel and
+    outside together, over every rendered cell)."""
+    w_all = np.asarray(expected, dtype=np.float64)
+    mask = w_all > 0.0
+    if (np.asarray(C1)[~mask] != 0).any():
+        raise ValueError("a gene with expected count 0 was drawn above 0")
+    n = len(C1)
+    S = sparse.csr_matrix((np.zeros(int(mask.sum())), np.nonzero(mask)[1], np.r_[0, np.cumsum(mask.sum(1))]),
+                          shape=C1.shape)
+    new = np.asarray(C1, dtype=np.int64)[mask]
+    row_of = np.repeat(np.arange(n), np.diff(S.indptr))
+    d = _repair_totals(new, S, w_all[mask], np.ones(len(new), dtype=bool), row_of, rng)
+    out = np.array(C1, dtype=np.int64)
+    out[mask] = new
+    target_other = np.rint(np.asarray(expected_other, dtype=np.float64))
+    d_other = np.asarray(oth, dtype=np.float64) - target_other
+    size = np.abs(d).astype(np.float64) + np.abs(d_other)
+    rec = {"xt_share_repaired": float((size > 0).mean()) if n else 0.0,
+           "xt_mean_abs_repair": float(size.mean()) if n else 0.0}
+    return out, target_other, rec
+
+
 def series_labels(names_before, groups_before, names_after) -> list[str]:
     """The matched extraembryonic labels of SERIES_RULE, sorted."""
     nb, gb, na = (np.asarray(x).astype(str) for x in (names_before, groups_before, names_after))
@@ -2189,13 +2300,27 @@ def series_factor(C_from: sparse.csr_matrix, names_from, C_to: sparse.csr_matrix
 
 
 def series_rendered_expression(before: ad.AnnData, after: ad.AnnData, interp: Interpolation, genes, t: float,
-                               seed, k: int = RENDER_K) -> tuple[np.ndarray, dict]:
+                               seed, k: int = RENDER_K, kernel: str = SERIES_KERNELS[0],
+                               repair_seed=None) -> tuple[np.ndarray, dict]:
     """The interpolation's cells with the shallower bracket's cells moved into the deeper bracket's run profile
     (SERIES_RULE): expression (cells x genes, float32, log(1 + 1e4 c / N)) and a record. Needs obs["celltype"] and
     obs["group"] on both brackets. k: the neighbours behind each cell's smoothed profile (default RENDER_K; try E27
-    passes RENDER_K_WIDE); with the default the result is what it was before k existed."""
+    passes RENDER_K_WIDE); with the default the result is what it was before k existed.
+
+    kernel (campaign branch campaign/emb-d): "independent" (default, the entry) or "exact_total": after the render's
+    own draws, exactly as above and on the same generator, every rendered cell's panel total is brought to the rounded
+    expected panel total of the render (`series_expected_counts`) by try H18's repair and its count outside the panel
+    is set to its rounded expected value (`_exact_series_totals`). The repair draws on its own generator,
+    repair_seed (required with "exact_total" and refused otherwise; the harness passes [its seed, a stream of its
+    own]). The deeper bracket's cells are not touched; a cell already at its rounded totals is left as drawn. The
+    record gains the share of rendered cells repaired and the mean absolute size of the repair in counts. Left unset,
+    the result is bit-identical to the entry."""
     from vec.core import apply_gene_factor
 
+    if kernel not in SERIES_KERNELS:
+        raise ValueError(f"kernel must be one of {SERIES_KERNELS}, got {kernel!r}")
+    if (kernel == SERIES_KERNELS[0]) != (repair_seed is None):
+        raise ValueError(f"repair_seed is given with kernel={SERIES_KERNELS[1]!r} and only then")
     rng = np.random.default_rng(seed)
     stages = (before, after)
     parts = [_stage_counts(a, genes) for a in stages]
@@ -2220,13 +2345,20 @@ def series_rendered_expression(before: ad.AnnData, after: ad.AnnData, interp: In
         P = S / np.maximum(S.sum(1, keepdims=True), 1e-12)  # the cell's smoothed proportions over the panel
         C0 = np.asarray(C[rows].toarray(), dtype=np.int32)
         C1 = apply_gene_factor(C0, phi, P, rng).astype(np.int64)
+        top = None
         if ratio > 1.0:
             Sp = S * phi
             Sp *= (S.sum(1) / np.maximum(Sp.sum(1), 1e-12))[:, None]  # the moved profile at the cell's panel share
-            C1 = C1 + rng.poisson(Sp * ((ratio - 1.0) * lib[rows])[:, None])
+            top = Sp * ((ratio - 1.0) * lib[rows])[:, None]
+            C1 = C1 + rng.poisson(top)
             oth = other[rows] + rng.poisson((ratio - 1.0) * other[rows])
         else:
             oth = other[rows]
+        if kernel != SERIES_KERNELS[0]:
+            expected, expected_other = series_expected_counts(C0, phi, P, np.zeros(C0.shape) if top is None else top,
+                                                              other[rows], ratio)
+            C1, oth, xt = _exact_series_totals(C1, oth, expected, expected_other, np.random.default_rng(repair_seed))
+            rec.update(xt)
         Cn = sparse.csr_matrix(C1)
         ln = np.asarray(Cn.sum(1)).ravel() + oth
         out[m_lo] = _log_normalise(Cn, ln)
