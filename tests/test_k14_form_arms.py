@@ -35,7 +35,7 @@ def _prep(rng, phi_raw=None, y=None):
     y = rng.normal(0, 0.5, t9.G) if y is None else y
     den = rng.gamma(2.0, size=t9.G)
     phi_raw = eb.finalize(y, den, CLIP) if phi_raw is None else phi_raw
-    return {"phi_raw": phi_raw, "phi_half_ctrl": k14.half_ctrl_factor(y, den, CLIP), "clip": CLIP}
+    return {"phi_raw": phi_raw, "phi_half_ctrl": k14.half_ctrl_factor(phi_raw), "clip": CLIP}
 
 
 def _counts(bs, ref, n, seed):
@@ -98,20 +98,84 @@ def test_the_mask_of_all_cells_gives_raw_bit_for_bit_at_the_built_cells(bs):
 
 
 # ----------------------------------------------------------------------------------------------- the control
-def test_the_controls_factor_is_finalize_of_half_the_log_ratio():
+def test_the_controls_factor_is_one_plus_phi_raw_over_two_within_the_clip_range():
     rng = np.random.default_rng(3)
-    y = rng.normal(0, 0.3, 300)  # small enough that no gene reaches the clip
-    y[:5] = 0.0
+    y = rng.normal(0, 1.5, 300)  # wide enough that genes reach both clip bounds
     den = rng.gamma(2.0, size=300)
-    ctrl = k14.half_ctrl_factor(y, den, CLIP)
     raw = eb.finalize(y, den, CLIP)
-    assert np.array_equal(ctrl, eb.finalize(y / 2, den, CLIP))
-    assert ((CLIP[0] < raw) & (raw < CLIP[1])).all() and ((CLIP[0] < ctrl) & (ctrl < CLIP[1])).all()
-    assert np.all(ctrl[y != 0] != raw[y != 0])
-    # (finalize's rescale moves a gene with y = 0 as well; and at the clip a gene can take the same value in both)
-    big = np.array([8.0, -8.0, 0.1, -0.1])
-    d4 = np.array([0.01, 1.0, 1.0, 1.0])
-    assert eb.finalize(big, d4, CLIP)[0] == k14.half_ctrl_factor(big, d4, CLIP)[0] == CLIP[1]
+    raw[:5] = 1.0
+    assert (raw == CLIP[0]).any() and (raw == CLIP[1]).any()
+    ctrl = k14.half_ctrl_factor(raw)
+    assert ctrl.dtype == np.float64 and np.array_equal(ctrl, (1.0 + raw) / 2.0)
+    assert ((CLIP[0] <= ctrl) & (ctrl <= CLIP[1])).all()
+    assert ctrl.min() == (1.0 + CLIP[0]) / 2.0 and ctrl.max() == (1.0 + CLIP[1]) / 2.0
+    # the control differs from raw wherever phi_raw is not 1 and equals it where phi_raw is exactly 1
+    assert np.all(ctrl[raw != 1.0] != raw[raw != 1.0]) and np.all(ctrl[raw == 1.0] == 1.0)
+
+
+def _mean_case():
+    """Genes at both clip bounds, moved down, moved up, and at exactly 1. den puts all its weight on the gene at 1, so
+    finalize's rescale is exactly 1 and phi_raw = clip(exp(y)): the old control finalize(y / 2) = clip(sqrt(exp(y)))."""
+    phi_in = np.array([0.1, 0.3, 0.7, 1.0, 1.0, 1.5, 3.0, 10.0])  # 0.1 and 10 land on the clip bounds
+    y = np.log(phi_in)
+    den = np.zeros(len(y))
+    den[3] = 1.0
+    phi_raw = eb.finalize(y, den, CLIP)
+    old = eb.finalize(y / 2, den, CLIP)
+    rng = np.random.default_rng(31)
+    n = 200
+    C = rng.poisson(6.0, size=(n, len(y))).astype(np.int32)
+    C[:, 3] = np.maximum(C[:, 3], 1)  # every cell keeps a count at a gene with factor 1: no cell is ever emptied
+    P = rng.dirichlet(np.ones(len(y)), size=n).astype(np.float32)
+    return phi_raw, old, C, P
+
+
+def _per_gene_means(C, phi, P, N, mask_of=None):
+    """Per seed, the mean over the cells of each gene's built count: every cell through apply_gene_factor with phi,
+    or (mask_of given) only the cells of mask_of(seed), the others as drawn."""
+    t3d = harness._t3_head().t3d
+    out = np.empty((N, C.shape[1]))
+    for s in range(N):
+        rng = np.random.default_rng([s, 3])
+        if mask_of is None:
+            b = t3d.apply_gene_factor(C, phi, P, rng)
+        else:
+            m = mask_of(s)
+            b = C.copy()
+            b[m] = t3d.apply_gene_factor(C[m], phi, P[m], rng)
+        out[s] = b.mean(0)
+    return out
+
+
+def test_the_controls_mean_matches_raw_halfs_mean_per_gene_and_the_old_controls_does_not():
+    phi_raw, old, C, P = _mean_case()
+    assert phi_raw[0] == CLIP[0] and phi_raw[-1] == CLIP[1] and np.all(phi_raw[3:5] == 1.0)
+    N = 1500
+    half = _per_gene_means(C, phi_raw, P, N, mask_of=lambda s: k14.half_mask(len(C), s))
+    ctrl = _per_gene_means(C, k14.half_ctrl_factor(phi_raw), P, N)
+    prev = _per_gene_means(C, old, P, N)
+    se = np.sqrt(half.var(0) / N + ctrl.var(0) / N)
+    # tolerance: 5 Monte Carlo standard errors of the difference, plus 1e-9 for genes that never vary (factor 1)
+    assert np.all(np.abs(half.mean(0) - ctrl.mean(0)) <= 5 * se + 1e-9)
+    assert np.array_equal(half[:, 3:5], ctrl[:, 3:5])  # genes at exactly 1: as drawn in both
+    # why the control changed: the old control finalize(y / 2) misses the mixture's mean on the genes moved more than
+    # twofold, by more than 5 Monte Carlo standard errors of the difference
+    big = (phi_raw > 2.0) | (phi_raw < 0.5)
+    assert big.sum() == 4
+    se_old = np.sqrt(half.var(0) / N + prev.var(0) / N)
+    gap = prev.mean(0) - half.mean(0)
+    assert np.all(np.abs(gap[big]) > 5 * se_old[big])
+
+
+def test_the_controls_built_counts_differ_from_raws_where_phi_raw_is_not_1_and_equal_them_where_it_is(bs):
+    phi_raw, _, C, P = _mean_case()
+    t3d = bs.t3d
+    g = np.random.default_rng(8)
+    raw = t3d.apply_gene_factor(C, phi_raw, P, np.random.default_rng(8))
+    ctrl = t3d.apply_gene_factor(C, k14.half_ctrl_factor(phi_raw), P, g)
+    one = phi_raw == 1.0
+    assert np.array_equal(ctrl[:, one], raw[:, one]) and np.array_equal(ctrl[:, one], C[:, one])
+    assert np.all((ctrl[:, ~one] != raw[:, ~one]).any(0))
 
 
 def test_the_control_is_built_through_k9s_raw_path_and_its_check_counts_the_changed_cells(bs):
@@ -263,6 +327,7 @@ def test_end_to_end_raw_is_k9s_raw_and_every_arm_is_built(world, monkeypatch):
     assert not g["refused"]
     prep = k14._PREP["fold"]
     assert np.array_equal(prep["phi_raw"], k9._PREP["fold"]["phi_raw"])
+    assert np.array_equal(prep["phi_half_ctrl"], (1.0 + prep["phi_raw"]) / 2.0)
     assert np.array_equal(out["raw"].X, k9raw.X) and np.array_equal(out["raw"].coords, k9raw.coords)
     for a in k14.ARMS[1:]:
         assert not np.array_equal(out[a].X, out["raw"].X), a
@@ -320,6 +385,8 @@ def test_the_reading_supported(tmp_path):
     assert all(res["arms"][a]["supported"] and res["arms"][a]["verdict"].startswith("SUPPORTED") for a in k14.READ)
     txt = k14.text(res)
     assert "NOT the adoption rule" in txt and "k14 check: task=x1 arm=raw_xt share=0.5000 mean_abs_off=1.0000" in txt
+    assert res["control"] == {"raw_half_ctrl": k14.HALF_CTRL_RULE} and "(1 + phi_raw) / 2" in txt
+    assert "exactly as far as raw_half's mixture does" in txt
 
 
 def test_the_reading_closed_by_x2(tmp_path):

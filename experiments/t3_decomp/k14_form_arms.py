@@ -15,9 +15,14 @@ Arms (K9's stream, the same drawn cells in every arm; build seed = the harness's
                  uniformly random subset of floor(n/2) of the n drawn cells (half_mask: not stratified, drawn on the
                  stream t3d.stable_rng(build seed, HALF_STREAM)); the other half keep the reference's counts as drawn.
                  With the mask of all cells it is raw bit for bit.
-  raw_half_ctrl  its control: every drawn cell moved through K9's raw path by eb_factor.finalize(y / 2), y the factor's
-                 log ratio as raw_c3 takes it (k11.section_estimates). It asks whether a gain comes from having two
-                 kinds of cells in one file or only from a smaller shift.
+  raw_half_ctrl  its control, mean-matched (fix brief J2): every drawn cell moved through K9's raw path (one construct
+                 call, as raw) by phi_ctrl = (1 + phi_raw) / 2 elementwise, phi_raw the fold's raw factor exactly as raw
+                 uses it (K9's, after its own rescale and clip), with no finalize. raw_half's expected count of an entry
+                 is exactly that of (1 + phi_raw) / 2 applied to every cell (thinning: c (1 + phi) / 2; top-up:
+                 c + P n ((1 + phi) / 2 - 1)), so the control moves each gene's expected count exactly as far as the
+                 mixture does, in every cell, without two kinds of cells in the file. It asks whether a gain comes from
+                 having two kinds of cells in one file or only from a smaller shift. (9ec3aba's control,
+                 eb_factor.finalize(y / 2), matched the mixture's mean only to first order.)
   raw_xt         try H18's form: the residual-arm path with phi_raw applied to all drawn cells in one call (raw's build
                  exactly), then per cell the total over the entries the step moves brought to its rounded expected total
                  by H18's repair (campaign/heart-cfix vec.core._repair_totals, its logic unchanged) on the stream
@@ -93,7 +98,9 @@ CHECK_KEYS = ("share", "mean_abs_off")
 HALF_RULE = ("phi_raw applied through t3_decompose.apply_gene_factor (continuing K9's build generator) to a uniformly "
              "random floor(n/2) of the n drawn cells, drawn by t3d.stable_rng(build seed, HALF_STREAM); the other "
              "cells keep the reference's counts as drawn (try H16's form)")
-HALF_CTRL_RULE = "every drawn cell through K9's raw path with eb_factor.finalize(y / 2), y raw_c3's log ratio"
+HALF_CTRL_RULE = ("every drawn cell through K9's raw path with phi_ctrl = (1 + phi_raw) / 2 elementwise (no finalize): "
+                  "it moves each gene's expected count exactly as far as raw_half's mixture does, in every cell, "
+                  "without two kinds of cells in the file")
 XT_RULE = ("raw's build, then per cell the total over the moved entries brought to rint of its expected total by try "
            "H18's repair (hypergeometric removal over the drawn units, multinomial addition at the expected profile) "
            "on t3d.stable_rng(build seed, XT_STREAM)")
@@ -113,9 +120,13 @@ def half_mask(n: int, seed: int) -> np.ndarray:
     return out
 
 
-def half_ctrl_factor(y: np.ndarray, den: np.ndarray, clip: tuple[float, float]) -> np.ndarray:
-    """raw_half_ctrl's factor: eb_factor.finalize(y / 2)."""
-    return harness._t3_eb().finalize(np.asarray(y, dtype=np.float64) / 2.0, den, clip)
+def half_ctrl_factor(phi_raw: np.ndarray) -> np.ndarray:
+    """raw_half_ctrl's factor: (1 + phi_raw) / 2 elementwise, phi_raw the fold's raw factor exactly as raw uses it
+    (K9's, after its own rescale and clip). Its expected count per entry is raw_half's: thinning gives c (1 + phi) / 2
+    and top-up c + P n ((1 + phi) / 2 - 1), the mean of moving half the cells by phi and leaving the other half as
+    drawn. No finalize is applied: a second rescale would break that match, and the factor lies inside the clip range
+    whenever phi_raw does (the clip range holds 1, and (1 + phi) / 2 lies between 1 and phi)."""
+    return (1.0 + np.asarray(phi_raw, dtype=np.float64)) / 2.0
 
 
 # ------------------------------------------------------------------------------------------------ the kernels
@@ -259,8 +270,8 @@ def arm_built(bs, ref, n: int, seed: int, f, arm: str, prep: dict, mask: np.ndar
 
 
 def _prepared(ctx) -> dict:
-    """The fold's raw factor (K9's), raw_half_ctrl's factor and the reference in t3_decompose's form, once per loaded
-    fold."""
+    """The fold's raw factor (K9's), raw_half_ctrl's factor ((1 + phi_raw) / 2) and the reference in t3_decompose's
+    form, once per loaded fold."""
     roles = sorted(ctx.inputs)
     objs = tuple(ctx.inputs[r] for r in roles)
     hit = _PREP.get("fold")
@@ -277,14 +288,15 @@ def _prepared(ctx) -> dict:
         y, _, den, _ = k11.section_estimates(frame.C, frame.lab, frame.block, frame.mu_wt, frame.weights, frame.mask,
                                              frame.eps)
         clip = tuple(float(c) for c in rules["components"]["factor"]["clip"])
-        phi_ctrl = half_ctrl_factor(y, den, clip)
+        phi_ctrl = half_ctrl_factor(phi_raw)
         full = harness._t3_eb().finalize(y, den, clip)
         _PREP.clear()
         hit = _PREP["fold"] = {
             "key": ctx.task.key, "inputs": objs, "phi_raw": phi_raw, "phi_half_ctrl": phi_ctrl, "clip": clip,
             "ref": harness.t3_reference(pool, fold["reference_preset"], rules),
             "record": {"fold": FOLD_OF[ctx.task.key], "reference": ctx.task.role_stems[ref_role],
-                       # how far finalize(y) is from phi_raw (the control halves y, so it presumes finalize(y) is raw)
+                       # how far finalize(y) is from phi_raw (kept from 9ec3aba as a record; the control no longer
+                       # uses y)
                        "max_abs_log_finalize_y_over_phi_raw": float(np.max(np.abs(np.log(full / phi_raw)))),
                        "streams": {HALF: HALF_STREAM, XT: XT_STREAM, MN: MN_STREAM}}}
     return hit
@@ -407,7 +419,7 @@ def reading(runs: Path, k9_dir: Path = RESULTS_K9) -> dict:
             "arms": {a: {"supported": bool(ok), "checks": checks,
                          "verdict": f"SUPPORTED: {NEXT}" if ok else "CLOSED: no request"}
                      for a, (ok, checks) in decided.items()},
-            "label": LABEL}
+            "label": LABEL, "control": {HALF_CTRL: HALF_CTRL_RULE}}
 
 
 NEXT = ("read next on the first-choice file's own form (as K10 did) before any request; no request goes on this "
@@ -421,7 +433,8 @@ def text(res: dict) -> str:
         return "VOID: " + "; ".join(res["why"]) + "\n"
     lines = [f"Tries K14 (commit {res['commit']}):"]
     lines += [f"  {a} {v['verdict']}" for a, v in res["arms"].items()]
-    lines += [res["label"], f"raw against K9's committed raw scores: {res['k9_reproduction']}"]
+    lines += [res["label"], f"{HALF_CTRL}, the control of {HALF}: {HALF_CTRL_RULE}.",
+              f"raw against K9's committed raw scores: {res['k9_reproduction']}"]
     for a, v in res["arms"].items():
         lines.append(f"Checks {a}: " + "; ".join(f"{k} {'yes' if x else 'no'}" for k, x in v["checks"].items()))
     lines.append("Reported, deciding nothing:")
