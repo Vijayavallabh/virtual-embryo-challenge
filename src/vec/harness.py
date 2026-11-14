@@ -913,8 +913,35 @@ B0_TREND_H_RULE = ("b0_trend's least-squares slope carried over the prediction h
                    "day - reference day) x slope; a lineage seen at only the last two stages gets B0's own factor "
                    "times (target day - reference day) / (reference day - start day), so every shifted lineage is "
                    "carried over half the horizon at its own rate; everything else is b0_trend's")
-TREND_FORMS = ("ols", "eb", "ts", "horizon")
+# Heart arm b0_trend_quad (branch campaign/heart-e; specification fixed by the main session before any code): b0_trend
+# with the least-squares line replaced by the least-squares quadratic. Harness candidate only; the test builders are
+# untouched.
+B0_TREND_QUAD_RULE = ("b0_trend with each lineage's per-gene log factor the change of the least-squares polynomial of "
+                      "degree 2 of log(mean CP10k + eps) on the stage day over the lineage's usable stages (exact "
+                      "through three), q(t_ref + b) - q(t_ref), from the reference stage's day t_ref over b0_trend's "
+                      "own budget b = B0_DAMPING x the last gap, instead of the line's slope x b; the fit is on days "
+                      "centred at their mean; a lineage seen at only the last two stages keeps B0's own factor; "
+                      "everything else is b0_trend's")
+TREND_FORMS = ("ols", "eb", "ts", "horizon", "quad")
 TREND_EB_BINS = 10
+
+
+def trend_quad_log_factor(log_means: Sequence[np.ndarray], days: Sequence[float], budget: float,
+                          day_ref: float) -> np.ndarray:
+    """Arm b0_trend_quad's per-gene log factor: q(day_ref + budget) - q(day_ref), q the least-squares polynomial of
+    degree 2 of y_k (one array per stage, n >= 3 stages; exact interpolation at n = 3) on day_k. The fit is on
+    x = day - mean(days) (numpy.linalg.lstsq on the columns 1, x, x^2), so with q = c0 + c1 x + c2 x^2 and
+    x_ref = day_ref - mean(days) the change is c1 budget + c2 budget (2 x_ref + budget)."""
+    d = np.asarray(days, dtype=np.float64)
+    Y = np.vstack([np.asarray(y, dtype=np.float64) for y in log_means])
+    if len(d) < 3:
+        raise ValueError("the quadratic needs at least three usable stages")
+    dbar = float(d.mean())
+    x = d - dbar
+    A = np.column_stack([np.ones_like(x), x, x * x])
+    coef, *_ = np.linalg.lstsq(A, Y, rcond=None)
+    x_ref = float(day_ref) - dbar
+    return coef[1] * budget + coef[2] * (budget * (2.0 * x_ref + budget))
 
 
 def trend_eb_weights(log_means: Sequence[np.ndarray], days: Sequence[float],
@@ -975,7 +1002,10 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
     form (heart tries H13e, H13r, H13h; default "ols", b0_trend's own path and record, unchanged): which per-gene log
     factor a lineage with three or more usable stages gets. "eb": the OLS factor times its bin's shrinkage weight
     (`trend_eb_weights`, B0_TREND_EB_RULE); "ts": the budget x the Theil-Sen slope (`theil_sen_slope`,
-    B0_TREND_TS_RULE); "horizon": the OLS slope x B0_DAMPING x (target_day - day_ref), and a lineage usable at only
+    B0_TREND_TS_RULE); "quad" (arm b0_trend_quad, B0_TREND_QUAD_RULE): q(day_ref + budget) - q(day_ref) of the
+    least-squares quadratic over the usable stages (`trend_quad_log_factor`), the record then naming that rule and
+    adding only the per-lineage boolean "quad" (whether the lineage took the quadratic); "horizon": the OLS slope x
+    B0_DAMPING x (target_day - day_ref), and a lineage usable at only
     start and the reference is in the mapping with B0's own factor x (target_day - day_ref) / (day_ref - day_start)
     (B0_TREND_H_RULE; the target's day is a known part of the task's geometry; the target stage is never read). With a
     form other than "ols" the record names the arm's rule and adds, per lineage, the arm's comparison with the OLS
@@ -1037,7 +1067,11 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
                          "norm_ratio_ols": float(np.linalg.norm(logf)) / n_ols if n_ols > 0 else float("nan")}
             elif form == "horizon":
                 logf = trend_log_factor(ys, ds, budget_h)
+            elif form == "quad":
+                logf = trend_quad_log_factor(ys, ds, budget, float(t.role_days[ref_role]))
             out[lin], kept = logf, False
+        if form == "quad":
+            extra = {"quad": not kept}
         n_own = float(np.linalg.norm(own))
         lineages.append({"lineage": lin, "stages": [r for r, _ in usable], "days": [d for _, d in usable],
                          "n_cells": [int(len(rows[r])) for r, _ in usable], "own_factor": kept,
@@ -1052,7 +1086,9 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
            "budget_days": budget, "eps": eps, "min_cells": min_cells, "n_trend": len(out), "lineages": lineages,
            "median_cosine": float(np.nanmedian(cos)) if lineages else float("nan"),
            "median_norm_ratio": float(np.nanmedian(ratio)) if lineages else float("nan")}
-    if form != "ols":
+    if form == "quad":  # the record gains only the per-lineage "quad" flag; "rule" names the arm's rule
+        rec["rule"] = "vec.harness.B0_TREND_QUAD_RULE"
+    elif form != "ols":
         rec["rule"] = {"eb": "vec.harness.B0_TREND_EB_RULE", "ts": "vec.harness.B0_TREND_TS_RULE",
                        "horizon": "vec.harness.B0_TREND_H_RULE"}[form]
         rec["form"] = form
@@ -1109,7 +1145,8 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
     lineage's log factor is its least-squares trend over every input stage (`b0_trend_factors`, B0_TREND_RULE); the
     draw, typing, stream and everything else are B0's. No try read it with depth, herd or cfm, so those raise.
     trend_record: a dict that receives b0_trend_factors' record (with trend only; the build record's source).
-    trend_form (with trend only; heart tries H13e, H13r, H13h): b0_trend_factors' `form`, default "ols" (b0_trend).
+    trend_form (with trend only; heart tries H13e, H13r, H13h, arm b0_trend_quad): b0_trend_factors' `form`, default
+    "ols" (b0_trend).
     trend_mix (with trend only; arm b0_trend_mix, B0_TREND_MIX_RULE): the drawn cells at positions below n // 2 of the
     seeded draw order get B0's own factor (momentum_shift's own_factor_cells), the rest the trend's.
     kernel (with trend only; arms b0_trend_xt, B0_TREND_XT_RULE, kernel "exact_total", and b0_trend_mn,
@@ -1330,8 +1367,8 @@ TREND_ARM_RECORDS: dict[str, dict] = {}
 
 
 def _b0_trend_arm(name: str, form: str):
-    """Heart tries H13e, H13r, H13h: `_b0_t2` with trend=True and the arm's trend form; the record goes to
-    TREND_ARM_RECORDS[name]."""
+    """Heart tries H13e, H13r, H13h and arm b0_trend_quad: `_b0_t2` with trend=True and the arm's trend form; the
+    record goes to TREND_ARM_RECORDS[name]."""
 
     def build(ctx: BuildContext) -> Stage:
         rec: dict = {}
@@ -2009,6 +2046,13 @@ CANDIDATES = {
                                      "(target day - reference day)) instead of the last gap (heart only; count space)",
                              "damping": B0_DAMPING, "rule": "vec.harness.B0_TREND_H_RULE", "scope": "chamber"},
                             requires=_heart_extrap_with_start),
+    # heart arm b0_trend_quad (campaign/heart-e): b0_trend with the least-squares quadratic in place of its line
+    "b0_trend_quad": Candidate("b0_trend_quad", frozenset({"T2"}), (), _b0_trend_arm("b0_trend_quad", "quad"),
+                               {"what": "b0_trend with each lineage's least-squares line replaced by the least-squares "
+                                        "quadratic over its usable stages, read as its change from the reference day "
+                                        "over b0_trend's budget (heart only; count space)", "damping": B0_DAMPING,
+                                "rule": "vec.harness.B0_TREND_QUAD_RULE", "scope": "chamber"},
+                               requires=_heart_extrap_with_start),
     # heart mixture and kernel batch (campaign/heart-c): b0_trend with one idea each, lines pruned before running
     "b0_trend_mix": Candidate("b0_trend_mix", frozenset({"T2"}), (), _b0_trend_idea("b0_trend_mix", trend_mix=True),
                               {"what": "b0_trend with a within-upload momentum mixture: the first half of the drawn "
