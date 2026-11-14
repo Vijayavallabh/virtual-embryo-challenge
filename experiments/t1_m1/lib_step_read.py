@@ -58,10 +58,12 @@ in experiments/t1_m1/results/t44_m1_step/tasks/ (the chamber cut's files), each 
 counts, and their contamination counts, add up to the pooled truth's; on every truth no scaled arm scores exactly as
 m1_r_gmom on every seed, m1_r_gmom_x2_perm does not score exactly as m1_r_gmom_x2 on every seed, m1_r_gmom_perm does
 not score exactly as m1_r_gmom on every seed (scores compared, not the whole record), and neither placebo's recorded
-sha256 equals its real arm's on every seed; every row records every arm's sparsity and the scored log factors.
+sha256 equals its real arm's on every seed; every row records every arm's sparsity and the scored log factors; every
+row records a sha256 (a string) for every arm; every row's scored log factors hold the same groups as the first row's,
+each with exactly the four arms m1_r_gmom, m1_r_gmom_x2, m1_r_gmom_perm and m1_r_gmom_x2_perm.
 The test on one truth is the adoption rule's single-task test (vec.adoption.keep_change on that truth alone): a mean
 paired gain above 0.3 with at least 8 of 10 seeds ahead ("ahead"); "behind" is the same with the sign reversed.
-The statement's quantity, per truth and seed: (m1_r_gmom_x2 - m1_r_gmom) - (m1_r_gmom_x2_perm - m1_r_gmom_perm), the
+The statement's quantity D, per truth and seed: (m1_r_gmom_x2 - m1_r_gmom) - (m1_r_gmom_x2_perm - m1_r_gmom_perm), the
 larger step's extra gain net of the same extra step along the permuted directions, with the single-task test on that
 paired difference. Gate per truth: where m1_r_gmom_x2 is not ahead of m1_r_gmom by the single-task test, the truth
 reads "no larger-step gain on this truth" and does not count as ahead; otherwise it counts as ahead when the paired
@@ -70,8 +72,9 @@ and neither lib1 nor lib2 does; "x2 ahead on both portion libraries" if lib1 and
 "; ahead on lib3 too" or "; not ahead on lib3"; otherwise "other". The pooled truth's gate and paired difference are
 reported and carry no statement. The labels say what is measured, not where a gain comes from. The text gives, for
 each truth, the gate (m1_r_gmom_x2 against m1_r_gmom), the paired difference, and, reported and not read,
-m1_r_gmom_x2 against m1_r_gmom_x2_perm and m1_r_gmom against m1_r_gmom_perm: each with the gain, the gain over its
-per-seed sd (ddof 1), seeds ahead, per-seed range, the part on the two de terms and the part on mmd_u and the variogram
+m1_r_gmom_x2 against m1_r_gmom_x2_perm and m1_r_gmom against m1_r_gmom_perm: each with the gain, its per-seed sd
+(ddof 1), the gain over that sd, seeds ahead, per-seed range, the part on the two de terms and the part on mmd_u and the
+variogram
 (board points: 100 x the board's weight x the mean skill difference, a NaN skill counting 0 as on the server; for the
 paired difference the real pair's parts minus the placebo pair's), and, for the arm comparisons, each scored metric's
 raw mean difference beside its skill difference. Where the response turns, per truth: the multiplier with the highest
@@ -83,8 +86,11 @@ neighbour gain is also given per 0.1 of fraction. Reported: per truth every arm'
 mean paired difference from m1_r_gmom with seeds ahead, per-seed range and sd, every metric's mean skill and raw
 difference, every arm's mean over seeds of the scored zero share and detected scored genes per cell, per group the
 mean over seeds of the mean absolute log factor on the scored genes for each real arm and placebo, each truth's
-contamination share (a fraction), and whether the predictions' sha256 agree across the truths. The read puts nothing
-forward by itself.
+contamination share (a fraction), and whether the predictions' sha256 agree across the truths. Printed beside the
+paired difference, per truth, and read by nothing: the sparsity difference in differences, the mean over seeds of
+(zero share of m1_r_gmom_x2 - zero share of m1_r_gmom) - (zero share of m1_r_gmom_x2_perm - zero share of
+m1_r_gmom_perm) on the scored genes, and the same for the detected scored genes per cell. The read puts nothing forward
+by itself.
 
 Limits, repeated in the text and in the row:
 - A larger step also makes predicted cells sparser at the same depth (more zeros, fewer detected genes), and every
@@ -122,6 +128,31 @@ Limits, repeated in the text and in the row:
 - No multiplier from T46 is a test setting: the test's step stays the bracket fraction by rule, and a library's turning
   point is read on an in-sample part of a released target with its own depth and anchors; carrying it to the test is
   not supported by this read.
+- The placebo matches the scored genes' factor sizes, not which genes they fall on nor the depth renormalisation
+  through the other genes; the printed sparsity difference in differences shows how much of D may be sparsification
+  at the same depth.
+- D is ahead whenever the truth lies along Feng's direction more than along a random direction of the same size,
+  including when twice the step overshoots; it never reads an overshoot as behind. Whether the larger step is the
+  better size is read from the gate (x2 against m1_r_gmom) alone; D only rules out a gain from a step of that size
+  along a random direction.
+- A difference of kind that lies along Feng's direction scores exactly as extra age would; a pass on any truth, lib3
+  included, does not say whether it came from age or from kind.
+- A kind difference across the direction mostly costs power on the de terms; a library that does not pass is not
+  evidence the step does nothing there.
+- On the shallow portion libraries a larger step can gain through sparsification at the same depth; the placebo
+  matches the scored genes' factor sizes but not which genes they fall on, so D can retain part of that gain, and a
+  pass on lib1 and lib2 is not shown to be a day of age.
+- x2 ahead on lib3 only means the gated rule passed on the dissected-heart library and on neither portion library; it
+  does not show that the gain is the change of kind's or that it would carry to the test's heart-to-heart pair, and it
+  is not a tested difference between libraries.
+- x2 ahead on both portion libraries is a rule pass on in-sample, shallower libraries of the reference's kind; it is
+  not shown to be a day of age, sets no test multiplier, and is no evidence on T1 read depth, which stays closed
+  whatever T46 reads.
+- other is any pattern but the two named ones, including a pass on one portion library only and passes lost to power;
+  it is not evidence that the step's gain is absent or uniform across kinds.
+- The library readings share predictions and the gate shares its increment with D; two passes are not two independent
+  replications.
+- No multiplier read from T46 is a candidate setting; the test's step stays the bracket fraction by rule.
 
 Usage: on the DGX campaign checkout, repo root, all four truths at one commit, committing nothing until the four task
 files exist, and on the machine T42 and T44 ran on, so that the pooled truth reproduces. The environment variables are
@@ -188,6 +219,7 @@ PLACEBO_OF = {PLACEBO: TWICE, PLACEBO_BASE: BASE}  # placebo -> the real arm at 
 PLACEBO_STREAM = 46  # [build seed, 46]: a stream no other step uses
 ARMS = ("b0", BASE, *MULTIPLIERS, PLACEBO, PLACEBO_BASE)
 SPARSITY_ARMS = (BASE, PLACEBO_BASE, TWICE, PLACEBO)  # printed first; every arm is recorded and printed
+LOG_FACTOR_ARMS = (BASE, TWICE, PLACEBO_BASE, PLACEBO)  # the arms of each group's scored log-factor record
 ROW = "T46"
 FRACTION = sr.FRACTION  # 0.2
 FRACTION_TOL = sr.FRACTION_TOL
@@ -243,6 +275,31 @@ LIMITS = (
     "No multiplier from T46 is a test setting: the test's step stays the bracket fraction by rule, and a library's "
     "turning point is read on an in-sample part of a released target with its own depth and anchors; carrying it to "
     "the test is not supported by this read.",
+    "The placebo matches the scored genes' factor sizes, not which genes they fall on nor the depth renormalisation "
+    "through the other genes; the printed sparsity difference in differences shows how much of D may be "
+    "sparsification at the same depth.",
+    "D is ahead whenever the truth lies along Feng's direction more than along a random direction of the same size, "
+    "including when twice the step overshoots; it never reads an overshoot as behind. Whether the larger step is the "
+    "better size is read from the gate (x2 against m1_r_gmom) alone; D only rules out a gain from a step of that size "
+    "along a random direction.",
+    "A difference of kind that lies along Feng's direction scores exactly as extra age would; a pass on any truth, "
+    "lib3 included, does not say whether it came from age or from kind.",
+    "A kind difference across the direction mostly costs power on the de terms; a library that does not pass is not "
+    "evidence the step does nothing there.",
+    "On the shallow portion libraries a larger step can gain through sparsification at the same depth; the placebo "
+    "matches the scored genes' factor sizes but not which genes they fall on, so D can retain part of that gain, and a "
+    "pass on lib1 and lib2 is not shown to be a day of age.",
+    "x2 ahead on lib3 only means the gated rule passed on the dissected-heart library and on neither portion library; "
+    "it does not show that the gain is the change of kind's or that it would carry to the test's heart-to-heart pair, "
+    "and it is not a tested difference between libraries.",
+    "x2 ahead on both portion libraries is a rule pass on in-sample, shallower libraries of the reference's kind; it "
+    "is not shown to be a day of age, sets no test multiplier, and is no evidence on T1 read depth, which stays closed "
+    "whatever T46 reads.",
+    "other is any pattern but the two named ones, including a pass on one portion library only and passes lost to "
+    "power; it is not evidence that the step's gain is absent or uniform across kinds.",
+    "The library readings share predictions and the gate shares its increment with D; two passes are not two "
+    "independent replications.",
+    "No multiplier read from T46 is a candidate setting; the test's step stays the bracket fraction by rule.",
 )
 
 
@@ -514,6 +571,23 @@ def _adds_up(results: Mapping[str, Mapping], key: str) -> bool:
     return all(isinstance(x, int) and not isinstance(x, bool) for x in sizes) and sum(sizes[1:]) == sizes[0]
 
 
+def _log_factors_complete(rows: Sequence[Mapping]) -> bool:
+    """Every row's scored log factors hold the first row's groups, each with exactly LOG_FACTOR_ARMS. Rows with no
+    record at all are left to the missing-record void."""
+    first = rows[0].get("scored_log_factors")
+    if not first:
+        return True
+    if not isinstance(first, Mapping):
+        return False
+    for row in rows:
+        lf = row.get("scored_log_factors")
+        if not isinstance(lf, Mapping) or set(lf) != set(first):
+            return False
+        if not all(isinstance(v, Mapping) and set(v) == set(LOG_FACTOR_ARMS) for v in lf.values()):
+            return False
+    return True
+
+
 def validity(results: Mapping[str, Mapping], committed: Mapping[str, Sequence[Mapping]]) -> dict:
     """The void conditions. results: truth -> task file (a missing truth is absent); committed: as `reproduction`."""
     reasons = []
@@ -578,6 +652,11 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Sequence[Ma
                              if not {"zero_share", "detected_per_cell"} <= set((row.get("sparsity") or {}).get(a, {}))})
         if unrecorded or any(not row.get("scored_log_factors") for row in r["rows"]):
             reasons.append(f"{k}: the sparsity or scored log-factor records are missing (arms {unrecorded})")
+        if any(not isinstance((row.get("sha256") or {}).get(a), str) for row in r["rows"] for a in ARMS):
+            reasons.append(f"{k}: sha256 not recorded for every arm")
+        if not _log_factors_complete(r["rows"]):
+            reasons.append(f"{k}: the scored log factors do not hold the first row's groups on every row, each with "
+                           f"the arms {list(LOG_FACTOR_ARMS)}")
     return {"valid": not reasons, "reasons": reasons, "reproduction": repro,
             "commits": sorted(c for c in commits if c)}
 
@@ -635,6 +714,17 @@ def did_comparison(r: Mapping, truth: str) -> dict:
             "points": {"by_metric": {m: real["by_metric"][m] - plac["by_metric"][m] for m in WEIGHTS},
                        "de": real["de"] - plac["de"], "mmd_u_variogram": real["mmd_u_variogram"]
                        - plac["mmd_u_variogram"]}}
+
+
+def sparsity_did(r: Mapping) -> dict:
+    """Printed beside D and read by nothing: per quantity (scored zero share, detected scored genes per cell), the mean
+    over seeds of (m1_r_gmom_x2 - m1_r_gmom) - (m1_r_gmom_x2_perm - m1_r_gmom_perm)."""
+    def one(row, q):
+        sp = row["sparsity"]
+        return (sp[TWICE][q] - sp[BASE][q]) - (sp[PLACEBO][q] - sp[PLACEBO_BASE][q])
+
+    return {"quantity": f"({TWICE} - {BASE}) - ({PLACEBO} - {PLACEBO_BASE})",
+            **{q: float(np.mean([one(row, q) for row in r["rows"]])) for q in ("zero_share", "detected_per_cell")}}
 
 
 def gated(step: Mapping, did: Mapping) -> dict:
@@ -750,6 +840,7 @@ def t46_reading(results: Mapping[str, Mapping], committed: Mapping[str, Sequence
     out["contamination_share"] = {k: results[k]["truth_contamination"] / results[k]["truth_rows"]
                                   if results[k]["truth_rows"] else None for k in TRUTHS}
     out["sha256_across_truths"] = sha_agreement(results)
+    out["sparsity_did"] = {k: sparsity_did(results[k]) for k in TRUTHS}  # reported only; read by nothing
     return out
 
 
@@ -760,8 +851,9 @@ def _z(x) -> str:
 def _comparison_line(c: Mapping) -> str:
     raw = ", ".join(f"{m} skill {c['skills'].get(m, float('nan')):+.4f} raw {c['metrics'].get(m, float('nan')):+.4g}"
                     for m in WEIGHTS)
-    return (f"{c['change']} against {c['base']}: {c['mean']:+.2f} points, mean over per-seed sd {_z(c['mean_over_sd'])}"
-            f", ahead {c['seeds_ahead']} of {c['of']}, per seed {c['range'][0]:+.2f} to {c['range'][1]:+.2f}, test: "
+    return (f"{c['change']} against {c['base']}: {c['mean']:+.2f} points, per-seed sd {c['sd']:.2f}, mean over "
+            f"per-seed sd {_z(c['mean_over_sd'])}, ahead {c['seeds_ahead']} of {c['of']}, per seed "
+            f"{c['range'][0]:+.2f} to {c['range'][1]:+.2f}, test: "
             f"{c['test']}; de terms {c['points']['de']:+.2f}, mmd_u and variogram {c['points']['mmd_u_variogram']:+.2f}"
             f"; {raw}")
 
@@ -784,10 +876,14 @@ def t46_text(res: Mapping) -> str:
         note = " (reported only; the pooled truth carries no statement)" if k == POOLED else ""
         lines.append(f"on {k}{note}: {kd['reading']}; counts as ahead: {kd['ahead']}")
         lines.append(f"    on {k}: gate: " + _comparison_line(r["comparisons"][k][TWICE]))
-        lines.append(f"    on {k}: {dc['quantity']}: {dc['mean']:+.2f} points, mean over per-seed sd "
-                     f"{_z(dc['mean_over_sd'])}, ahead {dc['seeds_ahead']} of {dc['of']}, per seed "
+        lines.append(f"    on {k}: {dc['quantity']}: {dc['mean']:+.2f} points, per-seed sd {dc['sd']:.2f}, mean over "
+                     f"per-seed sd {_z(dc['mean_over_sd'])}, ahead {dc['seeds_ahead']} of {dc['of']}, per seed "
                      f"{dc['range'][0]:+.2f} to {dc['range'][1]:+.2f}, test: {dc['test']}; de terms "
                      f"{dc['points']['de']:+.2f}, mmd_u and variogram {dc['points']['mmd_u_variogram']:+.2f}")
+        sd_ = r["sparsity_did"][k]
+        lines.append(f"    on {k}: reported, not read: sparsity difference in differences {sd_['quantity']} on the "
+                     f"scored genes, mean over seeds: zero share {sd_['zero_share']:+.4f}, detected per cell "
+                     f"{sd_['detected_per_cell']:+.2f}")
         lines.append(f"    on {k}: reported, not read: " + _comparison_line(r["placebo_comparisons"][k]))
         lines.append(f"    on {k}: reported, not read: " + _comparison_line(r["placebo_base_comparisons"][k]))
     for k in r.get("mean_scores", {}):

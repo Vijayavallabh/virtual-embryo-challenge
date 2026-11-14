@@ -6,6 +6,7 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import re
 import sys
 from dataclasses import replace
 
@@ -35,7 +36,19 @@ def ls(monkeypatch, tmp_path):
     sys.modules[spec.name] = mod
     spec.loader.exec_module(mod)
     monkeypatch.setattr(mod, "RESULTS", tmp_path / "results")
+    # a digit-free stamp, so that no check on the text depends on the commit hash or the clock
+    monkeypatch.setattr(mod.gv, "stamp", lambda started, files: dict(STAMP))
     return mod
+
+
+STAMP = {"commit": "f" * 40, "tree_clean": True, "utc": "x", "inputs": {}}
+
+
+def _prints_a_count(txt: str, counts) -> bool:
+    """Whether any of the counts is printed as a whole number in the text (the final 'Commit ...' line dropped; a
+    number inside a decimal such as 0.13 or 13.5 is not a count)."""
+    body = txt.rsplit("\nCommit ", 1)[0]
+    return any(re.search(rf"(?<![\d.]){n}(?![\d.])", body) for n in counts)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -339,6 +352,24 @@ def test_the_arms_of_fd18e0f8da_keep_their_output_bit_for_bit(ls):
         assert v[PLACEBO] == pytest.approx(v["m1_r_gmom_x2"]) and v[PERM1] == pytest.approx(v["m1_r_gmom"])
 
 
+# sha256 of every arm's predicted matrix on _arms_world, and of its scored log factors (json, sorted keys), computed
+# with experiments/t1_m1/lib_step_read.py as it stood at 5bc7adc30054712734abf87ec4a1372e1361d57a.
+GOLDEN_ARMS_5BC7 = {
+    **GOLDEN_ARMS_FD18,
+    "m1_r_gmom_perm": "066a4b4514a718afd225d63df56aaff8742f968fcade86ec6fd6a6cf0c0c0e0f",
+    "m1_r_gmom_x2_perm": "b2c4d07d19affaab30baa0a78c7ef19134f1e0b8111722f1c4f3bceec783ec53",
+}
+GOLDEN_LOG_FACTORS_5BC7 = "2e98acbc6ee4b3bcde1be9ca5f55e368071544d72ce77637abfe4988f4540100"
+
+
+def test_every_arm_of_5bc7adc_keeps_its_output_bit_for_bit(ls):
+    """No finding of the third review changes a build: all eight arms and the scored log factors are 5bc7adc's."""
+    ctx, groups, dirs, held = _arms_world()
+    preds, log_factors = ls.build_seed(ctx, harness._b0_t1(harness.B0_DAMPING), dirs, groups, 0.2, held, held)
+    assert {a: ls.prediction_sha256(p) for a, p in preds.items()} == GOLDEN_ARMS_5BC7
+    assert hashlib.sha256(json.dumps(log_factors, sort_keys=True).encode()).hexdigest() == GOLDEN_LOG_FACTORS_5BC7
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 # The reading
 
@@ -491,7 +522,7 @@ def test_each_statement_is_reached_by_a_table_built_for_it(ls, tmp_path, by_trut
         assert f"on {k}: gate: m1_r_gmom_x2 against m1_r_gmom: " in txt
         assert f"on {k}: (m1_r_gmom_x2 - m1_r_gmom) - ({PLACEBO} - {PERM1}): " in txt
     assert "on pooled (reported only; the pooled truth carries no statement)" in txt
-    assert not any(str(n) in txt for n in (*ROWS.values(), *CONTAM.values()))  # no cell count is printed
+    assert not _prints_a_count(txt, (*ROWS.values(), *CONTAM.values()))  # no cell count is printed
     assert "the kind's" not in txt
 
 
@@ -608,6 +639,31 @@ def test_the_reading_of_fd18e0f8da_keeps_its_unchanged_quantities_bit_for_bit(ls
     assert _sections_sha(r) == GOLDEN_READING_FD18
 
 
+# On _golden_truths(), with the stamp STAMP: the sha256 of 5bc7adc's whole reading (json, sorted keys) and of its
+# t46.txt, through a copy of the module as it stood at 5bc7adc30054712734abf87ec4a1372e1361d57a.
+GOLDEN_READING_5BC7 = "266a94130a9518faf68189bb47d5316533d730429b8ba9ccc379206e2e905c3c"
+GOLDEN_TEXT_5BC7 = "12722ece3cb549df70cbf94013dde4333e8c76540b61ce8e882f974e58caa3d0"
+SD_PRINTED = re.compile(r", per-seed sd (?:-?\d+\.\d\d|nan)(?=, mean over per-seed sd )")
+
+
+def test_the_reading_and_text_of_5bc7adc_keep_every_unchanged_quantity_bit_for_bit(ls, tmp_path):
+    """The third review's should-fixes add a key (sparsity_did), a printed sd, a printed sparsity line per truth and
+    new limits; with those taken out, the reading and the text are 5bc7adc's byte for byte."""
+    out, t42, t44 = _write(ls, tmp_path, _golden_truths())
+    res = ls.read(out, t42, t44)
+    r = dict(res["reading"])
+    assert r["valid"] and set(r["sparsity_did"]) == set(ls.TRUTHS)
+    del r["sparsity_did"]
+    assert hashlib.sha256(json.dumps(r, sort_keys=True).encode()).hexdigest() == GOLDEN_READING_5BC7
+    txt = (out / "t46.txt").read_text()
+    new_limits = {f"Limit: {x}" for x in (SPARSITY_LIMIT, *LEDGER_SENTENCES)}
+    assert all(x in txt.splitlines() for x in new_limits)
+    old = [SD_PRINTED.sub("", line) for line in txt.splitlines()
+           if line not in new_limits and "reported, not read: sparsity difference in differences" not in line]
+    assert len(SD_PRINTED.findall(txt)) == 4 * (2 + 4 + 2)  # per truth: gate and D, four scaled arms, two placebos
+    assert hashlib.sha256(("\n".join(old) + "\n").encode()).hexdigest() == GOLDEN_TEXT_5BC7
+
+
 def test_a_nan_skill_counts_zero_in_the_points(ls, tmp_path):
     """A non-finite skill counts 0, as on the server: the de part with NaN de_direction skills on some seeds equals
     the part computed with 0 in their place."""
@@ -651,6 +707,110 @@ def test_the_limits_are_in_the_text(ls, tmp_path):
     assert "no outcome of T46 is evidence on T1 read depth" in txt
     assert "The kind statement compares rule passes, not effect sizes." in txt
     assert "the argmax alone is not a finding" in txt
+
+
+# The third review's limit on the sparsity difference in differences (should-fix) and the ledger sentences its design
+# attack proposes, in the reviewer's words.
+SPARSITY_LIMIT = (
+    "The placebo matches the scored genes' factor sizes, not which genes they fall on nor the depth renormalisation "
+    "through the other genes; the printed sparsity difference in differences shows how much of D may be "
+    "sparsification at the same depth.")
+LEDGER_SENTENCES = (
+    "D is ahead whenever the truth lies along Feng's direction more than along a random direction of the same size, "
+    "including when twice the step overshoots; it never reads an overshoot as behind. Whether the larger step is the "
+    "better size is read from the gate (x2 against m1_r_gmom) alone; D only rules out a gain from a step of that size "
+    "along a random direction.",
+    "A difference of kind that lies along Feng's direction scores exactly as extra age would; a pass on any truth, "
+    "lib3 included, does not say whether it came from age or from kind.",
+    "A kind difference across the direction mostly costs power on the de terms; a library that does not pass is not "
+    "evidence the step does nothing there.",
+    "On the shallow portion libraries a larger step can gain through sparsification at the same depth; the placebo "
+    "matches the scored genes' factor sizes but not which genes they fall on, so D can retain part of that gain, and a "
+    "pass on lib1 and lib2 is not shown to be a day of age.",
+    "x2 ahead on lib3 only means the gated rule passed on the dissected-heart library and on neither portion library; "
+    "it does not show that the gain is the change of kind's or that it would carry to the test's heart-to-heart pair, "
+    "and it is not a tested difference between libraries.",
+    "x2 ahead on both portion libraries is a rule pass on in-sample, shallower libraries of the reference's kind; it "
+    "is not shown to be a day of age, sets no test multiplier, and is no evidence on T1 read depth, which stays closed "
+    "whatever T46 reads.",
+    "other is any pattern but the two named ones, including a pass on one portion library only and passes lost to "
+    "power; it is not evidence that the step's gain is absent or uniform across kinds.",
+    "The library readings share predictions and the gate shares its increment with D; two passes are not two "
+    "independent replications.",
+    "No multiplier read from T46 is a candidate setting; the test's step stays the bracket fraction by rule.",
+)
+
+
+def test_the_third_reviews_limit_sentences_are_in_the_limits_the_text_and_the_docstring(ls, tmp_path):
+    _read(ls, tmp_path, {"lib3": UP})
+    txt = (tmp_path / "out" / "t46.txt").read_text()
+    doc = " ".join(ls.__doc__.split())
+    limits = doc.split("Limits, repeated in the text and in the row:", 1)[1].split("Usage:", 1)[0]
+    for s in (SPARSITY_LIMIT, *LEDGER_SENTENCES):
+        assert s in ls.LIMITS
+        assert f"Limit: {s}\n" in txt
+        assert f"- {s}" in limits
+
+
+def test_no_count_check_holds_at_any_commit_and_clock(ls, tmp_path, monkeypatch):
+    """The reading's own stamp may hold any digits: a commit and a clock full of the synthetic counts do not make the
+    count check fail, and a count printed in the body does."""
+    noisy = {"commit": "13" * 20, "tree_clean": True, "utc": "2026-11-13T13:13:13Z", "inputs": {}}
+    monkeypatch.setattr(ls.gv, "stamp", lambda started, files: dict(noisy))
+    _read(ls, tmp_path, {"lib3": UP})
+    txt = (tmp_path / "out" / "t46.txt").read_text()
+    assert txt.splitlines()[-1].startswith("Commit 1313") and "13" in txt.splitlines()[-1]
+    assert not _prints_a_count(txt, (*ROWS.values(), *CONTAM.values()))
+    assert _prints_a_count(txt.replace("Limit:", "Limit: 13 cells;", 1), (13,))
+    assert not _prints_a_count("x +0.13 and 13.5\nCommit 13", (13,))
+
+
+def test_the_sd_of_every_comparison_and_of_d_is_printed(ls, tmp_path):
+    gains = [1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 2.0]
+    plac = [0.0, 0.5, 0.0, 0.5, 0.0, 0.5, 0.0, 0.5, 0.0, 0.5]
+    r = _read(ls, tmp_path, over={"lib2": {"per_seed": {"m1_r_gmom_x2": gains, PLACEBO: plac}}})
+    txt = (tmp_path / "out" / "t46.txt").read_text()
+    c = r["comparisons"]["lib2"]["m1_r_gmom_x2"]
+    assert f"m1_r_gmom_x2 against m1_r_gmom: {c['mean']:+.2f} points, per-seed sd {c['sd']:.2f}, mean over" in txt
+    d = r["did_comparisons"]["lib2"]
+    want = np.array(gains) - np.array(plac)  # m1_r_gmom_perm sits at m1_r_gmom's score on every seed but 0 and 1
+    assert d["sd"] == pytest.approx(np.std(want, ddof=1), abs=1e-6)
+    assert (f"on lib2: (m1_r_gmom_x2 - m1_r_gmom) - ({PLACEBO} - {PERM1}): {d['mean']:+.2f} points, per-seed sd "
+            f"{d['sd']:.2f}, mean over per-seed sd") in txt
+
+
+def test_the_sparsity_difference_in_differences_is_printed_beside_d_and_read_by_nothing(ls, tmp_path):
+    """Per truth, the mean over seeds of (x2 - m1_r_gmom) - (x2_perm - m1_r_gmom_perm) on the scored zero share and
+    the detected scored genes per cell; the reading is the same whatever these are."""
+    def truths(spread):
+        out = {k: _task(k, gains={"m1_r_gmom_x2": 1.0, PLACEBO: 0.2} if k == "lib1" else {}, rows=ROWS[k],
+                        contamination=CONTAM[k]) for k in ls.TRUTHS}
+        for i, row in enumerate(out["lib1"]["rows"]):
+            sp = row["sparsity"]
+            sp["m1_r_gmom_x2"] = {"zero_share": 0.25 + spread * (0.04 + 0.001 * i),
+                                  "detected_per_cell": 6.0 - spread * 2}
+            sp[PLACEBO] = {"zero_share": 0.25 + spread * 0.01, "detected_per_cell": 6.0 - spread * 0.5}
+            sp[PERM1] = {"zero_share": 0.25 - spread * 0.005, "detected_per_cell": 6.0}
+        return out
+
+    readings = []
+    for spread, sub in ((1.0, "a"), (0.0, "b")):
+        out, t42, t44 = _write(ls, tmp_path / sub, truths(spread))
+        readings.append(ls.read(out, t42, t44)["reading"])
+    r, flat = readings
+    s = r["sparsity_did"]["lib1"]
+    assert s["zero_share"] == pytest.approx((0.04 + 0.0045) - (0.01 + 0.005))
+    assert s["detected_per_cell"] == pytest.approx(-2.0 - (-0.5 - 0.0))
+    assert flat["sparsity_did"]["lib1"] == {"quantity": s["quantity"], "zero_share": 0.0, "detected_per_cell": 0.0}
+    assert r["sparsity_did"]["lib2"]["zero_share"] == 0.0
+    txt = (tmp_path / "a" / "out" / "t46.txt").read_text()
+    assert (f"on lib1: reported, not read: sparsity difference in differences (m1_r_gmom_x2 - m1_r_gmom) - ({PLACEBO} "
+            f"- {PERM1}) on the scored genes, mean over seeds: zero share +0.0295, detected per cell -1.50") in txt
+    for k in ls.TRUTHS:
+        assert f"on {k}: reported, not read: sparsity difference in differences" in txt
+    drop = ("sparsity_did", "sparsity")
+    assert {k: v for k, v in r.items() if k not in drop} == {k: v for k, v in flat.items() if k not in drop}
+    assert r["outcome"] == flat["outcome"] and r["kind"] == flat["kind"]
 
 
 def test_a_gain_of_exactly_point_three_is_not_ahead_and_a_loss_is_behind(ls, tmp_path):
@@ -790,7 +950,7 @@ def test_the_void_cases(ls, tmp_path, over, kw, reason):
     assert not r["valid"] and r["outcome"] == "VOID"
     assert any(reason in x for x in r["validity"]["reasons"]), r["validity"]["reasons"]
     txt = (tmp_path / "out" / "t46.txt").read_text()
-    assert not any(str(n) in txt for n in (*ROWS.values(), *CONTAM.values(), 3430, 198))
+    assert not _prints_a_count(txt, (*ROWS.values(), *CONTAM.values(), 3430, 198))
 
 
 @pytest.mark.parametrize("arm", ["b0", "m1_r_gmom", "m1_r_gmom_x15", "m1_r_gmom_x2"])
@@ -801,6 +961,62 @@ def test_each_rescored_arm_off_its_own_committed_score_voids(ls, tmp_path, arm):
     w = r["validity"]["reproduction"]["largest_difference"]
     assert w[arm] == pytest.approx(1e-6, rel=1e-3)
     assert all(v <= 1e-9 for a, v in w.items() if a != arm)
+
+
+def _drop_sha(rec):
+    del rec["rows"][4]["sha256"][PLACEBO]
+
+
+def _no_sha_record(rec):
+    del rec["rows"][0]["sha256"]
+
+
+def _sha_not_a_string(rec):
+    rec["rows"][7]["sha256"]["b0"] = None
+
+
+def _drop_group(rec):
+    rec["rows"][6]["scored_log_factors"].pop("CM")
+    rec["rows"][6]["scored_log_factors"]["Other"] = {a: 0.1 for a in ("m1_r_gmom", "m1_r_gmom_x2", PERM1, PLACEBO)}
+
+
+def _extra_group(rec):
+    rec["rows"][2]["scored_log_factors"]["Other"] = {a: 0.1 for a in ("m1_r_gmom", "m1_r_gmom_x2", PERM1, PLACEBO)}
+
+
+def _drop_log_arm(rec):
+    del rec["rows"][9]["scored_log_factors"]["CM"][PERM1]
+
+
+@pytest.mark.parametrize("damage, reason", [
+    (_drop_sha, "lib2: sha256 not recorded for every arm"),
+    (_no_sha_record, "lib2: sha256 not recorded for every arm"),
+    (_sha_not_a_string, "lib2: sha256 not recorded for every arm"),
+    (_drop_group, "lib2: the scored log factors do not hold the first row's groups on every row"),
+    (_extra_group, "lib2: the scored log factors do not hold the first row's groups on every row"),
+    (_drop_log_arm, "lib2: the scored log factors do not hold the first row's groups on every row"),
+])
+def test_an_incomplete_sha256_or_scored_log_factor_record_voids(ls, tmp_path, damage, reason):
+    """The third review's should-fix: a row without every arm's sha256 (which the placebo's sha256 void relies on), or
+    whose scored log factors do not hold the first row's groups each with the four arms, voids instead of passing the
+    sha256 void vacuously or raising in the reading."""
+    truths = {k: _task(k, gains={"m1_r_gmom_x2": 1.0} if k == "lib3" else {}, rows=ROWS[k], contamination=CONTAM[k])
+              for k in ls.TRUTHS}
+    damage(truths["lib2"])
+    out, t42, t44 = _write(ls, tmp_path, truths)
+    r = ls.read(out, t42, t44)["reading"]
+    assert not r["valid"] and r["outcome"] == "VOID"
+    assert any(x.startswith(reason) for x in r["validity"]["reasons"]), r["validity"]["reasons"]
+    txt = (out / "t46.txt").read_text()
+    assert reason in txt and not _prints_a_count(txt, (*ROWS.values(), *CONTAM.values()))
+
+
+def test_a_complete_record_does_not_trip_the_new_voids(ls, tmp_path):
+    truths = {k: _task(k, gains={"m1_r_gmom_x2": 1.0} if k == "lib3" else {}, rows=ROWS[k], contamination=CONTAM[k])
+              for k in ls.TRUTHS}
+    out, t42, t44 = _write(ls, tmp_path, truths)
+    assert ls._log_factors_complete(truths["lib1"]["rows"])
+    assert ls.read(out, t42, t44)["reading"]["valid"]
 
 
 def test_a_scaled_arm_that_ties_the_base_on_score_alone_voids(ls, tmp_path):
