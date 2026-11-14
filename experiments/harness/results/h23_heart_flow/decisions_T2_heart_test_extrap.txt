@@ -1,0 +1,15 @@
+T2:heart:test_extrap: 2 pseudo-task(s) in /mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/experiments/harness/results/h23_heart_flow/tasks (protocol bake, build main, anchors computed, seeds [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  T2h/<=E8.75->E10.5 on pseudo:T2h/<=E8.75->E10.5: floor 50.00 +/- 0.00; copy 50.55 +/- 0.79; b0 51.45 +/- 0.61; b0_trend 51.93 +/- 0.68; b0_trend_flow 52.17 +/- 0.59; b0_trend_flow_perm 52.09 +/- 0.61; b0_trend_flow_pool 52.17 +/- 0.62; b0_trend_flow_pool_perm 51.93 +/- 0.68 (commit 278712b, clean True)
+  T2h/<=E9.5->E10.5 on T2:heart:val_extrap: floor 50.00 +/- 0.00; copy 49.96 +/- 0.82; b0 50.43 +/- 0.70; b0_trend 50.78 +/- 0.72; b0_trend_flow 50.50 +/- 0.69; b0_trend_flow_perm 50.78 +/- 0.69; b0_trend_flow_pool 50.59 +/- 0.74; b0_trend_flow_pool_perm 50.82 +/- 0.67 (commit 278712b, clean True)
+b0_trend_flow against b0_trend: not kept (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2; decided on 2 of 2 configured pseudo-tasks; not counted: none)
+    T2h/<=E9.5->E10.5: paired mean gain -0.28, ahead in 0 of 10 seeds, passes False, vetoes False
+    T2h/<=E8.75->E10.5: paired mean gain +0.24, ahead in 10 of 10 seeds, passes False, vetoes False
+b0_trend_flow_perm against b0_trend: not kept (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2; decided on 2 of 2 configured pseudo-tasks; not counted: none)
+    T2h/<=E9.5->E10.5: paired mean gain -0.00, ahead in 6 of 10 seeds, passes False, vetoes False
+    T2h/<=E8.75->E10.5: paired mean gain +0.17, ahead in 9 of 10 seeds, passes False, vetoes False
+b0_trend_flow_pool against b0_trend: not kept (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2; decided on 2 of 2 configured pseudo-tasks; not counted: none)
+    T2h/<=E9.5->E10.5: paired mean gain -0.20, ahead in 0 of 10 seeds, passes False, vetoes False
+    T2h/<=E8.75->E10.5: paired mean gain +0.24, ahead in 10 of 10 seeds, passes False, vetoes False
+b0_trend_flow_pool_perm against b0_trend: not kept (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2; decided on 2 of 2 configured pseudo-tasks; not counted: none)
+    T2h/<=E9.5->E10.5: paired mean gain +0.04, ahead in 6 of 10 seeds, passes False, vetoes False
+    T2h/<=E8.75->E10.5: paired mean gain +0.00, ahead in 6 of 10 seeds, passes False, vetoes False

@@ -1,0 +1,111 @@
+{
+ "board": "T2:heart:test_extrap",
+ "runs": "/mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/experiments/harness/results/h23_heart_flow/tasks",
+ "decisions": [
+  {
+   "base": "b0_trend_flow_pool_perm",
+   "change": "b0_trend_flow_pool",
+   "counted": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2",
+   "tasks": {
+    "T2h/<=E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": -0.23390671582260508,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": false
+    },
+    "T2h/<=E8.75->E10.5": {
+     "complete": true,
+     "mean_gain": 0.24323527140009843,
+     "seeds_ahead": 10,
+     "passes": false,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  }
+ ],
+ "summaries": {
+  "T2h/<=E8.75->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    50.54677200019612,
+    0.7913080817718336
+   ],
+   "b0": [
+    51.446449911655364,
+    0.6052791869950301
+   ],
+   "b0_trend": [
+    51.9277094833677,
+    0.6771697555548825
+   ],
+   "b0_trend_flow": [
+    52.16608708091113,
+    0.5940594804758272
+   ],
+   "b0_trend_flow_perm": [
+    52.093229893473016,
+    0.611130806782349
+   ],
+   "b0_trend_flow_pool": [
+    52.17129239019889,
+    0.6154820819697137
+   ],
+   "b0_trend_flow_pool_perm": [
+    51.928057118798776,
+    0.6817835557611249
+   ]
+  },
+  "T2h/<=E9.5->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    49.955176642699044,
+    0.8224702162475157
+   ],
+   "b0": [
+    50.4272525233645,
+    0.7027599518307952
+   ],
+   "b0_trend": [
+    50.7845309339824,
+    0.7202187292775972
+   ],
+   "b0_trend_flow": [
+    50.502950501727774,
+    0.6944992056953158
+   ],
+   "b0_trend_flow_perm": [
+    50.78209205993536,
+    0.6938823339879896
+   ],
+   "b0_trend_flow_pool": [
+    50.586692074912676,
+    0.7367123738998281
+   ],
+   "b0_trend_flow_pool_perm": [
+    50.820598790735275,
+    0.6749270753260439
+   ]
+  }
+ }
+}

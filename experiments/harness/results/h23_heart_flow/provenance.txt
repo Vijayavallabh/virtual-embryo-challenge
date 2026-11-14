@@ -1,0 +1,10 @@
+run folder on the DGX: ~/v/vec-campaign/runs/harness/h23_heart_flow (first campaign checkout)
+commit: 278712b (campaign/heart-g-fix)
+tree at start and at end (bytes of git status --porcelain): 0 and 0
+started UTC: 2026-11-14T14:25:06Z
+ended UTC: 2026-11-14T15:19:22Z
+GPUs: one H100 per task (task1 gpu 2; task2 gpu 3); all candidates of a task in one process (one count-model fit per task); 16 BLAS threads
+command per task: experiments/harness/run.py run --board T2:heart:test_extrap --task <key> --candidates floor,copy,b0,b0_trend,b0_trend_flow,b0_trend_flow_perm,b0_trend_flow_pool,b0_trend_flow_pool_perm
+decisions_*: base b0_trend, recomputed on this machine from the task files and registered; against_placebo_flow and against_placebo_pool: each arm against its placebo, not registered
+the reference candidates (floor,copy,b0,b0_trend) reproduce their committed scores of experiments/harness/results/trend_heart_v1/tasks to 1e-6, seed for seed
+check_lines.txt: the builds' check lines, taken from the run's logs
