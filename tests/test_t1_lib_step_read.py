@@ -1,11 +1,13 @@
 """experiments/t1_m1/lib_step_read.py (try T46 of experiments/harness/TRIES.md) on synthetic data: the library truths,
-the scaled arms, the placebo and the reading. No released file, statistics file, board file or score is read."""
+the scaled arms, the two placebos and the reading. No released file, statistics file, board file or score is read."""
 
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import sys
+from dataclasses import replace
 
 import anndata as ad
 import numpy as np
@@ -20,7 +22,9 @@ from vec.evaluate import Stage
 SCRIPT = REPO_ROOT / "experiments" / "t1_m1" / "lib_step_read.py"
 SCALED = ("m1_r_gmom_x15", "m1_r_gmom_x2", "m1_r_gmom_x3", "m1_r_gmom_x4")
 PLACEBO = "m1_r_gmom_x2_perm"
-ALL_ARMS = ("b0", "m1_r_gmom", *SCALED, PLACEBO)
+PERM1 = "m1_r_gmom_perm"
+ALL_ARMS = ("b0", "m1_r_gmom", *SCALED, PLACEBO, PERM1)
+OLD_ARMS = ("b0", "m1_r_gmom", *SCALED, PLACEBO)  # the arms at fd18e0f8da
 MULT = {"m1_r_gmom_x15": 1.5, "m1_r_gmom_x2": 2.0, "m1_r_gmom_x3": 3.0, "m1_r_gmom_x4": 4.0}
 
 
@@ -184,36 +188,88 @@ def test_a_multiplier_of_one_is_the_base_bit_for_bit_and_the_larger_steps_build(
         assert ls.prediction_sha256(arms[a]) != ls.prediction_sha256(arms["m1_r_gmom"])
 
 
-def test_the_permutation_keeps_each_groups_factors_and_its_unmoved_genes(ls):
-    genes = [f"g{i}" for i in range(12)]
-    held = ["g1", "g5"]
-    cm = np.arange(12, dtype=float)
-    cm[[3, 7]] = np.nan
-    dirs = {"Endocardium": np.linspace(-1, 1, 12), "CM": cm}
-    a = ls.permuted_directions(dirs, genes, held, 1007)
-    b = ls.permuted_directions(dirs, genes, held, 1007)
-    c = ls.permuted_directions(dirs, genes, held, 1008)
+def test_the_permutation_keeps_each_groups_factors_within_each_stratum_and_its_unmoved_genes(ls):
+    """Two strata: the scored genes and the other moved genes. Each keeps its own multiset of factors, so the scored
+    genes carry exactly the real direction's factor sizes (must-fix 3 of the second review)."""
+    genes = [f"g{i}" for i in range(24)]
+    held = ["g1", "g5", "g14"]
+    scored = [f"g{i}" for i in range(0, 24, 2)]  # every other gene is on the board
+    cm = np.arange(24, dtype=float)
+    cm[[3, 7, 12]] = np.nan
+    dirs = {"Endocardium": np.linspace(-1, 1, 24) ** 3, "CM": cm}
+    a = ls.permuted_directions(dirs, genes, held, scored, 1007)
+    b = ls.permuted_directions(dirs, genes, held, scored, 1007)
+    c = ls.permuted_directions(dirs, genes, held, scored, 1008)
+    on = np.isin(genes, scored)
     assert set(a) == set(dirs)
     for g, v in dirs.items():
         moved = np.isfinite(v) & ~np.isin(genes, held)
         assert np.array_equal(np.isnan(a[g]), np.isnan(v))
         assert np.array_equal(a[g][~moved & np.isfinite(v)], v[~moved & np.isfinite(v)])
-        assert sorted(a[g][moved]) == sorted(v[moved])
-        assert not np.array_equal(a[g][moved], v[moved])
+        for stratum in (moved & on, moved & ~on):
+            assert sorted(a[g][stratum]) == sorted(v[stratum])
+            assert not np.array_equal(a[g][stratum], v[stratum])
         assert np.array_equal(a[g], b[g], equal_nan=True)
     assert not all(np.array_equal(a[g], c[g], equal_nan=True) for g in dirs)
-    rng = np.random.default_rng([1007, 46])  # the stream: [build seed, 46], groups in sorted order
+    rng = np.random.default_rng([1007, 46])  # the stream: [build seed, 46], groups in sorted order, scored first
     want = {}
     for g in sorted(dirs):
         v = np.array(dirs[g], dtype=float)
-        idx = np.flatnonzero(np.isfinite(v) & ~np.isin(genes, held))
-        v[idx] = v[idx][rng.permutation(len(idx))]
+        moved = np.isfinite(v) & ~np.isin(genes, held)
+        for stratum in (moved & on, moved & ~on):
+            idx = np.flatnonzero(stratum)
+            v[idx] = v[idx][rng.permutation(len(idx))]
         want[g] = v
     assert all(np.array_equal(a[g], want[g], equal_nan=True) for g in dirs)
     assert ls.PLACEBO_STREAM == 46
 
 
-def test_the_placebo_is_twice_the_step_with_permuted_directions_only(ls, monkeypatch):
+def test_an_unstratified_permutation_would_move_factor_size_onto_the_scored_genes(ls):
+    """The case must-fix 3 is about: scored genes with larger factors than the rest. The stratified placebo keeps the
+    scored genes' mean |log f| equal to the real direction's; one permutation over every moved gene (fd18e0f8da) does
+    not."""
+    genes = [f"g{i}" for i in range(200)]
+    scored = genes[:20]
+    v = np.r_[np.full(20, 2.0), np.full(180, 0.1)] * np.where(np.arange(200) % 2, 1, -1)
+    dirs = {"CM": v}
+    perm = ls.permuted_directions(dirs, genes, [], scored, 1003)
+    lf = ls.scored_log_factors(dirs, perm, genes, [], scored, 0.2)["CM"]
+    assert lf["m1_r_gmom_x2_perm"] == pytest.approx(lf["m1_r_gmom_x2"]) and lf["m1_r_gmom_x2"] == pytest.approx(0.8)
+    assert lf["m1_r_gmom_perm"] == pytest.approx(lf["m1_r_gmom"]) == pytest.approx(0.4)
+    unstratified = ls.permuted_directions(dirs, genes, [], genes, 1003)  # every moved gene in one stratum
+    lf_u = ls.scored_log_factors(dirs, unstratified, genes, [], scored, 0.2)["CM"]
+    assert lf_u["m1_r_gmom_x2_perm"] < 0.5 * lf_u["m1_r_gmom_x2"]
+
+
+def test_the_scored_log_factors_follow_external_shifts_log_factor(ls):
+    genes = ["a", "b", "c", "d"]
+    d = np.array([1.0, np.nan, -2.0, 4.0])
+    p = np.array([-2.0, np.nan, 1.0, 4.0])
+    lf = ls.scored_log_factors({"CM": d}, {"CM": p}, genes, ["d"], ["a", "b", "d"], 0.2)["CM"]
+    # scored a, b, d: |0.2 x 1|, 0 (NaN), 0 (held) -> mean 0.2/3; placebo |0.2 x -2| -> 0.4/3; at 0.4 twice these
+    assert lf == pytest.approx({"m1_r_gmom": 0.2 / 3, "m1_r_gmom_x2": 0.4 / 3, "m1_r_gmom_perm": 0.4 / 3,
+                                "m1_r_gmom_x2_perm": 0.8 / 3})
+
+
+def test_sparsity_is_read_on_the_scored_genes(ls):
+    X = np.array([[0, 1, 2, 0], [0, 0, 3, 1], [5, 0, 0, 0]], dtype=np.float32)
+    s = ls.sparsity(Stage(X=X, coords=None, celltype=None))
+    assert s == {"zero_share": pytest.approx(7 / 12), "detected_per_cell": pytest.approx(5 / 3)}
+
+
+def _world_with_a_smaller_board_and_a_reordered_start():
+    """_arms_world with the board scoring only every other gene and the start role's genes in reverse order: the
+    permutation must follow the reference role's genes and the board's panel."""
+    ctx, groups, dirs, held = _arms_world()
+    ref = ctx.inputs[ctx.task.reference_role]
+    start = ctx.inputs["start"]
+    inputs = {**ctx.inputs, "start": start[:, list(start.var_names)[::-1]].copy()}
+    board = replace(ctx.board, genes=list(ctx.board.genes)[::2])
+    assert list(ref.var_names) != list(inputs["start"].var_names)
+    return replace(ctx, inputs=inputs, board=board), groups, dirs, held
+
+
+def test_the_placebos_are_the_step_and_twice_it_along_one_set_of_permuted_directions(ls, monkeypatch):
     calls = []
 
     def spy(ctx, directions, groups, fraction, held_m1, held_factors):
@@ -221,29 +277,66 @@ def test_the_placebo_is_twice_the_step_with_permuted_directions_only(ls, monkeyp
                       "held_factors": held_factors})
         return {"m1_r": None, "m1_r_gmom": ("placebo", fraction)}
 
-    ctx, groups, dirs, held = _arms_world()
+    ctx, groups, dirs, held = _world_with_a_smaller_board_and_a_reordered_start()
     monkeypatch.setattr(ls.gc, "m1_r_arms", spy)
-    out = ls.placebo_arm(ctx, dirs, groups, 0.2, held, held)
-    assert out == ("placebo", pytest.approx(0.4)) and len(calls) == 1
-    c = calls[0]
-    assert c["groups"] is groups and c["held_m1"] is held and c["held_factors"] is held
+    out = ls.placebo_arms(ctx, dirs, groups, 0.2, held, held)
+    assert out == {PERM1: ("placebo", pytest.approx(0.2)), PLACEBO: ("placebo", pytest.approx(0.4))}
+    assert len(calls) == 2 and calls[0]["directions"] is calls[1]["directions"]
     genes = list(ctx.inputs[ctx.task.reference_role].var_names)
-    want = ls.permuted_directions(dirs, genes, held, ctx.seed)
-    assert set(c["directions"]) == set(dirs)
-    assert all(np.array_equal(c["directions"][g], want[g], equal_nan=True) for g in dirs)
-    assert not all(np.array_equal(c["directions"][g], dirs[g], equal_nan=True) for g in dirs)
+    want = ls.permuted_directions(dirs, genes, held, list(ctx.board.genes), ctx.seed)
+    start_order = ls.permuted_directions(dirs, list(ctx.inputs["start"].var_names), held, list(ctx.board.genes),
+                                         ctx.seed)
+    whole_genome = ls.permuted_directions(dirs, genes, held, genes, ctx.seed)
+    for c in calls:
+        assert c["groups"] is groups and c["held_m1"] is held and c["held_factors"] is held
+        assert set(c["directions"]) == set(dirs)
+        assert all(np.array_equal(c["directions"][g], want[g], equal_nan=True) for g in dirs)
+        assert not all(np.array_equal(c["directions"][g], start_order[g], equal_nan=True) for g in dirs)
+        assert not all(np.array_equal(c["directions"][g], whole_genome[g], equal_nan=True) for g in dirs)
+        assert not all(np.array_equal(c["directions"][g], dirs[g], equal_nan=True) for g in dirs)
+    # the held mask is the reference order's: the held genes keep their real values at the reference's positions
+    pos = [genes.index(h) for h in held if h in genes]
+    assert pos and all(np.array_equal(calls[0]["directions"][g][pos], dirs[g][pos]) for g in dirs)
 
 
-def test_the_placebo_with_an_idle_permutation_is_twice_the_step_bit_for_bit(ls, monkeypatch):
-    """The idle case: with the permutation the identity the placebo is m1_r_gmom_x2 bit for bit; with the real one it
-    moves the cells differently."""
+def test_the_placebos_with_an_idle_permutation_are_their_arms_bit_for_bit(ls, monkeypatch):
+    """The idle case: with the permutation the identity m1_r_gmom_x2_perm is m1_r_gmom_x2 and m1_r_gmom_perm is
+    m1_r_gmom bit for bit; with the real one both move the cells differently."""
     ctx, groups, dirs, held = _arms_world()
-    x2 = ls.scaled_arms(ctx, dirs, groups, 0.2, held, held)["m1_r_gmom_x2"]
-    real = ls.placebo_arm(ctx, dirs, groups, 0.2, held, held)
-    assert real.X.shape == x2.X.shape and not np.array_equal(real.X, x2.X)
-    monkeypatch.setattr(ls, "permuted_directions", lambda d, genes, held, seed: dict(d))
-    idle = ls.placebo_arm(ctx, dirs, groups, 0.2, held, held)
-    assert idle.X.tobytes() == x2.X.tobytes()
+    arms = ls.scaled_arms(ctx, dirs, groups, 0.2, held, held)
+    real = ls.placebo_arms(ctx, dirs, groups, 0.2, held, held)
+    for p, a in ((PLACEBO, "m1_r_gmom_x2"), (PERM1, "m1_r_gmom")):
+        assert real[p].X.shape == arms[a].X.shape and not np.array_equal(real[p].X, arms[a].X)
+    monkeypatch.setattr(ls, "permuted_directions", lambda d, genes, held, scored, seed: dict(d))
+    idle = ls.placebo_arms(ctx, dirs, groups, 0.2, held, held)
+    assert idle[PLACEBO].X.tobytes() == arms["m1_r_gmom_x2"].X.tobytes()
+    assert idle[PERM1].X.tobytes() == arms["m1_r_gmom"].X.tobytes()
+
+
+# sha256 of every arm's predicted matrix on _arms_world, b0 from harness._b0_t1(harness.B0_DAMPING), computed with
+# experiments/t1_m1/lib_step_read.py as it stood at fd18e0f8da (its scaled_arms and harness's b0 on this machine).
+GOLDEN_ARMS_FD18 = {
+    "b0": "21640b33ba8c93bb80f84e56bcd8f1f734cdb7497169a443401cd46cc3dafec5",
+    "m1_r_gmom": "ce657aaaf9faf415edbfb76815bd79e2e2db206dc313932dc0cb7a3be4846589",
+    "m1_r_gmom_x15": "5b437f9328463d76d15746da36973df208f9638f7f3b6a3f4237f40b235ab44e",
+    "m1_r_gmom_x2": "a15d04d020c386082bb8fc4c9317e55898e3c70d8ed99326e4f3479706fa1eab",
+    "m1_r_gmom_x3": "0762d2cb557e7768d529c3f046a41fb6b6db8ab5124072ff726b9e9ba1270742",
+    "m1_r_gmom_x4": "4bcd287411511e078aba78d2d6adfcb040fd9ceba19b98eb9a4dc4922aed2f66",
+}
+
+
+def test_the_arms_of_fd18e0f8da_keep_their_output_bit_for_bit(ls):
+    """b0, m1_r_gmom and the four scaled arms, as one seed's build makes them now (build_seed), equal what
+    fd18e0f8da built on the synthetic world; the two placebos are new or changed (stratified) and are not pinned."""
+    ctx, groups, dirs, held = _arms_world()
+    preds, log_factors = ls.build_seed(ctx, harness._b0_t1(harness.B0_DAMPING), dirs, groups, 0.2, held, held)
+    assert list(preds) == ["b0", "m1_r_gmom", *SCALED, PERM1, PLACEBO]
+    got = {a: ls.prediction_sha256(preds[a]) for a in ("b0", "m1_r_gmom", *SCALED)}
+    assert got == GOLDEN_ARMS_FD18
+    assert set(log_factors) == set(dirs)
+    assert all(set(v) == {"m1_r_gmom", "m1_r_gmom_x2", PERM1, PLACEBO} for v in log_factors.values())
+    for v in log_factors.values():  # the board scores every gene here: one stratum, the same multiset
+        assert v[PLACEBO] == pytest.approx(v["m1_r_gmom_x2"]) and v[PERM1] == pytest.approx(v["m1_r_gmom"])
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -267,31 +360,42 @@ def _arm(score, de_part=0.5, mmd_u=0.1):
             "skills": sk}
 
 
+SPARSE = {"zero_share": 0.25, "detected_per_cell": 6.0}
+LOGF = {"CM": {"m1_r_gmom": 0.1, "m1_r_gmom_x2": 0.2, PERM1: 0.1, PLACEBO: 0.2}}
+
+
 def _task(truth, gains=None, per_seed=None, seeds=range(10), commit="c" * 40, clean=True, fraction=0.2, fractions=None,
           base_shift=0.0, identical=(), rows=None, contamination=None, de_part=0.5, sha=None, stamp=None,
-          anchor_failures=None):
-    """A task file. gains: arm -> gain over m1_r_gmom on every seed (the placebo included); per_seed: arm -> ten gains
+          anchor_failures=None, sparsity=True, arm_list=ALL_ARMS):
+    """A task file. gains: arm -> gain over m1_r_gmom on every seed (the placebos included); per_seed: arm -> ten gains
     (overrides gains). An arm with no gain given gets a distinct tiny offset, +d on seed 0 and -d on seed 1, so that
-    no two arms score alike on every seed; `identical` names arms that copy their base's record (a scaled arm
-    m1_r_gmom's, the placebo m1_r_gmom_x2's)."""
+    no two arms score alike on every seed; `identical` names arms that copy their base's record (a scaled arm and
+    m1_r_gmom_perm m1_r_gmom's, m1_r_gmom_x2_perm m1_r_gmom_x2's). arm_list: the arms written (the arms of
+    fd18e0f8da for the golden reading)."""
     gains = gains or {}
     out = []
     for i, s in enumerate(seeds):
         arms = {"b0": _arm(B0), "m1_r_gmom": _arm(BASE + base_shift)}
-        for j, a in enumerate((*SCALED, PLACEBO)):
+        for j, a in enumerate((*SCALED, PLACEBO, PERM1)):
+            if a not in arm_list:
+                continue
             if per_seed and a in per_seed:
                 g = per_seed[a][i]
             elif a in gains:
                 g = gains[a]
-            else:
-                d = 1e-9 * (j + 1)
+            else:  # m1_r_gmom_perm takes m1_r_gmom_x2_perm's offset, so their default difference is exactly 0
+                d = 1e-9 * (min(j, 4) + 1)
                 g = d if i == 0 else -d if i == 1 else 0.0
             arms[a] = _arm(BASE + base_shift + g, de_part=de_part)
         for a in identical:
             arms[a] = dict(arms["m1_r_gmom_x2" if a == PLACEBO else "m1_r_gmom"])
-        out.append({"seed": s, "floor": 50.0, "arms": arms,
-                    "sha256": {a: (sha or {}).get(a, f"{a}-{s}") for a in ALL_ARMS}})
-    fr = fractions or {"m1_r_gmom": fraction, **{a: fraction * m for a, m in MULT.items()}, PLACEBO: fraction * 2}
+        row = {"seed": s, "floor": 50.0, "arms": arms, "sha256": {a: (sha or {}).get(a, f"{a}-{s}") for a in arm_list}}
+        if sparsity:
+            row["sparsity"] = {a: dict(SPARSE) for a in arm_list}
+            row["scored_log_factors"] = json.loads(json.dumps(LOGF))
+        out.append(row)
+    fr = fractions or {"m1_r_gmom": fraction, **{a: fraction * m for a, m in MULT.items()}, PLACEBO: fraction * 2,
+                       PERM1: fraction}
     rec = {"label": "synthetic", "task": "T1/E9.5->E10.5:chamber", "truth": truth, "truth_rows": rows,
            "truth_contamination": contamination, "fraction": fraction, "fractions": fr, "multipliers": dict(MULT),
            "seeds": list(seeds), "rows": out,
@@ -352,10 +456,15 @@ def _read(ls, tmp_path, by_truth=None, over=None, t44_shift=0.0, committed_shift
 UP = {"m1_r_gmom_x2": 1.0}
 
 
+HEADING = ("Twice the step's extra gain over m1_r_gmom net of the same extra step along the permuted directions, "
+           f"(m1_r_gmom_x2 - m1_r_gmom) - ({PLACEBO} - {PERM1}), on the library truths where m1_r_gmom_x2 is ahead "
+           "of m1_r_gmom: ")
+
+
 @pytest.mark.parametrize("by_truth, statement", [
     ({"lib3": UP}, "x2 ahead on lib3 only"),
-    ({"lib1": UP, "lib2": UP}, "x2 ahead on both portion libraries"),
-    ({"lib1": UP, "lib2": UP, "lib3": UP}, "x2 ahead on both portion libraries"),
+    ({"lib1": UP, "lib2": UP}, "x2 ahead on both portion libraries; not ahead on lib3"),
+    ({"lib1": UP, "lib2": UP, "lib3": UP}, "x2 ahead on both portion libraries; ahead on lib3 too"),
     ({"lib1": UP, "lib3": UP}, "other"),
     ({"lib2": UP}, "other"),
     ({}, "other"),
@@ -367,33 +476,67 @@ def test_each_statement_is_reached_by_a_table_built_for_it(ls, tmp_path, by_trut
     for k in ("lib1", "lib2", "lib3"):
         want = by_truth.get(k, {}).get("m1_r_gmom_x2", 0.0)
         g = r["kind"][k]
-        assert g["gain"] == pytest.approx(want, abs=1e-9)
-        assert g["de"] == pytest.approx(want / 2, abs=1e-9)
-        assert g["mmd_u_variogram"] == pytest.approx(want / 2, abs=1e-9)
+        assert g["gain"] == pytest.approx(want, abs=1e-8)
+        assert g["de"] == pytest.approx(want / 2, abs=1e-8)
+        assert g["mmd_u_variogram"] == pytest.approx(want / 2, abs=1e-8)
         assert g["test"] == ("ahead" if want > 0.3 else "neither")
+        assert g["reading"] == ("difference in differences ahead" if want > 0.3 else ls.NO_STEP_GAIN)
         pc = r["placebo_comparisons"][k]
         assert pc["base"] == PLACEBO and pc["change"] == "m1_r_gmom_x2"
     txt = (tmp_path / "out" / "t46.txt").read_text()
-    assert f"Twice the step against its placebo (m1_r_gmom_x2 against {PLACEBO}): {statement}" in txt
-    for k in ("lib1", "lib2", "lib3"):
-        assert f"on {k}: m1_r_gmom_x2 against {PLACEBO}: " in txt
-        assert f"on {k}: m1_r_gmom_x2 against m1_r_gmom: " in txt
+    assert HEADING + statement in txt
+    for k in ls.TRUTHS:
+        assert f"on {k}: reported, not read: m1_r_gmom_x2 against {PLACEBO}: " in txt
+        assert f"on {k}: reported, not read: m1_r_gmom against {PERM1}: " in txt
+        assert f"on {k}: gate: m1_r_gmom_x2 against m1_r_gmom: " in txt
+        assert f"on {k}: (m1_r_gmom_x2 - m1_r_gmom) - ({PLACEBO} - {PERM1}): " in txt
+    assert "on pooled (reported only; the pooled truth carries no statement)" in txt
     assert not any(str(n) in txt for n in (*ROWS.values(), *CONTAM.values()))  # no cell count is printed
     assert "the kind's" not in txt
 
 
-def test_the_statement_is_read_against_the_placebo_not_against_the_base(ls, tmp_path):
-    """Twice the step ahead of m1_r_gmom on every library, as far ahead as its placebo: a gain the sparsification
-    alone explains, which is no statement; ahead of its placebo on lib3 only is."""
-    same = {"m1_r_gmom_x2": [1.0] * 10, PLACEBO: [1.0] * 9 + [1.0 + 1e-6]}
-    r = _read(ls, tmp_path, over={k: {"per_seed": same} for k in ("lib1", "lib2", "lib3")})
+def test_the_statement_is_read_on_the_difference_of_paired_increments(ls, tmp_path):
+    """Must-fix 1 of the second review: x2 beats its placebo on every library (Feng's whole step against a random one)
+    and beats m1_r_gmom, but its increment over m1_r_gmom does not beat the placebo's increment over m1_r_gmom_perm:
+    'other'. Read against x2_perm alone (fd18e0f8da), this table said 'x2 ahead on both portion libraries'."""
+    worse = {"m1_r_gmom_x2": [1.0] * 10, PLACEBO: [-2.0] * 10, PERM1: [-3.0] * 10}
+    r = _read(ls, tmp_path, over={k: {"per_seed": worse} for k in ("lib1", "lib2", "lib3")})
     assert r["valid"] and r["outcome"] == "other"
-    assert all(r["comparisons"][k]["m1_r_gmom_x2"]["test"] == "ahead" for k in ("lib1", "lib2", "lib3"))
-    assert all(r["kind"][k]["against_m1_r_gmom"]["test"] == "ahead" for k in ("lib1", "lib2", "lib3"))
-    assert all(r["kind"][k]["test"] == "neither" for k in ("lib1", "lib2", "lib3"))
-    r = _read(ls, tmp_path / "b", {"lib3": {"m1_r_gmom_x2": 1.0, PLACEBO: 0.5}},
-              over={k: {"per_seed": same} for k in ("lib1", "lib2")})
+    for k in ("lib1", "lib2", "lib3"):
+        assert r["placebo_comparisons"][k]["test"] == "ahead"  # x2 against x2_perm alone: ahead, reported only
+        assert r["kind"][k]["against_placebo"]["test"] == "ahead"
+        assert r["kind"][k]["against_m1_r_gmom"]["test"] == "ahead"  # the gate passes
+        d = r["did_comparisons"][k]
+        assert d["mean"] == pytest.approx(0.0, abs=1e-9) and d["test"] == "neither"
+        assert r["kind"][k]["reading"] == "difference in differences neither" and not r["kind"][k]["ahead"]
+    r = _read(ls, tmp_path / "b", over={"lib3": {"per_seed": {"m1_r_gmom_x2": [1.0] * 10, PLACEBO: [0.0] * 10,
+                                                                PERM1: [-0.5] * 10}},
+                                         **{k: {"per_seed": worse} for k in ("lib1", "lib2")}})
     assert r["outcome"] == "x2 ahead on lib3 only"
+    d3 = r["did_comparisons"]["lib3"]
+    assert d3["mean"] == pytest.approx(0.5) and d3["test"] == "ahead"
+    r = _read(ls, tmp_path / "c", over={"lib1": {"per_seed": {"m1_r_gmom_x2": [1.0] * 10, PLACEBO: [2.5] * 10,
+                                                                PERM1: [0.5] * 10}}})
+    d1 = r["did_comparisons"]["lib1"]
+    assert d1["test"] == "behind" and d1["mean"] == pytest.approx(-1)
+
+
+def test_a_truth_where_x2_is_not_ahead_of_the_base_reads_no_larger_step_gain(ls, tmp_path):
+    """The gate: x2 behind m1_r_gmom while its placebo falls further (a positive paired difference) is not ahead on
+    that truth; the same paired difference with x2 ahead of m1_r_gmom is."""
+    down = {"m1_r_gmom_x2": [-1.0] * 10, PLACEBO: [-4.0] * 10, PERM1: [-1.0] * 10}
+    up = {"m1_r_gmom_x2": [1.0] * 10, PLACEBO: [-2.0] * 10, PERM1: [-1.0] * 10}
+    r = _read(ls, tmp_path, over={"lib3": {"per_seed": down}})
+    k3 = r["kind"]["lib3"]
+    assert r["did_comparisons"]["lib3"]["test"] == "ahead" and r["did_comparisons"]["lib3"]["mean"] == pytest.approx(2)
+    assert k3["against_m1_r_gmom"]["test"] == "behind"
+    assert k3["reading"] == "no larger-step gain on this truth" and k3["ahead"] is False and r["outcome"] == "other"
+    txt = (tmp_path / "out" / "t46.txt").read_text()
+    assert "on lib3: no larger-step gain on this truth; counts as ahead: False" in txt
+    r = _read(ls, tmp_path / "b", over={"lib3": {"per_seed": up}})
+    assert r["kind"]["lib3"]["ahead"] is True and r["outcome"] == "x2 ahead on lib3 only"
+    r = _read(ls, tmp_path / "c", over={"lib1": {"per_seed": down}, "lib2": {"per_seed": up}, "lib3": {"per_seed": up}})
+    assert r["outcome"] == "other"  # lib1 gated out: the portions are not both ahead, and lib3 is not alone
 
 
 def test_the_parts_split_the_gain_by_the_boards_weights(ls, tmp_path):
@@ -421,6 +564,85 @@ def test_each_gain_is_reported_over_its_per_seed_sd_with_its_raw_metric_differen
     assert "n/a (sd 0)" in (tmp_path / "flat" / "out" / "t46.txt").read_text()
 
 
+def _golden_truths():
+    """A fixed table with spread across seeds, arms and truths (two-decimal gains from a fixed generator)."""
+    rng = np.random.default_rng(11)
+    centre = {"m1_r_gmom_x15": 0.6, "m1_r_gmom_x2": 1.1, "m1_r_gmom_x3": 1.3, "m1_r_gmom_x4": 0.9, PLACEBO: -0.4,
+              PERM1: -0.2}
+    truths = {}
+    for i, k in enumerate(("pooled", "lib1", "lib2", "lib3")):
+        per = {a: [round(float(c * (1 + 0.3 * i) + rng.normal(0, 0.4)), 2) for _ in range(10)]
+               for a, c in centre.items()}
+        truths[k] = _task(k, per_seed=per, rows=ROWS[k], contamination=CONTAM[k], de_part=0.3 + 0.1 * i,
+                          sha={"m1_r_gmom_x4": "same-x4"} if k != "lib2" else None)
+    return truths
+
+
+def _fd18_sections(r):
+    """The parts of a reading that fd18e0f8da already computed and that no finding of the second review changes."""
+    lib = ("lib1", "lib2", "lib3")
+    return {"comparisons": r["comparisons"], "neighbour_comparisons": r["neighbour_comparisons"],
+            "placebo_comparisons": r["placebo_comparisons"],
+            "mean_scores": {k: {a: v[a] for a in OLD_ARMS} for k, v in r["mean_scores"].items()},
+            "contamination_share": r["contamination_share"],
+            "turn": {k: {f: tu[f] for f in ("by_multiplier", "best", "statement", "tie_rule", "neighbours")}
+                     for k, tu in r["turn"].items()},
+            "sha256": {a: r["sha256_across_truths"]["arms"][a] for a in OLD_ARMS},
+            "against_m1_r_gmom": {k: r["kind"][k]["against_m1_r_gmom"] for k in lib},
+            "reproduction": r["validity"]["reproduction"]}
+
+
+def _sections_sha(r) -> str:
+    return hashlib.sha256(json.dumps(_fd18_sections(r), sort_keys=True).encode()).hexdigest()
+
+
+# _sections_sha of fd18e0f8da's reading of _golden_truths() (its read on the same files, through a copy of the
+# module as it stood at that commit).
+GOLDEN_READING_FD18 = "1b0614b542ec503613f338298eb394261c9a11310e5d93989363d7d250c2e3f2"
+
+
+def test_the_reading_of_fd18e0f8da_keeps_its_unchanged_quantities_bit_for_bit(ls, tmp_path):
+    out, t42, t44 = _write(ls, tmp_path, _golden_truths())
+    r = ls.read(out, t42, t44)["reading"]
+    assert r["valid"]
+    assert _sections_sha(r) == GOLDEN_READING_FD18
+
+
+def test_a_nan_skill_counts_zero_in_the_points(ls, tmp_path):
+    """A non-finite skill counts 0, as on the server: the de part with NaN de_direction skills on some seeds equals
+    the part computed with 0 in their place."""
+    truths = {k: _task(k, gains={"m1_r_gmom_x2": 1.0} if k == "lib1" else {}, rows=ROWS[k], contamination=CONTAM[k])
+              for k in ls.TRUTHS}
+    for row in truths["lib1"]["rows"][:3]:
+        row["arms"]["m1_r_gmom_x2"]["skills"]["de_direction"] = float("nan")
+    rows = truths["lib1"]["rows"]
+    part = ls.points_by_part(rows, "m1_r_gmom", "m1_r_gmom_x2")
+    want = np.mean([100 * W["de_direction"] * ((0.0 if i < 3 else row["arms"]["m1_r_gmom_x2"]["skills"]["de_direction"])
+                                               - row["arms"]["m1_r_gmom"]["skills"]["de_direction"])
+                    for i, row in enumerate(rows)])
+    assert np.isfinite(part["by_metric"]["de_direction"])
+    assert part["by_metric"]["de_direction"] == pytest.approx(want)
+    assert want < 0  # the NaN seeds lose the base's whole de_direction skill: 0 replaced it, not the NaN dropped
+
+
+def test_the_sparsity_and_scored_log_factors_are_reported_and_printed(ls, tmp_path):
+    truths = {k: _task(k, gains={"m1_r_gmom_x2": 1.0} if k == "lib3" else {}, rows=ROWS[k], contamination=CONTAM[k])
+              for k in ls.TRUTHS}
+    for i, row in enumerate(truths["lib2"]["rows"]):
+        row["sparsity"][PLACEBO] = {"zero_share": 0.3 + 0.01 * i, "detected_per_cell": 5.0 - 0.1 * i}
+        row["scored_log_factors"]["CM"][PLACEBO] = 0.25 + 0.01 * i
+    out, t42, t44 = _write(ls, tmp_path, truths)
+    r = ls.read(out, t42, t44)["reading"]
+    assert r["valid"]
+    assert r["sparsity"]["lib2"][PLACEBO] == pytest.approx({"zero_share": 0.345, "detected_per_cell": 4.55})
+    assert r["sparsity"]["lib1"]["m1_r_gmom"] == pytest.approx(SPARSE)
+    assert set(r["sparsity"]["lib1"]) == set(ALL_ARMS)
+    assert r["scored_log_factors"]["lib2"]["CM"][PLACEBO] == pytest.approx(0.295)
+    txt = (out / "t46.txt").read_text()
+    assert f"{PLACEBO} zero share 0.3450, detected per cell 4.55" in txt
+    assert f"CM: m1_r_gmom 0.1000, m1_r_gmom_x2 0.2000, {PERM1} 0.1000, {PLACEBO} 0.2950" in txt
+
+
 def test_the_limits_are_in_the_text(ls, tmp_path):
     _read(ls, tmp_path, {"lib3": UP})
     txt = (tmp_path / "out" / "t46.txt").read_text()
@@ -432,53 +654,81 @@ def test_the_limits_are_in_the_text(ls, tmp_path):
 
 
 def test_a_gain_of_exactly_point_three_is_not_ahead_and_a_loss_is_behind(ls, tmp_path):
-    r = _read(ls, tmp_path, {"lib3": {"m1_r_gmom_x2": 0.3, PLACEBO: 0.0}})
-    assert r["valid"] and r["placebo_comparisons"]["lib3"]["test"] == "neither" and r["outcome"] == ls.OTHER
-    r = _read(ls, tmp_path / "exact", {"lib3": {"m1_r_gmom_x2": 0.3, PLACEBO: 0.0}},
+    r = _read(ls, tmp_path, {"lib3": {"m1_r_gmom_x2": 0.5, PLACEBO: 0.0, PERM1: -0.2}})
+    assert r["valid"] and r["did_comparisons"]["lib3"]["test"] == "neither" and r["outcome"] == ls.OTHER
+    r = _read(ls, tmp_path / "exact", {"lib3": {"m1_r_gmom_x2": 0.5, PLACEBO: 0.0, PERM1: -0.2}},
               over={"lib3": {"base_shift": -BASE}})
-    c = r["placebo_comparisons"]["lib3"]
+    c = r["did_comparisons"]["lib3"]
     assert r["valid"] and c["mean"] == pytest.approx(0.3, abs=1e-15) and c["seeds_ahead"] == 10
-    assert c["test"] == "neither"
-    r = _read(ls, tmp_path / "b", {"lib3": {"m1_r_gmom_x2": 0.31, PLACEBO: 0.0}})
-    assert r["placebo_comparisons"]["lib3"]["test"] == "ahead" and r["outcome"] == ls.X2_LIB3_ONLY
+    assert c["test"] == "neither" and r["kind"]["lib3"]["against_m1_r_gmom"]["test"] == "ahead"
+    r = _read(ls, tmp_path / "b", {"lib3": {"m1_r_gmom_x2": 0.51, PLACEBO: 0.0, PERM1: -0.2}})
+    assert r["did_comparisons"]["lib3"]["test"] == "ahead" and r["outcome"] == ls.X2_LIB3_ONLY
     r = _read(ls, tmp_path / "c", {"lib1": {"m1_r_gmom_x2": -0.3, "m1_r_gmom_x3": -0.31}})
     assert r["comparisons"]["lib1"]["m1_r_gmom_x2"]["test"] == "neither"
     assert r["comparisons"]["lib1"]["m1_r_gmom_x3"]["test"] == "behind"
+    r = _read(ls, tmp_path / "e", {"lib1": {"m1_r_gmom_x2": 1.0, PLACEBO: 2.0, PERM1: 0.69}})
+    assert r["did_comparisons"]["lib1"]["test"] == "behind"
 
 
 def test_ahead_needs_eight_seeds(ls, tmp_path):
     seven = [1.0] * 7 + [-0.1] * 3
     eight = [1.0] * 8 + [-0.1] * 2
-    zero = [0.0] * 10
-    r = _read(ls, tmp_path, over={"lib3": {"per_seed": {"m1_r_gmom_x2": seven, PLACEBO: zero}}})
-    c = r["placebo_comparisons"]["lib3"]
+    minus = [-1.0] * 10
+    up = [2.0] * 10
+    r = _read(ls, tmp_path, over={"lib3": {"per_seed": {"m1_r_gmom_x2": up, PLACEBO: [1.0 - x for x in seven],
+                                                         PERM1: minus}}})
+    c = r["did_comparisons"]["lib3"]
     assert c["seeds_ahead"] == 7 and c["mean"] > 0.3 and c["test"] == "neither"
     assert c["range"] == pytest.approx([-0.1, 1.0])
-    r = _read(ls, tmp_path / "b", over={"lib3": {"per_seed": {"m1_r_gmom_x2": eight, PLACEBO: zero}}})
-    assert r["placebo_comparisons"]["lib3"]["test"] == "ahead" and r["outcome"] == ls.X2_LIB3_ONLY
+    r = _read(ls, tmp_path / "b", over={"lib3": {"per_seed": {"m1_r_gmom_x2": up, PLACEBO: [1.0 - x for x in eight],
+                                                               PERM1: minus}}})
+    assert r["did_comparisons"]["lib3"]["test"] == "ahead" and r["outcome"] == ls.X2_LIB3_ONLY
 
 
-@pytest.mark.parametrize("gains, best, statement, separated", [
+@pytest.mark.parametrize("gains, best, statement, separated, later", [
     ({"m1_r_gmom_x15": 0.5, "m1_r_gmom_x2": 1.0, "m1_r_gmom_x3": 1.5, "m1_r_gmom_x4": 2.0}, 4.0, "still rising at 4",
-     4.0),
-    ({"m1_r_gmom_x15": 0.5, "m1_r_gmom_x2": 1.0, "m1_r_gmom_x3": 0.4, "m1_r_gmom_x4": -1.0}, 2.0, "turns at 2", 2.0),
-    ({"m1_r_gmom_x15": -0.5, "m1_r_gmom_x2": -1.0, "m1_r_gmom_x3": -2.0, "m1_r_gmom_x4": -3.0}, 1.0, "turns at 1", 1.0),
-    ({"m1_r_gmom_x15": 0.5, "m1_r_gmom_x2": 0.5, "m1_r_gmom_x3": 0.2, "m1_r_gmom_x4": 0.1}, 1.5, "turns at 1.5", 1.5),
+     4.0, []),
+    ({"m1_r_gmom_x15": 0.5, "m1_r_gmom_x2": 1.0, "m1_r_gmom_x3": 0.4, "m1_r_gmom_x4": -1.0}, 2.0, "turns at 2", 2.0,
+     []),
+    ({"m1_r_gmom_x15": -0.5, "m1_r_gmom_x2": -1.0, "m1_r_gmom_x3": -2.0, "m1_r_gmom_x4": -3.0}, 1.0, "turns at 1", 1.0,
+     []),
+    ({"m1_r_gmom_x15": 0.5, "m1_r_gmom_x2": 0.5, "m1_r_gmom_x3": 0.2, "m1_r_gmom_x4": 0.1}, 1.5, "turns at 1.5", 1.5,
+     []),
     ({"m1_r_gmom_x15": 0.5, "m1_r_gmom_x2": 1.0, "m1_r_gmom_x3": 1.2, "m1_r_gmom_x4": 1.3}, 4.0, "still rising at 4",
-     2.0),
+     2.0, []),
+    # the second review's two traced tables: a break in the chain stops the walk; the later pass is listed, not chained
+    ({"m1_r_gmom_x15": 1.0, "m1_r_gmom_x2": 0.5, "m1_r_gmom_x3": 1.0, "m1_r_gmom_x4": 1.0}, 1.5, "turns at 1.5", 1.5,
+     [3.0]),
+    ({"m1_r_gmom_x15": 0.1, "m1_r_gmom_x2": 0.2, "m1_r_gmom_x3": 1.0, "m1_r_gmom_x4": 1.1}, 4.0, "still rising at 4",
+     1.0, [3.0]),
 ])
-def test_where_the_response_turns(ls, tmp_path, gains, best, statement, separated):
+def test_where_the_response_turns(ls, tmp_path, gains, best, statement, separated, later):
     r = _read(ls, tmp_path, {k: gains for k in ls.TRUTHS})
     for k in ls.TRUTHS:
         tu = r["turn"][k]
         assert tu["best"] == best and tu["statement"] == statement and tu["tie_rule"] == "smallest multiplier"
-        assert tu["separated"] == separated
-        assert tu["separated_statement"] == f"separated up to {separated:g}; not separated beyond {separated:g}"
+        assert tu["separated"] == separated and tu["later_passes"] == later
+        want = f"separated up to {separated:g}; not separated beyond {separated:g}"
+        if later:
+            want += f" (a later pass after a failed step, not chained: {', '.join(f'{m:g}' for m in later)})"
+        assert tu["separated_statement"] == want
         assert r["mean_scores"][k]["m1_r_gmom"] == pytest.approx(BASE)
     assert r["neighbour_comparisons"]["lib1"]["m1_r_gmom_x15"]["base"] == "m1_r_gmom"
     assert r["neighbour_comparisons"]["lib1"]["m1_r_gmom_x4"]["base"] == "m1_r_gmom_x3"
     txt = (tmp_path / "out" / "t46.txt").read_text()
     assert f"not separated beyond {separated:g}" in txt and "smallest on a tie" in txt
+
+
+def test_each_neighbour_gain_is_also_given_per_tenth_of_fraction(ls, tmp_path):
+    """The neighbour steps are 0.1, 0.1, 0.2 and 0.2 of the bracket: equal gains per step are half as large per
+    tenth at 3 and 4."""
+    gains = {"m1_r_gmom_x15": 0.5, "m1_r_gmom_x2": 1.0, "m1_r_gmom_x3": 1.5, "m1_r_gmom_x4": 2.0}
+    r = _read(ls, tmp_path, {k: gains for k in ls.TRUTHS})
+    per = r["turn"]["lib2"]["gain_per_tenth"]
+    assert per == pytest.approx({"m1_r_gmom_x15": 0.5, "m1_r_gmom_x2": 0.5, "m1_r_gmom_x3": 0.25,
+                                 "m1_r_gmom_x4": 0.25})
+    txt = (tmp_path / "out" / "t46.txt").read_text()
+    assert "m1_r_gmom_x3 ahead, +0.25 per 0.1 of fraction" in txt
 
 
 def test_the_contamination_share_is_reported_as_a_fraction(ls, tmp_path):
@@ -490,7 +740,7 @@ def test_the_contamination_share_is_reported_as_a_fraction(ls, tmp_path):
 
 
 def test_the_predictions_sha256_agreement_is_reported(ls, tmp_path):
-    same = {a: "same" for a in ALL_ARMS}
+    same = {a: f"same-{a}" for a in ALL_ARMS}
     r = _read(ls, tmp_path, sha=same)
     assert r["valid"] and r["sha256_across_truths"]["all_agree"]
     r = _read(ls, tmp_path / "b", sha=same, over={"lib2": {"sha": {**same, "m1_r_gmom_x4": "other"}}})
@@ -517,7 +767,17 @@ FAILURE = [{"seed": 3, "reason": "T1/E9.5->E10.5:chamber seed 3: inverted"}]
     ({"lib2": {"clean": None}}, {}, "not clean"),
     ({"lib2": {"stamp": {"commit": "c" * 40, "utc": "x", "inputs": {}}}}, {}, "not clean"),
     ({"lib2": {"identical": ("m1_r_gmom_x3",)}}, {}, "exactly as m1_r_gmom"),
-    ({"lib1": {"identical": (PLACEBO,)}}, {}, "permutation idle"),
+    ({"lib1": {"identical": (PLACEBO,)}}, {}, f"the placebo {PLACEBO} scores exactly as m1_r_gmom_x2"),
+    ({"lib1": {"identical": (PERM1,)}}, {}, f"the placebo {PERM1} scores exactly as m1_r_gmom on every seed"),
+    ({"lib2": {"sha": {PLACEBO: "same", "m1_r_gmom_x2": "same"}}}, {},
+     f"the placebo {PLACEBO}'s predictions have m1_r_gmom_x2's sha256 on every seed"),
+    ({"lib3": {"sha": {PERM1: "same", "m1_r_gmom": "same"}}}, {},
+     f"the placebo {PERM1}'s predictions have m1_r_gmom's sha256 on every seed"),
+    ({"lib3": {"fractions": {"m1_r_gmom": 0.2, "m1_r_gmom_x15": 0.3, "m1_r_gmom_x2": 0.4, "m1_r_gmom_x3": 0.6,
+                             "m1_r_gmom_x4": 0.8, PLACEBO: 0.4, PERM1: 0.4}}}, {},
+     "wrong fraction on ['m1_r_gmom_perm']"),
+    ({"lib2": {"arm_list": OLD_ARMS}}, {}, "arms ['m1_r_gmom_perm'] missing"),
+    ({"lib1": {"sparsity": False}}, {}, "sparsity or scored log-factor records are missing"),
     ({"lib3": {"rows": 3430}}, {}, "do not add up"),
     ({"lib3": {"rows": None}}, {}, "do not add up"),
     ({"lib2": {"contamination": 198}}, {}, "contamination cells do not add up"),

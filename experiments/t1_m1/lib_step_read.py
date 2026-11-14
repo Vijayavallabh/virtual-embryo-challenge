@@ -7,7 +7,7 @@ Try T44 read M1's step at 1.5 and 2 times its fraction on the two E10.5 cuts and
 response still rising at twice the step. Its truth differs from its reference in the kind of sample as well as in age.
 The released E10.5 file's three libraries are of two kinds: libraries 1 and 2 are embryo portions (the kind E9.5's two
 libraries are, shallower than E9.5), library 3 a dissected-heart sample. This read puts the same steps, and two larger
-ones, to each library as the truth, with a placebo of twice the step that carries no age content.
+ones, to each library as the truth, with a placebo at the step and at twice the step that carries no age content.
 
   run    One truth of the chamber cut T1/E9.5->E10.5:chamber, 10 seeds, on T44's draws and scoring. `pooled`: the cut's
          target as T44's run loads it (harness.filter_target). `lib1`, `lib2`, `lib3`: the same filtered target with
@@ -20,12 +20,18 @@ ones, to each library as the truth, with a placebo of twice the step that carrie
          (harness.task_board on the truth's row count); the reference stage, the inputs and every build argument are
          the cut's. Arms per seed, all from one cell draw: b0 and m1_r_gmom (fraction 0.2) as T42 and T44 build them,
          step_read.step_arms at multipliers 1.5, 2, 3 and 4 (m1_r_gmom_x15, _x2, _x3, _x4: fractions 0.3, 0.4, 0.6,
-         0.8), and the placebo m1_r_gmom_x2_perm: the same build at fraction 0.4 with each Feng group's direction
-         permuted across genes (within the genes the step moves: finite and not held, so the factor magnitudes, the
-         held genes and the sparsification are x2's; the groups in sorted order, one generator on the new stream
-         [build seed, 46], which no other step uses). The task file holds every arm's fraction, the truth's name, the
-         truth's row count and contamination count (checks, compared by code and never printed) and, per seed and arm,
-         the sha256 of the predicted matrix as the scorer reads it. The floor's anchors are made for every seed before
+         0.8), and two placebos, m1_r_gmom_perm (fraction 0.2) and m1_r_gmom_x2_perm (fraction 0.4): the builds of
+         m1_r_gmom and m1_r_gmom_x2 along one set of permuted directions per seed, each Feng group's direction
+         permuted within the genes the step moves (finite and not held), separately among the board's scored genes
+         and among the other moved genes (two strata). The multiset of factors on the scored genes, and on the other
+         moved genes, is then the real arm's; which scored gene gets which factor, and so each cell's sparsification
+         on the scored genes, is not matched, and the task file records it. The groups in sorted order, the scored
+         stratum before the other, one generator per build seed on the stream [build seed, 46], which no other step
+         uses. The task file holds every arm's fraction, the truth's name, the truth's row count and contamination
+         count (checks, compared by code and never printed) and, per seed and arm, the sha256 of the predicted matrix
+         as the scorer reads it, the scored genes' zero share and the mean detected scored genes per cell; per seed
+         and group, the mean absolute log factor on the scored genes for the real direction (at 0.2 and 0.4) and the
+         placebo (at 0.2 and 0.4). The floor's anchors are made for every seed before
          any arm is built; a seed whose anchors invert or go missing is written to the task file with its reason, with
          no scores, and the run is refused. Refused on an existing task file, unless the committed N22 passed, and
          unless experiments/harness/TRIES.md holds row T46.
@@ -44,28 +50,41 @@ choices were made on, and a library truth is a part of a released target read in
 the team captain.
 
 The reading. Void unless the four truths hold the ten seeds at one commit on a clean tree (tree_clean exactly true);
-no truth's file records an anchor failure; each file's task is the chamber cut, its truth its own name, its base
-fraction 0.2, each scaled arm's fraction its multiplier times 0.2 and the placebo's 0.4; on `pooled`, b0 and m1_r_gmom
-equal, seed for seed, their committed scores in experiments/t1_m1/results/t42_m1_eb/tasks/ and m1_r_gmom_x15 and
-m1_r_gmom_x2 theirs in experiments/t1_m1/results/t44_m1_step/tasks/ (the chamber cut's files), each to 1e-9; the three
-library truths' row counts, and their contamination counts, add up to the pooled truth's; no scaled arm scores exactly
-as m1_r_gmom on every seed of a truth, and the placebo does not score exactly as m1_r_gmom_x2 on every seed of a truth
-(scores compared, not the whole record). The test on one truth is the adoption rule's single-task test
-(vec.adoption.keep_change on that truth alone): a mean paired gain above 0.3 with at least 8 of 10 seeds ahead
-("ahead"); "behind" is the same with the sign reversed. The statement, from twice the step against its placebo
-(m1_r_gmom_x2 against m1_r_gmom_x2_perm): "x2 ahead on lib3 only" if it is ahead on lib3 and on neither lib1 nor lib2;
-"x2 ahead on both portion libraries" if it is ahead on both lib1 and lib2; otherwise "other". The labels say what is
-measured, not where a gain comes from. The text gives, for each library, twice the step against the placebo and
-against m1_r_gmom: the gain, the gain over its per-seed sd, the part on the two de terms and the part on mmd_u and the
-variogram (board points: 100 x the board's weight x the mean skill difference, a NaN skill counting 0 as on the
-server), and each scored metric's raw mean difference beside its skill difference. Where the response turns, per
-truth: the multiplier with the highest mean board score among 1, 1.5, 2, 3 and 4 (the smallest on a tie), "still
-rising at 4" if that is 4; and the separated reading: the largest multiplier that passes the single-task test against
-its next smaller neighbour (x1.5 against m1_r_gmom, x2 against x1.5, x3 against x2, x4 against x3), "not separated
-beyond" it (1 when none passes). Reported: per truth every arm's mean board score, each scaled arm's mean paired
-difference from m1_r_gmom with seeds ahead, per-seed range and sd, every metric's mean skill and raw difference, each
-truth's contamination share (a fraction), and whether the predictions' sha256 agree across the truths. The read puts
-nothing forward by itself.
+no truth's file records an anchor failure; every arm (b0, m1_r_gmom, the four scaled arms, both placebos) is on every
+row; each file's task is the chamber cut, its truth its own name, its base fraction 0.2, each scaled arm's fraction its
+multiplier times 0.2, m1_r_gmom_perm's 0.2 and m1_r_gmom_x2_perm's 0.4; on `pooled`, b0 and m1_r_gmom equal, seed for
+seed, their committed scores in experiments/t1_m1/results/t42_m1_eb/tasks/ and m1_r_gmom_x15 and m1_r_gmom_x2 theirs
+in experiments/t1_m1/results/t44_m1_step/tasks/ (the chamber cut's files), each to 1e-9; the three library truths' row
+counts, and their contamination counts, add up to the pooled truth's; on every truth no scaled arm scores exactly as
+m1_r_gmom on every seed, m1_r_gmom_x2_perm does not score exactly as m1_r_gmom_x2 on every seed, m1_r_gmom_perm does
+not score exactly as m1_r_gmom on every seed (scores compared, not the whole record), and neither placebo's recorded
+sha256 equals its real arm's on every seed; every row records every arm's sparsity and the scored log factors.
+The test on one truth is the adoption rule's single-task test (vec.adoption.keep_change on that truth alone): a mean
+paired gain above 0.3 with at least 8 of 10 seeds ahead ("ahead"); "behind" is the same with the sign reversed.
+The statement's quantity, per truth and seed: (m1_r_gmom_x2 - m1_r_gmom) - (m1_r_gmom_x2_perm - m1_r_gmom_perm), the
+larger step's extra gain net of the same extra step along the permuted directions, with the single-task test on that
+paired difference. Gate per truth: where m1_r_gmom_x2 is not ahead of m1_r_gmom by the single-task test, the truth
+reads "no larger-step gain on this truth" and does not count as ahead; otherwise it counts as ahead when the paired
+difference is ahead. The statement, on the library truths as gated: "x2 ahead on lib3 only" if lib3 counts as ahead
+and neither lib1 nor lib2 does; "x2 ahead on both portion libraries" if lib1 and lib2 both count as ahead, followed by
+"; ahead on lib3 too" or "; not ahead on lib3"; otherwise "other". The pooled truth's gate and paired difference are
+reported and carry no statement. The labels say what is measured, not where a gain comes from. The text gives, for
+each truth, the gate (m1_r_gmom_x2 against m1_r_gmom), the paired difference, and, reported and not read,
+m1_r_gmom_x2 against m1_r_gmom_x2_perm and m1_r_gmom against m1_r_gmom_perm: each with the gain, the gain over its
+per-seed sd (ddof 1), seeds ahead, per-seed range, the part on the two de terms and the part on mmd_u and the variogram
+(board points: 100 x the board's weight x the mean skill difference, a NaN skill counting 0 as on the server; for the
+paired difference the real pair's parts minus the placebo pair's), and, for the arm comparisons, each scored metric's
+raw mean difference beside its skill difference. Where the response turns, per truth: the multiplier with the highest
+mean board score among 1, 1.5, 2, 3 and 4 (the smallest on a tie), "still rising at 4" if that is 4; and the separated
+reading: walking x1.5 against m1_r_gmom, x2 against x1.5, x3 against x2, x4 against x3 in that order, the largest
+multiplier up to which every step passes the single-task test against its next smaller neighbour, "not separated
+beyond" it (1 when x1.5 does not pass); a pass after a failed step is listed as a later pass and not chained; each
+neighbour gain is also given per 0.1 of fraction. Reported: per truth every arm's mean board score, each scaled arm's
+mean paired difference from m1_r_gmom with seeds ahead, per-seed range and sd, every metric's mean skill and raw
+difference, every arm's mean over seeds of the scored zero share and detected scored genes per cell, per group the
+mean over seeds of the mean absolute log factor on the scored genes for each real arm and placebo, each truth's
+contamination share (a fraction), and whether the predictions' sha256 agree across the truths. The read puts nothing
+forward by itself.
 
 Limits, repeated in the text and in the row:
 - A larger step also makes predicted cells sparser at the same depth (more zeros, fewer detected genes), and every
@@ -75,10 +94,34 @@ Limits, repeated in the text and in the row:
   size, so the same change to the prediction is worth more points on a same-kind, shallow, small library than on the
   dissected heart. The kind statement compares rule passes, not effect sizes.
 - Where adjacent multipliers differ by less than their per-seed spread, the turning point is not separated and is
-  reported as such; the argmax alone is not a finding.
+  reported as such; the argmax alone is not a finding. The argmax takes the smallest multiplier on a tie.
 - The library truths differ in kind, depth, size and contamination share; a difference between them is not attributed
   to any one of these.
 - A library truth whose anchors invert or go missing on any seed makes T46 void, not a finding about that library.
+- If the predictions' sha256 differ across truths, the library comparisons are of different predictions (cell count
+  and draw), and cross-truth differences include that.
+- The statement reads the larger step's extra gain net of the same extra step along a permuted direction,
+  (x2 - m1_r_gmom) - (x2_perm - m1_r_gmom_perm); x2 against x2_perm alone measures Feng's whole step against a random
+  one and is reported, not read.
+- The placebo is a random direction of equal size, its factors permuted within the scored genes and within the other
+  moved genes; it is read only as a difference between its own two fractions, never as a neutral arm. Which scored
+  gene gets which factor, and so each cell's sparsification on the scored genes, is not matched; the read reports every
+  arm's scored zero share and detected scored genes per cell.
+- Separated up to m means each step from 1 to m passed the single-task test against its neighbour; a later pass after
+  a failed step is reported, not chained.
+- The neighbour steps are 0.1, 0.1, 0.2 and 0.2 of Feng's bracket; the same 0.3 bar is a lower bar per tenth at 3 and
+  4.
+- On lib1 and lib2 the truth is the reference's kind but shallower and richer in surrounding tissue than the
+  prediction's composition; a pass there is not shown to be a day of age.
+- lib3 is the change-of-kind truth: its floor is far, so its points per unit change are smallest; a failure to pass
+  there is not evidence the step does nothing on a heart-to-heart pair.
+- The pooled truth reproduces T44 and carries no statement; it is a weighted mix of the three libraries' kinds, depths
+  and contamination.
+- A pass on one library and not on another is not a tested difference between them: the tests share predictions,
+  differ in power, and use per-truth anchors; T46 tests no between-library contrast.
+- No multiplier from T46 is a test setting: the test's step stays the bracket fraction by rule, and a library's turning
+  point is read on an in-sample part of a released target with its own depth and anchors; carrying it to the test is
+  not supported by this read.
 
 Usage: on the DGX campaign checkout, repo root, all four truths at one commit, committing nothing until the four task
 files exist, and on the machine T42 and T44 ran on, so that the pooled truth reproduces. The environment variables are
@@ -111,7 +154,7 @@ import numpy as np
 
 from vec import harness, t1_scope
 from vec import t1_state_transport as ts
-from vec.adoption import SEEDS
+from vec.adoption import SEEDS, keep_change
 from vec.boards import GROUPS, REPO_ROOT, load_boards
 from vec.evaluate import Stage
 from vec.io import read_stage
@@ -139,9 +182,12 @@ TRUTHS = (POOLED, *LIBRARIES)
 BASE = sr.BASE  # m1_r_gmom, fraction 0.2
 MULTIPLIERS = {"m1_r_gmom_x15": 1.5, "m1_r_gmom_x2": 2.0, "m1_r_gmom_x3": 3.0, "m1_r_gmom_x4": 4.0}
 TWICE = "m1_r_gmom_x2"
-PLACEBO = "m1_r_gmom_x2_perm"  # twice the step with each group's direction permuted across the genes it moves
+PLACEBO = "m1_r_gmom_x2_perm"  # twice the step along each group's permuted direction (see permuted_directions)
+PLACEBO_BASE = "m1_r_gmom_perm"  # the step at the base fraction along the same permuted directions
+PLACEBO_OF = {PLACEBO: TWICE, PLACEBO_BASE: BASE}  # placebo -> the real arm at its fraction
 PLACEBO_STREAM = 46  # [build seed, 46]: a stream no other step uses
-ARMS = ("b0", BASE, *MULTIPLIERS, PLACEBO)
+ARMS = ("b0", BASE, *MULTIPLIERS, PLACEBO, PLACEBO_BASE)
+SPARSITY_ARMS = (BASE, PLACEBO_BASE, TWICE, PLACEBO)  # printed first; every arm is recorded and printed
 ROW = "T46"
 FRACTION = sr.FRACTION  # 0.2
 FRACTION_TOL = sr.FRACTION_TOL
@@ -150,16 +196,17 @@ REPRO = {"b0": "t42", BASE: "t42", "m1_r_gmom_x15": "t44", "m1_r_gmom_x2": "t44"
 X2_LIB3_ONLY = "x2 ahead on lib3 only"
 X2_PORTIONS = "x2 ahead on both portion libraries"
 OTHER = "other"
+NO_STEP_GAIN = "no larger-step gain on this truth"
 STILL_RISING = "still rising at 4"
 DE_TERMS, DIST_TERMS = ("de_score", "de_direction"), ("mmd_u", "variogram")
 WEIGHTS = {m: gw * mw for _, gw, ms in GROUPS["T1"] for m, mw in ms}  # the board's weight of each metric
 TASK_FILE = "{truth}.json"
 LABEL_T46 = ("try T46, a labelled in-sample diagnostic, never an adoption result: M1 (with R1, R2 and g_mom's factors, "
-             "the entry's form) with its Feng step multiplied by 1, 1.5, 2, 3 and 4, and a placebo of twice the step "
-             "with each group's direction permuted across genes, on T44's route, with the chamber cut's truth taken "
-             "pooled and library by library (libraries 1 and 2 embryo portions, library 3 a dissected heart); Feng's "
-             "E9.5 cells lie inside this pseudo-task's external window and the cut is one earlier T1 choices were made "
-             "on; the result can only go to the team captain")
+             "the entry's form) with its Feng step multiplied by 1, 1.5, 2, 3 and 4, and placebos at the step and "
+             "twice the step with each group's direction permuted across genes, on T44's route, with the chamber "
+             "cut's truth taken pooled and library by library (libraries 1 and 2 embryo portions, library 3 a "
+             "dissected heart); Feng's E9.5 cells lie inside this pseudo-task's external window and the cut is one "
+             "earlier T1 choices were made on; the result can only go to the team captain")
 LIMITS = (
     "A larger step also makes predicted cells sparser at the same depth (more zeros, fewer detected genes), and every "
     "E10.5 library is shallower than E9.5. A gain on a library truth is therefore not shown to be a day of age, and no "
@@ -174,6 +221,28 @@ LIMITS = (
     "A library truth whose anchors invert or go missing on any seed makes T46 void, not a finding about that library.",
     "If the predictions' sha256 differ across truths, the library comparisons are of different predictions (cell count "
     "and draw), and cross-truth differences include that.",
+    "The statement reads the larger step's extra gain net of the same extra step along a permuted direction, "
+    "(x2 - m1_r_gmom) - (x2_perm - m1_r_gmom_perm); x2 against x2_perm alone measures Feng's whole step against a "
+    "random one and is reported, not read.",
+    "The placebo is a random direction of equal size, its factors permuted within the scored genes and within the "
+    "other moved genes; it is read only as a difference between its own two fractions, never as a neutral arm. Which "
+    "scored gene gets which factor, and so each cell's sparsification on the scored genes, is not matched; the read "
+    "reports every arm's scored zero share and detected scored genes per cell.",
+    "Separated up to m means each step from 1 to m passed the single-task test against its neighbour; a later pass "
+    "after a failed step is reported, not chained.",
+    "The neighbour steps are 0.1, 0.1, 0.2 and 0.2 of Feng's bracket; the same 0.3 bar is a lower bar per tenth at 3 "
+    "and 4.",
+    "On lib1 and lib2 the truth is the reference's kind but shallower and richer in surrounding tissue than the "
+    "prediction's composition; a pass there is not shown to be a day of age.",
+    "lib3 is the change-of-kind truth: its floor is far, so its points per unit change are smallest; a failure to pass "
+    "there is not evidence the step does nothing on a heart-to-heart pair.",
+    "The pooled truth reproduces T44 and carries no statement; it is a weighted mix of the three libraries' kinds, "
+    "depths and contamination.",
+    "A pass on one library and not on another is not a tested difference between them: the tests share predictions, "
+    "differ in power, and use per-truth anchors; T46 tests no between-library contrast.",
+    "No multiplier from T46 is a test setting: the test's step stays the bracket fraction by rule, and a library's "
+    "turning point is read on an in-sample part of a released target with its own depth and anchors; carrying it to "
+    "the test is not supported by this read.",
 )
 
 
@@ -262,7 +331,8 @@ def prediction_sha256(pred: Stage) -> str:
 
 
 def arm_fractions(fraction: float) -> dict[str, float]:
-    return {**sr.arm_fractions(fraction, MULTIPLIERS), PLACEBO: float(fraction) * MULTIPLIERS[TWICE]}
+    return {**sr.arm_fractions(fraction, MULTIPLIERS), PLACEBO: float(fraction) * MULTIPLIERS[TWICE],
+            PLACEBO_BASE: float(fraction)}
 
 
 def scaled_arms(ctx: harness.BuildContext, directions: Mapping, groups: Mapping, fraction: float,
@@ -272,29 +342,78 @@ def scaled_arms(ctx: harness.BuildContext, directions: Mapping, groups: Mapping,
 
 
 def permuted_directions(directions: Mapping[str, np.ndarray], genes: Sequence[str], held: Sequence[str],
-                        seed) -> dict[str, np.ndarray]:
-    """Each group's direction with its values permuted across the genes the step moves (finite and not held); NaN and
-    held positions stay where they are, so the multiset of factors is the group's own. Groups in sorted order, one
-    generator default_rng([*seed, PLACEBO_STREAM])."""
-    held_set = set(map(str, held))
+                        scored: Sequence[str], seed) -> dict[str, np.ndarray]:
+    """Each group's direction with its values permuted within the genes the step moves (finite and not held), in two
+    strata: among the scored genes (`scored`, the board's panel) and among the other moved genes. NaN and held
+    positions stay where they are, so the multiset of factors on the scored genes, and on the other moved genes, is the
+    group's own. Groups in sorted order, the scored stratum before the other within a group, one generator
+    default_rng([*seed, PLACEBO_STREAM])."""
+    held_set, scored_set = set(map(str, held)), set(map(str, scored))
     movable = np.array([str(g) not in held_set for g in genes], dtype=bool)
+    on_board = np.array([str(g) in scored_set for g in genes], dtype=bool)
     rng = np.random.default_rng([*np.atleast_1d(seed).astype(int).tolist(), PLACEBO_STREAM])
     out = {}
     for g in sorted(directions):
         v = np.array(directions[g], dtype=np.float64, copy=True)
-        idx = np.flatnonzero(np.isfinite(v) & movable)
-        v[idx] = v[idx][rng.permutation(len(idx))]
+        moved = np.isfinite(v) & movable
+        for stratum in (moved & on_board, moved & ~on_board):
+            idx = np.flatnonzero(stratum)
+            v[idx] = v[idx][rng.permutation(len(idx))]
         out[g] = v
     return out
 
 
-def placebo_arm(ctx: harness.BuildContext, directions: Mapping, groups: Mapping, fraction: float,
-                held_m1: Sequence[str], held_factors: Sequence[str]) -> Stage:
-    """m1_r_gmom_x2_perm: the build of m1_r_gmom_x2 (gmom_combo.m1_r_arms at twice the fraction) with each group's
-    direction permuted (`permuted_directions`, the reference's gene order, M1's held genes, the build seed)."""
+def placebo_directions(ctx: harness.BuildContext, directions: Mapping, held_m1: Sequence[str]) -> dict:
+    """The permuted directions on the reference role's gene order (the order external_shift checks), M1's held genes,
+    the board's scored genes and the build seed."""
     genes = list(ctx.inputs[ctx.task.reference_role].var_names)
-    perm = permuted_directions(directions, genes, held_m1, ctx.seed)
-    return gc.m1_r_arms(ctx, perm, groups, arm_fractions(fraction)[PLACEBO], held_m1, held_factors)[BASE]
+    return permuted_directions(directions, genes, held_m1, list(ctx.board.genes), ctx.seed)
+
+
+def placebo_arms(ctx: harness.BuildContext, directions: Mapping, groups: Mapping, fraction: float,
+                 held_m1: Sequence[str], held_factors: Sequence[str], perm: Mapping | None = None) -> dict[str, Stage]:
+    """m1_r_gmom_perm and m1_r_gmom_x2_perm: the builds of m1_r_gmom and m1_r_gmom_x2 (gmom_combo.m1_r_arms at the
+    fraction and at twice it) along one set of permuted directions (`placebo_directions` unless given)."""
+    perm = placebo_directions(ctx, directions, held_m1) if perm is None else perm
+    fr = arm_fractions(fraction)
+    return {a: gc.m1_r_arms(ctx, perm, groups, fr[a], held_m1, held_factors)[BASE] for a in (PLACEBO_BASE, PLACEBO)}
+
+
+def sparsity(pred: Stage) -> dict:
+    """On the scored genes (the prediction's columns are the board's panel): the share of zero entries and the mean
+    number of detected (non-zero) scored genes per cell."""
+    X = np.asarray(pred.X.toarray() if hasattr(pred.X, "toarray") else pred.X)
+    return {"zero_share": float((X == 0).mean()), "detected_per_cell": float((X > 0).sum(axis=1).mean())}
+
+
+def scored_log_factors(directions: Mapping, perm: Mapping, genes: Sequence[str], held: Sequence[str],
+                       scored: Sequence[str], fraction: float) -> dict:
+    """Per group, the mean absolute log factor over the scored genes (log f = fraction x direction, 0 where NaN and on
+    held genes, as external_shift makes it) for the real direction and the placebo at each arm's fraction."""
+    held_set, scored_set = set(map(str, held)), set(map(str, scored))
+    on_board = np.array([str(g) in scored_set for g in genes], dtype=bool)
+    held_mask = np.array([str(g) in held_set for g in genes], dtype=bool)
+    fr = arm_fractions(fraction)
+
+    def mean_abs(v, f):
+        logf = f * np.nan_to_num(np.asarray(v, dtype=np.float64), nan=0.0)
+        logf[held_mask] = 0.0
+        return float(np.abs(logf[on_board]).mean()) if on_board.any() else float("nan")
+
+    return {g: {BASE: mean_abs(directions[g], fr[BASE]), TWICE: mean_abs(directions[g], fr[TWICE]),
+                PLACEBO_BASE: mean_abs(perm[g], fr[PLACEBO_BASE]), PLACEBO: mean_abs(perm[g], fr[PLACEBO])}
+            for g in sorted(directions)}
+
+
+def build_seed(ctx: harness.BuildContext, b0, directions: Mapping, groups: Mapping, fraction: float,
+               held_m1: Sequence[str], held_factors: Sequence[str]) -> tuple[dict[str, Stage], dict]:
+    """One seed's arms, in the order the run builds them (b0, m1_r_gmom and the scaled arms, then the two placebos),
+    and the per-group mean absolute log factors on the scored genes."""
+    perm = placebo_directions(ctx, directions, held_m1)
+    preds = {"b0": b0(ctx), **scaled_arms(ctx, directions, groups, fraction, held_m1, held_factors),
+             **placebo_arms(ctx, directions, groups, fraction, held_m1, held_factors, perm=perm)}
+    genes = list(ctx.inputs[ctx.task.reference_role].var_names)
+    return preds, scored_log_factors(directions, perm, genes, held_m1, list(ctx.board.genes), fraction)
 
 
 def all_anchors(t, board, truth: Stage, ref_stage: Stage, seeds: Sequence[int]) -> tuple[dict, list[dict]]:
@@ -353,15 +472,16 @@ def cmd_run(a) -> None:
         f = floors[s]
         ctx = harness.BuildContext(task=view, board=cboard, inputs=inputs, seed=harness.BUILD_SEED_OFFSET + s,
                                    derived={"t1_held_flat": preregistered})
-        preds = {"b0": b0(ctx), **scaled_arms(ctx, directions, groups, fraction, held_m1, preregistered),
-                 PLACEBO: placebo_arm(ctx, directions, groups, fraction, held_m1, preregistered)}
+        preds, log_factors = build_seed(ctx, b0, directions, groups, fraction, held_m1, preregistered)
         arms = er.score_arms(board, truth, ref_stage, s, f.anchors, preds)
         rows.append({"seed": s, "floor": float(f.score), "arms": arms,
                      "sha256": {k: prediction_sha256(p) for k, p in preds.items()},
+                     "sparsity": {k: sparsity(p) for k, p in preds.items()}, "scored_log_factors": log_factors,
                      "seconds": round(time.time() - t0, 1)})
         print(f"{a.truth} seed {s}: " + ", ".join(f"{k} {v['score']:.2f}" for k, v in arms.items()), flush=True)
     res.update({"fraction": fraction, "fractions": arm_fractions(fraction), "multipliers": dict(MULTIPLIERS),
-                "placebo": {"arm": PLACEBO, "of": TWICE, "stream": PLACEBO_STREAM}, "external": ext, "rows": rows,
+                "placebo": {"arms": dict(PLACEBO_OF), "stream": PLACEBO_STREAM,
+                            "strata": ["scored genes", "other moved genes"]}, "external": ext, "rows": rows,
                 "stamp": gv.stamp(started, [*stamp_inputs, t1_scope.HELD_FLAT_GENES, ts.R1_CONFIG,
                                             REPO_ROOT / union["file"], feng_dirs.clean_stats_path(), n22])})
     (out / "tasks").mkdir(parents=True, exist_ok=True)
@@ -447,8 +567,17 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Sequence[Ma
         if same:
             reasons.append(f"{k}: scaled arms score exactly as {BASE} on every seed (built at the base fraction?): "
                            f"{same}")
-        if all(row["arms"][PLACEBO]["score"] == row["arms"][TWICE]["score"] for row in r["rows"]):
-            reasons.append(f"{k}: the placebo {PLACEBO} scores exactly as {TWICE} on every seed (permutation idle?)")
+        for p, real in PLACEBO_OF.items():
+            if all(row["arms"][p]["score"] == row["arms"][real]["score"] for row in r["rows"]):
+                reasons.append(f"{k}: the placebo {p} scores exactly as {real} on every seed (permutation idle?)")
+            if all((row.get("sha256") or {}).get(p) is not None
+                   and row["sha256"][p] == (row.get("sha256") or {}).get(real) for row in r["rows"]):
+                reasons.append(f"{k}: the placebo {p}'s predictions have {real}'s sha256 on every seed (permutation "
+                               "idle?)")
+        unrecorded = sorted({a for row in r["rows"] for a in ARMS
+                             if not {"zero_share", "detected_per_cell"} <= set((row.get("sparsity") or {}).get(a, {}))})
+        if unrecorded or any(not row.get("scored_log_factors") for row in r["rows"]):
+            reasons.append(f"{k}: the sparsity or scored log-factor records are missing (arms {unrecorded})")
     return {"valid": not reasons, "reasons": reasons, "reproduction": repro,
             "commits": sorted(c for c in commits if c)}
 
@@ -484,30 +613,76 @@ def truth_comparison(r: Mapping, truth: str, arm: str, base: str = BASE) -> dict
             "points": points_by_part(r["rows"], base, arm)}
 
 
-def kind_statement(placebo_comps: Mapping[str, Mapping]) -> str:
-    """placebo_comps: library truth -> truth_comparison of m1_r_gmom_x2 against its placebo."""
-    ahead = {k: placebo_comps[k]["ahead"] for k in LIBRARIES}
+def did_comparison(r: Mapping, truth: str) -> dict:
+    """The statement's quantity on one truth: per seed, (m1_r_gmom_x2 - m1_r_gmom) - (m1_r_gmom_x2_perm -
+    m1_r_gmom_perm) in board points, with the single-task test (vec.adoption.keep_change on this truth alone, the pair
+    per seed being (x2_perm - m1_r_gmom_perm, x2 - m1_r_gmom)) and the reversed test; the mean, seeds ahead, per-seed
+    range and sd, and the parts by metric as the difference of the two arms' points_by_part."""
+    def step(row, real, base):
+        return row["arms"][real]["score"] - row["arms"][base]["score"]
+
+    paired = {row["seed"]: (step(row, PLACEBO, PLACEBO_BASE), step(row, TWICE, BASE)) for row in r["rows"]}
+    fwd = keep_change({truth: paired})["tasks"][truth]
+    rev = keep_change({truth: {s: (b, a) for s, (a, b) in paired.items()}})["tasks"][truth]
+    d = np.array([b - a for a, b in paired.values()])
+    sd = float(d.std(ddof=1)) if len(d) > 1 else float("nan")
+    ahead, behind = bool(fwd.get("passes")), bool(rev.get("passes"))
+    real, plac = points_by_part(r["rows"], BASE, TWICE), points_by_part(r["rows"], PLACEBO_BASE, PLACEBO)
+    return {"quantity": f"({TWICE} - {BASE}) - ({PLACEBO} - {PLACEBO_BASE})", "mean": float(d.mean()),
+            "seeds_ahead": int((d > 0).sum()), "of": len(d), "range": [float(d.min()), float(d.max())], "sd": sd,
+            "mean_over_sd": float(d.mean()) / sd if sd > 0 else None, "ahead": ahead, "behind": behind,
+            "test": "ahead" if ahead else "behind" if behind else "neither",
+            "points": {"by_metric": {m: real["by_metric"][m] - plac["by_metric"][m] for m in WEIGHTS},
+                       "de": real["de"] - plac["de"], "mmd_u_variogram": real["mmd_u_variogram"]
+                       - plac["mmd_u_variogram"]}}
+
+
+def gated(step: Mapping, did: Mapping) -> dict:
+    """One truth's statement reading: where m1_r_gmom_x2 is not ahead of m1_r_gmom by the single-task test (`step`),
+    'no larger-step gain on this truth' and not ahead; otherwise the test on the paired difference (`did`)."""
+    if not step["ahead"]:
+        return {"reading": NO_STEP_GAIN, "ahead": False}
+    return {"reading": f"difference in differences {did['test']}", "ahead": bool(did["ahead"])}
+
+
+def kind_statement(gates: Mapping[str, Mapping]) -> str:
+    """gates: library truth -> `gated`. Ahead on lib3 and on neither portion library: X2_LIB3_ONLY; ahead on both
+    portion libraries: X2_PORTIONS, with lib3's state appended; otherwise OTHER."""
+    ahead = {k: gates[k]["ahead"] for k in LIBRARIES}
     if ahead[HEART] and not any(ahead[k] for k in PORTIONS):
         return X2_LIB3_ONLY
     if all(ahead[k] for k in PORTIONS):
-        return X2_PORTIONS
+        return f"{X2_PORTIONS}; {'ahead on lib3 too' if ahead[HEART] else 'not ahead on lib3'}"
     return OTHER
 
 
 def turn(mean_scores: Mapping[str, float], neighbours: Mapping[str, Mapping] | None = None) -> dict:
     """The multiplier with the highest mean board score among 1 (m1_r_gmom), 1.5, 2, 3 and 4 (the smallest on a tie);
     and, given neighbours (scaled arm -> truth_comparison against its next smaller multiplier), the separated reading:
-    the largest multiplier that passes the single-task test against its next smaller neighbour (1 when none does)."""
+    walking 1.5, 2, 3, 4 in order, the largest multiplier up to which every step passes the single-task test against
+    its next smaller neighbour (1 when x1.5 does not pass); a pass after a failed step is listed, not chained. Each
+    neighbour gain is also given per 0.1 of fraction (the step from m' to m is (m - m') x 0.2)."""
     by_m = {1.0: mean_scores[BASE], **{m: mean_scores[a] for a, m in MULTIPLIERS.items()}}
     best = max(by_m, key=lambda m: (by_m[m], -m))
     top = max(MULTIPLIERS.values())
     out = {"by_multiplier": {f"{m:g}": v for m, v in by_m.items()}, "best": best,
            "statement": STILL_RISING if best == top else f"turns at {best:g}", "tie_rule": "smallest multiplier"}
     if neighbours is not None:
-        passing = [MULTIPLIERS[a] for a, c in neighbours.items() if c["ahead"]]
-        sep = max(passing, default=1.0)
+        sep, broken, later = 1.0, False, []
+        for a, m in sorted(MULTIPLIERS.items(), key=lambda x: x[1]):
+            if not broken and neighbours[a]["ahead"]:
+                sep = m
+            elif not broken:
+                broken = True
+            elif neighbours[a]["ahead"]:
+                later.append(m)
+        prev = {a: (1.0 if neighbour_of(a) == BASE else MULTIPLIERS[neighbour_of(a)]) for a in MULTIPLIERS}
+        per_tenth = {a: neighbours[a]["mean"] / ((MULTIPLIERS[a] - prev[a]) * FRACTION / 0.1) for a in MULTIPLIERS}
+        statement = f"separated up to {sep:g}; not separated beyond {sep:g}"
+        if later:
+            statement += f" (a later pass after a failed step, not chained: {', '.join(f'{m:g}' for m in later)})"
         out.update({"neighbours": {a: c["test"] for a, c in neighbours.items()}, "separated": sep,
-                    "separated_statement": f"separated up to {sep:g}; not separated beyond {sep:g}"})
+                    "later_passes": later, "gain_per_tenth": per_tenth, "separated_statement": statement})
     return out
 
 
@@ -548,14 +723,26 @@ def t46_reading(results: Mapping[str, Mapping], committed: Mapping[str, Sequence
                   for k in TRUTHS}
     means = {k: {a: float(np.mean([row["arms"][a]["score"] for row in results[k]["rows"]])) for a in ARMS}
              for k in TRUTHS}
-    out["outcome"] = kind_statement({k: placebo[k] for k in LIBRARIES})
+    did = {k: did_comparison(results[k], k) for k in TRUTHS}
+    gates = {k: gated(comps[k][TWICE], did[k]) for k in TRUTHS}
+    out["outcome"] = kind_statement({k: gates[k] for k in LIBRARIES})
 
     def brief(c: Mapping) -> dict:
         return {"gain": c["mean"], "mean_over_sd": c["mean_over_sd"], "de": c["points"]["de"],
                 "mmd_u_variogram": c["points"]["mmd_u_variogram"], "test": c["test"]}
 
-    out["kind"] = {k: {**brief(placebo[k]), "against_m1_r_gmom": brief(comps[k][TWICE])} for k in LIBRARIES}
+    out["kind"] = {k: {**brief(did[k]), "reading": gates[k]["reading"], "ahead": gates[k]["ahead"],
+                       "against_m1_r_gmom": brief(comps[k][TWICE]), "against_placebo": brief(placebo[k])}
+                   for k in TRUTHS}
+    out["did_comparisons"] = did
     out["placebo_comparisons"] = placebo
+    out["placebo_base_comparisons"] = {k: truth_comparison(results[k], k, BASE, base=PLACEBO_BASE) for k in TRUTHS}
+    out["sparsity"] = {k: {a: {q: float(np.mean([row["sparsity"][a][q] for row in results[k]["rows"]]))
+                               for q in ("zero_share", "detected_per_cell")} for a in ARMS} for k in TRUTHS}
+    out["scored_log_factors"] = {
+        k: {g: {a: float(np.mean([row["scored_log_factors"][g][a] for row in results[k]["rows"]]))
+                for a in results[k]["rows"][0]["scored_log_factors"][g]}
+            for g in results[k]["rows"][0]["scored_log_factors"]} for k in TRUTHS}
     out["comparisons"] = comps
     out["neighbour_comparisons"] = neighbours
     out["mean_scores"] = means
@@ -582,7 +769,9 @@ def _comparison_line(c: Mapping) -> str:
 def t46_text(res: Mapping) -> str:
     """The reading as text; no cell count is printed."""
     r = res["reading"]
-    lines = [res["label"], f"Twice the step against its placebo ({TWICE} against {PLACEBO}): {r['outcome']}"]
+    lines = [res["label"], f"Twice the step's extra gain over {BASE} net of the same extra step along the permuted "
+             f"directions, ({TWICE} - {BASE}) - ({PLACEBO} - {PLACEBO_BASE}), on the library truths where {TWICE} is "
+             f"ahead of {BASE}: {r['outcome']}"]
     v = r["validity"]
     if not r["valid"]:
         lines.append("Void: " + "; ".join(v["reasons"]))
@@ -591,17 +780,34 @@ def t46_text(res: Mapping) -> str:
         lines.append(f"{POOLED}: largest per-seed difference from the committed scores: "
                      + ", ".join(f"{a} {x:.3g}" for a, x in w.items()) + f" (gate {REPRO_TOL:g})")
     for k in r.get("kind", {}):
-        lines.append(f"    on {k}: " + _comparison_line(r["placebo_comparisons"][k]))
-        lines.append(f"    on {k}: " + _comparison_line(r["comparisons"][k][TWICE]))
+        kd, dc = r["kind"][k], r["did_comparisons"][k]
+        note = " (reported only; the pooled truth carries no statement)" if k == POOLED else ""
+        lines.append(f"on {k}{note}: {kd['reading']}; counts as ahead: {kd['ahead']}")
+        lines.append(f"    on {k}: gate: " + _comparison_line(r["comparisons"][k][TWICE]))
+        lines.append(f"    on {k}: {dc['quantity']}: {dc['mean']:+.2f} points, mean over per-seed sd "
+                     f"{_z(dc['mean_over_sd'])}, ahead {dc['seeds_ahead']} of {dc['of']}, per seed "
+                     f"{dc['range'][0]:+.2f} to {dc['range'][1]:+.2f}, test: {dc['test']}; de terms "
+                     f"{dc['points']['de']:+.2f}, mmd_u and variogram {dc['points']['mmd_u_variogram']:+.2f}")
+        lines.append(f"    on {k}: reported, not read: " + _comparison_line(r["placebo_comparisons"][k]))
+        lines.append(f"    on {k}: reported, not read: " + _comparison_line(r["placebo_base_comparisons"][k]))
     for k in r.get("mean_scores", {}):
         share = r["contamination_share"][k]
         lines.append(f"truth {k}: contamination share {'n/a' if share is None else f'{share:.3f}'}; mean scores "
                      + ", ".join(f"{a} {x:.2f}" for a, x in r["mean_scores"][k].items()))
+        sp = r["sparsity"][k]
+        order = [*SPARSITY_ARMS, *(a for a in ARMS if a not in SPARSITY_ARMS)]
+        lines.append("    scored genes, mean over seeds: " + "; ".join(
+            f"{a} zero share {sp[a]['zero_share']:.4f}, detected per cell {sp[a]['detected_per_cell']:.2f}"
+            for a in order))
+        lines.append("    mean |log factor| on the scored genes by group: " + "; ".join(
+            f"{g}: " + ", ".join(f"{a} {x:.4f}" for a, x in fs.items())
+            for g, fs in r["scored_log_factors"][k].items()))
         tu = r["turn"][k]
         lines.append(f"    response: argmax {tu['statement']} (smallest on a tie; mean score by multiplier "
                      + ", ".join(f"{m} {x:.2f}" for m, x in tu["by_multiplier"].items()) + "); "
                      + tu["separated_statement"] + " (each against its next smaller: "
-                     + ", ".join(f"{a} {t}" for a, t in tu["neighbours"].items()) + ")")
+                     + ", ".join(f"{a} {t}, {tu['gain_per_tenth'][a]:+.2f} per 0.1 of fraction"
+                                 for a, t in tu["neighbours"].items()) + ")")
         for c in r["comparisons"][k].values():
             lines.append("    " + _comparison_line(c))
     if "sha256_across_truths" in r:
