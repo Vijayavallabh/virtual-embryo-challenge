@@ -137,25 +137,31 @@ def test_with_agreeing_halves_the_shrunk_arms_equal_their_twins_bit_for_bit(er):
 
 N48_GROUPS = {g: {"eb_factors": [0.5 + 0.05 * i for i in range(10)], "js": {"scale": 0.9}}
               for g in ("CM", "Endocardium", "Endothelium", "Epicardium")}
+STATS_SHA = "5" * 64
 
 
-def _arm(score):
+def _arm(score, mmd_u=0.1):
     return {"score": score, "groups": {"distribution": score / 100},
-            "metrics": {"mmd_u": 0.1, "variogram": 0.01},
+            "metrics": {"mmd_u": mmd_u, "variogram": 0.01},
             "skills": {"de_score": score / 200, "de_direction": 0.4, "mmd_u": 0.3, "variogram": 0.2}}
 
 
-def _task(gains, b0=50.0, seeds=range(10), commit="c" * 40, clean=True, factor_shift=0.0):
+def _task(gains, b0=50.0, seeds=range(10), commit="c" * 40, clean=True, factor_shift=0.0, js_shift=0.0, task=None,
+          fraction=0.2, sha=STATS_SHA, identical=False):
+    """A task file; a shrunk arm's raw metric differs from its twin's by 1e-9 (a real shrunk build is not its twin)
+    unless `identical`."""
     base = {"m1_r": 52.0, "m1_r_gmom": 53.0}
     rows = []
     for s in seeds:
         arms = {"b0": _arm(b0), **{a: _arm(v) for a, v in base.items()}}
         for a in ("m1_r_eb", "m1_r_gmom_eb", "m1_r_js", "m1_r_gmom_js"):
-            arms[a] = _arm(base["m1_r_gmom" if "gmom" in a else "m1_r"] + gains.get(a, 0.0))
+            arms[a] = _arm(base["m1_r_gmom" if "gmom" in a else "m1_r"] + gains.get(a, 0.0),
+                           mmd_u=0.1 if identical else 0.1 + 1e-9)
         rows.append({"seed": s, "floor": 50.0, "arms": arms})
-    shrink = {g: {"eb_factors": [f + factor_shift for f in v["eb_factors"]], "js_scale": v["js"]["scale"]}
+    shrink = {g: {"eb_factors": [f + factor_shift for f in v["eb_factors"]], "js_scale": v["js"]["scale"] + js_shift}
               for g, v in N48_GROUPS.items()}
-    return {"label": "synthetic", "seeds": list(seeds), "rows": rows, "shrinkage": shrink,
+    return {"label": "synthetic", "task": task, "fraction": fraction, "feng_stats_sha256": sha, "seeds": list(seeds),
+            "rows": rows, "shrinkage": shrink,
             "stamp": {"commit": commit, "tree_clean": clean, "utc": "x", "inputs": {}}}
 
 
@@ -164,6 +170,7 @@ def _write(er, tmp_path, cuts):
     out = tmp_path / "out"
     (out / "tasks").mkdir(parents=True)
     for k, rec in cuts.items():
+        rec = {**rec, "task": k if rec.get("task") is None else rec["task"]}
         (out / "tasks" / er.CUT_FILES[k]).write_text(json.dumps(rec))
     t26 = tmp_path / "t26"
     t26.mkdir()
@@ -172,7 +179,7 @@ def _write(er, tmp_path, cuts):
                 for s in range(10)]
         (t26 / f).write_text(json.dumps({"rows": rows}))
     n48 = tmp_path / "n48.json"
-    n48.write_text(json.dumps({"groups": N48_GROUPS}))
+    n48.write_text(json.dumps({"groups": N48_GROUPS, "inputs": {"feng_stats_sha256": STATS_SHA}}))
     return out, t26, n48
 
 
@@ -188,23 +195,53 @@ def _read(er, tmp_path, gains=None, **over):
     return er.read(out, t26, n48)["reading"]
 
 
-@pytest.mark.parametrize("gains, verdict", [
-    ({"m1_r_eb": 1.0, "m1_r_gmom_eb": 1.0}, "DECILE"),  # (a), (b), (e)
-    ({"m1_r_eb": 1.0, "m1_r_gmom_eb": 1.0, "m1_r_js": 1.0, "m1_r_gmom_js": 1.0}, "SCALAR"),  # not (e), (c), (d)
-    ({"m1_r_eb": 1.0, "m1_r_gmom_eb": 1.0, "m1_r_gmom_js": 0.8}, "DECILE"),  # (a), (b), not (e), not (c)
-    ({"m1_r_js": 1.0, "m1_r_gmom_js": 1.0}, "SCALAR"),  # not (a), (c), (d)
-    ({"m1_r_eb": 1.0, "m1_r_js": 1.0}, "NOTHING"),  # (a) and (c) only
-    ({}, "NOTHING"),
+@pytest.mark.parametrize("gains, verdict, passing", [
+    ({"m1_r_eb": 1.0, "m1_r_gmom_eb": 1.0}, "DECILE", "abe"),
+    ({"m1_r_eb": 1.0, "m1_r_gmom_eb": 1.0, "m1_r_js": 1.0, "m1_r_gmom_js": 1.0}, "DECILE_AS_WELL", "abcd"),
+    # (a), (b), (d) pass and (e) does not: the decile is not shown better than the uniform step (was DECILE)
+    ({"m1_r_eb": 1.0, "m1_r_gmom_eb": 1.0, "m1_r_gmom_js": 0.8}, "DECILE_NOT_SHOWN", "abd"),
+    # the reverse of (e) passes: the uniform control beats the decile by the rule (was DECILE)
+    ({"m1_r_eb": 1.0, "m1_r_gmom_eb": 1.0, "m1_r_gmom_js": 2.0}, "DECILE_BEATEN", "abdf"),
+    ({"m1_r_js": 1.0, "m1_r_gmom_js": 1.0}, "SCALAR_ONLY", "cdf"),
+    # (e) passes with (b), (c), (d) and not (a): the scalar is never the outcome (was SCALAR)
+    ({"m1_r_gmom_eb": 2.0, "m1_r_js": 1.0, "m1_r_gmom_js": 1.0}, "NOTHING", "bcde"),
+    ({"m1_r_eb": 1.0, "m1_r_js": 1.0}, "NOTHING", "ac"),
+    ({}, "NOTHING", ""),
 ])
-def test_each_verdict_is_reached_by_a_table_built_for_it(er, tmp_path, gains, verdict):
+def test_each_verdict_is_reached_by_a_table_built_for_it(er, tmp_path, gains, verdict, passing):
     r = _read(er, tmp_path, gains)
     assert r["valid"] and r["outcome"] == getattr(er, verdict)
+    assert {c for c, comp in r["comparisons"].items() if comp["passes"]} == set(passing)
+    assert r["comparisons"]["f"]["base"] == "m1_r_gmom_eb" and r["comparisons"]["f"]["change"] == "m1_r_gmom_js"
     comp = r["comparisons"]["b"]["cuts"][er.gc.TASK_CHAMBER]
     want = gains.get("m1_r_gmom_eb", 0.0)
     assert comp["mean"] == pytest.approx(want) and comp["ahead"] == (10 if want > 0 else 0)
     assert set(comp["skills"]) == {"de_score", "de_direction", "mmd_u", "variogram"}
     assert comp["skills"]["de_score"] == pytest.approx(want / 200)
     assert r["mean_scores"][er.gc.TASK_WHOLE]["m1_r_gmom_eb"] == pytest.approx(53.0 + want)
+
+
+def test_the_verdict_list_over_every_case(er):
+    """All 64 cases of (a)-(f): the decile goes forward exactly when (a), (b), (e) pass and (f) does not; a passing
+    (e) never yields the scalar-only outcome; (b) without (e) never puts the decile forward; nothing puts the scalar
+    scale forward (N48 closed it)."""
+    import itertools
+
+    outcomes = (er.DECILE, er.DECILE_BEATEN, er.DECILE_AS_WELL, er.DECILE_NOT_SHOWN, er.SCALAR_ONLY, er.NOTHING)
+    assert not any("scalar scale is put forward" in o for o in outcomes)
+    for bits in itertools.product((False, True), repeat=6):
+        p = dict(zip("abcdef", bits, strict=True))
+        v = er.verdict(p)
+        assert v in outcomes
+        assert (v == er.DECILE) == (p["a"] and p["b"] and p["e"] and not p["f"]), p
+        if p["e"]:
+            assert v != er.SCALAR_ONLY, p
+        if p["b"] and not p["e"]:
+            assert v != er.DECILE, p
+        if v == er.SCALAR_ONLY:
+            assert p["c"] and p["d"] and not (p["a"] or p["b"]), p
+        if p["a"] and p["b"] and v != er.DECILE:
+            assert v.startswith("the decile shrinkage is not put forward"), p
 
 
 def test_a_gain_of_exactly_point_three_does_not_pass(er, tmp_path):
@@ -229,8 +266,13 @@ def test_a_loss_beyond_point_three_on_one_cut_vetoes(er, tmp_path):
     ({"TASK_CHAMBER": {"seeds": range(9)}}, "seeds"),
     ({"TASK_WHOLE": {"b0": 50.03}}, "b0 does not reproduce"),
     ({"TASK_CHAMBER": {"factor_shift": 1e-9}}, "factors differ"),
+    ({"TASK_CHAMBER": {"js_shift": 1e-9}}, "factors differ"),
     ({"TASK_WHOLE": {"clean": False}}, "not clean"),
     ({"TASK_WHOLE": {"commit": "d" * 40}}, "2 commits"),
+    ({"TASK_WHOLE": {"sha": "6" * 64}}, "sha256 is not N48's"),
+    ({"TASK_WHOLE": {"fraction": 0.4}}, "fraction"),
+    ({"TASK_CHAMBER": {"task": "T1/E9.5->E10.5"}}, "the file holds task"),
+    ({"TASK_CHAMBER": {"identical": True}, "TASK_WHOLE": {"identical": True}}, "exactly as their twins"),
 ])
 def test_the_void_cases(er, tmp_path, over, reason):
     r = _read(er, tmp_path, {"m1_r_eb": 1.0, "m1_r_gmom_eb": 1.0}, **over)
@@ -245,11 +287,24 @@ def test_b0_within_the_tolerance_and_tiny_factor_noise_stay_valid(er, tmp_path):
     assert r["validity"]["reproduction"][er.gc.TASK_WHOLE]["largest_difference"]["b0"] == pytest.approx(0.01)
 
 
-def test_the_reading_refuses_to_overwrite_and_the_run_needs_n22(er, tmp_path):
+def test_shrunk_arms_identical_on_one_cut_only_stay_valid(er, tmp_path):
+    r = _read(er, tmp_path, {"m1_r_eb": 1.0, "m1_r_gmom_eb": 1.0}, TASK_WHOLE={"identical": True})
+    assert r["valid"]
+
+
+def test_the_reading_refuses_to_overwrite_and_the_run_needs_n22(er, tmp_path, monkeypatch):
     out, t26, n48 = _write(er, tmp_path, {k: _task({}) for k in er.CUT_FILES})
     er.read(out, t26, n48)
     assert (out / "t42.json").exists() and (out / "t42.txt").exists()
     with pytest.raises(SystemExit, match="already holds"):
         er.read(out, t26, n48)
-    with pytest.raises(SystemExit, match="refused"):
+    monkeypatch.setattr(er.n12, "tries_rows", lambda: {"T26", "T42"})
+    with pytest.raises(SystemExit, match="does not hold a passing N22"):
         er.main(["run", "--task", er.gc.TASK_CHAMBER, "--out", "t42", "--n22", "n22x"])
+
+
+def test_the_run_needs_its_row(er, monkeypatch):
+    monkeypatch.setattr(er.n12, "tries_rows", lambda: {"T26", "N48"})
+    monkeypatch.setattr(er.gc, "n22_passed", lambda path: True)
+    with pytest.raises(SystemExit, match="T42 has no row"):
+        er.main(["run", "--task", er.gc.TASK_CHAMBER, "--out", "t42"])

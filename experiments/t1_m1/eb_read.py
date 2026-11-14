@@ -2,9 +2,16 @@
 """Try T42 (experiments/harness/TRIES.md): M1 with its Feng direction shrunk by reliability, a labelled read on T26's
 route (experiments/t1_m1/gmom_combo.py), with the uniform James-Stein scale as its control.
 
-N48 (target-free, committed) found the decile factors of `feng_dirs.eb_shrink` below 0.9 in the upper expression deciles
-of Endocardium, Endothelium and Epicardium, so the decile form is open and its counted read comes next. The shrinkage
-uses Feng's two halves only (no E10.5 information), so the paired difference between M1 with and without it is a fair
+N48 (target-free, committed) opened the decile form by its stop (a factor of deciles 4 to 10 below 0.9 in each of CM and
+Endocardium) and closed the scalar James-Stein form (CM's scale 0.989 is not below 0.9). Its decile factors, deciles 4
+to 10: CM 0.000, 0.203, 0.744, 0.932, 0.966, 0.982, 0.994; Endocardium 1, 1, 0.104, 0.422, 0.665, 0.793, 0.930;
+Endothelium 1, 1, 0.111, 0.524, 0.697, 0.825, 0.932; Epicardium 1, 1, 0.333, 0.566, 0.667, 0.791, 0.925. A factor of 0
+(max(msq - noise, 0)) holds the first expressed decile still, CM's included: its genes get log f = 0 for the group's
+cells, as held genes do, and keep_depth rescales the other genes slightly. CM holds most cells and is one of the two
+groups the backtests read, so a pass may come from holding CM's weakly expressed genes still (factor 0 in decile 4,
+0.2 in decile 5), not from shrinking the small groups' noisy steps; this read cannot tell these apart. The scalar
+scale enters only as the uniform control of the decile form, never as an outcome (N48 closed it). The shrinkage uses
+Feng's two halves only (no E10.5 information), so the paired difference between M1 with and without it is a fair
 question to put to the two E10.5 cuts.
 
   run    One E10.5 cut, 10 seeds, on the harness's draws and scoring exactly as T26's run; refused unless the committed
@@ -12,24 +19,36 @@ question to put to the two E10.5 cuts.
          them; m1_r_eb and m1_r_gmom_eb, the same two builds with every group's direction replaced by
          feng_dirs.eb_shrink's output (try T18's rule and constants); m1_r_js and m1_r_gmom_js, every group's direction
          times that group's scalar n48_m1_direction_shrink.js_scale. Nothing else differs from the unshrunk twin.
+         Refused unless experiments/harness/TRIES.md holds row T42 (a row is committed before its run).
   read   T42's reading of both cuts' files (rule below, fixed in the row before the run).
 
 NOT an adoption result: Feng's E9.5 cells lie inside these pseudo-tasks' external windows and the cuts are ones earlier
 T1 choices were made on. The result can only go to the team captain as a request.
 
 The reading. Void unless both cuts hold the ten seeds at one commit on a clean tree, b0 is within 0.02 points per seed
-of T26's committed scores on both cuts, and the factors the run used equal N48's committed ones to 1e-12. The test,
-the adoption rule's (vec.adoption.keep_change, paired by seed, both cuts), on (a) m1_r_eb vs m1_r, (b) m1_r_gmom_eb vs
-m1_r_gmom, (c) m1_r_js vs m1_r, (d) m1_r_gmom_js vs m1_r_gmom, and the lead (e) m1_r_gmom_eb vs m1_r_gmom_js. Verdict
-in order: (a), (b) and (e) pass: the decile shrinkage; (a), (b), not (e), (c) and (d): the scalar scale; (a), (b), not
-(e), not both (c) and (d): the decile shrinkage; not both (a) and (b), (c) and (d): the scalar scale; otherwise nothing.
+of T26's committed scores on both cuts, the factors and scalar scales the run used equal N48's committed ones to 1e-12,
+the statistics file's sha256 equals N48's, each file's task is its cut and its fraction 0.2, and no shrunk arm scores
+exactly as its unshrunk twin (the same record) on every seed of both cuts (a build from unshrunk directions would pass
+the factor gate, since the factors are recorded apart from the build). The test, the adoption rule's
+(vec.adoption.keep_change, paired by seed, both cuts), on (a) m1_r_eb vs m1_r, (b) m1_r_gmom_eb vs m1_r_gmom, (c)
+m1_r_js vs m1_r, (d) m1_r_gmom_js vs m1_r_gmom, the lead (e) m1_r_gmom_eb vs m1_r_gmom_js, and its reverse (f)
+m1_r_gmom_js vs m1_r_gmom_eb, a veto on the decile. Verdict in order: (a), (b) and (e) pass and (f) does not: the
+decile shrinkage is put forward. (a) and (b) pass otherwise: the decile shrinkage is not put forward; (f) passing: its
+uniform control beats it; else (c) and (d) passing: its uniform control does as well; else: it is not shown to beat a
+uniform step of the same projection. Not both (a) and (b): nothing is put forward; when (c) and (d) pass and none of
+(a), (b), (e) does, only the closed scalar control reaches the rule. The scalar scale is never put forward (N48
+closed it).
 
-Usage (DGX, campaign checkout, repo root, BLAS threads capped):
-  OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 uv run --frozen --no-sync python -I -B \
-      experiments/t1_m1/eb_read.py run --out t42_m1_eb --task "T1/E9.5->E10.5:chamber"
-  OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 uv run --frozen --no-sync python -I -B \
-      experiments/t1_m1/eb_read.py run --out t42_m1_eb --task "T1/E9.5->E10.5"
-  uv run --frozen --no-sync python -I -B experiments/t1_m1/eb_read.py read --out t42_m1_eb
+Usage: on the DGX campaign checkout, repo root, both cuts at one commit, committing nothing until both task files
+exist (a commit between the cuts voids the read; the untracked task files leave the tree clean), and on the machine
+T26 ran on, so that b0 reproduces. The environment variables are docs/COMPUTE.md's for repository Python on the DGX.
+  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 \
+      uv run --frozen --no-sync python -I -B experiments/t1_m1/eb_read.py run --out t42_m1_eb \
+      --task "T1/E9.5->E10.5:chamber"
+  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 \
+      uv run --frozen --no-sync python -I -B experiments/t1_m1/eb_read.py run --out t42_m1_eb --task "T1/E9.5->E10.5"
+  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 \
+      uv run --frozen --no-sync python -I -B experiments/t1_m1/eb_read.py read --out t42_m1_eb
 """
 
 from __future__ import annotations
@@ -63,6 +82,7 @@ import dirlib as dl  # noqa: E402
 import feng_dirs  # noqa: E402
 import filterio as fio  # noqa: E402
 import gmom_combo as gc  # noqa: E402
+import n12_hygiene_size as n12  # noqa: E402  (on the path through n48's import)
 import n48_m1_direction_shrink as n48  # noqa: E402
 
 gv, hygiene = gc.gv, gc.hygiene
@@ -70,11 +90,20 @@ CUT_FILES = gc.CUT_FILES
 BASES = ("m1_r", "m1_r_gmom")
 ARMS = ("b0", "m1_r", "m1_r_gmom", "m1_r_eb", "m1_r_gmom_eb", "m1_r_js", "m1_r_gmom_js")
 COMPARISONS = {"a": ("m1_r", "m1_r_eb"), "b": ("m1_r_gmom", "m1_r_gmom_eb"), "c": ("m1_r", "m1_r_js"),
-               "d": ("m1_r_gmom", "m1_r_gmom_js"), "e": ("m1_r_gmom_js", "m1_r_gmom_eb")}  # (base, change)
+               "d": ("m1_r_gmom", "m1_r_gmom_js"), "e": ("m1_r_gmom_js", "m1_r_gmom_eb"),
+               "f": ("m1_r_gmom_eb", "m1_r_gmom_js")}  # (base, change); (f) is (e) reversed, a veto on the decile
+TWINS = (("m1_r", "m1_r_eb"), ("m1_r", "m1_r_js"), ("m1_r_gmom", "m1_r_gmom_eb"), ("m1_r_gmom", "m1_r_gmom_js"))
+ROW = "T42"
+FRACTION = 0.2  # Feng's step on an E9.5 -> E10.5 cut, feng_dirs.bracket_fraction(9.5, 10.5)
 FACTOR_TOL = 1e-12  # the run's factors against N48's committed ones
 REPRO_TOL = gc.REPRO_TOL  # 0.02 points per seed, b0 against T26's committed scores
-DECILE, SCALAR, NOTHING = ("the decile shrinkage is put forward", "the scalar scale is put forward",
-                           "nothing is put forward: closed by this reading")
+DECILE = "the decile shrinkage is put forward"
+DECILE_BEATEN = "the decile shrinkage is not put forward: its uniform control (closed by N48) beats it by the rule"
+DECILE_AS_WELL = "the decile shrinkage is not put forward: its uniform control (closed by N48) does as well"
+DECILE_NOT_SHOWN = ("the decile shrinkage is not put forward: it is not shown to beat a uniform step of the same "
+                    "projection")
+SCALAR_ONLY = "nothing is put forward: only the closed scalar control reaches the rule"
+NOTHING = "nothing is put forward: closed by this reading"
 LABEL_T42 = ("try T42, a labelled in-sample diagnostic, not an adoption result: M1 (with R1, R2, and with g_mom's "
              "factors) with its Feng direction shrunk by reliability (decile and scalar forms), on T26's route; Feng's "
              "E9.5 cells lie inside these pseudo-tasks' external windows and the cuts are ones earlier T1 choices were "
@@ -139,6 +168,8 @@ def score_arms(board, truth: Stage, ref_stage: Stage, seed: int, anchors, arms: 
 
 
 def cmd_run(a) -> None:
+    if ROW not in n12.tries_rows():
+        sys.exit(f"T42 is refused: {ROW} has no row in experiments/harness/TRIES.md (a row comes before its run)")
     n22 = RESULTS / a.n22 / "n22.json"
     if not gc.n22_passed(n22):
         sys.exit(f"T42 is refused: {gv._rel(n22)} does not hold a passing N22 (T26's route needs N22 passed)")
@@ -192,8 +223,9 @@ def cmd_run(a) -> None:
 # The reading
 
 
-def validity(results: Mapping[str, Mapping], t26: Mapping[str, Mapping], n48_groups: Mapping[str, Mapping]) -> dict:
-    """The void conditions. results and t26: cut -> task file (a missing cut is absent); n48_groups: N48's `groups`."""
+def validity(results: Mapping[str, Mapping], t26: Mapping[str, Mapping], n48_res: Mapping) -> dict:
+    """The void conditions. results and t26: cut -> task file (a missing cut is absent); n48_res: N48's n48.json."""
+    n48_groups, n48_sha = n48_res["groups"], n48_res["inputs"]["feng_stats_sha256"]
     reasons = []
     missing = [k for k in CUT_FILES if k not in results]
     if missing:
@@ -205,6 +237,12 @@ def validity(results: Mapping[str, Mapping], t26: Mapping[str, Mapping], n48_gro
         absent = sorted({a for row in r["rows"] for a in ARMS if a not in row["arms"]})
         if absent:
             reasons.append(f"{k}: arms {absent} missing")
+        if r.get("task") != k:
+            reasons.append(f"{k}: the file holds task {r.get('task')!r}")
+        if not isinstance(r.get("fraction"), int | float) or abs(r["fraction"] - FRACTION) > FACTOR_TOL:
+            reasons.append(f"{k}: fraction {r.get('fraction')!r}, not {FRACTION:g}")
+        if r.get("feng_stats_sha256") != n48_sha:
+            reasons.append(f"{k}: the statistics' sha256 is not N48's")
     commits = {r["stamp"]["commit"] for r in results.values()}
     unclean = sorted(k for k, r in results.items() if r["stamp"]["tree_clean"] is not True)
     if unclean:
@@ -228,6 +266,12 @@ def validity(results: Mapping[str, Mapping], t26: Mapping[str, Mapping], n48_gro
             worst_factor = max(worst_factor, *diffs, abs(got[g]["js_scale"] - want_js))
     if results and worst_factor > FACTOR_TOL:
         reasons.append(f"the factors differ from N48's by {worst_factor:.3g} (> {FACTOR_TOL:g})")
+    complete = all(a in row["arms"] for r in results.values() for row in r["rows"] for a in ARMS)
+    if results and complete:
+        same = [f"{c} = {b}" for b, c in TWINS
+                if all(row["arms"][c] == row["arms"][b] for r in results.values() for row in r["rows"])]
+        if same:
+            reasons.append(f"shrunk arms score exactly as their twins on every seed (built unshrunk?): {same}")
     return {"valid": not reasons, "reasons": reasons, "reproduction": repro, "largest_factor_difference": worst_factor,
             "commits": sorted(c for c in commits if c)}
 
@@ -270,15 +314,19 @@ def compare(results: Mapping[str, Mapping], base: str, change: str) -> dict:
 
 
 def verdict(p: Mapping[str, bool]) -> str:
+    """The decile goes forward only when (a), (b) and (e) pass and (f) does not; the scalar is never put forward, and
+    'only the scalar control reaches the rule' is said only when (c) and (d) pass and none of (a), (b), (e) does."""
     if p["a"] and p["b"]:
-        if p["e"]:
+        if p["e"] and not p["f"]:
             return DECILE
-        return SCALAR if p["c"] and p["d"] else DECILE
-    return SCALAR if p["c"] and p["d"] else NOTHING
+        if p["f"]:
+            return DECILE_BEATEN
+        return DECILE_AS_WELL if p["c"] and p["d"] else DECILE_NOT_SHOWN
+    return SCALAR_ONLY if p["c"] and p["d"] and not (p["a"] or p["b"] or p["e"]) else NOTHING
 
 
-def t42_reading(results: Mapping[str, Mapping], t26: Mapping[str, Mapping], n48_groups: Mapping[str, Mapping]) -> dict:
-    v = validity(results, t26, n48_groups)
+def t42_reading(results: Mapping[str, Mapping], t26: Mapping[str, Mapping], n48_res: Mapping) -> dict:
+    v = validity(results, t26, n48_res)
     out = {"valid": v["valid"], "validity": v}
     if not v["valid"]:
         out["outcome"] = "VOID"
@@ -322,8 +370,8 @@ def read(out: Path, t26_tasks: Path = T26_TASKS, n48_file: Path = N48_FILE) -> d
     present = {k: out / "tasks" / f for k, f in CUT_FILES.items() if (out / "tasks" / f).exists()}
     results = {k: json.loads(p.read_text()) for k, p in present.items()}
     t26 = {k: json.loads((t26_tasks / f).read_text()) for k, f in CUT_FILES.items() if (t26_tasks / f).exists()}
-    n48_groups = json.loads(Path(n48_file).read_text())["groups"]
-    res = {"label": LABEL_T42, "reading": t42_reading(results, t26, n48_groups),
+    n48_res = json.loads(Path(n48_file).read_text())
+    res = {"label": LABEL_T42, "reading": t42_reading(results, t26, n48_res),
            "stamps": {k: v["stamp"] for k, v in results.items()}}
     res["stamp"] = gv.stamp(started, [*present.values(), *[t26_tasks / f for f in CUT_FILES.values()
                                                           if (t26_tasks / f).exists()], Path(n48_file)])
