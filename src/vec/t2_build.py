@@ -1359,6 +1359,11 @@ MIDPOINT_STREAMS = (8, 9)  # random streams of the midpoint draw (before, after)
 # (`polar_moves(..., frame=True)`: the patch's whole affine map of the common frame, translation included,
 # interpolated along the same factors about the frame origin). No constant beyond the entry's k.
 MOVES = ("mean", "polar", "polar_frame")
+# Which partners set the anchors' displacements (campaign branch campaign/emb-mirror; the ledger's "Pruned before
+# running": a mirror-only correction of FGW's partners): "coupled" (the entry: the coupling's barycentric partners) or
+# "mirror_fixed" (`mirror_fixed_partners`: a partner on the other side of the pairs' symmetric direction from its
+# anchor is replaced by its mirror image there). No constant: the direction comes from the pairs, the test is a sign.
+PARTNERS = ("coupled", "mirror_fixed")
 
 
 def pchip_rms(days, rms, target_day: float) -> float:
@@ -1603,6 +1608,65 @@ def polar_moves(Z: np.ndarray, anchors: np.ndarray, shifts: np.ndarray, near: np
     return pos, rec
 
 
+def _whitened_xcorr(X: np.ndarray, Y: np.ndarray):
+    """The symmetrised whitened cross-correlation of paired rows of X and Y, formed exactly as
+    experiments/harness/diag_emb_coupling.py `_xcorr` forms it. Returns (eigenvalues smallest first, their unit
+    eigenvectors as columns, whitened X, whitened Y, Y's covariance square root), or None where a covariance is
+    singular (numpy.linalg.matrix_rank's default tolerance) or a value is not finite."""
+    if X.ndim != 2 or X.shape != Y.shape or len(X) == 0 or not (np.isfinite(X).all() and np.isfinite(Y).all()):
+        return None
+    d = X.shape[1]
+    Xc, Yc = X - X.mean(0), Y - Y.mean(0)
+    Sx, Sy = Xc.T @ Xc / len(X), Yc.T @ Yc / len(Y)
+    if np.linalg.matrix_rank(Sx) < d or np.linalg.matrix_rank(Sy) < d:
+        return None
+    ex, Vx = np.linalg.eigh(Sx)
+    ey, Vy = np.linalg.eigh(Sy)
+    if not ((ex > 0.0).all() and (ey > 0.0).all()):
+        return None
+    Wx, Wy = Vx @ np.diag(ex ** -0.5) @ Vx.T, Vy @ np.diag(ey ** -0.5) @ Vy.T
+    K = Wx @ (Xc.T @ Yc / len(X)) @ Wy
+    ev, V = np.linalg.eigh((K + K.T) / 2)
+    if not (np.isfinite(ev).all() and np.isfinite(V).all()):
+        return None
+    return ev, V, Xc @ Wx, Yc @ Wy, Vy @ np.diag(np.sqrt(ey)) @ Vy.T
+
+
+def mirror_fixed_partners(X, Y) -> tuple[np.ndarray, dict]:
+    """The mirror-only correction of one stage's partners (`interpolate_clouds(..., partners="mirror_fixed")`; campaign
+    branch campaign/emb-mirror). X: the stage's anchors in the common frame; Y: their barycentric partners (the
+    positions the entry subtracts X from to get the displacements).
+
+    Both are centred and whitened by the inverse square root of their own covariance, and the symmetrised whitened
+    cross-correlation is formed as diag_emb_coupling's `_xcorr` forms it; v is the unit eigenvector of its smallest
+    eigenvalue (the direction along which the partners agree least; its sign does not matter). For anchor i,
+    a = v . (whitened X_i) and b = v . (whitened Y_i); where a * b < 0 the partner is replaced by its mirror image
+    across the plane through the partner cloud's centre (in whitened coordinates b becomes -b and nothing else changes;
+    un-whitened, Y_i - 2 b Sy^(1/2) v). A partner on its anchor's side, or with a or b exactly zero, is left as it is,
+    bit for bit. If a covariance is singular or a value is not finite, every partner is left as it is.
+
+    Returns the partners and the stage's record: the smallest eigenvalue before and after the correction (None where
+    it cannot be formed) and the share of anchors whose partner was mirrored."""
+    X, Y = np.asarray(X, dtype=np.float64), np.asarray(Y, dtype=np.float64)
+    rec = {"xcorr_min_before": None, "xcorr_min_after": None, "share_mirrored": 0.0}
+    xc = _whitened_xcorr(X, Y)
+    if xc is None:
+        return Y, rec
+    ev, V, Xw, Yw, sqrt_y = xc
+    rec["xcorr_min_before"] = rec["xcorr_min_after"] = float(ev[0])
+    v = V[:, 0]
+    a, b = Xw @ v, Yw @ v
+    flip = a * b < 0.0
+    if not flip.any():
+        return Y, rec
+    out = Y.copy()
+    out[flip] = Y[flip] - 2.0 * b[flip, None] * (sqrt_y @ v)[None, :]
+    after = _whitened_xcorr(X, out)
+    rec["xcorr_min_after"] = None if after is None else float(after[0][0])
+    rec["share_mirrored"] = float(flip.mean())
+    return out, rec
+
+
 def log_panel_counts(a: ad.AnnData, genes) -> np.ndarray:
     """log1p of each cell's total counts over the panel (`layers["counts"]`, whatever its sparsity): the depth the
     midpoint draw's PCs are residualised on (`interpolate_clouds(..., draw="midpoint", log_depth=...)`). The log1p keeps
@@ -1617,7 +1681,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
                        with_partners: bool = False, herd: bool = False, move_coupling: str = MOVE_COUPLINGS[0],
                        with_coupling: bool = False, draw: str = DRAWS[0],
                        log_depth: tuple[np.ndarray, np.ndarray] | None = None,
-                       t_mix: float | None = None, moves: str = MOVES[0]) -> Interpolation:
+                       t_mix: float | None = None, moves: str = MOVES[0],
+                       partners: str = PARTNERS[0]) -> Interpolation:
     """Displacement interpolation between two stages at time fraction t (0 = before, 1 = after).
 
     1. Each cloud is centred and divided by its RMS radius (no PCA axes, so no sign choice).
@@ -1674,6 +1739,16 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     jitter are unchanged; the record gains "moves" and "polar" (per stage: the share of cells on the polar path, the
     median rotation angle in degrees and the median ratio of the stretch's largest to smallest eigenvalue over them).
     Left unset, the result is bit-identical to the entry.
+
+    partners (campaign branch campaign/emb-mirror): "coupled" (default, the entry) takes each anchor's displacement to
+    its coupled partners' mean as in step 3. "mirror_fixed" keeps those partners and moves only a partner on the other
+    side of the pairs' symmetric direction from its anchor to its mirror image there (`mirror_fixed_partners`, each
+    stage's anchors with their own partners); a stage whose covariance is singular or whose values are not finite keeps
+    the entry's partners. It composes with move_coupling and is refused with moves other than the entry's. Anchors,
+    coupling, rotation, the k-anchor mean displacement, draws, streams, scaling and jitter are unchanged; the record
+    gains "partner_fix" and "mirror" (per stage: the smallest eigenvalue of the symmetrised whitened cross-correlation
+    before and after the correction and the share of anchors whose partner was mirrored). Left unset, or with no
+    partner on the wrong side, the result is bit-identical to the entry.
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1695,6 +1770,10 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         raise ValueError(f"draw must be one of {DRAWS}, got {draw!r}")
     if moves not in MOVES:
         raise ValueError(f"moves must be one of {MOVES}, got {moves!r}")
+    if partners not in PARTNERS:
+        raise ValueError(f"partners must be one of {PARTNERS}, got {partners!r}")
+    if partners != PARTNERS[0] and moves != MOVES[0]:
+        raise ValueError(f"partners={partners!r} changes the entry's moves only (moves={MOVES[0]!r})")
     if draw != DRAWS[0]:
         if herd:
             raise ValueError(f"draw={draw!r} and herd both choose the rows; use one of them")
@@ -1717,8 +1796,14 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     R = coupling_rotation(Zb[ib], Za[ia], T)
     Za_b = Za @ R
     Tm = T if move_coupling == MOVE_COUPLINGS[0] else aligned_coupling(Fb, Fa, Zb[ib], Za_b[ia], alpha, emd_max_iter)
-    db = barycentric(Tm, Za_b[ia]) - Zb[ib]
-    da = barycentric(Tm.T, Zb[ib]) - Za_b[ia]
+    yb, ya = barycentric(Tm, Za_b[ia]), barycentric(Tm.T, Zb[ib])
+    mirror_rec = None
+    if partners != PARTNERS[0]:
+        yb, rec_b = mirror_fixed_partners(Zb[ib], yb)
+        ya, rec_a = mirror_fixed_partners(Za_b[ia], ya)
+        mirror_rec = {key: [rec_b[key], rec_a[key]] for key in rec_b}
+    db = yb - Zb[ib]
+    da = ya - Za_b[ia]
     near_b, near_a = nearest_anchors(Zb, Zb[ib], k)[1], nearest_anchors(Za_b, Za_b[ia], k)[1]
     pos_b = Zb + tp * db[near_b].mean(1)
     pos_a = Za_b + (1.0 - tp) * da[near_a].mean(1)
@@ -1783,6 +1868,9 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     if polar_rec is not None:
         record["moves"] = moves
         record["polar"] = polar_rec
+    if mirror_rec is not None:
+        record["partner_fix"] = partners
+        record["mirror"] = mirror_rec
     if midpoint is not None:
         record["draw"] = draw
         record["midpoint"] = {"k_strata": midpoint["k_strata"], "k_anchors": MIDPOINT_K_ANCHORS,

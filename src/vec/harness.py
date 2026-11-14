@@ -1042,7 +1042,8 @@ def _psb_size(ctx: BuildContext) -> Stage:
 
 def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixture", herd: bool = False,
          move_coupling: str = t2_build.MOVE_COUPLINGS[0], local_perm: bool = False,
-         draw: str = t2_build.DRAWS[0], t_mix: float | None = None, moves: str = t2_build.MOVES[0]) -> Stage:
+         draw: str = t2_build.DRAWS[0], t_mix: float | None = None, moves: str = t2_build.MOVES[0],
+         partners: str = t2_build.PARTNERS[0]) -> Stage:
     """The T2 embryo pipeline (docs/PLAN.md 4.2): displacement interpolation between the brackets at the target's
     time fraction (vec.t2_build.interpolate_clouds: fused Gromov-Wasserstein coupling, proper rotation, McCann moves,
     a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages. t_pos:
@@ -1056,7 +1057,9 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     entry) or "midpoint" (try E13, vec.t2_build._midpoint_draw; it needs the inputs' counts layer). moves: "mean" (the
     entry), "polar" (campaign branch campaign/emb-polar: vec.t2_build.polar_moves, each cell moved by its anchors'
     local linear map interpolated along its polar factors about the patch centroid) or "polar_frame" (the patch's whole
-    affine map of the common frame, translation included, interpolated along the same factors)."""
+    affine map of the common frame, translation included, interpolated along the same factors). partners: "coupled"
+    (the entry) or "mirror_fixed" (campaign branch campaign/emb-mirror: vec.t2_build.mirror_fixed_partners, FGW's
+    partners kept, a partner on the wrong side of the pairs' symmetric direction moved to its mirror image)."""
     t = ctx.task
     before, after = ctx.inputs["before"], ctx.inputs["after"]
     lo, hi = t.role_days["before"], t.role_days["after"]
@@ -1071,7 +1074,8 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
                                       target_rms=target_rms(ctx), t_pos=t_pos,
                                       with_partners=expression in ("blend", "latent"),
                                       herd=herd, move_coupling=move_coupling, draw=draw, log_depth=log_depth,
-                                      with_coupling=expression == "latent", t_mix=t_mix, moves=moves)
+                                      with_coupling=expression == "latent", t_mix=t_mix, moves=moves,
+                                      partners=partners)
     if expression == "mixture":
         X = np.empty((len(res.rows), len(g)), dtype=np.float32)
         X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
@@ -1241,6 +1245,18 @@ def _fgw_polar_frame(ctx: BuildContext) -> Stage:
     whole affine map interpolated, translation included; vec.t2_build.polar_moves with frame=True). No constant is
     new."""
     return _fgw(ctx, moves="polar_frame")
+
+
+def _fgw_mirrorfix(ctx: BuildContext) -> Stage:
+    """Campaign arm (branch campaign/emb-mirror): the entry with the mirror-only correction of FGW's partners
+    (vec.t2_build.mirror_fixed_partners). No constant is new."""
+    return _fgw(ctx, partners="mirror_fixed")
+
+
+def _fgw_mirrorfix_series(ctx: BuildContext) -> Stage:
+    """Campaign arm (branch campaign/emb-mirror): the second upload's expression (series) on FGW's corrected partners
+    (the second upload as built, fgw_aligned_series, takes its partners from the aligned transport instead)."""
+    return _fgw(ctx, partners="mirror_fixed", expression="series")
 
 
 def _fgw_aligned_polar_frame_series(ctx: BuildContext) -> Stage:
@@ -1760,6 +1776,19 @@ CANDIDATES = {
                                                  "rule": t2_build.SERIES_RULE, "alpha": t2_build.INTERP_ALPHA,
                                                  "k": t2_build.INTERP_K, "scope": "whole"},
                                                 requires=_series_applies),
+    # the embryo mirror-only partner correction (campaign branch campaign/emb-mirror): one idea, two arms
+    "fgw_mirrorfix": Candidate("fgw_mirrorfix", frozenset({"T2"}), (), _fgw_mirrorfix,
+                               {"what": "fgw with FGW's own partners kept and each partner on the other side of the "
+                                        "pairs' symmetric direction (the smallest eigenvalue's direction of their "
+                                        "symmetrised whitened cross-correlation) from its anchor replaced by its "
+                                        "mirror image there", "partners": "mirror_fixed",
+                                "alpha": t2_build.INTERP_ALPHA, "k": t2_build.INTERP_K, "scope": "whole"},
+                               requires=_interp),
+    "fgw_mirrorfix_series": Candidate("fgw_mirrorfix_series", frozenset({"T2"}), (), _fgw_mirrorfix_series,
+                                      {"what": "fgw_mirrorfix with the second upload's expression (series)",
+                                       "partners": "mirror_fixed", "rule": t2_build.SERIES_RULE,
+                                       "alpha": t2_build.INTERP_ALPHA, "k": t2_build.INTERP_K, "scope": "whole"},
+                                      requires=_series_applies),
     "fgw_aligned_hi": Candidate("fgw_aligned_hi", frozenset({"T2"}), (), _fgw_aligned_hi,
                                 {"what": "fgw_aligned (try E10's aligned moves) with every cell at the deeper "
                                          "bracket's depth: a top-up-only file at the aligned positions",
