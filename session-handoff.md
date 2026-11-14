@@ -39,6 +39,10 @@
     (prepared on the branch `port/emb-s1-trend`, off main), a dry build, a fourth rehearsal, a new reference list
     and pointer, the server's format check of the new file at the captain's word, and the summary and disclosure
     lines;
+  - nothing on the runner-up either unless the captain wants it: `fgw_aligned_trend` also passed the pair rule as a
+    first upload (+0.59 embryo points at the middle weighting, reading N37). Reading N40 found its gain follows the
+    same fit geometry (fitted -0.53 at the test's earlier-bracket geometry), and the AI assistant advises no; that
+    lens was fixed after the scores existed, so it is advice and not a pre-set gate (decision log (ii));
   - on 19 and 23 Nov, the approved screened reads for an organiser answer to the seventh email
     (`docs/SCREENED_READ_SEVENTH_EMAIL.md`; a reply in the captain's inbox is not pasted into the session). One
     consequence was fixed on 2026-11-13 (decision log (hh)): if the answer is that the hidden embryo sample was
@@ -61,18 +65,19 @@
   forecast for the files as built (mean 194.4, the upper reading; the gate figure stays 184); its second part read
   every remaining allowed line (26 tries in 14 rows: H14 to H20, E29 and E31 to E35, T37, T38, K11) and produced
   request R-D above, which the AI assistant advises against. The options for taking our own estimate past the
-  leading total are used up (decision log (ff) and (gg)). The round's audit (decision log (ii)) then read the four
-  lines a second independent sweep found open and replaced every closure that rested on the AI assistant's own odds by
-  a row-first read, a pre-set gate or arithmetic: nothing passes, nothing changes, and two critics found no open
-  lever. Tries: T1 35, embryo 53, heart 25, T3 25.
+  leading total are used up (decision log (ff) and (gg)). The round's audit (decision log (ii)) then read the six
+  lines that independent passes over the record found open (tries T39, K12, E36, E37, E38, K13) and replaced every
+  closure that rested on the AI assistant's own odds by a row-first read, a pre-set gate or arithmetic, or left it to
+  the captain: nothing passes, nothing changes, and two critics found no open lever. Tries: T1 35, embryo 57, heart
+  25, T3 27.
   Settled on 2026-11-13 (decision log (k)): T1's second upload (the mid base; built in and rehearsed), the heart
   try (run, not kept), and the checked copy of the reference files on this machine (kept, by the captain's word).
 - Branch / commit: `main` on GitHub (private). The DGX reference checkout
   (`PrakashDGX_H2:~/v/virtual-embryo-challenge`) is at dc7b6ae, the third rehearsal's commit, and stays untouched
   until the freeze-morning sync; campaign runs use `~/v/vec-campaign` and `~/v/vec-campaign-h7`, which sit at
   campaign-branch commits after the sixth round. The round's candidate code is on pushed branches named in decision
-  log (ff), and the audit's on `campaign/t1-c`, `campaign/emb-c`, `campaign/emb-polar` and `campaign/t3-c`; none of
-  it is on main.
+  log (ff), and the audit's on `campaign/t1-c`, `campaign/emb-c`, `campaign/emb-polar`, `campaign/emb-mirror`,
+  `campaign/t3-c` and `campaign/t3-d`; none of it is on main.
 
 ## Completed This Session (2026-11-12 to 2026-11-13: the campaign the captain asked for on 2026-11-12)
 
@@ -243,15 +248,16 @@
 
 ## Recommended Next Step
 
-- 2026-11-13 (latest, after decision log (ii)): the round's audit is done. Every line a second independent sweep found
-  open is read, and no closure rests on the AI assistant's own odds any more; nothing passes and no file changes. Two
-  things are the captain's, both optional: a ruling on request R-D (the AI assistant advises no), and whether to send
-  the drafted eighth email on final marks. One question from (ee) also stays with the captain: whether the Task 3
-  batch question goes into the follow-up about 19 Nov. No run is queued, and the AI assistant knows of none whose
-  result could change an upload under the standing rules. A check that reads practice scores gets its row first, a
-  gate is tried on pure noise before it is trusted, and a brief names where a formula's translation goes (three
-  corrections reviewers made this round). The dated items follow as listed below. Report the expected total as 184
-  (170 to 198), with 194.4 named as the forecast's upper reading.
+- 2026-11-14 (latest, after decision log (ii)): the round's audit is done. Every line that independent passes over the
+  record found open is read, and no closure rests on the AI assistant's own odds; nothing passes and no file changes.
+  Three things are the captain's, all optional: a ruling on request R-D or on its runner-up `fgw_aligned_trend` (the
+  AI assistant advises no on both, and says the advice is an after-the-fact lens), whether to send the drafted eighth
+  email on final marks, and whether the Task 3 batch question goes into the follow-up about 19 Nov. No run is queued,
+  and the AI assistant knows of none whose result could change an upload under the standing rules. Lessons of the
+  round, for the next brief: a check that reads practice scores gets its row first; a gate is tried on pure noise
+  before it is trusted; a control is checked for whether it can differ from its arm; a brief names where a formula's
+  translation goes; and a runner records an arm the builder refuses instead of stopping. The dated items follow as
+  listed below. Report the expected total as 184 (170 to 198), with 194.4 named as the forecast's upper reading.
 - 2026-11-13 (latest, after decision log (gg)): the sixth round is closed and the options for passing the leading
   total are used up; every allowed line with a counted read has been read. **No ruling is needed for the entry
   as built; one optional ruling is on record for the captain.** Request R-D (the embryo's first upload to

@@ -3809,8 +3809,11 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     1. *`fgw_aligned_trend` as a first upload* (reading N40, row first, an aggregation of committed scores). Its gain
        over `fgw` follows the trend's fit geometry as `fgw_trend_render`'s does: +1.08 + 8.40 g, and -0.53 at the
        test's earlier-bracket geometry (-0.54 without the E7.25 backtest). The trend's part at the aligned positions
-       gives almost reading N39's line (+1.39 + 10.07 g). By the row's rule it is not put forward. Neither arm that
-       passed reading N37 is.
+       gives almost reading N39's line (+1.39 + 10.07 g). The lens and its rule were fixed after the scores existed
+       and with the answer known, as rows N39 and N40 say, so this is the AI assistant's advice and not a pre-set
+       gate. By row N33's pre-set rule the arm passed as a first upload (S(0.45) +0.59, behind `fgw_trend_render`'s
+       +0.93); like request R-D it stays on record as that rule's outcome, for the captain to rule on, with the AI
+       assistant's advice against it.
     2. *The strong-null try in try T27's geometry.* Closed by arithmetic, with no judgement left in it: the base arm
        scores exactly 100 in 6 of the 10 seeds of the committed run, a board score cannot exceed 100, so no arm can be
        ahead in the 8 seeds the fixed reading needs. Written into the ledger's entry.
@@ -3836,6 +3839,20 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
        runner was fixed, reviewed and the row amended before the rerun). The patch-centroid form passes nothing:
        `fgw_polar` -0.30 and -0.17 on the counted backtests, S(0.45) -0.14 as a first upload and -1.72 as a second;
        `fgw_aligned_polar_series` -1.90 and -0.08.
+    7. *A mirror-only correction of FGW's partners* (tries E38a to E38d; found open by this entry's own audit, below).
+       Pruned in the ledger by analogy with try E11 and never read. Two forms were built, because the record's
+       sentence taken literally also mirrors partners that are right and only noisy: every wrong-side partner, and the
+       same only where the partners are mirrored. Nothing passes. The ungated form gains on the E7.5 backtest (+1.95,
+       ahead in 10 of 10 seeds) and loses on the E7.25 one (-0.62, a veto), the pattern that vetoed try E11, so the
+       ledger's analogy holds as a read; the gated form gives +1.39 and -0.21 and is `fgw` wherever its gate stays
+       closed; no arm passes a pair rule (S(0.45) +0.01 and +0.06 as a first upload; -0.00 for the two series arms as
+       a second).
+    8. *The T3 tail decoder* (tries K13a and K13b; found open by the same audit). The heart's form on the knockout
+       factor. Its first control was the arm itself on nearly all its genes and was replaced before any output; the
+       reading was then tightened so that a control that falls short cannot support the arm. It acts on about 130
+       genes per fold and is closed by K9's fixed reading on two grounds: its +0.40 on the cross-knockout fold x1,
+       ahead in 10 of 10 seeds, is not repeated on the replicate fold (+0.13, 5 of 10), and its control falls short on
+       both deciding folds; -0.06 on x2. A gain on one fold only, as in tries K9 to K11.
   - **Two critics, asked to attack the claim that the options are used up** (workflow wf_e1f10462-6d0, read only). The
     first listed every lever worth 3 points of the total or more: nine, none open. Closed by a rule: T1's depth (the
     largest: +10 to +22 T1 at zero gap, try T29), T3's depth step, and the heart's size, scope and cell numbers.
@@ -3858,7 +3875,13 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     hand arithmetic came first, and reading N40's row says the same of itself. (d) (ee) put three questions to the
     captain. Two are settled: the captain's renewal of the campaign answered whether it continues, and the strong-null
     try is closed by arithmetic (item 2). One remains for the captain: whether the Task 3 batch question goes into the
-    follow-up planned about 19 Nov.
+    follow-up planned about 19 Nov. (e) (gg) says no dry build of the trend file is made; one was made afterwards, as
+    the first planned check above; (gg) now carries a dated note. (f) Three closures above hold under a constant or a
+    choice that is on no record, and the entry should say so: the decoders' factor bound of 2 (tries T38, T39 and
+    E37a), the frame form's pivot at the stage centroid (tries E36c and E36d), and the sign test of the mirror
+    correction (tries E38). No other value is tried, because the ledger's rule 3 asks a physical reason for one and
+    the record gives none; a lift by a larger factor would also need an exact solve in place of the first-order one,
+    which is on no record.
   - **A question raised during the round: second uploads chosen by the first upload's score.** It is already on
     record: priced and retired in (dd) (a threshold on T1's first score gains +0.6 to +1.2 only if practice score
     levels carried to the test exactly, +0.3 to +0.5 with a level uncertainty of 4 board points and about +0.1 at 6,
@@ -3866,19 +3889,26 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     hidden share is inversion in spirit). It stays closed by `docs/S2_RULES.md` ("No rule reads a test score"), which
     is the captain's to change and would need extra files built and rehearsed by 24 Nov. The AI assistant advises
     against it.
-  - **A last audit of this entry's own claims.** Two agents that had no part in the round are given this entry, the
-    ledger and the committed result files, one to recompute every figure and class what each closure rests on, one to
-    sweep the ledger and the reports once more for a line still open. Their result is added to this entry when they
-    hand back.
+  - **Audits of this entry.** A third independent pass (workflow wf_5a1ca0e8-218: two agents with no part in the
+    round, given this entry, the ledger and the committed result files) recomputed every figure the entry then quoted
+    (168 figures in six lines and two checks, no mismatch) and found every row committed before its run. It classed
+    reading N40 as resting on the AI assistant's judgement after seeing results, which line 1 now says; it named three
+    sentences that claimed more than the files show (rows T38, T39 and E37, corrected with dated notes) and the stale
+    sentence in (gg) (correction (e)) and the unrecorded constants (correction (f)); and its sweep of 148 lines found
+    two still open by the rules, which became lines 7 and 8. A closing pass by two more agents follows this commit,
+    one on lines 7 and 8 and the reworded line 1, one sweeping the ledger again; its result is added here when it
+    hands back.
   - **Where it leaves the target.** Nothing read in this entry passes the adoption rule or a pair rule, so no upload,
     build, rule, gate figure or reference list changes; the ten files of `builds_dc7b6ae` stand. The committed
     estimate stays 184 (170 to 198); the forecast for the files as built stays its upper reading, 194.4, with P(total
     >= 215.41) at 0.01% or less. The options for taking the team's own estimate past 215.41 are used up within the
     rules: every line of the ledger, the plan and the research reports is now read, closed by a pre-set gate or by
     arithmetic, blocked by a named rule or ruling, without a practice read that could judge it, or not buildable from
-    the record; what two independent sweeps named open is read, and two critics found no open lever and no new line.
-    What could still move the total lies outside the AI assistant's reach: how the hidden samples were measured (the
-    seventh email, screened reads on 19 and 23 Nov), how final entries are marked (the drafted eighth email), and the
-    levers the post-exposure block and the frozen rules keep closed, which only the captain could reopen and for which
-    no released file gives a value. Nine counted tries in this entry (T39; K12a and K12b; E37a and E37b; E36a to E36d)
-    and one reading (N40): T1 35, embryo 53, heart 25, T3 25.
+    the record; the two first-upload arms that passed the pair rule are left to the captain, with the AI assistant's
+    advice against them labelled as such; what three independent sweeps named open is read, and two critics found no
+    open lever and no new line. What could still move the total lies outside the AI assistant's reach: how the hidden
+    samples were measured (the seventh email, screened reads on 19 and 23 Nov), how final entries are marked (the
+    drafted eighth email), and the levers the post-exposure block and the frozen rules keep closed, which only the
+    captain could reopen and for which no released file gives a value. Fifteen counted tries in this entry (T39; K12a
+    and K12b; E37a and E37b; E36a to E36d; E38a to E38d; K13a and K13b) and one reading (N40): T1 35, embryo 57, heart
+    25, T3 27.
