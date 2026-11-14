@@ -1,0 +1,102 @@
+try T47, a labelled diagnostic, counted, never an adoption result: how far the released days move along Feng's E9.5 -> E14.5 direction, by kind of sample, with M1's own formula; it compares a predictor with the cuts' target stage, scores nothing and calls no scorer; the read puts nothing forward by itself and its result can only go to the team captain
+Kind: it does not (K = +0.072 [+0.067, +0.078] (0 of 200 draws undefined), against 0.1)
+Pace: not separated [the interval does not separate (corrected widened by the self-check's bias)] (raw: the day holds more than a fifth [decided by the bootstrap interval], A / L = +0.304 [+0.296, +0.312] (0 of 200 draws undefined); corrected: not separated [decided by the bootstrap interval widened by the self-check's bias], A_corr / L_corr = +0.296 [+0.287, +0.303] (0 of 200 draws undefined); against 0.2 and 0.3)
+Entry's fraction 0.4: not separated [the interval does not separate (raw widened by the self-check's bias)] (two courses among many, not a bracket)
+    raw: not separated [decided by the bootstrap interval widened by the self-check's bias]; f_max +0.580 [+0.571, +0.590] (0 of 200 draws undefined); f_even +0.290 [+0.285, +0.295] (0 of 200 draws undefined); f_decay +0.358 [+0.355, +0.360] (0 of 200 draws undefined)
+    corrected (units of Feng's true direction): inside [decided by the bootstrap interval]; f_max +0.672 [+0.664, +0.682] (0 of 200 draws undefined); f_even +0.336 [+0.332, +0.341] (0 of 200 draws undefined); f_decay +0.409 [+0.407, +0.410] (0 of 200 draws undefined)
+    reported only, the corrected courses times the weighted r_d +0.899 [+0.899, +0.899] (0 of 200 draws undefined) (units of the noisy d): f_max +0.605 [+0.597, +0.613] (0 of 200 draws undefined); f_even +0.302 [+0.298, +0.307] (0 of 200 draws undefined); f_decay +0.368 [+0.366, +0.369] (0 of 200 draws undefined)
+A +0.254 [+0.247, +0.260] (0 of 200 draws undefined); K +0.072 [+0.067, +0.078] (0 of 200 draws undefined); A_corr +0.282 [+0.274, +0.289] (0 of 200 draws undefined); K_corr +0.079 [+0.073, +0.086] (0 of 200 draws undefined)
+    A, K, A_corr and K_corr over ['CM', 'Endocardium', 'Endothelium', 'Epicardium'] (excluded: []; no share in every library: []; no corrected share in every library: [])
+P over own cells +0.145 [+0.140, +0.151] (0 of 200 draws undefined) over ['CM', 'Endothelium']; beside it P +0.083 [+0.078, +0.089] (0 of 200 draws undefined) over ['CM', 'Endocardium', 'Endothelium'] (fallback groups: ['Endocardium'])
+L +0.834 [+0.828, +0.840] (0 of 200 draws undefined) (pairs with shared Feng labels excluded: ['Endocardium~Endothelium']); L over every pair +0.834 [+0.828, +0.840] (0 of 200 draws undefined); L_corr +0.955 [+0.950, +0.959] (0 of 200 draws undefined)
+    L rests on 5 pairs: ['CM~Endocardium', 'CM~Endothelium', 'CM~Epicardium', 'Endocardium~Epicardium', 'Endothelium~Epicardium']
+    L_corr rests on 5 pairs: ['CM~Endocardium', 'CM~Endothelium', 'CM~Epicardium', 'Endocardium~Epicardium', 'Endothelium~Epicardium']
+    L_all_pairs rests on 5 pairs: ['CM~Endocardium', 'CM~Endothelium', 'CM~Epicardium', 'Endocardium~Epicardium', 'Endothelium~Epicardium']
+(value [p5, p95], 200 draws, stream [47, 0])
+Groups (genes kept; r_d; N48 js_without_held, beside it only; label source E8.5 / E9.5 / E10.5): CM (29652; 0.990; 0.9891448668876724; own / own / own); Endocardium (29652; 0.868; 0.8631601621284487; fallback:Endothelium / own / own); Endothelium (29652; 0.880; 0.8742668743099202; own / own / own); Epicardium (29652; 0.863; 0.8649167698614572; none / own / own)
+N48 'js' (held genes included), beside it only: {'CM': 0.989137715770051, 'Endocardium': 0.8634251335066587, 'Endothelium': 0.8746332276679959, 'Epicardium': 0.8649913239115683}
+Calibration: M1's step of 0.2 on E10.5 library 3 reads a combined weighted share of +0.117 (unweighted +0.115; groups ['CM', 'Endocardium', 'Endothelium', 'Epicardium']); A in M1's fraction +0.435, K +0.123
+    the courses in M1's fraction (times 0.2 / s_cal), reported only: f_max +0.995; f_even +0.497; f_decay +0.614; f_max_corr +1.153; f_even_corr +0.576; f_decay_corr +0.701
+    CM: share +0.121
+    Endocardium: share +0.116
+    Endothelium: share +0.109
+    Epicardium: share +0.115
+Self-check (a known world from E9.5's cells: H2 against H1 moved by M1's 0.2 step on stream [47, 2], split on stream [47, 3]; Feng's E9.5 contrast stood in for by H1's, so the scale is 1; r_d = 1; at the point; groups ['CM', 'Endocardium', 'Endothelium', 'Epicardium']): A +0.1065 (known +0.200, bias -0.0935); L +0.9798 (known +1.000, bias -0.0202); A_over_L +0.1087 (known +0.200, bias -0.0913); f_max +0.8733 (known +0.800, bias +0.0733); f_even +0.4367 (known +0.400, bias +0.0367); f_decay +0.3218 (known +0.400, bias -0.0782); A_corr +0.1065 (known +0.200, bias -0.0935); L_corr +1.0021 (known +1.000, bias +0.0021); A_over_L_corr +0.1062 (known +0.200, bias -0.0938); f_max_corr +0.8956 (known +0.800, bias +0.0956); f_even_corr +0.4478 (known +0.400, bias +0.0478); f_decay_corr +0.3263 (known +0.400, bias -0.0737)
+    CM~Endocardium: slope +1.003, r_c 0.994, corrected +1.009
+    CM~Endothelium: slope +0.980, r_c 0.978, corrected +1.002
+    CM~Epicardium: slope +1.003, r_c 0.988, corrected +1.015
+    Endocardium~Endothelium: slope +0.868, r_c 0.882, corrected +0.984
+    Endocardium~Epicardium: slope +0.978, r_c 0.983, corrected +0.995
+    Endothelium~Epicardium: slope +0.961, r_c 0.964, corrected +0.997
+a_E8.5_E9.5: combined weighted +0.083 [+0.078, +0.089] (0 of 200 draws undefined) over ['CM', 'Endocardium', 'Endothelium'], unweighted +0.075 [+0.068, +0.083] (0 of 200 draws undefined) over ['CM', 'Endocardium', 'Endothelium']
+    CM: share +0.178 [+0.174, +0.183] (0 of 200 draws undefined), r +0.373, slope+int +0.181, top half +0.178, corrected +0.180, n_eff 613.9, without the top-d^2 half +0.205, r over d != 0 +0.378 (17897 genes)
+    Endocardium: share +0.033 [+0.024, +0.042] (0 of 200 draws undefined), r +0.065, slope+int +0.033, top half +0.033, corrected +0.038, n_eff 982.9, without the top-d^2 half +0.013, r over d != 0 +0.066 (13678 genes)
+    Endothelium: share +0.014 [-0.003, +0.033] (0 of 200 draws undefined), r +0.024, slope+int +0.014, top half +0.014, corrected +0.016, n_eff 647.5, without the top-d^2 half -0.036, r over d != 0 +0.024 (14107 genes)
+    Epicardium: share +nan [+nan, +nan] (200 of 200 draws undefined), r +nan, slope+int +nan, top half +nan, corrected +nan, n_eff nan, without the top-d^2 half +nan, r over d != 0 +nan (nan genes)
+b_E9.5_E10.5_lib1: combined weighted +0.284 [+0.279, +0.291] (0 of 200 draws undefined) over ['CM', 'Endocardium', 'Endothelium', 'Epicardium'], unweighted +0.299 [+0.291, +0.307] (0 of 200 draws undefined) over ['CM', 'Endocardium', 'Endothelium', 'Epicardium']
+    CM: share +0.309 [+0.300, +0.318] (0 of 200 draws undefined), r +0.365, slope+int +0.311, top half +0.309, corrected +0.312, n_eff 613.9, without the top-d^2 half +0.348, r over d != 0 +0.367 (17897 genes)
+    Endocardium: share +0.236 [+0.225, +0.249] (0 of 200 draws undefined), r +0.377, slope+int +0.237, top half +0.236, corrected +0.272, n_eff 982.9, without the top-d^2 half +0.259, r over d != 0 +0.386 (13678 genes)
+    Endothelium: share +0.327 [+0.302, +0.353] (0 of 200 draws undefined), r +0.409, slope+int +0.329, top half +0.327, corrected +0.372, n_eff 647.5, without the top-d^2 half +0.405, r over d != 0 +0.415 (14107 genes)
+    Epicardium: share +0.322 [+0.313, +0.331] (0 of 200 draws undefined), r +0.541, slope+int +0.323, top half +0.322, corrected +0.374, n_eff 1015.3, without the top-d^2 half +0.297, r over d != 0 +0.543 (14002 genes)
+b_E9.5_E10.5_lib2: combined weighted +0.224 [+0.212, +0.233] (0 of 200 draws undefined) over ['CM', 'Endocardium', 'Endothelium', 'Epicardium'], unweighted +0.237 [+0.221, +0.248] (0 of 200 draws undefined) over ['CM', 'Endocardium', 'Endothelium', 'Epicardium']
+    CM: share +0.260 [+0.247, +0.276] (0 of 200 draws undefined), r +0.370, slope+int +0.260, top half +0.260, corrected +0.263, n_eff 613.9, without the top-d^2 half +0.299, r over d != 0 +0.370 (17897 genes)
+    Endocardium: share +0.158 [+0.139, +0.175] (0 of 200 draws undefined), r +0.272, slope+int +0.160, top half +0.158, corrected +0.182, n_eff 982.9, without the top-d^2 half +0.170, r over d != 0 +0.281 (13678 genes)
+    Endothelium: share +0.249 [+0.196, +0.288] (0 of 200 draws undefined), r +0.304, slope+int +0.251, top half +0.249, corrected +0.283, n_eff 647.5, without the top-d^2 half +0.315, r over d != 0 +0.312 (14107 genes)
+    Epicardium: share +0.280 [+0.263, +0.296] (0 of 200 draws undefined), r +0.506, slope+int +0.280, top half +0.280, corrected +0.325, n_eff 1015.3, without the top-d^2 half +0.257, r over d != 0 +0.510 (14002 genes)
+b_E9.5_E10.5_lib3: combined weighted +0.326 [+0.321, +0.331] (0 of 200 draws undefined) over ['CM', 'Endocardium', 'Endothelium', 'Epicardium'], unweighted +0.330 [+0.324, +0.336] (0 of 200 draws undefined) over ['CM', 'Endocardium', 'Endothelium', 'Epicardium']
+    CM: share +0.398 [+0.393, +0.404] (0 of 200 draws undefined), r +0.566, slope+int +0.397, top half +0.398, corrected +0.403, n_eff 613.9, without the top-d^2 half +0.490, r over d != 0 +0.565 (17897 genes)
+    Endocardium: share +0.284 [+0.277, +0.293] (0 of 200 draws undefined), r +0.501, slope+int +0.283, top half +0.284, corrected +0.327, n_eff 982.9, without the top-d^2 half +0.304, r over d != 0 +0.507 (13678 genes)
+    Endothelium: share +0.317 [+0.293, +0.337] (0 of 200 draws undefined), r +0.342, slope+int +0.318, top half +0.317, corrected +0.361, n_eff 647.5, without the top-d^2 half +0.415, r over d != 0 +0.347 (14107 genes)
+    Epicardium: share +0.320 [+0.314, +0.326] (0 of 200 draws undefined), r +0.524, slope+int +0.319, top half +0.320, corrected +0.370, n_eff 1015.3, without the top-d^2 half +0.299, r over d != 0 +0.525 (14002 genes)
+b_E9.5_E10.5_pooled: combined weighted +0.309 [+0.305, +0.314] (0 of 200 draws undefined) over ['CM', 'Endocardium', 'Endothelium', 'Epicardium'], unweighted +0.316 [+0.309, +0.321] (0 of 200 draws undefined) over ['CM', 'Endocardium', 'Endothelium', 'Epicardium']
+    CM: share +0.359 [+0.353, +0.364] (0 of 200 draws undefined), r +0.569, slope+int +0.359, top half +0.359, corrected +0.363, n_eff 613.9, without the top-d^2 half +0.432, r over d != 0 +0.570 (17897 genes)
+    Endocardium: share +0.268 [+0.261, +0.278] (0 of 200 draws undefined), r +0.486, slope+int +0.268, top half +0.268, corrected +0.309, n_eff 982.9, without the top-d^2 half +0.288, r over d != 0 +0.493 (13678 genes)
+    Endothelium: share +0.317 [+0.294, +0.335] (0 of 200 draws undefined), r +0.380, slope+int +0.318, top half +0.317, corrected +0.360, n_eff 647.5, without the top-d^2 half +0.406, r over d != 0 +0.385 (14107 genes)
+    Epicardium: share +0.319 [+0.314, +0.324] (0 of 200 draws undefined), r +0.543, slope+int +0.318, top half +0.319, corrected +0.369, n_eff 1015.3, without the top-d^2 half +0.297, r over d != 0 +0.544 (14002 genes)
+c_E10.5_lib12_lib3: combined weighted +0.057 [+0.052, +0.062] (0 of 200 draws undefined) over ['CM', 'Endocardium', 'Endothelium', 'Epicardium'], unweighted +0.047 [+0.041, +0.053] (0 of 200 draws undefined) over ['CM', 'Endocardium', 'Endothelium', 'Epicardium']
+    CM: share +0.109 [+0.099, +0.117] (0 of 200 draws undefined), r +0.134, slope+int +0.106, top half +0.109, corrected +0.110, n_eff 613.9, without the top-d^2 half +0.161, r over d != 0 +0.133 (17897 genes)
+    Endocardium: share +0.065 [+0.057, +0.075] (0 of 200 draws undefined), r +0.163, slope+int +0.064, top half +0.065, corrected +0.075, n_eff 982.9, without the top-d^2 half +0.064, r over d != 0 +0.163 (13678 genes)
+    Endothelium: share +0.009 [-0.011, +0.031] (0 of 200 draws undefined), r +0.014, slope+int +0.008, top half +0.009, corrected +0.011, n_eff 647.5, without the top-d^2 half +0.032, r over d != 0 +0.012 (14107 genes)
+    Epicardium: share +0.005 [-0.004, +0.012] (0 of 200 draws undefined), r +0.014, slope+int +0.004, top half +0.005, corrected +0.005, n_eff 1015.3, without the top-d^2 half +0.009, r over d != 0 +0.013 (14002 genes)
+c_E10.5_lib1_lib2: combined weighted -0.061 [-0.072, -0.052] (0 of 200 draws undefined) over ['CM', 'Endocardium', 'Endothelium', 'Epicardium'], unweighted -0.062 [-0.078, -0.051] (0 of 200 draws undefined) over ['CM', 'Endocardium', 'Endothelium', 'Epicardium']
+    CM: share -0.049 [-0.064, -0.032] (0 of 200 draws undefined), r -0.125, slope+int -0.051, top half -0.049, corrected -0.049, n_eff 613.9, without the top-d^2 half -0.049, r over d != 0 -0.130 (17897 genes)
+    Endocardium: share -0.078 [-0.100, -0.061] (0 of 200 draws undefined), r -0.220, slope+int -0.077, top half -0.078, corrected -0.090, n_eff 982.9, without the top-d^2 half -0.089, r over d != 0 -0.222 (13678 genes)
+    Endothelium: share -0.078 [-0.129, -0.033] (0 of 200 draws undefined), r -0.129, slope+int -0.078, top half -0.078, corrected -0.088, n_eff 647.5, without the top-d^2 half -0.090, r over d != 0 -0.131 (14107 genes)
+    Epicardium: share -0.042 [-0.061, -0.024] (0 of 200 draws undefined), r -0.136, slope+int -0.042, top half -0.042, corrected -0.049, n_eff 1015.3, without the top-d^2 half -0.041, r over d != 0 -0.138 (14002 genes)
+scale E9.5: median slope +0.834 [+0.828, +0.840] (0 of 200 draws undefined); every pair +0.834 [+0.828, +0.840] (0 of 200 draws undefined); corrected +0.955 [+0.950, +0.959] (0 of 200 draws undefined)
+    CM~Endocardium (29652 genes): slope +0.924 [+0.920, +0.928] (0 of 200 draws undefined), r +0.825, r_c 0.968, corrected +0.955
+    CM~Endothelium (29652 genes): slope +0.884 [+0.877, +0.889] (0 of 200 draws undefined), r +0.733, r_c 0.968, corrected +0.913
+    CM~Epicardium (29652 genes): slope +0.761 [+0.755, +0.765] (0 of 200 draws undefined), r +0.771, r_c 0.873, corrected +0.871
+    Endocardium~Endothelium (29652 genes): slope +nan [+nan, +nan] (200 of 200 draws undefined), r +nan, r_c nan, corrected +nan
+    Endocardium~Epicardium (29652 genes): slope +0.834 [+0.828, +0.840] (0 of 200 draws undefined), r +0.735, r_c 0.795, corrected +1.049
+    Endothelium~Epicardium (29652 genes): slope +0.817 [+0.809, +0.824] (0 of 200 draws undefined), r +0.636, r_c 0.795, corrected +1.027
+scale E10.5_lib3_on_feng_E14.5: median slope +0.701 [+0.697, +0.704] (0 of 200 draws undefined); every pair +0.670 [+0.666, +0.673] (0 of 200 draws undefined); corrected +0.718 [+0.714, +0.721] (0 of 200 draws undefined)
+    CM~Endocardium (29652 genes): slope +0.768 [+0.766, +0.772] (0 of 200 draws undefined), r +0.769, r_c 0.970, corrected +0.792
+    CM~Endothelium (29652 genes): slope +0.783 [+0.777, +0.788] (0 of 200 draws undefined), r +0.742, r_c 0.980, corrected +0.799
+    CM~Epicardium (29652 genes): slope +0.701 [+0.697, +0.704] (0 of 200 draws undefined), r +0.702, r_c 0.977, corrected +0.718
+    Endocardium~Endothelium (29652 genes): slope +0.224 [+0.193, +0.252] (0 of 200 draws undefined), r +0.140, r_c 0.868, corrected +0.258
+    Endocardium~Epicardium (29652 genes): slope +0.579 [+0.576, +0.582] (0 of 200 draws undefined), r +0.636, r_c 0.926, corrected +0.625
+    Endothelium~Epicardium (29652 genes): slope +0.639 [+0.633, +0.645] (0 of 200 draws undefined), r +0.632, r_c 0.942, corrected +0.678
+Note: A is attenuated by the noise in Feng's direction and L by the noise in Feng's E9.5 contrast; the pace and the entry-fraction statements are read on the corrected pair and are not separated where raw and corrected disagree.
+Note: A share is a d^2-weighted average dominated by the few genes with the largest Feng change; n_eff is reported beside it.
+Note: The corrected fraction statement compares 0.4 with the courses in units of Feng's true direction; the courses times r_d (the best multiple of the noisy d, which includes N48's shrinkage) are reported beside it and decide nothing.
+Note: r_d is computed in this read from the bracket's two halves over the share's own genes; N48's scales are reported beside it and enter nothing.
+Note: The intervals hold only the challenge's cell sampling; Feng's own noise, of the same size as the cell sampling on the reviewer's synthetic check, is not in them, so a separated statement is weaker than its interval reads.
+Note: K counts any difference between the heart library and the embryo libraries that lies along Feng's direction, ambient heart RNA included (2% soup gives about 0.13 on synthetic data); a depth difference alone gives none. A K above 0.1 does not show that dissected-heart cells are further along in development.
+Note: L is the size of between-type contrasts at E9.5 in the challenge's data relative to Feng's; using it for the within-type change over five days assumes one scale for both, which the read cannot test; the E10.5 library 3 against E14.5 slope and each pair's correlation are reported as the only check.
+Note: A share is what the genes with the largest Feng change say; where share and share_without_top_d2_half differ by more than their intervals, the statements describe a handful of genes, not the direction.
+Note: Not separated may mean that correcting for Feng's noise changes the statement; the corrected statement is the estimate and the raw statement shows how much the correction moves it.
+Note: The courses assume the same E9.5 and E14.5 in both datasets, one scale for all genes and groups and a course that never turns back; they are two courses among many, and a statement about 0.4 says nothing about scores (T44 found larger steps score better).
+Note: P over own cells is the reading; P with fallback groups compares one group's cells at E8.5 with another group's at E9.5 and is shown only beside it.
+Note: No statement of T47 is a reason to change M1's fraction; any change goes as a counted try on the E10.5 cuts with its own row.
+Note: On synthetic data with the truth at 0.4, the cell-sampling intervals are about +-0.002 wide and L_corr reads 3-6% low (12-15% at scale 1.5) from the pseudocount and the two datasets' different depths; a fraction statement whose margin is smaller than that bias says nothing about 0.4.
+Note: At a pace near 0.2 the corrected pace statement turns on differences of 1-3%, inside the read's own systematic error on synthetic data; 'the day holds more than a fifth' with p5 within 0.01 of 0.2 is not a finding.
+Note: The intervals are a few thousandths wide at the released cell numbers; every statement is decided by the read's systematic errors (pseudocount, label purity, one scale for between-type and within-type change), which the intervals do not hold.
+Note: The raw pace is biased by the ratio of the direction's to the contrast's reliability; a 'not separated' that comes from raw against corrected is that bias, not uncertainty.
+Note: A is read on the embryo libraries alone; any difference between E9.5's and E10.5's embryo portions (dissection, composition within a label) that lies along Feng's direction is read as pace and subtracted from K.
+Note: L is lowered by any impurity of the challenge's labels or any pooling of Feng's labels (10% mislabelled cells lowered it by a fifth on synthetic data), and A and L rest on different groups and weights; an 'above both courses' can come from L alone.
+Note: 0.4 is compared with the courses in share units; M1's own 0.2 step reads as s_cal in those units, so the fraction M1 would need is the course times 0.2 / s_cal, which is reported and decides nothing; neither unit says what scores.
+Note: No statement of T47 measures the test's interval, sample kind or scoring; 'above both courses' means only that the released embryo days, at the E9.5 between-type scale, move less along Feng's direction than five even days would, and it is consistent with T44's finding that larger steps score better.
+Note: The self-check stands Feng in with the challenge's own E9.5 cells, so its bias holds the pseudocount, M1's count-space step and the cell sampling of one dataset at one point, not the depth difference between the two datasets nor label impurity or pooling; a statement that survives the widening can still be decided by those.
+Limit: a labelled diagnostic; never adoption evidence; puts nothing forward by itself; it can only go to the team captain
+Commit dff6a5bb9c44772b4a2586d318a6f784358534ac, tree clean True, UTC 2026-11-14T17:46:32Z
