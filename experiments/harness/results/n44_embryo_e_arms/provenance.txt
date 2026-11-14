@@ -1,0 +1,9 @@
+run folder on the DGX: ~/v/vec-campaign/runs/harness/n44_embryo_e_arms (campaign checkout)
+commit: 30e1417d91c61f722604de5f760ef79eca751dd5 (branch campaign/emb-e)
+tree at start and at end (bytes of git status --porcelain): 0 and 0
+started UTC: 2026-11-14T06:23:59Z
+ended UTC: 2026-11-14T07:05:44Z
+CPU only, 8 BLAS threads, one process per practice task
+command: experiments/harness/n44_embryo_e_arms.py run --task <task> --out <tasks>, the nine tasks started together
+tasks/: the nine task files as the run wrote them; each holds the floor, the arms that built and the committed arms it rescored, and under "not_buildable" any arm the builder refused on that task
+the reading is experiments/harness/n44_embryo_e_readings.py on main (results/n44_embryo_e_readings/)
