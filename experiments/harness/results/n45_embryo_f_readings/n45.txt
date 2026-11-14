@@ -1,0 +1,19 @@
+Readings of tries E41a and E41b (runs e24_pricing:ccd33b5, e25_pairs:798908a, e28_nine_tasks:22513cf, n45_embryo_f_arms:fcc1f6b): the Potts sorting and the partial coupling on the nine practice tasks; aggregation of committed scores
+outcome: the adoption rule is passed by fgw_partial; first upload put forward: fgw_partial
+  rescored arms against their committed scores, largest difference over tasks and seeds: floor 0.0e+00, fgw 6.5e-04 (void above 0.01)
+  adoption rule, fgw_potts against fgw: e75 +0.32 (10/10), e725 -0.00 (5/10) -> not kept (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 1 of 2 pseudo-tasks; needs 2)
+  adoption rule, fgw_partial against fgw: e75 +1.88 (10/10), e725 +0.71 (9/10) -> kept (passes on 2 of 2 pseudo-tasks (needs 2) and loses on none)
+  fgw_potts minus fgw, own means: half +0.39 late +0.21 new1 +0.13 x1 +2.29 x2 +0.55 x3 +1.26 new2 +0.15 e75 +0.32 e725 -0.00
+    seeds (of 10) in which fgw_potts scores as fgw: half 0 late 0 new1 0 x1 0 x2 0 x3 0 new2 0 e75 0 e725 1
+  fgw_partial minus fgw, own means: half +0.26 late +0.88 new1 +1.92 x1 +3.75 x2 -0.37 x3 +2.64 new2 -0.26 e75 +1.88 e725 +0.71
+    seeds (of 10) in which fgw_partial scores as fgw: half 0 late 0 new1 0 x1 0 x2 0 x3 0 new2 0 e75 0 e725 0
+  as a first upload (row N33's rule):      D      O  S(0.3) S(0.45) S(0.6)  LOO-min  rule a b c d
+    fgw_potts                         +0.30  +0.07  +0.14  +0.17  +0.21    +0.09  n y y y
+      per task half +0.00 late +0.00 new1 +0.00 x1 +0.00 x2 +0.55 x3 +1.26 new2 +0.02 e75 +0.19 e725 -0.00
+    fgw_partial                       +0.39  +0.70  +0.61  +0.56  +0.51    +0.34  y y y y
+      per task half +0.00 late +0.00 new1 +0.00 x1 +0.06 x2 -0.36 x3 +2.64 new2 -0.13 e75 +1.51 e725 +0.71
+  as a second upload beside fgw (rows E34 and E35's rule):      D      O  S(0.3) S(0.45) S(0.6)  LOO-min  rule a b c d
+    fgw_potts                         -2.59  -0.25  -0.95  -1.30  -1.65    -1.65  n n n n
+      per task half -7.05 late -4.06 new1 -4.04 x1 -2.19 x2 +0.55 x3 +1.26 new2 -0.71 e75 -0.09 e725 +0.04
+    fgw_partial                       -1.72  +0.49  -0.18  -0.51  -0.84    -0.90  n n n n
+      per task half -7.16 late -2.89 new1 -2.26 x1 -0.73 x2 +0.07 x3 +2.64 new2 -0.77 e75 +1.47 e725 +0.76
