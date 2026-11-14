@@ -1954,11 +1954,12 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
 
     coupling (campaign branch campaign/emb-f; the ledger's row E32): "fgw" (default, the entry) or "partial". With
     "partial", coupling_labels=(before labels, after labels), one label per cell of each bracket (the harness passes
-    obs["celltype"]), and s = `label_overlap` of the anchors' labels. If s is exactly 1 the coupling is the entry's own
-    call and the result is the entry's bit for bit. Otherwise the coupling is `partial_fgw_coupling` on the entry's
-    features, structure, alpha and network-simplex cap, transporting mass s; an anchor's partner is its row's (column's)
-    barycentre, the row divided by its own mass, and an anchor whose row (column) carries no mass has displacement 0
-    (`partial_partners`); the rotation is `coupling_rotation` on this coupling. Anchors, joint PCs, the k-anchor mean
+    obs["celltype"] for fgw_partial and obs["group"] for fgw_partial_grp, campaign/emb-h), and s = `label_overlap` of
+    the anchors' labels. If s is exactly 1 the coupling is the entry's own call and the result is the entry's bit for
+    bit. Otherwise the coupling is `partial_fgw_coupling` on the entry's features, structure, alpha and
+    network-simplex cap, transporting mass s; an anchor's partner is its row's (column's) barycentre, the row divided
+    by its own mass, and an anchor whose row (column) carries no mass has displacement 0 (`partial_partners`); the
+    rotation is `coupling_rotation` on this coupling. Anchors, joint PCs, the k-anchor mean
     displacement, draws, streams, expression, scaling and jitter are unchanged. Refused with move_coupling="aligned",
     draw="midpoint" and with_partners (each reads the coupling's rows as a balanced coupling's). The record gains
     "coupling" and "partial": s, the transported mass the solver returns (None where s is 1 and the entry's coupling
