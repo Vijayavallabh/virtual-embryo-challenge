@@ -1,0 +1,30 @@
+Readings of tries E40a to E40d (runs e24_pricing:ccd33b5, e25_pairs:798908a, e28_nine_tasks:22513cf, n36_trend_second_upload:51b0672, n44_embryo_e_arms:30e1417): the within-file mixture, the multinomial render and the quadratic trend on the nine practice tasks; aggregation of committed scores
+outcome: closed: no rule is passed
+  rescored arms against their committed scores, largest difference over tasks and seeds: floor 0.0e+00, fgw 6.5e-04, fgw_aligned_series 8.8e-04, fgw_trend_render 0.0e+00, fgw_aligned_trend 0.0e+00 (void above 0.01)
+  adoption rule, fgw_quad_render against fgw: e75 -2.18 (0/10), e725 -4.43 (0/10) -> not kept (loses more than 0.3 points on average on ['e725', 'e75'])
+  fgw_aligned_mix minus fgw_aligned_series, own means: half -1.87 late -0.45 new1 -0.89 x1 -1.83 x2 +3.10 x3 +5.14 new2 +0.09 e75 +2.73 e725 +6.13
+    minus fgw_aligned_trend: half +4.16 late +2.99 new1 +1.54 x1 +5.41 x2 +1.29 x3 +0.24 new2 +0.20 e75 +1.62 e725 -3.98
+  fgw_aligned_series_mn minus fgw_aligned_series, own means: half -0.23 late +0.12 new1 -0.12 x1 -0.88 x2 -0.06 x3 +0.26 new2 -0.22 e75 +0.05 e725 +0.12
+  fgw_quad_render minus fgw_trend_render, own means: half -2.57 late -1.60 new1 -0.43 x1 +1.03 x2 -0.20 x3 -0.74 new2 -0.48 e75 -1.16 e725 -8.09
+    minus fgw: half -1.15 late -1.57 new1 -0.22 x1 -1.89 x2 +1.72 x3 +0.25 new2 +0.74 e75 -2.18 e725 -4.43
+  fgw_aligned_quad minus fgw_aligned_trend, own means: half -2.56 late -1.60 new1 -0.43 x1 +1.04 x2 -0.20 x3 -0.75 new2 -0.48 e75 -1.19 e725 -7.95
+    minus fgw_aligned_series: half -8.60 late -5.04 new1 -2.87 x1 -6.20 x2 +1.61 x3 +4.14 new2 -0.58 e75 -0.08 e725 +2.16
+  fgw_aligned_mix: its own mean lies between its two halves' means (fgw_aligned_series, fgw_aligned_trend) on 5 of 9 tasks
+  as a first upload (row N33's rule):      D      O  S(0.3) S(0.45) S(0.6)  LOO-min  rule a b c d
+    fgw_aligned_mix                   +0.39  +0.19  +0.25  +0.28  +0.31    -0.35  n y y n
+      per task half +0.00 late +0.00 new1 +0.00 x1 +0.00 x2 +1.77 x3 +0.58 new2 -0.03 e75 +2.49 e725 -1.88
+    fgw_aligned_series_mn             -0.91  -2.73  -2.18  -1.91  -1.64    -2.63  n n y n
+      per task half +0.00 late +0.12 new1 +0.00 x1 +0.00 x2 -1.31 x3 -4.30 new2 -0.13 e75 -0.18 e725 -7.87
+    fgw_quad_render                   +0.33  -1.51  -0.96  -0.68  -0.41    -1.14  n n y n
+      per task half +0.00 late +0.00 new1 +0.00 x1 +0.00 x2 +1.72 x3 +0.25 new2 +0.16 e75 -0.24 e725 -4.43
+    fgw_aligned_quad                  -0.02  -1.97  -1.38  -1.09  -0.80    -1.65  n n y n
+      per task half +0.00 late +0.00 new1 +0.00 x1 +0.00 x2 +0.28 x3 -0.41 new2 -0.13 e75 +0.06 e725 -5.84
+  as a second upload beside fgw (rows E34 and E35's rule):      D      O  S(0.3) S(0.45) S(0.6)  LOO-min  rule a b c d
+    fgw_aligned_mix                   -0.45  +0.86  +0.47  +0.27  +0.08    -0.17  n y n n
+      per task half -1.87 late -0.45 new1 -0.89 x1 -1.83 x2 +1.77 x3 +0.60 new2 +0.07 e75 +2.49 e725 +0.03
+    fgw_aligned_series_mn             -0.19  -0.06  -0.09  -0.11  -0.13    -0.14  n n n n
+      per task half -0.23 late +0.12 new1 -0.12 x1 -0.88 x2 +0.00 x3 +0.00 new2 -0.18 e75 +0.02 e725 +0.00
+    fgw_quad_render                   -3.06  -0.18  -1.04  -1.47  -1.91    -1.90  n n n n
+      per task half -7.44 late -4.27 new1 -4.16 x1 -4.48 x2 +1.72 x3 +0.29 new2 -0.12 e75 -0.41 e725 +0.00
+    fgw_aligned_quad                  -3.04  -0.19  -1.04  -1.47  -1.90    -1.78  n n n n
+      per task half -7.44 late -3.90 new1 -2.87 x1 -4.48 x2 +0.41 x3 +0.02 new2 -0.47 e75 -0.09 e725 +0.00
