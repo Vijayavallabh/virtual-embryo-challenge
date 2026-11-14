@@ -2594,6 +2594,138 @@ def trend_rendered_expression(before: ad.AnnData, after: ad.AnnData, interp: Int
     return out, rec
 
 
+# The reference-residual render (campaign branch campaign/emb-i; the research report's recipe R2, "reference-residual
+# factor for an interior reference", in its own form): each bracket is corrected at ITS OWN day, so the stage
+# difference between the brackets stays, unlike the trend render, which moves both brackets to the trend at the
+# target's day. Samples, labels and profiles are TREND_RENDER_RULE's. L is R2's cap with no fitted number: the share of
+# the residual that is optimal when the three samples' own deviations are independent and equal in size (R2's fitted L
+# needs more interior stages than the embryo series has). No constant is new.
+RESID_RENDER_RULE = ("reference-residual render: each bracket that has, among the task's other samples (the other "
+                     "bracket included, the target never), an earlier and a later one has its drawn cells moved by a "
+                     "per-gene factor that removes the share L of its residual from the straight line through the "
+                     "nearest earlier and the nearest later sample by stage day. Samples, labels and profiles are "
+                     "TREND_RENDER_RULE's (weights the moved bracket's label shares, eps 1e-5). With d the bracket's "
+                     "day and d1 < d < d2 the neighbours', w1 = (d2 - d) / (d2 - d1), w2 = 1 - w1, line = w1 "
+                     "log(p1 + eps) + w2 log(p2 + eps), r = log(own + eps) - line, L = 1 / (1 + w1^2 + w2^2); the "
+                     "factor exp(-L r) is rescaled so the weighted total proportion is unchanged and clipped to "
+                     "0.25-4, applied in count space (vec.core.apply_gene_factor). A bracket without an earlier or a "
+                     "later sample keeps its drawn cells as released. Depth is not moved: the counts outside the "
+                     "panel stay as released")
+
+
+def resid_neighbours(days: Sequence[float], own: int) -> tuple[int | None, int | None]:
+    """RESID_RENDER_RULE's neighbours of sample `own`: the index of the nearest earlier and of the nearest later sample
+    by day among the others (None where there is none). Refuses two samples tied as the nearest on one side."""
+    d = np.asarray(days, dtype=np.float64)
+    out = []
+    for side in (d < d[own], d > d[own]):
+        side[own] = False
+        idx = np.flatnonzero(side)
+        if not len(idx):
+            out.append(None)
+            continue
+        gap = np.abs(d[idx] - d[own])
+        best = idx[gap == gap.min()]
+        if len(best) > 1:
+            raise ValueError("two samples share the nearest day on one side: the neighbour is not defined")
+        out.append(int(best[0]))
+    return out[0], out[1]
+
+
+def resid_weights(d: float, d1: float, d2: float) -> tuple[float, float, float]:
+    """(w1, w2, L) of RESID_RENDER_RULE for a bracket at day d between neighbours at d1 < d < d2."""
+    if not d1 < d < d2:
+        raise ValueError("the bracket's day must lie strictly between its neighbours'")
+    w1 = (d2 - d) / (d2 - d1)
+    w2 = 1.0 - w1
+    return w1, w2, 1.0 / (1.0 + w1 * w1 + w2 * w2)
+
+
+def resid_factor(C_own: sparse.csr_matrix, names_own, C1: sparse.csr_matrix, names1, C2: sparse.csr_matrix, names2,
+                 w1: float, w2: float, L: float, labels: Sequence[str]) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """RESID_RENDER_RULE's factor for the bracket (C_own, names_own) against its earlier (C1) and later (C2)
+    neighbours. Returns (the factor exp(-L r) before rescale and clip, the factor as applied, the bracket's own
+    profile). A factor of exactly 1 on every gene is returned as it is (its rescale is the identity)."""
+    if not len(labels):
+        raise ValueError("no extraembryonic label held by every sample: the residual factor is not defined")
+    no = np.asarray(names_own).astype(str)
+    w = np.array([(no == lab).sum() for lab in labels], dtype=np.float64)
+    w /= w.sum()
+    den = _label_profile(C_own, no, labels, w)
+    y1 = np.log(_label_profile(C1, np.asarray(names1).astype(str), labels, w) + SERIES_EPS)
+    y2 = np.log(_label_profile(C2, np.asarray(names2).astype(str), labels, w) + SERIES_EPS)
+    line = y1 + w2 * (y2 - y1)  # w1 y1 + w2 y2 written so that equal neighbours give their own profile exactly
+    r =np.log(den + SERIES_EPS) - line
+    raw = np.exp(-L * r)
+    if np.all(raw == 1.0):
+        return raw, raw.copy(), den
+    phi = raw / (den @ raw / max(den.sum(), 1e-12))
+    return raw, np.clip(phi, *SERIES_CLIP), den
+
+
+def resid_rendered_expression(before: ad.AnnData, after: ad.AnnData, interp: Interpolation, genes,
+                              samples: Sequence[tuple[ad.AnnData, float]], seed,
+                              sample_names: Sequence[str] | None = None) -> tuple[np.ndarray, dict]:
+    """The interpolation's cells, each bracket with an earlier and a later sample corrected by RESID_RENDER_RULE:
+    expression (cells x genes, float32, log(1 + 1e4 c / N)) and a record (per bracket: corrected, the neighbours'
+    names, w1, w2, L, the share of panel genes whose factor was clipped and the mean |log factor|). samples: every
+    sample of the task as (stage, day), the two brackets among them (the same objects); sample_names: their names for
+    the record. Needs obs["celltype"] on every sample and obs["group"] on `before` when a bracket is corrected. Where
+    no bracket has both neighbours nothing is read or drawn and every row is as released. A bracket whose factor is
+    exactly 1 on every gene keeps its released rows."""
+    from vec.core import apply_gene_factor
+
+    idx = {}
+    for name, a in (("before", before), ("after", after)):
+        hit = [i for i, (s, _) in enumerate(samples) if s is a]
+        if not hit:
+            raise ValueError("the brackets must be among the residual render's samples")
+        idx[name] = hit[0]
+    days = [float(day) for _, day in samples]
+    names_rec = list(sample_names) if sample_names is not None else [str(i) for i in range(len(samples))]
+    rng = np.random.default_rng(seed)
+    parts = [_stage_counts(a, genes) for a in (before, after)]
+    nbrs = {k: resid_neighbours(days, i) for k, i in idx.items()}
+    corrected = {k: e is not None and lt is not None for k, (e, lt) in nbrs.items()}
+    out = np.empty((len(interp.rows), len(genes)), dtype=np.float32)
+    rec = {"rule": RESID_RENDER_RULE, "brackets": {}}
+    labels: list[str] = []
+    if any(corrected.values()):
+        counts = [sparse.csr_matrix(a[:, list(genes)].layers["counts"], dtype=np.int64) for a, _ in samples]
+        names = [np.asarray(a.obs["celltype"]).astype(str) for a, _ in samples]
+        order = [idx["before"]] + [i for i in range(len(samples)) if i != idx["before"]]
+        labels = trend_labels([names[i] for i in order], np.asarray(before.obs["group"]).astype(str))
+    for s, (name, a) in enumerate((("before", before), ("after", after))):
+        m = interp.stage == s
+        E, C, lib, other = parts[s]
+        rows = interp.rows[m]
+        e, lt = nbrs[name]
+        if not corrected[name]:
+            rec["brackets"][name] = {"corrected": False}
+            out[m] = E[rows]
+            continue
+        w1, w2, L = resid_weights(days[idx[name]], days[e], days[lt])
+        own = np.asarray(a.obs["celltype"]).astype(str)
+        raw, phi, den = resid_factor(C, own, counts[e], names[e], counts[lt], names[lt], w1, w2, L, labels)
+        if np.all(raw == 1.0):
+            clipped = 0.0
+        else:
+            pre = raw / (den @ raw / max(den.sum(), 1e-12))
+            clipped = float(((pre < SERIES_CLIP[0]) | (pre > SERIES_CLIP[1])).mean())
+        rec["brackets"][name] = {"corrected": True, "neighbours": [names_rec[e], names_rec[lt]], "w1": float(w1),
+                                 "w2": float(w2), "L": float(L), "clipped_share": clipped,
+                                 "mean_abs_log_factor": float(np.abs(np.log(phi)).mean())}
+        if not m.any() or not np.any(phi != 1.0):
+            out[m] = E[rows]
+            continue
+        S = _smoothed_props(E, C, lib, rows)
+        P = S / np.maximum(S.sum(1, keepdims=True), 1e-12)
+        C1 = apply_gene_factor(np.asarray(C[rows].toarray(), dtype=np.int32), phi, P, rng).astype(np.int64)
+        Cn = sparse.csr_matrix(C1)
+        out[m] = _log_normalise(Cn, np.asarray(Cn.sum(1)).ravel() + other[rows])
+    return out, rec
+
+
 # The earlier-side specialist by gene-wise thinning (campaign branch campaign/emb-expr; the second research pass,
 # experiments/research_2026_11_runs/REPORT2.md, recipe 5): the mirror image of SERIES_RULE. The deeper bracket's drawn
 # cells are thinned gene by gene towards the shallower bracket's profile and depth; a gene that would need a keep

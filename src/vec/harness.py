@@ -1118,6 +1118,12 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
         X, _ = t2_build.trend_rendered_expression(before, after, res, g,
                                                   [(a, t.role_days[r]) for r, a in ctx.inputs.items()],
                                                   t.target_day, [ctx.seed, 7])
+    elif expression == "resid":  # campaign/emb-i: each bracket corrected at its own day (RESID_RENDER_RULE)
+        X, rrec = t2_build.resid_rendered_expression(before, after, res, g,
+                                                     [(a, t.role_days[r]) for r, a in ctx.inputs.items()],
+                                                     [ctx.seed, 7], sample_names=[t.role_stems[r] for r in ctx.inputs])
+        if build_record is not None:
+            build_record["resid"] = rrec
     elif expression == "early":  # campaign/emb-expr: the deeper bracket's cells to the shallower one's (EARLY_RULE)
         X, _ = t2_build.early_specialist_expression(before, after, res, g, frac, [ctx.seed, 7])
     elif expression in RENDER_EXPRESSIONS:  # tries E19a-E19c: every cell moved to one depth (t2_build.RENDER_RULE)
@@ -1245,6 +1251,14 @@ def _fgw_trend_render(ctx: BuildContext) -> Stage:
     fgw's draws and positions with every drawn cell of both brackets moved to the run profile a trend through all the
     task's samples gives at the target's day (vec.t2_build.TREND_RENDER_RULE)."""
     return _fgw(ctx, expression="trend")
+
+
+def _fgw_resid(ctx: BuildContext, build_record: dict | None = None) -> Stage:
+    """Campaign arm (branch campaign/emb-i; the research report's recipe R2 in its own form): fgw's draws and positions
+    with each bracket that has an earlier and a later sample corrected at its own day by the share L of its residual
+    from the line through those two samples (vec.t2_build.RESID_RENDER_RULE). build_record receives the per-bracket
+    record under "resid"."""
+    return _fgw(ctx, expression="resid", build_record=build_record)
 
 
 def _trend_applies(t: PseudoTask) -> bool:
@@ -1853,6 +1867,13 @@ CANDIDATES = {
                                             "profile a trend through all the task's samples gives at the target's day, "
                                             "at the aligned positions", "rule": t2_build.TREND_RENDER_RULE,
                                     "alpha": t2_build.INTERP_ALPHA, "scope": "whole"}, requires=_trend_applies),
+    # the embryo batch I (campaign branch campaign/emb-i): the research report's recipe R2 in its own form, with no
+    # fitted number; fgw_trend_render's samples, requirements and applicability
+    "fgw_resid": Candidate("fgw_resid", frozenset({"T2"}), (), _fgw_resid,
+                           {"what": "fgw's draws and positions with each bracket that has an earlier and a later "
+                                    "sample moved by a per-gene factor removing the share L = 1 / (1 + w1^2 + w2^2) of "
+                                    "its residual from the line through those two samples, at its own day",
+                            "rule": t2_build.RESID_RENDER_RULE, "scope": "whole"}, requires=_trend_applies),
     # the embryo polar moves (campaign branch campaign/emb-polar; REPORT.md recipe R10): one idea, two arms
     "fgw_polar": Candidate("fgw_polar", frozenset({"T2"}), (), _fgw_polar,
                            {"what": "fgw with every cell moved by its k nearest anchors' least-squares local linear "
