@@ -684,9 +684,13 @@ B0_HALF_CTRL_RULE = ("b0 on T1 (the same draw, shares, count, scope, held-flat g
                      "cell moved, each entry's factor 1 + w (F - 1), F exactly the factor b0 applies to that entry "
                      "(after its keep-depth constant; b0 on T1 applies no bound) and w = (n // 2) / n, the share of "
                      "cells b0_half moves (w = 1/2, the factor (1 + F) / 2, for an even count); nothing recomputed: "
-                     "no new keep-depth constant, no bound; so every gene's expected mean over the drawn cells equals "
-                     "b0_half's and every cell's expected total equals b0's; one apply_factors call on b0's stream "
-                     "(step_weight)")
+                     "no new keep-depth constant, no bound; so every gene's expected mean count over the drawn cells "
+                     "equals b0_half's and every cell's expected total equals b0's; one apply_factors call on b0's "
+                     "stream (step_weight). The match is in expected counts only: in what the scorer reads, the "
+                     "pseudobulk of log1p CP10k, the control's step per entry is log(1 + w (F - 1)), never below the "
+                     "mixture's w log F (concavity), so it sits above b0_half on almost every gene, moving up genes "
+                     "further than the mixture and down genes less; it matches the scored pseudobulk to first order "
+                     "only")
 T1_F_ARMS = {"mn": ("b0_mn", "vec.harness.B0_MN_RULE"), "half": ("b0_half", "vec.harness.B0_HALF_RULE"),
              "half_ctrl": ("b0_half_ctrl", "vec.harness.B0_HALF_CTRL_RULE")}
 
@@ -1935,7 +1939,8 @@ CANDIDATES = {
                           "rule": "vec.harness.B0_HALF_RULE", "scope": "chamber"},
                          requires=_b0_applies, derived=("t1_held_flat",)),
     "b0_half_ctrl": Candidate("b0_half_ctrl", frozenset({"T1"}), (), _b0_t1(B0_DAMPING, arm="half_ctrl"),
-                              {"what": "b0_half's mean-matched control: every drawn cell moved, each entry by "
+                              {"what": "b0_half's count-mean-matched control (not matched in the scored "
+                                       "log1p CP10k pseudobulk): every drawn cell moved, each entry by "
                                        "1 + w (F - 1), F b0's factor after its keep-depth constant, w the share "
                                        "b0_half moves (1/2 for an even count) (count space)", "damping": B0_DAMPING,
                                "rule": "vec.harness.B0_HALF_CTRL_RULE", "scope": "chamber"},

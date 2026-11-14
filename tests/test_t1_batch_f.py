@@ -1,7 +1,7 @@
 """T1 arms `b0_mn`, `b0_half` and `b0_half_ctrl` (campaign/t1-f): b0 on T1 with one change each to its momentum step,
 B0's only count edit on T1 (a whole-cell multinomial redraw; the step on a random half of the drawn cells; the
-mixture's mean-matched control), with their check lines and records. Synthetic data only; nothing scored, no
-prediction compared with a target."""
+mixture's control, matched in expected counts only), with their check lines and records. Synthetic data only; nothing
+scored, no prediction compared with a target."""
 
 from __future__ import annotations
 
@@ -277,6 +277,72 @@ def test_b0_half_ctrl_factor_is_one_plus_f_over_two_and_matches_the_mixture_in_e
     assert rec["step_ratio"] == pytest.approx(float((np.abs(np.log(G[on])) / np.abs(np.log(F[on]))).mean()),
                                               rel=1e-12)
     assert 0.0 < rec["step_ratio"] < 1.0
+
+
+def test_b0_half_ctrl_matches_counts_not_the_scored_pseudobulk(stages, monkeypatch):
+    """The control matches the mixture in expected counts, not in what the scorer reads (the pseudobulk of log1p
+    CP10k): at expected counts its log step per entry is log(1 + w (F - 1)) >= w log F, so it sits above the mixture's
+    expected pseudobulk on every gene (Jensen), moving up genes by more than w of b0's shift and down genes by less.
+    The rule text must say the match is in counts only."""
+    calls = _spy(monkeypatch)
+    ctx = _ctx(stages)
+    CANDIDATES["b0"].build(ctx)
+    CANDIDATES["b0_half_ctrl"].build(ctx)
+    b0, ctrl = calls
+    D = b0["C"].toarray().astype(np.float64)
+    w = ctrl["kw"]["step_weight"]
+    F = _b0_factor(b0)
+    G = np.where(F != 1.0, 1.0 + w * (F - 1.0), 1.0)
+
+    def lcp(E):  # log1p CP10k of an expected count matrix, each cell by its own total
+        return np.log1p(1e4 * E / E.sum(1, keepdims=True))
+
+    np.testing.assert_allclose((D * F).sum(1), D.sum(1), rtol=REL)  # keep-depth: every arm's cell totals are D's
+    base, full = lcp(D).mean(0), lcp(D * F).mean(0)
+    mix = (w * lcp(D * F) + (1.0 - w) * lcp(D)).mean(0)  # the mixture's pseudobulk, in expectation over the half
+    ctl = lcp(D * G).mean(0)
+    np.testing.assert_allclose((D * G).mean(0), (D * (1.0 + w * (F - 1.0))).mean(0), rtol=REL)  # counts: matched
+    assert (ctl >= mix - 1e-12).all()  # scored space: never below the mixture
+    shift = full - base
+    moved = np.abs(shift) > 1e-3
+    assert moved.sum() > 5 and (ctl[moved] > mix[moved] + 1e-6).mean() > 0.9
+    up, down = moved & (shift > 0), moved & (shift < 0)
+    assert up.any() and down.any()
+    assert ((ctl - base)[up] / shift[up]).mean() > w and ((ctl - base)[down] / shift[down]).mean() < w
+    rule = harness.B0_HALF_CTRL_RULE
+    assert "expected counts only" in rule and "first order" in rule
+    assert "not matched in the scored" in CANDIDATES["b0_half_ctrl"].params["what"]
+
+
+def test_b0_half_ctrl_end_to_end_at_an_odd_count_uses_the_mixtures_share(stages, monkeypatch):
+    """The harness hands apply_factors w = (n // 2) / n, not 1/2, at an odd count, and the per-gene expected counts
+    then match b0_half's exactly (from the factors)."""
+    calls = _spy(monkeypatch)
+    ctx = _ctx(stages, max_cells=701)
+    CANDIDATES["b0"].build(ctx)
+    CANDIDATES["b0_half"].build(ctx)
+    CANDIDATES["b0_half_ctrl"].build(ctx)
+    b0, half, ctrl = calls
+    n = b0["C"].shape[0]
+    assert n % 2 == 1
+    assert ctrl["kw"]["step_weight"] == (n // 2) / n != 0.5
+    assert half["kw"]["step_cells"].sum() == n // 2
+    for k in ("F", "tidx", "held", "scale"):
+        np.testing.assert_array_equal(ctrl[k], b0[k])
+    Cs = b0["C"]
+    rows = np.repeat(np.arange(n), np.diff(Cs.indptr))
+    F = _b0_factor(b0)[rows, Cs.indices]
+    (_, bp), = ctrl["draws"]["binomial"]
+    lam, = ctrl["draws"]["poisson"]
+    g_used = np.ones_like(F)
+    g_used[F < 1.0] = bp
+    g_used[F > 1.0] = lam / Cs.data[F > 1.0] + 1.0
+    c = Cs.data.astype(np.float64)
+    mix_gene = np.bincount(Cs.indices, weights=c * (1.0 + (n // 2) / n * (F - 1.0)), minlength=Cs.shape[1]) / n
+    ctrl_gene = np.bincount(Cs.indices, weights=c * g_used, minlength=Cs.shape[1]) / n
+    np.testing.assert_allclose(ctrl_gene, mix_gene, rtol=REL)
+    np.testing.assert_allclose(np.bincount(rows, weights=c * g_used, minlength=n),
+                               np.bincount(rows, weights=c * F, minlength=n), rtol=REL)
 
 
 def test_odd_count_control_weight_is_the_mixtures_share_and_the_means_match():
