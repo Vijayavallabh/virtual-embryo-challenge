@@ -66,18 +66,19 @@
   every remaining allowed line (26 tries in 14 rows: H14 to H20, E29 and E31 to E35, T37, T38, K11) and produced
   request R-D above, which the AI assistant advises against. The options for taking our own estimate past the
   leading total were declared used up in decision log (ff) and (gg), too early: the round's audit ((ii)) then read the
-  seven lines that independent passes over the record found open (tries T39, T40, K12, K13, E36, E37, E38) and
-  replaced every closure that rested on the AI assistant's own odds by a row-first read, a pre-set gate or arithmetic,
-  or left it to the captain: nothing passes, nothing changes, and two critics found no open lever. Tries: T1 36,
-  embryo 57, heart 25, T3 27.
+  eight lines that independent passes over the record found open and the closures they found resting on judgement
+  (tries T39 to T41, K12, K13 and E36 to E39; reading N40), and replaced every closure that rested on the AI
+  assistant's own odds by a row-first read, a pre-set gate or arithmetic, or left it to the captain: nothing passes,
+  nothing changes, and two critics found no open lever. Tries: T1 37, embryo 60, heart 25, T3 27.
   Settled on 2026-11-13 (decision log (k)): T1's second upload (the mid base; built in and rehearsed), the heart
   try (run, not kept), and the checked copy of the reference files on this machine (kept, by the captain's word).
 - Branch / commit: `main` on GitHub (private). The DGX reference checkout
   (`PrakashDGX_H2:~/v/virtual-embryo-challenge`) is at dc7b6ae, the third rehearsal's commit, and stays untouched
   until the freeze-morning sync; campaign runs use `~/v/vec-campaign` and `~/v/vec-campaign-h7`, which sit at
   campaign-branch commits after the sixth round. The round's candidate code is on pushed branches named in decision
-  log (ff), and the audit's on `campaign/t1-c`, `campaign/t1-d`, `campaign/emb-c`, `campaign/emb-polar`,
-  `campaign/emb-mirror`, `campaign/t3-c` and `campaign/t3-d`; none of it is on main.
+  log (ff), and the audit's on `campaign/t1-c`, `campaign/t1-d`, `campaign/t1-e`, `campaign/emb-c`,
+  `campaign/emb-polar`, `campaign/emb-mirror`, `campaign/emb-d`, `campaign/t3-c` and `campaign/t3-d`; none of it is
+  on main.
 
 ## Completed This Session (2026-11-12 to 2026-11-13: the campaign the captain asked for on 2026-11-12)
 

@@ -3857,11 +3857,24 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
        "exact-total kernels" for all boards; the kernel was built once, in its repair form, and read on the heart (try
        H18, a tie). On T1 the entry moves counts through the same routine, so the same kernel was read there
        unchanged. It repairs 98 to 99% of the moved cells and moves the score by +0.009 and +0.013, ahead in 10 of 10
-       seeds on both cuts and thirty times under the rule's 0.3: not kept. On the other two boards the line has
-       nothing to read: the embryo's entry moves no count (it is a mixture of real cells), and its second upload's
-       render has a kernel of its own (thinning to a common depth and a top-up from smoothed proportions), for which
-       an exact-total form would be a new kernel of an arm already read (the ledger's rule 3); T3's kernel is fixed by
-       its frozen rules.
+       seeds on both cuts and 23 to 35 times under the rule's 0.3: not kept. On the embryo the entry moves no count
+       (it is a mixture of real cells); its second upload's render does, and that is read as line 11; T3's kernel is
+       fixed by its frozen rules.
+    10. *`fgw_tissue`, a coupling on tissue profiles* (tries E39a and E39b; found open by the fifth pass, below).
+        Pruned in the ledger on an uncommitted synthetic toy and never read. The entry's coupling compares each
+        anchor's own expression; here it compares the mean over the cell and its 14 nearest cells, with the entry's
+        expression and with the second upload's. Nothing passes. Against `fgw` the tissue coupling loses on both
+        counted backtests (-0.35 and -1.50, two vetoes), so the ledger's toy result holds as a read; no arm passes a
+        pair rule (S(0.45) -0.35 as a first upload; +0.07 for the series form as a second, under the rule's 0.3).
+    11. *The exact-total kernel on the embryo's second-upload render* (try E39c). This entry first closed it by
+        calling it a variant of an arm already read; the fifth pass said that is the AI assistant's classification and
+        not a read, so it was read. Against the second upload as built its own mean differs by 0.04 at most on any of
+        the nine tasks, and it passes no rule (S(0.45) -0.01 as a second upload). An exact per-cell total is as
+        invisible on this render as on the heart and on T1.
+    12. *The tail decoder in the heart's form on T1* (try T41; added by the AI assistant to the same batch, so that no
+        form of the decoder stays closed on diagnostic N3's inference). The filter sets 23,906 negative factors to 0
+        on 15,290 infeasible genes and moves the score by +0.012 and +0.049: not kept. Diagnostic N3's inference, that
+        those genes are not what fills the down-list, stands as a measurement.
   - **Two critics, asked to attack the claim that the options are used up** (workflow wf_e1f10462-6d0, read only). The
     first listed every lever worth 3 points of the total or more: nine, none open. Closed by a rule: T1's depth (the
     largest: +10 to +22 T1 at zero gap, try T29), T3's depth step, and the heart's size, scope and cell numbers.
@@ -3901,16 +3914,20 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Audits of this entry.** A third independent pass (workflow wf_5a1ca0e8-218: two agents with no part in the
     round, given this entry, the ledger and the committed result files) recomputed every figure the entry then quoted
     (168 figures in six lines and two checks, no mismatch) and found every row committed before its run. It classed
-    reading N40 as resting on the AI assistant's judgement after seeing results, which line 1 now says; it named three
-    sentences that claimed more than the files show (rows T38, T39 and E37, corrected with dated notes) and the stale
-    sentence in (gg) (correction (e)) and the unrecorded constants (correction (f)); and its sweep of 148 lines found
-    two still open by the rules, which became lines 7 and 8. A fourth pass (workflow wf_3e0a3e10-c56, two more agents)
-    recomputed lines 1, 7 and 8 (about 305 figures, no mismatch), found every row committed before its run and no
-    closure resting on the AI assistant's judgement, and named four record errors, since corrected (a false sentence
-    in row E38, row N40's unlabelled "not put forward", two stale lines in the handoff); its sweep of 175 lines found
-    one still open, which became line 9. So the sweeps found four, then two, then one. A fifth pass by two more agents
-    follows this commit, one on line 9 and this paragraph, one sweeping the ledger again; its result is added here
-    when it hands back.
+    reading N40 as resting on the AI assistant's judgement after seeing results, which line 1 now says; it named
+    sentences that claimed more than the files show (rows T38, T39, E36 and E37: T38 with a dated note, the others
+    reworded in place), the stale sentence in (gg) (correction (e)) and the unrecorded constants (correction (f)); and
+    its sweep of 148 lines found two still open by the rules, which became lines 7 and 8. A fourth pass (workflow
+    wf_3e0a3e10-c56, two more agents) recomputed lines 1, 7 and 8 (about 305 figures, no mismatch), found every row
+    committed before its run and no closure resting on the AI assistant's judgement, and named four record errors,
+    since corrected (a false sentence in row E38, row N40's unlabelled "not put forward", two stale lines in the
+    handoff); its sweep of 175 lines found one still open, which became line 9. A fifth pass (workflow
+    wf_425d2359-6e1, two more agents) recomputed line 9 (no mismatch, the row before its run), corrected this
+    paragraph's own wording and three loose phrases in rows T38, T39 and T40, said that line 9's closing remark about
+    the embryo's render was a classification and not a read, and its sweep of 143 lines found one line open; these
+    became lines 10 and 11. So the sweeps found four, then two, then one, then one. A sixth pass by two more agents
+    follows this commit, one on lines 10 to 12 and this paragraph, one sweeping the ledger again; its result is added
+    here when it hands back.
   - **Where it leaves the target.** Nothing read in this entry passes the adoption rule or a pair rule, so no upload,
     build, rule, gate figure or reference list changes; the ten files of `builds_dc7b6ae` stand. The committed
     estimate stays 184 (170 to 198); the forecast for the files as built stays its upper reading, 194.4, with P(total
@@ -3922,6 +3939,6 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     no open lever and no new line. What could still move the total lies outside the AI assistant's reach: how the
     hidden samples were measured (the seventh email, screened reads on 19 and 23 Nov), how final entries are marked
     (the drafted eighth email), and the levers the post-exposure block and the frozen rules keep closed, which only
-    the captain could reopen and for which no released file gives a value. Sixteen counted tries in this entry (T39
-    and T40; K12a and K12b; K13a and K13b; E36a to E36d; E37a and E37b; E38a to E38d) and one reading (N40): T1 36,
-    embryo 57, heart 25, T3 27.
+    the captain could reopen and for which no released file gives a value. Twenty counted tries in this entry (T39,
+    T40 and T41; K12a and K12b; K13a and K13b; E36a to E36d; E37a and E37b; E38a to E38d; E39a to E39c) and one
+    reading (N40): T1 37, embryo 60, heart 25, T3 27.

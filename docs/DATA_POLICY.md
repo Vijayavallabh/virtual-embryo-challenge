@@ -1209,13 +1209,14 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   - **Agents.** In this round: three reviewers of the drafted organiser question, a sweep of the record and an audit
     of its closures (two agents), four build pipelines with independent reviewers (eight), three reviewed fixes (six),
     two critics, a third pass over the entry (two), two more build pipelines (four) and their fixes (four), a fourth
-    pass (two), one more build pipeline (two), a fifth pass (two), and one reviewer each for the two fixes the AI
-    assistant wrote itself (the polar runner; the T3 decoder's reading). Each brief opened with the list of what is
-    never opened (boards, data, runs, notes, the research folders, session logs and memory files) and said how to
-    search and run; the builders and reviewers ran synthetic tests only. The main session read the agents' hand-backs,
-    not their transcripts. What agents reported themselves: one critic's shell output was saved by the harness under
-    the account folder and it did not open it; one reviewer returned before its test rerun ended, and the main session
-    reran those tests; builders widened one existing test's list of allowed new names, with no pinned value changed.
+    pass (two), one more build pipeline (two), a fifth pass (two), two more build pipelines (four), a sixth pass
+    (two), and one reviewer each for the two fixes the AI assistant wrote itself (the polar runner; the T3 decoder's
+    reading). Each brief opened with the list of what is never opened (boards, data, runs, notes, the research
+    folders, session logs and memory files) and said how to search and run; the builders and reviewers ran synthetic
+    tests only. The main session read the agents' hand-backs, not their transcripts. What agents reported themselves:
+    one critic's shell output was saved by the harness under the account folder and it did not open it; one reviewer
+    returned before its test rerun ended, and the main session reran those tests; builders widened one existing test's
+    list of allowed new names, with no pinned value changed.
   - **Six errors in the AI assistant's own briefs, caught by builders and reviewers before anything ran on them.** The
     gate first written for recipe R8 on T3 left out one contrast at a time and passed pure noise in 30 of 30 simulated
     runs; it was replaced by a leave-one-group-out gate before any gate output existed. The rotation-aware move was
