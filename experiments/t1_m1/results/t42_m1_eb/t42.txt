@@ -1,0 +1,27 @@
+try T42, a labelled in-sample diagnostic, not an adoption result: M1 (with R1, R2, and with g_mom's factors) with its Feng direction shrunk by reliability (decile and scalar forms), on T26's route; Feng's E9.5 cells lie inside these pseudo-tasks' external windows and the cuts are ones earlier T1 choices were made on; the result can only go to the captain as a request
+Verdict: nothing is put forward: closed by this reading
+T1/E9.5->E10.5:chamber: largest per-seed difference from T26's committed scores: b0 0.0000 (gate), m1_r 0.0000, m1_r_gmom 0.0000 (reported)
+T1/E9.5->E10.5: largest per-seed difference from T26's committed scores: b0 0.0000 (gate), m1_r 0.0000, m1_r_gmom 0.0000 (reported)
+Largest difference of the factors from N48's: 0
+(a) m1_r_eb against m1_r: does not pass (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2)
+    T1/E9.5->E10.5:chamber: -0.10 points, ahead 0 of 10; skills: de_direction -0.0011, de_score -0.0014, mmd_u -0.0006, variogram -0.0008
+    T1/E9.5->E10.5: -0.08 points, ahead 0 of 10; skills: de_direction -0.0010, de_score -0.0010, mmd_u -0.0006, variogram -0.0007
+(b) m1_r_gmom_eb against m1_r_gmom: does not pass (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2)
+    T1/E9.5->E10.5:chamber: -0.09 points, ahead 0 of 10; skills: de_direction -0.0010, de_score -0.0013, mmd_u -0.0006, variogram -0.0008
+    T1/E9.5->E10.5: -0.09 points, ahead 0 of 10; skills: de_direction -0.0009, de_score -0.0013, mmd_u -0.0006, variogram -0.0007
+(c) m1_r_js against m1_r: does not pass (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2)
+    T1/E9.5->E10.5:chamber: -0.13 points, ahead 0 of 10; skills: de_direction -0.0010, de_score -0.0020, mmd_u -0.0011, variogram -0.0010
+    T1/E9.5->E10.5: -0.11 points, ahead 0 of 10; skills: de_direction -0.0009, de_score -0.0019, mmd_u -0.0010, variogram -0.0008
+(d) m1_r_gmom_js against m1_r_gmom: does not pass (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2)
+    T1/E9.5->E10.5:chamber: -0.13 points, ahead 0 of 10; skills: de_direction -0.0009, de_score -0.0021, mmd_u -0.0011, variogram -0.0010
+    T1/E9.5->E10.5: -0.13 points, ahead 0 of 10; skills: de_direction -0.0007, de_score -0.0026, mmd_u -0.0010, variogram -0.0009
+(e) m1_r_gmom_eb against m1_r_gmom_js: does not pass (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2)
+    T1/E9.5->E10.5:chamber: +0.04 points, ahead 9 of 10; skills: de_direction -0.0001, de_score +0.0009, mmd_u +0.0005, variogram +0.0002
+    T1/E9.5->E10.5: +0.04 points, ahead 8 of 10; skills: de_direction -0.0001, de_score +0.0012, mmd_u +0.0004, variogram +0.0002
+(f) m1_r_gmom_js against m1_r_gmom_eb: does not pass (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2)
+    T1/E9.5->E10.5:chamber: -0.04 points, ahead 1 of 10; skills: de_direction +0.0001, de_score -0.0009, mmd_u -0.0005, variogram -0.0002
+    T1/E9.5->E10.5: -0.04 points, ahead 2 of 10; skills: de_direction +0.0001, de_score -0.0012, mmd_u -0.0004, variogram -0.0002
+mean scores T1/E9.5->E10.5:chamber: b0 49.68, m1_r 50.83, m1_r_gmom 52.06, m1_r_eb 50.74, m1_r_gmom_eb 51.97, m1_r_js 50.70, m1_r_gmom_js 51.93
+mean scores T1/E9.5->E10.5: b0 44.12, m1_r 45.09, m1_r_gmom 46.23, m1_r_eb 45.01, m1_r_gmom_eb 46.14, m1_r_js 44.97, m1_r_gmom_js 46.10
+Limit: in-sample labelled diagnostic; never adoption evidence; a request to the captain at most
+Commit d95045896daec63b3af8e1a77fc6df35329d907e, tree clean True, UTC 2026-11-14T12:01:28Z
