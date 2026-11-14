@@ -127,6 +127,26 @@ R-D is no (decision log 2026-11-13 (gg)); the captain has not ruled and nothing 
 for taking the team's own estimate past the leading total are used up: the forecast's upper reading is 194.4 against
 215.41, and the committed estimate stays 184. Tries stand at T1 34, embryo 47, heart 25, T3 23.
 
+Status 2026-11-13, after the round's audit (`docs/PLAN.md` decision log 2026-11-13 (ii)): no entry has changed and no
+scored submission has been made. The session's stop check refused the declaration above twice, and a second
+independent sweep of the record found four lines still open by the rules and several closures that rested on the AI
+assistant's own judgement. Each was then read with its row first, or closed by a rule fixed beforehand or by
+arithmetic. Task 1: the tail decoder with the neighbour-profile kernel is idle like the own-count one (no infeasible
+gene comes within the bound under either), and the strong-null try in the zero-gap geometry is ruled out by arithmetic
+(its base scores 100 in 6 of 10 seeds, so no arm can lead in 8). Task 3: a run basis taken from the wild-type series
+passes the recipe's own gate and changes the factor too little to matter (-0.02 and -0.02 on the cross-knockout folds,
++0.06 on the replicate fold, at its permuted control's level). Embryo: a tail decoder is a tie; exponential-growth
+state shares lose a little on both backtests (-0.22 and -0.18); rotation-aware moves pass no rule in the form that
+pivots at each patch (-0.30 and -0.17 on the backtests; no pair rule), and in the form that interpolates in the common
+frame they are refused by the builder's own cloud guard on eight of nine practice tasks; and the second arm that had
+passed the first-upload pair rule (`fgw_aligned_trend`) follows the same fit geometry as request R-D's arm (a fitted
+gain of -0.53 at the test's earlier-bracket geometry) and is not put forward. Two critics asked to attack the claim
+found no open lever worth 3 points of the total and no new line that is allowed, buildable and has a practice read.
+Kept: nothing. The options for taking the team's own estimate past the leading total are used up within the rules: the
+levers of that size are closed by the post-exposure block and the frozen rules or have no practice read that could
+judge them, and the rest is for the organisers to answer. The committed estimate stays 184 (170 to 198) and the
+forecast's upper reading 194.4. Tries stand at T1 35, embryo 53, heart 25, T3 25.
+
 ## Team and track
 
 Team Mithril, Track 1 (Human Team). A person reviews results and makes every submission decision; coding agents do

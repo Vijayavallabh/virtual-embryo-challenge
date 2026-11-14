@@ -1199,3 +1199,35 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   - **Still true:** no test file was built, no format check was sent, nothing was uploaded, and the DGX reference
     checkout was not touched. The builder port behind request R-D is on a branch only (`port/emb-s1-trend`,
     reviewed, pushed).
+- 2026-11-13 (m), process notes for the round's audit (`docs/PLAN.md` decision log 2026-11-13 (ii)); written by the AI
+  assistant.
+  - **One test file was built, as a dry build.** Note (l) said no test file was built; after it, the port behind
+    request R-D was dry-built once on the DGX's campaign checkout (the embryo first-upload file with the trend
+    rendering, at 394f59f). It was read by its exit code, its sha256 and its stamp's commit and clean fields; its log,
+    its file size and its stamp's size field were not read. The file sits in that checkout's `runs/` and is on no
+    reference list, so the upload client refuses it; it was sent nowhere.
+  - **Agents.** Four workflows and one single review ran in this round: a sweep of the record and an audit of its
+    closures (two agents), four build pipelines with independent reviewers (eight), three reviewed fixes (six), two
+    critics, and a reviewer for a fix the AI assistant wrote itself. Each brief opened with the list of what is never
+    opened (boards, data, runs, notes, the research folders, session logs and memory files) and said how to search and
+    run; the builders and reviewers ran synthetic tests only. The main session read the agents' hand-backs, not their
+    transcripts. What agents reported themselves: one critic's shell output was saved by the harness under the account
+    folder and it did not open it; one reviewer returned before its test rerun ended, and the main session reran those
+    tests; two builders widened one existing test's list of allowed new names, with no pinned value changed.
+  - **Three errors in the AI assistant's own briefs, caught by reviewers before anything ran on them.** The gate first
+    written for recipe R8 on T3 left out one contrast at a time and passed pure noise in 30 of 30 simulated runs; it
+    was replaced by a leave-one-group-out gate before any gate output existed. The rotation-aware move was first
+    specified with its pivot at the patch centroid, which cannot do what the recipe is for; a second form was added
+    before any run, and both were registered. The growth-shares arm's idle case was not exact; it was made so. In each
+    case the brief was amended first and the code after.
+  - **Rows and readings.** Reading N40 was registered knowing which way its arithmetic pointed (the two tables it
+    combines were already committed and printed), as its row says; it could only withdraw. Every try of the round has
+    its row committed before its run. The first run of tries E36 wrote no task file: the builder's cloud guard refused
+    two arms and the runner let that end each task. The main session read the nine practice-task logs of that run for
+    the refusal message (logs of practice builds on released stages, not of a test build), fixed the runner on its
+    branch, had the fix reviewed, and amended the row before the rerun; no score from the first run exists. While
+    checking a committed practice-task file the main session printed its board field, which holds a validation board's
+    published limits; that board is public and the line describes no test board.
+  - **Still true:** no format check was sent, nothing was uploaded, no test score or leaderboard figure was read, the
+    team key was not used, and the DGX reference checkout is untouched at dc7b6ae. The DGX's system disk is still
+    nearly full (under 1 GB free); test runs there keep their temp files on the large volume.

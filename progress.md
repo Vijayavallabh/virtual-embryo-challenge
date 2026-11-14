@@ -3,6 +3,27 @@
 ## Current State
 
 **Last Updated:** 2026-11-13
+**2026-11-13, end of the night: the round's audit (decision log 2026-11-13 (ii)). Nothing passes a rule; no file
+changes; the options for passing 215.41 are used up within the rules.** The stop check refused the report of (ff) to
+(hh) a second time: closures rested on the AI assistant's own odds and two planned checks were open. Done since: the
+port's dry build (exit 0, read by exit code, hash and stamp only; on no reference list); an eighth email on how final
+entries are marked, reviewed and staged, a draft in the captain's mailbox; a second independent sweep of 147 lines,
+which found four lines open and several closures resting on judgement; and a row-first read or an arithmetic closure
+for each. Reading N40: `fgw_aligned_trend` is not put forward (fitted -0.53 at the test's earlier-bracket geometry).
+The strong-null try: ruled out by arithmetic (its base is at 100 in 6 of 10 seeds). Try T39, the T1 tail decoder with
+the neighbour-profile kernel: idle, as T38. Tries K12a and K12b, recipe R8 on T3: the gate opens (G 0.243 against
+0.004) and K9's reading closes it (-0.02, +0.06, -0.02). Tries E37a and E37b: the embryo tail decoder is a tie and the
+exponential-growth shares lose a little (-0.22 and -0.18). Tries E36a to E36d, rotation-aware moves on the nine tasks:
+the patch-centroid form passes no rule (-0.30 and -0.17 on the backtests; S(0.45) -0.14 and -1.90 as first upload,
+-1.72 and -0.08 as second) and the frame form is refused by the builder's cloud guard on eight of nine tasks; the
+first run wrote no file, and the runner was fixed and reviewed and the row amended before the rerun. Two critics found
+no open lever worth 3 points and no new line; one caveat is kept as written: the large levers are closed by rules the
+captain or the organisers could reopen, not exhausted by measurement. Three of the AI assistant's own briefs were
+corrected by reviewers before anything ran on them (a gate that passed pure noise, a pivot that could not deliver its
+reason, an idle case that was not exact). The committed estimate stays 184 (170 to 198); the upper reading stays
+194.4. Tries: T1 35, embryo 53, heart 25, T3 25. Main moved by documents, two reading scripts with tests (N40, the
+polar readings) and results only; the candidates are on the pushed branches `campaign/t1-c`, `campaign/emb-c`,
+`campaign/emb-polar` and `campaign/t3-c`.
 **2026-11-13, late night: the sixth round carried to the end of the ledger (decision log 2026-11-13 (ff) and (gg)).
 Nothing passes the adoption rule; one request, R-D, came out of a pair rule and the AI assistant advises against it
 after a cold check; no file changes.** The session's stop check did not

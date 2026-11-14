@@ -23,6 +23,11 @@
   decision log (x)). The upload client refuses a scored upload of a file that is not on this list (guard
   "reference list", pointer `results/reference_list.json`; decision log (cc)).
   What is owed:
+  - the captain's decision on a drafted question, if the captain wants it sent: an eighth email asking the organisers
+    how final entries are marked (per board or one pick over several boards; what counts on an unmarked board; until
+    when a pick can change). It is reviewed and staged in `docs/ORGANIZER_QUESTIONS.md` with its readings fixed
+    beforehand, and a draft with placeholders for the name and the team is in the captain's mailbox. The per-board
+    answer is a working answer rated 0.7 (the table of 2026-11-10); the estimate assumes it;
   - nothing on request R-D unless the captain wants it (`docs/PLAN.md` decision log 2026-11-13 (ff) and (gg); rows
     N37, N38 and N39 of `experiments/harness/TRIES.md`). The request: change the embryo's first upload from `fgw`
     to `fgw_trend_render` (the same cells and positions, each cell's expression moved to the profile a trend
@@ -56,14 +61,18 @@
   forecast for the files as built (mean 194.4, the upper reading; the gate figure stays 184); its second part read
   every remaining allowed line (26 tries in 14 rows: H14 to H20, E29 and E31 to E35, T37, T38, K11) and produced
   request R-D above, which the AI assistant advises against. The options for taking our own estimate past the
-  leading total are used up (decision log (ff) and (gg)). Tries: T1 34, embryo 47, heart 25, T3 23.
+  leading total are used up (decision log (ff) and (gg)). The round's audit (decision log (ii)) then read the four
+  lines a second independent sweep found open and replaced every closure that rested on the AI assistant's own odds by
+  a row-first read, a pre-set gate or arithmetic: nothing passes, nothing changes, and two critics found no open
+  lever. Tries: T1 35, embryo 53, heart 25, T3 25.
   Settled on 2026-11-13 (decision log (k)): T1's second upload (the mid base; built in and rehearsed), the heart
   try (run, not kept), and the checked copy of the reference files on this machine (kept, by the captain's word).
 - Branch / commit: `main` on GitHub (private). The DGX reference checkout
   (`PrakashDGX_H2:~/v/virtual-embryo-challenge`) is at dc7b6ae, the third rehearsal's commit, and stays untouched
   until the freeze-morning sync; campaign runs use `~/v/vec-campaign` and `~/v/vec-campaign-h7`, which sit at
   campaign-branch commits after the sixth round. The round's candidate code is on pushed branches named in decision
-  log (ff); none of it is on main.
+  log (ff), and the audit's on `campaign/t1-c`, `campaign/emb-c`, `campaign/emb-polar` and `campaign/t3-c`; none of
+  it is on main.
 
 ## Completed This Session (2026-11-12 to 2026-11-13: the campaign the captain asked for on 2026-11-12)
 
@@ -234,9 +243,19 @@
 
 ## Recommended Next Step
 
+- 2026-11-13 (latest, after decision log (ii)): the round's audit is done. Every line a second independent sweep found
+  open is read, and no closure rests on the AI assistant's own odds any more; nothing passes and no file changes. Two
+  things are the captain's, both optional: a ruling on request R-D (the AI assistant advises no), and whether to send
+  the drafted eighth email on final marks. One question from (ee) also stays with the captain: whether the Task 3
+  batch question goes into the follow-up about 19 Nov. No run is queued, and the AI assistant knows of none whose
+  result could change an upload under the standing rules. A check that reads practice scores gets its row first, a
+  gate is tried on pure noise before it is trusted, and a brief names where a formula's translation goes (three
+  corrections reviewers made this round). The dated items follow as listed below. Report the expected total as 184
+  (170 to 198), with 194.4 named as the forecast's upper reading.
 - 2026-11-13 (latest, after decision log (gg)): the sixth round is closed and the options for passing the leading
-  total are used up; every allowed line with a counted read has been read. **Nothing waits for the captain from
-  this round.** Request R-D (the embryo's first upload to `fgw_trend_render`) is on record as a pair rule's outcome
+  total are used up; every allowed line with a counted read has been read. **No ruling is needed for the entry
+  as built; one optional ruling is on record for the captain.** Request R-D (the embryo's first upload to
+  `fgw_trend_render`) is on record as a pair rule's outcome
   with the AI assistant's advice against it (decision log (gg), reading N39); it changes nothing unless the captain
   rules for it, and then: port the branch `port/emb-s1-trend` to main after its review, set the embryo's
   first-upload expression in `experiments/builds/build_all.sh`, dry-build, rehearse a fourth time on the DGX, write

@@ -3780,3 +3780,104 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     check the same night, one after its yes had been written down ((gg)) and one before ((hh)). The round's result
     stands as (ff) and (gg) give it: nothing is kept, nothing is recommended, the options for passing 215.41 are
     used up, and the committed estimate is 184 (170 to 198).
+- 2026-11-13 (ii), after the stop check refused the round's report a second time: what was still open, what was done
+  about it, and where that leaves the target. Written by the AI assistant; the captain can overrule any of it.
+  - **Why this entry exists.** The session's stop check refused the report of (ff) to (hh) twice. Its second finding,
+    in its words: "the 'exhausted' branch is not clearly established here: the assistant's own earlier cold check
+    showed it had not finished acting on its own pre-run odds, and at least two planned checks (the port's dry build
+    and a formal per-board mark question) remain open." So the declaration in (ff) that the options were used up was
+    made too early. This entry records the work that was missing.
+  - **The two planned checks.** (1) The port's dry build. The branch `port/emb-s1-trend` (394f59f) builds the embryo
+    first-upload file with the trend rendering on the DGX's campaign checkout: exit 0, sha256
+    934ddd67db65258ea9a865be1cdb26493ea27f6641c0aaa54b8b735f587c26e0, stamp at 394f59f on a clean tree, 13 Nov 21:36
+    UTC. It was read by its exit code, its hash and its stamp's commit and clean fields only. The file is on no
+    reference list and was sent nowhere; it shows that the port works if the captain ever rules for request R-D, and
+    changes nothing. (2) The mark question. An eighth email asking how final entries are marked (per board, or one
+    pick over several boards; what counts on an unmarked board; until when a pick can change) was drafted, reviewed
+    through three lenses (all "send with changes"), and staged with its readings fixed beforehand in
+    `docs/ORGANIZER_QUESTIONS.md`; a draft with placeholders for the name and the team is in the captain's mailbox.
+    Sending it is the captain's decision.
+  - **A second independent sweep** (workflow wf_a890c4d1-75d: one agent classed 147 lines of the ledger, the plan and
+    the research reports; another audited ten closures for what each rests on). It found four lines still open by the
+    rules (the embryo tail decoder, recipe R8 on T3, the embryo's exponential-growth shares, recipe R10's
+    rotation-aware moves), four closures that rested on the AI assistant's own judgement (try T38's closure of its
+    line, `fgw_aligned_trend` dropped without a reading, the strong-null prune's unwritten bound, the embryo decoder
+    and R8 on T3 called not buildable while their siblings were built in a simplest form), and discrepancies in the
+    record. Each is taken up below, every read with its row first.
+  - **What was done, line by line.**
+    1. *`fgw_aligned_trend` as a first upload* (reading N40, row first, an aggregation of committed scores). Its gain
+       over `fgw` follows the trend's fit geometry as `fgw_trend_render`'s does: +1.08 + 8.40 g, and -0.53 at the
+       test's earlier-bracket geometry (-0.54 without the E7.25 backtest). The trend's part at the aligned positions
+       gives almost reading N39's line (+1.39 + 10.07 g). By the row's rule it is not put forward. Neither arm that
+       passed reading N37 is.
+    2. *The strong-null try in try T27's geometry.* Closed by arithmetic, with no judgement left in it: the base arm
+       scores exactly 100 in 6 of the 10 seeds of the committed run, a board score cannot exceed 100, so no arm can be
+       ahead in the 8 seeds the fixed reading needs. Written into the ledger's entry.
+    3. *The T1 tail decoder with try T37's kernel* (try T39). Idle, as try T38 was with the own-count kernel: 30 to 32
+       infeasible genes per build, none within the bound under either kernel. The line is closed by measurement in
+       place of the inference row T38 ended on.
+    4. *Recipe R8 on T3* (tries K12a and K12b). The gate first designed for it said "inside" on pure noise in the
+       reviewer's simulation (30 of 30) and was replaced before any gate output existed; the gate as run leaves one
+       lineage group out. It says "inside" (G 0.243 against a null 95th percentile of 0.004), and K9's fixed reading
+       then closes the arm: -0.02 on x1, +0.06 on r12 with the permuted control at the same level, -0.02 on x2. The
+       knockout factors hold little of the direction the wild-type series shares (7.5%, 0.9% and 0.3% of their squared
+       norm).
+    5. *The embryo tail decoder and the exponential-growth shares* (tries E37a and E37b). Row first, the adoption rule
+       on the two counted backtests. The decoder acted in every build (4 to 12 genes lifted, the others beyond the
+       bound) and is a tie: -0.01 on the E7.5 backtest and +0.00 on the E7.25 one. The growth shares change 3 to 11%
+       of the drawn cells and lose a little on both: -0.22 and -0.18. Neither is kept, and by the row's own rule
+       neither goes on to the nine tasks or to a request.
+    6. *Recipe R10, rotation-aware moves* (tries E36a to E36d). The form the brief fixed first pivots at each patch's
+       centroid; its builder and reviewer both showed it cannot keep the size of a part larger than one patch, so a
+       second form that interpolates the patch's whole map in the common frame was added before any run, and both were
+       read. The frame form cannot be built: the builder's own cloud guard refuses its cloud on eight of the nine
+       tasks for each arm, so both are not readable (the first run stopped on that refusal and wrote no file; the
+       runner was fixed, reviewed and the row amended before the rerun). The patch-centroid form passes nothing:
+       `fgw_polar` -0.30 and -0.17 on the counted backtests, S(0.45) -0.14 as a first upload and -1.72 as a second;
+       `fgw_aligned_polar_series` -1.90 and -0.08.
+  - **Two critics, asked to attack the claim that the options are used up** (workflow wf_e1f10462-6d0, read only). The
+    first listed every lever worth 3 points of the total or more: nine, none open. Closed by a rule: T1's depth (the
+    largest: +10 to +22 T1 at zero gap, try T29), T3's depth step, and the heart's size, scope and cell numbers.
+    Blind, that is, with no practice read that can judge them: the Task 3 batch question (about 7 points of the
+    estimate either way), per-set final marks (about -4), T1's births. Read: T1's composition and base, T3's factor.
+    Its caveat is kept here as written: "its 3-point-plus items are closed by rules the captain or the organisers
+    could reopen, not exhausted by measurement." The second looked for lines the ledger does not hold and proposed
+    seven; none is open: three are closed by a rule (an outside atlas for the embryo is cross-modal input; gene
+    embeddings for T3 carry gene-level knowledge of the held-out gene; a shape model for the heart touches its closed
+    scope), two are variants of lines already read (a quadratic trend; another transport), one is blind (a new T1
+    practice family would count only with the captain's approval) and one has no source (a Cre-driver-only effect).
+    The largest was priced at about +0.5 of the total.
+  - **Corrections to the record.** (a) Decision log (hh) and `docs/S2_RULES.md` quote 0.55 for the working answer that
+    final marks are per board. The table of 2026-11-10 in `docs/ORGANIZER_QUESTIONS.md`, which replaces the 31 October
+    table where they differ, rates the final-entries row at 0.7 and "no objection to per-board marks" at 0.8. The
+    figure to quote is 0.7; `docs/S2_RULES.md` is hash-pinned and keeps its text until the captain changes it. Nothing
+    in (hh) turns on the difference: the decline there rests on a first upload having to stand alone if marks are per
+    set. (b) The handoff said nothing waits for the captain while (gg) leaves request R-D on record for the captain to
+    rule on; the handoff now says so. (c) Reading N39 is labelled a pre-set reading; its row already says that the
+    hand arithmetic came first, and reading N40's row says the same of itself. (d) (ee) put three questions to the
+    captain. Two are settled: the captain's renewal of the campaign answered whether it continues, and the strong-null
+    try is closed by arithmetic (item 2). One remains for the captain: whether the Task 3 batch question goes into the
+    follow-up planned about 19 Nov.
+  - **A question raised during the round: second uploads chosen by the first upload's score.** It is already on
+    record: priced and retired in (dd) (a threshold on T1's first score gains +0.6 to +1.2 only if practice score
+    levels carried to the test exactly, +0.3 to +0.5 with a level uncertainty of 4 board points and about +0.1 at 6,
+    where the library lottery alone is 14 points; on the embryo it loses 0.4; and a rule that maps a score level to a
+    hidden share is inversion in spirit). It stays closed by `docs/S2_RULES.md` ("No rule reads a test score"), which
+    is the captain's to change and would need extra files built and rehearsed by 24 Nov. The AI assistant advises
+    against it.
+  - **A last audit of this entry's own claims.** Two agents that had no part in the round are given this entry, the
+    ledger and the committed result files, one to recompute every figure and class what each closure rests on, one to
+    sweep the ledger and the reports once more for a line still open. Their result is added to this entry when they
+    hand back.
+  - **Where it leaves the target.** Nothing read in this entry passes the adoption rule or a pair rule, so no upload,
+    build, rule, gate figure or reference list changes; the ten files of `builds_dc7b6ae` stand. The committed
+    estimate stays 184 (170 to 198); the forecast for the files as built stays its upper reading, 194.4, with P(total
+    >= 215.41) at 0.01% or less. The options for taking the team's own estimate past 215.41 are used up within the
+    rules: every line of the ledger, the plan and the research reports is now read, closed by a pre-set gate or by
+    arithmetic, blocked by a named rule or ruling, without a practice read that could judge it, or not buildable from
+    the record; what two independent sweeps named open is read, and two critics found no open lever and no new line.
+    What could still move the total lies outside the AI assistant's reach: how the hidden samples were measured (the
+    seventh email, screened reads on 19 and 23 Nov), how final entries are marked (the drafted eighth email), and the
+    levers the post-exposure block and the frozen rules keep closed, which only the captain could reopen and for which
+    no released file gives a value. Nine counted tries in this entry (T39; K12a and K12b; E37a and E37b; E36a to E36d)
+    and one reading (N40): T1 35, embryo 53, heart 25, T3 25.
