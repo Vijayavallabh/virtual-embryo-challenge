@@ -34,6 +34,11 @@ Every file satisfies `expm1(X).sum(1) == 1e4` (log1p CP10k; the validation answe
 counts are exactly 10x the board `ref_cells` in `boards/index.json` (rounded), which confirms the server's 10% working
 copies.
 
+Counts per cell of the Task 3 files and their wild-type references (median over cells of the `counts` layer's
+row sums; 2026-11-14, measured for tries K14 of `experiments/harness/TRIES.md`): WT E8.75 131; Gata4 knockout
+replicates 82 and 68; WT E9.5 75; Mab21l2 knockout 95. So the Gata4 replicates are about half as deep as their
+reference and the Mab21l2 knockout is deeper than its reference.
+
 ## Quirks to handle in loaders
 
 Settled by `experiments/qc/` (2026-10-19; `vec data qc`) and `experiments/coords/`:
