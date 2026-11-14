@@ -1,0 +1,22 @@
+Readings of tries E36a to E36d (runs e24_pricing:ccd33b5, e25_pairs:798908a, e28_nine_tasks:22513cf, n41_polar_arms:b7d6fa0): the rotation-aware moves on the nine practice tasks; aggregation of committed scores
+outcome: closed: no rule is passed
+  adoption rule, fgw_polar against fgw: e75 -0.30 (3/10), e725 -0.17 (3/10) -> not kept (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2)
+  adoption rule, fgw_polar_frame against fgw: not readable
+  fgw_polar minus fgw, own means: half -0.64 late -0.25 new1 +0.07 x1 -1.39 x2 -0.33 x3 -0.65 new2 -0.07 e75 -0.30 e725 -0.17
+  fgw_aligned_polar_series minus fgw_aligned_series, own means: half -0.30 late -0.11 new1 +0.07 x1 -1.02 x2 -0.15 x3 -0.76 new2 +0.01 e75 -0.05 e725 +0.03
+  fgw_polar_frame: not readable
+  fgw_aligned_polar_frame_series: not readable
+  as a first upload (row N33's rule):      D      O  S(0.3) S(0.45) S(0.6)  LOO-min  rule a b c d
+    fgw_polar                         -0.15  -0.12  -0.13  -0.14  -0.14    -0.16  n n y n
+      per task half +0.00 late +0.00 new1 +0.00 x1 +0.00 x2 -0.28 x3 -0.65 new2 -0.04 e75 -0.17 e725 -0.17
+    fgw_aligned_polar_series          -0.95  -2.67  -2.16  -1.90  -1.64    -2.62  n n y n
+      per task half +0.00 late +0.06 new1 +0.08 x1 +0.00 x2 -1.31 x3 -4.56 new2 -0.09 e75 -0.05 e725 -7.88
+    fgw_polar_frame                  not readable: no scores on half, late, new1, x1, x2, new2, e75, e725
+    fgw_aligned_polar_frame_series   not readable: no scores on half, late, new1, x1, x2, x3, e75, e725
+  as a second upload beside fgw (rows E34 and E35's rule):      D      O  S(0.3) S(0.45) S(0.6)  LOO-min  rule a b c d
+    fgw_polar                         -3.37  -0.37  -1.27  -1.72  -2.17    -2.03  n n n n
+      per task half -7.44 late -4.22 new1 -4.09 x1 -4.48 x2 +0.00 x3 +0.00 new2 -0.83 e75 -0.39 e725 +0.10
+    fgw_aligned_polar_series          -0.23  +0.04  -0.04  -0.08  -0.12    -0.11  n n n n
+      per task half -0.30 late -0.11 new1 +0.07 x1 -1.02 x2 +0.00 x3 +0.00 new2 -0.01 e75 +0.12 e725 +0.00
+    fgw_polar_frame                  not readable: no scores on half, late, new1, x1, x2, new2, e75, e725
+    fgw_aligned_polar_frame_series   not readable: no scores on half, late, new1, x1, x2, x3, e75, e725
