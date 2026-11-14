@@ -953,8 +953,75 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
     return out, rec
 
 
+# campaign branch campaign/heart-f: the heart Potts arms b0_trend_potts and b0_trend_potts_d. Their two random streams,
+# [seed, 29] (each input stage's uniform draw of the file's number of cells for its H, all stages in day order) and
+# [seed, 30] (the swap proposals), apart from every stream a step uses on main and on the campaign branches (0-15,
+# 20-28 and the embryo sorting's 26 and 27)
+HEART_POTTS_STREAMS = (29, 30)
+HEART_POTTS_FORMS = ("line", "damped")
+B0_TREND_POTTS_RULE = ("b0_trend's file to the last detail, then which drawn cell (its expression row and its "
+                       "obs['merged'] lineage label; Untracked cells keep the label Untracked like any other) sits at "
+                       "which of the file's positions sorted by vec.t2_build.potts_sort (NBHD_K, unchanged; positions "
+                       "fixed, no count changes) towards H*. H of an input stage (trend_stages, never the target): "
+                       "vec.t2_build.bracket_share of its released positions and lineage labels at the file's number "
+                       "of cells, stream [seed, 29]; the line: the least-squares line of H on the stage day. 'line' "
+                       "(b0_trend_potts): H* is the line at the target's day. 'damped' (b0_trend_potts_d): H* is H of "
+                       "the file as drawn + slope x B0_DAMPING x the last gap in days. Swaps on stream [seed, 30]")
+# Each trend arm's record from its latest build (the arm's name -> its record): target-free (shares and a count of
+# swaps only), one per build and arm, overwritten by the next build of that arm (as campaign/heart-b, -c and -e keep it)
+TREND_ARM_RECORDS: dict[str, dict] = {}
+
+
+def potts_line(days: Sequence[float], shares: Sequence[float]) -> tuple[float, float]:
+    """The ordinary least-squares line of the shares on the days: (slope, intercept at day 0); with two stages the
+    line through them. Fewer than two stages, or days that do not differ, refuse."""
+    d, h = np.asarray(days, dtype=np.float64), np.asarray(shares, dtype=np.float64)
+    if d.size < 2 or d.size != h.size:
+        raise ValueError(f"the line needs at least two stages with one share each, got {d.size} days, {h.size} shares")
+    dc = d - d.mean()
+    sdd = float((dc ** 2).sum())
+    if sdd == 0.0:
+        raise ValueError("the line needs stages on at least two different days")
+    hc = h - h[0]  # the shares about the first one: equal shares give a slope of exactly 0 and their own value back
+    slope = float(dc @ hc) / sdd
+    return slope, float(h[0] + (hc.mean() - slope * d.mean()))
+
+
+def heart_potts_order(ctx: BuildContext, coords: np.ndarray, labels: np.ndarray, form: str) -> tuple[np.ndarray, dict]:
+    """The heart Potts arms' step on b0_trend's file (B0_TREND_POTTS_RULE): `at` (position p takes the drawn cell
+    at[p]) and the record (shares and a count of swaps only). coords: the file's positions; labels: the drawn cells'
+    lineage labels in the file's row order."""
+    if form not in HEART_POTTS_FORMS:
+        raise ValueError(f"unknown Potts form {form!r}; one of {HEART_POTTS_FORMS}")
+    t = ctx.task
+    stages = trend_stages(t)
+    C = np.asarray(coords, dtype=float)
+    lab = np.asarray(labels).astype(str)
+    n = C.shape[0]
+    stage_rng = np.random.default_rng([ctx.seed, HEART_POTTS_STREAMS[0]])
+    shares = [t2_build.bracket_share(np.asarray(ctx.inputs[r].obsm[COORD_KEY], dtype=float)[:, :3],
+                                     np.asarray(ctx.inputs[r].obs[T2_LINEAGE_KEY]).astype(str), n, NBHD_K, stage_rng)
+              for r, _ in stages]
+    days = [d for _, d in stages]
+    slope, intercept = potts_line(days, shares)
+    h_file = t2_build.same_group_share(C, lab, NBHD_K)
+    if form == "line":
+        target = intercept + slope * float(t.target_day)
+    else:
+        target = h_file + slope * B0_DAMPING * (float(t.role_days[t.reference_role]) - float(t.role_days["start"]))
+    if not np.isfinite(target):
+        raise ValueError(f"the Potts target must be finite, got {target}")
+    at, rec = t2_build.potts_sort(C, lab, target, NBHD_K, np.random.default_rng([ctx.seed, HEART_POTTS_STREAMS[1]]))
+    if rec["H_start"] != h_file:
+        raise AssertionError("potts_sort's H_start differs from H of the file as drawn")
+    return at, {"form": form, "rule": "vec.harness.B0_TREND_POTTS_RULE", "stages": [r for r, _ in stages],
+                "days": days, "H_stages": [float(h) for h in shares], "slope": slope, "intercept": intercept,
+                "H_target": float(target), "H_file": h_file, "H_final": float(rec["H_final"]),
+                "accepted_swaps": int(rec["accepted_swaps"]), "stop": rec["stop"]}
+
+
 def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool = False, trend: bool = False,
-           trend_record: dict | None = None) -> Stage:
+           trend_record: dict | None = None, potts: str | None = None, potts_record: dict | None = None) -> Stage:
     """B0 on a T2 board: real reference cells at the count rule, moved in count space by the per-type change of the
     harmonised lineage level (obs["merged"]; groups without a stable cross-stage meaning held flat). Extrapolation:
     from `start` to the reference, damped by B0_DAMPING. Interpolation: from the earlier bracket towards the later one,
@@ -967,13 +1034,19 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
     trend (heart candidate b0_trend, row H11; heart extrapolation with at least three input stages only): each
     lineage's log factor is its least-squares trend over every input stage (`b0_trend_factors`, B0_TREND_RULE); the
     draw, typing, stream and everything else are B0's. No try read it with depth, herd or cfm, so those raise.
-    trend_record: a dict that receives b0_trend_factors' record (with trend only; the build record's source)."""
+    trend_record: a dict that receives b0_trend_factors' record (with trend only; the build record's source).
+    potts (campaign branch campaign/heart-f; with trend only): "line" or "damped", the heart Potts arms' step
+    (heart_potts_order, B0_TREND_POTTS_RULE) after everything else; potts_record receives its record."""
     from vec import t1_scope
 
     if trend and (depth or herd or cfm):
         raise ValueError("the trend of B0 is not defined together with depth, herd or cfm (no try read them)")
     if trend_record is not None and not trend:
         raise ValueError("trend_record is for trend=True")
+    if potts is not None and (not trend or potts not in HEART_POTTS_FORMS):
+        raise ValueError(f"potts is one of {HEART_POTTS_FORMS} and needs trend=True")
+    if potts_record is not None and potts is None:
+        raise ValueError("potts_record is for a potts form")
     if trend:
         _b0_trend_task_check(ctx.task)
     if cfm and ctx.task.kind != "extrap":
@@ -1009,6 +1082,12 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
                                              t.target_day, B0_DAMPING)
         X, _ = t2_build.thin_to_depth(shifted, g, d_ref, target, [ctx.seed, 8])
         return finish(ctx, pool, X, coords)
+    if potts is not None:  # the cells (rows and lineage labels) move among the positions; the positions stay b0_trend's
+        labels = np.asarray(pool.obs[T2_LINEAGE_KEY]).astype(str)[rows]
+        at, prec = heart_potts_order(ctx, coords, labels, potts)
+        if potts_record is not None:
+            potts_record.update(prec)
+        return finish(ctx, pool, dense(shifted[:, g].X)[at], coords)
     return finish(ctx, pool, dense(shifted[:, g].X), coords)
 
 
@@ -1202,6 +1281,30 @@ def _b0_cfm(ctx: BuildContext) -> Stage:
 def _b0_trend(ctx: BuildContext) -> Stage:
     """Heart candidate b0_trend (row H11, B0_TREND_RULE): `_b0_t2` with trend=True."""
     return _b0_t2(ctx, trend=True)
+
+
+def _b0_trend_potts_check(ctx: BuildContext, name: str, rec: Mapping) -> None:
+    """The heart Potts arm's check line (as the T1 arm b0_xt prints its own): shares, days and a count of swaps only;
+    no cell number, no gene name, no score."""
+    hs = ",".join(f"{r}@{d:g}:{h:.4f}" for r, d, h in zip(rec["stages"], rec["days"], rec["H_stages"], strict=True))
+    print(f"{name} check: task={ctx.task.key} seed={int(ctx.seed)} H_stages={hs} slope={rec['slope']:.6f} "
+          f"intercept={rec['intercept']:.6f} H_target={rec['H_target']:.4f} H_file={rec['H_file']:.4f} "
+          f"H_final={rec['H_final']:.4f} accepted_swaps={rec['accepted_swaps']} stop={rec['stop']}", flush=True)
+
+
+def _b0_trend_potts_arm(name: str, form: str):
+    """Heart arms b0_trend_potts (form "line") and b0_trend_potts_d (form "damped"), campaign branch campaign/heart-f:
+    `_b0_t2` with trend=True and the Potts step; the record goes to TREND_ARM_RECORDS[name] and its check line is
+    printed."""
+
+    def build(ctx: BuildContext) -> Stage:
+        rec: dict = {}
+        stage = _b0_t2(ctx, trend=True, potts=form, potts_record=rec)
+        TREND_ARM_RECORDS[name] = {"task": ctx.task.key, "seed": int(ctx.seed), **rec}
+        _b0_trend_potts_check(ctx, name, rec)
+        return stage
+
+    return build
 
 
 def _fgw_herd(ctx: BuildContext) -> Stage:
@@ -2099,6 +2202,20 @@ CANDIDATES = {
                                    "budget (heart only; count space)", "damping": B0_DAMPING,
                            "rule": "vec.harness.B0_TREND_RULE", "scope": "chamber"},
                           requires=_heart_extrap_with_start),
+    # the heart batch F (campaign branch campaign/heart-f): the Potts sorting of which cell sits where, on b0_trend's
+    # file (the embryo's fgw_potts, row E31, carried to the heart's entry)
+    **{name: Candidate(name, frozenset({"T2"}), (), _b0_trend_potts_arm(name, form),
+                       {"what": "b0_trend with which drawn cell (row and lineage label) sits at which of its positions "
+                                "sorted by a zero-temperature Potts rule towards H*: " + what,
+                        "damping": B0_DAMPING, "rule": "vec.harness.B0_TREND_RULE",
+                        "potts_rule": "vec.harness.B0_TREND_POTTS_RULE", "form": form, "label": T2_LINEAGE_KEY,
+                        "k": NBHD_K, "streams": list(HEART_POTTS_STREAMS), "scope": "chamber"},
+                       requires=_heart_extrap_with_start)
+       for name, form, what in (
+           ("b0_trend_potts", "line", "the least-squares line of the input stages' same-lineage neighbour share on "
+                                      "the day, read at the target's day"),
+           ("b0_trend_potts_d", "damped", "the file's own share plus the line's slope x B0_DAMPING x the last gap in "
+                                          "days"))},
     # T3 tries K2a and K2b (experiments/harness/TRIES.md, registered before their run): s1's Gata4 factor on the
     # Gata4 -> Mab21l2 fold, and its permuted control
     "t3_factor_xko": Candidate("t3_factor_xko", frozenset({"T3"}), (), _t3_factor_xko,
