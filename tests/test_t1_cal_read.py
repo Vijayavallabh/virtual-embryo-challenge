@@ -195,7 +195,8 @@ def test_the_rule_uses_its_own_stream_which_no_build_step_uses(cr, monkeypatch):
             text = path.read_text(errors="replace")
             used |= {int(n) for n in re.findall(r"seed, ?(\d+)\]", text)}
             used |= {int(n) for n in re.findall(r"_STREAM = (\d+)\b", text)}
-    assert files > 10 and {1, 2, 4, 5, 15, 46} <= used, (files, sorted(used))
+            used |= {int(n) for pair in re.findall(r"_STREAM = \((\d+), ?(\d+)\)", text) for n in pair}
+    assert files > 10 and {1, 2, 4, 5, 15, 46, 47} <= used, (files, sorted(used))  # 47: share_read's (47, 1)
     assert cr.CAL_STREAM not in used, sorted(used)
     seeds = []
     real = t1_scope.external_shift
@@ -509,3 +510,147 @@ def test_t47s_raw_L_and_sha256_are_read(cr, tmp_path):
     path.write_text(json.dumps(_t47(0.834)))
     L_, sha = cr.t47_scale(path)
     assert L_ == 0.834 and sha == cr.gv.sha256_file(path)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# The review's fixes (row T48's limits, the min_cells rule, the calibration's identity, the reported parts)
+
+
+def _flat(text):
+    return " ".join(text.split())
+
+
+def test_every_limit_sentence_is_in_the_docstring_and_in_the_text(cr, tmp_path):
+    doc = _flat(cr.__doc__)
+    assert len(cr.LIMITS) == 14 and len(set(cr.LIMITS)) == 14
+    for s in cr.LIMITS:
+        assert s in doc, s
+    out, t42, t44 = _write(cr, tmp_path, {k: _task({"m1_r_gmom_calL": 1.0}) for k in cr.CUT_FILES})
+    cr.read(out, t42, t44)
+    text = (out / "t48.txt").read_text()
+    for s in cr.LIMITS:
+        assert f"Limit: {s}" in text
+
+
+def test_the_step_size_limit_gives_t47s_ratios_not_the_briefs(cr):
+    """The brief said 0.55 to 0.58; T47's committed numbers (self-check 0.1065 on E9.5, calibration 0.1167 on E10.5
+    library 3, both for a step of 0.2) give 0.53 to 0.58."""
+    lo, hi = round(0.1065 / 0.2, 2), round(0.1167 / 0.2, 2)
+    s = cr.LIMITS[0]
+    assert f"{lo:.2f} to {hi:.2f} of its nominal size" in s and "0.55" not in _flat(cr.__doc__)
+
+
+def test_the_test_limit_names_every_t1_upload_base(cr):
+    """The brief said the rule would run on library 3's cells at the test; T1's uploads use two bases, lib3 and mid
+    (experiments/builds/build_test.py T1_BASES, besides the pooled default), and the limit names both."""
+    text = (REPO_ROOT / "experiments" / "builds" / "build_test.py").read_text()
+    bases = re.search(r"^T1_BASES = \(([^)]*)\)", text, re.M).group(1)
+    names = set(re.findall(r'"(\w+)"', bases))
+    assert {"lib3", "mid"} <= names
+    assert "(lib3 and mid)" in cr.LIMITS[1] and "whose pool is E9.5's" in cr.LIMITS[1]
+
+
+def test_the_rule_reads_every_pool_cell_weighted_by_the_pools_group_counts(cr):
+    """Not the cells a build draws: every covered pool cell, weights its group counts (the docstrings say so)."""
+    pool, dirs, held = pool_world()
+    prep = cr.prepare(pool, dirs, GROUPS, held, EPS, MIN_CELLS)
+    assert prep["sub"].n_obs == 260 + 90 + 120
+    assert prep["weights"] == {"CM": 350.0, "Endocardium": 120.0}
+    for doc in (cr.__doc__, cr.prepare.__doc__):
+        assert "(the cells M1's step moves in a build)" not in doc
+        assert "not the cells a build draws" in _flat(doc)
+
+
+def test_a_group_under_min_cells_gives_no_share_and_drops_out_of_the_combination(cr):
+    sizes = (("V-CM", 260), ("A-CM", 90), ("Endocardium", MIN_CELLS - 1), ("Foregut", 80))
+    pool, dirs, held = pool_world(sizes=sizes)
+    prep = cr.prepare(pool, dirs, GROUPS, held, EPS, MIN_CELLS)
+    assert set(prep["members"]) == {"CM"} and prep["weights"]["Endocardium"] == MIN_CELLS - 1
+    r = cr.delivered_on(prep, 0.3)
+    assert np.isnan(r["groups"]["Endocardium"]) and np.isfinite(r["groups"]["CM"])
+    assert r["share"] == cr.shr.combine({"CM": r["groups"]["CM"]}, {"CM": 350.0})[0]
+    assert r["share"] == pytest.approx(r["groups"]["CM"], rel=1e-12)
+    # at MIN_CELLS cells the group gives a share and enters the combination
+    pool2, dirs2, held2 = pool_world(sizes=(("V-CM", 260), ("A-CM", 90), ("Endocardium", MIN_CELLS), ("Foregut", 80)))
+    r2 = cr.delivered_on(cr.prepare(pool2, dirs2, GROUPS, held2, EPS, MIN_CELLS), 0.3)
+    assert np.isfinite(r2["groups"]["Endocardium"]) and r2["share"] != r2["groups"]["CM"]
+
+
+def test_calibrate_reports_the_noise_the_bins_and_the_cells_beside_the_rule(cr):
+    pool, dirs, held = pool_world()
+    rec = cr.calibrate(pool, dirs, GROUPS, held, 0.2, L, "f" * 64, eps=EPS, min_cells=MIN_CELLS)
+    plain = _cal(cr, pool, dirs, held, 0.2)
+    assert rec["fractions"]["m1_r_gmom_cal"] == plain["fraction"]  # the reports do not touch the rule
+    for a in cr.CAL_ARMS:
+        nz = rec["noise"][a]
+        assert nz["streams"] == [[48, 48, k] for k in range(1, 11)] and len(set(nz["values"])) > 1
+        assert nz["sd"] > 0 and nz["slope"] > 0 and nz["fraction_sd"] == pytest.approx(nz["sd"] / nz["slope"])
+    fr = {"m1_r_gmom": 0.2, "m1_r_gmom_x15": 0.2 * 1.5, "m1_r_gmom_x2": 0.4, **rec["fractions"]}
+    assert set(rec["steps_by_arm"]) == set(fr)
+    for a, st in rec["steps_by_arm"].items():
+        assert st["fraction"] == fr[a]
+        assert st["share"] == cr.delivered(pool, dirs, GROUPS, held, fr[a], eps=EPS, min_cells=MIN_CELLS)
+        assert list(st["bins"]) == ["[0, 0.1)", "[0.1, 1)", "[1, 10)", ">= 10"]
+        assert st["after"]["detected_genes"] < st["before"]["detected_genes"]
+        assert st["after"]["total_counts"] == pytest.approx(st["before"]["total_counts"], rel=0.02)
+    lo, hi = rec["steps_by_arm"]["m1_r_gmom"], rec["steps_by_arm"]["m1_r_gmom_cal"]
+    assert hi["after"]["detected_genes"] < lo["after"]["detected_genes"]  # a larger step: sparser cells
+    assert rec["weights"] == {"CM": 350.0, "Endocardium": 120.0}
+
+
+def test_cell_stats_reads_detected_genes_and_panel_cp10k(cr):
+    X = np.log1p(np.array([[0.0, 3.0, 1.0], [0.0, 0.0, 9.0]], np.float32))
+    st = cr.cell_stats(cr.Stage(X=X))
+    assert st["detected_genes"] == pytest.approx(1.5) and st["panel_cp10k"] == pytest.approx(6.5, rel=1e-6)
+
+
+@pytest.mark.parametrize("field, value", [("L", 0.835), ("t47_sha256", "b" * 64),
+                                          ("fractions", {"m1_r_gmom_calL": 0.29, "m1_r_gmom_cal": 0.3501})])
+def test_a_calibration_that_differs_between_the_cuts_voids(cr, tmp_path, field, value):
+    cal = _cal_record()
+    cal[field] = value
+    if field == "L":
+        cal["targets"] = {"m1_r_gmom_calL": 0.2 * value, "m1_r_gmom_cal": 0.2}
+        cal["delivered"] = dict(cal["targets"])
+    r = _read(cr, tmp_path, {"m1_r_gmom_calL": 1.0}, TASK_WHOLE={"cal": cal})
+    assert not r["valid"] and any("differs between the cuts" in x for x in r["validity"]["reasons"])
+
+
+def test_t47s_L_must_be_a_number_not_a_bool(cr, tmp_path):
+    path = tmp_path / "t47.json"
+    path.write_text(json.dumps(_t47(True)))
+    with pytest.raises(SystemExit, match="not finite and in"):
+        cr.t47_scale(path)
+
+
+def test_t44s_line_predicts_the_gain_at_the_calibrated_fraction(cr, tmp_path):
+    """T44's committed x1.5 (+0.9) and x2 (+1.8): at 0.35 the line predicts +1.35, at 0.29 (extrapolated) +0.81."""
+    per_seed = {"m1_r_gmom_calL": [1.0 + 0.01 * i for i in range(10)]}
+    r = _read(cr, tmp_path, {"m1_r_gmom_cal": 1.35}, per_seed=per_seed)
+    line = r["t44_line"]
+    for k in cr.CUT_FILES:
+        a, b = line["m1_r_gmom_calL"][k], line["m1_r_gmom_cal"][k]
+        assert a["extrapolated"] is True and b["extrapolated"] is False
+        assert a["predicted"] == pytest.approx(0.81) and b["predicted"] == pytest.approx(1.35)
+        assert a["residual"] == pytest.approx(1.045 - 0.81) and b["residual"] == pytest.approx(0.0, abs=1e-9)
+        assert a["residual_range"] == pytest.approx([0.19, 0.28])
+    text = (tmp_path / "out" / "t48.txt").read_text()
+    assert "T44's line at fraction 0.2900 (extrapolated): predicted +0.81" in text
+
+
+def test_a_loss_or_not_separated_is_read_as_a_fault_first(cr, tmp_path):
+    r = _read(cr, tmp_path, {"m1_r_gmom_calL": 0.1})
+    assert r["outcome"] == cr.NOT_SEPARATED and r["fault_line"] == cr.FAULT_LINE
+    assert f"Read as: {cr.FAULT_LINE}" in (tmp_path / "out" / "t48.txt").read_text()
+    r = _read(cr, tmp_path / "pass", {"m1_r_gmom_calL": 1.0})
+    assert r["outcome"] == cr.PASSES and r["fault_line"] is None
+
+
+def test_the_cells_record_is_reported_per_cut_and_arm(cr, tmp_path):
+    cuts = {k: _task({"m1_r_gmom_calL": 1.0}) for k in cr.CUT_FILES}
+    for rec in cuts.values():
+        for i, row in enumerate(rec["rows"]):
+            row["cells"] = {a: {"detected_genes": 100.0 + i, "panel_cp10k": 900.0} for a in cr.ARMS}
+    out, t42, t44 = _write(cr, tmp_path, cuts)
+    r = cr.read(out, t42, t44)["reading"]
+    assert r["cells"][cr.gc.TASK_CHAMBER]["m1_r_gmom_cal"] == {"detected_genes": 104.5, "panel_cp10k": 900.0}

@@ -9,17 +9,24 @@ fraction so that M1's own step, read back on the task's reference cells, deliver
 scale.
 
   calibrated_fraction(pool, directions, groups, held, fraction, target_share)
-         cells: the pool's cells whose label maps to a direction group (the cells M1's step moves in a build), all of
-         them. delivered(f): t1_scope.external_shift at f on those cells (the build's held list, stream
-         [CAL_ROOT, CAL_STREAM], which no build step uses, its defaults otherwise), read before -> after with
-         share_read's code: per group share_stats of dirlib.lfc_ratio of the mean CP10k (the config's pseudocount) on
-         the genes M1 moves (a finite direction, not held), a group under the config's min_cells_t1 giving no value
-         (share_read.calibration's rule), combined with share_read.combine weighted by the groups' cell numbers among
-         those cells. The answer is the f in [fraction, 5 x fraction] with delivered(f) = target_share, found by
-         bisection to a relative tolerance of 1e-3 on the share, on the same stream at every step. It refuses
-         (ValueError) a target outside [delivered(fraction), delivered(5 x fraction)], a delivered share that does not
-         rise across the bracket, and a bisection that does not reach the tolerance in MAX_STEPS steps; it never
-         extrapolates. With a target within the tolerance of delivered(fraction) it returns the fraction itself.
+         cells: every cell of the pool whose label maps to a direction group, all of them (not the cells a build
+         draws from the pool at the chamber shares, which may repeat or leave cells out). delivered(f):
+         t1_scope.external_shift at f on those cells (the build's held list, stream [CAL_ROOT, CAL_STREAM], which no
+         build step uses, its defaults otherwise), read before -> after with share_read's code: per group share_stats
+         of dirlib.lfc_ratio of the mean CP10k (the config's pseudocount) on the genes M1 moves (a finite direction,
+         not held), a group under the config's min_cells_t1 giving no value (share_read.calibration's rule), combined
+         with share_read.combine weighted by the groups' cell numbers among those cells (the pool's group counts). The
+         answer is the f in [fraction, 5 x fraction] with delivered(f) = target_share, found by bisection to a relative
+         tolerance of 1e-3 on the share, on the same stream at every step. It refuses (ValueError) a target outside
+         [delivered(fraction), delivered(5 x fraction)], a delivered share that does not rise across the bracket, and a
+         bisection that does not reach the tolerance in MAX_STEPS steps; it never extrapolates. With a target within
+         the tolerance of delivered(fraction) it returns the fraction itself.
+  calibrate  Both answers and, reported only: the stream noise at each answer (sd of delivered over the ten further
+         streams [CAL_ROOT, CAL_STREAM, k], k = 1..10, and that sd divided by the slope of delivered between the base
+         fraction and the answer: the fraction's sd); and per arm's fraction (0.2, 0.3, 0.4 and both answers), on the
+         rule's stream, the delivered share and the share over f in four bins of the group's mean CP10k before the step
+         ([0, 0.1), [0.1, 1), [1, 10), >= 10), and the covered cells' mean detected genes and total counts per cell
+         before and after the step.
   run    One E10.5 cut, 10 seeds, on try T44's route. Refused unless experiments/harness/TRIES.md holds row T48, unless
          the committed N22 passed, on an existing task file, and unless T47's committed reading
          (results/t47_share_read/t47.json) is there, not void (its stamp's tree clean) and its raw L finite and in
@@ -28,14 +35,17 @@ scale.
          0.2, written to the task file with delivered(0.2), the delivered shares at the answers, the steps, L and the
          sha256 of t47.json. Arms per seed, all from one cell draw: b0, m1_r_gmom (0.2), m1_r_gmom_x15 (0.3) and
          m1_r_gmom_x2 (0.4) as T44 builds them (step_read.step_arms); m1_r_gmom_calL (T48a) and m1_r_gmom_cal (T48b),
-         gmom_combo.m1_r_arms' m1_r_gmom at the calibrated fraction with every other argument the base's.
+         gmom_combo.m1_r_arms' m1_r_gmom at the calibrated fraction with every other argument the base's. Per seed
+         and arm the file also records the built cells' mean detected panel genes and mean summed panel CP10k per
+         cell (reported only; a build's total counts are not in its Stage).
   read   T48's reading of both cuts' files (fixed in the row before the run):
          Void unless both cuts hold the ten seeds at one commit on a clean tree; b0 and m1_r_gmom equal, seed for seed,
          their committed scores in results/t42_m1_eb/tasks/ and m1_r_gmom_x15 and m1_r_gmom_x2 theirs in
          results/t44_m1_step/tasks/, each to 1e-9; each file's task is its cut, its base fraction 0.2 and every arm's
          fraction its own; both calibrated fractions lie in (0.2, 1.0) and the scaled one is the smaller; the delivered
-         shares at the answers equal their targets (0.2 x L and 0.2) to 1e-3 relative; neither calibrated arm scores
-         exactly as m1_r_gmom on every seed of both cuts.
+         shares at the answers equal their targets (0.2 x L and 0.2) to 1e-3 relative; both cuts record the same
+         t47_sha256, the same L and the same two calibrated fractions (one reference pool, one calibration); neither
+         calibrated arm scores exactly as m1_r_gmom on every seed of both cuts.
          The test: the adoption rule (vec.adoption.keep_change, paired by seed, both cuts) for each calibrated arm
          against m1_r_gmom. Statement, on T48a alone: "the calibrated step passes on both cuts" if it passes; "the
          calibrated step loses" if its mean difference is below zero on both cuts with at most 2 of 10 seeds ahead on
@@ -43,11 +53,51 @@ scale.
          Reported: per cut every arm's mean board score; each calibrated arm's mean paired difference from m1_r_gmom,
          m1_r_gmom_x15 and m1_r_gmom_x2 with seeds ahead and per-seed range; every metric's mean skill difference and
          the part of each gain on the two de terms, mmd_u and the variogram (100 x the group's weight x the skill
-         difference); the calibration record. The read puts nothing forward by itself.
+         difference); per calibrated arm and cut, the gain over m1_r_gmom that a straight line through T44's committed
+         m1_r_gmom_x15 and m1_r_gmom_x2 per-seed scores predicts at the calibrated fraction (marked extrapolated
+         outside [0.3, 0.4]), and the residual (observed minus predicted) with its per-seed range; per cut every arm's
+         mean detected panel genes and summed panel CP10k per cell; the calibration record; and, when the statement is
+         "the calibrated step loses" or "not separated", the line that it is read as a fault to explain first. The
+         read puts nothing forward by itself.
 
 NOT an adoption result: a labelled in-sample diagnostic, as tries T26, T42 and T44 are; Feng's E9.5 cells lie inside
 these pseudo-tasks' external windows, the cuts are ones earlier T1 choices were made on, and L comes from T47's read of
 the released E9.5 cells. Its result can only go to the team captain.
+
+Limits (each sentence is in LIMITS and in the ledger row):
+  In the units d is made in, M1's step of 0.2 reads 0.107 on E9.5's cells and 0.117 on E10.5 library 3's cells, that
+  is 0.53 to 0.58 of its nominal size.
+  At the test the rule would run once per T1 base (lib3 and mid) on that base's E10.5 cells, with fraction 0.4 and
+  target 0.4 x L; by T47's numbers it would give about 1.43 times the nominal fraction, against about 1.56 times on
+  these cuts, whose pool is E9.5's.
+  The calibration reads every reference-pool cell of the direction groups, weighted by the pool's group counts, not
+  the cells a build draws at the chamber shares; on synthetic pools this moves the fraction by under 0.001.
+  The calibration draws on the fixed stream [48, 48]; a port to the test build needs its own row and a stream from the
+  build seed.
+  delivered(f) on one stream carries the draw's noise: the calibration record gives the sd of delivered at each answer
+  over ten further streams, and the fraction is known only to about that sd divided by the slope of delivered; on a
+  small pool that noise can make the rule refuse, so a test build that calls it unchanged is not assured an answer.
+  T48a's fraction is predicted at about 0.31, within 5% of T44's x1.5 arm, which passed on every seed; a pass is
+  expected from T44 and is not evidence that the calibration target is right, nor about the fraction at the test.
+  A loss or a not-separated outcome contradicts T44 at a neighbouring fraction; it is read as a fault to explain
+  before any conclusion, never as evidence against a larger step.
+  The rule matches one d^2-weighted share; at the calibrated fraction genes above 10 CP10k move about 1.5 to 2 times
+  the target along d while weakly expressed genes stay several times under; a gain may come from over-moving
+  well-expressed genes, not from delivering the direction.
+  delivered(f) rises with f but not proportionally (about 7% concave over [0.2, 1.0] on synthetic pools) and is
+  non-monotone below about 5e-4 in f on one stream; the calibrated fraction is known only to that resolution.
+  A larger step also lowers detected genes per cell (synthetic: about 2 to 3 percentage points more at the calibrated
+  fraction than at 0.2); any gain on mmd_u or the variogram may travel through sparsity, the channel of the closed
+  read-depth lever, and adopting a larger step for that reason needs the captain's named answer on that lever.
+  The weights are the reference pool's group counts; a build's chamber-share draw would change the fraction by about
+  1% at most.
+  L is T47's raw between-type slope at E9.5, a fixed input from another read; it is not computable from the test's
+  base cells, the rule's fraction moves almost one for one with it (L_corr 0.955 would give about 15% more), and the
+  choice of raw over corrected is not tested here.
+  The cuts share one reference pool and one calibration; their day holds more than 0.2L along d (T47's A 0.254), so
+  the read favours any larger step; it says nothing about the pace from E10.5 to E12.5 or about the rule on the
+  test's bases.
+  T48b is about T44's x2 arm (fraction about 0.37 to 0.38 against 0.40) and reports nothing T44 did not.
 
 Usage: on the DGX campaign checkout, repo root, both cuts at one commit, committing nothing until both task files exist,
 on the machine T42 and T44 ran on, so that their arms reproduce.
@@ -120,6 +170,48 @@ LOSES = "the calibrated step loses"
 NOT_SEPARATED = "not separated"
 T1_GROUP_WEIGHT = {members[0][0]: w for _, w, members in GROUPS["T1"]}  # metric -> its group's weight (one each)
 DE_TERMS = ("de_score", "de_direction")
+SPREAD_STREAMS = 10  # further streams [CAL_ROOT, CAL_STREAM, k], k = 1..10, for the noise of delivered (reported only)
+CP_BINS = ((0.0, 0.1), (0.1, 1.0), (1.0, 10.0), (10.0, float("inf")))  # mean CP10k before the step (reported only)
+CP_BIN_NAMES = ("[0, 0.1)", "[0.1, 1)", "[1, 10)", ">= 10")
+FAULT_LINE = ("a loss or a not-separated outcome contradicts T44 at a neighbouring fraction: it is read as a fault to "
+              "explain before any conclusion, never as evidence against a larger step")
+LIMITS = (
+    "In the units d is made in, M1's step of 0.2 reads 0.107 on E9.5's cells and 0.117 on E10.5 library 3's cells, "
+    "that is 0.53 to 0.58 of its nominal size.",
+    "At the test the rule would run once per T1 base (lib3 and mid) on that base's E10.5 cells, with fraction 0.4 and "
+    "target 0.4 x L; by T47's numbers it would give about 1.43 times the nominal fraction, against about 1.56 times on "
+    "these cuts, whose pool is E9.5's.",
+    "The calibration reads every reference-pool cell of the direction groups, weighted by the pool's group counts, not "
+    "the cells a build draws at the chamber shares; on synthetic pools this moves the fraction by under 0.001.",
+    "The calibration draws on the fixed stream [48, 48]; a port to the test build needs its own row and a stream from "
+    "the build seed.",
+    "delivered(f) on one stream carries the draw's noise: the calibration record gives the sd of delivered at each "
+    "answer over ten further streams, and the fraction is known only to about that sd divided by the slope of "
+    "delivered; on a small pool that noise can make the rule refuse, so a test build that calls it unchanged is not "
+    "assured an answer.",
+    "T48a's fraction is predicted at about 0.31, within 5% of T44's x1.5 arm, which passed on every seed; a pass is "
+    "expected from T44 and is not evidence that the calibration target is right, nor about the fraction at the test.",
+    "A loss or a not-separated outcome contradicts T44 at a neighbouring fraction; it is read as a fault to explain "
+    "before any conclusion, never as evidence against a larger step.",
+    "The rule matches one d^2-weighted share; at the calibrated fraction genes above 10 CP10k move about 1.5 to 2 "
+    "times the target along d while weakly expressed genes stay several times under; a gain may come from over-moving "
+    "well-expressed genes, not from delivering the direction.",
+    "delivered(f) rises with f but not proportionally (about 7% concave over [0.2, 1.0] on synthetic pools) and is "
+    "non-monotone below about 5e-4 in f on one stream; the calibrated fraction is known only to that resolution.",
+    "A larger step also lowers detected genes per cell (synthetic: about 2 to 3 percentage points more at the "
+    "calibrated fraction than at 0.2); any gain on mmd_u or the variogram may travel through sparsity, the channel of "
+    "the closed read-depth lever, and adopting a larger step for that reason needs the captain's named answer on that "
+    "lever.",
+    "The weights are the reference pool's group counts; a build's chamber-share draw would change the fraction by "
+    "about 1% at most.",
+    "L is T47's raw between-type slope at E9.5, a fixed input from another read; it is not computable from the test's "
+    "base cells, the rule's fraction moves almost one for one with it (L_corr 0.955 would give about 15% more), and "
+    "the choice of raw over corrected is not tested here.",
+    "The cuts share one reference pool and one calibration; their day holds more than 0.2L along d (T47's A 0.254), so "
+    "the read favours any larger step; it says nothing about the pace from E10.5 to E12.5 or about the rule on the "
+    "test's bases.",
+    "T48b is about T44's x2 arm (fraction about 0.37 to 0.38 against 0.40) and reports nothing T44 did not.",
+)
 LABEL_T48 = ("try T48, a labelled in-sample diagnostic, never an adoption result: M1 (with R1, R2 and g_mom's factors, "
              "the entry's form) at the fraction its own step needs, read back on the task's reference cells with T47's "
              "share code, to deliver 0.2 x L (T48a; L from T47's committed reading) and 0.2 (T48b, reported), on T44's "
@@ -151,8 +243,10 @@ def _settings(eps: float | None, min_cells: float | None) -> tuple[float, float]
 
 def prepare(pool, directions: Mapping[str, np.ndarray], groups: Mapping[str, str], held: Sequence[str],
             eps: float | None = None, min_cells: float | None = None) -> dict:
-    """The rule's fixed part: the covered cells (as gmom_combo.moved_by_feng selects them), each group's cells, gene
-    mask (a finite direction, not held), weight (its cells among the covered cells) and mean CP10k before the step."""
+    """The rule's fixed part: the covered cells (every pool cell whose label maps to a direction group, as
+    gmom_combo.moved_by_feng selects them; not the cells a build draws at the chamber shares), each group's cells, gene
+    mask (a finite direction, not held), weight (its cells among the covered cells: the pool's group counts) and mean
+    CP10k before the step. A group under min_cells keeps its weight but gives no share (combine then skips it)."""
     eps, min_cells = _settings(eps, min_cells)
     labels = pool.obs[t1_scope.LABEL_KEY].astype(str).to_numpy()
     covered = np.array([groups.get(lab) in directions for lab in labels], dtype=bool)
@@ -177,15 +271,61 @@ def prepare(pool, directions: Mapping[str, np.ndarray], groups: Mapping[str, str
 def delivered_on(prep: Mapping, f: float, seed: Sequence[int] = (CAL_ROOT, CAL_STREAM)) -> dict:
     """delivered(f) on a prepared pool: external_shift at f on the covered cells, read before -> after with
     share_read's share_stats and combine (weighted by the groups' cells)."""
+    moved = _moved(prep, f, seed)
+    shares = _shares(prep, moved, {g: prep["masks"][g] for g in prep["members"]})
+    return {"share": shr.combine(shares, prep["weights"])[0], "groups": shares}
+
+
+def _moved(prep: Mapping, f: float, seed: Sequence[int]):
     moved, _ = t1_scope.external_shift(prep["sub"], prep["directions"], f, prep["groups"], prep["held"],
                                        label_key=t1_scope.LABEL_KEY, seed=list(seed))
+    return moved
+
+
+def _shares(prep: Mapping, moved, masks: Mapping[str, np.ndarray]) -> dict[str, float]:
+    """Per group share_stats' share of before -> after over the group's gene mask (NaN for a group without cells)."""
     shares = {g: float("nan") for g in prep["directions"]}
     for g, m in prep["members"].items():
         after = {"cp": _mean_cp10k(moved.X, m)}
-        st = shr.share_stats(dl.lfc_ratio(prep["before"][g], after, prep["eps"]), prep["directions"][g],
-                             prep["masks"][g], None)
+        st = shr.share_stats(dl.lfc_ratio(prep["before"][g], after, prep["eps"]), prep["directions"][g], masks[g],
+                             None)
         shares[g] = st["share"]
-    return {"share": shr.combine(shares, prep["weights"])[0], "groups": shares}
+    return shares
+
+
+def _cell_depth(C) -> dict[str, float]:
+    C = sparse.csr_matrix(C)
+    return {"detected_genes": float(np.diff(C.indptr).mean()) if C.shape[0] else float("nan"),
+            "total_counts": float(np.asarray(C.sum(axis=1)).mean()) if C.shape[0] else float("nan")}
+
+
+def step_record(prep: Mapping, f: float, seed: Sequence[int] = (CAL_ROOT, CAL_STREAM)) -> dict:
+    """Reported only, one external_shift at f on the rule's stream: the delivered share, and per bin of the group's mean
+    CP10k before the step (CP_BINS) the combined share and the share over f; the covered cells' mean detected genes
+    and total counts per cell before and after the step."""
+    moved = _moved(prep, f, seed)
+    share = shr.combine(_shares(prep, moved, {g: prep["masks"][g] for g in prep["members"]}), prep["weights"])[0]
+    bins = {}
+    for name, (lo, hi) in zip(CP_BIN_NAMES, CP_BINS, strict=True):
+        masks = {g: prep["masks"][g] & (prep["before"][g]["cp"] >= lo) & (prep["before"][g]["cp"] < hi)
+                 for g in prep["members"]}
+        s = shr.combine(_shares(prep, moved, masks), prep["weights"])[0]
+        bins[name] = {"share": s, "share_over_f": s / f,
+                      "genes": {g: int(m.sum()) for g, m in masks.items()}}
+    return {"fraction": float(f), "share": share, "share_over_f": share / f, "bins": bins,
+            "before": _cell_depth(t1_scope.counts_of(prep["sub"])), "after": _cell_depth(moved.layers["counts"])}
+
+
+def stream_spread(prep: Mapping, f: float, base_fraction: float, delivered_base: float, delivered_f: float,
+                  seed: Sequence[int] = (CAL_ROOT, CAL_STREAM), n: int = SPREAD_STREAMS) -> dict:
+    """Reported only: delivered at f on n further streams [*seed, k], k = 1..n, their sd, the slope of delivered
+    between the base fraction and f on the rule's stream, and the fraction's sd (the sd over the slope)."""
+    vals = [delivered_on(prep, f, (*seed, k))["share"] for k in range(1, n + 1)]
+    slope = (delivered_f - delivered_base) / (f - base_fraction) if f != base_fraction else float("nan")
+    sd = float(np.std(vals, ddof=1))
+    return {"streams": [[*map(int, seed), k] for k in range(1, n + 1)], "values": [float(v) for v in vals],
+            "sd": sd, "slope": float(slope), "fraction_sd": float(sd / slope) if np.isfinite(slope) and slope > 0
+            else float("nan")}
 
 
 def delivered(pool, directions, groups, held, f: float, *, eps: float | None = None, min_cells: float | None = None,
@@ -207,10 +347,19 @@ def calibrated_fraction(pool, directions: Mapping[str, np.ndarray], groups: Mapp
     target outside the bracket's delivered range, a delivered share that does not rise across the bracket, and a
     bisection that does not reach the tolerance; it never extrapolates. Reads no file once eps and min_cells are
     given (else the config, for those two only)."""
+    _check_args(fraction, target_share)
+    return _calibrated(prepare(pool, directions, groups, held, eps, min_cells), fraction, target_share, seed)
+
+
+def _check_args(fraction: float, target_share: float) -> None:
     if not (np.isfinite(fraction) and fraction > 0 and np.isfinite(target_share) and target_share != 0):
         raise ValueError(f"the rule needs a positive finite fraction and a finite non-zero target, got {fraction}, "
                          f"{target_share}")
-    prep = prepare(pool, directions, groups, held, eps, min_cells)
+
+
+def _calibrated(prep: Mapping, fraction: float, target_share: float, seed: Sequence[int]) -> dict:
+    """calibrated_fraction on a prepared pool."""
+    _check_args(fraction, target_share)
     lo, hi = float(fraction), float(UPPER * fraction)
     d_lo = delivered_on(prep, lo, seed)["share"]
     out = {"base_fraction": lo, "target": float(target_share), "bracket": [lo, hi], "stream": [int(s) for s in seed],
@@ -239,21 +388,34 @@ def calibrated_fraction(pool, directions: Mapping[str, np.ndarray], groups: Mapp
     raise ValueError(f"the bisection did not reach {REL_TOL:g} relative on the share in {MAX_STEPS} steps")
 
 
-def calibrate(pool, directions, groups, held, fraction: float, L: float, t47_sha256: str, **kw) -> dict:
-    """Both calibrations (T48a at fraction x L, T48b at fraction) and their record."""
+def calibrate(pool, directions, groups, held, fraction: float, L: float, t47_sha256: str, *,
+              eps: float | None = None, min_cells: float | None = None,
+              seed: Sequence[int] = (CAL_ROOT, CAL_STREAM)) -> dict:
+    """Both calibrations (T48a at fraction x L, T48b at fraction) on one prepared pool, and their record; reported
+    beside them: each answer's stream noise (stream_spread) and each arm's step (step_record)."""
     t0 = time.time()
+    prep = prepare(pool, directions, groups, held, eps, min_cells)
     targets = {CAL_SCALED: float(fraction) * float(L), CAL_PLAIN: float(fraction)}
-    res = {a: calibrated_fraction(pool, directions, groups, held, fraction, t, **kw) for a, t in targets.items()}
-    return {"L": float(L), "t47": gv._rel(T47_JSON), "t47_sha256": t47_sha256, "base_fraction": float(fraction),
-            "targets": targets, "fractions": {a: r["fraction"] for a, r in res.items()},
-            "delivered_at_base": res[CAL_PLAIN]["delivered_at_base"],
-            "delivered": {a: r["delivered"] for a, r in res.items()}, "steps": {a: r["steps"] for a, r in res.items()},
-            "stream": res[CAL_PLAIN]["stream"], "bracket": res[CAL_PLAIN]["bracket"], "rel_tol": REL_TOL,
-            "seconds": round(time.time() - t0, 1)}
+    res = {a: _calibrated(prep, fraction, t, seed) for a, t in targets.items()}
+    fractions = {a: r["fraction"] for a, r in res.items()}
+    rec = {"L": float(L), "t47": gv._rel(T47_JSON), "t47_sha256": t47_sha256, "base_fraction": float(fraction),
+           "targets": targets, "fractions": fractions, "delivered_at_base": res[CAL_PLAIN]["delivered_at_base"],
+           "delivered": {a: r["delivered"] for a, r in res.items()}, "steps": {a: r["steps"] for a, r in res.items()},
+           "stream": res[CAL_PLAIN]["stream"], "bracket": res[CAL_PLAIN]["bracket"], "rel_tol": REL_TOL,
+           "weights": dict(prep["weights"]), "seconds_rule": round(time.time() - t0, 1)}
+    rec["noise"] = {a: stream_spread(prep, r["fraction"], float(fraction), r["delivered_at_base"], r["delivered"], seed)
+                    for a, r in res.items()}
+    rec["steps_by_arm"] = {a: step_record(prep, f, seed) for a, f in arm_fractions(fraction, fractions).items()}
+    rec["seconds"] = round(time.time() - t0, 1)
+    return rec
 
 
 # ---------------------------------------------------------------------------------------------------------------------
 # The run
+
+
+def _num(x) -> bool:
+    return isinstance(x, int | float) and not isinstance(x, bool) and bool(np.isfinite(x))
 
 
 def t47_scale(path: Path = T47_JSON) -> tuple[float, str]:
@@ -269,7 +431,7 @@ def t47_scale(path: Path = T47_JSON) -> tuple[float, str]:
         sys.exit(f"{ROW} is refused: {gv._rel(path)} is void (unreadable: {e!r})")
     if clean is not True:
         sys.exit(f"{ROW} is refused: {gv._rel(path)} is void (its tree was not clean)")
-    if not isinstance(L, int | float) or not np.isfinite(L) or not L_RANGE[0] < L < L_RANGE[1]:
+    if not _num(L) or not L_RANGE[0] < L < L_RANGE[1]:
         sys.exit(f"{ROW} is refused: T47's L {L!r} is not finite and in ({L_RANGE[0]:g}, {L_RANGE[1]:g})")
     return float(L), gv.sha256_file(Path(path))
 
@@ -287,6 +449,13 @@ def cal_arms(ctx: harness.BuildContext, directions: Mapping, groups: Mapping, fr
     for a in CAL_ARMS:
         out[a] = gc.m1_r_arms(ctx, directions, groups, cal_fractions[a], held_m1, held_factors)[BASE]
     return out
+
+
+def cell_stats(stage: Stage) -> dict[str, float]:
+    """Reported only: a built prediction's mean detected panel genes per cell and mean summed panel CP10k per cell (a
+    Stage holds log1p CP10k on the panel, not counts)."""
+    X = np.asarray(stage.X, dtype=np.float64)
+    return {"detected_genes": float((X > 0).sum(1).mean()), "panel_cp10k": float(np.expm1(X).sum(1).mean())}
 
 
 def cmd_run(a) -> None:
@@ -334,7 +503,9 @@ def cmd_run(a) -> None:
         preds = {"b0": b0(ctx), **cal_arms(ctx, directions, groups, fraction, held_m1, preregistered,
                                            cal["fractions"])}
         arms = er.score_arms(board, target, ref_stage, s, f.anchors, preds)
-        rows.append({"seed": s, "floor": float(f.score), "arms": arms, "seconds": round(time.time() - t0, 1)})
+        rows.append({"seed": s, "floor": float(f.score), "arms": arms, "cells": {a: cell_stats(p) for a, p in
+                                                                                 preds.items()},
+                     "seconds": round(time.time() - t0, 1)})
         print(f"{t.key} seed {s}: " + ", ".join(f"{k} {v['score']:.2f}" for k, v in arms.items()), flush=True)
     res = {"label": LABEL_T48, "task": t.key, "fraction": fraction, "fractions": arm_fractions(fraction,
                                                                                               cal["fractions"]),
@@ -370,10 +541,6 @@ def reproduction(rows: Sequence[Mapping], committed: Sequence[Mapping], arms: Se
     return {"largest_difference": worst, "missing_seeds": missing, "absent": absent, "holds": holds}
 
 
-def _num(x) -> bool:
-    return isinstance(x, int | float) and not isinstance(x, bool) and bool(np.isfinite(x))
-
-
 def calibration_checks(k: str, cal: Mapping | None) -> list[str]:
     """One file's calibration record: both fractions inside CAL_RANGE (open), the scaled one the smaller, and each
     delivered share at its answer equal to its target (FRACTION x L and FRACTION) within REL_TOL relative."""
@@ -396,6 +563,24 @@ def calibration_checks(k: str, cal: Mapping | None) -> list[str]:
         reasons.append(f"{k}: delivered share off its target by more than {REL_TOL:g} relative on {off} "
                        f"(delivered { {a: dv.get(a) for a in off} }, targets { {a: targets[a] for a in off} })")
     return reasons
+
+
+def calibration_identity(results: Mapping[str, Mapping]) -> list[str]:
+    """The cuts share one reference pool, so one calibration: every cut's record must give the same t47_sha256, the
+    same L and the same two calibrated fractions (exactly)."""
+    cals = {k: r.get("calibration") for k, r in results.items()}
+    if len(cals) < 2 or not all(isinstance(c, Mapping) for c in cals.values()):
+        return []
+
+    def key(c):
+        return {"t47_sha256": c.get("t47_sha256"), "L": c.get("L"),
+                "fractions": {a: (c.get("fractions") or {}).get(a) for a in CAL_ARMS}}
+
+    keys = {k: key(c) for k, c in cals.items()}
+    first = next(iter(keys.values()))
+    if all(v == first for v in keys.values()):
+        return []
+    return [f"the calibration differs between the cuts (t47_sha256, L or the calibrated fractions): {keys}"]
 
 
 def validity(results: Mapping[str, Mapping], t42: Mapping[str, Mapping], t44: Mapping[str, Mapping]) -> dict:
@@ -424,6 +609,7 @@ def validity(results: Mapping[str, Mapping], t42: Mapping[str, Mapping], t44: Ma
             bad = [a for a, f in want.items() if not _num(got.get(a)) or abs(got[a] - f) > FRACTION_TOL]
             if bad:
                 reasons.append(f"{k}: arm fractions {got}, not {want} (wrong fraction on {bad})")
+    reasons += calibration_identity(results)
     commits = {r["stamp"]["commit"] for r in results.values()}
     unclean = sorted(k for k, r in results.items() if r["stamp"]["tree_clean"] is not True)
     if unclean:
@@ -475,8 +661,47 @@ def statement(comp: Mapping) -> str:
     return NOT_SEPARATED
 
 
+def t44_line(results: Mapping[str, Mapping], t44: Mapping[str, Mapping]) -> dict:
+    """Reported only: per calibrated arm and cut, the gain over m1_r_gmom that a straight line through T44's committed
+    m1_r_gmom_x15 and m1_r_gmom_x2 per-seed scores predicts at the cut's calibrated fraction, the observed gain, and
+    the residual (observed minus predicted) with its per-seed range; extrapolated outside [0.3, 0.4]."""
+    fr44 = sr.arm_fractions(FRACTION)
+    x15, x2 = T44_ARMS
+    f15, f2 = fr44[x15], fr44[x2]
+    out = {}
+    for a in CAL_ARMS:
+        out[a] = {}
+        for k, r in results.items():
+            f = float(r["calibration"]["fractions"][a])
+            w = (f - f15) / (f2 - f15)
+            committed = {row["seed"]: row["arms"] for row in t44[k]["rows"]}
+            pred, obs = [], []
+            for row in r["rows"]:
+                c = committed[row["seed"]]
+                base = row["arms"][BASE]["score"]
+                pred.append(c[x15]["score"] + w * (c[x2]["score"] - c[x15]["score"]) - base)
+                obs.append(row["arms"][a]["score"] - base)
+            res = np.array(obs) - np.array(pred)
+            out[a][k] = {"fraction": f, "weight_on_x2": float(w), "extrapolated": not f15 <= f <= f2,
+                         "predicted": float(np.mean(pred)), "observed": float(np.mean(obs)),
+                         "residual": float(res.mean()), "residual_range": [float(res.min()), float(res.max())]}
+    return out
+
+
+def cell_report(results: Mapping[str, Mapping]) -> dict:
+    """Reported only: per cut and arm, the mean over seeds of the built cells' detected panel genes and summed panel
+    CP10k per cell (rows without the record are skipped)."""
+    out = {}
+    for k, r in results.items():
+        rows = [row["cells"] for row in r["rows"] if isinstance(row.get("cells"), Mapping)]
+        if rows:
+            out[k] = {a: {m: float(np.mean([c[a][m] for c in rows])) for m in ("detected_genes", "panel_cp10k")}
+                      for a in ARMS if all(a in c for c in rows)}
+    return out
+
+
 def _cal_key(cal: Mapping) -> dict:
-    return {k: v for k, v in cal.items() if k != "seconds"}
+    return {k: v for k, v in cal.items() if k not in ("seconds", "seconds_rule")}
 
 
 def t48_reading(results: Mapping[str, Mapping], t42: Mapping[str, Mapping], t44: Mapping[str, Mapping]) -> dict:
@@ -496,12 +721,17 @@ def t48_reading(results: Mapping[str, Mapping], t42: Mapping[str, Mapping], t44:
                         "decides": False}
     out["mean_scores"] = {k: {a: float(np.mean([row["arms"][a]["score"] for row in r["rows"]])) for a in ARMS}
                           for k, r in results.items()}
+    out["t44_line"] = t44_line(results, t44)
+    out["cells"] = cell_report(results)
+    out["fault_line"] = FAULT_LINE if out["outcome"] in (LOSES, NOT_SEPARATED) else None
     return out
 
 
 def t48_text(res: Mapping) -> str:
     r = res["reading"]
     lines = [res["label"], f"Statement (T48a, {CAL_SCALED} against {BASE}): {r['outcome']}"]
+    if r.get("fault_line"):
+        lines.append(f"Read as: {r['fault_line']}")
     v = r["validity"]
     if not r["valid"]:
         lines.append("Void: " + "; ".join(v["reasons"]))
@@ -517,6 +747,15 @@ def t48_text(res: Mapping) -> str:
                      f"{cal.get('delivered_at_base')}; fractions {cal.get('fractions')}; delivered at the answers "
                      f"{cal.get('delivered')} against targets {cal.get('targets')}; steps {cal.get('steps')}; stream "
                      f"{cal.get('stream')}; {cal.get('seconds')} s")
+        for a, nz in (cal.get("noise") or {}).items():
+            lines.append(f"    noise {a} (reported): sd of delivered over {len(nz.get('values', []))} further streams "
+                         f"{nz.get('sd')}, slope {nz.get('slope')}, fraction sd {nz.get('fraction_sd')}")
+        for a, st in (cal.get("steps_by_arm") or {}).items():
+            bins = ", ".join(f"{b} {x['share_over_f']:.3f}" for b, x in st["bins"].items())
+            lines.append(f"    step {a} at {st['fraction']:.4f} (reported): share {st['share']:.4f}, over f "
+                         f"{st['share_over_f']:.3f}; over f by mean CP10k before: {bins}; detected genes per cell "
+                         f"{st['before']['detected_genes']:.1f} -> {st['after']['detected_genes']:.1f}, total counts "
+                         f"{st['before']['total_counts']:.0f} -> {st['after']['total_counts']:.0f}")
     lines.append(f"calibration identical on both cuts (one reference stage): {r['calibration_same_on_both_cuts']}")
     for k, ms in r.get("mean_scores", {}).items():
         lines.append(f"mean scores {k}: " + ", ".join(f"{a} {x:.2f}" for a, x in ms.items()))
@@ -533,8 +772,18 @@ def t48_text(res: Mapping) -> str:
                 pp = ", ".join(f"{m} {x:+.2f}" for m, x in cut["points_by_metric"].items())
                 lines.append(f"    {k}: {cut['mean']:+.2f} points, ahead {cut['ahead']} of {cut['of']}, per seed "
                              f"{cut['range'][0]:+.2f} to {cut['range'][1]:+.2f}; skills: {sk}; points: {pp}")
+    for a, by in r.get("t44_line", {}).items():
+        for k, x in by.items():
+            lines.append(f"{a} {k}, T44's line at fraction {x['fraction']:.4f}"
+                         f"{' (extrapolated)' if x['extrapolated'] else ''}: predicted {x['predicted']:+.2f}, observed "
+                         f"{x['observed']:+.2f}, residual {x['residual']:+.2f} (per seed {x['residual_range'][0]:+.2f} "
+                         f"to {x['residual_range'][1]:+.2f}) (reported)")
+    for k, by in r.get("cells", {}).items():
+        lines.append(f"cells {k} (reported): " + ", ".join(
+            f"{a} {c['detected_genes']:.1f} genes, {c['panel_cp10k']:.0f} panel CP10k" for a, c in by.items()))
     lines.append("Limit: in-sample labelled diagnostic; never adoption evidence; puts nothing forward by itself; it "
                  "can only go to the team captain")
+    lines += [f"Limit: {s}" for s in LIMITS]
     lines.append(f"Commit {res['stamp']['commit']}, tree clean {res['stamp']['tree_clean']}, UTC {res['stamp']['utc']}")
     return "\n".join(lines) + "\n"
 
