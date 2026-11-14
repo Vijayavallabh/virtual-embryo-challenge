@@ -42,26 +42,28 @@ def cfg(sr):
 
 
 def feng_stats(genes, means: dict, stages=("E9.5", "E14.5"), n=30) -> dict:
-    """Feng-format statistics ('stage|zone|cell_type_spec|half'): means[(stage, label)] is the mean CP10k vector."""
+    """Feng-format statistics ('stage|zone|cell_type_spec|half'): means[(stage, label)] is the mean CP10k vector, or
+    means[(stage, label, half)] a half's own (the two halves have equal cells, so the pooled mean is their average)."""
     keys, ns, S = [], [], []
     for st in stages:
         for lab in FENG_LABELS:
             for h in "AB":
                 keys.append(f"{st}|z|{lab}|{h}")
                 ns.append(n)
-                S.append(means[(st, lab)] * n)
+                S.append(means.get((st, lab, h), means[(st, lab)]) * n)
     S = np.array(S, dtype=np.float64)
     return {"genes": np.array(genes, dtype=object), "keys": np.array(keys, dtype=object), "n": np.array(ns, float),
             "S_log": np.log1p(S / n) * n, "S_cp": S, "S_nz": np.full_like(S, n),
             "depth_sum": np.full(len(keys), 1e4 * n)}
 
 
-def stage(blocks: dict, genes) -> ad.AnnData:
-    """blocks[(label, library)] = mean CP10k vector; N_CELLS identical cells each, named cell<i>_<library>."""
+def stage(blocks: dict, genes, sizes: dict | None = None) -> ad.AnnData:
+    """blocks[(label, library)] = mean CP10k vector; N_CELLS (or sizes[(label, library)]) identical cells each, named
+    cell<i>_<library>."""
     rows, labs, names = [], [], []
     i = 0
     for (lab, lib), cp in blocks.items():
-        for _ in range(N_CELLS):
+        for _ in range((sizes or {}).get((lab, lib), N_CELLS)):
             rows.append(np.log1p(cp))
             labs.append(lab)
             names.append(f"c{i}_{lib}")
@@ -71,9 +73,10 @@ def stage(blocks: dict, genes) -> ad.AnnData:
     return a
 
 
-def world(seed=0, G=60, extra_stage=False):
+def world(seed=0, G=60, extra_stage=False, half_noise=0.0):
     """Feng statistics at E9.5 and E14.5 (and E12.5 with extra_stage) on genes g1..; gene 'g0' is absent from Feng (a
-    non-finite direction)."""
+    non-finite direction). half_noise: the E9.5 halves differ (A = a (1 + e), B = a (1 - e), e ~ N(0, half_noise)),
+    their pooled mean staying a."""
     rng = np.random.default_rng(seed)
     genes = [f"g{i}" for i in range(G)]
     feng_genes = genes[1:]
@@ -81,6 +84,9 @@ def world(seed=0, G=60, extra_stage=False):
     for lab in FENG_LABELS:
         a = rng.uniform(2.0, 6.0, G - 1)
         means[("E9.5", lab)] = a
+        if half_noise:
+            e = np.clip(rng.normal(0, half_noise, G - 1), -0.9, 0.9)
+            means[("E9.5", lab, "A")], means[("E9.5", lab, "B")] = a * (1 + e), a * (1 - e)
         means[("E14.5", lab)] = (a + EPS) * np.exp(rng.normal(0, 0.3, G - 1)) - EPS
         if extra_stage:
             means[("E12.5", lab)] = np.full(G - 1, 1e3)
@@ -89,10 +95,13 @@ def world(seed=0, G=60, extra_stage=False):
     return genes, fst
 
 
-def build_t1(sr, cfg, genes, fst, c_lib=(0.2, 0.3, 0.9), c_prev=0.25, k=1.5, held_gene=None):
-    """Three T1 stages where, for every group, E9.5 -> E10.5 library i moves by c_lib[i] times the group's Feng
-    direction, E8.5 -> E9.5 by c_prev times it (CM; at E8.5 Endocardium takes Endothelium's cells and Epicardium has
-    none), and the E9.5 contrasts between groups are k times Feng's E9.5 contrasts."""
+def build_t1(sr, cfg, genes, fst, c_lib=(0.2, 0.3, 0.9), c_prev=0.25, k=1.5, held_gene=None, c_group=None,
+             n_lib3=None):
+    """Three T1 stages where, for every group, E9.5 -> E10.5 library i moves by c_lib[i] (times c_group[g]) times the
+    group's Feng direction, E8.5 -> E9.5 by c_prev times it (CM; at E8.5 Endocardium takes Endothelium's cells and
+    Epicardium has none), and the E9.5 contrasts between groups are k times Feng's E9.5 contrasts. n_lib3[g]: the
+    group's cells in E10.5's library 3 (default N_CELLS)."""
+    c_group = c_group or {}
     dirs, _, idx = sr.feng_dirs.directions_from_stats(fst, genes, cfg, sr.BRACKET)
     e95 = {}
     for g in T1_LABEL:
@@ -110,10 +119,12 @@ def build_t1(sr, cfg, genes, fst, c_lib=(0.2, 0.3, 0.9), c_prev=0.25, k=1.5, hel
 
     E95 = {(T1_LABEL[g], li): e95[g] for g in T1_LABEL for li in ("1", "2")}
     E95[("Foregut", "1")] = np.full(len(genes), 3.0)
-    E105 = {(T1_LABEL[g], li): moved(g, c) for g in T1_LABEL for li, c in zip(("1", "2", "3"), c_lib, strict=True)}
+    E105 = {(T1_LABEL[g], li): moved(g, c * c_group.get(g, 1.0)) for g in T1_LABEL
+            for li, c in zip(("1", "2", "3"), c_lib, strict=True)}
+    sizes = {(T1_LABEL[g], "3"): n for g, n in (n_lib3 or {}).items()}
     E85 = {("V-CM", "1"): (e95["CM"] + EPS) * np.exp(-c_prev * d0["CM"]) - EPS,
            ("BEC", "1"): e95["Endothelium"], ("Foregut", "1"): np.full(len(genes), 3.0)}
-    return {"E8.5": stage(E85, genes), "E9.5": stage(E95, genes), "E10.5": stage(E105, genes)}, dirs
+    return {"E8.5": stage(E85, genes), "E9.5": stage(E95, genes), "E10.5": stage(E105, genes, sizes)}, dirs
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -259,9 +270,13 @@ def test_the_courses_by_hand(sr, ratio, f_max, f_even, f_decay, L):
         assert ratio == pytest.approx(0.2)
 
 
-def test_the_decay_course_is_not_defined_outside_its_range(sr):
-    assert np.isnan(sr.courses(-0.1, 1.0)["f_decay"]) and np.isnan(sr.courses(1.2, 1.0)["f_decay"])
-    assert sr.courses(1.0, 1.0)["f_decay"] == 0.0
+def test_the_decay_course_at_the_ends_of_its_range(sr):
+    # no decaying course where the day holds nothing or goes back; nothing left where it holds the whole change or more
+    assert np.isnan(sr.courses(-0.1, 1.0)["f_decay"]) and np.isnan(sr.courses(0.0, 1.0)["f_decay"])
+    assert sr.courses(1.0, 1.0)["f_decay"] == 0.0 and sr.courses(1.2, 1.0)["f_decay"] == 0.0
+    assert sr.courses(2.4, 2.0)["x"] == 0.0
+    assert sr.courses(1e-4, 1.0)["f_decay"] < 0.02  # f_decay -> 0 as A / L -> 0+
+    assert np.isnan(sr.courses(0.3, 0.0)["A_over_L"])
 
 
 def test_each_kind_statement_is_reached(sr):
@@ -287,22 +302,34 @@ def test_each_fraction_statement_is_reached(sr):
     assert sr.fraction_statement(big, _rec(0.35, 0.3, 0.38), _rec(0.42, 0.39, 0.45)) == sr.INSIDE
     assert sr.fraction_statement(big, _rec(0.25, 0.2, 0.3), _rec(0.3, 0.25, 0.35)) == sr.ABOVE_BOTH
     assert sr.fraction_statement(big, _rec(0.5, 0.45, 0.55), _rec(0.6, 0.5, 0.7)) == sr.BELOW_BOTH
-    # the range runs from the smaller course's lower percentile to the larger's upper one
-    # (the smaller and the larger by point value: here f_decay is the smaller)
-    assert sr.fraction_statement(big, _rec(0.6, 0.2, 0.7), _rec(0.3, 0.35, 0.38)) == sr.INSIDE
-    assert sr.fraction_statement(big, _rec(0.6, 0.2, 0.7), _rec(0.3, 0.41, 0.45)) == sr.BELOW_BOTH
+    # the range runs from the lower of the two lower percentiles to the higher of the two upper ones, whatever the
+    # point values: here f_even's point is the smaller but its lower percentile lies above f_decay's upper one
+    assert sr.fraction_statement(big, _rec(0.3, 0.38, 0.5), _rec(0.35, 0.2, 0.37)) == sr.INSIDE
+    assert sr.fraction_statement(big, _rec(0.6, 0.2, 0.7), _rec(0.3, 0.41, 0.45)) == sr.INSIDE
+    assert sr.fraction_statement(big, _rec(0.6, 0.45, 0.7), _rec(0.3, 0.41, 0.45)) == sr.BELOW_BOTH
 
 
 def test_the_statements_come_out_of_the_reading(sr, cfg):
     genes, fst = world()
     stages, _ = build_t1(sr, cfg, genes, fst, c_lib=(0.18, 0.18, 0.6), k=1.0)
-    r = sr.reading(stages, fst, [], {}, cfg, n_boot=2)
+    r = sr.reading(stages, fst, [], dict.fromkeys(T1_LABEL, 1.0), cfg, n_boot=2)  # r_d = r_c = 1: corrected = raw
+    assert r["statements"]["pace_raw"] == r["statements"]["pace_corrected"]
     assert r["statements"]["kind"] == sr.KIND_ALONG  # K = 0.42
     assert r["statements"]["pace"] == sr.PACE_FIFTH_OR_LESS  # A / L = 0.18
     assert r["statements"]["entry_fraction"] == sr.INSIDE  # f_decay 0.389, f_even 0.41
     txt = sr.text({"label": sr.LABEL_T47, "read": r, "stamp": {"commit": "abc", "tree_clean": True, "utc": "t"}})
     assert sr.KIND_ALONG in txt and sr.PACE_FIFTH_OR_LESS in txt and "Entry's fraction 0.4: inside" in txt
+    assert "(0 of 2 draws undefined)" in txt  # beside each reading value
+    assert "over ['CM', 'Endocardium', 'Endothelium', 'Epicardium']" in txt  # each combined value's groups
+    assert "pairs with shared Feng labels excluded: ['Endocardium~Endothelium']" in txt
+    assert all(note in txt for note in sr.LEDGER_NOTES)
     json.dumps(r)  # the record serialises (no tuple keys)
+    r["calibration"] = {"fraction": 0.2, "combined_weighted": 0.19, "combined_unweighted": 0.18,
+                        "combined_groups": ["CM"], "A_in_M1_fraction": 0.19, "K_in_M1_fraction": 0.44,
+                        "groups": {"CM": {"share": 0.19}}}
+    txt = sr.text({"label": sr.LABEL_T47, "read": r, "n48_js": {"CM": 0.7},
+                   "stamp": {"commit": "abc", "tree_clean": True, "utc": "t"}})
+    assert "Calibration: M1's step of 0.2" in txt and "N48 'js' (held genes included)" in txt
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -350,3 +377,209 @@ def test_no_feng_stage_other_than_the_bracket_ends_is_read(sr, cfg, monkeypatch,
     stages, _ = build_t1(sr, cfg, genes, handed)
     sr.reading(stages, handed, [], {}, cfg, n_boot=1)
     assert seen and set(seen) <= set(sr.BRACKET)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Review fixes: corrected units, undefined draws, common support, weights, pinned choices, calibration
+
+
+def test_the_contrast_reliability_is_n48s_formula_on_the_contrast(sr):
+    c = np.array([1.0, -2.0, 0.5, np.nan, 3.0])
+    c_a = np.array([1.4, -2.2, 0.1, 1.0, np.nan])
+    c_b = np.array([0.6, -1.8, 0.9, 1.0, 1.0])
+    m = np.ones(5, bool)
+    ok = np.array([0, 1, 2])
+    msq = np.mean(c[ok] ** 2)
+    noise = np.mean(((c_a[ok] - c_b[ok]) / 2) ** 2)
+    assert sr.contrast_reliability(c, c_a, c_b, m) == pytest.approx((msq - noise) / msq)
+    assert sr.contrast_reliability(c, c + 10, c - 10, m) == 0.0  # noise above the signal: floored at 0
+    assert sr.contrast_reliability(c, c, c, m) == pytest.approx(1.0)
+    assert np.isnan(sr.contrast_reliability(c, c_a, c_b, np.zeros(5, bool)))
+
+
+def test_L_is_corrected_by_each_pairs_feng_reliability_and_drops_pairs_with_shared_feng_labels(sr, cfg):
+    genes, fst = world(half_noise=0.08)
+    stages, _ = build_t1(sr, cfg, genes, fst, k=1.5)
+    r = sr.reading(stages, fst, [], dict.fromkeys(T1_LABEL, 1.0), cfg, n_boot=2)
+    assert r["excluded_pairs_shared_feng_labels"] == ["Endocardium~Endothelium"]
+    rel = r["feng_reliability"]["E9.5"]
+    # by hand for one pair, from Feng's E9.5 halves
+    dirs, _, idx = sr.feng_dirs.directions_from_stats(fst, genes, cfg, sr.BRACKET)
+    lg, lh = cfg["external_labels"]["CM"][0], cfg["external_labels"]["Epicardium"][0]
+
+    def con(halves):
+        fg, fh = sr.dl.feng_sel(fst, "E9.5", lg, halves), sr.dl.feng_sel(fst, "E9.5", lh, halves)
+        return sr.dl.on_t1(np.log((fh["cp"] + EPS) / (fg["cp"] + EPS)), idx)
+
+    c, c_a, c_b = con(("A", "B")), con(("A",)), con(("B",))
+    ok = np.isfinite(dirs["CM"]) & np.isfinite(dirs["Epicardium"])
+    msq = np.mean(c[ok] ** 2)
+    assert rel["CM~Epicardium"] == pytest.approx((msq - np.mean(((c_a[ok] - c_b[ok]) / 2) ** 2)) / msq)
+    assert 0 < rel["CM~Epicardium"] < 1
+    kept = [p for p in r["genes_per_pair"] if p != "Endocardium~Endothelium"]
+    v = r["values"]
+    assert r["reading"]["L"]["value"] == pytest.approx(1.5, abs=1e-4)
+    assert r["reading"]["L_corr"]["value"] == pytest.approx(np.median([1.5 / rel[p] for p in kept]), rel=1e-4)
+    for p in kept:
+        assert v[f"scale_E9.5/{p}/slope_corrected"]["value"] == pytest.approx(1.5 / rel[p], rel=1e-4)
+
+
+def test_the_pair_median_is_a_median_over_finite_slopes(sr):
+    assert sr.pair_median([1.0, 1.0, 4.0, float("nan")]) == 1.0
+    assert np.isnan(sr.pair_median([float("nan")]))
+
+
+def test_the_corrected_pair_and_the_fractions_in_noisy_d_units(sr, cfg):
+    genes, fst = world()
+    stages, _ = build_t1(sr, cfg, genes, fst, c_lib=(0.2, 0.3, 0.9), k=1.0)
+    scales = {"CM": 0.5, "Endocardium": 0.8, "Endothelium": 0.6, "Epicardium": 0.9}
+    r = sr.reading(stages, fst, [], scales, cfg, n_boot=2)
+    rd = r["reading"]
+    s = np.array(list(scales.values()))  # equal library-3 cells: the weighted means are plain means here
+    A_corr = np.mean(0.25 / s)
+    assert rd["A"]["value"] == pytest.approx(0.25, abs=1e-4)
+    assert rd["A_corr"]["value"] == pytest.approx(A_corr, abs=1e-4)
+    assert rd["K_corr"]["value"] == pytest.approx(np.mean(0.9 / s) - A_corr, abs=1e-4)
+    assert rd["r_d_weighted"]["value"] == pytest.approx(s.mean())
+    L_corr = rd["L_corr"]["value"]  # identical halves: r_c = 1
+    assert L_corr == pytest.approx(1.0, abs=1e-4)
+    c = sr.courses(A_corr, L_corr)
+    assert rd["A_over_L_corr"]["value"] == pytest.approx(A_corr / L_corr, abs=1e-4)
+    for k in sr.COURSE_KEYS:
+        assert rd[f"{k}_corr"]["value"] == pytest.approx(c[k] * s.mean(), abs=1e-4)
+
+
+def test_raw_and_corrected_statements_are_joined(sr):
+    assert sr.joined(sr.INSIDE, sr.INSIDE) == sr.INSIDE
+    assert sr.joined(sr.PACE_MORE, sr.PACE_FIFTH_OR_LESS) == sr.NOT_SEPARATED
+    nc = "not computable (3 of 200 draws undefined)"
+    assert sr.joined(sr.INSIDE, nc) == nc and sr.joined(nc, sr.INSIDE) == nc
+
+
+def _draw_records(sr, A_draws, L_draws, A0=0.5, L0=1.0):
+    """The reading's records from draws of A and L (K fixed at 0.3; the corrected pair as the raw one)."""
+    def one(a, el):
+        return {**sr.courses(a, el), "K": 0.3}
+
+    point = one(A0, L0)
+    rows = [one(a, el) for a, el in zip(A_draws, L_draws, strict=True)]
+    vals = sr.summarise(point, {k: np.array([row[k] for row in rows]) for k in point}, len(rows))
+    return {**vals, **{f"{k}_corr": v for k, v in vals.items()}}
+
+
+def test_a_third_of_the_draws_with_the_day_above_the_whole_change(sr):
+    A = [0.5] * 20 + [1.5] * 10  # A / L > 1 in a third of the draws: f_decay = 0 there, nothing dropped
+    r = _draw_records(sr, A, [1.0] * 30)
+    assert r["f_decay"]["nonfinite_draws"] == 0 and r["f_decay"]["p5"] == 0.0
+    st = sr.statements(r, 30)
+    assert st["entry_fraction"] == sr.ABOVE_BOTH  # 0.4 above f_decay's 0.394 and f_even's 0.25
+    assert st["pace"] == sr.PACE_MORE and st["kind"] == sr.KIND_ALONG
+
+
+def test_a_statement_with_undefined_draws_is_not_computable(sr):
+    r = _draw_records(sr, [0.5] * 20 + [-0.2] * 10, [1.0] * 30)  # no decaying course in a third of the draws
+    st = sr.statements(r, 30)
+    assert st["entry_fraction"] == "not computable (10 of 30 draws undefined)"
+    assert st["entry_fraction_raw"] == st["entry_fraction_corrected"] == st["entry_fraction"]
+    assert st["pace"] == sr.NOT_SEPARATED  # A / L is defined in every draw
+    r = _draw_records(sr, [0.5] * 30, [1.0] * 25 + [0.0] * 5)  # L = 0: A / L undefined
+    assert sr.statements(r, 30)["pace"] == "not computable (5 of 30 draws undefined)"
+    r = _draw_records(sr, [0.5] * 30, [1.0] * 30)
+    r["K"] = {**r["K"], "nonfinite_draws": 2}
+    assert sr.statements(r, 30)["kind"] == "not computable (2 of 30 draws undefined)"
+
+
+def test_the_weights_are_library_3_cells_and_A_K_P_share_their_groups(sr, cfg):
+    genes, fst = world()
+    cg = {"CM": 1.0, "Endocardium": 2.0, "Endothelium": 1.0, "Epicardium": 3.0}
+    n3 = {"CM": 40, "Endocardium": 21, "Endothelium": 30, "Epicardium": 10}  # Epicardium under min_cells_t1 there
+    stages, _ = build_t1(sr, cfg, genes, fst, c_lib=(0.1, 0.2, 0.5), c_prev=0.25, c_group=cg, n_lib3=n3)
+    r = sr.reading(stages, fst, [], {}, cfg, n_boot=2)
+    v, rd = r["values"], r["reading"]
+    assert np.isnan(v["b_E9.5_E10.5_lib3/Epicardium/share"]["value"])  # 10 cells: no value
+    # the comparison-level combined values: weights from library 3, every group with a value
+    assert v["b_E9.5_E10.5_lib1/combined_unweighted/share"]["value"] == pytest.approx(0.1 * 7 / 4, abs=1e-4)
+    assert v["b_E9.5_E10.5_lib1/combined_weighted/share"]["value"] == pytest.approx(
+        0.1 * (40 + 42 + 30 + 30) / 101, abs=1e-4)
+    assert r["combined_groups"]["b_E9.5_E10.5_lib3/combined_weighted/share"] == ["CM", "Endocardium", "Endothelium"]
+    # A and K over the common support of libraries 1, 2 and 3
+    assert r["support"]["A_K_support"] == ["CM", "Endocardium", "Endothelium"]
+    assert r["support"]["A_K_excluded"] == ["Epicardium"]
+    wc = (40 * 1 + 21 * 2 + 30 * 1) / 91
+    assert rd["A"]["value"] == pytest.approx(0.15 * wc, abs=1e-4)
+    assert rd["K"]["value"] == pytest.approx(0.35 * wc, abs=1e-4)
+    # P with and without the groups that stand on another group's cells at E8.5
+    p = {g: v[f"a_E8.5_E9.5/{g}/share"]["value"] for g in ("CM", "Endocardium", "Endothelium")}
+    assert p["CM"] == pytest.approx(0.25, abs=1e-4) and p["Endothelium"] == pytest.approx(0.0, abs=1e-6)
+    assert r["support"]["P_fallback_groups"] == ["Endocardium"]
+    assert rd["P"]["value"] == pytest.approx((40 * p["CM"] + 21 * p["Endocardium"] + 30 * p["Endothelium"]) / 91,
+                                             abs=1e-4)
+    assert rd["P_own_cells"]["value"] == pytest.approx((40 * p["CM"] + 30 * p["Endothelium"]) / 70, abs=1e-4)
+
+
+def test_the_brief_fixed_choices(sr):
+    assert sr.BOOT_SEED == (47, 0) and sr.N_BOOT == 200 and sr.PERCENTILES == (5.0, 95.0)
+    assert sr.CAL_STREAM == (47, 1) and sr.CAL_FRACTION == pytest.approx(sr.feng_dirs.bracket_fraction(9.5, 10.5))
+    assert sr.KIND_AT == 0.1 and (sr.PACE_FIFTH, sr.PACE_UPPER) == (0.2, 0.3) and sr.ENTRY_FRACTION == 0.4
+    assert sr.pace_statement(0.2, 0.25) == sr.PACE_FIFTH_OR_LESS  # "above 0.2" is strict
+
+
+def test_the_n48_scale_is_read_without_the_held_genes(sr, tmp_path):
+    p = tmp_path / "n48.json"
+    p.write_text(json.dumps({"groups": {
+        "CM": {"js": {"scale": 0.7}, "js_without_held": {"scale": 0.6}},
+        "Blood": {"js": {"scale": None}, "js_without_held": {"scale": None}}}}))
+    assert sr.n48_scales(p) == {"CM": 0.6}
+    assert sr.n48_scales(p, field="js") == {"CM": 0.7}
+
+
+def test_the_share_reports_concentration_beside_it(sr):
+    d = np.array([4.0, 1.0, 1.0, 1.0, 0.0])
+    y = np.array([8.0, 1.0, 1.0, 1.0, 5.0])
+    st = sr.share_stats(y, d, np.ones(5, bool), None)
+    assert st["share"] == pytest.approx(35 / 19)
+    assert st["n_eff"] == pytest.approx(19 ** 2 / 259)
+    assert st["share_without_top_d2_half"] == pytest.approx(1.0)  # gene 0 alone carries 16 of 19
+    assert st["genes_d_nonzero"] == 4 and st["pearson_d_nonzero"] == pytest.approx(1.0)
+    assert st["pearson"] < 0.9  # the d = 0 gene pulls the all-gene correlation
+
+
+def test_the_calibration_arm_reads_m1s_own_step(sr):
+    rng = np.random.default_rng(5)
+    G, n = 300, 400
+    genes = [f"g{i}" for i in range(G)]
+    C = rng.poisson(rng.uniform(5, 60, G), size=(n, G)).astype(np.int64)
+    C[:, 0] = 1  # a count of one in every cell: counts are recoverable from .X
+    libs = ["3"] * 300 + ["1"] * 100
+    a = ad.AnnData(X=sr.t1_scope.log1p_cp10k(sparse.csr_matrix(C)),
+                   obs=pd.DataFrame({"celltype": ["V-CM"] * n}, index=[f"c{i}_{li}" for i, li in enumerate(libs)]),
+                   var=pd.DataFrame(index=genes))
+    d = rng.normal(0, 0.5, G)
+    d[0] = np.nan
+    dirs, masks = {"CM": d}, {"CM": np.isfinite(d)}
+    cal = sr.calibration(a, genes, dirs, masks, {"CM": ["V-CM"]}, [], {}, {"CM": 300.0}, EPS, 20)
+    # a count-space step of 0.2 reads as a share within 0.02 of 0.2 (the stated tolerance)
+    assert cal["groups"]["CM"]["share"] == pytest.approx(0.2, abs=0.02)
+    assert cal["combined_weighted"] == cal["groups"]["CM"]["share"]
+    again = sr.calibration(a, genes, dirs, masks, {"CM": ["V-CM"]}, [], {}, {"CM": 300.0}, EPS, 20)
+    assert again["combined_weighted"] == cal["combined_weighted"]  # seeded
+
+
+def test_the_run_reads_n48_without_held_and_runs_the_calibration(sr, monkeypatch):
+    monkeypatch.setattr(sr.n12, "tries_rows", lambda *a: {"T47"})
+    monkeypatch.setattr(sr.gv, "tree_state", lambda: {"commit": "abc", "clean": True})
+    monkeypatch.setattr(sr.hygiene, "load_union", lambda *a: {"file": "x", "genes": []})
+    monkeypatch.setattr(sr.t1_scope, "held_flat_genes", lambda *a: [])
+    monkeypatch.setattr(sr, "feng_inputs", lambda *a: ({}, {}))
+    monkeypatch.setattr(sr, "n48_scales", lambda path=None, field="js_without_held": {"CM": field})
+    monkeypatch.setattr(sr.ad, "read_h5ad", lambda p: None)
+    seen = {}
+
+    def spy(stages, feng, held, scales, cfg, **kw):
+        seen.update(scales=scales, **kw)
+        raise RuntimeError("stop")
+
+    monkeypatch.setattr(sr, "reading", spy)
+    with pytest.raises(RuntimeError, match="stop"):
+        sr.run("x")
+    assert seen == {"scales": {"CM": "js_without_held"}, "calibrate": True}
