@@ -1,0 +1,9 @@
+T2:heart:test_extrap: 2 pseudo-task(s) in /mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/experiments/harness/results/h22_heart_potts/tasks (protocol bake, build main, anchors computed, seeds [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+  T2h/<=E8.75->E10.5 on pseudo:T2h/<=E8.75->E10.5: floor 50.00 +/- 0.00; copy 50.55 +/- 0.79; b0 51.45 +/- 0.61; b0_trend 51.93 +/- 0.68; b0_trend_potts 51.90 +/- 0.68; b0_trend_potts_d 51.92 +/- 0.68 (commit 26e7010, clean True)
+  T2h/<=E9.5->E10.5 on T2:heart:val_extrap: floor 50.00 +/- 0.00; copy 49.96 +/- 0.82; b0 50.43 +/- 0.70; b0_trend 50.78 +/- 0.72; b0_trend_potts 50.78 +/- 0.72; b0_trend_potts_d 50.79 +/- 0.72 (commit 26e7010, clean True)
+b0_trend_potts against b0_trend: not kept (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2; decided on 2 of 2 configured pseudo-tasks; not counted: none)
+    T2h/<=E9.5->E10.5: paired mean gain -0.00, ahead in 3 of 10 seeds, passes False, vetoes False
+    T2h/<=E8.75->E10.5: paired mean gain -0.02, ahead in 3 of 10 seeds, passes False, vetoes False
+b0_trend_potts_d against b0_trend: not kept (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2; decided on 2 of 2 configured pseudo-tasks; not counted: none)
+    T2h/<=E9.5->E10.5: paired mean gain +0.00, ahead in 6 of 10 seeds, passes False, vetoes False
+    T2h/<=E8.75->E10.5: paired mean gain -0.01, ahead in 3 of 10 seeds, passes False, vetoes False

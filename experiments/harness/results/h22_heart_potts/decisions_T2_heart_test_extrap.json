@@ -1,0 +1,130 @@
+{
+ "board": "T2:heart:test_extrap",
+ "runs": "/mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/experiments/harness/results/h22_heart_potts/tasks",
+ "decisions": [
+  {
+   "base": "b0_trend",
+   "change": "b0_trend_potts",
+   "counted": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2",
+   "tasks": {
+    "T2h/<=E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": -0.004638311003929374,
+     "seeds_ahead": 3,
+     "passes": false,
+     "vetoes": false
+    },
+    "T2h/<=E8.75->E10.5": {
+     "complete": true,
+     "mean_gain": -0.02451273234129303,
+     "seeds_ahead": 3,
+     "passes": false,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  },
+  {
+   "base": "b0_trend",
+   "change": "b0_trend_potts_d",
+   "counted": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "excluded": {},
+   "configured": [
+    "T2h/<=E9.5->E10.5",
+    "T2h/<=E8.75->E10.5"
+   ],
+   "decided_on": "2 of 2 configured pseudo-tasks",
+   "keep": false,
+   "reason": "passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2",
+   "tasks": {
+    "T2h/<=E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": 0.0019696962264362126,
+     "seeds_ahead": 6,
+     "passes": false,
+     "vetoes": false
+    },
+    "T2h/<=E8.75->E10.5": {
+     "complete": true,
+     "mean_gain": -0.011219696204689456,
+     "seeds_ahead": 3,
+     "passes": false,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  }
+ ],
+ "summaries": {
+  "T2h/<=E8.75->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    50.54677200019612,
+    0.7913080817718336
+   ],
+   "b0": [
+    51.446449911655364,
+    0.6052791869950301
+   ],
+   "b0_trend": [
+    51.9277094833677,
+    0.6771697555548825
+   ],
+   "b0_trend_potts": [
+    51.90319675102641,
+    0.6755037580570387
+   ],
+   "b0_trend_potts_d": [
+    51.916489787163,
+    0.6828851389456163
+   ]
+  },
+  "T2h/<=E9.5->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    49.955176642699044,
+    0.8224702162475157
+   ],
+   "b0": [
+    50.4272525233645,
+    0.7027599518307952
+   ],
+   "b0_trend": [
+    50.7845309339824,
+    0.7202187292775972
+   ],
+   "b0_trend_potts": [
+    50.77989262297847,
+    0.7173147054132069
+   ],
+   "b0_trend_potts_d": [
+    50.78650063020884,
+    0.7210216545534324
+   ]
+  }
+ }
+}
