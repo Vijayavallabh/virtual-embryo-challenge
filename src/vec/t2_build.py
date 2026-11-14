@@ -1363,7 +1363,9 @@ MOVES = ("mean", "polar", "polar_frame")
 # running": a mirror-only correction of FGW's partners): "coupled" (the entry: the coupling's barycentric partners) or
 # "mirror_fixed" (`mirror_fixed_partners`: a partner on the other side of the pairs' symmetric direction from its
 # anchor is replaced by its mirror image there). No constant: the direction comes from the pairs, the test is a sign.
-PARTNERS = ("coupled", "mirror_fixed")
+# "mirror_gated" (fix E2: `mirror_fixed_partners(..., gated=True)`): the same correction, applied to a stage only where
+# that stage's smallest eigenvalue is below 0 (row E10's reading of a mirrored direction); the condition is a sign.
+PARTNERS = ("coupled", "mirror_fixed", "mirror_gated")
 
 
 def pchip_rms(days, rms, target_day: float) -> float:
@@ -1632,7 +1634,7 @@ def _whitened_xcorr(X: np.ndarray, Y: np.ndarray):
     return ev, V, Xc @ Wx, Yc @ Wy, Vy @ np.diag(np.sqrt(ey)) @ Vy.T
 
 
-def mirror_fixed_partners(X, Y) -> tuple[np.ndarray, dict]:
+def mirror_fixed_partners(X, Y, gated: bool = False) -> tuple[np.ndarray, dict]:
     """The mirror-only correction of one stage's partners (`interpolate_clouds(..., partners="mirror_fixed")`; campaign
     branch campaign/emb-mirror). X: the stage's anchors in the common frame; Y: their barycentric partners (the
     positions the entry subtracts X from to get the displacements).
@@ -1645,15 +1647,26 @@ def mirror_fixed_partners(X, Y) -> tuple[np.ndarray, dict]:
     un-whitened, Y_i - 2 b Sy^(1/2) v). A partner on its anchor's side, or with a or b exactly zero, is left as it is,
     bit for bit. If a covariance is singular or a value is not finite, every partner is left as it is.
 
+    gated (fix E2, `partners="mirror_gated"`): the correction is applied only if the stage's smallest eigenvalue
+    (before any correction) is below 0, row E10's sign of a mirrored direction; at 0 or above every partner is left as
+    it is, bit for bit. Left False, the routine is the one 749c1c6 built ("mirror_fixed"), bit for bit.
+
     Returns the partners and the stage's record: the smallest eigenvalue before and after the correction (None where
-    it cannot be formed) and the share of anchors whose partner was mirrored."""
+    it cannot be formed) and the share of anchors whose partner was mirrored; with gated, also "corrected" (whether
+    the gate opened: the smallest eigenvalue could be formed and was below 0)."""
     X, Y = np.asarray(X, dtype=np.float64), np.asarray(Y, dtype=np.float64)
     rec = {"xcorr_min_before": None, "xcorr_min_after": None, "share_mirrored": 0.0}
+    if gated:
+        rec["corrected"] = False
     xc = _whitened_xcorr(X, Y)
     if xc is None:
         return Y, rec
     ev, V, Xw, Yw, sqrt_y = xc
     rec["xcorr_min_before"] = rec["xcorr_min_after"] = float(ev[0])
+    if gated:
+        if not ev[0] < 0.0:
+            return Y, rec
+        rec["corrected"] = True
     v = V[:, 0]
     a, b = Xw @ v, Yw @ v
     flip = a * b < 0.0
@@ -1748,7 +1761,10 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     coupling, rotation, the k-anchor mean displacement, draws, streams, scaling and jitter are unchanged; the record
     gains "partner_fix" and "mirror" (per stage: the smallest eigenvalue of the symmetrised whitened cross-correlation
     before and after the correction and the share of anchors whose partner was mirrored). Left unset, or with no
-    partner on the wrong side, the result is bit-identical to the entry.
+    partner on the wrong side, the result is bit-identical to the entry. "mirror_gated" (fix E2) is the same
+    correction applied to a stage only where that stage's smallest eigenvalue is below 0 (`mirror_fixed_partners(...,
+    gated=True)`); a stage at 0 or above keeps the entry's partners, and the record's "mirror" also says per stage
+    whether it was corrected ("corrected").
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1799,8 +1815,9 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     yb, ya = barycentric(Tm, Za_b[ia]), barycentric(Tm.T, Zb[ib])
     mirror_rec = None
     if partners != PARTNERS[0]:
-        yb, rec_b = mirror_fixed_partners(Zb[ib], yb)
-        ya, rec_a = mirror_fixed_partners(Za_b[ia], ya)
+        gate = {"gated": True} if partners == "mirror_gated" else {}
+        yb, rec_b = mirror_fixed_partners(Zb[ib], yb, **gate)
+        ya, rec_a = mirror_fixed_partners(Za_b[ia], ya, **gate)
         mirror_rec = {key: [rec_b[key], rec_a[key]] for key in rec_b}
     db = yb - Zb[ib]
     da = ya - Za_b[ia]

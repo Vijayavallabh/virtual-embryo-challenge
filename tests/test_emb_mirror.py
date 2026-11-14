@@ -1,7 +1,8 @@
 """The mirror-only correction of FGW's partners (campaign branch campaign/emb-mirror):
 vec.t2_build.mirror_fixed_partners, interpolate_clouds(..., partners="mirror_fixed"), the two harness arms and the
-runner experiments/harness/n42_mirrorfix_arms.py. Synthetic clouds only; no data file, committed result or scorer is
-read.
+runner experiments/harness/n42_mirrorfix_arms.py; fix E2's gated form (partners="mirror_gated", the arms
+fgw_mirrorgate and fgw_mirrorgate_series, the runner's four arms) at the end. Synthetic clouds only; no data file,
+committed result or scorer is read.
 
 interpolate_clouds computes its own FGW coupling and cannot take a fixed one, so the tests that need a fixed pairing
 (the mirrored copy, the mix, the singular and non-finite cases) call the correction itself,
@@ -25,7 +26,8 @@ from vec import t2_build as tb
 REPO = Path(__file__).resolve().parents[1]
 HARNESS = REPO / "experiments" / "harness"
 BASE = "b7d6fa0"  # campaign/emb-polar, the branch's base
-ARMS = ("fgw_mirrorfix", "fgw_mirrorfix_series")
+FIX_AT = "749c1c6"  # campaign/emb-mirror as the first form was built (fix E2 pins "mirror_fixed" against it)
+ARMS = ("fgw_mirrorfix", "fgw_mirrorfix_series", "fgw_mirrorgate", "fgw_mirrorgate_series")
 
 
 def _helpers(name: str):
@@ -259,7 +261,7 @@ def n42():
     return mod
 
 
-def test_the_runner_scores_the_floor_and_the_two_arms_on_the_nine_tasks(n42):
+def test_the_runner_scores_the_floor_and_the_four_arms_on_the_nine_tasks(n42):
     assert n42.NEW == ARMS and n42.ARMS == (harness.FLOOR, *ARMS)
     assert not set(n42.ARMS) & {"fgw", "fgw_aligned_series"}  # never rescored
     tasks = n42.nt.all_tasks()
@@ -281,7 +283,7 @@ def test_the_runners_task_file_loads_through_nine_tasks(tmp_path, monkeypatch, n
     out = tmp_path / "runs"
     n42.main(["run", "--task", "e75", "--out", str(out), "--data", str(tmp_path / "no_data")])
     t = n42.nt.all_tasks()["e75"]
-    assert calls == [(t, list(n42.ARMS), list(n42.SEEDS))]  # one call with the floor and the two arms
+    assert calls == [(t, list(n42.ARMS), list(n42.SEEDS))]  # one call with the floor and the four arms
     (path,) = out.glob("T2e_*.json")
     data = json.loads(path.read_text())
     assert data["task_source"] == "experiments/harness/n42_mirrorfix_arms.py" and data["not_buildable"] == {}
@@ -337,9 +339,9 @@ def _patch_builds(monkeypatch, n42, fail_on: set[str], key: str, seed_fails: int
         monkeypatch.setitem(cands, x, dataclasses.replace(cands[x], build=bad if x in fail_on else ok))
 
 
-def test_an_arm_the_builder_refuses_is_recorded_and_the_other_arm_is_still_scored(tmp_path, monkeypatch, n42):
+def test_an_arm_the_builder_refuses_is_recorded_and_the_other_arms_are_still_scored(tmp_path, monkeypatch, n42):
     t = n42.nt.all_tasks()["e725"]
-    score = {"fgw_mirrorfix": 53.0, "fgw_mirrorfix_series": 0.0}
+    score = {"fgw_mirrorfix": 53.0, "fgw_mirrorfix_series": 0.0, "fgw_mirrorgate": 52.0, "fgw_mirrorgate_series": 51.0}
     _patch_builds(monkeypatch, n42, {"fgw_mirrorfix_series"}, t.key, seed_fails=2)
     runner, calls = _fake_runner(score)
     res = n42.score_task(t, tmp_path, runner=runner)
@@ -349,7 +351,7 @@ def test_an_arm_the_builder_refuses_is_recorded_and_the_other_arm_is_still_score
     assert rec["status"] == n42.n36.NOT_BUILDABLE and rec["seed"] == 2
     assert rec["message"] == ("ValueError: <task>: cloud guard flags ['rms: RMS radius is # x the source, "
                               "expected #']")  # the task key named as such, every number masked
-    scored = {"floor", "fgw_mirrorfix"}
+    scored = {"floor", "fgw_mirrorfix", "fgw_mirrorgate", "fgw_mirrorgate_series"}
     assert all(set(r["scores"]) == scored for r in res["rows"]) and set(res["candidates"]) == scored
     assert [r["seed"] for r in res["rows"]] == list(n42.SEEDS)
     monkeypatch.setattr(n42.harness, "run_task", runner)
@@ -378,3 +380,144 @@ def test_a_failure_outside_a_build_stops_the_task(tmp_path, n42):
 
     with pytest.raises(OSError, match="not there"):
         n42.score_task(n42.nt.all_tasks()["x2"], tmp_path, runner=runner)
+
+
+# ================================================================================ fix E2: partners="mirror_gated"
+def _gate_pair():
+    """A synthetic pair through interpolate_clouds whose before stage's smallest eigenvalue is below 0 and whose after
+    stage's is not: two left-right symmetric clouds (200 and 12 cells a side) whose expression cannot tell the sides
+    apart, so FGW's partners sit at random across the symmetric plane; the smaller after cloud makes the two stages'
+    pairs differ (with a one-to-one coupling the two stages share one eigenvalue)."""
+    def sym(seed, n_half, scale):
+        rng = np.random.default_rng(seed)
+        H = np.c_[rng.uniform(0.2, 2.0, n_half), rng.normal(scale=3.0, size=n_half),
+                  rng.normal(scale=2.0, size=n_half)]
+        E = rng.gamma(2.0, 1.0, size=(n_half, 12))
+        return np.vstack([H, H * [-1.0, 1.0, 1.0]]) * scale, np.vstack([E, E])
+
+    (A, E), (B, EB) = sym(0, 200, 1.0), sym(50, 12, 1.3)
+    return A, B, E, EB
+
+
+# ------------------------------------------------------------------------------------------ E2 1. the first form pinned
+@pytest.mark.parametrize("move_coupling", tb.MOVE_COUPLINGS)
+def test_mirror_fixed_is_bit_for_bit_what_749c1c6_gives(tmp_path, polar, move_coupling):
+    A, B, E, EB = polar._pair()
+    old_mod = polar._base_module(tmp_path, FIX_AT)
+    for partners in ("mirror_fixed", None):  # None: partners unset, still the entry
+        kw = {} if partners is None else {"partners": partners}
+        old = old_mod.interpolate_clouds(A, B, E, EB, 0.4, 300, move_coupling=move_coupling, with_partners=True,
+                                         **kw, **polar.KW)
+        new = tb.interpolate_clouds(A, B, E, EB, 0.4, 300, move_coupling=move_coupling, with_partners=True, **kw,
+                                    **polar.KW)
+        polar._same(old, new)
+        assert np.array_equal(old.partners, new.partners)
+    polar._same(polar._base_module(tmp_path, BASE).interpolate_clouds(A, B, E, EB, 0.4, 300,
+                                                                      move_coupling=move_coupling, **polar.KW),
+                tb.interpolate_clouds(A, B, E, EB, 0.4, 300, move_coupling=move_coupling, **polar.KW))
+    X, Q = _symmetric_cloud(3)
+    Y = _mirror(X, Q, np.sort(np.random.default_rng(3).choice(len(X), 300, replace=False)))
+    (fo, ro), (fn, rn) = old_mod.mirror_fixed_partners(X, Y), tb.mirror_fixed_partners(X, Y)
+    assert np.array_equal(fo, fn) and ro == rn and "corrected" not in rn
+
+
+# ------------------------------------------------------------------------------------------ E2 2. mirrored partners
+def test_mirrored_partners_gated_is_exactly_mirror_fixed():
+    X, Q = _symmetric_cloud(1)
+    for rows in (slice(None), np.sort(np.random.default_rng(3).choice(len(X), 700, replace=False))):
+        Y = _mirror(X, Q, rows)
+        fixed, rf = tb.mirror_fixed_partners(X, Y)
+        gated, rg = tb.mirror_fixed_partners(X, Y, gated=True)
+        assert rf["xcorr_min_before"] < 0.0 and rf["share_mirrored"] > 0.0
+        assert np.array_equal(gated, fixed)
+        assert rg.pop("corrected") is True and rg == rf
+
+
+# ------------------------------------------------------------------------------------------ E2 3. right but noisy
+def test_right_but_noisy_partners_gated_is_the_entry_while_mirror_fixed_changes_them():
+    X, Q = _symmetric_cloud(4)
+    Y = X + np.random.default_rng(4).normal(scale=1.0, size=X.shape)  # right partners, only noisy
+    fixed, rf = tb.mirror_fixed_partners(X, Y)
+    assert rf["xcorr_min_before"] > 0.0 and 0.0 < rf["share_mirrored"] < 0.5  # some signs disagree
+    assert not np.array_equal(fixed, Y)
+    gated, rg = tb.mirror_fixed_partners(X, Y, gated=True)
+    assert np.array_equal(gated, Y)  # the entry's partners, bit for bit
+    assert rg == {"xcorr_min_before": rf["xcorr_min_before"], "xcorr_min_after": rf["xcorr_min_before"],
+                  "share_mirrored": 0.0, "corrected": False}
+    # singular or non-finite: the entry's partners, recorded as not corrected
+    Yb = Y.copy()
+    Yb[5, 2] = np.nan
+    out, rec = tb.mirror_fixed_partners(X, Yb, gated=True)
+    assert np.array_equal(out, Yb, equal_nan=True) and rec["corrected"] is False and rec["xcorr_min_before"] is None
+
+
+# ------------------------------------------------------------------------------------------ E2 4. one stage gated
+def test_through_interpolate_clouds_only_the_stage_below_0_is_corrected(monkeypatch):
+    A, B, E, EB = _gate_pair()
+    kw = dict(seed=1, target_rms=10.0, n_anchor=200)
+    real, seen = tb.mirror_fixed_partners, []
+
+    def spy(X, Y, **gate):
+        out, rec = real(X, Y, **gate)
+        seen.append((X, np.asarray(Y, dtype=np.float64), out, gate))
+        return out, rec
+
+    monkeypatch.setattr(tb, "mirror_fixed_partners", spy)
+    gated = tb.interpolate_clouds(A, B, E, EB, 0.5, 300, partners="mirror_gated", **kw)
+    rec = gated.record["mirror"]
+    assert gated.record["partner_fix"] == "mirror_gated"
+    assert rec["xcorr_min_before"][0] < 0.0 <= rec["xcorr_min_before"][1]  # the pair does split the stages
+    assert rec["corrected"] == [True, False]
+    assert rec["share_mirrored"][0] > 0.0 and rec["share_mirrored"][1] == 0.0
+    assert rec["xcorr_min_after"][0] > rec["xcorr_min_before"][0]
+    assert rec["xcorr_min_after"][1] == rec["xcorr_min_before"][1]
+    (Xb, Yb, ob, gb), (Xa, Ya, oa, ga) = seen
+    assert gb == ga == {"gated": True}
+    assert np.array_equal(oa, Ya)  # the after stage keeps the entry's partners, bit for bit
+    assert np.array_equal(ob, real(Xb, Yb)[0]) and not np.array_equal(ob, Yb)  # the before stage: mirror_fixed's
+    seen.clear()
+    fixed = tb.interpolate_clouds(A, B, E, EB, 0.5, 300, partners="mirror_fixed", **kw)
+    entry = tb.interpolate_clouds(A, B, E, EB, 0.5, 300, **kw)
+    assert [g for *_, g in seen] == [{}, {}]  # "mirror_fixed" calls the routine as 749c1c6 did
+    assert "corrected" not in fixed.record["mirror"]
+    assert fixed.record["mirror"]["share_mirrored"][1] > 0.0  # the ungated form also changes the after stage
+    for other in (fixed, entry):
+        assert np.array_equal(gated.rows, other.rows) and np.array_equal(gated.stage, other.stage)
+        assert not np.array_equal(gated.coords, other.coords)
+
+
+# ------------------------------------------------------------------------------------------ E2 5. reproducible, arms
+def test_mirror_gated_is_reproducible(polar):
+    A, B, E, EB = _gate_pair()
+    kw = dict(seed=1, target_rms=10.0, n_anchor=200)
+    polar._same(tb.interpolate_clouds(A, B, E, EB, 0.5, 300, partners="mirror_gated", **kw),
+                tb.interpolate_clouds(A, B, E, EB, 0.5, 300, partners="mirror_gated", **kw))
+    A, B, E, EB = polar._pair()
+    a = tb.interpolate_clouds(A, B, E, EB, 0.5, 300, partners="mirror_gated", move_coupling="aligned", **polar.KW)
+    b = tb.interpolate_clouds(A, B, E, EB, 0.5, 300, partners="mirror_gated", move_coupling="aligned", **polar.KW)
+    polar._same(a, b)
+    assert set(a.record["mirror"]) == {"xcorr_min_before", "xcorr_min_after", "share_mirrored", "corrected"}
+    for moves in ("polar", "polar_frame"):
+        with pytest.raises(ValueError, match="moves"):
+            tb.interpolate_clouds(A, B, E, EB, 0.4, 30, partners="mirror_gated", moves=moves, **polar.KW)
+
+
+def test_the_two_gated_arms_are_registered_for_t2_and_call_fgw_with_the_gate(monkeypatch):
+    seen = {}
+    monkeypatch.setattr(harness, "_fgw", lambda ctx, **kw: seen.setdefault(ctx, kw))
+    for name, kw in (("fgw_mirrorgate", {"partners": "mirror_gated"}),
+                     ("fgw_mirrorgate_series", {"partners": "mirror_gated", "expression": "series"})):
+        c = harness.CANDIDATES[name]
+        assert c.tasks == frozenset({"T2"}) and c.name == name and c.params["partners"] == "mirror_gated"
+        assert c.build(name) == kw
+    assert harness.CANDIDATES["fgw_mirrorgate"].requires is harness.CANDIDATES["fgw"].requires
+    assert harness.CANDIDATES["fgw_mirrorgate_series"].requires is harness.CANDIDATES["fgw_series"].requires
+
+
+@pytest.mark.parametrize("arm, base", [("fgw_mirrorgate", "fgw"), ("fgw_mirrorgate_series", "fgw_series")])
+def test_the_gated_arms_build_on_a_synthetic_embryo(emb_expr, arm, base):
+    s = emb_expr.stages()
+    c = emb_expr.ctx(inputs=s, roles=("before", "after"))
+    a, again, b = harness.CANDIDATES[arm].build(c), harness.CANDIDATES[arm].build(c), harness.CANDIDATES[base].build(c)
+    assert emb_expr.digest(a) == emb_expr.digest(again)  # same seed, same output
+    assert np.array_equal(a.X, b.X) and np.isfinite(a.coords).all()  # the same draws and expression

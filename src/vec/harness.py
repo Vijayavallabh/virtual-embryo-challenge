@@ -1059,7 +1059,8 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     local linear map interpolated along its polar factors about the patch centroid) or "polar_frame" (the patch's whole
     affine map of the common frame, translation included, interpolated along the same factors). partners: "coupled"
     (the entry) or "mirror_fixed" (campaign branch campaign/emb-mirror: vec.t2_build.mirror_fixed_partners, FGW's
-    partners kept, a partner on the wrong side of the pairs' symmetric direction moved to its mirror image)."""
+    partners kept, a partner on the wrong side of the pairs' symmetric direction moved to its mirror image) or
+    "mirror_gated" (fix E2: the same correction, applied to a stage only where its smallest eigenvalue is below 0)."""
     t = ctx.task
     before, after = ctx.inputs["before"], ctx.inputs["after"]
     lo, hi = t.role_days["before"], t.role_days["after"]
@@ -1257,6 +1258,19 @@ def _fgw_mirrorfix_series(ctx: BuildContext) -> Stage:
     """Campaign arm (branch campaign/emb-mirror): the second upload's expression (series) on FGW's corrected partners
     (the second upload as built, fgw_aligned_series, takes its partners from the aligned transport instead)."""
     return _fgw(ctx, partners="mirror_fixed", expression="series")
+
+
+def _fgw_mirrorgate(ctx: BuildContext) -> Stage:
+    """Campaign arm (branch campaign/emb-mirror, fix E2): the entry with the mirror correction of FGW's partners applied
+    to a stage only where the smallest eigenvalue of its pairs' symmetrised whitened cross-correlation is below 0
+    (vec.t2_build.mirror_fixed_partners(..., gated=True)). No constant is new."""
+    return _fgw(ctx, partners="mirror_gated")
+
+
+def _fgw_mirrorgate_series(ctx: BuildContext) -> Stage:
+    """Campaign arm (branch campaign/emb-mirror, fix E2): the second upload's expression (series) on FGW's partners
+    with the gated mirror correction."""
+    return _fgw(ctx, partners="mirror_gated", expression="series")
 
 
 def _fgw_aligned_polar_frame_series(ctx: BuildContext) -> Stage:
@@ -1789,6 +1803,19 @@ CANDIDATES = {
                                        "partners": "mirror_fixed", "rule": t2_build.SERIES_RULE,
                                        "alpha": t2_build.INTERP_ALPHA, "k": t2_build.INTERP_K, "scope": "whole"},
                                       requires=_series_applies),
+    # fix E2 (campaign branch campaign/emb-mirror): the same correction gated on the smallest eigenvalue's sign
+    "fgw_mirrorgate": Candidate("fgw_mirrorgate", frozenset({"T2"}), (), _fgw_mirrorgate,
+                                {"what": "fgw_mirrorfix applied to a stage only where the smallest eigenvalue of its "
+                                         "pairs' symmetrised whitened cross-correlation is below 0 (a mirrored "
+                                         "direction, row E10); a stage at 0 or above keeps FGW's partners",
+                                 "partners": "mirror_gated",
+                                 "alpha": t2_build.INTERP_ALPHA, "k": t2_build.INTERP_K, "scope": "whole"},
+                                requires=_interp),
+    "fgw_mirrorgate_series": Candidate("fgw_mirrorgate_series", frozenset({"T2"}), (), _fgw_mirrorgate_series,
+                                       {"what": "fgw_mirrorgate with the second upload's expression (series)",
+                                        "partners": "mirror_gated", "rule": t2_build.SERIES_RULE,
+                                        "alpha": t2_build.INTERP_ALPHA, "k": t2_build.INTERP_K, "scope": "whole"},
+                                       requires=_series_applies),
     "fgw_aligned_hi": Candidate("fgw_aligned_hi", frozenset({"T2"}), (), _fgw_aligned_hi,
                                 {"what": "fgw_aligned (try E10's aligned moves) with every cell at the deeper "
                                          "bracket's depth: a top-up-only file at the aligned positions",
