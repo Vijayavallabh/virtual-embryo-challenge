@@ -1,0 +1,9 @@
+Reading of try E44 (runs e24_pricing:ccd33b5, e25_pairs:798908a, e28_nine_tasks:22513cf, n36_trend_second_upload:51b0672, n49_embryo_i_arms:5b8e126): fgw with each bracket moved the share L of the way to its neighbours' line, on the nine practice tasks with their trend samples; aggregation of committed scores
+fgw_resid is not put forward: closed by this reading
+  rescored arms against their committed scores, largest difference over tasks and seeds: floor 0.0e+00, fgw 6.5e-04, fgw_trend_render 0.0e+00 (void above 0.01)
+  adoption against fgw: e75 -0.25 (0/10), e725 +4.32 (10/10) -> not kept
+  first upload beside fgw_aligned_series (row N33's rule): S(0.45) +0.68, clauses y y y n -> does not pass
+  second upload beside fgw (rows E34 and E35's rule): S(0.45) -0.91, clauses n n n n -> does not pass
+  own mean minus fgw: half +0.26 late +0.04 new1 +0.32 x1 -3.94 x2 -0.49 x3 -0.74 new2 -0.26 e75 -0.25 e725 +4.32
+  own mean minus fgw_trend_render: half -1.16 late +0.01 new1 +0.11 x1 -1.02 x2 -2.41 x3 -1.73 new2 -1.48 e75 +0.76 e725 +0.67
+  corrected bracket, L, clipped share, mean |log factor|: half before 0.595 0.020 0.485; late before 0.611 0.024 0.483; new1 before 0.595 0.020 0.485; x1 before 0.658 0.020 0.425; x2 before 0.658 0.020 0.425; x3 before 0.658 0.002 0.297; new2 before 0.581 0.030 0.486; e75 before 0.658 0.014 0.437; e725 after 0.658 0.020 0.494
