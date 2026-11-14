@@ -34,12 +34,15 @@ lever is closed); (3) any set of factors with this size profile, whatever the ge
          Each arm is gmom_combo.m1_r_arms' m1_r_gmom with only its fraction, its directions or (T45d, T45e) the hook's
          first edit changed. The task file holds every arm's fraction(s), each group's sha256 of Feng's direction and of
          the directions object each placebo arm (p1, p2, q1, q2) was built with, each group's applied size (mean |log f|
-         and sum of log f^2 over the non-held genes at the base fraction) for Feng and the first placebo, each group's
-         between-bin share of the direction's variance (over the finite genes, each gene given the mean of its T15 bin
-         (LP_BINS bins of mean_cp, the permutation's bins): the variance of those bin means over the variance of d),
+         and sum of log f^2 over the non-held genes at the base fraction, before the per-cell depth constant) for Feng
+         and the first placebo, each group's between-bin share of the direction's variance (over the finite genes,
+         each gene given the mean of its T15 bin (LP_BINS bins of mean_cp, the permutation's bins): the variance of
+         those bin means over the variance of d), the same share over the non-held finite genes only
+         (between_bin_share_free: T15's bins as before, each bin's mean and the variances over its non-held genes),
          and per seed and arm the target-free redraw measures of the covered cells before g_mom against the drawn
-         cells: the share of non-zero counts changed, the share of non-zero counts set to zero, and the mean detected
-         genes per cell (drawn and edited).
+         cells: the share of non-zero counts changed, the share of non-zero counts set to zero, the mean squared
+         change over the drawn non-zero counts, the mean detected genes per cell (drawn and edited), and the mean
+         log1p CP10k over the covered cells and genes (drawn and edited; each cell's CP10k on its own row sum).
   read   T45's reading of both cuts' files (rule below, fixed in the row before the run).
 
 What a control shares with its twin and does not: every arm reaches external_shift with the same cells, groups, held
@@ -52,21 +55,25 @@ beside (a) and (b). T45d's first edit is bit for bit the x2 arm's and T45e's the
 covered cells' counts again: held genes keep their counts; every other gene of a covered cell, NaN-direction genes
 included, is redrawn, because the depth constant scales its factor of 1. x2b's expected counts are the base's, but on a
 synthetic build it carries about 1.6 times x2's per-entry count variance and zeroing, and 2.4 times x2's excess over
-the base; x15b's expected counts are the base's as well, and on a synthetic build its count variance (0.483 against
-x2's 0.452), zeroing (0.040 against 0.036) and detected genes (172.3 against 173.1) are close to x2's. That is why the
-count-noise statement reads (c') and (d') and not (c) and (d). x2b's expected counts are the base's, but its per-cell
+the base; x15b's expected counts are the base's as well. x15b matches x2's per-entry count variance on sparse synthetic
+counts (0.8-1.0 of x2's excess over the base) but carries only about half of x2's extra zeroing, loss of detected genes
+and drop in mean log1p CP10k (0.36-0.64 on heavy-tailed directions): x2's extra sparsity comes with its larger expected
+down-step, and (c') counts it on the direction's side. The count-noise statement reads (c') and (d'), the pair matched
+in variance, and not (c) and (d). x2b's expected counts are the base's, but its per-cell
 log-expression is lower and sparser (a depth-like thinning), so (d) passing is a reading of the closed depth lever and
 is never a reason to add redraw; read (c) and (d) per metric: the pseudobulk metrics see x2b as the base, the per-cell
 metrics see it as a shallower base. (c) and (d) add up to (h) seed by seed, as (c') and (d') do; x2b carries about
 twice x2's excess redraw on an independent stream, so (d) bounds the noise share from above and (c) bounds the
 direction's share from below when a redraw helps (as T43c found), and the reverse when it hurts: (c) and (d) are
-reported as the upper bound of the noise reading. The read prints the redraw measures beside (c), (c'), (d) and (d').
+reported as the upper bound of the noise reading. The read prints the redraw measures beside (c), (c'), (d) and (d'),
+the mean squared change and the mean log1p CP10k (edited and drawn) among them.
 
 The placebo permutes held and non-held genes together, as T15's did; the read prints each group's applied size for Feng
 and the placebo and the ratio placebo over Feng for both measures, and names beside (a) and (b) any group where a
 measure differs from Feng's by more than SIZE_FLAG = 10% (relative to Feng's): that threshold only labels text and
 decides nothing. The placebo keeps each expression bin's values, so it keeps the part of Feng's direction that depends
-on expression level (its between-bin share is printed beside (a) and (b)); "a placebo gains as well" means a direction
+on expression level (its between-bin share, over all finite genes and over the non-held ones, is printed beside (a)
+and (b)); "a placebo gains as well" means a direction
 with Feng's level profile gains, not that any factors gain, and "needs the direction's genes" means needing more than
 that profile. The placebo is one permutation per group (T15's seed); the seed test measures build noise around that one
 draw, not the spread across permutations, so either gene-identity value is a statement about this permutation; the
@@ -84,17 +91,40 @@ differs from its reference in the kind of sample as well as in age. Each stateme
 in-sample cuts at ten seeds; "not separated" means the rule did not decide, not that the effects are absent, and no
 value is evidence for a change to the entry. The result can only go to the team captain.
 
+Limits (the third review's ledger sentences, in its words):
+  - (h) repeats T44's passing comparison on reproduced scores; in a valid read it passes, and the two statements are
+    always read.
+  - 'is not count noise' means the gain is not explained by redraw variance at the base's expected counts; it does not
+    separate the direction's expected change from the extra zeroing and lost detected genes that a larger down-step
+    brings, which the redraw measures beside (c') show; it is never a reason to reopen T1's read depth, a closed lever
+    that only the captain can reopen by name.
+  - 'count noise ... gains' says only that redraw of x2's size at the base's expectation scores higher on these two
+    in-sample cuts; it is no reason to add redraw (T1's depth lever is closed) and does not show that the larger step's
+    expected change is worth nothing.
+  - in 'part of each' the two sizes are a split by a control matched in variance and not in sparsity; they are not
+    shares of the mechanism.
+  - 'needs the direction's genes' means the larger step's increment beats one within-bin permutation's increment (T15's
+    seed); it includes the case where the permuted larger step loses ((b)'s mean is printed), it is one permutation
+    ((a2) shows a second), and it says nothing about genes the level profile explains.
+  - 'a placebo gains as well' means a direction with Feng's level profile and value distribution gains at the larger
+    step, sparsity included; it is not evidence that random factors gain, and not evidence for the depth lever.
+  - 'not separated' means the adoption rule did not decide on ten seeds; it is not evidence that either effect is
+    absent.
+  - the reported comparisons decide nothing; no reported value, alone or combined, puts a change forward; the read can
+    go only to the team captain.
+
 The reading. Void unless both cuts hold the ten seeds at one commit on a clean tree, with every arm on every row; b0 and
 m1_r_gmom equal, seed for seed, their committed scores in experiments/t1_m1/results/t42_m1_eb/tasks/ and m1_r_gmom_x2
 its committed scores in experiments/t1_m1/results/t44_m1_step/tasks/, each to 1e-9; each file's task is its cut, its
 base fraction 0.2 and each arm's fraction(s) as above (x0 0, p1 0.2, p2 0.4, x2b [0.4, -0.2], x15b [0.3, -0.1], q1 0.2,
-q2 0.4, to 1e-12); no control (x0, p1, p2, x2b, x15b, q1, q2) scores exactly as m1_r_gmom on every seed of both cuts;
-m1_r_gmom_p1 and m1_r_gmom_p2 record the same permuted directions on every seed, and these differ from Feng's in every
-group; m1_r_gmom_q1 and m1_r_gmom_q2 record the same permuted directions on every seed, and these differ from Feng's and
-from the first placebo's in every group. The test is the adoption rule's (vec.adoption.keep_change, paired by seed, both
-cuts: a mean gain above 0.3 with at least 8 of 10 seeds ahead on each, no loss beyond 0.3), used thirteen times on these
-files, once per comparison below, and once more on try T43c's committed files (reported only); "A over B" is A as the
-change, B as the base, and "X - Y" a paired per-seed increment:
+q2 0.4, to 1e-12); no control's (x0, p1, p2, x2b, x15b, q1, q2) arm record (score, group scores, metrics and skills)
+equals m1_r_gmom's on every seed of both cuts; m1_r_gmom_p1 and m1_r_gmom_p2 record the same permuted directions on
+every seed, and these differ from Feng's in every group; m1_r_gmom_q1 and m1_r_gmom_q2 record the same permuted
+directions on every seed, and these differ from Feng's and from the first placebo's in every group. The test is the
+adoption rule's (vec.adoption.keep_change, paired by seed, both cuts: a mean gain above 0.3 with at least 8 of 10 seeds
+ahead on each, no loss beyond 0.3), used thirteen times on these files, once per comparison below, and once more on try
+T43c's committed files (reported only); "A over B" is A as the change, B as the base, and "X - Y" a paired per-seed
+increment:
   (a)  (x2 - m1_r_gmom) over (p2 - p1): the larger step's increment against the first placebo's increment; decides the
        gene-identity statement;
   (a0) x2 over p2, the level comparison; reported, decides nothing;
@@ -113,12 +143,14 @@ change, B as the base, and "X - Y" a paired per-seed increment:
 The two statements are read only if (h) passes; otherwise both read "no larger-step gain to explain" and the comparisons
 are reported only. Gene identity: "a placebo gains as well; the direction more" if (a) and (b) pass; "a placebo gains as
 well" if (b) passes and (a) does not; "needs the direction's genes" if (a) passes and (b) does not; otherwise "not
-separated". Count noise: "count noise of x2b's size gains" if (d') passes and (c') does not; "is not count noise" if
-(c') passes and (d') does not; "part of each" if both pass (the text gives the two sizes of (c') and (d')); otherwise
-"not separated". The statements rest on the first permutation; (a2) and (b2) show the spread across permutations.
+separated". Count noise: "count noise of the larger step's size gains" if (d') passes and (c') does not; "is not count
+noise" if (c') passes and (d') does not; "part of each" if both pass (the text gives the two sizes of (c') and (d'));
+otherwise "not separated". The statements rest on the first permutation; (a2) and (b2) show the spread across
+permutations.
 Reported: per cut every arm's mean board score, each comparison's mean paired difference with seeds ahead and per-seed
 range, every metric's mean skill difference, the redraw measures beside (c), (c'), (d) and (d'), the first placebo's
-applied size, its ratio to Feng's and the between-bin share beside (a) and (b), and beside (b) and (d) try T43c's
+applied size, its ratio to Feng's and the between-bin shares (all finite genes, non-held finite genes) beside (a) and
+(b), and beside (b) and (d) try T43c's
 committed difference (b0_mn against b0 in experiments/harness/results/t43_t1_mix/tasks/), what a full count redraw does
 on the same cuts. The read puts nothing forward by itself.
 
@@ -205,11 +237,13 @@ T43C = ("b0", "b0_mn")  # (base, change): try T43c's full count redraw, reported
 NEEDS_GENES, PLACEBO_GAINS, PLACEBO_LESS, NOT_SEPARATED = (
     "needs the direction's genes", "a placebo gains as well", "a placebo gains as well; the direction more",
     "not separated")
-IS_NOISE, NOT_NOISE, PART_OF_EACH = "count noise of x2b's size gains", "is not count noise", "part of each"
+IS_NOISE, NOT_NOISE, PART_OF_EACH = ("count noise of the larger step's size gains", "is not count noise",
+                                     "part of each")
 NO_GAIN = "no larger-step gain to explain"
 SIZE_FLAG = 0.10  # the reviewer's 10%: labels text only, decides nothing (a size this far from Feng's is named)
 REDRAW_BESIDE = {"c": (X2, X2B), "c'": (X2, X15B), "d": (X2B, BASE), "d'": (X15B, BASE)}  # arms printed beside
-REDRAW_KEYS = ("share_nonzero_changed", "share_nonzero_zeroed", "detected_per_cell", "detected_per_cell_drawn")
+REDRAW_KEYS = ("share_nonzero_changed", "share_nonzero_zeroed", "detected_per_cell", "detected_per_cell_drawn",
+               "mean_sq_change", "mean_log1p_cp10k", "mean_log1p_cp10k_drawn")
 LABEL_T45 = ("try T45, a labelled in-sample diagnostic, never an adoption result: M1 (with R1, R2 and g_mom's factors, "
              "the entry's form) at fractions 0, 0.2 and 0.4 of Feng's bracket, with try T15's permuted placebo at 0.2 "
              "and 0.4 (and a second permutation, reported only), and two there-and-back steps (0.4 then -0.2, 0.3 then "
@@ -251,23 +285,27 @@ def placebo_directions(directions: Mapping[str, np.ndarray], halves: Mapping[str
     return out
 
 
-def between_bin_share(directions: Mapping[str, np.ndarray], halves: Mapping[str, Mapping[str, np.ndarray]]
-                      ) -> dict[str, float]:
+def between_bin_share(directions: Mapping[str, np.ndarray], halves: Mapping[str, Mapping[str, np.ndarray]],
+                      free: np.ndarray | None = None) -> dict[str, float]:
     """Per group, the share of the direction's variance between T15's bins: over the finite genes, each gene given the
     mean of its bin (LP_BINS runs of the stable mean_cp ranking, the bins t3_decile_permutation permutes within), the
-    variance of those bin means over the variance of d. The part of d a within-bin permutation keeps. Target-free; NaN
-    when d has no variance."""
+    variance of those bin means over the variance of d. The part of d a within-bin permutation keeps. With `free` (a
+    gene mask, the non-held genes), the bins stay T15's (over all finite genes) and each bin's mean and both variances
+    are taken over its finite genes in `free` only: the share of the part external_shift applies. Target-free; NaN when
+    d has no variance (over the genes counted)."""
     out = {}
     for g, d in sorted(directions.items()):
         d = np.asarray(d, dtype=np.float64)
         ok = np.isfinite(d)
         v, basis = d[ok], np.asarray(halves[g]["mean_cp"], dtype=np.float64)[ok]
+        keep = np.ones(v.size, dtype=bool) if free is None else np.asarray(free, dtype=bool)[ok]
         means = np.empty_like(v)
         for genes in np.array_split(np.argsort(basis, kind="stable"), harness.LP_BINS):
+            genes = genes[keep[genes]]
             if genes.size:
                 means[genes] = v[genes].mean()
-        total = float(v.var()) if v.size else 0.0
-        out[g] = float(means.var()) / total if total > 0 else float("nan")
+        total = float(v[keep].var()) if keep.any() else 0.0
+        out[g] = float(means[keep].var()) / total if total > 0 else float("nan")
     return out
 
 
@@ -276,11 +314,16 @@ def direction_sha(directions: Mapping[str, np.ndarray]) -> dict[str, str]:
             for g, d in sorted(directions.items())}
 
 
+def free_genes(held: Sequence[str], genes: Sequence[str]) -> np.ndarray:
+    """The gene mask of the non-held genes, in `genes`' order."""
+    return ~np.isin(np.asarray(list(genes), dtype=object), list(held))
+
+
 def applied_size(directions: Mapping[str, np.ndarray], held: Sequence[str], genes: Sequence[str], fraction: float
                  ) -> dict[str, dict[str, float]]:
-    """Per group, the log factors external_shift applies at `fraction` (NaN as 0, held genes left out): their mean
-    absolute value and their sum of squares over the non-held genes. Target-free."""
-    free = ~np.isin(np.asarray(list(genes), dtype=object), list(held))
+    """Per group, the log factors at `fraction` before the per-cell depth constant (fraction x d, NaN as 0, held genes
+    left out): their mean absolute value and their sum of squares over the non-held genes. Target-free."""
+    free = free_genes(held, genes)
     out = {}
     for g, d in sorted(directions.items()):
         logf = float(fraction) * np.nan_to_num(np.asarray(d, dtype=np.float64), nan=0.0)[free]
@@ -295,7 +338,9 @@ def _dense(M) -> np.ndarray:
 
 def redraw_measures(drawn, edited) -> dict[str, float]:
     """Target-free measures of how much of the covered cells' counts an arm redrew: among the drawn non-zero counts,
-    the share changed and the share set to zero; the mean detected genes per cell, edited and drawn."""
+    the share changed, the share set to zero and the mean squared change (A - B)^2; the mean detected genes per cell,
+    edited and drawn; the mean over the covered cells and genes of log1p(1e4 x C / C's row sum), edited and drawn (a
+    cell with no count gives 0)."""
     B, A = _dense(drawn).astype(np.int64), _dense(edited).astype(np.int64)
     if A.shape != B.shape:
         raise ValueError(f"the edited covered cells {A.shape} are not the drawn ones {B.shape}")
@@ -304,7 +349,20 @@ def redraw_measures(drawn, edited) -> dict[str, float]:
     return {"share_nonzero_changed": float((A[nz] != B[nz]).sum() / n) if n else 0.0,
             "share_nonzero_zeroed": float((A[nz] == 0).sum() / n) if n else 0.0,
             "detected_per_cell": float((A > 0).sum(axis=1).mean()) if A.shape[0] else 0.0,
-            "detected_per_cell_drawn": float(nz.sum(axis=1).mean()) if B.shape[0] else 0.0}
+            "detected_per_cell_drawn": float(nz.sum(axis=1).mean()) if B.shape[0] else 0.0,
+            "mean_sq_change": float(((A[nz] - B[nz]).astype(np.float64) ** 2).mean()) if n else 0.0,
+            "mean_log1p_cp10k": _mean_log1p_cp10k(A),
+            "mean_log1p_cp10k_drawn": _mean_log1p_cp10k(B)}
+
+
+def _mean_log1p_cp10k(C: np.ndarray) -> float:
+    """The mean over cells and genes of log1p(1e4 x C / row sum); a row with no count is 0."""
+    if not C.size:
+        return 0.0
+    C = C.astype(np.float64)
+    rs = C.sum(axis=1, keepdims=True)
+    cp = np.divide(1e4 * C, rs, out=np.zeros_like(C), where=rs > 0)
+    return float(np.log1p(cp).mean())
 
 
 @contextlib.contextmanager
@@ -474,6 +532,7 @@ def cmd_run(a) -> None:
            "applied_size": {"fraction": fraction, "feng": applied_size(directions, held_m1, pool.var_names, fraction),
                             "placebo": applied_size(placebo, held_m1, pool.var_names, fraction)},
            "between_bin_share": between_bin_share(directions, halves),
+           "between_bin_share_free": between_bin_share(directions, halves, free_genes(held_m1, pool.var_names)),
            "feng_stats_sha256": stats_sha, "external": ext, "seeds": list(seeds), "rows": rows,
            "stamp": gv.stamp(started, [data / t.target, data / t.reference, *[data / f for f in t.inputs.values()],
                                        t1_scope.HELD_FLAT_GENES, ts.R1_CONFIG, REPO_ROOT / union["file"],
@@ -581,7 +640,8 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[str
         same = [a for a in CONTROLS
                 if all(row["arms"][a] == row["arms"][BASE] for r in results.values() for row in r["rows"])]
         if same:
-            reasons.append(f"controls score exactly as {BASE} on every seed of both cuts: {same}")
+            reasons.append(f"controls' arm records (score, group scores, metrics and skills) equal {BASE}'s on every "
+                           f"seed of both cuts: {same}")
     return {"valid": not reasons, "reasons": reasons, "reproduction": repro,
             "commits": sorted(c for c in commits if c)}
 
@@ -717,6 +777,7 @@ def t45_reading(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[
     out["size_flags"] = {k: size_flags(r.get("applied_size")) for k, r in results.items()}
     out["size_ratios"] = {k: size_ratios(r.get("applied_size")) for k, r in results.items()}
     out["between_bin_share"] = {k: r.get("between_bin_share") for k, r in results.items()}
+    out["between_bin_share_free"] = {k: r.get("between_bin_share_free") for k, r in results.items()}
     t43c_comp = t43c(t43 or {})
     if t43c_comp is not None:
         out["t43c"] = t43c_comp
@@ -747,7 +808,9 @@ def t45_text(res: Mapping) -> str:
         for k, per in r.get("redraw", {}).items():
             lines.append(f"    redraw of the covered cells before g_mom, {k}: " + "; ".join(
                 f"{a} changed {per[a]['share_nonzero_changed']:.4f}, zeroed {per[a]['share_nonzero_zeroed']:.4f}, "
-                f"detected per cell {per[a]['detected_per_cell']:.1f} (drawn {per[a]['detected_per_cell_drawn']:.1f})"
+                f"detected per cell {per[a]['detected_per_cell']:.1f} (drawn {per[a]['detected_per_cell_drawn']:.1f}), "
+                f"mean squared change {per[a]['mean_sq_change']:.4f}, mean log1p CP10k "
+                f"{per[a]['mean_log1p_cp10k']:.4f} (drawn {per[a]['mean_log1p_cp10k_drawn']:.4f})"
                 for a in arms if a in per and len(per[a]) == len(REDRAW_KEYS)))
         if not r.get("redraw"):
             lines.append("    redraw measures: not recorded in the task files")
@@ -772,6 +835,9 @@ def t45_text(res: Mapping) -> str:
                              + "; ".join(flags) + " (a text label; the threshold decides nothing)")
         for k, share in (r.get("between_bin_share") or {}).items():
             lines.append(f"    between-bin share of the direction's variance (kept by the placebo), {k}: " + (
+                "not recorded" if not share else "; ".join(f"{g} {x:.3f}" for g, x in sorted(share.items()))))
+        for k, share in (r.get("between_bin_share_free") or {}).items():
+            lines.append(f"    between-bin share over the non-held finite genes (the part applied), {k}: " + (
                 "not recorded" if not share else "; ".join(f"{g} {x:.3f}" for g, x in sorted(share.items()))))
 
     def block(name: str, comp: Mapping) -> None:
