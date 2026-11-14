@@ -1,0 +1,25 @@
+Readings of tries E42a to E42d (runs e24_pricing:ccd33b5, e25_pairs:798908a, e28_nine_tasks:22513cf, n45_embryo_f_arms:fcc1f6b, n46_embryo_g_arms:b33595e): four controls for fgw_partial on the nine practice tasks; aggregation of committed scores
+verdict: moving less; arm put forward: fgw_damp_m (to a cold check before any request)
+  rescored arms against their committed scores, largest difference over tasks and seeds: floor 0.0e+00, fgw 0.0e+00, fgw_partial 0.0e+00 (void above 0.01)
+  how far the cells move, as a share of the entry's distance (mean over tasks and seeds; earlier bracket, later bracket): fgw_partial 0.45 0.47, fgw_still 0.00 0.00, fgw_damp 0.35 0.35, fgw_part_rand 0.38 0.38, fgw_damp_m 0.45 0.47
+  fgw_damp_m against fgw_partial, largest difference of that share over tasks, seeds and brackets: 2.2e-16 (void above 1e-06)
+  fgw_damp_m's factors, earlier and later bracket, lowest to highest over seeds: half 0.32-0.36 0.34-0.41; late 0.31-0.76 0.32-0.76; new1 0.32-0.36 0.34-0.41; new2 0.10-0.32 0.10-0.31; e75 0.48-0.62 0.54-0.69; e725 0.43-1.59 0.49-1.29; x1 0.26-0.35 0.28-0.36; x2 0.26-0.35 0.28-0.36; x3 0.55-0.65 0.60-0.72 (a factor of 1 or more: the arm does not move less there)
+  fgw_still      adoption against fgw: e75 +2.66 (10/10), e725 -0.70 (1/10) -> not kept; first upload S(0.45) +0.27, clauses n y y n -> does not pass both
+    own mean minus fgw: half +0.04 late +0.27 new1 +2.21 x1 +3.96 x2 -0.30 x3 +0.27 new2 -0.14 e75 +2.66 e725 -0.70
+  fgw_damp       adoption against fgw: e75 +1.81 (10/10), e725 +0.51 (7/10) -> not kept; first upload S(0.45) +0.35, clauses y y y y -> does not pass both
+    own mean minus fgw: half +0.22 late +1.00 new1 +1.87 x1 +3.87 x2 -0.23 x3 +0.53 new2 -0.18 e75 +1.81 e725 +0.51
+  fgw_part_rand  adoption against fgw: e75 +1.66 (10/10), e725 +0.27 (7/10) -> not kept; first upload S(0.45) +0.26, clauses n y y y -> does not pass both
+    own mean minus fgw: half +0.08 late +0.88 new1 +1.99 x1 +3.50 x2 -0.34 x3 +0.34 new2 -0.17 e75 +1.66 e725 +0.27
+  fgw_damp_m     adoption against fgw: e75 +1.43 (10/10), e725 +0.65 (9/10) -> kept; first upload S(0.45) +0.32, clauses y y y y -> passes both
+    own mean minus fgw: half +0.28 late +1.19 new1 +1.68 x1 +3.70 x2 -0.07 x3 +0.58 new2 -0.20 e75 +1.43 e725 +0.65
+  fgw_partial    adoption against fgw: e75 +1.88 (10/10), e725 +0.71 (9/10) -> kept; first upload S(0.45) +0.56, clauses y y y y -> passes both
+    own mean minus fgw: half +0.26 late +0.88 new1 +1.92 x1 +3.75 x2 -0.37 x3 +2.64 new2 -0.26 e75 +1.88 e725 +0.71
+  fgw_partial against fgw_still: e75 -0.78 (3/10), e725 +1.42 (10/10) -> does not lead
+    on every task: half +0.22 late +0.60 new1 -0.29 x1 -0.22 x2 -0.06 x3 +2.37 new2 -0.12 e75 -0.78 e725 +1.42
+  fgw_partial against fgw_damp: e75 +0.08 (4/10), e725 +0.21 (8/10) -> does not lead
+    on every task: half +0.04 late -0.13 new1 +0.06 x1 -0.12 x2 -0.14 x3 +2.11 new2 -0.08 e75 +0.08 e725 +0.21
+  fgw_partial against fgw_part_rand: e75 +0.23 (5/10), e725 +0.44 (8/10) -> does not lead
+    on every task: half +0.18 late +0.00 new1 -0.07 x1 +0.25 x2 -0.03 x3 +2.30 new2 -0.08 e75 +0.23 e725 +0.44
+  fgw_partial against fgw_damp_m: e75 +0.46 (6/10), e725 +0.06 (6/10) -> does not lead
+    on every task: half -0.02 late -0.31 new1 +0.24 x1 +0.05 x2 -0.29 x3 +2.07 new2 -0.06 e75 +0.46 e725 +0.06
+  the controls as a second upload beside fgw (rows E34 and E35's rule), S(0.45): fgw_still -0.66, fgw_damp -0.70, fgw_part_rand -0.82, fgw_damp_m -0.76
