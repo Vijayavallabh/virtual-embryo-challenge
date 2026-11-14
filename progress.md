@@ -3,6 +3,25 @@
 ## Current State
 
 **Last Updated:** 2026-11-14
+**2026-11-14, midday UTC: eleven more tries read after the sixth independent pass (decision log 2026-11-13 (ii), lines
+13 to 18). Ten pass nothing; one embryo arm passes both of its rules and waits for its controls.** The sixth pass
+found one line open and named hard calls of its own, and a separate check tested the eighteen closures "not buildable
+from the record" (one has a form with no free number; the two agents split on a second). All were built, reviewed and
+read, rows first. H21, a quadratic heart trend: -4.13 and -1.04, not kept. K14a to K14d on the T3 folds: the
+within-file mixture does what a smaller shift does (its control, replaced before any output by an exactly mean-matched
+one, moves the same way); the exact-total repair moves 0.1 to 0.2; the whole-cell redraw gains 2.37 and 5.73 where the
+target is a Gata4 replicate, half as deep as its reference, and loses 3.45 where it is Mab21l2, deeper than its
+reference: closed by the reading's third clause. E40a to E40d: the mixture of the second upload's two render estimates
+is 0.02 under the pair rule's bar and fails leave-one-task-out; the multinomial redraw of the render moves little; the
+quadratic trend loses to the line on eight of nine tasks. E41a, the Potts sorting: above `fgw` on eight tasks, under
+the bar. **E41b, `fgw_partial`, passes the adoption rule (+1.88 and +0.71 against `fgw`, ahead in 10 and 9 of 10
+seeds) and the first-upload pair rule (S(0.45) +0.56, all four clauses)**; the rescored `fgw` reproduces. No request
+yet: 27 to 90% of its anchors do not move, the captain asked for the same test with cells simply moved less, and three
+control arms are specified (`briefs/embg.md` in the session scratchpad; not yet built). A cold adversarial check and
+an independent recomputation were started and stopped on the account's usage limit; they are to be resumed. Tries: T1
+37, embryo 66, heart 26, T3 31. Candidates on the pushed branches `campaign/emb-e`, `campaign/emb-f`,
+`campaign/heart-e`, `campaign/t3-e` and `campaign/t3-e-fix`; two reading scripts with tests (tries E40 and E41) and a
+forecast sensitivity script on main.
 **2026-11-14, morning UTC: the organisers' replies assumed (decision log 2026-11-14 (a)). No file changes; no set of
 replies reaches 215.41.** The captain: "Assume logical replies from the organizers for relevant mails". Three
 independent predictors and two adversarial reviewers put the replies at: final marks per board (0.60 to 0.80); Task

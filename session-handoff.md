@@ -23,6 +23,16 @@
   decision log (x)). The upload client refuses a scored upload of a file that is not on this list (guard
   "reference list", pointer `results/reference_list.json`; decision log (cc)).
   What is owed:
+  - FIRST: the controls and checks of tries E41b. The embryo arm `fgw_partial` (branch `campaign/emb-f`, fcc1f6b)
+    passed the adoption rule and the first-upload pair rule on 2026-11-14 (ledger row E41;
+    `experiments/harness/results/n45_embryo_f_readings/`). Before any request to the captain: (1) build, review and
+    read the three control arms the captain asked for (every anchor moved by the same share; the same number left
+    unmoved at random; no movement), row first, on the nine practice tasks; the brief is drafted (session scratchpad,
+    `lift6/briefs/embg.md`) and nothing of it is built; (2) rerun the cold adversarial check and the independent
+    recomputation of the reading's tables, both of which stopped on the account's usage limit on 2026-11-14 without a
+    result; (3) then a priced request, both ways, for the simplest arm that passes, or a recorded decline. A yes needs
+    a builder port, a dry build, a fourth rehearsal and a new reference list by about 24 Nov. Then the seventh
+    independent pass over decision log (ii), lines 13 to 18;
   - nothing to the organisers: on 2026-11-14 the captain had their logical replies assumed for the questions still
     open (decision log 2026-11-14 (a); `docs/ORGANIZER_QUESTIONS.md`, "Working answers (2026-11-14)"). The replies
     confirm the files as built; the items below about the eighth email, the Task 3 batch question and the screened

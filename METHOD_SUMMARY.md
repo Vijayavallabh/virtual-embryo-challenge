@@ -127,32 +127,35 @@ R-D is no (decision log 2026-11-13 (gg)); the captain has not ruled and nothing 
 for taking the team's own estimate past the leading total are used up: the forecast's upper reading is 194.4 against
 215.41, and the committed estimate stays 184. Tries stand at T1 34, embryo 47, heart 25, T3 23.
 
-Status 2026-11-14, after the round's audit (`docs/PLAN.md` decision log 2026-11-13 (ii)): no entry has changed and no
-scored submission has been made. The session's stop check refused the declaration above twice. Independent passes over
-the record then named, between them, eight lines still open by the rules and several closures that rested on the AI
-assistant's own judgement; each line was read with its row first, and each closure now rests on a rule fixed
-beforehand, a read or arithmetic, holds under a design choice that no record fixes and is named as such (decision log
-(ii), correction (f)), or is left to the captain. Task 1: the tail decoder with the neighbour-profile kernel is idle
-like the own-count one (no infeasible gene comes within the bound under either), the decoder in the heart's form and
-the exact-total count kernel each move the score by a few hundredths of a point, and the strong-null try in the
-zero-gap geometry is ruled out by arithmetic (its base scores 100 in 6 of 10 seeds, so no arm can lead in 8). Task 3:
-a run basis taken from the wild-type series passes the recipe's own gate and changes the factor too little to matter
-(-0.02 and -0.02 on the cross-knockout folds, +0.06 on the replicate fold, at its control's level); a tail decoder on
-the factor gains 0.40 on one cross-knockout fold in every seed and nothing on the other two folds, which the fixed
-reading closes. Embryo: a tail decoder is a tie; exponential-growth state shares lose a little on both backtests
-(-0.22 and -0.18); rotation-aware moves pass no rule in the form that pivots at each patch (-0.30 and -0.17), and in
-the form that interpolates in the common frame they are refused by the builder's own cloud guard on eight of nine
-practice tasks; a mirror-only correction of the coupled partners gains 1.95 on one backtest and loses 0.62 on the
-other, as the aligned moves of try E11 did, and passes no pair rule; a coupling on tissue profiles loses on both
-backtests (-0.35 and -1.50); and an exact per-cell total in the second upload's render changes nothing. The second arm
-that had passed the first-upload pair rule (`fgw_aligned_trend`) follows the same fit geometry as request R-D's arm (a
-fitted gain of -0.53 at the test's earlier-bracket geometry); like R-D it stays on record for the captain, with the AI
-assistant's advice against it. Two critics asked to attack the claim found no open lever worth 3 points of the total
-and no new line that is allowed, buildable and has a practice read. Kept: nothing. The options for taking the team's
-own estimate past the leading total are used up within the rules: the levers of that size are closed by the
-post-exposure block and the frozen rules or have no practice read that could judge them, and the rest is for the
-organisers to answer. The committed estimate stays 184 (170 to 198) and the forecast's upper reading 194.4. Tries
-stand at T1 37, embryo 60, heart 25, T3 27.
+Status 2026-11-14, midday UTC (`docs/PLAN.md` decision log 2026-11-13 (ii) and 2026-11-14 (a)): no entry has changed
+and no scored submission has been made. The session's stop check refused the declaration above twice. Independent
+passes over the record then named, between them, nine lines still open by the rules and several closures that rested
+on the AI assistant's own judgement or on a label; each line was read with its row first, and each closure now rests
+on a rule fixed beforehand, a read or arithmetic, holds under a design choice that no record fixes and is named as
+such (decision log (ii), correction (f)), or is left to the captain. A further check tested every closure of the kind
+"not buildable from the record" for a form with no free number; two such forms were built and read. Thirty-one counted
+tries in all. Task 1: the tail decoders are idle or move the score by hundredths of a point, as does the exact-total
+count kernel, and the strong-null try is ruled out by arithmetic. Task 3: a run basis from the wild-type series
+changes the factor too little to matter; a tail decoder gains on one fold only; a within-file mixture does what a
+smaller shift does; an exact per-cell total changes nothing; and a whole-cell redraw of the counts gains 2.4 and 5.7
+where the fold's target is half as deep as its reference and loses 3.5 where it is deeper, which the fixed reading
+closes. Heart: a quadratic in place of the trend's line loses on both backtests (-4.13 and -1.04). Embryo: a tail
+decoder is a tie; growth shares, rotation-aware moves, a mirror-only correction, a coupling on tissue profiles, an
+exact total or a multinomial redraw in the second upload's render, a within-file mixture of its two render estimates
+(0.02 under the pair rule's bar, failing its leave-one-task-out clause), a quadratic trend and a Potts sorting of
+which cell sits where pass no rule. **One arm passes**: the entry with a partial FGW coupling, whose transported share
+is the overlap of the two brackets' cell-type distributions, is ahead of the entry on both counted backtests (+1.88
+and +0.71) and passes the first-upload pair rule (+0.56 embryo points at the middle weighting, about +0.3 on the
+total). It is not adopted and not yet put to the captain: 27 to 90% of its anchors do not move, so it may gain only by
+moving the cloud less; three control arms, a cold adversarial check and an independent recomputation come first. The
+second arm that had passed the first-upload pair rule earlier (`fgw_aligned_trend`) and request R-D stay on record for
+the captain, with the AI assistant's advice against them. On 2026-11-14 the captain had the organisers' logical
+replies assumed for the questions still open; they confirm the files as built, and no set of replies takes the
+forecast past 203.7. Two critics asked to attack the claim found no open lever worth 3 points of the total and no new
+line that is allowed, buildable and has a practice read. The options for taking the team's own estimate past the
+leading total are used up within the rules: the levers of that size are closed by the post-exposure block and the
+frozen rules or have no practice read that could judge them. The committed estimate stays 184 (170 to 198) and the
+forecast's upper reading 194.4. Tries stand at T1 37, embryo 66, heart 26, T3 31.
 
 ## Team and track
 

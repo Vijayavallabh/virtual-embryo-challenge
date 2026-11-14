@@ -3876,6 +3876,68 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
         on 15,290 infeasible genes and moves the score by +0.011 and +0.049: not kept. What the run measures is that
         stopping the factors' push on those genes barely moves the down-list term (+0.0004 and +0.0011 in skill);
         where the infeasible genes of the down-list come from was not measured.
+    13. *The within-file mixture on the embryo's second-upload render* (try E40a; found open by the sixth pass,
+        below). The ledger's line, read before on the heart only (try H16): one file at the second upload's cells and
+        positions, a random half of its rows carrying the second upload's expression and the other half the aligned
+        trend's. It lies between its two halves on five tasks and above both on four, by 0.1 to 1.6 over the better
+        half. As a first upload beside the second upload it is 0.02 under the pair rule's bar (S(0.45) +0.28) and
+        fails the leave-one-task-out clause (-0.35); as a second upload S(0.45) is +0.27 with three clauses failing.
+        Closed by the rule; the nearest miss of the batch.
+    14. *A whole-cell multinomial redraw of that render* (try E40b; a call the sixth pass named hard). The
+        dispersion-free form of the ledger's resampling line, read before on the heart only (try H19). It moves
+        little: within 0.3 of the second upload as built on eight tasks and -0.88 on the ninth; S(0.45) -0.11 as a
+        second upload. The redraw that was strongly one-sided on the heart and on T3 has little to act on here, where
+        the render already brings the shallower bracket's cells to the deeper bracket's depth.
+    15. *A quadratic in place of the embryo trend's line* (tries E40c and E40d; the second critic's proposal, closed
+        until the sixth pass as a variant). Against `fgw` the first-upload form loses on both counted backtests (-2.18
+        and -4.43, ahead in no seed); against the line each form is worse on eight of the nine tasks (by about 8 on
+        the E7.25 backtest's task) and better on one. No pair rule is passed (S(0.45) -0.68 and -1.09 as a first
+        upload, -1.47 as a second). On the two counted backtests the samples span exactly three days, so the quadratic
+        passes through every sample and carries their run differences in full, as its row said before the run.
+    16. *The same quadratic on the heart's ladder trend* (try H21). Not kept: -4.13 on the one-day backtest and -1.04
+        on the 1.75-day one against the trend as built, ahead in no seed on either. Its reviewer had measured before
+        the run that at these stage days the quadratic's factor scatters about five times as much as the line's, so
+        the read closes the form as built and says little about curvature in general.
+    17. *The all-boards forms on the Task 3 folds* (tries K14a to K14d; a call the sixth pass named hard). Line 9 had
+        closed them with one sentence on T3's frozen rules; those rules fix the upload, not what may be read on the
+        knockout folds. The mixture's first control matched its arm's mean only to first order and was replaced by the
+        exactly matched one before any output existed. Nothing is supported. The mixture gains on the two
+        cross-knockout folds (+1.10 and +1.49) and loses on the replicate fold (-2.00), and its control does the same
+        (+0.89, +2.35 and -2.28): a smaller shift, not an effect of two kinds of cells. The exact-total repair moves
+        the score by 0.1 to 0.2. The whole-cell redraw gains 2.37 and 5.73 on the two folds whose target is a Gata4
+        replicate and loses 3.45 on the fold whose target is Mab21l2, so the reading's third clause closes it. The
+        released files show why: the Gata4 target holds 68 counts per cell against its reference's 131, and the
+        Mab21l2 target 95 against 75, so added count noise helps where the target is shallower than its reference and
+        hurts where it is deeper. The fold arms carry no depth step; T3's first-choice file has one, fixed by the
+        frozen rules.
+    18. *Two lines the record had left unbuilt* (tries E41a and E41b; from the check of the closures "not buildable",
+        below). The Potts sorting reaches its target in most seeds on every task (the entry's file is more mixed than
+        either bracket) and is above `fgw` on eight of the nine tasks, by too little for the rule (+0.32 and -0.00 on
+        the counted backtests). **The partial coupling passes**: against `fgw` +1.88 on the E7.5 backtest (ahead in 10
+        of 10 seeds) and +0.71 on the E7.25 one (9 of 10), and as a first upload beside the second upload S(0.45)
+        +0.56 with all four clauses; the gain is on the shape term. Nothing is requested yet. Its row warned before
+        the run that the arm is in large part a cloud that moves less (its share was 0.10 to 0.73, so 27 to 90% of its
+        anchors do not move) and that the share comes from cell-type names that are not harmonised across stages; at
+        the test pair the share is 0.417, inside the practice range. On 2026-11-14 the captain asked for the same test
+        with cells simply moved less; three control arms are specified for it (every anchor moved by the same share;
+        the same number of anchors left unmoved at random; no movement). A cold adversarial check and an independent
+        recomputation of the tables were started and stopped on the account's usage limit before handing back; they
+        are to be resumed. Until they and the controls are read, the pass is a pass of the rules and not a
+        recommendation.
+  - **The closures "not buildable from the record", tested** (workflow wf_7bb9d8b1-464, read only: a designer tried to
+    write, for each such closure, a form with no free number that the rules allow and a counted read can judge; a
+    verifier attacked each class). Eighteen closures were listed. Sixteen stand, on both agents' reading: five are
+    variants of arms already read (the negative-binomial redraw, the frame form's pivot, the decoders' bound, recipe
+    R8's run basis, the mirror correction's sign test); four need a number that nothing released fixes (a Schrodinger
+    bridge's entropy weight, a background threshold for T3, the fluctuation-response scale, the two-scenario
+    exponent); five have no counted read that could judge them (latent Gaussian-OT decoding on the embryo, recipe R4
+    on T3, a learned flow on T1, a clock warp of the embryo's bracket fraction, T1's growth quotas and births); and
+    two have their design only in a folder nobody may open (the lineage-distance factor, the emergence-first second
+    upload). The verifier added five closures of the same kind that the designer had missed and classed them the same
+    way (one needs a number, three are variants, one is blocked by A15 or is a variant of try K11a). One closure of
+    the eighteen has a form with no free number, a zero-temperature Potts sorting of which embryo cell sits where; on
+    one more, a partial FGW coupling, the designer wrote such a form and the verifier called three of its points free
+    choices. Both were built and read (line 18), the second with its three choices named in its row.
   - **Two critics, asked to attack the claim that the options are used up** (workflow wf_e1f10462-6d0, read only). The
     first listed every lever worth 3 points of the total or more: nine, none open. Closed by a rule: T1's depth (the
     largest: +10 to +22 T1 at zero gap, try T29), T3's depth step, and the heart's size, scope and cell numbers.
@@ -3889,9 +3951,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     new T1 practice family would count only with the captain's approval) and one has no source (a Cre-driver-only
     effect). The largest was priced at about +0.5 of the total. The sixth pass (below) said that "variant" and "no
     source" were that agent's classifications. What stands in their place: the quadratic trend is a different form
-    from the line and is read, on the embryo and on the heart (tries E40c, E40d and H21, below); another transport (a
-    Schrodinger bridge or an unbalanced coupling) needs a constant that no record gives, the entropy weight of the one
-    and the unmatched share of the other, the ground on which row E32 left the unbalanced coupling unbuilt; and for a
+    from the line and is read, on the embryo and on the heart (lines 15 and 16); another transport (a Schrodinger
+    bridge or an unbalanced coupling) needs a constant that no record gives, the entropy weight of the one and the
+    unmatched share of the other, the ground on which row E32 left the unbalanced coupling unbuilt; and for a
     Cre-driver-only effect the runs report's search found no outside source, any such source would be cross-modal
     input (A15), and its released-only form is the ledger's pruned Mesp1-lineage contrast shared by the released
     knockouts, which the ledger closes with the timing shift whose estimator failed its known-lag check.
@@ -3947,24 +4009,28 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     (nine are read by now) and named its own hard calls: the whole-cell multinomial redraw on the embryo's render,
     which it classed a variant of line 11, and the mixture on T3, which it classed as blocked by extending line 9's
     sentence on T3's frozen rules. So that no label stands in for a read, the open line, both hard calls, the
-    exact-total and multinomial kernels on the T3 folds and the quadratic trend on the embryo and on the heart are
-    being built as tries E40a to E40d, K14a to K14d and H21, each with its row before its run; their lines are added
-    to this entry when they are read. So the sweeps found four, then two, then one, then one, then one. A seventh pass
-    follows those reads.
-  - **Where it leaves the target.** Nothing read in this entry passes the adoption rule or a pair rule, so no upload,
-    build, rule, gate figure or reference list changes; the ten files of `builds_dc7b6ae` stand. The committed
-    estimate stays 184 (170 to 198); the forecast for the files as built stays its upper reading, 194.4, with P(total
-    >= 215.41) at 0.01% or less. The options for taking the team's own estimate past 215.41 are used up within the
-    rules: every line of the ledger, the plan and the research reports is now read, closed by a pre-set gate or by
-    arithmetic, blocked by a named rule or ruling, without a practice read that could judge it, or not buildable from
-    the record; the two first-upload arms that passed the pair rule are left to the captain, with the AI assistant's
-    advice against them labelled as such; every line the independent sweeps named open is read, and two critics found
-    no open lever and no new line. What could still move the total lies outside the AI assistant's reach: how the
-    hidden samples were measured (the seventh email, screened reads on 19 and 23 Nov), how final entries are marked
-    (the drafted eighth email), and the levers the post-exposure block and the frozen rules keep closed, which only
-    the captain could reopen and for which no released file gives a value. Twenty counted tries in this entry (T39,
-    T40 and T41; K12a and K12b; K13a and K13b; E36a to E36d; E37a and E37b; E38a to E38d; E39a to E39c) and one
-    reading (N40): T1 37, embryo 60, heart 25, T3 27.
+    exact-total and multinomial kernels on the T3 folds and the quadratic trend on the embryo and on the heart were
+    built and read as tries E40a to E40d, K14a to K14d and H21, each with its row before its run (lines 13 to 17). So
+    the sweeps found four, then two, then one, then one, then one. A seventh pass, over lines 13 to 18 and the whole
+    ledger, follows the controls of line 18; it had not run when this entry was last written.
+  - **Where it leaves the target.** One arm read in this entry passes the adoption rule and a pair rule: the embryo's
+    partial coupling (line 18), worth about +0.56 embryo points beside the second upload, about +0.3 on the total. It
+    is not put to the captain yet: its controls, a cold adversarial check and an independent recomputation come first.
+    Nothing else passes. No upload, build, rule, gate figure or reference list has changed; the ten files of
+    `builds_dc7b6ae` stand. The committed estimate stays 184 (170 to 198); the forecast for the files as built stays
+    its upper reading, 194.4, with P(total >= 215.41) at 0.01% or less, and no set of organiser replies takes it past
+    203.7 (decision log 2026-11-14 (a)). The options for taking the team's own estimate past 215.41 are used up within
+    the rules: every line of the ledger, the plan and the research reports is now read, closed by a pre-set gate or by
+    arithmetic, blocked by a named rule or ruling, without a practice read that could judge it, or tested for a form
+    with no free number and found to have none; the two first-upload arms that passed the pair rule earlier are left
+    to the captain, with the AI assistant's advice against them labelled as such; every line the independent sweeps
+    named open is read, and two critics found no open lever and no new line. What could still move the total by more
+    than a point or two lies outside the AI assistant's reach: the levers the post-exposure block and the frozen rules
+    keep closed, which only the captain could reopen and for which no released file gives a value (the largest, Task
+    1's depth, is worth about +2 to +4.5 Task 1 points at the real time gap and only if the hidden sample is much
+    shallower than library 3; the +10 to +22 quoted above is its size at zero gap). Thirty-one counted tries in this
+    entry (T39, T40 and T41; K12a and K12b; K13a and K13b; K14a to K14d; E36a to E36d; E37a and E37b; E38a to E38d;
+    E39a to E39c; E40a to E40d; E41a and E41b; H21) and one reading (N40): T1 37, embryo 66, heart 26, T3 31.
 - 2026-11-14 (a), the organisers' replies assumed for the four questions that had no working answer: what that changes
   and what it cannot. Written by the AI assistant; the captain can overrule any of it.
   - **The instruction.** The captain, 2026-11-14, on being told by a side agent that two questions for the organisers

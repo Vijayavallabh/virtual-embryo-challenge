@@ -1210,22 +1210,31 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     of its closures (two agents), four build pipelines with independent reviewers (eight), three reviewed fixes (six),
     two critics, a third pass over the entry (two), two more build pipelines (four) and their fixes (four), a fourth
     pass (two), one more build pipeline (two), a fifth pass (two), two more build pipelines (four), a sixth pass
-    (two), and one reviewer each for the two fixes the AI assistant wrote itself (the polar runner; the T3 decoder's
-    reading). Each brief opened with the list of what is never opened (boards, data, runs, notes, the research
-    folders, session logs and memory files) and said how to search and run; the builders and reviewers ran synthetic
-    tests only. The main session read the agents' hand-backs, not their transcripts. What agents reported themselves:
-    one critic's shell output was saved by the harness under the account folder and it did not open it; one reviewer
-    returned before its test rerun ended, and the main session reran those tests; builders widened one existing test's
-    list of allowed new names, with no pinned value changed.
-  - **Six errors in the AI assistant's own briefs, caught by builders and reviewers before anything ran on them.** The
+    (two), four more build pipelines (eight) and one reviewed fix (two), a check of the closures "not buildable from
+    the record" (two), a panel on the organisers' replies (three predictors, two reviewers and one recomputation), and
+    one reviewer each for the two fixes the AI assistant wrote itself (the polar runner; the T3 decoder's reading).
+    Each brief opened with the list of what is never opened (boards, data, runs, notes, the research folders, session
+    logs and memory files) and said how to search and run; the builders and reviewers ran synthetic tests only. The
+    main session read the agents' hand-backs, not their transcripts. What agents reported themselves: one critic's
+    shell output was saved by the harness under the account folder and it did not open it; one reviewer returned
+    before its test rerun ended, and the main session reran those tests; builders widened one existing test's list of
+    allowed new names, with no pinned value changed.
+  - **Ten errors in the AI assistant's own briefs, caught by builders and reviewers before anything ran on them.** The
     gate first written for recipe R8 on T3 left out one contrast at a time and passed pure noise in 30 of 30 simulated
     runs; it was replaced by a leave-one-group-out gate before any gate output existed. The rotation-aware move was
     first specified with its pivot at the patch centroid, which cannot do what the recipe is for; a second form was
     added. The growth-shares arm's idle case was not exact; it was made so. The mirror correction's sign test also
     mirrors partners that are right and only noisy; a gated form was added beside it. The T3 decoder's first control
     was the arm itself on nearly all its genes; it was replaced. Its second control could fall short unnoticed; the
-    reading was tightened so that a short control can only close the line. In each case the brief or the reading was
-    amended first, the code after, and the row was written only when the last review said ready.
+    reading was tightened so that a short control can only close the line. The T3 mixture's control was first the
+    factor at half its log ratio, which matches the mixture's mean only to first order (off by 2 to 20% on genes moved
+    more than 1.5-fold and by 60% at the factor's clip bounds); it was replaced by the exactly matched one, and the
+    fix brief's own account of the miss ("always in one direction", "about 6%") was wrong, as its builder and reviewer
+    both said. The partial coupling's iteration cap as specified made every solve fail at real size; the builder used
+    the only cap that builds and said so. The Potts form, taken from the verifying agent of the closure check, was
+    found to freeze far from its target on synthetic clouds; that went into its row before the run, and on the
+    practice tasks it did not happen. In each case the brief or the reading was amended first, the code after, and the
+    row was written only when the last review said ready.
   - **Rows and readings.** Reading N40 was registered knowing which way its arithmetic pointed (the two tables it
     combines were already committed and printed), as its row says; it could only withdraw. Every try of the round has
     its row committed before its run. The first run of tries E36 wrote no task file: the builder's cloud guard refused
@@ -1236,6 +1245,20 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     nothing and are named in the row. While checking a committed practice-task file the main session printed its board
     field, which holds a validation board's published limits; that board is public and the line describes no test
     board.
+  - **Two checks that stopped before handing back.** A cold adversarial check of the one reading that passed (tries
+    E41b) and an independent recomputation of its tables were started on 2026-11-14 and both ended on the account's
+    usage limit without a result. Nothing they might have said is on record or was used; they are to be resumed, and
+    no request rests on the reading until they have handed back.
+  - **Released-file listings made by the main session on 2026-11-14.** For decision log 2026-11-14 (a) a script listed
+    the obs columns of the released T2 and T3 files and the slide and batch identifiers of the three knockout files;
+    for row K14 another read the counts layers of the three knockout files and their two wild-type references and
+    printed median counts per cell; for the cold check of tries E41 a third computed the overlap of two stages' label
+    distributions for the test pair and the practice pairs from obs columns and the lineage map. All three read
+    released and unlocked files only, compared no prediction with a target and read no score; the figures are in
+    `docs/DATA_NOTES.md`, the decision log and the rows. The build records of tries E41 (shares, stop reasons and
+    counts of swaps on practice tasks) were read before their scores, as the row had fixed. One shell call of the main
+    session printed the whole ledger into a tool output that the harness saved under the account folder; the ledger
+    holds no quarantined material and the saved file was not opened.
   - **Still true:** no format check was sent, nothing was uploaded, no test score or leaderboard figure was read, the
     team key was not used, and the DGX reference checkout is untouched at dc7b6ae. The DGX's system disk is still
     nearly full (under 1 GB free); test runs there keep their temp files on the large volume.
