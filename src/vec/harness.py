@@ -1074,8 +1074,10 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     [seed, POTTS_STREAMS[1]]); the positions array is left as it is. anchor_moves (campaign branch campaign/emb-g):
     "coupled" (the entry), "damped", "random_still" (stream [seed, ANCHOR_STILL_STREAM]) or "still", the controls of
     vec.t2_build.interpolate_clouds for the partial coupling, s the overlap of the brackets' anchors' obs["celltype"]
-    distributions. build_record: a dict that receives the arm's record ("potts", "partial" and/or "anchor_move";
-    shares, ratios, s, masses and a count of swaps only)."""
+    distributions; "damped_matched" (fix brief M2) its movement-matched control. build_record: a dict that receives
+    the arm's record ("potts", "partial" and/or "anchor_move"; shares, ratios, s, masses and a count of swaps only) and
+    "shift", the call's mean anchor and mean cell shift per bracket (vec.t2_build.Interpolation.movement), which
+    experiments/harness/n46_embryo_g_arms.py turns into ratios to the entry's before it writes anything."""
     if potts and local_perm:
         raise ValueError("potts and local_perm both re-arrange the cells; use one of them")
     t = ctx.task
@@ -1105,6 +1107,9 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
         build_record["partial"] = res.record["partial"]
     if build_record is not None and "anchor_move" in res.record:
         build_record["anchor_move"] = {"anchor_moves": res.record["anchor_moves"], **res.record["anchor_move"]}
+    if build_record is not None:  # fix brief M2: how far the call moves (n46 turns it into ratios to the entry's)
+        build_record["shift"] = {"anchor": list(res.movement["mean_anchor_shift"]),
+                                 "cell": list(res.movement["mean_cell_shift"])}
     if expression == "mixture":
         X = np.empty((len(res.rows), len(g)), dtype=np.float32)
         X[res.stage == 0], X[res.stage == 1] = Eb[res.rows[res.stage == 0]], Ea[res.rows[res.stage == 1]]
@@ -1373,7 +1378,7 @@ def _anchor_move_kw(anchor_moves: str, before: ad.AnnData, after: ad.AnnData, se
     if anchor_moves == t2_build.ANCHOR_MOVES[0]:
         return {}
     kw: dict = {"anchor_moves": anchor_moves}
-    if anchor_moves in ("damped", "random_still"):
+    if anchor_moves in ("damped", "random_still", "damped_matched"):
         kw["anchor_labels"] = (before.obs["celltype"], after.obs["celltype"])
     if anchor_moves == "random_still":
         kw["anchor_rng"] = np.random.default_rng([seed, ANCHOR_STILL_STREAM])
@@ -1397,6 +1402,13 @@ def _fgw_still(ctx: BuildContext, build_record: dict | None = None) -> Stage:
     """Campaign arm (branch campaign/emb-g; a control for fgw_partial): the entry with no anchor displaced. No label
     is read and no number is used."""
     return _fgw(ctx, anchor_moves="still", build_record=build_record)
+
+
+def _fgw_damp_m(ctx: BuildContext, build_record: dict | None = None) -> Stage:
+    """Campaign arm (fix brief M2; a control for fgw_partial matched on movement): the entry with every anchor's
+    displacement of a bracket multiplied by that bracket's factor, the mean cell-level shift under fgw_partial's
+    coupling on the same anchors over the entry's (vec.t2_build.movement_factors). No constant is new."""
+    return _fgw(ctx, anchor_moves="damped_matched", build_record=build_record)
 
 
 def _fgw_aligned_series_xt(ctx: BuildContext) -> Stage:
@@ -2003,7 +2015,16 @@ CANDIDATES = {
                                     "normalised positions, the later bracket's rotated into the earlier's frame by the "
                                     "entry's rotation", "anchor_moves": "still", "alpha": t2_build.INTERP_ALPHA,
                             "k": t2_build.INTERP_K, "scope": "whole"}, requires=_interp),
-    "fgw_aligned_series_xt": Candidate("fgw_aligned_series_xt", frozenset({"T2"}), (), _fgw_aligned_series_xt,
+    # fix brief M2 (campaign/emb-g): the movement-matched control
+    "fgw_damp_m": Candidate("fgw_damp_m", frozenset({"T2"}), (), _fgw_damp_m,
+                            {"what": "fgw with every anchor's displacement of a bracket multiplied by one factor of "
+                                     "that bracket: the mean over the bracket's cells of the norm of the k-anchor mean "
+                                     "displacement under fgw_partial's coupling on the same anchors, over the entry's; "
+                                     "the entry's balanced coupling, directions, partners and rotation",
+                             "anchor_moves": "damped_matched", "label": "celltype", "alpha": t2_build.INTERP_ALPHA,
+                             "k": t2_build.INTERP_K, "num_iter_max": t2_build.INTERP_EMD_ITER, "scope": "whole"},
+                            requires=_interp),
+    "fgw_aligned_series_xt":Candidate("fgw_aligned_series_xt", frozenset({"T2"}), (), _fgw_aligned_series_xt,
                                        {"what": "fgw_aligned_series (the second upload as built) with each rendered "
                                                 "cell's panel total and outside count brought to their rounded "
                                                 "expected values by try H18's repair",

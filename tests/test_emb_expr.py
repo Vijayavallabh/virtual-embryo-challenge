@@ -425,7 +425,8 @@ NEW_AT_MIRROR = ("fgw_mirrorfix", "fgw_mirrorfix_series",  # campaign/emb-mirror
 NEW_AT_EMB_D = ("fgw_tissue", "fgw_tissue_series",  # campaign/emb-d (tests/test_emb_batch_d.py)
                 "fgw_aligned_series_xt")
 NEW_AT_EMB_F = ("fgw_potts", "fgw_partial")  # campaign/emb-f (tests/test_emb_batch_f.py)
-NEW_AT_EMB_G = ("fgw_damp", "fgw_part_rand", "fgw_still")  # campaign/emb-g (tests/test_emb_batch_g.py)
+NEW_AT_EMB_G = ("fgw_damp", "fgw_part_rand", "fgw_still",  # campaign/emb-g (tests/test_emb_batch_g.py)
+                "fgw_damp_m")
 
 
 @pytest.fixture(scope="module")

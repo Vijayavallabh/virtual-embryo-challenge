@@ -1384,7 +1384,9 @@ COUPLINGS = ("fgw", "partial")
 # anchors' labels that coupling="partial" transports), "random_still" (in each bracket a uniformly random subset of
 # round(s x its anchors) anchors keeps the entry's displacement, the others get 0; `still_anchor_subset`) or "still"
 # (every anchor's displacement 0). The entry's balanced coupling, partners and rotation in all three. No constant.
-ANCHOR_MOVES = ("coupled", "damped", "random_still", "still")
+# "damped_matched" (fix brief M2): every anchor's displacement of a bracket times one factor of that bracket, the mean
+# cell-level shift coupling="partial" gives over the bracket's cells divided by the entry's (`movement_factors`).
+ANCHOR_MOVES = ("coupled", "damped", "random_still", "still", "damped_matched")
 
 
 def pchip_rms(days, rms, target_day: float) -> float:
@@ -1416,7 +1418,10 @@ class Interpolation:
     each stage, the FGW coupling, the coupling that set the moves, the rotation, both clouds in the before stage's
     normalised frame and every cell's mean anchor displacement there; with draw="midpoint" also `midpoint`: the
     anchors' joint-PC fit (centre, loadings), the residualised joint PCs, strata, offsets and weights per bracket, each
-    row's expected share of the draw and the uniform rows of the same seed, for the gate N16)."""
+    row's expected share of the draw and the uniform rows of the same seed, for the gate N16). `movement` (every call;
+    campaign branch campaign/emb-g, fix brief M2): "mean_anchor_shift", the record's own pair, and "mean_cell_shift",
+    per bracket the mean over all its cells of the norm of the k-anchor mean displacement the call applies (no time
+    fraction). It is kept apart from `record` so that every record stays as it was."""
 
     stage: np.ndarray
     rows: np.ndarray
@@ -1426,6 +1431,7 @@ class Interpolation:
     record: dict
     partners: np.ndarray | None = None
     coupling: dict | None = None
+    movement: dict | None = None
 
 
 def _joint_pcs(Eb: np.ndarray, Ea: np.ndarray, n_pc: int) -> tuple[np.ndarray, np.ndarray]:
@@ -1810,13 +1816,21 @@ def still_anchor_subset(n_anchor: int, s: Fraction, rng: np.random.Generator) ->
 
 
 def controlled_displacements(db: np.ndarray, da: np.ndarray, anchor_moves: str, s: Fraction | None,
-                             rng: np.random.Generator | None) -> tuple[np.ndarray, np.ndarray]:
+                             rng: np.random.Generator | None,
+                             factors: tuple[float, float] | None = None) -> tuple[np.ndarray, np.ndarray]:
     """The anchors' displacements (before, after) under `anchor_moves` (campaign branch campaign/emb-g), from the
     entry's db and da: "coupled" returns them as they are, "damped" multiplies both by s, "random_still" keeps them on
     `still_anchor_subset` of each bracket (the before bracket's draw first, then the after bracket's, both from `rng`)
-    and sets the others to 0, "still" sets every one to 0."""
+    and sets the others to 0, "still" sets every one to 0, "damped_matched" multiplies each bracket's by its own factor
+    (`movement_factors`; factors exactly (1, 1) return them as they are)."""
     if anchor_moves == ANCHOR_MOVES[0]:
         return db, da
+    if anchor_moves == "damped_matched":
+        if factors is None:
+            raise ValueError("damped_matched needs its two factors")
+        if factors == (1.0, 1.0):
+            return db, da
+        return db * float(factors[0]), da * float(factors[1])
     if anchor_moves == "damped":
         return db * float(s), da * float(s)
     if anchor_moves == "random_still":
@@ -1826,6 +1840,23 @@ def controlled_displacements(db: np.ndarray, da: np.ndarray, anchor_moves: str, 
     if anchor_moves == "still":
         return np.zeros_like(db), np.zeros_like(da)
     raise ValueError(f"anchor_moves must be one of {ANCHOR_MOVES}, got {anchor_moves!r}")
+
+
+def mean_cell_shift(d: np.ndarray, near: np.ndarray) -> float:
+    """The mean over a bracket's cells of the norm of each cell's k-anchor mean displacement (d the anchors'
+    displacements, near each cell's k nearest anchors; no time fraction)."""
+    return float(np.linalg.norm(d[near].mean(1), axis=1).mean())
+
+
+def movement_factors(entry_cell_shift, partial_cell_shift) -> tuple[float, float]:
+    """anchor_moves="damped_matched"'s two factors (fix brief M2): per bracket (before, after), the partial
+    coupling's `mean_cell_shift` over the entry's. A denominator of 0 raises ValueError (the arm refuses)."""
+    out = []
+    for den, num in zip(entry_cell_shift, partial_cell_shift, strict=True):
+        if not den > 0.0:
+            raise ValueError("damped_matched: the entry's mean cell shift of a bracket is 0")
+        out.append(float(num) / float(den))
+    return out[0], out[1]
 
 
 def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: float, n: int, seed: int, *,
@@ -1948,6 +1979,14 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     gains "anchor_moves" and "anchor_move": s (not for "still"), the share of anchors with a non-zero displacement per
     bracket (before, after) and the mean norm of the anchors' displacements as a ratio to the entry's on the same
     anchors per bracket (None where the entry's is 0). Left unset, the result is the entry's bit for bit.
+    "damped_matched" (fix brief M2; anchor_labels as "damped") multiplies every anchor's displacement of a bracket by
+    one factor of that bracket (`movement_factors`): the mean over all the bracket's cells of the norm of the k-anchor
+    mean of the displacements coupling="partial" computes for the same anchors and labels (this function called with
+    coupling="partial": its own partial coupling, rotation and `partial_partners`; `Interpolation.movement`), divided
+    by the same mean of the entry's. The partial coupling sets these two numbers only: directions, partners and rotation
+    stay the entry's and every anchor moves. With s exactly 1 the factors are 1, the partial solver is not called and
+    the file is the entry's bit for bit; a solver failure or a zero denominator raises ValueError. The record's
+    "anchor_move" also holds "factors" [before, after].
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1993,8 +2032,9 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
             raise ValueError("coupling_labels: one label per cell of each bracket")
     if anchor_moves not in ANCHOR_MOVES:
         raise ValueError(f"anchor_moves must be one of {ANCHOR_MOVES}, got {anchor_moves!r}")
-    if (anchor_moves in ("damped", "random_still")) != (anchor_labels is not None):
-        raise ValueError("anchor_labels are given with anchor_moves 'damped' or 'random_still' and only then")
+    if (anchor_moves in ("damped", "random_still", "damped_matched")) != (anchor_labels is not None):
+        raise ValueError("anchor_labels are given with anchor_moves 'damped', 'random_still' or 'damped_matched' and "
+                         "only then")
     if (anchor_moves == "random_still") != (anchor_rng is not None):
         raise ValueError("anchor_rng is given with anchor_moves='random_still' and only then")
     if anchor_moves != ANCHOR_MOVES[0]:
@@ -2059,18 +2099,33 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     db = yb - Zb[ib]
     da = ya - Za_b[ia]
     anchor_rec = None
+    near_b, near_a = nearest_anchors(Zb, Zb[ib], k)[1], nearest_anchors(Za_b, Za_b[ia], k)[1]
     if anchor_moves != ANCHOR_MOVES[0]:
         s_anchor = label_overlap(alab_b[ib], alab_a[ia]) if anchor_labels is not None else None
         db0, da0 = db, da
-        db, da = controlled_displacements(db0, da0, anchor_moves, s_anchor, anchor_rng)
+        factors = None
+        if anchor_moves == "damped_matched":
+            factors = (1.0, 1.0)
+            if s_anchor != 1:  # coupling="partial" on the same anchors and labels, for the two factors only
+                part = interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t, n, seed,
+                                          target_rms=target_rms, alpha=alpha, n_anchor=n_anchor, n_pc=n_pc, k=k,
+                                          max_iter=max_iter, emd_max_iter=emd_max_iter, t_pos=t_pos,
+                                          features=features, tissue_k=tissue_k, coupling=COUPLINGS[1],
+                                          coupling_labels=anchor_labels)
+                factors = movement_factors([mean_cell_shift(db0, near_b), mean_cell_shift(da0, near_a)],
+                                           part.movement["mean_cell_shift"])
+            db, da = controlled_displacements(db0, da0, anchor_moves, s_anchor, anchor_rng, factors=factors)
+        else:
+            db, da = controlled_displacements(db0, da0, anchor_moves, s_anchor, anchor_rng)
         anchor_rec = {} if s_anchor is None else {"s": float(s_anchor)}
+        if factors is not None:
+            anchor_rec["factors"] = [float(factors[0]), float(factors[1])]
         anchor_rec["moving_share"] = [float((d != 0.0).any(1).mean()) for d in (db, da)]
         ratio = []
         for d, d0 in ((db, db0), (da, da0)):
             m0 = float(np.linalg.norm(d0, axis=1).mean())
             ratio.append(float(np.linalg.norm(d, axis=1).mean()) / m0 if m0 > 0.0 else None)
         anchor_rec["shift_ratio"] = ratio
-    near_b, near_a = nearest_anchors(Zb, Zb[ib], k)[1], nearest_anchors(Za_b, Za_b[ia], k)[1]
     pos_b = Zb + tp * db[near_b].mean(1)
     pos_a = Za_b + (1.0 - tp) * da[near_a].mean(1)
     polar_rec = None
@@ -2167,8 +2222,10 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         if midpoint is not None:
             internals["midpoint"] = {**midpoint["internals"], "uniform_before": midpoint["uniform_before"],
                                      "uniform_after": midpoint["uniform_after"]}
+    movement = {"mean_anchor_shift": list(record["mean_anchor_shift"]),
+                "mean_cell_shift": [mean_cell_shift(db, near_b), mean_cell_shift(da, near_a)]}
     return Interpolation(stage=stage, rows=rows, coords=coords, pool_coords=pool, pool_weights=weights, record=record,
-                         partners=partners, coupling=internals)
+                         partners=partners, coupling=internals, movement=movement)
 
 
 def _sample_from_rows(P: np.ndarray, which: np.ndarray, rng: np.random.Generator,

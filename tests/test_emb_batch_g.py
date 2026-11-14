@@ -31,6 +31,7 @@ HARNESS = REPO / "experiments" / "harness"
 BASE = "fcc1f6b"  # campaign/emb-f, the branch's base
 ARMS = ("fgw_damp", "fgw_part_rand", "fgw_still")
 MODES = {"fgw_damp": "damped", "fgw_part_rand": "random_still", "fgw_still": "still"}
+RUN_ARMS = (*ARMS, "fgw_damp_m")  # fix brief M2: the runner's four controls
 T = 0.4
 N = 300
 
@@ -411,16 +412,21 @@ def n46():
 
 
 def test_the_runner_scores_the_floor_fgw_fgw_partial_and_the_three_arms_on_the_nine_tasks(n46):
-    assert n46.NEW == ARMS and n46.ARMS == (harness.FLOOR, "fgw", "fgw_partial", *ARMS)
+    # fix brief M2: the fourth control fgw_damp_m joins the three
+    assert n46.NEW == RUN_ARMS and n46.ARMS == (harness.FLOOR, "fgw", "fgw_partial", *RUN_ARMS)
     tasks = n46.nt.all_tasks()
     assert set(tasks) == {"half", "late", "new1", "new2", "e75", "e725", "x1", "x2", "x3"}
     for name in ("fgw", "fgw_partial", *n46.NEW):
         assert all(harness.CANDIDATES[name].applies(t) for t in tasks.values())
 
 
+FAKE_SHIFT = {"fgw": {"anchor": [2.0, 4.0], "cell": [1.0, 0.0]}, "arm": {"anchor": [1.0, 1.0], "cell": [0.5, 0.0]}}
+
+
 def _patch_builds(monkeypatch, n46, fail_on: set[str], key: str, seed_fails: int = 0):
-    """Every guarded arm's build replaced (each new arm writes a record): the arms in fail_on raise the builder's
-    refusal from seed_fails."""
+    """Every guarded arm's build replaced (each new arm writes a record; fix brief M2: fgw, fgw_partial and every
+    new arm also write their shifts, fgw_damp_m its factors): the arms in fail_on raise the builder's refusal from
+    seed_fails."""
     cands = harness.CANDIDATES
 
     def make(name):
@@ -429,20 +435,29 @@ def _patch_builds(monkeypatch, n46, fail_on: set[str], key: str, seed_fails: int
                 raise ValueError(f"{key}: the partial FGW solver failed: ValueError: Error in the EMD resolution 3")
             if name in n46.NEW:
                 build_record["seen"] = 1
-            else:
-                assert build_record is None  # fgw_partial is rescored as it stands, without a record
+            if name == "fgw_damp_m":
+                build_record["anchor_move"] = {"factors": [0.5, 0.25]}
+            build_record["shift"] = FAKE_SHIFT["arm"]
             return "built"
 
         return build
 
+    def fgw(ctx, build_record=None):
+        build_record["shift"] = FAKE_SHIFT["fgw"]
+        return "built"
+
     for x in n46.GUARDED:
         monkeypatch.setitem(cands, x, dataclasses.replace(cands[x], build=make(x)))
-    monkeypatch.setitem(cands, "fgw", dataclasses.replace(cands["fgw"], build=lambda ctx: "built"))
+    monkeypatch.setitem(cands, "fgw", dataclasses.replace(cands["fgw"], build=fgw))
 
 
-def _fake_runner(score: dict[str, float]):
-    """run_task's shape without data or scorer: each candidate is built (its build may raise) and given a constant."""
+def _fake_runner(score: dict[str, float], ctx_of=None):
+    """run_task's shape without data or scorer: each candidate is built (its build may raise) and given a constant.
+    ctx_of(seed) gives the build's context (default: a context holding the seed only)."""
     calls = []
+    if ctx_of is None:
+        def ctx_of(seed):
+            return dataclasses.make_dataclass("Ctx", ["seed"])(seed=seed)
 
     def runner(t, cands, seeds, data_dir):
         calls.append([c.name for c in cands])
@@ -453,7 +468,7 @@ def _fake_runner(score: dict[str, float]):
             for c in cands:
                 if c.name == "floor":
                     continue
-                c.build(dataclasses.make_dataclass("Ctx", ["seed"])(seed=harness.BUILD_SEED_OFFSET + s))
+                c.build(ctx_of(harness.BUILD_SEED_OFFSET + s))
                 row["scores"][c.name] = score[c.name]
                 for k in ("skills", "metrics", "groups"):
                     row[k][c.name] = {}
@@ -466,7 +481,9 @@ def _fake_runner(score: dict[str, float]):
     return runner, calls
 
 
-SCORE = {"fgw": 51.0, "fgw_partial": 52.0, "fgw_damp": 53.0, "fgw_part_rand": 54.0, "fgw_still": 55.0}
+SCORE = {"fgw": 51.0, "fgw_partial": 52.0, "fgw_damp": 53.0, "fgw_part_rand": 54.0, "fgw_still": 55.0,
+         "fgw_damp_m": 56.0}
+FAKE_RATIO = {"anchor": [0.5, 0.25], "cell": [0.5, None]}
 
 
 def test_the_runners_task_file_loads_through_nine_tasks_with_fgw_and_fgw_partial_under_their_names(tmp_path,
@@ -481,7 +498,12 @@ def test_the_runners_task_file_loads_through_nine_tasks_with_fgw_and_fgw_partial
     (path,) = out.glob("T2e_*.json")
     data = json.loads(path.read_text())
     assert data["task_source"] == "experiments/harness/n46_embryo_g_arms.py" and data["not_buildable"] == {}
-    assert data["build_records"] == {a: {str(s): {"seen": 1} for s in n46.SEEDS} for a in ARMS}
+    # fix brief M2: fgw_partial and the four controls carry movement_ratio (fgw's record and raw shifts not written)
+    want = {a: {str(s): {"seen": 1, "movement_ratio": FAKE_RATIO} for s in n46.SEEDS} for a in RUN_ARMS}
+    want["fgw_partial"] = {str(s): {"movement_ratio": FAKE_RATIO} for s in n46.SEEDS}
+    for s in n46.SEEDS:
+        want["fgw_damp_m"][str(s)].update(anchor_move={"factors": [0.5, 0.25]}, factors=[0.5, 0.25])
+    assert data["build_records"] == want
     scores, why, meta = n46.nt._load([out])
     assert why == [] and meta == ["runs:aaaaaaa"]
     assert set(scores[t.key]) == set(n46.ARMS) and {"fgw", "fgw_partial"} <= set(scores[t.key])
@@ -499,15 +521,15 @@ def test_an_arm_the_builder_refuses_is_recorded_and_the_others_are_still_scored(
     runner, calls = _fake_runner(SCORE)
     res = n46.score_task(t, tmp_path, runner=runner)
     assert calls == [list(n46.ARMS), ["floor", "fgw"], ["floor", "fgw_partial"], ["floor", "fgw_damp"],
-                     ["floor", "fgw_part_rand"], ["floor", "fgw_still"]]
+                     ["floor", "fgw_part_rand"], ["floor", "fgw_still"], ["floor", "fgw_damp_m"]]
     assert set(res["not_buildable"]) == {"fgw_partial", "fgw_damp"}
     rec = res["not_buildable"]["fgw_damp"]
     assert rec["status"] == n46.n36.NOT_BUILDABLE and rec["seed"] == 2
     assert rec["message"] == ("ValueError: <task>: the partial FGW solver failed: ValueError: Error in the EMD "
                               "resolution #")
-    scored = {"floor", "fgw", "fgw_part_rand", "fgw_still"}
+    scored = {"floor", "fgw", "fgw_part_rand", "fgw_still", "fgw_damp_m"}
     assert all(set(r["scores"]) == scored for r in res["rows"]) and set(res["candidates"]) == scored
-    assert set(res["build_records"]) == {"fgw_part_rand", "fgw_still"}
+    assert set(res["build_records"]) == {"fgw_part_rand", "fgw_still", "fgw_damp_m"}
     # every guarded arm failing still leaves the floor and fgw scored
     _patch_builds(monkeypatch, n46, set(n46.GUARDED), t.key)
     runner, calls = _fake_runner(SCORE)
@@ -525,10 +547,212 @@ def test_a_failure_outside_a_guarded_arms_build_stops_the_task(tmp_path, monkeyp
     t = n46.nt.all_tasks()["x1"]
     _patch_builds(monkeypatch, n46, set(), t.key)
 
-    def bad_fgw(ctx):
+    def bad_fgw(ctx, build_record=None):
         raise ValueError("fgw fails")
 
     monkeypatch.setitem(harness.CANDIDATES, "fgw", dataclasses.replace(harness.CANDIDATES["fgw"], build=bad_fgw))
     runner, _ = _fake_runner(SCORE)
     with pytest.raises(ValueError, match="fgw fails"):
         n46.score_task(t, tmp_path, runner=runner)
+
+
+# ================================================================================ fix brief M2: fgw_damp_m
+# Tolerances: fgw_damp_m's mean cell shift against fgw_partial's, 1e-9 relative (the same partial displacements; the
+# after bracket's nearest-anchor indices are the entry's against fgw_partial's own, the same up to the rounding of a
+# rotation); a cell-level ratio against the factor it was scaled by, 1e-12 relative.
+DIGESTS_4E3C6EC = {  # the five arms on _partly_shared, computed at 4e3c6ec before fix M2 (tests/test_emb_expr digest)
+    "fgw": "4a53a67d0be4e5195b3ddf8e554b5ac2ac0b506bfb8808f747ab48cea1d8164f",
+    "fgw_partial": "3c6e99b0548240ff9e578ee1c6380417ebcbe0e0b01385616e1a952989afb77a",
+    "fgw_damp": "8e29579079a375747cdaced71865d7b83f038ab24048c355b02cd77d30dda7a1",
+    "fgw_part_rand": "7743a92233c1b3121a80f8726ebd579db62fa748827bb14558fd4dfb62dd5eb0",
+    "fgw_still": "9754173a91bc162a9d59e10eb87b282f75b8877731ca82c63185b139babdcac4",
+}
+
+
+def _spy_m(monkeypatch) -> list:
+    seen = []
+    real = tb.controlled_displacements
+
+    def spy(db, da, mode, s, rng, factors=None):
+        out = real(db, da, mode, s, rng, factors=factors)
+        seen.append((np.array(db), np.array(da), factors, out))
+        return out
+
+    monkeypatch.setattr(tb, "controlled_displacements", spy)
+    return seen
+
+
+def _m_kw(la, lb) -> dict:
+    return {"anchor_moves": "damped_matched", "anchor_labels": (la, lb)}
+
+
+def test_the_five_arms_keep_their_4e3c6ec_files(emb_expr):
+    c = _partly_shared(emb_expr)
+    for name, d in DIGESTS_4E3C6EC.items():
+        assert emb_expr.digest(harness.CANDIDATES[name].build(c)) == d, name
+
+
+def test_damp_m_scales_each_brackets_displacements_by_its_factor_and_matches_fgw_partials_cell_shift(polar,
+                                                                                                     monkeypatch):
+    A, B, E, EB = polar._pair()
+    la, lb = _labels(A, B)
+    entry = tb.interpolate_clouds(A, B, E, EB, T, N, with_coupling=True, **polar.KW)
+    part = tb.interpolate_clouds(A, B, E, EB, T, N, coupling="partial", coupling_labels=(la, lb), **polar.KW)
+    db0, da0 = _entry_displacements(entry)
+    seen = _spy_m(monkeypatch)
+    res = tb.interpolate_clouds(A, B, E, EB, T, N, with_coupling=True, **_m_kw(la, lb), **polar.KW)
+    (db_in, da_in, factors, (db, da)), = seen
+    assert np.array_equal(db_in, db0) and np.array_equal(da_in, da0)
+    fb, fa = factors
+    assert 0 < fb < 1 and 0 < fa < 1 and fb != fa
+    assert np.array_equal(db, db0 * fb) and np.array_equal(da, da0 * fa)
+    rec = res.record["anchor_move"]
+    assert res.record["anchor_moves"] == "damped_matched" and rec["factors"] == [fb, fa]
+    assert rec["s"] == part.record["partial"]["s"] and 0 < rec["s"] < 1
+    assert rec["moving_share"] == [float((db0 != 0).any(1).mean()), float((da0 != 0).any(1).mean())]
+    # each bracket's cells move on average as far as under fgw_partial; its anchors in general do not
+    np.testing.assert_allclose(res.movement["mean_cell_shift"], part.movement["mean_cell_shift"], rtol=1e-9, atol=0)
+    assert not np.allclose(res.movement["mean_anchor_shift"], part.movement["mean_anchor_shift"], rtol=1e-3)
+    # the factors are the cell-level ratios of fgw_partial's shifts to the entry's
+    for i, f in enumerate((fb, fa)):
+        assert f == pytest.approx(part.movement["mean_cell_shift"][i] / entry.movement["mean_cell_shift"][i],
+                                  rel=1e-9)
+    # the entry's coupling, rotation, anchors and partners (directions); only the lengths change
+    for key in ("anchors_before", "anchors_after", "fgw", "moves", "rotation", "before_frame", "after_frame"):
+        assert np.array_equal(res.coupling[key], entry.coupling[key]), key
+    assert res.record["rotation_deg"] == entry.record["rotation_deg"]
+    np.testing.assert_allclose(res.coupling["shift_before"], fb * entry.coupling["shift_before"], rtol=1e-12, atol=0)
+    np.testing.assert_allclose(res.coupling["shift_after"], fa * entry.coupling["shift_after"], rtol=1e-12, atol=0)
+
+
+def test_damp_m_with_an_overlap_of_one_is_fgw_bit_for_bit_without_the_partial_solver(polar, monkeypatch):
+    A, B, E, EB = polar._pair()
+    entry = tb.interpolate_clouds(A, B, E, EB, T, N, **polar.KW)
+
+    def boom(*a, **kw):
+        raise AssertionError("the partial solver is called")
+
+    monkeypatch.setattr(tb, "partial_fgw_coupling", boom)
+    one = (np.full(len(A), "x"), np.full(len(B), "x"))
+    res = tb.interpolate_clouds(A, B, E, EB, T, N, **_m_kw(*one), **polar.KW)
+    polar._same(_strip(res), entry)
+    assert res.movement == entry.movement
+    assert res.record["anchor_move"]["factors"] == [1.0, 1.0] and res.record["anchor_move"]["s"] == 1.0
+
+
+def test_damp_m_refuses_on_a_solver_failure_and_a_zero_denominator(polar, emb_expr, monkeypatch):
+    A, B, E, EB = polar._pair()
+    la, lb = _labels(A, B)
+
+    def fail(*a, **kw):
+        raise ValueError("the partial FGW solver failed: ValueError: stub")
+
+    with monkeypatch.context() as m:
+        m.setattr(tb, "partial_fgw_coupling", fail)
+        with pytest.raises(ValueError, match="partial FGW solver failed"):
+            tb.interpolate_clouds(A, B, E, EB, T, N, **_m_kw(la, lb), **polar.KW)
+        with pytest.raises(ValueError, match="partial FGW solver failed"):
+            harness.CANDIDATES["fgw_damp_m"].build(_partly_shared(emb_expr))
+    with pytest.raises(ValueError, match="mean cell shift of a bracket is 0"):
+        tb.movement_factors([0.0, 1.0], [0.5, 0.5])
+    assert tb.movement_factors([2.0, 4.0], [1.0, 1.0]) == (0.5, 0.25)
+    with pytest.raises(ValueError, match="anchor_labels"):
+        tb.interpolate_clouds(A, B, E, EB, T, 30, anchor_moves="damped_matched", **polar.KW)
+    with pytest.raises(ValueError, match="anchor displacements only"):
+        tb.interpolate_clouds(A, B, E, EB, T, 30, coupling="partial", coupling_labels=(la, lb), **_m_kw(la, lb),
+                              **polar.KW)
+
+
+def test_damp_m_keeps_fgws_draws_and_rows_and_is_reproducible(polar, emb_expr):
+    A, B, E, EB = polar._pair()
+    la, lb = _labels(A, B)
+    entry = tb.interpolate_clouds(A, B, E, EB, T, N, **polar.KW)
+    a = tb.interpolate_clouds(A, B, E, EB, T, N, **_m_kw(la, lb), **polar.KW)
+    b = tb.interpolate_clouds(A, B, E, EB, T, N, **_m_kw(la, lb), **polar.KW)
+    polar._same(a, b)
+    assert np.array_equal(a.rows, entry.rows) and np.array_equal(a.stage, entry.stage)
+    assert np.array_equal(a.pool_weights, entry.pool_weights) and not np.array_equal(a.coords, entry.coords)
+    c = _partly_shared(emb_expr)
+    fgw = harness.CANDIDATES["fgw"].build(c)
+    rec: dict = {}
+    x = harness._fgw_damp_m(c, build_record=rec)
+    y = harness.CANDIDATES["fgw_damp_m"].build(c)
+    assert emb_expr.digest(x) == emb_expr.digest(y)
+    assert np.array_equal(x.X, fgw.X) and x.n == fgw.n and not np.array_equal(x.coords, fgw.coords)
+    assert rec["anchor_move"]["anchor_moves"] == "damped_matched" and len(rec["anchor_move"]["factors"]) == 2
+    c1 = emb_expr.ctx(inputs=emb_expr.stages(), roles=("before", "after"))  # equal label shares: s = 1
+    assert emb_expr.digest(harness.CANDIDATES["fgw_damp_m"].build(c1)) == emb_expr.digest(
+        harness.CANDIDATES["fgw"].build(c1))
+
+
+def test_damp_m_is_registered_like_fgw_partial_and_gets_the_celltype_labels(emb_expr, monkeypatch):
+    c = harness.CANDIDATES["fgw_damp_m"]
+    assert c.tasks == frozenset({"T2"}) and c.requires is harness.CANDIDATES["fgw_partial"].requires
+    assert c.params["label"] == "celltype" and c.params["anchor_moves"] == "damped_matched"
+    seen = []
+    real = tb.interpolate_clouds
+
+    def spy(*a, **kw):
+        seen.append(kw)
+        return real(*a, **kw)
+
+    monkeypatch.setattr(harness.t2_build, "interpolate_clouds", spy)
+    s = emb_expr.stages()
+    c.build(emb_expr.ctx(inputs=s, roles=("before", "after")))
+    (kw,) = seen
+    assert kw["anchor_moves"] == "damped_matched" and "anchor_rng" not in kw and "coupling" not in kw
+    assert np.array_equal(np.asarray(kw["anchor_labels"][0]), np.asarray(s["before"].obs["celltype"]))
+    assert np.array_equal(np.asarray(kw["anchor_labels"][1]), np.asarray(s["after"].obs["celltype"]))
+
+
+# ================================================================================ fix brief M2: the movement record
+@pytest.mark.parametrize("kw", ["entry", "partial", "damped", "random_still", "still", "damped_matched"])
+def test_mean_cell_shift_is_present_for_every_arm_and_equals_a_by_hand_computation(polar, kw):
+    A, B, E, EB = polar._pair()
+    la, lb = _labels(A, B)
+    fixed = {"entry": {}, "partial": {"coupling": "partial", "coupling_labels": (la, lb)},
+             "damped_matched": _m_kw(la, lb)}
+    extra = fixed[kw] if kw in fixed else _kw(kw, la, lb)
+    res = tb.interpolate_clouds(A, B, E, EB, T, N, with_coupling=True, **extra, **polar.KW)
+    by_hand = [float(np.mean([np.sqrt((v ** 2).sum()) for v in res.coupling[key]]))
+               for key in ("shift_before", "shift_after")]
+    np.testing.assert_allclose(res.movement["mean_cell_shift"], by_hand, rtol=1e-12, atol=0)
+    assert res.movement["mean_anchor_shift"] == res.record["mean_anchor_shift"]
+    assert "mean_cell_shift" not in res.record  # every record stays as it was
+
+
+def test_mean_cell_shift_on_a_small_case_by_hand():
+    d = np.array([[1.0, 0, 0], [0, 2.0, 0], [0, 0, 0], [3.0, 4.0, 0]])
+    near = np.array([[0, 1], [2, 3], [0, 2]])
+    # the cells' mean displacements (0.5, 1, 0), (1.5, 2, 0), (0.5, 0, 0): norms sqrt(1.25), 2.5, 0.5
+    assert tb.mean_cell_shift(d, near) == pytest.approx((np.sqrt(1.25) + 2.5 + 0.5) / 3, rel=1e-15)
+
+
+def test_the_runner_writes_movement_ratios_from_real_builds(tmp_path, emb_expr, n46):
+    c = _partly_shared(emb_expr)
+
+    def ctx_of(seed):
+        return dataclasses.replace(c, seed=seed)
+
+    runner, _ = _fake_runner(SCORE, ctx_of=ctx_of)
+    res = n46.score_task(n46.nt.all_tasks()["e75"], tmp_path, runner=runner, seeds=(0, 1))
+    br = res["build_records"]
+    assert set(br) == {"fgw_partial", *RUN_ARMS} and res["not_buildable"] == {}
+    for arm in br:
+        for seed in ("0", "1"):
+            r = br[arm][seed]
+            assert "shift" not in r and set(r["movement_ratio"]) == {"anchor", "cell"}
+            assert all(len(v) == 2 for v in r["movement_ratio"].values())
+    for seed in ("0", "1"):
+        s = br["fgw_damp"][seed]["anchor_move"]["s"]
+        assert 0 < s < 1
+        np.testing.assert_allclose(br["fgw_damp"][seed]["movement_ratio"]["cell"], [s, s], rtol=1e-12)
+        np.testing.assert_allclose(br["fgw_damp"][seed]["movement_ratio"]["anchor"], [s, s], rtol=1e-12)
+        assert br["fgw_still"][seed]["movement_ratio"] == {"anchor": [0.0, 0.0], "cell": [0.0, 0.0]}
+        m = br["fgw_damp_m"][seed]
+        np.testing.assert_allclose(m["movement_ratio"]["cell"], m["factors"], rtol=1e-12)
+        np.testing.assert_allclose(m["movement_ratio"]["cell"], br["fgw_partial"][seed]["movement_ratio"]["cell"],
+                                   rtol=1e-9)
+        assert m["factors"] == m["anchor_move"]["factors"]
+        assert "factors" not in br["fgw_damp"][seed]
+    json.dumps(br)  # floats and None only
