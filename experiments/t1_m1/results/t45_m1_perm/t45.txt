@@ -1,0 +1,79 @@
+try T45, a labelled in-sample diagnostic, never an adoption result: M1 (with R1, R2 and g_mom's factors, the entry's form) at fractions 0, 0.2 and 0.4 of Feng's bracket, with try T15's permuted placebo at 0.2 and 0.4 (and a second permutation, reported only), and two there-and-back steps (0.4 then -0.2, 0.3 then -0.1), on T44's route; Feng's E9.5 cells lie inside these pseudo-tasks' external windows, the cuts are ones earlier T1 choices were made on, and the truth of a one-day cut differs from its reference in the kind of sample as well as in age; the result can only go to the team captain
+Outcome: gene identity: needs the direction's genes; count noise: is not count noise
+T1/E9.5->E10.5:chamber: largest per-seed difference from the committed scores: b0 0 (T42), m1_r_gmom 0 (T42), m1_r_gmom_x2 0 (T44) (gate 1e-09)
+T1/E9.5->E10.5: largest per-seed difference from the committed scores: b0 0 (T42), m1_r_gmom 0 (T42), m1_r_gmom_x2 0 (T44) (gate 1e-09)
+mean scores T1/E9.5->E10.5:chamber: b0 49.68, m1_r_gmom 52.06, m1_r_gmom_x2 53.87, m1_r_gmom_x0 50.04, m1_r_gmom_p1 50.26, m1_r_gmom_p2 50.47, m1_r_gmom_x2b 52.56, m1_r_gmom_x15b 52.33, m1_r_gmom_q1 50.39, m1_r_gmom_q2 50.64
+mean scores T1/E9.5->E10.5: b0 44.12, m1_r_gmom 46.23, m1_r_gmom_x2 47.90, m1_r_gmom_x0 44.49, m1_r_gmom_p1 44.69, m1_r_gmom_p2 44.93, m1_r_gmom_x2b 46.72, m1_r_gmom_x15b 46.46, m1_r_gmom_q1 44.80, m1_r_gmom_q2 45.13
+(a): m1_r_gmom_x2 - m1_r_gmom over m1_r_gmom_p2 - m1_r_gmom_p1: PASSES (passes on 2 of 2 pseudo-tasks (needs 2) and loses on none)
+    T1/E9.5->E10.5:chamber: +1.60 points, ahead 10 of 10, per seed +1.44 to +1.85; skills: de_direction +0.0126, de_score +0.0316, mmd_u +0.0093, variogram +0.0109
+    T1/E9.5->E10.5: +1.44 points, ahead 10 of 10, per seed +1.26 to +1.73; skills: de_direction +0.0111, de_score +0.0313, mmd_u +0.0067, variogram +0.0089
+    applied size at fraction 0.2, T1/E9.5->E10.5:chamber (mean |log f|, sum log f^2, non-held genes): CM Feng 0.0087, 18.094, placebo 0.0087, 18.233; Endocardium Feng 0.0121, 28.636, placebo 0.0122, 28.889; Endothelium Feng 0.0110, 24.068, placebo 0.0110, 24.416; Epicardium Feng 0.0160, 49.901, placebo 0.0161, 50.555
+    the placebo's applied size over Feng's, T1/E9.5->E10.5:chamber (mean |log f|, sum log f^2): CM 1.005, 1.008; Endocardium 1.004, 1.009; Endothelium 1.006, 1.014; Epicardium 1.005, 1.013
+    applied size at fraction 0.2, T1/E9.5->E10.5 (mean |log f|, sum log f^2, non-held genes): CM Feng 0.0087, 18.094, placebo 0.0087, 18.233; Endocardium Feng 0.0121, 28.636, placebo 0.0122, 28.889; Endothelium Feng 0.0110, 24.068, placebo 0.0110, 24.416; Epicardium Feng 0.0160, 49.901, placebo 0.0161, 50.555
+    the placebo's applied size over Feng's, T1/E9.5->E10.5 (mean |log f|, sum log f^2): CM 1.005, 1.008; Endocardium 1.004, 1.009; Endothelium 1.006, 1.014; Epicardium 1.005, 1.013
+    between-bin share of the direction's variance (kept by the placebo), T1/E9.5->E10.5:chamber: CM 0.028; Endocardium 0.019; Endothelium 0.020; Epicardium 0.015
+    between-bin share of the direction's variance (kept by the placebo), T1/E9.5->E10.5: CM 0.028; Endocardium 0.019; Endothelium 0.020; Epicardium 0.015
+    between-bin share over the non-held finite genes (the part applied), T1/E9.5->E10.5:chamber: CM 0.027; Endocardium 0.019; Endothelium 0.020; Epicardium 0.017
+    between-bin share over the non-held finite genes (the part applied), T1/E9.5->E10.5: CM 0.027; Endocardium 0.019; Endothelium 0.020; Epicardium 0.017
+(a0) reported, decides nothing: m1_r_gmom_x2 over m1_r_gmom_p2: PASSES (passes on 2 of 2 pseudo-tasks (needs 2) and loses on none)
+    T1/E9.5->E10.5:chamber: +3.40 points, ahead 10 of 10, per seed +3.13 to +3.63; skills: de_direction +0.0261, de_score +0.0678, mmd_u +0.0210, variogram +0.0209
+    T1/E9.5->E10.5: +2.98 points, ahead 10 of 10, per seed +2.73 to +3.35; skills: de_direction +0.0230, de_score +0.0638, mmd_u +0.0156, variogram +0.0170
+(a2) reported, decides nothing: the second permutation: m1_r_gmom_x2 - m1_r_gmom over m1_r_gmom_q2 - m1_r_gmom_q1: PASSES (passes on 2 of 2 pseudo-tasks (needs 2) and loses on none)
+    T1/E9.5->E10.5:chamber: +1.56 points, ahead 10 of 10, per seed +1.34 to +1.78; skills: de_direction +0.0130, de_score +0.0316, mmd_u +0.0083, variogram +0.0097
+    T1/E9.5->E10.5: +1.35 points, ahead 10 of 10, per seed +1.16 to +1.71; skills: de_direction +0.0113, de_score +0.0299, mmd_u +0.0055, variogram +0.0076
+    the two statements rest on the first permutation (seed LP_PERM_SEED); this second permutation (LP_PERM_SEED + 1) shows the spread across permutations and decides nothing
+(b): m1_r_gmom_p2 over m1_r_gmom_p1: does not pass (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2)
+    T1/E9.5->E10.5:chamber: +0.21 points, ahead 10 of 10, per seed +0.12 to +0.31; skills: de_direction +0.0004, de_score +0.0013, mmd_u +0.0019, variogram +0.0052
+    T1/E9.5->E10.5: +0.24 points, ahead 10 of 10, per seed +0.12 to +0.30; skills: de_direction +0.0012, de_score +0.0011, mmd_u +0.0025, variogram +0.0052
+    applied size at fraction 0.2, T1/E9.5->E10.5:chamber (mean |log f|, sum log f^2, non-held genes): CM Feng 0.0087, 18.094, placebo 0.0087, 18.233; Endocardium Feng 0.0121, 28.636, placebo 0.0122, 28.889; Endothelium Feng 0.0110, 24.068, placebo 0.0110, 24.416; Epicardium Feng 0.0160, 49.901, placebo 0.0161, 50.555
+    the placebo's applied size over Feng's, T1/E9.5->E10.5:chamber (mean |log f|, sum log f^2): CM 1.005, 1.008; Endocardium 1.004, 1.009; Endothelium 1.006, 1.014; Epicardium 1.005, 1.013
+    applied size at fraction 0.2, T1/E9.5->E10.5 (mean |log f|, sum log f^2, non-held genes): CM Feng 0.0087, 18.094, placebo 0.0087, 18.233; Endocardium Feng 0.0121, 28.636, placebo 0.0122, 28.889; Endothelium Feng 0.0110, 24.068, placebo 0.0110, 24.416; Epicardium Feng 0.0160, 49.901, placebo 0.0161, 50.555
+    the placebo's applied size over Feng's, T1/E9.5->E10.5 (mean |log f|, sum log f^2): CM 1.005, 1.008; Endocardium 1.004, 1.009; Endothelium 1.006, 1.014; Epicardium 1.005, 1.013
+    between-bin share of the direction's variance (kept by the placebo), T1/E9.5->E10.5:chamber: CM 0.028; Endocardium 0.019; Endothelium 0.020; Epicardium 0.015
+    between-bin share of the direction's variance (kept by the placebo), T1/E9.5->E10.5: CM 0.028; Endocardium 0.019; Endothelium 0.020; Epicardium 0.015
+    between-bin share over the non-held finite genes (the part applied), T1/E9.5->E10.5:chamber: CM 0.027; Endocardium 0.019; Endothelium 0.020; Epicardium 0.017
+    between-bin share over the non-held finite genes (the part applied), T1/E9.5->E10.5: CM 0.027; Endocardium 0.019; Endothelium 0.020; Epicardium 0.017
+    beside it, try T43c's full count redraw (committed files, reported): b0_mn over b0: PASSES (passes on 2 of 2 pseudo-tasks (needs 2) and loses on none)
+    T1/E9.5->E10.5:chamber: +3.74 points, ahead 10 of 10, per seed +3.48 to +4.00; skills: de_direction +0.0112, de_score +0.0122, mmd_u +0.0208, variogram +0.1263
+    T1/E9.5->E10.5: +3.82 points, ahead 10 of 10, per seed +3.67 to +4.26; skills: de_direction +0.0143, de_score +0.0070, mmd_u +0.0256, variogram +0.1259
+(b2) reported, decides nothing: the second permutation: m1_r_gmom_q2 over m1_r_gmom_q1: does not pass (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 1 of 2 pseudo-tasks; needs 2)
+    T1/E9.5->E10.5:chamber: +0.25 points, ahead 10 of 10, per seed +0.10 to +0.48; skills: de_direction -0.0000, de_score +0.0012, mmd_u +0.0030, variogram +0.0065
+    T1/E9.5->E10.5: +0.33 points, ahead 10 of 10, per seed +0.22 to +0.41; skills: de_direction +0.0010, de_score +0.0025, mmd_u +0.0037, variogram +0.0065
+    the two statements rest on the first permutation (seed LP_PERM_SEED); this second permutation (LP_PERM_SEED + 1) shows the spread across permutations and decides nothing
+(c) reported, decides nothing: the upper bound of the noise reading (x2b carries more redraw than x2): m1_r_gmom_x2 over m1_r_gmom_x2b: PASSES (passes on 2 of 2 pseudo-tasks (needs 2) and loses on none)
+    T1/E9.5->E10.5:chamber: +1.30 points, ahead 10 of 10, per seed +1.06 to +1.57; skills: de_direction +0.0110, de_score +0.0287, mmd_u +0.0080, variogram +0.0036
+    T1/E9.5->E10.5: +1.18 points, ahead 10 of 10, per seed +0.97 to +1.46; skills: de_direction +0.0103, de_score +0.0286, mmd_u +0.0053, variogram +0.0023
+    redraw of the covered cells before g_mom, T1/E9.5->E10.5:chamber: m1_r_gmom_x2 changed 0.1651, zeroed 0.0137, detected per cell 4366.4 (drawn 4427.1), mean squared change 6.0197, mean log1p CP10k 0.1220 (drawn 0.1237); m1_r_gmom_x2b changed 0.1927, zeroed 0.0190, detected per cell 4343.1 (drawn 4427.1), mean squared change 1.8419, mean log1p CP10k 0.1223 (drawn 0.1237)
+    redraw of the covered cells before g_mom, T1/E9.5->E10.5: m1_r_gmom_x2 changed 0.1651, zeroed 0.0137, detected per cell 4366.4 (drawn 4427.1), mean squared change 6.0197, mean log1p CP10k 0.1220 (drawn 0.1237); m1_r_gmom_x2b changed 0.1927, zeroed 0.0190, detected per cell 4343.1 (drawn 4427.1), mean squared change 1.8419, mean log1p CP10k 0.1223 (drawn 0.1237)
+(c'): m1_r_gmom_x2 over m1_r_gmom_x15b: PASSES (passes on 2 of 2 pseudo-tasks (needs 2) and loses on none)
+    T1/E9.5->E10.5:chamber: +1.54 points, ahead 10 of 10, per seed +1.34 to +1.74; skills: de_direction +0.0119, de_score +0.0302, mmd_u +0.0096, variogram +0.0099
+    T1/E9.5->E10.5: +1.44 points, ahead 10 of 10, per seed +1.30 to +1.73; skills: de_direction +0.0113, de_score +0.0309, mmd_u +0.0073, variogram +0.0082
+    redraw of the covered cells before g_mom, T1/E9.5->E10.5:chamber: m1_r_gmom_x2 changed 0.1651, zeroed 0.0137, detected per cell 4366.4 (drawn 4427.1), mean squared change 6.0197, mean log1p CP10k 0.1220 (drawn 0.1237); m1_r_gmom_x15b changed 0.1524, zeroed 0.0126, detected per cell 4371.3 (drawn 4427.1), mean squared change 1.6716, mean log1p CP10k 0.1226 (drawn 0.1237)
+    redraw of the covered cells before g_mom, T1/E9.5->E10.5: m1_r_gmom_x2 changed 0.1651, zeroed 0.0137, detected per cell 4366.4 (drawn 4427.1), mean squared change 6.0197, mean log1p CP10k 0.1220 (drawn 0.1237); m1_r_gmom_x15b changed 0.1524, zeroed 0.0126, detected per cell 4371.3 (drawn 4427.1), mean squared change 1.6716, mean log1p CP10k 0.1226 (drawn 0.1237)
+(d) reported, decides nothing: the upper bound of the noise reading (x2b carries more redraw than x2): m1_r_gmom_x2b over m1_r_gmom: PASSES (passes on 2 of 2 pseudo-tasks (needs 2) and loses on none)
+    T1/E9.5->E10.5:chamber: +0.50 points, ahead 10 of 10, per seed +0.43 to +0.54; skills: de_direction +0.0020, de_score +0.0042, mmd_u +0.0032, variogram +0.0126
+    T1/E9.5->E10.5: +0.50 points, ahead 10 of 10, per seed +0.41 to +0.60; skills: de_direction +0.0020, de_score +0.0038, mmd_u +0.0039, variogram +0.0118
+    redraw of the covered cells before g_mom, T1/E9.5->E10.5:chamber: m1_r_gmom_x2b changed 0.1927, zeroed 0.0190, detected per cell 4343.1 (drawn 4427.1), mean squared change 1.8419, mean log1p CP10k 0.1223 (drawn 0.1237); m1_r_gmom changed 0.1014, zeroed 0.0061, detected per cell 4399.9 (drawn 4427.1), mean squared change 1.4969, mean log1p CP10k 0.1230 (drawn 0.1237)
+    redraw of the covered cells before g_mom, T1/E9.5->E10.5: m1_r_gmom_x2b changed 0.1927, zeroed 0.0190, detected per cell 4343.1 (drawn 4427.1), mean squared change 1.8419, mean log1p CP10k 0.1223 (drawn 0.1237); m1_r_gmom changed 0.1014, zeroed 0.0061, detected per cell 4399.9 (drawn 4427.1), mean squared change 1.4969, mean log1p CP10k 0.1230 (drawn 0.1237)
+    beside it, try T43c's full count redraw (committed files, reported): b0_mn over b0: PASSES (passes on 2 of 2 pseudo-tasks (needs 2) and loses on none)
+    T1/E9.5->E10.5:chamber: +3.74 points, ahead 10 of 10, per seed +3.48 to +4.00; skills: de_direction +0.0112, de_score +0.0122, mmd_u +0.0208, variogram +0.1263
+    T1/E9.5->E10.5: +3.82 points, ahead 10 of 10, per seed +3.67 to +4.26; skills: de_direction +0.0143, de_score +0.0070, mmd_u +0.0256, variogram +0.1259
+(d'): m1_r_gmom_x15b over m1_r_gmom: does not pass (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2)
+    T1/E9.5->E10.5:chamber: +0.27 points, ahead 10 of 10, per seed +0.21 to +0.33; skills: de_direction +0.0011, de_score +0.0027, mmd_u +0.0016, variogram +0.0063
+    T1/E9.5->E10.5: +0.24 points, ahead 10 of 10, per seed +0.19 to +0.28; skills: de_direction +0.0010, de_score +0.0015, mmd_u +0.0019, variogram +0.0059
+    redraw of the covered cells before g_mom, T1/E9.5->E10.5:chamber: m1_r_gmom_x15b changed 0.1524, zeroed 0.0126, detected per cell 4371.3 (drawn 4427.1), mean squared change 1.6716, mean log1p CP10k 0.1226 (drawn 0.1237); m1_r_gmom changed 0.1014, zeroed 0.0061, detected per cell 4399.9 (drawn 4427.1), mean squared change 1.4969, mean log1p CP10k 0.1230 (drawn 0.1237)
+    redraw of the covered cells before g_mom, T1/E9.5->E10.5: m1_r_gmom_x15b changed 0.1524, zeroed 0.0126, detected per cell 4371.3 (drawn 4427.1), mean squared change 1.6716, mean log1p CP10k 0.1226 (drawn 0.1237); m1_r_gmom changed 0.1014, zeroed 0.0061, detected per cell 4399.9 (drawn 4427.1), mean squared change 1.4969, mean log1p CP10k 0.1230 (drawn 0.1237)
+(e) reported, decides nothing: m1_r_gmom over m1_r_gmom_p1: PASSES (passes on 2 of 2 pseudo-tasks (needs 2) and loses on none)
+    T1/E9.5->E10.5:chamber: +1.79 points, ahead 10 of 10, per seed +1.63 to +1.93; skills: de_direction +0.0135, de_score +0.0363, mmd_u +0.0117, variogram +0.0100
+    T1/E9.5->E10.5: +1.54 points, ahead 10 of 10, per seed +1.24 to +1.80; skills: de_direction +0.0119, de_score +0.0324, mmd_u +0.0089, variogram +0.0080
+(f) reported, decides nothing: m1_r_gmom_p1 over m1_r_gmom_x0: does not pass (passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2)
+    T1/E9.5->E10.5:chamber: +0.23 points, ahead 10 of 10, per seed +0.15 to +0.30; skills: de_direction +0.0018, de_score +0.0008, mmd_u +0.0019, variogram +0.0054
+    T1/E9.5->E10.5: +0.20 points, ahead 10 of 10, per seed +0.11 to +0.30; skills: de_direction +0.0019, de_score -0.0005, mmd_u +0.0023, variogram +0.0051
+(g) reported, decides nothing: m1_r_gmom over m1_r_gmom_x0: PASSES (passes on 2 of 2 pseudo-tasks (needs 2) and loses on none)
+    T1/E9.5->E10.5:chamber: +2.02 points, ahead 10 of 10, per seed +1.90 to +2.17; skills: de_direction +0.0152, de_score +0.0371, mmd_u +0.0136, variogram +0.0154
+    T1/E9.5->E10.5: +1.74 points, ahead 10 of 10, per seed +1.50 to +2.04; skills: de_direction +0.0137, de_score +0.0319, mmd_u +0.0112, variogram +0.0131
+(h) gates the two statements: m1_r_gmom_x2 over m1_r_gmom: PASSES (passes on 2 of 2 pseudo-tasks (needs 2) and loses on none)
+    T1/E9.5->E10.5:chamber: +1.81 points, ahead 10 of 10, per seed +1.60 to +2.07; skills: de_direction +0.0130, de_score +0.0329, mmd_u +0.0112, variogram +0.0162
+    T1/E9.5->E10.5: +1.68 points, ahead 10 of 10, per seed +1.52 to +1.97; skills: de_direction +0.0123, de_score +0.0324, mmd_u +0.0092, variogram +0.0141
+Limit: in-sample labelled diagnostic; never adoption evidence; puts nothing forward by itself; it can only go to the team captain
+Commit d5a6708a7749dc6032baf91d4842e23ce2f2c506, tree clean True, UTC 2026-11-14T19:08:06Z
