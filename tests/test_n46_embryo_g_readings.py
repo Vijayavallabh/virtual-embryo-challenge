@@ -56,14 +56,19 @@ def split(n46, scores: dict) -> tuple[dict, dict]:
 
 
 def records(n46, run: dict, partial=(0.5, 0.6), s=0.7) -> dict:
-    """A movement record for every arm the run scored, every seed: fgw_partial's cells move `partial` of the entry's
-    distance (earlier bracket, later bracket) and the matched control's exactly as far; the damped control s; the
-    random control about s; the still control 0."""
+    """What the run records of every scored arm's movement, every seed, in `movement`'s shape: fgw_partial's cells
+    move `partial` of the entry's distance (earlier bracket, later bracket) and its anchors less; the matched control's
+    anchors and cells move by its two factors, which are fgw_partial's cell ratios; the damped control's by s; the
+    random control's about s; the still control's not at all."""
     cell = {n46.PARTIAL: list(partial), n46.MATCHED: list(partial), n46.DAMP: [s, s], n46.RAND: [s + 0.01, s - 0.01],
             n46.STILL: [0.0, 0.0]}
     anchor = {**cell, n46.PARTIAL: [partial[0] - 0.1, partial[1] - 0.1]}
-    return {k: {a: {seed: {"cell": list(cell[a]), "anchor": list(anchor[a])} for seed in range(10)}
-                for a in n46.MOVED if a in arms} for k, arms in run.items()}
+    extra = {n46.PARTIAL: {"factors": None, "s": None}, n46.MATCHED: {"factors": list(partial), "s": s},
+             n46.DAMP: {"factors": None, "s": s}, n46.RAND: {"factors": None, "s": s},
+             n46.STILL: {"factors": None, "s": None}}
+    return {k: {a: {seed: {"ratio": {"cell": list(cell[a]), "anchor": list(anchor[a])},
+                           **{x: (list(v) if isinstance(v, list) else v) for x, v in extra[a].items()}}
+                    for seed in range(10)} for a in n46.MOVED if a in arms} for k, arms in run.items()}
 
 
 def patch(n46, monkeypatch, committed: dict, run: dict, tasks: dict, moves: dict | None = None) -> None:
@@ -84,68 +89,102 @@ def test_the_constants_are_the_rows(n46):
     assert n46.MATCH_TOL == 1e-6 and n46.MOVEMENT_KEY == "movement_ratio"
 
 
-def test_partial_ahead_of_every_control_is_matching_and_is_put_forward(n46):
+def test_partial_ahead_of_every_control_is_matching_and_is_the_only_unled_arm(n46):
     # the arm gains 2 everywhere and every control gains 1: it leads each of the four by 1 on both backtests
-    scores, tasks = tables(n46, {"fgw_partial": 2.0, "fgw_damp": 1.0, "fgw_part_rand": 1.0, "fgw_damp_m": 1.0,
-                                 "fgw_still": 1.0})
+    scores, tasks = tables(n46, {"fgw_partial": 2.0, **{c: 1.0 for c in n46.CONTROLS}})
     res = n46.check(scores, tasks)
-    assert res["verdict"] == "matching" and res["put_forward"] == "fgw_partial" and not res["closed"]
+    assert res["verdict"] == "matching" and res["not_led"] == [] and not res["closed"]
     assert all(res["lead"][c]["keep"] for c in n46.CONTROLS)
-    assert res["passes"]["fgw_still"], "a passing control does not displace the arm when the verdict is matching"
+    assert all(res["passes"].values()), "every control passes both rules here"
+    assert res["led_by"] == {**{c: ["fgw_partial"] for c in n46.CONTROLS}, "fgw_partial": []}
+    assert res["put_forward"] == "fgw_partial", "a passing control that the arm leads does not displace it"
 
 
 @pytest.mark.parametrize("control", ["fgw_still", "fgw_damp", "fgw_part_rand", "fgw_damp_m"])
-def test_one_control_that_is_not_led_makes_the_verdict_moving_less(n46, control):
+def test_one_passing_control_that_is_not_led_is_moving_less_and_is_put_forward(n46, control):
     # every control gains 1 except one, which gains 1.9: the arm's lead of 0.1 over it is under the rule's bar
     gains = {"fgw_partial": 2.0, **{c: 1.0 for c in n46.CONTROLS}, control: 1.9}
     res = n46.check(*tables(n46, gains))
-    assert res["verdict"] == "moving less" and not res["lead"][control]["keep"]
+    assert res["verdict"] == "moving less" and res["not_led"] == [control]
+    assert not res["lead"][control]["keep"]
     assert all(res["lead"][c]["keep"] for c in n46.CONTROLS if c != control)
-    assert res["put_forward"] == "fgw_still", "every arm passes here, so the first of the order is put forward"
+    others = sorted(c for c in n46.CONTROLS if c != control)
+    assert all(sorted(res["led_by"][c]) == sorted([control, "fgw_partial"]) for c in others)
+    assert res["led_by"][control] == [] and res["led_by"]["fgw_partial"] == []
+    assert res["put_forward"] == control, "of the two unled arms the control comes first in the order"
 
 
 def test_a_still_cloud_that_does_as_well_is_put_forward(n46):
     # a gain g on every task gives the pair rule S(0.45) = 0.55 g (an arm leads the pair on the three OTHER tasks
-    # only), so 2.5 passes it; the arm does not lead a control that scores above it
+    # only), so 2.5 passes it; the arm does not lead a control that scores above it, and that control leads the arm
     scores, tasks = tables(n46, {"fgw_partial": 2.0, "fgw_still": 2.5, "fgw_damp": 1.0, "fgw_part_rand": 1.0,
                                  "fgw_damp_m": 1.0})
     res = n46.check(scores, tasks)
     assert res["verdict"] == "moving less" and not res["lead"]["fgw_still"]["keep"]
-    assert res["passes"]["fgw_still"] and res["put_forward"] == "fgw_still"
+    assert res["led_by"]["fgw_partial"] == ["fgw_still"] and res["led_by"]["fgw_still"] == []
+    assert res["put_forward"] == "fgw_still"
 
 
-def test_moving_less_puts_forward_the_first_passing_arm_of_the_order(n46):
-    # 0.6 passes the pair rule (S(0.45) = 0.33) and 0.5 would not
-    scores, tasks = tables(n46, {"fgw_partial": 2.0, "fgw_damp": 1.9, "fgw_part_rand": 0.6, "fgw_damp_m": 0.6,
-                                 "fgw_still": 0.0})
+def test_a_passing_control_that_another_passing_arm_leads_is_not_put_forward(n46):
+    # fgw_still passes (S(0.45) = 0.385) but the arm and the matched control both lead it by more than 1; 0.6 passes
+    # the pair rule (0.33) and 0.5 would not
+    scores, tasks = tables(n46, {"fgw_partial": 2.0, "fgw_still": 0.7, "fgw_damp_m": 1.9})
     res = n46.check(scores, tasks)
-    assert res["verdict"] == "moving less"
-    assert not res["lead"]["fgw_damp"]["keep"] and res["lead"]["fgw_part_rand"]["keep"]
-    assert res["passes"] == {"fgw_still": False, "fgw_damp": True, "fgw_part_rand": True, "fgw_damp_m": True,
+    assert res["passes"] == {"fgw_still": True, "fgw_damp": False, "fgw_part_rand": False, "fgw_damp_m": True,
                              "fgw_partial": True}
+    assert sorted(res["led_by"]["fgw_still"]) == ["fgw_damp_m", "fgw_partial"]
+    assert res["verdict"] == "moving less" and res["not_led"] == ["fgw_damp_m"]
+    assert res["put_forward"] == "fgw_damp_m"
+    scores, tasks = tables(n46, {"fgw_partial": 2.0, "fgw_damp": 1.9, "fgw_part_rand": 0.6, "fgw_damp_m": 0.6})
+    res = n46.check(scores, tasks)
+    assert res["verdict"] == "moving less" and res["not_led"] == ["fgw_damp"]
+    assert res["led_by"]["fgw_part_rand"] and res["led_by"]["fgw_damp_m"] and not res["passes"]["fgw_still"]
     assert res["put_forward"] == "fgw_damp"
-    scores, tasks = tables(n46, {"fgw_partial": 2.0, "fgw_damp_m": 1.9})
-    res = n46.check(scores, tasks)
-    assert res["verdict"] == "moving less" and res["put_forward"] == "fgw_damp_m"
-    assert res["passes"] == {"fgw_still": False, "fgw_damp": False, "fgw_part_rand": False, "fgw_damp_m": True,
-                             "fgw_partial": True}
 
 
-def test_moving_less_with_no_passing_control_leaves_partial_as_the_arm(n46):
+def test_a_control_that_is_not_led_and_does_not_pass_leaves_the_arms_not_separated(n46):
     # the controls gain 0.52 on every task: ahead of fgw on both backtests, but S(0.45) = 0.286 is under the pair
     # rule's bar; the arm gains 0.8 and passes both rules, and its lead of 0.28 over each control is under the bar
     scores, tasks = tables(n46, {"fgw_partial": 0.8, **{c: 0.52 for c in n46.CONTROLS}})
     res = n46.check(scores, tasks)
-    assert res["verdict"] == "moving less"
+    assert res["verdict"] == "not separated" and res["not_led"] == list(n46.CONTROLS)
     assert res["passes"] == {**{c: False for c in n46.CONTROLS}, "fgw_partial": True}
     assert res["put_forward"] == "fgw_partial"
+
+
+def test_a_control_led_on_one_backtest_only_is_not_led(n46):
+    # the matched control is 1.0 behind on e75 and 0.29 behind on e725, behind in every seed on both
+    behind = {**{n: 1.0 for n in [*n46.nt.DEEP, *n46.nt.OTHER]}, "e725": 1.71}
+    scores, tasks = tables(n46, {"fgw_partial": 2.0, "fgw_damp_m": behind})
+    res = n46.check(scores, tasks)
+    lead = res["lead"]["fgw_damp_m"]
+    assert lead["tasks"]["e75"]["mean_gain"] == pytest.approx(1.0) and lead["tasks"]["e75"]["seeds_ahead"] == 10
+    assert lead["tasks"]["e725"]["mean_gain"] == pytest.approx(0.29) and lead["tasks"]["e725"]["seeds_ahead"] == 10
+    assert not lead["keep"] and res["not_led"] == ["fgw_damp_m"]
+    assert res["passes"]["fgw_damp_m"] and res["verdict"] == "moving less", "the control reaches the bar by itself"
+    assert res["put_forward"] == "fgw_damp_m"
+    # the same control with a loss on new2 fails the pair rule: then nothing shows that moving less is enough
+    scores, tasks = tables(n46, {"fgw_partial": 2.0, "fgw_damp_m": {**behind, "new2": -3.0}})
+    res = n46.check(scores, tasks)
+    assert not res["lead"]["fgw_damp_m"]["keep"] and not res["passes"]["fgw_damp_m"]
+    assert res["verdict"] == "not separated" and res["put_forward"] == "fgw_partial"
+
+
+def test_matching_with_an_arm_that_fails_a_rule_puts_forward_an_unled_passing_control(n46):
+    # the arm leads every control on both backtests but loses 3 on new2, so it fails the pair rule
+    scores, tasks = tables(n46, {"fgw_partial": {**{n: 2.0 for n in [*n46.nt.DEEP, *n46.nt.OTHER]}, "new2": -3.0},
+                                 **{c: 1.0 for c in n46.CONTROLS}})
+    res = n46.check(scores, tasks)
+    assert res["verdict"] == "matching" and not res["passes"]["fgw_partial"]
+    assert "fgw_partial" not in res["led_by"] and all(res["led_by"][c] == [] for c in n46.CONTROLS)
+    assert res["put_forward"] == "fgw_still"
 
 
 def test_nothing_passes_closes_the_line(n46):
     scores, tasks = tables(n46)
     res = n46.check(scores, tasks)
-    assert res["verdict"] == "moving less" and res["put_forward"] is None and res["closed"]
-    assert res["own_minus_fgw"]["fgw_still"]["x2"] == pytest.approx(0.0)
+    assert res["verdict"] == "not separated" and res["put_forward"] is None and res["closed"]
+    assert res["led_by"] == {} and res["own_minus_fgw"]["fgw_still"]["x2"] == pytest.approx(0.0)
 
 
 def test_an_arm_needs_both_rules_to_pass(n46):
@@ -165,9 +204,9 @@ def test_a_control_missing_on_a_task_is_not_readable_and_cannot_lead_or_pass(n46
                                  "fgw_damp_m": 1.0, "fgw_still": 1.0})
     res = n46.check(scores, tasks)
     assert not res["readable"]["fgw_damp"] and res["lead"]["fgw_damp"] is None
-    assert res["verdict"] == "moving less", "an unreadable control cannot make the verdict matching"
+    assert res["not_led"] == ["fgw_damp"] and res["verdict"] == "not separated"
     assert res["adoption"]["fgw_damp"] is None and not res["passes"]["fgw_damp"]
-    assert "fgw_damp" not in res["partial_minus_control"]
+    assert "fgw_damp" not in res["partial_minus_control"] and "fgw_damp" not in res["led_by"]
 
 
 def test_the_rescored_arms_must_match_the_record(n46):
@@ -185,35 +224,69 @@ def test_the_rescored_arms_must_match_the_record(n46):
 
 
 def test_the_movement_record_is_read_from_the_task_files(n46, tmp_path):
-    rec = {"s": 0.5, "movement_ratio": {"anchor": [0.4, 0.5], "cell": [0.45, 0.55]}}
-    one = {"task": {"key": "T2e/a"}, "build_records": {"fgw_partial": {"0": rec, "1": {"s": 0.5}},
-                                                       "fgw_potts": {"0": {"potts": {}}}}}
+    ratio = {"anchor": [0.4, 0.5], "cell": [0.45, 0.55]}
+    one = {"task": {"key": "T2e/a"},
+           "build_records": {"fgw_partial": {"0": {"partial": {"s": 0.5}, "movement_ratio": ratio}, "1": {}},
+                             "fgw_damp": {"0": {"anchor_move": {"s": 0.5}, "movement_ratio": ratio}},
+                             "fgw_damp_m": {"0": {"anchor_move": {"s": 0.5, "factors": [0.45, 0.55]},
+                                                  "factors": [0.45, 0.55], "movement_ratio": ratio}},
+                             "fgw_potts": {"0": {"potts": {}}}}}
     (tmp_path / "T2e_a.json").write_text(json.dumps(one))
     (tmp_path / "T2e_b.json").write_text(json.dumps({"task": {"key": "T2e/b"}}))
     (tmp_path / "other.json").write_text("not read")
     got = n46.movement([tmp_path])
     assert set(got) == {"T2e/a", "T2e/b"} and set(got["T2e/a"]) == set(n46.MOVED)
-    assert got["T2e/a"]["fgw_partial"] == {0: {"anchor": [0.4, 0.5], "cell": [0.45, 0.55]}, 1: None}
-    assert got["T2e/a"]["fgw_damp_m"] == {} and got["T2e/b"]["fgw_still"] == {}
+    assert got["T2e/a"]["fgw_partial"] == {0: {"ratio": ratio, "factors": None, "s": None},
+                                           1: {"ratio": None, "factors": None, "s": None}}
+    assert got["T2e/a"]["fgw_damp"][0] == {"ratio": ratio, "factors": None, "s": 0.5}
+    assert got["T2e/a"]["fgw_damp_m"][0] == {"ratio": ratio, "factors": [0.45, 0.55], "s": 0.5}
+    assert got["T2e/a"]["fgw_still"] == {} and got["T2e/b"]["fgw_still"] == {}
 
 
 def test_the_matched_control_must_move_its_cells_as_far_as_the_arm(n46):
     scores, tasks = tables(n46, {"fgw_partial": 1.0})
     _, run = split(n46, scores)
     moves = records(n46, run, partial=(0.5, 0.6), s=0.7)
-    table, worst, why = n46.moved(moves, run, tasks)
+    table, factors, worst, why = n46.moved(moves, run, tasks)
     assert why == [] and worst == 0.0
     assert table["fgw_partial"]["e75"] == {"cell": [pytest.approx(0.5), pytest.approx(0.6)],
                                            "anchor": [pytest.approx(0.4), pytest.approx(0.5)]}
     assert table["fgw_damp"]["x1"]["cell"] == [pytest.approx(0.7), pytest.approx(0.7)]
     assert table["fgw_still"]["half"]["cell"] == [0.0, 0.0]
-    moves[tasks["late"].key]["fgw_damp_m"][7]["cell"][1] += 1e-3  # one seed, one bracket, off the arm's
-    _, worst, why = n46.moved(moves, run, tasks)
+    assert factors["late"] == [[0.5, 0.5], [0.6, 0.6]] and set(factors) == set(tasks)
+    # the arm's record moves, the control's does not: the control is no longer matched
+    moves[tasks["late"].key]["fgw_partial"][7]["ratio"]["cell"][1] += 1e-3
+    _, _, worst, why = n46.moved(moves, run, tasks)
     assert worst == pytest.approx(1e-3)
     assert why == ["late: fgw_damp_m moves its cells 1.00e-03 off fgw_partial (ratio to the entry's)"]
-    moves[tasks["late"].key]["fgw_damp_m"][7]["cell"][1] -= 1e-3 - 1e-7  # inside the tolerance
-    _, worst, why = n46.moved(moves, run, tasks)
+    moves[tasks["late"].key]["fgw_partial"][7]["ratio"]["cell"][1] -= 1e-3 - 1e-7  # inside the tolerance
+    _, _, worst, why = n46.moved(moves, run, tasks)
     assert why == [] and worst == pytest.approx(1e-7, rel=1e-3)
+
+
+def test_each_record_must_be_what_its_arm_is_by_construction(n46):
+    scores, tasks = tables(n46, {"fgw_partial": 1.0})
+    _, run = split(n46, scores)
+    k = tasks["x2"].key
+    moves = records(n46, run)
+    moves[k]["fgw_still"][1]["ratio"]["anchor"][0] = 1e-3  # a still cloud that moved
+    moves[k]["fgw_damp"][2]["ratio"]["cell"][1] = 0.69  # a damped cloud off its s
+    moves[k]["fgw_damp_m"][3]["ratio"]["anchor"] = [0.4, 0.5]  # fgw_partial's own record under the control's name
+    _, _, _, why = n46.moved(moves, run, tasks)
+    assert why == ["x2: fgw_still's movement record is 1.00e-03 off what the arm is by construction",
+                   "x2: fgw_damp's movement record is 1.00e-02 off what the arm is by construction",
+                   "x2: fgw_damp_m's movement record is 1.00e-01 off what the arm is by construction"]
+    moves = records(n46, run)
+    moves[k]["fgw_damp_m"][0]["factors"] = None
+    moves[k]["fgw_damp"][0]["s"] = None
+    table, factors, _, why = n46.moved(moves, run, tasks)
+    assert why == ["x2: fgw_damp's movement record is inf off what the arm is by construction",
+                   "x2: fgw_damp_m's movement record is inf off what the arm is by construction"]
+    assert "x2" not in factors and "x2" in table["fgw_damp_m"]
+    moves = records(n46, run, partial=(1.2, 0.6))  # the partial coupling moves the earlier bracket farther than fgw
+    _, factors, worst, why = n46.moved(moves, run, tasks)
+    assert why == [] and worst == 0.0 and factors["x2"][0] == [1.2, 1.2], "a factor above 1 is a result, not a fault"
+    assert n46.off_construction("fgw_partial", {}, {}) is None and n46.off_construction("fgw_part_rand", {}, {}) is None
 
 
 def test_an_arm_the_run_scored_needs_its_movement_record_for_every_seed(n46):
@@ -222,25 +295,19 @@ def test_an_arm_the_run_scored_needs_its_movement_record_for_every_seed(n46):
     moves = records(n46, run)
     del moves[tasks["x2"].key]["fgw_damp"][4]
     moves[tasks["x3"].key]["fgw_partial"][2] = None
-    moves[tasks["new1"].key]["fgw_still"][0]["cell"] = [0.0]
-    moves[tasks["new2"].key]["fgw_part_rand"][9]["anchor"] = [None, 0.7]
-    table, _, why = n46.moved(moves, run, tasks)
+    moves[tasks["new1"].key]["fgw_still"][0]["ratio"]["cell"] = [0.0]
+    moves[tasks["new2"].key]["fgw_part_rand"][9]["ratio"]["anchor"] = [None, 0.7]  # the entry did not move
+    table, _, _, why = n46.moved(moves, run, tasks)
     assert why == ["new1: no movement record for fgw_still (seeds [0])",
                    "x2: no movement record for fgw_damp (seeds [4])",
                    "x3: no movement record for fgw_partial (seeds [2])",
                    "new2: no movement record for fgw_part_rand (seeds [9])"]
     assert "x2" not in table["fgw_damp"] and "x2" in table["fgw_still"]
-    # an arm the run did not score on a task (its build was refused) owes no record there
-    _, run = split(n46, scores)
-    del run[tasks["e75"].key]["fgw_damp_m"]
-    moves = records(n46, run)
-    table, worst, why = n46.moved(moves, run, tasks)
-    assert why == [] and worst == 0.0 and "e75" not in table["fgw_damp_m"]
 
 
 def test_the_reading_uses_the_committed_arms_and_the_runs_controls(n46, monkeypatch):
     scores, tasks = tables(n46, {"fgw_partial": 2.0, "fgw_damp": 1.9, "fgw_part_rand": 1.9, "fgw_damp_m": 1.9,
-                                 "fgw_still": 0.1})
+                                 "fgw_still": 0.7})
     committed, run = split(n46, scores)
     run[tasks["new1"].key]["fgw_partial"] += 0.005  # a rescored arm inside the tolerance: the record's is used
     patch(n46, monkeypatch, committed, run, tasks)
@@ -253,11 +320,14 @@ def test_the_reading_uses_the_committed_arms_and_the_runs_controls(n46, monkeypa
     txt = n46.text(res)
     assert "verdict: moving less; arm put forward: fgw_damp (to a cold check before any request)" in txt
     assert "fgw_partial against fgw_damp:" in txt and "fgw_partial against fgw_damp_m:" in txt
-    assert "does not lead" in txt
+    assert "does not lead" in txt and "passes both; led by fgw_damp, fgw_part_rand, fgw_damp_m, fgw_partial" in txt
     assert "Readings of tries E42a to E42d" in txt and "rescored arms against their committed scores" in txt
     assert "fgw_partial 0.50 0.60, fgw_still 0.00 0.00, fgw_damp 0.70 0.70" in txt
     assert "fgw_damp_m against fgw_partial, largest difference of that share" in txt
+    assert "half 0.50-0.50 0.60-0.60" in txt and "a factor of 1 or more" not in txt
     json.dumps(res, default=float)
+    patch(n46, monkeypatch, committed, run, tasks, records(n46, run, partial=(1.2, 0.6)))
+    assert "(a factor of 1 or more: the arm does not move less there)" in n46.text(n46.reading([RUN]))
 
 
 def test_the_reading_is_void_on_a_rescored_mismatch_a_missing_arm_or_a_missing_task(n46, monkeypatch):
@@ -278,10 +348,28 @@ def test_the_reading_is_void_on_a_rescored_mismatch_a_missing_arm_or_a_missing_t
     patch(n46, monkeypatch, committed, run, tasks)
     res = n46.reading([RUN])
     assert res["void"] and any("x1: no task file in the run" in w for w in res["why"])
+    assert not any("x1: the run did not score" in w for w in res["why"])
     committed, run = split(n46, scores)
     patch(n46, monkeypatch, committed, run, tasks)
     res = n46.reading([RUN])
     assert not res["void"] and "arm put forward: fgw_partial" in n46.text(res)
+
+
+def test_a_control_the_builder_refused_voids_the_reading(n46, monkeypatch):
+    scores, tasks = tables(n46, {"fgw_partial": 1.0})
+    committed, run = split(n46, scores)
+    del run[tasks["e75"].key]["fgw_damp_m"]
+    patch(n46, monkeypatch, committed, run, tasks)
+    res = n46.reading([RUN])
+    assert res["void"] and any(w.startswith("e75: the run did not score fgw_damp_m") for w in res["why"])
+    committed, run = split(n46, scores)
+    for k in run:
+        for c in n46.CONTROLS:
+            del run[k][c]
+    patch(n46, monkeypatch, committed, run, tasks)
+    res = n46.reading([RUN])
+    assert res["void"] and len([w for w in res["why"] if "the run did not score" in w]) == 36
+    assert n46.text(res).startswith("VOID")
 
 
 def test_the_reading_is_void_without_the_movement_record_or_with_an_unmatched_control(n46, monkeypatch):
@@ -293,9 +381,12 @@ def test_the_reading_is_void_without_the_movement_record_or_with_an_unmatched_co
     res = n46.reading([RUN])
     assert res["void"] and any("half: no movement record for fgw_partial" in w for w in res["why"])
     moves = records(n46, run)
-    moves[tasks["e725"].key]["fgw_damp_m"][3]["cell"][0] = 0.9
+    moves[tasks["e725"].key]["fgw_partial"][3]["ratio"]["cell"][0] = 0.9
     patch(n46, monkeypatch, committed, run, tasks, moves)
     res = n46.reading([RUN])
     assert res["void"] and any("e725: fgw_damp_m moves its cells 4.00e-01 off fgw_partial" in w for w in res["why"])
     assert res["matched_max_abs_difference"] == pytest.approx(0.4)
     assert n46.text(res).startswith("VOID")
+    patch(n46, monkeypatch, {}, {}, {})
+    res = n46.reading([RUN])
+    assert res["void"] and res["why"] == ["fgw_damp_m was never compared with fgw_partial"]

@@ -12,8 +12,10 @@ partners and rotation; none of them uses which anchors the partial coupling keep
 Why. `fgw_partial` passed the adoption rule and the first-upload pair rule, but 27 to 90% of its anchors do not
 move, so its row could not say whether the gain comes from partial matching or only from moving the cloud less.
 The captain asked for "the same test with cells simply moved less". The first three controls match the share of
-anchors that moves and not the distance: their builder and their reviewer showed that they move the cloud about 1.3
-to 1.8 times as far as `fgw_partial`, so `fgw_damp_m` was added before any run.
+anchors that moves and not the distance. On synthetic pairs their anchors moved 1.3 to 1.8 times as far as
+`fgw_partial`'s; at the cells, which is what a file holds, the gap is smaller and can reverse. So `fgw_damp_m`,
+matched at the cells, was added before any run, and the run records how far every arm moves at both levels. Only
+the cell level is read.
 
 What it reads. Only per-seed board scores committed by counted tries and the run's own movement record: the stored
 runs of E24, E25 and E28 (`nine_tasks.STORED` and `results/e28_nine_tasks/tasks`), the committed task files of tries
@@ -22,9 +24,14 @@ E41 (`results/n45_embryo_f_arms/tasks`: `fgw_partial`) and the committed task fi
 at the anchors and at the cells). It opens no data file, runs no candidate and no scorer.
 
 Validity, checks that can fail. (1) The run of tries E42 rescored `fgw`, `fgw_partial` and the floor: each must
-agree with its committed scores seed for seed within nine_tasks.TOL on every task. (2) Every arm the run scored
-holds its movement record for every seed. (3) The matched control is matched: on every task, seed and bracket its
-cell-level ratio equals `fgw_partial`'s within MATCH_TOL. Otherwise the reading is void.
+agree with its committed scores seed for seed within nine_tasks.TOL on every task. (2) Every control is scored on
+every task: the controls use `fgw`'s coupling or `fgw_partial`'s solver, which build there, so a control the
+builder refuses is a fault and not a result. (3) `fgw_partial` and every control hold their movement record for
+every seed; a null ratio (the entry did not move) counts as missing. (4) Each record is what its arm is by
+construction, within MATCH_TOL: `fgw_still` moves nothing; `fgw_damp` moves anchors and cells by its recorded s;
+`fgw_damp_m` moves anchors and cells by its recorded factors. (5) The matched control is matched: on every task,
+seed and bracket its cell-level ratio equals `fgw_partial`'s within MATCH_TOL. Otherwise the reading is void, puts
+nothing forward, and is rerun only after its cause is fixed.
 
 Readings, all fixed in the row before the run:
   rules     for each control and for `fgw_partial`: the adoption rule (vec.adoption.keep_change) against `fgw` on the
@@ -33,15 +40,26 @@ Readings, all fixed in the row before the run:
   lead      `fgw_partial` against each control, paired by seed, by the adoption rule's own test on the two counted
             backtests (a paired mean above 0.3 with at least 8 of 10 seeds ahead on both, no loss beyond 0.3).
   verdict   "matching" if `fgw_partial` leads every one of the four controls by that test: no way of simply moving
-            less reaches it. Otherwise "moving less": a control that uses no matching is not led, so the gain is
-            not shown to need the partial coupling's choices. "Not led" is not "equal": the test has ten seeds.
-  the arm   put forward: `fgw_partial` if the verdict is "matching". Otherwise the first arm that passes, in the
-            order `fgw_still`, `fgw_damp`, `fgw_part_rand`, `fgw_damp_m`, `fgw_partial`: the arm with the fewest
-            unrecorded choices first (`fgw_still` reads no label and uses no number; `fgw_damp_m` needs the partial
-            solver for its two factors). None if no arm passes.
+            less reaches it. "moving less" if a control that it does not lead passes both rules: simply moving
+            less reaches the bar by itself. Otherwise "not separated": the arm is not shown to beat every control
+            and no such control is shown to reach the bar. With ten seeds and the thin E7.25 backtest a control
+            with no gain at all would still go unled a fifth to two fifths of the time, so neither "moving less"
+            nor "not separated" shows that a control equals the arm. The verdict decides no file.
+  the arm   put forward: among the arms that pass both rules, those that no other passing arm leads by the same
+            paired test on both counted backtests; of these the first in the order `fgw_still`, `fgw_damp`,
+            `fgw_part_rand`, `fgw_damp_m`, `fgw_partial` (fewest unrecorded choices first: `fgw_still` reads no
+            label and uses no number; `fgw_damp_m` needs the partial solver for its two factors). The order only
+            breaks ties the rule cannot separate, and it stands in for row N33's largest-S(0.45) clause, which
+            would choose among several arms by their scores. None if no arm passes. A lead above 0.3 on a backtest
+            cannot run in a circle, so some passing arm is always unled; when the verdict is "matching",
+            `fgw_partial` is the only one.
 Any arm put forward goes to a cold adversarial check before a request; the reading requests nothing by itself.
+`fgw_partial`'s scores are those of the run that selected it and the controls' are fresh, so its leads are biased
+upward and "matching" is easier to reach here than on an independent rerun.
 Reported, deciding nothing: each arm's own mean minus `fgw`'s on every task, `fgw_partial`'s own mean minus each
-control's on every task, the second-upload rule for the controls, and how far each arm moves its cells.
+control's on every task, the second-upload rule for the controls, how far each arm moves its cells, and
+`fgw_damp_m`'s factors (a factor of 1 or more means `fgw_partial` moves that bracket's cells at least as far as
+the entry does, so the arm does not move less there).
 
 What the controls do not separate: `fgw_partial` also turns the later bracket by its own rotation and gives its
 matched anchors other partners than the entry's. A verdict "matching" therefore means that the partial coupling's
@@ -115,45 +133,70 @@ def rescored(committed: dict, run: dict, tasks: dict) -> tuple[dict, list[str]]:
 
 
 def movement(run_dirs) -> dict:
-    """Per task key, arm and seed, the run's movement record: {"anchor": [before, after], "cell": [before, after]}, the
-    arm's mean displacement norm as a ratio to the entry's on the same anchors and the same cells. None where the task
-    file holds none."""
+    """Per task key, arm and seed, what the run recorded of the arm's movement: "ratio", {"anchor": [before, after],
+    "cell": [before, after]}, the arm's mean displacement norm as a ratio to the entry's on the same anchors and the
+    same cells; "factors", fgw_damp_m's two factors; "s", the share a damped or random control used. Each is None where
+    the task file holds none."""
     out: dict = {}
     for d in run_dirs:
         for p in sorted(Path(d).glob("T2e_*.json")):
             r = json.loads(p.read_text())
             recs = r.get("build_records", {})
-            out[r["task"]["key"]] = {a: {int(s): v.get(MOVEMENT_KEY) for s, v in recs.get(a, {}).items()}
-                                     for a in MOVED}
+            out[r["task"]["key"]] = {a: {int(s): {"ratio": v.get(MOVEMENT_KEY), "factors": v.get("factors"),
+                                                  "s": (v.get("anchor_move") or {}).get("s")}
+                                         for s, v in recs.get(a, {}).items()} for a in MOVED}
     return out
 
 
-def _pair(rec, level: str):
-    """The record's two ratios at one level (before, after) as floats, or None if it does not hold two finite ones."""
-    v = rec.get(level) if isinstance(rec, dict) else None
+def _two(v):
+    """Two finite floats (before, after), or None."""
     if not isinstance(v, (list, tuple)) or len(v) != 2 or any(x is None for x in v):
         return None
     v = [float(x) for x in v]
     return v if all(np.isfinite(v)) else None
 
 
-def moved(moves: dict, run: dict, tasks: dict) -> tuple[dict, float | None, list[str]]:
-    """How far each arm moves, and the check that the matched control is matched.
+def off_construction(arm: str, recs: dict, pairs: dict) -> float | None:
+    """The largest absolute departure, over seeds, levels and brackets, of an arm's movement record from what its
+    construction fixes: fgw_still moves nothing; fgw_damp moves every anchor, and so every cell, by its recorded s;
+    fgw_damp_m by its bracket's recorded factor. Infinite where the record lacks that s or those factors. None for an
+    arm whose construction fixes no ratio (fgw_partial, fgw_part_rand)."""
+    if arm not in (STILL, DAMP, MATCHED):
+        return None
+    worst = 0.0
+    for s in SEEDS:
+        if arm == STILL:
+            want = [0.0, 0.0]
+        elif arm == DAMP:
+            share = recs[s].get("s")
+            want = None if share is None or not np.isfinite(float(share)) else [float(share)] * 2
+        else:
+            want = _two(recs[s].get("factors"))
+        if want is None:
+            return float("inf")
+        worst = max(worst, *(abs(pairs[s][lv][b] - want[b]) for lv in ("cell", "anchor") for b in (0, 1)))
+    return worst
 
-    Returns (per arm and task, the mean over seeds of the cell-level and the anchor-level ratio per bracket; the
-    largest absolute difference between the matched control's cell-level ratio and fgw_partial's over tasks, seeds
-    and brackets; the reasons the run is void: an arm the run scored without its record for a seed, or a matched
-    control that is off fgw_partial's cell-level ratio by more than MATCH_TOL)."""
+
+def moved(moves: dict, run: dict, tasks: dict) -> tuple[dict, dict, float | None, list[str]]:
+    """How far each arm moves, and the checks of the movement record.
+
+    Returns (per arm and task, the mean over seeds of the cell-level and the anchor-level ratio per bracket; per task,
+    fgw_damp_m's factors as [min, max] over seeds per bracket; the largest absolute difference between the matched
+    control's cell-level ratio and fgw_partial's over tasks, seeds and brackets; the reasons the run is void: an arm
+    the run scored without its record for a seed, a record off what its arm is by construction, or a matched control
+    off fgw_partial's cell-level ratio, each by more than MATCH_TOL)."""
     table: dict = {a: {} for a in MOVED}
+    factors: dict = {}
     worst, why = None, []
     for n, t in tasks.items():
         have = moves.get(t.key, {})
         per: dict = {}
         for arm in MOVED:
             if arm not in run.get(t.key, {}):
-                continue  # not scored on this task (not buildable): nothing to hold
-            recs = {s: have.get(arm, {}).get(s) for s in SEEDS}
-            pairs = {s: {lv: _pair(recs[s], lv) for lv in ("cell", "anchor")} for s in SEEDS}
+                continue  # reading() voids a run that did not score it
+            recs = {s: have.get(arm, {}).get(s) or {} for s in SEEDS}
+            pairs = {s: {lv: _two((recs[s].get("ratio") or {}).get(lv)) for lv in ("cell", "anchor")} for s in SEEDS}
             bad = [s for s in SEEDS if pairs[s]["cell"] is None or pairs[s]["anchor"] is None]
             if bad:
                 why.append(f"{n}: no movement record for {arm} (seeds {bad})")
@@ -161,12 +204,18 @@ def moved(moves: dict, run: dict, tasks: dict) -> tuple[dict, float | None, list
             per[arm] = pairs
             table[arm][n] = {lv: [float(np.mean([pairs[s][lv][b] for s in SEEDS])) for b in (0, 1)]
                              for lv in ("cell", "anchor")}
+            off = off_construction(arm, recs, pairs)
+            if off is not None and not off <= MATCH_TOL:
+                why.append(f"{n}: {arm}'s movement record is {off:.2e} off what the arm is by construction")
+            if arm == MATCHED and off is not None and np.isfinite(off):
+                f = np.array([recs[s]["factors"] for s in SEEDS], dtype=float)
+                factors[n] = [[float(f[:, b].min()), float(f[:, b].max())] for b in (0, 1)]
         if MATCHED in per and PARTIAL in per:
             d = max(abs(per[MATCHED][s]["cell"][b] - per[PARTIAL][s]["cell"][b]) for s in SEEDS for b in (0, 1))
             worst = d if worst is None else max(worst, d)
             if not d <= MATCH_TOL:
                 why.append(f"{n}: {MATCHED} moves its cells {d:.2e} off {PARTIAL} (ratio to the entry's)")
-    return table, worst, why
+    return table, factors, worst, why
 
 
 def check(scores: dict, tasks: dict) -> dict:
@@ -189,12 +238,18 @@ def check(scores: dict, tasks: dict) -> dict:
                     for c in CONTROLS}}
     out["passes"] = {a: bool(readable[a] and out["adoption"][a]["keep"] and first["first_uploads"][a]["passes"])
                      for a in ORDER}
-    leads = [out["lead"][c] is not None and out["lead"][c]["keep"] for c in CONTROLS]
-    out["verdict"] = "matching" if all(leads) else "moving less"
-    if out["verdict"] == "matching" and out["passes"][PARTIAL]:
-        out["put_forward"] = PARTIAL
+    not_led = [c for c in CONTROLS if out["lead"][c] is None or not out["lead"][c]["keep"]]
+    out["not_led"] = not_led
+    if not not_led:
+        out["verdict"] = "matching"
+    elif any(out["passes"][c] for c in not_led):
+        out["verdict"] = "moving less"
     else:
-        out["put_forward"] = next((a for a in ORDER if out["passes"][a]), None)
+        out["verdict"] = "not separated"
+    passing = [a for a in ORDER if out["passes"][a]]
+    out["led_by"] = {a: [b for b in passing if b != a and adoption(scores, tasks, b, base=a)["keep"]]
+                     for a in passing}
+    out["put_forward"] = next((a for a in passing if not out["led_by"][a]), None)
     out["closed"] = out["put_forward"] is None
     return out
 
@@ -211,10 +266,18 @@ def reading(run_dirs) -> dict:
                 why.append(f"{n}: no committed scores for {arm}")
         if t.key not in run:
             why.append(f"{n}: no task file in the run")
+            continue
+        for c in CONTROLS:
+            if c not in run[t.key]:
+                why.append(f"{n}: the run did not score {c} (a control uses fgw's coupling or fgw_partial's solver, "
+                           "which build there: a refusal is a fault)")
     worst, why_rescored = rescored(committed, run, tasks)
-    table, worst_match, why_moved = moved(movement(run_dirs), run, tasks)
+    table, factors, worst_match, why_moved = moved(movement(run_dirs), run, tasks)
     why = [*why, *why_rescored, *why_moved]
-    head = {"rescored_max_abs_difference": worst, "movement": table, "matched_max_abs_difference": worst_match}
+    if worst_match is None and not why:
+        why.append(f"{MATCHED} was never compared with {PARTIAL}")
+    head = {"rescored_max_abs_difference": worst, "movement": table, "matched_factors": factors,
+            "matched_max_abs_difference": worst_match}
     if why:
         return {"void": True, "why": sorted(set(why)), **head}
     scores = {t.key: {**committed[t.key], **{a: run[t.key][a] for a in CONTROLS if a in run[t.key]}}
@@ -240,7 +303,12 @@ def text(res: dict) -> str:
                          f"{np.mean([v['cell'][1] for v in res['movement'][a].values()]):.2f}"
                          for a in MOVED if res["movement"][a]),
              f"  {MATCHED} against {PARTIAL}, largest difference of that share over tasks, seeds and brackets: "
-             + ("not readable" if match is None else f"{match:.1e}") + f" (void above {MATCH_TOL})"]
+             + ("not readable" if match is None else f"{match:.1e}") + f" (void above {MATCH_TOL})",
+             f"  {MATCHED}'s factors, earlier and later bracket, lowest to highest over seeds: "
+             + "; ".join(f"{n} {f[0][0]:.2f}-{f[0][1]:.2f} {f[1][0]:.2f}-{f[1][1]:.2f}"
+                         for n, f in res["matched_factors"].items())
+             + (" (a factor of 1 or more: the arm does not move less there)"
+                if any(x >= 1.0 for f in res["matched_factors"].values() for pair in f for x in pair) else "")]
     for arm in res["arms"]:
         a = res["adoption"][arm]
         if a is None:
@@ -252,7 +320,8 @@ def text(res: dict) -> str:
         lines.append(f"  {arm:<14} adoption against {ENTRY}: " + ", ".join(parts)
                      + f" -> {'kept' if a['keep'] else 'not kept'}; first upload S(0.45) {v['S0.45']:+.2f}, clauses "
                      + " ".join("y" if r[k] else "n" for k in sorted(r))
-                     + f" -> {'passes both' if res['passes'][arm] else 'does not pass both'}")
+                     + f" -> {'passes both' if res['passes'][arm] else 'does not pass both'}"
+                     + (f"; led by {', '.join(res['led_by'][arm])}" if res["led_by"].get(arm) else ""))
         lines.append(f"    own mean minus {ENTRY}: "
                      + " ".join(f"{n} {res['own_minus_fgw'][arm][n]:+.2f}" for n in names))
     for c, a in res["lead"].items():
