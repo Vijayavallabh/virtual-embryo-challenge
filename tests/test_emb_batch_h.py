@@ -102,6 +102,9 @@ def test_fgw_partial_is_what_it_was_at_the_base_bit_for_bit(emb_expr):
     rec: dict = {}
     st = harness._fgw_partial(c, build_record=rec)
     assert emb_expr.digest(st) == FGW_PARTIAL_AT_BASE
+    # campaign/emb-j: since the merge of campaign/emb-g every record also holds "shift" (fix brief M2); the rest is
+    # the base's
+    assert set(rec.pop("shift")) == {"anchor", "cell"}
     assert json.dumps(rec, sort_keys=True) == json.dumps(FGW_PARTIAL_RECORD_AT_BASE, sort_keys=True)
     assert emb_expr.digest(harness.CANDIDATES["fgw_partial"].build(c)) == FGW_PARTIAL_AT_BASE
 

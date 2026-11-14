@@ -427,7 +427,8 @@ NEW_AT_EMB_D = ("fgw_tissue", "fgw_tissue_series",  # campaign/emb-d (tests/test
 NEW_AT_EMB_F = ("fgw_potts", "fgw_partial",  # campaign/emb-f (tests/test_emb_batch_f.py)
                 "fgw_partial_grp")  # campaign/emb-h (tests/test_emb_batch_h.py)
 NEW_AT_EMB_G = ("fgw_damp", "fgw_part_rand", "fgw_still",  # campaign/emb-g (tests/test_emb_batch_g.py)
-                "fgw_damp_m")
+                "fgw_damp_m",
+                "fgw_damp_m_grp")  # campaign/emb-j (tests/test_emb_batch_j.py)
 
 
 @pytest.fixture(scope="module")

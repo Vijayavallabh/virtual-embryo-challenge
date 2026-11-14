@@ -1045,7 +1045,8 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
          draw: str = t2_build.DRAWS[0], t_mix: float | None = None, moves: str = t2_build.MOVES[0],
          partners: str = t2_build.PARTNERS[0], features: str = t2_build.FEATURES[0],
          coupling: str = t2_build.COUPLINGS[0], potts: bool = False, build_record: dict | None = None,
-         anchor_moves: str = t2_build.ANCHOR_MOVES[0], coupling_label: str = "celltype") -> Stage:
+         anchor_moves: str = t2_build.ANCHOR_MOVES[0], coupling_label: str = "celltype",
+         anchor_label: str = "celltype") -> Stage:
     """The T2 embryo pipeline (docs/PLAN.md 4.2): displacement interpolation between the brackets at the target's
     time fraction (vec.t2_build.interpolate_clouds: fused Gromov-Wasserstein coupling, proper rotation, McCann moves,
     a mixture of real cells of both brackets), scaled to the embryo size rule read on the task's own stages. t_pos:
@@ -1077,7 +1078,10 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     [seed, POTTS_STREAMS[1]]); the positions array is left as it is. anchor_moves (campaign branch campaign/emb-g):
     "coupled" (the entry), "damped", "random_still" (stream [seed, ANCHOR_STILL_STREAM]) or "still", the controls of
     vec.t2_build.interpolate_clouds for the partial coupling, s the overlap of the brackets' anchors' obs["celltype"]
-    distributions; "damped_matched" (fix brief M2) its movement-matched control. build_record: a dict that receives
+    distributions; "damped_matched" (fix brief M2) its movement-matched control. anchor_label (campaign branch
+    campaign/emb-j): the obs column the labels of "damped", "random_still" and "damped_matched" are read from,
+    "celltype" (default, the four controls) or "group" (fgw_damp_m_grp, whose two factors then come from
+    fgw_partial_grp's coupling); a bracket without that column refuses the build. build_record: a dict that receives
     the arm's record ("potts", "partial" and/or "anchor_move"; shares, ratios, s, masses and a count of swaps only) and
     "shift", the call's mean anchor and mean cell shift per bracket (vec.t2_build.Interpolation.movement), which
     experiments/harness/n46_embryo_g_arms.py turns into ratios to the entry's before it writes anything."""
@@ -1090,6 +1094,9 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     if coupling != t2_build.COUPLINGS[0] and coupling_label != "celltype" and not (
             coupling_label in before.obs and coupling_label in after.obs):
         raise ValueError(f"the partial coupling needs obs[{coupling_label!r}] in both brackets")
+    if anchor_moves in ANCHOR_LABEL_MOVES and anchor_label != "celltype" and not (
+            anchor_label in before.obs and anchor_label in after.obs):
+        raise ValueError(f"anchor_moves={anchor_moves!r} needs obs[{anchor_label!r}] in both brackets")
     lo, hi = t.role_days["before"], t.role_days["after"]
     g = ctx.board.genes
     frac = (t.target_day - lo) / (hi - lo)
@@ -1109,7 +1116,7 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
                                          {"coupling": coupling,
                                           "coupling_labels": (before.obs[coupling_label],
                                                               after.obs[coupling_label])}),
-                                      **_anchor_move_kw(anchor_moves, before, after, ctx.seed))
+                                      **_anchor_move_kw(anchor_moves, before, after, ctx.seed, anchor_label))
     if build_record is not None and "partial" in res.record:
         build_record["partial"] = res.record["partial"]
     if build_record is not None and "anchor_move" in res.record:
@@ -1379,14 +1386,20 @@ def _fgw_partial(ctx: BuildContext, build_record: dict | None = None) -> Stage:
 ANCHOR_STILL_STREAM = 28
 
 
-def _anchor_move_kw(anchor_moves: str, before: ad.AnnData, after: ad.AnnData, seed: int) -> dict:
+# the anchor moves that read labels (their share s, or fgw_damp_m's partial coupling)
+ANCHOR_LABEL_MOVES = ("damped", "random_still", "damped_matched")
+
+
+def _anchor_move_kw(anchor_moves: str, before: ad.AnnData, after: ad.AnnData, seed: int,
+                    label: str = "celltype") -> dict:
     """interpolate_clouds' keywords for `anchor_moves`: none for the entry's (its call unchanged), the brackets'
-    obs["celltype"] for "damped" and "random_still", the stream [seed, ANCHOR_STILL_STREAM] for "random_still"."""
+    obs[label] (obs["celltype"] unless campaign/emb-j's fgw_damp_m_grp passes "group") for "damped", "random_still"
+    and "damped_matched", the stream [seed, ANCHOR_STILL_STREAM] for "random_still"."""
     if anchor_moves == t2_build.ANCHOR_MOVES[0]:
         return {}
     kw: dict = {"anchor_moves": anchor_moves}
-    if anchor_moves in ("damped", "random_still", "damped_matched"):
-        kw["anchor_labels"] = (before.obs["celltype"], after.obs["celltype"])
+    if anchor_moves in ANCHOR_LABEL_MOVES:
+        kw["anchor_labels"] = (before.obs[label], after.obs[label])
     if anchor_moves == "random_still":
         kw["anchor_rng"] = np.random.default_rng([seed, ANCHOR_STILL_STREAM])
     return kw
@@ -1424,6 +1437,14 @@ def _fgw_partial_grp(ctx: BuildContext, build_record: dict | None = None) -> Sta
     obs["celltype"]; everything else is fgw_partial's. A bracket without obs["group"] refuses the build. No constant
     is new."""
     return _fgw(ctx, coupling="partial", build_record=build_record, coupling_label="group")
+
+
+def _fgw_damp_m_grp(ctx: BuildContext, build_record: dict | None = None) -> Stage:
+    """Campaign arm (branch campaign/emb-j; fgw_damp_m's twin at the lineage-group level): fgw_damp_m with the labels
+    behind its two factors the brackets' obs["group"] in place of obs["celltype"], so the partial coupling that sets
+    them is fgw_partial_grp's; the entry's coupling, partners, rotation, draws, streams, expression and size rule are
+    untouched. A bracket without obs["group"] refuses the build. No constant is new."""
+    return _fgw(ctx, anchor_moves="damped_matched", build_record=build_record, anchor_label="group")
 
 
 def _fgw_aligned_series_xt(ctx: BuildContext) -> Stage:
@@ -2053,6 +2074,16 @@ CANDIDATES = {
                                                            "estimate of the share", "the zero displacement of an "
                                                            "unmatched anchor"], "scope": "whole"},
                                  requires=_interp),
+    # campaign branch campaign/emb-j: fgw_damp_m's twin at the lineage-group level
+    "fgw_damp_m_grp": Candidate("fgw_damp_m_grp", frozenset({"T2"}), (), _fgw_damp_m_grp,
+                                {"what": "fgw_damp_m with its two factors taken from fgw_partial_grp's coupling (the "
+                                         "brackets' anchors' group labels) in place of fgw_partial's (their celltype "
+                                         "labels); the entry's balanced coupling, directions, partners, rotation, "
+                                         "draws, streams and expression; the entry where the group overlap is exactly "
+                                         "1; a bracket without group labels refuses",
+                                 "anchor_moves": "damped_matched", "label": "group", "alpha": t2_build.INTERP_ALPHA,
+                                 "k": t2_build.INTERP_K, "num_iter_max": t2_build.INTERP_EMD_ITER, "scope": "whole"},
+                                requires=_interp),
     "fgw_aligned_series_xt":Candidate("fgw_aligned_series_xt", frozenset({"T2"}), (), _fgw_aligned_series_xt,
                                        {"what": "fgw_aligned_series (the second upload as built) with each rendered "
                                                 "cell's panel total and outside count brought to their rounded "
