@@ -1064,7 +1064,10 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
     features (campaign branch campaign/emb-d): "own" (the entry) or "tissue" (the coupling's features formed from each
     anchor's tissue profile over NBHD_K cells, vec.t2_build.tissue_profiles). expression "series_xt" (campaign branch
     campaign/emb-d): the series rendering with an exact per-cell total (kernel "exact_total", repair stream
-    [seed, SERIES_XT_STREAM])."""
+    [seed, SERIES_XT_STREAM]). Campaign branch campaign/emb-e: "series_mn" (the series rendering with a whole-cell
+    multinomial redraw, kernel "multinomial_redraw", redraw stream [seed, SERIES_MN_STREAM]), "series_trend_mix"
+    (the series and the trend renderings of the same cells, each built as its own arm builds it, mixed row by row by
+    `mix_half`) and "trend_quad" (the trend rendering with a quadratic in place of its line)."""
     t = ctx.task
     before, after = ctx.inputs["before"], ctx.inputs["after"]
     lo, hi = t.role_days["before"], t.role_days["after"]
@@ -1095,6 +1098,20 @@ def _fgw(ctx: BuildContext, t_pos: float | None = None, expression: str = "mixtu
         X, _ = t2_build.series_rendered_expression(before, after, res, g, frac, [ctx.seed, 7],
                                                    kernel=t2_build.SERIES_KERNELS[1],
                                                    repair_seed=[ctx.seed, SERIES_XT_STREAM])
+    elif expression == "series_mn":  # campaign/emb-e: the series rendering with a whole-cell multinomial redraw
+        X, _ = t2_build.series_rendered_expression(before, after, res, g, frac, [ctx.seed, 7],
+                                                   kernel=t2_build.SERIES_KERNELS[2],
+                                                   repair_seed=[ctx.seed, SERIES_MN_STREAM])
+    elif expression == "series_trend_mix":  # campaign/emb-e: half the rows series, half trend (try H16's form)
+        S, _ = t2_build.series_rendered_expression(before, after, res, g, frac, [ctx.seed, 7])
+        T, _ = t2_build.trend_rendered_expression(before, after, res, g,
+                                                  [(a, t.role_days[r]) for r, a in ctx.inputs.items()],
+                                                  t.target_day, [ctx.seed, 7])
+        X, _ = t2_build.mix_rows(S, T, mix_half(len(res.rows), ctx.seed))
+    elif expression == "trend_quad":  # campaign/emb-e: the trend render with a quadratic in place of the line
+        X, _ = t2_build.trend_rendered_expression(before, after, res, g,
+                                                  [(a, t.role_days[r]) for r, a in ctx.inputs.items()],
+                                                  t.target_day, [ctx.seed, 7], form=t2_build.TREND_FORMS[1])
     elif expression == "series_wide":  # try E27: the same with the wider neighbourhood of diagnostic N24b
         X, _ = t2_build.series_rendered_expression(before, after, res, g, frac, [ctx.seed, 7],
                                                    k=t2_build.RENDER_K_WIDE)
@@ -1305,6 +1322,58 @@ def _fgw_aligned_series_xt(ctx: BuildContext) -> Stage:
     upload as built (fgw_aligned_series) with each rendered cell's panel total and outside count brought to their
     rounded expected values by try H18's repair (vec.t2_build.series_rendered_expression, kernel="exact_total")."""
     return _fgw(ctx, move_coupling="aligned", expression="series_xt")
+
+
+# campaign branch campaign/emb-e: the mixture's half and the multinomial redraw draw on streams of their own, apart from
+# the interpolation's and the expression steps' 0-9, the swap chain's and the latent step's 20 and the repair's 21
+SERIES_MIX_STREAM = 22
+SERIES_MN_STREAM = 23
+
+
+def mix_half(n: int, seed: int) -> np.ndarray:
+    """The mixture's half (try H16's): a uniformly random subset of floor(n / 2) of the n rows, not stratified, drawn
+    on the stream [seed, SERIES_MIX_STREAM]; True marks a row taken from the series rendering."""
+    mask = np.zeros(n, dtype=bool)
+    mask[np.random.default_rng([seed, SERIES_MIX_STREAM]).permutation(n)[:n // 2]] = True
+    return mask
+
+
+def _fgw_aligned_mix(ctx: BuildContext) -> Stage:
+    """Campaign arm (branch campaign/emb-e; the ledger's "Pruned before running": within-upload mixtures, read on the
+    heart only as try H16): fgw_aligned_series' cells, positions and draws; floor(n / 2) rows, a uniformly random
+    subset (`mix_half`), carry fgw_aligned_series' expression and the others fgw_aligned_trend's, each built as that
+    arm builds it (vec.t2_build.mix_rows). No constant besides the half."""
+    return _fgw(ctx, move_coupling="aligned", expression="series_trend_mix")
+
+
+def _mix_applies(t: PseudoTask) -> bool:
+    """Where both fgw_aligned_series and fgw_aligned_trend apply."""
+    return _series_applies(t) and _trend_applies(t)
+
+
+def _fgw_aligned_series_mn(ctx: BuildContext) -> Stage:
+    """Campaign arm (branch campaign/emb-e; the ledger's "Pruned before running": negative-binomial resampling, in its
+    dispersion-free form, try H19's whole-cell multinomial): the second upload as built (fgw_aligned_series) with each
+    rendered cell's panel row redrawn as one multinomial at its expected counts with total the rounded expected total
+    and its outside count set to its rounded expected value (vec.t2_build.series_rendered_expression,
+    kernel="multinomial_redraw")."""
+    return _fgw(ctx, move_coupling="aligned", expression="series_mn")
+
+
+def _fgw_quad_render(ctx: BuildContext) -> Stage:
+    """Campaign arm (branch campaign/emb-e): fgw_trend_render with a least-squares quadratic of the log profile on the
+    stage day in place of the line (vec.t2_build.TREND_FORMS); refused with fewer than three distinct days."""
+    return _fgw(ctx, expression="trend_quad")
+
+
+def _fgw_aligned_quad(ctx: BuildContext) -> Stage:
+    """Campaign arm (branch campaign/emb-e): fgw_aligned_trend with the quadratic in place of the line."""
+    return _fgw(ctx, move_coupling="aligned", expression="trend_quad")
+
+
+def _quad_applies(t: PseudoTask) -> bool:
+    """Where the trend arms apply and the task's samples hold at least three distinct stage days."""
+    return _trend_applies(t) and len({STAGE_DAYS[f] for f in t.inputs.values()}) >= 3
 
 
 def _fgw_aligned_polar_frame_series(ctx: BuildContext) -> Stage:
@@ -1870,7 +1939,34 @@ CANDIDATES = {
                                         "kernel": "exact_total", "rule": t2_build.SERIES_RULE,
                                         "alpha": t2_build.INTERP_ALPHA, "scope": "whole"},
                                        requires=_series_applies),
-    "fgw_aligned_hi": Candidate("fgw_aligned_hi", frozenset({"T2"}), (), _fgw_aligned_hi,
+    # the embryo batch E (campaign branch campaign/emb-e): a within-file mixture of the two read second-upload renders,
+    # the series render with a whole-cell multinomial redraw, and a quadratic in place of the trend's line (two arms)
+    "fgw_aligned_mix": Candidate("fgw_aligned_mix", frozenset({"T2"}), (), _fgw_aligned_mix,
+                                 {"what": "fgw_aligned_series' cells and positions with a uniformly random half of the "
+                                          "rows (floor(n / 2)) carrying fgw_aligned_series' expression and the others "
+                                          "fgw_aligned_trend's (try H16's within-file mixture)",
+                                  "half": "floor(n / 2), stream [seed, SERIES_MIX_STREAM]",
+                                  "rule": [t2_build.SERIES_RULE, t2_build.TREND_RENDER_RULE],
+                                  "alpha": t2_build.INTERP_ALPHA, "scope": "whole"}, requires=_mix_applies),
+    "fgw_aligned_series_mn": Candidate("fgw_aligned_series_mn", frozenset({"T2"}), (), _fgw_aligned_series_mn,
+                                       {"what": "fgw_aligned_series (the second upload as built) with each rendered "
+                                                "cell's panel row redrawn as one multinomial at its expected counts "
+                                                "with total the rounded expected total and its outside count set to "
+                                                "its rounded expected value (try H19's whole-cell multinomial)",
+                                        "kernel": "multinomial_redraw", "rule": t2_build.SERIES_RULE,
+                                        "alpha": t2_build.INTERP_ALPHA, "scope": "whole"},
+                                       requires=_series_applies),
+    "fgw_quad_render": Candidate("fgw_quad_render", frozenset({"T2"}), (), _fgw_quad_render,
+                                 {"what": "fgw_trend_render with a least-squares quadratic of the log profile on the "
+                                          "stage day through the task's samples in place of the line, read at the "
+                                          "target's day", "form": "quadratic", "rule": t2_build.TREND_RENDER_RULE,
+                                  "scope": "whole"}, requires=_quad_applies),
+    "fgw_aligned_quad": Candidate("fgw_aligned_quad", frozenset({"T2"}), (), _fgw_aligned_quad,
+                                  {"what": "fgw_aligned_trend with a least-squares quadratic of the log profile on the "
+                                           "stage day through the task's samples in place of the line, read at the "
+                                           "target's day", "form": "quadratic", "rule": t2_build.TREND_RENDER_RULE,
+                                   "alpha": t2_build.INTERP_ALPHA, "scope": "whole"}, requires=_quad_applies),
+    "fgw_aligned_hi":Candidate("fgw_aligned_hi", frozenset({"T2"}), (), _fgw_aligned_hi,
                                 {"what": "fgw_aligned (try E10's aligned moves) with every cell at the deeper "
                                          "bracket's depth: a top-up-only file at the aligned positions",
                                  "mode": "hi", "rule": t2_build.RENDER_RULE, "alpha": t2_build.INTERP_ALPHA,

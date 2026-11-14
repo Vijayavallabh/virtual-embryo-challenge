@@ -2203,7 +2203,12 @@ SERIES_RULE = ("series: the shallower bracket's drawn cells are moved by a per-g
 # independent draws) or "exact_total" (the same draws, then each rendered cell's panel total brought to its rounded
 # expected value by try H18's repair, vec.core._repair_totals, and its count outside the panel set to its rounded
 # expected value; `series_expected_counts` gives the expectations).
-SERIES_KERNELS = ("independent", "exact_total")
+# Campaign branch campaign/emb-e adds "multinomial_redraw" (try H19's whole-cell multinomial, vec.core.apply_factors
+# kernel="multinomial" on campaign/heart-cfix, in the same logic): the same draws, then each rendered cell's panel row
+# redrawn as one multinomial at its expected counts with total the rounded expected total, and its count outside the
+# panel set to its rounded expected value (`_multinomial_series_redraw`). The name is not "multinomial" because the
+# batch-D test pins that value as refused.
+SERIES_KERNELS = ("independent", "exact_total", "multinomial_redraw")
 
 
 def series_expected_counts(C0, phi, P, top, other, ratio: float) -> tuple[np.ndarray, np.ndarray]:
@@ -2264,6 +2269,47 @@ def _exact_series_totals(C1: np.ndarray, oth: np.ndarray, expected: np.ndarray, 
     return out, target_other, rec
 
 
+def _multinomial_series_redraw(expected: np.ndarray, expected_other: np.ndarray,
+                               rng: np.random.Generator) -> tuple[np.ndarray, np.ndarray, dict]:
+    """The whole-cell multinomial redraw of the series render's drawn cells (try H19's kernel, vec.core.apply_factors
+    kernel="multinomial" on campaign/heart-cfix, in its logic): per cell, over the genes whose expected count w is
+    above 0 (S = their sum), the panel counts are drawn together as Multinomial(rint(S), w / S); a gene whose expected
+    count is 0 stays 0; a cell with no such gene draws nothing. One generator, cells in row order. The count outside the
+    panel is set to rint of its expected value. Returns the panel counts, the outside counts and the record (the share
+    of rendered cells redrawn and the mean rounded expected panel total)."""
+    w_all = np.asarray(expected, dtype=np.float64)
+    n = len(w_all)
+    out = np.zeros(w_all.shape, dtype=np.int64)
+    totals = np.zeros(n)
+    redrawn = np.zeros(n, dtype=bool)
+    for i in range(n):
+        m = w_all[i] > 0.0
+        if not m.any():
+            continue
+        wi = w_all[i, m]
+        s = float(wi.sum())
+        totals[i] = np.rint(s)
+        out[i, m] = rng.multinomial(int(totals[i]), wi / s)
+        redrawn[i] = True
+    rec = {"mn_share_redrawn": float(redrawn.mean()) if n else 0.0,
+           "mn_mean_rounded_expected_total": float(totals.mean()) if n else 0.0}
+    return out, np.rint(np.asarray(expected_other, dtype=np.float64)), rec
+
+
+def mix_rows(S: np.ndarray, T: np.ndarray, mask) -> tuple[np.ndarray, dict]:
+    """A within-file mixture of two expression matrices of the same cells (campaign branch campaign/emb-e, try H16's
+    form): row i is S's row i where mask[i] and T's row i elsewhere, bit for bit (an all-true mask gives S, an all-false
+    mask T). Returns the matrix (S's dtype) and the record: the share of rows taken from S."""
+    S, T = np.asarray(S), np.asarray(T)
+    mask = np.asarray(mask)
+    if S.shape != T.shape or S.dtype != T.dtype:
+        raise ValueError("the two matrices must have one shape and one dtype")
+    if mask.dtype != bool or mask.shape != (len(S),):
+        raise ValueError("mask must be a boolean vector with one entry per row")
+    X = np.where(mask[:, None], S, T)
+    return X, {"mix_share_from_s": float(mask.mean()) if len(mask) else 0.0}
+
+
 def series_labels(names_before, groups_before, names_after) -> list[str]:
     """The matched extraembryonic labels of SERIES_RULE, sorted."""
     nb, gb, na = (np.asarray(x).astype(str) for x in (names_before, groups_before, names_after))
@@ -2314,13 +2360,21 @@ def series_rendered_expression(before: ad.AnnData, after: ad.AnnData, interp: In
     repair_seed (required with "exact_total" and refused otherwise; the harness passes [its seed, a stream of its
     own]). The deeper bracket's cells are not touched; a cell already at its rounded totals is left as drawn. The
     record gains the share of rendered cells repaired and the mean absolute size of the repair in counts. Left unset,
-    the result is bit-identical to the entry."""
+    the result is bit-identical to the entry.
+
+    kernel "multinomial_redraw" (campaign branch campaign/emb-e, try H19's form): after the render's own draws, exactly
+    as above and on the same generator, every rendered cell's panel row is replaced by one multinomial draw at its
+    expected counts (`series_expected_counts`) with total the rounded expected panel total, and its count outside the
+    panel is set to its rounded expected value (`_multinomial_series_redraw`). The redraw uses repair_seed as its
+    generator (the harness passes [its seed, a stream of its own], not the repair's). The record gains the share of
+    rendered cells redrawn and the mean rounded expected panel total."""
     from vec.core import apply_gene_factor
 
     if kernel not in SERIES_KERNELS:
         raise ValueError(f"kernel must be one of {SERIES_KERNELS}, got {kernel!r}")
     if (kernel == SERIES_KERNELS[0]) != (repair_seed is None):
-        raise ValueError(f"repair_seed is given with kernel={SERIES_KERNELS[1]!r} and only then")
+        raise ValueError(f"repair_seed is given with kernel={SERIES_KERNELS[1]!r} or {SERIES_KERNELS[2]!r} and only "
+                         "then")
     rng = np.random.default_rng(seed)
     stages = (before, after)
     parts = [_stage_counts(a, genes) for a in stages]
@@ -2357,7 +2411,11 @@ def series_rendered_expression(before: ad.AnnData, after: ad.AnnData, interp: In
         if kernel != SERIES_KERNELS[0]:
             expected, expected_other = series_expected_counts(C0, phi, P, np.zeros(C0.shape) if top is None else top,
                                                               other[rows], ratio)
-            C1, oth, xt = _exact_series_totals(C1, oth, expected, expected_other, np.random.default_rng(repair_seed))
+            if kernel == SERIES_KERNELS[1]:
+                C1, oth, xt = _exact_series_totals(C1, oth, expected, expected_other,
+                                                   np.random.default_rng(repair_seed))
+            else:
+                C1, oth, xt = _multinomial_series_redraw(expected, expected_other, np.random.default_rng(repair_seed))
             rec.update(xt)
         Cn = sparse.csr_matrix(C1)
         ln = np.asarray(Cn.sum(1)).ravel() + oth
@@ -2385,6 +2443,13 @@ TREND_RENDER_RULE = ("trend render: each bracket's drawn cells are moved by a pe
                      "outside the panel stay as released")
 
 
+# The trend's form (campaign branch campaign/emb-e): "line" (TREND_RENDER_RULE as it stands) or "quadratic" (the
+# least-squares polynomial of degree 2 of log(profile + 1e-5) on the stage day through the same samples, exact through
+# three distinct days, read at the target's day; it needs at least three distinct days and refuses otherwise). The
+# days are centred on their mean before the fit (np.linalg.lstsq, SVD, on the columns dc^2, dc, 1). No constant.
+TREND_FORMS = ("line", "quadratic")
+
+
 def trend_labels(names: Sequence, groups_first) -> list[str]:
     """TREND_RENDER_RULE's labels: series_labels of the first sample against every other sample, intersected (each
     label held by every sample with at least SERIES_MIN_CELLS cells, extraembryonic by the first sample's groups)."""
@@ -2408,35 +2473,51 @@ def _label_profile(C: sparse.csr_matrix, names: np.ndarray, labels: Sequence[str
 
 
 def trend_factor(C_from: sparse.csr_matrix, names_from, samples: Sequence[tuple[sparse.csr_matrix, Sequence]],
-                 days: Sequence[float], target_day: float, labels: Sequence[str]) -> np.ndarray:
+                 days: Sequence[float], target_day: float, labels: Sequence[str],
+                 form: str = TREND_FORMS[0]) -> np.ndarray:
     """The per-gene factor of TREND_RENDER_RULE that moves `from` cells (one of `samples`) to the trend's profile at
-    target_day. samples: (panel counts, cell-type names) per sample, in the order of `days`."""
+    target_day. samples: (panel counts, cell-type names) per sample, in the order of `days`. form (campaign branch
+    campaign/emb-e): "line" (default, the rule as it stands) or "quadratic" (TREND_FORMS)."""
+    if form not in TREND_FORMS:
+        raise ValueError(f"form must be one of {TREND_FORMS}, got {form!r}")
     if not len(labels):
         raise ValueError("no extraembryonic label held by every sample: the trend factor is not defined")
     d = np.asarray(days, dtype=np.float64)
     if len(d) != len(samples) or len(np.unique(d)) < 2:
         raise ValueError("a trend needs one day per sample and at least two distinct days")
+    if form == TREND_FORMS[1] and len(np.unique(d)) < 3:
+        raise ValueError("a quadratic trend needs at least three distinct days")
     nf = np.asarray(names_from).astype(str)
     w = np.array([(nf == lab).sum() for lab in labels], dtype=np.float64)
     w /= w.sum()
     den = _label_profile(C_from, nf, labels, w)
     Y = np.log(np.vstack([_label_profile(C, np.asarray(nm).astype(str), labels, w) for C, nm in samples]) + SERIES_EPS)
     dc = d - d.mean()
-    slope = dc @ (Y - Y.mean(0)) / (dc @ dc)
-    phi = np.exp(Y.mean(0) + slope * (float(target_day) - d.mean())) / (den + SERIES_EPS)
+    if form == TREND_FORMS[0]:
+        slope = dc @ (Y - Y.mean(0)) / (dc @ dc)
+        fit = Y.mean(0) + slope * (float(target_day) - d.mean())
+    else:
+        coef = np.linalg.lstsq(np.vander(dc, 3), Y, rcond=None)[0]
+        x = float(target_day) - d.mean()
+        fit = np.array([x * x, x, 1.0]) @ coef
+    phi = np.exp(fit) / (den + SERIES_EPS)
     phi = phi / (den @ phi / max(den.sum(), 1e-12))
     return np.clip(phi, *SERIES_CLIP)
 
 
 def trend_rendered_expression(before: ad.AnnData, after: ad.AnnData, interp: Interpolation, genes,
                               samples: Sequence[tuple[ad.AnnData, float]], target_day: float,
-                              seed) -> tuple[np.ndarray, dict]:
+                              seed, form: str = TREND_FORMS[0]) -> tuple[np.ndarray, dict]:
     """The interpolation's cells, each bracket's moved to the trend's run profile at target_day (TREND_RENDER_RULE):
     expression (cells x genes, float32, log(1 + 1e4 c / N)) and a record. samples: every sample of the task as (stage,
     day), the two brackets among them (the same objects). Needs obs["celltype"] on every sample and obs["group"] on
-    `before`. A bracket whose factor is exactly 1 for every gene keeps its released rows."""
+    `before`. A bracket whose factor is exactly 1 for every gene keeps its released rows. form (campaign branch
+    campaign/emb-e): the trend's form, "line" (default; the result is what it was before form existed) or
+    "quadratic" (TREND_FORMS; refused with fewer than three distinct days); the record then gains "form"."""
     from vec.core import apply_gene_factor
 
+    if form not in TREND_FORMS:
+        raise ValueError(f"form must be one of {TREND_FORMS}, got {form!r}")
     if not any(s is before for s, _ in samples) or not any(s is after for s, _ in samples):
         raise ValueError("the brackets must be among the trend's samples")
     rng = np.random.default_rng(seed)
@@ -2450,11 +2531,13 @@ def trend_rendered_expression(before: ad.AnnData, after: ad.AnnData, interp: Int
     out = np.empty((len(interp.rows), len(genes)), dtype=np.float32)
     rec = {"rule": TREND_RENDER_RULE, "target_day": float(target_day), "days": days, "labels": labels,
            "sd_log_factor": {}, "genes_above_2x": {}, "moved": {}}
+    if form != TREND_FORMS[0]:
+        rec["form"] = form
     for s, (name, a) in enumerate((("before", before), ("after", after))):
         m = interp.stage == s
         E, C, lib, other = parts[s]
         own = np.asarray(a.obs["celltype"]).astype(str)
-        phi = trend_factor(C, own, list(zip(counts, names, strict=True)), days, target_day, labels)
+        phi = trend_factor(C, own, list(zip(counts, names, strict=True)), days, target_day, labels, form=form)
         rec["sd_log_factor"][name] = float(np.log(phi).std())
         rec["genes_above_2x"][name] = int((np.abs(np.log(phi)) > np.log(2.0)).sum())
         rows = interp.rows[m]
