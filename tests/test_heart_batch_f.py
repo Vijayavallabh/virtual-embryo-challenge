@@ -333,3 +333,177 @@ def test_registration_is_b0_trends():
         assert c.params["scope"] == base.params["scope"] == "chamber"
         assert c.params["form"] == form and c.params["streams"] == [29, 30] and c.params["k"] == K
         assert c.params["label"] == "merged"
+
+
+# ================================================================================ review of b62db9a
+# (1) Which scored quantities a permutation of cells over fixed positions can change. The pinned scorer subsamples the
+# prediction's rows by index in variogram and energy_distance (1500 rows) and mmd_u (2000 rows), so above those sizes
+# a permutation re-indexes the rows they read: "every metric that reads expression without positions equals
+# b0_trend's exactly" is false there. The check below is the corrected one.
+EXACT = ("d2_shape", "occupancy_dice", "scale_log_ratio", "sliced_wasserstein", "count_log_ratio")
+ROUNDED = {"de_score": 4, "de_direction": 4, "pb_rel_err": 4, "pseudobulk_pearson": 4, "library_size_ratio": 3,
+           "variance_ratio": 3, "composition_JSD": 4}  # decimals the pinned T2 scorer rounds them to
+SUBSAMPLED = {"variogram": 1500, "energy_distance": 1500, "mmd_u": 2000}  # rows the scorer draws from the prediction
+BY_DESIGN = ("neighborhood_mmd", "morans_I_agreement")
+
+
+def _validity_check(base, arm, mb: dict, ma: dict) -> set[str]:
+    """The corrected validity check of an arm against its base (same positions, cells permuted): (a) coords bytes and
+    n identical, (b) the lexsorted row multiset identical, (c) the shape metrics equal exactly, (d) the order-invariant
+    expression metrics equal within one unit of their rounding, (e) the subsampled ones equal where the file holds no
+    more rows than the scorer draws. Returns the subsampled metrics that differ (allowed only above their size)."""
+    assert np.asarray(base.coords).tobytes() == np.asarray(arm.coords).tobytes() and base.n == arm.n
+    assert _sha(_rows_multiset(base.X)) == _sha(_rows_multiset(arm.X))
+    for m in EXACT:
+        assert mb[m] == ma[m], m
+    for m, d in ROUNDED.items():
+        if mb[m] is None or ma[m] is None:
+            assert mb[m] is None and ma[m] is None, m
+        else:
+            assert abs(mb[m] - ma[m]) <= 10.0 ** -d * (1 + 1e-9), m
+    changed = {m for m in SUBSAMPLED if mb[m] != ma[m]}
+    for m in changed:
+        assert base.n > SUBSAMPLED[m], m
+    for m in BY_DESIGN:
+        assert m in mb and m in ma
+    return changed
+
+
+def _metrics(st, truth, ref):
+    from vec.evaluate import panel_metrics
+
+    return panel_metrics("T2", st, truth, ref, seed=0)
+
+
+def _cloud(n: int, seed: int):
+    from vec.evaluate import Stage
+
+    r = np.random.default_rng(seed)
+    C = r.normal(size=(n, 3)).astype(np.float32)
+    g = len(bt.GENES)
+    X = np.log1p(r.poisson(np.exp(C[:, :1] * 0.8 + r.normal(size=(1, g))), size=(n, g))).astype(np.float32)
+    return Stage(X=X, coords=C, celltype=np.array(["NA"] * n))
+
+
+def test_the_arms_pass_the_corrected_validity_check_against_b0_trend():
+    """At the synthetic file's size (at most 1500 rows) every expression-only metric is b0_trend's."""
+    ctx = bt._ctx(_three())
+    truth, ref = _cloud(900, 1), _cloud(900, 2)
+    base = CANDIDATES["b0_trend"].build(ctx)
+    assert base.n <= min(SUBSAMPLED.values())
+    mb = _metrics(base, truth, ref)
+    for name in ARMS:
+        st = CANDIDATES[name].build(ctx)
+        ma = _metrics(st, truth, ref)
+        assert _validity_check(base, st, mb, ma) == set()
+        assert mb["neighborhood_mmd"] != ma["neighborhood_mmd"]  # the arm's idea moves the local organisation
+
+
+def test_above_the_scorers_subsample_sizes_a_permutation_changes_the_subsampled_metrics():
+    """The brief's premise (expression-only metrics equal exactly) fails above 1500 rows: variogram and energy_distance
+    change by subsample re-indexing; mmd_u, which draws 2000 rows, still reads every row at 1800."""
+    from vec.evaluate import Stage
+
+    truth, ref = _cloud(1500, 1), _cloud(1500, 2)
+    p = _cloud(1800, 3)
+    q = Stage(X=p.X[np.random.default_rng(9).permutation(p.n)], coords=p.coords, celltype=p.celltype)
+    mp, mq = _metrics(p, truth, ref), _metrics(q, truth, ref)
+    assert _validity_check(p, q, mp, mq) == {"variogram", "energy_distance"}
+
+
+# (2) The two arms share one swap path (stream [seed, 30]) and differ only in where they stop.
+def _traced(ctx, form: str, line: tuple[float, float], monkeypatch):
+    """The arm built with a fixed line (slope, intercept) and potts_sort's trace kept: (stage, record, trace)."""
+    trace: list = []
+    real_sort, real_line = tb.potts_sort, harness.potts_line
+
+    def sort(coords, labels, target, k, rng, trace_=None):
+        return real_sort(coords, labels, target, k, rng, trace=trace)
+
+    monkeypatch.setattr(tb, "potts_sort", sort)
+    monkeypatch.setattr(harness, "potts_line", lambda days, shares: line)
+    rec: dict = {}
+    st = harness._b0_t2(ctx, trend=True, potts=form, potts_record=rec)
+    monkeypatch.setattr(tb, "potts_sort", real_sort)
+    monkeypatch.setattr(harness, "potts_line", real_line)
+    return st, rec, trace
+
+
+def _small_ref() -> dict:
+    """A reference stage with fewer cells than the file: the file repeats rows (drawn with replacement, jittered)."""
+    return {**_three(), "ref": bt._stage(500, seed=2, shift=0.0, tiny=60)}
+
+
+@pytest.fixture(scope="module", params=["three", "four", "small_ref"])
+def nest_case(request):
+    if request.param == "small_ref":
+        return _small_ref(), bt._view(), [8.5, 8.75, 9.5]
+    three = _three()
+    if request.param == "three":
+        return three, bt._view(), [8.5, 8.75, 9.5]
+    four = {**three, "earliest": bt._stage(1000, seed=7, shift=2.2, tiny=10)}
+    return four, bt._view(inputs=bt.FOUR_INPUTS), [8.3, 8.5, 8.75, 9.5]
+
+
+def _gap(ctx) -> float:
+    t = ctx.task
+    return float(t.role_days[t.reference_role]) - float(t.role_days["start"])
+
+
+def test_the_two_arms_are_nested_on_one_swap_path(nest_case, monkeypatch):
+    """Both targets above H of the file (damped H_file + 0.03, line H_file + 0.08): the nearer target's accepted swaps
+    are the farther one's until the first swap the nearer one rejects as an overshoot (the proposals are the same), and
+    the nearer one stops there or earlier. One target reached and the other farther: the files differ."""
+    ctx = _ctx(nest_case)
+    first: dict = {}
+    harness._b0_t2(ctx, trend=True, potts="damped", potts_record=first)
+    h0 = first["H_file"]
+    s = 0.03 / (B0_DAMPING * _gap(ctx))
+    line = (s, h0 + 0.08 - s * float(ctx.task.target_day))
+    st_d, rec_d, tr_d = _traced(ctx, "damped", line, monkeypatch)
+    st_l, rec_l, tr_l = _traced(ctx, "line", line, monkeypatch)
+    near, far = rec_d["H_target"], rec_l["H_target"]
+    assert rec_d["H_file"] == rec_l["H_file"] == h0 and h0 < near < far
+    m = 0
+    while m < min(len(tr_d), len(tr_l)) and np.array_equal(tr_d[m][0], tr_l[m][0]):
+        m += 1
+    if m < len(tr_d):  # a divergence: the farther run accepted a swap the nearer one rejected as an overshoot
+        h_prev = tr_d[m - 1][1] if m else h0
+        assert m < len(tr_l) and not abs(tr_l[m][1] - near) < abs(h_prev - near)
+        assert tr_l[m][1] >= near
+    assert rec_d["stop"] == "reached" and rec_l["accepted_swaps"] > rec_d["accepted_swaps"]
+    assert _sha(st_d.X) != _sha(st_l.X)
+    np.testing.assert_array_equal(st_d.coords, st_l.coords)
+
+
+def test_with_both_targets_beyond_the_stall_the_two_arms_are_the_same_file(nest_case, monkeypatch):
+    ctx = _ctx(nest_case)
+    line = (10.0, 0.0)  # damped: H_file + 10 x B0_DAMPING x the gap; line: 10 x the target day; both far above 1
+    st_d, rec_d, tr_d = _traced(ctx, "damped", line, monkeypatch)
+    st_l, rec_l, tr_l = _traced(ctx, "line", line, monkeypatch)
+    assert rec_d["H_target"] > 1.0 and rec_l["H_target"] > 1.0 and rec_d["H_target"] != rec_l["H_target"]
+    assert rec_d["stop"] == rec_l["stop"] == "stalled"
+    assert _sha(st_d.X) == _sha(st_l.X) and rec_d["H_final"] == rec_l["H_final"]
+    assert rec_d["accepted_swaps"] == rec_l["accepted_swaps"] == len(tr_d) == len(tr_l)
+    assert all(np.array_equal(a[0], b[0]) for a, b in zip(tr_d, tr_l, strict=True))
+
+
+def test_a_reference_smaller_than_the_file(monkeypatch):
+    """The reference holds fewer cells than the file: b0_trend repeats rows; the arm is still a permutation of
+    b0_trend's rows over its positions, and the reference stage's H is read on all its cells (no draw)."""
+    inputs = _small_ref()
+    ctx = bt._ctx(inputs)
+    base = CANDIDATES["b0_trend"].build(ctx)
+    for name, form in ARMS.items():
+        st, rec, seen = _spy_build(ctx, form, monkeypatch)
+        assert base.n > inputs["ref"].n_obs and len(np.unique(seen["rows"])) < base.n
+        np.testing.assert_array_equal(st.coords, base.coords)
+        np.testing.assert_array_equal(st.X, base.X[seen["at"]])
+        np.testing.assert_array_equal(_rows_multiset(st.X), _rows_multiset(base.X))
+        i = rec["stages"].index("ref")
+        a = inputs["ref"]
+        want = tb.same_group_share(np.asarray(a.obsm["spatial_3D"], dtype=float)[:, :3],
+                                   np.asarray(a.obs["merged"]).astype(str), K)
+        assert rec["H_stages"][i] == want, name
+        np.testing.assert_allclose(rec["H_stages"], _shares_by_hand(ctx, base.n), atol=1e-15, rtol=0)
+        assert abs(rec["H_final"] - rec["H_target"]) <= abs(rec["H_file"] - rec["H_target"])

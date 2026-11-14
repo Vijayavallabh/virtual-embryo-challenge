@@ -958,6 +958,11 @@ def b0_trend_factors(ctx: BuildContext, genes: Sequence[str], types: Sequence[st
 # [seed, 30] (the swap proposals), apart from every stream a step uses on main and on the campaign branches (0-15,
 # 20-28 and the embryo sorting's 26 and 27)
 HEART_POTTS_STREAMS = (29, 30)
+# The two forms share one swap path (stream [seed, 30], the same proposals, a swap accepted iff it moves H strictly
+# closer to the form's target) and differ only in where they stop: with both targets on one side of H of the file, the
+# nearer one's accepted swaps are the farther one's until a swap that overshoots the nearer target, and with both
+# targets beyond the greedy stall the two files are identical. They are one dose-response, not two ideas
+# (tests/test_heart_batch_f.py, the review of b62db9a)
 HEART_POTTS_FORMS = ("line", "damped")
 B0_TREND_POTTS_RULE = ("b0_trend's file to the last detail, then which drawn cell (its expression row and its "
                        "obs['merged'] lineage label; Untracked cells keep the label Untracked like any other) sits at "
@@ -969,6 +974,7 @@ B0_TREND_POTTS_RULE = ("b0_trend's file to the last detail, then which drawn cel
                        "the file as drawn + slope x B0_DAMPING x the last gap in days. Swaps on stream [seed, 30]")
 # Each trend arm's record from its latest build (the arm's name -> its record): target-free (shares and a count of
 # swaps only), one per build and arm, overwritten by the next build of that arm (as campaign/heart-b, -c and -e keep it)
+# In memory only: the run JSON does not carry it, the check line on stdout is the only kept copy (keep the run's log)
 TREND_ARM_RECORDS: dict[str, dict] = {}
 
 
