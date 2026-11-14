@@ -1,0 +1,320 @@
+{
+ "void": false,
+ "why": [],
+ "commit": "4198dd51974c273228212eaf776b9506f08405aa",
+ "tasks": {
+  "x1": {
+   "counted_fold": true,
+   "idle": false,
+   "tail_check": {
+    "infeasible": 279,
+    "negative": 136,
+    "control_changed": 106,
+    "control_short": 30
+   },
+   "mean_score": {
+    "floor": 50.0,
+    "raw": 46.47338794948598,
+    "raw_tail": 46.87346389714619,
+    "raw_tail_ctrl": 47.23349535376216
+   },
+   "paired": {
+    "raw - floor": {
+     "mean": -3.5266120505140224,
+     "sd": 0.34584140910797123,
+     "ahead": 0,
+     "n": 10,
+     "passes": false
+    },
+    "raw_tail - raw": {
+     "mean": 0.400075947660212,
+     "sd": 0.15444706474015757,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "raw_tail - raw_tail_ctrl": {
+     "mean": -0.36003145661596675,
+     "sd": 0.4694270336763116,
+     "ahead": 2,
+     "n": 10,
+     "passes": false
+    },
+    "raw_tail_ctrl - raw": {
+     "mean": 0.7601074042761787,
+     "sd": 0.43856826163559304,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "raw": {
+     "r2_gate": 10
+    },
+    "raw_tail": {
+     "r2_gate": 10
+    },
+    "raw_tail_ctrl": {
+     "beta_gate": 5,
+     "r2_gate": 5
+    }
+   },
+   "skill_diff_minus_raw": {
+    "raw_tail": {
+     "de_score": 0.009510145667026154,
+     "de_direction": 0.003837778203864245,
+     "severity_slope": 0.0,
+     "mmd_u": 0.0006688036674485475,
+     "variogram": 0.0013501848179298891
+    },
+    "raw_tail_ctrl": {
+     "de_score": 0.008902966720778538,
+     "de_direction": 0.0032715520217177995,
+     "severity_slope": 0.0,
+     "mmd_u": 0.0147846826897161,
+     "variogram": 0.029226676229160458
+    }
+   },
+   "record": {
+    "fold": "T3/Mab21l2->Gata4rep2",
+    "reference": "E8.75",
+    "pb_min": 0.25,
+    "tail_check": {
+     "infeasible": 279,
+     "negative": 136,
+     "control_changed": 106,
+     "control_short": 30
+    },
+    "mass": {
+     "wt_mass_share_arm": 0.026620183571712197,
+     "wt_mass_share_control": 0.614064434433722,
+     "finalize_divisor_raw": 0.9913502784674291,
+     "finalize_divisor_arm": 1.0005385859889655,
+     "finalize_divisor_control": 1.1862236428817092
+    },
+    "control_seed": [
+     20261113,
+     2
+    ]
+   }
+  },
+  "x2": {
+   "counted_fold": true,
+   "idle": false,
+   "tail_check": {
+    "infeasible": 319,
+    "negative": 131,
+    "control_changed": 93,
+    "control_short": 38
+   },
+   "mean_score": {
+    "floor": 50.0,
+    "raw": 50.084296911174725,
+    "raw_tail": 50.0244443921906,
+    "raw_tail_ctrl": 50.347878862654724
+   },
+   "paired": {
+    "raw - floor": {
+     "mean": 0.08429691117472657,
+     "sd": 0.4690720345284868,
+     "ahead": 5,
+     "n": 10,
+     "passes": false
+    },
+    "raw_tail - raw": {
+     "mean": -0.05985251898412471,
+     "sd": 0.09559876233585099,
+     "ahead": 4,
+     "n": 10,
+     "passes": false
+    },
+    "raw_tail - raw_tail_ctrl": {
+     "mean": -0.3234344704641273,
+     "sd": 1.3291233310441803,
+     "ahead": 6,
+     "n": 10,
+     "passes": false
+    },
+    "raw_tail_ctrl - raw": {
+     "mean": 0.26358195148000263,
+     "sd": 1.2758699316563868,
+     "ahead": 2,
+     "n": 10,
+     "passes": false
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "raw": {
+     "r2_gate": 10
+    },
+    "raw_tail": {
+     "r2_gate": 10
+    },
+    "raw_tail_ctrl": {
+     "beta_gate": 2,
+     "r2_gate": 7,
+     "scored": 1
+    }
+   },
+   "skill_diff_minus_raw": {
+    "raw_tail": {
+     "de_score": -0.0008748912729887204,
+     "de_direction": -0.0010013187582988137,
+     "severity_slope": 0.0,
+     "mmd_u": -0.0016418233267722349,
+     "variogram": 0.0013911335105338484
+    },
+    "raw_tail_ctrl": {
+     "de_score": -0.014588096422654934,
+     "de_direction": -0.004923587047864486,
+     "severity_slope": 0.016032272600887833,
+     "mmd_u": 0.018777932858359363,
+     "variogram": 0.024771563879219173
+    }
+   },
+   "record": {
+    "fold": "T3/Gata4->Mab21l2",
+    "reference": "E9.5",
+    "pb_min": 0.25,
+    "tail_check": {
+     "infeasible": 319,
+     "negative": 131,
+     "control_changed": 93,
+     "control_short": 38
+    },
+    "mass": {
+     "wt_mass_share_arm": 0.04735265405867897,
+     "wt_mass_share_control": 0.4757034064933443,
+     "finalize_divisor_raw": 0.9979162508115887,
+     "finalize_divisor_arm": 1.0106568369335307,
+     "finalize_divisor_control": 1.1212152521753334
+    },
+    "control_seed": [
+     20261113,
+     2
+    ]
+   }
+  },
+  "r12": {
+   "counted_fold": false,
+   "idle": false,
+   "tail_check": {
+    "infeasible": 279,
+    "negative": 130,
+    "control_changed": 120,
+    "control_short": 10
+   },
+   "mean_score": {
+    "floor": 50.0,
+    "raw": 63.863084540451226,
+    "raw_tail": 63.99305750499773,
+    "raw_tail_ctrl": 60.34007882281884
+   },
+   "paired": {
+    "raw - floor": {
+     "mean": 13.863084540451217,
+     "sd": 0.5968677948354641,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "raw_tail - raw": {
+     "mean": 0.12997296454650709,
+     "sd": 0.3813619126972976,
+     "ahead": 5,
+     "n": 10,
+     "passes": false
+    },
+    "raw_tail - raw_tail_ctrl": {
+     "mean": 3.6529786821788752,
+     "sd": 0.5953532002765056,
+     "ahead": 10,
+     "n": 10,
+     "passes": true
+    },
+    "raw_tail_ctrl - raw": {
+     "mean": -3.523005717632368,
+     "sd": 0.5638078639332857,
+     "ahead": 0,
+     "n": 10,
+     "passes": false
+    }
+   },
+   "severity_states": {
+    "floor": {
+     "no_response": 10
+    },
+    "raw": {
+     "scored": 10
+    },
+    "raw_tail": {
+     "scored": 10
+    },
+    "raw_tail_ctrl": {
+     "scored": 10
+    }
+   },
+   "skill_diff_minus_raw": {
+    "raw_tail": {
+     "de_score": 0.013817778669912623,
+     "de_direction": -0.013082999677161433,
+     "severity_slope": 0.0012508143630501679,
+     "mmd_u": 0.0017629403643327213,
+     "variogram": -0.0012388808837604625
+    },
+    "raw_tail_ctrl": {
+     "de_score": -0.01163798139432352,
+     "de_direction": -0.008788465494816355,
+     "severity_slope": -0.08679593453451959,
+     "mmd_u": -0.03755123011708098,
+     "variogram": -0.041705189208036494
+    }
+   },
+   "record": {
+    "fold": "T3/Gata4rep1->rep2",
+    "reference": "E8.75",
+    "pb_min": 0.25,
+    "tail_check": {
+     "infeasible": 279,
+     "negative": 130,
+     "control_changed": 120,
+     "control_short": 10
+    },
+    "mass": {
+     "wt_mass_share_arm": 0.023475976131626282,
+     "wt_mass_share_control": 0.5095105800411804,
+     "finalize_divisor_raw": 0.9986259550813397,
+     "finalize_divisor_arm": 1.004479599846347,
+     "finalize_divisor_control": 1.1296157460866287
+    },
+    "control_seed": [
+     20261113,
+     2
+    ]
+   }
+  }
+ },
+ "k9_reproduction": "reproduced",
+ "checks": {
+  "x1: raw_tail - raw": true,
+  "x1: raw_tail - raw_tail_ctrl": false,
+  "r12: raw_tail - raw": false,
+  "r12: raw_tail - raw_tail_ctrl": true,
+  "x2: raw_tail - raw not below -0.3": true
+ },
+ "idle_folds": [],
+ "control_short_folds": [
+  "x1",
+  "r12"
+ ],
+ "supported": false,
+ "verdict": "CLOSED: the control falls short on x1 and r12 (fewer feasible genes with a negative entry than the arm changes), so the control clause cannot be read there; no request",
+ "label": "A labelled reading for a ruling, NOT the adoption rule: only x1 and x2 are counted cross-knockout folds; r12 is a replicate fold that never counts; x2's reference is WT E9.5, where K7 found reverts flattered."
+}

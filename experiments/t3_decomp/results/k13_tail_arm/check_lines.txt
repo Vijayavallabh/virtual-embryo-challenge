@@ -1,0 +1,3 @@
+raw_tail check: task=r12 infeasible=279 negative=130 control_changed=120 control_short=10
+raw_tail check: task=x2 infeasible=319 negative=131 control_changed=93 control_short=38
+raw_tail check: task=x1 infeasible=279 negative=136 control_changed=106 control_short=30

@@ -1,0 +1,44 @@
+Tries K13 (commit 4198dd51974c273228212eaf776b9506f08405aa): raw_tail CLOSED: the control falls short on x1 and r12 (fewer feasible genes with a negative entry than the arm changes), so the control clause cannot be read there; no request
+A labelled reading for a ruling, NOT the adoption rule: only x1 and x2 are counted cross-knockout folds; r12 is a replicate fold that never counts; x2's reference is WT E9.5, where K7 found reverts flattered.
+raw against K9's committed raw scores: reproduced
+Checks: x1: raw_tail - raw yes; x1: raw_tail - raw_tail_ctrl no; r12: raw_tail - raw no; r12: raw_tail - raw_tail_ctrl yes; x2: raw_tail - raw not below -0.3 yes
+Reported, deciding nothing:
+x1 T3/Mab21l2->Gata4rep2 (counted cross-knockout fold): floor 50.00, raw 46.47, raw_tail 46.87, raw_tail_ctrl 47.23
+    raw_tail check: task=x1 infeasible=279 negative=136 control_changed=106 control_short=30
+    WT mass share on the changed genes: arm 0.0266, control 0.6141; finalize's divisor: raw 0.9914, arm 1.0005, control 1.1862
+    raw - floor: -3.53 (sd 0.35, ahead 0 of 10)
+    raw_tail - raw: +0.40 (sd 0.15, ahead 10 of 10)  passes
+    raw_tail - raw_tail_ctrl: -0.36 (sd 0.47, ahead 2 of 10)
+    raw_tail_ctrl - raw: +0.76 (sd 0.44, ahead 10 of 10)  passes
+    floor          severity no_response 10
+    raw            severity r2_gate 10
+    raw_tail       severity r2_gate 10
+    raw_tail_ctrl  severity beta_gate 5, r2_gate 5
+    skills raw_tail - raw: de_score +0.010, de_direction +0.004, severity_slope +0.000, mmd_u +0.001, variogram +0.001
+    skills raw_tail_ctrl - raw: de_score +0.009, de_direction +0.003, severity_slope +0.000, mmd_u +0.015, variogram +0.029
+x2 T3/Gata4->Mab21l2 (counted cross-knockout fold): floor 50.00, raw 50.08, raw_tail 50.02, raw_tail_ctrl 50.35
+    raw_tail check: task=x2 infeasible=319 negative=131 control_changed=93 control_short=38
+    WT mass share on the changed genes: arm 0.0474, control 0.4757; finalize's divisor: raw 0.9979, arm 1.0107, control 1.1212
+    raw - floor: +0.08 (sd 0.47, ahead 5 of 10)
+    raw_tail - raw: -0.06 (sd 0.10, ahead 4 of 10)
+    raw_tail - raw_tail_ctrl: -0.32 (sd 1.33, ahead 6 of 10)
+    raw_tail_ctrl - raw: +0.26 (sd 1.28, ahead 2 of 10)
+    floor          severity no_response 10
+    raw            severity r2_gate 10
+    raw_tail       severity r2_gate 10
+    raw_tail_ctrl  severity beta_gate 2, r2_gate 7, scored 1
+    skills raw_tail - raw: de_score -0.001, de_direction -0.001, severity_slope +0.000, mmd_u -0.002, variogram +0.001
+    skills raw_tail_ctrl - raw: de_score -0.015, de_direction -0.005, severity_slope +0.016, mmd_u +0.019, variogram +0.025
+r12 T3/Gata4rep1->rep2 (replicate fold, never counted): floor 50.00, raw 63.86, raw_tail 63.99, raw_tail_ctrl 60.34
+    raw_tail check: task=r12 infeasible=279 negative=130 control_changed=120 control_short=10
+    WT mass share on the changed genes: arm 0.0235, control 0.5095; finalize's divisor: raw 0.9986, arm 1.0045, control 1.1296
+    raw - floor: +13.86 (sd 0.60, ahead 10 of 10)  passes
+    raw_tail - raw: +0.13 (sd 0.38, ahead 5 of 10)
+    raw_tail - raw_tail_ctrl: +3.65 (sd 0.60, ahead 10 of 10)  passes
+    raw_tail_ctrl - raw: -3.52 (sd 0.56, ahead 0 of 10)
+    floor          severity no_response 10
+    raw            severity scored 10
+    raw_tail       severity scored 10
+    raw_tail_ctrl  severity scored 10
+    skills raw_tail - raw: de_score +0.014, de_direction -0.013, severity_slope +0.001, mmd_u +0.002, variogram -0.001
+    skills raw_tail_ctrl - raw: de_score -0.012, de_direction -0.009, severity_slope -0.087, mmd_u -0.038, variogram -0.042
