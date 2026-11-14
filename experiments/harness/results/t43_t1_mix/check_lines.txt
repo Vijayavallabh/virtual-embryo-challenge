@@ -1,0 +1,80 @@
+  b0_xt check: task=T1/E9.5->E10.5:chamber seed=1000000 repaired_share=0.9818 mean_abs_off=21.2928
+  b0_half check: task=T1/E9.5->E10.5:chamber seed=1000000 moved_share=0.50
+  b0_half_ctrl check: task=T1/E9.5->E10.5:chamber seed=1000000 step_ratio=0.4995
+  b0_mn check: task=T1/E9.5->E10.5:chamber seed=1000000 moved_share=0.8589 mean_abs_total_off=0.0000
+  b0_xt check: task=T1/E9.5->E10.5:chamber seed=1000001 repaired_share=0.9854 mean_abs_off=21.2202
+  b0_half check: task=T1/E9.5->E10.5:chamber seed=1000001 moved_share=0.50
+  b0_half_ctrl check: task=T1/E9.5->E10.5:chamber seed=1000001 step_ratio=0.4995
+  b0_mn check: task=T1/E9.5->E10.5:chamber seed=1000001 moved_share=0.8589 mean_abs_total_off=0.0000
+  b0_xt check: task=T1/E9.5->E10.5:chamber seed=1000002 repaired_share=0.9854 mean_abs_off=21.8314
+  b0_half check: task=T1/E9.5->E10.5:chamber seed=1000002 moved_share=0.50
+  b0_half_ctrl check: task=T1/E9.5->E10.5:chamber seed=1000002 step_ratio=0.4995
+  b0_mn check: task=T1/E9.5->E10.5:chamber seed=1000002 moved_share=0.8589 mean_abs_total_off=0.0000
+  b0_xt check: task=T1/E9.5->E10.5:chamber seed=1000003 repaired_share=0.9850 mean_abs_off=21.1372
+  b0_half check: task=T1/E9.5->E10.5:chamber seed=1000003 moved_share=0.50
+  b0_half_ctrl check: task=T1/E9.5->E10.5:chamber seed=1000003 step_ratio=0.4995
+  b0_mn check: task=T1/E9.5->E10.5:chamber seed=1000003 moved_share=0.8589 mean_abs_total_off=0.0000
+  b0_xt check: task=T1/E9.5->E10.5:chamber seed=1000004 repaired_share=0.9850 mean_abs_off=21.6347
+  b0_half check: task=T1/E9.5->E10.5:chamber seed=1000004 moved_share=0.50
+  b0_half_ctrl check: task=T1/E9.5->E10.5:chamber seed=1000004 step_ratio=0.4995
+  b0_mn check: task=T1/E9.5->E10.5:chamber seed=1000004 moved_share=0.8589 mean_abs_total_off=0.0000
+  b0_xt check: task=T1/E9.5->E10.5:chamber seed=1000005 repaired_share=0.9827 mean_abs_off=21.1303
+  b0_half check: task=T1/E9.5->E10.5:chamber seed=1000005 moved_share=0.50
+  b0_half_ctrl check: task=T1/E9.5->E10.5:chamber seed=1000005 step_ratio=0.4995
+  b0_mn check: task=T1/E9.5->E10.5:chamber seed=1000005 moved_share=0.8589 mean_abs_total_off=0.0000
+  b0_xt check: task=T1/E9.5->E10.5:chamber seed=1000006 repaired_share=0.9857 mean_abs_off=21.3701
+  b0_half check: task=T1/E9.5->E10.5:chamber seed=1000006 moved_share=0.50
+  b0_half_ctrl check: task=T1/E9.5->E10.5:chamber seed=1000006 step_ratio=0.4995
+  b0_mn check: task=T1/E9.5->E10.5:chamber seed=1000006 moved_share=0.8589 mean_abs_total_off=0.0000
+  b0_xt check: task=T1/E9.5->E10.5:chamber seed=1000007 repaired_share=0.9823 mean_abs_off=21.0551
+  b0_half check: task=T1/E9.5->E10.5:chamber seed=1000007 moved_share=0.50
+  b0_half_ctrl check: task=T1/E9.5->E10.5:chamber seed=1000007 step_ratio=0.4995
+  b0_mn check: task=T1/E9.5->E10.5:chamber seed=1000007 moved_share=0.8589 mean_abs_total_off=0.0000
+  b0_xt check: task=T1/E9.5->E10.5:chamber seed=1000008 repaired_share=0.9843 mean_abs_off=21.3883
+  b0_half check: task=T1/E9.5->E10.5:chamber seed=1000008 moved_share=0.50
+  b0_half_ctrl check: task=T1/E9.5->E10.5:chamber seed=1000008 step_ratio=0.4995
+  b0_mn check: task=T1/E9.5->E10.5:chamber seed=1000008 moved_share=0.8589 mean_abs_total_off=0.0000
+  b0_xt check: task=T1/E9.5->E10.5:chamber seed=1000009 repaired_share=0.9861 mean_abs_off=21.6943
+  b0_half check: task=T1/E9.5->E10.5:chamber seed=1000009 moved_share=0.50
+  b0_half_ctrl check: task=T1/E9.5->E10.5:chamber seed=1000009 step_ratio=0.4995
+  b0_mn check: task=T1/E9.5->E10.5:chamber seed=1000009 moved_share=0.8589 mean_abs_total_off=0.0000
+  b0_xt check: task=T1/E9.5->E10.5 seed=1000000 repaired_share=0.9818 mean_abs_off=21.2928
+  b0_half check: task=T1/E9.5->E10.5 seed=1000000 moved_share=0.50
+  b0_half_ctrl check: task=T1/E9.5->E10.5 seed=1000000 step_ratio=0.4995
+  b0_mn check: task=T1/E9.5->E10.5 seed=1000000 moved_share=0.8589 mean_abs_total_off=0.0000
+  b0_xt check: task=T1/E9.5->E10.5 seed=1000001 repaired_share=0.9854 mean_abs_off=21.2202
+  b0_half check: task=T1/E9.5->E10.5 seed=1000001 moved_share=0.50
+  b0_half_ctrl check: task=T1/E9.5->E10.5 seed=1000001 step_ratio=0.4995
+  b0_mn check: task=T1/E9.5->E10.5 seed=1000001 moved_share=0.8589 mean_abs_total_off=0.0000
+  b0_xt check: task=T1/E9.5->E10.5 seed=1000002 repaired_share=0.9854 mean_abs_off=21.8314
+  b0_half check: task=T1/E9.5->E10.5 seed=1000002 moved_share=0.50
+  b0_half_ctrl check: task=T1/E9.5->E10.5 seed=1000002 step_ratio=0.4995
+  b0_mn check: task=T1/E9.5->E10.5 seed=1000002 moved_share=0.8589 mean_abs_total_off=0.0000
+  b0_xt check: task=T1/E9.5->E10.5 seed=1000003 repaired_share=0.9850 mean_abs_off=21.1372
+  b0_half check: task=T1/E9.5->E10.5 seed=1000003 moved_share=0.50
+  b0_half_ctrl check: task=T1/E9.5->E10.5 seed=1000003 step_ratio=0.4995
+  b0_mn check: task=T1/E9.5->E10.5 seed=1000003 moved_share=0.8589 mean_abs_total_off=0.0000
+  b0_xt check: task=T1/E9.5->E10.5 seed=1000004 repaired_share=0.9850 mean_abs_off=21.6347
+  b0_half check: task=T1/E9.5->E10.5 seed=1000004 moved_share=0.50
+  b0_half_ctrl check: task=T1/E9.5->E10.5 seed=1000004 step_ratio=0.4995
+  b0_mn check: task=T1/E9.5->E10.5 seed=1000004 moved_share=0.8589 mean_abs_total_off=0.0000
+  b0_xt check: task=T1/E9.5->E10.5 seed=1000005 repaired_share=0.9827 mean_abs_off=21.1303
+  b0_half check: task=T1/E9.5->E10.5 seed=1000005 moved_share=0.50
+  b0_half_ctrl check: task=T1/E9.5->E10.5 seed=1000005 step_ratio=0.4995
+  b0_mn check: task=T1/E9.5->E10.5 seed=1000005 moved_share=0.8589 mean_abs_total_off=0.0000
+  b0_xt check: task=T1/E9.5->E10.5 seed=1000006 repaired_share=0.9857 mean_abs_off=21.3701
+  b0_half check: task=T1/E9.5->E10.5 seed=1000006 moved_share=0.50
+  b0_half_ctrl check: task=T1/E9.5->E10.5 seed=1000006 step_ratio=0.4995
+  b0_mn check: task=T1/E9.5->E10.5 seed=1000006 moved_share=0.8589 mean_abs_total_off=0.0000
+  b0_xt check: task=T1/E9.5->E10.5 seed=1000007 repaired_share=0.9823 mean_abs_off=21.0551
+  b0_half check: task=T1/E9.5->E10.5 seed=1000007 moved_share=0.50
+  b0_half_ctrl check: task=T1/E9.5->E10.5 seed=1000007 step_ratio=0.4995
+  b0_mn check: task=T1/E9.5->E10.5 seed=1000007 moved_share=0.8589 mean_abs_total_off=0.0000
+  b0_xt check: task=T1/E9.5->E10.5 seed=1000008 repaired_share=0.9843 mean_abs_off=21.3883
+  b0_half check: task=T1/E9.5->E10.5 seed=1000008 moved_share=0.50
+  b0_half_ctrl check: task=T1/E9.5->E10.5 seed=1000008 step_ratio=0.4995
+  b0_mn check: task=T1/E9.5->E10.5 seed=1000008 moved_share=0.8589 mean_abs_total_off=0.0000
+  b0_xt check: task=T1/E9.5->E10.5 seed=1000009 repaired_share=0.9861 mean_abs_off=21.6943
+  b0_half check: task=T1/E9.5->E10.5 seed=1000009 moved_share=0.50
+  b0_half_ctrl check: task=T1/E9.5->E10.5 seed=1000009 step_ratio=0.4995
+  b0_mn check: task=T1/E9.5->E10.5 seed=1000009 moved_share=0.8589 mean_abs_total_off=0.0000

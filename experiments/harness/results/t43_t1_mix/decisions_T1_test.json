@@ -1,0 +1,190 @@
+{
+ "board": "T1:test",
+ "runs": "/mnt/md0/IITM/BackUp/Home/vijayavallabh/virtual-embryo-challenge/experiments/harness/results/t43_t1_mix/tasks",
+ "decisions": [
+  {
+   "base": "b0",
+   "change": "b0_half",
+   "counted": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber"
+   ],
+   "excluded": {
+    "T1/E8.5->E9.5": "base does not apply"
+   },
+   "configured": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber",
+    "T1/E8.5->E9.5"
+   ],
+   "decided_on": "2 of 3 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T1/E9.5->E10.5', 'T1/E9.5->E10.5:chamber']",
+   "tasks": {
+    "T1/E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": -0.32193297561972967,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    },
+    "T1/E9.5->E10.5:chamber": {
+     "complete": true,
+     "mean_gain": -0.37434918471868456,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  },
+  {
+   "base": "b0",
+   "change": "b0_half_ctrl",
+   "counted": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber"
+   ],
+   "excluded": {
+    "T1/E8.5->E9.5": "base does not apply"
+   },
+   "configured": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber",
+    "T1/E8.5->E9.5"
+   ],
+   "decided_on": "2 of 3 configured pseudo-tasks",
+   "keep": false,
+   "reason": "loses more than 0.3 points on average on ['T1/E9.5->E10.5', 'T1/E9.5->E10.5:chamber']",
+   "tasks": {
+    "T1/E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": -0.34591124491647635,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    },
+    "T1/E9.5->E10.5:chamber": {
+     "complete": true,
+     "mean_gain": -0.38004399238051645,
+     "seeds_ahead": 0,
+     "passes": false,
+     "vetoes": true
+    }
+   },
+   "need": 2,
+   "passed": 0,
+   "fit_checks": {}
+  },
+  {
+   "base": "b0",
+   "change": "b0_mn",
+   "counted": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber"
+   ],
+   "excluded": {
+    "T1/E8.5->E9.5": "base does not apply"
+   },
+   "configured": [
+    "T1/E9.5->E10.5",
+    "T1/E9.5->E10.5:chamber",
+    "T1/E8.5->E9.5"
+   ],
+   "decided_on": "2 of 3 configured pseudo-tasks",
+   "keep": true,
+   "reason": "passes on 2 of 2 pseudo-tasks (needs 2) and loses on none",
+   "tasks": {
+    "T1/E9.5->E10.5": {
+     "complete": true,
+     "mean_gain": 3.818750501563599,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    },
+    "T1/E9.5->E10.5:chamber": {
+     "complete": true,
+     "mean_gain": 3.735112954208751,
+     "seeds_ahead": 10,
+     "passes": true,
+     "vetoes": false
+    }
+   },
+   "need": 2,
+   "passed": 2,
+   "fit_checks": {}
+  }
+ ],
+ "summaries": {
+  "T1/E9.5->E10.5": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    47.97674341689909,
+    1.0833523075516147
+   ],
+   "b0": [
+    44.116683628570335,
+    0.4633178753047292
+   ],
+   "b0_xt": [
+    44.12527127273749,
+    0.46769355440200283
+   ],
+   "b0_scope": [
+    43.38230642903072,
+    0.4435127849875099
+   ],
+   "b0_half": [
+    43.79475065295061,
+    0.47297761832677226
+   ],
+   "b0_half_ctrl": [
+    43.77077238365386,
+    0.47205973470147555
+   ],
+   "b0_mn": [
+    47.93543413013394,
+    0.5244326665882251
+   ]
+  },
+  "T1/E9.5->E10.5:chamber": {
+   "floor": [
+    50.0,
+    0.0
+   ],
+   "copy": [
+    48.06103129437448,
+    1.2049221129933374
+   ],
+   "b0": [
+    49.68290567973587,
+    0.6683315658494151
+   ],
+   "b0_xt": [
+    49.696069548985825,
+    0.6679017639129485
+   ],
+   "b0_scope": [
+    48.87844196735013,
+    0.6431969918843083
+   ],
+   "b0_half": [
+    49.308556495017186,
+    0.6616967300907044
+   ],
+   "b0_half_ctrl": [
+    49.30286168735535,
+    0.6697935375091045
+   ],
+   "b0_mn": [
+    53.41801863394462,
+    0.7411086685446677
+   ]
+  }
+ }
+}
