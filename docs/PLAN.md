@@ -4487,3 +4487,45 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     two test days hold 0.33 to 0.34 of the bracket after an even pace, against the 0.35 the request's first draft
     used; and the upper end of that draft's range (0.41) mixed a noise-corrected scale into a quantity that the entry
     delivers along the noisy direction, so the range in the entry's own units is 0.28 to 0.36.
+- 2026-11-17 (c), the rule for the AI assistant's advice on Task 1's step, fixed before the runs of tries T48 to T53
+  (advice only: every change to an upload is the captain's ruling, and the captain is given the table both ways
+  whatever this rule says). Written by the AI assistant after the cold adversarial check of the request (the
+  adversary's text is in the session's scratch record and its three attacks are in entry (b)), so that the advice
+  cannot lean on the results after they are seen.
+  - **What the cold check changed already.** Its second attack was run without any target and moved the range a
+    little: the two test days are expected to hold 0.28 to 0.36 of Feng's five-day change in the entry's own units
+    (first draft: 0.29 to 0.41). Its first attack is right that the upper figure mixed a noise-corrected scale into a
+    quantity the entry delivers along the noisy direction, and that the scale itself is a between-type quantity never
+    measured over time; try T51 reads what released data can say about that. Its third attack is right that the three
+    library truths flatten in the order of their depth and not of their measured share; try T50 reads that. Its
+    cheaper alternative, 0.55, is a candidate here. Its worst case, a real share of 0.22 at the test (a time scale of
+    0.70), is the case the rule's first test uses.
+  - **The candidates.** Uniform fractions 0.55, 0.60 and 0.69 on both Task 1 uploads (today 0.40; they deliver 0.32,
+    0.35 and 0.40 where 0.40 delivers 0.233). No larger uniform value is a candidate whatever the practice curves
+    show, because beyond 0.69 nothing but the raw practice response supports one. A changed direction (pseudocount 0.1
+    or 0.02 at the entry's fraction, try T52; a zone-held form, try T53) is a candidate only under test C below.
+  - **A, the worst case.** On library 3's truth, the practice multiple k whose delivered-to-real ratio equals a
+    candidate's ratio at a real share of 0.22 is k = 0.5835 f / (0.22 x 0.358): 0.40 stands at 3.0, 0.55 at 4.1, 0.60
+    at 4.4, 0.69 at 5.1 times the practice step. From library 3's mean scores at 1, 1.5, 2, 3, 4, 5, 6 and 8 times the
+    step (tries T46 and T50), by linear interpolation, a candidate passes A if its score at its multiple is not below
+    the score at the entry's multiple, and if no read multiple between the two is behind 3 times by try T50's
+    single-task test. If try T51 reads "the common part moves less", the worst case is the smaller of 0.22 and the low
+    end of the range recomputed with T51's own scale, and the multiples are recomputed the same way.
+  - **B, the choice among those that pass.** The value advised is the one with the largest interpolated gain over 0.40
+    on library 3's curve at the low end of the expected range (a real share of 0.28, or T51's recomputed low end if it
+    reads "the common part moves less"). If try T50's depth statement reads "the larger steps gain more against the
+    shallower truth", the request says that the curve depends on the truth's depth, that released data do not say how
+    deep the hidden truth is, and that library 3 unthinned is the deepest truth read; the advice then takes the
+    smaller of the rule's value and 0.60. Nothing about the hidden truth's depth enters the advice.
+  - **C, a changed direction instead of a uniform value.** Only if its read's own statement says so: try T52's "the
+    smaller pseudocount scores better at the same delivered size" together with "the gain needs the direction's genes"
+    on the pooled truth, or try T53's "the zone-fixed content scores better at equal size" together with "the gain
+    needs the form's genes". The form advised is then the one read, at a fraction whose arm was read, and it must pass
+    A on its own arms where they reach the worst-case ratio; where they do not reach it the request says so and the
+    advice stays with the uniform value. Two changed directions are never combined in one request unless an arm that
+    combines them was read.
+  - **D, and what the rule does not do.** If no candidate passes A the advice is to keep 0.40. Try T48 (the step set
+    by its own calibration on the cuts) and try T49 (the size of g_mom's factors) decide nothing here: T48 is reported
+    in the request as the rule's own arm on practice, and T49 has its own adoption-rule route. The independent
+    recomputation of tries T44 to T47 must have found no mismatch that bears on a figure the request quotes; otherwise
+    the request waits for the correction.
