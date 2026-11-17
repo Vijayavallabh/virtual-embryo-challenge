@@ -30,7 +30,7 @@ SCALED = tuple(MULT)
 ALL_ARMS = ("b0", "m1_r_gmom", *SCALED)
 RESCORED = ("b0", "m1_r_gmom", *OLD)
 T46_TRUTHS = ("pooled", "lib1", "lib2", "lib3")
-THIN = {"lib3_t33": (1 / 3, [50, 1]), "lib3_t67": (2 / 3, [50, 2])}
+THIN = {"lib3_t33": (1 / 3, [50, 1]), "lib3_t67": (2 / 3, [50, 2]), "lib3_t33b": (1 / 3, [50, 3])}
 TRUTHS = (*T46_TRUTHS, *THIN)
 STAMP = {"commit": "f" * 40, "tree_clean": True, "utc": "x", "inputs": {}}
 
@@ -98,7 +98,7 @@ def test_lib3_is_t46s_and_its_counts_are_the_files_rows_in_that_order(orr, world
     assert list(obs["celltype"]) == list(a.obs["celltype"].iloc[rows])
 
 
-@pytest.mark.parametrize("name", ["lib3_t33", "lib3_t67"])
+@pytest.mark.parametrize("name", ["lib3_t33", "lib3_t67", "lib3_t33b"])
 def test_thinning_keeps_the_rows_their_order_and_count_and_gives_a_ratio_near_p(orr, world, tmp_path, name):
     t, a, C = world
     lib3, c3 = orr.ls.truth_and_contamination(t, tmp_path, PANEL, "lib3")
@@ -132,7 +132,15 @@ def test_thinning_is_binomial_on_its_own_stream_the_same_on_every_call_and_diffe
     assert (c67 != a).nnz > 0
     want67 = np.random.default_rng([50, 2]).binomial(Cs.data, 2 / 3)
     assert (c67 != sparse.csr_matrix((want67, Cs.indices, Cs.indptr), shape=C.shape)).nnz == 0
-    assert orr.THINNED == {"lib3_t33": {"p": 1 / 3, "stream": [50, 1]}, "lib3_t67": {"p": 2 / 3, "stream": [50, 2]}}
+    c33b = orr.thin_counts(C, "lib3_t33b")
+    assert (c33b != a).nnz > 0  # the second draw at p = 1/3 is a different draw
+    want33b = np.random.default_rng([50, 3]).binomial(Cs.data, 1 / 3)
+    assert (c33b != sparse.csr_matrix((want33b, Cs.indices, Cs.indptr), shape=C.shape)).nnz == 0
+    assert orr.THINNED == {"lib3_t33": {"p": 1 / 3, "stream": [50, 1]}, "lib3_t67": {"p": 2 / 3, "stream": [50, 2]},
+                           "lib3_t33b": {"p": 1 / 3, "stream": [50, 3]}}
+    assert orr.DRAW_NULL == ("lib3_t33b", "lib3_t33")
+    streams = [tuple(v["stream"]) for v in orr.THINNED.values()]
+    assert len(set(streams)) == len(streams)
 
 
 def test_the_matrix_the_scorer_gets_is_made_by_the_repositorys_own_routines(orr, world, tmp_path, monkeypatch):
@@ -248,8 +256,9 @@ def test_t46s_arms_keep_their_output_and_the_new_arms_build_past_a_fraction_of_o
 
 B0, BASE = 50.0, 53.0
 W = {"de_score": 0.25, "de_direction": 0.25, "mmd_u": 0.30, "variogram": 0.20}
-ROWS = {"pooled": 7919, "lib1": 1777, "lib2": 2711, "lib3": 3431, "lib3_t33": 3431, "lib3_t67": 3431}
-CONTAM = {"pooled": 613, "lib1": 401, "lib2": 199, "lib3": 13, "lib3_t33": 13, "lib3_t67": 13}
+ROWS = {"pooled": 7919, "lib1": 1777, "lib2": 2711, "lib3": 3431, "lib3_t33": 3431, "lib3_t67": 3431,
+        "lib3_t33b": 3431}
+CONTAM = {"pooled": 613, "lib1": 401, "lib2": 199, "lib3": 13, "lib3_t33": 13, "lib3_t67": 13, "lib3_t33b": 13}
 
 
 def _arm(score, de_part=0.5):
@@ -401,12 +410,14 @@ def test_statement_two_reports_each_worst_case_with_its_label_and_parts(orr, tmp
     assert "test: behind; de terms -0.75, mmd_u and variogram -0.75; de_score skill" in txt
 
 
-def _depth(x4_minus_x2_thin, x4_minus_x2_lib3=1.0):
-    """Gains with (x4 - x2) set per truth: lib3's and each thinned truth's."""
-    def g(d):
+def _depth(x4_minus_x2_thin, x4_minus_x2_lib3=1.0, x8_extra_thin=0.37, null=0.0):
+    """Gains with (x4 - x2) set per truth: lib3's and each thinned truth's; x8 moved by x8_extra_thin on the thinned
+    truths only (so x8 - x4 differs from x6 - x4 between truths); lib3_t33b's (x4 - x2) is lib3_t33's plus null."""
+    def g(d, e=0.0):
         return {**{a: 0.0 for a in SCALED}, "m1_r_gmom_x2": 1.0, "m1_r_gmom_x4": 1.0 + d,
-                "m1_r_gmom_x5": 0.5 + d, "m1_r_gmom_x6": 0.4 + d, "m1_r_gmom_x8": 0.3 + d}
-    return {"lib3": g(x4_minus_x2_lib3), "lib3_t33": g(x4_minus_x2_thin), "lib3_t67": g(x4_minus_x2_thin)}
+                "m1_r_gmom_x5": 0.5 + d, "m1_r_gmom_x6": 0.4 + d, "m1_r_gmom_x8": 0.3 + d + e}
+    return {"lib3": g(x4_minus_x2_lib3), "lib3_t33": g(x4_minus_x2_thin, x8_extra_thin),
+            "lib3_t67": g(x4_minus_x2_thin, x8_extra_thin), "lib3_t33b": g(x4_minus_x2_thin + null, x8_extra_thin)}
 
 
 @pytest.mark.parametrize("thin, statement, label", [
@@ -417,12 +428,16 @@ def _depth(x4_minus_x2_thin, x4_minus_x2_lib3=1.0):
 def test_statement_three_each_depth_label(orr, tmp_path, thin, statement, label):
     r = _read(orr, tmp_path, _depth(thin))
     s3 = r["statement_3"]
+    assert s3["valid"] and s3["draw_null"]["holds"] and s3["draw_null"]["x4_minus_x2"]["label"] == "level"
     assert s3["D33"]["statement"] == statement and s3["D33"]["label"] == label
     assert s3["D67"]["statement"] == statement and s3["D67"]["label"] == label
     assert s3["D33"]["mean"] == pytest.approx(thin - 1.0, abs=1e-8)
     for k in THIN:
         d = s3["x8_minus_x4"][k]
-        assert d["mean"] == pytest.approx(0.0, abs=1e-8)  # x8 - x4 is -0.7 on every truth here
+        # x8 - x4 is -0.7 on lib3 and -0.7 + 0.37 on the thinned truths; x6 - x4 is -0.6 on every truth
+        assert d["mean"] == pytest.approx(0.37, abs=1e-8)
+    assert s3["draw_null"]["x8_minus_x4"]["mean"] == pytest.approx(0.0, abs=1e-8)
+    assert f"; depth: {statement}" in r["outcome"]
     assert set(s3["reported_not_read"]) == {"lib1", "lib2"}
     assert s3["reported_not_read"]["lib1"]["mean"] == pytest.approx(-1.0, abs=1e-8)  # lib1's 0 minus lib3's 1
     txt = (tmp_path / "out" / "t50.txt").read_text()
@@ -440,17 +455,171 @@ def test_d33_and_d67_are_read_separately_and_paired_by_seed(orr, tmp_path):
         d["m1_r_gmom_x6"] = [x + 2e-3 for x in d["m1_r_gmom_x4"]]
         d["m1_r_gmom_x8"] = [x + 3e-3 for x in d["m1_r_gmom_x4"]]
     r = _read(orr, tmp_path, {"lib3": {"per_seed": lib3}, "lib3_t33": {"per_seed": t33},
-                              "lib3_t67": {"per_seed": t67}})
+                              "lib3_t67": {"per_seed": t67}, "lib3_t33b": {"per_seed": t33}})
     s3 = r["statement_3"]
     assert s3["D33"]["mean"] == pytest.approx(0.5) and s3["D33"]["seeds_ahead"] == 10 and s3["D33"]["sd"] < 1e-9
     assert s3["D33"]["statement"] == "The larger steps gain more against the shallower truth"
     assert s3["D67"]["mean"] == pytest.approx(0.1) and s3["D67"]["statement"] == "no difference at the bar"
 
 
+@pytest.mark.parametrize("null, label", [(0.5, "ahead"), (-0.5, "behind")])
+def test_statement_three_is_void_when_the_second_draw_is_not_level_against_the_first(orr, tmp_path, null, label):
+    """The draw null (lib3_t33b against lib3_t33, the same predictions) past the bar: one draw alone can pass it, so
+    statement 3 is void and only reported; statements 1 and 2 stand."""
+    r = _read(orr, tmp_path, _depth(2.0, null=null))
+    assert r["valid"] and "statement_1" in r and "statement_2" in r
+    s3 = r["statement_3"]
+    assert not s3["valid"] and not s3["draw_null"]["holds"]
+    assert s3["draw_null"]["x4_minus_x2"]["label"] == label
+    assert s3["draw_null"]["x4_minus_x2"]["mean"] == pytest.approx(null, abs=1e-8)
+    assert s3["D33"]["statement"] == orr.DEPTH_VOID and s3["D67"]["statement"] == orr.DEPTH_VOID
+    assert s3["D33"]["label"] == "ahead"  # still reported
+    assert s3["D33"]["label_if_valid"] == "The larger steps gain more against the shallower truth"
+    assert r["outcome"].endswith(f"; depth: {orr.DEPTH_VOID}")
+    txt = (tmp_path / "out" / "t50.txt").read_text()
+    assert "statement 3 is void and only reported" in txt and orr.DEPTH_VOID in txt
+
+
+def test_statement_three_stands_with_a_level_null_printed_beside_d33(orr, tmp_path):
+    per = {a: [0.0] * 10 for a in SCALED}
+    base = {**per, "m1_r_gmom_x2": [1.0] * 10, "m1_r_gmom_x4": [2.0] * 10}
+    t33 = {**base, "m1_r_gmom_x4": [3.0] * 10}
+    t33b = {**base, "m1_r_gmom_x4": [3.0 + (0.2 if i % 2 else -0.1) for i in range(10)]}  # null: mean +0.05, level
+    for d in (base, t33, t33b):
+        for j, a in enumerate(("m1_r_gmom_x5", "m1_r_gmom_x6", "m1_r_gmom_x8")):
+            d[a] = [x + 1e-3 * (j + 1) for x in d["m1_r_gmom_x4"]]
+    r = _read(orr, tmp_path, {"lib3": {"per_seed": base}, "lib3_t33": {"per_seed": t33},
+                              "lib3_t67": {"per_seed": t33}, "lib3_t33b": {"per_seed": t33b}})
+    s3 = r["statement_3"]
+    assert s3["valid"] and s3["draw_null"]["x4_minus_x2"]["label"] == "level"
+    assert s3["draw_null"]["x4_minus_x2"]["mean"] == pytest.approx(0.05)
+    assert s3["D33"]["statement"] == "The larger steps gain more against the shallower truth"
+    txt = (tmp_path / "out" / "t50.txt").read_text()
+    assert "statement 3 stands" in txt
+    assert "beside it the draw null's mean +0.05, per seed -0.10 to +0.20" in txt
+
+
+def test_the_tie_rule_picks_the_smallest_multiplier(orr):
+    means = {"m1_r_gmom": 53.0, "m1_r_gmom_x15": 54.0, "m1_r_gmom_x2": 55.0, "m1_r_gmom_x3": 56.0,
+             "m1_r_gmom_x4": 57.0, "m1_r_gmom_x5": 57.0, "m1_r_gmom_x6": 56.5, "m1_r_gmom_x8": 57.0}
+    t = orr.turn(means)
+    assert t["best"] == 4.0 and t["statement"] == "turns at 4"
+    t = orr.turn({**means, "m1_r_gmom_x4": 56.0, "m1_r_gmom_x5": 56.0, "m1_r_gmom_x8": 57.0})
+    assert t["best"] == 8.0 and t["statement"] == "still rising at 8"
+    t = orr.turn({**means, "m1_r_gmom": 57.0})
+    assert t["best"] == 1.0
+
+
+def test_the_outcome_line_gives_the_labels_first_and_marks_an_unseparated_argmax(orr, tmp_path):
+    flat = {**_rising(4.0), "m1_r_gmom_x5": 4.2, "m1_r_gmom_x6": 4.05, "m1_r_gmom_x8": 3.8}  # all level, argmax 5
+    r = _read(orr, tmp_path, {**{k: _rising(8.0) for k in TRUTHS}, "lib3": flat})
+    assert "lib3 x5 level, x6 level, x8 level; argmax 5 (not separated)" in r["outcome"]
+    assert "lib1 x5 ahead, x6 ahead, x8 ahead; argmax 8 (still rising at 8)" in r["outcome"]
+    txt = (tmp_path / "out" / "t50.txt").read_text()
+    assert "on lib3: m1_r_gmom_x5 level, m1_r_gmom_x6 level, m1_r_gmom_x8 level; argmax turns at 5 (not separated)" \
+        in txt
+    r = _read(orr, tmp_path / "b", {k: _rising(4.0) for k in TRUTHS})
+    assert "lib3 x5 behind, x6 behind, x8 behind; argmax 4;" in r["outcome"]
+    assert "(not separated)" not in r["outcome"]
+
+
+def test_statement_three_reports_the_raw_metric_differences_the_anchor_gaps_and_the_shapes(orr, tmp_path):
+    anchors = {m: {"floor": 0.1, "ceiling": 0.6} for m in W}
+    thin_anchors = {m: {"floor": 0.2, "ceiling": 0.45} for m in W}
+    truths = {k: _task(k, gains=g) for k, g in {**{k: {} for k in TRUTHS}, **_depth(2.0)}.items()}
+    for k, rec in truths.items():
+        for row in rec["rows"]:
+            if k == "lib3":
+                row["anchors"] = anchors
+            elif k in THIN:
+                row["anchors"] = thin_anchors
+    out, t46 = _write(tmp_path, truths)
+    r = orr.read(out, t46)["reading"]
+    s3 = r["statement_3"]
+    raw = s3["D33"]["raw_by_metric"]
+    assert raw["de_score"]["mean"] == pytest.approx(1.0 / 100)  # D33 of +1 point is +0.01 of raw de_score here
+    assert raw["mmd_u"]["mean"] == pytest.approx(0.0) and set(raw) == set(W)
+    assert s3["anchor_gap"]["lib3"] == pytest.approx({m: 0.5 for m in W})
+    assert s3["anchor_gap"]["lib3_t33"] == pytest.approx({m: 0.25 for m in W})
+    assert set(s3["shapes"]) == {"lib3", *THIN}
+    assert s3["shapes"]["lib3_t33"] == r["statement_1"]["lib3_t33"]
+    txt = (tmp_path / "out" / "t50.txt").read_text()
+    assert "D33 on the raw metrics (free of each truth's anchors; read by nothing): de_score +0.01" in txt
+    assert "lib3: mean ceiling minus floor per metric (read by nothing): de_score +0.5" in txt
+    assert "the curve's shape side by side" in txt
+    r = _read(orr, tmp_path / "b", _depth(2.0))
+    assert r["statement_3"]["anchor_gap"]["lib3"] is None
+    assert "lib3: mean ceiling minus floor per metric (read by nothing): not recorded" in \
+        (tmp_path / "b" / "out" / "t50.txt").read_text()
+
+
+def test_the_run_records_each_seeds_anchors(orr):
+    rec = orr.anchor_record({"mmd_u": {"floor": np.float32(0.25), "ceiling": 0.5, "other": 1}})
+    assert rec == {"mmd_u": {"floor": 0.25, "ceiling": 0.5}} and type(rec["mmd_u"]["floor"]) is float
+    assert '"anchors": anchor_record(f.anchors)' in inspect.getsource(orr.cmd_run)
+
+
+def test_the_new_limits_are_in_the_text(orr):
+    for want in ("No outcome of T50 is evidence on T1 read depth, a lever closed after an exposure that this read does "
+                 "not reopen.",
+                 "Board points are not comparable across truths: each truth, the thinned ones included, has its own "
+                 "floor and ceiling",
+                 "the argmax alone is not a finding.",
+                 "'level' is not 'no loss'.",
+                 "differ from it in contamination share and capture",
+                 "statement 3 stands only when a second draw at p = 1/3 (lib3_t33b) reads level against the first.",
+                 "it shows no biological change and no change in Feng's share",
+                 "The depth-ratio check catches a wrong p or a wrong stream only"):
+        assert any(want in x for x in orr.LIMITS), want
+
+
+def test_the_thinning_record_is_printed(orr, tmp_path):
+    _read(orr, tmp_path, over={"lib3_t33b": {"thinning": {"rebuild_largest_difference": 2.5e-7}}})
+    txt = (tmp_path / "out" / "t50.txt").read_text()
+    assert ("truth lib3_t33b: realised depth ratio 0.3333 (p 0.3333, stream [50, 3]), rebuild check's largest "
+            "difference 2.5e-07, any cell left with no count: False") in txt
+
+
+def test_a_thinning_that_empties_a_cell_is_recorded(orr, world, tmp_path, monkeypatch):
+    t, _, _ = world
+
+    def empty_first(C, name):
+        out = sparse.csr_matrix(C, dtype=np.int64, copy=True)
+        out[0] = 0
+        out.eliminate_zeros()
+        return out
+
+    monkeypatch.setattr(orr, "thin_counts", empty_first)
+    th, _, rec = orr.thinned_truth(t, tmp_path, PANEL, "lib3_t33")
+    assert rec["any_cell_emptied"] is True
+    assert th.X[0].sum() == 0  # the all-zero row the scorer would get
+
+
+def test_a_file_with_no_rows_key_is_void_not_an_error(orr, tmp_path):
+    truths = {k: _task(k) for k in TRUTHS}
+    out, t46 = _write(tmp_path, truths)
+    (out / "tasks" / "lib1.json").write_text(json.dumps({k: v for k, v in truths["lib1"].items() if k != "rows"}))
+    r = orr.read(out, t46)["reading"]
+    assert not r["valid"] and any("lib1: seeds []" in x for x in r["validity"]["reasons"])
+
+
+def test_the_rebuild_refuses_rows_whose_cell_types_differ_from_lib3s(orr, monkeypatch, tmp_path):
+    """The full file read by name gives rows whose cell types are not lib3's: refused."""
+    a, _ = _counts_target()
+    t = _chamber(monkeypatch, orr, a)
+    shuffled = a.copy()
+    shuffled.obs["celltype"] = np.random.default_rng(1).permutation(shuffled.obs["celltype"].to_numpy())
+    monkeypatch.setattr(orr, "read_stage", lambda path, genes=None: shuffled.copy() if genes is None
+                        else shuffled[:, list(genes)].copy())
+    with pytest.raises(ValueError, match="the rebuilt rows' cell types differ from lib3's"):
+        orr.thinned_truth(t, tmp_path, PANEL, "lib3_t33")
+
+
 def test_the_reported_quantities(orr, tmp_path):
     r = _read(orr, tmp_path, {k: _rising(8.0) for k in TRUTHS},
               over={"lib3_t33": {"thinning": {"depth_ratio": 0.335}}})
-    assert r["valid"] and r["depth_ratio"] == pytest.approx({"lib3_t33": 0.335, "lib3_t67": 2 / 3})
+    assert r["valid"] and r["depth_ratio"] == pytest.approx({"lib3_t33": 0.335, "lib3_t67": 2 / 3,
+                                                             "lib3_t33b": 1 / 3})
     n = r["neighbours"]["lib2"]
     assert n["m1_r_gmom_x15"]["base"] == "m1_r_gmom" and n["m1_r_gmom_x8"]["base"] == "m1_r_gmom_x6"
     assert n["m1_r_gmom_x15"]["per_tenth"] == pytest.approx(1.5)  # +1.5 over 0.1 of fraction
@@ -459,7 +628,7 @@ def test_the_reported_quantities(orr, tmp_path):
     assert r["mean_scores"]["lib1"]["m1_r_gmom_x8"] == pytest.approx(BASE + 8)
     assert r["sha256_across_truths"]["all_agree"]
     txt = (tmp_path / "out" / "t50.txt").read_text()
-    assert "truth lib3_t33: realised depth ratio 0.3350 (p 0.3333)" in txt
+    assert "truth lib3_t33: realised depth ratio 0.3350 (p 0.3333, stream [50, 1])" in txt
     assert "m1_r_gmom_x8 against m1_r_gmom_x6 +2.00 (ahead), +0.50 per 0.1 of fraction" in txt
     assert "predictions' sha256 across the truths: the same on every seed and arm" in txt
     for line in orr.LIMITS:
@@ -476,6 +645,14 @@ FR_X6 = {"m1_r_gmom": 0.2, **{a: 0.2 * m for a, m in MULT.items()}, "m1_r_gmom_x
 @pytest.mark.parametrize("over, shift, reason", [
     ({"lib2": None}, None, "missing truths ['lib2']"),
     ({"lib3_t67": None}, None, "missing truths ['lib3_t67']"),
+    ({"lib3_t33b": None}, None, "missing truths ['lib3_t33b']"),
+    ({"lib3_t33b": {"thinning": {"stream": [50, 1]}}}, None, "lib3_t33b: the file records p"),
+    ({"lib3_t33b": {"sha": lambda s, a: "other" if (s, a) == (0, "b0") else f"{a}-{s}"}}, None,
+     "lib3_t33b: the predictions' sha256 do not equal lib3's"),
+    ({"lib3_t33": {"thinning": {"any_cell_emptied": True}}}, None, "lib3_t33: the thinning left a truth cell"),
+    ({"lib3_t67": {"thinning": {"any_cell_emptied": None}}}, None, "lib3_t67: the thinning left a truth cell"),
+    ({"lib3_t33b": {"thinning": {"rebuild_largest_difference": 1e-4}}}, None,
+     "lib3_t33b: the rebuild check's largest difference"),
     ({"lib1": {"seeds": range(9)}}, None, "lib1: seeds"),
     ({"lib3_t33": {"seeds": range(9)}}, None, "lib3_t33: seeds"),
     ({}, {("lib2", "m1_r_gmom_x3"): 1e-6}, "do not reproduce T46's committed scores"),
