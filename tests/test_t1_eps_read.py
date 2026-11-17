@@ -23,6 +23,8 @@ SCRIPT = REPO_ROOT / "experiments" / "t1_m1" / "eps_read.py"
 NEW = ("m1_r_gmom_e01", "m1_r_gmom_e01_x15", "m1_r_gmom_e01_x2", "m1_r_gmom_e002", "m1_r_gmom_e002_x15",
        "m1_r_gmom_e002_x2")
 NEW_PERM = ("m1_r_gmom_e01_x15_perm", "m1_r_gmom_e002_x15_perm")
+NEW_SPERM = ("m1_r_gmom_e01_x15_sperm", "m1_r_gmom_e002_x15_sperm")
+SPERM = ("m1_r_gmom_sperm", *NEW_SPERM)
 UNIFORM = ("m1_r_gmom_x15", "m1_r_gmom_x2", "m1_r_gmom_x3", "m1_r_gmom_x4")
 CHAMBER = ("pooled", "lib1", "lib2", "lib3")
 TRUTHS = (*CHAMBER, "whole")
@@ -52,7 +54,7 @@ def _prints_a_count(txt: str, counts) -> bool:
 
 def test_the_arms_of_each_truth(ep):
     for k in CHAMBER:
-        assert ep.arms_of(k) == ("b0", "m1_r_gmom", *UNIFORM, "m1_r_gmom_perm", *NEW, *NEW_PERM)
+        assert ep.arms_of(k) == ("b0", "m1_r_gmom", *UNIFORM, "m1_r_gmom_perm", *NEW, *NEW_PERM, *SPERM)
     assert ep.arms_of("whole") == ("b0", "m1_r_gmom", "m1_r_gmom_x15", "m1_r_gmom_x2", "m1_r_gmom_x3", *NEW)
     spec = ep.arm_spec("lib2")
     assert spec["m1_r_gmom"] == {"fraction": 0.2, "pseudocount": 0.5}
@@ -62,7 +64,15 @@ def test_the_arms_of_each_truth(ep):
     assert spec["m1_r_gmom_e01_x15_perm"] == {"fraction": pytest.approx(0.3), "pseudocount": 0.1}
     assert spec["m1_r_gmom_e002_x15_perm"] == {"fraction": pytest.approx(0.3), "pseudocount": 0.02}
     assert spec["m1_r_gmom_perm"] == {"fraction": 0.2, "pseudocount": 0.5}
-    assert "m1_r_gmom_x4" not in ep.arm_spec("whole") and "m1_r_gmom_perm" not in ep.arm_spec("whole")
+    assert spec["m1_r_gmom_sperm"] == {"fraction": 0.2, "pseudocount": 0.5}
+    assert spec["m1_r_gmom_e01_x15_sperm"] == {"fraction": pytest.approx(0.3), "pseudocount": 0.1}
+    assert spec["m1_r_gmom_e002_x15_sperm"] == {"fraction": pytest.approx(0.3), "pseudocount": 0.02}
+    whole = ep.arm_spec("whole")
+    assert not {"m1_r_gmom_x4", "m1_r_gmom_perm", *NEW_PERM, *SPERM} & set(whole)
+    assert ep.PLACEBO_OF == {"m1_r_gmom_perm": "m1_r_gmom", "m1_r_gmom_sperm": "m1_r_gmom",
+                             **dict(zip(NEW_PERM, ("m1_r_gmom_e01_x15", "m1_r_gmom_e002_x15"), strict=True)),
+                             **dict(zip(NEW_SPERM, ("m1_r_gmom_e01_x15", "m1_r_gmom_e002_x15"), strict=True))}
+    assert ep.SPERM_STREAM not in (ep.PLACEBO_STREAM, 0, 1, 2)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -152,6 +162,42 @@ def test_the_direction_stats_are_ratios_from_the_moved_genes(ep):
     assert out["entry"]["CM"] == {"squared_size_over_entry": 1.0, "share_on_low_start_genes": pytest.approx(5 / 6)}
     assert out["e01"]["CM"] == {"squared_size_over_entry": pytest.approx(14 / 6),
                                 "share_on_low_start_genes": pytest.approx(13 / 14)}
+    # with the E14.5 means: low at the end are b and c (c is not moved); either end: a, b, d
+    end = {"CM": np.array([3.0, 0.2, 0.1, 1.0, 0.0])}
+    out = ep.direction_stats({"entry": entry, "e01": new}, means, genes, held=["e"], end=end)
+    assert out["e01"]["CM"]["share_on_low_end_genes"] == pytest.approx(1 / 14)
+    assert out["e01"]["CM"]["share_on_low_either_end_genes"] == pytest.approx(14 / 14)
+    assert out["entry"]["CM"]["share_on_low_end_genes"] == pytest.approx(1 / 6)
+
+
+def test_the_end_means_are_the_groups_feng_e14_5_means(ep, stats):
+    path, genes = stats
+    _, rec = ep.feng_dirs.feng_directions(genes, stats_path=path)
+    means = ep.end_means(genes, rec, stats_path=path)
+    st = ep.dl.load_stats(path, fields=ep.dl.STAT_FIELDS)
+    for g, c in rec["groups"].items():
+        np.testing.assert_array_equal(means[g], ep.dl.feng_sel(st, "E14.5", c["feng_labels"])["cp"])
+
+
+def test_the_half_split_agreement_is_target_free_and_per_pseudocount(ep, stats):
+    """Per pseudocount and group: the correlation of Feng's half-A and half-B directions over the moved genes, and
+    eb_shrink's per-decile factors, each from feng_dirs' own functions with the pseudocount's config copy."""
+    path, genes = stats
+    held = genes[:3]
+    out = ep.half_agreement(genes, held, {"entry": 0.5, "e002": 0.02}, stats_path=path)
+    st = ep.dl.load_stats(path, fields=ep.dl.STAT_FIELDS)
+    for tag, eps in (("entry", 0.5), ("e002", 0.02)):
+        halves = ep.feng_dirs.direction_halves(st, genes, ep.eps_config(eps))
+        dirs, _, _ = ep.feng_dirs.directions_from_stats(st, genes, ep.eps_config(eps))
+        assert set(out[tag]) == set(halves) & set(dirs)
+        for g, rec in out[tag].items():
+            h = halves[g]
+            ok = np.isfinite(h["d_a"]) & np.isfinite(h["d_b"]) & ~np.isin(genes, held)
+            assert rec["correlation"] == pytest.approx(np.corrcoef(h["d_a"][ok], h["d_b"][ok])[0, 1])
+            assert rec["eb_shrink_factors"] == pytest.approx(
+                ep.feng_dirs.eb_shrink(dirs[g], h["d_a"], h["d_b"], h["mean_cp"])[1])
+            assert len(rec["eb_shrink_factors"]) == 10
+    assert ep.feng_dirs.load_config()["metrics"]["pseudocount_cp10k"] == 0.5
 
 
 def test_the_start_means_are_the_groups_feng_e9_5_means(ep, stats):
@@ -221,11 +267,11 @@ def test_a_new_arm_differs_from_the_entrys_build_in_the_directions_and_the_fract
 
     ctx, groups, dirs, eps_dirs, held = _eps_world(ep)
     monkeypatch.setattr(ep.gc, "m1_r_arms", spy)
-    preds, _, _ = ep.build_seed(ctx, lambda c: "b0", "pooled", dirs, eps_dirs, groups, 0.2, held, held)
+    preds, _, _, _ = ep.build_seed(ctx, lambda c: "b0", "pooled", dirs, eps_dirs, groups, 0.2, held, held)
     assert list(preds) == list(ep.arms_of("pooled"))
     by_arm = dict(zip([a for a in ep.arms_of("pooled") if a != "b0"], calls, strict=True))
     base = by_arm["m1_r_gmom"]
-    for a in ("m1_r_gmom", *UNIFORM, *NEW, "m1_r_gmom_perm", *NEW_PERM):
+    for a in ("m1_r_gmom", *UNIFORM, *NEW, "m1_r_gmom_perm", *NEW_PERM, *SPERM):
         c = by_arm[a]
         for key in ("ctx", "groups", "held_m1", "held_factors"):
             assert c[key] is base[key], f"{a} differs from the entry's build in {key}"
@@ -248,23 +294,32 @@ def test_a_new_arm_differs_from_the_entrys_build_in_the_directions_and_the_fract
     perm_entry = ep.lsr.placebo_directions(ctx, dirs, held)
     assert all(np.array_equal(by_arm["m1_r_gmom_perm"]["directions"][g], perm_entry[g], equal_nan=True) for g in dirs)
     assert by_arm["m1_r_gmom_perm"]["fraction"] == 0.2
+    # the expression-matched placebos: each direction permuted within scored/other x reference-level deciles
+    levels = ep.reference_levels(ctx, groups, dirs)
+    x15 = by_arm["m1_r_gmom_x15"]["fraction"]
+    for p, d, fr in (("m1_r_gmom_sperm", dirs, 0.2), (NEW_SPERM[0], eps_dirs["e01"], x15),
+                     (NEW_SPERM[1], eps_dirs["e002"], x15)):
+        want = ep.splacebo_directions(ctx, d, held, levels)
+        assert all(np.array_equal(by_arm[p]["directions"][g], want[g], equal_nan=True) for g in want)
+        assert by_arm[p]["fraction"] == fr
 
 
 def test_the_whole_cut_builds_no_x4_and_no_placebo(ep, monkeypatch):
     calls = []
     monkeypatch.setattr(ep.gc, "m1_r_arms", lambda *a: calls.append(a[3]) or {"m1_r": None, "m1_r_gmom": a[3]})
     ctx, groups, dirs, eps_dirs, held = _eps_world(ep)
-    preds, _, placebo = ep.build_seed(ctx, lambda c: "b0", "whole", dirs, eps_dirs, groups, 0.2, held, held)
+    preds, _, placebo, factors = ep.build_seed(ctx, lambda c: "b0", "whole", dirs, eps_dirs, groups, 0.2, held, held)
     assert list(preds) == list(ep.arms_of("whole")) and len(calls) == 4 + 6
-    assert placebo == {"sha256": {}, "same_positions_as_m1_r_gmom_perm": {}}
+    assert placebo == {"sha256": {}, "same_positions_as_m1_r_gmom_perm": {}, "same_positions_as_m1_r_gmom_sperm": {}}
+    assert all(set(v) == set(ep.arms_of("whole")) - {"b0"} for v in factors.values())
 
 
 def test_the_rescored_arms_keep_their_output_bit_for_bit(ep):
     """b0, m1_r_gmom, the four uniform arms and m1_r_gmom_perm as build_seed makes them now equal try T46's committed
     builds on the synthetic world (test_t1_lib_step_read's golden sha256)."""
     ctx, groups, dirs, eps_dirs, held = _eps_world(ep)
-    preds, log_factors, placebo = ep.build_seed(ctx, harness._b0_t1(harness.B0_DAMPING), "pooled", dirs, eps_dirs,
-                                                groups, 0.2, held, held)
+    preds, log_factors, placebo, factors = ep.build_seed(ctx, harness._b0_t1(harness.B0_DAMPING), "pooled", dirs,
+                                                         eps_dirs, groups, 0.2, held, held)
     got = {a: ep.lsr.prediction_sha256(preds[a]) for a in ("b0", "m1_r_gmom", *UNIFORM, "m1_r_gmom_perm")}
     assert got == {a: GOLDEN_ARMS_5BC7[a] for a in got}
     for a in NEW:
@@ -277,7 +332,14 @@ def test_the_rescored_arms_keep_their_output_bit_for_bit(ep):
         assert v[NEW_PERM[0]] == pytest.approx(v["m1_r_gmom_e01_x15"])
         assert v["m1_r_gmom_perm"] == pytest.approx(v["m1_r_gmom"])
     assert placebo["same_positions_as_m1_r_gmom_perm"] == {p: True for p in NEW_PERM}
-    assert set(placebo["sha256"]) == {"m1_r_gmom_perm", *NEW_PERM}
+    assert placebo["same_positions_as_m1_r_gmom_sperm"] == {p: True for p in NEW_SPERM}
+    assert set(placebo["sha256"]) == {"m1_r_gmom_perm", *NEW_PERM, *SPERM}
+    for p, real in zip(NEW_SPERM, ("m1_r_gmom_e01_x15", "m1_r_gmom_e002_x15"), strict=True):
+        assert ep.lsr.prediction_sha256(preds[p]) != ep.lsr.prediction_sha256(preds[real])
+        assert ep.lsr.prediction_sha256(preds[p]) != ep.lsr.prediction_sha256(preds[p.replace("_sperm", "_perm")])
+    assert set(factors) == set(dirs) and all(set(v) == set(ep.arms_of("pooled")) - {"b0"} for v in factors.values())
+    pb = ep.pseudobulk_changes(preds)
+    assert pb["m1_r_gmom"] == 0.0 and all(pb[a] > 0 for a in NEW)
 
 
 def test_with_the_entrys_directions_the_new_arms_are_the_entrys_arms_bit_for_bit(ep):
@@ -285,8 +347,8 @@ def test_with_the_entrys_directions_the_new_arms_are_the_entrys_arms_bit_for_bit
     the new placebo the _x15 build along the entry's own permutation) bit for bit."""
     ctx, groups, dirs, held = _arms_world()
     idle = {tag: {g: v.copy() for g, v in dirs.items()} for tag in ep.EPS}
-    preds, _, placebo = ep.build_seed(ctx, harness._b0_t1(harness.B0_DAMPING), "pooled", dirs, idle, groups, 0.2,
-                                      held, held)
+    preds, _, placebo, _ = ep.build_seed(ctx, harness._b0_t1(harness.B0_DAMPING), "pooled", dirs, idle, groups, 0.2,
+                                         held, held)
     sha = {a: ep.lsr.prediction_sha256(p) for a, p in preds.items()}
     for tag in ep.EPS:
         assert sha[f"m1_r_gmom_{tag}"] == sha["m1_r_gmom"]
@@ -296,6 +358,10 @@ def test_with_the_entrys_directions_the_new_arms_are_the_entrys_arms_bit_for_bit
     x15_perm = ep.gc.m1_r_arms(ctx, perm, groups, 0.2 * 1.5, held, held)["m1_r_gmom"]
     assert all(sha[p] == ep.lsr.prediction_sha256(x15_perm) for p in NEW_PERM)
     assert all(placebo["sha256"][p] == placebo["sha256"]["m1_r_gmom_perm"] for p in NEW_PERM)
+    sperm = ep.splacebo_directions(ctx, dirs, held, ep.reference_levels(ctx, groups, dirs))
+    x15_sperm = ep.gc.m1_r_arms(ctx, sperm, groups, 0.2 * 1.5, held, held)["m1_r_gmom"]
+    assert all(sha[p] == ep.lsr.prediction_sha256(x15_sperm) for p in NEW_SPERM)
+    assert all(placebo["sha256"][p] == placebo["sha256"]["m1_r_gmom_sperm"] for p in NEW_SPERM)
 
 
 def test_the_permutation_of_positions_is_the_entrys_when_the_moved_genes_are_the_same(ep):
@@ -311,6 +377,121 @@ def test_the_permutation_of_positions_is_the_entrys_when_the_moved_genes_are_the
         idx = a[g]
         ok = np.isfinite(idx)
         np.testing.assert_array_equal(b[g][ok], eps_dirs["e01"][g][idx[ok].astype(int)])
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# The expression-matched placebo and the count-space records
+
+
+def test_the_reference_levels_are_each_groups_mean_cp10k_on_the_reference_cells(ep):
+    ctx, groups, dirs, held = _arms_world()
+    dirs = {**dirs, "Nowhere": dirs["CM"]}  # a group no reference cell maps to: the mean over all cells
+    levels = ep.reference_levels(ctx, groups, dirs)
+    ref = ctx.inputs[ctx.task.reference_role]
+    C = np.asarray(ep.core.counts_of(ref).toarray(), dtype=np.float64)
+    cp = C / np.maximum(C.sum(axis=1, keepdims=True), 1.0) * 1e4
+    lab = ref.obs[t1_scope.LABEL_KEY].astype(str).to_numpy()
+    cell_group = np.array([groups.get(x, "") for x in lab])
+    for g in ("CM", "Endocardium"):
+        assert (cell_group == g).any()
+        np.testing.assert_allclose(levels[g], cp[cell_group == g].mean(axis=0), rtol=1e-10)
+    np.testing.assert_allclose(levels["Nowhere"], cp.mean(axis=0), rtol=1e-10)
+
+
+def _strata_world(n=3000, seed=0):
+    """Synthetic genes: lognormal reference levels; an entry direction of small noise; a 'decompressed' direction that
+    adds large factors on the genes weakly expressed in the reference (as a small pseudocount does)."""
+    rng = np.random.default_rng(seed)
+    genes = [f"g{i}" for i in range(n)]
+    level = rng.lognormal(0.0, 2.0, n)
+    entry = rng.normal(0.0, 0.3, n)
+    weak = level < np.quantile(level, 0.4)
+    new = entry + np.where(weak, rng.choice([-1.0, 1.0], n) * rng.uniform(2.0, 4.0, n), 0.0)
+    entry[:5] = new[:5] = np.nan
+    return genes, level, entry, new, genes[5:15], genes[::2]
+
+
+def test_the_expression_matched_permutation_stays_within_its_strata_and_bins(ep):
+    genes, level, entry, new, held, scored = _strata_world()
+    out = ep.stratified_permuted_directions({"CM": new}, genes, held, scored, [7], {"CM": level})["CM"]
+    held_m = np.isin(genes, held)
+    moved = np.isfinite(new) & ~held_m
+    np.testing.assert_array_equal(out[~moved], new[~moved])  # NaN and held positions stay
+    on = np.isin(genes, scored)
+    changed = 0
+    for stratum in (moved & on, moved & ~on):
+        idx = np.flatnonzero(stratum)
+        for part in np.array_split(idx[np.argsort(level[idx], kind="stable")], ep.LEVEL_BINS):
+            assert sorted(out[part]) == sorted(new[part])  # each bin keeps its own multiset of values
+            changed += int((out[part] != new[part]).sum())
+    assert changed > 0
+    # the same moved genes are permuted the same way whatever the values; another stream from try T46's
+    again = ep.stratified_permuted_directions({"CM": entry}, genes, held, scored, [7], {"CM": level})["CM"]
+    pos = ep.positions_of({"CM": new})
+    pa = ep.stratified_permuted_directions(pos, genes, held, scored, [7], {"CM": level})["CM"]
+    ok = np.isfinite(pa)
+    np.testing.assert_array_equal(again[ok], entry[pa[ok].astype(int)])
+    t46 = ep.lsr.permuted_directions({"CM": new}, genes, held, scored, [7])["CM"]
+    assert not np.array_equal(t46, out, equal_nan=True)
+
+
+def test_the_expression_matched_placebo_moves_about_the_counts_the_real_direction_moves(ep):
+    """The reviewer's design attack: with large factors on weakly expressed genes, try T46's permutation (scored/other
+    only) moves them onto well-expressed genes, so its placebo moves several times the counts the real direction moves;
+    the expression-matched permutation keeps the counts moved near the real direction's."""
+    genes, level, _, new, held, scored = _strata_world()
+
+    def moved(v):
+        return ep.factor_stats(v, genes, held, scored, 0.3, level)["cp10k_moved_share"]
+
+    real = moved(new)
+    t46 = [moved(ep.lsr.permuted_directions({"CM": new}, genes, held, scored, [s])["CM"]) for s in range(5)]
+    strat = [moved(ep.stratified_permuted_directions({"CM": new}, genes, held, scored, [s], {"CM": level})["CM"])
+             for s in range(5)]
+    assert min(t46) > 2.0 * real
+    assert all(abs(x / real - 1.0) < 0.25 for x in strat)
+
+
+def test_the_factor_records_are_external_shifts_own_and_count_large_factors(ep, stats, monkeypatch):
+    """factor_stats' max_abs_log_f is the ShiftReport's per group (no clip on the route), scored_over_log10 counts the
+    scored genes beyond log 10, and the moved shares are the reference levels times |f - 1| over their sum."""
+    path, genes = stats
+    rows = []
+    real = t1_scope.external_shift
+
+    def spy(*args, **kw):
+        out, rep = real(*args, **kw)
+        rows.extend((r["type"], r["max_abs_log_f"], kw.get("max_abs_log_factor")) for r in rep.rows
+                    if "max_abs_log_f" in r)
+        return out, rep
+
+    monkeypatch.setattr(t1_scope, "external_shift", spy)
+    ctx, groups, _, held = _arms_world()
+    new, _ = ep.eps_directions(genes, 0.02, stats_path=path)
+    ep.gc.m1_r_arms(ctx, new, groups, 0.4, held, held)
+    levels = ep.reference_levels(ctx, groups, new)
+    scored = list(ctx.board.genes)
+    assert rows and all(clip is None for _, _, clip in rows)
+    for g, top, _ in rows:
+        assert ep.factor_stats(new[g], genes, held, scored, 0.4, levels[g])["max_abs_log_f"] == pytest.approx(top)
+    v = np.array([1.0, -8.0, np.nan, 7.0, 0.5])
+    names = ["a", "b", "c", "d", "e"]
+    lev = np.array([10.0, 1.0, 5.0, 2.0, 2.0])
+    fs = ep.factor_stats(v, names, ["d"], ["a", "b", "c"], 0.5, lev)
+    logf = np.array([0.5, -4.0, 0.0, 0.0, 0.25])
+    assert fs["max_abs_log_f"] == pytest.approx(4.0) and fs["scored_over_log10"] == 1
+    assert fs["cp10k_moved_share"] == pytest.approx(float((lev * np.abs(np.expm1(logf))).sum() / lev.sum()))
+    assert fs["cp10k_moved_share_scored"] == pytest.approx(float((lev * np.abs(np.expm1(logf)))[:3].sum() / lev.sum()))
+
+
+def test_the_pseudobulk_change_is_against_m1_r_gmoms_prediction(ep):
+    from vec.evaluate import Stage
+
+    base = Stage(X=np.log1p(np.array([[1.0, 0.0], [3.0, 2.0]], dtype=np.float32)))
+    arm = Stage(X=np.log1p(np.array([[1.0, 4.0], [3.0, 0.0]], dtype=np.float32)))
+    out = ep.pseudobulk_changes({"m1_r_gmom": base, "a": arm})
+    want = np.abs(np.log1p([2.0, 2.0]) - np.log1p([2.0, 1.0])).mean()
+    assert out["m1_r_gmom"] == 0.0 and out["a"] == pytest.approx(want, rel=1e-6)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -348,27 +529,34 @@ def _task(ep, truth, gains=None, per_seed=None, seeds=range(10), commit="c" * 40
         for a in identical:
             arms[a] = dict(arms["m1_r_gmom"])
         lf = {g: {a: 0.1 for a in arms_list if a != "b0"} for g in ("CM", "Endocardium")}
+        fs = {g: {a: {"max_abs_log_f": 0.5, "scored_over_log10": 0, "cp10k_moved_share": 0.2,
+                      "cp10k_moved_share_scored": 0.1} for a in arms_list if a != "b0"} for g in ("CM", "Endocardium")}
         rows.append({"seed": s, "floor": 50.0, "arms": arms,
                      "sha256": {a: (sha or {}).get(a, f"{a}-{s}") for a in arms_list},
                      "sparsity": {a: {"zero_share": 0.25, "detected_per_cell": 6.0} for a in arms_list},
-                     "scored_log_factors": lf,
-                     "placebo": {"same_positions_as_m1_r_gmom_perm": {p: True for p in NEW_PERM}}})
+                     "scored_log_factors": lf, "factor_stats": fs,
+                     "pseudobulk_change": {a: 0.0 if a == "m1_r_gmom" else 0.05 for a in arms_list},
+                     "placebo": {"same_positions_as_m1_r_gmom_perm": {p: True for p in NEW_PERM},
+                                 "same_positions_as_m1_r_gmom_sperm": {p: True for p in NEW_SPERM}}})
     spec = ep.arm_spec(truth)
     return {"label": "synthetic", "task": ep.TASK_OF[truth], "truth": truth, "truth_rows": ROWS[truth],
             "truth_contamination": CONTAM[truth], "fraction": 0.2,
             "fractions": fractions or {a: v["fraction"] for a, v in spec.items()},
             "pseudocounts": pseudocounts or {a: v["pseudocount"] for a, v in spec.items()},
             "directions": json.loads(json.dumps(directions or DIRS)),
-            "direction_stats": {t: {"CM": {"squared_size_over_entry": 1.0, "share_on_low_start_genes": 0.4}}
+            "direction_stats": {t: {"CM": {"squared_size_over_entry": 1.0, "share_on_low_start_genes": 0.4,
+                                           "share_on_low_end_genes": 0.3, "share_on_low_either_end_genes": 0.6}}
                                 for t in DIRS},
+            "half_agreement": {t: {"CM": {"correlation": 0.8, "eb_shrink_factors": [0.5] * 10}} for t in DIRS},
             "seeds": list(seeds), "rows": rows,
             "stamp": {"commit": commit, "tree_clean": clean, "utc": "x", "inputs": {}}}
 
 
-def _write(ep, tmp_path, truths, committed_shift=None):
+def _write(ep, tmp_path, truths, committed_shift=None, committed_sha=None):
     """truths: truth -> task record; the committed files (T46's per chamber truth, T44's whole cut) hold the rescored
-    arms' scores from the same rows unless shifted (truth -> arm -> shift)."""
-    committed_shift = committed_shift or {}
+    arms' scores from the same rows unless shifted (truth -> arm -> shift), and on the chamber truths their sha256 from
+    the same rows unless replaced (truth -> arm -> sha256 on every seed; T44's whole-cut file holds no sha256)."""
+    committed_shift, committed_sha = committed_shift or {}, committed_sha or {}
     out = tmp_path / "out"
     (out / "tasks").mkdir(parents=True)
     for k, rec in truths.items():
@@ -382,18 +570,21 @@ def _write(ep, tmp_path, truths, committed_shift=None):
         rows = [{"seed": r["seed"], "arms": {a: {**r["arms"][a], "score": r["arms"][a]["score"]
                                                  + committed_shift.get(k, {}).get(a, 0.0)} for a in repro}}
                 for r in src["rows"]]
+        if k != "whole":
+            for row, r in zip(rows, src["rows"], strict=True):
+                row["sha256"] = {a: committed_sha.get(k, {}).get(a, r["sha256"][a]) for a in repro}
         (t44 if k == "whole" else t46 / f"{k}.json").write_text(json.dumps({"rows": rows}))
     return out, t46, t44
 
 
-def _read(ep, tmp_path, by_truth=None, over=None, committed_shift=None, edit=None):
+def _read(ep, tmp_path, by_truth=None, over=None, committed_shift=None, edit=None, committed_sha=None):
     """by_truth: truth -> gains (both cuts: give 'pooled' and 'whole'); over: truth -> _task overrides (None drops
     the truth); edit: truth -> a function changing the record after it is made (the committed files are written
     first, from the unedited rows)."""
     by_truth, over = by_truth or {}, over or {}
     truths = {k: _task(ep, k, gains=by_truth.get(k), **(over.get(k) or {})) for k in TRUTHS
               if not (k in over and over[k] is None)}
-    out, t46, t44 = _write(ep, tmp_path, {k: v for k, v in truths.items()}, committed_shift)
+    out, t46, t44 = _write(ep, tmp_path, {k: v for k, v in truths.items()}, committed_shift, committed_sha)
     for k, f in (edit or {}).items():
         f(truths[k])
         (out / "tasks" / f"{k}.json").write_text(json.dumps(truths[k]))
@@ -411,10 +602,13 @@ HEAD2 = "Statement 2, decompression against uniform inflation at about the same 
 @pytest.mark.parametrize("gains, statement", [
     ({"m1_r_gmom_e01": 1.0, "m1_r_gmom_e01_x2": 1.0}, SMALLER),
     ({"m1_r_gmom_e01": -1.0, "m1_r_gmom_e01_x2": -1.0}, "uniform inflation scores better"),
-    ({"m1_r_gmom_e01": 1.0, "m1_r_gmom_e01_x2": 0.01}, "no difference at the bar"),
-    ({"m1_r_gmom_e01": 1.0, "m1_r_gmom_e01_x2": -1.0}, "no difference at the bar"),
+    ({}, "no difference at the bar"),
+    ({"m1_r_gmom_e01": 0.01, "m1_r_gmom_e01_x2": -0.2}, "no difference at the bar"),
+    ({"m1_r_gmom_e01": 1.0, "m1_r_gmom_e01_x2": 0.01}, "mixed: passes at the smaller size, neither at the larger"),
+    ({"m1_r_gmom_e01": 1.0, "m1_r_gmom_e01_x2": -1.0}, "mixed: passes at the smaller size, loses at the larger"),
+    ({"m1_r_gmom_e01": -0.1, "m1_r_gmom_e01_x2": -1.0}, "mixed: neither at the smaller size, loses at the larger"),
     ({"m1_r_gmom_x15": 1.0, "m1_r_gmom_e01": 2.0, "m1_r_gmom_x3": 2.0, "m1_r_gmom_e01_x2": 1.0},
-     "no difference at the bar"),
+     "mixed: passes at the smaller size, loses at the larger"),
     ({"m1_r_gmom_x15": 1.0, "m1_r_gmom_e01": 2.0, "m1_r_gmom_x3": 2.0, "m1_r_gmom_e01_x2": 3.0}, SMALLER),
 ])
 def test_statement_two(ep, tmp_path, gains, statement):
@@ -423,10 +617,14 @@ def test_statement_two(ep, tmp_path, gains, statement):
     c1, c2 = r["statement_2"]["comparisons"]
     assert (c1["two_cuts"]["change"], c1["two_cuts"]["base"]) == ("m1_r_gmom_e01", "m1_r_gmom_x15")
     assert (c2["two_cuts"]["change"], c2["two_cuts"]["base"]) == ("m1_r_gmom_e01_x2", "m1_r_gmom_x3")
+    if statement == "no difference at the bar":
+        assert c1["two_cuts"]["label"] == c2["two_cuts"]["label"] == "neither"
     txt = (tmp_path / "out" / "t52.txt").read_text()
     assert HEAD2 + statement in txt
     assert "m1_r_gmom_e01 against m1_r_gmom_x15 on the two cuts: " in txt
     assert "m1_r_gmom_e01_x2 against m1_r_gmom_x3 on the two cuts: " in txt
+    for k in ("pooled", "whole"):  # each pair's count-space sizes beside it, on each cut
+        assert f"count-space sizes on {k} (ruler-matched is not count-matched): m1_r_gmom_e01: ruler size 0.173" in txt
     assert not _prints_a_count(txt, (*ROWS.values(), *[c for c in CONTAM.values() if c]))
 
 
@@ -465,27 +663,53 @@ def test_a_gain_of_exactly_point_three_does_not_pass(ep, tmp_path):
 
 
 @pytest.mark.parametrize("gains, label", [
-    ({"m1_r_gmom_e01_x15": 1.0, "m1_r_gmom_e01_x15_perm": 0.0}, "the gain needs the direction's genes"),
-    ({"m1_r_gmom_e01_x15": 0.01, "m1_r_gmom_e01_x15_perm": -2.0}, "no gain on this truth"),
-    ({"m1_r_gmom_e01_x15": 1.0, "m1_r_gmom_e01_x15_perm": 0.9}, "not separated"),
-    ({"m1_r_gmom_e01_x15": 1.0, "m1_r_gmom_e01_x15_perm": 1.5}, "not separated"),
+    ({"m1_r_gmom_e01_x15": 1.0, "m1_r_gmom_e01_x15_sperm": 0.0}, "the gain needs the direction's genes"),
+    ({"m1_r_gmom_e01_x15": 0.01, "m1_r_gmom_e01_x15_sperm": -2.0}, "no gain on this truth"),
+    ({"m1_r_gmom_e01_x15": 1.0, "m1_r_gmom_e01_x15_sperm": 0.9}, "not separated"),
+    ({"m1_r_gmom_e01_x15": 1.0, "m1_r_gmom_e01_x15_sperm": 1.5}, "not separated"),
+    # try T46's placebo does far more damage (D with it is ahead) but the expression-matched one does not: not read
+    ({"m1_r_gmom_e01_x15": 1.0, "m1_r_gmom_e01_x15_sperm": 0.9, "m1_r_gmom_e01_x15_perm": -3.0}, "not separated"),
 ])
 def test_statement_three(ep, tmp_path, gains, label):
     r = _read(ep, tmp_path, {"lib3": gains})
     s = r["statement_3"]["lib3"]["e01"]
-    assert s["label"] == label
+    assert s["label"] == label and s["same_positions"] is True
     d = s["did"]
-    assert d["mean"] == pytest.approx(gains["m1_r_gmom_e01_x15"] - gains["m1_r_gmom_e01_x15_perm"], abs=1e-7)
+    assert d["quantity"] == "(m1_r_gmom_e01_x15 - m1_r_gmom) - (m1_r_gmom_e01_x15_sperm - m1_r_gmom_sperm)"
+    assert d["mean"] == pytest.approx(gains["m1_r_gmom_e01_x15"] - gains["m1_r_gmom_e01_x15_sperm"], abs=1e-7)
+    t46 = s["did_t46_placebo_not_read"]
+    assert t46["quantity"] == "(m1_r_gmom_e01_x15 - m1_r_gmom) - (m1_r_gmom_e01_x15_perm - m1_r_gmom_perm)"
+    assert t46["mean"] == pytest.approx(gains["m1_r_gmom_e01_x15"] - gains.get("m1_r_gmom_e01_x15_perm", 0.0),
+                                        abs=1e-7)
+    txt = (tmp_path / "out" / "t52.txt").read_text()
+    assert f"on lib3, e01: {label}; gate: " in txt and "reported, not read (try T46's placebo" in txt
     assert r["statement_3"]["lib1"]["e01"]["label"] == "no gain on this truth"
     assert r["statement_3"]["lib3"]["e002"]["label"] == "no gain on this truth"
     assert "whole" not in r["statement_3"]
 
 
 def test_d_uses_the_entrys_placebo_as_the_placebo_base(ep, tmp_path):
-    r = _read(ep, tmp_path, {"lib2": {"m1_r_gmom_e002_x15": 1.0, "m1_r_gmom_e002_x15_perm": 0.5,
-                                      "m1_r_gmom_perm": -0.5}})
+    r = _read(ep, tmp_path, {"lib2": {"m1_r_gmom_e002_x15": 1.0, "m1_r_gmom_e002_x15_sperm": 0.5,
+                                      "m1_r_gmom_sperm": -0.5}})
     s = r["statement_3"]["lib2"]["e002"]
     assert s["did"]["mean"] == pytest.approx(1.0 - (0.5 + 0.5)) and s["label"] == "not separated"
+
+
+def _sperm_differs(rec):
+    rec["rows"][4]["placebo"]["same_positions_as_m1_r_gmom_sperm"]["m1_r_gmom_e002_x15_sperm"] = False
+
+
+def test_statement_three_is_not_read_where_the_permutation_differs(ep, tmp_path):
+    r = _read(ep, tmp_path, {"lib1": {"m1_r_gmom_e002_x15": 1.0, "m1_r_gmom_e002_x15_sperm": -1.0}},
+              edit={"lib1": _sperm_differs})
+    assert r["valid"]
+    s = r["statement_3"]["lib1"]
+    assert s["e002"]["label"] == "not read (permutation differs)" and s["e002"]["same_positions"] is False
+    assert s["e01"]["label"] == "no gain on this truth"
+    assert r["same_positions"]["lib1"]["m1_r_gmom_e002_x15_sperm"] is False
+    assert r["same_positions"]["lib1"]["m1_r_gmom_e002_x15_perm"] is True
+    txt = (tmp_path / "out" / "t52.txt").read_text()
+    assert "on lib1, e002: not read (permutation differs)" in txt
 
 
 def test_the_brackets_of_the_0_02_arms_and_the_reported_numbers(ep, tmp_path):
@@ -512,6 +736,18 @@ def test_the_brackets_of_the_0_02_arms_and_the_reported_numbers(ep, tmp_path):
     assert ("m1_r_gmom_e002_x2 against m1_r_gmom_x4 on the two cuts: not made (m1_r_gmom_x4 is not built on "
             "whole)") in txt
     assert "truth whole: highest mean m1_r_gmom_e002_x2" in txt
+    # the pairing that differs between the truths is named; the extrapolated size is marked; the count-space records
+    assert r["nearest_uniform_differs"] == {"m1_r_gmom_e002_x2": {**{k: "m1_r_gmom_x4" for k in CHAMBER},
+                                                                  "whole": "m1_r_gmom_x3"}}
+    assert r["extrapolated_delivered"] == {"m1_r_gmom_e01_x15": pytest.approx(0.2595)}
+    assert "differs between the truths for: m1_r_gmom_e002_x2 (pooled m1_r_gmom_x4" in txt
+    assert "Extrapolated delivered sizes (not quoted read-backs): m1_r_gmom_e01_x15 0.2595" in txt
+    assert "nearest delivered size m1_r_gmom_x2 (the arm's size is extrapolated)" in txt
+    assert "Statement 1, each new arm against m1_r_gmom (does not separate decompression from step size):" in txt
+    cs = r["count_space"]["lib2"]["m1_r_gmom_e002_x15_sperm"]
+    assert cs["pseudobulk_change"] == pytest.approx(0.05) and cs["groups"]["CM"]["cp10k_moved_share"] == 0.2
+    assert set(r["count_space"]["whole"]) == set(ep.arms_of("whole")) - {"b0"}
+    assert "max 0.500 over-log10 0 moved 0.200/0.100" in txt and "Feng half-A against half-B directions" in txt
     for line in ep.LIMITS:
         assert f"Limit: {line}" in txt
     assert not _prints_a_count(txt, (*ROWS.values(), *[c for c in CONTAM.values() if c]))
@@ -543,6 +779,27 @@ def _anchor_failure(rec):
     rec["anchor_failures"] = [{"seed": 3, "reason": "inverted"}]
 
 
+def _no_factor_stats(rec):
+    del rec["rows"][1]["factor_stats"]["CM"]["m1_r_gmom_sperm"]
+
+
+def _no_pseudobulk(rec):
+    del rec["rows"][0]["pseudobulk_change"]["m1_r_gmom_e002"]
+
+
+@pytest.mark.parametrize("truth, arm", [("pooled", "m1_r_gmom"), ("lib2", "m1_r_gmom_perm"), ("lib3", "m1_r_gmom_x4"),
+                                        ("lib1", "b0")])
+def test_a_rescored_arm_with_another_sha256_than_t46s_is_void(ep, tmp_path, truth, arm):
+    """A scorer-free check: on the chamber truths the rescored arms' prediction sha256 must equal T46's recorded ones
+    (even with the scores equal); T44's whole-cut file holds none and is checked by score only."""
+    r = _read(ep, tmp_path, _both({"m1_r_gmom_e01": 1.0}), committed_sha={truth: {arm: "other"}})
+    assert not r["valid"] and r["outcome"] == "VOID"
+    assert any(f"{truth}: the rescored arms' predictions do not have T46's recorded sha256" in x
+               for x in r["validity"]["reasons"]), r["validity"]["reasons"]
+    assert r["validity"]["reproduction"][truth]["scores_hold"] and not r["validity"]["reproduction"][truth]["holds"]
+    assert r["validity"]["reproduction"]["whole"]["sha256_holds"]
+
+
 @pytest.mark.parametrize("over, edit, shift, reason", [
     ({"lib2": None}, None, None, "missing truths ['lib2']"),
     ({"whole": None}, None, None, "missing truths ['whole']"),
@@ -567,6 +824,12 @@ def _anchor_failure(rec):
     (None, {"lib3": _no_sha}, None, "lib3: sha256 not recorded for every arm"),
     (None, {"pooled": _no_sparsity}, None, "pooled: the sparsity or scored log-factor records are missing"),
     (None, {"lib1": _anchor_failure}, None, "anchors invert or go missing on seeds [3]"),
+    (None, {"lib2": _no_factor_stats}, None, "lib2: the count-space factor or pseudobulk records are missing"),
+    (None, {"whole": _no_pseudobulk}, None, "whole: the count-space factor or pseudobulk records are missing"),
+    ({"lib3": {"sha": {"m1_r_gmom_sperm": "s", "m1_r_gmom": "s"}}}, None, None,
+     "the placebo m1_r_gmom_sperm's predictions have m1_r_gmom's sha256"),
+    ({"pooled": {"sha": {"m1_r_gmom_e01_x15_sperm": "s", "m1_r_gmom_e01_x15": "s"}}}, None, None,
+     "the placebo m1_r_gmom_e01_x15_sperm's predictions have m1_r_gmom_e01_x15's sha256"),
 ])
 def test_the_void_cases(ep, tmp_path, over, edit, shift, reason):
     r = _read(ep, tmp_path, _both({"m1_r_gmom_e01": 1.0}), over=over, edit=edit, committed_shift=shift)
