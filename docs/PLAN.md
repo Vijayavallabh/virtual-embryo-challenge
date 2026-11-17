@@ -4176,10 +4176,13 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     mirrored. Row N51 computed the target-free flag of 2026-11-03 for all nine practice tasks (its gate reproduces
     the committed diagnostic exactly): six tasks have partners at random on every draw; `late` (six draws), the
     E7.25 backtest (five) and new2 (two) have mirrored draws beside clean ones. The test pair is flagged on ten of
-    ten draws, the upload's own included, and is of the mirrored kind. Row N52 then read the committed scores by
+    ten draws, the upload's own included, and its draws lie between the two kinds (cross-correlation -0.26 to
+    -0.50, the upload's own -0.31; mirrored is below -0.5, random within about 0.3 of zero). [Corrected on
+    2026-11-17, entry (b): this sentence first said "of the mirrored kind", which rows N51 and N52 do not support.] Row N52 then read the committed scores by
     that flag, inside one truth each: on `late` the arms that move cells less gain 1.65 to 2.65 on mirrored draws
     and lose 0.57 to 1.79 on clean ones, and beside the second upload the pair value is 0 on every draw; on the
-    E7.25 backtest the damped arms gain 1.09 to 1.37 on mirrored draws and nothing on clean ones, while the partial
+    E7.25 backtest the damped arms gain 1.09 to 1.37 on mirrored draws and -0.07 to +0.16 on clean ones [corrected
+    on 2026-11-17, entry (b): first "nothing"], while the partial
     arms gain the same on both (+0.66 and +0.76 to +0.79); on new2 every arm loses 1.05 to 1.54 on the two mirrored
     draws, where the flattened cloud fits its truth better. So the kind of draw does not settle whether the change
     helps: the hidden truth's shape does, and nothing released shows it. That is why the closure in (c) is left to
@@ -4194,7 +4197,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     shrinkage of M1's direction (reading N48 and tries T42a to T42d, item 4); the interior-reference residual on
     the embryo (try E44: -0.25 on the E7.5 backtest, 0 of 10 seeds, and +4.32 on the E7.25 one; one-sided, and it
     fails both upload rules; the test pair would correct E7.5 in the position where the arm does nothing on the
-    practice tasks). Four were closed without a read, each on a ground that is not the AI assistant's odds: the
+    practice tasks). Four were closed without a read [five, counted on 2026-11-17: the last clause holds two; entry 2026-11-17 (b)
+    restates each ground from the record, and replaces the two marked "structure" for the reversal constant and the
+    persistence gate and the two marked "not buildable"], each on a ground that is not the AI assistant's odds: the
     heart's reversal constant needs four input stages and the 1.75-day backtest has three (structure); the
     persistence gate has no form on the embryo's two brackets (structure); the heart's span-matched shuffle has no
     bracket segregation to undo and the ledger's rule 3 asks a reason (rule); the embryo's latent Gaussian
@@ -4293,7 +4298,7 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     first placebo destroyed the mean development; the step controls compared levels where increments were meant and
     took a control with twice the redraw for a matched one; the read by library named where a gain comes from, which
     its design cannot show; the share reading mixed corrected and uncorrected quantities and could not read "inside"
-    at the truth. One error reached the record: the outcome of try E45 was first written with four pair-rule figures
+    at the truth. One error reached the record: the outcome of try E45 was first written with five pair-rule figures [first "four"; corrected 2026-11-17]
     and one sentence that the AI assistant had not read from the reading's file; it corrected them within the hour
     (the verdict was unchanged) and noted it in the row. Its pre-run odds were wrong on N48, T43c, T44 and T47's
     kind statement, and are recorded as such. And one thing it did that no rule forbids but the next rounds avoid:
@@ -4301,12 +4306,13 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     wrote the briefs of tries T45 to T47 on that sight (`docs/DATA_POLICY.md` 2026-11-14 (a)).
   - **9. What waits for the captain** (asked on 2026-11-14, not answered; nothing in the plan is blocked by them).
     (i) Whether to reopen Task 1's read depth, given item 3: the AI assistant's advice is the rule's, released data
-    alone or decline, with no lean. (ii) Whether to reverse the decline of the late-fetal practice family (item 5):
+    alone or decline, with no lean [since the organisers' answer of 2026-11-17 the rule's single outcome, declined:
+    entry 2026-11-17 (a)]. (ii) Whether to reverse the decline of the late-fetal practice family (item 5):
     its recommendation is no; item 7's reads answer the question about the entry's own stretch from released files.
     (iii) Whether to overrule the closure of the embryo's moved-less family (item 1): its advice is to keep it
     closed; if overruled, the file a request would name is `fgw_partial_grp`, after an independent recomputation and
     a cold adversarial check.
-  - **Audits of this entry.** None yet. An independent recomputation of tries T44 to T47 and a cold adversarial
+  - **Audits of this entry.** [Done on 2026-11-17: entry (b).] None yet. An independent recomputation of tries T44 to T47 and a cold adversarial
     check of the step's case were started on 2026-11-17, after the account's usage limit had stopped every agent from
     the evening of 2026-11-14; an eighth pass over this entry and the whole ledger (closures and a sweep, with one
     added question: every size the ledger calls flat, read on both sides or not) follows them.
@@ -4315,7 +4321,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     198) and the forecast for the files as built its upper reading, 194.4. One lever was found that the practice cuts
     can read and no rule closes, the size of Task 1's step (item 7): on the cuts' evidence it is worth about a point
     at the test if the practice response carries, it needs the captain's ruling, a builder change and a rehearsal, and
-    it does not take any estimate near 215.41. Everything else closed by a read, a pre-set rule or structure. Tries
+    it does not take any estimate near 215.41. Everything else closed by a read, a pre-set rule or structure. [The
+    eighth pass, entry 2026-11-17 (b), found this sentence too wide: one ledger line closed on an estimate is now
+    being read, one hard call on Task 3 goes to the captain, and four grounds were restated.] Tries
     in this entry: T42a to T42d, T43a to T43c, T44a and T44b, T45a to T45g, T46a to T46d and T47 (21 on Task 1);
     E42a to E42d, E43, E44 and E45 (7 on the embryo); H22 and H23a to H23d (5 on the heart); and three readings
     that count nothing (N48, N51, N52). Totals: T1 58, embryo 73, heart 31, T3 31.
@@ -4379,3 +4387,103 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     reaches the captain as one priced question by 18 November or not at all. Nothing else in the ledger is near a
     request.
   - **The estimate.** Unchanged: 184 (170 to 198), and 194.4 for the files as built.
+- 2026-11-17 (b), the eighth independent pass, its corrections, and what was started on it (workflow wf_2e425fcd-8ff:
+  two read-only agents working from one brief; one tested the closures of entry 2026-11-14 (c), the other swept the
+  ledger, this plan and the research reports for lines still open, with one added question: every size the ledger
+  calls flat, read on both sides or not. Tries T44 to T47 were left to the separate recomputation; tries T48 and T49,
+  in review, were not classed). Written by the AI assistant from the two hand-backs, after reading the records they
+  name.
+  - **What holds.** Thirteen items of entry (c) were checked (rows E42, E43, E45, N51, N52, T43, H22, E44, N48, T42
+    and H23, the four hard calls closed without a read, and items 8 and 9): every row was committed before its run or
+    reading (commit times against the runs' own stamps), and about 370 figures recompute from the committed task files
+    with no numeric mismatch. No closure of those rows rests on the AI assistant's odds: each rests on a reading or
+    gate fixed in its row before the run, or, for try T43c, on the closed depth lever. The sweep classed 143 lines
+    (read 81, blocked by a named rule 33, no counted read can judge 16, no form on record without a free number 11,
+    closed by a pre-set gate 2) and found none open.
+  - **Sentences of entry (c) that claimed too much, corrected in place with a dated mark.** The test pair's draws are
+    between the two kinds of coupling defect, not "of the mirrored kind" (rows N51 and N52 say so themselves). On the
+    E7.25 backtest the damped arms gain -0.07 to +0.16 on clean draws, not "nothing". The first outcome of try E45
+    carried five unread pair-rule figures, not four (also corrected in `docs/DATA_POLICY.md` 2026-11-14 (a)). Item 2
+    closed five hard calls without a read, not four. "Everything else closed by a read, a pre-set rule or structure"
+    was too wide (below). Two precision points stay as notes here: row E45's outcome says the order named the control
+    because the passing arms "were not led" by it, where row E42's rule named it because neither passing arm led the
+    other; and reading N48's "false for three of four groups" leaves out that the cardiomyocyte group's weakly
+    expressed deciles also fell under the bar. Neither changes a verdict.
+  - **The seventh sweep's nine hard calls, accounted for.** Three were read (the multinomial redraw, try T43c; the
+    shrinkage of M1's direction, N48 and tries T42; the interior-reference residual on the embryo, try E44); one was
+    about how the Potts read's target was assembled and is settled in row H22; five were closed without a read. The
+    pass found that four of those five rested on a classification by an agent that the record did not show. Each
+    ground is restated here from the record, by file and line, so that none rests on a label. (1) The heart's reversal
+    constant: its own range is a multiplier of -0.10 to 0.00 on the last step (ledger, pruned notes); 0.00 is the
+    copy, which is read and scores below the entry on both heart backtests (49.96 and 50.55 against 50.78 and 51.93),
+    and the size of the heart's step is read on both sides of the entry (smaller: tries H12, H12s, H13e and H16;
+    larger: H11s and H13h). Class: read. (2) The persistence gate on the embryo: recipe R9 is defined on a gene's last
+    step and an analogous series (`experiments/research_2026_11_runs/REPORT.md`, R9), and the embryo board
+    interpolates between two brackets, so the recipe as written has no embryo form; a gate on the trend through the
+    four released samples would be a new design inside the trend-render family, whose request (R-D) is with the
+    captain and advised against on reading N39. Class: no form on record. (3) The heart's span-matched shuffle: rule 3
+    of the ledger, as entry (c) says. (4) Latent Gaussian transport on the embryo: the record calls it an exponential
+    tilt, a change of composition (ledger, pruned notes; research report, section 5), and the ledger holds that the
+    E7.25 and E7.5 backtests cannot count for a change to the embryo's mixing fraction, because a designer derived
+    each target's best fraction from the committed mixtures. Class: no counted read can judge it (entry 2026-11-13
+    (ii) said the same; entry (c) wrote "not buildable", which was the wrong label). (5) Task 1's curvature term: the
+    practice cuts hold two input stages (E8.5 and E9.5), so no second difference exists on them and no counted read
+    can judge a curvature term; the forms without a free number that were read on the other boards lost (heart, try
+    H21: -4.13 and -1.04; embryo, try E40c: -2.18 and -4.43). Class: no counted read can judge it.
+  - **Sizes the ledger called flat.** Three sentences. Two said Task 1 is flat in step size (pruned notes on
+    time-warped fractions and on a bold second upload): both are contradicted by tries T44 and T46 and are marked so
+    in the ledger; the step is now read on both sides (smaller: tries T42; larger: T44 and T46). The third, the
+    heart's step, is read on both sides (above). The size of B0's and g_mom's damped factors on Task 1 is read on the
+    smaller side only (tries T43a and T43b); try T49, in review, reads the larger side.
+  - **A ledger line that was closed on an estimate and is now read: the zone-fixed direction.** The ledger's headroom
+    list closed "a zone-fixed Feng cardiomyocyte direction" on the AI assistant's estimate (about 0 +- 0.3) at a time
+    when it held that no backtest can judge a change to Feng's direction; rows T26 and T42 to T47 have since read such
+    changes on the E10.5 cuts, and that sentence is marked superseded in the ledger. The ledger also records that
+    Feng's capture moves from 69% LV-zone cells at E9.5 to zone-balanced at E14.5, so the pooled direction holds a
+    change of zone mix beside the change over time. A target-free look at Feng's statistics at the bracket's two ends
+    (key names only) shows the four zones at both ends, so the line has a form with no free number. It is being built
+    and reviewed as try T53 (the cardiomyocyte direction from LV-zone cells; every group's direction as the unweighted
+    mean of its within-zone directions).
+  - **The hard call that goes to the captain: the size of Task 3's factor.** Tries K14's control arm (every drawn cell
+    moved by the mean of the factor and 1, that is, the factor at half size) scored above the full factor on both
+    counted cross-knockout folds, +0.89 on x1 and +2.35 on x2, ahead on every seed, and 2.28 below it on the replicate
+    fold r12, which rule 5 says never counts. K14's reading, fixed before the run, required a gain on x1 and on r12,
+    because the test shares its wild-type reference with the Gata4 replicates as r12 does; by it the arm closed, and
+    the control was never a candidate. The pass is right that this closure leans on a fold the adoption rule does not
+    count, and the AI assistant is right that no fold has the test's structure (another gene's knockout against the
+    same wild-type run): the cross-knockout folds both cross a wild-type run, and the replicate fold shares the gene.
+    Which of them the test resembles is assumption A10, which the record itself calls killed (2026-11-05). The full
+    factor is under the no-factor floor on x1 (by 3.53; at half size by 2.64) and level with it on x2 (+0.08; at half
+    size +2.43), and far above it on r12 (+13.86; at half size +11.58). With two uploads, of which the second carries
+    no Gata4 number, halving the first file's factor gains only if the test is like x2, changes nothing if it is like
+    x1 (the second upload counts there either way) and loses about 2.3 if it is like r12. Task 3's first-choice file
+    changes only by the captain's own ruling (frozen rules). The question is put to the captain priced both ways; the
+    AI assistant's advice is to keep the file, since no released fold says which case holds and the second upload
+    already covers the case where the factor does not carry. This is advice on a question that is the captain's, not a
+    closure.
+  - **Grounds that rested on a toy or an estimate, restated.** The motif prior on Task 3: blocked by the organisers'
+    ruling of 2026-10-15 on gene-level knockout knowledge and by the provenance gate, and it has free numbers (a motif
+    threshold, a promoter window). The fluctuation-response programme and the background-aware factor on Task 3: each
+    needs a number that nothing released fixes (entry 2026-11-13 (ii)). The cycling-state quota on Task 1: the
+    composition confound on the cuts means no counted read can judge it. M2, per-cell transport to Feng's E14.5: its
+    growth step is closed by `docs/DATA_POLICY.md` 2026-11-04 (d) and its within-type form has free numbers (the
+    latent's size, the transport's entropy weight); the three-point bar (dropped on 2026-11-14) and "no T1 pseudo-task
+    can score M1" (superseded by row T26) are no longer grounds, and the ledger note says so now. `fgw_pairs`: rule 3
+    carries the closure.
+  - **Checks the pass named as the AI assistant's to do.** The section of `METHOD_SUMMARY.md` on the exposure and the
+    precommitted procedure: written, reviewed through three lenses and committed the same day (e1ce0f7); the handoff
+    lists what only the captain can confirm. The full test suite on the DGX after the reading scripts of tries T45 to
+    T47 reached main: owed, with the next sync. The recomputation and the cold check of tries T44 to T47: below, entry
+    (c) of this date when they are read. Tries T48 and T49: in review.
+  - **What was started on the cold check's attacks (no row yet; each is built by one agent and attacked by another
+    before its row).** Try T50: the step at 5, 6 and 8 times its size, and library 3's truth thinned to the depth of
+    libraries 1 and 2 (where the score turns; whether the flat point follows the truth's depth). Try T51: the released
+    day's share along the part of Feng's direction that all cell groups share and along the rest (whether the scale
+    used for the test's days is too high). Try T52: the direction made with a smaller pseudocount (0.1, 0.02) against
+    the same step inflated uniformly; a target-free check found that such a direction delivers 0.87 and 1.04 of its
+    nominal size along the entry's direction, against the entry's 0.58, at 3 and 7 times the squared size. Try T53:
+    above. A second target-free check answered the cold check's second attack: on Feng's own statistics a course that
+    is even in log expression is read by the entry's ruler as 0.187, 0.190, 0.196, 0.207 and 0.221 per fifth, so the
+    two test days hold 0.33 to 0.34 of the bracket after an even pace, against the 0.35 the request's first draft
+    used; and the upper end of that draft's range (0.41) mixed a noise-corrected scale into a quantity that the entry
+    delivers along the noisy direction, so the range in the entry's own units is 0.28 to 0.36.

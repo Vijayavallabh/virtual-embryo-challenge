@@ -1283,10 +1283,11 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     it was changed. The same holds for the check lines of try H23 (target-free build records). This is said here
     because the ledger's rule 1 is about rows before runs, not about what the session may see while a run goes;
     the next rounds read a run's exit file and seed count only.
-  - **One record written before its file was opened.** The outcome of try E45 was first committed with four
-    pair-rule figures and one sentence that the AI assistant had not read from the reading's output. It found the
-    slip on reading the file, corrected the row within the hour (e8e856f; the verdict did not change) and told the
-    captain. Since then no figure goes into a row before the file that holds it has been printed.
+  - **One record written before its file was opened.** The outcome of try E45 was first committed with five
+    pair-rule figures (first written here as four; corrected 2026-11-17) and one sentence that the AI assistant had
+    not read from the reading's output. It found the slip on reading the file, corrected the row within the hour
+    (e8e856f; the verdict did not change) and told the captain. Since then no figure goes into a row before the file
+    that holds it has been printed.
   - **Target-free listings and checks made by the main session**, each from released or disclosed files, none
     comparing a prediction with a target or reading a score. (i) The flag of the embryo coupling's defect on the
     nine practice tasks (row N51: brackets only). (ii) The harmonised-group shares of the E10.5 Task 1 file's
