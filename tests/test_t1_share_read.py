@@ -6,6 +6,7 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import math
 import sys
 
 import anndata as ad
@@ -758,6 +759,7 @@ def test_the_ledger_sentences_are_in_the_docstring_and_printed(sr, cfg):
 # raw courses; and the raw statements.
 GOLDEN_SHA = "e0acf3898ab13e5efc99c122df6b391ef6c9f5de0674296185f73801d0436e10"
 GOLDEN_N = 292
+GOLDEN_TABLE = REPO_ROOT / "tests" / "golden" / "t1_share_read_unchanged.json"
 CHANGED = ("share_corrected", "reading/A_corr", "reading/K_corr", "reading/r_d_weighted", "reading/A_over_L_corr",
            "reading/x_corr", "reading/f_max_corr", "reading/f_even_corr", "reading/f_decay_corr")
 
@@ -773,7 +775,20 @@ def test_every_unchanged_quantity_keeps_its_output_bit_for_bit(sr, cfg):
     r = sr.reading(stages, fst, [genes[7]], {"CM": 0.5, "Endothelium": 0.8}, cfg, n_boot=3)
     kept = {k: v for k, v in r["values"].items() if not any(c in k for c in CHANGED)}
     assert len(kept) == GOLDEN_N
-    assert hashlib.sha256(json.dumps(kept, sort_keys=True).encode()).hexdigest() == GOLDEN_SHA
+    # The exact hash (GOLDEN_SHA) holds on the machine the table was made on; another BLAS rounds the last digits
+    # differently (found on 2026-11-17, when the full suite ran on the DGX). So the values are compared with the stored
+    # table to nine digits, and the hash is kept only as the table's own check.
+    golden = json.loads(GOLDEN_TABLE.read_text())
+    assert hashlib.sha256(json.dumps(golden, sort_keys=True).encode()).hexdigest() == GOLDEN_SHA
+    assert sorted(kept) == sorted(golden)
+    for key, rec in kept.items():
+        assert sorted(rec) == sorted(golden[key]), key
+        for field, value in rec.items():
+            want = golden[key][field]
+            if isinstance(want, float) and math.isnan(want):
+                assert isinstance(value, float) and math.isnan(value), (key, field)
+            else:
+                assert value == pytest.approx(want, rel=1e-9, abs=1e-12), (key, field)
     assert {s: r["statements"][s] for s in ("kind", "pace_raw", "entry_fraction_raw")} == {
         "kind": sr.KIND_ALONG, "pace_raw": sr.PACE_FIFTH_OR_LESS, "entry_fraction_raw": sr.BELOW_BOTH}
 

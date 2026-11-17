@@ -1,0 +1,1754 @@
+{
+"a_E8.5_E9.5/CM/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"a_E8.5_E9.5/CM/n_eff": {
+"nonfinite_draws": 0,
+"p5": 18.35162051604226,
+"p95": 18.35162051604226,
+"value": 18.35162051604226
+},
+"a_E8.5_E9.5/CM/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.44812219421185895,
+"p95": 0.5118195349143032,
+"value": 0.6341331570395926
+},
+"a_E8.5_E9.5/CM/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.44812219421185895,
+"p95": 0.5118195349143032,
+"value": 0.6341331570395926
+},
+"a_E8.5_E9.5/CM/share": {
+"nonfinite_draws": 0,
+"p5": 0.18019730725512695,
+"p95": 0.2140342085665441,
+"value": 0.2271357394069188
+},
+"a_E8.5_E9.5/CM/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.19712860677549746,
+"p95": 0.2457220994543683,
+"value": 0.2473248232648418
+},
+"a_E8.5_E9.5/CM/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.11871993527629374,
+"p95": 0.15122415552435223,
+"value": 0.17711306310453628
+},
+"a_E8.5_E9.5/CM/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.17988908897059344,
+"p95": 0.2136657883519356,
+"value": 0.22673008740274708
+},
+"a_E8.5_E9.5/Endocardium/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"a_E8.5_E9.5/Endocardium/n_eff": {
+"nonfinite_draws": 0,
+"p5": 12.940590922016984,
+"p95": 12.940590922016984,
+"value": 12.940590922016984
+},
+"a_E8.5_E9.5/Endocardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.02999086191281758,
+"p95": 0.08865521213396513,
+"value": 0.018459497458833265
+},
+"a_E8.5_E9.5/Endocardium/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.02999086191281758,
+"p95": 0.08865521213396513,
+"value": 0.018459497458833265
+},
+"a_E8.5_E9.5/Endocardium/share": {
+"nonfinite_draws": 0,
+"p5": 0.015605465124448048,
+"p95": 0.057829988538687094,
+"value": 0.006965949715947582
+},
+"a_E8.5_E9.5/Endocardium/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.02687492285425552,
+"p95": 0.07015407500583377,
+"value": 0.019161605749473447
+},
+"a_E8.5_E9.5/Endocardium/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.006074920896127117,
+"p95": 0.07275411753309668,
+"value": 0.027300164352423835
+},
+"a_E8.5_E9.5/Endocardium/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.02212891419311997,
+"p95": 0.06471320587510072,
+"value": 0.013318492456824775
+},
+"a_E8.5_E9.5/Endothelium/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"a_E8.5_E9.5/Endothelium/n_eff": {
+"nonfinite_draws": 0,
+"p5": 20.653452208895274,
+"p95": 20.653452208895274,
+"value": 20.653452208895274
+},
+"a_E8.5_E9.5/Endothelium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.14015334112818922,
+"p95": 0.3313666255582518,
+"value": 0.13887614054052408
+},
+"a_E8.5_E9.5/Endothelium/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.14015334112818922,
+"p95": 0.3313666255582518,
+"value": 0.13887614054052408
+},
+"a_E8.5_E9.5/Endothelium/share": {
+"nonfinite_draws": 0,
+"p5": 0.05883918496288957,
+"p95": 0.15343244289253827,
+"value": 0.048022979693912
+},
+"a_E8.5_E9.5/Endothelium/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.07006379681806829,
+"p95": 0.16940205375940126,
+"value": 0.0444627492816987
+},
+"a_E8.5_E9.5/Endothelium/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": -0.022927915606966436,
+"p95": 0.11642768243261013,
+"value": 0.023423312122336514
+},
+"a_E8.5_E9.5/Endothelium/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.0651327458886313,
+"p95": 0.15383095215698664,
+"value": 0.046172906565502936
+},
+"a_E8.5_E9.5/Epicardium/genes_d_nonzero": {
+"nonfinite_draws": 3,
+"p5": NaN,
+"p95": NaN,
+"value": NaN
+},
+"a_E8.5_E9.5/Epicardium/n_eff": {
+"nonfinite_draws": 3,
+"p5": NaN,
+"p95": NaN,
+"value": NaN
+},
+"a_E8.5_E9.5/Epicardium/pearson": {
+"nonfinite_draws": 3,
+"p5": NaN,
+"p95": NaN,
+"value": NaN
+},
+"a_E8.5_E9.5/Epicardium/pearson_d_nonzero": {
+"nonfinite_draws": 3,
+"p5": NaN,
+"p95": NaN,
+"value": NaN
+},
+"a_E8.5_E9.5/Epicardium/share": {
+"nonfinite_draws": 3,
+"p5": NaN,
+"p95": NaN,
+"value": NaN
+},
+"a_E8.5_E9.5/Epicardium/share_top_half": {
+"nonfinite_draws": 3,
+"p5": NaN,
+"p95": NaN,
+"value": NaN
+},
+"a_E8.5_E9.5/Epicardium/share_without_top_d2_half": {
+"nonfinite_draws": 3,
+"p5": NaN,
+"p95": NaN,
+"value": NaN
+},
+"a_E8.5_E9.5/Epicardium/slope_intercept": {
+"nonfinite_draws": 3,
+"p5": NaN,
+"p95": NaN,
+"value": NaN
+},
+"a_E8.5_E9.5/combined_unweighted/share": {
+"nonfinite_draws": 0,
+"p5": 0.09911649552830268,
+"p95": 0.13395504306067724,
+"value": 0.09404155627225946
+},
+"a_E8.5_E9.5/combined_weighted/share": {
+"nonfinite_draws": 0,
+"p5": 0.11412805522207702,
+"p95": 0.1442262995697474,
+"value": 0.11263439694729264
+},
+"b_E9.5_E10.5_lib1/CM/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"b_E9.5_E10.5_lib1/CM/n_eff": {
+"nonfinite_draws": 0,
+"p5": 18.35162051604226,
+"p95": 18.35162051604226,
+"value": 18.35162051604226
+},
+"b_E9.5_E10.5_lib1/CM/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.3938168212160746,
+"p95": 0.4016807410165358,
+"value": 0.4431229361966382
+},
+"b_E9.5_E10.5_lib1/CM/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.3938168212160746,
+"p95": 0.4016807410165358,
+"value": 0.4431229361966382
+},
+"b_E9.5_E10.5_lib1/CM/share": {
+"nonfinite_draws": 0,
+"p5": 0.127937485338876,
+"p95": 0.1471932565561431,
+"value": 0.1184542325337738
+},
+"b_E9.5_E10.5_lib1/CM/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.12331593087951583,
+"p95": 0.14573484080787155,
+"value": 0.11692274154609814
+},
+"b_E9.5_E10.5_lib1/CM/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.15201867262169072,
+"p95": 0.20522388502580272,
+"value": 0.1570220751082201
+},
+"b_E9.5_E10.5_lib1/CM/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.13036981686296706,
+"p95": 0.1474199481184753,
+"value": 0.11913128019478832
+},
+"b_E9.5_E10.5_lib1/Endocardium/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"b_E9.5_E10.5_lib1/Endocardium/n_eff": {
+"nonfinite_draws": 0,
+"p5": 12.940590922016984,
+"p95": 12.940590922016984,
+"value": 12.940590922016984
+},
+"b_E9.5_E10.5_lib1/Endocardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.49469681684735006,
+"p95": 0.679099279790764,
+"value": 0.7067446713761703
+},
+"b_E9.5_E10.5_lib1/Endocardium/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.49469681684735006,
+"p95": 0.679099279790764,
+"value": 0.7067446713761703
+},
+"b_E9.5_E10.5_lib1/Endocardium/share": {
+"nonfinite_draws": 0,
+"p5": 0.16533894783543024,
+"p95": 0.23026561491029943,
+"value": 0.1963137207519191
+},
+"b_E9.5_E10.5_lib1/Endocardium/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.16451129981009538,
+"p95": 0.24011398389228533,
+"value": 0.19708895037028087
+},
+"b_E9.5_E10.5_lib1/Endocardium/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.19265314946251536,
+"p95": 0.26737286182190106,
+"value": 0.2053098116424657
+},
+"b_E9.5_E10.5_lib1/Endocardium/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.1678399641525095,
+"p95": 0.2337029812591626,
+"value": 0.19683335310763225
+},
+"b_E9.5_E10.5_lib1/Endothelium/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"b_E9.5_E10.5_lib1/Endothelium/n_eff": {
+"nonfinite_draws": 0,
+"p5": 20.653452208895274,
+"p95": 20.653452208895274,
+"value": 20.653452208895274
+},
+"b_E9.5_E10.5_lib1/Endothelium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.15825765892970045,
+"p95": 0.23643484972912626,
+"value": 0.3053579409355374
+},
+"b_E9.5_E10.5_lib1/Endothelium/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.15825765892970045,
+"p95": 0.23643484972912626,
+"value": 0.3053579409355374
+},
+"b_E9.5_E10.5_lib1/Endothelium/share": {
+"nonfinite_draws": 0,
+"p5": 0.06728312322460103,
+"p95": 0.0957401165560232,
+"value": 0.10161231212259575
+},
+"b_E9.5_E10.5_lib1/Endothelium/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.03914153679514833,
+"p95": 0.08688790742552295,
+"value": 0.09483154291710151
+},
+"b_E9.5_E10.5_lib1/Endothelium/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.11286578701268786,
+"p95": 0.17812556777522018,
+"value": 0.16115921400593913
+},
+"b_E9.5_E10.5_lib1/Endothelium/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.08488752036547112,
+"p95": 0.10958211234892871,
+"value": 0.10999775250037272
+},
+"b_E9.5_E10.5_lib1/Epicardium/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"b_E9.5_E10.5_lib1/Epicardium/n_eff": {
+"nonfinite_draws": 0,
+"p5": 22.92251589563391,
+"p95": 22.92251589563391,
+"value": 22.92251589563391
+},
+"b_E9.5_E10.5_lib1/Epicardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.5136322814960236,
+"p95": 0.5313659540816693,
+"value": 0.7052201903435775
+},
+"b_E9.5_E10.5_lib1/Epicardium/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.5136322814960236,
+"p95": 0.5313659540816693,
+"value": 0.7052201903435775
+},
+"b_E9.5_E10.5_lib1/Epicardium/share": {
+"nonfinite_draws": 0,
+"p5": 0.1453793703889834,
+"p95": 0.16432295286321363,
+"value": 0.18159912691493965
+},
+"b_E9.5_E10.5_lib1/Epicardium/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.13950765021794959,
+"p95": 0.14907208027572286,
+"value": 0.17640722531810152
+},
+"b_E9.5_E10.5_lib1/Epicardium/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.11757101829391672,
+"p95": 0.19328412893225305,
+"value": 0.19851673572418962
+},
+"b_E9.5_E10.5_lib1/Epicardium/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.1450042463172296,
+"p95": 0.16266942568662116,
+"value": 0.1810990575449356
+},
+"b_E9.5_E10.5_lib1/combined_unweighted/share": {
+"nonfinite_draws": 0,
+"p5": 0.13637577341246906,
+"p95": 0.15015952435618393,
+"value": 0.14949484808080707
+},
+"b_E9.5_E10.5_lib1/combined_weighted/share": {
+"nonfinite_draws": 0,
+"p5": 0.13534049649630656,
+"p95": 0.14472022854940433,
+"value": 0.14264583312782458
+},
+"b_E9.5_E10.5_lib2/CM/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"b_E9.5_E10.5_lib2/CM/n_eff": {
+"nonfinite_draws": 0,
+"p5": 18.35162051604226,
+"p95": 18.35162051604226,
+"value": 18.35162051604226
+},
+"b_E9.5_E10.5_lib2/CM/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.5997683085383998,
+"p95": 0.6393114605182153,
+"value": 0.7109783597424263
+},
+"b_E9.5_E10.5_lib2/CM/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.5997683085383998,
+"p95": 0.6393114605182153,
+"value": 0.7109783597424263
+},
+"b_E9.5_E10.5_lib2/CM/share": {
+"nonfinite_draws": 0,
+"p5": 0.2874526778615734,
+"p95": 0.31132495724828846,
+"value": 0.2705027576006461
+},
+"b_E9.5_E10.5_lib2/CM/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.26202636698671256,
+"p95": 0.29931718110492395,
+"value": 0.26399482282477393
+},
+"b_E9.5_E10.5_lib2/CM/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.2114558691270946,
+"p95": 0.2770999773973795,
+"value": 0.23089120864984858
+},
+"b_E9.5_E10.5_lib2/CM/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.2891971474093197,
+"p95": 0.3110585604578232,
+"value": 0.2693443536199201
+},
+"b_E9.5_E10.5_lib2/Endocardium/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"b_E9.5_E10.5_lib2/Endocardium/n_eff": {
+"nonfinite_draws": 0,
+"p5": 12.940590922016984,
+"p95": 12.940590922016984,
+"value": 12.940590922016984
+},
+"b_E9.5_E10.5_lib2/Endocardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.816147006175464,
+"p95": 0.8636540731058915,
+"value": 0.8864969574908639
+},
+"b_E9.5_E10.5_lib2/Endocardium/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.816147006175464,
+"p95": 0.8636540731058915,
+"value": 0.8864969574908639
+},
+"b_E9.5_E10.5_lib2/Endocardium/share": {
+"nonfinite_draws": 0,
+"p5": 0.3790789203030122,
+"p95": 0.4068886167129452,
+"value": 0.3782930318986108
+},
+"b_E9.5_E10.5_lib2/Endocardium/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.37887700427399384,
+"p95": 0.41444506395472325,
+"value": 0.37680283093104683
+},
+"b_E9.5_E10.5_lib2/Endocardium/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.3845410400102719,
+"p95": 0.41683335903760815,
+"value": 0.3921043683398578
+},
+"b_E9.5_E10.5_lib2/Endocardium/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.3818480677825986,
+"p95": 0.40558824135808874,
+"value": 0.37968410872226244
+},
+"b_E9.5_E10.5_lib2/Endothelium/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"b_E9.5_E10.5_lib2/Endothelium/n_eff": {
+"nonfinite_draws": 0,
+"p5": 20.653452208895274,
+"p95": 20.653452208895274,
+"value": 20.653452208895274
+},
+"b_E9.5_E10.5_lib2/Endothelium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.30203811455358576,
+"p95": 0.3773296365766991,
+"value": 0.48648033078681424
+},
+"b_E9.5_E10.5_lib2/Endothelium/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.30203811455358576,
+"p95": 0.3773296365766991,
+"value": 0.48648033078681424
+},
+"b_E9.5_E10.5_lib2/Endothelium/share": {
+"nonfinite_draws": 0,
+"p5": 0.15117075602244617,
+"p95": 0.15383831963296243,
+"value": 0.17275753369299623
+},
+"b_E9.5_E10.5_lib2/Endothelium/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.12408074542497993,
+"p95": 0.14975096176935382,
+"value": 0.16442130854451456
+},
+"b_E9.5_E10.5_lib2/Endothelium/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.20859726865418277,
+"p95": 0.21701377314970036,
+"value": 0.24067728142584452
+},
+"b_E9.5_E10.5_lib2/Endothelium/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.15388572752326388,
+"p95": 0.16522895769396131,
+"value": 0.17693899266493063
+},
+"b_E9.5_E10.5_lib2/Epicardium/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"b_E9.5_E10.5_lib2/Epicardium/n_eff": {
+"nonfinite_draws": 0,
+"p5": 22.92251589563391,
+"p95": 22.92251589563391,
+"value": 22.92251589563391
+},
+"b_E9.5_E10.5_lib2/Epicardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.7291925167068241,
+"p95": 0.8964414839178498,
+"value": 0.9145511648041983
+},
+"b_E9.5_E10.5_lib2/Epicardium/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.7291925167068241,
+"p95": 0.8964414839178498,
+"value": 0.9145511648041983
+},
+"b_E9.5_E10.5_lib2/Epicardium/share": {
+"nonfinite_draws": 0,
+"p5": 0.30384719943373384,
+"p95": 0.3901033026322464,
+"value": 0.3698522704512335
+},
+"b_E9.5_E10.5_lib2/Epicardium/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.3136217434220888,
+"p95": 0.37914493571190644,
+"value": 0.36257116341261186
+},
+"b_E9.5_E10.5_lib2/Epicardium/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.187400072634961,
+"p95": 0.4032488923875697,
+"value": 0.3641455483004892
+},
+"b_E9.5_E10.5_lib2/Epicardium/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.30524657451530995,
+"p95": 0.3892149336029181,
+"value": 0.3693532146983052
+},
+"b_E9.5_E10.5_lib2/combined_unweighted/share": {
+"nonfinite_draws": 0,
+"p5": 0.28151247900501947,
+"p95": 0.3135278688039409,
+"value": 0.29785139841087166
+},
+"b_E9.5_E10.5_lib2/combined_weighted/share": {
+"nonfinite_draws": 0,
+"p5": 0.2765970627249269,
+"p95": 0.30431522985901543,
+"value": 0.2871530945487875
+},
+"b_E9.5_E10.5_lib3/CM/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"b_E9.5_E10.5_lib3/CM/n_eff": {
+"nonfinite_draws": 0,
+"p5": 18.35162051604226,
+"p95": 18.35162051604226,
+"value": 18.35162051604226
+},
+"b_E9.5_E10.5_lib3/CM/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.8880416488050342,
+"p95": 0.9065234141571805,
+"value": 0.9266739347535817
+},
+"b_E9.5_E10.5_lib3/CM/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.8880416488050342,
+"p95": 0.9065234141571805,
+"value": 0.9266739347535817
+},
+"b_E9.5_E10.5_lib3/CM/share": {
+"nonfinite_draws": 0,
+"p5": 0.5699302830199687,
+"p95": 0.6208517785732186,
+"value": 0.5730463318135585
+},
+"b_E9.5_E10.5_lib3/CM/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.5599559301017124,
+"p95": 0.6040395129912814,
+"value": 0.5598318264831363
+},
+"b_E9.5_E10.5_lib3/CM/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.5578509512961107,
+"p95": 0.5831031965168186,
+"value": 0.5630649261629865
+},
+"b_E9.5_E10.5_lib3/CM/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.5726533755553397,
+"p95": 0.6200073517842869,
+"value": 0.5734985083237696
+},
+"b_E9.5_E10.5_lib3/Endocardium/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"b_E9.5_E10.5_lib3/Endocardium/n_eff": {
+"nonfinite_draws": 0,
+"p5": 12.940590922016984,
+"p95": 12.940590922016984,
+"value": 12.940590922016984
+},
+"b_E9.5_E10.5_lib3/Endocardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.9497479299391972,
+"p95": 0.9593395760177096,
+"value": 0.9749353284050957
+},
+"b_E9.5_E10.5_lib3/Endocardium/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.9497479299391972,
+"p95": 0.9593395760177096,
+"value": 0.9749353284050957
+},
+"b_E9.5_E10.5_lib3/Endocardium/share": {
+"nonfinite_draws": 0,
+"p5": 0.7969186361537903,
+"p95": 0.8774006373633685,
+"value": 0.8626407804706026
+},
+"b_E9.5_E10.5_lib3/Endocardium/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.7920574022041535,
+"p95": 0.8809068296027032,
+"value": 0.8605354498050112
+},
+"b_E9.5_E10.5_lib3/Endocardium/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.7939135296230901,
+"p95": 0.8905905053570023,
+"value": 0.8670709170956401
+},
+"b_E9.5_E10.5_lib3/Endocardium/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.7957351639182397,
+"p95": 0.8758248984595847,
+"value": 0.8626626279338123
+},
+"b_E9.5_E10.5_lib3/Endothelium/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"b_E9.5_E10.5_lib3/Endothelium/n_eff": {
+"nonfinite_draws": 0,
+"p5": 20.653452208895274,
+"p95": 20.653452208895274,
+"value": 20.653452208895274
+},
+"b_E9.5_E10.5_lib3/Endothelium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.7029029322258813,
+"p95": 0.7585441978880711,
+"value": 0.8503423549213097
+},
+"b_E9.5_E10.5_lib3/Endothelium/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.7029029322258813,
+"p95": 0.7585441978880711,
+"value": 0.8503423549213097
+},
+"b_E9.5_E10.5_lib3/Endothelium/share": {
+"nonfinite_draws": 0,
+"p5": 0.38386985116225886,
+"p95": 0.43360508365952444,
+"value": 0.43867955801245956
+},
+"b_E9.5_E10.5_lib3/Endothelium/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.367828275492984,
+"p95": 0.41712703225260855,
+"value": 0.43523844341730555
+},
+"b_E9.5_E10.5_lib3/Endothelium/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.4472066902475561,
+"p95": 0.5057402719039067,
+"value": 0.500770333062027
+},
+"b_E9.5_E10.5_lib3/Endothelium/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.37890850798419934,
+"p95": 0.42974728089351544,
+"value": 0.43486635116372035
+},
+"b_E9.5_E10.5_lib3/Epicardium/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"b_E9.5_E10.5_lib3/Epicardium/n_eff": {
+"nonfinite_draws": 0,
+"p5": 22.92251589563391,
+"p95": 22.92251589563391,
+"value": 22.92251589563391
+},
+"b_E9.5_E10.5_lib3/Epicardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.9379569328396611,
+"p95": 0.9555269417889998,
+"value": 0.9756011561064537
+},
+"b_E9.5_E10.5_lib3/Epicardium/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.9379569328396611,
+"p95": 0.9555269417889998,
+"value": 0.9756011561064537
+},
+"b_E9.5_E10.5_lib3/Epicardium/share": {
+"nonfinite_draws": 0,
+"p5": 0.7089668322886536,
+"p95": 0.7215947690406103,
+"value": 0.7278137844019477
+},
+"b_E9.5_E10.5_lib3/Epicardium/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.703513870014795,
+"p95": 0.727202366701384,
+"value": 0.7314881116905949
+},
+"b_E9.5_E10.5_lib3/Epicardium/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.7035903835688075,
+"p95": 0.7319677841996225,
+"value": 0.7027406942614607
+},
+"b_E9.5_E10.5_lib3/Epicardium/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.7089988353269656,
+"p95": 0.7206930879222253,
+"value": 0.7272845730418583
+},
+"b_E9.5_E10.5_lib3/combined_unweighted/share": {
+"nonfinite_draws": 0,
+"p5": 0.6263166009360538,
+"p95": 0.6502791458647449,
+"value": 0.6505451136746421
+},
+"b_E9.5_E10.5_lib3/combined_weighted/share": {
+"nonfinite_draws": 0,
+"p5": 0.6081190874484754,
+"p95": 0.6338563416362645,
+"value": 0.6295740408677268
+},
+"b_E9.5_E10.5_pooled/CM/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"b_E9.5_E10.5_pooled/CM/n_eff": {
+"nonfinite_draws": 0,
+"p5": 18.35162051604226,
+"p95": 18.35162051604226,
+"value": 18.35162051604226
+},
+"b_E9.5_E10.5_pooled/CM/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.844292361234978,
+"p95": 0.8768242094898714,
+"value": 0.890701991751486
+},
+"b_E9.5_E10.5_pooled/CM/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.844292361234978,
+"p95": 0.8768242094898714,
+"value": 0.890701991751486
+},
+"b_E9.5_E10.5_pooled/CM/share": {
+"nonfinite_draws": 0,
+"p5": 0.3868925881249822,
+"p95": 0.42136509368650654,
+"value": 0.3819592005457526
+},
+"b_E9.5_E10.5_pooled/CM/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.3757680538233082,
+"p95": 0.4063568960368696,
+"value": 0.37327087968991474
+},
+"b_E9.5_E10.5_pooled/CM/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.3648554286901941,
+"p95": 0.4102779575702472,
+"value": 0.3739822345746731
+},
+"b_E9.5_E10.5_pooled/CM/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.3888531726346058,
+"p95": 0.4201874872551259,
+"value": 0.38169544682246964
+},
+"b_E9.5_E10.5_pooled/Endocardium/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"b_E9.5_E10.5_pooled/Endocardium/n_eff": {
+"nonfinite_draws": 0,
+"p5": 12.940590922016984,
+"p95": 12.940590922016984,
+"value": 12.940590922016984
+},
+"b_E9.5_E10.5_pooled/Endocardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.9339764152597471,
+"p95": 0.9369426249659077,
+"value": 0.960899634228293
+},
+"b_E9.5_E10.5_pooled/Endocardium/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.9339764152597471,
+"p95": 0.9369426249659077,
+"value": 0.960899634228293
+},
+"b_E9.5_E10.5_pooled/Endocardium/share": {
+"nonfinite_draws": 0,
+"p5": 0.48354119378417,
+"p95": 0.5365851750515376,
+"value": 0.5120024155892552
+},
+"b_E9.5_E10.5_pooled/Endocardium/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.4832952932416634,
+"p95": 0.5432170913820188,
+"value": 0.5111688645635971
+},
+"b_E9.5_E10.5_pooled/Endocardium/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.5067475408312271,
+"p95": 0.5254446309774897,
+"value": 0.516441196745575
+},
+"b_E9.5_E10.5_pooled/Endocardium/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.48399532304862874,
+"p95": 0.5359741019796815,
+"value": 0.5113889851237053
+},
+"b_E9.5_E10.5_pooled/Endothelium/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"b_E9.5_E10.5_pooled/Endothelium/n_eff": {
+"nonfinite_draws": 0,
+"p5": 20.653452208895274,
+"p95": 20.653452208895274,
+"value": 20.653452208895274
+},
+"b_E9.5_E10.5_pooled/Endothelium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.5654556111661286,
+"p95": 0.6478875392931911,
+"value": 0.7594267079557134
+},
+"b_E9.5_E10.5_pooled/Endothelium/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.5654556111661286,
+"p95": 0.6478875392931911,
+"value": 0.7594267079557134
+},
+"b_E9.5_E10.5_pooled/Endothelium/share": {
+"nonfinite_draws": 0,
+"p5": 0.22871345424389536,
+"p95": 0.25639761590940485,
+"value": 0.2653384031839309
+},
+"b_E9.5_E10.5_pooled/Endothelium/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.21549790115780515,
+"p95": 0.23444076869005523,
+"value": 0.25998400062252763
+},
+"b_E9.5_E10.5_pooled/Endothelium/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.2867331750170377,
+"p95": 0.3237102100434851,
+"value": 0.3261131297070371
+},
+"b_E9.5_E10.5_pooled/Endothelium/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.23084795632039062,
+"p95": 0.2580470143188456,
+"value": 0.26641436178183725
+},
+"b_E9.5_E10.5_pooled/Epicardium/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"b_E9.5_E10.5_pooled/Epicardium/n_eff": {
+"nonfinite_draws": 0,
+"p5": 22.92251589563391,
+"p95": 22.92251589563391,
+"value": 22.92251589563391
+},
+"b_E9.5_E10.5_pooled/Epicardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.9025262109077261,
+"p95": 0.9284479019716739,
+"value": 0.9648592342506582
+},
+"b_E9.5_E10.5_pooled/Epicardium/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.9025262109077261,
+"p95": 0.9284479019716739,
+"value": 0.9648592342506582
+},
+"b_E9.5_E10.5_pooled/Epicardium/share": {
+"nonfinite_draws": 0,
+"p5": 0.39974134679675805,
+"p95": 0.4260111186915656,
+"value": 0.43280127701716353
+},
+"b_E9.5_E10.5_pooled/Epicardium/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.4051223156257112,
+"p95": 0.4144452202803825,
+"value": 0.4300481661897808
+},
+"b_E9.5_E10.5_pooled/Epicardium/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.35201561684101296,
+"p95": 0.4399714982430811,
+"value": 0.4300811078671592
+},
+"b_E9.5_E10.5_pooled/Epicardium/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.3992370707789926,
+"p95": 0.42411131797589446,
+"value": 0.4318316837467444
+},
+"b_E9.5_E10.5_pooled/combined_unweighted/share": {
+"nonfinite_draws": 0,
+"p5": 0.3794276412222945,
+"p95": 0.40344565353481804,
+"value": 0.3980253240840256
+},
+"b_E9.5_E10.5_pooled/combined_weighted/share": {
+"nonfinite_draws": 0,
+"p5": 0.3752827020371335,
+"p95": 0.3976126562353737,
+"value": 0.3894034923201454
+},
+"c_E10.5_lib12_lib3/CM/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"c_E10.5_lib12_lib3/CM/n_eff": {
+"nonfinite_draws": 0,
+"p5": 18.35162051604226,
+"p95": 18.35162051604226,
+"value": 18.35162051604226
+},
+"c_E10.5_lib12_lib3/CM/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.7502573324716854,
+"p95": 0.8171342108755257,
+"value": 0.8878915096634937
+},
+"c_E10.5_lib12_lib3/CM/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.7502573324716854,
+"p95": 0.8171342108755257,
+"value": 0.8878915096634937
+},
+"c_E10.5_lib12_lib3/CM/share": {
+"nonfinite_draws": 0,
+"p5": 0.36070877971969034,
+"p95": 0.3961669936486351,
+"value": 0.37787487154197497
+},
+"c_E10.5_lib12_lib3/CM/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.3634890485921376,
+"p95": 0.3919086795701379,
+"value": 0.3689358245856731
+},
+"c_E10.5_lib12_lib3/CM/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.33711315184120594,
+"p95": 0.3758207555605343,
+"value": 0.3691708501928937
+},
+"c_E10.5_lib12_lib3/CM/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.3625872733251237,
+"p95": 0.39600720080495627,
+"value": 0.3787484519659648
+},
+"c_E10.5_lib12_lib3/Endocardium/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"c_E10.5_lib12_lib3/Endocardium/n_eff": {
+"nonfinite_draws": 0,
+"p5": 12.940590922016984,
+"p95": 12.940590922016984,
+"value": 12.940590922016984
+},
+"c_E10.5_lib12_lib3/Endocardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.8679757311956426,
+"p95": 0.9225840566654299,
+"value": 0.9492683291626609
+},
+"c_E10.5_lib12_lib3/Endocardium/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.8679757311956426,
+"p95": 0.9225840566654299,
+"value": 0.9492683291626609
+},
+"c_E10.5_lib12_lib3/Endocardium/share": {
+"nonfinite_draws": 0,
+"p5": 0.4869127656415156,
+"p95": 0.5656752941125142,
+"value": 0.575707697421701
+},
+"c_E10.5_lib12_lib3/Endocardium/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.4776378428451124,
+"p95": 0.5615877087398732,
+"value": 0.5741033554260254
+},
+"c_E10.5_lib12_lib3/Endocardium/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.4531253605732789,
+"p95": 0.5942022599514031,
+"value": 0.5692322232303769
+},
+"c_E10.5_lib12_lib3/Endocardium/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.4873102313488271,
+"p95": 0.561865878560105,
+"value": 0.5750476213753969
+},
+"c_E10.5_lib12_lib3/Endothelium/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"c_E10.5_lib12_lib3/Endothelium/n_eff": {
+"nonfinite_draws": 0,
+"p5": 20.653452208895274,
+"p95": 20.653452208895274,
+"value": 20.653452208895274
+},
+"c_E10.5_lib12_lib3/Endothelium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.5082444505064857,
+"p95": 0.596056449604983,
+"value": 0.6767988717955659
+},
+"c_E10.5_lib12_lib3/Endothelium/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.5082444505064857,
+"p95": 0.596056449604983,
+"value": 0.6767988717955659
+},
+"c_E10.5_lib12_lib3/Endothelium/share": {
+"nonfinite_draws": 0,
+"p5": 0.26583090970504875,
+"p95": 0.30840687188444615,
+"value": 0.30028482051553546
+},
+"c_E10.5_lib12_lib3/Endothelium/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.2597713717877102,
+"p95": 0.31882636466717795,
+"value": 0.30409371753600156
+},
+"c_E10.5_lib12_lib3/Endothelium/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.27387042655333477,
+"p95": 0.3128217997084387,
+"value": 0.300006488811953
+},
+"c_E10.5_lib12_lib3/Endothelium/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.2578273970115029,
+"p95": 0.2964899257943039,
+"value": 0.2906551817545531
+},
+"c_E10.5_lib12_lib3/Epicardium/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"c_E10.5_lib12_lib3/Epicardium/n_eff": {
+"nonfinite_draws": 0,
+"p5": 22.92251589563391,
+"p95": 22.92251589563391,
+"value": 22.92251589563391
+},
+"c_E10.5_lib12_lib3/Epicardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.8531733214541657,
+"p95": 0.9053852941060825,
+"value": 0.9213344073587084
+},
+"c_E10.5_lib12_lib3/Epicardium/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.8531733214541657,
+"p95": 0.9053852941060825,
+"value": 0.9213344073587084
+},
+"c_E10.5_lib12_lib3/Epicardium/share": {
+"nonfinite_draws": 0,
+"p5": 0.4357686599932539,
+"p95": 0.49739339374078456,
+"value": 0.4532587703957549
+},
+"c_E10.5_lib12_lib3/Epicardium/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.44212377655430657,
+"p95": 0.4981084318586203,
+"value": 0.4633909820264385
+},
+"c_E10.5_lib12_lib3/Epicardium/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.41205610805321724,
+"p95": 0.555620074038036,
+"value": 0.4209923403409554
+},
+"c_E10.5_lib12_lib3/Epicardium/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.4356048446160466,
+"p95": 0.4963868406011413,
+"value": 0.4533600403870791
+},
+"c_E10.5_lib12_lib3/combined_unweighted/share": {
+"nonfinite_draws": 0,
+"p5": 0.40320029596530815,
+"p95": 0.42070095166757016,
+"value": 0.4267815399687416
+},
+"c_E10.5_lib12_lib3/combined_weighted/share": {
+"nonfinite_draws": 0,
+"p5": 0.39236187181190624,
+"p95": 0.4110268594247824,
+"value": 0.41442670821704436
+},
+"c_E10.5_lib1_lib2/CM/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"c_E10.5_lib1_lib2/CM/n_eff": {
+"nonfinite_draws": 0,
+"p5": 18.35162051604226,
+"p95": 18.35162051604226,
+"value": 18.35162051604226
+},
+"c_E10.5_lib1_lib2/CM/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.28161505421872857,
+"p95": 0.3845326448350755,
+"value": 0.4358477516310389
+},
+"c_E10.5_lib1_lib2/CM/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.28161505421872857,
+"p95": 0.3845326448350755,
+"value": 0.4358477516310389
+},
+"c_E10.5_lib1_lib2/CM/share": {
+"nonfinite_draws": 0,
+"p5": 0.14505555140837978,
+"p95": 0.17297760926963623,
+"value": 0.1520485250668723
+},
+"c_E10.5_lib1_lib2/CM/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.11665461478746336,
+"p95": 0.17309654135642918,
+"value": 0.1470720812786758
+},
+"c_E10.5_lib1_lib2/CM/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.05943719650540394,
+"p95": 0.0718760923715768,
+"value": 0.07386913354162844
+},
+"c_E10.5_lib1_lib2/CM/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.1439515568015134,
+"p95": 0.17340808866534876,
+"value": 0.15021307342513168
+},
+"c_E10.5_lib1_lib2/Endocardium/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"c_E10.5_lib1_lib2/Endocardium/n_eff": {
+"nonfinite_draws": 0,
+"p5": 12.940590922016984,
+"p95": 12.940590922016984,
+"value": 12.940590922016984
+},
+"c_E10.5_lib1_lib2/Endocardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.4613870863145358,
+"p95": 0.5455631558991055,
+"value": 0.6249780882130721
+},
+"c_E10.5_lib1_lib2/Endocardium/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.4613870863145358,
+"p95": 0.5455631558991055,
+"value": 0.6249780882130721
+},
+"c_E10.5_lib1_lib2/Endocardium/share": {
+"nonfinite_draws": 0,
+"p5": 0.17102389501008627,
+"p95": 0.21443986081665203,
+"value": 0.1819793111466916
+},
+"c_E10.5_lib1_lib2/Endocardium/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.1682545447025882,
+"p95": 0.21512527138387963,
+"value": 0.17971388056076595
+},
+"c_E10.5_lib1_lib2/Endocardium/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.1484632705195772,
+"p95": 0.19986570411679608,
+"value": 0.18679455669739212
+},
+"c_E10.5_lib1_lib2/Endocardium/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.1685558048540398,
+"p95": 0.21442428553569998,
+"value": 0.18285075561463005
+},
+"c_E10.5_lib1_lib2/Endothelium/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"c_E10.5_lib1_lib2/Endothelium/n_eff": {
+"nonfinite_draws": 0,
+"p5": 20.653452208895274,
+"p95": 20.653452208895274,
+"value": 20.653452208895274
+},
+"c_E10.5_lib1_lib2/Endothelium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.09147054393072084,
+"p95": 0.15400111880700357,
+"value": 0.1922526469606382
+},
+"c_E10.5_lib1_lib2/Endothelium/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.09147054393072084,
+"p95": 0.15400111880700357,
+"value": 0.1922526469606382
+},
+"c_E10.5_lib1_lib2/Endothelium/share": {
+"nonfinite_draws": 0,
+"p5": 0.05805190933759167,
+"p95": 0.08425798271262618,
+"value": 0.07114522157040047
+},
+"c_E10.5_lib1_lib2/Endothelium/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.043495729994937136,
+"p95": 0.1098215634747704,
+"value": 0.06958976562741302
+},
+"c_E10.5_lib1_lib2/Endothelium/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.03331455903843937,
+"p95": 0.09642818743349992,
+"value": 0.07951806741990543
+},
+"c_E10.5_lib1_lib2/Endothelium/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.045693243228956744,
+"p95": 0.08016773382166244,
+"value": 0.0669412401645579
+},
+"c_E10.5_lib1_lib2/Epicardium/genes_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 58.0,
+"p95": 58.0,
+"value": 58.0
+},
+"c_E10.5_lib1_lib2/Epicardium/n_eff": {
+"nonfinite_draws": 0,
+"p5": 22.92251589563391,
+"p95": 22.92251589563391,
+"value": 22.92251589563391
+},
+"c_E10.5_lib1_lib2/Epicardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.47593930942673385,
+"p95": 0.6697596458902153,
+"value": 0.6880555142653382
+},
+"c_E10.5_lib1_lib2/Epicardium/pearson_d_nonzero": {
+"nonfinite_draws": 0,
+"p5": 0.47593930942673385,
+"p95": 0.6697596458902153,
+"value": 0.6880555142653382
+},
+"c_E10.5_lib1_lib2/Epicardium/share": {
+"nonfinite_draws": 0,
+"p5": 0.15846782904475049,
+"p95": 0.22578034976903283,
+"value": 0.1882531435362938
+},
+"c_E10.5_lib1_lib2/Epicardium/share_top_half": {
+"nonfinite_draws": 0,
+"p5": 0.16749559816612863,
+"p95": 0.230900167315935,
+"value": 0.18616393809451043
+},
+"c_E10.5_lib1_lib2/Epicardium/share_without_top_d2_half": {
+"nonfinite_draws": 0,
+"p5": 0.06862619253056015,
+"p95": 0.21958765793919052,
+"value": 0.1656288125762996
+},
+"c_E10.5_lib1_lib2/Epicardium/slope_intercept": {
+"nonfinite_draws": 0,
+"p5": 0.1602423281980804,
+"p95": 0.2265455079162969,
+"value": 0.18825415715336966
+},
+"c_E10.5_lib1_lib2/combined_unweighted/share": {
+"nonfinite_draws": 0,
+"p5": 0.14513670559255046,
+"p95": 0.163368344447757,
+"value": 0.14835655033006456
+},
+"c_E10.5_lib1_lib2/combined_weighted/share": {
+"nonfinite_draws": 0,
+"p5": 0.1412565662286204,
+"p95": 0.1595950013096112,
+"value": 0.1445072614209629
+},
+"reading/A": {
+"nonfinite_draws": 0,
+"p5": 0.20596877961061674,
+"p95": 0.2245177292042099,
+"value": 0.21489946383830605
+},
+"reading/A_over_L": {
+"nonfinite_draws": 0,
+"p5": 0.16137765421500475,
+"p95": 0.17749217414580618,
+"value": 0.16798189595468696
+},
+"reading/K": {
+"nonfinite_draws": 0,
+"p5": 0.39283679457242904,
+"p95": 0.4105028015902333,
+"value": 0.4146745770294208
+},
+"reading/L": {
+"nonfinite_draws": 0,
+"p5": 1.2445279760642742,
+"p95": 1.279205029195556,
+"value": 1.2793013355217462
+},
+"reading/L_all_pairs": {
+"nonfinite_draws": 0,
+"p5": 1.2430371737652715,
+"p95": 1.2732267656807341,
+"value": 1.279085116577443
+},
+"reading/L_corr": {
+"nonfinite_draws": 0,
+"p5": 1.3370467931767749,
+"p95": 1.364716474195865,
+"value": 1.366323980169216
+},
+"reading/P": {
+"nonfinite_draws": 0,
+"p5": 0.11412805522207702,
+"p95": 0.1442262995697474,
+"value": 0.11263439694729264
+},
+"reading/P_own_cells": {
+"nonfinite_draws": 0,
+"p5": 0.1466865567101347,
+"p95": 0.17541064216704874,
+"value": 0.15037312810134446
+},
+"reading/f_decay": {
+"nonfinite_draws": 0,
+"p5": 0.4798532187271011,
+"p95": 0.49016847839386957,
+"value": 0.4877433365421672
+},
+"reading/f_even": {
+"nonfinite_draws": 0,
+"p5": 0.5128302171033043,
+"p95": 0.5362649880833106,
+"value": 0.5322009358417201
+},
+"reading/f_max": {
+"nonfinite_draws": 0,
+"p5": 1.0256604342066087,
+"p95": 1.0725299761666212,
+"value": 1.0644018716834402
+},
+"reading/x": {
+"nonfinite_draws": 0,
+"p5": 1.0597327503765785,
+"p95": 1.107695154351922,
+"value": 1.087335806458075
+},
+"scale_E10.5_lib3_on_feng_E14.5/CM~Endocardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.9152877934638852,
+"p95": 0.9325602974732327,
+"value": 0.9387091460493938
+},
+"scale_E10.5_lib3_on_feng_E14.5/CM~Endocardium/slope": {
+"nonfinite_draws": 0,
+"p5": 0.8912651530586473,
+"p95": 0.9408872300924144,
+"value": 0.9483560115230762
+},
+"scale_E10.5_lib3_on_feng_E14.5/CM~Endocardium/slope_corrected": {
+"nonfinite_draws": 0,
+"p5": 0.8912651530586473,
+"p95": 0.9408872300924144,
+"value": 0.9483560115230762
+},
+"scale_E10.5_lib3_on_feng_E14.5/CM~Endothelium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.8818750193346789,
+"p95": 0.8952454950745189,
+"value": 0.8998842540877351
+},
+"scale_E10.5_lib3_on_feng_E14.5/CM~Endothelium/slope": {
+"nonfinite_draws": 0,
+"p5": 0.8789340361181711,
+"p95": 0.9071909384102442,
+"value": 0.9284732225571107
+},
+"scale_E10.5_lib3_on_feng_E14.5/CM~Endothelium/slope_corrected": {
+"nonfinite_draws": 0,
+"p5": 0.8789340361181711,
+"p95": 0.9071909384102442,
+"value": 0.9284732225571107
+},
+"scale_E10.5_lib3_on_feng_E14.5/CM~Epicardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.9271840126885016,
+"p95": 0.9351680448486375,
+"value": 0.9378365587629237
+},
+"scale_E10.5_lib3_on_feng_E14.5/CM~Epicardium/slope": {
+"nonfinite_draws": 0,
+"p5": 0.9459187181096184,
+"p95": 0.9880336705464504,
+"value": 0.9813606396089348
+},
+"scale_E10.5_lib3_on_feng_E14.5/CM~Epicardium/slope_corrected": {
+"nonfinite_draws": 0,
+"p5": 0.9459187181096184,
+"p95": 0.9880336705464504,
+"value": 0.9813606396089348
+},
+"scale_E10.5_lib3_on_feng_E14.5/Endocardium~Endothelium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.924041931930043,
+"p95": 0.9395645759780804,
+"value": 0.9463298140226337
+},
+"scale_E10.5_lib3_on_feng_E14.5/Endocardium~Endothelium/slope": {
+"nonfinite_draws": 0,
+"p5": 1.149554449519434,
+"p95": 1.1946590740513237,
+"value": 1.1929791630225917
+},
+"scale_E10.5_lib3_on_feng_E14.5/Endocardium~Endothelium/slope_corrected": {
+"nonfinite_draws": 0,
+"p5": 1.149554449519434,
+"p95": 1.1946590740513237,
+"value": 1.1929791630225917
+},
+"scale_E10.5_lib3_on_feng_E14.5/Endocardium~Epicardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.9444179392538596,
+"p95": 0.9477543109305294,
+"value": 0.9538573964699403
+},
+"scale_E10.5_lib3_on_feng_E14.5/Endocardium~Epicardium/slope": {
+"nonfinite_draws": 0,
+"p5": 0.9946181851608639,
+"p95": 1.0287342329761424,
+"value": 1.0067371908535374
+},
+"scale_E10.5_lib3_on_feng_E14.5/Endocardium~Epicardium/slope_corrected": {
+"nonfinite_draws": 0,
+"p5": 0.9946181851608639,
+"p95": 1.0287342329761424,
+"value": 1.0067371908535374
+},
+"scale_E10.5_lib3_on_feng_E14.5/Endothelium~Epicardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.9012014329794704,
+"p95": 0.9099292222024283,
+"value": 0.9137082496896756
+},
+"scale_E10.5_lib3_on_feng_E14.5/Endothelium~Epicardium/slope": {
+"nonfinite_draws": 0,
+"p5": 0.8800859926374405,
+"p95": 0.9180309700602387,
+"value": 0.9053386831998494
+},
+"scale_E10.5_lib3_on_feng_E14.5/Endothelium~Epicardium/slope_corrected": {
+"nonfinite_draws": 0,
+"p5": 0.8800859926374405,
+"p95": 0.9180309700602387,
+"value": 0.9053386831998494
+},
+"scale_E10.5_lib3_on_feng_E14.5/median_slope": {
+"nonfinite_draws": 0,
+"p5": 0.9046339045579053,
+"p95": 0.9408872300924144,
+"value": 0.9483560115230762
+},
+"scale_E10.5_lib3_on_feng_E14.5/median_slope_all_pairs": {
+"nonfinite_draws": 0,
+"p5": 0.9415235224376555,
+"p95": 0.9613694008590656,
+"value": 0.9648583255660055
+},
+"scale_E10.5_lib3_on_feng_E14.5/median_slope_corrected": {
+"nonfinite_draws": 0,
+"p5": 0.9046339045579053,
+"p95": 0.9408872300924144,
+"value": 0.9483560115230762
+},
+"scale_E9.5/CM~Endocardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.9874825535072126,
+"p95": 0.9897130700981182,
+"value": 0.992330550957759
+},
+"scale_E9.5/CM~Endocardium/slope": {
+"nonfinite_draws": 0,
+"p5": 1.2428313398643216,
+"p95": 1.2685334705639653,
+"value": 1.2657632571062507
+},
+"scale_E9.5/CM~Endocardium/slope_corrected": {
+"nonfinite_draws": 0,
+"p5": 1.3379726037674748,
+"p95": 1.365642284786565,
+"value": 1.3626600058609188
+},
+"scale_E9.5/CM~Endothelium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.9810835096948232,
+"p95": 0.9825574417217281,
+"value": 0.9911567554766552
+},
+"scale_E9.5/CM~Endothelium/slope": {
+"nonfinite_draws": 0,
+"p5": 1.2336602599819344,
+"p95": 1.2864781924976492,
+"value": 1.27886889763314
+},
+"scale_E9.5/CM~Endothelium/slope_corrected": {
+"nonfinite_draws": 0,
+"p5": 1.3180237628068712,
+"p95": 1.3744536344792073,
+"value": 1.366323980169216
+},
+"scale_E9.5/CM~Epicardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.9878940927778512,
+"p95": 0.989539673348764,
+"value": 0.9935117761048257
+},
+"scale_E9.5/CM~Epicardium/slope": {
+"nonfinite_draws": 0,
+"p5": 1.2447232743331265,
+"p95": 1.3070462279320292,
+"value": 1.2886448840468292
+},
+"scale_E9.5/CM~Epicardium/slope_corrected": {
+"nonfinite_draws": 0,
+"p5": 1.3288697959314728,
+"p95": 1.3954059428314267,
+"value": 1.3757606203747614
+},
+"scale_E9.5/Endocardium~Endothelium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.9385773852705465,
+"p95": 0.9403119304020273,
+"value": 0.9725861308988388
+},
+"scale_E9.5/Endocardium~Endothelium/slope": {
+"nonfinite_draws": 0,
+"p5": 1.1960498100913741,
+"p95": 1.226467469112525,
+"value": 1.2598157198400797
+},
+"scale_E9.5/Endocardium~Endothelium/slope_corrected": {
+"nonfinite_draws": 0,
+"p5": 1.278330725878584,
+"p95": 1.3108409339050078,
+"value": 1.346483340433277
+},
+"scale_E9.5/Endocardium~Epicardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.9900093967945328,
+"p95": 0.9927419674568,
+"value": 0.9954151821698395
+},
+"scale_E9.5/Endocardium~Epicardium/slope": {
+"nonfinite_draws": 0,
+"p5": 1.246726649883243,
+"p95": 1.279770104000325,
+"value": 1.2793013355217462
+},
+"scale_E9.5/Endocardium~Epicardium/slope_corrected": {
+"nonfinite_draws": 0,
+"p5": 1.314418732566768,
+"p95": 1.3492563090990983,
+"value": 1.3487620884377056
+},
+"scale_E9.5/Endothelium~Epicardium/pearson": {
+"nonfinite_draws": 0,
+"p5": 0.9845199091723057,
+"p95": 0.9884436763126377,
+"value": 0.9933006362470191
+},
+"scale_E9.5/Endothelium~Epicardium/slope": {
+"nonfinite_draws": 0,
+"p5": 1.2587469607262225,
+"p95": 1.3251570955004282,
+"value": 1.3142341922482623
+},
+"scale_E9.5/Endothelium~Epicardium/slope_corrected": {
+"nonfinite_draws": 0,
+"p5": 1.3468802452349515,
+"p95": 1.4179401972360774,
+"value": 1.4062525085504445
+},
+"scale_E9.5/median_slope": {
+"nonfinite_draws": 0,
+"p5": 1.2445279760642742,
+"p95": 1.279205029195556,
+"value": 1.2793013355217462
+},
+"scale_E9.5/median_slope_all_pairs": {
+"nonfinite_draws": 0,
+"p5": 1.2430371737652715,
+"p95": 1.2732267656807341,
+"value": 1.279085116577443
+},
+"scale_E9.5/median_slope_corrected": {
+"nonfinite_draws": 0,
+"p5": 1.3370467931767749,
+"p95": 1.364716474195865,
+"value": 1.366323980169216
+}
+}
