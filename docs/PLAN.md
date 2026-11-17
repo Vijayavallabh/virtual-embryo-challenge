@@ -4574,3 +4574,63 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     bear on it, is asked to decide from the practice numbers alone.
   - **After the last read.** The request as it then stands is put to a second cold adversary before it goes to the
     captain, since it is no longer the claim the first one attacked.
+- 2026-11-17 (e), the step's request after its last reads and a second cold check: the AI assistant does not put it
+  forward; its advice is to keep 0.40 on both Task 1 uploads (tries T48 to T51, T53 and T54 are read; T52 is still
+  running and cannot change this, see the end). Written by the AI assistant. Nothing in any upload, build, rule or
+  gate file has changed.
+  - **What the reads found.** On the released day a larger step scores better against every released truth, and the
+    gain between 1 and 2 times the practice step needs Feng's own genes (tries T44 to T46). Where the curve turns,
+    though, follows how deep the truth is against the cells the prediction is built from: the multiple with the
+    highest score is beyond 8, then 6, 4, 3 and 2 as that depth goes 0.3, 0.6, 0.9, 1.35 and 1.8 (tries T50 and T54;
+    each turn confirmed by a second thinning draw). The released day's change lies mostly along the part of the
+    direction that all cell groups share (try T51); holding Feng's zone mix fixed changes nothing at the bar (try
+    T53); the step set by its own calibration sits on the line through the uniform arms (try T48); and a larger g_mom
+    also scores better on these cuts, on the distribution terms (try T49).
+  - **What the pre-set rule gave.** By entries (c) and (d): 0.55, 0.60 and 0.69 pass test A; B picks 0.69 and caps it
+    at 0.60, because the turn follows the truth's depth; C is not met; E leaves 0.60 standing (in the world where the
+    truth is 1.35 times as deep as the reference it reads +0.25 against 0.40 at a real share of 0.28). Its price both
+    ways, 0.60 against 0.40, by interpolation inside each practice world, at a real share of 0.28 and then 0.22: depth
+    0.3, +1.97 and +2.03; 0.6, +1.21 and +0.90; 0.9, +0.80 and +0.27; 1.35, +0.25 and -0.51; 1.8, -0.26 and -0.91.
+  - **The second cold check** (a fresh adversary given only the claim; its text is in the session's scratch record)
+    put the chance of a mistake at 38% and named a kill shot, three attacks and a cheaper alternative. Each check it
+    named was run.
+  - **Its kill shot, conceded.** The controls that show the gain to be direction-specific cover 1 to 2 times the
+    practice step. The move under request stands, by the request's own mapping, between 2.3 and 4.4 times, where no
+    control was run, where the increments sit mostly on the distribution and covariance terms (on library 3, from 3 to
+    4 times: +0.09 on the de terms, +0.21 there) and where their sign turns with depth.
+  - **Its first attack, conceded in part.** The depth at which 0.60 breaks even falls with the real share: about 1.55
+    at a share of 0.28, 1.26 at 0.24 and 1.04 at 0.22 (recomputed). At 0.24 the price reads +2.14, +1.09, +0.57, -0.11
+    and -0.59 over the five depths. Rebutted: the second upload's base is not a quarter shallower than the first's. By
+    the builder's own selection on the released E10.5 file its cells hold 0.91 of library 3's counts per cell (0.89 to
+    0.94 by chamber category; target-free), so its depth against any truth is 1.10 times the first upload's.
+  - **Its second attack, conceded.** The sign of the change is a function of the hidden truth's depth, and the captain
+    has seen metadata that bears on it. The rule was written by the AI assistant on 2026-11-17 (643d610 and b6a56ed),
+    after the exposure and without its figures, and nobody approved it; no commitment exists that the captain would
+    not overrule it. A yes or a no given with discretion could carry what the block exists to keep out, and could not
+    be shown not to.
+  - **Its third attack, conceded.** The mapping from a practice multiple to a test fraction assumes that the curve's
+    position follows the share of the real change. At matched depth it does not: at 0.6 of the reference's depth the
+    embryo-portion library 2, whose day holds 0.22 of the change, has its highest score at 8 times the step and is
+    still level there (8 against 6 times: +0.10), while library 3 thinned to the same depth, whose day holds 0.33,
+    peaks at 6 times (8 against 6: -0.80 on every seed). The mapping predicts the opposite order. So tests A, B and E,
+    which all place the test on the practice curve by that mapping, rest on a premise the practice data contradict,
+    and the multiples at which 0.40 and 0.60 stand at the test are not known.
+  - **Verdict: stop.** The AI assistant does not put the request forward. Released data show that the entry's step is
+    too small for the released day and that the right size at the test depends on a quantity nothing released shows
+    and the team has barred itself from using; the block's own rule for that case is released data alone or decline,
+    and released data alone do not settle the sign. The expected gain it gives up is small (a few tenths under an even
+    prior over depth; the request's first draft said about one point), and a change would have needed a builder port,
+    an amendment to the frozen second-upload rules, a fourth rehearsal and new reference hashes three days before the
+    freeze. The advice, deciding nothing: keep 0.40 on both Task 1 uploads. If the captain wants the change all the
+    same, the least exposed form is the adversary's: the first upload only, at 0.55, with the second left as it is,
+    and the choice left in writing to the pre-set rule or declined, so that no figure the captain saw can enter it;
+    that form would then be listed in the method report's section on the exposure.
+  - **What this does to the record.** The size of M1's step, of its parts and of g_mom is now read on both sides on
+    every released truth, and each read's row says that no outcome sets a size at the test. Variants that change a
+    size (a split between the common and the group-specific part of the direction, a smaller pseudocount, a calibrated
+    step) share the property the reads found and are not built further: their sign at the test turns on the same
+    blocked quantity. The builder option of `campaign/t1-n` stays on its branch, unused. The estimate stays 184 (170
+    to 198).
+  - **Try T52** (the direction made with a smaller pseudocount) is still running. Its use was test C, which could only
+    have replaced a uniform value by a changed direction of larger delivered size; the verdict stops any such change
+    for the reasons above, so T52 is read and recorded when it finishes and changes nothing here.
