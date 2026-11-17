@@ -1,0 +1,911 @@
+{
+ "label": "try T49: the size of g_mom's within-type factors (dampings 0.75 and 1.0 against B0's 0.5) on the two counted E10.5 cuts; in both forms a labelled in-sample diagnostic: form A selects a constant on the cuts that kept g_mom, form B (M1 with R1, R2 and g_mom's factors) is the entry's form, whose one use is the veto; Feng's E9.5 cells lie inside these pseudo-tasks' external windows",
+ "reading": {
+  "valid": true,
+  "validity": {
+   "valid": true,
+   "reasons": [],
+   "reproduction": {
+    "T1/E9.5->E10.5:chamber": {
+     "largest_difference": {
+      "b0": 0.0,
+      "g_mom": 0.0,
+      "m1_r_gmom": 0.0
+     },
+     "missing_seeds": [],
+     "absent": [],
+     "holds": true,
+     "tolerance": 1e-09
+    },
+    "T1/E9.5->E10.5": {
+     "largest_difference": {
+      "b0": 0.0,
+      "g_mom": 0.0,
+      "m1_r_gmom": 0.0
+     },
+     "missing_seeds": [],
+     "absent": [],
+     "holds": true,
+     "tolerance": 1e-09
+    }
+   },
+   "commits": [
+    "15f38b6a5c61e13f0698b19984280d5ac6eff517"
+   ]
+  },
+  "outcome": "a larger g_mom scores above g_mom by the adoption rule's arithmetic on the cuts that kept g_mom (a size chosen on these cuts; not a keep): g_mom_d1",
+  "statement": {
+   "statement": "a larger g_mom scores above g_mom by the adoption rule's arithmetic on the cuts that kept g_mom (a size chosen on these cuts; not a keep): g_mom_d1",
+   "arm": "g_mom_d1",
+   "basis": "passes against g_mom and against g_mom_d075",
+   "veto": {
+    "twin": "m1_r_gmom_g1",
+    "means": {
+     "T1/E9.5->E10.5:chamber": 1.4555536840062069,
+     "T1/E9.5->E10.5": 1.3801737700545906
+    },
+    "loses": false
+   },
+   "put_forward": true
+  },
+  "form_a": {
+   "A1": {
+    "base": "g_mom",
+    "change": "g_mom_d075",
+    "passes": true,
+    "rule": {
+     "keep": true,
+     "reason": "passes on 2 of 2 pseudo-tasks (needs 2) and loses on none",
+     "tasks": {
+      "T1/E9.5->E10.5:chamber": {
+       "complete": true,
+       "mean_gain": 0.7310442212613154,
+       "seeds_ahead": 10,
+       "passes": true,
+       "vetoes": false
+      },
+      "T1/E9.5->E10.5": {
+       "complete": true,
+       "mean_gain": 0.6936628025384458,
+       "seeds_ahead": 10,
+       "passes": true,
+       "vetoes": false
+      }
+     },
+     "need": 2,
+     "passed": 2
+    },
+    "cuts": {
+     "T1/E9.5->E10.5:chamber": {
+      "mean": 0.7310442212613154,
+      "ahead": 10,
+      "of": 10,
+      "skills": {
+       "de_direction": 0.0025537379323567035,
+       "de_score": 0.00432049747630871,
+       "mmd_u": 0.011985480371280138,
+       "variogram": 0.009981196245313856
+      },
+      "groups": {
+       "covariance": 0.009981196245313856,
+       "de_recovery": 0.00432049747630871,
+       "direction": 0.0025537379323567035,
+       "distribution": 0.011985480371280138
+      },
+      "metrics": {
+       "de_direction": 0.005330000000000018,
+       "de_score": 0.016440000000000003,
+       "energy_distance": -0.08805699999999997,
+       "library_size_ratio": 0.0,
+       "mmd_u": -0.004731000000000002,
+       "pb_rel_err": -0.002950000000000008,
+       "pseudobulk_pearson": -9.999999999998899e-05,
+       "variance_ratio": 0.008400000000000008,
+       "variogram": -0.00027890000000000006
+      },
+      "range": [
+       0.6528044599042957,
+       0.813858166318596
+      ],
+      "points": {
+       "de_direction": 0.06384344830891758,
+       "de_score": 0.10801243690771775,
+       "mmd_u": 0.35956441113840415,
+       "variogram": 0.19962392490627712
+      }
+     },
+     "T1/E9.5->E10.5": {
+      "mean": 0.6936628025384458,
+      "ahead": 10,
+      "of": 10,
+      "skills": {
+       "de_direction": 0.002674014215816567,
+       "de_score": 0.0036283403599832453,
+       "mmd_u": 0.011635117198588785,
+       "variogram": 0.009352521109289347
+      },
+      "groups": {
+       "covariance": 0.009352521109289347,
+       "de_recovery": 0.0036283403599832453,
+       "direction": 0.002674014215816567,
+       "distribution": 0.011635117198588785
+      },
+      "metrics": {
+       "de_direction": 0.006570000000000006,
+       "de_score": 0.01641,
+       "energy_distance": -0.09452900000000009,
+       "library_size_ratio": 0.0,
+       "mmd_u": -0.005079,
+       "pb_rel_err": -0.0029800000000000104,
+       "pseudobulk_pearson": -0.00010000000000001119,
+       "variance_ratio": 0.008200000000000008,
+       "variogram": -0.00031009999999999995
+      },
+      "range": [
+       0.6336252921322441,
+       0.7765414041431313
+      ],
+      "points": {
+       "de_direction": 0.06685035539541417,
+       "de_score": 0.09070850899958113,
+       "mmd_u": 0.34905351595766354,
+       "variogram": 0.18705042218578694
+      }
+     }
+    }
+   },
+   "A2": {
+    "base": "g_mom",
+    "change": "g_mom_d1",
+    "passes": true,
+    "rule": {
+     "keep": true,
+     "reason": "passes on 2 of 2 pseudo-tasks (needs 2) and loses on none",
+     "tasks": {
+      "T1/E9.5->E10.5:chamber": {
+       "complete": true,
+       "mean_gain": 1.4652162057518148,
+       "seeds_ahead": 10,
+       "passes": true,
+       "vetoes": false
+      },
+      "T1/E9.5->E10.5": {
+       "complete": true,
+       "mean_gain": 1.3578773680620473,
+       "seeds_ahead": 10,
+       "passes": true,
+       "vetoes": false
+      }
+     },
+     "need": 2,
+     "passed": 2
+    },
+    "cuts": {
+     "T1/E9.5->E10.5:chamber": {
+      "mean": 1.4652162057518148,
+      "ahead": 10,
+      "of": 10,
+      "skills": {
+       "de_direction": 0.005221440875239536,
+       "de_score": 0.009064760110490327,
+       "mmd_u": 0.023481980179797007,
+       "variogram": 0.020180088785732898
+      },
+      "groups": {
+       "covariance": 0.020180088785732898,
+       "de_recovery": 0.009064760110490327,
+       "direction": 0.005221440875239536,
+       "distribution": 0.023481980179797007
+      },
+      "metrics": {
+       "de_direction": 0.010830000000000011,
+       "de_score": 0.03407,
+       "energy_distance": -0.16959500000000002,
+       "library_size_ratio": 0.0,
+       "mmd_u": -0.00907,
+       "pb_rel_err": -0.005790000000000006,
+       "pseudobulk_pearson": -0.00022999999999997466,
+       "variance_ratio": 0.016600000000000014,
+       "variogram": -0.0005512999999999999
+      },
+      "range": [
+       1.3638831416682322,
+       1.5929909438820857
+      ],
+      "points": {
+       "de_direction": 0.1305360218809884,
+       "de_score": 0.22661900276225816,
+       "mmd_u": 0.7044594053939102,
+       "variogram": 0.40360177571465794
+      }
+     },
+     "T1/E9.5->E10.5": {
+      "mean": 1.3578773680620473,
+      "ahead": 10,
+      "of": 10,
+      "skills": {
+       "de_direction": 0.005296261572803817,
+       "de_score": 0.006456371516431775,
+       "mmd_u": 0.02280828035908527,
+       "variogram": 0.018990656502929977
+      },
+      "groups": {
+       "covariance": 0.018990656502929977,
+       "de_recovery": 0.006456371516431775,
+       "direction": 0.005296261572803817,
+       "distribution": 0.02280828035908527
+      },
+      "metrics": {
+       "de_direction": 0.012930000000000002,
+       "de_score": 0.02924000000000001,
+       "energy_distance": -0.18217899999999995,
+       "library_size_ratio": 0.0,
+       "mmd_u": -0.009708999999999999,
+       "pb_rel_err": -0.005840000000000007,
+       "pseudobulk_pearson": -0.0002200000000000313,
+       "variance_ratio": 0.015800000000000015,
+       "variogram": -0.0006151999999999999
+      },
+      "range": [
+       1.2527682270968796,
+       1.438376040912516
+      ],
+      "points": {
+       "de_direction": 0.13240653932009544,
+       "de_score": 0.16140928791079437,
+       "mmd_u": 0.684248410772558,
+       "variogram": 0.3798131300585995
+      }
+     }
+    }
+   },
+   "A3": {
+    "base": "g_mom_d075",
+    "change": "g_mom_d1",
+    "passes": true,
+    "rule": {
+     "keep": true,
+     "reason": "passes on 2 of 2 pseudo-tasks (needs 2) and loses on none",
+     "tasks": {
+      "T1/E9.5->E10.5:chamber": {
+       "complete": true,
+       "mean_gain": 0.7341719844904994,
+       "seeds_ahead": 10,
+       "passes": true,
+       "vetoes": false
+      },
+      "T1/E9.5->E10.5": {
+       "complete": true,
+       "mean_gain": 0.6642145655236014,
+       "seeds_ahead": 10,
+       "passes": true,
+       "vetoes": false
+      }
+     },
+     "need": 2,
+     "passed": 2
+    },
+    "cuts": {
+     "T1/E9.5->E10.5:chamber": {
+      "mean": 0.7341719844904994,
+      "ahead": 10,
+      "of": 10,
+      "skills": {
+       "de_direction": 0.0026677029428828327,
+       "de_score": 0.004744262634181618,
+       "mmd_u": 0.011496499808516868,
+       "variogram": 0.01019889254041904
+      },
+      "groups": {
+       "covariance": 0.01019889254041904,
+       "de_recovery": 0.004744262634181618,
+       "direction": 0.0026677029428828327,
+       "distribution": 0.011496499808516868
+      },
+      "metrics": {
+       "de_direction": 0.005499999999999994,
+       "de_score": 0.01763,
+       "energy_distance": -0.08153800000000007,
+       "library_size_ratio": 0.0,
+       "mmd_u": -0.004338999999999998,
+       "pb_rel_err": -0.002839999999999998,
+       "pseudobulk_pearson": -0.00012999999999998568,
+       "variance_ratio": 0.008200000000000008,
+       "variogram": -0.0002723999999999998
+      },
+      "range": [
+       0.6278509723352244,
+       0.8324434430078824
+      ],
+      "points": {
+       "de_direction": 0.06669257357207081,
+       "de_score": 0.11860656585454045,
+       "mmd_u": 0.34489499425550607,
+       "variogram": 0.20397785080838082
+      }
+     },
+     "T1/E9.5->E10.5": {
+      "mean": 0.6642145655236014,
+      "ahead": 10,
+      "of": 10,
+      "skills": {
+       "de_direction": 0.002622247356987251,
+       "de_score": 0.0028280311564485294,
+       "mmd_u": 0.011173163160496486,
+       "variogram": 0.00963813539364063
+      },
+      "groups": {
+       "covariance": 0.00963813539364063,
+       "de_recovery": 0.0028280311564485294,
+       "direction": 0.002622247356987251,
+       "distribution": 0.011173163160496486
+      },
+      "metrics": {
+       "de_direction": 0.006359999999999996,
+       "de_score": 0.012830000000000008,
+       "energy_distance": -0.08764999999999987,
+       "library_size_ratio": 0.0,
+       "mmd_u": -0.00463,
+       "pb_rel_err": -0.002859999999999996,
+       "pseudobulk_pearson": -0.00012000000000002009,
+       "variance_ratio": 0.007600000000000007,
+       "variogram": -0.0003050999999999999
+      },
+      "range": [
+       0.5478460338282076,
+       0.7316435591968755
+      ],
+      "points": {
+       "de_direction": 0.06555618392468127,
+       "de_score": 0.07070077891121324,
+       "mmd_u": 0.33519489481489456,
+       "variogram": 0.19276270787281258
+      }
+     }
+    }
+   }
+  },
+  "form_b_diagnostic": {
+   "B1": {
+    "base": "m1_r_gmom",
+    "change": "m1_r_gmom_g075",
+    "passes": true,
+    "rule": {
+     "keep": true,
+     "reason": "passes on 2 of 2 pseudo-tasks (needs 2) and loses on none",
+     "tasks": {
+      "T1/E9.5->E10.5:chamber": {
+       "complete": true,
+       "mean_gain": 0.745605298953641,
+       "seeds_ahead": 10,
+       "passes": true,
+       "vetoes": false
+      },
+      "T1/E9.5->E10.5": {
+       "complete": true,
+       "mean_gain": 0.6890563433601173,
+       "seeds_ahead": 10,
+       "passes": true,
+       "vetoes": false
+      }
+     },
+     "need": 2,
+     "passed": 2
+    },
+    "cuts": {
+     "T1/E9.5->E10.5:chamber": {
+      "mean": 0.745605298953641,
+      "ahead": 10,
+      "of": 10,
+      "skills": {
+       "de_direction": 0.003161341799430062,
+       "de_score": 0.0045799837735150065,
+       "mmd_u": 0.011714136957450955,
+       "variogram": 0.01003240254532416
+      },
+      "groups": {
+       "covariance": 0.01003240254532416,
+       "de_recovery": 0.0045799837735150065,
+       "direction": 0.003161341799430062,
+       "distribution": 0.011714136957450955
+      },
+      "metrics": {
+       "de_direction": 0.006319999999999992,
+       "de_score": 0.015380000000000001,
+       "energy_distance": -0.08499700000000007,
+       "library_size_ratio": 0.0,
+       "mmd_u": -0.004576000000000001,
+       "pb_rel_err": -0.0028499999999999914,
+       "pseudobulk_pearson": -8.999999999999009e-05,
+       "variance_ratio": 0.008500000000000008,
+       "variogram": -0.00027500000000000007
+      },
+      "range": [
+       0.6235536069353032,
+       0.847459468098215
+      ],
+      "points": {
+       "de_direction": 0.07903354498575155,
+       "de_score": 0.11449959433787517,
+       "mmd_u": 0.35142410872352864,
+       "variogram": 0.2006480509064832
+      }
+     },
+     "T1/E9.5->E10.5": {
+      "mean": 0.6890563433601173,
+      "ahead": 10,
+      "of": 10,
+      "skills": {
+       "de_direction": 0.002901329168332667,
+       "de_score": 0.003471188348335363,
+       "mmd_u": 0.011387690492206726,
+       "variogram": 0.009405634533860775
+      },
+      "groups": {
+       "covariance": 0.009405634533860775,
+       "de_recovery": 0.003471188348335363,
+       "direction": 0.002901329168332667,
+       "distribution": 0.011387690492206726
+      },
+      "metrics": {
+       "de_direction": 0.00686,
+       "de_score": 0.014069999999999996,
+       "energy_distance": -0.09165100000000001,
+       "library_size_ratio": 0.0,
+       "mmd_u": -0.004935,
+       "pb_rel_err": -0.002880000000000016,
+       "pseudobulk_pearson": -0.00010000000000000009,
+       "variance_ratio": 0.008100000000000007,
+       "variogram": -0.0003074999999999998
+      },
+      "range": [
+       0.5882179379228276,
+       0.7556613359233353
+      ],
+      "points": {
+       "de_direction": 0.07253322920831667,
+       "de_score": 0.08677970870838408,
+       "mmd_u": 0.34163071476620177,
+       "variogram": 0.18811269067721548
+      }
+     }
+    }
+   },
+   "B2": {
+    "base": "m1_r_gmom",
+    "change": "m1_r_gmom_g1",
+    "passes": true,
+    "rule": {
+     "keep": true,
+     "reason": "passes on 2 of 2 pseudo-tasks (needs 2) and loses on none",
+     "tasks": {
+      "T1/E9.5->E10.5:chamber": {
+       "complete": true,
+       "mean_gain": 1.4555536840062069,
+       "seeds_ahead": 10,
+       "passes": true,
+       "vetoes": false
+      },
+      "T1/E9.5->E10.5": {
+       "complete": true,
+       "mean_gain": 1.3801737700545906,
+       "seeds_ahead": 10,
+       "passes": true,
+       "vetoes": false
+      }
+     },
+     "need": 2,
+     "passed": 2
+    },
+    "cuts": {
+     "T1/E9.5->E10.5:chamber": {
+      "mean": 1.4555536840062069,
+      "ahead": 10,
+      "of": 10,
+      "skills": {
+       "de_direction": 0.006080298758195557,
+       "de_score": 0.008418120159526327,
+       "mmd_u": 0.022891673839289965,
+       "variogram": 0.020317149794223117
+      },
+      "groups": {
+       "covariance": 0.020317149794223117,
+       "de_recovery": 0.008418120159526327,
+       "direction": 0.006080298758195557,
+       "distribution": 0.022891673839289965
+      },
+      "metrics": {
+       "de_direction": 0.012110000000000004,
+       "de_score": 0.027990000000000004,
+       "energy_distance": -0.16467800000000002,
+       "library_size_ratio": 0.0,
+       "mmd_u": -0.008755,
+       "pb_rel_err": -0.005630000000000001,
+       "pseudobulk_pearson": -0.00020999999999998797,
+       "variance_ratio": 0.016600000000000014,
+       "variogram": -0.0005445000000000002
+      },
+      "range": [
+       1.327485377144498,
+       1.5502842184488088
+      ],
+      "points": {
+       "de_direction": 0.15200746895488892,
+       "de_score": 0.2104530039881582,
+       "mmd_u": 0.6867502151786989,
+       "variogram": 0.4063429958844623
+      }
+     },
+     "T1/E9.5->E10.5": {
+      "mean": 1.3801737700545906,
+      "ahead": 10,
+      "of": 10,
+      "skills": {
+       "de_direction": 0.005753728769515587,
+       "de_score": 0.007495624869409889,
+       "mmd_u": 0.02225653578933464,
+       "variogram": 0.0190621927700707
+      },
+      "groups": {
+       "covariance": 0.0190621927700707,
+       "de_recovery": 0.007495624869409889,
+       "direction": 0.005753728769515587,
+       "distribution": 0.02225653578933464
+      },
+      "metrics": {
+       "de_direction": 0.013549999999999996,
+       "de_score": 0.03005,
+       "energy_distance": -0.17761399999999988,
+       "library_size_ratio": 0.0,
+       "mmd_u": -0.009412,
+       "pb_rel_err": -0.005690000000000001,
+       "pseudobulk_pearson": -0.00020999999999998797,
+       "variance_ratio": 0.015900000000000015,
+       "variogram": -0.0006091
+      },
+      "range": [
+       1.2312086229475412,
+       1.541084754902812
+      ],
+      "points": {
+       "de_direction": 0.14384321923788967,
+       "de_score": 0.18739062173524723,
+       "mmd_u": 0.6676960736800392,
+       "variogram": 0.38124385540141403
+      }
+     }
+    }
+   },
+   "B3": {
+    "base": "m1_r_gmom_g075",
+    "change": "m1_r_gmom_g1",
+    "passes": true,
+    "rule": {
+     "keep": true,
+     "reason": "passes on 2 of 2 pseudo-tasks (needs 2) and loses on none",
+     "tasks": {
+      "T1/E9.5->E10.5:chamber": {
+       "complete": true,
+       "mean_gain": 0.7099483850525659,
+       "seeds_ahead": 10,
+       "passes": true,
+       "vetoes": false
+      },
+      "T1/E9.5->E10.5": {
+       "complete": true,
+       "mean_gain": 0.6911174266944734,
+       "seeds_ahead": 10,
+       "passes": true,
+       "vetoes": false
+      }
+     },
+     "need": 2,
+     "passed": 2
+    },
+    "cuts": {
+     "T1/E9.5->E10.5:chamber": {
+      "mean": 0.7099483850525659,
+      "ahead": 10,
+      "of": 10,
+      "skills": {
+       "de_direction": 0.0029189569587654953,
+       "de_score": 0.0038381363860113204,
+       "mmd_u": 0.011177536881839012,
+       "variogram": 0.010284747248898957
+      },
+      "groups": {
+       "covariance": 0.010284747248898957,
+       "de_recovery": 0.0038381363860113204,
+       "direction": 0.0029189569587654953,
+       "distribution": 0.011177536881839012
+      },
+      "metrics": {
+       "de_direction": 0.005790000000000012,
+       "de_score": 0.01261,
+       "energy_distance": -0.07968099999999993,
+       "library_size_ratio": 0.0,
+       "mmd_u": -0.0041789999999999996,
+       "pb_rel_err": -0.0027800000000000103,
+       "pseudobulk_pearson": -0.00011999999999999789,
+       "variance_ratio": 0.008100000000000007,
+       "variogram": -0.0002695000000000001
+      },
+      "range": [
+       0.6194636185670532,
+       0.7955855731414871
+      ],
+      "points": {
+       "de_direction": 0.07297392396913738,
+       "de_score": 0.09595340965028301,
+       "mmd_u": 0.33532610645517036,
+       "variogram": 0.20569494497797913
+      }
+     },
+     "T1/E9.5->E10.5": {
+      "mean": 0.6911174266944734,
+      "ahead": 10,
+      "of": 10,
+      "skills": {
+       "de_direction": 0.00285239960118292,
+       "de_score": 0.004024436521074526,
+       "mmd_u": 0.010868845297127916,
+       "variogram": 0.009656558236209927
+      },
+      "groups": {
+       "covariance": 0.009656558236209927,
+       "de_recovery": 0.004024436521074526,
+       "direction": 0.00285239960118292,
+       "distribution": 0.010868845297127916
+      },
+      "metrics": {
+       "de_direction": 0.006689999999999996,
+       "de_score": 0.01598,
+       "energy_distance": -0.08596299999999987,
+       "library_size_ratio": 0.0,
+       "mmd_u": -0.004477,
+       "pb_rel_err": -0.002809999999999985,
+       "pseudobulk_pearson": -0.00010999999999998789,
+       "variance_ratio": 0.007800000000000007,
+       "variogram": -0.00030160000000000023
+      },
+      "range": [
+       0.6378141062642229,
+       0.7854234189794767
+      ],
+      "points": {
+       "de_direction": 0.071309990029573,
+       "de_score": 0.10061091302686315,
+       "mmd_u": 0.3260653589138375,
+       "variogram": 0.19313116472419856
+      }
+     }
+    }
+   }
+  },
+  "mean_scores": {
+   "T1/E9.5->E10.5:chamber": {
+    "b0": 49.68290567973587,
+    "g_mom": 50.9121727839015,
+    "g_mom_d075": 51.64321700516281,
+    "g_mom_d1": 52.37738898965331,
+    "m1_r_gmom": 52.059191374811334,
+    "m1_r_gmom_g075": 52.80479667376498,
+    "m1_r_gmom_g1": 53.51474505881755
+   },
+   "T1/E9.5->E10.5": {
+    "b0": 44.116683628570335,
+    "g_mom": 45.24814327354579,
+    "g_mom_d075": 45.941806076084234,
+    "g_mom_d1": 46.606020641607834,
+    "m1_r_gmom": 46.22641107922755,
+    "m1_r_gmom_g075": 46.91546742258767,
+    "m1_r_gmom_g1": 47.606584849282136
+   }
+  },
+  "factor_records": {
+   "T1/E9.5->E10.5:chamber": {
+    "0.5": {
+     "blood": {
+      "share_not_zeroed": 0.18044758539458186,
+      "share_at_clip": 2.4796974769078173e-05,
+      "mean_abs_log_not_zeroed": 0.13794657941944674,
+      "mean_abs_log_all_entries": 0.024892127169681085,
+      "share_unzeroed_vs_0.5": 0.0
+     },
+     "cm": {
+      "share_not_zeroed": 0.1010467865777518,
+      "share_at_clip": 4.42803120876396e-06,
+      "mean_abs_log_not_zeroed": 0.09410049418369922,
+      "mean_abs_log_all_entries": 0.009508552552641228,
+      "share_unzeroed_vs_0.5": 0.0
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.08342012274502511,
+      "share_at_clip": 0.0,
+      "mean_abs_log_not_zeroed": 0.08489425755832702,
+      "mean_abs_log_all_entries": 0.007081889385863416,
+      "share_unzeroed_vs_0.5": 0.0
+     }
+    },
+    "0.75": {
+     "blood": {
+      "share_not_zeroed": 0.23348831442564008,
+      "share_at_clip": 0.00013638336122992996,
+      "mean_abs_log_not_zeroed": 0.17347819692691765,
+      "mean_abs_log_all_entries": 0.04050513179006525,
+      "share_unzeroed_vs_0.5": 0.05304072903105821
+     },
+     "cm": {
+      "share_not_zeroed": 0.15980321829308253,
+      "share_at_clip": 5.313637450516751e-05,
+      "mean_abs_log_not_zeroed": 0.11122149020768811,
+      "mean_abs_log_all_entries": 0.017773552078541123,
+      "share_unzeroed_vs_0.5": 0.05875643171533073
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.1428863678631207,
+      "share_at_clip": 6.199243692269543e-06,
+      "mean_abs_log_not_zeroed": 0.09926097557949047,
+      "mean_abs_log_all_entries": 0.014183040271103316,
+      "share_unzeroed_vs_0.5": 0.05946624511809559
+     }
+    },
+    "1": {
+     "blood": {
+      "share_not_zeroed": 0.2693137437232658,
+      "share_at_clip": 0.0008926910916868142,
+      "mean_abs_log_not_zeroed": 0.20753510755157675,
+      "mean_abs_log_all_entries": 0.05589205676872574,
+      "share_unzeroed_vs_0.5": 0.0888661583286839
+     },
+     "cm": {
+      "share_not_zeroed": 0.20346803404270394,
+      "share_at_clip": 0.00017977806707581676,
+      "mean_abs_log_not_zeroed": 0.12841850945583996,
+      "mean_abs_log_all_entries": 0.02612906165367414,
+      "share_unzeroed_vs_0.5": 0.10242124746495214
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.1878153865228442,
+      "share_at_clip": 3.719546215361726e-05,
+      "mean_abs_log_not_zeroed": 0.11418589776809511,
+      "mean_abs_log_all_entries": 0.02144586852477276,
+      "share_unzeroed_vs_0.5": 0.1043952637778191
+     }
+    }
+   },
+   "T1/E9.5->E10.5": {
+    "0.5": {
+     "blood": {
+      "share_not_zeroed": 0.18044758539458186,
+      "share_at_clip": 2.4796974769078173e-05,
+      "mean_abs_log_not_zeroed": 0.13794657941944674,
+      "mean_abs_log_all_entries": 0.024892127169681085,
+      "share_unzeroed_vs_0.5": 0.0
+     },
+     "cm": {
+      "share_not_zeroed": 0.1010467865777518,
+      "share_at_clip": 4.42803120876396e-06,
+      "mean_abs_log_not_zeroed": 0.09410049418369922,
+      "mean_abs_log_all_entries": 0.009508552552641228,
+      "share_unzeroed_vs_0.5": 0.0
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.08342012274502511,
+      "share_at_clip": 0.0,
+      "mean_abs_log_not_zeroed": 0.08489425755832702,
+      "mean_abs_log_all_entries": 0.007081889385863416,
+      "share_unzeroed_vs_0.5": 0.0
+     }
+    },
+    "0.75": {
+     "blood": {
+      "share_not_zeroed": 0.23348831442564008,
+      "share_at_clip": 0.00013638336122992996,
+      "mean_abs_log_not_zeroed": 0.17347819692691765,
+      "mean_abs_log_all_entries": 0.04050513179006525,
+      "share_unzeroed_vs_0.5": 0.05304072903105821
+     },
+     "cm": {
+      "share_not_zeroed": 0.15980321829308253,
+      "share_at_clip": 5.313637450516751e-05,
+      "mean_abs_log_not_zeroed": 0.11122149020768811,
+      "mean_abs_log_all_entries": 0.017773552078541123,
+      "share_unzeroed_vs_0.5": 0.05875643171533073
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.1428863678631207,
+      "share_at_clip": 6.199243692269543e-06,
+      "mean_abs_log_not_zeroed": 0.09926097557949047,
+      "mean_abs_log_all_entries": 0.014183040271103316,
+      "share_unzeroed_vs_0.5": 0.05946624511809559
+     }
+    },
+    "1": {
+     "blood": {
+      "share_not_zeroed": 0.2693137437232658,
+      "share_at_clip": 0.0008926910916868142,
+      "mean_abs_log_not_zeroed": 0.20753510755157675,
+      "mean_abs_log_all_entries": 0.05589205676872574,
+      "share_unzeroed_vs_0.5": 0.0888661583286839
+     },
+     "cm": {
+      "share_not_zeroed": 0.20346803404270394,
+      "share_at_clip": 0.00017977806707581676,
+      "mean_abs_log_not_zeroed": 0.12841850945583996,
+      "mean_abs_log_all_entries": 0.02612906165367414,
+      "share_unzeroed_vs_0.5": 0.10242124746495214
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.1878153865228442,
+      "share_at_clip": 3.719546215361726e-05,
+      "mean_abs_log_not_zeroed": 0.11418589776809511,
+      "mean_abs_log_all_entries": 0.02144586852477276,
+      "share_unzeroed_vs_0.5": 0.1043952637778191
+     }
+    }
+   }
+  }
+ },
+ "limits": [
+  "T49 chooses a value of one constant (B0's damping applied to g_mom) on the two cuts that kept g_mom and have read it seven times. Whatever it reads, it keeps nothing under rule 6, it is counted as tries, and its statement is a labelled in-sample diagnostic in both forms.",
+  "T47's 0.58 is a calibration of Feng's direction over M1's genes. It is not measured for g_mom's factors, whose zeroing removes most low-mean entries. g_mom's raw fit holds sampling noise, transport mismatch and the amplification of each state's own deviation as well as development (T23: about 40% of the gain with nothing developing; N21: R^2 0.35 to 0.64 from amplification). So a delivered share below 1 is expected of a noisy estimate and is not evidence that the size is too small. No outcome is read as 'g_mom was under-sized by a factor of about 3'.",
+  "Form B's veto reads the sign of an in-sample twin, and M1's step there is itself too small (T44). A veto or its absence says nothing about g_mom's size in the entry at test.",
+  "A larger arm redraws every count of every edited cell on a stream it does not share with its base, and its larger factors add resampling variance (about three times g_mom's at damping 1 on synthetic counts). Per-seed differences hold that noise, and a small part of any gain may be added spread rather than size.",
+  "'loses' is a sign on these cuts, not a size; 'not separated' includes steady gains below 0.3.",
+  "Run in the DGX checkout where T42 and T44 ran; a 1e-9 miss on b0, g_mom or m1_r_gmom voids the read uncounted and goes to the captain.",
+  "Twice the damping is not twice g_mom. It brings back the entries zeroed at 0.5, which are mostly sampling noise of low-mean genes, and grows the mean factor about fourfold over all entries; the clip does not bind. A larger arm's result is the result of that combined change and is not read as a size of the development g_mom measured.",
+  "One E8.5 -> E9.5 fit serves every seed and both cuts. The seeds measure draw and scoring noise only, n = 1 for the fit, and '8 of 10 ahead' is not replication.",
+  "The two cuts share their truth stage, reference and fit and are not independent evidence. Their truth differs from the reference in kind and depth (T27), and a gain from a larger spread may come from that difference rather than from development.",
+  "The order rule only makes the choice coarser. Any damping it names is chosen on these cuts and is a tuned constant, not a pre-registered one.",
+  "Form B's sign is in-sample and mixes g_mom's size with M1's step, which is itself too small on these cuts (T44). The veto can only hold back a form A result; it can never support one.",
+  "No outcome of T49 sets a damping at the test pair. There the fit crosses the change of sample kind and depth (T27, N21) that the E8.5 -> E9.5 fit does not, its leading direction does not carry from the backtest's fit (N21: |cos| 0.20 and 0.29), and a larger damping would enlarge a library contrast. A pass reads the size of the E8.5 -> E9.5 fit against an E10.5 truth only.",
+  "No value of T49's statement changes g_mom's damping in any entry or at test. A pass is a tuned in-sample size on cuts where 40% of g_mom's gain needs no development (T23). A veto or 'loses' is a sign on these cuts. 'Not separated' includes steady gains below 0.3. Each value goes to the captain with these sentences, and any change is the captain's ruling.",
+  "A gain at a larger damping fits three readings the read cannot tell apart: a faster pace on E9.5 -> E10.5 than on E8.5 -> E9.5, a scorer that rewards state-aligned spread or count noise, and the change of sample kind in the truth."
+ ],
+ "stamps": {
+  "T1/E9.5->E10.5:chamber": {
+   "commit": "15f38b6a5c61e13f0698b19984280d5ac6eff517",
+   "tree_clean": true,
+   "utc": "2026-11-17T11:04:38Z",
+   "inputs": {
+    "/home/prachh/v/vec-campaign/data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+    "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+    "experiments/t1_direction/config.yaml": "bae9b7aa747b17658aa25b4c1984bc3f7a3dbaca9a0970f7b60aa8e9b504c69f",
+    "experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841",
+    "/home/prachh/v/vec-campaign/data/external/feng2022_gse193346_geo/cd1_stats.npz": "28f188fb9409984142a70a5a940dde3d1d3187b033d94ee2d26337a216f295c3",
+    "experiments/t1_m1/results/n22_additivity/n22.json": "c16dac361f5dfbff8cad9699ff224b6f642332a8142614507b536d1531fa33be"
+   }
+  },
+  "T1/E9.5->E10.5": {
+   "commit": "15f38b6a5c61e13f0698b19984280d5ac6eff517",
+   "tree_clean": true,
+   "utc": "2026-11-17T11:07:53Z",
+   "inputs": {
+    "/home/prachh/v/vec-campaign/data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+    "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+    "experiments/t1_direction/config.yaml": "bae9b7aa747b17658aa25b4c1984bc3f7a3dbaca9a0970f7b60aa8e9b504c69f",
+    "experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841",
+    "/home/prachh/v/vec-campaign/data/external/feng2022_gse193346_geo/cd1_stats.npz": "28f188fb9409984142a70a5a940dde3d1d3187b033d94ee2d26337a216f295c3",
+    "experiments/t1_m1/results/n22_additivity/n22.json": "c16dac361f5dfbff8cad9699ff224b6f642332a8142614507b536d1531fa33be"
+   }
+  }
+ },
+ "stamp": {
+  "commit": "bec12e4585c02af2be66de54dcd0bd2db7d2daa7",
+  "tree_clean": true,
+  "utc": "2026-11-17T11:08:34Z",
+  "inputs": {
+   "experiments/t1_m1/results/t49_gmom_size/tasks/T1_E9.5_E10.5_chamber.json": "b59386f24e2892120696313bf7b0b7169ddcd6cd00cee897a5fbf6594b3aaab7",
+   "experiments/t1_m1/results/t49_gmom_size/tasks/T1_E9.5_E10.5.json": "37594ffc08e8653959895718ef17b20d5dbc9d3bda54bc58893a31b65f60babb",
+   "experiments/harness/results/t11_g_mom/tasks/T1_E9.5_E10.5_chamber.json": "d67a8f472685c3f09e46ec4ce5c7f13f2a06c4fa39db1e825d2fd53a7e5654a2",
+   "experiments/t1_m1/results/t42_m1_eb/tasks/T1_E9.5_E10.5_chamber.json": "790f9b57e590c7df5573e62be1d211f2335e0b704ce1c2ff259c71dfa7f12b9a",
+   "experiments/harness/results/t11_g_mom/tasks/T1_E9.5_E10.5.json": "e33236032e7c2bde61d7bd6c14bb6f8461ae9e6fcd85a6408ad12a5a1391b7f6",
+   "experiments/t1_m1/results/t42_m1_eb/tasks/T1_E9.5_E10.5.json": "0e557a57766472fca8ccbf3b4dac10338a7b13cac069e339ea7b9b00daef4d5b"
+  }
+ }
+}
