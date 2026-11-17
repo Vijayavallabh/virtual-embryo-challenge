@@ -1,0 +1,4806 @@
+{
+ "label": "try T51, a labelled diagnostic on try T47's route, counted, never an adoption result: the released day's share along the part of Feng's E9.5 -> E14.5 direction that all cell groups share and along the rest; it compares a predictor with the cuts' target stage, scores nothing and calls no scorer; the read puts nothing forward by itself and its result can only go to the team captain",
+ "read": {
+  "groups": [
+   "CM",
+   "Endocardium",
+   "Endothelium",
+   "Epicardium"
+  ],
+  "t47": {
+   "A": 0.25398926848230596,
+   "L": 0.8342320620692518,
+   "L_corr": 0.9547335982602717,
+   "support": [
+    "CM",
+    "Endocardium",
+    "Endothelium",
+    "Epicardium"
+   ]
+  },
+  "read_set": [
+   "CM",
+   "Endocardium",
+   "Endothelium",
+   "Epicardium"
+  ],
+  "p_set": [
+   "CM",
+   "Endocardium",
+   "Endothelium"
+  ],
+  "c_groups": [
+   "CM",
+   "Endocardium",
+   "Endothelium",
+   "Epicardium"
+  ],
+  "c_n_groups": [
+   "CM",
+   "Endocardium",
+   "Epicardium"
+  ],
+  "reliability": {
+   "M": {
+    "CM": 0.9895864492474655,
+    "Endocardium": 0.8679360996106043,
+    "Endothelium": 0.8797324772815692,
+    "Epicardium": 0.862849665232609
+   },
+   "c": {
+    "CM": 0.9339629442581693,
+    "Endocardium": 0.9339629442581693,
+    "Endothelium": 0.9339629442581693,
+    "Epicardium": 0.9339629442581693
+   },
+   "s": {
+    "CM": 0.8872392348709851,
+    "Endocardium": 0.7747488677175184,
+    "Endothelium": 0.8264577908394949,
+    "Epicardium": 0.7684932826788465
+   },
+   "c_w": {
+    "CM": 0.9340755133513062,
+    "Endocardium": 0.9340755133513062,
+    "Endothelium": 0.9340755133513062,
+    "Epicardium": 0.9340755133513062
+   },
+   "s_w": {
+    "CM": 0.8839410602707441,
+    "Endocardium": 0.7749753998879471,
+    "Endothelium": 0.8363747672228512,
+    "Epicardium": 0.7646239438488435
+   },
+   "c_n": {
+    "CM": 0.9398157813742973,
+    "Endocardium": 0.9398157813742973,
+    "Endothelium": 0.9398157813742973,
+    "Epicardium": 0.9398157813742973
+   },
+   "s_n": {
+    "CM": 0.8784937475686116,
+    "Endocardium": 0.7766222626957145,
+    "Endothelium": 0.8264577908394949,
+    "Epicardium": 0.7742771537096743
+   }
+  },
+  "half_reliability": {
+   "a": {
+    "M": {
+     "CM": 0.9793378349764217,
+     "Endocardium": 0.758467834927315,
+     "Endothelium": 0.7800868175586224,
+     "Epicardium": 0.76559756209711
+    },
+    "c": {
+     "CM": 0.8761014893951624,
+     "Endocardium": 0.8761014893951624,
+     "Endothelium": 0.8761014893951624,
+     "Epicardium": 0.8761014893951624
+    },
+    "s": {
+     "CM": 0.7969953525933033,
+     "Endocardium": 0.6172074944046356,
+     "Endothelium": 0.7062240442807193,
+     "Epicardium": 0.6267773404758713
+    },
+    "c_w": {
+     "CM": 0.8765227714578729,
+     "Endocardium": 0.8765227714578729,
+     "Endothelium": 0.8765227714578729,
+     "Epicardium": 0.8765227714578729
+    },
+    "s_w": {
+     "CM": 0.7916510989758666,
+     "Endocardium": 0.6197577848806984,
+     "Endothelium": 0.7220923690935115,
+     "Epicardium": 0.6203713482549296
+    },
+    "c_n": {
+     "CM": 0.887714033393043,
+     "Endocardium": 0.887714033393043,
+     "Endothelium": 0.887714033393043,
+     "Epicardium": 0.887714033393043
+    },
+    "s_n": {
+     "CM": 0.7848215061567707,
+     "Endocardium": 0.6229332497031063,
+     "Endothelium": 0.7062240442807193,
+     "Epicardium": 0.6344423863023134
+    }
+   },
+   "b": {
+    "M": {
+     "CM": 0.9794527067138136,
+     "Endocardium": 0.7729651785536967,
+     "Endothelium": 0.7892836080105319,
+     "Epicardium": 0.7482832656288863
+    },
+    "c": {
+     "CM": 0.8751574674354624,
+     "Endocardium": 0.8751574674354624,
+     "Endothelium": 0.8751574674354624,
+     "Epicardium": 0.8751574674354624
+    },
+    "s": {
+     "CM": 0.7968399999812307,
+     "Endocardium": 0.6431738007344262,
+     "Endothelium": 0.7005113344760313,
+     "Epicardium": 0.6174009304342403
+    },
+    "c_w": {
+     "CM": 0.8751001356622519,
+     "Endocardium": 0.8751001356622519,
+     "Endothelium": 0.8751001356622519,
+     "Epicardium": 0.8751001356622519
+    },
+    "s_w": {
+     "CM": 0.7913314595663482,
+     "Endocardium": 0.6414768683952982,
+     "Endothelium": 0.7139241691598145,
+     "Epicardium": 0.6137154257736036
+    },
+    "c_n": {
+     "CM": 0.8841797241775817,
+     "Endocardium": 0.8841797241775817,
+     "Endothelium": 0.8841797241775817,
+     "Epicardium": 0.8841797241775817
+    },
+    "s_n": {
+     "CM": 0.7805494450598341,
+     "Endocardium": 0.6428392075874131,
+     "Endothelium": 0.7005113344760314,
+     "Epicardium": 0.6253739081666007
+    }
+   }
+  },
+  "r_c_over_r_s": 1.158572779024412,
+  "weight_share": {
+   "CM": 0.26345238095238094,
+   "Endocardium": 0.4036904761904762,
+   "Endothelium": 0.06607142857142857,
+   "Epicardium": 0.2667857142857143
+  },
+  "energy": {
+   "unweighted": {
+    "e_c": 0.6879159538918005,
+    "e_s": 0.39959616640705536,
+    "cross": -0.08751212029885604
+   },
+   "_w": {
+    "e_c": 0.7183773232997638,
+    "e_s": 0.3999953886412334,
+    "cross": -0.11837271194099729
+   },
+   "_n": {
+    "e_c": 0.7313037004742768,
+    "e_s": 0.4229060415398586,
+    "cross": -0.1542097420141357
+   }
+  },
+  "energy_per_group": {
+   "unweighted": {
+    "CM": {
+     "e_c": 1.034579318641049,
+     "e_s": 0.6576127654139704,
+     "cross": -0.6921920840550195
+    },
+    "Endocardium": {
+     "e_c": 0.6536864666552527,
+     "e_s": 0.2487139948593671,
+     "cross": 0.09759953848538008
+    },
+    "Endothelium": {
+     "e_c": 0.777758331776583,
+     "e_s": 0.27705324897325556,
+     "cross": -0.054811580749838676
+    },
+    "Epicardium": {
+     "e_c": 0.3751286470212038,
+     "e_s": 0.4034614182105658,
+     "cross": 0.22140993476823034
+    }
+   },
+   "_w": {
+    "CM": {
+     "e_c": 1.080391169098468,
+     "e_s": 0.6613765437878721,
+     "cross": -0.74176771288634
+    },
+    "Endocardium": {
+     "e_c": 0.6826321319289261,
+     "e_s": 0.25133611971682857,
+     "cross": 0.06603174835424507
+    },
+    "Endothelium": {
+     "e_c": 0.812197980574282,
+     "e_s": 0.33892645059603205,
+     "cross": -0.15112443117031418
+    },
+    "Epicardium": {
+     "e_c": 0.3917395894303395,
+     "e_s": 0.38195002728390737,
+     "cross": 0.22631038328575312
+    }
+   },
+   "_n": {
+    "CM": {
+     "e_c": 1.0998315708133095,
+     "e_s": 0.5775842842347245,
+     "cross": -0.6774158550480341
+    },
+    "Endocardium": {
+     "e_c": 0.6949153153237244,
+     "e_s": 0.38558244718828283,
+     "cross": -0.08049776251200756
+    },
+    "Endothelium": {
+     "e_c": 0.8268125530235576,
+     "e_s": 0.4925391092857876,
+     "cross": -0.3193516623093454
+    },
+    "Epicardium": {
+     "e_c": 0.39878849468239524,
+     "e_s": 0.3093919874405569,
+     "cross": 0.2918195178770477
+    }
+   }
+  },
+  "halves_missing": [],
+  "values": {
+   "a_E8.5_E9.5/CM/d_T47/share": {
+    "value": 0.17813872236691808,
+    "p5": 0.17392617594829432,
+    "p95": 0.18284568812366644,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/CM/M/share": {
+    "value": 0.17813872236691808,
+    "p5": 0.17392617594829432,
+    "p95": 0.18284568812366644,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/CM/M/share_corrected": {
+    "value": 0.18001330000262664,
+    "p5": 0.17575642439380318,
+    "p95": 0.18476979779049327,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/CM/c/share": {
+    "value": 0.15719932611800758,
+    "p5": 0.15174171615072457,
+    "p95": 0.1626968395287122,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/CM/c/share_corrected": {
+    "value": 0.1683143074191967,
+    "p5": 0.16247081009327455,
+    "p95": 0.1742005296130239,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/CM/s/share": {
+    "value": 0.02357550138364195,
+    "p5": 0.019577363883328546,
+    "p95": 0.027687119941611757,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/CM/s/share_corrected": {
+    "value": 0.026571752529711,
+    "p5": 0.022065484836426695,
+    "p95": 0.031205923784060098,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/CM/c_w/share": {
+    "value": 0.15449183672014846,
+    "p5": 0.1490951147607632,
+    "p95": 0.15986990807740084,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/CM/c_w/share_corrected": {
+    "value": 0.1653954466334929,
+    "p5": 0.15961783884670624,
+    "p95": 0.171153087509825,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/CM/s_w/share": {
+    "value": 0.016975362041669526,
+    "p5": 0.012882847831126943,
+    "p95": 0.02138915683711946,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/CM/s_w/share_corrected": {
+    "value": 0.0192041786547059,
+    "p5": 0.014574329002412251,
+    "p95": 0.024197492116236945,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/CM/c_n/share": {
+    "value": 0.16163663801960784,
+    "p5": 0.1565542758634122,
+    "p95": 0.16684511920367281,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/CM/c_n/share_corrected": {
+    "value": 0.17198757588774022,
+    "p5": 0.16657974782513452,
+    "p95": 0.17752959942819257,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/CM/s_n/share": {
+    "value": 0.0006330589020698465,
+    "p5": -0.003360544139790269,
+    "p95": 0.005047041038575662,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/CM/s_n/share_corrected": {
+    "value": 0.0007206185631052584,
+    "p5": -0.0038253478173193318,
+    "p95": 0.0057451075235814145,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endocardium/d_T47/share": {
+    "value": 0.03282905166183154,
+    "p5": 0.023708277864127433,
+    "p95": 0.04282532162558182,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endocardium/M/share": {
+    "value": 0.03282905166183154,
+    "p5": 0.023708277864127433,
+    "p95": 0.04282532162558182,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endocardium/M/share_corrected": {
+    "value": 0.03782427263546262,
+    "p5": 0.027315695101014982,
+    "p95": 0.04934156056510983,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endocardium/c/share": {
+    "value": 0.057666654063519535,
+    "p5": 0.046692752473630666,
+    "p95": 0.06919340318808809,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endocardium/c/share_corrected": {
+    "value": 0.06174404928808302,
+    "p5": 0.04999422381871683,
+    "p95": 0.07408581209080753,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endocardium/s/share": {
+    "value": -0.019568097402533492,
+    "p5": -0.03247725905045118,
+    "p95": -0.0058143916504427295,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endocardium/s/share_corrected": {
+    "value": -0.025257342369770622,
+    "p5": -0.041919724447138824,
+    "p95": -0.00750487273065976,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endocardium/c_w/share": {
+    "value": 0.0671930118408474,
+    "p5": 0.05620690607273306,
+    "p95": 0.07884171663080447,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endocardium/c_w/share_corrected": {
+    "value": 0.0719353102403575,
+    "p5": 0.06017383527277373,
+    "p95": 0.08440614865058782,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endocardium/s_w/share": {
+    "value": -0.05187896302569777,
+    "p5": -0.06442515498858108,
+    "p95": -0.03886517354391214,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endocardium/s_w/share_corrected": {
+    "value": -0.0669427223537662,
+    "p5": -0.08313187102183664,
+    "p95": -0.050150202896158534,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endocardium/c_n/share": {
+    "value": 0.07544501900109214,
+    "p5": 0.0648782162367828,
+    "p95": 0.08654300750837618,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endocardium/c_n/share_corrected": {
+    "value": 0.08027639085903464,
+    "p5": 0.06903290785552788,
+    "p95": 0.09208507584520863,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endocardium/s_n/share": {
+    "value": -0.050829200472775976,
+    "p5": -0.0606555499504045,
+    "p95": -0.04045962616172534,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endocardium/s_n/share_corrected": {
+    "value": -0.0654490643834288,
+    "p5": -0.07810173988557126,
+    "p95": -0.052096917774784,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endothelium/d_T47/share": {
+    "value": 0.013784846998150201,
+    "p5": -0.006660334246362903,
+    "p95": 0.03409024826907362,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endothelium/M/share": {
+    "value": 0.013784846998150201,
+    "p5": -0.006660334246362903,
+    "p95": 0.03409024826907362,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endothelium/M/share_corrected": {
+    "value": 0.01566936239610737,
+    "p5": -0.007570863209397214,
+    "p95": 0.03875069881973065,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endothelium/c/share": {
+    "value": -0.05343470436030077,
+    "p5": -0.07746912545767101,
+    "p95": -0.03001763418682944,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endothelium/c/share_corrected": {
+    "value": -0.05721287411755189,
+    "p5": -0.08294667998761279,
+    "p95": -0.03214006976547868,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endothelium/s/share": {
+    "value": 0.19975991519859457,
+    "p5": 0.1796708137765704,
+    "p95": 0.22058267350957225,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endothelium/s/share_corrected": {
+    "value": 0.24170613116936498,
+    "p5": 0.21739865697686186,
+    "p95": 0.266901317834405,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endothelium/c_w/share": {
+    "value": -0.06701706598279439,
+    "p5": -0.0902786343951733,
+    "p95": -0.04437699806018209,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endothelium/c_w/share_corrected": {
+    "value": -0.07174694660643485,
+    "p5": -0.09665025268810302,
+    "p95": -0.04750900481371668,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endothelium/s_w/share": {
+    "value": 0.20127072564984355,
+    "p5": 0.18294540327465664,
+    "p95": 0.22102576540242735,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endothelium/s_w/share_corrected": {
+    "value": 0.24064657799057582,
+    "p5": 0.2187361580528302,
+    "p95": 0.2642664198686129,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endothelium/c_n/share": {
+    "value": -0.07257670533617339,
+    "p5": -0.09419883050743177,
+    "p95": -0.0516244064935805,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endothelium/c_n/share_corrected": {
+    "value": -0.0772243952214168,
+    "p5": -0.10023116484560875,
+    "p95": -0.05493034647501862,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endothelium/s_n/share": {
+    "value": 0.14981993639894597,
+    "p5": 0.13475311033242784,
+    "p95": 0.16543700513217924,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Endothelium/s_n/share_corrected": {
+    "value": 0.18127959837702382,
+    "p5": 0.16304899273264647,
+    "p95": 0.20017598837580383,
+    "nonfinite_draws": 0
+   },
+   "a_E8.5_E9.5/Epicardium/d_T47/share": {
+    "value": NaN,
+    "p5": NaN,
+    "p95": NaN,
+    "nonfinite_draws": 200
+   },
+   "a_E8.5_E9.5/Epicardium/M/share": {
+    "value": NaN,
+    "p5": NaN,
+    "p95": NaN,
+    "nonfinite_draws": 200
+   },
+   "a_E8.5_E9.5/Epicardium/M/share_corrected": {
+    "value": NaN,
+    "p5": NaN,
+    "p95": NaN,
+    "nonfinite_draws": 200
+   },
+   "a_E8.5_E9.5/Epicardium/c/share": {
+    "value": NaN,
+    "p5": NaN,
+    "p95": NaN,
+    "nonfinite_draws": 200
+   },
+   "a_E8.5_E9.5/Epicardium/c/share_corrected": {
+    "value": NaN,
+    "p5": NaN,
+    "p95": NaN,
+    "nonfinite_draws": 200
+   },
+   "a_E8.5_E9.5/Epicardium/s/share": {
+    "value": NaN,
+    "p5": NaN,
+    "p95": NaN,
+    "nonfinite_draws": 200
+   },
+   "a_E8.5_E9.5/Epicardium/s/share_corrected": {
+    "value": NaN,
+    "p5": NaN,
+    "p95": NaN,
+    "nonfinite_draws": 200
+   },
+   "a_E8.5_E9.5/Epicardium/c_w/share": {
+    "value": NaN,
+    "p5": NaN,
+    "p95": NaN,
+    "nonfinite_draws": 200
+   },
+   "a_E8.5_E9.5/Epicardium/c_w/share_corrected": {
+    "value": NaN,
+    "p5": NaN,
+    "p95": NaN,
+    "nonfinite_draws": 200
+   },
+   "a_E8.5_E9.5/Epicardium/s_w/share": {
+    "value": NaN,
+    "p5": NaN,
+    "p95": NaN,
+    "nonfinite_draws": 200
+   },
+   "a_E8.5_E9.5/Epicardium/s_w/share_corrected": {
+    "value": NaN,
+    "p5": NaN,
+    "p95": NaN,
+    "nonfinite_draws": 200
+   },
+   "a_E8.5_E9.5/Epicardium/c_n/share": {
+    "value": NaN,
+    "p5": NaN,
+    "p95": NaN,
+    "nonfinite_draws": 200
+   },
+   "a_E8.5_E9.5/Epicardium/c_n/share_corrected": {
+    "value": NaN,
+    "p5": NaN,
+    "p95": NaN,
+    "nonfinite_draws": 200
+   },
+   "a_E8.5_E9.5/Epicardium/s_n/share": {
+    "value": NaN,
+    "p5": NaN,
+    "p95": NaN,
+    "nonfinite_draws": 200
+   },
+   "a_E8.5_E9.5/Epicardium/s_n/share_corrected": {
+    "value": NaN,
+    "p5": NaN,
+    "p95": NaN,
+    "nonfinite_draws": 200
+   },
+   "b_E9.5_E10.5_lib1/CM/d_T47/share": {
+    "value": 0.3086194819695132,
+    "p5": 0.2987588416042161,
+    "p95": 0.31754617258746654,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/CM/M/share": {
+    "value": 0.3086194819695132,
+    "p5": 0.2987588416042161,
+    "p95": 0.31754617258746654,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/CM/M/share_corrected": {
+    "value": 0.3118671261153626,
+    "p5": 0.3019027209107485,
+    "p95": 0.3208877534943467,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/CM/c/share": {
+    "value": 0.34950253214234706,
+    "p5": 0.33609813023315194,
+    "p95": 0.3580984289304659,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/CM/c/share_corrected": {
+    "value": 0.37421455989343444,
+    "p5": 0.35986238244185254,
+    "p95": 0.38341824066146146,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/CM/s/share": {
+    "value": -0.08054680867439294,
+    "p5": -0.08851901893311397,
+    "p95": -0.07035320700231085,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/CM/s/share_corrected": {
+    "value": -0.09078364155762947,
+    "p5": -0.09976905377272417,
+    "p95": -0.07929451746184447,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/CM/c_w/share": {
+    "value": 0.3456218809184448,
+    "p5": 0.3324626061173444,
+    "p95": 0.35421991098649286,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/CM/c_w/share_corrected": {
+    "value": 0.3700149248944676,
+    "p5": 0.35592690458667986,
+    "p95": 0.37921978033190407,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/CM/s_w/share": {
+    "value": -0.09795833648850508,
+    "p5": -0.10581535819867631,
+    "p95": -0.08766302193597172,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/CM/s_w/share_corrected": {
+    "value": -0.11081998663859015,
+    "p5": -0.11970861288677538,
+    "p95": -0.09917292665318798,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/CM/c_n/share": {
+    "value": 0.34746371275925236,
+    "p5": 0.3345466362668532,
+    "p95": 0.3561673610486088,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/CM/c_n/share_corrected": {
+    "value": 0.369714703291271,
+    "p5": 0.35597043899139896,
+    "p95": 0.37897571854750456,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/CM/s_n/share": {
+    "value": -0.12730969495222125,
+    "p5": -0.13552101707387193,
+    "p95": -0.11671436568029839,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/CM/s_n/share_corrected": {
+    "value": -0.14491815713495237,
+    "p5": -0.15426520387760362,
+    "p95": -0.13285736637662618,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endocardium/d_T47/share": {
+    "value": 0.23638174582110208,
+    "p5": 0.22405209555823374,
+    "p95": 0.24710917813204114,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endocardium/M/share": {
+    "value": 0.23638174582110208,
+    "p5": 0.22405209555823374,
+    "p95": 0.24710917813204114,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endocardium/M/share_corrected": {
+    "value": 0.2723492500509585,
+    "p5": 0.2581435380539578,
+    "p95": 0.2847089529320253,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endocardium/c/share": {
+    "value": 0.29295741624693283,
+    "p5": 0.2788014454996262,
+    "p95": 0.30575604858386324,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endocardium/c/share_corrected": {
+    "value": 0.3136713485775647,
+    "p5": 0.2985144616428796,
+    "p95": 0.3273749247372122,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endocardium/s/share": {
+    "value": 0.18044600803251587,
+    "p5": 0.16193285263701418,
+    "p95": 0.19468377819203214,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endocardium/s/share_corrected": {
+    "value": 0.2329090309794533,
+    "p5": 0.2090133453361259,
+    "p95": 0.2512863023157278,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endocardium/c_w/share": {
+    "value": 0.2881315933797744,
+    "p5": 0.2743558516683272,
+    "p95": 0.300600777825892,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endocardium/c_w/share_corrected": {
+    "value": 0.3084671306134625,
+    "p5": 0.293719134852368,
+    "p95": 0.3218163558826062,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endocardium/s_w/share": {
+    "value": 0.1579313868651661,
+    "p5": 0.13961107504774897,
+    "p95": 0.1721129338758436,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endocardium/s_w/share_corrected": {
+    "value": 0.2037889033484176,
+    "p5": 0.18014904094753872,
+    "p95": 0.22208825454424647,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endocardium/c_n/share": {
+    "value": 0.2727889322900314,
+    "p5": 0.2597840016668815,
+    "p95": 0.2846802525816676,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endocardium/c_n/share_corrected": {
+    "value": 0.29025787574148926,
+    "p5": 0.27642013128040693,
+    "p95": 0.3029106961423634,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endocardium/s_n/share": {
+    "value": 0.12141771302958689,
+    "p5": 0.10701613279378781,
+    "p95": 0.13282994054296615,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endocardium/s_n/share_corrected": {
+    "value": 0.15634075774255662,
+    "p5": 0.13779689037283935,
+    "p95": 0.1710354530423882,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endothelium/d_T47/share": {
+    "value": 0.32706977947835403,
+    "p5": 0.2975122665400374,
+    "p95": 0.35188490508812137,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endothelium/M/share": {
+    "value": 0.32706977947835403,
+    "p5": 0.2975122665400374,
+    "p95": 0.35188490508812137,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endothelium/M/share_corrected": {
+    "value": 0.37178322720222967,
+    "p5": 0.3381849303317409,
+    "p95": 0.39999080876889836,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endothelium/c/share": {
+    "value": 0.41008954757508354,
+    "p5": 0.3736486905638833,
+    "p95": 0.44170537693629697,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endothelium/c/share_corrected": {
+    "value": 0.43908545847159985,
+    "p5": 0.400068003619422,
+    "p95": 0.4729367258645748,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endothelium/s/share": {
+    "value": 0.02930561943392753,
+    "p5": -0.003405561573535446,
+    "p95": 0.05805783067505818,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endothelium/s/share_corrected": {
+    "value": 0.03545930567628823,
+    "p5": -0.00412067211572434,
+    "p95": 0.0702489967649582,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endothelium/c_w/share": {
+    "value": 0.4015767478713717,
+    "p5": 0.3660774493625729,
+    "p95": 0.43291502269729903,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endothelium/c_w/share_corrected": {
+    "value": 0.4299189328179493,
+    "p5": 0.3919141912297309,
+    "p95": 0.46346897708952095,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endothelium/s_w/share": {
+    "value": 0.0026848179303744883,
+    "p5": -0.028847635892326782,
+    "p95": 0.030510444448975223,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endothelium/s_w/share_corrected": {
+    "value": 0.0032100656734173347,
+    "p5": -0.03449127953502734,
+    "p95": 0.03647939374149692,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endothelium/c_n/share": {
+    "value": 0.3824859160061064,
+    "p5": 0.34947949677011686,
+    "p95": 0.4127696117969682,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endothelium/c_n/share_corrected": {
+    "value": 0.4069796694058439,
+    "p5": 0.37185957471268594,
+    "p95": 0.43920268203346524,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endothelium/s_n/share": {
+    "value": 0.02197921457544565,
+    "p5": -0.0025541711801515933,
+    "p95": 0.04354337300629366,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Endothelium/s_n/share_corrected": {
+    "value": 0.026594479257216173,
+    "p5": -0.003090504086793266,
+    "p95": 0.05268674757371869,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Epicardium/d_T47/share": {
+    "value": 0.32240055232318393,
+    "p5": 0.31340605378200703,
+    "p95": 0.33047761347463367,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Epicardium/M/share": {
+    "value": 0.32240055232318393,
+    "p5": 0.31340605378200703,
+    "p95": 0.33047761347463367,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Epicardium/M/share_corrected": {
+    "value": 0.37364626227938613,
+    "p5": 0.3632220842289117,
+    "p95": 0.3830071758624867,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Epicardium/c/share": {
+    "value": 0.46510133968935946,
+    "p5": 0.448760893471667,
+    "p95": 0.4800824148523006,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Epicardium/c/share_corrected": {
+    "value": 0.497986930368829,
+    "p5": 0.48049111180541537,
+    "p95": 0.5140272617920851,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Epicardium/s/share": {
+    "value": 0.366646497932454,
+    "p5": 0.35504961842848554,
+    "p95": 0.37629302805082027,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Epicardium/s/share_corrected": {
+    "value": 0.47709785654128567,
+    "p5": 0.4620074455183765,
+    "p95": 0.4896503802077775,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Epicardium/c_w/share": {
+    "value": 0.46161286299577964,
+    "p5": 0.44539946644501033,
+    "p95": 0.47659952560863145,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Epicardium/c_w/share_corrected": {
+    "value": 0.49419223220999564,
+    "p5": 0.47683453861989356,
+    "p95": 0.5102366123469743,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Epicardium/s_w/share": {
+    "value": 0.37064670450258747,
+    "p5": 0.3589156484051376,
+    "p95": 0.3804138286296817,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Epicardium/s_w/share_corrected": {
+    "value": 0.484743784816474,
+    "p5": 0.4694015290686355,
+    "p95": 0.4975175466188183,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Epicardium/c_n/share": {
+    "value": 0.47426150387009547,
+    "p5": 0.4575479554091418,
+    "p95": 0.48901238129613134,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Epicardium/c_n/share_corrected": {
+    "value": 0.5046324112333808,
+    "p5": 0.4868485552988556,
+    "p95": 0.5203279099878979,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Epicardium/s_n/share": {
+    "value": 0.43074974957011336,
+    "p5": 0.41744903227059726,
+    "p95": 0.4412887843055069,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib1/Epicardium/s_n/share_corrected": {
+    "value": 0.5563250155404027,
+    "p5": 0.5391467774433719,
+    "p95": 0.5699364655036355,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/CM/d_T47/share": {
+    "value": 0.2600996375031576,
+    "p5": 0.24708696021155635,
+    "p95": 0.27080595450653344,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/CM/M/share": {
+    "value": 0.2600996375031576,
+    "p5": 0.24708696021155635,
+    "p95": 0.27080595450653344,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/CM/M/share_corrected": {
+    "value": 0.26283670082684674,
+    "p5": 0.249687089389163,
+    "p95": 0.27365568183807365,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/CM/c/share": {
+    "value": 0.26857719888023307,
+    "p5": 0.2533363413199007,
+    "p95": 0.2829601763216951,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/CM/c/share_corrected": {
+    "value": 0.28756729646652024,
+    "p5": 0.2712488143960801,
+    "p95": 0.30296724089674193,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/CM/s/share": {
+    "value": -0.027014040558796828,
+    "p5": -0.038822074653330166,
+    "p95": -0.014950931685900379,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/CM/s/share_corrected": {
+    "value": -0.03044730158120767,
+    "p5": -0.043756039101421555,
+    "p95": -0.01685107138896356,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/CM/c_w/share": {
+    "value": 0.2662059966853017,
+    "p5": 0.2512196852562527,
+    "p95": 0.2806318133824763,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/CM/c_w/share_corrected": {
+    "value": 0.2849940854676719,
+    "p5": 0.2689500813000853,
+    "p95": 0.30043803672319425,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/CM/s_w/share": {
+    "value": -0.04159048387044245,
+    "p5": -0.05380194273698764,
+    "p95": -0.028869042908755953,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/CM/s_w/share_corrected": {
+    "value": -0.047051195763780466,
+    "p5": -0.06086598434573062,
+    "p95": -0.03265946589234535,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/CM/c_n/share": {
+    "value": 0.27538357540344494,
+    "p5": 0.26101809706141244,
+    "p95": 0.28925375578668755,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/CM/c_n/share_corrected": {
+    "value": 0.29301867542674176,
+    "p5": 0.27773325606399624,
+    "p95": 0.30777707878421695,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/CM/s_n/share": {
+    "value": -0.0740600358710851,
+    "p5": -0.08617357503272861,
+    "p95": -0.06140866455103285,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/CM/s_n/share_corrected": {
+    "value": -0.08430342967842341,
+    "p5": -0.09809241701631842,
+    "p95": -0.06990222152518706,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endocardium/d_T47/share": {
+    "value": 0.15825773549128286,
+    "p5": 0.1362630862430373,
+    "p95": 0.1755303173403529,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endocardium/M/share": {
+    "value": 0.15825773549128286,
+    "p5": 0.1362630862430373,
+    "p95": 0.1755303173403529,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endocardium/M/share_corrected": {
+    "value": 0.18233800341094752,
+    "p5": 0.15699668017515475,
+    "p95": 0.2022387563083317,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endocardium/c/share": {
+    "value": 0.23191051533642779,
+    "p5": 0.20653762295555464,
+    "p95": 0.25360289839619565,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endocardium/c/share_corrected": {
+    "value": 0.24830804772520212,
+    "p5": 0.22114113223154044,
+    "p95": 0.27153421873458594,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endocardium/s/share": {
+    "value": 0.026781645900468956,
+    "p5": 0.000536995801794979,
+    "p95": 0.04465858120329496,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endocardium/s/share_corrected": {
+    "value": 0.03456816397727712,
+    "p5": 0.000693122409300214,
+    "p95": 0.05764265436729615,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endocardium/c_w/share": {
+    "value": 0.22732991900765737,
+    "p5": 0.20248583044721188,
+    "p95": 0.24928718956291165,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endocardium/c_w/share_corrected": {
+    "value": 0.24337424090268223,
+    "p5": 0.21677672474329907,
+    "p95": 0.2668811953634359,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endocardium/s_w/share": {
+    "value": 0.01223472468390192,
+    "p5": -0.013377847581075934,
+    "p95": 0.029436133442073503,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endocardium/s_w/share_corrected": {
+    "value": 0.015787242647535556,
+    "p5": -0.01726228675517987,
+    "p95": 0.0379833133365648,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endocardium/c_n/share": {
+    "value": 0.22426735611214557,
+    "p5": 0.20144081806329747,
+    "p95": 0.24461983682199726,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endocardium/c_n/share_corrected": {
+    "value": 0.2386290596059137,
+    "p5": 0.2143407485334302,
+    "p95": 0.26028487887731405,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endocardium/s_n/share": {
+    "value": 0.006252657555793726,
+    "p5": -0.014045728915860619,
+    "p95": 0.01995558782047421,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endocardium/s_n/share_corrected": {
+    "value": 0.008051092347121598,
+    "p5": -0.018085663507902583,
+    "p95": 0.025695358965382806,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endothelium/d_T47/share": {
+    "value": 0.24925957691994816,
+    "p5": 0.20467963139052053,
+    "p95": 0.2879930894339384,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endothelium/M/share": {
+    "value": 0.24925957691994816,
+    "p5": 0.20467963139052053,
+    "p95": 0.2879930894339384,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endothelium/M/share_corrected": {
+    "value": 0.28333565414133227,
+    "p5": 0.23266121994608402,
+    "p95": 0.3273643941438378,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endothelium/c/share": {
+    "value": 0.3441165417980409,
+    "p5": 0.292790527070045,
+    "p95": 0.39885320935005064,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endothelium/c/share_corrected": {
+    "value": 0.3684477461483943,
+    "p5": 0.31349265928596715,
+    "p95": 0.42705464044599,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endothelium/s/share": {
+    "value": -0.066340786956074,
+    "p5": -0.1181733722749982,
+    "p95": -0.02084473109774742,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endothelium/s/share_corrected": {
+    "value": -0.08027123428612937,
+    "p5": -0.14298778907385057,
+    "p95": -0.02522177336676066,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endothelium/c_w/share": {
+    "value": 0.3399348799166285,
+    "p5": 0.29062869590919466,
+    "p95": 0.39566018866494984,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endothelium/c_w/share_corrected": {
+    "value": 0.3639265509669547,
+    "p5": 0.31114047178741217,
+    "p95": 0.4235847990976527,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endothelium/s_w/share": {
+    "value": -0.07917601599965761,
+    "p5": -0.13022441305335536,
+    "p95": -0.0331059972916959,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endothelium/s_w/share_corrected": {
+    "value": -0.09466571578020985,
+    "p5": -0.15570103039545333,
+    "p95": -0.0395827308392182,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endothelium/c_n/share": {
+    "value": 0.33111029822456645,
+    "p5": 0.284710266881503,
+    "p95": 0.38358643298110423,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endothelium/c_n/share_corrected": {
+    "value": 0.3523140436526637,
+    "p5": 0.30294263250737263,
+    "p95": 0.40815066163305314,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endothelium/s_n/share": {
+    "value": -0.04975559021705549,
+    "p5": -0.08863002920624868,
+    "p95": -0.015633548323310573,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Endothelium/s_n/share_corrected": {
+    "value": -0.06020342571459701,
+    "p5": -0.10724084180538797,
+    "p95": -0.0189163300250705,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Epicardium/d_T47/share": {
+    "value": 0.2801692938072774,
+    "p5": 0.2614648140020026,
+    "p95": 0.293881578968556,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Epicardium/M/share": {
+    "value": 0.2801692938072774,
+    "p5": 0.2614648140020026,
+    "p95": 0.293881578968556,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Epicardium/M/share_corrected": {
+    "value": 0.32470232660025283,
+    "p5": 0.30302476148207846,
+    "p95": 0.34059418553442994,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Epicardium/c/share": {
+    "value": 0.3868911461835779,
+    "p5": 0.3565881691548903,
+    "p95": 0.4157766192951216,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Epicardium/c/share_corrected": {
+    "value": 0.41424678416002775,
+    "p5": 0.381801196018673,
+    "p95": 0.44517464193974615,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Epicardium/s/share": {
+    "value": 0.33469208082859214,
+    "p5": 0.31395233174069564,
+    "p95": 0.34932936892829486,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Epicardium/s/share_corrected": {
+    "value": 0.4355172496263185,
+    "p5": 0.4085297019725498,
+    "p95": 0.4545639848803723,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Epicardium/c_w/share": {
+    "value": 0.3852738183803598,
+    "p5": 0.35515963880273155,
+    "p95": 0.4138642950365253,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Epicardium/c_w/share_corrected": {
+    "value": 0.41246538729835874,
+    "p5": 0.3802258315588194,
+    "p95": 0.4430737013452474,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Epicardium/s_w/share": {
+    "value": 0.3383748583440446,
+    "p5": 0.31661955100015077,
+    "p95": 0.3532846701130711,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Epicardium/s_w/share_corrected": {
+    "value": 0.44253761743424697,
+    "p5": 0.41408532069555815,
+    "p95": 0.4620371529758307,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Epicardium/c_n/share": {
+    "value": 0.40129134158593305,
+    "p5": 0.37090396659574343,
+    "p95": 0.4305060564975575,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Epicardium/c_n/share_corrected": {
+    "value": 0.42698936274417815,
+    "p5": 0.3946560314760502,
+    "p95": 0.45807493875877076,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Epicardium/s_n/share": {
+    "value": 0.38830651291584106,
+    "p5": 0.36413809859807805,
+    "p95": 0.4042656321948547,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib2/Epicardium/s_n/share_corrected": {
+    "value": 0.5015084211840788,
+    "p5": 0.4702942568477444,
+    "p95": 0.5221200577312133,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/CM/d_T47/share": {
+    "value": 0.39848840835705407,
+    "p5": 0.3916546961310433,
+    "p95": 0.4046680003287399,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/CM/M/share": {
+    "value": 0.39848840835705407,
+    "p5": 0.3916546961310433,
+    "p95": 0.4046680003287399,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/CM/M/share_corrected": {
+    "value": 0.4026817552524956,
+    "p5": 0.39577613095741,
+    "p95": 0.40892637589820585,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/CM/c/share": {
+    "value": 0.31479269017678174,
+    "p5": 0.3079316939317089,
+    "p95": 0.32201278250410426,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/CM/c/share_corrected": {
+    "value": 0.3370505137404741,
+    "p5": 0.3297044018981864,
+    "p95": 0.34478111201710837,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/CM/s/share": {
+    "value": 0.11071926408688539,
+    "p5": 0.1046901494046666,
+    "p95": 0.11578121452539349,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/CM/s/share_corrected": {
+    "value": 0.12479076638555694,
+    "p5": 0.1179954011162387,
+    "p95": 0.13049604883876606,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/CM/c_w/share": {
+    "value": 0.31036108911370586,
+    "p5": 0.3036464098101862,
+    "p95": 0.31737836345625,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/CM/c_w/share_corrected": {
+    "value": 0.3322655231590242,
+    "p5": 0.32507694021520145,
+    "p95": 0.33977805746941125,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/CM/s_w/share": {
+    "value": 0.09552353956339715,
+    "p5": 0.08960383277645823,
+    "p95": 0.10101032683772028,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/CM/s_w/share_corrected": {
+    "value": 0.10806550782259063,
+    "p5": 0.10136856042077431,
+    "p95": 0.11427269461470839,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/CM/c_n/share": {
+    "value": 0.32518478964994957,
+    "p5": 0.318784910147329,
+    "p95": 0.3318380030491695,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/CM/c_n/share_corrected": {
+    "value": 0.3460090754960831,
+    "p5": 0.3391993584967984,
+    "p95": 0.3530883494677235,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/CM/s_n/share": {
+    "value": 0.07070813986198694,
+    "p5": 0.06501517138931397,
+    "p95": 0.07650145080332402,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/CM/s_n/share_corrected": {
+    "value": 0.08048792613229673,
+    "p5": 0.07400755164081141,
+    "p95": 0.08708252166285241,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endocardium/d_T47/share": {
+    "value": 0.284172895074774,
+    "p5": 0.27419496909401603,
+    "p95": 0.2915902695020913,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endocardium/M/share": {
+    "value": 0.284172895074774,
+    "p5": 0.27419496909401603,
+    "p95": 0.2915902695020913,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endocardium/M/share_corrected": {
+    "value": 0.32741223138692693,
+    "p5": 0.3159160786341672,
+    "p95": 0.33595822276883286,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endocardium/c/share": {
+    "value": 0.3396983318801743,
+    "p5": 0.3279797079740708,
+    "p95": 0.3482040280199813,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endocardium/c/share_corrected": {
+    "value": 0.3637171409942723,
+    "p5": 0.3511699366558696,
+    "p95": 0.3728242433606975,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endocardium/s/share": {
+    "value": 0.24975149795837923,
+    "p5": 0.2368598990496091,
+    "p95": 0.26097315740285465,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endocardium/s/share_corrected": {
+    "value": 0.3223644568777108,
+    "p5": 0.30572474374492503,
+    "p95": 0.33684871095288677,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endocardium/c_w/share": {
+    "value": 0.33482793148808826,
+    "p5": 0.3233235309752733,
+    "p95": 0.34326473452139283,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endocardium/c_w/share_corrected": {
+    "value": 0.35845916813168754,
+    "p5": 0.3461428185985121,
+    "p95": 0.367491417572672,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endocardium/s_w/share": {
+    "value": 0.22125188546859145,
+    "p5": 0.20912066519701972,
+    "p95": 0.2317516259946641,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endocardium/s_w/share_corrected": {
+    "value": 0.28549536604720877,
+    "p5": 0.26984168171951817,
+    "p95": 0.29904384839592696,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endocardium/c_n/share": {
+    "value": 0.3140893675537839,
+    "p5": 0.30370062209149723,
+    "p95": 0.32196788412191607,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endocardium/c_n/share_corrected": {
+    "value": 0.33420312126966994,
+    "p5": 0.3231490980577005,
+    "p95": 0.34258616475997117,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endocardium/s_n/share": {
+    "value": 0.17092941772093692,
+    "p5": 0.16139686315299523,
+    "p95": 0.17910111118111596,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endocardium/s_n/share_corrected": {
+    "value": 0.2200933786363888,
+    "p5": 0.20781900147025725,
+    "p95": 0.23061547393637993,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endothelium/d_T47/share": {
+    "value": 0.3173368881641629,
+    "p5": 0.2969495104990905,
+    "p95": 0.33925292681966357,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endothelium/M/share": {
+    "value": 0.3173368881641629,
+    "p5": 0.2969495104990905,
+    "p95": 0.33925292681966357,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endothelium/M/share_corrected": {
+    "value": 0.3607197601079303,
+    "p5": 0.33754524036293837,
+    "p95": 0.3856319228636156,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endothelium/c/share": {
+    "value": 0.4703563519684556,
+    "p5": 0.4469332568663182,
+    "p95": 0.4943072389402304,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endothelium/c/share_corrected": {
+    "value": 0.5036135050754627,
+    "p5": 0.4785342497943637,
+    "p95": 0.5292578704317334,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endothelium/s/share": {
+    "value": -0.17500853595123478,
+    "p5": -0.19821552658696454,
+    "p95": -0.1509364133990861,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endothelium/s/share_corrected": {
+    "value": -0.21175737937380387,
+    "p5": -0.23983744697430007,
+    "p95": -0.18263051673306718,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endothelium/c_w/share": {
+    "value": 0.477480360734648,
+    "p5": 0.4548082582363892,
+    "p95": 0.5006312075029865,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endothelium/c_w/share_corrected": {
+    "value": 0.5111796143991919,
+    "p5": 0.4869073771183804,
+    "p95": 0.5359643844070012,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endothelium/s_w/share": {
+    "value": -0.2079262225313699,
+    "p5": -0.22853303706757938,
+    "p95": -0.18669880527610075,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endothelium/s_w/share_corrected": {
+    "value": -0.2486041314012623,
+    "p5": -0.2732423860973402,
+    "p95": -0.22322386159021348,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endothelium/c_n/share": {
+    "value": 0.4619980648315128,
+    "p5": 0.44153959312319757,
+    "p95": 0.48378026747733,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endothelium/c_n/share_corrected": {
+    "value": 0.4915836422281936,
+    "p5": 0.4698150444734308,
+    "p95": 0.5147607404186123,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endothelium/s_n/share": {
+    "value": -0.13125640196342606,
+    "p5": -0.1486616449402234,
+    "p95": -0.1132023100493146,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Endothelium/s_n/share_corrected": {
+    "value": -0.15881803453035287,
+    "p5": -0.17987808523072507,
+    "p95": -0.13697288754980042,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Epicardium/d_T47/share": {
+    "value": 0.31963905420719635,
+    "p5": 0.3121769604597812,
+    "p95": 0.3255913083235382,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Epicardium/M/share": {
+    "value": 0.31963905420719635,
+    "p5": 0.3121769604597812,
+    "p95": 0.3255913083235382,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Epicardium/M/share_corrected": {
+    "value": 0.37044582282016336,
+    "p5": 0.3617976259811422,
+    "p95": 0.37734419035297945,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Epicardium/c/share": {
+    "value": 0.43874168483656467,
+    "p5": 0.4239447772537361,
+    "p95": 0.44900735661101404,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Epicardium/c/share_corrected": {
+    "value": 0.469763482088735,
+    "p5": 0.4539203400521079,
+    "p95": 0.4807550014392197,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Epicardium/s/share": {
+    "value": 0.38431055011493015,
+    "p5": 0.37701368226626303,
+    "p95": 0.39041789676993993,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Epicardium/s/share_corrected": {
+    "value": 0.5000831611374456,
+    "p5": 0.49058812973882177,
+    "p95": 0.5080303309991268,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Epicardium/c_w/share": {
+    "value": 0.43501659934015796,
+    "p5": 0.4204251370485762,
+    "p95": 0.4451524195547262,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Epicardium/c_w/share_corrected": {
+    "value": 0.46571887724515054,
+    "p5": 0.4500975895836958,
+    "p95": 0.4765700558379847,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Epicardium/s_w/share": {
+    "value": 0.39069464465669296,
+    "p5": 0.3833654908841846,
+    "p95": 0.39710374867759773,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Epicardium/s_w/share_corrected": {
+    "value": 0.5109631313532713,
+    "p5": 0.5013778262742595,
+    "p95": 0.5193451655185155,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Epicardium/c_n/share": {
+    "value": 0.45081891816054886,
+    "p5": 0.43646736162855876,
+    "p95": 0.4603396018085487,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Epicardium/c_n/share_corrected": {
+    "value": 0.4796886018463258,
+    "p5": 0.4644179958228732,
+    "p95": 0.48981897402849717,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Epicardium/s_n/share": {
+    "value": 0.45204033115587955,
+    "p5": 0.44365872421299823,
+    "p95": 0.4592105557881846,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_lib3/Epicardium/s_n/share_corrected": {
+    "value": 0.5838223806424981,
+    "p5": 0.5729973073431972,
+    "p95": 0.5930829207449039,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/CM/d_T47/share": {
+    "value": 0.3591155979904768,
+    "p5": 0.35414281579696,
+    "p95": 0.36445981144648903,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/CM/M/share": {
+    "value": 0.3591155979904768,
+    "p5": 0.35414281579696,
+    "p95": 0.36445981144648903,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/CM/M/share_corrected": {
+    "value": 0.3628946195287613,
+    "p5": 0.3578695080821581,
+    "p95": 0.36829507085878527,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/CM/c/share": {
+    "value": 0.3194791208244473,
+    "p5": 0.3131563153532564,
+    "p95": 0.3263268702129347,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/CM/c/share_corrected": {
+    "value": 0.3420683045173747,
+    "p5": 0.3352984369224531,
+    "p95": 0.34940023286698013,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/CM/s/share": {
+    "value": 0.043474075248344284,
+    "p5": 0.038503970966018736,
+    "p95": 0.048187604592466037,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/CM/s/share_corrected": {
+    "value": 0.048999270478233437,
+    "p5": 0.04339750706765989,
+    "p95": 0.05431185039903367,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/CM/c_w/share": {
+    "value": 0.31548288373340166,
+    "p5": 0.30923285984165505,
+    "p95": 0.32223836813310813,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/CM/c_w/share_corrected": {
+    "value": 0.33774879998888097,
+    "p5": 0.33105766656078955,
+    "p95": 0.34498106794061106,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/CM/s_w/share": {
+    "value": 0.02762522586384769,
+    "p5": 0.02250573791332658,
+    "p95": 0.03235006273849783,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/CM/s_w/share_corrected": {
+    "value": 0.03125233921748844,
+    "p5": 0.02546067710264896,
+    "p95": 0.036597533695956225,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/CM/c_n/share": {
+    "value": 0.3263516892092362,
+    "p5": 0.32044745190333485,
+    "p95": 0.33266685170729965,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/CM/c_n/share_corrected": {
+    "value": 0.3472507013363943,
+    "p5": 0.3409683666247261,
+    "p95": 0.3539702761969364,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/CM/s_n/share": {
+    "value": 0.0003180609565042046,
+    "p5": -0.004806381395487977,
+    "p95": 0.005447460896467693,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/CM/s_n/share_corrected": {
+    "value": 0.0003620526126503406,
+    "p5": -0.0054711617570307085,
+    "p95": 0.0062009102643524935,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endocardium/d_T47/share": {
+    "value": 0.2684681168593338,
+    "p5": 0.25902372621811826,
+    "p95": 0.2756444665531891,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endocardium/M/share": {
+    "value": 0.2684681168593338,
+    "p5": 0.25902372621811826,
+    "p95": 0.2756444665531891,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endocardium/M/share_corrected": {
+    "value": 0.309317836854327,
+    "p5": 0.29843640140596545,
+    "p95": 0.3175861295282634,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endocardium/c/share": {
+    "value": 0.32466200294032593,
+    "p5": 0.314194645589533,
+    "p95": 0.33261478825762325,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endocardium/c/share_corrected": {
+    "value": 0.34761764900447883,
+    "p5": 0.3364101836385943,
+    "p95": 0.35613274627486796,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endocardium/s/share": {
+    "value": 0.22612703934033068,
+    "p5": 0.2140140255276634,
+    "p95": 0.23738329597655178,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endocardium/s/share_corrected": {
+    "value": 0.2918714034478318,
+    "p5": 0.27623664189167313,
+    "p95": 0.30640031353115094,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endocardium/c_w/share": {
+    "value": 0.31979135134581,
+    "p5": 0.3094865212276426,
+    "p95": 0.32801393381186905,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endocardium/c_w/share_corrected": {
+    "value": 0.3423613474230282,
+    "p5": 0.33132923067135855,
+    "p95": 0.35116425719694766,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endocardium/s_w/share": {
+    "value": 0.19960626818872687,
+    "p5": 0.1878966053924037,
+    "p95": 0.21038585654482495,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endocardium/s_w/share_corrected": {
+    "value": 0.2575646507199941,
+    "p5": 0.24245492878815442,
+    "p95": 0.2714742385051763,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endocardium/c_n/share": {
+    "value": 0.30088046284580294,
+    "p5": 0.29088969766145056,
+    "p95": 0.30877248359007947,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endocardium/c_n/share_corrected": {
+    "value": 0.32014834056715236,
+    "p5": 0.3095177836193399,
+    "p95": 0.32854575301827754,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endocardium/s_n/share": {
+    "value": 0.1540051306254043,
+    "p5": 0.14472736732881436,
+    "p95": 0.16259215215537312,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endocardium/s_n/share_corrected": {
+    "value": 0.1983012051326482,
+    "p5": 0.1863549041543758,
+    "p95": 0.20935808817919216,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endothelium/d_T47/share": {
+    "value": 0.3171403093813366,
+    "p5": 0.29700628516580374,
+    "p95": 0.33946087755251586,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endothelium/M/share": {
+    "value": 0.3171403093813366,
+    "p5": 0.29700628516580374,
+    "p95": 0.33946087755251586,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endothelium/M/share_corrected": {
+    "value": 0.36049630719707065,
+    "p5": 0.33760977664888825,
+    "p95": 0.38586830237468567,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endothelium/c/share": {
+    "value": 0.44555784043468744,
+    "p5": 0.42293629981678266,
+    "p95": 0.4680095861320473,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endothelium/c/share_corrected": {
+    "value": 0.4770615827682397,
+    "p5": 0.45284055691600666,
+    "p95": 0.5011008081308613,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endothelium/s/share": {
+    "value": -0.10610239516794327,
+    "p5": -0.12550725540109559,
+    "p95": -0.08328248642947376,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endothelium/s/share_corrected": {
+    "value": -0.128382110186374,
+    "p5": -0.1518616640707186,
+    "p95": -0.1007704051587166,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endothelium/c_w/share": {
+    "value": 0.4473695090590868,
+    "p5": 0.42519636471199557,
+    "p95": 0.4698809669086686,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endothelium/c_w/share_corrected": {
+    "value": 0.47894362143591585,
+    "p5": 0.4552055574034505,
+    "p95": 0.5030438762095524,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endothelium/s_w/share": {
+    "value": -0.13634905852196946,
+    "p5": -0.15569139059703888,
+    "p95": -0.11645549655571619,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endothelium/s_w/share_corrected": {
+    "value": -0.16302387860732698,
+    "p5": -0.18615027222067673,
+    "p95": -0.1392384145475861,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endothelium/c_n/share": {
+    "value": 0.43097433932889795,
+    "p5": 0.4096620906140463,
+    "p95": 0.4524286368543124,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endothelium/c_n/share_corrected": {
+    "value": 0.4585732096333624,
+    "p5": 0.4358961604315639,
+    "p95": 0.48140140421213584,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endothelium/s_n/share": {
+    "value": -0.07957679637595746,
+    "p5": -0.09413044155082169,
+    "p95": -0.06246186482210533,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Endothelium/s_n/share_corrected": {
+    "value": -0.09628658263978052,
+    "p5": -0.11389624805303894,
+    "p95": -0.07557780386903747,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Epicardium/d_T47/share": {
+    "value": 0.318533180254923,
+    "p5": 0.31186070508741565,
+    "p95": 0.3236894489445438,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Epicardium/M/share": {
+    "value": 0.318533180254923,
+    "p5": 0.31186070508741565,
+    "p95": 0.3236894489445438,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Epicardium/M/share_corrected": {
+    "value": 0.3691641697155345,
+    "p5": 0.3614311016778844,
+    "p95": 0.3751400295870578,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Epicardium/c/share": {
+    "value": 0.4421373776120596,
+    "p5": 0.42799558638584917,
+    "p95": 0.4519749139618207,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Epicardium/c/share_corrected": {
+    "value": 0.4733992717058403,
+    "p5": 0.4582575668735966,
+    "p95": 0.48393238376370123,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Epicardium/s/share": {
+    "value": 0.37841235147328833,
+    "p5": 0.3709455529779231,
+    "p95": 0.38508491927407723,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Epicardium/s/share_corrected": {
+    "value": 0.4924081446153992,
+    "p5": 0.482691991379372,
+    "p95": 0.5010908071072943,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Epicardium/c_w/share": {
+    "value": 0.4385638556324721,
+    "p5": 0.4247218114846496,
+    "p95": 0.44825593500521776,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Epicardium/c_w/share_corrected": {
+    "value": 0.4695164891529792,
+    "p5": 0.4546975115114826,
+    "p95": 0.47989260889299057,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Epicardium/s_w/share": {
+    "value": 0.38416113373230776,
+    "p5": 0.3765956358466849,
+    "p95": 0.3905637979262489,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Epicardium/s_w/share_corrected": {
+    "value": 0.5024183938035971,
+    "p5": 0.4925239902258843,
+    "p95": 0.5107920057542149,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Epicardium/c_n/share": {
+    "value": 0.45358669192019757,
+    "p5": 0.44012888045834686,
+    "p95": 0.463265967270922,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Epicardium/c_n/share_corrected": {
+    "value": 0.4826336191725952,
+    "p5": 0.46831399214721015,
+    "p95": 0.4929327390028351,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Epicardium/s_n/share": {
+    "value": 0.4448984840066236,
+    "p5": 0.4364677928480144,
+    "p95": 0.4520520763481562,
+    "nonfinite_draws": 0
+   },
+   "b_E9.5_E10.5_pooled/Epicardium/s_n/share_corrected": {
+    "value": 0.5745984908311582,
+    "p5": 0.5637100239324302,
+    "p95": 0.5838375498777266,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/CM/d_T47/share": {
+    "value": 0.10884068321626253,
+    "p5": 0.10045426316213438,
+    "p95": 0.11903777968002466,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/CM/M/share": {
+    "value": 0.10884068321626253,
+    "p5": 0.10045426316213438,
+    "p95": 0.11903777968002466,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/CM/M/share_corrected": {
+    "value": 0.10998602830407672,
+    "p5": 0.10151135682842582,
+    "p95": 0.12029043017974564,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/CM/c/share": {
+    "value": -0.004333074391273578,
+    "p5": -0.014613448405914845,
+    "p95": 0.007014150175076837,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/CM/c/share_corrected": {
+    "value": -0.0046394500102092,
+    "p5": -0.015646711141759542,
+    "p95": 0.00751009471863796,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/CM/s/share": {
+    "value": 0.1723257186108143,
+    "p5": 0.1634929607186935,
+    "p95": 0.18084107583159598,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/CM/s/share_corrected": {
+    "value": 0.19422689150561795,
+    "p5": 0.18427156317367688,
+    "p95": 0.20382448016728247,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/CM/c_w/share": {
+    "value": -0.005447908804315938,
+    "p5": -0.015608754792137372,
+    "p95": 0.005506416439838565,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/CM/c_w/share_corrected": {
+    "value": -0.005832407258776922,
+    "p5": -0.016710377875270254,
+    "p95": 0.00589504420267101,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/CM/s_w/share": {
+    "value": 0.17346632089706568,
+    "p5": 0.16428515001447616,
+    "p95": 0.18207681537917822,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/CM/s_w/share_corrected": {
+    "value": 0.19624195400984576,
+    "p5": 0.1858553215801028,
+    "p95": 0.20598298185561095,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/CM/c_n/share": {
+    "value": 0.004821338432218777,
+    "p5": -0.004933024132596042,
+    "p95": 0.015201970996335464,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/CM/c_n/share_corrected": {
+    "value": 0.005130088819288084,
+    "p5": -0.0052489266836767265,
+    "p95": 0.01617547959676262,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/CM/s_n/share": {
+    "value": 0.17926045742764002,
+    "p5": 0.1699418702681384,
+    "p95": 0.18791559911962727,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/CM/s_n/share_corrected": {
+    "value": 0.2040543349611484,
+    "p5": 0.19344687510694625,
+    "p95": 0.2139065868592887,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endocardium/d_T47/share": {
+    "value": 0.06498975349186713,
+    "p5": 0.05681076414997212,
+    "p95": 0.07258127431135795,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endocardium/M/share": {
+    "value": 0.06498975349186713,
+    "p5": 0.05681076414997212,
+    "p95": 0.07258127431135795,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endocardium/M/share_corrected": {
+    "value": 0.0748785002963058,
+    "p5": 0.06545500777702415,
+    "p95": 0.08362513593330341,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endocardium/c/share": {
+    "value": 0.060267821410744986,
+    "p5": 0.04975837996073665,
+    "p95": 0.06871872415072743,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endocardium/c/share_corrected": {
+    "value": 0.06452913553076207,
+    "p5": 0.053276610455095595,
+    "p95": 0.07357757025928852,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endocardium/s/share": {
+    "value": 0.10290331380563869,
+    "p5": 0.09275952994263371,
+    "p95": 0.11442404132983551,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endocardium/s/share_corrected": {
+    "value": 0.1328215091282435,
+    "p5": 0.11972851308051838,
+    "p95": 0.14769178258619375,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endocardium/c_w/share": {
+    "value": 0.06018072295676731,
+    "p5": 0.04987855419975621,
+    "p95": 0.06861989440330608,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endocardium/c_w/share_corrected": {
+    "value": 0.06442811324841283,
+    "p5": 0.05339884568946714,
+    "p95": 0.07346289825873864,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endocardium/s_w/share": {
+    "value": 0.09512543722645915,
+    "p5": 0.08462635942383734,
+    "p95": 0.10615549630235498,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endocardium/s_w/share_corrected": {
+    "value": 0.12274639587296995,
+    "p5": 0.1091987686784295,
+    "p95": 0.13697918194268346,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endocardium/c_n/share": {
+    "value": 0.05211097113695342,
+    "p5": 0.04209309661259045,
+    "p95": 0.060164517957610374,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endocardium/c_n/share_corrected": {
+    "value": 0.055448069898072244,
+    "p5": 0.04478866757380632,
+    "p95": 0.06401735228326501,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endocardium/s_n/share": {
+    "value": 0.07463265447442322,
+    "p5": 0.06627613968764663,
+    "p95": 0.08344042528150356,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endocardium/s_n/share_corrected": {
+    "value": 0.09609904075549887,
+    "p5": 0.0853389644762399,
+    "p95": 0.10744016658996555,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endothelium/d_T47/share": {
+    "value": 0.009452170491165725,
+    "p5": -0.011771695791773451,
+    "p95": 0.03388831524915744,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endothelium/M/share": {
+    "value": 0.009452170491165725,
+    "p5": -0.011771695791773451,
+    "p95": 0.03388831524915744,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endothelium/M/share_corrected": {
+    "value": 0.010744369152283146,
+    "p5": -0.013380994899891339,
+    "p95": 0.038521159698314815,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endothelium/c/share": {
+    "value": 0.07696152760797317,
+    "p5": 0.049460800234575025,
+    "p95": 0.10698754378513,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endothelium/c/share_corrected": {
+    "value": 0.08240319177663134,
+    "p5": 0.052957989970213316,
+    "p95": 0.11455223619188484,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endothelium/s/share": {
+    "value": -0.18193361391352839,
+    "p5": -0.20633961422534017,
+    "p95": -0.1549395559635002,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endothelium/s/share_corrected": {
+    "value": -0.22013660701138146,
+    "p5": -0.24966745611502508,
+    "p95": -0.18747425177771815,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endothelium/c_w/share": {
+    "value": 0.09152962702553932,
+    "p5": 0.06361731275456413,
+    "p95": 0.12125882889378146,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endothelium/c_w/share_corrected": {
+    "value": 0.09798953694562271,
+    "p5": 0.06810724812420774,
+    "p95": 0.12981694430541824,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endothelium/s_w/share": {
+    "value": -0.1914515896519238,
+    "p5": -0.21762500041882657,
+    "p95": -0.1644419912762798,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endothelium/s_w/share_corrected": {
+    "value": -0.22890646293363334,
+    "p5": -0.26020034193695446,
+    "p95": -0.19661280770377948,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endothelium/c_n/share": {
+    "value": 0.09271658409202548,
+    "p5": 0.06699319839823334,
+    "p95": 0.12133536918391151,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endothelium/c_n/share_corrected": {
+    "value": 0.09865399786801361,
+    "p5": 0.07128332990989877,
+    "p95": 0.12910548172162228,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endothelium/s_n/share": {
+    "value": -0.1364502104351463,
+    "p5": -0.15475471066900515,
+    "p95": -0.11620466697262517,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Endothelium/s_n/share_corrected": {
+    "value": -0.16510245525853612,
+    "p5": -0.18725059208626882,
+    "p95": -0.14060568883328864,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Epicardium/d_T47/share": {
+    "value": 0.004702487076345509,
+    "p5": -0.0011893234559428663,
+    "p95": 0.012898188374126617,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Epicardium/M/share": {
+    "value": 0.004702487076345509,
+    "p5": -0.0011893234559428663,
+    "p95": 0.012898188374126617,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Epicardium/M/share_corrected": {
+    "value": 0.005449949470720142,
+    "p5": -0.0013783669437042033,
+    "p95": 0.01494836110372656,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Epicardium/c/share": {
+    "value": -0.012511099183620547,
+    "p5": -0.025414657972581935,
+    "p95": 0.002088957456992588,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Epicardium/c/share_corrected": {
+    "value": -0.013395712603520795,
+    "p5": -0.02721163417545261,
+    "p95": 0.002236659890882299,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Epicardium/s/share": {
+    "value": 0.023287874284280495,
+    "p5": 0.015066615124845336,
+    "p95": 0.03212371596167811,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Epicardium/s/share_corrected": {
+    "value": 0.030303289318421408,
+    "p5": 0.019605395992955837,
+    "p95": 0.04180090663863696,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Epicardium/c_w/share": {
+    "value": -0.013074668543185185,
+    "p5": -0.025924519354564614,
+    "p95": 0.0011710720527388844,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Epicardium/c_w/share_corrected": {
+    "value": -0.013997442772346604,
+    "p5": -0.027754200794271745,
+    "p95": 0.001253723104824014,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Epicardium/s_w/share": {
+    "value": 0.025721564763989686,
+    "p5": 0.017171999334011305,
+    "p95": 0.03437572811171501,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Epicardium/s_w/share_corrected": {
+    "value": 0.033639496867592884,
+    "p5": 0.022458097829860784,
+    "p95": 0.04495769245556174,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Epicardium/c_n/share": {
+    "value": -0.010473246862411287,
+    "p5": -0.022995326049510014,
+    "p95": 0.0033411083320365963,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Epicardium/c_n/share_corrected": {
+    "value": -0.011143935939335053,
+    "p5": -0.02446790797222391,
+    "p95": 0.0035550672783456316,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Epicardium/s_n/share": {
+    "value": 0.0286985370904266,
+    "p5": 0.019398887365030246,
+    "p95": 0.03900431858065475,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib12_lib3/Epicardium/s_n/share_corrected": {
+    "value": 0.03706494109109088,
+    "p5": 0.02505419057257128,
+    "p95": 0.05037513814501615,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/CM/d_T47/share": {
+    "value": -0.04851984446635567,
+    "p5": -0.06451140614790536,
+    "p95": -0.03456449312714787,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/CM/M/share": {
+    "value": -0.04851984446635567,
+    "p5": -0.06451140614790536,
+    "p95": -0.03456449312714787,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/CM/M/share_corrected": {
+    "value": -0.04903042528851598,
+    "p5": -0.065190268315581,
+    "p95": -0.034928219917959226,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/CM/c/share": {
+    "value": -0.08092533326211393,
+    "p5": -0.09971112825659798,
+    "p95": -0.06576369859574631,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/CM/c/share_corrected": {
+    "value": -0.08664726342691415,
+    "p5": -0.10676133230938495,
+    "p95": -0.0704136058074352,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/CM/s/share": {
+    "value": 0.053532768115596104,
+    "p5": 0.038288612565020315,
+    "p95": 0.06684300440052236,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/CM/s/share_corrected": {
+    "value": 0.06033633997642179,
+    "p5": 0.04315477839591699,
+    "p95": 0.07533819715518117,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/CM/c_w/share": {
+    "value": -0.07941588423314311,
+    "p5": -0.09791701982978367,
+    "p95": -0.06407044041948909,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/CM/c_w/share_corrected": {
+    "value": -0.08502083942679563,
+    "p5": -0.10482773440711858,
+    "p95": -0.06859235629635027,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/CM/s_w/share": {
+    "value": 0.05636785261806261,
+    "p5": 0.04056780336737674,
+    "p95": 0.06959610925368681,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/CM/s_w/share_corrected": {
+    "value": 0.06376879087480966,
+    "p5": 0.04589424022790744,
+    "p95": 0.07873387987245449,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/CM/c_n/share": {
+    "value": -0.07208013735580743,
+    "p5": -0.09007230472287141,
+    "p95": -0.05704068031798486,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/CM/c_n/share_corrected": {
+    "value": -0.07669602786452924,
+    "p5": -0.09584038330486239,
+    "p95": -0.06069346934627335,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/CM/s_n/share": {
+    "value": 0.053249659081136165,
+    "p5": 0.03767358493133281,
+    "p95": 0.0675985957814216,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/CM/s_n/share_corrected": {
+    "value": 0.06061472745652898,
+    "p5": 0.04288429489179768,
+    "p95": 0.07694829470159895,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endocardium/d_T47/share": {
+    "value": -0.07812401032981915,
+    "p5": -0.0974360178823859,
+    "p95": -0.060705857653858275,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endocardium/M/share": {
+    "value": -0.07812401032981915,
+    "p5": -0.0974360178823859,
+    "p95": -0.060705857653858275,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endocardium/M/share_corrected": {
+    "value": -0.09001124664001088,
+    "p5": -0.112261741303421,
+    "p95": -0.06994277306946178,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endocardium/c/share": {
+    "value": -0.061046900910504964,
+    "p5": -0.08335451904071642,
+    "p95": -0.03889794187504372,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endocardium/c/share_corrected": {
+    "value": -0.06536330085236247,
+    "p5": -0.08924820792212851,
+    "p95": -0.041648271073473575,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endocardium/s/share": {
+    "value": -0.15366436213204693,
+    "p5": -0.1787528201917337,
+    "p95": -0.13084557883049536,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endocardium/s/share_corrected": {
+    "value": -0.1983408670021762,
+    "p5": -0.2307235642929766,
+    "p95": -0.1688877316026011,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endocardium/c_w/share": {
+    "value": -0.060801674372117046,
+    "p5": -0.08277631002338662,
+    "p95": -0.03902133592158851,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endocardium/c_w/share_corrected": {
+    "value": -0.06509288971078027,
+    "p5": -0.08861843484837656,
+    "p95": -0.04177535473720589,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endocardium/s_w/share": {
+    "value": -0.14569666218126423,
+    "p5": -0.1710629365564574,
+    "p95": -0.12364136814858229,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endocardium/s_w/share_corrected": {
+    "value": -0.1880016607008821,
+    "p5": -0.22073337628677145,
+    "p95": -0.15954231342886427,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endocardium/c_n/share": {
+    "value": -0.048521576177885835,
+    "p5": -0.06811360637607244,
+    "p95": -0.027790080148758212,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endocardium/c_n/share_corrected": {
+    "value": -0.05162881613557552,
+    "p5": -0.07247548692624588,
+    "p95": -0.029569710042664572,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endocardium/s_n/share": {
+    "value": -0.11516505547379315,
+    "p5": -0.1353131612749147,
+    "p95": -0.09752435192456398,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endocardium/s_n/share_corrected": {
+    "value": -0.148289665395435,
+    "p5": -0.17423291576168892,
+    "p95": -0.12557501453286904,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endothelium/d_T47/share": {
+    "value": -0.07781020255840586,
+    "p5": -0.11985729700546309,
+    "p95": -0.028527677810798867,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endothelium/M/share": {
+    "value": -0.07781020255840586,
+    "p5": -0.11985729700546309,
+    "p95": -0.028527677810798867,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endothelium/M/share_corrected": {
+    "value": -0.0884475730608974,
+    "p5": -0.13624289212992335,
+    "p95": -0.03242767380710015,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endothelium/c/share": {
+    "value": -0.06597300577704267,
+    "p5": -0.11823037786849291,
+    "p95": -0.0005181155370600583,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endothelium/c/share_corrected": {
+    "value": -0.07063771232320559,
+    "p5": -0.12659000937387432,
+    "p95": -0.0005547495650071948,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endothelium/s/share": {
+    "value": -0.09564640639000148,
+    "p5": -0.14634771112518027,
+    "p95": -0.047910104262265836,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endothelium/s/share_corrected": {
+    "value": -0.11573053996241754,
+    "p5": -0.1770782643073931,
+    "p95": -0.05797041880820068,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endothelium/c_w/share": {
+    "value": -0.061641867954743045,
+    "p5": -0.11479557616276086,
+    "p95": 0.0026763417457492176,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endothelium/c_w/share_corrected": {
+    "value": -0.06599238185099443,
+    "p5": -0.12289753293167228,
+    "p95": 0.0028652306023385114,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endothelium/s_w/share": {
+    "value": -0.0818608339300321,
+    "p5": -0.13566199344784635,
+    "p95": -0.03521792732759404,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endothelium/s_w/share_corrected": {
+    "value": -0.0978757814536272,
+    "p5": -0.16220239869060915,
+    "p95": -0.04210783097215349,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endothelium/c_n/share": {
+    "value": -0.051375617781539915,
+    "p5": -0.1033659723786018,
+    "p95": 0.013256694423605197,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endothelium/c_n/share_corrected": {
+    "value": -0.05466562575318015,
+    "p5": -0.10998535503143948,
+    "p95": 0.014105630790983172,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endothelium/s_n/share": {
+    "value": -0.07173480479250113,
+    "p5": -0.10976078334388521,
+    "p95": -0.035932578196699386,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Endothelium/s_n/share_corrected": {
+    "value": -0.08679790497181318,
+    "p5": -0.1328086982305448,
+    "p95": -0.043477814106150516,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Epicardium/d_T47/share": {
+    "value": -0.042231258515906436,
+    "p5": -0.06243636485386639,
+    "p95": -0.028251176401191222,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Epicardium/M/share": {
+    "value": -0.042231258515906436,
+    "p5": -0.06243636485386639,
+    "p95": -0.028251176401191222,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Epicardium/M/share_corrected": {
+    "value": -0.04894393567913321,
+    "p5": -0.07236065257907315,
+    "p95": -0.03274171334768405,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Epicardium/c/share": {
+    "value": -0.07821019350578144,
+    "p5": -0.114645878336463,
+    "p95": -0.051409551578208076,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Epicardium/c/share_corrected": {
+    "value": -0.08374014620880109,
+    "p5": -0.12275206317475931,
+    "p95": -0.05504453029348161,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Epicardium/s/share": {
+    "value": -0.03195441710386194,
+    "p5": -0.05253336883269249,
+    "p95": -0.015593811661936326,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Epicardium/s/share_corrected": {
+    "value": -0.04158060691496726,
+    "p5": -0.06835891739947217,
+    "p95": -0.020291409194337723,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Epicardium/c_w/share": {
+    "value": -0.07633904461541988,
+    "p5": -0.11236042428691291,
+    "p95": -0.049738949871254684,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Epicardium/c_w/share_corrected": {
+    "value": -0.08172684491163695,
+    "p5": -0.12029051471843273,
+    "p95": -0.05324938847053133,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Epicardium/s_w/share": {
+    "value": -0.032271846158542825,
+    "p5": -0.05342419227672712,
+    "p95": -0.016075201566184815,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Epicardium/s_w/share_corrected": {
+    "value": -0.042206167382226996,
+    "p5": -0.0698698918684247,
+    "p95": -0.02102367012634734,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Epicardium/c_n/share": {
+    "value": -0.07297016228416246,
+    "p5": -0.10780027761823495,
+    "p95": -0.047167515833155677,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Epicardium/c_n/share_corrected": {
+    "value": -0.07764304848920267,
+    "p5": -0.11470362570481427,
+    "p95": -0.05018804404857128,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Epicardium/s_n/share": {
+    "value": -0.0424432366542723,
+    "p5": -0.06621678666348382,
+    "p95": -0.024584791605597893,
+    "nonfinite_draws": 0
+   },
+   "c_E10.5_lib1_lib2/Epicardium/s_n/share_corrected": {
+    "value": -0.05481659435632394,
+    "p5": -0.08552078070007565,
+    "p95": -0.031751926926693604,
+    "nonfinite_draws": 0
+   },
+   "reading/A_M": {
+    "value": 0.25398926848230596,
+    "p5": 0.2465383955259678,
+    "p95": 0.25826378594605803,
+    "nonfinite_draws": 0
+   },
+   "reading/lib3_M": {
+    "value": 0.32594264622644725,
+    "p5": 0.32147466386789586,
+    "p95": 0.33002633809026477,
+    "nonfinite_draws": 0
+   },
+   "reading/K_M": {
+    "value": 0.07195337774414129,
+    "p5": 0.06701978856479623,
+    "p95": 0.07799828801842396,
+    "nonfinite_draws": 0
+   },
+   "reading/P_M": {
+    "value": 0.08332438656717549,
+    "p5": 0.07719798514489047,
+    "p95": 0.08912868500081164,
+    "nonfinite_draws": 0
+   },
+   "reading/A_M_corr": {
+    "value": 0.2822770364486536,
+    "p5": 0.27373571337255104,
+    "p95": 0.28692064267101214,
+    "nonfinite_draws": 0
+   },
+   "reading/lib3_M_corr": {
+    "value": 0.3609235900960392,
+    "p5": 0.35578981340707805,
+    "p95": 0.3654662938811924,
+    "nonfinite_draws": 0
+   },
+   "reading/K_M_corr": {
+    "value": 0.0786465536473856,
+    "p5": 0.07318673264785948,
+    "p95": 0.0853130221725416,
+    "nonfinite_draws": 0
+   },
+   "reading/P_M_corr": {
+    "value": 0.08691801226538498,
+    "p5": 0.07979919803500013,
+    "p95": 0.09345758292240544,
+    "nonfinite_draws": 0
+   },
+   "reading/A_c": {
+    "value": 0.3259248298330644,
+    "p5": 0.31554237071251684,
+    "p95": 0.3323933598343537,
+    "nonfinite_draws": 0
+   },
+   "reading/lib3_c": {
+    "value": 0.3681929949795385,
+    "p5": 0.36249589711975394,
+    "p95": 0.37370594259560375,
+    "nonfinite_draws": 0
+   },
+   "reading/K_c": {
+    "value": 0.04226816514647408,
+    "p5": 0.0351099741436985,
+    "p95": 0.050750439663304454,
+    "nonfinite_draws": 0
+   },
+   "reading/P_c": {
+    "value": 0.0834183263043641,
+    "p5": 0.07651483154087485,
+    "p95": 0.09012274869838499,
+    "nonfinite_draws": 0
+   },
+   "reading/A_c_corr": {
+    "value": 0.34896976570300753,
+    "p5": 0.3378532014063435,
+    "p95": 0.3558956614690619,
+    "nonfinite_draws": 0
+   },
+   "reading/lib3_c_corr": {
+    "value": 0.39422655603535517,
+    "p5": 0.38812663751630766,
+    "p95": 0.400129303729959,
+    "nonfinite_draws": 0
+   },
+   "reading/K_c_corr": {
+    "value": 0.04525679033234764,
+    "p5": 0.03759247019332851,
+    "p95": 0.05433881501970576,
+    "nonfinite_draws": 0
+   },
+   "reading/P_c_corr": {
+    "value": 0.08931652676072911,
+    "p5": 0.08192491148741375,
+    "p95": 0.09649499399568572,
+    "nonfinite_draws": 0
+   },
+   "reading/A_s": {
+    "value": 0.11998940786681045,
+    "p5": 0.11172608791674934,
+    "p95": 0.12565310174271585,
+    "nonfinite_draws": 0
+   },
+   "reading/lib3_s": {
+    "value": 0.2209570555185434,
+    "p5": 0.21593033461395045,
+    "p95": 0.22662001372968615,
+    "nonfinite_draws": 0
+   },
+   "reading/K_s": {
+    "value": 0.10096764765173294,
+    "p5": 0.09533869214322487,
+    "p95": 0.10697214641185898,
+    "nonfinite_draws": 0
+   },
+   "reading/P_s": {
+    "value": 0.015697989804388465,
+    "p5": 0.008189878986396495,
+    "p95": 0.023713990283896518,
+    "nonfinite_draws": 0
+   },
+   "reading/A_s_corr": {
+    "value": 0.15827565020685508,
+    "p5": 0.14778229076956606,
+    "p95": 0.16550177476060007,
+    "nonfinite_draws": 0
+   },
+   "reading/lib3_s_corr": {
+    "value": 0.28243581640953686,
+    "p5": 0.27594452246293005,
+    "p95": 0.2895059274225358,
+    "nonfinite_draws": 0
+   },
+   "reading/K_s_corr": {
+    "value": 0.12416016620268178,
+    "p5": 0.11696670308232143,
+    "p95": 0.1317972836840216,
+    "nonfinite_draws": 0
+   },
+   "reading/P_s_corr": {
+    "value": 0.01742207227981098,
+    "p5": 0.007790316572117665,
+    "p95": 0.027915529829184226,
+    "nonfinite_draws": 0
+   },
+   "reading/A_c_w": {
+    "value": 0.32210220762078223,
+    "p5": 0.3118766190667536,
+    "p95": 0.32827218202400343,
+    "nonfinite_draws": 0
+   },
+   "reading/lib3_c_w": {
+    "value": 0.36453623871592405,
+    "p5": 0.3589189274375815,
+    "p95": 0.3699691600531482,
+    "nonfinite_draws": 0
+   },
+   "reading/K_c_w": {
+    "value": 0.04243403109514182,
+    "p5": 0.035326865523214804,
+    "p95": 0.051017408918483526,
+    "nonfinite_draws": 0
+   },
+   "reading/P_c_w": {
+    "value": 0.08646654752290164,
+    "p5": 0.07962127410701196,
+    "p95": 0.09304493295586415,
+    "nonfinite_draws": 0
+   },
+   "reading/A_c_w_corr": {
+    "value": 0.34483529759294673,
+    "p5": 0.33388801505757565,
+    "p95": 0.3514407318592668,
+    "nonfinite_draws": 0
+   },
+   "reading/lib3_c_w_corr": {
+    "value": 0.3902642061646913,
+    "p5": 0.3842504404701079,
+    "p95": 0.3960805681820744,
+    "nonfinite_draws": 0
+   },
+   "reading/K_c_w_corr": {
+    "value": 0.045428908571744586,
+    "p5": 0.037820138755664354,
+    "p95": 0.05461807764924878,
+    "nonfinite_draws": 0
+   },
+   "reading/P_c_w_corr": {
+    "value": 0.09256911918467295,
+    "p5": 0.08524072515437664,
+    "p95": 0.09961178901054214,
+    "nonfinite_draws": 0
+   },
+   "reading/A_s_w": {
+    "value": 0.10801645548924937,
+    "p5": 0.09965184255143279,
+    "p95": 0.11316660987030387,
+    "nonfinite_draws": 0
+   },
+   "reading/lib3_s_w": {
+    "value": 0.20497695022006313,
+    "p5": 0.20016053353038804,
+    "p95": 0.21047686183401343,
+    "nonfinite_draws": 0
+   },
+   "reading/K_s_w": {
+    "value": 0.09696049473081375,
+    "p5": 0.0912887474540197,
+    "p95": 0.10297918865242503,
+    "nonfinite_draws": 0
+   },
+   "reading/P_s_w": {
+    "value": -0.0043269742955452705,
+    "p5": -0.011334121296165378,
+    "p95": 0.003338277859235986,
+    "nonfinite_draws": 0
+   },
+   "reading/A_s_w_corr": {
+    "value": 0.14419604291966825,
+    "p5": 0.13355340644008046,
+    "p95": 0.15059551658456127,
+    "nonfinite_draws": 0
+   },
+   "reading/lib3_s_w_corr": {
+    "value": 0.26361390946576885,
+    "p5": 0.25739765726858194,
+    "p95": 0.27049661500204386,
+    "nonfinite_draws": 0
+   },
+   "reading/K_s_w_corr": {
+    "value": 0.11941786654610059,
+    "p5": 0.11224074182944323,
+    "p95": 0.1270783124412654,
+    "nonfinite_draws": 0
+   },
+   "reading/P_s_w_corr": {
+    "value": -0.008271646915731031,
+    "p5": -0.01741940749236767,
+    "p95": 0.001473045736473018,
+    "nonfinite_draws": 0
+   },
+   "reading/A_c_n": {
+    "value": 0.3227404016810009,
+    "p5": 0.3131904379497648,
+    "p95": 0.3289002359426899,
+    "nonfinite_draws": 0
+   },
+   "reading/lib3_c_n": {
+    "value": 0.36326251267255943,
+    "p5": 0.3578339724908402,
+    "p95": 0.36809999099515994,
+    "nonfinite_draws": 0
+   },
+   "reading/K_c_n": {
+    "value": 0.04052211099155856,
+    "p5": 0.033576606530131684,
+    "p95": 0.04880282886541355,
+    "nonfinite_draws": 0
+   },
+   "reading/P_c_n": {
+    "value": 0.09307612727853862,
+    "p5": 0.08646347830907025,
+    "p95": 0.09940870744542184,
+    "nonfinite_draws": 0
+   },
+   "reading/A_c_n_corr": {
+    "value": 0.3434081530414992,
+    "p5": 0.3332466257289113,
+    "p95": 0.34996245270720766,
+    "nonfinite_draws": 0
+   },
+   "reading/lib3_c_n_corr": {
+    "value": 0.3865252317229222,
+    "p5": 0.3807490569775044,
+    "p95": 0.39167249400396903,
+    "nonfinite_draws": 0
+   },
+   "reading/K_c_n_corr": {
+    "value": 0.043117078681423004,
+    "p5": 0.035726795820594154,
+    "p95": 0.0519280797711748,
+    "nonfinite_draws": 0
+   },
+   "reading/P_c_n_corr": {
+    "value": 0.0990365655941986,
+    "p5": 0.09200045373002172,
+    "p95": 0.10577467352171505,
+    "nonfinite_draws": 0
+   },
+   "reading/A_s_n": {
+    "value": 0.10758263143410589,
+    "p5": 0.10059983496030787,
+    "p95": 0.11199032389453077,
+    "nonfinite_draws": 0
+   },
+   "reading/lib3_s_n": {
+    "value": 0.19955641048058317,
+    "p5": 0.19560458797861904,
+    "p95": 0.20418023501266452,
+    "nonfinite_draws": 0
+   },
+   "reading/K_s_n": {
+    "value": 0.09197377904647729,
+    "p5": 0.08691516425629792,
+    "p95": 0.09772596754780054,
+    "nonfinite_draws": 0
+   },
+   "reading/P_s_n": {
+    "value": -0.014257313646937447,
+    "p5": -0.020384395885963604,
+    "p95": -0.007815406167856996,
+    "nonfinite_draws": 0
+   },
+   "reading/A_s_n_corr": {
+    "value": 0.14298435466975087,
+    "p5": 0.13443318869890133,
+    "p95": 0.14855872018180602,
+    "nonfinite_draws": 0
+   },
+   "reading/lib3_s_n_corr": {
+    "value": 0.25531647301693566,
+    "p5": 0.2502361214024672,
+    "p95": 0.26095908003495444,
+    "nonfinite_draws": 0
+   },
+   "reading/K_s_n_corr": {
+    "value": 0.11233211834718479,
+    "p5": 0.10586871069116244,
+    "p95": 0.11938107498328128,
+    "nonfinite_draws": 0
+   },
+   "reading/P_s_n_corr": {
+    "value": -0.019440310333626712,
+    "p5": -0.027153854217041577,
+    "p95": -0.01145766189166351,
+    "nonfinite_draws": 0
+   },
+   "reading/A_M_T47_mask": {
+    "value": 0.25398926848230596,
+    "p5": 0.2465383955259678,
+    "p95": 0.25826378594605803,
+    "nonfinite_draws": 0
+   },
+   "reading/group/CM/A_M": {
+    "value": 0.2843595597363354,
+    "p5": 0.2753221162500151,
+    "p95": 0.29260888419958464,
+    "nonfinite_draws": 0
+   },
+   "reading/group/CM/A_M_corr": {
+    "value": 0.28735191347110467,
+    "p5": 0.2782193677564853,
+    "p95": 0.29568804668061094,
+    "nonfinite_draws": 0
+   },
+   "reading/group/CM/A_c": {
+    "value": 0.30903986551129004,
+    "p5": 0.2984914773357901,
+    "p95": 0.31816892278305453,
+    "nonfinite_draws": 0
+   },
+   "reading/group/CM/A_c_corr": {
+    "value": 0.33089092817997734,
+    "p5": 0.3195967026003122,
+    "p95": 0.3406654672319689,
+    "nonfinite_draws": 0
+   },
+   "reading/group/CM/A_s": {
+    "value": -0.05378042461659489,
+    "p5": -0.06007266356935732,
+    "p95": -0.044429722062722485,
+    "nonfinite_draws": 0
+   },
+   "reading/group/CM/A_s_corr": {
+    "value": -0.06061547156941857,
+    "p5": -0.06770740202679672,
+    "p95": -0.050076372095045014,
+    "nonfinite_draws": 0
+   },
+   "reading/group/Endocardium/A_M": {
+    "value": 0.19731974065619245,
+    "p5": 0.1838129754243157,
+    "p95": 0.20821311038229906,
+    "nonfinite_draws": 0
+   },
+   "reading/group/Endocardium/A_M_corr": {
+    "value": 0.227343626730953,
+    "p5": 0.21178169165539099,
+    "p95": 0.23989451582404855,
+    "nonfinite_draws": 0
+   },
+   "reading/group/Endocardium/A_c": {
+    "value": 0.2624339657916803,
+    "p5": 0.24654807476968588,
+    "p95": 0.27561840915568775,
+    "nonfinite_draws": 0
+   },
+   "reading/group/Endocardium/A_c_corr": {
+    "value": 0.2809896981513834,
+    "p5": 0.26398057469562114,
+    "p95": 0.2951063646048685,
+    "nonfinite_draws": 0
+   },
+   "reading/group/Endocardium/A_s": {
+    "value": 0.1036138269664924,
+    "p5": 0.08522600741692474,
+    "p95": 0.11764045122901322,
+    "nonfinite_draws": 0
+   },
+   "reading/group/Endocardium/A_s_corr": {
+    "value": 0.13373859747836522,
+    "p5": 0.11000468792940403,
+    "p95": 0.151843334183363,
+    "nonfinite_draws": 0
+   },
+   "reading/group/Endothelium/A_M": {
+    "value": 0.2881646781991511,
+    "p5": 0.25753272750237066,
+    "p95": 0.3141468210416009,
+    "nonfinite_draws": 0
+   },
+   "reading/group/Endothelium/A_M_corr": {
+    "value": 0.327559440671781,
+    "p5": 0.2927398205169867,
+    "p95": 0.35709358146278186,
+    "nonfinite_draws": 0
+   },
+   "reading/group/Endothelium/A_c": {
+    "value": 0.3771030446865622,
+    "p5": 0.3387591648130548,
+    "p95": 0.4109258011583683,
+    "nonfinite_draws": 0
+   },
+   "reading/group/Endothelium/A_c_corr": {
+    "value": 0.40376660230999706,
+    "p5": 0.3627115689071855,
+    "p95": 0.43998084044411373,
+    "nonfinite_draws": 0
+   },
+   "reading/group/Endothelium/A_s": {
+    "value": -0.018517583761073233,
+    "p5": -0.05465708824289474,
+    "p95": 0.007272945053935944,
+    "nonfinite_draws": 0
+   },
+   "reading/group/Endothelium/A_s_corr": {
+    "value": -0.02240596430492057,
+    "p5": -0.06613415572908503,
+    "p95": 0.008800140956440463,
+    "nonfinite_draws": 0
+   },
+   "reading/group/Epicardium/A_M": {
+    "value": 0.3012849230652307,
+    "p5": 0.29042661049548274,
+    "p95": 0.3094315462747052,
+    "nonfinite_draws": 0
+   },
+   "reading/group/Epicardium/A_M_corr": {
+    "value": 0.3491742944398195,
+    "p5": 0.3365900482990729,
+    "p95": 0.35861582700074174,
+    "nonfinite_draws": 0
+   },
+   "reading/group/Epicardium/A_c": {
+    "value": 0.42599624293646865,
+    "p5": 0.4058416629517536,
+    "p95": 0.4438889417435521,
+    "nonfinite_draws": 0
+   },
+   "reading/group/Epicardium/A_c_corr": {
+    "value": 0.4561168572644284,
+    "p5": 0.43453722168185877,
+    "p95": 0.4752746824405602,
+    "nonfinite_draws": 0
+   },
+   "reading/group/Epicardium/A_s": {
+    "value": 0.3506692893805231,
+    "p5": 0.3385982053116354,
+    "p95": 0.35999971411441944,
+    "nonfinite_draws": 0
+   },
+   "reading/group/Epicardium/A_s_corr": {
+    "value": 0.4563075530838021,
+    "p5": 0.44060008453338123,
+    "p95": 0.46844874539373604,
+    "nonfinite_draws": 0
+   },
+   "reading/R": {
+    "value": 2.716280008605797,
+    "p5": 2.596850408393674,
+    "p95": 2.8886903468852445,
+    "nonfinite_draws": 0
+   },
+   "reading/R_lib3": {
+    "value": 1.666355455884678,
+    "p5": 1.6271002072710112,
+    "p95": 1.6977830749112839,
+    "nonfinite_draws": 0
+   },
+   "reading/R_K": {
+    "value": 0.41863078054734315,
+    "p5": 0.3454914099863789,
+    "p95": 0.5040639813378305,
+    "nonfinite_draws": 0
+   },
+   "reading/R_a": {
+    "value": 5.313949578502339,
+    "p5": 3.6080355278390797,
+    "p95": 10.244772329225682,
+    "nonfinite_draws": 0
+   },
+   "reading/R_corr": {
+    "value": 2.204822821747557,
+    "p5": 2.112760075041588,
+    "p95": 2.3392959326896814,
+    "nonfinite_draws": 0
+   },
+   "reading/R_lib3_corr": {
+    "value": 1.3958093596164864,
+    "p5": 1.3630284074824994,
+    "p95": 1.4211421412947136,
+    "nonfinite_draws": 0
+   },
+   "reading/R_K_corr": {
+    "value": 0.3645033001846137,
+    "p5": 0.3010214795237098,
+    "p95": 0.43776230721566306,
+    "nonfinite_draws": 0
+   },
+   "reading/R_a_corr": {
+    "value": 5.126630479212898,
+    "p5": 3.309728412790358,
+    "p95": 11.393129144179648,
+    "nonfinite_draws": 0
+   },
+   "reading/R_w": {
+    "value": 2.981973498036513,
+    "p5": 2.8351308899016257,
+    "p95": 3.20247121514509,
+    "nonfinite_draws": 0
+   },
+   "reading/R_lib3_w": {
+    "value": 1.7784255172328312,
+    "p5": 1.7344393154997477,
+    "p95": 1.814802536804859,
+    "nonfinite_draws": 0
+   },
+   "reading/R_K_w": {
+    "value": 0.43764247710316617,
+    "p5": 0.3599313226552925,
+    "p95": 0.5224786924665689,
+    "nonfinite_draws": 0
+   },
+   "reading/R_a_w": {
+    "value": NaN,
+    "p5": 11.74999081646109,
+    "p95": 1005.6725841472041,
+    "nonfinite_draws": 160
+   },
+   "reading/R_w_corr": {
+    "value": 2.391433846662871,
+    "p5": 2.281299404963922,
+    "p95": 2.562188271679257,
+    "nonfinite_draws": 0
+   },
+   "reading/R_lib3_w_corr": {
+    "value": 1.480438596565666,
+    "p5": 1.444704368948202,
+    "p95": 1.510051230170886,
+    "nonfinite_draws": 0
+   },
+   "reading/R_K_w_corr": {
+    "value": 0.38041969669762116,
+    "p5": 0.3139536169204208,
+    "p95": 0.4539611236814175,
+    "nonfinite_draws": 0
+   },
+   "reading/R_a_w_corr": {
+    "value": NaN,
+    "p5": 13.737103371546077,
+    "p95": 326.6378071716516,
+    "nonfinite_draws": 177
+   },
+   "reading/R_n": {
+    "value": 2.9999303547308993,
+    "p5": 2.871357545174392,
+    "p95": 3.204621038744291,
+    "nonfinite_draws": 0
+   },
+   "reading/R_lib3_n": {
+    "value": 1.8203500042806435,
+    "p5": 1.7792119206508812,
+    "p95": 1.853791415757357,
+    "nonfinite_draws": 0
+   },
+   "reading/R_K_n": {
+    "value": 0.44058329897569437,
+    "p5": 0.3616402693205503,
+    "p95": 0.5266852841594409,
+    "nonfinite_draws": 0
+   },
+   "reading/R_a_n": {
+    "value": NaN,
+    "p5": NaN,
+    "p95": NaN,
+    "nonfinite_draws": 200
+   },
+   "reading/R_n_corr": {
+    "value": 2.401718382648679,
+    "p5": 2.3045130990285796,
+    "p95": 2.554439385857514,
+    "nonfinite_draws": 0
+   },
+   "reading/R_lib3_n_corr": {
+    "value": 1.5139063576884175,
+    "p5": 1.4799051703802752,
+    "p95": 1.5412483778377346,
+    "nonfinite_draws": 0
+   },
+   "reading/R_K_n_corr": {
+    "value": 0.3838357124910712,
+    "p5": 0.3143635987254745,
+    "p95": 0.4588954476275177,
+    "nonfinite_draws": 0
+   },
+   "reading/R_a_n_corr": {
+    "value": NaN,
+    "p5": NaN,
+    "p95": NaN,
+    "nonfinite_draws": 200
+   },
+   "reading/R_corr_without/CM": {
+    "value": 1.5024583328826082,
+    "p5": 1.4502312344949928,
+    "p95": 1.5818612507775063,
+    "nonfinite_draws": 0
+   },
+   "reading/R_corr_without/Endocardium": {
+    "value": 2.2585527092458215,
+    "p5": 2.12886452763971,
+    "p95": 2.37777655319277,
+    "nonfinite_draws": 0
+   },
+   "reading/R_corr_without/Endothelium": {
+    "value": 2.017403040601896,
+    "p5": 1.9377815881969356,
+    "p95": 2.1456397338233426,
+    "nonfinite_draws": 0
+   },
+   "reading/R_corr_without/Epicardium": {
+    "value": 6.220267459326774,
+    "p5": 5.203797860215372,
+    "p95": 8.249771397248805,
+    "nonfinite_draws": 0
+   },
+   "reading/L_eff": {
+    "value": 0.8342320620692518,
+    "p5": 0.8342320620692518,
+    "p95": 0.8342320620692518,
+    "nonfinite_draws": 0
+   },
+   "reading/L_eff_uncapped": {
+    "value": 1.4700186148656507,
+    "p5": 1.421436985008858,
+    "p95": 1.5409802484821946,
+    "nonfinite_draws": 0
+   },
+   "reading/A_M_over_L_eff": {
+    "value": 0.3044587711629113,
+    "p5": 0.2955273559187443,
+    "p95": 0.3095826661294383,
+    "nonfinite_draws": 0
+   },
+   "reading/f_max": {
+    "value": 0.5802427935869459,
+    "p5": 0.5759682761231939,
+    "p95": 0.587693666543284,
+    "nonfinite_draws": 0
+   },
+   "reading/f_even": {
+    "value": 0.29012139679347293,
+    "p5": 0.28798413806159695,
+    "p95": 0.293846833271642,
+    "nonfinite_draws": 0
+   },
+   "reading/f_decay": {
+    "value": 0.3579280150894132,
+    "p5": 0.35717485288264733,
+    "p95": 0.35826316859997814,
+    "nonfinite_draws": 0
+   },
+   "reading/L_eff_corr": {
+    "value": 0.9547335982602717,
+    "p5": 0.9547335982602717,
+    "p95": 0.9547335982602717,
+    "nonfinite_draws": 0
+   },
+   "reading/L_eff_uncapped_corr": {
+    "value": 1.6823570149042735,
+    "p5": 1.6267579599273214,
+    "p95": 1.763568777052449,
+    "nonfinite_draws": 0
+   },
+   "reading/A_M_over_L_eff_corr": {
+    "value": 0.2956605245306362,
+    "p5": 0.2867142351241811,
+    "p95": 0.30052429619513,
+    "nonfinite_draws": 0
+   },
+   "reading/f_max_corr": {
+    "value": 0.6724565618116181,
+    "p5": 0.6678129555892596,
+    "p95": 0.6809978848877206,
+    "nonfinite_draws": 0
+   },
+   "reading/f_even_corr": {
+    "value": 0.33622828090580903,
+    "p5": 0.3339064777946298,
+    "p95": 0.3404989424438603,
+    "nonfinite_draws": 0
+   },
+   "reading/f_decay_corr": {
+    "value": 0.4087820401205749,
+    "p5": 0.40766987896323104,
+    "p95": 0.4092801440806588,
+    "nonfinite_draws": 0
+   },
+   "reading/L_eff_w": {
+    "value": 0.8342320620692518,
+    "p5": 0.8342320620692518,
+    "p95": 0.8342320620692518,
+    "nonfinite_draws": 0
+   },
+   "reading/L_eff_uncapped_w": {
+    "value": 1.5798485332499217,
+    "p5": 1.5208316752282698,
+    "p95": 1.6713493344734596,
+    "nonfinite_draws": 0
+   },
+   "reading/A_M_over_L_eff_w": {
+    "value": 0.3044587711629113,
+    "p5": 0.2955273559187443,
+    "p95": 0.3095826661294383,
+    "nonfinite_draws": 0
+   },
+   "reading/f_max_w": {
+    "value": 0.5802427935869459,
+    "p5": 0.5759682761231939,
+    "p95": 0.587693666543284,
+    "nonfinite_draws": 0
+   },
+   "reading/f_even_w": {
+    "value": 0.29012139679347293,
+    "p5": 0.28798413806159695,
+    "p95": 0.293846833271642,
+    "nonfinite_draws": 0
+   },
+   "reading/f_decay_w": {
+    "value": 0.3579280150894132,
+    "p5": 0.35717485288264733,
+    "p95": 0.35826316859997814,
+    "nonfinite_draws": 0
+   },
+   "reading/L_eff_w_corr": {
+    "value": 0.9547335982602717,
+    "p5": 0.9547335982602717,
+    "p95": 0.9547335982602717,
+    "nonfinite_draws": 0
+   },
+   "reading/L_eff_uncapped_w_corr": {
+    "value": 1.808051432493012,
+    "p5": 1.7405098217363282,
+    "p95": 1.9127691641265323,
+    "nonfinite_draws": 0
+   },
+   "reading/A_M_over_L_eff_w_corr": {
+    "value": 0.2956605245306362,
+    "p5": 0.2867142351241811,
+    "p95": 0.30052429619513,
+    "nonfinite_draws": 0
+   },
+   "reading/f_max_w_corr": {
+    "value": 0.6724565618116181,
+    "p5": 0.6678129555892596,
+    "p95": 0.6809978848877206,
+    "nonfinite_draws": 0
+   },
+   "reading/f_even_w_corr": {
+    "value": 0.33622828090580903,
+    "p5": 0.3339064777946298,
+    "p95": 0.3404989424438603,
+    "nonfinite_draws": 0
+   },
+   "reading/f_decay_w_corr": {
+    "value": 0.4087820401205749,
+    "p5": 0.40766987896323104,
+    "p95": 0.4092801440806588,
+    "nonfinite_draws": 0
+   },
+   "reading/L_eff_n": {
+    "value": 0.8342320620692518,
+    "p5": 0.8342320620692518,
+    "p95": 0.8342320620692518,
+    "nonfinite_draws": 0
+   },
+   "reading/L_eff_uncapped_n": {
+    "value": 1.5751339157413515,
+    "p5": 1.523754426314405,
+    "p95": 1.6558571735460168,
+    "nonfinite_draws": 0
+   },
+   "reading/A_M_over_L_eff_n": {
+    "value": 0.3044587711629113,
+    "p5": 0.2955273559187443,
+    "p95": 0.3095826661294383,
+    "nonfinite_draws": 0
+   },
+   "reading/f_max_n": {
+    "value": 0.5802427935869459,
+    "p5": 0.5759682761231939,
+    "p95": 0.587693666543284,
+    "nonfinite_draws": 0
+   },
+   "reading/f_even_n": {
+    "value": 0.29012139679347293,
+    "p5": 0.28798413806159695,
+    "p95": 0.293846833271642,
+    "nonfinite_draws": 0
+   },
+   "reading/f_decay_n": {
+    "value": 0.3579280150894132,
+    "p5": 0.35717485288264733,
+    "p95": 0.35826316859997814,
+    "nonfinite_draws": 0
+   },
+   "reading/L_eff_n_corr": {
+    "value": 0.9547335982602716,
+    "p5": 0.9547335982602716,
+    "p95": 0.9547335982602716,
+    "nonfinite_draws": 0
+   },
+   "reading/L_eff_uncapped_n_corr": {
+    "value": 1.8026558070513177,
+    "p5": 1.7438547527071706,
+    "p95": 1.8950392215606755,
+    "nonfinite_draws": 0
+   },
+   "reading/A_M_over_L_eff_n_corr": {
+    "value": 0.2956605245306362,
+    "p5": 0.28671423512418115,
+    "p95": 0.30052429619513,
+    "nonfinite_draws": 0
+   },
+   "reading/f_max_n_corr": {
+    "value": 0.6724565618116181,
+    "p5": 0.6678129555892595,
+    "p95": 0.6809978848877206,
+    "nonfinite_draws": 0
+   },
+   "reading/f_even_n_corr": {
+    "value": 0.33622828090580903,
+    "p5": 0.33390647779462973,
+    "p95": 0.3404989424438603,
+    "nonfinite_draws": 0
+   },
+   "reading/f_decay_n_corr": {
+    "value": 0.40878204012057484,
+    "p5": 0.4076698789632309,
+    "p95": 0.40928014408065877,
+    "nonfinite_draws": 0
+   }
+  },
+  "reading": {
+   "A_M": {
+    "value": 0.25398926848230596,
+    "p5": 0.2465383955259678,
+    "p95": 0.25826378594605803,
+    "nonfinite_draws": 0
+   },
+   "lib3_M": {
+    "value": 0.32594264622644725,
+    "p5": 0.32147466386789586,
+    "p95": 0.33002633809026477,
+    "nonfinite_draws": 0
+   },
+   "K_M": {
+    "value": 0.07195337774414129,
+    "p5": 0.06701978856479623,
+    "p95": 0.07799828801842396,
+    "nonfinite_draws": 0
+   },
+   "P_M": {
+    "value": 0.08332438656717549,
+    "p5": 0.07719798514489047,
+    "p95": 0.08912868500081164,
+    "nonfinite_draws": 0
+   },
+   "A_M_corr": {
+    "value": 0.2822770364486536,
+    "p5": 0.27373571337255104,
+    "p95": 0.28692064267101214,
+    "nonfinite_draws": 0
+   },
+   "lib3_M_corr": {
+    "value": 0.3609235900960392,
+    "p5": 0.35578981340707805,
+    "p95": 0.3654662938811924,
+    "nonfinite_draws": 0
+   },
+   "K_M_corr": {
+    "value": 0.0786465536473856,
+    "p5": 0.07318673264785948,
+    "p95": 0.0853130221725416,
+    "nonfinite_draws": 0
+   },
+   "P_M_corr": {
+    "value": 0.08691801226538498,
+    "p5": 0.07979919803500013,
+    "p95": 0.09345758292240544,
+    "nonfinite_draws": 0
+   },
+   "A_c": {
+    "value": 0.3259248298330644,
+    "p5": 0.31554237071251684,
+    "p95": 0.3323933598343537,
+    "nonfinite_draws": 0
+   },
+   "lib3_c": {
+    "value": 0.3681929949795385,
+    "p5": 0.36249589711975394,
+    "p95": 0.37370594259560375,
+    "nonfinite_draws": 0
+   },
+   "K_c": {
+    "value": 0.04226816514647408,
+    "p5": 0.0351099741436985,
+    "p95": 0.050750439663304454,
+    "nonfinite_draws": 0
+   },
+   "P_c": {
+    "value": 0.0834183263043641,
+    "p5": 0.07651483154087485,
+    "p95": 0.09012274869838499,
+    "nonfinite_draws": 0
+   },
+   "A_c_corr": {
+    "value": 0.34896976570300753,
+    "p5": 0.3378532014063435,
+    "p95": 0.3558956614690619,
+    "nonfinite_draws": 0
+   },
+   "lib3_c_corr": {
+    "value": 0.39422655603535517,
+    "p5": 0.38812663751630766,
+    "p95": 0.400129303729959,
+    "nonfinite_draws": 0
+   },
+   "K_c_corr": {
+    "value": 0.04525679033234764,
+    "p5": 0.03759247019332851,
+    "p95": 0.05433881501970576,
+    "nonfinite_draws": 0
+   },
+   "P_c_corr": {
+    "value": 0.08931652676072911,
+    "p5": 0.08192491148741375,
+    "p95": 0.09649499399568572,
+    "nonfinite_draws": 0
+   },
+   "A_s": {
+    "value": 0.11998940786681045,
+    "p5": 0.11172608791674934,
+    "p95": 0.12565310174271585,
+    "nonfinite_draws": 0
+   },
+   "lib3_s": {
+    "value": 0.2209570555185434,
+    "p5": 0.21593033461395045,
+    "p95": 0.22662001372968615,
+    "nonfinite_draws": 0
+   },
+   "K_s": {
+    "value": 0.10096764765173294,
+    "p5": 0.09533869214322487,
+    "p95": 0.10697214641185898,
+    "nonfinite_draws": 0
+   },
+   "P_s": {
+    "value": 0.015697989804388465,
+    "p5": 0.008189878986396495,
+    "p95": 0.023713990283896518,
+    "nonfinite_draws": 0
+   },
+   "A_s_corr": {
+    "value": 0.15827565020685508,
+    "p5": 0.14778229076956606,
+    "p95": 0.16550177476060007,
+    "nonfinite_draws": 0
+   },
+   "lib3_s_corr": {
+    "value": 0.28243581640953686,
+    "p5": 0.27594452246293005,
+    "p95": 0.2895059274225358,
+    "nonfinite_draws": 0
+   },
+   "K_s_corr": {
+    "value": 0.12416016620268178,
+    "p5": 0.11696670308232143,
+    "p95": 0.1317972836840216,
+    "nonfinite_draws": 0
+   },
+   "P_s_corr": {
+    "value": 0.01742207227981098,
+    "p5": 0.007790316572117665,
+    "p95": 0.027915529829184226,
+    "nonfinite_draws": 0
+   },
+   "A_c_w": {
+    "value": 0.32210220762078223,
+    "p5": 0.3118766190667536,
+    "p95": 0.32827218202400343,
+    "nonfinite_draws": 0
+   },
+   "lib3_c_w": {
+    "value": 0.36453623871592405,
+    "p5": 0.3589189274375815,
+    "p95": 0.3699691600531482,
+    "nonfinite_draws": 0
+   },
+   "K_c_w": {
+    "value": 0.04243403109514182,
+    "p5": 0.035326865523214804,
+    "p95": 0.051017408918483526,
+    "nonfinite_draws": 0
+   },
+   "P_c_w": {
+    "value": 0.08646654752290164,
+    "p5": 0.07962127410701196,
+    "p95": 0.09304493295586415,
+    "nonfinite_draws": 0
+   },
+   "A_c_w_corr": {
+    "value": 0.34483529759294673,
+    "p5": 0.33388801505757565,
+    "p95": 0.3514407318592668,
+    "nonfinite_draws": 0
+   },
+   "lib3_c_w_corr": {
+    "value": 0.3902642061646913,
+    "p5": 0.3842504404701079,
+    "p95": 0.3960805681820744,
+    "nonfinite_draws": 0
+   },
+   "K_c_w_corr": {
+    "value": 0.045428908571744586,
+    "p5": 0.037820138755664354,
+    "p95": 0.05461807764924878,
+    "nonfinite_draws": 0
+   },
+   "P_c_w_corr": {
+    "value": 0.09256911918467295,
+    "p5": 0.08524072515437664,
+    "p95": 0.09961178901054214,
+    "nonfinite_draws": 0
+   },
+   "A_s_w": {
+    "value": 0.10801645548924937,
+    "p5": 0.09965184255143279,
+    "p95": 0.11316660987030387,
+    "nonfinite_draws": 0
+   },
+   "lib3_s_w": {
+    "value": 0.20497695022006313,
+    "p5": 0.20016053353038804,
+    "p95": 0.21047686183401343,
+    "nonfinite_draws": 0
+   },
+   "K_s_w": {
+    "value": 0.09696049473081375,
+    "p5": 0.0912887474540197,
+    "p95": 0.10297918865242503,
+    "nonfinite_draws": 0
+   },
+   "P_s_w": {
+    "value": -0.0043269742955452705,
+    "p5": -0.011334121296165378,
+    "p95": 0.003338277859235986,
+    "nonfinite_draws": 0
+   },
+   "A_s_w_corr": {
+    "value": 0.14419604291966825,
+    "p5": 0.13355340644008046,
+    "p95": 0.15059551658456127,
+    "nonfinite_draws": 0
+   },
+   "lib3_s_w_corr": {
+    "value": 0.26361390946576885,
+    "p5": 0.25739765726858194,
+    "p95": 0.27049661500204386,
+    "nonfinite_draws": 0
+   },
+   "K_s_w_corr": {
+    "value": 0.11941786654610059,
+    "p5": 0.11224074182944323,
+    "p95": 0.1270783124412654,
+    "nonfinite_draws": 0
+   },
+   "P_s_w_corr": {
+    "value": -0.008271646915731031,
+    "p5": -0.01741940749236767,
+    "p95": 0.001473045736473018,
+    "nonfinite_draws": 0
+   },
+   "A_c_n": {
+    "value": 0.3227404016810009,
+    "p5": 0.3131904379497648,
+    "p95": 0.3289002359426899,
+    "nonfinite_draws": 0
+   },
+   "lib3_c_n": {
+    "value": 0.36326251267255943,
+    "p5": 0.3578339724908402,
+    "p95": 0.36809999099515994,
+    "nonfinite_draws": 0
+   },
+   "K_c_n": {
+    "value": 0.04052211099155856,
+    "p5": 0.033576606530131684,
+    "p95": 0.04880282886541355,
+    "nonfinite_draws": 0
+   },
+   "P_c_n": {
+    "value": 0.09307612727853862,
+    "p5": 0.08646347830907025,
+    "p95": 0.09940870744542184,
+    "nonfinite_draws": 0
+   },
+   "A_c_n_corr": {
+    "value": 0.3434081530414992,
+    "p5": 0.3332466257289113,
+    "p95": 0.34996245270720766,
+    "nonfinite_draws": 0
+   },
+   "lib3_c_n_corr": {
+    "value": 0.3865252317229222,
+    "p5": 0.3807490569775044,
+    "p95": 0.39167249400396903,
+    "nonfinite_draws": 0
+   },
+   "K_c_n_corr": {
+    "value": 0.043117078681423004,
+    "p5": 0.035726795820594154,
+    "p95": 0.0519280797711748,
+    "nonfinite_draws": 0
+   },
+   "P_c_n_corr": {
+    "value": 0.0990365655941986,
+    "p5": 0.09200045373002172,
+    "p95": 0.10577467352171505,
+    "nonfinite_draws": 0
+   },
+   "A_s_n": {
+    "value": 0.10758263143410589,
+    "p5": 0.10059983496030787,
+    "p95": 0.11199032389453077,
+    "nonfinite_draws": 0
+   },
+   "lib3_s_n": {
+    "value": 0.19955641048058317,
+    "p5": 0.19560458797861904,
+    "p95": 0.20418023501266452,
+    "nonfinite_draws": 0
+   },
+   "K_s_n": {
+    "value": 0.09197377904647729,
+    "p5": 0.08691516425629792,
+    "p95": 0.09772596754780054,
+    "nonfinite_draws": 0
+   },
+   "P_s_n": {
+    "value": -0.014257313646937447,
+    "p5": -0.020384395885963604,
+    "p95": -0.007815406167856996,
+    "nonfinite_draws": 0
+   },
+   "A_s_n_corr": {
+    "value": 0.14298435466975087,
+    "p5": 0.13443318869890133,
+    "p95": 0.14855872018180602,
+    "nonfinite_draws": 0
+   },
+   "lib3_s_n_corr": {
+    "value": 0.25531647301693566,
+    "p5": 0.2502361214024672,
+    "p95": 0.26095908003495444,
+    "nonfinite_draws": 0
+   },
+   "K_s_n_corr": {
+    "value": 0.11233211834718479,
+    "p5": 0.10586871069116244,
+    "p95": 0.11938107498328128,
+    "nonfinite_draws": 0
+   },
+   "P_s_n_corr": {
+    "value": -0.019440310333626712,
+    "p5": -0.027153854217041577,
+    "p95": -0.01145766189166351,
+    "nonfinite_draws": 0
+   },
+   "A_M_T47_mask": {
+    "value": 0.25398926848230596,
+    "p5": 0.2465383955259678,
+    "p95": 0.25826378594605803,
+    "nonfinite_draws": 0
+   },
+   "group/CM/A_M": {
+    "value": 0.2843595597363354,
+    "p5": 0.2753221162500151,
+    "p95": 0.29260888419958464,
+    "nonfinite_draws": 0
+   },
+   "group/CM/A_M_corr": {
+    "value": 0.28735191347110467,
+    "p5": 0.2782193677564853,
+    "p95": 0.29568804668061094,
+    "nonfinite_draws": 0
+   },
+   "group/CM/A_c": {
+    "value": 0.30903986551129004,
+    "p5": 0.2984914773357901,
+    "p95": 0.31816892278305453,
+    "nonfinite_draws": 0
+   },
+   "group/CM/A_c_corr": {
+    "value": 0.33089092817997734,
+    "p5": 0.3195967026003122,
+    "p95": 0.3406654672319689,
+    "nonfinite_draws": 0
+   },
+   "group/CM/A_s": {
+    "value": -0.05378042461659489,
+    "p5": -0.06007266356935732,
+    "p95": -0.044429722062722485,
+    "nonfinite_draws": 0
+   },
+   "group/CM/A_s_corr": {
+    "value": -0.06061547156941857,
+    "p5": -0.06770740202679672,
+    "p95": -0.050076372095045014,
+    "nonfinite_draws": 0
+   },
+   "group/Endocardium/A_M": {
+    "value": 0.19731974065619245,
+    "p5": 0.1838129754243157,
+    "p95": 0.20821311038229906,
+    "nonfinite_draws": 0
+   },
+   "group/Endocardium/A_M_corr": {
+    "value": 0.227343626730953,
+    "p5": 0.21178169165539099,
+    "p95": 0.23989451582404855,
+    "nonfinite_draws": 0
+   },
+   "group/Endocardium/A_c": {
+    "value": 0.2624339657916803,
+    "p5": 0.24654807476968588,
+    "p95": 0.27561840915568775,
+    "nonfinite_draws": 0
+   },
+   "group/Endocardium/A_c_corr": {
+    "value": 0.2809896981513834,
+    "p5": 0.26398057469562114,
+    "p95": 0.2951063646048685,
+    "nonfinite_draws": 0
+   },
+   "group/Endocardium/A_s": {
+    "value": 0.1036138269664924,
+    "p5": 0.08522600741692474,
+    "p95": 0.11764045122901322,
+    "nonfinite_draws": 0
+   },
+   "group/Endocardium/A_s_corr": {
+    "value": 0.13373859747836522,
+    "p5": 0.11000468792940403,
+    "p95": 0.151843334183363,
+    "nonfinite_draws": 0
+   },
+   "group/Endothelium/A_M": {
+    "value": 0.2881646781991511,
+    "p5": 0.25753272750237066,
+    "p95": 0.3141468210416009,
+    "nonfinite_draws": 0
+   },
+   "group/Endothelium/A_M_corr": {
+    "value": 0.327559440671781,
+    "p5": 0.2927398205169867,
+    "p95": 0.35709358146278186,
+    "nonfinite_draws": 0
+   },
+   "group/Endothelium/A_c": {
+    "value": 0.3771030446865622,
+    "p5": 0.3387591648130548,
+    "p95": 0.4109258011583683,
+    "nonfinite_draws": 0
+   },
+   "group/Endothelium/A_c_corr": {
+    "value": 0.40376660230999706,
+    "p5": 0.3627115689071855,
+    "p95": 0.43998084044411373,
+    "nonfinite_draws": 0
+   },
+   "group/Endothelium/A_s": {
+    "value": -0.018517583761073233,
+    "p5": -0.05465708824289474,
+    "p95": 0.007272945053935944,
+    "nonfinite_draws": 0
+   },
+   "group/Endothelium/A_s_corr": {
+    "value": -0.02240596430492057,
+    "p5": -0.06613415572908503,
+    "p95": 0.008800140956440463,
+    "nonfinite_draws": 0
+   },
+   "group/Epicardium/A_M": {
+    "value": 0.3012849230652307,
+    "p5": 0.29042661049548274,
+    "p95": 0.3094315462747052,
+    "nonfinite_draws": 0
+   },
+   "group/Epicardium/A_M_corr": {
+    "value": 0.3491742944398195,
+    "p5": 0.3365900482990729,
+    "p95": 0.35861582700074174,
+    "nonfinite_draws": 0
+   },
+   "group/Epicardium/A_c": {
+    "value": 0.42599624293646865,
+    "p5": 0.4058416629517536,
+    "p95": 0.4438889417435521,
+    "nonfinite_draws": 0
+   },
+   "group/Epicardium/A_c_corr": {
+    "value": 0.4561168572644284,
+    "p5": 0.43453722168185877,
+    "p95": 0.4752746824405602,
+    "nonfinite_draws": 0
+   },
+   "group/Epicardium/A_s": {
+    "value": 0.3506692893805231,
+    "p5": 0.3385982053116354,
+    "p95": 0.35999971411441944,
+    "nonfinite_draws": 0
+   },
+   "group/Epicardium/A_s_corr": {
+    "value": 0.4563075530838021,
+    "p5": 0.44060008453338123,
+    "p95": 0.46844874539373604,
+    "nonfinite_draws": 0
+   },
+   "R": {
+    "value": 2.716280008605797,
+    "p5": 2.596850408393674,
+    "p95": 2.8886903468852445,
+    "nonfinite_draws": 0
+   },
+   "R_lib3": {
+    "value": 1.666355455884678,
+    "p5": 1.6271002072710112,
+    "p95": 1.6977830749112839,
+    "nonfinite_draws": 0
+   },
+   "R_K": {
+    "value": 0.41863078054734315,
+    "p5": 0.3454914099863789,
+    "p95": 0.5040639813378305,
+    "nonfinite_draws": 0
+   },
+   "R_a": {
+    "value": 5.313949578502339,
+    "p5": 3.6080355278390797,
+    "p95": 10.244772329225682,
+    "nonfinite_draws": 0
+   },
+   "R_corr": {
+    "value": 2.204822821747557,
+    "p5": 2.112760075041588,
+    "p95": 2.3392959326896814,
+    "nonfinite_draws": 0
+   },
+   "R_lib3_corr": {
+    "value": 1.3958093596164864,
+    "p5": 1.3630284074824994,
+    "p95": 1.4211421412947136,
+    "nonfinite_draws": 0
+   },
+   "R_K_corr": {
+    "value": 0.3645033001846137,
+    "p5": 0.3010214795237098,
+    "p95": 0.43776230721566306,
+    "nonfinite_draws": 0
+   },
+   "R_a_corr": {
+    "value": 5.126630479212898,
+    "p5": 3.309728412790358,
+    "p95": 11.393129144179648,
+    "nonfinite_draws": 0
+   },
+   "R_w": {
+    "value": 2.981973498036513,
+    "p5": 2.8351308899016257,
+    "p95": 3.20247121514509,
+    "nonfinite_draws": 0
+   },
+   "R_lib3_w": {
+    "value": 1.7784255172328312,
+    "p5": 1.7344393154997477,
+    "p95": 1.814802536804859,
+    "nonfinite_draws": 0
+   },
+   "R_K_w": {
+    "value": 0.43764247710316617,
+    "p5": 0.3599313226552925,
+    "p95": 0.5224786924665689,
+    "nonfinite_draws": 0
+   },
+   "R_a_w": {
+    "value": NaN,
+    "p5": 11.74999081646109,
+    "p95": 1005.6725841472041,
+    "nonfinite_draws": 160
+   },
+   "R_w_corr": {
+    "value": 2.391433846662871,
+    "p5": 2.281299404963922,
+    "p95": 2.562188271679257,
+    "nonfinite_draws": 0
+   },
+   "R_lib3_w_corr": {
+    "value": 1.480438596565666,
+    "p5": 1.444704368948202,
+    "p95": 1.510051230170886,
+    "nonfinite_draws": 0
+   },
+   "R_K_w_corr": {
+    "value": 0.38041969669762116,
+    "p5": 0.3139536169204208,
+    "p95": 0.4539611236814175,
+    "nonfinite_draws": 0
+   },
+   "R_a_w_corr": {
+    "value": NaN,
+    "p5": 13.737103371546077,
+    "p95": 326.6378071716516,
+    "nonfinite_draws": 177
+   },
+   "R_n": {
+    "value": 2.9999303547308993,
+    "p5": 2.871357545174392,
+    "p95": 3.204621038744291,
+    "nonfinite_draws": 0
+   },
+   "R_lib3_n": {
+    "value": 1.8203500042806435,
+    "p5": 1.7792119206508812,
+    "p95": 1.853791415757357,
+    "nonfinite_draws": 0
+   },
+   "R_K_n": {
+    "value": 0.44058329897569437,
+    "p5": 0.3616402693205503,
+    "p95": 0.5266852841594409,
+    "nonfinite_draws": 0
+   },
+   "R_a_n": {
+    "value": NaN,
+    "p5": NaN,
+    "p95": NaN,
+    "nonfinite_draws": 200
+   },
+   "R_n_corr": {
+    "value": 2.401718382648679,
+    "p5": 2.3045130990285796,
+    "p95": 2.554439385857514,
+    "nonfinite_draws": 0
+   },
+   "R_lib3_n_corr": {
+    "value": 1.5139063576884175,
+    "p5": 1.4799051703802752,
+    "p95": 1.5412483778377346,
+    "nonfinite_draws": 0
+   },
+   "R_K_n_corr": {
+    "value": 0.3838357124910712,
+    "p5": 0.3143635987254745,
+    "p95": 0.4588954476275177,
+    "nonfinite_draws": 0
+   },
+   "R_a_n_corr": {
+    "value": NaN,
+    "p5": NaN,
+    "p95": NaN,
+    "nonfinite_draws": 200
+   },
+   "R_corr_without/CM": {
+    "value": 1.5024583328826082,
+    "p5": 1.4502312344949928,
+    "p95": 1.5818612507775063,
+    "nonfinite_draws": 0
+   },
+   "R_corr_without/Endocardium": {
+    "value": 2.2585527092458215,
+    "p5": 2.12886452763971,
+    "p95": 2.37777655319277,
+    "nonfinite_draws": 0
+   },
+   "R_corr_without/Endothelium": {
+    "value": 2.017403040601896,
+    "p5": 1.9377815881969356,
+    "p95": 2.1456397338233426,
+    "nonfinite_draws": 0
+   },
+   "R_corr_without/Epicardium": {
+    "value": 6.220267459326774,
+    "p5": 5.203797860215372,
+    "p95": 8.249771397248805,
+    "nonfinite_draws": 0
+   },
+   "L_eff": {
+    "value": 0.8342320620692518,
+    "p5": 0.8342320620692518,
+    "p95": 0.8342320620692518,
+    "nonfinite_draws": 0
+   },
+   "L_eff_uncapped": {
+    "value": 1.4700186148656507,
+    "p5": 1.421436985008858,
+    "p95": 1.5409802484821946,
+    "nonfinite_draws": 0
+   },
+   "A_M_over_L_eff": {
+    "value": 0.3044587711629113,
+    "p5": 0.2955273559187443,
+    "p95": 0.3095826661294383,
+    "nonfinite_draws": 0
+   },
+   "f_max": {
+    "value": 0.5802427935869459,
+    "p5": 0.5759682761231939,
+    "p95": 0.587693666543284,
+    "nonfinite_draws": 0
+   },
+   "f_even": {
+    "value": 0.29012139679347293,
+    "p5": 0.28798413806159695,
+    "p95": 0.293846833271642,
+    "nonfinite_draws": 0
+   },
+   "f_decay": {
+    "value": 0.3579280150894132,
+    "p5": 0.35717485288264733,
+    "p95": 0.35826316859997814,
+    "nonfinite_draws": 0
+   },
+   "L_eff_corr": {
+    "value": 0.9547335982602717,
+    "p5": 0.9547335982602717,
+    "p95": 0.9547335982602717,
+    "nonfinite_draws": 0
+   },
+   "L_eff_uncapped_corr": {
+    "value": 1.6823570149042735,
+    "p5": 1.6267579599273214,
+    "p95": 1.763568777052449,
+    "nonfinite_draws": 0
+   },
+   "A_M_over_L_eff_corr": {
+    "value": 0.2956605245306362,
+    "p5": 0.2867142351241811,
+    "p95": 0.30052429619513,
+    "nonfinite_draws": 0
+   },
+   "f_max_corr": {
+    "value": 0.6724565618116181,
+    "p5": 0.6678129555892596,
+    "p95": 0.6809978848877206,
+    "nonfinite_draws": 0
+   },
+   "f_even_corr": {
+    "value": 0.33622828090580903,
+    "p5": 0.3339064777946298,
+    "p95": 0.3404989424438603,
+    "nonfinite_draws": 0
+   },
+   "f_decay_corr": {
+    "value": 0.4087820401205749,
+    "p5": 0.40766987896323104,
+    "p95": 0.4092801440806588,
+    "nonfinite_draws": 0
+   },
+   "L_eff_w": {
+    "value": 0.8342320620692518,
+    "p5": 0.8342320620692518,
+    "p95": 0.8342320620692518,
+    "nonfinite_draws": 0
+   },
+   "L_eff_uncapped_w": {
+    "value": 1.5798485332499217,
+    "p5": 1.5208316752282698,
+    "p95": 1.6713493344734596,
+    "nonfinite_draws": 0
+   },
+   "A_M_over_L_eff_w": {
+    "value": 0.3044587711629113,
+    "p5": 0.2955273559187443,
+    "p95": 0.3095826661294383,
+    "nonfinite_draws": 0
+   },
+   "f_max_w": {
+    "value": 0.5802427935869459,
+    "p5": 0.5759682761231939,
+    "p95": 0.587693666543284,
+    "nonfinite_draws": 0
+   },
+   "f_even_w": {
+    "value": 0.29012139679347293,
+    "p5": 0.28798413806159695,
+    "p95": 0.293846833271642,
+    "nonfinite_draws": 0
+   },
+   "f_decay_w": {
+    "value": 0.3579280150894132,
+    "p5": 0.35717485288264733,
+    "p95": 0.35826316859997814,
+    "nonfinite_draws": 0
+   },
+   "L_eff_w_corr": {
+    "value": 0.9547335982602717,
+    "p5": 0.9547335982602717,
+    "p95": 0.9547335982602717,
+    "nonfinite_draws": 0
+   },
+   "L_eff_uncapped_w_corr": {
+    "value": 1.808051432493012,
+    "p5": 1.7405098217363282,
+    "p95": 1.9127691641265323,
+    "nonfinite_draws": 0
+   },
+   "A_M_over_L_eff_w_corr": {
+    "value": 0.2956605245306362,
+    "p5": 0.2867142351241811,
+    "p95": 0.30052429619513,
+    "nonfinite_draws": 0
+   },
+   "f_max_w_corr": {
+    "value": 0.6724565618116181,
+    "p5": 0.6678129555892596,
+    "p95": 0.6809978848877206,
+    "nonfinite_draws": 0
+   },
+   "f_even_w_corr": {
+    "value": 0.33622828090580903,
+    "p5": 0.3339064777946298,
+    "p95": 0.3404989424438603,
+    "nonfinite_draws": 0
+   },
+   "f_decay_w_corr": {
+    "value": 0.4087820401205749,
+    "p5": 0.40766987896323104,
+    "p95": 0.4092801440806588,
+    "nonfinite_draws": 0
+   },
+   "L_eff_n": {
+    "value": 0.8342320620692518,
+    "p5": 0.8342320620692518,
+    "p95": 0.8342320620692518,
+    "nonfinite_draws": 0
+   },
+   "L_eff_uncapped_n": {
+    "value": 1.5751339157413515,
+    "p5": 1.523754426314405,
+    "p95": 1.6558571735460168,
+    "nonfinite_draws": 0
+   },
+   "A_M_over_L_eff_n": {
+    "value": 0.3044587711629113,
+    "p5": 0.2955273559187443,
+    "p95": 0.3095826661294383,
+    "nonfinite_draws": 0
+   },
+   "f_max_n": {
+    "value": 0.5802427935869459,
+    "p5": 0.5759682761231939,
+    "p95": 0.587693666543284,
+    "nonfinite_draws": 0
+   },
+   "f_even_n": {
+    "value": 0.29012139679347293,
+    "p5": 0.28798413806159695,
+    "p95": 0.293846833271642,
+    "nonfinite_draws": 0
+   },
+   "f_decay_n": {
+    "value": 0.3579280150894132,
+    "p5": 0.35717485288264733,
+    "p95": 0.35826316859997814,
+    "nonfinite_draws": 0
+   },
+   "L_eff_n_corr": {
+    "value": 0.9547335982602716,
+    "p5": 0.9547335982602716,
+    "p95": 0.9547335982602716,
+    "nonfinite_draws": 0
+   },
+   "L_eff_uncapped_n_corr": {
+    "value": 1.8026558070513177,
+    "p5": 1.7438547527071706,
+    "p95": 1.8950392215606755,
+    "nonfinite_draws": 0
+   },
+   "A_M_over_L_eff_n_corr": {
+    "value": 0.2956605245306362,
+    "p5": 0.28671423512418115,
+    "p95": 0.30052429619513,
+    "nonfinite_draws": 0
+   },
+   "f_max_n_corr": {
+    "value": 0.6724565618116181,
+    "p5": 0.6678129555892595,
+    "p95": 0.6809978848877206,
+    "nonfinite_draws": 0
+   },
+   "f_even_n_corr": {
+    "value": 0.33622828090580903,
+    "p5": 0.33390647779462973,
+    "p95": 0.3404989424438603,
+    "nonfinite_draws": 0
+   },
+   "f_decay_n_corr": {
+    "value": 0.40878204012057484,
+    "p5": 0.4076698789632309,
+    "p95": 0.40928014408065877,
+    "nonfinite_draws": 0
+   }
+  },
+  "statement": {
+   "R_corr": "the common part moves as much",
+   "R": "the common part moves as much",
+   "turned_on": null,
+   "void": [],
+   "why_not_separated": null,
+   "statement": "the common part moves as much",
+   "R_corr_without_each_group": {
+    "CM": "the common part moves as much",
+    "Endocardium": "the common part moves as much",
+    "Endothelium": "the common part moves as much",
+    "Epicardium": "the common part moves as much"
+   }
+  },
+  "gauge": {
+   "a": {
+    "A_M": 0.2385112711062286,
+    "A_c": 0.3114178202855604,
+    "A_s": 0.09960539132398609,
+    "R": 3.1265157050848065,
+    "A_M_corr": 0.2906593212200429,
+    "A_c_corr": 0.35545861302045634,
+    "A_s_corr": 0.16481735985311433,
+    "R_corr": 2.1566818770622342
+   },
+   "b": {
+    "A_M": 0.22594232565747124,
+    "A_c": 0.30059343932163396,
+    "A_s": 0.09344766220465354,
+    "R": 3.2167036845001444,
+    "A_M_corr": 0.2747021184409698,
+    "A_c_corr": 0.3434735467692286,
+    "A_s_corr": 0.15278253321652452,
+    "R_corr": 2.2481205118025853
+   },
+   "a_minus_b": {
+    "A_M": 0.012568945448757363,
+    "A_c": 0.010824380963926461,
+    "A_s": 0.0061577291193325445,
+    "R": -0.09018797941533796,
+    "A_M_corr": 0.015957202779073087,
+    "A_c_corr": 0.01198506625122775,
+    "A_s_corr": 0.012034826636589807,
+    "R_corr": -0.09143863474035108
+   }
+  },
+  "n_boot": 200,
+  "seed": [
+   51,
+   0
+  ],
+  "percentiles": [
+   5.0,
+   95.0
+  ],
+  "bootstrap_seconds": 344.0,
+  "calibration": {
+   "fraction": 0.2,
+   "stream": [
+    47,
+    1
+   ],
+   "groups": {
+    "CM": {
+     "d_T47/share": 0.12123286884107261,
+     "M/share": 0.12123286884107261,
+     "c/share": 0.08024553092674616,
+     "s/share": 0.058107908089094586,
+     "c_w/share": 0.07928877869553025,
+     "s_w/share": 0.053781726709115935,
+     "c_n/share": 0.08354341906493713,
+     "s_n/share": 0.050813673122451136
+    },
+    "Endocardium": {
+     "d_T47/share": 0.11636480641267703,
+     "M/share": 0.11636480641267703,
+     "c/share": 0.12786349895631421,
+     "s/share": 0.13180668656897573,
+     "c_w/share": 0.12501290270160834,
+     "s_w/share": 0.1234481623962832,
+     "c_n/share": 0.11342589922411665,
+     "s_n/share": 0.09736805230955008
+    },
+    "Endothelium": {
+     "d_T47/share": 0.1086924024413683,
+     "M/share": 0.1086924024413683,
+     "c/share": 0.11055252850832144,
+     "s/share": 0.08196710336086056,
+     "c_w/share": 0.10502534663780663,
+     "s_w/share": 0.06901505607453358,
+     "c_n/share": 0.09483818199729648,
+     "s_n/share": 0.061475327520645426
+    },
+    "Epicardium": {
+     "d_T47/share": 0.11458393382381284,
+     "M/share": 0.11458393382381284,
+     "c/share": 0.15336033410889038,
+     "s/share": 0.14141148721449398,
+     "c_w/share": 0.1526928606063003,
+     "s_w/share": 0.143390735406983,
+     "c_n/share": 0.16101643827768414,
+     "s_n/share": 0.16281103851667256
+    }
+   },
+   "combined_weighted": {
+    "M": 0.11666527099342923,
+    "c": 0.12097686273355863,
+    "s": 0.11166001904399069,
+    "c_w": 0.11903078432346,
+    "s_w": 0.10681829453112916,
+    "c_n": 0.11702164760100894,
+    "s_n": 0.10019096048708215,
+    "d_T47": 0.11666527099342923
+   },
+   "combined_over": [
+    "CM",
+    "Endocardium",
+    "Endothelium",
+    "Epicardium"
+   ],
+   "R": 1.0834393883266078,
+   "R_w": 1.1143295710340315,
+   "R_n": 1.1679860840948502
+  },
+  "self_check": {
+   "fraction": 0.2,
+   "stream": [
+    47,
+    2
+   ],
+   "split_stream": [
+    47,
+    3
+   ],
+   "support": [
+    "CM",
+    "Endocardium",
+    "Endothelium",
+    "Epicardium"
+   ],
+   "measured": {
+    "A_M": 0.10646198607719615,
+    "A_c": 0.115069946488239,
+    "A_s": 0.09245776894074995,
+    "R": 1.2445676313256022,
+    "R_corr": 1.2445676313256022,
+    "A_c_w": 0.11288755387233432,
+    "A_s_w": 0.08853072397772949,
+    "R_w": 1.2751229042330203,
+    "R_w_corr": 1.2751229042330203
+   },
+   "known": {
+    "A_M": 0.2,
+    "A_c": 0.2,
+    "A_s": 0.2,
+    "R": 1.0,
+    "R_corr": 1.0,
+    "A_c_w": 0.2,
+    "A_s_w": 0.2,
+    "R_w": 1.0,
+    "R_w_corr": 1.0
+   },
+   "bias": {
+    "A_M": -0.09353801392280386,
+    "A_c": -0.08493005351176101,
+    "A_s": -0.10754223105925007,
+    "R": 0.24456763132560222,
+    "R_corr": 0.24456763132560222,
+    "A_c_w": -0.0871124461276657,
+    "A_s_w": -0.11146927602227052,
+    "R_w": 0.2751229042330203,
+    "R_w_corr": 0.2751229042330203
+   },
+   "known_by_definition": {
+    "A_M": 0.2,
+    "A_c": 0.20368160357474155,
+    "A_s": 0.20144435533379831,
+    "R": 1.0111060358938133,
+    "R_corr": 1.0111060358938133,
+    "A_c_w": 0.20000000000000007,
+    "A_s_w": 0.19391966993450271,
+    "R_w": 1.0313548907521914,
+    "R_w_corr": 1.0313548907521914
+   },
+   "bias_from_definition": {
+    "A_M": -0.09353801392280386,
+    "A_c": -0.08861165708650255,
+    "A_s": -0.10898658639304837,
+    "R": 0.2334615954317889,
+    "R_corr": 0.2334615954317889,
+    "A_c_w": -0.08711244612766575,
+    "A_s_w": -0.10538894595677323,
+    "R_w": 0.24376801348082888,
+    "R_w_corr": 0.24376801348082888
+   }
+  },
+  "correction_check": {
+   "fraction": 0.2,
+   "stream": [
+    47,
+    2
+   ],
+   "support": [
+    "CM",
+    "Endocardium",
+    "Endothelium",
+    "Epicardium"
+   ],
+   "measured": {
+    "A_M": 0.08855339691251164,
+    "A_c": 0.10338701177582828,
+    "A_s": 0.06314278902049249,
+    "R": 1.6373526317039124,
+    "R_corr": 1.2373005010543752,
+    "A_c_w": 0.10145145070174985,
+    "A_s_w": 0.06009825265401178,
+    "R_w": 1.688093184435997,
+    "R_w_corr": 1.2687245777075578
+   },
+   "known": {
+    "A_M": 0.2,
+    "A_c": 0.2,
+    "A_s": 0.2,
+    "R": 1.0,
+    "R_corr": 1.0,
+    "A_c_w": 0.2,
+    "A_s_w": 0.2,
+    "R_w": 1.0,
+    "R_w_corr": 1.0
+   },
+   "bias": {
+    "A_M": -0.11144660308748837,
+    "A_c": -0.09661298822417173,
+    "A_s": -0.13685721097950754,
+    "R": 0.6373526317039124,
+    "R_corr": 0.23730050105437517,
+    "A_c_w": -0.09854854929825016,
+    "A_s_w": -0.13990174734598823,
+    "R_w": 0.688093184435997,
+    "R_w_corr": 0.26872457770755775
+   },
+   "bias_from_definition": {
+    "A_M": -0.11144660308748837,
+    "A_c": -0.10029459179891327,
+    "A_s": -0.1383015663133058,
+    "R": 0.6262465958100991,
+    "R_corr": 0.22619446516056185,
+    "A_c_w": -0.09854854929825022,
+    "A_s_w": -0.13382141728049093,
+    "R_w": 0.6567382936838055,
+    "R_w_corr": 0.2373696869553663
+   }
+  }
+ },
+ "feng": {
+  "file": "/home/prachh/v/vec-campaign-h7/data/external/feng2022_gse193346_geo/cd1_stats.npz",
+  "sha256": "28f188fb9409984142a70a5a940dde3d1d3187b033d94ee2d26337a216f295c3"
+ },
+ "stamp": {
+  "commit": "643d6107330064e0a14c819c03c1d30cae997538",
+  "tree_clean": true,
+  "utc": "2026-11-17T09:50:36Z",
+  "inputs": {
+   "/home/prachh/v/vec-campaign-h7/data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+   "/home/prachh/v/vec-campaign-h7/data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+   "/home/prachh/v/vec-campaign-h7/data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+   "/home/prachh/v/vec-campaign-h7/data/external/feng2022_gse193346_geo/cd1_stats.npz": "28f188fb9409984142a70a5a940dde3d1d3187b033d94ee2d26337a216f295c3",
+   "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+   "experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841",
+   "experiments/t1_m1/results/t47_share_read/t47.json": "1f2f92b12316b8f9ce5462622df8831817d839e364f20c95f248bb304818b125"
+  }
+ }
+}
