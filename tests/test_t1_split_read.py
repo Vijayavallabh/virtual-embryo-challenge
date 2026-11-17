@@ -400,18 +400,27 @@ def test_each_statement_value_is_reached(sp):
     assert sp.statement(less, bias0, nb, ["x"])["statement"] == "void (x)"
 
 
-def test_the_void_cases(sp, cfg):
-    c0, S = split_dirs(seed=8)
-    genes, fst, _ = feng_world(c0, S, seed=8)
+def _void_world(sp, cfg, seed=8):
+    c0, S = split_dirs(seed=seed)
+    genes, fst, _ = feng_world(c0, S, seed=seed)
     stages = t1_world(sp, cfg, genes, fst, group_change(c0, S, 0.2, 0.2))
     t47 = t47_of(sp, stages, fst, cfg)
-    setup, extra = sp.build_setup(stages, fst, [], cfg, t47)
-    point = sp.measure_split(extra["tabs"], {s: sp.sr.block_sums(t) for s, t in extra["tabs"].items()}, setup)
+    return stages, fst, t47
+
+
+def test_the_void_cases(sp, cfg):
+    stages, fst, t47 = _void_world(sp, cfg)
+    setup, extra, point = sp.prepare(stages, fst, [], cfg, t47)
     good_sc = {"measured": {"R": 1.0}}
     assert sp.void_reasons(point, setup, t47["A"], good_sc) == []
-    assert sp.void_reasons(point, setup, t47["A"] + 0.019, good_sc) == []
-    (why,) = sp.void_reasons(point, setup, t47["A"] + 0.021, good_sc)
-    assert why.startswith("A_M") and "within 0.02" in why
+    # A_M against T47's A: within 0.02 passes, beyond it voids (A on T47's own masks left at T47's A)
+    for delta, voids in ((0.019, False), (0.021, True)):
+        p = {**point, "reading/A_M": t47["A"] + delta}
+        reasons = sp.void_reasons(p, setup, t47["A"], good_sc)
+        assert (reasons != []) == voids
+        if voids:
+            (why,) = reasons
+            assert why.startswith("A_M") and "within 0.02" in why
     (why,) = sp.void_reasons(point, setup, t47["A"], {"measured": {"R": float("nan")}})
     assert why == "the self-check's R is undefined"
     (why,) = sp.void_reasons(point, setup, t47["A"], None)
@@ -420,10 +429,72 @@ def test_the_void_cases(sp, cfg):
     e105 = stages["E10.5"]
     drop = (e105.obs["celltype"] == "Epicardium") & np.array([n.endswith("_3") for n in e105.obs_names])
     stages2 = {**stages, "E10.5": e105[~drop.to_numpy()].copy()}
-    setup2, extra2 = sp.build_setup(stages2, fst, [], cfg, t47)
-    point2 = sp.measure_split(extra2["tabs"], {s: sp.sr.block_sums(t) for s, t in extra2["tabs"].items()}, setup2)
+    setup2, _, point2 = sp.prepare(stages2, fst, [], cfg, t47)
     reasons = sp.void_reasons(point2, setup2, t47["A"], good_sc)
     assert any("['Epicardium']" in x for x in reasons)
+    assert "Epicardium" not in setup2["read_set"]
+
+
+def test_void_when_a_on_t47s_own_masks_is_not_t47s_committed_A(sp, cfg):
+    """The inputs must be T47's: A along d_g on T47's own masks equals T47's committed A within 1e-9, while the 0.02
+    rule on A_M is left for the mask change."""
+    stages, fst, t47 = _void_world(sp, cfg)
+    setup, _, point = sp.prepare(stages, fst, [], cfg, t47)
+    assert point["reading/A_M_T47_mask"] == pytest.approx(t47["A"], abs=1e-12)
+    good_sc = {"measured": {"R": 1.0}}
+    (why,) = sp.void_reasons(point, setup, t47["A"] + 1e-6, good_sc)
+    assert why.startswith("A on T47's own masks") and "the inputs are not T47's" in why
+    assert sp.void_reasons(point, setup, t47["A"] + 5e-10, good_sc) == []
+
+
+def test_void_when_only_the_shares_along_s_g_are_missing(sp, cfg):
+    """A group whose s_g is zero on M has no share along s_g (and none corrected) while its shares along M and c stand:
+    the read set drops it and the reading is void, naming the s_g share."""
+    stages, fst, t47 = _void_world(sp, cfg)
+    setup, extra = sp.build_setup(stages, fst, [], cfg, t47)
+    setup["vecs"]["s"]["Epicardium"] = np.where(setup["M"], 0.0, np.nan)
+    shares = sp.measure_shares(extra["tabs"], {s: sp.sr.block_sums(t) for s, t in extra["tabs"].items()}, setup)
+    assert np.isfinite(shares["b_E9.5_E10.5_lib1/Epicardium/c/share"])
+    assert np.isfinite(shares["b_E9.5_E10.5_lib1/Epicardium/M/share_corrected"])
+    assert np.isnan(shares["b_E9.5_E10.5_lib1/Epicardium/s/share"])
+    sp.finish_setup(setup, shares)
+    assert setup["read_set"] == ["CM", "Endocardium", "Endothelium"]
+    point = {**shares, **{f"reading/{k}": v for k, v in sp.split_values(shares, setup).items()}}
+    reasons = sp.void_reasons(point, setup, point["reading/A_M"], {"measured": {"R": 1.0}})
+    miss = [x for x in reasons if x.startswith("groups of T47's A set without")]
+    assert len(miss) == 1 and "['Epicardium']" in miss[0] and "Epicardium b_E9.5_E10.5_lib1/s/share" in miss[0]
+
+
+def test_a_group_with_a_pure_noise_specific_part_voids_the_read(sp, cfg):
+    """The reviewer's case: Epicardium's true direction is the common part (its s_g is Feng noise alone), half noise sd
+    0.25, true R 0.5. Seed 20 gives r_s(Epicardium) = 0: its corrected share along s_g is undefined, so it leaves the
+    read set for every A (common and specific alike) and the read is void on its reliability."""
+    c0, S = split_dirs(seed=20)
+    S[3] = 0.0
+    S[:3] -= S[:3].mean(0)
+    r, t47 = _read(sp, cfg, c0, S, 0.15, 0.3, half_noise=0.25, seed=20, n_boot=2)
+    assert r["reliability"]["s"]["Epicardium"] == 0.0
+    assert "Epicardium" in t47["support"] and r["read_set"] == ["CM", "Endocardium", "Endothelium"]
+    void = r["statement"]["void"]
+    assert any(x.startswith("groups of T47's A set whose reliability") and "Epicardium" in x and "r_s 0.0000" in x
+               for x in void)
+    assert any(x.startswith("groups of T47's A set without") for x in void)
+    assert r["statement"]["statement"].startswith("void")
+    # A_c and A_s (raw and corrected) rest on the same three groups: recompute them from the per-group shares
+    v, w = r["values"], {g: 1.0 for g in r["read_set"]}  # every group has the same library-3 cells here
+    for vec in ("c", "s"):
+        for f, tag in (("share", ""), ("share_corrected", "_corr")):
+            want = np.mean([(v[f"b_E9.5_E10.5_lib1/{g}/{vec}/{f}"]["value"]
+                             + v[f"b_E9.5_E10.5_lib2/{g}/{vec}/{f}"]["value"]) / 2 for g in w])
+            assert r["reading"][f"A_{vec}{tag}"]["value"] == pytest.approx(want, rel=1e-12)
+
+
+def test_strict_combine_never_shrinks_its_set(sp):
+    w = {"a": 1.0, "b": 3.0, "c": 0.0}
+    assert sp.strict_combine({"a": 1.0, "b": 2.0, "c": 9.0}, ["a", "b", "c"], w) == pytest.approx(1.75)  # c: weight 0
+    assert np.isnan(sp.strict_combine({"a": 1.0, "b": float("nan")}, ["a", "b"], w))
+    assert np.isnan(sp.strict_combine({"a": 1.0}, [], w))
+    assert sp.sr.combine({"a": 1.0, "b": float("nan")}, w)[0] == 1.0  # T47's combine would have dropped b
 
 
 def test_the_held_genes_leave_M_and_A_M_stays_close_to_t47(sp, cfg):
@@ -480,6 +551,194 @@ def test_the_limits_are_in_the_docstring_and_the_output_holds_no_cell_count(sp):
     assert all(any(n.startswith(s) for n in sp.LEDGER_NOTES) for s in starts)
     src = SCRIPT.read_text()
     assert '"weights"' not in src.split("res = {", 1)[1].split("}", 1)[0]  # the record carries no weights
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# The review's fixes
+
+
+def test_l_eff_is_fed_r_corr_not_r_and_uncapped_beside_it(sp, cfg):
+    """With Feng half noise R and R_corr differ; L_eff takes R_corr (capped at 1), L_eff_uncapped R_corr as it is."""
+    c0, S = split_dirs(seed=13)
+    r, t47 = _read(sp, cfg, c0, S, 0.15, 0.3, half_noise=0.25, seed=13, n_boot=1)
+    rd, E = r["reading"], r["energy"]["unweighted"]
+    R, Rc = rd["R"]["value"], rd["R_corr"]["value"]
+    assert abs(R - Rc) > 0.03 and Rc < 1
+    want = sp.l_eff(t47["L"], Rc, E["e_s"], E["e_c"])
+    assert rd["L_eff"]["value"] == pytest.approx(want, rel=1e-12)
+    assert abs(rd["L_eff"]["value"] - sp.l_eff(t47["L"], R, E["e_s"], E["e_c"])) > 1e-3
+    assert rd["L_eff_corr"]["value"] == pytest.approx(sp.l_eff(t47["L_corr"], Rc, E["e_s"], E["e_c"]), rel=1e-12)
+    assert rd["L_eff_uncapped"]["value"] == pytest.approx(want, rel=1e-12)  # R_corr < 1: the cap is idle
+    assert sp.l_eff(1.2, 1.7, 0.6, 0.4, cap=False) == pytest.approx(1.2 * (0.6 + 1.7 * 0.4))
+    assert sp.l_eff(1.2, 1.7, 0.6, 0.4, cap=False) > sp.l_eff(1.2, 1.7, 0.6, 0.4)
+
+
+def test_energy_parts_are_combined_with_unequal_library_3_weights(sp, cfg):
+    stages, fst, t47 = _void_world(sp, cfg)
+    setup, extra = sp.build_setup(stages, fst, [], cfg, t47)
+    shares = sp.measure_shares(extra["tabs"], {s: sp.sr.block_sums(t) for s, t in extra["tabs"].items()}, setup)
+    setup["weights"] = {"CM": 5.0, "Endocardium": 1.0, "Endothelium": 2.0, "Epicardium": 0.5}
+    sp.finish_setup(setup, shares)
+    eg = setup["energy_g"]["unweighted"]
+    for p in ("e_c", "e_s", "cross"):
+        want = sum(setup["weights"][g] * eg[g][p] for g in eg) / 8.5
+        assert setup["energy"]["unweighted"][p] == pytest.approx(want, rel=1e-12)
+    unw = np.mean([eg[g]["e_c"] for g in eg])
+    assert abs(setup["energy"]["unweighted"]["e_c"] - unw) > 1e-3
+
+
+def test_the_self_check_bias_is_against_the_briefs_known_values_in_a_non_orthogonal_world(sp, cfg):
+    """With c and s_g not orthogonal, the definitional known R differs from 1: bias['R'] is measured minus 1 (the
+    brief's), bias_from_definition['R'] measured minus the definitional value, and the two differ. The values rest on
+    the set the self-check reports (S_g carries k_g c0 with k = 1.5, -0.5, -0.5, -0.5, so the parts still sum to 0)."""
+    c0, S = split_dirs(seed=7)
+    S += np.outer([1.5, -0.5, -0.5, -0.5], c0)
+    genes, fst, _ = feng_world(c0, S, seed=7)
+    stages = t1_world(sp, cfg, genes, fst, group_change(c0, S, 0.2, 0.2), counts=True, seed=7)
+    t47 = t47_of(sp, stages, fst, cfg)
+    r = sp.split_reading(stages, fst, [], cfg, t47, n_boot=1, self_check=True)
+    sc = r["self_check"]
+    assert sc["support"] == r["read_set"] == t47["support"]
+    assert sc["bias"]["R"] == sc["measured"]["R"] - 1.0
+    assert sc["bias_from_definition"]["R"] == sc["measured"]["R"] - sc["known_by_definition"]["R"]
+    assert abs(sc["known_by_definition"]["R"] - 1.0) > 0.05
+    assert abs(sc["bias"]["R"] - sc["bias_from_definition"]["R"]) > 0.05
+    assert abs(sc["bias_from_definition"]["R"]) < abs(sc["bias"]["R"])
+
+
+def test_leave_one_out_r_corr_and_its_statements(sp, cfg):
+    c0, S = split_dirs(seed=6)
+    r, _ = _read(sp, cfg, c0, S, 0.15, 0.3, counts=True, n_boot=5, self_check=True)
+    rd, v = r["reading"], r["values"]
+    assert set(r["statement"]["R_corr_without_each_group"]) == set(r["read_set"])
+    for g in r["read_set"]:
+        rest = [h for h in r["read_set"] if h != g]
+        w = {h: 1.0 for h in rest}
+
+        def a(vec, rest=rest, w=w):
+            return np.mean([(v[f"b_E9.5_E10.5_lib1/{h}/{vec}/share_corrected"]["value"]
+                             + v[f"b_E9.5_E10.5_lib2/{h}/{vec}/share_corrected"]["value"]) / 2 for h in w])
+
+        assert rd[f"R_corr_without/{g}"]["value"] == pytest.approx(a("c") / a("s"), rel=1e-9)
+        assert r["statement"]["R_corr_without_each_group"][g] == sp.LESS
+
+
+def test_the_feng_half_gauge(sp, cfg):
+    """Identical halves: the gauge reads the read's own R from either half and a difference of 0; noisy halves: a
+    finite, non-zero difference."""
+    c0, S = split_dirs(seed=14)
+    r, _ = _read(sp, cfg, c0, S, 0.15, 0.3, n_boot=1)
+    g = r["gauge"]
+    assert g["a"]["R"] == pytest.approx(r["reading"]["R"]["value"], rel=1e-9)
+    assert g["a_minus_b"]["R_corr"] == pytest.approx(0.0, abs=1e-12)
+    r2, _ = _read(sp, cfg, c0, S, 0.15, 0.3, half_noise=0.25, seed=14, n_boot=1)
+    d = r2["gauge"]["a_minus_b"]
+    assert np.isfinite(d["R_corr"]) and abs(d["R_corr"]) > 1e-4
+    # single-half reliability: one half's noise variance is twice the mean's
+    rng = np.random.default_rng(0)
+    t = rng.normal(size=4000)
+    va, vb = t + rng.normal(0, 0.5, 4000), t + rng.normal(0, 0.5, 4000)
+    assert sp.half_reliability(vb, va, vb, np.ones(4000, bool)) == pytest.approx(1 / 1.25, abs=0.02)
+
+
+def test_c_n_keeps_one_group_per_overlapping_feng_label_set(sp, cfg):
+    labs = {g: (cfg["external_labels"][g] or [None])[0] for g in ("CM", "Endocardium", "Endothelium", "Epicardium",
+                                                                      "ventricularCM", "Hepatocyte")}
+    assert sp.non_overlapping_groups(list(labs), labs) == ["CM", "Endocardium", "Epicardium", "Hepatocyte"]
+    stages, fst, t47 = _void_world(sp, cfg)
+    setup, _ = sp.build_setup(stages, fst, [], cfg, t47)
+    assert setup["c_n_groups"] == ["CM", "Endocardium", "Epicardium"]
+    M = setup["M"]
+    want = np.mean([setup["dirs"][g][M] for g in ("CM", "Endocardium", "Epicardium")], 0)
+    assert np.allclose(setup["vecs"]["c_n"]["CM"][M], want)
+    assert np.allclose(setup["vecs"]["s_n"]["Endothelium"][M], setup["dirs"]["Endothelium"][M] - want)
+
+
+def test_the_correction_check(sp, cfg):
+    """Identical halves: the correction check is the self-check (d_a = d_b = d, every single-half reliability 1).
+    Noisy halves: moved along half A, read along half B corrected, it reads about 0.2 along c and s_g."""
+    c0, S = split_dirs(seed=15)
+    r, _ = _read(sp, cfg, c0, S, 0.2, 0.2, counts=True, n_boot=1, self_check=True, seed=15)
+    cc, sc = r["correction_check"], r["self_check"]
+    for k in sp.SELF_KEYS:
+        assert cc["measured"][k] == pytest.approx(sc["measured"][k], rel=1e-9)
+    r2, _ = _read(sp, cfg, c0, S, 0.2, 0.2, counts=True, n_boot=1, self_check=True, seed=15, half_noise=0.1)
+    cc2 = r2["correction_check"]
+    assert cc2["measured"]["A_c"] == pytest.approx(0.2, abs=0.03)
+    assert cc2["measured"]["A_s"] == pytest.approx(0.2, abs=0.04)
+    assert cc2["measured"]["R_corr"] == pytest.approx(1.0, abs=0.2)
+    assert r2["self_check"]["measured"]["R_corr"] == r2["self_check"]["measured"]["R"]  # it cannot see the noise
+
+
+def test_r_corr_error_at_2000_heavy_tailed_genes(sp):
+    """The correction's error with many genes, on vectors alone: four groups, unequal weights, Student-t(3) genes,
+    Feng half noise sd 0.5 (r_s 0.61-0.70), true R 0.5. Largest |R_corr - 0.5| over seeds 0-19 measured 0.017 (raw R
+    0.62-0.68); asserted at 0.025 on seeds 0-9."""
+    n, groups = 2000, ["g0", "g1", "g2", "g3"]
+    w = {g: float(i + 1) for i, g in enumerate(groups)}
+    M = np.ones(n, bool)
+    for seed in range(10):
+        rng = np.random.default_rng(seed)
+        c0 = rng.standard_t(3, n) * 0.3
+        c0 -= c0.mean()
+        S = rng.standard_t(3, (4, n)) * 0.3
+        S -= S.mean(0)
+        S -= np.outer(S @ c0 / (c0 @ c0), c0)
+        halves = {g: {"d_a": c0 + S[i] + rng.normal(0, 0.5, n), "d_b": c0 + S[i] + rng.normal(0, 0.5, n)}
+                  for i, g in enumerate(groups)}
+        d = {g: (halves[g]["d_a"] + halves[g]["d_b"]) / 2 for g in groups}
+        vecs = sp.vector_set(d, sp.split_vectors(d, M, w))
+        rel = sp.reliabilities(vecs, sp.half_vectors(halves, groups, M, w), M)
+        ch = {g: 0.15 * c0 + 0.3 * S[i] for i, g in enumerate(groups)}
+        A = {(v, f): sp.strict_combine({g: sp.sr.share_stats(ch[g], vecs[v][g], M, rel[v][g])[f] for g in groups},
+                                       groups, w) for v in ("c", "s") for f in ("share", "share_corrected")}
+        assert A[("c", "share")] / A[("s", "share")] > 0.6  # raw: biased upward by r_c / r_s
+        assert A[("c", "share_corrected")] / A[("s", "share_corrected")] == pytest.approx(0.5, abs=0.025)
+
+
+def test_a_raw_against_corrected_not_separated_is_labelled_as_the_attenuation_bias(sp):
+    nb = 10
+    r = {"R": _rec(1.2, 1.15, 1.25), "R_corr": _rec(0.6, 0.55, 0.65)}
+    st = sp.statement(r, {"R": 0.0, "R_corr": 0.0}, nb, r_c_over_r_s=2.0)
+    assert st["statement"] == sp.NOT_SEPARATED
+    assert st["why_not_separated"].startswith(sp.ATTENUATION) and "r_c / r_s 2.000" in st["why_not_separated"]
+    assert "R / R_corr 2.000" in st["why_not_separated"]
+    # raw lower than corrected: not the attenuation
+    st = sp.statement({"R": r["R_corr"], "R_corr": r["R"]}, {"R": 0.0, "R_corr": 0.0}, nb, r_c_over_r_s=2.0)
+    assert st["why_not_separated"] == "the readings on R and R_corr differ"
+    # agreement: no label
+    st = sp.statement({"R": r["R_corr"], "R_corr": r["R_corr"]}, {"R": 0.0, "R_corr": 0.0}, nb)
+    assert st["statement"] == sp.LESS and st["why_not_separated"] is None
+
+
+def test_the_attenuation_ratio_in_a_noisy_world(sp, cfg):
+    """R / R_corr at the point equals r_c / r_s combined (r_c is one number for every group; equal weights here)."""
+    c0, S = split_dirs(seed=16)
+    r, _ = _read(sp, cfg, c0, S, 0.15, 0.3, half_noise=0.25, seed=16, n_boot=1)
+    rd = r["reading"]
+    rs = [r["reliability"]["s"][g] for g in r["read_set"]]
+    sh = {g: np.mean([r["values"][f"b_E9.5_E10.5_lib{i}/{g}/s/share"]["value"] for i in (1, 2)])
+          for g in r["read_set"]}
+    eff = sum(sh.values()) / sum(sh[g] / x for g, x in zip(r["read_set"], rs, strict=True))
+    assert rd["R"]["value"] / rd["R_corr"]["value"] == pytest.approx(r["reliability"]["c"]["CM"] / eff, rel=1e-9)
+    assert r["r_c_over_r_s"] == pytest.approx(r["reliability"]["c"]["CM"] / np.mean(rs), rel=1e-9)
+
+
+def test_the_text_names_the_group_set_and_each_groups_r_s(sp, cfg):
+    c0, S = split_dirs(seed=6)
+    r, _ = _read(sp, cfg, c0, S, 0.15, 0.3, counts=True, n_boot=3, self_check=True, calibrate=True)
+    txt = sp.text({"label": sp.LABEL_T51, "read": r, "stamp": {"commit": "abc", "tree_clean": True, "utc": "t"}})
+    assert f"rest on the read set {r['read_set']}" in txt
+    assert "c averages ['CM', 'Endocardium', 'Endothelium', 'Epicardium']" in txt
+    assert "c_n averages ['CM', 'Endocardium', 'Epicardium']" in txt
+    for g in r["read_set"]:
+        assert f"    {g}: weight share +0.2500; r_M +1.0000, r_s +1.0000; along c" in txt
+        assert f"without {g} " in txt
+    assert "Feng half gauge" in txt and "Correction check" in txt and "uncapped" in txt
+    assert "does not test the noise correction" in txt
+    assert any(n.startswith("The read does not test the sample-difference hypothesis") for n in sp.LEDGER_NOTES)
+    assert "weights" not in json.dumps({k: v for k, v in r.items() if k != "weight_share"})
+    json.dumps(r)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
