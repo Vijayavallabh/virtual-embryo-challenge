@@ -338,6 +338,12 @@ declined, unless the captain names an exception.
 - 2026-11-14: a practice read (try T43c) found that a shallower practice target's depth scores better; its row fixed
   beforehand that this leads to no request. The captain, asked whether to reopen Task 1's depth (advice: released
   data alone or decline), has not answered; on 2026-11-17 the AI assistant recorded that the rule gives "declined".
+- 2026-11-17: practice reads on released stages (tries T44 to T54) found that a larger Task 1 step scores better on
+  the released day, and that the size at which it stops helping depends on how deep the truth is against the cells
+  the prediction is built from (tries T50 and T54, which thin a released truth or its reference). Released data do
+  not show that depth for the hidden truth, and it is a blocked quantity. The AI assistant, which holds none of the
+  exposed figures, wrote its advice rule before the runs, had the result attacked twice by agents given only the
+  claim, and put no request forward; the step is as it was built on 2026-11-13 (`docs/PLAN.md` 2026-11-17 (c) to (e)).
 
 **What the organisers were told.** On 2026-11-04 the captain wrote (drafted by the AI assistant; fcd8964) what was
 pasted, that some test-board limits with the page's rule give away part of a hidden target's size, that the page

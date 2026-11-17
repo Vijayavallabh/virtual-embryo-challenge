@@ -46,6 +46,8 @@
   Not traced to a dated entry by the drafter and left as the record's own summary: who pruned the Task 1 additions
   of 2026-11-04, the date the chamber-only scope file was fixed, and the reason the embryo's depth is outside the
   block. Section 5 of the brief (what the organisers were told) quotes their answer in full.
+  One bullet was added to the section after its review, on 2026-11-17: the step reads of that day (tries T44 to
+  T54) and that no request followed. It has not been through the three reviewers.
 - Goal: a compliant Human-track entry on all four test boards that finishes as high as it can. The final phase now
   ends on 2026-11-25 at 23:59 AoE, with two scored uploads per board for the whole phase; none is used as of
   2026-11-17.
