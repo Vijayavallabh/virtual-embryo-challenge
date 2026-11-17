@@ -9,6 +9,7 @@ import importlib.util
 import json
 import re
 import sys
+import types
 
 import numpy as np
 import pytest
@@ -503,6 +504,10 @@ CONTAM = {"pooled": 613, "lib1": 401, "lib2": 199, "lib3": 13, "whole": 0}
 DIRS = {"entry": {"pseudocount": 0.5, "sha256": {"CM": "e-cm", "Endocardium": "e-en"}},
         "e01": {"pseudocount": 0.1, "sha256": {"CM": "a-cm", "Endocardium": "a-en"}},
         "e002": {"pseudocount": 0.02, "sha256": {"CM": "b-cm", "Endocardium": "b-en"}}}
+# a per-cut read-back that matches the quoted library-3 sizes (m1_r_gmom at 0.58 of its nominal 0.2)
+RULER = {"m1_r_gmom": 0.116, "m1_r_gmom_x15": 0.175, "m1_r_gmom_x2": 0.233, "m1_r_gmom_x3": 0.349,
+         "m1_r_gmom_x4": 0.463, "m1_r_gmom_e01": 0.173, "m1_r_gmom_e01_x15": 0.2595, "m1_r_gmom_e01_x2": 0.347,
+         "m1_r_gmom_e002": 0.207, "m1_r_gmom_e002_x15": 0.312, "m1_r_gmom_e002_x2": 0.416}
 
 
 def _task(ep, truth, gains=None, per_seed=None, seeds=range(10), commit="c" * 40, clean=True, base_shift=0.0,
@@ -530,11 +535,14 @@ def _task(ep, truth, gains=None, per_seed=None, seeds=range(10), commit="c" * 40
             arms[a] = dict(arms["m1_r_gmom"])
         lf = {g: {a: 0.1 for a in arms_list if a != "b0"} for g in ("CM", "Endocardium")}
         fs = {g: {a: {"max_abs_log_f": 0.5, "scored_over_log10": 0, "cp10k_moved_share": 0.2,
-                      "cp10k_moved_share_scored": 0.1} for a in arms_list if a != "b0"} for g in ("CM", "Endocardium")}
+                      "cp10k_moved_share_scored": 0.1, "cp10k_moved_share_scored_weak": 0.03,
+                      "cp10k_moved_share_scored_strong": 0.07} for a in arms_list if a != "b0"}
+              for g in ("CM", "Endocardium")}
+        rb = {g: {a: RULER[a] for a in ep.candidates(truth)} for g in ("CM", "Endocardium")}
         rows.append({"seed": s, "floor": 50.0, "arms": arms,
                      "sha256": {a: (sha or {}).get(a, f"{a}-{s}") for a in arms_list},
                      "sparsity": {a: {"zero_share": 0.25, "detected_per_cell": 6.0} for a in arms_list},
-                     "scored_log_factors": lf, "factor_stats": fs,
+                     "scored_log_factors": lf, "factor_stats": fs, "ruler_readback": rb,
                      "pseudobulk_change": {a: 0.0 if a == "m1_r_gmom" else 0.05 for a in arms_list},
                      "placebo": {"same_positions_as_m1_r_gmom_perm": {p: True for p in NEW_PERM},
                                  "same_positions_as_m1_r_gmom_sperm": {p: True for p in NEW_SPERM}}})
@@ -548,6 +556,7 @@ def _task(ep, truth, gains=None, per_seed=None, seeds=range(10), commit="c" * 40
                                            "share_on_low_end_genes": 0.3, "share_on_low_either_end_genes": 0.6}}
                                 for t in DIRS},
             "half_agreement": {t: {"CM": {"correlation": 0.8, "eb_shrink_factors": [0.5] * 10}} for t in DIRS},
+            "external": {t: {"pseudocount_cp10k": d["pseudocount"]} for t, d in DIRS.items()},
             "seeds": list(seeds), "rows": rows,
             "stamp": {"commit": commit, "tree_clean": clean, "utc": "x", "inputs": {}}}
 
@@ -663,7 +672,8 @@ def test_a_gain_of_exactly_point_three_does_not_pass(ep, tmp_path):
 
 
 @pytest.mark.parametrize("gains, label", [
-    ({"m1_r_gmom_e01_x15": 1.0, "m1_r_gmom_e01_x15_sperm": 0.0}, "the gain needs the direction's genes"),
+    ({"m1_r_gmom_e01_x15": 1.0, "m1_r_gmom_e01_x15_sperm": 0.0},
+     "the gain needs gene identity (not separated from the entry's own direction-specific gain)"),
     ({"m1_r_gmom_e01_x15": 0.01, "m1_r_gmom_e01_x15_sperm": -2.0}, "no gain on this truth"),
     ({"m1_r_gmom_e01_x15": 1.0, "m1_r_gmom_e01_x15_sperm": 0.9}, "not separated"),
     ({"m1_r_gmom_e01_x15": 1.0, "m1_r_gmom_e01_x15_sperm": 1.5}, "not separated"),
@@ -682,7 +692,10 @@ def test_statement_three(ep, tmp_path, gains, label):
     assert t46["mean"] == pytest.approx(gains["m1_r_gmom_e01_x15"] - gains.get("m1_r_gmom_e01_x15_perm", 0.0),
                                         abs=1e-7)
     txt = (tmp_path / "out" / "t52.txt").read_text()
-    assert f"on lib3, e01: {label}; gate: " in txt and "reported, not read (try T46's placebo" in txt
+    # every statement-3 label carries the caveat on its own line: D checks generic movement, not which genes
+    assert f"on lib3, e01: {label} ({ep.S3_CAVEAT}); gate: " in txt and "reported, not read (try T46's placebo" in txt
+    assert all(ep.S3_CAVEAT in line for line in txt.splitlines() if re.match(r"\s+on \w+, e0\w+: (?!\()", line)
+               and "gate: " in line)
     assert r["statement_3"]["lib1"]["e01"]["label"] == "no gain on this truth"
     assert r["statement_3"]["lib3"]["e002"]["label"] == "no gain on this truth"
     assert "whole" not in r["statement_3"]
@@ -787,6 +800,22 @@ def _no_pseudobulk(rec):
     del rec["rows"][0]["pseudobulk_change"]["m1_r_gmom_e002"]
 
 
+def _no_rows(rec):
+    del rec["rows"]
+
+
+def _ext_wrong(rec):  # e01 labelled 0.1 by the script's constants but made with 0.02 (the reviewer's mutant M14)
+    rec["external"]["e01"]["pseudocount_cp10k"] = 0.02
+
+
+def _ext_missing(rec):
+    del rec["external"]
+
+
+def _no_readback(rec):
+    del rec["rows"][6]["ruler_readback"]["Endocardium"]["m1_r_gmom_e01_x2"]
+
+
 @pytest.mark.parametrize("truth, arm", [("pooled", "m1_r_gmom"), ("lib2", "m1_r_gmom_perm"), ("lib3", "m1_r_gmom_x4"),
                                         ("lib1", "b0")])
 def test_a_rescored_arm_with_another_sha256_than_t46s_is_void(ep, tmp_path, truth, arm):
@@ -830,6 +859,12 @@ def test_a_rescored_arm_with_another_sha256_than_t46s_is_void(ep, tmp_path, trut
      "the placebo m1_r_gmom_sperm's predictions have m1_r_gmom's sha256"),
     ({"pooled": {"sha": {"m1_r_gmom_e01_x15_sperm": "s", "m1_r_gmom_e01_x15": "s"}}}, None, None,
      "the placebo m1_r_gmom_e01_x15_sperm's predictions have m1_r_gmom_e01_x15's sha256"),
+    (None, {"lib2": _no_rows}, None, "lib2: seeds [], not"),
+    (None, {"pooled": _ext_wrong}, None,
+     "pooled: wrong pseudocount in the direction code's own record (external) for ['e01']"),
+    (None, {"whole": _ext_missing}, None,
+     "whole: wrong pseudocount in the direction code's own record (external) for ['entry', 'e01', 'e002']"),
+    (None, {"lib3": _no_readback}, None, "lib3: the per-cut ruler read-back records are missing"),
 ])
 def test_the_void_cases(ep, tmp_path, over, edit, shift, reason):
     r = _read(ep, tmp_path, _both({"m1_r_gmom_e01": 1.0}), over=over, edit=edit, committed_shift=shift)
@@ -893,3 +928,200 @@ def test_the_run_refuses_an_existing_task_file(ep, monkeypatch, truth):
 def test_the_run_refuses_an_unknown_truth(ep):
     with pytest.raises(SystemExit):
         ep.main(["run", "--truth", "lib4", "--out", "t52"])
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Review fixes (campaign/t1-q-fix2)
+
+
+def test_every_arm_of_a_seed_shares_one_cell_draw_and_the_limit_says_so(ep):
+    """The pairs share the cell draw (cells, composition, count) and differ only in the count redraw: the limit that
+    said every pair differed by a full redraw was false."""
+    ctx, groups, dirs, eps_dirs, held = _eps_world(ep)
+    preds, _, _, _ = ep.build_seed(ctx, harness._b0_t1(harness.B0_DAMPING), "pooled", dirs, eps_dirs, groups, 0.2,
+                                   held, held)
+    directional = [a for a in ep.arms_of("pooled") if a != "b0"]
+    first = preds["m1_r_gmom"]
+    for a in directional:
+        assert preds[a].n == first.n and np.array_equal(preds[a].celltype, first.celltype), a
+    assert not np.array_equal(preds["m1_r_gmom_e01"].X, first.X)  # the count redraw differs
+    assert not any("full redraw" in x for x in ep.LIMITS)
+    assert ("All arms of a seed share one cell draw (the same cells, composition and count); they differ in the count "
+            "redraw of the direction step and of g_mom's factors (the same streams with other factors), so the "
+            "cell-draw noise is shared within a pair and the redraw noise is not.") in ep.LIMITS
+
+
+def test_the_expression_matched_placebos_flag_uses_the_expression_matched_permutation(ep, monkeypatch):
+    """Mutant M6: build_seed must compute the _sperm placebos' same-position flag with the expression-matched
+    permutation, and the _perm placebos' with try T46's."""
+    calls = []
+    real = ep.same_positions
+
+    def spy(ctx, a, b, held, permute=None):
+        calls.append(permute)
+        return real(ctx, a, b, held, permute=permute)
+
+    monkeypatch.setattr(ep, "same_positions", spy)
+    monkeypatch.setattr(ep.gc, "m1_r_arms", lambda *a: {"m1_r": None, "m1_r_gmom": a[3]})
+    ctx, groups, dirs, eps_dirs, held = _eps_world(ep)
+    ep.build_seed(ctx, lambda c: "b0", "pooled", dirs, eps_dirs, groups, 0.2, held, held)
+    assert len(calls) == 4 and calls[0] is None and calls[1] is None  # the two _perm placebos: T46's permutation
+    levels = ep.reference_levels(ctx, groups, dirs)
+    pos = ep.positions_of(dirs)
+    want = ep.splacebo_directions(ctx, pos, held, levels)
+    t46 = ep.lsr.placebo_directions(ctx, pos, held)
+    for permute in calls[2:]:
+        assert permute is not None
+        got = permute(ctx, pos, held)
+        assert all(np.array_equal(got[g], want[g], equal_nan=True) for g in want)
+        assert not all(np.array_equal(got[g], t46[g], equal_nan=True) for g in t46)
+
+
+def test_the_moved_shares_split_into_weak_and_strong_scored_genes(ep):
+    v = np.array([1.0, -2.0, 0.5, 1.0, 3.0, np.nan])
+    names = ["a", "b", "c", "d", "e", "f"]
+    lev = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+    fs = ep.factor_stats(v, names, [], ["a", "b", "c", "d"], 0.5, lev)
+    moved = lev * np.abs(np.expm1(0.5 * np.nan_to_num(v)))
+    # scored levels 1, 2, 3, 4: median 2.5, weak a and b, strong c and d
+    assert fs["cp10k_moved_share_scored_weak"] == pytest.approx(moved[:2].sum() / lev.sum())
+    assert fs["cp10k_moved_share_scored_strong"] == pytest.approx(moved[2:4].sum() / lev.sum())
+    assert fs["cp10k_moved_share_scored"] == pytest.approx(fs["cp10k_moved_share_scored_weak"]
+                                                           + fs["cp10k_moved_share_scored_strong"])
+    assert fs["cp10k_moved_share"] == pytest.approx(moved.sum() / lev.sum())
+
+
+def test_the_ruler_readback_is_the_entrys_ruler_on_the_cuts_reference_cells(ep):
+    """Target-free: each arm's direction step alone on the reference cells, one fixed stream; the slope of the
+    realised log ratio (pseudocount 0.5) on the entry's direction. An idle direction reads 0, a larger fraction reads
+    more, the stream is fixed, and the value is the one computed by hand from external_shift."""
+    ctx, groups, dirs, eps_dirs, held = _eps_world(ep)
+    zero = {g: np.zeros_like(v) for g, v in dirs.items()}
+    arms = {"m1_r_gmom": (dirs, 0.2), "m1_r_gmom_x2": (dirs, 0.4), "idle": (zero, 0.2), "e01": (eps_dirs["e01"], 0.2)}
+    rb = ep.ruler_readback(ctx, groups, dirs, arms, held)
+    assert set(rb) == {"CM", "Endocardium"}
+    for by in rb.values():
+        assert by["idle"] == 0.0
+        assert 0.0 < by["m1_r_gmom"] < by["m1_r_gmom_x2"]
+    again = ep.ruler_readback(ctx, groups, dirs, {"m1_r_gmom": (dirs, 0.2)}, held)
+    assert again["CM"]["m1_r_gmom"] == rb["CM"]["m1_r_gmom"]
+    ref = ctx.inputs[ctx.task.reference_role]
+    moved, _ = t1_scope.external_shift(ref, dirs, 0.2, groups, held, seed=[ctx.seed, ep.READBACK_STREAM])
+    lab = ref.obs[t1_scope.LABEL_KEY].astype(str).to_numpy()
+    rows = np.flatnonzero(np.array([groups.get(x) == "CM" for x in lab]))
+    before = ep.core.mean_cp10k(ep.core.counts_of(ref)[rows])
+    after = ep.core.mean_cp10k(ep.core.counts_of(moved)[rows])
+    m = ep.moved_mask(dirs["CM"], list(ref.var_names), held)
+    slope = np.polyfit(dirs["CM"][m], np.log((after + 0.5) / (before + 0.5))[m], 1)[0]
+    assert rb["CM"]["m1_r_gmom"] == pytest.approx(slope, rel=1e-9)
+    assert ep.READBACK_STREAM not in (ep.SPERM_STREAM, ep.PLACEBO_STREAM, 0, 1, 2, 4, 5, 6)
+
+
+def test_the_ruler_arms_are_the_real_directional_arms_at_their_build_fractions(ep):
+    dirs, eps = {"CM": np.ones(3)}, {"e01": {"CM": np.zeros(3)}, "e002": {"CM": np.full(3, 2.0)}}
+    arms = ep.ruler_arms("pooled", dirs, eps, 0.2)
+    assert set(arms) == set(ep.candidates("pooled"))
+    assert set(ep.ruler_arms("whole", dirs, eps, 0.2)) == set(ep.candidates("whole"))
+    fr = ep.sr.arm_fractions(0.2, ep.uniform_of("pooled"))
+    assert all(arms[a][1] == f and arms[a][0] is dirs for a, f in fr.items())
+    assert arms["m1_r_gmom_e01"] == (eps["e01"], 0.2) and arms["m1_r_gmom_e002_x2"][0] is eps["e002"]
+    assert arms["m1_r_gmom_e01_x15"][1] == arms["m1_r_gmom_x15"][1]
+
+
+def _off_ruler(rec):
+    for row in rec["rows"]:
+        row["ruler_readback"]["CM"]["m1_r_gmom_e01"] = 0.25  # x15 at 0.175, half its smaller gap 0.029
+
+
+def test_a_pair_not_ruler_matched_on_a_cut_is_flagged_and_the_statement_says_so(ep, tmp_path):
+    r = _read(ep, tmp_path, _both({"m1_r_gmom_e01": 1.0, "m1_r_gmom_e01_x2": 1.0}), edit={"pooled": _off_ruler})
+    assert r["valid"]
+    m = r["statement_2"]["comparisons"][0]["ruler_match"]
+    assert m["pooled"]["flagged_groups"] == ["CM"] and not m["pooled"]["matched"] and m["whole"]["matched"]
+    assert m["pooled"]["groups"]["CM"]["half_gap"] == pytest.approx(0.029)
+    assert m["pooled"]["neighbours"] == ["m1_r_gmom", "m1_r_gmom_x2"]
+    assert r["statement_2"]["comparisons"][1]["ruler_match"]["pooled"]["matched"]
+    want = (SMALLER + " (not ruler-matched on the cuts' reference cells: m1_r_gmom_e01 against m1_r_gmom_x15 on pooled "
+            "(CM))")
+    assert r["outcome"] == want == r["statement_2"]["statement"]
+    txt = (tmp_path / "out" / "t52.txt").read_text()
+    assert HEAD2 + want in txt and "NOT ruler-matched" in txt and "FLAGGED" in txt
+    # matched pairs: the statement carries no suffix and the read-back is printed beside the pair
+    r = _read(ep, tmp_path / "b", _both({"m1_r_gmom_e01": 1.0, "m1_r_gmom_e01_x2": 1.0}))
+    assert r["outcome"] == SMALLER and not r["statement_2"]["not_ruler_matched"]
+    txt = (tmp_path / "b" / "out" / "t52.txt").read_text()
+    assert "read-back on pooled's reference cells" in txt and "read-back on whole's reference cells" in txt
+    assert "(scored weak 0.030, strong 0.070)" in txt
+    # on the whole cut _x3 has one neighbour on the ladder (no _x4 there)
+    m2 = r["statement_2"]["comparisons"][1]["ruler_match"]
+    assert m2["whole"]["neighbours"] == ["m1_r_gmom_x2"]
+    assert m2["pooled"]["neighbours"] == ["m1_r_gmom_x2", "m1_r_gmom_x4"]
+
+
+def _cmd_run_world(ep, monkeypatch, stats):
+    """cmd_run on the synthetic world: the released files, the boards, the scorer and the anchors replaced; the
+    directions, the arms and the records made by the script's own code from synthetic Feng statistics."""
+    path, genes = stats
+    assert ep.feng_dirs.clean_stats_path() == path
+    ctx, _, _, held = _arms_world()
+    task = types.SimpleNamespace(key=ep.TASK_OF["whole"], panel_board="pb", reference="T1/E9.5_RNA.h5ad",
+                                 target="T1/E10.5_RNA.h5ad", target_filter=None,
+                                 inputs={"ref": "T1/E9.5_RNA.h5ad", "start": "T1/E8.5_RNA.h5ad"})
+    monkeypatch.setattr(ep.n12, "tries_rows", lambda: {"T52"})
+    monkeypatch.setattr(ep.gc, "n22_passed", lambda p: True)
+    monkeypatch.setattr(ep.gv, "tree_state", lambda: {"commit": "f" * 40, "clean": True})
+    monkeypatch.setattr(ep.harness, "load_tasks", lambda: {"T1:test": [task]})
+    monkeypatch.setattr(ep, "load_boards", lambda: {"pb": types.SimpleNamespace(genes=list(ctx.board.genes))})
+    monkeypatch.setattr(ep, "truth_and_contamination", lambda *a: (types.SimpleNamespace(n=5), None))
+    monkeypatch.setattr(ep, "read_stage", lambda *a: None)
+    monkeypatch.setattr(ep, "Stage", types.SimpleNamespace(from_anndata=lambda *a: types.SimpleNamespace(n=3)))
+    monkeypatch.setattr(ep.harness, "task_board", lambda *a: "board")
+    monkeypatch.setattr(ep.lsr, "all_anchors", lambda t, b, tr, rs, seeds: (
+        {s: types.SimpleNamespace(score=50.0, anchors=None) for s in seeds}, []))
+    by_name = {"E9.5_RNA.h5ad": ctx.inputs["ref"], "E8.5_RNA.h5ad": ctx.inputs["start"]}
+    monkeypatch.setattr(ep, "load_stage", lambda p, lineage=False: by_name[p.name])
+    monkeypatch.setattr(ep.t1_scope, "held_flat_genes", lambda: tuple(held))
+    monkeypatch.setattr(ep.hygiene, "load_union", lambda: {"file": "x"})
+    monkeypatch.setattr(ep.gc, "held_feng", lambda union, pre: list(held))
+    monkeypatch.setattr(ep.harness.TaskView, "of", staticmethod(lambda t: ctx.task))
+    monkeypatch.setattr(ep.harness, "_candidate_board", lambda b: ctx.board)
+    monkeypatch.setattr(ep.er, "score_arms", lambda board, truth, ref, s, anchors, preds: {
+        a: {"score": 50.0 + i * 1e-3, "skills": {}} for i, a in enumerate(preds)})
+    captured = []
+    real_build = ep.build_seed
+
+    def spy(ctx_, b0, truth, directions, eps_dirs, *rest):
+        captured.append(eps_dirs)
+        return real_build(ctx_, b0, truth, directions, eps_dirs, *rest)
+
+    monkeypatch.setattr(ep, "build_seed", spy)
+    return path, genes, captured
+
+
+def test_the_run_makes_each_direction_set_with_its_own_pseudocount_end_to_end(ep, monkeypatch, stats, tmp_path):
+    """Mutant M14 (both new sets made with 0.02 inside cmd_run): the run's direction step on synthetic statistics
+    gives build_seed lfc_ratio at 0.1 and 0.02, the file's external records say so, and a run with the mutant voids the
+    reading through those records."""
+    path, genes, captured = _cmd_run_world(ep, monkeypatch, stats)
+    ep.main(["run", "--truth", "whole", "--out", "t52", "--seeds", "0", "--data", str(tmp_path)])
+    rec = json.loads((ep.RESULTS / "t52" / "tasks" / "whole.json").read_text())
+    assert {t: rec["external"][t]["pseudocount_cp10k"] for t in ("entry", "e01", "e002")} == {
+        "entry": 0.5, "e01": 0.1, "e002": 0.02}
+    (eps_dirs,) = captured
+    for tag, eps in ep.EPS.items():
+        want, _ = ep.eps_directions(genes, eps, stats_path=path)
+        assert ep.directions_sha256(eps_dirs[tag]) == ep.directions_sha256(want)
+        assert rec["directions"][tag]["sha256"] == ep.directions_sha256(want)
+    row = rec["rows"][0]
+    assert row["ruler_readback"] and all(set(ep.candidates("whole")) <= set(v)
+                                         for v in row["ruler_readback"].values())
+    v = ep.validity({"whole": rec}, {})
+    assert not any("external" in x or "read-back" in x for x in v["reasons"]), v["reasons"]
+    # the mutant: every new set made with 0.02 while the script's constants still say 0.1 for e01
+    real = ep.eps_directions
+    monkeypatch.setattr(ep, "eps_directions", lambda g, eps, stats_path=None: real(g, 0.02, stats_path))
+    ep.main(["run", "--truth", "whole", "--out", "t52m", "--seeds", "0", "--data", str(tmp_path)])
+    bad = json.loads((ep.RESULTS / "t52m" / "tasks" / "whole.json").read_text())
+    assert bad["pseudocounts"]["m1_r_gmom_e01"] == 0.1  # the per-arm record cannot see it
+    v = ep.validity({"whole": bad}, {})
+    assert "whole: wrong pseudocount in the direction code's own record (external) for ['e01']" in v["reasons"]

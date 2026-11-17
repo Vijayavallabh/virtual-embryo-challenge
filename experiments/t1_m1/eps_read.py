@@ -54,7 +54,10 @@ the same arms' prediction sha256 equal T46's recorded ones seed for seed (a scor
 no new arm scores exactly as m1_r_gmom on every seed of a truth; no placebo's recorded prediction sha256 equals its real
 arm's on every seed; the new arms' recorded directions differ from the entry's in every group. Also void, so that the
 checks above cannot pass vacuously: a row without a sha256 string for every arm, or without the sparsity, log-factor,
-count-space factor and pseudobulk records.
+count-space factor, pseudobulk and per-cut ruler read-back records. Also void (added after review): a direction set
+whose own record from feng_dirs.feng_directions (the file's `external`, the config the direction code was actually
+given) holds another pseudocount than the set's (0.5 for the entry's, 0.1 and 0.02 for the new ones): the per-arm
+`pseudocounts` record is written from the script's constants and cannot catch a wrong config on the route.
 Tests. On one truth: try T46's single-task test (vec.adoption.keep_change on that truth alone: "ahead" for a mean
 paired gain above 0.3 with at least 8 of 10 seeds ahead, "behind" the same reversed, else "level"). On the two cuts
 (`pooled` and `whole`): the adoption rule's test (vec.adoption.keep_change, both cuts: "passes"), with the reversed sign
@@ -71,21 +74,36 @@ bar" for every other case: that wording was false when one comparison passes and
 one passes and the other is neither), always with both comparisons' numbers. "The same delivered size" is the entry's
 ruler along the entry's direction on library 3's cells, not a count-matched size: beside each comparison the read
 prints both arms' count-space sizes on each cut (the share of reference-cell CP10k moved and the pseudobulk change
-from m1_r_gmom), so a reader sees how far the pair differs in counts moved. The 0.02 arms have no uniform arm of the
+from m1_r_gmom; the scored genes' moved share split into the group's weakly and well expressed halves, at the median
+reference level of the scored genes), so a reader sees how far the pair differs in counts moved and where. The
+matching itself is checked where the pair is scored (added after review): per seed the run applies each real
+directional arm's direction step alone (external_shift, M1's held genes, keep_depth, no clip, one fixed stream
+[build seed, 53] for every arm) to the cut's own reference cells and records, per group with reference cells, the
+slope (least squares with an intercept) of the realised log ratio of the group's mean CP10k, after over before, with
+the entry's pseudocount 0.5, on the entry's direction over its moved genes. Beside each statement-2 pair the read
+prints both arms' slopes on each cut and flags the pair on a cut where, in any group, the two arms differ by more than
+half the smaller gap between the uniform arm and its neighbours on the ladder m1_r_gmom, _x15, _x2, _x3 (, _x4). A
+flag on either cut adds "(not ruler-matched on the cuts' reference cells: ...)" to the statement, whose words then
+claim only what was compared. The 0.02 arms have no uniform arm of the
 same delivered size: each is reported against the two uniform arms that bracket it and carries no statement (_x4 is not
 built on `whole`, so _e002_x2 against _x4 is reported on the chamber truths only).
 Statement 3, per chamber truth and NN in 01, 002: D = (_eNN_x15 - m1_r_gmom) - (_eNN_x15_sperm - m1_r_gmom_sperm) per
-seed with the single-task test: "the gain needs the direction's genes" where D is ahead and _eNN_x15 is ahead of
-m1_r_gmom; "no gain on this truth" where _eNN_x15 is not ahead of m1_r_gmom; otherwise "not separated"; and "not read
-(permutation differs)" on a truth where any seed's _eNN_x15_sperm permutes positions otherwise than m1_r_gmom_sperm
-(D's design rests on the two pairs sharing one permutation). Changed from the brief, which read D with try T46's
-placebos (_eNN_x15_perm, m1_r_gmom_perm): T46's permutation keeps only the scored/other strata, so it moves a
-decompressed direction's large factors, which sit on genes weak at one end, onto well-expressed genes; the placebo pair
-then moves far more counts than the real pair and D is mostly the placebo's damage, ahead by construction once the gate
-passes. The expression-matched placebo keeps each factor within its decile of reference-cell expression, so the placebo
-moves about the counts the real direction moves (to within a decile). D with T46's placebos is still computed and
-printed, marked reported and not read. Statement 3 says something about gene identity only: it does not bear on
-decompression.
+seed with the single-task test: "the gain needs gene identity (not separated from the entry's own direction-specific
+gain)" where D is ahead and _eNN_x15 is ahead of m1_r_gmom (changed from the brief's "the gain needs the direction's
+genes", which read as if the decompressed genes carry the gain: D mixes the step from fraction 0.2 to 0.3 with the
+change of direction, and a permuted placebo does more damage the larger the direction it permutes, so D can come out
+ahead whenever the gate passes even when the truth moves along the entry's direction only; the text prints that
+caveat on the same line as every statement-3 label: statement 3 checks that the gain is not generic movement of that
+size, never which genes carry it); "no gain on this truth" where _eNN_x15 is not ahead of m1_r_gmom; otherwise "not
+separated"; and "not read (permutation differs)" on a truth where any seed's _eNN_x15_sperm permutes positions
+otherwise than m1_r_gmom_sperm (D's design rests on the two pairs sharing one permutation). Changed from the brief,
+which read D with try T46's placebos (_eNN_x15_perm, m1_r_gmom_perm): T46's permutation keeps only the scored/other
+strata, so it moves a decompressed direction's large factors, which sit on genes weak at one end, onto well-expressed
+genes; the placebo pair then moves far more counts than the real pair and D is mostly the placebo's damage, ahead by
+construction once the gate passes. The expression-matched placebo keeps each factor within its decile of
+reference-cell expression, so the placebo moves about the counts the real direction moves (to within a decile). D with
+T46's placebos is still computed and printed, marked reported and not read. Statement 3 says something about gene
+identity only: it does not bear on decompression.
 Statements 1 and 3 can both come out positive when decompression does no better than its delivered size (statement 1
 inherits T44's uniform-inflation gain, since the new _x15 and _x2 arms deliver at least as much along the entry's
 direction as m1_r_gmom; statement 3 inherits the entry's own direction-specific gain, T46); only statement 2 compares
@@ -115,11 +133,22 @@ Limits, repeated in the text (and in the row):
   bears on decompression.
 - The expression-matched placebo matches the counts the real direction moves only to within a decile of reference-cell
   expression.
-- Every pair of arms differs by a full redraw (other factors on the same streams), so per-seed noise is not shared
-  between the arms of a pair.
+- All arms of a seed share one cell draw (the same cells, composition and count); they differ in the count redraw of
+  the direction step and of g_mom's factors (the same streams with other factors), so the cell-draw noise is shared
+  within a pair and the redraw noise is not.
 - The pooled chamber truth and the whole cut come from the same released E10.5 file and the same reference, so the
   adoption rule's two cuts are not two independent replications (as in try T44).
 - The pseudocounts 0.1 and 0.02 were chosen before the run from the read-back table and no other value is read.
+- The pseudocounts and statement 2's matched pairs come from a target-free read-back on E10.5 library 3's cells, which
+  are one of the four chamber truths: the match is in-sample for lib3.
+- Statement 2's "neither" and "no difference at the bar" are not equivalence, and "mixed" supports neither side.
+- Statement 3's D mixes the step from fraction 0.2 to 0.3 with the change of direction, and a permuted placebo does
+  more damage the larger the direction it permutes, so D can come out ahead whenever the gate passes even when the
+  truth moves along the entry's direction only: it checks that the gain is not generic movement of that size, never
+  which genes carry it.
+- The per-cut read-back applies the direction step alone (no R1, R2 or g_mom) to the cut's reference cells on one
+  fixed stream, and its slope, like the quoted sizes, is the entry's ruler along the entry's direction: it is least
+  sensitive on weakly expressed genes, where the smaller pseudocount's direction differs.
 - Nothing here says how far any hidden truth moves.
 
 NOT an adoption result: Feng's E9.5 cells lie inside these pseudo-tasks' external windows and the cuts are ones earlier
@@ -195,6 +224,7 @@ PLACEBO_STEP = "_x15"  # the new placebos are the _x15 builds along permuted dir
 PLACEBO_STREAM = lsr.PLACEBO_STREAM  # 46
 SPERM_ENTRY = "m1_r_gmom_sperm"  # the expression-matched placebo at the base fraction: statement 3's placebo base
 SPERM_STREAM = 52  # [build seed, 52]: the expression-matched permutation's stream, which no other step uses
+READBACK_STREAM = 53  # [build seed, 53]: the per-cut ruler read-back's redraw, which no other step uses
 LEVEL_BINS = 10  # deciles of reference-cell expression within each stratum (the reviewer's proposal; not tuned)
 
 
@@ -238,7 +268,12 @@ SMALLER_BETTER = "the smaller pseudocount scores better at the same delivered si
 UNIFORM_BETTER = "uniform inflation scores better"
 NO_DIFFERENCE = "no difference at the bar"
 MIXED = "mixed: {} at the smaller size, {} at the larger"
-NEEDS_GENES = "the gain needs the direction's genes"
+UNMATCHED = " (not ruler-matched on the cuts' reference cells: {})"
+NEEDS_GENES = "the gain needs gene identity (not separated from the entry's own direction-specific gain)"
+S3_CAVEAT = ("statement 3's D mixes the step from fraction 0.2 to 0.3 with the change of direction, and a permuted "
+             "placebo does more damage the larger the direction it permutes, so D can come out ahead whenever the gate "
+             "passes even when the truth moves along the entry's direction only: it checks that the gain is not "
+             "generic movement of that size, never which genes carry it")
 NO_GAIN = "no gain on this truth"
 NOT_SEPARATED = "not separated"
 NOT_READ_PERM = "not read (permutation differs)"
@@ -264,11 +299,20 @@ LIMITS = (
     "statement 2 bears on decompression.",
     "The expression-matched placebo matches the counts the real direction moves only to within a decile of "
     "reference-cell expression.",
-    "Every pair of arms differs by a full redraw (other factors on the same streams), so per-seed noise is not shared "
-    "between the arms of a pair.",
+    "All arms of a seed share one cell draw (the same cells, composition and count); they differ in the count redraw "
+    "of the direction step and of g_mom's factors (the same streams with other factors), so the cell-draw noise is "
+    "shared within a pair and the redraw noise is not.",
     "The pooled chamber truth and the whole cut come from the same released E10.5 file and the same reference, so the "
     "adoption rule's two cuts are not two independent replications (as in try T44).",
     "The pseudocounts 0.1 and 0.02 were chosen before the run from the read-back table and no other value is read.",
+    "The pseudocounts and statement 2's matched pairs come from a target-free read-back on E10.5 library 3's cells, "
+    "which are one of the four chamber truths: the match is in-sample for lib3.",
+    "Statement 2's \"neither\" and \"no difference at the bar\" are not equivalence, and \"mixed\" supports neither "
+    "side.",
+    S3_CAVEAT[0].upper() + S3_CAVEAT[1:] + ".",
+    "The per-cut read-back applies the direction step alone (no R1, R2 or g_mom) to the cut's reference cells on one "
+    "fixed stream, and its slope, like the quoted sizes, is the entry's ruler along the entry's direction: it is least "
+    "sensitive on weakly expressed genes, where the smaller pseudocount's direction differs.",
     "Nothing here says how far any hidden truth moves.",
 )
 
@@ -461,7 +505,9 @@ def factor_stats(v, genes: Sequence[str], held: Sequence[str], scored: Sequence[
     clip: external_shift's own formula). max_abs_log_f: the largest |log f| on any gene (ShiftReport's);
     scored_over_log10: scored genes with |log f| above log 10; cp10k_moved_share (and _scored): the sum over genes
     (scored genes) of the group's reference mean CP10k x |f - 1|, over the sum of the means, i.e. the share of the
-    group's mean profile the factors move before the redraw and the depth renormalisation."""
+    group's mean profile the factors move before the redraw and the depth renormalisation; cp10k_moved_share_scored_weak
+    and _strong: the scored part split at the median reference level of the scored genes (weak: below it; strong: the
+    rest), over the same sum, so a gain confined to weakly expressed genes is visible in count space."""
     held_set, scored_set = set(map(str, held)), set(map(str, scored))
     on_board = np.array([str(g) in scored_set for g in genes], dtype=bool)
     held_mask = np.array([str(g) in held_set for g in genes], dtype=bool)
@@ -470,10 +516,16 @@ def factor_stats(v, genes: Sequence[str], held: Sequence[str], scored: Sequence[
     lev = np.asarray(level, dtype=np.float64)
     moved = lev * np.abs(np.expm1(logf))
     total = float(lev.sum())
+    weak = on_board & (lev < np.median(lev[on_board])) if on_board.any() else on_board
+    strong = on_board & ~weak
+
+    def share(mask):
+        return float(moved[mask].sum()) / total if total > 0 else None
+
     return {"max_abs_log_f": float(np.abs(logf).max()) if logf.size else 0.0,
             "scored_over_log10": int(((np.abs(logf) > BIG_LOG_F) & on_board).sum()),
-            "cp10k_moved_share": float(moved.sum()) / total if total > 0 else None,
-            "cp10k_moved_share_scored": float(moved[on_board].sum()) / total if total > 0 else None}
+            "cp10k_moved_share": share(np.ones(len(lev), dtype=bool)), "cp10k_moved_share_scored": share(on_board),
+            "cp10k_moved_share_scored_weak": share(weak), "cp10k_moved_share_scored_strong": share(strong)}
 
 
 def pseudobulk(pred: Stage) -> np.ndarray:
@@ -518,6 +570,87 @@ def half_agreement(genes: Sequence[str], held: Sequence[str], pseudocounts: Mapp
             rec[g] = {"correlation": corr, "eb_shrink_factors": [float(x) for x in factors]}
         out[tag] = rec
     return out
+
+
+def ruler_arms(truth: str, directions: Mapping, eps_dirs: Mapping[str, Mapping],
+               fraction: float) -> dict[str, tuple[Mapping, float]]:
+    """The real directional arms of a truth (m1_r_gmom, the uniform arms, the new arms; no placebo) with the directions
+    and the very fraction each is built with (step_read.arm_fractions)."""
+    out = {a: (directions, f) for a, f in sr.arm_fractions(fraction, uniform_of(truth)).items()}
+    for tag, dirs in eps_dirs.items():
+        fr = sr.arm_fractions(fraction, {new_arm(tag, s): m for s, m in STEPS.items() if s})
+        out.update({(new_arm(tag, "") if a == BASE else a): (dirs, f) for a, f in fr.items()})
+    return out
+
+
+def ruler_readback(ctx: harness.BuildContext, groups: Mapping[str, str], entry: Mapping[str, np.ndarray],
+                   arms: Mapping[str, tuple[Mapping, float]], held: Sequence[str]) -> dict[str, dict[str, float]]:
+    """Target-free, on the cut's own reference cells: per arm, its direction step alone (t1_scope.external_shift, the
+    held genes, keep_depth, no clip, stream [build seed, READBACK_STREAM] for every arm); per direction group with
+    reference cells, the least-squares slope (with an intercept) of the realised log ratio of the group's mean CP10k,
+    after over before, with the entry's pseudocount, on the entry's direction over its moved genes: the entry's ruler
+    along the entry's direction, read where the pair is scored. group -> arm -> slope (None where the moved genes'
+    direction has no spread)."""
+    ref = ctx.inputs[ctx.task.reference_role]
+    genes = list(ref.var_names)
+    labels = ref.obs[t1_scope.LABEL_KEY].astype(str).to_numpy()
+    cell_group = np.array([groups.get(lab, "") for lab in labels], dtype=object)
+    C0 = sparse.csr_matrix(core.counts_of(ref))
+    seed = [*np.atleast_1d(ctx.seed).astype(int).tolist(), READBACK_STREAM]
+    present = [g for g in sorted(entry) if (cell_group == g).any()]
+    before = {g: core.mean_cp10k(C0[np.flatnonzero(cell_group == g)]) for g in present}
+    out = {g: {} for g in present}
+    for a, (dirs, f) in arms.items():
+        moved_ref, _ = t1_scope.external_shift(ref, dirs, f, groups, held, seed=seed)
+        C1 = sparse.csr_matrix(core.counts_of(moved_ref))
+        for g in present:
+            d = np.asarray(entry[g], dtype=np.float64)
+            m = moved_mask(d, genes, held)
+            after = core.mean_cp10k(C1[np.flatnonzero(cell_group == g)])
+            r = np.log((after + ENTRY_EPS) / (before[g] + ENTRY_EPS))
+            x, y = d[m] - d[m].mean(), r[m] - r[m].mean()
+            den = float((x * x).sum())
+            out[g][a] = float((x * y).sum()) / den if m.sum() > 1 and den > 0 else None
+    return out
+
+
+def readback_means(r: Mapping) -> dict[str, dict[str, float | None]]:
+    """Per group and arm, the mean over seeds of the per-cut read-back (None where a seed has none)."""
+    rows = r.get("rows") or []
+    first = (rows[0].get("ruler_readback") or {}) if rows else {}
+    out = {}
+    for g in sorted(first):
+        out[g] = {}
+        for a in first[g] or {}:
+            xs = [((row.get("ruler_readback") or {}).get(g) or {}).get(a) for row in rows]
+            ok = all(isinstance(x, int | float) and not isinstance(x, bool) for x in xs)
+            out[g][a] = float(np.mean(xs)) if ok else None
+    return out
+
+
+def ruler_match(r: Mapping, truth: str, arm: str, uniform: str) -> dict:
+    """Whether a statement-2 pair is ruler-matched on a cut's own reference cells: per group the two arms' mean
+    read-backs and half the smaller gap between the uniform arm and its neighbours on the ladder m1_r_gmom, then the
+    uniform arms in multiplier order (those built on this truth); the pair is flagged when, in any group, the two arms
+    differ by more than that half gap, or a value is missing, or no group has a read-back."""
+    means = readback_means(r)
+    ladder = [BASE, *sorted(uniform_of(truth), key=UNIFORM.get)]
+    i = ladder.index(uniform)
+    neighbours = [ladder[j] for j in (i - 1, i + 1) if 0 <= j < len(ladder)]
+    groups, flagged = {}, []
+    for g, by in means.items():
+        vals = [by.get(x) for x in (arm, uniform, *neighbours)]
+        if any(v is None for v in vals):
+            groups[g] = {"arm": vals[0], "uniform": vals[1], "half_gap": None, "flagged": True}
+            flagged.append(g)
+            continue
+        half = 0.5 * min(abs(vals[1] - v) for v in vals[2:])
+        bad = abs(vals[0] - vals[1]) > half
+        groups[g] = {"arm": vals[0], "uniform": vals[1], "half_gap": half, "flagged": bool(bad)}
+        if bad:
+            flagged.append(g)
+    return {"arm": arm, "uniform": uniform, "neighbours": neighbours, "groups": groups, "flagged_groups": flagged,
+            "matched": bool(groups) and not flagged}
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -652,12 +785,13 @@ def cmd_run(a) -> None:
                                    derived={"t1_held_flat": preregistered})
         preds, log_factors, placebo, factors = build_seed(ctx, b0, a.truth, directions, eps_dirs, groups, fraction,
                                                           held_m1, preregistered)
+        readback = ruler_readback(ctx, groups, directions, ruler_arms(a.truth, directions, eps_dirs, fraction), held_m1)
         arms = er.score_arms(board, truth, ref_stage, s, f.anchors, preds)
         rows.append({"seed": s, "floor": float(f.score), "arms": arms,
                      "sha256": {k: lsr.prediction_sha256(p) for k, p in preds.items()},
                      "sparsity": {k: lsr.sparsity(p) for k, p in preds.items()}, "scored_log_factors": log_factors,
                      "factor_stats": factors, "pseudobulk_change": pseudobulk_changes(preds),
-                     "placebo": placebo, "seconds": round(time.time() - t0, 1)})
+                     "ruler_readback": readback, "placebo": placebo, "seconds": round(time.time() - t0, 1)})
         print(f"{a.truth} seed {s}: " + ", ".join(f"{k} {v['score']:.2f}" for k, v in arms.items()), flush=True)
     spec = arm_spec(a.truth, fraction)
     res.update({"fraction": fraction, "fractions": {k: v["fraction"] for k, v in spec.items()},
@@ -690,16 +824,16 @@ def reproduction(truth: str, rows: Sequence[Mapping], committed_rows: Sequence[M
     by_seed = {r["seed"]: r for r in committed_rows}
     worst, absent, sha_off = {a: 0.0 for a in arms}, [], []
     for r in rows:
-        old = by_seed.get(r["seed"])
+        old = by_seed.get(r.get("seed"))
         for arm in arms:
-            if old is None or arm not in old["arms"] or arm not in r["arms"]:
-                absent.append(f"{r['seed']}:{arm}")
+            if old is None or arm not in old["arms"] or arm not in (r.get("arms") or {}):
+                absent.append(f"{r.get('seed')}:{arm}")
                 continue
             worst[arm] = max(worst[arm], abs(r["arms"][arm]["score"] - old["arms"][arm]["score"]))
         for arm in sha_arms:
             want = ((old or {}).get("sha256") or {}).get(arm)
             if not isinstance(want, str) or (r.get("sha256") or {}).get(arm) != want:
-                sha_off.append(f"{r['seed']}:{arm}")
+                sha_off.append(f"{r.get('seed')}:{arm}")
     scores_hold = bool(rows) and bool(committed_rows) and not absent and all(w <= REPRO_TOL for w in worst.values())
     return {"largest_difference": worst, "absent": absent, "sha256_off": sha_off, "scores_hold": scores_hold,
             "sha256_holds": not sha_off, "holds": scores_hold and not sha_off}
@@ -720,14 +854,16 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Sequence[Ma
         if r.get("anchor_failures"):
             reasons.append(f"{k}: the floor's anchors invert or go missing on seeds "
                            f"{[f['seed'] for f in r['anchor_failures']]}")
-        seeds = [row["seed"] for row in r["rows"]]
-        if sorted(seeds) != list(SEEDS) or list(r.get("seeds", seeds)) != list(SEEDS):
+        rows = r.get("rows") or []
+        seeds = [row.get("seed") for row in rows]
+        if (any(not isinstance(x, int) for x in seeds) or sorted(seeds) != list(SEEDS)
+                or list(r.get("seeds", seeds)) != list(SEEDS)):
             reasons.append(f"{k}: seeds {seeds}, not {list(SEEDS)}")
         if r.get("task") != TASK_OF.get(k):
             reasons.append(f"{k}: the file holds task {r.get('task')!r}")
         if r.get("truth") != k:
             reasons.append(f"{k}: the file holds truth {r.get('truth')!r}")
-        absent = sorted({a for row in r["rows"] for a in arms_of(k) if a not in row["arms"]})
+        absent = sorted({a for row in rows for a in arms_of(k) if a not in (row.get("arms") or {})})
         if absent:
             reasons.append(f"{k}: arms {absent} missing")
         if _off(r.get("fraction"), FRACTION, FRACTION_TOL):
@@ -753,6 +889,14 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Sequence[Ma
                 if not entry or set(new) != set(entry) or same:
                     reasons.append(f"{k}: the {tag} directions do not differ from the entry's in every group "
                                    f"(groups {sorted(new)} against {sorted(entry)}; equal in {same})")
+        # the pseudocount each direction set was actually made with, as feng_directions recorded the config it was
+        # given (not arm_spec's constants, which the pseudocounts record above copies)
+        ext = r.get("external") if isinstance(r.get("external"), Mapping) else {}
+        bad_ext = [t for t, e in want_ps.items()
+                   if _off((ext.get(t) if isinstance(ext.get(t), Mapping) else {}).get("pseudocount_cp10k"), e,
+                           EPS_TOL)]
+        if bad_ext:
+            reasons.append(f"{k}: wrong pseudocount in the direction code's own record (external) for {bad_ext}")
     commits = {(r.get("stamp") or {}).get("commit") for r in results.values()}
     unclean = sorted(k for k, r in results.items() if (r.get("stamp") or {}).get("tree_clean") is not True)
     if unclean:
@@ -761,7 +905,7 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Sequence[Ma
         reasons.append(f"the truths ran at {len(commits)} commits")
     repro = {}
     for k, r in results.items():
-        repro[k] = reproduction(k, r["rows"], committed.get(k) or [])
+        repro[k] = reproduction(k, r.get("rows") or [], committed.get(k) or [])
         if not repro[k]["scores_hold"]:
             src = "T44's whole-cut file" if k == WHOLE else "T46's file"
             reasons.append(f"{k}: {', '.join(REPRO_WHOLE if k == WHOLE else REPRO_CHAMBER)} do not reproduce their "
@@ -771,7 +915,7 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Sequence[Ma
                            f"{repro[k]['sha256_off'][:6]}{' ...' if len(repro[k]['sha256_off']) > 6 else ''}")
     for k, r in results.items():
         arms = arms_of(k)
-        if not r["rows"] or not all(a in row["arms"] for row in r["rows"] for a in arms):
+        if not r.get("rows") or not all(a in (row.get("arms") or {}) for row in r["rows"] for a in arms):
             continue
         same = [a for a in NEW_ARMS if all(row["arms"][a]["score"] == row["arms"][BASE]["score"] for row in r["rows"])]
         if same:
@@ -798,6 +942,12 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Sequence[Ma
                      or not set(arms) <= set(row["pseudobulk_change"]) for row in r["rows"])
         if fs_bad or pb_bad:
             reasons.append(f"{k}: the count-space factor or pseudobulk records are missing")
+        real = set(candidates(k))  # the real directional arms: the read-back covers these
+        rb_bad = any(not isinstance(row.get("ruler_readback"), Mapping) or not row["ruler_readback"]
+                     or any(not isinstance(v, Mapping) or not real <= set(v)
+                            for v in row["ruler_readback"].values()) for row in r["rows"])
+        if rb_bad:
+            reasons.append(f"{k}: the per-cut ruler read-back records are missing")
     return {"valid": not reasons, "reasons": reasons, "reproduction": repro,
             "commits": sorted(c for c in commits if c)}
 
@@ -875,6 +1025,12 @@ def matched_statement(comps: Sequence[Mapping]) -> str:
     return MIXED.format(*labels)
 
 
+def unmatched(comps: Sequence[Mapping]) -> list[str]:
+    """The statement-2 pairs flagged by the per-cut read-back, as 'arm against uniform on cut (groups)'."""
+    return [f"{m['arm']} against {m['uniform']} on {c} ({', '.join(m['flagged_groups']) or 'no group read'})"
+            for x in comps for c, m in x["ruler_match"].items() if not m["matched"]]
+
+
 def nearest_uniform(arm: str, truth: str) -> str:
     """The uniform arm built on this truth whose quoted delivered size is nearest the arm's (the smaller on a tie)."""
     cands = list(uniform_of(truth))
@@ -895,9 +1051,12 @@ def t52_reading(results: Mapping[str, Mapping], committed: Mapping[str, Sequence
     out["statement_1"] = {a: {"two_cuts": two_cuts(results, a, BASE),
                               "libraries": {k: one_truth(results[k], k, a, BASE) for k in LIBRARIES}}
                           for a in NEW_ARMS}
-    s2 = [{"two_cuts": two_cuts(results, a, u), "libraries": {k: one_truth(results[k], k, a, u) for k in LIBRARIES}}
-          for a, u in MATCHED]
-    out["statement_2"] = {"comparisons": s2, "statement": matched_statement([c["two_cuts"] for c in s2])}
+    s2 = [{"two_cuts": two_cuts(results, a, u), "libraries": {k: one_truth(results[k], k, a, u) for k in LIBRARIES},
+           "ruler_match": {c: ruler_match(results[c], c, a, u) for c in CUTS}} for a, u in MATCHED]
+    out["statement_2"] = {"comparisons": s2, "statement": matched_statement([c["two_cuts"] for c in s2]),
+                          "not_ruler_matched": unmatched(s2)}
+    if out["statement_2"]["not_ruler_matched"]:
+        out["statement_2"]["statement"] += UNMATCHED.format("; ".join(out["statement_2"]["not_ruler_matched"]))
     out["outcome"] = out["statement_2"]["statement"]
     brackets = {}
     for a, us in BRACKETS.items():
@@ -948,13 +1107,14 @@ def count_space(r: Mapping, arms: Sequence[str]) -> dict:
             fs = [row["factor_stats"][g][a] for row in rows]
 
             def mean_of(q, fs=fs):
-                xs = [x[q] for x in fs if x[q] is not None]
+                xs = [x.get(q) for x in fs if x.get(q) is not None]
                 return float(np.mean(xs)) if xs else None
 
             rec["groups"][g] = {"max_abs_log_f": float(max(x["max_abs_log_f"] for x in fs)),
                                 "scored_over_log10": int(max(x["scored_over_log10"] for x in fs)),
-                                "cp10k_moved_share": mean_of("cp10k_moved_share"),
-                                "cp10k_moved_share_scored": mean_of("cp10k_moved_share_scored")}
+                                **{q: mean_of(q) for q in ("cp10k_moved_share", "cp10k_moved_share_scored",
+                                                           "cp10k_moved_share_scored_weak",
+                                                           "cp10k_moved_share_scored_strong")}}
         out[a] = rec
     return out
 
@@ -1004,10 +1164,20 @@ def t52_text(res: Mapping) -> str:
 
         def size_of(a: str, k: str) -> str:
             c = cs[k][a]
-            shares = ", ".join(f"{g} {_f3(x['cp10k_moved_share'])}" for g, x in c["groups"].items())
+            shares = ", ".join(f"{g} {_f3(x['cp10k_moved_share'])} (scored weak "
+                               f"{_f3(x['cp10k_moved_share_scored_weak'])}, strong "
+                               f"{_f3(x['cp10k_moved_share_scored_strong'])})" for g, x in c["groups"].items())
             mark = " (extrapolated)" if a in EXTRAPOLATED else ""
             return (f"{a}: ruler size {DELIVERED.get(a, float('nan')):.4g}{mark}, share of reference CP10k moved by "
                     f"group {shares}, pseudobulk change from m1_r_gmom {c['pseudobulk_change']:.4f}")
+
+        def match_line(m: Mapping, k: str) -> str:
+            groups = "; ".join(f"{g} {_f3(x['arm'])} against {_f3(x['uniform'])}, half gap {_f3(x['half_gap'])}"
+                               + (" FLAGGED" if x["flagged"] else "") for g, x in m["groups"].items())
+            verdict = "ruler-matched" if m["matched"] else "NOT ruler-matched"
+            return (f"    read-back on {k}'s reference cells (entry's ruler, slope on the entry's direction; "
+                    f"{m['arm']} against {m['uniform']}, half the smaller gap to {', '.join(m['neighbours'])}): "
+                    f"{verdict}; {groups or 'no group read'}")
 
         for i, c in enumerate(r["statement_2"]["comparisons"]):
             lines.append(f"Statement 2, comparison {i + 1}:")
@@ -1016,6 +1186,7 @@ def t52_text(res: Mapping) -> str:
             for k in CUTS:
                 lines.append(f"    count-space sizes on {k} (ruler-matched is not count-matched): "
                              + "; ".join(size_of(a, k) for a in (c["two_cuts"]["change"], c["two_cuts"]["base"])))
+                lines.append(match_line(c["ruler_match"][k], k))
         lines.append("Statement 1, each new arm against m1_r_gmom (does not separate decompression from step size):")
         for s in r["statement_1"].values():
             lines += _two_cut_lines(s["two_cuts"])
@@ -1032,7 +1203,7 @@ def t52_text(res: Mapping) -> str:
                      "placebos; bears on gene identity, not on decompression):")
         for k, by in r["statement_3"].items():
             for tag, s in by.items():
-                lines.append(f"    on {k}, {tag}: {s['label']}; gate: " + _line(s["gate"]))
+                lines.append(f"    on {k}, {tag}: {s['label']} ({S3_CAVEAT}); gate: " + _line(s["gate"]))
                 lines.append(f"        on {k}, {tag}: " + _did_line(s["did"]))
                 lines.append(f"        on {k}, {tag}: reported, not read (try T46's placebo, which moves the "
                              "decompressed factors onto well-expressed genes): "
