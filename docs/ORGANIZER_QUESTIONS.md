@@ -21,6 +21,39 @@ under "Third email" below. The user sent a fourth email (the HTTP 403 on the pan
 of the A20 reading) on 2026-10-28 at 15:41 IST; its text is under "Fourth email" below. As of then none of the four
 emails had a reply, and the last screened Slack sweep (2026-10-23) found no organiser post or reply.
 
+## Organiser messages received (2026-11-17): one answer, one notice
+
+Both were pasted into the main session by the captain on 2026-11-17; `docs/PLAN.md` decision log 2026-11-17 (a) says
+what each changes, and `docs/DATA_POLICY.md` 2026-11-17 (a) how they were handled. A real answer replaces a working
+one the day it arrives.
+
+1. **The answer on the exposure notice of 4 November** (an email to the captain; the first reply the organisers have
+   given the team). In full, as pasted: "Thanks for flagging the metadata issue, and sorry for the delayed reply. We
+   have removed the hidden-target file sizes and cell-limit derivation from the website. The scoring rules and
+   submission limits remain unchanged. Thank you for documenting the exposure and explaining that your predictions did
+   not depend on it. Please include that explanation and your precommitted procedure in your method report so we have
+   a clear record. This reply addresses the metadata issue; the other questions in this thread still need a separate
+   response."
+   - It replaces the working answer in the table of 2026-11-10 ("Exposure notice of 4 November") and agrees with it.
+   - What the team does: the block of 2026-11-04 stays; `METHOD_SUMMARY.md` carries the explanation and the
+     precommitted procedure in a section of its own; the correction that the working answer set aside for the
+     pre-upload email (T3's count default was fixed on 2026-11-01, after the release and before the exposure) goes
+     into that section as well.
+   - The separate response it announces to the thread's other questions has not come. When it does, a screening
+     agent reads it first and it is read as the sections of those questions below fix.
+2. **The deadline notice to every team** (through the challenge's message system; thread
+   b6a676c673a047d2ac013675e532a302). As pasted: "We are moving the final submission deadline one week earlier, from
+   December 2 to November 25, 2026, at 23:59 AoE. Final-entry nominations and Agent Team evidence are due at the same
+   time. [...] Official evaluation will begin on November 26, and winners will be notified by December 1. Nothing else
+   changes: the tasks, data, metrics, two official submissions per board, and eligibility rules remain the same.
+   Final rankings will still be based on the hidden test set."
+   - It replaces "through 2 December 2026 (UTC)" (the organisers' email of 2026-10-20). 23:59 AoE on 25 November is
+     11:59 UTC and 17:29 IST on 26 November.
+   - It bears on the working answer for final entries ("editable until 2 December UTC"): nominations are due at the
+     new deadline. Whether an unmarked board counts its best upload is still not stated.
+   - What the team does: every upload date and the upload gate's exception date are the captain's to move; the
+     AI assistant's proposal and what stays unchanged until he rules are in the decision log.
+
 ## Working answers (2026-11-14): the four questions that had none
 
 The captain, 2026-11-14, after being told that two questions for the organisers waited on a decision and that the
@@ -85,7 +118,7 @@ ranked entries show that the specs reach teams. Their main use is scale, in the 
 | Board specs, HTTP 403 (28 Oct Q1) | An unintended Cloudflare block; a browser copy of the linked file is fine (0.8) | Done: saved file, read by code |
 | Final entries (28 Oct Q2) | Marks per board, editable until 2 December UTC; an unmarked board counts its best official upload (0.7) | Every board is marked explicitly after its last upload |
 | Notice of 31 October | No objection to the browser save, validation inputs or per-board marks (0.8) | No change; silence is not an answer under s.10 |
-| Exposure notice of 4 November | Seeing what every signed-in team sees is no breach and carries no penalty; keep it out of the methods (0.8) | The block of 2026-11-04 stays. One correction goes in the pre-upload email: T3's count default was fixed on 2026-11-01, after the release and before the exposure |
+| Exposure notice of 4 November | Seeing what every signed-in team sees is no breach and carries no penalty; keep it out of the methods (0.8) | The block of 2026-11-04 stays. One correction goes in the pre-upload email: T3's count default was fixed on 2026-11-01, after the release and before the exposure. **Answered on 2026-11-17** (above): the exposed metadata was removed from the site, the rules are unchanged, and the explanation and the precommitted procedure go into the method report |
 | Embryo-series stage labels (Slack DM, optional) | Timed matings refined by morphological staging; probably unanswered (0.55) | No change |
 | External sources "with each submission" (not asked; `EXTERNAL_DATA.md`) | The form has no disclosure field, so a dated private statement before the upload meets it (0.8) | Private email before the first upload (`docs/P3_RUNBOOK.md`); `--model sources-disclosed-by-email` on every upload |
 | Where the method summary goes (not asked) | The organisers' address, since no route is published for a claimant outside the places (0.55) | Sent privately in the plan's 24-30 Nov slot unless the screened check finds a route |

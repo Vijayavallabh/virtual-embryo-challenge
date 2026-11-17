@@ -1265,3 +1265,70 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   - **Still true:** no format check was sent, nothing was uploaded, no test score or leaderboard figure was read, the
     team key was not used, and the DGX reference checkout is untouched at dc7b6ae. The DGX's system disk is still
     nearly full (under 1 GB free); test runs there keep their temp files on the large volume.
+- 2026-11-14 (a), process notes from the round after the audit (`docs/PLAN.md` decision log 2026-11-14 (c)); written
+  by the AI assistant on 2026-11-17.
+  - **What ran, and on what.** Sixteen ledger rows (E42 to E45, N48, N51, N52, T42 to T47, H22, H23), each committed
+    before its run or reading. Every candidate was built by an agent in its own worktree on a campaign branch, to a
+    brief fixed before the code, and reviewed by other agents before its row; no agent ran anything on real data,
+    opened `boards/`, `data/`, `runs/`, a `notes/` folder, a session log or a memory file, and every brief opened
+    with the line that says so. The runs were the main session's, on released stages only: practice tasks whose
+    targets are released files, never a test build. Try H23 used two of the DGX's free H100s for fifty-four
+    minutes (devices 2 and 3; the two devices that carry other users' jobs were left alone); everything else was
+    CPU only at 16 BLAS threads. The DGX reference checkout was not touched; both campaign checkouts were synced
+    only while idle.
+  - **What the main session saw before a formal reading.** While tries T44 to T46 ran it polled their logs for
+    progress, and those logs print each finished seed's scores. So it had seen the first seeds of try T44 before
+    that try's one reading, and it wrote the briefs of tries T45 to T47 on that sight. T44's reading rule was in
+    code and in its row before the run and was applied once, at the commit that holds the task files; nothing in
+    it was changed. The same holds for the check lines of try H23 (target-free build records). This is said here
+    because the ledger's rule 1 is about rows before runs, not about what the session may see while a run goes;
+    the next rounds read a run's exit file and seed count only.
+  - **One record written before its file was opened.** The outcome of try E45 was first committed with four
+    pair-rule figures and one sentence that the AI assistant had not read from the reading's output. It found the
+    slip on reading the file, corrected the row within the hour (e8e856f; the verdict did not change) and told the
+    captain. Since then no figure goes into a row before the file that holds it has been printed.
+  - **Target-free listings and checks made by the main session**, each from released or disclosed files, none
+    comparing a prediction with a target or reading a score. (i) The flag of the embryo coupling's defect on the
+    nine practice tasks (row N51: brackets only). (ii) The harmonised-group shares of the E10.5 Task 1 file's
+    cells, whole file and library 3, and the cell-type labels with their cell numbers in Feng's statistics at the
+    bracket's two ends (no other Feng stage was read): M1's four direction groups cover 0.71 of library 3's
+    cells, and Feng holds fewer than ten early cells of every other type, the config's pre-registered minimum, so
+    no further group can get a direction. (iii) The Task 1 board's gene list against the file's: the board scores
+    every gene; and the size of try T15's permuted direction against Feng's on those genes (1.00 to 1.01 of it,
+    correlation -0.00 to +0.04). (iv) M1's own step applied to library 3's cells and read back with four
+    pseudocounts: the delivered share is 0.58 of the nominal step at the config's 0.5 CP10k, 0.81 at 0.1, 0.92 at
+    0.02 and 0.96 at 0.004, the same at nominal steps of 0.2, 0.4 and 0.6. The figures are in the rows and in
+    decision log 2026-11-14 (c).
+  - **Other process facts.** One shell call printed a large table into a tool output that the harness saved under
+    the account folder; the saved file was not opened and the command was rerun compactly. The workflow results
+    the main session read are the agents' hand-backs, not their transcripts. The DGX's system disk stayed nearly
+    full; test runs there kept their temporary files on the large volume, and the main session removed only its
+    own leftovers.
+  - **Still true:** no format check was sent, nothing was uploaded, no test score or leaderboard figure was read,
+    the team key was not used, no organiser message was read or sent, and the DGX reference checkout is untouched
+    at dc7b6ae. The three options the post-exposure block and the captain's earlier rulings keep closed (Task 1's
+    read depth, the embryo's moved-less change, the late-fetal practice family) were not touched; the captain was
+    told on 2026-11-14 that each needs an answer by name.
+- 2026-11-17 (a), process notes on two organiser messages (`docs/PLAN.md` decision log 2026-11-17 (a)); written by the
+  AI assistant.
+  - **What happened.** On 2026-11-17 the captain pasted two organiser messages into the main session: a reply by
+    email on the exposure notice of 2026-11-04, and a notice to every team that moves the final deadline to 25
+    November. The route for an organiser reply (decision log 2026-11-13 (c)) sends it through a screening agent
+    before the main session sees it; this time it did not.
+  - **The check after the fact.** The AI assistant read both pastes against the screening list. Neither holds a
+    test board's limit, anchor or truth count or any other property of a hidden target; neither holds a leaderboard
+    figure or a knockout finding. The reply says that "the hidden-target file sizes and cell-limit derivation" were
+    removed from the website: it names in kind what the team's notice had named and gives no value. Nothing was
+    redacted and nothing needs to be.
+  - **What stands.** The organisers announce a separate response to the thread's other questions. Those questions
+    ask about properties of the held-out samples' processing, so that response is exactly what the screen is for: it
+    is not pasted into the main session, and a screening agent reads it first (`docs/SCREENED_READ_SEVENTH_EMAIL.md`).
+    The captain was told so the same day.
+  - **The answer's effect on this policy.** None on its rules. The organisers accept the team's statement that its
+    predictions did not depend on the exposure and ask for that explanation and the precommitted procedure in the
+    method report. The block of 2026-11-04, (b) to (d) and (f), is what that statement rests on, so every lever it
+    closes stays closed; the rule for a request on such a lever (a change follows from released data alone, or is
+    declined) is unchanged, and for Task 1's read depth it now gives "declined", since released data do not show
+    E12.5's depth.
+  - **Still true:** no format check was sent, nothing was uploaded, no test score or leaderboard figure was read,
+    the team key was not used, and the DGX reference checkout is untouched at dc7b6ae.

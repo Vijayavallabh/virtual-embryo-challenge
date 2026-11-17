@@ -4144,3 +4144,238 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     whatever its size and however long it trained. D3 of the tries ledger's second wave (T1's second upload at 0.75)
     is another decision and is not touched. No upload, build, gate figure or reference list changes. The committed
     estimate stays 184 (170 to 198).
+- 2026-11-14 (c), the round after entry (ii): the controls and twins of the embryo's partial coupling, the check of
+  the built embryo file the captain asked for, the seventh independent sweep, the design panel on large models, and
+  the reads that followed from each, the last of them finished on 2026-11-14 at 19:10 UTC. Written by the AI
+  assistant on 2026-11-17 (the account's usage limit stopped the session in between); the captain can overrule any
+  of it.
+  - **Why a new entry.** Entry (ii) ends with the controls of its line 18 in progress and a seventh pass owed. This
+    entry records how line 18 ended and what the pass and the captain's two instructions of entry (b) led to. Every
+    read below had its ledger row committed before its run or reading; candidate code stayed on campaign branches,
+    and only reading scripts with tests, rows and results reached main.
+  - **1. Line 18 ends with no request: the embryo's partial coupling and its family.** The captain had asked for
+    "the same test with cells simply moved less". (a) Controls, tries E42a to E42d (row E42). The first brief was
+    wrong twice and its reviewers said so before any run: a control that damped by the transported share did not
+    move the cells as far as the partial arm (the premise "1.3 to 1.8 times as far" held for anchors only and
+    reversed at the cells), so a fourth control was built whose cells move on average exactly as far
+    (`fgw_damp_m`); and the reading as first written could put forward an arm that another passing arm led. The
+    reading was fixed before the run. Verdict "moving less": the movement-matched control passes both keep rules by
+    itself (+1.43 on the E7.5 backtest, ahead in 10 of 10 seeds, and +0.65 on the E7.25 one, 9 of 10; pair rule
+    S(0.45) +0.32), and `fgw_partial` (+1.88, +0.71; S(0.45) +0.56) leads none of its four controls. By the row the
+    arm put forward became `fgw_damp_m`, on the condition its row named: its amount of movement comes from cell-type
+    labels, which are not harmonised across stages, so its twin at the lineage level had to pass too. (b) Try E43,
+    the partial arm at the lineage level (`fgw_partial_grp`): it passes both rules (+1.38, 10 of 10; +0.72, 9 of
+    10; S(0.45) +0.49; no task below `fgw`), so the partial form does not hang on the label level. (c) Try E45, the
+    matched control at the lineage level (`fgw_damp_m_grp`): the adoption rule keeps it (+0.77 and +0.77) and the
+    pair rule does not (S(0.45) +0.26 against the 0.3 it asks). By rows E42 and E43, fixed before these runs, the
+    family closes with no request and no other arm takes its place. Every member's pair value is positive and near
+    the bar (+0.56, +0.49, +0.35, +0.32, +0.27, +0.26, +0.26). The captain can overrule the closure; the AI
+    assistant advises against it for the reason in (d).
+    (d) The check of the built file, which a side agent's note asked for and the captain forwarded (rows N51 and
+    N52). The entry's coupling fails in two ways that one flag had pooled: partners at random, and partners
+    mirrored. Row N51 computed the target-free flag of 2026-11-03 for all nine practice tasks (its gate reproduces
+    the committed diagnostic exactly): six tasks have partners at random on every draw; `late` (six draws), the
+    E7.25 backtest (five) and new2 (two) have mirrored draws beside clean ones. The test pair is flagged on ten of
+    ten draws, the upload's own included, and is of the mirrored kind. Row N52 then read the committed scores by
+    that flag, inside one truth each: on `late` the arms that move cells less gain 1.65 to 2.65 on mirrored draws
+    and lose 0.57 to 1.79 on clean ones, and beside the second upload the pair value is 0 on every draw; on the
+    E7.25 backtest the damped arms gain 1.09 to 1.37 on mirrored draws and nothing on clean ones, while the partial
+    arms gain the same on both (+0.66 and +0.76 to +0.79); on new2 every arm loses 1.05 to 1.54 on the two mirrored
+    draws, where the flattened cloud fits its truth better. So the kind of draw does not settle whether the change
+    helps: the hidden truth's shape does, and nothing released shows it. That is why the closure in (c) is left to
+    stand.
+  - **2. The seventh sweep.** An independent agent classed 223 lines of the ledger, the plan and the research reports
+    (read 89, blocked by a named rule 73, closed by a pre-set gate 6, no counted read can judge 33, not buildable
+    from the record 20, open 2). Both open lines were built, reviewed and read. The within-upload mixture on Task 1
+    (tries T43a and T43b): the mixture loses 0.32 and 0.37 and its matched control loses the same, so there is no
+    mixture effect. Potts sorting on the heart (try H22): the sort reaches its targets after up to 4,200 swaps and
+    the score does not move (within 0.02). The sweep's hard calls were read where a form without a free number
+    existed, so that no label stands in for a read: the multinomial redraw on Task 1 (try T43c, item 3 below); the
+    shrinkage of M1's direction (reading N48 and tries T42a to T42d, item 4); the interior-reference residual on
+    the embryo (try E44: -0.25 on the E7.5 backtest, 0 of 10 seeds, and +4.32 on the E7.25 one; one-sided, and it
+    fails both upload rules; the test pair would correct E7.5 in the position where the arm does nothing on the
+    practice tasks). Four were closed without a read, each on a ground that is not the AI assistant's odds: the
+    heart's reversal constant needs four input stages and the 1.75-day backtest has three (structure); the
+    persistence gate has no form on the embryo's two brackets (structure); the heart's span-matched shuffle has no
+    bracket segregation to undo and the ledger's rule 3 asks a reason (rule); the embryo's latent Gaussian
+    transport and Task 1's curvature term have no form without a free number (not buildable from the record).
+  - **3. The count redraw on Task 1 gains 3.8 points on both practice cuts and leads to no request (try T43c).** A
+    second layer of count noise on the drawn cells (the heart's try H19 on Task 1) scores +3.82 and +3.74 above B0,
+    ahead on every seed, mostly on the covariance term. The released files give the reason: the E9.5 cells the
+    practice cuts draw are about twice as deep as the E10.5 stage they are scored against (median library about
+    13,800 against 6,723), and count noise on log-normalised data is what a shallower sample looks like. It is the
+    pattern of tries H19 and K14d: count noise follows depth. Task 1's depth was closed on 2026-11-04 because a
+    hidden count had been seen, and the row fixed before the run that a gain of this kind leads to no request. The
+    price both ways went to the captain with no lean: worth a few points if the hidden E12.5 sample is about half as
+    deep as the cells the entry draws, a loss of about as much if it is as deep, and released data do not say which;
+    for a lever closed after an exposure the rule is that a change follows from released data alone or is declined.
+    The AI assistant's odds (0.7 that the redraw would lose) were wrong.
+  - **4. Shrinking M1's direction (reading N48, tries T42a to T42d).** The ledger had pruned this on the sentence
+    "nothing to shrink". Reading N48 (target-free) found the sentence false for three of M1's four groups: the two
+    halves of Feng's cells agree at 0.98 in cardiomyocytes and at 0.76 to 0.78 in the three smaller groups. The
+    counted read on the two E10.5 cuts then found that every shrunk arm loses 0.08 to 0.13 on every seed of both
+    cuts, on the de terms and the cell-state terms alike; the form that shrinks by expression decile leads the
+    uniform one by 0.04. The captain had asked for the measured gain and not only the verdict: it is about a third
+    of the rule's 0.3, in the wrong direction. Closed by its reading.
+  - **5. The design panel on large models** (workflow wf_14a0efab-a85, entry (b)): three designers, one per lens
+    (Task 1; the two spatial boards; Task 3 and cross-board), then one adversary on rules and reproducibility and
+    one on evidence. Both adversaries concluded that capacity limits no board: every learned generator in the
+    record lost or tied, and the large effects are facts about the hidden samples (Task 3's knockout run, Task 1's
+    sample kind and depth, the embryo's run profile) and the levers the rules keep closed. The Task 3 designer
+    found nothing to propose: no released knockout run remains to judge a shared-knockout model. Two lines
+    survived and were started, row first: the heart's learned flow in a corrected form with placebos (item 6), and
+    the size of M1's step on the two E10.5 cuts (item 7). A third, a family of late-fetal practice tasks for Task
+    1 built from the Qiu 2024 series, needs the captain to reverse his decline of 2026-11-05 and two data
+    registers amended before it can be read; the adversaries put its value at about zero (-0.5 to +1.0) because no
+    legal series has a cell between E10.5 and E14.5. It was put to the captain as one question, with the AI
+    assistant's recommendation to leave the decline in place.
+  - **6. The heart's learned flow, kept to what is left once each lineage's mean change is the entry's (tries H23a to
+    H23d).** The panel's adversaries had corrected the design before any code: the flow's field adds a per-cell
+    factor inside each moved lineage and leaves the lineage's expected total as `b0_trend` makes it; a second form
+    fits the field on latents centred per lineage and stage, the form try H10's row had left open; each has a
+    placebo whose within-lineage residuals are permuted across stages. The independent review found the brief's
+    recentring identity false after the entry's depth rule and its first placebo wrong (it destroyed the mean
+    development too); both were fixed and reviewed again before the row. The run used two of the DGX's free H100s
+    for fifty-four minutes; the count model reproduced try H10's fit to the bit. Against `b0_trend`, one-day then
+    1.75-day backtest: the flow -0.28 (0 of 10 seeds) and +0.24 (10 of 10), its placebo -0.00 and +0.17; the pooled
+    form -0.20 (0 of 10) and +0.24 (10 of 10), its placebo +0.04 and +0.00. Nothing passes the adoption rule, and
+    each arm's sign changes with the backtest on every seed. By the row both pairs close, and what the row owed
+    after a pass (refits, a size-matched placebo, a larger model on the free GPUs) is not owed. So the one
+    learned-model line the panel left standing was read in the form its critics asked for and adds nothing that
+    holds on both backtests. No larger model was trained: the row tied it to a pass.
+  - **7. The size of M1's step (tries T44 to T47), the one lever of this round that the practice cuts can read and no
+    rule closes.** The ledger had pruned every change of the Task 1 step's size on the sentence "T1 is flat in step
+    size", which rested on a toy; the panel's adversaries named the counted route that could read it (row T42's, the
+    two E10.5 cuts). Each of the four reads below had its design changed by independent reviewers before its run.
+    (a) Try T44: 1.5 times the step scores +0.95 and +0.89 above the entry's form and twice the step +1.81 and +1.68,
+    ahead on every seed of both cuts, about +0.9 points for each further tenth of Feng's bracket; try T42's smaller
+    step had lost 0.13. The sentence "flat in step size" is false on these cuts, and the AI assistant's odds (0.15 for
+    a pass) were wrong again. (b) Try T45, the controls: the larger step's increment beats a gene-permuted placebo's
+    increment by +1.60 and +1.44 (the placebo's own increment is +0.21 and +0.24; a second permutation agrees), and a
+    control with the larger step's redraw variance at the base's expected counts gains +0.27 and +0.24. So the gain
+    needs Feng's direction on its own genes and is not count noise; the same holds for the entry's own step, nine
+    tenths of which is lost when its genes are permuted. (c) Try T46, each E10.5 library as the truth (libraries 1 and
+    2 are embryo portions like the E9.5 reference, library 3 a dissected heart, the kind the test pair is): twice the
+    step gains +1.74, +1.54 and +1.52, and +1.67, +1.48 and +1.51 net of a placebo whose own increment is zero, on
+    every seed; so the gain is not the change of sample kind. The response does not turn in the range read: mean
+    score at 1, 1.5, 2, 3 and 4 times the step is 52.06, 53.01, 53.87, 55.11 and 55.84 on the pooled truth and 55.74,
+    56.63, 57.26, 58.22 and 58.53 against library 3, where the gain per further tenth has fallen to 0.15 by a step of
+    0.8. (d) Try T47, a reading that scores nothing: with the entry's own formula the released day covers 0.254 of
+    Feng's five-day change in the portion libraries and 0.326 in the dissected-heart library (the kind adds 0.07,
+    statement "it does not" lie along the direction); between cell types at E9.5 the challenge's contrasts are 0.834
+    of Feng's (0.955 corrected for Feng's noise); the day's share of the bracket reads 0.30 where proportional days
+    say 0.20; and M1's own step of 0.2, applied to library 3's cells and read back the same way, reads 0.117. Its
+    statements on the pace and on the entry's fraction are "not separated", and by its own row no statement of it is a
+    reason to change the step. (e) A target-free check by the main session of why the step reads small: read back with
+    a pseudocount of 0.004 CP10k in place of the config's 0.5, the same step reads 0.96 of its nominal size (0.58 at
+    0.5, 0.81 at 0.1, 0.92 at 0.02), the same at steps of 0.2, 0.4 and 0.6. Feng's direction is a log ratio made with
+    a pseudocount that is large against most genes' means, and M1 applies it as a plain count factor: the step
+    under-delivers on weakly expressed genes. (f) Also target-free: M1's four direction groups cover 0.71 of library
+    3's cells, and Feng holds fewer than ten early cells of every other type, the config's pre-registered minimum, so
+    no further group can get a direction. **What follows.** No row above puts a change forward, and a one-day cut
+    cannot judge the test's two days. The reads agree on a mechanism that is the same at the test (the delivery) and
+    on two things that are not (the day's pace; the kind, small). By T47's numbers the test's two days are expected
+    to hold a share of 0.29 to 0.41 in the units in which the entry's 0.40 delivers 0.233. A rule with no free number
+    that follows from this, a step set so that it delivers the bracket's share, is in review as try T48 (two fix
+    rounds so far; a reviewer's caution stands in its row: a uniform inflation over-moves well-expressed genes). The
+    same pseudocount and a further halving by B0's damping apply to the entry's other Task 1 component, g_mom's
+    within-type factors, whose size has never been read on the cuts although the adoption rule can judge it there:
+    try T49, in build. A request to the captain on the step follows only after try T48, an independent recomputation
+    and a cold adversarial check, priced both ways.
+  - **8. Errors of the AI assistant in this round, and what caught them.** Its briefs were wrong before any run in
+    every build of the round, and the independent reviewers caught each: the embryo controls matched share and not
+    movement; their first reading could put a led arm forward and did not void on a refused control; the Task 1
+    mixture's control matched counts and not the scorer's log-space pseudobulk, and the premise that the redraw
+    would lose was false; the heart sort's validity check was false above 1,500 cells and its two arms were one swap
+    path; the shrinkage read's verdict list could put the closed scalar form forward; the residual arm "keeps the
+    stage difference" only for log-linear trends; the lineage twin differs from its sibling through one scalar; the
+    defect flag pooled two kinds of draw; the heart flow's recentring identity did not survive the depth rule and its
+    first placebo destroyed the mean development; the step controls compared levels where increments were meant and
+    took a control with twice the redraw for a matched one; the read by library named where a gain comes from, which
+    its design cannot show; the share reading mixed corrected and uncorrected quantities and could not read "inside"
+    at the truth. One error reached the record: the outcome of try E45 was first written with four pair-rule figures
+    and one sentence that the AI assistant had not read from the reading's file; it corrected them within the hour
+    (the verdict was unchanged) and noted it in the row. Its pre-run odds were wrong on N48, T43c, T44 and T47's
+    kind statement, and are recorded as such. And one thing it did that no rule forbids but the next rounds avoid:
+    it polled the logs of running tries, saw the first seeds' scores of try T44 before that try's reading, and
+    wrote the briefs of tries T45 to T47 on that sight (`docs/DATA_POLICY.md` 2026-11-14 (a)).
+  - **9. What waits for the captain** (asked on 2026-11-14, not answered; nothing in the plan is blocked by them).
+    (i) Whether to reopen Task 1's read depth, given item 3: the AI assistant's advice is the rule's, released data
+    alone or decline, with no lean. (ii) Whether to reverse the decline of the late-fetal practice family (item 5):
+    its recommendation is no; item 7's reads answer the question about the entry's own stretch from released files.
+    (iii) Whether to overrule the closure of the embryo's moved-less family (item 1): its advice is to keep it
+    closed; if overruled, the file a request would name is `fgw_partial_grp`, after an independent recomputation and
+    a cold adversarial check.
+  - **Audits of this entry.** None yet. An independent recomputation of tries T44 to T47 and a cold adversarial
+    check of the step's case were started on 2026-11-17, after the account's usage limit had stopped every agent from
+    the evening of 2026-11-14; an eighth pass over this entry and the whole ledger (closures and a sweep, with one
+    added question: every size the ledger calls flat, read on both sides or not) follows them.
+  - **Where it leaves the target.** Nothing read in this round has changed an upload, a build, a rule, the gate
+    figure or the reference list; the ten files of `builds_dc7b6ae` stand. The committed estimate stays 184 (170 to
+    198) and the forecast for the files as built its upper reading, 194.4. One lever was found that the practice cuts
+    can read and no rule closes, the size of Task 1's step (item 7): on the cuts' evidence it is worth about a point
+    at the test if the practice response carries, it needs the captain's ruling, a builder change and a rehearsal, and
+    it does not take any estimate near 215.41. Everything else closed by a read, a pre-set rule or structure. Tries
+    in this entry: T42a to T42d, T43a to T43c, T44a and T44b, T45a to T45g, T46a to T46d and T47 (21 on Task 1);
+    E42a to E42d, E43, E44 and E45 (7 on the embryo); H22 and H23a to H23d (5 on the heart); and three readings
+    that count nothing (N48, N51, N52). Totals: T1 58, embryo 73, heart 31, T3 31.
+- 2026-11-17 (a), two organiser messages, pasted into the main session by the captain: the first answer the organisers
+  have given the team, on the exposure notice, and a notice to every team that moves the final deadline to 25
+  November. Written by the AI assistant. What moves an upload date is the captain's to rule, and nothing has been
+  ruled yet.
+  - **How they arrived.** The captain pasted both into the main session on 2026-11-17, without the screening step
+    that the route for organiser replies names (decision log 2026-11-13 (c)). The AI assistant checked them afterwards
+    against the screening list: neither holds a test board's limit, anchor or truth count or any other property of a
+    hidden target, a leaderboard figure, or a knockout finding. The first names what was exposed in kind, as the
+    team's own notice had, with no value. The organisers announce a separate response to "the other questions in this
+    thread": that one goes through a screening agent first, as the route says (`docs/DATA_POLICY.md` 2026-11-17 (a)).
+  - **The answer on the exposure** (their email as pasted; its header in the paste reads 5:40 AM on the day of the
+    paste): "We have removed the hidden-target file sizes and cell-limit derivation from the website. The scoring
+    rules and submission limits remain unchanged. Thank you for documenting the exposure and explaining that your
+    predictions did not depend on it. Please include that explanation and your precommitted procedure in your method
+    report so we have a clear record. This reply addresses the metadata issue; the other questions in this thread
+    still need a separate response."
+    - What it settles: the working answer of 2026-11-10 for the exposure notice (no breach, no penalty, keep it out
+      of the methods; 0.8) is now an organiser's answer, with one thing added: the explanation and the precommitted
+      procedure belong in the method report.
+    - What it changes in the entries: nothing.
+    - What it changes in the work. `METHOD_SUMMARY.md` gets a section of its own on the exposure and the procedure:
+      what was seen and when, what was fixed in code and rules before it, the block of 2026-11-04 and its two
+      narrowings, and every later choice that bears on a blocked lever, with who decided it and from what. It is
+      reviewed for accuracy, strategy and tone before it leaves the repository.
+    - What it does to the blocked levers. The block of 2026-11-04 is what makes "did not depend on it" true, so it
+      stands, and a request to reopen a blocked lever now has a second cost, the organisers' record. For Task 1's
+      read depth, which the captain was asked about on 2026-11-14, the rule for a lever closed after an exposure
+      (a change follows from released data alone, or is declined) now gives one outcome: declined. Released data do
+      not show E12.5's depth (tries T30 to T32), and the one read that gains (try T43c) gains because the practice
+      target is shallower than its reference.
+  - **The deadline** (the organisers' notice to every team, as pasted): the final submission deadline moves "from
+    December 2 to November 25, 2026, at 23:59 AoE. Final-entry nominations and Agent Team evidence are due at the same
+    time"; "Official evaluation will begin on November 26, and winners will be notified by December 1"; "Nothing else
+    changes: the tasks, data, metrics, two official submissions per board, and eligibility rules remain the same."
+    23:59 AoE on 25 November is 11:59 UTC and 17:29 IST on 26 November.
+  - **What it breaks, and whose each is.**
+    1. The captain's upload gate. Its deadline exception (2026-11-27 00:00 UTC) now falls after the deadline; as the
+       record stands the client refuses every official upload until then, so without a new date there is no entry.
+       Only the captain moves it (`results/upload_gate.json`).
+    2. The second-upload rules' dates (`docs/S2_RULES.md`: every upload by the end of 30 November IST). The file is
+       hash-pinned and changes only by an amendment in the captain's words.
+    3. The ruling of 2026-11-06 (b): the screened check that picks T3's second upload runs "no earlier than 26 Nov".
+    4. Every date in section 7's upload runbook and in `docs/P3_RUNBOOK.md`; the screened reads of 19 and 23 November;
+       the method summary and the disclosure email (24 to 30 November); "a build change is rehearsed by 24 Nov"; and
+       `AGENTS.md`'s summary of the gate.
+    5. The privacy date. Methods stay private until the organisers' announcement, which the plan dates 2026-12-11;
+       winners are now told by 1 December and the workshop is on 12 December. The rule stays as written until the
+       captain says otherwise.
+  - **The AI assistant's proposal, put to the captain on 2026-11-17 and not yet answered.** The spacing of the old
+    runbook, six days earlier: the methods freeze and the first round on 21 November from 00:00 UTC (05:30 IST); the
+    second round on 23 November; T3's last upload on 24 November; final marks on 25 November by 12:00 UTC; what is
+    left before 17:29 IST on 26 November is the outage buffer. A change to a file is rehearsed by 20 November. The
+    disclosure email goes before the first upload, as before, and the method summary by 24 November. Until the
+    captain names the dates no record changes: the gate's file, the second-upload rules and the runbooks keep their
+    text, and this entry and the handoff are the only places the new deadline is written.
+  - **What it does to the open work.** Four days are left for a change to an upload. One candidate exists, the size
+    of Task 1's step (entry 2026-11-14 (c), item 7). Its case is recomputed and attacked on 2026-11-17, and it
+    reaches the captain as one priced question by 18 November or not at all. Nothing else in the ledger is near a
+    request.
+  - **The estimate.** Unchanged: 184 (170 to 198), and 194.4 for the files as built.
