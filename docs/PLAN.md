@@ -4529,3 +4529,48 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     in the request as the rule's own arm on practice, and T49 has its own adoption-rule route. The independent
     recomputation of tries T44 to T47 must have found no mismatch that bears on a figure the request quotes; otherwise
     the request waits for the correction.
+- 2026-11-17 (d), the cold check's attacks after their checks were run, and one more test added to the advice rule
+  before the read it uses exists (tries T48 to T51 are read; T52 and T53 are running; T54 is being built). Written by
+  the AI assistant.
+  - **The first attack: the scale was never measured over time, and its upper end is a noise-free limit.** The second
+    half is conceded: the range for the test's days is 0.28 to 0.36 in the entry's own units, not up to 0.41 (the
+    independent recomputation says the same). The first half is unresolved: the check the adversary named was run as
+    try T51 and came back against the attack (the released day moves about twice as far along the part of the
+    direction that all cell groups share as along the rest; "the common part moves as much"), but its reviewers showed
+    that this outcome cannot confirm the scale either, and nothing released can measure a scale over time. T51 adds a
+    reading the request must carry: the released day's change sits on the common part, and for that part an even pace
+    after E10.5 leaves 0.23 to 0.25 for the test's two days, which the entry's 0.40 nearly delivers already. So the
+    gain a larger step can expect at the test runs from about nothing to about a point; it is not "about one point".
+  - **The second attack: 0.35 is a middle course, not a floor.** Mostly rebutted by the target-free check of entry
+    (b): on Feng's own statistics the entry's ruler reads the fifths of an even course as 0.187 to 0.221, so the two
+    test days hold 0.33 to 0.34 after an even pace where the draft said 0.35. The floor moves from 0.29 to 0.28. The
+    adversary's other check, the outside dataset's middle stages, is barred by the data rules and was not run.
+  - **The third attack: the flat point follows the truth's depth, not the share delivered.** Conceded; try T50
+    confirms it. Against library 3 as released the score peaks at 4 times the step, is level at 5 and falls from 6;
+    against the same truth thinned to two thirds it peaks at 6 times, and at one third it is still rising at 8. The
+    request therefore cannot rest on a share model. It rests on the curve of the deepest released truth, and it must
+    say that the curve moves with the truth's depth.
+  - **The kill shot: in the worst case 0.69 over-delivers 1.8 times for no gain or a loss.** Half conceded. On library
+    3 the worst-case multiple of 0.69 (5.1 times) scores 58.39 against 58.22 at the entry's worst-case multiple: no
+    gain to speak of, and no loss. The loss begins at 6 times (-0.31 against 3 times), which no candidate reaches in
+    the worst case.
+  - **Where the advice rule stands on the reads so far.** Tests A and B of entry (c): 0.55, 0.60 and 0.69 pass A; B's
+    largest gain at the low end is 0.69's (+0.95; 0.60: +0.79; 0.55: +0.70); T50's depth statement reads "the larger
+    steps gain more against the shallower truth", so B caps the advice at 0.60. T51 changes nothing by its use. T48
+    and T49 decide nothing (T48: the calibrated step passes, on try T44's line; T49: a larger g_mom scores +1.47 and
+    +1.36 at twice the damping in both forms, three quarters on the distribution terms, and by its row changes
+    nothing). Test C waits for T52 and T53.
+  - **Test E, added now, before try T54 has a row: the deep side.** No released truth is deeper than the cells its
+    prediction is built from, so T50 read one side of the depth question only. Try T54 reads the other side by
+    thinning the reference (worlds `ref67` and `ref50`: the truth 1.35 and 1.8 times as deep as the reference). Its
+    use, fixed here: for each world the request quotes, for the value advised by A to C and for the entry's 0.40, the
+    interpolated scores at the multiples tests A and B use (a real share of 0.28: 2.33 for 0.40, 3.20 for 0.55, 3.49
+    for 0.60, 4.02 for 0.69 times the practice step; a real share of 0.22: 3.0, 4.1, 4.4, 5.1), as the price "if the
+    hidden truth is deeper than the cells the upload is built from". The advice changes only on `ref67`, the nearer
+    world: if the advised value scores below the entry there at a real share of 0.28, the advice steps down to the
+    largest candidate that does not (0.60, then 0.55, then keeping 0.40). `ref50` is quoted and changes nothing. If
+    T54 is void or its world `ref100` does not reproduce T50, the request says the deep side is unread and the advice
+    steps down one candidate. Nothing about the hidden truth's depth enters; the captain, who has seen figures that
+    bear on it, is asked to decide from the practice numbers alone.
+  - **After the last read.** The request as it then stands is put to a second cold adversary before it goes to the
+    captain, since it is no longer the claim the first one attacked.
