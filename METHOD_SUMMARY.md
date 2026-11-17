@@ -262,8 +262,9 @@ Task 3's s2 is the wild type plus a five-state depletion, by design.
   the same for a board index the captain saved in the browser, the route the captain cleared on 2026-11-01 and used on
   2026-11-04, 634b5fd). Since the final phase opened the public board file has been opened once on record: on 2026-11-04
   the captain displayed the board index in a browser and pasted it, and then the Data page, into the AI assistant's
-  session. The paste held no test anchors and no truth counts but did show the test boards' cell limits, and the Data
-  page lists hidden targets' file sizes. No value from either is written in the repository, its notes or its commits,
+  session. The paste held no test anchors and no truth_cells field but did show the test boards' cell limits, and the
+  Data page lists hidden targets' file sizes (what that bears on, and what was done, is in the section at the end of
+  this part). No value from either is written in the repository, its notes or its commits,
   and none is used (the paste stayed in the AI assistant's local session log, outside every repository): every use of a
   test board's limits is code fixed before that day, and since then no try may change a cell number, a size or a scope
   on any board, or T3's composition, and T1's composition only by the legal route, unless the captain rules otherwise
@@ -277,6 +278,80 @@ Task 3's s2 is the wild type plus a five-state depletion, by design.
 - **Released files contain synthetic records** (copies of cells in adjacent sections and averaged, half-integer cells);
   prediction inputs drop them (`vec.prep.load_stage(drop_duplicates=True)`), the local scorer loads targets as released.
 - Every exposure to a held-out value during research is recorded, with what was done about it, in `docs/DATA_POLICY.md`.
+
+### Exposure of hidden-target metadata on 2026-11-04 and the precommitted procedure
+(Written on 2026-11-17 at the organisers' request, quoted below; drafted by the AI assistant and reviewed for accuracy,
+framing and tone by independent agents.)
+
+**In short.** Every quantity the exposed metadata bears on was set by code or rules committed before 2026-11-04;
+that day the team closed them to change, and each later decision touching one is listed below. Dates are UTC.
+
+**What was seen.** On 2026-11-04 the team's tool still could not fetch the public board index; asked which address
+was blocked, the AI assistant named it without repeating that it must not be opened. At about 07:05 the captain
+opened it in a browser and pasted it, then the signed-in Data page, into the AI assistant's session. The index had no
+test-board anchors or truth_cells field but held the four test boards' cell limits; the page showed these, how the
+upper limit is set (with the limits, it bears on a hidden cell count) and the file sizes of the heart E12.5 target
+and the two beta-catenin replicates. The record treats the Task 1 limits as showing a cell count of the scorer's E12.5
+working copy (`docs/DATA_POLICY.md` 2026-11-04 (c)). The Task 1 E12.5 file size, in our notes since 2026-10-18 and
+shown unused to four agents ((g)(i)), was redacted that day (older commits of this private repository hold it). No
+value or inference from the paste, which stayed in the session's local log, is in the repository or any prompt; the
+AI assistant states it held none once that context was summarised. Anchor-stripping code imported the index (634b5fd,
+07:29); only code reads it (one recursive search opened it that day, printing nothing: (e)).
+
+**What was fixed before it.**
+- Cell numbers: the count rule in code (4272990, 2026-10-21; decided for the Task 2 boards at dfee546, 2026-10-28);
+  per the record every use of a test board's limits is code fixed before 2026-11-04 (`tests/test_hidden_counts.py`).
+- Tissue sizes: the heart's and the embryo's, by the size procedure committed at 171695a (2026-10-18, pre-release).
+- Scope: Task 1's chamber-only scope (`configs/t1_chamber_classes.yaml`); the heart's by the rule at 38faf73
+  (2026-11-01 21:38), amended after its readout by the AI assistant under delegation, logged as such (8031d9c, 21:52).
+- Composition: Task 3's by rules approved before any Gata4 download (4a63801, 2026-10-19); Task 1's at E10.5's chamber
+  mix (the captain, 2026-11-01), its s2 at 60% cardiomyocytes (38faf73, by the AI assistant under delegation).
+- Read depth: on Task 1 and the heart drawn cells keep their released counts (the base moves it); Task 3's: its rules.
+
+**The block.** That day the AI assistant, under the captain's delegation of 2026-11-02, closed cell numbers, sizes and
+scope on every board and Task 1's composition, unless the captain rules otherwise; after the Data page, also Task 3's
+composition. Asked whether to keep it or narrow it as the AI assistant recommended, the captain gave a general
+go-ahead; the AI assistant let Task 1 add cell states present in legal post-E14.5 heart data and absent at E10.5 (c),
+then change shares in its chamber scope from released and legal external data by a rule committed before any run
+(d), since a count or a file size does not say which states appear or in what shares. A clarification (f) closes
+Task 1's read depth and sends a rule that shifts drawn depth to the captain. The heart's depth stays closed; Task 3's
+is not named. A request on a blocked quantity is decided from released data (or a screened organiser answer) or
+declined, unless the captain names an exception.
+
+**Later decisions that bear on a blocked quantity.** Two choose Task 1's base, a depth choice in effect.
+- 2026-11-04: Task 1 additions by the legal route were pruned (`experiments/harness/TRIES.md`). 2026-11-05: under the
+  captain's "go with your recommendations on all six", a Task 1 upload at 75% cardiomyocytes was not run; the AI
+  assistant dropped one with blood at 40% and set aside heart candidates that change scope. 2026-11-06: the AI
+  assistant dropped a cycling-state quota (its sign is depth-sensitive); the captain ruled, as advised, that Task 3's
+  second upload is an already-built barred-branch file (no depth step) if the organisers score a floored slope zero.
+  2026-11-11: the captain's named exception let an organiser statement of Task 1's cardiomyocyte or blood share on
+  its public page set them, by a rule committed first (74834bd); none was found, and the exception is spent.
+- 2026-11-13, row R6 (Task 1's first upload): released-stage reads (tries T27 to T31) showed the base to be a depth
+  choice; try T30's pre-set rule recommended nothing. The captain, who had seen the figures, was asked with "decline"
+  as default and left the direction to the AI assistant, which holds none; it chose E10.5's dissected-heart library
+  from released data and the organisers' collection text, reasons in the row before any build (2dc55d8).
+- 2026-11-13, row R7 (Task 1's second upload): the captain, who had seen the figures, picked of four options try
+  T33's pre-set rule's outcome (marked recommended), asked to decide "from the practice numbers in the options alone".
+- 2026-11-13, the embryo's row R4 (its second upload; the captain's choice of three options): E7.5's cells take a
+  released E8.0 sample's detection profile and depth. No embryo file size was exposed; its depth line was closed by
+  the ledger, not the block, and reopened for tries on 2026-11-12. These rulings amend `docs/S2_RULES.md`, dated.
+- 2026-11-14: a practice read (try T43c) found that a shallower practice target's depth scores better; its row fixed
+  beforehand that this leads to no request. The captain, asked whether to reopen Task 1's depth (advice: released
+  data alone or decline), has not answered; on 2026-11-17 the AI assistant recorded that the rule gives "declined".
+
+**What the organisers were told.** On 2026-11-04 the captain wrote (drafted by the AI assistant; fcd8964) what was
+pasted, that some test-board limits with the page's rule give away part of a hidden target's size, that the page
+lists hidden file sizes, and that nothing in our predictions depends on what was seen ("the cell counts and sizes
+follow rules committed before the release"; correction: Task 3's count was set in code after it, on 2026-11-01,
+46089fe). Their answer of 2026-11-17: "We have removed the hidden-target file sizes and cell-limit derivation from
+the website. The scoring rules and submission limits remain unchanged. Thank you for documenting the exposure and
+explaining that your predictions did not depend on it. Please include that explanation and your precommitted
+procedure in your method report so we have a clear record. This reply addresses the metadata issue; the other
+questions in this thread still need a separate response."
+
+**How to check it.** `docs/DATA_POLICY.md` 2026-11-04 to (g); each decision's `docs/PLAN.md` entry and `TRIES.md` row
+(where one exists, committed before its run or build); `docs/S2_RULES.sha256` with `tests/test_s2_rules.py` (the
+amended file; the text frozen on 2026-11-03 stands above the amendments), `tests/test_t3_xko.py` (Task 3's rules).
 
 ## Shared machinery
 

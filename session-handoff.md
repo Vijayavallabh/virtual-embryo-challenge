@@ -23,6 +23,21 @@
   disclosure email with the new hashes. Also owed: the `METHOD_SUMMARY.md` section on the exposure (draft and three
   reviews in the session scratchpad, `lift6/outward/`), the eighth independent pass (`lift6/briefs/audit8.md`), the
   disclosure email and the screened checks re-dated to the captain's schedule.
+- **The method report's exposure section (2026-11-17).** `METHOD_SUMMARY.md` now holds "Exposure of hidden-target
+  metadata on 2026-11-04 and the precommitted procedure", which the organisers asked for. It was drafted by an agent
+  from the dated records, reviewed by three others (accuracy, framing, tone) and revised once; the AI assistant
+  checked the commits it cites. Before the report leaves the repository the captain confirms what only the captain
+  can: (1) what the captain saw and did on 2026-11-04 (the address opened in a browser, the index and then the
+  signed-in Data page pasted, about 07:05 UTC) and that no copy exists outside that session's local log; (2) that the
+  captain's choices of 2026-11-05, 2026-11-06, 2026-11-11 and 2026-11-13 (rows R4 and R7) did not draw on the figures
+  seen; (3) that the email of 2026-11-04 went out as recorded and that the quoted answer is the one received; (4)
+  whether the correction on Task 3's count default (set in code on 2026-11-01, after the release; the email said
+  "before") should reach the organisers through this section, as it now does; (5) whether to answer the open question
+  on Task 1's read depth first (the section says it is unanswered and that the rule gives "declined"); (6) whether
+  older commits that still hold the Task 1 E12.5 file size are to be rewritten (a force-push; the captain's call).
+  Not traced to a dated entry by the drafter and left as the record's own summary: who pruned the Task 1 additions
+  of 2026-11-04, the date the chamber-only scope file was fixed, and the reason the embryo's depth is outside the
+  block. Section 5 of the brief (what the organisers were told) quotes their answer in full.
 - Goal: a compliant Human-track entry on all four test boards that finishes as high as it can. The final phase now
   ends on 2026-11-25 at 23:59 AoE, with two scored uploads per board for the whole phase; none is used as of
   2026-11-17.
