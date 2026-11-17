@@ -4,6 +4,7 @@ statistics file, board file or score is read."""
 
 from __future__ import annotations
 
+import copy
 import importlib.util
 import inspect
 import json
@@ -12,6 +13,7 @@ from types import SimpleNamespace
 
 import numpy as np
 import pytest
+from scipy import sparse
 from test_t1_deep_read import _world
 from test_t1_lib_step_read import GOLDEN_ARMS_FD18
 from test_t1_step_read import _arms_world
@@ -23,16 +25,19 @@ from vec.evaluate import Stage
 
 SCRIPT = REPO_ROOT / "experiments" / "t1_m1" / "part_depth_read.py"
 STAMP = {"commit": "f" * 40, "tree_clean": True, "utc": "x", "inputs": {}}
-WORLDS = ("lib3", "lib3_t67", "lib3_t33", "ref67", "ref50")
-THIN = {"lib3_t67": (2 / 3, [50, 2]), "lib3_t33": (1 / 3, [50, 1]), "ref67": (2 / 3, [54, 1]),
-        "ref50": (1 / 2, [54, 2])}
+WORLDS = ("lib3", "lib3_t67", "lib3_t33", "lib3_t33b", "ref67", "ref67b", "ref50")
+T50_THIN = {"lib3_t67": (2 / 3, [50, 2]), "lib3_t33": (1 / 3, [50, 1]), "lib3_t33b": (1 / 3, [50, 3])}
+T54_THIN = {"ref67": (2 / 3, [54, 1]), "ref67b": (2 / 3, [54, 3]), "ref50": (1 / 2, [54, 2])}
+THIN = {**T50_THIN, **T54_THIN}
+SHALLOWER, DEEPER = "truth shallower than the reference", "truth deeper than the reference"
 BASE, X2 = "m1_r_gmom", "m1_r_gmom_x2"
 C1, CN, CN_X2 = "m1_r_gmom_c1", "m1_r_gmom_cn", "m1_r_gmom_cn_x2"
 ARMS = ("b0", BASE, X2, C1, CN, CN_X2)
 ENTRY_OF = {C1: BASE, CN: BASE, CN_X2: X2}
 FRACTIONS = {BASE: 0.2, X2: 0.4, C1: 0.2, CN: 0.2, CN_X2: 0.4}
-HOLDS = "the common part's gain at equal movement holds at every depth read"
-TURNS = "it turns with depth"
+HOLDS = "the common part's gain at equal movement stays positive at every depth read"
+TURNS = "it turns"
+D_CN, D_CN_X2 = f"{CN} minus {BASE}", f"{CN_X2} minus {X2}"
 
 
 @pytest.fixture
@@ -61,8 +66,12 @@ def test_the_worlds_and_their_thinnings_are_the_tries_own(pd_):
     src = inspect.getsource(pd_.world_route)
     assert "ob.truth_and_contamination(t, data, genes, world)" in src
     assert "dr.world_reference(world" in src and "ob.truth_and_contamination(t, data, genes, HEART)" in src
+    assert pd_.THINNING_OF["lib3_t33b"] is pd_.ob.THINNED["lib3_t33b"]
+    assert pd_.THINNING_OF["ref67b"] is pd_.dr.THINNED["ref67b"]
+    assert pd_.DRAWS == (("lib3_t33", "lib3_t33b"), ("ref67", "ref67b"))
+    assert pd_.SIDE == {**dict.fromkeys(WORLDS[:4], SHALLOWER), **dict.fromkeys(WORLDS[4:], DEEPER)}
     with pytest.raises(ValueError, match="unknown world"):
-        pd_.world_route("lib3_t33b", None, None, [], {}, "ref", None, lambda: None)
+        pd_.world_route("ref100", None, None, [], {}, "ref", None, lambda: None)
 
 
 def _truth(ref_stage):
@@ -177,6 +186,59 @@ def test_ref50_is_try_t54s_half(pd_, monkeypatch):
     assert r.thinning["p"] == 1 / 2 and r.thinning["stream"] == [54, 2]
 
 
+def _independent_thinning(C, p, stream):
+    """The thinning written out with the earlier try's p and stream as literals: every count a Binomial(c, p) draw on
+    the generator seeded by the stream, cells in row order and within a cell the columns' order."""
+    Cs = sparse.csr_matrix(C, dtype=np.int64, copy=True)
+    Cs.sort_indices()
+    want = sparse.csr_matrix((np.random.default_rng(stream).binomial(Cs.data, p), Cs.indices, Cs.indptr),
+                             shape=Cs.shape)
+    want.eliminate_zeros()
+    return want
+
+
+@pytest.mark.parametrize("world", list(T50_THIN))
+def test_each_thinned_truth_is_drawn_at_try_t50s_own_p_and_stream(pd_, monkeypatch, world):
+    """The real route (over_read.thinned_truth and thin_counts, not a spy) on synthetic lib3 counts: the truth equals
+    an independent binomial draw at try T50's literal p and stream; the inputs and the reference are as loaded; the
+    tries' tables are left as they were."""
+    before = (copy.deepcopy(pd_.ob.THINNED), copy.deepcopy(pd_.dr.THINNED))
+    ctx, _, _, _, full, ref_stage, genes = _world()
+    ref = ctx.inputs["ref"]
+    C, obs, var_names = core.counts_of(ref), ref.obs[["celltype"]].copy(), list(ref.var_names)
+    lib3 = pd_.ob.as_scored(C, obs, var_names, genes)
+    monkeypatch.setattr(pd_.ob, "lib3_counts", lambda t, data, genes_: (lib3, 7, C, obs, var_names))
+    inputs = dict(ctx.inputs)
+    got_inputs, stage, truth, contamination, rec = pd_.world_route(world, None, None, genes, inputs, "ref", ref_stage,
+                                                                   lambda: full)
+    p, stream = T50_THIN[world]
+    want = pd_.ob.as_scored(_independent_thinning(C, p, stream), obs, var_names, genes)
+    assert np.array_equal(np.asarray(truth.X), np.asarray(want.X)) and not np.array_equal(truth.X, lib3.X)
+    assert rec["p"] == p and rec["stream"] == stream and contamination == 7
+    assert got_inputs is inputs and stage is ref_stage
+    assert (copy.deepcopy(pd_.ob.THINNED), copy.deepcopy(pd_.dr.THINNED)) == before
+
+
+@pytest.mark.parametrize("world", list(T54_THIN))
+def test_each_thinned_reference_is_drawn_at_try_t54s_own_p_and_stream(pd_, monkeypatch, world):
+    """The real route (deep_read.world_reference) on synthetic inputs: the pool's counts equal an independent binomial
+    draw at try T54's literal p and stream; the truth is lib3 as released; try T50's table holds only its own three
+    truths afterwards and try T54's is unchanged."""
+    before = (copy.deepcopy(pd_.ob.THINNED), copy.deepcopy(pd_.dr.THINNED))
+    ctx, _, _, _, full, ref_stage, genes = _world()
+    lib3 = _truth(ref_stage)
+    monkeypatch.setattr(pd_.ob.ls, "truth_and_contamination", lambda t, data, genes_, name: (lib3, 0))
+    released = core.counts_of(ctx.inputs["ref"])
+    inputs, stage, truth, _, rec = pd_.world_route(world, None, None, genes, dict(ctx.inputs), "ref", ref_stage,
+                                                   lambda: full)
+    p, stream = T54_THIN[world]
+    want = _independent_thinning(released, p, stream)
+    assert (core.counts_of(inputs["ref"]) != want).nnz == 0 and (want != released).nnz > 0
+    assert rec["p"] == p and rec["stream"] == stream and truth is lib3 and stage is not ref_stage
+    assert (copy.deepcopy(pd_.ob.THINNED), copy.deepcopy(pd_.dr.THINNED)) == before
+    assert set(pd_.ob.THINNED) == set(T50_THIN)
+
+
 def test_the_directions_depend_on_the_gene_names_and_the_held_list_only(pd_, monkeypatch):
     """world_directions loads the entry's directions as tries T50 and T54 do and as try T55 does, and builds try T55's
     forms with try T55's own function; the same gene names give the same record in every world."""
@@ -200,6 +262,13 @@ def test_the_directions_depend_on_the_gene_names_and_the_held_list_only(pd_, mon
     _, want = pd_.pr.all_directions(stat, genes, ["g0"])
     assert json.dumps(rec1, sort_keys=True) == json.dumps(want, sort_keys=True)
     assert set(inspect.signature(pd_.world_directions).parameters) == {"pool_genes", "held_m1"}
+    # the two routes disagree on a group, and one gives a group the other lacks: both recorded as not agreeing
+    other = {**{g: v.copy() for g, v in stat.items()}, "Epicardium": common.copy()}
+    other["CM"] = other["CM"] + 1e-6
+    monkeypatch.setattr(pd_.feng_dirs, "feng_directions", lambda genes: (other, {"f": 1}))
+    _, _, _, ext3 = pd_.world_directions(genes, ["g0"])
+    assert ext3["entry_agrees_with_t55s"] == {"CM": False, "Endocardium": True, "Endothelium": True,
+                                              "Epicardium": False}
 
 
 def test_the_run_makes_the_world_before_anything_else_and_refuses_where_t55_refuses(pd_):
@@ -243,6 +312,7 @@ def test_a_form_equal_to_the_entry_builds_the_entry_arm_bit_for_bit(pd_):
 
 W = {"de_score": 0.25, "de_direction": 0.25, "mmd_u": 0.30, "variogram": 0.20}
 B, BX2 = 53.0, 53.6
+GROUPS = ("CM", "Endocardium")
 
 
 def _arm(score, base=B):
@@ -257,9 +327,9 @@ def _arm(score, base=B):
 
 
 def _dirs(tag=""):
-    rec = {"entry": {g: {"sha256": f"e-{g}{tag}", "a_n": 1.25, "a_p": 1.6} for g in ("CM", "Endocardium")}}
+    rec = {"entry": {g: {"sha256": f"e-{g}{tag}", "a_n": 1.25, "a_p": 1.6} for g in GROUPS}}
     for f in ("c1", "s05", "s15", "cn", "cp"):
-        rec[f] = {g: {"sha256": f"{f}-{g}", "slope": 0.6, "size_ratio": 1.0} for g in ("CM", "Endocardium")}
+        rec[f] = {g: {"sha256": f"{f}-{g}", "slope": 0.6, "size_ratio": 1.0} for g in GROUPS}
     return rec
 
 
@@ -268,10 +338,14 @@ def _gains(g, i):
 
 
 def _task(world, gains=None, seeds=range(10), commit="c" * 40, clean=True, fractions=None, thinning=None,
-          directions=None, identical=(), anchor_failures=None):
+          directions=None, identical=(), anchor_failures=None, sha_tag=None, agree=None, truth_rows=3431,
+          truth_contamination=13):
     """gains: arm -> gain over its entry arm (a number, or ten per-seed values); default cn and cn_x2 +0.5 on every
-    seed, c1 -0.2. identical: form arms that score exactly as their entry arm on every seed."""
+    seed, c1 -0.2. identical: form arms that score exactly as their entry arm on every seed. Try T50's worlds record
+    lib3's prediction hashes (they change the truth only) unless sha_tag says otherwise; agree: the entry directions'
+    agreement record (default every group agrees)."""
     gains = {CN: 0.5, CN_X2: 0.5, C1: -0.2, **(gains or {})}
+    tag = sha_tag or ("lib3" if world.startswith("lib3") else world)
     rows = []
     for i, s in enumerate(seeds):
         entry = {BASE: B + 0.01 * s, X2: BX2 + 0.01 * s}
@@ -279,10 +353,12 @@ def _task(world, gains=None, seeds=range(10), commit="c" * 40, clean=True, fract
         for a, p in ENTRY_OF.items():
             arms[a] = (dict(arms[p]) if a in identical
                        else _arm(entry[p] + _gains(gains[a], i), B if p == BASE else BX2))
-        rows.append({"seed": s, "floor": 50.0, "arms": arms, "sha256": {a: f"{world}-{a}-{s}" for a in arms}})
+        rows.append({"seed": s, "floor": 50.0, "arms": arms, "sha256": {a: f"{tag}-{a}-{s}" for a in arms}})
     rec = {"label": "synthetic", "task": "T1/E9.5->E10.5:chamber", "world": world,
-           "truth": world if world.startswith("lib3") else "lib3", "truth_rows": 3431, "truth_contamination": 13,
-           "seeds": list(seeds), "fraction": 0.2, "fractions": fractions or dict(FRACTIONS), "rows": rows,
+           "truth": world if world.startswith("lib3") else "lib3", "truth_rows": truth_rows,
+           "truth_contamination": truth_contamination, "seeds": list(seeds), "fraction": 0.2,
+           "fractions": fractions or dict(FRACTIONS), "rows": rows,
+           "external": {"entry_agrees_with_t55s": dict.fromkeys(GROUPS, True) if agree is None else agree},
            "directions": directions if directions is not None else _dirs(), "thinning": None,
            "stamp": {"commit": commit, "tree_clean": clean, "utc": "x", "inputs": {}}}
     if world in THIN:
@@ -294,17 +370,18 @@ def _task(world, gains=None, seeds=range(10), commit="c" * 40, clean=True, fract
     return rec
 
 
-def _write(tmp_path, worlds, shift=None):
+def _write(tmp_path, worlds, shift=None, libraries=True):
     """worlds: world -> task record; the committed try T50 and T54 files beside them (the entry arms' default scores)
-    and try T55's lib3 file (lib3's record's scores); shift: (folder, world, arm) -> added to that committed score."""
+    and try T55's lib3 file (lib3's record's scores) with its lib1 and lib2 files (cn +0.4, cn_x2 +0.45 on every seed
+    unless libraries is False); shift: (folder, world, arm) -> added to that committed score."""
     shift = shift or {}
     out = tmp_path / "out"
     (out / "tasks").mkdir(parents=True)
     for k, rec in worlds.items():
         (out / "tasks" / f"{k}.json").write_text(json.dumps(rec))
-    t50, t54 = tmp_path / "t50" / "tasks", tmp_path / "t54" / "tasks"
-    t50.mkdir(parents=True)
-    t54.mkdir(parents=True)
+    t50, t54, t55 = tmp_path / "t50" / "tasks", tmp_path / "t54" / "tasks", tmp_path / "t55" / "tasks"
+    for d in (t50, t54, t55):
+        d.mkdir(parents=True)
     for k in WORLDS:
         src = _task(k)
         folder, d = ("t50", t50) if k.startswith("lib3") else ("t54", t54)
@@ -316,69 +393,142 @@ def _write(tmp_path, worlds, shift=None):
     rows = [{"seed": r["seed"], "arms": {a: {**r["arms"][a], "score": r["arms"][a]["score"]
                                              + shift.get(("t55", "lib3", a), 0.0)} for a in ARMS}}
             for r in src["rows"]]
-    t55 = tmp_path / "t55_lib3.json"
-    t55.write_text(json.dumps({"truth": "lib3", "rows": rows, "directions": _dirs()}))
+    (t55 / "lib3.json").write_text(json.dumps({"truth": "lib3", "rows": rows, "directions": _dirs()}))
+    if libraries:
+        for k in ("lib1", "lib2"):
+            lib = _task(k, gains={CN: 0.4, CN_X2: 0.45})
+            (t55 / f"{k}.json").write_text(json.dumps({"truth": k, "rows": lib["rows"], "directions": _dirs()}))
     return out, t50, t54, t55
 
 
-def _read(pd_, tmp_path, by_world=None, over=None, shift=None, t55_directions=None):
+def _read(pd_, tmp_path, by_world=None, over=None, shift=None, t55_directions=None, libraries=True):
     """by_world: world -> gains; over: world -> _task keyword overrides (None drops the world)."""
     by_world, over = by_world or {}, over or {}
     worlds = {k: _task(k, gains=by_world.get(k), **over.get(k, {})) for k in WORLDS
               if not (k in over and over[k] is None)}
-    out, t50, t54, t55 = _write(tmp_path, worlds, shift)
+    out, t50, t54, t55 = _write(tmp_path, worlds, shift, libraries)
     if t55_directions is not None:
-        rec = json.loads(t55.read_text())
-        t55.write_text(json.dumps({**rec, "directions": t55_directions}))
+        rec = json.loads((t55 / "lib3.json").read_text())
+        (t55 / "lib3.json").write_text(json.dumps({**rec, "directions": t55_directions}))
     return pd_.read(out, t50, t54, t55)["reading"]
+
+
+def _text(tmp_path):
+    return (tmp_path / "out" / "t56.txt").read_text()
 
 
 def _seeds(pos, n=10, up=0.5, down=-0.1):
     return [up if i < pos else down for i in range(n)]
 
 
-def test_the_statement_holds(pd_, tmp_path):
+def test_the_statement_stays_positive(pd_, tmp_path):
     r = _read(pd_, tmp_path)
     assert r["valid"], r["validity"]["reasons"]
-    assert r["outcome"] == HOLDS and r["statement"]["turned_in"] == [] and r["statement"]["neither_in"] == []
+    assert r["outcome"] == HOLDS and r["statement"]["turned"] == [] and r["statement"]["neither"] == []
+    assert set(r["differences"]) == set(WORLDS)
     for k in WORLDS:
         d = r["differences"][k]
-        assert set(d) == {f"{CN} minus {BASE}", f"{CN_X2} minus {X2}"}
+        assert set(d) == {D_CN, D_CN_X2}
         for c in d.values():
             assert c["mean"] == pytest.approx(0.5) and c["seeds_ahead"] == 10 and c["label"] == "ahead"
             assert c["range"] == pytest.approx([0.5, 0.5])
+    assert f"The statement: {HOLDS}" in _text(tmp_path)
 
 
-def test_a_positive_mean_below_the_bar_with_eight_seeds_ahead_still_holds(pd_, tmp_path):
+def test_a_positive_mean_below_the_bar_with_eight_seeds_ahead_still_stays_positive(pd_, tmp_path):
     g = _seeds(8, up=0.1, down=-0.05)
     r = _read(pd_, tmp_path, by_world={k: {CN: g, CN_X2: g} for k in WORLDS})
     assert r["outcome"] == HOLDS
     assert all(c["label"] == "level" for k in WORLDS for c in r["differences"][k].values())
 
 
-def test_a_positive_mean_on_seven_of_ten_seeds_does_not_hold(pd_, tmp_path):
+def test_a_positive_mean_on_seven_of_ten_seeds_does_not_stay_positive(pd_, tmp_path):
     g = _seeds(7)
     r = _read(pd_, tmp_path, by_world={"ref50": {CN_X2: g}})
-    c = r["differences"]["ref50"][f"{CN_X2} minus {X2}"]
+    c = r["differences"]["ref50"][D_CN_X2]
     assert c["mean"] > 0 and c["seeds_ahead"] == 7
-    assert r["outcome"] == "not separated in ref50" and r["statement"]["neither_in"] == ["ref50"]
+    assert r["outcome"] == f"not separated (ref50 ({DEEPER}): {D_CN_X2})"
+    assert r["statement"]["neither"] == [{"world": "ref50", "difference": D_CN_X2, "side": DEEPER}]
 
 
-@pytest.mark.parametrize("gains", [
-    -0.5,  # behind by the single-task test
-    _seeds(2, up=0.01, down=-0.1),  # a negative mean, 2 of 10 seeds ahead, level by the test
-])
-def test_it_turns_with_depth(pd_, tmp_path, gains):
-    r = _read(pd_, tmp_path, by_world={"lib3_t33": {CN: gains}, "ref67": {CN: _seeds(5)}})
-    assert r["outcome"] == TURNS and r["statement"]["turned_in"] == ["lib3_t33"]
-    txt = (tmp_path / "out" / "t56.txt").read_text()
-    assert f"The statement: {TURNS} (behind or negative in lib3_t33)" in txt
+@pytest.mark.parametrize("world,side", [("lib3", SHALLOWER), ("lib3_t67", SHALLOWER), ("ref50", DEEPER)])
+def test_behind_in_a_world_with_one_draw_turns(pd_, tmp_path, world, side):
+    r = _read(pd_, tmp_path, by_world={world: {CN: -0.5}, "ref67": {CN: _seeds(5)}})
+    assert r["differences"][world][D_CN]["label"] == "behind"
+    assert r["outcome"] == f"{TURNS} ({world} ({side}): {D_CN})"
+    assert r["statement"]["turned_in"] == [world] and r["statement"]["neither_in"] == ["ref67"]
+    txt = _text(tmp_path)
+    assert f"The statement: {TURNS} ({world} ({side}): {D_CN})" in txt
+    assert f"also meeting neither condition: ref67 ({DEEPER}): {D_CN}" in txt
 
 
-def test_a_negative_mean_with_three_seeds_ahead_is_not_separated(pd_, tmp_path):
+@pytest.mark.parametrize("pair,side", [(("lib3_t33", "lib3_t33b"), SHALLOWER), (("ref67", "ref67b"), DEEPER)])
+def test_behind_in_one_draw_only_is_not_a_turn(pd_, tmp_path, pair, side):
+    a, b = pair
+    r = _read(pd_, tmp_path, by_world={a: {CN_X2: -0.5}})
+    assert r["differences"][a][D_CN_X2]["label"] == "behind" and r["differences"][b][D_CN_X2]["label"] == "ahead"
+    assert r["statement"]["turned"] == []
+    assert r["outcome"] == f"not separated ({a} ({side}): {D_CN_X2})"
+    # behind in the other draw only, with the first level: both named, neither a turn
+    r = _read(pd_, tmp_path / "b", by_world={a: {CN_X2: _seeds(5)}, b: {CN_X2: -0.5}})
+    assert r["outcome"] == f"not separated ({a} ({side}): {D_CN_X2}; {b} ({side}): {D_CN_X2})"
+    assert f"The statement: not separated ({a} ({side}): {D_CN_X2}; {b} ({side}): {D_CN_X2})" in _text(tmp_path / "b")
+
+
+@pytest.mark.parametrize("pair,side", [(("lib3_t33", "lib3_t33b"), SHALLOWER), (("ref67", "ref67b"), DEEPER)])
+def test_behind_in_both_draws_is_a_turn_and_names_both_and_their_side(pd_, tmp_path, pair, side):
+    a, b = pair
+    r = _read(pd_, tmp_path, by_world={a: {CN: -0.5}, b: {CN: -0.4}})
+    assert r["outcome"] == f"{TURNS} ({a} ({side}): {D_CN}; {b} ({side}): {D_CN})"
+    assert r["statement"]["turned_in"] == [a, b] and r["statement"]["neither"] == []
+    assert f"The statement: {TURNS} ({a} ({side}): {D_CN}; {b} ({side}): {D_CN})" in _text(tmp_path)
+
+
+def test_behind_in_both_draws_on_different_differences_is_not_a_turn(pd_, tmp_path):
+    r = _read(pd_, tmp_path, by_world={"ref67": {CN: -0.5}, "ref67b": {CN_X2: -0.5}})
+    assert r["statement"]["turned"] == []
+    assert r["outcome"] == f"not separated (ref67 ({DEEPER}): {D_CN}; ref67b ({DEEPER}): {D_CN_X2})"
+
+
+def test_a_negative_mean_with_two_seeds_ahead_but_level_by_the_test_is_not_a_turn(pd_, tmp_path):
+    """The brief's second turn condition is replaced: only try T46's 'behind' turns."""
+    g = _seeds(2, up=0.01, down=-0.1)
+    r = _read(pd_, tmp_path, by_world={"lib3_t67": {CN: g}})
+    c = r["differences"]["lib3_t67"][D_CN]
+    assert c["mean"] < 0 and c["seeds_ahead"] == 2 and c["label"] == "level"
+    assert r["outcome"] == f"not separated (lib3_t67 ({SHALLOWER}): {D_CN})"
+
+
+def test_not_separated_names_every_world_and_difference_with_its_side(pd_, tmp_path):
     r = _read(pd_, tmp_path, by_world={"lib3": {CN: _seeds(3, up=0.01, down=-0.1)},
-                                       "ref67": {CN_X2: _seeds(6)}})
-    assert r["outcome"] == "not separated in lib3, ref67"
+                                       "ref67": {CN_X2: _seeds(6)}, "ref50": {CN: _seeds(6), CN_X2: _seeds(4)}})
+    assert r["outcome"] == (f"not separated (lib3 ({SHALLOWER}): {D_CN}; ref67 ({DEEPER}): {D_CN_X2}; "
+                            f"ref50 ({DEEPER}): {D_CN}; ref50 ({DEEPER}): {D_CN_X2})")
+    assert r["statement"]["neither_in"] == ["lib3", "ref67", "ref50"]
+
+
+def test_the_text_prints_the_means_the_two_draws_and_the_libraries_beside_the_statement(pd_, tmp_path):
+    r = _read(pd_, tmp_path, by_world={"ref67": {CN: 0.4}, "ref67b": {CN: 0.6}})
+    assert r["means"]["ref67"] == pytest.approx({D_CN: 0.4, D_CN_X2: 0.5})
+    assert set(r["draws"]) == {"lib3_t33 and lib3_t33b", "ref67 and ref67b"}
+    assert r["draws"]["ref67 and ref67b"][D_CN]["ref67b"]["mean"] == pytest.approx(0.6)
+    libs = r["libraries_1_and_2"]
+    assert set(libs) == {"lib1", "lib2"}
+    assert libs["lib1"][D_CN]["mean"] == pytest.approx(0.4) and libs["lib2"][D_CN_X2]["mean"] == pytest.approx(0.45)
+    txt = _text(tmp_path)
+    assert (f"each world's two means: lib3 ({SHALLOWER}): {D_CN} +0.50, {D_CN_X2} +0.50;") in txt
+    assert f"ref67 ({DEEPER}): {D_CN} +0.40, {D_CN_X2} +0.50;" in txt
+    assert (f"ref67 and ref67b, {D_CN}: ref67 +0.40, ahead 10 of 10, per seed +0.40 to +0.40, test: ahead | "
+            f"ref67b +0.60, ahead 10 of 10, per seed +0.60 to +0.60, test: ahead") in txt
+    assert f"lib1 as released (try T55's committed file): {D_CN}: +0.40 points" in txt
+    assert f"lib2 as released (try T55's committed file): {D_CN_X2}: +0.45 points" in txt
+    assert txt.index("The statement:") < txt.index("each world's two means") < txt.index("The two draws side by side")
+
+
+def test_missing_library_files_are_printed_as_not_available_and_void_nothing(pd_, tmp_path):
+    r = _read(pd_, tmp_path, libraries=False)
+    assert r["valid"] and r["libraries_1_and_2"] == {"lib1": None, "lib2": None}
+    assert "lib1 as released (try T55's committed file): not available" in _text(tmp_path)
 
 
 def test_the_reported_quantities_are_read_by_nothing(pd_, tmp_path):
@@ -388,22 +538,24 @@ def test_the_reported_quantities_are_read_by_nothing(pd_, tmp_path):
         c = r["reported"][k][f"{C1} minus {BASE}"]
         assert c["mean"] == pytest.approx(-3.0) and c["label"] == "behind"
         assert r["mean_scores"][k][CN] == pytest.approx(r["mean_scores"][k][BASE] + 0.5)
-        d = r["differences"][k][f"{CN} minus {BASE}"]
+        d = r["differences"][k][D_CN]
         assert d["points"]["de"] + d["points"]["mmd_u_variogram"] == pytest.approx(0.5)
         assert d["metrics"]["de_score"] == pytest.approx(0.005)
-    txt = (tmp_path / "out" / "t56.txt").read_text()
+    txt = _text(tmp_path)
     for k in WORLDS:
-        assert f"in {k}: {CN} minus {BASE}: +0.50 points, ahead 10 of 10, per seed +0.50 to +0.50, test: ahead" in txt
+        assert f"in {k}: {D_CN}: +0.50 points, ahead 10 of 10, per seed +0.50 to +0.50, test: ahead" in txt
         assert f"world {k}: mean scores" in txt
     assert "de terms +0.25, mmd_u and variogram +0.25 (read by nothing)" in txt
     assert "raw metrics de_score +0.005, de_direction +0, mmd_u -0.0005, variogram +0 (read by nothing)" in txt
     assert "world ref50: realised depth ratio 0.5000 (p 0.5000, stream [54, 2])" in txt
-    assert "3431" not in txt and "truth_rows" not in txt  # no count is printed
+    assert "world lib3_t33b: realised depth ratio 0.3333 (p 0.3333, stream [50, 3])" in txt
+    assert "world ref67b: realised depth ratio 0.6667 (p 0.6667, stream [54, 3])" in txt
+    assert "3431" not in txt and "truth_rows" not in txt and "13 " not in txt  # no count is printed
 
 
 def test_the_limits_and_choices_are_in_the_text(pd_, tmp_path):
     _read(pd_, tmp_path)
-    txt = (tmp_path / "out" / "t56.txt").read_text()
+    txt = _text(tmp_path)
     for x in pd_.LIMITS:
         assert f"Limit: {x}" in txt
     for x in pd_.CHOICES:
@@ -413,25 +565,47 @@ def test_the_limits_and_choices_are_in_the_text(pd_, tmp_path):
     assert "not compared across worlds" in txt and "one draw for all seeds" in txt
     assert "the floor, the de terms' reference, B0's shift and g_mom's fit" in txt
     assert "no statement may be used with a figure for it" in txt
+    assert "lib3 reproduces try T55's committed scores by rule and adds no evidence" in txt
+    assert "the statement rests on the six thinned worlds" in txt
+    assert "'Stays positive' says nothing about size" in txt
+    assert "with no raw metric changing sign, so it is read beside the raw-metric differences" in txt
+    assert "two manipulations, not one axis" in txt
 
 
 VOIDS = [
     ({"ref50": None}, None, "missing worlds ['ref50']"),
+    ({"lib3_t33b": None}, None, "missing worlds ['lib3_t33b']"),
+    ({"ref67b": None}, None, "missing worlds ['ref67b']"),
     ({"lib3_t33": {"seeds": range(9)}}, None, "lib3_t33: seeds"),
     (None, {("t50", "lib3_t67", BASE): 1e-6}, "lib3_t67: b0, m1_r_gmom, m1_r_gmom_x2 do not reproduce try T50's"),
+    (None, {("t50", "lib3_t33b", "b0"): 1e-6}, "lib3_t33b: b0, m1_r_gmom, m1_r_gmom_x2 do not reproduce try T50's"),
     (None, {("t54", "ref67", X2): 1e-6}, "ref67: b0, m1_r_gmom, m1_r_gmom_x2 do not reproduce try T54's"),
+    (None, {("t54", "ref67b", BASE): 1e-6}, "ref67b: b0, m1_r_gmom, m1_r_gmom_x2 do not reproduce try T54's"),
     (None, {("t55", "lib3", CN): 1e-6}, "do not reproduce try T55's committed lib3 scores"),
     ({"ref67": {"fractions": {**FRACTIONS, CN_X2: 0.2}}}, None, "wrong fraction on ['m1_r_gmom_cn_x2']"),
     ({"ref50": {"commit": "d" * 40}}, None, "the worlds ran at 2 commits"),
     ({"lib3_t67": {"clean": False}}, None, "tree not clean on ['lib3_t67']"),
     ({"ref67": {"directions": _dirs("x")}}, None, "differ between the worlds' files"),
     ({"lib3_t33": {"thinning": {"depth_ratio": 1 / 3 + 0.02}}}, None, "lib3_t33: realised depth ratio"),
+    ({"lib3_t33b": {"thinning": {"depth_ratio": 0.3}}}, None, "lib3_t33b: realised depth ratio"),
     ({"ref50": {"thinning": {"any_cell_emptied": True}}}, None, "ref50: the thinning left a cell with no count"),
+    ({"ref67b": {"thinning": {"any_cell_emptied": True}}}, None, "ref67b: the thinning left a cell with no count"),
     ({"ref67": {"thinning": {"rebuild_largest_difference": 1e-3}}}, None, "ref67: the rebuild check's largest"),
     ({"lib3_t67": {"thinning": {"stream": [50, 9]}}}, None, "lib3_t67: the file records p"),
+    ({"lib3_t33b": {"thinning": {"stream": [50, 1]}}}, None, "lib3_t33b: the file records p"),
+    ({"ref67b": {"thinning": {"stream": [54, 1]}}}, None, "ref67b: the file records p"),
     ({"ref67": {"identical": (CN,)}}, None, "ref67: form arms score exactly as the entry's arm"),
     ({"lib3": {"identical": (CN_X2,)}}, None, "lib3: form arms score exactly as the entry's arm"),
     ({"lib3_t33": {"anchor_failures": [{"seed": 3}]}}, None, "lib3_t33: the floor's anchors invert"),
+    # the amendment's three checks
+    ({"ref67b": {"agree": {"CM": True, "Endocardium": False}}}, None,
+     "ref67b: the entry's directions as tries T50 and T54 load them and as try T55 loads them do not have the same"),
+    ({"lib3": {"agree": {}}}, None, "lib3: the entry's directions as tries T50 and T54 load them"),
+    ({"ref50": {"agree": "missing"}}, None, "ref50: the entry's directions as tries T50 and T54 load them"),
+    ({"lib3_t67": {"sha_tag": "lib3_t67"}}, None, "lib3_t67: the predictions' sha256 do not equal this run's lib3"),
+    ({"lib3_t33b": {"sha_tag": "other"}}, None, "lib3_t33b: the predictions' sha256 do not equal this run's lib3"),
+    ({"lib3_t33": {"truth_rows": 3430}}, None, "the truth's cells: lib3_t33 does not equal lib3"),
+    ({"lib3_t33b": {"truth_contamination": 12}}, None, "the truth's contamination cells: lib3_t33b does not equal"),
 ]
 
 
@@ -441,13 +615,21 @@ def test_the_void_cases(pd_, tmp_path, over, shift, reason):
     assert not r["valid"] and r["outcome"] == "VOID"
     assert any(reason in x for x in r["validity"]["reasons"]), r["validity"]["reasons"]
     assert "statement" not in r
+    txt = _text(tmp_path)
+    assert "3431" not in txt and "3430" not in txt  # a count check names the world, never the count
+
+
+def test_a_sha_check_is_made_in_try_t50s_thinned_worlds_only(pd_, tmp_path):
+    """try T54's worlds change the inputs, so their predictions differ from lib3's and void nothing."""
+    r = _read(pd_, tmp_path, over={k: {"sha_tag": k} for k in ("ref67", "ref67b", "ref50")})
+    assert r["valid"], r["validity"]["reasons"]
 
 
 def test_directions_that_differ_from_try_t55s_void(pd_, tmp_path):
     r = _read(pd_, tmp_path, t55_directions=_dirs("old"))
     assert not r["valid"]
-    assert any("differ from try T55's lib3 file in ['lib3', 'lib3_t33', 'lib3_t67', 'ref50', 'ref67']" in x
-               for x in r["validity"]["reasons"])
+    assert any("differ from try T55's lib3 file in ['lib3', 'lib3_t33', 'lib3_t33b', 'lib3_t67', 'ref50', 'ref67', "
+               "'ref67b']" in x for x in r["validity"]["reasons"])
     a_n = _dirs()
     a_n["entry"]["CM"]["a_n"] = 1.2500001
     r = _read(pd_, tmp_path / "b", t55_directions=a_n)
@@ -458,7 +640,7 @@ def test_a_rescored_arm_within_tolerance_and_a_form_identical_on_nine_seeds_stay
     g = [0.0] + [0.5] * 9
     r = _read(pd_, tmp_path, by_world={"ref67": {CN: g}}, shift={("t50", "lib3", "b0"): 1e-12})
     assert r["valid"], r["validity"]["reasons"]
-    assert r["differences"]["ref67"][f"{CN} minus {BASE}"]["seeds_ahead"] == 9
+    assert r["differences"]["ref67"][D_CN]["seeds_ahead"] == 9
 
 
 def test_the_reading_refuses_to_overwrite(pd_, tmp_path):
@@ -470,10 +652,12 @@ def test_the_reading_refuses_to_overwrite(pd_, tmp_path):
 
 
 def test_the_committed_files_are_the_tries_own(pd_):
-    for k in ("lib3", "lib3_t67", "lib3_t33"):
+    for k in ("lib3", "lib3_t67", "lib3_t33", "lib3_t33b"):
         assert pd_.committed_file(k).parts[-3:] == ("t50_m1_over_step", "tasks", f"{k}.json")
-    assert pd_.committed_file("ref50").parts[-3:] == ("t54_m1_deep_step", "tasks", "ref50.json")
+    for k in ("ref67", "ref67b", "ref50"):
+        assert pd_.committed_file(k).parts[-3:] == ("t54_m1_deep_step", "tasks", f"{k}.json")
     assert pd_.T55_LIB3.parts[-3:] == ("t55_m1_part", "tasks", "lib3.json")
+    assert pd_.T55_TASKS.parts[-2:] == ("t55_m1_part", "tasks")
 
 
 # ---------------------------------------------------------------------------------------------------------------------

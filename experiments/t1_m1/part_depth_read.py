@@ -9,64 +9,78 @@ Try T55 found that M1's step along the common part of Feng's direction alone, at
 gain turns with how deep the truth is against the cells the prediction is built from. The common-part form does not
 enlarge the step; row T55 fixed that it is read in the worlds of tries T50 and T54 before anything is said about it.
 
-  run    One world of the chamber cut T1/E9.5->E10.5:chamber, 10 seeds. Worlds:
-           lib3      the truth library 3 as try T50 makes it, the inputs as they are;
-           lib3_t67  try T50's thinned truths of those names, made by try T50's own code with its own p and streams
-           lib3_t33  (over_read.truth_and_contamination); the predictions are lib3's (the inputs as they are);
-           ref67     try T54's worlds of those names, made by try T54's own code with its own p and streams
-           ref50     (deep_read.world_reference: the reference thinned in the input pool, the floor's anchors, the
-                     scorer's reference, every build and g_mom's fit), the truth library 3 as released.
+  run    One world of the chamber cut T1/E9.5->E10.5:chamber, 10 seeds. Worlds (seven):
+           lib3       the truth library 3 as try T50 makes it, the inputs as they are;
+           lib3_t67   try T50's thinned truths of those names, made by try T50's own code with its own p and streams
+           lib3_t33   (over_read.truth_and_contamination; lib3_t33b is try T50's second draw at p = 1/3); the
+           lib3_t33b  predictions are lib3's (the inputs as they are);
+           ref67      try T54's worlds of those names, made by try T54's own code with its own p and streams
+           ref67b     (deep_read.world_reference: the reference thinned in the input pool, the floor's anchors, the
+           ref50      scorer's reference, every build and g_mom's fit; ref67b is try T54's second draw at p = 2/3), the
+                      truth library 3 as released.
          Arms per seed, all from one cell draw: b0, m1_r_gmom (fraction 0.2) and m1_r_gmom_x2 (0.4) as tries T50 and
          T54 build them (step_read.step_arms on feng_dirs.feng_directions), and try T55's forms built by try T55's own
          functions (part_read.all_directions on the entry's directions as try T55 makes them, and each arm the build of
          the pooled arm of its fraction, gmom_combo.m1_r_arms, with the form's directions in place of the entry's):
          m1_r_gmom_c1, m1_r_gmom_cn (0.2) and m1_r_gmom_cn_x2 (0.4). The forms' directions depend on Feng's statistics,
          the pool's gene names and the held list only, so they are the same in every world; the task file records
-         them as try T55 does (sha256, a_n and a_p per group). The task file also holds what tries T50 and T54 hold for
-         the world (the thinning record with ratios only, per seed and arm the prediction's sha256, the scored genes'
-         zero share and detected genes per cell, per seed the anchors; the truth's row and contamination counts as
-         checks, never printed). Refused on an existing task file, unless the committed N22 passed, unless
-         experiments/harness/TRIES.md holds row T56, and where try T55's directions refuse.
-  read   T56's reading of the five worlds' files (below, fixed here and repeated in the ledger row before the run).
+         them as try T55 does (sha256, a_n and a_p per group), and per group whether the entry's directions as tries
+         T50 and T54 load them and as try T55 loads them have the same sha256. The task file also holds what tries T50
+         and T54 hold for the world (the thinning record with ratios only, per seed and arm the prediction's sha256,
+         the scored genes' zero share and detected genes per cell, per seed the anchors; the truth's row and
+         contamination counts as checks, never printed). Refused on an existing task file, unless the committed N22
+         passed, unless experiments/harness/TRIES.md holds row T56, and where try T55's directions refuse.
+  read   T56's reading of the seven worlds' files (below, fixed here and repeated in the ledger row before the run).
          Writes t56.json and t56.txt and refuses to overwrite them.
 
-The reading. Void unless: the five worlds hold the ten seeds with every arm and its fraction at one commit on a clean
-tree; no file records an anchor failure; b0, m1_r_gmom and m1_r_gmom_x2 equal, seed for seed and to 1e-9, their
-committed scores in experiments/t1_m1/results/t50_m1_over_step/tasks/ for lib3, lib3_t67 and lib3_t33, and in
-experiments/t1_m1/results/t54_m1_deep_step/tasks/ for ref67 and ref50; in lib3 the three forms' arms equal, seed for
-seed and to 1e-9, their committed scores in experiments/t1_m1/results/t55_m1_part/tasks/lib3.json; the thinned worlds
-pass the checks of the try they come from (their own p and stream, depth ratio within 0.01 of p, no cell emptied, the
-rebuild check); the recorded directions' sha256 and multiples are the same in the five files and equal those in try
-T55's lib3 file; no form's arm scores exactly as the entry's arm of its fraction on every seed of a world.
-The test is try T46's single-task test on one world's paired differences ("ahead": a mean paired gain above 0.3 with at
-least 8 of 10 seeds ahead; "behind" the same reversed; otherwise "level").
+The reading (brief AJ and its amendment of 2026-11-17). Void unless: the seven worlds hold the ten seeds with every arm
+and its fraction at one commit on a clean tree; no file records an anchor failure; b0, m1_r_gmom and m1_r_gmom_x2
+equal, seed for seed and to 1e-9, their committed scores in experiments/t1_m1/results/t50_m1_over_step/tasks/ for
+lib3, lib3_t67, lib3_t33 and lib3_t33b, and in experiments/t1_m1/results/t54_m1_deep_step/tasks/ for ref67, ref67b and
+ref50; in lib3 the three forms' arms equal, seed for seed and to 1e-9, their committed scores in
+experiments/t1_m1/results/t55_m1_part/tasks/lib3.json; the thinned worlds pass the checks of the try they come from
+(their own p and stream, depth ratio within 0.01 of p, no cell emptied, the rebuild check); in lib3_t67, lib3_t33 and
+lib3_t33b every arm's prediction sha256 equals, seed for seed, the one in this run's lib3 file; the truth's row and
+contamination counts of try T50's thinned worlds equal lib3's (try T50's check, compared by code, never printed); per
+group the entry's directions as tries T50 and T54 load them and as try T55 loads them have the same sha256 in every
+world; the recorded directions' sha256 and multiples are the same in the seven files and equal those in try T55's lib3
+file; no form's arm scores exactly as the entry's arm of its fraction on every seed of a world.
 Per world, two differences: m1_r_gmom_cn minus m1_r_gmom, and m1_r_gmom_cn_x2 minus m1_r_gmom_x2, each with its mean,
-seeds ahead, per-seed range and label.
-The statement: "the common part's gain at equal movement holds at every depth read" if in each of the five worlds both
-differences have a positive mean with at least 8 of 10 seeds ahead; "it turns with depth" if in any world a difference
-is behind, or has a negative mean with at most 2 of 10 seeds ahead; otherwise "not separated in" the worlds where a
-difference meets neither, named.
-Reported and read by nothing: m1_r_gmom_c1 minus m1_r_gmom per world; every arm's mean score per world; the parts of
-each difference on the two de terms and on mmd_u and the variogram; each difference on the raw metrics.
+seeds ahead, per-seed range and its label by try T46's single-task test ("ahead": a mean paired gain above 0.3 with at
+least 8 of 10 seeds ahead; "behind" the same reversed; otherwise "level").
+The statement: "the common part's gain at equal movement stays positive at every depth read" if in each of the seven
+worlds both differences have a positive mean with at least 8 of 10 seeds ahead; "it turns" if in some world a
+difference is behind by try T46's test, where that world has a second draw (lib3_t33 and lib3_t33b; ref67 and ref67b)
+only if the same difference is behind in both draws, naming each such world and its side ("truth shallower than the
+reference" for try T50's worlds, "truth deeper than the reference" for try T54's); otherwise "not separated", naming
+every world and difference that meets neither condition, with its side.
+Printed beside it and read by nothing: each world's two means; the two draws' differences side by side; each
+difference on the raw metrics and its parts on the two de terms and on mmd_u and the variogram; from try T55's
+committed files, the same two differences on libraries 1 and 2 as released; m1_r_gmom_c1 minus m1_r_gmom per world;
+every arm's mean score per world.
 
 NOT an adoption result: a labelled in-sample diagnostic, as tries T44 to T55 are; the result can only go to the team
 captain, and no outcome is evidence on Task 1's read depth, which stays closed. The limits are LIMITS below, repeated in
 the text.
 
-Usage: on the DGX campaign checkout, repo root, all five worlds at one commit, committing nothing until the five task
+Usage: on the DGX campaign checkout, repo root, all seven worlds at one commit, committing nothing until the seven task
 files exist, and on the machine tries T50, T54 and T55 ran on, so that the rescored arms reproduce. The environment
 variables are docs/COMPUTE.md's for repository Python on the DGX.
-  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 \
+  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 \\
     uv run --frozen --no-sync python -I -B experiments/t1_m1/part_depth_read.py run --world lib3 --out t56_cn_depth
-  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 \
+  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 \\
     uv run --frozen --no-sync python -I -B experiments/t1_m1/part_depth_read.py run --world lib3_t67 --out t56_cn_depth
-  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 \
+  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 \\
     uv run --frozen --no-sync python -I -B experiments/t1_m1/part_depth_read.py run --world lib3_t33 --out t56_cn_depth
-  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 \
+  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 \\
+    uv run --frozen --no-sync python -I -B experiments/t1_m1/part_depth_read.py run --world lib3_t33b --out t56_cn_depth
+  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 \\
     uv run --frozen --no-sync python -I -B experiments/t1_m1/part_depth_read.py run --world ref67 --out t56_cn_depth
-  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 \
+  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 \\
+    uv run --frozen --no-sync python -I -B experiments/t1_m1/part_depth_read.py run --world ref67b --out t56_cn_depth
+  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 \\
     uv run --frozen --no-sync python -I -B experiments/t1_m1/part_depth_read.py run --world ref50 --out t56_cn_depth
-  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 \
+  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=16 OPENBLAS_NUM_THREADS=16 MKL_NUM_THREADS=16 \\
     uv run --frozen --no-sync python -I -B experiments/t1_m1/part_depth_read.py read --out t56_cn_depth
 """
 
@@ -103,9 +117,14 @@ TASK = ob.TASK  # T1/E9.5->E10.5:chamber
 HEART = ob.HEART  # lib3
 ROW = "T56"
 STEM = "t56"
-T50_WORLDS = (HEART, "lib3_t67", "lib3_t33")  # try T50's truths; the inputs as they are
-T54_WORLDS = ("ref67", "ref50")  # try T54's thinned references; the truth lib3 as released
+T50_WORLDS = (HEART, "lib3_t67", "lib3_t33", "lib3_t33b")  # try T50's truths; the inputs as they are
+T54_WORLDS = ("ref67", "ref67b", "ref50")  # try T54's thinned references; the truth lib3 as released
 WORLDS = (*T50_WORLDS, *T54_WORLDS)
+T50_THINNED = tuple(k for k in T50_WORLDS if k != HEART)  # these worlds change the truth only
+DRAWS = (("lib3_t33", "lib3_t33b"), ("ref67", "ref67b"))  # a world and its second draw (tries T50's and T54's)
+SECOND_DRAW_OF = {k: pair for pair in DRAWS for k in pair}
+SHALLOWER, DEEPER = "truth shallower than the reference", "truth deeper than the reference"
+SIDE = {**dict.fromkeys(T50_WORLDS, SHALLOWER), **dict.fromkeys(T54_WORLDS, DEEPER)}
 THINNING_OF = {**{k: ob.THINNED[k] for k in T50_WORLDS if k != HEART}, **{k: dr.THINNED[k] for k in T54_WORLDS}}
 BASE, X2 = sr.BASE, ob.X2  # m1_r_gmom (0.2), m1_r_gmom_x2 (0.4)
 UNIFORM_MULTIPLIERS = {X2: 2.0}
@@ -117,48 +136,68 @@ DIFFERENCES = ((CN, BASE), (CN_X2, X2))  # (change, base): the read
 REPORTED = ((C1, BASE),)  # read by nothing
 FRACTION, FRACTION_TOL, REPRO_TOL = sr.FRACTION, sr.FRACTION_TOL, sr.REPRO_TOL  # 0.2, its tolerance, 1e-9
 DEPTH_TOL, REBUILD_TOL = ob.DEPTH_TOL, ob.REBUILD_TOL  # 0.01, 1e-5 (the same in tries T50 and T54)
-HOLD_AHEAD = 8  # seeds ahead of 10 for "holds"
-TURN_AHEAD_MAX = 2  # seeds ahead of 10 at most, with a negative mean, for "turns"
+HOLD_AHEAD = 8  # seeds ahead of 10 for "stays positive"
 T50_TASKS = RESULTS / "t50_m1_over_step" / "tasks"
 T54_TASKS = RESULTS / "t54_m1_deep_step" / "tasks"
-T55_LIB3 = RESULTS / "t55_m1_part" / "tasks" / "lib3.json"
+T55_TASKS = RESULTS / "t55_m1_part" / "tasks"
+T55_LIB3 = T55_TASKS / "lib3.json"
+T55_LIBRARIES = ("lib1", "lib2")  # try T55's committed libraries 1 and 2 as released: printed, read by nothing
 TASK_FILE = "{world}.json"
-HOLDS = "the common part's gain at equal movement holds at every depth read"
-TURNS = "it turns with depth"
-NOT_SEPARATED = "not separated in"
+HOLDS = "the common part's gain at equal movement stays positive at every depth read"
+TURNS = "it turns"
+NOT_SEPARATED = "not separated"
 LABEL_T56 = ("try T56, a labelled in-sample diagnostic, never an adoption result: M1 (with R1, R2 and g_mom's factors, "
              "the entry's form) with its Feng step along the common part of Feng's direction alone at the entry's "
              "squared size (try T55's cn form), at the step and twice the step, against the entry's step of the same "
              "fraction, in the worlds of tries T50 (library 3's truth as released and thinned to two thirds and a "
-             "third) and T54 (the reference thinned to two thirds and a half) on the chamber cut; the result can only "
+             "third, two draws at a third) and T54 (the reference thinned to two thirds, two draws, and a half) on the "
+             "chamber cut; the result can only "
              "go to the team captain, and no outcome is evidence on Task 1's read depth, which stays closed")
 LIMITS = (
     "Each difference is taken inside one world, in that world's own points, and is not compared across worlds.",
     "A thinned truth or reference is one draw for all seeds, which the paired difference inside a world shares between "
     "its two arms.",
     "A thinned reference also changes the floor, the de terms' reference, B0's shift and g_mom's fit.",
-    "'Holds at every depth read' covers truths 0.3 to 1.8 times as deep as the reference and no other.",
+    "'Stays positive at every depth read' covers truths 0.3 to 1.8 times as deep as the reference and no other.",
     "One released day, in-sample, the chamber cut and one library only.",
     "Equal movement is equal squared size of the direction, not equal counts moved.",
     "The released day's low share along the group-specific parts may be that day's pace and says nothing about the two "
     "days of the test.",
     "Nothing here says how deep any hidden truth is, and no statement may be used with a figure for it.",
+    "lib3 reproduces try T55's committed scores by rule and adds no evidence: the statement rests on the six thinned "
+    "worlds, all made from the one library where the form was ahead at both fractions.",
+    "'Stays positive' says nothing about size: a gain that falls to a few hundredths still stays positive, and each "
+    "mean is printed.",
+    "'It turns' is a difference behind by 0.3 in a world's own points, which a rescaled floor and ceiling can produce "
+    "with no raw metric changing sign, so it is read beside the raw-metric differences.",
+    "Try T50's worlds change the truth only and try T54's change the inputs, the floor, the de terms' reference, B0's "
+    "shift and g_mom's fit: two manipulations, not one axis.",
 )
 CHOICES = (
     "b0, m1_r_gmom and m1_r_gmom_x2 are built on the entry's directions as tries T50 and T54 load them "
     "(feng_dirs.feng_directions); the forms on the entry's directions as try T55 loads them (share_read.feng_inputs, "
-    "feng_dirs.directions_from_stats); per group whether the two agree by sha256 is recorded and read by nothing (the "
-    "reproduction gates cover both routes).",
+    "feng_dirs.directions_from_stats); the run records per group, over every group either route gives, whether the "
+    "two agree by sha256, and the read voids a world whose record is missing, empty or not all true (amendment).",
     "The forms are built only for the three arms the brief names (c1, cn, cn_x2); try T55's direction record "
     "(part_read.all_directions) covers all five of its forms and is recorded whole, so that it can be compared with "
     "try T55's lib3 file by part_read.direction_values (every form's sha256, a_n and a_p per group).",
-    "The holds and turns tests use the comparison's mean and seeds ahead (strictly above zero) as tries T46 to T55 "
-    "count them; 'behind' is try T46's reversed single-task test; a world is named under 'not separated' when one of "
-    "its two differences meets neither the holds nor the turns condition, and 'turns' wins over that when any world "
-    "turns.",
+    "'Stays positive' uses the difference's mean (above zero) and seeds ahead (strictly above zero, at least 8) as "
+    "tries T46 to T55 count them; 'behind' is try T46's label (the reversed single-task test: a mean below -0.3 with "
+    "at least 8 of 10 seeds behind), which the amendment's 'at most 2 of 10 seeds ahead' equals only when no seed "
+    "ties; the amendment's statement drops the brief's second turn condition (a negative mean with at most 2 seeds "
+    "ahead, level by the test).",
+    "A difference behind in one draw of a world with a second draw (and not in the other) is not a turn and is named "
+    "under 'not separated'; a draw where that difference stays positive is not named. 'It turns' wins over 'not "
+    "separated' when both apply, and the differences meeting neither are still recorded.",
+    "The side of lib3 is try T50's ('truth shallower than the reference'), as for every try T50 world.",
     "Each file must hold its own world's name, the chamber cut and its truth (the world's name for try T50's worlds, "
     "lib3 for try T54's), and lib3 must record no thinning: the same file checks tries T50 and T54 make.",
-    "The truth's row and contamination counts are recorded as tries T50 and T54 record them and compared by nothing.",
+    "The truth's row and contamination checks are try T50's own (over_read._sizes_agree: each thinned truth's counts "
+    "equal lib3's), run on the T50 worlds only; try T54's worlds, whose truth is lib3 as released, are not checked "
+    "against lib3's counts, since neither try makes that check.",
+    "The two draws side by side and libraries 1 and 2 from try T55's committed files are computed with try T50's "
+    "comparison (over_read.comparison); a library file that is missing or lacks a seed or an arm is printed as not "
+    "available and voids nothing.",
 )
 
 
@@ -184,17 +223,18 @@ def world_route(world: str, t, data: Path, genes: Sequence[str], inputs: Mapping
 
 def world_directions(pool_genes: Sequence[str], held_m1: Sequence[str]) -> tuple[dict, dict, dict, dict]:
     """The entry's directions as tries T50 and T54 load them, try T55's forms built by try T55's own functions and
-    their record, and the external record (try T50's, try T55's source, and per group whether the two routes' entry
-    directions agree by sha256). Depends on the pool's gene names and the held list only. Raises ValueError where
-    try T55's directions refuse."""
+    their record, and the external record (try T50's, try T55's source, and per group, over every group either route
+    gives, whether the two routes' entry directions agree by sha256; the read voids where they do not). Depends on
+    the pool's gene names and the held list only. Raises ValueError where try T55's directions refuse."""
     pool_genes = list(pool_genes)
     directions, ext = feng_dirs.feng_directions(pool_genes)
     cfg = feng_dirs.load_config()
     st, src = pr.share_read.feng_inputs()
     entry, _, _ = feng_dirs.directions_from_stats(st, pool_genes, cfg, pr.BRACKET)
     forms, rec = pr.all_directions(entry, pool_genes, held_m1)
-    agree = {g: g in directions and zr.direction_sha256(directions[g]) == zr.direction_sha256(entry[g])
-             for g in sorted(entry)}
+    agree = {g: g in directions and g in entry
+             and zr.direction_sha256(directions[g]) == zr.direction_sha256(entry[g])
+             for g in sorted({*directions, *entry})}
     return directions, forms, rec, {**ext, "t55_source": src, "entry_agrees_with_t55s": agree}
 
 
@@ -401,6 +441,21 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Mapping], t
             if not isinstance(rebuild, int | float) or not rebuild <= REBUILD_TOL:
                 reasons.append(f"{k}: the rebuild check's largest difference {rebuild!r} is not at most "
                                f"{REBUILD_TOL:g}")
+        # these worlds change the truth only: every arm's prediction is lib3's, seed for seed
+        if k in T50_THINNED:
+            lib3 = {row["seed"]: row for row in _rows(results.get(HEART, {}))}
+            differ = sorted({f"{row['seed']}:{a}" for row in rows for a in ARMS
+                             if (row.get("sha256") or {}).get(a) is None
+                             or (lib3.get(row["seed"], {}).get("sha256") or {}).get(a) != row["sha256"][a]})
+            if HEART not in results or differ:
+                reasons.append(f"{k}: the predictions' sha256 do not equal this run's lib3 file seed for seed "
+                               f"(seed:arm {differ})")
+        # the entry's directions as tries T50 and T54 load them and as try T55 loads them
+        agree = (r.get("external") or {}).get("entry_agrees_with_t55s")
+        if not isinstance(agree, Mapping) or not agree or not all(x is True for x in agree.values()):
+            off = sorted(g for g, x in agree.items() if x is not True) if isinstance(agree, Mapping) else agree
+            reasons.append(f"{k}: the entry's directions as tries T50 and T54 load them and as try T55 loads them do "
+                           f"not have the same sha256 in every group (or it is not recorded): {off!r}")
         # a form's arm built at the entry's arm (idle form, wrong directions or wrong fraction)
         if rows and not absent:
             same = [a for a, (_, p) in FORM_ARMS.items()
@@ -411,6 +466,9 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Mapping], t
         values[k] = pr.direction_values(r.get("directions") or {})
         if values[k] is None:
             reasons.append(f"{k}: no full direction record")
+    for key, what in (("truth_rows", "cells"), ("truth_contamination", "contamination cells")):
+        for b in ob._sizes_agree(results, key):  # try T50's check between its truths (compared, never printed)
+            reasons.append(f"the truth's {what}: {b}")
     known = {k: _values_key(v) for k, v in values.items() if v is not None}
     if len(set(known.values())) > 1:
         reasons.append(f"the recorded directions' sha256 or multiples differ between the worlds' files {sorted(known)}")
@@ -438,32 +496,71 @@ def comparison(r: Mapping, world: str, change: str, base: str) -> dict:
 
 
 def holds(c: Mapping) -> bool:
+    """'Stays positive': a positive mean with at least HOLD_AHEAD of 10 seeds ahead."""
     return c["mean"] > 0 and c["seeds_ahead"] >= HOLD_AHEAD
 
 
-def turns(c: Mapping) -> bool:
-    return c["label"] == "behind" or (c["mean"] < 0 and c["seeds_ahead"] <= TURN_AHEAD_MAX)
+def behind(c: Mapping) -> bool:
+    """Behind by try T46's single-task test (the reversed test)."""
+    return c["label"] == "behind"
+
+
+def turns(diffs: Mapping[str, Mapping[str, Mapping]], world: str, name: str) -> bool:
+    """The difference counts as a turn in this world: behind, and where the world has a second draw, behind in both
+    draws."""
+    return all(behind(diffs[k][name]) for k in SECOND_DRAW_OF.get(world, (world,)))
+
+
+def _item(world: str, name: str) -> dict:
+    return {"world": world, "difference": name, "side": SIDE[world]}
+
+
+def _items_text(items: Sequence[Mapping]) -> str:
+    return "; ".join(f"{x['world']} ({x['side']}): {x['difference']}" for x in items)
 
 
 def statement(diffs: Mapping[str, Mapping[str, Mapping]]) -> dict:
-    """diffs: world -> difference name -> comparison. HOLDS when every difference in every world holds; TURNS when any
-    turns; otherwise NOT_SEPARATED with the worlds where a difference meets neither."""
-    turned = [k for k in WORLDS if any(turns(c) for c in diffs[k].values())]
-    unsettled = [k for k in WORLDS if any(not holds(c) and not turns(c) for c in diffs[k].values())]
+    """diffs: world -> difference name -> comparison. HOLDS when every difference in every world stays positive; TURNS
+    when a difference is behind in some world (in both draws where the world has two), naming each such world and its
+    side; otherwise NOT_SEPARATED, naming every world and difference that meets neither, with its side."""
+    turned = [_item(k, n) for k in WORLDS for n in diffs[k] if turns(diffs, k, n)]
+    neither = [_item(k, n) for k in WORLDS for n, c in diffs[k].items() if not holds(c) and not turns(diffs, k, n)]
     if all(holds(c) for k in WORLDS for c in diffs[k].values()):
         said = HOLDS
     elif turned:
-        said = TURNS
+        said = f"{TURNS} ({_items_text(turned)})"
     else:
-        said = f"{NOT_SEPARATED} {', '.join(unsettled)}"
-    return {"statement": said, "turned_in": turned, "neither_in": unsettled}
+        said = f"{NOT_SEPARATED} ({_items_text(neither)})"
+    return {"statement": said, "turned": turned, "neither": neither,
+            "turned_in": sorted({x["world"] for x in turned}, key=WORLDS.index),
+            "neither_in": sorted({x["world"] for x in neither}, key=WORLDS.index)}
 
 
 def _name(a: str, b: str) -> str:
     return f"{a} minus {b}"
 
 
-def t56_reading(results: Mapping[str, Mapping], committed: Mapping[str, Mapping], t55_lib3: Mapping | None) -> dict:
+def library_differences(t55_libs: Mapping[str, Mapping | None]) -> dict:
+    """From try T55's committed files, the two differences on libraries 1 and 2 as released (read by nothing); None
+    where a file is missing or lacks a seed or an arm."""
+    out = {}
+    need = {a for pair in DIFFERENCES for a in pair}
+    for k in T55_LIBRARIES:
+        r = t55_libs.get(k)
+        rows = _rows(r or {})
+        complete = sorted(row["seed"] for row in rows) == list(SEEDS) and all(
+            a in row.get("arms", {}) for row in rows for a in need)
+        out[k] = {_name(a, b): comparison(r, k, a, b) for a, b in DIFFERENCES} if complete else None
+    return out
+
+
+def draws_side_by_side(diffs: Mapping[str, Mapping[str, Mapping]]) -> dict:
+    """Per world with a second draw and per difference, the two draws' comparisons."""
+    return {f"{a} and {b}": {n: {a: diffs[a][n], b: diffs[b][n]} for n in diffs[a]} for a, b in DRAWS}
+
+
+def t56_reading(results: Mapping[str, Mapping], committed: Mapping[str, Mapping], t55_lib3: Mapping | None,
+                t55_libs: Mapping[str, Mapping | None] | None = None) -> dict:
     v = validity(results, committed, t55_lib3)
     out = {"valid": v["valid"], "validity": v}
     if not v["valid"]:
@@ -472,6 +569,8 @@ def t56_reading(results: Mapping[str, Mapping], committed: Mapping[str, Mapping]
     diffs = {k: {_name(a, b): comparison(results[k], k, a, b) for a, b in DIFFERENCES} for k in WORLDS}
     st = statement(diffs)
     out.update({"outcome": st["statement"], "statement": st, "differences": diffs,
+                "means": {k: {n: c["mean"] for n, c in diffs[k].items()} for k in WORLDS},
+                "draws": draws_side_by_side(diffs), "libraries_1_and_2": library_differences(t55_libs or {}),
                 "reported": {k: {_name(a, b): comparison(results[k], k, a, b) for a, b in REPORTED} for k in WORLDS},
                 "mean_scores": {k: {a: float(np.mean([row["arms"][a]["score"] for row in _rows(results[k])]))
                                     for a in ARMS} for k in WORLDS},
@@ -507,13 +606,28 @@ def t56_text(res: Mapping) -> str:
                          + f" (gate {REPRO_TOL:g})")
     if r["valid"]:
         st = r["statement"]
-        lines.append(f"The statement: {st['statement']}" + (f" (behind or negative in {', '.join(st['turned_in'])})"
-                                                             if st["turned_in"] else ""))
+        lines.append(f"The statement: {st['statement']}")
+        if st["turned"] and st["neither"]:
+            lines.append("    also meeting neither condition: " + _items_text(st["neither"]))
+        lines.append("    each world's two means: " + "; ".join(
+            f"{k} ({SIDE[k]}): " + ", ".join(f"{n} {m:+.2f}" for n, m in r["means"][k].items()) for k in WORLDS))
+        lines.append("The two draws side by side:")
+        for pair, by_name in r["draws"].items():
+            for n, cs in by_name.items():
+                lines.append(f"    {pair}, {n}: " + " | ".join(
+                    f"{k} {c['mean']:+.2f}, ahead {c['seeds_ahead']} of {c['of']}, per seed {c['range'][0]:+.2f} to "
+                    f"{c['range'][1]:+.2f}, test: {c['label']}" for k, c in cs.items()))
         lines.append("Per world, the two differences at equal movement (try T46's single-task test inside the world):")
         for k in WORLDS:
             for c in r["differences"][k].values():
                 lines.append(f"    in {k}: " + _difference_line(c))
         lines.append("Reported and read by nothing:")
+        for k, cs in r["libraries_1_and_2"].items():
+            if cs is None:
+                lines.append(f"    {k} as released (try T55's committed file): not available")
+                continue
+            for c in cs.values():
+                lines.append(f"    {k} as released (try T55's committed file): " + _difference_line(c))
         for k in WORLDS:
             for c in r["reported"][k].values():
                 lines.append(f"    in {k}: " + _difference_line(c))
@@ -526,7 +640,7 @@ def t56_text(res: Mapping) -> str:
                          f"{th['rebuild_largest_difference']:.3g}, any cell left with no count: "
                          f"{th['any_cell_emptied']}")
         d = r["directions"]
-        lines.append("    the forms' directions (the same in the five files and in try T55's lib3 file): " + "; ".join(
+        lines.append("    the forms' directions (the same in the seven files and in try T55's lib3 file): " + "; ".join(
             f"{g}: a_n {e[pr.N]:.4f}, a_p {e[pr.P]:.4f}" for g, e in d["entry"].items()))
     lines.append("Choices the brief left open:")
     lines.extend(f"  - {x}" for x in CHOICES)
@@ -537,9 +651,9 @@ def t56_text(res: Mapping) -> str:
     return "\n".join(lines) + "\n"
 
 
-def read(out: Path, t50_tasks: Path = T50_TASKS, t54_tasks: Path = T54_TASKS, t55_lib3: Path = T55_LIB3) -> dict:
-    """Read the worlds present in out/tasks against the committed files of tries T50, T54 and T55; write
-    t56.{json,txt}."""
+def read(out: Path, t50_tasks: Path = T50_TASKS, t54_tasks: Path = T54_TASKS, t55_tasks: Path = T55_TASKS) -> dict:
+    """Read the worlds present in out/tasks against the committed files of tries T50, T54 and T55 (t55_tasks holds
+    try T55's lib3, lib1 and lib2 files); write t56.{json,txt}."""
     gv.refuse_existing(out, (f"{STEM}.json", f"{STEM}.txt"))
     started = gv.tree_state()
     present = {k: out / "tasks" / TASK_FILE.format(world=k) for k in WORLDS
@@ -548,11 +662,13 @@ def read(out: Path, t50_tasks: Path = T50_TASKS, t54_tasks: Path = T54_TASKS, t5
     files = {k: committed_file(k, t50_tasks, t54_tasks) for k in WORLDS}
     found = {k: p for k, p in files.items() if p.exists()}
     committed = {k: json.loads(p.read_text()) for k, p in found.items()}
-    t55_lib3 = Path(t55_lib3)
-    t55 = json.loads(t55_lib3.read_text()) if t55_lib3.exists() else None
+    t55_files = {k: Path(t55_tasks) / TASK_FILE.format(world=k) for k in (HEART, *T55_LIBRARIES)}
+    t55_found = {k: p for k, p in t55_files.items() if p.exists()}
+    t55 = {k: json.loads(p.read_text()) for k, p in t55_found.items()}
     res = {"label": LABEL_T56, "choices": list(CHOICES), "limits": list(LIMITS),
-           "reading": t56_reading(results, committed, t55), "stamps": {k: v.get("stamp") for k, v in results.items()}}
-    res["stamp"] = gv.stamp(started, [*present.values(), *found.values(), *([t55_lib3] if t55 is not None else [])])
+           "reading": t56_reading(results, committed, t55.get(HEART), {k: t55.get(k) for k in T55_LIBRARIES}),
+           "stamps": {k: v.get("stamp") for k, v in results.items()}}
+    res["stamp"] = gv.stamp(started, [*present.values(), *found.values(), *t55_found.values()])
     gv.write_outputs(out, STEM, res, t56_text(res))
     return res
 
