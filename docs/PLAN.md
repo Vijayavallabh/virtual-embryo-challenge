@@ -4636,6 +4636,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     smaller pseudocount) was still running when this entry was written. Its use was test C, which could only have
     replaced a uniform value by a changed direction of larger delivered size; the verdict stops any such change for
     the reasons above, so T52 is read and recorded when it finishes and changes nothing here.
+  - **Corrected in part on 2026-11-18** by the ninth independent pass (entry 2026-11-18 (a)): the verdict above is the
+    AI assistant's judgement after the results and closes nothing; the pre-set rule's output and the table go to the
+    captain; five sentences of this entry said too much and are corrected there.
 - 2026-11-17 (f), what was prepared after the report of entry (e), without changing any record on main that waits for
   the captain. Written by the AI assistant.
   - **The schedule amendments, as a draft on a branch.** `draft/schedule-nov21-fix` (490a51a; built by one agent,
@@ -4753,3 +4756,79 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the step's size (entry (e)). A request would again be one priced question both ways, with the first upload alone
     as the lower-exposure form that two adversaries have now named, and it would say what no released day can show:
     what the deleted or kept parts carry between E10.5 and E12.5.
+- 2026-11-18 (a), the ninth independent pass, part one (rows T48 to T54 and entries 2026-11-17 (b) to (e); workflow
+  wf_44f6e5d3-588, two read-only agents with their own code): what it found, what was corrected, and what it does to
+  the question of Task 1's step. Written by the AI assistant. Nothing in any upload, build, rule or gate file has
+  changed.
+  - **The rows.** Each of rows T48 to T54 was committed before its run, each task file's stamp names the row's commit
+    with a clean tree, and every rescored arm reproduces its committed scores exactly. About 370 figures were
+    recomputed and no result is wrong. Rounding slips, corrected in the rows: T51's corrected ratio is 2.20, not 2.21;
+    T50's tests A and B were read at multiples rounded to one decimal (at the exact multiples the entry's 0.40 reads
+    58.19 and 0.69 reads 58.38 on library 3 at a real share of 0.22, and the gains over 0.40 at a share of 0.28 are
+    +0.71, +0.80 and +0.95); T53's mix-held raw form at 0.4 is +0.19, not +0.18. T52's delivered sizes are constants
+    in its script and cannot be recomputed from its task files; its own read-backs agree within the matching
+    tolerance.
+  - **Sentences that said more than their rows allow,** each now noted in its row as the AI assistant's reading after
+    the result, or withdrawn. T49: its last sentence ('every larger within-type move read so far scores better') was
+    untrue minutes later (try T50), and its advice is the AI assistant's. T50: statement 3 ('the larger steps gain
+    more against the shallower truth') was quoted although the row's own limit, fixed before the run, says it is not
+    quoted where the floor-to-ceiling gaps differ by more than about a tenth, and they differ by a fifth; 'and not the
+    share delivered' says more than a thinning read can; 'the third attack is confirmed' is a reading. T51: 'the parts
+    of the direction that are specific to a cell group are the ones the released day does not follow' fails for the
+    epicardium and, by the joint fit, for the cardiomyocytes. T52: 'what scored on these cuts was the larger movement
+    of well-expressed genes'. T53: 'T51's finding is therefore not explained by the zone mix' (withdrawn), and 'the
+    reopened ledger line is closed by its read', which stands only in the sweeps' sense that the line now has a
+    counted read that found nothing at the bar. T54: its statement 1 names highest means that no test separates from a
+    neighbour, and its closing sentence reads thinned-reference worlds as deeper hidden truths, which its own limits
+    say they are not.
+  - **Entries (c) to (e), recomputed.** Entry (c) was committed before every run of tries T48 to T53. Entry (d), with
+    test E, was committed after tries T48 to T51 were read, try T50's curves among them, and before row T54 and every
+    result of T52 to T54: test E was designed with T50's curves known. Test D's condition held: the independent
+    recomputation of tries T44 to T47 found no numeric mismatch, and the one quoted range it moved (the test's days,
+    0.29 to 0.41 into 0.28 to 0.36) entered (c) and (d) corrected. The rule's output recomputes as entry (e) gives it,
+    0.60 on both uploads, with one condition that entry did not state: test B's cap at 0.60 is triggered by try T50's
+    statement 3, the statement that should not have been quoted. Without the cap B gives 0.69, and test E leaves it
+    standing (+0.12 against 0.40 in `ref67` at a real share of 0.28, where 0.60 reads +0.25). So the pre-set rule
+    gives 0.60 with the cap and 0.69 without it.
+  - **The price table, with its convention.** Entry (e)'s table (0.60 against 0.40) is linear interpolation in the
+    practice multiple on each world's mean curve rounded to two decimals, at multiples rounded to two decimals at a
+    real share of 0.28 (2.33 and 3.49) and to one decimal at 0.22 (3.0 and 4.4). With exact multiples and unrounded
+    means it reads, over the truth's depth against the cells the prediction is built from (0.3, 0.6, 0.9, 1.35, 1.8):
+    at a share of 0.28, +1.98, +1.21, +0.80, +0.25, -0.26; at 0.24, +2.16, +1.09, +0.57, -0.12, -0.60; at 0.22, +2.16,
+    +0.97, +0.30, -0.52, -0.96 (entry (e): +2.03, +0.90, +0.27, -0.51, -0.91). The depths at which it breaks even are
+    1.55, 1.26 and 1.04 by interpolation in log depth, as entry (e) has them, and 1.57, 1.27 and 1.07 linear in depth.
+    Averaged evenly over the five depths, a prior no rule sets, the table gives +0.79, +0.62 and +0.39: entry (e)'s 'a
+    few tenths under an even prior' understated that; it is about +0.4 to +0.8 on Task 1's board, and the same in the
+    total.
+  - **Entry (e)'s three grounds.** The first holds: the controls that show the gain to need Feng's own genes exist at
+    1, 1.5 and 2 times the practice step only (tries T45, T46, T52, T53). The third is overstated: 'a premise the
+    practice data contradict' rests on one pair of curves, library 2 against library 3 thinned to two thirds, which
+    also differ in the kind of sample and in contamination; the other matched pair is still rising at 8 times on both
+    sides and cannot test the mapping. It should read: one confounded pair speaks against the mapping, and nothing
+    released supports it. For the rebuttal of the first attack (the second upload's base holds 0.91 of library 3's
+    counts per cell) no committed record existed; one does now, target-free and reproducible:
+    `experiments/t1_m1/base_depth.py` with `experiments/t1_m1/results/base_depth/base_depth.txt` (0.911 over the
+    chamber categories, 0.89 to 0.94 by category). 'Each turn confirmed by a second thinning draw' is wrong: second
+    draws exist at depths 0.3 and 1.35 only, and at 0.9, 1.35 and 1.8 the highest mean is not separated from its
+    neighbour.
+  - **What the verdict of entry (e) rests on.** The pass classes 'Verdict: stop' and 'keep 0.40' as the AI assistant's
+    judgement after the results, and that is what they are: the pre-set rule's output is 0.60, and the stop came from
+    conceding a cold adversary's attacks once every read was in. The second cold check itself was fixed beforehand
+    (entry (d), 'after the last read'); what its verdict would decide was not. So the size of the step is not closed
+    by the AI assistant. It is a question for the captain, as entry (c) fixed in its first lines ('the captain is
+    given the table both ways whatever this rule says'), and it is put in that form in the report that goes with this
+    entry: the rule's output (0.60 on both uploads; 0.69 without the cap), the table above, the three grounds as
+    corrected here, and the AI assistant's advice labelled as formed after the results: keep 0.40. Because the price
+    changes sign with the hidden truth's depth, and the captain has seen figures that bear on it, the block's rule
+    applies (`docs/DATA_POLICY.md` 2026-11-04): the captain decides from this released-data table alone, or declines;
+    declining is the default if no ruling comes.
+  - **Other questions that are the captain's, restated so that none is closed on the AI assistant's advice.** Try T49:
+    by the adoption rule's arithmetic a larger g_mom scores above the entry's on both cuts (+1.47 and +1.36 at damping
+    1.0, ahead on every seed, three quarters of it on the distribution and covariance terms); it is a size chosen on
+    the cuts that kept g_mom, so under ledger rule 6 it keeps nothing, and by its row it goes to the captain with the
+    limits; the AI assistant's advice, its own: no change. Entry (b): Task 3's factor at half size (+0.89 and +2.35 on
+    the two counted cross-knockout folds, -2.28 on the replicate fold); advice, its own: keep the file.
+  - **Checks the pass found open, now done.** The full test suite on the DGX that entry (b) owed was run at b1bf884
+    (2,151 passed) and at 628909f (2,214 passed, lock and lint clean) and is running at de8f8b5, the commit of row
+    T57. The corrections above are in the rows. Part two of this pass (rows T55 to T57, entries (f) to (h), and a
+    sweep of the ledger for lines still open) follows try T57's reading.

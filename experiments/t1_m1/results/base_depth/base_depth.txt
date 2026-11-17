@@ -1,0 +1,8 @@
+mean counts per cell, mid base over library 3, per chamber category (ratios only):
+  blood: library 3's share of the pool 0.746; depth ratio 0.890
+  cm: library 3's share of the pool 0.821; depth ratio 0.909
+  endocardium: library 3's share of the pool 0.859; depth ratio 0.933
+  epicardium: library 3's share of the pool 0.870; depth ratio 0.935
+  vascular_endothelium: library 3's share of the pool 0.830; depth ratio 0.922
+all chamber categories, cell-weighted over each pool: 0.911; unweighted mean of the categories' ratios 0.918
+the other libraries' chamber cells over library 3's: 0.470
