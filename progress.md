@@ -6,27 +6,29 @@
 **2026-11-17, 14:00 UTC: the step's request is not put forward; the advice is to keep 0.40 on both Task 1 uploads.
 Nothing in any upload, build, rule or gate file has changed** (`docs/PLAN.md` decision log 2026-11-17 (d) and (e)).
 All seven reads registered today are recorded (T48 to T54; T52, read last, says that at the same delivered size
-uniform inflation scores better than a direction made with a smaller pseudocount, so it changes nothing). What they found: on the released day a larger step scores better against every released truth, but where
-the curve turns follows how deep the truth is against the cells the prediction is built from. The multiple of the
-practice step with the highest score is beyond 8, then 6, 4, 3 and 2 as that depth goes 0.3, 0.6, 0.9, 1.35 and 1.8
-(try T50 thinned the truth, try T54 the reference; each turn confirmed by a second thinning draw). The rule fixed
-before the runs gave 0.60 on both uploads, priced at +2.0 to -0.9 over those depths. A second cold adversary then
-put the chance of a mistake at 38%, and the checks it named were run: the controls that show the gain to be
-direction-specific cover 1 to 2 times the practice step and not the interval the change would move in; the mapping
-from a practice multiple to a test fraction is contradicted at matched depth (the library with the smaller share
-peaks later, not earlier); and a ruling on a change whose sign turns on the hidden truth's depth cannot be shown
-free of the metadata the captain saw on 4 November. Its claim that the second upload's base is a quarter shallower
-was wrong: by the builder's own selection it is 0.91 as deep as the first's. So released data show the entry's step
-too small for the released day and cannot say whether a larger one helps at the test; the block's rule for that
-case is released data alone or decline. Other reads: the released day's change lies along the part of Feng's
-direction that all cell groups share (T51); holding Feng's zone mix fixed changes nothing at the bar, which closes
-by a read the line the eighth pass reopened (T53); the calibrated step sits on the uniform arms' line (T48); a larger
-g_mom scores +1.47 and +1.36 at twice its size, on the distribution terms, and by its row changes nothing (T49).
-The full suite on the DGX at 628909f, after the last read's script and tests: lock 0, lint 0, 2,214 tests passed, clean
-tree (2,151 at b1bf884 earlier in the day). Tries: T1 93, embryo 73, heart 31, T3 31. The committed estimate stays 184 (170 to 198). **Waiting for the captain:** the new dates (the
-upload gate's exception lies after the organisers' deadline, so no upload is possible until it is moved); the six
-confirmations for the method report's exposure section; and, for information with the AI assistant's advice to
-change nothing, the size of Task 3's factor and the size of Task 1's step.
+uniform inflation scores better than a direction made with a smaller pseudocount, so it changes nothing). What they
+found: on the released day a larger step scores better against every released truth, but where the curve turns
+follows how deep the truth is against the cells the prediction is built from. The multiple of the practice step with
+the highest score is beyond 8, then 6, 4, 3 and 2 as that depth goes 0.3, 0.6, 0.9, 1.35 and 1.8 (try T50 thinned
+the truth, try T54 the reference; each turn confirmed by a second thinning draw). The rule fixed before the runs
+gave 0.60 on both uploads, priced at +2.0 to -0.9 over those depths. A second cold adversary then put the chance of
+a mistake at 38%, and the checks it named were run: the controls that show the gain to be direction-specific cover 1
+to 2 times the practice step and not the interval the change would move in; the mapping from a practice multiple to
+a test fraction is contradicted at matched depth (the library with the smaller share peaks later, not earlier); and
+a ruling on a change whose sign turns on the hidden truth's depth cannot be shown free of the metadata the captain
+saw on 4 November. Its claim that the second upload's base is a quarter shallower was wrong: by the builder's own
+selection it is 0.91 as deep as the first's. So released data show the entry's step too small for the released day
+and cannot say whether a larger one helps at the test; the block's rule for that case is released data alone or
+decline. Other reads: the released day's change lies along the part of Feng's direction that all cell groups share
+(T51); holding Feng's zone mix fixed changes nothing at the bar, which closes by a read the line the eighth pass
+reopened (T53); the calibrated step sits on the uniform arms' line (T48); a larger g_mom scores +1.47 and +1.36 at
+twice its size, on the distribution terms, and by its row changes nothing (T49). The full suite on the DGX at
+628909f, after the last read's script and tests: lock 0, lint 0, 2,214 tests passed, clean tree (2,151 at b1bf884
+earlier in the day). Tries: T1 93, embryo 73, heart 31, T3 31. The committed estimate stays 184 (170 to 198).
+**Waiting for the captain:** the new dates (the upload gate's exception lies after the organisers' deadline, so no
+upload is possible until it is moved); the six confirmations for the method report's exposure section; and, for
+information with the AI assistant's advice to change nothing, the size of Task 3's factor and the size of Task 1's
+step.
 **2026-11-17, 11:00 UTC: the step's request was attacked cold and is being rebuilt on what the attack and the eighth
 independent pass found; six reads are registered, one is read, five are running.** The cold adversarial check put
 the chance that the request (0.40 to 0.69) is a mistake at 30% and named three attacks; its cheaper alternative is
