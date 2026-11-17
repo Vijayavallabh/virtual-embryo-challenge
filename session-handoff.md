@@ -16,11 +16,8 @@
   is announced and must go through a screening agent, never be pasted.
 - **What is live (2026-11-17, 14:00 UTC).** No candidate change is live. The step's request was read on both
   sides, attacked cold twice and is not put forward (decision log 2026-11-17 (b) to (e)); the AI assistant's advice
-  is to keep 0.40 on both Task 1 uploads. Rows T48 to T54 are in the ledger with their outcomes, except T52
-  (`eps_read.py`, running in `~/v/vec-campaign-d` at f8c247e, exit file `runs/round6/t52.exit`): when it reads 0,
-  copy it with `lift6/finish_t1read.sh vec-campaign-d t52_m1_eps t52 t52_logs f8c247e` (session scratchpad), commit
-  the task files unread, run `eps_read.py read --out t52_m1_eps` once, write the outcome with `lift6/outcome.py`
-  (totals then T1 93) and remove the folder on the DGX. It changes nothing in the advice. The DGX holds four idle
+  is to keep 0.40 on both Task 1 uploads. Rows T48 to T54 are in the ledger with their outcomes (T1 93 tries).
+  The DGX holds four idle
   campaign checkouts (`~/v/vec-campaign`, `-h7`, `-c`, `-d`; identical package sets; the reference checkout is
   untouched at dc7b6ae). The builder option for a step ruling stays on `campaign/t1-n` (2921b96), unused.
   **For the captain, in this order:** (1) the dates: the gate's exception (27 November) is after the organisers'
