@@ -1,0 +1,1900 @@
+{
+ "label": "try T48, a labelled in-sample diagnostic, never an adoption result: M1 (with R1, R2 and g_mom's factors, the entry's form) at the fraction its own step needs, read back on the task's reference cells with T47's share code, to deliver 0.2 x L (T48a; L from T47's committed reading) and 0.2 (T48b, reported), on T44's route; Feng's E9.5 cells lie inside these pseudo-tasks' external windows, the cuts are ones earlier T1 choices were made on; the result can only go to the team captain",
+ "reading": {
+  "valid": true,
+  "validity": {
+   "valid": true,
+   "reasons": [],
+   "reproduction": {
+    "T1/E9.5->E10.5:chamber": {
+     "t42": {
+      "largest_difference": {
+       "b0": 0.0,
+       "m1_r_gmom": 0.0
+      },
+      "missing_seeds": [],
+      "absent": [],
+      "holds": true
+     },
+     "t44": {
+      "largest_difference": {
+       "m1_r_gmom_x15": 0.0,
+       "m1_r_gmom_x2": 0.0
+      },
+      "missing_seeds": [],
+      "absent": [],
+      "holds": true
+     }
+    },
+    "T1/E9.5->E10.5": {
+     "t42": {
+      "largest_difference": {
+       "b0": 0.0,
+       "m1_r_gmom": 0.0
+      },
+      "missing_seeds": [],
+      "absent": [],
+      "holds": true
+     },
+     "t44": {
+      "largest_difference": {
+       "m1_r_gmom_x15": 0.0,
+       "m1_r_gmom_x2": 0.0
+      },
+      "missing_seeds": [],
+      "absent": [],
+      "holds": true
+     }
+    }
+   },
+   "commits": [
+    "15f38b6a5c61e13f0698b19984280d5ac6eff517"
+   ]
+  },
+  "calibration": {
+   "T1/E9.5->E10.5:chamber": {
+    "L": 0.8342320620692518,
+    "t47": "experiments/t1_m1/results/t47_share_read/t47.json",
+    "t47_sha256": "1f2f92b12316b8f9ce5462622df8831817d839e364f20c95f248bb304818b125",
+    "base_fraction": 0.2,
+    "targets": {
+     "m1_r_gmom_calL": 0.16684641241385037,
+     "m1_r_gmom_cal": 0.2
+    },
+    "fractions": {
+     "m1_r_gmom_calL": 0.2953125000000001,
+     "m1_r_gmom_cal": 0.353125
+    },
+    "delivered_at_base": 0.11234401084650328,
+    "delivered": {
+     "m1_r_gmom_calL": 0.16690144838303853,
+     "m1_r_gmom_cal": 0.20019716991837735
+    },
+    "steps": {
+     "m1_r_gmom_calL": 9,
+     "m1_r_gmom_cal": 8
+    },
+    "stream": [
+     48,
+     48
+    ],
+    "bracket": [
+     0.2,
+     1.0
+    ],
+    "rel_tol": 0.001,
+    "weights": {
+     "CM": 5263.0,
+     "Endocardium": 1555.0,
+     "Endothelium": 271.0,
+     "Epicardium": 883.0
+    },
+    "seconds_rule": 176.0,
+    "noise": {
+     "m1_r_gmom_calL": {
+      "streams": [
+       [
+        48,
+        48,
+        1
+       ],
+       [
+        48,
+        48,
+        2
+       ],
+       [
+        48,
+        48,
+        3
+       ],
+       [
+        48,
+        48,
+        4
+       ],
+       [
+        48,
+        48,
+        5
+       ],
+       [
+        48,
+        48,
+        6
+       ],
+       [
+        48,
+        48,
+        7
+       ],
+       [
+        48,
+        48,
+        8
+       ],
+       [
+        48,
+        48,
+        9
+       ],
+       [
+        48,
+        48,
+        10
+       ]
+      ],
+      "values": [
+       0.16683833230695921,
+       0.16680151457067752,
+       0.16680930162305616,
+       0.16675326226145878,
+       0.16677254090809498,
+       0.16681925913190734,
+       0.16686901201676552,
+       0.1668669637540702,
+       0.1666953726316068,
+       0.1666983081402878
+      ],
+      "sd": 6.220290919865487e-05,
+      "slope": 0.5724059020226644,
+      "fraction_sd": 0.00010866923101046561
+     },
+     "m1_r_gmom_cal": {
+      "streams": [
+       [
+        48,
+        48,
+        1
+       ],
+       [
+        48,
+        48,
+        2
+       ],
+       [
+        48,
+        48,
+        3
+       ],
+       [
+        48,
+        48,
+        4
+       ],
+       [
+        48,
+        48,
+        5
+       ],
+       [
+        48,
+        48,
+        6
+       ],
+       [
+        48,
+        48,
+        7
+       ],
+       [
+        48,
+        48,
+        8
+       ],
+       [
+        48,
+        48,
+        9
+       ],
+       [
+        48,
+        48,
+        10
+       ]
+      ],
+      "values": [
+       0.2000333935502788,
+       0.2000591281507391,
+       0.2000137731114361,
+       0.20014566681119908,
+       0.20011817716831334,
+       0.2001038923454413,
+       0.19992636307552478,
+       0.20000490418798292,
+       0.1998341162258692,
+       0.2000516762021836
+      ],
+      "sd": 9.305921977873627e-05,
+      "slope": 0.573734916387749,
+      "fraction_sd": 0.00016219898270204594
+     }
+    },
+    "steps_by_arm": {
+     "m1_r_gmom": {
+      "fraction": 0.2,
+      "share": 0.11234401084650328,
+      "share_over_f": 0.5617200542325164,
+      "bins": {
+       "[0, 0.1)": {
+        "share": 0.015546420141462586,
+        "share_over_f": 0.07773210070731293,
+        "genes": {
+         "CM": 20712,
+         "Endocardium": 20822,
+         "Endothelium": 21037,
+         "Epicardium": 20806
+        }
+       },
+       "[0.1, 1)": {
+        "share": 0.08785604483074101,
+        "share_over_f": 0.43928022415370505,
+        "genes": {
+         "CM": 7077,
+         "Endocardium": 6752,
+         "Endothelium": 6477,
+         "Epicardium": 6773
+        }
+       },
+       "[1, 10)": {
+        "share": 0.1551095563319848,
+        "share_over_f": 0.775547781659924,
+        "genes": {
+         "CM": 1728,
+         "Endocardium": 1958,
+         "Endothelium": 2013,
+         "Epicardium": 1953
+        }
+       },
+       ">= 10": {
+        "share": 0.1892528254311167,
+        "share_over_f": 0.9462641271555835,
+        "genes": {
+         "CM": 135,
+         "Endocardium": 120,
+         "Endothelium": 125,
+         "Epicardium": 120
+        }
+       }
+      },
+      "before": {
+       "detected_genes": 4430.830908178626,
+       "total_counts": 15723.840692423482
+      },
+      "after": {
+       "detected_genes": 4403.618038133467,
+       "total_counts": 15723.575388861014
+      },
+      "panel": {
+       "share": 0.11234401084650328,
+       "share_over_f": 0.5617200542325164,
+       "genes": {
+        "CM": 29652,
+        "Endocardium": 29652,
+        "Endothelium": 29652,
+        "Epicardium": 29652
+       }
+      }
+     },
+     "m1_r_gmom_x15": {
+      "fraction": 0.30000000000000004,
+      "share": 0.16932776898264526,
+      "share_over_f": 0.5644258966088175,
+      "bins": {
+       "[0, 0.1)": {
+        "share": 0.023848426484997874,
+        "share_over_f": 0.0794947549499929,
+        "genes": {
+         "CM": 20712,
+         "Endocardium": 20822,
+         "Endothelium": 21037,
+         "Epicardium": 20806
+        }
+       },
+       "[0.1, 1)": {
+        "share": 0.13304425194639505,
+        "share_over_f": 0.44348083982131675,
+        "genes": {
+         "CM": 7077,
+         "Endocardium": 6752,
+         "Endothelium": 6477,
+         "Epicardium": 6773
+        }
+       },
+       "[1, 10)": {
+        "share": 0.23315774800639333,
+        "share_over_f": 0.7771924933546444,
+        "genes": {
+         "CM": 1728,
+         "Endocardium": 1958,
+         "Endothelium": 2013,
+         "Epicardium": 1953
+        }
+       },
+       ">= 10": {
+        "share": 0.28431729439742337,
+        "share_over_f": 0.9477243146580777,
+        "genes": {
+         "CM": 135,
+         "Endocardium": 120,
+         "Endothelium": 125,
+         "Epicardium": 120
+        }
+       }
+      },
+      "before": {
+       "detected_genes": 4430.830908178626,
+       "total_counts": 15723.840692423482
+      },
+      "after": {
+       "detected_genes": 4387.790015052685,
+       "total_counts": 15723.745233316607
+      },
+      "panel": {
+       "share": 0.16932776898264526,
+       "share_over_f": 0.5644258966088175,
+       "genes": {
+        "CM": 29652,
+        "Endocardium": 29652,
+        "Endothelium": 29652,
+        "Epicardium": 29652
+       }
+      }
+     },
+     "m1_r_gmom_x2": {
+      "fraction": 0.4,
+      "share": 0.22698446875571984,
+      "share_over_f": 0.5674611718892996,
+      "bins": {
+       "[0, 0.1)": {
+        "share": 0.03287665474585046,
+        "share_over_f": 0.08219163686462615,
+        "genes": {
+         "CM": 20712,
+         "Endocardium": 20822,
+         "Endothelium": 21037,
+         "Epicardium": 20806
+        }
+       },
+       "[0.1, 1)": {
+        "share": 0.178804002737173,
+        "share_over_f": 0.4470100068429325,
+        "genes": {
+         "CM": 7077,
+         "Endocardium": 6752,
+         "Endothelium": 6477,
+         "Epicardium": 6773
+        }
+       },
+       "[1, 10)": {
+        "share": 0.3119663128444419,
+        "share_over_f": 0.7799157821111047,
+        "genes": {
+         "CM": 1728,
+         "Endocardium": 1958,
+         "Endothelium": 2013,
+         "Epicardium": 1953
+        }
+       },
+       ">= 10": {
+        "share": 0.37997910543375396,
+        "share_over_f": 0.9499477635843848,
+        "genes": {
+         "CM": 135,
+         "Endocardium": 120,
+         "Endothelium": 125,
+         "Epicardium": 120
+        }
+       }
+      },
+      "before": {
+       "detected_genes": 4430.830908178626,
+       "total_counts": 15723.840692423482
+      },
+      "after": {
+       "detected_genes": 4370.099473156046,
+       "total_counts": 15723.44831911691
+      },
+      "panel": {
+       "share": 0.22698446875571984,
+       "share_over_f": 0.5674611718892996,
+       "genes": {
+        "CM": 29652,
+        "Endocardium": 29652,
+        "Endothelium": 29652,
+        "Epicardium": 29652
+       }
+      }
+     },
+     "m1_r_gmom_calL": {
+      "fraction": 0.2953125000000001,
+      "share": 0.16690144838303853,
+      "share_over_f": 0.5651689257415059,
+      "bins": {
+       "[0, 0.1)": {
+        "share": 0.02380171781279315,
+        "share_over_f": 0.08059840952480217,
+        "genes": {
+         "CM": 20712,
+         "Endocardium": 20822,
+         "Endothelium": 21037,
+         "Epicardium": 20806
+        }
+       },
+       "[0.1, 1)": {
+        "share": 0.13095350396910188,
+        "share_over_f": 0.44344043672076816,
+        "genes": {
+         "CM": 7077,
+         "Endocardium": 6752,
+         "Endothelium": 6477,
+         "Epicardium": 6773
+        }
+       },
+       "[1, 10)": {
+        "share": 0.22991425717312475,
+        "share_over_f": 0.7785456327555544,
+        "genes": {
+         "CM": 1728,
+         "Endocardium": 1958,
+         "Endothelium": 2013,
+         "Epicardium": 1953
+        }
+       },
+       ">= 10": {
+        "share": 0.2802424740239314,
+        "share_over_f": 0.9489692242080213,
+        "genes": {
+         "CM": 135,
+         "Endocardium": 120,
+         "Endothelium": 125,
+         "Epicardium": 120
+        }
+       }
+      },
+      "before": {
+       "detected_genes": 4430.830908178626,
+       "total_counts": 15723.840692423482
+      },
+      "after": {
+       "detected_genes": 4388.515429001505,
+       "total_counts": 15724.119668840944
+      },
+      "panel": {
+       "share": 0.16690144838303853,
+       "share_over_f": 0.5651689257415059,
+       "genes": {
+        "CM": 29652,
+        "Endocardium": 29652,
+        "Endothelium": 29652,
+        "Epicardium": 29652
+       }
+      }
+     },
+     "m1_r_gmom_cal": {
+      "fraction": 0.353125,
+      "share": 0.20019716991837735,
+      "share_over_f": 0.5669300387069093,
+      "bins": {
+       "[0, 0.1)": {
+        "share": 0.029015856611216913,
+        "share_over_f": 0.08216879748309214,
+        "genes": {
+         "CM": 20712,
+         "Endocardium": 20822,
+         "Endothelium": 21037,
+         "Epicardium": 20806
+        }
+       },
+       "[0.1, 1)": {
+        "share": 0.1576293549462733,
+        "share_over_f": 0.4463840140071456,
+        "genes": {
+         "CM": 7077,
+         "Endocardium": 6752,
+         "Endothelium": 6477,
+         "Epicardium": 6773
+        }
+       },
+       "[1, 10)": {
+        "share": 0.2751887557816935,
+        "share_over_f": 0.7792955915941763,
+        "genes": {
+         "CM": 1728,
+         "Endocardium": 1958,
+         "Endothelium": 2013,
+         "Epicardium": 1953
+        }
+       },
+       ">= 10": {
+        "share": 0.3350707824686552,
+        "share_over_f": 0.9488730123006164,
+        "genes": {
+         "CM": 135,
+         "Endocardium": 120,
+         "Endothelium": 125,
+         "Epicardium": 120
+        }
+       }
+      },
+      "before": {
+       "detected_genes": 4430.830908178626,
+       "total_counts": 15723.840692423482
+      },
+      "after": {
+       "detected_genes": 4378.730306071249,
+       "total_counts": 15724.016683391872
+      },
+      "panel": {
+       "share": 0.20019716991837735,
+       "share_over_f": 0.5669300387069093,
+       "genes": {
+        "CM": 29652,
+        "Endocardium": 29652,
+        "Endothelium": 29652,
+        "Epicardium": 29652
+       }
+      }
+     }
+    },
+    "seconds": 410.2
+   },
+   "T1/E9.5->E10.5": {
+    "L": 0.8342320620692518,
+    "t47": "experiments/t1_m1/results/t47_share_read/t47.json",
+    "t47_sha256": "1f2f92b12316b8f9ce5462622df8831817d839e364f20c95f248bb304818b125",
+    "base_fraction": 0.2,
+    "targets": {
+     "m1_r_gmom_calL": 0.16684641241385037,
+     "m1_r_gmom_cal": 0.2
+    },
+    "fractions": {
+     "m1_r_gmom_calL": 0.2953125000000001,
+     "m1_r_gmom_cal": 0.353125
+    },
+    "delivered_at_base": 0.11234401084650328,
+    "delivered": {
+     "m1_r_gmom_calL": 0.16690144838303853,
+     "m1_r_gmom_cal": 0.20019716991837735
+    },
+    "steps": {
+     "m1_r_gmom_calL": 9,
+     "m1_r_gmom_cal": 8
+    },
+    "stream": [
+     48,
+     48
+    ],
+    "bracket": [
+     0.2,
+     1.0
+    ],
+    "rel_tol": 0.001,
+    "weights": {
+     "CM": 5263.0,
+     "Endocardium": 1555.0,
+     "Endothelium": 271.0,
+     "Epicardium": 883.0
+    },
+    "seconds_rule": 182.0,
+    "noise": {
+     "m1_r_gmom_calL": {
+      "streams": [
+       [
+        48,
+        48,
+        1
+       ],
+       [
+        48,
+        48,
+        2
+       ],
+       [
+        48,
+        48,
+        3
+       ],
+       [
+        48,
+        48,
+        4
+       ],
+       [
+        48,
+        48,
+        5
+       ],
+       [
+        48,
+        48,
+        6
+       ],
+       [
+        48,
+        48,
+        7
+       ],
+       [
+        48,
+        48,
+        8
+       ],
+       [
+        48,
+        48,
+        9
+       ],
+       [
+        48,
+        48,
+        10
+       ]
+      ],
+      "values": [
+       0.16683833230695921,
+       0.16680151457067752,
+       0.16680930162305616,
+       0.16675326226145878,
+       0.16677254090809498,
+       0.16681925913190734,
+       0.16686901201676552,
+       0.1668669637540702,
+       0.1666953726316068,
+       0.1666983081402878
+      ],
+      "sd": 6.220290919865487e-05,
+      "slope": 0.5724059020226644,
+      "fraction_sd": 0.00010866923101046561
+     },
+     "m1_r_gmom_cal": {
+      "streams": [
+       [
+        48,
+        48,
+        1
+       ],
+       [
+        48,
+        48,
+        2
+       ],
+       [
+        48,
+        48,
+        3
+       ],
+       [
+        48,
+        48,
+        4
+       ],
+       [
+        48,
+        48,
+        5
+       ],
+       [
+        48,
+        48,
+        6
+       ],
+       [
+        48,
+        48,
+        7
+       ],
+       [
+        48,
+        48,
+        8
+       ],
+       [
+        48,
+        48,
+        9
+       ],
+       [
+        48,
+        48,
+        10
+       ]
+      ],
+      "values": [
+       0.2000333935502788,
+       0.2000591281507391,
+       0.2000137731114361,
+       0.20014566681119908,
+       0.20011817716831334,
+       0.2001038923454413,
+       0.19992636307552478,
+       0.20000490418798292,
+       0.1998341162258692,
+       0.2000516762021836
+      ],
+      "sd": 9.305921977873627e-05,
+      "slope": 0.573734916387749,
+      "fraction_sd": 0.00016219898270204594
+     }
+    },
+    "steps_by_arm": {
+     "m1_r_gmom": {
+      "fraction": 0.2,
+      "share": 0.11234401084650328,
+      "share_over_f": 0.5617200542325164,
+      "bins": {
+       "[0, 0.1)": {
+        "share": 0.015546420141462586,
+        "share_over_f": 0.07773210070731293,
+        "genes": {
+         "CM": 20712,
+         "Endocardium": 20822,
+         "Endothelium": 21037,
+         "Epicardium": 20806
+        }
+       },
+       "[0.1, 1)": {
+        "share": 0.08785604483074101,
+        "share_over_f": 0.43928022415370505,
+        "genes": {
+         "CM": 7077,
+         "Endocardium": 6752,
+         "Endothelium": 6477,
+         "Epicardium": 6773
+        }
+       },
+       "[1, 10)": {
+        "share": 0.1551095563319848,
+        "share_over_f": 0.775547781659924,
+        "genes": {
+         "CM": 1728,
+         "Endocardium": 1958,
+         "Endothelium": 2013,
+         "Epicardium": 1953
+        }
+       },
+       ">= 10": {
+        "share": 0.1892528254311167,
+        "share_over_f": 0.9462641271555835,
+        "genes": {
+         "CM": 135,
+         "Endocardium": 120,
+         "Endothelium": 125,
+         "Epicardium": 120
+        }
+       }
+      },
+      "before": {
+       "detected_genes": 4430.830908178626,
+       "total_counts": 15723.840692423482
+      },
+      "after": {
+       "detected_genes": 4403.618038133467,
+       "total_counts": 15723.575388861014
+      },
+      "panel": {
+       "share": 0.11234401084650328,
+       "share_over_f": 0.5617200542325164,
+       "genes": {
+        "CM": 29652,
+        "Endocardium": 29652,
+        "Endothelium": 29652,
+        "Epicardium": 29652
+       }
+      }
+     },
+     "m1_r_gmom_x15": {
+      "fraction": 0.30000000000000004,
+      "share": 0.16932776898264526,
+      "share_over_f": 0.5644258966088175,
+      "bins": {
+       "[0, 0.1)": {
+        "share": 0.023848426484997874,
+        "share_over_f": 0.0794947549499929,
+        "genes": {
+         "CM": 20712,
+         "Endocardium": 20822,
+         "Endothelium": 21037,
+         "Epicardium": 20806
+        }
+       },
+       "[0.1, 1)": {
+        "share": 0.13304425194639505,
+        "share_over_f": 0.44348083982131675,
+        "genes": {
+         "CM": 7077,
+         "Endocardium": 6752,
+         "Endothelium": 6477,
+         "Epicardium": 6773
+        }
+       },
+       "[1, 10)": {
+        "share": 0.23315774800639333,
+        "share_over_f": 0.7771924933546444,
+        "genes": {
+         "CM": 1728,
+         "Endocardium": 1958,
+         "Endothelium": 2013,
+         "Epicardium": 1953
+        }
+       },
+       ">= 10": {
+        "share": 0.28431729439742337,
+        "share_over_f": 0.9477243146580777,
+        "genes": {
+         "CM": 135,
+         "Endocardium": 120,
+         "Endothelium": 125,
+         "Epicardium": 120
+        }
+       }
+      },
+      "before": {
+       "detected_genes": 4430.830908178626,
+       "total_counts": 15723.840692423482
+      },
+      "after": {
+       "detected_genes": 4387.790015052685,
+       "total_counts": 15723.745233316607
+      },
+      "panel": {
+       "share": 0.16932776898264526,
+       "share_over_f": 0.5644258966088175,
+       "genes": {
+        "CM": 29652,
+        "Endocardium": 29652,
+        "Endothelium": 29652,
+        "Epicardium": 29652
+       }
+      }
+     },
+     "m1_r_gmom_x2": {
+      "fraction": 0.4,
+      "share": 0.22698446875571984,
+      "share_over_f": 0.5674611718892996,
+      "bins": {
+       "[0, 0.1)": {
+        "share": 0.03287665474585046,
+        "share_over_f": 0.08219163686462615,
+        "genes": {
+         "CM": 20712,
+         "Endocardium": 20822,
+         "Endothelium": 21037,
+         "Epicardium": 20806
+        }
+       },
+       "[0.1, 1)": {
+        "share": 0.178804002737173,
+        "share_over_f": 0.4470100068429325,
+        "genes": {
+         "CM": 7077,
+         "Endocardium": 6752,
+         "Endothelium": 6477,
+         "Epicardium": 6773
+        }
+       },
+       "[1, 10)": {
+        "share": 0.3119663128444419,
+        "share_over_f": 0.7799157821111047,
+        "genes": {
+         "CM": 1728,
+         "Endocardium": 1958,
+         "Endothelium": 2013,
+         "Epicardium": 1953
+        }
+       },
+       ">= 10": {
+        "share": 0.37997910543375396,
+        "share_over_f": 0.9499477635843848,
+        "genes": {
+         "CM": 135,
+         "Endocardium": 120,
+         "Endothelium": 125,
+         "Epicardium": 120
+        }
+       }
+      },
+      "before": {
+       "detected_genes": 4430.830908178626,
+       "total_counts": 15723.840692423482
+      },
+      "after": {
+       "detected_genes": 4370.099473156046,
+       "total_counts": 15723.44831911691
+      },
+      "panel": {
+       "share": 0.22698446875571984,
+       "share_over_f": 0.5674611718892996,
+       "genes": {
+        "CM": 29652,
+        "Endocardium": 29652,
+        "Endothelium": 29652,
+        "Epicardium": 29652
+       }
+      }
+     },
+     "m1_r_gmom_calL": {
+      "fraction": 0.2953125000000001,
+      "share": 0.16690144838303853,
+      "share_over_f": 0.5651689257415059,
+      "bins": {
+       "[0, 0.1)": {
+        "share": 0.02380171781279315,
+        "share_over_f": 0.08059840952480217,
+        "genes": {
+         "CM": 20712,
+         "Endocardium": 20822,
+         "Endothelium": 21037,
+         "Epicardium": 20806
+        }
+       },
+       "[0.1, 1)": {
+        "share": 0.13095350396910188,
+        "share_over_f": 0.44344043672076816,
+        "genes": {
+         "CM": 7077,
+         "Endocardium": 6752,
+         "Endothelium": 6477,
+         "Epicardium": 6773
+        }
+       },
+       "[1, 10)": {
+        "share": 0.22991425717312475,
+        "share_over_f": 0.7785456327555544,
+        "genes": {
+         "CM": 1728,
+         "Endocardium": 1958,
+         "Endothelium": 2013,
+         "Epicardium": 1953
+        }
+       },
+       ">= 10": {
+        "share": 0.2802424740239314,
+        "share_over_f": 0.9489692242080213,
+        "genes": {
+         "CM": 135,
+         "Endocardium": 120,
+         "Endothelium": 125,
+         "Epicardium": 120
+        }
+       }
+      },
+      "before": {
+       "detected_genes": 4430.830908178626,
+       "total_counts": 15723.840692423482
+      },
+      "after": {
+       "detected_genes": 4388.515429001505,
+       "total_counts": 15724.119668840944
+      },
+      "panel": {
+       "share": 0.16690144838303853,
+       "share_over_f": 0.5651689257415059,
+       "genes": {
+        "CM": 29652,
+        "Endocardium": 29652,
+        "Endothelium": 29652,
+        "Epicardium": 29652
+       }
+      }
+     },
+     "m1_r_gmom_cal": {
+      "fraction": 0.353125,
+      "share": 0.20019716991837735,
+      "share_over_f": 0.5669300387069093,
+      "bins": {
+       "[0, 0.1)": {
+        "share": 0.029015856611216913,
+        "share_over_f": 0.08216879748309214,
+        "genes": {
+         "CM": 20712,
+         "Endocardium": 20822,
+         "Endothelium": 21037,
+         "Epicardium": 20806
+        }
+       },
+       "[0.1, 1)": {
+        "share": 0.1576293549462733,
+        "share_over_f": 0.4463840140071456,
+        "genes": {
+         "CM": 7077,
+         "Endocardium": 6752,
+         "Endothelium": 6477,
+         "Epicardium": 6773
+        }
+       },
+       "[1, 10)": {
+        "share": 0.2751887557816935,
+        "share_over_f": 0.7792955915941763,
+        "genes": {
+         "CM": 1728,
+         "Endocardium": 1958,
+         "Endothelium": 2013,
+         "Epicardium": 1953
+        }
+       },
+       ">= 10": {
+        "share": 0.3350707824686552,
+        "share_over_f": 0.9488730123006164,
+        "genes": {
+         "CM": 135,
+         "Endocardium": 120,
+         "Endothelium": 125,
+         "Epicardium": 120
+        }
+       }
+      },
+      "before": {
+       "detected_genes": 4430.830908178626,
+       "total_counts": 15723.840692423482
+      },
+      "after": {
+       "detected_genes": 4378.730306071249,
+       "total_counts": 15724.016683391872
+      },
+      "panel": {
+       "share": 0.20019716991837735,
+       "share_over_f": 0.5669300387069093,
+       "genes": {
+        "CM": 29652,
+        "Endocardium": 29652,
+        "Endothelium": 29652,
+        "Epicardium": 29652
+       }
+      }
+     }
+    },
+    "seconds": 418.0
+   }
+  },
+  "calibration_same_on_both_cuts": true,
+  "comparisons": {
+   "m1_r_gmom_calL": {
+    "m1_r_gmom": {
+     "base": "m1_r_gmom",
+     "change": "m1_r_gmom_calL",
+     "passes": true,
+     "rule": {
+      "keep": true,
+      "reason": "passes on 2 of 2 pseudo-tasks (needs 2) and loses on none",
+      "tasks": {
+       "T1/E9.5->E10.5:chamber": {
+        "complete": true,
+        "mean_gain": 0.9004537712948583,
+        "seeds_ahead": 10,
+        "passes": true,
+        "vetoes": false
+       },
+       "T1/E9.5->E10.5": {
+        "complete": true,
+        "mean_gain": 0.8508244502242519,
+        "seeds_ahead": 10,
+        "passes": true,
+        "vetoes": false
+       }
+      },
+      "need": 2,
+      "passed": 2
+     },
+     "cuts": {
+      "T1/E9.5->E10.5:chamber": {
+       "mean": 0.9004537712948583,
+       "ahead": 10,
+       "of": 10,
+       "skills": {
+        "de_direction": 0.006663125008616188,
+        "de_score": 0.016311181476893387,
+        "mmd_u": 0.00572343345387979,
+        "variogram": 0.0077196552770363355
+       },
+       "groups": {
+        "covariance": 0.0077196552770363355,
+        "de_recovery": 0.016311181476893387,
+        "direction": 0.006663125008616188,
+        "distribution": 0.00572343345387979
+       },
+       "metrics": {
+        "de_direction": 0.013269999999999994,
+        "de_score": 0.053470000000000004,
+        "energy_distance": -0.09188500000000008,
+        "library_size_ratio": 0.0,
+        "mmd_u": -0.0022580000000000005,
+        "pb_rel_err": -0.003880000000000006,
+        "pseudobulk_pearson": 0.00043999999999998484,
+        "variance_ratio": 0.003500000000000003,
+        "variogram": -0.00021259999999999986
+       },
+       "range": [
+        0.7663594838118044,
+        0.9906155941845043
+       ],
+       "points_by_metric": {
+        "de_direction": 0.16657812521540472,
+        "de_score": 0.40777953692233465,
+        "mmd_u": 0.17170300361639368,
+        "variogram": 0.15439310554072672,
+        "de_terms": 0.5743576621377393
+       }
+      },
+      "T1/E9.5->E10.5": {
+       "mean": 0.8508244502242519,
+       "ahead": 10,
+       "of": 10,
+       "skills": {
+        "de_direction": 0.006098151978818711,
+        "de_score": 0.0169466011971598,
+        "mmd_u": 0.004686700020269441,
+        "variogram": 0.0067052310108353715
+       },
+       "groups": {
+        "covariance": 0.0067052310108353715,
+        "de_recovery": 0.0169466011971598,
+        "direction": 0.006098151978818711,
+        "distribution": 0.004686700020269441
+       },
+       "metrics": {
+        "de_direction": 0.014379999999999999,
+        "de_score": 0.06673,
+        "energy_distance": -0.08584099999999988,
+        "library_size_ratio": 0.0,
+        "mmd_u": -0.0020620000000000013,
+        "pb_rel_err": -0.0034400000000000043,
+        "pseudobulk_pearson": 0.0002999999999999892,
+        "variance_ratio": 0.0032000000000000028,
+        "variogram": -0.0002206999999999999
+       },
+       "range": [
+        0.702035922857327,
+        1.0572216302321564
+       ],
+       "points_by_metric": {
+        "de_direction": 0.15245379947046778,
+        "de_score": 0.423665029928995,
+        "mmd_u": 0.14060100060808323,
+        "variogram": 0.13410462021670744,
+        "de_terms": 0.5761188293994628
+       }
+      }
+     }
+    },
+    "m1_r_gmom_x15": {
+     "base": "m1_r_gmom_x15",
+     "change": "m1_r_gmom_calL",
+     "passes": false,
+     "rule": {
+      "keep": false,
+      "reason": "passes rule 7's test (mean gain > 0.3, >= 8 of 10 seeds ahead) on 0 of 2 pseudo-tasks; needs 2",
+      "tasks": {
+       "T1/E9.5->E10.5:chamber": {
+        "complete": true,
+        "mean_gain": -0.04954999354851566,
+        "seeds_ahead": 1,
+        "passes": false,
+        "vetoes": false
+       },
+       "T1/E9.5->E10.5": {
+        "complete": true,
+        "mean_gain": -0.037712922144203985,
+        "seeds_ahead": 3,
+        "passes": false,
+        "vetoes": false
+       }
+      },
+      "need": 2,
+      "passed": 0
+     },
+     "cuts": {
+      "T1/E9.5->E10.5:chamber": {
+       "mean": -0.04954999354851566,
+       "ahead": 1,
+       "of": 10,
+       "skills": {
+        "de_direction": -0.00017323016829430272,
+        "de_score": -0.001194957967340271,
+        "mmd_u": -0.0002808793162926426,
+        "variogram": -0.00034594553344353686
+       },
+       "groups": {
+        "covariance": -0.00034594553344353686,
+        "de_recovery": -0.001194957967340271,
+        "direction": -0.00017323016829430272,
+        "distribution": -0.0002808793162926426
+       },
+       "metrics": {
+        "de_direction": -0.0003400000000000125,
+        "de_score": -0.0038399999999999997,
+        "energy_distance": 0.004120999999999997,
+        "library_size_ratio": 0.0,
+        "mmd_u": 0.00010999999999999899,
+        "pb_rel_err": 0.00015999999999999904,
+        "pseudobulk_pearson": -9.999999999998898e-06,
+        "variance_ratio": -0.00030000000000000024,
+        "variogram": 9.20000000000018e-06
+       },
+       "range": [
+        -0.13179336223254268,
+        0.0027416170578575816
+       ],
+       "points_by_metric": {
+        "de_direction": -0.004330754207357568,
+        "de_score": -0.029873949183506776,
+        "mmd_u": -0.008426379488779279,
+        "variogram": -0.006918910668870737,
+        "de_terms": -0.034204703390864344
+       }
+      },
+      "T1/E9.5->E10.5": {
+       "mean": -0.037712922144203985,
+       "ahead": 3,
+       "of": 10,
+       "skills": {
+        "de_direction": -0.00025514700273195914,
+        "de_score": -0.0007078673947555458,
+        "mmd_u": -0.0002578573605809986,
+        "variogram": -0.000295092069479308
+       },
+       "groups": {
+        "covariance": -0.000295092069479308,
+        "de_recovery": -0.0007078673947555458,
+        "direction": -0.00025514700273195914,
+        "distribution": -0.0002578573605809986
+       },
+       "metrics": {
+        "de_direction": -0.00058,
+        "de_score": -0.0026800000000000005,
+        "energy_distance": 0.003979000000000088,
+        "library_size_ratio": 0.0,
+        "mmd_u": 0.00011300000000000337,
+        "pb_rel_err": 0.00013000000000000235,
+        "pseudobulk_pearson": 0.0,
+        "variance_ratio": -0.00010000000000000009,
+        "variogram": 9.5999999999998e-06
+       },
+       "range": [
+        -0.0836141251223097,
+        0.030372354237414356
+       ],
+       "points_by_metric": {
+        "de_direction": -0.006378675068298979,
+        "de_score": -0.017696684868888646,
+        "mmd_u": -0.0077357208174299585,
+        "variogram": -0.00590184138958616,
+        "de_terms": -0.024075359937187624
+       }
+      }
+     }
+    },
+    "m1_r_gmom_x2": {
+     "base": "m1_r_gmom_x2",
+     "change": "m1_r_gmom_calL",
+     "passes": false,
+     "rule": {
+      "keep": false,
+      "reason": "loses more than 0.3 points on average on ['T1/E9.5->E10.5', 'T1/E9.5->E10.5:chamber']",
+      "tasks": {
+       "T1/E9.5->E10.5:chamber": {
+        "complete": true,
+        "mean_gain": -0.9057766268042855,
+        "seeds_ahead": 0,
+        "passes": false,
+        "vetoes": true
+       },
+       "T1/E9.5->E10.5": {
+        "complete": true,
+        "mean_gain": -0.8247070567115422,
+        "seeds_ahead": 0,
+        "passes": false,
+        "vetoes": true
+       }
+      },
+      "need": 2,
+      "passed": 0
+     },
+     "cuts": {
+      "T1/E9.5->E10.5:chamber": {
+       "mean": -0.9057766268042855,
+       "ahead": 0,
+       "of": 10,
+       "skills": {
+        "de_direction": -0.006291593582394739,
+        "de_score": -0.01658521668897146,
+        "mmd_u": -0.005490351601306015,
+        "variogram": -0.008457291099047465
+       },
+       "groups": {
+        "covariance": -0.008457291099047465,
+        "de_recovery": -0.01658521668897146,
+        "direction": -0.006291593582394739,
+        "distribution": -0.005490351601306015
+       },
+       "metrics": {
+        "de_direction": -0.012280000000000008,
+        "de_score": -0.05134000000000001,
+        "energy_distance": 0.07790799999999995,
+        "library_size_ratio": 0.0,
+        "mmd_u": 0.002122,
+        "pb_rel_err": 0.0034399999999999986,
+        "pseudobulk_pearson": -0.0001900000000000346,
+        "variance_ratio": -0.003700000000000003,
+        "variogram": 0.00022480000000000034
+       },
+       "range": [
+        -1.0768849081885676,
+        -0.7138927598700846
+       ],
+       "points_by_metric": {
+        "de_direction": -0.15728983955986847,
+        "de_score": -0.4146304172242865,
+        "mmd_u": -0.16471054803918045,
+        "variogram": -0.1691458219809493,
+        "de_terms": -0.571920256784155
+       }
+      },
+      "T1/E9.5->E10.5": {
+       "mean": -0.8247070567115422,
+       "ahead": 0,
+       "of": 10,
+       "skills": {
+        "de_direction": -0.0061883766899285654,
+        "de_score": -0.015482588938218123,
+        "mmd_u": -0.004496455219708334,
+        "variogram": -0.007401962970831099
+       },
+       "groups": {
+        "covariance": -0.007401962970831099,
+        "de_recovery": -0.015482588938218123,
+        "direction": -0.0061883766899285654,
+        "distribution": -0.004496455219708334
+       },
+       "metrics": {
+        "de_direction": -0.014280000000000001,
+        "de_score": -0.056999999999999995,
+        "energy_distance": 0.07164400000000008,
+        "library_size_ratio": 0.0,
+        "mmd_u": 0.001937,
+        "pb_rel_err": 0.0029499999999999917,
+        "pseudobulk_pearson": -6.00000000000267e-05,
+        "variance_ratio": -0.003400000000000003,
+        "variogram": 0.0002354000000000002
+       },
+       "range": [
+        -0.915796038995623,
+        -0.703571784778589
+       ],
+       "points_by_metric": {
+        "de_direction": -0.15470941724821413,
+        "de_score": -0.38706472345545306,
+        "mmd_u": -0.13489365659125002,
+        "variogram": -0.148039259416622,
+        "de_terms": -0.5417741407036671
+       }
+      }
+     }
+    }
+   },
+   "m1_r_gmom_cal": {
+    "m1_r_gmom": {
+     "base": "m1_r_gmom",
+     "change": "m1_r_gmom_cal",
+     "passes": true,
+     "rule": {
+      "keep": true,
+      "reason": "passes on 2 of 2 pseudo-tasks (needs 2) and loses on none",
+      "tasks": {
+       "T1/E9.5->E10.5:chamber": {
+        "complete": true,
+        "mean_gain": 1.4467776481575485,
+        "seeds_ahead": 10,
+        "passes": true,
+        "vetoes": false
+       },
+       "T1/E9.5->E10.5": {
+        "complete": true,
+        "mean_gain": 1.3336477112270935,
+        "seeds_ahead": 10,
+        "passes": true,
+        "vetoes": false
+       }
+      },
+      "need": 2,
+      "passed": 2
+     },
+     "cuts": {
+      "T1/E9.5->E10.5:chamber": {
+       "mean": 1.4467776481575485,
+       "ahead": 10,
+       "of": 10,
+       "skills": {
+        "de_direction": 0.010296512554928661,
+        "de_score": 0.027007457880104363,
+        "mmd_u": 0.008851444888669836,
+        "variogram": 0.012431752031081484
+       },
+       "groups": {
+        "covariance": 0.012431752031081484,
+        "de_recovery": 0.027007457880104363,
+        "direction": 0.010296512554928661,
+        "distribution": 0.008851444888669836
+       },
+       "metrics": {
+        "de_direction": 0.02039000000000001,
+        "de_score": 0.08702,
+        "energy_distance": -0.13847500000000004,
+        "library_size_ratio": 0.0,
+        "mmd_u": -0.0034730000000000013,
+        "pb_rel_err": -0.005880000000000008,
+        "pseudobulk_pearson": 0.0005900000000000239,
+        "variance_ratio": 0.005600000000000005,
+        "variogram": -0.00033890000000000005
+       },
+       "range": [
+        1.3084917698393923,
+        1.5786164069402915
+       ],
+       "points_by_metric": {
+        "de_direction": 0.2574128138732165,
+        "de_score": 0.6751864470026091,
+        "mmd_u": 0.26554334666009505,
+        "variogram": 0.24863504062162967,
+        "de_terms": 0.9325992608758256
+       }
+      },
+      "T1/E9.5->E10.5": {
+       "mean": 1.3336477112270935,
+       "ahead": 10,
+       "of": 10,
+       "skills": {
+        "de_direction": 0.009622804626554182,
+        "de_score": 0.02637579365332059,
+        "mmd_u": 0.00726497922323271,
+        "variogram": 0.010786668876662126
+       },
+       "groups": {
+        "covariance": 0.010786668876662126,
+        "de_recovery": 0.02637579365332059,
+        "direction": 0.009622804626554182,
+        "distribution": 0.00726497922323271
+       },
+       "metrics": {
+        "de_direction": 0.022550000000000004,
+        "de_score": 0.10207999999999999,
+        "energy_distance": -0.12873499999999996,
+        "library_size_ratio": 0.0,
+        "mmd_u": -0.0031780000000000046,
+        "pb_rel_err": -0.005180000000000007,
+        "pseudobulk_pearson": 0.00037000000000001474,
+        "variance_ratio": 0.005200000000000005,
+        "variogram": -0.0003515999999999999
+       },
+       "range": [
+        1.1828340674037605,
+        1.5374496753182498
+       ],
+       "points_by_metric": {
+        "de_direction": 0.24057011566385456,
+        "de_score": 0.6593948413330147,
+        "mmd_u": 0.21794937669698128,
+        "variogram": 0.2157333775332425,
+        "de_terms": 0.8999649569968693
+       }
+      }
+     }
+    },
+    "m1_r_gmom_x15": {
+     "base": "m1_r_gmom_x15",
+     "change": "m1_r_gmom_cal",
+     "passes": true,
+     "rule": {
+      "keep": true,
+      "reason": "passes on 2 of 2 pseudo-tasks (needs 2) and loses on none",
+      "tasks": {
+       "T1/E9.5->E10.5:chamber": {
+        "complete": true,
+        "mean_gain": 0.4967738833141745,
+        "seeds_ahead": 10,
+        "passes": true,
+        "vetoes": false
+       },
+       "T1/E9.5->E10.5": {
+        "complete": true,
+        "mean_gain": 0.44511033885863754,
+        "seeds_ahead": 10,
+        "passes": true,
+        "vetoes": false
+       }
+      },
+      "need": 2,
+      "passed": 2
+     },
+     "cuts": {
+      "T1/E9.5->E10.5:chamber": {
+       "mean": 0.4967738833141745,
+       "ahead": 10,
+       "of": 10,
+       "skills": {
+        "de_direction": 0.0034601573780181694,
+        "de_score": 0.009501318435870704,
+        "mmd_u": 0.002847132118497403,
+        "variogram": 0.00436615122060161
+       },
+       "groups": {
+        "covariance": 0.00436615122060161,
+        "de_recovery": 0.009501318435870704,
+        "direction": 0.0034601573780181694,
+        "distribution": 0.002847132118497403
+       },
+       "metrics": {
+        "de_direction": 0.006780000000000003,
+        "de_score": 0.029710000000000004,
+        "energy_distance": -0.04246899999999996,
+        "library_size_ratio": 0.0,
+        "mmd_u": -0.0011050000000000018,
+        "pb_rel_err": -0.0018400000000000027,
+        "pseudobulk_pearson": 0.0001400000000000401,
+        "variance_ratio": 0.0018000000000000017,
+        "variogram": -0.00011710000000000001
+       },
+       "range": [
+        0.43059508888048725,
+        0.560424753164547
+       ],
+       "points_by_metric": {
+        "de_direction": 0.08650393445045423,
+        "de_score": 0.2375329608967676,
+        "mmd_u": 0.08541396355492209,
+        "variogram": 0.08732302441203221,
+        "de_terms": 0.3240368953472218
+       }
+      },
+      "T1/E9.5->E10.5": {
+       "mean": 0.44511033885863754,
+       "ahead": 10,
+       "of": 10,
+       "skills": {
+        "de_direction": 0.003269505645003512,
+        "de_score": 0.008721325061405244,
+        "mmd_u": 0.00232042184238227,
+        "variogram": 0.0037863457963474454
+       },
+       "groups": {
+        "covariance": 0.0037863457963474454,
+        "de_recovery": 0.008721325061405244,
+        "direction": 0.003269505645003512,
+        "distribution": 0.00232042184238227
+       },
+       "metrics": {
+        "de_direction": 0.007590000000000005,
+        "de_score": 0.03267,
+        "energy_distance": -0.03891499999999999,
+        "library_size_ratio": 0.0,
+        "mmd_u": -0.0010029999999999998,
+        "pb_rel_err": -0.0016100000000000003,
+        "pseudobulk_pearson": 7.00000000000256e-05,
+        "variance_ratio": 0.0019000000000000017,
+        "variogram": -0.00012130000000000022
+       },
+       "range": [
+        0.33818018320828,
+        0.5416568382102582
+       ],
+       "points_by_metric": {
+        "de_direction": 0.0817376411250878,
+        "de_score": 0.2180331265351311,
+        "mmd_u": 0.0696126552714681,
+        "variogram": 0.07572691592694891,
+        "de_terms": 0.29977076766021893
+       }
+      }
+     }
+    },
+    "m1_r_gmom_x2": {
+     "base": "m1_r_gmom_x2",
+     "change": "m1_r_gmom_cal",
+     "passes": false,
+     "rule": {
+      "keep": false,
+      "reason": "loses more than 0.3 points on average on ['T1/E9.5->E10.5', 'T1/E9.5->E10.5:chamber']",
+      "tasks": {
+       "T1/E9.5->E10.5:chamber": {
+        "complete": true,
+        "mean_gain": -0.3594527499415953,
+        "seeds_ahead": 0,
+        "passes": false,
+        "vetoes": true
+       },
+       "T1/E9.5->E10.5": {
+        "complete": true,
+        "mean_gain": -0.3418837957087007,
+        "seeds_ahead": 0,
+        "passes": false,
+        "vetoes": true
+       }
+      },
+      "need": 2,
+      "passed": 0
+     },
+     "cuts": {
+      "T1/E9.5->E10.5:chamber": {
+       "mean": -0.3594527499415953,
+       "ahead": 0,
+       "of": 10,
+       "skills": {
+        "de_direction": -0.0026582060360822667,
+        "de_score": -0.005888940285760485,
+        "mmd_u": -0.0023623401665159695,
+        "variogram": -0.0037451943450023174
+       },
+       "groups": {
+        "covariance": -0.0037451943450023174,
+        "de_recovery": -0.005888940285760485,
+        "direction": -0.0026582060360822667,
+        "distribution": -0.0023623401665159695
+       },
+       "metrics": {
+        "de_direction": -0.005159999999999993,
+        "de_score": -0.01779,
+        "energy_distance": 0.031318,
+        "library_size_ratio": 0.0,
+        "mmd_u": 0.0009069999999999995,
+        "pb_rel_err": 0.0014399999999999968,
+        "pseudobulk_pearson": -3.999999999999559e-05,
+        "variance_ratio": -0.0016000000000000014,
+        "variogram": 9.850000000000014e-05
+       },
+       "range": [
+        -0.5192017720818782,
+        -0.17132979207099908
+       ],
+       "points_by_metric": {
+        "de_direction": -0.06645515090205667,
+        "de_score": -0.14722350714401214,
+        "mmd_u": -0.07087020499547908,
+        "variogram": -0.07490388690004635,
+        "de_terms": -0.2136786580460688
+       }
+      },
+      "T1/E9.5->E10.5": {
+       "mean": -0.3418837957087007,
+       "ahead": 0,
+       "of": 10,
+       "skills": {
+        "de_direction": -0.002663724042193094,
+        "de_score": -0.006053396482057332,
+        "mmd_u": -0.0019181760167450656,
+        "variogram": -0.003320525105004346
+       },
+       "groups": {
+        "covariance": -0.003320525105004346,
+        "de_recovery": -0.006053396482057332,
+        "direction": -0.002663724042193094,
+        "distribution": -0.0019181760167450656
+       },
+       "metrics": {
+        "de_direction": -0.006109999999999996,
+        "de_score": -0.02165,
+        "energy_distance": 0.028750000000000008,
+        "library_size_ratio": 0.0,
+        "mmd_u": 0.0008209999999999968,
+        "pb_rel_err": 0.0012099999999999889,
+        "pseudobulk_pearson": 9.999999999998898e-06,
+        "variance_ratio": -0.0014000000000000013,
+        "variogram": 0.00010450000000000017
+       },
+       "range": [
+        -0.4355679939095296,
+        -0.14092431995404553
+       ],
+       "points_by_metric": {
+        "de_direction": -0.06659310105482735,
+        "de_score": -0.15133491205143332,
+        "mmd_u": -0.05754528050235197,
+        "variogram": -0.06641050210008692,
+        "de_terms": -0.21792801310626067
+       }
+      }
+     }
+    }
+   }
+  },
+  "outcome": "the calibrated step passes on both cuts",
+  "t48b_test": {
+   "passes": true,
+   "would_read": "the calibrated step passes on both cuts",
+   "decides": false
+  },
+  "mean_scores": {
+   "T1/E9.5->E10.5:chamber": {
+    "b0": 49.68290567973587,
+    "m1_r_gmom": 52.059191374811334,
+    "m1_r_gmom_x15": 53.00919513965471,
+    "m1_r_gmom_x2": 53.86542177291049,
+    "m1_r_gmom_calL": 52.95964514610618,
+    "m1_r_gmom_cal": 53.505969022968884
+   },
+   "T1/E9.5->E10.5": {
+    "b0": 44.116683628570335,
+    "m1_r_gmom": 46.22641107922755,
+    "m1_r_gmom_x15": 47.11494845159601,
+    "m1_r_gmom_x2": 47.901942586163344,
+    "m1_r_gmom_calL": 47.0772355294518,
+    "m1_r_gmom_cal": 47.56005879045465
+   }
+  },
+  "t44_line": {
+   "m1_r_gmom_calL": {
+    "T1/E9.5->E10.5:chamber": {
+     "fraction": 0.2953125000000001,
+     "weight_on_x2": -0.04687499999999956,
+     "extrapolated": true,
+     "predicted": 0.9098681414095111,
+     "observed": 0.9004537712948583,
+     "residual": -0.009414370114652825,
+     "residual_range": [
+      -0.09551201687439459,
+      0.05334911042878332
+     ]
+    },
+    "T1/E9.5->E10.5": {
+     "fraction": 0.2953125000000001,
+     "weight_on_x2": -0.04687499999999956,
+     "extrapolated": true,
+     "predicted": 0.8516470223106118,
+     "observed": 0.8508244502242519,
+     "residual": -0.0008225720863599406,
+     "residual_range": [
+      -0.05066405003567098,
+      0.07435508959069637
+     ]
+    }
+   },
+   "m1_r_gmom_cal": {
+    "T1/E9.5->E10.5:chamber": {
+     "fraction": 0.353125,
+     "weight_on_x2": 0.5312499999999999,
+     "extrapolated": false,
+     "predicted": 1.4048741637605011,
+     "observed": 1.4467776481575485,
+     "residual": 0.041903484397047205,
+     "residual_range": [
+      -0.013126838372613747,
+      0.1411034623883225
+     ]
+    },
+    "T1/E9.5->E10.5": {
+     "fraction": 0.353125,
+     "weight_on_x2": 0.5312499999999999,
+     "extrapolated": false,
+     "predicted": 1.306628006357353,
+     "observed": 1.3336477112270935,
+     "residual": 0.02701970486974048,
+     "residual_range": [
+      -0.03416019548220817,
+      0.16271804004158952
+     ]
+    }
+   }
+  },
+  "cells": {
+   "T1/E9.5->E10.5:chamber": {
+    "b0": {
+     "detected_genes": 4341.1340171942165,
+     "panel_cp10k": 10000.000001968572
+    },
+    "m1_r_gmom": {
+     "detected_genes": 4296.381535756155,
+     "panel_cp10k": 10000.000000216814
+    },
+    "m1_r_gmom_x15": {
+     "detected_genes": 4281.048905822588,
+     "panel_cp10k": 10000.00000089953
+    },
+    "m1_r_gmom_x2": {
+     "detected_genes": 4263.981184056272,
+     "panel_cp10k": 10000.000000346781
+    },
+    "m1_r_gmom_calL": {
+     "detected_genes": 4281.813032434545,
+     "panel_cp10k": 10000.000000698867
+    },
+    "m1_r_gmom_cal": {
+     "detected_genes": 4272.219519343494,
+     "panel_cp10k": 9999.999999754122
+    }
+   },
+   "T1/E9.5->E10.5": {
+    "b0": {
+     "detected_genes": 4341.1340171942165,
+     "panel_cp10k": 10000.000001968572
+    },
+    "m1_r_gmom": {
+     "detected_genes": 4296.381535756155,
+     "panel_cp10k": 10000.000000216814
+    },
+    "m1_r_gmom_x15": {
+     "detected_genes": 4281.048905822588,
+     "panel_cp10k": 10000.00000089953
+    },
+    "m1_r_gmom_x2": {
+     "detected_genes": 4263.981184056272,
+     "panel_cp10k": 10000.000000346781
+    },
+    "m1_r_gmom_calL": {
+     "detected_genes": 4281.813032434545,
+     "panel_cp10k": 10000.000000698867
+    },
+    "m1_r_gmom_cal": {
+     "detected_genes": 4272.219519343494,
+     "panel_cp10k": 9999.999999754122
+    }
+   }
+  },
+  "fault_line": null
+ },
+ "stamps": {
+  "T1/E9.5->E10.5:chamber": {
+   "commit": "15f38b6a5c61e13f0698b19984280d5ac6eff517",
+   "tree_clean": true,
+   "utc": "2026-11-17T11:11:57Z",
+   "inputs": {
+    "/home/prachh/v/vec-campaign/data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+    "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+    "experiments/t1_direction/config.yaml": "bae9b7aa747b17658aa25b4c1984bc3f7a3dbaca9a0970f7b60aa8e9b504c69f",
+    "experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841",
+    "/home/prachh/v/vec-campaign/data/external/feng2022_gse193346_geo/cd1_stats.npz": "28f188fb9409984142a70a5a940dde3d1d3187b033d94ee2d26337a216f295c3",
+    "experiments/t1_m1/results/n22_additivity/n22.json": "c16dac361f5dfbff8cad9699ff224b6f642332a8142614507b536d1531fa33be",
+    "experiments/t1_m1/results/t47_share_read/t47.json": "1f2f92b12316b8f9ce5462622df8831817d839e364f20c95f248bb304818b125"
+   }
+  },
+  "T1/E9.5->E10.5": {
+   "commit": "15f38b6a5c61e13f0698b19984280d5ac6eff517",
+   "tree_clean": true,
+   "utc": "2026-11-17T11:15:23Z",
+   "inputs": {
+    "/home/prachh/v/vec-campaign/data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+    "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+    "experiments/t1_direction/config.yaml": "bae9b7aa747b17658aa25b4c1984bc3f7a3dbaca9a0970f7b60aa8e9b504c69f",
+    "experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841",
+    "/home/prachh/v/vec-campaign/data/external/feng2022_gse193346_geo/cd1_stats.npz": "28f188fb9409984142a70a5a940dde3d1d3187b033d94ee2d26337a216f295c3",
+    "experiments/t1_m1/results/n22_additivity/n22.json": "c16dac361f5dfbff8cad9699ff224b6f642332a8142614507b536d1531fa33be",
+    "experiments/t1_m1/results/t47_share_read/t47.json": "1f2f92b12316b8f9ce5462622df8831817d839e364f20c95f248bb304818b125"
+   }
+  }
+ },
+ "stamp": {
+  "commit": "4534a4fed8883ce29d563f803afa5d10bc53f39b",
+  "tree_clean": true,
+  "utc": "2026-11-17T11:19:27Z",
+  "inputs": {
+   "experiments/t1_m1/results/t48_m1_cal/tasks/T1_E9.5_E10.5_chamber.json": "705a17fa134fc295c03eafd60949c759451a243f773aad3bbd045b2977812f2b",
+   "experiments/t1_m1/results/t48_m1_cal/tasks/T1_E9.5_E10.5.json": "e0ac7af019d6784c04c640e3d87bac3facafbb52d7b2ca44d6509ccf78fe0d61",
+   "experiments/t1_m1/results/t42_m1_eb/tasks/T1_E9.5_E10.5_chamber.json": "790f9b57e590c7df5573e62be1d211f2335e0b704ce1c2ff259c71dfa7f12b9a",
+   "experiments/t1_m1/results/t42_m1_eb/tasks/T1_E9.5_E10.5.json": "0e557a57766472fca8ccbf3b4dac10338a7b13cac069e339ea7b9b00daef4d5b",
+   "experiments/t1_m1/results/t44_m1_step/tasks/T1_E9.5_E10.5_chamber.json": "fd1f9e98c5daa4e17ada3bb44a3e7d3eded71c23be6973c804b9c12adc6cd3a4",
+   "experiments/t1_m1/results/t44_m1_step/tasks/T1_E9.5_E10.5.json": "657bdd471955481e4b042cdbe95fefa0b09651e67930dc895a878541ad83c8c8"
+  }
+ }
+}
