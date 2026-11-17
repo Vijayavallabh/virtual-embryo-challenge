@@ -4723,7 +4723,8 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     part of each group's direction that is orthogonal to the common part, which is 0.54, 0.25, 0.28 and 0.37 of its
     squared size. (2) Fitted jointly on the common part and a group's own part, the released day follows the own
     parts: for the cardiomyocytes +0.13 in libraries 1 and 2 and +0.34 against library 3 (common part +0.35 and
-    +0.43), for the epicardium +0.26 and +0.29. Try T51 had fitted the two parts singly, and its "-0.05, not at all"
+    +0.43), for the epicardium +0.25 and +0.29 (the first was written +0.26 from rounded shares; +0.25 by the
+    reading's unrounded stored values). Try T51 had fitted the two parts singly, and its "-0.05, not at all"
     for the cardiomyocytes was an artefact of the two parts running against each other; that sentence is withdrawn in
     row T51 and wherever entries (e) and (g) and rows T53 and T55 repeat it. Over all groups the common part still
     moves 2.5 times as far as the own parts in libraries 1 and 2 and 1.6 times against library 3 by the joint fit. (3)
