@@ -30,14 +30,16 @@ THIN = {"ref67": (2 / 3, [54, 1]), "ref50": (1 / 2, [54, 2]), "ref67_lib2": (2 /
         "ref50_lib2": (1 / 2, [54, 2])}
 TRUTH = {"lib3": "lib3", "lib2": "lib2", "ref67": "lib3", "ref50": "lib3", "ref67_lib2": "lib2", "ref50_lib2": "lib2"}
 BASE, X2, X3, X4 = "m1_r_gmom", "m1_r_gmom_x2", "m1_r_gmom_x3", "m1_r_gmom_x4"
+X5, X6, X8 = "m1_r_gmom_x5", "m1_r_gmom_x6", "m1_r_gmom_x8"
 ENTRY = {1: BASE, 2: X2, 3: X3, 4: X4}
+PLAIN = {BASE: 0.2, X2: 0.4, X3: 0.6, X4: 0.8, X5: 1.0, X6: 1.2, X8: 1.6}  # the entry's seven arms and fractions
 CN = {m: f"{BASE}_cn" + ("" if m == 1 else f"_x{m}") for m in (1, 2, 3, 4)}
 DC = {m: f"{BASE}_dc" + ("" if m == 1 else f"_x{m}") for m in (1, 2, 3, 4)}
 ENTRY_OF = {**{CN[m]: ENTRY[m] for m in ENTRY}, **{DC[m]: ENTRY[m] for m in ENTRY}}
-ARMS = ("b0", BASE, X2, X3, X4, *CN.values(), *DC.values())
-FRACTIONS = {BASE: 0.2, X2: 0.4, X3: 0.6, X4: 0.8, **{a: {BASE: 0.2, X2: 0.4, X3: 0.6, X4: 0.8}[p]
-                                                      for a, p in ENTRY_OF.items()}}
+ARMS = ("b0", *PLAIN, *CN.values(), *DC.values())
+FRACTIONS = {**PLAIN, **{a: PLAIN[p] for a, p in ENTRY_OF.items()}}
 AHEAD_ALL = "ahead of the entry's direction in every cell read"
+AHEAD_ALL_DC = "the entry plus a further step along c is ahead of the entry in every cell read"
 
 
 @pytest.fixture
@@ -157,8 +159,8 @@ def _route(pr_, monkeypatch, world):
 
     monkeypatch.setattr(pr_.ob.ls, "truth_and_contamination", t46_spy)
     original = dict(ctx.inputs)
-    inputs, stage, truth, _, thinning = pr_.world_route(world, None, None, genes, original, "ref", ref_stage,
-                                                        lambda: full)
+    inputs, stage, truth, _, thinning, truth_name = pr_.world_route(world, None, None, genes, original, "ref",
+                                                                    ref_stage, lambda: full)
     forms = _forms(pr_, dirs, list(inputs["ref"].var_names), held)
     seen = {"anchors": [], "score": [], "truth": [], "build_ref": [], "fit_ref": [], "fit_start": []}
     real_build, real_fit = t1_scope.build_submission, ts.fit_state_factors
@@ -190,14 +192,14 @@ def _route(pr_, monkeypatch, world):
                          held, held)
     return SimpleNamespace(seen=seen, stage=stage, ref_stage=ref_stage, truth=truth, truths=truths, asked=asked,
                            inputs=inputs, original=original, counts=core.counts_of(inputs["ref"]), released=released,
-                           start=start, rows=rows, failures=failures, thinning=thinning)
+                           start=start, rows=rows, failures=failures, thinning=thinning, truth_name=truth_name)
 
 
 @pytest.mark.parametrize("world,twin", [("ref67_lib2", "ref67"), ("ref50_lib2", "ref50")])
 def test_a_library_2_world_has_try_t54s_thinned_reference_and_try_t46s_library_2(pr_, monkeypatch, world, twin):
     before = (copy.deepcopy(pr_.ob.THINNED), copy.deepcopy(pr_.dr.THINNED))
     r = _route(pr_, monkeypatch, world)
-    assert r.asked == ["lib2"] and r.truth is r.truths["lib2"]  # try T46's library 2
+    assert r.asked == ["lib2"] and r.truth is r.truths["lib2"] and r.truth_name == "lib2"  # try T46's library 2
     p, stream = THIN[world]
     want = pr_.dr.thin_counts(r.released, twin)  # try T54's own thinning of the twin's name
     assert (r.counts != want).nnz == 0 and (r.counts != _independent_thinning(r.released, p, stream)).nnz == 0
@@ -206,7 +208,7 @@ def test_a_library_2_world_has_try_t54s_thinned_reference_and_try_t46s_library_2
     assert r.inputs["start"] is r.original["start"] and r.stage is not r.ref_stage
     assert r.seen["anchors"] and all(t is r.truth and s is r.stage for t, s in r.seen["anchors"])
     assert r.seen["score"] == [r.stage] and r.seen["truth"] == [r.truth]
-    assert len(r.seen["build_ref"]) == 1 + 2 * 12  # b0, then m1_r and m1_r_gmom for each of the twelve M1 arms
+    assert len(r.seen["build_ref"]) == 1 + 2 * 15  # b0, then m1_r and m1_r_gmom for each of the fifteen M1 arms
     assert all((c != r.counts).nnz == 0 for c in r.seen["build_ref"])
     assert len(r.seen["fit_ref"]) == 1 and (r.seen["fit_ref"][0] != r.counts).nnz == 0
     assert (r.seen["fit_start"][0] != r.start).nnz == 0
@@ -225,7 +227,7 @@ def test_the_library_2_world_and_its_twin_have_the_same_thinned_reference(pr_, m
 @pytest.mark.parametrize("world", ["lib3", "lib2"])
 def test_the_library_worlds_take_try_t46s_truth_and_thin_nothing(pr_, monkeypatch, world):
     r = _route(pr_, monkeypatch, world)
-    assert r.asked == [world] and r.truth is r.truths[world] and r.thinning is None
+    assert r.asked == [world] and r.truth is r.truths[world] and r.thinning is None and r.truth_name == world
     assert r.inputs is r.original and r.stage is r.ref_stage
     assert all((c != r.released).nnz == 0 for c in r.seen["build_ref"] + r.seen["fit_ref"])
 
@@ -236,6 +238,7 @@ def test_the_worlds_and_their_routes(pr_):
     assert pr_.THINNING_OF["ref67_lib2"] is pr_.dr.THINNED["ref67"]
     assert pr_.THINNING_OF["ref50_lib2"] is pr_.dr.THINNED["ref50"]
     assert pr_.ARMS == ARMS and pr_.arm_fractions(0.2) == pytest.approx(FRACTIONS)
+    assert pr_.ENTRY_MULTIPLIERS == {a: pr_.ob.MULTIPLIERS[a] for a in (X2, X3, X4, X5, X6, X8)}  # try T50's
     assert {a: p for a, (_, p) in pr_.FORM_ARMS.items()} == ENTRY_OF
     src = inspect.getsource(pr_.world_route)
     assert "dr.world_reference(REFERENCE_OF[world]" in src and "ob.truth_and_contamination(" in src
@@ -263,10 +266,11 @@ def test_the_entry_arms_are_try_t50s_and_cn_try_t55s_bit_for_bit(pr_):
     mine = pr_.build_seed(ctx, b0, dirs, forms, groups, 0.2, held, held)
     assert list(mine) == list(ARMS)
     sha = {a: pr_.ls.prediction_sha256(p) for a, p in mine.items()}
-    entry = ("b0", BASE, X2, X3, X4)
+    entry = ("b0", *PLAIN)
     t50 = pr_.ob.build_seed(ctx, b0, dirs, groups, 0.2, held, held)
-    assert {a: sha[a] for a in entry} == {a: pr_.ls.prediction_sha256(t50[a]) for a in entry}
-    assert {a: sha[a] for a in entry} == {a: GOLDEN_ARMS_FD18[a] for a in entry}
+    assert {a: sha[a] for a in entry} == {a: pr_.ls.prediction_sha256(t50[a]) for a in entry}  # x5, x6, x8 included
+    golden = ("b0", BASE, X2, X3, X4)
+    assert {a: sha[a] for a in golden} == {a: GOLDEN_ARMS_FD18[a] for a in golden}
     t55_forms, _ = pr_.pr.all_directions(dirs, genes, held)
     t55 = pr_.pr.build_seed(ctx, b0, dirs, t55_forms, groups, 0.2, held, held)
     assert {a: sha[a] for a in (CN[1], CN[2])} == {a: pr_.ls.prediction_sha256(t55[a]) for a in (CN[1], CN[2])}
@@ -304,7 +308,7 @@ def test_a_form_arm_differs_from_the_entry_arm_of_its_fraction_in_the_directions
     b0 = harness._b0_t1(harness.B0_DAMPING)
     pr_.build_seed(ctx, b0, dirs, forms, groups, 0.2, held, held)
     m1 = calls[1:]
-    order = [BASE, X2, X3, X4, *pr_.FORM_ARMS]
+    order = [*PLAIN, *pr_.FORM_ARMS]
     assert len(m1) == 2 * len(order)
     by_arm = {a: m1[2 * i: 2 * i + 2] for i, a in enumerate(order)}
     for arm, (form, base) in pr_.FORM_ARMS.items():
@@ -323,12 +327,14 @@ def test_a_form_arm_differs_from_the_entry_arm_of_its_fraction_in_the_directions
 # The reading on synthetic per-seed score tables
 
 
-SCORE = {BASE: 53.0, X2: 53.6, X3: 54.0, X4: 54.2}
+SCORE = {BASE: 53.0, X2: 53.6, X3: 54.0, X4: 54.2, X5: 54.1, X6: 53.9, X8: 53.0}  # the plain curve turns at x4
+RISING = {BASE: 53.0, X2: 53.3, X3: 53.6, X4: 53.8, X5: 54.0, X6: 54.1, X8: 54.21}  # still rising at x8
 GROUPS = ("CM", "Endocardium")
 
 
-def _dc_rec(tag=""):
-    return {g: {"sha256": f"dc-{g}{tag}", "p_g": 0.9, "a_n": 1.25, "size_ratio": 1.3, "slope": 1.1} for g in GROUPS}
+def _dc_rec(tag="", p_g=0.9, a_n=1.25, size_ratio=None):
+    size = 2 - (p_g / a_n) ** 2 if size_ratio is None else size_ratio
+    return {g: {"sha256": f"dc-{g}{tag}", "p_g": p_g, "a_n": a_n, "size_ratio": size, "slope": 1.1} for g in GROUPS}
 
 
 def _gain(g, i):
@@ -336,16 +342,18 @@ def _gain(g, i):
 
 
 def _task(world, gains=None, seeds=range(10), commit="c" * 40, clean=True, fractions=None, thinning=None,
-          directions=None, dc=None, identical=(), anchor_failures=None, agree=None, truth=None):
+          directions=None, dc=None, identical=(), anchor_failures=None, agree=None, truth=None, scores=None,
+          truth_sha256="default"):
     """gains: arm -> gain over its entry arm (a number or ten per-seed values); default every cn arm +0.5, every dc
     arm +0.6. identical: form arms that score exactly as their entry arm on every seed."""
     gains = {**dict.fromkeys(CN.values(), 0.5), **dict.fromkeys(DC.values(), 0.6), **(gains or {})}
+    plain = scores or SCORE
     rows = []
     for i, s in enumerate(seeds):
-        entry = {a: v + 0.01 * s for a, v in SCORE.items()}
-        arms = {"b0": _arm(50.0), **{a: _arm(entry[a], SCORE[a]) for a in SCORE}}
+        entry = {a: v + 0.01 * s for a, v in plain.items()}
+        arms = {"b0": _arm(50.0), **{a: _arm(entry[a], plain[a]) for a in plain}}
         for a, p in ENTRY_OF.items():
-            arms[a] = dict(arms[p]) if a in identical else _arm(entry[p] + _gain(gains[a], i), SCORE[p])
+            arms[a] = dict(arms[p]) if a in identical else _arm(entry[p] + _gain(gains[a], i), plain[p])
         rows.append({"seed": s, "floor": 50.0, "arms": arms, "sha256": {a: f"{world}-{a}-{s}" for a in arms}})
     rec = {"label": "synthetic", "task": "T1/E9.5->E10.5:chamber", "world": world, "truth": truth or TRUTH[world],
            "truth_rows": 3431, "truth_contamination": 13, "seeds": list(seeds), "fraction": 0.2,
@@ -353,6 +361,7 @@ def _task(world, gains=None, seeds=range(10), commit="c" * 40, clean=True, fract
            "external": {"entry_agrees_with_t55s": dict.fromkeys(GROUPS, True) if agree is None else agree},
            "directions": directions if directions is not None else _dirs(),
            "dc_directions": dc if dc is not None else _dc_rec(), "thinning": None,
+           "truth_sha256": f"truth-{truth or TRUTH[world]}" if truth_sha256 == "default" else truth_sha256,
            "stamp": {"commit": commit, "tree_clean": clean, "utc": "x", "inputs": {}}}
     if world in THIN:
         p, stream = THIN[world]
@@ -365,8 +374,8 @@ def _task(world, gains=None, seeds=range(10), commit="c" * 40, clean=True, fract
     return rec
 
 
-COMMITTED = {"t50": {"lib3": ("b0", BASE, X2, X3, X4), "lib2": ("b0", BASE, X2, X3, X4)},
-             "t54": {"ref67": ("b0", BASE, X2, X3, X4), "ref50": ("b0", BASE, X2, X3, X4)},
+COMMITTED = {"t50": {"lib3": ("b0", *PLAIN), "lib2": ("b0", *PLAIN)},
+             "t54": {"ref67": ("b0", BASE, X2, X3, X4, X5, X6), "ref50": ("b0", BASE, X2, X3, X4, X5, X6)},
              "t56": {"lib3": (CN[1], CN[2]), "ref67": (CN[1], CN[2]), "ref50": (CN[1], CN[2])},
              "t55": {"lib2": (CN[1], CN[2])}}
 
@@ -414,28 +423,39 @@ def _seeds(pos, n=10, up=0.5, down=-0.1):
 def test_both_forms_ahead_in_every_cell(pr_, tmp_path):
     r = _read(pr_, tmp_path)
     assert r["valid"], r["validity"]["reasons"]
-    assert r["outcome"]["statement_1"] == {"cn": AHEAD_ALL, "dc": AHEAD_ALL}
+    size = "ahead by try T46's test in 24 of 24 cells, cell means"
+    assert r["outcome"]["statement_1"] == {"cn": f"{AHEAD_ALL}; {size} +0.50 to +0.50",
+                                           "dc": f"{AHEAD_ALL_DC}; {size} +0.60 to +0.60"}
     assert set(r["differences"]["cn"]) == {f"{k} x{m}" for k in WORLDS for m in (1, 2, 3, 4)}
     c = r["differences"]["dc"]["ref50_lib2 x3"]
     assert c["change"] == DC[3] and c["base"] == X3 and c["mean"] == pytest.approx(0.6) and c["label"] == "ahead"
     txt = _text(tmp_path)
-    assert f"Statement 1, cn: {AHEAD_ALL}" in txt and f"Statement 1, dc: {AHEAD_ALL}" in txt
+    assert f"{AHEAD_ALL}; {size} +0.50 to +0.50" in txt and f"{AHEAD_ALL_DC}; {size} +0.60 to +0.60" in txt
+    assert "Statement 1, dc (dc minus the entry's arm of its fraction: exactly the entry plus a further step along c " \
+           "of m x fraction x (a_n - p_g) per group, a reading of depth along c, not of the form): " in txt
 
 
 def test_a_positive_mean_below_the_bar_with_eight_seeds_ahead_is_still_ahead(pr_, tmp_path):
     g = _seeds(8, up=0.1, down=-0.05)
     r = _read(pr_, tmp_path, by_world={k: {CN[m]: g for m in CN} for k in WORLDS})
-    assert r["outcome"]["statement_1"]["cn"] == AHEAD_ALL
+    assert r["statement_1"]["cn"]["said"] == AHEAD_ALL
     assert all(c["label"] == "level" for c in r["differences"]["cn"].values())
+    # the phrase cannot be quoted without its size (fix after review): no cell is ahead by try T46's test
+    want = f"{AHEAD_ALL}; ahead by try T46's test in 0 of 24 cells, cell means +0.07 to +0.07"
+    assert r["outcome"]["statement_1"]["cn"] == want and r["statement_1"]["cn"]["ahead_by_test"] == []
+    assert f"Statement 1, cn (cn minus the entry's arm of its fraction: the deleted orthogonal parts and the raised " \
+           f"coefficient on c together): {want}" in _text(tmp_path)
 
 
 def test_behind_somewhere_names_the_cells(pr_, tmp_path):
     r = _read(pr_, tmp_path, by_world={"ref50_lib2": {DC[3]: -0.5}, "lib2": {DC[4]: -0.4, DC[1]: _seeds(7)}})
-    assert r["outcome"]["statement_1"]["dc"] == "behind somewhere (lib2 x4, ref50_lib2 x3)"
+    assert r["statement_1"]["dc"]["said"] == "behind somewhere (lib2 x4, ref50_lib2 x3)"
+    assert r["outcome"]["statement_1"]["dc"].startswith("behind somewhere (lib2 x4, ref50_lib2 x3); ahead by try "
+                                                        "T46's test in 21 of 24 cells, cell means -0.50 to +0.60")
     assert r["statement_1"]["dc"]["neither"] == ["lib2 x1"]  # still recorded
-    assert r["outcome"]["statement_1"]["cn"] == AHEAD_ALL
+    assert r["statement_1"]["cn"]["said"] == AHEAD_ALL
     txt = _text(tmp_path)
-    assert "Statement 1, dc: behind somewhere (lib2 x4, ref50_lib2 x3)" in txt
+    assert "not of the form): behind somewhere (lib2 x4, ref50_lib2 x3); ahead by try T46's test in 21 of 24" in txt
     assert "also meeting neither condition: lib2 x1" in txt
 
 
@@ -443,8 +463,10 @@ def test_not_separated_names_every_cell_meeting_neither(pr_, tmp_path):
     r = _read(pr_, tmp_path, by_world={"lib2": {CN[2]: _seeds(7)}, "ref67": {CN[4]: _seeds(2, up=0.01)},
                                        "ref67_lib2": {CN[1]: _seeds(6, up=0.2, down=-0.1)}})
     assert r["differences"]["cn"]["ref67 x4"]["mean"] < 0 and r["differences"]["cn"]["ref67 x4"]["label"] == "level"
-    assert r["outcome"]["statement_1"]["cn"] == "not separated (lib2 x2, ref67 x4, ref67_lib2 x1)"
-    assert "Statement 1, cn: not separated (lib2 x2, ref67 x4, ref67_lib2 x1)" in _text(tmp_path)
+    assert r["statement_1"]["cn"]["said"] == "not separated (lib2 x2, ref67 x4, ref67_lib2 x1)"
+    assert r["outcome"]["statement_1"]["cn"].startswith("not separated (lib2 x2, ref67 x4, ref67_lib2 x1); ahead by "
+                                                        "try T46's test in 21 of 24 cells")
+    assert "together): not separated (lib2 x2, ref67 x4, ref67_lib2 x1); ahead by" in _text(tmp_path)
 
 
 def test_statement_2_counts_and_names_the_cells(pr_, tmp_path):
@@ -473,12 +495,89 @@ def test_statement_3_above_and_not_above_the_best_plain_step(pr_, tmp_path):
     assert t["statement"] == "above the best plain step read"  # positive, every seed ahead, below the 0.3 bar
     assert r["outcome"]["statement_3"]["lib2"] == {"cn": "not above", "dc": "above the best plain step read"}
     txt = _text(tmp_path)
-    assert "lib2, cn at x1 against the entry at x4: -0.70 points, ahead 0 of 10: not above" in txt
+    assert "lib2, cn at x1 against the entry at x4: -0.70 points, ahead 0 of 10, c-matched multiple x1.39: not " \
+           "above" in txt
 
 
 def test_statement_3_takes_the_smallest_multiple_on_a_tie(pr_):
     means = {BASE: 1.0, X2: 2.0, X3: 2.0, X4: 1.5}
     assert pr_.best_multiple(means, {1: BASE, 2: X2, 3: X3, 4: X4}.__getitem__) == 2
+    means = {BASE: 1.0, X2: 2.0, X3: 2.0, X4: 1.5, X5: 3.0, X6: 3.0, X8: 1.0}
+    assert pr_.best_multiple(means, pr_.ENTRY_RANGE.__getitem__, tuple(pr_.ENTRY_RANGE)) == 5
+
+
+def test_statement_3_with_a_rising_entry_curve_is_not_above(pr_, tmp_path):
+    """Fix after review: in a world where the plain curve still rises past x4, a form that only moves further along c
+    is ahead of the entry in every cell of x1 to x4 and above the entry's best of x1 to x4, but not above the entry's
+    best of x1 to x8."""
+    gains = {**dict.fromkeys(DC.values(), 0.19), **dict.fromkeys(CN.values(), 0.11)}
+    r = _read(pr_, tmp_path, by_world={"lib2": gains}, over={"lib2": {"scores": RISING}})
+    assert r["valid"], r["validity"]["reasons"]
+    assert all(r["differences"]["dc"][f"lib2 x{m}"]["seeds_ahead"] == 10 for m in (1, 2, 3, 4))
+    s = r["statement_3"]["lib2"]
+    assert s["dc"]["form_multiple"] == 4 and s["dc"]["entry_multiple"] == 8
+    assert s["dc"]["comparison"]["mean"] == pytest.approx(53.99 - 54.21)
+    assert s["dc"]["c_matched_multiple"] == pytest.approx(4 * 1.25 / 0.9)  # within the range read: readable
+    assert s["dc"]["statement"] == "not above" and s["cn"]["statement"] == "not above"
+    # the brief's range (the entry's best over x1 to x4) would have read "above" here
+    four = pr_.best_multiple(r["mean_scores"]["lib2"], pr_.ENTRY_AT.__getitem__)
+    assert four == 4 and r["mean_scores"]["lib2"][DC[4]] > r["mean_scores"]["lib2"][X4]
+    assert "lib2, dc at x4 against the entry at x8: -0.22 points, ahead 0 of 10, c-matched multiple x5.56: not " \
+           "above" in _text(tmp_path)
+
+
+def test_statement_3_is_not_readable_at_the_edge_beyond_the_c_matched_multiple(pr_, tmp_path):
+    """The entry's best is x8 (the edge) and a form at x4 moves along c as far as the entry at 4 x a_n/p_g = 16.67."""
+    dc = _dc_rec(p_g=0.3)
+    over = {k: {"dc": dc} for k in WORLDS}
+    over["lib2"]["scores"] = RISING
+    r = _read(pr_, tmp_path, over=over)
+    assert r["valid"], r["validity"]["reasons"]
+    s = r["statement_3"]["lib2"]["dc"]
+    assert s["entry_multiple"] == 8 and s["form_multiple"] == 4
+    want = ("not readable: the entry's best is at the edge of the range read (x8) and the form at x4 moves along c as "
+            "far as the entry at x16.67")
+    assert s["statement"] == want and r["outcome"]["statement_3"]["lib2"]["dc"] == want
+    assert want in _text(tmp_path)
+    # where the plain curve turned inside the range, the same ratio stays readable
+    assert r["statement_3"]["lib3"]["dc"]["entry_multiple"] == 4
+    assert r["statement_3"]["lib3"]["dc"]["statement"] == "above the best plain step read"
+
+
+def test_c_ratio_is_the_largest_a_n_over_p_g_and_infinite_where_p_g_is_not_positive(pr_):
+    rec = {"CM": {"a_n": 0.98, "p_g": 0.67}, "Endocardium": {"a_n": 1.0, "p_g": 0.9}}
+    assert pr_.c_ratio(rec) == pytest.approx(0.98 / 0.67)
+    assert pr_.c_ratio({**rec, "Blood": {"a_n": 1.0, "p_g": 0.0}}) == float("inf")
+
+
+def test_the_dc_refusal_is_unreachable_by_cauchy_schwarz(pr_):
+    """Should-fix after review: a_n >= |p_g| on every synthetic entry, so dc_forms never refuses unpatched."""
+    for seed in range(40):
+        rng = np.random.default_rng(seed)
+        n = 25
+        common = rng.normal(0.5, 1, n)
+        entry = {g: common * rng.uniform(0.2, 2) + rng.normal(0, rng.uniform(0.01, 3), n) for g in ("A", "B", "C")}
+        genes = [f"g{i}" for i in range(n)]
+        try:
+            _, rec = pr_.dc_forms(entry, genes, [])
+        except ValueError as e:  # only try T55's own refusal (sum(c d_g) not positive) may stop it
+            assert "T55 is refused" in str(e)
+            continue
+        for v in rec.values():
+            assert v["a_n"] >= abs(v["p_g"]) and v["size_ratio"] >= 1 - 1e-12
+            assert v["size_ratio"] == pytest.approx(2 - (v["p_g"] / v["a_n"]) ** 2, rel=1e-9)
+    assert any("cannot fire" in x and "Cauchy-Schwarz" in x for x in pr_.CHOICES)
+
+
+def test_the_run_records_the_routes_truth_name_and_the_truth_hash(pr_, monkeypatch):
+    """Should-fix after review: a route that took the wrong library is caught by the read. The name recorded is the
+    one passed to try T46's truth maker, and the truth matrix's sha256 is recorded."""
+    monkeypatch.setitem(pr_.TRUTH_OF, "ref67_lib2", "lib3")  # the reviewer's mutant
+    r = _route(pr_, monkeypatch, "ref67_lib2")
+    assert r.asked == ["lib3"] and r.truth_name == "lib3"
+    src = inspect.getsource(pr_.cmd_run)
+    assert '"truth": truth_name' in src and '"truth_sha256": ls.prediction_sha256(truth)' in src
+    assert "TRUTH_OF[a.world]" not in src
 
 
 def test_the_reported_quantities_are_read_by_nothing_and_no_count_is_printed(pr_, tmp_path):
@@ -508,7 +607,12 @@ def test_the_limits_and_choices_are_in_the_text(pr_, tmp_path):
                  "one draw for all seeds and also changes the floor, the de terms' reference, B0's shift and "
                  "g_mom's fit",
                  "covers 1 to 4 times the practice step and the six worlds and nothing else",
-                 "statement 3 is the reading that a larger plain step cannot give",
+                 "Within that range a larger plain step cannot give its 'above'",
+                 "dc - cn = o_g exactly", "dc - entry = (a_n - p_g) x c exactly",
+                 "a consistent tiny shift passes it in every cell", "is evidence of step size",
+                 "no world here varies how much of them the truth carries",
+                 "The library-2 thinned worlds have no draw control",
+                 "6 of the 24 cells (lib3, ref67 and ref50 at 1 and 2 times the step) repeat tries T50, T54 and T56",
                  "what those parts carry over the two days of the test no released day shows",
                  "no statement may be used with a figure for it"):
         assert want in txt, want
@@ -518,12 +622,26 @@ VOIDS = [
     ({"lib2": None}, None, "missing worlds ['lib2']"),
     ({"ref67_lib2": None}, None, "missing worlds ['ref67_lib2']"),
     ({"ref50_lib2": {"seeds": range(9)}}, None, "ref50_lib2: seeds"),
-    (None, {("t50", "lib3", X3): 1e-6}, "lib3: b0, m1_r_gmom, m1_r_gmom_x2, m1_r_gmom_x3, m1_r_gmom_x4 do not "
-                                        "reproduce try T50's"),
-    (None, {("t50", "lib2", X4): 1e-6}, "lib2: b0, m1_r_gmom, m1_r_gmom_x2, m1_r_gmom_x3, m1_r_gmom_x4 do not "
-                                        "reproduce try T50's"),
-    (None, {("t54", "ref67", BASE): 1e-6}, "ref67: b0, m1_r_gmom, m1_r_gmom_x2, m1_r_gmom_x3, m1_r_gmom_x4 do not "
-                                           "reproduce try T54's"),
+    (None, {("t50", "lib3", X3): 1e-6}, "lib3: b0, m1_r_gmom, m1_r_gmom_x2, m1_r_gmom_x3, m1_r_gmom_x4, "
+                                        "m1_r_gmom_x5, m1_r_gmom_x6, m1_r_gmom_x8 do not reproduce try T50's"),
+    (None, {("t50", "lib2", X4): 1e-6}, "lib2: b0, m1_r_gmom, m1_r_gmom_x2, m1_r_gmom_x3, m1_r_gmom_x4, "
+                                        "m1_r_gmom_x5, m1_r_gmom_x6, m1_r_gmom_x8 do not reproduce try T50's"),
+    (None, {("t50", "lib2", X8): 1e-6}, "lib2: b0, m1_r_gmom, m1_r_gmom_x2"),
+    (None, {("t50", "lib3", X5): 1e-6}, "lib3: b0, m1_r_gmom, m1_r_gmom_x2"),
+    (None, {("t54", "ref67", BASE): 1e-6}, "ref67: b0, m1_r_gmom, m1_r_gmom_x2, m1_r_gmom_x3, m1_r_gmom_x4, "
+                                           "m1_r_gmom_x5, m1_r_gmom_x6 do not reproduce try T54's"),
+    (None, {("t54", "ref50", X6): 1e-6}, "ref50: b0, m1_r_gmom"),
+    ({"ref67": {"fractions": {**FRACTIONS, X8: 0.8}}}, None, "wrong fraction on ['m1_r_gmom_x8']"),
+    ({"ref50_lib2": {"dc": _dc_rec(a_n=1.2, size_ratio=1.4)}}, None,
+     "ref50_lib2: dc's a_n in CM (1.2) is not the entry's recorded a_n (1.25)"),
+    ({"lib3": {"dc": _dc_rec(p_g=1.3, size_ratio=1.0)}}, None, "lib3: dc's p_g in CM (1.3) is above its a_n (1.25)"),
+    ({"lib2": {"dc": _dc_rec(size_ratio=0.9)}}, None,
+     "lib2: dc's squared size over the entry's in CM (0.9) is not at least 1"),
+    ({"ref67": {"truth_sha256": None}}, None, "ref67: the truth matrix's sha256 is not recorded"),
+    ({"ref67_lib2": {"truth_sha256": "truth-lib3"}}, None,
+     "the truth matrix's sha256 differs between the worlds of lib2 ['lib2', 'ref50_lib2', 'ref67_lib2']"),
+    ({"ref50": {"truth_sha256": "truth-other"}}, None,
+     "the truth matrix's sha256 differs between the worlds of lib3 ['lib3', 'ref50', 'ref67']"),
     (None, {("t54", "ref50", "b0"): 1e-6}, "ref50: b0, m1_r_gmom"),
     (None, {("t56", "lib3", CN[1]): 1e-6}, "lib3: m1_r_gmom_cn, m1_r_gmom_cn_x2 do not reproduce try T56's"),
     (None, {("t56", "ref67", CN[2]): 1e-6}, "ref67: m1_r_gmom_cn, m1_r_gmom_cn_x2 do not reproduce try T56's"),

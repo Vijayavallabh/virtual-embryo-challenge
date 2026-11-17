@@ -27,38 +27,50 @@ Forms, per group, on the common mask M (try T55's: part_read.split and part_read
            ref50       own code, p and stream, before anything else is made), the truth library 3;
            ref67_lib2  the same thinned references (deep_read.world_reference called under the name ref67 or ref50, so
            ref50_lib2  the same p and stream), the truth library 2.
-         Arms per seed, all from one cell draw: b0; the entry's arms m1_r_gmom, m1_r_gmom_x2, _x3, _x4
-         (step_read.step_arms on feng_dirs.feng_directions, as tries T50 and T54 build them); cn and dc at the same four
-         fractions (m1_r_gmom_cn, _cn_x2, _cn_x3, _cn_x4; m1_r_gmom_dc, _dc_x2, _dc_x3, _dc_x4), each the build of the
-         entry's arm of its fraction (gmom_combo.m1_r_arms) with the form's directions in place of the entry's and every
-         other argument the same. Refused on an existing task file, unless the committed N22 passed, unless
+         Arms per seed, all from one cell draw: b0; the entry's arms m1_r_gmom, m1_r_gmom_x2, _x3, _x4 and, as the
+         plain-step control of statement 3 (added after review), _x5, _x6, _x8 (try T50's names and builds:
+         step_read.step_arms on feng_dirs.feng_directions with over_read.MULTIPLIERS' values); cn and dc at the first
+         four fractions (m1_r_gmom_cn, _cn_x2, _cn_x3, _cn_x4; m1_r_gmom_dc, _dc_x2, _dc_x3, _dc_x4), each the build of
+         the entry's arm of its fraction (gmom_combo.m1_r_arms) with the form's directions in place of the entry's and
+         every other argument the same. Refused on an existing task file, unless the committed N22 passed, unless
          experiments/harness/TRIES.md holds row T57, and where the forms refuse.
   read   T57's reading of the six worlds' files (below, fixed here and repeated in the ledger row before the run).
          Writes t57.json and t57.txt and refuses to overwrite them.
 
 The reading (brief AL). Void unless: the six worlds hold the ten seeds with every arm and its fraction at one commit
 on a clean tree; no file records an anchor failure; where a committed score exists it is reproduced, seed for seed and
-to 1e-9: b0 and the entry's four arms in lib3 and lib2 (try T50's lib3.json and lib2.json) and in ref67 and ref50 (try
-T54's files); m1_r_gmom_cn and _cn_x2 in lib3, ref67 and ref50 (try T56's files) and in lib2 (try T55's lib2.json); the
-thinned worlds pass try T54's checks (their p and stream, depth ratio within 0.01 of p, no cell emptied, the rebuild
-check); in ref67_lib2 and ref50_lib2 the thinning record's p and stream equal ref67's and ref50's; per group the entry's
-directions as tries T50 and T54 load them and as try T55 loads them have the same sha256; the forms' recorded directions
-and multiples are the same in the six files, and try T55's record (cn's among it) equals try T55's lib3 file; no form's
-arm scores exactly as the entry's arm of its fraction on every seed of a world.
+to 1e-9: b0 and the entry's arms in lib3 and lib2 (x1 to x8: try T50's lib3.json and lib2.json) and in ref67 and ref50
+(x1 to x6: try T54's files); m1_r_gmom_cn and _cn_x2 in lib3, ref67 and ref50 (try T56's files) and in lib2 (try
+T55's lib2.json); the thinned worlds pass try T54's checks (their p and stream, depth ratio within 0.01 of p, no cell
+emptied, the rebuild check); in ref67_lib2 and ref50_lib2 the thinning record's p and stream equal ref67's and
+ref50's; per group the entry's directions as tries T50 and T54 load them and as try T55 loads them have the same
+sha256; the forms' recorded directions and multiples are the same in the six files, and try T55's record (cn's among
+it) equals try T55's lib3 file; in every file dc's a_n per group equals the entry's recorded a_n, p_g is at most a_n
+and dc's squared size over the entry's is at least 1 (added after review); every file records the truth name the route
+passed to try T46's truth maker and the truth matrix's sha256, and the worlds of one library have the same truth
+sha256 (added after review); no form's arm scores exactly as the entry's arm of its fraction on every seed of a world.
 A cell is a world and a multiple (1, 2, 3, 4): 24 cells. Per form and cell, the paired difference of the form's arm from
 the entry's arm of the same fraction, with its mean, seeds ahead, per-seed range and its label by try T46's single-task
 test ("ahead": a mean paired gain above 0.3 with at least 8 of 10 seeds ahead; "behind" the same reversed; else
 "level").
-Statement 1, per form: "ahead of the entry's direction in every cell read" if in all 24 cells the difference has a
-positive mean with at least 8 of 10 seeds ahead; "behind somewhere" if in some cell it is behind by try T46's test,
-naming the cells; otherwise "not separated", naming every cell that meets neither condition.
+Statement 1, per form: cn "ahead of the entry's direction in every cell read", dc "the entry plus a further step along c
+is ahead of the entry in every cell read" (changed after review: dc minus the entry is exactly a further step along c of
+m x fraction x (a_n - p_g) per group, so its sign reads depth along c, not the form), if in all 24 cells the difference
+has a positive mean with at least 8 of 10 seeds ahead; "behind somewhere" if in some cell it is behind by try T46's
+test, naming the cells; otherwise "not separated", naming every cell that meets neither condition. Each statement 1
+carries its size (added after review): the number of the 24 cells ahead by try T46's test and the smallest and largest
+cell means.
 Statement 2, per cell: dc minus cn with its label by try T46's test; the summary counts the cells where dc is ahead,
 behind and level, and names them.
 Statement 3, beyond a larger step, per world and form: the form's highest mean over its four multiples against the
-entry's highest mean over its four, paired by seed at those two multiples: mean, seeds ahead, and "above the best plain
-step read" where the mean is positive with at least 8 of 10 seeds ahead (otherwise "not above").
-Reported and read by nothing: every arm's mean score per world; each difference's parts on the two de terms and on mmd_u
-and the variogram, and its raw-metric differences; the forms' per-group records.
+entry's highest mean over 1, 2, 3, 4, 5, 6 and 8 times (changed after review from the entry's four: the forms move along
+c as far as the entry at m x a_n/p_g, up to about 5.9 at x4), paired by seed at those two multiples: mean, seeds ahead,
+and "above the best plain step read" where the mean is positive with at least 8 of 10 seeds ahead (otherwise "not
+above"); "not readable" where the entry's best is at the edge of its range (x8) and the multiple at which the entry
+would move along c as far as the form at its best (the form's multiple x the largest a_n/p_g over the groups) lies
+beyond 8.
+Reported and read by nothing: every arm's mean score per world (x5 to x8 included); each difference's parts on the
+two de terms and on mmd_u and the variogram, and its raw-metric differences; the forms' per-group records.
 
 NOT an adoption result: a labelled in-sample diagnostic, as tries T44 to T56 are; the result can only go to the team
 captain, and no outcome is evidence on Task 1's read depth, which stays closed. The limits are LIMITS below, repeated in
@@ -123,9 +135,12 @@ TWIN = {"ref67_lib2": "ref67", "ref50_lib2": "ref50"}  # a library-2 world and i
 TRUTH_OF = {LIB3: LIB3, LIB2: LIB2, "ref67": LIB3, "ref50": LIB3, "ref67_lib2": LIB2, "ref50_lib2": LIB2}
 THINNING_OF = {k: dr.THINNED[v] for k, v in REFERENCE_OF.items()}
 BASE, X2, X3, X4 = sr.BASE, ob.X2, ob.X3, ob.X4  # m1_r_gmom (0.2), _x2 (0.4), _x3 (0.6), _x4 (0.8)
-MULTIPLES = (1, 2, 3, 4)
-ENTRY_AT = {1: BASE, 2: X2, 3: X3, 4: X4}  # multiple -> the entry's arm
-ENTRY_MULTIPLIERS = {X2: 2.0, X3: 3.0, X4: 4.0}
+X5, X6, X8 = ob.X5, ob.X6, ob.X8  # try T50's arms at 1.0, 1.2 and 1.6: statement 3's plain-step control only
+MULTIPLES = (1, 2, 3, 4)  # the cells' multiples and the forms' arms
+ENTRY_AT = {1: BASE, 2: X2, 3: X3, 4: X4}  # multiple -> the entry's arm of a cell
+ENTRY_RANGE = {**ENTRY_AT, 5: X5, 6: X6, 8: X8}  # multiple -> the entry's arm, statement 3's plain-step range
+ENTRY_EDGE = max(ENTRY_RANGE)
+ENTRY_MULTIPLIERS = {a: float(ob.MULTIPLIERS[a]) for a in (X2, X3, X4, X5, X6, X8)}  # try T50's values
 CN, DC = "cn", "dc"
 FORMS = (CN, DC)
 
@@ -136,9 +151,9 @@ def form_arm(form: str, m: int) -> str:
 
 
 FORM_ARMS = {form_arm(f, m): (f, ENTRY_AT[m]) for f in FORMS for m in MULTIPLES}  # arm -> (form, entry arm)
-ENTRY_ARMS = tuple(ENTRY_AT.values())
+ENTRY_ARMS = tuple(ENTRY_RANGE.values())
 ARMS = ("b0", *ENTRY_ARMS, *FORM_ARMS)
-REPRO_ENTRY = ("b0", *ENTRY_ARMS)
+REPRO_ENTRY = {"t50": ("b0", *ENTRY_ARMS), "t54": ("b0", BASE, X2, X3, X4, X5, X6)}  # try T54 has no x8
 REPRO_CN = (form_arm(CN, 1), form_arm(CN, 2))
 CELLS = tuple((k, m) for k in WORLDS for m in MULTIPLES)
 FRACTION, FRACTION_TOL, REPRO_TOL = sr.FRACTION, sr.FRACTION_TOL, sr.REPRO_TOL  # 0.2, its tolerance, 1e-9
@@ -152,16 +167,24 @@ ENTRY_SOURCE = {LIB3: "t50", LIB2: "t50", "ref67": "t54", "ref50": "t54"}  # the
 CN_SOURCE = {LIB3: "t56", "ref67": "t56", "ref50": "t56", LIB2: "t55"}  # cn's and cn_x2's committed scores
 TASK_FILE = "{world}.json"
 AHEAD_ALL = "ahead of the entry's direction in every cell read"
+AHEAD_ALL_DC = "the entry plus a further step along c is ahead of the entry in every cell read"
+AHEAD_ALL_OF = {"cn": AHEAD_ALL, "dc": AHEAD_ALL_DC}
+QUANTITY = {"cn": "cn minus the entry's arm of its fraction: the deleted orthogonal parts and the raised coefficient "
+                  "on c together",
+            "dc": "dc minus the entry's arm of its fraction: exactly the entry plus a further step along c of m x "
+                  "fraction x (a_n - p_g) per group, a reading of depth along c, not of the form"}
 BEHIND_SOMEWHERE = "behind somewhere"
 NOT_SEPARATED = "not separated"
 ABOVE = "above the best plain step read"
 NOT_ABOVE = "not above"
+NOT_READABLE = "not readable"
 LABEL_T57 = ("try T57, a labelled in-sample diagnostic, never an adoption result: M1 (with R1, R2 and g_mom's factors, "
              "the entry's form) with its Feng step along the common part of Feng's direction alone at the entry's "
              "squared size (cn) and along the entry's direction with its coefficient on the common part raised to "
              "that size's (dc), at 1, 2, 3 and 4 times the step, against the entry's step of the same fraction, with "
              "library 3's and library 2's truths and the reference as released and thinned to two thirds and a half "
-             "(try T54's draws) on the chamber cut; the result can only go to the team captain, and no outcome is "
+             "(try T54's draws) on the chamber cut, with the entry's step also at 5, 6 and 8 times as statement 3's "
+             "plain-step control; the result can only go to the team captain, and no outcome is "
              "evidence on Task 1's read depth, which stays closed")
 LIMITS = (
     "One released day, in-sample, the chamber cut, two libraries.",
@@ -169,20 +192,35 @@ LIMITS = (
     "A thinned reference is one draw for all seeds and also changes the floor, the de terms' reference, B0's shift and "
     "g_mom's fit.",
     "'In every cell read' covers 1 to 4 times the practice step and the six worlds and nothing else.",
-    "Both forms move further along c than the entry does, so a difference in a cell where larger plain steps still "
-    "gain can be that larger movement and not the form: statement 3 "
-    "is the reading that a larger plain step cannot give.",
+    "Both forms move further along c than the entry does (at the multiple m, as far as the entry at m x a_n/p_g, up to "
+    "about 1.5 m), so a difference in a cell where larger plain steps still gain can be that larger movement and not "
+    "the form. Statement 3 compares a form's best over 1 to 4 times with the entry's best over 1, 2, 3, 4, 5, 6 and 8 "
+    "times, a range that holds the multiple at which the entry moves along c as far as the form; it is ruled not "
+    "readable where that multiple lies beyond 8 while the entry's best is at 8. Within that range a larger plain step "
+    "cannot give its 'above'; beyond 8 times and between the multiples read, nothing here says.",
     "cn deletes parts of the groups' directions that the released day follows, and what those parts carry over the two "
-    "days of the test no released day shows.",
+    "days of the test no released day shows. A cn lead needs a truth that follows those parts less than the released "
+    "day does; no world here varies how much of them the truth carries (all six share one released reference and one "
+    "direction set), so cn's statement 1 cannot speak to a test day that follows them more or less.",
     "Nothing here says how deep any hidden truth is, and no statement may be used with a figure for it.",
-    "dc is not at equal movement: its squared size over the entry's is 1 + sum(o_g^2)/sum(d_g^2) (recorded per group), "
-    "larger than cn's and the entry's, so dc minus cn adds the orthogonal parts and size together.",
+    "On M the directions obey two identities: dc - cn = o_g exactly (the same coefficient a_n on c), so statement 2 is "
+    "the one clean reading of the deleted orthogonal parts at a fixed coefficient on c; and "
+    "dc - entry = (a_n - p_g) x c exactly, so dc against the entry at the multiple m is the entry plus a further "
+    "step along c of m x fraction x (a_n - p_g): a reading of depth along c, not of the form. dc's squared size over "
+    "the entry's is 2 - (p_g/a_n)^2 (recorded per group).",
+    "Statement 1's bar (a positive mean with at least 8 of 10 seeds ahead) has no size threshold: the arms share one "
+    "cell draw, so a consistent tiny shift passes it in every cell while every cell is 'level' by try T46's test; the "
+    "number of cells ahead by that test and the smallest and largest cell means are printed with it and go with it.",
+    "A world split (a form ahead where plain steps still gain and behind where they have turned) is evidence of step "
+    "size, the story of tries T44 to T50, not of the form.",
+    "The library-2 thinned worlds have no draw control: try T54's second draw (ref67b) is not repeated with library "
+    "2's truth, and the two thinned draws are shared between the libraries.",
     "The 24 cells share the seeds, the draw and the directions within a world, and the thinned worlds share their two "
     "draws between the libraries: agreement across cells is not 24 confirmations.",
     "Statement 3 picks each side's best multiple on the same ten seeds it then compares: both maxima are chosen in "
-    "sample, and only the four multiples read are searched.",
-    "lib3, ref67 and ref50 reproduce tries T50, T54 and T56 at 1 and 2 times the step by rule and add no evidence "
-    "there; the new evidence is dc, the multiples 3 and 4, and the library-2 worlds.",
+    "sample, and only the multiples read are searched (the forms' four, the entry's seven).",
+    "6 of the 24 cells (lib3, ref67 and ref50 at 1 and 2 times the step) repeat tries T50, T54 and T56 by rule and add "
+    "no evidence for cn there; the new evidence is dc, the multiples 3 and 4, and the library-2 worlds.",
 )
 CHOICES = (
     "dc is computed as d_g + (a_n - p_g) x c on M, algebraically a_n x c + o_g, so that where a_n equals p_g the form "
@@ -207,10 +245,17 @@ CHOICES = (
     "Statement 1 counts 'ahead' as a mean above zero and seeds strictly above zero (at least 8), as tries T46 to T56 "
     "count them; 'behind somewhere' wins over 'not separated' when both apply, and the cells meeting neither are still "
     "recorded and printed.",
-    "Statement 3's best multiple is the one with the highest mean score among the four (the smallest on a tie), "
-    "separately for the form and for the entry, inside each world; the comparison is try T50's (over_read.comparison) "
+    "Statement 3's best multiple is the one with the highest mean score (the smallest on a tie), among the four for "
+    "the form and among the seven for the entry, inside each world; the comparison is try T50's (over_read.comparison) "
     "of those two arms paired by seed.",
     "A cell is named '<world> x<multiple>'.",
+    "dc's refusal where a_n is below p_g cannot fire: a_n = sqrt(sum d_g^2 / sum c^2) >= |sum c d_g| / sum c^2 = |p_g| "
+    "by Cauchy-Schwarz, with equality only where d_g is parallel to c on M; it is kept only as the brief's guard.",
+    "Statement 3's c-matched multiple is the form's best multiple times the largest a_n/p_g over the groups (the "
+    "farthest a group moves), from the dc record of the world's file (infinite where p_g is not positive); the entry's "
+    "range adds try T50's x5, x6 and x8 (x8 is not in try T54's files, so it is not reproduced in ref67 and ref50).",
+    "The truth's sha256 is that of its matrix as the scorer reads it (lib_step_read.prediction_sha256 on the truth "
+    "Stage); the worlds of one library must agree on it, the thinned worlds thinning only the reference.",
     "The run's --out folder for the command lines is t57_range.",
 )
 
@@ -274,18 +319,20 @@ def world_directions(pool_genes: Sequence[str], held_m1: Sequence[str]) -> tuple
 
 def world_route(world: str, t, data: Path, genes: Sequence[str], inputs: Mapping[str, ad.AnnData], role: str,
                 ref_stage: Stage, read_full: Callable[[], ad.AnnData]
-                ) -> tuple[Mapping[str, ad.AnnData], Stage, Stage, int, dict | None]:
-    """The world's inputs, scorer's reference stage, truth, contamination count and thinning record. A thinned world:
-    the reference thinned first by deep_read.world_reference under try T54's world name (ref67 or ref50); then the
-    truth (library 3 or 2) by over_read.truth_and_contamination, which is try T46's for these names."""
+                ) -> tuple[Mapping[str, ad.AnnData], Stage, Stage, int, dict | None, str]:
+    """The world's inputs, scorer's reference stage, truth, contamination count, thinning record and the truth name
+    passed to try T46's truth maker. A thinned world: the reference thinned first by deep_read.world_reference under
+    try T54's world name (ref67 or ref50); then the truth (library 3 or 2) by over_read.truth_and_contamination, which
+    is try T46's for these names."""
     if world not in WORLDS:
         raise ValueError(f"unknown world {world!r}; one of {list(WORLDS)}")
     thinning = None
     if world in REFERENCE_OF:
         inputs, ref_stage, thinning = dr.world_reference(REFERENCE_OF[world], inputs, role, ref_stage, genes,
                                                          read_full)
-    truth, contamination, _ = ob.truth_and_contamination(t, data, genes, TRUTH_OF[world])
-    return inputs, ref_stage, truth, contamination, thinning
+    truth_name = TRUTH_OF[world]
+    truth, contamination, _ = ob.truth_and_contamination(t, data, genes, truth_name)
+    return inputs, ref_stage, truth, contamination, thinning, truth_name
 
 
 def arm_fractions(fraction: float) -> dict[str, float]:
@@ -295,7 +342,8 @@ def arm_fractions(fraction: float) -> dict[str, float]:
 
 def build_seed(ctx: harness.BuildContext, b0, directions: Mapping, forms: Mapping[str, Mapping], groups: Mapping,
                fraction: float, held_m1: Sequence[str], held_factors: Sequence[str]) -> dict[str, Stage]:
-    """One seed's arms: b0 and the entry's four arms as tries T50 and T54 build them (step_read.step_arms), then each
+    """One seed's arms: b0 and the entry's seven arms (x1 to x6 and x8) as tries T50 and T54 build them
+    (step_read.step_arms with try T50's multipliers), then each
     form's arm, the build of the entry's arm of its fraction (gmom_combo.m1_r_arms) with the form's directions in place
     of the entry's and every other argument the same."""
     preds = {"b0": b0(ctx), **sr.step_arms(ctx, directions, groups, fraction, held_m1, held_factors,
@@ -346,13 +394,14 @@ def cmd_run(a) -> None:
     inputs = {r: load_stage(data / f, lineage=False) for r, f in t.inputs.items()}
     role = harness.base_role(t)
     try:  # a thinned reference comes before anything else is made (try T54's order)
-        inputs, ref_stage, truth, contamination, thinning = world_route(
+        inputs, ref_stage, truth, contamination, thinning, truth_name = world_route(
             a.world, t, data, genes, inputs, role, ref_stage, lambda: read_stage(data / t.reference, None))
     except ValueError as e:
         sys.exit(f"T57 is refused on {a.world}: {e}")
     board = harness.task_board(t, boards, truth.n, ref_stage.n)
     stamp_inputs = [data / t.target, data / t.reference, *[data / f for f in t.inputs.values()]]
-    res = {"label": LABEL_T57, "task": t.key, "world": a.world, "truth": TRUTH_OF[a.world],
+    res = {"label": LABEL_T57, "task": t.key, "world": a.world, "truth": truth_name,
+           "truth_sha256": ls.prediction_sha256(truth),
            "reference_of": REFERENCE_OF.get(a.world), "truth_rows": int(truth.n),
            "truth_contamination": contamination, "seeds": list(seeds), "thinning": thinning}
     floors, failures = ls.all_anchors(t, board, truth, ref_stage, seeds)
@@ -392,9 +441,9 @@ def _rows(r: Mapping) -> list:
 
 def committed_files(t50_tasks: Path = T50_TASKS, t54_tasks: Path = T54_TASKS, t55_tasks: Path = T55_TASKS,
                     t56_tasks: Path = T56_TASKS) -> dict[str, dict[str, Path]]:
-    """The committed task files the read reproduces: 'entry' (b0 and the entry's four arms: try T50's lib3 and lib2,
-    try T54's ref67 and ref50), 'cn' (cn and cn_x2: try T56's lib3, ref67 and ref50, try T55's lib2) and 't55_lib3'
-    (try T55's direction record)."""
+    """The committed task files the read reproduces: 'entry' (b0 and the entry's arms: x1 to x8 in try T50's lib3 and
+    lib2, x1 to x6 in try T54's ref67 and ref50), 'cn' (cn and cn_x2: try T56's lib3, ref67 and ref50, try T55's
+    lib2) and 't55_lib3' (try T55's direction record)."""
     folder = {"t50": Path(t50_tasks), "t54": Path(t54_tasks), "t55": Path(t55_tasks), "t56": Path(t56_tasks)}
     return {"entry": {k: folder[s] / TASK_FILE.format(world=k) for k, s in ENTRY_SOURCE.items()},
             "cn": {k: folder[s] / TASK_FILE.format(world=k) for k, s in CN_SOURCE.items()},
@@ -409,6 +458,26 @@ def dc_values(rec) -> dict | None:
         return {(x, g): v[x] for g, v in zr._groups(rec).items() for x in ("sha256", "p_g", "a_n")}
     except (KeyError, TypeError, AttributeError):
         return None
+
+
+def dc_record_off(dc_rec, directions) -> list[str]:
+    """dc's record against try T55's in the same file: per group dc's a_n equals the entry's recorded a_n, p_g is at
+    most a_n (Cauchy-Schwarz), and dc's squared size over the entry's is at least 1 (it is 2 - (p_g/a_n)^2)."""
+    try:
+        entry = directions["entry"]
+        out = []
+        for g, v in zr._groups(dc_rec).items():
+            a_n, p_g, size = v["a_n"], v["p_g"], v.get("size_ratio")
+            if g not in entry or entry[g][pr.N] != a_n:
+                out.append(f"dc's a_n in {g} ({a_n!r}) is not the entry's recorded a_n "
+                           f"({(entry.get(g) or {}).get(pr.N)!r})")
+            if not p_g <= a_n:
+                out.append(f"dc's p_g in {g} ({p_g!r}) is above its a_n ({a_n!r})")
+            if not isinstance(size, int | float) or not size >= 1.0 - 1e-12:
+                out.append(f"dc's squared size over the entry's in {g} ({size!r}) is not at least 1")
+        return out
+    except (KeyError, TypeError, AttributeError) as e:
+        return [f"dc's record cannot be checked against the entry's ({e!r})"]
 
 
 def _key(v: Mapping) -> str:
@@ -478,10 +547,11 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[str
         # the committed scores
         repro[k] = {}
         if k in ENTRY_SOURCE:
-            rep = pdr.reproduction(rows, committed.get("entry", {}).get(k), REPRO_ENTRY)
+            want = REPRO_ENTRY[ENTRY_SOURCE[k]]
+            rep = pdr.reproduction(rows, committed.get("entry", {}).get(k), want)
             repro[k]["entry_arms"] = rep
             if not rep["holds"]:
-                reasons.append(f"{k}: {', '.join(REPRO_ENTRY)} do not reproduce try T{ENTRY_SOURCE[k][1:]}'s "
+                reasons.append(f"{k}: {', '.join(want)} do not reproduce try T{ENTRY_SOURCE[k][1:]}'s "
                                f"committed scores within {REPRO_TOL:g} per seed")
         if k in CN_SOURCE:
             rep = pdr.reproduction(rows, committed.get("cn", {}).get(k), REPRO_CN)
@@ -514,6 +584,10 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[str
         dcv[k] = dc_values(r.get("dc_directions"))
         if dcv[k] is None:
             reasons.append(f"{k}: no full record of the form dc")
+        else:
+            reasons.extend(f"{k}: {x}" for x in dc_record_off(r.get("dc_directions"), r.get("directions")))
+        if not isinstance(r.get("truth_sha256"), str):
+            reasons.append(f"{k}: the truth matrix's sha256 is not recorded")
     known = {k: _key(v) for k, v in values.items() if v is not None}
     if len(set(known.values())) > 1:
         reasons.append(f"the recorded directions' sha256 or multiples differ between the worlds' files {sorted(known)}")
@@ -527,6 +601,11 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[str
         off = sorted(k for k, v in known.items() if v != _key(t55))
         if off:
             reasons.append(f"the recorded directions' sha256 or multiples differ from try T55's lib3 file in {off}")
+    for lib in (LIB3, LIB2):
+        hashes = {k: r.get("truth_sha256") for k, r in results.items()
+                  if TRUTH_OF.get(k) == lib and isinstance(r.get("truth_sha256"), str)}
+        if len(set(hashes.values())) > 1:
+            reasons.append(f"the truth matrix's sha256 differs between the worlds of {lib} {sorted(hashes)}")
     commits = {(r.get("stamp") or {}).get("commit") for r in results.values()}
     unclean = sorted(k for k, r in results.items() if (r.get("stamp") or {}).get("tree_clean") is not True)
     if unclean:
@@ -552,18 +631,30 @@ def holds(c: Mapping) -> bool:
     return c["mean"] > 0 and c["seeds_ahead"] >= HOLD_AHEAD
 
 
-def statement_1(cells: Mapping[str, Mapping]) -> dict:
-    """cells: cell name -> the form's difference from the entry. AHEAD_ALL when every cell holds; BEHIND_SOMEWHERE
-    naming the cells behind by try T46's test; otherwise NOT_SEPARATED naming every cell that meets neither."""
+def statement_size(cells: Mapping[str, Mapping]) -> str:
+    """Statement 1's size: the cells ahead by try T46's test and the smallest and largest cell means."""
+    ahead = sum(c["label"] == "ahead" for c in cells.values())
+    means = [c["mean"] for c in cells.values()]
+    return (f"ahead by try T46's test in {ahead} of {len(cells)} cells, cell means {min(means):+.2f} to "
+            f"{max(means):+.2f}")
+
+
+def statement_1(cells: Mapping[str, Mapping], form: str = CN) -> dict:
+    """cells: cell name -> the form's difference from the entry. AHEAD_ALL_OF[form] when every cell holds;
+    BEHIND_SOMEWHERE naming the cells behind by try T46's test; otherwise NOT_SEPARATED naming every cell that meets
+    neither. The statement carries its size (statement_size) so that it is never quoted without it."""
     behind = [n for n, c in cells.items() if c["label"] == "behind"]
     neither = [n for n, c in cells.items() if not holds(c) and c["label"] != "behind"]
     if all(holds(c) for c in cells.values()):
-        said = AHEAD_ALL
+        said = AHEAD_ALL_OF[form]
     elif behind:
         said = f"{BEHIND_SOMEWHERE} ({', '.join(behind)})"
     else:
         said = f"{NOT_SEPARATED} ({', '.join(neither)})"
-    return {"statement": said, "behind": behind, "neither": neither}
+    size = statement_size(cells)
+    return {"statement": f"{said}; {size}", "said": said, "size": size,
+            "ahead_by_test": [n for n, c in cells.items() if c["label"] == "ahead"], "behind": behind,
+            "neither": neither, "quantity": QUANTITY[form]}
 
 
 def statement_2(cells: Mapping[str, Mapping]) -> dict:
@@ -575,20 +666,36 @@ def statement_2(cells: Mapping[str, Mapping]) -> dict:
     return {"summary": summary, "counts": {lab: len(ns) for lab, ns in by.items()}, "cells": by}
 
 
-def best_multiple(mean_scores: Mapping[str, float], arm_at: Callable[[int], str]) -> int:
-    """The multiple with the highest mean score among 1 to 4 (the smallest on a tie)."""
-    return max(MULTIPLES, key=lambda m: (mean_scores[arm_at(m)], -m))
+def best_multiple(mean_scores: Mapping[str, float], arm_at: Callable[[int], str],
+                  multiples: Sequence[int] = MULTIPLES) -> int:
+    """The multiple with the highest mean score among `multiples` (the smallest on a tie)."""
+    return max(multiples, key=lambda m: (mean_scores[arm_at(m)], -m))
+
+
+def c_ratio(dc_rec: Mapping) -> float:
+    """The largest a_n/p_g over the groups: how much further along c than the entry a form moves at one multiple
+    (both forms put a_n on c, the entry p_g); infinite where a p_g is not positive."""
+    return max((v["a_n"] / v["p_g"] if v["p_g"] > 0 else float("inf")) for v in zr._groups(dc_rec).values())
 
 
 def statement_3(r: Mapping, world: str, mean_scores: Mapping[str, float]) -> dict:
-    """Per form, the form's best multiple against the entry's best, paired by seed."""
-    e = best_multiple(mean_scores, ENTRY_AT.__getitem__)
+    """Per form, the form's best multiple (1 to 4) against the entry's best over ENTRY_RANGE (1 to 6 and 8), paired by
+    seed. NOT_READABLE where the entry's best is at the edge of its range and the c-matched multiple (the form's
+    multiple x c_ratio) lies beyond it: there a larger plain step than any read could still give the form's lead."""
+    e = best_multiple(mean_scores, ENTRY_RANGE.__getitem__, tuple(ENTRY_RANGE))
+    ratio = c_ratio(r["dc_directions"])
     out = {}
     for f in FORMS:
         m = best_multiple(mean_scores, lambda x, f=f: form_arm(f, x))
-        c = comparison(r, world, form_arm(f, m), ENTRY_AT[e])
-        out[f] = {"form_multiple": m, "entry_multiple": e, "comparison": c,
-                  "statement": ABOVE if holds(c) else NOT_ABOVE}
+        matched = m * ratio
+        c = comparison(r, world, form_arm(f, m), ENTRY_RANGE[e])
+        if e == ENTRY_EDGE and matched > ENTRY_EDGE:
+            said = (f"{NOT_READABLE}: the entry's best is at the edge of the range read (x{ENTRY_EDGE}) and the form "
+                    f"at x{m} moves along c as far as the entry at x{matched:.2f}")
+        else:
+            said = ABOVE if holds(c) else NOT_ABOVE
+        out[f] = {"form_multiple": m, "entry_multiple": e, "c_matched_multiple": matched, "comparison": c,
+                  "statement": said}
     return out
 
 
@@ -600,7 +707,7 @@ def t57_reading(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[
         return out
     diffs = {f: {cell_name(k, m): comparison(results[k], k, form_arm(f, m), ENTRY_AT[m]) for k, m in CELLS}
              for f in FORMS}
-    s1 = {f: statement_1(diffs[f]) for f in FORMS}
+    s1 = {f: statement_1(diffs[f], f) for f in FORMS}
     dc_cn = {cell_name(k, m): comparison(results[k], k, form_arm(DC, m), form_arm(CN, m)) for k, m in CELLS}
     s2 = statement_2(dc_cn)
     means = {k: {a: float(np.mean([row["arms"][a]["score"] for row in _rows(results[k])])) for a in ARMS}
@@ -643,16 +750,18 @@ def t57_text(res: Mapping) -> str:
     if r["valid"]:
         for f in FORMS:
             s = r["statement_1"][f]
-            lines.append(f"Statement 1, {f}: {s['statement']}")
+            lines.append(f"Statement 1, {f} ({s['quantity']}): {s['statement']}")
             if s["behind"] and s["neither"]:
                 lines.append("    also meeting neither condition: " + ", ".join(s["neither"]))
         lines.append(f"Statement 2, dc minus cn per cell: {r['statement_2']['summary']}")
-        lines.append("Statement 3, beyond a larger step (each side's best multiple, paired by seed):")
+        lines.append("Statement 3, beyond a larger step (the form's best of x1 to x4 against the entry's best of x1 to "
+                     "x6 and x8, paired by seed; the entry's multiple that moves along c as far as the form):")
         for k in WORLDS:
             for f, x in r["statement_3"][k].items():
                 c = x["comparison"]
                 lines.append(f"    {k}, {f} at x{x['form_multiple']} against the entry at x{x['entry_multiple']}: "
-                             f"{c['mean']:+.2f} points, ahead {c['seeds_ahead']} of {c['of']}: {x['statement']}")
+                             f"{c['mean']:+.2f} points, ahead {c['seeds_ahead']} of {c['of']}, c-matched multiple "
+                             f"x{x['c_matched_multiple']:.2f}: {x['statement']}")
         lines.append("Per form and cell, the form minus the entry's arm of the same fraction (try T46's single-task "
                      "test inside the world):")
         for f in FORMS:
