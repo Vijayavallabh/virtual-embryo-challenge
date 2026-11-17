@@ -4670,3 +4670,37 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **How the main session waits from now on.** The captain interrupted a foreground wait in which the session slept
     through a remote shell; the harness blocks such waits and the session had worked around the block. It now waits on
     background notifications only.
+- 2026-11-17 (g), try T55's reading and the rule for the AI assistant's advice on the common-part form, fixed before
+  try T56 has a row (advice only: every change to an upload is the captain's ruling). Written by the AI assistant.
+  - **What try T55 read.** Entry (e) had set a split of the step between the part of Feng's direction that all cell
+    groups share and the group-specific parts aside as one more size variant. Read, it is not one. At the entry's
+    squared size, a step along the common part alone scores above the entry's step on both practice cuts and at both
+    fractions: +0.37 and +0.39, and +0.48 and +0.48 at twice the fraction, ahead on every seed; ahead against library
+    3 at both fractions, level or ahead against libraries 1 and 2. Dropping the group-specific parts at the entry's
+    fraction reads +0.13 and +0.17 on every seed, and enlarging them -0.06. So entry (e)'s sentence that the family's
+    variants "share the property the reads found" was too wide for this one, and it is corrected here: the form's gain
+    is not a larger step.
+  - **Why it is not yet a request.** Equal squared size of the direction is not equal counts moved: if the common part
+    sits on better-expressed genes it delivers more, and then the gain could turn with the truth's depth as the larger
+    steps' gain does. Row T55 fixed beforehand that the form is read in the worlds of tries T50 and T54 first. That
+    read is try T56 (in build and review).
+  - **The rule, fixed now.** The AI assistant puts one priced question to the captain (the common part at the entry's
+    squared size, the fraction 0.40 unchanged, on both Task 1 uploads) only if all of the following hold. G1: try T56
+    reads "the common part's gain at equal movement holds at every depth read" (truths 0.3 to 1.8 times as deep as the
+    reference); any other reading closes the form with no request. G2: an independent recomputation of tries T55 and
+    T56 finds no mismatch in a figure the request quotes. G3: a cold adversary given only the claim returns, after
+    every check it names that committed or released files can answer has been run, a verdict of proceed, or of proceed
+    on conditions that are met; on stop there is no request. G4: the form requested is exactly the one read (per group
+    the multiple a_n times the common part, on the common gene mask, with try T55's refusals), built by an option that
+    leaves a default build byte for byte unchanged. The price quoted is the practice gain as released (try T55) with
+    each depth world's difference beside it, and the loss side is the lowest difference read in any world and library.
+    The request names what no released day can show: whether the two days of the test follow the group-specific parts
+    more than the released days did (on both released days the common part led: 0.33 against 0.12 on E9.5 to E10.5,
+    0.08 against 0.02 on E8.5 to E9.5, try T51).
+  - **What the rule answers in the second cold check's attacks.** If G1 holds, the form's sign does not turn on the
+    hidden truth's depth, so a ruling on it carries nothing of the exposed metadata; the fraction is the entry's own,
+    so no mapping from a practice multiple to a test fraction is used. The controls that show a gain to be specific to
+    the direction's genes were not run for this form; the cold check of G3 is asked about that.
+  - **Prepared in parallel, deciding nothing.** A builder option for the form on a campaign branch (`campaign/t1-w`,
+    in build and review), so that a yes can be rehearsed by 20 November; it stays unused on any other outcome, as
+    `campaign/t1-n` did.
