@@ -2,8 +2,30 @@
 
 ## Current Objective
 
-- Goal: a compliant Human-track entry on all four test boards that finishes as high as it can. The final phase runs
-  through 2026-12-02 (UTC), with two scored uploads per board for the whole phase; none is used as of 2026-11-13.
+- **Read this first (2026-11-17).** The organisers moved the final deadline to **25 November 2026, 23:59 AoE (26
+  November 11:59 UTC, 17:29 IST)**, for uploads and final-entry marks alike. Every later date in this file, in
+  `docs/PLAN.md` section 7, `docs/P3_RUNBOOK.md`, `docs/S2_RULES.md` and `AGENTS.md` is superseded in fact but not
+  yet in text: the dates are the captain's to move, and the captain has been asked (proposal: freeze and first round
+  21 November from 00:00 UTC, second round 23 November, T3's last upload 24 November, marks 25 November by 12:00 UTC,
+  any file change rehearsed by 20 November). **The upload gate's exception (27 November) is after the deadline: until
+  the captain moves it the client refuses every official upload.** When the captain names the dates, one commit
+  changes `results/upload_gate.json` (with the captain's words), its test in `tests/test_submit.py`, an amendment at
+  the end of `docs/S2_RULES.md` with a new `docs/S2_RULES.sha256`, the runbook tables and `AGENTS.md`. Decision log
+  2026-11-17 (a) has the whole list. The organisers also answered the exposure notice (accepted; they ask for the
+  explanation and the precommitted procedure in the method report): a further reply to the thread's other questions
+  is announced and must go through a screening agent, never be pasted.
+- **What is live (2026-11-17).** One candidate change, the size of Task 1's step (decision log 2026-11-14 (c), item 7;
+  rows T44 to T47). Owed, in order: the cold adversarial check and the independent recomputation (running); rows and
+  runs for tries T48 (`campaign/t1-l-fix2`, the rule's own read) and T49 (`campaign/t1-m`, g_mom's size), each run in
+  `~/v/vec-campaign-h7` with the generic launcher `~/v/scratch/round6/t1read_launch.sh`; one priced question to the
+  captain by 18 November; on a yes, the builder option (`campaign/t1-n`, in review), dry builds, a fourth rehearsal, a
+  new reference list and pointer, the server's format check of the two new T1 files at the captain's word, and the
+  disclosure email with the new hashes. Also owed: the `METHOD_SUMMARY.md` section on the exposure (draft and three
+  reviews in the session scratchpad, `lift6/outward/`), the eighth independent pass (`lift6/briefs/audit8.md`), the
+  disclosure email and the screened checks re-dated to the captain's schedule.
+- Goal: a compliant Human-track entry on all four test boards that finishes as high as it can. The final phase now
+  ends on 2026-11-25 at 23:59 AoE, with two scored uploads per board for the whole phase; none is used as of
+  2026-11-17.
 - Current status (2026-11-14): the entries are built and their methods chosen. T1: M1 with R1, R2 and R3b, its first
   upload drawn from E10.5's dissected-heart library since 2026-11-13 and its second on the pooled base at 60%
   cardiomyocytes. Heart: B0 with the pre-registered size and, since the captain's ruling of the evening of
@@ -23,7 +45,8 @@
   decision log (x)). The upload client refuses a scored upload of a file that is not on this list (guard
   "reference list", pointer `results/reference_list.json`; decision log (cc)).
   What is owed:
-  - FIRST: the controls and checks of tries E41b. The embryo arm `fgw_partial` (branch `campaign/emb-f`, fcc1f6b)
+  - DONE on 2026-11-14 (decision log 2026-11-14 (c), item 1: the family closed with no request; kept here as the
+    record of what was owed): the controls and checks of tries E41b. The embryo arm `fgw_partial` (branch `campaign/emb-f`, fcc1f6b)
     passed the adoption rule and the first-upload pair rule on 2026-11-14 (ledger row E41;
     `experiments/harness/results/n45_embryo_f_readings/`). Before any request to the captain: (1) build, review and
     read the three control arms the captain asked for (every anchor moved by the same share; the same number left

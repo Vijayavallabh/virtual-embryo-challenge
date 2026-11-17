@@ -2,7 +2,37 @@
 
 ## Current State
 
-**Last Updated:** 2026-11-14
+**Last Updated:** 2026-11-17
+**2026-11-17, morning UTC: the organisers moved the final deadline to 25 November 23:59 AoE (26 November 11:59 UTC,
+17:29 IST), for uploads and final-entry marks alike, and answered the exposure notice. Nothing is uploaded; no dated
+record has changed yet, because the dates are the captain's to move** (`docs/PLAN.md` decision log 2026-11-17 (a)).
+The captain's upload gate opens by its exception on 27 November, which is now after the deadline: without a new date
+the client refuses every upload. The AI assistant proposed the old spacing six days earlier (freeze and first round
+21 November from 00:00 UTC, second round 23 November, T3's last upload 24 November, marks 25 November by 12:00 UTC,
+any file change rehearsed by 20 November) and waits for the captain's word. The organisers' answer on the exposure of
+4 November: the metadata is removed from the site, the rules are unchanged, they accept that the predictions did not
+depend on it, and they ask for that explanation and the precommitted procedure in the method report; a section for
+`METHOD_SUMMARY.md` is being drafted and reviewed. Both messages were pasted into the main session unscreened and
+checked afterwards: neither holds a property of a hidden target (`docs/DATA_POLICY.md` 2026-11-17 (a)). The account's
+usage limit had stopped every agent from the evening of 14 November to the night of 16 November.
+**2026-11-14, evening UTC: the round after the audit is read out (decision log 2026-11-14 (c)). One lever is live:
+the size of Task 1's step.** The embryo's partial-coupling family closed with no request (tries E42, E43, E45; the
+lineage twin of the movement-matched control missed the pair rule by 0.04); the captain's check found the built
+embryo file's draw is the mirrored kind, and practice draws of that kind are helped on two truths and hurt on a
+third (rows N51, N52). The seventh sweep's two open lines and three hard calls were read: the Task 1 mixture loses,
+Potts sorting on the heart is flat, the count redraw on Task 1 gains 3.8 points on both cuts and is the closed depth
+lever (no request), shrinking M1's direction loses 0.1, the embryo residual is one-sided. The heart's learned flow,
+the one large-model line a design panel left standing, passes nothing (try H23: +0.24 on one backtest, -0.20 to
+-0.28 on the other, every seed). **Task 1's step:** a larger step of Feng's direction scores better on every released
+truth (try T44: +0.95 and +0.89 at 1.5 times, +1.81 and +1.68 at twice; try T46: ahead against each E10.5 library
+alone, still rising at four times the step, flattening only against the dissected-heart library); the gain needs
+Feng's own genes and is not count noise (try T45: +1.60 and +1.44 beyond a placebo's increment, +0.27 and +0.24 for a
+noise-matched control); and a share reading explains it (try T47: the change of sample kind adds 0.07, the day holds
+0.30 of the bracket, and M1's step of 0.2 reads back as 0.117, because a log ratio made with a pseudocount of half a
+CP10k is applied as a plain factor). No row puts a change forward; a priced request to the captain follows an
+independent recomputation and a cold adversarial check, both started on 17 November, with the rule's own read on the
+cuts (try T48) and the same question for g_mom's size (try T49) in review. The DGX's full test suite passed at
+1399017 (1,507 tests). Tries: T1 58, embryo 73, heart 31, T3 31. The committed estimate stays 184 (170 to 198).
 **2026-11-14, midday UTC: eleven more tries read after the sixth independent pass (decision log 2026-11-13 (ii), lines
 13 to 18). Ten pass nothing; one embryo arm passes both of its rules and waits for its controls.** The sixth pass
 found one line open and named hard calls of its own, and a separate check tested the eighteen closures "not buildable
