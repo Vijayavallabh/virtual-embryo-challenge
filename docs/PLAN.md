@@ -4677,9 +4677,12 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     squared size, a step along the common part alone scores above the entry's step on both practice cuts and at both
     fractions: +0.37 and +0.39, and +0.48 and +0.48 at twice the fraction, ahead on every seed; ahead against library
     3 at both fractions, level or ahead against libraries 1 and 2. Dropping the group-specific parts at the entry's
-    fraction reads +0.13 and +0.17 on every seed, and enlarging them -0.06. So entry (e)'s sentence that the family's
-    variants "share the property the reads found" was too wide for this one, and it is corrected here: the form's gain
-    is not a larger step.
+    fraction reads +0.13 and +0.17, ahead on every seed, and enlarging them -0.06 (on the two cuts). [An independent
+    recomputation the same evening found every figure of try T55 to recompute, two of them one hundredth higher than
+    first written in the row; over all truths and seeds the form's lowest paired difference is +0.10 at the entry's
+    fraction and -0.11 at twice it, where 3 of 50 are negative, all against library 2; about two thirds of each gain
+    is on the two de terms.] So entry (e)'s sentence that the family's variants "share the property the reads found"
+    was too wide for this one, and it is corrected here: the form's gain is not a larger step.
   - **Why it is not yet a request.** Equal squared size of the direction is not equal counts moved: if the common part
     sits on better-expressed genes it delivers more, and then the gain could turn with the truth's depth as the larger
     steps' gain does. Row T55 fixed beforehand that the form is read in the worlds of tries T50 and T54 first. That
