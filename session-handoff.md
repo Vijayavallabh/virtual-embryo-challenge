@@ -20,6 +20,11 @@
   The DGX holds four idle
   campaign checkouts (`~/v/vec-campaign`, `-h7`, `-c`, `-d`; identical package sets; the reference checkout is
   untouched at dc7b6ae). The builder option for a step ruling stays on `campaign/t1-n` (2921b96), unused.
+  Try T55 (`part_read.py`) runs in `~/v/vec-campaign-c` at e492c30 (exit file `runs/round6/t55.exit`; finish it
+  with `lift6/finish_t1read.sh vec-campaign-c t55_m1_part t55 t55_logs e492c30`, commit unread, read once, outcome,
+  totals then T1 100). The schedule amendments are drafted on `draft/schedule-nov21-fix` (490a51a, reviewed: ready,
+  not merged; decision log 2026-11-17 (f)): fill its markers with the captain's words, recompute the rules hash,
+  rebase and merge.
   **For the captain, in this order:** (1) the dates: the gate's exception (27 November) is after the organisers'
   deadline, so the client refuses every official upload until the captain moves it (proposal: freeze and first
   round 21 November 00:00 UTC, second round 23 November, T3's last upload 24 November, marks 25 November by 12:00

@@ -4636,3 +4636,37 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     smaller pseudocount) was still running when this entry was written. Its use was test C, which could only have
     replaced a uniform value by a changed direction of larger delivered size; the verdict stops any such change for
     the reasons above, so T52 is read and recorded when it finishes and changes nothing here.
+- 2026-11-17 (f), what was prepared after the report of entry (e), without changing any record on main that waits for
+  the captain. Written by the AI assistant.
+  - **The schedule amendments, as a draft on a branch.** `draft/schedule-nov21-fix` (490a51a; built by one agent,
+    attacked by another, fixed once, reviewed again: ready; pushed, not merged) holds what entry (a)'s proposal would
+    change if the captain says yes to it: the gate record's exception at 2026-11-21 00:00 UTC, the client's guard and
+    its tests, an amendment appended to `docs/S2_RULES.md` with a new hash and no earlier line changed, sections 7 and
+    8 of this plan, `docs/P3_RUNBOOK.md`, `AGENTS.md`, `feature_list.json`, `README.md`, `docs/CHALLENGE.md` and the
+    screened-read brief. Wherever the captain's own words or the date of the ruling belong it holds a marker, and the
+    client on that branch refuses every official upload while a marker stands (tested by the reviewer at five times,
+    with the gate lifted and with an estimate above 209 as well); with the words filled in it refuses before 21
+    November 00:00 UTC and opens from then. Main's record behaves as before. To merge after the ruling: fill every
+    marker, recompute the rules file's hash, add the decision-log entry with the captain's words, rebase on main. The
+    reviewer's remaining points are for that step: three dated runbook notes were reworded inside their own sentences
+    and should be put back with the new dates beside them; two live dates outside the brief's files still read as
+    before (this plan's line on the next screened check, and A28 in `ASSUMPTIONS.md`); the guard accepts any non-empty
+    text as the captain's words.
+  - **What the draft cannot decide, for the captain with the dates.** The second screened read for the seventh email
+    was approved for 23 November; six days earlier is already past, and the draft's default is 20 November. The first,
+    approved for 19 November, stays. The floor of the ruling of 2026-11-06 (b) for the screened check that picks T3's
+    second upload, "no earlier than 26 Nov", would move to 20 November. The archive step after the deadline would be
+    26 November. If the ruling comes after 20 November, the rehearsal, the second read and the check fall on the day
+    of the ruling, before any upload.
+  - **Try T55, registered and running.** Entry (e) set the split between the common and the group-specific part of the
+    direction aside as one more size variant; that was an argument and not a read. It is read as try T55
+    (`part_read.py`, built and reviewed like the others; row committed at e492c30 before the run): the group-specific
+    parts dropped, halved and enlarged, and the common part alone at the entry's squared size and at its projection.
+    Its row fixes that no size and no direction is advised from it for the test, and that a pass at equal movement at
+    both fractions is next read in the depth worlds before anything is said.
+  - **One more line for the method report.** The exposure section's list of later decisions now names the step reads
+    of this day and that no request followed (afd0ed7); that bullet has not been through the section's three
+    reviewers.
+  - **How the main session waits from now on.** The captain interrupted a foreground wait in which the session slept
+    through a remote shell; the harness blocks such waits and the session had worked around the block. It now waits on
+    background notifications only.
