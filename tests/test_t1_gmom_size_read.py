@@ -99,13 +99,16 @@ def test_the_larger_finishes_are_finish_momentum_at_their_dampings_not_a_rescali
         assert not np.array_equal(doubled, big)  # not the 0.5 factors scaled up: entries zeroed at 0.5 come back
         assert np.abs(big).max() <= ts.CLIP_AT
     assert revived
-    rec = sm.factor_records(fold["finished"])
+    rec = sm.factor_records(fold["finished"], ctx.derived["t1_held_flat"])
     assert set(rec) == {"0.5", "0.75", "1"}
     for c in rec["0.5"]:
         shares = [rec[d][c]["share_not_zeroed"] for d in ("0.5", "0.75", "1")]
         assert shares == sorted(shares)
         assert rec["0.5"][c]["mean_abs_log_not_zeroed"] < rec["1"][c]["mean_abs_log_not_zeroed"]
-        assert set(rec["1"][c]) == {"share_not_zeroed", "share_at_clip", "mean_abs_log_not_zeroed"}
+        assert set(rec["1"][c]) == {"share_not_zeroed", "share_at_clip", "mean_abs_log_not_zeroed",
+                                    "mean_abs_log_all_entries", "share_unzeroed_vs_0.5"}
+        assert rec["0.5"][c]["share_unzeroed_vs_0.5"] == 0.0
+        assert rec["0.5"][c]["mean_abs_log_all_entries"] < rec["1"][c]["mean_abs_log_all_entries"]
 
 
 def test_a_build_that_reaches_another_fit_is_refused(sm):
@@ -113,6 +116,68 @@ def test_a_build_that_reaches_another_fit_is_refused(sm):
     fold = sm.fold_factors(ctx)
     with pytest.raises(RuntimeError, match="other than the fold's own"):
         sm._base_factors(fold, ts.finish_momentum(fold["raw"], 0.5))
+
+
+def test_form_a_refuses_a_transform_handed_factors_other_than_the_folds_own(sm, monkeypatch):
+    """A fresh finish at 0.5 is equal in value but another object: form A's transform must refuse it."""
+    _, _, ctx, *_ = _world()
+    fold = sm.fold_factors(ctx)
+    fresh = ts.finish_momentum(fold["raw"], 0.5)
+    assert sm.same_factors(fresh, fold["finished"][0.5]) and fresh is not fold["finished"][0.5]
+    monkeypatch.setitem(harness._G_MOM_PREP, "fold", {**harness._G_MOM_PREP["fold"], "factors": fresh})
+    with pytest.raises(RuntimeError, match="other than the fold's own"):
+        sm.form_a_arms(ctx)
+
+
+def _records_world():
+    genes = ["a", "b", "h"]
+    half = np.array([[ts.CLIP_AT, -ts.CLIP_AT, ts.CLIP_AT], [0.0, 0.06, 0.0]])
+    one = np.array([[ts.CLIP_AT, -ts.CLIP_AT, ts.CLIP_AT], [0.08, 0.12, 0.2]])
+
+    def sf(logf):
+        cf = ts.CategoryFactors(category="cm", index={"c0": 0, "c1": 1}, sizes=np.array([3, 4]), logf=logf)
+        return ts.StateFactors(genes=genes, metacells_on="later", categories={"cm": cf}, skipped={})
+
+    return {0.5: sf(half), 1.0: sf(one)}
+
+
+def test_the_factor_records_count_the_clip_exactly_and_skip_the_held_genes(sm):
+    """Entries exactly at CLIP_AT count as at the clip; the held gene h (factor 1 when applied) is left out; the share
+    newly not zeroed and the mean over all entries are reported."""
+    rec = sm.factor_records(_records_world(), ["h"])
+    half, one = rec["0.5"]["cm"], rec["1"]["cm"]
+    assert half["share_at_clip"] == 0.5 and one["share_at_clip"] == 0.5
+    assert half["share_not_zeroed"] == 0.75 and one["share_not_zeroed"] == 1.0
+    assert half["share_unzeroed_vs_0.5"] == 0.0 and one["share_unzeroed_vs_0.5"] == 0.25
+    assert half["mean_abs_log_all_entries"] == pytest.approx((2 * ts.CLIP_AT + 0.06) / 4)
+    assert half["mean_abs_log_not_zeroed"] == pytest.approx((2 * ts.CLIP_AT + 0.06) / 3)
+    assert one["mean_abs_log_all_entries"] == pytest.approx((2 * ts.CLIP_AT + 0.2) / 4)
+    with_held = sm.factor_records(_records_world(), [])
+    assert with_held["0.5"]["cm"]["share_at_clip"] == pytest.approx(3 / 6)
+    assert with_held["1"]["cm"]["share_unzeroed_vs_0.5"] == pytest.approx(2 / 6)
+
+
+def test_the_labels_say_no_keep_and_the_limits_are_the_docstrings(sm):
+    """No text calls a pass a keep or form A the adoption rule's read; the limits are the docstring's, word for word,
+    in the order written, and the reading writes them out."""
+    assert "not a keep" in sm.PASSES and "passes the adoption rule" not in sm.PASSES
+    assert "the adoption rule's read" not in sm.LABEL_T49
+    assert "in both forms a labelled in-sample diagnostic: form A selects a constant on the cuts that kept g_mom" in (
+        sm.LABEL_T49)
+    doc = " ".join(sm.__doc__.split())
+    assert len(sm.LIMITS) == 14 and all(x in doc for x in sm.LIMITS)
+    assert sm.LIMITS[0].startswith("T49 chooses a value of one constant (B0's damping applied to g_mom)")
+    assert sm.LIMITS[1].endswith("No outcome is read as 'g_mom was under-sized by a factor of about 3'.")
+    assert sm.LIMITS[-1].endswith("and the change of sample kind in the truth.")
+    assert "the adoption rule's read" not in doc and "So what g_mom delivers is about 0.3" not in doc
+
+
+def test_the_reading_writes_the_limits(sm, tmp_path):
+    out, t11, t42 = _write(sm, tmp_path, {k: _task(sm, {}) for k in sm.CUT_FILES})
+    res = sm.read(out, t11, t42)
+    assert res["limits"] == list(sm.LIMITS)
+    text = (out / "t49.txt").read_text()
+    assert all(f"- {x}" in text for x in sm.LIMITS) and "PASSES" not in text
 
 
 def test_the_fold_is_refused_unless_g_mom_factors_finishes_once_at_half(sm, monkeypatch):
@@ -216,7 +281,9 @@ def _task(sm, gains, seeds=range(10), commit="c" * 40, clean=True, task=None, da
     return {"label": "synthetic", "task": task, "dampings": dampings or dict(sm.DAMPINGS), "seeds": list(seeds),
             "reproduction_tolerance": 1e-9, "factor_records": {"0.5": {"cm": {"share_not_zeroed": 0.2,
                                                                                "share_at_clip": 0.0,
-                                                                               "mean_abs_log_not_zeroed": 0.07}}},
+                                                                               "mean_abs_log_not_zeroed": 0.07,
+                                                                               "mean_abs_log_all_entries": 0.014,
+                                                                               "share_unzeroed_vs_0.5": 0.0}}},
             "rows": rows, "stamp": {"commit": commit, "tree_clean": clean, "utc": "x", "inputs": {}}}
 
 
@@ -252,23 +319,26 @@ def _read(sm, tmp_path, gains=None, drop=(), **over):
     return sm.read(out, t11, t42)["reading"]
 
 
-@pytest.mark.parametrize("gains, statement, arm", [
-    ({"g_mom_d075": 0.5, "g_mom_d1": 1.0}, "a larger g_mom passes the adoption rule: g_mom_d1", "g_mom_d1"),
-    ({"g_mom_d075": 1.0, "g_mom_d1": 1.2}, "a larger g_mom passes the adoption rule: g_mom_d075", "g_mom_d075"),
-    ({"g_mom_d075": 0.1, "g_mom_d1": 0.35}, "a larger g_mom passes the adoption rule: g_mom_d1", "g_mom_d1"),
-    ({"g_mom_d075": -0.1, "g_mom_d1": -0.2}, "a larger g_mom loses", None),
+@pytest.mark.parametrize("gains, kind, arm", [
+    ({"g_mom_d075": 0.5, "g_mom_d1": 1.0}, "passes", "g_mom_d1"),
+    ({"g_mom_d075": 1.0, "g_mom_d1": 1.2}, "passes", "g_mom_d075"),
+    ({"g_mom_d075": 0.1, "g_mom_d1": 0.35}, "passes", "g_mom_d1"),
+    ({"g_mom_d075": -0.1, "g_mom_d1": -0.2}, "loses", None),
     ({"g_mom_d075": 0.1, "g_mom_d1": -0.2}, "not separated", None),
     ({}, "not separated", None),
-    ({"g_mom_d075": 0.5, "g_mom_d1": 1.0, "m1_r_gmom_g1": -0.1},
-     "passes in try T11's form and loses in the entry's form: not put forward (g_mom_d1)", "g_mom_d1"),
-    ({"g_mom_d075": 1.0, "g_mom_d1": 1.2, "m1_r_gmom_g1": -0.5},
-     "a larger g_mom passes the adoption rule: g_mom_d075", "g_mom_d075"),
-    ({"g_mom_d075": 1.0, "g_mom_d1": 1.2, "m1_r_gmom_g075": -0.01},
-     "passes in try T11's form and loses in the entry's form: not put forward (g_mom_d075)", "g_mom_d075"),
+    ({"g_mom_d075": 0.5, "g_mom_d1": 1.0, "m1_r_gmom_g1": -0.31}, "vetoed", "g_mom_d1"),
+    ({"g_mom_d075": 1.0, "g_mom_d1": 1.2, "m1_r_gmom_g1": -0.5}, "passes", "g_mom_d075"),
+    ({"g_mom_d075": 1.0, "g_mom_d1": 1.2, "m1_r_gmom_g075": -0.4}, "vetoed", "g_mom_d075"),
+    ({"g_mom_d075": 1.0, "g_mom_d1": 1.2, "m1_r_gmom_g075": -0.01}, "passes", "g_mom_d075"),
 ])
-def test_each_statement_is_reached_by_a_table_built_for_it(sm, tmp_path, gains, statement, arm):
+def test_each_statement_is_reached_by_a_table_built_for_it(sm, tmp_path, gains, kind, arm):
     r = _read(sm, tmp_path, gains)
-    assert r["valid"] and r["outcome"] == statement and r["statement"]["arm"] == arm
+    want_text = {"passes": f"{sm.PASSES}: {arm}", "vetoed": f"{sm.VETOED} ({arm})"}
+    if kind in want_text:
+        assert r["outcome"] == want_text[kind]
+    else:
+        assert r["outcome"].startswith({"loses": sm.LOSES, "not separated": sm.NOT_SEPARATED}[kind] + " (")
+    assert r["valid"] and r["statement"]["arm"] == arm
     assert set(r["form_a"]) == {"A1", "A2", "A3"} and set(r["form_b_diagnostic"]) == {"B1", "B2", "B3"}
     a3 = r["form_a"]["A3"]
     assert a3["base"] == "g_mom_d075" and a3["change"] == "g_mom_d1"
@@ -295,33 +365,52 @@ def test_the_order_rule_between_the_two_larger_arms(sm, tmp_path):
 
 
 def test_the_veto_reads_the_twin_on_both_cuts(sm, tmp_path):
-    r = _read(sm, tmp_path, {"g_mom_d075": 0.5, "g_mom_d1": 1.0}, TASK_WHOLE={"gains": {"m1_r_gmom_g1": -0.05}})
+    r = _read(sm, tmp_path, {"g_mom_d075": 0.5, "g_mom_d1": 1.0}, TASK_WHOLE={"gains": {"m1_r_gmom_g1": -0.31}})
     assert r["valid"] and r["outcome"].startswith(sm.VETOED) and r["statement"]["veto"]["loses"]
     r = _read(sm, tmp_path / "zero", {"g_mom_d075": 0.5, "g_mom_d1": 1.0, "m1_r_gmom_g1": 0.0})
     assert r["outcome"] == f"{sm.PASSES}: g_mom_d1" and not r["statement"]["veto"]["loses"]
 
 
+@pytest.mark.parametrize("twin, vetoed", [(-0.01, False), (-0.05, False), (-0.3, False), (-0.31, True)])
+def test_the_veto_needs_a_loss_beyond_the_adoption_rules_bound_not_a_noise_sign(sm, tmp_path, twin, vetoed):
+    """A twin's mean of -0.01 is inside a ten-seed mean's noise (paired sd about 0.06 to 0.08); only a loss beyond
+    vec.adoption.MAX_LOSS (0.3) on either cut vetoes."""
+    assert sm.VETO_LOSS == 0.3
+    r = _read(sm, tmp_path, {"g_mom_d075": 0.5, "g_mom_d1": 1.0}, TASK_CHAMBER={"gains": {"m1_r_gmom_g1": twin}})
+    assert r["valid"] and r["statement"]["veto"]["loses"] is vetoed
+    assert r["outcome"] == (f"{sm.VETOED} (g_mom_d1)" if vetoed else f"{sm.PASSES}: g_mom_d1")
+
+
 def test_losing_needs_at_most_two_seeds_ahead_on_each_cut(sm, tmp_path):
     two_ahead = [0.05, 0.05] + [-0.3] * 8
-    three_ahead = [0.05, 0.05, 0.05] + [-0.3] * 7
+    three_ahead = [0.06, 0.06, 0.06] + [-0.3] * 7
     r = _read(sm, tmp_path, {"g_mom_d075": two_ahead, "g_mom_d1": two_ahead})
-    assert r["valid"] and r["outcome"] == sm.LOSES
+    assert r["valid"] and r["outcome"] == f"{sm.LOSES} (A1 -0.23 / -0.23, A2 -0.23 / -0.23)"
     r = _read(sm, tmp_path / "more", {"g_mom_d075": two_ahead, "g_mom_d1": two_ahead},
               TASK_WHOLE={"gains": {"g_mom_d1": three_ahead}})
-    assert r["valid"] and r["outcome"] == sm.NOT_SEPARATED
+    assert r["valid"] and r["outcome"] == f"{sm.NOT_SEPARATED} (largest mean gain -0.19)"
+
+
+def test_the_loses_and_not_separated_texts_carry_their_means(sm, tmp_path):
+    """'loses' is a sign, not a size, and 'not separated' covers a steady gain below 0.3: both texts say the means."""
+    r = _read(sm, tmp_path, {"g_mom_d075": -0.05, "g_mom_d1": -0.05}, TASK_WHOLE={"gains": {"g_mom_d1": -0.07}})
+    assert r["outcome"] == f"{sm.LOSES} (A1 -0.05 / -0.05, A2 -0.05 / -0.07)"
+    r = _read(sm, tmp_path / "steady", {"g_mom_d075": 0.25, "g_mom_d1": 0.25})
+    assert r["form_a"]["A1"]["cuts"][sm.gc.TASK_WHOLE]["ahead"] == 10
+    assert r["outcome"] == f"{sm.NOT_SEPARATED} (largest mean gain +0.25)"
 
 
 def test_a_gain_of_exactly_point_three_does_not_pass(sm, tmp_path):
     r = _read(sm, tmp_path, {"g_mom_d075": 0.3, "g_mom_d1": 0.3})
     assert r["valid"] and not r["form_a"]["A1"]["passes"] and not r["form_a"]["A2"]["passes"]
-    assert r["outcome"] == sm.NOT_SEPARATED
+    assert r["outcome"] == f"{sm.NOT_SEPARATED} (largest mean gain +0.30)"
     r = _read(sm, tmp_path / "more", {"g_mom_d1": 0.31})
     assert r["outcome"] == f"{sm.PASSES}: g_mom_d1"
 
 
 def test_a_loss_beyond_point_three_on_one_cut_vetoes_the_rule(sm, tmp_path):
     r = _read(sm, tmp_path, {"g_mom_d1": 1.0}, TASK_WHOLE={"gains": {"g_mom_d1": -0.4}})
-    assert r["valid"] and not r["form_a"]["A2"]["passes"] and r["outcome"] == sm.NOT_SEPARATED
+    assert r["valid"] and not r["form_a"]["A2"]["passes"] and r["outcome"].startswith(sm.NOT_SEPARATED)
 
 
 @pytest.mark.parametrize("over, reason", [
