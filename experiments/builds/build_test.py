@@ -22,7 +22,8 @@ machine, and an official upload needs the captain's go-ahead.
           Feng's direction, on the cells g_mom edits (metacell factors through apply_factors with keep_depth, R1's held
           labels left alone), so no share, cell count or scope changes. Row R3b (the captain's ruling of 2026-11-10
           (p)): the factors edit cardiomyocytes and endocardium only; epicardium and vascular endothelium keep M1's
-          counts
+          counts. --direction-form common (campaign option, no ruling; default entry, the build as it was): each
+          group's Feng direction is try T55's form cn (experiments/t1_m1/part_read.py), with --g-mom only
   heart   B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
           procedure: --entry s1 = scope hypothesis H1; s2_trim = the s2 of docs/S2_RULES.md (H2 as a trim to half
           E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`). --trend
@@ -309,6 +310,43 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str]):
     return hook, record
 
 
+def _t1_direction_form_refusal(a) -> str | None:
+    """--direction-form common's flag refusals (campaign option; no ruling): the form try T55 read is M1 with R1, R2
+    and g_mom's factors, so common needs --g-mom and is refused with --strong-null, --herd, --no-hold-unbracketed,
+    --lib3-pair and --no-feng-hygiene. None where the build may go on (always with entry)."""
+    if a.direction_form != "common":
+        return None
+    if not a.g_mom:
+        return "--direction-form common is refused without --g-mom: try T55 read the form on M1 with g_mom's factors"
+    bad = [flag for flag, on in (("--strong-null", a.strong_null), ("--herd", a.herd),
+                                 ("--no-hold-unbracketed", not a.hold_unbracketed), ("--lib3-pair", a.lib3_pair),
+                                 ("--no-feng-hygiene", a.feng_hygiene is False)) if on]
+    if bad:
+        return (f"--direction-form common is refused with {', '.join(bad)}: try T55 read the form on M1 with R1, R2 "
+                "and g_mom's factors only")
+    return None
+
+
+def _t1_common_directions(directions: dict, genes, held) -> tuple[dict, dict]:
+    """--direction-form common: each group's direction try T55's form cn (experiments/t1_m1/part_read.py), a_n,g x c
+    on M and the entry's own values off M, made from the builder's own directions and held list by part_read's own
+    functions (`all_directions`: split_read's M, c and s_g, and the multiples a_n,g). part_read is imported here
+    only, so a build without the option imports nothing new. part_read's refusals (a group's moved genes are not M;
+    sum(c d_g) not positive in a group) stop the build before anything is written. Returns the directions handed to
+    build_submission and the record: per group a_n and the sha256 part_read records for the cn form."""
+    import part_read  # experiments/t1_m1 is on sys.path (above)
+
+    try:
+        forms, rec = part_read.all_directions(directions, [str(g) for g in genes], held)
+    except ValueError as e:
+        sys.exit(f"--direction-form common is refused: {e}")
+    groups = sorted(directions)
+    return {g: forms["cn"][g] for g in groups}, {
+        "form": "try T55's cn: a_n,g x c on M, the entry's values off M (experiments/t1_m1/part_read.py)",
+        "a_n": {g: rec["entry"][g][part_read.N] for g in groups},
+        "sha256": {g: rec["cn"][g]["sha256"] for g in groups}}
+
+
 def _t1_mid_rows(ref, in3: np.ndarray, seed: int) -> tuple[np.ndarray, dict]:
     """The mid base's pool (row R7; try T33's arm as a builder gets it): every library-3 cell of the reference, and in
     each chamber category a random fraction s / (1 + s) of the other libraries' cells, s being library 3's share of that
@@ -338,6 +376,9 @@ def _t1_mid_rows(ref, in3: np.ndarray, seed: int) -> tuple[np.ndarray, dict]:
 
 
 def build_t1(a) -> dict:
+    refusal = _t1_direction_form_refusal(a)
+    if refusal:
+        sys.exit(refusal)
     if a.g_mom and a.strong_null:
         sys.exit("--g-mom is refused with --strong-null: the two count edits have no ruled order and were never tested "
                  "together; a new row in experiments/harness/TRIES.md and the captain's ruling fix it first")
@@ -390,7 +431,10 @@ def build_t1(a) -> dict:
         shares = t1_scope.with_share(shares, "blood", a.blood_share, within=list(shares))
     directions, ext = feng_dirs.feng_directions(list(ref.var_names))
     held, feng_hygiene = _t1_held(union, directions, ref.var_names)
-    groups = feng_dirs.label_groups(ref.obs["celltype"].astype(str).unique())
+    common = None
+    if a.direction_form == "common":
+        directions, common = _t1_common_directions(directions, ref.var_names, held)
+    groups =feng_dirs.label_groups(ref.obs["celltype"].astype(str).unique())
     fraction = feng_dirs.bracket_fraction(10.5, 12.5)
     n = harness.count_for(board, ref.n_obs)
     extra = {} if prior is None else {"down_prior": prior}
@@ -423,6 +467,9 @@ def build_t1(a) -> dict:
         rec["mid_base"] = {"stream": [int(a.seed), T1_MID_STREAM], "categories": mid_record}
     if a.g_mom:
         rec["g_mom"] = g_mom_record
+    rec["direction_form"] = a.direction_form
+    if common is not None:
+        rec["direction_form_common"] = common
     return rec if strong is None else {**rec, "strong_null": strong}
 
 
@@ -598,6 +645,12 @@ def build_parser() -> argparse.ArgumentParser:
                                 "kept, no share, cell count or scope changed; refused with --no-hold-unbracketed; "
                                 "off: the entry as built, "
                                 "and only the captain's ruling turns it on for an upload)")
+            p.add_argument("--direction-form", choices=("entry", "common"), default="entry",
+                           help="the form of Feng's direction per group: entry = the entry's own (the default, the "
+                                "build as it was); common = try T55's form cn (experiments/t1_m1/part_read.py: the "
+                                "part all groups share, at each group's own squared size). A campaign option, no "
+                                "entry: needs --g-mom, refused with --strong-null, --herd, --no-hold-unbracketed, "
+                                "--lib3-pair and --no-feng-hygiene; only the captain's ruling puts it in an upload")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
