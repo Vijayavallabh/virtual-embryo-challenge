@@ -4153,57 +4153,55 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     entry records how line 18 ended and what the pass and the captain's two instructions of entry (b) led to. Every
     read below had its ledger row committed before its run or reading; candidate code stayed on campaign branches,
     and only reading scripts with tests, rows and results reached main.
-  - **1. Line 18 ends with no request: the embryo's partial coupling and its family.** The captain had asked for
-    "the same test with cells simply moved less". (a) Controls, tries E42a to E42d (row E42). The first brief was
-    wrong twice and its reviewers said so before any run: a control that damped by the transported share did not
-    move the cells as far as the partial arm (the premise "1.3 to 1.8 times as far" held for anchors only and
-    reversed at the cells), so a fourth control was built whose cells move on average exactly as far
-    (`fgw_damp_m`); and the reading as first written could put forward an arm that another passing arm led. The
-    reading was fixed before the run. Verdict "moving less": the movement-matched control passes both keep rules by
-    itself (+1.43 on the E7.5 backtest, ahead in 10 of 10 seeds, and +0.65 on the E7.25 one, 9 of 10; pair rule
-    S(0.45) +0.32), and `fgw_partial` (+1.88, +0.71; S(0.45) +0.56) leads none of its four controls. By the row the
-    arm put forward became `fgw_damp_m`, on the condition its row named: its amount of movement comes from cell-type
-    labels, which are not harmonised across stages, so its twin at the lineage level had to pass too. (b) Try E43,
-    the partial arm at the lineage level (`fgw_partial_grp`): it passes both rules (+1.38, 10 of 10; +0.72, 9 of
-    10; S(0.45) +0.49; no task below `fgw`), so the partial form does not hang on the label level. (c) Try E45, the
-    matched control at the lineage level (`fgw_damp_m_grp`): the adoption rule keeps it (+0.77 and +0.77) and the
-    pair rule does not (S(0.45) +0.26 against the 0.3 it asks). By rows E42 and E43, fixed before these runs, the
-    family closes with no request and no other arm takes its place. Every member's pair value is positive and near
-    the bar (+0.56, +0.49, +0.35, +0.32, +0.27, +0.26, +0.26). The captain can overrule the closure; the AI
-    assistant advises against it for the reason in (d).
-    (d) The check of the built file, which a side agent's note asked for and the captain forwarded (rows N51 and
-    N52). The entry's coupling fails in two ways that one flag had pooled: partners at random, and partners
-    mirrored. Row N51 computed the target-free flag of 2026-11-03 for all nine practice tasks (its gate reproduces
-    the committed diagnostic exactly): six tasks have partners at random on every draw; `late` (six draws), the
-    E7.25 backtest (five) and new2 (two) have mirrored draws beside clean ones. The test pair is flagged on ten of
-    ten draws, the upload's own included, and its draws lie between the two kinds (cross-correlation -0.26 to
-    -0.50, the upload's own -0.31; mirrored is below -0.5, random within about 0.3 of zero). [Corrected on
-    2026-11-17, entry (b): this sentence first said "of the mirrored kind", which rows N51 and N52 do not support.] Row N52 then read the committed scores by
-    that flag, inside one truth each: on `late` the arms that move cells less gain 1.65 to 2.65 on mirrored draws
-    and lose 0.57 to 1.79 on clean ones, and beside the second upload the pair value is 0 on every draw; on the
-    E7.25 backtest the damped arms gain 1.09 to 1.37 on mirrored draws and -0.07 to +0.16 on clean ones [corrected
-    on 2026-11-17, entry (b): first "nothing"], while the partial
-    arms gain the same on both (+0.66 and +0.76 to +0.79); on new2 every arm loses 1.05 to 1.54 on the two mirrored
-    draws, where the flattened cloud fits its truth better. So the kind of draw does not settle whether the change
-    helps: the hidden truth's shape does, and nothing released shows it. That is why the closure in (c) is left to
-    stand.
+  - **1. Line 18 ends with no request: the embryo's partial coupling and its family.** The captain had asked for "the
+    same test with cells simply moved less". (a) Controls, tries E42a to E42d (row E42). The first brief was wrong
+    twice and its reviewers said so before any run: a control that damped by the transported share did not move the
+    cells as far as the partial arm (the premise "1.3 to 1.8 times as far" held for anchors only and reversed at the
+    cells), so a fourth control was built whose cells move on average exactly as far (`fgw_damp_m`); and the reading
+    as first written could put forward an arm that another passing arm led. The reading was fixed before the run.
+    Verdict "moving less": the movement-matched control passes both keep rules by itself (+1.43 on the E7.5 backtest,
+    ahead in 10 of 10 seeds, and +0.65 on the E7.25 one, 9 of 10; pair rule S(0.45) +0.32), and `fgw_partial` (+1.88,
+    +0.71; S(0.45) +0.56) leads none of its four controls. By the row the arm put forward became `fgw_damp_m`, on the
+    condition its row named: its amount of movement comes from cell-type labels, which are not harmonised across
+    stages, so its twin at the lineage level had to pass too. (b) Try E43, the partial arm at the lineage level
+    (`fgw_partial_grp`): it passes both rules (+1.38, 10 of 10; +0.72, 9 of 10; S(0.45) +0.49; no task below `fgw`),
+    so the partial form does not hang on the label level. (c) Try E45, the matched control at the lineage level
+    (`fgw_damp_m_grp`): the adoption rule keeps it (+0.77 and +0.77) and the pair rule does not (S(0.45) +0.26 against
+    the 0.3 it asks). By rows E42 and E43, fixed before these runs, the family closes with no request and no other arm
+    takes its place. Every member's pair value is positive and near the bar (+0.56, +0.49, +0.35, +0.32, +0.27, +0.26,
+    +0.26). The captain can overrule the closure; the AI assistant advises against it for the reason in (d). (d) The
+    check of the built file, which a side agent's note asked for and the captain forwarded (rows N51 and N52). The
+    entry's coupling fails in two ways that one flag had pooled: partners at random, and partners mirrored. Row N51
+    computed the target-free flag of 2026-11-03 for all nine practice tasks (its gate reproduces the committed
+    diagnostic exactly): six tasks have partners at random on every draw; `late` (six draws), the E7.25 backtest
+    (five) and new2 (two) have mirrored draws beside clean ones. The test pair is flagged on ten of ten draws, the
+    upload's own included, and its draws lie between the two kinds (cross-correlation -0.26 to -0.50, the upload's own
+    -0.31; mirrored is below -0.5, random within about 0.3 of zero). [Corrected on 2026-11-17, entry (b): this
+    sentence first said "of the mirrored kind", which rows N51 and N52 do not support.] Row N52 then read the
+    committed scores by that flag, inside one truth each: on `late` the arms that move cells less gain 1.65 to 2.65 on
+    mirrored draws and lose 0.57 to 1.79 on clean ones, and beside the second upload the pair value is 0 on every
+    draw; on the E7.25 backtest the damped arms gain 1.09 to 1.37 on mirrored draws and -0.07 to +0.16 on clean ones
+    [corrected on 2026-11-17, entry (b): first "nothing"], while the partial arms gain the same on both (+0.66 and
+    +0.76 to +0.79); on new2 every arm loses 1.05 to 1.54 on the two mirrored draws, where the flattened cloud fits
+    its truth better. So the kind of draw does not settle whether the change helps: the hidden truth's shape does, and
+    nothing released shows it. That is why the closure in (c) is left to stand.
   - **2. The seventh sweep.** An independent agent classed 223 lines of the ledger, the plan and the research reports
-    (read 89, blocked by a named rule 73, closed by a pre-set gate 6, no counted read can judge 33, not buildable
-    from the record 20, open 2). Both open lines were built, reviewed and read. The within-upload mixture on Task 1
-    (tries T43a and T43b): the mixture loses 0.32 and 0.37 and its matched control loses the same, so there is no
-    mixture effect. Potts sorting on the heart (try H22): the sort reaches its targets after up to 4,200 swaps and
-    the score does not move (within 0.02). The sweep's hard calls were read where a form without a free number
-    existed, so that no label stands in for a read: the multinomial redraw on Task 1 (try T43c, item 3 below); the
-    shrinkage of M1's direction (reading N48 and tries T42a to T42d, item 4); the interior-reference residual on
-    the embryo (try E44: -0.25 on the E7.5 backtest, 0 of 10 seeds, and +4.32 on the E7.25 one; one-sided, and it
-    fails both upload rules; the test pair would correct E7.5 in the position where the arm does nothing on the
-    practice tasks). Four were closed without a read [five, counted on 2026-11-17: the last clause holds two; entry 2026-11-17 (b)
-    restates each ground from the record, and replaces the two marked "structure" for the reversal constant and the
-    persistence gate and the two marked "not buildable"], each on a ground that is not the AI assistant's odds: the
-    heart's reversal constant needs four input stages and the 1.75-day backtest has three (structure); the
-    persistence gate has no form on the embryo's two brackets (structure); the heart's span-matched shuffle has no
-    bracket segregation to undo and the ledger's rule 3 asks a reason (rule); the embryo's latent Gaussian
-    transport and Task 1's curvature term have no form without a free number (not buildable from the record).
+    (read 89, blocked by a named rule 73, closed by a pre-set gate 6, no counted read can judge 33, not buildable from
+    the record 20, open 2). Both open lines were built, reviewed and read. The within-upload mixture on Task 1 (tries
+    T43a and T43b): the mixture loses 0.32 and 0.37 and its matched control loses the same, so there is no mixture
+    effect. Potts sorting on the heart (try H22): the sort reaches its targets after up to 4,200 swaps and the score
+    does not move (within 0.02). The sweep's hard calls were read where a form without a free number existed, so that
+    no label stands in for a read: the multinomial redraw on Task 1 (try T43c, item 3 below); the shrinkage of M1's
+    direction (reading N48 and tries T42a to T42d, item 4); the interior-reference residual on the embryo (try E44:
+    -0.25 on the E7.5 backtest, 0 of 10 seeds, and +4.32 on the E7.25 one; one-sided, and it fails both upload rules;
+    the test pair would correct E7.5 in the position where the arm does nothing on the practice tasks). Four were
+    closed without a read [five, counted on 2026-11-17: the last clause holds two; entry 2026-11-17 (b) restates each
+    ground from the record, and replaces the two marked "structure" for the reversal constant and the persistence gate
+    and the two marked "not buildable"], each on a ground that is not the AI assistant's odds: the heart's reversal
+    constant needs four input stages and the 1.75-day backtest has three (structure); the persistence gate has no form
+    on the embryo's two brackets (structure); the heart's span-matched shuffle has no bracket segregation to undo and
+    the ledger's rule 3 asks a reason (rule); the embryo's latent Gaussian transport and Task 1's curvature term have
+    no form without a free number (not buildable from the record).
   - **3. The count redraw on Task 1 gains 3.8 points on both practice cuts and leads to no request (try T43c).** A
     second layer of count noise on the drawn cells (the heart's try H19 on Task 1) scores +3.82 and +3.74 above B0,
     ahead on every seed, mostly on the covariance term. The released files give the reason: the E9.5 cells the
@@ -4290,20 +4288,20 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **8. Errors of the AI assistant in this round, and what caught them.** Its briefs were wrong before any run in
     every build of the round, and the independent reviewers caught each: the embryo controls matched share and not
     movement; their first reading could put a led arm forward and did not void on a refused control; the Task 1
-    mixture's control matched counts and not the scorer's log-space pseudobulk, and the premise that the redraw
-    would lose was false; the heart sort's validity check was false above 1,500 cells and its two arms were one swap
-    path; the shrinkage read's verdict list could put the closed scalar form forward; the residual arm "keeps the
-    stage difference" only for log-linear trends; the lineage twin differs from its sibling through one scalar; the
-    defect flag pooled two kinds of draw; the heart flow's recentring identity did not survive the depth rule and its
-    first placebo destroyed the mean development; the step controls compared levels where increments were meant and
-    took a control with twice the redraw for a matched one; the read by library named where a gain comes from, which
-    its design cannot show; the share reading mixed corrected and uncorrected quantities and could not read "inside"
-    at the truth. One error reached the record: the outcome of try E45 was first written with five pair-rule figures [first "four"; corrected 2026-11-17]
-    and one sentence that the AI assistant had not read from the reading's file; it corrected them within the hour
-    (the verdict was unchanged) and noted it in the row. Its pre-run odds were wrong on N48, T43c, T44 and T47's
-    kind statement, and are recorded as such. And one thing it did that no rule forbids but the next rounds avoid:
-    it polled the logs of running tries, saw the first seeds' scores of try T44 before that try's reading, and
-    wrote the briefs of tries T45 to T47 on that sight (`docs/DATA_POLICY.md` 2026-11-14 (a)).
+    mixture's control matched counts and not the scorer's log-space pseudobulk, and the premise that the redraw would
+    lose was false; the heart sort's validity check was false above 1,500 cells and its two arms were one swap path;
+    the shrinkage read's verdict list could put the closed scalar form forward; the residual arm "keeps the stage
+    difference" only for log-linear trends; the lineage twin differs from its sibling through one scalar; the defect
+    flag pooled two kinds of draw; the heart flow's recentring identity did not survive the depth rule and its first
+    placebo destroyed the mean development; the step controls compared levels where increments were meant and took a
+    control with twice the redraw for a matched one; the read by library named where a gain comes from, which its
+    design cannot show; the share reading mixed corrected and uncorrected quantities and could not read "inside" at
+    the truth. One error reached the record: the outcome of try E45 was first written with five pair-rule figures
+    [first "four"; corrected 2026-11-17] and one sentence that the AI assistant had not read from the reading's file;
+    it corrected them within the hour (the verdict was unchanged) and noted it in the row. Its pre-run odds were wrong
+    on N48, T43c, T44 and T47's kind statement, and are recorded as such. And one thing it did that no rule forbids
+    but the next rounds avoid: it polled the logs of running tries, saw the first seeds' scores of try T44 before that
+    try's reading, and wrote the briefs of tries T45 to T47 on that sight (`docs/DATA_POLICY.md` 2026-11-14 (a)).
   - **9. What waits for the captain** (asked on 2026-11-14, not answered; nothing in the plan is blocked by them).
     (i) Whether to reopen Task 1's read depth, given item 3: the AI assistant's advice is the rule's, released data
     alone or decline, with no lean [since the organisers' answer of 2026-11-17 the rule's single outcome, declined:
