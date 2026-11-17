@@ -398,10 +398,11 @@ def _task(world, gains=None, seeds=range(10), commit="c" * 40, clean=True, fract
           directions=None, dc=None, identical=(), anchor_failures=None, agree=None, truth=None, scores=None,
           truth_sha256="default", gs=None):
     """gains: arm -> gain over its entry arm (a number or ten per-seed values); default every cn arm +0.5, every dc
-    arm +0.6, every gs arm -0.2 (so that the plain steps are statement 3's control unless a test says otherwise).
-    identical: form arms that score exactly as their entry arm on every seed."""
+    arm +0.6, the gs arms -0.2 at x1 to x3 and -0.5 at x4 (so that gs is behind the plain steps and its best, x3, is
+    inside its range unless a test says otherwise). identical: form arms that score exactly as their entry arm on
+    every seed."""
     gains = {**dict.fromkeys(CN.values(), 0.5), **dict.fromkeys(DC.values(), 0.6), **dict.fromkeys(GS.values(), -0.2),
-             **(gains or {})}
+             GS[4]: -0.5, **(gains or {})}
     plain = scores or SCORE
     rows = []
     for i, s in enumerate(seeds):
@@ -543,52 +544,80 @@ def test_statement_2_counts_and_names_the_cells(pr_, tmp_path):
            "step): ahead in 2 of 24 cells (lib3 x1, lib2 x3)" in _text(tmp_path)
 
 
+def _both(plain, scaled):
+    """Statement 3's two comparisons as the statement gives them: (arm, mean, seeds ahead, label) each."""
+    return "; ".join(f"against the {w} {a}: {m:+.2f} points, ahead {n} of 10, try T46's test: {lab}"
+                     for w, (a, m, n, lab) in (("plain best", plain), ("group-scaled best", scaled)))
+
+
 def test_statement_3_above_and_not_above_the_best_plain_step(pr_, tmp_path):
-    # in lib2 cn's best is x1 (53.5), below the entry's best x4 (54.2): not above; dc's best x4 (54.8): above
-    r = _read(pr_, tmp_path, by_world={"lib2": {CN[2]: -2.0, CN[3]: -2.0, CN[4]: -2.0},
+    # in lib2 cn's best is x1 (53.4), below the entry's best x4 (54.2) and gs's best x3 (53.8): not above; dc's best x4
+    # (54.8) is above both
+    r = _read(pr_, tmp_path, by_world={"lib2": {CN[1]: 0.4, CN[2]: -2.0, CN[3]: -2.0, CN[4]: -2.0},
                                        "ref50": {DC[4]: -0.5, DC[3]: 0.3}})
     s = r["statement_3"]["lib2"]
-    assert s["cn"]["form_multiple"] == 1 and s["cn"]["entry_multiple"] == 4 and s["cn"]["gs_multiple"] == 4
-    assert s["cn"]["control"] == X4  # the plain best (54.2) above the group-scaled best (54.0)
-    assert s["cn"]["comparison"]["mean"] == pytest.approx(53.5 - 54.2) and s["cn"]["said"] == "not above"
-    assert s["cn"]["against_group_scaled"]["mean"] == pytest.approx(53.5 - 54.0)
+    assert s["cn"]["form_multiple"] == 1 and s["cn"]["entry_multiple"] == 4 and s["cn"]["gs_multiple"] == 3
+    assert "control" not in s["cn"] and "comparison" not in s["cn"]  # no single control (must-fix after review 3)
+    assert s["cn"]["against_plain"]["mean"] == pytest.approx(53.4 - 54.2) and s["cn"]["said"] == "not above"
+    assert s["cn"]["against_group_scaled"]["mean"] == pytest.approx(53.4 - 53.8)
     assert s["dc"]["form_multiple"] == 4 and s["dc"]["said"] == ABOVE
     t = r["statement_3"]["ref50"]["dc"]
-    assert t["form_multiple"] == 3 and t["comparison"]["mean"] == pytest.approx(54.3 - 54.2)
+    assert t["form_multiple"] == 3 and t["against_plain"]["mean"] == pytest.approx(54.3 - 54.2)
     assert t["said"] == ABOVE  # positive, every seed ahead, below the 0.3 bar ...
-    # ... and the statement carries its size and its label by try T46's test (should-fix after review 2)
-    assert t["statement"] == f"{ABOVE}; +0.10 points against m1_r_gmom_x4, ahead 10 of 10, try T46's test: level"
+    # ... and the statement gives both comparisons, each with its size and its label by try T46's test
+    assert t["statement"] == f"{ABOVE}; " + _both((X4, 0.1, 10, "level"), (GS[3], 0.5, 10, "ahead"))
     assert r["outcome"]["statement_3"]["lib2"] == {
-        "cn": "not above; -0.70 points against m1_r_gmom_x4, ahead 0 of 10, try T46's test: behind",
-        "dc": f"{ABOVE}; +0.60 points against m1_r_gmom_x4, ahead 10 of 10, try T46's test: ahead"}
+        "cn": "not above; " + _both((X4, -0.8, 0, "behind"), (GS[3], -0.4, 0, "behind")),
+        "dc": f"{ABOVE}; " + _both((X4, 0.6, 10, "ahead"), (GS[3], 1.0, 10, "ahead"))}
     txt = _text(tmp_path)
-    assert "lib2, cn at x1 against the plain step at x4 (-0.70 points, ahead 0 of 10) and the group-scaled step at " \
-           "x4 (-0.50 points, ahead 0 of 10), c-matched plain multiple x1.39: not above; -0.70 points against " \
-           "m1_r_gmom_x4, ahead 0 of 10, try T46's test: behind" in txt
+    assert "    lib2, cn at x1 (plain best x4, group-scaled best x3, c-matched plain multiple x1.39): not above; " \
+           + _both((X4, -0.8, 0, "behind"), (GS[3], -0.4, 0, "behind")) in txt
+
+
+def test_statement_3_above_needs_both_controls_the_reviewers_case(pr_, tmp_path):
+    """Must-fix after review 3, the reviewer's case: gs's best has a higher mean than the plain best, and dc holds
+    against gs (10 of 10) but not against the plain best (7 of 10). The old code tested the higher-mean control alone
+    and said 'above'; both must hold, so it is 'not above', and the statement gives both comparisons."""
+    gs3 = [0.7] * 7 + [-0.3] * 3  # gs_x3 - x4: +0.5 on 7 seeds, -0.5 on 3 (x3 is 0.2 below x4)
+    dc4 = [1.0] * 7 + [-0.2] * 3  # dc_x4 - x4: +1.0 on 7 seeds, -0.2 on 3
+    r = _read(pr_, tmp_path, by_world={"lib3": {GS[3]: gs3, DC[4]: dc4}})
+    assert r["valid"], r["validity"]["reasons"]
+    means = r["mean_scores"]["lib3"]
+    assert means[GS[3]] > means[X4]  # the old code's control was gs
+    s = r["statement_3"]["lib3"]["dc"]
+    assert s["form_multiple"] == 4 and s["entry_multiple"] == 4 and s["gs_multiple"] == 3
+    g, p = s["against_group_scaled"], s["against_plain"]
+    assert g["mean"] == pytest.approx(0.44) and g["seeds_ahead"] == 10 and s["holds_group_scaled"]
+    assert p["mean"] == pytest.approx(0.64) and p["seeds_ahead"] == 7 and not s["holds_plain"]
+    assert s["said"] == "not above"
+    assert s["statement"] == "not above; " + _both((X4, 0.64, 7, "level"), (GS[3], 0.44, 10, "ahead"))
+    assert r["outcome"]["statement_3"]["lib3"]["dc"] == s["statement"]
+    # held against both elsewhere: above
+    assert r["statement_3"]["lib2"]["dc"]["said"] == ABOVE
 
 
 def test_statement_3_a_per_group_step_beats_dc_and_is_not_above(pr_, tmp_path):
     """Must-fix after review 2 (the reviewer's case in score form): a truth along each group's own entry direction,
     deeper in one group than the others, puts dc above every plain step at one multiple, while the group-scaled step
     (the entry's direction times a_n/p_g per group) beats it. Read against the plain steps alone this would be 'above';
-    against the best of both it is 'not above'."""
-    gains = {**{GS[m]: g for m, g in zip((1, 2, 3, 4), (0.3, 0.6, 0.8, 0.85), strict=True)},
+    against both it is 'not above'."""
+    gains = {**{GS[m]: g for m, g in zip((1, 2, 3, 4), (0.3, 0.6, 1.0, 0.7), strict=True)},
              **dict.fromkeys(CN.values(), -1.0)}
     r = _read(pr_, tmp_path, by_world={"lib3": gains})
     assert r["valid"], r["validity"]["reasons"]
     s = r["statement_3"]["lib3"]["dc"]
-    assert s["form_multiple"] == 4 and s["entry_multiple"] == 4 and s["gs_multiple"] == 4 and s["control"] == GS[4]
+    assert s["form_multiple"] == 4 and s["entry_multiple"] == 4 and s["gs_multiple"] == 3
     assert s["against_plain"]["mean"] == pytest.approx(0.6) and s["against_plain"]["seeds_ahead"] == 10
-    assert holds_plain(s["against_plain"])  # the old control (plain steps only) would have read 'above'
-    assert s["against_group_scaled"]["mean"] == pytest.approx(-0.25)
-    assert s["comparison"]["mean"] == pytest.approx(-0.25) and s["said"] == "not above"
-    assert s["statement"] == "not above; -0.25 points against m1_r_gmom_gs_x4, ahead 0 of 10, try T46's test: level"
-    # where gs is behind the plain steps (the other worlds), the plain best is the control and dc stays above
-    assert r["statement_3"]["lib2"]["dc"]["control"] == X4 and r["statement_3"]["lib2"]["dc"]["said"] == ABOVE
+    assert s["holds_plain"] and holds_plain(s["against_plain"])  # the plain steps alone would have read 'above'
+    assert s["against_group_scaled"]["mean"] == pytest.approx(-0.2) and not s["holds_group_scaled"]
+    assert s["said"] == "not above"
+    assert s["statement"] == "not above; " + _both((X4, 0.6, 10, "ahead"), (GS[3], -0.2, 0, "level"))
+    # where gs is behind the plain steps (the other worlds), dc holds against both and stays above
+    assert r["statement_3"]["lib2"]["dc"]["said"] == ABOVE
     # gs is no form: statements 1 and 2 never read it
     assert set(r["differences"]) == {"cn", "dc"} and set(r["statement_1"]) == {"cn", "dc"}
-    assert "lib3, dc at x4 against the plain step at x4 (+0.60 points, ahead 10 of 10) and the group-scaled step at " \
-           "x4 (-0.25 points, ahead 0 of 10)" in _text(tmp_path)
+    assert "lib3, dc at x4 (plain best x4, group-scaled best x3, c-matched plain multiple x5.56): not above; " \
+           + _both((X4, 0.6, 10, "ahead"), (GS[3], -0.2, 0, "level")) in _text(tmp_path)
 
 
 def holds_plain(c):
@@ -609,12 +638,12 @@ def test_statement_3_reads_the_plain_curve_at_x1_5(pr_, tmp_path):
     r = _read(pr_, tmp_path, over={"lib2": {"scores": peak}})
     assert r["valid"], r["validity"]["reasons"]
     s = r["statement_3"]["lib2"]
-    assert s["dc"]["entry_multiple"] == 1.5 and s["dc"]["control"] == X15
-    assert s["dc"]["comparison"]["mean"] == pytest.approx(54.8 - 54.75) and s["dc"]["said"] == ABOVE
+    assert s["dc"]["entry_multiple"] == 1.5 and s["dc"]["against_plain"]["base"] == X15
+    assert s["dc"]["against_plain"]["mean"] == pytest.approx(54.8 - 54.75) and s["dc"]["said"] == ABOVE
     # without x1.5 the plain best would be x4 (54.2) and cn (54.7 at x4) would read 'above'
-    assert s["cn"]["said"] == "not above" and s["cn"]["comparison"]["mean"] == pytest.approx(54.7 - 54.75)
+    assert s["cn"]["said"] == "not above" and s["cn"]["against_plain"]["mean"] == pytest.approx(54.7 - 54.75)
     assert r["mean_scores"]["lib2"][X15] == pytest.approx(54.795)
-    assert "lib2, cn at x4 against the plain step at x1.5 (" in _text(tmp_path)
+    assert "lib2, cn at x4 (plain best x1.5, group-scaled best x3" in _text(tmp_path)
 
 
 def test_statement_3_with_a_rising_entry_curve_is_not_above(pr_, tmp_path):
@@ -626,16 +655,15 @@ def test_statement_3_with_a_rising_entry_curve_is_not_above(pr_, tmp_path):
     assert r["valid"], r["validity"]["reasons"]
     assert all(r["differences"]["dc"][f"lib2 x{m}"]["seeds_ahead"] == 10 for m in (1, 2, 3, 4))
     s = r["statement_3"]["lib2"]
-    assert s["dc"]["form_multiple"] == 4 and s["dc"]["entry_multiple"] == 8
-    assert s["dc"]["comparison"]["mean"] == pytest.approx(53.99 - 54.21)
+    assert s["dc"]["form_multiple"] == 4 and s["dc"]["entry_multiple"] == 8 and s["dc"]["gs_multiple"] == 3
+    assert s["dc"]["against_plain"]["mean"] == pytest.approx(53.99 - 54.21)
     assert s["dc"]["c_matched_multiple"] == pytest.approx(4 * 1.25 / 0.9)  # within the range read: readable
     assert s["dc"]["said"] == "not above" and s["cn"]["said"] == "not above"
     # the brief's range (the entry's best over x1 to x4) would have read "above" here
     four = pr_.best_multiple(r["mean_scores"]["lib2"], pr_.ENTRY_AT.__getitem__)
     assert four == 4 and r["mean_scores"]["lib2"][DC[4]] > r["mean_scores"]["lib2"][X4]
-    assert "lib2, dc at x4 against the plain step at x8 (-0.22 points, ahead 0 of 10) and the group-scaled step at " \
-           "x4 (+0.39 points, ahead 10 of 10), c-matched plain multiple x5.56: not above; -0.22 points against " \
-           "m1_r_gmom_x8, ahead 0 of 10, try T46's test: level" in _text(tmp_path)
+    assert "lib2, dc at x4 (plain best x8, group-scaled best x3, c-matched plain multiple x5.56): not above; " \
+           + _both((X8, -0.22, 0, "level"), (GS[3], 0.59, 10, "ahead")) in _text(tmp_path)
 
 
 def test_statement_3_is_not_readable_at_the_edge_beyond_the_c_matched_multiple(pr_, tmp_path):
@@ -649,11 +677,42 @@ def test_statement_3_is_not_readable_at_the_edge_beyond_the_c_matched_multiple(p
     assert s["entry_multiple"] == 8 and s["form_multiple"] == 4
     want = ("not readable: the entry's best is at the edge of the range read (x8) and the form at x4 moves along c as "
             "far as the entry at x16.67")
-    assert s["statement"] == want and r["outcome"]["statement_3"]["lib2"]["dc"] == want
-    assert want in _text(tmp_path)
+    assert s["said"] == want
+    assert s["statement"] == f"{want}; " + _both((X8, 0.19, 10, "level"), (GS[3], 1.0, 10, "ahead"))
+    assert r["outcome"]["statement_3"]["lib2"]["dc"] == s["statement"] and s["statement"] in _text(tmp_path)
     # where the plain curve turned inside the range, the same ratio stays readable
     assert r["statement_3"]["lib3"]["dc"]["entry_multiple"] == 4
     assert r["statement_3"]["lib3"]["dc"]["said"] == ABOVE
+
+
+def test_statement_3_is_not_readable_where_the_group_scaled_best_is_at_its_edge(pr_, tmp_path):
+    """Should-fix after review 3: gs's best at x4, the edge of its range, could be beaten by a larger group-scaled
+    step; statement 3 is not readable there, though the form holds against both controls read."""
+    r = _read(pr_, tmp_path, by_world={"ref67": {GS[4]: -0.1}})
+    assert r["valid"], r["validity"]["reasons"]
+    s = r["statement_3"]["ref67"]
+    assert s["dc"]["gs_multiple"] == 4 and s["dc"]["holds_plain"] and s["dc"]["holds_group_scaled"]
+    want = "not readable: the group-scaled best is at the edge of its range read (x4)"
+    assert s["dc"]["said"] == s["cn"]["said"] == want
+    assert s["dc"]["statement"] == f"{want}; " + _both((X4, 0.6, 10, "ahead"), (GS[4], 0.7, 10, "ahead"))
+    assert r["outcome"]["statement_3"]["ref67"]["cn"].startswith(want + "; against the plain best")
+    assert s["dc"]["statement"] in _text(tmp_path)
+    # gs's best inside its range (the default x3): readable
+    assert r["statement_3"]["lib3"]["dc"]["gs_multiple"] == 3 and r["statement_3"]["lib3"]["dc"]["said"] == ABOVE
+    assert pr_.GS_EDGE == 4
+
+
+def test_statement_3_names_both_edges(pr_, tmp_path):
+    dc = _dc_rec(p_g=0.3)
+    over = {k: {"dc": dc} for k in WORLDS}
+    over["lib2"]["scores"] = RISING
+    r = _read(pr_, tmp_path, over=over, by_world={"lib2": {GS[4]: 0.01}})
+    assert r["valid"], r["validity"]["reasons"]
+    s = r["statement_3"]["lib2"]["dc"]
+    assert s["entry_multiple"] == 8 and s["gs_multiple"] == 4
+    assert s["said"] == ("not readable: the entry's best is at the edge of the range read (x8) and the form at x4 "
+                         "moves along c as far as the entry at x16.67; the group-scaled best is at the edge of its "
+                         "range read (x4)")
 
 
 def test_c_ratio_is_the_largest_a_n_over_p_g_and_infinite_where_p_g_is_not_positive(pr_):
@@ -732,10 +791,46 @@ def test_the_limits_and_choices_are_in_the_text(pr_, tmp_path):
                  "a consistent tiny shift passes it in every cell", "is evidence of step size",
                  "no world here varies how much of them the truth carries",
                  "The library-2 thinned worlds have no draw control",
-                 "6 of the 24 cells (lib3, ref67 and ref50 at 1 and 2 times the step) repeat tries T50, T54 and T56",
+                 "8 of the 24 cells (lib3 x1, lib3 x2, lib2 x1, lib2 x2, ref67 x1, ref67 x2, ref50 x1, ref50 x2) "
+                 "repeat for cn the committed scores of tries T55 and T56",
+                 "a rescored world (lib3, lib2, ref67 and ref50) is no new evidence for its committed arms",
+                 "and every arm of ref67_lib2 and ref50_lib2",
+                 "which side that selection favours is not shown",
+                 "its 'above' must hold against both",
+                 "and where the group-scaled best is at 4, the edge of its own range",
                  "what those parts carry over the two days of the test no released day shows",
                  "no statement may be used with a figure for it"):
         assert want in txt, want
+    for x in pr_.STATEMENTS:  # the statements as the code reads them, for the row to quote (should-fix, review 3)
+        assert f"  - {x}" in txt
+    assert json.loads((tmp_path / "out" / "t57.json").read_text())["statements"] == list(pr_.STATEMENTS)
+    assert "where against both the mean is positive with at least 8 of 10 seeds ahead" in pr_.STATEMENTS[2]
+
+
+def test_the_limit_counts_the_repeated_cells_from_the_reads_gates(pr_, monkeypatch):
+    """Must-fix after review 3: the cells repeating committed results are counted from the committed-score gates the
+    read applies (8 of 24: lib2's cn and cn_x2 are try T55's), and no rescored world is called new evidence."""
+    want = tuple(f"{k} x{m}" for k in WORLDS for m, a in CN.items()
+                 if any(a in COMMITTED[f].get(k, ()) for f in ("t55", "t56")))
+    assert pr_.repeated_cn_cells() == want and len(want) == 8
+    limit = pr_.LIMITS[-1]
+    assert limit == pr_.repeated_limit() and limit.startswith(f"8 of the 24 cells ({', '.join(want)}) repeat for cn")
+    assert "new evidence is" not in limit and "the library-2 worlds" not in limit
+    assert "the entry's m1_r_gmom_x8 in ref67 and ref50" in limit  # try T54 has no x8: not a rescored arm
+    # the count follows the gates, not a figure written by hand
+    monkeypatch.delitem(pr_.CN_SOURCE, "lib2")
+    assert len(pr_.repeated_cn_cells()) == 6 and pr_.repeated_limit().startswith("6 of the 24 cells (lib3 x1, ")
+    monkeypatch.setattr(pr_, "REPRO_CN", (CN[1],))
+    assert pr_.repeated_limit().startswith("3 of the 24 cells (lib3 x1, ref67 x1, ref50 x1)")
+
+
+def test_no_hard_coded_ratio_and_the_recorded_ratios_are_printed(pr_, tmp_path):
+    """Should-fix after review 3: the per-group ratios a_n/p_g come from the record, not from figures in the text."""
+    for x in (*pr_.LIMITS, *pr_.CHOICES, pr_.__doc__, *pr_.STATEMENTS):
+        assert "1.46" not in x and "1.16" not in x and "1.20" not in x
+    _read(pr_, tmp_path)
+    assert "CM: a_n 1.2500, p_g 0.9000, dc's squared size over the entry's 1.4816, gs's ratio a_n/p_g 1.3889" \
+        in _text(tmp_path)
 
 
 VOIDS = [
@@ -781,6 +876,14 @@ VOIDS = [
     ({"ref67_lib2": {"thinning": {"stream": [54, 3]}}}, None,
      "ref67_lib2: the thinning record's p and stream (0.6666666666666666, [54, 3]) are not ref67's"),
     ({"ref50_lib2": {"thinning": {"p": 2 / 3, "stream": [54, 1]}}}, None, "are not ref50's"),
+    # the whole thinning record against the twin's, field for field (should-fix after review 3): each passes try
+    # T54's own checks and has the twin's p and stream
+    ({"ref67_lib2": {"thinning": {"depth_ratio": 0.6667}}}, None,
+     "ref67_lib2: the thinning record is not ref67's field for field (it differs in ['depth_ratio'])"),
+    ({"ref50_lib2": {"thinning": {"rebuild_largest_difference": 1e-7}}}, None,
+     "ref50_lib2: the thinning record is not ref50's field for field (it differs in ['rebuild_largest_difference'])"),
+    ({"ref67_lib2": {"thinning": {"rebuild_pool": "other"}}}, None,
+     "ref67_lib2: the thinning record is not ref67's field for field (it differs in ['rebuild_pool'])"),
     ({"ref50": {"thinning": {"depth_ratio": 0.48}}}, None, "ref50: realised depth ratio"),
     ({"ref67_lib2": {"thinning": {"any_cell_emptied": True}}}, None, "ref67_lib2: the thinning left a cell"),
     ({"ref50_lib2": {"thinning": {"rebuild_largest_difference": 1e-3}}}, None, "ref50_lib2: the rebuild check's"),
