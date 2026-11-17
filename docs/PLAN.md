@@ -4631,6 +4631,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     step) share the property the reads found and are not built further: their sign at the test turns on the same
     blocked quantity. The builder option of `campaign/t1-n` stays on its branch, unused. The estimate stays 184 (170
     to 198).
-  - **Try T52** (the direction made with a smaller pseudocount) is still running. Its use was test C, which could only
+  - **Try T52, read at 14:20 UTC:** "uniform inflation scores better". At the same delivered size the direction made with a
+    pseudocount of 0.1 scores 0.47 to 0.65 below the uniform arm on both cuts, on every seed, so test C is not met and
+    nothing changes here. The sentence written before its reading follows. Try T52 (the direction made with a smaller
+    pseudocount) was still running when this entry was written. Its use was test C, which could only
     have replaced a uniform value by a changed direction of larger delivered size; the verdict stops any such change
     for the reasons above, so T52 is read and recorded when it finishes and changes nothing here.
