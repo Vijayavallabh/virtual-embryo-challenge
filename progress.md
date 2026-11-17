@@ -3,6 +3,33 @@
 ## Current State
 
 **Last Updated:** 2026-11-17
+**2026-11-17, 22:30 UTC: a second Task 1 line was read, the common part of Feng's direction; it has no request, and
+one more read (try T57, in build, no row yet, nothing run) decides whether it gets one. Nothing in any upload,
+build, rule or gate file has changed** (`docs/PLAN.md` decision log 2026-11-17 (f) to (h)). The form `cn` steps
+every cell group along the part of the direction that all four groups share, at the squared size of the group's own
+direction. Try T55: it scores +0.37 and +0.39 above the entry's direction on the two practice cuts, ahead on every
+seed (library 3 +0.37/+0.41, library 1 +0.29/+0.46, library 2 +0.19/+0.09). Try T56: the gain stays positive at
+every truth depth read, +0.30 to +0.40 at the practice fraction and +0.33 to +0.50 at twice it, in seven worlds. The
+rule for the AI assistant's advice was fixed before T56 (entry (g)): the sign at every depth (met), an independent
+recomputation (met; two figures of T55 were one hundredth low and are corrected), a cold adversary that does not say
+stop, and the exact form by an option that leaves default builds byte-identical (ready on `campaign/t1-w`, f51a278,
+unused). The cold adversary put the chance of a mistake at 55%, and the checks it named on committed files hold in
+part (entry (h)): the form raises every group's coefficient on the common part (cardiomyocytes 0.67 to 0.98) and
+deletes the part of each group's direction orthogonal to it (0.25 to 0.54 of its squared size); fitted jointly, the
+released day does follow those deleted parts, so try T51's sentence that the cardiomyocytes' own part is not
+followed is withdrawn (it came from fitting the parts singly); a plain step of 1.25 times gains more than the form
+where the truth is as deep as the reference or shallower and less where it is deeper, and in the deepest world the
+form at twice the fraction scores above every plain step up to four times (59.01 against 58.52). So the form is in
+part the larger step that entry (e) did not put forward. Try T57 reads two forms (the common part alone; the common
+part raised with each group's orthogonal part kept) and a group-scaled control at one to four times the practice
+step in six worlds, two of them built from library 2, where the form gained least. Its use was fixed in entry (h)
+before it has a row: a form goes to the captain only if it is ahead of the entry's direction in all 24 cells; any
+other reading closes the family with no request. Its script is on `campaign/t1-x-fix2` (75e137b) after three rounds
+of independent review, with a fourth under way. The schedule amendments are drafted on `draft/schedule-nov21-fix`
+(490a51a; markers stand where the captain's words go; not merged). Tries: T1 118, embryo 73, heart 31, T3 31. The
+committed estimate stays 184 (170 to 198). **Waiting for the captain,** unchanged: the dates (no upload is possible
+until the gate's date is moved), the six confirmations for the method report's exposure section, and for information
+the size of Task 3's factor and of Task 1's step (advice: change nothing).
 **2026-11-17, 14:00 UTC: the step's request is not put forward; the advice is to keep 0.40 on both Task 1 uploads.
 Nothing in any upload, build, rule or gate file has changed** (`docs/PLAN.md` decision log 2026-11-17 (d) and (e)).
 All seven reads registered today are recorded (T48 to T54; T52, read last, says that at the same delivered size
