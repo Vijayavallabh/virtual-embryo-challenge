@@ -59,6 +59,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -337,7 +338,35 @@ def _t1_mid_rows(ref, in3: np.ndarray, seed: int) -> tuple[np.ndarray, dict]:
     return np.sort(np.concatenate(keep)), record
 
 
+def _t1_direction_fraction(a, bracket: float) -> tuple[float, str]:
+    """The share of Feng's bracket M1's direction step covers, and its source. --direction-fraction not given (None):
+    the bracket's share of days (`feng_dirs.bracket_fraction(10.5, 12.5)`), the entry as built, and "bracket". Given:
+    F in place of it at the one place the build passes it on (build_submission's direction_fraction), and "option";
+    nothing else in the build reads it. No ruling has put it in an upload (tries T44 to T47 of
+    experiments/harness/TRIES.md read a larger step on practice cuts only). Refused, before anything is read, unless F
+    is finite and in (0, 1] (a step beyond Feng's whole bracket extrapolates past E14.5, which no read measured), and
+    unless the build is the form those reads read: M1 with R1 and g_mom's factors (--g-mom), without --strong-null,
+    --herd or --lib3-pair, and without --no-hold-unbracketed."""
+    f = a.direction_fraction
+    if f is None:
+        return bracket, "bracket"
+    if not math.isfinite(f) or not 0.0 < f <= 1.0:
+        sys.exit(f"--direction-fraction {f}: the share of Feng's E9.5 -> E14.5 bracket must be finite and in (0, 1] "
+                 "(above 1 the step reaches past Feng's last stage, 0 or below is no step or a reversed one)")
+    if not a.g_mom:
+        sys.exit("--direction-fraction is refused without --g-mom: the practice reads of a larger step (tries T44 to "
+                 "T47 of experiments/harness/TRIES.md) read M1 with R1, R2 and g_mom's factors only")
+    for flag, on in (("--strong-null", a.strong_null), ("--herd", a.herd),
+                     ("--no-hold-unbracketed", not a.hold_unbracketed), ("--lib3-pair", a.lib3_pair)):
+        if on:
+            sys.exit(f"--direction-fraction is refused with {flag}: no practice read of a larger step read that form "
+                     "(tries T44 to T47 of experiments/harness/TRIES.md)")
+    return float(f), "option"
+
+
 def build_t1(a) -> dict:
+    if a.direction_fraction is not None:  # its refusals come before every other check, so they name the option
+        _t1_direction_fraction(a, feng_dirs.bracket_fraction(10.5, 12.5))
     if a.g_mom and a.strong_null:
         sys.exit("--g-mom is refused with --strong-null: the two count edits have no ruled order and were never tested "
                  "together; a new row in experiments/harness/TRIES.md and the captain's ruling fix it first")
@@ -391,7 +420,8 @@ def build_t1(a) -> dict:
     directions, ext = feng_dirs.feng_directions(list(ref.var_names))
     held, feng_hygiene = _t1_held(union, directions, ref.var_names)
     groups = feng_dirs.label_groups(ref.obs["celltype"].astype(str).unique())
-    fraction = feng_dirs.bracket_fraction(10.5, 12.5)
+    bracket = feng_dirs.bracket_fraction(10.5, 12.5)
+    fraction, fraction_source = _t1_direction_fraction(a, bracket)  # the bracket's share unless the option is given
     n = harness.count_for(board, ref.n_obs)
     extra = {} if prior is None else {"down_prior": prior}
     within_type, g_mom_record = ({}, None)
@@ -412,6 +442,7 @@ def build_t1(a) -> dict:
             sys.exit(f"the strong-null prior's target-free checks failed: {strong['checks']}")
     check = t1_scope.write_checked(sub, a.out, board)
     rec = {"entry": "M1", "board": board.key, "dry_run": dry, "n_cells": n, "seed": a.seed, "fraction": fraction,
+           "bracket_fraction": bracket, "fraction_source": fraction_source,
            "herd": bool(a.herd), "hold_unbracketed": bool(a.hold_unbracketed), "feng_hygiene": feng_hygiene,
            "base": a.base,
            "cm_share_of_heart": t1_scope.share_of(shares, "cm", t1_scope.load_spec().heart),
@@ -598,6 +629,12 @@ def build_parser() -> argparse.ArgumentParser:
                                 "kept, no share, cell count or scope changed; refused with --no-hold-unbracketed; "
                                 "off: the entry as built, "
                                 "and only the captain's ruling turns it on for an upload)")
+            p.add_argument("--direction-fraction", type=float, default=None, metavar="F",
+                           help="the share of Feng's E9.5 -> E14.5 bracket M1's direction step covers, in place of "
+                                "the bracket's share of days (E10.5 -> E12.5: 0.4, the default and the entry as "
+                                "built). Only with --g-mom, F finite and in (0, 1]; refused with --strong-null, "
+                                "--herd, --no-hold-unbracketed and --lib3-pair. Nothing else in the build changes. "
+                                "No ruling puts it in an upload (tries T44 to T47 of experiments/harness/TRIES.md)")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
