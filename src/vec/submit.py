@@ -15,9 +15,12 @@ scored submissions per board for the whole phase, which cannot be withdrawn. So 
 - refuses an official upload while the captain's upload gate stands (guard "upload gate"; 2026-11-05, his words: "Until
   our estimated score in leaderboard crosses 209, don't submit our 1st submission"; docs/PLAN.md section 8): the
   committed record UPLOAD_GATE must hold an estimate above UPLOAD_GATE_MIN with a named independent review, or the
-  captain's lift, or its deadline exception must have opened (2026-11-27 00:00 UTC; the captain: "I am fine with
-  submitting our 1st submission at Nov 27 anyway"); an unreadable or inconsistent record refuses too. Format
-  checks never read it;
+  captain's lift, or its deadline exception must have opened (the record's `deadline_exception_utc`: set on
+  2026-11-05 to 2026-11-27 00:00 UTC, the captain: "I am fine with submitting our 1st submission at Nov 27 anyway";
+  moved to 2026-11-21 00:00 UTC after the organisers' notice of 2026-11-17 moved the deadline to 25 November, on the
+  captain's ruling recorded in `deadline_exception_moved`); an unreadable or inconsistent record refuses too, and so
+  does a record that still holds a placeholder of the form [[...]] in any string (a draft awaiting the captain's
+  words; UPLOAD_GATE_PLACEHOLDER). Format checks never read it;
 - refuses an official upload of a file that is not in the current reference list (guard "reference list"; AGENTS.md:
   an official upload sends only a file whose sha256 is in it), so that a superseded file left in an older archive
   folder with a clean build stamp cannot go: the committed pointer (results/reference_list.json of the repository
@@ -170,6 +173,9 @@ EXTERNAL_DATA = REPO_ROOT / "EXTERNAL_DATA.md"
 UPLOAD_GATE = REPO_ROOT / "results" / "upload_gate.json"  # the captain's upload gate record (docs/PLAN.md section 8)
 UPLOAD_GATE_MIN = 209.0  # the captain's figure (2026-11-05); only he changes it
 UPLOAD_GATE_MAX_BYTES = 64 * 1024
+# A placeholder left in a draft of the record for words only the captain gives ("[[THE CAPTAIN'S WORDS AND DATE GO
+# HERE BEFORE THIS IS MERGED]]"): while any string in the record matches it, the guard refuses whatever else it says.
+UPLOAD_GATE_PLACEHOLDER = re.compile(r"\[\[[^\[\]]*\]\]")
 REFERENCE_POINTER = "results/reference_list.json"  # the pointer, relative to the repository root
 REFERENCE_LIST = REPO_ROOT / REFERENCE_POINTER  # the pointer read without a repo (guard below)
 REFERENCE_LIST_MAX_BYTES = 64 * 1024  # the pointer file
@@ -937,14 +943,38 @@ def remove_stale_copies(now: float | None = None) -> list[str]:
 
 
 
+def _placeholder_fields(rec: object, where: str = "") -> list[str]:
+    """The paths (`key.key[i]`) of every string, key or value, in a parsed gate record that matches
+    UPLOAD_GATE_PLACEHOLDER. Iterative, so a deeply nested record cannot exhaust the stack."""
+    found: list[str] = []
+    stack: list[tuple[str, object]] = [(where, rec)]
+    while stack:
+        at, node = stack.pop()
+        if isinstance(node, str):
+            if UPLOAD_GATE_PLACEHOLDER.search(node):
+                found.append(at or "(the record)")
+        elif isinstance(node, dict):
+            for k, v in node.items():
+                key = f"{at}.{k}" if at else str(k)
+                if UPLOAD_GATE_PLACEHOLDER.search(str(k)):
+                    found.append(key)
+                stack.append((key, v))
+        elif isinstance(node, list):
+            stack.extend((f"{at}[{i}]", v) for i, v in enumerate(node))
+    return sorted(found)
+
+
 def upload_gate_guard(path: str | Path | None = None, now: datetime | None = None) -> Guard:
     """The guard "upload gate": the captain's rule of 2026-11-05, "Until our estimated score in leaderboard crosses 209,
     don't submit our 1st submission" (docs/PLAN.md section 8). It reads the committed record (UPLOAD_GATE, JSON) and
     passes when the captain has lifted the gate there (`lifted_by_captain` true) or when its `estimate`, our estimated
     leaderboard total from our own evidence, is above UPLOAD_GATE_MIN and an independent `review` is named. It also
     passes from the record's `deadline_exception_utc` on (an ISO time with its zone; the captain, 2026-11-05: "I am
-    fine with submitting our 1st submission at Nov 27 anyway"). An unreadable record or exception time, a missing
-    or non-finite estimate, or a `threshold` other than UPLOAD_GATE_MIN refuses. `now` is for tests."""
+    fine with submitting our 1st submission at Nov 27 anyway"; moved to 2026-11-21 00:00 UTC on the captain's ruling
+    after the organisers' notice of 2026-11-17, recorded in `deadline_exception_moved`). An unreadable record or
+    exception time, a missing or non-finite estimate, a `threshold` other than UPLOAD_GATE_MIN, or any string in the
+    record that still holds a placeholder (UPLOAD_GATE_PLACEHOLDER: a draft awaiting the captain's words) refuses,
+    before the lift, the estimate or the exception is read. `now` is for tests."""
     p = Path(path) if path is not None else UPLOAD_GATE
     name = "upload gate"
     try:
@@ -955,6 +985,10 @@ def upload_gate_guard(path: str | Path | None = None, now: datetime | None = Non
         return Guard(name, False, f"cannot read the captain's upload gate record {p.name} ({type(e).__name__})")
     if not isinstance(rec, dict):
         return Guard(name, False, f"{p.name} is not a JSON object")
+    held = _placeholder_fields(rec)
+    if held:
+        return Guard(name, False, f"{p.name} still holds a placeholder for the captain's words in "
+                     f"{', '.join(held[:5])}: a draft record opens nothing until his words replace it")
     if rec.get("lifted_by_captain") is True:
         return Guard(name, True, f"lifted by the captain ({str(rec.get('lifted_note') or 'no note')[:120]})")
     opens = ""

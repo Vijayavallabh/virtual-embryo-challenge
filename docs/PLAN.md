@@ -603,6 +603,8 @@ Next:
 
 ## 7. Timeline and decision points
 
+The upload runbook's dates in this section were moved on the captain's ruling of [[DATE]] after the organisers' notice of 2026-11-17 (deadline 25 November, 23:59 AoE): [[THE CAPTAIN'S WORDS AND DATE GO HERE BEFORE THIS IS MERGED]]. The first table and the dated notes of 2026-10-28 and 2026-11-05 below are kept as written, as the record; the runbook table holds the live dates.
+
 | Dates | Work | Decision point |
 |---|---|---|
 | Oct 18-20 | Token and download; organiser questions out; leak report sent; experiments on released data; size procedure and release-day scripts committed; redactions and history rewrite | D0: data on the DGX, else escalate |
@@ -636,17 +638,19 @@ every T3 upload after its screened check of mail, Slack and the Rules page (`doc
 
 | Day (IST) | Work |
 |---|---|
-| 19 Nov | If no organiser has answered the public Slack question on floored T3 severity (posted 2026-11-12), the captain may post one short follow-up in the same thread, drafted by the AI assistant (decision log 2026-11-11 (e)). On the captain's say-so, a screened read for an answer to the seventh email: the Data Protocol page, the Slack channel and the mailbox (decision log 2026-11-13 (c)) |
-| 23 Nov | On the captain's say-so, a second screened read for an answer to the seventh email; it is the last day an answer can still change a build, which has to be rehearsed by 24 Nov |
-| 26-27 Nov | The screened check that picks T3's s2 (ruling 2026-11-06 (b)), run no earlier than 26 Nov; it also looks for an answer to the seventh email, the Data Protocol page included |
-| 27 Nov, from 05:30 | Rebuild at the freeze commit and check (`vec check`, the server format checks, the archived hashes: since the third rehearsal of 2026-11-13 `runs/archive/builds_dc7b6ae/SHA256SUMS` on the DGX, through `determinism_check.sh ... 16`, decision log 2026-11-13 (e), (m) and (bb); every file of that set has passed the server's format check already); the plain summary to the captain; then the first round, pulled from the folder that command built: T1 s1, heart s1, embryo s1 and T3's s2 |
-| 29 Nov | T1, heart and embryo s2, each after its screened check |
-| 30 Nov | T3's s1, after its screened check; every upload done by the end of the day |
-| 1 Dec | Outage buffer only; each board's final mark as soon as both its uploads are scored, by 12:00 UTC |
+| As soon as the captain has ruled (was 19 Nov) | If no organiser has answered the public Slack question on floored T3 severity (posted 2026-11-12), the captain may post one short follow-up in the same thread, drafted by the AI assistant (decision log 2026-11-11 (e)). On the captain's say-so, a screened read for an answer to the seventh email: the Data Protocol page, the Slack channel and the mailbox (decision log 2026-11-13 (c)) |
+| As soon as the captain has ruled (was 23 Nov) | On the captain's say-so, a second screened read for an answer to the seventh email; it is the last day an answer can still change a build, which has to be rehearsed by 20 Nov |
+| 20-21 Nov | The screened check that picks T3's s2 (ruling 2026-11-06 (b)), run no earlier than 20 Nov; it also looks for an answer to the seventh email, the Data Protocol page included |
+| 21 Nov, from 05:30 (00:00 UTC) | The s1 methods freeze; the disclosure email goes before the first upload. Rebuild at the freeze commit and check (`vec check`, the server format checks, the archived hashes: since the third rehearsal of 2026-11-13 `runs/archive/builds_dc7b6ae/SHA256SUMS` on the DGX, through `determinism_check.sh ... 16`, decision log 2026-11-13 (e), (m) and (bb); every file of that set has passed the server's format check already); the plain summary to the captain; then the first round, pulled from the folder that command built: T1 s1, heart s1, embryo s1 and T3's s2 |
+| 23 Nov | T1, heart and embryo s2, each after its screened check |
+| 24 Nov | T3's s1, after its screened check; every upload done by the end of the day; the method summary by the end of the day |
+| 25 Nov | Outage buffer only, until the deadline (23:59 AoE, 17:29 IST on 26 Nov); each board's final mark as soon as both its uploads are scored, by 12:00 UTC |
 
 Do not front-load the second round: a late A20 bar or Gata4 restriction is absorbed only by the s2 and last-T3 slots.
 
 ## 8. Submission policy
+
+The dates in this section were moved on the captain's ruling of [[DATE]] after the organisers' notice of 2026-11-17 (deadline 25 November, 23:59 AoE): [[THE CAPTAIN'S WORDS AND DATE GO HERE BEFORE THIS IS MERGED]]. His words of 2026-11-05 and the reading he confirmed that day are kept as written.
 
 - **The captain's upload gate (2026-11-05).** In his words: "Until our estimated score in leaderboard crosses 209,
   don't submit our 1st submission."
@@ -663,7 +667,9 @@ Do not front-load the second round: a late A20 bar or Gata4 restriction is absor
     evidence for a try, an adoption or a method choice (`docs/DATA_POLICY.md` 2026-11-05).
   - The deadline exception (the captain, 2026-11-05, answering a side agent's note that the gate could mean no entry,
     and so no place and no Generality Award standing): "I am fine with submitting our 1st submission at Nov 27 anyway".
-    So the s1 methods freeze at 2026-11-27 00:00 UTC (05:30 IST). That morning the AI assistant rebuilds the files at
+    So the s1 methods were to freeze at 2026-11-27 00:00 UTC; since the organisers' notice of 2026-11-17 and the
+    captain's ruling of [[DATE]] they freeze at 2026-11-21 00:00 UTC (05:30 IST). That morning the AI assistant
+    rebuilds the files at
     the freeze commit, checks them (`vec check`, the server format checks, the hashes archived in
     `runs/archive/builds_02abf39` since R2's build, decision log 2026-11-06 (k); before it `builds_88b057f`; since
     2026-11-13 `runs/archive/builds_fd2683a`, decision log 2026-11-13 (e), and from that evening
@@ -674,14 +680,15 @@ Do not front-load the second round: a late A20 bar or Gata4 restriction is absor
     own, written in his message in the main session (a note on a side agent's text he forwarded), not an agent's relay.
     The AI assistant reads "our 1st submission" with the gate's own scope (the first upload on every board) and "at Nov
     27" as from 2026-11-27 00:00 UTC (05:30 IST, inside 27 Nov in both zones), and asked him on 2026-11-05 to confirm or
-    correct that reading; he confirmed it the same day (decision log 2026-11-05 (c)). The second round follows by the end of 30
-    November IST; 1 December IST is the outage buffer, and the final marks are made that day by 12:00 UTC (section 7,
-    reconciled 2026-11-06 (e)). If the estimate crosses 209 earlier, with its review, the first
-    round may go in earlier.
+    correct that reading; he confirmed it the same day (decision log 2026-11-05 (c)). The second round follows by the
+    end of 24 November IST; 25 November IST is the outage buffer, and the final marks are made that day by 12:00 UTC
+    (section 7, reconciled 2026-11-06 (e), moved on the captain's ruling of [[DATE]]). If the estimate crosses 209
+    earlier, with its review, the first round may go in earlier.
   - The record: `results/upload_gate.json` (the estimate, its range and basis, the review, the deadline exception and
     whether the captain has lifted the gate). The submission client refuses an official upload unless the record passes:
-    an estimate above 209 with a named review, the deadline exception reached (2026-11-27 00:00 UTC), or the captain's
-    lift (guard "upload gate"; `src/vec/submit.py`). Only the captain lifts it or moves the exception, by a committed
+    an estimate above 209 with a named review, the deadline exception reached (2026-11-21 00:00 UTC, moved from
+    2026-11-27; `deadline_exception_moved` holds the captain's words, and a record that still holds a `[[...]]`
+    placeholder refuses), or the captain's lift (guard "upload gate"; `src/vec/submit.py`). Only the captain lifts it or moves the exception, by a committed
     change to the record. The guard checks the record only; the captain's go-ahead for each upload, which he runs
     himself, is the control beyond it. He confirmed on 2026-11-05 that "estimated score" means each board at the better
     of its two uploads (`estimate`); the first round alone (`estimate_first_round`: T1 s1, heart s1, embryo s1 and T3's
@@ -694,14 +701,17 @@ Do not front-load the second round: a late A20 bar or Gata4 restriction is absor
   that the server stored awaits `vec submit resolve`. Scored uploads need the user's explicit go-ahead, and the client
   defaults to format-only.
 - s1 = the best honestly validated candidate. s2 = a pre-registered alternative chosen by a written rule. Never submit a
-  plain copy, and never in the last hours (the portal has had outages). The deadline is "through 2 December 2026
-  (UTC)" (organisers' email of 2026-10-20 22:03 IST), with no hour given; its earliest reading, 00:00 UTC on
-  2 December, is 05:30 IST on 2 December. Final uploads still finish by the end of 30 November IST, which leaves
-  1 December for outages. Each official upload is scored and published when it is made (Rules s.11), so s1's score
+  plain copy, and never in the last hours (the portal has had outages). The deadline was "through 2 December 2026
+  (UTC)" (organisers' email of 2026-10-20 22:03 IST); the organisers' notice of 2026-11-17 moves it to 25 November
+  2026, 23:59 AoE, which is 11:59 UTC and 17:29 IST on 26 November. Final uploads finish by the end of 24 November
+  IST, which leaves 25 November (and 26 November to 17:29 IST) for outages. Each official upload is scored and
+  published when it is made (Rules s.11), so s1's score
   is public before s2 goes in (on T3, s2's score is public before s1 goes in).
 - Final entries (account page, seen 2026-10-28): in the final phase the captain, the user, picks which submission
   counts, marking it in a "Final" column of the team's submission list while nominations are open; 2026-12-02 is the
-  last moment to make a submission or nominate a final entry. Rules s.11 still says a board ranks a team by its best;
+  last moment to make a submission or nominate a final entry (moved by the organisers' notice of 2026-11-17 to
+  25 November 23:59 AoE; our marks by 12:00 UTC on 25 November, section 7). Rules s.11 still says a board ranks a
+  team by its best;
   what counts when nothing is marked, and whether the pick is per board, is not stated (asked in the fourth email).
   Mark the final entries after the last official upload.
 - Each submission carries its external-data disclosure text.

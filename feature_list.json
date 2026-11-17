@@ -197,7 +197,7 @@
     {
       "id": "feat-018",
       "name": "First official submissions (s1)",
-      "description": "Upload the first official submissions only once the captain's upload gate is crossed (2026-11-05: \"Until our estimated score in leaderboard crosses 209, don't submit our 1st submission\"; docs/PLAN.md section 8, results/upload_gate.json, the client's guard \"upload gate\") and he gives the go-ahead. By his deadline exception (2026-11-05: \"I am fine with submitting our 1st submission at Nov 27 anyway\") the s1 methods freeze at 2026-11-27 00:00 UTC, and from then the first round may go in whatever the estimate, each upload only on his go-ahead at the time; every upload by the end of 30 November IST, 1 December IST as the outage buffer and the final marks that day by 12:00 UTC (T3: s2 first, s1 last; the runbook in docs/PLAN.md section 7, reconciled 2026-11-06 (e)). The s2 rules were frozen and hashed on 2026-11-03 (docs/S2_RULES.md).",
+      "description": "Upload the first official submissions only once the captain's upload gate is crossed (2026-11-05: \"Until our estimated score in leaderboard crosses 209, don't submit our 1st submission\"; docs/PLAN.md section 8, results/upload_gate.json, the client's guard \"upload gate\") and he gives the go-ahead. By his deadline exception (2026-11-05: \"I am fine with submitting our 1st submission at Nov 27 anyway\") the s1 methods freeze at 2026-11-21 00:00 UTC (moved from 2026-11-27 on the captain's ruling of [[DATE]] after the organisers' notice of 2026-11-17 moved the deadline to 25 November 23:59 AoE: [[THE CAPTAIN'S WORDS AND DATE GO HERE BEFORE THIS IS MERGED]]), and from then the first round may go in whatever the estimate, each upload only on his go-ahead at the time; every upload by the end of 24 November IST, 25 November IST as the outage buffer and the final marks that day by 12:00 UTC (T3: s2 first, s1 last; the runbook in docs/PLAN.md section 7, reconciled 2026-11-06 (e)). The s2 rules were frozen and hashed on 2026-11-03 (docs/S2_RULES.md).",
       "dependencies": [
         "feat-009",
         "feat-010",
@@ -212,7 +212,7 @@
     {
       "id": "feat-019",
       "name": "Second submissions (s2) and final nomination",
-      "description": "Apply the written s2 rules, submit by 2026-11-30, nominate final entries, archive everything for the 14-day report.",
+      "description": "Apply the written s2 rules, submit by 2026-11-24 (IST; moved from 2026-11-30 on the captain's ruling of [[DATE]] after the organisers' notice of 2026-11-17), nominate final entries by 2026-11-25 12:00 UTC, archive everything for the 14-day report.",
       "dependencies": [
         "feat-018",
         "feat-017"

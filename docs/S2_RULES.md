@@ -463,3 +463,30 @@ second file only; no change), each offered with its price.
   `--entry s2`, `--depth`, `--herd` and `--cfm`, which no try read with it. The reference list for the freeze-morning
   rebuild changes for these two files and is remade by a third rehearsal on the machine that builds the uploads
   (`docs/P3_RUNBOOK.md`, section 5).
+
+## Amendment of [[DATE]]: the organisers' deadline of 25 November
+
+Written by the AI assistant. The quoted words are the captain's, given in answer to the proposal of 2026-11-17
+(`docs/PLAN.md` decision log 2026-11-17 (a)). No test score existed: nothing had been uploaded.
+
+**What the organisers changed.** Their notice to every team, pasted into the main session by the captain on
+2026-11-17, moves the final submission deadline "from December 2 to November 25, 2026, at 23:59 AoE. Final-entry
+nominations and Agent Team evidence are due at the same time" (11:59 UTC and 17:29 IST on 26 November). "Nothing else
+changes: the tasks, data, metrics, two official submissions per board, and eligibility rules remain the same."
+
+**The captain's words:** [[THE CAPTAIN'S WORDS AND DATE GO HERE BEFORE THIS IS MERGED]]
+
+Every date in the sections above moves by that ruling. No rule, command, file or order changes; only its date does.
+The sections above keep their text as the record of the rules before this amendment, and where they and this section
+differ on a date, this section holds.
+
+- **Order (T1 and both T2 boards).** s1 first and s2 after it, by the end of 24 Nov IST, in place of the end of 30 Nov
+  IST.
+- **Final marks.** The working rule's case "a tie, or s2 unscored by 30 Nov IST: s1" reads "s2 unscored by 24 Nov IST".
+  The case the AI assistant added for T3 ("if s1 is unscored by 30 Nov IST, mark s2") reads "by 24 Nov IST". The marks
+  themselves are made on 25 Nov by 12:00 UTC, in place of 1 Dec by 12:00 UTC (`docs/PLAN.md` section 7), and the
+  nominations close with the deadline.
+- **T3's order.** s2 first and s1 last, by the end of 24 Nov IST, in place of the end of 30 Nov IST.
+- **Unchanged.** The freeze of 2026-11-03 and its slot are a record. Every other rule above, each build command, the
+  disclosure ids and the ruling switches stand as written; "Before each s2 build and upload" still runs
+  `sha256sum -c docs/S2_RULES.sha256`, which this amendment rewrites.

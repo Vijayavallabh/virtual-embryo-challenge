@@ -741,17 +741,18 @@ def test_the_upload_gate_record(tmp_path):
     assert not vs.upload_gate_guard(tmp_path / "missing.json").ok
     g.write_text(" " * (vs.UPLOAD_GATE_MAX_BYTES + 1))
     assert not vs.upload_gate_guard(g).ok
-    # the captain's deadline exception (2026-11-05: "I am fine with submitting our 1st submission at Nov 27 anyway")
-    rec = {"threshold": 209, "estimate": 184, "review": "", "deadline_exception_utc": "2026-11-27T00:00:00Z"}
+    # the captain's deadline exception (2026-11-05: "I am fine with submitting our 1st submission at Nov 27 anyway"),
+    # moved to 2026-11-21 00:00 UTC on his ruling after the organisers' notice of 2026-11-17
+    rec = {"threshold": 209, "estimate": 184, "review": "", "deadline_exception_utc": "2026-11-21T00:00:00Z"}
     g.write_text(json.dumps(rec))
-    before = vs.upload_gate_guard(g, now=datetime(2026, 11, 26, 23, 59, 59, tzinfo=UTC))
+    before = vs.upload_gate_guard(g, now=datetime(2026, 11, 20, 23, 59, 59, tzinfo=UTC))
     assert not before.ok
-    assert "it opens at the captain's deadline exception, 2026-11-27T00:00:00+00:00" in before.detail
-    assert vs.upload_gate_guard(g, now=datetime(2026, 11, 27, tzinfo=UTC)).ok
+    assert "it opens at the captain's deadline exception, 2026-11-21T00:00:00+00:00" in before.detail
+    assert vs.upload_gate_guard(g, now=datetime(2026, 11, 21, tzinfo=UTC)).ok
     ist = timezone(timedelta(hours=5.5))
-    assert vs.upload_gate_guard(g, now=datetime(2026, 11, 27, 5, 30, tzinfo=ist)).ok
-    assert not vs.upload_gate_guard(g, now=datetime(2026, 11, 27, 5, 29, tzinfo=ist)).ok
-    for bad in ("soon", "2026-11-27T00:00:00", ""):  # unreadable, or no time zone: refused
+    assert vs.upload_gate_guard(g, now=datetime(2026, 11, 21, 5, 30, tzinfo=ist)).ok
+    assert not vs.upload_gate_guard(g, now=datetime(2026, 11, 21, 5, 29, tzinfo=ist)).ok
+    for bad in ("soon", "2026-11-21T00:00:00", ""):  # unreadable, or no time zone: refused
         g.write_text(json.dumps({**rec, "deadline_exception_utc": bad}))
         assert not vs.upload_gate_guard(g, now=datetime(2026, 12, 1, tzinfo=UTC)).ok, bad
     g.write_text(json.dumps({**rec, "estimate": 210, "review": "wf-review"}))  # crossed early: open before it
@@ -786,15 +787,60 @@ def test_the_format_check_message_names_the_upload_gate(env):
 
 def test_the_committed_upload_gate_record_holds():
     """The repository's own record parses; until the captain's figure is crossed or he lifts it, it refuses before his
-    deadline exception (2026-11-27 00:00 UTC) and passes from then on."""
+    deadline exception (moved to 2026-11-21 00:00 UTC after the organisers' notice of 2026-11-17) and passes from then
+    on, but only once his words for the move replace the draft's placeholder: until then it refuses at every time."""
     path = Path(__file__).resolve().parents[1] / "results" / "upload_gate.json"
     rec = json.loads(path.read_text())
     assert rec["threshold"] == vs.UPLOAD_GATE_MIN == 209.0
     assert isinstance(rec["estimate"], (int, float)) and isinstance(rec["lifted_by_captain"], bool)
-    assert rec["deadline_exception_utc"] == "2026-11-27T00:00:00Z"
+    assert rec["deadline_exception_utc"] == "2026-11-21T00:00:00Z"
+    assert rec["deadline_exception"].startswith("the captain, 2026-11-05")  # his words of 2026-11-05 stay as written
+    for key in ("deadline_exception_moved", "deadline_exception_moved_source"):
+        assert isinstance(rec[key], str) and rec[key].strip(), key
     if rec["estimate"] <= 209 and not rec["lifted_by_captain"]:
-        assert not vs.upload_gate_guard(path, now=datetime(2026, 11, 26, 23, 59, tzinfo=UTC)).ok
-    assert vs.upload_gate_guard(path, now=datetime(2026, 11, 27, tzinfo=UTC)).ok
+        assert not vs.upload_gate_guard(path, now=datetime(2026, 11, 20, 23, 59, tzinfo=UTC)).ok
+    opened = vs.upload_gate_guard(path, now=datetime(2026, 11, 21, tzinfo=UTC))
+    if vs.UPLOAD_GATE_PLACEHOLDER.search(rec["deadline_exception_moved"] + rec["deadline_exception_moved_source"]):
+        assert not opened.ok and "placeholder" in opened.detail  # a draft: nothing opens, at any time
+        assert not vs.upload_gate_guard(path, now=datetime(2026, 12, 31, tzinfo=UTC)).ok
+    else:
+        assert opened.ok
+
+
+MARKER = "[[THE CAPTAIN'S WORDS AND DATE GO HERE BEFORE THIS IS MERGED]]"
+
+
+def test_a_gate_record_holding_the_placeholder_opens_nothing(tmp_path):
+    """A draft of the record that still holds the placeholder for the captain's words refuses, whatever else it says:
+    after its exception time, with the captain's lift, with an estimate above the figure and a review."""
+    g = tmp_path / "gate.json"
+    late = datetime(2026, 11, 25, tzinfo=UTC)
+    base = {"threshold": 209, "estimate": 184, "review": "", "deadline_exception_utc": "2026-11-21T00:00:00Z"}
+    g.write_text(json.dumps(base))
+    assert vs.upload_gate_guard(g, now=late).ok  # the same record without the placeholder opens
+    for rec in ({**base, "deadline_exception_moved": MARKER, "deadline_exception_moved_source": MARKER},
+                {**base, "deadline_exception_moved": "ok", "deadline_exception_moved_source": MARKER},
+                {**base, "lifted_by_captain": True, "lifted_note": MARKER},
+                {**base, "estimate": 210, "review": "wf-review", "notes": ["x", {"deep": f"see {MARKER}"}]},
+                {**base, "[[DATE]]": "a placeholder in a key"}):
+        g.write_text(json.dumps(rec))
+        got = vs.upload_gate_guard(g, now=late)
+        assert not got.ok and "placeholder" in got.detail, rec
+    g.write_text(json.dumps({**base, "deadline_exception_moved": "[not a placeholder]"}))
+    assert vs.upload_gate_guard(g, now=late).ok
+
+
+def test_an_official_upload_refuses_while_the_gate_record_holds_the_placeholder(env):
+    f = _checked(env, "a.h5ad", 0)
+    env.gate.write_text(json.dumps({"threshold": 209, "estimate": 184, "review": "",
+                                    "deadline_exception_utc": "2000-01-01T00:00:00Z",
+                                    "deadline_exception_moved": MARKER, "deadline_exception_moved_source": MARKER}))
+    with pytest.raises(vs.SubmitRefused, match="upload gate") as e:
+        _official(f)
+    assert e.value.plan.failed == ["upload gate"]
+    assert "placeholder" in _guard(e.value.plan, "upload gate").detail
+    assert not env.api.posts(official=True)
+    assert vs.submit(f, T1).server_status == "format_ok"  # format checks never read the gate
 
 
 # ---------------------------------------------------------------------------------------------------------------------

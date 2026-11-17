@@ -146,8 +146,11 @@ If baseline verification is failing, repair that first before adding new scope.
   board at the better of its two uploads, from our own committed evidence by the procedure in `docs/PLAN.md` section 8,
   recomputed by an independent reviewer before the gate counts as crossed; never from a test score or a leaderboard
   figure. The figure stays 209 unless the captain changes it, and only he lifts the gate. His deadline exception
-  (2026-11-05): "I am fine with submitting our 1st submission at Nov 27 anyway": the s1 methods freeze at 2026-11-27
-  00:00 UTC, and the first round may then go in whatever the estimate, each upload only on his go-ahead at the time; he
+  (2026-11-05): "I am fine with submitting our 1st submission at Nov 27 anyway": the s1 methods freeze at 2026-11-21
+  00:00 UTC (moved from 2026-11-27 on his ruling of [[DATE]] after the organisers' notice of 2026-11-17 moved the
+  deadline to 25 November 23:59 AoE: [[THE CAPTAIN'S WORDS AND DATE GO HERE BEFORE THIS IS MERGED]]), and the first
+  round may then go in whatever the estimate, each upload only on his go-ahead at the time; every upload is done by the
+  end of 24 Nov IST and the final marks by 25 Nov 12:00 UTC (`docs/PLAN.md` section 7); he
   confirmed this reading and the better-of-two estimate on 2026-11-05. The gate is about uploads only, never a try
   (`docs/DATA_POLICY.md` 2026-11-05). The record is `results/upload_gate.json`; the submission client refuses an
   official upload while it does not pass (guard "upload gate").
