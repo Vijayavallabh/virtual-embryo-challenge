@@ -90,8 +90,55 @@ def test_a_n_gives_the_entrys_squared_size_and_a_p_its_projection(pr):
         ep = rec["entry"][g]
         assert ep["e_c"] + ep["e_s"] + ep["cross"] == pytest.approx(1.0, abs=1e-12)
         assert ep["e_c"] == pytest.approx(1 / ep["a_n"] ** 2, abs=1e-12)
+    sp = pr.split(e, GENES, ["h"])
+    for g in e:
+        ep = rec["entry"][g]
+        assert np.allclose(forms["cn"][g][M], ep["a_n"] * sp["c"][M], rtol=0, atol=1e-12)
+        assert np.allclose(forms["cp"][g][M], ep["a_p"] * sp["c"][M], rtol=0, atol=1e-12)
+        for f in pr.FORMS:
+            assert rec[f][g]["sha256"] != ep["sha256"], (f, g)
+    assert pr.forms_off(rec) == []
     text = json.dumps(rec)
     assert "\"n\"" not in text and "cells" not in text
+
+
+def test_a_form_left_on_the_entrys_direction_in_one_group_is_caught(pr):
+    """The reviewer's mutant: the cn form left on the entry's direction in one group. The entry satisfies cn's size and
+    cp's projection checks itself, so only the hash check and the proportionality to c tell it apart."""
+    e = _entry(4)
+    forms, rec = pr.all_directions(e, GENES, ["h"])
+    g = "Blood"
+    mut = {**rec, "cn": {**rec["cn"], g: {**pr.zr.compare_directions(e[g], e[g], GENES, ["h"]),
+                                          "sha256": pr.zr.direction_sha256(e[g])}}}
+    assert mut["cn"][g]["size_ratio"] == pytest.approx(1.0)  # the size check alone passes
+    assert pr.forms_off(mut) == [f"cn equals the entry in {g}"]
+    M = pr.split(e, GENES, ["h"])["M"]
+    assert not np.allclose(e[g][M], rec["entry"][g]["a_n"] * pr.split(e, GENES, ["h"])["c"][M])
+
+
+def test_the_centred_figures_are_recorded_and_read_by_nothing(pr, tmp_path):
+    """A constant log offset shared by every group sits in c: the uncentred ratio of cn is 1, the centred one below."""
+    e = {g: v.copy() for g, v in _entry(5).items()}
+    for g in e:
+        e[g][:40] += 1.5
+    _, rec = pr.all_directions(e, GENES, ["h"])
+    M = pr.split(e, GENES, ["h"])["M"]
+    for g in e:
+        assert rec["cn"][g]["size_ratio"] == pytest.approx(1.0, abs=1e-12)
+        assert rec["cn"][g]["size_ratio_centred"] < 1.0
+        d = e[g][M]
+        c = pr.split(e, GENES, ["h"])["c"][M]
+        dc, cc = d - d.mean(), c - c.mean()
+        assert rec["entry"][g]["a_n_centred"] == pytest.approx(np.sqrt(dc @ dc / (cc @ cc)), rel=1e-12)
+        f = rec["cn"][g]["size_ratio_centred"]
+        assert f == pytest.approx(rec["entry"][g]["a_n"] ** 2 * (cc @ cc) / (dc @ dc), rel=1e-12)
+    # read by nothing: changing them between truths changes neither validity nor any statement
+    odd = _dirs(form_over={("cn", "CM"): {"size_ratio_centred": 0.1}})
+    r = _read(pr, tmp_path, over={"whole": {"directions": odd}})
+    assert r["valid"], r["validity"]["reasons"]
+    txt = (tmp_path / "out" / "t55.txt").read_text()
+    assert "a_n on centred vectors 1.3000 (read by nothing)" in txt and "(centred 0.9000, read by nothing)" in txt
+    assert pr.centred_ratio(np.ones(3), np.ones(3), np.ones(3, bool)) is None
 
 
 def test_the_run_refuses_a_group_whose_moved_genes_are_not_m(pr):
@@ -210,14 +257,20 @@ def _arm(score):
             "skills": sk}
 
 
-def _dirs(groups=("CM", "Endocardium"), tag="", a_n=1.25, a_p=1.6, rebuild=1e-15, cp_size=1.44):
+S1_SIZE = {"c1": 0.64, "s05": 0.7, "s15": 1.3}
+
+
+def _dirs(groups=("CM", "Endocardium"), tag="", a_n=1.25, a_p=1.6, rebuild=1e-15, cp_size=1.44, form_over=None):
+    """form_over: (form, group) -> fields replacing the recorded ones."""
     rec = {"entry": {g: {"sha256": f"e-{g}{tag}", "a_n": a_n, "a_p": a_p, "e_c": 0.64, "e_s": 0.3, "cross": 0.06,
-                         "rebuild_11_max_abs": rebuild} for g in groups},
+                         "rebuild_11_max_abs": rebuild, "a_n_centred": 1.3} for g in groups},
            "forms": {}}
     for f in ("c1", "s05", "s15", "cn", "cp"):
-        rec[f] = {g: {"slope": 0.6, "pearson": 0.8, "slope_centred": 0.6,
-                      "size_ratio": cp_size if f == "cp" else 1.0 if f == "cn" else 0.64,
-                      "sha256": f"{f}-{g}"} for g in groups}
+        rec[f] = {g: {"slope": 1.0 if f == "cp" else 0.6, "pearson": 0.8, "slope_centred": 0.6,
+                      "size_ratio": cp_size if f == "cp" else 1.0 if f == "cn" else S1_SIZE[f],
+                      "size_ratio_centred": 0.9, "sha256": f"{f}-{g}"} for g in groups}
+    for (f, g), v in (form_over or {}).items():
+        rec[f][g] = {**rec[f][g], **v}
     return rec
 
 
@@ -226,7 +279,7 @@ def _uniform(seed):
 
 
 def _task(truth, gains=None, seeds=range(10), commit="c" * 40, clean=True, fractions=None, identical=(),
-          directions=None, anchor_failures=None):
+          directions=None, anchor_failures=None, identical_but=None):
     """gains: arm -> gain over its pooled arm on every seed. An arm with no gain gets +d on seed 0 and -d on seed 1,
     so that it never scores exactly as its pooled arm."""
     gains = gains or {}
@@ -242,7 +295,7 @@ def _task(truth, gains=None, seeds=range(10), commit="c" * 40, clean=True, fract
                 g = d if i == 0 else -d if i == 1 else 0.0
             arms[a] = _arm(uni[POOLED_OF[a]] + g)
         for a in identical:
-            arms[a] = dict(arms[POOLED_OF[a]])
+            arms[a] = dict(arms[POOLED_OF[a]]) if i != identical_but else _arm(uni[POOLED_OF[a]] + 0.01)
         rows.append({"seed": s, "floor": 50.0, "arms": arms, "sha256": {a: f"{a}-{s}" for a in arms}})
     fr = fractions or {"m1_r_gmom": 0.2, "m1_r_gmom_x15": 0.2 * 1.5, "m1_r_gmom_x2": 0.4,
                        **{a: (0.4 if a.endswith("_x2") else 0.2) for a in NEW}}
@@ -277,7 +330,9 @@ def _read(pr, tmp_path, by_truth=None, over=None, committed_shift=None, **kw):
 
 UP, DOWN = 1.0, -1.0
 NODIFF = "no difference at the bar"
-DROP_BETTER, CARRY = "dropping them scores better", "they carry part of the score"
+DROP_BETTER, DROP_WORSE = "dropping them scores better", "dropping them scores worse"
+HALF_BETTER, HALF_WORSE = "halving them scores better", "halving them scores worse"
+MORE_BETTER, MORE_WORSE = "1.5 times them scores better", "1.5 times them scores worse"
 MOVE_BETTER = "the common part alone scores better at equal movement"
 MOVE_WORSE = "the common part alone scores worse at equal movement"
 PROJ_BETTER = "the common part alone scores better at equal projection"
@@ -290,9 +345,11 @@ def _all(gains):
 
 @pytest.mark.parametrize("gains, s1", [
     ({"m1_r_gmom_c1": UP}, {"m1_r_gmom_c1": DROP_BETTER, "m1_r_gmom_s05": NODIFF, "m1_r_gmom_s15": NODIFF}),
-    ({"m1_r_gmom_c1": DOWN}, {"m1_r_gmom_c1": CARRY, "m1_r_gmom_s05": NODIFF, "m1_r_gmom_s15": NODIFF}),
+    ({"m1_r_gmom_c1": DOWN}, {"m1_r_gmom_c1": DROP_WORSE, "m1_r_gmom_s05": NODIFF, "m1_r_gmom_s15": NODIFF}),
     ({"m1_r_gmom_s05": UP, "m1_r_gmom_s15": DOWN},
-     {"m1_r_gmom_c1": NODIFF, "m1_r_gmom_s05": DROP_BETTER, "m1_r_gmom_s15": CARRY}),
+     {"m1_r_gmom_c1": NODIFF, "m1_r_gmom_s05": HALF_BETTER, "m1_r_gmom_s15": MORE_WORSE}),
+    ({"m1_r_gmom_s05": DOWN, "m1_r_gmom_s15": UP},
+     {"m1_r_gmom_c1": NODIFF, "m1_r_gmom_s05": HALF_WORSE, "m1_r_gmom_s15": MORE_BETTER}),
     ({}, {"m1_r_gmom_c1": NODIFF, "m1_r_gmom_s05": NODIFF, "m1_r_gmom_s15": NODIFF}),
 ])
 def test_statement_one_takes_every_value(pr, tmp_path, gains, s1):
@@ -302,6 +359,30 @@ def test_statement_one_takes_every_value(pr, tmp_path, gains, s1):
     txt = (tmp_path / "out" / "t55.txt").read_text()
     for a, s in s1.items():
         assert f"  {a}: {s}" in txt
+    assert not any("carry part of the score" in x for x in txt.splitlines() if x.startswith("  m1_r_gmom_"))
+    assert "not size-controlled" in txt
+
+
+def test_statement_one_never_calls_adding_the_parts_dropping_them(pr, tmp_path):
+    """m1_r_gmom_s15 adds half as much again of the group-specific parts: its gain or loss never reads 'dropping'."""
+    for i, g in enumerate((UP, DOWN)):
+        r = _read(pr, tmp_path / str(i), _all({"m1_r_gmom_s15": g, "m1_r_gmom_s05": g}))
+        for a in ("m1_r_gmom_s15", "m1_r_gmom_s05"):
+            assert "dropping" not in r["outcome"]["statement_1"][a]
+        txt = (tmp_path / str(i) / "out" / "t55.txt").read_text()
+        line = next(x for x in txt.splitlines() if x.startswith("  m1_r_gmom_s15: "))
+        assert "dropping" not in line and "1.5 times them" in line
+    assert set(pr.S1_LABELS) == set(pr.S1_ARMS)
+    for labs in pr.S1_LABELS.values():
+        assert labs["neither"] == NODIFF and labs["passes"].endswith("better") and labs["loses"].endswith("worse")
+
+
+def test_statement_one_prints_each_arms_squared_size(pr, tmp_path):
+    r = _read(pr, tmp_path)
+    assert r["statement_1"]["m1_r_gmom_c1"]["size_ratio"] == {"CM": 0.64, "Endocardium": 0.64}
+    assert r["statement_1"]["m1_r_gmom_s15"]["size_ratio"] == {"CM": 1.3, "Endocardium": 1.3}
+    txt = (tmp_path / "out" / "t55.txt").read_text()
+    assert "squared size over the entry's: CM 0.7000, Endocardium 0.7000" in txt
 
 
 @pytest.mark.parametrize("gains, s2", [
@@ -386,6 +467,13 @@ def test_the_limits_and_choices_are_in_the_text(pr, tmp_path):
     for x in (*pr.LIMITS, *pr.CHOICES):
         assert x in txt
     assert "one result read twice" in txt and "equal squared size of the direction" in txt
+    assert "An arm that moves less than its comparison arm can lose by size alone" in txt
+    assert "Statement 2 is its size-controlled form" in txt
+    assert "s_g is not orthogonal to c within a group" in txt
+    assert "'No difference at the bar' is not 'no difference'" in txt
+    assert "not that the group-specific parts are noise" in txt
+    assert "Equal movement is the uncentred squared size" in txt
+    assert "outside the uniform arms by construction" in txt
 
 
 @pytest.mark.parametrize("over, kw, reason", [
@@ -402,6 +490,13 @@ def test_the_limits_and_choices_are_in_the_text(pr, tmp_path):
     ({"whole": {"directions": _dirs(a_p=1.61)}}, {}, "differ between the truths' files"),
     ({}, {"directions": _dirs(rebuild=2e-12)}, "the form (1, 1) is not the entry's direction within 1e-12"),
     ({"lib1": {"directions": {}}}, {}, "no full direction record"),
+    ({}, {"directions": _dirs(form_over={("cn", "CM"): {"sha256": "e-CM"}})}, "cn equals the entry in CM"),
+    ({}, {"directions": _dirs(form_over={("s15", "Endocardium"): {"sha256": "e-Endocardium"}})},
+     "s15 equals the entry in Endocardium"),
+    ({}, {"directions": _dirs(form_over={("cn", "Endocardium"): {"size_ratio": 1.0 + 1e-9}})},
+     "cn's squared size ratio in Endocardium"),
+    ({}, {"directions": _dirs(form_over={("cp", "CM"): {"slope": 0.999}})}, "cp's slope in CM"),
+    ({}, {"directions": _dirs(form_over={("cp", "CM"): {"slope": None}})}, "cp's slope in CM"),
     ({"lib2": {"anchor_failures": [{"seed": 3, "reason": "x"}]}}, {}, "anchors invert or go missing"),
 ])
 def test_the_void_cases(pr, tmp_path, over, kw, reason):
@@ -417,6 +512,33 @@ def test_a_rescored_arm_off_its_committed_score_by_1e_6_voids(pr, tmp_path, trut
     r = _read(pr, tmp_path, committed_shift={(truth, arm): 1e-6})
     assert not r["valid"] and any(x.startswith(f"{truth}: ") and "reproduce" in x for x in r["validity"]["reasons"])
     assert _read(pr, tmp_path / "ok", committed_shift={(truth, arm): 1e-10})["valid"]
+
+
+def test_a_new_arm_identical_to_its_pooled_arm_on_nine_seeds_of_ten_stays_valid(pr, tmp_path):
+    r = _read(pr, tmp_path, over={"lib3": {"identical": ("m1_r_gmom_cn_x2",), "identical_but": 7}})
+    assert r["valid"], r["validity"]["reasons"]
+    r = _read(pr, tmp_path / "first", over={"lib3": {"identical": ("m1_r_gmom_cn_x2",), "identical_but": 0}})
+    assert r["valid"], r["validity"]["reasons"]
+
+
+def test_the_forms_check_holds_within_its_tolerance(pr, tmp_path):
+    d = _dirs(form_over={("cn", "CM"): {"size_ratio": 1.0 + 5e-13}, ("cp", "Endocardium"): {"slope": 1.0 - 5e-13}})
+    assert _read(pr, tmp_path, directions=d)["valid"]
+    assert pr.forms_off({"entry": {}}) is None and pr.forms_off({}) is None
+
+
+def test_statement_three_says_cp_x2_is_outside_by_construction(pr, tmp_path):
+    r = _read(pr, tmp_path)
+    assert r["statement_3"]["cp_x2_note"] == pr.CP_X2_NOTE
+    txt = (tmp_path / "out" / "t55.txt").read_text()
+    assert "    note: " + pr.CP_X2_NOTE in txt
+    # on real forms: cp's squared size ratio is (a_p / a_n)^2 >= 1, so the cp_x2 multiple is >= 2
+    for seed in range(5):
+        _, rec = pr.all_directions(_entry(seed), GENES, ["h"])
+        for g, v in rec["cp"].items():
+            e = rec["entry"][g]
+            assert v["size_ratio"] == pytest.approx((e["a_p"] / e["a_n"]) ** 2, rel=1e-12)
+            assert 2 * np.sqrt(v["size_ratio"]) >= 2 - 1e-12
 
 
 def test_the_reading_refuses_to_overwrite(pr, tmp_path):

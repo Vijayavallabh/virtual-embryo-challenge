@@ -22,7 +22,11 @@ Directions (per group, from the entry's directions alone):
   The task file records per group a_n,g, a_p,g, the energy parts (split_read.energy_parts: sum(c^2), sum(s_g^2) and
   2 sum(c s_g), each over sum(d_g^2)), the largest deviation of the form (1, 1) from d_g on M, and for every form its
   slope through the origin on the entry's direction over the moved genes, its squared size over the entry's and its
-  sha256 (zone_read.compare_directions, zone_read.direction_sha256). Ratios, names and hashes only.
+  sha256 (zone_read.compare_directions, zone_read.direction_sha256). Ratios, names and hashes only. Recorded beside
+  them and read by nothing: a_n,g on the mean-centred vectors over M (a_n_centred) and every form's squared size over
+  the entry's on the mean-centred moved genes (size_ratio_centred). "Equal movement" stays the uncentred squared size
+  of the brief; the centred figures show how much of it is a constant log offset over the moved genes, which M1's
+  depth rescaling (core.apply_factors, keep_depth) largely removes, so that it moves cells little.
 
   run    One truth, 10 seeds. pooled, lib1, lib2, lib3: the chamber cut exactly as T46's run makes them; whole: the
          other cut exactly as T44's run loads it (zone_read.load_truth). Arms per seed, all from one cell draw: b0,
@@ -40,19 +44,29 @@ tree; no file records an anchor failure; on the four chamber truths b0, m1_r_gmo
 seed for seed, their committed scores in experiments/t1_m1/results/t46_m1_lib_step/tasks/, and on whole theirs in
 experiments/t1_m1/results/t44_m1_step/tasks/, each to 1e-9; every recorded direction's sha256 and every a_n,g and a_p,g
 are the same in the five files; the form (1, 1) rebuilt from c and s_g equals the entry's direction to 1e-12 in every
-group (recorded by the run); no new arm scores exactly as the pooled arm of its fraction on every seed of a truth.
+group (recorded by the run); no new arm scores exactly as the pooled arm of its fraction on every seed of a truth;
+(added after review) every form's recorded sha256 differs from the entry's in every group, and in every group the cn
+form's recorded squared size ratio and the cp form's recorded slope are 1 to 1e-12 (the forms are what they claim).
 Tests. On the two cuts (pooled and whole) the adoption rule's (vec.adoption.keep_change: passes; with the sign
 reversed, loses; else neither); on a library truth T46's single-task test (ahead, behind, level).
-Statement 1, the group-specific parts at the entry's size: m1_r_gmom_c1 against m1_r_gmom: "dropping them scores
-better" if it passes, "they carry part of the score" if it loses, otherwise "no difference at the bar"; _s05 and _s15
-against m1_r_gmom with the same labels.
+Statement 1, the group-specific parts at the entry's fraction (sizes differ, so not size-controlled; Statement 2 is
+the size-controlled reading). Each arm against m1_r_gmom with its own labels (changed after review: the brief gave
+_s05 and _s15 c1's labels, and "they carry part of the score" claimed content where the arm also moves less):
+  m1_r_gmom_c1  (1, 0)    "dropping them scores better" / "dropping them scores worse"
+  m1_r_gmom_s05 (1, 0.5)  "halving them scores better" / "halving them scores worse"
+  m1_r_gmom_s15 (1, 1.5)  "1.5 times them scores better" / "1.5 times them scores worse"
+if it passes / loses, otherwise "no difference at the bar"; beside each, per group, its squared size over the entry's
+(the reviewer's synthetic worlds had c1 and s05 moving less than m1_r_gmom and s15 more; the run's ratios decide).
 Statement 2, content at equal movement: m1_r_gmom_cn against m1_r_gmom and m1_r_gmom_cn_x2 against m1_r_gmom_x2: "the
 common part alone scores better at equal movement" if both pass, "the common part alone scores worse at equal
 movement" if both lose, "no difference at the bar" if both are neither, otherwise "mixed" with both labels.
 Statement 3, content at equal projection, the same form and read by nothing: m1_r_gmom_cp and m1_r_gmom_cp_x2, and
 beside each, per group, what the uniform arms give at the multiple with the same squared size (sqrt of the form's
 squared size ratio, twice that for _x2; zone_read.size_alone, linear between the multiples 1, 1.5 and 2; "outside the
-uniform arms" where it is not between them).
+uniform arms" where it is not between them). Since a_p,g >= a_n,g (Cauchy-Schwarz), cp's squared size ratio is at
+least 1, so m1_r_gmom_cp_x2's same-size multiple is at least 2 and is outside the uniform arms by construction (on
+their edge only where c is parallel to d_g), not as a data outcome; m1_r_gmom_cp's is a_p,g / a_n,g, inside only
+where that is at most 2.
 Reported: per truth every arm's mean score; each comparison's mean paired difference, seeds ahead, per-seed range and
 library labels; the parts on the two de terms and on mmd_u and the variogram. The read puts nothing forward by itself.
 
@@ -126,7 +140,14 @@ TASK_FILE = zr.TASK_FILE
 PASSES, LOSES, NEITHER = zr.PASSES, zr.LOSES, zr.NEITHER
 NO_DIFFERENCE = zr.NO_DIFFERENCE  # "no difference at the bar"
 S1_ARMS = (f"{BASE}_c1", f"{BASE}_s05", f"{BASE}_s15")
-S1_LABELS = {PASSES: "dropping them scores better", LOSES: "they carry part of the score", NEITHER: NO_DIFFERENCE}
+# per arm what it does to the group-specific parts; the label is "<verb> them scores better / worse"
+S1_VERB = {f"{BASE}_c1": "dropping them", f"{BASE}_s05": "halving them", f"{BASE}_s15": "1.5 times them"}
+S1_LABELS = {a: {PASSES: f"{v} scores better", LOSES: f"{v} scores worse", NEITHER: NO_DIFFERENCE}
+             for a, v in S1_VERB.items()}
+CN_SIZE_TOL = CP_SLOPE_TOL = 1e-12  # the cn form's recorded squared size ratio and cp's slope must be 1 to this
+CP_X2_NOTE = ("a_p,g >= a_n,g (Cauchy-Schwarz), so the cp form's squared size ratio is at least 1 and "
+              "m1_r_gmom_cp_x2's same-size multiple 2 a_p,g / a_n,g is at least 2: it is outside the uniform arms by "
+              "construction (on their edge only where c is parallel to d_g), not as a data outcome")
 S2_ARMS = (f"{BASE}_cn", f"{BASE}_cn_x2")
 S3_ARMS = (f"{BASE}_cp", f"{BASE}_cp_x2")
 BETTER_MOVE = "the common part alone scores better at equal movement"
@@ -156,6 +177,11 @@ CHOICES = (
     "inputs); the (1, 1) check is the largest absolute difference from d_g on M per group.",
     "Labels on each library truth: T46's single-task test of each arm against its comparison arm (ahead, behind, "
     "level).",
+    "After review, Statement 1's labels are per arm ('dropping them', 'halving them', '1.5 times them' scores better "
+    "or worse) in place of the brief's shared labels, which called a gain of the arm that adds the parts 'dropping "
+    "them scores better' and claimed content ('they carry part of the score') for arms whose size differs too.",
+    "The centred figures (a_n on centred vectors, each form's centred squared size ratio) are taken over M with the "
+    "mean over M removed, and are read by nothing.",
 )
 LIMITS = (
     "One released day, in-sample, on cuts earlier choices were made on.",
@@ -167,7 +193,22 @@ LIMITS = (
     "on this one day and says nothing about the two days of the test.",
     "Larger steps score better on these cuts and how far depends on the truth's depth (tries T50 and T54), so an arm "
     "that moves more than its comparison arm can gain by size alone, and no outcome sets a size at the test.",
-    "The two fractions share the seeds, the draw and the directions, so agreement at both is one result read twice.",
+    "The two fractions share the seeds, the draw and the directions, so agreement at both is one result read twice; "
+    "'both' is never two confirmations.",
+    "An arm that moves less than its comparison arm can lose by size alone: Statement 1's arms differ from m1_r_gmom "
+    "in content and squared size together (their ratios are printed), so Statement 1 is not size-controlled and is "
+    "descriptive; Statement 2 is its size-controlled form.",
+    "s_g is not orthogonal to c within a group: dropping or scaling it also changes how far the arm moves along c (the "
+    "recorded 2 sum(c s_g)/sum(d_g^2)).",
+    "Equal movement is the uncentred squared size; a constant log offset over the moved genes is largely removed by "
+    "M1's depth rescaling and moves cells little, so cn can carry less effective movement than the entry where c holds "
+    "such an offset (the centred ratios are printed beside, read by nothing).",
+    "'Better' in Statement 2 means the moved cells land closer along the day's change on these cuts, not that the "
+    "group-specific parts are noise or biologically empty; the read cannot separate noise in s_g from a different pace "
+    "of s_g (try T51's limit).",
+    "'No difference at the bar' is not 'no difference': with ten seeds on one draw, in-sample cuts and the 0.3 bar, an "
+    "effect below the bar or within one cut's noise can hide; the per-seed ranges are printed.",
+    "Statement 3: " + CP_X2_NOTE + ".",
 )
 
 
@@ -216,6 +257,16 @@ def form_direction(d: np.ndarray, c: np.ndarray, s: np.ndarray, M: np.ndarray, a
     return out
 
 
+def centred_ratio(f: np.ndarray, d: np.ndarray, M: np.ndarray) -> float | None:
+    """sum((f - mean f)^2) / sum((d - mean d)^2) over M (information only); None where d is constant on M."""
+    if not M.any():
+        return None
+    fm, dm = np.asarray(f, np.float64)[M], np.asarray(d, np.float64)[M]
+    fc, dc = fm - fm.mean(), dm - dm.mean()
+    dd = float(dc @ dc)
+    return zr._num(float(fc @ fc) / dd) if dd > 0 else None
+
+
 def all_directions(entry: Mapping[str, np.ndarray], genes: Sequence[str], held: Sequence[str]) -> tuple[dict, dict]:
     """Every form's directions (form -> group -> array) and the task file's direction record. Raises ValueError where
     the run refuses."""
@@ -231,10 +282,13 @@ def all_directions(entry: Mapping[str, np.ndarray], genes: Sequence[str], held: 
         d = np.asarray(entry[g], np.float64)
         one = form_direction(d, c, sp["s"][g], M, 1.0, 1.0)
         dev = float(np.max(np.abs(one[M] - d[M]))) if M.any() else 0.0
+        cc = centred_ratio(c, d, M)
         rec["entry"][g] = {"sha256": zr.direction_sha256(d), N: mult[g][N], P: mult[g][P],
-                           **split_read.energy_parts(d, c, sp["s"][g], M), "rebuild_11_max_abs": dev}
+                           **split_read.energy_parts(d, c, sp["s"][g], M), "rebuild_11_max_abs": dev,
+                           "a_n_centred": zr._num(1.0 / np.sqrt(cc)) if cc else None}
     for f in FORMS:
         rec[f] = {g: {**zr.compare_directions(forms[f][g], entry[g], genes, held),
+                      "size_ratio_centred": centred_ratio(forms[f][g], entry[g], M),
                       "sha256": zr.direction_sha256(forms[f][g])} for g in sorted(entry)}
     return forms, rec
 
@@ -357,6 +411,32 @@ def rebuild_off(directions: Mapping) -> list[str] | None:
         return None
 
 
+def forms_off(directions: Mapping) -> list[str] | None:
+    """What makes a form not what it claims: a form whose recorded sha256 equals the entry's in a group, a cn form whose
+    recorded squared size ratio is not 1 to CN_SIZE_TOL, a cp form whose recorded slope is not 1 to CP_SLOPE_TOL;
+    None without a record."""
+    try:
+        ent = directions["entry"]
+        if not ent:
+            return None
+        off = []
+        for f in FORMS:
+            per = zr._groups(directions[f])
+            for g, e in sorted(ent.items()):
+                v = per[g]
+                if v["sha256"] == e["sha256"]:
+                    off.append(f"{f} equals the entry in {g}")
+                if f == "cn" and not (isinstance(v.get("size_ratio"), int | float)
+                                      and abs(v["size_ratio"] - 1.0) <= CN_SIZE_TOL):
+                    off.append(f"cn's squared size ratio in {g} is {v.get('size_ratio')!r}, not 1")
+                if f == "cp" and not (isinstance(v.get("slope"), int | float)
+                                      and abs(v["slope"] - 1.0) <= CP_SLOPE_TOL):
+                    off.append(f"cp's slope in {g} is {v.get('slope')!r}, not 1")
+        return off
+    except (KeyError, TypeError, AttributeError):
+        return None
+
+
 def validity(results: Mapping[str, Mapping], committed: Mapping[str, Sequence[Mapping]]) -> dict:
     """The void conditions. results: truth -> task file; committed: truth -> the committed file's rows."""
     reasons = []
@@ -405,6 +485,11 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Sequence[Ma
             reasons.append(f"{k}: no record of the form (1, 1)")
         elif off:
             reasons.append(f"{k}: the form (1, 1) is not the entry's direction within {REBUILD_TOL:g} in {off}")
+        bad_forms = forms_off(directions)
+        if bad_forms is None:
+            reasons.append(f"{k}: no record of the forms against the entry")
+        elif bad_forms:
+            reasons.append(f"{k}: the forms are not what they claim: {'; '.join(bad_forms)}")
     known = {k: v for k, v in values.items() if v is not None}
     if len({json.dumps(sorted((f"{a}|{b}", x) for (a, b), x in v.items())) for v in known.values()}) > 1:
         reasons.append(f"the recorded directions' sha256 or multiples differ between the truths' files {sorted(known)}")
@@ -456,13 +541,15 @@ def t55_reading(results: Mapping[str, Mapping], committed: Mapping[str, Sequence
     comps = {k: {n: lsr.truth_comparison(results[k], k, a, base=b) for n, (a, b) in pairs.items()} for k in TRUTHS}
     labels = {k: {n: zr.library_label(comps[k][n]) for n in pairs} for k in LIBS}
     rec = results[lsr.POOLED]["directions"]
-    s1 = {a: {"statement": S1_LABELS[cut_tests[a]["test"]], "comparison": cut_tests[a],
-              "library_labels": {k: labels[k][a] for k in LIBS}} for a in S1_ARMS}
+    s1 = {a: {"statement": S1_LABELS[a][cut_tests[a]["test"]], "comparison": cut_tests[a],
+              "library_labels": {k: labels[k][a] for k in LIBS},
+              "size_ratio": {g: x.get("size_ratio") for g, x in sorted(zr._groups(rec[NEW_ARMS[a][0]]).items())}}
+          for a in S1_ARMS}
     s2 = {"statement": pair_statement([cut_tests[a]["test"] for a in S2_ARMS], S2_ARMS, BETTER_MOVE, WORSE_MOVE),
           "comparisons": {a: cut_tests[a] for a in S2_ARMS},
           "library_labels": {k: {a: labels[k][a] for a in S2_ARMS} for k in LIBS}}
     s3 = {"statement": pair_statement([cut_tests[a]["test"] for a in S3_ARMS], S3_ARMS, BETTER_PROJ, WORSE_PROJ),
-          "read_by_nothing": True, "comparisons": {a: cut_tests[a] for a in S3_ARMS},
+          "read_by_nothing": True, "comparisons": {a: cut_tests[a] for a in S3_ARMS}, "cp_x2_note": CP_X2_NOTE,
           "library_labels": {k: {a: labels[k][a] for a in S3_ARMS} for k in LIBS},
           "same_size": {a: {k: {g: same_size(means[k], x.get("size_ratio"), NEW_ARMS[a][1])
                                 for g, x in sorted(zr._groups(rec[NEW_ARMS[a][0]]).items())}
@@ -483,9 +570,12 @@ def t55_text(res: Mapping) -> str:
         lines.append("Outcome: VOID")
         lines.append("Void: " + "; ".join(r["validity"]["reasons"]))
     else:
-        lines.append("Statement 1, the group-specific parts at the entry's size:")
+        lines.append("Statement 1, the group-specific parts at the entry's fraction (sizes differ; not "
+                     "size-controlled, descriptive; Statement 2 is the size-controlled reading):")
         for a, s in r["statement_1"].items():
             lines.append(f"  {a}: {s['statement']}")
+            lines.append("    squared size over the entry's: " + ", ".join(
+                f"{g} {zr._f(x, '.4f')}" for g, x in s["size_ratio"].items()))
             lines.append("    " + zr._cut_line(s["comparison"]) + "; library truths "
                          + ", ".join(f"{k} {lab}" for k, lab in s["library_labels"].items()))
         for name, key in (("Statement 2, content at equal movement", "statement_2"),
@@ -501,17 +591,21 @@ def t55_text(res: Mapping) -> str:
                                      + (zr._f(v["what_size_alone_would_give"]) if v["why_not"] is None
                                         else v["why_not"])
                                      for g, v in per.items()) for k, per in s["same_size"][a].items()))
+            if key == "statement_3":
+                lines.append(f"    note: {s['cp_x2_note']}")
             lines.append("    library truths (single-task test against the pooled arm of the same fraction): "
                          + "; ".join(f"{k}: " + ", ".join(f"{a} {lab}" for a, lab in ls_.items())
                                      for k, ls_ in s["library_labels"].items()))
         d = r["directions"]
         lines.append("Per group (over M; ratios only): " + "; ".join(
             f"{g}: a_n {v[N]:.4f}, a_p {v[P]:.4f}, sum(c^2)/sum(d^2) {v['e_c']:.4f}, sum(s^2)/sum(d^2) {v['e_s']:.4f}, "
-            f"2 sum(c s)/sum(d^2) {v['cross']:+.4f}, (1, 1) off by {v['rebuild_11_max_abs']:.2e}"
+            f"2 sum(c s)/sum(d^2) {v['cross']:+.4f}, (1, 1) off by {v['rebuild_11_max_abs']:.2e}, "
+            f"a_n on centred vectors {zr._f(v.get('a_n_centred'), '.4f')} (read by nothing)"
             for g, v in d["entry"].items()))
         for f in FORMS:
             lines.append(f"form {f} {tuple(FORMS[f])} on the entry's direction: " + "; ".join(
-                f"{g} slope {zr._f(v['slope'], '.4f')}, squared size ratio {zr._f(v['size_ratio'], '.4f')}"
+                f"{g} slope {zr._f(v['slope'], '.4f')}, squared size ratio {zr._f(v['size_ratio'], '.4f')} "
+                f"(centred {zr._f(v.get('size_ratio_centred'), '.4f')}, read by nothing)"
                 for g, v in zr._groups(d[f]).items()))
         for k in TRUTHS:
             lines.append(f"truth {k}: mean scores " + ", ".join(f"{a} {x:.2f}" for a, x in r["mean_scores"][k].items()))
