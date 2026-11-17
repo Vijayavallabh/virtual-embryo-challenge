@@ -22,7 +22,8 @@ case is released data alone or decline. Other reads: the released day's change l
 direction that all cell groups share (T51); holding Feng's zone mix fixed changes nothing at the bar, which closes
 by a read the line the eighth pass reopened (T53); the calibrated step sits on the uniform arms' line (T48); a larger
 g_mom scores +1.47 and +1.36 at twice its size, on the distribution terms, and by its row changes nothing (T49).
-The full suite on the DGX at b1bf884: lock 0, lint 0, 2,151 tests passed. Tries: T1 93, embryo 73, heart 31, T3 31. The committed estimate stays 184 (170 to 198). **Waiting for the captain:** the new dates (the
+The full suite on the DGX at 628909f, after the last read's script and tests: lock 0, lint 0, 2,214 tests passed, clean
+tree (2,151 at b1bf884 earlier in the day). Tries: T1 93, embryo 73, heart 31, T3 31. The committed estimate stays 184 (170 to 198). **Waiting for the captain:** the new dates (the
 upload gate's exception lies after the organisers' deadline, so no upload is possible until it is moved); the six
 confirmations for the method report's exposure section; and, for information with the AI assistant's advice to
 change nothing, the size of Task 3's factor and the size of Task 1's step.
