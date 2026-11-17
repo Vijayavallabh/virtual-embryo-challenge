@@ -1,0 +1,2487 @@
+{
+ "label": "try T48, a labelled in-sample diagnostic, never an adoption result: M1 (with R1, R2 and g_mom's factors, the entry's form) at the fraction its own step needs, read back on the task's reference cells with T47's share code, to deliver 0.2 x L (T48a; L from T47's committed reading) and 0.2 (T48b, reported), on T44's route; Feng's E9.5 cells lie inside these pseudo-tasks' external windows, the cuts are ones earlier T1 choices were made on; the result can only go to the team captain",
+ "task": "T1/E9.5->E10.5",
+ "fraction": 0.2,
+ "fractions": {
+  "m1_r_gmom": 0.2,
+  "m1_r_gmom_x15": 0.30000000000000004,
+  "m1_r_gmom_x2": 0.4,
+  "m1_r_gmom_calL": 0.2953125000000001,
+  "m1_r_gmom_cal": 0.353125
+ },
+ "multipliers": {
+  "m1_r_gmom_x15": 1.5,
+  "m1_r_gmom_x2": 2.0
+ },
+ "calibration": {
+  "L": 0.8342320620692518,
+  "t47": "experiments/t1_m1/results/t47_share_read/t47.json",
+  "t47_sha256": "1f2f92b12316b8f9ce5462622df8831817d839e364f20c95f248bb304818b125",
+  "base_fraction": 0.2,
+  "targets": {
+   "m1_r_gmom_calL": 0.16684641241385037,
+   "m1_r_gmom_cal": 0.2
+  },
+  "fractions": {
+   "m1_r_gmom_calL": 0.2953125000000001,
+   "m1_r_gmom_cal": 0.353125
+  },
+  "delivered_at_base": 0.11234401084650328,
+  "delivered": {
+   "m1_r_gmom_calL": 0.16690144838303853,
+   "m1_r_gmom_cal": 0.20019716991837735
+  },
+  "steps": {
+   "m1_r_gmom_calL": 9,
+   "m1_r_gmom_cal": 8
+  },
+  "stream": [
+   48,
+   48
+  ],
+  "bracket": [
+   0.2,
+   1.0
+  ],
+  "rel_tol": 0.001,
+  "weights": {
+   "CM": 5263.0,
+   "Endocardium": 1555.0,
+   "Endothelium": 271.0,
+   "Epicardium": 883.0
+  },
+  "seconds_rule": 182.0,
+  "noise": {
+   "m1_r_gmom_calL": {
+    "streams": [
+     [
+      48,
+      48,
+      1
+     ],
+     [
+      48,
+      48,
+      2
+     ],
+     [
+      48,
+      48,
+      3
+     ],
+     [
+      48,
+      48,
+      4
+     ],
+     [
+      48,
+      48,
+      5
+     ],
+     [
+      48,
+      48,
+      6
+     ],
+     [
+      48,
+      48,
+      7
+     ],
+     [
+      48,
+      48,
+      8
+     ],
+     [
+      48,
+      48,
+      9
+     ],
+     [
+      48,
+      48,
+      10
+     ]
+    ],
+    "values": [
+     0.16683833230695921,
+     0.16680151457067752,
+     0.16680930162305616,
+     0.16675326226145878,
+     0.16677254090809498,
+     0.16681925913190734,
+     0.16686901201676552,
+     0.1668669637540702,
+     0.1666953726316068,
+     0.1666983081402878
+    ],
+    "sd": 6.220290919865487e-05,
+    "slope": 0.5724059020226644,
+    "fraction_sd": 0.00010866923101046561
+   },
+   "m1_r_gmom_cal": {
+    "streams": [
+     [
+      48,
+      48,
+      1
+     ],
+     [
+      48,
+      48,
+      2
+     ],
+     [
+      48,
+      48,
+      3
+     ],
+     [
+      48,
+      48,
+      4
+     ],
+     [
+      48,
+      48,
+      5
+     ],
+     [
+      48,
+      48,
+      6
+     ],
+     [
+      48,
+      48,
+      7
+     ],
+     [
+      48,
+      48,
+      8
+     ],
+     [
+      48,
+      48,
+      9
+     ],
+     [
+      48,
+      48,
+      10
+     ]
+    ],
+    "values": [
+     0.2000333935502788,
+     0.2000591281507391,
+     0.2000137731114361,
+     0.20014566681119908,
+     0.20011817716831334,
+     0.2001038923454413,
+     0.19992636307552478,
+     0.20000490418798292,
+     0.1998341162258692,
+     0.2000516762021836
+    ],
+    "sd": 9.305921977873627e-05,
+    "slope": 0.573734916387749,
+    "fraction_sd": 0.00016219898270204594
+   }
+  },
+  "steps_by_arm": {
+   "m1_r_gmom": {
+    "fraction": 0.2,
+    "share": 0.11234401084650328,
+    "share_over_f": 0.5617200542325164,
+    "bins": {
+     "[0, 0.1)": {
+      "share": 0.015546420141462586,
+      "share_over_f": 0.07773210070731293,
+      "genes": {
+       "CM": 20712,
+       "Endocardium": 20822,
+       "Endothelium": 21037,
+       "Epicardium": 20806
+      }
+     },
+     "[0.1, 1)": {
+      "share": 0.08785604483074101,
+      "share_over_f": 0.43928022415370505,
+      "genes": {
+       "CM": 7077,
+       "Endocardium": 6752,
+       "Endothelium": 6477,
+       "Epicardium": 6773
+      }
+     },
+     "[1, 10)": {
+      "share": 0.1551095563319848,
+      "share_over_f": 0.775547781659924,
+      "genes": {
+       "CM": 1728,
+       "Endocardium": 1958,
+       "Endothelium": 2013,
+       "Epicardium": 1953
+      }
+     },
+     ">= 10": {
+      "share": 0.1892528254311167,
+      "share_over_f": 0.9462641271555835,
+      "genes": {
+       "CM": 135,
+       "Endocardium": 120,
+       "Endothelium": 125,
+       "Epicardium": 120
+      }
+     }
+    },
+    "before": {
+     "detected_genes": 4430.830908178626,
+     "total_counts": 15723.840692423482
+    },
+    "after": {
+     "detected_genes": 4403.618038133467,
+     "total_counts": 15723.575388861014
+    },
+    "panel": {
+     "share": 0.11234401084650328,
+     "share_over_f": 0.5617200542325164,
+     "genes": {
+      "CM": 29652,
+      "Endocardium": 29652,
+      "Endothelium": 29652,
+      "Epicardium": 29652
+     }
+    }
+   },
+   "m1_r_gmom_x15": {
+    "fraction": 0.30000000000000004,
+    "share": 0.16932776898264526,
+    "share_over_f": 0.5644258966088175,
+    "bins": {
+     "[0, 0.1)": {
+      "share": 0.023848426484997874,
+      "share_over_f": 0.0794947549499929,
+      "genes": {
+       "CM": 20712,
+       "Endocardium": 20822,
+       "Endothelium": 21037,
+       "Epicardium": 20806
+      }
+     },
+     "[0.1, 1)": {
+      "share": 0.13304425194639505,
+      "share_over_f": 0.44348083982131675,
+      "genes": {
+       "CM": 7077,
+       "Endocardium": 6752,
+       "Endothelium": 6477,
+       "Epicardium": 6773
+      }
+     },
+     "[1, 10)": {
+      "share": 0.23315774800639333,
+      "share_over_f": 0.7771924933546444,
+      "genes": {
+       "CM": 1728,
+       "Endocardium": 1958,
+       "Endothelium": 2013,
+       "Epicardium": 1953
+      }
+     },
+     ">= 10": {
+      "share": 0.28431729439742337,
+      "share_over_f": 0.9477243146580777,
+      "genes": {
+       "CM": 135,
+       "Endocardium": 120,
+       "Endothelium": 125,
+       "Epicardium": 120
+      }
+     }
+    },
+    "before": {
+     "detected_genes": 4430.830908178626,
+     "total_counts": 15723.840692423482
+    },
+    "after": {
+     "detected_genes": 4387.790015052685,
+     "total_counts": 15723.745233316607
+    },
+    "panel": {
+     "share": 0.16932776898264526,
+     "share_over_f": 0.5644258966088175,
+     "genes": {
+      "CM": 29652,
+      "Endocardium": 29652,
+      "Endothelium": 29652,
+      "Epicardium": 29652
+     }
+    }
+   },
+   "m1_r_gmom_x2": {
+    "fraction": 0.4,
+    "share": 0.22698446875571984,
+    "share_over_f": 0.5674611718892996,
+    "bins": {
+     "[0, 0.1)": {
+      "share": 0.03287665474585046,
+      "share_over_f": 0.08219163686462615,
+      "genes": {
+       "CM": 20712,
+       "Endocardium": 20822,
+       "Endothelium": 21037,
+       "Epicardium": 20806
+      }
+     },
+     "[0.1, 1)": {
+      "share": 0.178804002737173,
+      "share_over_f": 0.4470100068429325,
+      "genes": {
+       "CM": 7077,
+       "Endocardium": 6752,
+       "Endothelium": 6477,
+       "Epicardium": 6773
+      }
+     },
+     "[1, 10)": {
+      "share": 0.3119663128444419,
+      "share_over_f": 0.7799157821111047,
+      "genes": {
+       "CM": 1728,
+       "Endocardium": 1958,
+       "Endothelium": 2013,
+       "Epicardium": 1953
+      }
+     },
+     ">= 10": {
+      "share": 0.37997910543375396,
+      "share_over_f": 0.9499477635843848,
+      "genes": {
+       "CM": 135,
+       "Endocardium": 120,
+       "Endothelium": 125,
+       "Epicardium": 120
+      }
+     }
+    },
+    "before": {
+     "detected_genes": 4430.830908178626,
+     "total_counts": 15723.840692423482
+    },
+    "after": {
+     "detected_genes": 4370.099473156046,
+     "total_counts": 15723.44831911691
+    },
+    "panel": {
+     "share": 0.22698446875571984,
+     "share_over_f": 0.5674611718892996,
+     "genes": {
+      "CM": 29652,
+      "Endocardium": 29652,
+      "Endothelium": 29652,
+      "Epicardium": 29652
+     }
+    }
+   },
+   "m1_r_gmom_calL": {
+    "fraction": 0.2953125000000001,
+    "share": 0.16690144838303853,
+    "share_over_f": 0.5651689257415059,
+    "bins": {
+     "[0, 0.1)": {
+      "share": 0.02380171781279315,
+      "share_over_f": 0.08059840952480217,
+      "genes": {
+       "CM": 20712,
+       "Endocardium": 20822,
+       "Endothelium": 21037,
+       "Epicardium": 20806
+      }
+     },
+     "[0.1, 1)": {
+      "share": 0.13095350396910188,
+      "share_over_f": 0.44344043672076816,
+      "genes": {
+       "CM": 7077,
+       "Endocardium": 6752,
+       "Endothelium": 6477,
+       "Epicardium": 6773
+      }
+     },
+     "[1, 10)": {
+      "share": 0.22991425717312475,
+      "share_over_f": 0.7785456327555544,
+      "genes": {
+       "CM": 1728,
+       "Endocardium": 1958,
+       "Endothelium": 2013,
+       "Epicardium": 1953
+      }
+     },
+     ">= 10": {
+      "share": 0.2802424740239314,
+      "share_over_f": 0.9489692242080213,
+      "genes": {
+       "CM": 135,
+       "Endocardium": 120,
+       "Endothelium": 125,
+       "Epicardium": 120
+      }
+     }
+    },
+    "before": {
+     "detected_genes": 4430.830908178626,
+     "total_counts": 15723.840692423482
+    },
+    "after": {
+     "detected_genes": 4388.515429001505,
+     "total_counts": 15724.119668840944
+    },
+    "panel": {
+     "share": 0.16690144838303853,
+     "share_over_f": 0.5651689257415059,
+     "genes": {
+      "CM": 29652,
+      "Endocardium": 29652,
+      "Endothelium": 29652,
+      "Epicardium": 29652
+     }
+    }
+   },
+   "m1_r_gmom_cal": {
+    "fraction": 0.353125,
+    "share": 0.20019716991837735,
+    "share_over_f": 0.5669300387069093,
+    "bins": {
+     "[0, 0.1)": {
+      "share": 0.029015856611216913,
+      "share_over_f": 0.08216879748309214,
+      "genes": {
+       "CM": 20712,
+       "Endocardium": 20822,
+       "Endothelium": 21037,
+       "Epicardium": 20806
+      }
+     },
+     "[0.1, 1)": {
+      "share": 0.1576293549462733,
+      "share_over_f": 0.4463840140071456,
+      "genes": {
+       "CM": 7077,
+       "Endocardium": 6752,
+       "Endothelium": 6477,
+       "Epicardium": 6773
+      }
+     },
+     "[1, 10)": {
+      "share": 0.2751887557816935,
+      "share_over_f": 0.7792955915941763,
+      "genes": {
+       "CM": 1728,
+       "Endocardium": 1958,
+       "Endothelium": 2013,
+       "Epicardium": 1953
+      }
+     },
+     ">= 10": {
+      "share": 0.3350707824686552,
+      "share_over_f": 0.9488730123006164,
+      "genes": {
+       "CM": 135,
+       "Endocardium": 120,
+       "Endothelium": 125,
+       "Epicardium": 120
+      }
+     }
+    },
+    "before": {
+     "detected_genes": 4430.830908178626,
+     "total_counts": 15723.840692423482
+    },
+    "after": {
+     "detected_genes": 4378.730306071249,
+     "total_counts": 15724.016683391872
+    },
+    "panel": {
+     "share": 0.20019716991837735,
+     "share_over_f": 0.5669300387069093,
+     "genes": {
+      "CM": 29652,
+      "Endocardium": 29652,
+      "Endothelium": 29652,
+      "Epicardium": 29652
+     }
+    }
+   }
+  },
+  "seconds": 418.0
+ },
+ "external": {
+  "file": "data/external/feng2022_gse193346_geo/cd1_stats.npz",
+  "sha256": "28f188fb9409984142a70a5a940dde3d1d3187b033d94ee2d26337a216f295c3",
+  "bracket": [
+   "E9.5",
+   "E14.5"
+  ],
+  "pseudocount_cp10k": 0.5,
+  "min_cells_ext": 10,
+  "groups": {
+   "CM": {
+    "E9.5": 705,
+    "E14.5": 1777,
+    "feng_labels": [
+     "ventricular_cm",
+     "atrial_cm"
+    ]
+   },
+   "Endocardium": {
+    "E9.5": 70,
+    "E14.5": 107,
+    "feng_labels": [
+     "endocardial_ec"
+    ]
+   },
+   "Endothelium": {
+    "E9.5": 70,
+    "E14.5": 158,
+    "feng_labels": [
+     "endocardial_ec",
+     "vascular_ec"
+    ]
+   },
+   "Epicardium": {
+    "E9.5": 13,
+    "E14.5": 143,
+    "feng_labels": [
+     "epicardial"
+    ]
+   }
+  },
+  "mapped_genes": 29715,
+  "of_genes": 32285
+ },
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "rows": [
+  {
+   "seed": 0,
+   "floor": 50.0,
+   "arms": {
+    "b0": {
+     "score": 43.96512151447558,
+     "groups": {
+      "de_recovery": 0.42163993225067253,
+      "direction": 0.559442044891312,
+      "distribution": 0.39876654632972325,
+      "covariance": 0.3737537848017133
+     },
+     "metrics": {
+      "variance_ratio": 0.708,
+      "mmd_u": 0.12397,
+      "variogram": 0.008638,
+      "energy_distance": 3.60369,
+      "pb_rel_err": 0.2824,
+      "de_score": -0.3146,
+      "de_direction": 0.1679,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9664
+     },
+     "skills": {
+      "de_score": 0.42163993225067253,
+      "de_direction": 0.559442044891312,
+      "mmd_u": 0.39876654632972325,
+      "variogram": 0.3737537848017133
+     }
+    },
+    "m1_r_gmom": {
+     "score": 45.99941244234049,
+     "groups": {
+      "de_recovery": 0.451991882943501,
+      "direction": 0.5734088105087453,
+      "distribution": 0.4182927470677957,
+      "covariance": 0.39078063470002317
+     },
+     "metrics": {
+      "variance_ratio": 0.722,
+      "mmd_u": 0.11466,
+      "variogram": 0.008048,
+      "energy_distance": 3.37766,
+      "pb_rel_err": 0.2742,
+      "de_score": -0.1798,
+      "de_direction": 0.2023,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9667
+     },
+     "skills": {
+      "de_score": 0.451991882943501,
+      "de_direction": 0.5734088105087453,
+      "mmd_u": 0.4182927470677957,
+      "variogram": 0.39078063470002317
+     }
+    },
+    "m1_r_gmom_x15": {
+     "score": 46.76378284760879,
+     "groups": {
+      "de_recovery": 0.46502939398934123,
+      "direction": 0.5791672775252895,
+      "distribution": 0.42318948544670887,
+      "covariance": 0.3981590748170875
+     },
+     "metrics": {
+      "variance_ratio": 0.725,
+      "mmd_u": 0.11246,
+      "variogram": 0.007808,
+      "energy_distance": 3.28686,
+      "pb_rel_err": 0.2707,
+      "de_score": -0.1273,
+      "de_direction": 0.216,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.967
+     },
+     "skills": {
+      "de_score": 0.46502939398934123,
+      "de_direction": 0.5791672775252895,
+      "mmd_u": 0.42318948544670887,
+      "variogram": 0.3981590748170875
+     }
+    },
+    "m1_r_gmom_x2": {
+     "score": 47.7020812018121,
+     "groups": {
+      "de_recovery": 0.48601780074648293,
+      "direction": 0.5854327208061647,
+      "distribution": 0.42714431494709704,
+      "covariance": 0.40507443572915003
+     },
+     "metrics": {
+      "variance_ratio": 0.729,
+      "mmd_u": 0.11072,
+      "variogram": 0.007591,
+      "energy_distance": 3.22355,
+      "pb_rel_err": 0.268,
+      "de_score": -0.0487,
+      "de_direction": 0.2306,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.967
+     },
+     "skills": {
+      "de_score": 0.48601780074648293,
+      "de_direction": 0.5854327208061647,
+      "mmd_u": 0.42714431494709704,
+      "variogram": 0.40507443572915003
+     }
+    },
+    "m1_r_gmom_calL": {
+     "score": 46.7941552018462,
+     "groups": {
+      "de_recovery": 0.46692778727864515,
+      "direction": 0.5794221179231447,
+      "distribution": 0.4227620667658941,
+      "covariance": 0.3976272784412319
+     },
+     "metrics": {
+      "variance_ratio": 0.725,
+      "mmd_u": 0.11265,
+      "variogram": 0.007825,
+      "energy_distance": 3.29192,
+      "pb_rel_err": 0.2709,
+      "de_score": -0.1199,
+      "de_direction": 0.2166,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.967
+     },
+     "skills": {
+      "de_score": 0.46692778727864515,
+      "de_direction": 0.5794221179231447,
+      "mmd_u": 0.4227620667658941,
+      "variogram": 0.3976272784412319
+     }
+    },
+    "m1_r_gmom_cal": {
+     "score": 47.30382711345553,
+     "groups": {
+      "de_recovery": 0.4777871860005645,
+      "direction": 0.5828415461788139,
+      "distribution": 0.4251804330392943,
+      "covariance": 0.4016347908896119
+     },
+     "metrics": {
+      "variance_ratio": 0.727,
+      "mmd_u": 0.11158,
+      "variogram": 0.007698,
+      "energy_distance": 3.25118,
+      "pb_rel_err": 0.2692,
+      "de_score": -0.0787,
+      "de_direction": 0.2246,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.967
+     },
+     "skills": {
+      "de_score": 0.4777871860005645,
+      "de_direction": 0.5828415461788139,
+      "mmd_u": 0.4251804330392943,
+      "variogram": 0.4016347908896119
+     }
+    }
+   },
+   "cells": {
+    "b0": {
+     "detected_genes": 4327.476553341149,
+     "panel_cp10k": 9999.999999310912
+    },
+    "m1_r_gmom": {
+     "detected_genes": 4282.8245408362645,
+     "panel_cp10k": 10000.000001019052
+    },
+    "m1_r_gmom_x15": {
+     "detected_genes": 4267.3065650644785,
+     "panel_cp10k": 9999.999999214595
+    },
+    "m1_r_gmom_x2": {
+     "detected_genes": 4250.308323563892,
+     "panel_cp10k": 10000.00000015665
+    },
+    "m1_r_gmom_calL": {
+     "detected_genes": 4268.061742868308,
+     "panel_cp10k": 10000.0000017779
+    },
+    "m1_r_gmom_cal": {
+     "detected_genes": 4258.410902696366,
+     "panel_cp10k": 9999.999999933583
+    }
+   },
+   "seconds": 584.0
+  },
+  {
+   "seed": 1,
+   "floor": 50.0,
+   "arms": {
+    "b0": {
+     "score": 43.35042380549521,
+     "groups": {
+      "de_recovery": 0.38404424189666647,
+      "direction": 0.5493166126532337,
+      "distribution": 0.4124878993223621,
+      "covariance": 0.38208827310384225
+     },
+     "metrics": {
+      "variance_ratio": 0.698,
+      "mmd_u": 0.12747,
+      "variogram": 0.008863,
+      "energy_distance": 3.74567,
+      "pb_rel_err": 0.2939,
+      "de_score": -0.4529,
+      "de_direction": 0.14,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9644
+     },
+     "skills": {
+      "de_score": 0.38404424189666647,
+      "de_direction": 0.5493166126532337,
+      "mmd_u": 0.4124878993223621,
+      "variogram": 0.38208827310384225
+     }
+    },
+    "m1_r_gmom": {
+     "score": 45.59620671508679,
+     "groups": {
+      "de_recovery": 0.4190178222247053,
+      "direction": 0.563652136196053,
+      "distribution": 0.4345741968383478,
+      "covariance": 0.3996115924708694
+     },
+     "metrics": {
+      "variance_ratio": 0.711,
+      "mmd_u": 0.11697,
+      "variogram": 0.008249,
+      "energy_distance": 3.48574,
+      "pb_rel_err": 0.2848,
+      "de_score": -0.2899,
+      "de_direction": 0.1761,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9649
+     },
+     "skills": {
+      "de_score": 0.4190178222247053,
+      "de_direction": 0.563652136196053,
+      "mmd_u": 0.4345741968383478,
+      "variogram": 0.3996115924708694
+     }
+    },
+    "m1_r_gmom_x15": {
+     "score": 46.360807999357235,
+     "groups": {
+      "de_recovery": 0.43215211754537597,
+      "direction": 0.5689164538489603,
+      "distribution": 0.4398451612903226,
+      "covariance": 0.40693694378945766
+     },
+     "metrics": {
+      "variance_ratio": 0.715,
+      "mmd_u": 0.11462,
+      "variogram": 0.008008,
+      "energy_distance": 3.38673,
+      "pb_rel_err": 0.2811,
+      "de_score": -0.2355,
+      "de_direction": 0.1889,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9652
+     },
+     "skills": {
+      "de_score": 0.43215211754537597,
+      "de_direction": 0.5689164538489603,
+      "mmd_u": 0.4398451612903226,
+      "variogram": 0.40693694378945766
+     }
+    },
+    "m1_r_gmom_x2": {
+     "score": 47.21237125322175,
+     "groups": {
+      "de_recovery": 0.44805543939303427,
+      "direction": 0.5756367663344408,
+      "distribution": 0.44452558551979554,
+      "covariance": 0.4142149272220501
+     },
+     "metrics": {
+      "variance_ratio": 0.718,
+      "mmd_u": 0.11258,
+      "variogram": 0.007777,
+      "energy_distance": 3.30697,
+      "pb_rel_err": 0.2781,
+      "de_score": -0.1739,
+      "de_direction": 0.2049,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9653
+     },
+     "skills": {
+      "de_score": 0.44805543939303427,
+      "de_direction": 0.5756367663344408,
+      "mmd_u": 0.44452558551979554,
+      "variogram": 0.4142149272220501
+     }
+    },
+    "m1_r_gmom_calL": {
+     "score": 46.298242637944114,
+     "groups": {
+      "de_recovery": 0.4303419784255222,
+      "direction": 0.5687089715536104,
+      "distribution": 0.4397089933439967,
+      "covariance": 0.4065349544072948
+     },
+     "metrics": {
+      "variance_ratio": 0.715,
+      "mmd_u": 0.11468,
+      "variogram": 0.008021,
+      "energy_distance": 3.39207,
+      "pb_rel_err": 0.2812,
+      "de_score": -0.2428,
+      "de_direction": 0.1884,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9652
+     },
+     "skills": {
+      "de_score": 0.4303419784255222,
+      "de_direction": 0.5687089715536104,
+      "mmd_u": 0.4397089933439967,
+      "variogram": 0.4065349544072948
+     }
+    },
+    "m1_r_gmom_cal": {
+     "score": 46.77904078249055,
+     "groups": {
+      "de_recovery": 0.43949604453559915,
+      "direction": 0.5721309069562664,
+      "distribution": 0.4424255009863981,
+      "covariance": 0.41078009828009826
+     },
+     "metrics": {
+      "variance_ratio": 0.717,
+      "mmd_u": 0.11349,
+      "variogram": 0.007885,
+      "energy_distance": 3.34267,
+      "pb_rel_err": 0.2794,
+      "de_score": -0.2065,
+      "de_direction": 0.1966,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9653
+     },
+     "skills": {
+      "de_score": 0.43949604453559915,
+      "de_direction": 0.5721309069562664,
+      "mmd_u": 0.4424255009863981,
+      "variogram": 0.41078009828009826
+     }
+    }
+   },
+   "cells": {
+    "b0": {
+     "detected_genes": 4340.580695584213,
+     "panel_cp10k": 10000.000001835291
+    },
+    "m1_r_gmom": {
+     "detected_genes": 4295.635599843689,
+     "panel_cp10k": 10000.000000217053
+    },
+    "m1_r_gmom_x15": {
+     "detected_genes": 4280.203595154358,
+     "panel_cp10k": 10000.000002225665
+    },
+    "m1_r_gmom_x2": {
+     "detected_genes": 4263.240328253224,
+     "panel_cp10k": 9999.999998255464
+    },
+    "m1_r_gmom_calL": {
+     "detected_genes": 4281.122508792497,
+     "panel_cp10k": 10000.000000401422
+    },
+    "m1_r_gmom_cal": {
+     "detected_genes": 4271.489253614694,
+     "panel_cp10k": 10000.000003394576
+    }
+   },
+   "seconds": 366.7
+  },
+  {
+   "seed": 2,
+   "floor": 50.0,
+   "arms": {
+    "b0": {
+     "score": 43.9372388689948,
+     "groups": {
+      "de_recovery": 0.4021083598921304,
+      "direction": 0.5575348369487143,
+      "distribution": 0.4046495793006177,
+      "covariance": 0.39033357844775723
+     },
+     "metrics": {
+      "variance_ratio": 0.696,
+      "mmd_u": 0.12727,
+      "variogram": 0.009295,
+      "energy_distance": 3.73117,
+      "pb_rel_err": 0.29,
+      "de_score": -0.3993,
+      "de_direction": 0.1602,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9659
+     },
+     "skills": {
+      "de_score": 0.4021083598921304,
+      "de_direction": 0.5575348369487143,
+      "mmd_u": 0.4046495793006177,
+      "variogram": 0.39033357844775723
+     }
+    },
+    "m1_r_gmom": {
+     "score": 46.1080640327028,
+     "groups": {
+      "de_recovery": 0.4367809970174691,
+      "direction": 0.5718706255065203,
+      "distribution": 0.4250319284802044,
+      "covariance": 0.4070407807598467
+     },
+     "metrics": {
+      "variance_ratio": 0.71,
+      "mmd_u": 0.11741,
+      "variogram": 0.008681,
+      "energy_distance": 3.49217,
+      "pb_rel_err": 0.2814,
+      "de_score": -0.2374,
+      "de_direction": 0.1951,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9661
+     },
+     "skills": {
+      "de_score": 0.4367809970174691,
+      "de_direction": 0.5718706255065203,
+      "mmd_u": 0.4250319284802044,
+      "variogram": 0.4070407807598467
+     }
+    },
+    "m1_r_gmom_x15": {
+     "score": 46.93827034738975,
+     "groups": {
+      "de_recovery": 0.4532692201403858,
+      "direction": 0.577529761904762,
+      "distribution": 0.4297298693249315,
+      "covariance": 0.41381998582565555
+     },
+     "metrics": {
+      "variance_ratio": 0.713,
+      "mmd_u": 0.11527,
+      "variogram": 0.008446,
+      "energy_distance": 3.40096,
+      "pb_rel_err": 0.2779,
+      "de_score": -0.1691,
+      "de_direction": 0.2084,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9664
+     },
+     "skills": {
+      "de_score": 0.4532692201403858,
+      "de_direction": 0.577529761904762,
+      "mmd_u": 0.4297298693249315,
+      "variogram": 0.41381998582565555
+     }
+    },
+    "m1_r_gmom_x2": {
+     "score": 47.67152609502673,
+     "groups": {
+      "de_recovery": 0.4662573199158565,
+      "direction": 0.5836967965107535,
+      "distribution": 0.43353655359282994,
+      "covariance": 0.4208288288288289
+     },
+     "metrics": {
+      "variance_ratio": 0.716,
+      "mmd_u": 0.11357,
+      "variogram": 0.008211,
+      "energy_distance": 3.33201,
+      "pb_rel_err": 0.2751,
+      "de_score": -0.1187,
+      "de_direction": 0.2226,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9664
+     },
+     "skills": {
+      "de_score": 0.4662573199158565,
+      "de_direction": 0.5836967965107535,
+      "mmd_u": 0.43353655359282994,
+      "variogram": 0.4208288288288289
+     }
+    },
+    "m1_r_gmom_calL": {
+     "score": 46.947831686641265,
+     "groups": {
+      "de_recovery": 0.45417289693747576,
+      "direction": 0.5777016969336113,
+      "distribution": 0.4293085655314758,
+      "covariance": 0.41358549369599096
+     },
+     "metrics": {
+      "variance_ratio": 0.713,
+      "mmd_u": 0.11546,
+      "variogram": 0.008454,
+      "energy_distance": 3.40357,
+      "pb_rel_err": 0.278,
+      "de_score": -0.1655,
+      "de_direction": 0.2088,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9664
+     },
+     "skills": {
+      "de_score": 0.45417289693747576,
+      "de_direction": 0.5777016969336113,
+      "mmd_u": 0.4293085655314758,
+      "variogram": 0.41358549369599096
+     }
+    },
+    "m1_r_gmom_cal": {
+     "score": 47.37374914623145,
+     "groups": {
+      "de_recovery": 0.461534132477911,
+      "direction": 0.5809880239520959,
+      "distribution": 0.43187126914092916,
+      "covariance": 0.41772785806266993
+     },
+     "metrics": {
+      "variance_ratio": 0.715,
+      "mmd_u": 0.11431,
+      "variogram": 0.008314,
+      "energy_distance": 3.36025,
+      "pb_rel_err": 0.2763,
+      "de_score": -0.1367,
+      "de_direction": 0.2164,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9664
+     },
+     "skills": {
+      "de_score": 0.461534132477911,
+      "de_direction": 0.5809880239520959,
+      "mmd_u": 0.43187126914092916,
+      "variogram": 0.41772785806266993
+     }
+    }
+   },
+   "cells": {
+    "b0": {
+     "detected_genes": 4349.182688550215,
+     "panel_cp10k": 10000.000005287302
+    },
+    "m1_r_gmom": {
+     "detected_genes": 4304.239742086753,
+     "panel_cp10k": 9999.99999898976
+    },
+    "m1_r_gmom_x15": {
+     "detected_genes": 4288.972645564673,
+     "panel_cp10k": 10000.000001413233
+    },
+    "m1_r_gmom_x2": {
+     "detected_genes": 4271.881789761625,
+     "panel_cp10k": 9999.999998369714
+    },
+    "m1_r_gmom_calL": {
+     "detected_genes": 4289.796014067995,
+     "panel_cp10k": 9999.999999459482
+    },
+    "m1_r_gmom_cal": {
+     "detected_genes": 4280.410511918718,
+     "panel_cp10k": 9999.99999975247
+    }
+   },
+   "seconds": 368.3
+  },
+  {
+   "seed": 3,
+   "floor": 50.0,
+   "arms": {
+    "b0": {
+     "score": 45.01647883816655,
+     "groups": {
+      "de_recovery": 0.414842716074519,
+      "direction": 0.5701112412177985,
+      "distribution": 0.41655122877225387,
+      "covariance": 0.39480465213454974
+     },
+     "metrics": {
+      "variance_ratio": 0.706,
+      "mmd_u": 0.11827,
+      "variogram": 0.008856,
+      "energy_distance": 3.44648,
+      "pb_rel_err": 0.2785,
+      "de_score": -0.3346,
+      "de_direction": 0.1916,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9683
+     },
+     "skills": {
+      "de_score": 0.414842716074519,
+      "de_direction": 0.5701112412177985,
+      "mmd_u": 0.41655122877225387,
+      "variogram": 0.39480465213454974
+     }
+    },
+    "m1_r_gmom": {
+     "score": 47.1887395950819,
+     "groups": {
+      "de_recovery": 0.44708980196390363,
+      "direction": 0.5847909316117409,
+      "distribution": 0.43777633991157117,
+      "covariance": 0.4129215529171825
+     },
+     "metrics": {
+      "variance_ratio": 0.72,
+      "mmd_u": 0.10882,
+      "variogram": 0.008226,
+      "energy_distance": 3.21662,
+      "pb_rel_err": 0.2702,
+      "de_score": -0.1929,
+      "de_direction": 0.2259,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9685
+     },
+     "skills": {
+      "de_score": 0.44708980196390363,
+      "de_direction": 0.5847909316117409,
+      "mmd_u": 0.43777633991157117,
+      "variogram": 0.4129215529171825
+     }
+    },
+    "m1_r_gmom_x15": {
+     "score": 48.10564751870153,
+     "groups": {
+      "de_recovery": 0.4651826484018265,
+      "direction": 0.5920352637178903,
+      "distribution": 0.44245231607629426,
+      "covariance": 0.4200815116709892
+     },
+     "metrics": {
+      "variance_ratio": 0.724,
+      "mmd_u": 0.10686,
+      "variogram": 0.007992,
+      "energy_distance": 3.13154,
+      "pb_rel_err": 0.2667,
+      "de_score": -0.122,
+      "de_direction": 0.2422,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9687
+     },
+     "skills": {
+      "de_score": 0.4651826484018265,
+      "de_direction": 0.5920352637178903,
+      "mmd_u": 0.44245231607629426,
+      "variogram": 0.4200815116709892
+     }
+    },
+    "m1_r_gmom_x2": {
+     "score": 48.8085824538832,
+     "groups": {
+      "de_recovery": 0.47697079651196816,
+      "direction": 0.5971636642391721,
+      "distribution": 0.44673709695168917,
+      "covariance": 0.42765540132770063
+     },
+     "metrics": {
+      "variance_ratio": 0.727,
+      "mmd_u": 0.1051,
+      "variogram": 0.007753,
+      "energy_distance": 3.06742,
+      "pb_rel_err": 0.264,
+      "de_score": -0.0787,
+      "de_direction": 0.2535,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9688
+     },
+     "skills": {
+      "de_score": 0.47697079651196816,
+      "de_direction": 0.5971636642391721,
+      "mmd_u": 0.44673709695168917,
+      "variogram": 0.42765540132770063
+     }
+    },
+    "m1_r_gmom_calL": {
+     "score": 48.02203339357922,
+     "groups": {
+      "de_recovery": 0.4630944940053412,
+      "direction": 0.5910022001365602,
+      "distribution": 0.4423076923076923,
+      "covariance": 0.42001926354004593
+     },
+     "metrics": {
+      "variance_ratio": 0.723,
+      "mmd_u": 0.10692,
+      "variogram": 0.007994,
+      "energy_distance": 3.13366,
+      "pb_rel_err": 0.2668,
+      "de_score": -0.1299,
+      "de_direction": 0.2399,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9687
+     },
+     "skills": {
+      "de_score": 0.4630944940053412,
+      "de_direction": 0.5910022001365602,
+      "mmd_u": 0.4423076923076923,
+      "variogram": 0.42001926354004593
+     }
+    },
+    "m1_r_gmom_cal": {
+     "score": 48.48759958711183,
+     "groups": {
+      "de_recovery": 0.47153436704466556,
+      "direction": 0.5948381185094685,
+      "distribution": 0.4448523368582543,
+      "covariance": 0.4241358671255424
+     },
+     "metrics": {
+      "variance_ratio": 0.725,
+      "mmd_u": 0.10587,
+      "variogram": 0.007863,
+      "energy_distance": 3.09414,
+      "pb_rel_err": 0.2651,
+      "de_score": -0.0984,
+      "de_direction": 0.2484,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9688
+     },
+     "skills": {
+      "de_score": 0.47153436704466556,
+      "de_direction": 0.5948381185094685,
+      "mmd_u": 0.4448523368582543,
+      "variogram": 0.4241358671255424
+     }
+    }
+   },
+   "cells": {
+    "b0": {
+     "detected_genes": 4334.940797186401,
+     "panel_cp10k": 10000.000005164906
+    },
+    "m1_r_gmom": {
+     "detected_genes": 4290.4970691676435,
+     "panel_cp10k": 10000.000001583661
+    },
+    "m1_r_gmom_x15": {
+     "detected_genes": 4275.1854239937475,
+     "panel_cp10k": 10000.000001073468
+    },
+    "m1_r_gmom_x2": {
+     "detected_genes": 4257.921258304025,
+     "panel_cp10k": 10000.000000579099
+    },
+    "m1_r_gmom_calL": {
+     "detected_genes": 4275.836850332161,
+     "panel_cp10k": 9999.999999676942
+    },
+    "m1_r_gmom_cal": {
+     "detected_genes": 4266.372997264556,
+     "panel_cp10k": 9999.999996272709
+    }
+   },
+   "seconds": 369.5
+  },
+  {
+   "seed": 4,
+   "floor": 50.0,
+   "arms": {
+    "b0": {
+     "score": 43.748339391464434,
+     "groups": {
+      "de_recovery": 0.4222745441603242,
+      "direction": 0.5618489583333334,
+      "distribution": 0.3848591729284874,
+      "covariance": 0.37997383206341884
+     },
+     "metrics": {
+      "variance_ratio": 0.707,
+      "mmd_u": 0.12579,
+      "variogram": 0.008244,
+      "energy_distance": 3.37444,
+      "pb_rel_err": 0.2755,
+      "de_score": -0.2839,
+      "de_direction": 0.171,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9683
+     },
+     "skills": {
+      "de_score": 0.4222745441603242,
+      "de_direction": 0.5618489583333334,
+      "mmd_u": 0.3848591729284874,
+      "variogram": 0.37997383206341884
+     }
+    },
+    "m1_r_gmom": {
+     "score": 45.9162339539899,
+     "groups": {
+      "de_recovery": 0.4561424262139942,
+      "direction": 0.5763579697239537,
+      "distribution": 0.40552623074437144,
+      "covariance": 0.3968968566605033
+     },
+     "metrics": {
+      "variance_ratio": 0.72,
+      "mmd_u": 0.11582,
+      "variogram": 0.00769,
+      "energy_distance": 3.15347,
+      "pb_rel_err": 0.267,
+      "de_score": -0.1483,
+      "de_direction": 0.2058,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9686
+     },
+     "skills": {
+      "de_score": 0.4561424262139942,
+      "de_direction": 0.5763579697239537,
+      "mmd_u": 0.40552623074437144,
+      "variogram": 0.3968968566605033
+     }
+    },
+    "m1_r_gmom_x15": {
+     "score": 46.995522170760005,
+     "groups": {
+      "de_recovery": 0.48148841855528496,
+      "direction": 0.5829768070254446,
+      "distribution": 0.4102773690807041,
+      "covariance": 0.4037785229410321
+     },
+     "metrics": {
+      "variance_ratio": 0.724,
+      "mmd_u": 0.11367,
+      "variogram": 0.007478,
+      "energy_distance": 3.06976,
+      "pb_rel_err": 0.2633,
+      "de_score": -0.0593,
+      "de_direction": 0.2211,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9689
+     },
+     "skills": {
+      "de_score": 0.48148841855528496,
+      "de_direction": 0.5829768070254446,
+      "mmd_u": 0.4102773690807041,
+      "variogram": 0.4037785229410321
+     }
+    },
+    "m1_r_gmom_x2": {
+     "score": 47.88925162321768,
+     "groups": {
+      "de_recovery": 0.5,
+      "direction": 0.5893914099256337,
+      "distribution": 0.4143643368189323,
+      "covariance": 0.4111768135254435
+     },
+     "metrics": {
+      "variance_ratio": 0.727,
+      "mmd_u": 0.11186,
+      "variogram": 0.007258,
+      "energy_distance": 3.00581,
+      "pb_rel_err": 0.2605,
+      "de_score": 0.0,
+      "de_direction": 0.2356,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.969
+     },
+     "skills": {
+      "de_score": 0.5,
+      "de_direction": 0.5893914099256337,
+      "mmd_u": 0.4143643368189323,
+      "variogram": 0.4111768135254435
+     }
+    },
+    "m1_r_gmom_calL": {
+     "score": 46.97345558422206,
+     "groups": {
+      "de_recovery": 0.48148841855528496,
+      "direction": 0.5824958752062397,
+      "distribution": 0.4099646065886197,
+      "covariance": 0.4037455021262676
+     },
+     "metrics": {
+      "variance_ratio": 0.724,
+      "mmd_u": 0.11381,
+      "variogram": 0.007479,
+      "energy_distance": 3.07322,
+      "pb_rel_err": 0.2635,
+      "de_score": -0.0593,
+      "de_direction": 0.22,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9689
+     },
+     "skills": {
+      "de_score": 0.48148841855528496,
+      "de_direction": 0.5824958752062397,
+      "mmd_u": 0.4099646065886197,
+      "variogram": 0.4037455021262676
+     }
+    },
+    "m1_r_gmom_cal": {
+     "score": 47.45368362930815,
+     "groups": {
+      "de_recovery": 0.49055403600279884,
+      "direction": 0.5863656953042429,
+      "distribution": 0.41248014025091767,
+      "covariance": 0.40781430695522886
+     },
+     "metrics": {
+      "variance_ratio": 0.726,
+      "mmd_u": 0.11269,
+      "variogram": 0.007357,
+      "energy_distance": 3.03396,
+      "pb_rel_err": 0.2617,
+      "de_score": -0.0297,
+      "de_direction": 0.2288,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.969
+     },
+     "skills": {
+      "de_score": 0.49055403600279884,
+      "de_direction": 0.5863656953042429,
+      "mmd_u": 0.41248014025091767,
+      "variogram": 0.40781430695522886
+     }
+    }
+   },
+   "cells": {
+    "b0": {
+     "detected_genes": 4337.549628761235,
+     "panel_cp10k": 10000.000001833512
+    },
+    "m1_r_gmom": {
+     "detected_genes": 4292.661977334897,
+     "panel_cp10k": 10000.000001828152
+    },
+    "m1_r_gmom_x15": {
+     "detected_genes": 4277.382180539274,
+     "panel_cp10k": 10000.000000602582
+    },
+    "m1_r_gmom_x2": {
+     "detected_genes": 4260.043767096522,
+     "panel_cp10k": 10000.000001920818
+    },
+    "m1_r_gmom_calL": {
+     "detected_genes": 4278.135599843689,
+     "panel_cp10k": 10000.000002021918
+    },
+    "m1_r_gmom_cal": {
+     "detected_genes": 4268.425361469324,
+     "panel_cp10k": 9999.999999864398
+    }
+   },
+   "seconds": 368.8
+  },
+  {
+   "seed": 5,
+   "floor": 50.0,
+   "arms": {
+    "b0": {
+     "score": 44.03176926597395,
+     "groups": {
+      "de_recovery": 0.42074898264049865,
+      "direction": 0.5459984514675864,
+      "distribution": 0.40709442364133186,
+      "covariance": 0.3825125352015935
+     },
+     "metrics": {
+      "variance_ratio": 0.704,
+      "mmd_u": 0.12159,
+      "variogram": 0.009163,
+      "energy_distance": 3.7639,
+      "pb_rel_err": 0.2846,
+      "de_score": -0.3077,
+      "de_direction": 0.1307,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9657
+     },
+     "skills": {
+      "de_score": 0.42074898264049865,
+      "de_direction": 0.5459984514675864,
+      "mmd_u": 0.40709442364133186,
+      "variogram": 0.3825125352015935
+     }
+    },
+    "m1_r_gmom": {
+     "score": 46.008187407899854,
+     "groups": {
+      "de_recovery": 0.4469004760080976,
+      "direction": 0.5602744673167208,
+      "distribution": 0.42826723449560816,
+      "covariance": 0.39903983949555744
+     },
+     "metrics": {
+      "variance_ratio": 0.718,
+      "mmd_u": 0.11182,
+      "variogram": 0.00856,
+      "energy_distance": 3.53334,
+      "pb_rel_err": 0.2765,
+      "de_score": -0.1941,
+      "de_direction": 0.1669,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9659
+     },
+     "skills": {
+      "de_score": 0.4469004760080976,
+      "de_direction": 0.5602744673167208,
+      "mmd_u": 0.42826723449560816,
+      "variogram": 0.39903983949555744
+     }
+    },
+    "m1_r_gmom_x15": {
+     "score": 46.7740795202453,
+     "groups": {
+      "de_recovery": 0.4597804672108078,
+      "direction": 0.5664110989412194,
+      "distribution": 0.43366934397067547,
+      "covariance": 0.40546050236621767
+     },
+     "metrics": {
+      "variance_ratio": 0.721,
+      "mmd_u": 0.10948,
+      "variogram": 0.008339,
+      "energy_distance": 3.44923,
+      "pb_rel_err": 0.2731,
+      "de_score": -0.1429,
+      "de_direction": 0.1819,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9662
+     },
+     "skills": {
+      "de_score": 0.4597804672108078,
+      "de_direction": 0.5664110989412194,
+      "mmd_u": 0.43366934397067547,
+      "variogram": 0.40546050236621767
+     }
+    },
+    "m1_r_gmom_x2": {
+     "score": 47.68202472090587,
+     "groups": {
+      "de_recovery": 0.4795678722404885,
+      "direction": 0.5722189436411921,
+      "distribution": 0.438204695244839,
+      "covariance": 0.4120606733259341
+     },
+     "metrics": {
+      "variance_ratio": 0.725,
+      "mmd_u": 0.10756,
+      "variogram": 0.008119,
+      "energy_distance": 3.38762,
+      "pb_rel_err": 0.2704,
+      "de_score": -0.0696,
+      "de_direction": 0.1958,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9663
+     },
+     "skills": {
+      "de_score": 0.4795678722404885,
+      "de_direction": 0.5722189436411921,
+      "mmd_u": 0.438204695244839,
+      "variogram": 0.4120606733259341
+     }
+    },
+    "m1_r_gmom_calL": {
+     "score": 46.79246792657,
+     "groups": {
+      "de_recovery": 0.46074007220216606,
+      "direction": 0.5665765831568184,
+      "distribution": 0.4334824074572983,
+      "covariance": 0.40525396594382185
+     },
+     "metrics": {
+      "variance_ratio": 0.721,
+      "mmd_u": 0.10956,
+      "variogram": 0.008346,
+      "energy_distance": 3.45285,
+      "pb_rel_err": 0.2732,
+      "de_score": -0.1392,
+      "de_direction": 0.1823,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9662
+     },
+     "skills": {
+      "de_score": 0.46074007220216606,
+      "de_direction": 0.5665765831568184,
+      "mmd_u": 0.4334824074572983,
+      "variogram": 0.40525396594382185
+     }
+    },
+    "m1_r_gmom_cal": {
+     "score": 47.31573635845556,
+     "groups": {
+      "de_recovery": 0.47246645071726057,
+      "direction": 0.5698648251542757,
+      "distribution": 0.43597247060098626,
+      "covariance": 0.40891401718187825
+     },
+     "metrics": {
+      "variance_ratio": 0.723,
+      "mmd_u": 0.1085,
+      "variogram": 0.008223,
+      "energy_distance": 3.412,
+      "pb_rel_err": 0.2716,
+      "de_score": -0.0952,
+      "de_direction": 0.1902,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9663
+     },
+     "skills": {
+      "de_score": 0.47246645071726057,
+      "de_direction": 0.5698648251542757,
+      "mmd_u": 0.43597247060098626,
+      "variogram": 0.40891401718187825
+     }
+    }
+   },
+   "cells": {
+    "b0": {
+     "detected_genes": 4340.73700664322,
+     "panel_cp10k": 10000.000000220703
+    },
+    "m1_r_gmom": {
+     "detected_genes": 4296.155334114888,
+     "panel_cp10k": 10000.000001144972
+    },
+    "m1_r_gmom_x15": {
+     "detected_genes": 4280.711606096132,
+     "panel_cp10k": 10000.000002183191
+    },
+    "m1_r_gmom_x2": {
+     "detected_genes": 4263.660023446659,
+     "panel_cp10k": 10000.000001254008
+    },
+    "m1_r_gmom_calL": {
+     "detected_genes": 4281.414615084017,
+     "panel_cp10k": 10000.000001971739
+    },
+    "m1_r_gmom_cal": {
+     "detected_genes": 4271.9533020711215,
+     "panel_cp10k": 10000.000000579787
+    }
+   },
+   "seconds": 372.5
+  },
+  {
+   "seed": 6,
+   "floor": 50.0,
+   "arms": {
+    "b0": {
+     "score": 44.68835391218865,
+     "groups": {
+      "de_recovery": 0.4066893127776326,
+      "direction": 0.5691416153567548,
+      "distribution": 0.4136359082256287,
+      "covariance": 0.3941751731030052
+     },
+     "metrics": {
+      "variance_ratio": 0.704,
+      "mmd_u": 0.12271,
+      "variogram": 0.008658,
+      "energy_distance": 3.59509,
+      "pb_rel_err": 0.2854,
+      "de_score": -0.3571,
+      "de_direction": 0.1909,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9661
+     },
+     "skills": {
+      "de_score": 0.4066893127776326,
+      "de_direction": 0.5691416153567548,
+      "mmd_u": 0.4136359082256287,
+      "variogram": 0.3941751731030052
+     }
+    },
+    "m1_r_gmom": {
+     "score": 46.86659420499969,
+     "groups": {
+      "de_recovery": 0.4404323957213198,
+      "direction": 0.583599494911981,
+      "distribution": 0.4346246973365617,
+      "covariance": 0.411352800953516
+     },
+     "metrics": {
+      "variance_ratio": 0.718,
+      "mmd_u": 0.11307,
+      "variogram": 0.008073,
+      "energy_distance": 3.35516,
+      "pb_rel_err": 0.2772,
+      "de_score": -0.2105,
+      "de_direction": 0.2251,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9663
+     },
+     "skills": {
+      "de_score": 0.4404323957213198,
+      "de_direction": 0.583599494911981,
+      "mmd_u": 0.4346246973365617,
+      "variogram": 0.411352800953516
+     }
+    },
+    "m1_r_gmom_x15": {
+     "score": 47.84317779419273,
+     "groups": {
+      "de_recovery": 0.46205913786961167,
+      "direction": 0.5895550386433556,
+      "distribution": 0.4396230433393675,
+      "covariance": 0.41820660405937593
+     },
+     "metrics": {
+      "variance_ratio": 0.721,
+      "mmd_u": 0.11091,
+      "variogram": 0.007853,
+      "energy_distance": 3.26699,
+      "pb_rel_err": 0.2738,
+      "de_score": -0.1278,
+      "de_direction": 0.2387,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9666
+     },
+     "skills": {
+      "de_score": 0.46205913786961167,
+      "de_direction": 0.5895550386433556,
+      "mmd_u": 0.4396230433393675,
+      "variogram": 0.41820660405937593
+     }
+    },
+    "m1_r_gmom_x2": {
+     "score": 48.56989327683861,
+     "groups": {
+      "de_recovery": 0.47477274113842965,
+      "direction": 0.5948217124687712,
+      "distribution": 0.4438770024728524,
+      "covariance": 0.4256860931236509
+     },
+     "metrics": {
+      "variance_ratio": 0.724,
+      "mmd_u": 0.10911,
+      "variogram": 0.007621,
+      "energy_distance": 3.19707,
+      "pb_rel_err": 0.2711,
+      "de_score": -0.0827,
+      "de_direction": 0.2505,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9666
+     },
+     "skills": {
+      "de_score": 0.47477274113842965,
+      "de_direction": 0.5948217124687712,
+      "mmd_u": 0.4438770024728524,
+      "variogram": 0.4256860931236509
+     }
+    },
+    "m1_r_gmom_calL": {
+     "score": 47.765853166373695,
+     "groups": {
+      "de_recovery": 0.4600106401844299,
+      "direction": 0.5890246645175801,
+      "distribution": 0.43934234330105354,
+      "covariance": 0.41798501248959197
+     },
+     "metrics": {
+      "variance_ratio": 0.721,
+      "mmd_u": 0.11103,
+      "variogram": 0.00786,
+      "energy_distance": 3.27163,
+      "pb_rel_err": 0.2739,
+      "de_score": -0.1353,
+      "de_direction": 0.2375,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9666
+     },
+     "skills": {
+      "de_score": 0.4600106401844299,
+      "de_direction": 0.5890246645175801,
+      "mmd_u": 0.43934234330105354,
+      "variogram": 0.41798501248959197
+     }
+    },
+    "m1_r_gmom_cal": {
+     "score": 48.23498564601426,
+     "groups": {
+      "de_recovery": 0.46938898606671087,
+      "direction": 0.5919535899947261,
+      "distribution": 0.44197623380794354,
+      "covariance": 0.42210671151200124
+     },
+     "metrics": {
+      "variance_ratio": 0.723,
+      "mmd_u": 0.10991,
+      "variogram": 0.007731,
+      "energy_distance": 3.22903,
+      "pb_rel_err": 0.2722,
+      "de_score": -0.1015,
+      "de_direction": 0.2441,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9667
+     },
+     "skills": {
+      "de_score": 0.46938898606671087,
+      "de_direction": 0.5919535899947261,
+      "mmd_u": 0.44197623380794354,
+      "variogram": 0.42210671151200124
+     }
+    }
+   },
+   "cells": {
+    "b0": {
+     "detected_genes": 4343.118210238375,
+     "panel_cp10k": 10000.000001979119
+    },
+    "m1_r_gmom": {
+     "detected_genes": 4298.368698710434,
+     "panel_cp10k": 9999.999998868994
+    },
+    "m1_r_gmom_x15": {
+     "detected_genes": 4283.035169988277,
+     "panel_cp10k": 10000.00000316722
+    },
+    "m1_r_gmom_x2": {
+     "detected_genes": 4265.7788198515045,
+     "panel_cp10k": 10000.00000250166
+    },
+    "m1_r_gmom_calL": {
+     "detected_genes": 4283.699882766706,
+     "panel_cp10k": 10000.000001002185
+    },
+    "m1_r_gmom_cal": {
+     "detected_genes": 4274.019148104729,
+     "panel_cp10k": 10000.000001098517
+    }
+   },
+   "seconds": 371.8
+  },
+  {
+   "seed": 7,
+   "floor": 50.0,
+   "arms": {
+    "b0": {
+     "score": 44.21004194684441,
+     "groups": {
+      "de_recovery": 0.4121777559538424,
+      "direction": 0.5574907958085529,
+      "distribution": 0.4106462019747776,
+      "covariance": 0.3824471046770601
+     },
+     "metrics": {
+      "variance_ratio": 0.7,
+      "mmd_u": 0.1246,
+      "variogram": 0.00902,
+      "energy_distance": 3.70718,
+      "pb_rel_err": 0.2864,
+      "de_score": -0.3577,
+      "de_direction": 0.1624,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9667
+     },
+     "skills": {
+      "de_score": 0.4121777559538424,
+      "de_direction": 0.5574907958085529,
+      "mmd_u": 0.4106462019747776,
+      "variogram": 0.3824471046770601
+     }
+    },
+    "m1_r_gmom": {
+     "score": 46.211176450723435,
+     "groups": {
+      "de_recovery": 0.43892491110646314,
+      "direction": 0.5715322639181244,
+      "distribution": 0.4320168672220508,
+      "covariance": 0.39946205292236114
+     },
+     "metrics": {
+      "variance_ratio": 0.714,
+      "mmd_u": 0.11448,
+      "variogram": 0.008408,
+      "energy_distance": 3.46845,
+      "pb_rel_err": 0.2776,
+      "de_score": -0.2336,
+      "de_direction": 0.1971,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.967
+     },
+     "skills": {
+      "de_score": 0.43892491110646314,
+      "de_direction": 0.5715322639181244,
+      "mmd_u": 0.4320168672220508,
+      "variogram": 0.39946205292236114
+     }
+    },
+    "m1_r_gmom_x15": {
+     "score": 47.08338902823764,
+     "groups": {
+      "de_recovery": 0.456344460150049,
+      "direction": 0.5781204111600586,
+      "distribution": 0.43675591369898625,
+      "covariance": 0.40595449172576825
+     },
+     "metrics": {
+      "variance_ratio": 0.717,
+      "mmd_u": 0.11237,
+      "variogram": 0.008188,
+      "energy_distance": 3.38197,
+      "pb_rel_err": 0.274,
+      "de_score": -0.1606,
+      "de_direction": 0.2128,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9673
+     },
+     "skills": {
+      "de_score": 0.456344460150049,
+      "de_direction": 0.5781204111600586,
+      "mmd_u": 0.43675591369898625,
+      "variogram": 0.40595449172576825
+     }
+    },
+    "m1_r_gmom_x2": {
+     "score": 47.73115939622832,
+     "groups": {
+      "de_recovery": 0.4665406847487773,
+      "direction": 0.5839080459770115,
+      "distribution": 0.4407428781281149,
+      "covariance": 0.4123827392120075
+     },
+     "metrics": {
+      "variance_ratio": 0.721,
+      "mmd_u": 0.11063,
+      "variogram": 0.007977,
+      "energy_distance": 3.31676,
+      "pb_rel_err": 0.271,
+      "de_score": -0.1204,
+      "de_direction": 0.2263,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9673
+     },
+     "skills": {
+      "de_score": 0.4665406847487773,
+      "de_direction": 0.5839080459770115,
+      "mmd_u": 0.4407428781281149,
+      "variogram": 0.4123827392120075
+     }
+    },
+    "m1_r_gmom_calL": {
+     "score": 47.02758761144973,
+     "groups": {
+      "de_recovery": 0.4554530656538253,
+      "direction": 0.5774420651217366,
+      "distribution": 0.43648360783498724,
+      "covariance": 0.4055350553505535
+     },
+     "metrics": {
+      "variance_ratio": 0.717,
+      "mmd_u": 0.11249,
+      "variogram": 0.008202,
+      "energy_distance": 3.38567,
+      "pb_rel_err": 0.2741,
+      "de_score": -0.1642,
+      "de_direction": 0.2112,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9673
+     },
+     "skills": {
+      "de_score": 0.4554530656538253,
+      "de_direction": 0.5774420651217366,
+      "mmd_u": 0.43648360783498724,
+      "variogram": 0.4055350553505535
+     }
+    },
+    "m1_r_gmom_cal": {
+     "score": 47.590235076274276,
+     "groups": {
+      "de_recovery": 0.4674760525729561,
+      "direction": 0.5815361890694238,
+      "distribution": 0.43910725486096586,
+      "covariance": 0.40958556946929037
+     },
+     "metrics": {
+      "variance_ratio": 0.719,
+      "mmd_u": 0.11134,
+      "variogram": 0.008068,
+      "energy_distance": 3.34341,
+      "pb_rel_err": 0.2723,
+      "de_score": -0.1168,
+      "de_direction": 0.2208,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9673
+     },
+     "skills": {
+      "de_score": 0.4674760525729561,
+      "de_direction": 0.5815361890694238,
+      "mmd_u": 0.43910725486096586,
+      "variogram": 0.40958556946929037
+     }
+    }
+   },
+   "cells": {
+    "b0": {
+     "detected_genes": 4358.56858147714,
+     "panel_cp10k": 10000.000002792582
+    },
+    "m1_r_gmom": {
+     "detected_genes": 4313.7598671356,
+     "panel_cp10k": 9999.999998463416
+    },
+    "m1_r_gmom_x15": {
+     "detected_genes": 4298.378272762798,
+     "panel_cp10k": 9999.999997281251
+    },
+    "m1_r_gmom_x2": {
+     "detected_genes": 4281.593395857757,
+     "panel_cp10k": 10000.000000573922
+    },
+    "m1_r_gmom_calL": {
+     "detected_genes": 4299.240719030871,
+     "panel_cp10k": 9999.999998152785
+    },
+    "m1_r_gmom_cal": {
+     "detected_genes": 4289.694802657288,
+     "panel_cp10k": 9999.999999967478
+    }
+   },
+   "seconds": 369.8
+  },
+  {
+   "seed": 8,
+   "floor": 50.0,
+   "arms": {
+    "b0": {
+     "score": 44.13693155921684,
+     "groups": {
+      "de_recovery": 0.38721608668472596,
+      "direction": 0.5618156768907258,
+      "distribution": 0.41234989700045227,
+      "covariance": 0.40203202799084914
+     },
+     "metrics": {
+      "variance_ratio": 0.686,
+      "mmd_u": 0.12143,
+      "variogram": 0.009062,
+      "energy_distance": 3.73441,
+      "pb_rel_err": 0.2892,
+      "de_score": -0.433,
+      "de_direction": 0.1705,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9675
+     },
+     "skills": {
+      "de_score": 0.38721608668472596,
+      "de_direction": 0.5618156768907258,
+      "mmd_u": 0.41234989700045227,
+      "variogram": 0.40203202799084914
+     }
+    },
+    "m1_r_gmom": {
+     "score": 46.392380074694586,
+     "groups": {
+      "de_recovery": 0.42450028555111363,
+      "direction": 0.575631500742942,
+      "distribution": 0.43375085883409975,
+      "covariance": 0.41882798261601006
+     },
+     "metrics": {
+      "variance_ratio": 0.7,
+      "mmd_u": 0.11161,
+      "variogram": 0.008466,
+      "energy_distance": 3.47676,
+      "pb_rel_err": 0.2799,
+      "de_score": -0.2644,
+      "de_direction": 0.2036,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9678
+     },
+     "skills": {
+      "de_score": 0.42450028555111363,
+      "de_direction": 0.575631500742942,
+      "mmd_u": 0.43375085883409975,
+      "variogram": 0.41882798261601006
+     }
+    },
+    "m1_r_gmom_x15": {
+     "score": 47.34994381242864,
+     "groups": {
+      "de_recovery": 0.4439467240040614,
+      "direction": 0.581769034389548,
+      "distribution": 0.4390648405735074,
+      "covariance": 0.42675523176915936
+     },
+     "metrics": {
+      "variance_ratio": 0.703,
+      "mmd_u": 0.10932,
+      "variogram": 0.008201,
+      "energy_distance": 3.37251,
+      "pb_rel_err": 0.2759,
+      "de_score": -0.1877,
+      "de_direction": 0.2178,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9682
+     },
+     "skills": {
+      "de_score": 0.4439467240040614,
+      "de_direction": 0.581769034389548,
+      "mmd_u": 0.4390648405735074,
+      "variogram": 0.42675523176915936
+     }
+    },
+    "m1_r_gmom_x2": {
+     "score": 48.154912127399825,
+     "groups": {
+      "de_recovery": 0.45862898747454806,
+      "direction": 0.5875929015622631,
+      "distribution": 0.44374155177074887,
+      "covariance": 0.434355917417854
+     },
+     "metrics": {
+      "variance_ratio": 0.706,
+      "mmd_u": 0.10735,
+      "variogram": 0.007956,
+      "energy_distance": 3.29694,
+      "pb_rel_err": 0.2727,
+      "de_score": -0.1341,
+      "de_direction": 0.231,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9683
+     },
+     "skills": {
+      "de_score": 0.45862898747454806,
+      "de_direction": 0.5875929015622631,
+      "mmd_u": 0.44374155177074887,
+      "variogram": 0.434355917417854
+     }
+    },
+    "m1_r_gmom_calL": {
+     "score": 47.281573953669366,
+     "groups": {
+      "de_recovery": 0.44191438763376933,
+      "direction": 0.5816816816816817,
+      "distribution": 0.4388770053475936,
+      "covariance": 0.42626810301776413
+     },
+     "metrics": {
+      "variance_ratio": 0.703,
+      "mmd_u": 0.1094,
+      "variogram": 0.008217,
+      "energy_distance": 3.37869,
+      "pb_rel_err": 0.2761,
+      "de_score": -0.1954,
+      "de_direction": 0.2176,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9682
+     },
+     "skills": {
+      "de_score": 0.44191438763376933,
+      "de_direction": 0.5816816816816817,
+      "mmd_u": 0.4388770053475936,
+      "variogram": 0.42626810301776413
+     }
+    },
+    "m1_r_gmom_cal": {
+     "score": 47.788686904958105,
+     "groups": {
+      "de_recovery": 0.452211474113281,
+      "direction": 0.5849313000150989,
+      "distribution": 0.44152141166343883,
+      "covariance": 0.43072376009227226
+     },
+     "metrics": {
+      "variance_ratio": 0.705,
+      "mmd_u": 0.10828,
+      "variogram": 0.008072,
+      "energy_distance": 3.33007,
+      "pb_rel_err": 0.2741,
+      "de_score": -0.1571,
+      "de_direction": 0.225,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9683
+     },
+     "skills": {
+      "de_score": 0.452211474113281,
+      "de_direction": 0.5849313000150989,
+      "mmd_u": 0.44152141166343883,
+      "variogram": 0.43072376009227226
+     }
+    }
+   },
+   "cells": {
+    "b0": {
+     "detected_genes": 4346.778429073857,
+     "panel_cp10k": 10000.000000422391
+    },
+    "m1_r_gmom": {
+     "detected_genes": 4301.914810472841,
+     "panel_cp10k": 10000.000001402113
+    },
+    "m1_r_gmom_x15": {
+     "detected_genes": 4286.8243454474405,
+     "panel_cp10k": 10000.000002209501
+    },
+    "m1_r_gmom_x2": {
+     "detected_genes": 4269.97713950762,
+     "panel_cp10k": 10000.000000195687
+    },
+    "m1_r_gmom_calL": {
+     "detected_genes": 4287.544157874169,
+     "panel_cp10k": 9999.99999878317
+    },
+    "m1_r_gmom_cal": {
+     "detected_genes": 4277.864400156311,
+     "panel_cp10k": 10000.00000072914
+    }
+   },
+   "seconds": 366.1
+  },
+  {
+   "seed": 9,
+   "floor": 50.0,
+   "arms": {
+    "b0": {
+     "score": 44.08213718288296,
+     "groups": {
+      "de_recovery": 0.42412993039443153,
+      "direction": 0.5533422178578944,
+      "distribution": 0.39890177563378837,
+      "covariance": 0.3839140103780579
+     },
+     "metrics": {
+      "variance_ratio": 0.71,
+      "mmd_u": 0.12075,
+      "variogram": 0.00848,
+      "energy_distance": 3.59914,
+      "pb_rel_err": 0.2757,
+      "de_score": -0.2943,
+      "de_direction": 0.1521,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9675
+     },
+     "skills": {
+      "de_score": 0.42412993039443153,
+      "de_direction": 0.5533422178578944,
+      "mmd_u": 0.39890177563378837,
+      "variogram": 0.3839140103780579
+     }
+    },
+    "m1_r_gmom": {
+     "score": 45.977115914756034,
+     "groups": {
+      "de_recovery": 0.4467253176930596,
+      "direction": 0.5679216759052624,
+      "distribution": 0.4197764216665767,
+      "covariance": 0.4008824212400341
+     },
+     "metrics": {
+      "variance_ratio": 0.724,
+      "mmd_u": 0.11106,
+      "variogram": 0.007909,
+      "energy_distance": 3.36976,
+      "pb_rel_err": 0.2674,
+      "de_score": -0.1962,
+      "de_direction": 0.1887,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9678
+     },
+     "skills": {
+      "de_score": 0.4467253176930596,
+      "de_direction": 0.5679216759052624,
+      "mmd_u": 0.4197764216665767,
+      "variogram": 0.4008824212400341
+     }
+    },
+    "m1_r_gmom_x15": {
+     "score": 46.93486347703843,
+     "groups": {
+      "de_recovery": 0.46579841449603626,
+      "direction": 0.5760917190010223,
+      "distribution": 0.424475753604194,
+      "covariance": 0.40766687657430734
+     },
+     "metrics": {
+      "variance_ratio": 0.727,
+      "mmd_u": 0.10901,
+      "variogram": 0.007694,
+      "energy_distance": 3.28438,
+      "pb_rel_err": 0.264,
+      "de_score": -0.1208,
+      "de_direction": 0.2084,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9681
+     },
+     "skills": {
+      "de_score": 0.46579841449603626,
+      "de_direction": 0.5760917190010223,
+      "mmd_u": 0.424475753604194,
+      "variogram": 0.40766687657430734
+     }
+    },
+    "m1_r_gmom_x2": {
+     "score": 47.59762371309934,
+     "groups": {
+      "de_recovery": 0.4759865756278209,
+      "direction": 0.582042201564114,
+      "distribution": 0.42859505955006616,
+      "covariance": 0.4144526248399488
+     },
+     "metrics": {
+      "variance_ratio": 0.73,
+      "mmd_u": 0.10725,
+      "variogram": 0.007486,
+      "energy_distance": 3.22013,
+      "pb_rel_err": 0.2614,
+      "de_score": -0.083,
+      "de_direction": 0.2224,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9682
+     },
+     "skills": {
+      "de_score": 0.4759865756278209,
+      "de_direction": 0.582042201564114,
+      "mmd_u": 0.42859505955006616,
+      "variogram": 0.4144526248399488
+     }
+    },
+    "m1_r_gmom_calL": {
+     "score": 46.86915413222235,
+     "groups": {
+      "de_recovery": 0.4638285875387652,
+      "direction": 0.575965539899248,
+      "distribution": 0.42426723432127067,
+      "covariance": 0.40731419583169487
+     },
+     "metrics": {
+      "variance_ratio": 0.727,
+      "mmd_u": 0.1091,
+      "variogram": 0.007705,
+      "energy_distance": 3.28744,
+      "pb_rel_err": 0.2641,
+      "de_score": -0.1283,
+      "de_direction": 0.2081,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9681
+     },
+     "skills": {
+      "de_score": 0.4638285875387652,
+      "de_direction": 0.575965539899248,
+      "mmd_u": 0.42426723432127067,
+      "variogram": 0.40731419583169487
+     }
+    },
+    "m1_r_gmom_cal": {
+     "score": 47.27304366024671,
+     "groups": {
+      "de_recovery": 0.46981552344508537,
+      "direction": 0.5798177274731735,
+      "distribution": 0.42690026362038663,
+      "covariance": 0.4112602239339316
+     },
+     "metrics": {
+      "variance_ratio": 0.729,
+      "mmd_u": 0.10797,
+      "variogram": 0.007583,
+      "energy_distance": 3.24507,
+      "pb_rel_err": 0.2625,
+      "de_score": -0.1057,
+      "de_direction": 0.2172,
+      "library_size_ratio": 1.0,
+      "pseudobulk_pearson": 0.9682
+     },
+     "skills": {
+      "de_score": 0.46981552344508537,
+      "de_direction": 0.5798177274731735,
+      "mmd_u": 0.42690026362038663,
+      "variogram": 0.4112602239339316
+     }
+    }
+   },
+   "cells": {
+    "b0": {
+     "detected_genes": 4332.4075810863615,
+     "panel_cp10k": 10000.000000839018
+    },
+    "m1_r_gmom": {
+     "detected_genes": 4287.757717858539,
+     "panel_cp10k": 9999.999998650976
+    },
+    "m1_r_gmom_x15": {
+     "detected_genes": 4272.489253614694,
+     "panel_cp10k": 9999.99999962459
+    },
+    "m1_r_gmom_x2": {
+     "detected_genes": 4255.40699491989,
+     "panel_cp10k": 9999.999999660798
+    },
+    "m1_r_gmom_calL": {
+     "detected_genes": 4273.278233685033,
+     "panel_cp10k": 10000.000003741128
+    },
+    "m1_r_gmom_cal": {
+     "detected_genes": 4263.5545134818285,
+     "panel_cp10k": 9999.999995948565
+    }
+   },
+   "seconds": 361.7
+  }
+ ],
+ "stamp": {
+  "commit": "15f38b6a5c61e13f0698b19984280d5ac6eff517",
+  "tree_clean": true,
+  "utc": "2026-11-17T11:15:23Z",
+  "inputs": {
+   "/home/prachh/v/vec-campaign/data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+   "/home/prachh/v/vec-campaign/data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+   "/home/prachh/v/vec-campaign/data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+   "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+   "experiments/t1_direction/config.yaml": "bae9b7aa747b17658aa25b4c1984bc3f7a3dbaca9a0970f7b60aa8e9b504c69f",
+   "experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841",
+   "/home/prachh/v/vec-campaign/data/external/feng2022_gse193346_geo/cd1_stats.npz": "28f188fb9409984142a70a5a940dde3d1d3187b033d94ee2d26337a216f295c3",
+   "experiments/t1_m1/results/n22_additivity/n22.json": "c16dac361f5dfbff8cad9699ff224b6f642332a8142614507b536d1531fa33be",
+   "experiments/t1_m1/results/t47_share_read/t47.json": "1f2f92b12316b8f9ce5462622df8831817d839e364f20c95f248bb304818b125"
+  }
+ }
+}
