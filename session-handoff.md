@@ -14,39 +14,45 @@
   2026-11-17 (a) has the whole list. The organisers also answered the exposure notice (accepted; they ask for the
   explanation and the precommitted procedure in the method report): a further reply to the thread's other questions
   is announced and must go through a screening agent, never be pasted.
-- **What is live (2026-11-17, 22:30 UTC).** No candidate change is live. Two Task 1 lines were read on 17
-  November. (1) The step's size: read on both sides, attacked cold twice, not put forward (decision log 2026-11-17
-  (b) to (e)); the advice is to keep 0.40 on both Task 1 uploads. (2) The common part of Feng's direction (form
-  `cn`): tries T55 and T56 found +0.3 to +0.5 at equal squared size at every depth read; a third cold check found it
-  to be in part a larger step along the common part plus a deletion of group-specific parts the released day does
-  follow (entry (h)); **no request**. Try T57 decides, by a use fixed in entry (h): a form goes to the captain only
-  if it is ahead of the entry's direction in all 24 cells (six worlds, one to four times the practice step),
-  otherwise the family closes. T57's script (`experiments/t1_m1/part_range_read.py`, brief `lift6/briefs/t1x.md`) is
-  on `campaign/t1-x-fix2` (75e137b) after three review rounds, a fourth under way; it has NO ledger row yet and
-  nothing has run. To finish it: take the reviewed branch's two files onto main, write row T57 with the reviewer's
-  row sentences (`lift6/rowcells.py`; last cell `*(pending: the run follows this row's commit)*`), commit,
-  `lift6/sync_campaign.sh <checkout> main`, launch the six worlds detached over the four idle campaign checkouts
-  with a background waiter, `lift6/finish_t1read.sh`, commit the task files unread, run `read` once,
-  `lift6/outcome.py`, then an independent recomputation. Rows T48 to T56 are in the ledger with their outcomes (T1
-  118 tries). The DGX holds four idle campaign checkouts (`~/v/vec-campaign`, `-h7`, `-c`, `-d`; identical package
-  sets; the reference checkout is untouched at dc7b6ae). Builder options built, reviewed and unused: `campaign/t1-n`
-  (2921b96, a step fraction) and `campaign/t1-w` (f51a278, the form `cn`). The schedule amendments are drafted on
-  `draft/schedule-nov21-fix` (490a51a, reviewed: ready, not merged; decision log 2026-11-17 (f)): fill its markers
-  with the captain's words, recompute the rules hash, rebase and merge. Owed by the AI assistant: the full suite on
-  the DGX once T57's script is on main (last full run 628909f: 2,214 passed), the three-reviewer pass of
-  `METHOD_SUMMARY.md`'s bullet on the reads of 17 November, and a ninth independent pass over rows T55 to T57 and
-  entries (f) to (h).
+- **What is live (2026-11-17, 23:50 UTC).** No candidate change is live. Two Task 1 lines were read on 17
+  November. (1) The step's size (tries T44 to T54): the rule fixed before the runs gives 0.60 on both uploads; a
+  second cold check then said stop; the ninth independent pass (decision log 2026-11-18 (a)) classed that stop as
+  the AI assistant's judgement after the results, so the question is the captain's (table below) and is not
+  closed. (2) The common part of Feng's direction (form `cn`): tries T55 and T56 found +0.3 to +0.5 at equal
+  squared size at every depth read; a third cold check found it to be in part a larger step along the common part
+  plus a deletion of group-specific parts the released day does follow (entry 2026-11-17 (h)); no request. Try T57
+  decides, by a use fixed in entry (h) and in its row: a form goes to the captain only if it is ahead of the
+  entry's direction in all 24 cells (six worlds, one to four times the practice step), otherwise the family
+  closes. **Row T57 is committed (de8f8b5) and running in `~/v/vec-campaign-h7` since 23:20 UTC** (exit file
+  `runs/round6/t57.exit`; about three hours; do not sync that checkout while it runs). To finish it:
+  `lift6/finish_t1read.sh vec-campaign-h7 t57_range t57 t57_logs de8f8b5`, commit the task files unread, run
+  `experiments/t1_m1/part_range_read.py read --out t57_range` once on the DGX checkout or locally on the copied
+  task files, `lift6/outcome.py` (totals then T1 200), then the independent recomputation
+  (`lift6/briefs/recompute_t57.md`) and part two of the ninth pass (rows T55 to T57, entries (f) to (h), a sweep
+  of the ledger). The full suite runs at de8f8b5 in `~/v/vec-campaign` (`runs/full_tests_de8f8b5/`; last complete
+  run 628909f: 2,214 passed). The DGX holds four campaign checkouts (`~/v/vec-campaign`, `-h7`, `-c`, `-d`;
+  identical package sets; the reference checkout is untouched at dc7b6ae). Builder options built, reviewed and
+  unused: `campaign/t1-n` (2921b96, a step fraction) and `campaign/t1-w` (f51a278, the form `cn`). The schedule
+  amendments are drafted on `draft/schedule-nov21-fix` (490a51a, reviewed: ready, not merged; decision log
+  2026-11-17 (f)): fill its markers with the captain's words, recompute the rules hash, rebase and merge. Owed by
+  the AI assistant: the three-reviewer pass of `METHOD_SUMMARY.md`'s bullet on the reads of 17 November.
   **For the captain, in this order:** (1) the dates: the gate's exception (27 November) is after the organisers'
   deadline, so the client refuses every official upload until the captain moves it (proposal: freeze and first
   round 21 November 00:00 UTC, second round 23 November, T3's last upload 24 November, marks 25 November by 12:00
-  UTC); (2) the six confirmations for the method report (next bullet); (3) for information, each with the AI
-  assistant's advice to change nothing: the size of Task 3's factor (decision log 2026-11-17 (b)) and the size of
-  Task 1's step (entry (e); if the captain wants it all the same, the least exposed form is the first upload only
-  at 0.55, left in writing to the pre-set rule); (4) the older open decisions (Task 1's read depth: the rule gives
-  declined; the embryo's moved-less family and the late-fetal practice family: advice no). Owed by the AI assistant
-  after T52: the full suite on the DGX at the last commit, and, once the captain names the dates, the amendments
-  (the gate's file with the captain's words and its test, an amendment at the end of `docs/S2_RULES.md` with a new
-  hash, the runbook's tables, `AGENTS.md`), the freeze-morning rebuild and the disclosure email.
+  UTC); (2) the six confirmations for the method report (next bullet); (3) three priced questions, none closed by
+  the AI assistant, each with its advice 'change nothing' labelled as its own and formed after the results: (a)
+  Task 1's step, 0.60 in place of 0.40 on both uploads, the output of the rule fixed before the runs (0.69 without
+  a cap that leaned on a statement its row barred): on Task 1's board, by the truth's depth against the cells the
+  prediction is built from (0.3, 0.6, 0.9, 1.35, 1.8), +1.98, +1.21, +0.80, +0.25, -0.26 at a real share of 0.28
+  and +2.16, +0.97, +0.30, -0.52, -0.96 at 0.22; released data do not say which depth holds, the captain has seen
+  figures that bear on it, so the captain decides from this table alone or declines, and declining is the default
+  (decision log 2026-11-18 (a)); (b) g_mom's damping, 1.0 in place of 0.5: +1.47 and +1.36 on the two practice
+  cuts, a size chosen on the cuts that kept g_mom (row T49); (c) Task 3's factor at half size: +0.89 and +2.35 on
+  the two counted cross-knockout folds, -2.28 on the replicate fold (decision log 2026-11-17 (b)); (4) the older
+  open decisions (Task 1's read depth: the rule gives declined; the embryo's moved-less family and the late-fetal
+  practice family: advice no). Once the captain names the dates, the AI assistant owes the amendments (the gate's
+  file with the captain's words and its test, an amendment at the end of `docs/S2_RULES.md` with a new hash, the
+  runbook's tables, `AGENTS.md`), the freeze-morning rebuild and the disclosure email.
 - **The method report's exposure section (2026-11-17).** `METHOD_SUMMARY.md` now holds "Exposure of hidden-target
   metadata on 2026-11-04 and the precommitted procedure", which the organisers asked for. It was drafted by an agent
   from the dated records, reviewed by three others (accuracy, framing, tone) and revised once; the AI assistant

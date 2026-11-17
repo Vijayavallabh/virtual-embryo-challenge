@@ -3,6 +3,22 @@
 ## Current State
 
 **Last Updated:** 2026-11-17
+**2026-11-17, 23:50 UTC: the ninth independent pass, part one, recomputed rows T48 to T54 (no result wrong) and
+corrected how they were written up; the size of Task 1's step is a question for the captain and is not closed by the
+AI assistant** (`docs/PLAN.md` decision log 2026-11-18 (a)). The pass found rounding slips (corrected in the rows)
+and ten sentences that said more than their rows allow (each noted as the AI assistant's reading after the result,
+or withdrawn). Its main point: 'verdict: stop, keep 0.40' in entry 2026-11-17 (e) is the AI assistant's judgement
+after the results. The rule fixed before the runs gives 0.60 on both uploads (0.69 without a cap that leaned on a
+statement its row barred from quoting), and entry (c) had promised the captain the table whatever the rule said. The
+table, 0.60 against 0.40 on Task 1's board, by the truth's depth against the cells the prediction is built from
+(0.3, 0.6, 0.9, 1.35, 1.8): at a real share of 0.28, +1.98, +1.21, +0.80, +0.25, -0.26; at 0.24, +2.16, +1.09,
++0.57, -0.12, -0.60; at 0.22, +2.16, +0.97, +0.30, -0.52, -0.96. The captain decides from that table alone, or
+declines; declining is the default. The AI assistant's advice, its own and formed after the results: keep 0.40. Two
+more questions are the captain's in the same way, with the advice 'no change' labelled as the AI assistant's:
+g_mom's damping (try T49: +1.47 and +1.36 at damping 1.0) and Task 3's factor at half size. The figure for the
+second upload's base depth now has a committed, target-free record (`experiments/t1_m1/base_depth.py`: 0.911). Row
+T57 was committed at de8f8b5 (82 tries) and runs in `~/v/vec-campaign-h7` since 23:20 UTC (six worlds, about three
+hours); the full suite runs at the same commit in `~/v/vec-campaign`. The committed estimate stays 184 (170 to 198).
 **2026-11-17, 22:30 UTC: a second Task 1 line was read, the common part of Feng's direction; it has no request, and
 one more read (try T57, in build, no row yet, nothing run) decides whether it gets one. Nothing in any upload,
 build, rule or gate file has changed** (`docs/PLAN.md` decision log 2026-11-17 (f) to (h)). The form `cn` steps
