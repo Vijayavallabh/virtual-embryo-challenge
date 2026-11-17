@@ -4707,3 +4707,48 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Prepared in parallel, deciding nothing.** A builder option for the form on a campaign branch (`campaign/t1-w`,
     in build and review), so that a yes can be rehearsed by 20 November; it stays unused on any other outcome, as
     `campaign/t1-n` did.
+- 2026-11-17 (h), the common-part form after try T56 and a third cold check: conditions G1 and G2 of entry (g) are
+  met, G3 is not, and no request is made now; a further read (try T57, in build) decides, by a use fixed here before
+  it has a row. Written by the AI assistant. Nothing in any upload, build, rule or gate file has changed.
+  - **G1 and G2.** Try T56 read "the common part's gain at equal movement stays positive at every depth read": +0.30
+    to +0.40 at the entry's fraction and +0.33 to +0.50 at twice it, ahead on every seed, in seven worlds from a truth
+    a third as deep as the reference to one 1.8 times as deep. Independent recomputations of tries T55 and T56 found
+    no mismatch in T56 and two figures of T55 one hundredth low (corrected in its row).
+  - **G3, the cold check** (a fresh adversary given only the claim; its text is in the session's scratch record) put
+    the chance of a mistake at 55%. Its kill shot: equal squared size does not separate a change of direction from a
+    larger step, so the form is the step lever that entry (e) did not put forward, plus an untested deletion. The
+    checks it named that committed files can answer were run.
+  - **What those checks found.** (1) In every group the form raises the coefficient on the common part: cardiomyocytes
+    from 0.67 to 0.98, endocardium 1.07 to 1.24, endothelium 0.96 to 1.13, epicardium 1.30 to 1.63; and it deletes the
+    part of each group's direction that is orthogonal to the common part, which is 0.54, 0.25, 0.28 and 0.37 of its
+    squared size. (2) Fitted jointly on the common part and a group's own part, the released day follows the own
+    parts: for the cardiomyocytes +0.13 in libraries 1 and 2 and +0.34 against library 3 (common part +0.35 and
+    +0.43), for the epicardium +0.26 and +0.29. Try T51 had fitted the two parts singly, and its "-0.05, not at all"
+    for the cardiomyocytes was an artefact of the two parts running against each other; that sentence is withdrawn in
+    row T51 and wherever entries (e) and (g) and rows T53 and T55 repeat it. Over all groups the common part still
+    moves 2.5 times as far as the own parts in libraries 1 and 2 and 1.6 times against library 3 by the joint fit. (3)
+    A plain step of 1.25 times, read off the stored curves, gains more than the form where the truth is as deep as the
+    reference or shallower (+0.44 against +0.37 on library 3; +0.54 against +0.31 with the truth at a third) and less
+    where it is deeper (+0.19 against +0.31 at 1.8 times). At twice the fraction the same holds more sharply: a
+    further half step gains +0.48 against the form's +0.41 on library 3 and -0.00 against +0.50 where the truth is 1.8
+    times as deep, and there the form at twice the fraction scores above every plain step up to four times (59.01
+    against 58.52).
+  - **The attacks, labelled.** The kill shot is conceded in part: the form is in part a larger step along the common
+    part, and "equal movement" did not separate that. It is rebutted in part: where the truth is deeper than the
+    reference the form gains what no plain step gains. Its first attack (the deleted part is real) is conceded on the
+    joint fit; whether that part carries more over the test's later days no released day shows. Its second (the
+    every-world rule had no power) is conceded for the entry's fraction, where any small step-up passes, and not for
+    twice the fraction in the deep worlds; the arm it names, each group's own part kept and only the coefficient on
+    the common part raised, has not been run. Its third (every depth world came from the library where the form gains
+    most) stands until worlds are built from library 2.
+  - **Verdict: no request now; proceed only if try T57 says so.** Try T57 reads both forms, the common part alone
+    (`cn`) and the common part raised with each group's orthogonal part kept (`dc`), against the entry's direction at
+    1, 2, 3 and 4 times the practice step in six worlds: libraries 3 and 2 as released, and the reference thinned to
+    two thirds and to a half against each of them. Its use, fixed here before it has a row: a form goes to the captain
+    only if its statement 1 reads "ahead of the entry's direction in every cell read" (24 cells: a positive mean with
+    at least 8 of 10 seeds ahead in each). If both forms do, the one that statement 2 puts ahead in more cells is
+    named, and on a tie the one that deletes nothing. Statement 3 (the form's best score against the best plain step,
+    per world) is quoted beside it. Any other reading closes the family with no request, as part of the question of
+    the step's size (entry (e)). A request would again be one priced question both ways, with the first upload alone
+    as the lower-exposure form that two adversaries have now named, and it would say what no released day can show:
+    what the deleted or kept parts carry between E10.5 and E12.5.
