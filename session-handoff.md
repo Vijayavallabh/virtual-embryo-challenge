@@ -14,15 +14,22 @@
   2026-11-17 (a) has the whole list. The organisers also answered the exposure notice (accepted; they ask for the
   explanation and the precommitted procedure in the method report): a further reply to the thread's other questions
   is announced and must go through a screening agent, never be pasted.
-- **What is live (2026-11-17).** One candidate change, the size of Task 1's step (decision log 2026-11-14 (c), item 7;
-  rows T44 to T47). Owed, in order: the cold adversarial check and the independent recomputation (running); rows and
-  runs for tries T48 (`campaign/t1-l-fix2`, the rule's own read) and T49 (`campaign/t1-m`, g_mom's size), each run in
-  `~/v/vec-campaign-h7` with the generic launcher `~/v/scratch/round6/t1read_launch.sh`; one priced question to the
-  captain by 18 November; on a yes, the builder option (`campaign/t1-n`, in review), dry builds, a fourth rehearsal, a
-  new reference list and pointer, the server's format check of the two new T1 files at the captain's word, and the
-  disclosure email with the new hashes. Also owed: the `METHOD_SUMMARY.md` section on the exposure (draft and three
-  reviews in the session scratchpad, `lift6/outward/`), the eighth independent pass (`lift6/briefs/audit8.md`), the
-  disclosure email and the screened checks re-dated to the captain's schedule.
+- **What is live (2026-11-17, 11:00 UTC).** The step's request (decision log 2026-11-14 (c), item 7) is being
+  rebuilt after a cold adversarial check and the eighth independent pass (decision log 2026-11-17 (b)); the rule for
+  the AI assistant's advice is fixed in decision log 2026-11-17 (c). Rows T48 to T53 are in the ledger. Read: T51
+  (`experiments/t1_m1/results/t51_split_read/`). Running on the DGX, each at its row's commit, with exit files under
+  `runs/round6/` of its checkout: T48 and T49 in `~/v/vec-campaign` (15f38b6; `cal_read.py`, `gmom_size_read.py`),
+  T50 in `~/v/vec-campaign-h7` (643d610; `over_read.py`, seven truths), T53 in `~/v/vec-campaign-c` (8cc7d3d;
+  `zone_read.py`), T52 in `~/v/vec-campaign-d` (f8c247e; `eps_read.py`). For each, when its exit file reads 0: copy
+  the task files with `lift6/finish_t1read.sh <checkout> <results folder> <exit name> <logs folder> <commit>` (session
+  scratchpad), commit them unread, run the script's `read` once at that commit on main, write the outcome with
+  `lift6/outcome.py`, commit, push, and remove the run's untracked result folder from the DGX checkout. Then: apply
+  the advice rule, put one priced question both ways to the captain (0.55, 0.60 or 0.69 on both uploads, or a
+  changed direction if tests C of the rule say so, or keep 0.40), and on a yes port the option (`campaign/t1-n`,
+  2921b96, reviewed: ready), amend `build_all.sh` and `docs/S2_RULES.md` in the captain's words, dry-build, rehearse
+  a fourth time, write a new reference list and pointer, and send the format checks at the captain's word. Also for
+  the captain: the size of Task 3's factor (decision log 2026-11-17 (b); advice: keep), and the schedule. Owed after
+  the reads: the full suite on the DGX at the final commit, the status files, the final report.
 - **The method report's exposure section (2026-11-17).** `METHOD_SUMMARY.md` now holds "Exposure of hidden-target
   metadata on 2026-11-04 and the precommitted procedure", which the organisers asked for. It was drafted by an agent
   from the dated records, reviewed by three others (accuracy, framing, tone) and revised once; the AI assistant

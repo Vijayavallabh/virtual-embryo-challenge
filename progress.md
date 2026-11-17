@@ -3,6 +3,29 @@
 ## Current State
 
 **Last Updated:** 2026-11-17
+**2026-11-17, 11:00 UTC: the step's request was attacked cold and is being rebuilt on what the attack and the eighth
+independent pass found; six reads are registered, one is read, five are running.** The cold adversarial check put
+the chance that the request (0.40 to 0.69) is a mistake at 30% and named three attacks; its cheaper alternative is
+0.55. The independent recomputation of tries T44 to T47 found no numeric mismatch and six loose wordings, now noted
+in the rows; the range the request quoted for the test's days was 0.29 to 0.41 and is 0.28 to 0.36 in one set of
+units. The eighth pass (decision log 2026-11-17 (b)) recomputed about 370 figures of entry 2026-11-14 (c) without a
+mismatch, found no open line, corrected five sentences that claimed too much, restated the grounds of five
+closures, reopened one ledger line that had been closed on an estimate (a zone-held form of Feng's direction, now
+try T53), and raised one hard call that goes to the captain: Task 3's factor at half size scored above the full
+factor on both counted cross-knockout folds and below it on the replicate fold (the AI assistant advises keeping the
+file; no released fold has the test's structure). The rule for the AI assistant's advice on the step was fixed
+before any of the new runs (decision log 2026-11-17 (c)). Registered: T48 (the step set by its own calibration), T49
+(g_mom's size), T50 (the step at 5, 6 and 8 times, and library 3's truth thinned), T51 (the released day's share
+along the common and the specific part of the direction), T52 (the direction made with a smaller pseudocount) and T53
+(the zone-held forms). T51 is read: the common part moves as much, in fact about twice as far as the specific part,
+so the attack on the scale is not confirmed by the one check released data allow; what it adds is that the released
+day does not follow the cell-group-specific parts of the direction, the cardiomyocytes' least of all. The others run
+in four DGX campaign checkouts (two new ones, `~/v/vec-campaign-c` and `~/v/vec-campaign-d`, built from the same lock
+file, data by links to the untouched reference). `METHOD_SUMMARY.md` has the section the organisers asked for. The
+builder option a step ruling would need is built and reviewed on `campaign/t1-n` (2921b96; ready, not on main). The
+full suite on the DGX at 8d50ff6: lock 0, lint 0, 1,741 passed and one failure, a golden hash that held on one
+machine only; fixed at d4e1557 and confirmed there. Tries: T1 59 read (to 90 when the five running rows are read),
+embryo 73, heart 31, T3 31. The committed estimate stays 184 (170 to 198).
 **2026-11-17, morning UTC: the organisers moved the final deadline to 25 November 23:59 AoE (26 November 11:59 UTC,
 17:29 IST), for uploads and final-entry marks alike, and answered the exposure notice. Nothing is uploaded; no dated
 record has changed yet, because the dates are the captain's to move** (`docs/PLAN.md` decision log 2026-11-17 (a)).
