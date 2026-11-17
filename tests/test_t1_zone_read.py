@@ -1,5 +1,6 @@
-"""experiments/t1_m1/zone_read.py (try T53 of experiments/harness/TRIES.md) on synthetic data: the zone-fixed
-directions, the new arms and the reading. No released file, statistics file, board file or score is read."""
+"""experiments/t1_m1/zone_read.py (try T53 of experiments/harness/TRIES.md, as amended after its first review) on
+synthetic data: the zone-fixed directions (zlv, zw), their slope-matched versions and controls, the new arms and the
+reading. No released file, statistics file, board file or score is read."""
 
 from __future__ import annotations
 
@@ -15,9 +16,11 @@ from vec.boards import GROUPS, REPO_ROOT
 
 SCRIPT = REPO_ROOT / "experiments" / "t1_m1" / "zone_read.py"
 STAMP = {"commit": "f" * 40, "tree_clean": True, "utc": "x", "inputs": {}}
-NEW = ("m1_r_gmom_zlv", "m1_r_gmom_zlv_x2", "m1_r_gmom_zbal", "m1_r_gmom_zbal_x2")
-POOLED_OF = {"m1_r_gmom_zlv": "m1_r_gmom", "m1_r_gmom_zlv_x2": "m1_r_gmom_x2", "m1_r_gmom_zbal": "m1_r_gmom",
-             "m1_r_gmom_zbal_x2": "m1_r_gmom_x2"}
+RAW = ("m1_r_gmom_zlv", "m1_r_gmom_zlv_x2", "m1_r_gmom_zw", "m1_r_gmom_zw_x2")
+SMA = ("m1_r_gmom_zlv_sm", "m1_r_gmom_zlv_sm_x2", "m1_r_gmom_zw_sm", "m1_r_gmom_zw_sm_x2")
+CTRL = ("m1_r_gmom_zlv_sm_perm", "m1_r_gmom_zw_sm_perm")
+NEW = (*RAW, *SMA, *CTRL)
+POOLED_OF = {a: ("m1_r_gmom_x2" if a.endswith("_x2") else "m1_r_gmom") for a in NEW}
 TRUTHS = ("pooled", "lib1", "lib2", "lib3", "whole")
 
 
@@ -102,7 +105,6 @@ def test_a_zone_under_the_minimum_at_either_end_gives_no_direction(zr):
     st = _rng_world()
     within = zr.within_zone_directions(st, T1_GENES, CFG, ["Blood"])
     assert "RA" not in within["Blood"] and sorted(within["Blood"]) == ["LA", "LV", "RV"]
-    # the same under the minimum at the start end only
     cells = [("E9.5", "LV", "blood", "A", 4, np.ones(6)), ("E9.5", "LV", "blood", "B", 4, np.ones(6)),
              ("E14.5", "LV", "blood", "A", 40, np.ones(6)), ("E9.5", "RV", "blood", "A", 20, np.ones(6)),
              ("E14.5", "RV", "blood", "B", 20, np.ones(6))]
@@ -115,6 +117,8 @@ def test_a_key_without_four_parts_is_refused(zr):
     st["keys"] = np.array([*st["keys"][:-1], "E9.5|LV|blood"], dtype=object)
     with pytest.raises(ValueError, match="four parts"):
         zr.within_zone_directions(st, T1_GENES, CFG, ["Blood"])
+    with pytest.raises(ValueError, match="four parts"):
+        zr.zw_directions(st, {"Blood": np.zeros(7)}, T1_GENES, CFG)
     st["keys"] = np.array([*st["keys"][:-1], "E9.5|LV|blood|A|x"], dtype=object)
     with pytest.raises(ValueError, match="four parts"):
         zr.zones_of(st)
@@ -132,6 +136,7 @@ def test_zlv_changes_the_cardiomyocyte_group_only_and_is_its_lv_direction(zr):
         if g != "CM":
             assert dirs[g] is entry[g]
     assert used == {"CM": ["LV"], "Endocardium": [], "Blood": []}
+    assert zr.changed_groups(entry, dirs) == ["CM"]
 
 
 def test_zlv_is_void_without_an_lv_direction(zr):
@@ -140,48 +145,122 @@ def test_zlv_is_void_without_an_lv_direction(zr):
         zr.zlv_directions(entry, {"CM": {"RV": np.ones(3)}, "Blood": {}})
 
 
-def test_zbal_is_the_unweighted_mean_over_defined_zones_per_gene_over_finite_values(zr):
-    nan = np.nan
-    entry = {"CM": np.array([9.0, 9.0, 9.0, 9.0]), "Blood": np.array([1.0, 2.0, 3.0, 4.0])}
-    within = {"CM": {"LA": np.array([1.0, nan, 3.0, nan]), "LV": np.array([3.0, 2.0, nan, nan]),
-                     "RV": np.array([5.0, 4.0, nan, nan])},
-              "Blood": {}}
-    dirs, used = zr.zbal_directions(entry, within)
-    assert np.array_equal(dirs["CM"], np.array([3.0, 3.0, 3.0, nan]), equal_nan=True)
-    assert used["CM"] == ["LA", "LV", "RV"]
-    assert dirs["Blood"] is entry["Blood"] and used["Blood"] == []
-    rec = zr.direction_record(entry, {"zlv": ({"CM": within["CM"]["LV"], "Blood": entry["Blood"]},
-                                              {"CM": ["LV"], "Blood": []}), "zbal": (dirs, used)},
-                              ["a", "b", "c", "d"], [], ["LA", "LV", "RV"])
-    assert rec["zbal_fallback"] == ["Blood"] and rec["zbal"]["Blood"]["pooled"] is True
-    assert rec["zbal"]["CM"]["zones"] == ["LA", "LV", "RV"] and rec["zbal"]["CM"]["pooled"] is False
+# ---------------------------------------------------------------------------------------------------------------------
+# zw
 
 
-def test_one_zone_holding_every_cell_gives_both_forms_the_entrys_direction(zr):
+def _independent_zw(cells, labels, eps=0.5, mc=10):
+    """zw by hand from the cell list: E9.5 zone shares, E14.5 zone means, both on the six Feng genes."""
+    labels = set(labels)
+    n9, s9, n14, s14 = {}, {}, {}, {}
+    for stage, zone, typ, _half, k, prof in cells:
+        if typ not in labels:
+            continue
+        n, s = (n9, s9) if stage == "E9.5" else (n14, s14)
+        n[zone] = n.get(zone, 0) + k
+        s[zone] = s.get(zone, 0) + k * np.asarray(prof, float)
+    total9 = sum(n9.values())
+    a = sum(s9.values()) / total9
+    keep = [z for z in n9 if n14.get(z, 0) >= mc]
+    w = {z: n9[z] / total9 for z in keep}
+    b = sum(w[z] * s14[z] / n14[z] for z in keep) / sum(w.values())
+    return np.log((b + eps) / (a + eps)), 1 - sum(w.values())
+
+
+def test_zw_matches_an_independent_computation_on_unequal_zone_cell_numbers(zr):
+    rng = np.random.default_rng(11)
+    cells = []
+    for stage, counts in (("E9.5", {"LA": 7, "LV": 61, "RA": 5, "RV": 23}),
+                          ("E14.5", {"LA": 30, "LV": 17, "RA": 4, "RV": 52})):
+        for zone, k in counts.items():
+            typ = "atrial_cm" if zone in ("LA", "RA") else "ventricular_cm"
+            for half, kk in (("A", k // 2 + 1), ("B", k - k // 2)):
+                cells.append((stage, zone, typ, half, kk, rng.gamma(2.0, 3.0, 6)))
+    st = _stats(cells)
+    entry = _entry(zr, st)
+    dirs, used, info = zr.zw_directions(st, entry, T1_GENES, CFG)
+    want, lost = _independent_zw(cells, ["ventricular_cm", "atrial_cm"])
+    assert np.allclose(dirs["CM"][:6], want, rtol=0, atol=1e-12) and np.isnan(dirs["CM"][6])
+    assert used["CM"] == ["LA", "LV", "RV"]  # RA under the minimum at E14.5
+    assert info["CM"]["dropped"] == ["RA"] and info["CM"]["dropped_share"] == pytest.approx(lost)
+    assert info["CM"]["fallback"] is False
+    assert not np.allclose(dirs["CM"][:6], entry["CM"][:6])
+
+
+def test_zw_is_exactly_zero_in_a_world_that_differs_between_the_ends_only_in_zone_mix(zr):
+    """Per zone the profile is the same at both ends; only the zone shares change (dyadic numbers, so the pooled E9.5
+    mean and the reweighted E14.5 mean are exact)."""
+    lv, la = np.array([10.0, 1.0, 5.0, 0.25, 3.0, 7.0]), np.array([1.0, 10.0, 5.0, 4.0, 0.5, 7.0])
+    cells = [("E9.5", "LV", "ventricular_cm", "A", 48, lv), ("E9.5", "LA", "atrial_cm", "A", 16, la),
+             ("E14.5", "LV", "ventricular_cm", "A", 32, lv), ("E14.5", "LA", "atrial_cm", "A", 32, la)]
+    st = _stats(cells)
+    entry = _entry(zr, st)
+    assert np.nanmax(np.abs(entry["CM"])) > 0.1
+    zw = zr.zw_directions(st, entry, T1_GENES, CFG)[0]["CM"]
+    assert np.all(zw[:6] == 0.0) and np.isnan(zw[6])
+    zlv = zr.zlv_directions(entry, zr.within_zone_directions(st, T1_GENES, CFG, entry))[0]["CM"]
+    assert np.all(zlv[:6] == 0.0)
+
+
+def test_zw_is_zero_to_rounding_in_a_random_zone_mix_world(zr):
+    rng = np.random.default_rng(3)
+    prof = {z: rng.gamma(2.0, 3.0, 6) for z in ("LA", "LV", "RA", "RV")}
+    cells = [(s, z, "atrial_cm" if z[0] == "L" else "ventricular_cm", "A", int(rng.integers(10, 90)), prof[z])
+             for s in ("E9.5", "E14.5") for z in prof]
+    st = _stats(cells)
+    entry = _entry(zr, st)
+    zw = zr.zw_directions(st, entry, T1_GENES, CFG)[0]["CM"]
+    assert np.nanmax(np.abs(entry["CM"])) > 1e-3
+    assert np.nanmax(np.abs(zw)) < 1e-12
+
+
+def test_zw_equals_the_entrys_direction_when_the_zone_mix_is_the_same_at_both_ends(zr):
+    rng = np.random.default_rng(5)
+    cells = []
+    for stage, scale in (("E9.5", 1), ("E14.5", 3)):
+        for zone, k in (("LA", 11), ("LV", 40), ("RV", 25)):
+            for typ in ("ventricular_cm", "atrial_cm", "blood"):
+                cells.append((stage, zone, typ, "A", k * scale, rng.gamma(2.0, 3.0, 6)))
+    st = _stats(cells)
+    entry = _entry(zr, st)
+    dirs, used, info = zr.zw_directions(st, entry, T1_GENES, CFG)
+    for g in entry:
+        assert np.allclose(dirs[g], entry[g], rtol=0, atol=1e-12, equal_nan=True), g
+        assert info[g]["dropped"] == [] and info[g]["dropped_share"] == 0.0
+    assert np.nanmax(np.abs(entry["CM"])) > 0.1
+
+
+def test_zw_keeps_the_entry_where_more_than_half_the_weight_is_dropped(zr):
+    one = np.ones(6)
+    # Blood: LV holds 3/4 of E9.5 and is under the minimum at E14.5 (dropped share 0.75, falls back);
+    # CM: LV holds exactly half and is dropped (0.5 is not more than half: kept on RV alone)
+    cells = [("E9.5", "LV", "blood", "A", 30, one), ("E9.5", "RV", "blood", "A", 10, one),
+             ("E14.5", "LV", "blood", "A", 5, one * 2), ("E14.5", "RV", "blood", "A", 20, one * 3),
+             ("E9.5", "LV", "ventricular_cm", "A", 20, one), ("E9.5", "RV", "ventricular_cm", "A", 20, one),
+             ("E14.5", "LV", "ventricular_cm", "A", 4, one), ("E14.5", "RV", "ventricular_cm", "A", 20, one * 4)]
+    st = _stats(cells)
+    entry = _entry(zr, st)
+    dirs, used, info = zr.zw_directions(st, entry, T1_GENES, CFG)
+    assert dirs["Blood"] is entry["Blood"] and used["Blood"] == [] and info["Blood"]["fallback"] is True
+    assert info["Blood"]["dropped"] == ["LV"] and info["Blood"]["dropped_share"] == 0.75
+    assert info["CM"]["fallback"] is False and used["CM"] == ["RV"] and info["CM"]["dropped_share"] == 0.5
+    assert np.allclose(dirs["CM"][:6], np.log(4.5 / 1.5))
+    rec = zr.direction_record(entry, {"zw": (dirs, used)}, T1_GENES, [], ["LV", "RV"], info)
+    assert rec["zw_fallback"] == ["Blood"] and rec["zw"]["Blood"]["dropped_share"] == 0.75
+    assert "\"n\"" not in json.dumps(rec)
+
+
+def test_one_zone_holding_every_cell_gives_every_form_the_entrys_direction(zr):
     rng = np.random.default_rng(4)
     cells = [(stage, "LV", typ, half, int(rng.integers(10, 30)), rng.gamma(2.0, 3.0, 6))
              for stage in ("E9.5", "E14.5") for typ in ("ventricular_cm", "atrial_cm", "blood") for half in ("A", "B")]
     st = _stats(cells)
     entry = _entry(zr, st)
-    forms = zr.form_directions(entry, zr.within_zone_directions(st, T1_GENES, CFG, entry))
-    for form, (dirs, _) in forms.items():
+    forms, rec = zr.all_directions(st, entry, T1_GENES, CFG, [])
+    for form in ("zlv", "zw", "zlv_sm", "zw_sm"):
         for g in entry:
-            assert dirs[g].tobytes() == entry[g].tobytes(), (form, g)
-            assert zr.direction_sha256(dirs[g]) == zr.direction_sha256(entry[g])
-
-
-def test_a_world_differing_only_in_zone_mix_gives_a_pooled_direction_and_zero_zone_fixed_ones(zr):
-    """Per zone the profile is the same at both ends; only the share of LV against atrial cells changes."""
-    lv, la = np.array([10.0, 1.0, 5.0, 0.2, 3.0, 7.0]), np.array([1.0, 10.0, 5.0, 4.0, 0.5, 7.0])
-    cells = [("E9.5", "LV", "ventricular_cm", "A", 70, lv), ("E9.5", "LA", "atrial_cm", "A", 30, la),
-             ("E14.5", "LV", "ventricular_cm", "A", 50, lv), ("E14.5", "LA", "atrial_cm", "A", 50, la)]
-    st = _stats(cells)
-    entry = _entry(zr, st)
-    assert np.nanmax(np.abs(entry["CM"])) > 0.1
-    forms = zr.form_directions(entry, zr.within_zone_directions(st, T1_GENES, CFG, entry))
-    for form in ("zlv", "zbal"):
-        d = forms[form][0]["CM"]
-        assert np.all(d[np.isfinite(d)] == 0.0) and np.isnan(d[-1])
+            assert forms[form][g].tobytes() == entry[g].tobytes(), (form, g)
+        assert rec["changed"][form] == []
 
 
 def test_the_bracket_cut_gives_the_entrys_directions_bit_for_bit(zr):
@@ -194,18 +273,93 @@ def test_the_bracket_cut_gives_the_entrys_directions_bit_for_bit(zr):
     assert zr.zones_of(cut) == ["LA", "LV", "RA", "RV"]
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# Slope matching and the controls
+
+
+def test_a_slope_matched_direction_has_slope_one_on_the_entrys(zr):
+    st = _rng_world()
+    entry = _entry(zr, st)
+    forms, rec = zr.all_directions(st, entry, T1_GENES, CFG, ["g5"])
+    for form in ("zlv_sm", "zw_sm"):
+        assert rec["changed"][form]
+        for g in rec["changed"][form]:
+            assert rec[form][g]["slope"] == pytest.approx(1.0, abs=1e-12)
+            raw = rec[form.removesuffix("_sm")][g]["slope"]
+            assert rec[form][g]["divisor"] == raw
+            assert np.array_equal(forms[form][g], forms[form.removesuffix("_sm")][g] / raw, equal_nan=True)
+        for g in set(entry) - set(rec["changed"][form]):
+            assert forms[form][g] is entry[g]
+    assert rec["changed"]["zlv_sm"] == ["CM"]
+
+
+@pytest.mark.parametrize("scale", [0.2 - 1e-9, 0.1, -1.0, 0.0])
+def test_the_run_refuses_a_changed_group_whose_slope_is_not_above_point_two(zr, scale):
+    entry = {"CM": np.array([1.0, -2.0, 3.0, 0.5]), "Blood": np.ones(4)}
+    form = {"CM": entry["CM"] * scale, "Blood": entry["Blood"]}
+    with pytest.raises(ValueError, match="not above 0.2"):
+        zr.slope_matched(entry, form, ["a", "b", "c", "d"], [])
+    ok, div = zr.slope_matched(entry, {"CM": entry["CM"] * 0.21, "Blood": entry["Blood"]}, ["a", "b", "c", "d"], [])
+    assert div == {"CM": pytest.approx(0.21)} and ok["Blood"] is entry["Blood"]
+
+
+def test_all_directions_refuses_through_the_slope(zr, monkeypatch):
+    st = _rng_world()
+    entry = _entry(zr, st)
+    monkeypatch.setattr(zr, "MIN_SLOPE", 1e9)
+    with pytest.raises(ValueError, match="not above"):
+        zr.all_directions(st, entry, T1_GENES, CFG, [])
+
+
+def test_a_control_carries_the_same_departures_permuted_within_the_two_strata(zr):
+    genes = [f"s{i}" for i in range(5)] + [f"o{i}" for i in range(6)] + ["h", "n"]
+    scored = [f"s{i}" for i in range(5)]
+    rng = np.random.default_rng(0)
+    e = {"CM": np.append(rng.normal(size=12), np.nan), "Blood": np.append(rng.normal(size=12), np.nan),
+         "Endo": np.append(rng.normal(size=12), np.nan)}
+    sm = {"CM": e["CM"] + np.append(rng.normal(size=12), np.nan), "Blood": e["Blood"],
+          "Endo": e["Endo"] * 1.0 + np.append(np.arange(12.0), np.nan)}
+    sm["CM"][11] = 99.0  # the held gene h: not moved, so the control keeps the entry's value
+    c = zr.control_directions(e, sm, genes, ["h"], scored, [1000 + 3])
+    assert c["Blood"] is e["Blood"]
+    for g in ("CM", "Endo"):
+        r = sm[g] - e[g]
+        d = c[g] - e[g]
+        for sl in (slice(0, 5), slice(5, 11)):
+            assert np.allclose(np.sort(d[sl]), np.sort(r[sl]), rtol=0, atol=1e-12)
+        assert c[g][11] == e[g][11] and np.isnan(c[g][12])
+        assert not np.allclose(d[:11], r[:11])
+    again = zr.control_directions(e, sm, genes, ["h"], scored, [1003])
+    assert all(np.array_equal(c[g], again[g], equal_nan=True) for g in c)
+    other = zr.control_directions(e, sm, genes, ["h"], scored, [1004])
+    assert not np.array_equal(c["CM"], other["CM"], equal_nan=True)
+    # the stream: [build seed, 53], groups in sorted order (CM before Endo), the scored stratum first
+    g53 = np.random.default_rng([1003, 53])
+    want = {}
+    for g in ("CM", "Endo"):
+        v = e[g].copy()
+        r = sm[g] - e[g]
+        for ix in (np.arange(5), np.arange(5, 11)):
+            v[ix] = e[g][ix] + r[ix][g53.permutation(len(ix))]
+        want[g] = v
+    assert all(np.array_equal(c[g], want[g], equal_nan=True) for g in want)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# The direction record
+
+
 def test_the_direction_record_holds_ratios_names_and_hashes(zr):
     entry = {"CM": np.array([1.0, 2.0, np.nan, 4.0, 1.0]), "Blood": np.array([1.0, 1.0, 1.0, 1.0, 1.0])}
     zlv = {"CM": np.array([2.0, 4.0, 5.0, 8.0, -9.0]), "Blood": entry["Blood"]}
-    rec = zr.direction_record(entry, {"zlv": (zlv, {"CM": ["LV"], "Blood": []}),
-                                      "zbal": (zlv, {"CM": ["LV"], "Blood": []})},
-                              ["a", "b", "c", "d", "h"], ["h"], ["LV"])
+    rec = zr.direction_record(entry, {"zlv": (zlv, {"CM": ["LV"], "Blood": []})}, ["a", "b", "c", "d", "h"], ["h"],
+                              ["LV"], divisors={"zlv": {"CM": 2.0}})
     cm = rec["zlv"]["CM"]
-    assert cm["slope"] == pytest.approx(2.0) and cm["pearson"] == pytest.approx(1.0)
+    assert cm["slope"] == pytest.approx(2.0) and cm["pearson"] == pytest.approx(1.0) and cm["divisor"] == 2.0
     assert cm["size_ratio"] == pytest.approx(4.0)  # held gene h and the NaN gene c left out
     assert rec["zlv"]["Blood"]["slope"] == pytest.approx(1.0) and rec["zlv"]["Blood"]["size_ratio"] == 1.0
     assert rec["zlv"]["Blood"]["sha256"] == rec["entry"]["Blood"]["sha256"] != cm["sha256"]
-    assert zr.differing_groups(rec, "zlv") == ["CM"]
+    assert zr.differing_groups(rec, "zlv") == ["CM"] == rec["changed"]["zlv"]
     text = json.dumps(rec)
     assert "\"n\"" not in text and "cells" not in text
 
@@ -222,41 +376,61 @@ def test_a_new_arm_differs_from_its_pooled_arms_build_in_the_directions_only(zr,
                       "held_m1": held_m1, "held_factors": held_factors})
         return {"m1_r": ("m1_r", fraction), "m1_r_gmom": ("m1_r_gmom", id(directions), fraction)}
 
-    monkeypatch.setattr(zr.gc, "m1_r_arms", spy)
     ctx, entry, groups, held_m1, held_f = object(), {"CM": np.zeros(3)}, {"V-CM": "CM"}, ["a", "b"], ["a"]
-    forms = {"zlv": {"CM": np.ones(3)}, "zbal": {"CM": np.full(3, 2.0)}}
+    forms = {k: {"CM": np.full(3, float(i + 1))} for i, k in enumerate(("zlv", "zw", "zlv_sm", "zw_sm"))}
+    controls = {"zlv_sm_perm": {"CM": np.full(3, 7.0)}, "zw_sm_perm": {"CM": np.full(3, 8.0)}}
+    seen = []
+
+    def fake_controls(c, e, f, h):
+        seen.append((c, e, f, h))
+        return controls
+
+    monkeypatch.setattr(zr.gc, "m1_r_arms", spy)
+    monkeypatch.setattr(zr, "seed_controls", fake_controls)
     preds = zr.build_seed(ctx, lambda c: "b0", entry, forms, groups, 0.2, held_m1, held_f)
-    assert set(preds) == set(zr.ARMS)
+    assert set(preds) == set(zr.ARMS) and len(zr.NEW_ARMS) == 10
+    assert seen == [(ctx, entry, forms, held_m1)]
     by_fraction = {c["fraction"]: c for c in calls if c["directions"] is entry}
     assert sorted(by_fraction) == pytest.approx([0.2, 0.3, 0.4])
     news = [c for c in calls if c["directions"] is not entry]
-    assert len(news) == 4
-    for c, arm in zip(news, NEW, strict=True):
-        base = by_fraction[0.4 if arm.endswith("_x2") else 0.2]
+    assert len(news) == 10
+    want = {**forms, **controls}
+    for c, (arm, (key, pooled)) in zip(news, zr.NEW_ARMS.items(), strict=True):
+        base = by_fraction[0.4 if pooled == "m1_r_gmom_x2" else 0.2]
+        assert pooled == POOLED_OF[arm]
         assert c["fraction"] == base["fraction"]
-        assert c["directions"] is forms["zlv" if "zlv" in arm else "zbal"]
-        for key in ("ctx", "groups", "held_m1", "held_factors"):
-            assert c[key] is base[key], f"{arm} differs from its pooled arm's build in {key}"
+        assert c["directions"] is want[key]
+        for k in ("ctx", "groups", "held_m1", "held_factors"):
+            assert c[k] is base[k], f"{arm} differs from its pooled arm's build in {k}"
+    assert {a: k for a, (k, _) in zr.NEW_ARMS.items()} == {
+        "m1_r_gmom_zlv": "zlv", "m1_r_gmom_zlv_x2": "zlv", "m1_r_gmom_zw": "zw", "m1_r_gmom_zw_x2": "zw",
+        "m1_r_gmom_zlv_sm": "zlv_sm", "m1_r_gmom_zlv_sm_x2": "zlv_sm", "m1_r_gmom_zw_sm": "zw_sm",
+        "m1_r_gmom_zw_sm_x2": "zw_sm", "m1_r_gmom_zlv_sm_perm": "zlv_sm_perm", "m1_r_gmom_zw_sm_perm": "zw_sm_perm"}
 
 
 def test_a_form_equal_to_the_entry_builds_the_pooled_arms_bit_for_bit(zr):
-    """The idle case on a real build: a form whose directions are the entry's (copies) gives the pooled arm's
-    prediction bit for bit at both fractions; a changed direction moves it."""
+    """The idle case on a real build: forms whose directions are the entry's (copies) give the pooled arms' predictions
+    bit for bit, controls included; a changed slope-matched direction moves its arm, and its control moves it
+    differently."""
     ctx, groups, dirs, held = _arms_world()
-    copy = {g: v.copy() for g, v in dirs.items()}
-    moved = {g: (v * 0.5 if g == "CM" else v) for g, v in dirs.items()}
-    preds = zr.build_seed(ctx, lambda c: None, dirs, {"zlv": copy, "zbal": moved}, groups, 0.2, held, held)
-    assert preds["m1_r_gmom_zlv"].X.tobytes() == preds["m1_r_gmom"].X.tobytes()
-    assert preds["m1_r_gmom_zlv_x2"].X.tobytes() == preds["m1_r_gmom_x2"].X.tobytes()
-    assert preds["m1_r_gmom_zbal"].X.tobytes() != preds["m1_r_gmom"].X.tobytes()
+    copy = {k: {g: v.copy() for g, v in dirs.items()} for k in ("zlv", "zw", "zlv_sm", "zw_sm")}
+    preds = zr.build_seed(ctx, lambda c: None, dirs, copy, groups, 0.2, held, held)
+    for arm, (_, pooled) in zr.NEW_ARMS.items():
+        assert preds[arm].X.tobytes() == preds[pooled].X.tobytes(), arm
     direct = zr.gc.m1_r_arms(ctx, dirs, groups, 0.2, held, held)["m1_r_gmom"]
     assert preds["m1_r_gmom"].X.tobytes() == direct.X.tobytes()
+    rng = np.random.default_rng(9)
+    moved = {**copy, "zlv_sm": {g: (v + rng.normal(0, 0.3, len(v)) if g == "CM" else v) for g, v in dirs.items()}}
+    preds = zr.build_seed(ctx, lambda c: None, dirs, moved, groups, 0.2, held, held)
+    assert preds["m1_r_gmom_zlv_sm"].X.tobytes() != preds["m1_r_gmom"].X.tobytes()
+    assert preds["m1_r_gmom_zlv_sm_perm"].X.tobytes() != preds["m1_r_gmom_zlv_sm"].X.tobytes()
+    assert preds["m1_r_gmom_zw_sm_perm"].X.tobytes() == preds["m1_r_gmom"].X.tobytes()
 
 
 def test_the_fractions(zr):
     fr = zr.arm_fractions(0.2)
-    assert fr["m1_r_gmom"] == fr["m1_r_gmom_zlv"] == fr["m1_r_gmom_zbal"] == 0.2
-    assert fr["m1_r_gmom_x2"] == fr["m1_r_gmom_zlv_x2"] == fr["m1_r_gmom_zbal_x2"] == 0.2 * 2.0
+    for a in NEW:
+        assert fr[a] == (0.2 * 2.0 if a.endswith("_x2") else 0.2), a
     assert fr["m1_r_gmom_x15"] == 0.2 * 1.5
 
 
@@ -279,13 +453,19 @@ def _arm(score):
             "skills": sk}
 
 
-def _sha(entry_groups=("CM", "Endocardium"), zlv_diff=("CM",), zbal_diff=("CM", "Endocardium")):
-    rec = {"zones": ["LA", "LV", "RA", "RV"], "entry": {g: {"sha256": f"e-{g}"} for g in entry_groups},
-           "zbal_fallback": []}
-    for form, diff in (("zlv", zlv_diff), ("zbal", zbal_diff)):
-        rec[form] = {g: {"zones": ["LV"], "pooled": False, "slope": 0.75 if g in diff else 1.0, "pearson": 0.9,
-                         "size_ratio": 0.8, "sha256": f"{form}-{g}" if g in diff else f"e-{g}"}
-                     for g in entry_groups}
+def _sha(groups=("CM", "Endocardium"), zlv_diff=("CM",), zw_diff=("CM", "Endocardium"), zlv_sm_diff=None,
+         zw_sm_diff=None, sm_slope=1.0, tag=""):
+    rec = {"zones": ["LA", "LV", "RA", "RV"], "entry": {g: {"sha256": f"e-{g}{tag}"} for g in groups},
+           "zw_fallback": []}
+    diffs = {"zlv": zlv_diff, "zw": zw_diff, "zlv_sm": zlv_diff if zlv_sm_diff is None else zlv_sm_diff,
+             "zw_sm": zw_diff if zw_sm_diff is None else zw_sm_diff}
+    for form, diff in diffs.items():
+        sm = form.endswith("_sm")
+        rec[form] = {g: {"zones": ["LV"], "pooled": False,
+                         "slope": (sm_slope if sm else 0.75) if g in diff else 1.0, "pearson": 0.9,
+                         "size_ratio": 0.8, "sha256": f"{form}-{g}" if g in diff else f"e-{g}{tag}"}
+                     for g in groups}
+    rec["changed"] = {f: sorted(d) for f, d in diffs.items()}
     return rec
 
 
@@ -293,27 +473,28 @@ def _uniform(seed):
     return {a: BASE + g + 0.01 * seed for a, g in UNI.items()}
 
 
-def _task(truth, gains=None, per_seed=None, seeds=range(10), commit="c" * 40, clean=True, fractions=None,
-          identical=(), directions=None, anchor_failures=None):
-    """gains: new arm -> gain over its pooled arm on every seed; per_seed: new arm -> ten gains. A new arm with no gain
-    gets +d on seed 0 and -d on seed 1, so that it never scores exactly as its pooled arm."""
+def _task(truth, gains=None, seeds=range(10), commit="c" * 40, clean=True, fractions=None, identical=(),
+          directions=None, anchor_failures=None, same_control_sha=()):
+    """gains: arm -> gain over its pooled arm (controls: over m1_r_gmom) on every seed, or ten gains. An arm with no
+    gain gets +d on seed 0 and -d on seed 1, so that it never scores exactly as its pooled arm."""
     gains = gains or {}
     rows = []
     for i, s in enumerate(seeds):
         uni = _uniform(s)
         arms = {"b0": _arm(B0), **{a: _arm(x) for a, x in uni.items()}}
         for j, a in enumerate(NEW):
-            if per_seed and a in per_seed:
-                g = per_seed[a][i]
-            elif a in gains:
-                g = gains[a]
+            if a in gains:
+                g = gains[a][i] if isinstance(gains[a], list | tuple) else gains[a]
             else:
                 d = 1e-9 * (j + 1)
                 g = d if i == 0 else -d if i == 1 else 0.0
             arms[a] = _arm(uni[POOLED_OF[a]] + g)
         for a in identical:
             arms[a] = dict(arms[POOLED_OF[a]])
-        rows.append({"seed": s, "floor": 50.0, "arms": arms, "sha256": {a: f"{a}-{s}" for a in arms}})
+        sha = {a: f"{a}-{s}" for a in arms}
+        for perm in same_control_sha:
+            sha[perm] = sha[perm.removesuffix("_perm")]
+        rows.append({"seed": s, "floor": 50.0, "arms": arms, "sha256": sha})
     fr = fractions or {"m1_r_gmom": 0.2, "m1_r_gmom_x15": 0.2 * 1.5, "m1_r_gmom_x2": 0.4,
                        **{a: (0.4 if a.endswith("_x2") else 0.2) for a in NEW}}
     task = "T1/E9.5->E10.5" if truth == "whole" else "T1/E9.5->E10.5:chamber"
@@ -349,79 +530,118 @@ def _read(zr, tmp_path, by_truth=None, over=None, committed_shift=None, drop_com
 
 
 UP, DOWN = 1.0, -1.0
+BETTER = "the zone-fixed content scores better at equal size"
+WORSE = "the zone-fixed content scores worse at equal size"
+NODIFF = "no difference at the bar"
 
 
-def _both(form, g):
-    return {k: {f"m1_r_gmom_{form}": g, f"m1_r_gmom_{form}_x2": g} for k in TRUTHS}
+def _sm_both(form, g, extra=None):
+    return {k: {f"m1_r_gmom_{form}_sm": g, f"m1_r_gmom_{form}_sm_x2": g, **(extra or {})} for k in TRUTHS}
 
 
-@pytest.mark.parametrize("by_truth, zlv, zbal", [
-    (_both("zlv", UP), "zone-fixed scores better", "no difference at the bar"),
-    (_both("zlv", DOWN), "zone-fixed scores worse", "no difference at the bar"),
-    (_both("zbal", UP), "no difference at the bar", "zone-fixed scores better"),
-    ({k: {"m1_r_gmom_zlv": UP} for k in TRUTHS}, "no difference at the bar", "no difference at the bar"),
-    ({"pooled": {"m1_r_gmom_zlv": UP, "m1_r_gmom_zlv_x2": UP}}, "no difference at the bar",
-     "no difference at the bar"),
-    ({**{k: {"m1_r_gmom_zlv": UP} for k in TRUTHS}, **{k: {"m1_r_gmom_zlv_x2": DOWN} for k in ("pooled", "whole")}},
-     "no difference at the bar", "no difference at the bar"),
-    ({}, "no difference at the bar", "no difference at the bar"),
+@pytest.mark.parametrize("by_truth, zlv, zw", [
+    (_sm_both("zlv", UP), BETTER, NODIFF),
+    (_sm_both("zlv", DOWN), WORSE, NODIFF),
+    (_sm_both("zw", UP), NODIFF, BETTER),
+    (_sm_both("zw", DOWN), NODIFF, WORSE),
+    ({k: {"m1_r_gmom_zlv_sm": UP} for k in TRUTHS}, NODIFF, NODIFF),
+    ({"pooled": {"m1_r_gmom_zlv_sm": UP, "m1_r_gmom_zlv_sm_x2": UP}}, NODIFF, NODIFF),
+    ({**{k: {"m1_r_gmom_zlv_sm": UP} for k in TRUTHS},
+      **{k: {"m1_r_gmom_zlv_sm_x2": DOWN} for k in ("pooled", "whole")}}, NODIFF, NODIFF),
+    ({k: {a: UP for a in RAW} for k in TRUTHS}, NODIFF, NODIFF),  # the raw arms carry no statement
+    ({}, NODIFF, NODIFF),
 ])
-def test_each_statement_is_reached(zr, tmp_path, by_truth, zlv, zbal):
+def test_each_statement_is_reached(zr, tmp_path, by_truth, zlv, zw):
     r = _read(zr, tmp_path, by_truth)
     assert r["valid"], r["validity"]["reasons"]
-    assert r["outcome"] == {"zlv": zlv, "zbal": zbal}
-    assert r["statements"]["zlv"]["statement"] == zlv
+    assert r["outcome"] == {"zlv": zlv, "zw": zw}
     txt = (tmp_path / "out" / "t53.txt").read_text()
-    assert f"zlv: {zlv}" in txt and f"zbal: {zbal}" in txt
+    assert f"zlv (slope-matched): {zlv}" in txt and f"zw (slope-matched): {zw}" in txt
+    for form, s in (("zlv", zlv), ("zw", zw)):
+        if s != BETTER:
+            assert r["statements"][form]["gene_statement"] is None
+
+
+def test_the_gene_statement_takes_both_values(zr, tmp_path):
+    # the control at the pooled arm: the slope-matched arm is ahead of it too
+    r = _read(zr, tmp_path, _sm_both("zlv", UP))
+    assert r["statements"]["zlv"]["gene_statement"] == "the gain needs the form's genes"
+    assert r["statements"]["zlv"]["gene_comparison"]["test"] == "passes"
+    # the control gains as much: not separated
+    r = _read(zr, tmp_path / "b", _sm_both("zlv", UP, {"m1_r_gmom_zlv_sm_perm": UP}))
+    assert r["outcome"]["zlv"] == BETTER
+    assert r["statements"]["zlv"]["gene_statement"] == "a scrambled departure gains as well or is not separated"
+    txt = (tmp_path / "b" / "out" / "t53.txt").read_text()
+    assert "zlv's genes: a scrambled departure gains as well or is not separated" in txt
+    # where the form does not read better the comparison is reported without a statement
+    r = _read(zr, tmp_path / "c", {k: {"m1_r_gmom_zw_sm_perm": DOWN} for k in TRUTHS})
+    assert r["statements"]["zw"]["gene_statement"] is None
+    assert r["statements"]["zw"]["gene_comparison"]["test"] == "passes"
+    assert "zw's genes: no statement" in (tmp_path / "c" / "out" / "t53.txt").read_text()
 
 
 def test_a_gain_of_exactly_point_three_does_not_pass(zr, tmp_path):
-    r = _read(zr, tmp_path, {k: {"m1_r_gmom_zlv": 0.3, "m1_r_gmom_zlv_x2": 0.3} for k in TRUTHS})
-    c = r["statements"]["zlv"]["comparisons"]["m1_r_gmom_zlv"]
-    assert c["test"] == "neither" and r["outcome"]["zlv"] == "no difference at the bar"
-    assert r["statements"]["zlv"]["library_labels"]["lib1"]["m1_r_gmom_zlv"] == "level"
+    r = _read(zr, tmp_path, _sm_both("zlv", 0.3))
+    c = r["statements"]["zlv"]["comparisons"]["m1_r_gmom_zlv_sm"]
+    assert c["test"] == "neither" and r["outcome"]["zlv"] == NODIFF
+    assert r["statements"]["zlv"]["library_labels"]["lib1"]["m1_r_gmom_zlv_sm"] == "level"
 
 
 def test_the_library_labels_are_ahead_behind_and_level(zr, tmp_path):
-    r = _read(zr, tmp_path, {"lib1": {"m1_r_gmom_zbal": UP}, "lib2": {"m1_r_gmom_zbal": DOWN}})
-    labels = r["statements"]["zbal"]["library_labels"]
-    assert labels["lib1"]["m1_r_gmom_zbal"] == "ahead"
-    assert labels["lib2"]["m1_r_gmom_zbal"] == "behind"
-    assert labels["lib3"]["m1_r_gmom_zbal"] == "level"
-    assert r["outcome"]["zbal"] == "no difference at the bar"
+    r = _read(zr, tmp_path, {"lib1": {"m1_r_gmom_zw_sm": UP}, "lib2": {"m1_r_gmom_zw_sm": DOWN}})
+    labels = r["statements"]["zw"]["library_labels"]
+    assert labels["lib1"]["m1_r_gmom_zw_sm"] == "ahead"
+    assert labels["lib2"]["m1_r_gmom_zw_sm"] == "behind"
+    assert labels["lib3"]["m1_r_gmom_zw_sm"] == "level"
+    assert r["outcome"]["zw"] == NODIFF
 
 
 def test_the_reported_numbers(zr, tmp_path):
-    r = _read(zr, tmp_path, _both("zlv", UP))
-    c = r["comparisons"]["whole"]["m1_r_gmom_zlv_x2"]
+    r = _read(zr, tmp_path, _sm_both("zlv", UP))
+    c = r["comparisons"]["whole"]["m1_r_gmom_zlv_sm_x2"]
     assert c["base"] == "m1_r_gmom_x2" and c["mean"] == pytest.approx(1.0) and c["seeds_ahead"] == 10
     assert c["points"]["de"] == pytest.approx(0.5) and c["points"]["mmd_u_variogram"] == pytest.approx(0.5)
     assert set(c["skills"]) >= {"de_score", "mmd_u"}
     assert r["mean_scores"]["lib2"]["m1_r_gmom_x2"] == pytest.approx(BASE + 0.8 + 0.045)
     four = r["statements"]["zlv"]["comparisons"]
-    assert set(four) == {"m1_r_gmom_zlv", "m1_r_gmom_zlv_x2"}
+    assert set(four) == {"m1_r_gmom_zlv_sm", "m1_r_gmom_zlv_sm_x2"}
     assert all(set(c["cuts"]) == {"pooled", "whole"} for c in four.values())
+    g = r["comparisons"]["pooled"]["m1_r_gmom_zlv_sm_vs_perm"]
+    assert g["base"] == "m1_r_gmom_zlv_sm_perm" and g["change"] == "m1_r_gmom_zlv_sm" and g["mean"] == pytest.approx(1)
+    assert set(r["raw_arms"]) == set(RAW)
 
 
 def test_what_size_alone_would_give(zr, tmp_path):
     r = _read(zr, tmp_path)
-    sa = r["size_alone"]["pooled"]
-    # CM's zlv slope 0.75: at the base fraction outside 1 to 2 (not computed); at x2 the multiple 1.5, which the
+    sa = r["raw_arms"]["m1_r_gmom_zlv"]["size_alone"]["pooled"]
+    sa2 = r["raw_arms"]["m1_r_gmom_zlv_x2"]["size_alone"]["pooled"]
+    # CM's zlv slope 0.75: at the base fraction outside 1 to 2 (with its reason); at x2 the multiple 1.5, which the
     # uniform arms put 0.4 below x2
-    assert sa["m1_r_gmom_zlv"]["CM"]["what_size_alone_would_give"] is None
-    assert sa["m1_r_gmom_zlv_x2"]["CM"]["what_size_alone_would_give"] == pytest.approx(-0.4)
-    assert sa["m1_r_gmom_zlv"]["Endocardium"]["what_size_alone_would_give"] == pytest.approx(0.0)
+    assert sa["CM"]["what_size_alone_would_give"] is None
+    assert sa["CM"]["why_not"] == "slope below 1: outside the uniform arms 1 to 2"
+    assert sa2["CM"]["what_size_alone_would_give"] == pytest.approx(-0.4) and sa2["CM"]["why_not"] is None
+    assert sa["Endocardium"]["what_size_alone_would_give"] == pytest.approx(0.0)
+    assert sa2["Endocardium"]["what_size_alone_would_give"] == pytest.approx(0.0)  # multiple 2: the x2 arm itself
+    assert zr.size_alone_reason(1.2, "m1_r_gmom_x2") == "twice the slope above 2: outside the uniform arms 1 to 2"
+    txt = (tmp_path / "out" / "t53.txt").read_text()
+    assert "CM slope 0.750 -> slope below 1: outside the uniform arms 1 to 2" in txt
     means = {"m1_r_gmom": 0.0, "m1_r_gmom_x15": 0.4, "m1_r_gmom_x2": 0.6}
     assert zr.size_alone(means, 1.25, "m1_r_gmom") == pytest.approx(0.2)
     assert zr.size_alone(means, 1.75, "m1_r_gmom_x2") == pytest.approx(-0.1)
     assert zr.size_alone(means, 2.5, "m1_r_gmom") is None and zr.size_alone(means, None, "m1_r_gmom") is None
+    assert zr.size_alone_reason(0.4, "m1_r_gmom_x2") == "twice the slope below 1: outside the uniform arms 1 to 2"
+    assert zr.size_alone_reason(None, "m1_r_gmom") == "slope not defined"
 
 
-def test_the_limits_are_in_the_text_and_no_count_is_printed(zr, tmp_path):
-    _read(zr, tmp_path, _both("zbal", UP))
+def test_the_limits_and_choices_are_in_the_text_and_no_count_is_printed(zr, tmp_path):
+    _read(zr, tmp_path, _sm_both("zw", UP))
     txt = (tmp_path / "out" / "t53.txt").read_text()
-    for x in zr.LIMITS:
+    assert txt.splitlines()[1] == "Choices the brief left open:"
+    for x in (*zr.LIMITS, *zr.CHOICES):
         assert x in txt
+    head = txt.split("Outcome")[0].split("zlv (slope-matched)")[0]
+    for x in ("twice the slope for an _x2 arm", "per group", "ahead, behind", "four parts"):
+        assert x in head
     assert "what size alone would give" in txt and "read by nothing" in txt
 
 
@@ -430,14 +650,19 @@ def test_the_limits_are_in_the_text_and_no_count_is_printed(zr, tmp_path):
     ({"whole": {"seeds": range(9)}}, {}, "whole: seeds"),
     ({"lib3": {"commit": "d" * 40}}, {}, "ran at 2 commits"),
     ({"lib1": {"clean": None}}, {}, "tree not clean on ['lib1']"),
-    ({"pooled": {"fractions": {"m1_r_gmom": 0.2, "m1_r_gmom_x15": 0.3, "m1_r_gmom_x2": 0.4, "m1_r_gmom_zlv": 0.2,
-                               "m1_r_gmom_zlv_x2": 0.2, "m1_r_gmom_zbal": 0.2, "m1_r_gmom_zbal_x2": 0.4}}}, {},
-     "wrong fraction on ['m1_r_gmom_zlv_x2']"),
-    ({"lib3": {"identical": ("m1_r_gmom_zbal_x2",)}}, {}, "score exactly as the pooled arm"),
-    ({"whole": {"directions": _sha(zlv_diff=("CM", "Endocardium"))}}, {}, "not in CM alone"),
+    ({"pooled": {"fractions": {"m1_r_gmom": 0.2, "m1_r_gmom_x15": 0.3, "m1_r_gmom_x2": 0.4,
+                               **{a: (0.4 if a.endswith("_x2") else 0.2) for a in NEW},
+                               "m1_r_gmom_zw_sm_perm": 0.4}}}, {}, "wrong fraction on ['m1_r_gmom_zw_sm_perm']"),
+    ({"lib3": {"identical": ("m1_r_gmom_zw_x2",)}}, {}, "score exactly as the pooled arm"),
+    ({"lib3": {"identical": ("m1_r_gmom_zlv_sm_perm",)}}, {}, "score exactly as the pooled arm"),
+    ({"whole": {"directions": _sha(zlv_diff=("CM", "Endocardium"))}}, {}, "zlv's directions differ"),
+    ({"lib2": {"directions": _sha(zlv_sm_diff=("CM", "Endocardium"))}}, {}, "zlv_sm's directions differ"),
     ({"pooled": {"directions": _sha(zlv_diff=())}}, {}, "not in CM alone"),
-    ({"lib1": {"directions": _sha(zbal_diff=())}}, {}, "zbal's directions are the entry's in every group"),
+    ({"lib1": {"directions": _sha(zw_diff=())}}, {}, "zw's directions are the entry's in every group"),
     ({"lib1": {"directions": {}}}, {}, "no direction record"),
+    ({"lib3": {"directions": _sha(tag="x")}}, {}, "sha256 differ between the truths' files"),
+    ({}, {"directions": _sha(sm_slope=1.0 + 2e-9)}, "recorded slope on the entry's is not within 1e-09 of 1"),
+    ({"whole": {"same_control_sha": ("m1_r_gmom_zw_sm_perm",)}}, {}, "controls with their real arm's prediction"),
     ({"lib2": {"anchor_failures": [{"seed": 3, "reason": "x"}]}}, {}, "anchors invert or go missing"),
 ])
 def test_the_void_cases(zr, tmp_path, over, kw, reason):
@@ -445,6 +670,11 @@ def test_the_void_cases(zr, tmp_path, over, kw, reason):
     assert not r["valid"] and r["outcome"] == "VOID"
     assert any(reason in x for x in r["validity"]["reasons"]), r["validity"]["reasons"]
     assert "Outcome: VOID" in (tmp_path / "out" / "t53.txt").read_text()
+
+
+def test_a_slope_within_tolerance_of_one_is_valid(zr, tmp_path):
+    r = _read(zr, tmp_path, directions=_sha(sm_slope=1.0 + 5e-10))
+    assert r["valid"], r["validity"]["reasons"]
 
 
 @pytest.mark.parametrize("truth, arm", [("pooled", "b0"), ("lib2", "m1_r_gmom"), ("lib3", "m1_r_gmom_x15"),
@@ -505,3 +735,4 @@ def test_the_truths_go_to_their_cuts(zr):
                           "whole": "T1/E9.5->E10.5"}
     assert zr.COMMITTED["lib2"].parts[-3:] == ("t46_m1_lib_step", "tasks", "lib2.json")
     assert zr.COMMITTED["whole"].parts[-3:] == ("t44_m1_step", "tasks", "T1_E9.5_E10.5.json")
+    assert zr.CONTROL_STREAM == 53
