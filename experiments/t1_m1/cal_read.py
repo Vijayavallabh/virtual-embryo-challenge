@@ -4,9 +4,10 @@ of one rule on try T44's route (experiments/t1_m1/step_read.py).
 
 M1 applies Feng's E9.5 -> E14.5 change per group as the count factor exp(fraction x d), d the log ratio of mean CP10k
 made with the config's pseudocount. Read back with try T47's share code (experiments/t1_m1/share_read.py), M1's step
-delivers only part of its nominal size in the units in which d is made. The rule, with no free number: set the nominal
-fraction so that M1's own step, read back on the task's reference cells, delivers the bracket's fraction times the
-scale.
+delivers only part of its nominal size in the units in which d is made; in those units even a true fraction of Feng's
+change reads under its nominal size, so the rule's target is not the reading of the change M1 aims at (see the limits).
+The rule, with no free number: set the nominal fraction so that M1's own step, read back on the task's reference cells,
+delivers the bracket's fraction times the scale.
 
   calibrated_fraction(pool, directions, groups, held, fraction, target_share)
          cells: every cell of the pool whose label maps to a direction group, all of them (not the cells a build
@@ -26,18 +27,19 @@ scale.
          fraction and the answer: the fraction's sd); and per arm's fraction (0.2, 0.3, 0.4 and both answers), on the
          rule's stream, the delivered share and the share over f in four bins of the group's mean CP10k before the step
          ([0, 0.1), [0.1, 1), [1, 10), >= 10), and the covered cells' mean detected genes and total counts per cell
-         before and after the step.
+         before and after the step, and, given the board's scored genes (the panel), the combined share over the
+         panel genes M1 moves and the share over f.
   run    One E10.5 cut, 10 seeds, on try T44's route. Refused unless experiments/harness/TRIES.md holds row T48, unless
          the committed N22 passed, on an existing task file, and unless T47's committed reading
-         (results/t47_share_read/t47.json) is there, not void (its stamp's tree clean) and its raw L finite and in
-         (0.5, 1.5). Before the seed loop the calibration runs once on the task's reference pool (the build's
-         directions, groups and held list): T48a's fraction for target_share = 0.2 x L and T48b's for target_share =
-         0.2, written to the task file with delivered(0.2), the delivered shares at the answers, the steps, L and the
-         sha256 of t47.json. Arms per seed, all from one cell draw: b0, m1_r_gmom (0.2), m1_r_gmom_x15 (0.3) and
-         m1_r_gmom_x2 (0.4) as T44 builds them (step_read.step_arms); m1_r_gmom_calL (T48a) and m1_r_gmom_cal (T48b),
-         gmom_combo.m1_r_arms' m1_r_gmom at the calibrated fraction with every other argument the base's. Per seed
-         and arm the file also records the built cells' mean detected panel genes and mean summed panel CP10k per
-         cell (reported only; a build's total counts are not in its Stage).
+         (results/t47_share_read/t47.json) is there, not void (its stamp's tree clean) and its raw L finite and in (0.5,
+         1.5). Before the seed loop the calibration runs once on the task's reference pool (the build's directions,
+         groups and held list; the board's panel genes for the reported panel share only): T48a's fraction for
+         target_share = 0.2 x L and T48b's for target_share = 0.2, written to the task file with delivered(0.2), the
+         delivered shares at the answers, the steps, L and the sha256 of t47.json. Arms per seed, all from one cell
+         draw: b0, m1_r_gmom (0.2), m1_r_gmom_x15 (0.3) and m1_r_gmom_x2 (0.4) as T44 builds them (step_read.step_arms);
+         m1_r_gmom_calL (T48a) and m1_r_gmom_cal (T48b), gmom_combo.m1_r_arms' m1_r_gmom at the calibrated fraction with
+         every other argument the base's. Per seed and arm the file also records the built cells' mean detected panel
+         genes and mean summed panel CP10k per cell (reported only; a build's total counts are not in its Stage).
   read   T48's reading of both cuts' files (fixed in the row before the run):
          Void unless both cuts hold the ten seeds at one commit on a clean tree; b0 and m1_r_gmom equal, seed for seed,
          their committed scores in results/t42_m1_eb/tasks/ and m1_r_gmom_x15 and m1_r_gmom_x2 theirs in
@@ -57,8 +59,9 @@ scale.
          m1_r_gmom_x15 and m1_r_gmom_x2 per-seed scores predicts at the calibrated fraction (marked extrapolated
          outside [0.3, 0.4]), and the residual (observed minus predicted) with its per-seed range; per cut every arm's
          mean detected panel genes and summed panel CP10k per cell; the calibration record; and, when the statement is
-         "the calibrated step loses" or "not separated", the line that it is read as a fault to explain first. The
-         read puts nothing forward by itself.
+         "the calibrated step loses" or "not separated", the line that the reproduction and the calibration record are
+         checked for a fault first and that, if none is found, the outcome stands as recorded and bears on the rule's
+         target. The read puts nothing forward by itself.
 
 NOT an adoption result: a labelled in-sample diagnostic, as tries T26, T42 and T44 are; Feng's E9.5 cells lie inside
 these pseudo-tasks' external windows, the cuts are ones earlier T1 choices were made on, and L comes from T47's read of
@@ -66,38 +69,65 @@ the released E9.5 cells. Its result can only go to the team captain.
 
 Limits (each sentence is in LIMITS and in the ledger row):
   In the units d is made in, M1's step of 0.2 reads 0.107 on E9.5's cells and 0.117 on E10.5 library 3's cells, that
-  is 0.53 to 0.58 of its nominal size.
+  is 0.53 to 0.58 of its nominal size; a true fraction of Feng's change also reads under its nominal size in these
+  units, so that ratio is not a shortfall against 1.0.
   At the test the rule would run once per T1 base (lib3 and mid) on that base's E10.5 cells, with fraction 0.4 and
   target 0.4 x L; by T47's numbers it would give about 1.43 times the nominal fraction, against about 1.56 times on
-  these cuts, whose pool is E9.5's.
-  The calibration reads every reference-pool cell of the direction groups, weighted by the pool's group counts, not
-  the cells a build draws at the chamber shares; on synthetic pools this moves the fraction by under 0.001.
+  these cuts, whose pool is E9.5's; the multiples assume a proportional delivered; the rule's multiple at the test is
+  not known from these cuts.
+  The weights are the pool's group counts; the build draws at the reference's own chamber shares, so its expected mix
+  is the same, and one seed's draw moves the fraction by under 0.001 on synthetic pools (by up to 2% only if the mix
+  were far from the pool's).
   The calibration draws on the fixed stream [48, 48]; a port to the test build needs its own row and a stream from the
   build seed.
   delivered(f) on one stream carries the draw's noise: the calibration record gives the sd of delivered at each answer
   over ten further streams, and the fraction is known only to about that sd divided by the slope of delivered; on a
   small pool that noise can make the rule refuse, so a test build that calls it unchanged is not assured an answer.
-  T48a's fraction is predicted at about 0.31, within 5% of T44's x1.5 arm, which passed on every seed; a pass is
-  expected from T44 and is not evidence that the calibration target is right, nor about the fraction at the test.
-  A loss or a not-separated outcome contradicts T44 at a neighbouring fraction; it is read as a fault to explain
-  before any conclusion, never as evidence against a larger step.
+  T48a's fraction is 0.31 if delivered is proportional and lower if it is convex; where it falls below 0.3, T44's line
+  is an extrapolation.
+  T44's x1.5 arm passed on every seed; a pass is expected from T44 and is not evidence that the calibration target is
+  right, nor about the fraction at the test.
+  A loss or a not-separated outcome contradicts T44 at a neighbouring fraction; the reproduction and the calibration
+  record are checked for a fault first; if none is found, the outcome stands as recorded and bears on the rule's
+  target, not on T44's arms.
   The rule matches one d^2-weighted share; at the calibrated fraction genes above 10 CP10k move about 1.5 to 2 times
   the target along d while weakly expressed genes stay several times under; a gain may come from over-moving
   well-expressed genes, not from delivering the direction.
-  delivered(f) rises with f but not proportionally (about 7% concave over [0.2, 1.0] on synthetic pools) and is
-  non-monotone below about 5e-4 in f on one stream; the calibrated fraction is known only to that resolution.
-  A larger step also lowers detected genes per cell (synthetic: about 2 to 3 percentage points more at the calibrated
-  fraction than at 0.2); any gain on mmd_u or the variogram may travel through sparsity, the channel of the closed
-  read-depth lever, and adopting a larger step for that reason needs the captain's named answer on that lever.
-  The weights are the reference pool's group counts; a build's chamber-share draw would change the fraction by about
-  1% at most.
+  delivered(f) rises with f; how far from proportional, and in which direction, depends on the pool (synthetic: about
+  linear on one pool, delivered/f from 0.33 at 0.2 to 0.76 at 1.0 on another); the record's steps_by_arm share_over_f
+  at 0.2, 0.3 and 0.4 gives the real shape.
+  A larger step leaves total counts per cell unchanged but lowers detected genes per cell (synthetic: 19.5 genes of
+  1,033 at the T48a answer against 5.0 at 0.2; a true fifth lowers them by 19.5 too); any gain on mmd_u or the
+  variogram may travel through that sparsity, which the closed read-depth lever also moved, so a T48 result reopens
+  nothing there and adoption for that reason needs the captain's named answer on that lever.
   L is T47's raw between-type slope at E9.5, a fixed input from another read; it is not computable from the test's
-  base cells, the rule's fraction moves almost one for one with it (L_corr 0.955 would give about 15% more), and the
-  choice of raw over corrected is not tested here.
+  base cells, the rule's fraction moves with it (L_corr 0.955 would give about 10 to 15% more, depending on the
+  curvature of delivered), and the choice of raw over corrected is not tested here.
+  Recomputing L on the test's base cells (E10.5) would need Feng's contrasts at a matching stage; against E9.5
+  contrasts it would mix a day's change into the scale.
   The cuts share one reference pool and one calibration; their day holds more than 0.2L along d (T47's A 0.254), so
-  the read favours any larger step; it says nothing about the pace from E10.5 to E12.5 or about the rule on the
-  test's bases.
-  T48b is about T44's x2 arm (fraction about 0.37 to 0.38 against 0.40) and reports nothing T44 did not.
+  the read favours any larger step; it says nothing about the pace from E10.5 to E12.5 or about the rule on the test's
+  bases.
+  T48b's fraction is about 0.37 to 0.38 if delivered is proportional and lower if it is convex, near T44's x2 arm
+  (0.40); it reports nothing T44 did not.
+  In these units even a true fraction of Feng's change reads under its nominal size (synthetic: a true fifth reads
+  0.68 of nominal), so the target 0.2 x L is not the reading of the change M1 aims at; the rule's answer lies above
+  the true-change-equivalent fraction (synthetic 0.39 and 0.44 against 0.34), and the excess falls on the
+  well-expressed genes, which the nominal step already moves about as a true fifth would (synthetic: 0.105 against
+  0.110 above 10 CP10k).
+  The calibrated fraction carries a stream noise of about sd / slope (recorded); it is negligible beside the
+  uncertainty of the target itself.
+  A pass says that on the one E9.5 -> E10.5 pair a step at the calibrated fraction beats 0.2, as T44 already showed at
+  0.3 and 0.4; it is no evidence that 0.2 x L is the right target, nor about the multiple the rule would give on E10.5
+  bases with fraction 0.4.
+  The cuts' day holds more than 0.2 x L along d, and the rule's multiple shrinks or grows with the base fraction
+  according to the pool's curvature; the read cannot transfer its fraction or its gain to the test.
+  L is a fixed input from T47's read of released E9.5 cells; it is target-free here but not computable from a test
+  build's base cells; a port of the rule carries L as a frozen constant with its own row.
+  passes: T44's direction holds at the calibrated fraction, nothing about the target or the test; loses or not
+  separated: after a fault check, evidence against the rule's target; T48b reports nothing beyond T44's x2.
+  T48 opens no closed lever; any use of a T48 gain that runs through sparsity waits for the captain's named answer on
+  the read-depth lever.
 
 Usage: on the DGX campaign checkout, repo root, both cuts at one commit, committing nothing until both task files exist,
 on the machine T42 and T44 ran on, so that their arms reproduce.
@@ -173,44 +203,71 @@ DE_TERMS = ("de_score", "de_direction")
 SPREAD_STREAMS = 10  # further streams [CAL_ROOT, CAL_STREAM, k], k = 1..10, for the noise of delivered (reported only)
 CP_BINS = ((0.0, 0.1), (0.1, 1.0), (1.0, 10.0), (10.0, float("inf")))  # mean CP10k before the step (reported only)
 CP_BIN_NAMES = ("[0, 0.1)", "[0.1, 1)", "[1, 10)", ">= 10")
-FAULT_LINE = ("a loss or a not-separated outcome contradicts T44 at a neighbouring fraction: it is read as a fault to "
-              "explain before any conclusion, never as evidence against a larger step")
+FAULT_LINE = ("a loss or a not-separated outcome contradicts T44 at a neighbouring fraction; the reproduction and the "
+              "calibration record are checked for a fault first; if none is found, the outcome stands as recorded and "
+              "bears on the rule's target, not on T44's arms")
 LIMITS = (
     "In the units d is made in, M1's step of 0.2 reads 0.107 on E9.5's cells and 0.117 on E10.5 library 3's cells, "
-    "that is 0.53 to 0.58 of its nominal size.",
-    "At the test the rule would run once per T1 base (lib3 and mid) on that base's E10.5 cells, with fraction 0.4 and "
-    "target 0.4 x L; by T47's numbers it would give about 1.43 times the nominal fraction, against about 1.56 times on "
-    "these cuts, whose pool is E9.5's.",
-    "The calibration reads every reference-pool cell of the direction groups, weighted by the pool's group counts, not "
-    "the cells a build draws at the chamber shares; on synthetic pools this moves the fraction by under 0.001.",
-    "The calibration draws on the fixed stream [48, 48]; a port to the test build needs its own row and a stream from "
-    "the build seed.",
+    "that is 0.53 to 0.58 of its nominal size; a true fraction of Feng's change also reads under its nominal size "
+    "in these units, so that ratio is not a shortfall against 1.0.",
+    "At the test the rule would run once per T1 base (lib3 and mid) on that base's E10.5 cells, with fraction 0.4 "
+    "and target 0.4 x L; by T47's numbers it would give about 1.43 times the nominal fraction, against about 1.56 "
+    "times on these cuts, whose pool is E9.5's; the multiples assume a proportional delivered; the rule's multiple "
+    "at the test is not known from these cuts.",
+    "The weights are the pool's group counts; the build draws at the reference's own chamber shares, so its "
+    "expected mix is the same, and one seed's draw moves the fraction by under 0.001 on synthetic pools (by up to "
+    "2% only if the mix were far from the pool's).",
+    "The calibration draws on the fixed stream [48, 48]; a port to the test build needs its own row and a stream "
+    "from the build seed.",
     "delivered(f) on one stream carries the draw's noise: the calibration record gives the sd of delivered at each "
     "answer over ten further streams, and the fraction is known only to about that sd divided by the slope of "
-    "delivered; on a small pool that noise can make the rule refuse, so a test build that calls it unchanged is not "
-    "assured an answer.",
-    "T48a's fraction is predicted at about 0.31, within 5% of T44's x1.5 arm, which passed on every seed; a pass is "
-    "expected from T44 and is not evidence that the calibration target is right, nor about the fraction at the test.",
-    "A loss or a not-separated outcome contradicts T44 at a neighbouring fraction; it is read as a fault to explain "
-    "before any conclusion, never as evidence against a larger step.",
+    "delivered; on a small pool that noise can make the rule refuse, so a test build that calls it unchanged is not"
+    " assured an answer.",
+    "T48a's fraction is 0.31 if delivered is proportional and lower if it is convex; where it falls below 0.3, "
+    "T44's line is an extrapolation.",
+    "T44's x1.5 arm passed on every seed; a pass is expected from T44 and is not evidence that the calibration "
+    "target is right, nor about the fraction at the test.",
+    "A loss or a not-separated outcome contradicts T44 at a neighbouring fraction; the reproduction and the "
+    "calibration record are checked for a fault first; if none is found, the outcome stands as recorded and bears "
+    "on the rule's target, not on T44's arms.",
     "The rule matches one d^2-weighted share; at the calibrated fraction genes above 10 CP10k move about 1.5 to 2 "
-    "times the target along d while weakly expressed genes stay several times under; a gain may come from over-moving "
-    "well-expressed genes, not from delivering the direction.",
-    "delivered(f) rises with f but not proportionally (about 7% concave over [0.2, 1.0] on synthetic pools) and is "
-    "non-monotone below about 5e-4 in f on one stream; the calibrated fraction is known only to that resolution.",
-    "A larger step also lowers detected genes per cell (synthetic: about 2 to 3 percentage points more at the "
-    "calibrated fraction than at 0.2); any gain on mmd_u or the variogram may travel through sparsity, the channel of "
-    "the closed read-depth lever, and adopting a larger step for that reason needs the captain's named answer on that "
-    "lever.",
-    "The weights are the reference pool's group counts; a build's chamber-share draw would change the fraction by "
-    "about 1% at most.",
-    "L is T47's raw between-type slope at E9.5, a fixed input from another read; it is not computable from the test's "
-    "base cells, the rule's fraction moves almost one for one with it (L_corr 0.955 would give about 15% more), and "
-    "the choice of raw over corrected is not tested here.",
-    "The cuts share one reference pool and one calibration; their day holds more than 0.2L along d (T47's A 0.254), so "
-    "the read favours any larger step; it says nothing about the pace from E10.5 to E12.5 or about the rule on the "
-    "test's bases.",
-    "T48b is about T44's x2 arm (fraction about 0.37 to 0.38 against 0.40) and reports nothing T44 did not.",
+    "times the target along d while weakly expressed genes stay several times under; a gain may come from "
+    "over-moving well-expressed genes, not from delivering the direction.",
+    "delivered(f) rises with f; how far from proportional, and in which direction, depends on the pool (synthetic: "
+    "about linear on one pool, delivered/f from 0.33 at 0.2 to 0.76 at 1.0 on another); the record's steps_by_arm "
+    "share_over_f at 0.2, 0.3 and 0.4 gives the real shape.",
+    "A larger step leaves total counts per cell unchanged but lowers detected genes per cell (synthetic: 19.5 genes"
+    " of 1,033 at the T48a answer against 5.0 at 0.2; a true fifth lowers them by 19.5 too); any gain on mmd_u or "
+    "the variogram may travel through that sparsity, which the closed read-depth lever also moved, so a T48 result "
+    "reopens nothing there and adoption for that reason needs the captain's named answer on that lever.",
+    "L is T47's raw between-type slope at E9.5, a fixed input from another read; it is not computable from the "
+    "test's base cells, the rule's fraction moves with it (L_corr 0.955 would give about 10 to 15% more, depending "
+    "on the curvature of delivered), and the choice of raw over corrected is not tested here.",
+    "Recomputing L on the test's base cells (E10.5) would need Feng's contrasts at a matching stage; against E9.5 "
+    "contrasts it would mix a day's change into the scale.",
+    "The cuts share one reference pool and one calibration; their day holds more than 0.2L along d (T47's A 0.254),"
+    " so the read favours any larger step; it says nothing about the pace from E10.5 to E12.5 or about the rule on "
+    "the test's bases.",
+    "T48b's fraction is about 0.37 to 0.38 if delivered is proportional and lower if it is convex, near T44's x2 "
+    "arm (0.40); it reports nothing T44 did not.",
+    "In these units even a true fraction of Feng's change reads under its nominal size (synthetic: a true fifth "
+    "reads 0.68 of nominal), so the target 0.2 x L is not the reading of the change M1 aims at; the rule's answer "
+    "lies above the true-change-equivalent fraction (synthetic 0.39 and 0.44 against 0.34), and the excess falls on"
+    " the well-expressed genes, which the nominal step already moves about as a true fifth would (synthetic: 0.105 "
+    "against 0.110 above 10 CP10k).",
+    "The calibrated fraction carries a stream noise of about sd / slope (recorded); it is negligible beside the "
+    "uncertainty of the target itself.",
+    "A pass says that on the one E9.5 -> E10.5 pair a step at the calibrated fraction beats 0.2, as T44 already "
+    "showed at 0.3 and 0.4; it is no evidence that 0.2 x L is the right target, nor about the multiple the rule "
+    "would give on E10.5 bases with fraction 0.4.",
+    "The cuts' day holds more than 0.2 x L along d, and the rule's multiple shrinks or grows with the base fraction"
+    " according to the pool's curvature; the read cannot transfer its fraction or its gain to the test.",
+    "L is a fixed input from T47's read of released E9.5 cells; it is target-free here but not computable from a "
+    "test build's base cells; a port of the rule carries L as a frozen constant with its own row.",
+    "passes: T44's direction holds at the calibrated fraction, nothing about the target or the test; loses or not "
+    "separated: after a fault check, evidence against the rule's target; T48b reports nothing beyond T44's x2.",
+    "T48 opens no closed lever; any use of a T48 gain that runs through sparsity waits for the captain's named "
+    "answer on the read-depth lever.",
 )
 LABEL_T48 = ("try T48, a labelled in-sample diagnostic, never an adoption result: M1 (with R1, R2 and g_mom's factors, "
              "the entry's form) at the fraction its own step needs, read back on the task's reference cells with T47's "
@@ -299,11 +356,23 @@ def _cell_depth(C) -> dict[str, float]:
             "total_counts": float(np.asarray(C.sum(axis=1)).mean()) if C.shape[0] else float("nan")}
 
 
-def step_record(prep: Mapping, f: float, seed: Sequence[int] = (CAL_ROOT, CAL_STREAM)) -> dict:
+def step_record(prep: Mapping, f: float, seed: Sequence[int] = (CAL_ROOT, CAL_STREAM),
+                panel_genes: Sequence[str] | None = None) -> dict:
     """Reported only, one external_shift at f on the rule's stream: the delivered share, and per bin of the group's mean
     CP10k before the step (CP_BINS) the combined share and the share over f; the covered cells' mean detected genes
-    and total counts per cell before and after the step."""
+    and total counts per cell before and after the step; given the board's scored genes, the combined share and the
+    share over f over the panel genes M1 moves (the same step, no further draw)."""
     moved = _moved(prep, f, seed)
+    rec = _step_record(prep, f, moved)
+    if panel_genes is not None:
+        in_panel = np.isin(np.asarray(prep["sub"].var_names, dtype=str), np.asarray(list(panel_genes), dtype=str))
+        masks = {g: prep["masks"][g] & in_panel for g in prep["members"]}
+        s = shr.combine(_shares(prep, moved, masks), prep["weights"])[0]
+        rec["panel"] = {"share": s, "share_over_f": s / f, "genes": {g: int(m.sum()) for g, m in masks.items()}}
+    return rec
+
+
+def _step_record(prep: Mapping, f: float, moved) -> dict:
     share = shr.combine(_shares(prep, moved, {g: prep["masks"][g] for g in prep["members"]}), prep["weights"])[0]
     bins = {}
     for name, (lo, hi) in zip(CP_BIN_NAMES, CP_BINS, strict=True):
@@ -390,9 +459,10 @@ def _calibrated(prep: Mapping, fraction: float, target_share: float, seed: Seque
 
 def calibrate(pool, directions, groups, held, fraction: float, L: float, t47_sha256: str, *,
               eps: float | None = None, min_cells: float | None = None,
-              seed: Sequence[int] = (CAL_ROOT, CAL_STREAM)) -> dict:
+              seed: Sequence[int] = (CAL_ROOT, CAL_STREAM), panel_genes: Sequence[str] | None = None) -> dict:
     """Both calibrations (T48a at fraction x L, T48b at fraction) on one prepared pool, and their record; reported
-    beside them: each answer's stream noise (stream_spread) and each arm's step (step_record)."""
+    beside them: each answer's stream noise (stream_spread) and each arm's step (step_record, with the share over the
+    board's panel genes when they are given). The panel genes enter no fraction."""
     t0 = time.time()
     prep = prepare(pool, directions, groups, held, eps, min_cells)
     targets = {CAL_SCALED: float(fraction) * float(L), CAL_PLAIN: float(fraction)}
@@ -405,7 +475,8 @@ def calibrate(pool, directions, groups, held, fraction: float, L: float, t47_sha
            "weights": dict(prep["weights"]), "seconds_rule": round(time.time() - t0, 1)}
     rec["noise"] = {a: stream_spread(prep, r["fraction"], float(fraction), r["delivered_at_base"], r["delivered"], seed)
                     for a, r in res.items()}
-    rec["steps_by_arm"] = {a: step_record(prep, f, seed) for a, f in arm_fractions(fraction, fractions).items()}
+    rec["steps_by_arm"] = {a: step_record(prep, f, seed, panel_genes)
+                           for a, f in arm_fractions(fraction, fractions).items()}
     rec["seconds"] = round(time.time() - t0, 1)
     return rec
 
@@ -487,7 +558,8 @@ def cmd_run(a) -> None:
     union = hygiene.load_union()
     held_m1 = gc.held_feng(union, preregistered)
     try:  # once per run, on a shallow copy of the reference pool (the inputs' obs untouched), before any build
-        cal = calibrate(harness._shallow(pool), directions, groups, held_m1, fraction, L, t47_sha)
+        cal = calibrate(harness._shallow(pool), directions, groups, held_m1, fraction, L, t47_sha,
+                        panel_genes=list(genes))
     except ValueError as e:
         sys.exit(f"{ROW} is refused: the calibration refuses ({e})")
     print(f"{t.key} calibration: " + ", ".join(f"{k} {v:.4f}" for k, v in cal["fractions"].items())
@@ -755,7 +827,9 @@ def t48_text(res: Mapping) -> str:
             lines.append(f"    step {a} at {st['fraction']:.4f} (reported): share {st['share']:.4f}, over f "
                          f"{st['share_over_f']:.3f}; over f by mean CP10k before: {bins}; detected genes per cell "
                          f"{st['before']['detected_genes']:.1f} -> {st['after']['detected_genes']:.1f}, total counts "
-                         f"{st['before']['total_counts']:.0f} -> {st['after']['total_counts']:.0f}")
+                         f"{st['before']['total_counts']:.0f} -> {st['after']['total_counts']:.0f}"
+                         + (f"; panel genes: share {st['panel']['share']:.4f}, over f {st['panel']['share_over_f']:.3f}"
+                            if isinstance(st.get("panel"), Mapping) else ""))
     lines.append(f"calibration identical on both cuts (one reference stage): {r['calibration_same_on_both_cuts']}")
     for k, ms in r.get("mean_scores", {}).items():
         lines.append(f"mean scores {k}: " + ", ".join(f"{a} {x:.2f}" for a, x in ms.items()))

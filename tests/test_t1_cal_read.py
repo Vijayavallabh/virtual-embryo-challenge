@@ -8,7 +8,9 @@ import importlib.util
 import io
 import json
 import re
+import subprocess
 import sys
+import types
 
 import anndata as ad
 import h5py
@@ -212,9 +214,11 @@ def test_the_rule_uses_its_own_stream_which_no_build_step_uses(cr, monkeypatch):
     assert len(seeds) >= 3 and all(s == [cr.CAL_ROOT, cr.CAL_STREAM] for s in seeds)
 
 
-def test_calibrate_records_both_targets(cr):
-    pool, dirs, held = pool_world()
-    L = 0.834
+@pytest.mark.parametrize("L", [0.834, 0.9])
+def test_calibrate_records_both_targets(cr, L):
+    """L = 0.9 as well, so a hard-coded 0.834 fails; on seed 7's pool (on seed 3's small pool the stream noise makes
+    the rule refuse at L = 0.9, as the noise limit says it may)."""
+    pool, dirs, held = pool_world(seed=7)
     rec = cr.calibrate(pool, dirs, GROUPS, held, 0.2, L, "f" * 64, eps=EPS, min_cells=MIN_CELLS)
     assert rec["targets"] == {"m1_r_gmom_calL": 0.2 * L, "m1_r_gmom_cal": 0.2}
     for a, t in rec["targets"].items():
@@ -522,7 +526,7 @@ def _flat(text):
 
 def test_every_limit_sentence_is_in_the_docstring_and_in_the_text(cr, tmp_path):
     doc = _flat(cr.__doc__)
-    assert len(cr.LIMITS) == 14 and len(set(cr.LIMITS)) == 14
+    assert len(cr.LIMITS) == 22 and len(set(cr.LIMITS)) == 22
     for s in cr.LIMITS:
         assert s in doc, s
     out, t42, t44 = _write(cr, tmp_path, {k: _task({"m1_r_gmom_calL": 1.0}) for k in cr.CUT_FILES})
@@ -654,3 +658,171 @@ def test_the_cells_record_is_reported_per_cut_and_arm(cr, tmp_path):
     out, t42, t44 = _write(cr, tmp_path, cuts)
     r = cr.read(out, t42, t44)["reading"]
     assert r["cells"][cr.gc.TASK_CHAMBER]["m1_r_gmom_cal"] == {"detected_genes": 104.5, "panel_cp10k": 900.0}
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# The second review's fixes (the limits on curvature and on the target, the panel share, cmd_run's calibration call,
+# nothing changed against 49a9773)
+
+
+BASE_COMMIT = "49a97738329ac87f7bb2d616fd340dfc00ee2cab"
+
+
+def test_the_limits_carry_the_second_reviews_sentences_and_drop_the_old_ones(cr):
+    doc = _flat(cr.__doc__)
+    for old in ("about 7% concave", "predicted at about 0.31, within 5%", "about 15% more", "about 1% at most",
+                "the channel of the closed read-depth lever", "never as evidence against a larger step",
+                "moves almost one for one", "(fraction about 0.37 to 0.38 against 0.40)"):
+        assert old not in doc and all(old not in s for s in cr.LIMITS), old
+    for new in ("how far from proportional, and in which direction, depends on the pool",
+                "the multiples assume a proportional delivered; the rule's multiple at the test is not known",
+                "T48a's fraction is 0.31 if delivered is proportional and lower if it is convex",
+                "so the target 0.2 x L is not the reading of the change M1 aims at",
+                "A larger step leaves total counts per cell unchanged but lowers detected genes per cell",
+                "about 10 to 15% more, depending on the curvature of delivered",
+                "would need Feng's contrasts at a matching stage",
+                "one seed's draw moves the fraction by under 0.001 on synthetic pools"):
+        assert sum(new in s for s in cr.LIMITS) == 1 and new in doc, new
+    assert cr.FAULT_LINE[0].upper() + cr.FAULT_LINE[1:] + "." in cr.LIMITS
+    assert "the rule's target is not the reading of the change M1 aims at" in _flat(cr.__doc__.split("Limits")[0])
+
+
+def test_the_panel_share_is_reported_on_the_same_step_and_enters_no_fraction(cr, tmp_path):
+    pool, dirs, held = pool_world()
+    prep = cr.prepare(pool, dirs, GROUPS, held, EPS, MIN_CELLS)
+    whole = cr.step_record(prep, 0.3, panel_genes=list(pool.var_names))
+    assert whole["panel"]["share"] == whole["share"]
+    assert "panel" not in cr.step_record(prep, 0.3)
+    panel = [f"g{i}" for i in range(0, 400, 3)]
+    rec = cr.step_record(prep, 0.3, panel_genes=panel)
+    in_panel = np.isin(np.asarray(pool.var_names), panel)
+    moved, _ = t1_scope.external_shift(prep["sub"], dirs, 0.3, GROUPS, held, label_key="celltype", seed=[48, 48])
+    want = cr.shr.combine(cr._shares(prep, moved, {g: prep["masks"][g] & in_panel for g in prep["members"]}),
+                          prep["weights"])[0]
+    assert rec["panel"]["share"] == want and rec["panel"]["share_over_f"] == pytest.approx(want / 0.3)
+    assert rec["panel"]["genes"]["CM"] == int((prep["masks"]["CM"] & in_panel).sum())
+    a = cr.calibrate(pool, dirs, GROUPS, held, 0.2, L, "f" * 64, eps=EPS, min_cells=MIN_CELLS, panel_genes=panel)
+    b = cr.calibrate(pool, dirs, GROUPS, held, 0.2, L, "f" * 64, eps=EPS, min_cells=MIN_CELLS)
+    for k in ("fractions", "delivered", "delivered_at_base", "steps", "noise"):
+        assert a[k] == b[k], k
+    assert all("panel" in st for st in a["steps_by_arm"].values())
+    cal = {**_cal_record(), "steps_by_arm": a["steps_by_arm"]}
+    out, t42, t44 = _write(cr, tmp_path, {k: _task({}, cal=cal) for k in cr.CUT_FILES})
+    cr.read(out, t42, t44)
+    assert "; panel genes: share " in (out / "t48.txt").read_text()
+
+
+class _Stop(Exception):
+    pass
+
+
+def test_the_run_calibrates_the_step_the_build_applies(cr, monkeypatch, tmp_path):
+    """cmd_run's calibration: on the base-role pool's matrix, with the build's directions, groups and held_m1 list
+    (the same objects cal_arms gets), and the board's panel genes for the reported share."""
+    _pass_gates(cr, monkeypatch)
+    t47 = tmp_path / "t47.json"
+    t47.write_text(json.dumps(_t47(0.834)))
+    monkeypatch.setattr(cr, "T47_JSON", t47)
+    monkeypatch.setattr(cr.gv, "tree_state", lambda *a, **k: {"commit": "c" * 40, "tree_clean": True})
+    task = types.SimpleNamespace(key=cr.gc.TASK_CHAMBER, panel_board="B", target_filter=None, target="tgt.h5ad",
+                                 reference="ref.h5ad", inputs={"start": "start.h5ad", "base": "base.h5ad"})
+    monkeypatch.setattr(cr.harness, "load_tasks", lambda *a, **k: {"T1:test": [task]})
+    genes = ["g0", "g5", "g9"]
+    monkeypatch.setattr(cr, "load_boards", lambda *a, **k: {"B": types.SimpleNamespace(genes=genes)})
+    monkeypatch.setattr(cr, "read_stage", lambda *a, **k: "stage")
+    monkeypatch.setattr(cr.Stage, "from_anndata", lambda *a, **k: types.SimpleNamespace(n=5))
+    monkeypatch.setattr(cr.harness, "task_board", lambda *a, **k: "board")
+    base, _, _ = pool_world(seed=3)
+    start, _, _ = pool_world(seed=4)
+    loaded = {"base.h5ad": base, "start.h5ad": start}
+    monkeypatch.setattr(cr, "load_stage", lambda path, lineage=False: loaded[path.name])
+    monkeypatch.setattr(cr.harness, "base_role", lambda t: "base")
+    dirs, ext = {"CM": np.zeros(400)}, {"ext": 1}
+    monkeypatch.setattr(cr.feng_dirs, "feng_directions", lambda genes: (dirs, ext))
+    groups = dict(GROUPS)
+    monkeypatch.setattr(cr.feng_dirs, "label_groups", lambda labels: groups)
+    monkeypatch.setattr(cr.feng_dirs, "bracket_fraction", lambda a, b: 0.2)
+    monkeypatch.setattr(cr.harness, "STAGE_DAYS", {"ref.h5ad": 9.5, "tgt.h5ad": 10.5})
+    pre = ["g1"]
+    monkeypatch.setattr(cr.t1_scope, "held_flat_genes", lambda *a, **k: pre)
+    monkeypatch.setattr(cr.hygiene, "load_union", lambda *a, **k: {"file": "u"})
+    held_m1 = ["g1", "g2"]
+    monkeypatch.setattr(cr.gc, "held_feng", lambda union, prereg: held_m1)
+    seen = {}
+
+    def cal_spy(pool, directions, groups_, held, fraction, L_, sha, **k):
+        seen["cal"] = {"pool": pool, "directions": directions, "groups": groups_, "held": held, "fraction": fraction,
+                       "L": L_, "panel_genes": k.get("panel_genes")}
+        return {"fractions": dict(CAL_FR), "delivered_at_base": 0.1, "seconds": 0.0}
+
+    def arms_spy(ctx, directions, groups_, fraction, held_m1_, held_factors, cal_fractions):
+        seen["arms"] = {"directions": directions, "groups": groups_, "held_m1": held_m1_, "fractions": cal_fractions}
+        raise _Stop
+
+    monkeypatch.setattr(cr, "calibrate", cal_spy)
+    monkeypatch.setattr(cr, "cal_arms", arms_spy)
+    monkeypatch.setattr(cr.harness, "TaskView", types.SimpleNamespace(of=lambda t: "view"))
+    monkeypatch.setattr(cr.harness, "_candidate_board", lambda b: b)
+    monkeypatch.setattr(cr.harness, "_b0_t1", lambda *a, **k: (lambda ctx: "b0"))
+    monkeypatch.setattr(cr.gv, "floor_anchors", lambda *a, **k: types.SimpleNamespace(anchors=None, score=50.0))
+    monkeypatch.setattr(cr.harness, "BuildContext", lambda **k: k)
+    with pytest.raises(_Stop):
+        cr.main(["run", "--task", cr.gc.TASK_CHAMBER, "--out", "t48", "--data", str(tmp_path)])
+    c, a = seen["cal"], seen["arms"]
+    assert c["pool"].X is base.X and c["pool"].X is not start.X
+    assert c["held"] is a["held_m1"] is held_m1 and c["held"] is not pre
+    assert c["directions"] is a["directions"] is dirs and c["groups"] is a["groups"] is groups
+    assert c["fraction"] == 0.2 and c["L"] == 0.834 and c["panel_genes"] == genes
+    assert a["fractions"] == CAL_FR
+
+
+def _old_module(cr, tmp_path):
+    """cal_read.py as committed at 49a9773, loaded beside the current one (share_read and step_read come from the
+    path the cr fixture set)."""
+    try:
+        src = subprocess.run(["git", "show", f"{BASE_COMMIT}:experiments/t1_m1/cal_read.py"], cwd=REPO_ROOT,
+                             capture_output=True, text=True, check=True).stdout
+    except (OSError, subprocess.CalledProcessError) as e:
+        pytest.skip(f"commit {BASE_COMMIT} not readable: {e}")
+    path = tmp_path / "cal_read_49a9773.py"
+    path.write_text(src)
+    spec = importlib.util.spec_from_file_location("cal_read_49a9773", path)
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_no_fraction_and_no_arm_changes_against_49a9773(cr, tmp_path):
+    old = _old_module(cr, tmp_path)
+    pool, dirs, held = pool_world(seed=7)
+    d02 = cr.delivered(pool, dirs, GROUPS, held, 0.2, eps=EPS, min_cells=MIN_CELLS)
+    assert d02 == old.delivered(pool, dirs, GROUPS, held, 0.2, eps=EPS, min_cells=MIN_CELLS)
+    answered = 0
+    for target in (d02, d02 * 1.1, d02 * 1.2, d02 * 1.3, d02 * 1.6, 0.2 * 0.834, 0.2 * 0.9, 0.2):
+        try:
+            want = old.calibrated_fraction(pool, dirs, GROUPS, held, 0.2, target, eps=EPS, min_cells=MIN_CELLS)
+        except ValueError as e:  # the old rule refuses: the new one refuses with the same reason
+            with pytest.raises(ValueError, match=re.escape(str(e))):
+                _cal(cr, pool, dirs, held, target)
+            continue
+        assert _cal(cr, pool, dirs, held, target) == want
+        answered += 1
+    assert answered >= 4
+    for L_ in (0.834, 0.9):
+        a = cr.calibrate(pool, dirs, GROUPS, held, 0.2, L_, "f" * 64, eps=EPS, min_cells=MIN_CELLS,
+                         panel_genes=[f"g{i}" for i in range(0, 400, 2)])
+        b = old.calibrate(pool, dirs, GROUPS, held, 0.2, L_, "f" * 64, eps=EPS, min_cells=MIN_CELLS)
+        for k in ("targets", "fractions", "delivered_at_base", "delivered", "steps", "stream", "bracket", "weights",
+                  "noise"):
+            assert a[k] == b[k], k
+        assert set(a["steps_by_arm"]) == set(b["steps_by_arm"])
+        for arm, st in b["steps_by_arm"].items():
+            assert {k: v for k, v in a["steps_by_arm"][arm].items() if k != "panel"} == st, arm
+    ctx, groups, wdirs, wheld = _arms_world()
+    new_arms = cr.cal_arms(ctx, wdirs, groups, 0.2, wheld, wheld, CAL_FR)
+    old_arms = old.cal_arms(ctx, wdirs, groups, 0.2, wheld, wheld, CAL_FR)
+    assert set(new_arms) == set(old_arms) == {"m1_r_gmom", "m1_r_gmom_x15", "m1_r_gmom_x2", *CAL_FR}
+    for arm in old_arms:
+        assert new_arms[arm].X.tobytes() == old_arms[arm].X.tobytes(), arm
+    assert cr.arm_fractions(0.2, CAL_FR) == old.arm_fractions(0.2, CAL_FR)
