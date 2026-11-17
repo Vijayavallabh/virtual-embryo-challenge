@@ -19,8 +19,9 @@ scored submissions per board for the whole phase, which cannot be withdrawn. So 
   2026-11-05 to 2026-11-27 00:00 UTC, the captain: "I am fine with submitting our 1st submission at Nov 27 anyway";
   moved to 2026-11-21 00:00 UTC after the organisers' notice of 2026-11-17 moved the deadline to 25 November, on the
   captain's ruling recorded in `deadline_exception_moved`); an unreadable or inconsistent record refuses too, and so
-  does a record that still holds a placeholder of the form [[...]] in any string (a draft awaiting the captain's
-  words; UPLOAD_GATE_PLACEHOLDER). Format checks never read it;
+  does a record that still holds a placeholder of the form [[...]], or any fragment of one, in any string (a draft
+  awaiting the captain's words; UPLOAD_GATE_PLACEHOLDER), and a moved exception time opens nothing without his words
+  for the move. Format checks never read it;
 - refuses an official upload of a file that is not in the current reference list (guard "reference list"; AGENTS.md:
   an official upload sends only a file whose sha256 is in it), so that a superseded file left in an older archive
   folder with a clean build stamp cannot go: the committed pointer (results/reference_list.json of the repository
@@ -175,7 +176,13 @@ UPLOAD_GATE_MIN = 209.0  # the captain's figure (2026-11-05); only he changes it
 UPLOAD_GATE_MAX_BYTES = 64 * 1024
 # A placeholder left in a draft of the record for words only the captain gives ("[[THE CAPTAIN'S WORDS AND DATE GO
 # HERE BEFORE THIS IS MERGED]]"): while any string in the record matches it, the guard refuses whatever else it says.
-UPLOAD_GATE_PLACEHOLDER = re.compile(r"\[\[[^\[\]]*\]\]")
+# Any fragment of it counts too ("[[" or "]]" alone, or the marker's inner words), so that a marker with one bracket
+# edited away still refuses.
+UPLOAD_GATE_PLACEHOLDER = re.compile(r"\[\[|\]\]|THE CAPTAIN.S WORDS|BEFORE THIS IS MERGED")
+# The exception time the captain set on 2026-11-05 ("I am fine with submitting our 1st submission at Nov 27 anyway").
+# A record that names any other time opens nothing by it unless `deadline_exception_moved` and
+# `deadline_exception_moved_source` hold his words for the move (non-empty strings).
+UPLOAD_GATE_EXCEPTION_SET = datetime(2026, 11, 27, tzinfo=UTC)
 REFERENCE_POINTER = "results/reference_list.json"  # the pointer, relative to the repository root
 REFERENCE_LIST = REPO_ROOT / REFERENCE_POINTER  # the pointer read without a repo (guard below)
 REFERENCE_LIST_MAX_BYTES = 64 * 1024  # the pointer file
@@ -971,7 +978,9 @@ def upload_gate_guard(path: str | Path | None = None, now: datetime | None = Non
     leaderboard total from our own evidence, is above UPLOAD_GATE_MIN and an independent `review` is named. It also
     passes from the record's `deadline_exception_utc` on (an ISO time with its zone; the captain, 2026-11-05: "I am
     fine with submitting our 1st submission at Nov 27 anyway"; moved to 2026-11-21 00:00 UTC on the captain's ruling
-    after the organisers' notice of 2026-11-17, recorded in `deadline_exception_moved`). An unreadable record or
+    after the organisers' notice of 2026-11-17, recorded in `deadline_exception_moved`; an exception time other than
+    UPLOAD_GATE_EXCEPTION_SET opens nothing unless `deadline_exception_moved` and `deadline_exception_moved_source`
+    are non-empty strings). An unreadable record or
     exception time, a missing or non-finite estimate, a `threshold` other than UPLOAD_GATE_MIN, or any string in the
     record that still holds a placeholder (UPLOAD_GATE_PLACEHOLDER: a draft awaiting the captain's words) refuses,
     before the lift, the estimate or the exception is read. `now` is for tests."""
@@ -1001,9 +1010,16 @@ def upload_gate_guard(path: str | Path | None = None, now: datetime | None = Non
         if when is None or when.tzinfo is None:
             return Guard(name, False, f"{p.name}: cannot read deadline_exception_utc {raw[:40]!r} (an ISO time "
                          "with its zone)")
-        if (now or datetime.now(UTC)) >= when:
+        moved_words = all(isinstance(rec.get(k), str) and rec[k].strip()
+                          for k in ("deadline_exception_moved", "deadline_exception_moved_source"))
+        if when != UPLOAD_GATE_EXCEPTION_SET and not moved_words:
+            opens = (f"; its deadline exception names {when.isoformat()}, not the captain's time of 2026-11-05 "
+                     f"({UPLOAD_GATE_EXCEPTION_SET.isoformat()}), and the record holds no words of his for the move "
+                     "(deadline_exception_moved and deadline_exception_moved_source), so it opens nothing")
+        elif (now or datetime.now(UTC)) >= when:
             return Guard(name, True, f"the captain's deadline exception, open since {when.isoformat()}")
-        opens = f"; it opens at the captain's deadline exception, {when.isoformat()}"
+        else:
+            opens = f"; it opens at the captain's deadline exception, {when.isoformat()}"
     try:
         threshold = float(rec.get("threshold", UPLOAD_GATE_MIN))
         estimate = float(rec["estimate"])

@@ -742,8 +742,10 @@ def test_the_upload_gate_record(tmp_path):
     g.write_text(" " * (vs.UPLOAD_GATE_MAX_BYTES + 1))
     assert not vs.upload_gate_guard(g).ok
     # the captain's deadline exception (2026-11-05: "I am fine with submitting our 1st submission at Nov 27 anyway"),
-    # moved to 2026-11-21 00:00 UTC on his ruling after the organisers' notice of 2026-11-17
-    rec = {"threshold": 209, "estimate": 184, "review": "", "deadline_exception_utc": "2026-11-21T00:00:00Z"}
+    # moved to 2026-11-21 00:00 UTC on his ruling after the organisers' notice of 2026-11-17 (his words for the move
+    # are in the record; without them a moved time opens nothing, below)
+    rec = {"threshold": 209, "estimate": 184, "review": "", "deadline_exception_utc": "2026-11-21T00:00:00Z",
+           "deadline_exception_moved": "test: the captain's ruling", "deadline_exception_moved_source": "test"}
     g.write_text(json.dumps(rec))
     before = vs.upload_gate_guard(g, now=datetime(2026, 11, 20, 23, 59, 59, tzinfo=UTC))
     assert not before.ok
@@ -808,6 +810,23 @@ def test_the_committed_upload_gate_record_holds():
 
 
 MARKER = "[[THE CAPTAIN'S WORDS AND DATE GO HERE BEFORE THIS IS MERGED]]"
+# The files the schedule draft of 2026-11-17 wrote placeholders into (the gate record aside).
+SCHEDULE_DRAFT_FILES = ("docs/S2_RULES.md", "docs/PLAN.md", "AGENTS.md", "docs/P3_RUNBOOK.md", "feature_list.json",
+                        "README.md", "docs/CHALLENGE.md", "docs/COMPUTE.md", "docs/SCREENED_READ_SEVENTH_EMAIL.md")
+
+
+def test_no_schedule_placeholder_outlives_the_gate_records():
+    """Once the gate record holds the captain's words (no placeholder left, so the guard can open), no file of the
+    schedule draft may still hold "[[DATE]]" or the marker: the gate must not open while the rules or the runbook still
+    wait for his words."""
+    root = Path(__file__).resolve().parents[1]
+    rec = json.loads((root / "results" / "upload_gate.json").read_text())
+    if vs._placeholder_fields(rec):
+        return  # still a draft: the guard refuses every official upload (test above)
+    for rel in SCHEDULE_DRAFT_FILES:
+        text = (root / rel).read_text()
+        for frag in ("[[DATE", "DATE]]", "THE CAPTAIN'S WORDS AND DATE", "BEFORE THIS IS MERGED", "GO HERE BEFORE"):
+            assert frag not in text, (rel, frag)
 
 
 def test_a_gate_record_holding_the_placeholder_opens_nothing(tmp_path):
@@ -815,9 +834,10 @@ def test_a_gate_record_holding_the_placeholder_opens_nothing(tmp_path):
     after its exception time, with the captain's lift, with an estimate above the figure and a review."""
     g = tmp_path / "gate.json"
     late = datetime(2026, 11, 25, tzinfo=UTC)
-    base = {"threshold": 209, "estimate": 184, "review": "", "deadline_exception_utc": "2026-11-21T00:00:00Z"}
+    base = {"threshold": 209, "estimate": 184, "review": "", "deadline_exception_utc": "2026-11-21T00:00:00Z",
+            "deadline_exception_moved": "ok", "deadline_exception_moved_source": "ok"}
     g.write_text(json.dumps(base))
-    assert vs.upload_gate_guard(g, now=late).ok  # the same record without the placeholder opens
+    assert vs.upload_gate_guard(g, now=late).ok  # the same record with words in place of the placeholder opens
     for rec in ({**base, "deadline_exception_moved": MARKER, "deadline_exception_moved_source": MARKER},
                 {**base, "deadline_exception_moved": "ok", "deadline_exception_moved_source": MARKER},
                 {**base, "lifted_by_captain": True, "lifted_note": MARKER},
@@ -828,6 +848,41 @@ def test_a_gate_record_holding_the_placeholder_opens_nothing(tmp_path):
         assert not got.ok and "placeholder" in got.detail, rec
     g.write_text(json.dumps({**base, "deadline_exception_moved": "[not a placeholder]"}))
     assert vs.upload_gate_guard(g, now=late).ok
+    # a marker with one bracket edited away, or only its inner words, still refuses
+    for frag in ("[THE CAPTAIN'S WORDS AND DATE GO HERE BEFORE THIS IS MERGED]]",
+                 "[[THE CAPTAIN'S WORDS AND DATE GO HERE BEFORE THIS IS MERGED]",
+                 "THE CAPTAIN'S WORDS AND DATE GO HERE", "BEFORE THIS IS MERGED", "see [[DATE]", "DATE]]"):
+        g.write_text(json.dumps({**base, "deadline_exception_moved": frag, "deadline_exception_moved_source": "x"}))
+        got = vs.upload_gate_guard(g, now=late)
+        assert not got.ok and "placeholder" in got.detail, frag
+
+
+def test_a_moved_gate_exception_opens_nothing_without_the_captains_words(tmp_path):
+    """The exception time the captain set on 2026-11-05 is 2026-11-27 00:00 UTC. A record that names another time opens
+    nothing by it unless both deadline_exception_moved and deadline_exception_moved_source are non-empty strings:
+    deleting the two fields, emptying them or giving them another type leaves the gate shut at every time."""
+    g = tmp_path / "gate.json"
+    base = {"threshold": 209, "estimate": 184, "review": "", "deadline_exception_utc": "2026-11-21T00:00:00Z"}
+    words = {"deadline_exception_moved": "test: his ruling", "deadline_exception_moved_source": "test: his message"}
+    for now in (datetime(2026, 11, 21, tzinfo=UTC), datetime(2026, 11, 26, 11, 59, tzinfo=UTC)):
+        for rec in (base, {**base, "deadline_exception_moved": "", "deadline_exception_moved_source": ""},
+                    {**base, "deadline_exception_moved": " ", "deadline_exception_moved_source": "x"},
+                    {**base, "deadline_exception_moved": "x"},
+                    {**base, "deadline_exception_moved": ["x"], "deadline_exception_moved_source": "x"},
+                    {**base, "deadline_exception_moved": "x", "deadline_exception_moved_source": None}):
+            g.write_text(json.dumps(rec))
+            got = vs.upload_gate_guard(g, now=now)
+            assert not got.ok and "no words of his for the move" in got.detail, (now, rec)
+        g.write_text(json.dumps({**base, **words}))
+        assert vs.upload_gate_guard(g, now=now).ok
+    # the time of 2026-11-05 needs no words for a move (it was not moved), in any spelling of the same instant
+    for when in ("2026-11-27T00:00:00Z", "2026-11-27T05:30:00+05:30"):
+        g.write_text(json.dumps({**base, "deadline_exception_utc": when}))
+        assert vs.upload_gate_guard(g, now=datetime(2026, 11, 27, tzinfo=UTC)).ok
+        assert not vs.upload_gate_guard(g, now=datetime(2026, 11, 26, 23, 59, tzinfo=UTC)).ok
+    # an estimate above the figure with a review still passes on its own, words or not
+    g.write_text(json.dumps({**base, "estimate": 210, "review": "wf-review"}))
+    assert vs.upload_gate_guard(g, now=datetime(2026, 11, 10, tzinfo=UTC)).ok
 
 
 def test_an_official_upload_refuses_while_the_gate_record_holds_the_placeholder(env):

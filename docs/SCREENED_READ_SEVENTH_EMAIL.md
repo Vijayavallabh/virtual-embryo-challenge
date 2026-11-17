@@ -1,7 +1,9 @@
 # Screened read for an answer to the seventh organiser email
 
 Approved by the captain on 2026-11-13 for 19 and 23 Nov ("yes to the screened reads on 19 and 23 Nov"; `docs/PLAN.md`
-decision log 2026-11-13 (d)); the check of 26-27 Nov repeats it. Written by the AI assistant before any read. The
+decision log 2026-11-13 (d)); the check of 20-21 Nov (moved from 26-27 Nov on the captain's ruling of [[DATE]] after
+the organisers' notice of 2026-11-17) repeats it. Since that notice the read of 19 Nov runs as soon as the captain
+has ruled, and the read of 23 Nov on 20 Nov (`docs/PLAN.md` section 7). Written by the AI assistant before any read. The
 main session never opens the sources below: it hands this file to a screening agent as its brief and reads only the
 block that agent releases, after a second agent has audited that block against the scope.
 

@@ -467,7 +467,8 @@ second file only; no change), each offered with its price.
 ## Amendment of [[DATE]]: the organisers' deadline of 25 November
 
 Written by the AI assistant. The quoted words are the captain's, given in answer to the proposal of 2026-11-17
-(`docs/PLAN.md` decision log 2026-11-17 (a)). No test score existed: nothing had been uploaded.
+(`docs/PLAN.md` decision log 2026-11-17 (a)) and logged with this file's new sha256 in the decision log entry of
+[[DATE]]. No test score existed: nothing had been uploaded.
 
 **What the organisers changed.** Their notice to every team, pasted into the main session by the captain on
 2026-11-17, moves the final submission deadline "from December 2 to November 25, 2026, at 23:59 AoE. Final-entry

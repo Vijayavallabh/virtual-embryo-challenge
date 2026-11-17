@@ -101,7 +101,9 @@ runs on the DGX go in a second copy of the repository, `~/v/vec-campaign`, so th
   ruled that evening (the trend) came out with the same bytes on both machines.
 - **Keep the DGX's environment as it is until the uploads are done.** The numerical libraries come from `uv.lock`; a
   change of the lock, of the Python environment there or of the processor can change those three files' bytes, and
-  then the freeze-morning check names them. A change to `uv.lock` before 2 December needs a new rehearsal.
+  then the freeze-morning check names them. A change to `uv.lock` before the deadline (26 Nov 11:59 UTC;
+  was 2 December, moved on the captain's ruling of [[DATE]] after the organisers' notice of 2026-11-17) needs a new
+  rehearsal.
 
 ## Setup on the DGX
 

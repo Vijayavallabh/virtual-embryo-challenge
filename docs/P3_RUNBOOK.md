@@ -246,11 +246,10 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     --submission s1` (wild-type cells, the central composition at the Mab21l2 magnitude, no number derived from the
     Gata4 files). Upload s2 first and s1 last (by 24 Nov IST; since 2026-11-05 not before the captain's upload gate
     is crossed or its deadline exception opens, on 21 Nov since his ruling of [[DATE]] after the organisers' notice of
-    2026-11-17, `docs/PLAN.md` section 8), each with the captain's go-ahead
-    after a screened check
-    of mail, Slack and the Rules page. If the organisers allow the Gata4 files before the first T3 upload, s1 stays
-    the allowed branch's s1 and s2 follows the 2026-11-06 switch below (decision log 2026-11-06 (b), Interactions: the
-    switch takes the s2 slot even when the Gata4 files are allowed); if they restrict them before the last one, send nothing from the allowed branch
+    2026-11-17, `docs/PLAN.md` section 8; was 30 Nov and 27 Nov), each with the captain's go-ahead after a screened
+    check of mail, Slack and the Rules page. If the organisers allow the Gata4 files before the first T3 upload, s1
+    stays the allowed branch's s1 and s2 follows the 2026-11-06 switch below (decision log 2026-11-06 (b),
+    Interactions: the switch takes the s2 slot even when the Gata4 files are allowed); if they restrict them before the last one, send nothing from the allowed branch
     (the barred branch's s1; `docs/S2_RULES.md`, which also covers a full bar). It re-decides nothing and refuses a decision file whose script or rules hash
     differs from the files on disk.
     2026-11-06, the captain's ruling ("go with your recommendation"; `docs/PLAN.md` decision log 2026-11-06 (b)):
@@ -263,18 +262,20 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
     - If the barred s1 went first and the Gata4 files are restricted before the last upload, the last upload is
       `runs/t3_build/barred_s2.h5ad`, and the higher published score of the two Gata4-free uploads is marked.
     - An answer that arrives after T3's s2 is up changes nothing. The disclosure ids are unchanged (X001, X004, X005).
-    2026-11-10 (`docs/PLAN.md` decision log 2026-11-10 (s)): the screened check before the first upload (20-21 Nov) also
-    reads, from the Rules and Prizes pages, where and by when the method summary goes in, and how the source and stages
-    of external data are to be stated with the submission: the client keeps the `--disclose` ids in the local ledger
-    and sends none of them. It also looks for the organisers' answer to the sixth email (`ASSUMPTIONS.md` A21), and quotes the Rules' definition of a
+    2026-11-10 (`docs/PLAN.md` decision log 2026-11-10 (s)): the screened check before the first upload (20-21 Nov;
+    was 26-27 Nov) also reads, from the Rules and Prizes pages, where and by when the method summary goes in, and how
+    the source and stages of external data are to be stated with the submission: the client keeps the `--disclose`
+    ids in the local ledger and sends none of them. It also looks for the organisers' answer to the sixth email (`ASSUMPTIONS.md` A21), and quotes the Rules' definition of a
     Human Team and anything they say about AI assistance (decision log 2026-11-10 (x)).
     2026-11-13 (`docs/PLAN.md` decision log 2026-11-13 (c)): the seventh organiser email, sent that day, asks which
     released samples the hidden E7.75 sections and E12.5 Multiome libraries were processed with. An answer may come by
     reply, in the Slack channel or as a line on the Data Protocol page, and each is read through a screen with the scope
     fixed in `docs/ORGANIZER_QUESTIONS.md` ("Seventh email"): procedure only, every number replaced, everything else
-    withheld. Two extra screened reads are asked of the captain, as soon as he has ruled on the new dates (they were
-    for about 19 and 23 Nov), because a build change has to be rehearsed by 20 Nov; the check of 20-21 Nov repeats the
-    read. The captain approved both on 2026-11-13; the
+    withheld. Two extra screened reads were asked of the captain for about 19 and 23 Nov, because a build change had to
+    be rehearsed by 24 Nov; the check of 26-27 Nov was to repeat the read. The captain approved both on 2026-11-13 (for
+    about 19 and 23 Nov). Moved on the captain's ruling of [[DATE]] after the organisers' notice of 2026-11-17 (live
+    dates in `docs/PLAN.md` section 7): the first read as soon as he has ruled, the second on 20 Nov, a build change
+    rehearsed by 20 Nov, and the check of 20-21 Nov repeats the read. The
     screening agent's brief is `docs/SCREENED_READ_SEVENTH_EMAIL.md`. A reply in the captain's inbox is not pasted into
     the session. What each answer changes is fixed in the same place, and nothing changes without the captain's ruling.
   - T2: `vec.t2_build`, run from the repo root (the paths are relative). Count by `n_cells_from_decision(board,
@@ -412,15 +413,17 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
   every ruling received by then allows, mark the one with the higher published score (a tie, or s2 unscored by
   24 Nov IST: s1); if marks are per bundle, the bundle with the higher overall standing. Look for the Final column
   after every official upload, ask on the email thread and in #virtual-embryo-challenge if it has not appeared by
-  22 Nov IST, and recheck all four boards on 25 Nov IST.
+  22 Nov IST, and recheck all four boards on 25 Nov IST (the three dates were 30 Nov, 28 Nov and 1 Dec IST, moved on
+  the captain's ruling of [[DATE]] after the organisers' notice of 2026-11-17).
 
 ## Never today
 
 - No official upload on any board while the captain's upload gate stands (2026-11-05: "Until our estimated score in
   leaderboard crosses 209, don't submit our 1st submission"; `docs/PLAN.md` section 8), until his deadline exception
   opens it at 2026-11-21 00:00 UTC (moved from 2026-11-27 on the captain's ruling of [[DATE]]; the record names his
-  words in `deadline_exception_moved`, and while it holds a `[[...]]` placeholder it opens nothing). The client refuses one unless `results/upload_gate.json` passes (guard "upload
-  gate").
+  words in `deadline_exception_moved` and `deadline_exception_moved_source`; a moved time without them, or a record
+  that still holds a `[[...]]` placeholder or any fragment of one, opens nothing). The client refuses one unless
+  `results/upload_gate.json` passes (guard "upload gate").
 - No scored upload (format checks only; `format_only=true`). `vec submit` sends format checks unless given
   `--official` with the file's hash, which needs the user's go-ahead.
 - Server format checks only on boards of the phase's split: in the final phase, the test boards that `vec boards

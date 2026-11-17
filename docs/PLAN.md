@@ -603,7 +603,10 @@ Next:
 
 ## 7. Timeline and decision points
 
-The upload runbook's dates in this section were moved on the captain's ruling of [[DATE]] after the organisers' notice of 2026-11-17 (deadline 25 November, 23:59 AoE): [[THE CAPTAIN'S WORDS AND DATE GO HERE BEFORE THIS IS MERGED]]. The first table and the dated notes of 2026-10-28 and 2026-11-05 below are kept as written, as the record; the runbook table holds the live dates.
+The upload runbook's dates in this section were moved on the captain's ruling of [[DATE]] after the organisers'
+notice of 2026-11-17 (deadline 25 November, 23:59 AoE):
+[[THE CAPTAIN'S WORDS AND DATE GO HERE BEFORE THIS IS MERGED]]. The first table and the dated notes of 2026-10-28
+and 2026-11-05 below are kept as written, as the record; the runbook table holds the live dates.
 
 | Dates | Work | Decision point |
 |---|---|---|
@@ -639,18 +642,21 @@ every T3 upload after its screened check of mail, Slack and the Rules page (`doc
 | Day (IST) | Work |
 |---|---|
 | As soon as the captain has ruled (was 19 Nov) | If no organiser has answered the public Slack question on floored T3 severity (posted 2026-11-12), the captain may post one short follow-up in the same thread, drafted by the AI assistant (decision log 2026-11-11 (e)). On the captain's say-so, a screened read for an answer to the seventh email: the Data Protocol page, the Slack channel and the mailbox (decision log 2026-11-13 (c)) |
-| As soon as the captain has ruled (was 23 Nov) | On the captain's say-so, a second screened read for an answer to the seventh email; it is the last day an answer can still change a build, which has to be rehearsed by 20 Nov |
-| 20-21 Nov | The screened check that picks T3's s2 (ruling 2026-11-06 (b)), run no earlier than 20 Nov; it also looks for an answer to the seventh email, the Data Protocol page included |
+| 20 Nov (was 23 Nov; the captain to confirm) | On the captain's say-so, a second screened read for an answer to the seventh email; it is the last day an answer can still change a build, which has to be rehearsed by 20 Nov |
+| 20-21 Nov | The screened check that picks T3's s2 (ruling 2026-11-06 (b)), run no earlier than 20 Nov (the ruling's floor was 26 Nov; moved six days, the captain to confirm); it also looks for an answer to the seventh email, the Data Protocol page included |
 | 21 Nov, from 05:30 (00:00 UTC) | The s1 methods freeze; the disclosure email goes before the first upload. Rebuild at the freeze commit and check (`vec check`, the server format checks, the archived hashes: since the third rehearsal of 2026-11-13 `runs/archive/builds_dc7b6ae/SHA256SUMS` on the DGX, through `determinism_check.sh ... 16`, decision log 2026-11-13 (e), (m) and (bb); every file of that set has passed the server's format check already); the plain summary to the captain; then the first round, pulled from the folder that command built: T1 s1, heart s1, embryo s1 and T3's s2 |
 | 23 Nov | T1, heart and embryo s2, each after its screened check |
 | 24 Nov | T3's s1, after its screened check; every upload done by the end of the day; the method summary by the end of the day |
 | 25 Nov | Outage buffer only, until the deadline (23:59 AoE, 17:29 IST on 26 Nov); each board's final mark as soon as both its uploads are scored, by 12:00 UTC |
+| 26 Nov, after the deadline | Archive every submitted file with its code hash for the 14-day winners' report (the first table's "Dec 1-2" step; winners are notified by 1 Dec) |
 
 Do not front-load the second round: a late A20 bar or Gata4 restriction is absorbed only by the s2 and last-T3 slots.
 
 ## 8. Submission policy
 
-The dates in this section were moved on the captain's ruling of [[DATE]] after the organisers' notice of 2026-11-17 (deadline 25 November, 23:59 AoE): [[THE CAPTAIN'S WORDS AND DATE GO HERE BEFORE THIS IS MERGED]]. His words of 2026-11-05 and the reading he confirmed that day are kept as written.
+The dates in this section were moved on the captain's ruling of [[DATE]] after the organisers' notice of 2026-11-17
+(deadline 25 November, 23:59 AoE): [[THE CAPTAIN'S WORDS AND DATE GO HERE BEFORE THIS IS MERGED]]. His words of
+2026-11-05 and the reading he confirmed that day are kept as written.
 
 - **The captain's upload gate (2026-11-05).** In his words: "Until our estimated score in leaderboard crosses 209,
   don't submit our 1st submission."
@@ -687,12 +693,13 @@ The dates in this section were moved on the captain's ruling of [[DATE]] after t
   - The record: `results/upload_gate.json` (the estimate, its range and basis, the review, the deadline exception and
     whether the captain has lifted the gate). The submission client refuses an official upload unless the record passes:
     an estimate above 209 with a named review, the deadline exception reached (2026-11-21 00:00 UTC, moved from
-    2026-11-27; `deadline_exception_moved` holds the captain's words, and a record that still holds a `[[...]]`
-    placeholder refuses), or the captain's lift (guard "upload gate"; `src/vec/submit.py`). Only the captain lifts it or moves the exception, by a committed
-    change to the record. The guard checks the record only; the captain's go-ahead for each upload, which he runs
-    himself, is the control beyond it. He confirmed on 2026-11-05 that "estimated score" means each board at the better
-    of its two uploads (`estimate`); the first round alone (`estimate_first_round`: T1 s1, heart s1, embryo s1 and T3's
-    s2) stays in the record for information.
+    2026-11-27; `deadline_exception_moved` and `deadline_exception_moved_source` hold the captain's words, a moved
+    time without them opens nothing, and a record that still holds a `[[...]]` placeholder, or any fragment of one,
+    refuses), or the captain's lift (guard "upload gate"; `src/vec/submit.py`). Only the captain lifts it or moves the
+    exception, by a committed change to the record. The guard checks the record only; the captain's go-ahead for each
+    upload, which he runs himself, is the control beyond it. He confirmed on 2026-11-05 that "estimated score" means
+    each board at the better of its two uploads (`estimate`); the first round alone (`estimate_first_round`: T1 s1,
+    heart s1, embryo s1 and T3's s2) stays in the record for information.
   - Today: about 184 (170-198), some 25 points short. The DGX campaign design of 2026-11-05 found no route past 209 by
     the freeze on our evidence (decision log 2026-11-05 (b)). R1, kept by the captain's ruling the same day, has no
     counted run, so the estimate stands (decision log 2026-11-05 (c)).

@@ -36,7 +36,9 @@ Sources (keep in sync when the site changes):
     - the method report is due 14 days after notification and is published with the results;
     - the organisers may ask for documentation or code before paying;
     - a result that cannot be reproduced makes a team ineligible.
-  - **Dates.** Official evaluation starts 2026-12-04; winners are announced on 2026-12-11.
+  - **Dates.** Official evaluation starts 2026-12-04; winners are announced on 2026-12-11. The organisers' notice of
+    2026-11-17: uploads and final-entry nominations due 25 November 2026, 23:59 AoE (26 Nov 11:59 UTC), evaluation
+    from 26 November, winners notified by 1 December (our dates moved on the captain's ruling of [[DATE]]).
 
 ## Timeline (compiled 2026-10-18, updated to 2026-10-28; schedule change of 2026-10-20 included)
 - P2 (until the final phase opened on 2026-10-27): validation leaderboard, 8 scored submissions/day/task. Starter kit +
@@ -54,7 +56,8 @@ Sources (keep in sync when the site changes):
   read this as allowing them as model inputs (A20, passed on 2026-10-28; organiser confirmation asked in the fourth
   email). **Only 2 official scored submissions per board for the whole phase**; Rules s.11 says the board ranks a team
   by its best. The account page adds: "In the final phase the captain picks which submission counts" (a "Final" mark
-  per submission, until 2026-12-02). The user is the captain; what counts on a board with no mark is not stated (asked
+  per submission, until 2026-12-02; since the organisers' notice of 2026-11-17 until 25 November 23:59 AoE). The
+  user is the captain; what counts on a board with no mark is not stated (asked
   in the fourth email). Each official submission "is scored and published when it is made" (Rules s.11), so the test
   leaderboard is not hidden until the end. Format checks unlimited and free; a separate daily upload limit bounds
   storage (`vec submit status` shows it; our format checks of 2026-10-20 did not count toward it).
@@ -63,7 +66,10 @@ Sources (keep in sync when the site changes):
   postponement). Per the same email and the partner rules (s.5), P3 methods, prediction files and detailed evaluation
   feedback stay private from other participants until the 2026-12-11 announcement (the organisers may process
   submissions for scoring and verification). The sentence sits in Yukon's final-phase section and is absent from the
-  Rules, but its wording is not limited to Yukon, so we follow it.
+  Rules, but its wording is not limited to Yukon, so we follow it. The organisers' notice of 2026-11-17 moves the
+  deadline for uploads and nominations to 25 November 2026, 23:59 AoE (11:59 UTC and 17:29 IST on 26 November),
+  evaluation from 26 November, winners notified by 1 December; our dates follow the captain's ruling of [[DATE]]
+  ([[THE CAPTAIN'S WORDS AND DATE GO HERE BEFORE THIS IS MERGED]]).
 - **Yukon partner team** (announced 2026-10-20; the organisers' email of 2026-10-20 22:03 IST turned it into a
   collaborative track): Eigen Labs runs a Yukon team (https://www.yukon.org/) whose authorised members share
   executable models, fitted weights, methods and evaluation feedback with each other. It appears on the leaderboard as
