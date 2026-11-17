@@ -30,16 +30,19 @@ THIN = {"ref67": (2 / 3, [54, 1]), "ref50": (1 / 2, [54, 2]), "ref67_lib2": (2 /
         "ref50_lib2": (1 / 2, [54, 2])}
 TRUTH = {"lib3": "lib3", "lib2": "lib2", "ref67": "lib3", "ref50": "lib3", "ref67_lib2": "lib2", "ref50_lib2": "lib2"}
 BASE, X2, X3, X4 = "m1_r_gmom", "m1_r_gmom_x2", "m1_r_gmom_x3", "m1_r_gmom_x4"
-X5, X6, X8 = "m1_r_gmom_x5", "m1_r_gmom_x6", "m1_r_gmom_x8"
+X15, X5, X6, X8 = "m1_r_gmom_x15", "m1_r_gmom_x5", "m1_r_gmom_x6", "m1_r_gmom_x8"
 ENTRY = {1: BASE, 2: X2, 3: X3, 4: X4}
-PLAIN = {BASE: 0.2, X2: 0.4, X3: 0.6, X4: 0.8, X5: 1.0, X6: 1.2, X8: 1.6}  # the entry's seven arms and fractions
+# the entry's eight arms and fractions, in try T50's build order
+PLAIN = {BASE: 0.2, X15: 0.3, X2: 0.4, X3: 0.6, X4: 0.8, X5: 1.0, X6: 1.2, X8: 1.6}
 CN = {m: f"{BASE}_cn" + ("" if m == 1 else f"_x{m}") for m in (1, 2, 3, 4)}
 DC = {m: f"{BASE}_dc" + ("" if m == 1 else f"_x{m}") for m in (1, 2, 3, 4)}
-ENTRY_OF = {**{CN[m]: ENTRY[m] for m in ENTRY}, **{DC[m]: ENTRY[m] for m in ENTRY}}
-ARMS = ("b0", *PLAIN, *CN.values(), *DC.values())
+GS = {m: f"{BASE}_gs" + ("" if m == 1 else f"_x{m}") for m in (1, 2, 3, 4)}
+ENTRY_OF = {**{CN[m]: ENTRY[m] for m in ENTRY}, **{DC[m]: ENTRY[m] for m in ENTRY}, **{GS[m]: ENTRY[m] for m in ENTRY}}
+ARMS = ("b0", *PLAIN, *CN.values(), *DC.values(), *GS.values())
 FRACTIONS = {**PLAIN, **{a: PLAIN[p] for a, p in ENTRY_OF.items()}}
 AHEAD_ALL = "ahead of the entry's direction in every cell read"
 AHEAD_ALL_DC = "the entry plus a further step along c is ahead of the entry in every cell read"
+ABOVE = "above the best plain and group-scaled step read"
 
 
 @pytest.fixture
@@ -118,6 +121,39 @@ def test_the_run_refuses_where_a_n_is_below_p_g(pr_, monkeypatch):
     assert "world_directions(" in src and "except ValueError as e:\n        sys.exit(str(e))" in src
 
 
+def test_gs_moves_along_c_as_the_forms_and_scales_the_orthogonal_part(pr_):
+    """Must-fix after review 2: the group-scaled control has coefficient a_n on c (as both forms) and orthogonal part
+    (a_n/p_g) o_g; it is the entry's direction where a_n equals p_g, bit for bit."""
+    entry, genes, held = _synthetic_entry()
+    sp = pr_.pr.split(entry, genes, held)
+    M, c = sp["M"], sp["c"]
+    cM = c[M]
+    mult = pr_.pr.multiples(entry, sp)
+    forms, rec = pr_.gs_forms(entry, genes, held)
+    dc, dc_rec = pr_.dc_forms(entry, genes, held)
+    ratios = []
+    for g, d in entry.items():
+        dM, f = d[M], forms[g]
+        p = float(cM @ dM) / float(cM @ cM)
+        a_n = mult[g]["a_n"]
+        assert np.allclose(f[M], dM * (a_n / p), rtol=0, atol=1e-12)
+        coef = float(cM @ f[M]) / float(cM @ cM)
+        assert coef == pytest.approx(a_n, rel=1e-12)  # the same movement along c as dc and cn
+        assert coef == pytest.approx(float(cM @ dc[g][M]) / float(cM @ cM), rel=1e-12)
+        assert np.allclose(f[M] - coef * cM, (a_n / p) * (dM - p * cM), rtol=0, atol=1e-12)
+        assert np.array_equal(f[~M], d[~M], equal_nan=True)
+        assert rec[g]["ratio"] == a_n / p and rec[g]["p_g"] == p and rec[g]["a_n"] == a_n
+        assert rec[g]["sha256"] == pr_.zr.direction_sha256(f)
+        ratios.append(rec[g]["ratio"])
+        _, p2 = pr_.dc_direction(d, c, M, 1.0)
+        idle, ratio, _ = pr_.gs_direction(d, c, M, p2)  # a_n = p_g: the entry's direction bit for bit
+        assert ratio == 1.0 and idle.tobytes() == np.asarray(d, np.float64).tobytes()
+    assert len(set(ratios)) == len(ratios)  # a different ratio in each group: a per-group step size
+    assert pr_.gs_record_off(rec, dc_rec) == []
+    with pytest.raises(ValueError, match="p_g is not positive"):
+        pr_.gs_direction(-entry["CM"], c, M, 1.0)
+
+
 def test_world_directions_builds_cn_by_try_t55_and_dc_on_the_same_entry(pr_, monkeypatch):
     entry, genes, held = _synthetic_entry()
     calls = []
@@ -128,14 +164,17 @@ def test_world_directions_builds_cn_by_try_t55_and_dc_on_the_same_entry(pr_, mon
     monkeypatch.setattr(pr_.feng_dirs, "directions_from_stats",
                         lambda st, g, cfg, bracket: (calls.append(("t55", bracket)),
                                                      ({k: v.copy() for k, v in entry.items()}, {}, None))[1])
-    directions, forms, rec, dc_rec, ext = pr_.world_directions(genes, held)
+    directions, forms, rec, dc_rec, gs_rec, ext = pr_.world_directions(genes, held)
     assert calls == ["t50", ("t55", ("E9.5", "E14.5"))]
     t55_forms, t55_rec = pr_.pr.all_directions(entry, genes, held)
     assert json.dumps(rec, sort_keys=True) == json.dumps(t55_rec, sort_keys=True)
-    assert set(forms) == {"cn", "dc"}
+    assert set(forms) == {"cn", "dc", "gs"}
     assert all(forms["cn"][g].tobytes() == t55_forms["cn"][g].tobytes() for g in entry)
     want, want_rec = pr_.dc_forms(entry, genes, held)
     assert all(forms["dc"][g].tobytes() == want[g].tobytes() for g in entry) and dc_rec == want_rec
+    want_gs, want_gs_rec = pr_.gs_forms(entry, genes, held)
+    assert all(forms["gs"][g].tobytes() == want_gs[g].tobytes() for g in entry) and gs_rec == want_gs_rec
+    assert pr_.gs_record_off(gs_rec, dc_rec) == []  # gs's ratio is dc's a_n / p_g bit for bit
     assert ext["entry_agrees_with_t55s"] == dict.fromkeys(sorted(entry), True)
 
 
@@ -208,7 +247,7 @@ def test_a_library_2_world_has_try_t54s_thinned_reference_and_try_t46s_library_2
     assert r.inputs["start"] is r.original["start"] and r.stage is not r.ref_stage
     assert r.seen["anchors"] and all(t is r.truth and s is r.stage for t, s in r.seen["anchors"])
     assert r.seen["score"] == [r.stage] and r.seen["truth"] == [r.truth]
-    assert len(r.seen["build_ref"]) == 1 + 2 * 15  # b0, then m1_r and m1_r_gmom for each of the fifteen M1 arms
+    assert len(r.seen["build_ref"]) == 1 + 2 * 20  # b0, then m1_r and m1_r_gmom for each of the twenty M1 arms
     assert all((c != r.counts).nnz == 0 for c in r.seen["build_ref"])
     assert len(r.seen["fit_ref"]) == 1 and (r.seen["fit_ref"][0] != r.counts).nnz == 0
     assert (r.seen["fit_start"][0] != r.start).nnz == 0
@@ -238,7 +277,11 @@ def test_the_worlds_and_their_routes(pr_):
     assert pr_.THINNING_OF["ref67_lib2"] is pr_.dr.THINNED["ref67"]
     assert pr_.THINNING_OF["ref50_lib2"] is pr_.dr.THINNED["ref50"]
     assert pr_.ARMS == ARMS and pr_.arm_fractions(0.2) == pytest.approx(FRACTIONS)
-    assert pr_.ENTRY_MULTIPLIERS == {a: pr_.ob.MULTIPLIERS[a] for a in (X2, X3, X4, X5, X6, X8)}  # try T50's
+    assert pr_.ENTRY_MULTIPLIERS == pr_.ob.MULTIPLIERS  # try T50's, x1.5 included (should-fix after review 2)
+    assert list(pr_.ENTRY_MULTIPLIERS) == list(pr_.ob.MULTIPLIERS)  # in try T50's build order
+    assert pr_.ENTRY_RANGE == {1: BASE, 1.5: X15, 2: X2, 3: X3, 4: X4, 5: X5, 6: X6, 8: X8}
+    assert pr_.REPRO_ENTRY == {"t50": ("b0", *PLAIN), "t54": ("b0", BASE, X15, X2, X3, X4, X5, X6)}
+    assert set(pr_.REPRO_ENTRY["t54"]) - {"b0", BASE} == set(pr_.dr.MULTIPLIERS)  # try T54's own arms
     assert {a: p for a, (_, p) in pr_.FORM_ARMS.items()} == ENTRY_OF
     src = inspect.getsource(pr_.world_route)
     assert "dr.world_reference(REFERENCE_OF[world]" in src and "ob.truth_and_contamination(" in src
@@ -255,7 +298,7 @@ def test_the_worlds_and_their_routes(pr_):
 
 def _forms(pr_, dirs, genes, held):
     t55, _ = pr_.pr.all_directions(dirs, genes, held)
-    return {"cn": t55["cn"], "dc": pr_.dc_forms(dirs, genes, held)[0]}
+    return {"cn": t55["cn"], "dc": pr_.dc_forms(dirs, genes, held)[0], "gs": pr_.gs_forms(dirs, genes, held)[0]}
 
 
 def test_the_entry_arms_are_try_t50s_and_cn_try_t55s_bit_for_bit(pr_):
@@ -287,7 +330,11 @@ def test_a_form_equal_to_the_entry_builds_the_entry_arm_bit_for_bit(pr_):
     for g, d in dirs.items():
         _, p = pr_.dc_direction(d, sp["c"], sp["M"], 1.0)
         idle[g] = pr_.dc_direction(d, sp["c"], sp["M"], p)[0]
-    forms = {"cn": {g: v.copy() for g, v in dirs.items()}, "dc": idle}
+    idle_gs = {}
+    for g, d in dirs.items():
+        _, p = pr_.dc_direction(d, sp["c"], sp["M"], 1.0)
+        idle_gs[g] = pr_.gs_direction(d, sp["c"], sp["M"], p)[0]  # ratio 1: the entry's direction
+    forms = {"cn": {g: v.copy() for g, v in dirs.items()}, "dc": idle, "gs": idle_gs}
     preds = pr_.build_seed(ctx, lambda c: None, dirs, forms, groups, 0.2, held, held)
     for arm, base in ENTRY_OF.items():
         assert preds[arm].X.tobytes() == preds[base].X.tobytes(), arm
@@ -327,8 +374,8 @@ def test_a_form_arm_differs_from_the_entry_arm_of_its_fraction_in_the_directions
 # The reading on synthetic per-seed score tables
 
 
-SCORE = {BASE: 53.0, X2: 53.6, X3: 54.0, X4: 54.2, X5: 54.1, X6: 53.9, X8: 53.0}  # the plain curve turns at x4
-RISING = {BASE: 53.0, X2: 53.3, X3: 53.6, X4: 53.8, X5: 54.0, X6: 54.1, X8: 54.21}  # still rising at x8
+SCORE = {BASE: 53.0, X15: 53.3, X2: 53.6, X3: 54.0, X4: 54.2, X5: 54.1, X6: 53.9, X8: 53.0}  # turns at x4
+RISING = {BASE: 53.0, X15: 53.15, X2: 53.3, X3: 53.6, X4: 53.8, X5: 54.0, X6: 54.1, X8: 54.21}  # still rising at x8
 GROUPS = ("CM", "Endocardium")
 
 
@@ -337,16 +384,24 @@ def _dc_rec(tag="", p_g=0.9, a_n=1.25, size_ratio=None):
     return {g: {"sha256": f"dc-{g}{tag}", "p_g": p_g, "a_n": a_n, "size_ratio": size, "slope": 1.1} for g in GROUPS}
 
 
+def _gs_rec(dc, tag=""):
+    """gs's record matching a dc record: per group the ratio a_n/p_g."""
+    return {g: {"sha256": f"gs-{g}{tag}", "ratio": v["a_n"] / v["p_g"], "p_g": v["p_g"], "a_n": v["a_n"]}
+            for g, v in dc.items()}
+
+
 def _gain(g, i):
     return g[i] if isinstance(g, list | tuple) else g
 
 
 def _task(world, gains=None, seeds=range(10), commit="c" * 40, clean=True, fractions=None, thinning=None,
           directions=None, dc=None, identical=(), anchor_failures=None, agree=None, truth=None, scores=None,
-          truth_sha256="default"):
+          truth_sha256="default", gs=None):
     """gains: arm -> gain over its entry arm (a number or ten per-seed values); default every cn arm +0.5, every dc
-    arm +0.6. identical: form arms that score exactly as their entry arm on every seed."""
-    gains = {**dict.fromkeys(CN.values(), 0.5), **dict.fromkeys(DC.values(), 0.6), **(gains or {})}
+    arm +0.6, every gs arm -0.2 (so that the plain steps are statement 3's control unless a test says otherwise).
+    identical: form arms that score exactly as their entry arm on every seed."""
+    gains = {**dict.fromkeys(CN.values(), 0.5), **dict.fromkeys(DC.values(), 0.6), **dict.fromkeys(GS.values(), -0.2),
+             **(gains or {})}
     plain = scores or SCORE
     rows = []
     for i, s in enumerate(seeds):
@@ -360,7 +415,8 @@ def _task(world, gains=None, seeds=range(10), commit="c" * 40, clean=True, fract
            "fractions": fractions or dict(FRACTIONS), "rows": rows,
            "external": {"entry_agrees_with_t55s": dict.fromkeys(GROUPS, True) if agree is None else agree},
            "directions": directions if directions is not None else _dirs(),
-           "dc_directions": dc if dc is not None else _dc_rec(), "thinning": None,
+           "dc_directions": dc if dc is not None else _dc_rec(),
+           "gs_directions": gs if gs is not None else _gs_rec(dc if dc else _dc_rec()), "thinning": None,
            "truth_sha256": f"truth-{truth or TRUTH[world]}" if truth_sha256 == "default" else truth_sha256,
            "stamp": {"commit": commit, "tree_clean": clean, "utc": "x", "inputs": {}}}
     if world in THIN:
@@ -375,7 +431,7 @@ def _task(world, gains=None, seeds=range(10), commit="c" * 40, clean=True, fract
 
 
 COMMITTED = {"t50": {"lib3": ("b0", *PLAIN), "lib2": ("b0", *PLAIN)},
-             "t54": {"ref67": ("b0", BASE, X2, X3, X4, X5, X6), "ref50": ("b0", BASE, X2, X3, X4, X5, X6)},
+             "t54": {"ref67": ("b0", BASE, X15, X2, X3, X4, X5, X6), "ref50": ("b0", BASE, X15, X2, X3, X4, X5, X6)},
              "t56": {"lib3": (CN[1], CN[2]), "ref67": (CN[1], CN[2]), "ref50": (CN[1], CN[2])},
              "t55": {"lib2": (CN[1], CN[2])}}
 
@@ -479,7 +535,12 @@ def test_statement_2_counts_and_names_the_cells(pr_, tmp_path):
     assert r["dc_minus_cn"]["lib3 x1"]["mean"] == pytest.approx(0.5)
     assert r["outcome"]["statement_2"].startswith("ahead in 2 of 24 cells (lib3 x1, lib2 x3); behind in 1 of 24 cells "
                                                   "(ref67 x4); level in 21 of 24 cells (")
-    assert "Statement 2, dc minus cn per cell: ahead in 2 of 24 cells (lib3 x1, lib2 x3)" in _text(tmp_path)
+    # its quantity goes with it (design attack after review 2): o_g at the forms' coefficient a_n on c
+    assert r["outcome"]["statement_2_quantity"] == s2["quantity"] == pr_.QUANTITY_2
+    assert "at the forms' coefficient a_n on c (not at the entry's p_g)" in s2["quantity"]
+    assert "Statement 2, dc minus cn per cell (dc minus cn: exactly the orthogonal parts o_g at the forms' " \
+           "coefficient a_n on c (not at the entry's p_g), so it does not say what o_g is worth at the entry's own " \
+           "step): ahead in 2 of 24 cells (lib3 x1, lib2 x3)" in _text(tmp_path)
 
 
 def test_statement_3_above_and_not_above_the_best_plain_step(pr_, tmp_path):
@@ -487,23 +548,73 @@ def test_statement_3_above_and_not_above_the_best_plain_step(pr_, tmp_path):
     r = _read(pr_, tmp_path, by_world={"lib2": {CN[2]: -2.0, CN[3]: -2.0, CN[4]: -2.0},
                                        "ref50": {DC[4]: -0.5, DC[3]: 0.3}})
     s = r["statement_3"]["lib2"]
-    assert s["cn"]["form_multiple"] == 1 and s["cn"]["entry_multiple"] == 4
-    assert s["cn"]["comparison"]["mean"] == pytest.approx(53.5 - 54.2) and s["cn"]["statement"] == "not above"
-    assert s["dc"]["form_multiple"] == 4 and s["dc"]["statement"] == "above the best plain step read"
+    assert s["cn"]["form_multiple"] == 1 and s["cn"]["entry_multiple"] == 4 and s["cn"]["gs_multiple"] == 4
+    assert s["cn"]["control"] == X4  # the plain best (54.2) above the group-scaled best (54.0)
+    assert s["cn"]["comparison"]["mean"] == pytest.approx(53.5 - 54.2) and s["cn"]["said"] == "not above"
+    assert s["cn"]["against_group_scaled"]["mean"] == pytest.approx(53.5 - 54.0)
+    assert s["dc"]["form_multiple"] == 4 and s["dc"]["said"] == ABOVE
     t = r["statement_3"]["ref50"]["dc"]
     assert t["form_multiple"] == 3 and t["comparison"]["mean"] == pytest.approx(54.3 - 54.2)
-    assert t["statement"] == "above the best plain step read"  # positive, every seed ahead, below the 0.3 bar
-    assert r["outcome"]["statement_3"]["lib2"] == {"cn": "not above", "dc": "above the best plain step read"}
+    assert t["said"] == ABOVE  # positive, every seed ahead, below the 0.3 bar ...
+    # ... and the statement carries its size and its label by try T46's test (should-fix after review 2)
+    assert t["statement"] == f"{ABOVE}; +0.10 points against m1_r_gmom_x4, ahead 10 of 10, try T46's test: level"
+    assert r["outcome"]["statement_3"]["lib2"] == {
+        "cn": "not above; -0.70 points against m1_r_gmom_x4, ahead 0 of 10, try T46's test: behind",
+        "dc": f"{ABOVE}; +0.60 points against m1_r_gmom_x4, ahead 10 of 10, try T46's test: ahead"}
     txt = _text(tmp_path)
-    assert "lib2, cn at x1 against the entry at x4: -0.70 points, ahead 0 of 10, c-matched multiple x1.39: not " \
-           "above" in txt
+    assert "lib2, cn at x1 against the plain step at x4 (-0.70 points, ahead 0 of 10) and the group-scaled step at " \
+           "x4 (-0.50 points, ahead 0 of 10), c-matched plain multiple x1.39: not above; -0.70 points against " \
+           "m1_r_gmom_x4, ahead 0 of 10, try T46's test: behind" in txt
+
+
+def test_statement_3_a_per_group_step_beats_dc_and_is_not_above(pr_, tmp_path):
+    """Must-fix after review 2 (the reviewer's case in score form): a truth along each group's own entry direction,
+    deeper in one group than the others, puts dc above every plain step at one multiple, while the group-scaled step
+    (the entry's direction times a_n/p_g per group) beats it. Read against the plain steps alone this would be 'above';
+    against the best of both it is 'not above'."""
+    gains = {**{GS[m]: g for m, g in zip((1, 2, 3, 4), (0.3, 0.6, 0.8, 0.85), strict=True)},
+             **dict.fromkeys(CN.values(), -1.0)}
+    r = _read(pr_, tmp_path, by_world={"lib3": gains})
+    assert r["valid"], r["validity"]["reasons"]
+    s = r["statement_3"]["lib3"]["dc"]
+    assert s["form_multiple"] == 4 and s["entry_multiple"] == 4 and s["gs_multiple"] == 4 and s["control"] == GS[4]
+    assert s["against_plain"]["mean"] == pytest.approx(0.6) and s["against_plain"]["seeds_ahead"] == 10
+    assert holds_plain(s["against_plain"])  # the old control (plain steps only) would have read 'above'
+    assert s["against_group_scaled"]["mean"] == pytest.approx(-0.25)
+    assert s["comparison"]["mean"] == pytest.approx(-0.25) and s["said"] == "not above"
+    assert s["statement"] == "not above; -0.25 points against m1_r_gmom_gs_x4, ahead 0 of 10, try T46's test: level"
+    # where gs is behind the plain steps (the other worlds), the plain best is the control and dc stays above
+    assert r["statement_3"]["lib2"]["dc"]["control"] == X4 and r["statement_3"]["lib2"]["dc"]["said"] == ABOVE
+    # gs is no form: statements 1 and 2 never read it
+    assert set(r["differences"]) == {"cn", "dc"} and set(r["statement_1"]) == {"cn", "dc"}
+    assert "lib3, dc at x4 against the plain step at x4 (+0.60 points, ahead 10 of 10) and the group-scaled step at " \
+           "x4 (-0.25 points, ahead 0 of 10)" in _text(tmp_path)
+
+
+def holds_plain(c):
+    return c["mean"] > 0 and c["seeds_ahead"] >= 8
 
 
 def test_statement_3_takes_the_smallest_multiple_on_a_tie(pr_):
     means = {BASE: 1.0, X2: 2.0, X3: 2.0, X4: 1.5}
     assert pr_.best_multiple(means, {1: BASE, 2: X2, 3: X3, 4: X4}.__getitem__) == 2
-    means = {BASE: 1.0, X2: 2.0, X3: 2.0, X4: 1.5, X5: 3.0, X6: 3.0, X8: 1.0}
+    means = {BASE: 1.0, X15: 1.2, X2: 2.0, X3: 2.0, X4: 1.5, X5: 3.0, X6: 3.0, X8: 1.0}
     assert pr_.best_multiple(means, pr_.ENTRY_RANGE.__getitem__, tuple(pr_.ENTRY_RANGE)) == 5
+
+
+def test_statement_3_reads_the_plain_curve_at_x1_5(pr_, tmp_path):
+    """Should-fix after review 2: a plain curve that peaks between x1 and x2 is read at x1.5 (try T50's arm), so the
+    entry's best is not understated."""
+    peak = {**SCORE, X15: 54.75}
+    r = _read(pr_, tmp_path, over={"lib2": {"scores": peak}})
+    assert r["valid"], r["validity"]["reasons"]
+    s = r["statement_3"]["lib2"]
+    assert s["dc"]["entry_multiple"] == 1.5 and s["dc"]["control"] == X15
+    assert s["dc"]["comparison"]["mean"] == pytest.approx(54.8 - 54.75) and s["dc"]["said"] == ABOVE
+    # without x1.5 the plain best would be x4 (54.2) and cn (54.7 at x4) would read 'above'
+    assert s["cn"]["said"] == "not above" and s["cn"]["comparison"]["mean"] == pytest.approx(54.7 - 54.75)
+    assert r["mean_scores"]["lib2"][X15] == pytest.approx(54.795)
+    assert "lib2, cn at x4 against the plain step at x1.5 (" in _text(tmp_path)
 
 
 def test_statement_3_with_a_rising_entry_curve_is_not_above(pr_, tmp_path):
@@ -518,12 +629,13 @@ def test_statement_3_with_a_rising_entry_curve_is_not_above(pr_, tmp_path):
     assert s["dc"]["form_multiple"] == 4 and s["dc"]["entry_multiple"] == 8
     assert s["dc"]["comparison"]["mean"] == pytest.approx(53.99 - 54.21)
     assert s["dc"]["c_matched_multiple"] == pytest.approx(4 * 1.25 / 0.9)  # within the range read: readable
-    assert s["dc"]["statement"] == "not above" and s["cn"]["statement"] == "not above"
+    assert s["dc"]["said"] == "not above" and s["cn"]["said"] == "not above"
     # the brief's range (the entry's best over x1 to x4) would have read "above" here
     four = pr_.best_multiple(r["mean_scores"]["lib2"], pr_.ENTRY_AT.__getitem__)
     assert four == 4 and r["mean_scores"]["lib2"][DC[4]] > r["mean_scores"]["lib2"][X4]
-    assert "lib2, dc at x4 against the entry at x8: -0.22 points, ahead 0 of 10, c-matched multiple x5.56: not " \
-           "above" in _text(tmp_path)
+    assert "lib2, dc at x4 against the plain step at x8 (-0.22 points, ahead 0 of 10) and the group-scaled step at " \
+           "x4 (+0.39 points, ahead 10 of 10), c-matched plain multiple x5.56: not above; -0.22 points against " \
+           "m1_r_gmom_x8, ahead 0 of 10, try T46's test: level" in _text(tmp_path)
 
 
 def test_statement_3_is_not_readable_at_the_edge_beyond_the_c_matched_multiple(pr_, tmp_path):
@@ -541,7 +653,7 @@ def test_statement_3_is_not_readable_at_the_edge_beyond_the_c_matched_multiple(p
     assert want in _text(tmp_path)
     # where the plain curve turned inside the range, the same ratio stays readable
     assert r["statement_3"]["lib3"]["dc"]["entry_multiple"] == 4
-    assert r["statement_3"]["lib3"]["dc"]["statement"] == "above the best plain step read"
+    assert r["statement_3"]["lib3"]["dc"]["said"] == ABOVE
 
 
 def test_c_ratio_is_the_largest_a_n_over_p_g_and_infinite_where_p_g_is_not_positive(pr_):
@@ -607,7 +719,15 @@ def test_the_limits_and_choices_are_in_the_text(pr_, tmp_path):
                  "one draw for all seeds and also changes the floor, the de terms' reference, B0's shift and "
                  "g_mom's fit",
                  "covers 1 to 4 times the practice step and the six worlds and nothing else",
-                 "Within that range a larger plain step cannot give its 'above'",
+                 "by a different ratio a_n/p_g in each group",
+                 "can put a form ahead with no direction effect at all",
+                 "The c-match is on c alone: the group-scaled step also moves o_g by m x a_n/p_g, further than dc (m) "
+                 "and cn (0)",
+                 "so the other groups are over-matched there",
+                 "it does not rule out a per-group depth at any other ratio",
+                 "the form's four against the controls' twelve: eight plain, four group-scaled",
+                 "its mean and its label by try T46's test are printed with it and go with it",
+                 "the forms' a_n and not the entry's p_g",
                  "dc - cn = o_g exactly", "dc - entry = (a_n - p_g) x c exactly",
                  "a consistent tiny shift passes it in every cell", "is evidence of step size",
                  "no world here varies how much of them the truth carries",
@@ -622,14 +742,22 @@ VOIDS = [
     ({"lib2": None}, None, "missing worlds ['lib2']"),
     ({"ref67_lib2": None}, None, "missing worlds ['ref67_lib2']"),
     ({"ref50_lib2": {"seeds": range(9)}}, None, "ref50_lib2: seeds"),
-    (None, {("t50", "lib3", X3): 1e-6}, "lib3: b0, m1_r_gmom, m1_r_gmom_x2, m1_r_gmom_x3, m1_r_gmom_x4, "
-                                        "m1_r_gmom_x5, m1_r_gmom_x6, m1_r_gmom_x8 do not reproduce try T50's"),
-    (None, {("t50", "lib2", X4): 1e-6}, "lib2: b0, m1_r_gmom, m1_r_gmom_x2, m1_r_gmom_x3, m1_r_gmom_x4, "
-                                        "m1_r_gmom_x5, m1_r_gmom_x6, m1_r_gmom_x8 do not reproduce try T50's"),
-    (None, {("t50", "lib2", X8): 1e-6}, "lib2: b0, m1_r_gmom, m1_r_gmom_x2"),
-    (None, {("t50", "lib3", X5): 1e-6}, "lib3: b0, m1_r_gmom, m1_r_gmom_x2"),
-    (None, {("t54", "ref67", BASE): 1e-6}, "ref67: b0, m1_r_gmom, m1_r_gmom_x2, m1_r_gmom_x3, m1_r_gmom_x4, "
-                                           "m1_r_gmom_x5, m1_r_gmom_x6 do not reproduce try T54's"),
+    (None, {("t50", "lib3", X3): 1e-6}, "lib3: b0, m1_r_gmom, m1_r_gmom_x15, m1_r_gmom_x2, m1_r_gmom_x3, "
+                                        "m1_r_gmom_x4, m1_r_gmom_x5, m1_r_gmom_x6, m1_r_gmom_x8 do not reproduce try "
+                                        "T50's"),
+    (None, {("t50", "lib2", X4): 1e-6}, "lib2: b0, m1_r_gmom, m1_r_gmom_x15, m1_r_gmom_x2, m1_r_gmom_x3, "
+                                        "m1_r_gmom_x4, m1_r_gmom_x5, m1_r_gmom_x6, m1_r_gmom_x8 do not reproduce try "
+                                        "T50's"),
+    (None, {("t50", "lib2", X8): 1e-6}, "lib2: b0, m1_r_gmom, m1_r_gmom_x15, m1_r_gmom_x2"),
+    (None, {("t50", "lib3", X5): 1e-6}, "lib3: b0, m1_r_gmom, m1_r_gmom_x15, m1_r_gmom_x2"),
+    # x1.5 reproduced in each committed folder (should-fix after review 2)
+    (None, {("t50", "lib3", X15): 1e-6}, "lib3: b0, m1_r_gmom, m1_r_gmom_x15"),
+    (None, {("t50", "lib2", X15): 1e-6}, "lib2: b0, m1_r_gmom, m1_r_gmom_x15"),
+    (None, {("t54", "ref67", X15): 1e-6}, "ref67: b0, m1_r_gmom, m1_r_gmom_x15"),
+    (None, {("t54", "ref50", X15): 1e-6}, "ref50: b0, m1_r_gmom, m1_r_gmom_x15"),
+    ({"lib2": {"fractions": {**FRACTIONS, X15: 0.4}}}, None, "wrong fraction on ['m1_r_gmom_x15']"),
+    (None, {("t54", "ref67", BASE): 1e-6}, "ref67: b0, m1_r_gmom, m1_r_gmom_x15, m1_r_gmom_x2, m1_r_gmom_x3, "
+                                           "m1_r_gmom_x4, m1_r_gmom_x5, m1_r_gmom_x6 do not reproduce try T54's"),
     (None, {("t54", "ref50", X6): 1e-6}, "ref50: b0, m1_r_gmom"),
     ({"ref67": {"fractions": {**FRACTIONS, X8: 0.8}}}, None, "wrong fraction on ['m1_r_gmom_x8']"),
     ({"ref50_lib2": {"dc": _dc_rec(a_n=1.2, size_ratio=1.4)}}, None,
@@ -661,8 +789,21 @@ VOIDS = [
     ({"ref67_lib2": {"directions": _dirs("x")}}, None, "differ between the worlds' files"),
     ({"ref50": {"dc": _dc_rec("x")}}, None, "dc's recorded sha256, p_g or a_n differ between the worlds' files"),
     ({"lib3": {"dc": {}}}, None, "lib3: no full record of the form dc"),
-    ({"lib2": {"identical": (CN[3],)}}, None, "lib2: form arms score exactly as the entry's arm"),
-    ({"ref50_lib2": {"identical": (DC[1],)}}, None, "ref50_lib2: form arms score exactly as the entry's arm"),
+    ({"lib2": {"identical": (CN[3],)}}, None, "lib2: form (or gs) arms score exactly as the entry's arm"),
+    ({"ref50_lib2": {"identical": (DC[1],)}}, None, "ref50_lib2: form (or gs) arms score exactly as the entry's arm"),
+    # added after review 2: the group-scaled control and the two libraries' truths
+    ({"ref67": {"identical": (GS[2],)}}, None,
+     "ref67: form (or gs) arms score exactly as the entry's arm of their fraction on every seed: ['m1_r_gmom_gs_x2']"),
+    ({"ref50": {"fractions": {**FRACTIONS, GS[4]: 0.6}}}, None, "wrong fraction on ['m1_r_gmom_gs_x4']"),
+    ({"lib3": {"gs": {}}}, None, "lib3: no full record of the group-scaled control gs"),
+    ({"ref67_lib2": {"gs": _gs_rec(_dc_rec(), "x")}}, None,
+     "gs's recorded sha256 or ratio differ between the worlds' files"),
+    ({"lib2": {"gs": {g: {**v, "ratio": 1.3} for g, v in _gs_rec(_dc_rec()).items()}}}, None,
+     "lib2: gs's ratio in CM (1.3) is not dc's a_n/p_g"),
+    ({"ref50": {"gs": {"CM": _gs_rec(_dc_rec())["CM"]}}}, None,
+     "ref50: gs's groups ['CM'] are not dc's ['CM', 'Endocardium']"),
+    ({k: {"truth_sha256": "truth-lib3"} for k in ("lib2", "ref67_lib2", "ref50_lib2")}, None,
+     "a world of lib3 and a world of lib2 record the same truth matrix sha256 ['truth-lib3']"),
     ({"ref67_lib2": {"anchor_failures": [{"seed": 3}]}}, None, "ref67_lib2: the floor's anchors invert"),
     ({"lib2": {"agree": {"CM": True, "Endocardium": False}}}, None,
      "lib2: the entry's directions as tries T50 and T54 load them and as try T55 loads them do not have the same"),

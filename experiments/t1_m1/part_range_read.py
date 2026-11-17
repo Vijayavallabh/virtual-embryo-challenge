@@ -28,9 +28,11 @@ Forms, per group, on the common mask M (try T55's: part_read.split and part_read
            ref67_lib2  the same thinned references (deep_read.world_reference called under the name ref67 or ref50, so
            ref50_lib2  the same p and stream), the truth library 2.
          Arms per seed, all from one cell draw: b0; the entry's arms m1_r_gmom, m1_r_gmom_x2, _x3, _x4 and, as the
-         plain-step control of statement 3 (added after review), _x5, _x6, _x8 (try T50's names and builds:
-         step_read.step_arms on feng_dirs.feng_directions with over_read.MULTIPLIERS' values); cn and dc at the first
-         four fractions (m1_r_gmom_cn, _cn_x2, _cn_x3, _cn_x4; m1_r_gmom_dc, _dc_x2, _dc_x3, _dc_x4), each the build of
+         plain-step control of statement 3 (added after review), _x15, _x5, _x6, _x8 (x15 added after review 2; try
+         T50's names and builds: step_read.step_arms on feng_dirs.feng_directions with over_read.MULTIPLIERS' values);
+         cn and dc at the first four fractions (m1_r_gmom_cn, _cn_x2, _cn_x3, _cn_x4; m1_r_gmom_dc, _dc_x2, _dc_x3,
+         _dc_x4) and, as statement 3's group-scaled control (added after review 2), gs at the same four
+         (m1_r_gmom_gs, _gs_x2, _gs_x3, _gs_x4: per group the entry's direction times a_n/p_g on M), each the build of
          the entry's arm of its fraction (gmom_combo.m1_r_arms) with the form's directions in place of the entry's and
          every other argument the same. Refused on an existing task file, unless the committed N22 passed, unless
          experiments/harness/TRIES.md holds row T57, and where the forms refuse.
@@ -39,16 +41,19 @@ Forms, per group, on the common mask M (try T55's: part_read.split and part_read
 
 The reading (brief AL). Void unless: the six worlds hold the ten seeds with every arm and its fraction at one commit
 on a clean tree; no file records an anchor failure; where a committed score exists it is reproduced, seed for seed and
-to 1e-9: b0 and the entry's arms in lib3 and lib2 (x1 to x8: try T50's lib3.json and lib2.json) and in ref67 and ref50
-(x1 to x6: try T54's files); m1_r_gmom_cn and _cn_x2 in lib3, ref67 and ref50 (try T56's files) and in lib2 (try
-T55's lib2.json); the thinned worlds pass try T54's checks (their p and stream, depth ratio within 0.01 of p, no cell
-emptied, the rebuild check); in ref67_lib2 and ref50_lib2 the thinning record's p and stream equal ref67's and
-ref50's; per group the entry's directions as tries T50 and T54 load them and as try T55 loads them have the same
-sha256; the forms' recorded directions and multiples are the same in the six files, and try T55's record (cn's among
-it) equals try T55's lib3 file; in every file dc's a_n per group equals the entry's recorded a_n, p_g is at most a_n
-and dc's squared size over the entry's is at least 1 (added after review); every file records the truth name the route
-passed to try T46's truth maker and the truth matrix's sha256, and the worlds of one library have the same truth
-sha256 (added after review); no form's arm scores exactly as the entry's arm of its fraction on every seed of a world.
+to 1e-9: b0 and the entry's arms in lib3 and lib2 (x1, x1.5 and x2 to x8: try T50's lib3.json and lib2.json) and in
+ref67 and ref50 (x1, x1.5 and x2 to x6: try T54's files); m1_r_gmom_cn and _cn_x2 in lib3, ref67 and ref50 (try
+T56's files) and in lib2 (try T55's lib2.json); the thinned worlds pass try T54's checks (their p and stream, depth
+ratio within 0.01 of p, no cell emptied, the rebuild check); in ref67_lib2 and ref50_lib2 the thinning record's p
+and stream equal ref67's and ref50's; per group the entry's directions as tries T50 and T54 load them and as try
+T55 loads them have the same sha256; the forms' recorded directions and multiples are the same in the six files, and
+try T55's record (cn's among it) equals try T55's lib3 file; in every file dc's a_n per group equals the entry's
+recorded a_n, p_g is at most a_n and dc's squared size over the entry's is at least 1 (added after review); every
+file records the truth name the route passed to try T46's truth maker and the truth matrix's sha256, and the worlds
+of one library have the same truth sha256 (added after review), and no world of library 3 has library 2's truth
+sha256 (added after review 2); gs's recorded sha256 and ratio are the same in the six files and its ratio per group
+is dc's a_n/p_g (added after review 2); no form's (or gs's) arm scores exactly as the entry's arm of its fraction
+on every seed of a world.
 A cell is a world and a multiple (1, 2, 3, 4): 24 cells. Per form and cell, the paired difference of the form's arm from
 the entry's arm of the same fraction, with its mean, seeds ahead, per-seed range and its label by try T46's single-task
 test ("ahead": a mean paired gain above 0.3 with at least 8 of 10 seeds ahead; "behind" the same reversed; else
@@ -61,16 +66,25 @@ test, naming the cells; otherwise "not separated", naming every cell that meets 
 carries its size (added after review): the number of the 24 cells ahead by try T46's test and the smallest and largest
 cell means.
 Statement 2, per cell: dc minus cn with its label by try T46's test; the summary counts the cells where dc is ahead,
-behind and level, and names them.
+behind and level, and names them. Its quantity is stated with it (added after review 2): exactly o_g at the forms'
+coefficient a_n on c, not at the entry's p_g.
 Statement 3, beyond a larger step, per world and form: the form's highest mean over its four multiples against the
-entry's highest mean over 1, 2, 3, 4, 5, 6 and 8 times (changed after review from the entry's four: the forms move along
-c as far as the entry at m x a_n/p_g, up to about 5.9 at x4), paired by seed at those two multiples: mean, seeds ahead,
-and "above the best plain step read" where the mean is positive with at least 8 of 10 seeds ahead (otherwise "not
-above"); "not readable" where the entry's best is at the edge of its range (x8) and the multiple at which the entry
-would move along c as far as the form at its best (the form's multiple x the largest a_n/p_g over the groups) lies
-beyond 8.
-Reported and read by nothing: every arm's mean score per world (x5 to x8 included); each difference's parts on the
-two de terms and on mmd_u and the variogram, and its raw-metric differences; the forms' per-group records.
+control, paired by seed at those two arms. The control is the higher of the entry's highest mean over 1, 1.5, 2, 3, 4,
+5, 6 and 8 times (changed after review from the entry's four, and x1.5 added after review 2) and gs's highest mean
+over 1 to 4 times (added after review 2: both forms raise each group's coefficient on c by its own ratio a_n/p_g, about
+1.46 in cardiomyocytes and 1.16 to 1.20 elsewhere, so at one multiple they are also a per-group step size, which a
+plain step at one multiple for every group cannot match; gs moves along c exactly as far as the forms in every group).
+"above the best plain and group-scaled step read" (changed after review 2 from "above the best plain step read") where
+the mean is positive with at least 8 of 10 seeds ahead (otherwise "not above"); the statement carries its mean, its
+seeds ahead and its label by try T46's test (added after review 2); "not readable" where the plain best is at the edge
+of its range (x8) and the multiple at which the plain step would move along c as far as the form at its best (the
+form's multiple x the largest a_n/p_g over the groups) lies beyond 8. An "above" rules out a step along the entry's
+own direction at one multiple, or at the forms' own per-group ratio, within the multiples read; it does not rule out a
+per-group depth at another ratio.
+Reported and read by nothing: every arm's mean score per world (x1.5, x5 to x8 and gs included); each difference's
+parts on the two de terms and on mmd_u and the variogram, and its raw-metric differences; the forms' and gs's
+per-group records; per form and world the form's best against the plain best and against the group-scaled best
+separately.
 
 NOT an adoption result: a labelled in-sample diagnostic, as tries T44 to T56 are; the result can only go to the team
 captain, and no outcome is evidence on Task 1's read depth, which stays closed. The limits are LIMITS below, repeated in
@@ -135,25 +149,29 @@ TWIN = {"ref67_lib2": "ref67", "ref50_lib2": "ref50"}  # a library-2 world and i
 TRUTH_OF = {LIB3: LIB3, LIB2: LIB2, "ref67": LIB3, "ref50": LIB3, "ref67_lib2": LIB2, "ref50_lib2": LIB2}
 THINNING_OF = {k: dr.THINNED[v] for k, v in REFERENCE_OF.items()}
 BASE, X2, X3, X4 = sr.BASE, ob.X2, ob.X3, ob.X4  # m1_r_gmom (0.2), _x2 (0.4), _x3 (0.6), _x4 (0.8)
+X15 = dr.X15  # try T50's (and T46's, T54's) arm at 0.3: statement 3's plain-step control only (added after review 2)
 X5, X6, X8 = ob.X5, ob.X6, ob.X8  # try T50's arms at 1.0, 1.2 and 1.6: statement 3's plain-step control only
 MULTIPLES = (1, 2, 3, 4)  # the cells' multiples and the forms' arms
 ENTRY_AT = {1: BASE, 2: X2, 3: X3, 4: X4}  # multiple -> the entry's arm of a cell
-ENTRY_RANGE = {**ENTRY_AT, 5: X5, 6: X6, 8: X8}  # multiple -> the entry's arm, statement 3's plain-step range
+# multiple -> the entry's arm, statement 3's plain-step range: try T50's eight arms in try T50's build order
+ENTRY_RANGE = {1: BASE, 1.5: X15, 2: X2, 3: X3, 4: X4, 5: X5, 6: X6, 8: X8}
 ENTRY_EDGE = max(ENTRY_RANGE)
-ENTRY_MULTIPLIERS = {a: float(ob.MULTIPLIERS[a]) for a in (X2, X3, X4, X5, X6, X8)}  # try T50's values
+ENTRY_MULTIPLIERS = {a: float(ob.MULTIPLIERS[a]) for a in (X15, X2, X3, X4, X5, X6, X8)}  # try T50's values
 CN, DC = "cn", "dc"
-FORMS = (CN, DC)
+FORMS = (CN, DC)  # the forms the statements read
+GS = "gs"  # statement 3's group-scaled plain-step control (added after review 2): not a form, read by statement 3 only
+BUILT = (*FORMS, GS)  # every direction set built in place of the entry's
 
 
 def form_arm(form: str, m: int) -> str:
-    """The form's arm at the multiple m: m1_r_gmom_cn, m1_r_gmom_cn_x2, ..."""
+    """The form's (or gs's) arm at the multiple m: m1_r_gmom_cn, m1_r_gmom_cn_x2, ..."""
     return f"{BASE}_{form}" + ("" if m == 1 else f"_x{m}")
 
 
-FORM_ARMS = {form_arm(f, m): (f, ENTRY_AT[m]) for f in FORMS for m in MULTIPLES}  # arm -> (form, entry arm)
+FORM_ARMS = {form_arm(f, m): (f, ENTRY_AT[m]) for f in BUILT for m in MULTIPLES}  # arm -> (form, entry arm)
 ENTRY_ARMS = tuple(ENTRY_RANGE.values())
 ARMS = ("b0", *ENTRY_ARMS, *FORM_ARMS)
-REPRO_ENTRY = {"t50": ("b0", *ENTRY_ARMS), "t54": ("b0", BASE, X2, X3, X4, X5, X6)}  # try T54 has no x8
+REPRO_ENTRY = {"t50": ("b0", *ENTRY_ARMS), "t54": ("b0", BASE, X15, X2, X3, X4, X5, X6)}  # try T54 has no x8
 REPRO_CN = (form_arm(CN, 1), form_arm(CN, 2))
 CELLS = tuple((k, m) for k in WORLDS for m in MULTIPLES)
 FRACTION, FRACTION_TOL, REPRO_TOL = sr.FRACTION, sr.FRACTION_TOL, sr.REPRO_TOL  # 0.2, its tolerance, 1e-9
@@ -173,9 +191,13 @@ QUANTITY = {"cn": "cn minus the entry's arm of its fraction: the deleted orthogo
                   "on c together",
             "dc": "dc minus the entry's arm of its fraction: exactly the entry plus a further step along c of m x "
                   "fraction x (a_n - p_g) per group, a reading of depth along c, not of the form"}
+QUANTITY_2 = ("dc minus cn: exactly the orthogonal parts o_g at the forms' coefficient a_n on c (not at the entry's "
+              "p_g), so it does not say what o_g is worth at the entry's own step")
 BEHIND_SOMEWHERE = "behind somewhere"
 NOT_SEPARATED = "not separated"
-ABOVE = "above the best plain step read"
+# changed after review 2 from "above the best plain step read": the control is now the best of the plain steps (one
+# multiple for every group) and of the group-scaled steps (each group's direction times its own a_n/p_g)
+ABOVE = "above the best plain and group-scaled step read"
 NOT_ABOVE = "not above"
 NOT_READABLE = "not readable"
 LABEL_T57 = ("try T57, a labelled in-sample diagnostic, never an adoption result: M1 (with R1, R2 and g_mom's factors, "
@@ -183,8 +205,9 @@ LABEL_T57 = ("try T57, a labelled in-sample diagnostic, never an adoption result
              "squared size (cn) and along the entry's direction with its coefficient on the common part raised to "
              "that size's (dc), at 1, 2, 3 and 4 times the step, against the entry's step of the same fraction, with "
              "library 3's and library 2's truths and the reference as released and thinned to two thirds and a half "
-             "(try T54's draws) on the chamber cut, with the entry's step also at 5, 6 and 8 times as statement 3's "
-             "plain-step control; the result can only go to the team captain, and no outcome is "
+             "(try T54's draws) on the chamber cut, with the entry's step also at 1.5, 5, 6 and 8 times and the "
+             "entry's direction scaled per group by a_n/p_g at 1 to 4 times as statement 3's controls; the result can "
+             "only go to the team captain, and no outcome is "
              "evidence on Task 1's read depth, which stays closed")
 LIMITS = (
     "One released day, in-sample, the chamber cut, two libraries.",
@@ -192,19 +215,28 @@ LIMITS = (
     "A thinned reference is one draw for all seeds and also changes the floor, the de terms' reference, B0's shift and "
     "g_mom's fit.",
     "'In every cell read' covers 1 to 4 times the practice step and the six worlds and nothing else.",
-    "Both forms move further along c than the entry does (at the multiple m, as far as the entry at m x a_n/p_g, up to "
-    "about 1.5 m), so a difference in a cell where larger plain steps still gain can be that larger movement and not "
-    "the form. Statement 3 compares a form's best over 1 to 4 times with the entry's best over 1, 2, 3, 4, 5, 6 and 8 "
-    "times, a range that holds the multiple at which the entry moves along c as far as the form; it is ruled not "
-    "readable where that multiple lies beyond 8 while the entry's best is at 8. Within that range a larger plain step "
-    "cannot give its 'above'; beyond 8 times and between the multiples read, nothing here says.",
+    "Both forms move further along c than the entry does, and by a different ratio a_n/p_g in each group (recorded; "
+    "about 1.46 in cardiomyocytes and 1.16 to 1.20 in the others), so at one multiple they are also a per-group step "
+    "size: a difference in a cell where larger steps still gain can be that larger movement and not the form, and a "
+    "truth that follows each group's own entry direction, only deeper in some groups than in others, can put a form "
+    "ahead with no direction effect at all (corrected after review 2). Statement 3 therefore compares a form's best "
+    "over 1 to 4 times with the best of two controls: the plain steps (one multiple for every group) at 1, 1.5, 2, 3, "
+    "4, 5, 6 and 8 times, and the group-scaled steps (each group's entry direction times its own a_n/p_g on M) at 1 to "
+    "4 times, which move along c exactly as far as the forms at the same multiple in every group. The c-match is on c "
+    "alone: the group-scaled step also moves o_g by m x a_n/p_g, further than dc (m) and cn (0); the plain step's "
+    "c-matched multiple is taken for the farthest-moving group (the largest a_n/p_g), so the other groups are "
+    "over-matched there. It is ruled not readable where that plain multiple lies beyond 8 while the plain best is at "
+    "8. Its 'above' rules out a step along the entry's own direction at one multiple for every group, and at the "
+    "forms' own per-group ratio; it does not rule out a per-group depth at any other ratio, a step beyond 8 times or "
+    "between the multiples read, or a group-scaled step beyond 4 times.",
     "cn deletes parts of the groups' directions that the released day follows, and what those parts carry over the two "
     "days of the test no released day shows. A cn lead needs a truth that follows those parts less than the released "
     "day does; no world here varies how much of them the truth carries (all six share one released reference and one "
     "direction set), so cn's statement 1 cannot speak to a test day that follows them more or less.",
     "Nothing here says how deep any hidden truth is, and no statement may be used with a figure for it.",
     "On M the directions obey two identities: dc - cn = o_g exactly (the same coefficient a_n on c), so statement 2 is "
-    "the one clean reading of the deleted orthogonal parts at a fixed coefficient on c; and "
+    "the one clean reading of the deleted orthogonal parts at a fixed coefficient on c, the forms' a_n and not the "
+    "entry's p_g, so it does not say what o_g is worth at the entry's own step; and "
     "dc - entry = (a_n - p_g) x c exactly, so dc against the entry at the multiple m is the entry plus a further "
     "step along c of m x fraction x (a_n - p_g): a reading of depth along c, not of the form. dc's squared size over "
     "the entry's is 2 - (p_g/a_n)^2 (recorded per group).",
@@ -218,7 +250,10 @@ LIMITS = (
     "The 24 cells share the seeds, the draw and the directions within a world, and the thinned worlds share their two "
     "draws between the libraries: agreement across cells is not 24 confirmations.",
     "Statement 3 picks each side's best multiple on the same ten seeds it then compares: both maxima are chosen in "
-    "sample, and only the multiples read are searched (the forms' four, the entry's seven).",
+    "sample, and only the multiples read are searched (the form's four against the controls' twelve: eight plain, four "
+    "group-scaled). The winner's curse then favours the control: conservative for 'above', and 'not above' is partly a "
+    "property of the route. Its bar (a positive mean with at least 8 of 10 seeds ahead) has no size threshold, as "
+    "statement 1's: its mean and its label by try T46's test are printed with it and go with it.",
     "6 of the 24 cells (lib3, ref67 and ref50 at 1 and 2 times the step) repeat tries T50, T54 and T56 by rule and add "
     "no evidence for cn there; the new evidence is dc, the multiples 3 and 4, and the library-2 worlds.",
 )
@@ -246,14 +281,23 @@ CHOICES = (
     "count them; 'behind somewhere' wins over 'not separated' when both apply, and the cells meeting neither are still "
     "recorded and printed.",
     "Statement 3's best multiple is the one with the highest mean score (the smallest on a tie), among the four for "
-    "the form and among the seven for the entry, inside each world; the comparison is try T50's (over_read.comparison) "
-    "of those two arms paired by seed.",
+    "the form, the eight for the plain steps and the four for the group-scaled steps, inside each world; the control "
+    "is the higher of the plain best and the group-scaled best (the plain one on a tie); the comparison is try T50's "
+    "(over_read.comparison) of the form's best arm and the control's arm paired by seed.",
     "A cell is named '<world> x<multiple>'.",
     "dc's refusal where a_n is below p_g cannot fire: a_n = sqrt(sum d_g^2 / sum c^2) >= |sum c d_g| / sum c^2 = |p_g| "
     "by Cauchy-Schwarz, with equality only where d_g is parallel to c on M; it is kept only as the brief's guard.",
-    "Statement 3's c-matched multiple is the form's best multiple times the largest a_n/p_g over the groups (the "
+    "Statement 3's c-matched plain multiple is the form's best multiple times the largest a_n/p_g over the groups (the "
     "farthest a group moves), from the dc record of the world's file (infinite where p_g is not positive); the entry's "
-    "range adds try T50's x5, x6 and x8 (x8 is not in try T54's files, so it is not reproduced in ref67 and ref50).",
+    "range adds try T50's x1.5, x5, x6 and x8 (x8 is not in try T54's files, so it is not reproduced in ref67 and "
+    "ref50; x1.5 is reproduced in all four).",
+    "The group-scaled control gs (added after review 2, not in the brief): per group, on M, the entry's direction "
+    "times a_n/p_g (a_n, p_g as dc's), the entry's own values off M; computed as d_g x (a_n/p_g) so that a_n = p_g "
+    "gives d_g bit for bit; refused where p_g is not positive; its arms m1_r_gmom_gs, _gs_x2, _gs_x3, _gs_x4 are the "
+    "build of the entry's arm of their fraction with gs's directions in place of the entry's, as the forms' arms are. "
+    "Recorded per group: the ratio, p_g, a_n, sha256 and zone_read.compare_directions on the entry. The read voids "
+    "where gs's record differs between the six files, where its ratio is not dc's a_n/p_g, and where a gs arm scores "
+    "exactly as the entry's arm of its fraction on every seed of a world.",
     "The truth's sha256 is that of its matrix as the scorer reads it (lib_step_read.prediction_sha256 on the truth "
     "Stage); the worlds of one library must agree on it, the thinned worlds thinning only the reference.",
     "The run's --out folder for the command lines is t57_range.",
@@ -294,11 +338,42 @@ def dc_forms(entry: Mapping[str, np.ndarray], genes: Sequence[str], held: Sequen
     return forms, rec
 
 
-def world_directions(pool_genes: Sequence[str], held_m1: Sequence[str]) -> tuple[dict, dict, dict, dict, dict]:
+def gs_direction(d: np.ndarray, c: np.ndarray, M: np.ndarray, a_n: float) -> tuple[np.ndarray, float, float]:
+    """Statement 3's group-scaled control for one group, its ratio a_n/p_g and p_g: on M, d x (a_n/p_g), which has
+    coefficient a_n on c (as both forms) and orthogonal part (a_n/p_g) o_g; off M, d's own values. Raises ValueError
+    where p_g is not positive."""
+    d = np.asarray(d, dtype=np.float64)
+    cM, dM = np.asarray(c, dtype=np.float64)[M], d[M]
+    p = float(cM @ dM) / float(cM @ cM)
+    if not p > 0:
+        raise ValueError(f"T57 is refused: p_g is not positive ({p!r}), so the group-scaled control is not defined")
+    ratio = a_n / p
+    out = np.array(d, dtype=np.float64, copy=True)
+    out[M] = dM * ratio
+    return out, ratio, p
+
+
+def gs_forms(entry: Mapping[str, np.ndarray], genes: Sequence[str], held: Sequence[str]) -> tuple[dict, dict]:
+    """gs per group (group -> array) and its record; M, c and a_n by try T55's functions, as dc_forms."""
+    sp = pr.split(entry, genes, held)
+    mult = pr.multiples(entry, sp)
+    forms, rec = {}, {}
+    for g in sorted(entry):
+        d = np.asarray(entry[g], np.float64)
+        a_n = mult[g][pr.N]
+        f, ratio, p = gs_direction(d, sp["c"], sp["M"], a_n)
+        forms[g] = f
+        rec[g] = {"ratio": ratio, "p_g": p, "a_n": a_n, "sha256": zr.direction_sha256(f),
+                  **zr.compare_directions(f, d, genes, held)}
+    return forms, rec
+
+
+def world_directions(pool_genes: Sequence[str], held_m1: Sequence[str]) -> tuple[dict, dict, dict, dict, dict, dict]:
     """The entry's directions as tries T50 and T54 load them; the forms (cn by try T55's part_read.all_directions, dc
-    by dc_forms) on the entry's directions as try T55 loads them; try T55's record, dc's record, and the external record
-    (try T50's, try T55's source, and per group whether the two routes' entry directions agree by sha256). Depends on
-    the pool's gene names and the held list only. Raises ValueError where a form refuses."""
+    by dc_forms) and statement 3's group-scaled control (gs, gs_forms) on the entry's directions as try T55 loads them;
+    try T55's record, dc's record, gs's record, and the external record (try T50's, try T55's source, and per group
+    whether the two routes' entry directions agree by sha256). Depends on the pool's gene names and the held list only.
+    Raises ValueError where a form refuses."""
     pool_genes = list(pool_genes)
     directions, ext = feng_dirs.feng_directions(pool_genes)
     cfg = feng_dirs.load_config()
@@ -306,11 +381,12 @@ def world_directions(pool_genes: Sequence[str], held_m1: Sequence[str]) -> tuple
     entry, _, _ = feng_dirs.directions_from_stats(st, pool_genes, cfg, pr.BRACKET)
     t55_forms, rec = pr.all_directions(entry, pool_genes, held_m1)
     dc, dc_rec = dc_forms(entry, pool_genes, held_m1)
+    gs, gs_rec = gs_forms(entry, pool_genes, held_m1)
     agree = {g: g in directions and g in entry
              and zr.direction_sha256(directions[g]) == zr.direction_sha256(entry[g])
              for g in sorted({*directions, *entry})}
-    return directions, {CN: t55_forms[CN], DC: dc}, rec, dc_rec, {**ext, "t55_source": src,
-                                                                  "entry_agrees_with_t55s": agree}
+    return directions, {CN: t55_forms[CN], DC: dc, GS: gs}, rec, dc_rec, gs_rec, {
+        **ext, "t55_source": src, "entry_agrees_with_t55s": agree}
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -342,10 +418,10 @@ def arm_fractions(fraction: float) -> dict[str, float]:
 
 def build_seed(ctx: harness.BuildContext, b0, directions: Mapping, forms: Mapping[str, Mapping], groups: Mapping,
                fraction: float, held_m1: Sequence[str], held_factors: Sequence[str]) -> dict[str, Stage]:
-    """One seed's arms: b0 and the entry's seven arms (x1 to x6 and x8) as tries T50 and T54 build them
-    (step_read.step_arms with try T50's multipliers), then each
-    form's arm, the build of the entry's arm of its fraction (gmom_combo.m1_r_arms) with the form's directions in place
-    of the entry's and every other argument the same."""
+    """One seed's arms: b0 and the entry's eight arms (x1, x1.5, x2 to x6 and x8) as tries T50 and T54 build them
+    (step_read.step_arms with try T50's multipliers), then each form's (and gs's) arm, the build of the entry's arm of
+    its fraction (gmom_combo.m1_r_arms) with the form's directions in place of the entry's and every other argument
+    the same."""
     preds = {"b0": b0(ctx), **sr.step_arms(ctx, directions, groups, fraction, held_m1, held_factors,
                                            multipliers=ENTRY_MULTIPLIERS)}
     fr = arm_fractions(fraction)
@@ -415,7 +491,7 @@ def cmd_run(a) -> None:
     union = hygiene.load_union()
     held_m1 = gc.held_feng(union, preregistered)
     try:
-        directions, forms, rec, dc_rec, ext = world_directions(list(pool.var_names), held_m1)
+        directions, forms, rec, dc_rec, gs_rec, ext = world_directions(list(pool.var_names), held_m1)
     except ValueError as e:
         sys.exit(str(e))
     groups = feng_dirs.label_groups(pool.obs["celltype"].astype(str).unique())
@@ -425,7 +501,7 @@ def cmd_run(a) -> None:
                      held_m1, preregistered, label=a.world)
     res.update({"fraction": fraction, "fractions": arm_fractions(fraction), "multipliers": dict(ENTRY_MULTIPLIERS),
                 "form_arms": {k: list(v) for k, v in FORM_ARMS.items()}, "external": ext, "directions": rec,
-                "dc_directions": dc_rec, "rows": rows,
+                "dc_directions": dc_rec, "gs_directions": gs_rec, "rows": rows,
                 "stamp": gv.stamp(started, [*stamp_inputs, t1_scope.HELD_FLAT_GENES, ts.R1_CONFIG,
                                             REPO_ROOT / union["file"], feng_dirs.clean_stats_path(), n22])})
     zr.write_task_file(out, name, res)
@@ -480,6 +556,32 @@ def dc_record_off(dc_rec, directions) -> list[str]:
         return [f"dc's record cannot be checked against the entry's ({e!r})"]
 
 
+def gs_values(rec) -> dict | None:
+    """gs's recorded sha256 and ratio per group ((what, group) -> value); None without a full record."""
+    try:
+        if not rec:
+            return None
+        return {(x, g): v[x] for g, v in zr._groups(rec).items() for x in ("sha256", "ratio")}
+    except (KeyError, TypeError, AttributeError):
+        return None
+
+
+def gs_record_off(gs_rec, dc_rec) -> list[str]:
+    """gs's record against dc's in the same file: the same groups, and per group the ratio is dc's a_n / p_g."""
+    try:
+        gs, dc = zr._groups(gs_rec), zr._groups(dc_rec)
+        out = []
+        if sorted(gs) != sorted(dc):
+            out.append(f"gs's groups {sorted(gs)} are not dc's {sorted(dc)}")
+        for g in sorted(set(gs) & set(dc)):
+            want = dc[g]["a_n"] / dc[g]["p_g"] if dc[g]["p_g"] > 0 else None
+            if want is None or gs[g]["ratio"] != want:
+                out.append(f"gs's ratio in {g} ({gs[g]['ratio']!r}) is not dc's a_n/p_g ({want!r})")
+        return out
+    except (KeyError, TypeError, AttributeError, ZeroDivisionError) as e:
+        return [f"gs's record cannot be checked against dc's ({e!r})"]
+
+
 def _key(v: Mapping) -> str:
     return json.dumps(sorted((f"{a}|{b}", x) for (a, b), x in v.items()))
 
@@ -517,7 +619,7 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[str
     if missing:
         reasons.append(f"missing worlds {missing}")
     want_fr = arm_fractions(FRACTION)
-    repro, values, dcv = {}, {}, {}
+    repro, values, dcv, gsv = {}, {}, {}, {}
     for k, r in results.items():
         rows = _rows(r)
         if r.get("anchor_failures"):
@@ -576,8 +678,8 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[str
             same = [a for a, (_, p) in FORM_ARMS.items()
                     if all(row["arms"][a]["score"] == row["arms"][p]["score"] for row in rows)]
             if same:
-                reasons.append(f"{k}: form arms score exactly as the entry's arm of their fraction on every seed: "
-                               f"{same}")
+                reasons.append(f"{k}: form (or gs) arms score exactly as the entry's arm of their fraction on every "
+                               f"seed: {same}")
         values[k] = pr.direction_values(r.get("directions") or {})
         if values[k] is None:
             reasons.append(f"{k}: no full direction record")
@@ -586,6 +688,11 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[str
             reasons.append(f"{k}: no full record of the form dc")
         else:
             reasons.extend(f"{k}: {x}" for x in dc_record_off(r.get("dc_directions"), r.get("directions")))
+        gsv[k] = gs_values(r.get("gs_directions"))
+        if gsv[k] is None:
+            reasons.append(f"{k}: no full record of the group-scaled control gs")
+        else:
+            reasons.extend(f"{k}: {x}" for x in gs_record_off(r.get("gs_directions"), r.get("dc_directions")))
         if not isinstance(r.get("truth_sha256"), str):
             reasons.append(f"{k}: the truth matrix's sha256 is not recorded")
     known = {k: _key(v) for k, v in values.items() if v is not None}
@@ -594,6 +701,9 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[str
     known_dc = {k: _key(v) for k, v in dcv.items() if v is not None}
     if len(set(known_dc.values())) > 1:
         reasons.append(f"dc's recorded sha256, p_g or a_n differ between the worlds' files {sorted(known_dc)}")
+    known_gs = {k: _key(v) for k, v in gsv.items() if v is not None}
+    if len(set(known_gs.values())) > 1:
+        reasons.append(f"gs's recorded sha256 or ratio differ between the worlds' files {sorted(known_gs)}")
     t55 = pr.direction_values(((committed.get("t55_lib3") or {}).get(LIB3) or {}).get("directions") or {})
     if t55 is None:
         reasons.append("try T55's lib3 file holds no full direction record")
@@ -601,11 +711,16 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[str
         off = sorted(k for k, v in known.items() if v != _key(t55))
         if off:
             reasons.append(f"the recorded directions' sha256 or multiples differ from try T55's lib3 file in {off}")
+    by_lib = {}
     for lib in (LIB3, LIB2):
         hashes = {k: r.get("truth_sha256") for k, r in results.items()
                   if TRUTH_OF.get(k) == lib and isinstance(r.get("truth_sha256"), str)}
+        by_lib[lib] = set(hashes.values())
         if len(set(hashes.values())) > 1:
             reasons.append(f"the truth matrix's sha256 differs between the worlds of {lib} {sorted(hashes)}")
+    shared = by_lib[LIB3] & by_lib[LIB2]  # added after review 2
+    if shared:
+        reasons.append(f"a world of {LIB3} and a world of {LIB2} record the same truth matrix sha256 {sorted(shared)}")
     commits = {(r.get("stamp") or {}).get("commit") for r in results.values()}
     unclean = sorted(k for k, r in results.items() if (r.get("stamp") or {}).get("tree_clean") is not True)
     if unclean:
@@ -663,7 +778,8 @@ def statement_2(cells: Mapping[str, Mapping]) -> dict:
     by = {lab: [n for n, c in cells.items() if c["label"] == lab] for lab in ("ahead", "behind", "level")}
     summary = "; ".join(f"{lab} in {len(ns)} of {len(cells)} cells" + (f" ({', '.join(ns)})" if ns else "")
                         for lab, ns in by.items())
-    return {"summary": summary, "counts": {lab: len(ns) for lab, ns in by.items()}, "cells": by}
+    return {"summary": summary, "counts": {lab: len(ns) for lab, ns in by.items()}, "cells": by,
+            "quantity": QUANTITY_2}
 
 
 def best_multiple(mean_scores: Mapping[str, float], arm_at: Callable[[int], str],
@@ -679,23 +795,35 @@ def c_ratio(dc_rec: Mapping) -> float:
 
 
 def statement_3(r: Mapping, world: str, mean_scores: Mapping[str, float]) -> dict:
-    """Per form, the form's best multiple (1 to 4) against the entry's best over ENTRY_RANGE (1 to 6 and 8), paired by
-    seed. NOT_READABLE where the entry's best is at the edge of its range and the c-matched multiple (the form's
-    multiple x c_ratio) lies beyond it: there a larger plain step than any read could still give the form's lead."""
+    """Per form, the form's best multiple (1 to 4) against the control, paired by seed: the higher of the entry's best
+    over ENTRY_RANGE (1, 1.5, 2 to 6 and 8, one multiple for every group) and gs's best over 1 to 4 (the entry's
+    direction scaled per group by a_n/p_g; changed after review 2), the plain one on a tie. NOT_READABLE where the
+    plain best is at the edge of its range and the c-matched plain multiple (the form's multiple x c_ratio) lies beyond
+    it: there a larger plain step than any read could still give the form's lead. The statement carries its mean, its
+    seeds ahead and its label by try T46's test (added after review 2)."""
     e = best_multiple(mean_scores, ENTRY_RANGE.__getitem__, tuple(ENTRY_RANGE))
+    s = best_multiple(mean_scores, lambda x: form_arm(GS, x))
+    plain, scaled = ENTRY_RANGE[e], form_arm(GS, s)
+    control = scaled if mean_scores[scaled] > mean_scores[plain] else plain
     ratio = c_ratio(r["dc_directions"])
     out = {}
     for f in FORMS:
         m = best_multiple(mean_scores, lambda x, f=f: form_arm(f, x))
         matched = m * ratio
-        c = comparison(r, world, form_arm(f, m), ENTRY_RANGE[e])
+        arm = form_arm(f, m)
+        c = comparison(r, world, arm, control)
         if e == ENTRY_EDGE and matched > ENTRY_EDGE:
-            said = (f"{NOT_READABLE}: the entry's best is at the edge of the range read (x{ENTRY_EDGE}) and the form "
-                    f"at x{m} moves along c as far as the entry at x{matched:.2f}")
+            said = (f"{NOT_READABLE}: the entry's best is at the edge of the range read (x{ENTRY_EDGE:g}) and the "
+                    f"form at x{m} moves along c as far as the entry at x{matched:.2f}")
+            statement = said
         else:
             said = ABOVE if holds(c) else NOT_ABOVE
-        out[f] = {"form_multiple": m, "entry_multiple": e, "c_matched_multiple": matched, "comparison": c,
-                  "statement": said}
+            statement = (f"{said}; {c['mean']:+.2f} points against {control}, ahead {c['seeds_ahead']} of {c['of']}, "
+                         f"try T46's test: {c['label']}")
+        out[f] = {"form_multiple": m, "entry_multiple": e, "gs_multiple": s, "control": control,
+                  "c_matched_multiple": matched, "comparison": c,
+                  "against_plain": comparison(r, world, arm, plain),
+                  "against_group_scaled": comparison(r, world, arm, scaled), "said": said, "statement": statement}
     return out
 
 
@@ -714,13 +842,15 @@ def t57_reading(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[
              for k in WORLDS}
     s3 = {k: statement_3(results[k], k, means[k]) for k in WORLDS}
     out.update({"outcome": {"statement_1": {f: s["statement"] for f, s in s1.items()}, "statement_2": s2["summary"],
+                            "statement_2_quantity": QUANTITY_2,
                             "statement_3": {k: {f: x["statement"] for f, x in s3[k].items()} for k in WORLDS}},
                 "statement_1": s1, "statement_2": s2, "statement_3": s3, "differences": diffs,
                 "dc_minus_cn": dc_cn, "mean_scores": means,
                 "thinning": {k: {x: (results[k].get("thinning") or {}).get(x) for x in
                                  ("p", "stream", "depth_ratio", "rebuild_largest_difference", "any_cell_emptied")}
                              for k in REFERENCE_OF},
-                "directions": results[LIB3]["directions"], "dc_directions": results[LIB3]["dc_directions"]})
+                "directions": results[LIB3]["directions"], "dc_directions": results[LIB3]["dc_directions"],
+                "gs_directions": results[LIB3]["gs_directions"]})
     return out
 
 
@@ -753,14 +883,19 @@ def t57_text(res: Mapping) -> str:
             lines.append(f"Statement 1, {f} ({s['quantity']}): {s['statement']}")
             if s["behind"] and s["neither"]:
                 lines.append("    also meeting neither condition: " + ", ".join(s["neither"]))
-        lines.append(f"Statement 2, dc minus cn per cell: {r['statement_2']['summary']}")
-        lines.append("Statement 3, beyond a larger step (the form's best of x1 to x4 against the entry's best of x1 to "
-                     "x6 and x8, paired by seed; the entry's multiple that moves along c as far as the form):")
+        lines.append(f"Statement 2, dc minus cn per cell ({r['statement_2']['quantity']}): "
+                     f"{r['statement_2']['summary']}")
+        lines.append("Statement 3, beyond a larger step (the form's best of x1 to x4 against the better of the "
+                     "entry's best plain step of x1, x1.5, x2 to x6 and x8 and its best group-scaled step (gs, the "
+                     "entry's direction times a_n/p_g per group) of x1 to x4, paired by seed; the plain multiple that "
+                     "moves along c as far as the form in its farthest-moving group):")
         for k in WORLDS:
             for f, x in r["statement_3"][k].items():
-                c = x["comparison"]
-                lines.append(f"    {k}, {f} at x{x['form_multiple']} against the entry at x{x['entry_multiple']}: "
-                             f"{c['mean']:+.2f} points, ahead {c['seeds_ahead']} of {c['of']}, c-matched multiple "
+                p, g = x["against_plain"], x["against_group_scaled"]
+                lines.append(f"    {k}, {f} at x{x['form_multiple']} against the plain step at "
+                             f"x{x['entry_multiple']:g} ({p['mean']:+.2f} points, ahead {p['seeds_ahead']} of "
+                             f"{p['of']}) and the group-scaled step at x{x['gs_multiple']} ({g['mean']:+.2f} points, "
+                             f"ahead {g['seeds_ahead']} of {g['of']}), c-matched plain multiple "
                              f"x{x['c_matched_multiple']:.2f}: {x['statement']}")
         lines.append("Per form and cell, the form minus the entry's arm of the same fraction (try T46's single-task "
                      "test inside the world):")
@@ -779,11 +914,13 @@ def t57_text(res: Mapping) -> str:
                          f"{th['depth_ratio']:.4f} (p {THINNING_OF[k]['p']:.4f}, stream {th['stream']}), rebuild "
                          f"check's largest difference {th['rebuild_largest_difference']:.3g}, any cell left with no "
                          f"count: {th['any_cell_emptied']}")
-        d, dc = r["directions"], r["dc_directions"]
+        d, dc, gs = r["directions"], r["dc_directions"], r["gs_directions"]
         lines.append("    the forms per group (the same in the six files; try T55's equal to its lib3 file): "
                      + "; ".join(
             f"{g}: a_n {e[pr.N]:.4f}, p_g {dc[g]['p_g']:.4f}, dc's squared size over the entry's "
-            f"{zr._f(dc[g].get('size_ratio'), '.4f')}" for g, e in d["entry"].items() if g in dc))
+            f"{zr._f(dc[g].get('size_ratio'), '.4f')}, gs's ratio a_n/p_g "
+            f"{zr._f((gs.get(g) or {}).get('ratio'), '.4f')}"
+            for g, e in d["entry"].items() if g in dc))
     lines.append("Choices the brief left open:")
     lines.extend(f"  - {x}" for x in CHOICES)
     lines.extend(f"Limit: {x}" for x in LIMITS)
