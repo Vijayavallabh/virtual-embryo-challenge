@@ -1,76 +1,85 @@
 #!/usr/bin/env python
 """Try T60 (experiments/harness/TRIES.md): the reachability read. How much of a perfect per-type expression shift can
-ANY size of the entry's external direction (Feng's E9.5 -> E14.5 change, M1's) reach on a one-day task, and how much
-lies outside it?
+the entry's external direction (Feng's E9.5 -> E14.5 change, M1's) reach on a one-day task at the best of several
+sizes, and how much lies outside it?
 
 Readout O1 showed that at an oracle mix a perfect per-type shift adds several board points on a one-day task
 (shift_1 over oracle). Tries T47 and T51 measured how far along Feng's direction a released day moves; they did not
-measure what lies outside the direction (decision log 2026-11-18 (t)). This read puts a bound on that: per type, the
-part of the oracle shift that lies along the direction, at the size that fits it best, scored beside the whole oracle
-shift.
+measure what lies outside the direction (decision log 2026-11-18 (t)). This read compares the oracle shift with the part
+of it that lies along the direction, each at the best of the same five multiples of its own size.
 
 Geometry. Source (and floor) E9.5, as rows T28 and T46. Each E10.5 library L is split once into halves A and B by T27's
 rule (`split_library`: one permutation of the library's rows at SPLIT_SEED, the first half is A). The truth is half A
 cut to the chamber categories, every cell as released (contamination 0, as row T28). Every arm starts from one draw per
 seed of E9.5's real cells at half A's own chamber mix (`vec.t1_scope.reweight`, the oracle mix of rows O1 and T28).
-The oracle shift is fitted on half B (no cell of the truth), E9.5 -> half B, per chamber category, at full size
-(damping 1, O1's shift_1 route: `vec.t1_scope.momentum_shift` with the pre-registered held list, stream [seed, 1]).
-Library 3 (the dissected heart the uploaded file is drawn from) is the reading; libraries 1 and 2 are reported beside
-it. 10 seeds, scored with the board emulator as `experiments/t1_scope/pseudo_task.py` scores (T1:val's genes and
-limits, 10% working copies, computed anchors, build main), every arm against one seed's anchors.
+The oracle shift is fitted on half B (no cell of the truth), E9.5 -> half B, per chamber category (O1's shift_1 route:
+`vec.t1_scope.momentum_shift` with the pre-registered held list, stream [seed, 1]). Library 3 (the dissected heart the
+uploaded file is drawn from) is the reading; libraries 1 and 2 (embryo portions, the kind E9.5 is) are its check, since
+on library 3 the oracle shift also carries the change of sample kind. 10 seeds, scored with the board emulator as
+`experiments/t1_scope/pseudo_task.py` scores (T1:val's genes and limits, 10% working copies, computed anchors, build
+main), every arm against one seed's anchors.
 
-Arms, all on the same drawn cells:
-  copy_last     a uniform draw of E9.5 (reference, not counted)
-  oracle_mix    the base at the truth's mix, no expression change (reference, not counted)
-  oracle_shift  oracle_mix plus the per-type shift fitted on half B at full size (counted)
-  proj_shift    oracle_mix plus, per type, the least-squares projection of the oracle shift's per-gene log factor onto
-                Feng's direction for that type, over the genes on which M1 moves that type (finite direction, not in
-                R2's held set); every other gene unmoved. Applied as oracle_shift is applied (the same call, damping,
-                pseudocount, depth rule and stream, its factor replaced through momentum_shift's logf_by_type), with
-                one difference: the call's held list is M1's (R2's), so that R2's genes are left exactly as they are,
-                outside the depth constant too, as external_shift leaves them; oracle_shift keeps pseudo_task's list. A
-                type whose cells have no Feng group (R1's held types) gets no change. The most any size of the entry's
-                direction can reach for that type on this task: an upper bound that uses the truth to choose the size
-                (counted)
-  proj_perm     the control: proj_shift with each type's direction permuted across the moved genes within deciles of
-                the type's mean CP10k at E9.5 (`vec.harness.t3_decile_permutation`, one permutation per type at
-                [PERM_SEED, the type's index in the config's category order]), projected and applied the same way: the
-                same values and gene set, so the same size profile; its own fitted size (counted)
-  entry_step    oracle_mix plus M1 at the entry's practice step (0.2 of Feng's bracket) with R1, R2 and g_mom's
-                factors (E8.5 -> E9.5, `vec.harness.g_mom_pair_factors`): the arm m1_r_gmom's form on this base
-                (`gmom_combo.moved_by_feng`, stream [seed, 2]; g_mom stream [seed, 5]; reported only, counted)
+Arms, all on the same drawn cells (k runs over MULTIPLES, 0.5, 1, 2, 3 and 4; the arm at k = 1 has the bare name):
+  copy_last         a uniform draw of E9.5 (reference, not counted)
+  oracle_mix        the base at the truth's mix, no expression change (reference, not counted)
+  oracle_shift_x<k> oracle_mix plus the per-type shift fitted on half B at damping k (counted)
+  proj_shift_x<k>   oracle_mix plus k times, per type, the least-squares projection of the oracle shift's per-gene log
+                    factor (damping 1) onto Feng's direction for that type, over the genes on which M1 moves that type
+                    (finite direction, not in R2's held set); every other gene unmoved. Applied as oracle_shift is
+                    applied (the same call, damping 1, pseudocount, depth rule and stream, its factor replaced through
+                    momentum_shift's logf_by_type), with one difference: the call's held list is M1's (R2's), so that
+                    R2's genes are left exactly as they are, outside the depth constant too, as external_shift leaves
+                    them; oracle_shift keeps pseudo_task's list. A type whose cells have no Feng group (R1's held types)
+                    gets no change. Its size is chosen with the truth (counted)
+  proj_perm         the control: proj_shift's size with each type's direction permuted across the moved genes within
+                    deciles of the type's mean CP10k at E9.5 (`vec.harness.t3_decile_permutation`, one permutation per
+                    type at [PERM_SEED, the type's index in the config's category order]): the same values on the same
+                    genes at proj_shift's coefficient, so the same applied size (row T46's placebo) (counted)
+  proj_perm_fit     the same permuted direction at its own least-squares coefficient (reported only, counted)
+  entry_step        oracle_mix plus M1 at the entry's practice step (0.2 of Feng's bracket) with R1, R2 and g_mom's
+                    factors (E8.5 -> E9.5, `vec.harness.g_mom_pair_factors`): the arm m1_r_gmom's form on this base
+                    (`gmom_combo.moved_by_feng`, stream [seed, 2]; g_mom stream [seed, 5]; reported only, counted)
 
 The guard, before any arm of the split is built: on row T28's own task (the whole library L cut to the chamber
 categories, the same E9.5 source, E8.5 as momentum start) this script rebuilds T28's copy_last, oracle and momentum_0.5
-with the same functions and streams as T28's script and scores them with its own scoring path. Each must match T28's
-committed scores (experiments/t1_scope/results/t28_E9.5_E10.5_lib<L>/scores.csv): ten-seed mean within GUARD_MEAN_TOL,
-every seed within GUARD_SEED_TOL. A library whose guard fails writes its task file with the guard and no split arm, and
-the run exits non-zero.
+(`guard_arms`, unit-tested equal to pseudo_task's own candidates) and scores them with its own scoring path. Each must
+match T28's committed scores (experiments/t1_scope/results/t28_E9.5_E10.5_lib<L>/scores.csv): ten-seed mean within
+GUARD_MEAN_TOL, every seed within GUARD_SEED_TOL. A library whose guard fails writes its task file with the guard and no
+split arm, and the run exits non-zero. The run is refused before anything is loaded unless the tree is clean by
+vec.provenance's rule.
 
   run    One library: the guard, then the split arms; writes results/<out>/tasks/lib<L>.json. Refused unless
-         experiments/harness/TRIES.md holds row T60, and on an existing task file. Prints no score: per seed only its
-         time, and the guard's verdict with its largest difference from T28's committed scores.
+         experiments/harness/TRIES.md holds row T60, on an unclean tree, and on an existing task file. Prints no score:
+         per seed only its time, and the guard's verdict with its largest difference from T28's committed scores.
   read   T60's reading of the three task files (rule below, fixed in the row before the run); writes t60.{json,txt}.
 
-The reading, on library 3, paired by seed. A = oracle_shift - proj_shift ("what a new direction could buy at most on
-this task"); C = proj_shift - proj_perm ("what the direction's identity reaches beyond a random direction of the same
-size profile"); B = proj_shift - entry_step, reported only (a matter of step size, a closed lever). Statement (1) "A new
-direction has room": true if A's mean is above A_BAR with at least MIN_AHEAD of 10 seeds above 0. Statement (2) "The
-direction's identity matters": true if C's mean is above C_BAR with at least MIN_AHEAD of 10 seeds above 0. Void unless
-library 3's file holds the ten seeds with every arm, its guard holds, its tree was clean at one commit, every row's
-anchors are uninverted, the coefficients are the same on every seed, oracle_shift differs from oracle_mix and proj_perm
-from proj_shift on at least one seed. Libraries 1 and 2 are read the same way and reported; a void one is named.
+The reading, paired by seed. On each library the best oracle multiple and the best projection multiple are the arms of
+each family with the highest ten-seed mean (the smaller multiple on a tie). A = best oracle - best projection ("what a
+new direction could buy at most on this task"). A library's test of statement (1) "A new direction has room" passes
+when A's mean is above A_BAR with at least MIN_AHEAD of 10 seeds above 0. Library 3's state: "true" if the test passes
+and the best projection multiple is below the largest; "not settled" if it passes with the best projection at the
+largest multiple (still rising along the direction), or fails with the best oracle at the largest multiple (the oracle
+still rising); "false" otherwise. Statement (1) is true only if library 3's state is true and libraries 1 and 2 are
+valid and true as well; if library 3 is true and a portion library is not, it reads "library 3 only" (on library 3 the
+room includes the change of sample kind, which the test's heart-to-heart pair does not have). C = proj_shift - proj_perm
+("what the direction's identity reaches beyond a permutation of it at the same applied size"); statement (2) "The
+direction's identity matters" is true if C's mean is above C_BAR with at least MIN_AHEAD of 10 seeds above 0, on
+library 3. Reported: A at the least-squares size (oracle_shift - proj_shift), C against proj_perm_fit, B = proj_shift -
+entry_step and every arm against oracle_mix. Void unless library 3's file holds the ten seeds with every arm, its guard
+holds, its tree was clean at one commit, every row's anchors are uninverted, oracle_shift differs from oracle_mix and
+proj_perm from proj_shift on at least one seed, and every moved type has a finite coefficient. A library 1 or 2 that is
+void or ran at another commit than library 3 is named and reported, and the reading stands.
 
 NOT an adoption result: the oracle shift is fitted on the truth's own library (in-sample by construction), the task is
-one day and the test two, the projection uses the truth to choose the size, Feng's E9.5 cells lie inside this task's
-external window, and one truth is one fold of evidence. The result can only go to the team captain.
+one day and the test two, the sizes are chosen with the truth, Feng's E9.5 cells lie inside this task's external window,
+and one truth is one fold of evidence. The result can only go to the team captain.
 
 Usage: on the DGX campaign checkout, repo root, the three libraries at one commit, committing nothing until the three
 task files exist (docs/COMPUTE.md):
-  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=8 OPENBLAS_NUM_THREADS=8 MKL_NUM_THREADS=8 \
+  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=8 OPENBLAS_NUM_THREADS=8 MKL_NUM_THREADS=8 \\
       uv run --frozen --no-sync python -I -B experiments/t1_m1/reach_read.py run --out t60_reach --library 3
   (the same with --library 1 and --library 2), then, at the commit that holds the three task files,
-  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=8 OPENBLAS_NUM_THREADS=8 MKL_NUM_THREADS=8 \
+  NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=8 OPENBLAS_NUM_THREADS=8 MKL_NUM_THREADS=8 \\
       uv run --frozen --no-sync python -I -B experiments/t1_m1/reach_read.py read --out t60_reach
 """
 
@@ -126,37 +135,58 @@ MOMENTUM_DAMPING = 0.5  # row T28's momentum_0.5, a guard arm only
 GUARD_ARMS = ("copy_last", "oracle", "momentum_0.5")
 GUARD_MEAN_TOL = 0.1  # board points, ten-seed mean
 GUARD_SEED_TOL = 0.5  # board points, every seed
+MULTIPLES = (0.5, 1.0, 2.0, 3.0, 4.0)  # each family's sizes, multiples of its own (damping 1; the fitted coefficient)
+
+
+def scaled(name: str, k: float) -> str:
+    """The arm of family `name` at multiple k: the bare name at 1, name_x<k> otherwise."""
+    return name if k == 1.0 else f"{name}_x{k:g}"
+
+
+ORACLE_ARMS = tuple(scaled("oracle_shift", k) for k in MULTIPLES)
+PROJ_ARMS = tuple(scaled("proj_shift", k) for k in MULTIPLES)
 REFERENCE_ARMS = ("copy_last", "oracle_mix")
-COUNTED_ARMS = ("oracle_shift", "proj_shift", "proj_perm", "entry_step")
+COUNTED_ARMS = (*ORACLE_ARMS, *PROJ_ARMS, "proj_perm", "proj_perm_fit", "entry_step")
 ARMS = (*REFERENCE_ARMS, *COUNTED_ARMS)
 A_BAR = 1.5
 C_BAR = 0.3
 MIN_AHEAD = 8
 STATEMENT_1 = "A new direction has room"
 STATEMENT_2 = "The direction's identity matters"
-READINGS = {"A": ("oracle_shift", "proj_shift"), "C": ("proj_shift", "proj_perm"), "B": ("proj_shift", "entry_step")}
-LABEL = ("try T60, a labelled in-sample diagnostic, never an adoption result: how much of a perfect per-type shift any "
-         "size of Feng's direction can reach on a one-day task (E9.5 -> half of an E10.5 library, the oracle shift "
-         "fitted on the library's other half); the projection uses the truth to choose the size, the task is one day "
-         "and the test two, and one truth is one fold of evidence; the result can only go to the team captain")
+PORTION_LIBRARIES = tuple(x for x in LIBRARIES if x != READ_LIBRARY)
+# A itself is the best oracle multiple against the best projection multiple (best_arm); these are fixed pairs
+READINGS = {"C": ("proj_shift", "proj_perm"), "A_least_squares": ("oracle_shift", "proj_shift"),
+            "C_fit": ("proj_shift", "proj_perm_fit"), "B": ("proj_shift", "entry_step")}
+LABEL = ("try T60, a labelled in-sample diagnostic, never an adoption result: how much of a perfect per-type shift "
+         "Feng's direction can reach on a one-day task at the best of five sizes (E9.5 -> half of an E10.5 library, "
+         "the oracle shift fitted on the library's other half); the sizes are chosen with the truth, the task is one "
+         "day and the test two, and one truth is one fold of evidence; the result can only go to the team captain")
 LIMITS = (
-    "The oracle shift is fitted on the truth's own library (its other half): in-sample by construction.",
-    "The projection's size is chosen with the truth: proj_shift is an upper bound for any size of the direction, never "
-    "an estimate of what a step rule would deliver.",
-    "The size is the least-squares fit to the oracle's log factor, not the size that scores best: rows T46 and T50 "
-    "found the score along the direction still rising past the share the released day was measured to hold, so a "
-    "better-scoring size along the direction can exist, and A can overstate the room outside it by that much. The "
-    "coefficient is in the units of M1's fraction (0.2 at the practice step) and is reported beside it.",
+    "The oracle shift is fitted on the truth's own library (its other half): in-sample by construction. It carries "
+    "that library's own signature (dissection, capture, ambient RNA), which no developmental direction could predict, "
+    "so the room A measures can be non-developmental.",
+    "Both families' sizes are chosen with the truth (the best of five multiples of each): the arms are optimistic "
+    "bounds, never an estimate of what a step rule would deliver. The best of five sizes is not the best of every "
+    "size: when the best projection is the largest multiple a passing test reads 'not settled', and when the best "
+    "oracle is the largest a failing test reads 'not settled'.",
+    "The projection's coefficient is the least-squares fit to the oracle's log factor over every moved gene, most of "
+    "which the board barely scores; the multiples, not that fit, set the size A uses. The coefficient is in the units "
+    "of M1's fraction (0.2 at the practice step) and is reported beside it; no size read here is a step setting.",
     "The task is one day (E9.5 -> E10.5) and the test two (E10.5 -> E12.5): the horizon ratio is 2 on every counting "
-    "task, so nothing here is a test figure (rule 9, J6).",
-    "One truth is one fold of evidence: library 3 is one released sample, halved; libraries 1 and 2 are other samples "
-    "of another kind and are reported only (rule 9, J5).",
+    "task, so nothing here is a test figure (rule 9, J6). The room outside the direction may be larger at two days.",
+    "One truth is one fold of evidence: library 3 is one released sample, halved (rule 9, J5).",
+    "On library 3 the oracle shift runs from E9.5's embryo portions to a dissected heart, so A there includes the "
+    "change of sample kind (row T27: +8.24 points between the kinds), which the test's heart-to-heart pair does not "
+    "have; statement (1) therefore needs the portion libraries 1 and 2 as well.",
+    "The oracle is fitted on half a library: noise in its small types (epicardium, blood) lowers its score while the "
+    "projection's one coefficient per type averages that noise away, so A can be understated; the multiple 0.5 covers "
+    "part of this.",
     "A counts everything outside the direction's reach: genes M1 holds (R2), genes with no Feng value, types with no "
-    "Feng group (R1, blood among them) and the part of each moved type's shift at right angles to the direction. It "
-    "does not say that any source could reach it.",
-    "C compares the best fit of the real direction with the best fit of one permutation of it: one draw of the "
-    "control, the same values on the same genes, not the same applied size.",
-    "B is a matter of step size, a closed lever; it is reported and decides nothing.",
+    "Feng group (R1, blood among them) and the part of each moved type's shift at right angles to the direction. Any "
+    "source applied as M1 is would hold R2's genes and blood too. A does not say that any source could reach the rest.",
+    "C compares the real direction with one permutation of it at the same applied size: one draw of the control.",
+    "B mixes step size, g_mom's within-type factors and the route of application (per label through external_shift "
+    "against per category through momentum_shift); it is reported and decides nothing.",
 )
 
 
@@ -212,7 +242,9 @@ def project(logf: np.ndarray, direction: np.ndarray, moved: np.ndarray) -> tuple
     coef = float(logf[moved] @ d[moved] / dd) if dd > 0 else 0.0
     out = coef * d
     on = float(logf[moved] @ logf[moved])
+    dc, lc = d[moved] - d[moved].mean(), logf[moved] - logf[moved].mean()  # with a free constant (reported only)
     rec = {"coefficient": coef, "explained_share": float(coef * coef * dd / on) if on > 0 else float("nan"),
+           "coefficient_centred": float(lc @ dc / (dc @ dc)) if float(dc @ dc) > 0 else 0.0,
            "size2_on_moved": on, "size2_off_moved": float(logf[~moved] @ logf[~moved]),
            "n_moved_genes": int(moved.sum())}
     return out, rec
@@ -261,24 +293,26 @@ def capture_shift(start, ref, target_like, held: Sequence[str], seed, **kw) -> t
 
 
 def projections(logf_by_type: Mapping[str, np.ndarray], tgroups: Mapping[str, str | None], directions: Mapping,
-                held_m1: np.ndarray, start, order: Sequence[str]) -> tuple[dict, dict, dict]:
-    """Per shifted type: proj_shift's and proj_perm's log factors and their records. A type with no Feng group gets
-    zeros (no change) in both."""
-    proj, perm, rec = {}, {}, {}
+                held_m1: np.ndarray, start, order: Sequence[str]) -> tuple[dict, dict, dict, dict]:
+    """Per shifted type: the log factors of proj_shift, proj_perm (the permuted direction at proj_shift's coefficient:
+    the same applied size) and proj_perm_fit (the permuted direction at its own least-squares coefficient), and the
+    records. A type with no Feng group gets zeros (no change) in all three."""
+    proj, perm, perm_fit, rec = {}, {}, {}, {}
     for t, logf in logf_by_type.items():
         g = tgroups.get(t)
         if g is None:
-            proj[t] = perm[t] = np.zeros_like(logf)
+            proj[t], perm[t], perm_fit[t] = np.zeros_like(logf), np.zeros_like(logf), np.zeros_like(logf)
             rec[t] = {"group": None, "coefficient": None, "coefficient_perm": None}
             continue
         d = np.asarray(directions[g], dtype=np.float64)
         moved = moved_genes(d, held_m1)
         proj[t], r = project(logf, d, moved)
         dp = permuted_direction(d, type_basis(start, t), moved, type_seed(t, order))
-        perm[t], rp = project(logf, dp, moved)
+        perm_fit[t], rp = project(logf, dp, moved)
+        perm[t] = r["coefficient"] * np.where(moved, np.nan_to_num(dp, nan=0.0), 0.0)
         rec[t] = {"group": g, **r, "coefficient_perm": rp["coefficient"],
                   "explained_share_perm": rp["explained_share"]}
-    return proj, perm, rec
+    return proj, perm, perm_fit, rec
 
 
 def entry_arm(base, directions: Mapping, groups: Mapping[str, str], fraction: float, held_m1: Sequence[str],
@@ -300,21 +334,44 @@ def entry_arm(base, directions: Mapping, groups: Mapping[str, str], fraction: fl
 def split_arms(base, start, sib, directions: Mapping, groups: Mapping[str, str], held_pre: Sequence[str],
                held_m1: Sequence[str], factors, seed: int, order: Sequence[str],
                shift_kw: Mapping) -> tuple[dict, dict]:
-    """The five arms of one seed on `base` (oracle_mix), and the projection records. oracle_shift holds `held_pre`
-    (pseudo_task's list); the projection arms hold `held_m1` (M1's, R2's), as external_shift does."""
+    """Every split arm of one seed on `base` (oracle_mix), and the projection records. The oracle family is
+    momentum_shift at damping k and holds `held_pre` (pseudo_task's list); the projection family applies k times the
+    projection at damping 1 and holds `held_m1` (M1's, R2's), as external_shift does. Every shifted arm uses the same
+    stream [seed, 1]."""
     genes = list(base.var_names)
     held_m1 = sorted(set(held_m1))
     held_m1_mask = np.isin(genes, held_m1)
     shifted, _, logf = capture_shift(start, sib, base, held_pre, [seed, 1], **shift_kw)
     tgroups = type_groups(base, directions, groups)
-    proj, perm, rec = projections(logf, tgroups, directions, held_m1_mask, start, order)
-    arms = {"oracle_mix": base, "oracle_shift": shifted}
-    arms["proj_shift"] = t1_scope.momentum_shift(start, sib, base, DAMPING, held_m1, seed=[seed, 1], logf_by_type=proj,
-                                                 **shift_kw)[0]
-    arms["proj_perm"] = t1_scope.momentum_shift(start, sib, base, DAMPING, held_m1, seed=[seed, 1], logf_by_type=perm,
-                                                **shift_kw)[0]
+    proj, perm, perm_fit, rec = projections(logf, tgroups, directions, held_m1_mask, start, order)
+
+    def along(factors_by_type):
+        return t1_scope.momentum_shift(start, sib, base, DAMPING, held_m1, seed=[seed, 1],
+                                       logf_by_type=factors_by_type, **shift_kw)[0]
+
+    arms = {"oracle_mix": base}
+    for k in MULTIPLES:
+        arms[scaled("oracle_shift", k)] = shifted if k == DAMPING else t1_scope.momentum_shift(
+            start, sib, base, k, held_pre, seed=[seed, 1], **shift_kw)[0]
+    for k in MULTIPLES:
+        arms[scaled("proj_shift", k)] = along({t: k * v for t, v in proj.items()})
+    arms["proj_perm"] = along(perm)
+    arms["proj_perm_fit"] = along(perm_fit)
     arms["entry_step"] = entry_arm(base, directions, groups, FRACTION, held_m1, held_pre, factors, seed)
     return arms, rec
+
+
+def guard_arms(mstart, ref, whole_shares: Mapping[str, float], within: Mapping, fb: Mapping, held_pre: Sequence[str],
+               seed: int, n_cells: int = N_CELLS) -> dict:
+    """Row T28's three arms of one seed on the whole library's shares, as pseudo_task's `candidates` builds them:
+    copy_last (stream [seed, 99]), oracle (reweight at `seed`) and momentum_0.5 (mstart -> ref on the oracle's cells,
+    stream [seed, 2]). fb: stage name -> fallbacks for "E8.5" and "E9.5"."""
+    pick = np.sort(np.random.default_rng([seed, 99]).choice(ref.n_obs, n_cells, replace=False))
+    oracle, _ = t1_scope.reweight(ref, whole_shares, n_cells, seed, within=within, fallback=fb["E9.5"])
+    mom, _ = t1_scope.momentum_shift(mstart, ref, oracle, MOMENTUM_DAMPING, held_pre, within=within,
+                                     start_fallback=fb["E8.5"], ref_fallback=fb["E9.5"], seed=[seed, 2],
+                                     min_cells=MIN_CELLS, eps=EPS)
+    return {"copy_last": pt.to_stage(ref[pick]), "oracle": pt.to_stage(oracle), "momentum_0.5": pt.to_stage(mom)}
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -378,6 +435,9 @@ def cmd_run(a) -> None:
     name = f"lib{a.library}.json"
     gv.refuse_existing(out, (name,))
     started = gv.tree_state()
+    if started["clean"] is not True:  # an unclean stamp would void the library after its tries: refuse before them
+        sys.exit("T60 is refused: the tree is not clean by vec.provenance's rule (git status --untracked-files=all, "
+                 "outside results/, runs/ and experiments/**/results/)")
     seeds = gv.parse_seeds(a.seeds)
     data = Path(a.data)
     board = get_board(BOARD)
@@ -403,12 +463,7 @@ def cmd_run(a) -> None:
     whole_stage = pt.to_stage(whole)
     fresh: dict[str, dict[int, float]] = {g: {} for g in GUARD_ARMS}
     for s in seeds:
-        pick = np.sort(np.random.default_rng([s, 99]).choice(e95.n_obs, N_CELLS, replace=False))
-        oracle, _ = t1_scope.reweight(e95, whole_shares, N_CELLS, s, within=within, fallback=fb["E9.5"])
-        mom, _ = t1_scope.momentum_shift(e85, e95, oracle, MOMENTUM_DAMPING, held_pre, within=within,
-                                         start_fallback=fb["E8.5"], ref_fallback=fb["E9.5"], seed=[s, 2],
-                                         min_cells=MIN_CELLS, eps=EPS)
-        arms = {"copy_last": pt.to_stage(e95[pick]), "oracle": pt.to_stage(oracle), "momentum_0.5": pt.to_stage(mom)}
+        arms = guard_arms(e85, e95, whole_shares, within, fb, held_pre, s)
         res = score_arms(board, arms, whole_stage, ref_stage, s)
         for g in GUARD_ARMS:
             fresh[g][s] = res["arms"][g]["score"]
@@ -420,7 +475,8 @@ def cmd_run(a) -> None:
     record = {"label": LABEL, "row": ROW, "library": a.library, "seeds": list(seeds), "guard": g,
               "constants": {"split_seed": SPLIT_SEED, "perm_seed": PERM_SEED, "perm_bins": PERM_BINS,
                             "n_cells": N_CELLS, "damping": DAMPING, "eps": EPS, "min_cells": MIN_CELLS,
-                            "fraction": FRACTION, "board": BOARD, "frac": SUBSAMPLE_FRAC, "build": DEFAULT_BUILD}}
+                            "fraction": FRACTION, "multiples": list(MULTIPLES), "board": BOARD,
+                            "frac": SUBSAMPLE_FRAC, "build": DEFAULT_BUILD}}
     inputs = [data / f for f in FILES.values()] + [t1_scope.HELD_FLAT_GENES, t28_path(a.library)]
     if not g["holds"]:
         record.update(rows=None, stamp=gv.stamp(started, inputs))
@@ -487,6 +543,23 @@ def statement(comp: Mapping, bar: float, min_ahead: int = MIN_AHEAD) -> bool:
     return bool(comp["mean"] > bar and comp["ahead"] >= min_ahead)
 
 
+def best_arm(rows: Sequence[Mapping], family: Sequence[str]) -> tuple[str, dict[str, float]]:
+    """The arm of `family` (in multiple order) with the highest ten-seed mean score, the smaller multiple on a tie,
+    and every arm's mean."""
+    means = {a: float(np.mean([r["arms"][a]["score"] for r in rows])) for a in family}
+    top = max(means.values())
+    return next(a for a in family if means[a] == top), means
+
+
+def room_state(test: bool, best_oracle: str, best_proj: str) -> str:
+    """One library's state of statement (1) from its test (A above the bar with enough seeds ahead) and where each
+    family's best size lies: a passing test with the projection still rising at its largest multiple, or a failing
+    test with the oracle still rising at its largest, is not settled."""
+    if test:
+        return "not settled" if best_proj == PROJ_ARMS[-1] else "true"
+    return "not settled" if best_oracle == ORACLE_ARMS[-1] else "false"
+
+
 def library_validity(r: Mapping | None, seeds: Sequence[int] = SEEDS) -> list[str]:
     """The void conditions of one library's file."""
     if r is None:
@@ -520,40 +593,54 @@ def library_validity(r: Mapping | None, seeds: Sequence[int] = SEEDS) -> list[st
     return reasons
 
 
+def library_reading(r: Mapping) -> dict:
+    """One valid library: the best of each family, A (best against best), the fixed pairs, every arm against the mix,
+    the test and state of statement (1) and statement (2)'s test."""
+    rows = r["rows"]
+    best_o, means_o = best_arm(rows, ORACLE_ARMS)
+    best_p, means_p = best_arm(rows, PROJ_ARMS)
+    comps = {"A": paired(rows, best_o, best_p), **{k: paired(rows, *pair) for k, pair in READINGS.items()}}
+    for arm in COUNTED_ARMS:
+        comps[f"{arm}_over_mix"] = paired(rows, arm, "oracle_mix")
+    test = statement(comps["A"], A_BAR)
+    oracle_gain = comps[f"{best_o}_over_mix"]["mean"]
+    return {"best_oracle": best_o, "best_projection": best_p, "family_means": {**means_o, **means_p},
+            "comparisons": comps, "test_1": test, "state_1": room_state(test, best_o, best_p),
+            "test_2": statement(comps["C"], C_BAR),
+            "mean_scores": {a: float(np.mean([x["arms"][a]["score"] for x in rows])) for a in ARMS},
+            "reached_share": comps[f"{best_p}_over_mix"]["mean"] / oracle_gain if oracle_gain > 0 else float("nan"),
+            "projection": r["projection"]}
+
+
 def t60_reading(results: Mapping[str, Mapping | None]) -> dict:
-    """results: library -> task file (or None). Void unless library 3 is valid and the valid files share one commit."""
+    """results: library -> task file (or None). Void unless library 3 is valid. A library 1 or 2 that is void or ran at
+    another commit than library 3 is named and reported; statement (1) cannot then be true."""
     libs = {}
     for lib in LIBRARIES:
         reasons = library_validity(results.get(lib))
         libs[lib] = {"valid": not reasons, "reasons": reasons}
-    commits = {results[lib]["stamp"]["commit"] for lib in LIBRARIES if libs[lib]["valid"]}
-    reasons = [f"library {READ_LIBRARY}: " + "; ".join(libs[READ_LIBRARY]["reasons"])] if not libs[READ_LIBRARY][
-        "valid"] else []
-    if len(commits) > 1:
-        reasons.append(f"the valid libraries ran at {len(commits)} commits")
-    out: dict = {"valid": not reasons, "reasons": reasons, "libraries": libs}
-    if reasons:
-        out["outcome"] = "VOID"
-        return out
+    if not libs[READ_LIBRARY]["valid"]:
+        return {"valid": False, "reasons": [f"library {READ_LIBRARY}: " + "; ".join(libs[READ_LIBRARY]["reasons"])],
+                "libraries": libs, "outcome": "VOID"}
+    commit = results[READ_LIBRARY]["stamp"]["commit"]
+    for lib in PORTION_LIBRARIES:
+        if libs[lib]["valid"] and results[lib]["stamp"]["commit"] != commit:
+            libs[lib] = {"valid": False, "reasons": [f"ran at commit {results[lib]['stamp']['commit']}, not library "
+                                                     f"{READ_LIBRARY}'s {commit}"]}
     for lib in LIBRARIES:
-        if not libs[lib]["valid"]:
-            continue
-        rows = results[lib]["rows"]
-        comps = {k: paired(rows, *pair) for k, pair in READINGS.items()}
-        comps["oracle_shift_over_mix"] = paired(rows, "oracle_shift", "oracle_mix")
-        comps["proj_shift_over_mix"] = paired(rows, "proj_shift", "oracle_mix")
-        comps["proj_perm_over_mix"] = paired(rows, "proj_perm", "oracle_mix")
-        comps["entry_step_over_mix"] = paired(rows, "entry_step", "oracle_mix")
-        libs[lib].update(comparisons=comps, statements={STATEMENT_1: statement(comps["A"], A_BAR),
-                                                        STATEMENT_2: statement(comps["C"], C_BAR)},
-                         mean_scores={a: float(np.mean([r["arms"][a]["score"] for r in rows])) for a in ARMS},
-                         projection=results[lib]["projection"])
-        oracle_gain = comps["oracle_shift_over_mix"]["mean"]
-        libs[lib]["reached_share"] = (comps["proj_shift_over_mix"]["mean"] / oracle_gain if oracle_gain > 0
-                                      else float("nan"))
-    out["statements"] = libs[READ_LIBRARY]["statements"]
-    out["outcome"] = "; ".join(f"{k}: {'true' if v else 'false'}" for k, v in out["statements"].items())
-    return out
+        if libs[lib]["valid"]:
+            libs[lib].update(library_reading(results[lib]))
+    state3 = libs[READ_LIBRARY]["state_1"]
+    if state3 != "true":
+        s1 = state3
+    elif all(libs[lib]["valid"] and libs[lib]["state_1"] == "true" for lib in PORTION_LIBRARIES):
+        s1 = "true"
+    else:
+        s1 = f"library {READ_LIBRARY} only"
+    s2 = "true" if libs[READ_LIBRARY]["test_2"] else "false"
+    statements = {STATEMENT_1: s1, STATEMENT_2: s2}
+    return {"valid": True, "reasons": [], "libraries": libs, "statements": statements,
+            "outcome": "; ".join(f"{k}: {v}" for k, v in statements.items())}
 
 
 def _cmp_line(name: str, c: Mapping) -> str:
@@ -568,31 +655,37 @@ def t60_text(res: Mapping) -> str:
     lines = [res["label"], f"Outcome: {r['outcome']}"]
     if not r["valid"]:
         lines.append("Void: " + "; ".join(r["reasons"]))
-    lines.append(f"Statements (library {READ_LIBRARY}, fixed in row T60): ({STATEMENT_1}) A above {A_BAR} with at "
-                 f"least {MIN_AHEAD} of 10 seeds ahead; ({STATEMENT_2}) C above {C_BAR} with at least {MIN_AHEAD} "
-                 "of 10")
+    lines.append(f"Statements (fixed in row T60): ({STATEMENT_1}) A, the best of the oracle multiples against the best "
+                 f"of the projection multiples, above {A_BAR} on its ten-seed mean with at least {MIN_AHEAD} of 10 "
+                 f"seeds ahead, on library {READ_LIBRARY} and on libraries {' and '.join(PORTION_LIBRARIES)}, the best "
+                 "projection below the largest multiple; 'not settled' when a family's best is its largest multiple "
+                 f"on the side that could change the answer; 'library {READ_LIBRARY} only' when a portion library does "
+                 f"not show it. ({STATEMENT_2}) C above {C_BAR} with at least {MIN_AHEAD} of 10 ahead, on library "
+                 f"{READ_LIBRARY}")
     for lib, v in r["libraries"].items():
-        tag = "the reading" if lib == READ_LIBRARY else "reported"
+        tag = "the reading" if lib == READ_LIBRARY else "the check on the change of kind"
         if not v["valid"]:
             lines.append(f"library {lib} ({tag}): void: " + "; ".join(v["reasons"]))
             continue
-        st = ", ".join(f"{k}: {'true' if b else 'false'}" for k, b in v["statements"].items())
-        lines.append(f"library {lib} ({tag}): {st}")
+        lines.append(f"library {lib} ({tag}): statement (1)'s test {'passes' if v['test_1'] else 'fails'}, state "
+                     f"{v['state_1']}; statement (2)'s test {'passes' if v['test_2'] else 'fails'}; best oracle "
+                     f"{v['best_oracle']}, best projection {v['best_projection']}")
         lines.append("    mean scores: " + ", ".join(f"{a} {x:.2f}" for a, x in v["mean_scores"].items()))
-        for k in ("A", "C", "B", "oracle_shift_over_mix", "proj_shift_over_mix", "proj_perm_over_mix",
-                  "entry_step_over_mix"):
+        for k in ("A", "A_least_squares", "C", "C_fit", "B"):
             lines.append(_cmp_line(k, v["comparisons"][k]))
-        lines.append("    share of the oracle shift's gain over the mix that proj_shift reaches: "
+        for arm in COUNTED_ARMS:
+            lines.append(_cmp_line(f"{arm} over the mix", v["comparisons"][f"{arm}_over_mix"]))
+        lines.append("    share of the best oracle's gain over the mix that the best projection reaches: "
                      f"{v['reached_share']:.3f}")
         for t, p in v["projection"].items():
             if p.get("group") is None:
-                lines.append(f"    type {t}: no Feng group (R1): unmoved in proj_shift and proj_perm")
+                lines.append(f"    type {t}: no Feng group (R1): unmoved in the projection arms")
                 continue
-            lines.append(f"    type {t} ({p['group']}): coefficient {p['coefficient']:.3f} (permuted "
-                         f"{p['coefficient_perm']:.3f}); share of the oracle log shift's squared size on the moved "
-                         f"genes along the direction {p['explained_share']:.3f} (permuted "
-                         f"{p['explained_share_perm']:.3f}); squared size on the moved genes "
-                         f"{p['size2_on_moved']:.2f}, off them {p['size2_off_moved']:.2f}")
+            lines.append(f"    type {t} ({p['group']}): coefficient {p['coefficient']:.3f} (with a free constant "
+                         f"{p['coefficient_centred']:.3f}; permuted {p['coefficient_perm']:.3f}; M1's step "
+                         f"{FRACTION:.1f}); share of the oracle log shift's squared size on the moved genes along the "
+                         f"direction {p['explained_share']:.3f} (permuted {p['explained_share_perm']:.3f}); squared "
+                         f"size on the moved genes {p['size2_on_moved']:.2f}, off them {p['size2_off_moved']:.2f}")
     lines.append("What the read cannot show (written before the run):")
     lines += [f"  - {x}" for x in LIMITS]
     lines.append(f"Commit {res['stamp']['commit']}, tree clean {res['stamp']['tree_clean']}, UTC {res['stamp']['utc']}")

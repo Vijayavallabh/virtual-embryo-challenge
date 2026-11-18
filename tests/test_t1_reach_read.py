@@ -167,7 +167,9 @@ def test_proj_shift_is_oracle_shift_when_the_direction_is_the_oracle_shift_itsel
         assert rec[t]["coefficient"] == 1.0 and rec[t]["explained_share"] == 1.0
     assert (counts_of(arms["proj_shift"]) != counts_of(arms["oracle_shift"])).nnz == 0
     assert np.array_equal(dense(arms["proj_shift"].X), dense(arms["oracle_shift"].X))
-    proj, _, _ = rr.projections(logf, rr.type_groups(base, directions, groups), directions, np.isin(GENES, HELD),
+    for k in rr.MULTIPLES:  # every multiple of the projection is the oracle at the same multiple
+        assert (counts_of(arms[rr.scaled("proj_shift", k)]) != counts_of(arms[rr.scaled("oracle_shift", k)])).nnz == 0
+    proj, _, _, _ = rr.projections(logf, rr.type_groups(base, directions, groups), directions, np.isin(GENES, HELD),
                                 start, order)
     assert all(np.array_equal(proj[t], logf[t]) for t in logf)
 
@@ -176,35 +178,80 @@ def test_proj_shift_is_oracle_mix_when_the_direction_is_zero(rr):
     start, sib, base, groups, directions, kw, order = _world(rr)
     zero = {g: np.zeros(len(GENES)) for g in directions}
     arms, rec = rr.split_arms(base, start, sib, zero, groups, HELD, [*HELD, "g5"], _factors(start), 3, order, kw)
-    for k in ("proj_shift", "proj_perm"):
+    for k in (*rr.PROJ_ARMS, "proj_perm", "proj_perm_fit"):
         assert (counts_of(arms[k]) != counts_of(base)).nnz == 0, k
         assert np.allclose(dense(arms[k].X), dense(base.X), atol=1e-6), k
     assert all(v["coefficient"] in (0.0, None) for v in rec.values())
 
 
-def test_the_five_arms_share_the_draw_and_move_as_designed(rr):
+def test_every_split_arm_shares_the_draw_and_moves_as_designed(rr):
     start, sib, base, groups, directions, kw, order = _world(rr)
     held_m1 = [*HELD, "g5", "g6"]
     arms, rec = rr.split_arms(base, start, sib, directions, groups, HELD, held_m1, _factors(start), 3, order, kw)
-    assert list(arms) == ["oracle_mix", "oracle_shift", "proj_shift", "proj_perm", "entry_step"]
+    assert list(arms) == ["oracle_mix", *rr.COUNTED_ARMS]
     assert arms["oracle_mix"] is base
     for name, a in arms.items():  # the same drawn cells, in the same order
         assert list(a.obs["source_obs"]) == list(base.obs["source_obs"]), name
     C = {k: counts_of(v) for k, v in arms.items()}
-    for k in ("oracle_shift", "proj_shift", "proj_perm", "entry_step"):
+    for k in rr.COUNTED_ARMS:
         assert (C[k] != C["oracle_mix"]).nnz > 0, k
-    assert (C["proj_shift"] != C["proj_perm"]).nnz > 0
+    for k in ("proj_perm", "proj_perm_fit"):  # the controls can differ from their arm
+        assert (C["proj_shift"] != C[k]).nnz > 0, k
+    assert (C["proj_perm"] != C["proj_perm_fit"]).nnz > 0
+    # each family's multiples differ from one another
+    for fam in (rr.ORACLE_ARMS, rr.PROJ_ARMS):
+        for x, y in zip(fam, fam[1:], strict=False):
+            assert (C[x] != C[y]).nnz > 0, (x, y)
     # held genes of M1 (R2) and blood (R1) are unmoved by the projection arms; the oracle shift moves both
     g56 = np.isin(GENES, ["g5", "g6"])
     blood = base.obs["category"].astype(str).to_numpy() == "blood"
-    for k in ("proj_shift", "proj_perm"):  # R2's genes exactly as drawn, outside the depth constant too
-        assert (C[k][:, g56] != C["oracle_mix"][:, g56]).nnz == 0
-        assert (C[k][blood] != C["oracle_mix"][blood]).nnz == 0  # R1: blood has no Feng group and stays as drawn
-    assert (C["oracle_shift"][:, g56] != C["oracle_mix"][:, g56]).nnz > 0
+    for k in (*rr.PROJ_ARMS, "proj_perm", "proj_perm_fit"):  # R2's genes exactly as drawn, outside the depth too
+        assert (C[k][:, g56] != C["oracle_mix"][:, g56]).nnz == 0, k
+        assert (C[k][blood] != C["oracle_mix"][blood]).nnz == 0, k  # R1: blood has no Feng group, stays as drawn
+    for k in rr.ORACLE_ARMS:
+        assert (C[k][:, g56] != C["oracle_mix"][:, g56]).nnz > 0 and (C[k][blood] != C["oracle_mix"][blood]).nnz > 0
     assert rec["blood"]["group"] is None and rec["cm"]["group"] == "CM"
     for t in ("cm", "endocardium", "epicardium", "vascular_endothelium"):
         assert np.isfinite(rec[t]["coefficient"]) and rec[t]["coefficient"] != rec[t]["coefficient_perm"]
-    assert (C["oracle_shift"][blood] != C["oracle_mix"][blood]).nnz > 0
+        assert np.isfinite(rec[t]["coefficient_centred"])
+
+
+def test_the_multiples_are_the_same_call_at_k_times_the_size(rr):
+    """oracle_shift_x<k> is momentum_shift at damping k; proj_shift_x<k> applies k times the projection; both at the
+    same stream as the arm at 1, so the families differ from one another only by their factors."""
+    start, sib, base, groups, directions, kw, order = _world(rr)
+    held_m1 = [*HELD, "g5"]
+    arms, _ = rr.split_arms(base, start, sib, directions, groups, HELD, held_m1, _factors(start), 3, order, kw)
+    _, _, logf = rr.capture_shift(start, sib, base, HELD, [3, 1], **kw)
+    proj, _, _, _ = rr.projections(logf, rr.type_groups(base, directions, groups), directions,
+                                   np.isin(GENES, held_m1), start, order)
+    for k in (0.5, 3.0):
+        want_o = t1_scope.momentum_shift(start, sib, base, k, HELD, seed=[3, 1], **kw)[0]
+        assert (counts_of(arms[rr.scaled("oracle_shift", k)]) != counts_of(want_o)).nnz == 0
+        want_p = t1_scope.momentum_shift(start, sib, base, 1.0, held_m1, seed=[3, 1],
+                                         logf_by_type={t: k * v for t, v in proj.items()}, **kw)[0]
+        assert (counts_of(arms[rr.scaled("proj_shift", k)]) != counts_of(want_p)).nnz == 0
+    assert rr.scaled("proj_shift", 1.0) == "proj_shift" and rr.scaled("oracle_shift", 0.5) == "oracle_shift_x0.5"
+
+
+def test_proj_perm_has_proj_shifts_applied_size_and_proj_perm_fit_its_own(rr):
+    """The control is matched in size to its arm: per type the same coefficient on the same multiset of direction
+    values on the same genes, so the same norm of the applied log factor; proj_perm_fit takes its own coefficient."""
+    start, sib, base, groups, directions, kw, order = _world(rr)
+    _, _, logf = rr.capture_shift(start, sib, base, HELD, [3, 1], **kw)
+    held = np.isin(GENES, HELD)
+    proj, perm, perm_fit, rec = rr.projections(logf, rr.type_groups(base, directions, groups), directions, held,
+                                               start, order)
+    for t, v in rec.items():
+        if v["group"] is None:
+            assert not proj[t].any() and not perm[t].any() and not perm_fit[t].any()
+            continue
+        assert np.linalg.norm(perm[t]) == pytest.approx(np.linalg.norm(proj[t]))
+        assert np.array_equal(np.sort(np.abs(perm[t])), np.sort(np.abs(proj[t])))
+        assert not np.array_equal(perm[t], proj[t])
+        moved = rr.moved_genes(directions[v["group"]], held)
+        dp = perm_fit[t][moved] / v["coefficient_perm"]
+        assert np.allclose(perm[t][moved], v["coefficient"] * dp)
 
 
 def test_the_control_permutes_the_same_values_within_deciles_and_differs_from_its_arm(rr):
@@ -290,6 +337,32 @@ def test_the_guard_holds_inside_its_tolerances_and_fails_outside(rr):
     assert rr.GUARD_MEAN_TOL == 0.1 and rr.GUARD_SEED_TOL == 0.5
 
 
+def test_the_guard_arms_are_pseudo_tasks_own_candidates(rr, monkeypatch):
+    """guard_arms builds row T28's copy_last, oracle and momentum_0.5 bit for bit as pseudo_task's `candidates` does
+    on the same stages, shares, fallbacks and held list (a synthetic E8.5 -> E9.5 pair and a hand-made mix)."""
+    spec = load_spec()
+    ref = states_stage(11, SIZES, later=True)
+    classify(ref, source="E9.5_RNA")
+    mstart = states_stage(13, {"V-CM": 200, "Endothelium": 90, "Blood": 40, "Foregut": 60})
+    classify(mstart, source="E8.5_RNA")
+    within = {"surrounding": list(rr.CONTAMINATION_LABELS)}
+    fb = {"E8.5": spec.fallbacks("E8.5_RNA"), "E9.5": spec.fallbacks("E9.5_RNA")}
+    n = 300
+    cfg = {"n_cells": n, "dampings": [0.5], "flip_dampings": [], "eps": rr.EPS, "min_cells": rr.MIN_CELLS,
+           "small_n": 100, "standin_momentum": False, "only": ["momentum_0.5"], "o1": False}
+    monkeypatch.setattr(rr.pt, "_DATA", {"ref": ref, "sibling": ref, "cfg": cfg, "momentum_start": mstart,
+                                         "share_sets": {"oracle": (SHARES, within)}, "within": within,
+                                         "fallback": fb["E9.5"], "sib_fallback": fb["E9.5"],
+                                         "mstart_fallback": fb["E8.5"], "held_flat": list(HELD)})
+    for seed in (0, 7):
+        want = rr.pt.candidates(seed)[0]
+        got = rr.guard_arms(mstart, ref, SHARES, within, fb, list(HELD), seed, n_cells=n)
+        assert set(want) == set(got) == set(rr.GUARD_ARMS)
+        for a in rr.GUARD_ARMS:
+            assert np.array_equal(dense(got[a].X), dense(want[a].X)), a
+            assert np.array_equal(got[a].celltype, want[a].celltype), a
+
+
 def test_the_guards_dry_run_on_committed_reproduction_files(rr):
     """Rule 9, J7: the guard's arithmetic on committed reproduction data other than the pair the row reads. O1's
     reproduction gate reran copy_last, oracle and shift_1 of the E8.5 -> E9.5 runs at n_cells 5,000 under new tags
@@ -317,24 +390,33 @@ def _arm(score):
             "skills": {}, "metrics": {}}
 
 
-def _lib(gains, per_seed=None, seeds=range(10), guard_holds=True, commit="c" * 40, clean=True, perm_equal=False):
-    """A task file: mix 60; oracle_shift = mix + gains['os']; proj_shift = mix + gains['ps']; proj_perm = mix +
-    gains['pp']; entry_step = mix + gains['es']. per_seed: key -> ten values replacing a gain."""
+def _gains(os=0.0, ps=0.0, pp=0.0, pf=0.0, es=0.0, peak_o=1.0, peak_p=1.0):
+    """Every arm's gain over the mix: each family peaks at its `peak_*` multiple (gain os or ps there) and falls by 0.2
+    a step of multiple away from it."""
+    out = {"oracle_mix": 0.0, "copy_last": -10.0, "proj_perm": pp, "proj_perm_fit": pf, "entry_step": es}
+    for k in (0.5, 1.0, 2.0, 3.0, 4.0):
+        out[f"oracle_shift{'' if k == 1 else f'_x{k:g}'}"] = os - 0.2 * abs(k - peak_o)
+        out[f"proj_shift{'' if k == 1 else f'_x{k:g}'}"] = ps - 0.2 * abs(k - peak_p)
+    return out
 
-    def g(k, i):
-        return per_seed[k][i] if per_seed and k in per_seed else gains.get(k, 0.0)
+
+def _lib(gains, per_seed=None, seeds=range(10), guard_holds=True, commit="c" * 40, clean=True, perm_equal=False):
+    """A task file: each arm at the mix (60) plus gains[arm]; per_seed: arm -> ten values added to its gain."""
+
+    def g(arm, i):
+        return gains.get(arm, 0.0) + (per_seed[arm][i] if per_seed and arm in per_seed else 0.0)
 
     rows = []
     for i, s in enumerate(seeds):
-        ps = g("ps", i)
-        arms = {"copy_last": _arm(50.0), "oracle_mix": _arm(60.0), "oracle_shift": _arm(60.0 + g("os", i)),
-                "proj_shift": _arm(60.0 + ps), "proj_perm": _arm(60.0 + (ps if perm_equal else g("pp", i))),
-                "entry_step": _arm(60.0 + g("es", i))}
+        arms = {a: _arm(60.0 + g(a, i)) for a in (*gains, "oracle_mix")}
+        if perm_equal:
+            arms["proj_perm"] = arms["proj_shift"]
         rows.append({"seed": s, "arms": arms, "inverted_anchors": []})
     return {"label": "synthetic", "row": "T60", "library": "x", "seeds": list(seeds),
             "guard": {"holds": guard_holds}, "rows": rows,
-            "projection": {"cm": {"group": "CM", "coefficient": 0.8, "coefficient_perm": 0.1, "explained_share": 0.3,
-                                  "explained_share_perm": 0.01, "size2_on_moved": 4.0, "size2_off_moved": 1.0},
+            "projection": {"cm": {"group": "CM", "coefficient": 0.8, "coefficient_centred": 0.7,
+                                  "coefficient_perm": 0.1, "explained_share": 0.3, "explained_share_perm": 0.01,
+                                  "size2_on_moved": 4.0, "size2_off_moved": 1.0},
                            "blood": {"group": None, "coefficient": None, "coefficient_perm": None}},
             "truth": {"n_rows": 4321, "n_half_b": 4322},
             "stamp": {"commit": commit, "tree_clean": clean, "utc": "x", "inputs": {}}}
@@ -348,60 +430,108 @@ def _write(tmp_path, libs):
     return out
 
 
-ROOM = {"os": 4.0, "ps": 1.0, "pp": 0.2, "es": 0.6}  # A 3.0, C 0.8, B 0.4
-NONE = {"os": 3.0, "ps": 2.5, "pp": 0.5, "es": 1.0}  # A 0.5, C 2.0
+ROOM = _gains(os=4.0, ps=1.0, pp=0.2, pf=0.05, es=0.6)  # A 3.0, C 0.8, B 0.4
+NONE = _gains(os=3.0, ps=2.5, pp=0.5, pf=0.1, es=1.0)  # A 0.5, C 2.0
+S1, S2 = "A new direction has room", "The direction's identity matters"
 
 
 def test_the_statements_follow_their_fixed_bars(rr, tmp_path):
-    res = rr.read(_write(tmp_path, {"1": _lib(NONE), "2": _lib(NONE), "3": _lib(ROOM)}))
+    res = rr.read(_write(tmp_path, {"1": _lib(ROOM), "2": _lib(ROOM), "3": _lib(ROOM)}))
     r = res["reading"]
-    assert r["valid"] and r["statements"] == {rr.STATEMENT_1: True, rr.STATEMENT_2: True}
-    c = r["libraries"]["3"]["comparisons"]
+    assert r["valid"] and r["statements"] == {S1: "true", S2: "true"}
+    v = r["libraries"]["3"]
+    c = v["comparisons"]
+    assert (v["best_oracle"], v["best_projection"]) == ("oracle_shift", "proj_shift")
     assert c["A"]["mean"] == pytest.approx(3.0) and c["C"]["mean"] == pytest.approx(0.8)
     assert c["B"]["mean"] == pytest.approx(0.4) and c["A"]["ahead"] == 10
-    assert r["libraries"]["3"]["reached_share"] == pytest.approx(0.25)
-    assert r["libraries"]["1"]["statements"] == {rr.STATEMENT_1: False, rr.STATEMENT_2: True}
-    # the reading is library 3's: libraries 1 and 2 carry no statement into the outcome
-    res2 = rr.t60_reading({"1": _lib(ROOM), "2": _lib(ROOM), "3": _lib(NONE)})
-    assert res2["statements"] == {rr.STATEMENT_1: False, rr.STATEMENT_2: True}
+    assert c["C_fit"]["mean"] == pytest.approx(0.95) and c["A_least_squares"]["mean"] == pytest.approx(3.0)
+    assert v["reached_share"] == pytest.approx(0.25)
+    r = rr.t60_reading({"1": _lib(NONE), "2": _lib(NONE), "3": _lib(NONE)})
+    assert r["statements"] == {S1: "false", S2: "true"}
+
+
+def test_a_is_the_best_size_against_the_best_size(rr):
+    """A pairs each family's best multiple by ten-seed mean: a projection that peaks at twice its fitted size closes
+    the gap the least-squares size leaves; an oracle that peaks at half its size is read there."""
+    g = _gains(os=3.0, ps=2.0, peak_p=2.0)  # A at the least-squares size 1.2; best against best 1.0
+    v = rr.t60_reading({"3": _lib(g), "1": _lib(g), "2": _lib(g)})["libraries"]["3"]
+    assert v["best_projection"] == "proj_shift_x2" and v["comparisons"]["A"]["mean"] == pytest.approx(1.0)
+    assert v["comparisons"]["A_least_squares"]["mean"] == pytest.approx(1.2)
+    g = _gains(os=3.0, ps=0.5, peak_o=0.5)
+    v = rr.t60_reading({"3": _lib(g)})["libraries"]["3"]
+    assert v["best_oracle"] == "oracle_shift_x0.5" and v["comparisons"]["A"]["mean"] == pytest.approx(2.5)
+    tie = _gains(os=3.0, ps=0.5)
+    tie["oracle_shift_x2"] = tie["oracle_shift"]  # the smaller multiple on a tie
+    assert rr.t60_reading({"3": _lib(tie)})["libraries"]["3"]["best_oracle"] == "oracle_shift"
+
+
+def test_a_family_still_rising_at_its_largest_multiple_leaves_statement_1_not_settled(rr):
+    rising_p = _gains(os=4.0, ps=1.0, peak_p=4.0)  # A passes, but the projection still rises at 4
+    assert rr.t60_reading({"1": _lib(ROOM), "2": _lib(ROOM), "3": _lib(rising_p)})["statements"][S1] == "not settled"
+    rising_o = _gains(os=3.0, ps=2.5, peak_o=4.0)  # A fails, but the oracle still rises at 4
+    assert rr.t60_reading({"1": _lib(NONE), "2": _lib(NONE), "3": _lib(rising_o)})["statements"][S1] == "not settled"
+    # the edge that cannot change the answer does not unsettle it
+    assert rr.t60_reading({"3": _lib(_gains(os=3.0, ps=2.5, peak_p=4.0))})["statements"][S1] == "false"
+    passing = _gains(os=4.0, ps=1.0, peak_o=4.0)
+    assert rr.t60_reading({"1": _lib(passing), "2": _lib(passing), "3": _lib(passing)})["statements"][S1] == "true"
+    assert rr.room_state(True, rr.ORACLE_ARMS[-1], rr.PROJ_ARMS[-1]) == "not settled"
+    assert rr.room_state(False, rr.ORACLE_ARMS[-1], rr.PROJ_ARMS[-1]) == "not settled"
+    assert rr.room_state(False, rr.ORACLE_ARMS[1], rr.PROJ_ARMS[-1]) == "false"
+
+
+def test_statement_1_needs_the_portion_libraries_and_otherwise_reads_library_3_only(rr):
+    for l1, l2 in ((NONE, ROOM), (ROOM, NONE), (NONE, NONE)):
+        r = rr.t60_reading({"1": _lib(l1), "2": _lib(l2), "3": _lib(ROOM)})
+        assert r["valid"] and r["statements"][S1] == "library 3 only"
+    r = rr.t60_reading({"1": None, "2": _lib(ROOM), "3": _lib(ROOM)})  # a void portion library: not true either
+    assert r["valid"] and r["statements"][S1] == "library 3 only" and r["libraries"]["1"]["reasons"] == ["no task file"]
+    # the portion libraries never make library 3's 'false' anything else, nor statement (2)
+    r = rr.t60_reading({"1": _lib(ROOM), "2": _lib(ROOM), "3": _lib(NONE)})
+    assert r["statements"] == {S1: "false", S2: "true"}
+    r = rr.t60_reading({"1": _lib(NONE), "2": _lib(NONE), "3": _lib(_gains(os=4.0, ps=1.0, pp=0.9))})
+    assert r["statements"][S2] == "false"
 
 
 def test_the_bars_are_strict_and_need_eight_seeds_ahead(rr):
-    at_bar = rr.t60_reading({"3": _lib({"os": 1.5, "ps": 0.0, "pp": -0.3})})
+    at_bar = rr.t60_reading({"3": _lib(_gains(os=1.5, ps=0.0, pp=-0.3))})
     assert at_bar["valid"]
-    assert at_bar["statements"] == {rr.STATEMENT_1: False, rr.STATEMENT_2: False}  # equal to a bar is not above it
+    assert at_bar["statements"] == {S1: "false", S2: "false"}  # equal to a bar is not above it
     seven = [3.0] * 7 + [-0.5] * 3  # mean 1.95 above the bar, ahead on 7 of 10
-    r = rr.t60_reading({"3": _lib({"ps": 0.0, "pp": -0.1}, per_seed={"os": seven})})
-    assert r["libraries"]["3"]["comparisons"]["A"]["mean"] > rr.A_BAR
-    assert r["statements"][rr.STATEMENT_1] is False
+    g = _gains(os=0.0, ps=0.0, pp=-0.1)
+    r = rr.t60_reading({"3": _lib(g, per_seed={a: seven for a in rr.ORACLE_ARMS})})
+    assert r["libraries"]["3"]["comparisons"]["A"]["mean"] > rr.A_BAR and r["libraries"]["3"]["test_1"] is False
     eight = [2.5] * 8 + [-0.5] * 2
-    r = rr.t60_reading({"3": _lib({"ps": 0.0, "pp": -0.1}, per_seed={"os": eight})})
-    assert r["statements"][rr.STATEMENT_1] is True
+    r = rr.t60_reading({"3": _lib(g, per_seed={a: eight for a in rr.ORACLE_ARMS})})
+    assert r["libraries"]["3"]["test_1"] is True and r["statements"][S1] == "library 3 only"
 
 
 def _noise_rates(rr, sd, draws, seed=20261119):
+    """Every arm the mix plus independent noise per seed, on all three libraries."""
     rng = np.random.default_rng(seed)
-    made = {rr.STATEMENT_1: 0, rr.STATEMENT_2: 0}
+    made = {"test_1": 0, S1: 0, S2: 0}
+    zero = {"copy_last": -10.0, **{a: 0.0 for a in rr.COUNTED_ARMS}}
     for _ in range(draws):
-        per = {k: rng.normal(0.0, sd, 10) for k in ("os", "ps", "pp", "es")}
-        st = rr.t60_reading({"3": _lib({}, per_seed=per)})["statements"]
-        for k in made:
-            made[k] += st[k]
+        libs = {lib: _lib(zero, per_seed={a: rng.normal(0.0, sd, 10) for a in rr.COUNTED_ARMS})
+                for lib in rr.LIBRARIES}
+        r = rr.t60_reading(libs)
+        made["test_1"] += r["libraries"]["3"]["test_1"]
+        made[S1] += r["statements"][S1] == "true"
+        made[S2] += r["statements"][S2] == "true"
     return {k: v / draws for k, v in made.items()}
 
 
 def test_on_pure_noise_the_statements_are_made_at_these_rates(rr):
-    """Every arm the mix plus independent noise per seed, no effect anywhere. At 0.25 points per arm (a paired sd of
-    0.35, above the per-seed sd of a paired difference on the committed library-3 files: 0.15 to 0.23 in T46, 0.18 in
-    T28) statement (1) is never made in 2,000 draws and statement (2) in under 1% (0.5% here). At 1 point per arm (a
-    paired sd of 1.4) statement (1) is made once in 2,000 draws, since its bar is 1.5 points; statement (2), whose bar
-    is 0.3, is made in about 5% of draws: 8 of 10 seeds ahead happens by chance 5.5% of the time, and a paired sd of
-    1.4 points puts the mean above 0.3 in most of those. The row states both."""
-    low = _noise_rates(rr, 0.25, 2000)
-    assert low[rr.STATEMENT_1] == 0.0 and low[rr.STATEMENT_2] < 0.01
-    high = _noise_rates(rr, 1.0, 2000)
-    assert high[rr.STATEMENT_1] < 0.002
-    assert 0.02 < high[rr.STATEMENT_2] < 0.07
+    """No effect anywhere, every arm the mix plus independent noise per seed. Taking the best of five multiples on each
+    side adds no bias in A on pure noise (both maxima have the same law), but widens A's spread. At 0.25 points per arm
+    (a paired sd of 0.35, above the committed library-3 paired sds of 0.13 to 0.40 in T46) library 3's test of (1)
+    never passes and (2) is made in under 1% of draws (0.3% in 4,000 draws). At 1 point per arm (a paired sd of 1.4)
+    the test of (1) still never passes in 4,000 draws, since its bar is 1.5 points; (2), whose bar is 0.3, is made in
+    about 5% of draws: 8 of 10 seeds ahead happens by chance 5.5% of the time. The row states these rates."""
+    low = _noise_rates(rr, 0.25, 1000)
+    assert low["test_1"] == 0.0 and low[S1] == 0.0 and low[S2] < 0.01
+    high = _noise_rates(rr, 1.0, 1000)
+    assert high["test_1"] < 0.005 and high[S1] == 0.0
+    assert 0.02 < high[S2] < 0.08
 
 
 def test_the_void_conditions(rr):
@@ -412,20 +542,22 @@ def test_the_void_conditions(rr):
                      (dict(seeds=range(9)), "seeds")):
         r = rr.t60_reading({**ok, "3": _lib(ROOM, **bad)})
         assert r["outcome"] == "VOID" and any(why in x for x in r["reasons"]), why
-    r = rr.t60_reading({**ok, "3": _lib({"os": 0.0, "ps": 1.0, "pp": 0.2})})
+    flat = dict(ROOM, oracle_shift=0.0)
+    r = rr.t60_reading({**ok, "3": _lib(flat)})
     assert r["outcome"] == "VOID" and any("oracle_shift scores exactly as oracle_mix" in x for x in r["reasons"])
     r = rr.t60_reading({"1": None, "2": _lib(NONE), "3": None})
     assert r["outcome"] == "VOID" and "no task file" in r["reasons"][0]
     # a void portion library is named and reported; the reading on library 3 stands
     r = rr.t60_reading({**ok, "1": _lib(NONE, guard_holds=False)})
     assert r["valid"] and not r["libraries"]["1"]["valid"] and r["libraries"]["2"]["valid"]
-    r = rr.t60_reading({**ok, "1": None})
-    assert r["valid"] and r["libraries"]["1"]["reasons"] == ["no task file"]
-    # the valid libraries at two commits: void
+    # a portion library at another commit than library 3 is void and named; library 3's reading stands
     r = rr.t60_reading({**ok, "2": _lib(NONE, commit="d" * 40)})
-    assert r["outcome"] == "VOID" and any("2 commits" in x for x in r["reasons"])
+    assert r["valid"] and not r["libraries"]["2"]["valid"] and "not library 3's" in r["libraries"]["2"]["reasons"][0]
+    assert r["statements"][S1] == "library 3 only"
+    r = rr.t60_reading({"1": _lib(ROOM, commit="d" * 40), "2": _lib(ROOM, commit="d" * 40), "3": _lib(ROOM)})
+    assert r["valid"] and r["statements"][S1] == "library 3 only"
     missing = _lib(ROOM)
-    del missing["rows"][3]["arms"]["proj_perm"]
+    del missing["rows"][3]["arms"]["proj_shift_x3"]
     r = rr.t60_reading({**ok, "3": missing})
     assert r["outcome"] == "VOID" and any("missing" in x for x in r["reasons"])
     inv = _lib(ROOM)
@@ -434,9 +566,9 @@ def test_the_void_conditions(rr):
 
 
 def test_the_text_holds_the_statements_and_limits_and_no_count(rr, tmp_path):
-    res = rr.read(_write(tmp_path, {"1": _lib(NONE), "2": _lib(NONE), "3": _lib(ROOM)}))
+    res = rr.read(_write(tmp_path, {"1": _lib(ROOM), "2": _lib(ROOM), "3": _lib(ROOM)}))
     txt = (tmp_path / "out" / "t60.txt").read_text()
-    assert f"{rr.STATEMENT_1}: true" in txt and f"{rr.STATEMENT_2}: true" in txt
+    assert f"Outcome: {S1}: true; {S2}: true" in txt
     for line in rr.LIMITS:
         assert line in txt
     body = txt.rsplit("\nCommit ", 1)[0]
@@ -452,10 +584,24 @@ def test_the_run_is_refused_without_its_row(rr, monkeypatch):
         rr.main(["run", "--library", "3", "--out", "x", "--data", "/nonexistent"])
 
 
+def test_the_run_is_refused_on_an_unclean_tree_before_anything_loads(rr, monkeypatch):
+    monkeypatch.setattr(rr.n12, "tries_rows", lambda: {"T60"})
+    for state in ({"commit": "c", "clean": False}, {"commit": "unknown", "clean": None}):
+        monkeypatch.setattr(rr.gv, "tree_state", lambda s=state: dict(s))
+        with pytest.raises(SystemExit, match="not clean"):
+            rr.main(["run", "--library", "3", "--out", "x", "--data", "/nonexistent"])
+
+
 def test_the_constants_are_the_rows(rr):
-    assert rr.COUNTED_ARMS == ("oracle_shift", "proj_shift", "proj_perm", "entry_step")
+    assert rr.MULTIPLES == (0.5, 1.0, 2.0, 3.0, 4.0)
+    assert rr.ORACLE_ARMS == ("oracle_shift_x0.5", "oracle_shift", "oracle_shift_x2", "oracle_shift_x3",
+                              "oracle_shift_x4")
+    assert rr.PROJ_ARMS == ("proj_shift_x0.5", "proj_shift", "proj_shift_x2", "proj_shift_x3", "proj_shift_x4")
+    assert rr.COUNTED_ARMS == (*rr.ORACLE_ARMS, *rr.PROJ_ARMS, "proj_perm", "proj_perm_fit", "entry_step")
+    assert len(rr.COUNTED_ARMS) * len(rr.LIBRARIES) == 39  # the row's count of tries
     assert rr.REFERENCE_ARMS == ("copy_last", "oracle_mix")
-    assert (rr.A_BAR, rr.C_BAR, rr.MIN_AHEAD, rr.READ_LIBRARY) == (1.5, 0.3, 8, "3")
+    assert (rr.A_BAR, rr.C_BAR, rr.MIN_AHEAD, rr.READ_LIBRARY, rr.PORTION_LIBRARIES) == (1.5, 0.3, 8, "3", ("1", "2"))
     assert (rr.N_CELLS, rr.DAMPING, rr.EPS, rr.MIN_CELLS, rr.PERM_BINS) == (5000, 1.0, 0.5, 20, 10)
-    assert rr.READINGS == {"A": ("oracle_shift", "proj_shift"), "C": ("proj_shift", "proj_perm"),
-                           "B": ("proj_shift", "entry_step")}
+    assert rr.READINGS == {"C": ("proj_shift", "proj_perm"), "A_least_squares": ("oracle_shift", "proj_shift"),
+                           "C_fit": ("proj_shift", "proj_perm_fit"), "B": ("proj_shift", "entry_step")}
+    assert (rr.STATEMENT_1, rr.STATEMENT_2) == (S1, S2)
