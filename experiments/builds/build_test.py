@@ -28,7 +28,12 @@ machine, and an official upload needs the captain's go-ahead.
           E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`). --trend
           (both heart files since the captain's ruling of 2026-11-13, docs/PLAN.md decision log (w); row H11 of
           experiments/harness/TRIES.md): b0_trend, each lineage's momentum the least-squares trend over E8.25_late to
-          E10.5 in place of the E9.5 -> E10.5 step alone
+          E10.5 in place of the E9.5 -> E10.5 step alone. --expression copy (off by default; --entry s1 only, refused
+          with --trend, --depth, --herd and --cfm): the copy baseline's cells and expression (the draw B0 starts
+          from, `vec.harness._copy`), no momentum. --z-mode raw (off by default): the size step's isotropic mode,
+          every axis scaled by one factor to the hypothesis's target RMS, in place of the mode the size JSON
+          recorded. The captain's direction for the heart's second upload (2026-11-18, docs/PLAN.md decision log
+          2026-11-18 (k)): heart --entry s1 --expression copy --z-mode raw
   embryo  --method pseudobulk_shift | fgw | fgw_shape0 | fgw_shape1: E7.5 cells moved by the E7.25 -> E7.5 change, or
           the FGW interpolation between E7.5 and E8.0 at t = 1/2 (fgw_shape0, the s2 of docs/S2_RULES.md, keeps the
           mixture in E7.5's geometry); sized by the pre-registered embryo procedure (size_embryo_E7.75.json)
@@ -431,6 +436,10 @@ def build_heart(a) -> dict:
     genes = board.genes
     if a.trend and (a.entry == "s2" or a.depth or a.herd or a.cfm):
         sys.exit("--trend is refused with --entry s2, --depth, --herd and --cfm (no try read those combinations)")
+    copy = a.expression == "copy"
+    if copy and (a.entry != "s1" or a.trend or a.depth or a.herd or a.cfm):
+        sys.exit("--expression copy is refused with --entry s2 or s2_trim, --trend, --depth, --herd and --cfm (it is "
+                 "the copy baseline's draw from --entry s1's pool, the full E10.5, with no step)")
     ref = load_stage(DATA / "T2/E10.5.h5ad", genes=genes, drop_duplicates=True)
     start = load_stage(DATA / "T2/E9.5.h5ad", genes=genes, drop_duplicates=True)
     pool, trim = ref, None
@@ -452,21 +461,31 @@ def build_heart(a) -> dict:
     count = _t2_count(board, pool.n_obs)
     ctx = harness.BuildContext(task=view, board=harness._candidate_board(board), inputs=inputs, seed=a.seed)
     trend_rec: dict = {}
-    if a.trend:
+    if copy:  # the copy baseline: B0's own draw (draw_copy, same context, seed and count) through finish, no step
+        stage = harness._copy(ctx)
+    elif a.trend:
         stage = harness._b0_t2(ctx, trend=True, trend_record=trend_rec)  # b0_trend, the harness's B0 otherwise
     else:
         stage = harness._b0_t2(ctx, depth=a.depth, herd=a.herd, cfm=a.cfm)  # the harness's B0 with its guard and checks
     hyp = {"s1": "H1", "s2": "H2", "s2_trim": "H2"}[a.entry]
+    z_mode = None if a.z_mode == "recorded" else a.z_mode  # None: the mode the size JSON recorded
     # the size step checks its reference against the full E10.5 cloud it measured; it rescales the (trimmed) cells
-    coords, size = t2_build.size_or_hold(stage.coords, SIZES["heart"], hyp, source_stage="E10.5", reference_cloud=ref,
-                                         expect_board="heart")
+    if z_mode is None:
+        coords, size = t2_build.size_or_hold(stage.coords, SIZES["heart"], hyp, source_stage="E10.5",
+                                             reference_cloud=ref, expect_board="heart")
+    else:
+        coords, size = t2_build.size_or_hold(stage.coords, SIZES["heart"], hyp, source_stage="E10.5",
+                                             reference_cloud=ref, z_mode=z_mode, expect_board="heart")
     _, report = t2_build.build_submission(board, stage.X, coords, genes=list(genes), out=a.out)
     if not report.ok:
         raise SystemExit(f"the built file fails its check: {report.errors}")
-    return {"entry": f"B0 {a.entry} ({hyp})", "board": board.key, "dry_run": dry, "n_cells": int(stage.n),
+    entry = f"copy {a.entry} ({hyp})" if copy else f"B0 {a.entry} ({hyp})"
+    return {"entry": entry, "board": board.key, "dry_run": dry, "n_cells": int(stage.n),
             "seed": a.seed, "count_decision": count, "trim": trim, "depth_step": bool(a.depth),
             **({"cfm_step": t2_build.CFM_RULE} if a.cfm else {}),
             **({"trend": _trend_record(trend_rec)} if a.trend else {}),
+            **({"expression": "copy"} if copy else {}),
+            **({"z_mode": z_mode} if z_mode is not None else {}),
             "size": {k: size[k] for k in size if not isinstance(size[k], (dict, list))}}
 
 
@@ -615,6 +634,17 @@ def build_parser() -> argparse.ArgumentParser:
                                 "E8.75, E9.5 and E10.5, over B0's time budget (the captain's ruling of 2026-11-13, "
                                 "docs/PLAN.md decision log (w); ledger row H11 of experiments/harness/TRIES.md); "
                                 "with --entry s1 or s2_trim, refused with --entry s2, --depth, --herd and --cfm")
+            p.add_argument("--expression", choices=("b0", "copy"), default="b0",
+                           help="b0 = B0's momentum step (the default, the entry as built); copy = the copy baseline's "
+                                "cells and expression, B0's own draw with no step (the captain's direction for the "
+                                "heart's second upload, docs/PLAN.md decision log 2026-11-18 (k)); --entry s1 only, "
+                                "refused with --trend, --depth, --herd and --cfm")
+            p.add_argument("--z-mode", choices=("recorded", "raw"), default="recorded",
+                           help="the size step's z mode: recorded = the mode the size JSON pre-registered (the "
+                                "default); raw = the isotropic mode the JSON also logs, one factor on all three axes "
+                                "to that raw mode's own target RMS for the hypothesis (z_modes.raw, not the recorded "
+                                "mode's pre-registered target); refused when the size JSON is not valid (its "
+                                "fallback is already isotropic: build with recorded then)")
         if name == "embryo":
             p.add_argument("--method", choices=("pseudobulk_shift", *EMBRYO_T_POS), required=True,
                            help="fgw = s1; fgw_shape0 = the s2 of docs/S2_RULES.md (E7.5's geometry)")
