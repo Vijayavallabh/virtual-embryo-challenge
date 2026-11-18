@@ -624,8 +624,9 @@ by the main session with identical output ((t)).
 
 **10. The embryo's last file (the question as put to the captain on 2026-11-18; (v), state at 20:56).**
 - Procedure: the embryo's second upload is `fgw_aligned_series`, by the captain's ruling R4 of 2026-11-13
-  (`docs/S2_RULES.md`, "Amendments of 2026-11-13"); row E47's rule (ii), fixed before its run, keeps fgw_shape0 as
-  the floor-form arm of the question and `fgw_shape0_series` before the series twin on the exact geometry.
+  (`docs/S2_RULES.md`, "Amendments of 2026-11-13"). Row E47's rule (ii), fixed before its run, decided which arms
+  enter the question; by its reading fgw_shape0 and `fgw_shape0_series` stay, and the two arms on the exact geometry
+  do not replace them.
 - The question put to the captain, one file, each option with the pre-registered size and the count rule and no
   closed lever touched: (1) `fgw_shape0x`, the first upload's own cells and expression on E7.5's exact positions, the
   AI assistant's recommendation, formed after row E47's result and against that row's rule (ii); (2)
