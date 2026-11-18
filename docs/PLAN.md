@@ -4832,3 +4832,35 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     (2,151 passed) and at 628909f (2,214 passed, lock and lint clean) and is running at de8f8b5, the commit of row
     T57. The corrections above are in the rows. Part two of this pass (rows T55 to T57, entries (f) to (h), and a
     sweep of the ledger for lines still open) follows try T57's reading.
+- 2026-11-18 (b), try T57 is read and the common-part family is closed by the use fixed before its run: no request.
+  Written by the AI assistant. Nothing in any upload, build, rule or gate file has changed.
+  - **The reading.** Row T57 was committed at de8f8b5 before its run (its use in entry 2026-11-17 (h) before the row),
+    the six worlds ran at that commit (3 hours 18 minutes, clean tree), the task files were committed unread at
+    cbd498b and the reading was run once (18c016a). Statement 1 reads 'behind somewhere' for both forms. The common
+    part alone (`cn`) is ahead of the entry's direction at 1 to 3 times the practice step against library 3's truth
+    (+0.20 to +0.50, every seed) and loses its lead against library 2's: +0.14 to +0.21 at one time, level at two and
+    three, behind at four times in all three library-2 worlds (-0.31, -0.31, -0.37). The form that keeps each group's
+    own part and only raises the coefficient on the common part (`dc`) is ahead in all twelve cells at one and two
+    times (+0.30 to +0.70, every seed) and behind at four times in the two worlds where the truth is deeper than the
+    reference (-0.56 and -0.80), level or behind at three times there.
+  - **What the pre-set use gives.** A form goes to the captain only if its statement 1 reads ahead in every cell read;
+    any other reading closes the family with no request, as part of the question of the step's size. Neither form
+    passes, so nothing is requested and the builder option of `campaign/t1-w` stays on its branch, unused. This
+    closure rests on a gate fixed before the run, not on the AI assistant's reading.
+  - **The third cold check, closed out.** Its third attack (every depth world of try T56 came from the library where
+    the form gains most) is borne out: against library 2's truth the parts `cn` deletes are worth +0.28 to +0.74
+    (statement 2, every seed). Its second (an arm that keeps the per-group parts and raises the coefficient on the
+    common part matches the form) is borne out and more: that arm is ahead of `cn` in 8 cells and behind in 3. Its
+    kill shot (the form is in part the step lever) stands for `dc` by construction, and for `cn` wherever larger steps
+    still gain; `cn` is 'above the best plain and group-scaled step read' only in the three library-3 worlds, by +0.10
+    to +0.50. Verdict by the pre-set gate: stop.
+  - **What the read adds to the captain's question on the step, as the AI assistant's reading and no request.** At the
+    practice multiples one and two, a further step along the common part alone, per group (`dc`), gains +0.30 to +0.70
+    in all six worlds, the two deepest included, where a plain step of twice the fraction is already level with its
+    neighbours; at four times it loses in those two worlds. That is the same shape as the plain step's table of entry
+    (a), a little more favourable at the entry's own multiple, and its sign at the test turns on the same depth. It is
+    quoted with the step's question and changes nothing in it.
+  - **Other state.** The full test suite on the DGX at de8f8b5: lock 0, lint 0, 2,456 tests passed, clean tree. Tries:
+    T1 200, embryo 73, heart 31, T3 31. The committed estimate stays 184 (170 to 198). Next: the independent
+    recomputation of try T57 and of entry (h)'s figures, and part two of the ninth pass (rows T55 to T57, entries (f)
+    to (h) and these two, and a sweep of the ledger for lines still open).
