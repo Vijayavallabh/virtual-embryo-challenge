@@ -5348,3 +5348,34 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     wf_bfc2939d-aa0: the screened check (mail, Slack, the Rules and Data Protocol pages, overall leaderboard totals),
     audited by a second agent before the main session reads it. Owed before any second file is built: the amendment
     to `docs/S2_RULES.md` with the captain's words and the new hash.
+- 2026-11-18 (l), the screened check, two second uploads handed to the captain, the two organiser drafts, and the
+  captain's order on organiser replies. Written by the AI assistant.
+  - **The screened check** (wf_bfc2939d-aa0, read on 2026-11-18 from about 15:40 to 15:46 UTC and audited;
+    `docs/ORGANIZER_QUESTIONS.md`, "Screened check of 2026-11-18"): no organiser answer to any open question, no
+    organiser post in the Slack channel since 2026-11-13, and no leaderboard figure (the page's table did not load).
+    The Rules page's Section 10, as released: scores may choose among predictions and not compute them, and "the test
+    is whether the truth enters your prediction's content or only its selection". By the rules fixed beforehand
+    nothing switches.
+  - **Handed to the captain for upload,** each re-verified against the reference list beforehand: `builds/T1_s2.h5ad`
+    (f169ea492e8d) for `T1:test` and `builds/T2embryo_s2.h5ad` (41982d8afd78) for `T2:embryo:test_interp`, both built
+    on 2026-11-13 by the rules as they stood. Held: T3's last file, until row K16 is read; the heart's, until it is
+    built.
+  - **The two drafts** are in the captain's Gmail drafts and recorded in `docs/ORGANIZER_QUESTIONS.md`: the disclosure
+    email, which now also lists the two files above, and the scorer-build note.
+  - **A figure of the AI assistant's withdrawn.** It had told the captain that a fix of the scorer build at the final
+    evaluation "could be worth about +1.8 overall". The strategy review of the note showed that to be one-sided: under
+    the right-handed build every file is compared directly, and the embryo file, whose partners the record shows
+    mirrored at the test pair, could score lower as easily as higher; the heart's direction is unknown. The note
+    therefore asks only which version applies and asks for no change to any score.
+  - **The captain's order** (verbatim; written by him into a side agent's note on that correction, which he forwarded):
+    "so you assume their reply and proceed as soon as possible [my order]".
+  - **How the AI assistant reads it:** no step waits for an organiser reply. The replies it assumes are working
+    assumptions and never rulings; the odds are its own judgement; no file and no estimate changes on an assumed
+    reply.
+
+    | Question | Assumed reply | Odds | If wrong |
+    |---|---|---|---|
+    | The scorer build for the test scores and the final evaluation | the build that runs now, no change | 0.8 | every Task 2 file is compared directly; our Dice on both Task 2 boards could move either way; nothing can be prepared |
+    | The same prediction in two row orders | not acceptable | 0.8 | nothing: it is not done |
+    | The validation files, the Gata4 replicates included, as inputs | allowed | 0.75 | restricted: T3's first upload falls away and the second, which takes no number from them, carries the board; a full bar touches every board and no choice of file protects against it |
+    | Final entries | nominated per board, the better published score | 0.8 | a per-set nomination would cost the better of two on some boards; the nomination is the captain's act on the site |
