@@ -1,0 +1,10 @@
+run folder on the DGX: ~/v/vec-campaign-c/runs/harness/k15_file_form_half (campaign checkout)
+commit: 36c4d3d2bfccf8c0a16307868eb3e3d7e6e734f2 (branch campaign/t3-f-fix2)
+tree at start (bytes of git status --porcelain): 0
+tree at end (bytes): 0
+started UTC: 2026-11-18T03:50:10Z
+ended UTC: 2026-11-18T03:53:41Z
+CPU only, 8 BLAS threads, one process per fold
+commands: experiments/t3_decomp/k15_file_form_half.py run --task r12|r21 --out <runs>; then read --runs <runs> --out <reading>
+tasks/: the two task files as written by the run; reading.json and reading.txt: the fixed reading as the script wrote it
+validity: the reading's own line says whether s1x reproduces try K10's committed scores (the K10 task files are on the branch, byte copies of main's)
