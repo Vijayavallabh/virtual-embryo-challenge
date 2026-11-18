@@ -14,25 +14,22 @@
   2026-11-17 (a) has the whole list. The organisers also answered the exposure notice (accepted; they ask for the
   explanation and the precommitted procedure in the method report): a further reply to the thread's other questions
   is announced and must go through a screening agent, never be pasted.
-- **What is live (2026-11-18, 03:05 UTC).** No candidate change is live. On Task 1 two lines were read on 17 and
-  18 November. (1) The step's size (tries T44 to T54): the rule fixed before the runs gives 0.60 on both uploads;
-  a cold check said stop; the ninth independent pass classed that stop as the AI assistant's judgement, so the
-  question is the captain's (table below). (2) The common part of Feng's direction (tries T55 to T57): **closed by
-  try T57's pre-set use, no request** (decision log 2026-11-18 (b)). The ninth pass is complete (entries
-  2026-11-18 (a) and (c)): no result wrong, no open line. **Being built now, no row yet, nothing run:** five reads
-  whose uses entry (c) fixed: T58 (`campaign/t1-y`, brief `lift6/briefs/t1y.md`), T59 (`campaign/t1-z`, `t1z.md`),
-  K15 (`campaign/t3-f` from `campaign/t3-e-fix`, `t3f.md`), H24 and E46 (`campaign/herd-t2`, `herd2.md`); each by
-  `lift6/build_review_workflow.js` (builder, independent review of design and code, up to three fix rounds). For
-  each, when its review says ready: take the files onto main (T58, T59: script and tests; K15 and the herding
-  candidates stay on their campaign branches, as tries K9 to K14 and every candidate do), write the row from the
-  script's own statements with the use of entry (c) (`lift6/rowcells.py`; last cell `*(pending: the run follows
-  this row's commit)*`), commit, `lift6/sync_campaign.sh <checkout> <main or branch>`, launch detached with a
-  background waiter, bring the files back, commit them unread, read once, `lift6/outcome.py`, then an independent
-  recomputation. The DGX holds four campaign checkouts (`~/v/vec-campaign` and `-h7` at de8f8b5, `-c`, `-d`; all
-  idle and clean; the reference checkout is untouched at dc7b6ae). Builder options built, reviewed and unused:
-  `campaign/t1-n` (2921b96, a step fraction) and `campaign/t1-w` (f51a278, the form `cn`). The schedule amendments
-  are drafted on `draft/schedule-nov21-fix` (490a51a, reviewed: ready, not merged; decision log 2026-11-17 (f)):
-  fill its markers with the captain's words, recompute the rules hash, rebase and merge.
+- **What is live (2026-11-18, 08:20 UTC).** No candidate change is live and nothing runs. **The captain cleared
+  the session's goal on 18 November (no words): no new read or agent round is opened without the captain's word.**
+  The ninth independent pass is complete (decision log 2026-11-18 (a) and (c): no result wrong, no open line). The
+  reads it named were finished and recorded (entries (d) to (f)): K15 (nothing changes), T58 (the first ground
+  against a larger step withdrawn in part; the depth ground stands), T59 (both pre-set conditions for a request on
+  g_mom's damping met; a cold check then said stop, after two target-free listings showed the test pair's factors
+  to be larger than the practice fit's and to hold a library component the practice fit lacks). H24 and E46 were
+  not run: rows H14 and E29 had read them. The DGX holds four campaign checkouts, all idle and clean
+  (`~/v/vec-campaign` at 6214e28, `-h7` at 50154a0, `-c` at 36c4d3d of `campaign/t3-f-fix2`, `-d`); the reference
+  checkout is untouched at dc7b6ae. Built, reviewed and unused on campaign branches: `campaign/t1-n` (2921b96, a
+  step fraction), `campaign/t1-w` (f51a278, the form `cn`), `campaign/herd-t2-fix2` (c0b4aa0, a herded heart
+  entry). No builder option exists for g_mom's damping. The schedule amendments are drafted on
+  `draft/schedule-nov21-fix` (490a51a, reviewed: ready, not merged; decision log 2026-11-17 (f)): fill its markers
+  with the captain's words, recompute the rules hash, rebase and merge. Owed by the AI assistant when the captain
+  next rules on anything: the amendments above, and one more dated sentence in the method report's exposure
+  section on tries T58 and T59 (reviewed like the rest of that section).
   **For the captain, in this order:** (1) the dates: the gate's exception (27 November) is after the organisers'
   deadline, so the client refuses every official upload until the captain moves it (proposal: freeze and first
   round 21 November 00:00 UTC, second round 23 November, T3's last upload 24 November, marks 25 November by 12:00
@@ -41,15 +38,22 @@
   Task 1's step, 0.60 in place of 0.40 on both uploads, the output of the rule fixed before the runs (0.69 without
   a cap that leaned on a statement its row barred): on Task 1's board, by the truth's depth against the cells the
   prediction is built from (0.3, 0.6, 0.9, 1.35, 1.8), +1.98, +1.21, +0.80, +0.25, -0.26 at a real share of 0.28
-  and +2.16, +0.97, +0.30, -0.52, -0.96 at 0.22; released data do not say which depth holds, the captain has seen
-  figures that bear on it, so the captain decides from this table alone or declines, and declining is the default
-  (decision log 2026-11-18 (a)); (b) g_mom's damping, 1.0 in place of 0.5: +1.47 and +1.36 on the two practice
-  cuts, a size chosen on the cuts that kept g_mom (row T49); (c) Task 3's factor at half size: +0.89 and +2.35 on
-  the two counted cross-knockout folds, -2.28 on the replicate fold (decision log 2026-11-17 (b)); (4) the older
-  open decisions (Task 1's read depth: the rule gives declined; the embryo's moved-less family and the late-fetal
-  practice family: advice no). Once the captain names the dates, the AI assistant owes the amendments (the gate's
-  file with the captain's words and its test, an amendment at the end of `docs/S2_RULES.md` with a new hash, the
-  runbook's tables, `AGENTS.md`), the freeze-morning rebuild and the disclosure email.
+  and +2.16, +0.97, +0.30, -0.52, -0.96 at 0.22; try T58 adds that most of the gain beyond twice the step goes
+  with Feng's own genes; the captain has seen figures that bear on that depth, so the captain decides from the
+  table alone or declines, and declining is the default (decision log 2026-11-18 (a), (f)); (b) g_mom's damping,
+  1.0 in place of 0.5: for, +1.47 and +1.36 on the two practice cuts, +0.71 to +0.90 beyond a twin without
+  development and a permuted control, and +1.83, +1.65, +1.27, +0.68, +0.27 in five worlds from a shallower to a
+  deeper truth; against, the covariance term loses in the deepest world, nearly half the gain comes with factor
+  sets that carry no development, and at the test the factors are 1.09 to 1.48 times as large, cover cell types
+  practice never read and hold a library component (0.30 of the cardiomyocytes' factors' squared size) that no
+  practice run contains; a cold check says stop (entry (f)); (c) Task 3's factor at half size: +0.89 and +2.35 on
+  the two cross-knockout folds with the factor alone, -0.55 and -1.67 on the two replicate folds in the file's own
+  form (row K15); (4) for information: the library component is in the Task 1 files as built, at the entry's own
+  damping, and no released stage can price it (entry (f)); (5) the older open decisions (Task 1's read depth: the
+  rule gives declined; the embryo's moved-less family and the late-fetal practice family: advice no). Once the
+  captain names the dates, the AI assistant owes the amendments (the gate's file with the captain's words and its
+  test, an amendment at the end of `docs/S2_RULES.md` with a new hash, the runbook's tables, `AGENTS.md`), the
+  freeze-morning rebuild and the disclosure email.
 - **The method report's exposure section (2026-11-17).** `METHOD_SUMMARY.md` now holds "Exposure of hidden-target
   metadata on 2026-11-04 and the precommitted procedure", which the organisers asked for. It was drafted by an agent
   from the dated records, reviewed by three others (accuracy, framing, tone) and revised once; the AI assistant

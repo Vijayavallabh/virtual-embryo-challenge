@@ -5011,7 +5011,7 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     checks it named that released files can answer were run as two target-free listings
     (`experiments/t1_m1/results/gmom_test_fit/`).
   - **What the listings show.** (1) The test pair's factors are larger than the practice fit's at the same damping:
-    1.09 times for the cardiomyocytes, 1.41 to 1.48 times for the endocardium (root mean square); two categories
+    1.09 to 1.10 times for the cardiomyocytes, 1.41 to 1.48 times for the endocardium (root mean square); two categories
     edited at the test, the epicardium and the vascular endothelium, have no factors in the practice fit; and blood,
     which the practice gain includes, is held at the test. (2) The per-category centring removes a collection shift
     common to a whole cell type, and what survives is measurable: at the test pair's fit 0.30 of the cardiomyocytes'

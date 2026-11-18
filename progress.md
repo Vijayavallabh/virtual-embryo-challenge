@@ -3,6 +3,27 @@
 ## Current State
 
 **Last Updated:** 2026-11-18
+**2026-11-18, 08:20 UTC: the captain cleared the session's goal; the reads already built were finished and recorded,
+and no new read was opened. Nothing in any upload, build, rule or gate file has changed** (`docs/PLAN.md` decision
+log 2026-11-18 (d) to (f)). K15: Task 3's half factor cannot be built in the first-choice file's own form on the
+cross-knockout folds from the record; on the two replicate folds it reads -0.55 and -1.67 against the full factor;
+nothing changes. H24 and E46 were not run: rows H14 and E29 had read herded draws on the heart and the embryo on 13
+November (not kept). T58: beyond twice the step a placebo gains as well, Feng's direction more; the first ground of
+the advice on the step is withdrawn in part, the depth ground stands, the advice stays keep 0.40. T59: g_mom at
+damping 1.0 gains more than a twin without development and a permuted control on both cuts (+0.71 to +0.90 beyond
+them) and stays positive at every depth read (+1.83 to +0.27); both conditions fixed before the run were met. An
+independent recomputation found no figure wrong. A cold check of the damping claim put the chance of a mistake at
+60%, and the captain forwarded a note with the same point: at the test the carried-forward change is fitted across
+the change from embryo portions to dissected hearts. Two target-free listings
+(`experiments/t1_m1/results/gmom_test_fit/`) show that the test pair's factors are 1.09 to 1.48 times the practice
+fit's and that 0.30 of the cardiomyocytes' factors' squared size there goes with a state's share of dissected-heart
+cells (0.10 endocardium, 0.17 epicardium; at the practice fit the figure is at its null). Verdict of the check, the
+AI assistant's judgement: stop; its advice: keep 0.5 on both uploads. The damping question is the captain's, priced
+both ways in entry (f). Tries: T1 261, embryo 73, heart 31, T3 35. The committed estimate stays 184 (170 to 198).
+**Waiting for the captain:** the dates (no upload is possible until the gate's date is moved); the six confirmations
+for the method report; three priced questions, each with the advice 'change nothing' labelled as the AI assistant's
+own (the step at 0.60, g_mom's damping at 1.0, Task 3's factor at half size); and, for information, that the library
+component is in the Task 1 files as built.
 **2026-11-18, 03:05 UTC: try T57 is read and the common-part family is closed by the use fixed before its run; the
 ninth independent pass is complete and found no open line; five further reads are being built for the captain's
 three questions and one hard call. Nothing in any upload, build, rule or gate file has changed** (`docs/PLAN.md`
