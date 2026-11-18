@@ -159,7 +159,8 @@ def test_too_few_unused_cells_use_all_of_them_then_repeat_only_what_the_count_fo
         assert len(np.unique(used)) == min(n, 100)  # every earlier cell is used before any repeats
         assert (fx.record["n_jittered"] > 0) is want
     assert len(fx.coupling["floor_exact_rows"]) == 130
-    # each earlier cell's expected number of copies stays equal in the fallback (two copies at n = 200, 50 seeds)
+    # each earlier cell's expected number of copies stays equal in the fallback (n = 150 over 100 earlier cells:
+    # 1.5 copies per seed on average, 50 seeds)
     copies = np.zeros(100)
     for seed in range(50):
         fx = tb.interpolate_clouds(Cb, Ca, Eb, Ea, 0.5, 150, seed=seed, target_rms=1.0, n_anchor=60, k=3, t_pos=0.0,

@@ -117,17 +117,62 @@ def test_the_shape_pair_is_the_scorers_values(n53):
     assert flat["occupancy_dice"] < same["occupancy_dice"] and flat["d2_shape"] > same["d2_shape"]
 
 
-def _rows(n53, rng, shift=None):
+def test_the_outside_draw_is_a_copy_at_the_arms_count_that_shares_nothing_with_draw_a(n53):
+    """Draw B0 has the arms' count, no repeats, no cell of draw A, its own stream; beyond the cells outside A it is
+    draw B and says so."""
+    a, _ = n53.reference_draws(413, 1_000_001)
+    b0, fell_back = n53.outside_draw(413, 300, a, 1_000_001)
+    assert not fell_back and len(b0) == 300 and len(np.unique(b0)) == 300 and not np.isin(b0, a).any()
+    assert np.array_equal(b0, n53.outside_draw(413, 300, a, 1_000_001)[0])
+    assert not np.array_equal(b0, n53.outside_draw(413, 300, a, 1_000_002)[0])
+    assert n53.OUTSIDE_STREAM not in (n53.REF_STREAM, n53.COPY_STREAM)
+    over = 413 - len(a) + 1
+    b0, fell_back = n53.outside_draw(413, over, a, 1_000_001)
+    assert fell_back and np.array_equal(b0, n53.copy_draw(413, over, 1_000_001))
+    assert not n53.outside_draw(413, over - 1, a, 1_000_001)[1]
+
+
+def test_each_arm_is_read_against_the_floor_matched_to_its_overlap(n53):
+    assert n53.FLOORS == {"fgw_shape0x": ("noise",), "fgw_shape0": ("noise", "noise_outside"),
+                          "fgw_aligned": ("noise_outside",)}
+
+
+def _rows(n53, rng, shift=None, overlap=0.0):
+    """Ten seeds of synthetic values. `overlap` stands for the closeness that shared cells give: B and fgw_shape0x
+    (about 10 percent shared) sit that much closer to A than B0 and fgw_aligned (none), fgw_shape0 half as much."""
+    near = {"noise": 1.0, "noise_outside": 0.0, "noise_disjoint": 0.0,
+            "fgw_shape0x": 1.0, "fgw_shape0": 0.5, "fgw_aligned": 0.0}
     rows = []
     for s in n53.SEEDS:
-        r = {"seed": s, "noise": {"occupancy_dice": rng.normal(0.6, 0.02), "d2_shape": rng.normal(0.05, 0.01)},
-             "noise_disjoint": {"occupancy_dice": rng.normal(0.6, 0.02), "d2_shape": rng.normal(0.05, 0.01)}}
-        for arm in n53.ARMS:
-            d = (shift or {}).get(arm, {})
-            r[arm] = {"occupancy_dice": rng.normal(0.6, 0.02) + d.get("occupancy_dice", 0.0),
-                      "d2_shape": rng.normal(0.05, 0.01) + d.get("d2_shape", 0.0)}
+        r = {"seed": s}
+        for key in ("noise", "noise_outside", "noise_disjoint", *n53.ARMS):
+            d = (shift or {}).get(key, {})
+            r[key] = {"occupancy_dice": rng.normal(0.6, 0.02) + overlap * near[key] + d.get("occupancy_dice", 0.0),
+                      "d2_shape": rng.normal(0.05, 0.01) - 0.5 * overlap * near[key] + d.get("d2_shape", 0.0)}
         rows.append(r)
     return rows
+
+
+def test_the_matched_floors_on_pure_noise_with_an_overlap_bias(n53):
+    """Arms that are copies of E7.5 apart from their overlap with A: against its own floor each is called in form about
+    85 percent of the time whatever the bias. Read against B alone, a large bias would push fgw_aligned and fgw_shape0
+    out; the rule does not, and the comparison against B is reported beside it."""
+    rng = np.random.default_rng(7)
+    calls = {arm: [] for arm in n53.ARMS}
+    beside_b = {"fgw_aligned": [], "fgw_shape0": []}
+    for _ in range(300):
+        s = n53.summary(_rows(n53, rng, overlap=0.04))
+        for arm in n53.ARMS:
+            calls[arm].append(s["in_form"][arm]["in_form"])
+        for arm in beside_b:
+            beside_b[arm].append(s["in_form"][arm]["beside"]["B"]["in_form"])
+    for arm in n53.ARMS:
+        assert 0.78 < np.mean(calls[arm]) < 0.92, arm
+    for arm in beside_b:
+        assert np.mean(beside_b[arm]) < 0.5, arm
+    r = n53.summary(_rows(n53, rng))["in_form"]
+    assert r["fgw_shape0x"]["floor"] == "B" and set(r["fgw_shape0x"]["beside"]) == {"B0", "mean of B and B0"}
+    assert r["fgw_aligned"]["floor"] == "B0" and r["fgw_shape0"]["floor"] == "mean of B and B0"
 
 
 def test_the_rule_on_pure_noise_and_on_shifted_arms(n53):
@@ -142,6 +187,7 @@ def test_the_rule_on_pure_noise_and_on_shifted_arms(n53):
     rows = _rows(n53, rng)
     for r, x in zip(rows, sign, strict=True):
         r["noise"] = {"occupancy_dice": 0.6 + 0.02 * x, "d2_shape": 0.05 + 0.01 * x}
+        r["noise_outside"] = dict(r["noise"])
         r["fgw_shape0"] = {"occupancy_dice": 0.6 + 0.02 * x - 0.03 + 0.001 * x * x, "d2_shape": 0.05 + 0.01 * x}
         r["fgw_aligned"] = {"occupancy_dice": 0.6 + 0.02 * x, "d2_shape": 0.05 + 0.01 * x + 0.042 + 0.001 * x}
     s = n53.summary(rows)
@@ -150,13 +196,14 @@ def test_the_rule_on_pure_noise_and_on_shifted_arms(n53):
     assert r["d2_shape"]["inside"]
     a = s["in_form"]["fgw_aligned"]
     assert not a["in_form"] and not a["d2_shape"]["inside"] and not a["d2_shape"]["inside_wide_bar"]
-    assert set(s) == {"noise", "noise_disjoint", "arms", "in_form"}
+    assert set(s) == {"noise", "noise_outside", "noise_disjoint", "arms", "in_form"}
     # the boundary: a paired mean just inside two standard errors is inside, just beyond is out
     d = np.array([0.01, -0.01] * 5)
     edge = 2.0 * d.std(ddof=1) / np.sqrt(10)
 
     def at(f):
         return [{"noise": {"occupancy_dice": 0.5, "d2_shape": 0.1},
+                 "noise_outside": {"occupancy_dice": 0.4, "d2_shape": 0.2},
                  "fgw_shape0x": {"occupancy_dice": 0.5 + f * edge + x, "d2_shape": 0.1 - f * edge + x}} for x in d]
 
     assert n53.in_form(at(0.999), "fgw_shape0x")["in_form"]
@@ -186,8 +233,11 @@ def test_a_run_writes_aggregates_only_and_never_builds_fgw(n53, monkeypatch, tmp
     n53.main(["run", "--out", str(out), "--data", str(tmp_path)])
     rep = json.loads((out / "n53.json").read_text())
     assert set(rep["arms"]) == set(n53.ARMS) and set(rep["in_form"]) == set(n53.ARMS)
-    assert len(rep["rows"]) == 3 and all(set(r) == {"seed", "noise", "noise_disjoint", *n53.ARMS} for r in rep["rows"])
+    assert len(rep["rows"]) == 3 and all(set(r) == {"seed", "noise", "noise_outside", "noise_disjoint", *n53.ARMS}
+                                         for r in rep["rows"])
     assert rep["floor_exact_fallback"] is False  # a boolean only (300 of 413 cells: the unused cells suffice)
+    assert rep["outside_fallback"] is False  # a boolean only (300 of the cells outside draw A suffice)
+    assert rep["floors"] == {"fgw_shape0": "mean of B and B0", "fgw_shape0x": "B", "fgw_aligned": "B0"}
     secret = {*SIZES.values(), *LIMITS.values(), round(0.1 * SIZES["E7.5"]), LIMITS["max_cells"] // 2}
     for written in ((out / "n53.json").read_text(), (out / "n53.txt").read_text(), capsys.readouterr().out):
         assert not _numbers(written) & secret
