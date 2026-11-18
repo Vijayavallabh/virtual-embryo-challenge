@@ -3,6 +3,18 @@
 ## Current State
 
 **Last Updated:** 2026-11-18
+**2026-11-18, 17:52 UTC: the captain holds the second uploads and orders a week of research; the design round is in
+and the first build wave is running** (`docs/PLAN.md` decision log 2026-11-18 (q) to (s)). The four second files of
+16:54 UTC stay the defaults and none goes up before the captain's word. The design round (wf_edd233ae-35a, nine
+read-only agents) kept those files, dropped every large new model on the ledger's earlier reads, and put the new
+work at +0.5 to +1.5 Overall beyond about 186 (180 to 195). Started on it, each on a campaign branch with reviews
+and its row before its run: embryo tries E47a and E47b and reading N53 (a file in E7.5's exact geometry with the
+first upload's own rows); T3 try K18 (the refused form against the barred form, plain and depth-matched worlds);
+heart try H25 (both uploaded forms end to end on the backtests, with a count ladder); a second-file value table from
+committed results; a ninth ledger rule on the judge and a pre-upload checklist as text (workflows wf_56b120a7-a36 and
+wf_d1838b6f-23d). The captain's word of 17:17 UTC: DGX GPUs 2 to 7 are ours and the disk needs no asking
+(`docs/COMPUTE.md`). Working calendar: reads and builds to 23 November, rulings on 23 and 24, builds on 24, uploads by
+the captain on 25, deadline 26 November 11:59 UTC.
 **2026-11-18, 16:54 UTC: all four second-upload files are decided, built and handed to the captain; nothing is
 waiting on the AI assistant but the scores** (`docs/PLAN.md` decision log 2026-11-18 (m) to (p)). T1: `builds/T1_s2.h5ad`
 (f169ea492e8d). Embryo: `builds/T2embryo_s2.h5ad` (41982d8afd78). Heart: `runs/manual_upload/T2heart_s2iso_half.h5ad`

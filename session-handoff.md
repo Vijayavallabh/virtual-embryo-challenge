@@ -2,6 +2,17 @@
 
 ## Current Objective
 
+- **State at 2026-11-18, 17:52 UTC (newest).** The captain holds the second uploads ("We don’t need to submit again
+  right now") and asked for a week of research; decision log 2026-11-18 (q) to (s) has his words, the reading, the
+  design round and the portfolio. The four files of the bullet below remain the default second uploads. Running:
+  wf_56b120a7-a36 (embryo arm fgw_shape0x with tries E47a, E47b and reading N53; T3 try K18) and wf_d1838b6f-23d (heart
+  try H25; the second-file value table; rule 9 and the pre-upload checklist as text). When each returns ready: merge
+  its branch to main, add its ledger row on main, sync a DGX campaign checkout (nothing may run in it), start the run
+  detached with a local background waiter, read by the row's fixed rule, and take the outcome to the captain as a
+  priced question where the row says so. Nothing changes an upload without his ruling. Still owed from before: rows
+  in `results/manual_uploads.csv` when he uploads; the method report's lines on every departure; his nomination of
+  final entries before 26 November 11:59 UTC. Saved outside the repository: the design round's result and the wave's
+  hand-backs, in the session's scratch folder `lift8/`.
 - **State at 2026-11-18, 16:54 UTC (newest).** All four second-upload files are with the captain, who uploads by
   hand: `builds/T1_s2.h5ad` (f169ea492e8d), `builds/T2embryo_s2.h5ad` (41982d8afd78),
   `runs/manual_upload/T2heart_s2iso_half.h5ad` (dc436d9225bb) and `t3_build/refused_s1.h5ad` (0394575a11fc); decision
