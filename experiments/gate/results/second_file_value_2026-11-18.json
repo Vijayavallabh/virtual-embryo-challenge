@@ -1,5 +1,10 @@
 {
  "label": "Second-file value table, 2026-11-18: V = E[max(D, 0)], D = candidate minus the practice analogue of the uploaded first file, seed-paired on committed practice tasks. Aggregation of committed results, not a try; no test score, leaderboard figure or made-up prior enters any number.",
+ "how_to_read": [
+  "V can never be negative, and on pure noise it is positive (E[max(Z, 0)] = 0.40 per seed for D ~ N(0, 1), about 0.13 per ten-seed task: tests/test_gate_second_file_value.py); a positive V is no evidence of a gain, so read mean D and the share of units ahead beside it",
+  "V seed: the ten seeds resample the scoring, not the method (TRIES row H11's checker, for the heart; the same holds wherever a factor is fitted once per task), and the two arms share each seed's scoring draw, so the paired seed spread understates an unpaired test draw",
+  "every embryo and T1 candidate was selected or tuned on the tasks used to value it; the built files (E28's and T33's picks) carry the most upward bias, so 'the built file has the highest V' is expected whether or not it is better"
+ ],
  "embryo": {
   "first": "fgw",
   "tasks": {
@@ -171,6 +176,15 @@
       "v_seed": 2.2067577146219315
      }
     },
+    "counted_backtests": {
+     "units": 2,
+     "mean_d": -3.917050996805452,
+     "sd_d": 5.775601587548747,
+     "sd_kind": "n-1",
+     "v_task": 0.08345802559102822,
+     "v_seed": 0.2055504893057975,
+     "share_positive": 0.5
+    },
     "note": "the built second file (builds/T2embryo_s2.h5ad, ruling R4); named by try E28's rule (1) on these nine tasks, so all nine were used to select it; its values on x1 to x3 were known from diagnostic E26 before E28's rules were written"
    },
    "fgw_shape0": {
@@ -293,6 +307,15 @@
       "v_task": 0.7848183018530922,
       "v_seed": 0.8571257243240386
      }
+    },
+    "counted_backtests": {
+     "units": 2,
+     "mean_d": -1.6414816414328333,
+     "sd_d": 4.910573617926776,
+     "sd_kind": "n-1",
+     "v_task": 0.9154091316594745,
+     "v_seed": 0.9154091316594745,
+     "share_positive": 0.5
     },
     "note": "the frozen s2 before ruling R4 (E7.5's geometry, the cover for fgw's flattened cloud)"
    },
@@ -417,6 +440,15 @@
       "v_seed": 2.0887954482202367
      }
     },
+    "counted_backtests": {
+     "units": 2,
+     "mean_d": -6.080694644174875,
+     "sd_d": 7.525281583742989,
+     "sd_kind": "n-1",
+     "v_task": 0.0,
+     "v_seed": 0.055066711851410946,
+     "share_positive": 0
+    },
     "note": "try E24's first pick on E24's six tasks (half, late, new1, new2, e75, e725)"
    },
    "fgw_series": {
@@ -539,6 +571,15 @@
       "v_task": 1.9642251360362846,
       "v_seed": 1.977742065937953
      }
+    },
+    "counted_backtests": {
+     "units": 2,
+     "mean_d": -4.437840599466963,
+     "sd_d": 3.048631228103124,
+     "sd_kind": "n-1",
+     "v_task": 0.0,
+     "v_seed": 0.0,
+     "share_positive": 0
     },
     "note": "its values on x1 to x3 were known from diagnostic E26 before E28's rules were written"
    },
@@ -663,6 +704,15 @@
       "v_seed": 1.5990694967003967
      }
     },
+    "counted_backtests": {
+     "units": 2,
+     "mean_d": -0.9429419948989839,
+     "sd_d": 0.009482521075252685,
+     "sd_kind": "n-1",
+     "v_task": 0.0,
+     "v_seed": 0.0,
+     "share_positive": 0
+    },
     "note": "its values on x1 to x3 were known from diagnostic E26 before E28's rules were written"
    },
    "fgw_shape0_hi": {
@@ -785,6 +835,15 @@
       "v_task": 1.8302630577540253,
       "v_seed": 1.883816112165932
      }
+    },
+    "counted_backtests": {
+     "units": 2,
+     "mean_d": -2.616207252536853,
+     "sd_d": 4.653574200497132,
+     "sd_kind": "n-1",
+     "v_task": 0.3371833106947175,
+     "v_seed": 0.3446218162065879,
+     "share_positive": 0.5
     },
     "note": "first scored on x1 to x3 by try E28 (counted)"
    },
@@ -909,6 +968,15 @@
       "v_seed": 0.601671506485836
      }
     },
+    "counted_backtests": {
+     "units": 2,
+     "mean_d": 0.27225985516609197,
+     "sd_d": 2.627978418344238,
+     "sd_kind": "n-1",
+     "v_task": 1.0652606077946,
+     "v_seed": 1.0693884124989084,
+     "share_positive": 0.5
+    },
     "note": "try E11's candidate, not kept (E11's veto stands); read here as a second file; first scored on x1 to x3 by try E28"
    }
   },
@@ -916,6 +984,18 @@
    "first file: fgw was adopted on the two counted backtests e75 and e725 (decision log 2026-11-04); the other seven tasks count for no adoption",
    "every score here was taken under the practice scorer build 'main'; decision log (k) names the live board's pre-fix build as the one recorded factor that acts on occupancy_dice alone, not established",
    "after the fact, decision log (k), changing no number here: at the test pair fgw's partners are mirrored in 10 of 10 draws (rows E11, N1, N51), while the practice tasks carry that defect only in some seeds (row N52 reads them by the flag); occupancy_dice on the first upload is explained by no practice task ((k): a practice task with mirrored, flatter draws scored 50.1 on it). (k) names no embryo practice task as misleading on expression"
+  ],
+  "counted_backtests": {
+   "tasks": [
+    "e75",
+    "e725"
+   ],
+   "what": "the adoption rule's tasks, not a prior on the test: the two counted backtests fgw was adopted on (decision log 2026-11-04), two truths, equal weights"
+  },
+  "reading": [
+   "selection: fgw_aligned_series was named by E28's rule on these nine tasks and fgw_shape0_series by E24's on six of them, so their lead in V is expected whether or not they are better (winner's curse)",
+   "separation: the candidates' task-level V rest on five units whose SD of mean D across units is 1.5 to 6.7; differences in V of a few tenths do not separate them, and no ranking by V is drawn here",
+   "the equal-weight units are three truths of E8.0 or later (six of the nine tasks) and one per counted backtest; on the counted backtests alone (the line 'counted backtests' per candidate) the candidates come in another order"
   ],
   "merge_source": "the task files' target field (task.target); experiments/harness/series_world.py says half and late share one truth; docs/PLAN.md decision log 2026-11-13 (gg), item 2, says x2 and x3 do",
   "e28_weighting_source": "experiments/harness/nine_tasks.py (DEEP, OTHER, PS) and TRIES row E28: S(p) = p D + (1 - p) O over unmerged tasks; p 0.45 central, 0.30 and 0.60 its range (experiments/gate/forecast.py JUDGEMENT emb_p_deep)"
@@ -2929,17 +3009,7 @@
     "seeds": 10
    }
   },
-  "m_unpaired_cross_run": {
-   "what": "on fold m's truth and reference only: the candidate's mean (K7) minus K2a's t3_factor_xko mean (t3_k2_v1), two runs, NOT seed-paired; no shared arm checks that the two runs score alike",
-   "values": {
-    "refused form, WT-only factor per group (K8b; built file)": 20.956208128067935,
-    "refused form, pooled factor (K8a)": 20.931912975285435,
-    "K7a wt_revert": 20.931912975285435,
-    "K7b wt_revert_grp": 20.956208128067935,
-    "K7 wt_draw": 0.9590753437660098,
-    "K7c wt_revert_perm (control)": -0.8713628224386198
-   }
-  },
+  "standins_note": "these lines are not to be differenced against the candidates' lines: each pair would be cross-run and unpaired, and read side by side they point opposite ways by knockout (on the Gata4 replicates the first file's same-knockout stand-in sits above every candidate; on Mab21l2 its cross-knockout stand-in sits near the floor, below the reverts, where m's WT E9.5 reference flattered reverts, rows K11 to K14); no difference is computed",
   "limits": [
    "every candidate was read on these folds before ruling R5: K8's row says the factor's form is no longer blind to g1 and g2, and tries K16 and K17 read the exponent on all three",
    "m's reference is WT E9.5 (the K11 to K14 rows: reverts were flattered there); g1 and g2 are two replicates of one knockout on one slide",
