@@ -4685,7 +4685,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     first written in the row; over all truths and seeds the form's lowest paired difference is +0.10 at the entry's
     fraction and -0.11 at twice it, where 3 of 50 are negative, all against library 2; about two thirds of each gain
     is on the two de terms.] So entry (e)'s sentence that the family's variants "share the property the reads found"
-    was too wide for this one, and it is corrected here: the form's gain is not a larger step.
+    was too wide for this one, and it is corrected here: the form's gain is not a larger step (the AI assistant's
+    judgement after try T55's result, withdrawn in part by entry (h) and by try T57: the form is in part a larger step
+    along the common part, and its lead does not hold against library 2's truth).
   - **Why it is not yet a request.** Equal squared size of the direction is not equal counts moved: if the common part
     sits on better-expressed genes it delivers more, and then the gain could turn with the truth's depth as the larger
     steps' gain does. Row T55 fixed beforehand that the form is read in the worlds of tries T50 and T54 first. That
@@ -4724,14 +4726,16 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **What those checks found.** (1) In every group the form raises the coefficient on the common part: cardiomyocytes
     from 0.67 to 0.98, endocardium 1.07 to 1.24, endothelium 0.96 to 1.13, epicardium 1.30 to 1.63; and it deletes the
     part of each group's direction that is orthogonal to the common part, which is 0.54, 0.25, 0.28 and 0.37 of its
-    squared size. (2) Fitted jointly on the common part and a group's own part, the released day follows the own
-    parts: for the cardiomyocytes +0.13 in libraries 1 and 2 and +0.34 against library 3 (common part +0.35 and
-    +0.43), for the epicardium +0.25 and +0.29 (the first was written +0.26 from rounded shares; +0.25 by the
-    reading's unrounded stored values). Try T51 had fitted the two parts singly, and its "-0.05, not at all"
-    for the cardiomyocytes was an artefact of the two parts running against each other; that sentence is withdrawn in
-    row T51 and wherever entries (e) and (g) and rows T53 and T55 repeat it. Over all groups the common part still
-    moves 2.5 times as far as the own parts in libraries 1 and 2 and 1.6 times against library 3 by the joint fit. (3)
-    A plain step of 1.25 times, read off the stored curves, gains more than the form where the truth is as deep as the
+    squared size. (2) Fitted jointly on the common part and a group's own part, the released day follows the own parts
+    of two of the four groups: for the cardiomyocytes +0.13 in libraries 1 and 2 and +0.34 against library 3 (common
+    part +0.35 and +0.43), for the epicardium +0.25 and +0.29, while the endocardium's reads +0.05 and +0.19 and the
+    endothelium's +0.02 and -0.13 (the first was written +0.26 from rounded shares; +0.25 by the reading's unrounded
+    stored values). Try T51 had fitted the two parts singly, and its "-0.05, not at all" for the cardiomyocytes was an
+    artefact of the two parts running against each other; that sentence is withdrawn in row T51 and wherever entries
+    (e) and (g) and rows T53 and T55 repeat it. Over all groups the common part still moves 2.5 times as far as the
+    own parts in libraries 1 and 2 and 1.6 times against library 3 by the joint fit. (3) A plain step of 1.25 times,
+    read off the stored curves by linear interpolation between the arms at 1 and 1.5 times (no such arm was run, the
+    curves are concave, and only means are compared), gains more than the form where the truth is as deep as the
     reference or shallower (+0.44 against +0.37 on library 3; +0.54 against +0.31 with the truth at a third) and less
     where it is deeper (+0.19 against +0.31 at 1.8 times). At twice the fraction the same holds more sharply: a
     further half step gains +0.48 against the form's +0.41 on library 3 and -0.00 against +0.50 where the truth is 1.8
@@ -4739,12 +4743,14 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     against 58.52).
   - **The attacks, labelled.** The kill shot is conceded in part: the form is in part a larger step along the common
     part, and "equal movement" did not separate that. It is rebutted in part: where the truth is deeper than the
-    reference the form gains what no plain step gains. Its first attack (the deleted part is real) is conceded on the
-    joint fit; whether that part carries more over the test's later days no released day shows. Its second (the
-    every-world rule had no power) is conceded for the entry's fraction, where any small step-up passes, and not for
-    twice the fraction in the deep worlds; the arm it names, each group's own part kept and only the coefficient on
-    the common part raised, has not been run. Its third (every depth world came from the library where the form gains
-    most) stands until worlds are built from library 2.
+    reference the form gains what no plain step gains (this held in `ref50` only: in `ref67` the form at twice the
+    fraction read 58.41 against 58.45 for the plain step at three times; noted by the ninth independent pass, as is
+    that these labels are the AI assistant's judgement after the results). Its first attack (the deleted part is real)
+    is conceded on the joint fit; whether that part carries more over the test's later days no released day shows. Its
+    second (the every-world rule had no power) is conceded for the entry's fraction, where any small step-up passes,
+    and not for twice the fraction in the deep worlds; the arm it names, each group's own part kept and only the
+    coefficient on the common part raised, has not been run. Its third (every depth world came from the library where
+    the form gains most) stands until worlds are built from library 2.
   - **Verdict: no request now; proceed only if try T57 says so.** Try T57 reads both forms, the common part alone
     (`cn`) and the common part raised with each group's orthogonal part kept (`dc`), against the entry's direction at
     1, 2, 3 and 4 times the practice step in six worlds: libraries 3 and 2 as released, and the reference thinned to
@@ -4826,9 +4832,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Other questions that are the captain's, restated so that none is closed on the AI assistant's advice.** Try T49:
     by the adoption rule's arithmetic a larger g_mom scores above the entry's on both cuts (+1.47 and +1.36 at damping
     1.0, ahead on every seed, three quarters of it on the distribution and covariance terms); it is a size chosen on
-    the cuts that kept g_mom, so under ledger rule 6 it keeps nothing, and by its row it goes to the captain with the
-    limits; the AI assistant's advice, its own: no change. Entry (b): Task 3's factor at half size (+0.89 and +2.35 on
-    the two counted cross-knockout folds, -2.28 on the replicate fold); advice, its own: keep the file.
+    the cuts that kept g_mom, so under `AGENTS.md` rule 6 (the ledger's rules 2 and 5) it keeps nothing, and by its
+    row it goes to the captain with the limits; the AI assistant's advice, its own: no change. Entry (b): Task 3's
+    factor at half size (+0.89 and +2.35 on the two counted cross-knockout folds, -2.28 on the replicate fold);
+    advice, its own: keep the file.
   - **Checks the pass found open, now done.** The full test suite on the DGX that entry (b) owed was run at b1bf884
     (2,151 passed) and at 628909f (2,214 passed, lock and lint clean) and is running at de8f8b5, the commit of row
     T57. The corrections above are in the rows. Part two of this pass (rows T55 to T57, entries (f) to (h), and a
@@ -4839,29 +4846,94 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the six worlds ran at that commit (3 hours 18 minutes, clean tree), the task files were committed unread at
     cbd498b and the reading was run once (18c016a). Statement 1 reads 'behind somewhere' for both forms. The common
     part alone (`cn`) is ahead of the entry's direction at 1 to 3 times the practice step against library 3's truth
-    (+0.20 to +0.50, every seed) and loses its lead against library 2's: +0.14 to +0.21 at one time, level at two and
-    three, behind at four times in all three library-2 worlds (-0.31, -0.31, -0.37). The form that keeps each group's
-    own part and only raises the coefficient on the common part (`dc`) is ahead in all twelve cells at one and two
-    times (+0.30 to +0.70, every seed) and behind at four times in the two worlds where the truth is deeper than the
-    reference (-0.56 and -0.80), level at three times there.
+    (+0.20 to +0.50, every seed; by try T46's test seven of those nine cells are ahead and two level) and loses its
+    lead against library 2's: +0.14 to +0.21 at one time, level at two and three, behind at four times in all three
+    library-2 worlds (-0.31, -0.31, -0.37). The form that keeps each group's own part and only raises the coefficient
+    on the common part (`dc`) is ahead in all twelve cells at one and two times (+0.30 to +0.70, every seed) and
+    behind at four times in the two worlds where the truth is deeper than the reference (-0.56 and -0.80), level at
+    three times there.
   - **What the pre-set use gives.** A form goes to the captain only if its statement 1 reads ahead in every cell read;
     any other reading closes the family with no request, as part of the question of the step's size. Neither form
     passes, so nothing is requested and the builder option of `campaign/t1-w` stays on its branch, unused. This
     closure rests on a gate fixed before the run, not on the AI assistant's reading.
   - **The third cold check, closed out.** Its third attack (every depth world of try T56 came from the library where
-    the form gains most) is borne out: against library 2's truth the parts `cn` deletes are worth +0.28 to +0.74
-    (statement 2, every seed). Its second (an arm that keeps the per-group parts and raises the coefficient on the
-    common part matches the form) is borne out and more: that arm is ahead of `cn` in 8 cells and behind in 3. Its
-    kill shot (the form is in part the step lever) stands for `dc` by construction, and for `cn` wherever larger steps
-    still gain; `cn` is 'above the best plain and group-scaled step read' only in the three library-3 worlds, by +0.10
-    to +0.50. Verdict by the pre-set gate: stop.
+    the form gains most) is borne out: against library 2's truth the parts `cn` deletes are worth +0.24 to +0.74
+    (statement 2, every seed; level by try T46's test in four of the twelve cells; first written +0.28). Its second
+    (an arm that keeps the per-group parts and raises the coefficient on the common part matches the form) is borne
+    out and more: that arm is ahead of `cn` in 8 cells and behind in 3. Its kill shot (the form is in part the step
+    lever) stands for `dc` by construction, and for `cn` wherever larger steps still gain; `cn` is 'above the best
+    plain and group-scaled step read' only in the three library-3 worlds, by +0.10 to +0.50 against the plain best and
+    +0.25 to +0.54 against the group-scaled best, level by try T46's test in `lib3`. Verdict by the pre-set gate:
+    stop. The three sentences before it ('borne out', 'stands') are the AI assistant's reading after the result.
   - **What the read adds to the captain's question on the step, as the AI assistant's reading and no request.** At the
     practice multiples one and two, a further step along the common part alone, per group (`dc`), gains +0.30 to +0.70
-    in all six worlds, the two deepest included, where a plain step of twice the fraction is already level with its
-    neighbours; at four times it loses in those two worlds. That is the same shape as the plain step's table of entry
-    (a), a little more favourable at the entry's own multiple, and its sign at the test turns on the same depth. It is
-    quoted with the step's question and changes nothing in it.
+    in all six worlds, the two deepest included (in `ref50`, and there only, a plain step of twice the fraction is
+    already level with its neighbours); at four times it loses in those two worlds. That is the same shape as the
+    plain step's table of entry (a), a little more favourable at the entry's own multiple, and its sign at the test
+    turns on the same depth. It is quoted with the step's question and changes nothing in it.
   - **Other state.** The full test suite on the DGX at de8f8b5: lock 0, lint 0, 2,456 tests passed, clean tree. Tries:
     T1 200, embryo 73, heart 31, T3 31. The committed estimate stays 184 (170 to 198). Next: the independent
     recomputation of try T57 and of entry (h)'s figures, and part two of the ninth pass (rows T55 to T57, entries (f)
     to (h) and these two, and a sweep of the ledger for lines still open).
+- 2026-11-18 (c), the ninth independent pass, part two (an independent recomputation of try T57 and of entries
+  2026-11-17 (h) and 2026-11-18 (b), and a sweep of the ledger; workflow wf_595017ac-aef, two read-only agents), and
+  what follows from it: five further reads, their uses fixed here before any of them has a row. Written by the AI
+  assistant. Nothing in any upload, build, rule or gate file has changed.
+  - **The recomputation.** From try T57's six task files, 430 figures: no cell figure, statement or reproduction is
+    wrong; the row was committed before the run, its use (entry (h)) before the row, and the row's nine pre-set cells
+    are unchanged since. One figure of entry (b) was wrong at its low end (the parts `cn` deletes are worth +0.24 to
+    +0.74 against library 2's truth, not +0.28 to +0.74), and six sentences of the AI assistant's labelled readings in
+    rows T55 to T57 and entries (g), (h) and (b) said more than the files show; each is corrected or noted where it
+    stands. Every figure of entry (h)'s checks follows; its joint fit is exact under the code's definitions; its plain
+    step of 1.25 times is a linear interpolation between read arms, which the entry now says.
+  - **The sweep.** Of 48 lines named since the eighth pass: read 27, closed by a gate fixed before its run 3, blocked
+    by a named rule or ruling 7, not judgeable by a counted read 4, not buildable from the record 7, open 0. For lines
+    unchanged since the eighth pass it relied on that pass's classification (143 lines, none open) and spot-checked
+    it. It confirmed that try T57's closure is the gate's and that none of the captain's three questions (entry (a))
+    is closed by the AI assistant.
+  - **What the sweep found that the AI assistant can still read.** For each of the captain's three questions a counted
+    read exists that bears on it and has not been run: for the step, the controls that show a gain to need Feng's own
+    genes, which exist at one to two times the practice step only; for g_mom's damping, the twin without development
+    and the permuted control at the larger dampings, and the larger damping in the worlds where the truth is shallower
+    or deeper than the reference; for Task 3's factor at half size, the first-choice file's own form, which row K14
+    itself names as the step before any request. And one hard call is closed on an analogy: herded draws on the heart
+    and on the embryo (rows H4 and E9, pruned before their runs on Task 1's read T5 and on the scorer's arithmetic),
+    for which a form with no free number is already in the code.
+  - **Try T58, the step beyond twice its size: does the gain need Feng's own genes?** Arms: the entry's step and try
+    T46's placebo direction at 2, 3, 4 and 5 times the practice fraction, and try T45's variance control, on the two
+    counted cuts and in the worlds `lib3`, `lib2`, `ref67` and `ref50`. Reading, per world and multiple k of 3, 4 and
+    5: the specific increment, (step at k minus step at 2) minus (placebo at k minus placebo at 2), paired by seed,
+    with try T46's label. Its use: it is quoted in the captain's question on the step. If the specific increment reads
+    ahead at 3 and at 4 times on both counted cuts and against library 3's truth, the first ground of the AI
+    assistant's advice (no control beyond twice the step) is withdrawn and the advice rests on the depth ground alone;
+    if any of those six is level or behind, the ground stands and the question says that the gain where the change
+    would sit is not shown to need Feng's genes. It sets no step and is no evidence on the hidden truth's depth.
+  - **Try T59, g_mom's larger damping: development and depth.** Reading 1, on the two counted cuts: the
+    development-specific increment, (g_mom at damping 1.0 minus g_mom at 0.5) minus the same difference for try T23's
+    twin without development, paired by seed, with try T46's label; the same against try T21's permuted control.
+    Reading 2, in the worlds `lib3`, `lib3_t67`, `lib3_t33`, `ref67` and `ref50`: g_mom at 1.0 minus g_mom at 0.5 in
+    the entry's form, by try T56's statement (stays positive at every depth read; turns; not separated). Its use: it
+    is quoted in the captain's question on the damping. Only if reading 1 says ahead on both cuts against the twin and
+    against the permuted control, and reading 2 says 'stays positive at every depth read', does the AI assistant
+    restate that question as a request priced both ways, after an independent recomputation and a cold check; any
+    other reading leaves its advice 'no change' standing with a read behind it. Whatever it reads, the damping stays a
+    size chosen on the cuts that kept g_mom: the adoption rule cannot keep it, and only the captain's ruling could.
+  - **Try K15, Task 3's factor at half size in the first-choice file's own form.** Arms, on every fold where the form
+    can be built (the two cross-knockout folds and the two replicate folds): the frozen stand-in for the first-choice
+    file with its depth step, the same with the factor at half size in row K14b's form (every cell moved by the mean
+    of one and the factor), and that half factor permuted over genes as its control. Reading: row K14's own, with the
+    adoption rule's constants (supported if on the cross-knockout fold x1 and on the replicate fold r12 the half
+    factor beats the full one by a paired mean above 0.3 with at least 8 of 10 seeds ahead and beats its permuted
+    control the same way, and on the other folds is not below -0.3). Its use: the price per fold in the file's own
+    form replaces, in the captain's question, the price read without the depth step. Only if it reads supported does
+    the AI assistant restate the question as a request, after an independent recomputation and a cold check; any other
+    reading leaves its advice 'keep the file' standing.
+  - **Tries H24 and E46, herded draws on the heart's and the embryo's first-upload entries.** Arms: the entry as built
+    and the same with try T5's herding of its drawn cells (no free number: T5's own proposals and stream rule), on the
+    board's counted backtests. Reading: the adoption rule. Its use: a herded entry that passes the adoption rule on
+    its board goes to the captain as a priced request after an independent recomputation and a cold check; otherwise
+    the line is closed by its read, with no request.
+  - **Done with this entry.** The three cold checks' texts are committed (`experiments/t1_m1/results/cold_checks/`),
+    so that entries (b) to (h) can be checked against them. The pruned line on a noise-aware Feng direction, whose
+    first clause reading N48 contradicted, is marked. Row T49's rule label is made exact. The method report's item on
+    these reads was rewritten and reviewed in four rounds (9cd44cc).
