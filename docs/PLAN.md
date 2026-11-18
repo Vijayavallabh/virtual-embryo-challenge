@@ -5050,3 +5050,44 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     upload is possible until the gate's date is moved), the six confirmations for the method report, and the three
     priced questions (the step at 0.60, g_mom's damping at 1.0, Task 3's factor at half size), each with the AI
     assistant's advice 'change nothing' labelled as its own.
+- 2026-11-18 (g), the library-linked part of g_mom's factors in the Task 1 files as built: the captain forwarded a
+  second note that names it and the two fixes considered (fit the step on dissected-heart cells only; drop the step),
+  so the options are prepared for a ruling. This entry fixes, before the listing it uses is run, the rule for the AI
+  assistant's advice. Written by the AI assistant. Nothing in any upload, build, rule or gate file has changed.
+  - **The three options.** A: the files as built (g_mom's factors fitted on E9.5 and the whole of E10.5, as the frozen
+    rules record, edited into the cardiomyocytes and the endocardium). B: the same step with the fit's reference held
+    to E10.5's dissected-heart library, so that no contrast between libraries can enter the factors; on the first
+    upload, whose every cell is of that library, with the second upload left as built. C: no g_mom step. B changes a
+    line of the frozen rules ('the fit of R3b's factors on the whole of E10.5') and C reverses a ruling, so each needs
+    the captain's own words, a builder change or a changed command, and a fourth rehearsal.
+  - **No practice run can score them.** The component is not a depth effect: with the smaller library of the practice
+    fit's reference thinned to two thirds and to one third of its counts, the share of the cardiomyocytes' factors
+    that goes with a metacell's library stays at its null (0.034 and 0.036 against a null of 0.03 with a 95th
+    percentile of 0.06; `experiments/t1_m1/results/gmom_test_fit/emulation.txt`). So it comes with the kind of sample,
+    and no released pair of stages has a change of kind inside the fit and a released truth after it. The options are
+    therefore read on the factors alone, target-free.
+  - **The listing, fixed here before it runs.** Four fits by the builder's own function: at the test pair (start E9.5)
+    with the reference as built (ALL), held to library 3 (L3, option B) and held to libraries 1 and 2, the embryo
+    portions, the one fit with no change of kind inside it (L12); and the practice fit (BACK, start E8.5, reference
+    E9.5). Read with reading N21's own measures, for the two categories the test build edits: the absolute cosine of
+    two fits' leading axes and the rank correlation of their per-gene sizes, between every pair; each fit's split-half
+    values as its ceiling; the factors' size; and the cosine of each fit's leading axis with the library slope of the
+    fit as built.
+  - **The rule for the advice, fixed now.** Advice only: every change is the captain's ruling. The AI assistant
+    advises B, on the first upload, only if all three hold for the cardiomyocytes, the category that carries the
+    component and most of the cells: (1) L3's leading axis agrees with L12's at least as well as ALL's does with L12's
+    (L12 is the one fit with no change of kind inside it; ALL shares a third of its reference cells with L12 and L3
+    shares none, so this bar is the stricter one for B); (2) L3 agrees with the practice fit at least as well as ALL
+    does, on the leading axis and on the per-gene sizes; (3) L3's split-half cosine is at least half of ALL's, so that
+    the smaller fit is not mostly noise; and for the endocardium none of the three fails by more than 0.1. The AI
+    assistant advises C only if ALL, L3 and L12 all agree with the practice fit no better than reading N21's
+    no-development references (0.03 and 0.01 on the leading axis). In every other case it advises A, the files as
+    built. Whatever the rule gives, the captain gets the whole table and the three options priced as far as they can
+    be: for B and C what practice cannot show, and for C the practice gain of g_mom that it gives up if that gain
+    carries (+1.23 and +1.13 on the two cuts, try T11).
+  - **Limits, said beforehand.** Agreement between fits is not a score: a fit that looks like the practice fit is not
+    thereby right at the test. A single-kind fit has fewer cells. Library 3 and the two portion libraries may differ
+    in real biology at the same stage, which the listing cannot tell from collection. The measures are reading N21's,
+    chosen before this question existed.
+  - **In build.** An off-by-default builder option for B (`campaign/t1-ac`, brief `lift6/briefs/t1ac.md`, with
+    independent review). It changes no entry.

@@ -10,3 +10,8 @@ collection.txt  The share of each category's factors' squared size that goes wit
                 the DGX's first campaign checkout at 6214e28, 16 threads).
 
 The scripts are kept as text beside their outputs: they are records of two listings, not maintained code.
+
+emulation.txt   (decision log 2026-11-18 (g)) The practice fit refitted with the smaller library of its reference
+                thinned to two thirds and to one third: the library-linked share of the factors stays at its null,
+                so the component at the test pair is not a depth effect. Script as run: gmom_emulate.py.txt (the
+                DGX's first campaign checkout at 6214e28, 16 threads).

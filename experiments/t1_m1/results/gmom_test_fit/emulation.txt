@@ -1,0 +1,17 @@
+reference E9.5: cells by library 1: 0.37, 2: 0.63
+the library thinned: 1 (the smaller one, as the shallower libraries are the smaller part of E10.5)
+  as released blood: 5 metacells; share of the finished factors' squared size that goes with the metacell's share of library 1: 0.227 (permutation null mean 0.237, 95th percentile 0.289); rms 0.0381
+  as released cm: 35 metacells; share of the finished factors' squared size that goes with the metacell's share of library 1: 0.032 (permutation null mean 0.030, 95th percentile 0.055); rms 0.0325
+  as released endocardium: 10 metacells; share of the finished factors' squared size that goes with the metacell's share of library 1: 0.151 (permutation null mean 0.106, 95th percentile 0.185); rms 0.0273
+  library 1 thinned to 0.67 blood: 5 metacells; share of the finished factors' squared size that goes with the metacell's share of library 1: 0.249 (permutation null mean 0.272, 95th percentile 0.298); rms 0.0366
+  library 1 thinned to 0.67 cm: 35 metacells; share of the finished factors' squared size that goes with the metacell's share of library 1: 0.034 (permutation null mean 0.029, 95th percentile 0.059); rms 0.0328
+  library 1 thinned to 0.67 endocardium: 10 metacells; share of the finished factors' squared size that goes with the metacell's share of library 1: 0.114 (permutation null mean 0.110, 95th percentile 0.193); rms 0.0267
+     blood: rms against the released fit x0.96
+     cm: rms against the released fit x1.01
+     endocardium: rms against the released fit x0.98
+  library 1 thinned to 0.33 blood: 5 metacells; share of the finished factors' squared size that goes with the metacell's share of library 1: 0.339 (permutation null mean 0.267, 95th percentile 0.351); rms 0.0447
+  library 1 thinned to 0.33 cm: 35 metacells; share of the finished factors' squared size that goes with the metacell's share of library 1: 0.036 (permutation null mean 0.030, 95th percentile 0.056); rms 0.0339
+  library 1 thinned to 0.33 endocardium: 10 metacells; share of the finished factors' squared size that goes with the metacell's share of library 1: 0.128 (permutation null mean 0.115, 95th percentile 0.216); rms 0.0289
+     blood: rms against the released fit x1.17
+     cm: rms against the released fit x1.04
+     endocardium: rms against the released fit x1.06
