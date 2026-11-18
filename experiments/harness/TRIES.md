@@ -11,8 +11,9 @@ same delegation. Rows written before that date stay as they were.
 
 From 2026-11-18 it also carries rule 9, the judge, written by the AI assistant under the captain's delegation of
 2026-11-02 after the first official scores and their diagnosis (`docs/PLAN.md` decision log 2026-11-18 (j), (k)); the
-captain can overrule it. It applies to every read registered from that date; rows registered before it stay as they
-were.
+captain can overrule it. It applies to every row committed on main after the commit that merges it and to every
+forecast or estimate restated after that commit; rows committed before it, K16 and K17 among them, stay under the
+rules they were written under.
 
 ## Rules
 
@@ -66,50 +67,81 @@ were.
    the headroom tables are copied from `headroom.txt`, naming the commit they were built at. An entry the script does
    not cover yet is added to its board list first. No official test score enters the tables.
 9. **The judge** (2026-11-18; written by the AI assistant under the captain's delegation of 2026-11-02; the captain
-   can overrule it). Every read registered from 2026-11-18, and every forecast or estimate restated from then, meets
-   J1 to J8. The row says how it meets each that bears on it; an outcome or estimate that breaks one says so in its
-   first line. Each clause names in its parenthesis the error of the first uploads it answers.
+   can overrule it). Every row committed on main after the commit that merges this rule, and every forecast or
+   estimate restated after that commit, meets J1 to J8; rows committed before it (K16, K17 and any other of
+   2026-11-18) stay under the rules they were written under. The row says how it meets each clause that bears on it;
+   an outcome or estimate that breaks one says so in its first line. Each clause names in its parenthesis the error of
+   the first uploads it answers. **One truth**, in J2, J4 and J5, is one released sample (stage, genotype, replicate),
+   whatever cut, subsample or budget a task scores on it: T1's whole and chamber-cut E10.5 tasks are one truth, and so
+   are the heart's two backtests on E10.5; T3's two Gata4 replicates are two truths.
    - **J1, completeness.** A practice score counts for a file only if the practice run applied that file's own build
-     path end to end (size mode, halving, depth step, composition, draw). A step outside the run is reported as
-     unpriced and is never filled in by judgement; a total that needs the file carries its board at the banked score.
+     path end to end (size mode, halving, depth step, composition step, draw). A step outside the run is reported as
+     unpriced and is never filled in by judgement; an estimate that needs the file reports that board as unpriced,
+     with the step's range from J1a where one exists, and takes nothing from a test score (`docs/PLAN.md` section 8).
      (The heart's size step and halving, which no practice run applied.) The stand-ins (*) of the headroom tables
      still rank groups under rule 6; they are not a file's score.
+   - **J1a, a step no practice task can host.** Some steps take a test-stage premise that no released task carries in
+     the same form: T1's composition at E12.5 (the cardiomyocyte share 0.60 of `T1_s2`; the tissue mix is a premise
+     on T1, `docs/PLAN.md` section 3, item 8) and T3's composition cut and per-label depth ratios. For such a step the
+     row names the nearest practice analogue, chosen by its build path before the read and never by how near it came
+     to a test score (J8), and labels it an analogue. The step's value is shown as a range over the analogue's
+     readings, never as a point, and a choice between files that differ on such a step goes to the captain as a
+     priced question that gives both readings. (T3's composition and depth, priced on no task at the test's depth;
+     decision log 2026-11-18 (k).)
    - **J2, independence.** A source fitted, tuned or selected on the same entity as its target (the same knockout
      run, the same truth) carries no weight in a forecast, as it already carries none in adoption (`docs/PLAN.md`
-     section 3, item 8; rule 5). (T3's same-knockout stand-in at weight 0.5, `experiments/gate/FORECAST_2026-11-13.md`.)
+     section 3, item 8; rule 5). A T3 factor fitted on the Gata4 replicates carries no forecast weight on them.
+     (T3's same-knockout stand-in at weight 0.5, `experiments/gate/FORECAST_2026-11-13.md`.)
    - **J3, no oracle centre.** A grid or arm that fixes an unknown at its oracle value (an oracle base, an oracle core
      size, the truth's own shares) is a sensitivity bound, never the centre of an estimate. (T1's oracle-base grid,
-     credited in full in the forecast and in the outlook of decision log 2026-11-04 (c).)
-   - **J4, equal weights.** Practice tasks weigh equally after tasks that share one truth are merged into one. A world
-     weight is allowed only where a committed, target-free measurement sets it; otherwise the headline uses the least
-     favourable value of its stated range. (The heart's two backtests on one E10.5 truth, read as two; the embryo's
+     credited in full in the forecast of 2026-11-13 and used in the outlook of decision log 2026-11-04 (c).)
+   - **J4, equal weights.** Practice tasks weigh equally after tasks on one truth are merged into one. A world weight
+     is allowed only where a committed, target-free measurement sets it; otherwise the headline uses the least
+     favourable value of the range committed when the weight was set, not of a later sensitivity sweep (the
+     embryo's 0.4 to 0.5, not the forecast's 0.3 to 0.6). Least favourable is judged against the claim argued: the
+     value that puts the change or file preferred furthest down against its alternative, with both files of a
+     comparison evaluated in the same world. (The heart's two backtests on one E10.5 truth, read as two; the embryo's
      world weight 0.45, the AI assistant's own "0.4 to 0.5".) The adoption rule's count of pseudo-tasks stays as the
      captain approved it; a decision whose passing tasks share one truth says so.
    - **J5, noise floor.** A row states before its run the smallest difference it can detect: the larger of the seed
      spread (the standard error of the ten seed-paired differences) and the between-truth spread (the standard
-     deviation of the merged tasks' mean differences), both from committed results of the nearest committed pair on
-     the same tasks. A try whose expected gain is under twice that, or that has one truth only, is labelled a
-     diagnostic. (A 0.06 margin on two backtests that share one truth, read as a gain.) A diagnostic still runs and
-     counts (rule 4; `AGENTS.md` rule 8); one that passes the adoption rule is reported as passing and goes to the
+     deviation of the merged tasks' mean differences), both from committed results of the board's entry against its
+     published baseline on the row's counting tasks. A try whose expected gain is under twice that, or whose counting
+     tasks are one truth, is labelled a diagnostic; on the record that is every try counted on T1's E10.5 cuts alone
+     and every try on the heart's two backtests. (A 0.06 margin on two backtests that share one truth, read as a
+     gain.) While the campaign of `AGENTS.md` rule 8 stands, a diagnostic still runs and counts (rule 4); after it,
+     rule 5's prune applies again. A diagnostic that passes the adoption rule is reported as passing and goes to the
      captain as a priced question before it enters an upload.
-   - **J6, horizon.** A row states the ratio of the test's step (time gap, extrapolation budget, bracket position) to
-     each counting practice task's. Where the ratio is above 1.5 on every counting task, the estimate is shrunk to the
-     published baseline: the step's gain over the floor counts as zero. (The heart's expression step, read on budgets
-     of 0.125 and 0.375 day and applied at 0.5.)
-   - **J7, guards are dry-run.** A guard (a reproduction check, a void condition, a tolerance) is run on committed
-     reproduction data before its row is committed, and the row quotes the result. That run reads committed results
-     only and is not a try; where no committed reproduction exists, the base arm's reproduction is its own counted
-     row first. (K16's 1e-9 guard, void on both machines; decision log 2026-11-18 (o).)
-   - **J8, the line on test scores.** A test score may name which file is banked and may choose among predictions; it
-     never sets a weight, a prior, a task selection, a tolerance or a constant, and practice tasks are never selected
-     by how near their level is to a test score. (The lines the challengers drew after the first scores, decision log
-     2026-11-18 (k).) The rest restates `AGENTS.md` ("Scores choose, never compute"), rule 5's last sentence and
-     rule 8; the last clause is new, and the plan of decision log 2026-11-18 (q) to build this week's reads "on the
-     tasks that did predict it" gives way to it.
-   - **Where it meets other rules.** J1, J3, J4 and J6 change the outlook procedure of decision log 2026-11-04 (c),
-     which `docs/PLAN.md` section 8 uses and which was the AI assistant's: rule 9 holds for every estimate restated
-     from 2026-11-18. The captain's 209 and his better-of-two reading stand. Nothing here changes the adoption rule,
-     the post-exposure block, a frozen rule or the captain's word on any upload.
+   - **J6, horizon.** A row states the ratio of the test's step to each counting task's: the time gap and the
+     extrapolation budget in days, and the bracket position as the distance from the nearer bracket end over the
+     bracket's length (0 at an end, 1/2 at the middle). Where the ratio is above 1 on every counting task, the test
+     lies outside the practice range (1 is that range's edge, read from no result), and the step's gain over the floor
+     is shown as a range from zero to its practice value, never as a point. Where it is above 1.5 on every counting
+     task, the step's gain counts as zero in the headline. (The heart's expression step, read on budgets of 0.125 and
+     0.375 day and applied at 0.5: ratio 1.33, so the first branch and not the second; the embryo's bracket position,
+     1/2 against 1/3, is 1.5 exactly and also takes the first. No threshold is set from either case: J8.)
+   - **J7, guards are dry-run.** A guard (a reproduction check, a void condition, a tolerance) is run, before its row
+     is committed, on committed reproduction data other than the pair the row will read, and the row quotes the
+     result and says whether the guard could have failed there; a dry run on the data the guard will later check
+     passes by construction. That run reads committed results only and is not a try; where no other committed
+     reproduction exists, the base arm's reproduction is its own counted row first. (K16's 1e-9 guard, void on both
+     machines, and K17's local guard, which tested nothing; decision log 2026-11-18 (o).)
+   - **J8, the line on test scores.** A test score may name which file is banked, set the score a second file must
+     beat and choose among predictions; it never sets a weight, a prior, a task selection, a tolerance, a constant or
+     an estimate, and practice tasks are never selected by how near their level is to a test score, as decision log
+     2026-11-18 (s) already reads it. A per-metric test value may name which step of a built file a try examines (the
+     embryo's d2_shape, the heart's size step and halving, entry (s)); it never sets that try's weight, expected
+     gain, task set or tolerance, and the row says so beside its headroom line, as rule 6 asks of a try off the
+     weakest group. (The lines the challengers drew after the first scores, decision log 2026-11-18 (k).) The rest
+     restates `AGENTS.md` ("Scores choose, never compute"), rule 5's last sentence and rule 8.
+   - **Where it meets other rules.** J1, J1a, J3, J4 and J6 amend the outlook procedure of decision log 2026-11-04
+     (c), which `docs/PLAN.md` section 8 and the captain's gate cite and which was the AI assistant's: the amendment
+     is made under the same delegation, the captain can overrule it, and it holds for every estimate restated after
+     the merge (section 8's "the oracle-base grids" are a bound from then, J3). Section 8's "never from a test score"
+     stands: no clause puts a test score into an estimate. The captain's 209 and his better-of-two reading stand.
+     J5's label leaves rule 5's prune as `AGENTS.md` rule 8 has it. J8's targeting of a step is a try off the weakest
+     group, which rule 6 allows when the row says why. Nothing here changes the adoption rule, the post-exposure
+     block, a frozen rule or the captain's word on any upload.
 
 ## Counts per board
 
