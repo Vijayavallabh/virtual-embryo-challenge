@@ -165,6 +165,12 @@ def test_the_records_are_target_free_and_cover_the_three_families(cm):
     assert rec["permutation_same_at_every_damping"] is True
     assert rec["permutation"]["0.5"]["seed"] == cm.PERM_SEED
     assert set(rec["null_match"]["1"]) == set(ctl["g_mom_null"][1.0].categories)
+    for d in ("0.5", "0.75", "1"):
+        assert set(rec["null_match"][d]) == set(ctl["g_mom_null"][float(d)].categories)
+        for m in rec["null_match"][d].values():  # the watched size match: g_mom's size inside the twin's range
+            assert m["bracketed"] is True and m["damping"] is not None
+            assert m["rms_at_smallest_damping"] <= m["rms_target"] <= m["rms_at_largest_damping"]
+    assert cm.size_match_reasons("x", rec["null_match"]) == []
     for c, m in rec["null_match"]["1"].items():
         assert m["reference_damping"] == 1.0 and m["rms_target"] == pytest.approx(rec["sizes"]["g_mom"]["1"][c])
 
@@ -192,6 +198,15 @@ def _gain(gains, arm, i):
     return g[i] if isinstance(g, list) else g
 
 
+def _match(**over):
+    """A twin's size-match record that passes: per damping, one category matched inside its range."""
+    out = {d: {"cm": {"damping": float(d) * 1.1, "relative_error": 1e-12, "rms_target": 0.1, "bracketed": True,
+                      "rms_at_smallest_damping": 1e-4, "rms_at_largest_damping": 5.0}} for d in ("0.5", "0.75", "1")}
+    for d, m in over.items():
+        out[d]["cm"].update(m)
+    return out
+
+
 def _cut(cm, gains, seeds=range(10), commit="c" * 40, clean=True, task=None, shift=None, copy=None, dampings=None,
          **top):
     """A part-1 task file. gains: larger arm -> gain over its family's arm at 0.5 (a number or ten); shift: arm ->
@@ -212,10 +227,10 @@ def _cut(cm, gains, seeds=range(10), commit="c" * 40, clean=True, task=None, shi
         rows.append({"seed": s, "floor": 50.0, "arms": arms})
     rec = {"label": "synthetic", "part": "cut", "task": task, "seeds": list(seeds),
            "dampings": dampings or dict(cm.CUT_ARMS), "null_seed": cm.NULL_SEED, "perm_seed": cm.PERM_SEED,
-           "registered_at_half": True,
+           "at_half": {f: {"used": "a" * 64, "registered": "a" * 64} for f in cm.FAMILIES},
            "records": {"permutation_same_at_every_damping": True, "permutation": {"0.5": {"seed": cm.PERM_SEED}},
                        "null_categories": {"0.5": ["cm"], "0.75": ["cm"], "1": ["cm"]}, "factors": {}, "sizes": {},
-                       "null_match": {}},
+                       "null_match": _match()},
            "rows": rows, "stamp": {"commit": commit, "tree_clean": clean, "utc": "x", "inputs": {}}}
     rec.update(top)
     return rec
@@ -245,7 +260,7 @@ def _world(cm, k, gains, seeds=range(10), commit="c" * 40, clean=True, shift=Non
         th.update(thinning or {})
     rec = {"label": "synthetic", "part": "world", "task": cm.TASK, "world": k,
            "truth": k if k in cm.T50_WORLDS else cm.HEART, "truth_rows": 100, "truth_contamination": 5,
-           "seeds": list(seeds), "thinning": th, "dampings": dict(cm.WORLD_DAMPINGS), "rows": rows,
+           "fraction": 0.2, "seeds": list(seeds), "thinning": th, "dampings": dict(cm.WORLD_DAMPINGS), "rows": rows,
            "stamp": {"commit": commit, "tree_clean": clean, "utc": "x", "inputs": {}}}
     rec.update(top)
     return rec
@@ -325,7 +340,7 @@ def test_statement_one_needs_development_and_the_assignment_and_the_values(cm, t
     res, out = _read(cm, tmp_path, NEEDS_GAINS, _all(0.5))
     r = res["reading"]
     assert r["valid"], r["validity"]["reasons"]
-    assert r["statement_1"]["statement"] == cm.NEEDS and r["statement_1"]["holds"]
+    assert r["statement_1"]["statement"] == cm.EXCEEDS and r["statement_1"]["holds"]
     c = r["reading_1"][cm.gc.TASK_CHAMBER]["1"]
     assert c["G"]["mean"] == pytest.approx(1.0) and c["Z"]["mean"] == pytest.approx(0.2)
     assert c["D"]["mean"] == pytest.approx(0.8) and c["Q"]["mean"] == pytest.approx(0.1)
@@ -338,7 +353,7 @@ def test_statement_one_needs_development_and_the_assignment_and_the_values(cm, t
     assert r["mean_scores"]["ref50"]["m1_r_gmom_g1"] == pytest.approx(54.0)
     assert r["mean_scores"][cm.gc.TASK_CHAMBER]["g_mom_null_d1"] == pytest.approx(51.2)
     text = (out / "t59.txt").read_text()
-    assert cm.NEEDS in text and all(f"Limit: {x}" in text for x in cm.LIMITS)
+    assert cm.EXCEEDS in text and all(f"Limit: {x}" in text for x in cm.LIMITS)
 
 
 @pytest.mark.parametrize("over, named", [
@@ -362,7 +377,7 @@ def test_statement_one_reads_one_cut_alone(cm, tmp_path):
 def test_statement_one_ignores_the_three_quarter_damping(cm, tmp_path):
     r = _read(cm, tmp_path, {**NEEDS_GAINS, "g_mom_null_d075": 2.0}, _all(0.5))[0]["reading"]
     assert r["reading_1"][cm.gc.TASK_CHAMBER]["0.75"]["D"]["label"] == "behind"
-    assert r["statement_1"]["statement"] == cm.NEEDS
+    assert r["statement_1"]["statement"] == cm.EXCEEDS
 
 
 def test_statement_two_stays_positive_with_no_size_threshold(cm, tmp_path):
@@ -376,7 +391,8 @@ def test_statement_two_turns_names_the_world_and_its_side(cm, tmp_path):
     wg["ref50"]["m1_r_gmom_g1"] = -0.5
     wg["lib3_t33"]["m1_r_gmom_g1"] = [0.1] * 7 + [-0.1] * 3
     r = _read(cm, tmp_path, NEEDS_GAINS, wg)[0]["reading"]
-    assert r["statement_2"]["statement"] == f"{cm.TURNS} (ref50, {cm.DEEPER})"
+    assert r["statement_2"]["statement"] == (f"{cm.TURNS} (ref50, {cm.DEEPER}: mean -0.50, 0 of 10 seeds ahead, "
+                                             "negative)")
     assert r["statement_2"]["neither"] == ["lib3_t33"]
 
 
@@ -386,7 +402,9 @@ def test_statement_two_not_separated_names_every_world_meeting_neither(cm, tmp_p
     wg["ref67"]["m1_r_gmom_g1"] = -0.2  # behind in sign, level by the test
     wg["lib3"]["m1_r_gmom_g075"] = -1.0  # the 0.75 damping is not read by statement 2
     r = _read(cm, tmp_path, NEEDS_GAINS, wg)[0]["reading"]
-    assert r["statement_2"]["statement"] == (f"{cm.NOT_SEPARATED} (lib3_t33, {cm.SHALLOWER}; ref67, {cm.DEEPER})")
+    assert r["statement_2"]["statement"] == (
+        f"{cm.NOT_SEPARATED} (lib3_t33, {cm.SHALLOWER}: mean +0.04, 7 of 10 seeds ahead, positive; "
+        f"ref67, {cm.DEEPER}: mean -0.20, 0 of 10 seeds ahead, negative)")
     assert r["reading_2"]["lib3"]["0.75"]["label"] == "behind"
 
 
@@ -394,7 +412,165 @@ def test_seven_of_ten_ahead_does_not_stay_positive(cm, tmp_path):
     wg = _all(0.5)
     wg["lib3"]["m1_r_gmom_g1"] = [1.0] * 7 + [-0.1] * 3
     r = _read(cm, tmp_path, NEEDS_GAINS, wg)[0]["reading"]
-    assert r["statement_2"]["statement"] == f"{cm.NOT_SEPARATED} (lib3, {cm.SHALLOWER})"
+    assert r["statement_2"]["statement"] == (f"{cm.NOT_SEPARATED} (lib3, {cm.SHALLOWER}: mean +0.67, 7 of 10 seeds "
+                                             "ahead, positive)")
+
+
+def test_statement_one_needs_g_itself_ahead(cm, tmp_path):
+    # G level (+0.2) while D and A read ahead because the controls lose: 'not shown', naming G on both cuts
+    gains = {**NEEDS_GAINS, "g_mom_d1": 0.2, "g_mom_null_d1": -0.6, "g_mom_perm_d1": -0.6}
+    r = _read(cm, tmp_path, gains, _all(0.5))[0]["reading"]
+    assert r["valid"], r["validity"]["reasons"]
+    c = r["reading_1"][CH]["1"]
+    assert c["D"]["label"] == c["A"]["label"] == "ahead" and c["G"]["label"] == "level"
+    assert r["statement_1"]["statement"] == f"{cm.NOT_SHOWN} (G on {CH} level; G on {WH} level)"
+    assert not r["statement_1"]["holds"]
+    # no gain at all (G 0, the controls behind): not shown either
+    gains = {**NEEDS_GAINS, "g_mom_d1": 0.0, "g_mom_null_d1": -0.6, "g_mom_perm_d1": -0.6}
+    r = _read(cm, tmp_path / "zero", gains, _all(0.5))[0]["reading"]
+    assert r["statement_1"]["statement"].startswith(cm.NOT_SHOWN)
+
+
+def test_statement_one_says_exceeds_and_prints_the_controls_share_of_the_gain(cm, tmp_path):
+    # the twin reproduces 70% of g_mom's gain: D (+0.42) is ahead, the words say 'exceeds', and Z/G 0.70 is printed
+    gains = {**NEEDS_GAINS, "g_mom_d1": 1.4, "g_mom_null_d1": 0.98, "g_mom_perm_d1": 0.2}
+    res, out = _read(cm, tmp_path, gains, _all(0.5))
+    r = res["reading"]
+    assert r["statement_1"]["statement"] == cm.EXCEEDS
+    share = r["statement_1"]["control_share_of_gain"][CH]
+    assert share["Z/G"] == pytest.approx(0.7) and share["Q/G"] == pytest.approx(0.2 / 1.4)
+    assert r["size_match_largest_relative_error"][CH] == {"0.5": 1e-12, "0.75": 1e-12, "1": 1e-12}
+    text = (out / "t59.txt").read_text()
+    assert f"{CH} Z/G 0.70, Q/G 0.14" in text and "'exceeds' is not 'needs'" in text
+    assert "largest relative error per damping" in text
+    assert cm.statement_one({k: {"1": {q: {"label": "ahead", "mean": 0.0} for q in "GZDQA"}}
+                             for k in cm.CUT_FILES})["control_share_of_gain"][CH]["Z/G"] != 0  # nan where G is 0
+
+
+def test_statement_two_names_a_small_steady_reversal_with_its_sign(cm, tmp_path):
+    wg = _all(0.5)
+    wg["ref67"]["m1_r_gmom_g1"] = -0.25  # every seed behind, smaller than the 0.3 bar
+    r = _read(cm, tmp_path, NEEDS_GAINS, wg)[0]["reading"]
+    assert r["statement_2"]["statement"] == (f"{cm.NOT_SEPARATED} (ref67, {cm.DEEPER}: mean -0.25, 0 of 10 seeds "
+                                             "ahead, negative)")
+    assert r["statement_2"]["signs"]["ref67"] == "negative" and r["statement_2"]["signs"]["lib3"] == "positive"
+
+
+@pytest.mark.parametrize("over, ok", [
+    ({}, True),
+    ({"1": {"damping": None}}, False),
+    ({"0.75": {"bracketed": False}}, False),
+    ({"0.5": {"bracketed": None}}, False),
+    ({"1": {"damping": None, "rms_target": 0.0, "bracketed": False}}, True),  # g_mom has no size: both zero
+])
+def test_a_failed_size_match_voids(cm, tmp_path, over, ok):
+    r = _read(cm, tmp_path, NEEDS_GAINS, _all(0.5),
+              cut_over={WH: {"records": {"permutation_same_at_every_damping": True,
+                                         "permutation": {"0.5": {"seed": cm.PERM_SEED}},
+                                         "null_categories": {"0.5": ["cm"], "0.75": ["cm"], "1": ["cm"]},
+                                         "null_match": _match(**over)}}})[0]["reading"]
+    assert r["valid"] is ok, r["validity"]["reasons"]
+    if not ok:
+        assert any("size match failed" in x for x in r["validity"]["reasons"])
+
+
+def test_an_unrecorded_size_match_voids(cm):
+    m = _match()
+    del m["0.75"]
+    assert "not recorded at every damping" in cm.size_match_reasons("x", m)[0]
+    assert "not recorded at every damping" in cm.size_match_reasons("x", None)[0]
+    assert cm.size_match_reasons("x", _match()) == []
+
+
+def test_the_size_match_watch_sees_a_match_at_an_end_of_the_range(cm):
+    mr = np.array([[0.2, -0.2, 0.1], [-0.2, 0.2, -0.1]])
+    sizes, free = np.array([1.0, 2.0]), np.array([True, True, False])
+    calls = []
+    with cm._capture_size_match(calls):
+        _, inside = ts._finish_to_size(mr, sizes, free, 0.3)
+        _, outside = ts._finish_to_size(mr, sizes, free, 100.0)  # above what the clip allows: stops at the top end
+    assert ts._finish_to_size is not None and [c["bracketed"] for c in calls] == [True, False]
+    # once every entry sits at the clip the size stops rising, so the bisection keeps the first damping that reached
+    # the cap: the damping found is not at an end of the range, and only the bracket shows the failed match
+    lo, hi = ts.SIZE_MATCH_DAMPING
+    assert lo < outside["damping"] < hi and outside["relative_error"] > 0.5
+    assert calls[1]["rms_at_largest_damping"] < 100.0 and inside["relative_error"] < 1e-6
+
+
+def test_the_at_half_record_is_the_registered_builds_sha256(cm):
+    ctx = _ctx()
+    cm.cut_arms(ctx, harness._b0_t1(harness.B0_DAMPING))
+    ctl = cm._CTL["fold"]
+    rec = cm.at_half_record(ctl)
+    assert rec["null_seed"] == rec["perm_seed"] == 20261110
+    for f in cm.FAMILIES:
+        assert rec["sha256"][f]["used"] == rec["sha256"][f]["registered"] and len(rec["sha256"][f]["used"]) == 64
+    assert len({rec["sha256"][f]["used"] for f in cm.FAMILIES}) == 3
+    assert cm.factors_sha256(ctl["g_mom"][1.0]) != rec["sha256"]["g_mom"]["used"]
+    # a twin at 0.5 other than the registered one, or no registered build, is recorded as different
+    swapped = {**ctl, "g_mom_null": {**ctl["g_mom_null"], 0.5: ctl["g_mom_null"][1.0]}}
+    assert cm.at_half_record(swapped)["sha256"]["g_mom_null"]["used"] != rec["sha256"]["g_mom_null"]["registered"]
+    harness._G_MOM_NULL_PREP.clear()
+    assert cm.at_half_record(ctl)["sha256"]["g_mom_null"]["registered"] is None
+
+
+def test_in_a_thinned_reference_world_the_arms_are_built_on_the_thinned_inputs(cm, monkeypatch):
+    """cmd_run_world with every loader stubbed: the inputs world_route returns, not the inputs as loaded, reach every
+    seed's build (try T54's arms fit on the thinned reference)."""
+    from types import SimpleNamespace as NS
+
+    import anndata as ad
+
+    def adata(tag):
+        a = ad.AnnData(np.zeros((2, 1), dtype=np.float32))
+        a.obs["celltype"] = ["x", "y"]
+        a.uns["tag"] = tag
+        return a
+
+    released = {"ref": adata("released"), "start": adata("released")}
+    thinned = {"ref": adata("thinned"), "start": adata("thinned")}
+    t = NS(key=cm.TASK, panel_board="pb", reference="r_stage", target="t_stage",
+           inputs={"ref": "ref.h5ad", "start": "start.h5ad"})
+    routed = []
+
+    def world_route(world, t_, data, genes, inputs, role, ref_stage, read_full):
+        routed.append(world)
+        assert inputs["ref"] is released["ref"]
+        return thinned, NS(n=3), NS(n=4), 0, {"p": 0.5}
+
+    seen = []
+
+    def form_b_arms(ctx, directions, groups, fraction, held_m1, held_factors):
+        seen.append(ctx.inputs)
+        cm.gs._FOLD["fold"] = {"finished": {}}
+        return {a: f"pred-{a}" for a in cm.WORLD_ARMS}
+
+    for mod, name, value in [
+        (cm.n12, "tries_rows", lambda: {"T59"}), (cm.gc, "n22_passed", lambda p: True),
+        (cm.gv, "tree_state", lambda: {}), (cm.gv, "stamp", lambda *a, **k: {"commit": "c", "tree_clean": True}),
+        (harness, "load_tasks", lambda: {"T1:test": [t]}), (harness, "STAGE_DAYS", {"r_stage": 9.5, "t_stage": 10.5}),
+        (cm, "load_boards", lambda: {"pb": NS(genes=["g0"])}), (cm, "read_stage", lambda *a, **k: None),
+        (cm, "Stage", NS(from_anndata=lambda a, g: NS(n=3))),
+        (cm, "load_stage", lambda path, lineage: released[path.stem]),
+        (harness, "base_role", lambda t_: "ref"), (cm.pdr, "world_route", world_route),
+        (harness, "task_board", lambda *a: "board"),
+        (cm.ls, "all_anchors", lambda t_, b, tr, rs, seeds: ({s: NS(score=50.0, anchors=None) for s in seeds}, [])),
+        (cm.feng_dirs, "feng_directions", lambda genes: ({}, {})), (cm.feng_dirs, "label_groups", lambda labels: {}),
+        (cm.feng_dirs, "bracket_fraction", lambda a, b: 0.2), (cm.feng_dirs, "clean_stats_path", lambda: "x"),
+        (cm.t1_scope, "held_flat_genes", lambda: []), (cm.hygiene, "load_union", lambda: {"file": "x"}),
+        (cm.gc, "held_feng", lambda u, p: []), (harness.TaskView, "of", staticmethod(lambda t_: "view")),
+        (harness, "_candidate_board", lambda b: "cboard"), (harness, "_b0_t1", lambda d: (lambda ctx: "b0")),
+        (cm.gs, "form_b_arms", form_b_arms),
+        (cm.er, "score_arms", lambda b, tr, rs, s, an, preds: {k: {"score": 1.0} for k in preds}),
+        (cm.ob, "anchor_record", lambda a: {}), (cm.ls, "prediction_sha256", lambda p: "h"),
+        (cm.ls, "sparsity", lambda p: 0.0), (cm.gs, "factor_records", lambda f, p: {}),
+    ]:
+        monkeypatch.setattr(mod, name, value)
+    cm.main(["run", "--world", "ref67", "--out", "t59", "--seeds", "0,1"])
+    assert routed == ["ref67"] and len(seen) == 2
+    assert all(x is thinned for x in seen)
+    rec = json.loads((cm.RESULTS / "t59" / "tasks" / "ref67.json").read_text())
+    assert rec["thinning"] == {"p": 0.5} and rec["fraction"] == 0.2 and rec["truth"] == cm.HEART
 
 
 
@@ -432,7 +608,13 @@ def test_seven_of_ten_ahead_does_not_stay_positive(cm, tmp_path):
     ({"world_over": {"ref50": {"truth": "ref50"}}}, "holds truth"),
     ({"world_over": {"ref67": {"world": "ref50"}}}, "holds world"),
     ({"cut_over": {CH: {"null_seed": 1}}}, "tries T23's and T21's"),
-    ({"cut_over": {WH: {"registered_at_half": None}}}, "registered candidates"),
+    ({"cut_over": {WH: {"at_half": {**{f: {"used": "a" * 64, "registered": "a" * 64} for f in ("g_mom",
+                                                                                          "g_mom_null")},
+                                     "g_mom_perm": {"used": "a" * 64, "registered": "b" * 64}}}}},
+     "registered candidates' sha256 on ['g_mom_perm']"),
+    ({"cut_over": {CH: {"at_half": None}}}, "registered candidates' sha256"),
+    ({"world_over": {"ref67": {"fraction": 0.4}}}, "fraction 0.4, not 0.2"),
+    ({"world_over": {"lib3": {"fraction": None}}}, "fraction None"),
     ({"cut_over": {WH: {"copy": {"g_mom_null_d1": "g_mom_null"}}}}, "exactly as its twin"),
     ({"cut_over": {CH: {"copy": {"g_mom_perm_d075": "g_mom_d075"}}}}, "exactly as its twin"),
 ])
@@ -491,15 +673,20 @@ def test_the_reading_refuses_to_overwrite(cm, tmp_path):
 
 def test_the_limits_are_the_docstrings_and_say_what_the_brief_says(cm):
     doc = " ".join(cm.__doc__.split())
-    assert len(cm.LIMITS) == 9 and all(x in doc for x in cm.LIMITS)
+    assert len(cm.LIMITS) == 13 and all(x in doc for x in cm.LIMITS)
     joined = " ".join(cm.LIMITS)
     for phrase in ("One E8.5 to E9.5 fit serves every seed and both cuts", "Twice the damping is not twice g_mom",
                    "A larger arm redraws more counts", "'Stays positive' has no size threshold",
                    "is not a deeper truth", "One released day, in-sample",
                    "Nothing here says how deep any hidden truth is",
-                   "the damping is a size chosen on the cuts that kept g_mom"):
+                   "the damping is a size chosen on the cuts that kept g_mom",
+                   "'Not shown' is not 'does not need development'", "means the twin or the permuted set gains more",
+                   "on the cell-weighted root mean square only", "Statement 1 is not carried into the entry's form",
+                   "Statement 2's bars are not symmetric", "Each thinned world is one draw",
+                   "share their predictions bit for bit"):
         assert phrase in joined
-    assert "keep" not in cm.NEEDS and "adoption result" in cm.LABEL_T59
+    assert "keep" not in cm.EXCEEDS and "adoption result" in cm.LABEL_T59
+    assert "needs" not in cm.EXCEEDS and "exceeds" in cm.EXCEEDS and "is ahead" in cm.EXCEEDS
 
 
 # ---------------------------------------------------------------------------------------------------------------------
