@@ -5430,3 +5430,36 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     K8b's scores exactly; on m it differs in those two seeds by at most 0.004 board points (mean absolute difference
     over the ten seeds 0.0005). The row fixed what follows: one rerun, unchanged at the same commit, on the DGX,
     whose reading is the try's reading; it is running in `~/v/vec-campaign` at cccff68.
+- 2026-11-18 (o), row K16 is void on both machines, and the captain signs off a second try on the same runs, row K17.
+  Written by the AI assistant.
+  - **K16's outcome.** The DGX rerun the row provided for (`~/v/vec-campaign` at cccff68, clean tree, exit 0) is void
+    as well: the base arm fails the 1e-9 reproduction on g1 and g2 in six seeds each and on m in three. By the row's
+    own words the try is void: no request, and the second upload stays at 0.5. Counted: T3 35 to 40. Neither reading
+    printed anything but its void line.
+  - **Why it was void, in plain words.** The guard asked the unchanged baseline to equal the scores of 13 November
+    to nine decimal places. On the local machine it does so on two practice tasks and differs on the third in two
+    seeds by at most 0.004 board points; on the DGX, T3 builds are known to draw a few cells differently. The guard
+    was the AI assistant's design, taken from a reviewer's suggestion without checking that the earlier runs
+    reproduce that closely; the row had itself cited the machines' difference and still asked for exactness on the
+    DGX, so its fallback could not have passed. That is a fault of the row and no finding about the exponent.
+  - **Row K17, in plain words.** A second, separately counted try that reads the same six task files and builds
+    nothing. Each run is void unless its baseline's ten-seed mean is within 0.1 board points of the earlier run and
+    every seed within 0.5, and unless the fitted factor's stored summary equals the earlier run's exactly. Each run
+    is then read by K16's own decision rule, unchanged. A request follows only if both runs name the same exponent;
+    anything else is no request and the second upload stays at 0.5. What it reverses: K16 said a double void meant
+    no request, and K17 can lead to one. What the guard is and is not: on the local run the baseline's distances
+    were already known, so there it states a tolerance and tests nothing; on the DGX run they were not known, so
+    there it can void. What was known when the row was written: the void lines, the local baseline's distances and
+    the equality of the factor summaries; no score of any arm.
+  - **Reviewed before the commit** (wf_8fa37372-259, two agents: the design of the try; the code). The first draft
+    had five blockers in its design and one in its code, all met in the committed row and script: the outcome now
+    needs the same exponent on both runs (the draft asked only that the local run's exponent carry on the DGX); the
+    DGX run gets the guard (the draft gave it none); a score-free check of the factor summary is added; the row says
+    that it reverses K16's fixed consequence and how the baseline's distances were computed; the six task files are
+    named by hash; a crash on a void run is fixed.
+  - **The captain's sign-off.** Asked, with K16's void, its cause, the looser guard and the two-machine condition in
+    the question, "May I register a second try that reads the same runs under a looser guard, fixed before any score
+    is seen, and that asks for a change only if the runs on both machines name the same strength?", the captain
+    answered: "Yes, read it (Recommended)". The option he chose said: the row is committed first with his words; if
+    both runs agree on a stronger factor the AI assistant comes back with a priced question before any file changes;
+    if not, T3 stays as built; the method report says the reading was set after a void.
