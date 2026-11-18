@@ -14,7 +14,7 @@
   2026-11-17 (a) has the whole list. The organisers also answered the exposure notice (accepted; they ask for the
   explanation and the precommitted procedure in the method report): a further reply to the thread's other questions
   is announced and must go through a screening agent, never be pasted.
-- **What is live (2026-11-18, 07:38 UTC).** No candidate change is live and nothing runs. **The captain cleared
+- **What is live (2026-11-18, 09:24 UTC; the paragraph below is of 07:38 UTC, and the captain's forwarded notes on g_mom at the test were examined after it: see item (4) of the captain's list).** No candidate change is live and nothing runs. **The captain cleared
   the session's goal on 18 November (no words): no new read or agent round is opened without the captain's word.**
   The ninth independent pass is complete (decision log 2026-11-18 (a) and (c): no result wrong, no open line). The
   reads it named were finished and recorded (entries (d) to (f)): K15 (nothing changes), T58 (the first ground
@@ -47,8 +47,7 @@
   sets that carry no development, and at the test the factors are 1.09 to 1.48 times as large and hold a library component (0.30 of the cardiomyocytes' factors' squared size) that no
   practice run contains; a cold check says stop (entry (f)); (c) Task 3's factor at half size: +0.89 and +2.35 on
   the two cross-knockout folds with the factor alone, -0.55 and -1.67 on the two replicate folds in the file's own
-  form (row K15); (4) for information: the library component is in the Task 1 files as built, at the entry's own
-  damping, and no released stage can price it (entry (f)); (5) the older open decisions (Task 1's read depth: the
+  form (row K15); (4) g_mom's fit at the test (decision log 2026-11-18 (g) to (i)): its factors go with which library a cell state's cells came from (0.31 of the cardiomyocytes' factors' squared size); a uniform offset between libraries explains about 1 to 3% of the factors' size, the rest is a difference between states that released stages cannot split into development and identity; three options, none scorable: A the files as built, B the fit on the dissected-heart library alone on the first upload (builder option in review on `campaign/t1-ac`), C no g_mom step; advice, the AI assistant's own, A, as a default and not a tested result; (5) the older open decisions (Task 1's read depth: the
   rule gives declined; the embryo's moved-less family and the late-fetal practice family: advice no). Once the
   captain names the dates, the AI assistant owes the amendments (the gate's file with the captain's words and its
   test, an amendment at the end of `docs/S2_RULES.md` with a new hash, the runbook's tables, `AGENTS.md`), the

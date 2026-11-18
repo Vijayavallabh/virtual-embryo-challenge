@@ -3,6 +3,19 @@
 ## Current State
 
 **Last Updated:** 2026-11-18
+**2026-11-18, 09:24 UTC: the captain forwarded three notes on g_mom at the test; the question they raise was
+examined on released stages and goes to the captain with three options, none of which can be scored. Nothing in any
+upload, build, rule or gate file has changed** (`docs/PLAN.md` decision log 2026-11-18 (g) to (i)). Five target-free
+listings (`experiments/t1_m1/results/gmom_test_fit/`), each reviewed by independent agents, who found no number
+wrong and withdrew several of the AI assistant's readings. What stands: at the test pair's fit g_mom's factors go
+with which library a cell state's cells came from (0.31 of the cardiomyocytes' factors' squared size, 0.10 for the
+endocardium, the two categories the test build edits); a uniform offset between libraries acting on cells explains
+about 1 to 3% of the factors' size; the rest is a difference between states that the libraries hold in different
+amounts, and released stages cannot say how much of it is development. The options: A, the files as built (the
+output of a rule fixed beforehand, which the reviews showed to lean against B and to be unable to give C); B, the
+fit on the dissected-heart library alone, on the first upload (an off-by-default builder option is in review on
+`campaign/t1-ac`); C, no g_mom step. The AI assistant's advice, its own: A; a 'keep' is a default here, not a tested
+result. Earlier the same day the cold check of g_mom's larger damping said stop (entry (f)).
 **2026-11-18, 07:38 UTC: the captain cleared the session's goal; the reads already built were finished and recorded,
 and no new read was opened. Nothing in any upload, build, rule or gate file has changed** (`docs/PLAN.md` decision
 log 2026-11-18 (d) to (f)). K15: Task 3's half factor cannot be built in the first-choice file's own form on the
