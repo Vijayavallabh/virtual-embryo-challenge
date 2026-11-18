@@ -5478,3 +5478,38 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **What follows.** T3's last upload is `t3_build/refused_s1.h5ad` (0394575a11fc...), built on 2026-11-13, as the
     amendment of 2026-11-18 to `docs/S2_RULES.md` says. It is handed to the captain with a short note for the
     organisers, as the disclosure email promises before T3's second upload.
+- 2026-11-18 (q), the captain holds the second uploads and orders a week of research; what the AI assistant reads
+  into it and what starts. Written by the AI assistant.
+  - **The captain's message** (pasted into the main session; the clock read 17:01 UTC at the first command after
+    it), verbatim: "We don’t need to submit again right now. Use the time before the deadline to make the biggest
+    measurable improvement you can to our leaderboard score. Start with our first submission. Compare its
+    leaderboard scores with our local validation results, identify where we underperformed, and turn those gaps into
+    testable hypotheses. Distinguish what the scores actually tell us from what we still need to investigate. Be
+    ambitious: explore several substantially different approaches in parallel rather than spending the whole window
+    tuning the current pipeline. Use the full compute and storage allocation available to us on the DGX. Run cheap
+    tests first, stop unpromising runs early, and give the strongest and wildest ideas enough resources to prove
+    themselves. Keep a record of configs, results, and checkpoints so we can reproduce the best runs."
+  - **How the AI assistant reads it** (its reading, which the captain can correct):
+    - The four second files handed over at 16:54 UTC (entries (l) to (p)) are held. They stay the second uploads
+      unless a better file is established and the captain rules for it; none goes up before his word.
+    - It renews the campaign of `AGENTS.md` rule 8 for the days to the deadline and widens it: new designs, with
+      their own counted practice reads, are now in scope, where entry (k) had set them aside for want of time.
+    - It lifts nothing. The Official Rules' line (scores choose among predictions and compute none; no property of a
+      hidden target is solved from them) and the five lines of entry (k), the data rules, the list of material that
+      is never opened, the post-exposure block (one priced question per candidate that touches it), the working
+      answer A15, the frozen second-upload rules (the captain's own words per rule), row before run, the count of
+      tries and the adoption rule all stand. Every upload, and every change to one, stays the captain's.
+    - "Measurable": on the leaderboard an improvement can be measured once per board, by the one upload left. Until
+      then the judge is the pinned scorer on practice tasks, each read with its ledger row committed first. Where
+      the practice tasks misjudged the test (entry (k)), the reads of this week are built on the tasks that did
+      predict it, chosen by a rule written before the reads.
+    - "Storage": `docs/COMPUTE.md` asks before more than 50 GB is written to the DGX's shared disk. The AI assistant
+      keeps to that and asks if a run needs more.
+  - **The working calendar** (the AI assistant's, under the delegation): practice reads and new builds until
+    23 November; candidates frozen, cold checks and the captain's rulings on 23 and 24 November; reproducible builds
+    on 24 November; uploads by the captain on 25 November; the organisers' deadline is 26 November 11:59 UTC.
+  - **What runs.** Workflow wf_edd233ae-35a (read-only; nine agents): one designer per board sets the first scores
+    beside the practice results, separates what the scores say from what they do not, and proposes hypotheses that
+    released data can test and candidates of substantially different kinds; one challenger per board tries to refute
+    the design; one adviser brings methods from other fields, a rule for choosing a second file as the better of two,
+    and a way to weigh practice evidence. Nothing is built, run against a practice target or uploaded by it.
