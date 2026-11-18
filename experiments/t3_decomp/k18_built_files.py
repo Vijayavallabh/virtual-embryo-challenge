@@ -773,17 +773,19 @@ def text(res: dict) -> str:
 def cmd_read(a) -> None:
     try:
         res = reading(Path(a.runs))
+        t = text(res)  # inside the try: a crash while formatting is masked too, and nothing is written before it
+        js = json.dumps(res, indent=1, default=float)
     except Exception:  # noqa: BLE001  (a crash after the task files were opened: masked traceback, nothing written)
         print(masked(traceback.format_exc()), file=sys.stderr, end="", flush=True)
         sys.exit(1)
     if res.get("incomplete"):  # nothing was read and nothing is written; no log holds a score, so the rerun is blind
-        print(text(res), end="")
+        print(t, end="")
         sys.exit(3)
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
-    (out / "reading.json").write_text(json.dumps(res, indent=1, default=float))
-    (out / "reading.txt").write_text(text(res))
-    print(text(res), end="")
+    (out / "reading.json").write_text(js)
+    (out / "reading.txt").write_text(t)
+    print(t, end="")
 
 
 def main(argv=None) -> None:
