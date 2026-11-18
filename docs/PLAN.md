@@ -5091,3 +5091,49 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     chosen before this question existed.
   - **In build.** An off-by-default builder option for B (`campaign/t1-ac`, brief `lift6/briefs/t1ac.md`, with
     independent review). It changes no entry.
+- 2026-11-18 (h), the listing of entry (g) is read, its rule gives option A, and two independent reviews of the four
+  listings (workflow wf_f9fc6803-97a: one of the code, one of the reading) withdraw three inferences of entries (f)
+  and (g). One more listing, named by the reviews, is fixed here before it runs. Written by the AI assistant. Nothing
+  in any upload, build, rule or gate file has changed.
+  - **The listing and the rule.** For the cardiomyocytes (`experiments/t1_m1/results/gmom_test_fit/single_kind.txt`):
+    split-half cosines of the leading axis 0.90 (ALL), 0.85 (L3), 0.86 (L12), 0.92 (BACK); with the practice fit ALL
+    0.20, L3 0.36, L12 0.01 on the leading axis and 0.79, 0.73, 0.65 on the per-gene sizes; L3 with L12 0.53, ALL with
+    L3 0.81, ALL with L12 0.86. For the endocardium: with the practice fit 0.29, 0.31, 0.20 and 0.68, 0.61, 0.51; L3
+    with L12 0.89, ALL with L3 0.98, ALL with L12 0.94. By the rule of entry (g): condition (1) fails for the
+    cardiomyocytes (0.53 against 0.86); condition (2) passes on the leading axis (0.36 against 0.20) and fails on the
+    per-gene sizes (0.73 against 0.79); condition (3) passes (0.85 against a bar of 0.45); so B is not advised. C is
+    not advised (ALL and L3 agree with the practice fit above the no-development references). The rule gives A, the
+    files as built.
+  - **What the reviews found; no number is wrong.** The library statistic recovers a planted share exactly, ALL
+    reproduces reading N21's committed figures, and the rule was applied as written. But: (1) the statistic and its
+    permutation null test an association only. Libraries that hold different states produce it with no collection
+    effect at all (on synthetic factors 0.14 to 0.64), and for the cardiomyocytes library 1's share explains more
+    (0.32) than library 3's (0.31), which a pure dissected-against-portion effect would not give. (2) The practice
+    comparison could not have come out otherwise: every practice metacell is mixed by library, so the statistic sits
+    at its null there whatever the libraries' differences, and the endocardium's ten metacells could not show 0.10.
+    (3) The thinning emulation had no power: the factors are built from depth-normalised means, which thinning leaves
+    unbiased, and it never separated a library into metacells of its own. (4) In the rule, condition (1) favours the
+    fit as built by construction (it shares a third of its cells with L12), and condition (2)'s shortfall on sizes is
+    a tie once each fit's own split-half reliability is allowed for, while on the leading axis L3 agrees with the
+    practice fit better than ALL does.
+  - **Withdrawn.** Entry (f): that the 0.30 is 'what survives' of the collection change, and that the practice fit
+    'shows none'; what stands is that the factors at the test pair go with a metacell's library make-up, of unknown
+    cause. Entry (g): 'the component is not a depth effect, so it comes with the kind of sample'; the emulation shows
+    neither. And the AI assistant's first report of the listing to the captain, that a fit on library 3 alone 'would
+    not remove it': such a fit removes any offset common to the whole library by construction, and what it keeps is an
+    axis of states that each library also shows inside itself (ALL with L3 0.81), which speaks for a difference in
+    states and against an artefact. The cosines of L3's and L12's leading axes with the library slope (0.81 each)
+    restate ALL's agreement with those fits and are no second line of evidence.
+  - **One more listing, fixed now, before it runs.** The reviews name the check that separates the two readings on
+    released stages: inside the metacells of the fit as built that hold cells of both kinds, compare the library-3
+    cells with the cells of libraries 1 and 2 of the same metacell. A collection or batch offset acts on cells and
+    shows as a contrast inside a metacell; a difference in which states the libraries hold does not. The quantity: per
+    category, the cell-weighted mean over such metacells (at least ten cells of each kind) of the log ratio of mean
+    CP10k, library 3 over libraries 1 and 2, with the fit's pseudocount, projected on the library slope of the fit as
+    built; rho is that projection over the slope's own squared length. Beside it: the same statistic as before on a
+    no-development fit of E10.5 (reading N21's), a joint regression of the factors on library 1's and library 2's
+    shares, and the genes with the largest slope. How it is described, fixed now: rho of 0.5 or more for the
+    cardiomyocytes, 'mostly an offset between libraries acting on cells (collection or batch)'; rho of 0.2 or less,
+    'mostly a difference in the states each library holds'; between, 'mixed'. It does not change the rule's output,
+    which stays A; it decides how the finding is put to the captain, and with rho of 0.5 or more the AI assistant says
+    so and prices B again as a question, labelled as formed after the rule.

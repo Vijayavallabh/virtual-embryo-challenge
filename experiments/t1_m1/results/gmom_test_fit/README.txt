@@ -1,4 +1,4 @@
-Two target-free listings of 2026-11-18 (decision log 2026-11-18 (f)), made for the cold check of the claim "raise
+Target-free listings of 2026-11-18 (decision log 2026-11-18 (f) to (h)), the first two made for the cold check of the claim "raise
 g_mom's damping to 1.0" and for a note the captain forwarded the same day. Each reads the three released Task 1
 stages only; neither builds a file, reads a board, a target or a score, or compares a prediction with anything.
 
@@ -12,8 +12,9 @@ collection.txt  The share of each category's factors' squared size that goes wit
 The scripts are kept as text beside their outputs: they are records of two listings, not maintained code.
 
 emulation.txt   (decision log 2026-11-18 (g)) The practice fit refitted with the smaller library of its reference
-                thinned to two thirds and to one third: the library-linked share of the factors stays at its null,
-                so the component at the test pair is not a depth effect. Script as run: gmom_emulate.py.txt (the
+                thinned to two thirds and to one third: the library-linked share of the factors stays at its null.
+                An independent review showed that this design could not have shown an effect (entry (h)): it
+                says nothing about depth. Script as run: gmom_emulate.py.txt (the
                 DGX's first campaign checkout at 6214e28, 16 threads).
 
 single_kind.txt (decision log 2026-11-18 (g), which fixed its use before it ran, and (h)) The test pair's fit on the
