@@ -5188,3 +5188,7 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     A, because the one artefact that could be measured is small, the rest cannot be told from the step's purpose on
     released data, and the stake is about a point of Task 1 either way. A 'keep' here is a default and not a tested
     result.
+  - **The builder option for B, after this entry.** `campaign/t1-ac-fix3` (86d19ff): `--g-mom-fit {whole,lib3}` on the
+    Task 1 build, default `whole` and byte for byte today's builder; four rounds of independent review, the last:
+    ready. The full test suite on the DGX at that commit: lock 0, lint 0, 2,672 tests passed, clean tree. It is off by
+    default, changes no entry and is not on main; no test build was made with it.
