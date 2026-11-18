@@ -4758,7 +4758,8 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     what the deleted or kept parts carry between E10.5 and E12.5.
 - 2026-11-18 (a), the ninth independent pass, part one (rows T48 to T54 and entries 2026-11-17 (b) to (e); workflow
   wf_44f6e5d3-588, two read-only agents with their own code): what it found, what was corrected, and what it does to
-  the question of Task 1's step. Written by the AI assistant. Nothing in any upload, build, rule or gate file has
+  the question of Task 1's step. Committed at 23:51 UTC on 2026-11-17: the date in this entry's name is the local one,
+  a few minutes ahead of UTC. Written by the AI assistant. Nothing in any upload, build, rule or gate file has
   changed.
   - **The rows.** Each of rows T48 to T54 was committed before its run, each task file's stamp names the row's commit
     with a clean tree, and every rescored arm reproduces its committed scores exactly. About 370 figures were
