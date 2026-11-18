@@ -207,6 +207,20 @@ def _match(**over):
     return out
 
 
+def _records(match=None, **extra):
+    """A cut's records that pass: the twin's size match, its categories, g_mom's categories and g_mom's sizes (each
+    category's size is the size match's target)."""
+    match = match or _match()
+    rec = {"permutation_same_at_every_damping": True, "permutation": {"0.5": {"seed": 20261110}},
+           "null_categories": {d: sorted(c) for d, c in match.items()},
+           "g_mom_categories": {d: sorted(c) for d, c in match.items()}, "null_skipped": {d: {} for d in match},
+           "factors": {}, "sizes": {"g_mom": {d: {c: m["rms_target"] for c, m in cats.items()}
+                                              for d, cats in match.items()}},
+           "null_match": match}
+    rec.update(extra)
+    return rec
+
+
 def _cut(cm, gains, seeds=range(10), commit="c" * 40, clean=True, task=None, shift=None, copy=None, dampings=None,
          **top):
     """A part-1 task file. gains: larger arm -> gain over its family's arm at 0.5 (a number or ten); shift: arm ->
@@ -221,7 +235,7 @@ def _cut(cm, gains, seeds=range(10), commit="c" * 40, clean=True, task=None, shi
                 a = f + suffix
                 arms[a] = _arm(CUT_BASE[f] + _gain(gains, a, i), mmd_u=0.1 + 1e-9 * (1 + n + 2 * j))
         for a, x in shift.items():
-            arms[a] = {**arms[a], "score": arms[a]["score"] + x}
+            arms[a] = {**arms[a], "score": arms[a]["score"] + (x[i] if isinstance(x, list) else x)}
         for a, b in copy.items():
             arms[a] = dict(arms[b])
         rows.append({"seed": s, "floor": 50.0, "arms": arms})
@@ -229,9 +243,7 @@ def _cut(cm, gains, seeds=range(10), commit="c" * 40, clean=True, task=None, shi
            "dampings": dampings or dict(cm.CUT_ARMS), "null_seed": cm.NULL_SEED, "perm_seed": cm.PERM_SEED,
            "at_half": {f: {"used": "a" * 64, "registered_cache": "a" * 64} for f in cm.FAMILIES},
            "registered_rebuild": {"seed": 0, **{a: {"equal": True} for a in cm.T20_ARMS}},
-           "records": {"permutation_same_at_every_damping": True, "permutation": {"0.5": {"seed": cm.PERM_SEED}},
-                       "null_categories": {"0.5": ["cm"], "0.75": ["cm"], "1": ["cm"]}, "factors": {}, "sizes": {},
-                       "null_match": _match()},
+           "records": _records(),
            "rows": rows, "stamp": {"commit": commit, "tree_clean": clean, "utc": "x", "inputs": {}}}
     rec.update(top)
     return rec
@@ -470,10 +482,7 @@ def test_statement_two_names_a_small_steady_reversal_with_its_sign(cm, tmp_path)
 ])
 def test_a_failed_size_match_voids(cm, tmp_path, over, ok):
     r = _read(cm, tmp_path, NEEDS_GAINS, _all(0.5),
-              cut_over={WH: {"records": {"permutation_same_at_every_damping": True,
-                                         "permutation": {"0.5": {"seed": cm.PERM_SEED}},
-                                         "null_categories": {"0.5": ["cm"], "0.75": ["cm"], "1": ["cm"]},
-                                         "null_match": _match(**over)}}})[0]["reading"]
+              cut_over={WH: {"records": _records(_match(**over))}})[0]["reading"]
     assert r["valid"] is ok, r["validity"]["reasons"]
     if not ok:
         assert any("size match failed" in x for x in r["validity"]["reasons"])
@@ -634,6 +643,12 @@ def test_in_a_thinned_reference_world_the_arms_are_built_on_the_thinned_inputs(c
     ({"world_over": {"lib3": {"fraction": None}}}, "fraction None"),
     ({"cut_over": {WH: {"copy": {"g_mom_null_d1": "g_mom_null"}}}}, "exactly as its twin"),
     ({"cut_over": {CH: {"copy": {"g_mom_perm_d075": "g_mom_d075"}}}}, "exactly as its twin"),
+    # third review: a twin or permuted arm equal to g_mom at 0.5 itself
+    ({"cut_over": {WH: {"copy": {"g_mom_null": "g_mom"}}}}, "g_mom_null = g_mom'"),
+    ({"cut_over": {CH: {"copy": {"g_mom_perm": "g_mom"}}}}, "g_mom_perm = g_mom'"),
+    # third review: the per-seed sd of a control at 0.5 changed with its mean (and so its gain over b0) kept
+    ({"cut_over": {CH: {"shift": {"g_mom_null": [1e-6, -1e-6] * 5}}}}, "do not reproduce"),
+    ({"cut_over": {WH: {"shift": {"g_mom_perm": [2e-6, -2e-6] * 5}}}}, "do not reproduce"),
 ])
 def test_the_void_cases(cm, tmp_path, kw, reason):
     r = _read(cm, tmp_path, NEEDS_GAINS, _all(0.5), **kw)[0]["reading"]
@@ -690,7 +705,7 @@ def test_the_reading_refuses_to_overwrite(cm, tmp_path):
 
 def test_the_limits_are_the_docstrings_and_say_what_the_brief_says(cm):
     doc = " ".join(cm.__doc__.split())
-    assert len(cm.LIMITS) == 17 and all(x in doc for x in cm.LIMITS)
+    assert len(cm.LIMITS) == 21 and all(x in doc for x in cm.LIMITS)
     joined = " ".join(cm.LIMITS)
     for phrase in ("One E8.5 to E9.5 fit serves every seed and both cuts", "Twice the damping is not twice g_mom",
                    "A larger arm redraws more counts", "'Stays positive' has no size threshold",
@@ -706,7 +721,10 @@ def test_the_limits_are_the_docstrings_and_say_what_the_brief_says(cm):
                    "grows linearly with the damping", "A partly reads that shift",
                    "is printed and bounds nothing", "the reader checks it before reading D",
                    "'not shown' is the expected outcome even when the effect is real and modest",
-                   "printed whatever the label", "cannot fail by itself", "with the caches cleared"):
+                   "printed whatever the label", "cannot fail by itself", "with the caches cleared",
+                   "not 'more than the twin at the same shape'", "A is read only with Q/G",
+                   "Try T49's form B arms are reproduced nowhere", "have no committed counterpart",
+                   "whether the refit itself is deterministic"):
         assert phrase in joined
     assert "keep" not in cm.EXCEEDS and "adoption result" in cm.LABEL_T59
     assert "needs" not in cm.EXCEEDS and "exceeds" in cm.EXCEEDS and "is ahead" in cm.EXCEEDS
@@ -790,14 +808,13 @@ def test_the_permuted_sets_size_and_mean_shift_are_recorded_and_grow_with_the_da
 def _records_with_shapes():
     def per(v):
         return {d: {"cm": v} for d in ("0.5", "0.75", "1")}
-    return {"permutation_same_at_every_damping": True, "permutation": {"0.5": {"seed": 20261110}},
-            "null_categories": {"0.5": ["cm"], "0.75": ["cm"], "1": ["cm"]}, "null_match": _match(),
-            "factors": {"g_mom": per({"share_not_zeroed": 0.936, "share_at_clip": 0.0026,
+    return _records(_match(**{d: {"rms_target": 0.264} for d in ("0.5", "0.75", "1")}),
+                    factors= {"g_mom": per({"share_not_zeroed": 0.936, "share_at_clip": 0.0026,
                                       "mean_abs_log_not_zeroed": 0.1, "mean_abs_log_all_entries": 0.1}),
                         "g_mom_null": per({"share_not_zeroed": 0.59, "share_at_clip": 0.0256,
                                            "mean_abs_log_not_zeroed": 0.1, "mean_abs_log_all_entries": 0.1})},
-            "sizes": {"g_mom": per(0.264), "g_mom_perm": per(0.2994), "g_mom_null": per(0.264)},
-            "mean_shift": {"g_mom": per(0.0064), "g_mom_perm": per(0.208), "g_mom_null": per(0.03)}}
+                    sizes={"g_mom": per(0.264), "g_mom_perm": per(0.2994), "g_mom_null": per(0.264)},
+                    mean_shift={"g_mom": per(0.0064), "g_mom_perm": per(0.208), "g_mom_null": per(0.03)})
 
 
 def test_beside_statement_one_the_shapes_the_shift_and_d_and_a_are_printed_whatever_the_label(cm, tmp_path):
@@ -954,3 +971,92 @@ def test_a_world_whose_larger_arm_is_m1_r_gmom_voids(cm):
     assert "m1_r_gmom_g075" in cm.world_idle_reasons("lib3", idle)[0]
     one = _world(cm, "lib3", _all(0.5), sha_same=("m1_r_gmom_g1", 0))
     assert "m1_r_gmom_g1 (sha256 on seed 0)" in cm.world_idle_reasons("lib3", one)[0]
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# The third review's fixes
+
+
+def _two_categories(twin=("cm", "en"), en_size=0.2, **extra):
+    m = _match()
+    for d in m:
+        m[d]["en"] = {**m[d]["cm"], "rms_target": en_size}
+    rec = _records(m, **extra)
+    rec["null_categories"] = {d: sorted(twin) for d in m}
+    for d in m:
+        rec["null_match"][d] = {c: x for c, x in rec["null_match"][d].items() if c in twin}
+    return rec
+
+
+def test_a_twin_missing_one_of_g_moms_categories_voids(cm, tmp_path):
+    # the reviewer's case: g_mom has cm and en, the twin's cross-fit skipped en; G 1.4, Z 1.0, Q 0.2 would read
+    # 'exceeds' with D 0.4 coming only from the missing category
+    gains = {**NEEDS_GAINS, "g_mom_d1": 1.4, "g_mom_null_d1": 1.0, "g_mom_perm_d1": 0.2}
+    ok = _two_categories()
+    r = _read(cm, tmp_path, gains, _all(0.5), cut_over={CH: {"records": ok}, WH: {"records": ok}})[0]["reading"]
+    assert r["valid"], r["validity"]["reasons"]
+    assert r["statement_1"]["statement"] == cm.EXCEEDS
+    rec = _two_categories(twin=("cm",), null_skipped={d: {"en": "not fitted in both directions of the cross-fit"}
+                                                     for d in ("0.5", "0.75", "1")})
+    r = _read(cm, tmp_path / "missing", gains, _all(0.5), cut_over={WH: {"records": rec}})[0]["reading"]
+    assert not r["valid"] and r["outcome"] == "VOID"
+    reasons = [x for x in r["validity"]["reasons"] if "the twin lacks g_mom's categories ['en']" in x]
+    assert len(reasons) == 3 and all("not fitted in both directions" in x for x in reasons)
+    # a g_mom category of size 0 need not be in the twin, and may be
+    for twin in (("cm",), ("cm", "en")):
+        rec = _two_categories(twin=twin, en_size=0.0)
+        assert cm.twin_category_reasons("x", rec) == [] and cm.size_target_reasons("x", rec) == []
+    # a twin category g_mom lacks, or g_mom's categories not recorded, voids
+    rec = _records(null_categories={d: ["cm", "zz"] for d in ("0.5", "0.75", "1")})
+    assert "holds categories g_mom lacks: ['zz']" in cm.twin_category_reasons("x", rec)[0]
+    rec = _records()
+    del rec["g_mom_categories"]
+    assert len(cm.twin_category_reasons("x", rec)) == 3
+    rec = _records()
+    rec["sizes"]["g_mom"]["1"] = {"cm": 0.1, "en": 0.2}  # sizes and categories disagree
+    assert "not recorded at damping 1" in cm.twin_category_reasons("x", rec)[0]
+
+
+def test_a_twin_missing_a_category_on_the_real_path_voids(cm):
+    ctx = _ctx()
+    ctl = cm.control_factors(ctx)
+    held = ctx.derived["t1_held_flat"]
+    rec = cm.control_records(ctl, held)
+    assert rec["g_mom_categories"] == rec["null_categories"] and len(rec["g_mom_categories"]["1"]) >= 2
+    assert cm.twin_category_reasons("x", rec) == [] and cm.size_target_reasons("x", rec) == []
+    assert set(rec["null_skipped"]) == {"0.5", "0.75", "1"}
+    # drop one category from the twin at 1.0 (as a cross-fit with too few cells in a half would)
+    tw = ctl["g_mom_null"][1.0]
+    gone = sorted(tw.categories)[0]
+    cut = ts.StateFactors(genes=tw.genes, metacells_on=tw.metacells_on,
+                          categories={c: cf for c, cf in tw.categories.items() if c != gone},
+                          skipped={**tw.skipped, gone: "not fitted in both directions of the cross-fit"},
+                          record=tw.record)
+    bad = cm.control_records({**ctl, "g_mom_null": {**ctl["g_mom_null"], 1.0: cut}}, held)
+    got = cm.twin_category_reasons("x", bad)
+    assert len(got) == 1 and f"at damping 1 the twin lacks g_mom's categories ['{gone}']" in got[0]
+    assert "not fitted in both directions" in got[0]
+
+
+def test_the_twins_size_target_must_be_g_moms_size_at_that_damping(cm, tmp_path):
+    rec = _records()
+    assert cm.size_target_reasons("x", rec) == []
+    rec["sizes"]["g_mom"]["1"]["cm"] = 0.1 * (1 + 1e-9)  # the target was g_mom at another damping
+    assert "size target is not g_mom's size" in cm.size_target_reasons("x", rec)[0]
+    r = _read(cm, tmp_path, NEEDS_GAINS, _all(0.5), cut_over={CH: {"records": rec}})[0]["reading"]
+    assert not r["valid"] and any("cm at 1 (target 0.1" in x for x in r["validity"]["reasons"])
+    rec = _records()
+    del rec["sizes"]["g_mom"]["0.75"]
+    assert "cm at 0.75" in " ".join(cm.size_target_reasons("x", rec))
+    # on the real path the target is g_mom's recorded size exactly
+    ctx = _ctx()
+    ctl = cm.control_factors(ctx)
+    real = cm.control_records(ctl, ctx.derived["t1_held_flat"])
+    for d, cats in real["null_match"].items():
+        for c, m in cats.items():
+            assert m["rms_target"] == real["sizes"]["g_mom"][d][c]
+    # a twin finished against g_mom at 0.5 where 1.0 was meant is caught by the read, not only by the build's spies
+    wrong = {**ctl, "g_mom_null": {**ctl["g_mom_null"], 1.0: ctl["g_mom_null"][0.5]},
+             "size_match": {**ctl["size_match"], 1.0: ctl["size_match"][0.5]}}
+    assert "size target is not g_mom's size" in cm.size_target_reasons(
+        "x", cm.control_records(wrong, ctx.derived["t1_held_flat"]))[0]

@@ -57,7 +57,11 @@ the task file records it from the built factors (g_mom's and the permuted set's 
 damping per category; in the worlds the finish note of the factors the hook returned), is the arm's; the twin's size
 match succeeded in every category at every damping (g_mom's size there lies between the twin's sizes at the two ends
 of SIZE_MATCH_DAMPING, so the bisection could reach it, or g_mom has no size there, so both are zero; a size the clip
-caps below g_mom's leaves the damping found short of an end, so the damping alone does not show it); no control
+caps below g_mom's leaves the damping found short of an end, so the damping alone does not show it), each category's
+size target is g_mom's size recorded at that damping (to a relative 1e-12), and at every damping the twin has every
+category in which g_mom's factors have a positive cell-weighted root mean square and no category g_mom lacks (a
+category the twin's cross-fit skips, as one with too few cells in a half, would leave g_mom's gain there counted in D
+as development-specific); no control
 scores exactly as its twin on every seed of a cut (no larger arm of g_mom, the twin or the permuted set as the same
 family's arm at 0.5, and no twin or permuted arm as g_mom at the same damping); and in no world does a larger arm
 score exactly as m1_r_gmom on every seed or have m1_r_gmom's prediction sha256 on any seed (the damping hook idle).
@@ -139,6 +143,20 @@ Limits (written before the run; each goes into the ledger row and into t59.txt):
 - The twin's and the permuted control's scores at 0.5 are committed only as per-cut means, per-seed sds and gains over
   b0 (their per-seed task files are not in the repository), so without --t20-tasks their reproduction is checked on
   those aggregates, not seed for seed.
+- The twin is matched on the root mean square, not on the shape: D reads 'more than the twin at equal root mean
+  square', not 'more than the twin at the same shape'. As the damping grows the twin's share at the clip can grow
+  several times faster than g_mom's, so Z holds a change of clip share that G does not; both families' shares not
+  zeroed and at the clip at damping 1.0 are printed beside D whatever the label.
+- A is read only with Q/G and the permuted set's mean shift and root mean square beside it: if the shift costs points,
+  Q falls with the damping and A reads ahead with no effect of the assignment.
+- What is reproduced: on the cuts b0, g_mom, g_mom_d075 and g_mom_d1 seed for seed against try T49's form A files, and
+  g_mom_null and g_mom_perm against tries T20 to T24's committed aggregates (seed for seed only with --t20-tasks); in
+  the worlds b0 and m1_r_gmom against tries T50's and T54's files. Try T49's form B arms are reproduced nowhere (the
+  lib3 world is not try T49's chamber file), and the larger control arms on the cuts and m1_r_gmom_g075 and
+  m1_r_gmom_g1 in the worlds have no committed counterpart.
+- The rebuild check at 0.5 refits g_mom and the twin's cross-fit in the same process and asks for equal prediction
+  sha256: a void on it ('rebuilt ... do not equal') first needs a check of whether the refit itself is deterministic
+  on that machine and thread count before anything is read into it.
 - At 0.5 the sha256 record of the factors used is taken from the same objects as the registered caches and cannot
   fail by itself; the identity of the twin and the permuted arm with the registered candidates rests on the rebuild
   of both candidates on the first seed with the caches cleared (bit for bit) and on the reproduction of tries T21's
@@ -238,6 +256,7 @@ T54_TASKS = dr.RESULTS / "t54_m1_deep_step" / "tasks"
 WORLD_REPRO_ARMS = ("b0", M1)
 FRACTION, FRACTION_TOL = pdr.FRACTION, pdr.FRACTION_TOL  # M1's 0.2 and its tolerance, tries T50's and T54's check
 HOLD_AHEAD = 8
+SIZE_TARGET_TOL = 1e-12  # relative: the twin's size target against g_mom's recorded size, the same computation
 EXCEEDS = ("the larger damping's gain is ahead and exceeds by more than 0.3 on both cuts the gains of the "
            "no-development twin (matched to g_mom's cell-weighted root mean square at each damping) and of the "
            "permuted control (g_mom's factor values with the metacells reassigned)")
@@ -301,6 +320,12 @@ CHOICES = (
     "permute_factors of the former at harness.G_MOM_PERM_SEED), which hold the same objects, so this record cannot "
     "fail in a real run and is kept as a record (field 'registered_cache'); the twin's seed is the registered "
     "function's default (its one call passes none) and the derangement's is the permuted factors' own record.",
+    "The twin's categories (third review): void unless at every damping the twin's finished categories hold every "
+    "category in which g_mom's finished factors have a positive cell-weighted root mean square and none that g_mom "
+    "lacks (a g_mom category of size 0 may stand in the twin, matched to 0); g_mom's categories and the twin's "
+    "'skipped' map are recorded per damping. Void as well unless each category's recorded size target equals g_mom's "
+    "recorded size at that damping to a relative 1e-12 (the two are computed by the same _factor_rms on the same "
+    "factors and genes).",
     "Statement 2's bars are kept as the brief sets them (a symmetric bar would loosen 'it turns' or change what 'stays "
     "positive' says); every world a statement names is printed with its mean, seeds ahead and sign instead.",
     "Each world's recorded M1 fraction is checked against 0.2 within part_depth_read's FRACTION_TOL, as tries T50 "
@@ -540,6 +565,9 @@ def control_records(ctl: Mapping, held_flat: Sequence[str]) -> dict:
             "mean_shift": {f: mean_shift_records(ctl[f], held_flat) for f in FAMILIES},
             "null_match": match,
             "null_categories": {f"{d:g}": sorted(ctl["g_mom_null"][d].categories) for d in LEVELS},
+            "null_skipped": {f"{d:g}": {str(c): str(why) for c, why in ctl["g_mom_null"][d].skipped.items()}
+                             for d in LEVELS},
+            "g_mom_categories": {f"{d:g}": sorted(ctl["g_mom"][d].categories) for d in LEVELS},
             "permutation": perms,
             "permutation_same_at_every_damping": all(perms[f"{d:g}"] == perms[f"{BASE_DAMPING:g}"] for d in LEVELS)}
 
@@ -815,6 +843,8 @@ def record_reasons(k: str, r: Mapping) -> list[str]:
                        f"bit (or the rebuild is not recorded) on {off}")
     rec = r.get("records") or {}
     reasons += size_match_reasons(k, rec.get("null_match"))
+    reasons += twin_category_reasons(k, rec)
+    reasons += size_target_reasons(k, rec)
     if rec.get("permutation_same_at_every_damping") is not True:
         reasons.append(f"{k}: the derangement is not recorded as the same at every damping")
     perm = (rec.get("permutation") or {}).get(f"{BASE_DAMPING:g}") or {}
@@ -824,6 +854,49 @@ def record_reasons(k: str, r: Mapping) -> list[str]:
     if not cats or len({json.dumps(v) for v in cats.values()}) != 1:
         reasons.append(f"{k}: the twin's categories are not recorded as the same at every damping")
     return reasons
+
+
+def twin_category_reasons(k: str, rec: Mapping) -> list[str]:
+    """At every damping the twin's categories are g_mom's categories with a positive cell-weighted root mean square
+    (a g_mom category of size 0 may stand in the twin; none g_mom lacks may). A category the twin's cross-fit skipped
+    (too few cells in a half) leaves g_mom's gain there in D as if it were development-specific, and makes 'matched to
+    g_mom's cell-weighted root mean square at each damping' false there."""
+    gcats, ncats = rec.get("g_mom_categories") or {}, rec.get("null_categories") or {}
+    sizes = (rec.get("sizes") or {}).get("g_mom") or {}
+    skipped = rec.get("null_skipped") or {}
+    reasons = []
+    for d in (f"{x:g}" for x in LEVELS):
+        g, n, sz = gcats.get(d), ncats.get(d), sizes.get(d)
+        if not isinstance(g, list) or not isinstance(n, list) or not isinstance(sz, Mapping) or sorted(sz) != sorted(g):
+            reasons.append(f"{k}: g_mom's categories with their sizes, or the twin's categories, are not recorded at "
+                           f"damping {d}")
+            continue
+        positive = {c for c in g if not (isinstance(sz[c], int | float) and sz[c] <= 0)}
+        missing, extra = sorted(positive - set(n)), sorted(set(n) - set(g))
+        if missing:
+            why = {c: (skipped.get(d) or {}).get(c) for c in missing}
+            reasons.append(f"{k}: at damping {d} the twin lacks g_mom's categories {missing} (the twin's record of "
+                           f"why: {why}); D would count g_mom's gain there as development-specific")
+        if extra:
+            reasons.append(f"{k}: at damping {d} the twin holds categories g_mom lacks: {extra}")
+    return reasons
+
+
+def size_target_reasons(k: str, rec: Mapping) -> list[str]:
+    """Each category's size target in the twin's size match is g_mom's recorded size at the same damping (to a
+    relative SIZE_TARGET_TOL): the read's own check that the twin was matched to g_mom finished at that damping."""
+    match = rec.get("null_match") or {}
+    sizes = (rec.get("sizes") or {}).get("g_mom") or {}
+    off = []
+    for d, cats in match.items():
+        for c, m in (cats or {}).items():
+            t, want = (m or {}).get("rms_target"), (sizes.get(d) or {}).get(c)
+            if (not isinstance(t, int | float) or not isinstance(want, int | float)
+                    or abs(t - want) > SIZE_TARGET_TOL * max(abs(want), 1e-300)):
+                off.append(f"{c} at {d} (target {t!r}, g_mom's size {want!r})")
+    if not off:
+        return []
+    return [f"{k}: the twin's size target is not g_mom's size at the same damping: {off}"]
 
 
 def size_match_reasons(k: str, match: Mapping | None) -> list[str]:
