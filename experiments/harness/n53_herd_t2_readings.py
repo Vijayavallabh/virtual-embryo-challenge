@@ -28,22 +28,31 @@ reproduction could not be checked. The harness task files record no machine: the
 the row, and the run must use it (a BLAS or machine difference voids the reading through (3)).
 
 Idle herding. `vec.core.herd_rows` returns the draw unchanged when it repeats rows or nothing is left to swap in (a
-board count at or above the pool's rows). A counted backtest on which the herded twin equals its base bit for bit on
-every seed (the score and every metric and skill the task file holds) is a backtest on which herding was not applied:
-it is reported as idle and its herding is not read there. This test uses no count.
+board count at or above the pool's rows). A counted backtest on which the herded twin equals its base within TOL on
+every seed (the score and every metric and skill the task file holds: the same keys, each value within TOL of the
+base's) is a backtest on which herding was not applied: it is reported as idle and its herding is not read there. TOL
+is the run's own reproduction tolerance, so a twin that differs from its base by float noise alone is idle too. This
+test uses no count. On the embryo herding draws each bracket on its own stream (t2_build.HERD_STREAMS): "acting" there
+means that at least one bracket's draw changed; the task files cannot tell whether one bracket or both did.
 
 Statement, per board, one of three: vec.adoption.keep_change of the herded entry against the entry on the board's two
 counted backtests (both must pass): "the herded entry passes the adoption rule" or "does not pass"; or, where herding
 is idle on a counted backtest, "the herded entry's read is not readable" (the rule needs a pass on both backtests, and
 an idle backtest reads nothing of herding; the other backtest's numbers are still reported). With each backtest's
 paired mean, the paired difference's seed SD, seeds ahead, largest single loss and seeds on which the two arms are
-identical. A "does not pass" does not exclude a true gain of about 0.3-0.4 points: the bar (mean > 0.3 and 8 of 10
-seeds ahead, on both) has low power there. The registered pair (b0 / b0_herd, fgw / fgw_herd) is reported the same way
-and decides nothing. Reported too, descriptive and deciding nothing: the position-only metrics (the shape group:
-d2_shape, occupancy_dice, scale_log_ratio) and the shape group's skill of every arm, each with its per-seed paired
-difference from the entry (mean and seed SD) beside the entry's own seed-to-seed SD. A herded draw is a different set
-of cells, so these differ through the change of draw alone; they show the size of the change, not that herding does or
-does not act on position (a scored arm passed the T2 head's cloud guard, which raises otherwise).
+identical (within TOL). A "does not pass" does not exclude a true gain: the bar (mean > 0.3 and 8 of 10 seeds ahead,
+on both) has low power, and how low depends on the seed SD of the paired difference. Each row that does not pass
+states the gain it does not exclude at its reported SD: about 0.3-0.4 points below SD 0.5 (LOW_POWER), about 0.6 points
+or more at SD 0.5 or above (synthetic Monte Carlo of the bar in the review of 2026-11-18: power at a true gain of 0.4 is
+0.89-0.91 at SD 0.2 and 0.34-0.46 at SD 0.5; at a gain of 0.6 it is 0.20-0.31 at SD 1.0). A pass judges the arm, not
+the mechanism: there is no placebo re-draw, so a pass cannot separate herding's acceptance rule from any re-draw of the
+rows, and the reading never names herding's mechanism as the reason. The registered pair (b0 / b0_herd, fgw /
+fgw_herd) is reported the same way and decides nothing. Reported too, descriptive and deciding nothing: the
+position-only metrics (the shape group: d2_shape, occupancy_dice, scale_log_ratio) and the shape group's skill of every
+arm, each with its per-seed paired difference from the entry (mean and seed SD) beside the entry's own seed-to-seed SD.
+A herded draw is a different set of cells, so these differ through the change of draw alone; they show the size of the
+change, not that herding does or does not act on position (a scored arm passed the T2 head's cloud guard, which raises
+otherwise).
 
   python -I -B experiments/harness/n53_herd_t2_readings.py read --board heart --runs DIR --out DIR
 """
@@ -67,7 +76,8 @@ from vec.adoption import SEEDS, keep_change  # noqa: E402
 from vec.boards import GROUPS  # noqa: E402
 from vec.provenance import repo_state  # noqa: E402
 
-TOL = 1e-9  # per seed, board points: the reproduction of committed scores
+TOL = 1e-9  # per seed, board points: the reproduction of committed scores, and the idle test's equality
+LOW_POWER = 0.5  # seed SD of the paired difference from which the not-excluded gain is stated as about 0.6 or more
 SHAPE_GROUP = "shape_growth"
 POSITION_ONLY = tuple(m for g, _, ms in GROUPS["T2"] if g == SHAPE_GROUP for m, _ in ms)
 OUTCOMES = ("passes", "does not pass", "not readable")
@@ -97,18 +107,38 @@ BOARDS = {
     "heart": Spec("T2:heart:test_extrap", "b0_trend", "b0_trend_herd", ("b0", "b0_herd"),
                   HERE / "results" / "trend_heart_v1" / "tasks",  # row H11's run of b0_trend
                   "the heart's backtest T2h/<=E8.75->E10.5 chose B0's composition damping (configs/pseudo_tasks.yaml): "
-                  "the entry's own level there is in-sample, the paired difference does not depend on it."),
+                  "the entry's own level there is in-sample, the paired difference does not depend on it. The heart's "
+                  "two counted backtests share one truth stage (E10.5), so their passes are correlated. The upload: "
+                  "the harness and the upload draw the same count (build_test._t2_count), so herding acts on the test "
+                  "build only where that count is below the test pool's rows; a pass on backtests where herding acts "
+                  "says nothing about an upload where it is idle, and the reverse holds too; and no build route "
+                  "exists for b0_trend_herd (build_test.py heart --trend refuses --herd): a pass goes to the captain "
+                  "as a priced request that includes the builder change, which needs its own ruling, and a code-only "
+                  "check, reported only as 'idle' or 'acting' with no count, that herding acts on the test build."),
     "embryo": Spec("T2:embryo:test_interp", "fgw", "fgw_herd", ("fgw", "fgw_herd"),
-                   HERE / "results" / "emb_fgw_v1" / "tasks"),  # the embryo entry's run of 2026-11-01
+                   HERE / "results" / "emb_fgw_v1" / "tasks",  # the embryo entry's run of 2026-11-01
+                   "On the embryo herding draws each bracket on its own stream: 'acting' on a backtest means that at "
+                   "least one bracket's draw changed; the read cannot tell whether one bracket or both changed. One "
+                   "backtest's target (E7.25) is an input bracket of the other (T2e/E6.75+E7.5->E7.25 and "
+                   "T2e/E7.25+E8.0->E7.5), so their passes are not independent. The upload: the harness and the "
+                   "upload draw the same count, so herding acts on the test build only where that count leaves a "
+                   "bracket's draw below its pool's rows; a pass on backtests where herding acts says nothing about an "
+                   "upload where it is idle, and the reverse holds too; a pass goes to the captain as a priced request "
+                   "that includes a code-only check, reported only as 'idle' or 'acting' with no count, that herding "
+                   "acts on the test build (its build route is build_test.py embryo --herd)."),
 }
 
 LIMITS = ("Limits: herding has no biological content in its intent (it moves the drawn sample's mean panel expression "
           "towards the pool's), but on T2 it swaps cells across the whole pool, not within each type's quota as on "
           "Task 1, so it can move the drawn type shares and positions too; the scorer's own reference working copy "
           "carries much of the de terms' noise, which herding the prediction cannot remove; each board has two counted "
-          "backtests and the rule needs a pass on both: a pass is in-sample for nothing but is still two tasks; a "
-          "'does not pass' does not exclude a true gain of about 0.3-0.4 points (low power at the bar); the harness "
-          "task files record no machine, so the run must use the machine of the committed runs named in the row.")
+          "backtests and the rule needs a pass on both: a pass is in-sample for nothing but is still two tasks, and "
+          "the two are not independent (below); a 'does not pass' does not exclude a true gain of about 0.3-0.4 "
+          "points where the seed SD of the paired difference is below 0.5, and of about 0.6 points or more where it "
+          "is 0.5 or above (low power at the bar; each row that does not pass states its own); a pass judges the "
+          "arm, not the mechanism: with no placebo re-draw it cannot separate herding's acceptance rule from any "
+          "re-draw of the rows; the harness task files record no machine, so the run must use the machine of the "
+          "committed runs named in the row.")
 
 
 def load(folder: Path, test_board: str) -> tuple[list[dict], list[str]]:
@@ -186,24 +216,43 @@ def reproduction(spec: Spec, run: dict[str, dict], keys: list[str], committed_di
     return out, why
 
 
+def _close(a, b) -> bool:
+    """`a` equals `b` within TOL: numbers within TOL of each other (two NaNs are equal), mappings with the same keys and
+    each value close, anything else equal."""
+    if isinstance(a, dict) or isinstance(b, dict):
+        return isinstance(a, dict) and isinstance(b, dict) and set(a) == set(b) and all(_close(a[k], b[k]) for k in a)
+    num = (int, float)
+    if isinstance(a, num) and isinstance(b, num) and not isinstance(a, bool) and not isinstance(b, bool):
+        if math.isnan(a) or math.isnan(b):
+            return math.isnan(a) and math.isnan(b)
+        return abs(a - b) <= TOL
+    return a == b
+
+
 def identical_seeds(r: dict, base: str, change: str) -> int:
-    """The number of seeds on which `change` equals `base` bit for bit in task file `r`: the same score and the same
-    value of every metric and skill the row holds for either arm."""
+    """The number of seeds on which `change` equals `base` within TOL in task file `r`: the score and every metric and
+    skill the row holds for either arm (the same keys, each value within TOL of the base's)."""
     n = 0
     for row in r["rows"]:
-        same = row["scores"][base] == row["scores"][change]
+        same = _close(row["scores"][base], row["scores"][change])
         for field in ("metrics", "skills"):
             got = row.get(field) or {}
             if base in got or change in got:
-                same = same and got.get(base) == got.get(change)
+                same = same and _close(got.get(base), got.get(change))
         n += bool(same)
     return n
+
+
+def not_excluded(sd: float) -> str:
+    """The true gain a 'does not pass' does not exclude at a backtest's seed SD of the paired difference."""
+    return "about 0.6 points or more" if sd >= LOW_POWER else "about 0.3-0.4 points"
 
 
 def paired(run: dict[str, dict], keys: list[str], base: str, change: str) -> dict:
     """keep_change's verdict of `change` against `base`, with each backtest's seed SD of the paired difference, largest
     single loss (the largest per-seed base - change, 0 if the change is ahead or level on every seed), the seeds on
-    which the two arms are identical, and whether herding is idle there (identical on every seed). The outcome is
+    which the two arms are identical within TOL, and whether herding is idle there (identical on every seed). The
+    outcome is
     "not readable" where it is idle on any counted backtest, else keep_change's."""
     pairs = {k: {s: (scores_of(run[k], base)[s], scores_of(run[k], change)[s]) for s in SEEDS} for k in keys}
     out = keep_change(pairs)
@@ -214,6 +263,7 @@ def paired(run: dict[str, dict], keys: list[str], base: str, change: str) -> dic
         t["largest_loss"] = max(0.0, float(-diffs.min()))
         t["identical_seeds"] = identical_seeds(run[k], base, change)
         t["idle"] = t["identical_seeds"] == len(SEEDS)
+        t["not_excluded"] = not_excluded(t["sd"])
     idle = [k for k in keys if out["tasks"][k]["idle"]]
     outcome = "not readable" if idle else ("passes" if out["keep"] else "does not pass")
     return {"base": base, "change": change, **out, "idle": idle, "outcome": outcome}
@@ -290,10 +340,12 @@ def _rows(res: dict) -> list[str]:
     for k, t in res["tasks"].items():
         line = (f"    {k}: paired mean {t['mean_gain']:+.2f} (seed SD of the paired difference {t['sd']:.2f}), ahead "
                 f"in {t['seeds_ahead']} of {len(SEEDS)} seeds, largest single loss {t['largest_loss']:.2f}, identical "
-                f"on {t['identical_seeds']} of {len(SEEDS)} seeds")
+                f"(within {TOL:g}) on {t['identical_seeds']} of {len(SEEDS)} seeds")
         if t["idle"]:
             line += (f"; herding idle on {k} (the draw repeats rows or leaves nothing to swap in; the herded twin is "
-                     "its base bit for bit): herding is not read there")
+                     f"its base within {TOL:g}): herding is not read there")
+        elif not t["passes"]:
+            line += f"; at this SD a true gain of {t['not_excluded']} is not excluded"
         out.append(line)
     return out
 

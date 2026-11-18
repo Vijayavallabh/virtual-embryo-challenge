@@ -333,8 +333,8 @@ def test_the_cli_writes_both_files_and_refuses_to_overwrite(n53, tmp_path, monke
 
 # ------------------------------------------------------------------------------------- review fixes (idle herding)
 def test_with_the_count_at_or_above_the_pool_herding_is_idle_and_the_twin_is_b0_trend_bit_for_bit(three):  # noqa: F811
-    """The heart's E8.75 backtest: a board count at or above the reference pool's rows makes the draw repeat rows, so
-    herd_rows hands it back unchanged and b0_trend_herd is b0_trend bit for bit (herding not applied)."""
+    """A synthetic board count at or above the synthetic reference pool's rows makes the draw repeat rows, so herd_rows
+    hands it back unchanged and b0_trend_herd is b0_trend bit for bit (herding not applied)."""
     n_pool = three["ref"].n_obs
     for max_cells in (n_pool, n_pool + 400):
         big = Board(key="pseudo:h7_big", task="T2", genes=list(GENES), needs_coords=True, setting="heart",
@@ -443,3 +443,102 @@ def test_the_paired_rows_give_the_seed_sd_and_the_text_states_two_backtests_and_
            for k in ("T2e/E7.25+E8.0->E7.5", "T2e/E6.75+E7.5->E7.25")]
     etxt = n53.text(n53.reading("embryo", _write(tmp_path / "emb", emb), committed_dir=tmp_path / "none"))
     assert "chose B0's composition damping" not in etxt and "passes the adoption rule" in etxt
+
+
+# ------------------------------------------------------------------------------------ second review fixes (fix2)
+def test_the_idle_count_test_names_no_real_backtest_or_board():
+    """must_fix: the idle-count test is a synthetic hypothesis; its docstring names no real backtest or board count."""
+    doc = test_with_the_count_at_or_above_the_pool_herding_is_idle_and_the_twin_is_b0_trend_bit_for_bit.__doc__
+    assert "synthetic" in doc and "E8.75" not in doc and "backtest" not in doc and "heart" not in doc
+
+
+def _noisy_twin(files: list[dict], eps: float, arm: str, base: str) -> None:
+    for f in files:
+        for row in f["rows"]:
+            row["scores"][arm] = row["scores"][base] + eps
+            row["metrics"][arm] = {m: v + eps for m, v in row["metrics"][base].items()}
+            row["skills"][arm] = dict(row["skills"][base])
+
+
+def test_a_twin_within_float_noise_of_its_base_is_idle_not_does_not_pass(n53, tmp_path):
+    """should_fix: +1e-13 on the score and on every metric per seed is idle (within TOL), never 'does not pass' with 10
+    of 10 seeds ahead."""
+    files = _heart(n53)
+    _noisy_twin(files, 1e-13, "b0_trend_herd", "b0_trend")
+    _noisy_twin(files, 1e-13, "b0_herd", "b0")
+    res = n53.reading("heart", _write(tmp_path / "run", files), committed_dir=tmp_path / "none")
+    st = res["statement"]
+    assert res["outcome"] == "not readable" and len(st["idle"]) == 2
+    assert all(t["identical_seeds"] == 10 and t["seeds_ahead"] == 10 for t in st["tasks"].values())
+    assert "identical (within 1e-09) on 10 of 10 seeds" in n53.text(res)
+    files = _heart(n53)  # just above TOL on the score: herding acted
+    _noisy_twin(files, 1e-8, "b0_trend_herd", "b0_trend")
+    res = n53.reading("heart", _write(tmp_path / "run2", files), committed_dir=tmp_path / "none")
+    assert res["outcome"] == "does not pass" and res["statement"]["idle"] == []
+
+
+def test_close_compares_keys_and_nans(n53):
+    assert n53._close({"a": 1.0, "b": float("nan")}, {"a": 1.0 + 1e-12, "b": float("nan")})
+    assert not n53._close({"a": 1.0}, {"a": 1.0, "b": 0.0})
+    assert not n53._close(float("nan"), 0.0) and not n53._close(None, {"a": 1.0}) and n53._close(None, None)
+    assert not n53._close(1.0, 1.0 + 2e-9)
+
+
+def test_a_backtest_an_arm_was_tuned_on_is_left_out(n53, monkeypatch):
+    """should_fix: counted() leaves out a backtest that any arm lists in tuned_on (mutant: the tuned_on clause
+    dropped)."""
+    spec = n53.BOARDS["heart"]
+    conf = load_tasks()[spec.test_board]
+    tuned = dataclasses.replace(CANDIDATES["b0_herd"], tuned_on=frozenset({"T2h/<=E8.75->E10.5"}))
+    monkeypatch.setitem(harness.CANDIDATES, "b0_herd", tuned)
+    assert n53.counted(spec, conf) == ["T2h/<=E9.5->E10.5"]
+
+
+def test_the_row_states_the_not_excluded_gain_at_its_seed_sd(n53, tmp_path):
+    """design attack (power): a 'does not pass' row ties the gain it does not exclude to its own seed SD."""
+    files = _heart(n53)
+    low = 0.05 * np.r_[np.ones(5), -np.ones(5)]  # SD about 0.05
+    high = 1.0 * np.r_[np.ones(5), -np.ones(5)]  # SD about 1.05
+    for f, d in zip(files, (low, high), strict=True):
+        for row, g in zip(f["rows"], d, strict=True):
+            row["scores"]["b0_trend_herd"] += g
+    res = n53.reading("heart", _write(tmp_path / "run", files), committed_dir=tmp_path / "none")
+    t = res["statement"]["tasks"]
+    assert t["T2h/<=E9.5->E10.5"]["not_excluded"] == "about 0.3-0.4 points"
+    assert t["T2h/<=E8.75->E10.5"]["not_excluded"] == "about 0.6 points or more"
+    assert n53.not_excluded(0.5) == "about 0.6 points or more" and n53.not_excluded(0.49) == "about 0.3-0.4 points"
+    txt = n53.text(res)
+    assert "at this SD a true gain of about 0.3-0.4 points is not excluded" in txt
+    assert "at this SD a true gain of about 0.6 points or more is not excluded" in txt
+    assert "about 0.6 points or more where it is 0.5 or above" in txt
+
+
+def test_a_passing_row_states_no_power_limit(n53, tmp_path):
+    gain = np.r_[np.full(8, 0.6), -0.1, 0.2]
+    files = _heart(n53)
+    for f in files:
+        for row, g in zip(f["rows"], gain, strict=True):
+            row["scores"]["b0_trend_herd"] += g
+    res = n53.reading("heart", _write(tmp_path / "run", files), committed_dir=tmp_path / "none")
+    assert res["outcome"] == "passes"
+    stmt_rows = n53.text(res).split("the registered pair")[0]
+    assert "is not excluded" not in stmt_rows
+
+
+def test_the_text_states_correlation_upload_route_brackets_and_no_mechanism_claim(n53, tmp_path):
+    """should_fix and design attacks: the heart's shared truth stage, the upload's idle-or-acting condition and the
+    missing build route; the embryo's per-bracket acting and its dependent backtests; a pass judges the arm, not the
+    mechanism. No count is in the text."""
+    res = n53.reading("heart", _write(tmp_path / "run", _heart(n53, gain=0.2)), committed_dir=tmp_path / "none")
+    txt = n53.text(res)
+    assert "share one truth stage (E10.5), so their passes are correlated" in txt
+    assert "herding acts on the test build only where that count is below the test pool's rows" in txt
+    assert "build_test.py heart --trend refuses --herd" in txt and "'idle' or 'acting' with no count" in txt
+    assert "a pass judges the arm, not the mechanism" in txt and "no placebo re-draw" in txt
+    spec = n53.BOARDS["embryo"]
+    emb = [_file(k, spec.test_board, {"fgw": 55.0 + np.arange(10.0), "fgw_herd": 55.1 + np.arange(10.0)})
+           for k in ("T2e/E7.25+E8.0->E7.5", "T2e/E6.75+E7.5->E7.25")]
+    etxt = n53.text(n53.reading("embryo", _write(tmp_path / "emb", emb), committed_dir=tmp_path / "none"))
+    assert "at least one bracket's draw changed" in etxt and "one bracket or both" in etxt
+    assert "target (E7.25) is an input bracket of the other" in etxt and "build_test.py embryo --herd" in etxt
+    assert "share one truth stage" not in etxt
