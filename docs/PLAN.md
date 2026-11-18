@@ -5673,3 +5673,43 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     E7.5-geometry file, or the new exact one, each with the first upload's expression or the series rendering. Before
     it goes: a cold attack on the AI assistant's recommendation and an independent recomputation of every practice
     figure in it (wf_f2cffba6-236). T3's and the heart's last files stand as they are, by rows K18 and H25.
+- 2026-11-18 (v), the two checks before the embryo question, and the question as it goes to the captain (state at
+  20:56 UTC). Written by the AI assistant.
+  - **The independent recomputation** (wf_f2cffba6-236; an agent with its own code on the committed task files of
+    tries E47 and reading N53, none of the repository's scripts) reproduces every figure of entry (u) and of the two
+    rows: the merged means and better-of-two values of the five arms against the uploaded form, rule (ii)'s three
+    numbers, the skill ranges, the neighbourhood differences, N53's means and verdicts, and the exact equality of the
+    four expression skills between `fgw_shape0x` and the uploaded form on all 90 task-seeds. It found one claim of
+    the AI assistant's off (where the series twin gains: it gains on six tasks and loses on three, and "target E8.0
+    or E8.25_late with E7.5 as the earlier bracket" does not separate them) and two loose phrases in row E47's
+    reading after the result, corrected in the row (ba8d66a).
+  - **The series rendering on the exact geometry, from that recomputation** (`fgw_shape0x_series` minus
+    `fgw_shape0x`, paired by seed, board points per truth): E8.0 +5.54 (half +7.53, late +3.56); E8.25_late +4.01
+    (new1 +2.71, x1 +5.30); E8.5 -0.46 (new2 +1.38, x2 +0.50, x3 -3.25); E7.5 -1.62; E7.25 -6.58; merged over the
+    five truths +0.18. On the split ruling R4 used (six tasks whose target shares its deeper bracket's profile, three
+    that do not) the means over truths are +2.72 and -2.27, so at the committed 0.4 to 0.5 chance that E7.75 was
+    measured like E8.0 the twin's practice mean against the mixture is -0.27 to +0.22: level.
+  - **The cold attack** (the same workflow; an adversary given the claim block only). Its strongest point: the board
+    keeps the better of two, so the last upload should carry spread, and the series twin on the exact geometry has
+    it. Its own check for that point, stated before any figure: stay with `fgw_shape0x` if the series gain on that
+    geometry averages one point or less or is negative on two or more tasks. It averages +0.18 and is negative on
+    three, so by its own check the mixture stays. Its second point: the recommendation cannot be reached from
+    practice and reading N53 alone; it needs the first upload's two shape scores, and it overrides row E47's rule
+    (ii). That is so, and the question says it: the first scores choose here among geometries built from released
+    data, which the Official Rules allow and entry (k)'s lines do not bar, and no figure is solved from them; the
+    override of a rule the AI assistant fixed is the captain's to make. Its third point: the neighbourhood term
+    could fall further at the test pair than in practice. Not checked by a new read; what the record holds is the
+    practice range of the new arm against the uploaded form (-0.089 to +0.021 in skill, merged -0.039) and that the
+    task with E7.5 as earlier bracket and the widest gap to the later one (half) lost 0.009.
+  - **The question for the captain** (one file for the embryo's last upload; every option keeps the pre-registered
+    size and the count rule and touches no closed lever; each but the first reverses ruling R4 and needs an
+    amendment to `docs/S2_RULES.md`, a rehearsed build and a reference-list entry):
+    1. `fgw_shape0x`: the first upload's own cells and expression on E7.5's exact positions. Shape skills at the
+       floor's level by construction; the four expression metrics repeat the first upload's by identity; the
+       neighbourhood skill 0.04 lower on practice. The AI assistant's recommendation, formed after row E47's
+       result and against that row's rule (ii).
+    2. `fgw_shape0x_series`: the same geometry with the series rendering, a bet that E7.75 was measured like E8.0.
+    3. fgw_shape0: the old second file, which row E47's rule keeps as the floor-form arm; reading N53 finds it
+       outside E7.5's form at the test pair.
+    4. `fgw_aligned_series`: the file as ruled on 13 November; best on the nine-task practice mean; its geometry is
+       outside E7.5's form at the test pair as well.
