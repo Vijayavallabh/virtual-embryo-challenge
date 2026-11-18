@@ -36,7 +36,10 @@ machine, and an official upload needs the captain's go-ahead.
           2026-11-18 (k)): heart --entry s1 --expression copy --z-mode raw
   embryo  --method pseudobulk_shift | fgw | fgw_shape0 | fgw_shape1: E7.5 cells moved by the E7.25 -> E7.5 change, or
           the FGW interpolation between E7.5 and E8.0 at t = 1/2 (fgw_shape0, the s2 of docs/S2_RULES.md, keeps the
-          mixture in E7.5's geometry); sized by the pre-registered embryo procedure (size_embryo_E7.75.json)
+          mixture in E7.5's geometry); sized by the pre-registered embryo procedure (size_embryo_E7.75.json).
+          --positions floor_exact (off by default; with --method fgw_shape0 only; tries E47a and E47b of
+          experiments/harness/TRIES.md): every cell on a real E7.5 position, the harness's fgw_shape0x, or with
+          --expression series its fgw_shape0x_series
 
 The board is the test board from boards/ (after the intake, `vec boards update --from-file`); before that, --board
 may name a validation board of the same task for a dry run, and the script refuses a dry run whose output file name
@@ -507,6 +510,9 @@ def _trend_record(rec: dict) -> dict:
 
 
 def build_embryo(a) -> dict:
+    if a.positions != t2_build.POSITIONS[0] and (a.method != "fgw_shape0" or a.herd
+                                                 or a.draw != t2_build.DRAWS[0]):
+        raise SystemExit(f"--positions {a.positions} is for --method fgw_shape0, without --herd and --draw midpoint")
     board, dry = _board("embryo", a.board)
     genes = board.genes
     files = {"before": ("T2/E7.5.h5ad", 7.5), "after": ("T2/E8.0.h5ad", 8.0)}
@@ -536,7 +542,7 @@ def build_embryo(a) -> dict:
                                           log_depth=(None if a.draw == t2_build.DRAWS[0]
                                                      else (t2_build.log_panel_counts(before, genes),
                                                            t2_build.log_panel_counts(after, genes))),
-                                          with_coupling=a.expression == "latent")
+                                          with_coupling=a.expression == "latent", positions=a.positions)
         expr_rec = None
         if a.expression == "mixture":
             X = np.empty((len(res.rows), len(genes)), dtype=np.float32)
@@ -664,6 +670,12 @@ def build_parser() -> argparse.ArgumentParser:
                            help="fgw methods: which real cells of each bracket are drawn: uniform (the entry) or "
                                 "midpoint (try E13 of experiments/harness/TRIES.md: tilted towards the local "
                                 "displacement midpoint, every cell unedited at its moved position)")
+            p.add_argument("--positions", choices=t2_build.POSITIONS, default=t2_build.POSITIONS[0],
+                           help="--method fgw_shape0 only: where the cells sit: moved (the default, the entry) or "
+                                "floor_exact (tries E47a and E47b of experiments/harness/TRIES.md: every cell on a "
+                                "real E7.5 position, the E8.0 cells on unused ones by an exact expression assignment; "
+                                "with --expression series the harness's fgw_shape0x_series). No entry until the "
+                                "captain rules; refused with --herd and --draw midpoint")
     return ap
 
 

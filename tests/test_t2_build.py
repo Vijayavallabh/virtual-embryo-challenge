@@ -1388,7 +1388,10 @@ RULE_LITERALS = {"COUNT_RULE_SEEDS": {10.0}, "COUNT_RULE_MIN_GAIN": {0.3}, "COUN
                  # 2026-11-12, try E24 (the series rendering): the T3 script's gene_factor settings (rules.yaml,
                  # components.factor: eps 1e-5; its clip, 0.25-4, is made of allowed literals) and the smallest
                  # matched label, set before its run
-                 "SERIES_MIN_CELLS": {100.0}, "SERIES_EPS": {1e-5}}
+                 "SERIES_MIN_CELLS": {100.0}, "SERIES_EPS": {1e-5},
+                 # 2026-11-18, tries E47a and E47b (the floor-exact positions): a random-stream id, not a value of a
+                 # stage
+                 "FLOOR_EXACT_STREAM": {47.0}}
 
 
 def _stray_literals(src: str) -> tuple[list[tuple[int, str]], set[str]]:

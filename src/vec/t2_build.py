@@ -1353,6 +1353,12 @@ MIDPOINT_K_ANCHORS = 15  # the coupled anchor pairs nearest a cell's moved posit
 MIDPOINT_KMEANS_SEED = 20261109  # the fixed random_state of the deterministic k-means (lloyd, n_init=1)
 MIDPOINT_STREAMS = (8, 9)  # random streams of the midpoint draw (before, after): not the interpolation's 0-5 or the
 # herd's and expression's 6 and 7
+# Where the drawn cells sit (embryo tries E47a and E47b of experiments/harness/TRIES.md, registered before their run):
+# "moved" (every arm before them: each cell at its moved position, t_pos of the way) or "floor_exact"
+# (`_floor_exact_positions`: every cell at a real position of the earlier bracket, so the cloud is a sample of that
+# bracket's own positions).
+POSITIONS = ("moved", "floor_exact")
+FLOOR_EXACT_STREAM = 47  # the draw of unused earlier-bracket positions: a stream no other build step uses
 
 
 def pchip_rms(days, rms, target_day: float) -> float:
@@ -1531,6 +1537,42 @@ def _midpoint_draw(Eb: np.ndarray, Ea: np.ndarray, ib: np.ndarray, ia: np.ndarra
                           "w_before": w_b, "w_after": w_a, "expected_before": expected_b, "expected_after": expected_a}}
 
 
+def _floor_exact_positions(Zb: np.ndarray, Eb: np.ndarray, Ea: np.ndarray, ib: np.ndarray, ia: np.ndarray,
+                           rows_b: np.ndarray, rows_a: np.ndarray, n_pc: int, seed: int) -> tuple[np.ndarray, dict]:
+    """The positions of `interpolate_clouds(..., positions="floor_exact")` for the later bracket's drawn rows: one row
+    of Zb (the earlier bracket's own positions, in its normalised frame) per entry of rows_a, in rows_a's order.
+
+    1. Candidates: from the earlier bracket's cells that rows_b does not draw, a uniform random subset as large as
+       rows_a (stream [seed, FLOOR_EXACT_STREAM], without replacement). If fewer cells are left unused than rows_a
+       holds, the candidates are drawn from all of the earlier bracket's cells instead (`vec.core.draw_balanced`, the
+       same stream), positions an earlier-bracket row also takes then repeat, and the caller's duplicate jitter moves
+       them apart; the record says so ("fallback").
+    2. Each later row takes one candidate's position, one to one, by the exact minimum-cost assignment
+       (scipy.optimize.linear_sum_assignment) on squared Euclidean distance between the later row's expression and the
+       candidate cell's own expression, both in the joint PCs of the coupling's anchors (`_joint_pc_loadings`, the fit
+       behind fgw's features: the same anchors, the same number of components).
+
+    Without the fallback the drawn rows_b and the candidates together are a uniform random subset of the earlier
+    bracket's cells, so the cloud is distributed as a copy of that bracket at the same count. The cost matrix holds
+    len(rows_a)^2 float64 values. Returns the positions and a record (fallback, the candidate rows, the assignment's
+    mean cost)."""
+    from scipy.optimize import linear_sum_assignment
+    from scipy.spatial.distance import cdist
+
+    n_a = len(rows_a)
+    rng = np.random.default_rng([seed, FLOOR_EXACT_STREAM])
+    unused = np.setdiff1d(np.arange(len(Zb)), rows_b)
+    fallback = bool(len(unused) < n_a)
+    if n_a == 0:
+        return np.empty((0, Zb.shape[1])), {"fallback": False, "rows": np.array([], dtype=np.int64), "mean_cost": 0.0}
+    cand = draw_balanced(len(Zb), n_a, rng) if fallback else rng.choice(unused, n_a, replace=False)
+    centre, loadings = _joint_pc_loadings(Eb[ib], Ea[ia], n_pc)
+    cost = cdist((Ea[rows_a] - centre) @ loadings, (Eb[cand] - centre) @ loadings, "sqeuclidean")
+    r, c = linear_sum_assignment(cost)
+    at = np.asarray(cand, dtype=np.int64)[c[np.argsort(r)]]
+    return Zb[at], {"fallback": fallback, "rows": at, "mean_cost": float(cost[r, c].mean())}
+
+
 def log_panel_counts(a: ad.AnnData, genes) -> np.ndarray:
     """log1p of each cell's total counts over the panel (`layers["counts"]`, whatever its sparsity): the depth the
     midpoint draw's PCs are residualised on (`interpolate_clouds(..., draw="midpoint", log_depth=...)`). The log1p keeps
@@ -1545,7 +1587,7 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
                        with_partners: bool = False, herd: bool = False, move_coupling: str = MOVE_COUPLINGS[0],
                        with_coupling: bool = False, draw: str = DRAWS[0],
                        log_depth: tuple[np.ndarray, np.ndarray] | None = None,
-                       t_mix: float | None = None) -> Interpolation:
+                       t_mix: float | None = None, positions: str = POSITIONS[0]) -> Interpolation:
     """Displacement interpolation between two stages at time fraction t (0 = before, 1 = after).
 
     1. Each cloud is centred and divided by its RMS radius (no PCA axes, so no sign choice).
@@ -1591,6 +1633,15 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     more (`_midpoint_draw`, streams MIDPOINT_STREAMS), each bracket's count and each stratum's share of its bracket
     stay as the uniform draw's, and pool_weights carry the draw's probabilities for the cloud guard. It needs
     log_depth=(before, after), each cell's log panel counts (`log_panel_counts`), for the depth residualisation.
+
+    positions (embryo tries E47a and E47b of experiments/harness/TRIES.md): "moved" (default) places the cells as
+    above. "floor_exact" keeps the rows, the order and every random stream of the default and changes where the cells
+    sit: every before row at its own position, every after row at the position of a before cell the before rows do not
+    use, chosen and assigned by `_floor_exact_positions`. The cloud is then a sample of the before stage's own positions
+    (t_pos = 0 exactly, where t_pos = 0 carries the after cells onto the mean of their partners' positions), and
+    pool_coords / pool_weights are the before stage's cells alone, uniform. Needs t_pos=0.0; not with herd or
+    draw="midpoint", which choose the rows by the moved positions. Left at "moved", the result is bit-identical to a
+    call without it.
     """
     Cb, Ca = _as_coords(before_coords, "before_coords"), _as_coords(after_coords, "after_coords")
     Eb, Ea = np.asarray(before_expr, dtype=np.float64), np.asarray(after_expr, dtype=np.float64)
@@ -1610,6 +1661,13 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         raise ValueError(f"move_coupling must be one of {MOVE_COUPLINGS}, got {move_coupling!r}")
     if draw not in DRAWS:
         raise ValueError(f"draw must be one of {DRAWS}, got {draw!r}")
+    if positions not in POSITIONS:
+        raise ValueError(f"positions must be one of {POSITIONS}, got {positions!r}")
+    if positions != POSITIONS[0]:
+        if t_pos is None or float(t_pos) != 0.0:
+            raise ValueError(f"positions={positions!r} places the cells in the before stage's geometry: pass t_pos=0.0")
+        if herd or draw != DRAWS[0]:
+            raise ValueError(f"positions={positions!r} is not defined with herd or draw={draw!r}")
     if draw != DRAWS[0]:
         if herd:
             raise ValueError(f"draw={draw!r} and herd both choose the rows; use one of them")
@@ -1660,13 +1718,22 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
     rows = np.r_[rows_b, rows_a].astype(np.int64)
     perm = np.random.default_rng([seed, 2]).permutation(n)
     stage, rows = stage[perm], rows[perm]
-    Z = np.empty((n, 3))
-    Z[stage == 0], Z[stage == 1] = pos_b[rows[stage == 0]], pos_a[rows[stage == 1]]
+    floor_exact = None
+    if positions == POSITIONS[0]:
+        Z = np.empty((n, 3))
+        Z[stage == 0], Z[stage == 1] = pos_b[rows[stage == 0]], pos_a[rows[stage == 1]]
+    else:  # E47: the before rows where they are, the after rows on unused before positions (rows_a's order), permuted
+        at_a, floor_exact = _floor_exact_positions(Zb, Eb, Ea, ib, ia, rows_b, rows_a, n_pc, seed)
+        Z = np.vstack([Zb[rows_b], at_a])[perm]
     zc = Z.mean(0)
     scale = target_rms / rms_radius(Z)
     coords = cb + (Z - zc) * scale
-    pool = cb + (np.vstack([pos_b, pos_a]) - zc) * scale
-    weights = np.r_[np.full(len(Zb), (1.0 - tm) / len(Zb)), np.full(len(Za), tm / len(Za))]
+    if floor_exact is None:
+        pool = cb + (np.vstack([pos_b, pos_a]) - zc) * scale
+        weights = np.r_[np.full(len(Zb), (1.0 - tm) / len(Zb)), np.full(len(Za), tm / len(Za))]
+    else:  # every cell sits on a before position: the source is the before stage alone, drawn uniformly
+        pool = cb + (Zb - zc) * scale
+        weights = np.full(len(Zb), 1.0 / len(Zb))
     if midpoint is not None:
         weights = midpoint["pool_weights"]
     _, first = np.unique(coords.astype(np.float32), axis=0, return_index=True)
@@ -1693,6 +1760,10 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         record["draw"] = draw
         record["midpoint"] = {"k_strata": midpoint["k_strata"], "k_anchors": MIDPOINT_K_ANCHORS,
                               "ess_frac": midpoint["ess_frac"]}
+    if floor_exact is not None:  # a flat string and a nested record (a build record keeps flat values only)
+        record["positions"] = positions
+        record["floor_exact"] = {"fallback": floor_exact["fallback"], "stream": FLOOR_EXACT_STREAM,
+                                 "mean_cost": floor_exact["mean_cost"]}
     partners = None
     if with_partners:
         prng = np.random.default_rng([seed, 5])
@@ -1711,6 +1782,8 @@ def interpolate_clouds(before_coords, after_coords, before_expr, after_expr, t: 
         if midpoint is not None:
             internals["midpoint"] = {**midpoint["internals"], "uniform_before": midpoint["uniform_before"],
                                      "uniform_after": midpoint["uniform_after"]}
+        if floor_exact is not None:  # the before row whose position each after row took, in rows_a's order
+            internals["floor_exact_rows"] = floor_exact["rows"]
     return Interpolation(stage=stage, rows=rows, coords=coords, pool_coords=pool, pool_weights=weights, record=record,
                          partners=partners, coupling=internals)
 
