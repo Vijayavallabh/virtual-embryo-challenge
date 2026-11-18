@@ -5702,8 +5702,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     practice range of the new arm against the uploaded form (-0.089 to +0.021 in skill, merged -0.039) and that the
     task with E7.5 as earlier bracket and the widest gap to the later one (half) lost 0.009.
   - **The question for the captain** (one file for the embryo's last upload; every option keeps the pre-registered
-    size and the count rule and touches no closed lever; each but the first reverses ruling R4 and needs an
-    amendment to `docs/S2_RULES.md`, a rehearsed build and a reference-list entry):
+    size and the count rule and touches no closed lever; each but the fourth reverses ruling R4 and needs an
+    amendment to `docs/S2_RULES.md`, a rehearsed build and a reference-list entry; the AI assistant had first written
+    "each but the first", which the review of the method summary's new section caught):
     1. `fgw_shape0x`: the first upload's own cells and expression on E7.5's exact positions. Shape skills at the
        floor's level by construction; the four expression metrics repeat the first upload's by identity; the
        neighbourhood skill 0.04 lower on practice. The AI assistant's recommendation, formed after row E47's
