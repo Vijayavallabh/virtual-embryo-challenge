@@ -53,13 +53,19 @@ The reading (fixed in the row before any run; `decide` and `guard`):
             is put. Anything else: the refused s1 stands and no question is put.
   VOID      also unless every file holds the ten seeds, every arm, a clean tree, one commit and one machine.
   INCOMPLETE  a missing task file (a run that crashed, was refused or killed) is not a reading: `read` opens nothing,
-            writes nothing and exits 3; the world is rerun at the row's commit before any task file is read.
+            writes nothing and exits 3. With no code change, the missing world is rerun into the same folder at the
+            row's commit on the same machine. After a committed code fix, all three worlds are rerun at the new commit
+            into a fresh folder and the earlier folder's task files are never read: `run` refuses a folder that holds
+            a task file from another commit or machine (`check_folder`), so a mixed folder cannot be made.
 
   run   --world plain --task g1|g2 --out DIR     the plain world, one task per process
   run   --world dm --out DIR [--workers N]       the depth-matched world, both replicates in one process
   read  --runs DIR --out DIR                     apply the reading; write reading.json and reading.txt
-Each run writes its task file and, beside it, <file>.prov.json: the commit, the clean flag, the machine and the
-file's sha256.
+Each run writes <file>.prov.json (the commit, the clean flag, the machine and the file's sha256) and then its task
+file, so a task file present means that world finished and `read` decides. No log of a run holds a score: the plain
+world hands the harness a progress-only log (`progress_log`; the harness's own line for a seed lists every arm's
+score), the depth-matched world prints timings only, and a crash prints its traceback with every decimal number
+masked (`masked`), so a crash can be diagnosed and its world rerun without seeing a score.
 """
 
 from __future__ import annotations
@@ -67,10 +73,12 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import socket
 import sys
 import tempfile
 import time
+import traceback
 from pathlib import Path
 
 import numpy as np
@@ -401,40 +409,86 @@ def stamp() -> dict:
             "machine": socket.gethostname(), "utc": time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())}
 
 
-def write_task_file(path: Path, res: dict) -> dict:
-    """The task file and, beside it, <file>.prov.json with the commit, the clean flag, the machine and its sha256.
-    The task file is written to a temporary name and renamed, so a run killed while writing leaves no task file and
-    the reading sees it as missing (not a reading), never as a short file."""
-    raw = json.dumps(res, indent=1, default=float).encode()
+def _write_by_rename(path: Path, raw: bytes) -> None:
     tmp = path.parent / f".{path.name}.part"
     tmp.write_bytes(raw)
     tmp.replace(path)
+
+
+def write_task_file(path: Path, res: dict) -> dict:
+    """<file>.prov.json (the commit, the clean flag, the machine and the task file's sha256), then the task file, each
+    written to a temporary name and renamed. A run killed while writing leaves no task file, and the reading sees it
+    as missing (not a reading), never as a short file; a task file present always has its provenance beside it."""
+    raw = json.dumps(res, indent=1, default=float).encode()
     prov = {k: res["provenance"][k] for k in ("commit", "tree_clean", "machine")} | {
         "file": path.name, "sha256": hashlib.sha256(raw).hexdigest()}
-    (path.parent / f"{path.name}.prov.json").write_text(json.dumps(prov, indent=1) + "\n")
+    _write_by_rename(path.parent / f"{path.name}.prov.json", (json.dumps(prov, indent=1) + "\n").encode())
+    _write_by_rename(path, raw)
     return prov
 
 
+def check_folder(out: Path, st: dict) -> None:
+    """Row K18's rerun rule, enforced: a run refuses a folder that already holds a task file (by its .prov.json) from
+    another commit or another machine. A rerun into the same folder is only for a cause outside the code, at the row's
+    commit on the same machine; after a code fix, all three worlds are rerun at the new commit into a fresh folder, so
+    the reading never meets a folder of mixed commits (which it would void)."""
+    for p in sorted(out.glob("*.json.prov.json")):
+        prov = json.loads(p.read_text())
+        if prov.get("commit") != st["commit"] or prov.get("machine") != st["machine"]:
+            sys.exit(f"{out} holds {prov.get('file', p.name)} from commit {prov.get('commit')} on "
+                     f"{prov.get('machine')}, not this run's commit {st['commit']} on {st['machine']}. Row K18: after "
+                     "a code fix, rerun all three worlds at the new commit into a fresh folder; the earlier folder's "
+                     "task files are never read")
+
+
+def progress_log(world: str, task: str):
+    """The log handed to harness.run_task in the plain world: progress only. The harness's line for a seed lists every
+    arm's score; this prints the world, the task and the seed, and never the line, so no log holds a score."""
+
+    def log(line: str) -> None:
+        m = re.match(r".* seed (\d+):", str(line))
+        print(f"K18 {world} {task} seed {m.group(1) if m else '?'}: scored", flush=True)
+
+    return log
+
+
+_DECIMAL = re.compile(r"[-+]?(?:\d+\.\d*|\.\d+)(?:[eE][-+]?\d+)?|[-+]?\d+[eE][-+]?\d+|\b(?:nan|inf)\b")
+
+
+def masked(text_: str) -> str:
+    """A crash's text with every decimal number masked (a score is a float; seeds, line numbers and counts of seeds
+    are integers and stay), so the traceback can be read without seeing a score."""
+    return _DECIMAL.sub("<num>", text_)
+
+
+def _run_world(a, st: dict) -> dict:
+    if a.world == "plain":
+        rec = load_barred_for_plain(Path(a.data), Path(a.run_dir), Path(a.decision))
+        res = harness.run_task(TASKS[a.task], candidates(), seeds=SEEDS, data_dir=Path(a.data),
+                               log=progress_log("plain", a.task))
+        res["provenance"]["machine"] = st["machine"]
+        return res | {"world": "plain", "task_source": "experiments/t3_decomp/k18_built_files.py",
+                      "factor_record": k7._PREP["fold"]["record"], "barred_factor": rec}
+    res = run_dm(Path(a.data), Path(a.run_dir), Path(a.decision), a.workers, a.threads)
+    return res | {"task_source": "experiments/t3_decomp/k18_built_files.py", "provenance": st}
+
+
 def cmd_run(a) -> None:
+    if a.world == "plain" and a.task not in TASKS:
+        sys.exit("--world plain needs --task g1 or g2")
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     name = f"plain_{a.task}.json" if a.world == "plain" else "dm.json"
     path = out / name
     if path.exists():
         sys.exit(f"{path} exists")
-    if a.world == "plain":
-        if a.task not in TASKS:
-            sys.exit("--world plain needs --task g1 or g2")
-        st = stamp()
-        rec = load_barred_for_plain(Path(a.data), Path(a.run_dir), Path(a.decision))
-        res = harness.run_task(TASKS[a.task], candidates(), seeds=SEEDS, data_dir=Path(a.data))
-        res["provenance"]["machine"] = st["machine"]
-        res |= {"world": "plain", "task_source": "experiments/t3_decomp/k18_built_files.py",
-                "factor_record": k7._PREP["fold"]["record"], "barred_factor": rec}
-    else:
-        st = stamp()
-        res = run_dm(Path(a.data), Path(a.run_dir), Path(a.decision), a.workers, a.threads)
-        res |= {"task_source": "experiments/t3_decomp/k18_built_files.py", "provenance": st}
+    st = stamp()
+    check_folder(out, st)
+    try:
+        res = _run_world(a, st)
+    except Exception:  # noqa: BLE001  (any crash: its traceback, masked, and exit 1; no task file is written)
+        print(masked(traceback.format_exc()), file=sys.stderr, end="", flush=True)
+        sys.exit(1)
     prov = write_task_file(path, res)
     print(f"wrote {path}: commit {prov['commit']}, clean {prov['tree_clean']}, machine {prov['machine']}, sha256 "
           f"{prov['sha256']}", flush=True)
@@ -545,22 +599,25 @@ def dm_check(rows: dict, records: Path = U3D_RECORDS) -> dict:
     for n, target in DM_TARGETS.items():
         ref_rows = [{"seed": int(r.seed), "scores": {DM_CHECK: float(r.t3)}} for r in rec[rec["target"] == target]
                     .itertuples()]
-        mine = [{"seed": q["seed"], "scores": {DM_CHECK: q["check"][DM_CHECK]}} for q in rows.get(n, [])]
+        mine = [{"seed": q["seed"], "scores": {DM_CHECK: q["check"][DM_CHECK]}
+                 if DM_CHECK in (q.get("check") or {}) else {}} for q in rows.get(n, [])]  # a missing check: None
         d = distance(mine, DM_CHECK, ref_rows, DM_CHECK)
         out[n] = {"distance": d, "within_tolerance": guard_passes(d)}
     return out
 
 
 TASK_FILES = (*(f"plain_{n}.json" for n in TASKS), "dm.json")
-INCOMPLETE = ("not a reading: a run ended without writing its task file; nothing was read. Row K18: rerun that "
-              "world at the row's commit (after a committed code fix noted as an amendment to the row, if the cause "
-              "is in the code) before any task file is read")
+INCOMPLETE = ("not a reading: a run ended without writing its task file; nothing was read. Row K18: if the cause "
+              "is outside the code, rerun only that world into this folder at the row's commit on the same machine; "
+              "after a committed code fix, rerun all three worlds at the new commit into a fresh folder, and never "
+              "read this folder's task files (keep them aside)")
 
 
 def reading(runs: Path, refs: Path = K8_TASKS, u3d: Path = U3D_RECORDS) -> dict:
     """Apply the reading of row K18 to a run folder (plain_g1.json, plain_g2.json, dm.json). A run that crashed, was
     refused or was killed writes no task file; while any of the three is missing, nothing in the folder is opened and
-    the result is 'incomplete', not void, so the missing world can be rerun blind."""
+    the result is 'incomplete', not void. Since no log holds a score (progress_log, masked), the missing world can be
+    rerun blind; a folder of mixed commits or machines is void (and `run` refuses to make one, check_folder)."""
     missing = [f for f in TASK_FILES if not (runs / f).exists()]
     if missing:
         return {"incomplete": True, "void": False, "missing": missing, "outcome": INCOMPLETE}
@@ -590,6 +647,8 @@ def reading(runs: Path, refs: Path = K8_TASKS, u3d: Path = U3D_RECORDS) -> dict:
                 why.append(f"dm: no rows for {n}")
             elif _rows_ok(f"dm {n}", rows, ARMS, why):
                 per["dm"][n] = summarise(rows, ARMS)
+            if any(DM_CHECK not in (q.get("check") or {}) for q in rows):
+                why.append(f"dm {n}: a row without the check arm {DM_CHECK}")
         check = dm_check(r["rows"], u3d)
     for f, p in prov.items():
         if not p["tree_clean"]:
@@ -677,7 +736,7 @@ def text(res: dict) -> str:
 
 def cmd_read(a) -> None:
     res = reading(Path(a.runs))
-    if res.get("incomplete"):  # nothing was read; nothing is written, so the rerun stays blind
+    if res.get("incomplete"):  # nothing was read and nothing is written; no log holds a score, so the rerun is blind
         print(text(res), end="")
         sys.exit(3)
     out = Path(a.out)

@@ -5,6 +5,7 @@ competition file, no score of a fold)."""
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -442,3 +443,122 @@ def test_a_task_file_and_its_provenance(tmp_path):
     assert {k: prov[k] for k in ("commit", "tree_clean", "machine")} == {"commit": "abc", "tree_clean": True,
                                                                          "machine": "m1"}
     assert sorted(p.name for p in tmp_path.iterdir()) == ["dm.json", "dm.json.prov.json"]  # no temporary file left
+
+
+# --- the reruns and the logs (row K18: no log holds a score; a code fix means a fresh folder) ---
+
+
+def test_a_single_world_rerun_after_a_code_fix_cannot_be_read(tmp_path, u3d):
+    """A folder whose dm.json was rerun at a later commit (a code fix) beside the plain files of the first commit is
+    void: the one-commit check reads it as two runs. So after a code fix the three worlds go into a fresh folder."""
+    root = _write_run(tmp_path / "run", commit="abc")
+    dm = json.loads((root / "dm.json").read_text())
+    dm["provenance"]["commit"] = "later"
+    (root / "dm.json").write_text(json.dumps(dm))
+    v = k18.reading(root, u3d=u3d)
+    assert v["void"] and not v.get("question") and any("different commits" in w for w in v["why"])
+    assert "rerun all three worlds at the new commit into a fresh folder" in k18.INCOMPLETE
+
+
+def test_a_dm_row_without_the_check_voids_and_does_not_raise(tmp_path, u3d):
+    root = _write_run(tmp_path / "run")
+    dm = json.loads((root / "dm.json").read_text())
+    del dm["rows"]["g2"][4]["check"]
+    (root / "dm.json").write_text(json.dumps(dm))
+    v = k18.reading(root, u3d=u3d)
+    assert v["void"] and any("without the check arm" in w for w in v["why"])
+    assert not v["dm_check"]["g2"]["within_tolerance"] and v["dm_check"]["g1"]["within_tolerance"]
+
+
+@pytest.fixture
+def fake_run(monkeypatch):
+    """cmd_run with the barred factor's load, the harness and the stamp stubbed: the fake harness logs each seed's
+    line in the harness's own format (every arm's score) and returns a minimal task result."""
+    calls = {"log": None, "n": 0}
+    lines = {}
+
+    def run_task(t, cands, seeds, data_dir, log=print):
+        calls["log"], calls["n"] = log, calls["n"] + 1
+        for s in seeds:
+            lines[s] = f"{t.key} seed {s}: floor 50.00, refused_form {55 + s / 7:.2f}, barred_form {60 - s / 9:.2f}"
+            log(lines[s])
+        return {"rows": [], "provenance": {"commit": "abc", "tree_clean": True}}
+
+    monkeypatch.setattr(k18, "load_barred_for_plain", lambda *a: {})
+    monkeypatch.setattr(harness, "run_task", run_task)
+    monkeypatch.setattr(k7, "_PREP", {"fold": {"record": {}}})
+    monkeypatch.setattr(k18, "stamp", lambda: {"commit": "abc", "tree_clean": True, "machine": "m1", "utc": "x"})
+    return SimpleNamespace(calls=calls, lines=lines)
+
+
+def test_the_plain_run_logs_progress_only(tmp_path, fake_run, capsys):
+    out = tmp_path / "run"
+    k18.main(["run", "--world", "plain", "--task", "g1", "--out", str(out)])
+    assert fake_run.calls["log"] is not print and fake_run.calls["n"] == 1
+    printed = capsys.readouterr()
+    log_lines = [x for x in printed.out.splitlines() if " seed " in x]
+    assert log_lines == [f"K18 plain g1 seed {s}: scored" for s in SEEDS]
+    for x in log_lines:  # no number after the seed
+        assert not re.search(r"\d", x.split(" seed ", 1)[1].split(":", 1)[1])
+    for line in fake_run.lines.values():  # no score of the harness's line reaches the output
+        for score in re.findall(r"\d+\.\d\d", line):
+            assert score not in printed.out and score not in printed.err
+    assert (out / "plain_g1.json").exists() and (out / "plain_g1.json.prov.json").exists()
+
+
+def test_a_crash_prints_a_masked_traceback_and_writes_no_task_file(tmp_path, fake_run, monkeypatch, capsys):
+    def boom(*a, **k):
+        raise ValueError("T3w/WT->Gata4rep1 seed 0: shared anchors give 57.1234, fresh ones 57.1301; -1.5e-03 nan")
+
+    monkeypatch.setattr(harness, "run_task", boom)
+    out = tmp_path / "run"
+    with pytest.raises(SystemExit) as e:
+        k18.main(["run", "--world", "plain", "--task", "g1", "--out", str(out)])
+    assert e.value.code == 1
+    err = capsys.readouterr().err
+    assert "ValueError" in err and "seed 0" in err and "Traceback" in err
+    for x in ("57.1234", "57.1301", "1.5e-03", "nan"):
+        assert x not in err
+    assert not (out / "plain_g1.json").exists() and not (out / "plain_g1.json.prov.json").exists()
+
+
+def test_masking_on_pure_noise():
+    """Random scores in every format the harness or numpy prints: none survives the mask; integers stay."""
+    rng = np.random.default_rng(4)
+    for _ in range(300):
+        v = rng.normal(50, 20, 6)
+        txt = (f"seed 17: a {v[0]:.2f}, b {v[1]!r}, c {v[2]:.4e}, d {-abs(v[3]):.6f}, e {v[4]:g}, "
+               f"f np.float64({v[5]})")
+        m = k18.masked(txt)
+        assert not re.search(r"\d\.\d|\d[eE][-+]?\d", m) and m.startswith("seed 17: ")
+
+
+def test_a_run_refuses_a_folder_of_another_commit_or_machine(tmp_path, fake_run):
+    out = tmp_path / "run"
+    out.mkdir()
+    for commit, machine, refused in (("old", "m1", True), ("abc", "m2", True), ("abc", "m1", False)):
+        (out / "dm.json.prov.json").write_text(json.dumps({"commit": commit, "machine": machine, "file": "dm.json"}))
+        if refused:
+            with pytest.raises(SystemExit) as e:
+                k18.main(["run", "--world", "plain", "--task", "g2", "--out", str(out)])
+            assert "fresh folder" in str(e.value.code) and fake_run.calls["n"] == 0
+            assert not (out / "plain_g2.json").exists()
+        else:  # the same commit and machine: a rerun of a missing world, at the row's commit
+            k18.main(["run", "--world", "plain", "--task", "g2", "--out", str(out)])
+            assert fake_run.calls["n"] == 1 and (out / "plain_g2.json").exists()
+
+
+def test_a_kill_between_the_two_writes_leaves_no_task_file(tmp_path, monkeypatch):
+    real, n = k18._write_by_rename, []
+
+    def once(path, raw):
+        n.append(path.name)
+        if len(n) == 2:
+            raise KeyboardInterrupt  # the kill, after the provenance and before the task file
+        real(path, raw)
+
+    monkeypatch.setattr(k18, "_write_by_rename", once)
+    res = {"rows": [], "provenance": {"commit": "abc", "tree_clean": True, "machine": "m1"}}
+    with pytest.raises(KeyboardInterrupt):
+        k18.write_task_file(tmp_path / "dm.json", res)
+    assert n == ["dm.json.prov.json", "dm.json"] and not (tmp_path / "dm.json").exists()
