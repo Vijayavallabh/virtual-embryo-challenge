@@ -1333,3 +1333,23 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     E12.5's depth.
   - **Still true:** no format check was sent, nothing was uploaded, no test score or leaderboard figure was read,
     the team key was not used, and the DGX reference checkout is untouched at dc7b6ae.
+- 2026-11-18 (a), the first official uploads and what the main session has read since. Written by the AI assistant.
+  - The captain uploaded the first official entry on each board through the site's form and pasted the site's
+    returns, the per-metric skills included, into the main session (`docs/PLAN.md` decision log 2026-11-18 (j)).
+    Until then the main session had read no per-metric test value. The values are our own results; they are kept in
+    that entry and in no memory file.
+  - The captain then directed that the scores be used to find what failed and to improve the second uploads (the
+    same entry, verbatim). What that changes: the second uploads may be chosen with the first scores known. What it
+    does not change: "Scores" above. The Rules page's own wording, read through a screen the same day
+    (`docs/ORGANIZER_QUESTIONS.md`, "Screened check of 2026-11-18"), is that scores may choose among predictions and
+    not compute them, and that "the test is whether the truth enters your prediction's content or only its
+    selection". The diagnosis round and its challengers (decision log 2026-11-18 (k)) held to that: no constant is
+    set from a test value, no anchor is bounded from a skill, no property of a hidden sample is inferred from a
+    score, and no file or row order is chosen by its parity.
+  - The server's message refusing the heart file quoted that board's cell limits, and the captain pasted it twice.
+    The limits are not recorded, and the halving rule was chosen so as not to use them (decision log (j), item 3).
+  - The screened check approved for 19 November ran on 18 November at the captain's word; it returned no answer to
+    any open question and no leaderboard figure (the page's table did not load).
+  - **Still true:** no gene-level knockout finding from outside the released data, nothing measured inside a
+    held-out window beyond the unlocked validation files, no quarantined material opened, the team key not used
+    (the captain uploads through the site), and the DGX reference checkout untouched at dc7b6ae.

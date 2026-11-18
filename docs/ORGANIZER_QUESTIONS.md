@@ -21,6 +21,35 @@ under "Third email" below. The user sent a fourth email (the HTTP 403 on the pan
 of the A20 reading) on 2026-10-28 at 15:41 IST; its text is under "Fourth email" below. As of then none of the four
 emails had a reply, and the last screened Slack sweep (2026-10-23) found no organiser post or reply.
 
+## Screened check of 2026-11-18 (after the first uploads): no answer to any open question
+
+Run by a screening agent and audited by a second agent before the main session read it (wf_bfc2939d-aa0); the reads
+were made on 2026-11-18 from about 15:40 to 15:46 UTC. The check approved for 19 November was brought forward by the
+captain's word of 18 November ("go ahead with whatever is best for us and immediately as weell instead of waiting";
+`docs/PLAN.md` decision log 2026-11-18 (k)). Sources: organiser messages in the captain's mailbox since 2026-11-13,
+organiser posts in the public Slack channel since 2026-11-13 and the captain's direct messages with the organiser,
+the Rules page, the Data Protocol page, and the leaderboard page for overall totals only.
+
+- **No answer found** to: the validation files, the Gata4 replicates included, as model inputs (fourth email,
+  question 3); how a floored severity scores (fifth email); the scorer build and parity (October); how final entries
+  are nominated; where a method summary goes and how sources are stated; the processing batches of the two held-out
+  samples (seventh email; the Data Protocol page makes no such statement); the further reply the organisers
+  announced on 17 November. The Slack channel has no organiser post since 2026-11-13.
+- **The Rules page on score use (Section 10), as released** (two quotes are shortened by the reading tool):
+  "Returned scores may be used to choose among predictions, not to compute them." "Using score returns to solve for a
+  property of a held-out target, by inverting the published skill map, ... is recovering held-out data by another
+  route and is prohibited." "The test is whether the truth enters your prediction's content or only its selection."
+  "Trying a parameter value, seeing how it scores, and trying another is ordinary leaderboard work and remains
+  permitted however many rounds it takes; ... what is prohibited is solving for a property of the target and
+  building a submission out of the solution."
+- **Section 9, as released:** "Choosing which completed run to submit is a person's decision and always has been."
+  "A final entry nominated for prizes must carry its evidence." No nomination procedure was found on the page.
+- **The leaderboard page** showed no figures (its table did not load), so no overall total or rank was read.
+- Withheld by the screen: two passages (one on test-board limits and hidden-target properties, quoted from the
+  team's own earlier text; one Data Protocol sentence on how the E12.5 samples were collected, marked unsure).
+- **What the team does:** by the rules fixed beforehand nothing switches: T3's remaining upload stays a file that
+  takes no number from the Gata4 replicates, and the working answers stand as working answers.
+
 ## Organiser messages received (2026-11-17): one answer, one notice
 
 Both were pasted into the main session by the captain on 2026-11-17; `docs/PLAN.md` decision log 2026-11-17 (a) says
@@ -430,6 +459,8 @@ captain sent it on 2026-11-13 (the captain's words in the main session: "i also 
 the drafts folder when checked, and the sent copy was not opened, so any edit before sending is not recorded).
 Answers: _pending_ (record them here and in `docs/DATA_POLICY.md`). A reply is not pasted into the main session: a
 screening agent reads it first and passes on the procedural answer only, as the classification below requires.
+Screened read of 2026-11-18, about 15:40 to 15:46 UTC (the section at the top of this file): no answer found in the
+mailbox, the Slack channel or the Data Protocol page.
 
 **Classification, stated before any answer.** What it asks is procedure: which released sample a held-out sample was
 processed with, and whether a protocol was the same. That is the class of the collection text released through the
