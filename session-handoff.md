@@ -2,6 +2,21 @@
 
 ## Current Objective
 
+- **State at 2026-11-18, 20:56 UTC (newest).** Decision log 2026-11-18 (q) to (v). The captain holds the second
+  uploads and asked for a week of research. Read so far: H25, K18, E47a, E47b, N53 (rows of those names; results
+  under `experiments/harness/results/h25_heart_forms`, `e47_floor_exact`, `n53_floor_proximity` and
+  `experiments/t3_decomp/results/k18_built_files`). Waiting for the captain: which file is the embryo's last upload
+  (entry (v): `fgw_shape0x`, recommended; `fgw_shape0x_series`; fgw_shape0; or the ruled `fgw_aligned_series`). On his
+  answer, if it is not the ruled file: amend `docs/S2_RULES.md` with his words and the new hash, add the command to
+  `experiments/builds/build_all.sh` with its tests, build twice on the DGX at two thread counts and compare, write
+  the reference list entry, copy the file here, check it locally, draft the note to the organisers (three-lens
+  review) and hand it over. Running: try T60 on the DGX (`~/v/vec-campaign-h7` at 13fd89a; exit files
+  `runs/logs/t60_lib{1,2,3}.exit`; then copy `experiments/t1_m1/results/t60_reach/tasks/lib{1,2,3}.json` back, commit
+  them unread, run `reach_read.py read --out t60_reach`, record the outcome by row T60's statements). Check builds
+  (never upload sources) sit in `~/v/vec-campaign/runs/builds_check_emb/` at 9967cf1. The DGX reference checkout is
+  untouched at dc7b6ae. Not started, with reasons in entry (s) and the status messages: the learned models, the
+  heart's tilted half, T3's cell-resolved factor. Owed: the method report's lines on every departure (now also: rule
+  9 was shaped after the first scores; K18's reading machine; the research week's tries after the first scores).
 - **State at 2026-11-18, 17:52 UTC (newest).** The captain holds the second uploads ("We don’t need to submit again
   right now") and asked for a week of research; decision log 2026-11-18 (q) to (s) has his words, the reading, the
   design round and the portfolio. The four files of the bullet below remain the default second uploads. Running:

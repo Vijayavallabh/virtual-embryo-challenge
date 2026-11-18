@@ -3,6 +3,18 @@
 ## Current State
 
 **Last Updated:** 2026-11-18
+**2026-11-18, 20:56 UTC: the first wave of the research week is read; one question waits for the captain (the
+embryo's last file); one read still runs** (`docs/PLAN.md` decision log 2026-11-18 (t) to (v)). Read by their fixed
+rules: H25 (the ruled heart form has a copy's shape skills; halving is under the bar; nothing follows), K18 (no
+question: the refused s1 stays T3's last upload; the barred form fails at matched depth on g1), E47a and E47b (the
+exact floor-form arm scores at the floor's shape level on every practice task and fails the no-worse test against
+fgw_shape0) and N53 (target-free: at the test pair only the exact arm is in E7.5's form; the planned file's geometry
+and fgw_shape0 are not). Check builds of the four floor-form candidates succeed; `fgw_shape0x` holds the first
+upload's expression matrix exactly. An independent recomputation matches every figure; a cold attack on the
+recommendation resolves, by its own check, to the mixture twin. On main besides: the second-file value table,
+ledger rule 9 (the judge) and the captain's pre-upload checklist. Running: try T60 (the T1 reachability read) on
+`~/v/vec-campaign-h7` at 13fd89a. Tries now: T1 261, embryo 75, heart 41, T3 51. The heart's, T3's and T1's second
+files stand as handed over at 16:54 UTC; the embryo's waits for the captain's choice among four files.
 **2026-11-18, 17:52 UTC: the captain holds the second uploads and orders a week of research; the design round is in
 and the first build wave is running** (`docs/PLAN.md` decision log 2026-11-18 (q) to (s)). The four second files of
 16:54 UTC stay the defaults and none goes up before the captain's word. The design round (wf_edd233ae-35a, nine
