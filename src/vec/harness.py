@@ -967,11 +967,19 @@ def _b0_t2(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool
     trend (heart candidate b0_trend, row H11; heart extrapolation with at least three input stages only): each
     lineage's log factor is its least-squares trend over every input stage (`b0_trend_factors`, B0_TREND_RULE); the
     draw, typing, stream and everything else are B0's. No try read it with depth, herd or cfm, so those raise.
-    trend_record: a dict that receives b0_trend_factors' record (with trend only; the build record's source)."""
-    from vec import t1_scope
-
+    trend_record: a dict that receives b0_trend_factors' record (with trend only; the build record's source).
+    The steps themselves are `_b0_t2_steps`; this route refuses the combinations no try read."""
     if trend and (depth or herd or cfm):
         raise ValueError("the trend of B0 is not defined together with depth, herd or cfm (no try read them)")
+    return _b0_t2_steps(ctx, depth=depth, herd=herd, cfm=cfm, trend=trend, trend_record=trend_record)
+
+
+def _b0_t2_steps(ctx: BuildContext, depth: bool = False, herd: bool = False, cfm: bool = False, trend: bool = False,
+                 trend_record: dict | None = None) -> Stage:
+    """`_b0_t2`'s steps, without its refusal of the trend together with depth, herd or cfm. Only `_b0_t2` and
+    `_b0_trend_herd` (try H24: the trend with herd, nothing else) call it."""
+    from vec import t1_scope
+
     if trend_record is not None and not trend:
         raise ValueError("trend_record is for trend=True")
     if trend:
@@ -1149,6 +1157,13 @@ def _b0_cfm(ctx: BuildContext) -> Stage:
 def _b0_trend(ctx: BuildContext) -> Stage:
     """Heart candidate b0_trend (row H11, B0_TREND_RULE): `_b0_t2` with trend=True."""
     return _b0_t2(ctx, trend=True)
+
+
+def _b0_trend_herd(ctx: BuildContext) -> Stage:
+    """Heart try H24 (the heart's first-upload entry, herded): b0_trend with the copy's draw herded towards the pool's
+    mean panel expression by the option b0_herd uses (`draw_copy(..., herd=True)`, `sample_cells`' stream [seed, 2]);
+    nothing else changed."""
+    return _b0_t2_steps(ctx, trend=True, herd=True)
 
 
 def _fgw_herd(ctx: BuildContext) -> Stage:
@@ -1788,6 +1803,14 @@ CANDIDATES = {
                                    "budget (heart only; count space)", "damping": B0_DAMPING,
                            "rule": "vec.harness.B0_TREND_RULE", "scope": "chamber"},
                           requires=_heart_extrap_with_start),
+    # heart try H24 (experiments/harness/TRIES.md; decision log 2026-11-18 (c)): the heart's first-upload entry
+    # b0_trend with its draw herded as b0_herd's (row H4's option). The embryo's twin, try E46, is fgw_herd itself: the
+    # embryo's first upload is the harness's fgw (build_test.py embryo --method fgw --expression mixture)
+    "b0_trend_herd": Candidate("b0_trend_herd", frozenset({"T2"}), (), _b0_trend_herd,
+                               {"what": "b0_trend with the copy's draw herded towards the pool's mean panel expression "
+                                        "before the shift (vec.core.herd_rows, as b0_herd's)", "damping": B0_DAMPING,
+                                "rule": "vec.harness.B0_TREND_RULE", "scope": "chamber"},
+                               requires=_heart_extrap_with_start),
     # T3 tries K2a and K2b (experiments/harness/TRIES.md, registered before their run): s1's Gata4 factor on the
     # Gata4 -> Mab21l2 fold, and its permuted control
     "t3_factor_xko": Candidate("t3_factor_xko", frozenset({"T3"}), (), _t3_factor_xko,
