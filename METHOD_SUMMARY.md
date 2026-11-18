@@ -281,7 +281,8 @@ Task 3's s2 is the wild type plus a five-state depletion, by design.
 
 ### Exposure of hidden-target metadata on 2026-11-04 and the precommitted procedure
 (Written on 2026-11-17 at the organisers' request, quoted below; drafted by the AI assistant and reviewed for accuracy,
-framing and tone by independent agents.)
+framing and tone by independent agents. Its last dated item was rewritten on 2026-11-18 and reviewed the same way,
+in four rounds.)
 
 **In short.** Every quantity the exposed metadata bears on was set by code or rules committed before 2026-11-04;
 that day the team closed them to change, and each later decision touching one is listed below. Dates are UTC.
@@ -338,12 +339,37 @@ declined, unless the captain names an exception.
 - 2026-11-14: a practice read (try T43c) found that a shallower practice target's depth scores better; its row fixed
   beforehand that this leads to no request. The captain, asked whether to reopen Task 1's depth (advice: released
   data alone or decline), has not answered; on 2026-11-17 the AI assistant recorded that the rule gives "declined".
-- 2026-11-17: practice reads on released stages (tries T44 to T54) found that a larger Task 1 step scores better on
-  the released day, and that the size at which it stops helping depends on how deep the truth is against the cells
-  the prediction is built from (tries T50 and T54, which thin a released truth or its reference). Released data do
-  not show that depth for the hidden truth, and it is a blocked quantity. The AI assistant, which holds none of the
-  exposed figures, wrote its advice rule before the runs, had the result attacked twice by agents given only the
-  claim, and put no request forward; the step is as it was built on 2026-11-13 (`docs/PLAN.md` 2026-11-17 (c) to (e)).
+- 2026-11-14 to 2026-11-18: practice reads on released stages (tries T44 to T57; T44 to T47 read on 2026-11-14)
+  found that a larger Task 1 step (tries T44 to T46, T48, T50, T54) scores better on the released day. They also
+  found that the size at which it stops helping moves as a released truth or its reference is thinned (tries T50
+  and T54): thinning a truth lowers its depth and adds count noise together, and the reads cannot tell the two
+  apart; a thinned reference is not a deeper truth, since the floor, the scorer's de reference and the fits change
+  with it. Released data do not show the hidden truth's depth, which is a blocked quantity. After a first cold
+  adversarial check of the claim, the AI assistant, which states it holds none of the exposed figures, wrote a rule
+  for its advice, after tries T44 to T47 had been read and before tries T48 to T53 ran; one test was added after
+  try T50's curves had been read, and nobody approved the rule. The rule gave a larger step on both Task 1 uploads,
+  0.60 in place of 0.40. A second check by an independent agent shown only the claim, fixed beforehand to follow
+  the last read, attacked it (a 38% chance of a mistake; a smaller alternative, the first upload only at 0.55); the
+  AI assistant conceded its main attack, two others, and part of a third (an audit later found one conceded ground
+  overstated), and advised keeping 0.40. It first recorded a verdict, stop; an independent audit (entry 2026-11-18
+  (a)) classed that verdict and the advice as the AI assistant's judgement after the results, which does not close
+  the question, and found that the rule's cap at 0.60 rested on a statement that the row's own limit, fixed before
+  the run, barred from quoting in this case; without the cap the rule gives 0.69. As entry 2026-11-17 (c) fixed
+  beforehand, the rule's output and its price both ways go to the captain, now as a table by depth on released
+  data (entry 2026-11-18 (a)); the captain has seen figures that bear on that depth. Because the price changes sign
+  with that depth, the block's rule applies: the captain decides from that table alone or declines, and without a
+  ruling the step stays at 0.40. The record notes that a ruling given with discretion, either way, could not be
+  shown to be free of the figures. A larger factor inside cell states (try T49) also scores better on the practice
+  cuts that had kept that factor; its row, fixed before the run, changes no size whatever it reads, names depth
+  among its limits and sends the result to the captain. The AI assistant's advice, formed after the result, is no
+  change. A variant of the step's direction (tries T55 to T57), in part a larger step, was closed with no request:
+  a third independent check (a 55% chance of a mistake) left the gate fixed before try T56 unmet, and a gate fixed
+  before try T57 ran, after tries T55 and T56 had been read, closed the family; the AI assistant's reading of it,
+  formed after the result, goes to the captain with the step's question and changes nothing in it. As of
+  2026-11-18 no ruling is recorded, no upload, build, rule or gate file has changed, and the step is as it was
+  built on 2026-11-13; any ruling will be added here with the captain's words. Records:
+  `experiments/harness/TRIES.md` rows T44 to T57; `docs/PLAN.md` 2026-11-14 (c), 2026-11-17 (b) to (h), 2026-11-18
+  (a) and (b).
 
 **What the organisers were told.** On 2026-11-04 the captain wrote (drafted by the AI assistant; fcd8964) what was
 pasted, that some test-board limits with the page's rule give away part of a hidden target's size, that the page
