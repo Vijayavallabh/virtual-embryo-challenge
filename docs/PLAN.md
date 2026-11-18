@@ -5011,16 +5011,18 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     checks it named that released files can answer were run as two target-free listings
     (`experiments/t1_m1/results/gmom_test_fit/`).
   - **What the listings show.** (1) The test pair's factors are larger than the practice fit's at the same damping:
-    1.09 to 1.10 times for the cardiomyocytes, 1.41 to 1.48 times for the endocardium (root mean square); two categories
-    edited at the test, the epicardium and the vascular endothelium, have no factors in the practice fit; and blood,
-    which the practice gain includes, is held at the test. (2) The per-category centring removes a collection shift
-    common to a whole cell type, and what survives is measurable: at the test pair's fit 0.30 of the cardiomyocytes'
-    factors' squared size goes with a metacell's share of cells from the dissected-heart library (200 permutations of
-    the shares: mean 0.05, 95th percentile 0.09), 0.10 for the endocardium (0.03, 0.06) and 0.17 for the epicardium
-    (0.05, 0.08); the vascular endothelium, with five metacells, is not above its null. At the practice fit, whose two
-    libraries are of one kind, the same figure is at its null (cardiomyocytes 0.035 against 0.03). So a part of what
-    g_mom carries forward at the test goes with the library a state's cells came from, a part the practice reads never
-    contained, and a larger damping applies it at twice the size.
+    1.09 to 1.10 times for the cardiomyocytes, 1.41 to 1.48 times for the endocardium (root mean square); and blood,
+    which the practice gain includes, is held at the test. (Corrected the same day: this sentence first said that the
+    epicardium and the vascular endothelium are edited at the test. They are not: by ruling R3b the test build edits
+    the cardiomyocytes and the endocardium only, the two categories a backtest read.) (2) The per-category centring
+    removes a collection shift common to a whole cell type, and what survives is measurable: at the test pair's fit
+    0.30 of the cardiomyocytes' factors' squared size goes with a metacell's share of cells from the dissected-heart
+    library (200 permutations of the shares: mean 0.05, 95th percentile 0.09), and 0.10 for the endocardium (0.03,
+    0.06), the two categories the test build edits; the epicardium's 0.17 and the vascular endothelium's figure do not
+    enter a file. At the practice fit, whose two libraries are of one kind, the same figure is at its null
+    (cardiomyocytes 0.035 against 0.03). So a part of what g_mom carries forward at the test goes with the library a
+    state's cells came from, a part the practice reads never contained, and a larger damping applies it at twice the
+    size.
   - **The attacks, labelled, and the verdict.** Kill shot: conceded. First attack (a dose practice never read; a
     state-specific residue of the collection change): conceded on both listings. Second (the excess over the two null
     factor sets was read at the released depth only): unresolved; reading it needs the twin and the permuted control
@@ -5034,11 +5036,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     entry (c) the question is restated with its price both ways; it is not closed by the AI assistant. For: +1.47 and
     +1.36 on the two cuts, +0.71 to +0.90 beyond both controls, positive in every depth world read. Against: the gain
     falls to +0.27 with a losing covariance term where the reference is thinned to a half; nearly half of it comes
-    with factor sets that carry no development; at the test the factors are larger, cover cell types practice never
-    read, and hold a library component that no practice run contains; the size was chosen on the cuts that kept g_mom,
-    so the adoption rule cannot keep it; and its size depends on a depth the captain has seen figures for, so the
-    captain decides from the released-data figures alone or declines. The AI assistant's advice, its own: keep 0.5 on
-    both uploads. Declining is the default.
+    with factor sets that carry no development; at the test the factors are larger and hold a library component that
+    no practice run contains; the size was chosen on the cuts that kept g_mom, so the adoption rule cannot keep it;
+    and its size depends on a depth the captain has seen figures for, so the captain decides from the released-data
+    figures alone or declines. The AI assistant's advice, its own: keep 0.5 on both uploads. Declining is the default.
   - **A finding beyond the damping, for the captain.** The library component is in the test pair's factors at any
     damping, the entry's 0.5 included: the entry as built carries it. Reading N21 had already found that the leading
     direction of the test pair's factors does not carry from the practice fit; this adds one measured reason. No

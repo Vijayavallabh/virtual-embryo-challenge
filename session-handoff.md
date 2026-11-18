@@ -44,8 +44,7 @@
   1.0 in place of 0.5: for, +1.47 and +1.36 on the two practice cuts, +0.71 to +0.90 beyond a twin without
   development and a permuted control, and +1.83, +1.65, +1.27, +0.68, +0.27 in five worlds from a shallower to a
   deeper truth; against, the covariance term loses in the deepest world, nearly half the gain comes with factor
-  sets that carry no development, and at the test the factors are 1.09 to 1.48 times as large, cover cell types
-  practice never read and hold a library component (0.30 of the cardiomyocytes' factors' squared size) that no
+  sets that carry no development, and at the test the factors are 1.09 to 1.48 times as large and hold a library component (0.30 of the cardiomyocytes' factors' squared size) that no
   practice run contains; a cold check says stop (entry (f)); (c) Task 3's factor at half size: +0.89 and +2.35 on
   the two cross-knockout folds with the factor alone, -0.55 and -1.67 on the two replicate folds in the file's own
   form (row K15); (4) for information: the library component is in the Task 1 files as built, at the entry's own

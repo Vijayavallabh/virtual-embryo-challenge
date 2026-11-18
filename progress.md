@@ -17,7 +17,7 @@ independent recomputation found no figure wrong. A cold check of the damping cla
 the change from embryo portions to dissected hearts. Two target-free listings
 (`experiments/t1_m1/results/gmom_test_fit/`) show that the test pair's factors are 1.09 to 1.48 times the practice
 fit's and that 0.30 of the cardiomyocytes' factors' squared size there goes with a state's share of dissected-heart
-cells (0.10 endocardium, 0.17 epicardium; at the practice fit the figure is at its null). Verdict of the check, the
+cells (0.10 endocardium, the other category the test build edits; at the practice fit the figure is at its null). Verdict of the check, the
 AI assistant's judgement: stop; its advice: keep 0.5 on both uploads. The damping question is the captain's, priced
 both ways in entry (f). Tries: T1 261, embryo 73, heart 31, T3 35. The committed estimate stays 184 (170 to 198).
 **Waiting for the captain:** the dates (no upload is possible until the gate's date is moved); the six confirmations
