@@ -116,7 +116,10 @@ def test_the_halving_seeds_avoid_every_build_and_scoring_stream(h25):
     sys.path.insert(0, str(REPO_ROOT / "experiments" / "builds"))
     import halve
 
-    assert halve.DEFAULT_SEED in builds  # why the upload's seed is not reused
+    # the upload's seed is a build seed number; kept apart so that no seed number serves two purposes (for clarity:
+    # sample_cells draws its rows from default_rng([seed, 0]), not halve.py's default_rng(seed))
+    assert halve.DEFAULT_SEED in builds
+    assert "default_rng([seed, 0])" in inspect.getsource(t2_build.sample_cells)
 
 
 def test_the_halving_draw_is_uniform(h25):
@@ -163,8 +166,10 @@ def test_the_arms_apply_to_both_counted_backtests_and_use_the_builders_expressio
     for name in h25.ARMS:
         arm = h25.make_arm(name, _size(h25), {})
         assert all(arm.applies(t) for t in ts)
-    for name in h25.REFERENCES:
+    for name in h25.HARNESS_REFERENCES:
         assert all(harness.CANDIDATES[name].applies(t) for t in ts)
+    assert all(h25.make_arm("copy_iso", _size(h25), {}).applies(t) for t in ts)
+    assert h25.REFERENCES == ("copy", "b0_trend", "copy_iso") and "copy_iso" not in h25.ARMS  # not counted
     # the builder's --trend expression is the harness's b0_trend, the function the s1form arms build from
     build_src = REPO_ROOT / "experiments" / "builds" / "build_test.py"
     assert "harness._b0_t2(ctx, trend=True, trend_record=trend_rec)" in build_src.read_text()
@@ -213,12 +218,16 @@ def test_a_clean_run_is_read_and_a_tie_makes_only_statement_one_true(h25):
 
 def test_statement_two_needs_the_bar_and_eight_seeds_on_both_backtests(h25):
     n = len(SEEDS)
-    lose = {"copy_half": {"neighborhood_mmd": [0.47] * n}}  # -0.03 in every seed
+
+    def half(v):  # copy_half and its rescaled twin iso_half move together, as the twin check requires
+        return {"copy_half": {"neighborhood_mmd": v}, "iso_half": {"neighborhood_mmd": v}}
+
+    lose = half([0.47] * n)  # -0.03 in every seed
     assert h25.reading(_both(h25, skills=lose), _committed(h25))["statements"]["2"]["true"]
     assert "priced question" in h25.reading(_both(h25, skills=lose), _committed(h25))["statements"]["2"]["follows"]
-    small = {"copy_half": {"neighborhood_mmd": [0.485] * n}}  # -0.015: under the bar
+    small = half([0.485] * n)  # -0.015: under the bar
     assert not h25.reading(_both(h25, skills=small), _committed(h25))["statements"]["2"]["true"]
-    seven = {"copy_half": {"neighborhood_mmd": [0.40] * 7 + [0.51] * 3}}  # mean -0.067, 7 of 10 behind
+    seven = half([0.40] * 7 + [0.51] * 3)  # mean -0.067, 7 of 10 behind
     assert not h25.reading(_both(h25, skills=seven), _committed(h25))["statements"]["2"]["true"]
     one = _both(h25)
     one[h25.TASK_KEYS[0]] = _result(h25, h25.TASK_KEYS[0], skills=lose)  # one backtest only
@@ -233,6 +242,22 @@ def test_statement_three_needs_the_bar_and_eight_seeds_on_both_backtests(h25):
     assert "decides nothing" in st["follows"]
 
 
+def test_statement_three_reads_against_the_sized_copy_not_the_copy(h25):
+    """The oracle lifts every sized arm's size term (about +4.2 points over the unsized copy), so (3)'s control is
+    copy_iso: an s1form_half 4 points above the copy but 0.5 below copy_iso makes (3) true, and one 0.5 below the copy
+    but level with copy_iso makes it false."""
+    n = len(SEEDS)
+    above_copy = {"copy_iso": [54.2] * n, "s1form_half": [53.7] * n}
+    res = h25.reading(_both(h25, score=above_copy), _committed(h25))
+    assert res["statements"]["3"]["true"]
+    assert res["minus_copy"][h25.TASK_KEYS[0]]["s1form_half"]["score"]["mean"] == pytest.approx(3.7)
+    assert res["minus_copy_iso"][h25.TASK_KEYS[0]]["s1form_half"]["score"]["mean"] == pytest.approx(-0.5)
+    level = {"copy_iso": [49.5] * n, "s1form_half": [49.5] * n}
+    assert not h25.reading(_both(h25, score=level), _committed(h25))["statements"]["3"]["true"]
+    assert set(res["minus_copy_iso"][h25.TASK_KEYS[0]]) == {"iso_half", "s1form", "s1form_half"}
+    assert "not comparable" in h25.text(res)
+
+
 def test_statement_one_fails_when_the_ruled_form_moves_a_shape_skill(h25):
     n = len(SEEDS)
     moved = {"iso_half": {"occupancy_dice": [0.45] * n}}  # -0.05 against copy_half
@@ -241,27 +266,40 @@ def test_statement_one_fails_when_the_ruled_form_moves_a_shape_skill(h25):
     assert h25.reading(_both(h25, skills=inside), _committed(h25))["statements"]["1"]["true"]
 
 
-def test_the_gates_on_pure_noise(h25):
-    """Pure noise, every arm the copy plus independent per-seed noise (board points sd 0.15, the spread of paired
-    differences on these backtests in row H23; skills sd 0.01): statements (2) and (3) come out true in under 1% of
-    400 draws, and statement (1) true in most (it asks for agreement, so noise below its tolerance passes it)."""
-    rng = np.random.default_rng(20261118)
+def _noise_rates(h25, sd_score, sd_skill, shared, draws, seed):
+    """Share of pure-noise draws on which each statement comes out true. Every control (copy, copy_iso) is held level
+    and every other arm gets per-seed noise, so a paired difference with a control has sd `sd_score` (board points) or
+    `sd_skill`; shared=True draws one noise for both backtests (they share one truth, E10.5)."""
+    rng = np.random.default_rng(seed)
     hits = {"1": 0, "2": 0, "3": 0}
-    draws = 400
+    controls = ("copy", h25.SIZED_CONTROL)
     for _ in range(draws):
-        results = {}
+        results, noise = {}, None
         for key in h25.TASK_KEYS:
-            sc = {a: list(50.0 + rng.normal(0, 0.15, len(SEEDS))) for a in h25.ALL[1:]}
-            sk = {a: {m: list(0.5 + rng.normal(0, 0.01, len(SEEDS))) for m in ("d2_shape", "occupancy_dice",
-                                                                               "neighborhood_mmd")}
-                  for a in h25.ALL[1:]}
-            sc["copy"] = 50.0
-            results[key] = _result(h25, key, score=sc, skills=sk)
+            if noise is None or not shared:
+                noise = ({a: list(50.0 + rng.normal(0, sd_score, len(SEEDS))) for a in h25.ALL[1:]
+                          if a not in controls},
+                         {a: {m: list(0.5 + rng.normal(0, sd_skill, len(SEEDS)))
+                              for m in ("d2_shape", "occupancy_dice", "neighborhood_mmd")}
+                          for a in h25.ALL[1:] if a not in controls})
+            results[key] = _result(h25, key, score=noise[0], skills=noise[1])
         st = h25.statements(results)
         for k in hits:
             hits[k] += st[k]["true"]
-    assert hits["2"] / draws < 0.01 and hits["3"] / draws < 0.01
-    assert hits["1"] / draws > 0.5
+    return {k: v / draws for k, v in hits.items()}
+
+
+def test_the_gates_on_pure_noise(h25):
+    """Pure noise at the spread of an arm minus the copy on these backtests: board points sd 0.45 (row H23's committed
+    arm-minus-copy spreads are 0.21 to 0.26 on E8.75->E10.5 and 0.39 to 0.46 on E9.5->E10.5); skills sd 0.01 (the
+    same arms' neighborhood_mmd skill spreads are 0.001 to 0.005). Over 2000 draws, with the backtests independent and
+    with one noise draw shared by both, statements (2) and (3) come out true in under 2.5%, and statement (1) true in
+    most (it asks for agreement, so noise below its tolerance passes it)."""
+    ind = _noise_rates(h25, 0.45, 0.01, shared=False, draws=2000, seed=20261118)
+    cor = _noise_rates(h25, 0.45, 0.01, shared=True, draws=2000, seed=20261119)
+    assert ind["2"] < 0.005 and ind["3"] < 0.005
+    assert cor["2"] < 0.005 and cor["3"] < 0.025
+    assert ind["1"] > 0.5 and cor["1"] > 0.5
 
 
 def test_the_reading_is_void_when_the_copy_drifts_from_its_committed_scores(h25):
@@ -300,6 +338,28 @@ def test_the_reading_is_void_when_twins_differ_on_expression(h25):
     assert res["void"] and any("iso_half mmd_u differs from copy_half's" in w for w in res["why"])
     bad = {"s1form": {"de_score": [0.6] * n}}
     assert h25.reading(_both(h25, skills=bad), _committed(h25))["void"]
+    bad = {"copy_iso": {"de_direction": [0.6] * n}}
+    assert h25.reading(_both(h25, skills=bad), _committed(h25))["void"]
+
+
+def test_the_reading_is_void_when_a_rescaled_twin_moves_its_neighbourhoods(h25):
+    n = len(SEEDS)
+    bad = {"copy_iso": {"neighborhood_mmd": [0.5] * (n - 1) + [0.49]}}
+    res = h25.reading(_both(h25, skills=bad), _committed(h25))
+    assert res["void"] and any("copy_iso neighborhood_mmd differs from copy's" in w for w in res["why"])
+    bad = {"iso_half": {"neighborhood_mmd": [0.51] * n}}
+    assert h25.reading(_both(h25, skills=bad), _committed(h25))["void"]
+    rounding = {"iso_half": {"neighborhood_mmd": [0.5001] * n}}  # under NBHD_TWIN_TOL
+    assert not h25.reading(_both(h25, skills=rounding), _committed(h25))["void"]
+    moved = {"s1form": {"neighborhood_mmd": [0.45] * n}}  # an in-plane stretch may move it: not a twin check
+    assert not h25.reading(_both(h25, skills=moved), _committed(h25))["void"]
+
+
+def test_the_reading_is_void_unless_the_results_carry_the_rows_commit(h25):
+    assert not h25.reading(_both(h25, commit="abc123def"), _committed(h25), commit="abc123")["void"]
+    res = h25.reading(_both(h25, commit="abc123def"), _committed(h25), commit="fff000")
+    assert res["void"] and any("row's commit" in w for w in res["why"])
+    assert h25.reading(_both(h25), _committed(h25), commit="")["void"]
 
 
 def test_the_guard_on_the_committed_heart_runs(h25):
@@ -355,6 +415,12 @@ def test_d2_shape_and_occupancy_dice_ignore_a_uniform_rescale(shape_values):
         assert v["uniform"][m] == pytest.approx(v["base"][m], abs=1e-4), m
 
 
+def test_neighborhood_mmd_ignores_a_uniform_rescale_within_the_twin_tolerance(h25, shape_values):
+    """Why the reading may hold copy_iso to the copy, and iso_half to copy_half, on neighborhood_mmd."""
+    v, _ = shape_values
+    assert abs(v["uniform"]["neighborhood_mmd"] - v["base"]["neighborhood_mmd"]) <= h25.NBHD_TWIN_TOL / 10
+
+
 def test_d2_shape_and_occupancy_dice_see_an_in_plane_stretch_with_z_held(shape_values):
     v, _ = shape_values
     for m in ("d2_shape", "occupancy_dice"):
@@ -388,9 +454,9 @@ def test_every_arm_builds_through_the_harness_and_the_checked_builder(h25, synth
     n = mod.BOARD.max_cells
     for seed in (harness.BUILD_SEED_OFFSET + 1, harness.BUILD_SEED_OFFSET + 4):
         ctx = mod._ctx(inputs, seed=seed)
-        st = {name: harness.CANDIDATES[name].build(ctx) for name in h25.REFERENCES}
-        st |= {name: h25.make_arm(name, size, records).build(ctx) for name in h25.ARMS}
-        assert {k: v.n for k, v in st.items()} == {"copy": n, "b0_trend": n, "copy_half": n // 2,
+        st = {name: harness.CANDIDATES[name].build(ctx) for name in h25.HARNESS_REFERENCES}
+        st |= {name: h25.make_arm(name, size, records).build(ctx) for name in ("copy_iso", *h25.ARMS)}
+        assert {k: v.n for k, v in st.items()} == {"copy": n, "b0_trend": n, "copy_iso": n, "copy_half": n // 2,
                                                    "copy_quarter": (n // 2) // 2, "iso_half": n // 2, "s1form": n,
                                                    "s1form_half": n // 2}
         s = seed - harness.BUILD_SEED_OFFSET
@@ -399,6 +465,9 @@ def test_every_arm_builds_through_the_harness_and_the_checked_builder(h25, synth
         np.testing.assert_array_equal(st["copy_half"].coords, st["copy"].coords[half])
         np.testing.assert_array_equal(st["copy_quarter"].X, st["copy"].X[quarter])
         np.testing.assert_array_equal(st["iso_half"].X, st["copy_half"].X)
+        np.testing.assert_array_equal(st["copy_iso"].X, st["copy"].X)
+        assert t2_build.rms_radius(st["copy_iso"].coords) == pytest.approx(target, rel=1e-5)
+        np.testing.assert_allclose(st["iso_half"].coords, st["copy_iso"].coords[half], atol=1e-3)
         np.testing.assert_array_equal(st["s1form"].X, st["b0_trend"].X)
         np.testing.assert_array_equal(st["s1form"].coords[:, 2], st["b0_trend"].coords[:, 2])  # z held
         np.testing.assert_array_equal(st["s1form_half"].X, st["b0_trend"].X[half])
@@ -407,6 +476,6 @@ def test_every_arm_builds_through_the_harness_and_the_checked_builder(h25, synth
         assert t2_build.rms_radius(st["iso_half"].coords) == pytest.approx(target, rel=0.05)  # half of a sized copy
         assert not np.array_equal(st["iso_half"].coords, st["copy_half"].coords)
         assert not np.array_equal(st["s1form"].coords, st["copy"].coords)
-    assert set(records) == {"iso_half", "s1form", "s1form_half"}
+    assert set(records) == {"copy_iso", "iso_half", "s1form", "s1form_half"}
     assert all(r["label"] == "oracle size" for arm in records.values() for r in arm.values())
     assert records["s1form"]["1"]["z_held"] and not records["iso_half"]["1"]["z_held"]

@@ -9,10 +9,12 @@ harness build, then `vec.t2_build`'s size step, then the checked builder; then e
 the two counted heart backtests, and scores it through the harness's own path (`vec.harness.run_task`: bake
 protocol, scorer build main, 10 seeds, build seed BUILD_SEED_OFFSET + seed, the floor checked at 50).
 
-Arms (the first two are references and are not counted):
+Arms (the first three are references and are not counted):
   copy          the copy baseline, `vec.harness.CANDIDATES["copy"]` (a fresh draw of the reference stage at the count
-                rule); its scores must reproduce the committed ones (GUARD_FILES), else the reading is void
+                rule); its scores must reproduce the committed ones (GUARD_RUN), else the reading is void
   b0_trend      the heart's first-upload expression with no size step, `CANDIDATES["b0_trend"]` (row H11's arm)
+  copy_iso      the copy with the size step in the raw mode and no halving: the control of every sized arm's board
+                score (the oracle size alone lifts scale_log_ratio's skill from the copy's 0.5 to about 1)
   copy_half     (b) the copy, then a uniform random half of its rows
   copy_quarter  (c) the copy, then the half applied twice (a uniform random quarter, nested in copy_half's half)
   iso_half      (d) the ruled second file's form: the copy, the size step in the isotropic raw mode, then the half
@@ -31,31 +33,39 @@ size result (`oracle_size_result`) that `vec.t2_build.apply_size_procedure` appl
 for a valid heart JSON, with hypothesis H1 and match "full", in the recorded mode (xy_grow_z_hold) or the raw mode.
 Both modes reach the same 3-D RMS radius, so the two forms differ in their shape, not their size. Every number that
 depends on the size (shape and growth, scale_log_ratio, the board score of a sized arm) is labelled "oracle size".
+The oracle sets a sized arm's scale_log_ratio skill near 1 where the copy's is 0.5 (the copy sits at the floor anchor on
+these backtests), worth about 100 x 0.25 x 1/3 x 0.5 = +4.2 board points through the size term alone. A sized arm's
+board score is therefore compared with copy_iso, never with the unsized copy; its difference from the copy is printed
+but is marked not comparable.
 payoff.py scaled by the core's in-plane growth (its rows differed in scope); here the rows differ in z mode, and both
 modes of the size procedure aim at the full cloud's 3-D RMS, so that is the quantity the oracle supplies.
 
 The halving. `halve.half_rows(n, seed)`, the function halve.py applies, with seed HALF_SEED_BASE + seed for the half
-and QUARTER_SEED_BASE + seed for the second halving of the quarter. The upload's seed, 1000001 (halve.DEFAULT_SEED),
-is not reused: it equals the build seed of scoring seed 1, and numpy's default_rng(1000001) is the stream
-`sample_cells` draws that seed's rows with, so the half would be correlated with the draw. Both bases lie apart from
-every build seed and every scoring stream, and above halve.py's floor (BUILD_SEED_OFFSET). The quarter is the half
+and QUARTER_SEED_BASE + seed for the second halving of the quarter. The seeds are kept apart from the build seeds
+(BUILD_SEED_OFFSET + seed, among them the upload's 1000001, halve.DEFAULT_SEED) so that no seed number serves two
+purposes in a run. That is for clarity only: `sample_cells` draws with default_rng([seed, 0]) and [seed, 1], other
+streams than halve.py's default_rng(seed), so reusing 1000001 would not have correlated the half with the draw. Both
+bases lie above halve.py's floor (BUILD_SEED_OFFSET). The quarter is the half
 applied twice rather than one draw of n // 4, so that it reuses halve.py's own operation and is nested in the half:
 copy -> copy_half -> copy_quarter then removes cells and changes nothing else.
 
-The reading (`reading`), fixed in row H25 before the run. Void if a task, seed or arm is missing, the two results come
-from different commits or a dirty tree, the copy does not reproduce its committed scores (ten-seed mean within
-GUARD_MEAN board points, every seed within GUARD_SEED), or an arm that shares its cells and expression with another
-differs from it on an expression-only skill (iso_half from copy_half, s1form from b0_trend). Then, per arm, backtest
-and metric, the arm minus the copy paired by seed, and the board scores; and three statements:
-  (1) "The ruled form is at the copy's level on shape": iso_half's d2_shape and occupancy_dice skills each within
-      SHAPE_TOL of copy_half's (ten-seed means) on both backtests.
+The reading (`reading`), fixed in row H25 before the run. Void if a task, seed or arm is missing; the two results come
+from different commits, from a commit other than the row's (read --commit) or from a dirty tree; the copy does not
+reproduce its committed scores (ten-seed mean within GUARD_MEAN board points, every seed within GUARD_SEED); an arm
+that shares its cells and expression with another differs from it on an expression-only skill by more than TOL
+(iso_half from copy_half, s1form from b0_trend, copy_iso from copy); or a pair that differs only by a uniform rescale
+differs on neighborhood_mmd, which uses 15 nearest neighbours and so ignores a rescale, by more than NBHD_TWIN_TOL
+(iso_half from copy_half, copy_iso from copy). Then, per arm, backtest and metric, the arm minus the copy paired by
+seed, a sized arm also minus copy_iso, and the board scores; and three statements:
+  (1) "The ruled form is at the copy's level on shape" (the comparison is the copy halved, copy_half): iso_half's
+      d2_shape and occupancy_dice skills each within SHAPE_TOL of copy_half's (ten-seed means) on both backtests.
   (2) "Halving costs the neighbourhood term": copy_half below copy on neighborhood_mmd skill by more than NBHD_BAR
       (paired mean) with at least MIN_SEEDS of 10 seeds behind, on both backtests. If true, the AI assistant puts one
       priced question to the captain on the second heart file's cell number, with the ladder (copy, copy_half,
       copy_quarter) as its table; if false, nothing follows.
-  (3) "The first upload's form falls below a copy in practice": s1form_half below copy on the board score by more
-      than SCORE_BAR (paired mean) with at least MIN_SEEDS of 10 seeds behind, on both backtests. Reported for the
-      method report; it decides nothing.
+  (3) "The first upload's form falls below a copy in practice": s1form_half below copy_iso (the copy at the same
+      oracle size) on the board score by more than SCORE_BAR (paired mean) with at least MIN_SEEDS of 10 seeds
+      behind, on both backtests. Reported for the method report; it decides nothing.
 The two backtests share one truth (E10.5): they are one fold of evidence, and "both" is not two confirmations.
 
   run   (DGX, repo root) score the arms on both backtests; one JSON per backtest under --out
@@ -84,11 +94,13 @@ import size_procedure as sp  # noqa: E402
 
 BOARD = "T2:heart:test_extrap"
 TASK_KEYS = ("T2h/<=E9.5->E10.5", "T2h/<=E8.75->E10.5")
-REFERENCES = ("copy", "b0_trend")  # not counted
+HARNESS_REFERENCES = ("copy", "b0_trend")  # the harness's own candidates
+REFERENCES = (*HARNESS_REFERENCES, "copy_iso")  # not counted
 ARMS = ("copy_half", "copy_quarter", "iso_half", "s1form", "s1form_half")  # counted: one try per arm and backtest
 ALL = (harness.FLOOR, *REFERENCES, *ARMS)
 # arm -> (expression source, size mode or None, number of halvings)
 FORMS = {
+    "copy_iso": ("copy", "raw", 0),
     "copy_half": ("copy", None, 1),
     "copy_quarter": ("copy", None, 2),
     "iso_half": ("copy", "raw", 1),
@@ -104,8 +116,11 @@ METRICS = ("de_score", "de_direction", "mmd_u", "variogram", "d2_shape", "occupa
 GROUPS = ("expression_change", "cell_state", "shape_growth", "local_organisation")
 EXPRESSION_ONLY = ("de_score", "de_direction", "mmd_u")
 SIZE_DEPENDENT = ("d2_shape", "occupancy_dice", "scale_log_ratio")  # with the shape group and the score of a sized arm
-SAME_CELLS = (("iso_half", "copy_half"), ("s1form", "b0_trend"))  # (arm, twin): same rows and expression
+SAME_CELLS = (("iso_half", "copy_half"), ("s1form", "b0_trend"), ("copy_iso", "copy"))  # same rows and expression
+RESCALED = (("iso_half", "copy_half"), ("copy_iso", "copy"))  # (arm, twin): one cloud up to a uniform rescale
 TOL = 1e-9
+NBHD_TWIN_TOL = 1e-3  # neighborhood_mmd of a rescaled twin: float32 rounding may swap a near-tied neighbour
+SIZED_CONTROL = "copy_iso"  # the control of a sized arm's board score
 GUARD_MEAN, GUARD_SEED = 0.1, 0.5  # the copy against its committed scores, board points
 GUARD_RUN = "experiments/harness/results/trend_heart_v1/tasks"  # row H11's run, at 8bb23bf
 SHAPE_TOL = 0.02  # statement (1), skill
@@ -239,7 +254,8 @@ def cmd_run(a) -> None:
             sys.exit(f"{t.key}: the size procedure has an applicable rule here; this script uses an oracle only "
                      "where it has none")
         records: dict = {}
-        cands = [harness.CANDIDATES[n] for n in REFERENCES] + [make_arm(n, size, records) for n in ARMS]
+        cands = ([harness.CANDIDATES[n] for n in HARNESS_REFERENCES]
+                 + [make_arm(n, size, records) for n in (*REFERENCES[len(HARNESS_REFERENCES):], *ARMS)])
         missing = [c.name for c in cands if not c.applies(t)]
         if missing:
             sys.exit(f"{t.key}: arms that do not apply: {missing}")
@@ -274,8 +290,9 @@ def guard_distances(r: dict, committed: dict) -> dict:
     return {"mean": float(d.mean()), "largest_seed": float(np.abs(d).max())}
 
 
-def void_reasons(results: dict[str, dict], committed: dict[str, dict]) -> list[str]:
-    """Why the reading may not be read; empty when it may."""
+def void_reasons(results: dict[str, dict], committed: dict[str, dict], commit: str | None = None) -> list[str]:
+    """Why the reading may not be read; empty when it may. `commit`: the row's commit (a prefix), which every result
+    must carry."""
     why = []
     for key in TASK_KEYS:
         r = results.get(key)
@@ -297,6 +314,10 @@ def void_reasons(results: dict[str, dict], committed: dict[str, dict]) -> list[s
                 for m in EXPRESSION_ONLY:
                     if abs(row["skills"][arm][m] - row["skills"][twin][m]) > TOL:
                         why.append(f"{key} seed {row['seed']}: {arm} {m} differs from {twin}'s")
+            for arm, twin in RESCALED:
+                nb = row["skills"][arm]["neighborhood_mmd"] - row["skills"][twin]["neighborhood_mmd"]
+                if abs(nb) > NBHD_TWIN_TOL:
+                    why.append(f"{key} seed {row['seed']}: {arm} neighborhood_mmd differs from {twin}'s")
         if not bad:
             if key not in committed:
                 why.append(f"{key}: no committed run to check the copy against")
@@ -307,6 +328,8 @@ def void_reasons(results: dict[str, dict], committed: dict[str, dict]) -> list[s
         why.append("the results come from different commits")
     if not all(p["tree_clean"] for p in prov):
         why.append("a result comes from a dirty tree")
+    if commit is not None and (not commit or any(not str(p["commit"]).startswith(commit) for p in prov)):
+        why.append(f"a result does not come from the row's commit {commit!r}")
     return why
 
 
@@ -343,7 +366,7 @@ def statements(results: dict[str, dict]) -> dict:
         s1[key] = {m: iso[m]["mean"] for m in ("d2_shape", "occupancy_dice")}
         half = paired(r, "copy_half")["neighborhood_mmd"]
         s2[key] = {"mean": half["mean"], "behind": half["behind"]}
-        sc = paired(r, "s1form_half")["score"]
+        sc = paired(r, "s1form_half", SIZED_CONTROL)["score"]
         s3[key] = {"mean": sc["mean"], "behind": sc["behind"]}
     t1 = all(abs(v) <= SHAPE_TOL for d in s1.values() for v in d.values())
     t2 = all(v["mean"] < -NBHD_BAR and v["behind"] >= MIN_SEEDS for v in s2.values())
@@ -360,8 +383,8 @@ def statements(results: dict[str, dict]) -> dict:
               if t2 else "nothing"},
         "3": {"statement": "The first upload's form falls below a copy in practice", "true": bool(t3),
               "per_backtest": s3,
-              "rule": f"s1form_half minus copy on the board score below -{SCORE_BAR} with at least {MIN_SEEDS} of 10 "
-                      "seeds behind, both backtests",
+              "rule": f"s1form_half minus {SIZED_CONTROL} (the copy at the same oracle size) on the board score "
+                      f"below -{SCORE_BAR} with at least {MIN_SEEDS} of 10 seeds behind, both backtests",
               "follows": "reported for the method report; decides nothing; no constant is set from it"},
     }
 
@@ -373,12 +396,18 @@ def ladder(results: dict[str, dict]) -> dict:
                   for arm in ("copy", "copy_half", "copy_quarter")} for key in TASK_KEYS}
 
 
-def reading(results: dict[str, dict], committed: dict[str, dict]) -> dict:
-    why = void_reasons(results, committed)
+def sized(arm: str) -> bool:
+    return FORMS.get(arm, (None, None, 0))[1] is not None
+
+
+def reading(results: dict[str, dict], committed: dict[str, dict], commit: str | None = None) -> dict:
+    why = void_reasons(results, committed, commit)
     if why:
         return {"void": True, "why": why, "statements": None,
                 "follows": "nothing: the reading is void (no statement is read)"}
-    per = {key: {arm: paired(results[key], arm) for arm in ("b0_trend", *ARMS)} for key in TASK_KEYS}
+    per = {key: {arm: paired(results[key], arm) for arm in (*REFERENCES[1:], *ARMS)} for key in TASK_KEYS}
+    per_sized = {key: {arm: paired(results[key], arm, SIZED_CONTROL) for arm in ARMS if sized(arm)}
+                 for key in TASK_KEYS}
     means = {key: {arm: {"score": mean_of(results[key], arm),
                          **{m: mean_of(results[key], arm, m) for m in METRICS}} for arm in ALL[1:]}
              for key in TASK_KEYS}
@@ -386,9 +415,12 @@ def reading(results: dict[str, dict], committed: dict[str, dict]) -> dict:
             "guard": {key: guard_distances(results[key], committed[key]) for key in TASK_KEYS},
             "b0_trend_vs_committed": {key: _b0_trend_distance(results[key], committed[key]) for key in TASK_KEYS},
             "oracle_size": {key: results[key].get("oracle_size") for key in TASK_KEYS},
-            "statements": statements(results), "ladder": ladder(results), "minus_copy": per, "means": means,
-            "labels": {"oracle size": list(SIZE_DEPENDENT) + ["shape_growth", "score of iso_half, s1form, "
-                                                                              "s1form_half"]}}
+            "statements": statements(results), "ladder": ladder(results), "minus_copy": per,
+            "minus_copy_iso": per_sized, "means": means,
+            "labels": {"oracle size": list(SIZE_DEPENDENT) + ["shape_growth", "score of copy_iso, iso_half, s1form, "
+                                                                              "s1form_half"],
+                       "not comparable": "a sized arm minus the unsized copy on the board score: the oracle's size "
+                                         "term alone is worth about +4.2 points; read it against copy_iso"}}
 
 
 def _b0_trend_distance(r: dict, committed: dict) -> dict | None:
@@ -405,7 +437,8 @@ def text(res: dict) -> str:
     if res["void"]:
         return "VOID: " + "; ".join(res["why"]) + "\n"
     lines = [f"Try H25 (commit {res['commit']}). Sized arms use an ORACLE SIZE (the target's own RMS radius); every "
-             "size-dependent number below is labelled so.",
+             "size-dependent number below is labelled so. The oracle alone adds about +4.2 board points through the "
+             "size term (scale skill 0.5 -> about 1), so a sized arm's score is read against copy_iso, not the copy.",
              "Guard (copy against row H11's committed run): " + "; ".join(
                  f"{k} mean {v['mean']:+.4f}, largest seed {v['largest_seed']:.4f}" for k, v in res["guard"].items())]
     for n, st in res["statements"].items():
@@ -416,12 +449,16 @@ def text(res: dict) -> str:
                                                       for a, b in v.items()))
     for key in TASK_KEYS:
         lines.append(f"{key}: mean board scores " + ", ".join(
-            f"{a} {m['score']:.2f}{' (oracle size)' if FORMS.get(a, (None, None))[1] else ''}"
+            f"{a} {m['score']:.2f}{' (oracle size)' if sized(a) else ''}"
             for a, m in res["means"][key].items()))
         for arm, p in res["minus_copy"][key].items():
-            sized = " [oracle size]" if FORMS.get(arm, (None, None))[1] else ""
-            lines.append(f"  {arm} - copy{sized}: score {p['score']['mean']:+.2f} (behind {p['score']['behind']} "
+            tag = " [oracle size; score not comparable]" if sized(arm) else ""
+            lines.append(f"  {arm} - copy{tag}: score {p['score']['mean']:+.2f} (behind {p['score']['behind']} "
                          "of 10); skills " + ", ".join(f"{m} {p[m]['mean']:+.4f}" for m in METRICS))
+        for arm, p in res["minus_copy_iso"][key].items():
+            lines.append(f"  {arm} - {SIZED_CONTROL} [oracle size in both]: score {p['score']['mean']:+.2f} (behind "
+                         f"{p['score']['behind']} of 10); skills " + ", ".join(f"{m} {p[m]['mean']:+.4f}"
+                                                                             for m in METRICS))
     return "\n".join(lines) + "\n"
 
 
@@ -435,7 +472,7 @@ def load_dir(path: Path) -> dict[str, dict]:
 
 
 def cmd_read(a) -> None:
-    res = reading(load_dir(Path(a.runs)), load_dir(HERE / GUARD_RUN))
+    res = reading(load_dir(Path(a.runs)), load_dir(HERE / GUARD_RUN), a.commit)
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     (out / "reading.json").write_text(json.dumps(res, indent=1))
@@ -452,6 +489,7 @@ def main(argv=None) -> None:
     d = sub.add_parser("read")
     d.add_argument("--runs", required=True)
     d.add_argument("--out", required=True)
+    d.add_argument("--commit", required=True, help="the commit row H25 names (a prefix of the results' commit)")
     a = ap.parse_args(argv)
     {"run": cmd_run, "read": cmd_read}[a.cmd](a)
 
