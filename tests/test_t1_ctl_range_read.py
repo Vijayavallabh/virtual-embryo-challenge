@@ -300,7 +300,8 @@ SCORE = {"b0": 50.0, BASE: 53.0, X[2]: 53.6, X[3]: 54.4, X[4]: 55.0, X[5]: 55.3,
 
 
 def _task(world, scores=None, per_seed=None, seeds=range(10), commit="c" * 40, clean=True, fractions=None,
-          thinning=None, placebo=None, identical=(), anchor_failures=None, truth=None, drop=(), idle=()):
+          thinning=None, placebo=None, identical=(), anchor_failures=None, truth=None, drop=(), idle=(), idle_x=(),
+          placebo_size=None):
     """scores: arm -> mean score (over SCORE); per_seed: arm -> ten values added seed by seed; identical: arms that
     score exactly as their twin on every seed."""
     sc = {**SCORE, **(scores or {})}
@@ -315,6 +316,8 @@ def _task(world, scores=None, per_seed=None, seeds=range(10), commit="c" * 40, c
             arms[a] = dict(arms[{**{P[k]: X[k] for k in P}, **{XB[k]: X[k] for k in XB}}[a]])
         for a in idle:  # a placebo arm left at p2's fraction
             arms[a] = dict(arms[P[2]])
+        for a in idle_x:  # a step arm left at x2's fraction
+            arms[a] = dict(arms[X[2]])
         rows.append({"seed": s, "floor": 50.0, "arms": arms})
     fr = {BASE: 0.2, **{X[k]: 0.2 * k for k in X}, **{P[k]: 0.2 * k for k in P},
           **{XB[k]: [0.2 * k, (2 - k) * 0.2] for k in XB}}
@@ -324,7 +327,9 @@ def _task(world, scores=None, per_seed=None, seeds=range(10), commit="c" * 40, c
            "placebo_sha256": placebo if placebo is not None else {a: dict(PL) for a in P.values()},
            "feng_sha256": dict(FENG),
            "applied_size": {a: {"fraction": fr[a], "feng": {"CM": {"mean_abs_logf": 0.1, "sum_sq_logf": 2.0}},
-                                "placebo": {"CM": {"mean_abs_logf": 0.1, "sum_sq_logf": 2.1}}} for a in P.values()},
+                                "placebo": {"CM": {"mean_abs_logf": 0.1,
+                                                   "sum_sq_logf": (placebo_size or {}).get(a, 2.1)}}}
+                            for a in P.values()},
            "stamp": {"commit": commit, "tree_clean": clean, "utc": "x", "inputs": {}}}
     if world in THIN:
         p, stream = THIN[world]
@@ -343,9 +348,10 @@ FOLDERS = {"t44": "t44_m1_step", "t45": "t45_m1_perm", "t46": "t46_m1_lib_step",
            "t54": "t54_m1_deep_step"}
 
 
-def _write(cr, tmp_path, worlds, shift=None, t45_placebo=None, skip=()):
+def _write(cr, tmp_path, worlds, shift=None, t45_placebo=None, skip=(), t45_p2=None):
     """worlds: world -> task record; the committed files of tries T44, T45, T46, T50 and T54 beside them (the world's
-    own scores, so that they reproduce); shift: (try, world, arm) -> added to that committed score."""
+    own scores, so that they reproduce); shift: (try, world, arm) -> added to that committed score; t45_p2: try T45's
+    m1_r_gmom_p2 record where it is to differ from its m1_r_gmom_p1 record."""
     shift = shift or {}
     out = tmp_path / "out"
     (out / "tasks").mkdir(parents=True)
@@ -364,16 +370,16 @@ def _write(cr, tmp_path, worlds, shift=None, t45_placebo=None, skip=()):
             rec = {"rows": rows}
             if src == "t45":
                 pl = t45_placebo or PL
-                rec["placebo_sha256"] = {"m1_r_gmom_p1": dict(pl), "m1_r_gmom_p2": dict(pl),
+                rec["placebo_sha256"] = {"m1_r_gmom_p1": dict(pl), "m1_r_gmom_p2": dict(t45_p2 or pl),
                                          "m1_r_gmom_q1": {"CM": "q"}, "m1_r_gmom_q2": {"CM": "q"}}
             path.write_text(json.dumps(rec))
     return out, dirs
 
 
-def _read(cr, tmp_path, over=None, shift=None, t45_placebo=None, skip=()):
+def _read(cr, tmp_path, over=None, shift=None, t45_placebo=None, skip=(), t45_p2=None):
     over = over or {}
     worlds = {k: _task(k, **over.get(k, {})) for k in WORLDS if not (k in over and over[k] is None)}
-    out, dirs = _write(cr, tmp_path, worlds, shift, t45_placebo, skip)
+    out, dirs = _write(cr, tmp_path, worlds, shift, t45_placebo, skip, t45_p2)
     return cr.read(out, *(dirs[s] for s in ("t44", "t45", "t46", "t50", "t54")))["reading"]
 
 
@@ -383,9 +389,12 @@ def _text(tmp_path):
 
 NEEDS = "the gain beyond twice the step needs Feng's own genes"
 ONE = "one placebo permutation, try T45's first"
-NEEDS_OUT = f"{NEEDS} ({ONE})"
+# the default tables: R_3 +0.80, P_3 +0.10 (level), R_4 +1.40, P_4 +0.20 (level) in every world
+NEEDS_OUT = f"{NEEDS} ({ONE}; " + "; ".join(
+    f"{k} R_3 ahead +0.80 beside P_3 level +0.10; {k} R_4 ahead +1.40 beside P_4 level +0.20"
+    for k in ("pooled", "whole", "lib3")) + ")"
 PLACEBO_TOO = "a placebo gains as well; Feng's direction more"
-NO_GAIN = "no gain beyond twice the step to explain"
+NO_GAIN = "the step's gain beyond twice its size is not in all six readings"
 
 
 def test_the_gain_needs_fengs_own_genes_and_the_quantities(cr, tmp_path):
@@ -461,7 +470,9 @@ def _incs(r3, p3, r4, p4):
 
 
 @pytest.mark.parametrize("r3,p3,r4,p4,r_label", [
-    (0.0, -0.4, 0.0, -0.8, "level"),  # the reviewer's case 1: the step level, the placebo loses
+    # the reviewer's case 1: the step level, the placebo loses (R_k not exactly 0: an x_k scoring exactly as x_2 on
+    # every seed is an idle fraction and voids)
+    (0.05, -0.4, 0.05, -0.8, "level"),
     (-0.6, -1.5, -1.2, -2.5, "behind"),  # case 2: the step has turned, the placebo falls faster
 ])
 def test_s_ahead_without_a_step_gain_is_no_gain_to_explain(cr, tmp_path, r3, p3, r4, p4, r_label):
@@ -478,6 +489,43 @@ def test_s_ahead_without_a_step_gain_is_no_gain_to_explain(cr, tmp_path, r3, p3,
     assert r["outcome"].count("the placebo loses more") == 6
     assert "Where R_k is negative (the step has turned) a positive S_k only says the placebo falls faster." \
         in _text(tmp_path)
+    # the decision log's S-only condition holds here and is reported beside the outcome as its own field
+    assert s3["s_all_six_ahead"] is True
+    assert ("decision log 2026-11-18 (c)'s condition (S_3 and S_4 ahead in pooled, whole and lib3), all six ahead: "
+            "True (pooled S_3 ahead, pooled S_4 ahead, whole S_3 ahead, whole S_4 ahead, lib3 S_3 ahead, lib3 S_4 "
+            "ahead)") in _text(tmp_path)
+
+
+def test_the_log_condition_is_false_where_one_s_reading_is_level(cr, tmp_path):
+    r = _read(cr, tmp_path, over={"whole": {"scores": {P[4]: SCORE[P[2]] + 1.4}}})
+    assert r["statement_3"]["s_all_six_ahead"] is False and r["statement_3"]["kind"] == "not shown"
+    assert "all six ahead: False (pooled S_3 ahead, pooled S_4 ahead, whole S_3 ahead, whole S_4 level" \
+        in _text(tmp_path)
+
+
+def test_the_six_readings_means_and_seeds_ahead_are_printed_beside_statement_3(cr, tmp_path):
+    per = [0.0] * 7 + [1.0] * 3
+    _read(cr, tmp_path, over={"whole": {"per_seed": {P[3]: per}}})
+    txt = _text(tmp_path)
+    assert ("the six readings' means and seeds ahead: pooled k=3: R_3 +0.80 (10 of 10 ahead), P_3 +0.10 (10 of 10 "
+            "ahead), S_3 +0.70 (10 of 10 ahead); pooled k=4: R_4 +1.40") in txt
+    assert "whole k=3: R_3 +0.80 (10 of 10 ahead), P_3 +0.40 (10 of 10 ahead), S_3 +0.40 (7 of 10 ahead)" in txt
+
+
+def test_the_placebo_size_beyond_ten_percent_is_flagged_beside_statement_3(cr, tmp_path):
+    r = _read(cr, tmp_path)
+    assert all(f == [] for by in r["size_flags"].values() for f in by.values())
+    assert "applied size more than 10% from Feng's (reported, decides nothing): none" in _text(tmp_path)
+    r = _read(cr, tmp_path / "b", over={"lib3": {"placebo_size": {P[5]: 2.5}}})
+    assert r["valid"] and r["outcome"] == NEEDS_OUT  # reported, decides nothing
+    assert r["size_flags"]["lib3"][P[5]] == ["CM sum_sq_logf: Feng 2, placebo 2.5"]
+    assert sum(bool(f) for by in r["size_flags"].values() for f in by.values()) == 1
+    txt = (tmp_path / "b" / "out" / "t58.txt").read_text()
+    assert "from Feng's (reported, decides nothing): lib3 m1_r_gmom_p5: CM sum_sq_logf: Feng 2, placebo 2.5" in txt
+
+
+def test_hold_ahead_is_gone(cr):
+    assert not hasattr(cr, "HOLD_AHEAD")
 
 
 def test_no_gain_names_only_the_readings_where_the_step_does_not_gain(cr, tmp_path):
@@ -507,7 +555,10 @@ def test_a_placebo_that_gains_as_well_is_named_with_its_means(cr, tmp_path):
 
 def test_needs_fengs_genes_with_a_placebo_that_loses_and_a_step_that_gains(cr, tmp_path):
     r = _read(cr, tmp_path, over={k: _incs(0.8, -0.5, 1.4, -0.9) for k in ("pooled", "whole", "lib3")})
-    assert r["outcome"] == NEEDS_OUT and r["statement_3"]["kind"] == NEEDS
+    assert r["outcome"] == f"{NEEDS} ({ONE}; " + "; ".join(
+        f"{k} R_3 ahead +0.80 beside P_3 behind -0.50; {k} R_4 ahead +1.40 beside P_4 behind -0.90"
+        for k in ("pooled", "whole", "lib3")) + ")"
+    assert r["statement_3"]["kind"] == NEEDS and r["statement_3"]["s_all_six_ahead"] is True
     assert r["quantities"]["whole"]["4"]["P"]["label"] == "behind"
 
 
@@ -578,6 +629,13 @@ VOIDS = [
     ({"whole": {"idle": (P[4],)}}, None,
      "whole: placebo arms score exactly as m1_r_gmom_p2 on every seed (an idle fraction): ['m1_r_gmom_p4']"),
     ({"lib2": {"idle": (P[3], P[5])}}, None, "(an idle fraction): ['m1_r_gmom_p3', 'm1_r_gmom_p5']"),
+    # a step arm left at x2's fraction (whole has no committed score for x3 to x5)
+    ({"whole": {"idle_x": (X[4],)}}, None,
+     "whole: step arms score exactly as m1_r_gmom_x2 on every seed (an idle fraction): ['m1_r_gmom_x4']"),
+    ({"whole": {"idle_x": (X[3], X[5])}}, None, "(an idle fraction): ['m1_r_gmom_x3', 'm1_r_gmom_x5']"),
+    # a stamp with no commit, on every world (one set {None} is not one commit)
+    ({k: {"commit": None} for k in WORLDS}, None, "no commit recorded on ['lib2', 'lib3', 'pooled', 'ref50', "),
+    ({"ref67": {"commit": ""}}, None, "no commit recorded on ['ref67']"),
     # the placebo record as each arm's build received it
     ({"pooled": {"placebo": {**{a: dict(PL) for a in P.values()}, P[5]: {"differs between seeds": ["a", "b"]}}}},
      None, "pooled: placebo arms ['m1_r_gmom_p5'] were built with different directions on different seeds"),
@@ -669,6 +727,17 @@ def test_a_placebo_record_that_differs_from_try_t45s_voids(cr, tmp_path):
     assert not r["valid"]
     assert any("differ from try T45's committed record (T1_E9.5_E10.5_chamber.json) in ['lib2', 'lib3', 'pooled', "
                "'ref50', 'ref67', 'whole']" in x for x in r["validity"]["reasons"]), r["validity"]["reasons"]
+
+
+def test_try_t45s_p1_and_p2_records_that_differ_void(cr, tmp_path):
+    """Try T45's committed m1_r_gmom_p1 and m1_r_gmom_p2 records differ: the worlds match p1 but not p2, so the
+    placebo record cannot equal both and the read voids."""
+    r = _read(cr, tmp_path, t45_p2={**PL, "CM": "other"})
+    assert not r["valid"]
+    assert any("differ from try T45's committed record (T1_E9.5_E10.5_chamber.json)" in x
+               for x in r["validity"]["reasons"]), r["validity"]["reasons"]
+    assert any("differ from try T45's committed record (T1_E9.5_E10.5.json)" in x
+               for x in r["validity"]["reasons"]), r["validity"]["reasons"]
 
 
 def test_a_missing_committed_file_voids(cr, tmp_path):

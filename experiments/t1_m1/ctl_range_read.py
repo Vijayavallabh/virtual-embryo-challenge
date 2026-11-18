@@ -54,8 +54,9 @@ rebuild check); each placebo arm records the directions its build received on ev
 between seeds"), the four arms the same set, with Feng's groups and differing from Feng's in every group; that set is
 the same in the six files and equals try T45's committed record (m1_r_gmom_p1 and m1_r_gmom_p2 in both of try T45's
 files); no placebo or there-and-back arm scores exactly as its twin (the step arm of its first fraction: p_k's x_k,
-x_kb2's x_k) on every seed of a world; no placebo arm p_k (k = 3, 4, 5) scores exactly as p_2 on every seed of a world
-(an idle fraction). The prediction sha256 is not compared across pooled, lib3 and lib2: harness.task_board sizes the
+x_kb2's x_k) on every seed of a world; no placebo arm p_k (k = 3, 4, 5) scores exactly as p_2, and no step arm x_k as
+x_2, on every seed of a world (an idle fraction; in whole x_3 to x_5 have no committed score); every file's stamp
+records a commit. The prediction sha256 is not compared across pooled, lib3 and lib2: harness.task_board sizes the
 board from the truth, so the drawn cells differ between those worlds.
 The test is try T46's single-task test inside one world ("ahead": a mean paired gain above 0.3 with at least 8 of 10
 seeds ahead; "behind" the same reversed; otherwise "level"), each quantity paired by seed.
@@ -66,16 +67,23 @@ step's expected counts (a reading of the closed depth lever, never a reason to a
 x_kb2, the step's expected change at about x_k's zero pattern.
 Statement 3, the summary the use reads, on the six readings (k = 3 and 4 in pooled, whole and lib3), gated as try
 T45's statements are gated on its (h):
-  "no gain beyond twice the step to explain" if any of the six readings of R_k is level or behind, naming each such
-    reading with R_k's and P_k's means, and where S_k reads ahead there "the placebo loses more";
+  "the step's gain beyond twice its size is not in all six readings" if any of the six readings of R_k is level or
+    behind, naming each such reading with R_k's and P_k's means, and where S_k reads ahead there "the placebo loses
+    more" (the readings not named may still gain clearly);
   otherwise "the gain beyond twice the step needs Feng's own genes" if S_3 and S_4 read ahead in all six and P_3 and
-    P_4 are ahead in none;
+    P_4 are ahead in none, quoting each of the six readings with R_k's and P_k's means ("not ahead" includes a placebo
+    that gains up to 0.3 points on the mean, or more on fewer than 8 seeds);
   "a placebo gains as well; Feng's direction more" if S_3 and S_4 read ahead in all six and P_k is ahead in any,
     naming each such reading with R_k's and P_k's means;
   otherwise "not shown", naming each of the six where S_k is level or behind.
 The three that read S_k carry "one placebo permutation, try T45's first" in the outcome itself. This is stricter than
 brief AM's statement 3 (S_3 and S_4 ahead alone): S_k ahead is the expected result when a random direction of this
 size loses at 3 to 5 times, whether or not the step gains, so S_k alone cannot show a gain that needs Feng's genes.
+Decision log 2026-11-18 (c) fixes the use on S_3 and S_4 alone and names try T46's placebo; this read runs try T45's
+first within-bin permutation in its place. The log's condition (S_3 and S_4 ahead in all six) is returned beside the
+outcome as s_all_six_ahead with the six labels and decides nothing. Also beside the outcome, deciding nothing: each of
+the six readings' R_k, P_k and S_k means and seeds ahead (an increment near 0.3 points gives an outcome that noise
+decides), and each placebo arm's groups whose applied size is more than 10% from Feng's (perm_read.size_flags).
 Reported and read by nothing: every arm's mean per world; S_5; each quantity's parts on the two de terms and on mmd_u
 with the variogram; the placebo's applied size on the non-held genes beside Feng's, per fraction (try T45's record).
 
@@ -153,8 +161,8 @@ BACK_AT = {k: f"{BASE}_x{k}b2" for k in MULTIPLES}  # multiple of the first edit
 TWIN = {**{PLACEBO_AT[k]: STEP_AT[k] for k in PLACEBO_AT}, **{BACK_AT[k]: STEP_AT[k] for k in BACK_AT}}
 IDLE_TWIN = {PLACEBO_AT[k]: PLACEBO_AT[2] for k in MULTIPLES}  # a placebo arm left at p2's fraction scores as p2
 ARMS = ("b0", BASE, *STEP_AT.values(), *PLACEBO_AT.values(), *BACK_AT.values())
+IDLE_STEP = {STEP_AT[k]: X2 for k in MULTIPLES}  # a step arm left at x2's fraction scores as x2
 FRACTION, FRACTION_TOL, REPRO_TOL = sr.FRACTION, sr.FRACTION_TOL, sr.REPRO_TOL  # 0.2, 1e-12, 1e-9
-HOLD_AHEAD = 8
 T44_TASKS = RESULTS / "t44_m1_step" / "tasks"
 T45_TASKS = RESULTS / "t45_m1_perm" / "tasks"
 T46_TASKS = RESULTS / "t46_m1_lib_step" / "tasks"
@@ -186,7 +194,7 @@ P_AT = {k: _increment(PLACEBO_AT[k], PLACEBO_AT[2]) for k in MULTIPLES}  # P_k =
 
 NEEDS_GENES = "the gain beyond twice the step needs Feng's own genes"
 PLACEBO_TOO = "a placebo gains as well; Feng's direction more"
-NO_GAIN = "no gain beyond twice the step to explain"
+NO_GAIN = "the step's gain beyond twice its size is not in all six readings"
 NOT_SHOWN = "not shown"
 ONE_PERMUTATION = "one placebo permutation, try T45's first"
 FALLS_FASTER = "the placebo loses more"
@@ -215,6 +223,18 @@ LIMITS = (
     "and part of the truth, and S_3 and S_4 share x_2 and p_2.",
     "Try T46's placebo (random permutation on stream 46) is not run here; only try T45's first within-bin "
     "permutation, and not its second (q1, q2).",
+    "Decision log 2026-11-18 (c) names try T46's placebo and reads S_3 and S_4 alone; this read runs try T45's first "
+    "within-bin permutation in its place, gates on R_k and splits on P_k. The log's own condition (S_3 and S_4 ahead "
+    "in all six readings) is reported beside the outcome and decides nothing: with R_k level and a placebo that loses "
+    "as k grows it holds whether or not the step gains.",
+    "P_k 'not ahead' by try T46's test includes a placebo that gains up to 0.3 points on the mean, or more on fewer "
+    "than 8 of 10 seeds; the outcome that the gain needs Feng's own genes quotes each of the six readings' R_k and P_k "
+    "means.",
+    "An increment near 0.3 points gives an outcome that noise decides between the four; each of the six readings' "
+    "R_k, P_k and S_k means and seeds ahead are printed beside the outcome.",
+    "The placebo's applied size on the non-held genes can differ from Feng's (the permutation moves values onto and "
+    "off the held genes, more as k grows); a larger placebo loses more and raises S_k. Groups more than 10% from "
+    "Feng's are flagged beside statement 3 (perm_read.size_flags); the flag decides nothing.",
 )
 STATEMENTS = (
     "Statement 1, per world and multiple k of 3, 4 and 5, each paired by seed with its mean, seeds ahead, per-seed "
@@ -225,11 +245,14 @@ STATEMENTS = (
     "x_k - x_kb2, the step's expected change at about x_k's zero pattern.",
     f"Statement 3, on the six readings (k = 3 and 4 in pooled, whole and lib3), gated as try T45's statements are on "
     f"its (h): '{NO_GAIN}' if any of the six readings of R_k is level or behind, naming each with R_k's and P_k's "
-    f"means and, where S_k reads ahead there, '{FALLS_FASTER}'; otherwise '{NEEDS_GENES}' if S_3 and S_4 read ahead "
-    f"by try T46's test in all six and P_3 and P_4 in none; '{PLACEBO_TOO}' if S_3 and S_4 read ahead in all six "
-    f"and P_k is ahead in any, naming each such reading with R_k's and P_k's means; otherwise '{NOT_SHOWN}', naming "
-    f"each of the six where S_k is level or behind. The three that read S_k carry '{ONE_PERMUTATION}' in the "
-    "outcome.",
+    f"means and, where S_k reads ahead there, '{FALLS_FASTER}' (the other readings may still gain); otherwise "
+    f"'{NEEDS_GENES}' if S_3 and S_4 read ahead by try T46's test in all six and P_3 and P_4 in none, quoting each of "
+    f"the six with R_k's and P_k's means ('not ahead' includes a placebo gain below 0.3 points); '{PLACEBO_TOO}' if "
+    "S_3 and S_4 read ahead in all six and P_k is ahead in any, naming each such reading with R_k's and P_k's means; "
+    f"otherwise '{NOT_SHOWN}', naming each of the six where S_k is level or behind. The three that read S_k carry "
+    f"'{ONE_PERMUTATION}' in the outcome. Beside the outcome, deciding nothing: whether S_3 and S_4 read ahead in "
+    "all six (decision log 2026-11-18 (c)'s condition, with the six labels), each of the six readings' R_k, P_k and "
+    "S_k means and seeds ahead, and the placebo arms' applied sizes more than 10% from Feng's.",
 )
 CHOICES = (
     "The there-and-back arms call perm_read.there_and_back with the fraction of twice the step (m1_r_gmom_x2's) and "
@@ -529,6 +552,10 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[str
             if idle:
                 reasons.append(f"{k}: placebo arms score exactly as {PLACEBO_AT[2]} on every seed (an idle fraction): "
                                f"{idle}")
+            idle_x = [a for a, twin in IDLE_STEP.items()
+                      if all(row["arms"][a]["score"] == row["arms"][twin]["score"] for row in rows)]
+            if idle_x:
+                reasons.append(f"{k}: step arms score exactly as {X2} on every seed (an idle fraction): {idle_x}")
     if len(set(placebos.values())) > 1:
         reasons.append(f"the placebo's recorded sha256 differ between the worlds' files {sorted(placebos)}")
     for cut, t45 in t45_placebo_records(committed).items():
@@ -540,6 +567,9 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[str
         if off:
             reasons.append(f"the placebo's recorded sha256 differ from try T45's committed record ({cut}) in {off}")
     commits = {(r.get("stamp") or {}).get("commit") for r in results.values()}
+    no_commit = sorted(k for k, r in results.items() if not (r.get("stamp") or {}).get("commit"))
+    if no_commit:
+        reasons.append(f"no commit recorded on {no_commit}")
     unclean = sorted(k for k, r in results.items() if (r.get("stamp") or {}).get("tree_clean") is not True)
     if unclean:
         reasons.append(f"tree not clean on {unclean}")
@@ -588,7 +618,10 @@ def statement_3(quantities: Mapping[str, Mapping[int, Mapping]]) -> dict:
       otherwise NEEDS_GENES if every S_k reads ahead and no P_k does;
       PLACEBO_TOO if every S_k reads ahead and some P_k does, naming those with R_k's and P_k's means;
       otherwise NOT_SHOWN, naming each S_k reading that is level or behind.
-    The three that read S_k carry ONE_PERMUTATION in the outcome."""
+    The three that read S_k carry ONE_PERMUTATION in the outcome; NEEDS_GENES quotes the six readings' R_k and P_k
+    means ('P not ahead' includes a placebo gain below 0.3 points). Returned beside the outcome and deciding nothing:
+    s_all_six_ahead, decision log 2026-11-18 (c)'s own condition (S_3 and S_4 ahead in all six), with the six labels
+    in `readings`."""
     six = [(k, m) for k in STATEMENT_WORLDS for m in STATEMENT_MULTIPLES]
     lab = {x: {q: quantities[x[0]][x[1]][q]["label"] for q in ("R", "P", "S")} for x in six}
     readings = {f"{k} S_{m}": lab[(k, m)]["S"] for k, m in six}
@@ -604,7 +637,7 @@ def statement_3(quantities: Mapping[str, Mapping[int, Mapping]]) -> dict:
             for k, m in no_gain) + ")"
     elif not off and not placebo_up:
         kind = NEEDS_GENES
-        said = f"{NEEDS_GENES} ({ONE_PERMUTATION})"
+        said = f"{NEEDS_GENES} ({ONE_PERMUTATION}; " + "; ".join(_beside(k, m, quantities[k][m]) for k, m in six) + ")"
     elif not off:
         kind = PLACEBO_TOO
         said = f"{PLACEBO_TOO} ({ONE_PERMUTATION}; placebo ahead: " + "; ".join(
@@ -612,7 +645,7 @@ def statement_3(quantities: Mapping[str, Mapping[int, Mapping]]) -> dict:
     else:
         kind = NOT_SHOWN
         said = f"{NOT_SHOWN} ({ONE_PERMUTATION}; " + ", ".join(f"{n} {v}" for n, v in off.items()) + ")"
-    return {"statement": said, "kind": kind, "readings": readings, "r_readings": r_readings,
+    return {"statement": said, "kind": kind, "readings": readings, "s_all_six_ahead": not off, "r_readings": r_readings,
             "p_readings": p_readings, "not_ahead": off, "r_not_ahead": [f"{k} R_{m}" for k, m in no_gain],
             "p_ahead": [f"{k} P_{m}" for k, m in placebo_up]}
 
@@ -631,6 +664,8 @@ def t58_reading(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[
                 "quantities": {k: {str(m): x for m, x in by.items()} for k, by in q.items()},
                 "mean_scores": means,
                 "applied_size": {k: results[k].get("applied_size") for k in WORLDS},
+                "size_flags": {k: {a: pm.size_flags((results[k].get("applied_size") or {}).get(a))
+                                   for a in PLACEBO_AT.values()} for k in WORLDS},
                 "thinning": {k: {x: (results[k].get("thinning") or {}).get(x) for x in
                                  ("p", "stream", "depth_ratio", "rebuild_largest_difference", "any_cell_emptied")}
                              for k in REFERENCE_OF}})
@@ -672,6 +707,18 @@ def t58_text(res: Mapping) -> str:
                      + ", ".join(f"{n} {lab}" for n, lab in s3["readings"].items())
                      + "; beside them (the gate and the split): "
                      + ", ".join(f"{n} {lab}" for n, lab in {**s3["r_readings"], **s3["p_readings"]}.items()))
+        lines.append("Beside statement 3, deciding nothing: decision log 2026-11-18 (c)'s condition (S_3 and S_4 ahead "
+                     f"in pooled, whole and lib3), all six ahead: {s3['s_all_six_ahead']} ("
+                     + ", ".join(f"{n} {lab}" for n, lab in s3["readings"].items()) + ")")
+        lines.append("Beside statement 3, the six readings' means and seeds ahead: " + "; ".join(
+            f"{k} k={m}: " + ", ".join(
+                f"{name}_{m} {c['mean']:+.2f} ({c['seeds_ahead']} of {c['of']} ahead)"
+                for name, c in ((n, r["quantities"][k][str(m)][n]) for n in ("R", "P", "S")))
+            for k in STATEMENT_WORLDS for m in STATEMENT_MULTIPLES))
+        flags = {(k, a): f for k, by in r["size_flags"].items() for a, f in by.items() if f}
+        lines.append("Beside statement 3, the placebo's applied size more than "
+                     f"{pm.SIZE_FLAG:.0%} from Feng's (reported, decides nothing): " + (
+                         "; ".join(f"{k} {a}: " + ", ".join(f) for (k, a), f in flags.items()) if flags else "none"))
         lines.append("Statement 1 (R_k = x_k - x_2, P_k = p_k - p_2, S_k = R_k - P_k; S_5 reported and read by "
                      "nothing) and statement 2 (V_k = x_kb2 - x_2, N_k = x_k - x_kb2), per world and k, by try T46's "
                      "test inside the world:")
