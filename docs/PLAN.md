@@ -5547,7 +5547,8 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     of the heart file's own steps. The round's estimate, which the AI assistant reports as it is: about 186 Overall
     (180 to 195) with the four files as they stand; the new work adds +0.5 to +1.5, with about a 0.3 chance of at
     least one point; nothing supports 226; compute is not what limits the week.
-  - **A side agent's note,** forwarded by the captain with no instruction added (about 17:35 UTC), says the same and
+  - **A side agent's note,** forwarded by the captain with no instruction added (after the round returned and before 17:51 UTC, the main
+    session's next clock reading; the AI assistant had first written "about 17:35" without one), says the same and
     ends: "Want the wild bets run anyway? Tell the main agent". The AI assistant does not read the forward as a
     decision either way.
   - **What the AI assistant starts** (two workflows; each item is written on a campaign branch to a brief fixed
