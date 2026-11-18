@@ -334,13 +334,14 @@ def test_the_reading_on_the_replicate_folds_says_not_readable_on_the_cross_knock
                    "no released fold has the test's structure", "which fold the test resembles is not known",
                    "differ in depth against their references", "one factor, ten seeds of draw noise",
                    "per-seed range", "half 0.050, full 0.200", "replicate fold, never counted",
-                   "Replicate-only", "the cost of shrinking a right factor", "identity check",
-                   "neither can support or reject the half factor at the test", "whole effect in the file's form",
+                   "Replicate-only", "prices shrinking the source factor", "identity check",
+                   "Neither sign by itself can support or reject the half factor at the test",
+                   "whole effect in the file's form",
                    "draw noise only", "mirrors of one slide, not two independent replications",
                    "Run as: DGX ~/v/vec-campaign", "CPU only, 8 BLAS threads, one process per fold",
                    "not below the guard margin -0.3", f"commit {k15.K10_COMMIT}"):
         assert phrase in txt, phrase
-    assert r12["shrink_cost_within_guard"] and res["run_as"] == k15.RUN_AS
+    assert r12["half_vs_s1x_within_guard_margin"] and res["run_as"] == k15.RUN_AS
     cmp = res["k10_comparator"]
     assert cmp["commit"] == k15.K10_COMMIT and set(cmp["files"]) == {"r12", "r21"}
     assert all(v["sha256"] == PINS[n] and v["commit"] == k15.K10_COMMIT for n, v in cmp["files"].items())
@@ -558,3 +559,89 @@ def test_run_and_read_refuse(tmp_path, monkeypatch):
     (out / "reading.json").unlink()
     with pytest.raises(SystemExit, match="exists"):  # reading.txt alone also refuses
         k15.main(["read", "--runs", str(runs), "--out", str(out)])
+
+
+# ----------------------------------------------------------------------------------------------- review fixes (fix2)
+def _with_depth(name, sc, half_ratio=0.95):
+    r = _result(name, sc)
+    r["depth_record"] = {"s1x": {"1": {"overall": 100.0, "per_label": {"a": 100.0}}},
+                         "s1x_half": {"1": {"overall": 100.0 * half_ratio, "per_label": {"a": 100.0 * half_ratio}}},
+                         "s1x_half_perm": {"1": {"overall": 99.0, "per_label": {"a": 99.0}}}}
+    return r
+
+
+@pytest.mark.parametrize("half", [54.0, 50.0])
+def test_the_replicate_sign_is_measured_never_by_construction(tmp_path, half):
+    """must_fix: the replicate folds' s1x_half - s1x sign is a measurement of the source factor's noise against its
+    signal; no text says it is fixed by construction, whichever sign comes out, and nothing voids on either sign."""
+    res = _read(tmp_path / "s", r12=_scores(half), r21=_scores(half))
+    assert not res["void"] and res["supported"] is None
+    txt = k15.text(res)
+    blob = txt + json.dumps(res) + k15.__doc__
+    for gone in ("by construction", "right factor", "fails whatever the test's truth is", "loss price"):
+        assert gone not in blob, gone
+    for phrase in ("Its sign is measured, not given", "shrinkage wins where the factor's per-gene estimation noise "
+                   "exceeds its signal", "Try K14b's factor-alone r12 read was -2.28", "it decides nothing",
+                   "changes the advice on the captain's half-factor question", "its sign measured, not given"):
+        assert phrase in txt, phrase
+    assert res["tasks"]["r12"]["half_vs_s1x_within_guard_margin"] is (half - 52.0 >= k15.FLOOR_MEAN)
+    assert "shrink_cost_within_guard" not in json.dumps(res)
+
+
+def test_the_docstring_says_why_r12_is_not_a_transfer_read_and_keeps_the_rule():
+    """design attack: the r12 condition is reworded as the noise-versus-signal hurdle it is; the bars are unchanged."""
+    doc = " ".join(k15.__doc__.split())
+    assert "the r12 condition does NOT" in doc and "noise-versus-signal hurdle" in doc
+    assert "cannot be reached on this commit because x1 and x2 are not built" in doc
+    assert "byte copies of main's commit 3fea49d" in doc
+    assert k15.DECIDING == ("x1", "r12") and k15.GUARDED == ("x2", "r21")
+    assert (k15.MIN_GAIN, k15.MIN_AHEAD, k15.FLOOR_MEAN) == (0.3, 8, -0.3)
+
+
+def test_a_failed_identity_check_is_reported_never_voided(tmp_path):
+    """should_fix: the control beating the half arm on a replicate fold is reported as a failure, not a void."""
+    res = _read(tmp_path / "i", r12=_scores(54.0, perm=56.0), r21=_scores(54.0, perm=56.0))
+    assert not res["void"]
+    d = res["tasks"]["r12"]["paired"]["s1x_half - s1x_half_perm"]
+    assert d["mean"] == pytest.approx(-2.0) and not d["passes"]
+    txt = k15.text(res)
+    assert "a pass is expected where the factor carries gene identity, and a failure is reported as such, never as a " \
+           "void" in txt
+    assert "identity check: which gene carries which half value, not size; a failure is reported as such" in txt
+
+
+def test_the_limits_name_the_uncoupled_draws_and_the_missing_size_control(tmp_path):
+    res = _read(tmp_path / "l", r12=_scores(54.0), r21=_scores(54.0))
+    txt = " ".join(k15.text(res).split())
+    assert "the arms share their drawn cells, but the factor's and the depth step's own draws are not coupled across " \
+           "arms, so the per-seed range includes that noise" in txt
+    assert "no arm prices size apart from depth" in txt
+
+
+def test_the_depth_shift_is_printed_next_to_the_half_difference(tmp_path):
+    """should_fix: s1x_half's counts per cell against s1x's sit on the s1x_half - s1x line."""
+    res = _read(tmp_path / "d", results={"r12": _with_depth("r12", _scores(54.0)),
+                                         "r21": _with_depth("r21", _scores(54.0), 0.909)}, r12=None, r21=None)
+    lines = k15.text(res).splitlines()
+    got = [ln for ln in lines if ln.strip().startswith("s1x_half - s1x [")]
+    assert len(got) == 2
+    assert got[0].endswith("s1x_half's mean counts per cell after the build: 0.9500 of s1x's")
+    assert got[1].endswith("s1x_half's mean counts per cell after the build: 0.9090 of s1x's")
+    assert not any("counts per cell" in ln for ln in lines if ln.strip().startswith("s1x_half - s1x_half_perm ["))
+    res = _read(tmp_path / "n", r12=_scores(54.0), r21=_scores(54.0))  # no depth record: said so, no raise
+    assert "counts per cell after the build: not recorded" in k15.text(res)
+
+
+@pytest.mark.parametrize("change", ["missing", "extra"])
+def test_a_k10_comparator_with_other_seeds_voids_and_does_not_raise(tmp_path, change):
+    """should_fix: a pinned K10 file whose rows miss a seed or carry an extra one voids with 'does not reproduce'."""
+    f = _k10_file("r12")
+    if change == "missing":
+        f["rows"] = f["rows"][:-1]
+    else:
+        f["rows"].append({"seed": max(SEEDS) + 1, "scores": {"floor": 50.0, "s1x": 52.0, "s1x_res": 0.0,
+                                                               "s1x_res_perm": 0.0}})
+    d = _k10_dir(tmp_path / f"cmp_{change}", files={"r12": f})
+    res = _read(tmp_path / f"run_{change}", k10_dir=d, r12=_scores(54.0), r21=_scores(54.0))
+    assert res["void"] and any(w.startswith("r12:") and "does not reproduce" in w for w in res["why"])
+    assert not any(w.startswith("r21") for w in res["why"])

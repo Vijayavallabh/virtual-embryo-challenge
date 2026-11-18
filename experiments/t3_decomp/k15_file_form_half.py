@@ -32,27 +32,36 @@ Reading, fixed (row K14's form, the adoption rule's constants: a paired mean abo
 ahead):
   Void unless one commit, a clean tree, every built fold present (r12 and r21), every seed and arm present with its
   score, skills and T3 severity state, and s1x reproduces try K10's committed s1x scores on r12 and r21 to 1e-6 per
-  seed. The comparator is try K10's own committed task files on this branch (RESULTS_K10, copied from main, where commit
-  3fea49d recorded them), never an operator's path: each file must hold task_source k10_s1_form.py, provenance commit
+  seed. The comparator is try K10's own committed task files on this branch (RESULTS_K10: the five files of
+  results/k10_s1_form/ are byte copies of main's commit 3fea49d, the same git blobs, added only so that the comparator
+  exists on this branch), never an operator's path: each file must hold task_source k10_s1_form.py, provenance commit
   K10_COMMIT on a clean tree, the fold's task key and try K10's arms (s1x_res among them) in every row, and its sha256
   must be the pinned K10_SHA256; the reading writes the comparator's path, commit and each file's sha256. A fold where
   severity is not scored in every seed of every arm is reported as not readable.
   Per fold: s1x_half - s1x (the half factor's WHOLE effect in the file's form: apply_gene_factor's net count change is
-  linear in phi - 1, so halving the factor also halves its per-label depth shift before the unchanged depth step; it is
-  not a per-gene size effect alone) and s1x_half - s1x_half_perm (an IDENTITY check: the control permutes which gene
-  carries which half value, not the size), each with its mean, seeds ahead and per-seed range.
+  linear in phi - 1, so halving the factor also halves its per-label depth shift, and the unchanged depth step then
+  multiplies the factor-moved depth, so every cell's final depth moves with the factor; it is not a per-gene size
+  effect alone, and the text prints s1x_half's counts per cell against s1x's on the same line as this difference) and
+  s1x_half - s1x_half_perm (an IDENTITY check: the control permutes which gene carries which half value, not the size;
+  a pass is expected where the factor carries gene identity, and a failure is reported as such, never as a void), each
+  with its mean, seeds ahead and per-seed range.
   "Supported in the file's own form" if on x1 AND on r12 s1x_half beats s1x that way and beats s1x_half_perm that way,
   and on x2 and on r21 its paired mean against s1x is not below -0.3; anything else "not supported", with the failing
-  folds named (a not-readable fold fails its checks). This rule is kept as the brief fixed it; it is unreachable on this
-  commit, and a design flaw is on record against it: on a replicate fold the source factor estimates the target's own
-  knockout, so shrinking it loses by construction and "r12: s1x_half beats s1x" fails whatever the test's truth is. A
-  later brief that builds x1 and x2 should make x1 and x2 the deciding folds and r12 and r21 guarded ones, with the
-  margin stated, before any build (not changed here: it would loosen r12's bar). Where x1 and x2 could not be built
-  (as here) the reading says "not readable on the cross-knockout folds" and gives the replicate folds' figures only,
-  read as follows. REPLICATE-ONLY: s1x_half - s1x on r12 and r21 is the COST OF SHRINKING A RIGHT FACTOR (a loss
-  price, expected below zero by construction), shown against the guard margin -0.3 (FLOOR_MEAN) and deciding nothing;
-  s1x_half - s1x_half_perm is an identity check expected to pass there and prices no size. Neither supports nor rejects
-  the half factor at the test, where the knockout differs.
+  folds named (a not-readable fold fails its checks). This rule is kept as the brief fixed it, bars unchanged. It
+  cannot be reached on this commit because x1 and x2 are not built. What its parts measure: the x1 and x2 conditions
+  price transfer of the half factor to another knockout; the r12 condition does NOT: where source and target share
+  the knockout, s1x_half - s1x prices shrinking the source factor, and its sign is measured, not given (shrinkage wins
+  where the factor's per-gene estimation noise exceeds its signal), so the r12 condition is a noise-versus-signal
+  hurdle on the source factor, passed or failed by the replicate's noise level as well as by the claim. A later brief
+  that builds x1 and x2 should make x1 and x2 the deciding folds and r12 and r21 guarded at a margin fixed before any
+  build, reporting the replicate sign as the noise-versus-signal reading it is (not changed here: it would loosen
+  r12's bar). Where x1 and x2 could not be built (as here) the reading says "not readable on the cross-knockout folds"
+  and gives the replicate folds' figures only, read as follows. REPLICATE-ONLY: s1x_half - s1x on r12 and r21 prices
+  shrinking the source factor where the source and the target share the knockout. Its sign is measured, not given:
+  shrinkage wins where the factor's per-gene estimation noise exceeds its signal. Try K14b's factor-alone r12 read was
+  -2.28. Shown against the guard margin -0.3 (FLOOR_MEAN); it decides nothing. s1x_half - s1x_half_perm is an identity
+  check and prices no size. Neither sign by itself supports or rejects the half factor at the test, where the knockout
+  differs, or changes the advice on the captain's half-factor question.
   Reported, read by nothing: each arm's mean board score per fold, each difference's parts by metric, the share of genes
   the half factor moves by more than 1.5-fold against the full factor's, each arm's mean counts per cell after the
   build (before normalisation), overall and per label, and the run's machine and thread settings.
@@ -351,7 +360,7 @@ def fold_figures(rows: list[dict], counted: bool) -> dict:
     metrics = list(rows[0]["skills"][HALF])
     return {
         "counted_fold": counted,
-        "shrink_cost_within_guard": bool(paired(rows, HALF, BASE)["mean"] >= FLOOR_MEAN),
+        "half_vs_s1x_within_guard_margin": bool(paired(rows, HALF, BASE)["mean"] >= FLOOR_MEAN),
         "readable": all(states[x] == {"scored": len(rows)} for x in ARMS),
         "mean_score": {x: float(np.mean([q["scores"][x] for q in rows])) for x in present},
         "paired": {f"{x} - {y}": paired(rows, x, y) for x, y in ((HALF, BASE), (HALF, PERM), (PERM, BASE))},
@@ -432,14 +441,17 @@ def reading(runs: Path, k10_dir: Path | None = None) -> dict:
 
 
 REPLICATE_ONLY = (
-    "Replicate-only: on r12 and r21 the source factor estimates the target's own knockout, so s1x_half - s1x there is "
-    "the cost of shrinking a right factor (a loss price, expected below zero by construction), shown against the guard "
-    "margin -0.3 and deciding nothing; s1x_half - s1x_half_perm is an identity check (which gene carries which value, "
-    "not size), expected to pass there; neither can support or reject the half factor at the test, where the knockout "
-    "differs.")
+    "Replicate-only: s1x_half - s1x on r12 and r21 prices shrinking the source factor where the source and the target "
+    "share the knockout. Its sign is measured, not given: shrinkage wins where the factor's per-gene estimation noise "
+    "exceeds its signal. Try K14b's factor-alone r12 read was -2.28. Shown against the guard margin -0.3; it decides "
+    "nothing. s1x_half - s1x_half_perm is an identity check (which gene carries which half value, not size); a pass is "
+    "expected where the factor carries gene identity, and a failure is reported as such, never as a void. Neither sign "
+    "by itself can support or reject the half factor at the test, where the knockout differs, or changes the advice on "
+    "the captain's half-factor question.")
 DIFF_NAMES = {f"{HALF} - {BASE}": "the half factor's whole effect in the file's form: per-gene size and the per-label "
                                   "depth shift the factor carries",
-              f"{HALF} - {PERM}": "identity check: which gene carries which half value, not size",
+              f"{HALF} - {PERM}": "identity check: which gene carries which half value, not size; a failure is "
+                                  "reported as such, never as a void",
               f"{PERM} - {BASE}": "the permuted half against the full factor"}
 LABEL = ("A labelled reading for a ruling, NOT the adoption rule; it changes no file: the first-choice file changes "
          "only by the captain's own ruling.")
@@ -449,7 +461,10 @@ LIMITS = ("Limits: the base is the frozen stand-in without the file's compositio
           "depth against their references, which moved other reads on these folds; one factor, ten seeds of draw "
           "noise: the seeds capture draw noise only (one factor estimate and one depth ratio per fold), so the seeds "
           "ahead cannot reflect the factor's estimation noise, and r12 and r21 are mirrors of one slide, not two "
-          "independent replications.")
+          "independent replications; the arms share their drawn cells, but the factor's and the depth step's own "
+          "draws are not coupled across arms, so the per-seed range includes that noise; no arm prices size apart "
+          "from depth: the half arm changes both each gene's size and the per-label depth carried into the depth "
+          "step.")
 
 
 def text(res: dict) -> str:
@@ -465,9 +480,15 @@ def text(res: dict) -> str:
     for n, v in res["tasks"].items():
         kind = "counted cross-knockout fold" if v["counted_fold"] else "replicate fold, never counted"
         lines.append(f"{n} ({kind}){'' if v['readable'] else ', NOT READABLE (severity not scored throughout)'}")
+        vs_half = (v.get("depth", {}).get(HALF) or {}).get("overall_vs_s1x")
         for k, d in v["paired"].items():
+            depth_note = ""
+            if k == f"{HALF} - {BASE}":
+                depth_note = ("; s1x_half's mean counts per cell after the build: "
+                              + (f"{vs_half:.4f} of s1x's" if vs_half is not None else "not recorded"))
             lines.append(f"    {k} [{DIFF_NAMES[k]}]: {d['mean']:+.2f} (ahead {d['ahead']} of {d['n']}, per-seed range "
-                         f"{d['min']:+.2f} to {d['max']:+.2f}, sd {d['sd']:.2f})" + ("  passes" if d["passes"] else ""))
+                         f"{d['min']:+.2f} to {d['max']:+.2f}, sd {d['sd']:.2f})" + ("  passes" if d["passes"] else "")
+                         + depth_note)
     lines.append("Reported, read by nothing:")
     for n, v in res["tasks"].items():
         lines.append(f"{n} mean board scores: " + ", ".join(f"{a} {s:.2f}" for a, s in v["mean_score"].items()))
@@ -475,8 +496,8 @@ def text(res: dict) -> str:
             lines.append(f"    skills {k}: " + ", ".join(f"{m} {x:+.3f}" for m, x in sk.items()))
         for a, st in v["severity_states"].items():
             lines.append(f"    {a:<14} severity " + ", ".join(f"{s} {c}" for s, c in st.items()))
-        lines.append(f"    s1x_half - s1x not below the guard margin {FLOOR_MEAN} (the cost of shrinking a right "
-                     f"factor; decides nothing): {'yes' if v['shrink_cost_within_guard'] else 'no'}")
+        lines.append(f"    s1x_half - s1x not below the guard margin {FLOOR_MEAN} (its sign measured, not given; "
+                     f"decides nothing): {'yes' if v['half_vs_s1x_within_guard_margin'] else 'no'}")
         for a, dp in v.get("depth", {}).items():
             vs = dp.get("overall_vs_s1x")
             lines.append(f"    {a:<14} mean counts per cell after the build {dp['overall']:.1f}"
