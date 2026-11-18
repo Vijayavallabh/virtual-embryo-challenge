@@ -4937,9 +4937,10 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     so that entries (b) to (h) can be checked against them. The pruned line on a noise-aware Feng direction, whose
     first clause reading N48 contradicted, is marked. Row T49's rule label is made exact. The method report's item on
     these reads was rewritten and reviewed in four rounds (9cd44cc).
-- 2026-11-18 (d), two amendments to entry (c), made after the reviews of the reads it fixed and before the row or run
-  of the read each concerns; both narrow a use, neither widens one. Written by the AI assistant. Nothing in any
-  upload, build, rule or gate file has changed.
+- 2026-11-18 (d), two amendments to entry (c), made after the reviews of the reads it fixed; the two on try T58 were
+  committed with its row and before its run and narrow its use, and the note on try K15 records, after its run, what
+  its builder had found before it. Written by the AI assistant. Nothing in any upload, build, rule or gate file has
+  changed.
   - **Try T58, the placebo.** Entry (c) named 'try T46's placebo direction'. That was a slip of the AI assistant's:
     the brief it wrote the same hour specifies try T45's placebo (try T15's permutation within expression bins, one
     permutation per group for every fraction and seed), the one whose committed arms exist on both counted cuts, and
