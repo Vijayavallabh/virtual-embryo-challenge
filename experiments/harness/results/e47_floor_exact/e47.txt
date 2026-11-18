@@ -1,0 +1,43 @@
+Tries E47a and E47b (commit 9967cf19c393b84a4cb2e30b7e1548b469235ae4); guard: reference arms within 0.000 (mean) and 0.001 (any seed) of their committed scores; expression metrics equal to the controls' within 0.0e+00.
+floor-exact fallback (the new arms' cells not all distinct earlier positions; reported, voids nothing): on no task
+rule (ii), geometry:
+  fgw_shape0x against fgw_shape0: board -0.932 (a False), neighborhood_mmd -0.0254 (b False), worst shape -0.324 (d2_shape on x3; c False): fgw_shape0 stays
+    noise: merged paired mean -0.932, its standard error over seeds 0.062
+  fgw_shape0x_series against fgw_shape0_series: board -0.599 (a False), neighborhood_mmd -0.0087 (b True), worst shape -0.324 (d2_shape on x3; c False): fgw_shape0_series stays
+    noise: merged paired mean -0.599, its standard error over seeds 0.063
+rule (i), the new arm minus its control per task (board mean, seeds ahead, seed SD; then skills):
+  half  fgw_shape0x          -1.81 ( 0/10, sd 0.35)  de_score +0.000 de_direction +0.000 mmd_u +0.000 variogram +0.000 d2_shape -0.122 occupancy_dice -0.019 scale_log_ratio +0.000 neighborhood_mmd -0.025
+  half  fgw_shape0x_series   -1.55 ( 0/10, sd 0.35)  de_score +0.000 de_direction +0.000 mmd_u +0.000 variogram +0.000 d2_shape -0.122 occupancy_dice -0.019 scale_log_ratio +0.000 neighborhood_mmd -0.015
+  late  fgw_shape0x          -1.59 ( 0/10, sd 0.34)  de_score +0.000 de_direction +0.000 mmd_u +0.000 variogram +0.000 d2_shape -0.076 occupancy_dice +0.003 scale_log_ratio +0.000 neighborhood_mmd -0.039
+  late  fgw_shape0x_series   -1.23 ( 0/10, sd 0.32)  de_score +0.000 de_direction +0.000 mmd_u +0.000 variogram +0.000 d2_shape -0.076 occupancy_dice +0.003 scale_log_ratio +0.000 neighborhood_mmd -0.025
+  new1  fgw_shape0x          -3.66 ( 0/10, sd 0.46)  de_score +0.000 de_direction +0.000 mmd_u +0.000 variogram +0.000 d2_shape -0.296 occupancy_dice -0.064 scale_log_ratio +0.000 neighborhood_mmd -0.027
+  new1  fgw_shape0x_series   -3.39 ( 0/10, sd 0.47)  de_score +0.000 de_direction +0.000 mmd_u +0.000 variogram +0.000 d2_shape -0.296 occupancy_dice -0.064 scale_log_ratio +0.000 neighborhood_mmd -0.016
+  new2  fgw_shape0x          -2.48 ( 0/10, sd 0.34)  de_score +0.000 de_direction +0.000 mmd_u +0.000 variogram +0.000 d2_shape -0.070 occupancy_dice -0.058 scale_log_ratio +0.000 neighborhood_mmd -0.057
+  new2  fgw_shape0x_series   -2.23 ( 0/10, sd 0.33)  de_score +0.000 de_direction +0.000 mmd_u +0.000 variogram +0.000 d2_shape -0.070 occupancy_dice -0.058 scale_log_ratio +0.000 neighborhood_mmd -0.047
+  e75   fgw_shape0x          -0.01 ( 4/10, sd 0.51)  de_score +0.000 de_direction +0.000 mmd_u +0.000 variogram +0.000 d2_shape +0.071 occupancy_dice +0.035 scale_log_ratio +0.000 neighborhood_mmd -0.036
+  e75   fgw_shape0x_series   +0.97 (10/10, sd 0.50)  de_score +0.000 de_direction +0.000 mmd_u +0.000 variogram +0.000 d2_shape +0.071 occupancy_dice +0.035 scale_log_ratio +0.000 neighborhood_mmd +0.003
+  e725  fgw_shape0x          +0.85 ( 9/10, sd 0.61)  de_score +0.000 de_direction +0.000 mmd_u +0.000 variogram +0.000 d2_shape +0.124 occupancy_dice +0.072 scale_log_ratio +0.000 neighborhood_mmd -0.030
+  e725  fgw_shape0x_series   +0.56 ( 9/10, sd 0.56)  de_score +0.000 de_direction +0.000 mmd_u +0.000 variogram +0.000 d2_shape +0.124 occupancy_dice +0.072 scale_log_ratio +0.000 neighborhood_mmd -0.021
+  x1    fgw_shape0x          -0.09 ( 5/10, sd 0.51)  de_score +0.000 de_direction +0.000 mmd_u +0.000 variogram +0.000 d2_shape -0.032 occupancy_dice -0.090 scale_log_ratio +0.000 neighborhood_mmd +0.012
+  x1    fgw_shape0x_series   +0.44 ( 7/10, sd 0.54)  de_score +0.000 de_direction +0.000 mmd_u +0.000 variogram +0.000 d2_shape -0.032 occupancy_dice -0.090 scale_log_ratio +0.000 neighborhood_mmd +0.025
+  x2    fgw_shape0x          -0.20 ( 5/10, sd 0.51)  de_score +0.000 de_direction +0.000 mmd_u +0.000 variogram +0.000 d2_shape -0.024 occupancy_dice -0.015 scale_log_ratio +0.000 neighborhood_mmd +0.005
+  x2    fgw_shape0x_series   -0.07 ( 5/10, sd 0.51)  de_score +0.000 de_direction +0.000 mmd_u +0.000 variogram +0.000 d2_shape -0.024 occupancy_dice -0.015 scale_log_ratio +0.000 neighborhood_mmd +0.010
+  x3    fgw_shape0x          -3.08 ( 0/10, sd 0.76)  de_score +0.000 de_direction +0.000 mmd_u +0.000 variogram +0.000 d2_shape -0.324 occupancy_dice -0.005 scale_log_ratio +0.000 neighborhood_mmd -0.013
+  x3    fgw_shape0x_series   -2.66 ( 0/10, sd 0.82)  de_score +0.000 de_direction +0.000 mmd_u +0.000 variogram +0.000 d2_shape -0.324 occupancy_dice -0.005 scale_log_ratio +0.000 neighborhood_mmd +0.004
+rule (iii), each arm against fgw (paired mean per task; merged; gain / loss tasks and means; better of two beside fgw, merged):
+  arm                    half   late   new1   new2    e75   e725     x1     x2     x3  merged  gains        losses       pair
+  fgw_shape0            +0.75  -0.28  +0.75  -0.64  +1.83  -5.11  +0.82  -3.15  +3.09   -0.50  5 +1.45   4 -2.30   +0.88
+  fgw_shape0_series     +8.03  +2.91  +3.19  +0.48  -0.76 -11.40  +5.59  -2.78  -0.59   -0.65  5 +4.04   4 -3.88   +2.05
+  fgw_aligned_series    +7.44  +4.27  +4.18  +0.73  +0.17  -8.00  +4.48  -1.34  -4.56   +0.13  6 +3.55   3 -4.63   +2.18
+  fgw_shape0x           -1.06  -1.87  -2.92  -3.13  +1.82  -4.27  +0.73  -3.35  +0.01   -1.43  3 +0.86   6 -2.77   +0.46
+  fgw_shape0x_series    +6.47  +1.68  -0.20  -1.75  +0.21 -10.84  +6.03  -2.85  -3.24   -1.25  4 +3.60   5 -3.78   +1.54
+seed SD of each arm's board score per task:
+  half  floor 0.00, fgw 0.54, fgw_shape0 0.56, fgw_shape0_series 0.48, fgw_aligned_series 0.44, fgw_shape0x 0.41, fgw_shape0x_series 0.46
+  late  floor 0.00, fgw 1.90, fgw_shape0 0.71, fgw_shape0_series 0.56, fgw_aligned_series 0.68, fgw_shape0x 0.52, fgw_shape0x_series 0.45
+  new1  floor 0.00, fgw 0.56, fgw_shape0 0.54, fgw_shape0_series 0.50, fgw_aligned_series 0.52, fgw_shape0x 0.49, fgw_shape0x_series 0.40
+  new2  floor 0.00, fgw 1.03, fgw_shape0 0.73, fgw_shape0_series 0.73, fgw_aligned_series 0.72, fgw_shape0x 0.56, fgw_shape0x_series 0.56
+  e75   floor 0.00, fgw 0.83, fgw_shape0 0.76, fgw_shape0_series 1.34, fgw_aligned_series 1.18, fgw_shape0x 0.76, fgw_shape0x_series 1.34
+  e725  floor 0.00, fgw 2.20, fgw_shape0 1.94, fgw_shape0_series 2.59, fgw_aligned_series 2.62, fgw_shape0x 1.93, fgw_shape0x_series 2.75
+  x1    floor 0.00, fgw 1.90, fgw_shape0 1.66, fgw_shape0_series 1.61, fgw_aligned_series 1.83, fgw_shape0x 1.87, fgw_shape0x_series 1.83
+  x2    floor 0.00, fgw 0.98, fgw_shape0 0.97, fgw_shape0_series 1.05, fgw_aligned_series 0.86, fgw_shape0x 0.88, fgw_shape0x_series 0.88
+  x3    floor 0.00, fgw 1.13, fgw_shape0 1.20, fgw_shape0_series 1.31, fgw_aligned_series 1.13, fgw_shape0x 0.69, fgw_shape0x_series 0.79

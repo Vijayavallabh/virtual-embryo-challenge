@@ -1,0 +1,12 @@
+Row N53 (a diagnostic, not a try; target-free): the floor-form arms at the test pair against 10% draws of E7.5's own cells, build seeds 1,000,001 to 1,000,010, panel and count rule of T2:embryo:val_interp, scorer build main. Commit 9967cf19c393b84a4cb2e30b7e1548b469235ae4, clean tree: True. fgw_shape0x's floor-exact fallback under this count rule: False. B0 fell back to B: False.
+  (mean, seed SD)            occupancy_dice (higher closer)   d2_shape (lower closer)
+  B: copy of E7.5 vs A       0.8482 (0.0260)   0.0028 (0.0013)
+  B0: copy outside A vs A    0.8446 (0.0361)   0.0033 (0.0016)
+  disjoint draw vs A         0.8337 (0.0265)   0.0041 (0.0013)
+  fgw_shape0                 0.7972 (0.0337)   0.0202 (0.0039)
+  fgw_shape0x                0.8593 (0.0362)   0.0030 (0.0009)
+  fgw_aligned                0.7873 (0.0246)   0.0273 (0.0027)
+  rule: the paired difference from the arm's own noise floor within 2 SE of its ten-seed mean; beside it, deciding nothing, the distance in single-draw SDs of that floor (the first version's bar, 2 SD) and the verdict against the other floors:
+  fgw_shape0                 floor mean of B and B0: in the floor's form: False (occupancy_dice -0.0492 vs 0.0219, 2.06 SD; d2_shape +0.0172 vs 0.0027, 13.10 SD); beside it: against B: False; against B0: False
+  fgw_shape0x                floor B: in the floor's form: True (occupancy_dice +0.0111 vs 0.0286, 0.43 SD; d2_shape +0.0001 vs 0.0008, 0.09 SD); beside it: against mean of B and B0: True; against B0: False
+  fgw_aligned                floor B0: in the floor's form: False (occupancy_dice -0.0574 vs 0.0248, 1.59 SD; d2_shape +0.0240 vs 0.0024, 14.71 SD); beside it: against B: False; against mean of B and B0: False

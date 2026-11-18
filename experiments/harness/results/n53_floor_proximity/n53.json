@@ -1,0 +1,535 @@
+{
+ "what": "Row N53 of experiments/harness/TRIES.md (a diagnostic, not a try; target-free): at the test pair, which embryo",
+ "row": "N53",
+ "commit": "9967cf19c393b84a4cb2e30b7e1548b469235ae4",
+ "clean": true,
+ "utc": [
+  "2026-11-18T19:52:12+00:00",
+  "2026-11-18T20:03:28+00:00"
+ ],
+ "board": "T2:embryo:val_interp",
+ "brackets": [
+  "T2/E7.5.h5ad",
+  "T2/E8.0.h5ad"
+ ],
+ "t": 0.5,
+ "seeds": [
+  1000001,
+  1000002,
+  1000003,
+  1000004,
+  1000005,
+  1000006,
+  1000007,
+  1000008,
+  1000009,
+  1000010
+ ],
+ "arms": {
+  "fgw_shape0": {
+   "occupancy_dice": {
+    "mean": 0.7972242530849887,
+    "sd": 0.033695668396144504
+   },
+   "d2_shape": {
+    "mean": 0.020242258283796912,
+    "sd": 0.003941898244825433
+   }
+  },
+  "fgw_shape0x": {
+   "occupancy_dice": {
+    "mean": 0.8592789471121582,
+    "sd": 0.03615585676672511
+   },
+   "d2_shape": {
+    "mean": 0.002961584539277052,
+    "sd": 0.0008802197283204097
+   }
+  },
+  "fgw_aligned": {
+   "occupancy_dice": {
+    "mean": 0.7872525750228776,
+    "sd": 0.02460101414188846
+   },
+   "d2_shape": {
+    "mean": 0.027299157406562035,
+    "sd": 0.0027330648028809548
+   }
+  }
+ },
+ "ref_frac": 0.1,
+ "ref_stream": 153,
+ "copy_stream": 154,
+ "outside_stream": 155,
+ "floors": {
+  "fgw_shape0": "mean of B and B0",
+  "fgw_shape0x": "B",
+  "fgw_aligned": "B0"
+ },
+ "metric_seed": 0,
+ "scorer_build": "main",
+ "noise_ses": 2.0,
+ "noise_sds": 2.0,
+ "rows": [
+  {
+   "seed": 1000001,
+   "noise": {
+    "occupancy_dice": 0.8421052631578947,
+    "d2_shape": 0.0014927337755591607
+   },
+   "noise_outside": {
+    "occupancy_dice": 0.9047619047619048,
+    "d2_shape": 0.0013098443519028661
+   },
+   "noise_disjoint": {
+    "occupancy_dice": 0.8605341246290801,
+    "d2_shape": 0.002645528880254456
+   },
+   "fgw_shape0": {
+    "occupancy_dice": 0.839572192513369,
+    "d2_shape": 0.023412960128330516
+   },
+   "fgw_shape0x": {
+    "occupancy_dice": 0.9096209912536443,
+    "d2_shape": 0.003117667277682318
+   },
+   "fgw_aligned": {
+    "occupancy_dice": 0.815028901734104,
+    "d2_shape": 0.029695301922775322
+   }
+  },
+  {
+   "seed": 1000002,
+   "noise": {
+    "occupancy_dice": 0.8571428571428571,
+    "d2_shape": 0.0022756471740365894
+   },
+   "noise_outside": {
+    "occupancy_dice": 0.8012048192771084,
+    "d2_shape": 0.001924451279916173
+   },
+   "noise_disjoint": {
+    "occupancy_dice": 0.8253968253968254,
+    "d2_shape": 0.006179058014808803
+   },
+   "fgw_shape0": {
+    "occupancy_dice": 0.7605633802816901,
+    "d2_shape": 0.021885367954083045
+   },
+   "fgw_shape0x": {
+    "occupancy_dice": 0.8,
+    "d2_shape": 0.0032097462635047157
+   },
+   "fgw_aligned": {
+    "occupancy_dice": 0.7710843373493976,
+    "d2_shape": 0.02665730256548922
+   }
+  },
+  {
+   "seed": 1000003,
+   "noise": {
+    "occupancy_dice": 0.8070175438596491,
+    "d2_shape": 0.003022866857061355
+   },
+   "noise_outside": {
+    "occupancy_dice": 0.8486646884272997,
+    "d2_shape": 0.0025558956346960057
+   },
+   "noise_disjoint": {
+    "occupancy_dice": 0.8520710059171598,
+    "d2_shape": 0.002337372260634793
+   },
+   "fgw_shape0": {
+    "occupancy_dice": 0.8260869565217391,
+    "d2_shape": 0.024660856597531956
+   },
+   "fgw_shape0x": {
+    "occupancy_dice": 0.8835820895522388,
+    "d2_shape": 0.004779828907000147
+   },
+   "fgw_aligned": {
+    "occupancy_dice": 0.7953216374269005,
+    "d2_shape": 0.029953390746868168
+   }
+  },
+  {
+   "seed": 1000004,
+   "noise": {
+    "occupancy_dice": 0.8488372093023255,
+    "d2_shape": 0.005334109357549147
+   },
+   "noise_outside": {
+    "occupancy_dice": 0.8383233532934131,
+    "d2_shape": 0.003272266716327208
+   },
+   "noise_disjoint": {
+    "occupancy_dice": 0.8252148997134671,
+    "d2_shape": 0.004206533811474094
+   },
+   "fgw_shape0": {
+    "occupancy_dice": 0.7647058823529411,
+    "d2_shape": 0.022337153138238697
+   },
+   "fgw_shape0x": {
+    "occupancy_dice": 0.8333333333333334,
+    "d2_shape": 0.0032764070387259737
+   },
+   "fgw_aligned": {
+    "occupancy_dice": 0.7846607669616519,
+    "d2_shape": 0.03181729788721474
+   }
+  },
+  {
+   "seed": 1000005,
+   "noise": {
+    "occupancy_dice": 0.8786127167630058,
+    "d2_shape": 0.005140853361141388
+   },
+   "noise_outside": {
+    "occupancy_dice": 0.8208092485549133,
+    "d2_shape": 0.006425573931032408
+   },
+   "noise_disjoint": {
+    "occupancy_dice": 0.8698224852071006,
+    "d2_shape": 0.005953902865992828
+   },
+   "fgw_shape0": {
+    "occupancy_dice": 0.8042328042328042,
+    "d2_shape": 0.019899298555008854
+   },
+   "fgw_shape0x": {
+    "occupancy_dice": 0.8347826086956521,
+    "d2_shape": 0.0036540991131748593
+   },
+   "fgw_aligned": {
+    "occupancy_dice": 0.8,
+    "d2_shape": 0.025595764653729022
+   }
+  },
+  {
+   "seed": 1000006,
+   "noise": {
+    "occupancy_dice": 0.873900293255132,
+    "d2_shape": 0.002299243818516439
+   },
+   "noise_outside": {
+    "occupancy_dice": 0.8825214899713467,
+    "d2_shape": 0.004946954993340239
+   },
+   "noise_disjoint": {
+    "occupancy_dice": 0.8629737609329446,
+    "d2_shape": 0.0052289941211380005
+   },
+   "fgw_shape0": {
+    "occupancy_dice": 0.8306878306878307,
+    "d2_shape": 0.019175678179265458
+   },
+   "fgw_shape0x": {
+    "occupancy_dice": 0.8771929824561403,
+    "d2_shape": 0.0030638040952092192
+   },
+   "fgw_aligned": {
+    "occupancy_dice": 0.7928994082840237,
+    "d2_shape": 0.024677125424988976
+   }
+  },
+  {
+   "seed": 1000007,
+   "noise": {
+    "occupancy_dice": 0.8082595870206489,
+    "d2_shape": 0.0018526432231433835
+   },
+   "noise_outside": {
+    "occupancy_dice": 0.8362573099415205,
+    "d2_shape": 0.0030024670254333074
+   },
+   "noise_disjoint": {
+    "occupancy_dice": 0.7878787878787878,
+    "d2_shape": 0.003314135546577117
+   },
+   "fgw_shape0": {
+    "occupancy_dice": 0.8097826086956522,
+    "d2_shape": 0.024697422679526487
+   },
+   "fgw_shape0x": {
+    "occupancy_dice": 0.8597014925373134,
+    "d2_shape": 0.002093976527081765
+   },
+   "fgw_aligned": {
+    "occupancy_dice": 0.7683284457478006,
+    "d2_shape": 0.025490289936466383
+   }
+  },
+  {
+   "seed": 1000008,
+   "noise": {
+    "occupancy_dice": 0.8787878787878788,
+    "d2_shape": 0.0018926669067131268
+   },
+   "noise_outside": {
+    "occupancy_dice": 0.8895522388059701,
+    "d2_shape": 0.0016863263284988912
+   },
+   "noise_disjoint": {
+    "occupancy_dice": 0.8128654970760234,
+    "d2_shape": 0.00401800884991323
+   },
+   "fgw_shape0": {
+    "occupancy_dice": 0.7853107344632768,
+    "d2_shape": 0.014178414144804335
+   },
+   "fgw_shape0x": {
+    "occupancy_dice": 0.9096385542168675,
+    "d2_shape": 0.002518483078520268
+   },
+   "fgw_aligned": {
+    "occupancy_dice": 0.7682926829268293,
+    "d2_shape": 0.026751661778985393
+   }
+  },
+  {
+   "seed": 1000009,
+   "noise": {
+    "occupancy_dice": 0.8367952522255193,
+    "d2_shape": 0.002569446844837657
+   },
+   "noise_outside": {
+    "occupancy_dice": 0.8137535816618912,
+    "d2_shape": 0.002790781245310092
+   },
+   "noise_disjoint": {
+    "occupancy_dice": 0.8152492668621701,
+    "d2_shape": 0.0038744696334773523
+   },
+   "fgw_shape0": {
+    "occupancy_dice": 0.8130081300813008,
+    "d2_shape": 0.01841010062391133
+   },
+   "fgw_shape0x": {
+    "occupancy_dice": 0.8277945619335347,
+    "d2_shape": 0.0019518265043681894
+   },
+   "fgw_aligned": {
+    "occupancy_dice": 0.8298507462686567,
+    "d2_shape": 0.02915553391926904
+   }
+  },
+  {
+   "seed": 1000010,
+   "noise": {
+    "occupancy_dice": 0.8502994011976048,
+    "d2_shape": 0.002471557747069899
+   },
+   "noise_outside": {
+    "occupancy_dice": 0.8106508875739645,
+    "d2_shape": 0.004780185928084162
+   },
+   "noise_disjoint": {
+    "occupancy_dice": 0.8246153846153846,
+    "d2_shape": 0.0031669629309447863
+   },
+   "fgw_shape0": {
+    "occupancy_dice": 0.7382920110192838,
+    "d2_shape": 0.013765330837268443
+   },
+   "fgw_shape0x": {
+    "occupancy_dice": 0.8571428571428571,
+    "d2_shape": 0.0019500065875030646
+   },
+   "fgw_aligned": {
+    "occupancy_dice": 0.7470588235294118,
+    "d2_shape": 0.023197905229834115
+   }
+  }
+ ],
+ "floor_exact_fallback": false,
+ "outside_fallback": false,
+ "noise": {
+  "occupancy_dice": {
+   "mean": 0.8481758002712516,
+   "sd": 0.025957838622205028
+  },
+  "d2_shape": {
+   "mean": 0.0028351769065628144,
+   "sd": 0.0013356236612100238
+  }
+ },
+ "noise_outside": {
+  "occupancy_dice": {
+   "mean": 0.8446499522269333,
+   "sd": 0.03614304419640317
+  },
+  "d2_shape": {
+   "mean": 0.003269474743454135,
+   "sd": 0.001633754781440165
+  }
+ },
+ "noise_disjoint": {
+  "occupancy_dice": {
+   "mean": 0.8336622038228944,
+   "sd": 0.02649296814863882
+  },
+  "d2_shape": {
+   "mean": 0.004092496691521546,
+   "sd": 0.0013255155240174802
+  }
+ },
+ "in_form": {
+  "fgw_shape0": {
+   "occupancy_dice": {
+    "difference": -0.04918862316410362,
+    "se": 0.010947724600888447,
+    "bound": 0.021895449201776895,
+    "inside": false,
+    "in_noise_sds": 2.063885523896544,
+    "inside_wide_bar": false
+   },
+   "d2_shape": {
+    "difference": 0.017189932458788436,
+    "se": 0.0013558105275783031,
+    "bound": 0.0027116210551566063,
+    "inside": false,
+    "in_noise_sds": 13.097620914180178,
+    "inside_wide_bar": false
+   },
+   "floor": "mean of B and B0",
+   "in_form": false,
+   "beside": {
+    "B": {
+     "occupancy_dice": {
+      "difference": -0.05095154718626281,
+      "se": 0.014931919544001087,
+      "bound": 0.029863839088002175,
+      "inside": false
+     },
+     "d2_shape": {
+      "difference": 0.0174070813772341,
+      "se": 0.0012745528503573138,
+      "bound": 0.0025491057007146277,
+      "inside": false
+     },
+     "in_form": false
+    },
+    "B0": {
+     "occupancy_dice": {
+      "difference": -0.047425699141944444,
+      "se": 0.010057508113288288,
+      "bound": 0.020115016226576576,
+      "inside": false
+     },
+     "d2_shape": {
+      "difference": 0.016972783540342776,
+      "se": 0.0014672288632822134,
+      "bound": 0.002934457726564427,
+      "inside": false
+     },
+     "in_form": false
+    }
+   }
+  },
+  "fgw_shape0x": {
+   "occupancy_dice": {
+    "difference": 0.011103146840906564,
+    "se": 0.014279425797747061,
+    "bound": 0.028558851595494122,
+    "inside": true,
+    "in_noise_sds": 0.42773772510507235,
+    "inside_wide_bar": true
+   },
+   "d2_shape": {
+    "difference": 0.00012640763271423743,
+    "se": 0.00040238958912192395,
+    "bound": 0.0008047791782438479,
+    "inside": true,
+    "in_noise_sds": 0.09464315164925798,
+    "inside_wide_bar": true
+   },
+   "floor": "B",
+   "in_form": true,
+   "beside": {
+    "mean of B and B0": {
+     "occupancy_dice": {
+      "difference": 0.01286607086306576,
+      "se": 0.008634154321975592,
+      "bound": 0.017268308643951184,
+      "inside": true
+     },
+     "d2_shape": {
+      "difference": -9.07412857314229e-05,
+      "se": 0.00044645226128657854,
+      "bound": 0.0008929045225731571,
+      "inside": true
+     },
+     "in_form": true
+    },
+    "B0": {
+     "occupancy_dice": {
+      "difference": 0.014628994885224933,
+      "se": 0.00544110130778694,
+      "bound": 0.01088220261557388,
+      "inside": false
+     },
+     "d2_shape": {
+      "difference": -0.00030789020417708324,
+      "se": 0.0005809672916784068,
+      "bound": 0.0011619345833568137,
+      "inside": true
+     },
+     "in_form": false
+    }
+   }
+  },
+  "fgw_aligned": {
+   "occupancy_dice": {
+    "difference": -0.05739737720405561,
+    "se": 0.012394551929784768,
+    "bound": 0.024789103859569537,
+    "inside": false,
+    "in_noise_sds": 1.5880615061685257,
+    "inside_wide_bar": true
+   },
+   "d2_shape": {
+    "difference": 0.024029682663107906,
+    "se": 0.001218810049282009,
+    "bound": 0.002437620098564018,
+    "inside": false,
+    "in_noise_sds": 14.708255446956116,
+    "inside_wide_bar": false
+   },
+   "floor": "B0",
+   "in_form": false,
+   "beside": {
+    "B": {
+     "occupancy_dice": {
+      "difference": -0.06092322524837398,
+      "se": 0.011799173419295816,
+      "bound": 0.023598346838591633,
+      "inside": false
+     },
+     "d2_shape": {
+      "difference": 0.024463980499999226,
+      "se": 0.0008424923187896491,
+      "bound": 0.0016849846375792982,
+      "inside": false
+     },
+     "in_form": false
+    },
+    "mean of B and B0": {
+     "occupancy_dice": {
+      "difference": -0.05916030122621478,
+      "se": 0.010208698939511419,
+      "bound": 0.020417397879022837,
+      "inside": false
+     },
+     "d2_shape": {
+      "difference": 0.024246831581553562,
+      "se": 0.0010233499184619888,
+      "bound": 0.0020466998369239775,
+      "inside": false
+     },
+     "in_form": false
+    }
+   }
+  }
+ }
+}
