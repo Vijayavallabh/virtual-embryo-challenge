@@ -1,0 +1,3075 @@
+{
+ "label": "try T59, a labelled in-sample diagnostic, never an adoption result: g_mom's within-type factors finished at dampings 0.75 and 1.0 against B0's 0.5, read against try T23's no-development twin and try T21's permuted control finished the same way on the two counted E10.5 cuts (try T11's form), and in the entry's form in the worlds of tries T50 and T54 (library 3's truth as released and thinned to two thirds and a third; the reference thinned to two thirds and a half); the damping is a size chosen on the cuts that kept g_mom; the result can only go to the team captain, and no outcome is evidence on Task 1's read depth, which stays closed",
+ "limits": [
+  "One E8.5 to E9.5 fit serves every seed and both cuts: the seeds measure draw and scoring noise only, n = 1 for the fit, and '8 of 10 ahead' is not replication.",
+  "Twice the damping is not twice g_mom: it brings back entries zeroed at 0.5 and moves the clip's share. The twin and the permuted set are finished the same way, so D and A compare like with like only as far as the records show their sizes agree.",
+  "The twin is matched to g_mom's size on the cell-weighted root mean square only, not on the share not zeroed or the share at the clip: at equal root mean square it can be sparser and clip more often, and its damping found need not grow as g_mom's does, so D compares unlike shapes at equal root mean square; the twin's share not zeroed, share at the clip and damping found are printed beside D.",
+  "The permuted set keeps g_mom's values exactly but not g_mom's size: moving whole rows between metacells of different sizes raises the cell-weighted root mean square and leaves a per-gene cell-weighted mean (a pseudobulk shift) that g_mom does not have, and that shift grows linearly with the damping (up to the clip). Q therefore holds a size-dependent shift as well as the assignment, and A partly reads that shift; the permuted set's root mean square and mean shift are printed beside A against g_mom's.",
+  "The twin's size match's largest relative error per damping is printed and bounds nothing (no tolerance is set): the reader checks it before reading D.",
+  "'Not shown' is not 'does not need development': it mixes controls that gain as much as g_mom with noise (D and A are differences of four scored arms, so their per-seed noise is about sqrt(2) times G's), and a D or A read 'behind' means the twin or the permuted set gains more than g_mom. With ten seeds and a 0.3 bar the power at a true D or A near 0.3 is low, so 'not shown' is the expected outcome even when the effect is real and modest; D's and A's means and Z/G and Q/G are printed whatever the label. Statement 1 never says the gain needs development: a twin that reproduces most of the gain can still leave D ahead, so Z/G and Q/G are printed beside it.",
+  "Statement 1 is read only in try T11's form A on the two cuts and Statement 2 only in the entry's form B in the worlds: nothing reads the development-dependence in the entry's form or the depth sign in form A, and Statement 1 is not carried into the entry's form. The two cuts share the fit, the reference and the truth's stage, so its six readings are closer to three.",
+  "Statement 2's bars are not symmetric: 'stays positive' needs a mean above 0 with 8 of 10 seeds ahead, 'it turns' a mean below -0.3 with 8 of 10 behind (try T46's test), so a steady reversal smaller than 0.3 reads 'not separated'; every world a statement names is printed with its mean, seeds ahead and sign.",
+  "Each thinned world is one draw (the second draws of tries T50 and T54 and their draw-null checks are not used), and try T50's three worlds share their predictions bit for bit and differ only in the truth, so they are one draw of predictions and not independent of one another: 'stays positive' in all of them by noise is likelier than the product of three independent worlds' chances.",
+  "A larger arm redraws more counts: apply_factors draws every count of a call from one stream, so a changed factor misaligns every later draw, and larger factors add resampling variance; per-seed differences hold that noise.",
+  "'Stays positive' has no size threshold: a gain that falls to a few hundredths still stays positive, and each mean is printed.",
+  "A thinned reference is one draw, changes the floor, the de terms' reference, B0's shift and g_mom's fit, and is not a deeper truth; a thinned truth is one draw shared by all ten seeds. Board points are not comparable across worlds.",
+  "One released day, in-sample: the cuts are the ones that kept g_mom and the worlds are made from the chamber cut's library 3; Feng's E9.5 cells lie inside these pseudo-tasks' external windows.",
+  "Nothing here says how deep any hidden truth is, and no statement may be used with a figure for one. No outcome is evidence on Task 1's read depth, a lever closed after an exposure that this read does not reopen.",
+  "Whatever it reads, the damping is a size chosen on the cuts that kept g_mom: no outcome changes g_mom's damping in any entry or at test, and the result can only go to the team captain.",
+  "The twin's and the permuted control's scores at 0.5 are committed only as per-cut means, per-seed sds and gains over b0 (their per-seed task files are not in the repository), so without --t20-tasks their reproduction is checked on those aggregates, not seed for seed.",
+  "The twin is matched on the root mean square, not on the shape: D reads 'more than the twin at equal root mean square', not 'more than the twin at the same shape'. As the damping grows the twin's share at the clip can grow several times faster than g_mom's, so Z holds a change of clip share that G does not; both families' shares not zeroed and at the clip at damping 1.0 are printed beside D whatever the label.",
+  "A is read only with Q/G and the permuted set's mean shift and root mean square beside it: if the shift costs points, Q falls with the damping and A reads ahead with no effect of the assignment.",
+  "What is reproduced: on the cuts b0, g_mom, g_mom_d075 and g_mom_d1 seed for seed against try T49's form A files, and g_mom_null and g_mom_perm against tries T20 to T24's committed aggregates (seed for seed only with --t20-tasks); in the worlds b0 and m1_r_gmom against tries T50's and T54's files. Try T49's form B arms are reproduced nowhere (the lib3 world is not try T49's chamber file), and the larger control arms on the cuts and m1_r_gmom_g075 and m1_r_gmom_g1 in the worlds have no committed counterpart.",
+  "The rebuild check at 0.5 refits g_mom and the twin's cross-fit in the same process and asks for equal prediction sha256: a void on it ('rebuilt ... do not equal') first needs a check of whether the refit itself is deterministic on that machine and thread count before anything is read into it.",
+  "At 0.5 the sha256 record of the factors used is taken from the same objects as the registered caches and cannot fail by itself; the identity of the twin and the permuted arm with the registered candidates rests on the rebuild of both candidates on the first seed with the caches cleared (bit for bit) and on the reproduction of tries T21's and T23's committed scores."
+ ],
+ "choices": [
+  "The twin at a larger damping: the registered cross-fit's two raw directions (captured from the one call of finish_no_development that harness._g_mom_null_factors makes) finished by finish_no_development with the target g_mom's factors finished at that damping (T23's size match, per category, to g_mom at the same damping) and the record's reference damping set to that damping (it enters the record only).",
+  "The permuted set at a larger damping: permute_factors(g_mom's factors finished at that damping, G_MOM_PERM_SEED); the derangement depends only on the seed and the metacell counts, so it is the same at every damping (checked).",
+  "Tries T21's and T23's per-seed scores are not committed; their reproduction uses the committed aggregates (each arm's mean and per-seed sd, and its gain over b0 with seeds ahead) to 1e-9, and seed for seed only when the uncommitted task files are given (--t20-tasks).",
+  "'No control scores exactly as its twin' is read two ways, both void reasons: a larger arm of any family scoring as that family's arm at 0.5 on every seed of a cut, and a twin or permuted arm scoring as g_mom at its damping on every seed of a cut.",
+  "Try T54's 'thinning idle' check is made against lib3 (the inputs as they are and the truth lib3, try T54's ref100 world), since ref100 is not one of this read's worlds.",
+  "The label of D and A is the single-task test on the pair (control's increment, g_mom's increment) per seed, as try T46's difference-in-differences is tested; the parts of D and A are the differences of the parts.",
+  "Besides try T49's records, each family's cell-weighted root mean square per category and damping (the size T23 matches) and the twin's size-match record are reported, read by nothing.",
+  "Statement 1's words and condition (after review): 'exceeds ... by more than 0.3' in place of 'needs', and G ahead on both cuts at damping 1.0 added to D and A ahead (a tighter bar, never a looser one); after the second review 'at g_mom's size' is dropped (it held for the twin on the cell-weighted root mean square only, and not for the permuted set) and each control is named by what it is matched on; the bar and the quantities are unchanged. Z/G and Q/G are the ratios of the paired means at damping 1.0 (nan where G's mean is 0).",
+  "The permuted set's mean shift: per damping and category, the root mean square over the free genes of the per-gene cell-weighted mean of the finished log factors (weights the metacell sizes), recorded for all three families; with each family's cell-weighted root mean square it is printed beside A, read by nothing.",
+  "The twin's shapes beside D: per damping and category, the twin's and g_mom's share not zeroed and share at the clip (try T49's records) and the twin's damping found (its size match's record), read by nothing.",
+  "Each arm's damping in a task file is read from the built factors: for g_mom and the permuted set the number in finish_momentum's note ('damped by d', which permute_factors keeps), for the twin its categories' one reference damping (None where they differ or there is none); in a world, the note of the fold's finish the hook returned for the arm.",
+  "The rebuild check at 0.5: on the first seed only, harness.CANDIDATES['g_mom_null'] and ['g_mom_perm'] are built with harness._G_MOM_PREP and _G_MOM_NULL_PREP cleared and then put back as they were; void unless each rebuilt prediction's sha256 (dtype, shape, bytes) equals the arm's.",
+  "A world's damping hook is idle (void) if a larger arm scores exactly as m1_r_gmom on every seed, or has m1_r_gmom's prediction sha256 on any seed (a damped finish differs from 0.5's, so no seed should share one).",
+  "A failed size match voids: a category whose twin was finished at no damping while g_mom has a size there, or whose g_mom size lies outside the twin's sizes at the two ends of SIZE_MATCH_DAMPING (the bisection cannot reach it; where the clip caps the twin's size it keeps the first damping at the cap, short of an end, so a test of the damping found against the ends would miss it), recorded at run time by watching ts._finish_to_size; no tolerance is set on the relative error, whose largest value per damping is printed.",
+  "The factors used at 0.5 are recorded by sha256 (genes, categories, metacell indexes, sizes, log factors) beside the sha256 of the registered caches (harness._G_MOM_PREP's and _G_MOM_NULL_PREP's at the end of the run, and permute_factors of the former at harness.G_MOM_PERM_SEED), which hold the same objects, so this record cannot fail in a real run and is kept as a record (field 'registered_cache'); the twin's seed is the registered function's default (its one call passes none) and the derangement's is the permuted factors' own record.",
+  "The twin's categories (third review): void unless at every damping the twin's finished categories hold every category in which g_mom's finished factors have a positive cell-weighted root mean square and none that g_mom lacks (a g_mom category of size 0 may stand in the twin, matched to 0); g_mom's categories and the twin's 'skipped' map are recorded per damping. Void as well unless each category's recorded size target equals g_mom's recorded size at that damping to a relative 1e-12 (the two are computed by the same _factor_rms on the same factors and genes).",
+  "Statement 2's bars are kept as the brief sets them (a symmetric bar would loosen 'it turns' or change what 'stays positive' says); every world a statement names is printed with its mean, seeds ahead and sign instead.",
+  "Each world's recorded M1 fraction is checked against 0.2 within part_depth_read's FRACTION_TOL, as tries T50 and T54 check it."
+ ],
+ "reading": {
+  "valid": true,
+  "validity": {
+   "valid": true,
+   "reasons": [],
+   "reproduction": {
+    "T1/E9.5->E10.5:chamber": {
+     "largest_difference": {
+      "b0": 0.0,
+      "g_mom": 0.0,
+      "g_mom_d075": 0.0,
+      "g_mom_d1": 0.0,
+      "g_mom_null": 0.0,
+      "g_mom_perm": 0.0
+     },
+     "aggregates": {
+      "g_mom_null": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "gain_over_b0": 0.0,
+       "seeds_ahead": 10,
+       "seeds_ahead_committed": 10
+      },
+      "g_mom_perm": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "gain_over_b0": 0.0,
+       "seeds_ahead": 10,
+       "seeds_ahead_committed": 10
+      }
+     },
+     "absent": [],
+     "holds": true,
+     "seed_for_seed_t21_t23": false
+    },
+    "T1/E9.5->E10.5": {
+     "largest_difference": {
+      "b0": 0.0,
+      "g_mom": 0.0,
+      "g_mom_d075": 0.0,
+      "g_mom_d1": 0.0,
+      "g_mom_null": 0.0,
+      "g_mom_perm": 0.0
+     },
+     "aggregates": {
+      "g_mom_null": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "gain_over_b0": 0.0,
+       "seeds_ahead": 10,
+       "seeds_ahead_committed": 10
+      },
+      "g_mom_perm": {
+       "mean": 0.0,
+       "sd": 0.0,
+       "gain_over_b0": 0.0,
+       "seeds_ahead": 10,
+       "seeds_ahead_committed": 10
+      }
+     },
+     "absent": [],
+     "holds": true,
+     "seed_for_seed_t21_t23": false
+    },
+    "lib3": {
+     "largest_difference": {
+      "b0": 0.0,
+      "m1_r_gmom": 0.0
+     },
+     "absent": [],
+     "holds": true
+    },
+    "lib3_t67": {
+     "largest_difference": {
+      "b0": 0.0,
+      "m1_r_gmom": 0.0
+     },
+     "absent": [],
+     "holds": true
+    },
+    "lib3_t33": {
+     "largest_difference": {
+      "b0": 0.0,
+      "m1_r_gmom": 0.0
+     },
+     "absent": [],
+     "holds": true
+    },
+    "ref67": {
+     "largest_difference": {
+      "b0": 0.0,
+      "m1_r_gmom": 0.0
+     },
+     "absent": [],
+     "holds": true
+    },
+    "ref50": {
+     "largest_difference": {
+      "b0": 0.0,
+      "m1_r_gmom": 0.0
+     },
+     "absent": [],
+     "holds": true
+    }
+   },
+   "commits": [
+    "6214e2865f3d4baa0650a09a69677e27b3a68910"
+   ]
+  },
+  "outcome": "statement 1: the larger damping's gain is ahead and exceeds by more than 0.3 on both cuts the gains of the no-development twin (matched to g_mom's cell-weighted root mean square at each damping) and of the permuted control (g_mom's factor values with the metacells reassigned); statement 2: stays positive at every depth read",
+  "reading_1": {
+   "T1/E9.5->E10.5:chamber": {
+    "0.75": {
+     "G": {
+      "mean": 0.7310442212613154,
+      "seeds_ahead": 10,
+      "of": 10,
+      "range": [
+       0.6528044599042957,
+       0.813858166318596
+      ],
+      "sd": 0.057310242091313406,
+      "ahead": true,
+      "behind": false,
+      "label": "ahead",
+      "quantity": "g_mom_d075 - g_mom",
+      "points": {
+       "by_metric": {
+        "de_score": 0.10801243690771775,
+        "de_direction": 0.06384344830891758,
+        "mmd_u": 0.35956441113840415,
+        "variogram": 0.19962392490627712
+       },
+       "de": 0.17185588521663533,
+       "mmd_u_variogram": 0.5591883360446812
+      }
+     },
+     "Z": {
+      "mean": 0.3230185346263504,
+      "seeds_ahead": 10,
+      "of": 10,
+      "range": [
+       0.2509476058217359,
+       0.36624620161285293
+      ],
+      "sd": 0.03519842720759151,
+      "ahead": true,
+      "behind": false,
+      "label": "ahead",
+      "quantity": "g_mom_null_d075 - g_mom_null",
+      "points": {
+       "by_metric": {
+        "de_score": 0.044469478013667574,
+        "de_direction": 0.03087015579350677,
+        "mmd_u": 0.1302230613517334,
+        "variogram": 0.11745583946743932
+       },
+       "de": 0.07533963380717434,
+       "mmd_u_variogram": 0.2476789008191727
+      }
+     },
+     "D": {
+      "mean": 0.408025686634965,
+      "seeds_ahead": 10,
+      "of": 10,
+      "range": [
+       0.30573900448906954,
+       0.5166130745430166
+      ],
+      "sd": 0.06078593664062033,
+      "ahead": true,
+      "behind": false,
+      "label": "ahead",
+      "quantity": "(g_mom_d075 - g_mom) - (g_mom_null_d075 - g_mom_null)",
+      "points": {
+       "by_metric": {
+        "de_score": 0.06354295889405018,
+        "de_direction": 0.03297329251541081,
+        "mmd_u": 0.22934134978667076,
+        "variogram": 0.0821680854388378
+       },
+       "de": 0.09651625140946099,
+       "mmd_u_variogram": 0.3115094352255085
+      }
+     },
+     "Q": {
+      "mean": 0.2561097528986835,
+      "seeds_ahead": 10,
+      "of": 10,
+      "range": [
+       0.20957917148120941,
+       0.3149800912712877
+      ],
+      "sd": 0.03175959967113093,
+      "ahead": false,
+      "behind": false,
+      "label": "level",
+      "quantity": "g_mom_perm_d075 - g_mom_perm",
+      "points": {
+       "by_metric": {
+        "de_score": 0.0054698902902262925,
+        "de_direction": 0.010043234059152473,
+        "mmd_u": 0.11105457377359995,
+        "variogram": 0.12954205477570258
+       },
+       "de": 0.015513124349378765,
+       "mmd_u_variogram": 0.24059662854930253
+      }
+     },
+     "A": {
+      "mean": 0.47493446836263187,
+      "seeds_ahead": 10,
+      "of": 10,
+      "range": [
+       0.3566579872429756,
+       0.6042789948373866
+      ],
+      "sd": 0.07089371109559041,
+      "ahead": true,
+      "behind": false,
+      "label": "ahead",
+      "quantity": "(g_mom_d075 - g_mom) - (g_mom_perm_d075 - g_mom_perm)",
+      "points": {
+       "by_metric": {
+        "de_score": 0.10254254661749146,
+        "de_direction": 0.05380021424976511,
+        "mmd_u": 0.2485098373648042,
+        "variogram": 0.07008187013057454
+       },
+       "de": 0.15634276086725657,
+       "mmd_u_variogram": 0.3185917074953787
+      }
+     }
+    },
+    "1": {
+     "G": {
+      "mean": 1.4652162057518148,
+      "seeds_ahead": 10,
+      "of": 10,
+      "range": [
+       1.3638831416682322,
+       1.5929909438820857
+      ],
+      "sd": 0.07577938809139687,
+      "ahead": true,
+      "behind": false,
+      "label": "ahead",
+      "quantity": "g_mom_d1 - g_mom",
+      "points": {
+       "by_metric": {
+        "de_score": 0.22661900276225824,
+        "de_direction": 0.1305360218809884,
+        "mmd_u": 0.7044594053939102,
+        "variogram": 0.40360177571465794
+       },
+       "de": 0.35715502464324667,
+       "mmd_u_variogram": 1.108061181108568
+      }
+     },
+     "Z": {
+      "mean": 0.668090528820008,
+      "seeds_ahead": 10,
+      "of": 10,
+      "range": [
+       0.6258477093406754,
+       0.6931134585876961
+      ],
+      "sd": 0.02063687346941037,
+      "ahead": true,
+      "behind": false,
+      "label": "ahead",
+      "quantity": "g_mom_null_d1 - g_mom_null",
+      "points": {
+       "by_metric": {
+        "de_score": 0.11167387280456922,
+        "de_direction": 0.0648337547044836,
+        "mmd_u": 0.2579379200647078,
+        "variogram": 0.2336449812462466
+       },
+       "de": 0.17650762750905283,
+       "mmd_u_variogram": 0.4915829013109544
+      }
+     },
+     "D": {
+      "mean": 0.7971256769318067,
+      "seeds_ahead": 10,
+      "of": 10,
+      "range": [
+       0.6713413469268232,
+       0.918419378600646
+      ],
+      "sd": 0.07975192552072514,
+      "ahead": true,
+      "behind": false,
+      "label": "ahead",
+      "quantity": "(g_mom_d1 - g_mom) - (g_mom_null_d1 - g_mom_null)",
+      "points": {
+       "by_metric": {
+        "de_score": 0.11494512995768902,
+        "de_direction": 0.06570226717650479,
+        "mmd_u": 0.4465214853292024,
+        "variogram": 0.16995679446841133
+       },
+       "de": 0.18064739713419384,
+       "mmd_u_variogram": 0.6164782797976137
+      }
+     },
+     "Q": {
+      "mean": 0.568224396059992,
+      "seeds_ahead": 10,
+      "of": 10,
+      "range": [
+       0.4980315760471683,
+       0.6593886476522144
+      ],
+      "sd": 0.04907268902719857,
+      "ahead": true,
+      "behind": false,
+      "label": "ahead",
+      "quantity": "g_mom_perm_d1 - g_mom_perm",
+      "points": {
+       "by_metric": {
+        "de_score": 0.03509329133832201,
+        "de_direction": 0.024942643909608986,
+        "mmd_u": 0.240735887308385,
+        "variogram": 0.26745257350367496
+       },
+       "de": 0.060035935247930994,
+       "mmd_u_variogram": 0.5081884608120599
+      }
+     },
+     "A": {
+      "mean": 0.8969918096918228,
+      "seeds_ahead": 10,
+      "of": 10,
+      "range": [
+       0.705066157862305,
+       1.046235511894153
+      ],
+      "sd": 0.0991229485020437,
+      "ahead": true,
+      "behind": false,
+      "label": "ahead",
+      "quantity": "(g_mom_d1 - g_mom) - (g_mom_perm_d1 - g_mom_perm)",
+      "points": {
+       "by_metric": {
+        "de_score": 0.19152571142393623,
+        "de_direction": 0.10559337797137941,
+        "mmd_u": 0.46372351808552514,
+        "variogram": 0.13614920221098298
+       },
+       "de": 0.29711908939531567,
+       "mmd_u_variogram": 0.5998727202965082
+      }
+     }
+    }
+   },
+   "T1/E9.5->E10.5": {
+    "0.75": {
+     "G": {
+      "mean": 0.6936628025384458,
+      "seeds_ahead": 10,
+      "of": 10,
+      "range": [
+       0.6336252921322441,
+       0.7765414041431313
+      ],
+      "sd": 0.04377476107274482,
+      "ahead": true,
+      "behind": false,
+      "label": "ahead",
+      "quantity": "g_mom_d075 - g_mom",
+      "points": {
+       "by_metric": {
+        "de_score": 0.09070850899958113,
+        "de_direction": 0.06685035539541417,
+        "mmd_u": 0.3490535159576635,
+        "variogram": 0.18705042218578694
+       },
+       "de": 0.1575588643949953,
+       "mmd_u_variogram": 0.5361039381434505
+      }
+     },
+     "Z": {
+      "mean": 0.3200076830667477,
+      "seeds_ahead": 10,
+      "of": 10,
+      "range": [
+       0.29234609704342773,
+       0.3593044854835483
+      ],
+      "sd": 0.020600659253508888,
+      "ahead": true,
+      "behind": false,
+      "label": "ahead",
+      "quantity": "g_mom_null_d075 - g_mom_null",
+      "points": {
+       "by_metric": {
+        "de_score": 0.05178960728543167,
+        "de_direction": 0.026080373684140845,
+        "mmd_u": 0.13252486485698195,
+        "variogram": 0.10961283724019288
+       },
+       "de": 0.07786998096957251,
+       "mmd_u_variogram": 0.24213770209717483
+      }
+     },
+     "D": {
+      "mean": 0.37365511947169805,
+      "seeds_ahead": 10,
+      "of": 10,
+      "range": [
+       0.30383635410365173,
+       0.4600960692254006
+      ],
+      "sd": 0.054948200841168124,
+      "ahead": true,
+      "behind": false,
+      "label": "ahead",
+      "quantity": "(g_mom_d075 - g_mom) - (g_mom_null_d075 - g_mom_null)",
+      "points": {
+       "by_metric": {
+        "de_score": 0.03891890171414946,
+        "de_direction": 0.04076998171127333,
+        "mmd_u": 0.21652865110068154,
+        "variogram": 0.07743758494559405
+       },
+       "de": 0.0796888834254228,
+       "mmd_u_variogram": 0.29396623604627564
+      }
+     },
+     "Q": {
+      "mean": 0.2506721807778959,
+      "seeds_ahead": 10,
+      "of": 10,
+      "range": [
+       0.20477916005325625,
+       0.29501463636038494
+      ],
+      "sd": 0.031856473153295074,
+      "ahead": false,
+      "behind": false,
+      "label": "level",
+      "quantity": "g_mom_perm_d075 - g_mom_perm",
+      "points": {
+       "by_metric": {
+        "de_score": -0.00203534280655282,
+        "de_direction": 0.01339461903200001,
+        "mmd_u": 0.11698776878048271,
+        "variogram": 0.12232513577196613
+       },
+       "de": 0.01135927622544719,
+       "mmd_u_variogram": 0.23931290455244886
+      }
+     },
+     "A": {
+      "mean": 0.4429906217605499,
+      "seeds_ahead": 10,
+      "of": 10,
+      "range": [
+       0.36915180615957155,
+       0.5249325803333633
+      ],
+      "sd": 0.055566287642113354,
+      "ahead": true,
+      "behind": false,
+      "label": "ahead",
+      "quantity": "(g_mom_d075 - g_mom) - (g_mom_perm_d075 - g_mom_perm)",
+      "points": {
+       "by_metric": {
+        "de_score": 0.09274385180613395,
+        "de_direction": 0.053455736363414164,
+        "mmd_u": 0.23206574717718076,
+        "variogram": 0.0647252864138208
+       },
+       "de": 0.14619958816954812,
+       "mmd_u_variogram": 0.2967910335910016
+      }
+     }
+    },
+    "1": {
+     "G": {
+      "mean": 1.3578773680620473,
+      "seeds_ahead": 10,
+      "of": 10,
+      "range": [
+       1.2527682270968796,
+       1.438376040912516
+      ],
+      "sd": 0.05895162915828114,
+      "ahead": true,
+      "behind": false,
+      "label": "ahead",
+      "quantity": "g_mom_d1 - g_mom",
+      "points": {
+       "by_metric": {
+        "de_score": 0.1614092879107944,
+        "de_direction": 0.13240653932009544,
+        "mmd_u": 0.6842484107725582,
+        "variogram": 0.3798131300585995
+       },
+       "de": 0.29381582723088984,
+       "mmd_u_variogram": 1.0640615408311578
+      }
+     },
+     "Z": {
+      "mean": 0.644430117147406,
+      "seeds_ahead": 10,
+      "of": 10,
+      "range": [
+       0.5892188074155911,
+       0.6768576159222093
+      ],
+      "sd": 0.024206818518803536,
+      "ahead": true,
+      "behind": false,
+      "label": "ahead",
+      "quantity": "g_mom_null_d1 - g_mom_null",
+      "points": {
+       "by_metric": {
+        "de_score": 0.10179316045200004,
+        "de_direction": 0.06189265611021316,
+        "mmd_u": 0.2625342482062224,
+        "variogram": 0.21821005237897073
+       },
+       "de": 0.1636858165622132,
+       "mmd_u_variogram": 0.48074430058519313
+      }
+     },
+     "D": {
+      "mean": 0.7134472509146412,
+      "seeds_ahead": 10,
+      "of": 10,
+      "range": [
+       0.6041765059015418,
+       0.7808535820876514
+      ],
+      "sd": 0.05523318400471427,
+      "ahead": true,
+      "behind": false,
+      "label": "ahead",
+      "quantity": "(g_mom_d1 - g_mom) - (g_mom_null_d1 - g_mom_null)",
+      "points": {
+       "by_metric": {
+        "de_score": 0.059616127458794355,
+        "de_direction": 0.07051388320988228,
+        "mmd_u": 0.42171416256633576,
+        "variogram": 0.16160307767962878
+       },
+       "de": 0.13013001066867663,
+       "mmd_u_variogram": 0.5833172402459647
+      }
+     },
+     "Q": {
+      "mean": 0.5390283961199984,
+      "seeds_ahead": 10,
+      "of": 10,
+      "range": [
+       0.4781891968430685,
+       0.6195903254110036
+      ],
+      "sd": 0.05222744143636712,
+      "ahead": true,
+      "behind": false,
+      "label": "ahead",
+      "quantity": "g_mom_perm_d1 - g_mom_perm",
+      "points": {
+       "by_metric": {
+        "de_score": 1.6319787937285613e-05,
+        "de_direction": 0.03417480325640265,
+        "mmd_u": 0.2525748915800415,
+        "variogram": 0.2522623814956182
+       },
+       "de": 0.03419112304433994,
+       "mmd_u_variogram": 0.5048372730756596
+      }
+     },
+     "A": {
+      "mean": 0.8188489719420489,
+      "seeds_ahead": 10,
+      "of": 10,
+      "range": [
+       0.6776671697024312,
+       0.9310322840521081
+      ],
+      "sd": 0.08073525511519977,
+      "ahead": true,
+      "behind": false,
+      "label": "ahead",
+      "quantity": "(g_mom_d1 - g_mom) - (g_mom_perm_d1 - g_mom_perm)",
+      "points": {
+       "by_metric": {
+        "de_score": 0.1613929681228571,
+        "de_direction": 0.09823173606369279,
+        "mmd_u": 0.4316735191925167,
+        "variogram": 0.12755074856298132
+       },
+       "de": 0.2596247041865499,
+       "mmd_u_variogram": 0.5592242677554982
+      }
+     }
+    }
+   }
+  },
+  "statement_1": {
+   "statement": "the larger damping's gain is ahead and exceeds by more than 0.3 on both cuts the gains of the no-development twin (matched to g_mom's cell-weighted root mean square at each damping) and of the permuted control (g_mom's factor values with the metacells reassigned)",
+   "readings": {
+    "G on T1/E9.5->E10.5:chamber": "ahead",
+    "D on T1/E9.5->E10.5:chamber": "ahead",
+    "A on T1/E9.5->E10.5:chamber": "ahead",
+    "G on T1/E9.5->E10.5": "ahead",
+    "D on T1/E9.5->E10.5": "ahead",
+    "A on T1/E9.5->E10.5": "ahead"
+   },
+   "holds": true,
+   "control_share_of_gain": {
+    "T1/E9.5->E10.5:chamber": {
+     "Z/G": 0.45596719869557073,
+     "Q/G": 0.38780924878484485
+    },
+    "T1/E9.5->E10.5": {
+     "Z/G": 0.4745863892459832,
+     "Q/G": 0.3969639739185696
+    }
+   }
+  },
+  "size_match_largest_relative_error": {
+   "T1/E9.5->E10.5:chamber": {
+    "0.5": 3.66223312264652e-10,
+    "0.75": 3.4361724093596433e-10,
+    "1": 2.8163765109294387e-10
+   },
+   "T1/E9.5->E10.5": {
+    "0.5": 3.66223312264652e-10,
+    "0.75": 3.4361724093596433e-10,
+    "1": 2.8163765109294387e-10
+   }
+  },
+  "beside_statement_1": {
+   "T1/E9.5->E10.5:chamber": {
+    "D_mean_at_1": 0.7971256769318067,
+    "A_mean_at_1": 0.8969918096918228,
+    "twin_shape": {
+     "0.5": {
+      "blood": {
+       "share_not_zeroed": 0.15927406856363524,
+       "share_at_clip": 4.9593949538156346e-05,
+       "damping_found": 0.33212465111390727,
+       "g_mom_share_not_zeroed": 0.18044758539458186,
+       "g_mom_share_at_clip": 2.4796974769078173e-05
+      },
+      "cm": {
+       "share_not_zeroed": 0.14020957090293806,
+       "share_at_clip": 0.0,
+       "damping_found": 0.9319071133056184,
+       "g_mom_share_not_zeroed": 0.1010467865777518,
+       "g_mom_share_at_clip": 4.42803120876396e-06
+      },
+      "endocardium": {
+       "share_not_zeroed": 0.11526563759221375,
+       "share_at_clip": 0.0,
+       "damping_found": 0.8267299395707677,
+       "g_mom_share_not_zeroed": 0.08342012274502511,
+       "g_mom_share_at_clip": 0.0
+      }
+     },
+     "0.75": {
+      "blood": {
+       "share_not_zeroed": 0.21450313061806459,
+       "share_at_clip": 0.0011034653772239787,
+       "damping_found": 0.49918223523108773,
+       "g_mom_share_not_zeroed": 0.23348831442564008,
+       "g_mom_share_at_clip": 0.00013638336122992996
+      },
+      "cm": {
+       "share_not_zeroed": 0.205636206500454,
+       "share_at_clip": 0.0,
+       "damping_found": 1.383534022314422,
+       "g_mom_share_not_zeroed": 0.15980321829308253,
+       "g_mom_share_at_clip": 5.313637450516751e-05
+      },
+      "endocardium": {
+       "share_not_zeroed": 0.18326204203087224,
+       "share_at_clip": 0.0,
+       "damping_found": 1.2284104151066235,
+       "g_mom_share_not_zeroed": 0.1428863678631207,
+       "g_mom_share_at_clip": 6.199243692269543e-06
+      }
+     },
+     "1": {
+      "blood": {
+       "share_not_zeroed": 0.25185667348583474,
+       "share_at_clip": 0.005427437852581985,
+       "damping_found": 0.6705217529355871,
+       "g_mom_share_not_zeroed": 0.2693137437232658,
+       "g_mom_share_at_clip": 0.0008926910916868142
+      },
+      "cm": {
+       "share_not_zeroed": 0.25101193536741456,
+       "share_at_clip": 4.558267420786429e-06,
+       "damping_found": 1.8283515367907177,
+       "g_mom_share_not_zeroed": 0.20346803404270394,
+       "g_mom_share_at_clip": 0.00017977806707581676
+      },
+      "endocardium": {
+       "share_not_zeroed": 0.23234765358626247,
+       "share_at_clip": 6.199243692269543e-06,
+       "damping_found": 1.631870992005156,
+       "g_mom_share_not_zeroed": 0.1878153865228442,
+       "g_mom_share_at_clip": 3.719546215361726e-05
+      }
+     }
+    },
+    "permuted_size": {
+     "0.5": {
+      "blood": {
+       "rms": 0.08335477832447684,
+       "g_mom_rms": 0.03814028009242542,
+       "mean_shift": 0.04426818543270708,
+       "g_mom_mean_shift": 0.006265578626160909
+      },
+      "cm": {
+       "rms": 0.034449381198065336,
+       "g_mom_rms": 0.03252267787145194,
+       "mean_shift": 0.00673522350894672,
+       "g_mom_mean_shift": 0.0025430843173583116
+      },
+      "endocardium": {
+       "rms": 0.02765965933321466,
+       "g_mom_rms": 0.027331102072777547,
+       "mean_shift": 0.003242208856176954,
+       "g_mom_mean_shift": 0.0031268144284529393
+      }
+     },
+     "0.75": {
+      "blood": {
+       "rms": 0.12541749601883248,
+       "g_mom_rms": 0.0591486678622186,
+       "mean_shift": 0.06631363552512229,
+       "g_mom_mean_shift": 0.006633779618981704
+      },
+      "cm": {
+       "rms": 0.05356610294054818,
+       "g_mom_rms": 0.050635673269600785,
+       "mean_shift": 0.01006887804062684,
+       "g_mom_mean_shift": 0.002758924791475269
+      },
+      "endocardium": {
+       "rms": 0.04399371806833945,
+       "g_mom_rms": 0.04352459808997031,
+       "mean_shift": 0.003839566533827311,
+       "g_mom_mean_shift": 0.0036015289476987755
+      }
+     },
+     "1": {
+      "blood": {
+       "rms": 0.1663594365194681,
+       "g_mom_rms": 0.07954747892279643,
+       "mean_shift": 0.0879619893143127,
+       "g_mom_mean_shift": 0.006651800315877262
+      },
+      "cm": {
+       "rms": 0.07191772191203609,
+       "g_mom_rms": 0.0679928999067857,
+       "mean_shift": 0.013245541456006026,
+       "g_mom_mean_shift": 0.00304965362109292
+      },
+      "endocardium": {
+       "rms": 0.05976182503587329,
+       "g_mom_rms": 0.0591591016138931,
+       "mean_shift": 0.004065414930453144,
+       "g_mom_mean_shift": 0.0036629561061500065
+      }
+     }
+    }
+   },
+   "T1/E9.5->E10.5": {
+    "D_mean_at_1": 0.7134472509146412,
+    "A_mean_at_1": 0.8188489719420489,
+    "twin_shape": {
+     "0.5": {
+      "blood": {
+       "share_not_zeroed": 0.15927406856363524,
+       "share_at_clip": 4.9593949538156346e-05,
+       "damping_found": 0.33212465111390727,
+       "g_mom_share_not_zeroed": 0.18044758539458186,
+       "g_mom_share_at_clip": 2.4796974769078173e-05
+      },
+      "cm": {
+       "share_not_zeroed": 0.14020957090293806,
+       "share_at_clip": 0.0,
+       "damping_found": 0.9319071133056184,
+       "g_mom_share_not_zeroed": 0.1010467865777518,
+       "g_mom_share_at_clip": 4.42803120876396e-06
+      },
+      "endocardium": {
+       "share_not_zeroed": 0.11526563759221375,
+       "share_at_clip": 0.0,
+       "damping_found": 0.8267299395707677,
+       "g_mom_share_not_zeroed": 0.08342012274502511,
+       "g_mom_share_at_clip": 0.0
+      }
+     },
+     "0.75": {
+      "blood": {
+       "share_not_zeroed": 0.21450313061806459,
+       "share_at_clip": 0.0011034653772239787,
+       "damping_found": 0.49918223523108773,
+       "g_mom_share_not_zeroed": 0.23348831442564008,
+       "g_mom_share_at_clip": 0.00013638336122992996
+      },
+      "cm": {
+       "share_not_zeroed": 0.205636206500454,
+       "share_at_clip": 0.0,
+       "damping_found": 1.383534022314422,
+       "g_mom_share_not_zeroed": 0.15980321829308253,
+       "g_mom_share_at_clip": 5.313637450516751e-05
+      },
+      "endocardium": {
+       "share_not_zeroed": 0.18326204203087224,
+       "share_at_clip": 0.0,
+       "damping_found": 1.2284104151066235,
+       "g_mom_share_not_zeroed": 0.1428863678631207,
+       "g_mom_share_at_clip": 6.199243692269543e-06
+      }
+     },
+     "1": {
+      "blood": {
+       "share_not_zeroed": 0.25185667348583474,
+       "share_at_clip": 0.005427437852581985,
+       "damping_found": 0.6705217529355871,
+       "g_mom_share_not_zeroed": 0.2693137437232658,
+       "g_mom_share_at_clip": 0.0008926910916868142
+      },
+      "cm": {
+       "share_not_zeroed": 0.25101193536741456,
+       "share_at_clip": 4.558267420786429e-06,
+       "damping_found": 1.8283515367907177,
+       "g_mom_share_not_zeroed": 0.20346803404270394,
+       "g_mom_share_at_clip": 0.00017977806707581676
+      },
+      "endocardium": {
+       "share_not_zeroed": 0.23234765358626247,
+       "share_at_clip": 6.199243692269543e-06,
+       "damping_found": 1.631870992005156,
+       "g_mom_share_not_zeroed": 0.1878153865228442,
+       "g_mom_share_at_clip": 3.719546215361726e-05
+      }
+     }
+    },
+    "permuted_size": {
+     "0.5": {
+      "blood": {
+       "rms": 0.08335477832447684,
+       "g_mom_rms": 0.03814028009242542,
+       "mean_shift": 0.04426818543270708,
+       "g_mom_mean_shift": 0.006265578626160909
+      },
+      "cm": {
+       "rms": 0.034449381198065336,
+       "g_mom_rms": 0.03252267787145194,
+       "mean_shift": 0.00673522350894672,
+       "g_mom_mean_shift": 0.0025430843173583116
+      },
+      "endocardium": {
+       "rms": 0.02765965933321466,
+       "g_mom_rms": 0.027331102072777547,
+       "mean_shift": 0.003242208856176954,
+       "g_mom_mean_shift": 0.0031268144284529393
+      }
+     },
+     "0.75": {
+      "blood": {
+       "rms": 0.12541749601883248,
+       "g_mom_rms": 0.0591486678622186,
+       "mean_shift": 0.06631363552512229,
+       "g_mom_mean_shift": 0.006633779618981704
+      },
+      "cm": {
+       "rms": 0.05356610294054818,
+       "g_mom_rms": 0.050635673269600785,
+       "mean_shift": 0.01006887804062684,
+       "g_mom_mean_shift": 0.002758924791475269
+      },
+      "endocardium": {
+       "rms": 0.04399371806833945,
+       "g_mom_rms": 0.04352459808997031,
+       "mean_shift": 0.003839566533827311,
+       "g_mom_mean_shift": 0.0036015289476987755
+      }
+     },
+     "1": {
+      "blood": {
+       "rms": 0.1663594365194681,
+       "g_mom_rms": 0.07954747892279643,
+       "mean_shift": 0.0879619893143127,
+       "g_mom_mean_shift": 0.006651800315877262
+      },
+      "cm": {
+       "rms": 0.07191772191203609,
+       "g_mom_rms": 0.0679928999067857,
+       "mean_shift": 0.013245541456006026,
+       "g_mom_mean_shift": 0.00304965362109292
+      },
+      "endocardium": {
+       "rms": 0.05976182503587329,
+       "g_mom_rms": 0.0591591016138931,
+       "mean_shift": 0.004065414930453144,
+       "g_mom_mean_shift": 0.0036629561061500065
+      }
+     }
+    }
+   }
+  },
+  "reading_2": {
+   "lib3": {
+    "0.75": {
+     "mean": 0.6385119024146398,
+     "seeds_ahead": 10,
+     "of": 10,
+     "range": [
+      0.539317925891325,
+      0.752660587893125
+     ],
+     "sd": 0.07151223164629283,
+     "ahead": true,
+     "behind": false,
+     "label": "ahead",
+     "quantity": "m1_r_gmom_g075 - m1_r_gmom",
+     "points": {
+      "by_metric": {
+       "de_score": 0.04130182862145365,
+       "de_direction": 0.06301998188600583,
+       "mmd_u": 0.3657982067778419,
+       "variogram": 0.16839188512933778
+      },
+      "de": 0.10432181050745948,
+      "mmd_u_variogram": 0.5341900919071797
+     }
+    },
+    "1": {
+     "mean": 1.2664683806291364,
+     "seeds_ahead": 10,
+     "of": 10,
+     "range": [
+      1.1143744315245385,
+      1.4296260340469331
+     ],
+     "sd": 0.0950813277140374,
+     "ahead": true,
+     "behind": false,
+     "label": "ahead",
+     "quantity": "m1_r_gmom_g1 - m1_r_gmom",
+     "points": {
+      "by_metric": {
+       "de_score": 0.10668825656242027,
+       "de_direction": 0.11612373418817323,
+       "mmd_u": 0.7116736379330911,
+       "variogram": 0.3319827519454524
+      },
+      "de": 0.2228119907505935,
+      "mmd_u_variogram": 1.0436563898785436
+     }
+    }
+   },
+   "lib3_t67": {
+    "0.75": {
+     "mean": 0.8399829470406445,
+     "seeds_ahead": 10,
+     "of": 10,
+     "range": [
+      0.732643776929045,
+      0.9393953879295864
+     ],
+     "sd": 0.067212078257414,
+     "ahead": true,
+     "behind": false,
+     "label": "ahead",
+     "quantity": "m1_r_gmom_g075 - m1_r_gmom",
+     "points": {
+      "by_metric": {
+       "de_score": 0.13457737509225798,
+       "de_direction": 0.0958122738676484,
+       "mmd_u": 0.40216074302009125,
+       "variogram": 0.2074325550606467
+      },
+      "de": 0.23038964895990638,
+      "mmd_u_variogram": 0.6095932980807379
+     }
+    },
+    "1": {
+     "mean": 1.645463996792953,
+     "seeds_ahead": 10,
+     "of": 10,
+     "range": [
+      1.4678353282361698,
+      1.8092177872794295
+     ],
+     "sd": 0.11526239043355889,
+     "ahead": true,
+     "behind": false,
+     "label": "ahead",
+     "quantity": "m1_r_gmom_g1 - m1_r_gmom",
+     "points": {
+      "by_metric": {
+       "de_score": 0.25125011797627883,
+       "de_direction": 0.18274137241710173,
+       "mmd_u": 0.7909262380866287,
+       "variogram": 0.4205462683129446
+      },
+      "de": 0.4339914903933806,
+      "mmd_u_variogram": 1.2114725063995733
+     }
+    }
+   },
+   "lib3_t33": {
+    "0.75": {
+     "mean": 0.9137697137676171,
+     "seeds_ahead": 10,
+     "of": 10,
+     "range": [
+      0.8372640055040037,
+      0.9786979786898158
+     ],
+     "sd": 0.0518366070527155,
+     "ahead": true,
+     "behind": false,
+     "label": "ahead",
+     "quantity": "m1_r_gmom_g075 - m1_r_gmom",
+     "points": {
+      "by_metric": {
+       "de_score": 0.21631150475629163,
+       "de_direction": 0.1341636451113848,
+       "mmd_u": 0.4069071834917276,
+       "variogram": 0.15638738040821276
+      },
+      "de": 0.3504751498676764,
+      "mmd_u_variogram": 0.5632945638999404
+     }
+    },
+    "1": {
+     "mean": 1.8263281910588376,
+     "seeds_ahead": 10,
+     "of": 10,
+     "range": [
+      1.6520286816633742,
+      1.961333006203347
+     ],
+     "sd": 0.10155888903177569,
+     "ahead": true,
+     "behind": false,
+     "label": "ahead",
+     "quantity": "m1_r_gmom_g1 - m1_r_gmom",
+     "points": {
+      "by_metric": {
+       "de_score": 0.42213430768991617,
+       "de_direction": 0.27378666131257834,
+       "mmd_u": 0.8120427251616131,
+       "variogram": 0.3183644968947289
+      },
+      "de": 0.6959209690024946,
+      "mmd_u_variogram": 1.1304072220563421
+     }
+    }
+   },
+   "ref67": {
+    "0.75": {
+     "mean": 0.35882082494908546,
+     "seeds_ahead": 10,
+     "of": 10,
+     "range": [
+      0.24768766746526438,
+      0.46977473799060476
+     ],
+     "sd": 0.07317896714206111,
+     "ahead": true,
+     "behind": false,
+     "label": "ahead",
+     "quantity": "m1_r_gmom_g075 - m1_r_gmom",
+     "points": {
+      "by_metric": {
+       "de_score": 0.00915032291629092,
+       "de_direction": 0.02393186633449257,
+       "mmd_u": 0.3168515455758757,
+       "variogram": 0.008887090122427499
+      },
+      "de": 0.03308218925078349,
+      "mmd_u_variogram": 0.3257386356983032
+     }
+    },
+    "1": {
+     "mean": 0.6830859589785021,
+     "seeds_ahead": 10,
+     "of": 10,
+     "range": [
+      0.5010683732527852,
+      0.8126879410615615
+     ],
+     "sd": 0.09271664135145043,
+     "ahead": true,
+     "behind": false,
+     "label": "ahead",
+     "quantity": "m1_r_gmom_g1 - m1_r_gmom",
+     "points": {
+      "by_metric": {
+       "de_score": 0.031788711529479596,
+       "de_direction": 0.044626807764291676,
+       "mmd_u": 0.6107489667301493,
+       "variogram": -0.004078527045416114
+      },
+      "de": 0.07641551929377127,
+      "mmd_u_variogram": 0.6066704396847332
+     }
+    }
+   },
+   "ref50": {
+    "0.75": {
+     "mean": 0.1581364226991262,
+     "seeds_ahead": 10,
+     "of": 10,
+     "range": [
+      0.07432827281699161,
+      0.22629799000283413
+     ],
+     "sd": 0.05514131536414068,
+     "ahead": false,
+     "behind": false,
+     "label": "level",
+     "quantity": "m1_r_gmom_g075 - m1_r_gmom",
+     "points": {
+      "by_metric": {
+       "de_score": 0.018628087171027874,
+       "de_direction": -0.0019204766990146838,
+       "mmd_u": 0.2619638824350753,
+       "variogram": -0.1205350702079635
+      },
+      "de": 0.01670761047201319,
+      "mmd_u_variogram": 0.1414288122271118
+     }
+    },
+    "1": {
+     "mean": 0.27328925937068005,
+     "seeds_ahead": 10,
+     "of": 10,
+     "range": [
+      0.2003781391521855,
+      0.33111057095537433
+     ],
+     "sd": 0.049777976123482545,
+     "ahead": false,
+     "behind": false,
+     "label": "level",
+     "quantity": "m1_r_gmom_g1 - m1_r_gmom",
+     "points": {
+      "by_metric": {
+       "de_score": 0.0341010122086674,
+       "de_direction": -0.005597730671870194,
+       "mmd_u": 0.49837172362609483,
+       "variogram": -0.2535857457922128
+      },
+      "de": 0.02850328153679721,
+      "mmd_u_variogram": 0.244785977833882
+     }
+    }
+   }
+  },
+  "statement_2": {
+   "statement": "stays positive at every depth read",
+   "behind": [],
+   "neither": [],
+   "signs": {
+    "lib3": "positive",
+    "lib3_t67": "positive",
+    "lib3_t33": "positive",
+    "ref67": "positive",
+    "ref50": "positive"
+   }
+  },
+  "mean_scores": {
+   "T1/E9.5->E10.5:chamber": {
+    "b0": 49.68290567973587,
+    "g_mom": 50.9121727839015,
+    "g_mom_d075": 51.64321700516281,
+    "g_mom_d1": 52.37738898965331,
+    "g_mom_null": 50.14013379761643,
+    "g_mom_null_d075": 50.463152332242785,
+    "g_mom_null_d1": 50.808224326436445,
+    "g_mom_perm": 49.98540426498378,
+    "g_mom_perm_d075": 50.241514017882466,
+    "g_mom_perm_d1": 50.55362866104378
+   },
+   "T1/E9.5->E10.5": {
+    "b0": 44.116683628570335,
+    "g_mom": 45.24814327354579,
+    "g_mom_d075": 45.941806076084234,
+    "g_mom_d1": 46.606020641607834,
+    "g_mom_null": 44.55381901367239,
+    "g_mom_null_d075": 44.87382669673914,
+    "g_mom_null_d1": 45.19824913081979,
+    "g_mom_perm": 44.39277680102038,
+    "g_mom_perm_d075": 44.64344898179828,
+    "g_mom_perm_d1": 44.93180519714038
+   },
+   "lib3": {
+    "b0": 53.60340061097905,
+    "m1_r_gmom": 55.73836420518334,
+    "m1_r_gmom_g075": 56.376876107597965,
+    "m1_r_gmom_g1": 57.00483258581247
+   },
+   "lib3_t67": {
+    "b0": 52.03492212422734,
+    "m1_r_gmom": 54.50868277114954,
+    "m1_r_gmom_g075": 55.34866571819018,
+    "m1_r_gmom_g1": 56.154146767942485
+   },
+   "lib3_t33": {
+    "b0": 48.51929944388088,
+    "m1_r_gmom": 50.90930881822052,
+    "m1_r_gmom_g075": 51.82307853198813,
+    "m1_r_gmom_g1": 52.73563700927936
+   },
+   "ref67": {
+    "b0": 55.34660354926174,
+    "m1_r_gmom": 56.95105851332386,
+    "m1_r_gmom_g075": 57.309879338272935,
+    "m1_r_gmom_g1": 57.63414447230235
+   },
+   "ref50": {
+    "b0": 56.81837149276661,
+    "m1_r_gmom": 57.89532908017808,
+    "m1_r_gmom_g075": 58.05346550287719,
+    "m1_r_gmom_g1": 58.16861833954874
+   }
+  },
+  "records": {
+   "T1/E9.5->E10.5:chamber": {
+    "factors": {
+     "g_mom": {
+      "0.5": {
+       "blood": {
+        "share_not_zeroed": 0.18044758539458186,
+        "share_at_clip": 2.4796974769078173e-05,
+        "mean_abs_log_not_zeroed": 0.13794657941944674,
+        "mean_abs_log_all_entries": 0.024892127169681085,
+        "share_unzeroed_vs_0.5": 0.0
+       },
+       "cm": {
+        "share_not_zeroed": 0.1010467865777518,
+        "share_at_clip": 4.42803120876396e-06,
+        "mean_abs_log_not_zeroed": 0.09410049418369922,
+        "mean_abs_log_all_entries": 0.009508552552641228,
+        "share_unzeroed_vs_0.5": 0.0
+       },
+       "endocardium": {
+        "share_not_zeroed": 0.08342012274502511,
+        "share_at_clip": 0.0,
+        "mean_abs_log_not_zeroed": 0.08489425755832702,
+        "mean_abs_log_all_entries": 0.007081889385863416,
+        "share_unzeroed_vs_0.5": 0.0
+       }
+      },
+      "0.75": {
+       "blood": {
+        "share_not_zeroed": 0.23348831442564008,
+        "share_at_clip": 0.00013638336122992996,
+        "mean_abs_log_not_zeroed": 0.17347819692691765,
+        "mean_abs_log_all_entries": 0.04050513179006525,
+        "share_unzeroed_vs_0.5": 0.05304072903105821
+       },
+       "cm": {
+        "share_not_zeroed": 0.15980321829308253,
+        "share_at_clip": 5.313637450516751e-05,
+        "mean_abs_log_not_zeroed": 0.11122149020768811,
+        "mean_abs_log_all_entries": 0.017773552078541123,
+        "share_unzeroed_vs_0.5": 0.05875643171533073
+       },
+       "endocardium": {
+        "share_not_zeroed": 0.1428863678631207,
+        "share_at_clip": 6.199243692269543e-06,
+        "mean_abs_log_not_zeroed": 0.09926097557949047,
+        "mean_abs_log_all_entries": 0.014183040271103316,
+        "share_unzeroed_vs_0.5": 0.05946624511809559
+       }
+      },
+      "1": {
+       "blood": {
+        "share_not_zeroed": 0.2693137437232658,
+        "share_at_clip": 0.0008926910916868142,
+        "mean_abs_log_not_zeroed": 0.20753510755157675,
+        "mean_abs_log_all_entries": 0.05589205676872574,
+        "share_unzeroed_vs_0.5": 0.0888661583286839
+       },
+       "cm": {
+        "share_not_zeroed": 0.20346803404270394,
+        "share_at_clip": 0.00017977806707581676,
+        "mean_abs_log_not_zeroed": 0.12841850945583996,
+        "mean_abs_log_all_entries": 0.02612906165367414,
+        "share_unzeroed_vs_0.5": 0.10242124746495214
+       },
+       "endocardium": {
+        "share_not_zeroed": 0.1878153865228442,
+        "share_at_clip": 3.719546215361726e-05,
+        "mean_abs_log_not_zeroed": 0.11418589776809511,
+        "mean_abs_log_all_entries": 0.02144586852477276,
+        "share_unzeroed_vs_0.5": 0.1043952637778191
+       }
+      }
+     },
+     "g_mom_null": {
+      "0.5": {
+       "blood": {
+        "share_not_zeroed": 0.15927406856363524,
+        "share_at_clip": 4.9593949538156346e-05,
+        "mean_abs_log_not_zeroed": 0.157654030350746,
+        "mean_abs_log_all_entries": 0.02511019883941815,
+        "share_unzeroed_vs_0.5": 0.0
+       },
+       "cm": {
+        "share_not_zeroed": 0.14020957090293806,
+        "share_at_clip": 0.0,
+        "mean_abs_log_not_zeroed": 0.09123120810694221,
+        "mean_abs_log_all_entries": 0.012791488541631013,
+        "share_unzeroed_vs_0.5": 0.0
+       },
+       "endocardium": {
+        "share_not_zeroed": 0.11526563759221375,
+        "share_at_clip": 0.0,
+        "mean_abs_log_not_zeroed": 0.0797591534538525,
+        "mean_abs_log_all_entries": 0.009193489676673527,
+        "share_unzeroed_vs_0.5": 0.0
+       }
+      },
+      "0.75": {
+       "blood": {
+        "share_not_zeroed": 0.21450313061806459,
+        "share_at_clip": 0.0011034653772239787,
+        "mean_abs_log_not_zeroed": 0.19061269032902683,
+        "mean_abs_log_all_entries": 0.04088701881110795,
+        "share_unzeroed_vs_0.5": 0.05522906205442936
+       },
+       "cm": {
+        "share_not_zeroed": 0.205636206500454,
+        "share_at_clip": 0.0,
+        "mean_abs_log_not_zeroed": 0.11136601710241496,
+        "mean_abs_log_all_entries": 0.022900885290005297,
+        "share_unzeroed_vs_0.5": 0.06542663559751592
+       },
+       "endocardium": {
+        "share_not_zeroed": 0.18326204203087224,
+        "share_at_clip": 0.0,
+        "mean_abs_log_not_zeroed": 0.09672218659922326,
+        "mean_abs_log_all_entries": 0.01772550542586472,
+        "share_unzeroed_vs_0.5": 0.06799640443865848
+       }
+      },
+      "1": {
+       "blood": {
+        "share_not_zeroed": 0.25185667348583474,
+        "share_at_clip": 0.005427437852581985,
+        "mean_abs_log_not_zeroed": 0.22243140018061006,
+        "mean_abs_log_all_entries": 0.05602083252828494,
+        "share_unzeroed_vs_0.5": 0.0925826049221995
+       },
+       "cm": {
+        "share_not_zeroed": 0.25101193536741456,
+        "share_at_clip": 4.558267420786429e-06,
+        "mean_abs_log_not_zeroed": 0.13074713343405334,
+        "mean_abs_log_all_entries": 0.03281909100702333,
+        "share_unzeroed_vs_0.5": 0.11080236446447651
+       },
+       "endocardium": {
+        "share_not_zeroed": 0.23234765358626247,
+        "share_at_clip": 6.199243692269543e-06,
+        "mean_abs_log_not_zeroed": 0.11326438039551354,
+        "mean_abs_log_all_entries": 0.02631671301979944,
+        "share_unzeroed_vs_0.5": 0.11708201599404873
+       }
+      }
+     },
+     "g_mom_perm": {
+      "0.5": {
+       "blood": {
+        "share_not_zeroed": 0.18044758539458186,
+        "share_at_clip": 2.4796974769078173e-05,
+        "mean_abs_log_not_zeroed": 0.13794657941944674,
+        "mean_abs_log_all_entries": 0.024892127169681085,
+        "share_unzeroed_vs_0.5": 0.0
+       },
+       "cm": {
+        "share_not_zeroed": 0.1010467865777518,
+        "share_at_clip": 4.42803120876396e-06,
+        "mean_abs_log_not_zeroed": 0.09410049418369923,
+        "mean_abs_log_all_entries": 0.009508552552641228,
+        "share_unzeroed_vs_0.5": 0.0
+       },
+       "endocardium": {
+        "share_not_zeroed": 0.08342012274502511,
+        "share_at_clip": 0.0,
+        "mean_abs_log_not_zeroed": 0.08489425755832702,
+        "mean_abs_log_all_entries": 0.007081889385863416,
+        "share_unzeroed_vs_0.5": 0.0
+       }
+      },
+      "0.75": {
+       "blood": {
+        "share_not_zeroed": 0.23348831442564008,
+        "share_at_clip": 0.00013638336122992996,
+        "mean_abs_log_not_zeroed": 0.17347819692691763,
+        "mean_abs_log_all_entries": 0.04050513179006525,
+        "share_unzeroed_vs_0.5": 0.05304072903105821
+       },
+       "cm": {
+        "share_not_zeroed": 0.15980321829308253,
+        "share_at_clip": 5.313637450516751e-05,
+        "mean_abs_log_not_zeroed": 0.11122149020768811,
+        "mean_abs_log_all_entries": 0.017773552078541123,
+        "share_unzeroed_vs_0.5": 0.05875643171533073
+       },
+       "endocardium": {
+        "share_not_zeroed": 0.1428863678631207,
+        "share_at_clip": 6.199243692269543e-06,
+        "mean_abs_log_not_zeroed": 0.09926097557949047,
+        "mean_abs_log_all_entries": 0.014183040271103316,
+        "share_unzeroed_vs_0.5": 0.05946624511809559
+       }
+      },
+      "1": {
+       "blood": {
+        "share_not_zeroed": 0.2693137437232658,
+        "share_at_clip": 0.0008926910916868142,
+        "mean_abs_log_not_zeroed": 0.20753510755157675,
+        "mean_abs_log_all_entries": 0.05589205676872574,
+        "share_unzeroed_vs_0.5": 0.0888661583286839
+       },
+       "cm": {
+        "share_not_zeroed": 0.20346803404270394,
+        "share_at_clip": 0.00017977806707581676,
+        "mean_abs_log_not_zeroed": 0.12841850945583996,
+        "mean_abs_log_all_entries": 0.02612906165367414,
+        "share_unzeroed_vs_0.5": 0.10242124746495214
+       },
+       "endocardium": {
+        "share_not_zeroed": 0.1878153865228442,
+        "share_at_clip": 3.719546215361726e-05,
+        "mean_abs_log_not_zeroed": 0.11418589776809511,
+        "mean_abs_log_all_entries": 0.02144586852477276,
+        "share_unzeroed_vs_0.5": 0.1043952637778191
+       }
+      }
+     }
+    },
+    "sizes": {
+     "g_mom": {
+      "0.5": {
+       "blood": 0.03814028009242542,
+       "cm": 0.03252267787145194,
+       "endocardium": 0.027331102072777547
+      },
+      "0.75": {
+       "blood": 0.0591486678622186,
+       "cm": 0.050635673269600785,
+       "endocardium": 0.04352459808997031
+      },
+      "1": {
+       "blood": 0.07954747892279643,
+       "cm": 0.0679928999067857,
+       "endocardium": 0.0591591016138931
+      }
+     },
+     "g_mom_null": {
+      "0.5": {
+       "blood": 0.038140280088889346,
+       "cm": 0.0325226778833625,
+       "endocardium": 0.02733110206763897
+      },
+      "0.75": {
+       "blood": 0.059148667860326395,
+       "cm": 0.050635673252201495,
+       "endocardium": 0.043524598100847946
+      },
+      "1": {
+       "blood": 0.07954747890039286,
+       "cm": 0.06799289990988737,
+       "endocardium": 0.059159101612969896
+      }
+     },
+     "g_mom_perm": {
+      "0.5": {
+       "blood": 0.08335477832447684,
+       "cm": 0.034449381198065336,
+       "endocardium": 0.02765965933321466
+      },
+      "0.75": {
+       "blood": 0.12541749601883248,
+       "cm": 0.05356610294054818,
+       "endocardium": 0.04399371806833945
+      },
+      "1": {
+       "blood": 0.1663594365194681,
+       "cm": 0.07191772191203609,
+       "endocardium": 0.05976182503587329
+      }
+     }
+    },
+    "mean_shift": {
+     "g_mom": {
+      "0.5": {
+       "blood": 0.006265578626160909,
+       "cm": 0.0025430843173583116,
+       "endocardium": 0.0031268144284529393
+      },
+      "0.75": {
+       "blood": 0.006633779618981704,
+       "cm": 0.002758924791475269,
+       "endocardium": 0.0036015289476987755
+      },
+      "1": {
+       "blood": 0.006651800315877262,
+       "cm": 0.00304965362109292,
+       "endocardium": 0.0036629561061500065
+      }
+     },
+     "g_mom_null": {
+      "0.5": {
+       "blood": 0.0036694507046740525,
+       "cm": 0.0018681546682067557,
+       "endocardium": 0.0030448692341052295
+      },
+      "0.75": {
+       "blood": 0.003950802087338843,
+       "cm": 0.002018673134625684,
+       "endocardium": 0.003345900128774983
+      },
+      "1": {
+       "blood": 0.003922605472965509,
+       "cm": 0.0020291969375062914,
+       "endocardium": 0.003422016996334595
+      }
+     },
+     "g_mom_perm": {
+      "0.5": {
+       "blood": 0.04426818543270708,
+       "cm": 0.00673522350894672,
+       "endocardium": 0.003242208856176954
+      },
+      "0.75": {
+       "blood": 0.06631363552512229,
+       "cm": 0.01006887804062684,
+       "endocardium": 0.003839566533827311
+      },
+      "1": {
+       "blood": 0.0879619893143127,
+       "cm": 0.013245541456006026,
+       "endocardium": 0.004065414930453144
+      }
+     }
+    },
+    "null_match": {
+     "0.5": {
+      "blood": {
+       "damping": 0.33212465111390727,
+       "rms_achieved": 0.038140280088889346,
+       "relative_error": 9.27123293968989e-11,
+       "rms_target": 0.03814028009242542,
+       "rms_at_reference_damping": 0.059249139637835575,
+       "reference_damping": 0.5,
+       "rms_at_smallest_damping": 0.0,
+       "rms_at_largest_damping": 0.7422993127631607,
+       "bracketed": true
+      },
+      "cm": {
+       "damping": 0.9319071133056184,
+       "rms_achieved": 0.0325226778833625,
+       "relative_error": 3.66223312264652e-10,
+       "rms_target": 0.03252267787145194,
+       "rms_at_reference_damping": 0.014171430244076083,
+       "reference_damping": 0.5,
+       "rms_at_smallest_damping": 0.0,
+       "rms_at_largest_damping": 0.8815881236641055,
+       "bracketed": true
+      },
+      "endocardium": {
+       "damping": 0.8267299395707677,
+       "rms_achieved": 0.02733110206763897,
+       "relative_error": 1.8801206955261918e-10,
+       "rms_target": 0.027331102072777547,
+       "rms_at_reference_damping": 0.013048390990291247,
+       "reference_damping": 0.5,
+       "rms_at_smallest_damping": 0.0,
+       "rms_at_largest_damping": 0.8784393184193936,
+       "bracketed": true
+      }
+     },
+     "0.75": {
+      "blood": {
+       "damping": 0.49918223523108773,
+       "rms_achieved": 0.059148667860326395,
+       "relative_error": 3.199060505527685e-11,
+       "rms_target": 0.0591486678622186,
+       "rms_at_reference_damping": 0.08865751038361439,
+       "reference_damping": 0.75,
+       "rms_at_smallest_damping": 0.0,
+       "rms_at_largest_damping": 0.7422993127631607,
+       "bracketed": true
+      },
+      "cm": {
+       "damping": 1.383534022314422,
+       "rms_achieved": 0.050635673252201495,
+       "relative_error": 3.4361724093596433e-10,
+       "rms_target": 0.050635673269600785,
+       "rms_at_reference_damping": 0.024946632970601863,
+       "reference_damping": 0.75,
+       "rms_at_smallest_damping": 0.0,
+       "rms_at_largest_damping": 0.8815881236641055,
+       "bracketed": true
+      },
+      "endocardium": {
+       "damping": 1.2284104151066235,
+       "rms_achieved": 0.043524598100847946,
+       "relative_error": 2.4991934548777407e-10,
+       "rms_target": 0.04352459808997031,
+       "rms_at_reference_damping": 0.02409474730161427,
+       "reference_damping": 0.75,
+       "rms_at_smallest_damping": 0.0,
+       "rms_at_largest_damping": 0.8784393184193936,
+       "bracketed": true
+      }
+     },
+     "1": {
+      "blood": {
+       "damping": 0.6705217529355871,
+       "rms_achieved": 0.07954747890039286,
+       "relative_error": 2.8163765109294387e-10,
+       "rms_target": 0.07954747892279643,
+       "rms_at_reference_damping": 0.1164063423232417,
+       "reference_damping": 1.0,
+       "rms_at_smallest_damping": 0.0,
+       "rms_at_largest_damping": 0.7422993127631607,
+       "bracketed": true
+      },
+      "cm": {
+       "damping": 1.8283515367907177,
+       "rms_achieved": 0.06799289990988737,
+       "relative_error": 4.56175821521208e-11,
+       "rms_target": 0.0679928999067857,
+       "rms_at_reference_damping": 0.03530299166076654,
+       "reference_damping": 1.0,
+       "rms_at_smallest_damping": 0.0,
+       "rms_at_largest_damping": 0.8815881236641055,
+       "bracketed": true
+      },
+      "endocardium": {
+       "damping": 1.631870992005156,
+       "rms_achieved": 0.059159101612969896,
+       "relative_error": 1.5605476265553034e-11,
+       "rms_target": 0.0591591016138931,
+       "rms_at_reference_damping": 0.03444365480266068,
+       "reference_damping": 1.0,
+       "rms_at_smallest_damping": 0.0,
+       "rms_at_largest_damping": 0.8784393184193936,
+       "bracketed": true
+      }
+     }
+    },
+    "null_categories": {
+     "0.5": [
+      "blood",
+      "cm",
+      "endocardium"
+     ],
+     "0.75": [
+      "blood",
+      "cm",
+      "endocardium"
+     ],
+     "1": [
+      "blood",
+      "cm",
+      "endocardium"
+     ]
+    },
+    "null_skipped": {
+     "0.5": {},
+     "0.75": {},
+     "1": {}
+    },
+    "g_mom_categories": {
+     "0.5": [
+      "blood",
+      "cm",
+      "endocardium"
+     ],
+     "0.75": [
+      "blood",
+      "cm",
+      "endocardium"
+     ],
+     "1": [
+      "blood",
+      "cm",
+      "endocardium"
+     ]
+    },
+    "permutation": {
+     "0.5": {
+      "seed": 20261110,
+      "per_category": {
+       "blood": [
+        3,
+        2,
+        4,
+        0,
+        1
+       ],
+       "cm": [
+        3,
+        28,
+        12,
+        21,
+        27,
+        17,
+        11,
+        31,
+        19,
+        13,
+        9,
+        6,
+        24,
+        5,
+        7,
+        29,
+        10,
+        16,
+        22,
+        8,
+        26,
+        1,
+        4,
+        0,
+        14,
+        20,
+        32,
+        25,
+        18,
+        2,
+        33,
+        34,
+        23,
+        30,
+        15
+       ],
+       "endocardium": [
+        8,
+        2,
+        6,
+        1,
+        3,
+        7,
+        0,
+        9,
+        4,
+        5
+       ]
+      }
+     },
+     "0.75": {
+      "seed": 20261110,
+      "per_category": {
+       "blood": [
+        3,
+        2,
+        4,
+        0,
+        1
+       ],
+       "cm": [
+        3,
+        28,
+        12,
+        21,
+        27,
+        17,
+        11,
+        31,
+        19,
+        13,
+        9,
+        6,
+        24,
+        5,
+        7,
+        29,
+        10,
+        16,
+        22,
+        8,
+        26,
+        1,
+        4,
+        0,
+        14,
+        20,
+        32,
+        25,
+        18,
+        2,
+        33,
+        34,
+        23,
+        30,
+        15
+       ],
+       "endocardium": [
+        8,
+        2,
+        6,
+        1,
+        3,
+        7,
+        0,
+        9,
+        4,
+        5
+       ]
+      }
+     },
+     "1": {
+      "seed": 20261110,
+      "per_category": {
+       "blood": [
+        3,
+        2,
+        4,
+        0,
+        1
+       ],
+       "cm": [
+        3,
+        28,
+        12,
+        21,
+        27,
+        17,
+        11,
+        31,
+        19,
+        13,
+        9,
+        6,
+        24,
+        5,
+        7,
+        29,
+        10,
+        16,
+        22,
+        8,
+        26,
+        1,
+        4,
+        0,
+        14,
+        20,
+        32,
+        25,
+        18,
+        2,
+        33,
+        34,
+        23,
+        30,
+        15
+       ],
+       "endocardium": [
+        8,
+        2,
+        6,
+        1,
+        3,
+        7,
+        0,
+        9,
+        4,
+        5
+       ]
+      }
+     }
+    },
+    "permutation_same_at_every_damping": true
+   },
+   "T1/E9.5->E10.5": {
+    "factors": {
+     "g_mom": {
+      "0.5": {
+       "blood": {
+        "share_not_zeroed": 0.18044758539458186,
+        "share_at_clip": 2.4796974769078173e-05,
+        "mean_abs_log_not_zeroed": 0.13794657941944674,
+        "mean_abs_log_all_entries": 0.024892127169681085,
+        "share_unzeroed_vs_0.5": 0.0
+       },
+       "cm": {
+        "share_not_zeroed": 0.1010467865777518,
+        "share_at_clip": 4.42803120876396e-06,
+        "mean_abs_log_not_zeroed": 0.09410049418369922,
+        "mean_abs_log_all_entries": 0.009508552552641228,
+        "share_unzeroed_vs_0.5": 0.0
+       },
+       "endocardium": {
+        "share_not_zeroed": 0.08342012274502511,
+        "share_at_clip": 0.0,
+        "mean_abs_log_not_zeroed": 0.08489425755832702,
+        "mean_abs_log_all_entries": 0.007081889385863416,
+        "share_unzeroed_vs_0.5": 0.0
+       }
+      },
+      "0.75": {
+       "blood": {
+        "share_not_zeroed": 0.23348831442564008,
+        "share_at_clip": 0.00013638336122992996,
+        "mean_abs_log_not_zeroed": 0.17347819692691765,
+        "mean_abs_log_all_entries": 0.04050513179006525,
+        "share_unzeroed_vs_0.5": 0.05304072903105821
+       },
+       "cm": {
+        "share_not_zeroed": 0.15980321829308253,
+        "share_at_clip": 5.313637450516751e-05,
+        "mean_abs_log_not_zeroed": 0.11122149020768811,
+        "mean_abs_log_all_entries": 0.017773552078541123,
+        "share_unzeroed_vs_0.5": 0.05875643171533073
+       },
+       "endocardium": {
+        "share_not_zeroed": 0.1428863678631207,
+        "share_at_clip": 6.199243692269543e-06,
+        "mean_abs_log_not_zeroed": 0.09926097557949047,
+        "mean_abs_log_all_entries": 0.014183040271103316,
+        "share_unzeroed_vs_0.5": 0.05946624511809559
+       }
+      },
+      "1": {
+       "blood": {
+        "share_not_zeroed": 0.2693137437232658,
+        "share_at_clip": 0.0008926910916868142,
+        "mean_abs_log_not_zeroed": 0.20753510755157675,
+        "mean_abs_log_all_entries": 0.05589205676872574,
+        "share_unzeroed_vs_0.5": 0.0888661583286839
+       },
+       "cm": {
+        "share_not_zeroed": 0.20346803404270394,
+        "share_at_clip": 0.00017977806707581676,
+        "mean_abs_log_not_zeroed": 0.12841850945583996,
+        "mean_abs_log_all_entries": 0.02612906165367414,
+        "share_unzeroed_vs_0.5": 0.10242124746495214
+       },
+       "endocardium": {
+        "share_not_zeroed": 0.1878153865228442,
+        "share_at_clip": 3.719546215361726e-05,
+        "mean_abs_log_not_zeroed": 0.11418589776809511,
+        "mean_abs_log_all_entries": 0.02144586852477276,
+        "share_unzeroed_vs_0.5": 0.1043952637778191
+       }
+      }
+     },
+     "g_mom_null": {
+      "0.5": {
+       "blood": {
+        "share_not_zeroed": 0.15927406856363524,
+        "share_at_clip": 4.9593949538156346e-05,
+        "mean_abs_log_not_zeroed": 0.157654030350746,
+        "mean_abs_log_all_entries": 0.02511019883941815,
+        "share_unzeroed_vs_0.5": 0.0
+       },
+       "cm": {
+        "share_not_zeroed": 0.14020957090293806,
+        "share_at_clip": 0.0,
+        "mean_abs_log_not_zeroed": 0.09123120810694221,
+        "mean_abs_log_all_entries": 0.012791488541631013,
+        "share_unzeroed_vs_0.5": 0.0
+       },
+       "endocardium": {
+        "share_not_zeroed": 0.11526563759221375,
+        "share_at_clip": 0.0,
+        "mean_abs_log_not_zeroed": 0.0797591534538525,
+        "mean_abs_log_all_entries": 0.009193489676673527,
+        "share_unzeroed_vs_0.5": 0.0
+       }
+      },
+      "0.75": {
+       "blood": {
+        "share_not_zeroed": 0.21450313061806459,
+        "share_at_clip": 0.0011034653772239787,
+        "mean_abs_log_not_zeroed": 0.19061269032902683,
+        "mean_abs_log_all_entries": 0.04088701881110795,
+        "share_unzeroed_vs_0.5": 0.05522906205442936
+       },
+       "cm": {
+        "share_not_zeroed": 0.205636206500454,
+        "share_at_clip": 0.0,
+        "mean_abs_log_not_zeroed": 0.11136601710241496,
+        "mean_abs_log_all_entries": 0.022900885290005297,
+        "share_unzeroed_vs_0.5": 0.06542663559751592
+       },
+       "endocardium": {
+        "share_not_zeroed": 0.18326204203087224,
+        "share_at_clip": 0.0,
+        "mean_abs_log_not_zeroed": 0.09672218659922326,
+        "mean_abs_log_all_entries": 0.01772550542586472,
+        "share_unzeroed_vs_0.5": 0.06799640443865848
+       }
+      },
+      "1": {
+       "blood": {
+        "share_not_zeroed": 0.25185667348583474,
+        "share_at_clip": 0.005427437852581985,
+        "mean_abs_log_not_zeroed": 0.22243140018061006,
+        "mean_abs_log_all_entries": 0.05602083252828494,
+        "share_unzeroed_vs_0.5": 0.0925826049221995
+       },
+       "cm": {
+        "share_not_zeroed": 0.25101193536741456,
+        "share_at_clip": 4.558267420786429e-06,
+        "mean_abs_log_not_zeroed": 0.13074713343405334,
+        "mean_abs_log_all_entries": 0.03281909100702333,
+        "share_unzeroed_vs_0.5": 0.11080236446447651
+       },
+       "endocardium": {
+        "share_not_zeroed": 0.23234765358626247,
+        "share_at_clip": 6.199243692269543e-06,
+        "mean_abs_log_not_zeroed": 0.11326438039551354,
+        "mean_abs_log_all_entries": 0.02631671301979944,
+        "share_unzeroed_vs_0.5": 0.11708201599404873
+       }
+      }
+     },
+     "g_mom_perm": {
+      "0.5": {
+       "blood": {
+        "share_not_zeroed": 0.18044758539458186,
+        "share_at_clip": 2.4796974769078173e-05,
+        "mean_abs_log_not_zeroed": 0.13794657941944674,
+        "mean_abs_log_all_entries": 0.024892127169681085,
+        "share_unzeroed_vs_0.5": 0.0
+       },
+       "cm": {
+        "share_not_zeroed": 0.1010467865777518,
+        "share_at_clip": 4.42803120876396e-06,
+        "mean_abs_log_not_zeroed": 0.09410049418369923,
+        "mean_abs_log_all_entries": 0.009508552552641228,
+        "share_unzeroed_vs_0.5": 0.0
+       },
+       "endocardium": {
+        "share_not_zeroed": 0.08342012274502511,
+        "share_at_clip": 0.0,
+        "mean_abs_log_not_zeroed": 0.08489425755832702,
+        "mean_abs_log_all_entries": 0.007081889385863416,
+        "share_unzeroed_vs_0.5": 0.0
+       }
+      },
+      "0.75": {
+       "blood": {
+        "share_not_zeroed": 0.23348831442564008,
+        "share_at_clip": 0.00013638336122992996,
+        "mean_abs_log_not_zeroed": 0.17347819692691763,
+        "mean_abs_log_all_entries": 0.04050513179006525,
+        "share_unzeroed_vs_0.5": 0.05304072903105821
+       },
+       "cm": {
+        "share_not_zeroed": 0.15980321829308253,
+        "share_at_clip": 5.313637450516751e-05,
+        "mean_abs_log_not_zeroed": 0.11122149020768811,
+        "mean_abs_log_all_entries": 0.017773552078541123,
+        "share_unzeroed_vs_0.5": 0.05875643171533073
+       },
+       "endocardium": {
+        "share_not_zeroed": 0.1428863678631207,
+        "share_at_clip": 6.199243692269543e-06,
+        "mean_abs_log_not_zeroed": 0.09926097557949047,
+        "mean_abs_log_all_entries": 0.014183040271103316,
+        "share_unzeroed_vs_0.5": 0.05946624511809559
+       }
+      },
+      "1": {
+       "blood": {
+        "share_not_zeroed": 0.2693137437232658,
+        "share_at_clip": 0.0008926910916868142,
+        "mean_abs_log_not_zeroed": 0.20753510755157675,
+        "mean_abs_log_all_entries": 0.05589205676872574,
+        "share_unzeroed_vs_0.5": 0.0888661583286839
+       },
+       "cm": {
+        "share_not_zeroed": 0.20346803404270394,
+        "share_at_clip": 0.00017977806707581676,
+        "mean_abs_log_not_zeroed": 0.12841850945583996,
+        "mean_abs_log_all_entries": 0.02612906165367414,
+        "share_unzeroed_vs_0.5": 0.10242124746495214
+       },
+       "endocardium": {
+        "share_not_zeroed": 0.1878153865228442,
+        "share_at_clip": 3.719546215361726e-05,
+        "mean_abs_log_not_zeroed": 0.11418589776809511,
+        "mean_abs_log_all_entries": 0.02144586852477276,
+        "share_unzeroed_vs_0.5": 0.1043952637778191
+       }
+      }
+     }
+    },
+    "sizes": {
+     "g_mom": {
+      "0.5": {
+       "blood": 0.03814028009242542,
+       "cm": 0.03252267787145194,
+       "endocardium": 0.027331102072777547
+      },
+      "0.75": {
+       "blood": 0.0591486678622186,
+       "cm": 0.050635673269600785,
+       "endocardium": 0.04352459808997031
+      },
+      "1": {
+       "blood": 0.07954747892279643,
+       "cm": 0.0679928999067857,
+       "endocardium": 0.0591591016138931
+      }
+     },
+     "g_mom_null": {
+      "0.5": {
+       "blood": 0.038140280088889346,
+       "cm": 0.0325226778833625,
+       "endocardium": 0.02733110206763897
+      },
+      "0.75": {
+       "blood": 0.059148667860326395,
+       "cm": 0.050635673252201495,
+       "endocardium": 0.043524598100847946
+      },
+      "1": {
+       "blood": 0.07954747890039286,
+       "cm": 0.06799289990988737,
+       "endocardium": 0.059159101612969896
+      }
+     },
+     "g_mom_perm": {
+      "0.5": {
+       "blood": 0.08335477832447684,
+       "cm": 0.034449381198065336,
+       "endocardium": 0.02765965933321466
+      },
+      "0.75": {
+       "blood": 0.12541749601883248,
+       "cm": 0.05356610294054818,
+       "endocardium": 0.04399371806833945
+      },
+      "1": {
+       "blood": 0.1663594365194681,
+       "cm": 0.07191772191203609,
+       "endocardium": 0.05976182503587329
+      }
+     }
+    },
+    "mean_shift": {
+     "g_mom": {
+      "0.5": {
+       "blood": 0.006265578626160909,
+       "cm": 0.0025430843173583116,
+       "endocardium": 0.0031268144284529393
+      },
+      "0.75": {
+       "blood": 0.006633779618981704,
+       "cm": 0.002758924791475269,
+       "endocardium": 0.0036015289476987755
+      },
+      "1": {
+       "blood": 0.006651800315877262,
+       "cm": 0.00304965362109292,
+       "endocardium": 0.0036629561061500065
+      }
+     },
+     "g_mom_null": {
+      "0.5": {
+       "blood": 0.0036694507046740525,
+       "cm": 0.0018681546682067557,
+       "endocardium": 0.0030448692341052295
+      },
+      "0.75": {
+       "blood": 0.003950802087338843,
+       "cm": 0.002018673134625684,
+       "endocardium": 0.003345900128774983
+      },
+      "1": {
+       "blood": 0.003922605472965509,
+       "cm": 0.0020291969375062914,
+       "endocardium": 0.003422016996334595
+      }
+     },
+     "g_mom_perm": {
+      "0.5": {
+       "blood": 0.04426818543270708,
+       "cm": 0.00673522350894672,
+       "endocardium": 0.003242208856176954
+      },
+      "0.75": {
+       "blood": 0.06631363552512229,
+       "cm": 0.01006887804062684,
+       "endocardium": 0.003839566533827311
+      },
+      "1": {
+       "blood": 0.0879619893143127,
+       "cm": 0.013245541456006026,
+       "endocardium": 0.004065414930453144
+      }
+     }
+    },
+    "null_match": {
+     "0.5": {
+      "blood": {
+       "damping": 0.33212465111390727,
+       "rms_achieved": 0.038140280088889346,
+       "relative_error": 9.27123293968989e-11,
+       "rms_target": 0.03814028009242542,
+       "rms_at_reference_damping": 0.059249139637835575,
+       "reference_damping": 0.5,
+       "rms_at_smallest_damping": 0.0,
+       "rms_at_largest_damping": 0.7422993127631607,
+       "bracketed": true
+      },
+      "cm": {
+       "damping": 0.9319071133056184,
+       "rms_achieved": 0.0325226778833625,
+       "relative_error": 3.66223312264652e-10,
+       "rms_target": 0.03252267787145194,
+       "rms_at_reference_damping": 0.014171430244076083,
+       "reference_damping": 0.5,
+       "rms_at_smallest_damping": 0.0,
+       "rms_at_largest_damping": 0.8815881236641055,
+       "bracketed": true
+      },
+      "endocardium": {
+       "damping": 0.8267299395707677,
+       "rms_achieved": 0.02733110206763897,
+       "relative_error": 1.8801206955261918e-10,
+       "rms_target": 0.027331102072777547,
+       "rms_at_reference_damping": 0.013048390990291247,
+       "reference_damping": 0.5,
+       "rms_at_smallest_damping": 0.0,
+       "rms_at_largest_damping": 0.8784393184193936,
+       "bracketed": true
+      }
+     },
+     "0.75": {
+      "blood": {
+       "damping": 0.49918223523108773,
+       "rms_achieved": 0.059148667860326395,
+       "relative_error": 3.199060505527685e-11,
+       "rms_target": 0.0591486678622186,
+       "rms_at_reference_damping": 0.08865751038361439,
+       "reference_damping": 0.75,
+       "rms_at_smallest_damping": 0.0,
+       "rms_at_largest_damping": 0.7422993127631607,
+       "bracketed": true
+      },
+      "cm": {
+       "damping": 1.383534022314422,
+       "rms_achieved": 0.050635673252201495,
+       "relative_error": 3.4361724093596433e-10,
+       "rms_target": 0.050635673269600785,
+       "rms_at_reference_damping": 0.024946632970601863,
+       "reference_damping": 0.75,
+       "rms_at_smallest_damping": 0.0,
+       "rms_at_largest_damping": 0.8815881236641055,
+       "bracketed": true
+      },
+      "endocardium": {
+       "damping": 1.2284104151066235,
+       "rms_achieved": 0.043524598100847946,
+       "relative_error": 2.4991934548777407e-10,
+       "rms_target": 0.04352459808997031,
+       "rms_at_reference_damping": 0.02409474730161427,
+       "reference_damping": 0.75,
+       "rms_at_smallest_damping": 0.0,
+       "rms_at_largest_damping": 0.8784393184193936,
+       "bracketed": true
+      }
+     },
+     "1": {
+      "blood": {
+       "damping": 0.6705217529355871,
+       "rms_achieved": 0.07954747890039286,
+       "relative_error": 2.8163765109294387e-10,
+       "rms_target": 0.07954747892279643,
+       "rms_at_reference_damping": 0.1164063423232417,
+       "reference_damping": 1.0,
+       "rms_at_smallest_damping": 0.0,
+       "rms_at_largest_damping": 0.7422993127631607,
+       "bracketed": true
+      },
+      "cm": {
+       "damping": 1.8283515367907177,
+       "rms_achieved": 0.06799289990988737,
+       "relative_error": 4.56175821521208e-11,
+       "rms_target": 0.0679928999067857,
+       "rms_at_reference_damping": 0.03530299166076654,
+       "reference_damping": 1.0,
+       "rms_at_smallest_damping": 0.0,
+       "rms_at_largest_damping": 0.8815881236641055,
+       "bracketed": true
+      },
+      "endocardium": {
+       "damping": 1.631870992005156,
+       "rms_achieved": 0.059159101612969896,
+       "relative_error": 1.5605476265553034e-11,
+       "rms_target": 0.0591591016138931,
+       "rms_at_reference_damping": 0.03444365480266068,
+       "reference_damping": 1.0,
+       "rms_at_smallest_damping": 0.0,
+       "rms_at_largest_damping": 0.8784393184193936,
+       "bracketed": true
+      }
+     }
+    },
+    "null_categories": {
+     "0.5": [
+      "blood",
+      "cm",
+      "endocardium"
+     ],
+     "0.75": [
+      "blood",
+      "cm",
+      "endocardium"
+     ],
+     "1": [
+      "blood",
+      "cm",
+      "endocardium"
+     ]
+    },
+    "null_skipped": {
+     "0.5": {},
+     "0.75": {},
+     "1": {}
+    },
+    "g_mom_categories": {
+     "0.5": [
+      "blood",
+      "cm",
+      "endocardium"
+     ],
+     "0.75": [
+      "blood",
+      "cm",
+      "endocardium"
+     ],
+     "1": [
+      "blood",
+      "cm",
+      "endocardium"
+     ]
+    },
+    "permutation": {
+     "0.5": {
+      "seed": 20261110,
+      "per_category": {
+       "blood": [
+        3,
+        2,
+        4,
+        0,
+        1
+       ],
+       "cm": [
+        3,
+        28,
+        12,
+        21,
+        27,
+        17,
+        11,
+        31,
+        19,
+        13,
+        9,
+        6,
+        24,
+        5,
+        7,
+        29,
+        10,
+        16,
+        22,
+        8,
+        26,
+        1,
+        4,
+        0,
+        14,
+        20,
+        32,
+        25,
+        18,
+        2,
+        33,
+        34,
+        23,
+        30,
+        15
+       ],
+       "endocardium": [
+        8,
+        2,
+        6,
+        1,
+        3,
+        7,
+        0,
+        9,
+        4,
+        5
+       ]
+      }
+     },
+     "0.75": {
+      "seed": 20261110,
+      "per_category": {
+       "blood": [
+        3,
+        2,
+        4,
+        0,
+        1
+       ],
+       "cm": [
+        3,
+        28,
+        12,
+        21,
+        27,
+        17,
+        11,
+        31,
+        19,
+        13,
+        9,
+        6,
+        24,
+        5,
+        7,
+        29,
+        10,
+        16,
+        22,
+        8,
+        26,
+        1,
+        4,
+        0,
+        14,
+        20,
+        32,
+        25,
+        18,
+        2,
+        33,
+        34,
+        23,
+        30,
+        15
+       ],
+       "endocardium": [
+        8,
+        2,
+        6,
+        1,
+        3,
+        7,
+        0,
+        9,
+        4,
+        5
+       ]
+      }
+     },
+     "1": {
+      "seed": 20261110,
+      "per_category": {
+       "blood": [
+        3,
+        2,
+        4,
+        0,
+        1
+       ],
+       "cm": [
+        3,
+        28,
+        12,
+        21,
+        27,
+        17,
+        11,
+        31,
+        19,
+        13,
+        9,
+        6,
+        24,
+        5,
+        7,
+        29,
+        10,
+        16,
+        22,
+        8,
+        26,
+        1,
+        4,
+        0,
+        14,
+        20,
+        32,
+        25,
+        18,
+        2,
+        33,
+        34,
+        23,
+        30,
+        15
+       ],
+       "endocardium": [
+        8,
+        2,
+        6,
+        1,
+        3,
+        7,
+        0,
+        9,
+        4,
+        5
+       ]
+      }
+     }
+    },
+    "permutation_same_at_every_damping": true
+   }
+  },
+  "world_factor_records": {
+   "lib3": {
+    "0.5": {
+     "blood": {
+      "share_not_zeroed": 0.18044758539458186,
+      "share_at_clip": 2.4796974769078173e-05,
+      "mean_abs_log_not_zeroed": 0.13794657941944674,
+      "mean_abs_log_all_entries": 0.024892127169681085,
+      "share_unzeroed_vs_0.5": 0.0
+     },
+     "cm": {
+      "share_not_zeroed": 0.1010467865777518,
+      "share_at_clip": 4.42803120876396e-06,
+      "mean_abs_log_not_zeroed": 0.09410049418369922,
+      "mean_abs_log_all_entries": 0.009508552552641228,
+      "share_unzeroed_vs_0.5": 0.0
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.08342012274502511,
+      "share_at_clip": 0.0,
+      "mean_abs_log_not_zeroed": 0.08489425755832702,
+      "mean_abs_log_all_entries": 0.007081889385863416,
+      "share_unzeroed_vs_0.5": 0.0
+     }
+    },
+    "0.75": {
+     "blood": {
+      "share_not_zeroed": 0.23348831442564008,
+      "share_at_clip": 0.00013638336122992996,
+      "mean_abs_log_not_zeroed": 0.17347819692691765,
+      "mean_abs_log_all_entries": 0.04050513179006525,
+      "share_unzeroed_vs_0.5": 0.05304072903105821
+     },
+     "cm": {
+      "share_not_zeroed": 0.15980321829308253,
+      "share_at_clip": 5.313637450516751e-05,
+      "mean_abs_log_not_zeroed": 0.11122149020768811,
+      "mean_abs_log_all_entries": 0.017773552078541123,
+      "share_unzeroed_vs_0.5": 0.05875643171533073
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.1428863678631207,
+      "share_at_clip": 6.199243692269543e-06,
+      "mean_abs_log_not_zeroed": 0.09926097557949047,
+      "mean_abs_log_all_entries": 0.014183040271103316,
+      "share_unzeroed_vs_0.5": 0.05946624511809559
+     }
+    },
+    "1": {
+     "blood": {
+      "share_not_zeroed": 0.2693137437232658,
+      "share_at_clip": 0.0008926910916868142,
+      "mean_abs_log_not_zeroed": 0.20753510755157675,
+      "mean_abs_log_all_entries": 0.05589205676872574,
+      "share_unzeroed_vs_0.5": 0.0888661583286839
+     },
+     "cm": {
+      "share_not_zeroed": 0.20346803404270394,
+      "share_at_clip": 0.00017977806707581676,
+      "mean_abs_log_not_zeroed": 0.12841850945583996,
+      "mean_abs_log_all_entries": 0.02612906165367414,
+      "share_unzeroed_vs_0.5": 0.10242124746495214
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.1878153865228442,
+      "share_at_clip": 3.719546215361726e-05,
+      "mean_abs_log_not_zeroed": 0.11418589776809511,
+      "mean_abs_log_all_entries": 0.02144586852477276,
+      "share_unzeroed_vs_0.5": 0.1043952637778191
+     }
+    }
+   },
+   "lib3_t67": {
+    "0.5": {
+     "blood": {
+      "share_not_zeroed": 0.18044758539458186,
+      "share_at_clip": 2.4796974769078173e-05,
+      "mean_abs_log_not_zeroed": 0.13794657941944674,
+      "mean_abs_log_all_entries": 0.024892127169681085,
+      "share_unzeroed_vs_0.5": 0.0
+     },
+     "cm": {
+      "share_not_zeroed": 0.1010467865777518,
+      "share_at_clip": 4.42803120876396e-06,
+      "mean_abs_log_not_zeroed": 0.09410049418369922,
+      "mean_abs_log_all_entries": 0.009508552552641228,
+      "share_unzeroed_vs_0.5": 0.0
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.08342012274502511,
+      "share_at_clip": 0.0,
+      "mean_abs_log_not_zeroed": 0.08489425755832702,
+      "mean_abs_log_all_entries": 0.007081889385863416,
+      "share_unzeroed_vs_0.5": 0.0
+     }
+    },
+    "0.75": {
+     "blood": {
+      "share_not_zeroed": 0.23348831442564008,
+      "share_at_clip": 0.00013638336122992996,
+      "mean_abs_log_not_zeroed": 0.17347819692691765,
+      "mean_abs_log_all_entries": 0.04050513179006525,
+      "share_unzeroed_vs_0.5": 0.05304072903105821
+     },
+     "cm": {
+      "share_not_zeroed": 0.15980321829308253,
+      "share_at_clip": 5.313637450516751e-05,
+      "mean_abs_log_not_zeroed": 0.11122149020768811,
+      "mean_abs_log_all_entries": 0.017773552078541123,
+      "share_unzeroed_vs_0.5": 0.05875643171533073
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.1428863678631207,
+      "share_at_clip": 6.199243692269543e-06,
+      "mean_abs_log_not_zeroed": 0.09926097557949047,
+      "mean_abs_log_all_entries": 0.014183040271103316,
+      "share_unzeroed_vs_0.5": 0.05946624511809559
+     }
+    },
+    "1": {
+     "blood": {
+      "share_not_zeroed": 0.2693137437232658,
+      "share_at_clip": 0.0008926910916868142,
+      "mean_abs_log_not_zeroed": 0.20753510755157675,
+      "mean_abs_log_all_entries": 0.05589205676872574,
+      "share_unzeroed_vs_0.5": 0.0888661583286839
+     },
+     "cm": {
+      "share_not_zeroed": 0.20346803404270394,
+      "share_at_clip": 0.00017977806707581676,
+      "mean_abs_log_not_zeroed": 0.12841850945583996,
+      "mean_abs_log_all_entries": 0.02612906165367414,
+      "share_unzeroed_vs_0.5": 0.10242124746495214
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.1878153865228442,
+      "share_at_clip": 3.719546215361726e-05,
+      "mean_abs_log_not_zeroed": 0.11418589776809511,
+      "mean_abs_log_all_entries": 0.02144586852477276,
+      "share_unzeroed_vs_0.5": 0.1043952637778191
+     }
+    }
+   },
+   "lib3_t33": {
+    "0.5": {
+     "blood": {
+      "share_not_zeroed": 0.18044758539458186,
+      "share_at_clip": 2.4796974769078173e-05,
+      "mean_abs_log_not_zeroed": 0.13794657941944674,
+      "mean_abs_log_all_entries": 0.024892127169681085,
+      "share_unzeroed_vs_0.5": 0.0
+     },
+     "cm": {
+      "share_not_zeroed": 0.1010467865777518,
+      "share_at_clip": 4.42803120876396e-06,
+      "mean_abs_log_not_zeroed": 0.09410049418369922,
+      "mean_abs_log_all_entries": 0.009508552552641228,
+      "share_unzeroed_vs_0.5": 0.0
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.08342012274502511,
+      "share_at_clip": 0.0,
+      "mean_abs_log_not_zeroed": 0.08489425755832702,
+      "mean_abs_log_all_entries": 0.007081889385863416,
+      "share_unzeroed_vs_0.5": 0.0
+     }
+    },
+    "0.75": {
+     "blood": {
+      "share_not_zeroed": 0.23348831442564008,
+      "share_at_clip": 0.00013638336122992996,
+      "mean_abs_log_not_zeroed": 0.17347819692691765,
+      "mean_abs_log_all_entries": 0.04050513179006525,
+      "share_unzeroed_vs_0.5": 0.05304072903105821
+     },
+     "cm": {
+      "share_not_zeroed": 0.15980321829308253,
+      "share_at_clip": 5.313637450516751e-05,
+      "mean_abs_log_not_zeroed": 0.11122149020768811,
+      "mean_abs_log_all_entries": 0.017773552078541123,
+      "share_unzeroed_vs_0.5": 0.05875643171533073
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.1428863678631207,
+      "share_at_clip": 6.199243692269543e-06,
+      "mean_abs_log_not_zeroed": 0.09926097557949047,
+      "mean_abs_log_all_entries": 0.014183040271103316,
+      "share_unzeroed_vs_0.5": 0.05946624511809559
+     }
+    },
+    "1": {
+     "blood": {
+      "share_not_zeroed": 0.2693137437232658,
+      "share_at_clip": 0.0008926910916868142,
+      "mean_abs_log_not_zeroed": 0.20753510755157675,
+      "mean_abs_log_all_entries": 0.05589205676872574,
+      "share_unzeroed_vs_0.5": 0.0888661583286839
+     },
+     "cm": {
+      "share_not_zeroed": 0.20346803404270394,
+      "share_at_clip": 0.00017977806707581676,
+      "mean_abs_log_not_zeroed": 0.12841850945583996,
+      "mean_abs_log_all_entries": 0.02612906165367414,
+      "share_unzeroed_vs_0.5": 0.10242124746495214
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.1878153865228442,
+      "share_at_clip": 3.719546215361726e-05,
+      "mean_abs_log_not_zeroed": 0.11418589776809511,
+      "mean_abs_log_all_entries": 0.02144586852477276,
+      "share_unzeroed_vs_0.5": 0.1043952637778191
+     }
+    }
+   },
+   "ref67": {
+    "0.5": {
+     "blood": {
+      "share_not_zeroed": 0.19555514227264273,
+      "share_at_clip": 3.099621846134772e-05,
+      "mean_abs_log_not_zeroed": 0.1476467674735592,
+      "mean_abs_log_all_entries": 0.02887308461938767,
+      "share_unzeroed_vs_0.5": 0.0
+     },
+     "cm": {
+      "share_not_zeroed": 0.10617887474870923,
+      "share_at_clip": 4.42803120876396e-06,
+      "mean_abs_log_not_zeroed": 0.09311083523930863,
+      "mean_abs_log_all_entries": 0.009886403712622253,
+      "share_unzeroed_vs_0.5": 0.0
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.09452296819787986,
+      "share_at_clip": 0.0,
+      "mean_abs_log_not_zeroed": 0.08407790594148302,
+      "mean_abs_log_all_entries": 0.007947293229451135,
+      "share_unzeroed_vs_0.5": 0.0
+     }
+    },
+    "0.75": {
+     "blood": {
+      "share_not_zeroed": 0.24723203769140165,
+      "share_at_clip": 0.00019217655446035584,
+      "mean_abs_log_not_zeroed": 0.18763217918659617,
+      "mean_abs_log_all_entries": 0.04638868599678037,
+      "share_unzeroed_vs_0.5": 0.05167689541875891
+     },
+     "cm": {
+      "share_not_zeroed": 0.16665958181673265,
+      "share_at_clip": 4.605152457114518e-05,
+      "mean_abs_log_not_zeroed": 0.11069726344314788,
+      "mean_abs_log_all_entries": 0.018448759633691712,
+      "share_unzeroed_vs_0.5": 0.060480707068023415
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.156785072221189,
+      "share_at_clip": 6.199243692269543e-06,
+      "mean_abs_log_not_zeroed": 0.09984624015053731,
+      "mean_abs_log_all_entries": 0.015654399973016174,
+      "share_unzeroed_vs_0.5": 0.06226210402330916
+     }
+    },
+    "1": {
+     "blood": {
+      "share_not_zeroed": 0.28222056909057097,
+      "share_at_clip": 0.0016489988221436984,
+      "mean_abs_log_not_zeroed": 0.2252435485523719,
+      "mean_abs_log_all_entries": 0.06356836245643005,
+      "share_unzeroed_vs_0.5": 0.08666542681792822
+     },
+     "cm": {
+      "share_not_zeroed": 0.21100011512881142,
+      "share_at_clip": 0.00016737957969127767,
+      "mean_abs_log_not_zeroed": 0.128308966178049,
+      "mean_abs_log_all_entries": 0.02707320663562711,
+      "share_unzeroed_vs_0.5": 0.1048212403801022
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.2032360052073647,
+      "share_at_clip": 4.33947058458868e-05,
+      "mean_abs_log_not_zeroed": 0.11559891868904296,
+      "mean_abs_log_all_entries": 0.023493862440652064,
+      "share_unzeroed_vs_0.5": 0.10871303700948484
+     }
+    }
+   },
+   "ref50": {
+    "0.5": {
+     "blood": {
+      "share_not_zeroed": 0.20487260554212386,
+      "share_at_clip": 3.099621846134772e-05,
+      "mean_abs_log_not_zeroed": 0.160404762366125,
+      "mean_abs_log_all_entries": 0.03286254160731324,
+      "share_unzeroed_vs_0.5": 0.0
+     },
+     "cm": {
+      "share_not_zeroed": 0.11983935102774604,
+      "share_at_clip": 3.5424249670111675e-06,
+      "mean_abs_log_not_zeroed": 0.09491688721288778,
+      "mean_abs_log_all_entries": 0.011374778165166239,
+      "share_unzeroed_vs_0.5": 0.0
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.10533444919719794,
+      "share_at_clip": 0.0,
+      "mean_abs_log_not_zeroed": 0.08511482936202922,
+      "mean_abs_log_all_entries": 0.008965523669362839,
+      "share_unzeroed_vs_0.5": 0.0
+     }
+    },
+    "0.75": {
+     "blood": {
+      "share_not_zeroed": 0.2548571074328932,
+      "share_at_clip": 0.00048354100799702436,
+      "mean_abs_log_not_zeroed": 0.2049269381071621,
+      "mean_abs_log_all_entries": 0.052227086681070865,
+      "share_unzeroed_vs_0.5": 0.04998450189076933
+     },
+     "cm": {
+      "share_not_zeroed": 0.18185127128776005,
+      "share_at_clip": 4.782273705465076e-05,
+      "mean_abs_log_not_zeroed": 0.11426360962474447,
+      "mean_abs_log_all_entries": 0.020778982672188116,
+      "share_unzeroed_vs_0.5": 0.062011920260013995
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.16937263653834234,
+      "share_at_clip": 6.199243692269543e-06,
+      "mean_abs_log_not_zeroed": 0.10209062328068559,
+      "mean_abs_log_all_entries": 0.01729135803089239,
+      "share_unzeroed_vs_0.5": 0.06403818734114439
+     }
+    },
+    "1": {
+     "blood": {
+      "share_not_zeroed": 0.2883826173206869,
+      "share_at_clip": 0.0030748248713656934,
+      "mean_abs_log_not_zeroed": 0.24626445870806274,
+      "mean_abs_log_all_entries": 0.07101838915529335,
+      "share_unzeroed_vs_0.5": 0.08351001177856301
+     },
+     "cm": {
+      "share_not_zeroed": 0.2271004366038772,
+      "share_at_clip": 0.00017800685459231117,
+      "mean_abs_log_not_zeroed": 0.13310329379330998,
+      "mean_abs_log_all_entries": 0.030227816133874836,
+      "share_unzeroed_vs_0.5": 0.10726108557613113
+     },
+     "endocardium": {
+      "share_not_zeroed": 0.2154485152811357,
+      "share_at_clip": 4.33947058458868e-05,
+      "mean_abs_log_not_zeroed": 0.11905789571662004,
+      "mean_abs_log_all_entries": 0.025650846864642075,
+      "share_unzeroed_vs_0.5": 0.11011406608393776
+     }
+    }
+   }
+  }
+ },
+ "stamps": {
+  "T1/E9.5->E10.5:chamber": {
+   "commit": "6214e2865f3d4baa0650a09a69677e27b3a68910",
+   "tree_clean": true,
+   "utc": "2026-11-18T06:59:29Z",
+   "inputs": {
+    "/home/prachh/v/vec-campaign/data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+    "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+    "experiments/t1_direction/config.yaml": "bae9b7aa747b17658aa25b4c1984bc3f7a3dbaca9a0970f7b60aa8e9b504c69f",
+    "experiments/t1_m1/results/n22_additivity/n22.json": "c16dac361f5dfbff8cad9699ff224b6f642332a8142614507b536d1531fa33be"
+   }
+  },
+  "T1/E9.5->E10.5": {
+   "commit": "6214e2865f3d4baa0650a09a69677e27b3a68910",
+   "tree_clean": true,
+   "utc": "2026-11-18T07:03:21Z",
+   "inputs": {
+    "/home/prachh/v/vec-campaign/data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+    "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+    "experiments/t1_direction/config.yaml": "bae9b7aa747b17658aa25b4c1984bc3f7a3dbaca9a0970f7b60aa8e9b504c69f",
+    "experiments/t1_m1/results/n22_additivity/n22.json": "c16dac361f5dfbff8cad9699ff224b6f642332a8142614507b536d1531fa33be"
+   }
+  },
+  "lib3": {
+   "commit": "6214e2865f3d4baa0650a09a69677e27b3a68910",
+   "tree_clean": true,
+   "utc": "2026-11-18T06:14:41Z",
+   "inputs": {
+    "/home/prachh/v/vec-campaign/data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+    "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+    "experiments/t1_direction/config.yaml": "bae9b7aa747b17658aa25b4c1984bc3f7a3dbaca9a0970f7b60aa8e9b504c69f",
+    "experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841",
+    "/home/prachh/v/vec-campaign/data/external/feng2022_gse193346_geo/cd1_stats.npz": "28f188fb9409984142a70a5a940dde3d1d3187b033d94ee2d26337a216f295c3",
+    "experiments/t1_m1/results/n22_additivity/n22.json": "c16dac361f5dfbff8cad9699ff224b6f642332a8142614507b536d1531fa33be"
+   }
+  },
+  "lib3_t67": {
+   "commit": "6214e2865f3d4baa0650a09a69677e27b3a68910",
+   "tree_clean": true,
+   "utc": "2026-11-18T06:15:36Z",
+   "inputs": {
+    "/home/prachh/v/vec-campaign/data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+    "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+    "experiments/t1_direction/config.yaml": "bae9b7aa747b17658aa25b4c1984bc3f7a3dbaca9a0970f7b60aa8e9b504c69f",
+    "experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841",
+    "/home/prachh/v/vec-campaign/data/external/feng2022_gse193346_geo/cd1_stats.npz": "28f188fb9409984142a70a5a940dde3d1d3187b033d94ee2d26337a216f295c3",
+    "experiments/t1_m1/results/n22_additivity/n22.json": "c16dac361f5dfbff8cad9699ff224b6f642332a8142614507b536d1531fa33be"
+   }
+  },
+  "lib3_t33": {
+   "commit": "6214e2865f3d4baa0650a09a69677e27b3a68910",
+   "tree_clean": true,
+   "utc": "2026-11-18T06:15:37Z",
+   "inputs": {
+    "/home/prachh/v/vec-campaign/data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+    "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+    "experiments/t1_direction/config.yaml": "bae9b7aa747b17658aa25b4c1984bc3f7a3dbaca9a0970f7b60aa8e9b504c69f",
+    "experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841",
+    "/home/prachh/v/vec-campaign/data/external/feng2022_gse193346_geo/cd1_stats.npz": "28f188fb9409984142a70a5a940dde3d1d3187b033d94ee2d26337a216f295c3",
+    "experiments/t1_m1/results/n22_additivity/n22.json": "c16dac361f5dfbff8cad9699ff224b6f642332a8142614507b536d1531fa33be"
+   }
+  },
+  "ref67": {
+   "commit": "6214e2865f3d4baa0650a09a69677e27b3a68910",
+   "tree_clean": true,
+   "utc": "2026-11-18T06:11:24Z",
+   "inputs": {
+    "/home/prachh/v/vec-campaign/data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+    "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+    "experiments/t1_direction/config.yaml": "bae9b7aa747b17658aa25b4c1984bc3f7a3dbaca9a0970f7b60aa8e9b504c69f",
+    "experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841",
+    "/home/prachh/v/vec-campaign/data/external/feng2022_gse193346_geo/cd1_stats.npz": "28f188fb9409984142a70a5a940dde3d1d3187b033d94ee2d26337a216f295c3",
+    "experiments/t1_m1/results/n22_additivity/n22.json": "c16dac361f5dfbff8cad9699ff224b6f642332a8142614507b536d1531fa33be"
+   }
+  },
+  "ref50": {
+   "commit": "6214e2865f3d4baa0650a09a69677e27b3a68910",
+   "tree_clean": true,
+   "utc": "2026-11-18T06:10:35Z",
+   "inputs": {
+    "/home/prachh/v/vec-campaign/data/raw/T1/E10.5_RNA.h5ad": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E9.5_RNA.h5ad": "0296e0043842f944a663f3c11ac1542d1bbee733c1cd657bd56f75af65958361",
+    "/home/prachh/v/vec-campaign/data/raw/T1/E8.5_RNA.h5ad": "8eab2d0ccaa89f92861b09816b76b6a731b8ed6b5995e4af196d9ed8ff76e504",
+    "experiments/t1_direction/results/held_flat_genes.csv": "d78eac16ff8e41458046ec8bada3bb8d367fcba74e48ff404a989d7d9624848c",
+    "experiments/t1_direction/config.yaml": "bae9b7aa747b17658aa25b4c1984bc3f7a3dbaca9a0970f7b60aa8e9b504c69f",
+    "experiments/t1_hygiene/results/n12_hygiene_size/hygiene_genes.csv": "c40e568ddd78a1b958c74aac7e6be72e1cf5b21acb1c83efd81d22e98243e841",
+    "/home/prachh/v/vec-campaign/data/external/feng2022_gse193346_geo/cd1_stats.npz": "28f188fb9409984142a70a5a940dde3d1d3187b033d94ee2d26337a216f295c3",
+    "experiments/t1_m1/results/n22_additivity/n22.json": "c16dac361f5dfbff8cad9699ff224b6f642332a8142614507b536d1531fa33be"
+   }
+  }
+ },
+ "stamp": {
+  "commit": "630a032a7644b96edb08821109b74eba9d3c14b1",
+  "tree_clean": true,
+  "utc": "2026-11-18T07:04:26Z",
+  "inputs": {
+   "experiments/t1_m1/results/t59_gmom_ctl/tasks/T1_E9.5_E10.5_chamber.json": "2bcb76c40007a4652230829f05778c04e3e5b98e9777bd70cfd3c66f04210fde",
+   "experiments/t1_m1/results/t59_gmom_ctl/tasks/T1_E9.5_E10.5.json": "0d7e021b42eb1c7d4c6d1dfb8399f6dc36d02084045a877ca944efcd0f58f9a1",
+   "experiments/t1_m1/results/t59_gmom_ctl/tasks/lib3.json": "a967f2b2621bd0243118d1a61040ceda46d2d9b0f59fddcd3918e1df280b6bcf",
+   "experiments/t1_m1/results/t59_gmom_ctl/tasks/lib3_t67.json": "fc259917b1a0bd642ea6142e4b6eb4cc1a328756316801f3cf5dbd8494d7da6a",
+   "experiments/t1_m1/results/t59_gmom_ctl/tasks/lib3_t33.json": "3f735f0ab2ccbfc148339e070d613b2cb561dbfc3f92f2540d80decb339bbef0",
+   "experiments/t1_m1/results/t59_gmom_ctl/tasks/ref67.json": "a116fa7f4df833ffca4137f557ad7ffb140fc32d8591b1aace8b8975dc721dfe",
+   "experiments/t1_m1/results/t59_gmom_ctl/tasks/ref50.json": "de7bb6f49241cb9827263d6a31c311d7f9f01cb5527a017e5bf330d9a877cd8b",
+   "experiments/t1_m1/results/t49_gmom_size/tasks/T1_E9.5_E10.5_chamber.json": "b59386f24e2892120696313bf7b0b7169ddcd6cd00cee897a5fbf6594b3aaab7",
+   "experiments/t1_m1/results/t49_gmom_size/tasks/T1_E9.5_E10.5.json": "37594ffc08e8653959895718ef17b20d5dbc9d3bda54bc58893a31b65f60babb",
+   "experiments/harness/results/t20_t24_g_mom_controls/decisions_T1_test.json": "949fcfabd5209b3a8df594c27f812b9f746ef12d4104e42b43474d9654438df4",
+   "experiments/t1_m1/results/t50_m1_over_step/tasks/lib3.json": "43cafb6960e9968e8a2163b98ee66abe5162e7306a7b60cc78f48eed3f8c9bf8",
+   "experiments/t1_m1/results/t50_m1_over_step/tasks/lib3_t67.json": "393ebac84ad21cf9508a0314bbc25dcc12f32f4cdb5a45c988a8a231c814f082",
+   "experiments/t1_m1/results/t50_m1_over_step/tasks/lib3_t33.json": "4937f3ba07dc41bb8b98e54754717fe916add8a2695301410890abb6a1d21d2b",
+   "experiments/t1_m1/results/t54_m1_deep_step/tasks/ref67.json": "74b1b2100c0a0bae91ec6b8ac43e12af8ee3f6bd409253cc1f9e5ef09430b3b3",
+   "experiments/t1_m1/results/t54_m1_deep_step/tasks/ref50.json": "cefed1ba305814b377406b951e84edfd78249559075faaa075d2eeccf00e19e3"
+  }
+ }
+}
