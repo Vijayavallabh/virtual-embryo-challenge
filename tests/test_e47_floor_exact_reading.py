@@ -98,7 +98,8 @@ def _results(e47, rng, change=None, commit="c" * 40):
         for i, s in enumerate(SEEDS):
             rows.append({"seed": s, "scores": {a: float(base[a][i]) for a in e47.ARMS},
                          "skills": {a: {m: float(sk[a][m][i]) for m in METRICS} for a in e47.ARMS}})
-        out[t.key] = {"task": {"key": t.key}, "rows": rows, "provenance": {"commit": commit, "tree_clean": True}}
+        out[t.key] = {"task": {"key": t.key}, "rows": rows, "provenance": {"commit": commit, "tree_clean": True},
+                      "floor_exact_fallback": {str(s): False for s in e47.build_seeds()}}
     return out
 
 
@@ -217,6 +218,66 @@ def test_void_conditions(e47):
     assert _read(e47, dirty)["void"]
     assert e47.text(_read(e47, dirty)).startswith("VOID")
     assert "rule (ii)" in e47.text(_read(e47, good))
+    # a task file without the floor-exact fallback record for every build seed
+    nofb = copy.deepcopy(good)
+    del nofb[next(iter(nofb))]["floor_exact_fallback"]
+    assert _read(e47, nofb)["void"]
+
+
+def test_a_fallback_is_listed_and_voids_nothing(e47):
+    good = _results(e47, np.random.default_rng(7))
+    res = _read(e47, good)
+    assert res["fallback_tasks"] == [] and "fallback (" in e47.text(res) and "on no task" in e47.text(res)
+    names = list(e47.tasks())
+    fb = copy.deepcopy(good)
+    fb[e47.tasks()["e725"].key]["floor_exact_fallback"][str(e47.build_seeds()[0])] = True
+    res = _read(e47, fb)
+    assert not res["void"] and res["fallback_tasks"] == ["e725"] and "e725" in names
+    assert "e725" in e47.text(res).splitlines()[1]
+
+
+def test_the_run_records_the_fallback_seen_by_the_builds(e47):
+    """floor_exact_records sees what _floor_exact_positions reports, per build seed, and restores the function."""
+    from test_e47_floor_exact import _two_types
+
+    from vec import t2_build as tb
+
+    orig = tb._floor_exact_positions
+    Cb, Ca, Eb, Ea, _, _ = _two_types(np.random.default_rng(6), n_b=100, n_a=300)
+    with e47.floor_exact_records() as seen:
+        for seed, n in ((5, 80), (6, 130)):
+            tb.interpolate_clouds(Cb, Ca, Eb, Ea, 0.5, n, seed=seed, target_rms=1.0, n_anchor=60, k=3, t_pos=0.0,
+                                  positions=tb.POSITIONS[1])
+        tb.interpolate_clouds(Cb, Ca, Eb, Ea, 0.5, 130, seed=7, target_rms=1.0, n_anchor=60, k=3, t_pos=0.0)
+    assert seen == {5: False, 6: True}  # the default position mode never calls it
+    assert tb._floor_exact_positions is orig
+    assert e47.build_seeds() == [1_000_000 + s for s in SEEDS]
+
+
+# ------------------------------------------------------------------------------------ before the row (J5, J7)
+def test_the_guards_dry_run_on_committed_reproductions(e47):
+    """J7: try E25's reference arms against try E24's committed scores (two commits, six tasks) sit within the guard,
+    and the expression-identity guard holds on every committed pair that shares its cells. Both guards can fail on
+    such data: a shift of 0.11 or 1e-6 voids, as test_the_guard_on_the_committed_files and test_void_conditions show."""
+    d = e47.dry_run_guards()
+    ref = d["reference"]
+    assert ref["tasks"] == 6 and ref["arms"] == ["fgw", "fgw_shape0", "fgw_shape0_series"]
+    assert ref["commits"] == ["798908a", "ccd33b5"] and ref["why"] == []
+    assert ref["worst"]["mean"] <= e47.GUARD_MEAN and ref["worst"]["seed"] <= e47.GUARD_SEED
+    expr = d["expression"]
+    assert expr["files"] == 15 and expr["why"] == [] and expr["worst"] <= e47.EXPR_TOL
+
+
+def test_the_committed_noise_is_spreads_only(e47):
+    """J5 and the noise of rule (ii) from committed scores: spreads and chances, no mean of any arm."""
+    n = e47.committed_noise()
+    j5 = n["j5"]
+    assert j5["noise_floor"] == max(j5["seed_se"], j5["between_truth_sd"]) > 0
+    assert set(j5["task_se"]) == set(e47.tasks())
+    p = n["rule2_proxy"]
+    assert p["pair"] == ["fgw", "fgw_shape0"] and set(p["skill_sd"]) == set(e47.tasks())
+    for v in (p["p_fail_a"], p["p_fail_b"], p["p_fail_c"]):
+        assert 0.0 <= v <= 1.0
 
 
 def test_the_run_refuses_without_its_row(e47, monkeypatch, tmp_path, capsys):

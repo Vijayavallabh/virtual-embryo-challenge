@@ -33,11 +33,19 @@ merged mean of a paired difference its standard error over seeds (SD of the merg
 Void (nothing is read): a task, seed or arm missing; results from different commits or a dirty tree; a reference arm
 off its committed scores on a task by more than GUARD_MEAN in the ten-seed mean or by more than GUARD_SEED in any seed;
 the committed runs disagreeing among themselves (nine_tasks._load's own check); a new arm's de_score, de_direction,
-mmd_u or variogram skill differing from its control's by more than EXPR_TOL in any seed (they hold the same cells).
+mmd_u or variogram skill differing from its control's by more than EXPR_TOL in any seed (they hold the same cells); a
+task file without the floor-exact fallback flag for every build seed. A build that refuses (the cloud guard, a file
+check) ends its task's process, so its task file is missing and the run is void; it is reported, not retried.
+
+The floor-exact fallback. Each task file records, per build seed, whether the new arms' fallback fired (more cells in
+the file than the earlier bracket holds, so some positions repeat; `floor_exact_records`). The reading lists the tasks
+where it did; it voids nothing.
 
   run   --task NAME --out DIR   one task per process (half, late, new1, x1, x2, x3, new2, e75, e725); start the nine
                                 together so that they record one commit
   read  --runs DIR --out DIR    apply the reading; write e47.json and e47.txt
+  noise                         before the row (TRIES.md rule 9, J5 and J7), from committed score files only: the
+                                guards' dry runs and the noise floors the row quotes
 
 Refused: a run while TRIES.md has no row E47a, a dirty tree, an existing output.
 """
@@ -45,6 +53,7 @@ Refused: a run while TRIES.md has no row E47a, a dirty tree, an existing output.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import json
 import sys
 from pathlib import Path
@@ -59,7 +68,7 @@ import n12_hygiene_size as n12  # noqa: E402
 import nine_tasks as nt  # noqa: E402
 import series_world as sw  # noqa: E402
 
-from vec import harness  # noqa: E402
+from vec import harness, t2_build  # noqa: E402
 from vec.adoption import SEEDS  # noqa: E402
 from vec.provenance import repo_state  # noqa: E402
 
@@ -78,6 +87,11 @@ GEOMETRY_SCORE_BAR = 0.3  # board points, nine-task merged mean
 GEOMETRY_NBHD_BAR = 0.02  # neighborhood_mmd skill, nine-task merged mean
 GEOMETRY_SHAPE_BAR = 0.10  # d2_shape and occupancy_dice skill, per task
 SHAPE_METRICS = ("d2_shape", "occupancy_dice")
+
+
+def build_seeds() -> list[int]:
+    """The build seeds harness.score_seeds hands the candidates (BUILD_SEED_OFFSET + each scoring seed)."""
+    return [harness.BUILD_SEED_OFFSET + s for s in SEEDS]
 
 
 def tasks() -> dict:
@@ -103,6 +117,28 @@ def merged_seeds(values: dict[str, np.ndarray], groups: dict[str, list[str]]) ->
 
 
 # ------------------------------------------------------------------------------------------------ run
+@contextlib.contextmanager
+def floor_exact_records():
+    """Collect what `vec.t2_build._floor_exact_positions` reports on each call made inside the block: build seed ->
+    whether the fallback fired (too few unused earlier cells). harness.run_task keeps no build record, so this is how a
+    run sees it. Both new arms call it with the same arguments at a seed, so they agree; a disagreement is kept as
+    True. Only the flag is kept: no count."""
+    seen: dict[int, bool] = {}
+    orig = t2_build._floor_exact_positions
+
+    def spy(*args, **kwargs):
+        pos, rec = orig(*args, **kwargs)
+        seed = int(kwargs["seed"] if "seed" in kwargs else args[-1])
+        seen[seed] = bool(seen.get(seed, False) or rec["fallback"])
+        return pos, rec
+
+    t2_build._floor_exact_positions = spy
+    try:
+        yield seen
+    finally:
+        t2_build._floor_exact_positions = orig
+
+
 def _state() -> tuple[str, bool]:
     s = repo_state(REPO)
     return s.commit, s.unclean == ()
@@ -126,7 +162,9 @@ def cmd_run(a) -> None:
     if path.exists():
         sys.exit(f"{path} exists")
     out.mkdir(parents=True, exist_ok=True)
-    res = harness.run_task(t, cands, seeds=SEEDS, data_dir=Path(a.data))
+    with floor_exact_records() as seen:
+        res = harness.run_task(t, cands, seeds=SEEDS, data_dir=Path(a.data))
+    res["floor_exact_fallback"] = {str(s): v for s, v in sorted(seen.items())}
     res["task_source"] = "experiments/harness/e47_floor_exact.py"
     res["run_id"] = out.name
     path.write_text(json.dumps(res, indent=1, default=float))
@@ -175,12 +213,12 @@ def guard(run: dict[str, dict[str, np.ndarray]], committed: dict[str, dict[str, 
     return worst, why
 
 
-def expression_identity(skills: dict[str, dict[str, dict[str, np.ndarray]]]) -> tuple[float, list[str]]:
-    """Each new arm against its control on the metrics that read expression only: the largest difference and the
-    reasons the run is void."""
+def expression_identity(skills: dict[str, dict[str, dict[str, np.ndarray]]], pairs=None) -> tuple[float, list[str]]:
+    """Each new arm against its control (or each pair of `pairs`, arm -> arm with the same cells) on the metrics that
+    read expression only: the largest difference and the reasons the run is void."""
     worst, why = 0.0, []
     for key, sk in skills.items():
-        for arm, ctl in NEW.items():
+        for arm, ctl in (pairs or NEW).items():
             for m in EXPR_METRICS:
                 d = float(np.abs(sk[arm][m] - sk[ctl][m]).max())
                 worst = max(worst, d)
@@ -240,6 +278,8 @@ def reading(results: dict[str, dict], committed: tuple[dict, list[str]] | None =
             why.append(f"{name}: seeds are not {list(SEEDS)}")
         if any(a not in row["scores"] or a not in row["skills"] for row in r["rows"] for a in ARMS):
             why.append(f"{name}: an arm is missing")
+        if sorted(r.get("floor_exact_fallback", {})) != sorted(str(s) for s in build_seeds()):
+            why.append(f"{name}: the floor-exact fallback is not recorded for every build seed")
     prov = [r["provenance"] for r in results.values()]
     if len({p["commit"] for p in prov}) > 1:
         why.append("the results come from different commits")
@@ -269,10 +309,12 @@ def reading(results: dict[str, dict], committed: tuple[dict, list[str]] | None =
                    "merged_board_se": float(merged_seeds({n: scores[n][arm] - scores[n][ctl] for n in per}, groups)
                                             .std(ddof=1) / np.sqrt(len(SEEDS)))}
              for arm, ctl in NEW.items()}
+    fallback = [n for n, t in all_tasks.items() if any(results[t.key]["floor_exact_fallback"].values())]
     rule2 = {arm: geometry_rule(per, groups, arm) for arm in NEW}
     pricing = {arm: price(scores, groups, arm) for arm in PRICED}
     return {"void": False, "why": [], "commit": prov[0]["commit"], "truths": groups, "tasks": per, "noise": noise,
-            "rule2": rule2, "pricing": pricing, "guard": worst_guard, "expression_identity": worst_expr,
+            "rule2": rule2, "pricing": pricing, "fallback_tasks": fallback, "guard": worst_guard,
+            "expression_identity": worst_expr,
             "thresholds": {"GUARD_MEAN": GUARD_MEAN, "GUARD_SEED": GUARD_SEED, "EXPR_TOL": EXPR_TOL,
                            "GEOMETRY_SCORE_BAR": GEOMETRY_SCORE_BAR, "GEOMETRY_NBHD_BAR": GEOMETRY_NBHD_BAR,
                            "GEOMETRY_SHAPE_BAR": GEOMETRY_SHAPE_BAR}}
@@ -285,6 +327,8 @@ def text(res: dict) -> str:
     lines = [f"Tries E47a and E47b (commit {res['commit']}); guard: reference arms within {res['guard']['mean']:.3f} "
              f"(mean) and {res['guard']['seed']:.3f} (any seed) of their committed scores; expression metrics equal to "
              f"the controls' within {res['expression_identity']:.1e}.",
+             "floor-exact fallback (the new arms' cells not all distinct earlier positions; reported, voids nothing): "
+             + (", ".join(res["fallback_tasks"]) if res["fallback_tasks"] else "on no task"),
              "rule (ii), geometry:"]
     for arm, g in res["rule2"].items():
         w = g["worst_shape"]
@@ -311,6 +355,91 @@ def text(res: dict) -> str:
     for n in names:
         lines.append(f"  {n:<5} " + ", ".join(f"{a} {v:.2f}" for a, v in res["tasks"][n]["seed_sd"].items()))
     return "\n".join(lines) + "\n"
+
+
+# ------------------------------------------------------------------------------------ before the row (J5, J7)
+# Rule 9 of TRIES.md asks a row to state its noise floor (J5) and to dry-run its guards on committed reproduction data
+# (J7) before it is committed. These read committed score files only (tries E24, E25 and E28); no arm is built or
+# scored, and no new arm is involved.
+E24, E25 = nt.STORED
+SAME_CELLS = {"fgw": "fgw_shape0", "fgw_series": "fgw_shape0_series", "fgw_aligned_series": "fgw_shape0_series"}
+POSITIONS_ONLY = ("fgw", "fgw_shape0")  # a committed pair that shares its cells and differs only in where they sit
+
+
+def _committed_per_seed(dirs=COMMITTED) -> dict[str, tuple[dict, dict]]:
+    """Task key -> (scores, skills) per arm, from the first committed file that holds the task."""
+    out: dict[str, tuple[dict, dict]] = {}
+    for d in dirs:
+        for p in sorted(Path(d).glob("T2e_*.json")):
+            r = json.loads(p.read_text())
+            out.setdefault(r["task"]["key"], per_seed(r))
+    return out
+
+
+def dry_run_guards() -> dict:
+    """J7. (1) The reference-score guard applied to try E25's run of the reference arms against try E24's committed
+    scores, on the six tasks and three reference arms the two hold in common (two commits, ccd33b5 and 798908a). (2) The
+    expression-identity guard on the committed pairs that hold the same cells, on every committed task file."""
+    run, old = _committed_per_seed([E25]), _committed_per_seed([E24])
+    keys = sorted(set(run) & set(old))
+    arms = [a for a in REFERENCE if all(a in run[k][0] and a in old[k][0] for k in keys)]
+    worst, why = guard({k: run[k][0] for k in keys}, {k: old[k][0] for k in keys}, keys, arms=arms)
+    commits = sorted({json.loads(p.read_text())["provenance"]["commit"][:7]
+                      for d in (E24, E25) for p in Path(d).glob("T2e_*.json")})
+    skills = {}
+    for d in COMMITTED:
+        for p in sorted(Path(d).glob("T2e_*.json")):
+            skills[f"{Path(d).parent.name}:{p.stem}"] = per_seed(json.loads(p.read_text()))[1]
+    expr_worst, expr_why = 0.0, []
+    for name, sk in skills.items():
+        here = {a: c for a, c in SAME_CELLS.items() if a in sk and c in sk}
+        w, y = expression_identity({name: sk}, here)
+        expr_worst, expr_why = max(expr_worst, w), [*expr_why, *y]
+    return {"reference": {"tasks": len(keys), "arms": arms, "commits": commits, "worst": worst, "why": why},
+            "expression": {"files": len(skills), "pairs": dict(SAME_CELLS), "worst": expr_worst, "why": expr_why}}
+
+
+def committed_noise() -> dict:
+    """J5 and the noise of rule (ii), from committed scores only.
+
+    J5: the entry (fgw, the first upload's arm) against the floor on the nine tasks, paired by seed: the seed spread
+    (the standard error over seeds of the merged per-seed difference) and the between-truth spread (the SD over the
+    five truths of their mean differences). The noise floor is the larger. Only spreads are returned.
+    Rule (ii): the committed positions-only pair fgw against fgw_shape0 (same cells, other positions), as a stand-in
+    for the new arm against its control: per task the seed SD of the paired d2_shape, occupancy_dice and
+    neighborhood_mmd skill differences; the standard errors of the merged board and neighbourhood differences; and the
+    chance that each clause fails on noise alone (zero-mean normal task means with those SEs, tasks independent)."""
+    from scipy.stats import norm
+
+    data = _committed_per_seed()
+    all_tasks = tasks()
+    groups = truths(all_tasks)
+    sc = {n: data[t.key][0] for n, t in all_tasks.items()}
+    sk = {n: data[t.key][1] for n, t in all_tasks.items()}
+    n_seed = len(SEEDS)
+    d_entry = {n: sc[n]["fgw"] - sc[n]["floor"] for n in all_tasks}
+    seed_se = float(merged_seeds(d_entry, groups).std(ddof=1) / np.sqrt(n_seed))
+    truth_means = [np.mean([d_entry[n].mean() for n in names]) for names in groups.values()]
+    between = float(np.std(truth_means, ddof=1))
+    a, c = POSITIONS_ONLY
+    sd = {n: {m: float((sk[n][a][m] - sk[n][c][m]).std(ddof=1)) for m in (*SHAPE_METRICS, "neighborhood_mmd")}
+          for n in all_tasks}
+    board_se = float(merged_seeds({n: sc[n][a] - sc[n][c] for n in all_tasks}, groups).std(ddof=1) / np.sqrt(n_seed))
+    nbhd_se = float(merged_seeds({n: sk[n][a]["neighborhood_mmd"] - sk[n][c]["neighborhood_mmd"] for n in all_tasks},
+                                 groups).std(ddof=1) / np.sqrt(n_seed))
+    keep = np.prod([norm.cdf(GEOMETRY_SHAPE_BAR / (sd[n][m] / np.sqrt(n_seed))) for n in all_tasks
+                    for m in SHAPE_METRICS])
+    return {"j5": {"entry": "fgw", "baseline": "floor", "seed_se": seed_se, "between_truth_sd": between,
+                   "noise_floor": max(seed_se, between),
+                   "task_se": {n: float(d_entry[n].std(ddof=1) / np.sqrt(n_seed)) for n in all_tasks}},
+            "rule2_proxy": {"pair": list(POSITIONS_ONLY), "skill_sd": sd, "board_se": board_se, "nbhd_se": nbhd_se,
+                            "p_fail_a": float(norm.cdf(-GEOMETRY_SCORE_BAR / board_se)),
+                            "p_fail_b": float(norm.cdf(-GEOMETRY_NBHD_BAR / nbhd_se)),
+                            "p_fail_c": float(1.0 - keep)}}
+
+
+def cmd_noise(a) -> None:
+    print(json.dumps({"dry_run_guards": dry_run_guards(), "noise": committed_noise()}, indent=1, default=float))
 
 
 def cmd_read(a) -> None:
@@ -342,8 +471,9 @@ def main(argv=None) -> None:
     d = sub.add_parser("read")
     d.add_argument("--runs", required=True)
     d.add_argument("--out", required=True)
+    sub.add_parser("noise", help="J5 and J7 from committed score files only (before the row)")
     a = ap.parse_args(argv)
-    {"run": cmd_run, "read": cmd_read}[a.cmd](a)
+    {"run": cmd_run, "read": cmd_read, "noise": cmd_noise}[a.cmd](a)
 
 
 if __name__ == "__main__":
