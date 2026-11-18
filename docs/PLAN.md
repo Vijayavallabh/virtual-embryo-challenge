@@ -5576,3 +5576,49 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     a validation anchor. It wrote neither figure anywhere; no file, brief, weight or constant takes anything from
     them; the questions it will put to the captain rest on the skill map's definition (the floor scores 50 whatever
     the truth is) and on committed practice results.
+- 2026-11-18 (t), the first results of the week's work (state at 18:55 UTC). Written by the AI assistant.
+  - **Try H25, read by its fixed statements** (row H25; run on the DGX's campaign checkout at 814b3d6, clean tree; heart
+    tries 31 to 41). The two uploaded heart forms were run end to end on the two heart backtests, which share one truth
+    and are one piece of evidence; the size is an oracle there, because the size procedure gives no figure for E10.5
+    from the stages before it, and a sized arm is read against a copy at the same size. (1) True: the ruled second
+    form (even scaling, the half) has the halved copy's d2_shape and occupancy_dice skills on both backtests. (2)
+    False: halving moves the neighbourhood skill by -0.002 and -0.007 against a bar of -0.02, so no question on the
+    cell number follows. (3) False: the first upload's form against the sized copy scores -2.41 on E10.5 from E9.5
+    (10 of 10 seeds behind) and +1.61 on E10.5 from E8.75 and earlier (0 of 10 behind). The AI assistant's reading
+    after the result, which changes nothing: the in-plane stretch with z held moved the d2_shape skill by -0.32 on
+    one backtest and +0.18 on the other, so practice could not have said what it would do at E12.5; the evenly
+    scaled form keeps a copy's shape skills exactly. The heart's second file stands as ruled.
+  - **The second-file value table** (`experiments/gate/second_file_value.py` and
+    `experiments/gate/results/second_file_value_2026-11-18.txt`; an aggregation of committed practice scores, not a
+    try; written, reviewed and fixed by agents, re-run by the main session with identical output). It values a second
+    file as the mean of max(D, 0), D being the candidate minus the practice analogue of the uploaded first file on the
+    same task and seed, so that no test score enters. What it says: on the embryo's nine tasks (five truths) the
+    built second file, fgw_shape0_series, fgw_series and fgw_shape0_hi lie within 0.5 of each other and are not
+    separated, and on the two counted backtests alone the order reverses (fgw_aligned 1.07, fgw_shape0 0.92, the
+    built file 0.08); on T1 the built second file is a bet on the cardiomyocyte share (it wins where the truth's
+    share is 0.45 or more and loses where the truth keeps its own share, in zero-gap scenarios that are upper
+    bounds); on the heart it has no evidence on the size mode; on T3 no paired stand-in for the uploaded file
+    exists. Every embryo and T1 candidate was chosen on the tasks that value it, which the table says.
+  - **Rule 9 of the ledger, "the judge", and the captain's pre-upload checklist** are on main (d25c7b7;
+    `experiments/harness/TRIES.md`, `docs/P3_RUNBOOK.md`). Written by an agent to the AI assistant's brief, reviewed
+    (eight blockers), fixed, reviewed again by a fresh agent (eleven more, each with its replacement text) and
+    corrected by the AI assistant before the merge. It is the AI assistant's rule under the delegation of 2026-11-02
+    and the captain can overrule it. In plain words: a practice score counts for a file only if the practice run
+    applied every step of that file; evidence from the same sample as its target carries no weight in a forecast; an
+    oracle setting is a bound and never the centre of an estimate; practice tasks weigh equally once tasks on one
+    truth are merged; a row states beforehand the smallest difference it can detect; a step applied further out than
+    any practice task is not credited in full; a guard is tried on committed data before its row is committed; a test
+    score names the banked file and chooses among predictions, and never sets a weight, a prior, a task selection or
+    a constant. Its two thresholds on the horizon were written with the heart's and the embryo's cases known; the
+    rule says so. It applies to rows committed after it; rows K16, K17 and H25 stay under the rules they were
+    written under. The method report owes a line that the rule was shaped after the first scores.
+  - **T1's expression line stays closed** without a new try: the committed readings of tries T47 and T51 put the
+    released day's change almost wholly along the direction the entry already uses (the corrected alignment is 0.955
+    in try T47's reading), so a new direction has little left to buy, which is what the challenger of entry (s)
+    expected. The learned model over the stage ladder is not started.
+  - **Still in review.** The embryo's exact floor-form arm with its two tries and its target-free read, and T3's
+    try K18, each came back from a third reviewer with two or three precise defects (a false reason in a clause of
+    the row, a noise floor not matched to each arm, an unfinished proof that existing outputs are unchanged; a rerun
+    path that the reading's own void rule would refuse, and a run log that would have held scores before the
+    reading). A second fix round with a final review runs as wf_0451676f-00d. Nothing of either has run on released
+    data.
