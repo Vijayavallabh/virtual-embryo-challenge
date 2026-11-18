@@ -5463,3 +5463,18 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     answered: "Yes, read it (Recommended)". The option he chose said: the row is committed first with his words; if
     both runs agree on a stronger factor the AI assistant comes back with a priced question before any file changes;
     if not, T3 stays as built; the method report says the reading was set after a void.
+- 2026-11-18 (p), row K17 is read: no request, and T3's last upload is the refused s1 as built. Written by the AI
+  assistant.
+  - **By the row's fixed reading:** no request; the second upload stays at exponent 0.5. The local run names no
+    exponent. Paired means over the 0.5 base (10 seeds): on g1 +0.27 at 0.75 (7 of 10 seeds ahead), +0.21 at 1.0 (6 of
+    10), -0.78 at 1.5; on g2 +1.03, +1.20 and +0.98 (9, 9 and 7 of 10); on m +2.05, +3.34 and +3.53 (10 of 10 each).
+    Carrying needed more than 0.3 with at least 8 of 10 seeds ahead on both g1 and g2, which g1 misses at every
+    exponent. The factor-specific check at 1.0 fails as well (g1 +0.50, g2 -0.12). The DGX run is void under the row
+    (its factor record on m differs from K7's in the last digits of two groups' spreads); the outcome does not rest
+    on it. Counted: T3 40 to 45.
+  - **The AI assistant's reading after the result,** which changes nothing: a larger exponent raises severity's
+    skill on every task and lowers mmd_u and the variogram on the Gata4 replicates; on g1 the two about cancel, g2's
+    gain rests partly on one seed's gate, and m gains throughout. It asks for no exception.
+  - **What follows.** T3's last upload is `t3_build/refused_s1.h5ad` (0394575a11fc...), built on 2026-11-13, as the
+    amendment of 2026-11-18 to `docs/S2_RULES.md` says. It is handed to the captain with a short note for the
+    organisers, as the disclosure email promises before T3's second upload.

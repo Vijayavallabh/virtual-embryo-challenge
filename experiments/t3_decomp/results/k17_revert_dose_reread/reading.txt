@@ -1,0 +1,64 @@
+Try K17: no request; the second upload stays at exponent 0.5 (the local run names no exponent).
+the base against the committed base, local run: g1 mean +0.0000, largest seed 0.0000, 0 of 10 seeds differ; g2 mean +0.0000, largest seed 0.0000, 0 of 10 seeds differ; m mean -0.0003, largest seed 0.0039, 2 of 10 seeds differ
+the base against the committed base, DGX run: g1 mean -0.0012, largest seed 0.0111, 6 of 10 seeds differ; g2 mean -0.0003, largest seed 0.0048, 6 of 10 seeds differ; m mean -0.0195, largest seed 0.1947, 3 of 10 seeds differ
+task files read (sha256): local g1 5184d2e92a0a8e53; local g2 b35df8dd1a86f686; local m 3bd420e486510c09; dgx g1 12da587aefe10c16; dgx g2 74bb85e0dce98353; dgx m 7eaee93fd71bc72d
+
+LOCAL RUN (K16's reading under the guard):
+run (commit cccff6883fea3313394e3cdb775f28abc04c5e87): no request; the second upload stays at exponent 0.5.
+carries: grp_e075 no, grp_e100 no, grp_e150 no; steps: grp_e075 n/a, grp_e100 yes, grp_e150 no; factor-specific at 1.0: no (g1 +0.50, g2 -0.12)
+the controls (identity enters only through the gate): g1 perm_e050 scored 10 of 10 {'scored': 10}, median r2 0.046; g1 perm_e100 scored 10 of 10 {'scored': 10}, median r2 0.044; g2 perm_e050 scored 8 of 10 {'r2_gate': 2, 'scored': 8}, median r2 0.026; g2 perm_e100 scored 10 of 10 {'scored': 10}, median r2 0.032
+g2 grp_e050: severity gated in seeds [4] (r2 does not depend on the exponent: a gate flip from thinning or the clip)
+g1 T3w/WT->Gata4rep1 (the upload form):
+    floor      50.00 (sd 0.00); severity scored 0 of 10, median beta n/a, r2 n/a; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    grp_e050   57.14 (sd 1.06); severity scored 10 of 10, median beta 0.098, r2 0.074; skills de_score 0.473, de_direction 0.554, severity_slope 0.753, mmd_u 0.513, variogram 0.513
+    grp_e075   57.41 (sd 0.89); severity scored 10 of 10, median beta 0.136, r2 0.070; skills de_score 0.483, de_direction 0.553, severity_slope 0.777, mmd_u 0.486, variogram 0.482
+    grp_e100   57.35 (sd 0.85); severity scored 10 of 10, median beta 0.169, r2 0.067; skills de_score 0.491, de_direction 0.552, severity_slope 0.796, mmd_u 0.450, variogram 0.438
+    grp_e150   56.36 (sd 0.75); severity scored 10 of 10, median beta 0.240, r2 0.066; skills de_score 0.491, de_direction 0.551, severity_slope 0.831, mmd_u 0.363, variogram 0.341
+    perm_e050  55.76 (sd 0.97); severity scored 10 of 10, median beta 0.099, r2 0.046; skills de_score 0.458, de_direction 0.521, severity_slope 0.752, mmd_u 0.514, variogram 0.501
+    perm_e100  55.46 (sd 0.78); severity scored 10 of 10, median beta 0.155, r2 0.044; skills de_score 0.457, de_direction 0.515, severity_slope 0.795, mmd_u 0.471, variogram 0.420
+    grp_e075 - grp_e050: +0.27 (sd 0.36, ahead 7 of 10)
+    grp_e100 - grp_e050: +0.21 (sd 0.44, ahead 6 of 10)
+    grp_e150 - grp_e050: -0.78 (sd 0.61, ahead 2 of 10)
+    perm_e050 - grp_e050: -1.38 (sd 0.60, ahead 0 of 10)
+    perm_e100 - grp_e050: -1.68 (sd 0.90, ahead 0 of 10)
+    perm_e100 - perm_e050: -0.29 (sd 0.62, ahead 3 of 10)
+    grp_e100 - grp_e075: -0.06 (sd 0.34, ahead 5 of 10)
+    grp_e150 - grp_e100: -0.99 (sd 0.28, ahead 0 of 10)
+    grp_e050 - floor: +7.14 (sd 1.06, ahead 10 of 10)
+g2 T3w/WT->Gata4rep2 (the upload form):
+    floor      50.00 (sd 0.00); severity scored 0 of 10, median beta n/a, r2 n/a; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    grp_e050   55.14 (sd 2.09); severity scored 9 of 10, median beta 0.067, r2 0.028; skills de_score 0.459, de_direction 0.543, severity_slope 0.704, mmd_u 0.508, variogram 0.514
+    grp_e075   56.17 (sd 0.75); severity scored 10 of 10, median beta 0.096, r2 0.035; skills de_score 0.462, de_direction 0.546, severity_slope 0.750, mmd_u 0.497, variogram 0.494
+    grp_e100   56.34 (sd 0.61); severity scored 10 of 10, median beta 0.125, r2 0.039; skills de_score 0.464, de_direction 0.548, severity_slope 0.770, mmd_u 0.480, variogram 0.465
+    grp_e150   56.12 (sd 0.64); severity scored 10 of 10, median beta 0.187, r2 0.044; skills de_score 0.467, de_direction 0.550, severity_slope 0.804, mmd_u 0.429, variogram 0.389
+    perm_e050  52.18 (sd 2.72); severity scored 8 of 10, median beta 0.053, r2 0.026; skills de_score 0.417, de_direction 0.515, severity_slope 0.668, mmd_u 0.506, variogram 0.502
+    perm_e100  53.50 (sd 0.89); severity scored 10 of 10, median beta 0.091, r2 0.032; skills de_score 0.419, de_direction 0.517, severity_slope 0.746, mmd_u 0.483, variogram 0.445
+    grp_e075 - grp_e050: +1.03 (sd 1.78, ahead 9 of 10)
+    grp_e100 - grp_e050: +1.20 (sd 1.82, ahead 9 of 10)
+    grp_e150 - grp_e050: +0.98 (sd 1.86, ahead 7 of 10)
+    perm_e050 - grp_e050: -2.96 (sd 1.82, ahead 0 of 10)
+    perm_e100 - grp_e050: -1.64 (sd 1.79, ahead 1 of 10)
+    perm_e100 - perm_e050: +1.32 (sd 2.25, ahead 9 of 10)
+    grp_e100 - grp_e075: +0.18 (sd 0.21, ahead 9 of 10)
+    grp_e150 - grp_e100: -0.22 (sd 0.23, ahead 3 of 10)
+    grp_e050 - floor: +5.14 (sd 2.09, ahead 9 of 10)
+m T3w/WT->Mab21l2 (K7b form):
+    floor      50.00 (sd 0.00); severity scored 0 of 10, median beta n/a, r2 n/a; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    grp_e050   71.04 (sd 1.01); severity scored 10 of 10, median beta 0.249, r2 0.541; skills de_score 0.654, de_direction 0.738, severity_slope 0.833, mmd_u 0.608, variogram 0.605
+    grp_e075   73.09 (sd 0.90); severity scored 10 of 10, median beta 0.381, r2 0.534; skills de_score 0.659, de_direction 0.740, severity_slope 0.878, mmd_u 0.643, variogram 0.640
+    grp_e100   74.38 (sd 0.82); severity scored 10 of 10, median beta 0.519, r2 0.529; skills de_score 0.666, de_direction 0.741, severity_slope 0.913, mmd_u 0.653, variogram 0.649
+    grp_e150   74.57 (sd 0.82); severity scored 10 of 10, median beta 0.790, r2 0.519; skills de_score 0.670, de_direction 0.741, severity_slope 0.968, mmd_u 0.592, variogram 0.583
+    perm_e050  49.47 (sd 0.51); severity scored 0 of 10, median beta 0.000, r2 -0.007; skills de_score 0.500, de_direction 0.489, severity_slope 0.500, mmd_u 0.491, variogram 0.481
+    perm_e100  48.24 (sd 0.45); severity scored 0 of 10, median beta 0.004, r2 -0.011; skills de_score 0.495, de_direction 0.487, severity_slope 0.500, mmd_u 0.447, variogram 0.419
+    grp_e075 - grp_e050: +2.05 (sd 0.26, ahead 10 of 10)
+    grp_e100 - grp_e050: +3.34 (sd 0.50, ahead 10 of 10)
+    grp_e150 - grp_e050: +3.53 (sd 0.66, ahead 10 of 10)
+    perm_e050 - grp_e050: -21.57 (sd 0.67, ahead 0 of 10)
+    perm_e100 - grp_e050: -22.80 (sd 0.68, ahead 0 of 10)
+    perm_e100 - perm_e050: -1.22 (sd 0.22, ahead 0 of 10)
+    grp_e100 - grp_e075: +1.29 (sd 0.35, ahead 10 of 10)
+    grp_e150 - grp_e100: +0.19 (sd 0.35, ahead 7 of 10)
+    grp_e050 - floor: +21.04 (sd 1.01, ahead 10 of 10)
+
+DGX RUN (K16's reading under the guard):
+VOID: m: the factor record differs from the one try K7 committed

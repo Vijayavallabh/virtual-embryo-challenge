@@ -1,0 +1,873 @@
+{
+ "local": {
+  "void": false,
+  "why": [],
+  "commit": "cccff6883fea3313394e3cdb775f28abc04c5e87",
+  "tasks": {
+   "g1": {
+    "arms": {
+     "floor": {
+      "mean": 50.0,
+      "sd": 0.0,
+      "skills": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "severity_slope": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5
+      },
+      "severity_states": {
+       "no_response": 10
+      },
+      "severity_scored": 0,
+      "gated_seeds": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9
+      ],
+      "median_beta": null,
+      "median_r2": null
+     },
+     "grp_e050": {
+      "mean": 57.139074927215916,
+      "sd": 1.0567741525350407,
+      "skills": {
+       "de_score": 0.4734103062522609,
+       "de_direction": 0.5540159632088925,
+       "severity_slope": 0.7528641049009371,
+       "mmd_u": 0.5134038288658455,
+       "variogram": 0.5129897613140253
+      },
+      "severity_states": {
+       "scored": 10
+      },
+      "severity_scored": 10,
+      "gated_seeds": [],
+      "median_beta": 0.0982181836067344,
+      "median_r2": 0.07443829953085274
+     },
+     "grp_e075": {
+      "mean": 57.41059607877643,
+      "sd": 0.8930227812760461,
+      "skills": {
+       "de_score": 0.4825629968219346,
+       "de_direction": 0.5530609923149685,
+       "severity_slope": 0.7766050113525639,
+       "mmd_u": 0.48637636660786676,
+       "variogram": 0.4819424603919608
+      },
+      "severity_states": {
+       "scored": 10
+      },
+      "severity_scored": 10,
+      "gated_seeds": [],
+      "median_beta": 0.1357919477723843,
+      "median_r2": 0.06950770812595697
+     },
+     "grp_e100": {
+      "mean": 57.34792955098432,
+      "sd": 0.8472512772468861,
+      "skills": {
+       "de_score": 0.49086706888933423,
+       "de_direction": 0.5523671025548063,
+       "severity_slope": 0.7964115406336336,
+       "mmd_u": 0.4495877218004526,
+       "variogram": 0.4384248428734822
+      },
+      "severity_states": {
+       "scored": 10
+      },
+      "severity_scored": 10,
+      "gated_seeds": [],
+      "median_beta": 0.16947991229347048,
+      "median_r2": 0.06688830791924394
+     },
+     "grp_e150": {
+      "mean": 56.35514994936589,
+      "sd": 0.7500071758301713,
+      "skills": {
+       "de_score": 0.49094086085790656,
+       "de_direction": 0.5513188966387894,
+       "severity_slope": 0.8305273169328963,
+       "mmd_u": 0.36302953877878325,
+       "variogram": 0.3405517898738944
+      },
+      "severity_states": {
+       "scored": 10
+      },
+      "severity_scored": 10,
+      "gated_seeds": [],
+      "median_beta": 0.24023078122792005,
+      "median_r2": 0.06580144236650703
+     },
+     "perm_e050": {
+      "mean": 55.75723140684594,
+      "sd": 0.9710092869224312,
+      "skills": {
+       "de_score": 0.45791414888108256,
+       "de_direction": 0.5211959547718823,
+       "severity_slope": 0.7524023357950276,
+       "mmd_u": 0.5144688177642875,
+       "variogram": 0.5007779828836582
+      },
+      "severity_states": {
+       "scored": 10
+      },
+      "severity_scored": 10,
+      "gated_seeds": [],
+      "median_beta": 0.09864335047122472,
+      "median_r2": 0.046282284748831726
+     },
+     "perm_e100": {
+      "mean": 55.463022926653515,
+      "sd": 0.776049601311912,
+      "skills": {
+       "de_score": 0.4570123533961835,
+       "de_direction": 0.5147491432684668,
+       "severity_slope": 0.7946471104613883,
+       "mmd_u": 0.47139011965096633,
+       "variogram": 0.4201330682137539
+      },
+      "severity_states": {
+       "scored": 10
+      },
+      "severity_scored": 10,
+      "gated_seeds": [],
+      "median_beta": 0.15452667509723544,
+      "median_r2": 0.044402650428294665
+     }
+    },
+    "paired": {
+     "grp_e075 - grp_e050": {
+      "mean": 0.2715211515605155,
+      "sd": 0.3614122965684294,
+      "ahead": 7,
+      "n": 10,
+      "passes": false
+     },
+     "grp_e100 - grp_e050": {
+      "mean": 0.20885462376839925,
+      "sd": 0.4405115345863157,
+      "ahead": 6,
+      "n": 10,
+      "passes": false
+     },
+     "grp_e150 - grp_e050": {
+      "mean": -0.7839249778500225,
+      "sd": 0.6086247358575811,
+      "ahead": 2,
+      "n": 10,
+      "passes": false
+     },
+     "perm_e050 - grp_e050": {
+      "mean": -1.381843520369975,
+      "sd": 0.5997075092994337,
+      "ahead": 0,
+      "n": 10,
+      "passes": false
+     },
+     "perm_e100 - grp_e050": {
+      "mean": -1.6760520005624038,
+      "sd": 0.9024367055356205,
+      "ahead": 0,
+      "n": 10,
+      "passes": false
+     },
+     "perm_e100 - perm_e050": {
+      "mean": -0.29420848019242885,
+      "sd": 0.6212971271239752,
+      "ahead": 3,
+      "n": 10,
+      "passes": false
+     },
+     "grp_e100 - grp_e075": {
+      "mean": -0.06266652779211626,
+      "sd": 0.3358271297957444,
+      "ahead": 5,
+      "n": 10,
+      "passes": false
+     },
+     "grp_e150 - grp_e100": {
+      "mean": -0.9927796016184217,
+      "sd": 0.2753602303447725,
+      "ahead": 0,
+      "n": 10,
+      "passes": false
+     },
+     "grp_e050 - floor": {
+      "mean": 7.139074927215913,
+      "sd": 1.0567741525350407,
+      "ahead": 10,
+      "n": 10,
+      "passes": true
+     }
+    },
+    "factor_record": {
+     "groups": [
+      "CM",
+      "CardiacProgenitor",
+      "Ectoderm",
+      "Endocardium",
+      "Endoderm",
+      "Endothelium",
+      "ExtraEmbryonicMeso",
+      "NCC",
+      "Neural",
+      "ParaxialMesoderm",
+      "Pericardium",
+      "PharyngealMesoderm"
+     ],
+     "sd_log_phi": 0.5359908127886033,
+     "genes_at_clip": 16,
+     "genes_beyond_twofold": 93,
+     "sd_log_phi_per_group": {
+      "CM": 0.5101076728441571,
+      "CardiacProgenitor": 0.636196506953993,
+      "Ectoderm": 0.6021004941905871,
+      "Endocardium": 0.5678826816424947,
+      "Endoderm": 0.7102075522403569,
+      "Endothelium": 0.6923963438131456,
+      "ExtraEmbryonicMeso": 0.8683594490397645,
+      "NCC": 0.5699794059014649,
+      "Neural": 0.7570059733967874,
+      "ParaxialMesoderm": 0.6700002862556046,
+      "Pericardium": 0.6620216647017211,
+      "PharyngealMesoderm": 0.5700022969676061
+     },
+     "other_samples": [
+      "E10.5",
+      "E7.5",
+      "E8.0",
+      "E8.25_late",
+      "E8.5",
+      "E9.5"
+     ],
+     "reference": "E8.75"
+    }
+   },
+   "g2": {
+    "arms": {
+     "floor": {
+      "mean": 50.0,
+      "sd": 0.0,
+      "skills": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "severity_slope": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5
+      },
+      "severity_states": {
+       "no_response": 10
+      },
+      "severity_scored": 0,
+      "gated_seeds": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9
+      ],
+      "median_beta": null,
+      "median_r2": null
+     },
+     "grp_e050": {
+      "mean": 55.13937670921458,
+      "sd": 2.086743303819374,
+      "skills": {
+       "de_score": 0.4586615167075556,
+       "de_direction": 0.5427932214780303,
+       "severity_slope": 0.7041055417009647,
+       "mmd_u": 0.5080002157986402,
+       "variogram": 0.5138824423661694
+      },
+      "severity_states": {
+       "r2_gate": 1,
+       "scored": 9
+      },
+      "severity_scored": 9,
+      "gated_seeds": [
+       4
+      ],
+      "median_beta": 0.06669201718995976,
+      "median_r2": 0.02829193348610687
+     },
+     "grp_e075": {
+      "mean": 56.16623079260644,
+      "sd": 0.7483311146145939,
+      "skills": {
+       "de_score": 0.46232741793054577,
+       "de_direction": 0.5456498401132641,
+       "severity_slope": 0.749645648845965,
+       "mmd_u": 0.49683410820208734,
+       "variogram": 0.49400146653553545
+      },
+      "severity_states": {
+       "scored": 10
+      },
+      "severity_scored": 10,
+      "gated_seeds": [],
+      "median_beta": 0.09598169586955377,
+      "median_r2": 0.035246146378989596
+     },
+     "grp_e100": {
+      "mean": 56.34228867771956,
+      "sd": 0.6141330825404985,
+      "skills": {
+       "de_score": 0.46381818708930955,
+       "de_direction": 0.5479642577349437,
+       "severity_slope": 0.7703010722561812,
+       "mmd_u": 0.4795170808738304,
+       "variogram": 0.46461310559702335
+      },
+      "severity_states": {
+       "scored": 10
+      },
+      "severity_scored": 10,
+      "gated_seeds": [],
+      "median_beta": 0.1250773498119395,
+      "median_r2": 0.03915354686884415
+     },
+     "grp_e150": {
+      "mean": 56.12013865024801,
+      "sd": 0.6446221710432565,
+      "skills": {
+       "de_score": 0.46728291171417247,
+       "de_direction": 0.550324858048314,
+       "severity_slope": 0.8035332436998331,
+       "mmd_u": 0.42882387843555636,
+       "variogram": 0.38866402673655964
+      },
+      "severity_states": {
+       "scored": 10
+      },
+      "severity_scored": 10,
+      "gated_seeds": [],
+      "median_beta": 0.18677378930961747,
+      "median_r2": 0.04393946038380092
+     },
+     "perm_e050": {
+      "mean": 52.17866635696864,
+      "sd": 2.7191378715926424,
+      "skills": {
+       "de_score": 0.41686634837221687,
+       "de_direction": 0.5150486582807307,
+       "severity_slope": 0.6683029237667439,
+       "mmd_u": 0.506357428427913,
+       "variogram": 0.50157465168504
+      },
+      "severity_states": {
+       "r2_gate": 2,
+       "scored": 8
+      },
+      "severity_scored": 8,
+      "gated_seeds": [
+       0,
+       4
+      ],
+      "median_beta": 0.052723357755113415,
+      "median_r2": 0.02560556649716944
+     },
+     "perm_e100": {
+      "mean": 53.49810208607748,
+      "sd": 0.8930104362787202,
+      "skills": {
+       "de_score": 0.41884158296276947,
+       "de_direction": 0.5173124539749304,
+       "severity_slope": 0.7457083063119336,
+       "mmd_u": 0.4832628434469524,
+       "variogram": 0.4447726835824202
+      },
+      "severity_states": {
+       "scored": 10
+      },
+      "severity_scored": 10,
+      "gated_seeds": [],
+      "median_beta": 0.09108894048694374,
+      "median_r2": 0.032131621622861706
+     }
+    },
+    "paired": {
+     "grp_e075 - grp_e050": {
+      "mean": 1.0268540833918478,
+      "sd": 1.7826944175129156,
+      "ahead": 9,
+      "n": 10,
+      "passes": true
+     },
+     "grp_e100 - grp_e050": {
+      "mean": 1.2029119685049785,
+      "sd": 1.8166970007274894,
+      "ahead": 9,
+      "n": 10,
+      "passes": true
+     },
+     "grp_e150 - grp_e050": {
+      "mean": 0.9807619410334247,
+      "sd": 1.8555834650399379,
+      "ahead": 7,
+      "n": 10,
+      "passes": false
+     },
+     "perm_e050 - grp_e050": {
+      "mean": -2.9607103522459375,
+      "sd": 1.8189435893801704,
+      "ahead": 0,
+      "n": 10,
+      "passes": false
+     },
+     "perm_e100 - grp_e050": {
+      "mean": -1.6412746231371045,
+      "sd": 1.7852702579810416,
+      "ahead": 1,
+      "n": 10,
+      "passes": false
+     },
+     "perm_e100 - perm_e050": {
+      "mean": 1.319435729108833,
+      "sd": 2.2492767927604658,
+      "ahead": 9,
+      "n": 10,
+      "passes": true
+     },
+     "grp_e100 - grp_e075": {
+      "mean": 0.17605788511313064,
+      "sd": 0.20982534401258818,
+      "ahead": 9,
+      "n": 10,
+      "passes": false
+     },
+     "grp_e150 - grp_e100": {
+      "mean": -0.22215002747155382,
+      "sd": 0.23350169278027363,
+      "ahead": 3,
+      "n": 10,
+      "passes": false
+     },
+     "grp_e050 - floor": {
+      "mean": 5.1393767092145834,
+      "sd": 2.0867433038193735,
+      "ahead": 9,
+      "n": 10,
+      "passes": true
+     }
+    },
+    "factor_record": {
+     "groups": [
+      "CM",
+      "CardiacProgenitor",
+      "Ectoderm",
+      "Endocardium",
+      "Endoderm",
+      "Endothelium",
+      "ExtraEmbryonicMeso",
+      "NCC",
+      "Neural",
+      "ParaxialMesoderm",
+      "Pericardium",
+      "PharyngealMesoderm"
+     ],
+     "sd_log_phi": 0.5359908127886033,
+     "genes_at_clip": 16,
+     "genes_beyond_twofold": 93,
+     "sd_log_phi_per_group": {
+      "CM": 0.5101076728441571,
+      "CardiacProgenitor": 0.636196506953993,
+      "Ectoderm": 0.6021004941905871,
+      "Endocardium": 0.5678826816424947,
+      "Endoderm": 0.7102075522403569,
+      "Endothelium": 0.6923963438131456,
+      "ExtraEmbryonicMeso": 0.8683594490397645,
+      "NCC": 0.5699794059014649,
+      "Neural": 0.7570059733967874,
+      "ParaxialMesoderm": 0.6700002862556046,
+      "Pericardium": 0.6620216647017211,
+      "PharyngealMesoderm": 0.5700022969676061
+     },
+     "other_samples": [
+      "E10.5",
+      "E7.5",
+      "E8.0",
+      "E8.25_late",
+      "E8.5",
+      "E9.5"
+     ],
+     "reference": "E8.75"
+    }
+   },
+   "m": {
+    "arms": {
+     "floor": {
+      "mean": 50.0,
+      "sd": 0.0,
+      "skills": {
+       "de_score": 0.5,
+       "de_direction": 0.5,
+       "severity_slope": 0.5,
+       "mmd_u": 0.5,
+       "variogram": 0.5
+      },
+      "severity_states": {
+       "no_response": 10
+      },
+      "severity_scored": 0,
+      "gated_seeds": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9
+      ],
+      "median_beta": null,
+      "median_r2": null
+     },
+     "grp_e050": {
+      "mean": 71.04017448862865,
+      "sd": 1.011966452413319,
+      "skills": {
+       "de_score": 0.6541223450385455,
+       "de_direction": 0.7377478219621911,
+       "severity_slope": 0.8334079139049532,
+       "mmd_u": 0.6079135702236385,
+       "variogram": 0.6053309872637505
+      },
+      "severity_states": {
+       "scored": 10
+      },
+      "severity_scored": 10,
+      "gated_seeds": [],
+      "median_beta": 0.24851406979321,
+      "median_r2": 0.5405528930341298
+     },
+     "grp_e075": {
+      "mean": 73.08715865909917,
+      "sd": 0.8961000715325736,
+      "skills": {
+       "de_score": 0.6593604309423863,
+       "de_direction": 0.7404634195224168,
+       "severity_slope": 0.8783839760293523,
+       "mmd_u": 0.642882450704677,
+       "variogram": 0.6400714291971559
+      },
+      "severity_states": {
+       "scored": 10
+      },
+      "severity_scored": 10,
+      "gated_seeds": [],
+      "median_beta": 0.3813518544354753,
+      "median_r2": 0.5335297974813142
+     },
+     "grp_e100": {
+      "mean": 74.37973613459073,
+      "sd": 0.8225555202294459,
+      "skills": {
+       "de_score": 0.6663256693238895,
+       "de_direction": 0.7409087445956881,
+       "severity_slope": 0.9134664990972288,
+       "mmd_u": 0.6531141261012455,
+       "variogram": 0.6491519311670216
+      },
+      "severity_states": {
+       "scored": 10
+      },
+      "severity_scored": 10,
+      "gated_seeds": [],
+      "median_beta": 0.5185315098934655,
+      "median_r2": 0.5287085648704735
+     },
+     "grp_e150": {
+      "mean": 74.56983980338813,
+      "sd": 0.8189158213876052,
+      "skills": {
+       "de_score": 0.6697060960756388,
+       "de_direction": 0.7406320457547263,
+       "severity_slope": 0.9678562491612507,
+       "mmd_u": 0.5916052759690444,
+       "variogram": 0.5833982795738766
+      },
+      "severity_states": {
+       "scored": 10
+      },
+      "severity_scored": 10,
+      "gated_seeds": [],
+      "median_beta": 0.7901534607719514,
+      "median_r2": 0.5194258190627286
+     },
+     "perm_e050": {
+      "mean": 49.467951150674196,
+      "sd": 0.5079226596302377,
+      "skills": {
+       "de_score": 0.49962886970852144,
+       "de_direction": 0.48947780827763426,
+       "severity_slope": 0.5,
+       "mmd_u": 0.4912302880167664,
+       "variogram": 0.48092204953456275
+      },
+      "severity_states": {
+       "beta_gate": 5,
+       "r2_gate": 5
+      },
+      "severity_scored": 0,
+      "gated_seeds": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9
+      ],
+      "median_beta": 1.1933153831246998e-05,
+      "median_r2": -0.007138482635485999
+     },
+     "perm_e100": {
+      "mean": 48.24496796781988,
+      "sd": 0.44565928208288,
+      "skills": {
+       "de_score": 0.49501995573699203,
+       "de_direction": 0.4871835552723308,
+       "severity_slope": 0.5,
+       "mmd_u": 0.4467044953180096,
+       "variogram": 0.4192908087607168
+      },
+      "severity_states": {
+       "beta_gate": 2,
+       "r2_gate": 8
+      },
+      "severity_scored": 0,
+      "gated_seeds": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9
+      ],
+      "median_beta": 0.003879945662470746,
+      "median_r2": -0.010678063790803716
+     }
+    },
+    "paired": {
+     "grp_e075 - grp_e050": {
+      "mean": 2.046984170470543,
+      "sd": 0.2589728747957296,
+      "ahead": 10,
+      "n": 10,
+      "passes": true
+     },
+     "grp_e100 - grp_e050": {
+      "mean": 3.3395616459620867,
+      "sd": 0.5025441896022734,
+      "ahead": 10,
+      "n": 10,
+      "passes": true
+     },
+     "grp_e150 - grp_e050": {
+      "mean": 3.5296653147594923,
+      "sd": 0.6564387558588245,
+      "ahead": 10,
+      "n": 10,
+      "passes": true
+     },
+     "perm_e050 - grp_e050": {
+      "mean": -21.572223337954444,
+      "sd": 0.6678713957899097,
+      "ahead": 0,
+      "n": 10,
+      "passes": false
+     },
+     "perm_e100 - grp_e050": {
+      "mean": -22.795206520808758,
+      "sd": 0.6791594187741292,
+      "ahead": 0,
+      "n": 10,
+      "passes": false
+     },
+     "perm_e100 - perm_e050": {
+      "mean": -1.2229831828543112,
+      "sd": 0.21893936439467684,
+      "ahead": 0,
+      "n": 10,
+      "passes": false
+     },
+     "grp_e100 - grp_e075": {
+      "mean": 1.2925774754915438,
+      "sd": 0.348914700962919,
+      "ahead": 10,
+      "n": 10,
+      "passes": true
+     },
+     "grp_e150 - grp_e100": {
+      "mean": 0.1901036687974056,
+      "sd": 0.35495200942281396,
+      "ahead": 7,
+      "n": 10,
+      "passes": false
+     },
+     "grp_e050 - floor": {
+      "mean": 21.04017448862864,
+      "sd": 1.0119664524133192,
+      "ahead": 10,
+      "n": 10,
+      "passes": true
+     }
+    },
+    "factor_record": {
+     "groups": [
+      "CM",
+      "CardiacProgenitor",
+      "Ectoderm",
+      "Endocardium",
+      "Endoderm",
+      "Endothelium",
+      "NCC",
+      "ParaxialMesoderm",
+      "Pericardium",
+      "PharyngealMesoderm"
+     ],
+     "sd_log_phi": 0.5289278480462356,
+     "genes_at_clip": 10,
+     "genes_beyond_twofold": 100,
+     "sd_log_phi_per_group": {
+      "CM": 0.5138038600231059,
+      "CardiacProgenitor": 0.7675881439166348,
+      "Ectoderm": 0.6550602169852527,
+      "Endocardium": 0.5541232706141034,
+      "Endoderm": 0.6912239567794075,
+      "Endothelium": 0.6320834482589754,
+      "NCC": 0.6970992743631008,
+      "ParaxialMesoderm": 0.6919444409498887,
+      "Pericardium": 0.5877527487119115,
+      "PharyngealMesoderm": 0.6195138714584213
+     },
+     "other_samples": [
+      "E10.5",
+      "E7.5",
+      "E8.0",
+      "E8.25_late",
+      "E8.5",
+      "E8.75"
+     ],
+     "reference": "E9.5"
+    }
+   }
+  },
+  "carries": {
+   "grp_e075": false,
+   "grp_e100": false,
+   "grp_e150": false
+  },
+  "specific_gain_over_control": {
+   "g1": 0.5030631039608281,
+   "g2": -0.1165237606038545
+  },
+  "factor_specific": false,
+  "step": {
+   "grp_e075": true,
+   "grp_e100": true,
+   "grp_e150": false
+  },
+  "named_exponent": null,
+  "request": false,
+  "outcome": "no request; the second upload stays at exponent 0.5",
+  "base_distance": {
+   "g1": {
+    "mean_diff": 0.0,
+    "max_abs_diff": 0.0,
+    "seeds_off": []
+   },
+   "g2": {
+    "mean_diff": 0.0,
+    "max_abs_diff": 0.0,
+    "seeds_off": []
+   },
+   "m": {
+    "mean_diff": -0.00033055061401370266,
+    "max_abs_diff": 0.0039465123240489675,
+    "seeds_off": [
+     1,
+     9
+    ]
+   }
+  },
+  "task_sha256": {
+   "g1": "5184d2e92a0a8e534ad6f32722cd01f77e8efed4e727ba5695a1b2848172d333",
+   "g2": "b35df8dd1a86f6860ccc785e6699724e66f0d5cfe0f53157e3a8695107509eb0",
+   "m": "3bd420e486510c094c059fe2279f3a32b1ec22b9c3c85d4965c572e293b3c55f"
+  }
+ },
+ "dgx": {
+  "void": true,
+  "why": [
+   "m: the factor record differs from the one try K7 committed"
+  ],
+  "base_distance": {
+   "g1": {
+    "mean_diff": -0.0012206846801916527,
+    "max_abs_diff": 0.0110901591238175,
+    "seeds_off": [
+     0,
+     2,
+     3,
+     4,
+     6,
+     9
+    ]
+   },
+   "g2": {
+    "mean_diff": -0.00031788325553350205,
+    "max_abs_diff": 0.004788846000728597,
+    "seeds_off": [
+     0,
+     2,
+     3,
+     4,
+     6,
+     9
+    ]
+   },
+   "m": {
+    "mean_diff": -0.01949733796711257,
+    "max_abs_diff": 0.19472791493728892,
+    "seeds_off": [
+     1,
+     2,
+     5
+    ]
+   }
+  },
+  "task_sha256": {
+   "g1": "12da587aefe10c16157239ffc43e6e60e0ee90062b4d1032a54861b46c51c53a",
+   "g2": "74bb85e0dce983536b41130f8c23969f508e962a2c9ff5c5036504b0d9116aa0",
+   "m": "7eaee93fd71bc72d91eab3feb48d3129856369fd5e9393a3adb179f20d252d37"
+  }
+ },
+ "request": false,
+ "exponent": null,
+ "why": "the local run names no exponent",
+ "outcome": "no request; the second upload stays at exponent 0.5"
+}
