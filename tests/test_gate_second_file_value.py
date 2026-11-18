@@ -73,6 +73,8 @@ def test_summarise_under_a_prior():
     assert s["mean_d"] == pytest.approx(0.25 * 2 - 0.75) and s["v_task"] == pytest.approx(0.5)
     assert s["v_seed"] == pytest.approx(0.25 * 2.5 + 0.75 * 0.5) and s["share_positive"] == pytest.approx(0.25)
     assert s["sd_d"] == pytest.approx((0.25 * (2 + 0.25) ** 2 + 0.75 * (-1 + 0.25) ** 2) ** 0.5)
+    one = S.summarise({"u1": {"mean_d": 2.0, "seed_v": 2.5}})
+    assert one["sd_d"] is None and one["v_task"] == pytest.approx(2.0)  # one unit: no spread
     zero = S.summarise(units, {"u1": 0.0, "u2": 1.0})  # a zero-weight unit counts for nothing
     assert zero["v_task"] == 0.0 and zero["mean_d"] == pytest.approx(-1.0)
 
@@ -177,9 +179,26 @@ def test_inputs_are_committed_result_files(out):
         assert hashlib.sha256((REPO / rel).read_bytes()).hexdigest() == sha, f"{rel} changed since the run"
 
 
+def _same(x, y, where=""):
+    """Equal structure and strings; floats to 1e-9 (statistics' last digits differ between Python versions)."""
+    assert type(x) is type(y) or {type(x), type(y)} <= {int, float}, where
+    if isinstance(x, dict):
+        assert x.keys() == y.keys(), where
+        for k in x:
+            _same(x[k], y[k], f"{where}/{k}")
+    elif isinstance(x, list):
+        assert len(x) == len(y), where
+        for i, (u, v) in enumerate(zip(x, y, strict=True)):
+            _same(u, v, f"{where}[{i}]")
+    elif isinstance(x, float):
+        assert x == pytest.approx(y, abs=1e-9), where
+    else:
+        assert x == y, where
+
+
 def test_rerun_gives_the_committed_output(out):
     res = S.build()
-    assert json.loads(json.dumps(res)) == out
+    _same(json.loads(json.dumps(res)), out)
     assert S.text(res) == OUT_TXT.read_text()
 
 

@@ -152,8 +152,10 @@ def summarise(units: dict[str, dict], weights: dict[str, float] | None = None) -
         w = {u: weights[u] / tot for u in names}
     m = [units[u]["mean_d"] for u in names]
     mean = sum(w[u] * units[u]["mean_d"] for u in names)
-    if weights is None:
-        sd = statistics.stdev(m) if len(m) > 1 else 0.0
+    if len(m) < 2:
+        sd = None  # one unit: no spread across units
+    elif weights is None:
+        sd = statistics.stdev(m)
     else:
         sd = math.sqrt(sum(w[u] * (units[u]["mean_d"] - mean) ** 2 for u in names))
     return {"units": len(names), "mean_d": mean, "sd_d": sd, "sd_kind": "n-1" if weights is None else "weighted",
@@ -249,8 +251,8 @@ EMB_LIMITS = [
     "every score here was taken under the practice scorer build 'main'; decision log (k) names the live board's "
     "pre-fix build as the one recorded factor that acts on occupancy_dice alone, not established",
     "after the fact, decision log (k), changing no number here: at the test pair fgw's partners are mirrored in 10 of "
-    "10 draws (rows E11, N1, N51), while the practice tasks carry that defect only in some seeds (row N52 reads them by "
-    "the flag); occupancy_dice on the first upload is explained by no practice task ((k): a practice task with "
+    "10 draws (rows E11, N1, N51), while the practice tasks carry that defect only in some seeds (row N52 reads them "
+    "by the flag); occupancy_dice on the first upload is explained by no practice task ((k): a practice task with "
     "mirrored, flatter draws scored 50.1 on it). (k) names no embryo practice task as misleading on expression",
 ]
 
@@ -299,7 +301,8 @@ def board_embryo(rd: Reader, checks: list[str]) -> dict:
             "units": truth_units(targets), "builds": sorted({m["build"] for m in meta.values()}),
             "runs_largest_difference": worst, "candidates": cands, "limits": EMB_LIMITS,
             "merge_source": "the task files' target field (task.target); experiments/harness/series_world.py says "
-                            "half and late share one truth; docs/PLAN.md decision log (N37 item) says x2 and x3 do",
+                            "half and late share one truth; docs/PLAN.md decision log 2026-11-13 (gg), item 2, says "
+                            "x2 and x3 do",
             "e28_weighting_source": "experiments/harness/nine_tasks.py (DEEP, OTHER, PS) and TRIES row E28: S(p) = "
                                     "p D + (1 - p) O over unmerged tasks; p 0.45 central, 0.30 and 0.60 its range "
                                     "(experiments/gate/forecast.py JUDGEMENT emb_p_deep)"}
@@ -432,8 +435,7 @@ def board_t1(rd: Reader, checks: list[str]) -> dict:
 # ========================================================================================================== heart
 HEART_TASKS = "experiments/harness/results/trend_heart_v1/tasks"
 HEART_FIRST, HEART_CAND = "b0_trend", "copy"
-HEART_HEDGE = ("experiments/s2_hedge/results/per_seed/heart-scope", "experiments/s2_hedge/results/per_seed/heart-scope-e875",
-               "experiments/s2_hedge/results/per_seed/heart-scope-e825")
+HEART_HEDGE = tuple(f"experiments/s2_hedge/results/per_seed/heart-scope{x}" for x in ("", "-e875", "-e825"))
 REGISTRY = "results/registry.csv"
 HEART_LIMITS = [
     "neither practice arm carried the uploaded files' size step or the half: the first upload had the pre-registered "
@@ -457,9 +459,9 @@ def board_heart(rd: Reader, checks: list[str]) -> dict:
     for key, t in tasks.items():
         for arm in (HEART_FIRST, HEART_CAND):
             row = [r for r in reg if r["pseudo_task"] == key and r["candidate"] == arm]
-            need(len(row) == 1 and abs(float(row[0]["score_mean"]) - statistics.fmean(t["arms"][arm])) < 1e-6,
-                 f"heart {key} {arm}: the registry's mean")
-    checks.append("heart: both arms on both backtests give results/registry.csv's means")
+            need(len(row) == 1 and abs(float(row[0]["score_mean"]) - statistics.fmean(t["arms"][arm])) <= 5e-4,
+                 f"heart {key} {arm}: the registry's mean (written to three decimals)")
+    checks.append("heart: both arms on both backtests give results/registry.csv's means (to its three decimals)")
     targets = {k: t["target"] for k, t in tasks.items()}
     tab = candidate_table({k: t["arms"][HEART_FIRST] for k, t in tasks.items()},
                           {k: t["arms"][HEART_CAND] for k, t in tasks.items()}, targets)
@@ -548,7 +550,8 @@ def board_t3(rd: Reader, checks: list[str]) -> dict:
             stand[f"{v} on {rep} (gata4_records.csv)"] = seed_summary(paired([base[k] for k in SEEDS],
                                                                               [rec[(rep, v)][k] for k in SEEDS]))
         same = [rec[(rep, "blind:G2_bcat_central_d50")][k] - k8[fold]["arms"]["s2_form"][k] for k in SEEDS]
-        stand[f"check {rep}: blind:G2_bcat_central_d50 (records) minus K8 s2_form, same file, per seed"] = {
+        stand[f"check {rep}: the frozen refused s1 in two runs, blind:G2_bcat_central_d50 (records, estimate.py "
+              f"T3_S2) minus K8's s2_form, per seed"] = {
             "largest_abs": max(abs(x) for x in same), "mean": statistics.fmean(same)}
     for f in ("r12", "r21"):
         t = task_scores(rd, K10.format(f), checks)
@@ -556,17 +559,18 @@ def board_t3(rd: Reader, checks: list[str]) -> dict:
     k2 = task_scores(rd, K2A, checks)
     need(k2["target"] == k7["m"]["target"] and k2["reference"] == k7["m"]["reference"],
          "T3: K2a's task has fold m's target and reference", checks)
-    stand[f"t3_factor_xko on {k2['key']} (K2a)"] = seed_summary(paired(k2["arms"]["floor"], k2["arms"]["t3_factor_xko"]))
-    unpaired = {name: statistics.fmean(src[c["arms"]["m"].split()[0]]["m"]["arms"][c["arms"]["m"].split()[1]])
-                - statistics.fmean(k2["arms"]["t3_factor_xko"])
-                for name, c in cands.items() if "m" in c["arms"]}
+    stand[f"t3_factor_xko on {k2['key']} (K2a)"] = seed_summary(paired(k2["arms"]["floor"],
+                                                                      k2["arms"]["t3_factor_xko"]))
+    xko = statistics.fmean(k2["arms"]["t3_factor_xko"])
+    unpaired = {name: statistics.fmean(src[where["m"][0]]["m"]["arms"][where["m"][1]]) - xko
+                for name, (where, _) in T3_CANDS.items() if "m" in where}
     return {"first": "allowed s1 (pooled Gata4 factor at exponent 1, the composition, Gata4's per-label depth ratios)",
             "paired_analogue": None,
-            "why_none": "the allowed s1's stand-ins were scored on the replicate folds r12 and r21 (s1x, tries K10 and "
-                        "K15), in the decomposition records on the Gata4 replicates (xrep:F+depth, another scoring run: "
-                        "the same frozen file scored there and in K8 differs seed by seed, see the check lines) and on "
-                        "T3/Gata4->Mab21l2 (K2a's t3_factor_xko, another run); no candidate was scored in any of those "
-                        "runs, so no seed-paired D exists and no V is computed",
+            "why_none": "the allowed s1's stand-ins were scored on the replicate folds r12 and r21 (s1x, tries K10 "
+                        "and K15), in the decomposition records on the Gata4 replicates (xrep:F+depth, another scoring "
+                        "run: the same frozen file scored there and in K8 differs seed by seed, see the check lines) "
+                        "and on T3/Gata4->Mab21l2 (K2a's t3_factor_xko, another run); no candidate was scored in any "
+                        "of those runs, so no seed-paired D exists and no V is computed",
             "targets": targets, "candidates": cands, "first_standins_vs_floor": stand,
             "m_unpaired_cross_run": {"what": "on fold m's truth and reference only: the candidate's mean (K7) minus "
                                              "K2a's t3_factor_xko mean (t3_k2_v1), two runs, NOT seed-paired; no "
@@ -576,8 +580,12 @@ def board_t3(rd: Reader, checks: list[str]) -> dict:
 
 
 # =========================================================================================================== text
+def _sd(s: dict) -> str:
+    return "  n/a" if s["sd_d"] is None else f"{s['sd_d']:5.2f}"
+
+
 def _row(name: str, s: dict) -> str:
-    return (f"  {name:<34} mean D {s['mean_d']:+6.2f}  SD {s['sd_d']:5.2f} ({s['sd_kind']}, {s['units']} units)  "
+    return (f"  {name:<34} mean D {s['mean_d']:+6.2f}  SD {_sd(s)} ({s['sd_kind']}, {s['units']} units)  "
             f"V task {s['v_task']:5.2f}  V seed {s['v_seed']:5.2f}  share D>0 {s['share_positive']:.2f}")
 
 
@@ -606,7 +614,7 @@ def text(res: dict) -> str:
               f"seeds; priors: {t['prior_source']}; T33's main prior {t['main_prior']}, checks "
               f"{', '.join(t['check_priors'])}."]
     for c, v in t["candidates"].items():
-        L.append(f"  {c}: equal weights over scenarios")
+        L.append(f"  {c} against {t['first']}: equal weights over the scenarios, then each stated prior")
         L.append(_row("    equal weights", v["summary"]))
         for p, s in v["by_prior"].items():
             L.append(_row(f"    {p}", s))
@@ -640,7 +648,7 @@ def text(res: dict) -> str:
           "three folds, one truth each (" + ", ".join(f"{f}: {x}" for f, x in r["targets"].items()) + "):"]
     for c, v in r["candidates"].items():
         s = v["summary"]
-        L.append(f"  {c:<56} over floor {s['mean_d']:+6.2f}  SD {s['sd_d']:5.2f} ({s['units']} folds)  share > 0 "
+        L.append(f"  {c:<56} over floor {s['mean_d']:+6.2f}  SD {_sd(s)} ({s['units']} folds)  share > 0 "
                  f"{s['share_positive']:.2f}; by knockout {v['by_knockout']['summary']['mean_d']:+6.2f} "
                  f"({v['by_knockout']['summary']['units']} units)")
         L += _tasks(v, list(T3_FOLDS))
