@@ -21,7 +21,8 @@ SEED = 1_000_001
 # the g_mom record's keys as build_t1 wrote them before --g-mom-fit (main cfa7e3f), and the fields only lib3 adds
 BEFORE_KEYS = {"rule", "edit_categories", "categories_with_factors", "categories_without_factors", "stream",
                "held_flat", "median_depth_scale"}
-LIB3_KEYS = {"fit", "fit_reference", "metacells", "reading", "edited_share_pool", "edited_share"}
+LIB3_KEYS = {"fit", "fit_reference", "metacells", "reading", "edited_share_pool", "edited_share_pool_assumes",
+             "edited_share"}
 
 
 def _libraries(a, lib_of):
@@ -356,3 +357,140 @@ def test_help_text_names_the_other_inputs_the_dose_cut_and_the_unknown_sign(bt):
                   "a cut in the step's dose", "(1 + s) / 2", "weighted by the build's shares", "unknown in sign",
                   "With whole the record is as before the option"):
         assert words in " ".join(opt.help.split())
+
+
+# --- review fixes of campaign/t1-ac-fix2: the readings, the pool share's assumption, the dose bounds, the size control
+
+
+def test_lib3_reading_follows_the_decision_log_and_gives_no_evidence(bt):  # noqa: F811
+    """The lib3 record's reading (review of campaign/t1-ac-fix2): the offset in the log's unit (squared size), the
+    rest as a difference between states the released stages cannot split, the 0.81 / 0.75 cosine as an axis agreement
+    with its libraries-1-and-2 counterpart and no null, the citations with the main commit that holds them, the dose,
+    and that none of its figures is a test of the score."""
+    r = bt.G_MOM_LIB3_READING
+    for words in ("about 1 to 3% of the factors' squared size", "cardiomyocytes 1.1 to 2.8%",
+                  "endocardium 1.2 to 1.5%", "docs/PLAN.md decision log 2026-11-18 (i), on main at 3182da3",
+                  "a difference between states the libraries hold in different amounts",
+                  "cannot split it into development, identity or collection",
+                  "|cos| 0.81 (cardiomyocytes) and 0.75 (endocardium)", "a libraries-1-and-2 fit gives 0.81 and 0.76",
+                  "own leading axis 0.98 and 0.81", "no null for that cosine was computed",
+                  "it is an axis agreement only",
+                  "experiments/t1_m1/results/gmom_test_fit/single_kind.txt, on main at 55d862c",
+                  "size-matched control", "several draws with their spread", "not built here",
+                  "states the libraries hold in different amounts, and any offset), net of size, which is not the same "
+                  "as the collection part", "is not a test that the collection part is gone",
+                  "Of the lib3 files only one on the lib3 base keeps the step's full dose",
+                  "on the pooled base at most s", "at most about (1 + s) / 2", "names the base of each",
+                  "a rehearsable code path with no evidence about the score",
+                  "a property of the construction, not a test"):
+        assert words in r, words
+    # the overclaims the review found are gone: the wrong unit and the conclusion the log withdrew
+    for words in ("of the factors' size", "chiefly", "not a collection artefact", "largely still present",
+                  "isolates the library part", "--g-mom-fit matched", "library part net of size"):
+        assert words not in r, words
+
+
+def test_the_lib3_record_states_the_pool_shares_assumption(bt, t1_env, tmp_path, monkeypatch):  # noqa: F811
+    t1_env.ref = _libraries(t1_env.ref, _alternate)
+    _loads(bt, t1_env, monkeypatch)
+    out = tmp_path / "T1_s1.h5ad"
+    bt.main(["t1", "--no-feng-hygiene", "--g-mom", "--g-mom-fit", "lib3", "--out", str(out)])
+    rec = json.loads(out.with_suffix(".build.json").read_text())["g_mom"]
+    assert rec["edited_share_pool_assumes"] == bt.EDITED_SHARE_POOL_ASSUMES
+    for words in ("drawn uniformly", "no stand-in is drawn"):
+        assert words in rec["edited_share_pool_assumes"]
+
+
+@pytest.mark.parametrize("base", ["lib3", "mid"])
+def test_the_lib3_and_mid_bases_refuse_a_reference_all_of_library_3(bt, t1_env, tmp_path, monkeypatch,  # noqa: F811
+                                                                    base):
+    """Why the idle case (every reference cell of library 3) is tested on the pooled base only: the other two bases
+    refuse such a reference before any fit."""
+    t1_env.ref = _libraries(t1_env.ref, lambda i, lab: 3)
+    _loads(bt, t1_env, monkeypatch)
+    calls = _fit_spy(bt, monkeypatch)
+    args = ["--base", base] + (["--cm-share", "0.60"] if base == "mid" else [])
+    with pytest.raises(SystemExit, match=f"--base {base}: the reference's cell names do not separate library 3"):
+        bt.main(["t1", "--no-feng-hygiene", *args, "--g-mom", "--g-mom-fit", "lib3",
+                 "--out", str(tmp_path / "T1_s2.h5ad")])
+    assert calls == []
+
+
+def _categories(ref):
+    b = ref.copy()
+    t1_scope.classify(b, source="E10.5_RNA")
+    return b.obs["category"].astype(str).to_numpy()
+
+
+@pytest.mark.parametrize("base", [[], ["--base", "mid", "--cm-share", "0.60"]])
+def test_lib3_pool_share_stays_within_the_dose_bound_the_reading_gives(bt, t1_env, tmp_path, monkeypatch,  # noqa: F811
+                                                                     base):
+    """On pooled each category's edited_share_pool is at most s (library 3's share of that category in the file), on
+    mid at most about (1 + s) / 2 (the other libraries' kept number is rounded, so within one cell of it)."""
+    t1_env.ref = _libraries(t1_env.ref, _v_cm_mostly_3)
+    returned = _loads(bt, t1_env, monkeypatch)
+    seen = _pool_spy(bt, monkeypatch)
+    out = tmp_path / "T1_s2.h5ad"
+    bt.main(["t1", "--no-feng-hygiene", *base, "--g-mom", "--g-mom-fit", "lib3", "--out", str(out)])
+    rec = json.loads(out.with_suffix(".build.json").read_text())["g_mom"]
+    _, s = _pool_shares(bt, returned["E10.5_RNA.h5ad"][0])  # library 3's share per category in the file
+    pool = seen[0]["pool"]
+    _, s_pool = _pool_shares(bt, pool)
+    pcat = _categories(pool)
+    for c in bt.G_MOM_EDIT_CATEGORIES:
+        assert 0 < rec["edited_share_pool"][c] <= s_pool[c] + 1e-12  # only library 3's cells get a factor
+        bound = s[c] if not base else (1 + s[c]) / 2
+        slack = 0.0 if not base else 1.0 / (pcat == c).sum()
+        assert rec["edited_share_pool"][c] <= bound + slack + 1e-12
+        if base:
+            assert s[c] < s_pool[c] == pytest.approx((1 + s[c]) / 2, abs=slack + 1e-12)
+
+
+def test_the_option_has_only_the_two_choices_the_brief_names(bt, tmp_path):  # noqa: F811
+    """No third arm: the size control is not built in the upload builder (the brief fixes {whole, lib3})."""
+    assert bt.G_MOM_FITS == ("whole", "lib3")
+    with pytest.raises(SystemExit):
+        bt.build_parser().parse_args(["t1", "--g-mom", "--g-mom-fit", "matched", "--out", str(tmp_path / "T1.h5ad")])
+    assert not hasattr(bt, "_t1_matched_rows") and not hasattr(bt, "T1_GMOM_MATCHED_STREAM")
+    assert not hasattr(bt, "G_MOM_MATCHED_READING")
+
+
+def test_lib3_on_the_lib3_base_keeps_the_whole_fits_dose(bt, t1_env, tmp_path, monkeypatch):  # noqa: F811
+    """What the reading says of the dose: on the lib3 base every pool cell of R3b's categories sits in the lib3 fit,
+    so edited_share_pool is R1's unheld share of each category, the share the whole fit edits on that base."""
+    t1_env.ref = _libraries(t1_env.ref, _v_cm_mostly_3)
+    _loads(bt, t1_env, monkeypatch)
+    seen = _pool_spy(bt, monkeypatch)
+    out = tmp_path / "T1_s2.h5ad"
+    bt.main(["t1", "--no-feng-hygiene", "--base", "lib3", "--g-mom", "--g-mom-fit", "lib3", "--out", str(out)])
+    rec = json.loads(out.with_suffix(".build.json").read_text())["g_mom"]
+    p = seen[0]["pool"].copy()
+    t1_scope.classify(p, source="E10.5_RNA")
+    cat = p.obs["category"].astype(str).to_numpy()
+    lab = p.obs["celltype"].astype(str).to_numpy()
+    held = np.isin(lab, sorted(ts.r1_unbracketed_labels(np.unique(lab))))
+    for c in bt.G_MOM_EDIT_CATEGORIES:
+        assert rec["edited_share_pool"][c] == pytest.approx((~held[cat == c]).mean())
+
+
+def test_help_text_follows_the_decision_log_and_names_no_third_arm(bt):  # noqa: F811
+    sub = next(a for a in bt.build_parser()._actions if a.choices and "t1" in a.choices)
+    opt = next(a for a in sub.choices["t1"]._actions if "--g-mom-fit" in a.option_strings)
+    text = " ".join(opt.help.split())
+    for words in ("about 1 to 3%% of the factors' squared size (cardiomyocytes 1.1 to 2.8%%, endocardium 1.2 to 1.5%%",
+                  "decision log 2026-11-18 (i), on main at 3182da3",
+                  "a difference between states the libraries hold in different amounts",
+                  "cannot split into development, identity or collection",
+                  "a libraries-1-and-2 fit gives 0.81 and 0.76", "no null for that cosine was computed",
+                  "axis agreement only", "single_kind.txt, on main at 55d862c",
+                  "a size-matched control (not built here; several draws, in a target-free listing) would remove "
+                  "size only", "net of size, which is not the same as the collection part",
+                  "Of the lib3 files only one on the lib3 base keeps the step's full dose", "on pooled at most s",
+                  "a rehearsable code path with no evidence about the score", "zero by construction and not a test",
+                  "under the assumption it states"):
+        assert words in text, words
+    for words in ("of the factors' size", "chiefly", "not a collection artefact", "largely still present",
+                  "matched =", "[seed, 61]", "only the size-matched control isolates"):
+        assert words not in text, words
+    rendered = " ".join(sub.choices["t1"].format_help().split())  # the %% renders as one %
+    assert "about 1 to 3% of the factors' squared size (cardiomyocytes 1.1 to 2.8%, endocardium 1.2 to 1.5%" in rendered

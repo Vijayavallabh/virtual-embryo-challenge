@@ -297,16 +297,35 @@ def _edited_shares(cats: np.ndarray, n_edited: dict[str, int], weights: dict[str
 
 
 G_MOM_FITS = ("whole", "lib3")  # --g-mom-fit: the reference g_mom's factors are fitted on
+_G_MOM_DOSE_READING = (
+    "Of the lib3 files only one on the lib3 base keeps the step's full dose, as the whole fit gives it. On a base "
+    "other than lib3 the drawn cells whose source cell sits in no fitted metacell keep their counts, so the step's "
+    "dose on the file falls to edited_share_pool (with lib3: on the mid base at most about (1 + s) / 2 of a category's"
+    " cells, on the pooled base at most s, s being library 3's share of that category in the file, R1's held labels "
+    "apart): such a file changes both what the factors carry and how many cells get any factor, and is not the same "
+    "step without the collection part; a comparison of files names the base of each. ")
+_G_MOM_NO_EVIDENCE = (
+    "No fold, backtest or listing reads this option: it is a rehearsable code path with no evidence about the score, "
+    "whose change it makes is unknown in sign; every figure this record gives (the option, the metacell counts, the "
+    "shares) is a property of the construction, not a test")
 G_MOM_LIB3_READING = (
     "the lib3 fit differs from the whole fit in its reference's size as well as its library make-up (fewer metacells, "
-    "its own PCA, HVGs, OT marginals and per-category mean): only a comparison with the same fit on a size-matched "
-    "random subset of E10.5 (library 3's cell number per category, its own stream) isolates the library part; a "
-    "library-share listing on this fit is zero by construction and is no evidence that the collection part is gone. "
-    "On a base other than lib3 the drawn cells whose source cell is of library 1 or 2 keep their counts, so the "
-    "step's dose on the file falls to edited_share_pool (on the mid base at most about (1 + s) / 2 of a category's "
-    "cells, s being library 3's share of that category in the file, R1's held labels apart): such a file changes "
-    "both what the factors carry and how many cells get any factor, and is not the same step without the collection "
-    "part. No fold or backtest reads this option: its effect on the score is unknown in sign")
+    "its own PCA, HVGs, OT marginals and per-category mean). A size-matched control (the same fit on random subsets of"
+    " E10.5 with library 3's cell number per category, several draws with their spread, in a target-free listing; not "
+    "built here) would remove size only: what it leaves is the part that goes with library make-up (states the "
+    "libraries hold in different amounts, and any offset), net of size, which is not the same as the collection part. "
+    "A library-share listing on this fit is zero by construction and is not a test that the collection part is gone. A"
+    " uniform offset common to library 3 is about 1 to 3% of the factors' squared size (cardiomyocytes 1.1 to 2.8%, "
+    "endocardium 1.2 to 1.5%; docs/PLAN.md decision log 2026-11-18 (i), on main at 3182da3). The rest of the "
+    "library-linked part is a difference between states the libraries hold in different amounts; released stages "
+    "cannot split it into development, identity or collection. The lib3 fit's leading axis has |cos| 0.81 "
+    "(cardiomyocytes) and 0.75 (endocardium) with the fit as built's library slope (a libraries-1-and-2 fit gives 0.81"
+    " and 0.76, the fit as built's own leading axis 0.98 and 0.81; no null for that cosine was computed, so it is an "
+    "axis agreement only; experiments/t1_m1/results/gmom_test_fit/single_kind.txt, on main at 55d862c). "
+    + _G_MOM_DOSE_READING + _G_MOM_NO_EVIDENCE)
+EDITED_SHARE_POOL_ASSUMES = (
+    "each category's drawn cells are drawn uniformly from the pool's cells of that category, and no stand-in is drawn "
+    "(a stand-in's category differs from its source cell's, so it gets no factor yet counts in the pool share)")
 
 
 def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str], fit: str = G_MOM_FITS[0],
@@ -341,7 +360,11 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str], f
     which `_hide_counts` strips on a test board (its denominator follows from the board's count). A drawn cell whose
     source cell is outside the fit keeps its counts and is not edited. The fit's other inputs follow from the smaller
     reference (fewer metacells, its own PCA, OT and per-category mean), so the lib3 fit differs from the whole one in
-    more than library make-up."""
+    more than library make-up. "edited_share_pool" is the expected share only under EDITED_SHARE_POOL_ASSUMES
+    (uniform draws within a category, no stand-in), which the record states beside it ("edited_share_pool_assumes").
+    No size control is built here: a lib3-against-size-matched comparison leaves what goes with library make-up
+    (states the libraries hold in different amounts, and any offset), net of size, which is not the same as the
+    collection part, and needs several draws read in a target-free listing (G_MOM_LIB3_READING)."""
     from vec import t1_state_transport as ts
 
     start = load_stage(DATA / "T1/E9.5_RNA.h5ad", lineage=False)
@@ -369,6 +392,7 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str], f
                   for c in G_MOM_EDIT_CATEGORIES}
         fit_record["edited_share_pool"] = _edited_shares(p_cats, {c: int(m.sum()) for c, m in fitted.items()},
                                                          weights=shares or {})
+        fit_record["edited_share_pool_assumes"] = EDITED_SHARE_POOL_ASSUMES
     record = {"rule": "try T11's within-type factors at test: OT within each chamber category from E9.5 to E10.5, "
                       "metacells of the E10.5 cells, the per-category mean removed, damped by B0_DAMPING, zeroed and "
                       "clipped; applied last (after Feng's direction); R1's held labels unedited; keep_depth; R3b: "
@@ -693,17 +717,35 @@ def build_parser() -> argparse.ArgumentParser:
                                 "categories): whole = every E10.5 cell (the default, the entry as built); lib3 = "
                                 "E10.5's dissected-heart library alone (names ending in _3, the lib3 base's "
                                 "selection), so no contrast between metacells of different library make-up enters "
-                                "the factors; the fit's other inputs follow from the smaller reference (fewer "
-                                "metacells, its own PCA, OT and per-category mean), so a lib3 file differs from the "
-                                "whole one in more than the library part, and only a size-matched control isolates "
-                                "it. With lib3 and a base other than lib3 (pooled, mid), the drawn cells "
-                                "whose source cell is of another library sit in no fitted metacell and keep their "
-                                "counts, a cut in the step's dose (on mid at most about (1 + s) / 2 of a category's "
-                                "cells edited, s its library-3 share in the file, R1's held labels apart): the "
-                                "record's g_mom field gives the "
-                                "share of R3b's cells the step edits (edited_share_pool, its 'all' weighted by the "
-                                "build's shares; edited_share on a dry run). No fold reads the option; its effect on "
-                                "the score is unknown in sign. With whole the record is as before the option. "
+                                "the factors by construction. A uniform offset common to library 3 is about 1 to 3%% "
+                                "of the factors' squared size (cardiomyocytes 1.1 to 2.8%%, endocardium 1.2 to 1.5%%; "
+                                "decision log 2026-11-18 (i), on main at 3182da3); the rest of the library-linked "
+                                "part is a difference between states the libraries hold in different amounts, which "
+                                "released stages cannot split into development, identity or collection. The lib3 "
+                                "fit's leading axis has |cos| 0.81 (cardiomyocytes) and 0.75 (endocardium) with the "
+                                "fit as built's library slope (a libraries-1-and-2 fit gives 0.81 and 0.76; no null "
+                                "for that cosine was computed, so it is an axis agreement only; single_kind.txt, on "
+                                "main at 55d862c). The fit's other inputs follow from the smaller "
+                                "reference (fewer metacells, its own PCA, OT and per-category mean), so a lib3 file "
+                                "differs from the whole one in more than the library part; a size-matched control "
+                                "(not built here; several draws, in a target-free listing) would remove size only, "
+                                "and what it leaves is what goes with library make-up (states the libraries hold in "
+                                "different amounts, and any offset), net of size, which is not the same as the "
+                                "collection part. "
+                                "Of the "
+                                "lib3 files only one on the lib3 base keeps the step's full dose, as the whole fit "
+                                "gives it. With lib3 and a base other "
+                                "than lib3 (pooled, mid), the drawn "
+                                "cells whose source cell is of another library sit in no fitted metacell and keep "
+                                "their counts, a cut in the step's dose (on mid at most about (1 + s) / 2 of a "
+                                "category's cells edited, on pooled at most s, s its library-3 share in the file, "
+                                "R1's held labels apart): the record's "
+                                "g_mom field gives the share of R3b's cells the step edits (edited_share_pool, its "
+                                "'all' weighted by the build's shares, under the assumption it states; edited_share "
+                                "on a dry run). No fold, backtest or listing reads the option: it is a rehearsable "
+                                "code path with no evidence about the score, its "
+                                "effect on the score is unknown in sign, and a library-share listing on a lib3 fit is "
+                                "zero by construction and not a test. With whole the record is as before the option. "
                                 "Refused without --g-mom; no entry uses it, and only the captain's ruling puts it in "
                                 "an upload")
         if name == "heart":
