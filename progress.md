@@ -13,8 +13,7 @@ endocardium, the two categories the test build edits); a uniform offset between 
 about 1 to 3% of the factors' size; the rest is a difference between states that the libraries hold in different
 amounts, and released stages cannot say how much of it is development. The options: A, the files as built (the
 output of a rule fixed beforehand, which the reviews showed to lean against B and to be unable to give C); B, the
-fit on the dissected-heart library alone, on the first upload (an off-by-default builder option is in review on
-`campaign/t1-ac`); C, no g_mom step. The AI assistant's advice, its own: A; a 'keep' is a default here, not a tested
+fit on the dissected-heart library alone, on the first upload (an off-by-default builder option is reviewed and ready on `campaign/t1-ac-fix3`, 86d19ff; the full suite passed there, 2,672 tests); C, no g_mom step. The AI assistant's advice, its own: A; a 'keep' is a default here, not a tested
 result. Earlier the same day the cold check of g_mom's larger damping said stop (entry (f)).
 **2026-11-18, 07:38 UTC: the captain cleared the session's goal; the reads already built were finished and recorded,
 and no new read was opened. Nothing in any upload, build, rule or gate file has changed** (`docs/PLAN.md` decision
