@@ -5,6 +5,7 @@ is read from data/ or from a committed run, and nothing is scored."""
 
 from __future__ import annotations
 
+import dataclasses
 import importlib.util
 import inspect
 import json
@@ -14,7 +15,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 from scipy import sparse
-from test_b0_trend import BOARD, _ctx, three  # noqa: F401
+from test_b0_trend import BOARD, _ctx, _view, three  # noqa: F401
 from test_harness import GENES, INTERP, _pool, _task
 
 from vec import harness
@@ -234,7 +235,8 @@ def test_a_herded_entry_ahead_on_both_backtests_passes(n53, tmp_path):
     t = res["statement"]["tasks"]["T2h/<=E9.5->E10.5"]
     assert t["mean_gain"] == pytest.approx(0.49) and t["seeds_ahead"] == 9 and t["largest_loss"] == pytest.approx(0.1)
     assert res["registered_pair"]["keep"] is False and not res["pair_is_the_statement"]
-    assert all(not r["checked"] for r in res["reproduction"].values())
+    assert all(not r["checked"] for by in res["reproduction"].values() for r in by.values())
+    assert res["outcome"] == "passes" and res["statement"]["idle"] == []
     txt = n53.text(res)
     assert "the herded entry passes the adoption rule" in txt and "could not be checked" in txt
     assert "decides nothing" in txt or "deciding nothing" in txt
@@ -253,7 +255,9 @@ def test_the_entry_must_reproduce_its_committed_scores(n53, tmp_path):
     files = _heart(n53)
     committed = _heart(n53, commit="b" * 40)
     ok = n53.reading("heart", _write(tmp_path / "run", files), committed_dir=_write(tmp_path / "c1", committed))
-    assert not ok["void"] and all(r["checked"] and r["max_abs"] == 0.0 for r in ok["reproduction"].values())
+    assert not ok["void"] and all(r["checked"] and r["max_abs"] == 0.0 for by in ok["reproduction"].values()
+                                  for r in by.values())
+    assert all(set(by) == {"b0_trend", "b0"} for by in ok["reproduction"].values())  # the herded arms are new
     assert "reproduces its committed scores" in n53.text(ok)
     committed[0]["rows"][3]["scores"]["b0_trend"] += 1e-6
     bad = n53.reading("heart", tmp_path / "run", committed_dir=_write(tmp_path / "c2", committed))
@@ -262,7 +266,7 @@ def test_the_entry_must_reproduce_its_committed_scores(n53, tmp_path):
     near = n53.reading("heart", tmp_path / "run", committed_dir=_write(tmp_path / "c3", committed))
     assert not near["void"]
     one = n53.reading("heart", tmp_path / "run", committed_dir=_write(tmp_path / "c4", committed[1:]))
-    assert not one["void"] and [r["checked"] for r in one["reproduction"].values()] == [False, True]
+    assert not one["void"] and [r["b0_trend"]["checked"] for r in one["reproduction"].values()] == [False, True]
 
 
 def test_void_cases(n53, tmp_path):
@@ -306,8 +310,10 @@ def test_the_embryo_reports_its_pair_once_and_position_metrics_beside_the_entry(
     assert not res["void"] and res["pair_is_the_statement"] and res["passes"] is False
     assert res["registered_pair"]["tasks"] == res["statement"]["tasks"]
     pos = res["position_only"]["T2e/E7.25+E8.0->E7.5"]
-    assert pos["fgw_herd"]["d2_shape"] - pos["fgw"]["d2_shape"] == pytest.approx(0.05)
-    assert pos["fgw"]["shape_growth"] == pytest.approx(0.5)
+    assert pos["fgw_herd"]["d2_shape"]["mean"] - pos["fgw"]["d2_shape"]["mean"] == pytest.approx(0.05)
+    assert pos["fgw_herd"]["d2_shape"]["diff_mean"] == pytest.approx(0.05)
+    assert pos["fgw_herd"]["d2_shape"]["diff_sd"] == pytest.approx(0.0, abs=1e-12)
+    assert pos["fgw"]["shape_growth"]["mean"] == pytest.approx(0.5) and "diff_mean" not in pos["fgw"]["shape_growth"]
     txt = n53.text(res)
     assert "is the entry and its herded twin themselves" in txt and "(minus the entry's: +0.0500" in txt
 
@@ -323,3 +329,117 @@ def test_the_cli_writes_both_files_and_refuses_to_overwrite(n53, tmp_path, monke
         {k: v for k, v in res.items() if k != "provenance"})
     with pytest.raises(SystemExit, match="refusing to overwrite"):
         n53.main(["read", "--board", "heart", "--runs", str(run), "--out", str(out)])
+
+
+# ------------------------------------------------------------------------------------- review fixes (idle herding)
+def test_with_the_count_at_or_above_the_pool_herding_is_idle_and_the_twin_is_b0_trend_bit_for_bit(three):  # noqa: F811
+    """The heart's E8.75 backtest: a board count at or above the reference pool's rows makes the draw repeat rows, so
+    herd_rows hands it back unchanged and b0_trend_herd is b0_trend bit for bit (herding not applied)."""
+    n_pool = three["ref"].n_obs
+    for max_cells in (n_pool, n_pool + 400):
+        big = Board(key="pseudo:h7_big", task="T2", genes=list(GENES), needs_coords=True, setting="heart",
+                    min_cells=100, max_cells=max_cells)
+        ctx = harness.BuildContext(task=_view(), board=big, inputs=three, seed=harness.BUILD_SEED_OFFSET + 1)
+        plain, herded = CANDIDATES["b0_trend"].build(ctx), CANDIDATES["b0_trend_herd"].build(ctx)
+        np.testing.assert_array_equal(herded.X, plain.X)
+        np.testing.assert_array_equal(herded.coords, plain.coords)
+        smp = harness.t2_build.sample_cells(three["ref"], harness.count_for(big, n_pool), seed=ctx.seed,
+                                            herd_expr=three["ref"][:, big.genes].X)
+        assert smp.record["herd"]["accepted"] == 0 and "skipped" in smp.record["herd"]
+
+
+def _idle_on(files: list[dict], key: str, arm: str = "b0_trend_herd", base: str = "b0_trend") -> None:
+    for f in files:
+        if f["task"]["key"] == key:
+            for row in f["rows"]:
+                row["scores"][arm] = row["scores"][base]
+                row["metrics"][arm] = dict(row["metrics"][base])
+                row["skills"][arm] = dict(row["skills"][base])
+
+
+def test_an_idle_backtest_makes_the_statement_not_readable_never_does_not_pass(n53, tmp_path):
+    gain = np.r_[np.full(8, 0.6), -0.1, 0.2]  # would pass on the active backtest
+    files = _heart(n53)
+    for f in files:
+        for row, g in zip(f["rows"], gain, strict=True):
+            row["scores"]["b0_trend_herd"] += g
+    _idle_on(files, "T2h/<=E8.75->E10.5")
+    _idle_on(files, "T2h/<=E8.75->E10.5", "b0_herd", "b0")
+    res = n53.reading("heart", _write(tmp_path / "run", files), committed_dir=tmp_path / "none")
+    assert not res["void"] and res["outcome"] == "not readable" and res["passes"] is None
+    st = res["statement"]
+    assert st["idle"] == ["T2h/<=E8.75->E10.5"] and st["keep"] is False  # keep_change alone would say "does not pass"
+    assert st["tasks"]["T2h/<=E8.75->E10.5"]["identical_seeds"] == 10
+    assert st["tasks"]["T2h/<=E9.5->E10.5"]["passes"] and st["tasks"]["T2h/<=E9.5->E10.5"]["identical_seeds"] == 0
+    assert res["registered_pair"]["outcome"] == "not readable"
+    txt = n53.text(res)
+    assert "is not readable under the adoption rule: herding is idle on T2h/<=E8.75->E10.5" in txt
+    assert "herding idle on T2h/<=E8.75->E10.5" in txt and "herding is not read there" in txt
+    assert "does not pass" not in txt.split("Limits:")[0] and "would not be kept" not in txt
+
+
+def test_equal_scores_with_a_moved_metric_are_not_idle(n53, tmp_path):
+    files = _heart(n53, shape=0.01)  # equal scores, the herded arms' d2_shape differs: herding acted
+    res = n53.reading("heart", _write(tmp_path / "run", files), committed_dir=tmp_path / "none")
+    assert res["outcome"] == "does not pass" and res["statement"]["idle"] == []
+    assert all(t["identical_seeds"] == 0 for t in res["statement"]["tasks"].values())
+    files = _heart(n53)  # equal on everything: idle on both
+    res = n53.reading("heart", _write(tmp_path / "run2", files), committed_dir=tmp_path / "none")
+    assert res["outcome"] == "not readable" and len(res["statement"]["idle"]) == 2
+
+
+def test_partly_identical_seeds_are_counted_but_not_idle(n53, tmp_path):
+    files = _heart(n53, gain=0.5)
+    for row in files[0]["rows"][:3]:
+        row["scores"]["b0_trend_herd"] = row["scores"]["b0_trend"]
+    res = n53.reading("heart", _write(tmp_path / "run", files), committed_dir=tmp_path / "none")
+    t = res["statement"]["tasks"]["T2h/<=E9.5->E10.5"]
+    assert t["identical_seeds"] == 3 and not t["idle"] and res["outcome"] == "does not pass"
+
+
+def test_a_non_counted_backtest_is_left_out(n53):
+    """A replicate fold or a diagnostic of the board is configured but not counted (mutant: counted() without
+    t.counted)."""
+    spec = n53.BOARDS["heart"]
+    conf = load_tasks()[spec.test_board]
+    base = next(t for t in conf if t.key == "T2h/<=E9.5->E10.5")
+    extra = [dataclasses.replace(base, key="syn/replicate", replicate=True),
+             dataclasses.replace(base, key="syn/diagnostic", adoption=False)]
+    assert all(CANDIDATES[a].applies(t) for a in spec.arms for t in extra)
+    assert n53.counted(spec, [*conf, *extra]) == ["T2h/<=E9.5->E10.5", "T2h/<=E8.75->E10.5"]
+    assert n53.counted(spec, extra) == []
+
+
+def test_no_counted_backtest_is_void(n53, tmp_path):
+    res = n53.reading("heart", _write(tmp_path / "run", _heart(n53)), committed_dir=tmp_path / "none", configured=[])
+    assert res["void"] and any("no counted backtest" in w for w in res["why"])
+
+
+def test_the_registered_base_must_reproduce_its_committed_scores_too(n53, tmp_path):
+    committed = _heart(n53, commit="b" * 40)
+    committed[1]["rows"][0]["scores"]["b0"] += 1e-6
+    res = n53.reading("heart", _write(tmp_path / "run", _heart(n53)), committed_dir=_write(tmp_path / "c", committed))
+    assert res["void"] and any("b0 differs from its committed scores" in w for w in res["why"])
+
+
+def test_the_paired_rows_give_the_seed_sd_and_the_text_states_two_backtests_and_the_limits(n53, tmp_path):
+    files = _heart(n53)
+    for f in files:
+        for i, row in enumerate(f["rows"]):
+            row["scores"]["b0_trend_herd"] += 0.1 * i  # paired differences 0.0 .. 0.9
+    res = n53.reading("heart", _write(tmp_path / "run", files), committed_dir=tmp_path / "none")
+    t = res["statement"]["tasks"]["T2h/<=E9.5->E10.5"]
+    assert t["sd"] == pytest.approx(np.std(0.1 * np.arange(10), ddof=1))
+    assert res["statement"]["need"] == 2
+    txt = n53.text(res)
+    assert "the rule needs a pass on 2 of 2" in txt and "seed SD of the paired difference 0.30" in txt
+    assert "two or three" not in txt and "two counted backtests and the rule needs a pass on both" in txt
+    assert "across the whole pool" in txt and "type shares and positions" in txt
+    assert "does not exclude a true gain of about 0.3-0.4" in txt and "record no machine" in txt
+    assert "chose B0's composition damping" in txt and "descriptive and deciding nothing" in txt
+    assert "must not depend on position" not in txt
+    spec = n53.BOARDS["embryo"]
+    emb = [_file(k, spec.test_board, {"fgw": 55.0 + np.arange(10.0), "fgw_herd": 55.5 + np.arange(10.0)})
+           for k in ("T2e/E7.25+E8.0->E7.5", "T2e/E6.75+E7.5->E7.25")]
+    etxt = n53.text(n53.reading("embryo", _write(tmp_path / "emb", emb), committed_dir=tmp_path / "none"))
+    assert "chose B0's composition damping" not in etxt and "passes the adoption rule" in etxt
