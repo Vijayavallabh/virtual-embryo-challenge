@@ -562,3 +562,98 @@ def test_a_kill_between_the_two_writes_leaves_no_task_file(tmp_path, monkeypatch
     with pytest.raises(KeyboardInterrupt):
         k18.write_task_file(tmp_path / "dm.json", res)
     assert n == ["dm.json.prov.json", "dm.json"] and not (tmp_path / "dm.json").exists()
+
+
+# --- the third fix round: the dm self-check's score kept out of the log; a dirty tree is INCOMPLETE, never VOID ---
+
+
+def test_the_dm_self_check_prints_no_score(capsys):
+    """The frozen selfcheck's own line ends with a board score; quiet_selfcheck drops it and prints a fixed line.
+    Pure noise: random scores printed through the frozen script's own log() never reach the output. A failing
+    self-check still raises (cmd_run then masks the traceback). run_dm calls quiet_selfcheck, never selfcheck."""
+    import inspect
+
+    t3d = harness._t3_head().t3d
+    rng = np.random.default_rng(8)
+    for _ in range(200):
+        v = float(rng.normal(55, 10))
+        fake = SimpleNamespace(selfcheck=lambda ctx, seed, v=v: t3d.log(
+            f"self-check passed: factored scoring equals vec.evaluate.score_board ({v:.4f})"))
+        k18.quiet_selfcheck(fake, None)
+        out = capsys.readouterr()
+        assert out.out == k18.SELFCHECK_LINE + "\n" and out.err == ""
+        assert not re.search(r"\d", out.out) and f"{v:.4f}" not in out.out
+
+    def failing(ctx, seed):
+        raise RuntimeError("self-check failed: factored scoring 57.1 vs vec.evaluate.score_board 57.2")
+
+    with pytest.raises(RuntimeError):
+        k18.quiet_selfcheck(SimpleNamespace(selfcheck=failing), None)
+    assert k18.SELFCHECK_LINE not in capsys.readouterr().out
+    src = inspect.getsource(k18.run_dm)
+    assert "quiet_selfcheck(t3d, ctx)" in src and ".selfcheck(" not in src
+
+
+@pytest.mark.parametrize("world", ["plain", "dm"])
+def test_a_dirty_tree_is_refused_before_anything_loads(tmp_path, fake_run, monkeypatch, world):
+    """A stamp whose tree is not clean: the run exits before loading the barred factor, the harness or the dm world,
+    makes no folder and writes no task file, so the case is INCOMPLETE (read exits 3), never VOID."""
+    loaded = []
+    monkeypatch.setattr(k18, "stamp", lambda: {"commit": "abc", "tree_clean": False, "machine": "m1", "utc": "x"})
+    monkeypatch.setattr(k18, "load_barred_for_plain", lambda *a: loaded.append("barred"))
+    monkeypatch.setattr(k18, "run_dm", lambda *a: loaded.append("dm"))
+    out = tmp_path / "run"
+    argv = ["run", "--world", world, "--out", str(out)] + (["--task", "g1"] if world == "plain" else [])
+    with pytest.raises(SystemExit) as e:
+        k18.main(argv)
+    assert e.value.code == k18.DIRTY and "INCOMPLETE, not VOID" in k18.DIRTY
+    assert loaded == [] and fake_run.calls["n"] == 0 and not out.exists()
+    res = k18.reading(out)
+    assert res["incomplete"] and not res["void"] and len(res["missing"]) == 3
+
+
+def test_the_stamp_rule_is_the_harness_rule(monkeypatch):
+    """stamp()'s clean flag is vec.harness's: `git status --porcelain --untracked-files=no` prints nothing. A tracked
+    change (any porcelain line) or a failing git ('unknown') is unclean."""
+    seen = []
+    status = {"now": ""}
+
+    def git(*args):
+        seen.append(args)
+        return "abc" if args[0] == "rev-parse" else status["now"]
+
+    monkeypatch.setattr(harness, "_git", git)
+    for line, clean in (("", True), (" M progress.md", False), ("M  docs/x.md", False), (" D a.py", False),
+                        ("UU b.py", False), ("unknown", False)):
+        status["now"] = line
+        assert k18.stamp()["tree_clean"] is clean, line
+    assert ("status", "--porcelain", "--untracked-files=no") in seen
+
+
+@pytest.mark.parametrize("prov", [{"commit": "abc", "tree_clean": False}, {"commit": "later", "tree_clean": True}])
+def test_a_stamp_that_turned_dirty_or_moved_writes_no_task_file(tmp_path, fake_run, monkeypatch, prov):
+    """The plain world's own stamp is the harness's, taken a little after the run's start: if it says unclean or
+    another commit, no task file is written (INCOMPLETE), so the reading never meets a file it would void."""
+
+    def run_task(t, cands, seeds, data_dir, log=print):
+        return {"rows": [], "provenance": prov}
+
+    monkeypatch.setattr(harness, "run_task", run_task)
+    out = tmp_path / "run"
+    with pytest.raises(SystemExit) as e:
+        k18.main(["run", "--world", "plain", "--task", "g1", "--out", str(out)])
+    assert "INCOMPLETE" in str(e.value.code)
+    assert not (out / "plain_g1.json").exists() and not (out / "plain_g1.json.prov.json").exists()
+
+
+def test_a_crash_in_read_is_masked_and_writes_nothing(tmp_path, monkeypatch, capsys):
+    def boom(runs):
+        raise KeyError("barred_form mean 57.1234 against 55.4321")
+
+    monkeypatch.setattr(k18, "reading", boom)
+    out = tmp_path / "reading"
+    with pytest.raises(SystemExit) as e:
+        k18.main(["read", "--runs", str(tmp_path), "--out", str(out)])
+    err = capsys.readouterr().err
+    assert e.value.code == 1 and "KeyError" in err and "57.1234" not in err and "55.4321" not in err
+    assert not out.exists()

@@ -52,26 +52,36 @@ The reading (fixed in the row before any run; `decide` and `guard`):
             committed rows on both replicates. Then a question to the captain to swap the last upload to the barred s1
             is put. Anything else: the refused s1 stands and no question is put.
   VOID      also unless every file holds the ten seeds, every arm, a clean tree, one commit and one machine.
-  INCOMPLETE  a missing task file (a run that crashed, was refused or killed) is not a reading: `read` opens nothing,
-            writes nothing and exits 3. With no code change, the missing world is rerun into the same folder at the
-            row's commit on the same machine. After a committed code fix, all three worlds are rerun at the new commit
-            into a fresh folder and the earlier folder's task files are never read: `run` refuses a folder that holds
-            a task file from another commit or machine (`check_folder`), so a mixed folder cannot be made.
+  INCOMPLETE  a missing task file (a run that crashed, was refused, a dirty tree included, or was killed) is not a
+            reading: `read` opens nothing, writes nothing and exits 3. With no code change, the missing world is rerun
+            into the same folder at the run's commit (the one the folder's other files record) on the same machine.
+            After a committed code fix, all three worlds are rerun at the new commit into a fresh folder and the
+            earlier folder's task files are never read: `run` refuses a folder that holds a task file or its
+            provenance from another commit or machine (`check_folder`), so a mixed folder cannot be made.
 
   run   --world plain --task g1|g2 --out DIR     the plain world, one task per process
   run   --world dm --out DIR [--workers N]       the depth-matched world, both replicates in one process
   read  --runs DIR --out DIR                     apply the reading; write reading.json and reading.txt
-Each run writes <file>.prov.json (the commit, the clean flag, the machine and the file's sha256) and then its task
-file, so a task file present means that world finished and `read` decides. No log of a run holds a score: the plain
-world hands the harness a progress-only log (`progress_log`; the harness's own line for a seed lists every arm's
-score), the depth-matched world prints timings only, and a crash prints its traceback with every decimal number
-masked (`masked`), so a crash can be diagnosed and its world rerun without seeing a score.
+A run refuses to start on a tree that is not clean, before anything loads (`stamp`'s rule, vec.harness's: `git
+status --porcelain --untracked-files=no` prints nothing; any staged, modified, deleted, renamed or unmerged tracked
+file, or a failing git, is unclean; untracked files are not counted), and refuses to write a task file whose own stamp
+is unclean or of another commit, so a dirty tree makes a world INCOMPLETE, never VOID. Each run writes
+<file>.prov.json (the commit, the clean flag, the machine and the file's sha256) and then its task file, so a task
+file present means that world finished and `read` decides. No log of a run holds a score: the plain world hands the
+harness a progress-only log (`progress_log`; the harness's own line for a seed lists every arm's score); the
+depth-matched world prints timings, the frozen script's set-up lines (practice files' cell counts, the harmoniser's
+out-of-fold accuracy and macro-F1 on the wild-type labels) and a self-check line without its number (the frozen
+selfcheck's own line carries a board score and is captured and dropped, `quiet_selfcheck`); and a crash of `run` or
+`read` prints its traceback with every decimal number masked (`masked`), so a crash can be diagnosed and its world
+rerun without seeing a score.
 """
 
 from __future__ import annotations
 
 import argparse
+import contextlib
 import hashlib
+import io
 import json
 import re
 import socket
@@ -347,6 +357,18 @@ def _dm_task(task) -> dict:
         return dm_row(_STATE, *task)
 
 
+SELFCHECK_LINE = "self-check passed (the frozen script's factored scoring equals vec.evaluate.score_board)"
+
+
+def quiet_selfcheck(t3d, ctx) -> None:
+    """The frozen script's self-check at SEEDS[0], as orth_diag.cmd_score runs it, with its standard output captured and
+    dropped: its own line ends with the board score of the frozen script's full estimate on rep1, which no log of this
+    try may hold. A failing self-check raises (and cmd_run masks the traceback); a passing one prints SELFCHECK_LINE."""
+    with contextlib.redirect_stdout(io.StringIO()):
+        t3d.selfcheck(ctx, SEEDS[0])
+    print(SELFCHECK_LINE, flush=True)
+
+
 def run_dm(data: Path, run_dir: Path, decision: Path, workers: int, threads: int) -> dict:
     """The depth-matched world over both replicates and the ten seeds, set up as orth_diag.cmd_score sets up U3d:
     the frozen script's context with the replicates, its self-check, the barred factor through load_factor, the
@@ -366,7 +388,7 @@ def run_dm(data: Path, run_dir: Path, decision: Path, workers: int, threads: int
         ctx, _ = t3d.build_context("gata4", paths, rules, n_jobs=n_par, threads=threads, out=Path(tmp))
         if sorted(T.name for T in ctx.targets) != sorted(DM_TARGETS.values()):
             raise RuntimeError(f"targets {[T.name for T in ctx.targets]}, expected {sorted(DM_TARGETS.values())}")
-        t3d.selfcheck(ctx, SEEDS[0])
+        quiet_selfcheck(t3d, ctx)
         genes = list(ctx.genes)
         phi_b, frec = barred_factor(run_dir, dec, spec, genes)
         ref_C, ref_lab, ref_P, gap = od.reference_counts(ctx, paths["wt"], ctx.preset["label_mode"])
@@ -473,22 +495,35 @@ def _run_world(a, st: dict) -> dict:
     return res | {"task_source": "experiments/t3_decomp/k18_built_files.py", "provenance": st}
 
 
+DIRTY = ("the tree is not clean (git status --porcelain --untracked-files=no prints a tracked file, or git failed): "
+         "not started, no task file written. Row K18: commit or restore first; the world is INCOMPLETE, not VOID")
+
+
 def cmd_run(a) -> None:
     if a.world == "plain" and a.task not in TASKS:
         sys.exit("--world plain needs --task g1 or g2")
+    st = stamp()
+    if not st["tree_clean"]:  # before anything loads: a dirty start writes nothing, so it can never void the try
+        sys.exit(DIRTY)
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     name = f"plain_{a.task}.json" if a.world == "plain" else "dm.json"
     path = out / name
     if path.exists():
         sys.exit(f"{path} exists")
-    st = stamp()
     check_folder(out, st)
     try:
         res = _run_world(a, st)
     except Exception:  # noqa: BLE001  (any crash: its traceback, masked, and exit 1; no task file is written)
         print(masked(traceback.format_exc()), file=sys.stderr, end="", flush=True)
         sys.exit(1)
+    got = res["provenance"]
+    if got.get("tree_clean") is not True or got.get("commit") != st["commit"]:
+        # the plain world's stamp is the harness's own, taken a little after this run's: a tree made dirty, or a commit
+        # made, in between leaves no task file (INCOMPLETE), never a task file the reading would void
+        sys.exit(f"the run's stamp says commit {got.get('commit')}, clean {got.get('tree_clean')}, against "
+                 f"{st['commit']} clean at its start: no task file written. Row K18: the world is INCOMPLETE; rerun it "
+                 "on a clean tree at the run's commit")
     prov = write_task_file(path, res)
     print(f"wrote {path}: commit {prov['commit']}, clean {prov['tree_clean']}, machine {prov['machine']}, sha256 "
           f"{prov['sha256']}", flush=True)
@@ -607,8 +642,9 @@ def dm_check(rows: dict, records: Path = U3D_RECORDS) -> dict:
 
 
 TASK_FILES = (*(f"plain_{n}.json" for n in TASKS), "dm.json")
-INCOMPLETE = ("not a reading: a run ended without writing its task file; nothing was read. Row K18: if the cause "
-              "is outside the code, rerun only that world into this folder at the row's commit on the same machine; "
+INCOMPLETE = ("not a reading: a run ended without writing its task file (a crash, a refusal such as a dirty tree, "
+              "out of memory or a kill); nothing was read. Row K18: if the cause "
+              "is outside the code, rerun only that world into this folder at the run's commit on the same machine; "
               "after a committed code fix, rerun all three worlds at the new commit into a fresh folder, and never "
               "read this folder's task files (keep them aside)")
 
@@ -735,7 +771,11 @@ def text(res: dict) -> str:
 
 
 def cmd_read(a) -> None:
-    res = reading(Path(a.runs))
+    try:
+        res = reading(Path(a.runs))
+    except Exception:  # noqa: BLE001  (a crash after the task files were opened: masked traceback, nothing written)
+        print(masked(traceback.format_exc()), file=sys.stderr, end="", flush=True)
+        sys.exit(1)
     if res.get("incomplete"):  # nothing was read and nothing is written; no log holds a score, so the rerun is blind
         print(text(res), end="")
         sys.exit(3)
