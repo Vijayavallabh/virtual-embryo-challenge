@@ -170,13 +170,26 @@ def _table(e075, e100, e150, p050=50.0, p100=50.0, base=50.0) -> dict[str, float
             "perm_e100": p100}
 
 
+def _refs(root, base: float = 50.0, shift: dict | None = None):
+    """The committed bases the reading checks grp_e050 against (K8b on g1 and g2, K7b on m), hand-made: `shift`
+    moves one task's base in one seed, {task: (seed, by)}."""
+    shift = shift or {}
+    for n, (folder, a) in k16.REPRO.items():
+        p = root / folder / "tasks"
+        p.mkdir(parents=True, exist_ok=True)
+        rows = [{"seed": s, "scores": {a: base + 0.1 * s + (shift[n][1] if n in shift and shift[n][0] == s else 0.0)}}
+                for s in SEEDS]
+        (p / f"{n}.json").write_text(json.dumps({"rows": rows}))
+    return root
+
+
 def _read(tmp_path, name, g, m=None, **kw):
     d = tmp_path / name
     d.mkdir()
     for n in ("g1", "g2"):
         (d / f"{n}.json").write_text(json.dumps(_result(k16.TASKS[n].key, g, **kw)))
     (d / "m.json").write_text(json.dumps(_result(k16.TASKS["m"].key, m or _table(50, 50, 50))))
-    return k16.reading(d)
+    return k16.reading(d, _refs(tmp_path / f"{name}_refs"))
 
 
 def test_every_exponent_carries_and_rises(tmp_path):
@@ -186,7 +199,8 @@ def test_every_exponent_carries_and_rises(tmp_path):
     assert r["tasks"]["g1"]["paired"]["grp_e100 - grp_e050"]["mean"] == pytest.approx(2.0)
     assert r["tasks"]["g1"]["arms"]["grp_e100"]["severity_scored"] == 10
     assert r["tasks"]["g1"]["arms"]["grp_e100"]["median_beta"] == pytest.approx(0.55)
-    assert "priced question" in k16.text(r)
+    t = k16.text(r)
+    assert "priced question" in t and "grp_e075 n/a" in t and "perm_e100 scored 10 of 10" in t
 
 
 def test_not_factor_specific_means_no_request(tmp_path):
@@ -213,6 +227,8 @@ def test_the_monotone_step(tmp_path):
 def test_carrying_needs_severity_scored_and_m_level(tmp_path):
     gated = _read(tmp_path, "gated", _table(51.0, 52.0, 53.0), gated=frozenset({"grp_e150"}), n_gated=2)
     assert gated["tasks"]["g2"]["arms"]["grp_e150"]["severity_scored"] == 8
+    assert gated["tasks"]["g2"]["arms"]["grp_e150"]["gated_seeds"] == [s for s in SEEDS if s < 2]
+    assert "g2 grp_e150: severity gated in seeds" in k16.text(gated)
     assert not gated["carries"]["grp_e150"] and gated["named_exponent"] == 1.0
     m_low = _read(tmp_path, "m_low", _table(51.0, 52.0, 53.0), m=_table(50.0, 49.6, 49.8))
     assert m_low["carries"] == {"grp_e075": True, "grp_e100": False, "grp_e150": True}
@@ -230,4 +246,21 @@ def test_a_missing_or_dirty_task_voids_the_reading(tmp_path):
         r = _result(k16.TASKS[n].key, _table(51, 52, 53))
         r["provenance"]["tree_clean"] = n != "m"
         (d / f"{n}.json").write_text(json.dumps(r))
-    assert k16.reading(d)["void"]
+    assert k16.reading(d, _refs(tmp_path / "dirty_refs"))["void"]
+
+
+def test_a_base_that_does_not_reproduce_k8b_or_k7b_voids_the_reading(tmp_path):
+    d = tmp_path / "runs"
+    d.mkdir()
+    for n in k16.TASKS:
+        (d / f"{n}.json").write_text(json.dumps(_result(k16.TASKS[n].key, _table(51, 52, 53))))
+    assert not k16.reading(d, _refs(tmp_path / "same"))["void"]
+    assert not k16.reading(d, _refs(tmp_path / "tiny", shift={"m": (SEEDS[3], 1e-12)}))["void"]
+    for n in k16.TASKS:
+        r = k16.reading(d, _refs(tmp_path / f"off_{n}", shift={n: (SEEDS[3], 1e-6)}))
+        assert r["void"] and any(w.startswith(f"{n}: grp_e050 does not reproduce") and str(SEEDS[3]) in w
+                                 for w in r["why"])
+    assert k16.reading(d, tmp_path / "absent")["void"]
+    assert k16.REPRO == {"g1": ("k8_s2_form", "s2_form_revert_grp"), "g2": ("k8_s2_form", "s2_form_revert_grp"),
+                         "m": ("k7_wt_revert", "wt_revert_grp")}
+    assert k16.REF_ROOT.name == "results" and (k16.REF_ROOT / "k8_s2_form" / "tasks" / "g1.json").exists()

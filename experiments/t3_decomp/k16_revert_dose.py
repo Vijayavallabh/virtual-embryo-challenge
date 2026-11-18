@@ -32,10 +32,15 @@ The reading (fixed in the row before any run; `decide`):
   SPECIFIC     at exponent 1.0, on both g1 and g2, (grp_e100 - grp_e050) exceeds (perm_e100 - perm_e050) by more than
                0.3 (paired means).
   STEP         every step up to e from the exponent tried before it beats that exponent by a paired mean above 0.3 on
-               both g1 and g2: 0.75 (its step from 0.5 is part of carrying); 1.0 over 0.75, waived when 0.75 does not
-               carry; 1.5 over 1.0.
+               both g1 and g2 (the paired comparison only; m and the scored count are not part of a step): 0.75 has no
+               step beyond its own carrying, and its carrying is not a step for 1.0 or 1.5; 1.0 over 0.75, waived when
+               0.75 does not carry (even if 1.0 scores below 0.75); 1.5 over 1.0 (so 1.5 can be named when 1.0 fails
+               only on m).
   OUTCOME      the largest e that carries and whose every step up to it holds, and only if SPECIFIC holds: a priced
                question to the captain. Anything else: no request; the second upload stays at 0.5.
+  VOID         unless every task file holds the ten seeds, every arm, a clean tree and one commit, and grp_e050
+               reproduces, seed for seed and to 1e-9, the committed base: K8's s2_form_revert_grp on g1 and g2
+               (results/k8_s2_form/tasks) and K7's wt_revert_grp on m (results/k7_wt_revert/tasks).
 
   run   --task g1|g2|m --out DIR    one task per process; start the three together (one commit, a clean tree)
   read  --runs DIR --out DIR        apply the reading; write reading.json and reading.txt
@@ -65,6 +70,9 @@ PERM_EXPONENTS = (0.5, 1.0)
 MIN_GAIN, MIN_AHEAD = k7.MIN_GAIN, k7.MIN_AHEAD  # 0.3 and 8 of 10
 MIN_SCORED = 9
 M_FLOOR = -0.3
+REPRO_TOL = 1e-9
+REF_ROOT = HERE / "results"  # the committed runs that grp_e050 must reproduce
+REPRO = {"g1": ("k8_s2_form", k8.GROUPED), "g2": ("k8_s2_form", k8.GROUPED), "m": ("k7_wt_revert", k7.GROUPED)}
 
 
 def arm(e: float, perm: bool = False) -> str:
@@ -175,6 +183,7 @@ def summarise(rows: list[dict]) -> dict:
             "skills": {m: float(np.mean([q["skills"][x][m] for q in rows])) for m in rows[0]["skills"][x]},
             "severity_states": {st: sum(v["state"] == st for v in sev) for st in sorted({v["state"] for v in sev})},
             "severity_scored": int(sum(v["state"] == "scored" for v in sev)),
+            "gated_seeds": [q["seed"] for q, v in zip(rows, sev, strict=True) if v["state"] != "scored"],
             "median_beta": _median([v.get("beta") for v in sev]), "median_r2": _median([v.get("r2") for v in sev])}
     pairs = [(x, BASE) for x in ARMS if x != BASE] + [(arm(1.0, True), arm(0.5, True)), (arm(1.0), arm(0.75)),
                                                        (arm(1.5), arm(1.0)), (BASE, harness.FLOOR)]
@@ -198,7 +207,7 @@ def decide(per: dict) -> dict:
                           and pm("m", a, BASE)["mean"] >= M_FLOOR)
     gain = {n: pm(n, arm(1.0), BASE)["mean"] - pm(n, arm(1.0, True), arm(0.5, True))["mean"] for n in S2_TASKS}
     specific = bool(all(v > MIN_GAIN for v in gain.values()))
-    step = {arm(0.75): True,
+    step = {arm(0.75): True,  # no step beyond its own carrying (printed as n/a)
             arm(1.0): bool(beats(arm(1.0), arm(0.75)) or not carries[arm(0.75)]),
             arm(1.5): bool(beats(arm(1.5), arm(1.0)))}
     named = None
@@ -213,7 +222,20 @@ def decide(per: dict) -> dict:
                         "no request; the second upload stays at exponent 0.5")}
 
 
-def reading(runs: Path) -> dict:
+def reproduction(name: str, rows: list[dict], refs: Path) -> str | None:
+    """None when grp_e050 equals the committed base (K8b on g1 and g2, K7b on m) seed for seed to REPRO_TOL; else why
+    not. It catches drift in code, data or environment since K7 and K8."""
+    folder, ref_arm = REPRO[name]
+    p = refs / folder / "tasks" / f"{name}.json"
+    if not p.exists():
+        return f"{name}: the committed base {folder}/tasks/{name}.json is missing"
+    ref = {x["seed"]: x["scores"].get(ref_arm) for x in json.loads(p.read_text())["rows"]}
+    off = [q["seed"] for q in rows
+           if ref.get(q["seed"]) is None or abs(q["scores"][BASE] - ref[q["seed"]]) > REPRO_TOL]
+    return f"{name}: {BASE} does not reproduce {folder}'s {ref_arm} in seeds {off}" if off else None
+
+
+def reading(runs: Path, refs: Path = REF_ROOT) -> dict:
     why, per, commits = [], {}, set()
     for name, t in TASKS.items():
         p = runs / f"{name}.json"
@@ -230,6 +252,9 @@ def reading(runs: Path) -> dict:
         if set(ARMS) - set(rows[0]["scores"]):
             why.append(f"{name}: missing arms {sorted(set(ARMS) - set(rows[0]['scores']))}")
             continue
+        miss = reproduction(name, rows, refs)
+        if miss:
+            why.append(miss)
         commits.add(r["provenance"]["commit"])
         per[name] = summarise(rows) | {"factor_record": r.get("factor_record")}
     if len(commits) > 1:
@@ -248,9 +273,20 @@ def text(res: dict) -> str:
         return "VOID: " + "; ".join(res["why"]) + "\n"
     lines = [f"Try K16 (commit {res['commit']}): {res['outcome']}.",
              "carries: " + ", ".join(f"{a} {'yes' if v else 'no'}" for a, v in res["carries"].items())
-             + "; steps: " + ", ".join(f"{a} {'yes' if v else 'no'}" for a, v in res["step"].items())
+             + "; steps: " + ", ".join(f"{a} {'n/a' if a == arm(0.75) else 'yes' if v else 'no'}"
+                                       for a, v in res["step"].items())
              + "; factor-specific at 1.0: " + ("yes" if res["factor_specific"] else "no") + " ("
-             + ", ".join(f"{n} {v:+.2f}" for n, v in res["specific_gain_over_control"].items()) + ")"]
+             + ", ".join(f"{n} {v:+.2f}" for n, v in res["specific_gain_over_control"].items()) + ")",
+             "the controls (identity enters only through the gate): " + "; ".join(
+                 f"{n} {c} scored {s['severity_scored']} of {len(SEEDS)} {s['severity_states']}, "
+                 f"median r2 {_f(s['median_r2'])}"
+                 for n in S2_TASKS for c in (arm(0.5, True), arm(1.0, True)) for s in [res["tasks"][n]["arms"][c]])]
+    for n in S2_TASKS:
+        for a in (BASE, *(arm(e) for e in TRIED)):
+            s = res["tasks"][n]["arms"][a]
+            if s["severity_scored"] < len(SEEDS):
+                lines.append(f"{n} {a}: severity gated in seeds {s['gated_seeds']} (r2 does not depend on the "
+                             "exponent: a gate flip from thinning or the clip)")
     for n, t in TASKS.items():
         v = res["tasks"][n]
         lines.append(f"{n} {t.key} ({'the upload form' if n in S2_TASKS else 'K7b form'}):")
