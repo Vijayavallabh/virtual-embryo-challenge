@@ -2,6 +2,18 @@
 
 ## Current Objective
 
+- **State at 2026-11-18, 17:00 UTC (newest).** All four second-upload files are with the captain, who uploads by
+  hand: `builds/T1_s2.h5ad` (f169ea492e8d), `builds/T2embryo_s2.h5ad` (41982d8afd78),
+  `runs/manual_upload/T2heart_s2iso_half.h5ad` (dc436d9225bb) and `t3_build/refused_s1.h5ad` (0394575a11fc); decision
+  log 2026-11-18 (m) to (p) has the amendment, the heart build, and tries K16 (void) and K17 (no request). Order for the
+  captain: send the disclosure email, upload T1 and the embryo, send the heart note and upload the heart, send the T3
+  note and upload T3; the scorer-build note is optional and goes before the embryo upload. When the captain pastes the
+  new scores: add rows to `results/manual_uploads.csv`, a decision-log entry with the scores as pasted, and the method
+  report's lines on the departures (the gate, T3's order, the heart's halving and its new second file, second uploads
+  chosen with the first scores known, tries K16 and K17 after the first scores), reviewed like its exposure section.
+  The DGX reference checkout is untouched at dc7b6ae; the campaign checkouts are at cccff68 (`vec-campaign`) and
+  307c9b2 (`vec-campaign-h7`), idle. Nomination of final entries on the site is the captain's, due 26 November
+  11:59 UTC.
 - **State at 2026-11-18, 16:00 UTC (newer than the bullet below).** `docs/PLAN.md` decision log 2026-11-18 (k) and
   (l) hold the diagnosis, the plan and the captain's two answers. Second uploads: T1's and the embryo's built s2
   files were handed to the captain (hashes f169ea492e8d and 41982d8afd78); T3's last file waits for try K16 (the

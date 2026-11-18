@@ -3,6 +3,21 @@
 ## Current State
 
 **Last Updated:** 2026-11-18
+**2026-11-18, 17:00 UTC: all four second-upload files are decided, built and handed to the captain; nothing is
+waiting on the AI assistant but the scores** (`docs/PLAN.md` decision log 2026-11-18 (m) to (p)). T1: `builds/T1_s2.h5ad`
+(f169ea492e8d). Embryo: `builds/T2embryo_s2.h5ad` (41982d8afd78). Heart: `runs/manual_upload/T2heart_s2iso_half.h5ad`
+(dc436d9225bb), the new file of the amendment of 2026-11-18 to `docs/S2_RULES.md` (hash now 8907bba814e3...): E10.5's
+cells with their expression unchanged, scaled evenly to the size file's raw-mode H1 size, a uniform random half; built
+twice on the DGX at 307c9b2 with identical bytes (`experiments/builds/results/heart2_307c9b2.txt`), in a campaign
+checkout, since the reference checkout was left untouched. T3: `t3_build/refused_s1.h5ad` (0394575a11fc), as built on
+13 November: row K16 (the strength of its wild-type-only factor) was void on both machines by its own 1e-9 guard, and
+row K17, a second try on the same runs that the captain signed off, read: no request (no exponent carries on the
+local run; T3 tries 45). Four drafts are in the captain's Gmail: the disclosure email (first), the scorer-build note
+(optional), the heart note and the T3 note (each before its upload); all are recorded in
+`docs/ORGANIZER_QUESTIONS.md`. Expected after the second uploads, by judgement: about 186 Overall (180 to 195). Owed:
+rows in `results/manual_uploads.csv` and the decision log when the captain reports the uploads and scores; the method
+report's lines on every departure (reviewed like its exposure section); the captain's nomination of final entries on
+the site before 26 November 11:59 UTC.
 **2026-11-18, 16:00 UTC: the diagnosis is in, two second uploads are with the captain, and the heart's new file and a
 Task 3 practice try are being prepared** (`docs/PLAN.md` decision log 2026-11-18 (k) and (l)). The diagnosis round
 (nine read-only agents, each board's account attacked by a second agent): T1 did not fail; the embryo's file was one
