@@ -9,9 +9,10 @@ Why. T3's last upload is the refused branch's s1 with the wild-type-only factor 
 the Mab21l2 factor (measured against WT E8.75) at exponent 1 with the same central composition and no depth step
 (docs/S2_RULES.md, "Branch names"). On the Gata4 replicates the barred factor without the composition read 59.40 and
 62.15 (gata4_records.csv) and the refused form 57.14 and 55.14 (K8b), but the barred file's own recipe, factor plus
-composition, was never scored. The practice world that predicted the first upload's 47.8 was the depth-matched one of
-orth_diag.py (try U3d: the reference and the wild-type pool thinned to each replicate's per-label depth), so the two
-files are read there as well as in K8's plain world.
+composition, was never scored. In the depth-matched world of orth_diag.py (try U3d: the reference and the wild-type
+pool thinned to each replicate's per-label depth) a stand-in for the first upload had its severity gated in every row,
+as at the test (it scored 53.89 there, not the test's figure), so the two files are read there as well as in K8's plain
+world.
 
 Arms, the same in both worlds and all from one stream per world (STREAM, K8's), so every arm of the upload's form holds
 the same drawn wild-type cells; every arm goes through the builder's own functions (build_submission.composition,
@@ -38,8 +39,8 @@ Worlds. Tasks g1 and g2 (WT E8.75 to Gata4 replicate 1 and 2), two replicates of
          replicate's depth (orth_diag.matched_counts on its streams); anchors recomputed on the matched reference. The
          arms draw from the matched pool. A check arm, `dm_B`, is U3d's own `dm:transfer:mab21l2_all` (the barred
          factor on the matched pool at the reference's composition, on U3d's stream) and is compared with U3d's
-         committed rows: reported, deciding nothing. The world sets no depth in any upload; no T3 depth is derived for
-         a file.
+         committed rows: it can only block the question, never void the run. The world sets no depth in any upload;
+         no T3 depth is derived for a file.
 
 The reading (fixed in the row before any run; `decide` and `guard`):
   GUARD     the plain world's refused_form against K8b's committed scores (results/k8_s2_form/tasks): on each task the
@@ -47,9 +48,12 @@ The reading (fixed in the row before any run; `decide` and `guard`):
             Else the run is void.
   QUESTION  barred_form beats refused_form by a paired mean above 0.3 board points with at least 8 of 10 seeds ahead
             on g1 AND on g2 in BOTH worlds, and barred_form's severity is scored (not gated) in at least 9 of 10 seeds
-            on both tasks in the depth-matched world. Then a question to the captain to swap the last upload to the
-            barred s1 is put. Anything else: the refused s1 stands and no question is put.
+            on both tasks in the depth-matched world, and the check arm dm_B is within the guard's tolerance of U3d's
+            committed rows on both replicates. Then a question to the captain to swap the last upload to the barred s1
+            is put. Anything else: the refused s1 stands and no question is put.
   VOID      also unless every file holds the ten seeds, every arm, a clean tree, one commit and one machine.
+  INCOMPLETE  a missing task file (a run that crashed, was refused or killed) is not a reading: `read` opens nothing,
+            writes nothing and exits 3; the world is rerun at the row's commit before any task file is read.
 
   run   --world plain --task g1|g2 --out DIR     the plain world, one task per process
   run   --world dm --out DIR [--workers N]       the depth-matched world, both replicates in one process
@@ -398,9 +402,13 @@ def stamp() -> dict:
 
 
 def write_task_file(path: Path, res: dict) -> dict:
-    """The task file and, beside it, <file>.prov.json with the commit, the clean flag, the machine and its sha256."""
+    """The task file and, beside it, <file>.prov.json with the commit, the clean flag, the machine and its sha256.
+    The task file is written to a temporary name and renamed, so a run killed while writing leaves no task file and
+    the reading sees it as missing (not a reading), never as a short file."""
     raw = json.dumps(res, indent=1, default=float).encode()
-    path.write_bytes(raw)
+    tmp = path.parent / f".{path.name}.part"
+    tmp.write_bytes(raw)
+    tmp.replace(path)
     prov = {k: res["provenance"][k] for k in ("commit", "tree_clean", "machine")} | {
         "file": path.name, "sha256": hashlib.sha256(raw).hexdigest()}
     (path.parent / f"{path.name}.prov.json").write_text(json.dumps(prov, indent=1) + "\n")
@@ -483,16 +491,21 @@ def summarise(rows: list[dict], arms: tuple[str, ...]) -> dict:
     return out
 
 
-def decide(per: dict) -> dict:
-    """The rule fixed in row K18, on summarise()'s output per world and task."""
+def decide(per: dict, check: dict | None) -> dict:
+    """The rule fixed in row K18, on summarise()'s output per world and task and on dm_check()'s output. The check
+    arm can only block the question: outside the guard's tolerance on either replicate (or not computable), the
+    depth-matched world's setup is not shown to reproduce U3d, and no question is put; the run is not void.
+    refused_form's scored count in the depth-matched world is reported beside barred_form's and decides nothing."""
     key = f"{BARRED} - {REFUSED}"
     beats = {w: {n: bool(per[w][n]["paired"][key]["mean"] > MIN_GAIN and per[w][n]["paired"][key]["ahead"] >= MIN_AHEAD)
                  for n in TASKS} for w in WORLDS}
     scored = {n: per["dm"][n]["arms"][BARRED]["severity_scored"] for n in TASKS}
+    scored_refused = {n: per["dm"][n]["arms"][REFUSED]["severity_scored"] for n in TASKS}
     scored_ok = all(v >= MIN_SCORED for v in scored.values())
-    question = all(beats[w][n] for w in WORLDS for n in TASKS) and scored_ok
-    return {"beats": beats, "dm_barred_severity_scored": scored, "dm_scored_ok": bool(scored_ok),
-            "question": bool(question),
+    check_ok = bool(check) and all(check.get(n, {}).get("within_tolerance") for n in TASKS)
+    question = all(beats[w][n] for w in WORLDS for n in TASKS) and scored_ok and check_ok
+    return {"beats": beats, "dm_barred_severity_scored": scored, "dm_refused_severity_scored": scored_refused,
+            "dm_scored_ok": bool(scored_ok), "dm_check_ok": check_ok, "question": bool(question),
             "outcome": ("a question to the captain: swap T3's last upload to the barred s1 (a priced question after a "
                         "cold check; the try changes no entry)" if question else
                         "no question; the refused s1 stands as T3's last upload")}
@@ -507,10 +520,13 @@ def _read_file(p: Path, why: list[str]) -> tuple[dict | None, str | None]:
 
 
 def _rows_ok(name: str, rows: list[dict], arms: tuple[str, ...], why: list[str]) -> bool:
+    """The ten seeds, and every arm in every row's scores, skills and severity (the plain world's arms include the
+    floor), so that a short row voids the reading instead of raising in summarise."""
     if [x["seed"] for x in rows] != list(SEEDS):
         why.append(f"{name}: other seeds")
         return False
-    miss = sorted(set(arms) - set(rows[0]["scores"]))
+    miss = sorted({a for q in rows for a in arms
+                   if a not in q.get("scores", {}) or a not in q.get("skills", {}) or a not in q.get("t3", {})})
     if miss:
         why.append(f"{name}: missing arms {miss}")
         return False
@@ -519,7 +535,8 @@ def _rows_ok(name: str, rows: list[dict], arms: tuple[str, ...], why: list[str])
 
 def dm_check(rows: dict, records: Path = U3D_RECORDS) -> dict:
     """The dm world's check arm against U3d's committed `dm:transfer:mab21l2_all` rows, per replicate: distance()'s
-    figures and whether they are within the guard's tolerances. Reported, deciding nothing."""
+    figures and whether they are within the guard's tolerances. Outside them on either replicate, decide() puts no
+    question; the run is not void (K16's lesson: a reproduction check across machines must not void a try)."""
     import pandas as pd
 
     rec = pd.read_csv(records)
@@ -534,8 +551,19 @@ def dm_check(rows: dict, records: Path = U3D_RECORDS) -> dict:
     return out
 
 
+TASK_FILES = (*(f"plain_{n}.json" for n in TASKS), "dm.json")
+INCOMPLETE = ("not a reading: a run ended without writing its task file; nothing was read. Row K18: rerun that "
+              "world at the row's commit (after a committed code fix noted as an amendment to the row, if the cause "
+              "is in the code) before any task file is read")
+
+
 def reading(runs: Path, refs: Path = K8_TASKS, u3d: Path = U3D_RECORDS) -> dict:
-    """Apply the reading of row K18 to a run folder (plain_g1.json, plain_g2.json, dm.json)."""
+    """Apply the reading of row K18 to a run folder (plain_g1.json, plain_g2.json, dm.json). A run that crashed, was
+    refused or was killed writes no task file; while any of the three is missing, nothing in the folder is opened and
+    the result is 'incomplete', not void, so the missing world can be rerun blind."""
+    missing = [f for f in TASK_FILES if not (runs / f).exists()]
+    if missing:
+        return {"incomplete": True, "void": False, "missing": missing, "outcome": INCOMPLETE}
     why, files, per = [], {}, {"plain": {}, "dm": {}}
     prov: dict = {}
     for n in TASKS:
@@ -548,7 +576,7 @@ def reading(runs: Path, refs: Path = K8_TASKS, u3d: Path = U3D_RECORDS) -> dict:
         if r["task"]["key"] != TASKS[n].key:
             why.append(f"plain_{n}: another task")
             continue
-        if _rows_ok(f"plain_{n}", rows, ARMS, why):
+        if _rows_ok(f"plain_{n}", rows, (harness.FLOOR, *ARMS), why):
             per["plain"][n] = summarise(rows, (harness.FLOOR, *ARMS)) | {
                 "guard": distance(rows, REFUSED, committed_k8(n, refs), k8.GROUPED)}
     r, h = _read_file(runs / "dm.json", why)
@@ -578,13 +606,13 @@ def reading(runs: Path, refs: Path = K8_TASKS, u3d: Path = U3D_RECORDS) -> dict:
             why.append(f"guard: plain {n}: {REFUSED} is off K8b's committed scores" + (
                 f" by {d['mean_diff']:+.3f} in the mean and {d['max_abs_diff']:.3f} in one seed" if d else
                 " (a seed is missing)") + f" (limits {GUARD_MEAN} and {GUARD_SEED})")
-    base = {"task_sha256": files, "provenance": prov, "dm_check": check,
+    base = {"incomplete": False, "task_sha256": files, "provenance": prov, "dm_check": check,
             "guard": {n: v["guard"] for n, v in per["plain"].items()}}
     if why:
         return base | {"void": True, "why": why, "worlds": per,
                        "outcome": "void: no question; the refused s1 stands as T3's last upload"}
     return base | {"void": False, "why": [], "commit": next(iter(commits)), "machine": next(iter(machines)),
-                   "worlds": per} | decide(per)
+                   "worlds": per} | decide(per, check)
 
 
 def _f(x) -> str:
@@ -617,6 +645,8 @@ def _world_lines(world: str, per: dict) -> list[str]:
 
 def text(res: dict) -> str:
     lines = [f"Try K18: {res['outcome']}."]
+    if res.get("incomplete"):
+        return "\n".join([*lines, "missing task files: " + ", ".join(res["missing"])]) + "\n"
     if res["void"]:
         lines.append("VOID: " + "; ".join(res["why"]))
     else:
@@ -625,11 +655,15 @@ def text(res: dict) -> str:
                          f"{w} {n} {'yes' if res['beats'][w][n] else 'no'}" for w in WORLDS for n in TASKS)
                      + "; barred severity scored in the depth-matched world: " + ", ".join(
                          f"{n} {c} of {len(SEEDS)}" for n, c in res["dm_barred_severity_scored"].items())
-                     + f" (needs >= {MIN_SCORED} on both).")
+                     + f" (needs >= {MIN_SCORED} on both; refused_form, reported only: " + ", ".join(
+                         f"{n} {c} of {len(SEEDS)}" for n, c in res["dm_refused_severity_scored"].items())
+                     + f"); the depth-matched check within tolerance on both replicates: "
+                     f"{'yes' if res['dm_check_ok'] else 'no'} (needed for a question).")
     lines.append("guard (plain refused_form against K8b's committed scores): " + "; ".join(
         f"{n} {_dist(d)}" for n, d in res["guard"].items()))
     if res.get("dm_check"):
-        lines.append("check, reported only (the dm world's U3d arm against U3d's committed rows): " + "; ".join(
+        lines.append("check (the dm world's U3d arm against U3d's committed rows; it can only block the question): "
+                     + "; ".join(
             f"{n} {_dist(c['distance'])}, within the guard's tolerance {'yes' if c['within_tolerance'] else 'no'}"
             for n, c in res["dm_check"].items()))
     lines.append("task files read: " + "; ".join(
@@ -643,6 +677,9 @@ def text(res: dict) -> str:
 
 def cmd_read(a) -> None:
     res = reading(Path(a.runs))
+    if res.get("incomplete"):  # nothing was read; nothing is written, so the rerun stays blind
+        print(text(res), end="")
+        sys.exit(3)
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     (out / "reading.json").write_text(json.dumps(res, indent=1, default=float))

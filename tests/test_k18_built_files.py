@@ -307,58 +307,75 @@ def _per(barred: dict, gated: dict | None = None) -> dict:
 
 
 ALL = {(w, n): 56.0 for w in k18.WORLDS for n in k18.TASKS}
+OK = {n: {"distance": None, "within_tolerance": True} for n in k18.TASKS}  # the depth-matched check, passed
 
 
 def test_the_rule_needs_both_tasks_in_both_worlds_and_a_scored_severity():
-    assert k18.decide(_per(ALL))["question"]
+    assert k18.decide(_per(ALL), OK)["question"]
     for k in ALL:  # one world and task short of the gain fails the whole
-        assert not k18.decide(_per(ALL | {k: 55.2}))["question"]
+        assert not k18.decide(_per(ALL | {k: 55.2}), OK)["question"]
     two_gated = {("dm", "g2"): {k18.BARRED: 2}}
-    res = k18.decide(_per(ALL, two_gated))
+    res = k18.decide(_per(ALL, two_gated), OK)
     assert not res["question"] and res["dm_barred_severity_scored"] == {"g1": 10, "g2": 8}
-    assert k18.decide(_per(ALL, {("dm", "g2"): {k18.BARRED: 1}}))["question"]  # 9 of 10 is enough
-    assert k18.decide(_per(ALL, {("plain", "g2"): {k18.BARRED: 5}}))["question"]  # the plain world's count is not read
+    assert res["dm_refused_severity_scored"] == {"g1": 10, "g2": 10}
+    assert k18.decide(_per(ALL, {("dm", "g2"): {k18.BARRED: 1}}), OK)["question"]  # 9 of 10 is enough
+    assert k18.decide(_per(ALL, {("plain", "g2"): {k18.BARRED: 5}}), OK)["question"]  # the plain count is not read
     p = _per(ALL)
     p["dm"]["g1"]["paired"][f"{k18.BARRED} - {k18.REFUSED}"]["ahead"] = 7
-    assert not k18.decide(p)["question"]
+    assert not k18.decide(p, OK)["question"]
+    # the check can only block: outside tolerance on one replicate, missing, or not computable, no question
+    for check in (OK | {"g2": {"distance": None, "within_tolerance": False}}, None, {}, {"g1": OK["g1"]}):
+        res = k18.decide(_per(ALL), check)
+        assert not res["question"] and not res["dm_check_ok"]
+    # refused_form's scored count is reported and decides nothing (the rule's severity condition is barred's alone)
+    res = k18.decide(_per(ALL, {("dm", "g1"): {k18.REFUSED: 6}}), OK)
+    assert res["question"] and res["dm_refused_severity_scored"]["g1"] == 4
 
 
-def test_the_rule_on_pure_noise_almost_never_asks():
-    """barred_form = refused_form + independent noise of sd 1 board point per seed, no true gain: the rule needs four
-    (world, task) passes at once and asks in well under 1% of draws."""
+@pytest.mark.parametrize("shared", [False, True])
+def test_the_rule_on_pure_noise_almost_never_asks(shared):
+    """barred_form = refused_form + noise of sd 1 board point per seed, no true gain: the rule needs four (world, task)
+    passes at once and asks in well under 1% of draws. With `shared`, the plain world's g1 and g2 carry the same noise
+    (in that world they hold the same predicted cells: one pool, one stream, one seed), the worst case of that
+    correlation."""
     rng = np.random.default_rng(11)
     asked = 0
     for _ in range(500):
         per = {}
         for w in k18.WORLDS:
             per[w] = {}
+            common = rng.normal(0, 1.0, len(SEEDS))
             for n in k18.TASKS:
-                noise = {k18.BARRED: rng.normal(0, 1.0, len(SEEDS))}
+                noise = {k18.BARRED: common if shared and w == "plain" else rng.normal(0, 1.0, len(SEEDS))}
                 per[w][n] = k18.summarise(_rows({k18.REFUSED: 55.0, k18.BARRED: 55.0}, noise=noise),
                                           (k18.REFUSED, k18.BARRED))
-        asked += k18.decide(per)["question"]
+        asked += k18.decide(per, OK)["question"]
     assert asked <= 2
 
 
 # --- the reading of a run folder ---
 
 
-def _write_run(root: Path, barred=ALL, commit="abc", clean=True, machine="m1", guard_shift=0.0, dm_machine=None):
+def _write_run(root: Path, barred=ALL, commit="abc", clean=True, machine="m1", guard_shift=0.0, dm_machine=None,
+               dm_commit=None, check_shift=0.0, drop_floor=False):
     root.mkdir(parents=True)
     for n in k18.TASKS:
         arms = (harness.FLOOR, *k18.ARMS)
         rows = _rows({a: _table(barred["plain", n])[a] for a in arms})
+        if drop_floor:  # the floor missing from some rows (not the first): must void, not raise
+            for r in rows[3:]:
+                del r["scores"][harness.FLOOR]
         for r, ref in zip(rows, sorted(k18.committed_k8(n), key=lambda x: x["seed"]), strict=True):
             r["scores"][k18.REFUSED] = ref["scores"][k8.GROUPED] + guard_shift
             r["scores"][k18.BARRED] = r["scores"][k18.REFUSED] + barred["plain", n] - 55.0
         (root / f"plain_{n}.json").write_text(json.dumps({
             "task": {"key": k18.TASKS[n].key}, "rows": rows,
             "provenance": {"commit": commit, "tree_clean": clean, "machine": machine}}))
-    dm_rows = {n: [r | {"check": {k18.DM_CHECK: 60.0 + r["seed"]}} for r in
+    dm_rows = {n: [r | {"check": {k18.DM_CHECK: 60.0 + r["seed"] + check_shift}} for r in
                    _rows({a: _table(barred["dm", n])[a] for a in k18.ARMS})] for n in k18.TASKS}
     (root / "dm.json").write_text(json.dumps({
         "world": "dm", "rows": dm_rows,
-        "provenance": {"commit": commit, "tree_clean": True, "machine": dm_machine or machine}}))
+        "provenance": {"commit": dm_commit or commit, "tree_clean": True, "machine": dm_machine or machine}}))
     return root
 
 
@@ -387,13 +404,34 @@ def test_the_reading_of_a_run_folder(tmp_path, u3d):
     stands = k18.reading(_write_run(tmp_path / "stands", barred=ALL | {("dm", "g1"): 55.1}), u3d=u3d)
     assert not stands["void"] and not stands["question"] and "refused s1 stands" in stands["outcome"]
 
+    off = k18.reading(_write_run(tmp_path / "check", check_shift=0.2), u3d=u3d)  # the check blocks, never voids
+    assert not off["void"] and not off["question"] and not off["dm_check_ok"]
+    assert not off["dm_check"]["g1"]["within_tolerance"] and "refused s1 stands" in off["outcome"]
+
     for name, kw in (("guard", {"guard_shift": 0.2}), ("dirty", {"clean": False}),
-                     ("machines", {"dm_machine": "m2"})):
+                     ("machines", {"dm_machine": "m2"}), ("commits", {"dm_commit": "def"}),
+                     ("floor", {"drop_floor": True})):
         v = k18.reading(_write_run(tmp_path / name, **kw), u3d=u3d)
         assert v["void"] and "no question" in v["outcome"], name
         assert "VOID" in k18.text(v)
-    (tmp_path / "ask" / "dm.json").unlink()
-    assert k18.reading(tmp_path / "ask", u3d=u3d)["void"]
+    assert any("different commits" in w for w in k18.reading(tmp_path / "commits", u3d=u3d)["why"])
+    assert any("missing arms ['floor']" in w for w in k18.reading(tmp_path / "floor", u3d=u3d)["why"])
+
+
+def test_a_missing_task_file_is_not_a_reading(tmp_path, u3d, capsys):
+    """A run that crashed or was killed leaves no task file: the reading opens nothing, is not void, writes nothing
+    and exits 3, so the world can be rerun blind."""
+    root = _write_run(tmp_path / "run")
+    (root / "dm.json").write_text("{ not JSON: the reading must not open this file")
+    (root / "plain_g2.json").unlink()
+    res = k18.reading(root, u3d=u3d)
+    assert res == {"incomplete": True, "void": False, "missing": ["plain_g2.json"], "outcome": k18.INCOMPLETE}
+    assert "missing task files: plain_g2.json" in k18.text(res)
+    out = tmp_path / "reading"
+    with pytest.raises(SystemExit) as e:
+        k18.main(["read", "--runs", str(root), "--out", str(out)])
+    assert e.value.code == 3 and not out.exists()
+    assert "not a reading" in capsys.readouterr().out
 
 
 def test_a_task_file_and_its_provenance(tmp_path):
@@ -403,3 +441,4 @@ def test_a_task_file_and_its_provenance(tmp_path):
     assert json.loads((tmp_path / "dm.json.prov.json").read_text()) == prov
     assert {k: prov[k] for k in ("commit", "tree_clean", "machine")} == {"commit": "abc", "tree_clean": True,
                                                                          "machine": "m1"}
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["dm.json", "dm.json.prov.json"]  # no temporary file left
