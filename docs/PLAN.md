@@ -5269,3 +5269,82 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     metric, the mechanism of each loss, candidates for the second upload), four more try to refute them, and one
     checks how the practice scorer could differ from the server on the spatial metrics and on the severity metric.
     All nine read committed files only. Nothing is built, run against a practice target, or uploaded.
+- 2026-11-18 (k), the diagnosis of the first scores, the plan for the second uploads and the captain's go-ahead.
+  Written by the AI assistant. Expected scores below are the agents' and the AI assistant's judgements from committed
+  practice results; none is a committed estimate, and the committed 184 (170 to 198) is not restated.
+  - **The round** (wf_4618bffd-b18; read-only). One agent per board set the committed practice results of the
+    uploaded entry beside the test values metric by metric and named mechanisms and candidates; a second agent per
+    board, who saw only that result, tried to refute it; a ninth compared the practice scorer with the server.
+  - **A correction to entry (j).** The heart's listed values are not mis-copied. The T2 aggregate scales the shape
+    group by min(1, neighborhood_mmd skill / 0.5) (`src/vec/evaluate.py`, the aggregate): with it the listed values
+    give 46.33 against the published 46.4, and 47.65 without it. In practice that gate was 0.99 to 1.00 in every row.
+  - **The forecast against the first uploads** (`experiments/gate/FORECAST_2026-11-13.md`): T1 66.0 against 70.9;
+    the embryo 60.0 against 64.6; the heart 53.9 against 46.4; T3 65.6 against 47.8. The 65.6 was the allowed s1's
+    figure, which the forecast carried at weight 0.5 on a same-knockout stand-in it called "never measured".
+  - **T1 (70.9).** Nothing failed: all four metrics beat the floor and the board beat its forecast. The counted
+    practice cuts could not see scope or composition, so they under-called the file. The agents' reading of the
+    effort: most of the T1 tries priced step sizes worth one or two points, while composition and a better expression
+    model had the larger stakes.
+  - **The embryo (64.6).** The four expression metrics, the size (96.5) and the neighbourhood metric (74.4) carried
+    over or beat practice. d2_shape (30.9) follows a defect the record had measured before the upload: at the test
+    pair FGW's partners are mirrored in 10 of 10 draws and the moved cloud's thinnest axis is 0.21 to 0.25 of its RMS
+    radius, against 0.53 for E7.5 and 0.36 for E8.0 (rows E11, N1 and N51, whose reading was "the built file is of
+    the flagged kind"); on the E7.5 backtest the method had scored 37.2 and 38.5 on d2_shape and occupancy_dice
+    against the copy's 50.8 and 50.6. The hedge for it, E7.5's own geometry as the second file, was replaced on
+    2026-11-13 (ruling R4). occupancy_dice at 2.5 is not explained by the flattening: a practice task with mirrored,
+    flatter draws scored 50.1 on it. The one recorded factor that acts on Dice alone and only on the live board is
+    the pre-fix scorer build's parity coin (section 3, "Scorer build"); every practice score was taken under build
+    "main". This is not established, and nothing may be solved from the 2.5.
+  - **The heart (46.4).** Two steps lost to the floor. (i) The size step's pre-registered mode, xy_grow_z_hold,
+    stretched x and y by 1.48 with z held, so z's share of the squared RMS radius fell from 0.214 to 0.110; d2_shape
+    and occupancy_dice ignore a uniform rescale and not this. No harness run ever applied the size step
+    (`src/vec/harness.py`, `_b0_t2`; `TRIES.md`, "say nothing about the pre-registered size"), so every practice
+    shape figure was a copy's and the forecast assumed it; the s2-hedge runs of 2026-11-01 had scored a z-held
+    growth at 22.0, 36.1 and 65.0 on d2_shape and were read only as a scope comparison. (ii) The expression step
+    (B0's momentum with the trend) is the only expression difference from the floor, so mmd_u at 37.6 is its cost by
+    elimination; at the test its budget was 0.5 day against 0.125 and 0.375 day on the two backtests, and it had
+    been adopted on a margin of 0.06 on two backtests that share one truth. neighborhood_mmd under 50 costs twice,
+    through its own weight and through the gate (about 1.3 points).
+  - **T3 (47.8).** The allowed s1 is the pooled Gata4 factor at exponent 1, a composition cut to 0.38 in five
+    states, and Gata4's per-label depth ratios (0.52 to 0.63). severity_slope at exactly 50.0 is the gated branch
+    (beta at or below zero, or r2 at or below 0.01), which returns the floor's own value. The depth step puts a
+    common shift into the predicted change and raises the bar r2 must clear from 0.03 to 0.22 (row N4). mmd_u and
+    variogram near 33 match what row K14 read when shallow-target noise was put on a deeper target (33.5 and 36.3);
+    how the loss splits between depth, factor and composition cannot be read without differencing hidden-target
+    scores. The test total lies inside the band the cross-knockout readings had given (46.5 to 50.1); the
+    same-knockout stand-in the forecast leaned on read 72 to 75.
+  - **The plan the round arrived at**, after the challengers' corrections:
+
+    | Board | Second upload | Built | Expected board score | What it touches |
+    |---|---|---|---|---|
+    | T3 | the refused s1 with the wild-type-only factor, `t3_build/refused_s1.h5ad` (0394575a11fc) | yes | about 54 (49 to 60) | nothing: the frozen rule's own file |
+    | T1 | `builds/T1_s2.h5ad` (f169ea492e8d), mid base, cardiomyocytes 0.60 | yes | about 73 (70.9 to 80) | nothing |
+    | Embryo | `builds/T2embryo_s2.h5ad` (41982d8afd78), fgw_aligned_series | yes | about 67 (60 to 74) | nothing |
+    | Heart | E10.5's cells with expression unchanged, scaled isotropically to the size file's raw-mode H1 size, at a uniform random half | no | about 51 (47 to 54) | the size block (the z mode), the frozen heart rule (the trend, the half trim), a cell number (the halving), the reference list |
+
+    About 186 Overall (180 to 195). No agent found support for 226. Alternatives the round weighed and did not take:
+    for the embryo, the aligned moves with s1's own expression (not built; it reverses ruling R4 and overrules row
+    E11's veto; the challenger put the built file ahead on the expected better of two); for T3, the barred files and
+    a file without the composition; for T1, the step at 0.60 with g_mom at 1.0 on top of the second file; new
+    designs on every board, each without a counted backtest before the deadline.
+  - **Lines the challengers drew, which hold for every later step:** no constant set from a test value; no bound on
+    a test anchor from the 2.5; no inference of E7.75's detection profile from the first upload's expression scores;
+    no choice of a file or a row order by its parity; no mapping of 70.9 onto a composition column.
+  - **What the captain was asked and answered.** The AI assistant put three priced questions on the heart (the
+    size mode: about +2.5 heart points, the 46.4 kept if wrong; the expression step: about 1.5 points given up on
+    direction for about 1.9 on cell state and up to 3.2 more if the neighbourhood loss came from the same step, which
+    is unproven; the cell number: the same uniform half), asked for word on the disclosure email and on a note to the
+    organisers about the scorer build, and advised holding the three built files until the screened check of
+    19 November. The captain's answer, verbatim: "go ahead with whatever is best for us and immediately as weell
+    instead of waiting".
+  - **How the AI assistant reads it** (its reading, which the captain can correct before any upload): yes to the
+    three heart items as recommended, each named in the question he answered; the screened check is brought forward
+    from 19 to 18 November; the disclosure email goes into the captain's Gmail drafts (done) and the scorer note is
+    drafted for him; every upload stays his own act. It does not read the sentence as lifting anything that was not
+    in the question: a later candidate that touches a closed lever or a frozen rule is put to him by name.
+  - **What runs.** wf_c9c10308-753: the heart builder's two off-by-default options and a halving tool, and the
+    script and ledger row of a practice try on the strength of T3's wild-type-only factor (row K16), each written on
+    a campaign branch, reviewed by two agents and fixed; the row is committed on main before the try runs.
+    wf_bfc2939d-aa0: the screened check (mail, Slack, the Rules and Data Protocol pages, overall leaderboard totals),
+    audited by a second agent before the main session reads it. Owed before any second file is built: the amendment
+    to `docs/S2_RULES.md` with the captain's words and the new hash.
