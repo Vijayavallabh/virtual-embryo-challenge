@@ -1,0 +1,38 @@
+test fit (E9.5 -> E10.5)
+  blood: raw centred log ratio, cell-weighted rms 0.1302
+     damping 0.5: rms 0.0635; not zeroed 0.221; at clip 0.0002; mean |log f| all entries 0.0328, not zeroed 0.1487
+     damping 0.75: rms 0.0947; not zeroed 0.271; at clip 0.0012; mean |log f| all entries 0.0519, not zeroed 0.1914
+     damping 1: rms 0.1242; not zeroed 0.304; at clip 0.0034; mean |log f| all entries 0.0703, not zeroed 0.2314
+  cm: raw centred log ratio, cell-weighted rms 0.0761
+     damping 0.5: rms 0.0356; not zeroed 0.106; at clip 0.0000; mean |log f| all entries 0.0101, not zeroed 0.0948
+     damping 0.75: rms 0.0553; not zeroed 0.168; at clip 0.0001; mean |log f| all entries 0.0188, not zeroed 0.1119
+     damping 1: rms 0.0739; not zeroed 0.213; at clip 0.0003; mean |log f| all entries 0.0276, not zeroed 0.1293
+  endocardium: raw centred log ratio, cell-weighted rms 0.0851
+     damping 0.5: rms 0.0403; not zeroed 0.127; at clip 0.0000; mean |log f| all entries 0.0123, not zeroed 0.0976
+     damping 0.75: rms 0.0622; not zeroed 0.191; at clip 0.0001; mean |log f| all entries 0.0224, not zeroed 0.1173
+     damping 1: rms 0.0832; not zeroed 0.236; at clip 0.0002; mean |log f| all entries 0.0324, not zeroed 0.1369
+  epicardium: raw centred log ratio, cell-weighted rms 0.0567
+     damping 0.5: rms 0.0251; not zeroed 0.097; at clip 0.0000; mean |log f| all entries 0.0089, not zeroed 0.0916
+     damping 0.75: rms 0.0403; not zeroed 0.157; at clip 0.0000; mean |log f| all entries 0.0169, not zeroed 0.1077
+     damping 1: rms 0.0549; not zeroed 0.203; at clip 0.0001; mean |log f| all entries 0.0252, not zeroed 0.1239
+  vascular_endothelium: raw centred log ratio, cell-weighted rms 0.0729
+     damping 0.5: rms 0.0338; not zeroed 0.110; at clip 0.0000; mean |log f| all entries 0.0098, not zeroed 0.0892
+     damping 0.75: rms 0.0529; not zeroed 0.175; at clip 0.0000; mean |log f| all entries 0.0186, not zeroed 0.1063
+     damping 1: rms 0.0712; not zeroed 0.222; at clip 0.0001; mean |log f| all entries 0.0275, not zeroed 0.1236
+practice fit (E8.5 -> E9.5)
+  blood: raw centred log ratio, cell-weighted rms 0.0809
+     damping 0.5: rms 0.0381; not zeroed 0.180; at clip 0.0000; mean |log f| all entries 0.0249, not zeroed 0.1379
+     damping 0.75: rms 0.0591; not zeroed 0.233; at clip 0.0001; mean |log f| all entries 0.0405, not zeroed 0.1735
+     damping 1: rms 0.0795; not zeroed 0.269; at clip 0.0009; mean |log f| all entries 0.0559, not zeroed 0.2075
+  cm: raw centred log ratio, cell-weighted rms 0.0700
+     damping 0.5: rms 0.0325; not zeroed 0.101; at clip 0.0000; mean |log f| all entries 0.0095, not zeroed 0.0941
+     damping 0.75: rms 0.0506; not zeroed 0.160; at clip 0.0001; mean |log f| all entries 0.0178, not zeroed 0.1112
+     damping 1: rms 0.0680; not zeroed 0.203; at clip 0.0002; mean |log f| all entries 0.0261, not zeroed 0.1284
+  endocardium: raw centred log ratio, cell-weighted rms 0.0608
+     damping 0.5: rms 0.0273; not zeroed 0.083; at clip 0.0000; mean |log f| all entries 0.0071, not zeroed 0.0849
+     damping 0.75: rms 0.0435; not zeroed 0.143; at clip 0.0000; mean |log f| all entries 0.0142, not zeroed 0.0993
+     damping 1: rms 0.0592; not zeroed 0.188; at clip 0.0000; mean |log f| all entries 0.0214, not zeroed 0.1142
+test fit over practice fit, per category both fits hold:
+  blood: raw rms x1.61; finished rms at 0.5 x1.66, at 1.0 x1.56; test fit at 1.0 over practice fit at 0.5 x3.26, over practice fit at 1.0 x1.56; share not zeroed at 1.0: 0.304 against 0.269
+  cm: raw rms x1.09; finished rms at 0.5 x1.10, at 1.0 x1.09; test fit at 1.0 over practice fit at 0.5 x2.27, over practice fit at 1.0 x1.09; share not zeroed at 1.0: 0.213 against 0.203
+  endocardium: raw rms x1.40; finished rms at 0.5 x1.48, at 1.0 x1.41; test fit at 1.0 over practice fit at 0.5 x3.05, over practice fit at 1.0 x1.41; share not zeroed at 1.0: 0.236 against 0.188

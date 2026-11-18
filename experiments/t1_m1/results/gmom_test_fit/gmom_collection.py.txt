@@ -1,0 +1,75 @@
+"""Target-free listing (the forwarded note of 2026-11-18 and the cold check's first attack): how much of g_mom's
+within-category factors at the test pair's fit (start E9.5, reference E10.5, as `build_test.py t1 --g-mom` fits them)
+goes with each metacell's share of cells from the dissected-heart library, the one way the change of sample collection
+can survive the per-category centring. Beside it the same reading for the practice fit (start E8.5, reference E9.5)
+with each of that stage's libraries in turn, as a baseline for library effects inside one kind of sample. Reads the
+three released Task 1 stages only; builds nothing, reads no board, no target and no score, and compares no prediction
+with anything. Shares and ratios only. Usage, repository root: uv run --frozen --no-sync python -I -B <this file>"""
+import sys
+from pathlib import Path
+
+import numpy as np
+
+REPO = Path.cwd()
+sys.path.insert(0, str(REPO / "experiments" / "t1_m1"))
+from vec import harness, t1_scope  # noqa: E402
+from vec import t1_state_transport as ts  # noqa: E402
+from vec.prep import load_stage  # noqa: E402
+
+data = harness.DATA_DIR
+stage = {k: load_stage(data / f, lineage=False) for k, f in
+         {"E8.5": "T1/E8.5_RNA.h5ad", "E9.5": "T1/E9.5_RNA.h5ad", "E10.5": "T1/E10.5_RNA.h5ad"}.items()}
+held = t1_scope.held_flat_genes()
+rng = np.random.default_rng(20261118)
+
+
+def lib_of(name: str) -> str:
+    return str(name).rsplit("_", 1)[-1]
+
+
+def reading(raw, finished, label):
+    free = ~np.isin(np.asarray(raw.genes, dtype=object), np.asarray(list(held), dtype=object))
+    for c in sorted(raw.categories):
+        cf = raw.categories[c]
+        M = cf.n_metacells
+        libs = sorted({lib_of(n) for n in cf.index})
+        share = {b: np.zeros(M) for b in libs}
+        n = np.zeros(M)
+        for name, m in cf.index.items():
+            share[lib_of(name)][m] += 1
+            n[m] += 1
+        for b in libs:
+            share[b] = share[b] / np.maximum(n, 1)
+        w = np.asarray(cf.sizes, float)
+        cells_by_lib = {b: float((share[b] * n).sum() / n.sum()) for b in libs}
+        print(f"  {label} {c}: {M} metacells; cells by library " + ", ".join(f"{b}: {v:.2f}" for b, v in cells_by_lib.items()))
+        for kind, logf in (("raw centred", cf.logf - np.average(cf.logf, axis=0, weights=w)),
+                           ("finished at 0.5", finished[0.5].categories[c].logf),
+                           ("finished at 1.0", finished[1.0].categories[c].logf)):
+            Y = logf[:, free]
+            tot = float((w[:, None] * Y ** 2).sum())
+            for b in libs:
+                s = share[b]
+                if s.std() == 0:
+                    continue
+                def r2(sv):
+                    x = sv - np.average(sv, weights=w)
+                    den = float((w * x * x).sum())
+                    if den == 0 or tot == 0:
+                        return float("nan")
+                    beta = (w[:, None] * x[:, None] * Y).sum(axis=0) / den
+                    return float((den * beta ** 2).sum() / tot)
+                null = [r2(rng.permutation(s)) for _ in range(200)]
+                seg = float(((s > 0.9) | (s < 0.1)).mean())
+                print(f"     {kind}, library {b}: share of the factors' squared size that goes with the metacell's share of this "
+                      f"library {r2(s):.3f} (200 permutations of the shares: mean {np.mean(null):.3f}, 95th percentile "
+                      f"{np.percentile(null, 95):.3f}); metacells nearly pure or nearly empty of it {seg:.2f}")
+
+
+for name, ref, src, start, ssrc in (("test fit (E9.5 -> E10.5)", "E10.5", "E10.5_RNA", "E9.5", "E9.5_RNA"),
+                                    ("practice fit (E8.5 -> E9.5)", "E9.5", "E9.5_RNA", "E8.5", "E8.5_RNA")):
+    cats = [c for c, s in harness.t1_chamber_shares(stage[ref], src).items() if s > 0]
+    fin05, raw = harness.g_mom_pair_factors(stage[ref], src, stage[start], ssrc, categories=cats)
+    finished = {d: ts.finish_momentum(raw, d) for d in (0.5, 1.0)}
+    print(name)
+    reading(raw, finished, name.split(" ")[0])

@@ -1,0 +1,52 @@
+"""Target-free listing (the cold check of the g_mom damping claim, its first attack's check): the sizes of g_mom's
+finished factors at the test pair's fit (start E9.5, reference E10.5, as `build_test.py t1 --g-mom` fits them) against
+the practice fit (start E8.5, reference E9.5), at dampings 0.5, 0.75 and 1.0. Reads the three released Task 1 stages
+only; builds nothing, reads no board, no target and no score, and compares no prediction with anything. Ratios and
+shares only. Usage, repository root:  uv run --frozen --no-sync python -I -B <this file>"""
+import sys
+from pathlib import Path
+
+import numpy as np
+
+REPO = Path.cwd()
+sys.path.insert(0, str(REPO / "experiments" / "t1_m1"))
+sys.path.insert(0, str(REPO / "experiments" / "t1_scope"))
+from vec import harness, t1_scope  # noqa: E402
+from vec import t1_state_transport as ts  # noqa: E402
+from vec.prep import load_stage  # noqa: E402
+
+import gmom_size_read as gs  # noqa: E402
+
+data = harness.DATA_DIR
+stage = {k: load_stage(data / f, lineage=False) for k, f in
+         {"E8.5": "T1/E8.5_RNA.h5ad", "E9.5": "T1/E9.5_RNA.h5ad", "E10.5": "T1/E10.5_RNA.h5ad"}.items()}
+held = t1_scope.held_flat_genes()
+fits = {}
+for name, ref, src, start, ssrc in (("test fit (E9.5 -> E10.5)", "E10.5", "E10.5_RNA", "E9.5", "E9.5_RNA"),
+                                    ("practice fit (E8.5 -> E9.5)", "E9.5", "E9.5_RNA", "E8.5", "E8.5_RNA")):
+    cats = [c for c, s in harness.t1_chamber_shares(stage[ref], src).items() if s > 0]
+    fin05, raw = harness.g_mom_pair_factors(stage[ref], src, stage[start], ssrc, categories=cats)
+    finished = {d: ts.finish_momentum(raw, d) for d in (0.5, 0.75, 1.0)}
+    assert gs.same_factors(finished[0.5], fin05)
+    rec = gs.factor_records(finished, held)
+    free = ~np.isin(np.asarray(finished[0.5].genes, dtype=object), np.asarray(list(held), dtype=object))
+    rms = {}
+    for d, sf in finished.items():
+        rms[d] = {c: float(np.sqrt(np.average((cf.logf[:, free] ** 2).mean(axis=1), weights=cf.sizes)))
+                  for c, cf in sf.categories.items()}
+    raw_rms = {c: float(np.sqrt(np.average(((cf.logf - np.average(cf.logf, axis=0, weights=cf.sizes))[:, free] ** 2).mean(axis=1),
+                                             weights=cf.sizes))) for c, cf in raw.categories.items()}
+    fits[name] = (rec, rms, raw_rms)
+    print(name)
+    for c in sorted(raw_rms):
+        print(f"  {c}: raw centred log ratio, cell-weighted rms {raw_rms[c]:.4f}")
+        for d in (0.5, 0.75, 1.0):
+            r = rec[f"{d:g}"][c]
+            print(f"     damping {d:g}: rms {rms[d][c]:.4f}; not zeroed {r['share_not_zeroed']:.3f}; at clip {r['share_at_clip']:.4f}; "
+                  f"mean |log f| all entries {r['mean_abs_log_all_entries']:.4f}, not zeroed {r['mean_abs_log_not_zeroed']:.4f}")
+t, p = fits["test fit (E9.5 -> E10.5)"], fits["practice fit (E8.5 -> E9.5)"]
+print("test fit over practice fit, per category both fits hold:")
+for c in sorted(set(t[2]) & set(p[2])):
+    print(f"  {c}: raw rms x{t[2][c] / p[2][c]:.2f}; finished rms at 0.5 x{t[1][0.5][c] / p[1][0.5][c]:.2f}, at 1.0 x{t[1][1.0][c] / p[1][1.0][c]:.2f}; "
+          f"test fit at 1.0 over practice fit at 0.5 x{t[1][1.0][c] / p[1][0.5][c]:.2f}, over practice fit at 1.0 x{t[1][1.0][c] / p[1][1.0][c]:.2f}; "
+          f"share not zeroed at 1.0: {t[0]['1'][c]['share_not_zeroed']:.3f} against {p[0]['1'][c]['share_not_zeroed']:.3f}")

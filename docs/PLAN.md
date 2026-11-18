@@ -4984,3 +4984,68 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     `experiments/harness/n53_herd_t2_readings.py` with their tests (three review rounds, ready). Nothing of it is on
     main. Whether herding would act on a test build depends on a test board's count against its pool, which nobody
     reads; the question does not arise without a pass.
+- 2026-11-18 (f), tries T58 and T59 are read, the cold check of g_mom's larger damping says stop, and what now stands
+  in the captain's three questions. Written by the AI assistant. The captain cleared the session's goal during this
+  round and forwarded a note on the damping; no new read was opened after that, and nothing in any upload, build, rule
+  or gate file has changed.
+  - **Try T58, for the question on the step.** Its third statement reads 'a placebo gains as well; Feng's direction
+    more': beyond twice the step the step's increment and its part specific to Feng's genes are ahead in all six
+    readings (+0.96 to +2.10 and +0.96 to +1.67, every seed), and the placebo's increment is ahead at four times on
+    the two counted cuts (+0.30 and +0.55). By the use fixed before the run (entries (c) and (d)) the first ground of
+    the AI assistant's advice, that no control showed the gain beyond twice the step to need Feng's genes, is
+    withdrawn in part: most of that gain goes with Feng's own genes, and a part of it comes with any direction of this
+    size profile. The depth ground is untouched: in the worlds with a thinned reference the step's increment falls to
+    behind at five times (two thirds) and at four and five times (a half), where the placebo falls further. The
+    advice, the AI assistant's own, stays: keep 0.40.
+  - **Try T59, for the question on g_mom's damping.** Both statements read as the use of entry (c) required for a
+    request: at damping 1.0 the gain (+1.47 and +1.36) exceeds the twin's without development by +0.80 and +0.71 and
+    the permuted control's by +0.90 and +0.82 on the two cuts, every seed; and in the entry's form it 'stays positive
+    at every depth read', +1.83, +1.65 and +1.27 where library 3's truth is thinned to a third, to two thirds and as
+    released, +0.68 and +0.27 where the reference is thinned to two thirds and to a half. An independent recomputation
+    of tries T59, T58 and K15 found no figure wrong and made six wordings exact; among them, in the deepest world the
+    covariance term loses on every seed (-0.25 points) and the difference is level by try T46's test.
+  - **The cold check of the damping claim** (a fresh adversary given the claim only; its text is
+    `experiments/t1_m1/results/cold_checks/damping_4.md`) put the chance of a mistake at 60%. The captain forwarded a
+    side note the same hour with its main point: at the test the carried-forward change is fitted on E9.5 to E10.5,
+    where a part of the samples changes from embryo portions to dissected hearts, and practice never covers that. The
+    checks it named that released files can answer were run as two target-free listings
+    (`experiments/t1_m1/results/gmom_test_fit/`).
+  - **What the listings show.** (1) The test pair's factors are larger than the practice fit's at the same damping:
+    1.09 times for the cardiomyocytes, 1.41 to 1.48 times for the endocardium (root mean square); two categories
+    edited at the test, the epicardium and the vascular endothelium, have no factors in the practice fit; and blood,
+    which the practice gain includes, is held at the test. (2) The per-category centring removes a collection shift
+    common to a whole cell type, and what survives is measurable: at the test pair's fit 0.30 of the cardiomyocytes'
+    factors' squared size goes with a metacell's share of cells from the dissected-heart library (200 permutations of
+    the shares: mean 0.05, 95th percentile 0.09), 0.10 for the endocardium (0.03, 0.06) and 0.17 for the epicardium
+    (0.05, 0.08); the vascular endothelium, with five metacells, is not above its null. At the practice fit, whose two
+    libraries are of one kind, the same figure is at its null (cardiomyocytes 0.035 against 0.03). So a part of what
+    g_mom carries forward at the test goes with the library a state's cells came from, a part the practice reads never
+    contained, and a larger damping applies it at twice the size.
+  - **The attacks, labelled, and the verdict.** Kill shot: conceded. First attack (a dose practice never read; a
+    state-specific residue of the collection change): conceded on both listings. Second (the excess over the two null
+    factor sets was read at the released depth only): unresolved; reading it needs the twin and the permuted control
+    in the deep worlds, a new read, not opened. Third (1.0 is the edge of the range, chosen on the cuts that kept
+    g_mom, and zeroing follows damping, so 1.0 also admits raw ratios that 0.5 zeroes): conceded; the code zeroes
+    after damping, and the response is still rising at 1.0 in every world. Its cheaper form, 1.0 on one upload only:
+    not taken up, because the two Task 1 uploads differ in their base, so a failed 1.0 on one costs up to that
+    upload's lead over the other, and the collection component speaks against 1.0 on either. Verdict, the AI
+    assistant's judgement after the results: stop.
+  - **What stands in the captain's question on the damping.** The conditions fixed before the run were met, and by
+    entry (c) the question is restated with its price both ways; it is not closed by the AI assistant. For: +1.47 and
+    +1.36 on the two cuts, +0.71 to +0.90 beyond both controls, positive in every depth world read. Against: the gain
+    falls to +0.27 with a losing covariance term where the reference is thinned to a half; nearly half of it comes
+    with factor sets that carry no development; at the test the factors are larger, cover cell types practice never
+    read, and hold a library component that no practice run contains; the size was chosen on the cuts that kept g_mom,
+    so the adoption rule cannot keep it; and its size depends on a depth the captain has seen figures for, so the
+    captain decides from the released-data figures alone or declines. The AI assistant's advice, its own: keep 0.5 on
+    both uploads. Declining is the default.
+  - **A finding beyond the damping, for the captain.** The library component is in the test pair's factors at any
+    damping, the entry's 0.5 included: the entry as built carries it. Reading N21 had already found that the leading
+    direction of the test pair's factors does not carry from the practice fit; this adds one measured reason. No
+    released stage can price it, since no released fit crosses a change of collection with a released truth after it.
+    It is recorded here as a risk of the Task 1 files as built, and nothing is changed or proposed on it.
+  - **Try K15 and the half factor; the totals.** Row K15's outcome stands as recorded (entry (d)). Tries: T1 261,
+    embryo 73, heart 31, T3 35. The committed estimate stays 184 (170 to 198). Still the captain's: the dates (no
+    upload is possible until the gate's date is moved), the six confirmations for the method report, and the three
+    priced questions (the step at 0.60, g_mom's damping at 1.0, Task 3's factor at half size), each with the AI
+    assistant's advice 'change nothing' labelled as its own.
