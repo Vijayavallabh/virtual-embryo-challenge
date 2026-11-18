@@ -274,16 +274,16 @@ T3. First file: allowed s1 (pooled Gata4 factor at exponent 1, the composition, 
     g2                           D  -1.88 (seed SD 1.98, ahead 1 of 10)
     m                            D  -0.79 (seed SD 0.66, ahead 2 of 10)
     arms: {'g1': 'K7 wt_revert_perm', 'g2': 'K7 wt_revert_perm', 'm': 'K7 wt_revert_perm'}; note: K7a's factor permuted
-  the first file's stand-ins against their own floors, on their own folds (no candidate there):
-    xrep:F+depth on rep1 (gata4_records.csv)                       +24.50 (seed SD 0.77, ahead 10 of 10)
-    transfer:mab21l2_all on rep1 (gata4_records.csv)                +9.40 (seed SD 0.62, ahead 10 of 10)
+  stand-ins against their own floors, on their own folds or runs (no seed pairing with the candidates above): the first file's, and the barred factor's (the barred file itself was never scored):
+    first file: xrep:F+depth on rep1 (gata4_records.csv)           +24.50 (seed SD 0.77, ahead 10 of 10)
+    barred factor: transfer:mab21l2_all on rep1 (gata4_records.csv)  +9.40 (seed SD 0.62, ahead 10 of 10)
     check rep1: the frozen refused s1 in two runs, blind:G2_bcat_central_d50 (records, estimate.py T3_S2) minus K8's s2_form, per seed: largest 10.11, mean +1.20
-    xrep:F+depth on rep2 (gata4_records.csv)                       +22.15 (seed SD 0.94, ahead 10 of 10)
-    transfer:mab21l2_all on rep2 (gata4_records.csv)               +12.15 (seed SD 0.45, ahead 10 of 10)
+    first file: xrep:F+depth on rep2 (gata4_records.csv)           +22.15 (seed SD 0.94, ahead 10 of 10)
+    barred factor: transfer:mab21l2_all on rep2 (gata4_records.csv) +12.15 (seed SD 0.45, ahead 10 of 10)
     check rep2: the frozen refused s1 in two runs, blind:G2_bcat_central_d50 (records, estimate.py T3_S2) minus K8's s2_form, per seed: largest 4.49, mean +0.11
-    s1x on r12 (K10; T3k10/r12)                                    +22.07 (seed SD 0.79, ahead 10 of 10)
-    s1x on r21 (K10; T3k10/r21)                                    +24.54 (seed SD 0.85, ahead 10 of 10)
-    t3_factor_xko on T3/Gata4->Mab21l2 (K2a)                        +0.08 (seed SD 0.47, ahead 5 of 10)
+    first file: s1x on r12 (K10; T3k10/r12)                        +22.07 (seed SD 0.79, ahead 10 of 10)
+    first file: s1x on r21 (K10; T3k10/r21)                        +24.54 (seed SD 0.85, ahead 10 of 10)
+    first file: t3_factor_xko on T3/Gata4->Mab21l2 (K2a)            +0.08 (seed SD 0.47, ahead 5 of 10)
   on fold m's truth and reference only: the candidate's mean (K7) minus K2a's t3_factor_xko mean (t3_k2_v1), two runs, NOT seed-paired; no shared arm checks that the two runs score alike:
     refused form, WT-only factor per group (K8b; built file) +20.96
     refused form, pooled factor (K8a)                        +20.93

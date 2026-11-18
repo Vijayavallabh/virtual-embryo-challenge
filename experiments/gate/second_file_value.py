@@ -546,20 +546,20 @@ def board_t3(rd: Reader, checks: list[str]) -> dict:
     for rep, fold in (("rep1", "g1"), ("rep2", "g2")):
         base = rec[(rep, "_floor_wt_workcopy")]
         need(sorted(base) == SEEDS and all(v == 50.0 for v in base.values()), f"T3 {rep}: the records' floor is 50")
-        for v in ("xrep:F+depth", "transfer:mab21l2_all"):
-            stand[f"{v} on {rep} (gata4_records.csv)"] = seed_summary(paired([base[k] for k in SEEDS],
-                                                                              [rec[(rep, v)][k] for k in SEEDS]))
+        for who, v in (("first file", "xrep:F+depth"), ("barred factor", "transfer:mab21l2_all")):
+            d = paired([base[k] for k in SEEDS], [rec[(rep, v)][k] for k in SEEDS])
+            stand[f"{who}: {v} on {rep} (gata4_records.csv)"] = seed_summary(d)
         same = [rec[(rep, "blind:G2_bcat_central_d50")][k] - k8[fold]["arms"]["s2_form"][k] for k in SEEDS]
         stand[f"check {rep}: the frozen refused s1 in two runs, blind:G2_bcat_central_d50 (records, estimate.py "
               f"T3_S2) minus K8's s2_form, per seed"] = {
             "largest_abs": max(abs(x) for x in same), "mean": statistics.fmean(same)}
     for f in ("r12", "r21"):
         t = task_scores(rd, K10.format(f), checks)
-        stand[f"s1x on {f} (K10; {t['key']})"] = seed_summary(paired(t["arms"]["floor"], t["arms"]["s1x"]))
+        stand[f"first file: s1x on {f} (K10; {t['key']})"] = seed_summary(paired(t["arms"]["floor"], t["arms"]["s1x"]))
     k2 = task_scores(rd, K2A, checks)
     need(k2["target"] == k7["m"]["target"] and k2["reference"] == k7["m"]["reference"],
          "T3: K2a's task has fold m's target and reference", checks)
-    stand[f"t3_factor_xko on {k2['key']} (K2a)"] = seed_summary(paired(k2["arms"]["floor"],
+    stand[f"first file: t3_factor_xko on {k2['key']} (K2a)"] = seed_summary(paired(k2["arms"]["floor"],
                                                                       k2["arms"]["t3_factor_xko"]))
     xko = statistics.fmean(k2["arms"]["t3_factor_xko"])
     unpaired = {name: statistics.fmean(src[where["m"][0]]["m"]["arms"][where["m"][1]]) - xko
@@ -571,7 +571,7 @@ def board_t3(rd: Reader, checks: list[str]) -> dict:
                         "run: the same frozen file scored there and in K8 differs seed by seed, see the check lines) "
                         "and on T3/Gata4->Mab21l2 (K2a's t3_factor_xko, another run); no candidate was scored in any "
                         "of those runs, so no seed-paired D exists and no V is computed",
-            "targets": targets, "candidates": cands, "first_standins_vs_floor": stand,
+            "targets": targets, "candidates": cands, "standins_vs_floor": stand,
             "m_unpaired_cross_run": {"what": "on fold m's truth and reference only: the candidate's mean (K7) minus "
                                              "K2a's t3_factor_xko mean (t3_k2_v1), two runs, NOT seed-paired; no "
                                              "shared arm checks that the two runs score alike",
@@ -653,8 +653,9 @@ def text(res: dict) -> str:
                  f"({v['by_knockout']['summary']['units']} units)")
         L += _tasks(v, list(T3_FOLDS))
         L.append(f"    arms: {v['arms']}; note: {v['note']}")
-    L.append("  the first file's stand-ins against their own floors, on their own folds (no candidate there):")
-    for k, s in r["first_standins_vs_floor"].items():
+    L.append("  stand-ins against their own floors, on their own folds or runs (no seed pairing with the candidates "
+             "above): the first file's, and the barred factor's (the barred file itself was never scored):")
+    for k, s in r["standins_vs_floor"].items():
         if "seeds" in s:
             L.append(f"    {k:<62} {s['mean']:+6.2f} (seed SD {s['seed_sd']:.2f}, ahead {s['ahead']} of "
                      f"{s['seeds']})")

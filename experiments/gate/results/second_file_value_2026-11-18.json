@@ -2877,14 +2877,14 @@
     "note": "K7a's factor permuted"
    }
   },
-  "first_standins_vs_floor": {
-   "xrep:F+depth on rep1 (gata4_records.csv)": {
+  "standins_vs_floor": {
+   "first file: xrep:F+depth on rep1 (gata4_records.csv)": {
     "mean": 24.50295833801339,
     "seed_sd": 0.766132588769574,
     "ahead": 10,
     "seeds": 10
    },
-   "transfer:mab21l2_all on rep1 (gata4_records.csv)": {
+   "barred factor: transfer:mab21l2_all on rep1 (gata4_records.csv)": {
     "mean": 9.398622567493438,
     "seed_sd": 0.6153669415342157,
     "ahead": 10,
@@ -2894,13 +2894,13 @@
     "largest_abs": 10.107166097647351,
     "mean": 1.2013419861194863
    },
-   "xrep:F+depth on rep2 (gata4_records.csv)": {
+   "first file: xrep:F+depth on rep2 (gata4_records.csv)": {
     "mean": 22.148284292901067,
     "seed_sd": 0.9384591065067452,
     "ahead": 10,
     "seeds": 10
    },
-   "transfer:mab21l2_all on rep2 (gata4_records.csv)": {
+   "barred factor: transfer:mab21l2_all on rep2 (gata4_records.csv)": {
     "mean": 12.15039518520013,
     "seed_sd": 0.4475488507343858,
     "ahead": 10,
@@ -2910,19 +2910,19 @@
     "largest_abs": 4.486710377311233,
     "mean": 0.10701881497175023
    },
-   "s1x on r12 (K10; T3k10/r12)": {
+   "first file: s1x on r12 (K10; T3k10/r12)": {
     "mean": 22.070630090811427,
     "seed_sd": 0.7857677341524578,
     "ahead": 10,
     "seeds": 10
    },
-   "s1x on r21 (K10; T3k10/r21)": {
+   "first file: s1x on r21 (K10; T3k10/r21)": {
     "mean": 24.537002778173537,
     "seed_sd": 0.8497554556052073,
     "ahead": 10,
     "seeds": 10
    },
-   "t3_factor_xko on T3/Gata4->Mab21l2 (K2a)": {
+   "first file: t3_factor_xko on T3/Gata4->Mab21l2 (K2a)": {
     "mean": 0.08429691117472657,
     "seed_sd": 0.4690720345284867,
     "ahead": 5,
