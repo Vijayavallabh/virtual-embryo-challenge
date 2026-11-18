@@ -2,6 +2,13 @@
 
 ## Current Objective
 
+- **State at 2026-11-18, 21:46 UTC (newest).** Decision log 2026-11-18 (w). All of today's rows are read (H25, E47a,
+  E47b, N53, K18, T60); nothing runs on the DGX. Waiting for the captain: the embryo's last file (entry (v); the
+  bullet below lists what follows his answer). In review: the method summary's section on the departures
+  (wf_e4e3dd12-c83; branch `campaign/method-report-departures-fix` when done): read its final check, apply the
+  lesser points, merge, and complete its marked line when the captain has ruled on the embryo. Beside the rule's
+  "no question" on T3, entry (w) gives the captain the four practice cells of try K18 (the barred form's mean is
+  higher, 60.2 against 57.8, with one failing cell); the swap is his to order and the advice stays with the rule.
 - **State at 2026-11-18, 20:56 UTC (newest).** Decision log 2026-11-18 (q) to (v). The captain holds the second
   uploads and asked for a week of research. Read so far: H25, K18, E47a, E47b, N53 (rows of those names; results
   under `experiments/harness/results/h25_heart_forms`, `e47_floor_exact`, `n53_floor_proximity` and

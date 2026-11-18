@@ -3,6 +3,14 @@
 ## Current State
 
 **Last Updated:** 2026-11-18
+**2026-11-18, 21:46 UTC: every row registered today is read; the embryo question waits for the captain; the method
+report's section on the departures is being drafted** (`docs/PLAN.md` decision log 2026-11-18 (w)). Try T60 (the T1
+reachability read) by its fixed statements: "a new direction has room" reads "library 3 only", so nothing opens and
+nothing closes; the best size of the entry's direction reaches a quarter to two fifths of a perfect one-day shift's
+gain, and nothing the data rules allow is shown to reach the rest. Tries: T1 300, embryo 75, heart 41, T3 51.
+Running: wf_e4e3dd12-c83 (the section "Departures from the precommitted procedure from the first official uploads
+on" for `METHOD_SUMMARY.md`: a writer, three reviewers, a fixer, a final check; it leaves one marked line for the
+captain's embryo choice).
 **2026-11-18, 20:56 UTC: the first wave of the research week is read; one question waits for the captain (the
 embryo's last file); one read still runs** (`docs/PLAN.md` decision log 2026-11-18 (t) to (v)). Read by their fixed
 rules: H25 (the ruled heart form has a copy's shape skills; halving is under the bar; nothing follows), K18 (no
