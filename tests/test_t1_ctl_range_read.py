@@ -34,6 +34,7 @@ P = {k: f"{BASE}_p{k}" for k in (2, 3, 4, 5)}
 XB = {k: f"{BASE}_x{k}b2" for k in (3, 4, 5)}
 ARMS = ("b0", BASE, *X.values(), *P.values(), *XB.values())
 PL = {"CM": "pl-CM", "Endocardium": "pl-Endocardium"}  # a placebo record (group -> sha256)
+FENG = {"CM": "feng-CM", "Endocardium": "feng-Endocardium"}  # Feng's record
 
 
 @pytest.fixture
@@ -299,7 +300,7 @@ SCORE = {"b0": 50.0, BASE: 53.0, X[2]: 53.6, X[3]: 54.4, X[4]: 55.0, X[5]: 55.3,
 
 
 def _task(world, scores=None, per_seed=None, seeds=range(10), commit="c" * 40, clean=True, fractions=None,
-          thinning=None, placebo=None, identical=(), anchor_failures=None, truth=None, drop=()):
+          thinning=None, placebo=None, identical=(), anchor_failures=None, truth=None, drop=(), idle=()):
     """scores: arm -> mean score (over SCORE); per_seed: arm -> ten values added seed by seed; identical: arms that
     score exactly as their twin on every seed."""
     sc = {**SCORE, **(scores or {})}
@@ -312,6 +313,8 @@ def _task(world, scores=None, per_seed=None, seeds=range(10), commit="c" * 40, c
             arms[a] = _arm(v + 0.01 * s + (per_seed or {}).get(a, [0.0] * 10)[i])
         for a in identical:
             arms[a] = dict(arms[{**{P[k]: X[k] for k in P}, **{XB[k]: X[k] for k in XB}}[a]])
+        for a in idle:  # a placebo arm left at p2's fraction
+            arms[a] = dict(arms[P[2]])
         rows.append({"seed": s, "floor": 50.0, "arms": arms})
     fr = {BASE: 0.2, **{X[k]: 0.2 * k for k in X}, **{P[k]: 0.2 * k for k in P},
           **{XB[k]: [0.2 * k, (2 - k) * 0.2] for k in XB}}
@@ -319,6 +322,7 @@ def _task(world, scores=None, per_seed=None, seeds=range(10), commit="c" * 40, c
            "truth": truth or TRUTH[world], "truth_rows": 3431, "truth_contamination": 13, "seeds": list(seeds),
            "fraction": 0.2, "fractions": fractions or fr, "rows": rows, "thinning": None,
            "placebo_sha256": placebo if placebo is not None else {a: dict(PL) for a in P.values()},
+           "feng_sha256": dict(FENG),
            "applied_size": {a: {"fraction": fr[a], "feng": {"CM": {"mean_abs_logf": 0.1, "sum_sq_logf": 2.0}},
                                 "placebo": {"CM": {"mean_abs_logf": 0.1, "sum_sq_logf": 2.1}}} for a in P.values()},
            "stamp": {"commit": commit, "tree_clean": clean, "utc": "x", "inputs": {}}}
@@ -378,12 +382,18 @@ def _text(tmp_path):
 
 
 NEEDS = "the gain beyond twice the step needs Feng's own genes"
+ONE = "one placebo permutation, try T45's first"
+NEEDS_OUT = f"{NEEDS} ({ONE})"
+PLACEBO_TOO = "a placebo gains as well; Feng's direction more"
+NO_GAIN = "no gain beyond twice the step to explain"
 
 
 def test_the_gain_needs_fengs_own_genes_and_the_quantities(cr, tmp_path):
     r = _read(cr, tmp_path)
     assert r["valid"], r["validity"]["reasons"]
-    assert r["outcome"] == NEEDS and r["statement_3"]["statement"] == NEEDS
+    assert r["outcome"] == NEEDS_OUT and r["statement_3"]["statement"] == NEEDS_OUT
+    assert r["statement_3"]["kind"] == NEEDS and r["statement_3"]["r_not_ahead"] == []
+    assert r["statement_3"]["p_ahead"] == []
     assert r["statement_3"]["readings"] == {f"{k} S_{m}": "ahead" for k in ("pooled", "whole", "lib3") for m in (3, 4)}
     q = r["quantities"]["ref50"]
     for k, (rk, pk, vk) in {3: (0.8, 0.1, 0.1), 4: (1.4, 0.2, 0.2), 5: (1.7, 0.2, 0.3)}.items():
@@ -412,7 +422,7 @@ def test_not_shown_names_each_of_the_six_that_is_level_or_behind(cr, tmp_path, w
     over = {world: {"scores": {P[m]: SCORE[P[2]] + gain}}}
     r = _read(cr, tmp_path, over=over)
     assert r["valid"], r["validity"]["reasons"]
-    assert r["outcome"] == f"not shown ({world} S_{m} {label})"
+    assert r["outcome"] == f"not shown ({ONE}; {world} S_{m} {label})"
     assert r["statement_3"]["not_ahead"] == {f"{world} S_{m}": label}
     assert sum(v == "ahead" for v in r["statement_3"]["readings"].values()) == 5
 
@@ -420,14 +430,16 @@ def test_not_shown_names_each_of_the_six_that_is_level_or_behind(cr, tmp_path, w
 def test_not_shown_names_every_reading_not_ahead(cr, tmp_path):
     level = {"scores": {P[3]: SCORE[P[2]] + 0.8, P[4]: SCORE[P[2]] + 1.4}}
     r = _read(cr, tmp_path, over={"pooled": level, "lib3": level})
-    assert r["outcome"] == "not shown (pooled S_3 level, pooled S_4 level, lib3 S_3 level, lib3 S_4 level)"
+    assert r["outcome"] == f"not shown ({ONE}; pooled S_3 level, pooled S_4 level, lib3 S_3 level, lib3 S_4 level)"
 
 
 def test_seven_seeds_ahead_is_level(cr, tmp_path):
-    per = [0.0] * 7 + [-2.0] * 3  # x3 falls behind its placebo increment on three seeds
-    r = _read(cr, tmp_path, over={"whole": {"per_seed": {X[3]: per}}})
+    per = [0.0] * 7 + [1.0] * 3  # the placebo's increment overtakes x3's on three seeds; R_3 stays ahead
+    r = _read(cr, tmp_path, over={"whole": {"per_seed": {P[3]: per}}})
     assert r["quantities"]["whole"]["3"]["S"]["seeds_ahead"] == 7
-    assert r["outcome"] == "not shown (whole S_3 level)"
+    assert r["quantities"]["whole"]["3"]["S"]["mean"] == pytest.approx(0.4)
+    assert r["quantities"]["whole"]["3"]["R"]["label"] == "ahead"
+    assert r["outcome"] == f"not shown ({ONE}; whole S_3 level)"
 
 
 def test_statement_3_reads_nothing_of_s_5_the_other_worlds_or_v_and_n(cr, tmp_path):
@@ -436,22 +448,88 @@ def test_statement_3_reads_nothing_of_s_5_the_other_worlds_or_v_and_n(cr, tmp_pa
             "pooled": {"scores": {P[5]: SCORE[P[2]] + 1.7, XB[3]: SCORE[X[3]] + 0.5}}}
     r = _read(cr, tmp_path, over=over)
     assert r["valid"], r["validity"]["reasons"]
-    assert r["outcome"] == NEEDS
+    assert r["outcome"] == NEEDS_OUT
     assert r["quantities"]["pooled"]["5"]["S"]["label"] == "level"
     assert r["quantities"]["lib2"]["3"]["S"]["label"] == "level"
     assert r["quantities"]["pooled"]["3"]["N"]["label"] == "behind"
 
 
-def test_negative_r_with_positive_s_is_still_read_as_the_rule_says(cr, tmp_path):
-    """Where the step has turned (R_k negative) and the placebo falls faster, S_k is ahead; the limit says what it
-    means and the text repeats it."""
-    turned = {"scores": {X[3]: SCORE[X[2]] - 0.4, X[4]: SCORE[X[2]] - 0.5, P[3]: SCORE[P[2]] - 1.4,
-                         P[4]: SCORE[P[2]] - 1.5}}
-    r = _read(cr, tmp_path, over={k: turned for k in ("pooled", "whole", "lib3")})
-    assert r["outcome"] == NEEDS
-    assert r["quantities"]["whole"]["3"]["R"]["label"] == "behind"
+def _incs(r3, p3, r4, p4):
+    """Scores giving R_3, P_3, R_4, P_4 exactly (over x2 and p2) on every seed."""
+    return {"scores": {X[3]: SCORE[X[2]] + r3, X[4]: SCORE[X[2]] + r4, P[3]: SCORE[P[2]] + p3,
+                       P[4]: SCORE[P[2]] + p4}}
+
+
+@pytest.mark.parametrize("r3,p3,r4,p4,r_label", [
+    (0.0, -0.4, 0.0, -0.8, "level"),  # the reviewer's case 1: the step level, the placebo loses
+    (-0.6, -1.5, -1.2, -2.5, "behind"),  # case 2: the step has turned, the placebo falls faster
+])
+def test_s_ahead_without_a_step_gain_is_no_gain_to_explain(cr, tmp_path, r3, p3, r4, p4, r_label):
+    """S_k ahead with R_k level or behind is the expected dull result (a random direction of this size loses); it is
+    never read as a gain that needs Feng's genes."""
+    r = _read(cr, tmp_path, over={k: _incs(r3, p3, r4, p4) for k in ("pooled", "whole", "lib3")})
+    assert r["valid"], r["validity"]["reasons"]
+    s3 = r["statement_3"]
+    assert all(v == "ahead" for v in s3["readings"].values())  # S_3 and S_4 ahead in all six, as the brief's bar reads
+    assert s3["kind"] == NO_GAIN and NEEDS not in r["outcome"]
+    assert s3["r_not_ahead"] == [f"{k} R_{m}" for k in ("pooled", "whole", "lib3") for m in (3, 4)]
+    assert r["outcome"].startswith(f"{NO_GAIN} (pooled R_3 {r_label} {r3:+.2f} beside P_3 behind {p3:+.2f}, S_3 ahead: "
+                                   "the placebo loses more; ")
+    assert r["outcome"].count("the placebo loses more") == 6
     assert "Where R_k is negative (the step has turned) a positive S_k only says the placebo falls faster." \
         in _text(tmp_path)
+
+
+def test_no_gain_names_only_the_readings_where_the_step_does_not_gain(cr, tmp_path):
+    over = {"pooled": _incs(0.8, 0.1, 1.4, 0.2), "whole": _incs(0.8, 0.1, 0.1, -0.5), "lib3": _incs(0.8, 0.1, 1.4, 0.2)}
+    r = _read(cr, tmp_path, over=over)
+    assert r["outcome"] == (f"{NO_GAIN} (whole R_4 level +0.10 beside P_4 behind -0.50, S_4 ahead: "
+                            "the placebo loses more)")
+    over["whole"] = _incs(0.8, 0.1, 0.2, 0.1)  # R_4 level and S_4 level: no 'loses more'
+    r = _read(cr, tmp_path / "b", over=over)
+    assert r["outcome"] == f"{NO_GAIN} (whole R_4 level +0.20 beside P_4 level +0.10)"
+
+
+def test_a_placebo_that_gains_as_well_is_named_with_its_means(cr, tmp_path):
+    """The reviewer's case: R_3 +1.4 and P_3 +1.0, R_4 +2.0 and P_4 +1.5: S ahead, but most of the gain also comes
+    with the placebo, so the outcome is not 'needs Feng's own genes'."""
+    r = _read(cr, tmp_path, over={k: _incs(1.4, 1.0, 2.0, 1.5) for k in ("pooled", "whole", "lib3")})
+    s3 = r["statement_3"]
+    assert all(v == "ahead" for v in s3["readings"].values())
+    assert s3["kind"] == PLACEBO_TOO and NEEDS not in r["outcome"]
+    assert r["outcome"].startswith(f"{PLACEBO_TOO} ({ONE}; placebo ahead: pooled R_3 ahead +1.40 beside P_3 ahead "
+                                   "+1.00; pooled R_4 ahead +2.00 beside P_4 ahead +1.50; whole R_3")
+    assert len(s3["p_ahead"]) == 6
+    # one P_k ahead in one world is enough to split
+    r = _read(cr, tmp_path / "b", over={"lib3": _incs(1.4, 0.5, 1.4, 0.2)})
+    assert r["outcome"] == f"{PLACEBO_TOO} ({ONE}; placebo ahead: lib3 R_3 ahead +1.40 beside P_3 ahead +0.50)"
+
+
+def test_needs_fengs_genes_with_a_placebo_that_loses_and_a_step_that_gains(cr, tmp_path):
+    r = _read(cr, tmp_path, over={k: _incs(0.8, -0.5, 1.4, -0.9) for k in ("pooled", "whole", "lib3")})
+    assert r["outcome"] == NEEDS_OUT and r["statement_3"]["kind"] == NEEDS
+    assert r["quantities"]["whole"]["4"]["P"]["label"] == "behind"
+
+
+def test_statement_3_outcomes_directly(cr):
+    """statement_3 on label tables alone: each of the four outcomes, with the precedence gate, split, not shown."""
+    def q(r, p, s, rm=1.0, pm_=0.0):
+        return {"R": {"label": r, "mean": rm}, "P": {"label": p, "mean": pm_}, "S": {"label": s, "mean": rm - pm_}}
+
+    def table(**over):
+        return {k: {m: over.get(f"{k}{m}", q("ahead", "level", "ahead")) for m in (3, 4, 5)}
+                for k in ("pooled", "whole", "lib3", "lib2", "ref67", "ref50")}
+
+    assert cr.statement_3(table())["kind"] == NEEDS
+    assert cr.statement_3(table(lib25=q("behind", "ahead", "behind"), pooled5=q("level", "level", "level")))["kind"] \
+        == NEEDS  # S_5, R_5 and the other worlds read nothing
+    assert cr.statement_3(table(whole3=q("ahead", "ahead", "ahead")))["kind"] == PLACEBO_TOO
+    assert cr.statement_3(table(whole3=q("ahead", "ahead", "level")))["kind"] == "not shown"
+    assert cr.statement_3(table(whole3=q("ahead", "level", "level")))["statement"] == \
+        f"not shown ({ONE}; whole S_3 level)"
+    # the gate comes first: a level R_k gives no gain to explain whatever S_k and P_k read
+    assert cr.statement_3(table(lib34=q("level", "behind", "ahead", 0.0, -1.0), whole3=q("ahead", "ahead", "level"))
+                          )["kind"] == NO_GAIN
 
 
 def test_the_limits_choices_statements_and_reported_numbers_are_in_the_text(cr, tmp_path):
@@ -496,6 +574,19 @@ VOIDS = [
      "pooled: placebo or there-and-back arms score exactly as their twin on every seed: ['m1_r_gmom_p3']"),
     ({"ref50": {"identical": (XB[4],)}}, None,
      "ref50: placebo or there-and-back arms score exactly as their twin on every seed: ['m1_r_gmom_x4b2']"),
+    # a placebo arm left at p2's fraction
+    ({"whole": {"idle": (P[4],)}}, None,
+     "whole: placebo arms score exactly as m1_r_gmom_p2 on every seed (an idle fraction): ['m1_r_gmom_p4']"),
+    ({"lib2": {"idle": (P[3], P[5])}}, None, "(an idle fraction): ['m1_r_gmom_p3', 'm1_r_gmom_p5']"),
+    # the placebo record as each arm's build received it
+    ({"pooled": {"placebo": {**{a: dict(PL) for a in P.values()}, P[5]: {"differs between seeds": ["a", "b"]}}}},
+     None, "pooled: placebo arms ['m1_r_gmom_p5'] were built with different directions on different seeds"),
+    ({"lib3": {"placebo": {a: dict(FENG) for a in P.values()}}}, None,
+     "lib3: the placebo arms record Feng's direction in groups ['CM', 'Endocardium']"),
+    ({"whole": {"placebo": {a: {**PL, "CM": FENG["CM"]} for a in P.values()}}}, None,
+     "whole: the placebo arms record Feng's direction in groups ['CM']"),
+    ({"ref67": {"placebo": {a: {"CM": "pl-CM"} for a in P.values()}}}, None,
+     "ref67: the placebo's groups ['CM'] are not Feng's"),
 ]
 
 
@@ -524,6 +615,53 @@ def test_a_rescored_arm_within_tolerance_and_a_control_identical_on_nine_seeds_s
     r = _read(cr, tmp_path, over={"lib2": {"per_seed": {P[3]: per}}},
               shift={("t50", "lib2", X[4]): 1e-12, ("t45", "whole", P[2]): 1e-10})
     assert r["valid"], r["validity"]["reasons"]
+
+
+@pytest.mark.parametrize("arm,twin", [(P[3], X[3]), (XB[5], X[5]), (P[4], P[2])])
+def test_a_twin_equal_on_nine_seeds_stays_valid_and_on_all_ten_voids(cr, tmp_path, arm, twin):
+    """The arm equals its twin exactly on nine seeds and differs on the tenth: valid; on all ten: void."""
+    nine = {"scores": {arm: SCORE[twin]}, "per_seed": {arm: [0.0] * 9 + [0.5]}}
+    r = _read(cr, tmp_path, over={"whole": nine})
+    rows = [row for row in json.loads((tmp_path / "out" / "tasks" / "whole.json").read_text())["rows"]]
+    assert sum(row["arms"][arm]["score"] == row["arms"][twin]["score"] for row in rows) == 9
+    assert r["valid"], r["validity"]["reasons"]
+    r = _read(cr, tmp_path / "b", over={"whole": {"scores": {arm: SCORE[twin]}}})
+    assert not r["valid"]
+    assert any(x.startswith("whole: placebo") and arm in x for x in r["validity"]["reasons"]), r["validity"]["reasons"]
+
+
+def test_the_placebo_record_is_what_each_placebo_build_received_per_seed(cr, monkeypatch):
+    """seed_rows hashes, per seed, the directions object each placebo arm's build received (spied on
+    gmom_combo.m1_r_arms), and perm_read.placebo_record folds them: the placebo's sha256, never Feng's."""
+    calls, _ = _spy(cr, monkeypatch)
+    monkeypatch.setattr(cr.harness, "_b0_t1", lambda damping: (lambda ctx: None))
+    monkeypatch.setattr(cr.harness, "BuildContext", lambda **kw: _Ctx(kw["seed"]))
+    monkeypatch.setattr(cr.er, "score_arms", lambda board, truth, ref, s, anchors, preds: {
+        a: {"score": 0.0} for a in preds})
+    monkeypatch.setattr(cr.ob, "anchor_record", lambda anchors: None)
+    monkeypatch.setattr(cr.ls, "prediction_sha256", lambda p: "x")
+    monkeypatch.setattr(cr.ls, "sparsity", lambda p: 0.0)
+    rng = np.random.default_rng(3)
+    dirs = {"CM": rng.normal(size=3)}
+    placebo = {"CM": dirs["CM"][::-1].copy()}
+    floors = {s: SimpleNamespace(score=50.0, anchors=None) for s in (0, 1, 2)}
+    built = {}
+    cr.seed_rows(None, None, None, None, None, {}, floors, (0, 1, 2), dirs, placebo, {"V-CM": "CM"}, 0.2, ["a"], ["a"],
+                 built_sha=built)
+    assert set(built) == set(P.values())
+    got = cr.pm.placebo_record(built)
+    seen = {json.dumps(cr.pm.direction_sha(c["directions"]), sort_keys=True) for c in calls
+            if c["directions"] is not dirs}
+    assert all(got[a] == cr.pm.direction_sha(placebo) != cr.pm.direction_sha(dirs) for a in P.values())
+    assert seen == {json.dumps(got[P[3]], sort_keys=True)}
+    # a build that received different directions on one seed is recorded as differing, which the read voids
+    used = {}
+    cr.build_seed(_Ctx(1), lambda c: None, dirs, placebo, {"V-CM": "CM"}, 0.2, ["a"], ["a"], used=used)
+    assert all(used[a] is placebo for a in P.values())
+    built[P[4]].add(json.dumps(cr.pm.direction_sha(dirs), sort_keys=True))
+    assert cr.pm.DIFFERS in cr.pm.placebo_record(built)[P[4]]
+    assert "built_sha=built_sha" in inspect.getsource(cr.cmd_run)
+    assert "pm.placebo_record(built_sha)" in inspect.getsource(cr.cmd_run)
 
 
 def test_a_placebo_record_that_differs_from_try_t45s_voids(cr, tmp_path):

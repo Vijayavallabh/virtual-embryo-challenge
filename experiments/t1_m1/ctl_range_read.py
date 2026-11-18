@@ -26,7 +26,12 @@ quoted in the captain's question; it sets no step and is no evidence on the hidd
            m1_r_gmom_x3b2, _x4b2, _x5b2: try T45's there-and-back code (perm_read.there_and_back) from twice the step,
              fractions [0.6, -0.2], [0.8, -0.4] and [1.0, -0.6]: its first edit is the x3, x4 or x5 arm's (the same
              float, bit for bit), its second edit returns to twice the step on that code's own second stream [seed,
-             perm_read.SECOND_STREAM]; their expected counts are m1_r_gmom_x2's.
+             perm_read.SECOND_STREAM]; x_kb2 returns to x_2's expected counts approximately (exactly only for a depth
+             constant taken from expectations) and keeps x_k's zeroing (vec.core.apply_factors never refills a zero).
+         Each placebo arm's record is the sha256 of the directions its own build received, per seed (as try T45's
+         perm_read.placebo_record); a record that differs between seeds says so and voids.
+         Not run here: try T46's placebo (a random permutation on stream 46) and try T45's second permutation (q1,
+         q2); the placebo is try T45's first within-bin permutation only.
          Refused on an existing task file, unless the committed N22 passed, and unless experiments/harness/TRIES.md
          holds row T58.
   read   T58's reading of the six worlds' files (below, fixed here and repeated in the ledger row before the run).
@@ -45,18 +50,32 @@ tree; no file records an anchor failure; every arm for which a committed score e
   ref67   try T54's ref67.json: b0, m1_r_gmom, _x2 to _x5;
   ref50   try T54's ref50.json: the same;
 the thinned worlds pass try T54's checks (their p and stream, the depth ratio within 0.01 of p, no cell emptied, the
-rebuild check); the placebo's recorded direction sha256 per group is the same for its four arms and in the six files,
-and equals try T45's committed record (m1_r_gmom_p1 and m1_r_gmom_p2 in both of try T45's files); no placebo or
-there-and-back arm scores exactly as its twin (the step arm of its first fraction: p_k's x_k, x_kb2's x_k) on every seed
-of a world.
+rebuild check); each placebo arm records the directions its build received on every seed as one set (no "differs
+between seeds"), the four arms the same set, with Feng's groups and differing from Feng's in every group; that set is
+the same in the six files and equals try T45's committed record (m1_r_gmom_p1 and m1_r_gmom_p2 in both of try T45's
+files); no placebo or there-and-back arm scores exactly as its twin (the step arm of its first fraction: p_k's x_k,
+x_kb2's x_k) on every seed of a world; no placebo arm p_k (k = 3, 4, 5) scores exactly as p_2 on every seed of a world
+(an idle fraction). The prediction sha256 is not compared across pooled, lib3 and lib2: harness.task_board sizes the
+board from the truth, so the drawn cells differ between those worlds.
 The test is try T46's single-task test inside one world ("ahead": a mean paired gain above 0.3 with at least 8 of 10
 seeds ahead; "behind" the same reversed; otherwise "level"), each quantity paired by seed.
 Statement 1, per world and multiple k of 3, 4 and 5, each with its mean, seeds ahead, per-seed range and label: the
 step's increment R_k = x_k - x_2; the placebo's increment P_k = p_k - p_2; the specific increment S_k = R_k - P_k.
-Statement 2, per world and k, the same way: the redraw's part V_k = x_kb2 - x_2 and the net part N_k = x_k - x_kb2.
-Statement 3, the summary the use reads: "the gain beyond twice the step needs Feng's own genes" if S_3 and S_4 read
-ahead in pooled, in whole and in lib3 (six readings); otherwise "not shown", naming each of the six that is level or
-behind.
+Statement 2, per world and k, the same way: V_k = x_kb2 - x_2, x_k's extra zeroing and redraw at about twice the
+step's expected counts (a reading of the closed depth lever, never a reason to add redraw or sparsity), and N_k = x_k -
+x_kb2, the step's expected change at about x_k's zero pattern.
+Statement 3, the summary the use reads, on the six readings (k = 3 and 4 in pooled, whole and lib3), gated as try
+T45's statements are gated on its (h):
+  "no gain beyond twice the step to explain" if any of the six readings of R_k is level or behind, naming each such
+    reading with R_k's and P_k's means, and where S_k reads ahead there "the placebo loses more";
+  otherwise "the gain beyond twice the step needs Feng's own genes" if S_3 and S_4 read ahead in all six and P_3 and
+    P_4 are ahead in none;
+  "a placebo gains as well; Feng's direction more" if S_3 and S_4 read ahead in all six and P_k is ahead in any,
+    naming each such reading with R_k's and P_k's means;
+  otherwise "not shown", naming each of the six where S_k is level or behind.
+The three that read S_k carry "one placebo permutation, try T45's first" in the outcome itself. This is stricter than
+brief AM's statement 3 (S_3 and S_4 ahead alone): S_k ahead is the expected result when a random direction of this
+size loses at 3 to 5 times, whether or not the step gains, so S_k alone cannot show a gain that needs Feng's genes.
 Reported and read by nothing: every arm's mean per world; S_5; each quantity's parts on the two de terms and on mmd_u
 with the variogram; the placebo's applied size on the non-held genes beside Feng's, per fraction (try T45's record).
 
@@ -132,6 +151,7 @@ STATEMENT_MULTIPLES = (3, 4)  # statement 3's
 PLACEBO_AT = {2: pm.P2, **{k: f"{BASE}_p{k}" for k in MULTIPLES}}  # multiple -> placebo arm (p2 is try T45's)
 BACK_AT = {k: f"{BASE}_x{k}b2" for k in MULTIPLES}  # multiple of the first edit -> there-and-back arm
 TWIN = {**{PLACEBO_AT[k]: STEP_AT[k] for k in PLACEBO_AT}, **{BACK_AT[k]: STEP_AT[k] for k in BACK_AT}}
+IDLE_TWIN = {PLACEBO_AT[k]: PLACEBO_AT[2] for k in MULTIPLES}  # a placebo arm left at p2's fraction scores as p2
 ARMS = ("b0", BASE, *STEP_AT.values(), *PLACEBO_AT.values(), *BACK_AT.values())
 FRACTION, FRACTION_TOL, REPRO_TOL = sr.FRACTION, sr.FRACTION_TOL, sr.REPRO_TOL  # 0.2, 1e-12, 1e-9
 HOLD_AHEAD = 8
@@ -165,7 +185,11 @@ R_AT = {k: _increment(STEP_AT[k], X2) for k in MULTIPLES}  # R_k = x_k - x_2
 P_AT = {k: _increment(PLACEBO_AT[k], PLACEBO_AT[2]) for k in MULTIPLES}  # P_k = p_k - p_2
 
 NEEDS_GENES = "the gain beyond twice the step needs Feng's own genes"
+PLACEBO_TOO = "a placebo gains as well; Feng's direction more"
+NO_GAIN = "no gain beyond twice the step to explain"
 NOT_SHOWN = "not shown"
+ONE_PERMUTATION = "one placebo permutation, try T45's first"
+FALLS_FASTER = "the placebo loses more"
 LABEL_T58 = ("try T58, a labelled in-sample diagnostic, never an adoption result: M1 (with R1, R2 and g_mom's factors, "
              "the entry's form) with its Feng step at 1, 2, 3, 4 and 5 times, try T45's placebo direction at 2, 3, 4 "
              "and 5 times and try T45's there-and-back arms from 3, 4 and 5 times back to twice the step, on the "
@@ -182,15 +206,30 @@ LIMITS = (
     "Each difference is taken inside one world.",
     "A thinned reference is one draw and is not a deeper truth.",
     "Nothing here says how deep any hidden truth is, and no statement may be used with a figure for it.",
+    "x_kb2 returns to x_2's expected counts approximately (exactly only for a depth constant taken from expectations) "
+    "and keeps x_k's zeroing.",
+    "V_k reads x_k's extra zeroing and redraw at twice the step's expected counts; it is a reading of the closed depth "
+    "lever and never a reason to add redraw or sparsity; N_k compares x_k with an arm that shares its zeros, not with "
+    "x_2.",
+    "The six readings of statement 3 are two cuts (chamber, whole); pooled and lib3 share the reference, the builds "
+    "and part of the truth, and S_3 and S_4 share x_2 and p_2.",
+    "Try T46's placebo (random permutation on stream 46) is not run here; only try T45's first within-bin "
+    "permutation, and not its second (q1, q2).",
 )
 STATEMENTS = (
     "Statement 1, per world and multiple k of 3, 4 and 5, each paired by seed with its mean, seeds ahead, per-seed "
     "range and its label by try T46's single-task test: the step's increment R_k = x_k - x_2; the placebo's increment "
     "P_k = p_k - p_2; the specific increment S_k = R_k - P_k.",
-    "Statement 2, per world and k: the redraw's part V_k = x_kb2 - x_2 and the net part N_k = x_k - x_kb2, the same "
-    "way.",
-    f"Statement 3: '{NEEDS_GENES}' if S_3 and S_4 read ahead by try T46's test in pooled, in whole and in lib3 (six "
-    f"readings); otherwise '{NOT_SHOWN}', naming each of the six that is level or behind.",
+    "Statement 2, per world and k, the same way: V_k = x_kb2 - x_2, x_k's extra zeroing and redraw at about twice the "
+    "step's expected counts (a reading of the closed depth lever, never a reason to add redraw or sparsity), and N_k = "
+    "x_k - x_kb2, the step's expected change at about x_k's zero pattern.",
+    f"Statement 3, on the six readings (k = 3 and 4 in pooled, whole and lib3), gated as try T45's statements are on "
+    f"its (h): '{NO_GAIN}' if any of the six readings of R_k is level or behind, naming each with R_k's and P_k's "
+    f"means and, where S_k reads ahead there, '{FALLS_FASTER}'; otherwise '{NEEDS_GENES}' if S_3 and S_4 read ahead "
+    f"by try T46's test in all six and P_3 and P_4 in none; '{PLACEBO_TOO}' if S_3 and S_4 read ahead in all six "
+    f"and P_k is ahead in any, naming each such reading with R_k's and P_k's means; otherwise '{NOT_SHOWN}', naming "
+    f"each of the six where S_k is level or behind. The three that read S_k carry '{ONE_PERMUTATION}' in the "
+    "outcome.",
 )
 CHOICES = (
     "The there-and-back arms call perm_read.there_and_back with the fraction of twice the step (m1_r_gmom_x2's) and "
@@ -207,7 +246,13 @@ CHOICES = (
     "S_k is the paired per-seed difference (x_k - x_2) - (p_k - p_2), tested as try T45's (a) is (the increments as "
     "arms, perm_read._arm_difference, with try T50's comparison); R_k, P_k, V_k and N_k are try T50's comparison of "
     "the two arms.",
-    "Statement 3 names each of the six readings that is not ahead, with its label ('level' or 'behind').",
+    "Statement 3 names each of the six readings that is not ahead, with its label ('level' or 'behind'); the gate on "
+    "R_k and the split on P_k follow try T45's statements ((h) gates; (b) passing gives 'a placebo gains as well').",
+    "Each placebo arm's record is the direction sha256 of the object its own build received, collected per seed and "
+    "folded by perm_read.placebo_record; the read also voids a record equal to Feng's in any group (try T45's "
+    "condition).",
+    "A placebo arm p_k (k = 3, 4, 5) scoring exactly as p_2 on every seed of a world voids (an idle fraction); the "
+    "prediction sha256 is not compared across worlds, because the board's cell count follows each world's truth.",
     "The whole cut's truth is loaded as tries T44 and T45 load it (harness.filter_target when the task has a target "
     "filter, otherwise the released target on the panel); its file records truth 'whole'.",
     "The thinned worlds' checks are try T57's statement of try T54's (part_range_read._thinning_reasons).",
@@ -232,15 +277,18 @@ def arm_fractions(fraction: float) -> dict[str, float | list[float]]:
 
 
 def build_seed(ctx: harness.BuildContext, b0, directions: Mapping, placebo: Mapping, groups: Mapping, fraction: float,
-               held_m1: Sequence[str], held_factors: Sequence[str]) -> dict[str, Stage]:
+               held_m1: Sequence[str], held_factors: Sequence[str], used: dict | None = None) -> dict[str, Stage]:
     """One seed's arms: b0, m1_r_gmom and x2 to x5 as try T50 builds them (step_read.step_arms); the placebo arms as
     try T45 builds p2 (gmom_combo.m1_r_arms on the placebo directions) at each fraction; the there-and-back arms by try
-    T45's perm_read.there_and_back from twice the step with the multiplier k/2."""
+    T45's perm_read.there_and_back from twice the step with the multiplier k/2. `used`, when given, receives each
+    placebo arm's directions object as its build received it (as perm_read.perm_arms' "directions")."""
     preds = {"b0": b0(ctx), **sr.step_arms(ctx, directions, groups, fraction, held_m1, held_factors,
                                            multipliers=STEP_MULTIPLIERS)}
     fr = arm_fractions(fraction)
     for a in PLACEBO_AT.values():
         preds[a] = gc.m1_r_arms(ctx, placebo, groups, fr[a], held_m1, held_factors)[BASE]
+        if used is not None:
+            used[a] = placebo
     twice = fr[X2]
     for k, a in BACK_AT.items():
         preds[a] = pm.there_and_back(ctx, directions, groups, twice, held_m1, held_factors, multiplier=float(k) / 2.0)
@@ -294,9 +342,11 @@ def applied_sizes(directions: Mapping, placebo: Mapping, held: Sequence[str], ge
 
 def seed_rows(view, cboard, board, truth: Stage, ref_stage: Stage, inputs: Mapping[str, ad.AnnData], floors: Mapping,
               seeds: Sequence[int], directions: Mapping, placebo: Mapping, groups: Mapping, fraction: float,
-              held_m1: Sequence[str], preregistered: Sequence[str], label: str = "") -> list[dict]:
+              held_m1: Sequence[str], preregistered: Sequence[str], label: str = "",
+              built_sha: dict[str, set[str]] | None = None) -> list[dict]:
     """Per seed: the arms built from the world's inputs and scored against the world's truth with the world's reference
-    stage and that seed's anchors, recorded as tries T50 and T54 record them."""
+    stage and that seed's anchors, recorded as tries T50 and T54 record them. `built_sha`, when given, collects per
+    placebo arm the direction sha256 of what its build received on each seed (try T45's built_sha)."""
     b0 = harness._b0_t1(harness.B0_DAMPING)
     rows = []
     for s in seeds:
@@ -304,7 +354,11 @@ def seed_rows(view, cboard, board, truth: Stage, ref_stage: Stage, inputs: Mappi
         f = floors[s]
         ctx = harness.BuildContext(task=view, board=cboard, inputs=inputs, seed=harness.BUILD_SEED_OFFSET + s,
                                    derived={"t1_held_flat": preregistered})
-        preds = build_seed(ctx, b0, directions, placebo, groups, fraction, held_m1, preregistered)
+        used = {}
+        preds = build_seed(ctx, b0, directions, placebo, groups, fraction, held_m1, preregistered, used=used)
+        if built_sha is not None:
+            for a in PLACEBO_AT.values():
+                built_sha.setdefault(a, set()).add(json.dumps(pm.direction_sha(used[a]), sort_keys=True))
         arms = er.score_arms(board, truth, ref_stage, s, f.anchors, preds)
         rows.append({"seed": s, "floor": float(f.score), "anchors": ob.anchor_record(f.anchors), "arms": arms,
                      "sha256": {k: ls.prediction_sha256(p) for k, p in preds.items()},
@@ -357,11 +411,12 @@ def cmd_run(a) -> None:
     union = hygiene.load_union()
     held_m1 = gc.held_feng(union, preregistered)
     view, cboard = harness.TaskView.of(t), harness._candidate_board(board)
+    built_sha = {p: set() for p in PLACEBO_AT.values()}
     rows = seed_rows(view, cboard, board, truth, ref_stage, inputs, floors, seeds, directions, placebo, groups,
-                     fraction, held_m1, preregistered, label=a.world)
+                     fraction, held_m1, preregistered, label=a.world, built_sha=built_sha)
     res.update({"fraction": fraction, "fractions": arm_fractions(fraction), "multipliers": dict(STEP_MULTIPLIERS),
                 "second_stream": pm.SECOND_STREAM, "feng_sha256": pm.direction_sha(directions),
-                "placebo_sha256": {p: pm.direction_sha(placebo) for p in PLACEBO_AT.values()},
+                "placebo_sha256": pm.placebo_record(built_sha),
                 "applied_size": applied_sizes(directions, placebo, held_m1, list(pool.var_names), fraction),
                 "feng_stats_sha256": stats_sha, "external": ext, "rows": rows,
                 "stamp": gv.stamp(started, [*stamp_inputs, t1_scope.HELD_FLAT_GENES, ts.R1_CONFIG,
@@ -449,16 +504,31 @@ def validity(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[str
             reasons.append(f"{k}: the file records a thinning")
         rec = r.get("placebo_sha256") or {}
         recs = [rec.get(a) for a in PLACEBO_AT.values()]
-        if not all(isinstance(x, Mapping) and x for x in recs) or any(x != recs[0] for x in recs):
+        feng = r.get("feng_sha256") or {}
+        split = [a for a, x in zip(PLACEBO_AT.values(), recs, strict=True)
+                 if isinstance(x, Mapping) and pm.DIFFERS in x]
+        if split:
+            reasons.append(f"{k}: placebo arms {split} were built with different directions on different seeds")
+        elif not all(isinstance(x, Mapping) and x for x in recs) or any(x != recs[0] for x in recs):
             reasons.append(f"{k}: the placebo arms {list(PLACEBO_AT.values())} do not record one set of permuted "
                            "directions")
+        elif not feng or set(recs[0]) != set(feng):
+            reasons.append(f"{k}: the placebo's groups {sorted(recs[0])} are not Feng's {sorted(feng)}")
         else:
+            same_g = sorted(g for g in feng if recs[0][g] == feng[g])
+            if same_g:
+                reasons.append(f"{k}: the placebo arms record Feng's direction in groups {same_g}")
             placebos[k] = json.dumps(recs[0], sort_keys=True)
         if rows and not absent:
             same = [a for a, twin in TWIN.items()
                     if all(row["arms"][a]["score"] == row["arms"][twin]["score"] for row in rows)]
             if same:
                 reasons.append(f"{k}: placebo or there-and-back arms score exactly as their twin on every seed: {same}")
+            idle = [a for a, twin in IDLE_TWIN.items()
+                    if all(row["arms"][a]["score"] == row["arms"][twin]["score"] for row in rows)]
+            if idle:
+                reasons.append(f"{k}: placebo arms score exactly as {PLACEBO_AT[2]} on every seed (an idle fraction): "
+                               f"{idle}")
     if len(set(placebos.values())) > 1:
         reasons.append(f"the placebo's recorded sha256 differ between the worlds' files {sorted(placebos)}")
     for cut, t45 in t45_placebo_records(committed).items():
@@ -506,13 +576,45 @@ def world_quantities(r: Mapping, world: str) -> dict:
     return out
 
 
+def _beside(k: str, m: int, q: Mapping) -> str:
+    return f"{k} R_{m} {q['R']['label']} {q['R']['mean']:+.2f} beside P_{m} {q['P']['label']} {q['P']['mean']:+.2f}"
+
+
 def statement_3(quantities: Mapping[str, Mapping[int, Mapping]]) -> dict:
-    """NEEDS_GENES if S_3 and S_4 are ahead by try T46's test in pooled, whole and lib3; otherwise NOT_SHOWN naming
-    each of the six readings that is level or behind, with its label."""
-    readings = {f"{k} S_{m}": quantities[k][m]["S"]["label"] for k in STATEMENT_WORLDS for m in STATEMENT_MULTIPLES}
-    off = {n: lab for n, lab in readings.items() if lab != "ahead"}
-    said = NEEDS_GENES if not off else f"{NOT_SHOWN} ({', '.join(f'{n} {lab}' for n, lab in off.items())})"
-    return {"statement": said, "readings": readings, "not_ahead": off}
+    """Statement 3 on the six readings (k = 3 and 4 in pooled, whole and lib3), gated on R_k as try T45's statements are
+    on its (h):
+      NO_GAIN if any reading of R_k is not ahead, naming each with R_k's and P_k's means (and FALLS_FASTER where S_k
+        reads ahead there);
+      otherwise NEEDS_GENES if every S_k reads ahead and no P_k does;
+      PLACEBO_TOO if every S_k reads ahead and some P_k does, naming those with R_k's and P_k's means;
+      otherwise NOT_SHOWN, naming each S_k reading that is level or behind.
+    The three that read S_k carry ONE_PERMUTATION in the outcome."""
+    six = [(k, m) for k in STATEMENT_WORLDS for m in STATEMENT_MULTIPLES]
+    lab = {x: {q: quantities[x[0]][x[1]][q]["label"] for q in ("R", "P", "S")} for x in six}
+    readings = {f"{k} S_{m}": lab[(k, m)]["S"] for k, m in six}
+    r_readings = {f"{k} R_{m}": lab[(k, m)]["R"] for k, m in six}
+    p_readings = {f"{k} P_{m}": lab[(k, m)]["P"] for k, m in six}
+    off = {f"{k} S_{m}": lab[(k, m)]["S"] for k, m in six if lab[(k, m)]["S"] != "ahead"}
+    no_gain = [(k, m) for k, m in six if lab[(k, m)]["R"] != "ahead"]
+    placebo_up = [(k, m) for k, m in six if lab[(k, m)]["P"] == "ahead"]
+    if no_gain:
+        kind = NO_GAIN
+        said = f"{NO_GAIN} (" + "; ".join(
+            _beside(k, m, quantities[k][m]) + (f", S_{m} ahead: {FALLS_FASTER}" if lab[(k, m)]["S"] == "ahead" else "")
+            for k, m in no_gain) + ")"
+    elif not off and not placebo_up:
+        kind = NEEDS_GENES
+        said = f"{NEEDS_GENES} ({ONE_PERMUTATION})"
+    elif not off:
+        kind = PLACEBO_TOO
+        said = f"{PLACEBO_TOO} ({ONE_PERMUTATION}; placebo ahead: " + "; ".join(
+            _beside(k, m, quantities[k][m]) for k, m in placebo_up) + ")"
+    else:
+        kind = NOT_SHOWN
+        said = f"{NOT_SHOWN} ({ONE_PERMUTATION}; " + ", ".join(f"{n} {v}" for n, v in off.items()) + ")"
+    return {"statement": said, "kind": kind, "readings": readings, "r_readings": r_readings,
+            "p_readings": p_readings, "not_ahead": off, "r_not_ahead": [f"{k} R_{m}" for k, m in no_gain],
+            "p_ahead": [f"{k} P_{m}" for k, m in placebo_up]}
 
 
 def t58_reading(results: Mapping[str, Mapping], committed: Mapping[str, Mapping[str, Mapping]]) -> dict:
@@ -567,7 +669,9 @@ def t58_text(res: Mapping) -> str:
     if r["valid"]:
         s3 = r["statement_3"]
         lines.append(f"Statement 3 (the summary the use reads): {s3['statement']}; the six readings: "
-                     + ", ".join(f"{n} {lab}" for n, lab in s3["readings"].items()))
+                     + ", ".join(f"{n} {lab}" for n, lab in s3["readings"].items())
+                     + "; beside them (the gate and the split): "
+                     + ", ".join(f"{n} {lab}" for n, lab in {**s3["r_readings"], **s3["p_readings"]}.items()))
         lines.append("Statement 1 (R_k = x_k - x_2, P_k = p_k - p_2, S_k = R_k - P_k; S_5 reported and read by "
                      "nothing) and statement 2 (V_k = x_kb2 - x_2, N_k = x_k - x_kb2), per world and k, by try T46's "
                      "test inside the world:")
