@@ -223,8 +223,12 @@ def test_the_trend_record_holds_no_cell_number(bt, heart_env, tmp_path, capsys):
 
 
 def test_build_all_puts_trend_in_both_heart_lines():
-    """The captain's ruling of 2026-11-13 (docs/PLAN.md decision log (w)): both heart files are b0_trend."""
+    """The captain's ruling of 2026-11-13 (docs/PLAN.md decision log (w)): both heart files are b0_trend. Since the
+    amendment of 2026-11-18 (docs/S2_RULES.md, last section) the script has a third heart line, the set heart2: the
+    second upload chosen after the first scores, which takes no trend (the copy's expression, scaled evenly)."""
     text = (BUILDS / "build_all.sh").read_text()
     assert "build_test.py heart --entry s1 --trend --out $O/builds/T2heart_s1.h5ad" in text
     assert "build_test.py heart --entry s2_trim --trend --out $O/builds/T2heart_s2.h5ad" in text
-    assert text.count("build_test.py heart ") == 2
+    assert ("build_test.py heart --entry s1 --expression copy --z-mode raw --out $O/builds/T2heart_s2iso.h5ad"
+            in text)
+    assert text.count("build_test.py heart ") == 3
