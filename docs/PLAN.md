@@ -4842,7 +4842,7 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     three, behind at four times in all three library-2 worlds (-0.31, -0.31, -0.37). The form that keeps each group's
     own part and only raises the coefficient on the common part (`dc`) is ahead in all twelve cells at one and two
     times (+0.30 to +0.70, every seed) and behind at four times in the two worlds where the truth is deeper than the
-    reference (-0.56 and -0.80), level or behind at three times there.
+    reference (-0.56 and -0.80), level at three times there.
   - **What the pre-set use gives.** A form goes to the captain only if its statement 1 reads ahead in every cell read;
     any other reading closes the family with no request, as part of the question of the step's size. Neither form
     passes, so nothing is requested and the builder option of `campaign/t1-w` stays on its branch, unused. This
