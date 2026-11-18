@@ -1,6 +1,7 @@
 """experiments/harness/n53_floor_proximity.py (row N53 of experiments/harness/TRIES.md), on synthetic stages only: the
-arms are the harness's own builders, the first upload's geometry is never built, the reference draws are disjoint, the
-rule reads as its row says, and nothing written or printed is a cell count."""
+arms are the harness's own builders, the first upload's geometry is never built, the noise floor is a copy of E7.5 at
+the arms' count independent of the reference draw, the rule reads as its row says, and nothing written or printed is a
+cell count."""
 
 from __future__ import annotations
 
@@ -73,6 +74,19 @@ def test_the_reference_draws_are_disjoint_and_seeded(n53):
     assert n53.SEEDS == tuple(range(1_000_001, 1_000_011)) and n53.BOARD == "T2:embryo:val_interp"
 
 
+def test_the_noise_draw_is_a_copy_at_the_arms_count_independent_of_draw_a(n53):
+    """Draw B has the arms' count, no repeats while the pool suffices, its own stream, and shares about REF_FRAC of
+    its cells with draw A, as a uniform sample of the pool does (fgw_shape0x's overlap without the fallback)."""
+    b = n53.copy_draw(413, 300, 1_000_001)
+    assert len(b) == 300 and len(np.unique(b)) == 300
+    assert np.array_equal(b, n53.copy_draw(413, 300, 1_000_001))
+    assert not np.array_equal(b, n53.copy_draw(413, 300, 1_000_002))
+    assert len(n53.copy_draw(413, 500, 1)) == 500  # beyond the pool: every cell once, the rest repeat
+    share = [np.isin(n53.copy_draw(4000, 3000, s), n53.reference_draws(4000, s)[0]).mean() for s in range(1, 41)]
+    assert np.mean(share) == pytest.approx(n53.REF_FRAC, abs=0.01)
+    assert n53.COPY_STREAM != n53.REF_STREAM
+
+
 def test_the_first_uploads_geometry_is_not_an_arm(n53):
     assert n53.NOT_AN_ARM == "fgw" and "fgw" not in n53.ARMS
     assert n53.ARMS == ("fgw_shape0", "fgw_shape0x", "fgw_aligned")
@@ -106,7 +120,8 @@ def test_the_shape_pair_is_the_scorers_values(n53):
 def _rows(n53, rng, shift=None):
     rows = []
     for s in n53.SEEDS:
-        r = {"seed": s, "noise": {"occupancy_dice": rng.normal(0.6, 0.02), "d2_shape": rng.normal(0.05, 0.01)}}
+        r = {"seed": s, "noise": {"occupancy_dice": rng.normal(0.6, 0.02), "d2_shape": rng.normal(0.05, 0.01)},
+             "noise_disjoint": {"occupancy_dice": rng.normal(0.6, 0.02), "d2_shape": rng.normal(0.05, 0.01)}}
         for arm in n53.ARMS:
             d = (shift or {}).get(arm, {})
             r[arm] = {"occupancy_dice": rng.normal(0.6, 0.02) + d.get("occupancy_dice", 0.0),
@@ -116,21 +131,37 @@ def _rows(n53, rng, shift=None):
 
 
 def test_the_rule_on_pure_noise_and_on_shifted_arms(n53):
-    """Pure noise: arms drawn like the noise floor are called in the floor's form (their mean sits about 0.45 noise SD
-    from the floor's, the bound is 2 SD). An arm shifted by 4 SD on one metric is not."""
+    """Pure noise: arms drawn like the noise floor are called in the floor's form unless the paired t of ten seeds
+    passes 2 on a metric (about 7.6 percent per metric, so about 85 percent in form on both). An arm whose seeds sit
+    1.4 single-draw noise SDs off on one metric, each seed beside its noise draw, is out (the first version's 2-SD bar
+    would have called it in); one 4 SDs off is out on both bars."""
     rng = np.random.default_rng(4)
-    inside = [all(v["in_form"] for v in n53.summary(_rows(n53, rng))["in_form"].values()) for _ in range(200)]
-    assert np.mean(inside) > 0.9
-    s = n53.summary(_rows(n53, rng, {"fgw_shape0": {"occupancy_dice": -0.08}, "fgw_aligned": {"d2_shape": 0.04}}))
-    assert not s["in_form"]["fgw_shape0"]["in_form"] and not s["in_form"]["fgw_shape0"]["occupancy_dice"]["inside"]
-    assert s["in_form"]["fgw_shape0"]["d2_shape"]["inside"]
-    assert not s["in_form"]["fgw_aligned"]["in_form"] and s["in_form"]["fgw_shape0x"]["in_form"]
-    # the boundary: exactly two noise SDs away is inside
-    noise = {"occupancy_dice": {"mean": 0.5, "sd": 0.1}, "d2_shape": {"mean": 0.1, "sd": 0.05}}
-    edge = {"occupancy_dice": {"mean": 0.3, "sd": 0.0}, "d2_shape": {"mean": 0.2, "sd": 0.0}}
-    assert n53.in_form(edge, noise)["in_form"]
-    edge["d2_shape"]["mean"] = 0.2001
-    assert not n53.in_form(edge, noise)["in_form"]
+    inside = [[v["in_form"] for v in n53.summary(_rows(n53, rng))["in_form"].values()] for _ in range(300)]
+    assert 0.78 < np.mean(inside) < 0.92
+    sign = np.array([1.0, -1.0] * 5)
+    rows = _rows(n53, rng)
+    for r, x in zip(rows, sign, strict=True):
+        r["noise"] = {"occupancy_dice": 0.6 + 0.02 * x, "d2_shape": 0.05 + 0.01 * x}
+        r["fgw_shape0"] = {"occupancy_dice": 0.6 + 0.02 * x - 0.03 + 0.001 * x * x, "d2_shape": 0.05 + 0.01 * x}
+        r["fgw_aligned"] = {"occupancy_dice": 0.6 + 0.02 * x, "d2_shape": 0.05 + 0.01 * x + 0.042 + 0.001 * x}
+    s = n53.summary(rows)
+    r = s["in_form"]["fgw_shape0"]
+    assert not r["in_form"] and not r["occupancy_dice"]["inside"] and r["occupancy_dice"]["inside_wide_bar"]
+    assert r["d2_shape"]["inside"]
+    a = s["in_form"]["fgw_aligned"]
+    assert not a["in_form"] and not a["d2_shape"]["inside"] and not a["d2_shape"]["inside_wide_bar"]
+    assert set(s) == {"noise", "noise_disjoint", "arms", "in_form"}
+    # the boundary: a paired mean just inside two standard errors is inside, just beyond is out
+    d = np.array([0.01, -0.01] * 5)
+    edge = 2.0 * d.std(ddof=1) / np.sqrt(10)
+
+    def at(f):
+        return [{"noise": {"occupancy_dice": 0.5, "d2_shape": 0.1},
+                 "fgw_shape0x": {"occupancy_dice": 0.5 + f * edge + x, "d2_shape": 0.1 - f * edge + x}} for x in d]
+
+    assert n53.in_form(at(0.999), "fgw_shape0x")["in_form"]
+    out = n53.in_form(at(1.001), "fgw_shape0x")
+    assert not out["in_form"] and not out["occupancy_dice"]["inside"] and not out["d2_shape"]["inside"]
 
 
 def _numbers(text: str) -> set[int]:
@@ -155,7 +186,8 @@ def test_a_run_writes_aggregates_only_and_never_builds_fgw(n53, monkeypatch, tmp
     n53.main(["run", "--out", str(out), "--data", str(tmp_path)])
     rep = json.loads((out / "n53.json").read_text())
     assert set(rep["arms"]) == set(n53.ARMS) and set(rep["in_form"]) == set(n53.ARMS)
-    assert len(rep["rows"]) == 3 and all(set(r) == {"seed", "noise", *n53.ARMS} for r in rep["rows"])
+    assert len(rep["rows"]) == 3 and all(set(r) == {"seed", "noise", "noise_disjoint", *n53.ARMS} for r in rep["rows"])
+    assert rep["floor_exact_fallback"] is False  # a boolean only (300 of 413 cells: the unused cells suffice)
     secret = {*SIZES.values(), *LIMITS.values(), round(0.1 * SIZES["E7.5"]), LIMITS["max_cells"] // 2}
     for written in ((out / "n53.json").read_text(), (out / "n53.txt").read_text(), capsys.readouterr().out):
         assert not _numbers(written) & secret
