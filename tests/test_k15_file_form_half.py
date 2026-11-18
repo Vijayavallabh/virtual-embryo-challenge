@@ -3,7 +3,9 @@ file is opened, nothing is scored, and no prediction is compared with any target
 
 from __future__ import annotations
 
+import hashlib
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -28,6 +30,17 @@ import test_k10_s1_form as t10  # noqa: E402  (K10's synthetic replicate world)
 G = t9.G
 world = t10.world  # the module fixture: synthetic files in r12's and r21's roles
 SOURCE = T3 / "k15_file_form_half.py"
+REAL_PINS = dict(k15.K10_SHA256)  # try K10's committed files' sha256, before any test re-pins synthetic comparators
+PINS: dict[str, str] = {}
+
+
+@pytest.fixture(autouse=True)
+def _synthetic_pins(monkeypatch):
+    """Synthetic comparators are pinned by their own sha256 as _k10_dir writes them; the real pins are checked against
+    the committed files in test_k10s_committed_files_are_on_the_branch_and_pass_the_comparator_checks."""
+    PINS.clear()
+    PINS.update(REAL_PINS)
+    monkeypatch.setattr(k15, "K10_SHA256", PINS)
 
 
 @pytest.fixture(scope="module")
@@ -51,6 +64,9 @@ def test_the_fixed_constants_arms_and_folds():
     assert (k15.MIN_GAIN, k15.MIN_AHEAD, k15.FLOOR_MEAN) == (0.3, 8, -0.3)
     assert set(k15.TASKS) == {"r12", "r21"} and all(k15.TASKS[n] is k10.TASKS[n] for n in k15.TASKS)
     assert k15.SOURCE is k10.SOURCE and k15.RESULTS_K10 == T3 / "results" / "k10_s1_form" / "tasks"
+    assert k15.K10_SOURCE == "experiments/t3_decomp/k10_s1_form.py"
+    assert k15.K10_COMMIT == "69057bc64054ee8b6f3efce04062f0b728adb0c1"
+    assert k15.K10_ARMS == {"s1x", "s1x_res", "s1x_res_perm"}
     assert [c.name for c in k15.candidates()] == [harness.FLOOR, *k15.ARMS]
     assert all(c.applies(t) for c in k15.candidates()[1:] for t in k15.TASKS.values())
     assert not any(c.applies(t) for c in k15.candidates()[1:] for ts in harness.load_tasks().values() for t in ts)
@@ -62,6 +78,18 @@ def test_the_source_opens_no_file_beyond_the_tasks_inputs():
     for call in ("read_h5ad", "load_stage", "read_stage", "h5py", "np.load", "open(", "boards/", "runs/", "data/"):
         assert call not in src, call
     assert re.findall(r'"[^"]*\.h5ad"', src) == []
+
+
+def test_k10s_committed_files_are_on_the_branch_and_pass_the_comparator_checks():
+    """must_fix 1: try K10's committed task files are on this branch, byte for byte the pinned ones, and the
+    comparator checks accept them (only their provenance fields are read here, never a score)."""
+    assert k15.RESULTS_K10.is_dir()
+    for name in k15.TASKS:
+        p = k15.RESULTS_K10 / f"{name}.json"
+        assert hashlib.sha256(p.read_bytes()).hexdigest() == REAL_PINS[name]
+        r, why, rec = k15.k10_comparator(name, p)
+        assert why == [] and r is not None, why
+        assert rec == {"path": str(p), "sha256": REAL_PINS[name], "commit": k15.K10_COMMIT}
 
 
 # ----------------------------------------------------------------------------------------------- the factors
@@ -90,6 +118,32 @@ def test_the_control_permutes_within_k9s_deciles_with_its_seed_and_keeps_the_dis
     idx = harness.t3_decile_permutation(np.arange(n, dtype=np.float64), basis, k9.PERM_SEED).astype(int)
     assert np.array_equal(perm, half[idx])
     assert not np.array_equal(k15.permuted_half(half, basis, k9.PERM_SEED + 1), perm)
+
+
+def test_the_depth_summary_and_the_counts_spy():
+    totals = np.array([10.0, 20.0, 30.0, 50.0])
+    lab = np.array([0, 0, 2, 2])
+    d = k15.depth_summary(totals, lab, ["a", "b", "c"])
+    assert d == {"overall": 27.5, "per_label": {"a": 15.0, "c": 40.0}}
+
+    class T:
+        @staticmethod
+        def lognorm(C):
+            return np.asarray(C) * 2.0
+
+    t = T()
+    real = t.lognorm
+    with k15.counts_seen(t) as seen:
+        out = t.lognorm(np.array([[1, 2], [3, 4]]))
+    assert np.array_equal(out, [[2.0, 4.0], [6.0, 8.0]]) and t.lognorm is real
+    assert len(seen) == 1 and np.array_equal(seen[0], [3.0, 7.0])
+    fig = k15.depth_figures({"s1x": {"1": {"overall": 10.0, "per_label": {"a": 8.0, "b": 12.0}},
+                                     "2": {"overall": 12.0, "per_label": {"a": 10.0}}},
+                             "s1x_half": {"1": {"overall": 9.0, "per_label": {"a": 9.0, "b": 9.0}},
+                                          "2": {"overall": 13.0, "per_label": {"a": 9.0}}}})
+    assert fig["s1x"]["overall"] == 11.0 and fig["s1x"]["per_label"] == {"a": 9.0, "b": 12.0}
+    assert fig["s1x_half"]["overall_vs_s1x"] == 1.0
+    assert fig["s1x_half"]["per_label_vs_s1x"] == {"a": 1.0, "b": 0.75}
 
 
 def test_the_share_beyond_one_and_a_half_fold():
@@ -170,8 +224,39 @@ def test_end_to_end_s1x_is_k10s_build_and_the_arms_take_the_folds_own_source(wor
     rec = prep["record"]
     assert json.loads(json.dumps(rec)) == rec and rec["labels_with_a_depth_ratio"] >= 1
     assert rec["share_beyond_1.5_fold"]["half"] <= rec["share_beyond_1.5_fold"]["full"]
+    # each arm's counts per cell after the build, recorded without changing a value (s1x equals K10's above)
+    depth = prep["depth"]
+    assert set(depth) == set(k15.ARMS) and all(set(v) == {str(ctx.seed)} for v in depth.values())
+    assert json.loads(json.dumps(depth)) == depth
+    labels = set(prep["ref"].V.labels)
+    for v in depth.values():
+        one = v[str(ctx.seed)]
+        assert one["overall"] > 0 and set(one["per_label"]) <= labels and one["per_label"]
+    assert depth["s1x_half"] != depth["s1x"]
     k15._PREP.clear()
     k10._PREP.clear()
+
+
+def test_the_controls_decile_basis_is_the_references_not_the_source_wt(world, monkeypatch):
+    """should_fix: the source WT (wt_train) and the reference role get different objects with different mean
+    expression; the control's basis is the reference's."""
+    monkeypatch.setattr(k7, "MIN_CELLS", 20)
+    t = k15.TASKS["r12"]
+    inputs = dict(world["r12"])
+    ref_role = harness.TaskView.of(t).reference_role
+    assert ref_role != "wt_train"
+    other = inputs["wt_train"].copy()
+    other.X = other.X[:, ::-1].copy()  # the same genes and cells, another gene profile in .X
+    inputs["wt_train"] = other
+    pool = inputs[ref_role]
+    b_ref, b_src = harness.t3_mean_expression(pool), harness.t3_mean_expression(other)
+    assert not np.allclose(b_ref, b_src)
+    k15._PREP.clear()
+    prep = k15._prepared(t9._ctx(t, inputs))
+    half = k15.half_factor(prep["phi_src"])
+    assert np.array_equal(prep["phi_perm"], harness.t3_decile_permutation(half, b_ref, k9.PERM_SEED))
+    assert not np.array_equal(prep["phi_perm"], harness.t3_decile_permutation(half, b_src, k9.PERM_SEED))
+    k15._PREP.clear()
 
 
 # ----------------------------------------------------------------------------------------------- the reading
@@ -195,11 +280,24 @@ def _scores(half, perm=50.0, base=52.0):
     return {harness.FLOOR: [50.0] * n, k15.BASE: [base] * n, k15.HALF: h, k15.PERM: [perm] * n}
 
 
-def _k10_dir(d: Path, base: float = 52.0) -> Path:
+def _k10_file(name: str, base: float = 52.0, **over) -> dict:
+    """A synthetic file in try K10's committed form (its task_source, commit, clean tree, key and arms)."""
+    r = {"task": {"key": k15.TASKS[name].key}, "task_source": k15.K10_SOURCE,
+         "provenance": {"commit": k15.K10_COMMIT, "tree_clean": True},
+         "rows": [{"seed": s, "scores": {"floor": 50.0, "s1x": base, "s1x_res": 0.0, "s1x_res_perm": 0.0}}
+                  for s in SEEDS]}
+    for k, v in over.items():
+        r[k] = v
+    return r
+
+
+def _k10_dir(d: Path, base: float = 52.0, files: dict | None = None, pin: bool = True) -> Path:
     d.mkdir(parents=True, exist_ok=True)
     for name in k15.TASKS:
-        (d / f"{name}.json").write_text(json.dumps({"rows": [{"seed": s, "scores": {"s1x": base, "s1x_res": 0.0}}
-                                                             for s in SEEDS]}))
+        blob = json.dumps((files or {}).get(name) or _k10_file(name, base)).encode()
+        (d / f"{name}.json").write_bytes(blob)
+        if pin:
+            PINS[name] = hashlib.sha256(blob).hexdigest()
     return d
 
 
@@ -235,8 +333,19 @@ def test_the_reading_on_the_replicate_folds_says_not_readable_on_the_cross_knock
                    "captain's own ruling", "without the file's composition term", "two samples on one slide",
                    "no released fold has the test's structure", "which fold the test resembles is not known",
                    "differ in depth against their references", "one factor, ten seeds of draw noise",
-                   "per-seed range", "half 0.050, full 0.200", "replicate fold, never counted"):
+                   "per-seed range", "half 0.050, full 0.200", "replicate fold, never counted",
+                   "Replicate-only", "the cost of shrinking a right factor", "identity check",
+                   "neither can support or reject the half factor at the test", "whole effect in the file's form",
+                   "draw noise only", "mirrors of one slide, not two independent replications",
+                   "Run as: DGX ~/v/vec-campaign", "CPU only, 8 BLAS threads, one process per fold",
+                   "not below the guard margin -0.3", f"commit {k15.K10_COMMIT}"):
         assert phrase in txt, phrase
+    assert r12["shrink_cost_within_guard"] and res["run_as"] == k15.RUN_AS
+    cmp = res["k10_comparator"]
+    assert cmp["commit"] == k15.K10_COMMIT and set(cmp["files"]) == {"r12", "r21"}
+    assert all(v["sha256"] == PINS[n] and v["commit"] == k15.K10_COMMIT for n, v in cmp["files"].items())
+    for v in cmp["files"].values():
+        assert v["sha256"] in txt
 
 
 def test_a_fold_with_a_gated_seed_is_reported_not_readable(tmp_path):
@@ -284,8 +393,16 @@ def test_decide_supported_and_each_failing_fold_named():
         assert not ok and fails == want, what
         v = k15.verdict(per)
         assert v["supported"] is False and v["verdict"] == "NOT SUPPORTED (failing folds: " + ", ".join(want) + ")"
-    # eight seeds ahead with a mean above 0.3 passes; a guarded fold at exactly -0.3 is not below it
-    assert k15.decide(_per(x1=_fold([1.0] * 8 + [-0.1] * 2), r21=_fold([-0.3] * 10)))[0]
+    # eight seeds ahead with a mean above 0.3 passes
+    assert k15.decide(_per(x1=_fold([1.0] * 8 + [-0.1] * 2)))[0]
+    # a guarded fold whose paired mean is exactly FLOOR_MEAN in floating point is not below it; the next float down is
+    for n in k15.GUARDED:
+        per = _per()
+        per[n]["paired"]["s1x_half - s1x"]["mean"] = k15.FLOOR_MEAN
+        assert k15.FLOOR_MEAN == -0.3 and k15.decide(per)[0], n
+        per[n]["paired"]["s1x_half - s1x"]["mean"] = float(np.nextafter(k15.FLOOR_MEAN, -1.0))
+        ok, _, fails = k15.decide(per)
+        assert not ok and fails == [n]
     # an absent cross-knockout fold: not readable there, never decided
     per = _per()
     del per["x2"]
@@ -332,6 +449,84 @@ def test_the_reading_is_void_unless_s1x_reproduces_k10s_committed_scores(tmp_pat
     assert res["void"] and any("r21: try K10's committed result is missing" in w for w in res["why"])
 
 
+def test_the_comparator_must_be_k10s_own_file(tmp_path):
+    """must_fix 2: a self-compare, try K14's or K9's file, another commit, a dirty tree, another key, try K10's arms
+    missing, or a file whose bytes are not the pinned ones each void the reading, even when s1x's scores match."""
+    good = {"r12": _scores(54.0), "r21": _scores(54.0)}
+    runs = tmp_path / "self"
+    # self-compare: K15's own task files as the comparator (the same keys, s1x at the same scores)
+    runs.mkdir()
+    for name, sc in good.items():
+        (runs / f"{name}.json").write_text(json.dumps(_result(name, sc)))
+    res = k15.reading(runs, runs)
+    assert res["void"] and any("not try K10's committed task file" in w for w in res["why"])
+    assert res["k10_comparator"]["dir"] == str(runs)
+    k14_file = _k10_file("r12", task_source="experiments/t3_decomp/k14_form_arms.py",
+                         task={"key": k9.TASKS["r12"].key},
+                         rows=[{"seed": s, "scores": {"raw": 52.0, "raw_half": 1.0, "s1x": 52.0}} for s in SEEDS])
+    k9_file = _k10_file("r12", task_source="experiments/t3_decomp/k9_residual.py")
+    wrong_commit = _k10_file("r12", provenance={"commit": "b45cd928616d642d855ad57b3e1bb159fd937094",
+                                                "tree_clean": True})
+    dirty = _k10_file("r12", provenance={"commit": k15.K10_COMMIT, "tree_clean": False})
+    other_key = _k10_file("r12", task={"key": k15.TASKS["r21"].key})
+    no_res = _k10_file("r12", rows=[{"seed": s, "scores": {"s1x": 52.0}} for s in SEEDS])
+    for what, f in {"k14": k14_file, "k9": k9_file, "commit": wrong_commit, "dirty": dirty, "key": other_key,
+                    "no s1x_res": no_res}.items():
+        d = _k10_dir(tmp_path / f"cmp_{what.replace(' ', '_')}", files={"r12": f})
+        res = _read(tmp_path / f"run_{what.replace(' ', '_')}", k10_dir=d, **good)
+        assert res["void"] and any("r12: the comparator" in w and "not try K10's" in w for w in res["why"]), what
+        assert not any(w.startswith("r21") for w in res["why"]), what
+    # right fields, but bytes that are not the pinned file's
+    d = _k10_dir(tmp_path / "cmp_unpinned", pin=False)
+    res = _read(tmp_path / "run_unpinned", k10_dir=d, **good)
+    assert res["void"] and any("sha256 is not that of try K10's committed file" in w for w in res["why"])
+    # a comparator that is not JSON voids, never raises
+    d = _k10_dir(tmp_path / "cmp_garbage")
+    (d / "r12.json").write_text("not json")
+    PINS["r12"] = hashlib.sha256(b"not json").hexdigest()
+    res = _read(tmp_path / "run_garbage", k10_dir=d, **good)
+    assert res["void"] and any("r12: the comparator" in w for w in res["why"])
+
+
+def test_a_row_without_skills_or_severity_voids_and_does_not_raise(tmp_path):
+    good = {"r12": _scores(54.0), "r21": _scores(54.0)}
+    for what in ("skills", "t3", "empty skills", "severity"):
+        r = _result("r12", good["r12"])
+        q = r["rows"][3]
+        if what == "skills":
+            del q["skills"][k15.PERM]
+        elif what == "t3":
+            del q["t3"][k15.BASE]
+        elif what == "empty skills":
+            q["skills"][k15.HALF] = {}
+        else:
+            del q["t3"][k15.HALF]["severity"]
+        res = _read(tmp_path / what.replace(" ", "_"), results={"r12": r, "r21": _result("r21", good["r21"])},
+                    r12=None, r21=None)
+        assert res["void"] and any("r12: a row lacks an arm's skills or T3 severity state" in w
+                                   for w in res["why"]), what
+
+
+def test_cmd_run_records_the_machine_and_each_arms_depth(tmp_path, monkeypatch):
+    monkeypatch.setenv("OMP_NUM_THREADS", "8")
+    monkeypatch.setenv("OPENBLAS_NUM_THREADS", "8")
+    monkeypatch.delenv("MKL_NUM_THREADS", raising=False)
+    depth = {"s1x": {"7": {"overall": 1.0, "per_label": {"a": 1.0}}}}
+
+    def fake_run(t, cands, seeds, data_dir):
+        k15._PREP["fold"] = {"record": {"labels_with_a_depth_ratio": 1}, "depth": depth}
+        return {"task": {"key": t.key}, "rows": []}
+
+    monkeypatch.setattr(k15.harness, "run_task", fake_run)
+    k15.main(["run", "--task", "r12", "--out", str(tmp_path), "--data", str(tmp_path / "nowhere")])
+    r = json.loads((tmp_path / "r12.json").read_text())
+    assert r["depth_record"] == depth and r["task_source"] == k15.TASK_SOURCE
+    env = r["run_env"]
+    assert set(env) == {"host", *k15.RUN_ENV_VARS} and env["OMP_NUM_THREADS"] == "8" and env["MKL_NUM_THREADS"] is None
+    assert env["host"] == os.uname().nodename
+    k15._PREP.clear()
+
+
 def test_the_reading_writes_no_per_gene_value(tmp_path):
     res = _read(tmp_path / "w", r12=_scores(54.0), r21=_scores(53.0))
     blob = json.dumps(res) + k15.text(res)
@@ -339,7 +534,7 @@ def test_the_reading_writes_no_per_gene_value(tmp_path):
     assert "phi_src" not in blob and "phi_perm" not in blob
 
 
-def test_run_and_read_refuse(tmp_path):
+def test_run_and_read_refuse(tmp_path, monkeypatch):
     (tmp_path / "r12.json").write_text("{}")
     with pytest.raises(SystemExit, match="exists"):
         k15.main(["run", "--task", "r12", "--out", str(tmp_path), "--data", str(tmp_path / "nowhere")])
@@ -351,10 +546,15 @@ def test_run_and_read_refuse(tmp_path):
     _read(runs, r12=_scores(54.0), r21=_scores(53.0))
     k10_dir = tmp_path / "runs_k10"
     out = tmp_path / "out"
-    k15.main(["read", "--runs", str(runs), "--out", str(out), "--k10", str(k10_dir)])
-    assert json.loads((out / "reading.json").read_text())["verdict"].startswith("NOT READABLE")
-    with pytest.raises(SystemExit, match="exists"):
+    with pytest.raises(SystemExit):  # no operator path for the comparator
         k15.main(["read", "--runs", str(runs), "--out", str(out), "--k10", str(k10_dir)])
+    assert not out.exists()
+    monkeypatch.setattr(k15, "RESULTS_K10", k10_dir)  # the CLI reads the module's committed directory only
+    k15.main(["read", "--runs", str(runs), "--out", str(out)])
+    got = json.loads((out / "reading.json").read_text())
+    assert got["verdict"].startswith("NOT READABLE") and got["k10_comparator"]["dir"] == str(k10_dir)
+    with pytest.raises(SystemExit, match="exists"):
+        k15.main(["read", "--runs", str(runs), "--out", str(out)])
     (out / "reading.json").unlink()
     with pytest.raises(SystemExit, match="exists"):  # reading.txt alone also refuses
-        k15.main(["read", "--runs", str(runs), "--out", str(out), "--k10", str(k10_dir)])
+        k15.main(["read", "--runs", str(runs), "--out", str(out)])
