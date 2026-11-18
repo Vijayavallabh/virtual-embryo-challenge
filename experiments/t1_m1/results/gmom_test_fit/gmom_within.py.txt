@@ -1,0 +1,150 @@
+"""Target-free listing (decision log 2026-11-18 (h), fixed there before this ran): is the link between g_mom's
+test-pair factors and a metacell's library make-up an offset between libraries acting on cells (collection or batch),
+or a difference in the states each library holds? Inside the metacells of the fit as built that hold at least ten
+cells of library 3 and ten of libraries 1 and 2, the log ratio of the two groups' mean CP10k (the fit's pseudocount)
+is projected on the library slope of that fit. The slope is taken on the raw centred log ratios (before damping,
+zeroing and clipping), so that an offset acting on cells gives rho near 1 and a pure difference in states near 0; rho
+against the slope of the finished factors (damping 0.5) is printed beside it. Beside it: the library statistic on a
+no-development fit of E10.5, a joint regression on the shares of libraries 1 and 2, and the genes with the largest
+slope. Reads the released E9.5 and E10.5 stages only; builds no prediction, reads no board, no target and no score.
+Usage, repository root: uv run --frozen --no-sync python -I -B <this file>"""
+import sys
+from pathlib import Path
+
+import numpy as np
+from scipy import sparse
+
+REPO = Path.cwd()
+sys.path.insert(0, str(REPO / "experiments" / "t1_m1"))
+sys.path.insert(0, str(REPO / "experiments" / "t1_scope"))
+from vec import core, harness, t1_scope  # noqa: E402
+from vec import t1_state_transport as ts  # noqa: E402
+from vec.prep import load_stage  # noqa: E402
+
+import g_mom_verify as gv  # noqa: E402
+
+EDITED = ("cm", "endocardium")
+MIN_EACH = 10
+data = harness.DATA_DIR
+spec = t1_scope.load_spec()
+e95 = load_stage(data / "T1/E9.5_RNA.h5ad", lineage=False)
+e105 = load_stage(data / "T1/E10.5_RNA.h5ad", lineage=False)
+held = set(t1_scope.held_flat_genes())
+cats = [c for c, s in harness.t1_chamber_shares(e105, "E10.5_RNA").items() if s > 0]
+fin, raw = harness.g_mom_pair_factors(e105, "E10.5_RNA", e95, "E9.5_RNA", categories=cats)
+assert list(e105.var_names) == list(fin.genes)
+free = ~np.isin(np.asarray(fin.genes, dtype=object), np.asarray(sorted(held), dtype=object))
+genes = np.asarray(fin.genes, dtype=object)[free]
+C = sparse.csr_matrix(core.counts_of(e105), dtype=np.float64)
+tot = np.asarray(C.sum(1)).ravel()
+row_of = {str(n): i for i, n in enumerate(e105.obs_names)}
+rng = np.random.default_rng(11)
+
+
+def mean_cp10k(rows):
+    sub = C[rows]
+    scale = sparse.diags(1e4 / np.maximum(tot[rows], 1.0))
+    return np.asarray((scale @ sub).mean(axis=0)).ravel()
+
+
+def shares(cf, test):
+    M = cf.n_metacells
+    s, n = np.zeros(M), np.zeros(M)
+    for name, m in cf.index.items():
+        n[m] += 1
+        s[m] += test(str(name).rsplit("_", 1)[-1])
+    return s / np.maximum(n, 1), n
+
+
+def slope(Y, w, s):
+    x = s - np.average(s, weights=w)
+    return (w[:, None] * x[:, None] * Y).sum(axis=0) / float((w * x * x).sum())
+
+
+def r2(Y, w, s):
+    x = s - np.average(s, weights=w)
+    den, tot2 = float((w * x * x).sum()), float((w[:, None] * Y ** 2).sum())
+    if den == 0 or tot2 == 0:
+        return float("nan")
+    b = (w[:, None] * x[:, None] * Y).sum(axis=0) / den
+    return float((den * b ** 2).sum() / tot2)
+
+
+for c in EDITED:
+    cf, cr = fin.categories[c], raw.categories[c]
+    w = np.asarray(cf.sizes, float)
+    s3, n = shares(cf, lambda b: b == "3")
+    Yraw = (cr.logf - np.average(cr.logf, axis=0, weights=w))[:, free]
+    Yfin = cf.logf[:, free]
+    b_raw, b_fin = slope(Yraw, w, s3), slope(Yfin, w, s3)
+    members = {}
+    for name, m in cf.index.items():
+        members.setdefault(m, {"3": [], "12": []})["3" if str(name).endswith("_3") else "12"].append(row_of[str(name)])
+    num, wsum, used, cells3, cells12 = 0.0, 0.0, 0, 0, 0
+    per = []
+    for m, g in sorted(members.items()):
+        n3, n12 = len(g["3"]), len(g["12"])
+        if n3 < MIN_EACH or n12 < MIN_EACH:
+            continue
+        d = np.log((mean_cp10k(g["3"])[free] + ts.PSEUDOCOUNT) / (mean_cp10k(g["12"])[free] + ts.PSEUDOCOUNT))
+        wt = n3 * n12 / (n3 + n12)
+        num, wsum, used, cells3, cells12 = num + wt * d, wsum + wt, used + 1, cells3 + n3, cells12 + n12
+        per.append(float(d @ b_raw / (b_raw @ b_raw)))
+    print(f"== {c}: {cf.n_metacells} metacells, {used} with at least {MIN_EACH} cells of each kind "
+          f"(holding {cells3 / max((s3 * n).sum(), 1):.2f} of the category's library-3 cells and "
+          f"{cells12 / max(((1 - s3) * n).sum(), 1):.2f} of its other cells)")
+    if used:
+        d = num / wsum
+        cos = float(d @ b_raw / (np.linalg.norm(d) * np.linalg.norm(b_raw)))
+        print(f"   within-metacell contrast (library 3 over libraries 1 and 2) on the raw slope: rho {float(d @ b_raw / (b_raw @ b_raw)):.2f}; "
+              f"cosine {cos:.2f}; length of the contrast over the slope's {np.linalg.norm(d) / np.linalg.norm(b_raw):.2f}; "
+              f"rho per metacell: median {np.median(per):.2f}, from {min(per):.2f} to {max(per):.2f}")
+        print(f"   the same against the slope of the finished factors (damping 0.5): rho {float(d @ b_fin / (b_fin @ b_fin)):.2f}; "
+              f"cosine {float(d @ b_fin / (np.linalg.norm(d) * np.linalg.norm(b_fin))):.2f}")
+        null = []
+        for _ in range(200):
+            acc = 0.0
+            for m, g in sorted(members.items()):
+                n3, n12 = len(g["3"]), len(g["12"])
+                if n3 < MIN_EACH or n12 < MIN_EACH:
+                    continue
+                allr = np.array(g["3"] + g["12"])
+                rng.shuffle(allr)
+                dd = np.log((mean_cp10k(allr[:n3])[free] + ts.PSEUDOCOUNT) / (mean_cp10k(allr[n3:])[free] + ts.PSEUDOCOUNT))
+                acc = acc + (n3 * n12 / (n3 + n12)) * dd
+            dn = acc / wsum
+            null.append(float(dn @ b_raw / (b_raw @ b_raw)))
+        print(f"   rho with the two kinds' labels shuffled inside each metacell (200 times): mean {np.mean(null):+.3f}, "
+              f"5th to 95th percentile {np.percentile(null, 5):+.3f} to {np.percentile(null, 95):+.3f}")
+        order = np.argsort(-np.abs(b_raw))[:25]
+        print("   genes with the largest raw slope (sign: higher where a metacell holds more library-3 cells): "
+              + ", ".join(f"{genes[i]} {b_raw[i]:+.2f}" for i in order))
+        order = np.argsort(-np.abs(d))[:25]
+        print("   genes with the largest within-metacell contrast: " + ", ".join(f"{genes[i]} {d[i]:+.2f}" for i in order))
+    s1, _ = shares(cf, lambda b: b == "1")
+    s2, _ = shares(cf, lambda b: b == "2")
+    X = np.stack([s1 - np.average(s1, weights=w), s2 - np.average(s2, weights=w)], axis=1)
+    G = X.T @ (w[:, None] * X)
+    coef = np.linalg.solve(G, X.T @ (w[:, None] * Yfin))
+    fit = X @ coef
+    tot2 = float((w[:, None] * Yfin ** 2).sum())
+    b1, b2 = coef[0], coef[1]
+    print(f"   joint regression of the finished factors on the shares of libraries 1 and 2: share of the squared size explained "
+          f"{float((w[:, None] * fit ** 2).sum()) / tot2:.3f}; cosine of the two libraries' coefficient vectors "
+          f"{float(b1 @ b2 / (np.linalg.norm(b1) * np.linalg.norm(b2))):.2f}; their lengths {np.linalg.norm(b1):.2f} and {np.linalg.norm(b2):.2f}; "
+          f"single-library shares of the squared size: library 1 {r2(Yfin, w, s1):.3f}, library 2 {r2(Yfin, w, s2):.3f}, library 3 {r2(Yfin, w, s3):.3f}")
+nd = gv.no_development_fit(e105, "E10.5_RNA", cats, "test", spec)
+for c in EDITED:
+    if c not in nd.categories:
+        print(f"no-development fit of E10.5: no factors for {c}")
+        continue
+    cf = nd.categories[c]
+    w = np.asarray(cf.sizes, float)
+    s3, n = shares(cf, lambda b: b == "3")
+    f2 = ~np.isin(np.asarray(nd.genes, dtype=object), np.asarray(sorted(held), dtype=object))
+    Y = cf.logf[:, f2]
+    null = [r2(Y, w, rng.permutation(s3)) for _ in range(200)]
+    print(f"no-development fit of E10.5 (two halves of the stage, no change between stages), {c}: {cf.n_metacells} metacells; share of the "
+          f"finished factors' squared size that goes with the metacell's library-3 share {r2(Y, w, s3):.3f} (permutation null mean "
+          f"{np.mean(null):.3f}, 95th percentile {np.percentile(null, 95):.3f}); rms "
+          f"{float(np.sqrt(np.average((Y ** 2).mean(axis=1), weights=w))):.4f}")

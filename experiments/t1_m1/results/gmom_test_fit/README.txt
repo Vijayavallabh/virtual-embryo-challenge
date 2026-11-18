@@ -21,3 +21,10 @@ single_kind.txt (decision log 2026-11-18 (g), which fixed its use before it ran,
                 reference as built (ALL), on library 3 only (L3) and on libraries 1 and 2 only (L12), and the
                 practice fit (BACK), compared by reading N21's measures. Script as run: gmom_single_kind.py.txt
                 (the DGX's first campaign checkout at 6214e28, 16 threads).
+
+within_metacell.txt (decision log 2026-11-18 (h), which fixed its use before it ran, and (i)) Inside the metacells of
+                the fit as built that hold at least ten cells of each kind, library 3's cells against the cells of
+                libraries 1 and 2, projected on the library slope; a joint regression on the two portion
+                libraries' shares; the genes with the largest slope and the largest within-metacell contrast; the
+                library statistic on a no-development fit of E10.5. Script as run: gmom_within.py.txt (the DGX's
+                first campaign checkout at 6214e28, 16 threads).
