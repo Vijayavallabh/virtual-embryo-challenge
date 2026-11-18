@@ -308,6 +308,23 @@ def test_every_arm_is_scored_against_the_first_arms_anchors(rr):
     assert set(res["arms"]["second"]["groups"]) == {"de_recovery", "direction", "distribution", "covariance"}
 
 
+def test_sparsity_is_the_scored_zero_share_and_detected_genes_per_cell(rr):
+    """Row T46's measure (lib_step_read.sparsity) on a hand-made prediction: the share of zero entries on the scored
+    genes and the mean number of non-zero scored genes per cell, dense or sparse alike."""
+    import scipy.sparse as sp
+
+    X = np.array([[0, 1, 2, 0], [0, 0, 0, 5], [3, 0, 0, 0]], dtype=np.float32)
+    for x in (X, sp.csr_matrix(X)):
+        got = rr.sparsity(type("P", (), {"X": x})())
+        assert got == {"zero_share": pytest.approx(8 / 12), "detected_per_cell": pytest.approx(4 / 3)}
+    start, *_ = _world(rr)
+    stage = rr.pt.to_stage(start[:50])
+    want = rr.sparsity(stage)
+    Xs = dense(stage.X)
+    assert want["zero_share"] == pytest.approx(float((Xs == 0).mean()))
+    assert want["detected_per_cell"] == pytest.approx(float((Xs > 0).sum(axis=1).mean()))
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 # The guard
 
@@ -400,8 +417,10 @@ def _gains(os=0.0, ps=0.0, pp=0.0, pf=0.0, es=0.0, peak_o=1.0, peak_p=1.0):
     return out
 
 
-def _lib(gains, per_seed=None, seeds=range(10), guard_holds=True, commit="c" * 40, clean=True, perm_equal=False):
-    """A task file: each arm at the mix (60) plus gains[arm]; per_seed: arm -> ten values added to its gain."""
+def _lib(gains, per_seed=None, seeds=range(10), guard_holds=True, commit="c" * 40, clean=True, perm_equal=False,
+         sparse=True):
+    """A task file: each arm at the mix (60) plus gains[arm]; per_seed: arm -> ten values added to its gain; sparse:
+    each arm's scored zero share 0.8 plus its gain / 1000 and detected genes per cell 400 minus its gain."""
 
     def g(arm, i):
         return gains.get(arm, 0.0) + (per_seed[arm][i] if per_seed and arm in per_seed else 0.0)
@@ -411,7 +430,11 @@ def _lib(gains, per_seed=None, seeds=range(10), guard_holds=True, commit="c" * 4
         arms = {a: _arm(60.0 + g(a, i)) for a in (*gains, "oracle_mix")}
         if perm_equal:
             arms["proj_perm"] = arms["proj_shift"]
-        rows.append({"seed": s, "arms": arms, "inverted_anchors": []})
+        row = {"seed": s, "arms": arms, "inverted_anchors": []}
+        if sparse:
+            row["sparsity"] = {a: {"zero_share": 0.8 + gains.get(a, 0.0) / 1000,
+                                   "detected_per_cell": 400 - gains.get(a, 0.0)} for a in arms}
+        rows.append(row)
     return {"label": "synthetic", "row": "T60", "library": "x", "seeds": list(seeds),
             "guard": {"holds": guard_holds}, "rows": rows,
             "projection": {"cm": {"group": "CM", "coefficient": 0.8, "coefficient_centred": 0.7,
@@ -479,17 +502,75 @@ def test_a_family_still_rising_at_its_largest_multiple_leaves_statement_1_not_se
     assert rr.room_state(False, rr.ORACLE_ARMS[1], rr.PROJ_ARMS[-1]) == "false"
 
 
-def test_statement_1_needs_the_portion_libraries_and_otherwise_reads_library_3_only(rr):
+def test_the_lowest_multiple_is_an_edge_on_the_side_that_can_change_the_answer(rr):
+    """A size between 0 and 0.5 was not tried. A passing test whose best projection is the smallest multiple could fail
+    at a smaller projection size (a higher projection lowers A); a failing test whose best oracle is the smallest
+    multiple could pass at a smaller oracle size (a higher oracle raises A). Both read 'not settled'. The other side
+    cannot change the answer and does not unsettle it."""
+    low_p = _gains(os=4.0, ps=1.0, peak_p=0.5)  # A passes, the projection best at 0.5
+    assert rr.t60_reading({"1": _lib(ROOM), "2": _lib(ROOM), "3": _lib(low_p)})["statements"][S1] == "not settled"
+    low_o = _gains(os=3.0, ps=2.5, peak_o=0.5)  # A fails, the oracle best at 0.5
+    assert rr.t60_reading({"1": _lib(NONE), "2": _lib(NONE), "3": _lib(low_o)})["statements"][S1] == "not settled"
+    passing = _gains(os=4.0, ps=1.0, peak_o=0.5)  # A passes with the oracle best at 0.5: a smaller oracle only adds
+    assert rr.t60_reading({"1": _lib(ROOM), "2": _lib(ROOM), "3": _lib(passing)})["statements"][S1] == "true"
+    failing = _gains(os=3.0, ps=2.5, peak_p=0.5)  # A fails with the projection best at 0.5: a smaller one only adds
+    assert rr.t60_reading({"3": _lib(failing)})["statements"][S1] == "false"
+    for edge in (0, -1):
+        assert rr.room_state(True, rr.ORACLE_ARMS[1], rr.PROJ_ARMS[edge]) == "not settled"
+        assert rr.room_state(False, rr.ORACLE_ARMS[edge], rr.PROJ_ARMS[1]) == "not settled"
+        assert rr.room_state(True, rr.ORACLE_ARMS[edge], rr.PROJ_ARMS[2]) == "true"
+        assert rr.room_state(False, rr.ORACLE_ARMS[2], rr.PROJ_ARMS[edge]) == "false"
+
+
+def test_statement_1_needs_the_portion_libraries_on_both_sides(rr):
+    """Symmetric (row T46's limit: on library 3 a point costs the most, so a failure there is not evidence on a
+    heart-to-heart pair). 'true' needs both portion libraries valid, at library 3's commit, and true, else it reads
+    'library 3 only'; library 3's 'false' with both portion libraries valid, at its commit, and true reads 'library 3
+    false, portions true', which opens nothing and closes nothing. A 'false' stands when a portion library is false,
+    not settled, void or at another commit."""
     for l1, l2 in ((NONE, ROOM), (ROOM, NONE), (NONE, NONE)):
         r = rr.t60_reading({"1": _lib(l1), "2": _lib(l2), "3": _lib(ROOM)})
         assert r["valid"] and r["statements"][S1] == "library 3 only"
     r = rr.t60_reading({"1": None, "2": _lib(ROOM), "3": _lib(ROOM)})  # a void portion library: not true either
     assert r["valid"] and r["statements"][S1] == "library 3 only" and r["libraries"]["1"]["reasons"] == ["no task file"]
-    # the portion libraries never make library 3's 'false' anything else, nor statement (2)
+    # library 3 false, both portion libraries true: the symmetric reading, and statement (2) unchanged
     r = rr.t60_reading({"1": _lib(ROOM), "2": _lib(ROOM), "3": _lib(NONE)})
-    assert r["statements"] == {S1: "false", S2: "true"}
+    assert r["statements"] == {S1: "library 3 false, portions true", S2: "true"}
+    unsettled = _gains(os=4.0, ps=1.0, peak_p=4.0)  # a portion library not settled
+    for l1, l2 in ((NONE, ROOM), (ROOM, NONE), (NONE, NONE), (ROOM, unsettled)):
+        r = rr.t60_reading({"1": _lib(l1), "2": _lib(l2), "3": _lib(NONE)})
+        assert r["statements"][S1] == "false", (l1, l2)
+    r = rr.t60_reading({"1": None, "2": _lib(ROOM), "3": _lib(NONE)})  # a void portion library: 'false' stands
+    assert r["statements"][S1] == "false"
+    r = rr.t60_reading({"1": _lib(ROOM, commit="d" * 40), "2": _lib(ROOM), "3": _lib(NONE)})  # another commit
+    assert r["statements"][S1] == "false"
+    # library 3 not settled is not settled whatever the portion libraries say
+    rising_o = _gains(os=3.0, ps=2.5, peak_o=4.0)
+    assert rr.t60_reading({"1": _lib(ROOM), "2": _lib(ROOM), "3": _lib(rising_o)})["statements"][S1] == "not settled"
     r = rr.t60_reading({"1": _lib(NONE), "2": _lib(NONE), "3": _lib(_gains(os=4.0, ps=1.0, pp=0.9))})
     assert r["statements"][S2] == "false"
+    # only 'true' opens (a priced statement) and only 'false' closes; the other three do neither
+    assert rr.OPENS == ("true",) and rr.CLOSES == ("false",)
+    assert rr.OUTCOMES_1 == ("true", "false", "not settled", "library 3 only", "library 3 false, portions true")
+
+
+def test_sparsity_is_reported_beside_the_scores_and_decides_nothing(rr):
+    """Each arm's mean scored zero share and detected genes per cell over the seeds is reported; the same file without
+    them, or with any other values, gives the same statements and stays valid."""
+    libs = {"1": _lib(ROOM), "2": _lib(ROOM), "3": _lib(NONE)}
+    r = rr.t60_reading(libs)
+    sp3 = r["libraries"]["3"]["sparsity"]
+    assert set(sp3) == set(rr.ARMS)
+    assert sp3["oracle_shift"] == {"zero_share": pytest.approx(0.803), "detected_per_cell": pytest.approx(397.0)}
+    assert sp3["oracle_mix"] == {"zero_share": pytest.approx(0.8), "detected_per_cell": pytest.approx(400.0)}
+    bare = rr.t60_reading({k: _lib(v, sparse=False) for k, v in (("1", ROOM), ("2", ROOM), ("3", NONE))})
+    assert bare["valid"] and bare["statements"] == r["statements"]
+    assert bare["libraries"]["3"]["sparsity"] == {}
+    flipped = {k: _lib(v) for k, v in (("1", ROOM), ("2", ROOM), ("3", NONE))}
+    for row in flipped["3"]["rows"]:
+        for v in row["sparsity"].values():
+            v["zero_share"], v["detected_per_cell"] = 0.99, 1.0
+    assert rr.t60_reading(flipped)["statements"] == r["statements"]
 
 
 def test_the_bars_are_strict_and_need_eight_seeds_ahead(rr):
@@ -508,7 +589,7 @@ def test_the_bars_are_strict_and_need_eight_seeds_ahead(rr):
 def _noise_rates(rr, sd, draws, seed=20261119):
     """Every arm the mix plus independent noise per seed, on all three libraries."""
     rng = np.random.default_rng(seed)
-    made = {"test_1": 0, S1: 0, S2: 0}
+    made = {"test_1": 0, S1: 0, S2: 0, **{o: 0 for o in rr.OUTCOMES_1}}
     zero = {"copy_last": -10.0, **{a: 0.0 for a in rr.COUNTED_ARMS}}
     for _ in range(draws):
         libs = {lib: _lib(zero, per_seed={a: rng.normal(0.0, sd, 10) for a in rr.COUNTED_ARMS})
@@ -517,6 +598,7 @@ def _noise_rates(rr, sd, draws, seed=20261119):
         made["test_1"] += r["libraries"]["3"]["test_1"]
         made[S1] += r["statements"][S1] == "true"
         made[S2] += r["statements"][S2] == "true"
+        made[r["statements"][S1]] += 1
     return {k: v / draws for k, v in made.items()}
 
 
@@ -526,12 +608,21 @@ def test_on_pure_noise_the_statements_are_made_at_these_rates(rr):
     (a paired sd of 0.35, above the committed library-3 paired sds of 0.13 to 0.40 in T46) library 3's test of (1)
     never passes and (2) is made in under 1% of draws (0.3% in 4,000 draws). At 1 point per arm (a paired sd of 1.4)
     the test of (1) still never passes in 4,000 draws, since its bar is 1.5 points; (2), whose bar is 0.3, is made in
-    about 5% of draws: 8 of 10 seeds ahead happens by chance 5.5% of the time. The row states these rates."""
+    about 5% of draws: 8 of 10 seeds ahead happens by chance 5.5% of the time. Statement (1) then reads 'false' in
+    61.7% of 4,000 draws and 'not settled' in 38.3% (the best oracle at the smallest or the largest multiple; about one
+    in five before the lowest multiple became an edge), and never 'true', 'library 3 only' or 'library 3 false,
+    portions true'. The row states these rates."""
     low = _noise_rates(rr, 0.25, 1000)
     assert low["test_1"] == 0.0 and low[S1] == 0.0 and low[S2] < 0.01
     high = _noise_rates(rr, 1.0, 1000)
     assert high["test_1"] < 0.005 and high[S1] == 0.0
     assert 0.02 < high[S2] < 0.08
+    # statement (1)'s outcomes on noise: the test fails, so the reading is 'false' unless the best oracle multiple sits
+    # at either edge ('not settled'); the five oracle multiples are exchangeable on noise, so that is about 2 in 5. The
+    # symmetric reading needs both portion libraries true, which noise never gives.
+    for rates in (low, high):
+        assert rates["true"] == rates["library 3 only"] == rates["library 3 false, portions true"] == 0.0
+        assert 0.33 < rates["not settled"] < 0.47 and 0.53 < rates["false"] < 0.67
 
 
 def test_the_void_conditions(rr):
@@ -571,6 +662,8 @@ def test_the_text_holds_the_statements_and_limits_and_no_count(rr, tmp_path):
     assert f"Outcome: {S1}: true; {S2}: true" in txt
     for line in rr.LIMITS:
         assert line in txt
+    assert "scored zero share and detected scored genes per cell (reported, deciding nothing)" in txt
+    assert "'library 3 false, portions true'" in txt and "the smallest or the largest multiple" in txt
     body = txt.rsplit("\nCommit ", 1)[0]
     assert not re.search(r"(?<![\d.])(4321|4322)(?![\d.])", body)  # the truth's row counts are never printed
     assert json.loads((tmp_path / "out" / "t60.json").read_text())["reading"]["valid"] == res["reading"]["valid"]

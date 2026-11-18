@@ -50,29 +50,39 @@ vec.provenance's rule.
 
   run    One library: the guard, then the split arms; writes results/<out>/tasks/lib<L>.json. Refused unless
          experiments/harness/TRIES.md holds row T60, on an unclean tree, and on an existing task file. Prints no score:
-         per seed only its time, and the guard's verdict with its largest difference from T28's committed scores.
+         per seed only its time, and the guard's verdict with its largest difference from T28's committed scores. The
+         task file also records, per seed and arm, the scored zero share and detected scored genes per cell.
   read   T60's reading of the three task files (rule below, fixed in the row before the run); writes t60.{json,txt}.
 
 The reading, paired by seed. On each library the best oracle multiple and the best projection multiple are the arms of
 each family with the highest ten-seed mean (the smaller multiple on a tie). A = best oracle - best projection ("what a
 new direction could buy at most on this task"). A library's test of statement (1) "A new direction has room" passes
-when A's mean is above A_BAR with at least MIN_AHEAD of 10 seeds above 0. Library 3's state: "true" if the test passes
-and the best projection multiple is below the largest; "not settled" if it passes with the best projection at the
-largest multiple (still rising along the direction), or fails with the best oracle at the largest multiple (the oracle
-still rising); "false" otherwise. Statement (1) is true only if library 3's state is true and libraries 1 and 2 are
-valid and true as well; if library 3 is true and a portion library is not, it reads "library 3 only" (on library 3 the
-room includes the change of sample kind, which the test's heart-to-heart pair does not have). C = proj_shift - proj_perm
+when A's mean is above A_BAR with at least MIN_AHEAD of 10 seeds above 0. A library's state: "true" if the test passes
+and the best projection multiple is neither the smallest nor the largest; "not settled" if it passes with the best
+projection at the smallest or the largest multiple (a projection size beyond the edge could lower A), or fails with the
+best oracle at the smallest or the largest multiple (an oracle size beyond the edge could raise A); "false" otherwise.
+Statement (1) checks library 3 against libraries 1 and 2 on both sides. It is "true" only if library 3's state is true
+and libraries 1 and 2 are valid, at library 3's commit, and true as well; if library 3 is true and a portion library is
+not, it reads "library 3 only" (on library 3 the room includes the change of sample kind, which the test's
+heart-to-heart pair does not have). If library 3 is false and libraries 1 and 2 are valid, at its commit, and true, it
+reads "library 3 false, portions true" (row T46's limit: library 3's floor is far, so a point costs the most there and
+a failure there is not evidence on a heart-to-heart pair); a portion library false, not settled, void or at another
+commit leaves library 3's "false" standing. Only "true" opens a line and only "false" closes one; "not settled",
+"library 3 only" and "library 3 false, portions true" open nothing and close nothing. C = proj_shift - proj_perm
 ("what the direction's identity reaches beyond a permutation of it at the same applied size"); statement (2) "The
 direction's identity matters" is true if C's mean is above C_BAR with at least MIN_AHEAD of 10 seeds above 0, on
 library 3. Reported: A at the least-squares size (oracle_shift - proj_shift), C against proj_perm_fit, B = proj_shift -
-entry_step and every arm against oracle_mix. Void unless library 3's file holds the ten seeds with every arm, its guard
+entry_step, every arm against oracle_mix, and each arm's scored zero share and detected scored genes per cell (row
+T46's measure; they decide nothing). Void unless library 3's file holds the ten seeds with every arm, its guard
 holds, its tree was clean at one commit, every row's anchors are uninverted, oracle_shift differs from oracle_mix and
 proj_perm from proj_shift on at least one seed, and every moved type has a finite coefficient. A library 1 or 2 that is
 void or ran at another commit than library 3 is named and reported, and the reading stands.
 
 NOT an adoption result: the oracle shift is fitted on the truth's own library (in-sample by construction), the task is
 one day and the test two, the sizes are chosen with the truth, Feng's E9.5 cells lie inside this task's external window,
-and one truth is one fold of evidence. The result can only go to the team captain.
+and one truth is one fold of evidence. The result can only go to the team captain. It reads one diagnostic of the line
+the ledger pruned as "oracle ladders and decompositions on the counted tasks", because decision log 2026-11-18 (t) put
+the question open; the pruned reasons (in-sample, counted, nothing adoptable) hold and are among its limits.
 
 Usage: on the DGX campaign checkout, repo root, the three libraries at one commit, committing nothing until the three
 task files exist (docs/COMPUTE.md):
@@ -121,7 +131,7 @@ TASK = "T1"
 BOARD = "T1:val"  # rows O1 and T28: the gene order and cell limits
 FILES = {"E8.5": "T1/E8.5_RNA.h5ad", "E9.5": "T1/E9.5_RNA.h5ad", "E10.5": "T1/E10.5_RNA.h5ad"}
 LIBRARIES = ("1", "2", "3")
-READ_LIBRARY = "3"  # the dissected heart; libraries 1 and 2 are reported beside it
+READ_LIBRARY = "3"  # the dissected heart; libraries 1 and 2 check its 'true' and its 'false'
 SPLIT_SEED = 20261112  # row T27's split of library 3, applied to each library
 PERM_SEED = 20261119  # proj_perm: one permutation per type, [PERM_SEED, type index in the config's category order]
 PERM_BINS = harness.LP_BINS  # deciles, K2b's bins
@@ -154,6 +164,11 @@ MIN_AHEAD = 8
 STATEMENT_1 = "A new direction has room"
 STATEMENT_2 = "The direction's identity matters"
 PORTION_LIBRARIES = tuple(x for x in LIBRARIES if x != READ_LIBRARY)
+LIBRARY_3_ONLY = f"library {READ_LIBRARY} only"
+SPLIT_READING = f"library {READ_LIBRARY} false, portions true"
+OUTCOMES_1 = ("true", "false", "not settled", LIBRARY_3_ONLY, SPLIT_READING)
+OPENS = ("true",)  # a priced statement to the captain, nothing started
+CLOSES = ("false",)  # the two lines stay closed with this row as evidence; the other outcomes open and close nothing
 # A itself is the best oracle multiple against the best projection multiple (best_arm); these are fixed pairs
 READINGS = {"C": ("proj_shift", "proj_perm"), "A_least_squares": ("oracle_shift", "proj_shift"),
             "C_fit": ("proj_shift", "proj_perm_fit"), "B": ("proj_shift", "entry_step")}
@@ -167,23 +182,34 @@ LIMITS = (
     "so the room A measures can be non-developmental.",
     "Both families' sizes are chosen with the truth (the best of five multiples of each): the arms are optimistic "
     "bounds, never an estimate of what a step rule would deliver. The best of five sizes is not the best of every "
-    "size: when the best projection is the largest multiple a passing test reads 'not settled', and when the best "
-    "oracle is the largest a failing test reads 'not settled'.",
+    "size, and one common multiple for all types is not each type's best: when the best projection is the smallest or "
+    "the largest multiple a passing test reads 'not settled', and when the best oracle is the smallest or the largest "
+    "a failing test reads 'not settled'; a size between two tried multiples is not covered.",
     "The projection's coefficient is the least-squares fit to the oracle's log factor over every moved gene, most of "
     "which the board barely scores; the multiples, not that fit, set the size A uses. The coefficient is in the units "
     "of M1's fraction (0.2 at the practice step) and is reported beside it; no size read here is a step setting.",
     "The task is one day (E9.5 -> E10.5) and the test two (E10.5 -> E12.5): the horizon ratio is 2 on every counting "
     "task, so nothing here is a test figure (rule 9, J6). The room outside the direction may be larger at two days.",
-    "One truth is one fold of evidence: library 3 is one released sample, halved (rule 9, J5).",
+    "One truth is one fold of evidence: library 3 is one released sample, halved (rule 9, J5), and the half split "
+    "itself is one draw (SPLIT_SEED); another split could move A.",
     "On library 3 the oracle shift runs from E9.5's embryo portions to a dissected heart, so A there includes the "
     "change of sample kind (row T27: +8.24 points between the kinds), which the test's heart-to-heart pair does not "
-    "have; statement (1) therefore needs the portion libraries 1 and 2 as well.",
+    "have; and library 3's floor is far, so a point costs the most there and a failure there is not evidence on a "
+    "heart-to-heart pair (row T46's limit). Statement (1) therefore needs the portion libraries 1 and 2 on both sides: "
+    "'true' needs them true, and library 3's 'false' with both of them true reads 'library 3 false, portions true', "
+    "which opens nothing and closes nothing.",
     "The oracle is fitted on half a library: noise in its small types (epicardium, blood) lowers its score while the "
     "projection's one coefficient per type averages that noise away, so A can be understated; the multiple 0.5 covers "
     "part of this.",
     "A counts everything outside the direction's reach: genes M1 holds (R2), genes with no Feng value, types with no "
     "Feng group (R1, blood among them) and the part of each moved type's shift at right angles to the direction. Any "
     "source applied as M1 is would hold R2's genes and blood too. A does not say that any source could reach the rest.",
+    "A larger multiple makes predicted cells sparser at the same depth (row T46's limit), and every E10.5 library is "
+    "shallower than E9.5. At the same multiple the oracle's log factor is larger than the projection's (it holds the "
+    "part off the direction), so the oracle's large multiples can gain through sparsity more than the projection's "
+    "do, which would raise A on every library. Each arm's scored zero share and detected scored genes per cell are "
+    "reported beside the scores and decide nothing; no outcome of T60 is evidence on T1's read depth, a lever closed "
+    "after an exposure that this read does not reopen, and nothing here sets or proposes a depth or a step.",
     "C compares the real direction with one permutation of it at the same applied size: one draw of the control.",
     "B mixes step size, g_mom's within-type factors and the route of application (per label through external_shift "
     "against per category through momentum_shift); it is reported and decides nothing.",
@@ -510,7 +536,8 @@ def cmd_run(a) -> None:
             sys.exit(f"library {a.library} seed {s}: the projection records differ from the first seed's")
         stages = {"copy_last": pt.to_stage(e95[pick]), **{k: pt.to_stage(v) for k, v in arms.items()}}
         res = score_arms(board, stages, truth_stage, ref_stage, s)
-        rows.append({"seed": s, **res, "seconds": round(time.time() - t1, 1)})
+        rows.append({"seed": s, **res, "sparsity": {k: sparsity(v) for k, v in stages.items()},
+                     "seconds": round(time.time() - t1, 1)})
         print(f"library {a.library} seed {s}: {time.time() - t1:.0f} s", flush=True)
     record.update(rows=rows, projection=coef, external=ext, arms={"reference": list(REFERENCE_ARMS),
                                                                   "counted": list(COUNTED_ARMS)},
@@ -553,11 +580,32 @@ def best_arm(rows: Sequence[Mapping], family: Sequence[str]) -> tuple[str, dict[
 
 def room_state(test: bool, best_oracle: str, best_proj: str) -> str:
     """One library's state of statement (1) from its test (A above the bar with enough seeds ahead) and where each
-    family's best size lies: a passing test with the projection still rising at its largest multiple, or a failing
-    test with the oracle still rising at its largest, is not settled."""
+    family's best size lies. A family's best at the smallest or the largest multiple is an edge: a size beyond it was
+    not tried. An edge matters only on the side that can change the answer: a passing test with the best projection
+    at an edge (a projection size beyond it could score higher and lower A), or a failing test with the best oracle at
+    an edge (an oracle size beyond it could score higher and raise A), is not settled."""
     if test:
-        return "not settled" if best_proj == PROJ_ARMS[-1] else "true"
-    return "not settled" if best_oracle == ORACLE_ARMS[-1] else "false"
+        return "not settled" if best_proj in (PROJ_ARMS[0], PROJ_ARMS[-1]) else "true"
+    return "not settled" if best_oracle in (ORACLE_ARMS[0], ORACLE_ARMS[-1]) else "false"
+
+
+def sparsity(pred) -> dict:
+    """Row T46's measure (`lib_step_read.sparsity`), on the scored genes (the prediction's columns are the board's
+    panel): the share of zero entries and the mean number of detected (non-zero) scored genes per cell. Reported
+    only."""
+    X = np.asarray(pred.X.toarray() if hasattr(pred.X, "toarray") else pred.X)
+    return {"zero_share": float((X == 0).mean()), "detected_per_cell": float((X > 0).sum(axis=1).mean())}
+
+
+def mean_sparsity(rows: Sequence[Mapping]) -> dict:
+    """Each arm's scored zero share and detected genes per cell, mean over the seeds that record them (reported only;
+    an empty dict when no seed does)."""
+    out = {}
+    for arm in ARMS:
+        got = [r["sparsity"][arm] for r in rows if arm in (r.get("sparsity") or {})]
+        if got:
+            out[arm] = {q: float(np.mean([g[q] for g in got])) for q in ("zero_share", "detected_per_cell")}
+    return out
 
 
 def library_validity(r: Mapping | None, seeds: Sequence[int] = SEEDS) -> list[str]:
@@ -609,12 +657,15 @@ def library_reading(r: Mapping) -> dict:
             "test_2": statement(comps["C"], C_BAR),
             "mean_scores": {a: float(np.mean([x["arms"][a]["score"] for x in rows])) for a in ARMS},
             "reached_share": comps[f"{best_p}_over_mix"]["mean"] / oracle_gain if oracle_gain > 0 else float("nan"),
-            "projection": r["projection"]}
+            "sparsity": mean_sparsity(rows), "projection": r["projection"]}
 
 
 def t60_reading(results: Mapping[str, Mapping | None]) -> dict:
     """results: library -> task file (or None). Void unless library 3 is valid. A library 1 or 2 that is void or ran at
-    another commit than library 3 is named and reported; statement (1) cannot then be true."""
+    another commit than library 3 is named and reported. The portion libraries check library 3 on both sides: its
+    'true' stands only when both are valid, at its commit, and true (else 'library 3 only'); its 'false' reads
+    'library 3 false, portions true' when both are valid, at its commit, and true (row T46's limit: on library 3 a
+    point costs the most, so a failure there is not evidence on a heart-to-heart pair), and stands otherwise."""
     libs = {}
     for lib in LIBRARIES:
         reasons = library_validity(results.get(lib))
@@ -631,12 +682,13 @@ def t60_reading(results: Mapping[str, Mapping | None]) -> dict:
         if libs[lib]["valid"]:
             libs[lib].update(library_reading(results[lib]))
     state3 = libs[READ_LIBRARY]["state_1"]
-    if state3 != "true":
-        s1 = state3
-    elif all(libs[lib]["valid"] and libs[lib]["state_1"] == "true" for lib in PORTION_LIBRARIES):
-        s1 = "true"
+    portions_true = all(libs[lib]["valid"] and libs[lib]["state_1"] == "true" for lib in PORTION_LIBRARIES)
+    if state3 == "true":
+        s1 = "true" if portions_true else LIBRARY_3_ONLY
+    elif state3 == "false":
+        s1 = SPLIT_READING if portions_true else "false"
     else:
-        s1 = f"library {READ_LIBRARY} only"
+        s1 = state3
     s2 = "true" if libs[READ_LIBRARY]["test_2"] else "false"
     statements = {STATEMENT_1: s1, STATEMENT_2: s2}
     return {"valid": True, "reasons": [], "libraries": libs, "statements": statements,
@@ -657,11 +709,13 @@ def t60_text(res: Mapping) -> str:
         lines.append("Void: " + "; ".join(r["reasons"]))
     lines.append(f"Statements (fixed in row T60): ({STATEMENT_1}) A, the best of the oracle multiples against the best "
                  f"of the projection multiples, above {A_BAR} on its ten-seed mean with at least {MIN_AHEAD} of 10 "
-                 f"seeds ahead, on library {READ_LIBRARY} and on libraries {' and '.join(PORTION_LIBRARIES)}, the best "
-                 "projection below the largest multiple; 'not settled' when a family's best is its largest multiple "
-                 f"on the side that could change the answer; 'library {READ_LIBRARY} only' when a portion library does "
-                 f"not show it. ({STATEMENT_2}) C above {C_BAR} with at least {MIN_AHEAD} of 10 ahead, on library "
-                 f"{READ_LIBRARY}")
+                 f"seeds ahead, reading true on library {READ_LIBRARY} and on libraries "
+                 f"{' and '.join(PORTION_LIBRARIES)}; 'not settled' when a family's best is the smallest or the "
+                 f"largest multiple on the side that could change the answer; '{LIBRARY_3_ONLY}' when library "
+                 f"{READ_LIBRARY} reads true and a portion library does not; '{SPLIT_READING}' when library "
+                 f"{READ_LIBRARY} reads false and both portion libraries read true; only 'true' opens a line and only "
+                 "'false' closes one. "
+                 f"({STATEMENT_2}) C above {C_BAR} with at least {MIN_AHEAD} of 10 ahead, on library {READ_LIBRARY}")
     for lib, v in r["libraries"].items():
         tag = "the reading" if lib == READ_LIBRARY else "the check on the change of kind"
         if not v["valid"]:
@@ -671,6 +725,10 @@ def t60_text(res: Mapping) -> str:
                      f"{v['state_1']}; statement (2)'s test {'passes' if v['test_2'] else 'fails'}; best oracle "
                      f"{v['best_oracle']}, best projection {v['best_projection']}")
         lines.append("    mean scores: " + ", ".join(f"{a} {x:.2f}" for a, x in v["mean_scores"].items()))
+        sp = v["sparsity"]
+        lines.append("    scored zero share and detected scored genes per cell (reported, deciding nothing), mean over "
+                     "seeds: " + (", ".join(f"{a} {q['zero_share']:.4f} and {q['detected_per_cell']:.2f}"
+                                            for a, q in sp.items()) or "not recorded"))
         for k in ("A", "A_least_squares", "C", "C_fit", "B"):
             lines.append(_cmp_line(k, v["comparisons"][k]))
         for arm in COUNTED_ARMS:
