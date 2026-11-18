@@ -622,6 +622,168 @@ Best regards,
 Vijayavallabh J
 Team captain, Mithril
 
+## Disclosure email for the uploads of 18 November (drafted 2026-11-18; in the captain's drafts; the captain sends)
+
+The runbook's email of sources and hashes (`docs/P3_RUNBOOK.md`, "Disclosure ids for each official upload"), which was
+due before the first official upload and follows it: the captain uploaded by hand on 2026-11-18 (`docs/PLAN.md`
+decision log 2026-11-18 (j)). Drafted by the AI assistant; reviewed for accuracy, strategy and tone by three
+independent agents, rewritten, verified by a fourth, and its later additions (the two second uploads it lists)
+checked by a fifth. Put into the drafts of be23b041@smail.iitm.ac.in, to virtual.embryo.moonshot@gmail.com, at the
+captain's word of 2026-11-18 (decision log (k)). The runbook also has it copied by Slack DM to Weize Xu; that is the
+captain's to do. Whether and when it was sent, and any edit before sending, are recorded here when the captain says.
+Answers: none can exist yet. Text as drafted:
+
+Subject: Human Team (Mithril): sources and file hashes for our official uploads of 18 November and two second
+uploads
+
+Hello organisers,
+
+This note lists, for each of our four official uploads of 18 November 2026 and for the two second uploads that
+follow it, the file's SHA-256 and every external source used, as Rules s.10 asks. It should have reached you before
+the first uploads; it follows them. As it describes our method, please keep it private.
+
+The uploads (18 November 2026, times in UTC as the site lists them)
+
+1. T1:test, 14:37. File T1_s1.h5ad, SHA-256 a294062f5f7bbb2dae19ef695979cc21f03f38df40d22be9ccdd30af36e3bdef.
+2. T2:embryo:test_interp, 14:38. File T2embryo_s1.h5ad, SHA-256
+  dc910d4b3fb1d62b643bf96e5765741f8f0ad011f7b2d928a7955928ddee1303.
+3. T3:bcatenin, 14:38. File allowed_s1.h5ad, SHA-256
+  3d6c94a97b02b8f378b275070dad2767e54005e4194d093e4e01bdf3881b4203.
+4. T2:heart:test_extrap, 14:42. File T2heart_s1_half.h5ad, SHA-256
+  2ca632d399502943da3f50d6609ab630927692073521735769fdacba0ea3a5a5. At 14:38 the site refused the file our procedure
+  had built (T2heart_s1.h5ad, SHA-256 3d6548382b24e01445148d238b5b9ec832f09c4ef6ccddbf819ccfb6ade7c46c) for its cell
+  count; for your information, the same file passed the site's format check on 13 November. The uploaded file is a
+  random half of that file's cells (drawn without replacement with a fixed seed, 1000001, cell order kept) and is
+  otherwise identical. We halved it, rather than cutting it to the board's limit, so that the number of cells
+  follows from the built file alone. This is the one change to a cell number since our note of 4 November, and the
+  method report will list it with the other later decisions that bear on the quantities that note covers.
+
+Second uploads that follow this note. Both files were built on 13 November, before any score, by the rules we had
+fixed in advance for our second uploads.
+
+5. T1:test, second upload. File T1_s2.h5ad, SHA-256
+  f169ea492e8dbac7e8b298f7dfa13fcceba71b5ff35e12ccfdc3a9504346304f. Sources as for upload 1.
+6. T2:embryo:test_interp, second upload. File T2embryo_s2.h5ad, SHA-256
+  41982d8afd784ecb07a4021077f701c3806c3bdb06eda92c2cb99fcc41b19b73. Sources as for upload 2.
+
+External sources
+
+Codes in brackets are the rows of our internal source register. Task 1 uses X001, X002, X003, X005, X006, X007, X008
+and X009; both Task 2 boards and Task 3 use X001, X004 and X005.
+
+On every board:
+- [X001] veckit from its public repository (github.com/aristoteleo/veckit, commit cc3859a, MIT licence): local
+  scoring only.
+- [X005] Open-source Python libraries, pinned in our lock file (as locked on 5 November 2026): POT 0.9.7 and rdata
+  (MIT); numpy 2.5, scipy 1.18, scikit-learn 1.9, pandas 2.3, anndata 0.13, scanpy 1.12 and h5py 3.16
+  (BSD-3-Clause). Library calls only; no data or pretrained weights come with them.
+
+On both Task 2 boards and on Task 3, also:
+- [X004] One function copied from veckit 0.1.1 (commit 46d41e6, common/shape_metrics.py, _canonicalise; MIT licence)
+  into our local scorer. Never part of a prediction.
+
+On Task 1 only:
+- [X002] Feng et al., Nat Commun 13:7960 (2022), GEO GSE193346: wild-type CD1 hearts at E9.5 and from E14.5 to P9.
+  Cells of E10.5 to E13.5 were removed on the per-cell stage column. It supplies a per-cell-type direction of change
+  (E9.5 to E14.5) and no absolute expression level. For completeness: GEO's full object (all stages) and the full
+  metadata tables of both strains in the study, CD1 and C57BL/6, were on our compute machine from 18 to 19 October
+  2026 and were then deleted. While they were there we printed once the median library size and mitochondrial
+  fraction of cells from the removed stages; nothing in any upload was set from that print. On 19 October, while
+  those tables were there, we computed each strain's cardiomyocyte share of heart cells from the cell-type and stage
+  labels alone (no expression) of its E14.5 hearts; the share in our second Task 1 upload lies within that range. On
+  1 November the reduction was rerun from the raw GEO files by code that read the CD1 metadata table as a stream,
+  parsed the object in memory, kept only the counts of the E9.5 and E14.5-and-later cells, and deleted the raw
+  files.
+- [X003] Qiu et al., Nature 626:1084 (2024): embryos 1 to 22 (labelled E8.5 to E9.5) and 54 to 74 (E14.25 to P0).
+  Diagnostics only, not a model input. Expression of embryos 23 to 49 was never downloaded; embryos 23-24 and 50-53
+  were dropped as boundary or in-window litters. A table of labels and metadata for all 74 embryos (no expression)
+  was on our compute machine from 18 to 19 October 2026 and was then deleted; nothing was set from it.
+- [X006] Feulner et al., Biology Open (2026), doi:10.1242/bio.062493, whose E14.5 hearts come from Wünnemann et al.,
+  Nat Genet 52:40 (2020): on 19 October our research took a cardiomyocyte share of heart cells from the cell-type
+  labels of its E14.5 whole hearts (the authors' E14.5; CELLxGENE codes the sample as Theiler stage 22). Our notes
+  match the figure to this source without settling it; the alternative is the Qiu et al. labels above. That figure
+  no longer supports any choice, and no cell, count or expression from this source enters any upload.
+- [X007] van den Brink et al., Nat Methods 14:935-936 (2017): two published gene lists (Supplementary Tables 1 and
+  5), from adult mouse muscle satellite cells. Gene symbols only; no cell, count or expression.
+- [X008] Bakken et al., PLoS One 13(12):e0209648 (2018): one published per-gene table (S6 Table), from adult mouse
+  visual cortex. Gene properties only; no cell, count or expression.
+- [X009] Young and Behjati, GigaScience 9:giaa151 (2020): a published statement on haemoglobin genes in ambient RNA
+  (a method paper, no stage), which informed one step.
+
+Official validation files. Each of the uploads above also uses official validation files that we unlocked on 28
+October: Task 1 the E10.5 file, the heart the E10.5 and E8.5 files, the embryo the E7.5 file, and Task 3 the two
+Gata4 knockout replicates. This is the use we asked about in question 3 of our email of 28 October and announced in
+our note of 31 October. That question has not been answered yet; if our reading of Rules s.10 is wrong, please tell
+us before our heart and Task 3 second uploads.
+
+No pretrained model is used in any upload. Apart from the official validation files above, used under Rules s.10 as
+our email of 28 October described, no measured data from the held-out stages or genotypes is used in any upload by
+any route, and no gene-level knockout finding from outside the released data.
+
+One correction to our note of 4 November. That note said our cell counts and sizes follow rules committed before the
+data release. For Task 3, the rule for the number of cells (use the board's maximum) was fixed on 1 November 2026:
+after the release, though still before what we saw on 4 November. The method report will say the same.
+
+What comes next. Before the heart's and Task 3's second uploads we will send their board, file hash and sources in a
+short note. Our method report will set out the procedure we fixed in advance for the second uploads and any change
+we make to it after the first scores.
+
+Best regards,
+Vijayavallabh J
+Team captain, Mithril
+
+## Scorer-build note (drafted 2026-11-18; in the captain's drafts; the captain decides)
+
+A repeat of follow-up question 1 of 19 October (the scorer build and the handedness of the canonical frame), raised
+again after the first Task 2 scores. Drafted by the AI assistant and reviewed for accuracy, strategy and tone by
+three independent agents, whose changes are in the text: it asks only which version applies and asks for no change
+to any score, because under the right-handed version every file is compared directly, which could score our own
+embryo file lower as easily as higher; it names no board, hash or score of ours; and it states beforehand that no
+file or row order of ours is chosen by its handedness. Put into the same drafts folder at the captain's word of
+2026-11-18. Sending it, changing it or deleting it is the captain's alone. Answers: none can exist yet. Text as
+drafted:
+
+Subject: Human Team (Mithril): which canonicalisation will score occupancy_dice in the final evaluation (Task 2)?
+
+Hello organisers,
+
+One scoring question about occupancy_dice in Task 2. The answer matters to every team with a Task 2 entry.
+
+In veckit before the right-handed-frame fix (for example at commit 46d41e6), common/shape_metrics.py::_canonicalise
+rotates each cloud into its own PCA basis and leaves the handedness of that basis to the SVD. occupancy_dice then
+compares the prediction with the truth either directly or as mirror images. Which case applies is set by the SVD
+sign patterns of the two clouds as the scorer subsamples them, so for a given truth it changes with the order and
+the number of rows in a submitted file. It does not depend on the handedness of the predicted shape: under that
+version a mirrored copy of a file scores exactly like the file. On a released heart stage (E9.5), comparing two
+random halves of the stage with each other, the mirror case scored on average about 0.10 to 0.14 lower in raw Dice
+than the direct case; the size of the difference depends on the stage's shape. veckit main at commit cc3859a (2
+October), the version we pin for local scoring, makes the basis right-handed, which removes the effect.
+
+In our 19 October email we wrote that the public validation scores looked consistent with the earlier version. When
+the validation answers were released to us, we checked the published floor and ceiling Dice values of the validation
+boards: all of them come out exactly the same under both versions, because on those boards the SVD happened to
+return matching handedness. So those values do not show which version the server runs.
+
+Two questions:
+
+1. Which version of _canonicalise returns the test-board scores now, and which will the final evaluation use?
+2. If it is the earlier one, do you plan any change before the final evaluation? We are not asking for any change to
+  our own scores; we only need to know which version applies.
+
+For transparency: our first Task 2 uploads of 18 November are what made us raise this again; we do not know whether
+the handedness affected any of their scores. We have not submitted the same prediction in two row orders, and no
+file or row order of ours is chosen by its handedness. Our heart upload is a random half of the file we built, for
+the reason given in our note on sources of the same day, and our second Task 2 uploads are different predictions
+chosen on other grounds. We will not submit the same prediction in two row orders unless you say that is acceptable.
+
+We asked which build the final evaluation uses on 18 October and raised this handedness question on 19 October
+(question 1 of that follow-up). A public answer in #virtual-embryo-challenge would be welcome, since it applies to
+all teams.
+
+Best regards,
+Vijayavallabh J
+Team captain, Mithril
+
 ## Planned Slack DM (drafted 2026-11-06; sent by the captain the same day)
 
 The state-of-the-art research recommends it (`experiments/research_2026_11_sota/REPORT.md` section 8; `docs/PLAN.md`
