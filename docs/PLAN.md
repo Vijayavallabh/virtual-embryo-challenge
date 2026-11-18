@@ -5137,3 +5137,54 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     'mostly a difference in the states each library holds'; between, 'mixed'. It does not change the rule's output,
     which stays A; it decides how the finding is put to the captain, and with rho of 0.5 or more the AI assistant says
     so and prices B again as a question, labelled as formed after the rule.
+- 2026-11-18 (i), the within-metacell listing of entry (h) is read and reviewed (workflow wf_fa3dfe61-09b, two
+  independent reviews: no number wrong, the AI assistant's first reading of it too strong), and the question on
+  g_mom's test-time fit goes to the captain as it stands. Written by the AI assistant. Nothing in any upload, build,
+  rule or gate file has changed.
+  - **The listing.** `experiments/t1_m1/results/gmom_test_fit/within_metacell.txt`. For the cardiomyocytes 22 of the
+    23 metacells of the fit as built hold at least ten cells of each kind (0.90 of the category's library-3 cells and
+    all of its other cells). Inside them the contrast of library 3's cells against the cells of libraries 1 and 2,
+    projected on the library slope of the raw centred log ratios: rho 0.06 (cosine 0.21; the contrast's length 0.30 of
+    the slope's; per metacell 0.02 to 0.12; with the two kinds' labels shuffled inside each metacell rho stays within
+    0.006 of zero). For the endocardium: rho 0.13, cosine 0.35, length 0.38. By the wording entry (h) fixed for the
+    cardiomyocytes (0.2 or less): 'mostly a difference in the states each library holds'. The slope was taken on the
+    raw log ratios, a choice made in the script before it ran and not in entry (h); against the finished factors'
+    slope, which is the raw one at half scale, rho reads 0.13 and 0.26.
+  - **What it shows, after review.** It rules out one cause. A uniform offset acting on every library-3 cell is not
+    most of the library-linked part of the factors: on synthetic cells run through the fit's own steps, an offset that
+    dominates the slope at the listing's own strength of association gives rho 0.84 to 0.89 and splits the metacells
+    by library, where the real fit has rho 0.06 and 22 of 23 metacells mixed. Taken as pure offset, the contrast is
+    worth 1.1 to 2.8% of the cardiomyocytes' factors' squared size and 1.2 to 1.5% of the endocardium's, by three ways
+    of splitting the share.
+  - **What it does not show.** The calibration the script states (an offset gives rho near 1, a difference in states
+    near 0) holds only with a slope free of noise and metacells of one state each: on the same synthetic cells a pure
+    offset gave 0.07 to 0.21 where the slope was mostly noise, and a pure difference in states gave 0.17 to 0.29 where
+    metacells pooled several states. 'A difference in states' is not 'development': a state that dissected hearts hold
+    more of, matched to E9.5 partners from embryo portions, gets a factor that reflects what the state is, not how it
+    changed; the genes with the largest slope include markers of the inflow tract and the sinus venosus (Tbx18, Sfrp5,
+    Hcn1, Nr2f2), which fits dissected hearts and embryo portions holding different parts of the heart, and
+    haemoglobin and immediate-early genes (Hba-a1, Hbb-y, Fos), a technical effect the test cannot see once it has
+    sorted cells into metacells. Two side readings are withdrawn: the cosine of -0.15 between the two portion
+    libraries' coefficients is what one shared effect also gives when the shares move together, and the no-development
+    statistic cannot detect an offset. The AI assistant's first report to the captain, that the risk recorded in entry
+    (f) is 'mostly withdrawn' and that what the step carries along that direction is 'the states' own change', said
+    more than the listing shows: the risk is described more narrowly, not withdrawn.
+  - **Where the question stands.** At the test pair g_mom's factors go with a metacell's library make-up (0.31 of the
+    cardiomyocytes' factors' squared size on library 3's share, 0.36 on the two portion libraries' shares together;
+    0.10 for the endocardium). A uniform offset on cells explains about 1 to 3% of the factors' size. The rest is a
+    difference between states that the libraries hold in different amounts, and released stages cannot say how much of
+    it is each state's change over the day and how much is what the state is. One practice figure bears on that: a
+    twin of g_mom with nothing developing still gained +0.44 and +0.46 on the two practice cuts (try T23), so factors
+    that carry no development are not known to cost points; no released fit has this structure with a truth after it.
+  - **The options for the captain, none scored and none scorable.** A, the files as built: the output of the rule of
+    entry (g), a rule the reviews showed to lean against B and to be unable to give C. B, the fit on library 3 alone,
+    on the first upload: removes any offset common to the library by construction (about 1 to 3% of the factors' size)
+    and also changes the factors' leading direction (cosine 0.81 with the fit as built), on 14 metacells in place of
+    23; it amends the frozen rules' line on the fit and needs the builder option in review on `campaign/t1-ac` and a
+    fourth rehearsal. C, no g_mom step: gives up the step's practice gain (+1.23 and +1.13) if that gain carries and
+    removes whatever the step carries that is not development; it needs a changed command and a fourth rehearsal. A
+    fourth form that needs no new code, the step on one upload only, hedges the step against itself and weakens the
+    hedge on the base that the two uploads now are. The AI assistant's advice, its own and formed after the results:
+    A, because the one artefact that could be measured is small, the rest cannot be told from the step's purpose on
+    released data, and the stake is about a point of Task 1 either way. A 'keep' here is a default and not a tested
+    result.
