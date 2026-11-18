@@ -4959,3 +4959,27 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Try K15.** Its builder found that the first-choice file's form cannot be built on the cross-knockout folds from
     the record, and did not choose; row K15 was written and read on the replicate folds only (its outcome is in the
     row). The cross-knockout part of entry (c)'s read is closed as not buildable from the record.
+- 2026-11-18 (e), tries H24 and E46 are not run: the reads entry (c) fixed for herded draws on the heart and the
+  embryo already exist (rows H14 and E29, 13 November), and the premise of the hard call was wrong. Written by the AI
+  assistant. Nothing in any upload, build, rule or gate file has changed.
+  - **What was wrong.** The ninth pass's sweep listed herded draws on the heart and on the embryo as closed by analogy
+    with Task 1, 'no heart or embryo read exists', and entry (c) repeated that without a look at the ledger. Rows H14
+    and E29 read both registered pairs on 2026-11-13 by the adoption rule on each board's two counted backtests: the
+    heart's `b0_herd` against `b0` read +0.01 on the one-day backtest (ahead on 4 of 10 seeds) and exactly 0.00 on
+    every seed of the other, where the count rule takes every cell of the reference stage and leaves nothing to herd;
+    the embryo's `fgw_herd` against `fgw` read +0.25 and +0.09 (8 and 6 of 10 seeds). Neither was kept. The builder of
+    the new read found the two rows; the AI assistant had not.
+  - **The embryo.** The embryo's first upload is the build the harness candidate `fgw` stands for, so the read fixed
+    in entry (c) is row E29's own comparison on the same backtests. It is not repeated. The line is closed by E29's
+    read: not kept, no request.
+  - **The heart.** The first upload's entry is `b0_trend`, and its herded twin (`b0_trend_herd`, built and reviewed on
+    `campaign/herd-t2-fix2`, c0b4aa0, unused) draws its cells exactly as `b0_herd` does. On the heart's 1.75-day
+    backtest that draw is idle, as row H14 showed on every seed, so the twin equals its base there and the adoption
+    rule, which needs both counted backtests, cannot pass whatever the other backtest reads; the reading script's own
+    statement for that case is 'not readable', which is not a pass. By the use of entry (c) anything but a pass closes
+    the line with no request. The run would add twenty tries and no information, so it is not made: the line is closed
+    by row H14's read and by the adoption rule's two-backtest requirement, not by an estimate.
+  - **Left as built.** `campaign/herd-t2-fix2` holds the candidate and the reading script
+    `experiments/harness/n53_herd_t2_readings.py` with their tests (three review rounds, ready). Nothing of it is on
+    main. Whether herding would act on a test build depends on a test board's count against its pool, which nobody
+    reads; the question does not arise without a pass.
