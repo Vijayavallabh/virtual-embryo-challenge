@@ -3,7 +3,7 @@
 ## Current State
 
 **Last Updated:** 2026-11-18
-**2026-11-18, 17:00 UTC: all four second-upload files are decided, built and handed to the captain; nothing is
+**2026-11-18, 16:54 UTC: all four second-upload files are decided, built and handed to the captain; nothing is
 waiting on the AI assistant but the scores** (`docs/PLAN.md` decision log 2026-11-18 (m) to (p)). T1: `builds/T1_s2.h5ad`
 (f169ea492e8d). Embryo: `builds/T2embryo_s2.h5ad` (41982d8afd78). Heart: `runs/manual_upload/T2heart_s2iso_half.h5ad`
 (dc436d9225bb), the new file of the amendment of 2026-11-18 to `docs/S2_RULES.md` (hash now 8907bba814e3...): E10.5's

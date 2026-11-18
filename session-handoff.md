@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-- **State at 2026-11-18, 17:00 UTC (newest).** All four second-upload files are with the captain, who uploads by
+- **State at 2026-11-18, 16:54 UTC (newest).** All four second-upload files are with the captain, who uploads by
   hand: `builds/T1_s2.h5ad` (f169ea492e8d), `builds/T2embryo_s2.h5ad` (41982d8afd78),
   `runs/manual_upload/T2heart_s2iso_half.h5ad` (dc436d9225bb) and `t3_build/refused_s1.h5ad` (0394575a11fc); decision
   log 2026-11-18 (m) to (p) has the amendment, the heart build, and tries K16 (void) and K17 (no request). Order for the
