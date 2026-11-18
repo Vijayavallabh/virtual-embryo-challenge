@@ -3,6 +3,23 @@
 ## Current State
 
 **Last Updated:** 2026-11-18
+**2026-11-18, 15:13 UTC: the captain uploaded the first official entry on every board by hand; the scores are in;
+the captain directed that they be used to find what failed and to rebuild the second uploads** (`docs/PLAN.md`
+decision log 2026-11-18 (j), which holds the files, the hashes, the per-metric table and every departure from the
+written procedure; `results/manual_uploads.csv`). Totals: T1 70.9, heart 46.4, embryo 64.6, T3 47.8; Overall 174.2,
+inside the committed 170 to 198 and 9.8 below its centre; the heart and T3 are below the floor. Uploaded: T1's s1,
+the embryo's s1, T3's allowed s1 (the frozen order had the refused s1 first) and a uniform random half of the
+heart's s1 (the server refused the built file for its cell count). One upload is left on each board; the deadline is
+26 November 11:59 UTC. The captain's direction, verbatim: "use the scores for our submission to understand where we
+went fully wrong and incompetent and drastically iterate and improve our scores to get our total leaderboard scores
+around 226 at all drastic and wild costs." The AI assistant reads it as the captain's say-so that the second uploads
+may be chosen with the first scores known; the Official Rules' line (scores choose among predictions and never
+compute one), the data rules and the per-lever rulings on the post-exposure block stay, and every upload stays the
+captain's. Its view on the target, given to the captain: 226 is 51.8 above the first uploads and nothing on record
+puts it within reach of one further upload per board; it works for the largest gain it can find. Running: workflow
+wf_4618bffd-b18 (nine read-only agents: a diagnosis and a challenger per board, and a check of the practice scorer
+against the server). Owed: the disclosure email (it was due before the first upload), an amendment to
+`docs/S2_RULES.md` once the new second uploads are named, and the method report's lines on today's departures.
 **2026-11-18, 09:24 UTC: the captain forwarded three notes on g_mom at the test; the question they raise was
 examined on released stages and goes to the captain with three options, none of which can be scored. Nothing in any
 upload, build, rule or gate file has changed** (`docs/PLAN.md` decision log 2026-11-18 (g) to (i)). Five target-free

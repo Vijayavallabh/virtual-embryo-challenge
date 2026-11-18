@@ -5192,3 +5192,80 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     Task 1 build, default `whole` and byte for byte today's builder; four rounds of independent review, the last:
     ready. The full test suite on the DGX at that commit: lock 0, lint 0, 2,672 tests passed, clean tree. It is off by
     default, changes no entry and is not on main; no test build was made with it.
+- 2026-11-18 (j), the first official uploads, made by the captain by hand; their scores; and the captain's direction
+  for the second uploads. Written by the AI assistant.
+  - **The uploads.** The captain asked for "our best solution file that I should submit", was given the reference
+    set with what stood between it and an upload (the gate, the disclosure email, the freeze-morning rebuild, the
+    screened check), and chose the site's form: "i will upload it manually"; "Leet's submit our best alone". The site
+    lists, on 2026-11-18 (its times, which are UTC by the main session's clock): `T1:test`, `builds/T1_s1.h5ad`
+    (a294062f5f7b) at 14:37; `T2:embryo:test_interp`, `builds/T2embryo_s1.h5ad` (dc910d4b3fb1) at 14:38;
+    `T3:bcatenin`, `t3_build/allowed_s1.h5ad` (3d6c94a97b02) at 14:38; `T2:heart:test_extrap`,
+    `builds/T2heart_s1.h5ad` (3d6548382b24) at 14:38, rejected for its cell count (a format rejection, no slot used),
+    then `runs/manual_upload/T2heart_s1_half.h5ad` (2ca632d39950) at 14:42, accepted. One upload is left on each
+    board. `results/manual_uploads.csv` holds these rows with the full hashes; the client's ledger
+    (`results/submissions.csv`) holds none of them, because the client did not run.
+  - **Departures from the written procedure,** each by the captain's own act or word:
+    1. The upload gate (`results/upload_gate.json`: no first upload until the estimate is above 209, with an
+       exception from 27 November). The uploads went with the estimate at 184. The gate file is unchanged.
+    2. T3's order (`docs/S2_RULES.md`, T3: the refused s1 first, the allowed s1 last). The allowed s1 went first
+       ("for this we can submit the 2nd one itself as it is the beest?"), after the AI assistant's note that it is
+       the first-choice file and that it rests on the two released Gata4 replicates, on which no ruling exists.
+    3. The heart file. The server refused the built file for its cell count; the same file had passed the server's
+       format check on 2026-11-13. The AI assistant made a uniform random half of its cells (numpy's default
+       generator, seed 1000001, half of the rows without replacement, order kept, nothing else changed; the local
+       format check passes) and the captain uploaded it. "Half" was chosen so that the rule reads nothing but the
+       built file and does not tune to the limit. The file is not in the reference list. The server's message says
+       that no task scores the number of cells.
+    4. The disclosure email of `docs/P3_RUNBOOK.md` (due before the first official upload) had not gone, and the
+       screened check before an upload was not run. The email is being drafted for the captain to send.
+    5. The site's per-metric returns were pasted into the main session by the captain. Until then the main session
+       had read no per-metric test value.
+  - **The scores, as pasted** (skills 0 to 100, the floor at 50; leaderboard label, then our metric name):
+
+    | Metric | T1 | Heart | Embryo | T3 |
+    |---|---|---|---|---|
+    | DES, de_score | 64.9 | 52.3 | 64.6 | 49.1 |
+    | DCS, de_direction | 76.7 | 59.4 | 73.0 | 55.7 |
+    | MMD, mmd_u | 71.1 | 37.6 | 78.1 | 33.2 |
+    | CSS, variogram | 70.6 | 52.2 | 62.9 | 34.0 |
+    | SDD, d2_shape | | 27.8 | 30.9 | |
+    | ODS, occupancy_dice | | 41.9 | 2.5 | |
+    | TSR, scale_log_ratio | | 71.0 | 96.5 | |
+    | NFS, neighborhood_mmd | | 44.4 | 74.4 | |
+    | PSS, severity_slope | | | | 50.0 |
+    | Board total | 70.9 | 46.4 | 64.6 | 47.8 |
+    | Rank on the board | 71 | 120 | 131 | 157 |
+
+    Overall = T1 + T3 + (heart + embryo)/2 = 174.2. With the weights of `src/vec/boards.py` the listed metrics give
+    70.85, 64.63 and 47.86 for T1, the embryo and T3 (published 70.9, 64.6, 47.8), and 47.65 for the heart against
+    a published 46.4. One heart value is probably mis-copied; the heart column is treated as approximate until the
+    captain re-reads it.
+  - **Against the estimate.** 174.2 is inside the committed 170 to 198 and 9.8 below its centre. It is below the
+    5th percentile (178.4) of the forecast for the files as built (mean 194.4). Two boards scored below the floor.
+  - **The captain's direction** (verbatim, after the scores): "use the scores for our submission to understand where
+    we went fully wrong and incompetent and drastically iterate and improve our scores to get our total leaderboard
+    scores around 226 at all drastic and wild costs."
+  - **How the AI assistant reads it** (its reading, which the captain can correct):
+    - It is the captain's own say-so under "No score feedback" in `docs/S2_RULES.md` ("After a board's first
+      official upload, only the captain himself can change that board's rule"): the second upload on every board is
+      no longer held to its pre-score rule and may be chosen with the first scores known. The amendment to
+      `docs/S2_RULES.md`, with these words and the new hash, is owed once the new second uploads are named and
+      before any of them is built.
+    - The Official Rules' line is not the team's to move: scores may choose among predictions and never compute
+      one, and no property of a hidden target is solved from scores (`docs/DATA_POLICY.md`, "Scores"). A second
+      upload is built from released data and practice evidence; the first scores say which parts failed and pick
+      among candidates.
+    - The data rules stand: no gene-level knockout findings from outside the released data, the stage and genotype
+      windows, and the list of material that is never opened.
+    - The post-exposure block (cell numbers, sizes and scope on every board; T3's composition; the heart's depth;
+      T1's depth) is not lifted by a general direction. Each candidate that touches one of these goes to the captain
+      as its own priced question. The organisers' reply of 2026-11-17 asks for "your precommitted procedure" in the
+      method report, so every departure from it is written there.
+    - Every upload stays the captain's.
+  - **The target.** 226 is 51.8 above the first uploads and above the leader's total at our last screened read
+    (215.41). The AI assistant's view, given to the captain: nothing on record puts that within reach of one further
+    upload per board. It works for the largest gain it can find and reports the odds as they are.
+  - **What runs.** Workflow wf_4618bffd-b18: four agents diagnose one board each (practice against test metric by
+    metric, the mechanism of each loss, candidates for the second upload), four more try to refute them, and one
+    checks how the practice scorer could differ from the server on the spatial metrics and on the severity metric.
+    All nine read committed files only. Nothing is built, run against a practice target, or uploaded.

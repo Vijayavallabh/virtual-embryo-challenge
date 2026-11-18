@@ -2,6 +2,22 @@
 
 ## Current Objective
 
+- **Read this before anything else (2026-11-18, 15:13 UTC): the first official uploads are in, by the captain's
+  hand, and the second uploads are being redesigned at the captain's direction.** `docs/PLAN.md` decision log
+  2026-11-18 (j) holds everything: the files and hashes, the per-metric scores as the captain pasted them, each
+  departure from the written procedure, the captain's direction verbatim and the AI assistant's reading of it.
+  Totals: T1 70.9, heart 46.4, embryo 64.6, T3 47.8, Overall 174.2. One upload is left on each board; the deadline
+  is 26 November 11:59 UTC. What holds now: (1) the second uploads are no longer fixed by the pre-score rules of
+  `docs/S2_RULES.md`; they may be chosen with the first scores known, by the captain's say-so of 18 November; (2)
+  the Official Rules' line stays: scores choose among predictions and never compute one, and no property of a hidden
+  target is solved from scores; (3) the data rules and the never-open list stay; (4) a candidate that touches the
+  post-exposure block (cell numbers, sizes, scope; T3's composition; the heart's depth; T1's depth) goes to the
+  captain as its own priced question; (5) every upload is the captain's, and the captain uploads through the site's
+  form, so the client's guards and ledger do not see them (`results/manual_uploads.csv` is the record). Owed by the
+  AI assistant: the disclosure email (due before the first upload; draft for the captain to send), the amendment to
+  `docs/S2_RULES.md` with the captain's words and a new hash before any new second upload is built, and the method
+  report's lines on the departures. Everything below this bullet that speaks of dates, the gate blocking uploads,
+  or 'nothing runs' is of before the uploads.
 - **Read this first (2026-11-17).** The organisers moved the final deadline to **25 November 2026, 23:59 AoE (26
   November 11:59 UTC, 17:29 IST)**, for uploads and final-entry marks alike. Every later date in this file, in
   `docs/PLAN.md` section 7, `docs/P3_RUNBOOK.md`, `docs/S2_RULES.md` and `AGENTS.md` is superseded in fact but not
