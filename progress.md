@@ -2,7 +2,27 @@
 
 ## Current State
 
-**Last Updated:** 2026-11-17
+**Last Updated:** 2026-11-18
+**2026-11-18, 04:00 UTC: try T57 is read and the common-part family is closed by the use fixed before its run; the
+ninth independent pass is complete and found no open line; five further reads are being built for the captain's
+three questions and one hard call. Nothing in any upload, build, rule or gate file has changed** (`docs/PLAN.md`
+decision log 2026-11-18 (b) and (c)). T57: both forms read 'behind somewhere'. The common part alone is ahead of the
+entry's direction against library 3's truth at one to three times the practice step and loses its lead against
+library 2's (behind at four times in all three library-2 worlds); the form that keeps each group's own part and only
+raises the coefficient on the common part is ahead in all twelve cells at one and two times (+0.30 to +0.70) and
+behind at four times in the two worlds where the truth is deeper than the reference. No request. The ninth pass,
+part two: an independent recomputation of T57 (430 figures, none wrong; one figure of the decision log and six of
+the AI assistant's labelled readings corrected) and a sweep of the ledger (48 lines since the eighth pass: read 27,
+closed by a pre-set gate 3, blocked 7, not judgeable 4, not buildable 7, open 0). The sweep named counted reads that
+bear on the captain's three questions and one hard call closed by analogy; their uses were fixed in entry (c) before
+any row: T58 (the step at 3 to 5 times with the placebo direction and there-and-back controls), T59 (g_mom's larger
+damping against the twin without development and the permuted control, and in five depth worlds), K15 (Task 3's
+factor at half size in the first-choice file's own form) and H24 with E46 (herded draws on the heart's and the
+embryo's first-upload entries). Four build-and-review workflows are running on them (briefs `lift6/briefs/t1y.md`,
+`t1z.md`, `t3f.md`, `herd2.md`); no row yet, nothing run. The method report's item on these reads was rewritten
+after four rounds of independent review (9cd44cc); the three cold checks' texts are committed
+(`experiments/t1_m1/results/cold_checks/`). The full suite on the DGX at de8f8b5: lock 0, lint 0, 2,456 tests
+passed. Tries: T1 200, embryo 73, heart 31, T3 31. The committed estimate stays 184 (170 to 198).
 **2026-11-17, 23:50 UTC: the ninth independent pass, part one, recomputed rows T48 to T54 (no result wrong) and
 corrected how they were written up; the size of Task 1's step is a question for the captain and is not closed by the
 AI assistant** (`docs/PLAN.md` decision log 2026-11-18 (a)). The pass found rounding slips (corrected in the rows)

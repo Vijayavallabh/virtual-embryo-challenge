@@ -14,28 +14,25 @@
   2026-11-17 (a) has the whole list. The organisers also answered the exposure notice (accepted; they ask for the
   explanation and the precommitted procedure in the method report): a further reply to the thread's other questions
   is announced and must go through a screening agent, never be pasted.
-- **What is live (2026-11-17, 23:50 UTC).** No candidate change is live. Two Task 1 lines were read on 17
-  November. (1) The step's size (tries T44 to T54): the rule fixed before the runs gives 0.60 on both uploads; a
-  second cold check then said stop; the ninth independent pass (decision log 2026-11-18 (a)) classed that stop as
-  the AI assistant's judgement after the results, so the question is the captain's (table below) and is not
-  closed. (2) The common part of Feng's direction (form `cn`): tries T55 and T56 found +0.3 to +0.5 at equal
-  squared size at every depth read; a third cold check found it to be in part a larger step along the common part
-  plus a deletion of group-specific parts the released day does follow (entry 2026-11-17 (h)); no request. Try T57
-  decides, by a use fixed in entry (h) and in its row: a form goes to the captain only if it is ahead of the
-  entry's direction in all 24 cells (six worlds, one to four times the practice step), otherwise the family
-  closes. **Row T57 is committed (de8f8b5) and running in `~/v/vec-campaign-h7` since 23:20 UTC** (exit file
-  `runs/round6/t57.exit`; about three hours; do not sync that checkout while it runs). To finish it:
-  `lift6/finish_t1read.sh vec-campaign-h7 t57_range t57 t57_logs de8f8b5`, commit the task files unread, run
-  `experiments/t1_m1/part_range_read.py read --out t57_range` once on the DGX checkout or locally on the copied
-  task files, `lift6/outcome.py` (totals then T1 200), then the independent recomputation
-  (`lift6/briefs/recompute_t57.md`) and part two of the ninth pass (rows T55 to T57, entries (f) to (h), a sweep
-  of the ledger). The full suite runs at de8f8b5 in `~/v/vec-campaign` (`runs/full_tests_de8f8b5/`; last complete
-  run 628909f: 2,214 passed). The DGX holds four campaign checkouts (`~/v/vec-campaign`, `-h7`, `-c`, `-d`;
-  identical package sets; the reference checkout is untouched at dc7b6ae). Builder options built, reviewed and
-  unused: `campaign/t1-n` (2921b96, a step fraction) and `campaign/t1-w` (f51a278, the form `cn`). The schedule
-  amendments are drafted on `draft/schedule-nov21-fix` (490a51a, reviewed: ready, not merged; decision log
-  2026-11-17 (f)): fill its markers with the captain's words, recompute the rules hash, rebase and merge. Owed by
-  the AI assistant: the three-reviewer pass of `METHOD_SUMMARY.md`'s bullet on the reads of 17 November.
+- **What is live (2026-11-18, 04:00 UTC).** No candidate change is live. On Task 1 two lines were read on 17 and
+  18 November. (1) The step's size (tries T44 to T54): the rule fixed before the runs gives 0.60 on both uploads;
+  a cold check said stop; the ninth independent pass classed that stop as the AI assistant's judgement, so the
+  question is the captain's (table below). (2) The common part of Feng's direction (tries T55 to T57): **closed by
+  try T57's pre-set use, no request** (decision log 2026-11-18 (b)). The ninth pass is complete (entries
+  2026-11-18 (a) and (c)): no result wrong, no open line. **Being built now, no row yet, nothing run:** five reads
+  whose uses entry (c) fixed: T58 (`campaign/t1-y`, brief `lift6/briefs/t1y.md`), T59 (`campaign/t1-z`, `t1z.md`),
+  K15 (`campaign/t3-f` from `campaign/t3-e-fix`, `t3f.md`), H24 and E46 (`campaign/herd-t2`, `herd2.md`); each by
+  `lift6/build_review_workflow.js` (builder, independent review of design and code, up to three fix rounds). For
+  each, when its review says ready: take the files onto main (T58, T59: script and tests; K15 and the herding
+  candidates stay on their campaign branches, as tries K9 to K14 and every candidate do), write the row from the
+  script's own statements with the use of entry (c) (`lift6/rowcells.py`; last cell `*(pending: the run follows
+  this row's commit)*`), commit, `lift6/sync_campaign.sh <checkout> <main or branch>`, launch detached with a
+  background waiter, bring the files back, commit them unread, read once, `lift6/outcome.py`, then an independent
+  recomputation. The DGX holds four campaign checkouts (`~/v/vec-campaign` and `-h7` at de8f8b5, `-c`, `-d`; all
+  idle and clean; the reference checkout is untouched at dc7b6ae). Builder options built, reviewed and unused:
+  `campaign/t1-n` (2921b96, a step fraction) and `campaign/t1-w` (f51a278, the form `cn`). The schedule amendments
+  are drafted on `draft/schedule-nov21-fix` (490a51a, reviewed: ready, not merged; decision log 2026-11-17 (f)):
+  fill its markers with the captain's words, recompute the rules hash, rebase and merge.
   **For the captain, in this order:** (1) the dates: the gate's exception (27 November) is after the organisers'
   deadline, so the client refuses every official upload until the captain moves it (proposal: freeze and first
   round 21 November 00:00 UTC, second round 23 November, T3's last upload 24 November, marks 25 November by 12:00
