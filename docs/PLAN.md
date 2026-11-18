@@ -4937,3 +4937,25 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     so that entries (b) to (h) can be checked against them. The pruned line on a noise-aware Feng direction, whose
     first clause reading N48 contradicted, is marked. Row T49's rule label is made exact. The method report's item on
     these reads was rewritten and reviewed in four rounds (9cd44cc).
+- 2026-11-18 (d), two amendments to entry (c), made after the reviews of the reads it fixed and before the row or run
+  of the read each concerns; both narrow a use, neither widens one. Written by the AI assistant. Nothing in any
+  upload, build, rule or gate file has changed.
+  - **Try T58, the placebo.** Entry (c) named 'try T46's placebo direction'. That was a slip of the AI assistant's:
+    the brief it wrote the same hour specifies try T45's placebo (try T15's permutation within expression bins, one
+    permutation per group for every fraction and seed), the one whose committed arms exist on both counted cuts, and
+    that is what was built and reviewed. Try T46's placebo (a random permutation per seed) is not run.
+  - **Try T58, the use.** Entry (c) read the specific increment alone. The independent reviews showed on synthetic
+    tables that this passes by construction where the step itself does not gain and the placebo loses, and that it
+    would read 'needs Feng's genes' where a placebo gains most of the step's increment. The read's third statement
+    therefore has four outcomes over the same six readings (three and four times, on both counted cuts and against
+    library 3's truth), and the use is fixed on them, before the row: 'the gain beyond twice the step needs Feng's own
+    genes' (the step's increment ahead in all six, the specific increment ahead in all six, the placebo's ahead in
+    none): the first ground of the AI assistant's advice is withdrawn and the advice rests on the depth ground alone.
+    'A placebo gains as well; Feng's direction more' (as before, with the placebo's increment ahead somewhere): the
+    ground is withdrawn in part, and the question quotes both increments and says that a part of the gain beyond twice
+    the step comes with any direction of this size profile. 'The step's gain beyond twice its size is not in all six
+    readings', and 'not shown': the ground stands. Entry (c)'s own condition is printed beside the outcome and decides
+    nothing. Whatever it reads, it sets no step and is no evidence on the hidden truth's depth.
+  - **Try K15.** Its builder found that the first-choice file's form cannot be built on the cross-knockout folds from
+    the record, and did not choose; row K15 was written and read on the replicate folds only (its outcome is in the
+    row). The cross-knockout part of entry (c)'s read is closed as not buildable from the record.
