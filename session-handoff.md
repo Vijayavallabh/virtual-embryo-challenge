@@ -2,6 +2,19 @@
 
 ## Current Objective
 
+- **State at 2026-11-18, 16:00 UTC (newer than the bullet below).** `docs/PLAN.md` decision log 2026-11-18 (k) and
+  (l) hold the diagnosis, the plan and the captain's two answers. Second uploads: T1's and the embryo's built s2
+  files were handed to the captain (hashes f169ea492e8d and 41982d8afd78); T3's last file waits for try K16 (the
+  fallback is the built `t3_build/refused_s1.h5ad`, 0394575a11fc); the heart needs a new file (E10.5 unchanged,
+  scaled evenly to the size file's raw-mode H1 size, a uniform random half), which the captain's go-ahead covers.
+  Before that file is built: merge the reviewed builder options, append the drafted amendment to `docs/S2_RULES.md`,
+  write its new hash to `docs/S2_RULES.sha256` and the decision log, add the set `heart2` to
+  `experiments/builds/build_all.sh`, then build twice on the DGX's campaign checkout (two thread counts), check,
+  halve, copy here, and give the captain the path and hash with a one-line note for the organisers. The captain
+  ordered that organiser replies be assumed and nothing wait on them (entry (l) has the assumed replies, the odds
+  and what each costs if wrong). Two drafts are in the captain's Gmail (the disclosure email; the scorer-build
+  note). Owed after the uploads: the method report's lines on every departure, reviewed like the rest of its
+  exposure section; the captain's nomination of final entries on the site before 26 November 11:59 UTC.
 - **Read this before anything else (2026-11-18, 15:13 UTC): the first official uploads are in, by the captain's
   hand, and the second uploads are being redesigned at the captain's direction.** `docs/PLAN.md` decision log
   2026-11-18 (j) holds everything: the files and hashes, the per-metric scores as the captain pasted them, each

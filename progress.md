@@ -3,6 +3,24 @@
 ## Current State
 
 **Last Updated:** 2026-11-18
+**2026-11-18, 16:00 UTC: the diagnosis is in, two second uploads are with the captain, and the heart's new file and a
+Task 3 practice try are being prepared** (`docs/PLAN.md` decision log 2026-11-18 (k) and (l)). The diagnosis round
+(nine read-only agents, each board's account attacked by a second agent): T1 did not fail; the embryo's file was one
+our own check had flagged as flattened at the test pair, and its near-zero occupancy score is probably the live
+scorer's parity coin, not the flattening (not established); the heart lost on the size step's in-plane stretch, which
+no practice run had scored, and on its expression step; T3's first-choice file carried a depth step fitted on one
+shallow Gata4 slide. The plan: T3 the refused s1 as built; T1 the s2 as built; the embryo the s2 as built; the heart
+a new file (E10.5 unchanged, scaled evenly to the pre-registered size, a uniform random half). About 186 Overall
+expected (180 to 195); no agent found support for 226, and the captain has been told so. The captain's answer to the
+three priced heart questions: "go ahead with whatever is best for us and immediately as weell instead of waiting";
+and later, on organiser replies: "so you assume their reply and proceed as soon as possible [my order]". Done since:
+the screened check ran (no answer to any open question; the Rules page's wording on score use recorded); the
+disclosure email and a scorer-build note are in the captain's Gmail drafts; `builds/T1_s2.h5ad` (f169ea492e8d) and
+`builds/T2embryo_s2.h5ad` (41982d8afd78) were handed to the captain for upload. Running: wf_c9c10308-753 (the heart
+builder's two off-by-default options and a halving tool on `campaign/heart-floor-iso`; the script and ledger row of
+try K16, the strength of T3's wild-type-only factor, on `campaign/t3-revert-dose`). Next: merge after review, the
+amendment to `docs/S2_RULES.md` (drafted) with a new hash, the heart build on the DGX's campaign checkout, row K16 on
+main and then its run, and the scores of the two second uploads when the captain pastes them.
 **2026-11-18, 15:13 UTC: the captain uploaded the first official entry on every board by hand; the scores are in;
 the captain directed that they be used to find what failed and to rebuild the second uploads** (`docs/PLAN.md`
 decision log 2026-11-18 (j), which holds the files, the hashes, the per-metric table and every departure from the
