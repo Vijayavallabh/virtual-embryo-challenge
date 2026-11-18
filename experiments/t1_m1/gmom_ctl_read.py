@@ -48,13 +48,19 @@ to lib3's seed for seed and the truth's row and contamination counts equal to li
 scoring exactly as in lib3 on every seed; in every world the recorded M1 fraction is 0.2 within its tolerance, as
 tries T50 and T54 check it); the twin's split seed (the registered function's seed default) and the derangement's seed
 (the permuted factors' own record) are try T23's and T21's (20261110), the derangement is the same at every damping,
-and the factors used at 0.5 for g_mom, the twin and the permuted set have the sha256 of the registered builds' own
-factors (harness._G_MOM_PREP's, harness._G_MOM_NULL_PREP's and permute_factors of the former at G_MOM_PERM_SEED); the
-twin's size match succeeded in every category at every damping (g_mom's size there lies between the twin's sizes at
-the two ends of SIZE_MATCH_DAMPING, so the bisection could reach it, or g_mom has no size there, so both are zero; a
-size the clip caps below g_mom's leaves the damping found short of an end, so the damping alone does not show it);
-and no control scores exactly as its twin on every seed of a cut (no larger arm of g_mom, the twin or the permuted set
-as the same family's arm at 0.5, and no twin or permuted arm as g_mom at the same damping).
+and the factors used at 0.5 for g_mom, the twin and the permuted set are recorded with the sha256 of the same objects
+as the registered caches (harness._G_MOM_PREP's, harness._G_MOM_NULL_PREP's and permute_factors of the former at
+G_MOM_PERM_SEED; a record, not an independent check); the registered candidates g_mom_null and g_mom_perm, rebuilt on
+the first seed with the harness's caches cleared (their own fits made afresh, the caches put back after), equal the
+arms g_mom_null and g_mom_perm bit for bit (the independent check of the identity at 0.5); each arm's damping, as
+the task file records it from the built factors (g_mom's and the permuted set's finish note, the twin's reference
+damping per category; in the worlds the finish note of the factors the hook returned), is the arm's; the twin's size
+match succeeded in every category at every damping (g_mom's size there lies between the twin's sizes at the two ends
+of SIZE_MATCH_DAMPING, so the bisection could reach it, or g_mom has no size there, so both are zero; a size the clip
+caps below g_mom's leaves the damping found short of an end, so the damping alone does not show it); no control
+scores exactly as its twin on every seed of a cut (no larger arm of g_mom, the twin or the permuted set as the same
+family's arm at 0.5, and no twin or permuted arm as g_mom at the same damping); and in no world does a larger arm
+score exactly as m1_r_gmom on every seed or have m1_r_gmom's prediction sha256 on any seed (the damping hook idle).
 Reading 1, per cut and for the dampings 0.75 and 1.0, each paired by seed, with its mean, seeds ahead, per-seed range
 and its label by try T46's single-task test ("ahead": a mean paired gain above 0.3 with at least 8 of 10 seeds ahead;
 "behind" the same reversed; otherwise "level"): the larger damping's gain G = g_mom_d - g_mom; the twin's Z =
@@ -62,11 +68,18 @@ g_mom_null_d - g_mom_null; the development-specific increment D = G - Z; the per
 g_mom_perm; the assignment-specific increment A = G - Q.
 Statement 1 (changed from brief AN after review: the brief's words, "the larger damping's gain needs development and
 the assignment", say more than D and A ahead can show, since a twin that carries most of the gain still leaves D
-ahead, and its condition never asked that G itself is ahead): "the larger damping's gain is ahead and exceeds the
-no-development twin's and the permuted control's gains at g_mom's size by more than 0.3 on both cuts" if at damping
-1.0 G, D and A all read ahead on both cuts (six readings); otherwise "not shown", naming each of the six that is level
-or behind. Printed beside it, read by nothing: per cut at damping 1.0 the shares Z/G and Q/G of the means (how much of
-g_mom's gain the controls reproduce), and per damping the twin's size match's largest relative error.
+ahead, and its condition never asked that G itself is ahead; reworded again after the second review, since the
+permuted set is not at g_mom's size: it keeps g_mom's values but moves whole rows between metacells of different sizes,
+so its cell-weighted root mean square is larger and it carries a per-gene mean shift g_mom does not have): "the larger
+damping's gain is ahead and exceeds by more than 0.3 on both cuts the gains of the no-development twin (matched to
+g_mom's cell-weighted root mean square at each damping) and of the permuted control (g_mom's factor values with the
+metacells reassigned)" if at damping 1.0 G, D and A all read ahead on both cuts (six readings); otherwise "not shown",
+naming each of the six that is level or behind. Printed beside it, read by nothing, whatever the label: per cut at
+damping 1.0 the means of D and A and the shares Z/G and Q/G of the means (how much of g_mom's gain the controls
+reproduce); per damping the twin's size match's largest relative error; per damping and category the twin's share not
+zeroed, share at the clip and damping found against g_mom's shares (the shapes D compares); and per damping and
+category the permuted set's cell-weighted root mean square and the root mean square over the free genes of its per-gene
+cell-weighted mean (its mean shift) against g_mom's (what Q holds besides the assignment).
 Reading 2, per world: m1_r_gmom_g1 - m1_r_gmom and m1_r_gmom_g075 - m1_r_gmom, the same way. Statement 2, on the
 damping 1.0: "stays positive at every depth read" if in all five worlds the mean is positive with at least 8 of 10
 seeds ahead; "it turns" if in some world it is behind by try T46's test, naming it; otherwise "not separated", naming
@@ -75,19 +88,31 @@ of its mean (the bars are not symmetric; see the limits).
 Reported and read by nothing: every arm's mean; each difference's parts on the two de terms and on mmd_u with the
 variogram; per damping the target-free records of the finished factors for g_mom, the twin and the permuted set (try
 T49's record: share not zeroed, share at the clip, mean absolute log factor), with each family's cell-weighted root
-mean square per category and the twin's size match.
+mean square and mean shift per category and the twin's size match.
 
 Limits (written before the run; each goes into the ledger row and into t59.txt):
 - One E8.5 to E9.5 fit serves every seed and both cuts: the seeds measure draw and scoring noise only, n = 1 for the
   fit, and '8 of 10 ahead' is not replication.
 - Twice the damping is not twice g_mom: it brings back entries zeroed at 0.5 and moves the clip's share. The twin and
   the permuted set are finished the same way, so D and A compare like with like only as far as the records show their
-  sizes agree. The twin is matched to g_mom's size on the cell-weighted root mean square only, not on the share not
-  zeroed or the share at the clip, which are printed beside it; the permuted set keeps g_mom's values exactly.
+  sizes agree.
+- The twin is matched to g_mom's size on the cell-weighted root mean square only, not on the share not zeroed or the
+  share at the clip: at equal root mean square it can be sparser and clip more often, and its damping found need not
+  grow as g_mom's does, so D compares unlike shapes at equal root mean square; the twin's share not zeroed, share at
+  the clip and damping found are printed beside D.
+- The permuted set keeps g_mom's values exactly but not g_mom's size: moving whole rows between metacells of different
+  sizes raises the cell-weighted root mean square and leaves a per-gene cell-weighted mean (a pseudobulk shift) that
+  g_mom does not have, and that shift grows linearly with the damping (up to the clip). Q therefore holds a
+  size-dependent shift as well as the assignment, and A partly reads that shift; the permuted set's root mean square
+  and mean shift are printed beside A against g_mom's.
+- The twin's size match's largest relative error per damping is printed and bounds nothing (no tolerance is set): the
+  reader checks it before reading D.
 - 'Not shown' is not 'does not need development': it mixes controls that gain as much as g_mom with noise (D and A
   are differences of four scored arms, so their per-seed noise is about sqrt(2) times G's), and a D or A read 'behind'
-  means the twin or the permuted set gains more than g_mom. Statement 1 never says the gain needs development: a twin
-  that reproduces most of the gain can still leave D ahead, so Z/G and Q/G are printed beside it.
+  means the twin or the permuted set gains more than g_mom. With ten seeds and a 0.3 bar the power at a true D or A
+  near 0.3 is low, so 'not shown' is the expected outcome even when the effect is real and modest; D's and A's means
+  and Z/G and Q/G are printed whatever the label. Statement 1 never says the gain needs development: a twin that
+  reproduces most of the gain can still leave D ahead, so Z/G and Q/G are printed beside it.
 - Statement 1 is read only in try T11's form A on the two cuts and Statement 2 only in the entry's form B in the
   worlds: nothing reads the development-dependence in the entry's form or the depth sign in form A, and Statement 1 is
   not carried into the entry's form. The two cuts share the fit, the reference and the truth's stage, so its six
@@ -96,8 +121,9 @@ Limits (written before the run; each goes into the ledger row and into t59.txt):
   mean below -0.3 with 8 of 10 behind (try T46's test), so a steady reversal smaller than 0.3 reads 'not separated';
   every world a statement names is printed with its mean, seeds ahead and sign.
 - Each thinned world is one draw (the second draws of tries T50 and T54 and their draw-null checks are not used), and
-  try T50's three worlds share their predictions bit for bit and differ only in the truth, so they are not independent
-  of one another.
+  try T50's three worlds share their predictions bit for bit and differ only in the truth, so they are one draw of
+  predictions and not independent of one another: 'stays positive' in all of them by noise is likelier than the
+  product of three independent worlds' chances.
 - A larger arm redraws more counts: apply_factors draws every count of a call from one stream, so a changed factor
   misaligns every later draw, and larger factors add resampling variance; per-seed differences hold that noise.
 - 'Stays positive' has no size threshold: a gain that falls to a few hundredths still stays positive, and each mean is
@@ -113,6 +139,10 @@ Limits (written before the run; each goes into the ledger row and into t59.txt):
 - The twin's and the permuted control's scores at 0.5 are committed only as per-cut means, per-seed sds and gains over
   b0 (their per-seed task files are not in the repository), so without --t20-tasks their reproduction is checked on
   those aggregates, not seed for seed.
+- At 0.5 the sha256 record of the factors used is taken from the same objects as the registered caches and cannot
+  fail by itself; the identity of the twin and the permuted arm with the registered candidates rests on the rebuild
+  of both candidates on the first seed with the caches cleared (bit for bit) and on the reproduction of tries T21's
+  and T23's committed scores.
 
 Usage: on the DGX campaign checkout, repo root, every cut and world at one commit, committing nothing until the seven
 task files exist, and on the machine tries T49, T50 and T54 ran on, so that the rescored arms reproduce. The
@@ -141,6 +171,7 @@ import argparse
 import hashlib
 import inspect
 import json
+import re
 import sys
 import time
 from collections.abc import Callable, Iterator, Mapping, Sequence
@@ -207,8 +238,9 @@ T54_TASKS = dr.RESULTS / "t54_m1_deep_step" / "tasks"
 WORLD_REPRO_ARMS = ("b0", M1)
 FRACTION, FRACTION_TOL = pdr.FRACTION, pdr.FRACTION_TOL  # M1's 0.2 and its tolerance, tries T50's and T54's check
 HOLD_AHEAD = 8
-EXCEEDS = ("the larger damping's gain is ahead and exceeds the no-development twin's and the permuted control's gains "
-           "at g_mom's size by more than 0.3 on both cuts")
+EXCEEDS = ("the larger damping's gain is ahead and exceeds by more than 0.3 on both cuts the gains of the "
+           "no-development twin (matched to g_mom's cell-weighted root mean square at each damping) and of the "
+           "permuted control (g_mom's factor values with the metacells reassigned)")
 NOT_SHOWN = "not shown"
 STAYS = "stays positive at every depth read"
 TURNS = "it turns"
@@ -240,18 +272,35 @@ CHOICES = (
     "try T46's difference-in-differences is tested; the parts of D and A are the differences of the parts.",
     "Besides try T49's records, each family's cell-weighted root mean square per category and damping (the size T23 "
     "matches) and the twin's size-match record are reported, read by nothing.",
-    "Statement 1's words and condition (after review): 'exceeds ... at g_mom's size by more than 0.3' in place of "
-    "'needs', and G ahead on both cuts at damping 1.0 added to D and A ahead (a tighter bar, never a looser one); Z/G "
+    "Statement 1's words and condition (after review): 'exceeds ... by more than 0.3' in place of 'needs', and G ahead "
+    "on both cuts at damping 1.0 added to D and A ahead (a tighter bar, never a looser one); after the second review "
+    "'at g_mom's size' is dropped (it held for the twin on the cell-weighted root mean square only, and not for the "
+    "permuted set) and each control is named by what it is matched on; the bar and the quantities are unchanged. Z/G "
     "and Q/G are the ratios of the paired means at damping 1.0 (nan where G's mean is 0).",
+    "The permuted set's mean shift: per damping and category, the root mean square over the free genes of the per-gene "
+    "cell-weighted mean of the finished log factors (weights the metacell sizes), recorded for all three families; "
+    "with each family's cell-weighted root mean square it is printed beside A, read by nothing.",
+    "The twin's shapes beside D: per damping and category, the twin's and g_mom's share not zeroed and share at the "
+    "clip (try T49's records) and the twin's damping found (its size match's record), read by nothing.",
+    "Each arm's damping in a task file is read from the built factors: for g_mom and the permuted set the number in "
+    "finish_momentum's note ('damped by d', which permute_factors keeps), for the twin its categories' one reference "
+    "damping (None where they differ or there is none); in a world, the note of the fold's finish the hook returned "
+    "for the arm.",
+    "The rebuild check at 0.5: on the first seed only, harness.CANDIDATES['g_mom_null'] and ['g_mom_perm'] are built "
+    "with harness._G_MOM_PREP and _G_MOM_NULL_PREP cleared and then put back as they were; void unless each rebuilt "
+    "prediction's sha256 (dtype, shape, bytes) equals the arm's.",
+    "A world's damping hook is idle (void) if a larger arm scores exactly as m1_r_gmom on every seed, or has "
+    "m1_r_gmom's prediction sha256 on any seed (a damped finish differs from 0.5's, so no seed should share one).",
     "A failed size match voids: a category whose twin was finished at no damping while g_mom has a size there, or "
     "whose g_mom size lies outside the twin's sizes at the two ends of SIZE_MATCH_DAMPING (the bisection cannot reach "
     "it; where the clip caps the twin's size it keeps the first damping at the cap, short of an end, so a test of the "
     "damping found against the ends would miss it), recorded at run time by watching ts._finish_to_size; no tolerance "
     "is set on the relative error, whose largest value per damping is printed.",
     "The factors used at 0.5 are recorded by sha256 (genes, categories, metacell indexes, sizes, log factors) beside "
-    "the registered builds' own (harness._G_MOM_PREP's and _G_MOM_NULL_PREP's at the end of the run, and "
-    "permute_factors of the former at harness.G_MOM_PERM_SEED); the twin's seed is the registered function's default "
-    "(its one call passes none) and the derangement's is the permuted factors' own record.",
+    "the sha256 of the registered caches (harness._G_MOM_PREP's and _G_MOM_NULL_PREP's at the end of the run, and "
+    "permute_factors of the former at harness.G_MOM_PERM_SEED), which hold the same objects, so this record cannot "
+    "fail in a real run and is kept as a record (field 'registered_cache'); the twin's seed is the registered "
+    "function's default (its one call passes none) and the derangement's is the permuted factors' own record.",
     "Statement 2's bars are kept as the brief sets them (a symmetric bar would loosen 'it turns' or change what 'stays "
     "positive' says); every world a statement names is printed with its mean, seeds ahead and sign instead.",
     "Each world's recorded M1 fraction is checked against 0.2 within part_depth_read's FRACTION_TOL, as tries T50 "
@@ -365,19 +414,72 @@ def control_factors(ctx: harness.BuildContext) -> dict:
 
 
 def at_half_record(ctl: Mapping) -> dict:
-    """The identity facts at 0.5: per family the sha256 of the factors the arm used and of the registered build's own
-    factors (harness._G_MOM_PREP's and harness._G_MOM_NULL_PREP's as they stand, and permute_factors of the former at
-    harness.G_MOM_PERM_SEED, as harness._g_mom_perm makes it); the twin's split seed is the registered function's
-    default (its one call passes none) and the derangement's the permuted factors' own record."""
+    """A record at 0.5, not an independent check: per family the sha256 of the factors the arm used and of the
+    registered caches' factors (harness._G_MOM_PREP's and harness._G_MOM_NULL_PREP's as they stand, and permute_factors
+    of the former at harness.G_MOM_PERM_SEED, as harness._g_mom_perm makes it), which in a run are the same objects;
+    the twin's split seed is the registered function's default (its one call passes none) and the derangement's the
+    permuted factors' own record. The independent check is `registered_rebuild`."""
     reg_g = (harness._G_MOM_PREP.get("fold") or {}).get("factors")
     reg_null = (harness._G_MOM_NULL_PREP.get("fold") or {}).get("factors")
     registered = {"g_mom": reg_g, "g_mom_null": reg_null,
                   "g_mom_perm": None if reg_g is None else ts.permute_factors(reg_g, harness.G_MOM_PERM_SEED)}
     sha = {f: {"used": factors_sha256(ctl[f][BASE_DAMPING]),
-               "registered": None if registered[f] is None else factors_sha256(registered[f])} for f in FAMILIES}
+               "registered_cache": None if registered[f] is None else factors_sha256(registered[f]),
+               "note": "sha256 of the factors used and of the registered caches, the same objects in a run"}
+           for f in FAMILIES}
     null_seed = inspect.signature(harness.g_mom_no_development_factors).parameters["seed"].default
     perm_seed = (ctl["g_mom_perm"][BASE_DAMPING].record.get("permutation") or {}).get("seed")
     return {"sha256": sha, "null_seed": null_seed, "perm_seed": perm_seed}
+
+
+def registered_rebuild(ctx: harness.BuildContext, preds: Mapping[str, Stage]) -> dict:
+    """The independent check at 0.5: the registered candidates g_mom_null and g_mom_perm built afresh with the
+    harness's caches cleared (their own fits made again), compared bit for bit with this run's arms of the same names
+    by prediction sha256 (dtype, shape, bytes). The caches are put back as they were, so later seeds use the same
+    objects."""
+    saved = {id(c): dict(c) for c in (harness._G_MOM_PREP, harness._G_MOM_NULL_PREP)}
+    harness._G_MOM_PREP.clear()
+    harness._G_MOM_NULL_PREP.clear()
+    try:
+        got = {a: harness.CANDIDATES[a].build(ctx) for a in T20_ARMS}
+    finally:
+        for c in (harness._G_MOM_PREP, harness._G_MOM_NULL_PREP):
+            c.clear()
+            c.update(saved[id(c)])
+    out = {}
+    for a in T20_ARMS:
+        new, used = ls.prediction_sha256(got[a]), ls.prediction_sha256(preds[a])
+        out[a] = {"sha256_rebuilt": new, "sha256_arm": used, "equal": new == used}
+    return out
+
+
+_DAMPED = re.compile(r"damped by ([0-9.eE+-]+)")
+
+
+def finish_damping(sf: ts.StateFactors) -> float | None:
+    """The damping finish_momentum wrote in the factors' finish note ('damped by d'; permute_factors keeps the note),
+    None where there is none."""
+    m = _DAMPED.search(str((sf.record or {}).get("finish", "")))
+    return float(m.group(1)) if m else None
+
+
+def twin_damping(sf: ts.StateFactors) -> float | None:
+    """The twin's reference damping, the same in every category (finish_no_development's record), None otherwise."""
+    ds = {(cf.record.get("no_development") or {}).get("reference_damping") for cf in sf.categories.values()}
+    return float(ds.pop()) if len(ds) == 1 and None not in ds else None
+
+
+def built_cut_dampings(ctl: Mapping) -> dict:
+    """Per arm of part 1, the damping read from the factors it used."""
+    return {f"{f}{SUFFIX[d]}": (twin_damping if f == "g_mom_null" else finish_damping)(ctl[f][d])
+            for f in FAMILIES for d in LEVELS}
+
+
+def built_world_dampings(finished: Mapping[float, ts.StateFactors]) -> dict:
+    """Per arm of part 2 (m1_r_gmom and the larger two), the damping read from the fold's finish the hook returned for
+    it."""
+    return {a: (finish_damping(finished[BASE_DAMPING * m]) if BASE_DAMPING * m in finished else None)
+            for a, m in WORLD_ARMS.items()}
 
 
 def control_arms(ctx: harness.BuildContext) -> dict[str, Stage]:
@@ -411,6 +513,20 @@ def size_records(by_d: Mapping[float, ts.StateFactors], held_flat: Sequence[str]
     return out
 
 
+def mean_shift_records(by_d: Mapping[float, ts.StateFactors], held_flat: Sequence[str]) -> dict:
+    """Per damping and category, the root mean square over the free genes of the per-gene cell-weighted mean of the
+    finished log factors (weights the metacell sizes): the pseudobulk shift the factors carry. g_mom's is near 0 (its
+    mean is removed before the zeroing and the clip); the permuted set's is not where metacell sizes differ, and it
+    grows with the damping. Target-free; no count."""
+    out = {}
+    held = set(map(str, held_flat))
+    for d, sf in sorted(by_d.items()):
+        free = np.array([g not in held for g in sf.genes], dtype=bool)
+        out[f"{d:g}"] = {c: float(np.sqrt(np.mean(np.average(cf.logf, axis=0, weights=cf.sizes)[free] ** 2)))
+                         if free.any() and len(cf.sizes) else 0.0 for c, cf in sf.categories.items()}
+    return out
+
+
 def control_records(ctl: Mapping, held_flat: Sequence[str]) -> dict:
     """The target-free records of each family's finished factors (try T49's, per damping), their sizes, the twin's
     size match per category and damping (finish_no_development's record and, where watched, g_mom's size against the
@@ -421,6 +537,7 @@ def control_records(ctl: Mapping, held_flat: Sequence[str]) -> dict:
     perms = {f"{d:g}": (ctl["g_mom_perm"][d].record.get("permutation") or {}) for d in LEVELS}
     return {"factors": {f: gs.factor_records(ctl[f], held_flat) for f in FAMILIES},
             "sizes": {f: size_records(ctl[f], held_flat) for f in FAMILIES},
+            "mean_shift": {f: mean_shift_records(ctl[f], held_flat) for f in FAMILIES},
             "null_match": match,
             "null_categories": {f"{d:g}": sorted(ctl["g_mom_null"][d].categories) for d in LEVELS},
             "permutation": perms,
@@ -462,7 +579,7 @@ def cmd_run_cut(a) -> None:
     ref_stage = Stage.from_anndata(read_stage(data / t.reference, genes), genes)
     board = harness.task_board(t, boards, target.n, ref_stage.n)
     stamp_inputs = [data / t.target, data / t.reference, *[data / f for f in t.inputs.values()]]
-    res = {"label": LABEL_T59, "part": "cut", "task": t.key, "seeds": list(seeds), "dampings": dict(CUT_ARMS),
+    res = {"label": LABEL_T59, "part": "cut", "task": t.key, "seeds": list(seeds), "dampings_intended": dict(CUT_ARMS),
            "reproduction_tolerance": REPRO_TOL}
     floors, failures = ls.all_anchors(t, board, target, ref_stage, seeds)
     if failures:
@@ -479,18 +596,22 @@ def cmd_run_cut(a) -> None:
     harness._G_MOM_PREP.clear()
     harness._G_MOM_NULL_PREP.clear()
     rows = []
+    rebuild = None
     for s in seeds:
         t0 = time.time()
         f = floors[s]
         ctx = harness.BuildContext(task=view, board=cboard, inputs=inputs, seed=harness.BUILD_SEED_OFFSET + s,
                                    derived={"t1_held_flat": preregistered})
         preds = cut_arms(ctx, b0)
+        if rebuild is None:  # the independent check at 0.5, on the first seed
+            rebuild = {"seed": s, **registered_rebuild(ctx, preds)}
         arms = er.score_arms(board, target, ref_stage, s, f.anchors, preds)
         rows.append({"seed": s, "floor": float(f.score), "arms": arms, "seconds": round(time.time() - t0, 1)})
         print(f"{t.key} seed {s}: " + ", ".join(f"{k} {v['score']:.2f}" for k, v in arms.items()), flush=True)
     ctl = _CTL["fold"]
     half = at_half_record(ctl)
     res.update({"null_seed": half["null_seed"], "perm_seed": half["perm_seed"], "at_half": half["sha256"],
+                "registered_rebuild": rebuild, "dampings": built_cut_dampings(ctl),
                 "records": control_records(ctl, ctl["held_flat"]),
                 "limits": list(LIMITS), "rows": rows,
                 "stamp": gv.stamp(started, [*stamp_inputs, t1_scope.HELD_FLAT_GENES, ts.R1_CONFIG, n22])})
@@ -521,7 +642,7 @@ def cmd_run_world(a) -> None:
     res = {"label": LABEL_T59, "part": "world", "task": t.key, "world": a.world,
            "truth": a.world if a.world in T50_WORLDS else HEART, "truth_rows": int(truth.n),
            "truth_contamination": contamination, "seeds": list(seeds), "thinning": thinning,
-           "dampings": dict(WORLD_DAMPINGS), "reproduction_tolerance": REPRO_TOL}
+           "dampings_intended": dict(WORLD_DAMPINGS), "reproduction_tolerance": REPRO_TOL}
     floors, failures = ls.all_anchors(t, board, truth, ref_stage, seeds)
     if failures:
         res.update({"anchor_failures": failures, "rows": [], "stamp": gv.stamp(started, stamp_inputs)})
@@ -552,6 +673,7 @@ def cmd_run_world(a) -> None:
                      "sparsity": {k: ls.sparsity(p) for k, p in preds.items()}, "seconds": round(time.time() - t0, 1)})
         print(f"{a.world} seed {s}: " + ", ".join(f"{k} {v['score']:.2f}" for k, v in arms.items()), flush=True)
     res.update({"fraction": fraction, "external": ext,
+                "dampings": built_world_dampings(gs._FOLD["fold"]["finished"]),
                 "factor_records": gs.factor_records(gs._FOLD["fold"]["finished"], preregistered),
                 "limits": list(LIMITS), "rows": rows,
                 "stamp": gv.stamp(started, [*stamp_inputs, t1_scope.HELD_FLAT_GENES, ts.R1_CONFIG,
@@ -683,9 +805,14 @@ def record_reasons(k: str, r: Mapping) -> list[str]:
                        f"{r.get('perm_seed')!r}, not tries T23's and T21's ({NULL_SEED} and {PERM_SEED})")
     half = r.get("at_half") or {}
     off = [f for f in FAMILIES if not (isinstance((half.get(f) or {}).get("used"), str)
-                                       and half[f]["used"] == half[f].get("registered"))]
+                                       and half[f]["used"] == half[f].get("registered_cache"))]
     if off:
-        reasons.append(f"{k}: the factors used at 0.5 are not recorded with the registered candidates' sha256 on {off}")
+        reasons.append(f"{k}: the factors used at 0.5 are not recorded with the registered caches' sha256 on {off}")
+    rebuild = r.get("registered_rebuild") or {}
+    off = [a for a in T20_ARMS if (rebuild.get(a) or {}).get("equal") is not True]
+    if off:
+        reasons.append(f"{k}: the registered candidates rebuilt with the caches cleared do not equal the arms bit for "
+                       f"bit (or the rebuild is not recorded) on {off}")
     rec = r.get("records") or {}
     reasons += size_match_reasons(k, rec.get("null_match"))
     if rec.get("permutation_same_at_every_damping") is not True:
@@ -740,10 +867,26 @@ def thinning_reasons(k: str, th: Mapping | None) -> list[str]:
     return reasons
 
 
+def world_idle_reasons(k: str, r: Mapping) -> list[str]:
+    """The damping hook is idle in a world if a larger arm scores exactly as m1_r_gmom on every seed, or has
+    m1_r_gmom's prediction sha256 on any seed."""
+    if not _complete(r, WORLD_ARM_NAMES):
+        return []
+    rows = _rows(r)
+    larger = [a for a in WORLD_ARMS if a != M1]
+    same = [a for a in larger if _same_on_every_seed(r, a, M1)]
+    same += [f"{a} (sha256 on seed {row['seed']})" for a in larger for row in rows
+             if (row.get("sha256") or {}).get(a) is not None and row["sha256"][a] == (row.get("sha256") or {}).get(M1)]
+    if not same:
+        return []
+    return [f"{k}: a larger arm is m1_r_gmom (the damping hook idle?): {same}"]
+
+
 def world_reasons(worlds: Mapping[str, Mapping]) -> list[str]:
     reasons = []
     lib3 = worlds.get(HEART)
     for k, r in worlds.items():
+        reasons += world_idle_reasons(k, r)
         if r.get("task") != TASK:
             reasons.append(f"{k}: the file holds task {r.get('task')!r}")
         if r.get("world") != k:
@@ -909,6 +1052,38 @@ def size_match_errors(cuts: Mapping[str, Mapping]) -> dict:
     return out
 
 
+def _get(m: Mapping | None, *keys):
+    for x in keys:
+        m = (m or {}).get(x) if isinstance(m, Mapping) else None
+    return m
+
+
+def beside_one(cuts: Mapping[str, Mapping], r1: Mapping) -> dict:
+    """Printed beside statement 1, read by nothing, whatever the label: per cut the means of D and A at damping 1.0;
+    per cut, damping and category the twin's share not zeroed, share at the clip and damping found against g_mom's
+    shares (the shapes D compares), and the permuted set's cell-weighted root mean square and mean shift against
+    g_mom's (what Q holds besides the assignment). Target-free records only."""
+    out = {}
+    for k in CUT_FILES:
+        rec = cuts[k].get("records") or {}
+        twin, perm = {}, {}
+        for d in (f"{x:g}" for x in LEVELS):
+            twin[d] = {c: {"share_not_zeroed": _get(rec, "factors", "g_mom_null", d, c, "share_not_zeroed"),
+                           "share_at_clip": _get(rec, "factors", "g_mom_null", d, c, "share_at_clip"),
+                           "damping_found": _get(rec, "null_match", d, c, "damping"),
+                           "g_mom_share_not_zeroed": _get(rec, "factors", "g_mom", d, c, "share_not_zeroed"),
+                           "g_mom_share_at_clip": _get(rec, "factors", "g_mom", d, c, "share_at_clip")}
+                       for c in sorted(_get(rec, "null_match", d) or {})}
+            perm[d] = {c: {"rms": _get(rec, "sizes", "g_mom_perm", d, c),
+                           "g_mom_rms": _get(rec, "sizes", "g_mom", d, c),
+                           "mean_shift": _get(rec, "mean_shift", "g_mom_perm", d, c),
+                           "g_mom_mean_shift": _get(rec, "mean_shift", "g_mom", d, c)}
+                       for c in sorted(_get(rec, "sizes", "g_mom_perm", d) or {})}
+        out[k] = {"D_mean_at_1": r1[k]["1"]["D"]["mean"], "A_mean_at_1": r1[k]["1"]["A"]["mean"],
+                  "twin_shape": twin, "permuted_size": perm}
+    return out
+
+
 def reading_two(worlds: Mapping[str, Mapping]) -> dict:
     return {k: {f"{d:g}": increment(_rows(worlds[k]), M1, f"{M1}{WORLD_SUFFIX[d]}") for d in LARGER} for k in WORLDS}
 
@@ -954,6 +1129,7 @@ def t59_reading(cuts: Mapping[str, Mapping], worlds: Mapping[str, Mapping], comm
     s1, s2 = statement_one(r1), statement_two(r2)
     out.update({"outcome": f"statement 1: {s1['statement']}; statement 2: {s2['statement']}",
                 "reading_1": r1, "statement_1": s1, "size_match_largest_relative_error": size_match_errors(cuts),
+                "beside_statement_1": beside_one(cuts, r1),
                 "reading_2": r2, "statement_2": s2})
     out["mean_scores"] = {k: {a: float(np.mean([_score(row, a) for row in _rows(r)])) for a in arms}
                           for k, r, arms in [*((k, cuts[k], CUT_ARM_NAMES) for k in CUT_FILES),
@@ -972,6 +1148,10 @@ def _line(c: Mapping) -> str:
     return (f"{c['quantity']}: {c['mean']:+.2f} points, ahead {c['seeds_ahead']} of {c['of']}, per seed "
             f"{c['range'][0]:+.2f} to {c['range'][1]:+.2f}, test: {c['label']}; de terms {p['de']:+.2f}, mmd_u and "
             f"variogram {p['mmd_u_variogram']:+.2f}")
+
+
+def _fmt(x, spec: str) -> str:
+    return format(x, spec) if isinstance(x, int | float) else str(x)
 
 
 def t59_text(res: Mapping) -> str:
@@ -993,9 +1173,26 @@ def t59_text(res: Mapping) -> str:
                      "shares of g_mom's: " + "; ".join(
                          f"{k} Z/G {x['Z/G']:.2f}, Q/G {x['Q/G']:.2f}"
                          for k, x in r["statement_1"]["control_share_of_gain"].items()))
-        lines.append("    the twin's size match, largest relative error per damping: " + "; ".join(
-            f"{k} " + ", ".join(f"{d} {e if e is None else format(e, '.3g')}" for d, e in by_d.items())
-            for k, by_d in r["size_match_largest_relative_error"].items()))
+        lines.append("    the twin's size match, largest relative error per damping (bounds nothing; check it before "
+                     "reading D): " + "; ".join(
+                         f"{k} " + ", ".join(f"{d} {e if e is None else format(e, '.3g')}" for d, e in by_d.items())
+                         for k, by_d in r["size_match_largest_relative_error"].items()))
+        for k, b in r["beside_statement_1"].items():
+            lines.append(f"    {k} at damping 1, whatever the label: D mean {b['D_mean_at_1']:+.2f}, A mean "
+                         f"{b['A_mean_at_1']:+.2f}")
+            for d, cats in b["twin_shape"].items():
+                lines.append(f"    {k} damping {d}, the twin's shape against g_mom's at equal root mean square (D "
+                             "compares unlike shapes): " + "; ".join(
+                                 f"{c} not zeroed {_fmt(x['share_not_zeroed'], '.3f')} (g_mom "
+                                 f"{_fmt(x['g_mom_share_not_zeroed'], '.3f')}), at clip "
+                                 f"{_fmt(x['share_at_clip'], '.4f')} (g_mom {_fmt(x['g_mom_share_at_clip'], '.4f')}), "
+                                 f"damping found {_fmt(x['damping_found'], '.4g')}" for c, x in cats.items()))
+            for d, cats in b["permuted_size"].items():
+                lines.append(f"    {k} damping {d}, the permuted set's size and mean shift against g_mom's (Q holds "
+                             "the shift besides the assignment): " + "; ".join(
+                                 f"{c} rms {_fmt(x['rms'], '.4f')} (g_mom {_fmt(x['g_mom_rms'], '.4f')}), mean shift "
+                                 f"{_fmt(x['mean_shift'], '.4f')} (g_mom {_fmt(x['g_mom_mean_shift'], '.4f')})"
+                                 for c, x in cats.items()))
         for k, by_d in r["reading_1"].items():
             for d, qs in by_d.items():
                 for q, c in qs.items():

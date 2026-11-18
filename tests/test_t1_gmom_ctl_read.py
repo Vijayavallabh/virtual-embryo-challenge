@@ -227,7 +227,8 @@ def _cut(cm, gains, seeds=range(10), commit="c" * 40, clean=True, task=None, shi
         rows.append({"seed": s, "floor": 50.0, "arms": arms})
     rec = {"label": "synthetic", "part": "cut", "task": task, "seeds": list(seeds),
            "dampings": dampings or dict(cm.CUT_ARMS), "null_seed": cm.NULL_SEED, "perm_seed": cm.PERM_SEED,
-           "at_half": {f: {"used": "a" * 64, "registered": "a" * 64} for f in cm.FAMILIES},
+           "at_half": {f: {"used": "a" * 64, "registered_cache": "a" * 64} for f in cm.FAMILIES},
+           "registered_rebuild": {"seed": 0, **{a: {"equal": True} for a in cm.T20_ARMS}},
            "records": {"permutation_same_at_every_damping": True, "permutation": {"0.5": {"seed": cm.PERM_SEED}},
                        "null_categories": {"0.5": ["cm"], "0.75": ["cm"], "1": ["cm"]}, "factors": {}, "sizes": {},
                        "null_match": _match()},
@@ -237,7 +238,7 @@ def _cut(cm, gains, seeds=range(10), commit="c" * 40, clean=True, task=None, shi
 
 
 def _world(cm, k, gains, seeds=range(10), commit="c" * 40, clean=True, shift=None, thinning=None, sha_off=False,
-           offset=None, **top):
+           offset=None, copy=None, sha_same=None, **top):
     """A part-2 task file of world k. The thinned references' scores sit 0.5 above lib3's (their thinning is not
     idle) unless offset says otherwise."""
     shift = shift or {}
@@ -249,7 +250,11 @@ def _world(cm, k, gains, seeds=range(10), commit="c" * 40, clean=True, shift=Non
             arms[a] = _arm(WORLD_BASE["m1_r_gmom"] + off + _gain(gains.get(k, {}), a, i), mmd_u=0.1 + 1e-9 * (n + 1))
         for a, x in shift.items():
             arms[a] = {**arms[a], "score": arms[a]["score"] + x}
+        for a, b in (copy or {}).items():
+            arms[a] = dict(arms[b])
         sha = {a: f"{a}-{s}" + ("x" if sha_off else "") for a in arms}
+        if sha_same is not None and sha_same[1] == s:
+            sha[sha_same[0]] = sha[cm.M1]
         rows.append({"seed": s, "floor": 50.0, "arms": arms, "sha256": sha})
     if k == cm.HEART:
         th = thinning
@@ -504,14 +509,16 @@ def test_the_at_half_record_is_the_registered_builds_sha256(cm):
     rec = cm.at_half_record(ctl)
     assert rec["null_seed"] == rec["perm_seed"] == 20261110
     for f in cm.FAMILIES:
-        assert rec["sha256"][f]["used"] == rec["sha256"][f]["registered"] and len(rec["sha256"][f]["used"]) == 64
+        assert rec["sha256"][f]["used"] == rec["sha256"][f]["registered_cache"]
+        assert len(rec["sha256"][f]["used"]) == 64 and "same objects" in rec["sha256"][f]["note"]
     assert len({rec["sha256"][f]["used"] for f in cm.FAMILIES}) == 3
     assert cm.factors_sha256(ctl["g_mom"][1.0]) != rec["sha256"]["g_mom"]["used"]
     # a twin at 0.5 other than the registered one, or no registered build, is recorded as different
     swapped = {**ctl, "g_mom_null": {**ctl["g_mom_null"], 0.5: ctl["g_mom_null"][1.0]}}
-    assert cm.at_half_record(swapped)["sha256"]["g_mom_null"]["used"] != rec["sha256"]["g_mom_null"]["registered"]
+    assert (cm.at_half_record(swapped)["sha256"]["g_mom_null"]["used"]
+            != rec["sha256"]["g_mom_null"]["registered_cache"])
     harness._G_MOM_NULL_PREP.clear()
-    assert cm.at_half_record(ctl)["sha256"]["g_mom_null"]["registered"] is None
+    assert cm.at_half_record(ctl)["sha256"]["g_mom_null"]["registered_cache"] is None
 
 
 def test_in_a_thinned_reference_world_the_arms_are_built_on_the_thinned_inputs(cm, monkeypatch):
@@ -542,7 +549,8 @@ def test_in_a_thinned_reference_world_the_arms_are_built_on_the_thinned_inputs(c
 
     def form_b_arms(ctx, directions, groups, fraction, held_m1, held_factors):
         seen.append(ctx.inputs)
-        cm.gs._FOLD["fold"] = {"finished": {}}
+        cm.gs._FOLD["fold"] = {"finished": {d: NS(record={"finish": f"per-category mean removed, damped by {d:g}, "
+                                                                     "zero below log 1.05"}) for d in (0.5, 0.75, 1.0)}}
         return {a: f"pred-{a}" for a in cm.WORLD_ARMS}
 
     for mod, name, value in [
@@ -571,6 +579,7 @@ def test_in_a_thinned_reference_world_the_arms_are_built_on_the_thinned_inputs(c
     assert all(x is thinned for x in seen)
     rec = json.loads((cm.RESULTS / "t59" / "tasks" / "ref67.json").read_text())
     assert rec["thinning"] == {"p": 0.5} and rec["fraction"] == 0.2 and rec["truth"] == cm.HEART
+    assert rec["dampings"] == cm.WORLD_DAMPINGS and rec["dampings_intended"] == cm.WORLD_DAMPINGS
 
 
 
@@ -608,11 +617,19 @@ def test_in_a_thinned_reference_world_the_arms_are_built_on_the_thinned_inputs(c
     ({"world_over": {"ref50": {"truth": "ref50"}}}, "holds truth"),
     ({"world_over": {"ref67": {"world": "ref50"}}}, "holds world"),
     ({"cut_over": {CH: {"null_seed": 1}}}, "tries T23's and T21's"),
-    ({"cut_over": {WH: {"at_half": {**{f: {"used": "a" * 64, "registered": "a" * 64} for f in ("g_mom",
-                                                                                          "g_mom_null")},
-                                     "g_mom_perm": {"used": "a" * 64, "registered": "b" * 64}}}}},
-     "registered candidates' sha256 on ['g_mom_perm']"),
-    ({"cut_over": {CH: {"at_half": None}}}, "registered candidates' sha256"),
+    ({"cut_over": {WH: {"at_half": {**{f: {"used": "a" * 64, "registered_cache": "a" * 64} for f in ("g_mom",
+                                                                                                "g_mom_null")},
+                                     "g_mom_perm": {"used": "a" * 64, "registered_cache": "b" * 64}}}}},
+     "registered caches' sha256 on ['g_mom_perm']"),
+    ({"cut_over": {CH: {"at_half": None}}}, "registered caches' sha256"),
+    ({"cut_over": {CH: {"registered_rebuild": None}}}, "rebuilt with the caches cleared"),
+    ({"cut_over": {WH: {"registered_rebuild": {"seed": 0, "g_mom_null": {"equal": True},
+                                               "g_mom_perm": {"equal": False}}}}},
+     "do not equal the arms bit for bit (or the rebuild is not recorded) on ['g_mom_perm']"),
+    ({"world_over": {"lib3_t33": {"copy": {"m1_r_gmom_g1": "m1_r_gmom"}}}}, "the damping hook idle"),
+    ({"world_over": {"ref50": {"sha_same": ("m1_r_gmom_g075", 4)}}}, "m1_r_gmom_g075 (sha256 on seed 4)"),
+    ({"world_over": {"ref67": {"dampings": {"m1_r_gmom": 0.5, "m1_r_gmom_g075": 0.75, "m1_r_gmom_g1": None}}}},
+     "wrong damping on ['m1_r_gmom_g1']"),
     ({"world_over": {"ref67": {"fraction": 0.4}}}, "fraction 0.4, not 0.2"),
     ({"world_over": {"lib3": {"fraction": None}}}, "fraction None"),
     ({"cut_over": {WH: {"copy": {"g_mom_null_d1": "g_mom_null"}}}}, "exactly as its twin"),
@@ -673,7 +690,7 @@ def test_the_reading_refuses_to_overwrite(cm, tmp_path):
 
 def test_the_limits_are_the_docstrings_and_say_what_the_brief_says(cm):
     doc = " ".join(cm.__doc__.split())
-    assert len(cm.LIMITS) == 13 and all(x in doc for x in cm.LIMITS)
+    assert len(cm.LIMITS) == 17 and all(x in doc for x in cm.LIMITS)
     joined = " ".join(cm.LIMITS)
     for phrase in ("One E8.5 to E9.5 fit serves every seed and both cuts", "Twice the damping is not twice g_mom",
                    "A larger arm redraws more counts", "'Stays positive' has no size threshold",
@@ -683,10 +700,20 @@ def test_the_limits_are_the_docstrings_and_say_what_the_brief_says(cm):
                    "'Not shown' is not 'does not need development'", "means the twin or the permuted set gains more",
                    "on the cell-weighted root mean square only", "Statement 1 is not carried into the entry's form",
                    "Statement 2's bars are not symmetric", "Each thinned world is one draw",
-                   "share their predictions bit for bit"):
+                   "share their predictions bit for bit", "one draw of predictions",
+                   "D compares unlike shapes at equal root mean square",
+                   "The permuted set keeps g_mom's values exactly but not g_mom's size",
+                   "grows linearly with the damping", "A partly reads that shift",
+                   "is printed and bounds nothing", "the reader checks it before reading D",
+                   "'not shown' is the expected outcome even when the effect is real and modest",
+                   "printed whatever the label", "cannot fail by itself", "with the caches cleared"):
         assert phrase in joined
     assert "keep" not in cm.EXCEEDS and "adoption result" in cm.LABEL_T59
     assert "needs" not in cm.EXCEEDS and "exceeds" in cm.EXCEEDS and "is ahead" in cm.EXCEEDS
+    assert cm.EXCEEDS == ("the larger damping's gain is ahead and exceeds by more than 0.3 on both cuts the gains of "
+                          "the no-development twin (matched to g_mom's cell-weighted root mean square at each damping) "
+                          "and of the permuted control (g_mom's factor values with the metacells reassigned)")
+    assert "at g_mom's size" not in cm.EXCEEDS and f'"{cm.EXCEEDS}"' in doc
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -730,3 +757,200 @@ def test_the_cut_and_world_names_are_the_briefs(cm):
     assert cm.CUTS == {"chamber": "T1/E9.5->E10.5:chamber", "whole": "T1/E9.5->E10.5"}
     with pytest.raises(SystemExit):
         cm.main(["run", "--world", "lib3_t33b", "--out", "t59"])
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# The second review's fixes
+
+
+def test_the_permuted_sets_size_and_mean_shift_are_recorded_and_grow_with_the_damping(cm):
+    ctx = _ctx()
+    ctl = cm.control_factors(ctx)
+    rec = cm.control_records(ctl, ctx.derived["t1_held_flat"])
+    assert set(rec["mean_shift"]) == set(cm.FAMILIES)
+    shift, size = rec["mean_shift"], rec["sizes"]
+    for d in ("0.5", "0.75", "1"):
+        for c in size["g_mom"][d]:
+            # g_mom's mean is removed before the finish, the permuted set's is not: a larger shift and a larger size
+            assert shift["g_mom_perm"][d][c] > 2 * shift["g_mom"][d][c]
+            assert size["g_mom_perm"][d][c] > size["g_mom"][d][c]
+    # on these stages, category cm: the shift is about 0.10 at 0.5 and doubles at 1.0 (linear in the damping)
+    assert shift["g_mom_perm"]["0.5"]["cm"] == pytest.approx(0.104, abs=0.002)
+    assert shift["g_mom_perm"]["1"]["cm"] == pytest.approx(2 * shift["g_mom_perm"]["0.5"]["cm"], rel=0.02)
+    assert size["g_mom_perm"]["1"]["cm"] == pytest.approx(0.2994, abs=1e-3)
+    assert size["g_mom"]["1"]["cm"] == pytest.approx(0.2640, abs=1e-3)
+    # the record is the root mean square of the per-gene cell-weighted mean over the free genes, by hand
+    cf = ctl["g_mom_perm"][1.0].categories["cm"]
+    held = set(ctx.derived["t1_held_flat"])
+    free = np.array([g not in held for g in ctl["g_mom_perm"][1.0].genes])
+    mean = (cf.logf * (cf.sizes / cf.sizes.sum())[:, None]).sum(0)[free]
+    assert shift["g_mom_perm"]["1"]["cm"] == pytest.approx(float(np.sqrt((mean ** 2).mean())), rel=1e-9)
+
+
+def _records_with_shapes():
+    def per(v):
+        return {d: {"cm": v} for d in ("0.5", "0.75", "1")}
+    return {"permutation_same_at_every_damping": True, "permutation": {"0.5": {"seed": 20261110}},
+            "null_categories": {"0.5": ["cm"], "0.75": ["cm"], "1": ["cm"]}, "null_match": _match(),
+            "factors": {"g_mom": per({"share_not_zeroed": 0.936, "share_at_clip": 0.0026,
+                                      "mean_abs_log_not_zeroed": 0.1, "mean_abs_log_all_entries": 0.1}),
+                        "g_mom_null": per({"share_not_zeroed": 0.59, "share_at_clip": 0.0256,
+                                           "mean_abs_log_not_zeroed": 0.1, "mean_abs_log_all_entries": 0.1})},
+            "sizes": {"g_mom": per(0.264), "g_mom_perm": per(0.2994), "g_mom_null": per(0.264)},
+            "mean_shift": {"g_mom": per(0.0064), "g_mom_perm": per(0.208), "g_mom_null": per(0.03)}}
+
+
+def test_beside_statement_one_the_shapes_the_shift_and_d_and_a_are_printed_whatever_the_label(cm, tmp_path):
+    # D and A level (not shown): their means, the twin's shape and the permuted set's shift are printed all the same
+    gains = {**NEEDS_GAINS, "g_mom_null_d1": 0.9, "g_mom_perm_d1": 0.9}
+    rec = _records_with_shapes()
+    res, out = _read(cm, tmp_path, gains, _all(0.5), cut_over={CH: {"records": rec}, WH: {"records": rec}})
+    r = res["reading"]
+    assert r["valid"], r["validity"]["reasons"]
+    assert r["statement_1"]["statement"].startswith(cm.NOT_SHOWN)
+    b = r["beside_statement_1"][CH]
+    assert b["D_mean_at_1"] == pytest.approx(0.1) and b["A_mean_at_1"] == pytest.approx(0.1)
+    assert b["twin_shape"]["1"]["cm"] == {"share_not_zeroed": 0.59, "share_at_clip": 0.0256,
+                                          "damping_found": 1.1, "g_mom_share_not_zeroed": 0.936,
+                                          "g_mom_share_at_clip": 0.0026}
+    assert b["permuted_size"]["1"]["cm"] == {"rms": 0.2994, "g_mom_rms": 0.264, "mean_shift": 0.208,
+                                             "g_mom_mean_shift": 0.0064}
+    text = (out / "t59.txt").read_text()
+    assert f"{CH} at damping 1, whatever the label: D mean +0.10, A mean +0.10" in text
+    assert "cm not zeroed 0.590 (g_mom 0.936), at clip 0.0256 (g_mom 0.0026), damping found 1.1" in text
+    assert "cm rms 0.2994 (g_mom 0.2640), mean shift 0.2080 (g_mom 0.0064)" in text
+    assert "D compares unlike shapes" in text and "Q holds the shift besides the assignment" in text
+    assert "bounds nothing; check it before reading D" in text
+
+
+def test_the_text_prints_missing_shape_records_without_failing(cm, tmp_path):
+    res, out = _read(cm, tmp_path, NEEDS_GAINS, _all(0.5))
+    assert res["reading"]["valid"]
+    assert res["reading"]["beside_statement_1"][CH]["twin_shape"]["1"]["cm"]["share_not_zeroed"] is None
+    assert "cm not zeroed None (g_mom None)" in (out / "t59.txt").read_text()
+
+
+# the 8-of-10 edges (a mutant '>' in place of '>=' must fail one of these)
+
+
+def test_eight_of_ten_ahead_with_a_positive_mean_stays_positive(cm, tmp_path):
+    wg = _all(0.5)
+    wg["lib3"]["m1_r_gmom_g1"] = [0.5] * 8 + [-0.1] * 2  # mean +0.38, 8 of 10 ahead
+    r = _read(cm, tmp_path, NEEDS_GAINS, wg)[0]["reading"]
+    assert r["reading_2"]["lib3"]["1"]["seeds_ahead"] == 8
+    assert r["statement_2"]["statement"] == cm.STAYS
+
+
+def test_eight_of_ten_ahead_with_a_mean_at_or_below_zero_does_not_stay_positive(cm, tmp_path):
+    wg = _all(0.5)
+    wg["lib3"]["m1_r_gmom_g1"] = [0.05] * 8 + [-0.5] * 2  # mean -0.06, 8 of 10 ahead
+    wg["ref67"]["m1_r_gmom_g1"] = [0.25] * 8 + [-1.0] * 2  # mean 0 exactly, 8 of 10 ahead
+    r = _read(cm, tmp_path, NEEDS_GAINS, wg)[0]["reading"]
+    assert r["statement_2"]["statement"].startswith(cm.NOT_SEPARATED)
+    assert r["statement_2"]["neither"] == ["lib3", "ref67"]
+
+
+def test_eight_of_ten_behind_with_a_mean_below_the_bar_turns_and_seven_does_not(cm, tmp_path):
+    wg = _all(0.5)
+    wg["ref50"]["m1_r_gmom_g1"] = [-0.5] * 8 + [0.1] * 2  # mean -0.38, 8 of 10 behind
+    r = _read(cm, tmp_path, NEEDS_GAINS, wg)[0]["reading"]
+    assert r["statement_2"]["statement"].startswith(cm.TURNS) and r["statement_2"]["behind"] == ["ref50"]
+    wg["ref50"]["m1_r_gmom_g1"] = [-0.6] * 7 + [0.1] * 3  # mean -0.39, 7 of 10 behind
+    r = _read(cm, tmp_path / "seven", NEEDS_GAINS, wg)[0]["reading"]
+    assert r["statement_2"]["statement"].startswith(cm.NOT_SEPARATED) and r["statement_2"]["behind"] == []
+
+
+@pytest.mark.parametrize("null_d1, label", [
+    ([0.5] * 8 + [1.1] * 2, "ahead"),   # D: 0.5 on 8 seeds, -0.1 on 2: mean +0.38, 8 ahead
+    ([0.5] * 7 + [1.1] * 3, "level"),   # 7 ahead, mean +0.32
+    ([0.9] * 8 + [1.5] * 2, "level"),   # 8 ahead, mean -0.02
+    ([1.5] * 8 + [0.9] * 2, "behind"),  # 8 behind, mean -0.38
+    ([1.5] * 7 + [0.9] * 3, "level"),   # 7 behind, mean -0.32
+])
+def test_the_eight_of_ten_edge_of_statement_ones_d_label(cm, tmp_path, null_d1, label):
+    r = _read(cm, tmp_path, {**NEEDS_GAINS, "g_mom_null_d1": null_d1}, _all(0.5))[0]["reading"]
+    c = r["reading_1"][CH]["1"]["D"]
+    assert c["label"] == label
+    assert (r["statement_1"]["statement"] == cm.EXCEEDS) is (label == "ahead")
+
+
+# the independent rebuild at 0.5, the built dampings and the world's idle hook
+
+
+def test_the_rebuild_at_half_equals_the_arms_and_puts_the_caches_back(cm, monkeypatch):
+    ctx = _ctx()
+    preds = cm.cut_arms(ctx, harness._b0_t1(harness.B0_DAMPING))
+    g_before = harness._G_MOM_PREP["fold"]["factors"]
+    null_before = harness._G_MOM_NULL_PREP["fold"]["factors"]
+    fits = []
+    real_fit = ts.fit_state_factors
+    monkeypatch.setattr(ts, "fit_state_factors", lambda *a, **k: fits.append(1) or real_fit(*a, **k))
+    rec = cm.registered_rebuild(ctx, preds)
+    assert len(fits) == 3  # the caches were cleared: g_mom's fit and the twin's two directions made again
+    assert all(rec[a]["equal"] for a in cm.T20_ARMS)
+    assert harness._G_MOM_PREP["fold"]["factors"] is g_before
+    assert harness._G_MOM_NULL_PREP["fold"]["factors"] is null_before
+    swapped = {**preds, "g_mom_perm": preds["g_mom_perm_d1"]}
+    rec = cm.registered_rebuild(ctx, swapped)
+    assert rec["g_mom_null"]["equal"] and not rec["g_mom_perm"]["equal"]
+
+
+def test_the_dampings_are_read_from_the_built_factors(cm):
+    ctx = _ctx()
+    ctl = cm.control_factors(ctx)
+    assert cm.built_cut_dampings(ctl) == cm.CUT_ARMS
+    wrong = {**ctl, "g_mom_perm": {**ctl["g_mom_perm"], 1.0: ctl["g_mom_perm"][0.5]},
+             "g_mom_null": {**ctl["g_mom_null"], 0.75: ctl["g_mom_null"][1.0]}}
+    got = cm.built_cut_dampings(wrong)
+    assert got["g_mom_perm_d1"] == 0.5 and got["g_mom_null_d075"] == 1.0
+    assert cm._dampings_off(got, cm.CUT_ARMS) == ["g_mom_null_d075", "g_mom_perm_d1"]
+    assert cm.built_world_dampings(cm.gs.fold_factors(ctx)["finished"]) == cm.WORLD_DAMPINGS
+    assert cm.built_world_dampings({0.5: ctl["g_mom"][0.5]})["m1_r_gmom_g1"] is None
+    empty = ts.StateFactors(genes=[], metacells_on="later", categories={}, skipped={})
+    assert cm.finish_damping(empty) is None and cm.twin_damping(empty) is None
+
+
+def test_the_cut_run_writes_the_built_dampings_and_the_rebuild(cm, monkeypatch):
+    """cmd_run_cut with the loaders and the scorer stubbed, on the synthetic stages: the task file's dampings come from
+    the built factors and the rebuild check is recorded once, on the first seed, and passes."""
+    from types import SimpleNamespace as NS
+
+    base = _ctx()
+    ref, start = base.inputs["ref"], base.inputs["start"]
+    t = NS(key=cm.gc.TASK_CHAMBER, panel_board="pb", reference="r_stage", target="t_stage", target_filter=None,
+           inputs={"ref": "ref.h5ad", "start": "start.h5ad"})
+    rebuilds = []
+    real_rebuild = cm.registered_rebuild
+    for mod, name, value in [
+        (cm.n12, "tries_rows", lambda: {"T59"}), (cm.gc, "n22_passed", lambda p: True),
+        (cm.gv, "tree_state", lambda: {}), (cm.gv, "stamp", lambda *a, **k: {"commit": "c", "tree_clean": True}),
+        (harness, "load_tasks", lambda: {"T1:test": [t]}),
+        (cm, "load_boards", lambda: {"pb": NS(genes=["g0"])}), (cm, "read_stage", lambda *a, **k: None),
+        (cm, "Stage", NS(from_anndata=lambda a, g: NS(n=3))),
+        (cm, "load_stage", lambda path, lineage: {"ref": ref, "start": start}[path.stem]),
+        (harness, "task_board", lambda *a: "board"),
+        (cm.ls, "all_anchors", lambda t_, b, tr, rs, seeds: ({s: NS(score=50.0, anchors=None) for s in seeds}, [])),
+        (cm.t1_scope, "held_flat_genes", lambda: base.derived["t1_held_flat"]),
+        (harness.TaskView, "of", staticmethod(lambda t_: base.task)),
+        (harness, "_candidate_board", lambda b: base.board),
+        (cm.er, "score_arms", lambda b, tr, rs, s, an, preds: {k: {"score": 1.0} for k in preds}),
+        (cm, "registered_rebuild", lambda ctx, preds: rebuilds.append(ctx.seed) or real_rebuild(ctx, preds)),
+    ]:
+        monkeypatch.setattr(mod, name, value)
+    cm.main(["run", "--cut", "chamber", "--out", "t59", "--seeds", "0,1"])
+    rec = json.loads((cm.RESULTS / "t59" / "tasks" / cm.CUT_FILES[cm.gc.TASK_CHAMBER]).read_text())
+    assert rebuilds == [harness.BUILD_SEED_OFFSET]
+    assert rec["dampings"] == cm.CUT_ARMS and rec["dampings_intended"] == cm.CUT_ARMS
+    assert rec["registered_rebuild"]["seed"] == 0
+    assert all(rec["registered_rebuild"][a]["equal"] for a in cm.T20_ARMS)
+    assert set(rec["records"]["mean_shift"]) == set(cm.FAMILIES)
+    assert cm.record_reasons("x", rec) == []
+
+
+def test_a_world_whose_larger_arm_is_m1_r_gmom_voids(cm):
+    ok = _world(cm, "lib3", _all(0.5))
+    assert cm.world_idle_reasons("lib3", ok) == []
+    idle = _world(cm, "lib3", _all(0.5), copy={"m1_r_gmom_g075": "m1_r_gmom"})
+    assert "m1_r_gmom_g075" in cm.world_idle_reasons("lib3", idle)[0]
+    one = _world(cm, "lib3", _all(0.5), sha_same=("m1_r_gmom_g1", 0))
+    assert "m1_r_gmom_g1 (sha256 on seed 0)" in cm.world_idle_reasons("lib3", one)[0]
