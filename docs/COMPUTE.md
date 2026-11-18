@@ -169,5 +169,9 @@ Detached jobs over ssh: put `cd` on its own line (or use absolute paths) before 
 
 - `/home` on the DGX is 89% full (1.6 TB free, shared; `df -h /home` on 2026-10-28). Check it before large writes
   and ask before writing more than 50 GB.
+- Since 2026-11-18 (the captain's words, `docs/PLAN.md` decision log 2026-11-18 (r)): GPUs 2 to 7 are this project's;
+  GPUs 0 and 1 run other jobs and are never touched. The disk may be used as far as a run needs without asking
+  first (1.4 TB free on 2026-11-18); check `df -h /home` before a large write all the same, since the account is
+  shared.
 - Stay inside `~/v`; the `prachh` account is shared with other lab members.
 - No system packages and no changes to the shared conda base. uv only.

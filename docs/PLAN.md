@@ -5513,3 +5513,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     released data can test and candidates of substantially different kinds; one challenger per board tries to refute
     the design; one adviser brings methods from other fields, a rule for choosing a second file as the better of two,
     and a way to weigh practice evidence. Nothing is built, run against a practice target or uploaded by it.
+- 2026-11-18 (r), the captain on the DGX's GPUs and disk. Written by the AI assistant.
+  - **The captain's words** (17:17 UTC by the main session's clock, in answer to entry (q)'s line on storage):
+    "gpus except 0,1 are free in the dgx and use all the space if required without permission".
+  - **What it changes.** GPUs 2 to 7 are this project's for the campaign (at 17:18 UTC all six showed no memory
+    in use; GPUs 0 and 1 hold other jobs and stay untouched), and `docs/COMPUTE.md`'s "ask before writing more
+    than 50 GB" no longer applies to this work. Nothing else changes: no rule of entry (q) is lifted by it.
