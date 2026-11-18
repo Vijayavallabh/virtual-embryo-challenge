@@ -64,6 +64,31 @@ def test_halve_is_repeatable_byte_for_byte_and_follows_the_seed(hv, tmp_path):
     assert c != a
 
 
+def test_halve_gives_the_bytes_of_the_hand_written_operations(hv, tmp_path):
+    # the operations that made the 18 Nov file, written out by hand: the tool must add nothing to them
+    _synthetic(tmp_path / "in.h5ad")
+    seed = BUILD_SEED_OFFSET + 1
+    hv.halve(str(tmp_path / "in.h5ad"), str(tmp_path / "tool.h5ad"), seed)
+    a = ad.read_h5ad(tmp_path / "in.h5ad")
+    a[np.sort(np.random.default_rng(seed).choice(a.n_obs, a.n_obs // 2, replace=False))].copy().write_h5ad(
+        tmp_path / "hand.h5ad", compression="gzip")
+    assert (tmp_path / "tool.h5ad").read_bytes() == (tmp_path / "hand.h5ad").read_bytes()
+
+
+def test_halve_refuses_out_equal_to_in(hv, tmp_path):
+    _synthetic(tmp_path / "in.h5ad")
+    before = (tmp_path / "in.h5ad").read_bytes()
+    (tmp_path / "sub").mkdir()
+    for out in (tmp_path / "in.h5ad", tmp_path / "sub" / ".." / "in.h5ad"):
+        with pytest.raises(SystemExit):
+            hv.main([str(tmp_path / "in.h5ad"), str(out)])
+    link = tmp_path / "link.h5ad"
+    link.symlink_to(tmp_path / "in.h5ad")
+    with pytest.raises(SystemExit):
+        hv.halve(str(link), str(tmp_path / "in.h5ad"))
+    assert (tmp_path / "in.h5ad").read_bytes() == before
+
+
 @pytest.mark.parametrize("seed", [0, 1, BUILD_SEED_OFFSET - 1, -5])
 def test_halve_refuses_seed_zero_and_seeds_below_the_offset(hv, tmp_path, seed):
     _synthetic(tmp_path / "in.h5ad")

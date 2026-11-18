@@ -7,13 +7,14 @@ The rows kept are numpy.sort(numpy.random.default_rng(seed).choice(n_obs, size=n
 the rows without replacement, in their order in IN. Nothing else changes: same variables, obs columns, X dtype and X
 type; the file is written with anndata's write_h5ad(compression="gzip") and no stamp, so the same input and seed give
 the same bytes. The seed is never 0 and never below vec.harness.BUILD_SEED_OFFSET. The tool prints "ok" and the
-output's sha256 only, never a cell count (a test board's count is never shown).
+output's sha256 only, never a cell count (a test board's count is never shown). OUT must not be IN.
 """
 
 from __future__ import annotations
 
 import argparse
 import hashlib
+import os
 import sys
 
 import anndata as ad
@@ -30,7 +31,7 @@ def half_rows(n_obs: int, seed: int) -> np.ndarray:
 
 
 def check_seed(seed: int) -> int:
-    if seed == 0 or seed < BUILD_SEED_OFFSET:
+    if seed < BUILD_SEED_OFFSET:  # BUILD_SEED_OFFSET > 0, so this refuses 0 too
         raise SystemExit(f"--seed must be at least vec.harness.BUILD_SEED_OFFSET ({BUILD_SEED_OFFSET}) and never 0")
     return seed
 
@@ -38,6 +39,8 @@ def check_seed(seed: int) -> int:
 def halve(src: str, out: str, seed: int = DEFAULT_SEED) -> str:
     """Write the halved file and return its sha256."""
     check_seed(seed)
+    if os.path.realpath(src) == os.path.realpath(out):
+        raise SystemExit("OUT must not be IN: the input is read whole into memory and would be replaced")
     a = ad.read_h5ad(src)
     idx = half_rows(a.n_obs, seed)
     b = a[idx].copy()

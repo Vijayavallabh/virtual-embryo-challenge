@@ -33,7 +33,7 @@ machine, and an official upload needs the captain's go-ahead.
           from, `vec.harness._copy`), no momentum. --z-mode raw (off by default): the size step's isotropic mode,
           every axis scaled by one factor to the hypothesis's target RMS, in place of the mode the size JSON
           recorded. The captain's direction for the heart's second upload (2026-11-18, docs/PLAN.md decision log
-          (j)): heart --entry s1 --expression copy --z-mode raw
+          2026-11-18 (k)): heart --entry s1 --expression copy --z-mode raw
   embryo  --method pseudobulk_shift | fgw | fgw_shape0 | fgw_shape1: E7.5 cells moved by the E7.25 -> E7.5 change, or
           the FGW interpolation between E7.5 and E8.0 at t = 1/2 (fgw_shape0, the s2 of docs/S2_RULES.md, keeps the
           mixture in E7.5's geometry); sized by the pre-registered embryo procedure (size_embryo_E7.75.json)
@@ -440,7 +440,7 @@ def build_heart(a) -> dict:
     if copy and (a.entry != "s1" or a.trend or a.depth or a.herd or a.cfm):
         sys.exit("--expression copy is refused with --entry s2 or s2_trim, --trend, --depth, --herd and --cfm (it is "
                  "the copy baseline's draw from --entry s1's pool, the full E10.5, with no step)")
-    ref =load_stage(DATA / "T2/E10.5.h5ad", genes=genes, drop_duplicates=True)
+    ref = load_stage(DATA / "T2/E10.5.h5ad", genes=genes, drop_duplicates=True)
     start = load_stage(DATA / "T2/E9.5.h5ad", genes=genes, drop_duplicates=True)
     pool, trim = ref, None
     if a.entry == "s2_trim":  # docs/S2_RULES.md (amended 2026-11-02): H2 built as a trim to half E10.5's scope
@@ -637,12 +637,14 @@ def build_parser() -> argparse.ArgumentParser:
             p.add_argument("--expression", choices=("b0", "copy"), default="b0",
                            help="b0 = B0's momentum step (the default, the entry as built); copy = the copy baseline's "
                                 "cells and expression, B0's own draw with no step (the captain's direction for the "
-                                "heart's second upload, docs/PLAN.md decision log 2026-11-18 (j)); --entry s1 only, "
+                                "heart's second upload, docs/PLAN.md decision log 2026-11-18 (k)); --entry s1 only,"
                                 "refused with --trend, --depth, --herd and --cfm")
             p.add_argument("--z-mode", choices=("recorded", "raw"), default="recorded",
                            help="the size step's z mode: recorded = the mode the size JSON pre-registered (the "
                                 "default); raw = the isotropic mode the JSON also logs, one factor on all three axes "
-                                "to the hypothesis's target RMS")
+                                "to that raw mode's own target RMS for the hypothesis (z_modes.raw, not the recorded "
+                                "mode's pre-registered target); refused when the size JSON is not valid (its "
+                                "fallback is already isotropic: build with recorded then)")
         if name == "embryo":
             p.add_argument("--method", choices=("pseudobulk_shift", *EMBRYO_T_POS), required=True,
                            help="fgw = s1; fgw_shape0 = the s2 of docs/S2_RULES.md (E7.5's geometry)")
