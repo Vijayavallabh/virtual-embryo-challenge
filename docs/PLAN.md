@@ -5666,8 +5666,9 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
       of 61 to 72 on 64 cores from other users' jobs, and row K17's committed record of K16's DGX run showed the
       guard passable there (largest seed 0.011 against a limit of 0.5). The row says so. The barred factor was read
       from the reference checkout's run folder through an option of the runner; nothing was written there.
-  - **Try T60** (the T1 reachability read; four reviews, three fix rounds) is registered and running on a second
-    campaign checkout at 13fd89a. Its row names the pruned line it reads and why.
+  - **Try T60** (the T1 reachability read; four reviews, two fix rounds) is registered and running on a second
+    campaign checkout at 13fd89a. Its row names the pruned line it reads and why. (Try K18's code had five reviews
+    and three fix rounds; its merge commit says four.)
   - **What this sets up.** One question for the captain on the embryo's last upload: the planned file, the old
     E7.5-geometry file, or the new exact one, each with the first upload's expression or the series rendering. Before
     it goes: a cold attack on the AI assistant's recommendation and an independent recomputation of every practice
