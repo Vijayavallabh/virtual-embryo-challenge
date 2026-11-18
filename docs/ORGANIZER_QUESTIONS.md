@@ -800,13 +800,13 @@ Subject: Human Team (Mithril): second heart upload, file hash and sources
 
 Hello organisers,
 
-As our email of 18 November on sources and file hashes said we would, here are the file hash and sources of our
-second heart upload, before we make it. As it describes our method, please keep it private.
+As our email on sources and file hashes for the uploads of 18 November said we would, here are the file hash and
+sources of our second heart upload, before we make it. As it describes our method, please keep it private.
 
 T2:heart:test_extrap, second upload. File T2heart_s2iso_half.h5ad, SHA-256
 dc436d9225bb28e7997d2ec51e95254cd125e569d44c059596298d0a7b6af5c2. The external sources are the same as for our first
-heart upload (X001, X004 and X005 in our email of 18 November), and so are the official validation files used (the
-heart's E10.5 and E8.5 files).
+heart upload (X001, X004 and X005 in that email), and so are the official validation files used (the heart's E10.5
+and E8.5 files).
 
 This is not the file we had fixed in advance for this upload, which trimmed the tissue to a heart-focused half and
 sized it for that scope. We decided on this one after our first scores, which the site returned to us as it does to
@@ -822,6 +822,59 @@ E10.5 file's released expression and read counts. Its scope and its number of ce
 our first heart upload: fixed seed 1000001, cell order kept) are the first upload's.
 
 The method report will list each of these changes against the procedure we fixed in advance.
+
+Best regards,
+Vijayavallabh J
+Team captain, Mithril
+
+## Note before Task 3's second upload (drafted 2026-11-18; in the captain's drafts; the captain sends)
+
+The short note the disclosure email promises before T3's second upload. Drafted by the AI assistant and reviewed for
+accuracy, strategy and tone by three independent agents, whose changes are in the text: it says "computed from"
+where the draft said "comes from", and names the Gata4 replicates as practice tasks for the two choices made on
+them (the knockout factor left out by the rules of 19 October, and the wild-type correction the captain added on
+13 November by his own decision); it says that the order was reversed before any Task 3 score and that the file is
+unchanged; it names the wild-type stage files the correction is fitted on and that three of them are official
+validation files; it reports the practice try of 18 November (rows K16 and K17), which changed nothing; and it
+explains the file's name. Both notes now refer to the disclosure email by its subject and not by a sending date.
+Before sending: the file chosen in the upload form must have the hash the note states (the archived copy, not a
+local rebuild). It goes only after the disclosure email has gone. Sending it, changing it or deleting it is the
+captain's alone. Answers: none can exist yet. Text as drafted:
+
+Subject: Human Team (Mithril): second Task 3 upload, file hash and sources
+
+Hello organisers,
+
+As our email on sources and file hashes for the uploads of 18 November said we would, here are the file hash and
+sources of our second Task 3 upload, before we make it. As it describes our method, please keep it private.
+
+T3:bcatenin, second upload. File refused_s1.h5ad, SHA-256
+0394575a11fcd4f915e0daf4972e5a783b6b89efa065ed4f85fe2445cbbb1545. ("refused" in the file name is our internal label
+for the version that takes no number from the Gata4 knockout files; the site has not refused this file.) The
+external sources are the same as for our first Task 3 upload (X001, X004 and X005 in that email).
+
+We built this file on 13 November, before any test score, as one of our two Task 3 files, and our procedure had it
+go first and the other file last. On 18 November, before any Task 3 score, we uploaded the other file first, so this
+one now goes second. The file itself is unchanged.
+
+It consists of the released wild-type E8.75 cells, with two changes. First, the cell-type proportions are changed by
+rules we fixed on 19 October: the cell states that change follow the broad phenotype background your answer of 15
+October allows (cell states only, no genes), and the size of the change is computed from the released Mab21l2
+knockout against its wild type. Second, each cell group's expression is adjusted by a correction estimated only from
+released wild-type stage files: E8.75's own deviation from a trend through E7.5, E8.0, E8.25_late, E8.5, E9.5 and
+E10.5. Three of these (Task 2's E7.5, E8.5 and E10.5) are official validation files we unlocked on 28 October, so
+this upload uses official validation files beyond the Gata4 replicates that our earlier email listed for Task 3. Its
+number of cells follows the same rule as our first Task 3 upload.
+
+No number in the file is computed from the Gata4 knockout replicates. They entered only as practice tasks, scored
+locally, together with the released Mab21l2 knockout. On those practice scores our rules of 19 October left a
+knockout-derived per-gene factor out of this file, and on 13 November I, as team captain, decided to add the wild-
+type correction described above; that was my decision and not the outcome of a rule fixed beforehand. On 18
+November, after our first scores, we ran one more practice comparison of that correction's strength on the same
+practice tasks. By the readings we had fixed before reading them, it changed nothing: the file is the one built on
+13 November.
+
+The method report will list the change of order.
 
 Best regards,
 Vijayavallabh J
