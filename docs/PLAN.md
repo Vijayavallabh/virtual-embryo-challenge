@@ -5628,3 +5628,47 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     path that the reading's own void rule would refuse, and a run log that would have held scores before the
     reading). A second fix round with a final review runs as wf_0451676f-00d. Nothing of either has run on released
     data.
+- 2026-11-18 (u), the embryo's and T3's reads of the first wave, and what they set up (state at 20:50 UTC). Written by
+  the AI assistant.
+  - **Tries E47a and E47b and reading N53** (rows of those names; run on the DGX's campaign checkout at 9967cf1, clean
+    tree; embryo tries 73 to 75). The code (the off-by-default position mode `floor_exact` of
+    `vec.t2_build.interpolate_clouds`, the candidates `fgw_shape0x` and `fgw_shape0x_series`, the builder option
+    `--positions floor_exact`) went through three reviews and two fix rounds; the whole tests folder passed on the
+    branch's final head (2725 passed, 1 skipped, the golden table included) and the targeted tests again on main
+    after the merge (104 passed). The first launch was refused by the runners' own clean-tree check: the campaign
+    checkout held one untracked leftover of an earlier branch (`tests/test_build_t1_gmom_fit.py`), which the AI
+    assistant removed there after checking that it equals the committed copy at 86d19ff, as `docs/COMPUTE.md` asks.
+    - **By the rules fixed in the rows.** N53, which reads no target: at the test pair only `fgw_shape0x` is in
+      the floor's form; fgw_shape0 and `fgw_aligned`, the geometry of the planned second file, are not (occupancy
+      overlap with a sample of E7.5: 0.859 for the new arm, 0.848 for a copy of E7.5, 0.797 and 0.787 for the other
+      two). E47, rule (ii): the new arm does not replace fgw_shape0 as the floor-form arm of the question (nine-task
+      mean -0.93 board points, neighbourhood skill -0.025, d2_shape -0.324 on one task); its series twin does not
+      replace `fgw_shape0_series` either. Rule (iii), each arm against the uploaded form on practice, merged mean
+      and better-of-two value: fgw_shape0 -0.50 and +0.88; `fgw_shape0_series` -0.65 and +2.05; the planned
+      `fgw_aligned_series` +0.13 and +2.18; `fgw_shape0x` -1.43 and +0.46; `fgw_shape0x_series` -1.25 and +1.54.
+    - **The AI assistant's reading after the result.** The new arm scored at the floor's shape level on every task
+      (d2_shape 0.47 to 0.51, occupancy_dice 0.48 to 0.54), which is what it was built for, and that is what the
+      no-worse rule counted against it, since fgw_shape0's partly moved cloud sat above the floor on five tasks.
+      Practice holds no task with a shape loss like the first upload's, so it cannot price a floor-level shape
+      against one.
+    - **Check builds** (the DGX's campaign checkout at 9967cf1; never upload sources; read by exit code, hash and the
+      stamp's commit and clean fields): the four floor-form candidates build (exit 0, stamps 9967cf1 and clean). By
+      a comparison that prints only booleans and hashes, `fgw_shape0x` and fgw_shape0 hold the first upload's rows,
+      row names and expression matrix exactly and differ from it in coordinates only; the two series files hold the
+      built second file's.
+  - **Try K18, read by its fixed rule** (row K18; T3 tries 45 to 51): no question, and the refused s1 stands as
+    T3's last upload. `barred_form` leads `refused_form` in the plain world on both replicates (+2.29 and +6.90)
+    and in the depth-matched world on g2 (+4.94), and falls behind on g1 there (-4.48, severity scored in 6 of 10
+    seeds against the 9 needed). The refused form's board means are 57.1 and 55.1 in the plain world and 60.1 and
+    58.9 at matched depth, with severity scored in 39 of 40 seeds. The guard and the depth-matched check both held.
+    - **A change the AI assistant made to the reviewed row before committing it:** the reading ran on a DGX campaign
+      checkout, not on the local machine the brief and the four reviews had fixed. The local machine carried a load
+      of 61 to 72 on 64 cores from other users' jobs, and row K17's committed record of K16's DGX run showed the
+      guard passable there (largest seed 0.011 against a limit of 0.5). The row says so. The barred factor was read
+      from the reference checkout's run folder through an option of the runner; nothing was written there.
+  - **Try T60** (the T1 reachability read; four reviews, three fix rounds) is registered and running on a second
+    campaign checkout at 13fd89a. Its row names the pruned line it reads and why.
+  - **What this sets up.** One question for the captain on the embryo's last upload: the planned file, the old
+    E7.5-geometry file, or the new exact one, each with the first upload's expression or the series rendering. Before
+    it goes: a cold attack on the AI assistant's recommendation and an independent recomputation of every practice
+    figure in it (wf_f2cffba6-236). T3's and the heart's last files stand as they are, by rows K18 and H25.
