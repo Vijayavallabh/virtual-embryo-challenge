@@ -5379,3 +5379,30 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     | The same prediction in two row orders | not acceptable | 0.8 | nothing: it is not done |
     | The validation files, the Gata4 replicates included, as inputs | allowed | 0.75 | restricted: T3's first upload falls away and the second, which takes no number from them, carries the board; a full bar touches every board and no choice of file protects against it |
     | Final entries | nominated per board, the better published score | 0.8 | a per-set nomination would cost the better of two on some boards; the nomination is the captain's act on the site |
+- 2026-11-18 (m), the amendment to the frozen second-upload rules after the first scores, the heart builder's two
+  options and row K16 on main. Written by the AI assistant.
+  - **The amendment.** `docs/S2_RULES.md` gains its last section, "Amendment of 2026-11-18, after the first scores
+    (the captain's own say-so)". Its sha256 is now
+    8907bba814e3f4b776c5c1c9618d6329f9e1860f4024798639fc738cf54e1e92 (it was 5ee8b2d8...), written to
+    `docs/S2_RULES.sha256` in the same commit. The captain's words are the two sentences of entries (j) and (k), quoted
+    there and in the amendment. The reason: the first scores, and the diagnosis of entry (k). What it changes: the
+    heart's second file (below); T3's order as it happened, with the ruling switches restated for the last upload;
+    uploads by the captain's hand; the organisers' deadline in place of "30 Nov IST". T1's and the embryo's second
+    files are unchanged.
+  - **The heart's second file:** `build_test.py heart --entry s1 --expression copy --z-mode raw`, then `halve.py`.
+    The size is the size file's own raw-mode figure for H1, 611.8, logged on 2026-10-28 beside the pre-registered
+    mode's 614.7; it is 0.5% smaller (0.005 in log). The AI assistant's words to the captain had been "our
+    pre-registered size": precisely, it is the logged alternative mode's figure, and the amendment says so.
+  - **Merged** (workflow wf_c9c10308-753: each written on a campaign branch to a specification fixed beforehand,
+    reviewed by two agents, fixed and re-reviewed, verdict ready): `campaign/heart-floor-iso-fix` (0599604), the
+    builder's off-by-default `--expression copy` and `--z-mode raw` and `experiments/builds/halve.py`; with the
+    defaults every byte and the build record are unchanged. `halve.py` run on the archived `T2heart_s1.h5ad` gives the
+    file uploaded on 18 November byte for byte (2ca632d39950). `campaign/t3-revert-dose-fix` (96fffe2): row K16 of
+    `experiments/harness/TRIES.md` with its script and tests, committed before any run; the re-review's open item
+    (which machine runs first and what a machine-only void leads to) is settled in the row.
+  - **The build script** has a new set, `bash experiments/builds/build_all.sh heart2`, and `tests/test_s2_rules.py`
+    now expects three heart commands in it, each word for word in the rules. The sets s1, s2 and t3alt are unchanged,
+    so the reference list of the third rehearsal still describes their ten files.
+  - **Next:** the heart2 set on the DGX's campaign checkout at this commit, twice at two thread counts, compared by
+    hash; the half copied here and handed to the captain with a line for the organisers; row K16 run on the local
+    machine and read by its fixed rule.

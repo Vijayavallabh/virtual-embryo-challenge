@@ -463,3 +463,69 @@ second file only; no change), each offered with its price.
   `--entry s2`, `--depth`, `--herd` and `--cfm`, which no try read with it. The reference list for the freeze-morning
   rebuild changes for these two files and is remade by a third rehearsal on the machine that builds the uploads
   (`docs/P3_RUNBOOK.md`, section 5).
+
+## Amendment of 2026-11-18, after the first scores (the captain's own say-so)
+
+Written by the AI assistant. Times are UTC. The record is `docs/PLAN.md` decision log 2026-11-18 (j) to (l) and
+`results/manual_uploads.csv`. Unlike every section above, this one was written with test scores known.
+
+**What happened.** On 2026-11-18 the captain uploaded the first official entry on each board through the site's form,
+not the client: T1's s1; the embryo's s1; on T3 the allowed branch's s1, which this file had last; and for the heart a
+uniform random half of s1's cells, after the server refused the built file for its cell count. The site returned the
+scores and the captain pasted them, the per-metric values included, into the main session. T1 and the embryo beat
+the floor; the heart and T3 scored below it.
+
+**The captain's words.**
+- After the scores: "use the scores for our submission to understand where we went fully wrong and incompetent and
+  drastically iterate and improve our scores to get our total leaderboard scores around 226 at all drastic and wild
+  costs."
+- After the diagnosis, in answer to three priced questions on the heart (the size mode, the expression step, the cell
+  number), a question on two organiser drafts and the advice to hold the built files until the screened check of
+  19 November: "go ahead with whatever is best for us and immediately as weell instead of waiting".
+
+**"No score feedback", as it now stands.** "Each s2 was fixed before any test score existed" holds for T1, the embryo
+and T3: their second uploads are the files this document already names, built on 2026-11-13. It no longer holds for
+the heart, whose second file is chosen below with the first scores known. The second bullet stands for every board: a
+change after a first upload is the captain's, is logged with the scores, and computes nothing from a test score
+(Official Rules, Section 10, as read through a screen on 2026-11-18: scores may choose among predictions and not
+compute them; "the test is whether the truth enters your prediction's content or only its selection").
+
+**T1 and the embryo: unchanged.** s2 = `runs/builds/T1_s2.h5ad` and `runs/builds/T2embryo_s2.h5ad` as built.
+
+**T2 heart: a new second file.** It replaces `--entry s2_trim --trend`:
+
+```bash
+uv run python experiments/builds/build_test.py heart --entry s1 --expression copy --z-mode raw --out runs/builds/T2heart_s2iso.h5ad
+uv run python experiments/builds/halve.py runs/builds/T2heart_s2iso.h5ad runs/builds/T2heart_s2iso_half.h5ad
+```
+
+- **What it is.** E10.5's cells at the count rule with their expression unchanged (the draw B0 starts from, with no
+  momentum and no trend), scaled about the centroid by one factor on all three axes to the size the size file gives
+  for H1 in its raw mode, then a uniform random half of the rows (numpy's default generator, seed 1000001, without
+  replacement, order kept). The uploaded file is the half.
+- **What it departs from,** each by the captain's answer above to a question that named it: the pre-registered z
+  mode, xy_grow_z_hold (the size lever of the post-exposure block); the ruling of 2026-11-13, evening, that both heart
+  uploads take the trend; the half trim, s2's hedge on scope; and a cell number (the halving).
+- **Why.** The first upload lost to the floor on d2_shape, occupancy_dice, mmd_u and neighborhood_mmd. d2_shape and
+  occupancy_dice ignore a uniform rescale and not the in-plane stretch, so an evenly scaled copy has the floor's form
+  by their formulas and keeps the size; the expression step is the only expression difference from the floor. The
+  pre-set second file keeps both steps. No harness run had scored the size step.
+- **Nothing is computed from a test score.** The size is the size file's own raw-mode number, logged on 2026-10-28
+  beside the pre-registered mode (`experiments/coords/results/p3/size_heart_E12.5.json`); the half is the rule of the
+  first upload. The scores chose which steps to drop.
+- **The first upload's file** is given by the same tool:
+  `uv run python experiments/builds/halve.py runs/builds/T2heart_s1.h5ad runs/builds/T2heart_s1_half.h5ad`.
+- **Builds.** `bash experiments/builds/build_all.sh heart2` runs the two commands above and checks both files. The
+  sets s1, s2 and t3alt are unchanged, so the reference list of the third rehearsal still describes them.
+
+**T3: the order, and the last upload.** The allowed s1 went first. The last upload is the refused s1 with the
+wild-type-only factor, as built (`runs/t3_build/refused_s1.h5ad`), unless the captain grants a request that row K16
+of `experiments/harness/TRIES.md` may lead to (the factor's exponent), which would be its own amendment. "s1 is fixed
+whatever s2 scores" is spent. The ruling switches read, for the last upload: if an organiser ruling restricts or bars
+the Gata4 files, or bars the validation answers, before it, the last upload is the barred branch's s1 and it is the
+one marked. The screened check of 2026-11-18 found no ruling.
+
+**Uploads, dates and marks.** Uploads go through the site's form by the captain's hand; the client's guards do not
+run, and `results/manual_uploads.csv` is their record. "By the end of 30 Nov IST" is replaced by the organisers'
+deadline, 2026-11-26 11:59 UTC, for uploads and nominations alike. The screened check before an upload ran on
+2026-11-18. The rule for final marks is unchanged.

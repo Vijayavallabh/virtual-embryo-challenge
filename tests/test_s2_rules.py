@@ -26,6 +26,7 @@ def test_the_heart_commands_of_build_all_are_the_ones_the_rules_give():
     script = (ROOT / "experiments" / "builds" / "build_all.sh").read_text().splitlines()
     commands = [line[line.index("build_test.py heart"):line.index(" --out")].strip()
                 for line in script if "build_test.py heart" in line and " --out" in line]
-    assert len(commands) == 2, commands  # the first upload's line and the second's
+    # the first upload's line, the second upload's as it was frozen, and the second's since the amendment of 2026-11-18
+    assert len(commands) == 3, commands
     for c in commands:
         assert c in rules, f"build_all.sh runs `{c}`, which docs/S2_RULES.md does not give"
