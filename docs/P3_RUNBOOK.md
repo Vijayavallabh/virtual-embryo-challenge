@@ -398,6 +398,52 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
   cardiomyocyte or blood share, the email also says which T1 upload or uploads take the share stated on the organisers'
   Task 1 page, the date it was read, and that it is used without their confirmation (even if no file changed). The
   read of 2026-11-11 returned none (decision log 2026-11-11 (d)), so this does not apply.
+- **(user) Before each second upload: the captain's checklist** (2026-11-18, written by the AI assistant after the
+  first uploads skipped the email, the screened check and the reference list; `docs/PLAN.md` decision log 2026-11-18
+  (j)). Uploads go by the captain's hand through the site's form, so the client and its guards do not run: each guard
+  is a line here. Lines 1 and 4 to 8 need nothing beyond `sha256sum` and `grep`; line 2 needs the repository's `vec
+  check` (local, nothing sent); line 3 uses the submission client, format-only, and only where the captain asks for it. One board at a time; a line that cannot be ticked stops
+  that upload until the captain has the explanation. Deadline 2026-11-26 11:59 UTC, never in the last hours.
+  1. [ ] **The hash.** On the machine the file goes from: `sha256sum <file>`. All 64 characters equal the board's line
+     in the reference list: `experiments/builds/results/builds_dc7b6ae.SHA256SUMS` (T1, the embryo, T3; the list
+     `results/reference_list.json` points to), or for the heart's half
+     `experiments/builds/results/heart2_307c9b2.SHA256SUMS` (`builds/T2heart_s2iso_half.h5ad`). That second list is
+     outside the pointer and was built in a campaign checkout (decision log 2026-11-18 (n)): the heart's line is
+     ticked only once the captain has accepted that provenance or a rebuild in the reference checkout has matched it.
+     A file in no committed list (a new embryo file, entry (s), item 1) needs its list committed, and the
+     `docs/S2_RULES.md` amendment it requires, before this line can be ticked. By hand: `grep <the 64 characters>
+     <list>` prints one line, under the name given above. A file whose 64 characters differ is not the listed
+     file, wherever it was built. The same 64 characters go in the disclosure note (line 4).
+  2. [ ] **Local format check of these bytes:** `uv run --frozen --no-sync vec check <file> --board <KEY>` on the same
+     path as line 1 passes (no token; nothing is sent).
+  3. [ ] **Server format check, only with the captain's word for this check, given each time.** A server format
+     check can come back stored as a submission: it may take the board's last upload and blocks every board until it
+     is resolved (section 0). Nobody pastes or quotes the log's server text into a session. Before it, `uv run --frozen
+     --no-sync vec submit status > <log>` shows nothing `unresolved` or `ambiguous` (section 0). Then, format-only by
+     default and never `--official`: `uv run --frozen --no-sync vec submit <local file> --board <KEY> > <log>`, or for
+     a DGX path `uv run --frozen --no-sync vec submit <path on the DGX> --board <KEY> --from-dgx > <log>`; output to a
+     file, never through `head`. After it, `vec submit status` again shows nothing unresolved and the portal's list
+     shows no new scored entry for the board; if either does, stop and resolve it (`vec submit resolve ...`, section
+     0) before anything else. A pass is not a promise: the heart's s1 passed on 2026-11-13 and the form refused it for
+     its cell count on 2026-11-18.
+  4. [ ] **The disclosure note went first.** The captain has sent the email or one line that names this board, this
+     file's sha256 and its register ids (above), with the board's own note where one is drafted
+     (`docs/ORGANIZER_QUESTIONS.md`: "Note before the heart's second upload", "Note before Task 3's second upload").
+  5. [ ] **The screened check** of mail, Slack and the Rules page ran on the upload day, by a screening agent, audited,
+     with the switches fixed beforehand (`docs/ORGANIZER_QUESTIONS.md`; for T3 `docs/S2_RULES.md`, last section: the
+     barred s1 if a ruling restricts the Gata4 files or bars the validation answers). Nothing it found switches this
+     file. No organiser reply is pasted into the session.
+  6. [ ] **The warnings register** for the file, in the decision-log entry that hands it over: every committed
+     reading that puts any step of this file below the floor on any metric (a practice row, a hedge run, a failed
+     gate, a flagged geometry, a step no practice run applied), each with its answer: why it does not apply, what
+     hedges it, or "unanswered". The captain has read it; an unanswered line has been put to him by name.
+  7. [ ] **The go-ahead:** the captain's own word for this board and these 64 characters.
+  8. [ ] **Afterwards, paste back** into the main session: the board, the time and file name the site lists, the first characters of the hash the site shows, the outcome (scored, or "rejected" and the kind of rejection in
+     your own words, with no number from the message), the board total and every per-metric value. The main session
+     records them in `results/manual_uploads.csv` (one row; the board total) and in a decision-log entry in
+     `docs/PLAN.md` (the per-metric values). It checks the copy only (that the board total is the one the listed
+     metrics give) and never differences values across uploads. A score names the banked file and chooses the final
+     mark; it sets nothing else (`experiments/harness/TRIES.md` rule 9, J8; "Scores choose, never compute").
 - **(user)** Final entries. The account page (seen in the site's public script, 2026-10-28): "The leaderboard shows
   your team's best score on each board, so there is nothing to nominate yet. In the final phase the captain picks
   which submission counts." While nominations are open, the captain sees a "Final" column in the team's submission
