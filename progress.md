@@ -3,6 +3,10 @@
 ## Current State
 
 **Last Updated:** 2026-11-18
+**2026-11-18, 22:09 UTC: the method summary's section on the departures is on main** (a3a9911; `METHOD_SUMMARY.md`,
+"Departures from the precommitted procedure from the first official uploads (2026-11-18)": twelve items, three
+reviews, a fix round and a final check; one line marked [TO COMPLETE] waits for the captain's choice of the embryo's
+last file). Nothing runs. The only open item that needs the captain is that choice (decision log 2026-11-18 (v)).
 **2026-11-18, 21:46 UTC: every row registered today is read; the embryo question waits for the captain; the method
 report's section on the departures is being drafted** (`docs/PLAN.md` decision log 2026-11-18 (w)). Try T60 (the T1
 reachability read) by its fixed statements: "a new direction has room" reads "library 3 only", so nothing opens and

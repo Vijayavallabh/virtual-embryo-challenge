@@ -2,6 +2,11 @@
 
 ## Current Objective
 
+- **State at 2026-11-18, 22:09 UTC (newest).** The departures section of `METHOD_SUMMARY.md` is merged (a3a9911); its
+  [TO COMPLETE] line and item 2's "not yet in the record" (whether and when the disclosure email and the three notes
+  were sent) are filled when the captain says. If he picks embryo option 1, 2 or 3, the disclosure email draft in his
+  Gmail no longer names the right embryo file and is corrected before it is sent (three-lens review again). Nothing
+  runs; the bullets below hold the rest.
 - **State at 2026-11-18, 21:46 UTC (newest).** Decision log 2026-11-18 (w). All of today's rows are read (H25, E47a,
   E47b, N53, K18, T60); nothing runs on the DGX. Waiting for the captain: the embryo's last file (entry (v); the
   bullet below lists what follows his answer). In review: the method summary's section on the departures
