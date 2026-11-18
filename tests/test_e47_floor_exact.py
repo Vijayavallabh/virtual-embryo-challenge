@@ -144,15 +144,29 @@ def test_the_drawn_positions_are_a_uniform_sample_of_the_earlier_bracket():
     assert hits.min() > 0.35 * 200 * 0.5 and hits.max() < 1.65 * 200 * 0.5  # each cell about half the draws
 
 
-def test_too_few_unused_cells_fall_back_to_all_earlier_cells_and_say_so():
+def test_too_few_unused_cells_use_all_of_them_then_repeat_only_what_the_count_forces():
+    """The fallback fires exactly when the count exceeds the earlier bracket's cells. Every unused cell is then a
+    candidate and only the remainder repeats: with 100 earlier cells and a count of 130, 65 before rows and 65
+    candidates, 35 unused cells, so 30 candidates repeat a position and 100 distinct positions are taken."""
     rng = np.random.default_rng(6)
     Cb, Ca, Eb, Ea, _, _ = _two_types(rng, n_b=100, n_a=300)
-    fx = tb.interpolate_clouds(Cb, Ca, Eb, Ea, 0.5, 260, seed=2, target_rms=1.0, n_anchor=60, k=3, t_pos=0.0,
-                               positions=FLOOR, with_coupling=True)
-    assert fx.record["floor_exact"]["fallback"] is True
-    assert fx.record["n_jittered"] > 0  # repeated positions are moved apart by the duplicate jitter
-    assert np.unique(fx.coords.astype(np.float32), axis=0).shape[0] == 260
+    for n, want in ((100, False), (101, True), (130, True), (260, True)):
+        fx = tb.interpolate_clouds(Cb, Ca, Eb, Ea, 0.5, n, seed=2, target_rms=1.0, n_anchor=60, k=3, t_pos=0.0,
+                                   positions=FLOOR, with_coupling=True)
+        assert fx.record["floor_exact"]["fallback"] is want, n
+        assert np.unique(fx.coords.astype(np.float32), axis=0).shape[0] == n  # repeats are jittered apart
+        used = np.r_[fx.rows[fx.stage == 0], fx.coupling["floor_exact_rows"]]
+        assert len(np.unique(used)) == min(n, 100)  # every earlier cell is used before any repeats
+        assert (fx.record["n_jittered"] > 0) is want
     assert len(fx.coupling["floor_exact_rows"]) == 130
+    # each earlier cell's expected number of copies stays equal in the fallback (two copies at n = 200, 50 seeds)
+    copies = np.zeros(100)
+    for seed in range(50):
+        fx = tb.interpolate_clouds(Cb, Ca, Eb, Ea, 0.5, 150, seed=seed, target_rms=1.0, n_anchor=60, k=3, t_pos=0.0,
+                                   positions=FLOOR, with_coupling=True)
+        np.add.at(copies, np.r_[fx.rows[fx.stage == 0], fx.coupling["floor_exact_rows"]], 1)
+    assert copies.min() >= 50 and copies.max() <= 50 * 2  # 1 to 2 copies per seed, mean 1.5
+    assert abs(copies.mean() - 75.0) < 1e-9 and copies.std() < 0.25 * 75
 
 
 def test_floor_exact_refusals():
@@ -164,6 +178,8 @@ def test_floor_exact_refusals():
             tb.interpolate_clouds(Cb, Ca, Eb, Ea, 0.5, 50, positions=FLOOR, **bad, **kw)
     with pytest.raises(ValueError, match="herd"):
         tb.interpolate_clouds(Cb, Ca, Eb, Ea, 0.5, 50, t_pos=0.0, positions=FLOOR, herd=True, **kw)
+    with pytest.raises(ValueError, match="draw='midpoint'"):
+        tb.interpolate_clouds(Cb, Ca, Eb, Ea, 0.5, 50, t_pos=0.0, positions=FLOOR, draw=tb.DRAWS[1], **kw)
     with pytest.raises(ValueError, match="positions must be"):
         tb.interpolate_clouds(Cb, Ca, Eb, Ea, 0.5, 50, positions="exact", **kw)
 

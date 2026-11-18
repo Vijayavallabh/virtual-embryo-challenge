@@ -1544,9 +1544,10 @@ def _floor_exact_positions(Zb: np.ndarray, Eb: np.ndarray, Ea: np.ndarray, ib: n
 
     1. Candidates: from the earlier bracket's cells that rows_b does not draw, a uniform random subset as large as
        rows_a (stream [seed, FLOOR_EXACT_STREAM], without replacement). If fewer cells are left unused than rows_a
-       holds, the candidates are drawn from all of the earlier bracket's cells instead (`vec.core.draw_balanced`, the
-       same stream), positions an earlier-bracket row also takes then repeat, and the caller's duplicate jitter moves
-       them apart; the record says so ("fallback").
+       holds (exactly when the file's count exceeds the earlier bracket's cells), every unused cell is a candidate and
+       the rest are drawn from all of the earlier bracket's cells (`vec.core.draw_balanced`, the same stream), so each
+       cell's expected number of copies in the file stays equal and only as many positions repeat as the count forces;
+       the caller's duplicate jitter moves the repeats apart, and the record says so ("fallback").
     2. Each later row takes one candidate's position, one to one, by the exact minimum-cost assignment
        (scipy.optimize.linear_sum_assignment) on squared Euclidean distance between the later row's expression and the
        candidate cell's own expression, both in the joint PCs of the coupling's anchors (`_joint_pc_loadings`, the fit
@@ -1565,7 +1566,10 @@ def _floor_exact_positions(Zb: np.ndarray, Eb: np.ndarray, Ea: np.ndarray, ib: n
     fallback = bool(len(unused) < n_a)
     if n_a == 0:
         return np.empty((0, Zb.shape[1])), {"fallback": False, "rows": np.array([], dtype=np.int64), "mean_cost": 0.0}
-    cand = draw_balanced(len(Zb), n_a, rng) if fallback else rng.choice(unused, n_a, replace=False)
+    if fallback:  # all unused cells, then the remainder from the whole bracket
+        cand = rng.permutation(np.r_[unused, draw_balanced(len(Zb), n_a - len(unused), rng)])
+    else:
+        cand = rng.choice(unused, n_a, replace=False)
     centre, loadings = _joint_pc_loadings(Eb[ib], Ea[ia], n_pc)
     cost = cdist((Ea[rows_a] - centre) @ loadings, (Eb[cand] - centre) @ loadings, "sqeuclidean")
     r, c = linear_sum_assignment(cost)
