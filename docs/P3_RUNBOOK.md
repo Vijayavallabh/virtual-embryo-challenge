@@ -404,15 +404,25 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
   is a line here, and every line works without the client. One board at a time; a line that cannot be ticked stops
   that upload until the captain has the explanation. Deadline 2026-11-26 11:59 UTC, never in the last hours.
   1. [ ] **The hash.** On the machine the file goes from: `sha256sum <file>`. All 64 characters equal the board's line
-     in the reference list: `experiments/builds/results/builds_dc7b6ae.SHA256SUMS` (T1, the embryo, T3), or for the
-     heart's half `experiments/builds/results/heart2_307c9b2.SHA256SUMS` (`builds/T2heart_s2iso_half.h5ad`). By
-     hand: `grep <the 64 characters> <list>` prints one line, under one of the board's names. The same 64 characters
-     are in the disclosure note (line 4). A file rebuilt on the other machine is not the listed file.
-  2. [ ] **Local format check of these bytes:** `uv run vec check <file> --board <KEY>` on the same path as line 1
-     passes (no token; nothing is sent).
-  3. [ ] **Server format check, only where the captain has approved one for this file:** `uv run vec submit <file>
-     --board <KEY> > <log>` (format-only by default; never `--official`). A pass is not a promise: the heart's s1
-     passed on 2026-11-13 and the form refused it for its cell count on 2026-11-18.
+     in the reference list: `experiments/builds/results/builds_dc7b6ae.SHA256SUMS` (T1, the embryo, T3; the list
+     `results/reference_list.json` points to), or for the heart's half
+     `experiments/builds/results/heart2_307c9b2.SHA256SUMS` (`builds/T2heart_s2iso_half.h5ad`). That second list is
+     outside the pointer and was built in a campaign checkout (decision log 2026-11-18 (n)): the heart's line is
+     ticked only once the captain has accepted that provenance or a rebuild in the reference checkout has matched it.
+     A file in no committed list (a new embryo file, entry (s), item 1) needs its list committed, and the
+     `docs/S2_RULES.md` amendment it requires, before this line can be ticked. By hand: `grep <the 64 characters>
+     <list>` prints one line, under one of the board's names. A file whose 64 characters differ is not the listed
+     file, wherever it was built. The same 64 characters go in the disclosure note (line 4).
+  2. [ ] **Local format check of these bytes:** `uv run --frozen --no-sync vec check <file> --board <KEY>` on the same
+     path as line 1 passes (no token; nothing is sent).
+  3. [ ] **Server format check, only where the captain has approved one for this file.** Before it, `uv run --frozen
+     --no-sync vec submit status > <log>` shows nothing `unresolved` or `ambiguous` (section 0). Then, format-only by
+     default and never `--official`: `uv run --frozen --no-sync vec submit <local file> --board <KEY> > <log>`, or for
+     a DGX path `uv run --frozen --no-sync vec submit <path on the DGX> --board <KEY> --from-dgx > <log>`; output to a
+     file, never through `head`. After it, `vec submit status` again shows nothing unresolved and the portal's list
+     shows no new scored entry for the board; if either does, stop and resolve it (`vec submit resolve ...`, section
+     0) before anything else. A pass is not a promise: the heart's s1 passed on 2026-11-13 and the form refused it for
+     its cell count on 2026-11-18.
   4. [ ] **The disclosure note went first.** The captain has sent the email or one line that names this board, this
      file's sha256 and its register ids (above), with the board's own note where one is drafted
      (`docs/ORGANIZER_QUESTIONS.md`: "Note before the heart's second upload", "Note before Task 3's second upload").
@@ -428,8 +438,9 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
   8. [ ] **Afterwards, paste back** into the main session: the board, the time and file name the site lists, the
      outcome (scored, or the rejection's message), the board total and every per-metric value. The main session
      records them in `results/manual_uploads.csv` (one row; the board total) and in a decision-log entry in
-     `docs/PLAN.md` (the per-metric values), and checks the board total against the listed metrics. A score names
-     the banked file and chooses the final mark; it sets nothing else (`experiments/harness/TRIES.md` rule 9, J8).
+     `docs/PLAN.md` (the per-metric values). It checks the copy only (that the board total is the one the listed
+     metrics give) and never differences values across uploads. A score names the banked file and chooses the final
+     mark; it sets nothing else (`experiments/harness/TRIES.md` rule 9, J8; "Scores choose, never compute").
 - **(user)** Final entries. The account page (seen in the site's public script, 2026-10-28): "The leaderboard shows
   your team's best score on each board, so there is nothing to nominate yet. In the final phase the captain picks
   which submission counts." While nominations are open, the captain sees a "Final" column in the team's submission
