@@ -1,0 +1,36 @@
+The heart's second upload since the amendment of 2026-11-18 (docs/S2_RULES.md, last section): the set heart2
+=================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-18 in the campaign checkout ~/v/vec-campaign-h7 at commit 307c9b2
+(clean tree; docs/S2_RULES.sha256 checked by the script), twice, by `bash experiments/builds/build_all.sh heart2`:
+  a: BUILD_OUT=runs/heart2_307c9b2/a BUILD_THREADS=16   exit 0
+  b: BUILD_OUT=runs/heart2_307c9b2/b BUILD_THREADS=8    exit 0
+The targeted tests ran first there (tests/test_build_heart_floor_iso.py, test_halve.py, test_s2_rules.py,
+test_heart_trend_build.py, test_hidden_counts.py): exit 0.
+
+Commands the set runs:
+  build_test.py heart --entry s1 --expression copy --z-mode raw --out <O>/builds/T2heart_s2iso.h5ad
+  halve.py <O>/builds/T2heart_s2iso.h5ad <O>/builds/T2heart_s2iso_half.h5ad      (seed 1000001, the default)
+then `vec check` on both files (exit 0 in both builds).
+
+Both builds give the same bytes:
+  283ea03f5a33552ca34f767d8deb138bd2292a739a005093b4c7eb0f8615221d  builds/T2heart_s2iso.h5ad
+  dc436d9225bb28e7997d2ec51e95254cd125e569d44c059596298d0a7b6af5c2  builds/T2heart_s2iso_half.h5ad
+The full file's stamp says commit 307c9b2, clean True, in both builds. halve.py writes no stamp.
+
+Kept: ~/v/vec-campaign-h7/runs/archive/heart2_307c9b2/ on the DGX and runs/archive/heart2_307c9b2/ on the local
+machine (SHA256SUMS checked on both); the file for upload is the half, copied to runs/manual_upload/ here. The local
+format check (`vec check ... --board T2:heart:test_extrap`) passes on the half.
+
+A check of the bytes against the first upload's half (runs/manual_upload/T2heart_s1_half.h5ad; the same rows, since
+both halves come from the same draw and the same halving rule): the coordinates are a pure per-axis rescale of the
+same cells (relative residual below 1e-7 on every axis), by 0.936 on x and y and 1.383 on z, so the first upload's
+in-plane stretch (z over xy 1.48) is gone; the 3-D RMS radius is 612.0 against 614.9; the expression of 21.4% of the
+cells equals the first upload's exactly (the cells B0's momentum never moved) and differs for the rest.
+
+Where it was built. docs/COMPUTE.md says an upload source is built in the DGX's reference checkout and a campaign
+checkout's build is a check. The reference checkout was left untouched at dc7b6ae, as the captain had asked, so this
+file comes from a campaign checkout: same machine, an environment from the same lock, and two builds at two thread
+counts with identical bytes. A rebuild in the reference checkout would need the captain's word to sync it.
+
+Cell counts, file sizes and build logs are not recorded here and were not read.

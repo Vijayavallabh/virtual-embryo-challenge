@@ -5406,3 +5406,27 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Next:** the heart2 set on the DGX's campaign checkout at this commit, twice at two thread counts, compared by
     hash; the half copied here and handed to the captain with a line for the organisers; row K16 run on the local
     machine and read by its fixed rule.
+- 2026-11-18 (n), the heart's second file is built; row K16's first run is void by its own guard. Written by the AI
+  assistant.
+  - **A slip, found before any build.** The amendment commit (cccff68) added the set heart2 to the build script and
+    broke `tests/test_heart_trend_build.py`, which counted two heart lines there; the tests run on the DGX before
+    the build showed it. Fixed at 307c9b2 (three lines, the third named); nothing had been built.
+  - **The build** (`experiments/builds/results/heart2_307c9b2.txt` and `.SHA256SUMS`): the set heart2 on the DGX at
+    307c9b2, twice, at 16 and at 8 BLAS threads, exit 0 with the local checks passing, and the same bytes both times:
+    the full file 283ea03f5a33..., the half dc436d9225bb.... The stamps say 307c9b2, clean. The half is on the local
+    machine as `runs/manual_upload/T2heart_s2iso_half.h5ad`, hash checked, local format check passed.
+  - **The bytes against the first upload's half** (the same rows): the coordinates are a pure per-axis rescale of
+    the same cells, 0.936 on x and y and 1.383 on z, so the in-plane stretch (z over xy 1.48) is gone; the 3-D RMS
+    radius is 612.0 against 614.9; the expression of 21.4% of the cells equals the first upload's and differs for
+    the rest.
+  - **Where it was built.** In a campaign checkout (`~/v/vec-campaign-h7`), not the reference checkout, which
+    `docs/COMPUTE.md` names as the source of uploads. The reference checkout stays untouched at dc7b6ae, as the
+    captain had asked; an attempt by the AI assistant to sync it was stopped by the session's safety check and not
+    repeated. Same machine, an environment from the same lock, two builds with identical bytes. The captain is told,
+    and a rebuild there waits for his word.
+  - **Row K16, first run** (local machine, at cccff68, clean tree, three tasks, exit 0). By the row's own rule the
+    reading is void: on task m the base arm does not reproduce try K7b's committed scores to 1e-9 in seeds 1 and 9.
+    Read after the void, of the base arm only (no other arm's score has been read): on g1 and g2 the base equals
+    K8b's scores exactly; on m it differs in those two seeds by at most 0.004 board points (mean absolute difference
+    over the ten seeds 0.0005). The row fixed what follows: one rerun, unchanged at the same commit, on the DGX,
+    whose reading is the try's reading; it is running in `~/v/vec-campaign` at cccff68.
