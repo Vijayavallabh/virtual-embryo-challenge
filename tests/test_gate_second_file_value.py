@@ -79,6 +79,21 @@ def test_summarise_under_a_prior():
     assert zero["v_task"] == 0.0 and zero["mean_d"] == pytest.approx(-1.0)
 
 
+def test_subset_summary_reads_named_units_only():
+    """The counted-backtest reading: the summary over the named units alone, which can order two candidates the other
+    way round from the summary over all units."""
+    a = {"u1": {"mean_d": 6.0, "seed_v": 6.0}, "u2": {"mean_d": 6.0, "seed_v": 6.0},
+         "e": {"mean_d": -4.0, "seed_v": 0.1}}
+    b = {u: {"mean_d": 1.0, "seed_v": 1.0} for u in ("u1", "u2", "e")}
+    assert S.summarise(a)["v_task"] > S.summarise(b)["v_task"]
+    sa, sb = S.subset_summary(a, ["e"]), S.subset_summary(b, ["e"])
+    assert sa["v_task"] == 0.0 and sa["mean_d"] == -4.0 and sb["v_task"] == 1.0 and sa["units"] == 1
+    with pytest.raises(AssertionError):
+        S.subset_summary(a, ["missing"])
+    with pytest.raises(AssertionError):
+        S.subset_summary(a, [])
+
+
 def test_identical_candidate_is_worth_nothing_and_a_different_one_is_not():
     """The control (the first file's analogue) against itself gives D = 0 and V = 0; the same table with a candidate
     that differs gives a different value, so the comparison can tell them apart."""
@@ -208,6 +223,11 @@ def test_output_states_the_structure_asked_for(out):
     assert {u: sorted(v) for u, v in e["units"].items()} == {
         "T2/E8.0.h5ad": ["half", "late"], "T2/E8.25_late.h5ad": ["new1", "x1"], "T2/E8.5.h5ad": ["new2", "x2", "x3"],
         "T2/E7.5.h5ad": ["e75"], "T2/E7.25.h5ad": ["e725"]}
+    assert e["counted_backtests"]["tasks"] == ["e75", "e725"]
+    for v in e["candidates"].values():  # the counted reading is the two counted backtests' own units, equal weights
+        units = {u: v["units"][u] for u in ("T2/E7.5.h5ad", "T2/E7.25.h5ad")}
+        _same(v["counted_backtests"], S.summarise(units))
+    assert out["how_to_read"] and e["reading"]
     t1 = out["T1"]
     assert t1["first"] == "lib3_base" and len(t1["priors"]) == 9 and len(t1["scenarios"]) == 12
     assert all(set(v["by_prior"]) == set(t1["priors"]) for v in t1["candidates"].values())
@@ -216,6 +236,8 @@ def test_output_states_the_structure_asked_for(out):
     assert h["s2_hedge_heart"]["holds_first_or_candidate"] == []
     t3 = out["T3"]
     assert t3["paired_analogue"] is None and "no seed-paired D exists" in t3["why_none"]
+    assert "m_unpaired_cross_run" not in t3  # no cross-run difference on one fold only
+    assert "not to be differenced" in t3["standins_note"]
     for v in t3["candidates"].values():  # T3 is against the floor: no value is computed
         for tab in (v, v["by_knockout"]):
             assert "v_task" not in tab["summary"] and "v_seed" not in tab["summary"]

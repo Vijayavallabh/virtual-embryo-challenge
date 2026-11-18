@@ -30,6 +30,7 @@ Boards:
   embryo  first file fgw; nine practice tasks of try E28 (per-seed scores from runs E24, E25 and E28, merged as
           experiments/harness/nine_tasks.py merges them); five truths. Also try E28's own weighting S(p) = p D + (1 -
           p) O over its unmerged groups, at its three stated p.
+          And each candidate on the two counted backtests alone (e75, e725), the tasks fgw was adopted on.
   T1      first file lib3_base; try T33's twelve zero-gap scenarios (T33's own arms, T32's stored s1_cm60 and
           lib3_cm60, as T33 reads them) under T30's nine stated priors, imported by reading t30_pricing.py's
           constants. The one-day reading that exists is the oracle-base grid (s2_hedge t1_grid, E9.5 -> E10.5): it
@@ -38,7 +39,7 @@ Boards:
   heart   first file b0_trend, candidate copy, on the two counted backtests of trend_heart_v1 (one truth).
   T3      no paired analogue of the allowed s1 exists (the script checks where its stand-ins were scored); the
           candidates are given against the floor on K7's and K8's folds, and the first file's stand-ins against the
-          floor on their own folds.
+          floor on their own folds; no cross-run difference between the two is computed.
 
 Usage, from the repository root (standard library only):
   python3 -I -B experiments/gate/second_file_value.py \
@@ -164,6 +165,12 @@ def summarise(units: dict[str, dict], weights: dict[str, float] | None = None) -
             "share_positive": sum(w[u] for u in names if units[u]["mean_d"] > 0)}
 
 
+def subset_summary(units: dict[str, dict], keep: list[str]) -> dict:
+    """The summary over named units only, with equal weights (for a reading restricted to a rule's own tasks)."""
+    need(all(u in units for u in keep) and len(keep) > 0, "a subset of the units")
+    return summarise({u: units[u] for u in keep})
+
+
 def candidate_table(first: dict[str, list[float]], cand: dict[str, list[float]], targets: dict[str, str]) -> dict:
     """One candidate against the first file on every task both hold: per task, per unit, and the summary."""
     tasks = [t for t in targets if t in first and t in cand]
@@ -230,6 +237,7 @@ EMB_TASKS = {"half": "T2e/E7.5+E8.5->E8.0", "late": "T2e/E7.5+E8.25_late->E8.0",
 EMB_DEEP = ("half", "late", "new1", "x1", "x2", "x3")  # nine_tasks.py DEEP
 EMB_OTHER = ("new2", "e75", "e725")  # nine_tasks.py OTHER
 EMB_PS = (0.3, 0.45, 0.6)  # nine_tasks.py PS; TRIES E28; forecast.py JUDGEMENT emb_p_deep (0.45; 0.30 to 0.60)
+EMB_COUNTED = ("e75", "e725")  # the two counted backtests fgw was adopted on (decision log 2026-11-04)
 EMB_FIRST = "fgw"
 EMB_CANDS = ("fgw_aligned_series", "fgw_shape0", "fgw_shape0_series", "fgw_series", "fgw_render_hi", "fgw_shape0_hi",
              "fgw_aligned")
@@ -245,6 +253,14 @@ EMB_NOTES = {
     "fgw_aligned": "try E11's candidate, not kept (E11's veto stands); read here as a second file; first scored on "
                    "x1 to x3 by try E28",
 }
+EMB_READING = [
+    "selection: fgw_aligned_series was named by E28's rule on these nine tasks and fgw_shape0_series by E24's on six "
+    "of them, so their lead in V is expected whether or not they are better (winner's curse)",
+    "separation: the candidates' task-level V rest on five units whose SD of mean D across units is 1.5 to 6.7; "
+    "differences in V of a few tenths do not separate them, and no ranking by V is drawn here",
+    "the equal-weight units are three truths of E8.0 or later (six of the nine tasks) and one per counted backtest; "
+    "on the counted backtests alone (the line 'counted backtests' per candidate) the candidates come in another order",
+]
 EMB_LIMITS = [
     "first file: fgw was adopted on the two counted backtests e75 and e725 (decision log 2026-11-04); the other seven "
     "tasks count for no adoption",
@@ -296,10 +312,16 @@ def board_embryo(rd: Reader, checks: list[str]) -> dict:
             s[f"{p:g}"] = {"v_task": p * statistics.fmean(deep) + (1 - p) * statistics.fmean(other),
                            "v_seed": p * statistics.fmean(deep_s) + (1 - p) * statistics.fmean(other_s)}
         tab.pop("d")
-        cands[c] = {**tab, "e28_weighting": s, "note": EMB_NOTES[c]}
+        counted = subset_summary(tab["units"], [targets[n] for n in EMB_COUNTED])
+        cands[c] = {**tab, "e28_weighting": s, "counted_backtests": counted, "note": EMB_NOTES[c]}
     return {"first": EMB_FIRST, "tasks": dict(EMB_TASKS), "targets": targets,
             "units": truth_units(targets), "builds": sorted({m["build"] for m in meta.values()}),
             "runs_largest_difference": worst, "candidates": cands, "limits": EMB_LIMITS,
+            "counted_backtests": {"tasks": list(EMB_COUNTED),
+                                  "what": "the adoption rule's tasks, not a prior on the test: the two counted "
+                                          "backtests fgw was adopted on (decision log 2026-11-04), two truths, equal "
+                                          "weights"},
+            "reading": EMB_READING,
             "merge_source": "the task files' target field (task.target); experiments/harness/series_world.py says "
                             "half and late share one truth; docs/PLAN.md decision log 2026-11-13 (gg), item 2, says "
                             "x2 and x3 do",
@@ -510,6 +532,13 @@ T3_LIMITS = [
 ]
 
 
+T3_STANDINS_NOTE = (
+    "these lines are not to be differenced against the candidates' lines: each pair would be cross-run and unpaired, "
+    "and read side by side they point opposite ways by knockout (on the Gata4 replicates the first file's "
+    "same-knockout stand-in sits above every candidate; on Mab21l2 its cross-knockout stand-in sits near the floor, "
+    "below the reverts, where m's WT E9.5 reference flattered reverts, rows K11 to K14); no difference is computed")
+
+
 def _no_value(tab: dict) -> dict:
     """Against the floor, max(D, 0) is not the value of a second file: drop V from a T3 table."""
     units = {u: {k: v for k, v in x.items() if k != "seed_v"} for u, x in tab["units"].items()}
@@ -561,9 +590,6 @@ def board_t3(rd: Reader, checks: list[str]) -> dict:
          "T3: K2a's task has fold m's target and reference", checks)
     stand[f"first file: t3_factor_xko on {k2['key']} (K2a)"] = seed_summary(paired(k2["arms"]["floor"],
                                                                       k2["arms"]["t3_factor_xko"]))
-    xko = statistics.fmean(k2["arms"]["t3_factor_xko"])
-    unpaired = {name: statistics.fmean(src[where["m"][0]]["m"]["arms"][where["m"][1]]) - xko
-                for name, (where, _) in T3_CANDS.items() if "m" in where}
     return {"first": "allowed s1 (pooled Gata4 factor at exponent 1, the composition, Gata4's per-label depth ratios)",
             "paired_analogue": None,
             "why_none": "the allowed s1's stand-ins were scored on the replicate folds r12 and r21 (s1x, tries K10 "
@@ -572,10 +598,7 @@ def board_t3(rd: Reader, checks: list[str]) -> dict:
                         "and on T3/Gata4->Mab21l2 (K2a's t3_factor_xko, another run); no candidate was scored in any "
                         "of those runs, so no seed-paired D exists and no V is computed",
             "targets": targets, "candidates": cands, "standins_vs_floor": stand,
-            "m_unpaired_cross_run": {"what": "on fold m's truth and reference only: the candidate's mean (K7) minus "
-                                             "K2a's t3_factor_xko mean (t3_k2_v1), two runs, NOT seed-paired; no "
-                                             "shared arm checks that the two runs score alike",
-                                     "values": unpaired},
+            "standins_note": T3_STANDINS_NOTE,
             "limits": T3_LIMITS}
 
 
@@ -595,7 +618,8 @@ def _tasks(tab: dict, order: list[str]) -> list[str]:
 
 
 def text(res: dict) -> str:
-    L = [res["label"], ""]
+    L = [res["label"]]
+    L += [f"  how to read V: {x}" for x in res["how_to_read"]] + [""]
     e = res["embryo"]
     L += [f"EMBRYO. First file: {e['first']} (builds/T2embryo_s1.h5ad). Nine practice tasks, 10 seeds; scorer build "
           f"{', '.join(e['builds'])}; runs agree to {e['runs_largest_difference']:.4f} where an arm is in two.",
@@ -606,7 +630,12 @@ def text(res: dict) -> str:
         L += _tasks(v, list(e["tasks"]))
         L.append("    E28's weighting S(p), unmerged: " + "; ".join(
             f"p {p}: V task {x['v_task']:.2f}, V seed {x['v_seed']:.2f}" for p, x in v["e28_weighting"].items()))
+        k = v["counted_backtests"]
+        L.append(f"    counted backtests e75, e725 only: mean D {k['mean_d']:+.2f}, V task {k['v_task']:.2f}, V seed "
+                 f"{k['v_seed']:.2f}, share D>0 {k['share_positive']:.2f}")
         L.append(f"    note: {v['note']}")
+    L.append(f"  counted backtests: {e['counted_backtests']['what']}")
+    L += [f"  reading: {x}" for x in e["reading"]]
     L.append(f"  E28's weighting from: {e['e28_weighting_source']}")
     L += [f"  limit: {x}" for x in e["limits"]]
     t = res["T1"]
@@ -638,7 +667,8 @@ def text(res: dict) -> str:
               f"{h['candidate']} (the built half of the heart2 set). Two counted backtests, 10 seeds; scorer build "
               f"{', '.join(h['builds'])}.",
           "  units: " + "; ".join(f"{u}: {', '.join(v)}" for u, v in h["units"].items()),
-          _row(h["candidate"], h["table"]["summary"])]
+          _row(h["candidate"], h["table"]["summary"]) + "  (the expression difference only: neither arm has the "
+          "size step or the half)"]
     L += _tasks(h["table"], list(h["targets"]))
     L.append(f"  s2_hedge heart-scope arms {h['s2_hedge_heart']['arms']}: {h['s2_hedge_heart']['what']}")
     L += [f"  limit: {x}" for x in h["limits"]]
@@ -661,9 +691,7 @@ def text(res: dict) -> str:
                      f"{s['seeds']})")
         else:
             L.append(f"    {k}: largest {s['largest_abs']:.2f}, mean {s['mean']:+.2f}")
-    u = r["m_unpaired_cross_run"]
-    L.append(f"  {u['what']}:")
-    L += [f"    {k:<56} {v:+6.2f}" for k, v in u["values"].items()]
+    L.append(f"  {r['standins_note']}")
     L += [f"  limit: {x}" for x in r["limits"]]
     L += ["", "checks passed: " + str(len(res["checks"])), "inputs (sha256):"]
     L += [f"  {k} {v}" for k, v in res["inputs_sha256"].items()]
@@ -675,11 +703,23 @@ LABEL = ("Second-file value table, 2026-11-18: V = E[max(D, 0)], D = candidate m
          "uploaded first file, seed-paired on committed practice tasks. Aggregation of committed results, not a try; "
          "no test score, leaderboard figure or made-up prior enters any number.")
 
+HOW_TO_READ = [
+    "V can never be negative, and on pure noise it is positive (E[max(Z, 0)] = 0.40 per seed for D ~ N(0, 1), about "
+    "0.13 per ten-seed task: tests/test_gate_second_file_value.py); a positive V is no evidence of a gain, so read "
+    "mean D and the share of units ahead beside it",
+    "V seed: the ten seeds resample the scoring, not the method (TRIES row H11's checker, for the heart; the same "
+    "holds wherever a factor is fitted once per task), and the two arms share each seed's scoring draw, so the paired "
+    "seed spread understates an unpaired test draw",
+    "every embryo and T1 candidate was selected or tuned on the tasks used to value it; the built files (E28's and "
+    "T33's picks) carry the most upward bias, so 'the built file has the highest V' is expected whether or not it is "
+    "better",
+]
+
 
 def build(rd: Reader | None = None) -> dict:
     rd = rd or Reader()
     checks: list[str] = []
-    res = {"label": LABEL, "embryo": board_embryo(rd, checks), "T1": board_t1(rd, checks),
+    res = {"label": LABEL, "how_to_read": HOW_TO_READ, "embryo": board_embryo(rd, checks), "T1": board_t1(rd, checks),
            "heart": board_heart(rd, checks), "T3": board_t3(rd, checks)}
     res["checks"] = sorted(set(checks))
     res["inputs_sha256"] = dict(sorted(rd.read.items()))
