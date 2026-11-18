@@ -14,7 +14,7 @@
   2026-11-17 (a) has the whole list. The organisers also answered the exposure notice (accepted; they ask for the
   explanation and the precommitted procedure in the method report): a further reply to the thread's other questions
   is announced and must go through a screening agent, never be pasted.
-- **What is live (2026-11-18, 04:00 UTC).** No candidate change is live. On Task 1 two lines were read on 17 and
+- **What is live (2026-11-18, 03:05 UTC).** No candidate change is live. On Task 1 two lines were read on 17 and
   18 November. (1) The step's size (tries T44 to T54): the rule fixed before the runs gives 0.60 on both uploads;
   a cold check said stop; the ninth independent pass classed that stop as the AI assistant's judgement, so the
   question is the captain's (table below). (2) The common part of Feng's direction (tries T55 to T57): **closed by

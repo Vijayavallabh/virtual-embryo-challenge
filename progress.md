@@ -3,7 +3,7 @@
 ## Current State
 
 **Last Updated:** 2026-11-18
-**2026-11-18, 04:00 UTC: try T57 is read and the common-part family is closed by the use fixed before its run; the
+**2026-11-18, 03:05 UTC: try T57 is read and the common-part family is closed by the use fixed before its run; the
 ninth independent pass is complete and found no open line; five further reads are being built for the captain's
 three questions and one hard call. Nothing in any upload, build, rule or gate file has changed** (`docs/PLAN.md`
 decision log 2026-11-18 (b) and (c)). T57: both forms read 'behind somewhere'. The common part alone is ahead of the
