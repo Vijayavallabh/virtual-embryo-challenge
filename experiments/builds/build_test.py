@@ -22,7 +22,8 @@ machine, and an official upload needs the captain's go-ahead.
           Feng's direction, on the cells g_mom edits (metacell factors through apply_factors with keep_depth, R1's held
           labels left alone), so no share, cell count or scope changes. Row R3b (the captain's ruling of 2026-11-10
           (p)): the factors edit cardiomyocytes and endocardium only; epicardium and vascular endothelium keep M1's
-          counts
+          counts. --g-mom-fit lib3 (with --g-mom; default whole; no entry, only a captain's ruling would use it): the
+          same fit on E10.5's dissected-heart library alone
   heart   B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
           procedure: --entry s1 = scope hypothesis H1; s2_trim = the s2 of docs/S2_RULES.md (H2 as a trim to half
           E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`). --trend
@@ -155,6 +156,9 @@ def _hide_counts(rec: dict, board) -> dict:
     # within 1/n_cells of a rounding boundary. And it adds nothing: the quotas meet the targets to within 1/n_cells by
     # construction. The h5ad is untouched: this is the record written beside it.
     out.pop("realised", None)
+    if isinstance(out.get("g_mom"), dict) and "edited_share" in out["g_mom"]:  # the drawn cells' share (--g-mom-fit):
+        # its denominator follows from the count, as the realised composition's does; the pool's share stays
+        out["g_mom"] = {k: v for k, v in out["g_mom"].items() if k != "edited_share"}
     if isinstance(out.get("record"), dict):
         out["record"] = {k: v for k, v in out["record"].items() if k not in COUNT_FIELDS}
     return out
@@ -256,7 +260,35 @@ def _t1_held(union: dict | None, direction_groups, build_genes) -> tuple[list[st
         "sources": union["sources"]}
 
 
-def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str]):
+def _t1_library3(ref, what: str, need_others: bool) -> np.ndarray:
+    """Which reference cells are E10.5's dissected-heart library (names ending in _T1_DISSECTED_LIBRARY), the selection
+    of the lib3 base. Every name must end in _<library number> and library 3 must be among them; need_others (the
+    bases): library 3 must be one of at least two. Otherwise the build stops."""
+    names = [str(x) for x in ref.obs_names]
+    library = np.array([x.rsplit("_", 1)[-1] if "_" in x else "" for x in names])
+    kinds = set(library.tolist())
+    if not all(k.isdigit() for k in kinds) or T1_DISSECTED_LIBRARY not in kinds or (need_others and len(kinds) < 2):
+        sys.exit(f"{what}: the reference's cell names do not separate library 3 from the others (every name must end "
+                 "in _<library number>, and library 3 must be " + ("one of at least two)" if need_others
+                                                                   else "among them)"))
+    return library == T1_DISSECTED_LIBRARY
+
+
+def _edited_shares(cats: np.ndarray, n_edited: dict[str, int]) -> dict:
+    """Per category of G_MOM_EDIT_CATEGORIES and over both ("all"): the share of the cells in that category that g_mom's
+    hook edits (None where the category holds no cell). Shares only, no cell number."""
+    out = {}
+    for name, members in (("all", list(G_MOM_EDIT_CATEGORIES)), *((c, [c]) for c in G_MOM_EDIT_CATEGORIES)):
+        total = int(np.isin(cats, members).sum())
+        out[name] = sum(n_edited.get(c, 0) for c in members) / total if total else None
+    return out
+
+
+G_MOM_FITS = ("whole", "lib3")  # --g-mom-fit: the reference g_mom's factors are fitted on
+
+
+def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str], fit: str = G_MOM_FITS[0],
+              pool=None):
     """The test build's g_mom step (--g-mom, default off; T1 try T11 of experiments/harness/TRIES.md; only the captain's
     ruling puts it in an upload): E9.5 is loaded here and nowhere else, and the factors are fitted exactly as the
     candidate's (`vec.harness.g_mom_pair_factors`: start E9.5, reference E10.5, the chamber categories of E10.5's own
@@ -274,7 +306,15 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str]):
     lever stays closed; the cells, their number, shares and scope are untouched. The stream is [seed, 5], the
     candidate's. covered_labels: the labels the build moved along Feng's direction (`label_groups` mapped to a group
     with a direction); the hook checks that every label it edits is one of them, so R1's mask and the build's own mask
-    of Feng-covered labels cannot disagree silently."""
+    of Feng-covered labels cannot disagree silently.
+
+    fit (--g-mom-fit; the record's only change with "whole" is the fields below): the option the caller chose; `ref` is
+    the reference the fit runs on (the caller passes the whole E10.5 object for "whole" and its library-3 rows for
+    "lib3"), with the same start, function and `categories`. The record adds the option, the number of metacells per
+    fitted category, and the share of the cells in R3b's edit categories that the hook edits: "edited_share_pool" over
+    `pool` (the build's base, when given: its cells whose name sits in a fitted metacell and whose label R1 does not
+    hold), and "edited_share" over the drawn cells, which `_hide_counts` strips on a test board (its denominator follows
+    from the board's count). A drawn cell whose source cell is outside the fit keeps its counts and is not edited."""
     from vec import t1_state_transport as ts
 
     start = load_stage(DATA / "T1/E9.5_RNA.h5ad", lineage=False)
@@ -283,6 +323,21 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str]):
     if missing:
         raise ValueError(f"--g-mom has no factors for a category R3b edits: {missing}")
     held_flat = t1_scope.held_flat_genes()
+    fit_record = {"fit": fit,
+                  "fit_reference": ("every E10.5 cell" if fit == "whole" else
+                                    f"E10.5's library-{T1_DISSECTED_LIBRARY} cells only (names ending in "
+                                    f"_{T1_DISSECTED_LIBRARY}, the lib3 base's selection)"),
+                  "metacells": {c: int(factors.categories[c].n_metacells) for c in sorted(factors.categories)}}
+    if pool is not None:
+        b = harness._shallow(pool)
+        t1_scope.classify(b, source="E10.5_RNA", spec=t1_scope.load_spec())
+        p_cats = np.asarray(b.obs[t1_scope.CATEGORY_KEY]).astype(str)
+        p_labels = np.asarray(b.obs[t1_scope.LABEL_KEY]).astype(str)
+        p_held = np.isin(p_labels, sorted(ts.r1_unbracketed_labels(np.unique(p_labels))))
+        p_names = np.asarray(b.obs_names).astype(str)
+        fitted = {c: (p_cats == c) & ~p_held & np.isin(p_names, list(factors.categories[c].index))
+                  for c in G_MOM_EDIT_CATEGORIES}
+        fit_record["edited_share_pool"] = _edited_shares(p_cats, {c: int(m.sum()) for c, m in fitted.items()})
     record = {"rule": "try T11's within-type factors at test: OT within each chamber category from E9.5 to E10.5, "
                       "metacells of the E10.5 cells, the per-category mean removed, damped by B0_DAMPING, zeroed and "
                       "clipped; applied last (after Feng's direction); R1's held labels unedited; keep_depth; R3b: "
@@ -291,7 +346,8 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str]):
               "edit_categories": list(G_MOM_EDIT_CATEGORIES),
               "categories_with_factors": sorted(factors.categories),
               "categories_without_factors": sorted(factors.skipped), "stream": [int(seed), 5],
-              "held_flat": "the candidate's pre-registered list (R2's union is held in Feng's direction only)"}
+              "held_flat": "the candidate's pre-registered list (R2's union is held in Feng's direction only)",
+              **fit_record}
 
     def hook(pop):
         labels = pop.obs[t1_scope.LABEL_KEY].astype(str).to_numpy()
@@ -304,6 +360,7 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str]):
             raise ValueError(f"--g-mom would edit labels Feng's direction does not cover: {extra}")
         moved, rec = ts.apply_state_factors(pop, factors, held_flat, [seed, 5], rescale=False, no_edit=no_edit)
         record["median_depth_scale"] = rec["median_depth_scale"]  # no cell number
+        record["edited_share"] = _edited_shares(cats, {c: v["n_edited"] for c, v in rec["by_category"].items()})
         return moved
 
     return hook, record
@@ -338,6 +395,9 @@ def _t1_mid_rows(ref, in3: np.ndarray, seed: int) -> tuple[np.ndarray, dict]:
 
 
 def build_t1(a) -> dict:
+    if a.g_mom_fit != G_MOM_FITS[0] and not a.g_mom:
+        sys.exit(f"--g-mom-fit {a.g_mom_fit} is refused without --g-mom: it chooses the reference g_mom's factors are "
+                 "fitted on")
     if a.g_mom and a.strong_null:
         sys.exit("--g-mom is refused with --strong-null: the two count edits have no ruled order and were never tested "
                  "together; a new row in experiments/harness/TRIES.md and the captain's ruling fix it first")
@@ -371,13 +431,7 @@ def build_t1(a) -> dict:
     pool = ref
     mid_record = None
     if a.base in ("lib3", "mid"):
-        names = [str(x) for x in ref.obs_names]
-        library = np.array([x.rsplit("_", 1)[-1] if "_" in x else "" for x in names])
-        kinds = set(library.tolist())
-        if not all(k.isdigit() for k in kinds) or T1_DISSECTED_LIBRARY not in kinds or len(kinds) < 2:
-            sys.exit(f"--base {a.base}: the reference's cell names do not separate library 3 from the others (every "
-                     "name must end in _<library number>, and library 3 must be one of at least two)")
-        in3 = library == T1_DISSECTED_LIBRARY
+        in3 = _t1_library3(ref, f"--base {a.base}", need_others=True)
         if a.base == "lib3":
             pool = ref[np.flatnonzero(in3)].copy()
         else:
@@ -397,7 +451,10 @@ def build_t1(a) -> dict:
     within_type, g_mom_record = ({}, None)
     if a.g_mom:
         covered = {lab for lab, group in groups.items() if group in directions}  # the build's Feng-covered labels
-        hook, g_mom_record = _t1_g_mom(ref, fit_categories, a.seed, covered)
+        fit_ref = ref  # --g-mom-fit whole: the fit's reference is the whole E10.5 object, as before the option
+        if a.g_mom_fit == "lib3":  # the same fit on E10.5's library-3 cells alone (the lib3 base's selection)
+            fit_ref = ref[np.flatnonzero(_t1_library3(ref, "--g-mom-fit lib3", need_others=False))].copy()
+        hook, g_mom_record = _t1_g_mom(fit_ref, fit_categories, a.seed, covered, fit=a.g_mom_fit, pool=pool)
         within_type = {"post_cells": hook}
     sub, rep = t1_scope.build_submission(pool, board, shares, n, a.seed, held_flat=held,
                                          ref_source="E10.5_RNA", directions=directions, direction_fraction=fraction,
@@ -598,6 +655,16 @@ def build_parser() -> argparse.ArgumentParser:
                                 "kept, no share, cell count or scope changed; refused with --no-hold-unbracketed; "
                                 "off: the entry as built, "
                                 "and only the captain's ruling turns it on for an upload)")
+            p.add_argument("--g-mom-fit", choices=G_MOM_FITS, default=G_MOM_FITS[0],
+                           help="with --g-mom: the reference g_mom's factors are fitted on (start E9.5, the same "
+                                "categories): whole = every E10.5 cell (the default, the entry as built); lib3 = "
+                                "E10.5's dissected-heart library alone (names ending in _3, the lib3 base's "
+                                "selection), so no contrast between metacells of different library make-up enters "
+                                "the factors. With lib3 and a base other than lib3 (pooled, mid), the drawn cells "
+                                "whose source cell is of another library sit in no fitted metacell and keep their "
+                                "counts: the record's g_mom field gives the share of R3b's cells the step edits "
+                                "(edited_share_pool; edited_share on a dry run). Refused without --g-mom; no entry "
+                                "uses it, and only the captain's ruling puts it in an upload")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
