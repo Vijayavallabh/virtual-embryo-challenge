@@ -5519,3 +5519,59 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **What it changes.** GPUs 2 to 7 are this project's for the campaign (at 17:18 UTC all six showed no memory
     in use; GPUs 0 and 1 hold other jobs and stay untouched), and `docs/COMPUTE.md`'s "ask before writing more
     than 50 GB" no longer applies to this work. Nothing else changes: no rule of entry (q) is lifted by it.
+- 2026-11-18 (s), the design round's result and the work the AI assistant starts on it. Written by the AI assistant;
+  the choices are its own under the delegation of 2026-11-02, and the captain can overrule each.
+  - **The round** (wf_edd233ae-35a, read-only, nine agents, about 20 minutes): per board a designer set the first
+    scores beside the practice results and proposed hypotheses and candidates of different kinds, and a challenger
+    checked them against the committed files; a ninth agent gave a rule for pricing a second file and for weighing
+    practice evidence. Its saved result is outside the repository (the session's scratch folder, `lift8/`).
+  - **What the first scores say and do not say,** as the round fixed it. They say which file is banked on each board
+    and, metric by metric, which parts of it beat the floor: all four on T1; the four expression metrics, the size and
+    the neighbourhood metric on the embryo, with d2_shape and occupancy_dice far below; the size and both direction
+    metrics on the heart, with shape, mmd_u and the neighbourhood metric below; only de_direction on T3, with
+    severity gated. They do not say, and nothing may be solved from them: T1's mix or depth at E12.5; why the
+    embryo's Dice fell so far; how the heart's neighbourhood loss splits between the trend, the stretch and the
+    halving; how T3's loss splits between depth, factor and composition, or which branch of the gate closed.
+  - **Which practice sources agreed with the test** (an after-the-fact lesson; it sets no weight and selects no
+    task): on T1 the matched-mix scope task of try T28 and not the counted cuts, which carry E9.5's mix; on the
+    embryo the nine-task mean for the total and the flagged-coupling readings E11, N1 and N51 for d2_shape, and
+    nothing for Dice; on the heart the z-held hedge runs of 2026-11-01 for shape and nothing for mmd_u; on T3 the
+    cross-knockout folds and the depth-matched reading, and not the same-knockout folds the forecast leaned on.
+  - **The challengers' verdicts.** Every large new model was dropped on reads the ledger already holds: a learned
+    model over the stage ladder for T1 (rows T34 and T35: the latent step tied the entry or lost; row H10: a latent
+    flow learns no forecast where stages do not overlap), the bracket to Feng's E14.5 (readout O1: +0.010 against a
+    bar of 1.5), learned heart models (rows H8 to H10 and H23), a knockout-series model and a Wnt gene-set prior for
+    T3, a mirror-symmetric embryo cloud (the released embryo clouds are mirror-neutral within noise, so there is
+    nothing to protect). Kept: the four second files as they stand; for the embryo, a file in E7.5's own geometry
+    (the old second file's family) in place of the moved one; for T3, one read between the two built files; checks
+    of the heart file's own steps. The round's estimate, which the AI assistant reports as it is: about 186 Overall
+    (180 to 195) with the four files as they stand; the new work adds +0.5 to +1.5, with about a 0.3 chance of at
+    least one point; nothing supports 226; compute is not what limits the week.
+  - **A side agent's note,** forwarded by the captain with no instruction added (about 17:35 UTC), says the same and
+    ends: "Want the wild bets run anyway? Tell the main agent". The AI assistant does not read the forward as a
+    decision either way.
+  - **What the AI assistant starts** (two workflows; each item is written on a campaign branch to a brief fixed
+    beforehand, reviewed for its design and its code, fixed and re-reviewed; each row is committed on main before its
+    run):
+    1. Embryo, tries E47a and E47b and reading N53: a new arm that keeps the first upload's own rows and puts every
+       E8.0 cell on the position of a real, unused E7.5 cell matched by expression, so that the cloud is a sample of
+       E7.5's own positions; scored on the nine practice tasks, with a target-free check of how close each geometry
+       is to E7.5's own form at the test pair. The first upload's moved geometry is not an arm of that check.
+    2. T3, try K18: the refused form against the barred file's form, both as built, on the two Gata4 replicates in
+       the plain and in the depth-matched practice world; a swap question only if the barred form wins on both
+       replicates in both worlds.
+    3. Heart, try H25: both uploaded forms run end to end on the two backtests, the size step and the halving
+       included, with a count ladder for the copy; a question on the cell number only if halving costs the
+       neighbourhood term there.
+    4. A table of what each candidate second file is worth as the better of two, from committed practice results
+       only (not a try); and, as text, a ninth ledger rule on how practice evidence is judged and a checklist the
+       captain can tick before each upload.
+  - **What it does not start, and why.** The learned models above: the ledger has read their families, no released
+    stage lies between E10.5 and E12.5 to check a new one, and a file from one would reach the captain with no
+    evidence behind it. The six GPUs stay idle unless a check opens one of these lines. The captain can order any of
+    them run regardless; it would then run as a labelled read with its row first.
+  - **Two slips in the AI assistant's own reasoning,** recorded because entry (k)'s lines hold for every later step:
+    it read the embryo's 2.5 as a bound on a test anchor, and it turned T3's direction skill into a raw value through
+    a validation anchor. It wrote neither figure anywhere; no file, brief, weight or constant takes anything from
+    them; the questions it will put to the captain rest on the skill map's definition (the floor scores 50 whatever
+    the truth is) and on committed practice results.
