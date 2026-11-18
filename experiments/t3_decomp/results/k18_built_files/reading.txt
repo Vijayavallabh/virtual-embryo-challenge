@@ -1,0 +1,70 @@
+Try K18: no question; the refused s1 stands as T3's last upload.
+commit 13fd89a6fb20474131a69f0a6b2f6d34d1de646f, machine p01r10srv05. Barred over refused, paired mean > 0.3 with >= 8 of 10 ahead: plain g1 yes; plain g2 yes; dm g1 no; dm g2 yes; barred severity scored in the depth-matched world: g1 6 of 10, g2 10 of 10 (needs >= 9 on both; refused_form, reported only: g1 10 of 10, g2 10 of 10); the depth-matched check within tolerance on both replicates: yes (needed for a question).
+guard (plain refused_form against K8b's committed scores): g1 mean -0.0012, largest seed 0.0111, 6 of 10 seeds differ; g2 mean -0.0003, largest seed 0.0048, 6 of 10 seeds differ
+check (the dm world's U3d arm against U3d's committed rows; it can only block the question): g1 mean -0.0000, largest seed 0.0000, 0 of 10 seeds differ, within the guard's tolerance yes; g2 mean +0.0000, largest seed 0.0000, 0 of 10 seeds differ, within the guard's tolerance yes
+task files read: plain_g1.json sha256 5ec09ef583862ab47ab078e72c7aed807c89b4d9c234c57e3b0727ff9e460ed9, commit 13fd89a6fb20474131a69f0a6b2f6d34d1de646f, clean True, machine p01r10srv05; plain_g2.json sha256 cfc5ede7e7185ba5e16d4774d975b9e140e60bbd29736fb85c0fdb8e99f4634f, commit 13fd89a6fb20474131a69f0a6b2f6d34d1de646f, clean True, machine p01r10srv05; dm.json sha256 1ef3e26347c65f915c1630130da02a655c155b912392180001cba315fe135b60, commit 13fd89a6fb20474131a69f0a6b2f6d34d1de646f, clean True, machine p01r10srv05
+Diagnostic arms (resid_*) decide nothing; g1 and g2 are two replicates of one knockout run.
+
+WORLD plain (K8's: the harness, the reference as released):
+plain g1 T3w/WT->Gata4rep1:
+    floor            50.00 (sd 0.00); severity scored 0 of 10 {'no_response': 10}, median beta n/a, r2 n/a; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    refused_form     57.14 (sd 1.05); severity scored 10 of 10 {'scored': 10}, median beta 0.098, r2 0.074; skills de_score 0.473, de_direction 0.554, severity_slope 0.753, mmd_u 0.513, variogram 0.513
+    barred_form      59.43 (sd 0.46); severity scored 10 of 10 {'scored': 10}, median beta 0.437, r2 0.167; skills de_score 0.486, de_direction 0.527, severity_slope 0.897, mmd_u 0.493, variogram 0.418
+    resid_revert_k7  55.08 (sd 3.00); severity scored 8 of 10 {'r2_gate': 2, 'scored': 8}, median beta 0.050, r2 0.069; skills de_score 0.460, de_direction 0.575, severity_slope 0.659, mmd_u 0.520, variogram 0.521
+    resid_perm_k7    53.25 (sd 2.33); severity scored 9 of 10 {'r2_gate': 1, 'scored': 9}, median beta 0.044, r2 0.040; skills de_score 0.433, de_direction 0.535, severity_slope 0.670, mmd_u 0.509, variogram 0.501
+    resid_revert_up  56.01 (sd 2.48); severity scored 9 of 10 {'r2_gate': 1, 'scored': 9}, median beta 0.058, r2 0.097; skills de_score 0.472, de_direction 0.557, severity_slope 0.695, mmd_u 0.528, variogram 0.527
+    resid_perm_up    54.48 (sd 1.46); severity scored 10 of 10 {'scored': 10}, median beta 0.055, r2 0.068; skills de_score 0.440, de_direction 0.529, severity_slope 0.710, mmd_u 0.518, variogram 0.508
+    barred_form - refused_form: +2.29 (sd 0.86, ahead 10 of 10)
+    resid_revert_k7 - refused_form: -2.06 (sd 2.50, ahead 3 of 10)
+    resid_perm_k7 - refused_form: -3.89 (sd 1.64, ahead 0 of 10)
+    resid_revert_up - refused_form: -1.13 (sd 1.79, ahead 2 of 10)
+    resid_perm_up - refused_form: -2.66 (sd 0.81, ahead 0 of 10)
+    resid_perm_k7 - resid_revert_k7: -1.83 (sd 1.49, ahead 1 of 10)
+    resid_perm_up - resid_revert_up: -1.53 (sd 1.68, ahead 1 of 10)
+    refused_form - floor: +7.14 (sd 1.05, ahead 10 of 10)
+plain g2 T3w/WT->Gata4rep2:
+    floor            50.00 (sd 0.00); severity scored 0 of 10 {'no_response': 10}, median beta n/a, r2 n/a; skills de_score 0.500, de_direction 0.500, severity_slope 0.500, mmd_u 0.500, variogram 0.500
+    refused_form     55.14 (sd 2.09); severity scored 9 of 10 {'r2_gate': 1, 'scored': 9}, median beta 0.067, r2 0.028; skills de_score 0.459, de_direction 0.543, severity_slope 0.704, mmd_u 0.508, variogram 0.514
+    barred_form      62.04 (sd 0.50); severity scored 10 of 10 {'scored': 10}, median beta 0.433, r2 0.265; skills de_score 0.499, de_direction 0.559, severity_slope 0.893, mmd_u 0.564, variogram 0.500
+    resid_revert_k7  54.49 (sd 2.66); severity scored 9 of 10 {'r2_gate': 1, 'scored': 9}, median beta 0.041, r2 0.084; skills de_score 0.436, de_direction 0.573, severity_slope 0.667, mmd_u 0.519, variogram 0.521
+    resid_perm_k7    51.12 (sd 2.92); severity scored 7 of 10 {'r2_gate': 3, 'scored': 7}, median beta 0.028, r2 0.031; skills de_score 0.400, de_direction 0.536, severity_slope 0.621, mmd_u 0.512, variogram 0.506
+    resid_revert_up  54.01 (sd 2.33); severity scored 9 of 10 {'r2_gate': 1, 'scored': 9}, median beta 0.041, r2 0.057; skills de_score 0.438, de_direction 0.542, severity_slope 0.676, mmd_u 0.517, variogram 0.524
+    resid_perm_up    51.34 (sd 2.52); severity scored 8 of 10 {'r2_gate': 2, 'scored': 8}, median beta 0.029, r2 0.030; skills de_score 0.401, de_direction 0.522, severity_slope 0.642, mmd_u 0.512, variogram 0.509
+    barred_form - refused_form: +6.90 (sd 1.92, ahead 10 of 10)
+    resid_revert_k7 - refused_form: -0.65 (sd 1.21, ahead 2 of 10)
+    resid_perm_k7 - refused_form: -4.02 (sd 1.96, ahead 0 of 10)
+    resid_revert_up - refused_form: -1.13 (sd 0.73, ahead 1 of 10)
+    resid_perm_up - refused_form: -3.80 (sd 1.61, ahead 0 of 10)
+    resid_perm_k7 - resid_revert_k7: -3.37 (sd 1.54, ahead 0 of 10)
+    resid_perm_up - resid_revert_up: -2.68 (sd 1.38, ahead 0 of 10)
+    refused_form - floor: +5.14 (sd 2.09, ahead 9 of 10)
+
+WORLD dm (U3d's: the frozen script, the reference and the pool at each replicate's per-label depth):
+dm g1 T3w/WT->Gata4rep1:
+    refused_form     60.12 (sd 0.86); severity scored 10 of 10 {'scored': 10}, median beta 0.144, r2 0.156; skills de_score 0.533, de_direction 0.581, severity_slope 0.783, mmd_u 0.501, variogram 0.501
+    barred_form      55.64 (sd 5.17); severity scored 6 of 10 {'r2_gate': 4, 'scored': 6}, median beta 0.415, r2 0.017; skills de_score 0.550, de_direction 0.560, severity_slope 0.735, mmd_u 0.356, variogram 0.314
+    resid_revert_k7  58.19 (sd 3.06); severity scored 8 of 10 {'r2_gate': 2, 'scored': 8}, median beta 0.044, r2 0.061; skills de_score 0.553, de_direction 0.590, severity_slope 0.663, mmd_u 0.516, variogram 0.510
+    resid_perm_k7    54.57 (sd 3.06); severity scored 7 of 10 {'r2_gate': 3, 'scored': 7}, median beta 0.038, r2 0.024; skills de_score 0.509, de_direction 0.536, severity_slope 0.639, mmd_u 0.501, variogram 0.487
+    resid_revert_up  58.70 (sd 3.33); severity scored 8 of 10 {'r2_gate': 2, 'scored': 8}, median beta 0.066, r2 0.095; skills de_score 0.562, de_direction 0.585, severity_slope 0.676, mmd_u 0.517, variogram 0.516
+    resid_perm_up    55.42 (sd 2.74); severity scored 8 of 10 {'r2_gate': 2, 'scored': 8}, median beta 0.055, r2 0.047; skills de_score 0.510, de_direction 0.536, severity_slope 0.668, mmd_u 0.503, variogram 0.497
+    barred_form - refused_form: -4.48 (sd 4.98, ahead 1 of 10)
+    resid_revert_k7 - refused_form: -1.92 (sd 3.02, ahead 3 of 10)
+    resid_perm_k7 - refused_form: -5.55 (sd 3.25, ahead 0 of 10)
+    resid_revert_up - refused_form: -1.42 (sd 2.76, ahead 3 of 10)
+    resid_perm_up - refused_form: -4.69 (sd 2.21, ahead 0 of 10)
+    resid_perm_k7 - resid_revert_k7: -3.63 (sd 1.61, ahead 0 of 10)
+    resid_perm_up - resid_revert_up: -3.27 (sd 0.79, ahead 0 of 10)
+dm g2 T3w/WT->Gata4rep2:
+    refused_form     58.90 (sd 1.22); severity scored 10 of 10 {'scored': 10}, median beta 0.110, r2 0.082; skills de_score 0.530, de_direction 0.570, severity_slope 0.754, mmd_u 0.491, variogram 0.498
+    barred_form      63.84 (sd 0.60); severity scored 10 of 10 {'scored': 10}, median beta 0.513, r2 0.222; skills de_score 0.580, de_direction 0.591, severity_slope 0.914, mmd_u 0.455, variogram 0.420
+    resid_revert_k7  58.45 (sd 2.92); severity scored 9 of 10 {'r2_gate': 1, 'scored': 9}, median beta 0.061, r2 0.135; skills de_score 0.555, de_direction 0.568, severity_slope 0.692, mmd_u 0.517, variogram 0.511
+    resid_perm_k7    55.14 (sd 3.49); severity scored 8 of 10 {'r2_gate': 2, 'scored': 8}, median beta 0.045, r2 0.028; skills de_score 0.509, de_direction 0.535, severity_slope 0.659, mmd_u 0.505, variogram 0.494
+    resid_revert_up  56.54 (sd 3.63); severity scored 7 of 10 {'r2_gate': 3, 'scored': 7}, median beta 0.049, r2 0.039; skills de_score 0.545, de_direction 0.560, severity_slope 0.644, mmd_u 0.503, variogram 0.508
+    resid_perm_up    53.34 (sd 3.63); severity scored 5 of 10 {'beta_gate': 1, 'r2_gate': 4, 'scored': 5}, median beta 0.034, r2 0.014; skills de_score 0.507, de_direction 0.531, severity_slope 0.598, mmd_u 0.496, variogram 0.494
+    barred_form - refused_form: +4.94 (sd 1.03, ahead 10 of 10)
+    resid_revert_k7 - refused_form: -0.45 (sd 2.24, ahead 6 of 10)
+    resid_perm_k7 - refused_form: -3.75 (sd 2.69, ahead 0 of 10)
+    resid_revert_up - refused_form: -2.36 (sd 2.93, ahead 1 of 10)
+    resid_perm_up - refused_form: -5.55 (sd 2.84, ahead 0 of 10)
+    resid_perm_k7 - resid_revert_k7: -3.31 (sd 1.14, ahead 0 of 10)
+    resid_perm_up - resid_revert_up: -3.20 (sd 2.14, ahead 0 of 10)
