@@ -5713,3 +5713,33 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
        outside E7.5's form at the test pair.
     4. `fgw_aligned_series`: the file as ruled on 13 November; best on the nine-task practice mean; its geometry is
        outside E7.5's form at the test pair as well.
+- 2026-11-18 (w), try T60 is read, and every row registered today is read (state at 21:45 UTC). Written by the AI
+  assistant.
+  - **Try T60, by its fixed statements** (row T60; run on `~/v/vec-campaign-h7` at 13fd89a, clean tree, three
+    processes at exit 0; T1 tries 261 to 300): "A new direction has room" reads "library 3 only", and "The
+    direction's identity matters" reads true. By the row nothing opens and nothing closes: the lines "a learned model
+    of T1's expression" and "a further external direction source" stay closed as they are, and the row is not cited
+    as evidence for closing them. On library 3 the best size of a perfect per-type shift beats the best size of the
+    entry's direction by 16.81 board points (10 of 10 seeds); on library 2 by 8.08; on library 1 by 14.39, where the
+    best projection is the largest size tried, which is what leaves that library "not settled".
+  - **The AI assistant's reading after the result,** which changes nothing: the hypothesis of entry (k), that T1's
+    expression model is weak, is measured on a one-day practice task: the direction reaches a quarter to two fifths
+    of what a perfect shift gains there, and it beats a permuted direction clearly. The read does not show that
+    anything the data rules allow could reach the rest: the perfect shift is fitted on the truth's own sample and
+    carries that library's own signature, no released stage lies between E10.5 and E12.5, external data from that
+    window is barred, and the previous day's change predicts the next one weakly (diagnostic N26). The AI assistant
+    starts no model on it. The captain can order one or approve a further external source; either would reach him
+    first as a priced statement, as the row says.
+  - **Try K18, a comparison the captain should have beside the rule's outcome** (the AI assistant's, formed after
+    the result; the rule's "no question" stands). The rule keeps the refused file unless the barred form wins on
+    both replicates in both worlds, and row K18 says that its "no question" is not evidence that the refused file is
+    better. The four practice cells: plain g1 57.14 against 59.43 for the barred form, plain g2 55.14 against 62.04,
+    depth-matched g1 60.12 against 55.64, depth-matched g2 58.90 against 63.84: the barred form's mean over the four
+    is 60.2 against 57.8, with the wider spread, and its one loss is the cell where four of ten seeds are gated and
+    the two cell-state skills fall to 0.36 and 0.31. That loss has the pattern row K14 read for a shallow source's
+    noise on a deeper target, and the first upload carried a knockout run's profile as well; the refused file
+    carries none. The AI assistant's advice stays with the rule's outcome; the swap is the captain's to order.
+  - **Where the week stands.** Read today by their fixed rules: H25, E47a, E47b, N53, K18, T60. Standing as handed
+    over at 16:54 UTC: T1's, the heart's and T3's second files. Waiting for the captain: the embryo's last file
+    (entry (v)). Not started, with the reasons of entries (s) and (t): the learned models, the heart's tilted half,
+    T3's cell-resolved factor. Owed and being drafted: the method report's lines on every departure.
