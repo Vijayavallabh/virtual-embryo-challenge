@@ -1,0 +1,34 @@
+ALL: categories with factors ['blood', 'cm', 'endocardium', 'epicardium', 'vascular_endothelium']; skipped {}
+L3: categories with factors ['blood', 'cm', 'endocardium', 'epicardium', 'vascular_endothelium']; skipped {}
+L12: categories with factors ['blood', 'cm', 'endocardium', 'epicardium', 'vascular_endothelium']; skipped {}
+BACK: categories with factors ['blood', 'cm', 'endocardium']; skipped {'epicardium': 'stand-in cells at a stage (identity, not development)', 'vascular_endothelium': 'stand-in cells at a stage (identity, not development)'}
+== cm
+  ALL: 23 metacells; rms 0.0356; split halves: leading axis |cos| 0.90, per-gene size Spearman 0.70
+  L3: 14 metacells; rms 0.0317; split halves: leading axis |cos| 0.85, per-gene size Spearman 0.58
+  L12: 8 metacells; rms 0.0375; split halves: leading axis |cos| 0.86, per-gene size Spearman 0.42
+  BACK: 35 metacells; rms 0.0325; split halves: leading axis |cos| 0.92, per-gene size Spearman 0.81
+  ALL with BACK: leading axis |cos| 0.20; per-gene size Spearman 0.79
+  L3 with BACK: leading axis |cos| 0.36; per-gene size Spearman 0.73
+  L12 with BACK: leading axis |cos| 0.01; per-gene size Spearman 0.65
+  L3 with L12: leading axis |cos| 0.53; per-gene size Spearman 0.60
+  ALL with L3: leading axis |cos| 0.81; per-gene size Spearman 0.83
+  ALL with L12: leading axis |cos| 0.86; per-gene size Spearman 0.79
+  ALL's leading axis with the library slope of the fit as built: |cos| 0.98
+  L3's leading axis with the library slope of the fit as built: |cos| 0.81
+  L12's leading axis with the library slope of the fit as built: |cos| 0.81
+  BACK's leading axis with the library slope of the fit as built: |cos| 0.15
+== endocardium
+  ALL: 38 metacells; rms 0.0403; split halves: leading axis |cos| 0.92, per-gene size Spearman 0.82
+  L3: 27 metacells; rms 0.0379; split halves: leading axis |cos| 0.93, per-gene size Spearman 0.75
+  L12: 10 metacells; rms 0.0395; split halves: leading axis |cos| 0.84, per-gene size Spearman 0.42
+  BACK: 10 metacells; rms 0.0273; split halves: leading axis |cos| 0.75, per-gene size Spearman 0.31
+  ALL with BACK: leading axis |cos| 0.29; per-gene size Spearman 0.68
+  L3 with BACK: leading axis |cos| 0.31; per-gene size Spearman 0.61
+  L12 with BACK: leading axis |cos| 0.20; per-gene size Spearman 0.51
+  L3 with L12: leading axis |cos| 0.89; per-gene size Spearman 0.74
+  ALL with L3: leading axis |cos| 0.98; per-gene size Spearman 0.94
+  ALL with L12: leading axis |cos| 0.94; per-gene size Spearman 0.84
+  ALL's leading axis with the library slope of the fit as built: |cos| 0.81
+  L3's leading axis with the library slope of the fit as built: |cos| 0.75
+  L12's leading axis with the library slope of the fit as built: |cos| 0.76
+  BACK's leading axis with the library slope of the fit as built: |cos| 0.33

@@ -15,3 +15,8 @@ emulation.txt   (decision log 2026-11-18 (g)) The practice fit refitted with the
                 thinned to two thirds and to one third: the library-linked share of the factors stays at its null,
                 so the component at the test pair is not a depth effect. Script as run: gmom_emulate.py.txt (the
                 DGX's first campaign checkout at 6214e28, 16 threads).
+
+single_kind.txt (decision log 2026-11-18 (g), which fixed its use before it ran, and (h)) The test pair's fit on the
+                reference as built (ALL), on library 3 only (L3) and on libraries 1 and 2 only (L12), and the
+                practice fit (BACK), compared by reading N21's measures. Script as run: gmom_single_kind.py.txt
+                (the DGX's first campaign checkout at 6214e28, 16 threads).

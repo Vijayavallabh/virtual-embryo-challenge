@@ -1,0 +1,84 @@
+"""Target-free listing (decision log 2026-11-18 (g), fixed there before this ran): g_mom's factors at the test pair
+fitted on the reference as built (ALL), on E10.5's dissected-heart library only (L3, option B) and on its two
+embryo-portion libraries only (L12, no change of kind inside the fit), against the practice fit (BACK), by reading
+N21's own measures. Reads the three released Task 1 stages only; builds no prediction, reads no board, no target and
+no score. Cosines, rank correlations and ratios only.
+Usage, repository root: uv run --frozen --no-sync python -I -B <this file>"""
+import sys
+from pathlib import Path
+
+import numpy as np
+
+REPO = Path.cwd()
+sys.path.insert(0, str(REPO / "experiments" / "t1_m1"))
+sys.path.insert(0, str(REPO / "experiments" / "t1_scope"))
+from vec import harness, t1_scope  # noqa: E402
+from vec import t1_state_transport as ts  # noqa: E402
+from vec.prep import load_stage  # noqa: E402
+
+import g_mom_verify as gv  # noqa: E402
+
+EDITED = ("cm", "endocardium")
+data = harness.DATA_DIR
+spec = t1_scope.load_spec()
+st = {k: load_stage(data / f, lineage=False) for k, f in
+      {"E8.5": "T1/E8.5_RNA.h5ad", "E9.5": "T1/E9.5_RNA.h5ad", "E10.5": "T1/E10.5_RNA.h5ad"}.items()}
+held = set(t1_scope.held_flat_genes())
+lib = np.array([str(n).rsplit("_", 1)[-1] for n in st["E10.5"].obs_names])
+ref = {"ALL": st["E10.5"], "L3": st["E10.5"][lib == "3"].copy(), "L12": st["E10.5"][lib != "3"].copy()}
+test_cats = [c for c, s in harness.t1_chamber_shares(st["E10.5"], "E10.5_RNA").items() if s > 0]
+back_cats = [c for c, s in harness.t1_chamber_shares(st["E9.5"], "E9.5_RNA").items() if s > 0]
+fit = {k: harness.g_mom_pair_factors(r, "E10.5_RNA", st["E9.5"], "E9.5_RNA", categories=test_cats)[0] for k, r in ref.items()}
+fit["BACK"] = harness.g_mom_pair_factors(st["E9.5"], "E9.5_RNA", st["E8.5"], "E8.5_RNA", categories=back_cats)[0]
+for k, f in fit.items():
+    print(f"{k}: categories with factors {sorted(f.categories)}; skipped {dict(f.skipped)}")
+halves = {}
+for n, (k, r) in enumerate(ref.items()):
+    halves[k] = gv.split_half_fits(r, "E10.5_RNA", st["E9.5"], "E9.5_RNA", test_cats, 10 + n, spec)
+halves["BACK"] = gv.split_half_fits(st["E9.5"], "E9.5_RNA", st["E8.5"], "E8.5_RNA", back_cats, 13, spec)
+
+
+def rms(f, c):
+    cf = f.categories[c]
+    free = ~np.isin(np.asarray(f.genes, dtype=object), np.asarray(sorted(held), dtype=object))
+    return float(np.sqrt(np.average((cf.logf[:, free] ** 2).mean(axis=1), weights=cf.sizes)))
+
+
+def lib_slope(f, c):
+    """Per gene, the cell-weighted regression slope of ALL's metacell factors on the metacell's library-3 share."""
+    cf = f.categories[c]
+    M = cf.n_metacells
+    s, n = np.zeros(M), np.zeros(M)
+    for name, m in cf.index.items():
+        n[m] += 1
+        s[m] += str(name).rsplit("_", 1)[-1] == "3"
+    s = s / np.maximum(n, 1)
+    w = np.asarray(cf.sizes, float)
+    x = s - np.average(s, weights=w)
+    return (w[:, None] * x[:, None] * cf.logf).sum(axis=0) / float((w * x * x).sum())
+
+
+for c in EDITED:
+    print(f"== {c}")
+    for k in ("ALL", "L3", "L12", "BACK"):
+        if c not in fit[k].categories:
+            print(f"  {k}: no factors for {c}")
+            continue
+        a, b = halves[k]
+        sh = gv.concordance(a, b, c, held) if c in a.categories and c in b.categories else None
+        print(f"  {k}: {fit[k].categories[c].n_metacells} metacells; rms {rms(fit[k], c):.4f}; split halves: "
+              + (f"leading axis |cos| {sh['axis_abs_cosine']:.2f}, per-gene size Spearman {sh['size_spearman']:.2f}" if sh else "not available"))
+    for x, y in (("ALL", "BACK"), ("L3", "BACK"), ("L12", "BACK"), ("L3", "L12"), ("ALL", "L3"), ("ALL", "L12")):
+        if c in fit[x].categories and c in fit[y].categories:
+            r = gv.concordance(fit[x], fit[y], c, held)
+            print(f"  {x} with {y}: leading axis |cos| {r['axis_abs_cosine']:.2f}; per-gene size Spearman {r['size_spearman']:.2f}")
+    beta = lib_slope(fit["ALL"], c)
+    genes = fit["ALL"].genes
+    keep = sorted(set(genes) - held)
+    col = gv._columns(genes, keep)
+    for k in ("ALL", "L3", "L12", "BACK"):
+        if c in fit[k].categories:
+            kk = sorted((set(fit[k].genes) & set(genes)) - held)
+            ax = gv.leading_axis(fit[k].categories[c], fit[k].genes, kk)
+            bb = beta[gv._columns(genes, kk)]
+            print(f"  {k}'s leading axis with the library slope of the fit as built: |cos| {gv.axis_cosine(ax, bb):.2f}")
