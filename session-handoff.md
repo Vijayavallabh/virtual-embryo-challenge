@@ -14,7 +14,7 @@
   2026-11-17 (a) has the whole list. The organisers also answered the exposure notice (accepted; they ask for the
   explanation and the precommitted procedure in the method report): a further reply to the thread's other questions
   is announced and must go through a screening agent, never be pasted.
-- **What is live (2026-11-18, 08:20 UTC).** No candidate change is live and nothing runs. **The captain cleared
+- **What is live (2026-11-18, 07:38 UTC).** No candidate change is live and nothing runs. **The captain cleared
   the session's goal on 18 November (no words): no new read or agent round is opened without the captain's word.**
   The ninth independent pass is complete (decision log 2026-11-18 (a) and (c): no result wrong, no open line). The
   reads it named were finished and recorded (entries (d) to (f)): K15 (nothing changes), T58 (the first ground
