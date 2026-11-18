@@ -784,6 +784,49 @@ Best regards,
 Vijayavallabh J
 Team captain, Mithril
 
+## Note before the heart's second upload (drafted 2026-11-18; in the captain's drafts; the captain sends)
+
+The short note the disclosure email promises before the heart's second upload: the board, the file's hash and its
+sources, and what the file changes against the procedure fixed in advance (`docs/S2_RULES.md`, amendment of
+2026-11-18). Drafted by the AI assistant and reviewed for accuracy, strategy and tone by three independent agents,
+whose changes are in the text: it names every departure (the size mode and its figure, the dropped expression step
+and with it the read counts, the scope and the cell number against the file fixed for this upload), says that the
+choice followed the first scores and the published metric definitions, and claims only what the record backs (both
+size figures were recorded on 28 October; no number was computed from a score). It goes only after the disclosure
+email has gone. Sending it, changing it or deleting it is the captain's alone. Answers: none can exist yet. Text as
+drafted:
+
+Subject: Human Team (Mithril): second heart upload, file hash and sources
+
+Hello organisers,
+
+As our email of 18 November on sources and file hashes said we would, here are the file hash and sources of our
+second heart upload, before we make it. As it describes our method, please keep it private.
+
+T2:heart:test_extrap, second upload. File T2heart_s2iso_half.h5ad, SHA-256
+dc436d9225bb28e7997d2ec51e95254cd125e569d44c059596298d0a7b6af5c2. The external sources are the same as for our first
+heart upload (X001, X004 and X005 in our email of 18 November), and so are the official validation files used (the
+heart's E10.5 and E8.5 files).
+
+This is not the file we had fixed in advance for this upload, which trimmed the tissue to a heart-focused half and
+sized it for that scope. We decided on this one after our first scores, which the site returned to us as it does to
+every team, and from the published metric definitions. No number in the file was computed from a score: the size
+figure and the halving rule were fixed before the scores, and the scores decided only which of our existing steps to
+keep.
+
+Compared with our first heart upload, it differs in two steps. First, the size: the cells are scaled evenly on all
+three axes to the figure our method had computed for that way of scaling, where the procedure we had fixed in
+advance enlarged the two in-plane axes and held the third, at a slightly different figure. Both figures were
+computed and recorded on 28 October. Second, the expression step of our first upload is dropped: the cells keep the
+E10.5 file's released expression and read counts. Its scope and its number of cells (a random half, by the rule of
+our first heart upload: fixed seed 1000001, cell order kept) are the first upload's.
+
+The method report will list each of these changes against the procedure we fixed in advance.
+
+Best regards,
+Vijayavallabh J
+Team captain, Mithril
+
 ## Planned Slack DM (drafted 2026-11-06; sent by the captain the same day)
 
 The state-of-the-art research recommends it (`experiments/research_2026_11_sota/REPORT.md` section 8; `docs/PLAN.md`
