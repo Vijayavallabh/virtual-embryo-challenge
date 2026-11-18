@@ -5612,10 +5612,16 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     a constant. Its two thresholds on the horizon were written with the heart's and the embryo's cases known; the
     rule says so. It applies to rows committed after it; rows K16, K17 and H25 stay under the rules they were
     written under. The method report owes a line that the rule was shaped after the first scores.
-  - **T1's expression line stays closed** without a new try: the committed readings of tries T47 and T51 put the
-    released day's change almost wholly along the direction the entry already uses (the corrected alignment is 0.955
-    in try T47's reading), so a new direction has little left to buy, which is what the challenger of entry (s)
-    expected. The learned model over the stage ladder is not started.
+  - **T1's expression line: a misreading of the AI assistant's, corrected.** It first wrote here that the committed
+    readings of tries T47 and T51 put the released day's change almost wholly along the direction the entry already
+    uses, citing try T47's L_corr of 0.955 as an alignment. That was wrong: in row T47, L is the size of
+    between-type contrasts along the direction, a ceiling for the share the day covers, and no alignment of the
+    released change. Those readings say how far along the direction a released day moves (about a quarter of it);
+    they do not say how much of the released change lies outside the direction. The question the challenger of
+    entry (s) put (what a new direction could buy at most, beside what any size of the present one can reach)
+    is therefore still open, and it needs a counted read with its row first. The same wrong sentence went to the
+    captain in a status message and is corrected there too. The learned model over the stage ladder stays
+    unstarted until that read.
   - **Still in review.** The embryo's exact floor-form arm with its two tries and its target-free read, and T3's
     try K18, each came back from a third reviewer with two or three precise defects (a false reason in a clause of
     the row, a noise floor not matched to each arm, an unfinished proof that existing outputs are unchanged; a rerun
