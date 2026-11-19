@@ -1185,3 +1185,215 @@ marks.
 
 **Builds.** None. The file is set t3alt's (`bash experiments/builds/build_all.sh t3alt`), built at dc7b6ae and on that
 reference list.
+
+## Amendment of 2026-11-19: T1's last upload is the recomputed-groups file (the captain's own say-so)
+
+Written by the AI assistant. Times are UTC. The quoted question, options and answer are as `docs/PLAN.md` decision log
+2026-11-19 (ii) records them; nothing else here is the captain's unless it is quoted and its entry named. The record is
+decision log 2026-11-19 (g), (l), (u) to (z), (dd), (gg), (hh) and (ii); rows R8, N54, N55, T61 and T62 of
+`experiments/harness/TRIES.md`; register rows X002, X003 and X010 of `EXTERNAL_DATA.md`; the relabelling's record
+`experiments/external/results/feng_relabel/MANIFEST.json`; and the check builds' record
+`experiments/builds/results/t1rc_check_8138fa2.txt`. Like the sections above of the same date, this section was
+written with the first test scores known; no test score sets anything in it (below). Where it and the sections above
+differ, this section holds for T1.
+
+**The question and the captain's answer** (decision log 2026-11-19 (ii); one dialog question, header "Task 1 file";
+state at 20:55 UTC).
+- The question, as it was put: "Task 1, last upload (one left). Our own odds are about 0.6 that only a compliant upload
+  will count, because the first one (70.9) used the atlas authors' labels; then this file is Task 1's whole score. On
+  practice (five tasks, ten seeds, one day ahead; independently recomputed) the atlas step on groups we recomputed from
+  permitted cells beat the no-outside-data file on every task, by +1.2 to +2.5 points. By our own rule a one-day gain
+  counts as zero at the centre for the two-day test, so the honest edge is 0 to about +2. A cold check let my pre-set
+  advice (the recomputed file) stand, with one thing it says my rule left out: if the organisers rejected this second
+  atlas file while discounting the first, Task 1 would have no counted upload, and a rejection chance of roughly 2 to
+  4% cancels the edge. Which file?"
+- The options, as put: "Recomputed atlas file" ("My pre-set advice, and the higher ceiling: 0 to about +2 over the
+  other file, perhaps more at the test's double step. It follows the organisers' words on recomputing, but the atlas
+  authors' quality filter chose which cells exist and that cannot be undone. Before building I run one more practice
+  check at the test's step size (about two hours)."); "No-outside-data file" ("The file you ruled on 19 November; built
+  and ready. Nothing in it can be ruled non-compliant. Gives up the 0 to +2."); "Own-data momentum file" (a third
+  candidate from released data only, which reverses ruling R1, is tied to depth and has no builder; "Not a pre-set
+  rule's output; the cold check did not prefer it; I state no lean on it. Choosing it names both exceptions.").
+- The captain's answer, typed in his own words: "proceed with your recommendation".
+
+**How the AI assistant reads that answer** (its reading, as decision log 2026-11-19 (ii) records it; not his words).
+The question named one recommendation, in its own text ("my pre-set advice (the recomputed file)") and in the first
+option ("My pre-set advice"). His answer therefore rules the recomputed atlas file in as T1's last upload. It is an
+answer to this question alone and extends to nothing else. It sets the ruling of decision log 2026-11-19 (u) on the
+no-outside-data file aside for the last upload. The answer lifts no rule: the organisers' data condition, the data
+rules, the post-exposure block and the list of material never opened all stand. The captain can correct this reading
+before any upload, and every upload is his own act.
+
+**Who decided what.** The captain chose the file, by his answer above. The recommendation he followed is row T62's
+advice, fixed by the AI assistant in that row before any result: the recomputed file if its step is AHEAD under both
+readings of the first upload, the ruled no-outside-data file otherwise. A cold challenger, given the decision and the
+record but not how the advice was formed, let the advice stand with conditions (decision log 2026-11-19 (hh)). The
+question carried that check's caveat beside the advice. The AI assistant stated no lean on the third option.
+
+**T1's last upload.** One command, as the build script gives it (set t1rc):
+
+```bash
+uv run python experiments/builds/build_test.py t1 --g-mom --base lib3 --feng-groups recomputed --out runs/builds/T1_s2rc.h5ad
+```
+
+- **What it is.** The first upload's design (library 3's cells at library 3's own chamber mix, row R6; the g_mom step,
+  row R3b) with the outside atlas's E9.5 to E14.5 direction (M1's step) formed on cell groups recomputed from the
+  atlas's permitted cells only. The labeller is `experiments/external/feng_relabel.py`, with its settings
+  `experiments/external/feng_relabel.yaml` frozen at sha256
+  883e74c2c1ef5f01d5244555f8b3dcae24255568c731a6d53ee2788b7b677b49 (row N54; its threshold set by row N55's dry run on
+  the released E9.5). The statistics file it wrote has sha256
+  36d1f7edcbbf3d7a80c68b51d5624a94bb753668079fe3d69aed720c71baa7e9. Its record says route recomputed and that no
+  author label column was read (cell names, stage, zone and strain only). The authors' labels are not read.
+- **The groups.** By row N54's record, each of the four direction groups (cardiomyocytes, endocardium, endothelium,
+  epicardium) has its own recomputed direction, with at least 10 cells at both ends of the bracket; no fallback fired.
+  R1's hold and g_mom's mask follow the groups with a recomputed direction. R2 holds its genes flat, as in the first
+  upload.
+- **The option.** Merged to main with the labeller (decision log 2026-11-19 (w)), off by default. The builder refuses
+  `--feng-groups recomputed` except as `t1 --g-mom --base lib3` with no other base or option of its list, and unless
+  the labeller's record is committed at HEAD with the route recomputed; then unless the statistics file passes the
+  labeller's own checks (`experiments/builds/build_test.py`, `_feng_recomputed_refusals`; `feng_dirs.check_recomputed`).
+  So it builds only in a checkout that holds the relabelling's output (`data/derived/feng_relabel_c/`), which on
+  2026-11-19 was the DGX checkout `~/v/vec-campaign-d` alone. With the option not given, every T1 file builds as
+  before.
+- **Check builds, not upload builds.** At 8138fa2 on `~/v/vec-campaign-d`, twice at 16 BLAS threads: exit 0 both, one
+  sha256, ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f, stamps at the commit and clean
+  (`experiments/builds/results/t1rc_check_8138fa2.txt`; decision log 2026-11-19 (z)). That file is on no reference list.
+
+**What it replaces.** The amendment of 2026-11-19 above, "T1's last upload has no outside data", and its file:
+`build_test.py t1 --g-mom --base lib3 --feng-groups none`, set t1none, row R8, `runs/builds/T1_s2none.h5ad`, sha256
+55eaee547ff1 (built at 385ff58; `experiments/builds/results/t1none_385ff58.txt`). That file stays built and is not
+uploaded. The text of that section is not edited; where the two differ, this section holds. One consequence, read from
+the builder's code and not from a run: since row N54's record routes to recomputed (committed at 3fcfb40), the builder
+refuses `--feng-groups none` unless `--feng-none-ruling` names a later decision-log entry of the captain that names N54
+and contains "sets the N54 route aside". Set t1none passes no such option, and no such entry exists, so the set no
+longer rebuilds that file. The built file and its record stand as they are.
+
+**What it departs from, lever by lever.**
+- **The data.** The outside atlas (register row X002) returns, on recomputed groups. The amendment it replaces put no
+  outside data in T1's last file. The first upload formed the same step on the authors' groups, which the organisers'
+  condition excludes. What enters this file: the atlas's permitted CD1 cells at E9.5 and E14.5 as raw counts, with gene
+  names and the cell name, stage, zone and strain columns; marker gene sets, those of the four direction groups from
+  the released E9.5 label means (`experiments/t1_scope/results/label_evidence/markers.csv`) and those of the competing
+  classes from the eight adult-mouse papers of register row X010. No clustering, embedding or classifier. The captain
+  approved the atlases as Task 1 inputs ("utilize the atlases", decision log 2026-11-19 (k)), the two further inputs
+  ("Approve both (Recommended)") and the labeller's settings and runs ("Sign and run (Recommended)", both in decision
+  log 2026-11-19 (u)). The second atlas (register row X003) is not read.
+- **Composition, cell number and depth.** Unchanged from the first upload: the same base, count rule and seed
+  (1000001), so the same drawn cells (row T62: "States, shares, cell number, size and scope do not change: the same
+  cells as R8's file and the first upload"). No depth step is added. These are levers the post-exposure block closes
+  (`docs/DATA_POLICY.md` 2026-11-04, (b) to (d)), and this file touches none of them.
+- **Expression.** The first upload's expression steps, with the direction formed on the recomputed groups: M1's step at
+  2/5 of the atlas's bracket, R1's hold, R2's held genes and g_mom's within-type edit of cardiomyocytes and
+  endocardium.
+- **"s2 as s1".** T1's last file is the first upload's command plus one option, `--feng-groups recomputed`. Both T1
+  uploads draw the same cells. The base and cardiomyocyte-share hedges of rows R7 and T33 stay given up, as in the
+  amendment this one replaces.
+- **"No score feedback", as it now stands.** For T1 the first bullet has not held since the amendment this one
+  replaces. The second bullet is met: the change comes after T1's first official upload, by the captain's own say-so,
+  is logged with the scores public at the time (decision log 2026-11-18 (j): T1 70.9), and computes nothing from a test
+  score.
+- **The default.** Row N54's terminal rule named this file as a candidate only; row T62's pre-set advice named it if
+  AHEAD under both readings. This file enters by the captain's ruling on that advice, not by the adoption rule.
+
+**Why.** The captain's words on this question are the answer above: "proceed with your recommendation". Earlier the same
+day he had answered the first T1 question with "whatever it takes to win this challenge" (decision log 2026-11-19 (f))
+and approved the atlases with "utilize the atlases" (entry (k)). The recommendation is row T62's advice, fixed before
+the run: the recomputed file if its step is AHEAD under both readings of the first upload. By that row's reading it was
+AHEAD under both (decision log 2026-11-19 (gg)).
+
+**What practice says, both ways.** Row T62 (`experiments/t1_m1/results/t62_recomputed/`; read in decision log
+2026-11-19 (gg), recomputed independently there). Every task scores one truth, E10.5, one day ahead, with the step at
+1/5 of the bracket: labelled in-sample diagnostics, never an adoption result.
+- **For the file.** Reading S (the first upload stands): AHEAD. Reading D (it is discounted): AHEAD. The recomputed
+  analogue minus the no-outside-data analogue, paired over ten seeds: chamber cut +1.97, whole cut +1.67, libraries 1
+  to 3 +2.50, +1.23 and +2.51, each ahead in 10 of 10 seeds. The epicardium step alone PAYS by the row's statement:
+  +0.68 on library 3 (10 of 10). An independent recomputation, from the task files without the read script, matched
+  every figure and statement.
+- **Against it.** By rule 9's J6 of `experiments/harness/TRIES.md`, the direction's share of the bracket is 1/5 on
+  every practice task and 2/5 at the test, a ratio above 1.5, so the one-day gain counts zero at the centre for the
+  two-day test, with a range from 0 to +1.97 (the chamber cut's gain). No practice figure is a test value.
+- **The compliance price, which the advice rule left out** (decision log 2026-11-19 (hh)). Row T62's rule decides on
+  practice gain alone. If the organisers discounted the first upload and also rejected this second outside-data file,
+  T1 would have no counted upload; the no-outside-data file cannot be rejected on that ground. The AI assistant's
+  arithmetic, its own and made after the result: with an edge of 1 to 2 points and a loss of 50 to 70 if rejected, the
+  two files break even at a rejection chance of about 1.5 to 4 percent; nobody can estimate that chance so finely. The
+  question put to the captain said "roughly 2 to 4%".
+
+**The cold check** (decision log 2026-11-19 (hh); one challenger given the decision and the record, not how the advice
+was formed). Its verdict: "advice stands with conditions". Its probability that advising the recomputed file over the
+no-outside-data file is a mistake: 0.35.
+- **Its compliance reading.** On the face of the organisers' words the file complies: raw counts and stage labels of
+  permitted cells, marker sets, no clustering, embedding or classifier, the authors' labels not read. What an organiser
+  could still object to: the authors' quality filter, made on all stages pooled, decided which permitted cells exist,
+  and register row X002 says it cannot be undone; the zone column comes from the authors' demultiplexing; the atlas,
+  the bracket and R2's held genes were chosen by readouts that read the authors' groups.
+- **Its other points.** The test's 2/5 step was never read on the recomputed groups, and the epicardium direction,
+  formed on 11 early cells, is applied without shrinkage and doubles at the test. It names the check: a counted read at
+  fraction 0.4 with a placebo and the epicardium-held arm (row T63, below).
+
+**What the organisers wrote.** On 2026-11-16 an organiser answered another participant on external datasets that span
+a protected window. As `docs/ORGANIZER_QUESTIONS.md` gives it, in part: "Using raw expression counts and stage labels
+from the permitted cells is acceptable. Please exclude annotations, clusters, embeddings, or fitted transformations
+learned using protected cells, and recompute any such processing on permitted data only. Describe the filtering in your
+method report." Under the captain's standing instruction of 2026-11-19 (decision log (g)), as the AI assistant reads
+it, no step waits for an organiser reply, and an assumed reply changes no file.
+
+**What practice cannot say.**
+- How the file scores at the test's 2/5 step on the recomputed groups. Row T62 read 1/5 only. Row T63 reads 2/5 (below).
+- Whether the organisers accept a second outside-data file. No practice task bears on it.
+- How the step carries to library 3 at its own mix. The practice tasks draw E9.5 embryo portions (the cuts) or an oracle
+  mix (the libraries); the test draws library 3, a dissected heart.
+- How sturdy the epicardium step is. Its direction rests on 11 early cells. Row T62's target-free reliability listing
+  gave the two halves of that group a Spearman agreement of 0.350 (6 and 5 early cells a half); it decides nothing.
+- Forecast weight. The four groups' marker genes come from the released E9.5 labels, and row N55 moved the score
+  threshold on the released E9.5, the practice tasks' reference stage (rule 9, J2). g_mom's practice fit spans E8.5 to
+  E9.5, portions both; at the test it crosses the collection change (decision log 2026-11-18 (f)).
+
+**Nothing is computed from a test score.** The labeller's settings were frozen before the relabelling ran, its route
+was fixed by its terminal rule, and row T62's advice was fixed before its run. No test value sets a weight, prior,
+task, tolerance, constant or estimate here (rule 9, J8). The first upload's 70.9 (decision log 2026-11-18 (j)) is only
+the score a second file must beat if the first upload stands. It favours neither T1 file: no file without the atlas
+step has a test score (decision log 2026-11-19 (hh)). The score chose nothing between the two files.
+
+**Built after row T63's read.** The practice check the chosen option promised is row T63: the candidate at the test's
+step size (2/5 of the atlas's bracket) on row T62's five tasks, with a placebo direction and the epicardium-held arm at
+that size, a counted try with its row first; what follows from it is fixed in its row before the run (decision log
+2026-11-19 (ii)). When this section was written, row T63 was being written and had not run. The file is built only
+after its read.
+- If its outcome sends a question to the captain (the epicardium step costs at the doubled size; the doubled step is
+  not ahead; or the gain is not shown to need the direction's own genes), nothing is built until he answers.
+- Otherwise the set t1rc is built (below).
+- Row T63's outcome: [MAIN SESSION: row T63's outcome]
+
+**Builds.** `bash experiments/builds/build_all.sh t1rc` checks this file's hash, builds `runs/builds/T1_s2rc.h5ad` by
+the command above and runs the local format check for `T1:test`. It runs on the DGX checkout that holds the
+relabelling's output, at a clean tree. It is built twice, both at 16 BLAS threads (T1 files move with the thread
+count), and the two sha256 are compared, and compared with the check builds' ad8f24c71c90. Any difference stops the
+hand-over until the captain has the explanation. The build record: [MAIN SESSION: the build record]. The sets s1, s2,
+t3alt, heart2, t1none, embryo2, heart3 and embryo3 are unchanged in the script. This file is in no reference list yet;
+its own list is committed under `experiments/builds/results/` before line 1 of the captain's checklist
+(`docs/P3_RUNBOOK.md` section 5) can be ticked.
+
+**What the record must say** (the method report, its section on exposures in `METHOD_SUMMARY.md`, the submission
+page's Data used field and the note that precedes the upload), as the organisers' reply asks.
+- The recomputation: the cell groups of the atlas's permitted cells were recomputed from their raw counts by
+  `experiments/external/feng_relabel.py`, by fixed marker scores against expression-matched control genes, a threshold,
+  a margin and an endothelial split; no clustering, embedding, classifier or fitted transformation.
+- Its inputs and settings: GEO GSE193346, CD1 cells at E9.5 and E14.5 (register row X002); the columns read (cell
+  name, stage, zone, strain); the marker sources (the released E9.5 label means; the eight papers of register row
+  X010); the settings file's sha256 (883e74c2c1ef...), the statistics file's (36d1f7edcbbf...) and the dry run that set
+  the threshold (row N55).
+- The filtering: the in-window cells (E10.5 to E13.5) removed at ingest on the per-cell stage column, CD1 only. What
+  could not be undone: the authors' quality filter, made on all stages pooled, decided which permitted cells exist; the
+  zone column comes from the authors' demultiplexing; ambient correction is not stated. The traces that the register
+  row lists in the evidence behind the design (g_mom's adoption evidence, the library-3 base's pricing scenarios, the
+  E10.5 mix's supporting reason, the readout that chose this atlas, the gate that adopted R2) stay listed.
+- Who decided: the captain chose this file by his answer above, after the first scores; the advice was row T62's,
+  fixed before its run; the cold check's caveat was put to him with it.
+- The disclosure email in the captain's drafts was worded for the no-outside-data file. By its own send condition, its
+  paragraph on T1's remaining upload must match this ruling, so it is reworded and reviewed before it goes. Whether
+  anything has been sent: [TO CONFIRM: whether the captain sent the disclosure of the X002 labels or the sources note].
+
+**What stays.** The first upload, the count rule, the seed, the other boards' files, the order (the first upload went
+first) and the rule for final marks. `runs/builds/T1_s2.h5ad` (the mid base) and `runs/builds/T1_s2none.h5ad` stay on
+disk as the record and are not uploaded.

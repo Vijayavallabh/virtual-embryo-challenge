@@ -35,6 +35,13 @@
 #   bash experiments/builds/build_all.sh embryo3 the embryo's last upload since the later amendment of 2026-11-19
 #                                                for the embryo (docs/S2_RULES.md, that section): embryo2's positions
 #                                                with the series rendering (the harness's fgw_shape0x_series, try E47b)
+#   bash experiments/builds/build_all.sh t1rc   T1's last upload since the later amendment of 2026-11-19 for T1
+#                                                (docs/S2_RULES.md, that section; the captain's own say-so): the first
+#                                                upload's command plus --feng-groups recomputed (the atlas's direction
+#                                                on groups recomputed from its permitted cells, row N54). The builder
+#                                                refuses it unless the labeller's record at HEAD routes to recomputed
+#                                                and the relabelling's output is in this checkout; built only after row
+#                                                T63's read, twice at the default 16 threads. It replaces t1none's file.
 #   T3 has no new set: its last upload since the amendment of 2026-11-19 for T3 is the barred branch's s1, which the
 #   set t3alt builds.
 #
@@ -46,7 +53,7 @@
 # The commands are the ones docs/P3_RUNBOOK.md and docs/S2_RULES.md give; this script only runs them in order and
 # stops at the first failure. Test-board cell counts are never printed (the builders and `vec check` hide them).
 set -euo pipefail
-set_name=${1:?usage: build_all.sh s1|s2|heart2|t3alt|t1none|embryo2|heart3|embryo3}
+set_name=${1:?usage: build_all.sh s1|s2|heart2|t3alt|t1none|embryo2|heart3|embryo3|t1rc}
 T=${BUILD_THREADS:-16}
 O=${BUILD_OUT:-runs}
 export OMP_NUM_THREADS=$T OPENBLAS_NUM_THREADS=$T MKL_NUM_THREADS=$T NUMPY_MADVISE_HUGEPAGE=0
@@ -100,6 +107,11 @@ case "$set_name" in
     $U run python experiments/builds/build_test.py t1 --g-mom --base lib3 --feng-groups none --out $O/builds/T1_s2none.h5ad
     files="$O/builds/T1_s2none.h5ad:T1:test"
     ;;
+  t1rc)
+    sha256sum -c docs/S2_RULES.sha256
+    $U run python experiments/builds/build_test.py t1 --g-mom --base lib3 --feng-groups recomputed --out $O/builds/T1_s2rc.h5ad
+    files="$O/builds/T1_s2rc.h5ad:T1:test"
+    ;;
   embryo2)
     sha256sum -c docs/S2_RULES.sha256
     $U run python experiments/builds/build_test.py embryo --method fgw_shape0 --positions floor_exact \
@@ -125,7 +137,7 @@ case "$set_name" in
     files="$O/t3_build/barred_s1.h5ad:T3:bcatenin $O/t3_build/barred_s2.h5ad:T3:bcatenin"
     ;;
   *)
-    echo "unknown set $set_name (s1, s2, heart2, t3alt, t1none, embryo2, heart3 or embryo3)" >&2
+    echo "unknown set $set_name (s1, s2, heart2, t3alt, t1none, embryo2, heart3, embryo3 or t1rc)" >&2
     exit 2
     ;;
 esac
