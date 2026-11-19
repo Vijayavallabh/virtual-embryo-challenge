@@ -1,0 +1,286 @@
+{
+ "label": "try T62, a labelled in-sample diagnostic, never an adoption result: T1's recomputed-groups file (`--feng-groups recomputed`) against the ruled file (row R8) by their practice analogues m1rc_gmom and none_gmom, and the epicardium group's step by m1rc_gmom against m1rc_gmom_epi_held, on T61's five tasks; every task scores one truth (E10.5) over one day, the test spans two",
+ "row": "T62",
+ "reading": {
+  "outcome": "S: AHEAD; D: AHEAD; epicardium step: PAYS",
+  "reading_S": "AHEAD",
+  "reading_D": "AHEAD",
+  "ahead": true,
+  "valid_libraries": [
+   "1",
+   "2",
+   "3"
+  ],
+  "libraries_below_floor": [],
+  "tasks": {
+   "chamber": {
+    "change": "m1rc_gmom",
+    "base": "none_gmom",
+    "mean": 1.967721608010622,
+    "sd": 0.1010474828869844,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     1.8251063333945226,
+     2.1269882939351064
+    ],
+    "groups": {
+     "de_recovery": 0.8988045838973903,
+     "direction": 0.3712038500671072,
+     "distribution": 0.3910404918911723,
+     "covariance": 0.3066726821549539
+    },
+    "skill_differences": {
+     "de_recovery": 0.03595218335589561,
+     "direction": 0.014848154002684289,
+     "distribution": 0.013034683063039076,
+     "covariance": 0.015333634107747695
+    },
+    "mean_scores": {
+     "none_gmom": 50.03595286859991,
+     "m1rc_gmom": 52.00367447661053,
+     "m1rc_gmom_epi_held": 51.73695532247105
+    }
+   },
+   "whole": {
+    "change": "m1rc_gmom",
+    "base": "none_gmom",
+    "mean": 1.6732589803075917,
+    "sd": 0.16082145167585835,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     1.47236424203318,
+     1.97684260694448
+    ],
+    "groups": {
+     "de_recovery": 0.7484269022043145,
+     "direction": 0.3379336941234351,
+     "distribution": 0.3240273284028826,
+     "covariance": 0.2628710555769591
+    },
+    "skill_differences": {
+     "de_recovery": 0.02993707608817258,
+     "direction": 0.013517347764937404,
+     "distribution": 0.010800910946762754,
+     "covariance": 0.013143552778847956
+    },
+    "mean_scores": {
+     "none_gmom": 44.48701002312955,
+     "m1rc_gmom": 46.160269003437136,
+     "m1rc_gmom_epi_held": 45.922160883007436
+    }
+   },
+   "1": {
+    "change": "m1rc_gmom",
+    "base": "none_gmom",
+    "mean": 2.496400932887994,
+    "sd": 0.2798102498761791,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     2.1214783683697647,
+     3.0296343263984653
+    ],
+    "groups": {
+     "de_recovery": 1.5639979333549512,
+     "direction": 0.39692416114102125,
+     "distribution": 0.3155074657158454,
+     "covariance": 0.21997137267617495
+    },
+    "skill_differences": {
+     "de_recovery": 0.06255991733419805,
+     "direction": 0.01587696644564085,
+     "distribution": 0.010516915523861515,
+     "covariance": 0.010998568633808747
+    },
+    "mean_scores": {
+     "none_gmom": 72.3154590909306,
+     "m1rc_gmom": 74.8118600238186,
+     "m1rc_gmom_epi_held": 74.12081768182848
+    }
+   },
+   "2": {
+    "change": "m1rc_gmom",
+    "base": "none_gmom",
+    "mean": 1.2320571439340782,
+    "sd": 0.7533796854871104,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.19219597717454917,
+     2.144506462413105
+    ],
+    "groups": {
+     "de_recovery": 0.867915892551124,
+     "direction": 0.22264972667269792,
+     "distribution": -0.15456074791543495,
+     "covariance": 0.29605227262569
+    },
+    "skill_differences": {
+     "de_recovery": 0.03471663570204496,
+     "direction": 0.008905989066907916,
+     "distribution": -0.005152024930514499,
+     "covariance": 0.0148026136312845
+    },
+    "mean_scores": {
+     "none_gmom": 88.1344917825949,
+     "m1rc_gmom": 89.36654892652898,
+     "m1rc_gmom_epi_held": 89.20636003577889
+    }
+   },
+   "3": {
+    "change": "m1rc_gmom",
+    "base": "none_gmom",
+    "mean": 2.5073267672736974,
+    "sd": 0.2741250181544979,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     2.107747382010004,
+     2.9836135893666693
+    ],
+    "groups": {
+     "de_recovery": 0.838949004822619,
+     "direction": 0.47883517089593824,
+     "distribution": 0.62619992443627,
+     "covariance": 0.5633426671188637
+    },
+    "skill_differences": {
+     "de_recovery": 0.03355796019290476,
+     "direction": 0.01915340683583753,
+     "distribution": 0.020873330814542335,
+     "covariance": 0.028167133355943185
+    },
+    "mean_scores": {
+     "none_gmom": 71.43903213949307,
+     "m1rc_gmom": 73.94635890676676,
+     "m1rc_gmom_epi_held": 73.26720960833624
+    }
+   }
+  },
+  "j6_range": [
+   0.0,
+   1.967721608010622
+  ],
+  "task_range_reported": [
+   1.2320571439340782,
+   2.5073267672736974
+  ],
+  "epicardium_step": "PAYS",
+  "epicardium_task_valid": true,
+  "epicardium": {
+   "chamber": {
+    "change": "m1rc_gmom",
+    "base": "m1rc_gmom_epi_held",
+    "mean": 0.26671915413948,
+    "sd": 0.05440547769808534,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.18423574709835577,
+     0.370612294240793
+    ],
+    "groups": {
+     "de_recovery": 0.10829351826976183,
+     "direction": 0.04882729103527439,
+     "distribution": 0.06623196650773489,
+     "covariance": 0.04336637832671031
+    },
+    "behind": 0
+   },
+   "whole": {
+    "change": "m1rc_gmom",
+    "base": "m1rc_gmom_epi_held",
+    "mean": 0.23810812042970966,
+    "sd": 0.04467108975131492,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.16467275970801154,
+     0.32139393424333207
+    ],
+    "groups": {
+     "de_recovery": 0.09190248064968778,
+     "direction": 0.046184002908585264,
+     "distribution": 0.06213291769408169,
+     "covariance": 0.037888719177354035
+    },
+    "behind": 0
+   },
+   "1": {
+    "change": "m1rc_gmom",
+    "base": "m1rc_gmom_epi_held",
+    "mean": 0.6910423419901278,
+    "sd": 0.19764822024712256,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.43607925606772824,
+     1.0438006659482397
+    ],
+    "groups": {
+     "de_recovery": 0.4784535938964915,
+     "direction": 0.10312798601844225,
+     "distribution": 0.052290684335907445,
+     "covariance": 0.0571700777392834
+    },
+    "behind": 0
+   },
+   "2": {
+    "change": "m1rc_gmom",
+    "base": "m1rc_gmom_epi_held",
+    "mean": 0.1601888907501106,
+    "sd": 0.13293031193701996,
+    "ahead": 9,
+    "of": 10,
+    "range": [
+     -0.028541834682926037,
+     0.33920886181407184
+    ],
+    "groups": {
+     "de_recovery": 0.09874497014089573,
+     "direction": 0.04660508389382867,
+     "distribution": -0.03680575992803481,
+     "covariance": 0.051644596643419804
+    },
+    "behind": 1
+   },
+   "3": {
+    "change": "m1rc_gmom",
+    "base": "m1rc_gmom_epi_held",
+    "mean": 0.6791492984305265,
+    "sd": 0.14060738827773453,
+    "ahead": 10,
+    "of": 10,
+    "range": [
+     0.37800475115079735,
+     0.8462919269937572
+    ],
+    "groups": {
+     "de_recovery": 0.2724944510159841,
+     "direction": 0.12328482670916102,
+     "distribution": 0.12072631895716801,
+     "covariance": 0.1626437017482092
+    },
+    "behind": 0
+   }
+  },
+  "epicardium_not_directed": [],
+  "advice_fixed_before_the_run": "the recomputed file",
+  "third_file_named": false
+ },
+ "tries": 10,
+ "stamp": {
+  "commit": "aec561612aa7b42e320e8b85b36aa69996e8723f",
+  "tree_clean": true,
+  "utc": "2026-11-19T20:27:17Z",
+  "inputs": {
+   "experiments/t1_m1/results/t62_recomputed/tasks/T1_E9.5_E10.5_chamber.json": "a4cb0bc3924f3114a931254bb647e1652431f07e565bd5ddd9abf049978eb1e5",
+   "experiments/t1_m1/results/t62_recomputed/tasks/T1_E9.5_E10.5.json": "8bb256a0272d4511d5853e9987673e808d804f64039d10a607c37f5fab5c1c8e",
+   "experiments/t1_m1/results/t62_recomputed/tasks/lib1.json": "1776b3fd7257525751b2b96b94838d74d7479a2cd6297fed11d4186fdfcc638f",
+   "experiments/t1_m1/results/t62_recomputed/tasks/lib2.json": "34fd2d8d93114feda87427bab79aa0147a5da0d8adc3e3ff66bb0e4f4d0864be",
+   "experiments/t1_m1/results/t62_recomputed/tasks/lib3.json": "4e1e5779dee8140a270f80781f0d174f7b9051199ba8191cf8858e47da44cb8d"
+  }
+ }
+}
