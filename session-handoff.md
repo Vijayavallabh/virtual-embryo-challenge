@@ -2,6 +2,15 @@
 
 ## Current Objective
 
+- **State at 2026-11-19, 13:24 UTC (newest).** Decision log 2026-11-19 (m). **The heart upload is held**: do not hand
+  over `runs/manual_upload/T2heart_s2iso_half.h5ad` as the last heart file until the captain has ruled on scope.
+  The amendment of 18 November dropped the frozen rule's half trim; entry (m) prices three files as the better of
+  two against the banked 46.4 from the committed hedge study (A the ruled full-scope file, B the same form on the
+  half trim, C on the full trim). Advice by the exposed-lever rule: B, the pre-set outcome; on C the table and no
+  lean; he decides from the released-data table alone or declines. Owed before the question: the builder option
+  (`campaign/heart-iso-trim`, from wf_cd5ffbb3-985), its review, an independent recomputation of the table, check
+  builds, the drafted `S2_RULES` amendment. The atlas inventory is back and saved in the session's scratch folder
+  (`lift8/atlas_inventory.json`).
 - **State at 2026-11-19, 13:09 UTC (newest).** Decision log 2026-11-19 (f) to (l). **Ruled today by the captain and
   built:** T1's last upload is the first file's design with no outside data (`runs/manual_upload/T1_s2none.h5ad`,
   55eaee547ff1; row R8; `experiments/builds/results/t1none_385ff58.txt`); the embryo's last upload is the first file

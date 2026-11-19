@@ -6236,3 +6236,58 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Checked, no change:** the embryo's last file keeps the first upload's size. `vec.t2_build.interpolate_clouds`
     scales the cloud of exact E7.5 positions to the same pre-registered `target_rms` (`size_embryo_E7.75.json`) as
     the first upload's, so the two files differ in the cloud's shape and in which cell sits where, not in its size.
+- 2026-11-19 (m), a forwarded side note on the heart's scope; the heart upload is held; the scope hedge the amendment of
+  18 November dropped, priced as the better of two (state at 13:24 UTC). Written by the AI assistant.
+  - **The note** (a side agent's, forwarded by the captain): the heart file waiting for upload keeps E10.5's full mix,
+    about three quarters of it not heart; the organisers say the E12.5 hearts were dissected out whole; a heart-only
+    file may be the largest gain left, is untested, touches a choice closed on 4 November and needs his ruling and a
+    note to the organisers; "Consider holding the heart upload until this is priced."
+  - **Held.** `runs/manual_upload/T2heart_s2iso_half.h5ad` is not to be uploaded until the captain has ruled on what
+    follows. (No upload is under way on any board.)
+  - **What is and is not new.** Target-free, on the released files through `vec.prep.load_stage`: the core
+    (cardiomyocytes and endocardium, `configs/lineage_map.yaml`) is 0.103, 0.167, 0.370 and 0.231 of the cells at
+    E8.5, E8.75, E9.5 and E10.5. The 23% is not new: the hedge study of 2026-11-01 opens with it
+    (`experiments/s2_hedge/README.md`, "T2 heart"), and the frozen rule made the heart's second upload a half trim of
+    the surrounding cells for that reason, before the exposure of 4 November (`docs/S2_RULES.md`, "T2 heart"). The
+    amendment of 18 November replaced that file with a full-scope copy at the predicted size and so dropped the
+    hedge, with the trend and the size mode it was built on. That is what the note has found.
+  - **The organisers' words do not settle it.** The protocol page describes the released E10.5 stack as hearts
+    dissected and sectioned whole (`docs/DATA_NOTES.md`, the read of 2026-10-31) and the E12.5 stack as "Hearts
+    dissected out of the embryo, and the entire heart sectioned" (the read of 2026-11-10); the E10.5 stack so
+    described is 77% outside the core. The page also says "The change in sampling falls exactly where the heart
+    extrapolation task asks you to go", which can be read either way, and does not say whether surrounding tissue
+    stayed attached at E12.5.
+  - **The price, from released data alone** (the committed per-seed files of the hedge study, commits 90b25d3 and
+    dcf1779, all before 4 November; recomputed by the AI assistant today, an independent recomputation is owed
+    before the question goes to the captain). Unit: heart points gained over the banked 46.4 as the better of two,
+    mean over 10 seeds; Overall moves by half. A = the ruled full-scope file, taken at 51.5 at the test (the AI
+    assistant's estimate: the floor's form plus the size term, not measured). B = A's form on the half trim, C = on
+    the full trim, each at A plus the study's paired difference from its full-scope row.
+
+    | Practice transition | Truth as released | Truth trimmed to 85% core | Truth trimmed to 100% core |
+    |---|---|---|---|
+    | E9.5 to E10.5 | A 5.1, B 0.0, C 0.0 | A 5.1, B 9.1, C 7.1 | A 5.1, B 10.9, C 15.9 |
+    | E8.25_late to E8.5 | A 5.1, B 6.9, C 2.8 | A 5.1, B 10.1, C 24.8 | A 5.1, B 9.1, C 15.6 |
+    | E8.75 and earlier to E10.5 | A 5.1, B 6.7, C 3.9 | A 5.1, B 15.2, C 16.0 | A 5.1, B 15.5, C 20.5 |
+
+    The two radial truths (surroundings near the heart kept; core 29% and 40% at E10.5, 20% and 50% at E8.5): B 0.1
+    and 5.4, C 0.0 and 0.5 on E9.5 to E10.5; B 14.9 and 10.4, C 20.2 and 19.8 on E8.25_late to E8.5; B 11.2 and 13.3,
+    C 9.0 and 12.6 on E8.75 to E10.5. Means over the fifteen cells: A 5.1, B 9.3, C 11.2; over the three truths as
+    released: A 5.1, B 4.5, C 2.2. The largest scored loss against A is 5.1 heart points for B and for C (E9.5 to
+    E10.5 with the truth as released or nearly so: the trimmed file falls under the banked score and adds nothing).
+    Limits: the study's rows carry B0's expression and an in-plane oracle size, not the copy and the even scaling, so
+    its scope differences are assumed to carry over; two of the three transitions share E10.5 as their truth; on E9.5
+    to E10.5 the later sample is the wider one (core 37% to 23%), and which way E12.5 goes is not known; the trimmed
+    truths are synthetic.
+  - **The advice, by the rule for a lever closed after an exposure** (`docs/DATA_POLICY.md` 2026-11-04; scope on
+    every board is in the block): the pre-set rule's outcome, which is the half trim. B restores the scope the frozen
+    rule gave the second upload before 4 November and keeps the two steps the captain removed on 18 November (the
+    trend, the stretch). C goes beyond that rule: the frozen text weighed the full trim and did not take it ("it
+    never beats s1 on a released target"), and the size file holds no scope hypothesis for it (H1, H0 and H2 only).
+    On C the AI assistant gives the table and no lean of its own. The captain decides from this released-data table
+    alone, or declines; the size of the hidden E12.5 file and the cell count he saw on 4 November, the limits in the
+    server's message of 18 November and the first scores are not to enter it. Whichever he rules, the method report
+    and the note that precedes the upload say so.
+  - **In hand:** the builder option for B is being written in the wave of entry (k) (`campaign/heart-iso-trim`); on
+    its return a review, an independent recomputation of the table above, check builds, and the question to the
+    captain with the amendment drafted.
