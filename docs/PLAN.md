@@ -5774,3 +5774,39 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     organiser post since 13 November" and its "no answer" on the severity question were wrong on the day. The four
     second files were handed over at 16:54 UTC on that check. None was uploaded. A screened Slack check opens every
     thread with replies from now on (`docs/DATA_POLICY.md`, change note 2026-11-19 (a)).
+- 2026-11-19 (b), the Feng authors' labels were made with in-window cells; what that touches; the rulings asked of
+  the captain; what is being prepared (state at 04:59 UTC). Written by the AI assistant.
+  - **How the labels were made** (wf_c9186108-9a8: an agent read the paper's Methods on annotation only, with every
+    result withheld; PMC9794824, "Data alignment and cell type analysis"): the authors merged every sample into one
+    object, batch-corrected and clustered it, annotated the joint clusters by marker genes ("a top-down approach based
+    on the expression of a panel of lineage genes"), analysed "each of the major cell types separately using the same
+    approach" with the stages still pooled, and joined the two strains at the end. No per-stage labelling is
+    described. So the labels of the permitted cells were learned using protected cells, in the organiser's words of
+    2026-11-16.
+  - **What rests on them** (the same workflow's designer and challenger, from committed files): the four groups of
+    T1's direction, in the uploaded first file and the built second; the readout that chose this dataset as the
+    direction's source; the gate that adopted the held list R2 (the list itself is not made from the labels); and
+    the second file's cardiomyocyte share, whose candidate values and priors were bounded by a range read from both
+    strains' labels. Not touched: the first file's scope and composition, which come from released data; g_mom's
+    factors; every T2 and T3 file. No in-window cell, count or expression value entered anything. A full audit is
+    being made.
+  - **What the AI assistant advises, and asks the captain to rule before any number exists** (the challenger's
+    point: a similarity listing seen first would turn the choice between a compliant and a non-compliant input into a
+    choice after the fact):
+    1. T1's last upload uses cell groups recomputed from the permitted cells' raw counts and stage labels alone, by
+       a procedure fixed beforehand (per-cell marker scores; a group too small takes a fixed fallback), whatever a
+       later listing of how far the direction moves shows. The file as built is not uploaded.
+    2. Which design the last upload has. The first file's design rebuilt with those groups is the one T1 file that
+       rests on no jointly learned label, and it would stand at about the first file's level if the organisers
+       discount the first upload; it gives up the composition hedge. The hedge file rebuilt with those groups keeps
+       the hedge, but its 0.60 came from a grid whose candidates and priors were bounded by the label-derived range,
+       and composition is a closed lever, so its share cannot be re-chosen. The AI assistant's advice is the first
+       file's design unless the organisers say the first upload stands.
+    3. A disclosure to the organisers, with one question: does the first upload stand as an eligible entry, or is
+       only the remaining upload to be nominated.
+  - **Being prepared without a ruling, and changing nothing by itself** (wf_63571f3d-9a2): the labeller as code on a
+    campaign branch, reviewed, with nothing run on data and a test that it cannot read the authors' label column; an
+    audit of every decision that rests on jointly learned labels; the disclosure email as a draft with accuracy,
+    strategy and tone reviews, for the captain's drafts at his word.
+  - **Calendar:** the ruling and the labeller's fixed choices on 19 and 20 November; the recomputation and its
+    listing on 21 November; rehearsed builds by 23 or 24 November; upload by the captain on 25 November.
