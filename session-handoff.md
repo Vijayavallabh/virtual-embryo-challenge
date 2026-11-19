@@ -2,6 +2,30 @@
 
 ## Current Objective
 
+- **State at 2026-11-19, 09:15 UTC (newest).** Decision log 2026-11-19 (b) to (e). The Feng authors' labels were made
+  with every stage pooled, so both T1 files rest on labels the organisers ask teams to leave out. `builds/T1_s2.h5ad`
+  is never uploaded, and no later T1 upload carries its 0.60 (it cannot be recomputed on permitted data). **Waiting
+  for the captain:** (1) T1's last upload: the AI assistant advises the first file's design with the atlas step
+  taken out, `t1 --g-mom --base lib3 --feng-groups none` (no outside data; priced in entry (d), corrected in (e));
+  the alternative, groups recomputed by a labeller, is parked on `campaign/feng-relabel-fix2` (final review not
+  ready: three blockers, nine lesser points, a data-folder link problem on the DGX, corrections owed to its marker
+  sources) and needs about a day and several sign-offs; (2) his word to put the two rewritten emails
+  (`docs/ORGANIZER_QUESTIONS.md`: "Disclosure of the X002 labels" and the amended sources note of 18 November) into
+  his drafts after he has ruled; the copy of the sources note now in his drafts is not to be sent as it stands;
+  (3) the embryo's last file (2026-11-18 (v)). **Ready for his T1 ruling:** the option on `campaign/t1-none`
+  (ea95c02; review ready; lesser points being applied on `campaign/t1-none-fix`, wf_79afa627-63b: on its return read
+  the review, rebuild on the DGX campaign checkout and confirm the no-direction file is still 55eaee547ff1 and the
+  two option-off files still have the reference hashes, run the complete suite); the ruling package as drafts on
+  `campaign/t1-none-docs-fix` (1921e9f) with its ordered steps from the ruling to the hand-over, saved in the
+  session's scratch folder as `lift8/t1none_package.json` (key package.fix: the draft amendment, row R8, the X002
+  and X003 texts, the method-summary texts, the runbook lines, the DATA_POLICY note, the checklist). At the ruling:
+  his words into a new decision-log entry; merge the option; squash the docs branch in uncommitted; take "DRAFT, not
+  in force" out of the amendment and put his words in; recompute `docs/S2_RULES.sha256`; one commit with row R8 and
+  the texts; build the set `t1none` twice at 16 threads on a DGX campaign checkout (never the reference checkout;
+  set BUILD_OUT outside any linked folder); compare with 55eaee547ff1; copy the file here, check it, hand it over
+  with the checklist and the note that precedes each second upload. The DGX campaign checkout `~/v/vec-campaign` is
+  at ea95c02, clean; check builds (never upload sources) are in its `runs/builds_check_t1/` and `runs/t1none_ea95c02/`.
+  The reference checkout is untouched at dc7b6ae. Screened read approved for 23 November (open every thread).
 - **State at 2026-11-19, 04:46 UTC (newest).** Decision log 2026-11-19 (a). HOLD: `builds/T1_s2.h5ad` is not uploaded
   as built (an organiser's reply of 2026-11-16 asks teams to leave out annotations learned using protected cells;
   X002's groups are the authors' labels). Waiting for the captain: (1) what T1's last upload should be once labels

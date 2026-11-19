@@ -3,6 +3,20 @@
 ## Current State
 
 **Last Updated:** 2026-11-19
+**2026-11-19, 09:15 UTC: the atlas authors' labels were made with in-window cells; T1's hedge is out; a T1 file with
+no outside data is ready for the captain's ruling** (`docs/PLAN.md` decision log 2026-11-19 (b) to (e)). The paper's
+Methods (a screened read) say every stage was merged before clustering, so the labels behind the four groups of T1's
+direction were learned using protected cells; the first upload (70.9) used them, and the built second file also
+took its 0.60 from a range read from them. An audit lists eighteen places the labels entered a decision. A labeller
+that recomputes the groups from permitted cells was written and reviewed three times; its final review says not
+ready and it is parked. The captain forwarded a note asking for the price of a third choice, a last T1 file with no
+outside data: the atlas step is worth about 1.2 to 3.5 practice points (in-sample, half the test's step; zero at
+the centre by rule 9's J6), the cost bites only if the first upload is discounted, and the file cannot be
+discounted for the atlas. The AI assistant now advises that file. Its option (`campaign/t1-none`, ea95c02) is
+reviewed ready; on the DGX the option-off files keep the reference hashes and the no-direction file builds to the
+same bytes four times (55eaee547ff1); the complete suite passes (2911). The ruling package and both organiser
+emails are drafted and reviewed (`campaign/t1-none-docs-fix`; `docs/ORGANIZER_QUESTIONS.md`). Nothing changes an
+upload: the T1 ruling, the emails and the embryo's last file wait for the captain.
 **2026-11-19, 04:46 UTC: two screened reads; T3's severity question is answered yes; an organiser's condition on
 external datasets puts T1's second file on hold** (`docs/PLAN.md` decision log 2026-11-19 (a);
 `docs/ORGANIZER_QUESTIONS.md`, "Screened reads of 2026-11-19"). An organiser (2026-11-16, in Slack threads the check
