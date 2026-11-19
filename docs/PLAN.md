@@ -6339,3 +6339,46 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     hypothesis's own size ratio), reviewed before it runs; the builder option from the wave of entry (k).
   - **Tests.** The complete local run at 2dccfee, the embryo's ruling commit (entries (j) and (k) had it running):
     2936 passed, 1 skipped, exit 0.
+- 2026-11-19 (o), the read owed by entry (n) is written and its design reviewed: the AI assistant's pick rule is
+  withdrawn before any run, and how the heart's scope can be reopened (state at 14:17 UTC). Written by the AI assistant.
+  - **What was prepared** (wf_b313b8f9-014; nothing run on data): `experiments/harness/h26_heart_scope_forms.py` with
+    its tests on `campaign/heart-scope-forms` (b3a11c7) and `-fix` (99c70eb). Arms: the ruled file's form on the whole
+    reference stage (A), on the half trim (B) and on the full trim (C), with the first upload's form as a stand-in,
+    on the hedge study's three transitions and five truths, 10 seeds, an oracle core size shared by the arms. The
+    AI assistant's brief had fixed a pick rule for the case that the captain left the direction to it: B if the
+    expected better of two (the stand-in and the arm) led A by 1.0 board point, averaged over the frozen section's
+    five priors, with the transitions weighted equally and with the two on E10.5 merged; otherwise A; C never.
+  - **The design review** (an agent asked to attack the brief's design) found two faults in that rule, and the fixer
+    confirmed both by simulation. The AI assistant accepts both.
+    (1) The better-of-two statistic credits a trimmed arm for being a different draw. A shares the stand-in's pool,
+    build seed and kept rows, so the larger of the stand-in and A is the larger of two near-copies, and the larger of
+    the stand-in and B is the larger of two different draws. With the two arms equal in distribution the rule's
+    statistic is +0.25 to +0.91 and B is picked in 0% to 37% of draws, depending on the spread and on the
+    stand-in's level; the first draft's "at most 4.15%" had drawn the stand-in independently and is withdrawn.
+    (2) The equal average over the five priors is a world weight (0.373 on the truth as released, 0.280 on the
+    radial trims, 0.347 on the thinned ones) that no committed, target-free measurement sets, which rule 9's J4
+    does not allow; under the least favourable committed prior, the truth as released, the study's own differences
+    give A on plain means (-0.85 and -0.20).
+  - **What the AI assistant decides** (under the delegation of 2026-11-02; no file, rule or build changes):
+    the pick rule is removed and the read decides nothing (second fix round, wf_7763454f-2bb). How E12.5's stack was
+    sampled is a test-stage premise no released task carries (rule 9, J1a), on a lever closed on 4 November. So:
+    the file in force, A, stays unless one of two things happens. (i) An organiser's statement, read through a
+    screen and audited, says the E12.5 heart stack was dissected with most or all tissue outside the heart removed,
+    or holds less surrounding tissue than the released E10.5 stack: the block's own route ("decided from released
+    data or a screened organiser answer"). For that case the row fixes, before the run, a conditional outcome on
+    plain means over the three truths with most or all surroundings removed (radial trim to scope none, thinned to
+    85% and to 100% core), the two E10.5 transitions merged: B only if ahead of A by 1.0 board point and ahead on
+    each fold; C in place of B only if ahead of B by the same, and then only with the captain's ruling on its size.
+    The captain signs that rule before it is used. (ii) The captain names an exception himself; the record would
+    then say that the scope of the last heart file was chosen after the exposure and the first scores by a person
+    who had seen the E12.5 heart file's size, and that it cannot be shown to be free of it
+    (`METHOD_SUMMARY.md`, "Exposure of hidden-target metadata").
+  - **What the released wording says today.** The team's screened notes give the released E10.5 stack as hearts
+    dissected and sectioned whole and the E12.5 stack as hearts dissected out of the embryo with the entire heart
+    sectioned; on that wording alone the like-for-like sample for E12.5 is E10.5 as released, which is A's scope.
+    Whether the page words the two rows differently is not in the notes. Asked of the captain with the question:
+    a screened re-read of those two rows, and a short procedural question to the organisers.
+  - **The labeller** (wf_5a6524a5-2ff): ported onto main on `campaign/feng-relabel-main` (5890abc); its review found
+    one blocker (a dry run that stops had no fixed outcome) and fourteen lesser points; a fix round closed them
+    in a worktree whose changes are not yet committed (its two targeted test runs were still going at hand-back).
+    Next: read those runs, commit, a last check, then the captain's sign-off of the settings.
