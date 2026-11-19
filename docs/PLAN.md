@@ -6964,3 +6964,34 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **What goes to the captain:** one question with the pre-set advice first and this caveat beside it, the
     no-outside-data file, and the released momentum as a third candidate that only his own named exceptions can
     choose (it is not a pre-set rule's output, and the AI assistant states no lean on it).
+- 2026-11-19 (ii), the captain rules on T1's last upload (state at 20:55 UTC). Written by the AI assistant.
+  - **The question as put** (one dialog question, header "Task 1 file"): "Task 1, last upload (one left). Our own
+    odds are about 0.6 that only a compliant upload will count, because the first one (70.9) used the atlas authors'
+    labels; then this file is Task 1's whole score. On practice (five tasks, ten seeds, one day ahead; independently
+    recomputed) the atlas step on groups we recomputed from permitted cells beat the no-outside-data file on every
+    task, by +1.2 to +2.5 points. By our own rule a one-day gain counts as zero at the centre for the two-day test,
+    so the honest edge is 0 to about +2. A cold check let my pre-set advice (the recomputed file) stand, with one
+    thing it says my rule left out: if the organisers rejected this second atlas file while discounting the first,
+    Task 1 would have no counted upload, and a rejection chance of roughly 2 to 4% cancels the edge. Which file?"
+  - **The options as put:** "Recomputed atlas file" ("My pre-set advice, and the higher ceiling: 0 to about +2
+    over the other file, perhaps more at the test's double step. It follows the organisers' words on recomputing,
+    but the atlas authors' quality filter chose which cells exist and that cannot be undone. Before building I run
+    one more practice check at the test's step size (about two hours)."); "No-outside-data file" ("The file you
+    ruled on 19 November; built and ready. Nothing in it can be ruled non-compliant. Gives up the 0 to +2.");
+    "Own-data momentum file" (a third candidate from released data only, which reverses ruling R1, is tied to
+    depth and has no builder; "Not a pre-set rule's output; the cold check did not prefer it; I state no lean on
+    it. Choosing it names both exceptions.").
+  - **His answer, verbatim:** "proceed with your recommendation".
+  - **The AI assistant's reading:** the question named one recommendation, in its own text ("my pre-set advice (the
+    recomputed file)") and in the first option ("My pre-set advice"). His answer therefore rules the recomputed
+    atlas file in as T1's last upload: `t1 --g-mom --base lib3 --feng-groups recomputed`. It is an answer to this
+    question alone and extends to nothing else. It sets the ruling of entry (u) on the no-outside-data file aside
+    for the last upload; that file stays built. With this entry the captain rules on T1's last upload.
+  - **What follows, in order.** (1) The practice check the option promised, as a counted try with its row first
+    (T63): the candidate at the test's fraction of the atlas bracket (2/5) on try T62's five tasks, with a placebo
+    direction and the epicardium-held arm at that size, designed and attacked by agents before it runs. What
+    follows from it is fixed in its row before the run. (2) The rules amendment with his words and the new hash,
+    the build set and its tests; two builds on the DGX checkout that holds the relabelling's output; the record,
+    the local copy and its check. (3) The method summary's lines and the note that precedes T1's second upload
+    (a draft; nothing is sent without his word). Row N54's listing may be opened from now on; nothing needs it,
+    and it stays unopened.
