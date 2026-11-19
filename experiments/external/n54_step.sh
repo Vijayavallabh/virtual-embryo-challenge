@@ -41,7 +41,8 @@ case "$STEP" in
     $PY -m pytest -q -p no:cacheprovider -o pythonpath=src --basetemp="$S/tmp/pytest" \
       tests/test_feng_relabel.py tests/test_t1_feng_groups_none.py tests/test_hidden_counts.py \
       tests/test_g_mom_verify.py tests/test_core.py tests/test_s2_rules.py tests/test_t1_late_proxy.py \
-      tests/test_b0_trend.py tests/test_build_heart_floor_iso.py tests/test_e47_floor_exact.py \
+      tests/test_b0_trend.py tests/test_build_heart_floor_iso.py tests/test_build_heart_iso_trim.py \
+      tests/test_build_heart_core_trim.py tests/test_e47_floor_exact.py \
       tests/test_h25_heart_forms.py tests/test_h6_cfm.py tests/test_heart_trend_build.py \
       tests/test_n12_hygiene_size.py tests/test_n2_momentum_size.py tests/test_n48_m1_direction_shrink.py \
       tests/test_t1_cal_read.py tests/test_t1_ctl_range_read.py tests/test_t1_eb_read.py tests/test_t1_eps_read.py \
