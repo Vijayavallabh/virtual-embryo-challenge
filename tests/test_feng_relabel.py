@@ -35,6 +35,13 @@ from test_hidden_counts import UNION, _reference_file, t1_env  # noqa: E402, F40
 from vec import harness  # noqa: E402
 
 COMMITTED = fr.load_config()
+# The committed file was frozen on 2026-11-19 (status frozen, min_score 0.3 by row N55's rule; docs/PLAN.md decision
+# log 2026-11-19 (x)). The tests below were written against the draft: DRAFT is the committed file with the three
+# values row N55 and the freeze may move set back, and every synthetic or stand-in settings file starts from it.
+# COMMITTED itself is checked by the first test alone.
+DRAFT = copy.deepcopy(COMMITTED)
+DRAFT["status"] = "draft"
+DRAFT["assign"] = {**DRAFT["assign"], "min_score": 0.5, "min_margin": 0.25}
 N55_ = {"outcome": "kept", "setting": {"min_score": 0.5, "min_margin": 0.25}, "commit": "n55c", "ruling": None}
 # what feng_relabel.preflight returns on a clean, committed, ruled tree (synthetic: the gate is never run here on data)
 GATE_ = {"row": "N54", "ruling": "2026-11-20 (a)", "commit": "abc", "clean": True, "config_at_head": True,
@@ -70,7 +77,7 @@ PROFILE = {"cm": ["Cm1", "Cm2", "Cm3"], "endo": ["Ec1", "Ec2", "Ec3", "En1", "En
 
 
 def syn_cfg(**over) -> dict:
-    cfg = copy.deepcopy({k: v for k, v in COMMITTED.items() if k not in ("sets", "sources")})
+    cfg = copy.deepcopy({k: v for k, v in DRAFT.items() if k not in ("sets", "sources")})
     cfg["sets"] = copy.deepcopy(SETS)
     cfg["sources"] = {"syn": "synthetic"}
     cfg.update(over)
@@ -101,7 +108,7 @@ SPEC = {"cm": 30, "endo": 15, "vasc": 15, "ambig": 6, "epi": 14, "blood": 8, "no
 # ------------------------------------------------------------------ the committed yaml
 
 
-def test_the_committed_yaml_is_well_formed_and_not_runnable_while_draft(tmp_path):
+def test_the_committed_yaml_is_well_formed_and_frozen_at_n55s_setting(tmp_path):
     cfg = COMMITTED
     assert cfg["method"] == "c" and cfg["stages"] == ["E9.5", "E14.5"]
     assert tuple(cfg["obs_columns"]) == fr.OBS_WHITELIST
@@ -109,16 +116,16 @@ def test_the_committed_yaml_is_well_formed_and_not_runnable_while_draft(tmp_path
     assert cfg["groups"]["Endocardium"] == ["r_endocardial_ec"]
     assert "r_ec_ambiguous" in cfg["groups"]["Endothelium"] and "r_ec_ambiguous" not in cfg["groups"]["Endocardium"]
     assert cfg["fallback"] == {"CM": "none", "Endocardium": "Endothelium", "Endothelium": "none", "Epicardium": "none"}
-    assert cfg["unassigned_cap"] == 0.40 and cfg["assign"]["min_score"] == 0.5 and cfg["assign"]["min_margin"] == 0.25
+    # frozen on 2026-11-19 at the setting row N55's rule gave (outcome changed: 0.5 to 0.3; the margin stays)
+    assert cfg["unassigned_cap"] == 0.40 and cfg["assign"]["min_score"] == 0.3 and cfg["assign"]["min_margin"] == 0.25
     assert cfg["assign"]["split_margin"] == 0.1
     fr.check_min_cells(cfg, feng_dirs.load_config())
-    # since 2026-11-19 no gene is UNSOURCED; the yaml stays draft until the captain's sign-off, and the code refuses it
+    # since 2026-11-19 no gene is UNSOURCED and the yaml is frozen (the captain's sign-off, decision log 2026-11-19
+    # (u)); the real gate still refuses a ruling the log does not hold (a draft's refusal is tested on synthetic files)
     assert not fr.unsourced_genes(cfg)
-    assert cfg["status"] == "draft"
-    with pytest.raises(fr.Refused, match="status is 'draft'"):
-        fr.preflight(fr.CONFIG, "2026-11-20 (a)", tmp_path / "out")  # the real gate, on the real committed yaml
-    with pytest.raises(fr.Refused, match="status is 'draft'"):
-        fr.run(cfg, fr.CONFIG, Path("/nonexistent"), Path("/nonexistent"), GATE)
+    assert cfg["status"] == "frozen"
+    with pytest.raises(fr.Refused):
+        fr.preflight(fr.CONFIG, "2099-01-01 (z)", tmp_path / "out")  # the real gate, on the real committed yaml
     with pytest.raises(fr.Refused, match="no gate"):
         fr.run(cfg, fr.CONFIG, Path("/nonexistent"), Path("/nonexistent"), None)
     assert not (tmp_path / "out").exists()
@@ -159,8 +166,8 @@ def test_every_released_data_gene_passes_the_yamls_rule_and_every_panel_gene_lef
     d = d[d.stage == "E9.5"].set_index("label")
     panel = _panel()
     checked = 0
-    used_by_groups = {p for s in COMMITTED["sets"].values() if s["role"] != "competing" for p in s.get("panel", [])}
-    for name, s in COMMITTED["sets"].items():
+    used_by_groups = {p for s in DRAFT["sets"].values() if s["role"] != "competing" for p in s.get("panel", [])}
+    for name, s in DRAFT["sets"].items():
         if "panel" not in s:  # the late classes rest on literature sources alone
             assert all(sid.startswith("lit_") for src in s["genes"].values() for sid in fr.gene_sources(src)), name
             continue
@@ -178,7 +185,7 @@ def test_every_released_data_gene_passes_the_yamls_rule_and_every_panel_gene_lef
         assert all(g in [x for p in s["panel"] for x in panel[p]] for g, src in s["genes"].items()
                    if src == "released_e95"), name
     assert checked > 50
-    assert set(COMMITTED["sets"]["vasc_split"]["excluded"]) == {"Lyve1"}
+    assert set(DRAFT["sets"]["vasc_split"]["excluded"]) == {"Lyve1"}
 
 
 # ------------------------------------------------------------------ the score
@@ -325,19 +332,19 @@ def test_a_set_with_too_few_genes_in_fengs_symbols_stops_the_run():
 def test_group_level_fallback():
     cells_ = {"CM": {"E9.5": 50, "E14.5": 80}, "Endocardium": {"E9.5": 9, "E14.5": 40},
               "Endothelium": {"E9.5": 30, "E14.5": 60}, "Epicardium": {"E9.5": 4, "E14.5": 30}}
-    fb = fr.fallbacks(cells_, 10, COMMITTED["fallback"])
+    fb = fr.fallbacks(cells_, 10, DRAFT["fallback"])
     assert fb["CM"] == {"own": True, "fired": False, "takes": "CM"}
     assert fb["Endocardium"] == {"own": False, "fired": True, "takes": "Endothelium"}
     assert fb["Epicardium"] == {"own": False, "fired": True, "takes": None}
     # never chained: Endocardium's fallback must have its own direction
-    fb2 = fr.fallbacks(dict(cells_, Endothelium={"E9.5": 2, "E14.5": 60}), 10, COMMITTED["fallback"])
+    fb2 = fr.fallbacks(dict(cells_, Endothelium={"E9.5": 2, "E14.5": 60}), 10, DRAFT["fallback"])
     assert fb2["Endocardium"]["takes"] is None and fb2["Endothelium"]["takes"] is None
     # feng_dirs applies the same rule to directions
     d = {"CM": np.ones(3), "Endothelium": np.full(3, 2.0)}
-    out, rec = feng_dirs.apply_fallback(d, COMMITTED)
+    out, rec = feng_dirs.apply_fallback(d, DRAFT)
     assert np.array_equal(out["Endocardium"], d["Endothelium"]) and out["Endocardium"] is not d["Endothelium"]
     assert "Epicardium" not in out and rec["Epicardium"] == {"own": False, "fired": True, "takes": None}
-    out2, _ = feng_dirs.apply_fallback({"CM": np.ones(3)}, COMMITTED)
+    out2, _ = feng_dirs.apply_fallback({"CM": np.ones(3)}, DRAFT)
     assert set(out2) == {"CM"}
 
 
@@ -381,7 +388,7 @@ def test_read_obs_reads_the_whitelist_and_nothing_else(tmp_path):
     for col in ("cell_type", "celltype_2", "clusters", "annotation", "X_pca", "harmony_1", "leiden", "label"):
         with pytest.raises(fr.Refused):
             fr.check_whitelist([col])
-    bad = copy.deepcopy(COMMITTED)
+    bad = copy.deepcopy(DRAFT)
     bad["obs_columns"] = ["stage", "cell_type_spec"]
     with pytest.raises(fr.Refused):
         fr.check_config(bad)
@@ -581,7 +588,7 @@ def test_the_authors_default_is_unchanged(tmp_path, monkeypatch):
 
 def test_groups_config_replaces_only_the_feng_lists():
     cfg = feng_dirs.load_config()
-    g = feng_dirs.groups_config(cfg, COMMITTED)
+    g = feng_dirs.groups_config(cfg, DRAFT)
     assert g["external_labels"]["Endothelium"][0] == ["r_endocardial_ec", "r_vascular_ec", "r_ec_ambiguous"]
     assert g["external_labels"]["Blood"][0] is None and g["external_labels"]["ventricularCM"][0] is None
     assert g["external_labels"]["CM"][1:] == cfg["external_labels"]["CM"][1:]
@@ -684,7 +691,7 @@ def test_harness_late_proxy_option_is_off_by_default():
     c = harness._lp("lp_rc", "synthetic", feng_groups="recomputed")
     assert c.derived == ("t1_late_proxy_recomputed",) and c.params["feng_groups"] == "recomputed"
     assert "lp_rc" not in harness.CANDIDATES
-    assert harness.LP_STATS_RECOMPUTED == feng_dirs.recomputed_stats_path(COMMITTED)
+    assert harness.LP_STATS_RECOMPUTED == feng_dirs.recomputed_stats_path(DRAFT)
     assert harness.DERIVED["t1_late_proxy"].path == harness.LP_STATS
     with pytest.raises(ValueError):
         harness._late_proxy(feng_groups="jax")
@@ -802,8 +809,8 @@ def test_check_config_keeps_unsourced_genes_in_competing_classes_and_needs_the_t
 
 
 def test_the_unsourced_rule_deletes_genes_then_emptied_classes():
-    assert fr.without_unsourced(COMMITTED) == COMMITTED  # nothing left to delete since 2026-11-19
-    cfg = copy.deepcopy(COMMITTED)  # the rule itself, on a copy with unsourced genes put back
+    assert fr.without_unsourced(DRAFT) == DRAFT  # nothing left to delete since 2026-11-19
+    cfg = copy.deepcopy(DRAFT)  # the rule itself, on a copy with unsourced genes put back
     cfg["sets"]["blood"]["genes"]["Hba-a1"] = fr.UNSOURCED
     cfg["sets"]["lymphatic"]["genes"]["Flt4"] = fr.UNSOURCED
     fr.check_config(cfg)
@@ -811,7 +818,7 @@ def test_the_unsourced_rule_deletes_genes_then_emptied_classes():
     assert not fr.unsourced_genes(out)
     assert set(cfg["sets"]) - set(out["sets"]) == {"lymphatic"}  # one gene left: the class goes whole
     assert set(out["sets"]["blood"]["genes"]) == {"Hba-x", "Hbb-y", "Gata1", "Hbb-bs", "Alas2"}
-    assert out["groups"] == COMMITTED["groups"] and out["unassigned_cap"] == COMMITTED["unassigned_cap"]
+    assert out["groups"] == DRAFT["groups"] and out["unassigned_cap"] == DRAFT["unassigned_cap"]
 
 
 # --- the literature sources of 2026-11-19 and the three dropped genes
@@ -824,7 +831,7 @@ LIT = {  # gene -> its source ids, as the main session's decisions of 2026-11-19
 
 
 def test_every_formerly_unsourced_gene_has_its_literature_source_and_sentence():
-    cfg = COMMITTED
+    cfg = DRAFT
     got = {g: fr.gene_sources(src) for s in cfg["sets"].values() for g, src in s["genes"].items()
            if any(sid.startswith("lit_") for sid in fr.gene_sources(src))}
     assert got == LIT
@@ -844,7 +851,7 @@ def test_the_quotation_checks_corrections_are_applied():
     """The check of 2026-11-19 against the eight papers: lit_C names the globins only in a quality-control filter, so it
     is no source for them; lit_E's class is erythroid progenitors; the caveats are the papers' own sentences, with the
     team's reading marked; the ages and sexes as published."""
-    src = COMMITTED["sources"]
+    src = DRAFT["sources"]
     assert not {"Hba-a1", "Hbb-bs"} & set(src["lit_C"]["names"])
     assert "contamination by immune cells and erythrocytes" in src["lit_C"]["caveats"]["Hba-a1"]
     assert "progenitor" in src["lit_E"]["class_named"] and "both sexes" in src["lit_E"]["samples"]
@@ -859,11 +866,11 @@ def test_the_quotation_checks_corrections_are_applied():
     assert "3 weeks" in src["lit_G"]["samples"]
     # the check counted 20 gene statements; lit_C's two globin statements are now caveats, so 18 remain, one per gene
     assert sum(len(src[s]["names"]) for s in src if s.startswith("lit_")) == 18
-    assert "PDPN" in COMMITTED["dropped"]["Pdpn"] and "protein" in COMMITTED["dropped"]["Pdpn"]
+    assert "PDPN" in DRAFT["dropped"]["Pdpn"] and "protein" in DRAFT["dropped"]["Pdpn"]
 
 
 def test_the_three_dropped_genes_are_gone_dated_and_kept_out_of_the_controls():
-    cfg = COMMITTED
+    cfg = DRAFT
     assert set(cfg["dropped"]) == {"Phox2b", "Fcer1g", "Pdpn"}
     assert all(cfg["dropped"][g].startswith("2026-11-19") for g in cfg["dropped"])
     members = {g for s in cfg["sets"].values() for g in s["genes"]}
@@ -882,7 +889,7 @@ def test_the_three_dropped_genes_are_gone_dated_and_kept_out_of_the_controls():
 def test_the_changed_classes_keep_the_minimum_of_genes():
     """With the three genes gone: neural_crest 6 (Phox2b gone), immune 4 (Fcer1g gone), lymphatic 2 (Pdpn gone, at
     the minimum exactly), mural 5 (unchanged); a class whose genes are all found always has at least the minimum."""
-    cfg = COMMITTED
+    cfg = DRAFT
     n = {name: len(s["genes"]) for name, s in cfg["sets"].items()}
     need = int(cfg["score"]["min_genes_found"])
     assert need == 2 and all(v >= need for v in n.values())
@@ -894,11 +901,11 @@ def test_the_changed_classes_keep_the_minimum_of_genes():
                                           (["lit_C", "lit_A"], "lit_A quotes no sentence"), ([], "an id or"),
                                           ({"lit_A": 1}, "an id or"), ("UNSOURCED_x", "not under")])
 def test_check_config_refuses_a_bad_gene_source(bad_src, msg):
-    bad = copy.deepcopy(COMMITTED)
+    bad = copy.deepcopy(DRAFT)
     bad["sets"]["mural"]["genes"]["Rgs5"] = bad_src
     with pytest.raises(fr.Refused, match=msg):
         fr.check_config(bad)
-    bad = copy.deepcopy(COMMITTED)
+    bad = copy.deepcopy(DRAFT)
     del bad["sources"]["lit_C"]["doi"]
     with pytest.raises(fr.Refused, match="lacks"):
         fr.check_config(bad)
@@ -921,20 +928,20 @@ def test_run_refuses_a_draft_yaml_or_a_gate_without_the_row_or_a_clean_tree():
     (True, {"CM": 50, "Endocardium": 4, "Endothelium": 8, "Epicardium": 30}, "none"),  # Endocardium has none
     (False, {"CM": 50, "Endocardium": 40, "Endothelium": 60, "Epicardium": 30}, "none")])  # the cap failed
 def test_the_terminal_route_is_fixed_by_the_rule(usable, cells_, want):
-    fb = fr.fallbacks({g: {"E9.5": n, "E14.5": 100} for g, n in cells_.items()}, 10, COMMITTED["fallback"])
-    assert fr.route(usable, fb, COMMITTED) == want
+    fb = fr.fallbacks({g: {"E9.5": n, "E14.5": 100} for g, n in cells_.items()}, 10, DRAFT["fallback"])
+    assert fr.route(usable, fb, DRAFT) == want
 
 
 def test_the_build_command_per_route_is_the_first_uploads_command(bt):
     """Decisions (1) and (2): both routes build the first upload's command; route none is main's none file as built
     (build_all.sh's set t1none, row R8)."""
-    assert fr.build_command("recomputed", COMMITTED) == ["t1", "--g-mom", "--base", "lib3", "--feng-groups",
+    assert fr.build_command("recomputed", DRAFT) == ["t1", "--g-mom", "--base", "lib3", "--feng-groups",
                                                          "recomputed"]
-    assert fr.build_command("none", COMMITTED) == ["t1", "--g-mom", "--base", "lib3", "--feng-groups", "none"]
-    assert fr.FIRST_UPLOAD_COMMAND == bt.FENG_NONE_COMMAND == " ".join(fr.build_command("none", COMMITTED)[:4])
+    assert fr.build_command("none", DRAFT) == ["t1", "--g-mom", "--base", "lib3", "--feng-groups", "none"]
+    assert fr.FIRST_UPLOAD_COMMAND == bt.FENG_NONE_COMMAND == " ".join(fr.build_command("none", DRAFT)[:4])
     with pytest.raises(fr.Refused, match="route must be"):
-        fr.build_command("authors", COMMITTED)
-    cfg = copy.deepcopy(COMMITTED)
+        fr.build_command("authors", DRAFT)
+    cfg = copy.deepcopy(DRAFT)
     cfg["terminal"]["base"] = fr.PENDING
     with pytest.raises(fr.Refused, match="PENDING"):
         fr.build_command("none", cfg)
@@ -951,7 +958,7 @@ def gate_env(tmp_path, monkeypatch):
     """A frozen, sourced, ruled yaml at a stand-in CONFIG path, with TRIES, PLAN, HEAD and the tree faked."""
     from vec import provenance
 
-    draft = copy.deepcopy(fr.without_unsourced(COMMITTED))  # the yaml as N55 read it (draft)
+    draft = copy.deepcopy(fr.without_unsourced(DRAFT))  # the yaml as N55 read it (draft)
     draft_bytes = yaml.safe_dump(draft, sort_keys=False).encode()
     cfg = copy.deepcopy(draft)
     cfg["status"] = "frozen"
@@ -1375,8 +1382,8 @@ def test_builder_blood_guard_reads_the_recomputed_group_names(bt, monkeypatch):
 def test_the_output_paths_agree():
     """The yaml's output folder, sources.yaml's feng_relabel entry and the harness's late-proxy path name one place."""
     src = yaml.safe_load((ROOT / "experiments/external/sources.yaml").read_text())["feng_relabel"]
-    assert src["dst"] == COMMITTED["output"]["dir"] == "data/derived/feng_relabel_c"
-    assert harness.LP_STATS_RECOMPUTED == ROOT / COMMITTED["output"]["dir"] / COMMITTED["output"]["stats"]
+    assert src["dst"] == DRAFT["output"]["dir"] == "data/derived/feng_relabel_c"
+    assert harness.LP_STATS_RECOMPUTED == ROOT / DRAFT["output"]["dir"] / DRAFT["output"]["stats"]
 
 
 # --- the listing, the agreement and the dry run
@@ -1491,7 +1498,7 @@ def test_the_dry_runs_refusals(monkeypatch, tmp_path):
     monkeypatch.setattr(fr, "ruling_logged", lambda ruling, row="N54", plan=None: ruling == "2026-11-20 (b)")
     monkeypatch.setattr(fr, "N55_OUT", tmp_path / "n55.json")
     monkeypatch.setattr(fr, "committed_at_head", lambda p: None)
-    cfg = copy.deepcopy(COMMITTED)
+    cfg = copy.deepcopy(DRAFT)
     assert dr.refusals(cfg, "2026-11-20 (b)") is None
     assert "naming N55" in dr.refusals(cfg, "2026-11-20 (c)")
     assert "before the freeze" in dr.refusals({**cfg, "status": "frozen"}, "2026-11-20 (b)")
@@ -1511,7 +1518,7 @@ def test_the_dry_runs_refusals(monkeypatch, tmp_path):
 def _committed_extremes(types_spec: dict[str, dict[str, float]], n_per: int = 20, seed: int = 0, drop: tuple = ()):
     """Poisson counts over the committed yaml's set genes, the three dropped genes and 2000 filler genes: every gene at
     its base rate (set genes low, filler spread like real genes), a type's listed genes at the listed rate."""
-    cfg = COMMITTED
+    cfg = DRAFT
     members = [g for s in cfg["sets"].values() for g in s["genes"]]
     named = [g for g in members + sorted(cfg["dropped"]) if g not in drop]
     genes = named + [f"f{i:04d}" for i in range(2000)]
@@ -1532,7 +1539,7 @@ def _committed_extremes(types_spec: dict[str, dict[str, float]], n_per: int = 20
 def test_the_committed_sets_on_synthetic_extremes():
     """The changed sets (literature genes in; Phox2b, Fcer1g and Pdpn out) under the unchanged score and assignment.
     Synthetic: what it shows is the rule's arithmetic, not how Feng's cells will fall."""
-    cfg = COMMITTED
+    cfg = DRAFT
     G = {n: list(s["genes"]) for n, s in cfg["sets"].items()}
     H = 30.0
 
@@ -1582,7 +1589,7 @@ def test_the_lymphatic_class_at_the_minimum_stops_the_run_if_a_gene_is_missing()
     for gone in ("Prox1", "Flt4"):
         C, genes, stage, _ = _committed_extremes({"x": {}}, n_per=40, drop=(gone,))
         with pytest.raises(fr.Refused, match="set lymphatic"):
-            fr.relabel(C, genes, stage, COMMITTED)
+            fr.relabel(C, genes, stage, DRAFT)
 
 
 # ------------------------------------------------------------------ the review of the port (second fixer, 2026-11-19)
@@ -1618,7 +1625,7 @@ def test_a_dry_run_that_stops_is_recorded_with_the_first_setting_and_never_rerun
     released symbols, a set that draws no control gene) writes n55.json with outcome stopped and the first setting,
     exits STOP_EXIT, and a second call is refused."""
     if stop == "missing_prox1":
-        cfg = copy.deepcopy(COMMITTED)
+        cfg = copy.deepcopy(DRAFT)
         C, genes, _, _ = _committed_extremes({"x": {}}, n_per=40, drop=("Prox1",))
         want = "set lymphatic"
     else:

@@ -6639,3 +6639,28 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     says; then one commit with the settings frozen at the setting the rule gives, row N54 and the register texts;
     then the relabelling once; its record committed at once; the listing; if the route is the recomputed groups,
     two check builds; then the priced question on T1's last upload.
+- 2026-11-19 (x), row N55 is read: its rule moves one threshold; the labeller's settings are frozen; row N54 is
+  registered (state at 18:41 UTC). Written by the AI assistant.
+  - **The steps on the DGX** (`~/v/vec-campaign-d` at cae44f7, row N55's commit, clean): the targeted tests, 1604
+    passed; the option-off identity builds: T1_s1 a294062f5f7b, T1_s2 f169ea492e8d and T1_s2none 55eaee547ff1, the
+    reference hashes, each stamp at the commit and clean, so the merged builder gives the three existing T1 files
+    byte for byte; then the dry run, exit 0. `n55.json` was committed at once (fb632a8) and read afterwards.
+  - **By the rule fixed in entry (w):** outcome changed. At the first setting (score 0.5, margin 0.25)
+    0.418 of the released E9.5's cells stay unassigned, over the cap of 0.40; the four chamber
+    checks pass. The next setting in the rule's order (0.3, 0.25) meets both: 0.360 unassigned,
+    and each chamber label's cells go most often to its own group (the cardiomyocyte labels pooled
+    0.82, Endocardium 0.64, BEC 0.93, Proepicardium 0.86). The third (0.5, 0.15) would not have passed the cap
+    (0.400). So min_score becomes 0.3, min_margin stays 0.25, and nothing else changes.
+  - **Frozen.** `experiments/external/feng_relabel.yaml`: status frozen, min_score 0.3; sha256
+    883e74c2c1ef5f01d5244555f8b3dcae24255568c731a6d53ee2788b7b677b49. The test that pinned the draft now pins the frozen state. The labeller's other tests had started their
+    synthetic settings from the committed file, and 26 of them failed at the freeze; they now start from a draft
+    copy of it (three values set back), so the suite no longer follows the file's state: 289 passed over the
+    labeller's, the builder's and the read's tests.
+  - **Registered before the run:** row N54 (the relabelling, its terminal route and its listing), naming entry (u)
+    as the captain's ruling; the amendment of register row X002 for the recomputation, with the two author columns
+    read beyond raw counts and stage; the line of row X003; the method summary's sentence on the recomputation, with
+    a marked line for the route.
+  - **Next:** the relabelling, once, on the same DGX checkout at this entry's commit, under the gate; its record
+    committed at once whatever it says. By the terminal rule fixed in the settings: the recomputed groups if at most
+    0.40 of each stage's permitted cells stay unassigned and the cardiomyocyte and endocardium groups each have a
+    direction after the fixed fallback; otherwise, or on any stop, T1's last upload stays row R8's file.

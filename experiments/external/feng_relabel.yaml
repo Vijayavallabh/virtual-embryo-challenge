@@ -27,7 +27,7 @@
 
 version: 1
 method: c                     # per-cell marker scores; no clustering, embedding, classifier or fitted transformation
-status: draft                 # the main session sets "frozen" in the commit that carries ledger row N54, after row
+status: frozen                # the main session sets "frozen" in the commit that carries ledger row N54, after row
                               # N55's dry run has run and its rule has been applied, and after the captain's sign-off
 
 # ------------------------------------------------------------------ inputs (the clean reduction, feng2022_geo)
@@ -92,7 +92,7 @@ score:
 # target-free, no Feng) is the dry run that checks them and the cap (rule 9, J7). It runs before the freeze, and the
 # rule under `n55_rule` below, written before it runs, alone decides whether min_score and min_margin change.
 assign:
-  min_score: 0.5
+  min_score: 0.3
   min_margin: 0.25
   split_margin: 0.1
   unassigned: r_unassigned

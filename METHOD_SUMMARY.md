@@ -359,8 +359,16 @@ missed the reply.
   used the labels; our reviewers found that overstated, and the record was corrected the same day.
 - A stricter file that also drops the within-type factors was priced (they add +1.23 and +1.14 practice points on
   two cuts, counted as zero at the centre over the test's longer gap) and not chosen.
-- We considered recomputing the groups from the permitted cells' raw counts and stage labels. That tool was written
-  and reviewed but not finished, and it was not used.
+- We considered recomputing the groups from the permitted cells' raw counts. On 2026-11-19 the captain approved the
+  two outside atlases as Task 1 inputs on stated terms (permitted stages, raw counts and stage labels, groups
+  recomputed), and the tool was finished and reviewed in three more rounds (`experiments/external/feng_relabel.py`;
+  settings frozen at sha256 883e74c2c1ef; ledger rows N55 and N54; register rows X002 and X010). It scores each
+  permitted cell on fixed marker-gene sets and never reads the authors' annotation columns. Beyond raw counts and
+  stage it reads two bookkeeping columns (zone and strain), and the genes that keep other cell types out come from
+  eight published papers; the captain accepted both. Its dry run on the released E9.5 moved one threshold, by a rule
+  fixed beforehand. [TO COMPLETE: the relabelling's route, and whether any upload uses the recomputed groups.] A file
+  built on the recomputed groups becomes Task 1's last upload only by the captain's later ruling; until then the last
+  upload is the file with no outside data.
 - We told the organisers on [TO COMPLETE: the date the captain sends the disclosure email] and asked whether our
   first Task 1 upload stands as an eligible entry.
 
