@@ -106,6 +106,12 @@ NATIVE_Z_WARN_FACTOR = 2.0  # z-hold mode: warn when the cloud's z SD and the re
 LIBRARY_BAND = (0.1, 2.0)  # builder: warn when the median implied library size leaves this band, in units of 1e4
 SIZE_BOARDS = ("heart", "embryo")
 SIZE_HYPOTHESES = ("H1", "H0", "H2")
+# The core's own scope (no ruling; campaign/heart-scope-options): a cloud whose full-over-core RMS ratio is one, sized
+# to the size procedure's own core forecast in the raw mode (the JSON's pred_rms_core of that mode, the term every
+# scope hypothesis multiplies by exp(pred_log_scope)). Not a pre-registered scope hypothesis: only the raw mode, only a
+# valid JSON, never the fallback, and only the captain's ruling puts a file sized this way in an upload.
+SIZE_CORE_SCOPE = "core"
+SIZE_CORE_SCOPE_MODES = ("raw",)
 APPLICABLE_Z_MODES = ("raw", "common_step", "xy_grow_z_hold")  # "split" is logged by the procedure for diagnosis only
 SIZE_MATCH = ("full", "xy")
 REDACTED_PREFIX = "[redacted"
@@ -734,7 +740,8 @@ def apply_size_procedure(coords, size_json, hypothesis: str | None = None, z_mod
     redacted dry-run forecasts, unknown boards, modes or hypotheses. hypothesis: the heart scope hypothesis ("H1"
     trend for s1, "H2" half for s2, "H0" hold); required for the heart, refused for the embryo (which has none).
     z_mode: None applies the pre-registered mode recorded in the JSON; a logged alternative may be named for
-    diagnosis.
+    diagnosis. hypothesis=SIZE_CORE_SCOPE ("core", no ruling): the heart cloud at the core's own scope, sized to the
+    mode's own pred_rms_core (the raw mode only); the record's target_source names that field.
 
     - "raw" / "common_step": isotropic `rescale_to_rms` about the centroid to the predicted full-cloud RMS (in
       common_step the target is in the reference stage's z step, so the cloud must be in that convention).
@@ -778,7 +785,17 @@ def apply_size_procedure(coords, size_json, hypothesis: str | None = None, z_mod
         raise ValueError("match='xy' applies only to the xy_grow_z_hold mode")
 
     stages = {g.get("name"): g for g in res.get("stages", [])}
-    if board == "heart":
+    core_source = None
+    if board == "heart" and hypothesis == SIZE_CORE_SCOPE:
+        if mode not in SIZE_CORE_SCOPE_MODES:
+            raise ValueError(f"heart: the core's own scope is sized in the {SIZE_CORE_SCOPE_MODES} mode only, got "
+                             f"{mode!r}")
+        core_source = f"{'preregistered' if mode == recorded else 'z_modes.' + mode}.pred_rms_core"
+        target_full = _forecast(res.get("pred_rms_core"), core_source)
+        target_xy = None
+        reference = res.get("reference")
+        z_reference = reference
+    elif board == "heart":
         if hypothesis not in SIZE_HYPOTHESES:
             raise ValueError(f"heart: pass the scope hypothesis, one of {SIZE_HYPOTHESES} (s1 = H1, s2 = H2), got "
                              f"{hypothesis!r}")
@@ -815,7 +832,9 @@ def apply_size_procedure(coords, size_json, hypothesis: str | None = None, z_mod
         if prov.get("git_uncommitted"):
             rec["warnings"].append(f"the size JSON was produced with uncommitted procedure files: "
                                    f"{prov['git_uncommitted']}")
-    if board == "heart":
+    if core_source is not None:
+        rec["target_source"] = core_source
+    elif board == "heart":
         rec["scale_vs_reference_full"] = scope.get("scale_vs_reference_full")
     ref_geom = stages.get(reference) if isinstance(reference, str) else None
     if ref_geom is not None and isinstance(ref_geom.get("rms_full"), int | float):
@@ -1032,6 +1051,9 @@ def size_or_hold(coords, size_json, hypothesis: str | None = None, *, source_sta
     if _redacted(size):
         raise ValueError("the size JSON is redacted: a dry-run JSON (a code check, not a prediction) cannot size a "
                          "submission, not even through the fallback")
+    if hypothesis == SIZE_CORE_SCOPE:
+        raise ValueError("the size result has valid=false: approved rule 3's fallback covers the pre-registered scope "
+                         f"hypotheses {SIZE_HYPOTHESES}, not the core's own scope; its size needs the captain's ruling")
     if hypothesis not in SIZE_HYPOTHESES:
         raise ValueError(f"heart: pass the scope hypothesis, one of {SIZE_HYPOTHESES} (s1 = H1, s2 = H2), got "
                          f"{hypothesis!r}")

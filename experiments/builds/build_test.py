@@ -60,7 +60,17 @@ machine, and an official upload needs the captain's go-ahead.
           from, `vec.harness._copy`), no momentum. --z-mode raw (off by default): the size step's isotropic mode,
           every axis scaled by one factor to the hypothesis's target RMS, in place of the mode the size JSON
           recorded. The captain's direction for the heart's second upload (2026-11-18, docs/PLAN.md decision log
-          2026-11-18 (k)): heart --entry s1 --expression copy --z-mode raw
+          2026-11-18 (k)): heart --entry s1 --expression copy --z-mode raw. The scope bet (no ruling; off unless all
+          three flags are given; scope is a lever of the post-exposure block, so only the captain's ruling puts it in
+          an upload): heart --entry s2_trim --expression copy --z-mode raw, the same two fixes on the half trim (H2,
+          docs/S2_RULES.md), sized to the raw mode's own logged H2 figure. The count is s1's: vec.t2_build.n_cells
+          does not read the pool's size (it only annotates the record), so the trimmed pool gets the count the server
+          refused on 2026-11-18, and the file is halved with halve.py as the ruled file is. The full trim (no ruling;
+          off unless all three flags are given; refused with --trend, --depth, --herd and --cfm): heart --entry
+          core_trim --expression copy --z-mode raw, the same draw from E10.5 under radial_trim_mask at fraction 0,
+          sized to the size JSON's raw-mode core forecast (z_modes.raw.pred_rms_core, the cloud at the core's own
+          scope); its record and the half trim's carry scope_option (scope rule, kept-share field, size field,
+          halving)
   embryo  --method pseudobulk_shift | fgw | fgw_shape0 | fgw_shape1: E7.5 cells moved by the E7.25 -> E7.5 change, or
           the FGW interpolation between E7.5 and E8.0 at t = 1/2 (fgw_shape0, the s2 of docs/S2_RULES.md, keeps the
           mixture in E7.5's geometry); sized by the pre-registered embryo procedure (size_embryo_E7.75.json).
@@ -152,6 +162,27 @@ T1_MID_CM_SHARE = 0.60  # the one cardiomyocyte share the mid base is ruled for 
 # decision log (w)): role -> (file, day as vec.harness.STAGE_DAYS gives it); with E9.5 ("start") and E10.5 ("ref")
 HEART_TREND_STAGES = {role: (f, harness.STAGE_DAYS[f]) for role, f in
                       (("e8_75", "T2/E8.75.h5ad"), ("e8_5", "T2/E8.5.h5ad"), ("e8_25_late", "T2/E8.25_late.h5ad"))}
+# The heart's scope bet (campaign/heart-iso-trim; no ruling; only the captain's ruling puts it in an upload): the ruled
+# second file's two fixes (the copy's expression, the size step's raw mode) on the pre-registered trimmed scope, H2 as
+# the half trim of docs/S2_RULES.md, sized by the size file's own logged raw-mode figure for H2. Scope is a lever of the
+# post-exposure block (docs/DATA_POLICY.md 2026-11-04): the option is off unless all three flags are given.
+HEART_ISO_TRIM = "heart --entry s2_trim --expression copy --z-mode raw"
+# The full trim (campaign/heart-scope-options; no ruling; off unless all three flags are given, only the captain's
+# ruling puts it in an upload): the same two fixes on E10.5 trimmed by vec.t2_build.radial_trim_mask at fraction 0
+# (surrounding cells removed farthest in plane first until the in-plane scope is at most zero: the core and any
+# surrounding cells inside its in-plane spread), sized to the raw mode's own core forecast
+# (z_modes.raw.pred_rms_core of the size JSON: the cloud at the core's own scope, full-over-core ratio one).
+HEART_CORE_TRIM = "heart --entry core_trim --expression copy --z-mode raw"
+# Per scope option: its trim fraction, the size step's hypothesis, the size JSON field its size comes from
+HEART_SCOPE_OPTIONS = {
+    "s2_trim": {"frac": 0.5, "hypothesis": "H2", "size_source": "z_modes.raw.scope.H2.pred_rms_full",
+                "rule": "surrounding cells removed farthest in plane from the core first, to half the in-plane scope"},
+    "core_trim": {"frac": 0.0, "hypothesis": t2_build.SIZE_CORE_SCOPE, "size_source": "z_modes.raw.pred_rms_core",
+                  "rule": "surrounding cells removed farthest in plane from the core first, to an in-plane scope of "
+                          "at most zero (the core's own)"},
+}
+HEART_HALVING = ("experiments/builds/halve.py <file> <half>: a uniform random half of the rows (halve.DEFAULT_SEED, "
+                 "order kept), as for the ruled heart2 file; the halving is a separate step, not this build")
 
 
 def _view(key: str, task: str, kind: str, setting: str | None, test_board: str, roles: dict[str, tuple[str, float]],
@@ -817,9 +848,20 @@ def build_heart(a) -> dict:
     if a.trend and (a.entry == "s2" or a.depth or a.herd or a.cfm):
         sys.exit("--trend is refused with --entry s2, --depth, --herd and --cfm (no try read those combinations)")
     copy = a.expression == "copy"
-    if copy and (a.entry != "s1" or a.trend or a.depth or a.herd or a.cfm):
-        sys.exit("--expression copy is refused with --entry s2 or s2_trim, --trend, --depth, --herd and --cfm (it is "
-                 "the copy baseline's draw from --entry s1's pool, the full E10.5, with no step)")
+    # The scope bet (HEART_ISO_TRIM; off unless asked for): --entry s2_trim with --expression copy --z-mode raw, the one
+    # trimmed copy file. Every other use of --expression copy outside s1 is refused, as before.
+    iso_trim = copy and a.entry == "s2_trim" and a.z_mode == "raw"
+    if copy and ((a.entry not in ("s1", "core_trim") and not iso_trim) or a.trend or a.depth or a.herd or a.cfm):
+        sys.exit("--expression copy is refused with --entry s2, --trend, --depth, --herd and --cfm, and with --entry "
+                 "s2_trim unless --z-mode raw is given (it is the copy baseline's draw from --entry s1's pool, the "
+                 f"full E10.5, with no step; or {HEART_ISO_TRIM}: the same draw from the half trim, sized in the raw "
+                 "mode for H2)")
+    # The full trim (HEART_CORE_TRIM; off unless asked for): --entry core_trim builds that one combination only
+    core_trim = a.entry == "core_trim"
+    if core_trim and (not (copy and a.z_mode == "raw") or a.trend or a.depth or a.herd or a.cfm):
+        sys.exit(f"--entry core_trim is refused except as {HEART_CORE_TRIM} (the copy draw from the full trim, sized "
+                 "in the raw mode to the core's own forecast), and with --trend, --depth, --herd and --cfm")
+    scope_option = HEART_SCOPE_OPTIONS[a.entry] if iso_trim or core_trim else None
     ref = load_stage(DATA / "T2/E10.5.h5ad", genes=genes, drop_duplicates=True)
     start = load_stage(DATA / "T2/E9.5.h5ad", genes=genes, drop_duplicates=True)
     pool, trim = ref, None
@@ -829,6 +871,14 @@ def build_heart(a) -> dict:
         keep = t2_build.radial_trim_mask(C, core, 0.5)
         pool = ref[keep].copy()
         trim = {"rule": "surrounding cells removed farthest in plane from the core first, to half the in-plane scope",
+                "kept_share": float(keep.mean()), "xy_scope_before": t2_build.xy_scope(C, core),
+                "xy_scope_after": t2_build.xy_scope(C[keep], core[keep])}
+    elif core_trim:  # the full trim (no ruling): radial_trim_mask at fraction 0
+        core = np.asarray(ref.obs["core"], dtype=bool)
+        C = np.asarray(ref.obsm[COORD_KEY], dtype=float)[:, :3]
+        keep = t2_build.radial_trim_mask(C, core, HEART_SCOPE_OPTIONS["core_trim"]["frac"])
+        pool = ref[keep].copy()
+        trim = {"rule": HEART_SCOPE_OPTIONS["core_trim"]["rule"], "frac": HEART_SCOPE_OPTIONS["core_trim"]["frac"],
                 "kept_share": float(keep.mean()), "xy_scope_before": t2_build.xy_scope(C, core),
                 "xy_scope_after": t2_build.xy_scope(C[keep], core[keep])}
     roles = {"ref": ("T2/E10.5.h5ad", 10.5), "start": ("T2/E9.5.h5ad", 9.5)}
@@ -847,7 +897,7 @@ def build_heart(a) -> dict:
         stage = harness._b0_t2(ctx, trend=True, trend_record=trend_rec)  # b0_trend, the harness's B0 otherwise
     else:
         stage = harness._b0_t2(ctx, depth=a.depth, herd=a.herd, cfm=a.cfm)  # the harness's B0 with its guard and checks
-    hyp = {"s1": "H1", "s2": "H2", "s2_trim": "H2"}[a.entry]
+    hyp = {"s1": "H1", "s2": "H2", "s2_trim": "H2", "core_trim": t2_build.SIZE_CORE_SCOPE}[a.entry]
     z_mode = None if a.z_mode == "recorded" else a.z_mode  # None: the mode the size JSON recorded
     # the size step checks its reference against the full E10.5 cloud it measured; it rescales the (trimmed) cells
     if z_mode is None:
@@ -866,7 +916,17 @@ def build_heart(a) -> dict:
             **({"trend": _trend_record(trend_rec)} if a.trend else {}),
             **({"expression": "copy"} if copy else {}),
             **({"z_mode": z_mode} if z_mode is not None else {}),
+            **({"scope_option": _scope_option_record(a.entry, scope_option)} if scope_option is not None else {}),
             "size": {k: size[k] for k in size if not isinstance(size[k], (dict, list))}}
+
+
+def _scope_option_record(entry: str, opt: dict) -> dict:
+    """What a scope option's build record names (no ruling; no cell number): its scope rule and trim fraction, the
+    record field that holds its kept share (a share of the released E10.5, never a count), the size JSON field its size
+    comes from, and the halving that follows as a separate step."""
+    return {"command": HEART_ISO_TRIM if entry == "s2_trim" else HEART_CORE_TRIM, "ruling": None,
+            "scope_rule": opt["rule"], "trim_fraction": opt["frac"], "kept_share_field": "trim.kept_share",
+            "size_hypothesis": opt["hypothesis"], "size_source_field": opt["size_source"], "halving": HEART_HALVING}
 
 
 TREND_LINEAGE_FIELDS = ("lineage", "stages", "days", "own_factor", "weights", "cosine", "norm_ratio",
@@ -1032,9 +1092,10 @@ def build_parser() -> argparse.ArgumentParser:
                            help="with --released-bet: the ID of the row of experiments/harness/TRIES.md that is the "
                                 "captain's ruling for the arm")
         if name == "heart":
-            p.add_argument("--entry", choices=("s1", "s2", "s2_trim"), required=True,
+            p.add_argument("--entry", choices=("s1", "s2", "s2_trim", "core_trim"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "
-                                "scope, the s2 of docs/S2_RULES.md")
+                                "scope, the s2 of docs/S2_RULES.md; core_trim = the full trim (no ruling; only as "
+                                f"{HEART_CORE_TRIM}, sized to the raw mode's own core forecast)")
             p.add_argument("--herd", action="store_true",
                            help="herd B0's draw towards the pool's mean expression (try H4; off: the entry so far)")
             p.add_argument("--depth", action="store_true",
@@ -1051,8 +1112,11 @@ def build_parser() -> argparse.ArgumentParser:
             p.add_argument("--expression", choices=("b0", "copy"), default="b0",
                            help="b0 = B0's momentum step (the default, the entry as built); copy = the copy baseline's "
                                 "cells and expression, B0's own draw with no step (the captain's direction for the "
-                                "heart's second upload, docs/PLAN.md decision log 2026-11-18 (k)); --entry s1 only, "
-                                "refused with --trend, --depth, --herd and --cfm")
+                                "heart's second upload, docs/PLAN.md decision log 2026-11-18 (k)); --entry s1, or "
+                                "--entry s2_trim with --z-mode raw (the scope bet, the same draw from the half trim "
+                                "sized for H2; no ruling, scope is a closed lever, only the captain's ruling puts it "
+                                "in an upload), or --entry core_trim with --z-mode raw (the full trim, likewise no "
+                                "ruling); refused with --entry s2, --trend, --depth, --herd and --cfm")
             p.add_argument("--z-mode", choices=("recorded", "raw"), default="recorded",
                            help="the size step's z mode: recorded = the mode the size JSON pre-registered (the "
                                 "default); raw = the isotropic mode the JSON also logs, one factor on all three axes "
