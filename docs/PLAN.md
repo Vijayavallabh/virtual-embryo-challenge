@@ -5839,3 +5839,68 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     goes into the captain's drafts only at his word, and only after he has ruled, since it states what the remaining
     T1 upload will be. The disclosure draft of 18 November, which the record shows as unsent, names the built second
     T1 file and says its share lies in the range: it is not to be sent as it stands.
+- 2026-11-19 (d), the labeller's last review, the price of a T1 file with no outside data, and the AI assistant's
+  changed advice (state at 08:23 UTC). Written by the AI assistant. The captain has ruled on none of it.
+  - **The labeller's marker sources** (an agent with literature access that opened nothing of Feng's and nothing built
+    on embryonic days 10 to 13.5; then wf_51c8618a-68c, a second fix round). Published statements on adult mouse
+    tissue, from eight papers, name 18 of the 21 unsourced genes for their classes; the settings file quotes each
+    sentence. The AI assistant dropped three genes before any run, on the sources' own words: Phox2b (its source
+    names it for heart neurons, another cell kind), Fcer1g (one review citing an unchecked reference) and Pdpn (its
+    source finds it in the epicardium, a target group). A second agent then re-read the eight papers
+    (wf_054e1199-d97): every quotation is there and no statement rests on an embryonic sample; corrections are owed
+    before any register row: two sources name the haemoglobin genes as a contamination filter and for marrow
+    progenitors, not as markers of the heart's red cells; two caveats were paraphrases; several ages and sexes were
+    misreported.
+  - **The labeller's final review** (the same workflow): not ready. Three blockers: a run that stops after the first
+    Feng file is opened has no outcome fixed beforehand; the dry run on the released E9.5 (row N55) has no fixed rule
+    for which result changes which threshold; row N54's cells understate what the row decides. Nine lesser points. A
+    fourth problem, found by the AI assistant on the DGX: a campaign checkout's data folders are links into the
+    reference checkout, so the labeller's output folder resolves there; its guard refuses, as it should, one test fails
+    on that machine for that reason, and the output path has to move before any run. What holds: the complete local
+    test run at f211416 (2989 passed, 1 skipped), and with the option off both T1 files rebuilt on the DGX at f211416
+    at 16 threads have the reference list's hashes (a294062f5f7b, f169ea492e8d). The labeller stays on its branch
+    (`campaign/feng-relabel-fix2`), unmerged and unrun.
+  - **A cold challenge of the T1 plan** (the same workflow; an agent told to break it from the committed record).
+    Its strongest point, which the AI assistant accepts: the second file's 0.60 cannot be made compliant by
+    recomputing the groups. Its range was read from the authors' labels, the second strain's tables were deleted on
+    2026-10-19 so it cannot be recomputed, and composition is a closed lever so it cannot be re-chosen. An organiser's
+    answer that the first upload stands would rule on a past file, not on a new one made after the team read the
+    condition. So the branch "the hedge with recomputed groups if the organisers say the first upload stands", which
+    the AI assistant had put to the captain on 19 November, is withdrawn: no later T1 upload carries the 0.60. The
+    challenge found the rest sound, with one correction: a rebuild with recomputed groups has no figure on record,
+    and "about the first file's level" overstated it.
+  - **The captain's forwarded note** (a side agent's): both rebuilds keep the outside atlas, a third choice uses no
+    outside data, and it should be priced both ways. **The price, from committed practice results** (each an in-sample
+    labelled diagnostic on one truth, with the atlas step at half the test's step): on the E9.5 to E10.5 chamber cut,
+    ten seeds, the copy scores 48.06 and b0 49.68 (`experiments/harness/TRIES.md`, T1's headroom table); row T26's
+    recorded numbers are b0 49.68, the step with R1 and R2 50.83, and with g_mom 52.06
+    (`experiments/t1_m1/results/t26_m1_gmom/t26.txt`; void by its own gate, the numbers on record); the forecast
+    credits the step with +1.29 (`experiments/gate/README.md`); row T60 reads the entry's step at +3.46, +1.85 and
+    +3.33 over the mix on its three library tasks, against +0.0 to +0.2 for a permuted direction. So the atlas step is
+    worth about 1.2 to 3.5 practice points. By rule 9's J6 that gain counts as zero at the centre of any estimate,
+    with a range up to its practice value: the step's position in its bracket is twice as far at the test as on any
+    practice task. No counted backtest can price a file without the step, because Feng's E9.5 lies inside every T1
+    window.
+  - **What the price buys.** The cost bites only if the organisers discount the first upload; if it stands, 70.9
+    stands whatever is uploaded second. Against that, a file with no outside data cannot be discounted for the
+    atlas, its labels, the authors' quality control, or the decisions the audit lists; a file with recomputed groups
+    can, if an organiser reads "the retained data do not carry information derived from the excluded cells" strictly
+    (the AI assistant's odds: one to two in a hundred, a judgement), and then the board rests on the first upload
+    alone. The two come out within about a point of each other in expectation, on judgement-level odds.
+  - **The AI assistant's advice, changed.** It had advised the first file's design with recomputed groups. It now
+    advises the first file's design with the atlas step taken out, `t1 --g-mom --base lib3 --feng-groups none`, as
+    T1's last upload. Reasons: no expected loss that the record can show; it is the only T1 file whose data and whose
+    adoption evidence are both free of the authors' labels (the readout that chose the atlas read them, and no clean
+    backtest can replace it); it needs no tool that has never run on data; and the labeller needs about a day more
+    work and several sign-offs. It is a defensive file either way: neither choice is expected to beat 70.9. The
+    recomputed-groups file stays open to the captain until about 22 November.
+  - **The no-direction option as its own small change** (`campaign/t1-none`, ea95c02; three files; off by default;
+    refused with the options that act on Feng's direction). The same cells and seed as the first upload, R1 on every
+    label, g_mom as built. Check builds on the DGX campaign checkout at f211416 (the labeller branch's copy of the
+    route; never upload sources): exit 0, stamp f211416 and clean, the local format check passes, and the file has
+    the same sha256 with and without R2's held lists (55eaee547ff1), so those lists do not enter it. Running: the
+    complete local test run at ea95c02; on the DGX at ea95c02 the unit tests, both option-off files and the
+    no-direction file twice; and wf_038f7126-b04: a review of the change, the ruling package as drafts (the build
+    set, a draft amendment of `docs/S2_RULES.md`, a ruling row, the register and method-summary texts), and the
+    organiser emails rewritten for this case with accuracy, strategy and tone reviews. None of it changes an upload:
+    that is the captain's ruling.
