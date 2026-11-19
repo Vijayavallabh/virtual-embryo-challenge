@@ -1,0 +1,25 @@
+Check builds of the candidate for T1's last upload on the recomputed groups (row N54; decision log 2026-11-19 (y), (z))
+==========================================================================================================
+
+NOT an upload build and not on any reference list: a check that the command the labeller's terminal rule names builds,
+and builds to the same bytes twice. The file becomes an upload only by the captain's ruling on a priced question, an
+amendment of docs/S2_RULES.md and a build set of its own.
+
+Command: build_test.py t1 --g-mom --base lib3 --feng-groups recomputed
+Built on the DGX (PrakashDGX_H2) on 2026-11-19 in the campaign checkout ~/v/vec-campaign-d at commit 8138fa2 (clean
+tree), twice, one after the other, at 16 BLAS threads, by `experiments/external/n54_step.sh build` and `build2`:
+  build   exit 0   T1_s2rc.h5ad
+  build2  exit 0   T1_s2rc_b.h5ad
+Both give one sha256:
+  ad8f24c71c90ca17bce5f8876d503471ab3faa5b17a0878addb00aff689fca4f
+Each stamp says commit 8138fa29026421bd181c247313a956a548206d11 and clean True.
+
+It reads the relabelling's statistics file data/derived/feng_relabel_c/cd1_stats_relabel.npz (sha256
+36d1f7edcbbf3d7a80c68b51d5624a94bb753668079fe3d69aed720c71baa7e9), whose record is committed
+(experiments/external/results/feng_relabel/MANIFEST.json: route recomputed, no author label column read), under the
+settings file frozen at sha256 883e74c2c1ef5f01d5244555f8b3dcae24255568c731a6d53ee2788b7b677b49.
+
+Before the relabelling, at cae44f7, the option-off identity builds on the merged builder gave the reference hashes:
+T1_s1 a294062f5f7b, T1_s2 f169ea492e8d, T1_s2none 55eaee547ff1.
+
+The builds' logs are kept on the DGX and were not read; no size or cell count was read.

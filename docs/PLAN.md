@@ -6700,3 +6700,29 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     direction is left to it, it chooses between the ruled file and the half trim only, from released data, with its
     reasons written before any build and a second cold check first. No answer from the captain yet on the route:
     the ruled full-scope file stays in force and the upload stays held.
+- 2026-11-19 (z), the candidate file builds to the same bytes twice; a third forwarded note: the epicardium step rests
+  on 11 early cells; what the practice read gains before its row is committed (state at 19:01 UTC). Written by the AI
+  assistant.
+  - **Check builds** of `t1 --g-mom --base lib3 --feng-groups recomputed` on the DGX (`~/v/vec-campaign-d` at 8138fa2,
+    clean), twice at 16 BLAS threads: exit 0 both, one sha256, ad8f24c71c90; stamps at the commit and clean
+    (`experiments/builds/results/t1rc_check_8138fa2.txt`). Not an upload build: the file is on no reference list.
+    Row N54's outcome cell is filled.
+  - **The note** (a side agent's, forwarded by the captain): the relabelled atlas has only 11 early epicardium
+    cells, one above the minimum; about a fifth of the Task 1 cells would follow them; the summary he got said only
+    that all four groups passed; before choosing the recomputed file he should ask how sturdy that step is; whether
+    the first upload shares the weakness was not known to the note.
+  - **The facts** (the AI assistant's summary to the captain had said "enough cells at both ends" without the
+    number, which understated it). Cells at E9.5 and E14.5, recomputed: cardiomyocytes 700 and 1767, endocardium 49
+    and 84, endothelium 59 and 135, epicardium 11 and 32; the minimum is 10. The first upload's groups, on the
+    authors' labels (from the committed record of try T44, `experiments/t1_m1/results/t44_m1_step/tasks/`): 705 and
+    1777, 70 and 107, 70 and 158, 13 and 143. So the thin early end is not new, and the uploaded first file carried
+    it; the late end is thinner now, since the labeller gives most of the late cells the authors called epicardial
+    to a competing class. Epicardium is 0.19 of the base's cells (2,241 of library 3's 11,818). These counts are
+    given to answer the note and choose nothing.
+  - **What the practice read (row T62) gains, fixed before its row is committed and before any result:** (1) a
+    target-free listing with no author label: for each recomputed group, how far the directions formed on the two
+    halves of its cells agree (the statistics file's own halves; the readout's expression deciles), which shows how
+    much of a group's step is sampling noise; (2) a second counted arm, the candidate with the epicardium group held
+    at its drawn counts, so that the difference prices the epicardium step itself; on library 3's task that group
+    has its test-like weight. If the step is noise or costs, a third file is put to the captain beside the two: the
+    recomputed groups with epicardium held, which needs an off-by-default builder option and his ruling.
