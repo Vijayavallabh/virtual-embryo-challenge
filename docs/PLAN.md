@@ -5786,8 +5786,11 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **What rests on them** (the same workflow's designer and challenger, from committed files): the four groups of
     T1's direction, in the uploaded first file and the built second; the readout that chose this dataset as the
     direction's source; the gate that adopted the held list R2 (the list itself is not made from the labels); and
-    the second file's cardiomyocyte share, whose candidate values and priors were bounded by a range read from both
-    strains' labels. Not touched: the first file's scope and composition, which come from released data; g_mom's
+    the second file's cardiomyocyte share: register row X002 says a range read from both strains' labels bounds where
+    that file places its share; the grid's three upper candidates (45, 60 and 75 percent) lie about the range's ends
+    and middle and two of its five priors are bounded by it (`docs/S2_RULES.md`, T1), while its other candidates (15
+    percent and the file's own) lie outside it. (Corrected the same day: the AI assistant had written that the
+    grid's candidate values and priors were bounded by the range, which holds for part of them only.) Not touched: the first file's scope and composition, which come from released data; g_mom's
     factors; every T2 and T3 file. No in-window cell, count or expression value entered anything. A full audit is
     being made.
   - **What the AI assistant advises, and asks the captain to rule before any number exists** (the challenger's
@@ -5810,3 +5813,29 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     strategy and tone reviews, for the captain's drafts at his word.
   - **Calendar:** the ruling and the labeller's fixed choices on 19 and 20 November; the recomputation and its
     listing on 21 November; rehearsed builds by 23 or 24 November; upload by the captain on 25 November.
+- 2026-11-19 (c), what was prepared on the labels question while the captain's rulings are awaited (state at 06:24 UTC).
+  Written by the AI assistant. Nothing here ran on data, and no file of an entry changed.
+  - **The audit** (wf_63571f3d-9a2: an auditor and a checker, from committed files). Eighteen items. The authors' labels
+    reach both T1 files through: the four direction groups; which groups have a direction at all, and so which cells
+    ruling R1 holds at E10.5; the readout that chose the dataset as the direction's source and the diagnostic shown
+    with it; the gate that adopted the held list R2; the interaction evidence and the held mask behind g_mom's
+    adoption (its factors come from released stages); the rationale of the second file's 0.60; and, more weakly, the
+    pricing scenarios behind the two files' cell bases (rows R6 and R7), which reuse the grid's shares. They reach no
+    file through: the step and size reads of tries T42 to T60, the late stand-in line, tries T12, the pruned lines.
+    Not resting on them: the first file's scope, mix and count; g_mom's factors; the fraction 0.4; the held gene
+    lists themselves; every T2 and T3 file. Two more disclosures the audit asks of the method report: the authors'
+    quality control decided which permitted cells exist, and the zone labels come from the authors' sample
+    demultiplexing; both were made on the full dataset and cannot be undone.
+  - **The labeller as code** (branch `campaign/feng-relabel-fix`, 2640d63; written, reviewed for design and for code
+    with six blockers, fixed; a second review of the fix and a complete test run are still owed, since the fixer's
+    full-suite run did not finish). Per-cell marker scores from the permitted cells' own counts, with a column
+    whitelist that cannot read the authors' label column; off by default behind `build_test.py t1 --feng-groups`.
+    Its settings file is not runnable: 21 marker genes of the classes that keep late cell types out of the four
+    groups have no named source yet. The markers of the four groups themselves come from the released E9.5 training
+    stage by a fixed rule. An agent is finding published, out-of-window, non-Feng sources for the 21; they would be
+    a new register row, for the captain's sign-off with the settings.
+  - **The disclosure email** is drafted and reviewed for accuracy, strategy and tone (seventeen points, applied);
+    its text and its two send conditions are in `docs/ORGANIZER_QUESTIONS.md`, "Disclosure of the X002 labels". It
+    goes into the captain's drafts only at his word, and only after he has ruled, since it states what the remaining
+    T1 upload will be. The disclosure draft of 18 November, which the record shows as unsent, names the built second
+    T1 file and says its share lies in the range: it is not to be sent as it stands.

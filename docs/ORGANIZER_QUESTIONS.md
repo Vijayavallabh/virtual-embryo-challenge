@@ -80,6 +80,42 @@ messages only. Recorded by the AI assistant.
   that check did not open; its "no answer found" on how a floored severity scores was therefore wrong on the day it
   was written. A screened Slack check reads every thread with replies from now on.
 
+## Disclosure of the X002 labels (drafted 2026-11-19; not sent; not yet in the captain's drafts; the captain decides and sends)
+
+Drafted by an agent of the AI assistant to its brief and reviewed by three agents (accuracy, strategy, tone:
+seventeen points, applied by a fourth; wf_63571f3d-9a2). Background: "Screened reads of 2026-11-19" above and
+`docs/PLAN.md` decision log 2026-11-19 (a) to (c). Send conditions, from the reviews: (1) it is held until the captain
+has ruled on what T1's remaining upload is (decision log 2026-11-19 (b)), because its sentence on that upload states
+a commitment, and the bracket is then resolved to match his ruling; (2) the disclosure email of 18 November (below),
+which the record shows as unsent, names `T1_s2.h5ad` and says its share lies in the label-derived range: it is
+amended or merged with this one before either goes. Answers: _none; not sent_.
+
+**Subject:** Human Team (Mithril): disclosure on the cell-type labels in our Task 1 entry, and one question
+
+To: virtual.embryo.moonshot@gmail.com
+
+Hello organisers,
+
+One disclosure about our Task 1 entry, and one question. As it describes our method, please keep it private.
+
+Our Task 1 models use one external expression dataset: Feng et al., Nat Commun 13:7960 (2022), GEO GSE193346, raw counts of wild-type CD1 hearts at E9.5 and from E14.5 on. Cells of E10.5 to E13.5 were removed on the per-cell stage column before any model used the data. From the permitted cells we took each cell type's direction of expression change from E9.5 to E14.5.
+
+Those cell types were the authors' labels. From the same labels we computed the E14.5 cardiomyocyte share in the authors' two strains, CD1 and C57BL/6; that range bounded where our second Task 1 file placed its share (60%).
+
+After your public reply of 16 November, we checked the paper's Methods. They say the authors merged every sample of every stage into one object, batch-corrected and clustered it, so the labels were learned using protected cells.
+
+Our first Task 1 upload used them: T1:test, 18 November 2026, 14:37 UTC, file T1_s1.h5ad, SHA-256 a294062f5f7bbb2dae19ef695979cc21f03f38df40d22be9ccdd30af36e3bdef. Apart from these labels, no in-window cell, count or expression value entered any file.
+
+Our remaining Task 1 upload will use cell groups recomputed from the permitted cells' raw counts and stage labels only, by a procedure we fix and record before it runs. [It will not keep the 60% share. / Whether it keeps that share depends on your answer below.]
+
+Our question: does our first Task 1 upload stand as an eligible entry, or should only our remaining one count?
+
+As your reply asks, our method report, in the submission page's fields and the attached report, will describe the filtering, this history, the recomputed groups' effect on the direction, and every other choice resting on the authors' processing.
+
+Best regards,
+Vijayavallabh J
+Team captain, Mithril
+
 ## Screened check of 2026-11-18 (after the first uploads): no answer to any open question
 
 Run by a screening agent and audited by a second agent before the main session read it (wf_bfc2939d-aa0); the reads
