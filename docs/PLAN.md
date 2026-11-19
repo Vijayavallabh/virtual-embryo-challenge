@@ -6833,3 +6833,27 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     core forecast of 2026-10-28. The embryo's: `embryo --method fgw_shape0 --positions floor_exact --expression
     series`. T3's: the barred branch's s1. Every upload stays his own act; before any upload the question of which
     login made the uploads of 18 November is raised again.
+- 2026-11-19 (dd), row T62 registered before its run (state at 19:54 UTC). Written by the AI assistant.
+  - **The read's fix round** (wf_091c67f6-b7b; one fixer, one re-reviewer; verdict ready, no blocker) added the two
+    things entry (z) fixed: the target-free reliability listing per recomputed group, and a second counted arm with
+    the epicardium group held. The code is merged (`experiments/t1_m1/recomputed_read.py`,
+    `tests/test_t62_recomputed_read.py`; 48 tests) and row T62 is in the ledger at this entry's commit, before any
+    run. Ten tries when it runs: T1 358 to 368.
+  - **One change to the main session's wording, accepted before the row's commit.** The brief said the epicardium
+    direction is taken out before the build. The fixer showed (with a test) that the shared core draws one random
+    stream over every moved cell, so taking a group out there redraws the other groups' cells. The arm therefore
+    holds the epicardium cells after the step: for those cells this is what the builder does for a group without a
+    direction, and every other cell stays the candidate's byte for byte, so the paired difference is the epicardium
+    step alone. A third file built through a builder option would match this arm in law, not byte for byte; the
+    captain is told so if a third file is ever named.
+  - **Two clauses added to the row by the main session, before its commit:** an empty half at a bracket end makes
+    the listing step refuse and write nothing; an invalid library 3 still gives the epicardium word, and the
+    question to the captain then says the third-file clause rests on a library with inverted anchors.
+  - **The advice, fixed in the row before any result:** the recomputed file if the candidate is AHEAD under both
+    readings, the ruled no-outside-data file otherwise; a third file is named only if the recomputed file is
+    advised and the epicardium step COSTS. The captain's question on T1's last upload follows the read and its
+    independent recomputation; under his Top-3 aim it also names try T61's released-data bets, each as his own
+    ruling (the advance draw; the momentum, which reverses ruling R1).
+  - **Also at this commit:** the labeller's step script lists the read's test file (its own test requires every
+    test that touches the builder). The package for the three rulings of entry (cc) is still being written and
+    reviewed (wf_1c3e47d4-cad); nothing is built yet.
