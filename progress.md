@@ -15,7 +15,7 @@ the team's name; he said the row "Star" is not his and stopped the search for no
 the organisers' rational reply (odds, loss if wrong, no file change). He approved the atlases as T1 model inputs on
 stated terms (register rows X002, X003). In preparation, nothing run on data: T3 variants, T1 released-data bets,
 the heart's scope hypothesis, a T1 late bracket, a pricing table, and the labeller ported onto main. The complete
-suite at 385ff58: 2934 passed, 1 skipped; at 2dccfee it is running.
+suite at 385ff58: 2934 passed, 1 skipped; at 2dccfee: 2936 passed, 1 skipped.
 **2026-11-19, 09:15 UTC: the atlas authors' labels were made with in-window cells; T1's hedge is out; a T1 file with
 no outside data is ready for the captain's ruling** (`docs/PLAN.md` decision log 2026-11-19 (b) to (e)). The paper's
 Methods (a screened read) say every stage was merged before clustering, so the labels behind the four groups of T1's

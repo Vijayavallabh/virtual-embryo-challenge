@@ -6337,3 +6337,5 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     copy at the even size and the uniform half on the full pool, the half-trimmed pool and the core-trimmed pool, on
     the released heart transitions against the truths of the hedge study, at the oracle size and at each scope
     hypothesis's own size ratio), reviewed before it runs; the builder option from the wave of entry (k).
+  - **Tests.** The complete local run at 2dccfee, the embryo's ruling commit (entries (j) and (k) had it running):
+    2936 passed, 1 skipped, exit 0.
