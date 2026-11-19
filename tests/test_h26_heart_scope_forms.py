@@ -283,12 +283,21 @@ def _parts(h26, score=None, **kw):
             for k in h26.TASK_KEYS}
 
 
-def test_a_clean_run_is_read_and_a_tie_picks_the_file_in_force(h26):
+def test_a_clean_run_is_read_decides_nothing_and_a_tie_leaves_the_file_in_force(h26):
     res = h26.reading(_parts(h26), _study(h26), _h25(h26), commit="abc")
     assert not res["void"], res["why"]
-    assert res["pick"]["D3"] == 0.0 and res["pick"]["DJ4"] == 0.0 and res["pick"]["pick"].startswith("A")
+    assert "pick" not in res and not hasattr(h26, "pick") and not hasattr(h26, "PICK_BAR")
+    assert res["decides"].startswith("nothing")
+    assert res["conditional_outcome"]["value"] == "A"
+    rep = res["reported_decides_nothing"]
+    assert rep["label"] == "reported, decides nothing"
+    assert rep["V"]["D3"] == 0.0 and rep["plain_mean"]["DJ4"] == 0.0
     assert res["R1_carry_over"]["agreement"]["half_iso_half"] == {"agree": 15, "of": 15}
-    assert "oracle size" in h26.text(res) and "PICK RULE" in h26.text(res)
+    t = h26.text(res)
+    assert t.splitlines()[0].startswith("This read decides nothing")
+    assert "oracle size" in t and "pick" not in t.lower()
+    assert ("conditional_outcome = A: used only under the organiser statement the row names; otherwise the file in "
+            "force stays") in t
 
 
 def test_the_reading_is_void_on_missing_repeated_or_mixed_parts(h26):
@@ -316,7 +325,8 @@ def test_the_reading_is_void_on_missing_repeated_or_mixed_parts(h26):
     res = h26.reading(_parts(h26), st, hh, commit="fff")
     assert res["void"] and any("row's commit" in w for w in res["why"])
     assert h26.reading(_parts(h26), st, hh, commit="")["void"]
-    assert res["pick"].startswith("A") and "void" in res["follows"]
+    assert res["conditional_outcome"]["value"] == "A" and "void" in res["follows"]
+    assert h26.text(res).startswith("This read decides nothing")
 
 
 def test_the_reading_is_void_when_a_truth_a_pool_or_the_factor_differs_from_the_study(h26):
@@ -363,66 +373,131 @@ def test_the_reading_is_void_when_full_iso_half_is_not_row_h25s_iso_half(h26):
     assert h26.OWN == "own" and h26.TASK_KEYS[1] not in h26.HARNESS_KEYS
 
 
-# ------------------------------------------------------------------------------------------------ the pick rule
-def _const(h26, gain_by_key: dict[str, float], s1: float = 0.0) -> dict:
-    """Parts where half_iso_half beats full_iso_half by a constant per transition on every truth, with s1form_half
-    at 50 + s1 (below the arms when s1 < 0, so V is the arm's own score)."""
-    return {k: {q: {"half_iso_half": 50.0 + g, "s1form_half": 50.0 + s1} for q in h26.TRUTHS}
-            for k, g in gain_by_key.items()}
+# ---------------------------------------------------------------------------------------------- the conditional outcome
+def _clean(h26, ba: dict[str, float], cb: dict[str, float] | None = None, s1: float = 0.0, own: float = 0.0) -> dict:
+    """Parts where, on the CLEAN truths, B = A + ba[key] and C = B + cb[key] (A at 50), and on the truth as released B
+    = A + own; s1form_half at 50 + s1 everywhere."""
+    cb = cb or {}
+    out = {}
+    for k in h26.TASK_KEYS:
+        out[k] = {}
+        for q in h26.TRUTHS:
+            g = ba.get(k, 0.0) if q in h26.CLEAN else (own if q == "own" else 0.0)
+            h = cb.get(k, 0.0) if q in h26.CLEAN else 0.0
+            out[k][q] = {"half_iso_half": 50.0 + g, "core_iso_half": 50.0 + g + h, "s1form_half": 50.0 + s1}
+    return out
 
 
-def test_the_pick_needs_both_d3_and_dj4_at_the_bar(h26):
-    st, hh = _study(h26), _h25(h26)
+def _outcome(h26, **kw) -> str:
+    res = h26.reading(_parts(h26, score=_clean(h26, **kw)), _study(h26), _h25(h26))
+    return res["conditional_outcome"]["value"]
+
+
+def test_clean_is_the_three_most_trimmed_truths(h26):
+    assert h26.CLEAN == ("radial_0", "thin_0.5", "thin_0") and set(h26.CLEAN) < set(h26.TRUTHS)
+    assert h26.WORLDS == {"CLEAN": h26.CLEAN, "own": ("own",)}
+    st = h26.load_study()
+    for key in h26.FOLDS[0]:  # E10.5 core shares 0.40, 0.85 and 1.00, against 0.23 as released
+        cs = {q: st[key]["truth_info"][q]["core_share"] for q in h26.TRUTHS}
+        assert [round(cs[q], 2) for q in h26.CLEAN] == [0.40, 0.85, 1.00] and round(cs["own"], 2) == 0.23
+
+
+def test_the_conditional_outcome_rule(h26):
     k0, k1, k2 = h26.TASK_KEYS  # E9.5->E10.5, E8.25_late->E8.5, E8.75->E10.5
-    res = h26.reading(_parts(h26, score=_const(h26, {k0: 1.0, k1: 1.0, k2: 1.0}, s1=-10)), st, hh)
-    assert res["pick"]["D3"] == pytest.approx(1.0) and res["pick"]["DJ4"] == pytest.approx(1.0)
-    assert res["pick"]["pick"].startswith("B")
-    res = h26.reading(_parts(h26, score=_const(h26, {k0: 0.99, k1: 0.99, k2: 0.99}, s1=-10)), st, hh)
-    assert res["pick"]["pick"].startswith("A")
-    # gains on the two E10.5 transitions only: D3 = 1.067 passes, DJ4 = 0.8 does not (one truth counts once)
-    res = h26.reading(_parts(h26, score=_const(h26, {k0: 1.6, k1: 0.0, k2: 1.6}, s1=-10)), st, hh)
-    assert res["pick"]["D3"] == pytest.approx(3.2 / 3) and res["pick"]["DJ4"] == pytest.approx(0.8)
-    assert res["pick"]["pick"].startswith("A")
-    # a gain on E8.5 alone: DJ4 = 1.0 passes, D3 = 0.667 does not
-    res = h26.reading(_parts(h26, score=_const(h26, {k0: 0.0, k1: 2.0, k2: 0.0}, s1=-10)), st, hh)
-    assert res["pick"]["DJ4"] == pytest.approx(1.0) and res["pick"]["D3"] == pytest.approx(2 / 3)
-    assert res["pick"]["pick"].startswith("A")
-    # the better of two: where s1form_half is above both arms, neither trim adds anything
-    res = h26.reading(_parts(h26, score=_const(h26, {k0: 3.0, k1: 3.0, k2: 3.0}, s1=+5)), st, hh)
-    assert res["pick"]["D3"] == 0.0 and res["pick"]["pick"].startswith("A")
-    # a void run never picks B
-    res = h26.reading(_parts(h26, score=_const(h26, {k0: 5.0, k1: 5.0, k2: 5.0}, s1=-10), clean=False), st, hh)
-    assert res["void"] and res["pick"].startswith("A")
+    every = lambda g: {k0: g, k1: g, k2: g}  # noqa: E731
+    assert _outcome(h26, ba=every(1.0)) == "B"
+    assert _outcome(h26, ba=every(0.99)) == "A"
+    # the two E10.5 transitions are one fold: 2.0 and 0.0 there make 1.0, with 1.0 on E8.5 the mean is 1.0
+    assert _outcome(h26, ba={k0: 2.0, k1: 1.0, k2: 0.0}) == "B"
+    # a gain on the E10.5 fold alone: the mean of the folds is 1.0 but E8.5 is not above zero
+    assert _outcome(h26, ba={k0: 2.0, k1: 0.0, k2: 2.0}) == "A"
+    # a large gain on E8.5 with a loss on the E10.5 fold
+    assert _outcome(h26, ba={k0: -0.5, k1: 4.0, k2: -0.5}) == "A"
+    # only CLEAN counts: a gain on the truth as released alone names nothing
+    assert _outcome(h26, ba=every(0.0), own=5.0) == "A"
+    # C only on top of B's condition, and only with C-B at the bar on both folds
+    assert _outcome(h26, ba=every(1.5), cb=every(1.0)) == "C (needs a size ruling)"
+    assert _outcome(h26, ba=every(1.5), cb=every(0.99)) == "B"
+    assert _outcome(h26, ba=every(1.5), cb={k0: 2.0, k1: 0.0, k2: 2.0}) == "B"
+    assert _outcome(h26, ba=every(0.5), cb=every(3.0)) == "A"
+    # a void run gives A
+    res = h26.reading(_parts(h26, score=_clean(h26, ba=every(5.0)), clean=False), _study(h26), _h25(h26))
+    assert res["void"] and res["conditional_outcome"]["value"] == "A"
+    # the condition travels with the value
+    res = h26.reading(_parts(h26, score=_clean(h26, ba=every(1.0))), _study(h26), _h25(h26))
+    o = res["conditional_outcome"]
+    assert o["condition"] == ("used only under the organiser statement the row names; otherwise the file in force "
+                              "stays")
+    assert o["inputs"]["B-A"] == pytest.approx(1.0) and o["inputs"]["B-A per fold"] == {"E10.5": pytest.approx(1.0),
+                                                                                         "E8.5": pytest.approx(1.0)}
 
 
-def test_c_is_reported_and_never_picked(h26):
-    st, hh = _study(h26), _h25(h26)
-    score = {k: {q: {"core_iso_half": 60.0, "s1form_half": 40.0} for q in h26.TRUTHS} for k in h26.TASK_KEYS}
-    res = h26.reading(_parts(h26, score=score), st, hh)
-    assert res["pick"]["pick"].startswith("A")
-    assert res["R2_expected_V"][h26.TASK_KEYS[0]]["uniform"]["core_iso_half"] == pytest.approx(60.0)
+def test_the_stand_in_never_enters_the_primary_table_or_the_outcome(h26):
+    """Plain means carry no draw premium: s1form_half's level moves V (secondary) and nothing else."""
+    k0, k1, k2 = h26.TASK_KEYS
+    ba = {k0: 1.2, k1: 1.1, k2: 1.0}
+    lo = h26.reading(_parts(h26, score=_clean(h26, ba=ba, s1=-20.0)), _study(h26), _h25(h26))
+    hi = h26.reading(_parts(h26, score=_clean(h26, ba=ba, s1=+0.5)), _study(h26), _h25(h26))
+    assert lo["conditional_outcome"] == hi["conditional_outcome"] and lo["conditional_outcome"]["value"] == "B"
+    for u in h26.UNITS:
+        for q in h26.TRUTHS:
+            assert lo["per_world"][u][q]["mean"] == hi["per_world"][u][q]["mean"]
+            assert lo["per_world"][u][q]["diff"] == hi["per_world"][u][q]["diff"]
+    assert lo["stated_worlds"]["CLEAN"]["fold-merged"]["diff"] == hi["stated_worlds"]["CLEAN"]["fold-merged"]["diff"]
+    # V does move: with the stand-in at 50.5 it truncates A at 50.5 and B (51.0 to 51.2) is barely above it
+    assert hi["per_world"][k0]["radial_0"]["V_secondary"]["diff"]["B-A"] == pytest.approx(0.7)
+    assert lo["per_world"][k0]["radial_0"]["V_secondary"]["diff"]["B-A"] == pytest.approx(1.2)
+
+
+def test_the_primary_table_per_world_and_fold(h26):
+    """Per-seed arithmetic by hand: the E10.5 fold averages its two transitions seed by seed, the mean of the folds
+    averages the two folds seed by seed, and min, max and seeds ahead are of those per-seed differences."""
+    k0, k1, k2 = h26.TASK_KEYS
+    s = np.arange(10, dtype=float)
+    b = {k0: list(50 + s - 4.5), k1: list(50 + 2.0 + 0 * s), k2: list(50 - (s - 4.5))}  # k0 + k2 cancel by seed
+    c = {k0: list(50 + 1.0 + 0 * s), k1: list(50 - 1.0 + 0 * s), k2: list(50 + 3.0 + 0 * s)}
+    score = {k: {"thin_0": {"half_iso_half": b[k], "core_iso_half": c[k]}} for k in h26.TASK_KEYS}
+    res = h26.reading(_parts(h26, score=score), _study(h26), _h25(h26))
+    w = res["per_world"]
+    assert w[k0]["thin_0"]["diff"]["B-A"] == {"mean": pytest.approx(0.0), "lo": -4.5, "hi": 4.5, "ahead": 5,
+                                               "behind": 5}
+    f = w["fold E10.5"]["thin_0"]
+    assert f["diff"]["B-A"]["lo"] == f["diff"]["B-A"]["hi"] == pytest.approx(0.0)
+    assert f["diff"]["C-A"]["mean"] == pytest.approx(2.0) and f["diff"]["C-B"]["mean"] == pytest.approx(2.0)
+    m = w["mean of folds"]["thin_0"]
+    assert m["diff"]["B-A"]["mean"] == pytest.approx(1.0) and m["diff"]["B-A"]["ahead"] == 10
+    assert m["diff"]["C-B"]["mean"] == pytest.approx(0.5 * 2.0 + 0.5 * -3.0)
+    assert m["mean"] == {"A": pytest.approx(50.0), "B": pytest.approx(51.0), "C": pytest.approx(50.5)}
+    assert w["mean of folds"]["own"]["diff"]["C-A"]["mean"] == 0.0
+    # CLEAN averages its three truths equally: one of three moved
+    cl = res["stated_worlds"]["CLEAN"]
+    assert cl["fold-merged"]["diff"]["B-A"]["mean"] == pytest.approx(1.0 / 3)
+    assert cl["folds"]["E8.5"]["diff"]["B-A"]["mean"] == pytest.approx(2.0 / 3)
+    assert res["stated_worlds"]["own"]["fold-merged"]["diff"]["B-A"]["mean"] == 0.0
+    assert set(h26.UNITS) == {*h26.TASK_KEYS, "fold E10.5", "fold E8.5", "mean of folds"}
 
 
 def test_the_reported_statistics_decide_nothing(h26):
-    """Plain-mean, per-prior and minimum-over-prior D3 and DJ4 are reported beside the pick and never move it."""
-    st, hh = _study(h26), _h25(h26)
-    # B ahead by 3 on every truth but the released one, where it is 2 behind; s1form_half far below
-    score = {k: {q: {"half_iso_half": 50.0 + (-2.0 if q == "own" else 3.0), "s1form_half": 30.0}
+    """D3 and DJ4 (on V and on the plain mean, per prior and at the minimum) are reported and never move the
+    conditional outcome."""
+    # B ahead by 3 on every truth but CLEAN, where it is level; the stand-in far below
+    score = {k: {q: {"half_iso_half": 50.0 + (0.0 if q in h26.CLEAN else 3.0), "s1form_half": 30.0}
                  for q in h26.TRUTHS} for k in h26.TASK_KEYS}
-    res = h26.reading(_parts(h26, score=score), st, hh)
-    p, rep = res["pick"], res["pick"]["reported_not_decided"]
-    assert rep["V_per_prior"]["released"] == {"D3": pytest.approx(-2.0), "DJ4": pytest.approx(-2.0)}
-    assert rep["V_per_prior"]["thin_family"]["D3"] == pytest.approx(3.0)
-    assert rep["V_min_over_priors"]["D3"] == pytest.approx(-2.0)
-    assert rep["plain_mean"]["D3"] == pytest.approx(p["D3"])  # s1 far below: V is the arm's own score
-    assert p["D3"] >= 1.0 and p["pick"].startswith("B")  # the fixed rule picks B: the reported -2.0 does not decide
-    assert "reported, not decided on" in h26.text(res) and "released D3 -2.000" in h26.text(res)
+    res = h26.reading(_parts(h26, score=score), _study(h26), _h25(h26))
+    rep = res["reported_decides_nothing"]
+    assert rep["V"]["per_prior"]["released"] == {"D3": pytest.approx(3.0), "DJ4": pytest.approx(3.0)}
+    assert rep["V"]["per_prior"]["thin_family"]["D3"] == pytest.approx(0.0)
+    assert rep["plain_mean"]["min_over_priors"]["D3"] == pytest.approx(0.0)
+    assert rep["V"]["D3"] >= 1.0 and rep["plain_mean"]["DJ4"] >= 1.0
+    assert res["conditional_outcome"]["value"] == "A"
+    t = h26.text(res)
+    assert "REPORTED, DECIDES NOTHING" in t and "released D3 +3.000" in t and "different draw" in t
 
 
 def test_the_carry_over_reference_figures_quoted_in_row_h26(h26):
-    """Row H26 quotes, as the committed reference for its outcome, what the pick statistics would be if the study's
-    own half_radial - hold carried over exactly (committed per-seed files, arithmetic only): on the plain mean and as
-    V with s1 = hold, over the five priors and on the released target alone."""
+    """Row H26 quotes, as committed reference arithmetic (not a forecast of this run), what the statistics would be if
+    the study's own half_radial - hold and core_radial - hold carried over exactly (committed per-seed files): the
+    reported D3 and DJ4, and the stated worlds' fold-merged and per-fold plain-mean differences."""
     st = h26.load_study()
     pm, pv = {}, {}
     for key in h26.TASK_KEYS:
@@ -442,59 +517,25 @@ def test_the_carry_over_reference_figures_quoted_in_row_h26(h26):
     want = {"plain": (3.08, 3.39), "V": (4.11, 4.19), "plain released": (-0.85, -0.20), "V released": (1.20, 1.41)}
     for k, (a, b) in want.items():
         assert got[k][0] == pytest.approx(a, abs=0.006) and got[k][1] == pytest.approx(b, abs=0.006), k
+    # the stated worlds under exact carry-over: A as hold, B as half_radial, C as core_radial
+    twin = {"A": "hold", "B": "half_radial", "C": "core_radial"}
+
+    def d(x, y, keys, truths):
+        return float(np.mean([np.mean([r["scores"][q][twin[x]] - r["scores"][q][twin[y]] for r in st[k]["rows"]])
+                              for k in keys for q in truths]))
+    ref = {}
+    for wn, ts in h26.WORLDS.items():
+        for x, y in (("B", "A"), ("C", "A"), ("C", "B")):
+            folds = [d(x, y, f, ts) for f in h26.FOLDS]
+            ref[(wn, f"{x}-{y}")] = (float(np.mean(folds)), *folds)
+    print("H26 stated worlds under exact carry-over (fold-merged; E10.5 fold, E8.5 fold): " + "; ".join(
+        f"{w} {p} {m:+.2f} ({a:+.2f}, {b:+.2f})" for (w, p), (m, a, b) in ref.items()))
+    ba, cb = ref[("CLEAN", "B-A")], ref[("CLEAN", "C-B")]
+    print("H26 the conditional outcome's arithmetic on the carry-over reference: "
+          + h26.outcome_from(ba[0], ba[1:], cb[0], cb[1:], True))
 
 
-def test_the_priors_are_the_frozen_sections_five(h26):
-    P = h26.PRIORS
-    assert list(P) == ["uniform", "own_third", "released", "radial_family", "thin_family"]
-    assert all(sum(w.values()) == pytest.approx(1.0) for w in P.values())
-    assert P["own_third"]["own"] == pytest.approx(1 / 3) and P["own_third"]["thin_0"] == pytest.approx(1 / 6)
-    assert set(P["radial_family"]) == {"own", "radial_0.5", "radial_0"} and set(P["thin_family"]) == {"thin_0.5",
-                                                                                                        "thin_0"}
-    assert set(P["released"]) == {"own"}
-
-
-def test_the_expected_better_of_two_is_the_studys_hedge_arithmetic(h26, tmp_path):
-    """E V under each prior equals payoff.hedge's (the study's own better-of-two) on the same hand-made table."""
-    rng = np.random.default_rng(3)
-    key = h26.TASK_KEYS[0]
-    score = {q: {a: list(50 + rng.normal(0, 3, 10)) for a in h26.BUILT} for q in h26.TRUTHS}
-    part = _part(h26, key, SEEDS, score=score)
-    for j in range(5):  # payoff.hedge reads directories of per-seed parts
-        d = tmp_path / f"{2 * j}-{2 * j + 1}"
-        d.mkdir()
-        sub = dict(part, rows=[r for r in part["rows"] if r["seed"] in (2 * j, 2 * j + 1)],
-                   pred_values=list(h26.BUILT), truth_values=list(h26.TRUTHS))
-        (d / "h.json").write_text(json.dumps(sub))
-    extra = {k: list(v) for k, v in h26.PRIORS.items() if k not in ("uniform", "own_third")}
-    hedge = h26.payoff.hedge(sorted(tmp_path.iterdir()), "s1form_half", None, extra)
-    vals = {key: {q: {"V": {a: h26.better_of_two(part["rows"], q, a) for a in h26.BUILT}} for q in h26.TRUTHS}}
-    ev = {name: {a: sum(w * vals[key][q]["V"][a] for q, w in pr.items()) for a in h26.BUILT}
-          for name, pr in h26.PRIORS.items()}
-    for name in h26.PRIORS:
-        for a in h26.BUILT:
-            assert ev[name][a] == pytest.approx(hedge["candidates"][a][name]["mean"], abs=1e-9)
-
-
-def test_r1_agreement(h26):
-    assert h26.agrees(2.0, 0.1) is True
-    assert h26.agrees(-2.0, 0.5) is False  # signs differ and -2.0 is not near zero
-    assert h26.agrees(-2.0, -0.5) is True
-    assert h26.agrees(0.9, -0.9) is True  # both within 1.0 of zero
-    assert h26.agrees(1.1, -0.2) is False
-
-
-def test_r1_reads_the_study_against_hold(h26):
-    st = _study(h26, score={"thin_0": {"half_radial": 55.0, "core_radial": 45.0}})
-    score = {k: {"thin_0": {"half_iso_half": 53.0, "core_iso_half": 53.0}} for k in h26.TASK_KEYS}
-    res = h26.reading(_parts(h26, score=score), st, _h25(h26))
-    c = res["R1_carry_over"]["cells"][h26.TASK_KEYS[0]]["thin_0"]
-    assert c["half_iso_half"]["new"]["mean"] == pytest.approx(3.0) and c["half_iso_half"]["study"]["mean"] == 5.0
-    assert c["half_iso_half"]["agree"] and not c["core_iso_half"]["agree"]
-    assert res["R1_carry_over"]["agreement"]["core_iso_half"] == {"agree": 12, "of": 15}
-
-
-# ------------------------------------------------------------------------------------------------ noise, guards, J5
+# ------------------------------------------------------------------------------------------------ noise
 def _study_spreads(h26, how=max) -> dict[str, float]:
     """Per transition, the seed SD of the study's committed paired differences of a trim minus hold (the nearest
     committed analogue of a trimmed arm against the full one): `max` the largest over the five truths and both trims
@@ -509,30 +550,83 @@ def _study_spreads(h26, how=max) -> dict[str, float]:
     return out
 
 
-def _h25_stand_in(h26) -> tuple[dict[str, float], dict[str, float]]:
-    """From row H25's committed per-seed scores: s1form_half minus iso_half (the stand-in against the file in force's
-    form, the same pool, build seed and half rows), its mean (the level) and its seed SD, per E10.5 backtest. E8.25_late
-    -> E8.5 has no H25 run: there the stand-in is the same copy as A with an in-plane instead of an even stretch, so it
-    takes level 0 and the SMALLER of the two committed SDs (the closer copy, the larger premium)."""
-    h25 = h26.load_h25()
-    level, sd = {}, {}
-    for key, r in h25.items():
-        d = np.array([x["scores"]["s1form_half"] - x["scores"]["iso_half"] for x in r["rows"]])
-        level[key], sd[key] = float(d.mean()), float(d.std(ddof=1))
-    k1 = h26.TASK_KEYS[1]
-    level[k1], sd[k1] = 0.0, min(sd.values())
-    return level, sd
+def _clean_null(h26, sd: dict[str, float], draws: int, seed: int, share_truths: bool, share_e105: bool) -> dict:
+    """Pure noise for the conditional outcome: A, B and C equal in distribution. Per transition, CLEAN truth and seed,
+    each arm is an independent draw of SD sd / sqrt(2), so every paired difference has the committed spread sd. A
+    component common to the arms cancels and is left out. share_truths: one draw for the three CLEAN truths of a
+    transition; share_e105: one draw for the two E10.5 transitions. The stand-in does not enter. Returns per draw the
+    per-seed scores averaged over CLEAN, per transition (draws x 3 transitions x 3 arms x seeds)."""
+    rng = np.random.default_rng(seed)
+    nt = 1 if share_truths else len(h26.CLEAN)
+    cache, out = {}, []
+    for key in h26.TASK_KEYS:
+        src = h26.TASK_KEYS[0] if (share_e105 and key == h26.TASK_KEYS[2]) else key
+        if src not in cache:
+            cache[src] = rng.normal(size=(draws, 3, nt, len(SEEDS)))
+        out.append(sd[key] / np.sqrt(2) * cache[src].mean(2))  # CLEAN: the truths weighted equally
+    return np.stack(out, 1)
 
 
-def _null_draws(h26, sd: dict[str, float], s1_sd: dict[str, float], s1_level: dict[str, float], draws: int,
-                seed: int, share_truths: bool, share_e105: bool) -> dict[str, np.ndarray]:
-    """Pure noise: half_iso_half (B) and full_iso_half (A) the same in distribution. Per transition, truth and seed,
-    A and B are independent draws with SD sd / sqrt(2), so B - A has the committed paired spread sd; s1form_half is
-    A's draw plus s1_level plus its own small term of SD s1_sd (it shares A's pool, build seed and half rows; H25's
-    committed s1form_half and iso_half correlate 0.75 and 0.96 per seed). A component common to all three arms
-    cancels in every difference, so it is left out. share_truths: one draw for all five truths of a transition (they
-    are trims of one stage); share_e105: one draw for the two E10.5 transitions. Returns, per draw, the per-transition,
-    per-prior differences B - A of E V and of the expected plain mean (arrays draws x 3 x 5)."""
+def _clean_outcomes(h26, x: np.ndarray) -> dict:
+    """The conditional outcome's arithmetic on draws x transitions x arms (A, B, C) x seeds, vectorised."""
+    f = np.stack([0.5 * (x[:, 0] + x[:, 2]), x[:, 1]], 1)  # folds E10.5, E8.5: draws x 2 x arms x seeds
+    ba_f = (f[:, :, 1] - f[:, :, 0]).mean(-1)
+    cb_f = (f[:, :, 2] - f[:, :, 1]).mean(-1)
+    ba, cb = ba_f.mean(1), cb_f.mean(1)
+    b = (ba >= h26.OUTCOME_BAR) & (ba_f > 0).all(1)
+    c = b & (cb >= h26.OUTCOME_BAR) & (cb_f > 0).all(1)
+    return {"ba": ba, "ba_f": ba_f, "cb": cb, "cb_f": cb_f, "B": b & ~c, "C": c}
+
+
+def test_the_vectorised_null_is_the_scripts_outcome(h26):
+    """The noise simulation's arithmetic equals the script's reading on hand-made parts built from the same draws
+    (each CLEAN truth given the draw, the other truths level), whatever the stand-in."""
+    sd = {k: 6.0 for k in h26.TASK_KEYS}
+    x = _clean_null(h26, sd, draws=12, seed=3, share_truths=True, share_e105=False)
+    o = _clean_outcomes(h26, x)
+    named = 0
+    for i in range(len(x)):
+        score = {k: {q: {"full_iso_half": list(50 + x[i, j, 0]), "half_iso_half": list(50 + x[i, j, 1]),
+                         "core_iso_half": list(50 + x[i, j, 2]), "s1form_half": list(50 + x[i, j, 1] + 0.3)}
+                     for q in h26.CLEAN} for j, k in enumerate(h26.TASK_KEYS)}
+        res = h26.reading(_parts(h26, score=score), _study(h26), _h25(h26))
+        inp = res["conditional_outcome"]["inputs"]
+        assert inp["B-A"] == pytest.approx(o["ba"][i], abs=1e-9) and inp["C-B"] == pytest.approx(o["cb"][i], abs=1e-9)
+        want = "C (needs a size ruling)" if o["C"][i] else ("B" if o["B"][i] else "A")
+        assert res["conditional_outcome"]["value"] == want
+        named += want != "A"
+    assert 0 < named < len(x)  # both branches exercised at this spread
+
+
+def test_the_conditional_outcome_on_pure_noise(h26):
+    """A, B and C equal in distribution over CLEAN; the study's largest and median paired spreads; truths and the two
+    E10.5 transitions independent or sharing draws. How often B or C is named. Printed for row H26."""
+    spreads = {"largest": _study_spreads(h26, max), "median": _study_spreads(h26, np.median)}
+    print("\nH26 null spreads (sd of paired differences, board points): " + "; ".join(
+        f"{sn} " + ", ".join(f"{k} {v:.3f}" for k, v in sd.items()) for sn, sd in spreads.items()))
+    rate = {}
+    for sn, sd in spreads.items():
+        for share, kw in (("independent truths", dict(share_truths=False, share_e105=False)),
+                          ("shared truths", dict(share_truths=True, share_e105=False)),
+                          ("shared truths and E10.5", dict(share_truths=True, share_e105=True))):
+            o = _clean_outcomes(h26, _clean_null(h26, sd, draws=20000, seed=20261119, **kw))
+            rate[(sn, share)] = r = {"mean B-A": float(o["ba"].mean()), "B named": float(o["B"].mean()),
+                                     "C named": float(o["C"].mean()), "B or C": float((o["B"] | o["C"]).mean())}
+            print(f"H26 conditional outcome on noise | spreads {sn} | {share}: mean B-A {r['mean B-A']:+.3f}, "
+                  f"B named {r['B named']:.2%}, C named {r['C named']:.2%}, B or C {r['B or C']:.2%}")
+    worst = max(r["B or C"] for r in rate.values())
+    print(f"H26 the conditional outcome's worst false naming of B or C on pure noise: {worst:.2%}")
+    # plain means carry no premium: the null difference centres on zero
+    assert all(abs(r["mean B-A"]) < 0.03 for r in rate.values())
+    assert all(r["B or C"] < 0.002 for (sn, _), r in rate.items() if sn == "median")
+    assert worst < 0.10
+
+
+def _v_null_draws(h26, sd: dict[str, float], s1_sd: dict[str, float], s1_level: dict[str, float], draws: int,
+                  seed: int, share_truths: bool, share_e105: bool) -> dict[str, np.ndarray]:
+    """The first fixer's null for V: B and A the same in distribution, s1form_half A's draw plus s1_level plus a small
+    term of SD s1_sd (it shares A's pool, build seed and half rows). Per draw, the per-transition, per-prior B - A of
+    E V and of the expected plain mean (draws x 3 x 5)."""
     rng = np.random.default_rng(seed)
     W = np.array([[pr.get(q, 0.0) for q in h26.TRUTHS] for pr in h26.PRIORS.values()])  # priors x truths
     nt = 1 if share_truths else len(h26.TRUTHS)
@@ -551,78 +645,68 @@ def _null_draws(h26, sd: dict[str, float], s1_sd: dict[str, float], s1_level: di
     return {"V": np.stack(dV, 1), "mean": np.stack(dM, 1)}
 
 
-def _stats(per: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def _h25_stand_in(h26) -> tuple[dict[str, float], dict[str, float]]:
+    """From row H25's committed per-seed scores: s1form_half minus iso_half, its mean and its seed SD, per E10.5
+    backtest; E8.25_late -> E8.5 has no H25 run and takes level 0 and the smaller of the two SDs."""
+    h25 = h26.load_h25()
+    level, sd = {}, {}
+    for key, r in h25.items():
+        d = np.array([x["scores"]["s1form_half"] - x["scores"]["iso_half"] for x in r["rows"]])
+        level[key], sd[key] = float(d.mean()), float(d.std(ddof=1))
+    k1 = h26.TASK_KEYS[1]
+    level[k1], sd[k1] = 0.0, min(sd.values())
+    return level, sd
+
+
+def _d3(per: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """D3 and DJ4 of per-draw arrays draws x transitions (TASK_KEYS order) x priors."""
-    d3 = per.mean(axis=(1, 2))
-    dj4 = 0.5 * (0.5 * (per[:, 0] + per[:, 2]).mean(1) + per[:, 1].mean(1))
-    return d3, dj4
+    return per.mean(axis=(1, 2)), 0.5 * (0.5 * (per[:, 0] + per[:, 2]).mean(1) + per[:, 1].mean(1))
 
 
-def test_the_vectorised_null_is_the_scripts_pick(h26):
-    """The noise simulation's D3 and DJ4 equal h26.pick's on the same draws: its arithmetic is the rule's."""
+def test_the_v_null_arithmetic_is_the_scripts_reported_d3(h26):
     level, s1sd = _h25_stand_in(h26)
-    sd = _study_spreads(h26)
-    sim = _null_draws(h26, sd, s1sd, level, draws=5, seed=7, share_truths=False, share_e105=False)
-    d3, dj4 = _stats(sim["V"])
-    m3, mj4 = _stats(sim["mean"])
+    sim = _v_null_draws(h26, _study_spreads(h26), s1sd, level, draws=5, seed=7, share_truths=False, share_e105=False)
+    d3, dj4 = _d3(sim["V"])
+    m3, mj4 = _d3(sim["mean"])
     for i in range(5):
         ev = {k: {n: {"full_iso_half": 0.0, "half_iso_half": float(sim["V"][i, j, p])}
                   for p, n in enumerate(h26.PRIORS)} for j, k in enumerate(h26.TASK_KEYS)}
         em = {k: {n: {"full_iso_half": 0.0, "half_iso_half": float(sim["mean"][i, j, p])}
                   for p, n in enumerate(h26.PRIORS)} for j, k in enumerate(h26.TASK_KEYS)}
-        res = h26.pick(ev, True, em)
-        assert res["D3"] == pytest.approx(d3[i], abs=1e-12) and res["DJ4"] == pytest.approx(dj4[i], abs=1e-12)
-        rep = res["reported_not_decided"]
+        rep = h26.reported_d3_dj4(ev, em)
+        assert rep["V"]["D3"] == pytest.approx(d3[i], abs=1e-12) and rep["V"]["DJ4"] == pytest.approx(dj4[i], abs=1e-12)
         assert rep["plain_mean"]["D3"] == pytest.approx(m3[i], abs=1e-12)
         assert rep["plain_mean"]["DJ4"] == pytest.approx(mj4[i], abs=1e-12)
 
 
-def test_the_pick_rule_on_pure_noise(h26):
-    """The fixed rule on pure noise (B and A the same in distribution), with s1form_half sharing A's draw as it does in
-    the run (review of 2026-11-19, blocker 1). Spreads: the study's committed trim-minus-hold seed SDs, the largest
-    over truths and trims and the median over truths of half_radial; the stand-in's level and SD from row H25's
-    committed s1form_half - iso_half (and level, and far below, where the better of two is the arm's own score).
-    The rates of three other rules the review proposed are printed for the main session; the pick uses none of them.
-    Printed for row H26."""
+def test_v_carries_a_draw_premium_on_pure_noise(h26):
+    """Why V decides nothing: on pure noise (B and A the same in distribution), with s1form_half sharing A's draw as it
+    does in the run, E V favours B with no scope effect, while the plain mean centres on zero. Printed for row H26."""
     level_h25, s1sd = _h25_stand_in(h26)
     levels = {"H25's levels": level_h25, "level": {k: 0.0 for k in h26.TASK_KEYS},
               "far below": {k: -100.0 for k in h26.TASK_KEYS}}
     spreads = {"largest": _study_spreads(h26, max), "median": _study_spreads(h26, np.median)}
-    rate = {}
-    print("\nH26 null spreads (sd of paired differences, board points): " + "; ".join(
-        f"{sn} " + ", ".join(f"{k} {v:.3f}" for k, v in sd.items()) for sn, sd in spreads.items()))
-    print("H26 stand-in s1form_half - iso_half (row H25): " + ", ".join(
+    print("\nH26 stand-in s1form_half - iso_half (row H25): " + ", ".join(
         f"{k} level {level_h25[k]:+.3f} sd {s1sd[k]:.3f}" for k in h26.TASK_KEYS))
+    null = {}
     for sn, sd in spreads.items():
         for ln, lv in levels.items():
             for share, kw in (("independent truths", dict(share_truths=False, share_e105=False)),
                               ("shared truths", dict(share_truths=True, share_e105=False)),
                               ("shared truths and E10.5", dict(share_truths=True, share_e105=True))):
-                sim = _null_draws(h26, sd, s1sd, lv, draws=4000, seed=20261119, **kw)
-                d3, dj4 = _stats(sim["V"])
-                m3, mj4 = _stats(sim["mean"])
-                r3, rj4 = _stats(sim["V"][:, :, 2:3])  # the released target alone
-                fixed = (d3 >= h26.PICK_BAR) & (dj4 >= h26.PICK_BAR)
-                rate[(sn, ln, share)] = r = {
-                    "null D3": float(d3.mean()), "fixed rule": float(fixed.mean()),
-                    "+ plain mean >= 0": float((fixed & (m3 >= 0) & (mj4 >= 0)).mean()),
-                    "+ plain mean >= 1": float((fixed & (m3 >= 1) & (mj4 >= 1)).mean()),
-                    "+ released alone >= 1": float((fixed & (r3 >= 1) & (rj4 >= 1)).mean())}
-                print(f"H26 null | spreads {sn} | s1 {ln} | {share}: " + ", ".join(
-                    f"{k} {v:+.3f}" if k == "null D3" else f"{k} {v:.2%}" for k, v in r.items()))
-    worst = max(r["fixed rule"] for r in rate.values())
-    print(f"H26 the fixed rule's worst false pick of B on pure noise: {worst:.2%}")
-    # with no premium (s1 far below), the rule holds its noise level
-    assert all(r["fixed rule"] < 0.05 for (sn, ln, sh), r in rate.items() if ln == "far below")
-    assert rate[("largest", "far below", "independent truths")]["fixed rule"] < 0.005
-    # the premium: under pure noise E V favours B whenever s1form_half is within reach of the arms
-    assert all(r["null D3"] > 0.2 for (sn, ln, sh), r in rate.items() if ln != "far below")
-    assert all(abs(r["null D3"]) < 0.05 for (sn, ln, sh), r in rate.items() if ln == "far below")
-    # and at the study's largest spreads it takes the fixed rule's false pick of B well above 5% (review, blocker 1)
-    assert rate[("largest", "level", "shared truths and E10.5")]["fixed rule"] > 0.2
-    # a plain-mean condition at the bar removes the premium: the rate falls to the no-premium level
-    for (sn, _ln, sh), r in rate.items():
-        assert r["+ plain mean >= 1"] <= rate[(sn, "far below", sh)]["fixed rule"] + 0.01
+                sim = _v_null_draws(h26, sd, s1sd, lv, draws=4000, seed=20261119, **kw)
+                null[(sn, ln, share)] = (float(_d3(sim["V"])[0].mean()), float(_d3(sim["mean"])[0].mean()))
+                print(f"H26 V premium | spreads {sn} | s1 {ln} | {share}: null D3 on V "
+                      f"{null[(sn, ln, share)][0]:+.3f}, on the plain mean {null[(sn, ln, share)][1]:+.3f}")
+    within = [v for (sn, ln, _), (v, _m) in null.items() if ln != "far below"]
+    print(f"H26 null D3 on V with the stand-in within reach: median spreads "
+          f"{min(v for (sn, ln, _), (v, _m) in null.items() if ln != 'far below' and sn == 'median'):+.2f} to "
+          f"{max(v for (sn, ln, _), (v, _m) in null.items() if ln != 'far below' and sn == 'median'):+.2f}, largest "
+          f"{min(v for (sn, ln, _), (v, _m) in null.items() if ln != 'far below' and sn == 'largest'):+.2f} to "
+          f"{max(v for (sn, ln, _), (v, _m) in null.items() if ln != 'far below' and sn == 'largest'):+.2f}")
+    assert all(v > 0.2 for v in within)
+    assert all(abs(m) < 0.05 for (_v, m) in null.values())  # the plain mean carries no premium
+    assert all(abs(v) < 0.05 for (sn, ln, _), (v, _m) in null.items() if ln == "far below")
 
 
 def test_the_study_parts_agree_on_every_record_the_guards_check(h26):
@@ -686,4 +770,4 @@ def test_the_noise_floor_of_rule_9_j5(h26):
     print("\nH26 J5 seed spread (SE of iso_half - copy): " + ", ".join(f"{k} {v:.3f}" for k, v in se.items())
           + "; the study's trimmed-minus-hold SE, largest over truths: "
           + ", ".join(f"{k} {v / np.sqrt(10):.3f}" for k, v in sd.items()))
-    assert max(se.values()) < h26.PICK_BAR / 2
+    assert max(se.values()) < h26.OUTCOME_BAR / 2

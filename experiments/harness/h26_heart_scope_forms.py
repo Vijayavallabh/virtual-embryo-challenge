@@ -38,23 +38,32 @@ study's committed truth_info; a pool's cell number or core share differs from th
 hold, B: half_radial, C: core_radial); the in-plane oracle factor differs from the study's committed
 oracle_core_xy_factor (relative 1e-12); or, on the two harness backtests with the truth as released, full_iso_half
 differs from row H25's committed iso_half on the de_score, de_direction or mmd_u skill in any seed by more than 1e-9.
-Then:
-  R1  carry-over (descriptive, decides nothing): per transition and truth, half_iso_half minus full_iso_half and
-      core_iso_half minus full_iso_half (mean, min, max, seeds ahead), beside the study's half_radial minus hold and
-      core_radial minus hold; per trim, how many of the 15 cells agree in sign or both lie within 1.0 point of zero.
-  R2  the better of two in practice space, no test score: V(X) = mean over seeds of max(s1form_half, X), per
-      transition and truth; its expectation under the frozen section's five priors, per transition; the plain mean
-      score; and s1form_half alone.
+Then. THE READ DECIDES NOTHING. There is no pick rule (removed after the review of 2026-11-19): which file goes up
+is a test-stage premise no released task carries (rule 9, J1a), so the tables go to the captain with a priced
+question whose default is the file in force (A).
+  R1  carry-over (descriptive): per transition and truth, half_iso_half minus full_iso_half and core_iso_half minus
+      full_iso_half (mean, min, max, seeds ahead), beside the study's half_radial minus hold and core_radial minus
+      hold; per trim, how many of the 15 cells agree in sign or both lie within 1.0 point of zero.
+  PRIMARY, per world, on plain means: for each transition and each truth, for the E10.5 fold (the two transitions
+      on that truth averaged seed by seed), the E8.5 fold and the mean of the two folds: the mean board score of A,
+      B and C and the paired differences B-A, C-A, C-B (mean, min, max, seeds ahead of 10). Beside it, labelled
+      secondary, V(X) = mean over seeds of max(s1form_half, X) for the same cells.
+  STATED WORLDS: CLEAN (radial_0, thin_0.5, thin_0 weighted equally: at E10.5 core shares 0.40, 0.85, 1.00, most or
+      all of the surrounding tissue removed) and the truth as released (own): fold values and the fold-merged plain
+      means of A, B, C and the three paired differences.
+  CONDITIONAL OUTCOME (fixed before the run; a reported value, never a choice the read makes): used only under an
+      organiser statement, screened and audited, that the E12.5 heart stack was dissected with most or all of the
+      tissue outside the heart removed, or holds less surrounding tissue than the released E10.5 stack. Over CLEAN,
+      fold-merged, plain means: "B" if B-A >= +1.0 on the mean of the two folds and B-A > 0 on each fold; "C (needs a
+      size ruling)" if in addition C-B >= +1.0 on the mean of the folds and > 0 on each; otherwise, or on a void run,
+      "A".
   R3  per metric group and metric: what the trims gain or lose against full_iso_half, per transition and truth.
-  The pick rule, used only if the captain leaves the direction to the AI assistant: D3 = mean over the 15
-  prior-by-transition cells of E V(half_iso_half) - E V(full_iso_half); DJ4 = the same with the two E10.5
-  transitions merged into one fold first, then the two folds averaged. B if the run is valid and D3 >= 1.0 and
-  DJ4 >= 1.0 board points; otherwise A, the file in force. C is reported and never picked.
-  Reported beside the pick, deciding nothing (the review of 2026-11-19): the same D3 and DJ4 on the plain mean score
-  and per prior alone, and at the minimum over the priors. Two known leans of the fixed rule toward B, stated in row
-  H26: s1form_half shares full_iso_half's pool, build seed and half rows, so max(s1form_half, A) is the larger of two
-  near-copies while max(s1form_half, B) is the larger of two different draws (a premium for B with no scope effect
-  behind it); and the equal average over the five priors is a world weight no committed measurement sets (rule 9, J4).
+  REPORTED, DECIDES NOTHING: the first fixer's D3 (mean over the 15 prior-by-transition cells) and DJ4 (the two E10.5
+      transitions merged into one fold first) of B-A, on E V and on the plain mean, under the five priors together,
+      per prior alone and at the minimum over priors. V carries a premium for a trimmed arm: s1form_half shares
+      full_iso_half's pool, build seed and half rows, so max(s1form_half, A) is the larger of two near-copies while
+      max(s1form_half, B) is the larger of two different draws; V rises for B with no scope effect. The equal average
+      over priors is a world weight no committed measurement sets (rule 9, J4).
 
   run   (DGX, repo root) one transition, a seed range; one JSON under --out
   read  apply the reading to every part under --runs; write reading.json and reading.txt under --out
@@ -108,8 +117,14 @@ TRIM = {REFERENCE: None, "full_iso_half": None, "half_iso_half": 0.5, "core_iso_
 STUDY_TWIN = {"full_iso_half": "hold", "half_iso_half": "half_radial", "core_iso_half": "core_radial"}
 STUDY_CONTROL = "hold"
 CONTROL = "full_iso_half"  # A, the file in force
-CANDIDATE = "half_iso_half"  # B, the only form the pick rule can return
 TRIMMED = ("half_iso_half", "core_iso_half")
+LETTER = {"full_iso_half": "A", "half_iso_half": "B", "core_iso_half": "C"}
+PAIRS = (("half_iso_half", "full_iso_half"), ("core_iso_half", "full_iso_half"), ("core_iso_half", "half_iso_half"))
+CLEAN = ("radial_0", "thin_0.5", "thin_0")  # most or all surrounding tissue removed (E10.5 core 0.40, 0.85, 1.00)
+WORLDS = {"CLEAN": CLEAN, "own": (OWN,)}  # the stated worlds, each an equal weight over its truths
+FOLD_NAMES = ("E10.5", "E8.5")  # FOLDS in order
+OUTCOME_BAR = 1.0  # board points, on the mean of the two folds
+OUTCOME_CONDITION = ("used only under the organiser statement the row names; otherwise the file in force stays")
 STUDY_RUNS = {"T2h/<=E9.5->E10.5": "experiments/s2_hedge/results/per_seed/heart-scope",
               "T2h/E8.25_late->E8.5": "experiments/s2_hedge/results/per_seed/heart-scope-e825",
               "T2h/<=E8.75->E10.5": "experiments/s2_hedge/results/per_seed/heart-scope-e875"}
@@ -121,7 +136,6 @@ GROUPS = h25.GROUPS
 TOL = 1e-9
 FACTOR_RTOL = 1e-12
 NEAR_ZERO = 1.0  # R1: both within this many board points of zero count as agreeing
-PICK_BAR = 1.0  # board points, for D3 and DJ4 alike
 PRIORS = {  # docs/S2_RULES.md "T2 heart", "Why the amendment": the five priors over the truths
     "uniform": {q: 1 / len(TRUTHS) for q in TRUTHS},
     "own_third": {q: (1 / 3 if q == OWN else (2 / 3) / (len(TRUTHS) - 1)) for q in TRUTHS},
@@ -485,35 +499,92 @@ def d3_dj4(diff: dict, names=tuple(PRIORS)) -> tuple[float, float, list[float]]:
     return d3, float(np.mean(folds)), folds
 
 
-def pick(ev: dict, valid: bool, em: dict | None = None) -> dict:
-    """The pick rule fixed in row H26: D3 over the 15 prior-by-transition cells (transitions weighted equally), DJ4
-    with the two E10.5 transitions merged into one fold first; B if valid and both reach PICK_BAR, else A.
+PREMIUM_NOTE = ("V credits a trimmed arm for being a different draw from the stand-in: s1form_half shares "
+                "full_iso_half's pool, build seed and half rows, so max(s1form_half, A) is the larger of two "
+                "near-copies while max(s1form_half, B) is the larger of two different draws, and V rises for B with "
+                "no scope effect (simulated null D3 on V: +0.25 to +0.34 at the study's median spreads, +0.59 to "
+                "+0.91 at its largest, test_v_carries_a_draw_premium_on_pure_noise). The equal average over the five "
+                "priors is a world weight no committed measurement sets (rule 9, J4).")
 
-    With `em` (the expected plain mean score), the same two statistics are also REPORTED, deciding nothing, on the
-    plain mean (a linear statistic, which carries none of the better-of-two's premium for a draw that differs from
-    s1form_half's), per prior alone (the released target alone is the least favourable committed prior for B under
-    rule 9, J4) and at the minimum over the five priors. The review of 2026-11-19 asked for these; the pick does not
-    use them unless the main session changes the fixed rule."""
-    diff = {key: {name: ev[key][name][CANDIDATE] - ev[key][name][CONTROL] for name in PRIORS} for key in TASK_KEYS}
-    d3, dj4, folds = d3_dj4(diff)
-    b = bool(valid and d3 >= PICK_BAR and dj4 >= PICK_BAR)
-    out = {"D3": d3, "DJ4": dj4, "folds": dict(zip([" + ".join(f) for f in FOLDS], folds, strict=True)),
-           "per_cell": diff, "bar": PICK_BAR,
-           "pick": "B (half_iso_half)" if b else "A (full_iso_half, the file in force)",
-           "rule": f"B if the run is valid and D3 >= {PICK_BAR} and DJ4 >= {PICK_BAR} board points; otherwise A. "
-                   "C is reported and never picked. Used only if the captain leaves the direction to the AI "
-                   "assistant; declining keeps A with no further step."}
-    rep = {"label": "reported, not decided on (the fixed pick uses D3 and DJ4 of E V over the five priors only)",
-           "V_per_prior": {name: dict(zip(("D3", "DJ4"), d3_dj4(diff, (name,))[:2], strict=True)) for name in PRIORS}}
-    per = list(rep["V_per_prior"].values())
-    rep["V_min_over_priors"] = {"D3": min(p["D3"] for p in per), "DJ4": min(p["DJ4"] for p in per)}
-    if em is not None:
-        dm = {key: {name: em[key][name][CANDIDATE] - em[key][name][CONTROL] for name in PRIORS} for key in TASK_KEYS}
-        rep["plain_mean"] = dict(zip(("D3", "DJ4"), d3_dj4(dm)[:2], strict=True))
-        rep["plain_mean_per_prior"] = {name: dict(zip(("D3", "DJ4"), d3_dj4(dm, (name,))[:2], strict=True))
-                                       for name in PRIORS}
-    out["reported_not_decided"] = rep
+
+def reported_d3_dj4(ev: dict, em: dict) -> dict:
+    """REPORTED, DECIDES NOTHING: the first fixer's D3 and DJ4 of B minus A, on E V and on the expected plain mean,
+    under the five priors together, per prior alone and at the minimum over the priors. Nothing reads these."""
+    out = {"label": "reported, decides nothing", "premium_note": PREMIUM_NOTE}
+    for what, e in (("V", ev), ("plain_mean", em)):
+        diff = {key: {name: e[key][name]["half_iso_half"] - e[key][name][CONTROL] for name in PRIORS}
+                for key in TASK_KEYS}
+        d3, dj4, folds = d3_dj4(diff)
+        per = {name: dict(zip(("D3", "DJ4"), d3_dj4(diff, (name,))[:2], strict=True)) for name in PRIORS}
+        out[what] = {"D3": d3, "DJ4": dj4, "folds": dict(zip(FOLD_NAMES, folds, strict=True)), "per_prior": per,
+                     "min_over_priors": {"D3": min(p["D3"] for p in per.values()),
+                                         "DJ4": min(p["DJ4"] for p in per.values())}}
     return out
+
+
+# ------------------------------------------------------------------------------------------------ the primary table
+def series(rows: dict[str, list[dict]], folds, truths, arm: str, v: bool = False) -> np.ndarray:
+    """Per seed: arm's board score (or, with v, max(s1form_half, arm)) averaged equally over `truths` and the
+    transitions of each fold, then equally over the folds. Seeds are paired across transitions by their index."""
+    def one(key, q):
+        x = scores(rows[key], q, arm)
+        return np.maximum(scores(rows[key], q, REFERENCE), x) if v else x
+    return np.mean([np.mean([one(key, q) for key in fold for q in truths], axis=0) for fold in folds], axis=0)
+
+
+def cell(rows: dict[str, list[dict]], folds, truths) -> dict:
+    """One cell of the primary table: plain mean scores of A, B and C, the paired differences B-A, C-A and C-B (mean,
+    min, max, seeds ahead), and V beside them (secondary)."""
+    s = {arm: series(rows, folds, truths, arm) for arm in ARMS}
+    sv = {arm: series(rows, folds, truths, arm, v=True) for arm in ARMS}
+    return {"mean": {LETTER[a]: float(s[a].mean()) for a in ARMS},
+            "diff": {f"{LETTER[x]}-{LETTER[y]}": _stats(s[x] - s[y]) for x, y in PAIRS},
+            "V_secondary": {"V": {LETTER[a]: float(sv[a].mean()) for a in ARMS},
+                            "diff": {f"{LETTER[x]}-{LETTER[y]}": float((sv[x] - sv[y]).mean()) for x, y in PAIRS}}}
+
+
+UNITS = {**{key: ((key,),) for key in TASK_KEYS},
+         **{f"fold {n}": (f,) for n, f in zip(FOLD_NAMES, FOLDS, strict=True)},
+         "mean of folds": FOLDS}
+
+
+def per_world(rows: dict[str, list[dict]]) -> dict:
+    """PRIMARY: per transition, per fold of rule 9's J4 and for the mean of the two folds, and per truth."""
+    return {u: {q: cell(rows, fs, (q,)) for q in TRUTHS} for u, fs in UNITS.items()}
+
+
+def stated_worlds(rows: dict[str, list[dict]]) -> dict:
+    """CLEAN (its three truths weighted equally) and the truth as released: fold-merged and per fold."""
+    return {w: {"truths": list(ts), "fold-merged": cell(rows, FOLDS, ts),
+                "folds": {n: cell(rows, (f,), ts) for n, f in zip(FOLD_NAMES, FOLDS, strict=True)}}
+            for w, ts in WORLDS.items()}
+
+
+def outcome_from(ba: float, ba_folds, cb: float, cb_folds, valid: bool) -> str:
+    """The conditional outcome's arithmetic (fixed before the run): over CLEAN, fold-merged plain means. B replaces A
+    only if B-A >= OUTCOME_BAR on the mean of the two folds and B-A > 0 on each fold; C is named in place of B only if,
+    in addition, C-B >= OUTCOME_BAR on the mean of the folds and > 0 on each. A void run gives A."""
+    b = bool(valid and ba >= OUTCOME_BAR and all(x > 0 for x in ba_folds))
+    c = bool(b and cb >= OUTCOME_BAR and all(x > 0 for x in cb_folds))
+    return "C (needs a size ruling)" if c else ("B" if b else "A")
+
+
+def conditional_outcome(sw: dict | None, valid: bool) -> dict:
+    """The CONDITIONAL OUTCOME, a reported value (never a choice the read makes), used only under the organiser
+    statement row H26 names, read through a screen and audited, and after the captain has signed it."""
+    out = {"condition": OUTCOME_CONDITION,
+           "rule": f"over CLEAN {list(CLEAN)}, fold-merged plain means: B if B-A >= +{OUTCOME_BAR} on the mean of "
+                   f"the two folds and B-A > 0 on each fold; C (needs a size ruling) if in addition C-B >= "
+                   f"+{OUTCOME_BAR} on the mean of the folds and > 0 on each; otherwise, or on a void run, A"}
+    if not valid or sw is None:
+        return {"value": "A", **out, "inputs": None}
+    c = sw["CLEAN"]
+    ba, cb = c["fold-merged"]["diff"]["B-A"]["mean"], c["fold-merged"]["diff"]["C-B"]["mean"]
+    ba_f = [c["folds"][n]["diff"]["B-A"]["mean"] for n in FOLD_NAMES]
+    cb_f = [c["folds"][n]["diff"]["C-B"]["mean"] for n in FOLD_NAMES]
+    return {"value": outcome_from(ba, ba_f, cb, cb_f, valid), **out,
+            "inputs": {"B-A": ba, "B-A per fold": dict(zip(FOLD_NAMES, ba_f, strict=True)),
+                       "C-B": cb, "C-B per fold": dict(zip(FOLD_NAMES, cb_f, strict=True))}}
 
 
 def groups_table(rows: dict[str, list[dict]]) -> dict:
@@ -522,18 +593,23 @@ def groups_table(rows: dict[str, list[dict]]) -> dict:
             for key in TASK_KEYS}
 
 
+DECIDES = ("nothing: the choice between the files is a test-stage premise no released task carries (rule 9, J1a); "
+           "the tables go to the captain with a priced question whose default is the file in force (A)")
+
+
 def reading(parts: dict[str, list[dict]], study: dict[str, dict], committed_h25: dict[str, dict],
             commit: str | None = None) -> dict:
     why = void_reasons(parts, study, committed_h25, commit)
     if why:
-        return {"void": True, "why": why, "pick": "A (full_iso_half, the file in force): the reading is void",
+        return {"void": True, "why": why, "decides": DECIDES, "conditional_outcome": conditional_outcome(None, False),
                 "follows": "nothing: the reading is void (no table is read, no rerun under this row)"}
     rows = {key: merge_rows(parts[key])[0] for key in TASK_KEYS}
     vals = values(rows)
     ev, em = expected(vals, "V"), expected(vals, "mean")
+    sw = stated_worlds(rows)
     first = {key: parts[key][0] for key in TASK_KEYS}
     return {
-        "void": False, "why": [], "commit": first[TASK_KEYS[0]]["provenance"]["commit"],
+        "void": False, "why": [], "decides": DECIDES, "commit": first[TASK_KEYS[0]]["provenance"]["commit"],
         "labels": {ORACLE: "every score here: the size is an oracle from the truth's core, shared by every arm; a "
                            "sensitivity bound, never a file's score (rule 9, J3)"},
         "oracle_factors": {key: first[key]["oracle_factors"] for key in TASK_KEYS},
@@ -541,10 +617,14 @@ def reading(parts: dict[str, list[dict]], study: dict[str, dict], committed_h25:
         "pred_info": {key: first[key]["pred_info"] for key in TASK_KEYS},
         "floor_vs_study": {key: _floor_distance(rows[key], study[key]["rows"]) for key in TASK_KEYS},
         "R1_carry_over": carry_over(rows, study),
+        "per_world": per_world(rows),
+        "stated_worlds": sw,
+        "conditional_outcome": conditional_outcome(sw, True),
         "R2_values": vals, "R2_expected_V": ev, "R2_expected_mean": em,
         "R3_groups": groups_table(rows),
-        "pick": pick(ev, True, em),
-        "follows": "nothing is built and no rule changes; the table and the rule's pick go to the captain",
+        "reported_decides_nothing": reported_d3_dj4(ev, em),
+        "follows": "nothing from the read alone; the tables go to the captain with a priced question whose default "
+                   "is the file in force (A)",
     }
 
 
@@ -557,27 +637,38 @@ def _floor_distance(rows: list[dict], study_rows: list[dict]) -> float | None:
         return None
 
 
+def _cell_line(c: dict) -> str:
+    m, d, v = c["mean"], c["diff"], c["V_secondary"]
+    return (" ".join(f"{k} {x:.2f}" for k, x in m.items()) + " | "
+            + "; ".join(f"{k} {s['mean']:+.2f} [{s['lo']:+.2f}, {s['hi']:+.2f}] {s['ahead']}/10" for k, s in d.items())
+            + " || V (secondary) " + " ".join(f"{k} {x:.2f}" for k, x in v["V"].items()) + ", "
+            + " ".join(f"{k} {x:+.2f}" for k, x in v["diff"].items()))
+
+
+def _outcome_lines(o: dict) -> list[str]:
+    return [f"CONDITIONAL OUTCOME: conditional_outcome = {o['value']}: {o['condition']}.", f"  rule: {o['rule']}"]
+
+
 def text(res: dict) -> str:
     if res["void"]:
-        return "VOID: " + "; ".join(res["why"]) + "\nPick: " + res["pick"] + "\n"
-    lines = [f"Try H26 (commit {res['commit']}). Every score below is at an {ORACLE} (the truth's core, shared by "
+        return ("This read decides " + res["decides"] + ".\nVOID: " + "; ".join(res["why"]) + "\n"
+                + "\n".join(_outcome_lines(res["conditional_outcome"])) + "\n")
+    lines = ["This read decides " + res["decides"] + ".",
+             f"Try H26 (commit {res['commit']}). Every score below is at an {ORACLE} (the truth's core, shared by "
              "every arm): a sensitivity bound, never a file's score.",
              "Oracle factors: " + "; ".join(f"{k} even {v['even']:.4f}, in plane {v['in_plane']:.4f}"
                                              for k, v in res["oracle_factors"].items())]
-    p = res["pick"]
-    lines.append(f"PICK RULE: D3 {p['D3']:+.3f}, DJ4 {p['DJ4']:+.3f} (bar {p['bar']}): {p['pick']}")
-    rep = p["reported_not_decided"]
-    lines.append("  " + rep["label"] + ":")
-    if "plain_mean" in rep:
-        lines.append(f"    plain mean (no better-of-two premium): D3 {rep['plain_mean']['D3']:+.3f}, "
-                     f"DJ4 {rep['plain_mean']['DJ4']:+.3f}")
-    lines.append("    E V per prior alone: " + "; ".join(f"{n} D3 {v['D3']:+.3f} DJ4 {v['DJ4']:+.3f}"
-                                                      for n, v in rep["V_per_prior"].items()))
-    lines.append(f"    E V at the minimum over the priors: D3 {rep['V_min_over_priors']['D3']:+.3f}, "
-                 f"DJ4 {rep['V_min_over_priors']['DJ4']:+.3f}")
-    if "plain_mean_per_prior" in rep:
-        lines.append("    plain mean per prior alone: " + "; ".join(
-            f"{n} D3 {v['D3']:+.3f} DJ4 {v['DJ4']:+.3f}" for n, v in rep["plain_mean_per_prior"].items()))
+    lines.append("PRIMARY, per world, plain means (A B C | paired difference mean [min, max] seeds ahead) "
+                 "|| V beside it, secondary:")
+    for u, by_q in res["per_world"].items():
+        for q, c in by_q.items():
+            lines.append(f"  {u} {q}: " + _cell_line(c))
+    lines.append("STATED WORLDS (CLEAN = " + ", ".join(CLEAN) + ", weighted equally; own = the truth as released):")
+    for w, s in res["stated_worlds"].items():
+        lines.append(f"  {w} fold-merged: " + _cell_line(s["fold-merged"]))
+        for n, c in s["folds"].items():
+            lines.append(f"  {w} fold {n}: " + _cell_line(c))
+    lines += _outcome_lines(res["conditional_outcome"])
     lines.append("R1 carry-over (trim minus full_iso_half | the study's trim minus hold; mean [min, max] ahead/10):")
     for key in TASK_KEYS:
         for q in TRUTHS:
@@ -588,7 +679,15 @@ def text(res: dict) -> str:
                 f"{'' if c[arm]['agree'] else ' (disagree)'}" for arm in TRIMMED))
     lines.append("  agreement: " + ", ".join(f"{a} {v['agree']} of {v['of']}"
                                              for a, v in res["R1_carry_over"]["agreement"].items()))
-    lines.append("R2 expected better of two, E V (plain mean score in brackets), per transition and prior:")
+    rep = res["reported_decides_nothing"]
+    lines.append("REPORTED, DECIDES NOTHING: D3 and DJ4 of B minus A over the five priors. " + rep["premium_note"])
+    for what in ("plain_mean", "V"):
+        r = rep[what]
+        lines.append(f"  {what}: D3 {r['D3']:+.3f}, DJ4 {r['DJ4']:+.3f}; minimum over priors D3 "
+                     f"{r['min_over_priors']['D3']:+.3f}, DJ4 {r['min_over_priors']['DJ4']:+.3f}; per prior: "
+                     + "; ".join(f"{n} D3 {v['D3']:+.3f} DJ4 {v['DJ4']:+.3f}" for n, v in r["per_prior"].items()))
+    lines.append("R2 expected better of two, E V (plain mean score in brackets), per transition and prior "
+                 "(reported, decides nothing):")
     for key in TASK_KEYS:
         for name in PRIORS:
             lines.append(f"  {key} {name}: " + ", ".join(
