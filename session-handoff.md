@@ -2,6 +2,16 @@
 
 ## Current Objective
 
+- **State at 2026-11-19, 04:46 UTC (newest).** Decision log 2026-11-19 (a). HOLD: `builds/T1_s2.h5ad` is not uploaded
+  as built (an organiser's reply of 2026-11-16 asks teams to leave out annotations learned using protected cells;
+  X002's groups are the authors' labels). Waiting for the captain: (1) what T1's last upload should be once labels
+  are recomputed from permitted cells (the hedge rebuilt, or the first file's design rebuilt) and whether to ask the
+  organisers about the uploaded first file; (2) the embryo's last file (2026-11-18 (v)). Running: wf_c9186108-9a8
+  (provenance of the authors' labels, a relabel design, a challenger); on its return pick the option, have it
+  implemented on a campaign branch with reviews, register its N row, run the target-free listing, and bring the
+  captain the table. T3's severity question is answered (skill 0.5; no follow-up). Screened Slack checks open every
+  thread with replies from now on. Sources are disclosed in the submission page's method-report fields with the
+  report attached (the organiser's words): tell the captain at hand-over and add it to the checklist.
 - **State at 2026-11-18, 22:09 UTC (newest).** The departures section of `METHOD_SUMMARY.md` is merged (a3a9911); its
   [TO COMPLETE] line and item 2's "not yet in the record" (whether and when the disclosure email and the three notes
   were sent) are filled when the captain says. If he picks embryo option 1, 2 or 3, the disclosure email draft in his

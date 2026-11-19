@@ -2,7 +2,17 @@
 
 ## Current State
 
-**Last Updated:** 2026-11-18
+**Last Updated:** 2026-11-19
+**2026-11-19, 04:46 UTC: two screened reads; T3's severity question is answered yes; an organiser's condition on
+external datasets puts T1's second file on hold** (`docs/PLAN.md` decision log 2026-11-19 (a);
+`docs/ORGANIZER_QUESTIONS.md`, "Screened reads of 2026-11-19"). An organiser (2026-11-16, in Slack threads the check
+of 18 November had not opened) confirmed that a gated T3 severity scores skill 0.5 in the final-test scorer, and told
+another participant that annotations learned using protected cells are to be left out of an external dataset and
+recomputed on permitted data, with sources listed in the submission page's method-report fields. Register row X002's
+cell groups are the Feng authors' own labels, so both T1 files may be touched: `builds/T1_s2.h5ad` is NOT to be
+uploaded as built until the captain has ruled. Running: wf_c9186108-9a8 (how the authors made their labels; a design
+for labels recomputed from permitted cells alone; a challenger). No answer to the seventh email. The embryo question
+of 2026-11-18 (v) still waits for the captain.
 **2026-11-18, 22:09 UTC: the method summary's section on the departures is on main** (a3a9911; `METHOD_SUMMARY.md`,
 "Departures from the precommitted procedure from the first official uploads (2026-11-18)": twelve items, three
 reviews, a fix round and a final check; one line marked [TO COMPLETE] waits for the captain's choice of the embryo's
