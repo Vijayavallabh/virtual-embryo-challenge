@@ -6582,3 +6582,30 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     was made by either run.
   - **Try T61's run** ended at 16:24 UTC: the targeted tests passed on the DGX (131), the five tasks exit 0 at the
     row's commit, clean tree. Its files are copied back and read next.
+- 2026-11-19 (v), try T61 is read: its rule names a composition arm if the first upload stands and nothing if it is
+  discounted (state at 18:10 UTC). Written by the AI assistant.
+  - **The run and the read:** five tasks on the DGX's campaign checkout at 48ce0d5, the row's commit, clean, exit 0,
+    after the targeted tests there (131 passed); the task files committed at fa2b09b and read there once. Counted:
+    T1 300 to 358. Every task scores one truth, E10.5, over one day: a labelled in-sample diagnostic.
+    `experiments/t1_m1/results/t61_bets/`.
+  - **By the row's fixed statements:** both cuts and the three library tasks are valid. Ahead of the last file's
+    practice analogue (none_gmom): g_mom at strength 1.0, the team's own momentum at 0.25, 0.5 and 1.0 with g_mom,
+    and the advance draw at both sizes. Reading S (the first upload stands): advance_t1. Reading D (it is
+    discounted): none. The output arm changes composition and shifts the drawn cells' median library size beyond
+    5%: by the row and by `docs/DATA_POLICY.md` 2026-11-04 (f)(3) the rule goes to the captain, as a range and never
+    a point: -0.30 to +5.89 over the analogue readings, 0 to +4.68 under J6.
+    The chamber-mix trend loses on every task (-0.27 to -1.17): the composition trend by the legal route is closed
+    by its own read. g_mom adds +1.16 on the copy and +1.23 on b0, as row T22 had it.
+  - **The AI assistant's reading after the result, which changes nothing.**
+    The advance draw gains where the base carries E9.5's own mix (the two cuts: +2.99 to +5.89) and not where the
+    base has the truth's mix: on library 3's task, the like-for-like sample, +0.36 and -0.30 (7 and 3 of 10 seeds).
+    At the test the base is library 3 at its own mix. So the gain the rule's output rests on is the kind the test's
+    base may not offer, it touches two closed quantities, and under the reading the team thinks likelier (the
+    first upload discounted, 0.6) the rule itself returns none. The question goes to the captain as the row
+    requires; the advice, by the rule for a closed lever, is to decline.
+    The momentum arms are ahead on all five tasks (at full strength +1.61 to +5.89 with g_mom) and are not the
+    row's output. They undo ruling R1, and at the test their fit would run from E9.5, embryo portions, to E10.5,
+    whose chamber cells come mostly from the dissected-heart library: the fit crosses the collection change, which
+    the practice fit (E8.5 to E9.5, portions both) does not. That is the property entry 2026-11-18 (f) to (i)
+    examined for g_mom. No request follows from this row. If the relabelled direction of row N54 fails its
+    guards, a momentum fitted on like-for-like libraries is the one released-data direction worth a row of its own.

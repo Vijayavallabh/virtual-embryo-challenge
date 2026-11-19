@@ -1,0 +1,85 @@
+try T61, a labelled in-sample diagnostic, never an adoption result: released-data variants of T1's last file (the first upload's design without the outside atlas's step) against its practice analogue none_gmom, on the E9.5 -> E10.5 cuts and row T60's library tasks; every task scores one truth (E10.5) over one day, the test spans two; the composition arms touch the post-exposure block; the result can only go to the captain
+Outcome: reading S (T1's first upload stands): advance_t1; reading D (it is discounted): none
+Arms ahead of none_gmom: gmom_s1, mom_d0.25_gmom, b0_gmom, mom_d1_gmom, advance_t0.5, advance_t1
+The output arm changes composition: the post-exposure block; only the captain's ruling puts it in a file (J1a: a range, never a point)
+The output arm's drawn cells shift the median library size beyond 5% of its base's (docs/DATA_POLICY.md 2026-11-04 (f)(3)): the rule goes to the captain
+cut chamber: valid
+    gate: largest per-seed difference from T11's b0 {'b0': 0.0}
+    mean scores: b0 49.68, copy 48.88, none_gmom 50.04, b0_gmom 50.91, mom_d0.25_gmom 50.48, mom_d1_gmom 51.81, gmom_s1 51.44, share_trend_l0.5 49.58, share_trend_l1 49.44, advance_t0.5 53.02, advance_t1 54.71
+    over the floor: b0 -0.32, copy -1.12, none_gmom +0.04, b0_gmom +0.91, mom_d0.25_gmom +0.48, mom_d1_gmom +1.81, gmom_s1 +1.44, share_trend_l0.5 -0.42, share_trend_l1 -0.56, advance_t0.5 +3.02, advance_t1 +4.71
+    copy (copy - none_gmom): -1.16 points, sd 0.06, ahead 0 of 10, per seed -1.25 to -1.07 (de_recovery -0.15, direction -0.13, distribution -0.58, covariance -0.29)
+    gmom_s1 (gmom_s1 - none_gmom): +1.40 points, sd 0.04, ahead 10 of 10, per seed +1.35 to +1.48 (de_recovery +0.17, direction +0.14, distribution +0.70, covariance +0.39)
+    mom_d0.25_gmom (mom_d0.25_gmom - none_gmom): +0.44 points, sd 0.05, ahead 10 of 10, per seed +0.34 to +0.51 (de_recovery +0.13, direction +0.04, distribution +0.16, covariance +0.11)
+    b0_gmom (b0_gmom - none_gmom): +0.88 points, sd 0.05, ahead 10 of 10, per seed +0.80 to +0.95 (de_recovery +0.24, direction +0.09, distribution +0.32, covariance +0.23)
+    mom_d1_gmom (mom_d1_gmom - none_gmom): +1.78 points, sd 0.12, ahead 10 of 10, per seed +1.62 to +2.02 (de_recovery +0.54, direction +0.14, distribution +0.63, covariance +0.47)
+    b0 (b0 - none_gmom): -0.35 points, sd 0.05, ahead 0 of 10, per seed -0.41 to -0.29 (de_recovery +0.04, direction -0.03, distribution -0.28, covariance -0.08)
+    share_trend_l0.5 (share_trend_l0.5 - none_gmom): -0.46 points, sd 0.18, ahead 0 of 10, per seed -0.71 to -0.12 (de_recovery -0.08, direction -0.11, distribution -0.17, covariance -0.10)
+    share_trend_l1 (share_trend_l1 - none_gmom): -0.59 points, sd 0.22, ahead 0 of 10, per seed -0.86 to -0.08 (de_recovery -0.10, direction -0.18, distribution -0.20, covariance -0.11)
+    advance_t0.5 (advance_t0.5 - none_gmom): +2.99 points, sd 0.36, ahead 10 of 10, per seed +2.50 to +3.66 (de_recovery +0.39, direction +0.51, distribution +1.16, covariance +0.93)
+    advance_t1 (advance_t1 - none_gmom): +4.68 points, sd 0.42, ahead 10 of 10, per seed +3.94 to +5.36 (de_recovery +0.62, direction +0.90, distribution +1.58, covariance +1.59)
+    gmom_on_copy (none_gmom - copy): +1.16 points, sd 0.06, ahead 10 of 10, per seed +1.07 to +1.25 (de_recovery +0.15, direction +0.13, distribution +0.58, covariance +0.29)
+    gmom_on_b0 (b0_gmom - b0): +1.23 points, sd 0.06, ahead 10 of 10, per seed +1.10 to +1.29 (de_recovery +0.20, direction +0.12, distribution +0.60, covariance +0.31)
+cut whole: valid
+    gate: largest per-seed difference from T11's b0 {'b0': 0.0}
+    mean scores: b0 44.12, copy 43.38, none_gmom 44.49, b0_gmom 45.25, mom_d0.25_gmom 44.86, mom_d1_gmom 46.10, gmom_s1 45.82, share_trend_l0.5 44.12, share_trend_l1 44.03, advance_t0.5 47.82, advance_t1 50.38
+    over the floor: b0 -5.88, copy -6.62, none_gmom -5.51, b0_gmom -4.75, mom_d0.25_gmom -5.14, mom_d1_gmom -3.90, gmom_s1 -4.18, share_trend_l0.5 -5.88, share_trend_l1 -5.97, advance_t0.5 -2.18, advance_t1 +0.38
+    copy (copy - none_gmom): -1.10 points, sd 0.06, ahead 0 of 10, per seed -1.25 to -1.03 (de_recovery -0.14, direction -0.13, distribution -0.56, covariance -0.27)
+    gmom_s1 (gmom_s1 - none_gmom): +1.33 points, sd 0.08, ahead 10 of 10, per seed +1.22 to +1.44 (de_recovery +0.14, direction +0.14, distribution +0.68, covariance +0.37)
+    mom_d0.25_gmom (mom_d0.25_gmom - none_gmom): +0.37 points, sd 0.06, ahead 10 of 10, per seed +0.29 to +0.49 (de_recovery +0.08, direction +0.05, distribution +0.14, covariance +0.10)
+    b0_gmom (b0_gmom - none_gmom): +0.76 points, sd 0.12, ahead 10 of 10, per seed +0.62 to +0.98 (de_recovery +0.17, direction +0.10, distribution +0.29, covariance +0.21)
+    mom_d1_gmom (mom_d1_gmom - none_gmom): +1.61 points, sd 0.15, ahead 10 of 10, per seed +1.42 to +1.91 (de_recovery +0.40, direction +0.21, distribution +0.57, covariance +0.44)
+    b0 (b0 - none_gmom): -0.37 points, sd 0.08, ahead 0 of 10, per seed -0.52 to -0.22 (de_recovery +0.02, direction -0.01, distribution -0.29, covariance -0.08)
+    share_trend_l0.5 (share_trend_l0.5 - none_gmom): -0.37 points, sd 0.22, ahead 0 of 10, per seed -0.74 to -0.04 (de_recovery -0.05, direction -0.09, distribution -0.14, covariance -0.09)
+    share_trend_l1 (share_trend_l1 - none_gmom): -0.45 points, sd 0.27, ahead 1 of 10, per seed -0.76 to +0.16 (de_recovery -0.08, direction -0.14, distribution -0.14, covariance -0.09)
+    advance_t0.5 (advance_t0.5 - none_gmom): +3.33 points, sd 0.29, ahead 10 of 10, per seed +2.85 to +3.89 (de_recovery +0.29, direction +0.57, distribution +1.54, covariance +0.94)
+    advance_t1 (advance_t1 - none_gmom): +5.89 points, sd 0.40, ahead 10 of 10, per seed +4.98 to +6.36 (de_recovery +0.59, direction +1.16, distribution +2.46, covariance +1.69)
+    gmom_on_copy (none_gmom - copy): +1.10 points, sd 0.06, ahead 10 of 10, per seed +1.03 to +1.25 (de_recovery +0.14, direction +0.13, distribution +0.56, covariance +0.27)
+    gmom_on_b0 (b0_gmom - b0): +1.13 points, sd 0.08, ahead 10 of 10, per seed +1.01 to +1.25 (de_recovery +0.15, direction +0.12, distribution +0.58, covariance +0.29)
+library 1: valid
+    mean scores: copy_last 44.66, oracle_mix 71.52, none_gmom 72.32, b0 74.78, b0_gmom 75.56, mom_d0.25_gmom 73.97, mom_d1_gmom 78.21, gmom_s1 73.44, advance_t0.5 73.57, advance_t1 74.10, own_copy 45.17, own_none_gmom 46.29, share_trend_l0.5 45.79, share_trend_l1 45.45
+    copy (own_copy - own_none_gmom): -1.11 points, sd 0.12, ahead 0 of 10, per seed -1.30 to -0.95 (de_recovery -0.30, direction -0.15, distribution -0.43, covariance -0.23)
+    gmom_s1 (gmom_s1 - none_gmom): +1.12 points, sd 0.19, ahead 10 of 10, per seed +0.91 to +1.61 (de_recovery +0.33, direction +0.16, distribution +0.43, covariance +0.21)
+    mom_d0.25_gmom (mom_d0.25_gmom - none_gmom): +1.66 points, sd 0.22, ahead 10 of 10, per seed +1.17 to +1.98 (de_recovery +0.51, direction +0.20, distribution +0.78, covariance +0.17)
+    b0_gmom (b0_gmom - none_gmom): +3.24 points, sd 0.37, ahead 10 of 10, per seed +2.44 to +3.61 (de_recovery +1.02, direction +0.40, distribution +1.46, covariance +0.36)
+    mom_d1_gmom (mom_d1_gmom - none_gmom): +5.89 points, sd 0.87, ahead 10 of 10, per seed +4.38 to +7.24 (de_recovery +1.95, direction +0.79, distribution +2.35, covariance +0.81)
+    b0 (b0 - none_gmom): +2.46 points, sd 0.26, ahead 10 of 10, per seed +1.89 to +2.84 (de_recovery +0.78, direction +0.28, distribution +1.20, covariance +0.20)
+    share_trend_l0.5 (share_trend_l0.5 - own_none_gmom): -0.49 points, sd 0.24, ahead 0 of 10, per seed -0.82 to -0.10 (de_recovery -0.09, direction -0.14, distribution -0.20, covariance -0.07)
+    share_trend_l1 (share_trend_l1 - own_none_gmom): -0.83 points, sd 0.22, ahead 0 of 10, per seed -1.08 to -0.45 (de_recovery -0.15, direction -0.28, distribution -0.29, covariance -0.11)
+    advance_t0.5 (advance_t0.5 - none_gmom): +1.25 points, sd 0.25, ahead 10 of 10, per seed +0.86 to +1.56 (de_recovery +0.44, direction +0.31, distribution +0.32, covariance +0.18)
+    advance_t1 (advance_t1 - none_gmom): +1.79 points, sd 0.57, ahead 10 of 10, per seed +0.98 to +2.56 (de_recovery +0.64, direction +0.48, distribution +0.31, covariance +0.35)
+library 2: valid
+    mean scores: copy_last 46.72, oracle_mix 87.53, none_gmom 88.13, b0 90.96, b0_gmom 91.40, mom_d0.25_gmom 89.79, mom_d1_gmom 93.62, gmom_s1 88.87, advance_t0.5 90.01, advance_t1 90.42, own_copy 48.87, own_none_gmom 49.73, share_trend_l0.5 49.09, share_trend_l1 48.56
+    copy (own_copy - own_none_gmom): -0.86 points, sd 0.15, ahead 0 of 10, per seed -1.10 to -0.69 (de_recovery -0.32, direction +0.02, distribution -0.29, covariance -0.27)
+    gmom_s1 (gmom_s1 - none_gmom): +0.73 points, sd 0.30, ahead 10 of 10, per seed +0.40 to +1.36 (de_recovery +0.25, direction +0.09, distribution +0.04, covariance +0.35)
+    mom_d0.25_gmom (mom_d0.25_gmom - none_gmom): +1.66 points, sd 0.55, ahead 10 of 10, per seed +0.81 to +2.66 (de_recovery +0.48, direction +0.12, distribution +0.74, covariance +0.31)
+    b0_gmom (b0_gmom - none_gmom): +3.27 points, sd 0.91, ahead 10 of 10, per seed +1.65 to +4.77 (de_recovery +0.86, direction +0.25, distribution +1.52, covariance +0.64)
+    mom_d1_gmom (mom_d1_gmom - none_gmom): +5.49 points, sd 1.17, ahead 10 of 10, per seed +3.43 to +6.96 (de_recovery +1.17, direction +0.29, distribution +2.68, covariance +1.35)
+    b0 (b0 - none_gmom): +2.82 points, sd 0.89, ahead 10 of 10, per seed +1.35 to +4.25 (de_recovery +0.78, direction +0.18, distribution +1.48, covariance +0.38)
+    share_trend_l0.5 (share_trend_l0.5 - own_none_gmom): -0.65 points, sd 0.28, ahead 0 of 10, per seed -1.03 to -0.25 (de_recovery -0.09, direction -0.26, distribution -0.21, covariance -0.09)
+    share_trend_l1 (share_trend_l1 - own_none_gmom): -1.17 points, sd 0.27, ahead 0 of 10, per seed -1.48 to -0.57 (de_recovery -0.21, direction -0.49, distribution -0.32, covariance -0.15)
+    advance_t0.5 (advance_t0.5 - none_gmom): +1.87 points, sd 0.92, ahead 10 of 10, per seed +0.16 to +3.10 (de_recovery +0.50, direction +0.35, distribution +0.41, covariance +0.61)
+    advance_t1 (advance_t1 - none_gmom): +2.29 points, sd 1.29, ahead 9 of 10, per seed -0.44 to +3.98 (de_recovery +0.50, direction +0.48, distribution +0.44, covariance +0.87)
+library 3: valid
+    mean scores: copy_last 49.56, oracle_mix 70.65, none_gmom 71.44, b0 72.80, b0_gmom 73.55, mom_d0.25_gmom 72.52, mom_d1_gmom 75.15, gmom_s1 72.44, advance_t0.5 71.80, advance_t1 71.14, own_copy 53.55, own_none_gmom 54.66, share_trend_l0.5 54.39, share_trend_l1 54.16
+    copy (own_copy - own_none_gmom): -1.11 points, sd 0.09, ahead 0 of 10, per seed -1.22 to -0.94 (de_recovery -0.11, direction -0.10, distribution -0.63, covariance -0.27)
+    gmom_s1 (gmom_s1 - none_gmom): +1.00 points, sd 0.07, ahead 10 of 10, per seed +0.90 to +1.12 (de_recovery +0.10, direction +0.08, distribution +0.63, covariance +0.19)
+    mom_d0.25_gmom (mom_d0.25_gmom - none_gmom): +1.09 points, sd 0.15, ahead 10 of 10, per seed +0.88 to +1.44 (de_recovery +0.34, direction +0.15, distribution +0.36, covariance +0.23)
+    b0_gmom (b0_gmom - none_gmom): +2.11 points, sd 0.23, ahead 10 of 10, per seed +1.71 to +2.58 (de_recovery +0.68, direction +0.28, distribution +0.71, covariance +0.44)
+    mom_d1_gmom (mom_d1_gmom - none_gmom): +3.71 points, sd 0.36, ahead 10 of 10, per seed +3.21 to +4.39 (de_recovery +1.16, direction +0.49, distribution +1.30, covariance +0.76)
+    b0 (b0 - none_gmom): +1.36 points, sd 0.22, ahead 10 of 10, per seed +0.91 to +1.76 (de_recovery +0.63, direction +0.23, distribution +0.19, covariance +0.30)
+    share_trend_l0.5 (share_trend_l0.5 - own_none_gmom): -0.27 points, sd 0.36, ahead 1 of 10, per seed -0.83 to +0.49 (de_recovery -0.00, direction -0.08, distribution -0.12, covariance -0.07)
+    share_trend_l1 (share_trend_l1 - own_none_gmom): -0.50 points, sd 0.29, ahead 0 of 10, per seed -0.85 to -0.03 (de_recovery -0.02, direction -0.16, distribution -0.18, covariance -0.14)
+    advance_t0.5 (advance_t0.5 - none_gmom): +0.36 points, sd 0.40, ahead 7 of 10, per seed -0.25 to +0.86 (de_recovery +0.25, direction +0.20, distribution -0.34, covariance +0.24)
+    advance_t1 (advance_t1 - none_gmom): -0.30 points, sd 0.47, ahead 3 of 10, per seed -0.92 to +0.33 (de_recovery +0.15, direction +0.26, distribution -1.05, covariance +0.34)
+Ranges (J1a: the analogue readings' paired means, cuts and valid libraries; J6: 0 to the chamber cut's gain; J6 under D: the lowest analogue mean, or 0 if higher, to the chamber cut's gain):
+    copy: analogue -1.16 to -0.86; J6 +0.00 to +0.00; J6 under D -1.16 to +0.00
+    gmom_s1: analogue +0.73 to +1.40; J6 +0.00 to +1.40; J6 under D +0.00 to +1.40
+    mom_d0.25_gmom: analogue +0.37 to +1.66; J6 +0.00 to +0.44; J6 under D +0.00 to +0.44
+    b0_gmom: analogue +0.76 to +3.27; J6 +0.00 to +0.88; J6 under D +0.00 to +0.88
+    mom_d1_gmom: analogue +1.61 to +5.89; J6 +0.00 to +1.78; J6 under D +0.00 to +1.78
+    b0: analogue -0.37 to +2.82; J6 +0.00 to +0.00; J6 under D -0.37 to +0.00
+    share_trend_l0.5: analogue -0.65 to -0.27; J6 +0.00 to +0.00; J6 under D -0.65 to +0.00
+    share_trend_l1: analogue -1.17 to -0.45; J6 +0.00 to +0.00; J6 under D -1.17 to +0.00
+    advance_t0.5: analogue +0.36 to +3.33; J6 +0.00 to +2.99; J6 under D +0.00 to +2.99
+    advance_t1: analogue -0.30 to +5.89; J6 +0.00 to +4.68; J6 under D -0.30 to +4.68
+Commit fa2b09bbf3fd4df31155b4c9c82d7d2e04a2ac67, tree clean True, UTC 2026-11-19T18:08:34Z
