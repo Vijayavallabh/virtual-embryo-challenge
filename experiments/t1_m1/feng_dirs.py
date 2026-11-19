@@ -15,6 +15,15 @@ in the readout's population prediction (`cm_includes`).
 `bracket` (default today's E9.5 -> E14.5, byte-identical) names the two Feng stages a direction spans; the late-proxy
 tries (experiments/harness/TRIES.md T13-T18, the X002 amendment of 2026-11-10) use E14.5 -> E18, the one bracket
 legal on every T1 pseudo-task. `direction_halves` and `eb_shrink` serve the same tries.
+
+`groups` (default "authors", byte-identical) names the cell groups. "none" forms no direction at all and reads no Feng
+file (main's option, unchanged). "recomputed" forms them from the permitted-only relabelling of
+experiments/external/feng_relabel.py (feng_relabel.yaml's group map and fallback; the organiser's condition of
+2026-11-16 on annotations learned using protected cells, register row X002). That path reads the recomputed statistics
+file alone, refuses it unless its manifest says it was written by feng_relabel through its gate (frozen yaml as it
+stands, no unsourced gene, committed code, a clean tree, row N54 and the ruling), passed the yaml's unassigned cap and
+is committed at HEAD as the labeller's RECORD byte for byte, and refuses any key whose label is not a recomputed one.
+Its record carries the yaml's terminal route.
 """
 
 from __future__ import annotations
@@ -41,8 +50,13 @@ X002_AMENDMENT = "E14.5 -> E18"  # the key phrase of X002's late-proxy amendment
 # The cell groups Feng's direction is formed on (build_test.py t1 --feng-groups; off by default). "authors": Feng's own
 # labels, every file as built. "none": no Feng direction on any group and no Feng file read (docs/PLAN.md decision
 # log 2026-11-19 (a) to (e): the authors' labels were made with every stage pooled, the in-window ones included, and
-# an organiser's condition of 2026-11-16 excludes such annotations).
-FENG_GROUPS = ("authors", "none")
+# an organiser's condition of 2026-11-16 excludes such annotations). "recomputed": the groups
+# experiments/external/feng_relabel.py recomputes from permitted cells alone (register rows X002 and X010), off unless
+# asked for; only the captain's ruling puts it in an upload. "authors" stays first (the default).
+FENG_GROUPS = ("authors", "none", "recomputed")
+RELABEL_CONFIG = REPO / "experiments" / "external" / "feng_relabel.yaml"
+RELABEL_SOURCE = "feng_relabel"  # the `source` of the recomputed file's manifest
+RELABEL_PREFIX = "r_"  # every recomputed label starts with it (feng_relabel.LABEL_PREFIX); no author label does
 
 
 def load_config(path: Path = CONFIG) -> dict:
@@ -103,11 +117,14 @@ def feng_directions(genes, cfg: dict | None = None, stats_path: Path | None = No
     group with Feng labels and at least min_cells_ext cells at both ends; and a record (file, sha256, bracket, groups,
     cells, mapped genes). stats_path: default the clean GEO reduction's statistics. groups: "authors" (the default,
     every file as built) forms the directions on Feng's own labels; "none" forms no direction on any group and reads
-    nothing, neither the config nor any Feng file (the record then names no file)."""
+    nothing, neither the config nor any Feng file (the record then names no file); "recomputed"
+    (`recomputed_directions`) forms them on the permitted-only groups of experiments/external/feng_relabel.py."""
     if groups not in FENG_GROUPS:
         raise ValueError(f"groups must be one of {FENG_GROUPS}, got {groups!r}")
     if groups == "none":
         return {}, {"file": None, "sha256": None, "groups": {}, "feng_groups": "none"}  # no step, so no bracket
+    if groups == "recomputed":
+        return recomputed_directions(genes, cfg, stats_path, bracket)
     cfg = cfg or load_config()
     path = Path(stats_path) if stats_path is not None else clean_stats_path()
     entry = fio.verify_manifest_output(path)
@@ -117,6 +134,138 @@ def feng_directions(genes, cfg: dict | None = None, stats_path: Path | None = No
     record = {"file": str(path.relative_to(REPO)), "sha256": entry["sha256"], "bracket": list(bracket),
               "pseudocount_cp10k": eps, "min_cells_ext": mc, "groups": cells,
               "mapped_genes": int((idx >= 0).sum()), "of_genes": len(idx)}
+    return out, record
+
+
+# ------------------------------------------------------------------ the recomputed groups (off by default)
+
+
+def load_relabel_config(path: Path | None = None) -> dict:
+    """experiments/external/feng_relabel.yaml, structurally checked by the labeller's own check."""
+    import feng_relabel
+
+    return feng_relabel.load_config(RELABEL_CONFIG if path is None else path)
+
+
+def recomputed_stats_path(rcfg: dict | None = None) -> Path:
+    """The recomputed statistics file the yaml names (output.dir / output.stats)."""
+    rcfg = rcfg or load_relabel_config()
+    return REPO / rcfg["output"]["dir"] / rcfg["output"]["stats"]
+
+
+def groups_config(cfg: dict, rcfg: dict) -> dict:
+    """The readout's config with its Feng label lists (each group's first external list) replaced by the recomputed
+    labels of feng_relabel.yaml's group map; a group the map does not name (Blood, Hepatocyte, ventricularCM) gets no
+    Feng labels and so no direction. The JAX lists, the harmonisation and the metrics are untouched; the file
+    experiments/t1_direction/config.yaml itself is never edited."""
+    out = dict(cfg)
+    out["external_labels"] = {g: [list(rcfg["groups"][g]) if g in rcfg["groups"] else None, *labs[1:]]
+                              for g, labs in cfg["external_labels"].items()}
+    return out
+
+
+def record_matches(man_path: Path) -> bool:
+    """The labeller's manifest at `man_path` is committed at HEAD as its RECORD, byte for byte (so the run is on the
+    record before any reader takes its file)."""
+    import feng_relabel
+
+    head = feng_relabel.committed_at_head(feng_relabel.RECORD)
+    return head is not None and head == Path(man_path).read_bytes()
+
+
+def check_recomputed(path: Path, relabel_config: Path | None = None, require_usable: bool = True,
+                     require_record: bool = True) -> tuple[dict, dict]:
+    """The recomputed statistics file's checks, all before it is read: listed with a matching sha256 in its manifest
+    (filterio.verify_manifest_output), written by feng_relabel through its gate (the yaml frozen, no gene unsourced,
+    the labeller's code committed, a clean tree, row N54 and a ruling recorded), marked usable (the yaml's per-stage
+    unassigned cap passed; `require_usable` False only for N54's listing, which forms no direction from an unusable
+    file), written from the yaml as it stands now (its sha256), and its manifest committed at HEAD as the labeller's
+    RECORD (`require_record`; final review, lesser point 1). Returns the manifest entry and the manifest."""
+    entry = fio.verify_manifest_output(path)
+    man_path = next(d / "MANIFEST.json" for d in Path(path).resolve().parents if (d / "MANIFEST.json").exists())
+    man = yaml.safe_load(man_path.read_text())  # JSON is YAML
+    if man.get("source") != RELABEL_SOURCE:
+        raise ValueError(f"{path} was not written by feng_relabel (manifest source {man.get('source')!r}): the "
+                         "recomputed option reads only the permitted-only relabelling")
+    gate = man.get("gate") or {}
+    if man.get("config", {}).get("status") != "frozen":
+        raise ValueError(f"{path} was written from a yaml that was not frozen")
+    if man.get("unsourced") or man.get("allow_unsourced"):
+        raise ValueError(f"{path} was written with unsourced genes")
+    if man.get("provenance", {}).get("git_uncommitted"):
+        raise ValueError(f"{path} was written by uncommitted labeller code")
+    if not (gate.get("clean") is True and gate.get("row") == "N54" and gate.get("ruling")):
+        raise ValueError(f"{path} was written without the labeller's gate (clean tree, row N54, the ruling)")
+    if require_usable and entry.get("usable") is not True:
+        raise ValueError(f"{path} is marked unusable by its manifest (the per-stage unassigned cap failed: "
+                         f"{man.get('cap')}); the terminal rule's route is none")
+    want = fio.sha256_file(RELABEL_CONFIG if relabel_config is None else relabel_config)
+    if man.get("config", {}).get("sha256") != want:
+        raise ValueError(f"{path} was written from another feng_relabel.yaml (sha256 "
+                         f"{man.get('config', {}).get('sha256')}, now {want}): relabel again under a new row")
+    if require_record and not record_matches(man_path):
+        raise ValueError(f"{path}: the relabelling's manifest is not committed at HEAD as the labeller's RECORD (byte "
+                         "for byte): commit it first, so the run is on the record before anything reads its file")
+    return entry, man
+
+
+def check_recomputed_keys(st: dict) -> None:
+    """Every key's label part is a recomputed label: no author label can come back through this file."""
+    bad = sorted({k.split("|")[2] for k in st["keys"] if not k.split("|")[2].startswith(RELABEL_PREFIX)})
+    if bad:
+        raise ValueError(f"the recomputed statistics hold labels that are not recomputed: {bad[:5]}")
+
+
+def apply_fallback(dirs: dict[str, np.ndarray], rcfg: dict) -> tuple[dict[str, np.ndarray], dict]:
+    """feng_relabel.yaml's group-level fallback: a group of its map without its own direction (fewer than min_cells_ext
+    cells at an end) takes its fallback group's own direction, or none ('none', or a fallback without its own
+    direction). One level: only own directions are handed on. Returns the directions and, per group, what it took."""
+    own = set(dirs)
+    out = dict(dirs)
+    record = {}
+    for g in rcfg["groups"]:
+        if g in own:
+            record[g] = {"own": True, "fired": False, "takes": g}
+            continue
+        fb = rcfg["fallback"].get(g, "none")
+        takes = fb if fb != "none" and fb in own else None
+        if takes is not None:
+            out[g] = np.array(dirs[takes], copy=True)
+        record[g] = {"own": False, "fired": True, "takes": takes}
+    return out, record
+
+
+def recomputed_directions(genes, cfg: dict | None = None, stats_path: Path | None = None,
+                          bracket: tuple[str, str] = BRACKET, relabel_config: Path | None = None
+                          ) -> tuple[dict[str, np.ndarray], dict]:
+    """As feng_directions, on the recomputed groups: the recomputed file (default the yaml's) after check_recomputed
+    and check_recomputed_keys, the readout's pseudocount and minimum (the yaml's minimum must equal it), the yaml's
+    group map in place of the authors' labels, then the yaml's fallback. The returned directions hold only the groups
+    with a direction after the fallback (a group with none is absent, so no cell of it moves). The record names the
+    file, its sha256, the yaml's sha256 and the route, and says which groups fell back."""
+    cfg = cfg or load_config()
+    rpath = RELABEL_CONFIG if relabel_config is None else Path(relabel_config)
+    rcfg = load_relabel_config(rpath)
+    if int(rcfg["min_cells_ext"]) != int(cfg["metrics"]["min_cells_ext"]):
+        raise ValueError("feng_relabel.yaml's min_cells_ext differs from the readout's")
+    path = Path(stats_path) if stats_path is not None else recomputed_stats_path(rcfg)
+    entry, man = check_recomputed(path, rpath)
+    st = dl.load_stats(path)
+    check_recomputed_keys(st)
+    out, cells, idx = directions_from_stats(st, genes, groups_config(cfg, rcfg), bracket)
+    out, fired = apply_fallback(out, rcfg)
+    import feng_relabel
+
+    route = feng_relabel.route(entry.get("usable") is True, fired, rcfg)
+    eps, mc = cfg["metrics"]["pseudocount_cp10k"], cfg["metrics"]["min_cells_ext"]
+    try:
+        shown = str(path.resolve().relative_to(REPO))
+    except ValueError:
+        shown = str(path)
+    record = {"file": shown, "sha256": entry["sha256"], "bracket": list(bracket), "pseudocount_cp10k": eps,
+              "min_cells_ext": mc, "groups": cells, "mapped_genes": int((idx >= 0).sum()), "of_genes": len(idx),
+              "feng_groups": "recomputed", "relabel_config_sha256": fio.sha256_file(rpath), "fallbacks": fired,
+              "with_direction": sorted(out), "route": route, "relabel_gate": man.get("gate")}
     return out, record
 
 

@@ -13,7 +13,7 @@ import numpy as np
 import pytest
 from test_g_mom_verify import _small_inputs
 from test_hidden_counts import T1_HELD, t1_env  # noqa: F401  (the synthetic build_t1 fixture)
-from test_t1_feng_groups_none import TARGET, _sha, _target_env, bt  # noqa: F401
+from test_t1_feng_groups_none import TARGET, _sha, _target_env
 from test_t1_scope import GENES, HELD
 from test_t1_state_transport import _gmom_ctx
 
@@ -27,6 +27,17 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "experiments" / "t1_m1" / "bets_read.py"
 BOARD = Board(key="pseudo:t61", task="T1", genes=list(GENES), needs_coords=False, min_cells=100, max_cells=600)
 SHARES = {"cm": 0.6, "endocardium": 0.25, "blood": 0.15}
+
+
+@pytest.fixture
+def bt(monkeypatch):
+    """The builder, with no permitted-only relabelling recorded, so a relabelling record committed later does not
+    change these none builds (the final check of the fix round, item C); tests/test_feng_relabel.py covers the record
+    and tests/test_t1_feng_groups_none.py pins the none path's refusal once one routes to recomputed."""
+    import build_test
+
+    monkeypatch.setattr(build_test, "_relabel_record", lambda: None)  # main's none path before any relabelling
+    return build_test
 
 
 @pytest.fixture

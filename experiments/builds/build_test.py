@@ -37,7 +37,19 @@ machine, and an official upload needs the captain's go-ahead.
           --bet-strength (try T61 of experiments/harness/TRIES.md; off by default, --feng-groups none only): that file
           with its cells drawn at the chamber mix moved along the E9.5 -> E10.5-portions trend, or drawn inside each
           category towards the released momentum axis (vec.t1_bets). Both change composition, a lever the
-          post-exposure block closes: refused unless --captain-ruling names the captain's ruling row for the arm
+          post-exposure block closes: refused unless --captain-ruling names the captain's ruling row for the arm.
+          After a permitted-only relabelling whose record routes to recomputed, none is also refused unless
+          --feng-none-ruling names a later decision-log entry of the captain (naming N54 and containing "sets the
+          N54 route aside", not the run's own ruling, made after the record's commit) that sets the route aside;
+          before any relabelling, none builds as before.
+          --feng-groups recomputed (off unless the captain rules): the same one command, t1 --g-mom --base lib3, with
+          Feng's direction formed on the groups experiments/external/feng_relabel.py recomputes from the permitted
+          cells' raw counts (register rows X002 and X010), R1 and R2 as in the first upload. Refused, before
+          anything is read, with any other base or option of that list (and with --no-feng-hygiene), and unless the
+          labeller's record is committed at HEAD with the route recomputed; then refused unless the recomputed file
+          passes feng_dirs.check_recomputed. R1's hold and g_mom's mask follow the groups with a recomputed direction
+          after the fallback: a group without one moves no cell and g_mom leaves it alone. The record's feng_groups
+          field names the file, its sha256, the yaml's sha256, the route, the fallbacks and the gate
   heart   B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
           procedure: --entry s1 = scope hypothesis H1; s2_trim = the s2 of docs/S2_RULES.md (H2 as a trim to half
           E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`). --trend
@@ -117,6 +129,10 @@ G_MOM_EDIT_CATEGORIES = ("cm", "endocardium")
 # its place: no Feng file is read, and neither is any list that was fixed by counting Feng's cells (docs/PLAN.md
 # decision log 2026-11-19 (a) to (e): the authors' labels were made with every stage pooled, the in-window ones
 # included, which an organiser's condition of 2026-11-16 excludes). Only the captain's ruling puts it in an upload.
+# "recomputed" is the first upload's design on the groups experiments/external/feng_relabel.py recomputes from the
+# permitted cells' raw counts alone (register rows X002 and X010; the captain's "utilize the atlases", decision log
+# 2026-11-19 (k)): it builds one file, the first upload's command, and only when the labeller's committed record routes
+# to it. Only the captain's ruling puts it in an upload.
 FENG_GROUPS = feng_dirs.FENG_GROUPS
 FENG_GROUPS_DEFAULT = FENG_GROUPS[0]
 # R6 of experiments/harness/TRIES.md (2026-11-13: the AI assistant's decision under the captain's delegation,
@@ -226,20 +242,48 @@ def _no_blood(direction_groups) -> None:
 
 def _feng_directions(genes, feng_groups: str = FENG_GROUPS_DEFAULT):
     """feng_dirs.feng_directions on the groups --feng-groups names. The default makes exactly the call the entries were
-    built with (no keyword), so the default build is unchanged; "none" asks for no direction and reads no Feng file."""
+    built with (no keyword), so the default build is unchanged; "none" asks for no direction and reads no Feng file;
+    "recomputed" asks for the permitted-only groups of experiments/external/feng_relabel.py (refused there unless that
+    file is written through the labeller's gate, hashed in its manifest, usable, made from the yaml as it stands and
+    its manifest committed as the labeller's RECORD), and is refused here unless the yaml's terminal rule routes that
+    relabelling to recomputed."""
     if feng_groups == FENG_GROUPS_DEFAULT:
         return feng_dirs.feng_directions(genes)
-    return feng_dirs.feng_directions(genes, groups=feng_groups)
+    if feng_groups != "recomputed":
+        return feng_dirs.feng_directions(genes, groups=feng_groups)
+    import feng_relabel
+
+    try:
+        directions, ext = feng_dirs.feng_directions(genes, groups=feng_groups)
+    except (ValueError, FileNotFoundError, StopIteration, feng_relabel.Refused) as e:
+        sys.exit(f"--feng-groups recomputed is refused: {e}")
+    if ext.get("route") != "recomputed":
+        sys.exit(f"--feng-groups recomputed is refused: feng_relabel.yaml's terminal rule routes this relabelling to "
+                 f"'{ext.get('route')}' (fallbacks {ext.get('fallbacks')}); the rule's file is --feng-groups "
+                 f"{ext.get('route')}")
+    return directions, ext
 
 
 def _g_mom_covered(groups: dict, directions, feng_groups: str = FENG_GROUPS_DEFAULT) -> set[str]:
     """The labels g_mom's hook checks its edits against. Default: the labels the build moved along Feng's direction
     (as before). Under --feng-groups none: the labels the readout config's regexes give a group (`_labels_without_group`
     names the others), the same rule as the hook's own mask under none, so the check is a self-check there.
-    vec.t1_state_transport.R1_FENG_GROUPS, a list fixed in N12 by counting Feng cells, is not read."""
+    vec.t1_state_transport.R1_FENG_GROUPS, a list fixed in N12 by counting Feng cells, is not read. Under recomputed:
+    the default rule, the labels whose group has a recomputed direction after the fallback (`directions` holds only
+    those groups), which is also the hook's own mask there (`_labels_without_direction`)."""
     if feng_groups == "none":
         return {lab for lab, group in groups.items() if not group.startswith(NO_GROUP)}
     return {lab for lab, group in groups.items() if group in directions}
+
+
+def _labels_without_direction(labels, with_direction) -> set[str]:
+    """Under --feng-groups recomputed, the labels g_mom holds back inside the categories it edits: those whose group
+    (the readout config's regexes, `feng_dirs.label_groups`) has no recomputed direction after the fallback, labels
+    with no group included. It takes the place of R1's mask (vec.t1_state_transport.r1_unbracketed_labels), whose list
+    R1_FENG_GROUPS was fixed in N12 by counting cells under the authors' labels, so R1's mask in the build (cells of a
+    group without a direction keep their E10.5 counts) and g_mom's mask follow the same groups."""
+    groups = feng_dirs.label_groups(sorted({str(x) for x in labels}))
+    return {lab for lab, group in groups.items() if group not in set(with_direction)}
 
 
 NO_GROUP = "other:"  # what the readout config's harmonisation gives a label that none of its regexes matches
@@ -279,6 +323,71 @@ def _feng_none_refusals(a) -> None:
                  "this file has none")
     if a.strong_null:
         sys.exit("--feng-groups none is refused with --strong-null: its prior acts on the cells Feng's direction moves")
+    _none_after_relabelling(getattr(a, "feng_none_ruling", None))
+
+
+def _relabel_record() -> dict | None:
+    """The permitted-only relabelling's record (experiments/external/feng_relabel.py RECORD), as in the tree or else
+    as committed at HEAD; None while no relabelling exists. Its route is the yaml's terminal rule's outcome."""
+    import feng_relabel
+
+    raw = feng_relabel.RECORD.read_bytes() if feng_relabel.RECORD.exists() else feng_relabel.committed_at_head(
+        feng_relabel.RECORD)
+    return None if raw is None else json.loads(raw)
+
+
+def _none_after_relabelling(ruling: str | None) -> None:
+    """The final review's lesser point 1, for --feng-groups none. Before any relabelling exists, none builds as on main
+    (and --feng-none-ruling is refused: it has nothing to override). After a relabelling whose recorded route is
+    recomputed, none is refused unless --feng-none-ruling names a later docs/PLAN.md decision-log entry of the captain,
+    naming N54 and containing the fixed phrase "sets the N54 route aside" (feng_relabel.NONE_RULING_PHRASE): not the
+    ruling that authorised the run (the record's gate), dated on or after the record's commit, and not yet in
+    docs/PLAN.md at that commit, which must be readable there (feng_relabel.later_ruling; the review of the port, lesser
+    point 2; the final check of the fix round, items E and F). A switch to none made after N54's listing (which compares
+    with the authors' groups) would otherwise be a choice by similarity to the authors' labels."""
+    import feng_relabel
+
+    rec = _relabel_record()
+    if rec is None or rec.get("route") != "recomputed":
+        if ruling is not None:
+            sys.exit("--feng-none-ruling is refused: no relabelling routes to recomputed, so --feng-groups none needs "
+                     "no ruling")
+        return
+    why = ("no --feng-none-ruling" if ruling is None else
+           feng_relabel.later_ruling(ruling, feng_relabel.RECORD, feng_relabel.ROW,
+                                     excluded=[(rec.get("gate") or {}).get("ruling")],
+                                     phrase=feng_relabel.NONE_RULING_PHRASE))
+    if why is not None:
+        sys.exit("--feng-groups none is refused: the permitted-only relabelling's record routes T1's file to "
+                 "recomputed (feng_relabel.yaml's terminal rule); only a later ruling of the captain, a docs/PLAN.md "
+                 "decision-log entry naming N54 and containing \"sets the N54 route aside\", given as "
+                 "--feng-none-ruling, other than the run's own ruling, dated on or after the record's commit and not "
+                 f"yet in docs/PLAN.md then, sets that aside ({why})")
+
+
+def _feng_recomputed_refusals(a) -> None:
+    """--feng-groups recomputed builds one file: the first upload's command (FENG_NONE_COMMAND, t1 --g-mom --base lib3)
+    on the recomputed groups, with R1 and R2 as in that upload. Refused before anything is read: without --g-mom, with
+    --base pooled or mid, --cm-share, --blood-share, --lib3-pair, --herd, --no-hold-unbracketed, --no-feng-hygiene,
+    --strong-null or --feng-none-ruling; then unless the labeller's record is committed at HEAD with the route
+    recomputed (the yaml's terminal rule)."""
+    import feng_relabel
+
+    if (not a.g_mom or a.base != "lib3" or a.cm_share is not None or a.blood_share is not None or a.lib3_pair
+            or a.herd or not a.hold_unbracketed or a.feng_hygiene is False or a.strong_null
+            or getattr(a, "feng_none_ruling", None) is not None):
+        sys.exit(f"--feng-groups recomputed builds one file: the first upload's command ({FENG_NONE_COMMAND}) on the "
+                 "recomputed groups; it is refused with --base pooled or mid, --cm-share, --blood-share, --lib3-pair, "
+                 "--herd, --no-hold-unbracketed, --no-feng-hygiene, --strong-null, --feng-none-ruling or without "
+                 "--g-mom")
+    head = feng_relabel.committed_at_head(feng_relabel.RECORD)
+    if head is None:
+        sys.exit("--feng-groups recomputed is refused: no permitted-only relabelling is committed "
+                 f"({feng_relabel.RECORD.relative_to(REPO_ROOT)} at HEAD)")
+    route = json.loads(head).get("route")
+    if route != "recomputed":
+        sys.exit(f"--feng-groups recomputed is refused: the committed relabelling's route is '{route}' "
+                 "(feng_relabel.yaml's terminal rule); the rule's file is --feng-groups none")
 
 
 # --released-bet (try T61 of experiments/harness/TRIES.md; off by default): a variant of T1's last file (the command
@@ -341,25 +450,28 @@ def _bet_refusals(a) -> None:
                  f"\"rules `{arm}` in\"")
 
 
-def _feng_group_names() -> list[str]:
+def _feng_group_names(feng_groups: str = FENG_GROUPS_DEFAULT) -> list[str]:
     """The names of Feng's direction groups from Feng's statistics alone, before any T1 file is read. The groups
     feng_dirs.feng_directions returns do not depend on the gene list it is given, so it is called on one placeholder
-    name (an empty list fails in dirlib.sym_index, whose empty index is a float array) and only the names are kept."""
-    return sorted(feng_dirs.feng_directions([""])[0])
+    name (an empty list fails in dirlib.sym_index, whose empty index is a float array) and only the names are kept.
+    The default makes exactly the call as before; recomputed asks for the recomputed groups' names."""
+    if feng_groups == FENG_GROUPS_DEFAULT:
+        return sorted(feng_dirs.feng_directions([""])[0])
+    return sorted(_feng_directions([""], feng_groups)[0])
 
 
-def _t1_union(hygiene_on: bool) -> dict | None:
+def _t1_union(hygiene_on: bool, feng_groups: str = FENG_GROUPS_DEFAULT) -> dict | None:
     """R2's union for --feng-hygiene, after R2's two refusals that need no T1 file, both made before anything else is
     read (R2: no E10.5 file is read before the build): hygiene.load_union refuses while configs/t1_hygiene.yaml pins no
     union_sha256 (until the build commit after N12) or pins another file's; then the Blood guard on the names of Feng's
-    direction groups. Off: None, and nothing is read."""
+    direction groups (on the groups --feng-groups names). Off: None, and nothing is read."""
     if not hygiene_on:
         return None
     try:
         union = hygiene.load_union()
     except hygiene.Refused as e:
         sys.exit(f"--feng-hygiene is refused: {e}")
-    _no_blood(_feng_group_names())
+    _no_blood(_feng_group_names() if feng_groups == FENG_GROUPS_DEFAULT else _feng_group_names(feng_groups))
     return union
 
 
@@ -403,7 +515,8 @@ def _t1_held(union: dict | None, direction_groups, build_genes) -> tuple[list[st
         "sources": union["sources"]}
 
 
-def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str], feng_direction: bool = True):
+def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str], feng_direction: bool = True,
+              with_direction=None):
     """The test build's g_mom step (--g-mom, default off; T1 try T11 of experiments/harness/TRIES.md; only the captain's
     ruling puts it in an upload): E9.5 is loaded here and nowhere else, and the factors are fitted exactly as the
     candidate's (`vec.harness.g_mom_pair_factors`: start E9.5, reference E10.5, the chamber categories of E10.5's own
@@ -425,7 +538,10 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str], f
     and edit; the held labels are `_labels_without_group`'s, the readout config's own rule, so R1_FENG_GROUPS is not
     read (the same cells on every label configs/t1_chamber_classes.yaml places in those categories); the record
     says so (applied last, with no Feng direction in the file), and covered_labels is `_g_mom_covered`'s, so the
-    check is a self-check."""
+    check is a self-check. with_direction (--feng-groups recomputed: the groups with a recomputed direction after
+    feng_relabel.yaml's fallback): the same fit, stream and edit; the held labels are `_labels_without_direction`'s,
+    the labels whose group has no recomputed direction, so g_mom's mask and R1's hold in the build follow the same
+    groups and R1_FENG_GROUPS (fixed under the authors' labels) is not read; the record says so."""
     from vec import t1_state_transport as ts
 
     start = load_stage(DATA / "T1/E9.5_RNA.h5ad", lineage=False)
@@ -451,12 +567,22 @@ def _t1_g_mom(ref, categories: list[str], seed: int, covered_labels: set[str], f
         record["held_flat"] = "the candidate's pre-registered list"
         record["mask"] = ("the cells of edit_categories whose label the readout config's regexes give a group (the "
                           "readout config's own rule; the list of groups with a Feng direction is not read)")
+    if with_direction is not None:  # --feng-groups recomputed: written only then
+        record["rule"] = record["rule"].replace("applied last (after Feng's direction)",
+                                                "applied last (after Feng's direction on the recomputed groups)")
+        record["rule"] = record["rule"].replace("R1's held labels unedited",
+                                                "labels of groups without a recomputed direction unedited")
+        record["mask"] = ("the cells of edit_categories whose label's group has a recomputed direction after the "
+                          f"fallback ({sorted(with_direction)}); R1_FENG_GROUPS is not read")
 
     def hook(pop):
         labels = pop.obs[t1_scope.LABEL_KEY].astype(str).to_numpy()
         cats = pop.obs[t1_scope.CATEGORY_KEY].astype(str).to_numpy()
-        held_labels = (ts.r1_unbracketed_labels(np.unique(labels)) if feng_direction
-                       else _labels_without_group(np.unique(labels)))
+        if with_direction is not None:
+            held_labels = _labels_without_direction(np.unique(labels), with_direction)
+        else:
+            held_labels = (ts.r1_unbracketed_labels(np.unique(labels)) if feng_direction
+                           else _labels_without_group(np.unique(labels)))
         no_edit = np.isin(labels, sorted(held_labels)) | ~np.isin(cats, G_MOM_EDIT_CATEGORIES)
         edited = set(labels[~no_edit & np.isin(cats, list(factors.categories))])
         if not edited <= set(covered_labels):
@@ -555,6 +681,10 @@ def build_t1(a) -> dict:
     _bet_refusals(a)  # nothing at all unless --released-bet (or one of its two companions) is given
     if feng_groups == "none":
         _feng_none_refusals(a)
+    elif feng_groups == "recomputed":
+        _feng_recomputed_refusals(a)
+    elif getattr(a, "feng_none_ruling", None) is not None:
+        sys.exit("--feng-none-ruling is refused without --feng-groups none")
     if a.g_mom and a.strong_null:
         sys.exit("--g-mom is refused with --strong-null: the two count edits have no ruled order and were never tested "
                  "together; a new row in experiments/harness/TRIES.md and the captain's ruling fix it first")
@@ -581,7 +711,7 @@ def build_t1(a) -> dict:
     # there is none (an explicit --feng-hygiene, the one case _feng_hygiene_on could refuse, was refused above)
     hygiene_on = False if feng_groups == "none" else _feng_hygiene_on(a.feng_hygiene, a.hold_unbracketed)
     prior = _t1_down_prior(a.strong_null, a.hold_unbracketed, hygiene_on)  # T12's, likewise
-    union = _t1_union(hygiene_on)
+    union = _t1_union(hygiene_on) if feng_groups == FENG_GROUPS_DEFAULT else _t1_union(hygiene_on, feng_groups)
     board, dry = _board("t1", a.board)
     ref = load_stage(DATA / "T1/E10.5_RNA.h5ad", lineage=False)
     momentum = _t1_momentum(a.hold_unbracketed)
@@ -616,7 +746,11 @@ def build_t1(a) -> dict:
     within_type, g_mom_record = ({}, None)
     if a.g_mom:
         covered = _g_mom_covered(groups, directions, feng_groups)  # the build's Feng-covered labels (none: self-check)
-        hook, g_mom_record = _t1_g_mom(ref, fit_categories, a.seed, covered, feng_direction=feng_groups != "none")
+        if feng_groups == "recomputed":  # g_mom's mask follows the groups with a recomputed direction
+            hook, g_mom_record = _t1_g_mom(ref, fit_categories, a.seed, covered, with_direction=sorted(directions))
+        else:
+            hook, g_mom_record = _t1_g_mom(ref, fit_categories, a.seed, covered,
+                                           feng_direction=feng_groups != "none")
         within_type = {"post_cells": hook}
     bet = getattr(a, "released_bet", None)
     bet_record = bet_pop = None
@@ -658,6 +792,15 @@ def build_t1(a) -> dict:
         rec["feng_groups"] = {"groups": feng_groups, "file": ext["file"], "sha256": ext["sha256"],
                               "direction_step": "removed: no cell is moved along any direction; \"entry\": \"M1\" "
                                                 "names the design this file comes from"}
+        if getattr(a, "feng_none_ruling", None) is not None:  # only after a relabelling routed to recomputed
+            rec["feng_groups"]["ruling_over_the_relabelling_route"] = a.feng_none_ruling
+    if feng_groups == "recomputed":  # likewise: written only then; "external" names the same file
+        rec["feng_groups"] = {"groups": feng_groups, "file": ext["file"], "sha256": ext["sha256"],
+                              "relabel_config_sha256": ext["relabel_config_sha256"], "route": ext["route"],
+                              "with_direction": ext["with_direction"], "fallbacks": ext["fallbacks"],
+                              "relabel_gate": ext["relabel_gate"],
+                              "groups_without_direction": "no cell of theirs moves: R1 holds them at their E10.5 "
+                                                          "counts and g_mom's mask holds them back"}
     if mid_record is not None:  # likewise: shares only, no cell number
         rec["mid_base"] = {"stream": [int(a.seed), T1_MID_STREAM], "categories": mid_record}
     if a.g_mom:
@@ -867,8 +1010,15 @@ def build_parser() -> argparse.ArgumentParser:
                                 "the entry; the list of groups with a Feng direction is not read). Refused "
                                 "without --g-mom and with --base pooled or mid, --cm-share, --blood-share, "
                                 "--lib3-pair, --herd, --no-hold-unbracketed, --feng-hygiene or --strong-null. The "
-                                "build record then says the direction step was removed. Only the captain's ruling "
-                                "puts it in an upload")
+                                "build record then says the direction step was removed. recomputed = the same one "
+                                "command on the groups experiments/external/feng_relabel.py recomputes from the "
+                                "permitted cells alone, refused unless its committed record routes to recomputed. "
+                                "Only the captain's ruling puts either in an upload")
+            p.add_argument("--feng-none-ruling", default=None,
+                           help="with --feng-groups none only, and only after a permitted-only relabelling whose "
+                                "record routes to recomputed: a later docs/PLAN.md decision-log entry of the captain "
+                                "(naming N54 and containing \"sets the N54 route aside\"; not the run's own "
+                                "ruling; added after the record's commit) that sets the route aside")
             p.add_argument("--released-bet", choices=tuple(RELEASED_BETS), default=None,
                            help="try T61 of experiments/harness/TRIES.md (off by default): a variant of T1's last file "
                                 "(--feng-groups none only) that changes which cells are drawn: share_trend (the "

@@ -174,6 +174,32 @@ def _late_proxy_load(path: Path) -> dict:
             "modules": _t1_hygiene().build_modules([str(g) for g in st["genes"]])}
 
 
+# The late-proxy hand-over on Feng's recomputed groups (experiments/external/feng_relabel.py, register row X002; off
+# unless a candidate built by `_lp(..., feng_groups="recomputed")` declares it; no such candidate is registered here: a
+# backtest on it is a scored try whose row comes first). The relabelling labels E9.5 and E14.5 only, so this hand-over
+# refuses (bracket_stats) until a row adds E18 to feng_relabel.yaml's stages.
+LP_STATS_RECOMPUTED = (REPO_ROOT / "data" / "derived" / "feng_relabel_c"
+                       / "cd1_stats_relabel.npz")  # feng_dirs.recomputed_stats_path() (feng_relabel.yaml output.dir)
+
+
+@lru_cache
+def _late_proxy_load_recomputed(path: Path) -> dict:
+    """As `_late_proxy_load`, on the recomputed statistics: the file checked by feng_dirs.check_recomputed (manifest,
+    written by feng_relabel from the yaml as it stands, usable, its manifest committed at HEAD as the labeller's
+    RECORD) and check_recomputed_keys (no author label), and the
+    readout's config with feng_relabel.yaml's group map in place of the authors' labels; the yaml rides along for its
+    fallback."""
+    fd = _feng_dirs()
+    fd.check_recomputed(path)
+    st = fd.dl.load_stats(path, fields=fd.dl.STAT_FIELDS)
+    fd.check_recomputed_keys(st)
+    rcfg = fd.load_relabel_config()
+    cfg = fd.load_config()
+    named = sorted({str(g) for key in ("sex_linked", "y_linked", "strain_named") for g in cfg["held_flat"][key]})
+    return {"stats": fd.bracket_stats(st, LP_BRACKET), "cfg": fd.groups_config(cfg, rcfg), "named": named,
+            "modules": _t1_hygiene().build_modules([str(g) for g in st["genes"]]), "relabel": rcfg}
+
+
 DERIVED = {
     # the pre-registered list (experiments/t1_direction): genes named in its config (sex-linked, Y-linked, strain)
     # plus its pool rule on E8.5 and E9.5; committed 2026-10-19 (c992e7a), nine days before the E10.5 file reached us
@@ -181,7 +207,10 @@ DERIVED = {
                             _held_flat_sources, _held_flat_load),
     # the late-proxy tries' statistics (above): external, so it enters through this hand-over and Candidate.externals
     "t1_late_proxy": Derived("T1", LP_STATS, _late_proxy_sources, _late_proxy_load),
+    # the same on Feng's recomputed groups (above): read only by a candidate that declares it; none does yet
+    "t1_late_proxy_recomputed": Derived("T1", LP_STATS_RECOMPUTED, _late_proxy_sources, _late_proxy_load_recomputed),
 }
+LP_DERIVED = {"authors": "t1_late_proxy", "recomputed": "t1_late_proxy_recomputed"}  # --feng-groups' two values
 
 
 def derived_ok(name: str, t: PseudoTask) -> bool:
@@ -663,7 +692,7 @@ LP_BINS = 10  # the permuted control's and the shrinkage's expression deciles (K
 
 
 def _late_proxy(hold: tuple[str, ...] = (), flip: bool = False, permute: bool = False,
-                shrink: bool = False) -> Callable[[BuildContext], Stage]:
+                shrink: bool = False, feng_groups: str = "authors") -> Callable[[BuildContext], Stage]:
     """T1 tries T13-T18: B0's chamber composition (b0_scope's cells, at the same seed) with the cells of M1's four
     direction groups moved along Feng's E14.5 -> E18 per-group log ratio of mean CP10k (genes mapped by symbol, as
     feng_dirs.feng_directions does) by the step's share of that 3.5-day bracket (a one-day step takes 2/7), in count
@@ -672,18 +701,26 @@ def _late_proxy(hold: tuple[str, ...] = (), flip: bool = False, permute: bool = 
     stages (derived_optional; on E8.5 -> E9.5, whose target is E9.5, only its named genes), plus R2's `hold` modules.
     flip negates the direction (control Cflip); permute shuffles each group's values within deciles of the group's mean
     CP10k averaged over the two ends (control Cperm, K2b's procedure, one permutation at LP_PERM_SEED); shrink is
-    feng_dirs.eb_shrink's reliability weighting."""
+    feng_dirs.eb_shrink's reliability weighting. feng_groups (default "authors", unchanged): "recomputed" reads the
+    hand-over on Feng's recomputed groups (LP_DERIVED) and applies feng_relabel.yaml's fallback; with a fallback fired
+    it refuses permute and shrink, whose halves exist only for a group's own cells."""
+    if feng_groups not in LP_DERIVED:
+        raise ValueError(f"feng_groups must be one of {sorted(LP_DERIVED)}, got {feng_groups!r}")
 
     def build(ctx: BuildContext) -> Stage:
         from vec import t1_scope
 
         fd = _feng_dirs()
-        bundle = ctx.derived["t1_late_proxy"]
+        bundle = ctx.derived[LP_DERIVED[feng_groups]]
         role = ctx.task.reference_role
         ref, src = _shallow(ctx.inputs[role]), ctx.task.role_stems[role]
         genes = list(ref.var_names)
-        dirs = {g: d for g, d in fd.directions_from_stats(bundle["stats"], genes, bundle["cfg"], LP_BRACKET)[0].items()
-                if g in LP_GROUPS}
+        own = fd.directions_from_stats(bundle["stats"], genes, bundle["cfg"], LP_BRACKET)[0]
+        if feng_groups != "authors":
+            own, fired = fd.apply_fallback(own, bundle["relabel"])
+            if (permute or shrink) and any(v["fired"] for v in fired.values()):
+                raise ValueError(f"{ctx.task.key}: a recomputed group fell back, and its halves cannot be read")
+        dirs = {g: d for g, d in own.items() if g in LP_GROUPS}
         if not dirs:
             raise ValueError(f"{ctx.task.key}: Feng's statistics give no direction for any of {list(LP_GROUPS)}")
         if permute or shrink:
@@ -1584,10 +1621,16 @@ _LP_PARAMS = {"bracket": list(LP_BRACKET), "groups": list(LP_GROUPS), "fraction"
               "scope": "chamber"}
 
 
-def _lp(name: str, what: str, **build) -> Candidate:
-    """A T1 late-proxy try (`_late_proxy`), with its external bracket and the hand-over declared."""
-    return Candidate(name, frozenset({"T1"}), _ANY, _late_proxy(**build), {"what": what, **_LP_PARAMS},
-                     externals=(LP_EXTERNAL,), derived=("t1_late_proxy",), derived_optional=("t1_held_flat",))
+def _lp(name: str, what: str, feng_groups: str = "authors", **build) -> Candidate:
+    """A T1 late-proxy try (`_late_proxy`), with its external bracket and the hand-over declared. feng_groups "authors"
+    (the default: every registered candidate, unchanged) or "recomputed" (Feng's permitted-only groups; no candidate
+    uses it until a row registers one)."""
+    if feng_groups == "authors":
+        return Candidate(name, frozenset({"T1"}), _ANY, _late_proxy(**build), {"what": what, **_LP_PARAMS},
+                         externals=(LP_EXTERNAL,), derived=("t1_late_proxy",), derived_optional=("t1_held_flat",))
+    return Candidate(name, frozenset({"T1"}), _ANY, _late_proxy(feng_groups=feng_groups, **build),
+                     {"what": what, **_LP_PARAMS, "feng_groups": feng_groups}, externals=(LP_EXTERNAL,),
+                     derived=(LP_DERIVED[feng_groups],), derived_optional=("t1_held_flat",))
 
 
 CANDIDATES = {
