@@ -107,7 +107,7 @@ def feng_directions(genes, cfg: dict | None = None, stats_path: Path | None = No
     if groups not in FENG_GROUPS:
         raise ValueError(f"groups must be one of {FENG_GROUPS}, got {groups!r}")
     if groups == "none":
-        return {}, {"file": None, "sha256": None, "bracket": list(bracket), "groups": {}, "feng_groups": "none"}
+        return {}, {"file": None, "sha256": None, "groups": {}, "feng_groups": "none"}  # no step, so no bracket
     cfg = cfg or load_config()
     path = Path(stats_path) if stats_path is not None else clean_stats_path()
     entry = fio.verify_manifest_output(path)
