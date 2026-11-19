@@ -21,6 +21,65 @@ under "Third email" below. The user sent a fourth email (the HTTP 403 on the pan
 of the A20 reading) on 2026-10-28 at 15:41 IST; its text is under "Fourth email" below. As of then none of the four
 emails had a reply, and the last screened Slack sweep (2026-10-23) found no organiser post or reply.
 
+## Screened reads of 2026-11-19: two organiser replies of 16 November, found inside Slack threads
+
+Two reads, each by a screening agent whose released block a second agent audited before the main session read it
+(workflows wf_56e44340-f54 and wf_a539cc31-54a); the first read was made on 2026-11-19 at about 04:38 UTC (its own statement) and the second between 04:41 and 04:44 UTC
+(the main session's clock readings before and after it).
+The first is the read the captain approved for 19 November (`docs/SCREENED_READ_SEVENTH_EMAIL.md`), with one item its
+reminder added (whether the public Slack question of 2026-11-12 has an organiser answer). The second repeats the Slack
+part of the check of 2026-11-18 with the channel's threads included, on the open questions that check listed; the AI
+assistant started it on its own when the first read showed that the earlier check had read the channel's top-level
+messages only. Recorded by the AI assistant.
+
+- **Seventh email (processing batches of the two held-out samples): no answer found** in the organiser mail thread
+  (no organiser reply), in the Slack channel or on the Data Protocol page (HTTP 200; whether its text changed since
+  2026-11-10 cannot be told without an earlier copy). By the reading fixed beforehand, nothing changes.
+- **The public Slack question on a floored Task 3 severity: answered** by an organiser (Weize Xu) on 2026-11-16 at
+  19:53 UTC, in the question's thread, as released through the screen: "Yes, the current P3 final-test scorer uses the
+  same behavior. No-response predictions, or cases with beta ≤ 0 or R² ≤ 0.01, receive the finite severity_slope
+  fallback of log(1e-3), matching wt_identity and mapping to skill 0.5 for that component. There is no additional
+  penalty specifically for triggering this fallback. Other T3 components are scored independently, so this does not
+  imply an overall T3 score of [n]." (The first read's auditor had also replaced the two gate values and the phrase
+  on wt_identity; the second read's auditor let them stand as scoring conventions, which they are in
+  `docs/CHALLENGE.md`.) By the reading fixed on 2026-11-11 ("Public Slack question" below), a "yes" keeps T3's last
+  upload as it is; the switch to the barred s1 that an answer of zero would have made does not apply. No follow-up is
+  drafted.
+- **External datasets that span a protected window, and where sources are disclosed: an organiser's reply to another
+  participant** (Weize Xu, 2026-11-16, 19:52 UTC; the participant had asked whether a public dataset spanning the
+  protected window may be used once every cell inside the window is removed, and where to disclose external
+  sources), as released: "Yes, provided all cells within the protected windows are removed before training, and the
+  retained data do not carry information derived from the excluded cells. Using raw expression counts and stage
+  labels from the permitted cells is acceptable. Please exclude annotations, clusters, embeddings, or fitted
+  transformations learned using protected cells, and recompute any such processing on permitted data only. Describe
+  the filtering in your method report. On the submission page, use the P3 method report → Data used field to list
+  external datasets, links/accessions, stages used, and filtering details. Disclose any pre-trained models or
+  external code in their corresponding fields, and attach the report to your P3 submission."
+  - **What it touches** (the AI assistant's reading; a rule question for the captain, `AGENTS.md`, "Escalation"):
+    register row X002. T1's direction is computed per cell group from Feng's permitted cells (E9.5 and E14.5), and
+    the groups are the authors' own cell-type labels (`cell_type_spec` in the authors' metadata table;
+    `experiments/external/feng2022_geo.py`, `experiments/t1_m1/feng_dirs.py`). If the authors made those labels in
+    an analysis of all their stages, the in-window ones among them, they are "annotations ... learned using protected
+    cells" in the organiser's words. Both T1 files rest on them (the uploaded first file and the built second), and
+    the second file's cardiomyocyte share of 0.60 was placed inside a range read from the same labels (X002). No
+    in-window cell, count or expression value entered anything: the removal the organiser asks for was done. What is
+    in question is the labels of permitted cells.
+  - It also answers the open question of where sources are stated: in the submission page's method-report fields,
+    with the report attached to the submission. The runbook had planned an email.
+- **No organiser statement since 2026-11-13** on: the validation files and the Gata4 replicates as model inputs; the
+  scorer build for occupancy_dice or a recomputation of shown scores; how final entries are nominated; the use of
+  returned scores, deadlines, the number of uploads or cell-count limits. No announcement to all teams since
+  2026-11-10. The third organiser reply of 16 November says only that questions belong in Slack.
+- Coverage, as the screen states it: the channel's four top-level messages since 2026-11-10 and all three threads
+  with replies; the only organiser posting in that window is Weize Xu, three thread replies on 2026-11-16. Withheld by
+  the screens, by class only: one passage on test-board limits, two on scores or leaderboard figures, three of other
+  participants' text, three Data Protocol passages not of the asked kind, three mailbox items that are not
+  organiser replies; one figure inside the severity quote reads [n].
+- **A correction to the check of 2026-11-18 (next section):** its line "The Slack channel has no organiser post
+  since 2026-11-13" holds for top-level posts only. Three organiser replies of 2026-11-16 sat inside threads, which
+  that check did not open; its "no answer found" on how a floored severity scores was therefore wrong on the day it
+  was written. A screened Slack check reads every thread with replies from now on.
+
 ## Screened check of 2026-11-18 (after the first uploads): no answer to any open question
 
 Run by a screening agent and audited by a second agent before the main session read it (wf_bfc2939d-aa0); the reads
@@ -35,6 +94,9 @@ the Rules page, the Data Protocol page, and the leaderboard page for overall tot
   are nominated; where a method summary goes and how sources are stated; the processing batches of the two held-out
   samples (seventh email; the Data Protocol page makes no such statement); the further reply the organisers
   announced on 17 November. The Slack channel has no organiser post since 2026-11-13.
+  (Corrected on 2026-11-19: this check read the channel's top-level messages and no thread. Three organiser replies
+  of 2026-11-16 sat inside threads, one of them the answer on a floored severity; see "Screened reads of 2026-11-19"
+  above.)
 - **The Rules page on score use (Section 10), as released** (two quotes are shortened by the reading tool):
   "Returned scores may be used to choose among predictions, not to compute them." "Using score returns to solve for a
   property of a held-out target, by inverting the published skill map, ... is recovering held-out data by another
@@ -461,6 +523,8 @@ Answers: _pending_ (record them here and in `docs/DATA_POLICY.md`). A reply is n
 screening agent reads it first and passes on the procedural answer only, as the classification below requires.
 Screened read of 2026-11-18, about 15:40 to 15:46 UTC (the section at the top of this file): no answer found in the
 mailbox, the Slack channel or the Data Protocol page.
+Screened read of 2026-11-19, about 04:38 UTC ("Screened reads of 2026-11-19" at the top of this file): no answer
+found in the organiser mail thread, the Slack channel (threads included) or the Data Protocol page.
 
 **Classification, stated before any answer.** What it asks is procedure: which released sample a held-out sample was
 processed with, and whether a protocol was the same. That is the class of the collection text released through the
@@ -929,7 +993,9 @@ does not argue in the thread and does not answer competitors, and replies only t
 answer. The screened Slack check reads the replies. A reply quoting test-board numbers, veckit 0.1.2 or PR #6 is
 skipped. If nothing has come by about 19 November, one short reply may follow in the same thread (an @-mention is fine
 there). Posted on 2026-11-12 by the captain (the captain's words: "i posted it"). The posted copy was not opened, so any
-edit before posting is not recorded. Answers: _pending_ (record any here and in `docs/DATA_POLICY.md`). Text as drafted:
+edit before posting is not recorded. Answer: **yes** (an organiser, 2026-11-16 19:53 UTC, in the thread; read through
+the screen on 2026-11-19; quoted under "Screened reads of 2026-11-19" at the top of this file and in
+`docs/DATA_POLICY.md`). T3's last upload stays as it is; no follow-up is posted. Text as drafted:
 
 > Hi organisers, a quick Task 3 scoring check. Currently, veckit's `severity_slope` returns `log(1e-3)` when a
 > prediction shows no response, or when `beta <= 0` or `r2 <= 0.01` (wrong sign, or almost no fit). That is the value

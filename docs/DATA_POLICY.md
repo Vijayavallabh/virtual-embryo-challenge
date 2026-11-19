@@ -253,6 +253,20 @@ organisers approve in writing.
   for T3 within the windows.
 - **2026-10-16, scoring conventions:** submissions are never renormalised (submit log1p CP10k); cell limits are inclusive
   and enforced at both ends.
+- **2026-11-16, a floored Task 3 severity (Weize Xu, in the thread of the team's public question; read through the
+  screen on 2026-11-19):** "the current P3 final-test scorer uses the same behavior": a no-response prediction, or
+  one with beta ≤ 0 or R² ≤ 0.01, gets the fallback log(1e-3), "matching wt_identity and mapping to skill 0.5 for
+  that component", with "no additional penalty". For us: a gated severity scores 50 in the final evaluation as on
+  the live board; T3's last upload is not switched (`docs/ORGANIZER_QUESTIONS.md`, "Public Slack question").
+- **2026-11-16, external datasets that span a protected window (Weize Xu, a reply to another participant; read
+  through the screen on 2026-11-19):** allowed "provided all cells within the protected windows are removed before
+  training, and the retained data do not carry information derived from the excluded cells. Using raw expression
+  counts and stage labels from the permitted cells is acceptable. Please exclude annotations, clusters, embeddings,
+  or fitted transformations learned using protected cells, and recompute any such processing on permitted data
+  only." The filtering is described in the method report, and sources are listed in the submission page's
+  method-report fields with the report attached. **For us: open.** Register row X002's cell groups are the Feng
+  authors' own labels of permitted cells; whether those labels were learned with in-window cells, and what the
+  team does about it, is with the captain (change note 2026-11-19 (a)).
 
 ## Open questions for the organisers
 
@@ -1353,3 +1367,22 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
   - **Still true:** no gene-level knockout finding from outside the released data, nothing measured inside a
     held-out window beyond the unlocked validation files, no quarantined material opened, the team key not used
     (the captain uploads through the site), and the DGX reference checkout untouched at dc7b6ae.
+- 2026-11-19 (a), two screened reads and what they found (`docs/PLAN.md` decision log 2026-11-19 (a)); written by the
+  AI assistant.
+  - The screened read approved for 19 November ran at about 04:38 UTC and a second, of the Slack channel's threads,
+    between 04:41 and 04:44 UTC; each block was audited by a second agent before the main session read it. Outcome and quotes:
+    `docs/ORGANIZER_QUESTIONS.md`, "Screened reads of 2026-11-19", and the two rulings of 2026-11-16 above.
+  - **A gap in the check of 2026-11-18, found by today's read:** that check read the channel's top-level messages
+    and no thread, so it reported no organiser post since 2026-11-13 while three organiser replies of 2026-11-16 sat
+    in threads. The first official uploads' second files were handed over on its "nothing switches". Nothing it
+    missed would have switched a file by a rule fixed beforehand (the severity answer is the one that keeps T3's
+    file), but the reply on external datasets bears on T1's two files and was not known when they were handed over.
+    From now on a screened Slack check opens every thread with replies, and its brief says so.
+  - **The external-dataset reply and register row X002.** What entered T1's files from Feng's data: counts of
+    permitted cells (E9.5 and E14.5; the in-window stages were removed at ingest, as the row describes), their stage
+    labels, and the authors' cell-type labels, by which the direction's four groups are formed and from which the
+    range around the second file's cardiomyocyte share was read. The reply asks teams to leave out annotations
+    learned using protected cells and to recompute them on permitted data. Whether the authors' labels are of that
+    kind has not been checked against the paper's methods by the AI assistant; it treats them as such until shown
+    otherwise. No file changes on the AI assistant's reading: the question, with its options, is put to the captain.
+    The second T1 file is not uploaded as built until he has ruled.

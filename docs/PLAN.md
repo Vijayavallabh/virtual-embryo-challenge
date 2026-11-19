@@ -5744,3 +5744,33 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     over at 16:54 UTC: T1's, the heart's and T3's second files. Waiting for the captain: the embryo's last file
     (entry (v)). Not started, with the reasons of entries (s) and (t): the learned models, the heart's tilted half,
     T3's cell-resolved factor. Owed and being drafted: the method report's lines on every departure.
+- 2026-11-19 (a), two screened reads: T3's severity question is answered; an organiser's condition on external
+  datasets bears on T1's two files; the check of 18 November had not read the Slack threads (state at 04:44 UTC).
+  Written by the AI assistant.
+  - **The reads** (`docs/ORGANIZER_QUESTIONS.md`, "Screened reads of 2026-11-19"): the read the captain approved for
+    19 November (wf_56e44340-f54) and, started by the AI assistant when that read showed the gap, a read of every
+    thread of the public Slack channel since 13 November on the open questions the check of 18 November had listed
+    (wf_a539cc31-54a). Each block was audited by a second agent before the main session read it.
+  - **Seventh email: no answer** in the mail thread, the channel or the Data Protocol page. By the reading fixed on
+    13 November nothing changes; the embryo question of entry 2026-11-18 (v) stands as put.
+  - **A floored Task 3 severity: answered, yes** (an organiser, 2026-11-16, in the thread of the team's public
+    question): the final-test scorer gives a no-response or gated severity the fallback, "mapping to skill 0.5 for
+    that component", with "no additional penalty". By the reading fixed on 2026-11-11 T3's last upload stays as it
+    is (the refused s1, which row K18 also keeps), and no follow-up is posted.
+  - **External datasets that span a protected window** (the same organiser, the same day, to another participant):
+    in-window cells removed, and no "annotations, clusters, embeddings, or fitted transformations learned using
+    protected cells", which are to be recomputed on permitted data; sources go into the submission page's
+    method-report fields, with the report attached to the submission.
+    - **Why it matters to us.** T1's direction comes from Feng's permitted cells (register row X002), grouped by the
+      authors' own cell-type labels; if the authors made those labels with all their stages, they are annotations of
+      the kind the organiser asks teams to leave out. Both T1 files rest on them, and the second file's cardiomyocyte
+      share of 0.60 sits inside a range read from the same labels. No in-window cell or count entered anything.
+    - **What the AI assistant does and does not do.** It changes no file and no rule on its own reading. It holds
+      the built second T1 file back from upload until the captain has ruled, puts the question to him with its
+      options, and prepares what does not need his ruling: a check of how the authors made their labels, labels
+      recomputed from permitted cells alone, and a listing that reads no target of how far the direction and a check
+      build move with them.
+  - **The gap.** The screened check of 18 November read the channel's top-level messages and no thread; its "no
+    organiser post since 13 November" and its "no answer" on the severity question were wrong on the day. The four
+    second files were handed over at 16:54 UTC on that check. None was uploaded. A screened Slack check opens every
+    thread with replies from now on (`docs/DATA_POLICY.md`, change note 2026-11-19 (a)).
