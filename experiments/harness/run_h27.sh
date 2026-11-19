@@ -5,7 +5,9 @@
 #   tests COMMIT   the unit tests of the script and of row H26's (synthetic arrays and hand-made tables only)
 #   run COMMIT     the fifteen parts: per transition five processes of two seeds, the transitions one after another;
 #                  each part refuses before anything loads unless row H27 is in TRIES.md, the tree is clean and its
-#                  output does not exist. Logs carry "<task> seed <s> (<sec> s) done" and "wrote <path>" only.
+#                  output does not exist. The script prints "<task> seed <s> (<sec> s) done" and "wrote <path>" only;
+#                  any other log line (imported code, warnings) is counted, never printed: the count per part is in
+#                  runs/h27/exit/<short>-<seeds>.other_lines and the total in runs/h27/exit/other_lines.
 #   read COMMIT    the one read: void conditions and the fixed statements, into experiments/harness/results/
 # COMMIT is row H27's commit (full hash). Each step refuses on an unclean tree (exit 98) or another HEAD (exit 99),
 # runs with 8 BLAS threads a process and NUMPY_MADVISE_HUGEPAGE=0, and writes ~/v/scratch/h27/<STEP>.exit (and, for
@@ -31,6 +33,8 @@ git rev-parse HEAD > "$S/$STEP.head"
 SCRIPT=experiments/harness/h27_heart_forecast_size.py
 R=runs/h27
 TASKS=("T2h/<=E9.5->E10.5:e95" "T2h/E8.25_late->E8.5:e825" "T2h/<=E8.75->E10.5:e875")
+DONE_LINE='^T2h/[^ ]+ seed [0-9]+ \([0-9.]+ s\) done$'
+WROTE_LINE='^wrote [^ ]+/h27\.json$'
 
 case "$STEP" in
   tests)
@@ -54,8 +58,14 @@ case "$STEP" in
       for p in "${pids[@]}"; do wait "$p"; done
       for seeds in 0-1 2-3 4-5 6-7 8-9; do
         [ "$(cat "$R/exit/$short-$seeds" 2>/dev/null)" = 0 ] || bad=1
+        # imported code and Python warnings write to the same log: count the lines other than the two expected kinds
+        # and keep only the count, in the exit folder; the lines are never printed
+        n=$(grep -cvE "$DONE_LINE|$WROTE_LINE" "$R/logs/$short-$seeds.log" 2>/dev/null)
+        echo "${n:-unreadable}" > "$R/exit/$short-$seeds.other_lines"
       done
     done
+    cat "$R"/exit/*.other_lines | awk '{ if ($1 ~ /^[0-9]+$/) s += $1; else u = 1 } END { print (u ? "unreadable" : s) }' \
+      > "$R/exit/other_lines"
     finish $bad ;;
   read)
     $PY "$SCRIPT" read --runs "$R" --commit "$COMMIT" --out experiments/harness/results/h27_heart_forecast_size \

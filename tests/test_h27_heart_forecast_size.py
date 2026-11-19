@@ -345,7 +345,8 @@ def _part(h27, key, seeds, score=None, skills=None, commit="abc123", clean=True)
           "interval": list(STAGES[key][-2:]) if len(STAGES[key]) > 1 else None, "gap": 1.0,
           "h": 1.33 if len(STAGES[key]) > 1 else None}
     return {"axis": h27.AXIS, "task": key, "rows": rows, "size_result": size, "forecast": fc, "forecast_targets": ft,
-            "perfect_targets": pt, "truth_rms": {"full": 200.0, "core": 90.0},
+            "perfect_targets": pt, "truth_rms": {"full": 205.0, "core": 92.0},  # as scored: L2 must not read it
+            "truth_rms_procedure": {"full": 200.0, "core": 90.0, "n_dropped_duplicates": 3},
             "offsets": {"full_iso_half": 0.1, "half_iso_half": 0.2, "core_iso_half": -0.3,
                         "C_parts": {"log_rms_ref_core": 5.0, "log_rms_c_pool": 5.3}},
             "v7": {"ok": True, "log_diff": 0.0}, "departures": h27.DEPARTURES,
@@ -705,3 +706,94 @@ def test_the_launcher_runs_the_fifteen_parts_and_the_tests_first(h27):
     for need in ("OMP_NUM_THREADS=8", "OPENBLAS_NUM_THREADS=8", "MKL_NUM_THREADS=8", "NUMPY_MADVISE_HUGEPAGE=0",
                  'TMPDIR="$S/tmp"', "S=~/v/scratch/h27", "status --porcelain", "python -I -B", "--commit"):
         assert need in sh, need
+    assert "DONE_LINE" in sh and "other_lines" in sh
+
+
+# ------------------------------------------------------------------------------------------------ the review's points
+def test_the_launcher_counts_other_log_lines_and_never_prints_them(tmp_path):
+    """Review point 5: lines other than the two expected kinds are counted into the exit folder, never printed."""
+    import subprocess
+
+    sh = (REPO_ROOT / "experiments" / "harness" / "run_h27.sh").read_text()
+    pat = dict(re.findall(r"^(DONE_LINE|WROTE_LINE)='([^']*)'$", sh, flags=re.M))
+    assert set(pat) == {"DONE_LINE", "WROTE_LINE"}
+    log = tmp_path / "e95-0-1.log"
+    log.write_text("T2h/<=E9.5->E10.5 seed 0 (812.3 s) done\nT2h/<=E9.5->E10.5 seed 1 (790.0 s) done\n"
+                   "wrote runs/h27/e95/0-1/h27.json\n")
+    cmd = 'grep -cvE "$1|$2" "$3"'
+
+    def count():
+        return subprocess.run(["bash", "-c", cmd, "_", pat["DONE_LINE"], pat["WROTE_LINE"], str(log)],
+                              capture_output=True, text=True).stdout.strip()
+
+    assert count() == "0"
+    log.write_text(log.read_text() + "UserWarning: something\nanother line\n")
+    assert count() == "2"
+    run = sh[sh.index("  run)"):sh.index("  read)")]
+    assert '> "$R/exit/$short-$seeds.other_lines"' in run and '> "$R/exit/other_lines"' in run
+    assert "grep -cvE" in run and not re.search(r"grep (?!-cvE)", run)  # only a count is taken from a log
+
+
+def test_the_read_refuses_without_row_h27_before_anything_loads(h27, monkeypatch, tmp_path):
+    """Review point 1: the read checks the ledger itself, before it loads a part."""
+    def boom(*a, **k):
+        raise AssertionError("something loaded")
+
+    monkeypatch.setattr(h27, "load_parts", boom)
+    monkeypatch.setattr(h27, "load_h26", boom)
+    monkeypatch.setattr(h27, "load_committed", boom)
+    monkeypatch.setattr(h27, "tries_rows", lambda path=h27.TRIES: {"H26"})
+    argv = ["read", "--runs", str(tmp_path / "runs"), "--out", str(tmp_path / "out"), "--commit", "abc"]
+    with pytest.raises(SystemExit, match="no row"):
+        h27.main(argv)
+    assert not (tmp_path / "out").exists()
+    monkeypatch.setattr(h27, "tries_rows", lambda path=h27.TRIES: {"H26", "H27"})
+    with pytest.raises(AssertionError, match="something loaded"):  # past the refusal, the first load
+        h27.main(argv)
+
+
+def test_l2_is_in_the_procedures_units(h27, committed):
+    """Review point 2: L2's log errors are against the target measured as the size procedure measures a stage
+    (duplicated records dropped), loaded after the forecast is formed; the RMS definition is the procedure's own."""
+    C, core = _cloud_with_core(n=2000, seed=11)
+    g = h27.sp.geometry_from_arrays("x", 10.5, C, core)
+    got = h27.procedure_truth_rms(C, core)
+    assert got["full"] == pytest.approx(g.rms_full, rel=1e-12) and got["core"] == pytest.approx(g.rms_core, rel=1e-12)
+    src = inspect.getsource(h27.run_transition)
+    i = src.index('load_stage(data_dir / t.target, drop_duplicates=sp.PREREGISTERED["drop_duplicates"])')
+    assert src.index("input_geometries(t, data_dir)") < src.index("analogue_size_result(") < i
+    assert h27.sp.PREREGISTERED["drop_duplicates"] is True and h27.sp.PREREGISTERED["core_key"] == "core"
+    res = _read(h27, committed)
+    e = res["transitions"][h27.TASK_KEYS[0]]["log_error"]
+    assert e["core"] == pytest.approx(np.log(100.0 / 90.0)) and e["full_H1"] == pytest.approx(np.log(120.0 / 200.0))
+    p = _parts(h27)
+    p[h27.TASK_KEYS[0]][1]["truth_rms_procedure"] = {"full": 201.0, "core": 90.0, "n_dropped_duplicates": 3}
+    assert any("truth rms procedure" in w for w in _read(h27, committed, p)["why"])
+    p = _parts(h27)
+    p[h27.TASK_KEYS[0]][0]["truth_rms_procedure"]["core"] = float("nan")
+    assert any("procedure's units" in w for w in _read(h27, committed, p)["why"])
+
+
+def test_the_fixed_words_follow_the_config(h27):
+    """Review point 4: the fixed words of L1 and S0_TAIL recomputed from the tasks (configs/pseudo_tasks.yaml and
+    payoff.HEART_EXTRA_TASKS), the size file's days and harness.STAGE_DAYS."""
+    keys = sorted({x.key for x in harness.load_tasks()["T2:heart:test_extrap"]} | set(h27.payoff.HEART_EXTRA_TASKS))
+    assert set(h27.TASK_KEYS) <= set(keys)
+    budgets, h_of = {}, {}
+    for key in keys:
+        task = h27.payoff.heart_task(key)
+        days = sorted(h27.SIZE_FILE_DAYS.get(f, harness.STAGE_DAYS[f]) for f in set(task.inputs.values()))
+        if len(days) >= 2:  # L1: no released transition has a rate interval at or after E9.0 before its target
+            assert days[-2] < 9.0, key
+        if key in h27.TASK_KEYS:
+            gap = harness.STAGE_DAYS[task.target] - days[-1]
+            budgets[key] = round(gap, 2)
+            h_of[key] = round(gap / (days[-1] - days[-2]), 2) if len(days) >= 2 else None
+    assert budgets == {"T2h/<=E9.5->E10.5": 1.0, "T2h/<=E8.75->E10.5": 1.75, "T2h/E8.25_late->E8.5": 0.25}
+    assert "(1.0, 1.75, 0.25 days)" in h27.S0_TAIL
+    nearest = min(budgets, key=lambda k: abs(budgets[k] - h27.TEST_GAP))
+    assert nearest == "T2h/<=E8.75->E10.5" and h_of[nearest] == 7.0 and "at h 7." in h27.S0_TAIL
+    assert sorted(h27.payoff.heart_task(nearest).inputs.values())[-2:] == ["T2/E8.5.h5ad", "T2/E8.75.h5ad"]
+    assert all(b < h27.TEST_GAP for b in budgets.values()) and "(2 days, h 2)" in h27.S0_TAIL
+    assert h_of["T2h/<=E9.5->E10.5"] == 1.33 and h_of["T2h/E8.25_late->E8.5"] is None
+    assert "rate interval at or after E9.0 before its target" in h27.L1

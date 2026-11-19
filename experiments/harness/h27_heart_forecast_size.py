@@ -238,6 +238,15 @@ def perfect_targets(TC: np.ndarray, tcore: np.ndarray) -> dict[str, float]:
     return {"full_iso_half": full, "half_iso_half": full, "core_iso_half": core}
 
 
+def procedure_truth_rms(C: np.ndarray, core: np.ndarray) -> dict[str, float]:
+    """L2's units: the target's whole-cloud and core RMS radius as the size procedure measures a stage (its
+    geometry_from_arrays on the duplicate-dropped load). The target is passed here only after the forecast is formed;
+    t2_build.rms_radius is the procedure's definition (a test pins the equality), so no size code sees the target."""
+    C = np.asarray(C, dtype=np.float64)[:, :3]
+    core = np.asarray(core, dtype=bool)
+    return {"full": t2_build.rms_radius(C), "core": t2_build.rms_radius(C[core])}
+
+
 def convention_offsets(ptargets: dict, even: float, pool_rms: dict, ref_core_rms: float) -> dict:
     """log(p target / o's nominal size), o's nominal size = even factor x the form's pool RMS radius. C's is
     target-free: log rms(ref core) - log rms(C pool)."""
@@ -320,6 +329,12 @@ def run_transition(key: str, seeds, out: Path, data_dir: Path) -> dict:
     prep.add_lineage(ta, source=harness.stem(t.target))
     tcore = np.asarray(ta.obs["core"], dtype=bool)
     TC = np.asarray(ta.obsm[COORD_KEY], dtype=float)[:, :3]
+    # L2's units: the target loaded as the size procedure loads a stage (duplicated records dropped), after the forecast
+    td = load_stage(data_dir / t.target, drop_duplicates=sp.PREREGISTERED["drop_duplicates"])
+    truth_proc = procedure_truth_rms(np.asarray(td.obsm[COORD_KEY], dtype=float),
+                                     np.asarray(td.obs[sp.PREREGISTERED["core_key"]], dtype=bool))
+    truth_proc["n_dropped_duplicates"] = int((td.uns.get("qc") or {}).get("n_dropped", 0))
+    del td
     ref_stage = Stage.from_anndata(read_stage(data_dir / t.reference, genes), genes, need_coords=True)
     tm = h26.truth_masks(TC, tcore)
     truths = {q: Stage.from_anndata(ta[m], genes, need_coords=True) for q, m in tm.items()}
@@ -374,6 +389,7 @@ def run_transition(key: str, seeds, out: Path, data_dir: Path) -> dict:
            "size_result": size, "input_records": infos, "forecast": frec, "forecast_targets": ftargets,
            "perfect_targets": ptargets, "oracle_factors": factors, "pool_rms": pool_rms, "offsets": offsets,
            "truth_rms": {"full": ptargets["full_iso_half"], "core": ptargets["core_iso_half"]},
+           "truth_rms_procedure": truth_proc,
            "v7": v7, "truth_info": t_info, "pred_info": p_info, "truth_seed": payoff.TRUTH_SEED,
            "half_seed_base": h25.HALF_SEED_BASE, "departures": DEPARTURES, "seeds": list(seeds), "rows": rows_out,
            "source": SOURCE, "provenance": payoff.provenance()}
@@ -475,6 +491,10 @@ def v8_size_results(key: str, part: dict) -> list[str]:
             v = vals.get(form)
             if not (isinstance(v, int | float) and np.isfinite(v) and v > 0):
                 why.append(f"V8: {key}: {name} target of {form} is not a positive finite number")
+    for k in ("full", "core"):  # L2's units
+        v = part["truth_rms_procedure"].get(k)
+        if not (isinstance(v, int | float) and np.isfinite(v) and v > 0):
+            why.append(f"V8: {key}: the target's {k} RMS in the procedure's units is not a positive finite number")
     for row in part["rows"]:
         for form in FORMS:
             fr, pr = row["size_records"][arm_name(form, "f")], row["size_records"][arm_name(form, "p")]
@@ -594,7 +614,7 @@ def void_reasons(parts: dict[str, list[dict]], h26_parts: dict[str, list[dict]],
                 why.append(f"V7: {key}: the reference cloud is not the cloud the analogue result measured")
             dist["V7"][key] = max(dist["V7"].get(key, 0.0), abs(p["v7"]["log_diff"]))
             why += v8_size_results(key, p)  # V8
-            for field in ("forecast_targets", "perfect_targets"):  # one forecast and one perfect size per transition
+            for field in ("forecast_targets", "perfect_targets", "truth_rms_procedure"):  # one each per transition
                 if p[field] != ps[0][field]:
                     why.append(f"V8: {key}: the parts disagree on the {field.replace('_', ' ')}")
         rows = h26.merge_rows(ps)[0]
@@ -668,16 +688,17 @@ def groups_table(rows: dict[str, list[dict]]) -> dict:
 
 
 def released_figures(parts: dict[str, list[dict]]) -> dict:
-    """L2, per transition, in the procedure's units: the forecast's log errors against this released target (core
-    against the truth's core RMS, H1 and H2 full against the as-released truth's full RMS) and the convention
-    offsets."""
+    """L2, per transition, in the procedure's units: the forecast's log errors against this released target measured
+    as the procedure measures a stage, duplicated records dropped (core against its core RMS, H1 and H2 full against
+    its full RMS), and the convention offsets."""
     out = {}
     for key in TASK_KEYS:
         p = parts[key][0]
         r = p["size_result"]["z_modes"]["raw"]
-        tr = p["truth_rms"]
+        tr = p["truth_rms_procedure"]
         out[key] = {"forecast": p["forecast"], "forecast_targets": p["forecast_targets"],
                     "perfect_targets": p["perfect_targets"], "oracle_factors": p["oracle_factors"],
+                    "truth_rms_procedure": p["truth_rms_procedure"],
                     "log_error": {"core": float(np.log(r["pred_rms_core"] / tr["core"])),
                                   "full_H1": float(np.log(r["scope"]["H1"]["pred_rms_full"] / tr["full"])),
                                   "full_H2": float(np.log(r["scope"]["H2"]["pred_rms_full"] / tr["full"]))},
@@ -807,6 +828,8 @@ def cmd_run(a) -> None:
 
 
 def cmd_read(a) -> None:
+    if ROW not in tries_rows():
+        sys.exit(f"{ROW} is refused: it has no row in experiments/harness/TRIES.md (a row comes before its read)")
     out = Path(a.out)
     if (out / "reading.json").exists() or (out / "reading.txt").exists():
         sys.exit(f"{out} already holds a reading: there is one read under row {ROW}")
@@ -829,7 +852,8 @@ def main(argv=None) -> None:
     d.add_argument("--runs", required=True)
     d.add_argument("--h26", default=str(H26_PARTS))
     d.add_argument("--out", required=True)
-    d.add_argument("--commit", required=True, help="the commit row H27 names (a prefix of the parts' commit)")
+    d.add_argument("--commit", required=True, help="row H27's own commit, the one that registered the row (a prefix "
+                                                    "of the parts' commit)")
     a = ap.parse_args(argv)
     {"run": cmd_run, "read": cmd_read}[a.cmd](a)
 
