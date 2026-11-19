@@ -27,10 +27,47 @@ def test_the_heart_commands_of_build_all_are_the_ones_the_rules_give():
     script = (ROOT / "experiments" / "builds" / "build_all.sh").read_text().splitlines()
     commands = [line[line.index("build_test.py heart"):line.index(" --out")].strip()
                 for line in script if "build_test.py heart" in line and " --out" in line]
-    # the first upload's line, the second upload's as it was frozen, and the second's since the amendment of 2026-11-18
-    assert len(commands) == 3, commands
+    # the first upload's line, the second upload's as it was frozen, the second's since the amendment of 2026-11-18,
+    # and the last upload's since the amendment of 2026-11-19 for the heart (the full trim, set heart3)
+    assert commands == ["build_test.py heart --entry s1 --trend",
+                        "build_test.py heart --entry s2_trim --trend",
+                        "build_test.py heart --entry s1 --expression copy --z-mode raw",
+                        "build_test.py heart --entry core_trim --expression copy --z-mode raw"], commands
     for c in commands:
         assert c in rules, f"build_all.sh runs `{c}`, which docs/S2_RULES.md does not give"
+
+
+def test_the_heart3_set_checks_the_rules_hash_and_builds_the_full_trim_and_its_half():
+    """The set heart3 checks docs/S2_RULES.sha256 before it builds, builds T2heart_s2core.h5ad by the full trim's
+    command of the amendment of 2026-11-19 for the heart (the captain's own named exception), halves it with halve.py
+    into T2heart_s2core_half.h5ad (the uploaded file) and checks both locally for T2:heart:test_extrap. The rules give
+    both commands word for word with runs/ as the output folder."""
+    text = (ROOT / "experiments" / "builds" / "build_all.sh").read_text()
+    block = text[text.index("\n  heart3)\n"):]
+    block = block[:block.index("\n    ;;\n")]
+    lines = [ln.strip() for ln in block.strip().splitlines()]
+    assert lines == [
+        "heart3)",
+        "sha256sum -c docs/S2_RULES.sha256",
+        "$U run python experiments/builds/build_test.py heart --entry core_trim --expression copy --z-mode raw "
+        "--out $O/builds/T2heart_s2core.h5ad",
+        "$U run python experiments/builds/halve.py $O/builds/T2heart_s2core.h5ad $O/builds/T2heart_s2core_half.h5ad",
+        'files="$O/builds/T2heart_s2core.h5ad:T2:heart:test_extrap '
+        '$O/builds/T2heart_s2core_half.h5ad:T2:heart:test_extrap"',
+    ], lines
+    rules = " ".join((ROOT / "docs" / "S2_RULES.md").read_text().split())
+    assert ("uv run python experiments/builds/build_test.py heart --entry core_trim --expression copy --z-mode raw "
+            "--out runs/builds/T2heart_s2core.h5ad") in rules
+    assert ("uv run python experiments/builds/halve.py runs/builds/T2heart_s2core.h5ad "
+            "runs/builds/T2heart_s2core_half.h5ad") in rules
+
+
+def test_the_usage_line_and_the_unknown_set_message_name_every_set():
+    text = (ROOT / "experiments" / "builds" / "build_all.sh").read_text()
+    assert "usage: build_all.sh s1|s2|heart2|t3alt|t1none|embryo2|heart3|embryo3}" in text
+    assert "unknown set $set_name (s1, s2, heart2, t3alt, t1none, embryo2, heart3 or embryo3)" in text
+    for name in ("s1", "s2", "heart2", "t3alt", "t1none", "embryo2", "heart3", "embryo3"):
+        assert f"\n  {name})\n" in text, name
 
 
 def test_the_t1_commands_of_build_all_are_the_ones_the_rules_give():
@@ -92,12 +129,15 @@ def test_the_embryo_commands_of_build_all_are_the_ones_the_rules_give():
     assert expression == "mixture"  # the first upload's expression step, which the last upload shares
     script = " ".join(text.replace("\\\n", " ").replace('"$EMBRYO_EXPRESSION"', expression).split())
     commands = [c.strip() for c in re.findall(r"build_test\.py embryo .*? (?=--out )", script)]
-    # the first upload's line, the second upload's of ruling R4 (not uploaded), and the last upload's since 2026-11-19
-    assert len(commands) == 3, commands
+    # the first upload's line, the second upload's of ruling R4 (not uploaded), the last upload's of the first
+    # amendment of 2026-11-19 for the embryo (set embryo2, not uploaded), and the series twin of the later one (embryo3)
+    assert len(commands) == 4, commands
     for c in commands:
         assert c in rules, f"build_all.sh runs `{c}`, which docs/S2_RULES.md does not give"
     assert ("build_test.py embryo --method fgw_shape0 --positions floor_exact --expression mixture "
             "--out $O/builds/T2embryo_s2x.h5ad") in script
+    assert ("build_test.py embryo --method fgw_shape0 --positions floor_exact --expression series "
+            "--out $O/builds/T2embryo_s2xs.h5ad") in script
 
 
 def test_the_embryo2_set_checks_the_rules_hash_and_builds_one_file():
@@ -117,3 +157,41 @@ def test_the_embryo2_set_checks_the_rules_hash_and_builds_one_file():
     ], lines
     assert ("build_test.py embryo --method fgw_shape0 --positions floor_exact --expression mixture "
             "--out runs/builds/T2embryo_s2x.h5ad") in " ".join((ROOT / "docs" / "S2_RULES.md").read_text().split())
+
+
+def test_the_embryo3_set_checks_the_rules_hash_and_builds_the_series_twin():
+    """The set embryo3 checks docs/S2_RULES.sha256 before it builds, builds one file, T2embryo_s2xs.h5ad, by the one
+    command of the later amendment of 2026-11-19 for the embryo (the series twin, try E47b; the captain's own say-so),
+    and checks it locally for T2:embryo:test_interp. The rules give the same command with runs/ as its output folder."""
+    text = (ROOT / "experiments" / "builds" / "build_all.sh").read_text()
+    block = text[text.index("\n  embryo3)\n"):]
+    block = block[:block.index("\n    ;;\n")]
+    lines = [ln.strip() for ln in block.strip().splitlines()]
+    assert lines == [
+        "embryo3)",
+        "sha256sum -c docs/S2_RULES.sha256",
+        "$U run python experiments/builds/build_test.py embryo --method fgw_shape0 --positions floor_exact \\",
+        "--expression series --out $O/builds/T2embryo_s2xs.h5ad",
+        'files="$O/builds/T2embryo_s2xs.h5ad:T2:embryo:test_interp"',
+    ], lines
+    assert ("uv run python experiments/builds/build_test.py embryo --method fgw_shape0 --positions floor_exact "
+            "--expression series --out runs/builds/T2embryo_s2xs.h5ad") in " ".join(
+        (ROOT / "docs" / "S2_RULES.md").read_text().split())
+
+
+def test_t3s_last_file_is_t3alts_barred_s1_on_the_reference_list():
+    """The amendment of 2026-11-19 for T3 names the barred branch's s1 with its sha256; set t3alt builds it and the
+    reference list of the third rehearsal holds that sha256 under t3_build/barred_s1.h5ad. No new set builds it."""
+    # the command's continuation lines joined, as for the embryo's commands of build_all.sh
+    rules = " ".join((ROOT / "docs" / "S2_RULES.md").read_text().replace("\\\n", " ").split())
+    sha = "3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2"
+    section = rules[rules.index("## Amendment of 2026-11-19: T3's last upload is the barred branch's s1"):]
+    assert sha in section
+    assert ("--branch barred --submission s1 --wt data/raw/T2/E8.75.h5ad --run-dir "
+            "runs/t3_decomp/gata4_20261028T122425Z --board T3:bcatenin --seed 1000001 "
+            "--out runs/t3_build/barred_s1.h5ad") in section
+    listing = (ROOT / "experiments" / "builds" / "results" / "builds_dc7b6ae.SHA256SUMS").read_text().split("\n")
+    assert f"{sha}  t3_build/barred_s1.h5ad" in listing
+    script = (ROOT / "experiments" / "builds" / "build_all.sh").read_text()
+    block = script[script.index("\n  t3alt)\n"):]
+    assert "t3 barred s1 $O/t3_build/barred_s1.h5ad\n" in block[:block.index("\n    ;;\n")]

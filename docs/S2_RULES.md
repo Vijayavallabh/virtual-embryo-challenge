@@ -832,3 +832,338 @@ describes the files of s1, s2 and t3alt; heart2's files have their own list
 (`experiments/builds/results/t1none_385ff58.SHA256SUMS`). This file is in none of those lists; its own list is
 committed under `experiments/builds/results/` before line 1 of the captain's checklist (`docs/P3_RUNBOOK.md`
 section 5) can be ticked.
+
+## Amendment of 2026-11-19: the heart's last upload is the full trim (the captain's own named exception)
+
+Written by the AI assistant. Times are UTC. The quoted question, options and answer are as `docs/PLAN.md` decision log
+2026-11-19 (cc) records them, and the two quoted messages as entries (aa) and (bb) record them; nothing else here is
+the captain's. The record is decision log 2026-11-18 (j) and (k) and 2026-11-19 (m) to (r), (aa), (bb) and (cc), and
+row H26 of `experiments/harness/TRIES.md`. Like the amendment of 2026-11-18 and the two sections above, this section
+was written with test scores known. Where it and the sections above differ, this section holds for the heart.
+
+**The question and the captain's answer** (decision log 2026-11-19 (cc); one dialog, state at 19:31 UTC). The
+question, as put: "Heart, last upload. I state no preference here (I recused myself after a lapse; see my message).
+Practice results in heart points against the ruled full-scope file; Overall moves by half; a file scoring below the
+first upload's 46.4 just leaves the 46.4 standing. If E12.5 was sampled like E10.5: half trim -1.0 (-7.9 on the
+nearest practice step), full trim -3.9 (-15.5). If E12.5 was dissected clean: half trim +5.8, full trim +11.8. An
+independent reviewer put 'clean to that degree' at about 0.25 to 0.30. A trim is your own named exception on a choice
+closed after the 4 November exposure; the method report will say so. Which file?" The options: "Keep ruled file";
+"Half trim"; "Full trim", described as "Highest ceiling: about +11.8 heart points (+5.9 Overall) if E12.5 is clean; if
+it is like E10.5 the file likely falls below 46.4 and the first score stands (costing the 2.6 Overall the ruled file
+would add). Your named exception on scope, cell number and size." **His answer: "Full trim".**
+
+**Who decided what.** The captain chose the file. It is his own named exception on a lever closed after the exposure
+of 2026-11-04: route (ii) of decision log 2026-11-19 (o). The AI assistant stated no preference. It had recused itself
+from every choice and every lean on the heart's scope and size after a lapse of its own (decision log 2026-11-19
+(bb)), and its own heart estimate had been withdrawn after the second cold check (same entry).
+
+**The heart's last upload.** It replaces the file of the amendment of 2026-11-18 (the full-scope copy,
+`runs/builds/T2heart_s2iso_half.h5ad`, set heart2), which stays built and is not uploaded:
+
+```bash
+uv run python experiments/builds/build_test.py heart --entry core_trim --expression copy --z-mode raw --out runs/builds/T2heart_s2core.h5ad
+uv run python experiments/builds/halve.py runs/builds/T2heart_s2core.h5ad runs/builds/T2heart_s2core_half.h5ad
+```
+
+- **What it is.** The pool is E10.5 under `vec.t2_build.radial_trim_mask(C, core, 0.0)`: surrounding cells are
+  removed farthest in plane from the core centroid first, until the in-plane scope is at most zero. What stays is the
+  core (cardiomyocytes and endocardium, `configs/lineage_map.yaml`) and any surrounding cells inside its in-plane
+  spread. On the released E10.5 the core is 0.231 of the cells (decision log 2026-11-19 (m), target-free). The file
+  is the copy's draw from that pool at the count rule, with its expression unchanged, as the ruled file of 2026-11-18
+  draws from the whole stage. It is then scaled about the centroid by one factor on all three axes to the size file's
+  raw-mode core forecast of 2026-10-28 (the field `z_modes.raw.pred_rms_core`). Last comes the halving of the ruled
+  file of 18 November, by the same rule and seed: a uniform random half of the rows (numpy's default generator, seed
+  1000001, without replacement, order kept). The uploaded file is the half.
+- **The option.** Merged to main at 71aba2d, off by default (`tests/test_build_heart_core_trim.py`). The builder
+  refuses `--entry core_trim` except as `heart --entry core_trim --expression copy --z-mode raw`. With the option not
+  given, every heart file builds as before.
+
+**What it replaces and what it departs from, lever by lever.**
+- **Scope.** A lever of the post-exposure block (`docs/DATA_POLICY.md` 2026-11-04, (b) to (d)). The frozen rule of
+  2026-11-02 made the second upload a half trim and weighed the full trim without taking it ("it never beats s1 on a
+  released target", section "T2 heart" above). The amendment of 2026-11-18 replaced the half trim with the whole
+  stage. This file takes the full trim. No rule returned it; the captain named it.
+- **Cell number.** A closed quantity. The count rule now acts on the trimmed pool, so the cell number follows from the
+  scope; then comes the halving. The captain's option named the cell number.
+- **Size.** A closed quantity. The pre-registered mode was xy_grow_z_hold (section "T2 heart" above). The amendment of
+  2026-11-18 took the raw mode at H1's size. This file takes the raw mode's core forecast: the term that the size
+  file's three scope hypotheses (H1, H0 and H2) multiply, and not one of them. No earlier rule fixed it. The captain's
+  option named the size.
+- **Expression.** No change from the file it replaces: the copy's expression, unchanged. No trend, no momentum.
+- **The default.** Rule 9's J1a and J4 of `experiments/harness/TRIES.md`, row H26's own text and the rule for a lever
+  closed after an exposure all gave the file in force as the default, and the two cold checks of decision log
+  2026-11-19 (n) and (bb) kept it. The captain's exception overrides that default. This file enters by ruling, not by
+  the adoption rule and not by a pre-set rule's outcome.
+
+**Why.** The captain's aim, in his words (decision log 2026-11-19 (aa) and (bb)): "Proceed with whatever that gets us
+to Top 3 in the leaderboard. If other teams can do it, so can us" and "ultrathink just deeply internalize that it is
+very much possible to beat the top 3 leaderboard scores". The AI assistant's reading of them (its own): a best-case
+aim, each last file weighed by its ceiling with the first score banked.
+
+**What practice says, both ways.** Row H26 (`experiments/harness/results/h26_heart_scope_forms/`; read in decision
+log 2026-11-19 (q), recomputed independently in (r)). Every figure is a difference between files at an oracle core
+size shared by the arms, on released transitions; no figure is a file's level. C is this file's form, A the ruled
+full-scope file's, B the half trim's; heart points, plain means, the two E10.5 transitions merged into one fold.
+- **If E12.5 was sampled like E10.5** (the truth as released): C minus A -3.86, behind in 10 of 10 seeds. By
+  transition: -15.53 on E9.5 to E10.5, -0.97 on E8.25_late to E8.5, +2.05 on E8.75 and earlier to E10.5. E9.5 to
+  E10.5 is the transition nearest the test.
+- **If E12.5 was dissected clean** (the three truths with most or all surroundings removed): C minus A +11.79, ahead
+  in 10 of 10 seeds. C minus B +6.01 (10 of 10; +0.75 on the E10.5 fold, with one seed of ten behind, and +11.27 on the
+  E8.5 fold).
+- **The odds the full trim needs** to pay, that E12.5 is clean (decision log 2026-11-19 (q) and (r)): about 0.25 on
+  the fold-merged figures; 0.31 with the one-day transition's loss capped by the banked score (the cap is the AI
+  assistant's estimate of A's margin over that score), 0.57 uncapped; 0.68 capped and 0.86 uncapped with the gain as
+  well as the loss taken from the one-day transition alone.
+- **The reviewer's odds** (the second cold check, decision log 2026-11-19 (bb)): about 0.45 that E12.5 holds less
+  surrounding tissue than E10.5, and about 0.25 to 0.30 that it is clean to the degree row H26's truths model.
+
+**What practice cannot say.**
+- How E12.5's stack was sampled. It is a test-stage premise no released task carries (rule 9, J1a). The team's
+  screened notes give the E10.5 and E12.5 stacks the same wording (decision log 2026-11-19 (o)).
+- No released transition has a reference and a target of equal scope, which is the test's case if E12.5 was sampled
+  like E10.5 (decision log 2026-11-19 (r)).
+- The trimmed truths are synthetic. Two of the three clean truths are thinnings no dissection makes, and the core is
+  cardiomyocytes and endocardium only, so a clean heart is not all core (decision log 2026-11-19 (bb)).
+- The size term. Every arm of row H26 was scaled to one oracle core size. At the test this file takes the raw-mode
+  core forecast and the replaced file H1's raw-mode size. That difference in the scale term is not priced; it can be
+  as large as the trim's own gain, in either direction (decision log 2026-11-19 (n), point (2)).
+
+**Nothing is computed from a test score.** The trim is `radial_trim_mask` at fraction 0, the hedge study's
+core_radial of 2026-11-01. The size is the size file's own raw-mode field, logged on 2026-10-28, before any score. The
+halving is the first upload's rule. The first heart score, 46.4, enters only as the level a last file must beat, as
+the question said (decision log 2026-11-19 (n), point (4)). The scores chose among built or pre-defined predictions
+(Official Rules, Section 10, as decision log 2026-11-19 (g) quotes them).
+
+**What the record must say** (the method report, its section on exposures in `METHOD_SUMMARY.md`, and the note that
+precedes the upload).
+- The scope, the cell number and the size of the heart's last file were chosen by the captain, after the exposure of
+  2026-11-04 and after the first scores. In the words of decision log 2026-11-19 (o), route (ii): chosen by a person
+  who had seen the E12.5 heart file's size, and the choice cannot be shown to be free of it.
+- The AI assistant stated no preference. It had recused itself after a lapse (decision log 2026-11-19 (bb)).
+- The size is the size file's own raw-mode core forecast of 2026-10-28, the term its three scope hypotheses multiply,
+  and not one of those hypotheses.
+
+**A correction to the amendment of 2026-11-18** (owed since decision log 2026-11-19 (n)). That amendment lists the half
+trim among four departures, "each by the captain's answer above to a question that named it". The record shows three
+priced questions on the heart: the size mode, the expression step and the cell number (decision log 2026-11-18 (k)).
+The half trim appears in that entry only in the plan table's column of what the new file touches, with no price of its
+own. So the scope hedge was dropped inside the redesign, without a priced question of its own. The text of that
+amendment is not edited; this paragraph corrects it.
+
+**"No score feedback", as it now stands.** For the heart the first bullet has not held since 2026-11-18. The second
+bullet is met: the change comes after the heart's first official upload, by the captain's own say-so, is logged with
+the scores public at the time (decision log 2026-11-18 (j): heart 46.4), and computes nothing from a test score.
+
+**What stays.** The first upload, the count rule, the halving's rule and seed, the other boards' files, the order (the
+first upload went first) and the rule for final marks.
+
+**Builds.** `bash experiments/builds/build_all.sh heart3` checks this file's hash, runs the two commands above and
+checks both files locally for `T2:heart:test_extrap`. It is built twice, both at 16 BLAS threads, and the two builds'
+sha256 are compared for both files. The sets s1, s2, t3alt, heart2, t1none and embryo2 are unchanged. The files of
+heart3 are in no reference list yet; their own list is committed under `experiments/builds/results/` before line 1 of
+the captain's checklist (`docs/P3_RUNBOOK.md` section 5) can be ticked.
+
+## Amendment of 2026-11-19: the embryo's last upload is the series twin on E7.5's exact positions (the captain's own say-so)
+
+Written by the AI assistant. Times are UTC. The quoted question, options and answer are as `docs/PLAN.md` decision log
+2026-11-19 (cc) records them, and the two quoted messages as entries (aa) and (bb) record them; nothing else here is
+the captain's. The record is decision log 2026-11-18 (j), (k), (u) and (v) and 2026-11-19 (j), (p), (aa), (bb) and
+(cc), and rows E47a and E47b, N53 and R9 of `experiments/harness/TRIES.md`. This section was written with test scores
+known. Where it and the sections above differ, this section holds for the embryo.
+
+**The question and the captain's answer** (decision log 2026-11-19 (cc); the same dialog). The question, as put:
+"Embryo, last upload. Your chosen file (the first upload's cells on E7.5's exact positions) is expected near 69. Its
+'series' twin re-renders the E7.5 cells at E8.0's measurement profile. If E7.75 was measured like E8.0 (the organisers'
+page groups E7.75 with E8.0; our committed odds 0.4 to 0.5) the twin scores about 4 to 5 embryo points higher;
+otherwise 2 to 7 lower, and then the first upload's 64.6 stands. Same expected value; higher best case, lower worst
+case. Which file?" The options: "Series twin (Top-3 aim)"; "Keep chosen file". **His answer: "Series twin (Top-3
+aim)".**
+
+**Who decided what.** The captain chose the file. Before the dialog the AI assistant had marked the higher-ceiling file
+as the one that fits a Top-3 aim and given the expected values as about equal (decision log 2026-11-19 (cc)).
+
+**The embryo's last upload.** It replaces the file of the embryo's amendment of earlier today (`fgw_shape0x`,
+`runs/builds/T2embryo_s2x.h5ad`, set embryo2), which stays built and is not uploaded:
+
+```bash
+uv run python experiments/builds/build_test.py embryo --method fgw_shape0 --positions floor_exact --expression series --out runs/builds/T2embryo_s2xs.h5ad
+```
+
+- **What it is.** The harness's `fgw_shape0x_series`, try E47b. The positions are the replaced file's: every E7.5 row
+  at its own position, every E8.0 row on the position of an E7.5 cell the file does not otherwise draw, matched one to
+  one by the exact minimum-cost assignment on expression in FGW's joint principal components; then centred and scaled
+  to the pre-registered embryo size (the section above; row R9). That section's fallback holds as written. The
+  expression is the series rendering of ruling R4: E7.5's cells rendered into E8.0's per-gene detection profile and
+  depth (`vec.t2_build.series_rendered_expression`). Of the check builds at 9967cf1, decision log 2026-11-18 (u)
+  records that "the two series files hold the built second file's" rows, row names and expression matrix: the second
+  file of ruling R4.
+- **"As s1"** for the embryo now reads: s1's command with `--method fgw_shape0` in place of `--method fgw`,
+  `--positions floor_exact` added, and `--expression series` in place of `--expression mixture`. The option was merged
+  to main at 5e3eb9a with tries E47a and E47b, off by default.
+
+**What it replaces and what it departs from, lever by lever.**
+- **Geometry.** No change from the file it replaces: E7.5's exact positions.
+- **Expression.** The replaced file kept the first upload's expression as released (`--expression mixture`). This file
+  takes the series rendering, as ruling R4's second file did. Its four expression metrics no longer repeat the first
+  upload's.
+- **The cold attack's own check** (decision log 2026-11-18 (v)): stay with the mixture if the series gain on this
+  geometry averages one point or less or is negative on two or more tasks. It averages +0.18 and is negative on three.
+  The captain's answer overrides that check.
+- **Rule (ii) of row E47**, which the AI assistant fixed before its run: by it the series twin does not replace
+  `fgw_shape0_series` (decision log 2026-11-18 (u)). The captain's answer overrides it, as it overrode the same rule
+  for the replaced file.
+- **Closed levers.** None touched. The file keeps the pre-registered size and the count rule (decision log 2026-11-18
+  (v)): its cell number, size and scope are the first upload's.
+
+**Why.** The captain's aim, in his words (decision log 2026-11-19 (aa) and (bb)): "Proceed with whatever that gets us
+to Top 3 in the leaderboard. If other teams can do it, so can us" and "ultrathink just deeply internalize that it is
+very much possible to beat the top 3 leaderboard scores". The AI assistant's reading of them (its own): a best-case
+aim, each last file weighed by its ceiling with the first score banked.
+
+**What practice says, both ways.** Every figure is from practice tasks; none is a test value.
+- **The series rendering on this geometry** (`fgw_shape0x_series` minus `fgw_shape0x`, paired by seed, board points
+  per truth; the independent recomputation of decision log 2026-11-18 (v), on the task files of row E47): E8.0 +5.54
+  (half +7.53, late +3.56); E8.25_late +4.01 (new1 +2.71, x1 +5.30); E8.5 -0.46 (new2 +1.38, x2 +0.50, x3 -3.25); E7.5
+  -1.62; E7.25 -6.58. Merged over the five truths +0.18. On the split ruling R4 used: +2.72 on the six tasks whose
+  target shares its deeper bracket's profile, -2.27 on the three that do not. At the committed 0.4 to 0.5 chance that
+  E7.75 was measured like E8.0, the twin's practice mean against the mixture is -0.27 to +0.22: level.
+- **Against the uploaded form on the nine practice tasks** (row E47, rule (iii);
+  `experiments/harness/results/e47_floor_exact/e47.txt`): merged mean -1.25 board points; better of two beside the
+  uploaded form +1.54. The replaced file: -1.43 and +0.46.
+- **The analyst's reading** (decision log 2026-11-19 (p); its own judgement from committed text): level with the
+  replaced file on the expected better of two (+0 to +0.6), with the higher tail (about 74 to 75 if E7.75 was measured
+  like E8.0).
+
+**What practice cannot say.**
+- How E7.75 was measured. Nothing released shows whether its detection profile is E7.5's or E8.0's. The 0.4 to 0.5
+  is the committed odds, not a measurement.
+- Tries E47a and E47b are labelled diagnostics: the noise floor is 6.54 board points (the between-truth SD; the seed
+  SE is 0.23), so no figure above is a detected effect; on 7 of the 9 tasks the earlier bracket is not E7.5 (row E47).
+- Practice holds no task with a shape loss like the first upload's (row E47, the AI assistant's reading after the
+  result).
+
+**Nothing is computed from a test score.** The file's positions and its rendering were each defined and built before
+the question (tries E47a and E47b; ruling R4's rendering). The scores chose among built or pre-defined predictions
+(Official Rules, Section 10, as decision log 2026-11-19 (g) quotes them). The lines of decision log 2026-11-18 (k) hold
+here, as in the section above: no constant set from a test value; no bound on a test anchor from the first upload's
+occupancy score; no inference of E7.75's detection profile from the first upload's expression scores; no choice of a
+file or a row order by its parity.
+
+**What the record must say.** The embryo's last file was chosen by the captain after the first scores, for its best
+case, against the cold attack's check and rule (ii) of row E47. Its expression bet (E7.75 measured like E8.0) is the
+one ruling R4 made on 2026-11-13, before any score.
+
+**"No score feedback", as it now stands.** As the section above says for the embryo: the first bullet no longer holds;
+the second is met. The change comes after the embryo's first official upload, by the captain's own say-so, is logged
+with the scores public at the time (decision log 2026-11-18 (j): embryo 64.6), and computes nothing from a test score.
+
+**What stays.** The first upload, the count rule, the pre-registered size, the other boards' files, the order (the
+first upload went first) and the rule for final marks. The file of ruling R4 (`runs/builds/T2embryo_s2.h5ad`) and the
+replaced file (`runs/builds/T2embryo_s2x.h5ad`) stay on disk as the record and are not uploaded.
+
+**Builds.** `bash experiments/builds/build_all.sh embryo3` checks this file's hash, runs the command above into
+`runs/builds/T2embryo_s2xs.h5ad` and checks the file locally for `T2:embryo:test_interp`. It is built twice, both at
+16 BLAS threads, and the two sha256 are compared. The sets s1, s2, t3alt, heart2, t1none and embryo2 are unchanged.
+This file is in no reference list yet; its own list is committed under `experiments/builds/results/` before line 1 of
+the captain's checklist (`docs/P3_RUNBOOK.md` section 5) can be ticked.
+
+## Amendment of 2026-11-19: T3's last upload is the barred branch's s1 (the captain's own say-so)
+
+Written by the AI assistant. Times are UTC. The quoted question, options and answer are as `docs/PLAN.md` decision log
+2026-11-19 (cc) records them, and the two quoted messages as entries (aa) and (bb) record them; nothing else here is
+the captain's. The record is decision log 2026-11-18 (j) and (u) and 2026-11-19 (p), (s), (aa), (bb) and (cc), and row
+K18 of `experiments/harness/TRIES.md`. This section was written with test scores known. Where it and the sections
+above differ, this section holds for T3.
+
+**The question and the captain's answer** (decision log 2026-11-19 (cc); the same dialog). The question, as put: "Task
+3, last upload. The ruled 'refused' file stays close to the floor: expected about 52 (48 to 57). The already-built
+'barred' file carries another knockout's response: about 62 to 64 if the beta-catenin embryos lean older than the
+wild-type reference as the Gata4 ones did (a reviewer's odds 0.35 to 0.45); otherwise it falls below the first
+upload's 47.8, which then stands, costing the 2 to 6 points the ruled file would likely add. Expected value about
+equal; our own pre-set rule and a cold check both said keep the ruled file. Which file?" The options: "Barred file
+(Top-3 aim)"; "Keep ruled file". **His answer: "Barred file (Top-3 aim)".**
+
+**Who decided what.** The captain chose the file. Before the dialog the AI assistant had marked the higher-ceiling file
+as the one that fits a Top-3 aim and given the expected values as about equal (decision log 2026-11-19 (cc)). Try
+K18's fixed reading had said "no question", and the cold check of the swap had said it does not stand on expected
+score (decision log 2026-11-19 (s)); the captain chose the file for its best case.
+
+**T3's last upload.** The barred branch's s1, as set t3alt builds it with the command of the T3 section above on the
+barred branch:
+
+```bash
+uv run python experiments/t3_decomp/build_submission.py build experiments/t3_decomp/results/gata4/gata4_decisions.json \
+  --branch barred --submission s1 --wt data/raw/T2/E8.75.h5ad --run-dir runs/t3_decomp/gata4_20261028T122425Z \
+  --board T3:bcatenin --seed 1000001 --out runs/t3_build/barred_s1.h5ad
+```
+
+- **The file.** `runs/t3_build/barred_s1.h5ad`, sha256
+  3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2, built in set t3alt and on the reference list of
+  the third rehearsal (`experiments/builds/results/builds_dc7b6ae.SHA256SUMS`). The copy that is uploaded is the one
+  with that sha256 from the folder the freeze-morning command builds, or the checked local copy of the same bytes at
+  the captain's word, as `AGENTS.md` says ("Official submissions need the user's explicit go-ahead"); never the copy in
+  the DGX's `runs/t3_build`. No new build is needed.
+- **What it is.** Wild-type E8.75 cells with the central composition at the Mab21l2 magnitude, the refused s1's, each
+  cell then moved by the Mab21l2 factor at exponent 1 (`transfer_mab21l2_all`; section "T3" above, "Branch names";
+  row K18), with no depth, stage or coverage step. It takes no number derived from the Gata4 files. What its factor
+  carries, by the cold check of decision log 2026-11-19 (s): Mab21l2's E9.5 knockout cells over WT E8.75, so the whole
+  step from E8.75 to E9.5 along the wild-type trend, the Mab21l2 knockout's effect, that sample's own run and WT
+  E8.75's own deviation.
+
+**What it replaces and what it departs from, lever by lever.**
+- **The file.** It replaces "the refused s1 with the wild-type-only factor" (`runs/t3_build/refused_s1.h5ad`, built
+  with `--wt-revert`) of the amendment of 2026-11-18, which stays built and is not uploaded.
+- **The factor.** The replaced file moved each cell by its lineage group's wild-type-only factor at exponent 0.5 (the
+  amendment of 2026-11-13). This file moves each cell by the Mab21l2 factor at exponent 1.
+- **The composition.** No change: the central composition at the Mab21l2 magnitude in both.
+- **The frozen T3 rule.** It put the barred s1 last only under an organiser ruling that restricts or bars the Gata4
+  files or bars the validation answers ("Ruling switches" above). No such ruling is on record. This file goes last by
+  the captain's say-so, not by a switch.
+- **Try K18's fixed reading** ("no question"; decision log 2026-11-18 (u)) and the cold check of decision log
+  2026-11-19 (s) both kept the refused file. The captain's answer overrides them. This file enters by ruling, not by
+  the adoption rule and not by a pre-set rule's outcome.
+
+**Why.** The captain's aim, in his words (decision log 2026-11-19 (aa) and (bb)): "Proceed with whatever that gets us
+to Top 3 in the leaderboard. If other teams can do it, so can us" and "ultrathink just deeply internalize that it is
+very much possible to beat the top 3 leaderboard scores". The AI assistant's reading of them (its own): a best-case
+aim, each last file weighed by its ceiling with the first score banked.
+
+**What practice says, both ways.** Every figure is from practice tasks (WT E8.75 to Gata4, replicates g1 and g2); none
+is a test value.
+- **Row K18, by its fixed rule** (decision log 2026-11-18 (u)): `barred_form` minus `refused_form` +2.29 and +6.90 in
+  the plain world; -4.48 on g1 (severity scored in 6 of 10 seeds against the 9 needed) and +4.94 on g2 at matched
+  depth. The refused form's board means: 57.1 and 55.1 plain, 60.1 and 58.9 at matched depth.
+- **The cold check's repricing** (decision log 2026-11-19 (s); approximate, from two scorers): Gata4's knockout cells
+  lean towards E9.5 against WT E8.75, and the barred factor's lead sits on that part. With it priced for the barred
+  file alone, the four cells go to about -2.8, +1.8, -9.6 and -0.2, and the swap is worth about -1 to +1 as the
+  expected better of two. Its one clear edge is the tail: about 62 to 64 against 57 to 59.
+- **The analyst's reading** (decision log 2026-11-19 (p); its own judgement): level with or ahead of the refused file
+  on the expected better of two (four-cell practice mean +2.4), ahead on the tail (about 62 to 64). The cold check
+  corrected its brief on what the barred factor carries (above).
+
+**What practice cannot say.**
+- Whether the beta-catenin embryos lean older than WT E8.75, as Gata4's did. The tail pays only then, and nothing
+  released shows it (decision log 2026-11-19 (s)).
+- g1 and g2 are two replicates of one knockout run: one fold of evidence, not two (row K18). No released knockout is
+  beta-catenin.
+
+**Nothing is computed from a test score.** The file was built in set t3alt at dc7b6ae, the third rehearsal of
+2026-11-13, before any score, and is on that reference list. The scores chose among built or pre-defined predictions
+(Official Rules, Section 10, as decision log 2026-11-19 (g) quotes them). The first T3 score, 47.8, enters only as the
+level a last file must beat, as the question said.
+
+**What the record must say.** T3's last file was chosen by the captain after the first scores, for its best case,
+against try K18's fixed reading and a cold check. The practice figures that priced it read the Gata4 replicates; the
+file itself takes no Gata4-derived number.
+
+**"No score feedback", as it now stands.** The first bullet no longer holds for T3: its last upload is chosen after,
+and with, the first scores. The second bullet is met: the change comes after T3's first official upload, by the
+captain's own say-so, is logged with the scores public at the time (decision log 2026-11-18 (j): T3 47.8), and
+computes nothing from a test score. "s1 is fixed whatever s2 scores" was spent on 2026-11-18.
+
+**What stays.** The first upload (the allowed branch's s1), the order (it went first), the ruling switches for any
+organiser ruling still to come (every switch that names the barred s1 last names this file) and the rule for final
+marks.
+
+**Builds.** None. The file is set t3alt's (`bash experiments/builds/build_all.sh t3alt`), built at dc7b6ae and on that
+reference list.
