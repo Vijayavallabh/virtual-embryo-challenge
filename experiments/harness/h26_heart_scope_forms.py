@@ -50,6 +50,11 @@ Then:
   prior-by-transition cells of E V(half_iso_half) - E V(full_iso_half); DJ4 = the same with the two E10.5
   transitions merged into one fold first, then the two folds averaged. B if the run is valid and D3 >= 1.0 and
   DJ4 >= 1.0 board points; otherwise A, the file in force. C is reported and never picked.
+  Reported beside the pick, deciding nothing (the review of 2026-11-19): the same D3 and DJ4 on the plain mean score
+  and per prior alone, and at the minimum over the priors. Two known leans of the fixed rule toward B, stated in row
+  H26: s1form_half shares full_iso_half's pool, build seed and half rows, so max(s1form_half, A) is the larger of two
+  near-copies while max(s1form_half, B) is the larger of two different draws (a premium for B with no scope effect
+  behind it); and the equal average over the five priors is a world weight no committed measurement sets (rule 9, J4).
 
   run   (DGX, repo root) one transition, a seed range; one JSON under --out
   read  apply the reading to every part under --runs; write reading.json and reading.txt under --out
@@ -472,20 +477,43 @@ def expected(vals: dict, what: str = "V") -> dict:
                   for name, pr in PRIORS.items()} for key in TASK_KEYS}
 
 
-def pick(ev: dict, valid: bool) -> dict:
+def d3_dj4(diff: dict, names=tuple(PRIORS)) -> tuple[float, float, list[float]]:
+    """D3 (the mean over the prior-by-transition cells, transitions weighted equally) and DJ4 (the two E10.5
+    transitions merged into one fold first, then the folds averaged) of a per-transition, per-prior difference."""
+    d3 = float(np.mean([diff[key][name] for key in TASK_KEYS for name in names]))
+    folds = [float(np.mean([np.mean([diff[key][name] for key in fold]) for name in names])) for fold in FOLDS]
+    return d3, float(np.mean(folds)), folds
+
+
+def pick(ev: dict, valid: bool, em: dict | None = None) -> dict:
     """The pick rule fixed in row H26: D3 over the 15 prior-by-transition cells (transitions weighted equally), DJ4
-    with the two E10.5 transitions merged into one fold first; B if valid and both reach PICK_BAR, else A."""
+    with the two E10.5 transitions merged into one fold first; B if valid and both reach PICK_BAR, else A.
+
+    With `em` (the expected plain mean score), the same two statistics are also REPORTED, deciding nothing, on the
+    plain mean (a linear statistic, which carries none of the better-of-two's premium for a draw that differs from
+    s1form_half's), per prior alone (the released target alone is the least favourable committed prior for B under
+    rule 9, J4) and at the minimum over the five priors. The review of 2026-11-19 asked for these; the pick does not
+    use them unless the main session changes the fixed rule."""
     diff = {key: {name: ev[key][name][CANDIDATE] - ev[key][name][CONTROL] for name in PRIORS} for key in TASK_KEYS}
-    d3 = float(np.mean([diff[key][name] for key in TASK_KEYS for name in PRIORS]))
-    folds = [float(np.mean([np.mean([diff[key][name] for key in fold]) for name in PRIORS])) for fold in FOLDS]
-    dj4 = float(np.mean(folds))
+    d3, dj4, folds = d3_dj4(diff)
     b = bool(valid and d3 >= PICK_BAR and dj4 >= PICK_BAR)
-    return {"D3": d3, "DJ4": dj4, "folds": dict(zip([" + ".join(f) for f in FOLDS], folds, strict=True)),
-            "per_cell": diff, "bar": PICK_BAR,
-            "pick": "B (half_iso_half)" if b else "A (full_iso_half, the file in force)",
-            "rule": f"B if the run is valid and D3 >= {PICK_BAR} and DJ4 >= {PICK_BAR} board points; otherwise A. "
-                    "C is reported and never picked. Used only if the captain leaves the direction to the AI "
-                    "assistant; declining keeps A with no further step."}
+    out = {"D3": d3, "DJ4": dj4, "folds": dict(zip([" + ".join(f) for f in FOLDS], folds, strict=True)),
+           "per_cell": diff, "bar": PICK_BAR,
+           "pick": "B (half_iso_half)" if b else "A (full_iso_half, the file in force)",
+           "rule": f"B if the run is valid and D3 >= {PICK_BAR} and DJ4 >= {PICK_BAR} board points; otherwise A. "
+                   "C is reported and never picked. Used only if the captain leaves the direction to the AI "
+                   "assistant; declining keeps A with no further step."}
+    rep = {"label": "reported, not decided on (the fixed pick uses D3 and DJ4 of E V over the five priors only)",
+           "V_per_prior": {name: dict(zip(("D3", "DJ4"), d3_dj4(diff, (name,))[:2], strict=True)) for name in PRIORS}}
+    per = list(rep["V_per_prior"].values())
+    rep["V_min_over_priors"] = {"D3": min(p["D3"] for p in per), "DJ4": min(p["DJ4"] for p in per)}
+    if em is not None:
+        dm = {key: {name: em[key][name][CANDIDATE] - em[key][name][CONTROL] for name in PRIORS} for key in TASK_KEYS}
+        rep["plain_mean"] = dict(zip(("D3", "DJ4"), d3_dj4(dm)[:2], strict=True))
+        rep["plain_mean_per_prior"] = {name: dict(zip(("D3", "DJ4"), d3_dj4(dm, (name,))[:2], strict=True))
+                                       for name in PRIORS}
+    out["reported_not_decided"] = rep
+    return out
 
 
 def groups_table(rows: dict[str, list[dict]]) -> dict:
@@ -515,7 +543,7 @@ def reading(parts: dict[str, list[dict]], study: dict[str, dict], committed_h25:
         "R1_carry_over": carry_over(rows, study),
         "R2_values": vals, "R2_expected_V": ev, "R2_expected_mean": em,
         "R3_groups": groups_table(rows),
-        "pick": pick(ev, True),
+        "pick": pick(ev, True, em),
         "follows": "nothing is built and no rule changes; the table and the rule's pick go to the captain",
     }
 
@@ -538,6 +566,18 @@ def text(res: dict) -> str:
                                              for k, v in res["oracle_factors"].items())]
     p = res["pick"]
     lines.append(f"PICK RULE: D3 {p['D3']:+.3f}, DJ4 {p['DJ4']:+.3f} (bar {p['bar']}): {p['pick']}")
+    rep = p["reported_not_decided"]
+    lines.append("  " + rep["label"] + ":")
+    if "plain_mean" in rep:
+        lines.append(f"    plain mean (no better-of-two premium): D3 {rep['plain_mean']['D3']:+.3f}, "
+                     f"DJ4 {rep['plain_mean']['DJ4']:+.3f}")
+    lines.append("    E V per prior alone: " + "; ".join(f"{n} D3 {v['D3']:+.3f} DJ4 {v['DJ4']:+.3f}"
+                                                      for n, v in rep["V_per_prior"].items()))
+    lines.append(f"    E V at the minimum over the priors: D3 {rep['V_min_over_priors']['D3']:+.3f}, "
+                 f"DJ4 {rep['V_min_over_priors']['DJ4']:+.3f}")
+    if "plain_mean_per_prior" in rep:
+        lines.append("    plain mean per prior alone: " + "; ".join(
+            f"{n} D3 {v['D3']:+.3f} DJ4 {v['DJ4']:+.3f}" for n, v in rep["plain_mean_per_prior"].items()))
     lines.append("R1 carry-over (trim minus full_iso_half | the study's trim minus hold; mean [min, max] ahead/10):")
     for key in TASK_KEYS:
         for q in TRUTHS:

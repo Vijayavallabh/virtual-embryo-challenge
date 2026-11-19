@@ -403,6 +403,47 @@ def test_c_is_reported_and_never_picked(h26):
     assert res["R2_expected_V"][h26.TASK_KEYS[0]]["uniform"]["core_iso_half"] == pytest.approx(60.0)
 
 
+def test_the_reported_statistics_decide_nothing(h26):
+    """Plain-mean, per-prior and minimum-over-prior D3 and DJ4 are reported beside the pick and never move it."""
+    st, hh = _study(h26), _h25(h26)
+    # B ahead by 3 on every truth but the released one, where it is 2 behind; s1form_half far below
+    score = {k: {q: {"half_iso_half": 50.0 + (-2.0 if q == "own" else 3.0), "s1form_half": 30.0}
+                 for q in h26.TRUTHS} for k in h26.TASK_KEYS}
+    res = h26.reading(_parts(h26, score=score), st, hh)
+    p, rep = res["pick"], res["pick"]["reported_not_decided"]
+    assert rep["V_per_prior"]["released"] == {"D3": pytest.approx(-2.0), "DJ4": pytest.approx(-2.0)}
+    assert rep["V_per_prior"]["thin_family"]["D3"] == pytest.approx(3.0)
+    assert rep["V_min_over_priors"]["D3"] == pytest.approx(-2.0)
+    assert rep["plain_mean"]["D3"] == pytest.approx(p["D3"])  # s1 far below: V is the arm's own score
+    assert p["D3"] >= 1.0 and p["pick"].startswith("B")  # the fixed rule picks B: the reported -2.0 does not decide
+    assert "reported, not decided on" in h26.text(res) and "released D3 -2.000" in h26.text(res)
+
+
+def test_the_carry_over_reference_figures_quoted_in_row_h26(h26):
+    """Row H26 quotes, as the committed reference for its outcome, what the pick statistics would be if the study's
+    own half_radial - hold carried over exactly (committed per-seed files, arithmetic only): on the plain mean and as
+    V with s1 = hold, over the five priors and on the released target alone."""
+    st = h26.load_study()
+    pm, pv = {}, {}
+    for key in h26.TASK_KEYS:
+        rows = st[key]["rows"]
+        for name, pr in h26.PRIORS.items():
+            m = v = 0.0
+            for q, w in pr.items():
+                h = np.array([r["scores"][q]["hold"] for r in rows])
+                b = np.array([r["scores"][q]["half_radial"] for r in rows])
+                m += w * (b - h).mean()
+                v += w * (np.maximum(h, b).mean() - h.mean())
+            pm.setdefault(key, {})[name], pv.setdefault(key, {})[name] = m, v
+    got = {"plain": h26.d3_dj4(pm)[:2], "V": h26.d3_dj4(pv)[:2],
+           "plain released": h26.d3_dj4(pm, ("released",))[:2], "V released": h26.d3_dj4(pv, ("released",))[:2]}
+    print("\nH26 carry-over reference (study half_radial - hold): "
+          + "; ".join(f"{k} D3 {a:+.2f} DJ4 {b:+.2f}" for k, (a, b) in got.items()))
+    want = {"plain": (3.08, 3.39), "V": (4.11, 4.19), "plain released": (-0.85, -0.20), "V released": (1.20, 1.41)}
+    for k, (a, b) in want.items():
+        assert got[k][0] == pytest.approx(a, abs=0.006) and got[k][1] == pytest.approx(b, abs=0.006), k
+
+
 def test_the_priors_are_the_frozen_sections_five(h26):
     P = h26.PRIORS
     assert list(P) == ["uniform", "own_third", "released", "radial_family", "thin_family"]
@@ -454,72 +495,134 @@ def test_r1_reads_the_study_against_hold(h26):
 
 
 # ------------------------------------------------------------------------------------------------ noise, guards, J5
-def _study_spreads(h26) -> dict[str, float]:
-    """Per transition, the largest seed SD over the five truths of the study's committed paired differences
-    half_radial - hold and core_radial - hold (the nearest committed analogue of a trimmed arm against the full one)."""
+def _study_spreads(h26, how=max) -> dict[str, float]:
+    """Per transition, the seed SD of the study's committed paired differences of a trim minus hold (the nearest
+    committed analogue of a trimmed arm against the full one): `max` the largest over the five truths and both trims
+    (half_radial, core_radial); `np.median` the median over the five truths of half_radial - hold (B's own analogue)."""
     st = h26.load_study()
     out = {}
     for key in h26.TASK_KEYS:
         rows = st[key]["rows"]
-        out[key] = max(float(np.std([r["scores"][q][p] - r["scores"][q]["hold"] for r in rows], ddof=1))
-                       for q in h26.TRUTHS for p in ("half_radial", "core_radial"))
+        trims = ("half_radial", "core_radial") if how is max else ("half_radial",)
+        out[key] = float(how([float(np.std([r["scores"][q][p] - r["scores"][q]["hold"] for r in rows], ddof=1))
+                              for q in h26.TRUTHS for p in trims]))
     return out
 
 
-def _null_pick_rate(h26, sd: dict[str, float], draws: int, seed: int, share_truths: bool, share_e105: bool,
-                    s1_offset: float) -> float:
-    """How often the rule picks B when half_iso_half and full_iso_half are the same in distribution. Each arm's
-    score per transition, truth and seed is level + noise with sd sd_pair / sqrt(2) (so a paired difference has the
-    committed spread); share_truths draws one noise per transition and seed for all five truths (the truths are
-    trims of one stage); share_e105 gives the two E10.5 transitions one draw; s1form_half sits s1_offset from the
-    arms with the same noise level."""
+def _h25_stand_in(h26) -> tuple[dict[str, float], dict[str, float]]:
+    """From row H25's committed per-seed scores: s1form_half minus iso_half (the stand-in against the file in force's
+    form, the same pool, build seed and half rows), its mean (the level) and its seed SD, per E10.5 backtest. E8.25_late
+    -> E8.5 has no H25 run: there the stand-in is the same copy as A with an in-plane instead of an even stretch, so it
+    takes level 0 and the SMALLER of the two committed SDs (the closer copy, the larger premium)."""
+    h25 = h26.load_h25()
+    level, sd = {}, {}
+    for key, r in h25.items():
+        d = np.array([x["scores"]["s1form_half"] - x["scores"]["iso_half"] for x in r["rows"]])
+        level[key], sd[key] = float(d.mean()), float(d.std(ddof=1))
+    k1 = h26.TASK_KEYS[1]
+    level[k1], sd[k1] = 0.0, min(sd.values())
+    return level, sd
+
+
+def _null_draws(h26, sd: dict[str, float], s1_sd: dict[str, float], s1_level: dict[str, float], draws: int,
+                seed: int, share_truths: bool, share_e105: bool) -> dict[str, np.ndarray]:
+    """Pure noise: half_iso_half (B) and full_iso_half (A) the same in distribution. Per transition, truth and seed,
+    A and B are independent draws with SD sd / sqrt(2), so B - A has the committed paired spread sd; s1form_half is
+    A's draw plus s1_level plus its own small term of SD s1_sd (it shares A's pool, build seed and half rows; H25's
+    committed s1form_half and iso_half correlate 0.75 and 0.96 per seed). A component common to all three arms
+    cancels in every difference, so it is left out. share_truths: one draw for all five truths of a transition (they
+    are trims of one stage); share_e105: one draw for the two E10.5 transitions. Returns, per draw, the per-transition,
+    per-prior differences B - A of E V and of the expected plain mean (arrays draws x 3 x 5)."""
     rng = np.random.default_rng(seed)
-    hits = 0
-    k0, k1, k2 = h26.TASK_KEYS
-    for _ in range(draws):
-        score = {}
-        cache = {}
-        for key in h26.TASK_KEYS:
-            src = k0 if (share_e105 and key == k2) else key
-            if src not in cache:
-                n_t = 1 if share_truths else len(h26.TRUTHS)
-                e = rng.normal(0, sd[key] / np.sqrt(2), size=(3, n_t, len(SEEDS)))
-                cache[src] = e
-            e = cache[src]
-            score[key] = {q: {a: list(50.0 + (s1_offset if a == "s1form_half" else 0.0)
-                                      + e[i, 0 if share_truths else j])
-                              for i, a in enumerate(("s1form_half", "full_iso_half", "half_iso_half"))}
-                          for j, q in enumerate(h26.TRUTHS)}
-        vals = {key: {q: {"V": {a: h26.better_of_two(
-            [{"scores": {q: {a2: score[key][q][a2][s] for a2 in ("s1form_half", "full_iso_half", "half_iso_half")}}}
-             for s in range(len(SEEDS))], q, a) for a in ("s1form_half", "full_iso_half", "half_iso_half")}}
-            for q in h26.TRUTHS} for key in h26.TASK_KEYS}
-        ev = {key: {name: {a: sum(w * vals[key][q]["V"][a] for q, w in pr.items())
-                           for a in ("full_iso_half", "half_iso_half")} for name, pr in h26.PRIORS.items()}
-              for key in h26.TASK_KEYS}
-        hits += h26.pick(ev, True)["pick"].startswith("B")
-    return hits / draws
+    W = np.array([[pr.get(q, 0.0) for q in h26.TRUTHS] for pr in h26.PRIORS.values()])  # priors x truths
+    nt = 1 if share_truths else len(h26.TRUTHS)
+    cache, dV, dM = {}, [], []
+    for key in h26.TASK_KEYS:
+        src = h26.TASK_KEYS[0] if (share_e105 and key == h26.TASK_KEYS[2]) else key
+        if src not in cache:
+            cache[src] = rng.normal(size=(3, draws, nt, len(SEEDS)))
+        z = cache[src]
+        A = sd[key] / np.sqrt(2) * z[0]
+        B = sd[key] / np.sqrt(2) * z[1]
+        S = A + s1_level[key] + s1_sd[key] * z[2]
+        A, B, S = (np.broadcast_to(x, (draws, len(h26.TRUTHS), len(SEEDS))) for x in (A, B, S))
+        dV.append((np.maximum(S, B).mean(-1) - np.maximum(S, A).mean(-1)) @ W.T)
+        dM.append((B.mean(-1) - A.mean(-1)) @ W.T)
+    return {"V": np.stack(dV, 1), "mean": np.stack(dM, 1)}
+
+
+def _stats(per: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """D3 and DJ4 of per-draw arrays draws x transitions (TASK_KEYS order) x priors."""
+    d3 = per.mean(axis=(1, 2))
+    dj4 = 0.5 * (0.5 * (per[:, 0] + per[:, 2]).mean(1) + per[:, 1].mean(1))
+    return d3, dj4
+
+
+def test_the_vectorised_null_is_the_scripts_pick(h26):
+    """The noise simulation's D3 and DJ4 equal h26.pick's on the same draws: its arithmetic is the rule's."""
+    level, s1sd = _h25_stand_in(h26)
+    sd = _study_spreads(h26)
+    sim = _null_draws(h26, sd, s1sd, level, draws=5, seed=7, share_truths=False, share_e105=False)
+    d3, dj4 = _stats(sim["V"])
+    m3, mj4 = _stats(sim["mean"])
+    for i in range(5):
+        ev = {k: {n: {"full_iso_half": 0.0, "half_iso_half": float(sim["V"][i, j, p])}
+                  for p, n in enumerate(h26.PRIORS)} for j, k in enumerate(h26.TASK_KEYS)}
+        em = {k: {n: {"full_iso_half": 0.0, "half_iso_half": float(sim["mean"][i, j, p])}
+                  for p, n in enumerate(h26.PRIORS)} for j, k in enumerate(h26.TASK_KEYS)}
+        res = h26.pick(ev, True, em)
+        assert res["D3"] == pytest.approx(d3[i], abs=1e-12) and res["DJ4"] == pytest.approx(dj4[i], abs=1e-12)
+        rep = res["reported_not_decided"]
+        assert rep["plain_mean"]["D3"] == pytest.approx(m3[i], abs=1e-12)
+        assert rep["plain_mean"]["DJ4"] == pytest.approx(mj4[i], abs=1e-12)
 
 
 def test_the_pick_rule_on_pure_noise(h26):
-    """The rule on pure noise, at the committed paired spreads of the study (largest over the five truths and the two
-    trims, per transition), with the truths and seeds shared across the fifteen prior cells by construction (every
-    prior averages the same draws) and, in the worst case, one noise draw for all five truths of a transition and one
-    for the two E10.5 transitions. Printed for row H26."""
-    sd = _study_spreads(h26)
-    out = {}
-    for name, kw in {"independent truths, s1 far below": dict(share_truths=False, share_e105=False, s1_offset=-100),
-                     "shared truths, s1 far below": dict(share_truths=True, share_e105=False, s1_offset=-100),
-                     "shared truths and E10.5, s1 far below": dict(share_truths=True, share_e105=True,
-                                                                   s1_offset=-100),
-                     "shared truths and E10.5, s1 level": dict(share_truths=True, share_e105=True, s1_offset=0.0)
-                     }.items():
-        out[name] = _null_pick_rate(h26, sd, draws=2000, seed=20261119, **kw)
-    print("\nH26 null spreads (sd of paired differences, board points): "
-          + ", ".join(f"{k} {v:.3f}" for k, v in sd.items()))
-    print("H26 pick rate of B on pure noise (2000 draws each): " + "; ".join(f"{k} {v:.2%}" for k, v in out.items()))
-    assert out["independent truths, s1 far below"] < 0.005
-    assert max(out.values()) < 0.05
+    """The fixed rule on pure noise (B and A the same in distribution), with s1form_half sharing A's draw as it does in
+    the run (review of 2026-11-19, blocker 1). Spreads: the study's committed trim-minus-hold seed SDs, the largest
+    over truths and trims and the median over truths of half_radial; the stand-in's level and SD from row H25's
+    committed s1form_half - iso_half (and level, and far below, where the better of two is the arm's own score).
+    The rates of three other rules the review proposed are printed for the main session; the pick uses none of them.
+    Printed for row H26."""
+    level_h25, s1sd = _h25_stand_in(h26)
+    levels = {"H25's levels": level_h25, "level": {k: 0.0 for k in h26.TASK_KEYS},
+              "far below": {k: -100.0 for k in h26.TASK_KEYS}}
+    spreads = {"largest": _study_spreads(h26, max), "median": _study_spreads(h26, np.median)}
+    rate = {}
+    print("\nH26 null spreads (sd of paired differences, board points): " + "; ".join(
+        f"{sn} " + ", ".join(f"{k} {v:.3f}" for k, v in sd.items()) for sn, sd in spreads.items()))
+    print("H26 stand-in s1form_half - iso_half (row H25): " + ", ".join(
+        f"{k} level {level_h25[k]:+.3f} sd {s1sd[k]:.3f}" for k in h26.TASK_KEYS))
+    for sn, sd in spreads.items():
+        for ln, lv in levels.items():
+            for share, kw in (("independent truths", dict(share_truths=False, share_e105=False)),
+                              ("shared truths", dict(share_truths=True, share_e105=False)),
+                              ("shared truths and E10.5", dict(share_truths=True, share_e105=True))):
+                sim = _null_draws(h26, sd, s1sd, lv, draws=4000, seed=20261119, **kw)
+                d3, dj4 = _stats(sim["V"])
+                m3, mj4 = _stats(sim["mean"])
+                r3, rj4 = _stats(sim["V"][:, :, 2:3])  # the released target alone
+                fixed = (d3 >= h26.PICK_BAR) & (dj4 >= h26.PICK_BAR)
+                rate[(sn, ln, share)] = r = {
+                    "null D3": float(d3.mean()), "fixed rule": float(fixed.mean()),
+                    "+ plain mean >= 0": float((fixed & (m3 >= 0) & (mj4 >= 0)).mean()),
+                    "+ plain mean >= 1": float((fixed & (m3 >= 1) & (mj4 >= 1)).mean()),
+                    "+ released alone >= 1": float((fixed & (r3 >= 1) & (rj4 >= 1)).mean())}
+                print(f"H26 null | spreads {sn} | s1 {ln} | {share}: " + ", ".join(
+                    f"{k} {v:+.3f}" if k == "null D3" else f"{k} {v:.2%}" for k, v in r.items()))
+    worst = max(r["fixed rule"] for r in rate.values())
+    print(f"H26 the fixed rule's worst false pick of B on pure noise: {worst:.2%}")
+    # with no premium (s1 far below), the rule holds its noise level
+    assert all(r["fixed rule"] < 0.05 for (sn, ln, sh), r in rate.items() if ln == "far below")
+    assert rate[("largest", "far below", "independent truths")]["fixed rule"] < 0.005
+    # the premium: under pure noise E V favours B whenever s1form_half is within reach of the arms
+    assert all(r["null D3"] > 0.2 for (sn, ln, sh), r in rate.items() if ln != "far below")
+    assert all(abs(r["null D3"]) < 0.05 for (sn, ln, sh), r in rate.items() if ln == "far below")
+    # and at the study's largest spreads it takes the fixed rule's false pick of B well above 5% (review, blocker 1)
+    assert rate[("largest", "level", "shared truths and E10.5")]["fixed rule"] > 0.2
+    # a plain-mean condition at the bar removes the premium: the rate falls to the no-premium level
+    for (sn, _ln, sh), r in rate.items():
+        assert r["+ plain mean >= 1"] <= rate[(sn, "far below", sh)]["fixed rule"] + 0.01
 
 
 def test_the_study_parts_agree_on_every_record_the_guards_check(h26):
