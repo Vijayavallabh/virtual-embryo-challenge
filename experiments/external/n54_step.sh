@@ -50,7 +50,7 @@ case "$STEP" in
       tests/test_t1_part_range_read.py tests/test_t1_reach_read.py tests/test_t1_scope.py tests/test_t1_share_read.py \
       tests/test_t1_split_read.py tests/test_t1_state_transport.py tests/test_t1_strong_null.py \
       tests/test_t1_zone_read.py tests/test_t2_latent.py tests/test_h26_heart_scope_forms.py tests/test_t1_bets.py \
-      tests/test_t62_recomputed_read.py \
+      tests/test_t62_recomputed_read.py tests/test_h27_heart_forecast_size.py \
       tests/test_git_helpers.py experiments/external/test_filters.py
     finish $? ;;
   identity)
