@@ -304,13 +304,16 @@ def _bet_arm(bet: str, strength: float) -> str:
 
 
 def _captain_ruling_names(row: str, arm: str, path: Path | None = None) -> bool:
-    """Whether experiments/harness/TRIES.md (TRIES_FILE) holds a table row `row` whose first cell says it is the
-    captain's ruling and whose text names the arm in backticks."""
+    """Whether experiments/harness/TRIES.md (TRIES_FILE) holds a ruling row `row` (its ID starts with R) whose first
+    cell holds "(the captain's ruling" and whose text puts the arm in with the dedicated phrase "rules `<arm>` in". A
+    row that merely mentions the arm, refuses it or awaits a ruling does not pass."""
+    if not row.startswith("R"):
+        return False
     for ln in (path or TRIES_FILE).read_text(encoding="utf-8").splitlines():
         if not ln.startswith(f"| {row} "):
             continue
         first = ln[2:].split("|", 1)[0]
-        if "the captain's ruling" in first and f"`{arm}`" in ln:
+        if "(the captain's ruling" in first and f"rules `{arm}` in" in ln:
             return True
     return False
 
@@ -333,8 +336,9 @@ def _bet_refusals(a) -> None:
     arm = _bet_arm(bet, a.bet_strength)
     if not a.captain_ruling or not _captain_ruling_names(a.captain_ruling, arm):
         sys.exit(f"--released-bet {bet} is refused: it changes T1's composition, a lever closed by the post-exposure "
-                 "block, and only the captain's own ruling opens it; --captain-ruling must name a row of "
-                 f"experiments/harness/TRIES.md that is the captain's ruling and names `{arm}`")
+                 "block, and only the captain's own ruling opens it; --captain-ruling must name a row R<n> of "
+                 "experiments/harness/TRIES.md whose first cell holds \"(the captain's ruling\" and whose text says "
+                 f"\"rules `{arm}` in\"")
 
 
 def _feng_group_names() -> list[str]:
@@ -512,8 +516,8 @@ def _t1_advance(ref, pool, portions: np.ndarray, shares: dict, n: int, seed: int
     proportion to exp(tau z) (`t1_bets.advance_reweight`), z on each category's momentum axis from E9.5 to E10.5's
     portion libraries (`portions`), the held genes at 0; then g_mom's hook and the board's genes
     (`t1_bets.assemble`), as `t1_scope.build_submission` does on the no-shift path (at tau 0 the same file, tested).
-    Returns the submission, a report with the realised composition (stripped from the record on a test board) and a
-    record."""
+    Returns the submission, a report with the realised composition (stripped from the record on a test board), a
+    record and the drawn population (before the hook), for its median library size."""
     if n < board.min_cells or (board.max_cells is not None and n > board.max_cells):
         raise ValueError("n_cells is outside the board's limits")
     spec = t1_scope.load_spec()
@@ -532,7 +536,18 @@ def _t1_advance(ref, pool, portions: np.ndarray, shares: dict, n: int, seed: int
         "rule": "library 3's cells drawn inside each chamber category by quotas over five z-quantile bins in "
                 "proportion to each bin's sum of exp(tau z), z the cell's projection on its category's E9.5 -> "
                 "E10.5-portion-libraries momentum axis, standardised within the category; category quotas at library "
-                "3's own chamber mix; then g_mom", "tau": float(tau), "axes": axes_rec}
+                "3's own chamber mix; then g_mom", "tau": float(tau), "axes": axes_rec}, pop
+
+
+def _bet_median_library(pool, base_shares: dict, bet_pop, n: int, seed: int) -> dict:
+    """docs/DATA_POLICY.md 2026-11-04 (f)(3) for --released-bet: the bet's drawn cells' median library size over the
+    none file's draw at the same seed (`reweight` on the same pool at the pool's own chamber mix, as build_submission
+    draws it on that file's path). A ratio of two medians of released cells, no count."""
+    spec = t1_scope.load_spec()
+    t1_scope.classify(pool, source="E10.5_RNA", spec=spec)  # in place and idempotent, as build_submission does
+    base, _ = t1_scope.reweight(pool, base_shares, n, seed, fallback=spec.fallbacks("E10.5_RNA"), spec=spec)
+    return {"median_library_over_none_draw": t1_bets.median_library(bet_pop) / t1_bets.median_library(base),
+            "against": "the none file's draw at the same seed (library 3's cells at their own chamber mix)"}
 
 
 def build_t1(a) -> dict:
@@ -604,17 +619,23 @@ def build_t1(a) -> dict:
         hook, g_mom_record = _t1_g_mom(ref, fit_categories, a.seed, covered, feng_direction=feng_groups != "none")
         within_type = {"post_cells": hook}
     bet = getattr(a, "released_bet", None)
-    bet_record = None
+    bet_record = bet_pop = None
+    own_shares = shares
     if bet == "share_trend":  # refused above unless --feng-groups none, so the pool is library 3's (row R8's command)
         shares, bet_record = _t1_trend(ref, library != T1_DISSECTED_LIBRARY, shares, a.bet_strength)
     if bet == "advance":
-        sub, rep, bet_record = _t1_advance(ref, pool, library != T1_DISSECTED_LIBRARY, shares, n, a.seed, held,
-                                           board, within_type["post_cells"], a.bet_strength)
+        sub, rep, bet_record, bet_pop = _t1_advance(ref, pool, library != T1_DISSECTED_LIBRARY, shares, n, a.seed,
+                                                    held, board, within_type["post_cells"], a.bet_strength)
     else:
         sub, rep = t1_scope.build_submission(pool, board, shares, n, a.seed, held_flat=held,
                                              ref_source="E10.5_RNA", directions=directions,
                                              direction_fraction=fraction, direction_groups=groups, herd=a.herd,
                                              **momentum, **extra, **within_type)
+    if bet == "share_trend":  # the draw build_submission made at the trended shares (the same call), for (f)(3)
+        spec = t1_scope.load_spec()
+        bet_pop = t1_scope.reweight(pool, shares, n, a.seed, fallback=spec.fallbacks("E10.5_RNA"), spec=spec)[0]
+    if bet_record is not None:
+        bet_record = {**bet_record, **_bet_median_library(pool, own_shares, bet_pop, n, a.seed)}
     strong = None
     if prior is not None:  # T12's part (d): the file is written only if the target-free checks pass
         strong = {"selection": "the reference's level alone (vec.t1_scope.DownPriorTable.level_only), no table",

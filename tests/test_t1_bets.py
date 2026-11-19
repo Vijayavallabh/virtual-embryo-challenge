@@ -145,6 +145,8 @@ def test_advance_at_zero_is_reweight_bit_for_bit_and_keeps_every_quota():
     assert z[rows].mean() > 0.2
     cm = next(r for r in rep.rows if r["category"] == "cm")["advance"]["bin_shares"]
     assert len(cm) == t1_bets.ADVANCE_BINS and list(cm.values()) == sorted(cm.values())  # quotas rise with z
+    reused = next(r for r in rep.rows if r["category"] == "cm")["advance"]["bin_reused"]
+    assert set(reused) == set(cm) and all(0.0 <= v <= 1.0 for v in reused.values())  # a fraction per bin, no count
 
 
 def test_the_bins_are_quotas_at_the_count_never_weights():
@@ -214,8 +216,9 @@ def test_the_cut_arms_reproduce_the_harness_and_read_no_outside_file(br, monkeyp
     fits = br.gmom_fits(ref, "E9.5_RNA", start, "E8.5_RNA")
     monkeypatch.setattr(br.bt.feng_dirs, "feng_directions", lambda *a, **k: pytest.fail("no Feng direction"))
     monkeypatch.setattr(ts, "r1_unbracketed_labels", lambda *a, **k: pytest.fail("R1's Feng list is not read"))
-    arms, depth = br.cut_arms(ctx, fits)
-    assert tuple(arms) == br.CUT_ARMS and set(depth) == set(br.COMPOSITION_ARMS)
+    arms, depth, reuse = br.cut_arms(ctx, fits)
+    assert tuple(arms) == br.CUT_ARMS and set(depth) == set(br.COMPOSITION_ARMS) and set(reuse) == set(br.ADVANCE_ARMS)
+    assert all(0.0 <= v <= 1.0 for r in reuse.values() for bins in r.values() for v in bins.values())
     assert all(np.isfinite(v) and v > 0 for v in depth.values())
     assert arms["copy"].X.tobytes() == harness._b0_t1(0.0)(ctx).X.tobytes()
     assert arms["b0"].X.tobytes() == harness._b0_t1(harness.B0_DAMPING)(ctx).X.tobytes()
@@ -233,8 +236,9 @@ def test_the_library_arms_on_t60s_base_and_on_the_own_mix(br):
     axes, _ = t1_bets.momentum_axes(e85, e95, sorted(SHARES), HELD, within=within, start_fallback=fb["E8.5"],
                                     later_fallback=fb["E9.5"])
     z = t1_bets.advance_scores(e95, axes)
-    arms, depth = br.library_arms(e85, e95, SHARES, fits, HELD, 4, within, fb, z, n_cells=300)
+    arms, depth, reuse = br.library_arms(e85, e95, SHARES, fits, HELD, 4, within, fb, z, n_cells=300)
     assert set(arms) == set(br.LIB_ARMS) - {"copy_last"} and set(depth) == set(br.COMPOSITION_ARMS)
+    assert set(reuse) == set(br.ADVANCE_ARMS)
     assert (_dense(arms["b0_gmom"].X) != _dense(arms["b0"].X)).any()
     base, _ = reweight(e95, SHARES, 300, 4, within=within, fallback=fb["E9.5"])
     assert (_dense(arms["oracle_mix"].X) == _dense(base.X)).all()
@@ -248,7 +252,10 @@ def test_the_library_arms_on_t60s_base_and_on_the_own_mix(br):
 
 
 def test_the_counts_and_the_row_refusal(br, tmp_path, monkeypatch):
-    assert br.TRIES_COUNT == 56 and len(br.CUT_COUNTED) == 10 and len(br.LIB_COUNTED) == 12
+    # b0 is both the gate and a candidate on the cuts, so it counts there: 11 x 2 + 12 x 3 = 58 (T1 300 to 358)
+    assert br.TRIES_COUNT == 58 and len(br.CUT_COUNTED) == 11 and len(br.LIB_COUNTED) == 12
+    assert br.CUT_GATE in br.CUT_COUNTED and br.CUT_GATE in br.ARM_ORDER
+    assert set(br.ARM_ORDER) <= set(br.CUT_COUNTED) and set(br.ARM_ORDER) - {"copy"} <= set(br.LIB_COUNTED)
     tries = tmp_path / "TRIES.md"
     tries.write_text("| T60 (one row) | T1 | x |\n")
     monkeypatch.setattr(br, "TRIES", tries)
@@ -310,6 +317,7 @@ def test_a_library_loss_keeps_the_arm_out_of_reading_d_only(br):
     assert (r["reading_S"], r["reading_D"]) == ("share_trend_l1", "none") and r["composition_arm"]
     assert r["ranges"]["share_trend_l1"]["analogue_range"] == pytest.approx([-1.0, 2.0])
     assert r["ranges"]["share_trend_l1"]["j6_range"] == pytest.approx([0.0, 2.0])
+    assert r["ranges"]["share_trend_l1"]["j6_range_d"] == pytest.approx([-1.0, 2.0])  # the library loss is shown
 
 
 def test_a_depth_linked_output_names_the_best_arm_outside_those_sizes(br):
@@ -330,6 +338,36 @@ def test_a_depth_linked_output_names_the_best_arm_outside_those_sizes(br):
     assert r["reading_S"] == "advance_t1" and r["median_library_shift"] == {"ratio": pytest.approx(1.08),
                                                                             "beyond": True}
     assert any("beyond 5%" in x for x in br.outcome_lines(r))
+
+
+R1_TEXT = ("The output arm reverses R1 (the captain's ruling of 2026-11-05): only his ruling naming R1 puts it in a "
+           "file")
+
+
+@pytest.mark.parametrize("arm", ["b0", "b0_gmom", "mom_d0.25_gmom", "mom_d1_gmom"])
+def test_a_momentum_output_says_it_reverses_r1(br, arm):
+    """B0's momentum on every cell reverses R1 under --feng-groups none: the read prints the line, word for word."""
+    assert br.R1_LINE == R1_TEXT and set(br.R1_REVERSING) == {"b0", "b0_gmom", "mom_d0.25_gmom", "mom_d1_gmom"}
+    cuts, libs = _committed(br)
+    if arm == "b0":  # b0 sits at the gate's committed 49.0: put none_gmom and the rest below it
+        gains = {**{a: -3.0 for a in br.CUT_ARMS if a != "b0"}, "none_gmom": -2.0}
+        chamber, whole = _cut(br, gains), _cut(br, gains)
+    else:
+        chamber, whole = _cut(br, {arm: 1.5}), _cut(br, {arm: 1.0})
+    r = br.t61_reading({"chamber": chamber, "whole": whole}, {lib: _lib(br, {}) for lib in br.LIBRARIES}, cuts, libs)
+    assert r["reading_S"] == arm and r["r1_reversing_output"]
+    assert R1_TEXT in br.outcome_lines(r)
+
+
+@pytest.mark.parametrize("arm", ["copy", "gmom_s1", "share_trend_l0.5", "advance_t1"])
+def test_an_output_outside_the_momentum_arms_has_no_r1_line(br, arm):
+    cuts, libs = _committed(br)
+    r = br.t61_reading({"chamber": _cut(br, {arm: 1.5}), "whole": _cut(br, {arm: 1.0})},
+                       {lib: _lib(br, {}) for lib in br.LIBRARIES}, cuts, libs)
+    assert r["reading_S"] == arm and not r["r1_reversing_output"] and R1_TEXT not in br.outcome_lines(r)
+    r = br.t61_reading({"chamber": _cut(br, {}), "whole": _cut(br, {})}, {lib: _lib(br, {}) for lib in br.LIBRARIES},
+                       cuts, libs)
+    assert r["reading_S"] == "none" and R1_TEXT not in br.outcome_lines(r)
 
 
 def test_too_few_seeds_ahead_or_a_small_mean_is_not_ahead(br):
@@ -359,7 +397,9 @@ def test_ties_break_by_the_fixed_order_and_a_late_commit_voids_a_library(br):
                         "whole": _cut(br, {"advance_t1": 1.0, "copy": 1.0})},
                        {"1": _lib(br, {}, commit="d" * 40), "2": _lib(br, {}), "3": _lib(br, {})}, cuts, libs)
     assert r["reading_S"] == "copy" and r["valid_libraries"] == ["2", "3"]
-    assert r["reading_D"] == "none"  # on the libraries the copy (the oracle mix) is 1 point behind none_gmom
+    assert r["libraries"]["2"]["against_none_gmom"]["copy"]["base"] == "own_none_gmom"
+    assert r["libraries"]["2"]["against_none_gmom"]["copy"]["change"] == "own_copy"
+    assert r["reading_D"] == "none"  # on the libraries the copy (E9.5's own mix) is 1 point behind own_none_gmom
 
 
 def test_the_read_prints_no_score(br, tmp_path, monkeypatch, capsys):
@@ -378,7 +418,8 @@ def test_the_read_prints_no_score(br, tmp_path, monkeypatch, capsys):
     printed = capsys.readouterr().out
     assert res["reading"]["reading_S"] == "gmom_s1"
     assert "1.23" not in printed and "51.2" not in printed and "Outcome" in printed
-    assert "+1.23" in (out / "t61.txt").read_text()
+    text = (out / "t61.txt").read_text()
+    assert "+1.23" in text and "over the floor: b0 -1.00" in text and "J6 under D" in text
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -387,9 +428,23 @@ def test_the_read_prints_no_score(br, tmp_path, monkeypatch, capsys):
 
 def _ruling(bt, tmp_path, monkeypatch, arm="share_trend_l0.5", row="R99"):  # noqa: F811
     tries = tmp_path / "TRIES.md"
-    tries.write_text(f"| {row} (the captain's ruling, test) | T1 | `{arm}` | x |\n| R98 (a ruling request) | T1 | "
-                     f"`{arm}` |\n")
+    tries.write_text(f"| {row} (the captain's ruling, test) | T1 | rules `{arm}` in | x |\n"
+                     f"| R98 (a ruling request) | T1 | rules `{arm}` in |\n"
+                     f"| R97 (the captain's ruling, test) | T1 | refuses `{arm}`; rules `{arm}` out |\n"
+                     f"| R96 (awaits the captain's ruling) | T1 | rules `{arm}` in |\n"
+                     f"| T96 (the captain's ruling, test) | T1 | rules `{arm}` in |\n")
     monkeypatch.setattr(bt, "TRIES_FILE", tries)
+
+
+def test_the_ruling_guard_needs_a_ruling_row_and_the_dedicated_phrase(bt, tmp_path, monkeypatch):  # noqa: F811
+    _ruling(bt, tmp_path, monkeypatch)
+    arm = "share_trend_l0.5"
+    assert bt._captain_ruling_names("R99", arm)
+    assert not bt._captain_ruling_names("R98", arm)  # its first cell is no ruling
+    assert not bt._captain_ruling_names("R97", arm)  # a negative mention of the arm
+    assert not bt._captain_ruling_names("R96", arm)  # "awaits the captain's ruling" is no ruling
+    assert not bt._captain_ruling_names("T96", arm)  # a try row, not a ruling row
+    assert not bt._captain_ruling_names("R99", "share_trend_l1")  # another arm
 
 
 def test_the_option_is_off_by_default_and_refused_without_its_ruling(bt, tmp_path, monkeypatch):  # noqa: F811
@@ -439,13 +494,22 @@ def test_share_trend_is_the_last_file_at_the_trended_mix(bt, t1_env, monkeypatch
     direct = tmp_path / "direct.h5ad"
     bt.t1_scope.write_checked(sub, direct, t1_env.board)
     assert _sha(bet) == _sha(direct) != _sha(none)
+    # (f)(3): the drawn median library over the none file's draw at the same seed, a ratio and no count
+    spec = load_spec()
+    classify(pool, source="E10.5_RNA")
+    seed = bt.harness.BUILD_SEED_OFFSET + 1
+    n = bt.harness.count_for(t1_env.board, ref.n_obs)
+    fb = spec.fallbacks("E10.5_RNA")
+    want = (t1_bets.median_library(reweight(pool, t1_scope.load_shares(trend), n, seed, fallback=fb)[0])
+            / t1_bets.median_library(reweight(pool, own, n, seed, fallback=fb)[0]))
+    assert rec["released_bet"]["median_library_over_none_draw"] == pytest.approx(want) and want > 0
 
 
 def test_advance_at_zero_is_the_last_file_and_at_its_strength_moves_it(bt, t1_env, monkeypatch, tmp_path):  # noqa: F811
     _target_env(bt, t1_env, monkeypatch)
     monkeypatch.setitem(bt.RELEASED_BETS, "advance", ("t", (0.0, *t1_bets.TAUS)))
     tries = tmp_path / "TRIES.md"
-    tries.write_text("| R99 (the captain's ruling, test) | T1 | `advance_t0` `advance_t1` |\n")
+    tries.write_text("| R99 (the captain's ruling, test) | T1 | rules `advance_t0` in; rules `advance_t1` in |\n")
     monkeypatch.setattr(bt, "TRIES_FILE", tries)
     none, zero, one = tmp_path / "T1_none.h5ad", tmp_path / "T1_adv0.h5ad", tmp_path / "T1_adv1.h5ad"
     bt.main(["t1", *TARGET, "--feng-groups", "none", "--out", str(none)])
@@ -456,4 +520,7 @@ def test_advance_at_zero_is_the_last_file_and_at_its_strength_moves_it(bt, t1_en
     rec = json.loads(one.with_suffix(".build.json").read_text())
     assert rec["released_bet"]["arm"] == "advance_t1" and rec["released_bet"]["tau"] == 1.0
     assert rec["n_cells"] == "max_cells" and "realised" not in rec
+    assert np.isfinite(rec["released_bet"]["median_library_over_none_draw"])
+    rec0 = json.loads(zero.with_suffix(".build.json").read_text())
+    assert rec0["released_bet"]["median_library_over_none_draw"] == 1.0  # tau 0 draws the none file's cells
     assert json.loads(none.with_suffix(".build.json").read_text())["shares"] == rec["shares"]

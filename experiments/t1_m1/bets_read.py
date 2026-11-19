@@ -20,7 +20,7 @@ pre-registered held genes) on the cells of `build_test.G_MOM_EDIT_CATEGORIES` (c
 readout config gives a group (`build_test._labels_without_group`, the mask of row R8), as `build_test._t1_g_mom`'s hook
 does under --feng-groups none (tests pin the two together).
 
-Arms on each E10.5 cut (b0 is the reproduction gate, not counted; the other ten are counted):
+Arms on each E10.5 cut (b0 is both the reproduction gate and a candidate; all eleven are counted):
   b0               B0: the chamber copy plus the damped (0.5) E8.5 -> E9.5 momentum on every cell (`harness._b0_t1`)
   copy             the chamber copy, no change (`harness._b0_t1(0.0)`'s cells)
   none_gmom        copy + g_mom: the practice analogue of the built last file
@@ -36,8 +36,9 @@ none_gmom, b0, b0_gmom, mom_d0.25_gmom, mom_d1_gmom, gmom_s1, advance_t0.5 and a
 own_copy, own_none_gmom, share_trend_l0.5 and share_trend_l1 (a trend applied to the truth's own mix would be no rule);
 twelve counted per library.
 
-  run-cut  One E10.5 cut: the gate's arm and the ten arms; writes results/<out>/tasks/<cut>.json. Refused unless row
-           T61 is in experiments/harness/TRIES.md, on an unclean tree, and on an existing task file. Prints no score.
+  run-cut  One E10.5 cut: the eleven arms (the gate's b0 among them); writes results/<out>/tasks/<cut>.json.
+           Refused unless row T61 is in experiments/harness/TRIES.md, on an unclean tree, and on an existing task
+           file. Prints no score.
   run-lib  One library task: the references and the twelve arms; writes results/<out>/tasks/lib<L>.json. Same
            refusals. Prints no score.
   read     T61's statements, applied to the task files before anything is printed (the row's rule, below); writes
@@ -51,9 +52,11 @@ least MIN_AHEAD seeds above 0, and on the whole cut its paired mean is above 0. 
 highest chamber-cut mean (ties: ARM_ORDER). Reading S (T1's first upload stands): the output arm. Reading D (it is
 discounted): the output arm if on every valid library task (at least MIN_LIBRARIES of them) its paired mean over its
 base's none_gmom is at least -AHEAD_BAR; otherwise none. No arm ahead: none in both readings. Named beside, deciding
-nothing: whether the output is one of DEPTH_LINKED (then the best ahead arm outside them too), and each composition
-arm's drawn median library size over its base's (docs/DATA_POLICY.md 2026-11-04 (f)(3): beyond 5% goes to the
-captain).
+nothing: whether the output is one of R1_REVERSING (B0's momentum on every cell: it reverses R1, the captain's ruling
+of 2026-11-05, and only his ruling naming R1 puts it in a file), whether it is one of DEPTH_LINKED (then the best ahead
+arm outside them too), and each composition arm's drawn median library size over its base's draw (docs/DATA_POLICY.md
+2026-11-04 (f)(3): beyond 5% goes to the captain; on practice the base is E9.5's own-mix or the oracle draw, not
+E10.5's).
 
 NOT an adoption result: every task scores one truth (E10.5), the tasks span one day and the test two, the advance and
 share_trend arms change composition (the post-exposure block: only the captain's ruling puts one in a file), and the
@@ -118,6 +121,10 @@ TREND_ARMS = {f"share_trend_l{x:g}": x for x in t1_bets.LAMBDAS}
 ADVANCE_ARMS = {f"advance_t{x:g}": x for x in t1_bets.TAUS}
 COMPOSITION_ARMS = (*TREND_ARMS, *ADVANCE_ARMS)  # the post-exposure block: composition (J1a)
 DEPTH_LINKED = ("gmom_s1", "mom_d1_gmom")  # larger sizes whose practice gain tracks the truth's depth (T46, T59)
+# B0's momentum on every cell: under --feng-groups none that reverses R1 (the captain's ruling of 2026-11-05: cells
+# without an atlas group keep their E10.5 counts), so an output among these enters a file only by his ruling naming R1
+R1_REVERSING = ("b0", "b0_gmom", "mom_d0.25_gmom", "mom_d1_gmom")
+R1_LINE = "The output arm reverses R1 (the captain's ruling of 2026-11-05): only his ruling naming R1 puts it in a file"
 LIBRARY_SHIFT_TOL = 0.05  # docs/DATA_POLICY.md 2026-11-04 (f)(3): a drawn median library shift beyond 5% -> captain
 GMOM_STREAM = 5
 # The candidate arms in the order that breaks a tie (the fewest changes to the built file first)
@@ -125,17 +132,18 @@ ARM_ORDER = ("copy", "gmom_s1", "mom_d0.25_gmom", "b0_gmom", "mom_d1_gmom", "b0"
 CUT_GATE = "b0"
 CUT_ARMS = ("b0", "copy", "none_gmom", "b0_gmom", "mom_d0.25_gmom", "mom_d1_gmom", "gmom_s1", *TREND_ARMS,
             *ADVANCE_ARMS)
-CUT_COUNTED = tuple(a for a in CUT_ARMS if a != CUT_GATE)
+CUT_COUNTED = CUT_ARMS  # b0 is both the gate and a candidate (it is in ARM_ORDER), so it counts (rule 4)
 LIB_REFERENCES = ("copy_last", "oracle_mix")
 LIB_ORACLE_ARMS = ("none_gmom", "b0", "b0_gmom", "mom_d0.25_gmom", "mom_d1_gmom", "gmom_s1", *ADVANCE_ARMS)
 LIB_OWN_ARMS = ("own_copy", "own_none_gmom", *TREND_ARMS)
 LIB_ARMS = (*LIB_REFERENCES, *LIB_ORACLE_ARMS, *LIB_OWN_ARMS)
 LIB_COUNTED = (*LIB_ORACLE_ARMS, *LIB_OWN_ARMS)
-# On a library task each candidate arm is read against the none_gmom of its own base; the copy is the oracle mix there
+# On a library task each candidate arm is read against the none_gmom of its own base. The copy is E9.5's own-mix copy
+# there, against own_none_gmom: the closer analogue of the last file, which draws its pool's own mix
 LIB_PAIR = {**{a: (a, "none_gmom") for a in ("b0", "b0_gmom", "mom_d0.25_gmom", "mom_d1_gmom", "gmom_s1",
                                               *ADVANCE_ARMS)},
-            "copy": ("oracle_mix", "none_gmom"), **{a: (a, "own_none_gmom") for a in TREND_ARMS}}
-TRIES_COUNT = len(CUT_COUNTED) * len(CUTS) + len(LIB_COUNTED) * len(LIBRARIES)  # 56
+            "copy": ("own_copy", "own_none_gmom"), **{a: (a, "own_none_gmom") for a in TREND_ARMS}}
+TRIES_COUNT = len(CUT_COUNTED) * len(CUTS) + len(LIB_COUNTED) * len(LIBRARIES)  # 58
 LABEL = ("try T61, a labelled in-sample diagnostic, never an adoption result: released-data variants of T1's last file "
          "(the first upload's design without the outside atlas's step) against its practice analogue none_gmom, on "
          "the E9.5 -> E10.5 cuts and row T60's library tasks; every task scores one truth (E10.5) over one day, the "
@@ -212,11 +220,20 @@ def cut_arms(ctx: harness.BuildContext, fits: Mapping[str, ts.StateFactors]) -> 
     axes, _ = t1_bets.momentum_axes(start, ref, cats, held, start_fallback=spec.fallbacks(start_src),
                                     later_fallback=spec.fallbacks(src))
     z = t1_bets.advance_scores(ref, axes)
+    reuse = {}
     for name, tau in ADVANCE_ARMS.items():
-        pop, _ = t1_bets.advance_reweight(ref, shares, n, ctx.seed, z, tau, fallback=spec.fallbacks(src), spec=spec)
+        pop, rep = t1_bets.advance_reweight(ref, shares, n, ctx.seed, z, tau, fallback=spec.fallbacks(src), spec=spec)
         arms[name] = harness.finish(ctx, ref, dense(t1_bets.assemble(pop, ctx.board, hook).X), None)
         depth[name] = t1_bets.median_library(pop)
-    return {a: arms[a] for a in CUT_ARMS}, {a: v / depth["copy"] for a, v in depth.items() if a != "copy"}
+        reuse[name] = bin_reuse(rep)
+    return ({a: arms[a] for a in CUT_ARMS}, {a: v / depth["copy"] for a, v in depth.items() if a != "copy"},
+            reuse)
+
+
+def bin_reuse(rep) -> dict[str, dict[str, float]]:
+    """An advance draw's reuse per category and z bin, as a fraction of the bin's quota (no count): recorded in the
+    task files, never read as a score property (row T61)."""
+    return {r["category"]: r["advance"]["bin_reused"] for r in rep.rows if r["advance"]["bin_reused"] is not None}
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -227,7 +244,8 @@ def library_arms(e85, e95, half_shares: Mapping[str, float], fits: Mapping[str, 
                  seed: int, within: Mapping, fb: Mapping[str, Mapping], z: np.ndarray,
                  n_cells: int = rr.N_CELLS) -> dict:
     """Every arm of one seed on a library task (LIB_ARMS but copy_last, which the caller draws), as AnnData, and each
-    composition arm's drawn median library size over its base's (reported only). e85, e95: classified; half_shares:
+    composition arm's drawn median library size over its base's and each advance arm's reuse per bin (`bin_reuse`),
+    both reported only. e85, e95: classified; half_shares:
     the truth's own chamber mix (row T60's oracle base); fb: stage name -> fallbacks."""
     hook, strong = file_hook(fits["file"], seed, held), file_hook(fits["strong"], seed, held)
     shift_kw = {"within": within, "start_fallback": fb["E8.5"], "ref_fallback": fb["E9.5"], "min_cells": rr.MIN_CELLS,
@@ -241,11 +259,12 @@ def library_arms(e85, e95, half_shares: Mapping[str, float], fits: Mapping[str, 
             arms["b0"] = moved
     arms["gmom_s1"] = strong(base)
     med = t1_bets.median_library
-    depth = {}
+    depth, reuse = {}, {}
     for name, tau in ADVANCE_ARMS.items():
-        pop, _ = t1_bets.advance_reweight(e95, half_shares, n_cells, seed, z, tau, within=within, fallback=fb["E9.5"])
+        pop, rep = t1_bets.advance_reweight(e95, half_shares, n_cells, seed, z, tau, within=within, fallback=fb["E9.5"])
         arms[name] = hook(pop)
         depth[name] = med(pop) / med(base)
+        reuse[name] = bin_reuse(rep)
     own = harness.t1_chamber_shares(e95, "E9.5_RNA")
     own_copy, _ = t1_scope.reweight(e95, own, n_cells, seed, within=within, fallback=fb["E9.5"])
     arms["own_copy"], arms["own_none_gmom"] = own_copy, hook(own_copy)
@@ -255,7 +274,7 @@ def library_arms(e85, e95, half_shares: Mapping[str, float], fits: Mapping[str, 
                                      within=within, fallback=fb["E9.5"])
         arms[name] = hook(drawn)
         depth[name] = med(drawn) / med(own_copy)
-    return {a: arms[a] for a in LIB_ARMS if a != "copy_last"}, depth
+    return {a: arms[a] for a in LIB_ARMS if a != "copy_last"}, depth, reuse
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -303,10 +322,10 @@ def cmd_run_cut(a) -> None:
         f = gv.floor_anchors(t, board, target, ref_stage, s)
         ctx = harness.BuildContext(task=view, board=cboard, inputs=inputs, seed=harness.BUILD_SEED_OFFSET + s,
                                    derived={"t1_held_flat": preregistered})
-        preds, depth = cut_arms(ctx, fits)
+        preds, depth, reuse = cut_arms(ctx, fits)
         arms = gv.score_arms(board, target, ref_stage, s, f.anchors, preds)
         rows.append({"seed": s, "floor": float(f.score), "arms": arms, "median_library_over_base": depth,
-                     "seconds": round(time.time() - t0, 1)})
+                     "advance_bin_reuse": reuse, "seconds": round(time.time() - t0, 1)})
         print(f"{t.key} seed {s}: {time.time() - t0:.0f} s", flush=True)  # no score
     res = {"label": LABEL, "row": ROW, "task": t.key, "seeds": list(seeds), "rows": rows,
            "constants": {"gmom_strong": GMOM_STRONG, "dampings": MOM_DAMPINGS, "lambdas": list(t1_bets.LAMBDAS),
@@ -349,10 +368,11 @@ def cmd_run_lib(a) -> None:
     for s in seeds:
         t0 = time.time()
         pick = np.sort(np.random.default_rng([s, 99]).choice(e95.n_obs, rr.N_CELLS, replace=False))
-        arms, depth = library_arms(e85, e95, shares, fits, held, s, within, fb, z)
+        arms, depth, reuse = library_arms(e85, e95, shares, fits, held, s, within, fb, z)
         stages = {"copy_last": pt.to_stage(e95[pick]), **{k: pt.to_stage(v) for k, v in arms.items()}}
         rows.append({"seed": s, **rr.score_arms(board, stages, truth_stage, ref_stage, s),
-                     "median_library_over_base": depth, "seconds": round(time.time() - t0, 1)})
+                     "median_library_over_base": depth, "advance_bin_reuse": reuse,
+                     "seconds": round(time.time() - t0, 1)})
         print(f"library {a.library} seed {s}: {time.time() - t0:.0f} s", flush=True)  # no score
     res = {"label": LABEL, "row": ROW, "library": a.library, "seeds": list(seeds), "rows": rows,
            "constants": {"split_seed": rr.SPLIT_SEED, "n_cells": rr.N_CELLS, "board": rr.BOARD,
@@ -440,6 +460,7 @@ def cut_reading(r: Mapping, cut: str, committed: Mapping) -> dict:
                 "none_gmom_over_floor": {"mean": float(np.mean([score_of(x, "none_gmom") - x["floor"] for x in rows]))}}
     return {"valid": True, "reasons": [], "gate": g, "commit": r["stamp"]["commit"], "against_none_gmom": comps,
             "reported": reported, "mean_scores": {a: float(np.mean([score_of(x, a) for x in rows])) for a in CUT_ARMS},
+            "over_floor": {a: float(np.mean([score_of(x, a) - x["floor"] for x in rows])) for a in CUT_ARMS},
             "median_library_over_base": mean_depth(rows)}
 
 
@@ -504,9 +525,13 @@ def t61_reading(cuts: Mapping[str, Mapping | None], libs: Mapping[str, Mapping |
     for a in ARM_ORDER:
         vals = [cr[c]["against_none_gmom"][a]["mean"] for c in CUTS if cr[c]["valid"]]
         vals += [lr[lib]["against_none_gmom"][a]["mean"] for lib in valid_libs]
-        ranges[a] = {"analogue_range": [min(vals), max(vals)],
-                     "j6_range": [0.0, max(0.0, cr["chamber"]["against_none_gmom"][a]["mean"])]}
+        top = max(0.0, cr["chamber"]["against_none_gmom"][a]["mean"])
+        # Under D an expression arm is reported like a composition arm (the analogue range), with J6's range beside
+        # it; that range runs down to the lowest analogue mean, so a library loss the D check allows is not hidden
+        ranges[a] = {"analogue_range": [min(vals), max(vals)], "j6_range": [0.0, top],
+                     "j6_range_d": [min(0.0, min(vals)), top]}
     return {"outcome": f"S: {out_s}; D: {out_d}", "reading_S": out_s, "reading_D": out_d, "ahead": ahead_arms,
+            "r1_reversing_output": best in R1_REVERSING if best else False,
             "depth_linked_output": best in DEPTH_LINKED if best else False, "depth_free_ahead": depth_free,
             "median_library_shift": None if shift is None else {"ratio": shift,
                                                                 "beyond": bool(abs(shift - 1) > LIBRARY_SHIFT_TOL)},
@@ -529,6 +554,8 @@ def outcome_lines(r: Mapping) -> list[str]:
              f"{r['reading_D']}", f"Arms ahead of none_gmom: {', '.join(r['ahead']) or 'none'}"]
     if not r["whole_cut_valid"]:
         lines.append("The whole cut is void: no arm can be ahead (its sign check cannot be made)")
+    if r["r1_reversing_output"]:
+        lines.append(R1_LINE)
     if r["reading_S"] != "none" and r["composition_arm"]:
         lines.append("The output arm changes composition: the post-exposure block; only the captain's ruling puts it "
                      "in a file (J1a: a range, never a point)")
@@ -551,6 +578,7 @@ def t61_text(res: Mapping) -> str:
             lines.append(f"    gate: largest per-seed difference from T11's b0 {v['gate']['largest_difference']}")
         if v["valid"]:
             lines.append("    mean scores: " + ", ".join(f"{a} {x:.2f}" for a, x in v["mean_scores"].items()))
+            lines.append("    over the floor: " + ", ".join(f"{a} {x:+.2f}" for a, x in v["over_floor"].items()))
             lines += [_line(a, cmp) for a, cmp in v["against_none_gmom"].items()]
             lines += [_line(k, cmp) for k, cmp in v["reported"].items() if "change" in cmp]
     for lib, v in r["libraries"].items():
@@ -560,9 +588,10 @@ def t61_text(res: Mapping) -> str:
             lines += [_line(a, cmp) for a, cmp in v["against_none_gmom"].items()]
     if r["outcome"] != "VOID":
         lines.append("Ranges (J1a: the analogue readings' paired means, cuts and valid libraries; J6: 0 to the chamber "
-                     "cut's gain):")
+                     "cut's gain; J6 under D: the lowest analogue mean, or 0 if higher, to the chamber cut's gain):")
         lines += [f"    {a}: analogue {v['analogue_range'][0]:+.2f} to {v['analogue_range'][1]:+.2f}; J6 "
-                  f"{v['j6_range'][0]:+.2f} to {v['j6_range'][1]:+.2f}" for a, v in r["ranges"].items()]
+                  f"{v['j6_range'][0]:+.2f} to {v['j6_range'][1]:+.2f}; J6 under D {v['j6_range_d'][0]:+.2f} to "
+                  f"{v['j6_range_d'][1]:+.2f}" for a, v in r["ranges"].items()]
     lines.append(f"Commit {res['stamp']['commit']}, tree clean {res['stamp']['tree_clean']}, UTC {res['stamp']['utc']}")
     return "\n".join(lines) + "\n"
 

@@ -241,15 +241,16 @@ def advance_reweight(adata: ad.AnnData, target_shares, n_cells: int, seed, z: np
     for standin, c, pool, how, labs, n_own in plan:
         if standin:
             idx, n_reused = draw_least_used(pool, q[c], used, rng)
-            bin_rec = None
+            bin_rec = bin_reuse = None
         else:
             bins = z_bins(z[pool])
             bq = bin_quotas(z[pool], bins, tau, q[c])
-            parts, n_reused = [], 0
+            parts, n_reused, bin_reuse = [], 0, {}
             for b in sorted(bq):
                 got, rep = draw_least_used(pool[bins == b], bq[b], used, rng)
                 parts.append(got)
                 n_reused += rep
+                bin_reuse[str(b)] = rep / bq[b] if bq[b] else 0.0  # a fraction of the bin's quota, no count
             idx = np.concatenate(parts) if parts else np.array([], dtype=np.int64)
             bin_rec = {str(b): bq[b] / q[c] for b in sorted(bq)}  # shares within the category, no count
         picks.append(idx)
@@ -258,7 +259,7 @@ def advance_reweight(adata: ad.AnnData, target_shares, n_cells: int, seed, z: np
                      "pool": int(len(pool)), "drawn_from": how, "labels": ";".join(labs),
                      "unique": int(len(np.unique(idx))), "reused": n_reused,
                      "realised_share": q[c] / n_cells if n_cells else float("nan"),
-                     "advance": {"tau": float(tau), "bin_shares": bin_rec}})
+                     "advance": {"tau": float(tau), "bin_shares": bin_rec, "bin_reused": bin_reuse}})
     idx = np.concatenate(picks) if picks else np.array([], dtype=np.int64)
     role = np.concatenate(roles) if roles else np.array([], dtype=object)
     perm = rng.permutation(len(idx))
