@@ -6664,3 +6664,39 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     committed at once whatever it says. By the terminal rule fixed in the settings: the recomputed groups if at most
     0.40 of each stage's permitted cells stay unassigned and the cardiomyocyte and endocardium groups each have a
     direction after the fixed fallback; otherwise, or on any stop, T1's last upload stays row R8's file.
+- 2026-11-19 (y), row N54's relabelling ran: by its terminal rule the route is the recomputed groups; the listing is
+  committed unopened; two launch slips; a second forwarded note on the heart (state at 18:54 UTC). Written by the AI
+  assistant.
+  - **The relabelling** ran once on the DGX (`~/v/vec-campaign-d`, at 7efef28, the commit of entry (x), clean) under
+    its gate, with entry (u) as the captain's ruling; exit 0; its record was committed at once (3fcfb40) and read
+    afterwards. By the terminal rule fixed in the settings: 0.019 and 0.038 of the permitted cells
+    stay unassigned at E9.5 and E14.5, under the cap of 0.40; each of the four groups has its own direction, with at
+    least 10 cells at both ends (cardiomyocytes 700 and 1767, endocardium 49 and 84, endothelium
+    59 and 135, epicardium 11 and 32); no fallback fired; the record says no author label column was
+    read (cell names, stage, zone and strain only). **Route: recomputed.** The rule names one file: the first
+    upload's command on the recomputed groups, `t1 --g-mom --base lib3 --feng-groups recomputed`. It is a
+    candidate: T1's last upload stays row R8's file until the captain rules on a priced question. Statistics file
+    sha256 36d1f7edcbbf.
+  - **Two launch slips of the main session, neither of which touched data.** (1) The first start of the relabelling
+    (18:46 UTC) exited 127 at once: the launch line had not put `uv` on the path, as the earlier chain script had.
+    No process of the labeller started, no marker and no output folder existed, and the tree was clean; the gate
+    would have refused a second start had anything been opened. Relaunched at 18:47 UTC with the path set; that run
+    is the one above. (2) The listing's first start stopped with an error before it wrote or printed anything: it
+    made the released T1 file's path relative after following a link, and on the DGX campaign checkouts `data/raw`
+    is a link into the reference checkout. Fixed at ee3583f (the path is recorded as written; a test pins it) and
+    run again there. Both failed launches' logs are kept on the DGX under `~/v/scratch/n54/`.
+  - **The listing** (`experiments/t1_m1/results/n54_relabel_listing/`, committed at 8138fa2 as the run wrote it) has
+    not been opened by the main session and is not used: it compares the recomputed direction with the one formed
+    on the authors' groups, and the settings forbid choosing by likeness to the authors' labels. It stays out of the
+    question on T1's last upload.
+  - **Running:** two check builds of the candidate file at 16 BLAS threads on the same checkout (8138fa2). **Being
+    written** (wf_bf253c90-a8c; nothing run on data): a practice read, row T62, that scores the candidate's practice
+    analogue beside try T61's analogue of the ruled file on T61's five tasks, with its statement and the AI
+    assistant's advice fixed before any result: the recomputed file if its step is ahead by T61's bar under both
+    readings of the first upload, the ruled file otherwise. Without it the candidate is unpriced (J1).
+  - **The heart: a second forwarded note** (a side agent's, relayed by the captain): leaving the choice to the main
+    agent cannot give the full trim; only his own exception can, since the full trim needs a size no earlier rule
+    set; and a cold review rated advising the half trim a likely mistake. The AI assistant confirms it: if the
+    direction is left to it, it chooses between the ruled file and the half trim only, from released data, with its
+    reasons written before any build and a second cold check first. No answer from the captain yet on the route:
+    the ruled full-scope file stays in force and the upload stays held.
