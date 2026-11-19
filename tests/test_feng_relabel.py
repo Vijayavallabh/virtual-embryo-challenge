@@ -1891,3 +1891,21 @@ def test_the_step_script_runs_every_builder_test_and_two_separate_check_builds()
     assert "experiments/external/test_filters.py" in sh
     assert "T1_s2rc_b.h5ad" in sh and "build2.sha" in sh and sh.count("--record-kill") >= 2
     assert '--upload-ruling "${2:?' in sh
+
+
+def test_the_listing_records_a_path_without_following_a_linked_data_folder(tmp_path, monkeypatch):
+    """On the DGX campaign checkouts data/raw is a link into the reference checkout: the listing's record names the
+    path as written under the checkout, and a path outside it as given (the first launch stopped on this)."""
+    import n54_relabel_listing as n54l
+
+    repo = tmp_path / "checkout"
+    elsewhere = tmp_path / "reference" / "raw" / "T1"
+    elsewhere.mkdir(parents=True)
+    (elsewhere / "E10.5_RNA.h5ad").write_text("x")
+    (repo / "data").mkdir(parents=True)
+    (repo / "data" / "raw").symlink_to(tmp_path / "reference" / "raw", target_is_directory=True)
+    monkeypatch.setattr(n54l, "REPO", repo)
+    f = repo / "data" / "raw" / "T1" / "E10.5_RNA.h5ad"
+    assert f.resolve() != f and f.exists()  # the link leads out of the checkout
+    assert n54l.shown_path(f) == "data/raw/T1/E10.5_RNA.h5ad"
+    assert n54l.shown_path(elsewhere / "E10.5_RNA.h5ad") == str(elsewhere / "E10.5_RNA.h5ad")

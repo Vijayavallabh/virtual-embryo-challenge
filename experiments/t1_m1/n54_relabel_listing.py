@@ -166,6 +166,19 @@ def text(rep: Mapping) -> str:
 # ------------------------------------------------------------------------------------------------ run
 
 
+def shown_path(p) -> str:
+    """A path as the listing records it: relative to the checkout where it lies under it AS WRITTEN, else as given. A
+    link is not followed: on the DGX campaign checkouts `data/raw` is a link into the reference checkout, and resolving
+    it made the first launch of this listing stop before it wrote or printed anything (docs/PLAN.md decision log
+    2026-11-19 (y))."""
+    q = Path(p)
+    q = q if q.is_absolute() else Path.cwd() / q
+    try:
+        return str(q.relative_to(REPO))
+    except ValueError:
+        return str(p)
+
+
 def main(argv=None) -> None:
     import hygiene
     import n12_hygiene_size as n12
@@ -234,7 +247,7 @@ def main(argv=None) -> None:
               "inputs": {"recomputed": {"file": str(rpath.relative_to(REPO)), "sha256": entry["sha256"]},
                          "relabel_config_sha256": manifest["config"]["sha256"],
                          "present": {"file": rec_present["file"], "sha256": rec_present["sha256"]},
-                         "t1_file": str(Path(a.t1_file).resolve().relative_to(REPO)),
+                         "t1_file": shown_path(a.t1_file),
                          "t1_file_sha256": hygiene.sha256_file(a.t1_file)},
               "stamp": {"commit": start[0], "tree_clean_at_start": True, "tree_clean_at_end": None,
                         "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}}
