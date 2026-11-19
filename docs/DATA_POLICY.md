@@ -1457,3 +1457,29 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     material opened; nothing in any of the three files computed from a test score. The scores chose among built or
     pre-defined predictions (Official Rules, Section 10, as decision log 2026-11-19 (g) quotes it); the first scores
     enter only as the score each last file must beat.
+- 2026-11-19 (d), T1's last upload is the recomputed-groups file; written by the AI assistant.
+  - **The ruling** (`docs/PLAN.md` decision log 2026-11-19 (ii); row R13 of `experiments/harness/TRIES.md`;
+    `docs/S2_RULES.md`, "Amendment of 2026-11-19: T1's last upload is the recomputed-groups file (the captain's own
+    say-so)"). To one question on T1's last upload, with three options, the captain answered "proceed with your
+    recommendation". The AI assistant reads that as the file the question recommended: `build_test.py t1 --g-mom
+    --base lib3 --feng-groups recomputed`. It is its reading, and the captain can correct it before any upload. It
+    replaces change note (b)'s file as the last upload; that file stays built and is not uploaded.
+  - **What enters, and what does not.** Register row X002 returns as an input: the permitted CD1 cells at E9.5 and
+    E14.5 as raw counts, with gene names and the cell name, stage, zone and strain columns, grouped by the labeller of
+    row N54 (marker scores; marker genes from the released E9.5 label means and from the papers of register row X010).
+    No clustering, embedding or classifier; the authors' labels are not read. The in-window cells were removed at
+    ingest, as before. The second atlas (X003) is not read.
+  - **No lever of the post-exposure block is touched.** Composition, cell number and depth are the first upload's:
+    the same base, count rule, seed and drawn cells (row T62: "States, shares, cell number, size and scope do not
+    change: the same cells as R8's file and the first upload"). The file changes expression only.
+  - **The compliance price the captain was told.** The question said, verbatim: "if the organisers rejected this
+    second atlas file while discounting the first, Task 1 would have no counted upload, and a rejection chance of
+    roughly 2 to 4% cancels the edge." The AI assistant's arithmetic behind it, made after row T62's result, gives
+    about 1.5 to 4 percent (decision log 2026-11-19 (hh)). The option's text also said that "the atlas authors'
+    quality filter chose which cells exist and that cannot be undone". The cold check's other residues (zone from the
+    authors' demultiplexing; the atlas, the bracket and R2's held genes chosen by readouts that read the authors'
+    groups) are in the amendment and the method report.
+  - **Still true:** no in-window cell, count or expression value entered any model; no quarantined material opened;
+    row N54's listing, which compares the recomputed direction with the authors', stays unopened and is used nowhere;
+    nothing in the file is computed from a test score. The file is built only after row T63's read:
+    [MAIN SESSION: row T63's outcome].

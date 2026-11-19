@@ -1334,3 +1334,40 @@ The email is quoted as it stands in the section "Disclosure email for the upload
    - The register sentence ("both Task 2 boards and Task 3 use X001, X004 and X005") holds for all three new files.
    - "no gene-level knockout finding from outside the released data" holds: the barred file's factor comes from the
      released Mab21l2 knockout.
+
+## Note before Task 1's second upload (drafted 2026-11-19 after the captain's ruling of entry (ii); NOT reviewed by the three-lens review, not in the captain's drafts, nothing sent)
+
+Drafted by an agent of the AI assistant from the captain's ruling of `docs/PLAN.md` decision log 2026-11-19 (ii), row
+R13 of `experiments/harness/TRIES.md` and the amendment of `docs/S2_RULES.md` for the recomputed-groups file. It is
+written for that file (`T1_s2rc.h5ad`). The section "Notes before Task 1's and the embryo's second uploads" above is
+left as drafted: its Task 1 note names `T1_s2none.h5ad`, which is no longer the last upload. This note has not had the
+accuracy, strategy and tone review the earlier notes had. It goes into the captain's drafts only at his word, after
+that review, and he sends it after the disclosure email. [HASH] is filled from the t1rc build record ([MAIN SESSION:
+the build record]); the file is built only after row T63's read ([MAIN SESSION: row T63's outcome]). [TO CONFIRM:
+whether the captain sent the disclosure of the X002 labels or the sources note.] Answers: none can exist yet.
+
+**Subject:** Human Team (Mithril): second Task 1 upload, file hash and sources
+
+To: virtual.embryo.moonshot@gmail.com
+
+Hello organisers,
+
+As our email on sources and file hashes for the uploads of 18 November said we would, here are the file hash and sources of our second Task 1 upload, before we make it. As it describes our method, please keep it private.
+
+T1:test, second upload. File T1_s2rc.h5ad, SHA-256 [HASH]. It is our first Task 1 upload's method with one change: the step that uses the external heart atlas (Feng et al. 2022, GEO GSE193346) is computed on cell groups we recomputed ourselves from the atlas's permitted cells, in place of the authors' cell-type labels. The cells, the cell number and the composition are those of our first Task 1 upload.
+
+[TO CONFIRM: whether the earlier Task 1 note, which named T1_s2none.h5ad, was sent. If it was: "It replaces the file our earlier note described (T1_s2none.h5ad, SHA-256 55eaee547ff18d7477da5b730c34e7de9ab74f85cc12fd01a9eff6450367611c), which used no external data." If it was not, drop this sentence.]
+
+What entered the recomputation: the raw counts of the atlas's wild-type CD1 cells at E9.5 and E14.5, after every cell from E10.5 to E13.5 was removed on the per-cell stage column; the gene names; and the cell name, stage, zone and strain columns. Zone is used only to split each group's cells into two halves for checks (the direction itself pools every zone), and strain only to confirm that each cell is CD1; neither is a cell-type label. Each cell was scored on fixed sets of marker genes against control genes of similar expression, and assigned to a group by a fixed threshold, margin and endothelial split. The marker genes of the four groups we use (cardiomyocytes, endocardium, endothelium, epicardium) come from the released Task 1 E9.5 file's cell-type means. Those of the other cell types, which keep non-chamber cells out, come from eight published papers on adult mouse tissue. No clustering, embedding or classifier was used, and the authors' cell-type labels and every other annotation column were not read. The settings were fixed, and a dry run on the released E9.5 file set one threshold by a rule fixed beforehand, before the atlas's cells were read.
+
+One thing cannot be undone. The authors' quality filter, which they applied to all stages together, decided which permitted cells exist in the files we have. The zone labels also come from their sample processing. Earlier choices in our method (this dataset as the direction source, its E9.5 to E14.5 bracket, and a list of genes held flat) were made with analyses that used the authors' labels; our labels note and the method report list them.
+
+The practice comparisons behind this file were scored locally against released Task 1 stages only. On them the step on the recomputed groups did better than the same method without external data on all five tasks we ran. Those tasks look one day ahead with half the step the test needs, so they do not show what the file will score.
+
+Sources: X001 (local scoring only), X005 (pinned libraries), X002 (Feng et al., on the recomputed groups), X010 (the published marker genes), and X007 and X009, the gene lists held flat in the atlas's direction as in our first Task 1 upload. X008 informed that list's premise. X003 and X006 never entered a model. Official validation file: E10.5, as before. [TO CONFIRM before sending: the captain confirms this list of register ids.]
+
+I, as team captain, chose this file after our first scores, which the site returned to us as to every team. I followed the advice the AI assistant we work with had fixed before its practice comparison; a later check let that advice stand and named the risk that you may not accept a second file that uses this atlas. No number in the file was computed from a score. The method report will describe the recomputation, its inputs and the filtering, as your reply of 16 November asks.
+
+Best regards,
+Vijayavallabh J
+Team captain, Mithril
