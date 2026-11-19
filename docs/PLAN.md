@@ -6995,3 +6995,27 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the local copy and its check. (3) The method summary's lines and the note that precedes T1's second upload
     (a draft; nothing is sent without his word). Row N54's listing may be opened from now on; nothing needs it,
     and it stays unopened.
+- 2026-11-19 (jj), row H27 run, read and recomputed independently; its figures go to the captain (state at 21:23
+  UTC). Written by the AI assistant, which is recused on the heart (entry (bb)) and states no preference here.
+  - **How it was made.** Analysts that had not seen the main session's conversation designed, attacked, settled,
+    wrote and reviewed the read (wf_3bfbefee-14f, wf_296e790e-d01; reviews ready, no blocker). The main session
+    settled three ledger matters only (the perfect twins stay; the oracle twins are references and not counted;
+    fold E8.5 stays), registered the row at 4751471 and ran it on the DGX campaign checkout: tests exit 0, fifteen
+    parts exit 0, no unexpected log line, one read. Eighteen tries: heart 50 to 68.
+  - **In the read's fixed words** (`experiments/harness/results/h27_heart_forecast_size/reading.txt`; every figure
+    a practice analogue on released stages, none to be read beside a test score). The oracle twins reproduce row
+    H26's scores with distance 0.000. At the forecast size, mean of the two folds: with the truth as released, B-A
+    +0.36 (8 of 10 seeds), C-A -2.90 (0 of 10), C-B -3.26; in the CLEAN world, B-A +5.13, C-A +11.32, C-B +6.19
+    (each 10 of 10). Fold E10.5 alone: as released C-A -5.43, CLEAN C-A +5.49. Fold E8.5 alone: as released C-A
+    -0.37, CLEAN C-A +17.16. Ranges over the three transitions: as released C-A from -13.05 to +2.20; CLEAN C-A
+    from +1.18 to +17.16. Each form's forecast error (forecast size minus perfect size), mean of folds: as released
+    A -3.58, B -1.97, C +0.33; CLEAN A -0.52, B +0.14, C -0.85. Beside it, row H26 at its oracle size: as released
+    B-A -1.00, C-A -3.86, C-B -2.85; CLEAN B-A +5.78, C-A +11.79, C-B +6.01. The read's own limit: "Every practice
+    rate interval lies before E9.0, where the size procedure says rates carry no information about later growth",
+    and the test's two-day forecast lies outside all three practice spans. "No pick and no advice."
+  - **Independent recomputation** (wf_a6b4c518-c64; one analyst from the fifteen part files, without the read
+    step): every figure matches (4,464 figures in reading.json; 131 lines of reading.txt rebuilt character for
+    character); the gate and every checkable void condition hold.
+  - **What follows, as fixed in entry (ee):** the figures go to the captain in these words beside row H26's; the
+    file he named, the full trim, stands unless he names another; with the result before him the hold on the heart
+    file ends by his answer.
