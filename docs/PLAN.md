@@ -6510,3 +6510,28 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     since its agent had handed back with the changes uncommitted and its test runs unfinished: the complete suite on
     that state, 3070 passed, 1 skipped. Settings file sha256 af3ac7224a65, status draft. A final check runs
     (wf_235124c8-92a) before the merge and the captain's sign-off.
+- 2026-11-19 (t), 22 empty commits on main made by a test fixture; left in place; the helpers hardened; the
+  labeller's final check (state at 15:16 UTC). Written by the AI assistant.
+  - **What happened.** Main holds 22 commits named "init" by "t <t@example.org>", 0b44bf1 to 246096d, made between
+    14:54:44 and 14:54:55 UTC, between 3e5fefa and 4e5f70c. They change no file. They are what the fixture `own_repo`
+    of `experiments/t3_decomp/test_build_submission.py` commits in its throwaway repository (`git -C <tmp> commit
+    --allow-empty -m init`), once for each of its tests that ran: with `GIT_DIR` set in the shell that started the
+    tests, `-C` does not win and the commits land in the repository `GIT_DIR` names. An agent of the AI assistant ran
+    that file from an exported copy at that time; which one is not established, since the main session does not open
+    agents' transcripts. The labeller's final check found the commits and reported them. The main session had by
+    then pushed later commits on top, so they are on origin as well.
+  - **What is done.** They stay. Removing them means rewriting main and a force-push, and it would change the hash of
+    every later commit, among them 48ce0d5, the row commit that try T61's run records. No file, build, row or result
+    depends on them. `tests/conftest.py` (`git_env`) and the fixture now drop `GIT_DIR`, `GIT_WORK_TREE`,
+    `GIT_INDEX_FILE` and the other variables that point git elsewhere; `tests/test_git_helpers.py` pins it. From now
+    on every brief for an agent that runs tests says: never set those variables in a shell that runs the suite.
+  - **The labeller's final check** (wf_235124c8-92a): ready to merge, no blocker; the first review's blocker is
+    closed in code, settings, tests and row text. By hand before or at the merge, each with its text given: the
+    merge conflicts with try T61's builder option in three places (keep both sides); the step script's test list
+    gains the two new test files; two test files must not see a real relabelling record; the gate must refuse the
+    entry that ordered row N55 as the ruling for N54, and must refuse when the log cannot be read at a commit;
+    a fixed phrase is required in the two later rulings; the rows say how they count. An order hazard to respect:
+    once a record that routes to the recomputed groups is committed, the no-outside-data file can be rebuilt only
+    with the captain's later ruling, so its list and any rebuild come first. Three sentences of the sign-off
+    summary overstate what the code checks (it checks that a decision-log entry names N54, not whose entry it is)
+    and are corrected before the captain sees it.

@@ -13,9 +13,23 @@ N_GENES = 60
 GENES = [f"g{i}" for i in range(N_GENES)]
 
 
+# Variables that point git at a repository other than the one `-C` names. A suite started from a shell that had
+# GIT_DIR set to the real checkout put 22 empty "init" commits on main on 2026-11-19 (docs/PLAN.md decision log
+# 2026-11-19 (t)): the test helpers drop them, so a test's git always acts on the test's own repository.
+GIT_LOCATION_VARS = ("GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_OBJECT_DIRECTORY", "GIT_COMMON_DIR",
+                     "GIT_NAMESPACE", "GIT_ALTERNATE_OBJECT_DIRECTORIES", "GIT_CEILING_DIRECTORIES")
+
+
+def git_env():
+    """The environment of a test's git: the caller's, without the variables that redirect git to another repository,
+    and with no global or system configuration."""
+    env = {k: v for k, v in os.environ.items() if k not in GIT_LOCATION_VARS}
+    return {**env, "GIT_CONFIG_GLOBAL": os.devnull, "GIT_CONFIG_NOSYSTEM": "1"}
+
+
 def git(repo, *args):
     """git in a test's own repository, with no global or system configuration; returns its standard output."""
-    env = {**os.environ, "GIT_CONFIG_GLOBAL": os.devnull, "GIT_CONFIG_NOSYSTEM": "1"}
+    env = git_env()
     return subprocess.run(["git", "-C", str(repo), "-c", "user.name=t", "-c", "user.email=t@example.org",
                            "-c", "commit.gpgsign=false", *args], check=True, capture_output=True, text=True,
                           env=env).stdout.strip()
