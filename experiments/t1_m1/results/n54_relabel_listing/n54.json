@@ -1,0 +1,262 @@
+{
+ "label": "N54: the permitted-only relabelling of Feng's cells against M1's present direction, which is formed on the authors' groups (target-free; decides nothing; the authors' label column not read)",
+ "ruling": "2026-11-19 (u)",
+ "usable": true,
+ "cap": {
+  "cap": 0.4,
+  "shares": {
+   "E9.5": 0.019165727170236752,
+   "E14.5": 0.03808717731696995
+  },
+  "stages_over": [],
+  "passed": true
+ },
+ "route": "recomputed",
+ "command": [
+  "t1",
+  "--g-mom",
+  "--base",
+  "lib3",
+  "--feng-groups",
+  "recomputed"
+ ],
+ "unassigned_share": {
+  "E9.5": 0.019165727170236752,
+  "E14.5": 0.03808717731696995
+ },
+ "unassigned_kinds": {
+  "E9.5": {
+   "no_class_reached_min_score": 5,
+   "margin_failed": 12
+  },
+  "E14.5": {
+   "no_class_reached_min_score": 1,
+   "margin_failed": 89
+  }
+ },
+ "groups": {
+  "CM": {
+   "cells": {
+    "E9.5": 700,
+    "E14.5": 1767
+   },
+   "fallback_fired": false,
+   "takes": "CM",
+   "compare": {
+    "genes_moved": 29652,
+    "genes_without_recomputed_value": 0,
+    "norm_present": 21.26823064217035,
+    "norm_recomputed": 21.27474873458739,
+    "cosine": 0.9998745121894208,
+    "pearson": 0.9998742168702927,
+    "sign_changes": 132,
+    "sign_changes_large": 0,
+    "n_up_present": 635,
+    "n_down_present": 1026,
+    "n_up_recomputed": 636,
+    "n_down_recomputed": 1026
+   }
+  },
+  "Endocardium": {
+   "cells": {
+    "E9.5": 49,
+    "E14.5": 84
+   },
+   "fallback_fired": false,
+   "takes": "Endocardium",
+   "compare": {
+    "genes_moved": 29652,
+    "genes_without_recomputed_value": 0,
+    "norm_present": 26.756451186425124,
+    "norm_recomputed": 26.017009448074813,
+    "cosine": 0.9652821194162852,
+    "pearson": 0.9652803994518531,
+    "sign_changes": 1394,
+    "sign_changes_large": 1,
+    "n_up_present": 1353,
+    "n_down_present": 1237,
+    "n_up_recomputed": 1259,
+    "n_down_recomputed": 1218
+   }
+  },
+  "Endothelium": {
+   "cells": {
+    "E9.5": 59,
+    "E14.5": 135
+   },
+   "fallback_fired": false,
+   "takes": "Endothelium",
+   "compare": {
+    "genes_moved": 29652,
+    "genes_without_recomputed_value": 0,
+    "norm_present": 24.529625712094177,
+    "norm_recomputed": 23.794165947631104,
+    "cosine": 0.9764565598719418,
+    "pearson": 0.9764658230606457,
+    "sign_changes": 1142,
+    "sign_changes_large": 1,
+    "n_up_present": 1150,
+    "n_down_present": 1053,
+    "n_up_recomputed": 1036,
+    "n_down_recomputed": 996
+   }
+  },
+  "Epicardium": {
+   "cells": {
+    "E9.5": 11,
+    "E14.5": 32
+   },
+   "fallback_fired": false,
+   "takes": "Epicardium",
+   "compare": {
+    "genes_moved": 29652,
+    "genes_without_recomputed_value": 0,
+    "norm_present": 35.320199039601405,
+    "norm_recomputed": 35.2220160647821,
+    "cosine": 0.9320478120264741,
+    "pearson": 0.9320189594101775,
+    "sign_changes": 1850,
+    "sign_changes_large": 74,
+    "n_up_present": 1720,
+    "n_down_present": 1841,
+    "n_up_recomputed": 1874,
+    "n_down_recomputed": 1853
+   }
+  }
+ },
+ "sensitivity": [
+  {
+   "setting": {
+    "min_score": 0.3,
+    "min_margin": 0.25
+   },
+   "group_cells": {
+    "CM": {
+     "E9.5": 700,
+     "E14.5": 1767
+    },
+    "Endocardium": {
+     "E9.5": 49,
+     "E14.5": 84
+    },
+    "Endothelium": {
+     "E9.5": 59,
+     "E14.5": 135
+    },
+    "Epicardium": {
+     "E9.5": 11,
+     "E14.5": 32
+    }
+   },
+   "unassigned_share": {
+    "E9.5": 0.019165727170236752,
+    "E14.5": 0.03808717731696995
+   }
+  },
+  {
+   "setting": {
+    "min_score": 0.7,
+    "min_margin": 0.25
+   },
+   "group_cells": {
+    "CM": {
+     "E9.5": 700,
+     "E14.5": 1755
+    },
+    "Endocardium": {
+     "E9.5": 34,
+     "E14.5": 84
+    },
+    "Endothelium": {
+     "E9.5": 40,
+     "E14.5": 134
+    },
+    "Epicardium": {
+     "E9.5": 9,
+     "E14.5": 32
+    }
+   },
+   "unassigned_share": {
+    "E9.5": 0.043968432919954906,
+    "E14.5": 0.04443504020313161
+   }
+  },
+  {
+   "setting": {
+    "min_score": 0.5,
+    "min_margin": 0.15
+   },
+   "group_cells": {
+    "CM": {
+     "E9.5": 701,
+     "E14.5": 1772
+    },
+    "Endocardium": {
+     "E9.5": 46,
+     "E14.5": 88
+    },
+    "Endothelium": {
+     "E9.5": 55,
+     "E14.5": 140
+    },
+    "Epicardium": {
+     "E9.5": 10,
+     "E14.5": 40
+    }
+   },
+   "unassigned_share": {
+    "E9.5": 0.02367531003382187,
+    "E14.5": 0.02496826068556919
+   }
+  },
+  {
+   "setting": {
+    "min_score": 0.5,
+    "min_margin": 0.35
+   },
+   "group_cells": {
+    "CM": {
+     "E9.5": 699,
+     "E14.5": 1753
+    },
+    "Endocardium": {
+     "E9.5": 45,
+     "E14.5": 81
+    },
+    "Endothelium": {
+     "E9.5": 53,
+     "E14.5": 130
+    },
+    "Epicardium": {
+     "E9.5": 10,
+     "E14.5": 23
+    }
+   },
+   "unassigned_share": {
+    "E9.5": 0.029312288613303268,
+    "E14.5": 0.05501481168006771
+   }
+  }
+ ],
+ "fraction": 0.4,
+ "bar": 0.09531017980432493,
+ "inputs": {
+  "recomputed": {
+   "file": "data/derived/feng_relabel_c/cd1_stats_relabel.npz",
+   "sha256": "36d1f7edcbbf3d7a80c68b51d5624a94bb753668079fe3d69aed720c71baa7e9"
+  },
+  "relabel_config_sha256": "883e74c2c1ef5f01d5244555f8b3dcae24255568c731a6d53ee2788b7b677b49",
+  "present": {
+   "file": "data/external/feng2022_gse193346_geo/cd1_stats.npz",
+   "sha256": "28f188fb9409984142a70a5a940dde3d1d3187b033d94ee2d26337a216f295c3"
+  },
+  "t1_file": "data/raw/T1/E10.5_RNA.h5ad",
+  "t1_file_sha256": "974e04e7fe64fb96142f17994a9678d4cebd4f1868dec4de034eda4245b7dd6c"
+ },
+ "stamp": {
+  "commit": "ee3583f955112370490239af0a8ab4f69a4dfe17",
+  "tree_clean_at_start": true,
+  "tree_clean_at_end": true,
+  "utc": "2026-11-19T18:51:09Z"
+ }
+}

@@ -1,0 +1,8 @@
+N54: the permitted-only relabelling of Feng's cells against M1's present direction, which is formed on the authors' groups (target-free; decides nothing; the authors' label column not read)
+cap: {'cap': 0.4, 'shares': {'E9.5': 0.019165727170236752, 'E14.5': 0.03808717731696995}, 'stages_over': [], 'passed': True}
+route: recomputed (t1 --g-mom --base lib3 --feng-groups recomputed)
+CM: cells {'E9.5': 700, 'E14.5': 1767}; fallback False -> CM; moved genes 29652; pearson 0.9998742168702927; cosine 0.9998745121894208; sign changes 132 (large 0)
+Endocardium: cells {'E9.5': 49, 'E14.5': 84}; fallback False -> Endocardium; moved genes 29652; pearson 0.9652803994518531; cosine 0.9652821194162852; sign changes 1394 (large 1)
+Endothelium: cells {'E9.5': 59, 'E14.5': 135}; fallback False -> Endothelium; moved genes 29652; pearson 0.9764658230606457; cosine 0.9764565598719418; sign changes 1142 (large 1)
+Epicardium: cells {'E9.5': 11, 'E14.5': 32}; fallback False -> Epicardium; moved genes 29652; pearson 0.9320189594101775; cosine 0.9320478120264741; sign changes 1850 (large 74)
+Decides nothing. The authors' label column is not read here; the present direction compared against is formed on the authors' groups.
