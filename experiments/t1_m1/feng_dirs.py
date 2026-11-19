@@ -38,6 +38,11 @@ BRACKET = ("E9.5", "E14.5")  # the readout's primary predictor, feng_E14.5
 BRACKET_DAYS = (9.5, 14.5)
 REGISTER = REPO / "EXTERNAL_DATA.md"
 X002_AMENDMENT = "E14.5 -> E18"  # the key phrase of X002's late-proxy amendment (PLAN decision log 2026-11-10 (a))
+# The cell groups Feng's direction is formed on (build_test.py t1 --feng-groups; off by default). "authors": Feng's own
+# labels, every file as built. "none": no Feng direction on any group and no Feng file read, a file with no outside
+# data in it (docs/PLAN.md decision log 2026-11-19 (a) to (d): the authors' labels were made with every stage pooled,
+# the in-window ones included, and an organiser's condition of 2026-11-16 excludes such annotations).
+FENG_GROUPS = ("authors", "none")
 
 
 def load_config(path: Path = CONFIG) -> dict:
@@ -92,10 +97,17 @@ def directions_from_stats(st: dict, genes, cfg: dict,
 
 
 def feng_directions(genes, cfg: dict | None = None, stats_path: Path | None = None,
-                    bracket: tuple[str, str] = BRACKET) -> tuple[dict[str, np.ndarray], dict]:
+                    bracket: tuple[str, str] = BRACKET,
+                    groups: str = FENG_GROUPS[0]) -> tuple[dict[str, np.ndarray], dict]:
     """group -> Feng log ratio across `bracket` (default E9.5 -> E14.5, M1's) on `genes` (NaN where unmapped), for every
     group with Feng labels and at least min_cells_ext cells at both ends; and a record (file, sha256, bracket, groups,
-    cells, mapped genes). stats_path: default the clean GEO reduction's statistics."""
+    cells, mapped genes). stats_path: default the clean GEO reduction's statistics. groups: "authors" (the default,
+    every file as built) forms the directions on Feng's own labels; "none" forms no direction on any group and reads
+    nothing, neither the config nor any Feng file (the record then names no file)."""
+    if groups not in FENG_GROUPS:
+        raise ValueError(f"groups must be one of {FENG_GROUPS}, got {groups!r}")
+    if groups == "none":
+        return {}, {"file": None, "sha256": None, "bracket": list(bracket), "groups": {}, "feng_groups": "none"}
     cfg = cfg or load_config()
     path = Path(stats_path) if stats_path is not None else clean_stats_path()
     entry = fio.verify_manifest_output(path)
