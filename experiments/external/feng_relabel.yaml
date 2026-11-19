@@ -1,0 +1,598 @@
+# Permitted-only cell groups for Feng et al. 2022 (GEO GSE193346, register row X002): option (c) of the design of
+# 2026-11-19, per-cell marker scores on the permitted cells, with the challenger's corrections binding. Read by
+# experiments/external/feng_relabel.py, which writes a second statistics file beside the clean reduction's.
+#
+# Why: an organiser wrote on 2026-11-16 that teams must "exclude annotations, clusters, embeddings, or fitted
+# transformations learned using protected cells, and recompute any such processing on permitted data only". Feng's
+# own cell-type labels (the metadata column cell_type_spec) were made on all stages pooled, the in-window ones included
+# (screened read of the paper's Methods, 2026-11-19). The labeller below reads only raw counts and four whitelisted
+# metadata columns of the permitted cells (cell name, stage, zone, strain); it never reads cell_type_spec or any other
+# annotation, cluster or embedding column (feng_relabel.OBS_WHITELIST; tests/test_feng_relabel.py).
+#
+# Written by the AI assistant (a writer agent of the main session, then fixer agents after three reviews and a check of
+# the marker quotations against the eight papers) on 2026-11-19. Nothing here was run on data. Every number below is
+# fixed before any run and before any view of Feng's cells under these rules; a change after a run is a new ledger row,
+# reported beside the first, and it enters no upload except through the terminal rule below (experiments/harness/
+# TRIES.md, row N54 as proposed). The one change allowed before the freeze is row N55's: min_score and min_margin, by
+# the rule written under `n55_rule` before N55 runs (feng_relabel.check_n55 refuses any other difference).
+#
+# NOT RUNNABLE AS COMMITTED (feng_relabel.preflight refuses, before any file is read): status is draft, and only the
+# main session freezes it, in the commit that carries ledger row N54, after the captain's sign-off; the run also needs
+# row N55's dry run committed with its rule applied, row N54 in TRIES.md, the ruling's PLAN entry naming N54, the yaml
+# committed and a clean tree. No choice is PENDING: the terminal route's base, g_mom and stop outcome were fixed on
+# 2026-11-19 by the main session under its delegation (decisions (1) to (3) of that day; `terminal`). No gene is
+# UNSOURCED: the genes the writer had marked so were sourced to published statements on adult mouse tissues (sources
+# lit_A to lit_J, register row X010 as proposed) or dropped (`dropped`).
+
+version: 1
+method: c                     # per-cell marker scores; no clustering, embedding, classifier or fitted transformation
+status: draft                 # the main session sets "frozen" in the commit that carries ledger row N54, after row
+                              # N55's dry run has run and its rule has been applied, and after the captain's sign-off
+
+# ------------------------------------------------------------------ inputs (the clean reduction, feng2022_geo)
+inputs:
+  dir: data/external/feng2022_gse193346_geo     # sources.yaml feng2022_geo.dst; each file checked against its manifest
+  counts: cd1_legal_counts.npz                  # raw UMI counts, cells x genes, rows aligned with the obs table
+  genes: cd1_legal_genes.txt
+  obs: cd1_legal_obs.csv
+# The only metadata read, by name (the cell names are the table's first column, whatever its header). Any other column,
+# cell_type_spec above all, is never read: feng_relabel.read_obs refuses a column outside this list, and refuses this
+# list itself if a name in it looks like an annotation, cluster or embedding column.
+obs_columns: [stage, zone, strain]
+expect_strain: CD1
+stages: [E9.5, E14.5]         # the bracket of M1's direction; E18 (the late-proxy stand-in) only under its own row
+
+# ------------------------------------------------------------------ outputs
+# data/derived/ is inside the checkout's own data/ directory, a real directory in every checkout (decision (5) of
+# 2026-11-19). Not data/external: on the DGX a campaign checkout's data/external and data/raw are links into the
+# reference checkout, which must stay untouched. feng_relabel.output_dir_ok refuses a folder that resolves outside the
+# checkout's own data/ directory, or a data/ that is itself a link.
+output:
+  dir: data/derived/feng_relabel_c    # its own MANIFEST.json (filterio.write_manifest) and the STARTED.json marker
+  stats: cd1_stats_relabel.npz        # same key layout as cd1_stats.npz: 'stage|zone|<recomputed label>|half'
+  cells: cd1_relabel_cells.csv        # cell, stage, zone, recomputed label, every class and split score
+
+# ------------------------------------------------------------------ the score (does not depend on the population mix)
+# A cell's score for a gene set: the mean over the set's genes of the cell's log1p CP10k (its own counts over its own
+# library), minus the mean over the set's control genes. The control genes are fixed, seeded, expression-matched random
+# genes (the binning of Tirosh et al. 2016 and scanpy's score_genes, re-implemented here): every gene with a non-zero
+# mean is ranked by its mean log1p CP10k, the mean taken per stage over that stage's permitted cells and then averaged
+# over the stages with equal weight (so one stage's size does not set the ranking), ties broken by symbol; the ranked
+# genes are cut into `control_bins` equal-count bins; for each set gene, `control_per_gene` controls are drawn without
+# replacement from its bin by numpy default_rng([control_seed, k]), k the set's index in the yaml's order of `sets`
+# (split sets included: cm 0, ec 1, epi 2, endo_split 3, vasc_split 4, blood 5, ...). Never a control: a gene of any
+# set here, a gene a set leaves out by name (`excluded`) or the main session took out (`dropped`), any gene of the released-data panel
+# (experiments/t1_scope/label_evidence.py MARKERS, so lineage genes outside the sets cannot depress a true class), or a
+# symbol Feng's list holds twice. A set that draws no control gene stops the run. Adding or deleting any set gene
+# changes every set's controls (the excluded genes leave the bins); that is acceptable only because this file is
+# frozen before the run.
+# The one data-derived step: which genes are controls depends on the permitted cells' per-stage gene means (no other
+# cell, no protected cell, no label). Once the controls are fixed, a cell's score uses no other cell, so it does not
+# depend on the population mix; the mix enters only through that choice of controls. No z-scaling, no fitted
+# transformation. Known limit (synthetic tests): a common type's markers have a higher pooled mean, so its controls
+# come from a higher bin, and a doublet of a common and a rare type may pass the margin as the rare type instead of
+# dropping out; this is accepted and disclosed, not tuned.
+score:
+  normalisation: log1p_cp10k
+  control_bins: 25
+  control_per_gene: 10
+  control_seed: 20261119
+  min_genes_found: 2          # a class or split set with fewer of its genes in Feng's symbols (unique) stops the run
+
+# ------------------------------------------------------------------ assignment
+# A cell takes the class with the highest score if that score is at least min_score and beats the runner-up by at
+# least min_margin; otherwise r_unassigned. A cell called ec is split: (endo_split score) - (vasc_split score) at least
+# +split_margin gives r_endocardial_ec, at most -split_margin gives r_vascular_ec, otherwise r_ec_ambiguous; the
+# ambiguous class enters Endothelium only, never Endocardium. A competing class's cells take its label and enter no
+# group. How the numbers were set: by the AI assistant, with the released T1 E9.5 label means of these genes in view
+# (sources, released_e95: a class's own label sits about 1 to 4 log1p CP10k above the other labels in the raw means)
+# and no Feng value of any kind in view. That is NOT a check of these thresholds: the score is control-adjusted, a
+# different scale, and no control-adjusted score of any real cell has been computed. Row N55 (released E9.5 only,
+# target-free, no Feng) is the dry run that checks them and the cap (rule 9, J7). It runs before the freeze, and the
+# rule under `n55_rule` below, written before it runs, alone decides whether min_score and min_margin change.
+assign:
+  min_score: 0.5
+  min_margin: 0.25
+  split_margin: 0.1
+  unassigned: r_unassigned
+  ec_split: {class: ec, plus: endo_split, minus: vasc_split, plus_label: r_endocardial_ec,
+             minus_label: r_vascular_ec, ambiguous_label: r_ec_ambiguous}
+
+# ------------------------------------------------------------------ gene sets
+# Each gene names its source (an id under `sources`, or a list of ids; a literature source must quote the sentence
+# that names the gene, under its `names`, which feng_relabel.check_config checks). role target: a class a direction group is built from; role
+# competing: a class that must be kept out of the four groups (late or non-chamber types); role split: used only to
+# split ec. Released-data genes are the candidates of the team's committed panel (experiments/t1_scope/label_evidence.py
+# MARKERS, committed 2026-10-19 at b875016; a class's `panel` names the panel groups it draws from) that pass the
+# released-data rule under `sources.released_e95` on the class's `released_labels` (against `against`, or every other
+# E9.5 label when absent); the trailing comments give the released E9.5 means the rule read (own label / highest other
+# label). tests/test_feng_relabel.py re-reads the committed table and checks every pass and every exclusion. The two
+# E9.5 non-chamber classes (mesenchyme, epithelial) were added on review so that the cap measures a failed labelling
+# rather than the dissection's tissue mix: every released E9.5 label now has a class. A competing class draws only on
+# panel groups that no target or split set uses.
+sets:
+  cm:
+    role: target
+    label: r_cm
+    released_labels: [AVC-CM, IFT-CM, OFT/RV-CM, SV-CM, V-CM]
+    panel: [cardiomyocyte]
+    genes:
+      Myl7: released_e95       # 5.03 / 1.15 (Epithelium)
+      Tnnt2: released_e95      # 3.69 / 0.29 (pSHF)
+      Actc1: released_e95      # 4.72 / 0.70 (Epithelium)
+      Nppa: released_e95       # 1.16 / 0.03 (Epithelium)
+      Myh6: released_e95       # 3.92 / 0.02 (Epithelium)
+      Myl2: released_e95       # 3.37 / 0.60 (Epithelium)
+      Myl4: released_e95       # 4.28 / 0.92 (Proepicardium)
+  ec:
+    role: target                # split into r_endocardial_ec, r_vascular_ec, r_ec_ambiguous (assign.ec_split)
+    label: r_ec
+    released_labels: [BEC, Endocardium]
+    panel: [pan_endothelial]
+    genes:
+      Cdh5: released_e95       # 1.94 / 0.02 (Surface Ectoderm)
+      Pecam1: released_e95     # 1.65 / 0.07 (NCC-derived)
+      Kdr: released_e95        # 2.09 / 0.30 (aPHM)
+      Emcn: released_e95       # 1.82 / 0.02 (aPHM, Surface Ectoderm)
+      Tek: released_e95        # 1.75 / 0.50 (ST)
+      Sox18: released_e95      # 0.35 / 0.01
+  epi:
+    role: target
+    label: r_epicardial
+    released_labels: [Proepicardium]
+    panel: [epicardial, mesothelial]
+    genes:
+      Wt1: released_e95        # 1.55 / 0.43 (ST)
+      Upk3b: released_e95      # 1.02 / 0.29 (pPHM)
+      Upk1b: released_e95      # 0.79 / 0.03 (IFT-CM)
+      # Left out by the rule: Tbx18 (1.65 / 1.08 SV-CM), Tcf21 (0.76 / 0.48 aPHM; also fibroblast), Aldh1a2 (0.05),
+      # Msln (0.00), Krt19 (0.42 / 0.47)
+  endo_split:
+    role: split
+    released_labels: [Endocardium]      # against BEC only: the split acts on ec cells alone
+    against: [BEC]
+    panel: [endocardial]
+    genes:
+      Npr3: released_e95       # 1.01 / 0.43 (BEC)
+      Nfatc1: released_e95     # 0.91 / 0.36 (BEC)
+      Cdh11: released_e95      # 0.53 / 0.11 (BEC)
+      # Left out by the rule: Hapln1 (3.02 / 2.18), Tmem100 (0.17)
+  vasc_split:
+    role: split
+    released_labels: [BEC]              # against Endocardium only
+    against: [Endocardium]
+    panel: [vascular]
+    genes:
+      Cldn5: released_e95      # 1.78 / 0.15 (Endocardium); configs/t1_chamber_classes.yaml's BEC line
+      Sox17: released_e95      # 0.36 / 0.16 (Endocardium)
+      # Left out by the rule: Gja4 (0.15 / 0.34: higher in Endocardium), Plvap (2.38 / 1.87), Efnb2 (0.54 / 0.84),
+      # Gja5, Dll4, Etv2, Runx1 (below 0.3)
+    excluded:                  # passes the rule, left out by name (and kept out of every control set)
+      Lyve1: >-
+        0.36 / 0.11 on the released E9.5, but at E14.5 it also marks lymphatic endothelium and resident macrophages,
+        both kept out of the four groups (classes lymphatic and immune); in a split set it would push lymphatic-like ec
+        cells into the vascular class. Left out by the AI assistant's judgement from general knowledge (UNSOURCED
+        reasoning, applied to remove a gene, never to add one)
+  blood:
+    role: competing
+    label: r_blood
+    released_labels: [Blood]
+    panel: [blood]
+    genes:
+      Hba-x: released_e95      # 4.83 / 0.53 (Epithelium)
+      Hbb-y: released_e95      # 5.63 / 0.80 (Epithelium)
+      Gata1: released_e95      # 0.33 / 0.00
+      # Definitive (adult-type) globins and the haem enzyme, for E14.5 red cells (the team's reading: E14.5 red cells
+      # are mostly definitive). lit_E names all three for erythroid progenitors in adult marrow, an erythroid class
+      # but not the heart's red cells; the team reads that as naming them for this class (erythroid cells), and says so
+      # in N54 and X010. lit_C is not a source here: it names the two globins only in a quality-control filter
+      # (cells with any hemoglobin read removed as erythrocyte contamination), not as markers of a red-cell class
+      # (the quotation check of 2026-11-19). If the reading of lit_E is refused, the unsourced rule deletes the three
+      # genes and blood keeps Hba-x, Hbb-y and Gata1 (three genes, above the minimum).
+      Hba-a1: lit_E
+      Hbb-bs: lit_E
+      Alas2: lit_E
+  neural_crest:
+    role: competing
+    label: r_neural_crest
+    released_labels: [NCC, NCC-derived]
+    panel: [neural_crest]
+    genes:
+      Sox10: released_e95      # 1.08 / 0.04 (Proepicardium)
+      Foxd3: released_e95      # 0.52 / 0.00
+      Tfap2a: released_e95     # 0.62 / 0.29 (Surface Ectoderm)
+      Dlx2: released_e95       # 0.34 / 0.08 (Surface Ectoderm)
+      Dlx5: released_e95       # 0.32 / 0.04 (Surface Ectoderm)
+      Plp1: lit_A              # cardiac glia, late
+      # Phox2b dropped 2026-11-19 (see `dropped`)
+  hepatic:
+    role: competing
+    label: r_hepatic
+    released_labels: [Hepatocyte]
+    panel: [septum_hepatic]
+    genes:
+      Afp: released_e95        # 2.78 / 0.20 (Foregut)
+      Ttr: released_e95        # 2.55 / 0.68 (Foregut)
+      Alb: released_e95        # 0.49 / 0.01
+  mesenchyme:
+    role: competing              # E9.5 non-chamber mesoderm (second heart field, pharyngeal mesoderm, septum
+                                 # transversum, pericardium) and, through its late genes, E14.5 fibroblasts
+    label: r_mesenchyme
+    released_labels: [aSHF, pSHF, aPHM, pPHM, ST, Pericardium]
+    panel: [shf, mesenchyme]
+    genes:
+      Tbx1: released_e95       # 0.98 aPHM / 0.27 (Surface Ectoderm)
+      Fgf10: released_e95      # 0.53 aPHM / 0.15 (Proepicardium)
+      Postn: released_e95      # 1.09 ST / 0.34 (NCC)
+      Col1a1: released_e95     # 1.45 ST / 0.47 (OFT/RV-CM)
+      Col1a2: lit_B            # late fibroblast genes (E14.5 has fibroblasts and valve interstitial cells)
+      Col3a1: lit_D
+      Dcn: lit_C
+      # Left out by the rule: Isl1 (1.02 / 1.08 Epithelium), Fgf8 (0.16), Sox9 (0.21 / 1.18 Proepicardium),
+      # Pdgfra (0.97 / 0.92 Proepicardium)
+  epithelial:
+    role: competing              # E9.5 endoderm and ectoderm epithelia caught in the dissection
+    label: r_epithelial
+    released_labels: [Foregut, Epithelium, Surface Ectoderm]
+    panel: [foregut]
+    genes:
+      Nkx2-1: released_e95     # 1.26 Epithelium / 0.00
+      Shh: released_e95        # 0.97 Foregut / 0.02 (NCC)
+      Cdh1: released_e95       # 0.98 Epithelium / 0.27 (Hepatocyte)
+      # Left out by the rule: Foxa2 (0.34 / 0.36 Hepatocyte), Sox2 (0.35 / 0.22), Epcam (2.10 / 1.44 Hepatocyte)
+  mural:
+    role: competing              # late: pericytes and smooth muscle of the coronary vessels
+    label: r_mural
+    released_labels: []
+    genes:
+      Myh11: lit_D
+      Pdgfrb: lit_A            # caveat (lit_B, quoted under its caveats): Muhl's mural short-list leaves Pdgfrb out as
+                               # a "commonly used" marker; that fibroblasts express it too is the team's reading of
+                               # lit_B's Results, not that sentence. Kept by the main session's decision of
+                               # 2026-11-19: mural against fibroblast (here, class mesenchyme) is a split between two
+                               # competing classes, both kept out of the four groups
+      Rgs5: lit_C              # caveat (lit_B, quoted): expressed in pericytes but missing in some SMC populations
+      Kcnj8: lit_C
+      Cspg4: lit_A
+      # Kept out by the AI assistant's judgement (general knowledge, applied to remove genes only): Acta2 and Tagln
+      # (smooth-muscle actin and transgelin are also expressed in embryonic myocardium: they would pull
+      # cardiomyocytes under the margin), although lit_C names both and lit_D names Acta2 for smooth muscle
+  immune:
+    role: competing              # macrophages and other leukocytes
+    label: r_immune
+    released_labels: []          # E9.5 has no immune label; E10.5's Macrophage label is in a validation file
+    genes:
+      Ptprc: lit_D
+      C1qb: lit_G
+      Lyz2: lit_H
+      Cd68: lit_A
+      # Fcer1g dropped 2026-11-19 (see `dropped`)
+  lymphatic:
+    role: competing              # late: lymphatic endothelium (also scores on ec; this class takes it out when larger)
+    label: r_lymphatic
+    released_labels: []
+    genes:                       # exactly score.min_genes_found (2): if either symbol is missing from Feng's genes,
+                                 # feng_relabel.relabel stops the run, and the stop takes route none
+                                 # (terminal.on_stop; no class is dropped after the data are read)
+      Prox1: lit_J             # caveat (lit_J, quoted): PROX1 mainly in valvular endothelial cells, endocardial cells
+                               # of the interatrial septum and some AVN cells; "LEC-specific" only within endothelium
+      Flt4: lit_J              # caveat (lit_J, quoted): Flt4 may be expressed by endothelial and endocardial cells
+      # Pdpn dropped 2026-11-19 (see `dropped`)
+
+# Genes taken out of the sets by the main session on 2026-11-19, from the sources' own words and before any run. They
+# are named here so that, like a gene a set leaves out by name, none of them is ever drawn as a control gene
+# (feng_relabel.named_genes; the fixer's choice, 2026-11-19, so that a lineage gene cannot depress a class's score).
+dropped:
+  Phox2b: >-
+    2026-11-19, dropped from neural_crest by the main session: its one source names it for intracardiac neurons,
+    another cell kind than the class it was put in.
+  Fcer1g: >-
+    2026-11-19, dropped from immune by the main session: its one source is a review citing an unchecked reference, for
+    mast cells.
+  Pdpn: >-
+    2026-11-19, dropped from lymphatic by the main session: source lit_J writes that "PDPN was expressed by the
+    epicardium and fibroblasts" (the protein, by immunostaining, not the transcript), and the epicardium is one of the
+    four target groups.
+
+sources:
+  released_e95: >-
+    The challenge's released T1 training stage E9.5 (data/raw/T1/E9.5_RNA.h5ad, not a protected window): per-label mean
+    log1p CP10k in experiments/t1_scope/results/label_evidence/markers.csv (experiments/t1_scope/label_evidence.py,
+    committed 2026-10-19 at b875016; the label placements it supports are in configs/t1_chamber_classes.yaml). Rule,
+    fixed here: a panel gene joins a class if its highest mean over the class's released_labels is at least 0.3 and at
+    least twice its highest mean over every other E9.5 label (for a split set, over the other split label alone). The
+    panel's genes were written by the AI assistant on 2026-10-19 for label placement; the released data, not the panel,
+    decide membership. No Feng value, label or figure was read to write any set. This is the team's released-data
+    evidence, not docs/DATA_NOTES.md, which lists no marker genes (the brief named DATA_NOTES; the captain accepts or
+    refuses the substitution). Disclosed: the panel was written on 2026-10-19, the day the research that read Feng's
+    label metadata ran; whether the panel itself was free of the paper cannot be certified.
+  UNSOURCED: >-
+    Proposed by the AI assistant from general knowledge, with no reference opened. No gene holds this mark since
+    2026-11-19; the mark stays defined so that a later edit cannot add an unsourced gene unnoticed (the gate refuses
+    it, and only a competing class may hold it).
+  # Published marker statements on adult mouse tissues (register row X010 as proposed; gene symbols only, no cell,
+  # count or expression value enters). Found on 2026-11-19 by a literature agent of the main session that opened
+  # nothing from the Feng paper and no source built on mouse embryonic days 10 to 13.5. A second agent re-read the
+  # eight papers the same day (the quotation check): every quotation below is in its paper, no statement rests on an
+  # embryonic sample, and its corrections are applied here (the haemoglobin genes, the classes, the caveats in the
+  # papers' own words, the ages and sexes). This file's fixer had no network and did not re-read the papers: the
+  # sentences and sample descriptions are copied from that check. `names` holds, per gene, the sentence that names it
+  # for its class; `class_named` the cells the sentence is about; `caveats` a sentence of the same source that limits a
+  # gene's use, in the paper's words, with the team's reading marked as such; `concerns` what the check noted about
+  # the samples.
+  lit_A:
+    citation: Farbehi et al., eLife 2019
+    doi: 10.7554/eLife.43882
+    pmc: PMC6459677
+    samples: >-
+      adult male mice: scRNA-seq of hearts of 8-week-old male PdgfraGFP/+ mice at days 3 and 7 after sham or
+      myocardial infarction surgery, pooled (the methods' general range is 8 to 12 weeks); ventricles and septum only;
+      the non-myocyte interstitial population (no cardiomyocytes). E14.5 embryos were used only to validate an
+      antibody, not for these markers
+    licence: CC BY
+    class_named: mouse cardiac glial cells, mural cells, and monocytes with macrophages, in the interstitial population
+    names:
+      Plp1: >-
+        glial cells (Plp1+Kcna1+); and: The minority glial cell population expressed canonical neuronal glia markers,
+        including Plp1, Prnp and Gfra3
+      Pdgfrb: mural cells (Cspg4+Pdgfrb+)
+      Cspg4: mural cells (Cspg4+Pdgfrb+)
+      Cd68: "Mo and MΦ (Cd68+Itgam+)"   # the source's capital phi, escaped to keep this file ASCII
+    concerns: sham and infarcted ventricles pooled; Cd68's class is monocytes and macrophages together
+  lit_B:
+    citation: Muhl et al., Nat Commun 2020
+    doi: 10.1038/s41467-020-17740-1
+    pmc: PMC7414220
+    samples: >-
+      adult male mice aged 10 to 20 weeks; heart, skeletal muscle, colon and urinary bladder; mesenchymal cells sorted
+      on Pdgfra, Pdgfrb, Cspg4 or Acta2 reporters or antibodies (SmartSeq2), so its lists are relative to mural cells,
+      not to every cell type
+    licence: CC BY 4.0
+    class_named: fibroblasts, against mural cells, shared by the four adult organs
+    names:
+      Col1a2: >-
+        The short-list of common fibroblast markers included many ECM genes, such as Col1a1, Col1a2, Col5a1, Loxl1, Lum,
+        Fbln1, and Fbln2, as well as the cell surface receptors Cd34 and Pdgfra.
+    caveats:
+      Pdgfrb: >-
+        The mural cell short-list encompassed the known mural cell markers Des, Mcam, Tagln and Notch3, but not the
+        commonly used markers Pdgfrb, and Anpep (CD13). (The sentence gives no reason. The paper's Results say the
+        sorting markers, Pdgfrb among them, are expressed broadly in mesenchymal cells including fibroblasts and mural
+        cells; that Pdgfrb does not separate mural cells from fibroblasts is the team's reading of that, not a quote.)
+      Rgs5: >-
+        (a fragment as the quotation check gives it) Rgs5 is expressed in pericytes but missing in some SMC
+        populations; so it is not pan-mural
+  lit_C:
+    citation: Peisker et al., Nat Commun 2022
+    doi: 10.1038/s41467-022-30682-0
+    pmc: PMC9156759
+    samples: >-
+      adult mice of both sexes: tamoxifen at 8 weeks, a 21-day washout, then transverse aortic constriction or sham
+      surgery, killed 2 or 4 weeks later; left ventricle, FACS-enriched tdTomato+ lineage-traced cells of six Cre
+      lines; sham and constricted hearts integrated
+    licence: CC BY 4.0
+    class_named: mouse cardiac fibroblasts and mural cells among lineage-traced cells
+    names:
+      Dcn: >-
+        We clearly identified the three major cell types of the cardiac vascular niche: fibroblasts (Dcn+, Col1a1+,
+        Pdgfra+), endothelial cells (Kdr+, Pecam1+), and mural cells (Rgs5+, Kcnj8+, Vtn+). (The source writes Pdgfr
+        with a Greek alpha.)
+      Rgs5: >-
+        mural cells (Rgs5+, Kcnj8+, Vtn+). Mural cells included pericytes (Abcc9+, Colec11+) and VSMC (Acta2+, Tagln+)
+      Kcnj8: mural cells (Rgs5+, Kcnj8+, Vtn+)
+    caveats:
+      Hba-a1: >-
+        Not a source for this gene. All cells containing reads for Ptprc (CD45), Hba-a1, Hba-a2, Hbb-bs (hemoglobins)
+        were removed from further analysis, as those genes indicate contamination by immune cells and erythrocytes.
+        (A quality-control filter, not a marker established on a red-cell population.)
+      Hbb-bs: Not a source for this gene; the same quality-control sentence as under Hba-a1.
+  lit_D:
+    citation: Zhu et al., Front Cell Dev Biol 2026
+    doi: 10.3389/fcell.2026.1786720
+    pmc: PMC13161174
+    samples: >-
+      two-month-old (8-week) male C57BL/6 mice; heart single-nucleus RNA-seq of cardiomyocyte-specific BDNF knockout
+      and wild-type hearts, pooled
+    licence: CC BY
+    class_named: mouse heart fibroblasts, smooth muscle cells and immune cells (single nuclei)
+    names:
+      Col3a1: >-
+        manually annotated using literature-derived annotations with the most enriched marker genes in each population
+        as follows: ... fibroblasts (Col3a1 and Pdgfra) ...
+      Myh11: smooth muscle cells (Acta2 and Myh11)
+      Ptprc: immune cells (Ptprc and Mrc1)
+    concerns: >-
+      the annotation is literature-derived; the same sentence calls a Mmrn1 and Reln population myoblasts, so the
+      annotation's quality is uneven (the check's note); Ptprc's class is broad, paired with Mrc1
+  lit_E:
+    citation: Dubey et al., Nat Neurosci 2025
+    doi: 10.1038/s41593-025-02064-4
+    pmc: PMC12586139
+    samples: >-
+      mice of both sexes aged 8 to 12 weeks; scRNA-seq of skull marrow and long-bone marrow from sham and intracranial
+      glioblastoma-bearing (GL261, SB28) mice, integrated; the sequenced cells were mostly CD45+
+    licence: CC BY-NC-ND 4.0
+    class_named: >-
+      erythroid progenitors in adult marrow, not mature red cells and not the heart's; the team reads this as naming
+      the three genes for an erythroid class, which class blood is (its own reading, stated in N54 and X010)
+    names:
+      Hba-a1: >-
+        The Erythro. Prog. (erythroid progenitor) cells expressed Gypa, Alas2 and hemoglobin genes (Hba-a1/2, Hbb-bs
+        and Hbb-bt)
+      Hbb-bs: >-
+        The Erythro. Prog. (erythroid progenitor) cells expressed Gypa, Alas2 and hemoglobin genes (Hba-a1/2, Hbb-bs
+        and Hbb-bt)
+      Alas2: >-
+        The Erythro. Prog. (erythroid progenitor) cells expressed Gypa, Alas2 and hemoglobin genes (Hba-a1/2, Hbb-bs
+        and Hbb-bt)
+  lit_G:
+    citation: Zaman et al., Immunity 2021
+    doi: 10.1016/j.immuni.2021.07.006
+    pmc: PMC12797153
+    samples: >-
+      mice of both sexes, 10 to 12 weeks, given tamoxifen chow for 7 days at 3 weeks; scRNA-seq of sorted cardiac
+      resident macrophages (with monocytes spiked in at about 1 to 100) from sham, day-4 and day-28 angiotensin II
+      hearts, pooled
+    licence: NIH author manuscript (no licence stated)
+    class_named: mouse cardiac resident macrophages, against monocytes
+    names:
+      C1qb: >-
+        Clusters were annotated on the basis of canonical macrophage (Fcgr1, C1qa, C1qb, C1qc, Mafb), monocyte (Plac8,
+        Ly6c2, Ace, Chil3) and proliferation (Mki67, Top2a) genes
+    concerns: the input was pre-sorted macrophages, so C1qb's specificity against non-immune heart cells was not tested
+  lit_H:
+    citation: Komai et al., Front Immunol 2021
+    doi: 10.3389/fimmu.2021.763647
+    pmc: PMC8564148
+    samples: >-
+      male mice aged 8 weeks; scRNA-seq of heart CD45+ cells one week after transverse aortic constriction or sham
+      surgery, in wild-type, CD3e-/- and CD8-depleted mice
+    licence: CC BY
+    class_named: mouse cardiac macrophages and monocytes together, among CD45+ cells
+    names:
+      Lyz2: We identified macrophage/monocyte by the expression of Csf1r, Lyz1, and Lyz2.
+  lit_J:
+    citation: Ware et al., Am J Physiol Heart 2026
+    doi: 10.1152/ajpheart.00549.2025
+    pmc: PMC12758634
+    samples: >-
+      the paper's own mice, male and female, 2 to 5 months (Prox1-tdTomato); its lymphatic-marker statement rests on
+      reanalysed public scRNA-seq of adult male C57BL/6N hearts aged 18 to 20 weeks; its Flt4 caveat also uses Tabula
+      Muris hearts of both sexes aged 10 to 15 weeks and a single-nucleus set whose age the check did not find
+    licence: NIH author manuscript (no licence stated)
+    class_named: mouse cardiac lymphatic endothelial cells, a subset taken within endothelial clusters
+    names:
+      Prox1: >-
+        We then subset the integrated dataset to include only those clusters that uniformly expressed the LEC-specific
+        markers Prox1 and Flt4 (i.e., high percentage expression)
+      Flt4: >-
+        We then subset the integrated dataset to include only those clusters that uniformly expressed the LEC-specific
+        markers Prox1 and Flt4 (i.e., high percentage expression)
+    caveats:
+      Prox1: >-
+        PROX1 was mainly expressed by valvular endothelial cells, endocardial cells lining the interatrial septum and a
+        subset of cells within the AVN. (So "LEC-specific" holds only within endothelium: the team's reading.)
+      Flt4: >-
+        Based on our sc/nRNA-Seq analyses, Flt4, the gene that encodes VEGFR3, may be expressed by various cell types,
+        including endothelial and endocardial cells.
+      Pdpn: >-
+        Prox1-tdTomato was expressed by valvular endothelial cells, some endocardial cells lining the interatrial
+        septum, within the AVN and lowly by cardiomyocytes while PDPN was expressed by the epicardium and fibroblasts.
+        (PDPN protein, by immunostaining; why Pdpn is dropped.)
+
+# ------------------------------------------------------------------ groups, the minimum, the fallback and the cap
+# The four direction groups of M1 (vec.t1_state_transport.R1_FENG_GROUPS) keep their names and today's structure
+# (Endothelium is the union of every endothelial class). experiments/t1_direction/config.yaml stays frozen: this map
+# takes the place of its Feng lists only when the recomputed option is on. Blood and every other group get no
+# recomputed label, so they get no direction (R2's guard on Blood stands).
+groups:
+  CM: [r_cm]
+  Endocardium: [r_endocardial_ec]
+  Endothelium: [r_endocardial_ec, r_vascular_ec, r_ec_ambiguous]
+  Epicardium: [r_epicardial]
+# A group with fewer than min_cells_ext recomputed cells at either end of the bracket takes its fallback. The minimum
+# is the readout's (experiments/t1_direction/config.yaml metrics.min_cells_ext, 10; the code refuses if they differ).
+min_cells_ext: 10
+# Fallback per group, fixed here: Endocardium takes Endothelium's direction (the readout's own antecedent rule,
+# config.yaml `fallback: {Endocardium: Endothelium}`); every other group takes none, so it has no direction. One level
+# only. In the build (build_test.py t1 --feng-groups recomputed), R1's mask and g_mom's covered labels follow the
+# groups that have a recomputed direction after the fallback: a group with its own direction moves its T1 cells along
+# it; Endocardium when it took Endothelium's moves its cells along Endothelium's direction, and g_mom may edit them; a
+# group with no direction (Epicardium, or Endothelium, with fewer than min_cells_ext cells at an end) moves no cell:
+# R1 holds its T1 cells at their E10.5 counts as drawn, and g_mom's mask holds them back too. A CM or Endocardium group
+# with no direction sends the file to route none (terminal, below). Since every r_endocardial_ec cell is also an
+# Endothelium cell, Endothelium has its own direction whenever Endocardium has one, so on route recomputed only
+# Epicardium can be without one.
+fallback:
+  CM: none
+  Endocardium: Endothelium
+  Endothelium: none
+  Epicardium: none
+# Per stage, the share of that stage's labelled cells left r_unassigned (competing classes are assigned, not
+# unassigned; the manifest also splits the unassigned into "no class reached min_score" and "margin failed", deciding
+# nothing). Above the cap at either stage, the labelling has failed: the statistics file is still written (so the
+# listing of row N54 can describe it) but its manifest marks it unusable, every reader (feng_dirs, the builder, the
+# harness) refuses it, and the terminal rule's route is "none". No threshold is relaxed to pass the cap.
+unassigned_cap: 0.40
+# The terminal rule, fixed before any run (feng_relabel.route and build_command; build_test.py t1 --feng-groups): the
+# candidate file is built with `t1 --g-mom --base lib3 --feng-groups recomputed` when the file passed the cap and every
+# group in requires_direction has a direction after the fallback; otherwise with `t1 --g-mom --base lib3 --feng-groups
+# none`, which is main's none file as built (T1's last upload as ruled, row R8: no Feng direction on any group, g_mom
+# on, R1 on every label). A run that stops after preflight takes route none too (on_stop). There is no third outcome:
+# the authors' labels are not one, the design's option (b) (label transfer from the released E9.5) is not built, the
+# mid base is not one, and no route is chosen after the manifest or the listing is seen. The manifest records the
+# route. The builder refuses --feng-groups recomputed unless the committed record's route is recomputed, and refuses
+# --feng-groups none after a record whose route is recomputed unless --feng-none-ruling names the captain's
+# decision-log entry (a switch made after the listing would be a choice by similarity to the authors' labels).
+# Whichever route the rule gives, which file is uploaded stays the captain's later ruling on a priced question.
+terminal:
+  requires_direction: [CM, Endocardium]   # the groups R3b's g_mom edits (build_test.G_MOM_EDIT_CATEGORIES)
+  otherwise: none
+  # Fixed on 2026-11-19 by the main session under its delegation, decision (2): route none is main's none file as
+  # built, with g_mom on (main's builder refuses --feng-groups none without --g-mom).
+  none_with_g_mom: true
+  # Fixed on 2026-11-19 by the main session under its delegation, decision (1): the first upload's design, library 3's
+  # cells at library 3's own mix. The mid base and its 0.60 are in no later file (docs/S2_RULES.md, the amendment of
+  # 2026-11-19 for T1); the builder refuses any other base under either route.
+  base: lib3
+  # Fixed on 2026-11-19 by the main session under its delegation, decision (3), the final review's blocker 1: a run
+  # that stops after preflight (a set short of score.min_genes_found in Feng's unique symbols, a set that draws no
+  # control gene, or any other refusal, error or interrupt after the first Feng file is opened) takes route none;
+  # feng_relabel.main writes the stop record (manifest and RECORD: the reason, usable false, route none); nothing in
+  # this file is edited and nothing is rerun under row N54.
+  on_stop: none
+
+# ------------------------------------------------------------------ row N55's rule, written before N55 runs
+# Decision (4) of 2026-11-19, the final review's dry-run advice: row N55 labels the released E9.5 (a training stage)
+# with this file before the freeze, and this rule alone decides whether min_score and min_margin change
+# (feng_relabel.n55_outcome, written into n55.json). A setting passes when, on the released E9.5, the unassigned share
+# is at most unassigned_cap and each chamber label below sends its cells most often to its own recomputed labels (its
+# own share above every other single recomputed label's, r_unassigned included). (i) The first setting (the values
+# under `assign` when N55 runs) passes: they stay. (ii) Otherwise the first later setting that passes replaces them.
+# (iii) None passes: they stay, and N54's first line says the guard failed on the released dry run. Never changed by
+# N55: the cap, split_margin, min_cells_ext, every gene and set, the controls' rule, the fallback and the terminal
+# rule; no setting is tightened. The E9.5 group cells are reported only (they follow the released file's size, not
+# Feng's). feng_relabel.check_n55 refuses the run unless n55.json is committed, its setting is the one under `assign`,
+# and nothing else differs from the yaml N55 read.
+n55_rule:
+  order:
+    - {min_score: 0.5, min_margin: 0.25}
+    - {min_score: 0.3, min_margin: 0.25}
+    - {min_score: 0.5, min_margin: 0.15}
+  chamber_labels:
+    CM: {released: [AVC-CM, IFT-CM, OFT/RV-CM, SV-CM, V-CM], own: [r_cm]}
+    Endocardium: {released: [Endocardium], own: [r_endocardial_ec]}
+    BEC: {released: [BEC], own: [r_vascular_ec, r_ec_ambiguous]}
+    Proepicardium: {released: [Proepicardium], own: [r_epicardial]}
+
+# ------------------------------------------------------------------ the pre-set deletion of an unsourced gene
+# (No gene is UNSOURCED since 2026-11-19; the rule stays for any later edit.)
+unsourced_rule: >-
+  At the freeze no gene may be UNSOURCED. A gene the main session cannot source to a named reference that is not Feng
+  et al. 2022 is deleted; a competing class left with fewer than score.min_genes_found genes is deleted whole (its
+  cells then fall to another class or to r_unassigned); a target or split set never holds an UNSOURCED gene. The cap,
+  thresholds, fallbacks and terminal rule do not change because of a deletion, and N54's row states the deletions and
+  their expected effect before the run (feng_relabel.without_unsourced applies the same rule in the tests).
+
+# ------------------------------------------------------------------ what the authors' labels may do
+authors_labels: >-
+  Agreement with the authors' labels selects nothing: no gene, threshold, margin, set or fallback here is chosen,
+  edited or kept by how well the recomputed groups match cell_type_spec. Neither the labeller nor the selector reads
+  that column. N54's listing compares the recomputed direction with the present one, which is formed on the authors'
+  groups (cd1_stats.npz); that comparison and the agreement table (experiments/t1_m1/n54_authors_agreement.py, run once
+  after the listing, for the method report only) decide nothing. No later relabelling or change of settings enters an
+  upload because of its agreement with cell_type_spec or its similarity to the present direction: a new relabelling
+  is a new row, and it enters an upload only through a terminal rule fixed before its own run.
+
+# ------------------------------------------------------------------ R2
+r2: >-
+  R2 (the held union, experiments/harness/TRIES.md) stays adopted as it is. Its gate N12 counted the union within
+  Feng's groups made on the authors' labels; no count of N12's kind under the recomputed groups is made by N54, and
+  none would change R2.
+
+# ------------------------------------------------------------------ reported, deciding nothing (row N54)
+sensitivity:
+  - {min_score: 0.3, min_margin: 0.25}
+  - {min_score: 0.7, min_margin: 0.25}
+  - {min_score: 0.5, min_margin: 0.15}
+  - {min_score: 0.5, min_margin: 0.35}

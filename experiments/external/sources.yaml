@@ -44,6 +44,20 @@ feng2022_geo:
   dst: data/external/feng2022_gse193346_geo
   compare_with: data/external/feng2022_gse193346
 
+feng_relabel:
+  # Cell groups of Feng's permitted cells recomputed from their raw counts and stage labels alone (option (c) of the
+  # design of 2026-11-19; experiments/external/feng_relabel.py with feng_relabel.yaml), after an organiser's condition
+  # of 2026-11-16 on annotations learned using protected cells, and the captain's "utilize the atlases" (decision log
+  # 2026-11-19 (k)). No download: it reads feng2022_geo's outputs (manifest-checked) and never the authors'
+  # cell_type_spec column. Not run until row N55's dry run is committed and applied, the yaml is frozen and ledger
+  # row N54 and its ruling are committed. Its output goes to data/derived/, a real directory inside each checkout's own
+  # data/ (on the DGX a campaign checkout's data/external links into the reference checkout, which stays untouched).
+  config: experiments/external/feng_relabel.yaml
+  reads: data/external/feng2022_gse193346_geo (cd1_legal_counts.npz, cd1_legal_genes.txt; cd1_legal_obs.csv columns
+    stage, zone and strain only)
+  tasks: [T1]
+  dst: data/derived/feng_relabel_c
+
 jax_qiu2024:
   citation: >-
     Qiu C, Martin BK, Welsh IC, et al. A single-cell time-lapse of mouse prenatal development from gastrula to birth.

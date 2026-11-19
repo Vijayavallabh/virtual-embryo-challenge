@@ -125,7 +125,8 @@ def _edited_labels(seen_entry) -> set[str]:
 
 
 def test_the_groups_are_authors_then_none():
-    assert feng_dirs.FENG_GROUPS == ("authors", "none")
+    # "recomputed" (the permitted-only relabelling, tests/test_feng_relabel.py) comes after them: authors stays first
+    assert feng_dirs.FENG_GROUPS == ("authors", "none", "recomputed")
 
 
 def test_none_gives_no_direction_and_reads_nothing(monkeypatch):
@@ -141,7 +142,7 @@ def test_none_gives_no_direction_and_reads_nothing(monkeypatch):
 
 def test_an_unknown_groups_value_is_refused_before_anything_is_read(monkeypatch):
     monkeypatch.setattr(feng_dirs, "load_config", _fail("refused before the config is read"))
-    for bad in ("recomputed", "jax", "", "None"):
+    for bad in ("Recomputed", "jax", "", "None"):  # "recomputed" is a value since the relabeller's port
         with pytest.raises(ValueError, match="groups must be one of"):
             feng_dirs.feng_directions(["g1"], groups=bad)
 
@@ -177,10 +178,10 @@ def test_the_option_is_off_by_default_and_takes_two_values(bt):
     ap = bt.build_parser()
     assert ap.parse_args(["t1", "--out", "x.h5ad"]).feng_groups == "authors"
     assert ap.parse_args(["t1", "--feng-groups", "none", "--out", "x.h5ad"]).feng_groups == "none"
-    for bad in ("recomputed", "jax"):
+    for bad in ("Recomputed", "jax"):  # "recomputed" is a value since the relabeller's port (test_feng_relabel.py)
         with pytest.raises(SystemExit):
             ap.parse_args(["t1", "--feng-groups", bad, "--out", "x.h5ad"])
-    assert bt.FENG_GROUPS == ("authors", "none") and bt.FENG_GROUPS_DEFAULT == "authors"
+    assert bt.FENG_GROUPS == ("authors", "none", "recomputed") and bt.FENG_GROUPS_DEFAULT == "authors"
     assert bt.FENG_NONE_COMMAND == "t1 --g-mom --base lib3"
 
 
