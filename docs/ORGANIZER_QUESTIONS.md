@@ -1112,6 +1112,50 @@ Best regards,
 Vijayavallabh J
 Team captain, Mithril
 
+## Data Protocol question on the E12.5 heart stack (drafted 2026-11-19; NOT reviewed, not in the captain's drafts; the captain decides)
+
+Why: the heart's last upload keeps E10.5's full scope, and the released E10.5 stack is 23% heart core. Whether the
+held-out E12.5 stack was dissected more closely is a test-stage premise no released task carries (`experiments/harness/TRIES.md`
+row H26; `docs/PLAN.md` decision log 2026-11-19 (m) to (r)). Scope is a lever closed on 4 November, and the block's own
+route to reopen one is "released data or a screened organiser answer". This is a first draft by the AI assistant,
+written before the captain has chosen a route. It goes to three independent reviewers (accuracy, strategy, tone)
+only if he chooses to ask, and into his drafts only at his word. It asks about the collection procedure and nothing
+else; it states one fact about the released E10.5 file and nothing about our method.
+
+**The reading of each answer, fixed before it is sent** (any answer is read through a screen and audited first;
+numbers are withheld):
+- The E12.5 hearts were dissected with most or all of the tissue outside the heart removed, or hold less surrounding
+  tissue than the released E10.5 stack: the condition of row H26. Its conditional outcome applies once the captain
+  has signed it: by the read of 2026-11-19, the full trim, which then needs his ruling on its size; or the half trim
+  if he rules so.
+- The two stacks were collected alike: the file in force stays.
+- No answer, or an answer that does not say: the file in force stays. Nothing is assumed from silence.
+- An answer that gives a number of the held-out file: the number is not read by the main session, and only the
+  qualitative statement, if any, is used.
+Answers: _none; not sent_.
+
+**Email (draft).** Subject: Human Team (Mithril): a Data Protocol question on the E12.5 heart stack (Task 2)
+
+To: virtual.embryo.moonshot@gmail.com
+
+Hello organisers,
+
+One short question about the Data Protocol page, for the Task 2 heart board.
+
+The page describes the released E10.5 MERFISH hearts and the held-out E12.5 hearts in similar words: dissected, and sectioned whole. In the released E10.5 file, a large share of the cells belongs to tissue around the heart, not to the heart itself.
+
+Could you say whether the E12.5 hearts were collected the same way, with neighbouring tissue left attached, or dissected more closely, as the page says of the E12.5 Multiome hearts ("most of the surrounding tissue removed")?
+
+We are asking about the collection procedure only. If you would rather answer for every team at once, the Slack channel is fine for us.
+
+Best regards,
+Vijayavallabh J
+Team captain, Mithril
+
+**Slack thread (draft), if the captain chooses to ask there as well.** "A Data Protocol question for Task 2 (heart):
+were the E12.5 MERFISH hearts dissected the same way as the released E10.5 ones, with neighbouring tissue left
+attached, or more closely, as the page says of the E12.5 Multiome hearts? We are asking about the collection procedure only."
+
 ## Planned Slack DM (drafted 2026-11-06; sent by the captain the same day)
 
 The state-of-the-art research recommends it (`experiments/research_2026_11_sota/REPORT.md` section 8; `docs/PLAN.md`
