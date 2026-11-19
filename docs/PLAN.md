@@ -6609,3 +6609,33 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the practice fit (E8.5 to E9.5, portions both) does not. That is the property entry 2026-11-18 (f) to (i)
     examined for g_mom. No request follows from this row. If the relabelled direction of row N54 fails its
     guards, a momentum fitted on like-for-like libraries is the one released-data direction worth a row of its own.
+- 2026-11-19 (w), row N55 is ordered: the dry run of the labeller on the released E9.5; the rule it runs under; the
+  labeller's rounds and its merge; register row X010 (state at 18:12 UTC). Written by the AI assistant.
+  - **Ordered.** Row N55 of `experiments/harness/TRIES.md` runs now, by the AI assistant under its delegation
+    (decision (4) of entry (l)) and inside the captain's sign-off of entry (u): the labeller's scorer and guards on
+    the released T1 E9.5 file alone, a training stage; no outside file, no test board, no score. This entry orders
+    N55 and is not the ruling for the relabelling itself, which is entry (u).
+  - **Its rule, fixed in the settings file and in the row before the run** (`n55_rule`, applied by code into
+    `n55.json`): (i) the two thresholds stay (score 0.5, margin 0.25) if on the released E9.5 at most 0.40 of the
+    cells stay unassigned and each chamber label's cells go most often to its own group's recomputed labels; (ii)
+    otherwise the first of (0.3, 0.25) and (0.5, 0.15) that meets both replaces them; (iii) if neither does, they
+    stay and row N54's first line says the guard failed on the dry run; (iv) if the dry run stops or is killed, the
+    stop is recorded with the first setting, nothing is edited because of it and it is not rerun. Nothing else in
+    the settings may change after it.
+  - **The labeller's record.** Written and sourced on `campaign/feng-relabel-fix` and `-fix2`; ported onto main's
+    lineage (`campaign/feng-relabel-main`, 5890abc; entry (l)); its review found the case (iv) above unfixed and
+    fourteen lesser points, closed on `campaign/feng-relabel-main-fix` (9f1e047); a final check said ready to merge
+    with a list by hand (entry (t)), applied with the merge of main on `campaign/feng-relabel-main-merge` (4c57dff:
+    the builder keeps both the labeller's option and try T61's; the two later rulings need the fixed phrases "sets
+    the N54 route aside" and "rules on T1's last upload"; the gate refuses this entry as the ruling for N54);
+    merged to main at 7ad5807. The complete suite on 4c57dff: 3156 passed, 2 skipped; at the merge on main the
+    labeller's, the builder's and the read's tests: 241 passed. Settings file sha256 67b1cfbec2f1, status draft.
+  - **Register.** Row X010 is entered with the captain's approval of entry (u): gene symbols from eight published
+    adult-mouse papers, used only for the classes that keep late or non-chamber cells out of the four direction
+    groups. The amendment of row X002 for the recomputation, with the two author columns read beyond raw counts and
+    stage (zone, strain), and the line of row X003 are entered with row N54, before the relabelling runs.
+  - **Order from here** (the final check's): the targeted tests and the option-off identity builds on the DGX
+    campaign checkout `~/v/vec-campaign-d` at this commit, then N55; its `n55.json` committed at once whatever it
+    says; then one commit with the settings frozen at the setting the rule gives, row N54 and the register texts;
+    then the relabelling once; its record committed at once; the listing; if the route is the recomputed groups,
+    two check builds; then the priced question on T1's last upload.
