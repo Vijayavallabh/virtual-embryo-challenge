@@ -24,12 +24,28 @@ Arms per seed, from one cell draw:
               pre-registered held genes, cardiomyocytes and endocardium only), with the builder's mask under
               recomputed (`build_test._labels_without_direction` on the groups with a direction, the with_direction
               argument of `_t1_g_mom`).
+  m1rc_gmom_epi_held
+              the second counted arm: m1rc_gmom with the Epicardium group's step taken out. Its cells are treated as
+              the builder treats a group without a direction under recomputed: not moved by the direction (they keep
+              their counts as drawn, R1's hold) and outside g_mom's covered labels and mask (with_direction without
+              Epicardium). Every other cell is m1rc_gmom's, byte for byte: the same draw, the same direction step on
+              stream [seed, 2] and the same g_mom draw on stream [seed, 5] (`hold_group`, tested). The direction is
+              not removed before the step itself, because `vec.core.apply_factors` draws one stream over every moved
+              cell: removing a group there would also redraw the other groups' cells (tested), and the paired
+              difference would then carry sampling noise from cells the question is not about.
   A group without a recomputed direction, and a label with no group: its cells are not moved by the direction and
   get no momentum (R1: they keep their counts as drawn, the E9.5 cells' own counts on these tasks), and g_mom's mask
   holds them back too, even inside cardiomyocytes and endocardium. On the configs as committed, with CM, Endocardium
   and Endothelium directed, that mask holds back the same labels as none_gmom's (Early VIC alone; tested).
 On each library task the reference copy_last (row T60's, not counted) is scored first, as T61 scored it.
 
+  reliability  Target-free: no T1 cell is loaded or scored, no truth is read, no authors' group is used. From the
+           recomputed statistics file alone (through feng_dirs' checks) and the T1 gene names (T1:val's gene order),
+           for each recomputed group with a direction: the cells in each half at each end of the bracket; the Spearman
+           correlation of the two halves' log ratios (`feng_dirs.direction_halves`, the readout's settings) over all
+           mapped genes and within each expression decile (`feng_dirs.eb_shrink`'s basis and binning); eb_shrink's
+           ten factors and their mean (the share of the direction's variance the halves agree on). Writes
+           tasks/reliability.json and tasks/reliability.txt; prints only their path. It decides nothing.
   run-cut  One E10.5 cut. Refused before anything loads unless row T62 is in TRIES.md, the tree is clean, the task file
            does not exist, and the relabelling's checks pass (`relabel_checks`). Prints no score.
   run-lib  One library task; the same refusals. Prints no score.
@@ -44,8 +60,15 @@ source calling feng_directions with any groups other than "recomputed" (`source_
 at least 8 of 10 seeds above 0, and on the whole cut the paired mean at least -0.3. Reading S (the first upload
 stands): AHEAD or not. Reading D (it is discounted): AHEAD, at least two library tasks valid, and no valid library task
 with a paired mean below -0.3. A library task is valid unless a seed has inverted anchors (T61's library rule).
-Reported for every task: the paired mean, its spread, seeds ahead, the per-group skill differences and points, and
-the two arms' mean scores; J6's range from zero to the chamber cut's gain.
+"The epicardium step PAYS": on library 3's task the ten-seed paired mean of m1rc_gmom minus m1rc_gmom_epi_held above
++0.3 with at least 8 of 10 seeds above 0; "COSTS": below -0.3 with at least 8 of 10 seeds below 0; otherwise "within
+noise". The same paired difference is reported on every task.
+Reported for every task: the paired means, their spread, seeds ahead, the per-group skill differences and points, and
+the arms' mean scores; J6's range from zero to the chamber cut's gain.
+What follows: nothing is built or changed. The advice fixed before the run: the recomputed file if AHEAD under both
+readings, the ruled file otherwise; if the recomputed file is advised and the epicardium step COSTS, the question also
+names a third file (the recomputed groups with the epicardium group held), which needs an off-by-default builder
+option, a check build and the captain's ruling.
 
 NOT an adoption result: in-sample labelled diagnostic on one truth; the atlas's E9.5 cells lie at the tasks' own
 reference stage; the labeller's threshold was moved on the released E9.5 (row N55); the practice fraction is half the
@@ -54,6 +77,7 @@ test's.
 Usage: on the DGX campaign checkout ~/v/vec-campaign-d (it alone holds data/derived/feng_relabel_c/), repo root, at the
 row's commit, committing nothing until the five task files exist:
   export NUMPY_MADVISE_HUGEPAGE=0 OMP_NUM_THREADS=8 OPENBLAS_NUM_THREADS=8 MKL_NUM_THREADS=8
+  uv run --frozen --no-sync python -I -B experiments/t1_m1/recomputed_read.py reliability --out t62_recomputed
   uv run --frozen --no-sync python -I -B experiments/t1_m1/recomputed_read.py run-cut --out t62_recomputed --cut chamber
   (and --cut whole, run-lib --library 1, 2, 3), then, at the commit that holds the five task files,
   uv run --frozen --no-sync python -I -B experiments/t1_m1/recomputed_read.py read --out t62_recomputed
@@ -67,10 +91,12 @@ import json
 import re
 import sys
 import time
+import warnings
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 
 import numpy as np
+from scipy.stats import spearmanr
 
 from vec import harness, t1_scope
 from vec import t1_state_transport as ts
@@ -95,12 +121,18 @@ hygiene = gc.hygiene
 ROW = "T62"
 CUTS, CUT_FILES, LIBRARIES = br.CUTS, br.CUT_FILES, br.LIBRARIES
 T61_TASKS = RESULTS / "t61_bets" / "tasks"
-CONTROL, CANDIDATE = "none_gmom", "m1rc_gmom"
-ARMS = (CONTROL, CANDIDATE)
+CONTROL, CANDIDATE, EPI_HELD = "none_gmom", "m1rc_gmom", "m1rc_gmom_epi_held"
+ARMS = (CONTROL, CANDIDATE, EPI_HELD)
 LIB_REFERENCE = "copy_last"  # scored first, as T61 scored it; not counted
 LIB_ARMS = (LIB_REFERENCE, *ARMS)
-COUNTED = (CANDIDATE,)
-TRIES_COUNT = len(COUNTED) * (len(CUTS) + len(LIBRARIES))  # 5: T1 358 to 363
+COUNTED = (CANDIDATE, EPI_HELD)
+TRIES_COUNT = len(COUNTED) * (len(CUTS) + len(LIBRARIES))  # 10: T1 358 to 368
+EPI_GROUP = "Epicardium"  # the group whose step the second counted arm takes out
+EPI_TASK = "3"  # library 3, where the epicardium group has its test-like weight
+EPI_BAR = 0.3
+MIN_EPI = 8
+DECILES = 10  # eb_shrink's bins (harness.LP_BINS)
+RELIABILITY_FILES = ("reliability.json", "reliability.txt")
 GROUPS_OPTION = "recomputed"
 REPRO_TOL = 1e-9  # none_gmom against T61's committed none_gmom, per task and seed
 AHEAD_BAR = 0.3
@@ -116,7 +148,10 @@ RECORD = ROOT / "experiments" / "external" / "results" / "feng_relabel" / "MANIF
 GROUP_WEIGHTS = {g: w for g, w, _ in GROUPS["T1"]}
 LABEL = ("try T62, a labelled in-sample diagnostic, never an adoption result: T1's recomputed-groups file "
          "(`--feng-groups recomputed`) against the ruled file (row R8) by their practice analogues m1rc_gmom and "
-         "none_gmom, on T61's five tasks; every task scores one truth (E10.5) over one day, the test spans two")
+         "none_gmom, and the epicardium group's step by m1rc_gmom against m1rc_gmom_epi_held, on T61's five tasks; "
+         "every task scores one truth (E10.5) over one day, the test spans two")
+RELIABILITY_LABEL = ("try T62's reliability listing: target-free, from the recomputed statistics file's own two halves "
+                     "of each group's cells; no T1 cell, no truth, no authors' group; it decides nothing")
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -238,10 +273,32 @@ def direction_kit(labels, directions: Mapping) -> tuple[dict, set[str], list[str
     return groups, bt._g_mom_covered(groups, directions, GROUPS_OPTION), sorted(directions)
 
 
+def without_epicardium(directions: Mapping) -> dict:
+    """The recomputed directions with the Epicardium group's taken out (the second counted arm's groups)."""
+    return {g: v for g, v in directions.items() if g != EPI_GROUP}
+
+
+def hold_group(moved, drawn, groups: Mapping[str, str], group: str = EPI_GROUP):
+    """`moved` (after the direction step) with the cells whose label maps to `group` given back their counts as drawn
+    (`drawn`, the same draw before the step: R1's hold, as the builder leaves a group without a direction), through
+    the builder's own row stacking (`t1_scope._stack_rows`). Every other cell is `moved`'s, byte for byte."""
+    if list(moved.obs_names) != list(drawn.obs_names):
+        raise ValueError("the moved and drawn populations are not the same draw")
+    labels = moved.obs[t1_scope.LABEL_KEY].astype(str).to_numpy()
+    held = np.array([groups.get(lab) == group for lab in labels], dtype=bool)
+    if not held.any():
+        return moved
+    if held.all():
+        return drawn.copy()
+    keep, back = np.flatnonzero(~held), np.flatnonzero(held)
+    return t1_scope._stack_rows([(keep, moved[keep].copy()), (back, drawn[back].copy())], moved.n_obs)
+
+
 def cut_pair(ctx: harness.BuildContext, factors: ts.StateFactors, directions: Mapping, fraction: float,
              held_m1: Sequence[str]) -> dict[str, Stage]:
-    """none_gmom (T61's) and m1rc_gmom (T26's m1_r_gmom with the recomputed direction, the builder's mask) from one
-    draw on a harness cut, each finished as the harness finishes a candidate."""
+    """none_gmom (T61's), m1rc_gmom (T26's m1_r_gmom with the recomputed direction, the builder's mask) and
+    m1rc_gmom_epi_held (m1rc_gmom with the Epicardium group's cells held as drawn) from one draw on a harness cut,
+    each finished as the harness finishes a candidate."""
     role = ctx.task.reference_role
     ref, src = harness._shallow(ctx.inputs[role]), ctx.task.role_stems[role]
     spec = t1_scope.load_spec()
@@ -249,40 +306,116 @@ def cut_pair(ctx: harness.BuildContext, factors: ts.StateFactors, directions: Ma
     shares = harness.t1_chamber_shares(ref, src)
     n = harness.count_for(ctx.board, ref.n_obs)
     held = list(ctx.derived["t1_held_flat"])
-    groups, covered, with_direction = direction_kit(ref.obs[t1_scope.LABEL_KEY].astype(str).unique(), directions)
+    labels = ref.obs[t1_scope.LABEL_KEY].astype(str).unique()
+    groups, covered, with_direction = direction_kit(labels, directions)
+    _, covered_h, with_direction_h = direction_kit(labels, without_epicardium(directions))
+    control_hook, drawn = br.file_hook(factors, ctx.seed, held), []
+
+    def control(pop):
+        drawn.append(pop)  # the draw itself: no direction and no momentum come before post_cells on this arm
+        return control_hook(pop)
 
     def build(**kw) -> Stage:
         sub, _ = t1_scope.build_submission(ref, ctx.board, shares, n, ctx.seed, ref_source=src, **kw)
         return harness.finish(ctx, ref, dense(sub.X), None)
 
-    return {CONTROL: build(held_flat=held, post_cells=br.file_hook(factors, ctx.seed, held)),
-            CANDIDATE: build(held_flat=list(held_m1), directions=directions, direction_fraction=fraction,
-                             direction_groups=groups,
-                             post_cells=rc_hook(factors, ctx.seed, held, with_direction, covered))}
+    moved_kw = {"held_flat": list(held_m1), "directions": directions, "direction_fraction": fraction,
+                "direction_groups": groups}
+    epi_hook = rc_hook(factors, ctx.seed, held, with_direction_h, covered_h)
+    arms = {CONTROL: build(held_flat=held, post_cells=control)}  # first: it hands the draw to the third arm
+    arms[CANDIDATE] = build(**moved_kw, post_cells=rc_hook(factors, ctx.seed, held, with_direction, covered))
+    arms[EPI_HELD] = build(**moved_kw, post_cells=lambda moved: epi_hook(hold_group(moved, drawn[0], groups)))
+    return arms
 
 
 def library_pair(e95, half_shares: Mapping[str, float], factors: ts.StateFactors, held: Sequence[str],
                  held_m1: Sequence[str], seed: int, within: Mapping, fb: Mapping[str, Mapping], directions: Mapping,
                  fraction: float, n_cells: int = rr.N_CELLS) -> dict:
-    """none_gmom (T61's, on T60's oracle base) and m1rc_gmom on the same draw (row T60's entry_step route:
-    `gmom_combo.moved_by_feng`, stream [seed, 2], then the candidate's g_mom), as AnnData."""
+    """none_gmom (T61's, on T60's oracle base), m1rc_gmom on the same draw (row T60's entry_step route:
+    `gmom_combo.moved_by_feng`, stream [seed, 2], then the candidate's g_mom) and m1rc_gmom_epi_held (the same, with
+    the Epicardium group's cells held as drawn), as AnnData."""
     base, _ = t1_scope.reweight(e95, half_shares, n_cells, seed, within=within, fallback=fb["E9.5"])
-    groups, covered, with_direction = direction_kit(e95.obs[t1_scope.LABEL_KEY].astype(str).unique(), directions)
+    labels = e95.obs[t1_scope.LABEL_KEY].astype(str).unique()
+    groups, covered, with_direction = direction_kit(labels, directions)
+    _, covered_h, with_direction_h = direction_kit(labels, without_epicardium(directions))
     moved = gc.moved_by_feng(base, directions, fraction, groups, list(held_m1), [seed, 2])
     return {CONTROL: br.file_hook(factors, seed, held)(base),
-            CANDIDATE: rc_hook(factors, seed, held, with_direction, covered)(moved)}
+            CANDIDATE: rc_hook(factors, seed, held, with_direction, covered)(moved),
+            EPI_HELD: rc_hook(factors, seed, held, with_direction_h, covered_h)(hold_group(moved, base, groups))}
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# The reliability listing (target-free)
+
+
+def _spearman(x: np.ndarray, y: np.ndarray) -> float:
+    if len(x) < 3:
+        return float("nan")
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")  # a constant half gives NaN, reported as such
+        return float(spearmanr(x, y).statistic)
+
+
+def reliability_listing(st: Mapping, genes: Sequence[str], cfg: Mapping, directions: Mapping,
+                        fallbacks: Mapping | None = None, bracket: tuple[str, str] = feng_dirs.BRACKET,
+                        bins: int = DECILES) -> dict:
+    """Per group with a recomputed direction, from the statistics' own two halves of the group's cells (`cfg`: the
+    readout's settings with the recomputed group map, `feng_dirs.groups_config`): the cells in each half at each end of
+    the bracket; the Spearman correlation of the halves' log ratios over every mapped gene and within each expression
+    decile (eb_shrink's basis and binning); eb_shrink's factors and their mean. A group whose direction came from the
+    yaml's fallback has no halves of its own and is listed as such. Reads no T1 cell and no truth."""
+    halves = feng_dirs.direction_halves(st, list(genes), cfg, bracket, groups=set(directions))
+    out = {}
+    for g in sorted(directions):
+        if g not in halves:
+            out[g] = {"own_direction": False, "fallback": (fallbacks or {}).get(g)}
+            continue
+        labels = cfg["external_labels"][g][0]
+        cells = {stage: {h: int(feng_dirs.dl.feng_sel(st, stage, labels, halves=(h,))["n"]) for h in ("A", "B")}
+                 for stage in bracket}
+        h = halves[g]
+        d, d_a, d_b, basis = (np.asarray(x, dtype=np.float64)
+                              for x in (directions[g], h["d_a"], h["d_b"], h["mean_cp"]))
+        idx = np.flatnonzero(np.isfinite(d) & np.isfinite(d_a) & np.isfinite(d_b) & np.isfinite(basis))
+        runs = np.array_split(idx[np.argsort(basis[idx], kind="stable")], bins)
+        _, factors = feng_dirs.eb_shrink(d, d_a, d_b, basis, bins)
+        deciles = [{"decile": i + 1, "genes": int(r.size),
+                    "mean_cp": [float(basis[r].min()), float(basis[r].max())] if r.size else None,
+                    "spearman": _spearman(d_a[r], d_b[r]), "eb_factor": float(f)}
+                   for i, (r, f) in enumerate(zip(runs, factors, strict=True))]
+        out[g] = {"own_direction": True, "labels": list(labels), "cells": cells, "mapped_genes": int(idx.size),
+                  "spearman_all": _spearman(d_a[idx], d_b[idx]), "deciles": deciles,
+                  "eb_factors": [float(f) for f in factors], "eb_factor_mean": float(np.mean(factors))}
+    return out
+
+
+def reliability_text(res: Mapping) -> str:
+    lines = [res["label"], f"Bracket {' -> '.join(res['bracket'])}; genes: {res['genes_from']}'s order "
+             f"({res['of_genes']}); groups with a direction: {', '.join(res['with_direction'])}"]
+    for g, r in res["groups"].items():
+        if not r["own_direction"]:
+            lines.append(f"{g}: no direction of its own (the yaml's fallback: {r['fallback']}); no halves to read")
+            continue
+        ends = "; ".join(f"{stage}: half A {v['A']}, half B {v['B']}" for stage, v in r["cells"].items())
+        lines.append(f"{g}: cells {ends}; mapped genes {r['mapped_genes']}; halves' Spearman over all mapped genes "
+                     f"{r['spearman_all']:.3f}; eb_shrink factor mean {r['eb_factor_mean']:.3f}")
+        for x in r["deciles"]:
+            lines.append(f"  decile {x['decile']:2d} ({x['genes']} genes): Spearman {x['spearman']:.3f}, eb factor "
+                         f"{x['eb_factor']:.3f}")
+    lines.append(f"Commit {res['stamp']['commit']}, tree clean {res['stamp']['tree_clean']}, UTC {res['stamp']['utc']}")
+    return "\n".join(lines) + "\n"
 
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Runs
 
 
-def refuse(out: Path, name: str) -> tuple[dict, dict]:
-    """The refusals before anything loads: the row, an existing task file, an unclean tree, the source guard and the
+def refuse(out: Path, name: str | Sequence[str]) -> tuple[dict, dict]:
+    """The refusals before anything loads: the row, an existing output file, an unclean tree, the source guard and the
     relabelling's guards. Returns the start state and the relabelling's checks."""
     if ROW not in br.tries_rows(TRIES):
         sys.exit(f"{ROW} is refused: it has no row in experiments/harness/TRIES.md (a row comes before its run)")
-    gv.refuse_existing(out, (name,))
+    gv.refuse_existing(out, (name,) if isinstance(name, str) else tuple(name))
     started = gv.tree_state()
     if started["clean"] is not True:
         sys.exit(f"{ROW} is refused: the tree is not clean by vec.provenance's rule")
@@ -299,7 +432,33 @@ def _relabel_fields(ext: Mapping, checks: Mapping) -> dict:
     return {"file": ext["file"], "sha256": ext["sha256"], "stats_sha256_hashed": checks["stats_sha256"],
             "yaml_sha256": checks["yaml_sha256"], "route": ext["route"], "record_route": checks["route"],
             "authors_labels_read": checks["authors_labels_read"], "with_direction": ext["with_direction"],
-            "fallbacks": ext["fallbacks"], "relabel_gate": ext.get("relabel_gate")}
+            "fallbacks": ext["fallbacks"], "relabel_gate": ext.get("relabel_gate"),
+            "epicardium_directed": EPI_GROUP in ext["with_direction"],
+            "with_direction_epi_held": [g for g in ext["with_direction"] if g != EPI_GROUP]}
+
+
+def cmd_reliability(a) -> None:
+    """Row T62's reliability listing: the recomputed statistics file and the T1 gene names only; no T1 cell, no
+    truth."""
+    out = RESULTS / a.out / "tasks"
+    started, checks = refuse(out, RELIABILITY_FILES)
+    genes = list(get_board(rr.BOARD).genes)  # the gene names alone (the libraries' gene order)
+    directions, ext = recomputed_inputs(genes)
+    path = feng_dirs.recomputed_stats_path()
+    feng_dirs.check_recomputed(path)
+    st = feng_dirs.dl.load_stats(path)
+    feng_dirs.check_recomputed_keys(st)
+    cfg = feng_dirs.groups_config(feng_dirs.load_config(), feng_dirs.load_relabel_config())
+    res = {"label": RELIABILITY_LABEL, "row": ROW, "bracket": list(feng_dirs.BRACKET), "genes_from": rr.BOARD,
+           "of_genes": len(genes), "with_direction": sorted(directions), "relabel": _relabel_fields(ext, checks),
+           "settings": {"pseudocount_cp10k": ext["pseudocount_cp10k"], "min_cells_ext": ext["min_cells_ext"],
+                        "deciles": DECILES},
+           "groups": reliability_listing(st, genes, cfg, directions, ext["fallbacks"]),
+           "stamp": gv.stamp(started, [path, feng_dirs.RELABEL_CONFIG, feng_dirs.CONFIG, RECORD])}
+    out.mkdir(parents=True, exist_ok=True)
+    (out / RELIABILITY_FILES[0]).write_text(json.dumps(res, indent=1, default=float) + "\n")
+    (out / RELIABILITY_FILES[1]).write_text(reliability_text(res))
+    print(f"reliability listing written: {out / RELIABILITY_FILES[1]}")  # the path only
 
 
 def _held_m1(preregistered: Sequence[str]) -> tuple[list[str], dict]:
@@ -413,6 +572,22 @@ def paired(rows: Sequence[Mapping]) -> dict:
     return p
 
 
+def epi_paired(rows: Sequence[Mapping]) -> dict:
+    """m1rc_gmom - m1rc_gmom_epi_held per seed (`bets_read.paired`) with the seeds below 0."""
+    p = br.paired(rows, CANDIDATE, EPI_HELD)
+    p["behind"] = int(sum(br.score_of(r, CANDIDATE) - br.score_of(r, EPI_HELD) < 0 for r in rows))
+    return p
+
+
+def epi_statement(p: Mapping) -> str:
+    """Row T62's epicardium statement on library 3's paired difference."""
+    if p["mean"] > EPI_BAR and p["ahead"] >= MIN_EPI:
+        return "PAYS"
+    if p["mean"] < -EPI_BAR and p["behind"] >= MIN_EPI:
+        return "COSTS"
+    return "within noise"
+
+
 def committed_t61(name: str, tasks: Path | None = None) -> dict[int, float]:
     rows = json.loads(((T61_TASKS if tasks is None else tasks) / name).read_text())["rows"]
     return {int(r["seed"]): float(r["arms"][CONTROL]["score"]) for r in rows}
@@ -483,18 +658,32 @@ def t62_reading(loaded: Mapping[str, Mapping | None], committed: Mapping[str, Ma
     d = bool(ahead and len(valid) >= MIN_LIBRARIES and not low)
     word = {True: "AHEAD", False: "NOT AHEAD"}
     means = [t["mean"] for t in tasks.values()]
-    return {"outcome": f"S: {word[ahead]}; D: {word[d]}", "reading_S": word[ahead], "reading_D": word[d],
-            "ahead": ahead, "valid_libraries": valid, "libraries_below_floor": low, "tasks": tasks,
-            "j6_range": sorted([0.0, c["mean"]]), "task_range_reported": [min(means), max(means)],
-            "advice_fixed_before_the_run": ("the recomputed file" if ahead and d else "the ruled file (row R8)")}
+    epi = {k: epi_paired(r["rows"]) for k, r in loaded.items()}
+    epi_word = epi_statement(epi[EPI_TASK])
+    recomputed = bool(ahead and d)
+    return {"outcome": f"S: {word[ahead]}; D: {word[d]}; epicardium step: {epi_word}", "reading_S": word[ahead],
+            "reading_D": word[d], "ahead": ahead, "valid_libraries": valid, "libraries_below_floor": low,
+            "tasks": tasks, "j6_range": sorted([0.0, c["mean"]]), "task_range_reported": [min(means), max(means)],
+            "epicardium_step": epi_word, "epicardium_task_valid": EPI_TASK in valid, "epicardium": epi,
+            "epicardium_not_directed": [k for k, r in loaded.items()
+                                        if (r.get("relabel") or {}).get("epicardium_directed") is not True],
+            "advice_fixed_before_the_run": "the recomputed file" if recomputed else "the ruled file (row R8)",
+            "third_file_named": bool(recomputed and epi_word == "COSTS")}
 
 
 def outcome_lines(r: Mapping) -> list[str]:
     if r["outcome"] == "VOID":
         return ["Outcome: VOID (" + "; ".join(r["reasons"]) + ")"]
-    return [f"Outcome: reading S (T1's first upload stands): the recomputed step is {r['reading_S']}; reading D (it "
-            f"is discounted): {r['reading_D']}",
-            f"The advice fixed before the run: {r['advice_fixed_before_the_run']}"]
+    lines = [f"Outcome: reading S (T1's first upload stands): the recomputed step is {r['reading_S']}; reading D (it "
+             f"is discounted): {r['reading_D']}",
+             f"The epicardium step (m1rc_gmom - m1rc_gmom_epi_held on library {EPI_TASK}, a valid library: "
+             f"{'yes' if r['epicardium_task_valid'] else 'no'}): {r['epicardium_step']}",
+             f"The advice fixed before the run: {r['advice_fixed_before_the_run']}; the question names a third file "
+             f"(the recomputed groups with the epicardium group held): {'yes' if r['third_file_named'] else 'no'}"]
+    if r["epicardium_not_directed"]:
+        lines.append(f"The Epicardium group had no recomputed direction on: {', '.join(r['epicardium_not_directed'])} "
+                     f"(the two candidate arms are the same file there)")
+    return lines
 
 
 def t62_text(res: Mapping) -> str:
@@ -506,12 +695,18 @@ def t62_text(res: Mapping) -> str:
                           for x, v in p["skill_differences"].items())
             lines.append(f"{k}: m1rc_gmom - none_gmom {p['mean']:+.2f} points, sd {p['sd']:.2f}, ahead {p['ahead']} of "
                          f"{p['of']}, per seed {p['range'][0]:+.2f} to {p['range'][1]:+.2f}; mean scores none_gmom "
-                         f"{p['mean_scores'][CONTROL]:.2f}, m1rc_gmom {p['mean_scores'][CANDIDATE]:.2f}; by group: {g}")
+                         f"{p['mean_scores'][CONTROL]:.2f}, m1rc_gmom {p['mean_scores'][CANDIDATE]:.2f}, "
+                         f"m1rc_gmom_epi_held {p['mean_scores'][EPI_HELD]:.2f}; by group: {g}")
+        for k, e in r["epicardium"].items():
+            g = ", ".join(f"{x} {v:+.2f} points" for x, v in e["groups"].items())
+            lines.append(f"{k}: m1rc_gmom - m1rc_gmom_epi_held {e['mean']:+.2f} points, sd {e['sd']:.2f}, ahead "
+                         f"{e['ahead']} and behind {e['behind']} of {e['of']}, per seed {e['range'][0]:+.2f} to "
+                         f"{e['range'][1]:+.2f}; by group: {g}")
         lines.append(f"Valid libraries: {', '.join(r['valid_libraries']) or 'none'}; below {LIB_FLOOR}: "
                      f"{', '.join(r['libraries_below_floor']) or 'none'}")
-        lines.append(f"J6 range (0 to the chamber cut's gain): {r['j6_range'][0]:+.2f} to {r['j6_range'][1]:+.2f}; the "
-                     f"five tasks' paired means, reported only: {r['task_range_reported'][0]:+.2f} to "
-                     f"{r['task_range_reported'][1]:+.2f}")
+        lines.append(f"J6 range (0 to the chamber cut's gain; a negative chamber gain is reported as [gain, 0] and "
+                     f"cannot be AHEAD): {r['j6_range'][0]:+.2f} to {r['j6_range'][1]:+.2f}; the five tasks' paired "
+                     f"means, reported only: {r['task_range_reported'][0]:+.2f} to {r['task_range_reported'][1]:+.2f}")
     lines.append(f"Commit {res['stamp']['commit']}, tree clean {res['stamp']['tree_clean']}, UTC {res['stamp']['utc']}")
     return "\n".join(lines) + "\n"
 
@@ -546,13 +741,15 @@ def main(argv=None) -> None:
     p.add_argument("--out", required=True)
     p.add_argument("--seeds", default=",".join(map(str, SEEDS)))
     p.add_argument("--data", default=str(harness.DATA_DIR))
+    p = sub.add_parser("reliability", help="try T62's target-free reliability listing of the recomputed groups")
+    p.add_argument("--out", required=True)
     p = sub.add_parser("read", help="try T62's reading")
     p.add_argument("--out", required=True)
     a = ap.parse_args(argv)
     if a.cmd == "read":
         read(RESULTS / a.out)
     else:
-        {"run-cut": cmd_run_cut, "run-lib": cmd_run_lib}[a.cmd](a)
+        {"run-cut": cmd_run_cut, "run-lib": cmd_run_lib, "reliability": cmd_reliability}[a.cmd](a)
 
 
 if __name__ == "__main__":

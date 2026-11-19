@@ -113,10 +113,12 @@ def test_recomputed_inputs_asks_feng_dirs_for_the_recomputed_groups_and_refuses_
         rc.recomputed_inputs(["a"])
 
 
-def test_the_practice_fraction_is_one_fifth_and_the_count_is_five(rc):
+def test_the_practice_fraction_is_one_fifth_and_the_count_is_ten(rc):
     assert rc.feng_dirs.bracket_fraction(9.5, 10.5) == pytest.approx(rc.PRACTICE_FRACTION)
     assert rc.feng_dirs.bracket_fraction(10.5, 12.5) == pytest.approx(2 * rc.PRACTICE_FRACTION)
-    assert rc.TRIES_COUNT == 5 and rc.COUNTED == ("m1rc_gmom",)
+    assert rc.TRIES_COUNT == 10 and rc.COUNTED == ("m1rc_gmom", "m1rc_gmom_epi_held")
+    assert rc.ARMS == ("none_gmom", "m1rc_gmom", "m1rc_gmom_epi_held") and rc.LIB_ARMS[0] == "copy_last"
+    assert rc.EPI_GROUP == "Epicardium" and rc.EPI_TASK == "3"
 
 
 def test_the_run_is_refused_without_its_row(rc, tmp_path, monkeypatch):
@@ -184,7 +186,7 @@ def test_the_cut_pair_none_gmom_is_t61s_and_the_candidate_is_the_builders_path(r
     monkeypatch.setattr(rc.feng_dirs, "feng_directions", lambda *a, **k: pytest.fail("the directions are given"))
     ours = rc.cut_pair(ctx, fits["file"], dirs, 0.2, HELD_M1)
     t61, _, _ = rc.br.cut_arms(ctx, fits)
-    assert tuple(ours) == ("none_gmom", "m1rc_gmom")
+    assert tuple(ours) == rc.ARMS
     assert ours["none_gmom"].X.tobytes() == t61["none_gmom"].X.tobytes()
     assert ours["m1rc_gmom"].X.tobytes() != ours["none_gmom"].X.tobytes()
     # the candidate: build_submission with the recomputed direction, R2's genes and the builder's own hook
@@ -201,6 +203,8 @@ def test_the_cut_pair_none_gmom_is_t61s_and_the_candidate_is_the_builders_path(r
                               direction_groups=groups, post_cells=hook)
     want = harness.finish(ctx, cref, rc.dense(sub.X), None)
     assert ours["m1rc_gmom"].X.tobytes() == want.X.tobytes()
+    # no label of this stage maps to Epicardium: the two candidate arms are the same file
+    assert ours["m1rc_gmom_epi_held"].X.tobytes() == ours["m1rc_gmom"].X.tobytes()
 
 
 def test_a_group_without_a_direction_keeps_its_drawn_counts_through_the_candidate(rc):
@@ -249,6 +253,173 @@ def test_the_library_pair_none_gmom_is_t61s_and_the_route_is_the_build_paths(rc,
 
 
 # ---------------------------------------------------------------------------------------------------------------------
+# The second counted arm: the Epicardium group's step taken out
+
+EPI_SHARES = {"cm": 0.5, "endocardium": 0.2, "epicardium": 0.15, "blood": 0.05, "surrounding": 0.1}
+WITH_EPI = (*DIRECTED, "Epicardium")
+
+
+def _epi_world():
+    """An E9.5-like stage with Proepicardium cells (the readout config maps them to Epicardium) and an E8.5-like
+    start, classified; g_mom's file factors on them."""
+    from test_t1_state_transport import classified_pair
+
+    start, ref = classified_pair(seed=5, n_scale=0.5)
+    return ref, start
+
+
+def test_the_epi_held_arm_differs_only_in_epicardium_cells_on_the_library_route(rc):
+    e95, e85 = _epi_world()
+    spec = load_spec()
+    fb = {"E8.5": spec.fallbacks("E8.5_RNA"), "E9.5": spec.fallbacks("E9.5_RNA")}
+    within = {"surrounding": ["Foregut"]}
+    factors = rc.br.gmom_fits(e95, "E9.5_RNA", e85, "E8.5_RNA")["file"]
+    dirs = _directions(e95.n_vars, WITH_EPI)
+    arms = rc.library_pair(e95, EPI_SHARES, factors, HELD, HELD_M1, 6, within, fb, dirs, 0.2, n_cells=300)
+    base, _ = reweight(e95, EPI_SHARES, 300, 6, within=within, fallback=fb["E9.5"])
+    labels = base.obs["celltype"].astype(str).to_numpy()
+    groups = rc.feng_dirs.label_groups(sorted(set(labels)))
+    epi = np.array([groups[lab] == "Epicardium" for lab in labels])
+    assert epi.any() and (~epi).any() and set(labels[epi]) == {"Proepicardium"}
+    full, held = (_dense(counts_of(arms[a])) for a in ("m1rc_gmom", "m1rc_gmom_epi_held"))
+    drawn = _dense(counts_of(base))
+    differs = (full != held).any(axis=1)
+    assert differs.any() and not differs[~epi].any()  # only cells whose label maps to Epicardium differ
+    assert np.array_equal(held[epi], drawn[epi])  # they keep their drawn counts: not moved, no momentum, no g_mom
+    assert not np.array_equal(full[epi], drawn[epi])  # the candidate moved them
+    # none_gmom leaves them as drawn too (g_mom edits cardiomyocytes and endocardium only)
+    assert np.array_equal(_dense(counts_of(arms["none_gmom"]))[epi], drawn[epi])
+    # the same arm with no Epicardium direction at all is the candidate itself
+    same = rc.library_pair(e95, EPI_SHARES, factors, HELD, HELD_M1, 6, within, fb, _directions(e95.n_vars), 0.2,
+                           n_cells=300)
+    assert np.array_equal(_dense(counts_of(same["m1rc_gmom"])), _dense(counts_of(same["m1rc_gmom_epi_held"])))
+
+
+def test_the_epi_held_arm_differs_only_in_epicardium_cells_on_the_cut_route(rc, monkeypatch):
+    ref, start = _epi_world()
+    ctx = _gmom_ctx(ref, start, seed=1000003)
+    fits = rc.br.gmom_fits(ref, "E9.5_RNA", start, "E8.5_RNA")
+    seen = []
+    real = rc.hold_group
+
+    def spy(moved, drawn, groups, group="Epicardium"):
+        seen.append(np.array([groups.get(x) == group for x in drawn.obs["celltype"].astype(str)]))
+        return real(moved, drawn, groups, group)
+
+    monkeypatch.setattr(rc, "hold_group", spy)
+    ours = rc.cut_pair(ctx, fits["file"], _directions(ref.n_vars, WITH_EPI), 0.2, HELD_M1)
+    assert tuple(ours) == rc.ARMS and len(seen) == 1
+    epi = seen[0]
+    full, held = ours["m1rc_gmom"].X, ours["m1rc_gmom_epi_held"].X
+    differs = (np.asarray(full) != np.asarray(held)).any(axis=1)
+    assert epi.any() and differs.any() and not differs[~epi].any()
+    assert (np.asarray(held)[epi] == np.asarray(ours["none_gmom"].X)[epi]).all()  # as drawn, as in none_gmom
+
+
+def test_taking_the_direction_out_before_the_step_would_redraw_the_other_groups(rc):
+    """Why the arm holds the Epicardium cells after the step and not before it: vec.core.apply_factors draws one stream
+    over every moved cell, so a direction step without the Epicardium group gives other groups' cells new draws."""
+    e95, _ = _epi_world()
+    spec = load_spec()
+    base, _ = reweight(e95, EPI_SHARES, 300, 6, within={"surrounding": ["Foregut"]},
+                       fallback=spec.fallbacks("E9.5_RNA"))
+    labels = base.obs["celltype"].astype(str).to_numpy()
+    groups = rc.feng_dirs.label_groups(sorted(set(labels)))
+    dirs = _directions(e95.n_vars, WITH_EPI)
+    a = rc.gc.moved_by_feng(base, dirs, 0.2, groups, HELD_M1, [6, 2])
+    b = rc.gc.moved_by_feng(base, rc.without_epicardium(dirs), 0.2, groups, HELD_M1, [6, 2])
+    epi = np.array([groups[lab] == "Epicardium" for lab in labels])
+    assert ((_dense(counts_of(a)) != _dense(counts_of(b))).any(axis=1) & ~epi).any()
+    held = rc.hold_group(a, base, groups)
+    assert np.array_equal(_dense(counts_of(held))[~epi], _dense(counts_of(a))[~epi])
+    assert np.array_equal(_dense(counts_of(held))[epi], _dense(counts_of(base))[epi])
+    assert rc.without_epicardium(dirs).keys() == set(DIRECTED)
+    with pytest.raises(ValueError, match="same draw"):
+        rc.hold_group(a, base[::-1].copy(), groups)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# The reliability listing (target-free)
+
+
+def _relabel_stats(genes, seed=2, small=None):
+    """Synthetic recomputed statistics in the file's key layout ('stage|zone|label|half'), per group label a noisy
+    profile with a stage trend; `small` gives that label too few cells at E14.5 for a direction of its own."""
+    rng = np.random.default_rng(seed)
+    base = rng.gamma(1.0, 5.0, len(genes))
+    keys, n, cp, cells = [], [], [], {}
+    for label in ("r_cm", "r_endocardial_ec", "r_vascular_ec", "r_ec_ambiguous", "r_epicardial"):
+        for i, stage in enumerate(("E9.5", "E14.5")):
+            trend = np.exp((-1.0) ** (np.arange(len(genes)) % 2) * 0.3 * i)
+            for half in "AB":
+                k = 2 if (label, stage) == small else int(rng.integers(20, 60))
+                keys.append(f"{stage}|LV|{label}|{half}")
+                n.append(k)
+                cp.append(k * base * trend * rng.lognormal(0.0, 0.3, len(genes)))
+                cells[(label, stage, half)] = k
+    st = {"genes": np.array(genes, dtype=object), "keys": np.array(keys, dtype=object), "n": np.array(n, float),
+          "S_cp": np.array(cp), "S_log": np.zeros((len(keys), len(genes))), "S_nz": np.zeros((len(keys), len(genes))),
+          "depth_sum": np.array(n, float) * 1000.0}
+    return st, cells
+
+
+def test_the_reliability_listing_reads_each_groups_own_halves(rc):
+    from scipy.stats import spearmanr
+
+    genes = [f"G{i}" for i in range(120)]
+    rcfg = rc.feng_dirs.load_relabel_config()
+    cfg = rc.feng_dirs.groups_config(rc.feng_dirs.load_config(), rcfg)
+    st, _ = _relabel_stats(genes, small=("r_epicardial", "E14.5"))
+    own, _, _ = rc.feng_dirs.directions_from_stats(st, genes, cfg)
+    dirs, _ = rc.feng_dirs.apply_fallback(own, rcfg)
+    assert "Epicardium" not in rc.reliability_listing(st, genes, cfg, dirs)  # no direction (no fallback): not listed
+    st2, cells2 = _relabel_stats(genes)
+    own2, _, _ = rc.feng_dirs.directions_from_stats(st2, genes[:100] + ["absent"], cfg)
+    out = rc.reliability_listing(st2, genes[:100] + ["absent"], cfg, own2)
+    assert set(out) == {"CM", "Endocardium", "Endothelium", "Epicardium"}
+    epi = out["Epicardium"]
+    assert epi["own_direction"] and epi["labels"] == ["r_epicardial"]
+    assert epi["cells"] == {s: {h: cells2[("r_epicardial", s, h)] for h in "AB"} for s in ("E9.5", "E14.5")}
+    ec = out["Endothelium"]["cells"]["E9.5"]["A"]
+    assert ec == sum(cells2[(lab, "E9.5", "A")] for lab in ("r_endocardial_ec", "r_vascular_ec", "r_ec_ambiguous"))
+    h = rc.feng_dirs.direction_halves(st2, genes[:100] + ["absent"], cfg)["Epicardium"]
+    assert epi["mapped_genes"] == 100  # the unmapped gene is left out
+    ok = np.isfinite(h["d_a"])
+    assert epi["spearman_all"] == pytest.approx(spearmanr(h["d_a"][ok], h["d_b"][ok]).statistic)
+    _, factors = rc.feng_dirs.eb_shrink(own2["Epicardium"], h["d_a"], h["d_b"], h["mean_cp"], 10)
+    assert epi["eb_factors"] == pytest.approx(factors) and epi["eb_factor_mean"] == pytest.approx(np.mean(factors))
+    assert len(epi["deciles"]) == 10 and sum(x["genes"] for x in epi["deciles"]) == 100
+    low = np.argsort(h["mean_cp"][ok], kind="stable")[:10]
+    assert epi["deciles"][0]["spearman"] == pytest.approx(spearmanr(h["d_a"][ok][low], h["d_b"][ok][low]).statistic)
+    # a group whose direction came from the yaml's fallback has no halves of its own
+    st3, _ = _relabel_stats(genes, small=("r_endocardial_ec", "E14.5"))
+    own3, _, _ = rc.feng_dirs.directions_from_stats(st3, genes, cfg)
+    dirs3, fired3 = rc.feng_dirs.apply_fallback(own3, rcfg)
+    out3 = rc.reliability_listing(st3, genes, cfg, dirs3, fired3)
+    assert out3["Endocardium"] == {"own_direction": False, "fallback": fired3["Endocardium"]}
+    assert fired3["Endocardium"]["takes"] == "Endothelium"
+    text = rc.reliability_text({"label": rc.RELIABILITY_LABEL, "bracket": ["E9.5", "E14.5"], "genes_from": "T1:val",
+                                "of_genes": len(genes), "with_direction": sorted(dirs3), "groups": out3,
+                                "stamp": {"commit": "c" * 40, "tree_clean": True, "utc": "x"}})
+    assert "Endocardium: no direction of its own" in text and "decile 10" in text
+
+
+def test_the_reliability_step_is_refused_without_its_row_and_reads_no_t1_cell(rc, tmp_path, monkeypatch):
+    tries = tmp_path / "TRIES.md"
+    tries.write_text("| T61 (one row) | T1 | x |\n")
+    monkeypatch.setattr(rc, "TRIES", tries)
+    monkeypatch.setattr(rc, "relabel_checks", lambda *a, **k: pytest.fail("nothing before the row's refusal"))
+    with pytest.raises(SystemExit, match="no row"):
+        rc.main(["reliability", "--out", "x"])
+    import inspect
+
+    body = inspect.getsource(rc.cmd_reliability)
+    for banned in ("load_stage", "read_stage", "load_tasks", "score_arms", "filter_target", "a.data", "DATA_DIR",
+                   "committed_t61"):
+        assert banned not in body, banned
+
+
+# ---------------------------------------------------------------------------------------------------------------------
 # The reading
 
 
@@ -259,15 +430,19 @@ def _arm(score):
 
 def _relabel(rc, **change):
     return {"sha256": rc.STATS_SHA256, "stats_sha256_hashed": rc.STATS_SHA256, "yaml_sha256": rc.YAML_SHA256,
-            "route": "recomputed", "record_route": "recomputed", "authors_labels_read": False, **change}
+            "route": "recomputed", "record_route": "recomputed", "authors_labels_read": False,
+            "epicardium_directed": True, **change}
 
 
 def _task(rc, gain, lib=False, per_seed=None, control=50.0, commit="c" * 40, clean=True, seeds=range(10),
-          inverted=False, relabel=None):
+          inverted=False, relabel=None, epi=0.0, epi_per_seed=None):
+    """`epi`: m1rc_gmom - m1rc_gmom_epi_held per seed (the epicardium step's gain)."""
     rows = []
     for s in seeds:
         g = per_seed[s] if per_seed is not None else gain
-        arms = {"none_gmom": _arm(control + s / 100), "m1rc_gmom": _arm(control + s / 100 + g)}
+        e = epi_per_seed[s] if epi_per_seed is not None else epi
+        arms = {"none_gmom": _arm(control + s / 100), "m1rc_gmom": _arm(control + s / 100 + g),
+                "m1rc_gmom_epi_held": _arm(control + s / 100 + g - e)}
         row = {"seed": s, "arms": arms}
         if lib:
             arms["copy_last"] = _arm(40.0)
@@ -328,8 +503,61 @@ def test_too_few_valid_libraries_stop_d(rc):
     assert rc.t62_reading(loaded, _committed(), OK)["reading_D"] == "AHEAD"
 
 
-@pytest.mark.parametrize("case", ["control_off", "missing_seed", "missing_arm", "missing_task", "two_commits",
-                                  "unclean", "stats", "yaml", "route", "authors", "checks", "source"])
+def _with_lib3_epi(rc, loaded, epi=0.0, epi_per_seed=None, inverted=False):
+    loaded["3"] = _task(rc, 0.0, lib=True, epi=epi, epi_per_seed=epi_per_seed, inverted=inverted)
+    return loaded
+
+
+@pytest.mark.parametrize("epi,per_seed,word", [(0.5, None, "PAYS"), (-0.5, None, "COSTS"), (0.29, None, "within noise"),
+                                               (-0.29, None, "within noise"), (None, [1.0] * 7 + [-0.1] * 3,
+                                                                              "within noise"),
+                                               (None, [-1.0] * 8 + [0.1] * 2, "COSTS"),
+                                               (None, [1.0] * 8 + [-0.1] * 2, "PAYS")])
+def test_the_epicardium_statement_on_library_3(rc, epi, per_seed, word):
+    loaded = _with_lib3_epi(rc, _loaded(rc, 1.0, 0.0), epi=epi or 0.0, epi_per_seed=per_seed)
+    r = rc.t62_reading(loaded, _committed(), OK)
+    assert r["epicardium_step"] == word and r["epicardium_task_valid"]
+    assert set(r["epicardium"]) == {"chamber", "whole", "1", "2", "3"}  # reported on every task
+
+
+def test_the_epicardium_statement_reads_library_3_alone(rc):
+    loaded = _loaded(rc, 1.0, 0.0)
+    loaded["chamber"] = _task(rc, 1.0, epi=-2.0)
+    loaded["1"] = _task(rc, 0.0, lib=True, epi=-2.0)
+    r = rc.t62_reading(loaded, _committed(), OK)
+    assert r["epicardium_step"] == "within noise" and r["epicardium"]["chamber"]["mean"] == pytest.approx(-2.0)
+    assert r["epicardium"]["1"]["behind"] == 10
+
+
+def test_a_third_file_is_named_only_when_the_recomputed_file_is_advised_and_the_step_costs(rc):
+    costs = rc.t62_reading(_with_lib3_epi(rc, _loaded(rc, 1.0, 0.0), epi=-0.5), _committed(), OK)
+    assert costs["advice_fixed_before_the_run"] == "the recomputed file" and costs["third_file_named"]
+    assert "third file (the recomputed groups with the epicardium group held): yes" in rc.outcome_lines(costs)[2]
+    pays = rc.t62_reading(_with_lib3_epi(rc, _loaded(rc, 1.0, 0.0), epi=0.5), _committed(), OK)
+    assert pays["advice_fixed_before_the_run"] == "the recomputed file" and not pays["third_file_named"]
+    noise = rc.t62_reading(_with_lib3_epi(rc, _loaded(rc, 1.0, 0.0), epi=0.1), _committed(), OK)
+    assert not noise["third_file_named"]
+    ruled = rc.t62_reading(_with_lib3_epi(rc, _loaded(rc, 0.1, 0.0), epi=-0.5), _committed(), OK)
+    assert ruled["epicardium_step"] == "COSTS" and ruled["advice_fixed_before_the_run"] == "the ruled file (row R8)"
+    assert not ruled["third_file_named"]
+
+
+def test_an_invalid_library_3_is_reported_beside_the_epicardium_statement(rc):
+    r = rc.t62_reading(_with_lib3_epi(rc, _loaded(rc, 1.0, 0.0), epi=-0.5, inverted=True), _committed(), OK)
+    assert r["epicardium_step"] == "COSTS" and not r["epicardium_task_valid"] and r["valid_libraries"] == ["1", "2"]
+    assert "a valid library: no" in rc.outcome_lines(r)[1]
+
+
+def test_a_task_without_an_epicardium_direction_is_named(rc):
+    loaded = _loaded(rc, 1.0, 0.0)
+    loaded["2"] = _task(rc, 0.0, lib=True, relabel=_relabel(rc, epicardium_directed=False))
+    r = rc.t62_reading(loaded, _committed(), OK)
+    assert r["epicardium_not_directed"] == ["2"]
+    assert "no recomputed direction on: 2" in rc.outcome_lines(r)[-1]
+
+
+@pytest.mark.parametrize("case", ["control_off", "missing_seed", "missing_arm", "missing_epi_arm", "missing_task",
+                                  "two_commits", "unclean", "stats", "yaml", "route", "authors", "checks", "source"])
 def test_every_guard_voids(rc, case):
     loaded, committed, checks, source = _loaded(rc), _committed(), OK, []
     if case == "control_off":
@@ -338,6 +566,8 @@ def test_every_guard_voids(rc, case):
         loaded["whole"] = _task(rc, 0.0, seeds=range(9))
     elif case == "missing_arm":
         del loaded["3"]["rows"][0]["arms"]["copy_last"]
+    elif case == "missing_epi_arm":
+        del loaded["chamber"]["rows"][7]["arms"]["m1rc_gmom_epi_held"]
     elif case == "missing_task":
         loaded["1"] = None
     elif case == "two_commits":
@@ -388,7 +618,7 @@ def test_the_read_prints_no_score(rc, tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(rc.gv, "tree_state", lambda: {"commit": "e" * 40, "clean": True})
     res = rc.read(out)
     printed = capsys.readouterr().out
-    assert res["reading"]["reading_S"] == "AHEAD" and res["tries"] == 5
+    assert res["reading"]["reading_S"] == "AHEAD" and res["tries"] == 10
     assert "1.23" not in printed and "51." not in printed and "Outcome" in printed
     text = (out / "t62.txt").read_text()
     assert "+1.23" in text and "J6 range" in text and "mean scores none_gmom" in text
