@@ -6935,3 +6935,32 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     how it was formed. The captain then gets one question on T1's last upload: the recomputed file, the ruled
     no-outside-data file, and whether the released-data bets are read on top before the file is fixed. Row N54's
     listing stays unopened until he has ruled.
+- 2026-11-19 (hh), the cold check of the pre-set advice on T1's last upload (state at 20:38 UTC). Written by the
+  AI assistant.
+  - **Verdict** (wf_4f2be352-3db; one challenger given the decision and the record, not how the advice was formed):
+    "advice stands with conditions"; its probability that advising the recomputed file over the no-outside-data
+    file is a mistake: 0.35.
+  - **What the advice rule left out, which the AI assistant accepts.** Row T62's rule decides on practice gain
+    alone. It gives no weight to the chance that the organisers treat a second outside-data file as non-compliant.
+    Entry (g) had parked the same file for that reason. Under the reading that only a compliant upload counts (the
+    team's odds about 0.6), a rejected last file would leave T1 with no counted upload; the no-outside-data file
+    cannot be rejected on that ground. By rule 9's J6 the one-day practice gain counts zero at the centre for the
+    two-day test, so the edge is 0 to about +2. The AI assistant's arithmetic on those figures, its own and after
+    the result: with an edge of 1 to 2 points and a loss of 50 to 70 if rejected, the two files break even at a
+    rejection chance of about 1.5 to 4 percent; nobody can estimate that chance so finely.
+  - **Its compliance reading.** What enters the recomputed file: the atlas's permitted cells as raw counts with
+    stage, zone and strain; marker gene sets (the four direction groups' from the released E9.5 label means, the
+    competing classes' from the eight adult-mouse papers of X010); no clustering, embedding or classifier; the
+    authors' labels are not read. On the face of the organisers' words it complies. What an organiser could still
+    object to: the authors' quality filter, made on all stages pooled, decided which permitted cells exist (X002
+    says it cannot be undone); the zone comes from the authors' demultiplexing; the atlas, the bracket and R2's
+    held genes were chosen by readouts that read the authors' groups.
+  - **Its other points.** The test's 2/5 step was never read on the recomputed groups (row T50 read double steps
+    on the authors' groups only), and the epicardium direction, formed on 11 early cells, is applied without
+    shrinkage and doubles at the test: a counted read at fraction 0.4 with a placebo and the epicardium-held arm is
+    the check it names. The first score, 70.9, cannot favour either file: no file without the atlas step has a
+    test score. Of try T61's arms it prefers none over the two files: the momentum at damping 1 reverses R1, is a
+    depth-linked size and has no builder; the advance draw fails its own library check.
+  - **What goes to the captain:** one question with the pre-set advice first and this caveat beside it, the
+    no-outside-data file, and the released momentum as a third candidate that only his own named exceptions can
+    choose (it is not a pre-set rule's output, and the AI assistant states no lean on it).
