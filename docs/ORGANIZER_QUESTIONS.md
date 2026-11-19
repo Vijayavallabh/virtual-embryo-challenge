@@ -80,7 +80,12 @@ messages only. Recorded by the AI assistant.
   that check did not open; its "no answer found" on how a floored severity scores was therefore wrong on the day it
   was written. A screened Slack check reads every thread with replies from now on.
 
-## Disclosure of the X002 labels (drafted 2026-11-19, rewritten the same day; not sent; not yet in the captain's drafts; the captain decides and sends)
+## Disclosure of the X002 labels (drafted 2026-11-19, rewritten the same day; in the captain's drafts since 2026-11-19; the captain sends)
+
+Put into the drafts of be23b041@smail.iitm.ac.in, to virtual.embryo.moonshot@gmail.com, on 2026-11-19 at 11:24 UTC
+(the draft's own time stamp), at the captain's word of that day ("Yes, both into drafts (Recommended)", `docs/PLAN.md`
+decision log 2026-11-19 (f)), as the text below for the no-outside-data case, and read back from the drafts folder
+against it. Whether and when it was sent, and any edit before sending, are recorded here when the captain says.
 
 First drafted and reviewed in wf_63571f3d-9a2 (the text stood here until the rewrite; it promised recomputed groups
 and left a bracket on the 60% share). Rewritten in wf_038f7126-b04 for the case the AI assistant now advises, a
@@ -797,7 +802,24 @@ labels; a separate note sent with this one is about them."; (7) the sentence on 
 hearts.", without "the share in our second Task 1 upload lies within that range"; (8) "What comes next" begins
 "Before each of our second uploads we will send its board, file hash and sources in a short note." Left for the
 captain: the validation paragraph still says "before our heart and Task 3 second uploads"; the last T1 file also
-uses the released E10.5 file, so he may widen it to "before our second uploads". Text as drafted on 18 November:
+uses the released E10.5 file, so he may widen it to "before our second uploads".
+
+**Three more changes, and the amended note put into the captain's drafts (2026-11-19, 11:25 UTC by the draft's own
+time stamp; at his word of that day, decision log 2026-11-19 (f)).** Before replacing the draft the AI assistant
+found one sentence the eight changes had left false: "no measured data from the held-out stages or genotypes is
+used in any upload by any route" cannot stand beside the labels email. A further agent reviewed the proposed edits
+in three passes (accuracy, strategy, tone) and reworded the first: (9) that sentence now reads "Apart from the
+official validation files above, used under Rules s.10 as our email of 28 October described, and apart from the
+[X002] authors' cell-type labels and processing that our separate note describes, no measured data from the
+held-out stages or genotypes is used in any upload by any route, and no gene-level knockout finding from outside
+the released data."; (10) the validation paragraph ends "please tell us before our second uploads.", since every
+board's second upload uses an official validation file; (11) the register sentence begins "Our Task 1 upload above
+uses X001, X002, ...", since the remaining T1 upload uses no external dataset. The reviewer asked whether the X006
+sentence "That figure no longer supports any choice" still holds: it does (the atlas share that supported keeping
+E10.5's own mix was X002's CD1 share, audit item 7, not X006's figure). The draft in his folder now holds the text
+below with changes (1) to (11), read back against it; the earlier copy that named `T1_s2.h5ad` is gone. One thing
+for him to glance at before sending: how the veckit address in the X001 line is shown (the mail tool's read-back
+wraps it in a redirect link). Text as drafted on 18 November:
 
 Subject: Human Team (Mithril): sources and file hashes for our official uploads of 18 November and two second
 uploads
