@@ -6046,3 +6046,56 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     reference hashes; the no-direction file twice at 55eaee547ff1, the hash of all earlier builds, so the mask change
     of entry (f) moved no byte). Being finished: the T1 ruling commit and the embryo's ruling texts, both written for
     "the last upload", which is what the Rules page says they are.
+- 2026-11-19 (h), the amendment of the frozen second-upload rules for T1's last upload; row R8. Written by the AI
+  assistant.
+  - **Its letter.** Entry (g) of this day, on the captain's two instructions and the submission count, was written on
+    main after this branch was cut from 4748dd9. This entry follows it as (h); the amendment, row R8 and the method
+    report cite (h).
+  - **The amendment.** `docs/S2_RULES.md` gains its last section, "Amendment of 2026-11-19: T1's last upload has no
+    outside data (the captain's own say-so)". Its sha256 is now
+    2895bc0f6f83110be0024739154308273b9e2ef552ffcd31448ef0ac7128ddaa (it was 8907bba8...), written to
+    `docs/S2_RULES.sha256` in the same commit. What it changes: T1's last upload is
+    `build_test.py t1 --g-mom --base lib3 --feng-groups none` (`runs/builds/T1_s2none.h5ad`), the first upload's
+    command with Feng's direction taken out and nothing put in its place; the built second file `T1_s2.h5ad` (mid
+    base, cardiomyocytes 0.60) is not uploaded, and no later T1 upload carries the 0.60. The first upload, the
+    heart, the embryo and T3 are unchanged by it. The draft of branch `campaign/t1-none-docs-fix` (1921e9f) never
+    entered main as a draft: its files came in rewritten with the captain's words, in this commit.
+  - **The captain's words:** the question, its two options and his answer, "whatever it takes to win this
+    challenge", verbatim in entry (f) and quoted in the amendment. The AI assistant's reading of that answer (the
+    recommendation named in the question and nothing beyond it, by the precedent of entry 2026-11-18 (k)) is labelled
+    as its reading there; he can correct it before any upload, and every upload is his own act.
+  - **The reason:** the organiser's condition of 2026-11-16 on annotations learned using protected cells, read on
+    2026-11-19 (entry (a)), and the Methods read that found the Feng authors' labels made with every stage pooled
+    (entry (b)). No test score set anything; the first upload's 70.9 is not an input.
+  - **Brought up to date in the amendment** (it was drafted before the captain answered): the option builds one file
+    only; under the option g_mom's mask does not read the list fixed in N12 by counting atlas cells and holds back the
+    same single label, Early VIC; the check builds, six by now, with one hash, 55eaee547ff1; the stricter file without g_mom,
+    priced in entry (f) and not chosen; and the correction of entry (e): the file's data are free of the authors'
+    labels, its adoption evidence is not, and traces remain in the evidence behind g_mom, the library-3 base and
+    E10.5's own mix (the labels email counts these as two kept parts: g_mom, and the draw of E10.5 cells). Lines 3 and 128 of `docs/S2_RULES.md`, which point at an older "last section", were already
+    stale and are frozen text above the new section; they are left as they were.
+  - **Merged:** `campaign/t1-none-fix2` (a04b3b2, which contains ea95c02, 157161b and 555daf4) by its own merge
+    commit, 9fe0760: the builder option `--feng-groups none`, off by default, and `tests/test_t1_feng_groups_none.py`.
+    The build set, the amendment and its hash, and the rules tests come from `campaign/t1-none-docs-fix` (1921e9f) as
+    rewritten with the captain's words on `campaign/t1-ruling-fix` (caff7c0: a writer, a reviewer with two blockers,
+    a fixer; wf_e7336078-e77), taken into this commit file by file and brought up to date by the AI assistant;
+    neither branch's own commits enter main. Reviews of the option: ea95c02 ready; 157161b ready; 555daf4 one blocker,
+    the build record's wording under the option, fixed at 75f65ef and a04b3b2 with the lesser points on terms (text
+    of the record and of comments only). The complete local test run at 555daf4: 2931 passed, 1 skipped; at a04b3b2
+    the option's tests, the builder's, g_mom's and the golden table's pass (171).
+  - **The new build set:** `bash experiments/builds/build_all.sh t1none` checks the rules' hash, builds
+    `T1_s2none.h5ad` by the one command and runs the local format check for `T1:test`. It keeps the draft's guard,
+    which refuses if the heading "DRAFT, not in force" were ever back; the heading is gone. The sets s1, s2, heart2
+    and t3alt are unchanged.
+  - **Row R8** of `experiments/harness/TRIES.md` enters in this commit, before any build meant for upload. A ruling
+    row, not a try: T1's count of tries is unchanged. The register rows X002 and X003, `METHOD_SUMMARY.md`,
+    `docs/DATA_POLICY.md` (change note 2026-11-19 (b)) and `docs/P3_RUNBOOK.md` (the captain's checklist) are amended
+    in the same commit.
+  - **Next:** the set built twice, one after the other, at 16 threads on a DGX campaign checkout at this commit (never
+    the reference checkout), and the two hashes compared with each other and with 55eaee547ff1 (at 555daf4, by entry (g): exit 0, both
+    option-off files at the reference hashes, the no-direction file twice at 55eaee547ff1, stamps 555daf4 and clean;
+    the two builds at this commit are recorded when made); the reference record `experiments/builds/results/t1none_<commit>.txt` and `.SHA256SUMS`; the
+    file copied to the local machine and checked by `sha256sum` and `vec check`; the captain sends the labels email
+    and then the amended sources note, both in his drafts since 2026-11-19, 11:24 and 11:25 UTC
+    (`docs/ORGANIZER_QUESTIONS.md`) (the time he sends them is recorded when he says); the short note that precedes the upload.
+    The upload is the captain's.

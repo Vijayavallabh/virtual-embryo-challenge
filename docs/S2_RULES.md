@@ -529,3 +529,174 @@ one marked. The screened check of 2026-11-18 found no ruling.
 run, and `results/manual_uploads.csv` is their record. "By the end of 30 Nov IST" is replaced by the organisers'
 deadline, 2026-11-26 11:59 UTC, for uploads and nominations alike. The screened check before an upload ran on
 2026-11-18. The rule for final marks is unchanged.
+
+## Amendment of 2026-11-19: T1's last upload has no outside data (the captain's own say-so)
+
+Written by the AI assistant. The quoted words are the captain's, as `docs/PLAN.md` decision log 2026-11-19 (f)
+records them; nothing else here is his. The record is decision log 2026-11-19 (a) to (h). The row is R8 of
+`experiments/harness/TRIES.md`. Times are UTC. Like the amendment of 2026-11-18, this section was written with the
+first test scores known; no test score sets anything in it (below).
+
+**The question and the captain's answer** (decision log 2026-11-19 (f), verbatim; the answers were read at 11:12 UTC).
+- The question, as it was put: "Task 1's last upload. The outside heart atlas's cell-type labels were made with
+  in-window stages pooled in, which the organisers ask teams to exclude; our first upload (70.9) used them. Which file
+  should be our last Task 1 upload?"
+- The two options: "No outside data (Recommended)" (the first file's design with the atlas step taken out; if the
+  organisers discount the first upload, about 0 to 3.5 points below 70.9 on in-sample practice figures; if it stands,
+  nothing changes) and "Atlas kept, labels recomputed" (no score figure on record; the tool's final review not ready;
+  about a day more work and his sign-offs).
+- The captain's answer, typed in his own words: "whatever it takes to win this challenge".
+
+**How the AI assistant reads that answer** (its reading, not his words). He did not pick an option; he left the choice
+to the AI assistant with one criterion. By the precedent of decision log 2026-11-18 (k), a general answer to a priced
+question is read as the recommendation named in that question and as nothing beyond it. So T1's last upload is the
+no-outside-data file below. The sentence lifts no rule: the organisers' data condition, the data rules, the
+post-exposure block and the list of material never opened all stand. The captain can correct this reading before any
+upload, and every upload is his own act.
+
+**What the organiser wrote, and when the team read it.** On 2026-11-16 an organiser answered another participant, in
+a thread of the public Slack channel, on external datasets that span a protected window. Such data are allowed
+"provided all cells within the protected windows are removed before training, and the retained data do not carry
+information derived from the excluded cells. Using raw expression counts and stage labels from the permitted cells is
+acceptable. Please exclude annotations, clusters, embeddings, or fitted transformations learned using protected
+cells, and recompute any such processing on permitted data only." The reply also asks teams to describe the filtering
+in the method report and to list sources in the submission page's method-report fields. The team read it through a
+screen on 2026-11-19 (`docs/ORGANIZER_QUESTIONS.md`, "Screened reads of 2026-11-19"; `docs/DATA_POLICY.md`, change
+note 2026-11-19 (a)). The check of 2026-11-18 had read no Slack thread, so the team did not know it before then.
+
+**What the Methods read found.** T1's one external model input is Feng et al. 2022 (register row X002). Its in-window
+cells (E10.5 to E13.5) were removed at ingest, on the per-cell stage column. But the cell groups of the permitted
+cells are the authors' own labels. A screened read of the paper's Methods, on annotation only (decision log
+2026-11-19 (b)), found that the authors merged every sample of every stage into one object, then batch-corrected,
+clustered and annotated it. No per-stage labelling is described. So the labels were learned using protected cells,
+in the organiser's words. They enter both built T1 files through the four groups of Feng's direction (CM,
+Endocardium, Endothelium, Epicardium): T1 cells of a group are moved two fifths of the way along that group's E9.5 to
+E14.5 log ratio. The audit of decision log 2026-11-19 (c) lists every other decision that rests on them.
+
+**T1's second file of the sections above is not uploaded.** That file is `runs/builds/T1_s2.h5ad`: the mid base with
+cardiomyocytes at 0.60 of heart cells (the amendment of 2026-11-13, later that day; row R7). It is not uploaded, for
+two reasons.
+- It carries the authors' groups through Feng's direction, as the first upload does.
+- Its 0.60 took its place from a grid partly bounded by a range of E14.5 cardiomyocyte shares read from the same
+  labels in the authors' two strains (register row X002). That range cannot be recomputed on permitted data: the
+  second strain's tables were deleted on 2026-10-19. The share cannot be re-chosen either: T1's composition is a
+  lever closed by the post-exposure block (`docs/DATA_POLICY.md`, 2026-11-04, (b) to (d)). So no later T1 upload
+  carries the 0.60.
+
+The file stays on disk as the record of 2026-11-13. It is not deleted and not uploaded.
+
+**T1's last upload.** One command, as the build script gives it (set t1none):
+
+```bash
+uv run python experiments/builds/build_test.py t1 --g-mom --base lib3 --feng-groups none --out runs/builds/T1_s2none.h5ad
+```
+
+**What it is.** The first upload's design with one step taken out.
+- The same as the first upload: the base (library 3's cells at library 3's own chamber mix; row R6), the count rule,
+  the seed (1000001), and so the same drawn cells. g_mom's within-type factors are as built: fitted within each
+  chamber category on the released E9.5 and E10.5, applied to cardiomyocytes and endocardium only (row R3b).
+- Taken out: Feng's direction (M1's step). Nothing is put in its place. Every cell keeps its E10.5 expression before
+  g_mom's edit of cardiomyocytes and endocardium; R1 then holds every label.
+- No outside data enter it. No Feng file is read, and the build record names no external file and says that the step
+  was removed. R2 holds genes flat in Feng's direction only, so with no direction it is off: the check builds gave the
+  same sha256 with and without R2's held lists (register rows X007 and X009; below).
+- g_mom's mask under the option. In the first upload g_mom holds back, inside cardiomyocytes and endocardium, the
+  labels R1 holds, and R1's mask reads the list of groups with a Feng direction, fixed in N12 by counting atlas cells.
+  Under `--feng-groups none` the mask does not read that list. It holds back the labels that the label map itself
+  (the readout config's regexes) gives no group. On every label the committed map can place in cardiomyocytes or
+  endocardium that is the same single label as in the first upload, Early VIC, so g_mom edits the same cells. This
+  was checked from committed configs alone and is pinned by `tests/test_t1_feng_groups_none.py` (branch `campaign/t1-none-fix2`, a04b3b2).
+- The option builds one file only. The builder refuses `--feng-groups none` before reading anything unless the rest
+  of the command is the first upload's (`t1 --g-mom --base lib3`): it is refused without `--g-mom`, and with `--base
+  pooled` or `mid`, `--cm-share`, `--blood-share`, `--lib3-pair`, `--herd`, `--no-hold-unbracketed`,
+  `--feng-hygiene` or `--strong-null`. With the option not given, every T1 file and its build record are as before.
+- Its changes beyond the published baseline are the first upload's, less the step. Proportions: chamber categories
+  only, drawn from library 3's cells at library 3's own chamber mix (row R6). Expression: g_mom's within-type edit of
+  cardiomyocytes and endocardium. The step taken out was an expression step. The cells of the four groups outside
+  g_mom's edit now keep E10.5's expression, as the published baseline predicts them. States, shares, cell number,
+  size and scope are the first upload's.
+- What it gives up against the sections above: the second upload no longer hedges the base or the cardiomyocyte
+  share (rows R7 and T33). Both T1 uploads then draw the same cells. "As s1" holds: the first upload's command plus
+  one option.
+
+**What it is expected to do, priced both ways.** Every figure below is an in-sample labelled diagnostic on one
+truth (E10.5), with Feng's step at 1/5 of its bracket against 2/5 at the test. No practice run applies this file's
+path end to end, so the record holds no practice score for it.
+- For scale, not a price of the step: on the E9.5 to E10.5 chamber cut, ten seeds, the copy scores 48.06 and b0
+  49.68 (`experiments/harness/TRIES.md`, T1's headroom table). b0 is the chamber-only copy with damped momentum, M1
+  without Feng's direction.
+- The step it takes out, as the record prices it. Row T26 records b0 49.68, m1_feng 50.99, m1_r 50.83 and m1_r_gmom
+  52.06 (`experiments/t1_m1/results/t26_m1_gmom/t26.txt`; void by its own gate, its numbers on record): the step
+  over b0 is +1.31 alone and +1.15 with R1 and R2. The forecast credits the step with +1.29
+  (`experiments/gate/README.md`). Row T60 reads its arm entry_step at +3.46, +1.85 and +3.33 over the oracle mix on
+  its three library tasks, against +0.0 to +0.2 for the permuted control at the projection's size
+  (`experiments/t1_m1/results/t60_reach/`). That arm also carries R1, R2 and g_mom's factors (g_mom's own part in T26:
+  +1.23), and this file keeps g_mom. So T60's figures are an upper bound on the step alone, over an oracle base
+  (ledger rule 9, J3), not a centre. The step is worth about 1.2 practice points by T26 and the forecast, and at
+  most about 3.5 by T60.
+- Against the first upload's design: the file gives up that step. By ledger rule 9, J6, the step's practice gain
+  counts as zero at the centre of an estimate, with a range up to its practice value: the quantity that sets its size
+  is twice as large at the test as on any practice task. So the expected cost is zero at the centre and up to about
+  3.5 practice points if the step's practice gain carries over. No practice figure shows a gain from taking it out.
+- What it buys: a T1 file with no outside data in it for the organiser's condition to bear on. It reads no Feng
+  file, label, count or statistic. If the organisers discount the first upload, T1 rests on this file. If the first
+  upload stands, its 70.9 stands whatever goes second. Neither T1 file is expected to beat 70.9.
+- No counted backtest can price a file without the step: Feng's E9.5 lies inside every T1 window.
+
+**Traces of the labels remain.** The file's data are free of the authors' labels; its adoption evidence is not.
+Decision log 2026-11-19 (e) corrects entry (d), which had called both free. Traces remain in the evidence behind
+choices the file keeps (the audit, decision log 2026-11-19 (c)), and the method report names them:
+- g_mom: its factors are fitted on released stages, but the backtest that adopted it (T11) held back the labels
+  outside the four groups, its restriction to cardiomyocytes and endocardium cites a read made on top of Feng's
+  direction (T26), and the interaction check N22 was read the same way. In the first upload, which labels g_mom
+  edits was set by the four groups' names; under the option the mask no longer reads that list (above), and it
+  gives the same cells.
+- The library-3 base: one of row R6's four reasons for it was priced on scenarios that reuse the share grid's values.
+- E10.5's own mix: Feng's CD1 cardiomyocyte share, read on the authors' labels, was one supporting reason on
+  2026-11-01 for keeping E10.5's own chamber mix (decision log 2026-11-01 (g), (h)), which this file keeps as library
+  3's own.
+
+No number from any of them enters the file. The labels email counts them as two kept parts: g_mom, and the draw of
+E10.5 cells (the base and its mix).
+
+**A stricter file, priced and not chosen.** A side agent's note, forwarded by the captain, asked for the price of a
+file that also drops g_mom (decision log 2026-11-19 (f)). g_mom's factors are fitted on the released E9.5 and E10.5
+alone; on practice they add +1.23 and +1.14 board points on the two E10.5 cuts, ahead in 10 of 10 seeds (row T26's
+recorded numbers; they keep 0.96 to 0.99 of row T11's raw gains on b0). They are fitted on a one-day step and
+applied over the test's two-day gap, so by rule 9's J6 that gain counts as zero at the centre with a range up to its
+practice value. Dropping g_mom removes one trace; the choice of cell base cannot be removed without changing the
+design that scored 70.9. Under the captain's answer the AI assistant chose to keep g_mom, as in the first upload. The
+stricter file is built instead only if the captain says so; it would need its own amendment.
+
+**It rests on no test score.** The first upload's 70.9 (decision log 2026-11-18 (j)) is not an input. It sets no
+weight, prior, task, tolerance, constant or estimate here (ledger rule 9, J8). What moves this file is an organiser's
+condition, not a score.
+
+**"No score feedback", as it now stands.** The change comes after T1's first upload. "Each s2 was fixed before any
+test score existed" no longer holds for T1: its last file is chosen here with the first scores known, as the heart's
+was on 2026-11-18. The second bullet stands: a change after a first upload is the captain's, is logged with the
+scores public at the time (the team's T1 total, 70.9), and computes nothing from a test score.
+
+**The alternative, not taken.** The first upload's design with cell groups recomputed from the permitted cells' raw
+counts and stage labels alone (branch `campaign/feng-relabel-fix2`, f211416). Its final review says not ready, with
+three blockers; its marker sources need corrections; one of its tests fails on the build machine. It is parked:
+unmerged and unrun.
+
+**Marks and disclosure.** The rule for final marks is unchanged: of the entries every ruling received by then allows,
+the one with the higher published score. Before the upload the captain sends two emails from his drafts, where they
+have been since 2026-11-19 at his word ("Yes, both into drafts (Recommended)"): the disclosure of the X002 labels,
+worded for this file, and then the sources note of 2026-11-18 in its amended form (`docs/ORGANIZER_QUESTIONS.md`,
+"Disclosure of the X002 labels"). He sends them himself. Register row X002 and the method report say what this file
+reads.
+
+**Builds.** `bash experiments/builds/build_all.sh t1none` checks this file's hash, builds `runs/builds/T1_s2none.h5ad`
+and runs the local format check for `T1:test`. It is built twice, both at 16 BLAS threads (T1 files move with the
+thread count), and the two hashes are compared. The check builds so far (DGX campaign checkouts; never upload
+sources; read by exit code, sha256 and the stamps' commit and clean fields only): two at f211416, with and without
+R2's held lists, two at ea95c02 and two at 555daf4, all six with one sha256, 55eaee547ff1; with the option not given both T1 files
+kept the reference list's hashes; the local format check passed. The builds at the ruling commit are compared with
+55eaee547ff1, and any difference stops the hand-over until the captain has the explanation. The sets s1, s2, t3alt
+and heart2 are unchanged: the reference list of the third rehearsal still describes the files of s1, s2 and t3alt,
+and heart2's files keep their own list (`experiments/builds/results/heart2_307c9b2.SHA256SUMS`). This file is
+outside that list; its own list is committed under `experiments/builds/results/` before checklist line 1 of
+`docs/P3_RUNBOOK.md` can be ticked.

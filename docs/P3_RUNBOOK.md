@@ -403,13 +403,17 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
   (j)). Uploads go by the captain's hand through the site's form, so the client and its guards do not run: each guard
   is a line here. Lines 1 and 4 to 8 need nothing beyond `sha256sum` and `grep`; line 2 needs the repository's `vec
   check` (local, nothing sent); line 3 uses the submission client, format-only, and only where the captain asks for it. One board at a time; a line that cannot be ticked stops
-  that upload until the captain has the explanation. Deadline 2026-11-26 11:59 UTC, never in the last hours.
+  that upload until the captain has the explanation. Deadline 2026-11-26 11:59 UTC, never in the last hours. Lines 4a
+  and 4b are filled on the site's submission page itself.
   1. [ ] **The hash.** On the machine the file goes from: `sha256sum <file>`. All 64 characters equal the board's line
      in the reference list: `experiments/builds/results/builds_dc7b6ae.SHA256SUMS` (T1, the embryo, T3; the list
      `results/reference_list.json` points to), or for the heart's half
      `experiments/builds/results/heart2_307c9b2.SHA256SUMS` (`builds/T2heart_s2iso_half.h5ad`). That second list is
      outside the pointer and was built in a campaign checkout (decision log 2026-11-18 (n)): the heart's line is
      ticked only once the captain has accepted that provenance or a rebuild in the reference checkout has matched it.
+     For T1's last upload (row R8; `docs/S2_RULES.md`, the amendment of 2026-11-19):
+     `experiments/builds/results/t1none_<commit>.SHA256SUMS` (`builds/T1_s2none.h5ad`) [TO COMPLETE: the commit of the build record]. That list is outside the pointer and is built in a campaign checkout: its line is ticked only
+     once the captain has accepted that provenance or a rebuild in the reference checkout has matched it.
      A file in no committed list (a new embryo file, entry (s), item 1) needs its list committed, and the
      `docs/S2_RULES.md` amendment it requires, before this line can be ticked. By hand: `grep <the 64 characters>
      <list>` prints one line, under the name given above. A file whose 64 characters differ is not the listed
@@ -429,8 +433,47 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
   4. [ ] **The disclosure note went first.** The captain has sent the email or one line that names this board, this
      file's sha256 and its register ids (above), with the board's own note where one is drafted
      (`docs/ORGANIZER_QUESTIONS.md`: "Note before the heart's second upload", "Note before Task 3's second upload").
+  4a. [ ] **The method-report fields of the submission page.** Source: an organiser, 2026-11-16, read through the
+     screen on 2026-11-19 (`docs/ORGANIZER_QUESTIONS.md`, "Screened reads of 2026-11-19"). In their words: "On the
+     submission page, use the P3 method report → Data used field to list external datasets, links/accessions, stages
+     used, and filtering details. Disclose any pre-trained models or external code in their corresponding fields, and
+     attach the report to your P3 submission." For each upload, fill these before pressing it:
+     - **P3 method report → Data used:** every external dataset of `EXTERNAL_DATA.md` that this file reads or that
+       informed a choice it carries. Give each with its link or accession, the stages used and the filtering. Paste
+       the board's text from the block below.
+     - **Pre-trained models:** none on any board. No register row is a pretrained model.
+     - **External code:** X001 (veckit, https://github.com/aristoteleo/veckit @ cc3859a, local scoring only) and X005
+       (the open-source libraries pinned in `uv.lock`: POT 0.9.7, numpy, scipy, scikit-learn, pandas, anndata, scanpy,
+       h5py; rdata for the Feng reduction). On the T2 and T3 boards, also X004 (veckit 0.1.1 `_canonicalise`, local
+       scoring only).
+  4b. [ ] **The report is attached:** the current `METHOD_SUMMARY.md`, in the form the page accepts [TO CONFIRM: the format the page accepts], at the commit that holds this upload's section, with no competition data
+     in it.
+
+     **What to paste for T1's last upload with no outside data** (`T1_s2none.h5ad`; row R8), read from
+     `EXTERNAL_DATA.md`:
+     - Data used: "No external dataset is read by this file. It is built from the released Task 1 stages E9.5 and
+       E10.5 only. For completeness: our first Task 1 upload used Feng et al. 2022, Nat Commun 13:7960, GEO GSE193346
+       (wild-type CD1 hearts; stages E9.5 and E14.5 used; every E10.5 to E13.5 cell removed on the per-cell stage
+       column before any use). Its cell groups were the authors' labels, which were made with all stages pooled. This
+       file takes that dataset out entirely. Traces of those labels remain in the evidence behind choices this file
+       keeps; the attached report, section 'External data across a protected window', lists them and the rest of the
+       history. Earlier diagnostics or rationales only, none an input of this file: Qiu et al. 2024 (JAX atlas,
+       diagnostics); a label-only E14.5 figure from Feulner et al. 2026, used in an early rationale and withdrawn on
+       2026-11-05; and the gene lists of van den Brink et al. 2017, Bakken et al. 2018 and Young and Behjati 2020,
+       which act only in Feng's direction and are absent here."
+     - Rows that still apply by this runbook's rule ("disclosing a row that only informed a choice is safe, leaving
+       one out is not"): X002, because it informed choices this file still carries (g_mom's adoption evidence, the
+       scenarios behind library 3's base, and a supporting reason for E10.5's own mix); X001 and X005 (code). X003,
+       X006, X007, X008 and X009 enter nothing in this file; they are named above as earlier uses, so that the field
+       and the register agree, and the captain decides whether to keep them in the list. The disclosure-ids line of
+       section 5 (T1:test `X001,X002,X003,X005,X006,X007,X008,X009`) stays the full list for T1 unless the captain
+       narrows it.
+     - Pre-trained models: "None."
+     - External code: "veckit (github.com/aristoteleo/veckit @ cc3859a), local scoring only; open-source Python
+       libraries (POT 0.9.7, numpy, scipy, scikit-learn, pandas, anndata, scanpy, h5py, rdata), library calls only."
   5. [ ] **The screened check** of mail, Slack and the Rules page ran on the upload day, by a screening agent, audited,
-     with the switches fixed beforehand (`docs/ORGANIZER_QUESTIONS.md`; for T3 `docs/S2_RULES.md`, last section: the
+     with the switches fixed beforehand (`docs/ORGANIZER_QUESTIONS.md`; for T3 `docs/S2_RULES.md`, the amendment of
+     2026-11-18: the
      barred s1 if a ruling restricts the Gata4 files or bars the validation answers). Nothing it found switches this
      file. No organiser reply is pasted into the session.
   6. [ ] **The warnings register** for the file, in the decision-log entry that hands it over: every committed

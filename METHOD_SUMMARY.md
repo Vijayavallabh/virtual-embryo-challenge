@@ -279,6 +279,89 @@ Task 3's s2 is the wild type plus a five-state depletion, by design.
   prediction inputs drop them (`vec.prep.load_stage(drop_duplicates=True)`), the local scorer loads targets as released.
 - Every exposure to a held-out value during research is recorded, with what was done about it, in `docs/DATA_POLICY.md`.
 
+### External data across a protected window: Feng et al. 2022 and its cell-type labels (2026-11-19)
+(Written on 2026-11-19 by the AI assistant from the audit of `docs/PLAN.md` decision log 2026-11-19 (c), its
+correction in (e), the captain's answer in (f), the amendment in (h), and the record named in each sentence.)
+
+**What the organisers asked.** On 2026-11-16 an organiser wrote that external datasets spanning a protected window are
+allowed "provided all cells within the protected windows are removed before training, and the retained data do not
+carry information derived from the excluded cells. Using raw expression counts and stage labels from the permitted
+cells is acceptable. Please exclude annotations, clusters, embeddings, or fitted transformations learned using
+protected cells, and recompute any such processing on permitted data only. Describe the filtering in your method
+report." The team read this on 2026-11-19.
+
+**The filtering.** Our one external expression dataset is Feng W, Bais A, He H, et al., Nat Commun 13:7960 (2022),
+GEO GSE193346: wild-type CD1 mouse hearts (register row X002).
+- What was removed: every CD1 cell from E10.5 to E13.5. The filter is on the per-cell `stage` column of GEO's CD1
+  metadata table.
+- How: the clean reduction (committed code `experiments/external/feng2022_geo.py` at 6093147, run on 2026-11-01)
+  streamed the metadata table and wrote only the kept rows. It parsed the Seurat object in memory and took only the
+  kept cells' counts. Then it deleted the raw files.
+- An earlier reduction of 2026-10-19 applied the same rule in research code. That rule is re-applied as committed
+  code by `experiments/external/feng2022.py`.
+- The all-stage object and the full CD1 and C57BL/6 metadata tables were on our compute machine from 2026-10-18 and
+  were deleted on 2026-10-19. During that time, one exploratory print of in-window quality-control medians (library
+  size, mitochondrial fraction) was made. It set nothing.
+- What was kept: CD1 cells at E9.5 and from E14.5 to P9, 19,073 of 27,445 cells (E9.5 887, E14.5 2,363). Only E9.5
+  and E14.5 entered a T1 file, as per-group mean expression (CP10k) at each stage and their log ratio.
+- From the C57BL/6 strain, the research of 2026-10-19 took label-only metadata of E14.5 hearts, with in-window rows
+  dropped at read time. It used them to compute that strain's E14.5 cardiomyocyte share.
+
+**How the kept cells were grouped, and why that falls under the organisers' words.** The groups were the authors' own
+per-cell labels of the permitted cells. A screened read of the paper's Methods, on annotation only, found that the
+authors merged every sample of every stage into one object, batch-corrected and clustered it, and annotated it by
+marker genes, with the stages still pooled. So the labels of the permitted cells were learned using protected cells.
+They are annotations of the kind the organisers ask teams to exclude.
+
+**When we found out.** On 2026-11-19. By then both Task 1 files were built and the first was uploaded (2026-11-18).
+An earlier check of the challenge's Slack channel, on 2026-11-18, read its top-level messages but no thread, and
+missed the reply.
+
+**What the labels reached** (the audit's summary, corrected where the record says more):
+- They formed the four groups (cardiomyocytes, endocardium, endothelium, epicardium) whose E9.5 to E14.5 log ratio
+  moved Task 1 cells two fifths of the way along it, in both built Task 1 files.
+- They decided which groups had a direction, and so which cells were held at E10.5 expression (ruling R1).
+- They entered the readout that chose this dataset as the direction source, and its end-to-end diagnostic.
+- They entered the gate that adopted the gene-hygiene list (R2).
+- In the first file they set which labels the within-type factors (g_mom) edit. They also entered the held mask and
+  the interaction checks under which g_mom was adopted. The factors themselves are fitted on released stages only.
+- A range of E14.5 cardiomyocyte shares in the two strains, read from the same labels, was our stated reason for
+  hedging on the cardiomyocyte share. It bounded where the second file's 0.60 sits: the share grid's three upper
+  candidates lie about the range's ends and middle, and two of its five priors are bounded by it. Its other
+  candidates lie outside it. The record does not say whether the candidates were chosen with the range in view.
+- The scenarios that priced both files' cell bases reuse the grid's shares.
+- Our pre-upload score estimates carried the diagnostic and the grid. They set no file.
+- Our ledger lists every in-sample diagnostic and pruned line that used the authors' groups. Among them are the
+  late-proxy tries, which read the same analysis's E18 labels. None of these changed a file.
+- The authors' quality control decided which permitted cells exist. Their zone labels come from sample
+  demultiplexing. Both were also made on the full dataset and cannot be undone.
+- No in-window cell, count or expression value entered any model.
+- The first file's chamber mix comes from released data, with two qualifications. Feng's CD1 cardiomyocyte share,
+  read on the authors' labels, was one supporting reason for keeping E10.5's own mix (2026-11-01). And one of the
+  four reasons for its library-3 base was priced on the scenarios above. No number from either enters a file.
+- The within-type factors' values and every Task 2 and Task 3 file read nothing of this dataset.
+
+**What we did.**
+- The built second Task 1 file was held from upload on 2026-11-19 and will not be uploaded. Its 0.60 cannot be
+  recomputed on permitted data, because the second strain's tables are gone. It cannot be re-chosen either, because
+  composition is closed by our own block of 2026-11-04.
+- Our last Task 1 upload takes Feng's direction out and puts nothing in its place (the captain's answer of
+  2026-11-19, as the AI assistant reads it; `docs/S2_RULES.md`, the amendment of 2026-11-19; row R8). It reads no
+  external data, and its mask for the within-type factors no longer reads the list of groups fixed by counting Feng
+  cells (it edits the same cells). Beyond the baseline it keeps the first upload's proportions: chamber categories
+  only, drawn from library 3's cells at library 3's own chamber mix. Its one expression step is the within-type
+  factors, fitted on released stages.
+- Its data are free of the authors' labels. Its adoption evidence is not: traces remain in the evidence behind the
+  within-type factors (the held mask and interaction checks above), the library-3 base (the scenarios above) and
+  E10.5's own mix (Feng's CD1 share above). We said at first that the file could not be discounted for decisions that
+  used the labels; our reviewers found that overstated, and the record was corrected the same day.
+- A stricter file that also drops the within-type factors was priced (they add +1.23 and +1.14 practice points on
+  two cuts, counted as zero at the centre over the test's longer gap) and not chosen.
+- We considered recomputing the groups from the permitted cells' raw counts and stage labels. That tool was written
+  and reviewed but not finished, and it was not used.
+- We told the organisers on [TO COMPLETE: the date the captain sends the disclosure email] and asked whether our
+  first Task 1 upload stands as an eligible entry.
+
 ### Exposure of hidden-target metadata on 2026-11-04 and the precommitted procedure
 (Written on 2026-11-17 at the organisers' request, quoted below; drafted by the AI assistant and reviewed for accuracy,
 framing and tone by independent agents. Its last dated item was rewritten on 2026-11-18 and reviewed the same way,
@@ -720,17 +803,47 @@ output ((t)).
 **12. What stayed as precommitted.** The data rules: no measured data inside a held-out window by any route, the
 official validation files used only under Rules s.10 as "Data provenance and compliance" above describes
 ("Validation answers (since 2026-10-28)"), and no gene-level knockout finding from outside the released data (the
-organiser ruling of 2026-10-15, cited there). The external-data register (`EXTERNAL_DATA.md`), unchanged since
-2026-11-10. The stage and genotype windows (`docs/DATA_POLICY.md`). The list of material never opened. Every file's
+organiser ruling of 2026-10-15, cited there). The external-data register (`EXTERNAL_DATA.md`), unchanged from
+2026-11-10 until rows X002 and X003 were amended on 2026-11-19 to record the Feng authors' labels and what carried them
+(item 13). The stage and genotype windows (`docs/DATA_POLICY.md`). The list of material never opened. Every file's
 cell number follows the count rule fixed before 2026-11-04, and every Task 2 file's size follows the size procedure
 committed on 2026-10-18 (171695a). Two exceptions on the heart are described in items 4 and 6: both heart files keep a
 random half of the rows, and the second heart file takes the raw-mode size that the size file of 2026-10-28 logs, not
-the pre-registered mode. T1's two files and Task 3's files are as built on 2026-11-13 and match the reference list;
-the embryo's first file is as built that day, and its second waits for the captain (item 10). T1's depth and step,
-Task 3's composition and depth, the adoption rule, row before run and the count of tries are unchanged. Every upload
+the pre-registered mode. T1's two files, until item 13, and Task 3's files are as built on 2026-11-13 and match the
+reference list; the embryo's first file is as built that day, and its second waits for the captain (item 10). T1's
+depth, Task 3's composition and depth, the adoption rule, row before run and the count of tries are unchanged; T1's step is
+unchanged in the first file and taken out of the last (item 13). Every upload
 remains the captain's own act. One compute rule changed and no rule of the entry with it: on 2026-11-18 (17:17) the
 captain released the DGX's GPUs 2 to 7 to this work and lifted `docs/COMPUTE.md`'s "ask before writing more than
 50 GB" for it ((r)).
+
+**13. Task 1's last file: no outside data, after an organiser's condition on external annotations (2026-11-19).**
+- Procedure: T1's second upload is the mid base with cardiomyocytes at 0.60 (`docs/S2_RULES.md`, amendment of
+  2026-11-13, later that day; row R7). The amendment of 2026-11-18 left that file unchanged.
+- Done:
+  - The file was held from upload on 2026-11-19, when the team read an organiser's reply of 2026-11-16. The reply
+    asks teams to exclude annotations learned using protected cells.
+  - The Feng authors' cell-type labels, on which T1's direction rests, were found to be of that kind (subsection
+    "External data across a protected window" above).
+  - The second file's 0.60 also rests on a range read from those labels. It cannot be recomputed or re-chosen.
+  - The new last file is the first upload's command plus `--feng-groups none`. The direction is taken out, and no
+    external data are read.
+- By: the captain's answer to a priced question, in his own words "whatever it takes to win this challenge", on
+  2026-11-19 (decision log 2026-11-19 (f)). The AI assistant reads it, by the precedent of entry 2026-11-18 (k), as
+  the recommendation named in the question ("No outside data (Recommended)") and nothing beyond it; that is its
+  reading, which the captain can correct before any upload. The amendment's sha256 is
+  2895bc0f6f83110be0024739154308273b9e2ef552ffcd31448ef0ac7128ddaa (decision log 2026-11-19 (h)); row R8.
+- Changed: T1's last file and nothing else.
+  - The composition and base hedges are given up. Both T1 uploads draw the same cells.
+  - A new reference list covers this one file [TO COMPLETE: the build record's path and commit]. The reference list
+    of the third rehearsal still describes the other files.
+- Evidence: in-sample labelled diagnostics only.
+  - The step removed is worth about 1.2 practice points by T26 and the forecast, at most about 3.5 by T60. By ledger
+    rule 9, J6, that counts as zero at the centre.
+  - No test score set anything. The first upload's 70.9 is banked and is not an input.
+  - Traces of the labels remain in the evidence behind choices the file keeps (the subsection above).
+  - The alternative, groups recomputed from the permitted cells, was written and reviewed, found not ready, and not
+    used. A stricter file without the within-type factors was priced and not chosen.
 
 ## Shared machinery
 
@@ -860,6 +973,32 @@ captain released the DGX's GPUs 2 to 7 to this work and lifted `docs/COMPUTE.md`
   backtest's fit does; the per-gene sizes carry (Spearman 0.79 and 0.68) but the leading axis does not (absolute cosine
   0.20 and 0.29 against ceilings of 0.91 and 0.84; N21), and the one-day step is applied unscaled to the two-day
   horizon, which is untested.
+- **The last upload, with no outside data** (the captain's answer of 2026-11-19, as the AI assistant reads it; row
+  R8; `docs/S2_RULES.md`, the amendment of 2026-11-19). `build_test.py t1 --g-mom --base lib3 --feng-groups none`: the
+  first upload's design with Feng's direction taken out and nothing put in its place.
+  - What is unchanged: the same base, seed and drawn cells (library 3 at its own chamber mix).
+  - Its changes beyond the baseline:
+    - Proportions as in the first upload: chamber categories only, library 3's cells at library 3's own chamber mix
+      (row R6).
+    - Expression on cardiomyocytes and endocardium only, by g_mom's within-type factors, fitted within each chamber
+      category on the released E9.5 and E10.5. Under the option g_mom's mask holds back the labels the label map
+      gives no group (Early VIC on the committed map), not the list of groups fixed by counting Feng cells; it edits
+      the same cells as in the first upload.
+  - Facets left at the baseline:
+    - which states emerge (no births);
+    - the expression of every cell outside g_mom's edit, the other cells of the four groups included. These cells
+      keep E10.5's expression, as copy_last predicts it.
+  - The evidence: no practice run applies this path end to end (ledger rule 9, J1), so the file is unpriced on
+    practice. The evidence for its one expression step is R3b's, given above: T11 on B0's base and T26 on M1's base.
+    Its proportions rest on R6.
+  - The step it removes, by in-sample labelled diagnostics on one truth: about 1.2 practice points by T26 and the
+    forecast, and at most about 3.5 by T60, an upper bound over an oracle base (`docs/S2_RULES.md`, the amendment's
+    "priced both ways"). By rule 9, J6, that gain counts as zero at the centre, because the step's share of Feng's
+    bracket is twice as large at the test.
+  - It reads no external dataset. R2's held lists do not enter it: the file's bytes are the same with and without
+    them. It is not expected to beat the first upload's 70.9. It is the file whose data hold no annotation the
+    organisers' condition excludes; traces of the labels remain in how its parts were chosen, listed in "External
+    data across a protected window" above.
 - **What the T1 scorer rewards.** On the released E9.5 -> E10.5 transition the changed genes are mostly highly
   expressed genes going down, which de_score's expression-magnitude null names 39-41% of; a copy names 11%
   (`experiments/harness/results/t1_de_v1/`). Better direction raises de_score but has not cleared its floor on this transition: in the labelled diagnostic (B0 with Feng's direction at 1/5) de_score skill is 0.480 against B0's 0.450, with raw overlap 0.347 against the null's 0.388 (`experiments/t1_m1/results/diag_v1/`).
@@ -878,7 +1017,7 @@ captain released the DGX's GPUs 2 to 7 to this work and lifted `docs/COMPUTE.md`
   share from a sample coded Theiler stage 22 (X006) informed the s2's rationale in October and was withdrawn on
   2026-11-05 under our staging rule; no rule changed, and no cell, count or expression from it enters any model
   (`docs/DATA_POLICY.md` 2026-11-05 (c), (e)). The open-source libraries the method runs on are listed in X005 (POT also
-  runs R3b's within-category transport).
+  runs R3b's within-category transport). T1's last upload (row R8) reads released T1 E9.5 and E10.5 only.
 
 ## Task 2: spatial-temporal (heart E12.5, embryo E7.75)
 

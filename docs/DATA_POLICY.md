@@ -1386,3 +1386,25 @@ Tracked in `docs/ORGANIZER_QUESTIONS.md` until answered; record answers here wit
     kind has not been checked against the paper's methods by the AI assistant; it treats them as such until shown
     otherwise. No file changes on the AI assistant's reading: the question, with its options, is put to the captain.
     The second T1 file is not uploaded as built until he has ruled.
+- 2026-11-19 (b), T1's last upload reads no external data; written by the AI assistant.
+  - The reason: the organisers' condition of 2026-11-16 (the ruling quoted above) asks teams to exclude annotations
+    learned using protected cells. A screened read of the Feng paper's Methods found that its authors' cell-type
+    labels were made on one object holding every stage (`docs/PLAN.md` decision log 2026-11-19 (b)). Register row
+    X002's four direction groups are those labels, so both built T1 files carry them. Change note (a)'s "has not been
+    checked against the paper's methods" is answered by that read.
+  - What changes: by the captain's answer of 2026-11-19, as the AI assistant reads it (decision log 2026-11-19 (f) and
+    (h); row R8; `docs/S2_RULES.md`, the amendment of 2026-11-19), T1's last upload is
+    `build_test.py t1 --g-mom --base lib3 --feng-groups none`. It reads no Feng file and no label, count or statistic
+    of X002. Its g_mom mask does not read the list of groups fixed in N12 by counting Feng cells. It reads no R2 gene
+    list either (X007, X009): its bytes are the same with and without them.
+  - Traces remain: the file's data are free of the authors' labels, but the evidence behind three choices it keeps is
+    not (g_mom's adoption, the library-3 base, E10.5's own mix; decision log 2026-11-19 (c) and its correction in
+    (e)). Register row X002 and the method report name them.
+  - The built second file (`T1_s2.h5ad`, cardiomyocytes 0.60) is not uploaded. Its range cannot be recomputed on
+    permitted data, and composition stays closed (2026-11-04 (b) to (d)).
+  - Register rows X002 and X003 record the labels and what carried them. That includes a use of Feng's CD1
+    cardiomyocyte share on 2026-11-01 that X002 had not named.
+  - The first upload, made on 2026-11-18 with the labels in it, is disclosed to the organisers with the question
+    whether it stands. [TO COMPLETE: the date the captain sends the disclosure email]
+  - Still true: no in-window cell, count or expression value entered any model; the post-exposure block is unchanged;
+    nothing was set from a test score.
