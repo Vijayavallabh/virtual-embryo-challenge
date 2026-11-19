@@ -2,7 +2,7 @@
 
 ## Current Objective
 
-- **State at 2026-11-19, 13:33 UTC (newest).** Decision log 2026-11-19 (n). The heart upload stays held. The price
+- **State at 2026-11-19, 13:31 UTC (newest).** Decision log 2026-11-19 (n). The heart upload stays held. The price
   table of entry (m) was recomputed independently and stands; a cold challenge rejected the advice (the half trim in
   today's form is a mix no rule returned): **the lean on the half trim is withdrawn**; A (the ruled full-scope file)
   is the file in force and the default; B and C go to the captain side by side with no lean. Owed first: a practice

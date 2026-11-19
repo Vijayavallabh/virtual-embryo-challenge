@@ -6292,7 +6292,7 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     its return a review, an independent recomputation of the table above, check builds, and the question to the
     captain with the amendment drafted.
 - 2026-11-19 (n), the two checks of entry (m): the table stands, the advice does not; the lean on the half trim is
-  withdrawn (state at 13:33 UTC). Written by the AI assistant.
+  withdrawn (state at 13:31 UTC). Written by the AI assistant.
   - **The recomputation** (wf_e5a70ad9-350, an agent that computed its own table from the fifteen committed per-seed
     files before opening entry (m)): no figure of entry (m) differs by more than 0.05. Its notes: the "85% core"
     truth is 83.8% core on E8.25_late to E8.5; B on E9.5 to E10.5 with the truth as released is 0.016, not exactly
@@ -6321,7 +6321,8 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     (4) The unit uses the first heart score as the level a second file must beat (a score choosing, which rule 9's J8
     allows); entry (m)'s sentence that the first scores are not to enter the ruling is wrong as worded and is
     replaced by: the first score enters only as that level.
-  - **What changes.** The lean on B, given to the captain at 13:26 UTC ("My advice will be the half trim"), is
+  - **What changes.** The lean on B, given to the captain in the message that followed entry (m) ("My advice will be the half
+    trim"), is
     withdrawn and he is told so. A is the file in force and the default if he declines. B and C go to him side by
     side with no lean, with the table per transition and per family, at three levels of A, and with what each
     reopens (scope and the cell number; for C a size no rule fixed). In entry (m), "keeps the two steps the captain
