@@ -3,6 +3,19 @@
 ## Current State
 
 **Last Updated:** 2026-11-19
+**2026-11-19, 13:09 UTC: the captain ruled T1's and the embryo's last files and both are built; he approved the outside
+atlases as T1 inputs; a wave of upside candidates is in preparation** (`docs/PLAN.md` decision log 2026-11-19 (f) to
+(l)). T1's last upload is the first file's design with the atlas step taken out (no outside data; 55eaee547ff1,
+built eight times to the same bytes across four commits; row R8). The embryo's last upload is the first file on
+E7.5's exact positions at the same pre-registered size (a03611a343fa, the check build's hash; row R9). Both organiser
+emails (the X002 labels; the amended sources note) are in his drafts. He asked for drastic gains and said
+submissions were unlimited: the Rules page, the organisers' messages of 17 November and the server's quota all say
+two per board, and the AI assistant told him so. The team key lists no upload and the overall board has no row under
+the team's name; he said the row "Star" is not his and stopped the search for now. His standing instruction: assume
+the organisers' rational reply (odds, loss if wrong, no file change). He approved the atlases as T1 model inputs on
+stated terms (register rows X002, X003). In preparation, nothing run on data: T3 variants, T1 released-data bets,
+the heart's scope hypothesis, a T1 late bracket, a pricing table, and the labeller ported onto main. The complete
+suite at 385ff58: 2934 passed, 1 skipped; at 2dccfee it is running.
 **2026-11-19, 09:15 UTC: the atlas authors' labels were made with in-window cells; T1's hedge is out; a T1 file with
 no outside data is ready for the captain's ruling** (`docs/PLAN.md` decision log 2026-11-19 (b) to (e)). The paper's
 Methods (a screened read) say every stage was merged before clustering, so the labels behind the four groups of T1's

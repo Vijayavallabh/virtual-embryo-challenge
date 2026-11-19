@@ -2,6 +2,33 @@
 
 ## Current Objective
 
+- **State at 2026-11-19, 13:09 UTC (newest).** Decision log 2026-11-19 (f) to (l). **Ruled today by the captain and
+  built:** T1's last upload is the first file's design with no outside data (`runs/manual_upload/T1_s2none.h5ad`,
+  55eaee547ff1; row R8; `experiments/builds/results/t1none_385ff58.txt`); the embryo's last upload is the first file
+  on E7.5's exact positions (`runs/manual_upload/T2embryo_s2x.h5ad`, a03611a343fa; row R9;
+  `experiments/builds/results/embryo2_2dccfee.txt`). Both pass the local format check; `docs/S2_RULES.md` carries
+  both amendments (sha256 ce5a4584c9b2). The heart's and T3's last files are as built on 18 November. **In his
+  Gmail drafts, not known sent:** the disclosure of the X002 labels and the amended sources note; the two short
+  notes that precede T1's and the embryo's second uploads are drafted in `docs/ORGANIZER_QUESTIONS.md` and go into
+  drafts at his word. **His standing instruction (19 November):** organisers are not expected to answer; assume the
+  rational reply, as odds with the loss if wrong, and change no file on an assumed reply. **Uploads:** the Rules page
+  and the server say two official uploads per board (not unlimited); the team key shows none used and lists no
+  upload, and the overall board has no row under the team's name; the row "Star" is not his; he said not to search
+  for the score now (entry (l)), so no screened read for it runs. The AI assistant's advice stands: no upload from
+  any login until it is known which account made the uploads of 18 November; raise it when an upload is next
+  discussed. **He approved the two outside atlases as T1 model inputs** ("utilize the atlases": permitted stages,
+  raw counts and stage labels, groups recomputed; register rows X002, X003). **Running:** wf_cd5ffbb3-985 (the
+  upside wave: T3 variants on `campaign/t3-variants`, T1 released-data bets on `campaign/t1-released-bets`, the
+  heart's scope hypothesis on `campaign/heart-iso-trim`, a T1 late-bracket design with a red team, a pricing table
+  of each board's last file by the expected better of two, reviewers); wf_5a6524a5-2ff (the labeller ported onto
+  main, `campaign/feng-relabel-main`, with a review); wf_31229ec2-5eb (inventory of the atlases on the DGX,
+  outputs under `~/v/scratch/atlas_inventory/`); the complete test run at 2dccfee in the worktree
+  `.claude/worktrees/t1-none` (log `t1none/full4.log` in the session's scratch folder). **On each return:** read the
+  hand-back (never a transcript); a fix round where a review says not ready; ledger rows on main BEFORE any run or
+  reading; practice reads on an idle DGX campaign checkout (`~/v/vec-campaign` is at 2dccfee, clean, idle; rsync,
+  then checkout); apply each row's pre-set statement; bring each candidate to the captain as a question priced both
+  ways. Every change of an upload is his ruling with an `S2_RULES` amendment first. The reference checkout is
+  untouched at dc7b6ae. Screened read approved for 23 November (every thread).
 - **State at 2026-11-19, 09:15 UTC (newest).** Decision log 2026-11-19 (b) to (e). The Feng authors' labels were made
   with every stage pooled, so both T1 files rest on labels the organisers ask teams to leave out. `builds/T1_s2.h5ad`
   is never uploaded, and no later T1 upload carries its 0.60 (it cannot be recomputed on permitted data). **Waiting

@@ -6210,3 +6210,29 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     captain: its rough range if the bets land is about 190 to 200, to be replaced by the analyst's table, and the
     leaders' 221 to 226 would need the bracket to work very well and Task 3 to jump as well, which it puts at a few
     per cent. Every change of an upload stays his ruling on a priced question.
+- 2026-11-19 (l), the captain stops the search for the score's row; what the approval of the atlases started (state at
+  13:09 UTC). Written by the AI assistant.
+  - **The captain, verbatim:** "don't search for the score right now. prune those agents". The screened read that
+    entry (k) announced (wf_4eb7f98c-f84) was stopped at 13:02 UTC before it handed anything back. The main session
+    read nothing of it and does not open its transcript. Where the uploads of 18 November are listed stays open and
+    is not pursued now, at his word. The AI assistant's advice on it (entry (g)) is unchanged and is raised again
+    only when an upload is next discussed.
+  - **The inventory.** The stopped workflow's second agent was not a score search: a target-free inventory of the two
+    outside atlases and the three released Task 1 stages on the DGX (counts, depths, gene overlap, a crude marker
+    gate for sizing; no author annotation value, no comparison with any target, nothing fitted). It was stopped with
+    the read and restarted alone (wf_31229ec2-5eb), reusing its partial outputs under `~/v/scratch/atlas_inventory/`.
+  - **The labeller, wanted again.** With the atlases approved as Task 1 inputs on the terms of entry (k), a file of
+    the first upload's design with X002's groups recomputed from permitted cells is a candidate for T1's last upload
+    again, by the captain's later ruling on a priced question. The parked labeller (entry (d)) is being ported onto
+    main and finished, with a review (wf_5a6524a5-2ff; branch `campaign/feng-relabel-main`; nothing is run on data).
+    Fixed for it now by the AI assistant under its delegation, each to stand in the yaml and in row N54 before any
+    run: (1) the terminal base is lib3, the first upload's design; the mid base and the 0.60 are in no later file;
+    (2) if the labeller's guards send the file to no direction, the file is main's built no-outside-data file;
+    (3) a run that stops after the first Feng file is opened takes that route too, recorded, with no rerun under the
+    same row; (4) the dry run on the released E9.5 (row N55) comes before the freeze, with its pre-stated rule for
+    which result changes which threshold; (5) the output goes to `data/derived/feng_relabel_c/`, a real folder in
+    every checkout, and the gate refuses a folder that resolves outside the checkout's own data directory (on the DGX
+    a campaign checkout's `data/external` is a link into the reference checkout, which stays untouched).
+  - **Checked, no change:** the embryo's last file keeps the first upload's size. `vec.t2_build.interpolate_clouds`
+    scales the cloud of exact E7.5 positions to the same pre-registered `target_rms` (`size_embryo_E7.75.json`) as
+    the first upload's, so the two files differ in the cloud's shape and in which cell sits where, not in its size.
