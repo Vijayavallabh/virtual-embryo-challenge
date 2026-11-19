@@ -6120,3 +6120,66 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **Not uploaded, and why.** The captain has not yet said which login made the uploads of 18 November (entry (g)):
     the server shows none of them for the team's key. Until that is clear the AI assistant advises no upload from any
     login. Next: the embryo's amendment and build (the captain's answer of entry (f)).
+- 2026-11-19 (j), the amendment of the frozen second-upload rules for the embryo's last upload; row R9. Written by the
+  AI assistant.
+  - **Its letter.** Its texts were drafted when T1's ruling was to be (g) and this entry (h). Entries (g), (h) and (i)
+    were written on main first, so this entry is (j). The amendment, row R9 and the method report cite (j); T1's
+    ruling is entry (h).
+  - **The amendment.** `docs/S2_RULES.md` gains its last section, "Amendment of 2026-11-19: the embryo's last upload
+    is the first upload on E7.5's exact positions (the captain's own say-so)", after the section of entry (h). Its
+    sha256 is now ce5a4584c9b20fb51e16443f40f9a69056f299d3892665daf2747b8a1917432f (it was
+    2895bc0f6f83110be0024739154308273b9e2ef552ffcd31448ef0ac7128ddaa, written by entry (h)'s commit, 385ff58),
+    written to `docs/S2_RULES.sha256` in the same commit. The captain's words are his answer of entry (f) to its
+    third question, quoted there and in the amendment with the question: "Exact E7.5 positions (Recommended)". The
+    reason: the first upload's two shape scores (30.9 and 2.5, entry 2026-11-18 (j)); the geometry that rows E11 and
+    N51 had flagged at the test pair; reading N53, which finds this geometry (shared by the series option) in E7.5's
+    form there and the geometries of the other two options outside it; and the question of entry 2026-11-18 (v). The
+    first scores chose among four files built from released data. No figure was computed from them. What it changes:
+    the embryo's last upload (below). Ruling R4's file (`T2embryo_s2.h5ad`, 41982d8afd78) is not uploaded. Row E47's
+    rule (ii), which the AI assistant had fixed, is overridden by the captain's answer. "No score feedback": its first
+    bullet no longer holds for the embryo, and its second is met. Unchanged: the first upload, the count rule, the
+    pre-registered size, every lever of the post-exposure block, the sections on T1, the heart and T3, and the rule
+    for final marks.
+  - **The embryo's last file:** `build_test.py embryo --method fgw_shape0 --positions floor_exact --expression
+    mixture`, `runs/builds/T2embryo_s2x.h5ad`. It holds the first upload's rows, order and expression. Every E7.5 row
+    stays at its own position. Every E8.0 row goes to an unused E7.5 position matched by expression. The cloud is
+    centred and scaled to the pre-registered size. On practice it ranks last of the four options: against the uploaded
+    form, merged mean -1.43 and better of two +0.46 (row E47, labelled diagnostics). The amendment and row R9 give the
+    figures both ways, with their limits, and the AI assistant's reading of why the choice stands.
+  - **Row R9** of `experiments/harness/TRIES.md`: a ruling with no run, committed here before any build meant for
+    upload. It is not a try, and the embryo's count of tries is unchanged.
+  - **The build script** has a new set, `bash experiments/builds/build_all.sh embryo2`. It checks the rules' hash,
+    runs the command above and checks the file locally for `T2:embryo:test_interp`. Like the set s1, it passes
+    `EMBRYO_EXPRESSION` (mixture). `tests/test_s2_rules.py` gains two tests: one pins the script's three embryo
+    commands word for word in the rules, and one pins the set's lines (the hash check first, one file, its local
+    check). A grep of `tests/` after entry (h)'s commit finds no other test that counts or pins the script's embryo
+    lines: the heart test counts heart lines only, and the g_mom test pins two T1 lines. The sets s1, s2, t3alt,
+    heart2 and t1none are unchanged. The reference list of the third rehearsal still describes the files of s1, s2
+    and t3alt; heart2's and t1none's files have their own lists (`heart2_307c9b2`, `t1none_385ff58`), and this file
+    gets its own after its builds.
+  - **Also in this commit:** item 10 of `METHOD_SUMMARY.md`'s departures section is completed. Items 7 and 12, the
+    Task 2 embryo lines of the table and the Task 2 section are brought up to date. Line 1 of the checklist in
+    `docs/P3_RUNBOOK.md` names the new list. The drafted note before the embryo's upload
+    (`docs/ORGANIZER_QUESTIONS.md`, "Notes before Task 1's and the embryo's second uploads") names the file,
+    `T2embryo_s2x.h5ad`; its hash is filled after the builds.
+  - **Owed, not in this commit:** `tests/test_integrity.py` still pins fgw_shape0 as the embryo s2 (stale since R4);
+    the `--positions` help text of `build_test.py` still says "No entry until the captain rules"; `progress.md`,
+    `feature_list.json` and `session-handoff.md` (which still lists `builds/T2embryo_s2.h5ad` among files in hand);
+    whether a `headroom.py` rerun is owed for a ruling on a last upload [MAIN SESSION: check what the commits of R4
+    and of entry 2026-11-18 (m) did, and follow that].
+  - **Tests** on the writer's branch, before the commit: `tests/test_s2_rules.py` (7),
+    `tests/test_e47_floor_exact.py`, `tests/test_heart_trend_build.py`, `tests/test_boards.py`,
+    `tests/test_g_mom_verify.py` and every test that reads a changed file: 469 passed; `sha256sum -c
+    docs/S2_RULES.sha256` OK; `bash -n experiments/builds/build_all.sh` OK; ruff clean. [MAIN SESSION: the complete
+    local test run's last line on main, and the targeted tests on the DGX].
+  - **The builds:** [MAIN SESSION: the DGX campaign checkout and commit; two builds of the set embryo2 at 16 BLAS
+    threads; each exit code; one sha256 or two (first 12 characters here, all 64 in the list); the stamps' commit and
+    clean fields; the comparison with the check build of 9967cf1; the boolean comparison with the first upload's
+    file by the script of entry 2026-11-18 (u) (rows, row names, expression equal; coordinates differ);
+    `experiments/builds/results/embryo2_<commit>.txt` and `.SHA256SUMS`; the local copy
+    `runs/manual_upload/T2embryo_s2x.h5ad`, its hash and its local format check]. Or record these in the next entry,
+    as entry (i) did for T1.
+  - **Next:** the note to the organisers that names this board, file and sha256 (drafted and reviewed), put into the
+    captain's drafts at his word; the screened check on the upload day; and the hand-over entry with the warnings
+    register of checklist line 6. Entry (i)'s advice stands: no upload from any login until the captain has said
+    which login made the uploads of 18 November. The upload is the captain's own act.

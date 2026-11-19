@@ -205,8 +205,10 @@ the half trim. Since the captain's ruling of 2026-11-13 (row H11) the expression
 | Expression | Since 2026-11-13: per harmonised lineage, half a day of the least-squares trend of its log mean expression over E8.25_late, E8.5, E8.75, E9.5 and E10.5, in count space (`vec.harness.B0_TREND_RULE`). Until then: half the E9.5 -> E10.5 change | The trend against the last step: +0.36 and +0.48 on the two backtests, the adoption rule passed on both (row H11, `experiments/harness/results/trend_heart_v1/`; the port reproduces these scores exactly, and an independent check recomputed the table and the factor). With it the stand-in scores 50.78 and 51.93 (floor 50; a copy 49.96 and 50.55). What limits it: a margin of 0.06 over the rule's threshold on one backtest; the one arm of seven read on these backtests that day that passed; two backtests that share one truth; and no backtest holds the test's last step, across the change from sectioned embryo portions to dissected hearts, on which the trend leans for 43% instead of 100%. Before the ruling, the last step alone: E10.5 from E9.5 and from <= E8.75: +0.47 and +0.90 over a copy (9 and 10 of 10 seeds), +0.43 and +1.45 over the floor (7 and 10 of 10); every metric within 1.3 points of the floor (`experiments/harness/results/d2_v1/`). The expression-change group itself moves +0.77 and -0.03 against a copy (+0.38 and -0.46 against the floor); on the 1.75-day backtest the gain over a copy sits on neighbourhoods (+0.50) and cell state (+0.43), not on the group the momentum's reason targets (`TRIES.md` rule 2; `experiments/harness/results/headroom/`) |
 | Spatial organisation | E10.5's tissue and shape; the core grown by 1.58 x the E9.5 -> E10.5 log growth (a fixed three-rule average), xy grown and z held | None is possible. No released pseudo-target reaches the E10.5-E12.5 regime, and on E9.5 every growth rule scores like copy_last (`experiments/coords/REPORT.md`, C7; A8). The one released scope check (n = 1) ranked s1's scope, which equals H0 as built, last of three (C10) |
 
-**Task 2 embryo, E7.75, beyond E7.5 with its coordinates.** s1 = fgw; s2 = fgw_shape0 until 2026-11-13 and
-`fgw_aligned_series` since (row R4, the captain's ruling). On the two backtests
+**Task 2 embryo, E7.75, beyond E7.5 with its coordinates.** s1 = fgw; s2 = fgw_shape0 until 2026-11-13,
+`fgw_aligned_series` from then (row R4, the captain's ruling; built, not uploaded), and since 2026-11-19 `fgw_shape0x`:
+s1's rows and expression with every cell on a real E7.5 position (row R9, the captain's ruling after the first scores).
+On the two backtests
 that chose it as the entry (selected on, not tuned on), fgw gains +4.15 against the organisers' pseudobulk_shift on E7.5
 and +4.92 against B0 on E7.25, ahead in 10 of 10 seeds each. After the organisers' protocol text showed E7.75 collected like
 E8.0, tries E16 and E17 (2026-11-11) tested whether s2 should take E8.0's geometry instead: on a backtest that copies that
@@ -216,7 +218,7 @@ sampling structure, neither geometry beat fgw in any seed, so s2 is unchanged.
 |---|---|---|
 | States that emerge, proportions | Real cells, half from E7.5 and half from E8.0: E8.0's states enter at half their E8.0 share, and states seen only at E7.5 halve | Mixed. On E7.5 (t = 1/3) mmd_u skill 0.671 and variogram 0.664; on E7.25 (t = 2/3) 0.497 and 0.283, both below the floor of 0.5 and the variogram well below it. E7.25 sits much nearer E6.75 than its day says, and a mixture at its nominal fraction does worse there than a copy of E6.75 (`experiments/harness/results/diag_emb_mix/`). Nothing measured places E7.75 between its brackets (the clock warp was pruned) |
 | Expression | The pseudobulk moves between the brackets; the cells are not edited | de_score 0.581 and 0.683, de_direction 0.703 and 0.702, against 0.450 and 0.522, and 0.526 and 0.628, for a copy (`experiments/harness/results/emb_fgw_v1/`) |
-| Spatial organisation | s1: cells moved half-way along their FGW partners after a proper rotation; s2: E7.5's geometry. Both at the size given by PCHIP of log RMS radius through the released embryo stages, with the 15-NN neighbourhoods of real cells | Size: scale skill 0.727 and 0.624. Shape, s1: d2 0.372 and 0.717, Dice 0.385 and 0.595 (below a copy on E7.5); at test the moved cloud is flatter than either bracket in every draw (mirrored partners; `experiments/harness/results/diag_emb_coupling/`), and the fix, try E11, gained on E7.5 and was vetoed on E7.25. Shape, s2: d2 0.439 and 0.383, Dice 0.494 and 0.434. Neighbourhoods: 0.640 and 0.602 (s1), 0.654 and 0.563 (s2). Better of the two: 60.87, against 59.95 for fgw alone (`experiments/harness/results/emb_shape_v1/`) |
+| Spatial organisation | s1: cells moved half-way along their FGW partners after a proper rotation; s2 until 2026-11-13: E7.5's geometry (fgw_shape0); from then `fgw_aligned_series`'s aligned moves (not uploaded); the last upload since 2026-11-19 (row R9): every cell on the position of a real E7.5 cell, the E8.0 half on unused E7.5 positions matched by expression, so that the cloud is a uniform sample of E7.5's positions (the floor's form). All at the size given by PCHIP of log RMS radius through the released embryo stages, with the 15-NN neighbourhoods of real cells | Size: scale skill 0.727 and 0.624. Shape, s1: d2 0.372 and 0.717, Dice 0.385 and 0.595 (below a copy on E7.5); at test the moved cloud is flatter than either bracket in every draw (mirrored partners; `experiments/harness/results/diag_emb_coupling/`), and the fix, try E11, gained on E7.5 and was vetoed on E7.25. Shape, s2: d2 0.439 and 0.383, Dice 0.494 and 0.434. Neighbourhoods: 0.640 and 0.602 (s1), 0.654 and 0.563 (s2). Better of the two: 60.87, against 59.95 for fgw alone (`experiments/harness/results/emb_shape_v1/`). The last upload since 2026-11-19, on the nine practice tasks (row E47, labelled diagnostics, `experiments/harness/results/e47_floor_exact/`): d2 0.47 to 0.51 and Dice 0.48 to 0.54 on every task, the floor's level; against s1 merged -1.43, better of two +0.46, three tasks gained and six lost; neighbourhoods -0.039 merged; at the test pair reading N53 finds this geometry in E7.5's form and the geometries of fgw_shape0 and `fgw_aligned` outside it (N53 does not build s1's geometry, which rows E11 and N51 flag) |
 
 **Task 3, beta-catenin knockout at E8.75, beyond the unchanged wild type.** s1 = the allowed branch's s1; s2 = the
 refused branch's s1, uploaded first. If the organisers say before that upload that a floored severity scores zero, s2 is
@@ -665,8 +667,10 @@ assistant's working session (called "the main session" below). The first scores 
 named). None is a test under the adoption rule. Each is either a reading whose rule, fixed in its row, decides whether
 a question goes to the captain, or a labelled diagnostic. "Its fixed reading" below means the outcome by that rule.
 "Counted: Task 3, 35 to 40" means that the ledger's running count of tries on that board rose from 35 to 40
-(`experiments/harness/TRIES.md`, running totals of 2026-11-18). None has changed an upload so far. Row E47's rule (ii)
-decided which arms enter the question on the embryo's last file (item 10); the other rows' fixed readings led to no
+(`experiments/harness/TRIES.md`, running totals of 2026-11-18). None changed an upload by its own rule; the embryo's
+last upload is row E47a's arm by the captain's ruling (item 10). Row E47's rule (ii) was to decide which arms enter
+the question on the embryo's last file; the question carried the two new arms all the same, and the captain chose one
+of them, overriding that rule (item 10); the other rows' fixed readings led to no
 question on an upload. The first scores chose what these tries examine: by ledger rule 9, J8, a per-metric test value
 may name which step of a built file a try examines and never sets that try's weight, expected gain, task set or
 tolerance, and rows E47, K18 and T60 each state under J8 what the first scores did and did not set in them. Row K18
@@ -780,7 +784,33 @@ output ((t)).
   The record states that here the first scores choose among geometries built from released data, that no figure is
   solved from them, and that the override of a rule the AI assistant fixed is the captain's to make ((v)). Check
   builds of the floor-form candidates ran in a DGX campaign checkout and are never upload sources ((u)).
-- [TO COMPLETE: the captain's choice, his words, the date, the amendment and the build record]
+- Done: on 2026-11-19 the captain chose option 1, `fgw_shape0x` ((f) of that day; the answers were read at 11:12).
+  The file of ruling R4 (`T2embryo_s2.h5ad`) is not uploaded.
+- By: the captain's own word. To the question "Embryo's last upload (open since 18 Nov). The first upload scored 64.6,
+  with its two shape scores at 30.9 and 2.5 of 100. Which file should be the embryo's last upload?", he answered
+  "Exact E7.5 positions (Recommended)". The choice reverses ruling R4 and overrides row E47's rule (ii), which the AI
+  assistant had fixed before that row's run.
+- Changed: `docs/S2_RULES.md` gained the section "Amendment of 2026-11-19: the embryo's last upload is the first upload
+  on E7.5's exact positions (the captain's own say-so)". Its sha256 is now
+  ce5a4584c9b20fb51e16443f40f9a69056f299d3892665daf2747b8a1917432f. The section comes with row R9 of
+  `experiments/harness/TRIES.md` and decision log 2026-11-19 (j), in commit [MAIN SESSION: the commit on main]. The
+  file is `build_test.py embryo --method fgw_shape0 --positions floor_exact --expression mixture`, built by the set
+  `embryo2` as `T2embryo_s2x.h5ad`. It holds the first upload's rows and expression, with each cell at the position of
+  a real E7.5 cell, at the pre-registered size and by the count rule. It touches no quantity closed by the block of
+  2026-11-04. "No score feedback" no longer holds for the embryo's last upload, which was chosen after and because of
+  the first scores. The change is the captain's, and it computes nothing from those scores.
+- Evidence, both ways: on practice the file ranks last of the four options. Against the uploaded form its merged mean
+  is -1.43 and its better of two +0.46; it gains on three tasks and loses on six; its neighbourhood skill is -0.039
+  merged (row E47; (v) of 2026-11-18). These are labelled diagnostics: the noise floor between truths is 6.54 board
+  points. Its four expression skills equal the uploaded form's on every practice task-seed. Its geometry, which
+  option 2 shares, is the one that reading N53 finds in E7.5's form at the test pair; the cold attack's own check kept
+  the mixture over the series rendering on it ((v)). The first scores chose among files built from released data.
+  Nothing is solved from them, and nothing shows what the file will score on either shape metric.
+- Builds: [MAIN SESSION: the DGX checkout and commit; two builds at 16 BLAS threads; their exit codes; the sha256
+  (first 12 characters); the stamps' commit and clean fields; the match with the check build of 9967cf1;
+  `experiments/builds/results/embryo2_<commit>.txt`; the local copy and its format check]. Like the heart's second
+  file and T1's last, it is built in a DGX campaign checkout, not the reference checkout [MAIN SESSION: confirm].
+- Disclosure: [MAIN SESSION: whether, and when, the captain sent the note that names this board, file and sha256].
 
 **11. What the AI assistant recorded against itself in this period.**
 - (j): it read one heart value as probably mis-copied; entry (k) corrected this (the aggregate's gate explains the
@@ -810,8 +840,9 @@ cell number follows the count rule fixed before 2026-11-04, and every Task 2 fil
 committed on 2026-10-18 (171695a). Two exceptions on the heart are described in items 4 and 6: both heart files keep a
 random half of the rows, and the second heart file takes the raw-mode size that the size file of 2026-10-28 logs, not
 the pre-registered mode. T1's two files, until item 13, and Task 3's files are as built on 2026-11-13 and match the
-reference list; the embryo's first file is as built that day, and its second waits for the captain (item 10). T1's
-depth, Task 3's composition and depth, the adoption rule, row before run and the count of tries are unchanged; T1's step is
+reference list; the embryo's first file is as built that day, and its last is a new file by the captain's choice of
+2026-11-19 (item 10): the first file's cells, count and size target, each cell on a real E7.5 position. T1's depth,
+Task 3's composition and depth, the adoption rule, row before run and the count of tries are unchanged; T1's step is
 unchanged in the first file and taken out of the last (item 13). Every upload
 remains the captain's own act. One compute rule changed and no rule of the entry with it: on 2026-11-18 (17:17) the
 captain released the DGX's GPUs 2 to 7 to this work and lifted `docs/COMPUTE.md`'s "ask before writing more than
@@ -1042,7 +1073,23 @@ captain released the DGX's GPUs 2 to 7 to this work and lifted `docs/COMPUTE.md`
   pseudobulk_shift and 58.83 for it with the size rule, and 58.78 on E7.25 against 53.86 for B0, every gap ahead in
   10 of 10 seeds (`experiments/harness/results/emb_fgw_v1/`). It loses on shape on E7.5, where E8.0's sampling differs;
   the s2 is fgw_shape0, fgw's mixture in E7.5's geometry, chosen by a rule fixed before its run (`docs/S2_RULES.md`).
-  Since the captain's ruling of 2026-11-13 the s2 is `fgw_aligned_series` instead (above; row R4).
+  From the captain's ruling of 2026-11-13 the s2 was `fgw_aligned_series` (above; row R4); it was built and not
+  uploaded.
+- **Embryo E7.75, the last upload since 2026-11-19: the first upload on E7.5's exact positions (`fgw_shape0x`).** The
+  captain's ruling after the first scores (row R9; `docs/S2_RULES.md`, amendment of 2026-11-19). Beyond the baseline
+  (a copy of E7.5): states, proportions and expression are the first upload's, real cells half from E7.5 and half from
+  E8.0, unedited. Spatial organisation: every E7.5 cell at its own position and every E8.0 cell at the position of an
+  unused E7.5 cell matched by expression (an exact one-to-one assignment in FGW's joint principal components). So the
+  cloud has the floor's form, at the pre-registered size, with E8.0's cells placed in it. Evidence, all from practice
+  and all labelled diagnostics (noise floor 6.54 board points between truths): on the nine practice tasks (row E47) its
+  shape skills sit at the floor's level on every task (d2_shape 0.47 to 0.51, occupancy_dice 0.48 to 0.54). Against
+  the first upload it scores -1.43 merged (+1.82 on E7.5, -4.27 on E7.25, the two counted backtests), with a
+  better-of-two value of +0.46. Its neighbourhood skill is -0.039 merged, and its four expression skills are
+  identical. On practice alone it ranks last of the four options put to the captain. At the test pair, reading N53
+  (target-free) finds its geometry in E7.5's form and the geometries of fgw_shape0 and `fgw_aligned` (that of
+  ruling R4's file) outside it; the first upload's own geometry is not an arm of N53, and rows E11 and N51 had
+  flagged it as flatter than either bracket, with mirrored partners. It enters by the captain's ruling, not by the
+  adoption rule. The first scores chose it among files built from released data, and nothing was computed from them.
 - **Spatial hygiene:** random rows only, jitter of at most 0.25 nearest-neighbour distances to break duplicate
   coordinates, proper rotations only, native coordinates (`experiments/density/REPORT.md`, `experiments/coords/REPORT.md`).
 

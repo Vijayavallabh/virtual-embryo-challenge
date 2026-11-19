@@ -24,6 +24,9 @@
 #                                                ever hold the draft heading "DRAFT, not in force" again. T1 files move
 #                                                with the BLAS thread count, so its two reference builds both use the
 #                                                default 16.
+#   bash experiments/builds/build_all.sh embryo2 the embryo's last upload since the amendment of 2026-11-19
+#                                                (docs/S2_RULES.md, its section on the embryo; row R9 of TRIES.md): the
+#                                                first upload's cells and expression, each cell on a real E7.5 position
 #
 # BUILD_OUT (default runs) and BUILD_THREADS (default 16) exist for the determinism check
 # (experiments/builds/determinism_check.sh): the same builds into another folder at another BLAS thread count. Every
@@ -33,13 +36,13 @@
 # The commands are the ones docs/P3_RUNBOOK.md and docs/S2_RULES.md give; this script only runs them in order and
 # stops at the first failure. Test-board cell counts are never printed (the builders and `vec check` hide them).
 set -euo pipefail
-set_name=${1:?usage: build_all.sh s1|s2|heart2|t3alt|t1none}
+set_name=${1:?usage: build_all.sh s1|s2|heart2|t3alt|t1none|embryo2}
 T=${BUILD_THREADS:-16}
 O=${BUILD_OUT:-runs}
 export OMP_NUM_THREADS=$T OPENBLAS_NUM_THREADS=$T MKL_NUM_THREADS=$T NUMPY_MADVISE_HUGEPAGE=0
 U=${UV:-uv}
 SEED=1000001
-EMBRYO_EXPRESSION=mixture  # the embryo s1's expression step (its s2 names its own since the ruling of 2026-11-13)
+EMBRYO_EXPRESSION=mixture  # the embryo s1's expression step, which the set embryo2 shares (s2 names its own, R4)
 T3_DECISIONS=experiments/t3_decomp/results/gata4/gata4_decisions.json
 T3_RUN_DIR=runs/t3_decomp/gata4_20261028T122425Z
 mkdir -p "$O/builds" "$O/t3_build"
@@ -87,6 +90,12 @@ case "$set_name" in
     $U run python experiments/builds/build_test.py t1 --g-mom --base lib3 --feng-groups none --out $O/builds/T1_s2none.h5ad
     files="$O/builds/T1_s2none.h5ad:T1:test"
     ;;
+  embryo2)
+    sha256sum -c docs/S2_RULES.sha256
+    $U run python experiments/builds/build_test.py embryo --method fgw_shape0 --positions floor_exact \
+      --expression "$EMBRYO_EXPRESSION" --out $O/builds/T2embryo_s2x.h5ad
+    files="$O/builds/T2embryo_s2x.h5ad:T2:embryo:test_interp"
+    ;;
   t3alt)
     sha256sum -c docs/S2_RULES.sha256
     t3 barred s1 $O/t3_build/barred_s1.h5ad
@@ -94,7 +103,7 @@ case "$set_name" in
     files="$O/t3_build/barred_s1.h5ad:T3:bcatenin $O/t3_build/barred_s2.h5ad:T3:bcatenin"
     ;;
   *)
-    echo "unknown set $set_name (s1, s2, heart2, t3alt or t1none)" >&2
+    echo "unknown set $set_name (s1, s2, heart2, t3alt, t1none or embryo2)" >&2
     exit 2
     ;;
 esac

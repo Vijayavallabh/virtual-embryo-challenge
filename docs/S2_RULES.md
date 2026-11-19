@@ -700,3 +700,135 @@ and heart2 are unchanged: the reference list of the third rehearsal still descri
 and heart2's files keep their own list (`experiments/builds/results/heart2_307c9b2.SHA256SUMS`). This file is
 outside that list; its own list is committed under `experiments/builds/results/` before checklist line 1 of
 `docs/P3_RUNBOOK.md` can be ticked.
+
+## Amendment of 2026-11-19: the embryo's last upload is the first upload on E7.5's exact positions (the captain's own say-so)
+
+Written by the AI assistant. Times are UTC. The record is `docs/PLAN.md` decision log 2026-11-18 (j), (k), (u) and (v)
+and 2026-11-19 (f) and (j), and rows E11, N51, E47a and E47b, N53 and R9 of `experiments/harness/TRIES.md`. Like the
+amendment of 2026-11-18, this section was written with test scores known. Where it and the sections above differ, this
+section holds for the embryo.
+
+**The question and the captain's answer** (decision log 2026-11-19 (f); the answers were read at 11:12 UTC). The
+question, verbatim: "Embryo's last upload (open since 18 Nov). The first upload scored 64.6, with its two shape scores
+at 30.9 and 2.5 of 100. Which file should be the embryo's last upload?" It carried the four options of decision log
+2026-11-18 (v): the first upload's cells and expression on E7.5's exact positions (`fgw_shape0x`, the AI assistant's
+recommendation); the same positions with the series rendering (`fgw_shape0x_series`); fgw_shape0, the second file
+before ruling R4; and `fgw_aligned_series`, the second file as ruled on 2026-11-13. The captain's answer: "Exact E7.5
+positions (Recommended)".
+
+**The embryo's last upload.** It replaces the second file of the ruling of 2026-11-13 ("Amendments of 2026-11-13",
+`fgw_aligned_series`, `runs/builds/T2embryo_s2.h5ad`), which is not uploaded:
+
+```bash
+uv run python experiments/builds/build_test.py embryo --method fgw_shape0 --positions floor_exact --expression mixture --out runs/builds/T2embryo_s2x.h5ad
+```
+
+- **What it is.** The first upload's file with every cell placed on the position of a real E7.5 cell. The set s1 of
+  `experiments/builds/build_all.sh` built the first upload as `build_test.py embryo --method fgw --expression
+  mixture`. The new command keeps its seed (1000001, the builder's default), its board, its count rule, its size
+  target, the anchors and coupling of FGW, the draw of E7.5 and E8.0 rows and their order, and each row's expression
+  as released (`--expression mixture`, the default, written out as the set s1 writes it). Only the positions change.
+  Every E7.5 row stays at its own position. Every E8.0 row goes to the position of an E7.5 cell that the file does not
+  otherwise draw: a uniform subset of those cells, as large as the E8.0 half (stream [seed, 47]), matched to the E8.0
+  rows one to one by the exact minimum-cost assignment on their expression in FGW's joint principal components
+  (`vec.t2_build.interpolate_clouds`, positions "floor_exact"; tries E47a and E47b). Without the fallback below, the
+  cloud is then a uniform sample of E7.5's own positions, the floor's form at test, centred and scaled to the
+  pre-registered embryo size (`experiments/coords/results/p3/size_embryo_E7.75.json`), as the first upload is.
+- **"As s1"** for the embryo now reads: s1's command with `--method fgw_shape0` in place of `--method fgw`, as the
+  rule of 2026-11-03 had it, and `--positions floor_exact` added. The option was merged to main at 5e3eb9a; with it
+  off, every embryo file builds as before.
+- **The fallback.** If the file's count exceeds E7.5's cells, so that the E8.0 half outnumbers the E7.5 cells the file
+  does not otherwise draw, every unused cell is a candidate, the remainder comes from all of E7.5's cells, and the
+  repeats are jittered apart. Whether that happens at the test follows from the test board's count, which nobody
+  reads; under the validation board's count rule it does not (row N53).
+- **What a check build showed** (decision log 2026-11-18 (u); a check build in a DGX campaign checkout at 9967cf1,
+  never an upload source): by a comparison that printed only booleans and hashes, the file holds the first upload's
+  rows, row names and expression matrix exactly and differs from it in coordinates only.
+
+**Why.** The first upload scored 64.6 (decision log 2026-11-18 (j)). Its four expression metrics, its size and its
+neighbourhood metric carried over or beat practice; its two shape scores were 30.9 (d2_shape) and 2.5 (occupancy_dice)
+of 100, the floor scoring 50.
+- The record had flagged the first upload's geometry before the upload. At the test pair FGW's partners are mirrored
+  in 10 of 10 draws, and the moved cloud's thinnest axis is 0.21 to 0.25 of its RMS radius, against 0.53 for E7.5 and
+  0.36 for E8.0 (row E11). Those draws are mirrored less strongly than any mirrored practice draw and are thinner than
+  every flagged practice draw but one task's (row N51).
+- Reading N53, which reads no target, finds this file's geometry in the floor's form at the test pair, and the
+  geometries of fgw_shape0 and of `fgw_aligned` (the planned second file's) outside it. The series option,
+  `fgw_shape0x_series`, has this file's positions, so the reading covers it too. N53 does not build the first upload's
+  own geometry. Against a 10 percent draw of E7.5, ten-seed means of (occupancy_dice, d2_shape): this file 0.859 and
+  0.0030; copies of E7.5 0.848 and 0.0028; fgw_shape0 0.797 and 0.0202; `fgw_aligned` 0.787 and 0.0273. By N53's fixed
+  rule, "in form" means no difference was detected at 2 standard errors (an arm exactly in form is called out about 15
+  percent of the time); against B0, the copy of E7.5 that shares no cell with the reference draw, this file is out
+  (row N53). It is one pair, ten draws, and E7.5 is the floor there, not the target.
+- Practice holds no task with a shape loss like the first upload's, so it cannot price a floor-level shape against one
+  (row E47, the AI assistant's reading after the result).
+- The first scores choose here among geometries built from released data: the four options, each built before the
+  question. The Official Rules allow that (Section 10, as read through a screen on 2026-11-18: "the test is whether
+  the truth enters your prediction's content or only its selection"). No figure is solved from the scores. The 2.5
+  sets no bound and no constant here, and the record does not explain it: a practice task with mirrored, flatter draws
+  scored 50.1 on occupancy_dice (decision log 2026-11-18 (k)). Nothing here says what this file will score on either
+  shape metric.
+
+**What the record says it is worth, both ways.** Every figure is from practice tasks; none is a test value.
+- **Limits.** Tries E47a and E47b are labelled diagnostics: the noise floor is 6.54 board points (the between-truth
+  SD; the seed SE is 0.23), so no figure below is a detected effect; the harness applies its own embryo size rule per
+  task, not the builder's size JSON (the shape metrics ignore scale); on 7 of the 9 tasks the earlier bracket is not
+  E7.5 (row E47).
+- **Against the uploaded form on the nine practice tasks** (row E47, rule (iii);
+  `experiments/harness/results/e47_floor_exact/e47.txt`): merged mean -1.43 board points; better of two beside the
+  uploaded form +0.46. It gains on three tasks (e75 +1.82, x1 +0.73, x3 +0.01; mean +0.86) and loses on six (half
+  -1.06, late -1.87, new1 -2.92, new2 -3.13, e725 -4.27, x2 -3.35; mean -2.77). On the two counted backtests: +1.82 on
+  E7.5, -4.27 on E7.25.
+- **The other three options, the same way** (merged mean, then better of two): fgw_shape0 -0.50 and +0.88;
+  `fgw_shape0x_series` -1.25 and +1.54; `fgw_aligned_series` +0.13 and +2.18. **Practice alone ranks this file last of
+  the four** on both values.
+- **Why it ranks last.** Its shape skills sit at the floor's level on every task (d2_shape 0.47 to 0.51,
+  occupancy_dice 0.48 to 0.54), which is what it was built for; the other geometries scored above the floor on several
+  practice tasks, which hold no shape loss like the first upload's (row E47).
+- **The neighbourhood term.** Against the uploaded form, neighborhood_mmd skill -0.089 to +0.021 by task, merged
+  -0.039 (decision log 2026-11-18 (v)); against fgw_shape0, merged -0.025 (row E47).
+- **The expression metrics.** de_score, de_direction, mmd_u and variogram equal the uploaded form's on all 90
+  task-seeds (row E47's guard; recomputed independently, decision log 2026-11-18 (v)). The file stakes nothing new on
+  expression: its rows and their expression are the first upload's.
+- **Why the captain's choice stands on the record** (the AI assistant's reading, from decision log 2026-11-18 (k) and
+  (v)): the board keeps the better of two uploads (the working answer on final marks), so the second file is worth
+  what it adds where the first is weak; the first upload's weakness is its geometry, which the record had flagged;
+  reading N53 finds this geometry, which options 1 and 2 share, in the floor's form at the test pair and the
+  geometries of options 3 and 4 outside it; and between those two, the series twin's gain on this geometry is level on
+  practice (+0.18 merged over the five truths, negative on three tasks), so the cold attack's own check kept the
+  mixture. Entry (v) records that the recommendation could not be reached from practice and reading N53 alone: it
+  needs the first upload's two shape scores, and the question said so.
+
+**What it overrides.**
+- **Ruling R4** (the captain's ruling of 2026-11-13, "Amendments of 2026-11-13", T2 embryo): its file is not uploaded.
+  The file stays on disk as the record of 2026-11-13.
+- **Rule (ii) of row E47**, which the AI assistant fixed before its run under the delegation of 2026-11-02: by it,
+  fgw_shape0 stays the floor-form arm, since this file's merged mean (-0.93), neighbourhood skill (-0.025) and worst
+  shape skill (-0.324, d2_shape on x3) against fgw_shape0 each fail their clause. The captain's answer overrides it.
+  This file enters by ruling, not by the adoption rule and not by a pre-set rule's outcome.
+
+**"No score feedback", as it now stands.** The first bullet no longer holds for the embryo: its last upload is chosen
+after, and because of, the first scores. It holds for T3; for T1 and the heart the sections above say what holds. The
+second bullet is met: this rule changes after the embryo's first official upload by the captain's own say-so, and
+computes nothing from a test score. The scores public at the time are the team's own of decision log 2026-11-18 (j):
+board totals T1 70.9, heart 46.4, embryo 64.6, T3 47.8; on the embryo de_score 64.6, de_direction 73.0, mmd_u 78.1,
+variogram 62.9, d2_shape 30.9, occupancy_dice 2.5, scale_log_ratio 96.5, neighborhood_mmd 74.4. The lines of decision
+log 2026-11-18 (k) hold here: no constant set from a test value; no bound on a test anchor from the 2.5; no inference
+of E7.75's detection profile from the first upload's expression scores; no choice of a file or a row order by its
+parity.
+
+**What stays.** The count rule and the pre-registered size: the file has the first upload's cells and size target. It
+touches no lever of the post-exposure block: its cell number, size and scope are the first upload's. The first upload,
+the other boards' files, the order (the first upload went first) and the rule for final marks are unchanged. "T1 and
+the embryo: unchanged" in the amendment of 2026-11-18 no longer holds for the embryo.
+
+**Builds.** `bash experiments/builds/build_all.sh embryo2` checks this file's hash, runs the command above into
+`runs/builds/T2embryo_s2x.h5ad` and checks the file locally for `T2:embryo:test_interp`. It is built twice, both at 16
+BLAS threads, the default that every upload build uses (`docs/COMPUTE.md`, "What reproduces where": the rendered
+embryo files move with the thread count; whether this one does has not been measured), and the two sha256 are
+compared. The sets s1, s2, t3alt, heart2 and t1none are unchanged. The reference list of the third rehearsal still
+describes the files of s1, s2 and t3alt; heart2's files have their own list
+(`experiments/builds/results/heart2_307c9b2.SHA256SUMS`), and so has t1none's file
+(`experiments/builds/results/t1none_385ff58.SHA256SUMS`). This file is in none of those lists; its own list is
+committed under `experiments/builds/results/` before line 1 of the captain's checklist (`docs/P3_RUNBOOK.md`
+section 5) can be ticked.

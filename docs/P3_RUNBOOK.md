@@ -414,6 +414,11 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
      For T1's last upload (row R8; `docs/S2_RULES.md`, the amendment of 2026-11-19):
      `experiments/builds/results/t1none_385ff58.SHA256SUMS` (`builds/T1_s2none.h5ad`). That list is outside the pointer and is built in a campaign checkout: its line is ticked only
      once the captain has accepted that provenance or a rebuild in the reference checkout has matched it.
+     For the embryo's last upload (row R9; `docs/S2_RULES.md`, the amendment of 2026-11-19 for the embryo; decision
+     log 2026-11-19 (j)): `experiments/builds/results/embryo2_[MAIN SESSION: commit].SHA256SUMS`
+     (`builds/T2embryo_s2x.h5ad`). That list is outside the pointer and is built in a campaign checkout
+     ([MAIN SESSION: the entry that records the embryo2 builds]): its line is ticked only once the captain has
+     accepted that provenance or a rebuild in the reference checkout has matched it.
      A file in no committed list (a new embryo file, entry (s), item 1) needs its list committed, and the
      `docs/S2_RULES.md` amendment it requires, before this line can be ticked. By hand: `grep <the 64 characters>
      <list>` prints one line, under the name given above. A file whose 64 characters differ is not the listed
