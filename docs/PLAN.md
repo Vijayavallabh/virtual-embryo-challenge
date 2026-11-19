@@ -6794,3 +6794,42 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     the full trim at its raw-mode core forecast (`z_modes.raw.pred_rms_core`, the term every scope hypothesis of
     2026-10-28 multiplies); the count rule and the halving as the ruled file's. Row T62's read was reviewed ready
     and is gaining the two additions of entry (z) (wf_091c67f6-b7b).
+- 2026-11-19 (cc), the captain names the last file on three boards (state at 19:31 UTC). Written by the AI assistant.
+  These are his own rulings, each an answer to its own question in one dialog; the questions are given as put.
+  - **Heart.** Question: "Heart, last upload. I state no preference here (I recused myself after a lapse; see my
+    message). Practice results in heart points against the ruled full-scope file; Overall moves by half; a file
+    scoring below the first upload's 46.4 just leaves the 46.4 standing. If E12.5 was sampled like E10.5: half trim
+    -1.0 (-7.9 on the nearest practice step), full trim -3.9 (-15.5). If E12.5 was dissected clean: half trim
+    +5.8, full trim +11.8. An independent reviewer put 'clean to that degree' at about 0.25 to 0.30. A trim is your
+    own named exception on a choice closed after the 4 November exposure; the method report will say so. Which
+    file?" Options: "Keep ruled file"; "Half trim"; "Full trim" (described as: "Highest ceiling: about +11.8 heart
+    points (+5.9 Overall) if E12.5 is clean; if it is like E10.5 the file likely falls below 46.4 and the first score
+    stands (costing the 2.6 Overall the ruled file would add). Your named exception on scope, cell number and
+    size."). **His answer: "Full trim".**
+  - **Embryo.** Question: "Embryo, last upload. Your chosen file (the first upload's cells on E7.5's exact positions)
+    is expected near 69. Its 'series' twin re-renders the E7.5 cells at E8.0's measurement profile. If E7.75 was
+    measured like E8.0 (the organisers' page groups E7.75 with E8.0; our committed odds 0.4 to 0.5) the twin scores
+    about 4 to 5 embryo points higher; otherwise 2 to 7 lower, and then the first upload's 64.6 stands. Same
+    expected value; higher best case, lower worst case. Which file?" Options: "Series twin (Top-3 aim)"; "Keep
+    chosen file". **His answer: "Series twin (Top-3 aim)".**
+  - **Task 3.** Question: "Task 3, last upload. The ruled 'refused' file stays close to the floor: expected about 52
+    (48 to 57). The already-built 'barred' file carries another knockout's response: about 62 to 64 if the
+    beta-catenin embryos lean older than the wild-type reference as the Gata4 ones did (a reviewer's odds 0.35 to
+    0.45); otherwise it falls below the first upload's 47.8, which then stands, costing the 2 to 6 points the ruled
+    file would likely add. Expected value about equal; our own pre-set rule and a cold check both said keep the
+    ruled file. Which file?" Options: "Barred file (Top-3 aim)"; "Keep ruled file". **His answer: "Barred file
+    (Top-3 aim)".**
+  - **What the AI assistant had told him before the dialog:** that a Top-3 aim is a best-case aim, so each board's
+    last file is weighed by its ceiling with the first score banked; that its own heart estimate was withdrawn
+    after the second cold check; and its lapse and recusal of entry (bb). On the heart it stated no preference. On
+    the embryo and Task 3 it marked the higher-ceiling file as the one that fits a Top-3 aim and gave the expected
+    values as about equal.
+  - **What follows, in order.** For each board: the amendment of `docs/S2_RULES.md` with his words and the new
+    hash, the build set and its tests, the ledger row of the ruling (no run), then the builds (the heart's full
+    trim and the embryo's twin on a DGX campaign checkout, twice each at 16 BLAS threads; T3's barred file is
+    built and on the reference list of the third rehearsal), the local copies and checks, the records, the method
+    summary's lines and the notes that precede each second upload, rewritten and reviewed. The heart's file:
+    `heart --entry core_trim --expression copy --z-mode raw`, then the halving, sized at the size file's raw-mode
+    core forecast of 2026-10-28. The embryo's: `embryo --method fgw_shape0 --positions floor_exact --expression
+    series`. T3's: the barred branch's s1. Every upload stays his own act; before any upload the question of which
+    login made the uploads of 18 November is raised again.
