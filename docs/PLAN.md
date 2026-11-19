@@ -6429,3 +6429,27 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     behind X002's. The red team's one surviving idea is a filter on the relabelled X002 direction by X003's sign,
     at about +0.03. The atlases enter T1 through the relabelled X002 direction (entry (l)); X003 stays a diagnostic
     source unless that file is ruled in and time remains.
+- 2026-11-19 (q), try H26 is read: the study's scope differences carry over to the actual forms; nothing is decided
+  (state at 14:44 UTC). Written by the AI assistant.
+  - **The run:** on the DGX's campaign checkout at b2e84dd, the row's commit, clean, exit 0, fifteen parts, about
+    eleven minutes; the reading step at the same commit: valid, no void condition. Counted: heart 41 to 50.
+    `experiments/harness/results/h26_heart_scope_forms/`.
+  - **By the row's fixed statements** (plain means, the two E10.5 transitions merged into one fold; every figure at
+    an oracle core size shared by the arms, so differences between files and no file's level):
+    with the truth as released, A 52.40, B 51.40, C 48.55: B minus A -1.00 (0 of 10 seeds), C minus A -3.86 (0 of
+    10); per transition B minus A -7.93, +0.21 and +3.50 (E9.5 to E10.5; E8.25_late to E8.5; E8.75
+    and earlier to E10.5), C minus A -15.53, -0.97 and +2.05.
+    Over the three truths with most or all surroundings removed: A 50.40, B 56.18, C 62.19: B minus A +5.78 (10 of
+    10), C minus A +11.79 (10 of 10), C minus B +6.01 (10 of 10; +0.75 on the E10.5 fold, +11.27 on the E8.5 fold).
+    Carry-over: 15 of 15 cells for the half trim, 14 of 15 for the full trim.
+    The conditional outcome reads "C (needs a size ruling)". It applies only under an organiser statement that the
+    E12.5 stack holds less surrounding tissue than E10.5's, and only once the captain has signed the rule. No such
+    statement is on record. The file in force, A, stays.
+  - **The AI assistant's reading after the result, which changes nothing.** Entry (m)'s assumption holds: the trims
+    behave in the copy's form as they did in the study. The price of a trimmed file is then about 1 heart point (B)
+    or 4 (C) if E12.5 was sampled like E10.5, with the one-day transition alone at 8 and 16, against a gain of
+    about 6 (B) or 12 (C) if it was dissected clean; Overall moves by half of each. On the fold-merged figures a
+    trim pays above odds of about 0.15 (B) and 0.25 (C) that E12.5 is clean; on the one-day transition's loss,
+    capped by the banked score at about 5, above about 0.48 (B) and 0.31 (C). Which odds hold is the premise no
+    released task carries, and the team's notes give both stacks the same wording. This goes to the captain with
+    the three routes of entry (o); an independent recomputation of the table precedes any ruling request.

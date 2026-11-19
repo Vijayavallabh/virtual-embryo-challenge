@@ -1,0 +1,95 @@
+This read decides nothing: the choice between the files is a test-stage premise no released task carries (rule 9, J1a); the tables go to the captain with a priced question whose default is the file in force (A).
+Try H26 (commit b2e84ddc25d7e6bb536050df2beecef033bfc271). Every score below is at an oracle size (the truth's core, shared by every arm): a sensitivity bound, never a file's score.
+Oracle factors: T2h/<=E9.5->E10.5 even 1.2291, in plane 1.2820; T2h/E8.25_late->E8.5 even 0.8810, in plane 0.8589; T2h/<=E8.75->E10.5 even 2.2159, in plane 2.6585
+PRIMARY, per world, plain means (A B C | paired difference mean [min, max] seeds ahead) || V beside it, secondary:
+  T2h/<=E9.5->E10.5 own: A 52.67 B 44.75 C 37.15 | B-A -7.93 [-9.04, -6.43] 0/10; C-A -15.53 [-17.06, -13.91] 0/10; C-B -7.60 [-8.25, -6.50] 0/10 || V (secondary) A 52.67 B 50.49 C 50.49, B-A -2.18 C-A -2.18 C-B +0.00
+  T2h/<=E9.5->E10.5 radial_0.5: A 53.59 B 48.81 C 42.02 | B-A -4.78 [-6.05, -3.31] 0/10; C-A -11.57 [-13.33, -9.55] 0/10; C-B -6.79 [-8.35, -5.54] 0/10 || V (secondary) A 53.59 B 52.31 C 52.31, B-A -1.28 C-A -1.28 C-B +0.00
+  T2h/<=E9.5->E10.5 radial_0: A 49.88 B 49.60 C 46.24 | B-A -0.28 [-1.38, +0.66] 3/10; C-A -3.63 [-6.17, -1.82] 0/10; C-B -3.35 [-5.64, -1.41] 0/10 || V (secondary) A 49.88 B 49.60 C 47.95, B-A -0.28 C-A -1.92 C-B -1.64
+  T2h/<=E9.5->E10.5 thin_0.5: A 51.29 B 55.66 C 55.42 | B-A +4.37 [+3.53, +5.73] 10/10; C-A +4.13 [+2.77, +6.76] 10/10; C-B -0.24 [-1.96, +2.47] 4/10 || V (secondary) A 53.11 B 55.66 C 55.42, B-A +2.55 C-A +2.31 C-B -0.24
+  T2h/<=E9.5->E10.5 thin_0: A 46.56 B 50.97 C 53.64 | B-A +4.41 [+3.05, +6.65] 10/10; C-A +7.08 [+4.31, +10.56] 10/10; C-B +2.67 [+0.59, +4.78] 10/10 || V (secondary) A 46.56 B 50.97 C 53.64, B-A +4.41 C-A +7.08 C-B +2.67
+  T2h/E8.25_late->E8.5 own: A 51.74 B 51.95 C 50.77 | B-A +0.21 [-3.10, +2.19] 8/10; C-A -0.97 [-4.01, +0.18] 1/10; C-B -1.18 [-3.23, +1.10] 2/10 || V (secondary) A 51.74 B 52.31 C 51.17, B-A +0.57 C-A -0.57 C-B -1.15
+  T2h/E8.25_late->E8.5 radial_0.5: A 50.54 B 63.56 C 68.89 | B-A +13.02 [+9.93, +15.47] 10/10; C-A +18.35 [+16.36, +19.97] 10/10; C-B +5.33 [+3.25, +8.04] 10/10 || V (secondary) A 52.06 B 63.56 C 68.89, B-A +11.49 C-A +16.83 C-B +5.33
+  T2h/E8.25_late->E8.5 radial_0: A 49.26 B 58.11 C 69.85 | B-A +8.85 [+6.16, +11.89] 10/10; C-A +20.59 [+16.72, +23.57] 10/10; C-B +11.74 [+9.53, +14.82] 10/10 || V (secondary) A 51.79 B 58.11 C 69.85, B-A +6.32 C-A +18.06 C-B +11.74
+  T2h/E8.25_late->E8.5 thin_0.5: A 49.96 B 54.28 C 67.21 | B-A +4.32 [+1.98, +9.08] 10/10; C-A +17.25 [+14.77, +19.71] 10/10; C-B +12.93 [+8.87, +16.31] 10/10 || V (secondary) A 49.99 B 54.28 C 67.21, B-A +4.29 C-A +17.22 C-B +12.93
+  T2h/E8.25_late->E8.5 thin_0: A 52.57 B 55.11 C 64.25 | B-A +2.54 [-3.09, +8.72] 8/10; C-A +11.67 [+3.82, +20.42] 10/10; C-B +9.13 [+1.52, +15.46] 10/10 || V (secondary) A 53.00 B 55.13 C 64.25, B-A +2.14 C-A +11.25 C-B +9.11
+  T2h/<=E8.75->E10.5 own: A 53.46 B 56.95 C 55.50 | B-A +3.50 [+2.51, +4.32] 10/10; C-A +2.05 [+1.30, +2.83] 10/10; C-B -1.45 [-1.99, -1.15] 0/10 || V (secondary) A 55.38 B 56.95 C 55.63, B-A +1.58 C-A +0.25 C-B -1.33
+  T2h/<=E8.75->E10.5 radial_0.5: A 52.87 B 58.05 C 58.45 | B-A +5.19 [+3.79, +5.90] 10/10; C-A +5.58 [+4.34, +6.75] 10/10; C-B +0.39 [-0.76, +1.82] 7/10 || V (secondary) A 53.16 B 58.05 C 58.45, B-A +4.89 C-A +5.29 C-B +0.39
+  T2h/<=E8.75->E10.5 radial_0: A 51.72 B 59.59 C 56.98 | B-A +7.86 [+5.99, +9.83] 10/10; C-A +5.26 [+2.20, +7.58] 10/10; C-B -2.61 [-4.12, -0.74] 0/10 || V (secondary) A 51.72 B 59.59 C 56.98, B-A +7.86 C-A +5.26 C-B -2.61
+  T2h/<=E8.75->E10.5 thin_0.5: A 51.40 B 62.85 C 66.06 | B-A +11.45 [+10.01, +13.89] 10/10; C-A +14.66 [+13.54, +16.78] 10/10; C-B +3.21 [+2.79, +4.07] 10/10 || V (secondary) A 54.69 B 62.85 C 66.06, B-A +8.16 C-A +11.38 C-B +3.21
+  T2h/<=E8.75->E10.5 thin_0: A 50.30 B 60.45 C 65.28 | B-A +10.15 [+7.98, +11.87] 10/10; C-A +14.99 [+13.93, +17.41] 10/10; C-B +4.83 [+3.33, +6.30] 10/10 || V (secondary) A 53.34 B 60.45 C 65.28, B-A +7.11 C-A +11.94 C-B +4.83
+  fold E10.5 own: A 53.06 B 50.85 C 46.32 | B-A -2.22 [-3.12, -1.68] 0/10; C-A -6.74 [-7.29, -5.88] 0/10; C-B -4.52 [-4.90, -3.89] 0/10 || V (secondary) A 54.02 B 53.72 C 53.06, B-A -0.30 C-A -0.97 C-B -0.66
+  fold E10.5 radial_0.5: A 53.23 B 53.43 C 50.24 | B-A +0.21 [-0.83, +1.02] 7/10; C-A -2.99 [-4.01, -1.98] 0/10; C-B -3.20 [-3.94, -2.04] 0/10 || V (secondary) A 53.38 B 55.18 C 55.38, B-A +1.81 C-A +2.00 C-B +0.20
+  fold E10.5 radial_0: A 50.80 B 54.59 C 51.61 | B-A +3.79 [+2.41, +4.89] 10/10; C-A +0.81 [-1.64, +2.34] 7/10; C-B -2.98 [-4.48, -1.07] 0/10 || V (secondary) A 50.80 B 54.59 C 52.47, B-A +3.79 C-A +1.67 C-B -2.12
+  fold E10.5 thin_0.5: A 51.35 B 59.25 C 60.74 | B-A +7.91 [+7.04, +8.73] 10/10; C-A +9.39 [+8.48, +11.12] 10/10; C-B +1.49 [+0.52, +3.00] 10/10 || V (secondary) A 53.90 B 59.25 C 60.74, B-A +5.36 C-A +6.84 C-B +1.49
+  fold E10.5 thin_0: A 48.43 B 55.71 C 59.46 | B-A +7.28 [+6.46, +8.16] 10/10; C-A +11.03 [+9.23, +13.07] 10/10; C-B +3.75 [+1.96, +5.10] 10/10 || V (secondary) A 49.95 B 55.71 C 59.46, B-A +5.76 C-A +9.51 C-B +3.75
+  fold E8.5 own: A 51.74 B 51.95 C 50.77 | B-A +0.21 [-3.10, +2.19] 8/10; C-A -0.97 [-4.01, +0.18] 1/10; C-B -1.18 [-3.23, +1.10] 2/10 || V (secondary) A 51.74 B 52.31 C 51.17, B-A +0.57 C-A -0.57 C-B -1.15
+  fold E8.5 radial_0.5: A 50.54 B 63.56 C 68.89 | B-A +13.02 [+9.93, +15.47] 10/10; C-A +18.35 [+16.36, +19.97] 10/10; C-B +5.33 [+3.25, +8.04] 10/10 || V (secondary) A 52.06 B 63.56 C 68.89, B-A +11.49 C-A +16.83 C-B +5.33
+  fold E8.5 radial_0: A 49.26 B 58.11 C 69.85 | B-A +8.85 [+6.16, +11.89] 10/10; C-A +20.59 [+16.72, +23.57] 10/10; C-B +11.74 [+9.53, +14.82] 10/10 || V (secondary) A 51.79 B 58.11 C 69.85, B-A +6.32 C-A +18.06 C-B +11.74
+  fold E8.5 thin_0.5: A 49.96 B 54.28 C 67.21 | B-A +4.32 [+1.98, +9.08] 10/10; C-A +17.25 [+14.77, +19.71] 10/10; C-B +12.93 [+8.87, +16.31] 10/10 || V (secondary) A 49.99 B 54.28 C 67.21, B-A +4.29 C-A +17.22 C-B +12.93
+  fold E8.5 thin_0: A 52.57 B 55.11 C 64.25 | B-A +2.54 [-3.09, +8.72] 8/10; C-A +11.67 [+3.82, +20.42] 10/10; C-B +9.13 [+1.52, +15.46] 10/10 || V (secondary) A 53.00 B 55.13 C 64.25, B-A +2.14 C-A +11.25 C-B +9.11
+  mean of folds own: A 52.40 B 51.40 C 48.55 | B-A -1.00 [-2.67, -0.47] 0/10; C-A -3.86 [-5.50, -3.16] 0/10; C-B -2.85 [-3.82, -1.83] 0/10 || V (secondary) A 52.88 B 53.02 C 52.11, B-A +0.13 C-A -0.77 C-B -0.91
+  mean of folds radial_0.5: A 51.88 B 58.50 C 59.56 | B-A +6.61 [+5.05, +8.18] 10/10; C-A +7.68 [+6.87, +8.35] 10/10; C-B +1.07 [+0.12, +2.07] 10/10 || V (secondary) A 52.72 B 59.37 C 62.14, B-A +6.65 C-A +9.42 C-B +2.77
+  mean of folds radial_0: A 50.03 B 56.35 C 60.73 | B-A +6.32 [+5.32, +7.91] 10/10; C-A +10.70 [+9.36, +12.51] 10/10; C-B +4.38 [+2.75, +6.33] 10/10 || V (secondary) A 51.30 B 56.35 C 61.16, B-A +5.05 C-A +9.86 C-B +4.81
+  mean of folds thin_0.5: A 50.65 B 56.77 C 63.98 | B-A +6.11 [+4.88, +8.68] 10/10; C-A +13.32 [+11.70, +14.79] 10/10; C-B +7.21 [+4.80, +8.41] 10/10 || V (secondary) A 51.95 B 56.77 C 63.98, B-A +4.82 C-A +12.03 C-B +7.21
+  mean of folds thin_0: A 50.50 B 55.41 C 61.85 | B-A +4.91 [+1.69, +8.04] 10/10; C-A +11.35 [+6.52, +16.40] 10/10; C-B +6.44 [+1.74, +9.78] 10/10 || V (secondary) A 51.47 B 55.42 C 61.85, B-A +3.95 C-A +10.38 C-B +6.43
+STATED WORLDS (CLEAN = radial_0, thin_0.5, thin_0, weighted equally; own = the truth as released):
+  CLEAN fold-merged: A 50.40 B 56.18 C 62.19 | B-A +5.78 [+4.06, +7.11] 10/10; C-A +11.79 [+10.48, +13.97] 10/10; C-B +6.01 [+4.29, +7.24] 10/10 || V (secondary) A 51.57 B 56.18 C 62.33, B-A +4.61 C-A +10.76 C-B +6.15
+  CLEAN fold E10.5: A 50.19 B 56.52 C 57.27 | B-A +6.33 [+5.39, +7.22] 10/10; C-A +7.08 [+6.03, +8.54] 10/10; C-B +0.75 [-0.03, +1.53] 9/10 || V (secondary) A 51.55 B 56.52 C 57.56, B-A +4.97 C-A +6.01 C-B +1.04
+  CLEAN fold E8.5: A 50.60 B 55.84 C 67.10 | B-A +5.24 [+2.74, +8.13] 10/10; C-A +16.51 [+14.54, +20.32] 10/10; C-B +11.27 [+8.41, +13.26] 10/10 || V (secondary) A 51.60 B 55.84 C 67.10, B-A +4.25 C-A +15.51 C-B +11.26
+  own fold-merged: A 52.40 B 51.40 C 48.55 | B-A -1.00 [-2.67, -0.47] 0/10; C-A -3.86 [-5.50, -3.16] 0/10; C-B -2.85 [-3.82, -1.83] 0/10 || V (secondary) A 52.88 B 53.02 C 52.11, B-A +0.13 C-A -0.77 C-B -0.91
+  own fold E10.5: A 53.06 B 50.85 C 46.32 | B-A -2.22 [-3.12, -1.68] 0/10; C-A -6.74 [-7.29, -5.88] 0/10; C-B -4.52 [-4.90, -3.89] 0/10 || V (secondary) A 54.02 B 53.72 C 53.06, B-A -0.30 C-A -0.97 C-B -0.66
+  own fold E8.5: A 51.74 B 51.95 C 50.77 | B-A +0.21 [-3.10, +2.19] 8/10; C-A -0.97 [-4.01, +0.18] 1/10; C-B -1.18 [-3.23, +1.10] 2/10 || V (secondary) A 51.74 B 52.31 C 51.17, B-A +0.57 C-A -0.57 C-B -1.15
+CONDITIONAL OUTCOME: conditional_outcome = C (needs a size ruling): used only under the organiser statement the row names; otherwise the file in force stays.
+  rule: over CLEAN ['radial_0', 'thin_0.5', 'thin_0'], fold-merged plain means: B if B-A >= +1.0 on the mean of the two folds and B-A > 0 on each fold; C (needs a size ruling) if in addition C-B >= +1.0 on the mean of the folds and > 0 on each; otherwise, or on a void run, A
+R1 carry-over (trim minus full_iso_half | the study's trim minus hold; mean [min, max] ahead/10):
+  T2h/<=E9.5->E10.5 own: half_iso_half -7.93 [-9.04, -6.43] 0 | study -5.88 0; core_iso_half -15.53 [-17.06, -13.91] 0 | study -11.29 0
+  T2h/<=E9.5->E10.5 radial_0.5: half_iso_half -4.78 [-6.05, -3.31] 0 | study -5.49 0; core_iso_half -11.57 [-13.33, -9.55] 0 | study -12.12 0
+  T2h/<=E9.5->E10.5 radial_0: half_iso_half -0.28 [-1.38, +0.66] 3 | study +0.31 6; core_iso_half -3.63 [-6.17, -1.82] 0 | study -4.71 0
+  T2h/<=E9.5->E10.5 thin_0.5: half_iso_half +4.37 [+3.53, +5.73] 10 | study +3.95 10; core_iso_half +4.13 [+2.77, +6.76] 10 | study +1.98 10
+  T2h/<=E9.5->E10.5 thin_0: half_iso_half +4.41 [+3.05, +6.65] 10 | study +5.77 10; core_iso_half +7.08 [+4.31, +10.56] 10 | study +10.84 10
+  T2h/E8.25_late->E8.5 own: half_iso_half +0.21 [-3.10, +2.19] 8 | study +1.75 9; core_iso_half -0.97 [-4.01, +0.18] 1 | study -2.34 0
+  T2h/E8.25_late->E8.5 radial_0.5: half_iso_half +13.02 [+9.93, +15.47] 10 | study +9.78 10; core_iso_half +18.35 [+16.36, +19.97] 10 | study +15.07 10
+  T2h/E8.25_late->E8.5 radial_0: half_iso_half +8.85 [+6.16, +11.89] 10 | study +5.34 10; core_iso_half +20.59 [+16.72, +23.57] 10 | study +14.68 10
+  T2h/E8.25_late->E8.5 thin_0.5: half_iso_half +4.32 [+1.98, +9.08] 10 | study +4.98 10; core_iso_half +17.25 [+14.77, +19.71] 10 | study +19.69 10
+  T2h/E8.25_late->E8.5 thin_0: half_iso_half +2.54 [-3.09, +8.72] 8 | study +4.01 10; core_iso_half +11.67 [+3.82, +20.42] 10 | study +10.45 10
+  T2h/<=E8.75->E10.5 own: half_iso_half +3.50 [+2.51, +4.32] 10 | study +1.57 10; core_iso_half +2.05 [+1.30, +2.83] 10 | study -1.24 0 (disagree)
+  T2h/<=E8.75->E10.5 radial_0.5: half_iso_half +5.19 [+3.79, +5.90] 10 | study +6.11 10; core_iso_half +5.58 [+4.34, +6.75] 10 | study +3.93 10
+  T2h/<=E8.75->E10.5 radial_0: half_iso_half +7.86 [+5.99, +9.83] 10 | study +8.17 10; core_iso_half +5.26 [+2.20, +7.58] 10 | study +7.46 10
+  T2h/<=E8.75->E10.5 thin_0.5: half_iso_half +11.45 [+10.01, +13.89] 10 | study +10.14 10; core_iso_half +14.66 [+13.54, +16.78] 10 | study +10.85 10
+  T2h/<=E8.75->E10.5 thin_0: half_iso_half +10.15 [+7.98, +11.87] 10 | study +10.44 10; core_iso_half +14.99 [+13.93, +17.41] 10 | study +15.40 10
+  agreement: half_iso_half 15 of 15, core_iso_half 14 of 15
+REPORTED, DECIDES NOTHING: D3 and DJ4 of B minus A over the five priors. V credits a trimmed arm for being a different draw from the stand-in: s1form_half shares full_iso_half's pool, build seed and half rows, so max(s1form_half, A) is the larger of two near-copies while max(s1form_half, B) is the larger of two different draws, and V rises for B with no scope effect (simulated null D3 on V: +0.25 to +0.34 at the study's median spreads, +0.59 to +0.91 at its largest, test_v_carries_a_draw_premium_on_pure_noise). The equal average over the five priors is a world weight no committed measurement sets (rule 9, J4).
+  plain_mean: D3 +3.020, DJ4 +3.347; minimum over priors D3 -1.408, DJ4 -1.004; per prior: uniform D3 +4.192 DJ4 +4.591; own_third D3 +3.259 DJ4 +3.658; released D3 -1.408 DJ4 -1.004; radial_family D3 +2.849 DJ4 +3.977; thin_family D3 +6.207 DJ4 +5.512
+  V: D3 +3.006, DJ4 +3.209; minimum over priors D3 -0.011, DJ4 +0.135; per prior: uniform D3 +3.843 DJ4 +4.122; own_third D3 +3.200 DJ4 +3.458; released D3 -0.011 DJ4 +0.135; radial_family D3 +3.220 DJ4 +3.947; thin_family D3 +4.777 DJ4 +4.386
+R2 expected better of two, E V (plain mean score in brackets), per transition and prior (reported, decides nothing):
+  T2h/<=E9.5->E10.5 uniform: s1form_half 49.67 (49.67), full_iso_half 51.16 (50.80), half_iso_half 51.81 (49.96), core_iso_half 51.96 (46.89)
+  T2h/<=E9.5->E10.5 own_third: s1form_half 49.81 (49.81), full_iso_half 51.41 (51.11), half_iso_half 51.59 (49.09), core_iso_half 51.72 (45.27)
+  T2h/<=E9.5->E10.5 released: s1form_half 50.49 (50.49), full_iso_half 52.67 (52.67), half_iso_half 50.49 (44.75), core_iso_half 50.49 (37.15)
+  T2h/<=E9.5->E10.5 radial_family: s1form_half 50.25 (50.25), full_iso_half 52.05 (52.05), half_iso_half 50.80 (47.72), core_iso_half 50.25 (41.80)
+  T2h/<=E9.5->E10.5 thin_family: s1form_half 48.80 (48.80), full_iso_half 49.83 (48.93), half_iso_half 53.32 (53.32), core_iso_half 54.53 (54.53)
+  T2h/E8.25_late->E8.5 uniform: s1form_half 50.94 (50.94), full_iso_half 51.72 (50.81), half_iso_half 56.68 (56.60), core_iso_half 64.27 (64.19)
+  T2h/E8.25_late->E8.5 own_third: s1form_half 50.92 (50.92), full_iso_half 51.72 (50.97), half_iso_half 55.95 (55.83), core_iso_half 62.09 (61.96)
+  T2h/E8.25_late->E8.5 released: s1form_half 50.83 (50.83), full_iso_half 51.74 (51.74), half_iso_half 52.31 (51.95), core_iso_half 51.17 (50.77)
+  T2h/E8.25_late->E8.5 radial_family: s1form_half 51.56 (51.56), full_iso_half 51.87 (50.51), half_iso_half 57.99 (57.87), core_iso_half 63.30 (63.17)
+  T2h/E8.25_late->E8.5 thin_family: s1form_half 49.99 (49.99), full_iso_half 51.50 (51.27), half_iso_half 54.71 (54.70), core_iso_half 65.73 (65.73)
+  T2h/<=E8.75->E10.5 uniform: s1form_half 53.15 (53.15), full_iso_half 53.66 (51.95), half_iso_half 59.58 (59.58), core_iso_half 60.48 (60.46)
+  T2h/<=E8.75->E10.5 own_third: s1form_half 53.52 (53.52), full_iso_half 53.94 (52.20), half_iso_half 59.14 (59.14), core_iso_half 59.67 (59.63)
+  T2h/<=E8.75->E10.5 released: s1form_half 55.38 (55.38), full_iso_half 55.38 (53.46), half_iso_half 56.95 (56.95), core_iso_half 55.63 (55.50)
+  T2h/<=E8.75->E10.5 radial_family: s1form_half 52.57 (52.57), full_iso_half 53.42 (52.68), half_iso_half 58.20 (58.20), core_iso_half 57.02 (56.98)
+  T2h/<=E8.75->E10.5 thin_family: s1form_half 54.01 (54.01), full_iso_half 54.01 (50.85), half_iso_half 61.65 (61.65), core_iso_half 65.67 (65.67)
+R3 groups (trim minus full_iso_half, mean group skill):
+  T2h/<=E9.5->E10.5 own: half_iso_half expression_change -0.0304, cell_state -0.0903, shape_growth -0.1124, local_organisation -0.0841; core_iso_half expression_change -0.0300, cell_state -0.1673, shape_growth -0.2556, local_organisation -0.1681
+  T2h/<=E9.5->E10.5 radial_0.5: half_iso_half expression_change -0.0153, cell_state -0.0799, shape_growth -0.0380, local_organisation -0.0578; core_iso_half expression_change -0.0129, cell_state -0.1578, shape_growth -0.1540, local_organisation -0.1380
+  T2h/<=E9.5->E10.5 radial_0: half_iso_half expression_change +0.0008, cell_state -0.0696, shape_growth +0.0901, local_organisation -0.0326; core_iso_half expression_change +0.0111, cell_state -0.1464, shape_growth +0.0941, local_organisation -0.1042
+  T2h/<=E9.5->E10.5 thin_0.5: half_iso_half expression_change +0.0408, cell_state +0.0274, shape_growth +0.0558, local_organisation +0.0506; core_iso_half expression_change +0.0707, cell_state +0.0211, shape_growth +0.0030, local_organisation +0.0702
+  T2h/<=E9.5->E10.5 thin_0: half_iso_half expression_change +0.0654, cell_state +0.0439, shape_growth +0.0065, local_organisation +0.0608; core_iso_half expression_change +0.0999, cell_state +0.0693, shape_growth +0.0054, local_organisation +0.1084
+  T2h/E8.25_late->E8.5 own: half_iso_half expression_change +0.0834, cell_state -0.0515, shape_growth -0.0335, local_organisation +0.0099; core_iso_half expression_change +0.0700, cell_state -0.0912, shape_growth +0.0201, local_organisation -0.0380
+  T2h/E8.25_late->E8.5 radial_0.5: half_iso_half expression_change +0.1345, cell_state +0.0573, shape_growth +0.2354, local_organisation +0.0937; core_iso_half expression_change +0.2346, cell_state +0.2008, shape_growth +0.0263, local_organisation +0.2724
+  T2h/E8.25_late->E8.5 radial_0: half_iso_half expression_change +0.0893, cell_state +0.0110, shape_growth +0.2397, local_organisation +0.0141; core_iso_half expression_change +0.2667, cell_state +0.2178, shape_growth +0.0910, local_organisation +0.2482
+  T2h/E8.25_late->E8.5 thin_0.5: half_iso_half expression_change +0.0650, cell_state +0.0015, shape_growth +0.1035, local_organisation +0.0027; core_iso_half expression_change +0.2138, cell_state +0.1309, shape_growth +0.1951, local_organisation +0.1503
+  T2h/E8.25_late->E8.5 thin_0: half_iso_half expression_change +0.0643, cell_state +0.0109, shape_growth +0.0066, local_organisation +0.0199; core_iso_half expression_change +0.2126, cell_state +0.1195, shape_growth -0.0284, local_organisation +0.1633
+  T2h/<=E8.75->E10.5 own: half_iso_half expression_change +0.0370, cell_state +0.0244, shape_growth +0.0513, local_organisation +0.0272; core_iso_half expression_change +0.0410, cell_state -0.0299, shape_growth +0.0837, local_organisation -0.0130
+  T2h/<=E8.75->E10.5 radial_0.5: half_iso_half expression_change +0.0609, cell_state +0.0424, shape_growth +0.0540, local_organisation +0.0501; core_iso_half expression_change +0.0663, cell_state -0.0036, shape_growth +0.1409, local_organisation +0.0195
+  T2h/<=E8.75->E10.5 radial_0: half_iso_half expression_change +0.0964, cell_state +0.0753, shape_growth +0.0652, local_organisation +0.0776; core_iso_half expression_change +0.1044, cell_state +0.0481, shape_growth +0.0023, local_organisation +0.0555
+  T2h/<=E8.75->E10.5 thin_0.5: half_iso_half expression_change +0.1423, cell_state +0.1213, shape_growth +0.0726, local_organisation +0.1217; core_iso_half expression_change +0.1574, cell_state +0.1471, shape_growth +0.1469, local_organisation +0.1349
+  T2h/<=E8.75->E10.5 thin_0: half_iso_half expression_change +0.1451, cell_state +0.1173, shape_growth +0.0319, local_organisation +0.1118; core_iso_half expression_change +0.1604, cell_state +0.1584, shape_growth +0.1444, local_organisation +0.1364
