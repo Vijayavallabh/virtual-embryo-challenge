@@ -6291,3 +6291,48 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
   - **In hand:** the builder option for B is being written in the wave of entry (k) (`campaign/heart-iso-trim`); on
     its return a review, an independent recomputation of the table above, check builds, and the question to the
     captain with the amendment drafted.
+- 2026-11-19 (n), the two checks of entry (m): the table stands, the advice does not; the lean on the half trim is
+  withdrawn (state at 13:33 UTC). Written by the AI assistant.
+  - **The recomputation** (wf_e5a70ad9-350, an agent that computed its own table from the fifteen committed per-seed
+    files before opening entry (m)): no figure of entry (m) differs by more than 0.05. Its notes: the "85% core"
+    truth is 83.8% core on E8.25_late to E8.5; B on E9.5 to E10.5 with the truth as released is 0.016, not exactly
+    nothing (2 of 10 seeds land above the banked score); B beats A in 13 of the 15 cells, C beats A in 10, C beats B
+    in 7. With A at 50.0 the means over all cells are A 3.6, B 7.9, C 10.0, and over the three truths as released
+    A 3.6, B 3.5, C 1.3; with A at 53.0, A 6.6, B 10.7, C 12.5, and A 6.6, B 5.8, C 3.2.
+  - **The cold challenge** (same workflow; an agent given the advice and its pricing without how they were formed):
+    verdict "advice does not stand", its probability that the advice is a mistake 0.65. Its points, which the AI
+    assistant accepts:
+    (1) B is not a rule's outcome. The frozen rule of 2 November returned the half trim on B0's expression (the
+    trend since 13 November) at H2's size in the pre-registered z mode: the built `builds/T2heart_s2.h5ad`. The
+    amendment in force returns A. B takes the trim from the first and the copy, the even scaling and the halving from
+    the second; no rule returned that mix, and it was reached after the scores, on a note written after them. By the
+    rule for a closed lever the default is to decline, which keeps A; a lean on B and none on C is uneven, since
+    both reopen the same lever.
+    (2) The size term is not priced. Every row of the study was scaled to an oracle in-plane core size; at the test
+    A takes H1's forecast size and B would take H2's, and C has no scope hypothesis in the size file. The difference
+    in the scale term can be as large as the trim's own gain, in either direction. The trim also changes the cell
+    number before the halving.
+    (3) The table's framing favoured the trims. E9.5 to E10.5 is the transition nearest the test and the one where
+    the sampling changed to dissected hearts, and there the core share fell (37% to 23%): on it B is behind A in 10
+    of 10 seeds with the truth as released, and over its three radial truths B gains 1.8 and C 0.2 against A's 5.1.
+    Over the nine cells with the truth as released or radially trimmed: A 5.1, B 7.7, C 7.6; over the six thinned
+    cells: B 11.6, C 16.6. Whether E12.5 is narrower than E10.5 is the unknown, and the released E10.5 stack, itself
+    described as dissected hearts, is 23% core.
+    (4) The unit uses the first heart score as the level a second file must beat (a score choosing, which rule 9's J8
+    allows); entry (m)'s sentence that the first scores are not to enter the ruling is wrong as worded and is
+    replaced by: the first score enters only as that level.
+  - **What changes.** The lean on B, given to the captain at 13:26 UTC ("My advice will be the half trim"), is
+    withdrawn and he is told so. A is the file in force and the default if he declines. B and C go to him side by
+    side with no lean, with the table per transition and per family, at three levels of A, and with what each
+    reopens (scope and the cell number; for C a size no rule fixed). In entry (m), "keeps the two steps the captain
+    removed on 18 November" means B stays without them, as A does.
+  - **A correction to the record of 18 November.** The amendment of that day (`docs/S2_RULES.md`) lists the half
+    trim among four departures, "each by the captain's answer above to a question that named it". Entry 2026-11-18
+    (k) records three priced questions on the heart (the size mode, the expression step, the cell number); the half
+    trim appears in that entry only in the plan table's column of what the new file touches, with no price of its
+    own. So the scope hedge was dropped inside the redesign and was not put to the captain as its own priced
+    question. The hash-pinned text is not edited here; the next amendment of that file carries this correction.
+  - **Owed before the question goes to him:** a practice read of the actual forms with its ledger row first (the
+    copy at the even size and the uniform half on the full pool, the half-trimmed pool and the core-trimmed pool, on
+    the released heart transitions against the truths of the hedge study, at the oracle size and at each scope
+    hypothesis's own size ratio), reviewed before it runs; the builder option from the wave of entry (k).

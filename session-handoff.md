@@ -2,6 +2,13 @@
 
 ## Current Objective
 
+- **State at 2026-11-19, 13:33 UTC (newest).** Decision log 2026-11-19 (n). The heart upload stays held. The price
+  table of entry (m) was recomputed independently and stands; a cold challenge rejected the advice (the half trim in
+  today's form is a mix no rule returned): **the lean on the half trim is withdrawn**; A (the ruled full-scope file)
+  is the file in force and the default; B and C go to the captain side by side with no lean. Owed first: a practice
+  read of the actual forms, row first (see entry (n)), and the builder option from the wave. Both checks are saved
+  in the session's scratch folder as `lift8/heart_scope_check.json`. The next amendment of `docs/S2_RULES.md`
+  carries a correction: the half trim was dropped on 18 November without its own priced question.
 - **State at 2026-11-19, 13:24 UTC (newest).** Decision log 2026-11-19 (m). **The heart upload is held**: do not hand
   over `runs/manual_upload/T2heart_s2iso_half.h5ad` as the last heart file until the captain has ruled on scope.
   The amendment of 18 November dropped the frozen rule's half trim; entry (m) prices three files as the better of
