@@ -419,6 +419,29 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
      (`builds/T2embryo_s2x.h5ad`). That list is outside the pointer and is built in a campaign checkout
      (decision log 2026-11-19 (k)): its line is ticked only once the captain has
      accepted that provenance or a rebuild in the reference checkout has matched it.
+     For the heart's last upload (row R10; `docs/S2_RULES.md`, the amendment of 2026-11-19 for the heart; decision log
+     2026-11-19 (cc)): [MAIN SESSION: `experiments/builds/results/heart3_<commit>.SHA256SUMS`]
+     (`builds/T2heart_s2core_half.h5ad`; the full file `builds/T2heart_s2core.h5ad` is listed and not uploaded). That
+     list is outside the pointer and is built in a campaign checkout: its line is ticked only once the captain has
+     accepted that provenance or a rebuild in the reference checkout has matched it. The file is held: this line is
+     not ticked until row H27's read at forecast sizes is with the captain and he has said which heart file goes
+     (decision log 2026-11-19 (ee)). The heart2 list's `T2heart_s2iso_half.h5ad` is no longer the heart's last upload
+     unless he names it again.
+     For the embryo's last upload (row R11; `docs/S2_RULES.md`, the amendment of 2026-11-19 for the series twin;
+     decision log 2026-11-19 (cc)): [MAIN SESSION: `experiments/builds/results/embryo3_<commit>.SHA256SUMS`]
+     (`builds/T2embryo_s2xs.h5ad`). That list is outside the pointer and is built in a campaign checkout: its line is
+     ticked only once the captain has accepted that provenance or a rebuild in the reference checkout has matched it.
+     The embryo2 list's `T2embryo_s2x.h5ad` is no longer the embryo's last upload.
+     For T3's last upload (row R12; `docs/S2_RULES.md`, the amendment of 2026-11-19 for T3; decision log 2026-11-19
+     (cc)): the list the pointer names, `experiments/builds/results/builds_dc7b6ae.SHA256SUMS`, its line
+     `t3_build/barred_s1.h5ad` (3712c3f9988d0f8aa4198b22c37b866a84ef8757fd500a9163944f0663a520a2). The copy handed
+     over is the checked local copy the uploads of 2026-11-18 came from
+     (`runs/archive/builds_dc7b6ae/t3_build/barred_s1.h5ad` on the local machine; that amendment and decision log
+     2026-11-19 (ee)); the third rehearsal's
+     archived set on the DGX reference checkout and the freeze-morning folder hold the same listed bytes. Never the
+     DGX's `runs/t3_build`. A T3 file rebuilt on the other machine is not checked against this hash
+     (`docs/COMPUTE.md`, "What reproduces where"). The list's `t3_build/refused_s1.h5ad` is no longer T3's last
+     upload.
      A file in no committed list (a new embryo file, entry (s), item 1) needs its list committed, and the
      `docs/S2_RULES.md` amendment it requires, before this line can be ticked. By hand: `grep <the 64 characters>
      <list>` prints one line, under the name given above. A file whose 64 characters differ is not the listed
@@ -438,6 +461,11 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
   4. [ ] **The disclosure note went first.** The captain has sent the email or one line that names this board, this
      file's sha256 and its register ids (above), with the board's own note where one is drafted
      (`docs/ORGANIZER_QUESTIONS.md`: "Note before the heart's second upload", "Note before Task 3's second upload").
+     For the last uploads named on 2026-11-19 (rows R10 to R12): the two board notes above were drafted for the
+     earlier files (the heart's full-scope copy; T3's refused s1), and the embryo note of 2026-11-19 for
+     `T2embryo_s2x.h5ad`. Each is rewritten for the file now named and reviewed before this line is ticked: the
+     drafts are in `docs/ORGANIZER_QUESTIONS.md`, "Notes before the second uploads of the heart, the embryo and Task 3" (not yet reviewed; the heart's is held with its
+     file). The heart's note names the captain's exception. The embryo's note names the twin and its 64 characters.
   4a. [ ] **The method-report fields of the submission page.** Source: an organiser, 2026-11-16, read through the
      screen on 2026-11-19 (`docs/ORGANIZER_QUESTIONS.md`, "Screened reads of 2026-11-19"). In their words: "On the
      submission page, use the P3 method report → Data used field to list external datasets, links/accessions, stages
@@ -481,10 +509,26 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
      2026-11-18: the
      barred s1 if a ruling restricts the Gata4 files or bars the validation answers). Nothing it found switches this
      file. No organiser reply is pasted into the session.
+     For T3 since row R12 the last upload is the barred s1 by the captain's ruling, so the switch of the amendment of
+     2026-11-18 sends no other file; a ruling the check finds on the Gata4 files or the validation answers goes to
+     the captain before the upload [MAIN SESSION: whether such a ruling would touch the barred s1 itself]. For the
+     heart, an organiser statement on how the E12.5 stack was dissected goes to the captain before the upload; it
+     changes no file on its own.
   6. [ ] **The warnings register** for the file, in the decision-log entry that hands it over: every committed
      reading that puts any step of this file below the floor on any metric (a practice row, a hedge run, a failed
      gate, a flagged geometry, a step no practice run applied), each with its answer: why it does not apply, what
      hedges it, or "unanswered". The captain has read it; an unanswered line has been put to him by name.
+     For the files of rows R10 to R12 the register holds at least these lines, each from the row named:
+     heart (row R10): -3.86 against the full-scope copy with the truth as released and -15.53 on the transition
+     nearest the test (try H26, at an oracle size); the size step and the test board's count applied by no practice
+     run (row H27 is to price the size term); rows drawn from a smaller pool (rows repeat only if the count exceeds
+     the pool); the depth mix unpriced; the record's sentence that the scope was chosen by a person who had seen the
+     E12.5 heart file's size.
+     embryo (row R11): -6.58 on E7.25 and -1.62 on E7.5 against row R9's file; -0.27 at the least favourable
+     committed odds; the overrides of row E47's rule (ii) and of the cold attack's check.
+     T3 (row R12): -4.48 on rep1 at matched depth with severity scored in 6 of 10 seeds; the stage-priced cells (about
+     -2.8, +1.8, -9.6, -0.2); the overrides of row K18's fixed reading and of the cold challenge of decision log
+     2026-11-19 (s).
   7. [ ] **The go-ahead:** the captain's own word for this board and these 64 characters.
   8. [ ] **Afterwards, paste back** into the main session: the board, the time and file name the site lists, the first characters of the hash the site shows, the outcome (scored, or "rejected" and the kind of rejection in
      your own words, with no number from the message), the board total and every per-metric value. The main session
