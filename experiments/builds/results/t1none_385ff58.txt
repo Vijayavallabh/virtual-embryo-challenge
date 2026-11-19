@@ -1,0 +1,33 @@
+T1's last upload since the amendment of 2026-11-19 (docs/S2_RULES.md, "T1's last upload has no outside data"): the set t1none
+=================================================================================================================
+
+Built on the DGX (PrakashDGX_H2) on 2026-11-19 in the campaign checkout ~/v/vec-campaign at commit 385ff58 (clean
+tree; docs/S2_RULES.sha256 checked by the script), twice, one after the other, by
+`bash experiments/builds/build_all.sh t1none`, both at the script's default 16 BLAS threads (T1 files move with the
+thread count):
+  a: BUILD_OUT=runs/t1none_a   exit 0
+  b: BUILD_OUT=runs/t1none_b   exit 0
+The targeted tests ran first there (tests/test_s2_rules.py, test_t1_feng_groups_none.py, test_g_mom_verify.py):
+exit 0, 108 passed.
+
+Command the set runs:
+  build_test.py t1 --g-mom --base lib3 --feng-groups none --out <O>/builds/T1_s2none.h5ad
+then `vec check` on the file for board T1:test (exit 0 in both builds).
+
+Both builds give the same bytes (cmp, and one sha256):
+  55eaee547ff18d7477da5b730c34e7de9ab74f85cc12fd01a9eff6450367611c  builds/T1_s2none.h5ad
+The stamp says commit 385ff58, clean True, in both builds. The build record says feng_groups "none", no external
+file, fraction null.
+
+The same sha256 as every check build of the route before the ruling: two at f211416 (with and without R2's held
+lists), two at ea95c02 and two at 555daf4 (docs/PLAN.md decision log 2026-11-19 (d), (e), (g)). With the option not
+given, the two T1 files of the reference list rebuilt to their listed hashes at f211416, ea95c02 and 555daf4.
+
+Kept: ~/v/vec-campaign/runs/archive/t1none_385ff58/ on the DGX and runs/archive/t1none_385ff58/ on the local machine
+(SHA256SUMS checked on both); the file for upload is copied to runs/manual_upload/T1_s2none.h5ad here (sha256
+checked). The local format check (`vec check runs/manual_upload/T1_s2none.h5ad --board T1:test`) passes.
+
+Built in a campaign checkout, not the reference checkout that docs/COMPUTE.md names as the source of uploads; the
+reference checkout stays untouched at dc7b6ae (the same provenance as the heart's second file, heart2_307c9b2).
+Logs of the builds are kept on the DGX and were not read: a test build is read by its exit code, its sha256 and its
+stamp's commit and clean fields.

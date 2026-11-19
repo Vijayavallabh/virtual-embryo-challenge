@@ -835,7 +835,7 @@ captain released the DGX's GPUs 2 to 7 to this work and lifted `docs/COMPUTE.md`
   2895bc0f6f83110be0024739154308273b9e2ef552ffcd31448ef0ac7128ddaa (decision log 2026-11-19 (h)); row R8.
 - Changed: T1's last file and nothing else.
   - The composition and base hedges are given up. Both T1 uploads draw the same cells.
-  - A new reference list covers this one file [TO COMPLETE: the build record's path and commit]. The reference list
+  - A new reference list covers this one file (`experiments/builds/results/t1none_385ff58.SHA256SUMS`, built at 385ff58). The reference list
     of the third rehearsal still describes the other files.
 - Evidence: in-sample labelled diagnostics only.
   - The step removed is worth about 1.2 practice points by T26 and the forecast, at most about 3.5 by T60. By ledger

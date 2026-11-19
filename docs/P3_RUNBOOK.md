@@ -412,7 +412,7 @@ ef1819f; 4.6 12151e0. On the DGX, a command here that no runner script wraps nee
      outside the pointer and was built in a campaign checkout (decision log 2026-11-18 (n)): the heart's line is
      ticked only once the captain has accepted that provenance or a rebuild in the reference checkout has matched it.
      For T1's last upload (row R8; `docs/S2_RULES.md`, the amendment of 2026-11-19):
-     `experiments/builds/results/t1none_<commit>.SHA256SUMS` (`builds/T1_s2none.h5ad`) [TO COMPLETE: the commit of the build record]. That list is outside the pointer and is built in a campaign checkout: its line is ticked only
+     `experiments/builds/results/t1none_385ff58.SHA256SUMS` (`builds/T1_s2none.h5ad`). That list is outside the pointer and is built in a campaign checkout: its line is ticked only
      once the captain has accepted that provenance or a rebuild in the reference checkout has matched it.
      A file in no committed list (a new embryo file, entry (s), item 1) needs its list committed, and the
      `docs/S2_RULES.md` amendment it requires, before this line can be ticked. By hand: `grep <the 64 characters>

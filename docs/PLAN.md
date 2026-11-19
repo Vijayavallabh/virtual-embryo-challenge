@@ -6099,3 +6099,24 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     and then the amended sources note, both in his drafts since 2026-11-19, 11:24 and 11:25 UTC
     (`docs/ORGANIZER_QUESTIONS.md`) (the time he sends them is recorded when he says); the short note that precedes the upload.
     The upload is the captain's.
+- 2026-11-19 (i), T1's last file is built (state at 12:35 UTC). Written by the AI assistant.
+  - **The build** (`experiments/builds/results/t1none_385ff58.txt` and `.SHA256SUMS`): the set t1none on the DGX
+    campaign checkout `~/v/vec-campaign` at 385ff58, the ruling commit of entry (h), twice, one after the other, both
+    at 16 BLAS threads. Exit 0 both times, with the script's check of the rules' hash and its local format check
+    inside; the targeted tests first, 108 passed. Both builds have the same bytes, 55eaee547ff1, which is the hash
+    of all six check builds of the route (entries (d), (e) and (g)). The stamps say 385ff58 and clean; the build
+    record says no outside file and that the direction step was removed.
+  - **A slip of the AI assistant's before the build, with no effect on any file.** Its first launch skipped the sync
+    (a commit it named did not exist on the DGX yet), so its script started at the old commit, where the set does not
+    exist; it was stopped during its unit tests, before any build. A second launch then overlapped the first's test
+    process, and both were stopped. The third ran alone at 385ff58 on a clean tree. Nothing was built by the first
+    two, and the reference checkout was never touched.
+  - **The file on this machine:** `runs/archive/t1none_385ff58/` (hash checked) and the upload copy
+    `runs/manual_upload/T1_s2none.h5ad` (hash checked; `vec check` for T1:test passes). The complete local test run
+    at 385ff58 is running.
+  - **The two notes that precede the T1 and embryo uploads** are drafted and reviewed
+    (`docs/ORGANIZER_QUESTIONS.md`, "Notes before Task 1's and the embryo's second uploads"); T1's carries this
+    hash. They go into the captain's drafts at his word.
+  - **Not uploaded, and why.** The captain has not yet said which login made the uploads of 18 November (entry (g)):
+    the server shows none of them for the team's key. Until that is clear the AI assistant advises no upload from any
+    login. Next: the embryo's amendment and build (the captain's answer of entry (f)).

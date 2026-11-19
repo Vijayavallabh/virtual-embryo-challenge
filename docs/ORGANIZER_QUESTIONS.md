@@ -972,6 +972,49 @@ Best regards,
 Vijayavallabh J
 Team captain, Mithril
 
+## Notes before Task 1's and the embryo's second uploads (drafted 2026-11-19; not in the captain's drafts; the captain decides and sends)
+
+The amended sources note promises "Before each of our second uploads we will send its board, file hash and sources
+in a short note." The heart's and Task 3's notes are below, in the captain's drafts since 18 November. These two were
+drafted by an agent of the AI assistant, reviewed by a second in three passes (accuracy, strategy, tone: four points)
+and fixed by a third (wf_e7336078-e77). They go into his drafts at his word. Task 1's hash is the rehearsed build's
+(`experiments/builds/results/t1none_385ff58.txt`); the embryo's file name and hash are filled when its set is built.
+Answers: _none; not sent_.
+
+**Subject:** Human Team (Mithril): second Task 1 upload, file hash and sources
+
+To: virtual.embryo.moonshot@gmail.com
+
+Hello organisers,
+
+As our email on sources and file hashes of 18 November promised, here are the hash and sources of our second Task 1 upload, before we make it. Please keep this private.
+
+T1:test, second upload. File T1_s2none.h5ad, SHA-256 55eaee547ff18d7477da5b730c34e7de9ab74f85cc12fd01a9eff6450367611c. It is our first Task 1 upload's method without its one step that used external data. It reads no external dataset.
+
+Sources: X001 (local scoring only) and X005 (pinned libraries). The file reads nothing of X002 (Feng et al.), nor of X007 to X009, which acted only on the removed step. We still list X002: two parts kept here were chosen with evidence that used its labels, as our labels note explains. X003 and X006 never entered a model. Official validation file: E10.5, as before.
+
+It replaces the second file fixed in advance; the method report will say so.
+
+Best regards,
+Vijayavallabh J
+Team captain, Mithril
+
+**Subject:** Human Team (Mithril): second embryo upload, file hash and sources
+
+To: virtual.embryo.moonshot@gmail.com
+
+Hello organisers,
+
+As our email on sources and file hashes for the uploads of 18 November promised, here are the hash and sources of our second embryo upload, before we make it. Please keep this private.
+
+T2:embryo:test_interp, second upload. File [EMBRYO FILE NAME], SHA-256 [EMBRYO HASH]. It has the cells and expression of our first embryo upload, with each cell placed at a position measured at E7.5 in place of a moved position. Sources as for our first embryo upload (X001, X004 and X005), and the same official validation file (the embryo's E7.5 file).
+
+This replaces the file we had fixed in advance. We built and chose it after our first scores, which the site returned to us as to every team; no number in the file was computed from a score. The method report will set out this change.
+
+Best regards,
+Vijayavallabh J
+Team captain, Mithril
+
 ## Note before the heart's second upload (drafted 2026-11-18; in the captain's drafts; the captain sends)
 
 The short note the disclosure email promises before the heart's second upload: the board, the file's hash and its
