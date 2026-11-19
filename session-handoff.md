@@ -2,7 +2,41 @@
 
 ## Current Objective
 
-- **State at 2026-11-19, 19:02 UTC (newest).** Decision log 2026-11-19 (u) to (z). **The labeller ran** (the
+- **State at 2026-11-19, 21:07 UTC (newest).** Decision log 2026-11-19 (aa) to (ii). **The captain named the last
+  file on all four boards** (each an answer to its own priced dialog question; entries (cc) and (ii)):
+  heart = the full trim (his own named exception); embryo = the series twin on E7.5's exact positions; T3 = the
+  barred branch's s1; T1 = the recomputed-groups atlas file ("proceed with your recommendation" to a question whose
+  one recommendation was that file). `docs/S2_RULES.md` carries the first three (sha256 9456a7737140); T1's
+  amendment is being written (wf_d0b288ec-143: rules, build set `t1rc`, row R13, report lines, a draft note).
+  **Files:** embryo `runs/manual_upload/T2embryo_s2xs.h5ad` (bc50d012cd2c; built twice at 3d52b83, record
+  `experiments/builds/results/embryo3_3d52b83.txt`); T3 `runs/archive/builds_dc7b6ae/t3_build/barred_s1.h5ad`
+  (3712c3f9988d; on the reference list; no build); heart `runs/manual_upload/T2heart_s2core_half.h5ad`
+  (04cde6361c04; `heart3_3d52b83.txt`), **built and HELD**; T1's recomputed file is not built for upload yet
+  (check builds ad8f24c71c90 at 8138fa2). **Nothing is handed over.** Before any hand-over: the note that precedes
+  each second upload (drafts in `docs/ORGANIZER_QUESTIONS.md`, last sections; into the captain's Gmail drafts only
+  at his word, after a three-lens review; he sends them), and the question of which login made the uploads of
+  18 November (our key's quota showed 0 of 2 used; he said not to search for the score for now).
+  **The AI assistant is recused from every choice and lean on the heart's scope and size** (entry (bb): it began to
+  invert the heart's scale score and stopped; no value recorded anywhere). A side note the captain forwarded was
+  right that row H26's figures were at an oracle size: **row H27** (the three heart forms at forecast and perfect
+  sizes on released stages; designed, attacked, settled, written and reviewed by agents that had not seen the
+  session; registered at 4751471) **is running** on `~/v/vec-campaign` (launcher `~/v/scratch/h27/go_h27.sh`; exit
+  files under `~/v/scratch/h27/` and `runs/h27/exit/`; then ONE read with `~/v/scratch/h27/go_h27_read.sh`; copy
+  back reading.json, reading.txt and the 15 parts and commit them with the row's outcome cell in one commit; then
+  an independent recomputation; then the figures go to the captain in the read's pre-set words beside row H26's,
+  with no preference from the AI assistant; his ruling stands unless he names another file).
+  **T1:** row T62 read and recomputed (the recomputed step AHEAD under both readings: +1.97, +1.67, +2.50, +1.23,
+  +2.51; the epicardium step PAYS); the cold check let the advice stand with conditions (entry (hh): the
+  compliance price; the test's 2/5 step unread). **Row T63** (the candidate at the test's step size with a placebo
+  and the epicardium-held arm; wf_81156c91-e7c) is being attacked, written and reviewed: then the row on main
+  first, the run on `~/v/vec-campaign-d`, one read, an independent recomputation. What follows is fixed in its
+  row; the T1 file is built (set `t1rc`, twice, on `~/v/vec-campaign-d`) only after that read, or after the
+  captain's answer if the read sends him a question.
+  **Housekeeping:** the complete suite last passed at 1750ade (3207 passed); rerun it at HEAD once the tree
+  settles (worktree `.claude/worktrees/t1-none`, GIT_* unset). `experiments/external/n54_step.sh` must list every
+  new test file that touches the builder (its own test fails otherwise). The heart builder's golden-record test
+  now tolerates last-bit float differences between machines (ce589a6). 22 junk commits by "t" stay in place.
+- **State at 2026-11-19, 19:02 UTC.** Decision log 2026-11-19 (u) to (z). **The labeller ran** (the
   captain's sign-off, entry (u), is the ruling naming N54): rows N55 and N54 are read; settings frozen (sha256
   883e74c2c1ef, min_score 0.3 by N55's rule); route recomputed (unassigned 0.019 and 0.038; four groups with a
   direction; epicardium on 11 early and 32 late cells, minimum 10); the candidate

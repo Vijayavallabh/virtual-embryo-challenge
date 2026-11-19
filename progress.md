@@ -2,6 +2,13 @@
 
 ## Current State
 
+- **2026-11-19, 21:07 UTC.** The captain named the last file on all four boards (decision log 2026-11-19 (cc),
+  (ii)): heart full trim (his exception; built, held until row H27's read), embryo series twin (built), T3 barred
+  s1 (built, on the reference list), T1 recomputed-groups atlas file (built after row T63's read). Rules
+  amendments for three boards are merged (S2_RULES sha256 9456a7737140); T1's is being written. Tries: T1 368,
+  embryo 75, heart 50 (68 after H27), T3 51. Nothing is handed over or sent. Details and what waits:
+  `session-handoff.md`, first bullet.
+
 **Last Updated:** 2026-11-19
 **2026-11-19, 13:09 UTC: the captain ruled T1's and the embryo's last files and both are built; he approved the outside
 atlases as T1 inputs; a wave of upside candidates is in preparation** (`docs/PLAN.md` decision log 2026-11-19 (f) to
