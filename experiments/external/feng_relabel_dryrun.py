@@ -21,11 +21,22 @@ immune, lymphatic, definitive blood) are not exercised: the released file has no
 
 It reads only the released E9.5 file's counts, gene names and celltype column. It refuses unless row N55 is in
 TRIES.md, a docs/PLAN.md decision-log entry named by --ruling names N55, the yaml is still draft and holds no
-UNSOURCED gene and no PENDING choice, its first n55_rule setting is the one under `assign`, the tree is clean, and its
-output exists neither in the tree nor at HEAD (deleting an untracked output cannot allow a silent rerun). Writes
-experiments/external/results/feng_relabel_dryrun/n55.json, which the main session commits at once. Run (DGX campaign
-checkout; minutes):
+UNSOURCED gene and no PENDING choice, its first n55_rule setting is the one under `assign`, the tree is clean, its
+output exists neither in the tree nor at HEAD (deleting an untracked output cannot allow a silent rerun), and no earlier
+dry run left its marker (feng_relabel.N55_STARTED, under the checkout's own data/derived, written before the released
+file is opened). Writes experiments/external/results/feng_relabel_dryrun/n55.json, which the main session commits at
+once.
+
+A dry run that stops after these refusals (a set short of score.min_genes_found in the released file's symbols, a set
+that draws no control gene, any other error or interrupt) writes n55.json as a stop record: "stopped": true, the
+reason, and "rule": {"outcome": "stopped", "setting": the first setting of n55_rule}; it exits with
+feng_relabel.STOP_EXIT (an interrupt is recorded, then raised again). By n55_rule (iv), min_score and min_margin stay,
+N55 is not rerun under its row, nothing in the yaml is edited because of it, and N54's first line says J7 was not met.
+A dry run killed outright leaves only the marker: `--record-kill` then writes the same stop record (reason "killed"),
+and refuses unless the marker exists and n55.json does not (in the tree or at HEAD). Run (DGX campaign checkout;
+minutes; never --record-kill while the dry run still runs):
   uv run --frozen --no-sync python -I -B experiments/external/feng_relabel_dryrun.py --ruling "<decision-log id>"
+  uv run --frozen --no-sync python -I -B experiments/external/feng_relabel_dryrun.py --record-kill
 """
 
 from __future__ import annotations
@@ -105,17 +116,60 @@ def refusals(cfg: Mapping, ruling: str | None) -> str | None:
         return f"n55_rule's first setting {dict(first)} is not the one under assign: N55 reads the yaml as it stands"
     if fr.N55_OUT.exists() or fr.committed_at_head(fr.N55_OUT) is not None:
         return f"{ROW} has already written its output (in the tree or at HEAD); a rerun is a new row"
+    if fr.N55_STARTED.exists():
+        return (f"{ROW} was started before ({fr.N55_STARTED} exists) and wrote no output: record the stop with "
+                "--record-kill; a rerun is a new row")
     return None
 
 
-def main(argv=None) -> None:
+def stop_report(cfg: Mapping, ruling: str | None, reason: str, config_sha256: str, stamp: Mapping,
+                released_sha256: str | None = None) -> dict:
+    """n55.json for a dry run that stopped (n55_rule (iv)): the outcome "stopped" with the rule's first setting, so
+    min_score and min_margin stay; feng_relabel.check_n55 accepts it and puts the reason in N54's gate."""
+    first = dict(cfg["n55_rule"]["order"][0])
+    return {"label": f"{ROW}: the dry run on the released T1 E9.5 STOPPED; by n55_rule (iv) the thresholds stay, {ROW} "
+                     "is not rerun, and N54 says J7 was not met",
+            "ruling": ruling, "stopped": True, "reason": str(reason)[:500],
+            "rule": {"outcome": "stopped", "setting": first},
+            "inputs": {"released": str(RELEASED.relative_to(fio.REPO)), "sha256": released_sha256,
+                       "config_sha256": config_sha256},
+            "stamp": dict(stamp)}
+
+
+def _write(report: Mapping) -> None:
+    fr.N55_OUT.parent.mkdir(parents=True, exist_ok=True)
+    fr.N55_OUT.write_text(json.dumps(report, indent=1, default=float) + "\n")
+
+
+def record_kill() -> int:
+    """`--record-kill`: n55.json as a stop record for a dry run killed outright (its marker exists, no n55.json in the
+    tree or at HEAD), with the ruling, commit and yaml sha256 the marker holds. Returns STOP_EXIT."""
+    if not fr.N55_STARTED.exists():
+        sys.exit(f"refused: no started dry run ({fr.N55_STARTED} is absent): there is no kill to record")
+    if fr.N55_OUT.exists() or fr.committed_at_head(fr.N55_OUT) is not None:
+        sys.exit("refused: n55.json exists (in the tree or at HEAD): there is no kill to record")
+    info = json.loads(fr.N55_STARTED.read_text())
+    if info.get("config_sha256") != fio.sha256_file(fr.CONFIG):
+        sys.exit("refused: the yaml differs from the one the killed dry run started with")
+    cfg = fr.load_config()
+    _write(stop_report(cfg, info.get("ruling"), "killed: the dry run ended without writing n55.json (SIGKILL or the "
+                       "OOM killer); recorded afterwards by --record-kill", info["config_sha256"], info["stamp"]))
+    print(f"recorded the killed dry run: outcome stopped; min_score and min_margin stay. Commit "
+          f"{fr.N55_OUT.relative_to(fio.REPO)} now.")
+    return fr.STOP_EXIT
+
+
+def main(argv=None) -> int:
     from vec import provenance
-    from vec.core import counts_of
-    from vec.prep import load_stage
 
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("--ruling", required=True, help="the docs/PLAN.md decision-log entry ordering N55")
+    what = ap.add_mutually_exclusive_group(required=True)
+    what.add_argument("--ruling", help="the docs/PLAN.md decision-log entry ordering N55")
+    what.add_argument("--record-kill", action="store_true",
+                      help="record a dry run killed outright (its marker and no n55.json) as a stop")
     a = ap.parse_args(argv)
+    if a.record_kill:
+        return record_kill()
     cfg = fr.load_config()
     why = refusals(cfg, a.ruling)
     if why:
@@ -123,21 +177,43 @@ def main(argv=None) -> None:
     commit, unclean = provenance.git_state(fio.REPO)
     if unclean is None or unclean:
         sys.exit(f"the tree is not clean ({unclean})")
-    ref = load_stage(RELEASED, lineage=False)
-    C = counts_of(ref)
+    try:
+        fr.output_dir_ok(fr.N55_STARTED.parent)  # inside the checkout's own data/ (never a linked folder)
+    except fr.Refused as e:
+        sys.exit(f"refused: {e}")
+    config_sha = fio.sha256_file(fr.CONFIG)
+    stamp = {"commit": commit, "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+    fr.N55_STARTED.parent.mkdir(parents=True, exist_ok=True)
+    fr.N55_STARTED.write_text(json.dumps({"ruling": a.ruling, "config_sha256": config_sha, "stamp": stamp}) + "\n")
+    released_sha = None
+    try:  # n55_rule (iv): any stop from here on is recorded, with the thresholds kept, and never rerun under N55
+        from vec.core import counts_of
+        from vec.prep import load_stage
+
+        ref = load_stage(RELEASED, lineage=False)
+        C = counts_of(ref)
+        released_sha = fio.sha256_file(RELEASED)
+        body = dry_run(C, [str(g) for g in ref.var_names], ref.obs[LABEL_KEY].astype(str).to_numpy(), cfg)
+    except BaseException as e:
+        report = stop_report(cfg, a.ruling, f"{type(e).__name__}: {e}", config_sha, stamp, released_sha)
+        _write(report)
+        print(f"the dry run stopped ({report['reason']}): outcome stopped, by n55_rule (iv); min_score and min_margin "
+              f"stay; {ROW} is not rerun. Commit {fr.N55_OUT.relative_to(fio.REPO)} now.")
+        if not isinstance(e, Exception):
+            raise
+        return fr.STOP_EXIT
     report = {"label": f"{ROW}: feng_relabel.yaml's scorer and guards on the released T1 E9.5 (training stage; no Feng "
                        "file; decides nothing by itself; optimistic, the markers were selected on this file)",
-              "ruling": a.ruling, **dry_run(C, [str(g) for g in ref.var_names],
-                                            ref.obs[LABEL_KEY].astype(str).to_numpy(), cfg),
-              "inputs": {"released": str(RELEASED.relative_to(fio.REPO)), "sha256": fio.sha256_file(RELEASED),
-                         "config_sha256": fio.sha256_file(fr.CONFIG)},
-              "stamp": {"commit": commit, "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}}
-    OUT.mkdir(parents=True, exist_ok=True)
-    fr.N55_OUT.write_text(json.dumps(report, indent=1, default=float) + "\n")
+              "ruling": a.ruling, **body,
+              "inputs": {"released": str(RELEASED.relative_to(fio.REPO)), "sha256": released_sha,
+                         "config_sha256": config_sha},
+              "stamp": stamp}
+    _write(report)
     print(json.dumps({k: report[k] for k in ("unassigned_share", "cap", "group_cells", "under_min_cells")}, indent=1))
     print(f"rule: {report['rule']['outcome']}; the yaml's min_score and min_margin at the freeze: "
           f"{report['rule']['setting']}. Commit {fr.N55_OUT.relative_to(fio.REPO)} now.")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

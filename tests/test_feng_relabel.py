@@ -1290,8 +1290,13 @@ def _none_env(bt, t1_env, monkeypatch, record, where):  # noqa: F811
         rec_path.parent.mkdir(parents=True, exist_ok=True)
         rec_path.write_text(json.dumps(record))
     plan = Path(where) / "PLAN.md"
-    plan.write_text("- 2026-11-22 (a), the captain sets the relabelling's route aside for T1; row N54.\n")
+    plan.write_text("- 2026-11-20 (a), the captain's ruling for the run; row N54.\n"
+                    "- 2026-11-22 (a), the captain sets the relabelling's route aside for T1; row N54.\n")
     monkeypatch.setattr(fr, "PLAN", plan)
+    # the record was committed on 2026-11-21, when docs/PLAN.md held the run's ruling only
+    monkeypatch.setattr(fr, "last_commit", lambda path: ("rc1", "2026-11-21"))
+    monkeypatch.setattr(fr, "plan_at_commit",
+                        lambda commit: "- 2026-11-20 (a), the captain's ruling for the run; row N54.\n")
 
 
 def test_none_before_any_relabelling_builds_as_on_main(bt, t1_env, monkeypatch, tmp_path):  # noqa: F811
@@ -1401,11 +1406,14 @@ def test_agreement_main_refuses_before_the_listing_is_committed(tmp_path, monkey
     listing = tmp_path / "n54.json"
     monkeypatch.setattr(ag, "OUT", tmp_path / "agree")
     monkeypatch.setattr(ag, "LISTING", listing)
+    args = ["--frozen-sha256", "x", "--method-report", "--upload-ruling", "2026-11-23 (a)"]
     with pytest.raises(SystemExit, match="has not run"):
-        ag.main(["--frozen-sha256", "x", "--method-report"])
+        ag.main(args)
     listing.write_text('{"inputs": {"recomputed": {"sha256": "x"}}}\n')
     monkeypatch.setattr(fr, "committed_at_head", lambda p: None)
     with pytest.raises(SystemExit, match="not committed at HEAD"):
+        ag.main(args)
+    with pytest.raises(SystemExit):  # the upload ruling is a required argument
         ag.main(["--frozen-sha256", "x", "--method-report"])
 
 
@@ -1568,3 +1576,264 @@ def test_the_lymphatic_class_at_the_minimum_stops_the_run_if_a_gene_is_missing()
         C, genes, stage, _ = _committed_extremes({"x": {}}, n_per=40, drop=(gone,))
         with pytest.raises(fr.Refused, match="set lymphatic"):
             fr.relabel(C, genes, stage, COMMITTED)
+
+
+# ------------------------------------------------------------------ the review of the port (second fixer, 2026-11-19)
+
+
+def _dry_env(monkeypatch, tmp_path, cfg, C, genes, released):
+    """feng_relabel_dryrun.main on a stand-in repository: the released file's reader returns synthetic counts."""
+    import feng_relabel_dryrun as dr
+    import pandas as pd
+
+    from vec import core, prep, provenance
+
+    (tmp_path / "data").mkdir(exist_ok=True)
+    monkeypatch.setattr(fr.fio, "REPO", tmp_path)
+    monkeypatch.setattr(dr, "RELEASED", tmp_path / "data/raw/T1/E9.5_RNA.h5ad")
+    monkeypatch.setattr(fr, "N55_OUT", tmp_path / "experiments/external/results/feng_relabel_dryrun/n55.json")
+    monkeypatch.setattr(fr, "N55_STARTED", tmp_path / "data/derived/feng_relabel_n55/STARTED.json")
+    monkeypatch.setattr(fr, "load_config", lambda path=None: copy.deepcopy(cfg))
+    monkeypatch.setattr(fr, "row_in_tries", lambda row, path=None: row == "N55")
+    monkeypatch.setattr(fr, "ruling_logged", lambda ruling, row="N54", plan=None, text=None: ruling == "2026-11-20 (b)")
+    monkeypatch.setattr(fr, "committed_at_head", lambda p: None)
+    monkeypatch.setattr(provenance, "git_state", lambda repo, ignore=(): ("n55c", []))
+    ref = SimpleNamespace(var_names=list(genes), obs=pd.DataFrame({"celltype": np.asarray(released)}))
+    monkeypatch.setattr(prep, "load_stage", lambda *a, **k: ref)
+    monkeypatch.setattr(core, "counts_of", lambda r: C)
+    monkeypatch.setattr(fr.fio, "sha256_file", lambda path: "sha-" + Path(path).name)
+    return dr
+
+
+@pytest.mark.parametrize("stop", ["missing_prox1", "no_control"])
+def test_a_dry_run_that_stops_is_recorded_with_the_first_setting_and_never_rerun(monkeypatch, tmp_path, capsys, stop):
+    """The review of the port, its blocker: n55_rule (iv). A dry run that stops (a set short of two genes in the
+    released symbols, a set that draws no control gene) writes n55.json with outcome stopped and the first setting,
+    exits STOP_EXIT, and a second call is refused."""
+    if stop == "missing_prox1":
+        cfg = copy.deepcopy(COMMITTED)
+        C, genes, _, _ = _committed_extremes({"x": {}}, n_per=40, drop=("Prox1",))
+        want = "set lymphatic"
+    else:
+        cfg = syn_cfg()
+        types = cells(SPEC)
+        C = counts(types, seed=2).tolil()
+        for g in ("Bl1", "Bl2"):  # every gene of the blood set has a zero mean: no bin, so no control gene
+            C[:, GENES.index(g)] = 0
+        C, genes = sparse.csr_matrix(C), GENES
+        want = "drew no control gene"
+    dr = _dry_env(monkeypatch, tmp_path, cfg, C, genes, ["V-CM"] * C.shape[0])
+    assert dr.main(["--ruling", "2026-11-20 (b)"]) == fr.STOP_EXIT
+    rep = json.loads(fr.N55_OUT.read_text())
+    assert rep["stopped"] is True and want in rep["reason"]
+    assert rep["rule"] == {"outcome": "stopped", "setting": cfg["n55_rule"]["order"][0]}
+    assert rep["stamp"]["commit"] == "n55c" and rep["inputs"]["config_sha256"]
+    assert "outcome stopped" in capsys.readouterr().out and fr.N55_STARTED.exists()
+    with pytest.raises(SystemExit, match="already written"):
+        dr.main(["--ruling", "2026-11-20 (b)"])
+    fr.N55_OUT.unlink()  # even with the output gone, the marker blocks a silent rerun
+    with pytest.raises(SystemExit, match="was started before"):
+        dr.main(["--ruling", "2026-11-20 (b)"])
+
+
+def test_an_interrupted_dry_run_is_recorded_and_raised_and_a_killed_one_recorded_afterwards(monkeypatch, tmp_path):
+    from vec import core
+
+    cfg = syn_cfg()
+    dr = _dry_env(monkeypatch, tmp_path, cfg, counts(cells(SPEC)), GENES, ["V-CM"] * sum(SPEC.values()))
+
+    def interrupt(r):
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(core, "counts_of", interrupt)
+    with pytest.raises(KeyboardInterrupt):
+        dr.main(["--ruling", "2026-11-20 (b)"])
+    assert json.loads(fr.N55_OUT.read_text())["rule"]["outcome"] == "stopped"
+    with pytest.raises(SystemExit, match="n55.json exists"):  # nothing to record: the stop is on file
+        dr.main(["--record-kill"])
+    # a kill leaves the marker alone: --record-kill writes the stop record from it
+    fr.N55_OUT.unlink()
+    assert dr.main(["--record-kill"]) == fr.STOP_EXIT
+    rep = json.loads(fr.N55_OUT.read_text())
+    assert rep["rule"]["outcome"] == "stopped" and rep["reason"].startswith("killed")
+    assert rep["ruling"] == "2026-11-20 (b)" and rep["stamp"]["commit"] == "n55c"
+    fr.N55_STARTED.unlink()
+    fr.N55_OUT.unlink()
+    with pytest.raises(SystemExit, match="no started dry run"):
+        dr.main(["--record-kill"])
+
+
+def test_the_gate_accepts_a_stopped_n55_with_the_first_setting_and_refuses_a_setting_its_outcome_cannot_give(
+        gate_env):
+    env, ruling = gate_env, "2026-11-20 (a)"
+
+    def n55(outcome, setting, **extra):
+        env.n55["rule"] = {"outcome": outcome, "setting": setting}
+        env.n55.update(extra)
+        env.head[env.n55_out.resolve()] = json.dumps(env.n55).encode()
+
+    first, later = {"min_score": 0.5, "min_margin": 0.25}, {"min_score": 0.5, "min_margin": 0.15}
+    n55("stopped", first, stopped=True, reason="Refused: set lymphatic: 1 of its genes")
+    g = fr.preflight(env.path, ruling, env.dst)["n55"]
+    assert g["outcome"] == "stopped" and g["setting"] == first and "lymphatic" in g["reason"]
+    for outcome, setting, msg in (("stopped", later, "cannot give the setting"),
+                                  ("guard_failed", later, "cannot give the setting"),
+                                  ("kept", later, "cannot give the setting"),
+                                  ("changed", first, "cannot give the setting"),
+                                  ("changed", {"min_score": 0.2, "min_margin": 0.25}, "cannot give the setting"),
+                                  ("rerun", first, "is not one of")):
+        n55(outcome, setting)
+        with pytest.raises(fr.Refused, match=msg):
+            fr.preflight(env.path, ruling, env.dst)
+
+
+def test_a_killed_relabelling_is_recorded_afterwards_as_route_none(gate_env, monkeypatch, tmp_path, capsys):
+    """The review of the port, lesser point 3: a run killed outright left only STARTED.json; --record-kill writes the
+    stop record from it (reason killed, route none), and refuses without a marker or with a manifest or RECORD."""
+    monkeypatch.setattr(fr.fio, "REPO", tmp_path)
+    monkeypatch.setattr(fr.fio, "provenance", lambda code: {"git_commit": "abc", "git_uncommitted": []})
+    (tmp_path / "data").mkdir()
+    _output(gate_env, "data/derived/relabel_c")
+    with pytest.raises(SystemExit, match="no started relabelling"):
+        fr.main(["--record-kill"])
+    dst = tmp_path / "data/derived/relabel_c"
+    dst.mkdir(parents=True)
+    (dst / fr.STARTED).write_text(json.dumps({"gate": GATE, "config_sha256": "other"}))
+    with pytest.raises(SystemExit, match="differs from the one the killed run started with"):
+        fr.main(["--record-kill"])
+    (dst / fr.STARTED).write_text(json.dumps({"gate": GATE, "config_sha256": fr.file_sha256(fr.CONFIG)}))
+    assert fr.main(["--record-kill"]) == fr.STOP_EXIT
+    man = json.loads(fr.RECORD.read_text())
+    assert man["stopped"] is True and man["route"] == "none" and man["reason"].startswith("killed")
+    assert man["gate"] == GATE and man["outputs"] == {} and "route none" in capsys.readouterr().out
+    with pytest.raises(SystemExit, match="already has a manifest or a RECORD"):
+        fr.main(["--record-kill"])
+    with pytest.raises(SystemExit):  # --ruling and --record-kill are one or the other
+        fr.main(["--ruling", "2026-11-20 (a)", "--record-kill"])
+
+
+def test_later_ruling_needs_an_entry_after_the_commit_other_than_the_runs(tmp_path, monkeypatch):
+    plan = tmp_path / "PLAN.md"
+    plan.write_text("- 2026-11-20 (a), the run's ruling; N54.\n- 2026-11-21 (a), old; N54.\n"
+                    "- 2026-11-22 (a), the captain's later ruling; N54.\n- 2026-11-22 (b), something else.\n")
+    monkeypatch.setattr(fr, "PLAN", plan)
+    monkeypatch.setattr(fr, "last_commit", lambda path: ("c1", "2026-11-21"))
+    monkeypatch.setattr(fr, "plan_at_commit", lambda c: "- 2026-11-20 (a), the run's ruling; N54.\n"
+                                                        "- 2026-11-21 (a), old; N54.\n")
+    after = fr.RECORD
+    assert fr.later_ruling("2026-11-22 (a)", after, excluded=["2026-11-20 (a)"]) is None
+    assert "no decision-log entry" in fr.later_ruling("2026-11-22 (b)", after)
+    assert "authorised the run" in fr.later_ruling("2026-11-20 (a)", after, excluded=["2026-11-20 (a)"])
+    assert "dated before" in fr.later_ruling("2026-11-20 (a)", after)
+    assert "already in docs/PLAN.md" in fr.later_ruling("2026-11-21 (a)", after)
+    monkeypatch.setattr(fr, "last_commit", lambda path: None)
+    assert "is not committed" in fr.later_ruling("2026-11-22 (a)", after)
+
+
+def test_last_commit_and_plan_at_commit_read_a_real_history(tmp_path, monkeypatch):
+    import subprocess
+
+    def g(*args):
+        subprocess.run(["git", "-c", "user.name=t", "-c", "user.email=t@t", *args], cwd=tmp_path, check=True,
+                       capture_output=True)
+
+    g("init", "-q")
+    (tmp_path / "docs").mkdir()
+    (tmp_path / "docs/PLAN.md").write_text("- 2026-11-20 (a), first; N54.\n")
+    (tmp_path / "rec.json").write_text("{}")
+    g("add", "-A")
+    g("commit", "-q", "-m", "one")
+    monkeypatch.setattr(fr.fio, "REPO", tmp_path)
+    monkeypatch.setattr(fr, "PLAN", tmp_path / "docs/PLAN.md")
+    commit, day = fr.last_commit(tmp_path / "rec.json")
+    assert len(commit) == 40 and len(day) == 10
+    assert fr.ruling_logged("2026-11-20 (a)", "N54", text=fr.plan_at_commit(commit))
+    assert fr.last_commit(tmp_path / "absent.json") is None and fr.plan_at_commit("0" * 40) is None
+
+
+def test_none_after_a_relabelling_refuses_the_runs_own_ruling_and_an_earlier_entry(
+        bt, t1_env, monkeypatch, tmp_path):  # noqa: F811
+    """The review of the port, lesser point 2: the ruling that authorised the run always exists after a relabelling,
+    so it cannot set the route aside; nor can an entry already in docs/PLAN.md when the record was committed."""
+    _none_env(bt, t1_env, monkeypatch, {"route": "recomputed", "gate": {"ruling": "2026-11-20 (a)"}}, tmp_path)
+    out = tmp_path / "T1_none.h5ad"
+    with pytest.raises(SystemExit, match="authorised the run"):
+        bt.main(["t1", *TARGET, "--feng-groups", "none", "--feng-none-ruling", "2026-11-20 (a)", "--out", str(out)])
+    monkeypatch.setattr(fr, "plan_at_commit", lambda commit: fr.PLAN.read_text())  # both entries were there already
+    with pytest.raises(SystemExit, match="already in docs/PLAN.md"):
+        bt.main(["t1", *TARGET, "--feng-groups", "none", "--feng-none-ruling", "2026-11-22 (a)", "--out", str(out)])
+    monkeypatch.setattr(fr, "last_commit", lambda path: ("rc1", "2026-11-23"))
+    with pytest.raises(SystemExit, match="dated before"):
+        bt.main(["t1", *TARGET, "--feng-groups", "none", "--feng-none-ruling", "2026-11-22 (a)", "--out", str(out)])
+    assert not out.exists()
+
+
+def test_the_agreement_waits_for_the_captains_ruling_on_the_upload(tmp_path, monkeypatch):
+    """The review of the port, lesser point 1: the agreement table runs only after a ruling on T1's last upload that
+    came after the listing's commit, and never on the run's own ruling."""
+    import n54_authors_agreement as ag
+
+    listing = tmp_path / "n54.json"
+    listing.write_text('{"inputs": {"recomputed": {"sha256": "x"}}}\n')
+    monkeypatch.setattr(ag, "OUT", tmp_path / "agree")
+    monkeypatch.setattr(ag, "LISTING", listing)
+    record = json.dumps({"route": "recomputed", "gate": {"ruling": "2026-11-20 (a)"}}).encode()
+    monkeypatch.setattr(fr, "committed_at_head", lambda p: listing.read_bytes() if Path(p) == listing else record)
+    plan = tmp_path / "PLAN.md"
+    plan.write_text("- 2026-11-20 (a), the run's ruling; N54.\n- 2026-11-21 (a), the listing noted; N54.\n"
+                    "- 2026-11-23 (a), the captain rules on T1's last upload; N54.\n")
+    monkeypatch.setattr(fr, "PLAN", plan)
+    monkeypatch.setattr(fr, "last_commit", lambda path: ("lc1", "2026-11-21"))
+    monkeypatch.setattr(fr, "plan_at_commit", lambda c: "- 2026-11-20 (a), the run's ruling; N54.\n"
+                                                        "- 2026-11-21 (a), the listing noted; N54.\n")
+
+    def reached(*a, **k):
+        raise RuntimeError("reached the reads")
+
+    monkeypatch.setattr(feng_dirs, "load_relabel_config", reached)
+    for ruling, msg in (("2026-11-20 (a)", "authorised the run"), ("2026-11-21 (a)", "already in docs/PLAN.md"),
+                        ("2026-11-24 (a)", "no decision-log entry")):
+        with pytest.raises(SystemExit, match=msg):
+            ag.main(["--frozen-sha256", "x", "--method-report", "--upload-ruling", ruling])
+    with pytest.raises(RuntimeError, match="reached the reads"):
+        ag.main(["--frozen-sha256", "x", "--method-report", "--upload-ruling", "2026-11-23 (a)"])
+
+
+@pytest.mark.parametrize("spec, route", [
+    ({"cm": 30, "endo": 4, "vasc": 15, "ambig": 6, "epi": 4, "blood": 8, "none": 4}, "recomputed"),
+    ({"cm": 30, "endo": 15, "vasc": 15, "ambig": 6, "epi": 14, "blood": 8, "none": 4}, "recomputed"),
+    ({"cm": 4, "endo": 15, "vasc": 15, "ambig": 6, "epi": 14, "blood": 8, "none": 4}, "none")])
+def test_the_labellers_route_and_the_builders_route_agree(tmp_path, monkeypatch, record_ok, spec, route):
+    """The review of the port, lesser point 12: on one synthetic relabelling, the route the labeller writes in its
+    manifest (group_cells and fallbacks on the labels) equals the route feng_dirs.recomputed_directions recomputes from
+    the statistics file (directions_from_stats and apply_fallback), and the groups with a direction are those whose
+    fallback takes something."""
+    monkeypatch.setattr(fr.fio, "provenance", lambda code: {"git_commit": "abc", "git_uncommitted": []})
+    types = [t for t in cells(spec) for _ in range(2)]
+    cfg = syn_cfg(status="frozen")
+    cfg_path = _cfg_file(tmp_path, cfg)
+    src = _src(tmp_path, ["x"] * len(types), types)
+    dst = tmp_path / "relabel_c"
+    man = fr.run(cfg, cfg_path, src, dst, GATE)
+    assert man["route"] == route and man["usable"] is True
+    _, rec = feng_dirs.recomputed_directions(GENES, stats_path=dst / cfg["output"]["stats"], relabel_config=cfg_path)
+    assert rec["route"] == man["route"]
+    assert rec["fallbacks"] == man["fallbacks"]
+    assert rec["with_direction"] == sorted(g for g, f in man["fallbacks"].items() if f["takes"] is not None)
+    for g, c in man["group_cells"].items():  # the same cells at both ends
+        assert (g in rec["groups"]) == (min(c.values()) >= cfg["min_cells_ext"])
+        if g in rec["groups"]:
+            assert {s: rec["groups"][g][s] for s in ("E9.5", "E14.5")} == c
+
+
+def test_the_step_script_runs_every_builder_test_and_two_separate_check_builds():
+    """The review of the port, lesser points 3 to 5: the tests step lists every test file that imports build_test,
+    feng_dirs, feng_relabel or the harness's late proxy; build2 writes its own file; a kill is recorded."""
+    sh = (ROOT / "experiments/external/n54_step.sh").read_text()
+    pat = re.compile(r"build_test|feng_dirs|feng_relabel|late_proxy|LP_STATS")
+    want = {f"tests/{p.name}" for p in (ROOT / "tests").glob("test_*.py") if pat.search(p.read_text())}
+    listed = set(re.findall(r"tests/test_[a-z0-9_]+\.py", sh.split("  tests)")[1].split(";;")[0]))
+    assert want <= listed and {"tests/test_core.py", "tests/test_s2_rules.py"} <= listed
+    assert "experiments/external/test_filters.py" in sh
+    assert "T1_s2rc_b.h5ad" in sh and "build2.sha" in sh and sh.count("--record-kill") >= 2
+    assert '--upload-ruling "${2:?' in sh

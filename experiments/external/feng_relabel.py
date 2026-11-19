@@ -37,8 +37,12 @@ draws no control gene, a cell with no counts, a strain or shape mismatch, any ot
 yaml's terminal.on_stop route, "none": main() writes a stop record (the manifest and RECORD, with the reason, usable
 false and route none), prints the none command and exits with STOP_EXIT. Nothing in the yaml is edited and nothing is
 rerun under row N54. A marker (STARTED.json) is written in the output folder before the first Feng file is opened, so a
-killed run also blocks a second one. Run (DGX campaign checkout, repo root; minutes):
+killed run also blocks a second one. A run killed outright (SIGKILL, the OOM killer) writes nothing more:
+`--record-kill` then writes the same stop record (reason "killed", route none) from STARTED.json, and refuses unless
+STARTED.json exists and no manifest or RECORD does (the final review of the port, lesser point 3). Run (DGX campaign
+checkout, repo root; minutes; never --record-kill while a relabelling process still runs):
   uv run --frozen --no-sync python -I -B experiments/external/feng_relabel.py --ruling "<decision-log id>"
+  uv run --frozen --no-sync python -I -B experiments/external/feng_relabel.py --record-kill
 """
 
 from __future__ import annotations
@@ -79,6 +83,12 @@ RECORD = fio.HERE / "results" / "feng_relabel" / "MANIFEST.json"
 # Row N55's dry run on the released E9.5 (feng_relabel_dryrun.py), committed before the freeze; the gate reads it.
 N55_OUT = fio.HERE / "results" / "feng_relabel_dryrun" / "n55.json"
 STARTED = "STARTED.json"  # written in the output folder before the first Feng file is opened
+# Row N55's own marker, written before the released E9.5 file is opened (gitignored, inside the checkout's own data/):
+# a dry run killed outright leaves it, which blocks a silent rerun until feng_relabel_dryrun.py --record-kill records
+# the stop.
+N55_STARTED = fio.REPO / "data" / "derived" / "feng_relabel_n55" / "STARTED.json"
+# The outcomes row N55's rule (n55_rule) can give; "stopped" is (iv), a dry run that stopped (its setting the first)
+N55_OUTCOMES = ("kept", "changed", "guard_failed", "stopped")
 STOP_EXIT = 3  # main()'s exit code when a run stopped after preflight and took route none
 PENDING = "PENDING"  # a choice the captain's ruling fixes before the yaml is frozen
 ROW_ID = re.compile(r"[A-Z][0-9]+[a-z]?")  # a TRIES row's ID (n12_hygiene_size.ROW_ID)
@@ -370,13 +380,18 @@ def row_in_tries(row: str, path: Path | None = None) -> bool:
     return False
 
 
-def ruling_logged(ruling: str | None, row: str = ROW, plan: Path | None = None) -> bool:
+RULING_ID = re.compile(r"\d{4}-\d{2}-\d{2} \([a-z]+\)")  # a decision-log entry's id, e.g. '2026-11-20 (a)'
+
+
+def ruling_logged(ruling: str | None, row: str = ROW, plan: Path | None = None, text: str | None = None) -> bool:
     """The docs/PLAN.md decision-log entry `ruling` (e.g. '2026-11-20 (a)') exists and names `row` anywhere in it: the
-    entry runs from its '- <ruling>' line (at the margin) to the next entry or heading."""
-    if ruling is None or not re.fullmatch(r"\d{4}-\d{2}-\d{2} \([a-z]+\)", ruling):
+    entry runs from its '- <ruling>' line (at the margin) to the next entry or heading. `text`: the plan's text as
+    given (e.g. as committed at an earlier commit) in place of the file."""
+    if ruling is None or not RULING_ID.fullmatch(ruling):
         return False
     block: list[str] | None = None
-    for line in Path(plan or PLAN).read_text(encoding="utf-8").splitlines():
+    lines = (Path(plan or PLAN).read_text(encoding="utf-8") if text is None else text).splitlines()
+    for line in lines:
         if block is not None:
             if line.startswith("- ") or line.startswith("#"):
                 break
@@ -384,6 +399,44 @@ def ruling_logged(ruling: str | None, row: str = ROW, plan: Path | None = None) 
         elif line.startswith(f"- {ruling}"):
             block = [line]
     return block is not None and any(re.search(rf"\b{re.escape(row)}\b", ln) for ln in block)
+
+
+def last_commit(path: Path) -> tuple[str, str] | None:
+    """The last commit that touched `path` (its hash and its committer date, YYYY-MM-DD), or None if none did."""
+    rel = Path(path).resolve().relative_to(fio.REPO).as_posix()
+    r = subprocess.run(["git", "log", "-1", "--format=%H %cs", "--", rel], cwd=fio.REPO, capture_output=True,
+                       text=True)
+    parts = r.stdout.split()
+    return (parts[0], parts[1]) if r.returncode == 0 and len(parts) == 2 else None
+
+
+def plan_at_commit(commit: str) -> str | None:
+    """docs/PLAN.md's text as committed at `commit`, or None."""
+    rel = Path(PLAN).resolve().relative_to(fio.REPO).as_posix()
+    r = subprocess.run(["git", "show", f"{commit}:{rel}"], cwd=fio.REPO, capture_output=True)
+    return r.stdout.decode("utf-8") if r.returncode == 0 else None
+
+
+def later_ruling(ruling: str | None, after: Path, row: str = ROW, excluded: Iterable[str] = ()) -> str | None:
+    """Why `ruling` is not a ruling made after the committed file `after`, or None when it is: the docs/PLAN.md entry
+    exists now and names `row`; it is none of `excluded` (e.g. the ruling that authorised the run); `after` is
+    committed; the entry's date is on or after that commit's date; and the entry was not yet in docs/PLAN.md at that
+    commit. Used by the builder's --feng-none-ruling (after the RECORD) and by the agreement table (after the
+    listing): the final review of the port, lesser points 1 and 2."""
+    if not ruling_logged(ruling, row):
+        return f"docs/PLAN.md has no decision-log entry {ruling!r} naming {row}"
+    if ruling in set(excluded):
+        return f"{ruling!r} is the ruling that authorised the run, not a later ruling"
+    last = last_commit(after)
+    if last is None:
+        return f"{_rel(after)} is not committed, so no ruling can be shown to come after it"
+    commit, day = last
+    if str(ruling)[:10] < day:
+        return f"the entry {ruling!r} is dated before the commit of {_rel(after)} ({day})"
+    earlier = plan_at_commit(commit)
+    if earlier is not None and ruling_logged(ruling, row, text=earlier):
+        return f"the entry {ruling!r} was already in docs/PLAN.md at the commit of {_rel(after)}: it is not later"
+    return None
 
 
 def committed_at_head(path: Path) -> bytes | None:
@@ -426,16 +479,26 @@ def check_n55(cfg: Mapping) -> dict:
     rep = json.loads(raw)
     rule = rep.get("rule") or {}
     want = rule.get("setting") or {}
+    outcome = rule.get("outcome")
     have = {"min_score": cfg["assign"]["min_score"], "min_margin": cfg["assign"]["min_margin"]}
-    if {k: float(v) for k, v in want.items()} != {k: float(v) for k, v in have.items()}:
-        raise Refused(f"the yaml's thresholds {have} are not the setting row N55's rule gave ({want}, "
-                      f"{rule.get('outcome')})")
     read = yaml_at_commit(str(rep.get("stamp", {}).get("commit")))
     if read is None or hashlib.sha256(read).hexdigest() != rep.get("inputs", {}).get("config_sha256"):
         raise Refused("the yaml row N55 read cannot be found at N55's stamp commit with the sha256 it recorded")
+    order = [{k: float(v) for k, v in s.items()} for s in (yaml.safe_load(read).get("n55_rule") or {}).get("order", [])]
+    got = {k: float(v) for k, v in want.items()}
+    if outcome not in N55_OUTCOMES or not order:
+        raise Refused(f"row N55's outcome {outcome!r} is not one of {N55_OUTCOMES} under a rule with settings")
+    if (got != order[0]) if outcome != "changed" else (got not in order[1:]):
+        raise Refused(f"row N55's outcome {outcome!r} cannot give the setting {want} under the rule it read "
+                      f"({order}): kept, guard_failed and stopped keep the first; changed takes a later one")
+    if got != {k: float(v) for k, v in have.items()}:
+        raise Refused(f"the yaml's thresholds {have} are not the setting row N55's rule gave ({want}, {outcome})")
     if _without(yaml.safe_load(read), N55_MOVABLE) != _without(cfg, N55_MOVABLE):
         raise Refused("the yaml differs from the one row N55 read in more than its status, min_score and min_margin")
-    return {"outcome": rule.get("outcome"), "setting": want, "commit": rep["stamp"]["commit"]}
+    out = {"outcome": outcome, "setting": want, "commit": rep["stamp"]["commit"]}
+    if outcome == "stopped":  # (iv): J7 was not met; N54's first line says so, with the reason
+        out["reason"] = rep.get("reason")
+    return out
 
 
 def output_dir_ok(dst: Path, repo: Path | None = None) -> Path:
@@ -795,10 +858,41 @@ def write_stop(dst: Path, cfg: Mapping, cfg_path: Path, gate: Mapping, reason: s
     return manifest
 
 
+def record_kill() -> int:
+    """`--record-kill`: the stop record of a run killed outright (it left STARTED.json and nothing else), written as
+    write_stop writes it, with the gate STARTED.json holds and the reason "killed". Refused unless STARTED.json exists,
+    no manifest is in the output folder, no RECORD is in the tree or at HEAD, and the yaml is the one the run started
+    with. Returns STOP_EXIT: the run took route none (terminal.on_stop)."""
+    cfg = load_config(CONFIG)
+    dst = output_dir_ok(fio.REPO / cfg["output"]["dir"])
+    started = dst / STARTED
+    if not started.exists():
+        raise Refused(f"no started relabelling ({_rel(started)} is absent): there is no kill to record")
+    if (dst / "MANIFEST.json").exists() or RECORD.exists() or committed_at_head(RECORD) is not None:
+        raise Refused("the relabelling already has a manifest or a RECORD: there is no kill to record")
+    info = json.loads(started.read_text())
+    if info.get("config_sha256") != file_sha256(CONFIG):
+        raise Refused("the yaml differs from the one the killed run started with")
+    stop = write_stop(dst, cfg, CONFIG, info.get("gate") or {}, "killed: the run ended without writing its manifest "
+                      "(SIGKILL or the OOM killer); recorded afterwards by --record-kill")
+    print(f"recorded the killed run: route {stop['route']}, by terminal.on_stop; build "
+          f"{' '.join(build_command(stop['route'], cfg))}\ncommit {RECORD.relative_to(fio.REPO)} now; nothing is "
+          f"rerun under row {ROW}")
+    return STOP_EXIT
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("--ruling", required=True, help="the docs/PLAN.md decision-log entry of the captain's ruling")
+    what = ap.add_mutually_exclusive_group(required=True)
+    what.add_argument("--ruling", help="the docs/PLAN.md decision-log entry of the captain's ruling")
+    what.add_argument("--record-kill", action="store_true",
+                      help="record a run killed outright (STARTED.json and nothing else) as a stop: route none")
     a = ap.parse_args(argv)
+    if a.record_kill:
+        try:
+            return record_kill()
+        except Refused as e:
+            raise SystemExit(f"refused: {e}") from None
     cfg_path = CONFIG
     try:  # nothing of Feng's is opened in this block: a refusal here records nothing and changes no route
         cfg = load_config(cfg_path)

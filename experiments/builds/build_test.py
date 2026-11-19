@@ -34,8 +34,9 @@ machine, and an official upload needs the captain's go-ahead.
           --g-mom and with --base pooled or mid, --cm-share, --blood-share, --lib3-pair, --herd,
           --no-hold-unbracketed, --feng-hygiene or --strong-null. The build record then carries a feng_groups field
           saying the direction step was removed, and its fraction is null. After a permitted-only relabelling whose
-          record routes to recomputed, none is also refused unless --feng-none-ruling names the captain's
-          decision-log entry (naming N54) that sets the route aside; before any relabelling, none builds as before.
+          record routes to recomputed, none is also refused unless --feng-none-ruling names a later decision-log
+          entry of the captain (naming N54, not the run's own ruling, made after the record's commit) that sets the
+          route aside; before any relabelling, none builds as before.
           --feng-groups recomputed (off unless the captain rules): the same one command, t1 --g-mom --base lib3, with
           Feng's direction formed on the groups experiments/external/feng_relabel.py recomputes from the permitted
           cells' raw counts (register rows X002 and X010), R1 and R2 as in the first upload. Refused, before
@@ -44,7 +45,7 @@ machine, and an official upload needs the captain's go-ahead.
           passes feng_dirs.check_recomputed. R1's hold and g_mom's mask follow the groups with a recomputed direction
           after the fallback: a group without one moves no cell and g_mom leaves it alone. The record's feng_groups
           field names the file, its sha256, the yaml's sha256, the route, the fallbacks and the gate
-  heart  B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
+  heart   B0 (copy of E10.5 plus damped E9.5 -> E10.5 momentum in count space), sized by the pre-registered heart
           procedure: --entry s1 = scope hypothesis H1; s2_trim = the s2 of docs/S2_RULES.md (H2 as a trim to half
           E10.5's scope); s2 = H2 as first built (size only, superseded) (approved rule 3, `size_or_hold`). --trend
           (both heart files since the captain's ruling of 2026-11-13, docs/PLAN.md decision log (w); row H11 of
@@ -333,9 +334,11 @@ def _relabel_record() -> dict | None:
 def _none_after_relabelling(ruling: str | None) -> None:
     """The final review's lesser point 1, for --feng-groups none. Before any relabelling exists, none builds as on main
     (and --feng-none-ruling is refused: it has nothing to override). After a relabelling whose recorded route is
-    recomputed, none is refused unless --feng-none-ruling names the captain's docs/PLAN.md decision-log entry, naming
-    N54, that sets the rule's route aside: a switch to none made after N54's listing (which compares with the authors'
-    groups) would otherwise be a choice by similarity to the authors' labels."""
+    recomputed, none is refused unless --feng-none-ruling names a later docs/PLAN.md decision-log entry of the captain,
+    naming N54, that sets the rule's route aside: not the ruling that authorised the run (the record's gate), dated on
+    or after the record's commit, and not yet in docs/PLAN.md at that commit (feng_relabel.later_ruling; the review of
+    the port, lesser point 2). A switch to none made after N54's listing (which compares with the authors' groups)
+    would otherwise be a choice by similarity to the authors' labels."""
     import feng_relabel
 
     rec = _relabel_record()
@@ -344,10 +347,14 @@ def _none_after_relabelling(ruling: str | None) -> None:
             sys.exit("--feng-none-ruling is refused: no relabelling routes to recomputed, so --feng-groups none needs "
                      "no ruling")
         return
-    if ruling is None or not feng_relabel.ruling_logged(ruling, feng_relabel.ROW):
+    why = ("no --feng-none-ruling" if ruling is None else
+           feng_relabel.later_ruling(ruling, feng_relabel.RECORD, feng_relabel.ROW,
+                                     excluded=[(rec.get("gate") or {}).get("ruling")]))
+    if why is not None:
         sys.exit("--feng-groups none is refused: the permitted-only relabelling's record routes T1's file to "
-                 "recomputed (feng_relabel.yaml's terminal rule); only the captain's ruling, a docs/PLAN.md "
-                 "decision-log entry naming N54 given as --feng-none-ruling, sets that aside")
+                 "recomputed (feng_relabel.yaml's terminal rule); only a later ruling of the captain, a docs/PLAN.md "
+                 "decision-log entry naming N54 given as --feng-none-ruling, other than the run's own ruling, dated "
+                 f"on or after the record's commit and not yet in docs/PLAN.md then, sets that aside ({why})")
 
 
 def _feng_recomputed_refusals(a) -> None:
@@ -870,8 +877,9 @@ def build_parser() -> argparse.ArgumentParser:
                                 "Only the captain's ruling puts either in an upload")
             p.add_argument("--feng-none-ruling", default=None,
                            help="with --feng-groups none only, and only after a permitted-only relabelling whose "
-                                "record routes to recomputed: the captain's docs/PLAN.md decision-log entry (naming "
-                                "N54) that sets the route aside")
+                                "record routes to recomputed: a later docs/PLAN.md decision-log entry of the captain "
+                                "(naming N54; not the run's own ruling; added after the record's commit) that sets "
+                                "the route aside")
         if name == "heart":
             p.add_argument("--entry", choices=("s1", "s2", "s2_trim"), required=True,
                            help="s1 = H1; s2 = H2 as first built (size only); s2_trim = H2 as a trim to half the "

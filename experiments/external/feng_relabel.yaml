@@ -22,7 +22,8 @@
 # committed and a clean tree. No choice is PENDING: the terminal route's base, g_mom and stop outcome were fixed on
 # 2026-11-19 by the main session under its delegation (decisions (1) to (3) of that day; `terminal`). No gene is
 # UNSOURCED: the genes the writer had marked so were sourced to published statements on adult mouse tissues (sources
-# lit_A to lit_J, register row X010 as proposed) or dropped (`dropped`).
+# lit_A, lit_B, lit_C, lit_D, lit_E, lit_G, lit_H and lit_J, register row X010 as proposed; there is no lit_F or lit_I)
+# or dropped (`dropped`).
 
 version: 1
 method: c                     # per-cell marker scores; no clustering, embedding, classifier or fitted transformation
@@ -275,7 +276,8 @@ sets:
                                  # feng_relabel.relabel stops the run, and the stop takes route none
                                  # (terminal.on_stop; no class is dropped after the data are read)
       Prox1: lit_J             # caveat (lit_J, quoted): PROX1 mainly in valvular endothelial cells, endocardial cells
-                               # of the interatrial septum and some AVN cells; "LEC-specific" only within endothelium
+                               # of the interatrial septum and some AVN cells, and a Prox1 reporter lowly in
+                               # cardiomyocytes; "LEC-specific" only within endothelium (the team's reading)
       Flt4: lit_J              # caveat (lit_J, quoted): Flt4 may be expressed by endothelial and endocardial cells
       # Pdpn dropped 2026-11-19 (see `dropped`)
 
@@ -361,7 +363,7 @@ sources:
         cells; that Pdgfrb does not separate mural cells from fibroblasts is the team's reading of that, not a quote.)
       Rgs5: >-
         (a fragment as the quotation check gives it) Rgs5 is expressed in pericytes but missing in some SMC
-        populations; so it is not pan-mural
+        populations. (That it is therefore not pan-mural is the team's reading.)
   lit_C:
     citation: Peisker et al., Nat Commun 2022
     doi: 10.1038/s41467-022-30682-0
@@ -418,13 +420,16 @@ sources:
     names:
       Hba-a1: >-
         The Erythro. Prog. (erythroid progenitor) cells expressed Gypa, Alas2 and hemoglobin genes (Hba-a1/2, Hbb-bs
-        and Hbb-bt)
+        and Hbb-bt) and existed in sham SM (6.8%), and decreased to ~1.6% in GL261 SM and 1.2% in SB28 SM, whereas
+        they increased in BM, from 0.2% in sham BM to 3.5% in GL261 BM and 5% in SB28 BM
       Hbb-bs: >-
         The Erythro. Prog. (erythroid progenitor) cells expressed Gypa, Alas2 and hemoglobin genes (Hba-a1/2, Hbb-bs
-        and Hbb-bt)
+        and Hbb-bt) and existed in sham SM (6.8%), and decreased to ~1.6% in GL261 SM and 1.2% in SB28 SM, whereas
+        they increased in BM, from 0.2% in sham BM to 3.5% in GL261 BM and 5% in SB28 BM
       Alas2: >-
         The Erythro. Prog. (erythroid progenitor) cells expressed Gypa, Alas2 and hemoglobin genes (Hba-a1/2, Hbb-bs
-        and Hbb-bt)
+        and Hbb-bt) and existed in sham SM (6.8%), and decreased to ~1.6% in GL261 SM and 1.2% in SB28 SM, whereas
+        they increased in BM, from 0.2% in sham BM to 3.5% in GL261 BM and 5% in SB28 BM
   lit_G:
     citation: Zaman et al., Immunity 2021
     doi: 10.1016/j.immuni.2021.07.006
@@ -456,7 +461,8 @@ sources:
     doi: 10.1152/ajpheart.00549.2025
     pmc: PMC12758634
     samples: >-
-      the paper's own mice, male and female, 2 to 5 months (Prox1-tdTomato); its lymphatic-marker statement rests on
+      the paper's own mice, male and female, 2 to 5 months (Prox1-tdTomato; the paper also writes "All experiments
+      used male mice except Supplemental Figure S22"); its lymphatic-marker statement rests on
       reanalysed public scRNA-seq of adult male C57BL/6N hearts aged 18 to 20 weeks; its Flt4 caveat also uses Tabula
       Muris hearts of both sexes aged 10 to 15 weeks and a single-nucleus set whose age the check did not find
     licence: NIH author manuscript (no licence stated)
@@ -471,7 +477,9 @@ sources:
     caveats:
       Prox1: >-
         PROX1 was mainly expressed by valvular endothelial cells, endocardial cells lining the interatrial septum and a
-        subset of cells within the AVN. (So "LEC-specific" holds only within endothelium: the team's reading.)
+        subset of cells within the AVN. The same paper: Prox1-tdTomato was expressed ... lowly by cardiomyocytes
+        (a reporter, not the transcript; the whole sentence is under Pdpn). (So "LEC-specific" holds only within
+        endothelium: the team's reading.)
       Flt4: >-
         Based on our sc/nRNA-Seq analyses, Flt4, the gene that encodes VEGFR3, may be expressed by various cell types,
         including endothelial and endocardial cells.
@@ -522,8 +530,12 @@ unassigned_cap: 0.40
 # the authors' labels are not one, the design's option (b) (label transfer from the released E9.5) is not built, the
 # mid base is not one, and no route is chosen after the manifest or the listing is seen. The manifest records the
 # route. The builder refuses --feng-groups recomputed unless the committed record's route is recomputed, and refuses
-# --feng-groups none after a record whose route is recomputed unless --feng-none-ruling names the captain's
-# decision-log entry (a switch made after the listing would be a choice by similarity to the authors' labels).
+# --feng-groups none after a record whose route is recomputed unless --feng-none-ruling names a later decision-log
+# entry of the captain, other than the run's ruling, that names N54 and sets the route aside (dated on or after the
+# record's commit and not yet in docs/PLAN.md at that commit; a switch made after the listing would otherwise be a
+# choice by similarity to the authors' labels). A refusal by the builder under a record that routes to recomputed
+# (feng_dirs.check_recomputed, or a route recomputed again from the file that differs) also leaves route none, built
+# with --feng-none-ruling naming the captain's later entry that records the refusal.
 # Whichever route the rule gives, which file is uploaded stays the captain's later ruling on a priced question.
 terminal:
   requires_direction: [CM, Endocardium]   # the groups R3b's g_mom edits (build_test.G_MOM_EDIT_CATEGORIES)
@@ -538,8 +550,9 @@ terminal:
   # Fixed on 2026-11-19 by the main session under its delegation, decision (3), the final review's blocker 1: a run
   # that stops after preflight (a set short of score.min_genes_found in Feng's unique symbols, a set that draws no
   # control gene, or any other refusal, error or interrupt after the first Feng file is opened) takes route none;
-  # feng_relabel.main writes the stop record (manifest and RECORD: the reason, usable false, route none); nothing in
-  # this file is edited and nothing is rerun under row N54.
+  # feng_relabel.main writes the stop record (manifest and RECORD: the reason, usable false, route none); a run killed
+  # outright (SIGKILL, the OOM killer) leaves only STARTED.json, and `feng_relabel.py --record-kill` then writes the
+  # same stop record with the reason "killed"; nothing in this file is edited and nothing is rerun under row N54.
   on_stop: none
 
 # ------------------------------------------------------------------ row N55's rule, written before N55 runs
@@ -549,11 +562,17 @@ terminal:
 # is at most unassigned_cap and each chamber label below sends its cells most often to its own recomputed labels (its
 # own share above every other single recomputed label's, r_unassigned included). (i) The first setting (the values
 # under `assign` when N55 runs) passes: they stay. (ii) Otherwise the first later setting that passes replaces them.
-# (iii) None passes: they stay, and N54's first line says the guard failed on the released dry run. Never changed by
-# N55: the cap, split_margin, min_cells_ext, every gene and set, the controls' rule, the fallback and the terminal
-# rule; no setting is tightened. The E9.5 group cells are reported only (they follow the released file's size, not
-# Feng's). feng_relabel.check_n55 refuses the run unless n55.json is committed, its setting is the one under `assign`,
-# and nothing else differs from the yaml N55 read.
+# (iii) None passes: they stay, and N54's first line says the guard failed on the released dry run. (iv) If N55 stops
+# (a set short of score.min_genes_found in the released file's symbols, a set that draws no control gene, any other
+# error or interrupt, or a kill recorded afterwards by feng_relabel_dryrun.py --record-kill), n55.json records the stop
+# with outcome "stopped" and the first setting; min_score and min_margin stay, N55 is not rerun under its row, no gene
+# or set is edited because of it, and N54's first line says J7 was not met because the dry run stopped, with its
+# reason (decided by the main session under its delegation, 2026-11-19, the review of the port's blocker). Never
+# changed by N55: the cap, split_margin, min_cells_ext, every gene and set, the controls' rule, the fallback and the
+# terminal rule; no setting is tightened. The E9.5 group cells are reported only (they follow the released file's
+# size, not Feng's). feng_relabel.check_n55 refuses the run unless n55.json is committed, its outcome is one of kept, changed,
+# guard_failed and stopped with the setting this rule gives for it (the first setting unless changed), that setting is
+# the one under `assign`, and nothing else differs from the yaml N55 read.
 n55_rule:
   order:
     - {min_score: 0.5, min_margin: 0.25}
@@ -579,8 +598,11 @@ authors_labels: >-
   Agreement with the authors' labels selects nothing: no gene, threshold, margin, set or fallback here is chosen,
   edited or kept by how well the recomputed groups match cell_type_spec. Neither the labeller nor the selector reads
   that column. N54's listing compares the recomputed direction with the present one, which is formed on the authors'
-  groups (cd1_stats.npz); that comparison and the agreement table (experiments/t1_m1/n54_authors_agreement.py, run once
-  after the listing, for the method report only) decide nothing. No later relabelling or change of settings enters an
+  groups (cd1_stats.npz); that comparison and the agreement table decide nothing. The agreement table
+  (experiments/t1_m1/n54_authors_agreement.py) runs once, for the method report only, and only after the captain's
+  ruling on T1's last upload is committed (a decision-log entry naming N54 that is not yet in docs/PLAN.md at the
+  listing's commit; the script refuses otherwise), so it cannot inform that ruling. No later relabelling or change of
+  settings enters an
   upload because of its agreement with cell_type_spec or its similarity to the present direction: a new relabelling
   is a new row, and it enters an upload only through a terminal rule fixed before its own run.
 

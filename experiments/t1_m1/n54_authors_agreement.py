@@ -6,10 +6,12 @@ on purpose (feng_relabel.yaml, `authors_labels`): agreement with the authors' la
 threshold, margin, set or fallback is chosen, edited or kept by what it shows; nothing imports this module or reads
 its output (tests/test_feng_relabel.py checks the labeller, feng_dirs, the builder, the harness and the listing).
 
-It runs once, after the captain's ruling and after the recomputed statistics file is hashed and N54's listing has
-written its outputs: it refuses unless the listing's n54.json exists and records the same recomputed sha256 as
---frozen-sha256 and is committed at HEAD as written, the file and its manifest carry that sha256, the tree is clean
-and its own output does not exist.
+It runs once, only after the captain's ruling on T1's last upload (recomputed file or none file) is committed, so it
+cannot inform that ruling (the final review of the port, lesser point 1): it refuses unless --upload-ruling names a
+docs/PLAN.md decision-log entry naming N54 that is not the relabelling's own ruling, is dated on or after the
+listing's commit and was not yet in docs/PLAN.md at that commit (feng_relabel.later_ruling); the listing's n54.json
+exists, records the same recomputed sha256 as --frozen-sha256 and is committed at HEAD as written; the file and its
+manifest carry that sha256; the tree is clean; and its own output does not exist.
 It writes aggregates only, per stage and group: the cells under each labelling, those in both, the share of the
 authors' group recovered, the share of the recomputed group the authors placed elsewhere, and the Jaccard index. No
 per-cell, per-gene or per-cluster detail. Output: experiments/t1_m1/results/n54_authors_agreement/agreement.json.
@@ -74,6 +76,9 @@ def main(argv=None) -> None:
     ap.add_argument("--frozen-sha256", required=True, help="the recomputed statistics file's sha256, as N54 read it")
     ap.add_argument("--method-report", action="store_true", required=True,
                     help="acknowledges that this output is for the method report only and decides nothing")
+    ap.add_argument("--upload-ruling", required=True,
+                    help="the captain's docs/PLAN.md decision-log entry (naming N54) on T1's last upload, made after "
+                         "the listing's commit")
     a = ap.parse_args(argv)
     if (OUT / "agreement.json").exists():
         sys.exit("the agreement has been computed once already; it is not recomputed")
@@ -83,6 +88,11 @@ def main(argv=None) -> None:
 
     if feng_relabel.committed_at_head(LISTING) != LISTING.read_bytes():
         sys.exit("N54's listing is not committed at HEAD as written: the agreement comes after the listing's commit")
+    raw = feng_relabel.committed_at_head(feng_relabel.RECORD)
+    run_ruling = ((json.loads(raw).get("gate") or {}).get("ruling")) if raw is not None else None
+    why = feng_relabel.later_ruling(a.upload_ruling, LISTING, feng_relabel.ROW, excluded=[run_ruling])
+    if why is not None:
+        sys.exit(f"the agreement comes only after the captain's ruling on T1's last upload: {why}")
     listed = json.loads(LISTING.read_text())["inputs"]["recomputed"]["sha256"]
     rcfg = feng_dirs.load_relabel_config()
     rpath = feng_dirs.recomputed_stats_path(rcfg)
@@ -105,7 +115,8 @@ def main(argv=None) -> None:
     authors_groups = {g: list(cfg["external_labels"][g][0] or []) for g in rcfg["groups"]}
     report = {"label": "FOR THE METHOD REPORT ONLY: agreement of the recomputed groups with the authors' labels; it "
                        "selects nothing",
-              "recomputed_sha256": entry["sha256"], "relabel_config_sha256": fio.sha256_file(feng_dirs.RELABEL_CONFIG),
+              "upload_ruling": a.upload_ruling, "recomputed_sha256": entry["sha256"],
+              "relabel_config_sha256": fio.sha256_file(feng_dirs.RELABEL_CONFIG),
               "authors_groups": authors_groups, "recomputed_groups": rcfg["groups"],
               "by_stage": {s: agreement(group_masks(alab[stage == s], authors_groups),
                                         group_masks(rlab[stage == s], rcfg["groups"])) for s in rcfg["stages"]},
