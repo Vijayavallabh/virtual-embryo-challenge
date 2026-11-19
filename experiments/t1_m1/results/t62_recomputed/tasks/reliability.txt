@@ -1,0 +1,47 @@
+try T62's reliability listing: target-free, from the recomputed statistics file's own two halves of each group's cells; no T1 cell, no truth, no authors' group; it decides nothing
+Bracket E9.5 -> E14.5; genes: T1:val's order (32285); groups with a direction: CM, Endocardium, Endothelium, Epicardium
+CM: cells E9.5: half A 351, half B 349; E14.5: half A 884, half B 883; mapped genes 29715; halves' Spearman over all mapped genes 0.745; eb_shrink factor mean 0.782
+  decile  1 (2972 genes): Spearman nan, eb factor 1.000
+  decile  2 (2972 genes): Spearman nan, eb factor 1.000
+  decile  3 (2972 genes): Spearman nan, eb factor 1.000
+  decile  4 (2972 genes): Spearman -0.009, eb factor 0.001
+  decile  5 (2972 genes): Spearman 0.105, eb factor 0.193
+  decile  6 (2971 genes): Spearman 0.539, eb factor 0.748
+  decile  7 (2971 genes): Spearman 0.821, eb factor 0.930
+  decile  8 (2971 genes): Spearman 0.896, eb factor 0.967
+  decile  9 (2971 genes): Spearman 0.942, eb factor 0.983
+  decile 10 (2971 genes): Spearman 0.980, eb factor 0.994
+Endocardium: cells E9.5: half A 25, half B 24; E14.5: half A 42, half B 42; mapped genes 29715; halves' Spearman over all mapped genes 0.423; eb_shrink factor mean 0.775
+  decile  1 (2972 genes): Spearman nan, eb factor 1.000
+  decile  2 (2972 genes): Spearman nan, eb factor 1.000
+  decile  3 (2972 genes): Spearman nan, eb factor 1.000
+  decile  4 (2972 genes): Spearman nan, eb factor 1.000
+  decile  5 (2972 genes): Spearman nan, eb factor 1.000
+  decile  6 (2971 genes): Spearman 0.014, eb factor 0.045
+  decile  7 (2971 genes): Spearman 0.201, eb factor 0.386
+  decile  8 (2971 genes): Spearman 0.375, eb factor 0.626
+  decile  9 (2971 genes): Spearman 0.558, eb factor 0.761
+  decile 10 (2971 genes): Spearman 0.809, eb factor 0.928
+Endothelium: cells E9.5: half A 31, half B 28; E14.5: half A 70, half B 65; mapped genes 29715; halves' Spearman over all mapped genes 0.436; eb_shrink factor mean 0.800
+  decile  1 (2972 genes): Spearman nan, eb factor 1.000
+  decile  2 (2972 genes): Spearman nan, eb factor 1.000
+  decile  3 (2972 genes): Spearman nan, eb factor 1.000
+  decile  4 (2972 genes): Spearman nan, eb factor 1.000
+  decile  5 (2972 genes): Spearman nan, eb factor 1.000
+  decile  6 (2971 genes): Spearman 0.035, eb factor 0.086
+  decile  7 (2971 genes): Spearman 0.281, eb factor 0.504
+  decile  8 (2971 genes): Spearman 0.439, eb factor 0.691
+  decile  9 (2971 genes): Spearman 0.572, eb factor 0.788
+  decile 10 (2971 genes): Spearman 0.789, eb factor 0.927
+Epicardium: cells E9.5: half A 6, half B 5; E14.5: half A 17, half B 15; mapped genes 29715; halves' Spearman over all mapped genes 0.350; eb_shrink factor mean 0.745
+  decile  1 (2972 genes): Spearman nan, eb factor 1.000
+  decile  2 (2972 genes): Spearman nan, eb factor 1.000
+  decile  3 (2972 genes): Spearman nan, eb factor 1.000
+  decile  4 (2972 genes): Spearman nan, eb factor 1.000
+  decile  5 (2972 genes): Spearman nan, eb factor 1.000
+  decile  6 (2971 genes): Spearman 0.003, eb factor 0.084
+  decile  7 (2971 genes): Spearman 0.151, eb factor 0.309
+  decile  8 (2971 genes): Spearman 0.294, eb factor 0.509
+  decile  9 (2971 genes): Spearman 0.444, eb factor 0.660
+  decile 10 (2971 genes): Spearman 0.716, eb factor 0.892
+Commit c40217c610be2f85279225411ec1dd4e02aef291, tree clean True, UTC 2026-11-19T19:57:53Z

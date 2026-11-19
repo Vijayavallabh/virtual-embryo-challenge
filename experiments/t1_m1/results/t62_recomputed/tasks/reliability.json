@@ -1,0 +1,627 @@
+{
+ "label": "try T62's reliability listing: target-free, from the recomputed statistics file's own two halves of each group's cells; no T1 cell, no truth, no authors' group; it decides nothing",
+ "row": "T62",
+ "bracket": [
+  "E9.5",
+  "E14.5"
+ ],
+ "genes_from": "T1:val",
+ "of_genes": 32285,
+ "with_direction": [
+  "CM",
+  "Endocardium",
+  "Endothelium",
+  "Epicardium"
+ ],
+ "relabel": {
+  "file": "data/derived/feng_relabel_c/cd1_stats_relabel.npz",
+  "sha256": "36d1f7edcbbf3d7a80c68b51d5624a94bb753668079fe3d69aed720c71baa7e9",
+  "stats_sha256_hashed": "36d1f7edcbbf3d7a80c68b51d5624a94bb753668079fe3d69aed720c71baa7e9",
+  "yaml_sha256": "883e74c2c1ef5f01d5244555f8b3dcae24255568c731a6d53ee2788b7b677b49",
+  "route": "recomputed",
+  "record_route": "recomputed",
+  "authors_labels_read": false,
+  "with_direction": [
+   "CM",
+   "Endocardium",
+   "Endothelium",
+   "Epicardium"
+  ],
+  "fallbacks": {
+   "CM": {
+    "own": true,
+    "fired": false,
+    "takes": "CM"
+   },
+   "Endocardium": {
+    "own": true,
+    "fired": false,
+    "takes": "Endocardium"
+   },
+   "Endothelium": {
+    "own": true,
+    "fired": false,
+    "takes": "Endothelium"
+   },
+   "Epicardium": {
+    "own": true,
+    "fired": false,
+    "takes": "Epicardium"
+   }
+  },
+  "relabel_gate": {
+   "row": "N54",
+   "ruling": "2026-11-19 (u)",
+   "commit": "7efef2826bb165aff729fd4ecd8f90c94eda7ffc",
+   "clean": true,
+   "config_at_head": true,
+   "n55": {
+    "outcome": "changed",
+    "setting": {
+     "min_score": 0.3,
+     "min_margin": 0.25
+    },
+    "commit": "cae44f793d1a134b219471df6f9bc941d913c82a",
+    "ruling": "2026-11-19 (w)"
+   }
+  },
+  "epicardium_directed": true,
+  "with_direction_epi_held": [
+   "CM",
+   "Endocardium",
+   "Endothelium"
+  ]
+ },
+ "settings": {
+  "pseudocount_cp10k": 0.5,
+  "min_cells_ext": 10,
+  "deciles": 10
+ },
+ "groups": {
+  "CM": {
+   "own_direction": true,
+   "labels": [
+    "r_cm"
+   ],
+   "cells": {
+    "E9.5": {
+     "A": 351,
+     "B": 349
+    },
+    "E14.5": {
+     "A": 884,
+     "B": 883
+    }
+   },
+   "mapped_genes": 29715,
+   "spearman_all": 0.7450464162029311,
+   "deciles": [
+    {
+     "decile": 1,
+     "genes": 2972,
+     "mean_cp": [
+      0.0,
+      0.0
+     ],
+     "spearman": NaN,
+     "eb_factor": 1.0
+    },
+    {
+     "decile": 2,
+     "genes": 2972,
+     "mean_cp": [
+      0.0,
+      0.0
+     ],
+     "spearman": NaN,
+     "eb_factor": 1.0
+    },
+    {
+     "decile": 3,
+     "genes": 2972,
+     "mean_cp": [
+      0.0,
+      0.0
+     ],
+     "spearman": NaN,
+     "eb_factor": 1.0
+    },
+    {
+     "decile": 4,
+     "genes": 2972,
+     "mean_cp": [
+      0.0,
+      0.00011625744047619047
+     ],
+     "spearman": -0.008847587375425885,
+     "eb_factor": 0.0008367155802641336
+    },
+    {
+     "decile": 5,
+     "genes": 2972,
+     "mean_cp": [
+      0.00011627444042227901,
+      0.0009571465858089362
+     ],
+     "spearman": 0.10478678644233459,
+     "eb_factor": 0.1930880421732332
+    },
+    {
+     "decile": 6,
+     "genes": 2971,
+     "mean_cp": [
+      0.0009573171727346008,
+      0.008770357564940013
+     ],
+     "spearman": 0.5386920254552859,
+     "eb_factor": 0.7477342370285841
+    },
+    {
+     "decile": 7,
+     "genes": 2971,
+     "mean_cp": [
+      0.00877385139577848,
+      0.0588596095587471
+     ],
+     "spearman": 0.8211552697322948,
+     "eb_factor": 0.9298014704718407
+    },
+    {
+     "decile": 8,
+     "genes": 2971,
+     "mean_cp": [
+      0.05887608196365296,
+      0.17174567222589202
+     ],
+     "spearman": 0.8956030156186172,
+     "eb_factor": 0.9674103698895666
+    },
+    {
+     "decile": 9,
+     "genes": 2971,
+     "mean_cp": [
+      0.17192089883515488,
+      0.45261118091332975
+     ],
+     "spearman": 0.9420413879157508,
+     "eb_factor": 0.9829356722327479
+    },
+    {
+     "decile": 10,
+     "genes": 2971,
+     "mean_cp": [
+      0.45287881800231344,
+      171.3333283635444
+     ],
+     "spearman": 0.9795986820534568,
+     "eb_factor": 0.9941049890555574
+    }
+   ],
+   "eb_factors": [
+    1.0,
+    1.0,
+    1.0,
+    0.0008367155802641336,
+    0.1930880421732332,
+    0.7477342370285841,
+    0.9298014704718407,
+    0.9674103698895666,
+    0.9829356722327479,
+    0.9941049890555574
+   ],
+   "eb_factor_mean": 0.7815911496431794
+  },
+  "Endocardium": {
+   "own_direction": true,
+   "labels": [
+    "r_endocardial_ec"
+   ],
+   "cells": {
+    "E9.5": {
+     "A": 25,
+     "B": 24
+    },
+    "E14.5": {
+     "A": 42,
+     "B": 42
+    }
+   },
+   "mapped_genes": 29715,
+   "spearman_all": 0.42325939233459736,
+   "deciles": [
+    {
+     "decile": 1,
+     "genes": 2972,
+     "mean_cp": [
+      0.0,
+      0.0
+     ],
+     "spearman": NaN,
+     "eb_factor": 1.0
+    },
+    {
+     "decile": 2,
+     "genes": 2972,
+     "mean_cp": [
+      0.0,
+      0.0
+     ],
+     "spearman": NaN,
+     "eb_factor": 1.0
+    },
+    {
+     "decile": 3,
+     "genes": 2972,
+     "mean_cp": [
+      0.0,
+      0.0
+     ],
+     "spearman": NaN,
+     "eb_factor": 1.0
+    },
+    {
+     "decile": 4,
+     "genes": 2972,
+     "mean_cp": [
+      0.0,
+      0.0
+     ],
+     "spearman": NaN,
+     "eb_factor": 1.0
+    },
+    {
+     "decile": 5,
+     "genes": 2972,
+     "mean_cp": [
+      0.0,
+      0.0
+     ],
+     "spearman": NaN,
+     "eb_factor": 1.0
+    },
+    {
+     "decile": 6,
+     "genes": 2971,
+     "mean_cp": [
+      0.0,
+      0.009096759748708085
+     ],
+     "spearman": 0.014281625541485004,
+     "eb_factor": 0.04512648274387146
+    },
+    {
+     "decile": 7,
+     "genes": 2971,
+     "mean_cp": [
+      0.00912235139426879,
+      0.06976054353572188
+     ],
+     "spearman": 0.2005661827950666,
+     "eb_factor": 0.3858067891029342
+    },
+    {
+     "decile": 8,
+     "genes": 2971,
+     "mean_cp": [
+      0.06977487295842051,
+      0.2099338948614859
+     ],
+     "spearman": 0.37528004062381015,
+     "eb_factor": 0.6263253788835602
+    },
+    {
+     "decile": 9,
+     "genes": 2971,
+     "mean_cp": [
+      0.20997340669288708,
+      0.5310343782599377
+     ],
+     "spearman": 0.558012642542415,
+     "eb_factor": 0.7613747199265731
+    },
+    {
+     "decile": 10,
+     "genes": 2971,
+     "mean_cp": [
+      0.5310601008490589,
+      166.9473166256745
+     ],
+     "spearman": 0.8085001528362269,
+     "eb_factor": 0.9282246188188226
+    }
+   ],
+   "eb_factors": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.04512648274387146,
+    0.3858067891029342,
+    0.6263253788835602,
+    0.7613747199265731,
+    0.9282246188188226
+   ],
+   "eb_factor_mean": 0.7746857989475762
+  },
+  "Endothelium": {
+   "own_direction": true,
+   "labels": [
+    "r_endocardial_ec",
+    "r_vascular_ec",
+    "r_ec_ambiguous"
+   ],
+   "cells": {
+    "E9.5": {
+     "A": 31,
+     "B": 28
+    },
+    "E14.5": {
+     "A": 70,
+     "B": 65
+    }
+   },
+   "mapped_genes": 29715,
+   "spearman_all": 0.43615195247884603,
+   "deciles": [
+    {
+     "decile": 1,
+     "genes": 2972,
+     "mean_cp": [
+      0.0,
+      0.0
+     ],
+     "spearman": NaN,
+     "eb_factor": 1.0
+    },
+    {
+     "decile": 2,
+     "genes": 2972,
+     "mean_cp": [
+      0.0,
+      0.0
+     ],
+     "spearman": NaN,
+     "eb_factor": 1.0
+    },
+    {
+     "decile": 3,
+     "genes": 2972,
+     "mean_cp": [
+      0.0,
+      0.0
+     ],
+     "spearman": NaN,
+     "eb_factor": 1.0
+    },
+    {
+     "decile": 4,
+     "genes": 2972,
+     "mean_cp": [
+      0.0,
+      0.0
+     ],
+     "spearman": NaN,
+     "eb_factor": 1.0
+    },
+    {
+     "decile": 5,
+     "genes": 2972,
+     "mean_cp": [
+      0.0,
+      0.0
+     ],
+     "spearman": NaN,
+     "eb_factor": 1.0
+    },
+    {
+     "decile": 6,
+     "genes": 2971,
+     "mean_cp": [
+      0.0,
+      0.009424577356536288
+     ],
+     "spearman": 0.0348695766357718,
+     "eb_factor": 0.08559203722842158
+    },
+    {
+     "decile": 7,
+     "genes": 2971,
+     "mean_cp": [
+      0.009441846478351983,
+      0.07007654412278382
+     ],
+     "spearman": 0.2808998891074876,
+     "eb_factor": 0.504215451667414
+    },
+    {
+     "decile": 8,
+     "genes": 2971,
+     "mean_cp": [
+      0.07010302171125347,
+      0.20912448601816067
+     ],
+     "spearman": 0.4386254944664116,
+     "eb_factor": 0.6908475555040814
+    },
+    {
+     "decile": 9,
+     "genes": 2971,
+     "mean_cp": [
+      0.20924662383783815,
+      0.5242810722681803
+     ],
+     "spearman": 0.5717526772376411,
+     "eb_factor": 0.7884013245501929
+    },
+    {
+     "decile": 10,
+     "genes": 2971,
+     "mean_cp": [
+      0.5243225227786052,
+      154.85931910328955
+     ],
+     "spearman": 0.7891152867448171,
+     "eb_factor": 0.9267949142865067
+    }
+   ],
+   "eb_factors": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.08559203722842158,
+    0.504215451667414,
+    0.6908475555040814,
+    0.7884013245501929,
+    0.9267949142865067
+   ],
+   "eb_factor_mean": 0.7995851283236617
+  },
+  "Epicardium": {
+   "own_direction": true,
+   "labels": [
+    "r_epicardial"
+   ],
+   "cells": {
+    "E9.5": {
+     "A": 6,
+     "B": 5
+    },
+    "E14.5": {
+     "A": 17,
+     "B": 15
+    }
+   },
+   "mapped_genes": 29715,
+   "spearman_all": 0.35049338797312085,
+   "deciles": [
+    {
+     "decile": 1,
+     "genes": 2972,
+     "mean_cp": [
+      0.0,
+      0.0
+     ],
+     "spearman": NaN,
+     "eb_factor": 1.0
+    },
+    {
+     "decile": 2,
+     "genes": 2972,
+     "mean_cp": [
+      0.0,
+      0.0
+     ],
+     "spearman": NaN,
+     "eb_factor": 1.0
+    },
+    {
+     "decile": 3,
+     "genes": 2972,
+     "mean_cp": [
+      0.0,
+      0.0
+     ],
+     "spearman": NaN,
+     "eb_factor": 1.0
+    },
+    {
+     "decile": 4,
+     "genes": 2972,
+     "mean_cp": [
+      0.0,
+      0.0
+     ],
+     "spearman": NaN,
+     "eb_factor": 1.0
+    },
+    {
+     "decile": 5,
+     "genes": 2972,
+     "mean_cp": [
+      0.0,
+      0.0
+     ],
+     "spearman": NaN,
+     "eb_factor": 1.0
+    },
+    {
+     "decile": 6,
+     "genes": 2971,
+     "mean_cp": [
+      0.0,
+      0.012911089076185754
+     ],
+     "spearman": 0.0030707563166701988,
+     "eb_factor": 0.083794496420283
+    },
+    {
+     "decile": 7,
+     "genes": 2971,
+     "mean_cp": [
+      0.012911089076185754,
+      0.07526515231883044
+     ],
+     "spearman": 0.15060761467640674,
+     "eb_factor": 0.30916864530140975
+    },
+    {
+     "decile": 8,
+     "genes": 2971,
+     "mean_cp": [
+      0.07526925368397235,
+      0.21510163752117217
+     ],
+     "spearman": 0.2935745655267933,
+     "eb_factor": 0.5086438066929865
+    },
+    {
+     "decile": 9,
+     "genes": 2971,
+     "mean_cp": [
+      0.21510951461405037,
+      0.557409518355697
+     ],
+     "spearman": 0.4437725122426182,
+     "eb_factor": 0.6598936843016563
+    },
+    {
+     "decile": 10,
+     "genes": 2971,
+     "mean_cp": [
+      0.557504260619057,
+      95.2917618904037
+     ],
+     "spearman": 0.7162785945264666,
+     "eb_factor": 0.8920562900388338
+    }
+   ],
+   "eb_factors": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.083794496420283,
+    0.30916864530140975,
+    0.5086438066929865,
+    0.6598936843016563,
+    0.8920562900388338
+   ],
+   "eb_factor_mean": 0.745355692275517
+  }
+ },
+ "stamp": {
+  "commit": "c40217c610be2f85279225411ec1dd4e02aef291",
+  "tree_clean": true,
+  "utc": "2026-11-19T19:57:53Z",
+  "inputs": {
+   "data/derived/feng_relabel_c/cd1_stats_relabel.npz": "36d1f7edcbbf3d7a80c68b51d5624a94bb753668079fe3d69aed720c71baa7e9",
+   "experiments/external/feng_relabel.yaml": "883e74c2c1ef5f01d5244555f8b3dcae24255568c731a6d53ee2788b7b677b49",
+   "experiments/t1_direction/config.yaml": "bae9b7aa747b17658aa25b4c1984bc3f7a3dbaca9a0970f7b60aa8e9b504c69f",
+   "experiments/external/results/feng_relabel/MANIFEST.json": "2a3e7200299bf2da05223a60bb910bbda8fcd1785375548e28aafdd006c93cad"
+  }
+ }
+}
