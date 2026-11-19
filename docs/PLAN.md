@@ -6453,3 +6453,20 @@ read through a screen, and how each answer would be read is fixed in `docs/ORGAN
     capped by the banked score at about 5, above about 0.48 (B) and 0.31 (C). Which odds hold is the premise no
     released task carries, and the team's notes give both stacks the same wording. This goes to the captain with
     the three routes of entry (o); an independent recomputation of the table precedes any ruling request.
+- 2026-11-19 (r), the independent recomputation of try H26, and the odds entry (q) left out (state at 14:48 UTC).
+  Written by the AI assistant.
+  - **The recomputation** (wf_fd1ee9c1-1f8: an agent that wrote its own script on the fifteen committed parts before
+    opening the reading): all 540 figures it compared agree with `reading.json` within 0.01; the conditional outcome
+    follows from the row's rule on its numbers; every part names commit b2e84dd with a clean tree; the truths equal
+    the study's; on the two harness backtests with the truth as released A's three expression skills equal row
+    H25's `iso_half` exactly in every seed. The row's outcome cell and entry (q) agree with its tables on every
+    figure they quote.
+  - **What entry (q) left out**, by the recomputation's reading: (q) gave the odds at which a trim pays on the
+    fold-merged figures (0.15 for B, 0.25 for C) and with the loss of the one-day transition capped at 5.3 by the
+    banked score (0.48 and 0.31; the cap is the AI assistant's estimate of A's margin over the banked score).
+    Without the cap they are 0.58 (B) and 0.57 (C). With the gain as well as the loss taken from the one-day
+    transition alone (B +2.83 and C +2.52 over its three clean truths), 0.74 and 0.86, or 0.65 and 0.68 capped. And
+    C minus B on the E10.5 fold, +0.75, has one seed of ten behind (-0.03). So the odds a trim needs run from about
+    0.15 to about 0.86 according to which released transition is taken as the test's likeness. No transition has
+    a reference and a target of equal scope, which is the test's case if E12.5 was sampled like E10.5: E9.5 to
+    E10.5 has the target wider than its reference (core 0.37 to 0.23) and the two others have it narrower.
